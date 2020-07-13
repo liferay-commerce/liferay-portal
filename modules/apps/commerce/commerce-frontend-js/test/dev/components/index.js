@@ -14,6 +14,11 @@
 
 module.exports = [
 	{
+		entry: 'MiniCompare',
+		name: 'Mini Compare',
+		page: 'mini-compare.html'
+	},
+	{
 		entry: 'DatasetDisplay',
 		name: 'Dataset display',
 		page: 'dataset-display.html',
