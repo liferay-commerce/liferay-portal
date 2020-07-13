@@ -118,7 +118,8 @@ export const fetchHeaders = new Headers({
 });
 
 export const fetchParams = {
-	headers: Liferay.staticEnvHeaders || fetchHeaders,
+	credentials: 'include',
+	headers: Liferay.staticEnvHeaders || fetchHeaders
 };
 
 export function createSortingString(values) {
