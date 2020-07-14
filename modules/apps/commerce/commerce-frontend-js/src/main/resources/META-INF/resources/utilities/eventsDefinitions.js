@@ -34,7 +34,7 @@ export const SIDE_PANEL_CLOSED = 'side-panel-closed';
 export const UPDATE_DATASET_DISPLAY = 'update-dataset-display';
 export const COMPARE_IS_AVAILABLE = 'compareIsAvailable';
 export const COMPARE_IS_UNAVAILABLE = 'compareIsUnavailable';
-export const ITEM_REMOVED_FROM_COMPARE = 'productRemovedFromCompare';
+export const ITEM_REMOVED_FROM_COMPARE = 'itemRemovedFromCompare';
 export const ADD_ITEM_TO_COMPARE = 'addItemToCompare';
 export const REMOVE_ITEM_FROM_COMPARE = 'removeItemFromCompare';
 
@@ -46,9 +46,9 @@ export default {
 	CHANGE_ORDER,
 	CLOSE_MODAL,
 	CLOSE_SIDE_PANEL,
-	CP_INSTANCE_CHANGED,
 	COMPARE_IS_AVAILABLE,
 	COMPARE_IS_UNAVAILABLE,
+	CP_INSTANCE_CHANGED,
 	CURRENT_PRODUCT_STATUS_CHANGED,
 	CURRENT_PRODUCT_UPDATED,
 	DATASET_ACTION_PERFORMED,
