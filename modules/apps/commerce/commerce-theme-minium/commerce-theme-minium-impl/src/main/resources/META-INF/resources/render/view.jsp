@@ -37,8 +37,8 @@ String addToCartId = PortalUtil.generateRandomKey(request, "add-to-cart");
 		<div class="col-md-6 col-xs-12">
 			<header class="product-header">
 				<commerce-ui:compare-checkbox
-					componentId="compareCheckbox"
 					CPDefinitionId="<%= cpDefinitionId %>"
+					label="<%= LanguageUtil.get(resourceBundle, "compare") %>"
 				/>
 
 				<h3 class="product-header-tagline" data-text-cp-instance-sku>
