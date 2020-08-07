@@ -125,6 +125,8 @@ public class CommerceAddressPersistenceTest {
 
 		CommerceAddress newCommerceAddress = _persistence.create(pk);
 
+		newCommerceAddress.setMvccVersion(RandomTestUtil.nextLong());
+
 		newCommerceAddress.setExternalReferenceCode(
 			RandomTestUtil.randomString());
 
@@ -179,6 +181,9 @@ public class CommerceAddressPersistenceTest {
 		CommerceAddress existingCommerceAddress = _persistence.findByPrimaryKey(
 			newCommerceAddress.getPrimaryKey());
 
+		Assert.assertEquals(
+			existingCommerceAddress.getMvccVersion(),
+			newCommerceAddress.getMvccVersion());
 		Assert.assertEquals(
 			existingCommerceAddress.getExternalReferenceCode(),
 			newCommerceAddress.getExternalReferenceCode());
@@ -355,8 +360,8 @@ public class CommerceAddressPersistenceTest {
 
 	protected OrderByComparator<CommerceAddress> getOrderByComparator() {
 		return OrderByComparatorFactoryUtil.create(
-			"CommerceAddress", "externalReferenceCode", true,
-			"commerceAddressId", true, "groupId", true, "companyId", true,
+			"CommerceAddress", "mvccVersion", true, "externalReferenceCode",
+			true, "commerceAddressId", true, "groupId", true, "companyId", true,
 			"userId", true, "userName", true, "createDate", true,
 			"modifiedDate", true, "classNameId", true, "classPK", true, "name",
 			true, "description", true, "street1", true, "street2", true,
@@ -607,6 +612,8 @@ public class CommerceAddressPersistenceTest {
 		long pk = RandomTestUtil.nextLong();
 
 		CommerceAddress commerceAddress = _persistence.create(pk);
+
+		commerceAddress.setMvccVersion(RandomTestUtil.nextLong());
 
 		commerceAddress.setExternalReferenceCode(RandomTestUtil.randomString());
 

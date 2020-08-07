@@ -125,6 +125,8 @@ public class CommerceCountryPersistenceTest {
 
 		CommerceCountry newCommerceCountry = _persistence.create(pk);
 
+		newCommerceCountry.setMvccVersion(RandomTestUtil.nextLong());
+
 		newCommerceCountry.setUuid(RandomTestUtil.randomString());
 
 		newCommerceCountry.setCompanyId(RandomTestUtil.nextLong());
@@ -166,6 +168,9 @@ public class CommerceCountryPersistenceTest {
 		CommerceCountry existingCommerceCountry = _persistence.findByPrimaryKey(
 			newCommerceCountry.getPrimaryKey());
 
+		Assert.assertEquals(
+			existingCommerceCountry.getMvccVersion(),
+			newCommerceCountry.getMvccVersion());
 		Assert.assertEquals(
 			existingCommerceCountry.getUuid(), newCommerceCountry.getUuid());
 		Assert.assertEquals(
@@ -315,13 +320,14 @@ public class CommerceCountryPersistenceTest {
 
 	protected OrderByComparator<CommerceCountry> getOrderByComparator() {
 		return OrderByComparatorFactoryUtil.create(
-			"CommerceCountry", "uuid", true, "commerceCountryId", true,
-			"companyId", true, "userId", true, "userName", true, "createDate",
-			true, "modifiedDate", true, "name", true, "billingAllowed", true,
-			"shippingAllowed", true, "twoLettersISOCode", true,
-			"threeLettersISOCode", true, "numericISOCode", true, "subjectToVAT",
-			true, "priority", true, "active", true, "lastPublishDate", true,
-			"channelFilterEnabled", true);
+			"CommerceCountry", "mvccVersion", true, "uuid", true,
+			"commerceCountryId", true, "companyId", true, "userId", true,
+			"userName", true, "createDate", true, "modifiedDate", true, "name",
+			true, "billingAllowed", true, "shippingAllowed", true,
+			"twoLettersISOCode", true, "threeLettersISOCode", true,
+			"numericISOCode", true, "subjectToVAT", true, "priority", true,
+			"active", true, "lastPublishDate", true, "channelFilterEnabled",
+			true);
 	}
 
 	@Test
@@ -576,6 +582,8 @@ public class CommerceCountryPersistenceTest {
 		long pk = RandomTestUtil.nextLong();
 
 		CommerceCountry commerceCountry = _persistence.create(pk);
+
+		commerceCountry.setMvccVersion(RandomTestUtil.nextLong());
 
 		commerceCountry.setUuid(RandomTestUtil.randomString());
 
