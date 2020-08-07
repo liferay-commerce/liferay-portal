@@ -14,9 +14,8 @@
 
 package com.liferay.commerce.discount.service;
 
-import aQute.bnd.annotation.ProviderType;
-
 import com.liferay.commerce.discount.model.CommerceDiscountCommerceAccountGroupRel;
+import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -37,6 +36,8 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import java.io.Serializable;
 
 import java.util.List;
+
+import org.osgi.annotation.versioning.ProviderType;
 
 /**
  * Provides the local service interface for CommerceDiscountCommerceAccountGroupRel. Methods of this
@@ -65,6 +66,10 @@ public interface CommerceDiscountCommerceAccountGroupRelLocalService
 	/**
 	 * Adds the commerce discount commerce account group rel to the database. Also notifies the appropriate model listeners.
 	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommerceDiscountCommerceAccountGroupRelLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
+	 *
 	 * @param commerceDiscountCommerceAccountGroupRel the commerce discount commerce account group rel
 	 * @return the commerce discount commerce account group rel that was added
 	 */
@@ -92,7 +97,17 @@ public interface CommerceDiscountCommerceAccountGroupRelLocalService
 			long commerceDiscountCommerceAccountGroupRelId);
 
 	/**
+	 * @throws PortalException
+	 */
+	public PersistedModel createPersistedModel(Serializable primaryKeyObj)
+		throws PortalException;
+
+	/**
 	 * Deletes the commerce discount commerce account group rel from the database. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommerceDiscountCommerceAccountGroupRelLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
 	 *
 	 * @param commerceDiscountCommerceAccountGroupRel the commerce discount commerce account group rel
 	 * @return the commerce discount commerce account group rel that was removed
@@ -107,6 +122,10 @@ public interface CommerceDiscountCommerceAccountGroupRelLocalService
 
 	/**
 	 * Deletes the commerce discount commerce account group rel with the primary key from the database. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommerceDiscountCommerceAccountGroupRelLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
 	 *
 	 * @param commerceDiscountCommerceAccountGroupRelId the primary key of the commerce discount commerce account group rel
 	 * @return the commerce discount commerce account group rel that was removed
@@ -137,6 +156,9 @@ public interface CommerceDiscountCommerceAccountGroupRelLocalService
 	@Override
 	public PersistedModel deletePersistedModel(PersistedModel persistedModel)
 		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public <T> T dslQuery(DSLQuery dslQuery);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DynamicQuery dynamicQuery();
@@ -293,6 +315,10 @@ public interface CommerceDiscountCommerceAccountGroupRelLocalService
 
 	/**
 	 * Updates the commerce discount commerce account group rel in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommerceDiscountCommerceAccountGroupRelLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
 	 *
 	 * @param commerceDiscountCommerceAccountGroupRel the commerce discount commerce account group rel
 	 * @return the commerce discount commerce account group rel that was updated

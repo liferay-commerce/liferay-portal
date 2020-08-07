@@ -48,6 +48,10 @@ public class CommercePriceListLocalServiceWrapper
 	/**
 	 * Adds the commerce price list to the database. Also notifies the appropriate model listeners.
 	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePriceListLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
+	 *
 	 * @param commercePriceList the commerce price list
 	 * @return the commerce price list that was added
 	 */
@@ -286,7 +290,23 @@ public class CommercePriceListLocalServiceWrapper
 	}
 
 	/**
+	 * @throws PortalException
+	 */
+	@Override
+	public com.liferay.portal.kernel.model.PersistedModel createPersistedModel(
+			java.io.Serializable primaryKeyObj)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commercePriceListLocalService.createPersistedModel(
+			primaryKeyObj);
+	}
+
+	/**
 	 * Deletes the commerce price list from the database. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePriceListLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
 	 *
 	 * @param commercePriceList the commerce price list
 	 * @return the commerce price list that was removed
@@ -305,6 +325,10 @@ public class CommercePriceListLocalServiceWrapper
 
 	/**
 	 * Deletes the commerce price list with the primary key from the database. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePriceListLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
 	 *
 	 * @param commercePriceListId the primary key of the commerce price list
 	 * @return the commerce price list that was removed
@@ -336,6 +360,11 @@ public class CommercePriceListLocalServiceWrapper
 
 		return _commercePriceListLocalService.deletePersistedModel(
 			persistedModel);
+	}
+
+	@Override
+	public <T> T dslQuery(com.liferay.petra.sql.dsl.query.DSLQuery dslQuery) {
+		return _commercePriceListLocalService.dslQuery(dslQuery);
 	}
 
 	@Override
@@ -854,6 +883,10 @@ public class CommercePriceListLocalServiceWrapper
 
 	/**
 	 * Updates the commerce price list in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePriceListLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
 	 *
 	 * @param commercePriceList the commerce price list
 	 * @return the commerce price list that was updated

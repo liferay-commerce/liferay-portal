@@ -38,6 +38,10 @@ public class CommercePriceListAccountRelLocalServiceWrapper
 	/**
 	 * Adds the commerce price list account rel to the database. Also notifies the appropriate model listeners.
 	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePriceListAccountRelLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
+	 *
 	 * @param commercePriceListAccountRel the commerce price list account rel
 	 * @return the commerce price list account rel that was added
 	 */
@@ -78,7 +82,23 @@ public class CommercePriceListAccountRelLocalServiceWrapper
 	}
 
 	/**
+	 * @throws PortalException
+	 */
+	@Override
+	public com.liferay.portal.kernel.model.PersistedModel createPersistedModel(
+			java.io.Serializable primaryKeyObj)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commercePriceListAccountRelLocalService.createPersistedModel(
+			primaryKeyObj);
+	}
+
+	/**
 	 * Deletes the commerce price list account rel from the database. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePriceListAccountRelLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
 	 *
 	 * @param commercePriceListAccountRel the commerce price list account rel
 	 * @return the commerce price list account rel that was removed
@@ -97,6 +117,10 @@ public class CommercePriceListAccountRelLocalServiceWrapper
 
 	/**
 	 * Deletes the commerce price list account rel with the primary key from the database. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePriceListAccountRelLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
 	 *
 	 * @param commercePriceListAccountRelId the primary key of the commerce price list account rel
 	 * @return the commerce price list account rel that was removed
@@ -140,6 +164,11 @@ public class CommercePriceListAccountRelLocalServiceWrapper
 
 		return _commercePriceListAccountRelLocalService.deletePersistedModel(
 			persistedModel);
+	}
+
+	@Override
+	public <T> T dslQuery(com.liferay.petra.sql.dsl.query.DSLQuery dslQuery) {
+		return _commercePriceListAccountRelLocalService.dslQuery(dslQuery);
 	}
 
 	@Override
@@ -433,6 +462,10 @@ public class CommercePriceListAccountRelLocalServiceWrapper
 
 	/**
 	 * Updates the commerce price list account rel in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePriceListAccountRelLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
 	 *
 	 * @param commercePriceListAccountRel the commerce price list account rel
 	 * @return the commerce price list account rel that was updated

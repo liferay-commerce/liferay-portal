@@ -14,9 +14,8 @@
 
 package com.liferay.commerce.pricing.service;
 
-import aQute.bnd.annotation.ProviderType;
-
 import com.liferay.commerce.pricing.model.CommercePricingClassCPDefinitionRel;
+import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -37,6 +36,8 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import java.io.Serializable;
 
 import java.util.List;
+
+import org.osgi.annotation.versioning.ProviderType;
 
 /**
  * Provides the local service interface for CommercePricingClassCPDefinitionRel. Methods of this
@@ -65,6 +66,10 @@ public interface CommercePricingClassCPDefinitionRelLocalService
 	/**
 	 * Adds the commerce pricing class cp definition rel to the database. Also notifies the appropriate model listeners.
 	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePricingClassCPDefinitionRelLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
+	 *
 	 * @param commercePricingClassCPDefinitionRel the commerce pricing class cp definition rel
 	 * @return the commerce pricing class cp definition rel that was added
 	 */
@@ -92,7 +97,17 @@ public interface CommercePricingClassCPDefinitionRelLocalService
 			long CommercePricingClassCPDefinitionRelId);
 
 	/**
+	 * @throws PortalException
+	 */
+	public PersistedModel createPersistedModel(Serializable primaryKeyObj)
+		throws PortalException;
+
+	/**
 	 * Deletes the commerce pricing class cp definition rel from the database. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePricingClassCPDefinitionRelLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
 	 *
 	 * @param commercePricingClassCPDefinitionRel the commerce pricing class cp definition rel
 	 * @return the commerce pricing class cp definition rel that was removed
@@ -107,6 +122,10 @@ public interface CommercePricingClassCPDefinitionRelLocalService
 
 	/**
 	 * Deletes the commerce pricing class cp definition rel with the primary key from the database. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePricingClassCPDefinitionRelLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
 	 *
 	 * @param CommercePricingClassCPDefinitionRelId the primary key of the commerce pricing class cp definition rel
 	 * @return the commerce pricing class cp definition rel that was removed
@@ -128,6 +147,9 @@ public interface CommercePricingClassCPDefinitionRelLocalService
 	@Override
 	public PersistedModel deletePersistedModel(PersistedModel persistedModel)
 		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public <T> T dslQuery(DSLQuery dslQuery);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DynamicQuery dynamicQuery();
@@ -296,6 +318,10 @@ public interface CommercePricingClassCPDefinitionRelLocalService
 
 	/**
 	 * Updates the commerce pricing class cp definition rel in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePricingClassCPDefinitionRelLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
 	 *
 	 * @param commercePricingClassCPDefinitionRel the commerce pricing class cp definition rel
 	 * @return the commerce pricing class cp definition rel that was updated

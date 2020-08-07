@@ -869,43 +869,6 @@ public class CommercePriceListServiceHttp {
 		}
 	}
 
-	public static void setCatalogBasePriceList(
-			HttpPrincipal httpPrincipal, long groupId, long commercePriceListId,
-			String type)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		try {
-			MethodKey methodKey = new MethodKey(
-				CommercePriceListServiceUtil.class, "setCatalogBasePriceList",
-				_setCatalogBasePriceListParameterTypes17);
-
-			MethodHandler methodHandler = new MethodHandler(
-				methodKey, groupId, commercePriceListId, type);
-
-			try {
-				TunnelUtil.invoke(httpPrincipal, methodHandler);
-			}
-			catch (Exception exception) {
-				if (exception instanceof
-						com.liferay.portal.kernel.exception.PortalException) {
-
-					throw (com.liferay.portal.kernel.exception.PortalException)
-						exception;
-				}
-
-				throw new com.liferay.portal.kernel.exception.SystemException(
-					exception);
-			}
-		}
-		catch (com.liferay.portal.kernel.exception.SystemException
-					systemException) {
-
-			_log.error(systemException, systemException);
-
-			throw systemException;
-		}
-	}
-
 	public static int searchCommercePriceListsCount(
 			HttpPrincipal httpPrincipal, long companyId, String keywords,
 			int status)
@@ -915,7 +878,7 @@ public class CommercePriceListServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CommercePriceListServiceUtil.class,
 				"searchCommercePriceListsCount",
-				_searchCommercePriceListsCountParameterTypes18);
+				_searchCommercePriceListsCountParameterTypes17);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, companyId, keywords, status);
@@ -938,6 +901,43 @@ public class CommercePriceListServiceHttp {
 			}
 
 			return ((Integer)returnObj).intValue();
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
+	public static void setCatalogBasePriceList(
+			HttpPrincipal httpPrincipal, long groupId, long commercePriceListId,
+			String type)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				CommercePriceListServiceUtil.class, "setCatalogBasePriceList",
+				_setCatalogBasePriceListParameterTypes18);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, groupId, commercePriceListId, type);
+
+			try {
+				TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
 		}
 		catch (com.liferay.portal.kernel.exception.SystemException
 					systemException) {
@@ -1477,12 +1477,12 @@ public class CommercePriceListServiceHttp {
 			long.class, String.class, int.class, int.class, int.class,
 			com.liferay.portal.kernel.search.Sort.class
 		};
-	private static final Class<?>[] _setCatalogBasePriceListParameterTypes17 =
-		new Class[] {long.class, long.class, String.class};
 	private static final Class<?>[]
-		_searchCommercePriceListsCountParameterTypes18 = new Class[] {
+		_searchCommercePriceListsCountParameterTypes17 = new Class[] {
 			long.class, String.class, int.class
 		};
+	private static final Class<?>[] _setCatalogBasePriceListParameterTypes18 =
+		new Class[] {long.class, long.class, String.class};
 	private static final Class<?>[] _updateCommercePriceListParameterTypes19 =
 		new Class[] {
 			long.class, long.class, boolean.class, long.class, String.class,

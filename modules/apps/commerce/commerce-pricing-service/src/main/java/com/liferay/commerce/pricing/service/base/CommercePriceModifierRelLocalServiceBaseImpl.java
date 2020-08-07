@@ -24,6 +24,7 @@ import com.liferay.commerce.pricing.service.persistence.CommercePricingClassCPDe
 import com.liferay.commerce.pricing.service.persistence.CommercePricingClassCPDefinitionRelPersistence;
 import com.liferay.commerce.pricing.service.persistence.CommercePricingClassFinder;
 import com.liferay.commerce.pricing.service.persistence.CommercePricingClassPersistence;
+import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
@@ -81,6 +82,10 @@ public abstract class CommercePriceModifierRelLocalServiceBaseImpl
 	/**
 	 * Adds the commerce price modifier rel to the database. Also notifies the appropriate model listeners.
 	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePriceModifierRelLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
+	 *
 	 * @param commercePriceModifierRel the commerce price modifier rel
 	 * @return the commerce price modifier rel that was added
 	 */
@@ -113,6 +118,10 @@ public abstract class CommercePriceModifierRelLocalServiceBaseImpl
 	/**
 	 * Deletes the commerce price modifier rel with the primary key from the database. Also notifies the appropriate model listeners.
 	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePriceModifierRelLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
+	 *
 	 * @param commercePriceModifierRelId the primary key of the commerce price modifier rel
 	 * @return the commerce price modifier rel that was removed
 	 * @throws PortalException if a commerce price modifier rel with the primary key could not be found
@@ -130,6 +139,10 @@ public abstract class CommercePriceModifierRelLocalServiceBaseImpl
 	/**
 	 * Deletes the commerce price modifier rel from the database. Also notifies the appropriate model listeners.
 	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePriceModifierRelLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
+	 *
 	 * @param commercePriceModifierRel the commerce price modifier rel
 	 * @return the commerce price modifier rel that was removed
 	 * @throws PortalException
@@ -142,6 +155,11 @@ public abstract class CommercePriceModifierRelLocalServiceBaseImpl
 
 		return commercePriceModifierRelPersistence.remove(
 			commercePriceModifierRel);
+	}
+
+	@Override
+	public <T> T dslQuery(DSLQuery dslQuery) {
+		return commercePriceModifierRelPersistence.dslQuery(dslQuery);
 	}
 
 	@Override
@@ -307,6 +325,16 @@ public abstract class CommercePriceModifierRelLocalServiceBaseImpl
 	/**
 	 * @throws PortalException
 	 */
+	public PersistedModel createPersistedModel(Serializable primaryKeyObj)
+		throws PortalException {
+
+		return commercePriceModifierRelPersistence.create(
+			((Long)primaryKeyObj).longValue());
+	}
+
+	/**
+	 * @throws PortalException
+	 */
 	@Override
 	public PersistedModel deletePersistedModel(PersistedModel persistedModel)
 		throws PortalException {
@@ -361,6 +389,10 @@ public abstract class CommercePriceModifierRelLocalServiceBaseImpl
 
 	/**
 	 * Updates the commerce price modifier rel in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePriceModifierRelLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
 	 *
 	 * @param commercePriceModifierRel the commerce price modifier rel
 	 * @return the commerce price modifier rel that was updated

@@ -33,6 +33,7 @@ import com.liferay.exportimport.kernel.lar.ManifestSummary;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandlerUtil;
 import com.liferay.exportimport.kernel.lar.StagedModelType;
+import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
@@ -92,6 +93,10 @@ public abstract class CommercePriceListAccountRelLocalServiceBaseImpl
 	/**
 	 * Adds the commerce price list account rel to the database. Also notifies the appropriate model listeners.
 	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePriceListAccountRelLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
+	 *
 	 * @param commercePriceListAccountRel the commerce price list account rel
 	 * @return the commerce price list account rel that was added
 	 */
@@ -124,6 +129,10 @@ public abstract class CommercePriceListAccountRelLocalServiceBaseImpl
 	/**
 	 * Deletes the commerce price list account rel with the primary key from the database. Also notifies the appropriate model listeners.
 	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePriceListAccountRelLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
+	 *
 	 * @param commercePriceListAccountRelId the primary key of the commerce price list account rel
 	 * @return the commerce price list account rel that was removed
 	 * @throws PortalException if a commerce price list account rel with the primary key could not be found
@@ -141,6 +150,10 @@ public abstract class CommercePriceListAccountRelLocalServiceBaseImpl
 	/**
 	 * Deletes the commerce price list account rel from the database. Also notifies the appropriate model listeners.
 	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePriceListAccountRelLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
+	 *
 	 * @param commercePriceListAccountRel the commerce price list account rel
 	 * @return the commerce price list account rel that was removed
 	 * @throws PortalException
@@ -153,6 +166,11 @@ public abstract class CommercePriceListAccountRelLocalServiceBaseImpl
 
 		return commercePriceListAccountRelPersistence.remove(
 			commercePriceListAccountRel);
+	}
+
+	@Override
+	public <T> T dslQuery(DSLQuery dslQuery) {
+		return commercePriceListAccountRelPersistence.dslQuery(dslQuery);
 	}
 
 	@Override
@@ -403,6 +421,16 @@ public abstract class CommercePriceListAccountRelLocalServiceBaseImpl
 	/**
 	 * @throws PortalException
 	 */
+	public PersistedModel createPersistedModel(Serializable primaryKeyObj)
+		throws PortalException {
+
+		return commercePriceListAccountRelPersistence.create(
+			((Long)primaryKeyObj).longValue());
+	}
+
+	/**
+	 * @throws PortalException
+	 */
 	@Override
 	public PersistedModel deletePersistedModel(PersistedModel persistedModel)
 		throws PortalException {
@@ -475,6 +503,10 @@ public abstract class CommercePriceListAccountRelLocalServiceBaseImpl
 
 	/**
 	 * Updates the commerce price list account rel in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePriceListAccountRelLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
 	 *
 	 * @param commercePriceListAccountRel the commerce price list account rel
 	 * @return the commerce price list account rel that was updated

@@ -14,11 +14,11 @@
 
 package com.liferay.commerce.model;
 
-import aQute.bnd.annotation.ProviderType;
-
 import com.liferay.portal.kernel.annotation.ImplementationClassName;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.util.Accessor;
+
+import org.osgi.annotation.versioning.ProviderType;
 
 /**
  * The extended model interface for the CommerceOrderItem service. Represents a row in the &quot;CommerceOrderItem&quot; database table, with each column mapped to a property of this class.
@@ -63,6 +63,8 @@ public interface CommerceOrderItem
 	public com.liferay.commerce.product.model.CPInstance fetchCPInstance();
 
 	public com.liferay.commerce.product.model.CProduct fetchCProduct();
+
+	public java.util.List<CommerceOrderItem> getChildCommerceOrderItems();
 
 	public CommerceOrder getCommerceOrder()
 		throws com.liferay.portal.kernel.exception.PortalException;
@@ -118,8 +120,6 @@ public interface CommerceOrderItem
 	public com.liferay.commerce.currency.model.CommerceMoney
 			getUnitPriceWithTaxAmountMoney()
 		throws com.liferay.portal.kernel.exception.PortalException;
-
-	public java.util.List<CommerceOrderItem> getChildCommerceOrderItems();
 
 	public boolean hasParentCommerceOrderItem();
 

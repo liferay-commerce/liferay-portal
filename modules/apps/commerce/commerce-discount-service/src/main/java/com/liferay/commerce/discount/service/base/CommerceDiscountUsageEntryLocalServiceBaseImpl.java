@@ -27,6 +27,7 @@ import com.liferay.commerce.discount.service.persistence.CommerceDiscountRelPers
 import com.liferay.commerce.discount.service.persistence.CommerceDiscountRuleFinder;
 import com.liferay.commerce.discount.service.persistence.CommerceDiscountRulePersistence;
 import com.liferay.commerce.discount.service.persistence.CommerceDiscountUsageEntryPersistence;
+import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
@@ -84,6 +85,10 @@ public abstract class CommerceDiscountUsageEntryLocalServiceBaseImpl
 	/**
 	 * Adds the commerce discount usage entry to the database. Also notifies the appropriate model listeners.
 	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommerceDiscountUsageEntryLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
+	 *
 	 * @param commerceDiscountUsageEntry the commerce discount usage entry
 	 * @return the commerce discount usage entry that was added
 	 */
@@ -116,6 +121,10 @@ public abstract class CommerceDiscountUsageEntryLocalServiceBaseImpl
 	/**
 	 * Deletes the commerce discount usage entry with the primary key from the database. Also notifies the appropriate model listeners.
 	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommerceDiscountUsageEntryLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
+	 *
 	 * @param commerceDiscountUsageEntryId the primary key of the commerce discount usage entry
 	 * @return the commerce discount usage entry that was removed
 	 * @throws PortalException if a commerce discount usage entry with the primary key could not be found
@@ -133,6 +142,10 @@ public abstract class CommerceDiscountUsageEntryLocalServiceBaseImpl
 	/**
 	 * Deletes the commerce discount usage entry from the database. Also notifies the appropriate model listeners.
 	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommerceDiscountUsageEntryLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
+	 *
 	 * @param commerceDiscountUsageEntry the commerce discount usage entry
 	 * @return the commerce discount usage entry that was removed
 	 */
@@ -143,6 +156,11 @@ public abstract class CommerceDiscountUsageEntryLocalServiceBaseImpl
 
 		return commerceDiscountUsageEntryPersistence.remove(
 			commerceDiscountUsageEntry);
+	}
+
+	@Override
+	public <T> T dslQuery(DSLQuery dslQuery) {
+		return commerceDiscountUsageEntryPersistence.dslQuery(dslQuery);
 	}
 
 	@Override
@@ -308,6 +326,16 @@ public abstract class CommerceDiscountUsageEntryLocalServiceBaseImpl
 	/**
 	 * @throws PortalException
 	 */
+	public PersistedModel createPersistedModel(Serializable primaryKeyObj)
+		throws PortalException {
+
+		return commerceDiscountUsageEntryPersistence.create(
+			((Long)primaryKeyObj).longValue());
+	}
+
+	/**
+	 * @throws PortalException
+	 */
 	@Override
 	public PersistedModel deletePersistedModel(PersistedModel persistedModel)
 		throws PortalException {
@@ -362,6 +390,10 @@ public abstract class CommerceDiscountUsageEntryLocalServiceBaseImpl
 
 	/**
 	 * Updates the commerce discount usage entry in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommerceDiscountUsageEntryLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
 	 *
 	 * @param commerceDiscountUsageEntry the commerce discount usage entry
 	 * @return the commerce discount usage entry that was updated

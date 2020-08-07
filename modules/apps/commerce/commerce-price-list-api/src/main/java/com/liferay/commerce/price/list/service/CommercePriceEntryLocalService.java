@@ -14,10 +14,9 @@
 
 package com.liferay.commerce.price.list.service;
 
-import aQute.bnd.annotation.ProviderType;
-
 import com.liferay.commerce.price.list.model.CommercePriceEntry;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
+import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery;
@@ -49,6 +48,8 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import org.osgi.annotation.versioning.ProviderType;
+
 /**
  * Provides the local service interface for CommercePriceEntry. Methods of this
  * service will not have security checks based on the propagated JAAS
@@ -70,11 +71,15 @@ public interface CommercePriceEntryLocalService
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never modify or reference this interface directly. Always use {@link CommercePriceEntryLocalServiceUtil} to access the commerce price entry local service. Add custom service methods to <code>com.liferay.commerce.price.list.service.impl.CommercePriceEntryLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface.
+	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.commerce.price.list.service.impl.CommercePriceEntryLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the commerce price entry local service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link CommercePriceEntryLocalServiceUtil} if injection and service tracking are not available.
 	 */
 
 	/**
 	 * Adds the commerce price entry to the database. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePriceEntryLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
 	 *
 	 * @param commercePriceEntry the commerce price entry
 	 * @return the commerce price entry that was added
@@ -152,6 +157,12 @@ public interface CommercePriceEntryLocalService
 	public CommercePriceEntry createCommercePriceEntry(
 		long commercePriceEntryId);
 
+	/**
+	 * @throws PortalException
+	 */
+	public PersistedModel createPersistedModel(Serializable primaryKeyObj)
+		throws PortalException;
+
 	public void deleteCommercePriceEntries(long commercePriceListId)
 		throws PortalException;
 
@@ -168,6 +179,10 @@ public interface CommercePriceEntryLocalService
 	/**
 	 * Deletes the commerce price entry from the database. Also notifies the appropriate model listeners.
 	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePriceEntryLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
+	 *
 	 * @param commercePriceEntry the commerce price entry
 	 * @return the commerce price entry that was removed
 	 * @throws PortalException
@@ -180,6 +195,10 @@ public interface CommercePriceEntryLocalService
 
 	/**
 	 * Deletes the commerce price entry with the primary key from the database. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePriceEntryLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
 	 *
 	 * @param commercePriceEntryId the primary key of the commerce price entry
 	 * @return the commerce price entry that was removed
@@ -196,6 +215,9 @@ public interface CommercePriceEntryLocalService
 	@Override
 	public PersistedModel deletePersistedModel(PersistedModel persistedModel)
 		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public <T> T dslQuery(DSLQuery dslQuery);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DynamicQuery dynamicQuery();
@@ -477,6 +499,10 @@ public interface CommercePriceEntryLocalService
 
 	/**
 	 * Updates the commerce price entry in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePriceEntryLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
 	 *
 	 * @param commercePriceEntry the commerce price entry
 	 * @return the commerce price entry that was updated

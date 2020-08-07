@@ -14,10 +14,9 @@
 
 package com.liferay.commerce.service;
 
-import aQute.bnd.annotation.ProviderType;
-
 import com.liferay.commerce.model.CommerceAddressRestriction;
 import com.liferay.commerce.model.CommerceShippingMethod;
+import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -42,6 +41,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.osgi.annotation.versioning.ProviderType;
+
 /**
  * Provides the local service interface for CommerceShippingMethod. Methods of this
  * service will not have security checks based on the propagated JAAS
@@ -63,7 +64,7 @@ public interface CommerceShippingMethodLocalService
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never modify or reference this interface directly. Always use {@link CommerceShippingMethodLocalServiceUtil} to access the commerce shipping method local service. Add custom service methods to <code>com.liferay.commerce.service.impl.CommerceShippingMethodLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface.
+	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.commerce.service.impl.CommerceShippingMethodLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the commerce shipping method local service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link CommerceShippingMethodLocalServiceUtil} if injection and service tracking are not available.
 	 */
 	public CommerceAddressRestriction addCommerceAddressRestriction(
 			long userId, long groupId, long commerceShippingMethodId,
@@ -108,6 +109,12 @@ public interface CommerceShippingMethodLocalService
 	@Transactional(enabled = false)
 	public CommerceShippingMethod createCommerceShippingMethod(
 		long commerceShippingMethodId);
+
+	/**
+	 * @throws PortalException
+	 */
+	public PersistedModel createPersistedModel(Serializable primaryKeyObj)
+		throws PortalException;
 
 	public void deleteCommerceAddressRestriction(
 			long commerceAddressRestrictionId)
@@ -154,6 +161,9 @@ public interface CommerceShippingMethodLocalService
 	@Override
 	public PersistedModel deletePersistedModel(PersistedModel persistedModel)
 		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public <T> T dslQuery(DSLQuery dslQuery);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DynamicQuery dynamicQuery();

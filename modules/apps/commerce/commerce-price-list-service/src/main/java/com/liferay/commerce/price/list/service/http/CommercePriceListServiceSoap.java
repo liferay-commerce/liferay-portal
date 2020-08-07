@@ -467,21 +467,6 @@ public class CommercePriceListServiceSoap {
 		}
 	}
 
-	public static void setCatalogBasePriceList(
-			long groupId, long commercePriceListId, String type)
-		throws RemoteException {
-
-		try {
-			CommercePriceListServiceUtil.setCatalogBasePriceList(
-				groupId, commercePriceListId, type);
-		}
-		catch (Exception exception) {
-			_log.error(exception, exception);
-
-			throw new RemoteException(exception.getMessage());
-		}
-	}
-
 	public static int searchCommercePriceListsCount(
 			long companyId, String keywords, int status)
 		throws RemoteException {
@@ -492,6 +477,21 @@ public class CommercePriceListServiceSoap {
 					companyId, keywords, status);
 
 			return returnValue;
+		}
+		catch (Exception exception) {
+			_log.error(exception, exception);
+
+			throw new RemoteException(exception.getMessage());
+		}
+	}
+
+	public static void setCatalogBasePriceList(
+			long groupId, long commercePriceListId, String type)
+		throws RemoteException {
+
+		try {
+			CommercePriceListServiceUtil.setCatalogBasePriceList(
+				groupId, commercePriceListId, type);
 		}
 		catch (Exception exception) {
 			_log.error(exception, exception);

@@ -38,6 +38,10 @@ public class CommercePriceListDiscountRelLocalServiceWrapper
 	/**
 	 * Adds the commerce price list discount rel to the database. Also notifies the appropriate model listeners.
 	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePriceListDiscountRelLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
+	 *
 	 * @param commercePriceListDiscountRel the commerce price list discount rel
 	 * @return the commerce price list discount rel that was added
 	 */
@@ -79,7 +83,23 @@ public class CommercePriceListDiscountRelLocalServiceWrapper
 	}
 
 	/**
+	 * @throws PortalException
+	 */
+	@Override
+	public com.liferay.portal.kernel.model.PersistedModel createPersistedModel(
+			java.io.Serializable primaryKeyObj)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commercePriceListDiscountRelLocalService.createPersistedModel(
+			primaryKeyObj);
+	}
+
+	/**
 	 * Deletes the commerce price list discount rel from the database. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePriceListDiscountRelLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
 	 *
 	 * @param commercePriceListDiscountRel the commerce price list discount rel
 	 * @return the commerce price list discount rel that was removed
@@ -98,6 +118,10 @@ public class CommercePriceListDiscountRelLocalServiceWrapper
 
 	/**
 	 * Deletes the commerce price list discount rel with the primary key from the database. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePriceListDiscountRelLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
 	 *
 	 * @param commercePriceListDiscountRelId the primary key of the commerce price list discount rel
 	 * @return the commerce price list discount rel that was removed
@@ -129,6 +153,11 @@ public class CommercePriceListDiscountRelLocalServiceWrapper
 
 		return _commercePriceListDiscountRelLocalService.deletePersistedModel(
 			persistedModel);
+	}
+
+	@Override
+	public <T> T dslQuery(com.liferay.petra.sql.dsl.query.DSLQuery dslQuery) {
+		return _commercePriceListDiscountRelLocalService.dslQuery(dslQuery);
 	}
 
 	@Override
@@ -404,6 +433,10 @@ public class CommercePriceListDiscountRelLocalServiceWrapper
 
 	/**
 	 * Updates the commerce price list discount rel in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePriceListDiscountRelLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
 	 *
 	 * @param commercePriceListDiscountRel the commerce price list discount rel
 	 * @return the commerce price list discount rel that was updated

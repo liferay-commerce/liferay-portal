@@ -32,6 +32,7 @@ import com.liferay.exportimport.kernel.lar.ManifestSummary;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandlerUtil;
 import com.liferay.exportimport.kernel.lar.StagedModelType;
+import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
@@ -91,6 +92,10 @@ public abstract class CommercePriceListDiscountRelLocalServiceBaseImpl
 	/**
 	 * Adds the commerce price list discount rel to the database. Also notifies the appropriate model listeners.
 	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePriceListDiscountRelLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
+	 *
 	 * @param commercePriceListDiscountRel the commerce price list discount rel
 	 * @return the commerce price list discount rel that was added
 	 */
@@ -123,6 +128,10 @@ public abstract class CommercePriceListDiscountRelLocalServiceBaseImpl
 	/**
 	 * Deletes the commerce price list discount rel with the primary key from the database. Also notifies the appropriate model listeners.
 	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePriceListDiscountRelLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
+	 *
 	 * @param commercePriceListDiscountRelId the primary key of the commerce price list discount rel
 	 * @return the commerce price list discount rel that was removed
 	 * @throws PortalException if a commerce price list discount rel with the primary key could not be found
@@ -140,6 +149,10 @@ public abstract class CommercePriceListDiscountRelLocalServiceBaseImpl
 	/**
 	 * Deletes the commerce price list discount rel from the database. Also notifies the appropriate model listeners.
 	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePriceListDiscountRelLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
+	 *
 	 * @param commercePriceListDiscountRel the commerce price list discount rel
 	 * @return the commerce price list discount rel that was removed
 	 * @throws PortalException
@@ -152,6 +165,11 @@ public abstract class CommercePriceListDiscountRelLocalServiceBaseImpl
 
 		return commercePriceListDiscountRelPersistence.remove(
 			commercePriceListDiscountRel);
+	}
+
+	@Override
+	public <T> T dslQuery(DSLQuery dslQuery) {
+		return commercePriceListDiscountRelPersistence.dslQuery(dslQuery);
 	}
 
 	@Override
@@ -405,6 +423,16 @@ public abstract class CommercePriceListDiscountRelLocalServiceBaseImpl
 	/**
 	 * @throws PortalException
 	 */
+	public PersistedModel createPersistedModel(Serializable primaryKeyObj)
+		throws PortalException {
+
+		return commercePriceListDiscountRelPersistence.create(
+			((Long)primaryKeyObj).longValue());
+	}
+
+	/**
+	 * @throws PortalException
+	 */
 	@Override
 	public PersistedModel deletePersistedModel(PersistedModel persistedModel)
 		throws PortalException {
@@ -477,6 +505,10 @@ public abstract class CommercePriceListDiscountRelLocalServiceBaseImpl
 
 	/**
 	 * Updates the commerce price list discount rel in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePriceListDiscountRelLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
 	 *
 	 * @param commercePriceListDiscountRel the commerce price list discount rel
 	 * @return the commerce price list discount rel that was updated

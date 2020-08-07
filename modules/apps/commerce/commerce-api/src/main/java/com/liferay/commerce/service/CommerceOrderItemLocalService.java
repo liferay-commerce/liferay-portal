@@ -14,11 +14,10 @@
 
 package com.liferay.commerce.service;
 
-import aQute.bnd.annotation.ProviderType;
-
 import com.liferay.commerce.context.CommerceContext;
 import com.liferay.commerce.exception.NoSuchOrderItemException;
 import com.liferay.commerce.model.CommerceOrderItem;
+import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -45,6 +44,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import org.osgi.annotation.versioning.ProviderType;
+
 /**
  * Provides the local service interface for CommerceOrderItem. Methods of this
  * service will not have security checks based on the propagated JAAS
@@ -66,7 +67,7 @@ public interface CommerceOrderItemLocalService
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never modify or reference this interface directly. Always use {@link CommerceOrderItemLocalServiceUtil} to access the commerce order item local service. Add custom service methods to <code>com.liferay.commerce.service.impl.CommerceOrderItemLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface.
+	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.commerce.service.impl.CommerceOrderItemLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the commerce order item local service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link CommerceOrderItemLocalServiceUtil} if injection and service tracking are not available.
 	 */
 
 	/**
@@ -100,6 +101,12 @@ public interface CommerceOrderItemLocalService
 	 */
 	@Transactional(enabled = false)
 	public CommerceOrderItem createCommerceOrderItem(long commerceOrderItemId);
+
+	/**
+	 * @throws PortalException
+	 */
+	public PersistedModel createPersistedModel(Serializable primaryKeyObj)
+		throws PortalException;
 
 	/**
 	 * Deletes the commerce order item from the database. Also notifies the appropriate model listeners.
@@ -150,6 +157,9 @@ public interface CommerceOrderItemLocalService
 	@Override
 	public PersistedModel deletePersistedModel(PersistedModel persistedModel)
 		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public <T> T dslQuery(DSLQuery dslQuery);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DynamicQuery dynamicQuery();

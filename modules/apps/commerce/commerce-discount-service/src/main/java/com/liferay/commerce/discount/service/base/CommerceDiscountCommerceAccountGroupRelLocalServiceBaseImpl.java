@@ -27,6 +27,7 @@ import com.liferay.commerce.discount.service.persistence.CommerceDiscountRelPers
 import com.liferay.commerce.discount.service.persistence.CommerceDiscountRuleFinder;
 import com.liferay.commerce.discount.service.persistence.CommerceDiscountRulePersistence;
 import com.liferay.commerce.discount.service.persistence.CommerceDiscountUsageEntryPersistence;
+import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
@@ -86,6 +87,10 @@ public abstract class
 	/**
 	 * Adds the commerce discount commerce account group rel to the database. Also notifies the appropriate model listeners.
 	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommerceDiscountCommerceAccountGroupRelLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
+	 *
 	 * @param commerceDiscountCommerceAccountGroupRel the commerce discount commerce account group rel
 	 * @return the commerce discount commerce account group rel that was added
 	 */
@@ -121,6 +126,10 @@ public abstract class
 	/**
 	 * Deletes the commerce discount commerce account group rel with the primary key from the database. Also notifies the appropriate model listeners.
 	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommerceDiscountCommerceAccountGroupRelLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
+	 *
 	 * @param commerceDiscountCommerceAccountGroupRelId the primary key of the commerce discount commerce account group rel
 	 * @return the commerce discount commerce account group rel that was removed
 	 * @throws PortalException if a commerce discount commerce account group rel with the primary key could not be found
@@ -139,6 +148,10 @@ public abstract class
 	/**
 	 * Deletes the commerce discount commerce account group rel from the database. Also notifies the appropriate model listeners.
 	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommerceDiscountCommerceAccountGroupRelLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
+	 *
 	 * @param commerceDiscountCommerceAccountGroupRel the commerce discount commerce account group rel
 	 * @return the commerce discount commerce account group rel that was removed
 	 * @throws PortalException
@@ -153,6 +166,12 @@ public abstract class
 
 		return commerceDiscountCommerceAccountGroupRelPersistence.remove(
 			commerceDiscountCommerceAccountGroupRel);
+	}
+
+	@Override
+	public <T> T dslQuery(DSLQuery dslQuery) {
+		return commerceDiscountCommerceAccountGroupRelPersistence.dslQuery(
+			dslQuery);
 	}
 
 	@Override
@@ -323,6 +342,16 @@ public abstract class
 	/**
 	 * @throws PortalException
 	 */
+	public PersistedModel createPersistedModel(Serializable primaryKeyObj)
+		throws PortalException {
+
+		return commerceDiscountCommerceAccountGroupRelPersistence.create(
+			((Long)primaryKeyObj).longValue());
+	}
+
+	/**
+	 * @throws PortalException
+	 */
 	@Override
 	public PersistedModel deletePersistedModel(PersistedModel persistedModel)
 		throws PortalException {
@@ -380,6 +409,10 @@ public abstract class
 
 	/**
 	 * Updates the commerce discount commerce account group rel in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommerceDiscountCommerceAccountGroupRelLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
 	 *
 	 * @param commerceDiscountCommerceAccountGroupRel the commerce discount commerce account group rel
 	 * @return the commerce discount commerce account group rel that was updated

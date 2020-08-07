@@ -14,10 +14,9 @@
 
 package com.liferay.commerce.price.list.service;
 
-import aQute.bnd.annotation.ProviderType;
-
 import com.liferay.commerce.price.list.model.CommercePriceListDiscountRel;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
+import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery;
@@ -40,6 +39,8 @@ import java.io.Serializable;
 
 import java.util.List;
 
+import org.osgi.annotation.versioning.ProviderType;
+
 /**
  * Provides the local service interface for CommercePriceListDiscountRel. Methods of this
  * service will not have security checks based on the propagated JAAS
@@ -61,11 +62,15 @@ public interface CommercePriceListDiscountRelLocalService
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never modify or reference this interface directly. Always use {@link CommercePriceListDiscountRelLocalServiceUtil} to access the commerce price list discount rel local service. Add custom service methods to <code>com.liferay.commerce.price.list.service.impl.CommercePriceListDiscountRelLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface.
+	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.commerce.price.list.service.impl.CommercePriceListDiscountRelLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the commerce price list discount rel local service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link CommercePriceListDiscountRelLocalServiceUtil} if injection and service tracking are not available.
 	 */
 
 	/**
 	 * Adds the commerce price list discount rel to the database. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePriceListDiscountRelLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
 	 *
 	 * @param commercePriceListDiscountRel the commerce price list discount rel
 	 * @return the commerce price list discount rel that was added
@@ -90,7 +95,17 @@ public interface CommercePriceListDiscountRelLocalService
 		long commercePriceListDiscountRelId);
 
 	/**
+	 * @throws PortalException
+	 */
+	public PersistedModel createPersistedModel(Serializable primaryKeyObj)
+		throws PortalException;
+
+	/**
 	 * Deletes the commerce price list discount rel from the database. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePriceListDiscountRelLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
 	 *
 	 * @param commercePriceListDiscountRel the commerce price list discount rel
 	 * @return the commerce price list discount rel that was removed
@@ -103,6 +118,10 @@ public interface CommercePriceListDiscountRelLocalService
 
 	/**
 	 * Deletes the commerce price list discount rel with the primary key from the database. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePriceListDiscountRelLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
 	 *
 	 * @param commercePriceListDiscountRelId the primary key of the commerce price list discount rel
 	 * @return the commerce price list discount rel that was removed
@@ -121,6 +140,9 @@ public interface CommercePriceListDiscountRelLocalService
 	@Override
 	public PersistedModel deletePersistedModel(PersistedModel persistedModel)
 		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public <T> T dslQuery(DSLQuery dslQuery);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DynamicQuery dynamicQuery();
@@ -296,6 +318,10 @@ public interface CommercePriceListDiscountRelLocalService
 
 	/**
 	 * Updates the commerce price list discount rel in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePriceListDiscountRelLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
 	 *
 	 * @param commercePriceListDiscountRel the commerce price list discount rel
 	 * @return the commerce price list discount rel that was updated

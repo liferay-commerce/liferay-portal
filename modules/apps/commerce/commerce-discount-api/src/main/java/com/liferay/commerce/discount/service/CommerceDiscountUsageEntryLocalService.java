@@ -14,9 +14,8 @@
 
 package com.liferay.commerce.discount.service;
 
-import aQute.bnd.annotation.ProviderType;
-
 import com.liferay.commerce.discount.model.CommerceDiscountUsageEntry;
+import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -37,6 +36,8 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import java.io.Serializable;
 
 import java.util.List;
+
+import org.osgi.annotation.versioning.ProviderType;
 
 /**
  * Provides the local service interface for CommerceDiscountUsageEntry. Methods of this
@@ -65,6 +66,10 @@ public interface CommerceDiscountUsageEntryLocalService
 	/**
 	 * Adds the commerce discount usage entry to the database. Also notifies the appropriate model listeners.
 	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommerceDiscountUsageEntryLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
+	 *
 	 * @param commerceDiscountUsageEntry the commerce discount usage entry
 	 * @return the commerce discount usage entry that was added
 	 */
@@ -88,7 +93,17 @@ public interface CommerceDiscountUsageEntryLocalService
 		long commerceDiscountUsageEntryId);
 
 	/**
+	 * @throws PortalException
+	 */
+	public PersistedModel createPersistedModel(Serializable primaryKeyObj)
+		throws PortalException;
+
+	/**
 	 * Deletes the commerce discount usage entry from the database. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommerceDiscountUsageEntryLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
 	 *
 	 * @param commerceDiscountUsageEntry the commerce discount usage entry
 	 * @return the commerce discount usage entry that was removed
@@ -99,6 +114,10 @@ public interface CommerceDiscountUsageEntryLocalService
 
 	/**
 	 * Deletes the commerce discount usage entry with the primary key from the database. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommerceDiscountUsageEntryLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
 	 *
 	 * @param commerceDiscountUsageEntryId the primary key of the commerce discount usage entry
 	 * @return the commerce discount usage entry that was removed
@@ -120,6 +139,9 @@ public interface CommerceDiscountUsageEntryLocalService
 	@Override
 	public PersistedModel deletePersistedModel(PersistedModel persistedModel)
 		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public <T> T dslQuery(DSLQuery dslQuery);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DynamicQuery dynamicQuery();
@@ -264,6 +286,10 @@ public interface CommerceDiscountUsageEntryLocalService
 
 	/**
 	 * Updates the commerce discount usage entry in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommerceDiscountUsageEntryLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
 	 *
 	 * @param commerceDiscountUsageEntry the commerce discount usage entry
 	 * @return the commerce discount usage entry that was updated

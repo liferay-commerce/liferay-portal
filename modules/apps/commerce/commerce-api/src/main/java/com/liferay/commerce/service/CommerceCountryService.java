@@ -14,8 +14,6 @@
 
 package com.liferay.commerce.service;
 
-import aQute.bnd.annotation.ProviderType;
-
 import com.liferay.commerce.model.CommerceCountry;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -36,6 +34,8 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import org.osgi.annotation.versioning.ProviderType;
 
 /**
  * Provides the remote service interface for CommerceCountry. Methods of this
@@ -65,7 +65,7 @@ public interface CommerceCountryService extends BaseService {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never modify or reference this interface directly. Always use {@link CommerceCountryServiceUtil} to access the commerce country remote service. Add custom service methods to <code>com.liferay.commerce.service.impl.CommerceCountryServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface.
+	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.commerce.service.impl.CommerceCountryServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the commerce country remote service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link CommerceCountryServiceUtil} if injection and service tracking are not available.
 	 */
 	public CommerceCountry addCommerceCountry(
 			Map<Locale, String> nameMap, boolean billingAllowed,

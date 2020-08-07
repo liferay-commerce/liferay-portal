@@ -14,10 +14,9 @@
 
 package com.liferay.commerce.service;
 
-import aQute.bnd.annotation.ProviderType;
-
 import com.liferay.commerce.model.CommerceCountry;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
+import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery;
@@ -47,6 +46,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.osgi.annotation.versioning.ProviderType;
+
 /**
  * Provides the local service interface for CommerceCountry. Methods of this
  * service will not have security checks based on the propagated JAAS
@@ -68,7 +69,7 @@ public interface CommerceCountryLocalService
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never modify or reference this interface directly. Always use {@link CommerceCountryLocalServiceUtil} to access the commerce country local service. Add custom service methods to <code>com.liferay.commerce.service.impl.CommerceCountryLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface.
+	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.commerce.service.impl.CommerceCountryLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the commerce country local service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link CommerceCountryLocalServiceUtil} if injection and service tracking are not available.
 	 */
 
 	/**
@@ -101,6 +102,12 @@ public interface CommerceCountryLocalService
 	 */
 	@Transactional(enabled = false)
 	public CommerceCountry createCommerceCountry(long commerceCountryId);
+
+	/**
+	 * @throws PortalException
+	 */
+	public PersistedModel createPersistedModel(Serializable primaryKeyObj)
+		throws PortalException;
 
 	public void deleteCommerceCountries(long companyId) throws PortalException;
 
@@ -142,6 +149,9 @@ public interface CommerceCountryLocalService
 	@Override
 	public PersistedModel deletePersistedModel(PersistedModel persistedModel)
 		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public <T> T dslQuery(DSLQuery dslQuery);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DynamicQuery dynamicQuery();

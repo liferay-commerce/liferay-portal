@@ -30,6 +30,7 @@ import com.liferay.exportimport.kernel.lar.ManifestSummary;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandlerUtil;
 import com.liferay.exportimport.kernel.lar.StagedModelType;
+import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
@@ -88,6 +89,10 @@ public abstract class CommercePricingClassLocalServiceBaseImpl
 	/**
 	 * Adds the commerce pricing class to the database. Also notifies the appropriate model listeners.
 	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePricingClassLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
+	 *
 	 * @param commercePricingClass the commerce pricing class
 	 * @return the commerce pricing class that was added
 	 */
@@ -118,6 +123,10 @@ public abstract class CommercePricingClassLocalServiceBaseImpl
 	/**
 	 * Deletes the commerce pricing class with the primary key from the database. Also notifies the appropriate model listeners.
 	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePricingClassLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
+	 *
 	 * @param commercePricingClassId the primary key of the commerce pricing class
 	 * @return the commerce pricing class that was removed
 	 * @throws PortalException if a commerce pricing class with the primary key could not be found
@@ -134,6 +143,10 @@ public abstract class CommercePricingClassLocalServiceBaseImpl
 	/**
 	 * Deletes the commerce pricing class from the database. Also notifies the appropriate model listeners.
 	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePricingClassLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
+	 *
 	 * @param commercePricingClass the commerce pricing class
 	 * @return the commerce pricing class that was removed
 	 * @throws PortalException
@@ -145,6 +158,11 @@ public abstract class CommercePricingClassLocalServiceBaseImpl
 		throws PortalException {
 
 		return commercePricingClassPersistence.remove(commercePricingClass);
+	}
+
+	@Override
+	public <T> T dslQuery(DSLQuery dslQuery) {
+		return commercePricingClassPersistence.dslQuery(dslQuery);
 	}
 
 	@Override
@@ -409,6 +427,16 @@ public abstract class CommercePricingClassLocalServiceBaseImpl
 	/**
 	 * @throws PortalException
 	 */
+	public PersistedModel createPersistedModel(Serializable primaryKeyObj)
+		throws PortalException {
+
+		return commercePricingClassPersistence.create(
+			((Long)primaryKeyObj).longValue());
+	}
+
+	/**
+	 * @throws PortalException
+	 */
 	@Override
 	public PersistedModel deletePersistedModel(PersistedModel persistedModel)
 		throws PortalException {
@@ -478,6 +506,10 @@ public abstract class CommercePricingClassLocalServiceBaseImpl
 
 	/**
 	 * Updates the commerce pricing class in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePricingClassLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
 	 *
 	 * @param commercePricingClass the commerce pricing class
 	 * @return the commerce pricing class that was updated

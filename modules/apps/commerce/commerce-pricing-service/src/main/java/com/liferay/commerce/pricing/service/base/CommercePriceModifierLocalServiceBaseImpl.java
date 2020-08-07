@@ -32,6 +32,7 @@ import com.liferay.exportimport.kernel.lar.StagedModelDataHandler;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandlerRegistryUtil;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandlerUtil;
 import com.liferay.exportimport.kernel.lar.StagedModelType;
+import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
@@ -98,6 +99,10 @@ public abstract class CommercePriceModifierLocalServiceBaseImpl
 	/**
 	 * Adds the commerce price modifier to the database. Also notifies the appropriate model listeners.
 	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePriceModifierLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
+	 *
 	 * @param commercePriceModifier the commerce price modifier
 	 * @return the commerce price modifier that was added
 	 */
@@ -128,6 +133,10 @@ public abstract class CommercePriceModifierLocalServiceBaseImpl
 	/**
 	 * Deletes the commerce price modifier with the primary key from the database. Also notifies the appropriate model listeners.
 	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePriceModifierLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
+	 *
 	 * @param commercePriceModifierId the primary key of the commerce price modifier
 	 * @return the commerce price modifier that was removed
 	 * @throws PortalException if a commerce price modifier with the primary key could not be found
@@ -144,6 +153,10 @@ public abstract class CommercePriceModifierLocalServiceBaseImpl
 	/**
 	 * Deletes the commerce price modifier from the database. Also notifies the appropriate model listeners.
 	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePriceModifierLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
+	 *
 	 * @param commercePriceModifier the commerce price modifier
 	 * @return the commerce price modifier that was removed
 	 * @throws PortalException
@@ -155,6 +168,11 @@ public abstract class CommercePriceModifierLocalServiceBaseImpl
 		throws PortalException {
 
 		return commercePriceModifierPersistence.remove(commercePriceModifier);
+	}
+
+	@Override
+	public <T> T dslQuery(DSLQuery dslQuery) {
+		return commercePriceModifierPersistence.dslQuery(dslQuery);
 	}
 
 	@Override
@@ -479,6 +497,16 @@ public abstract class CommercePriceModifierLocalServiceBaseImpl
 	/**
 	 * @throws PortalException
 	 */
+	public PersistedModel createPersistedModel(Serializable primaryKeyObj)
+		throws PortalException {
+
+		return commercePriceModifierPersistence.create(
+			((Long)primaryKeyObj).longValue());
+	}
+
+	/**
+	 * @throws PortalException
+	 */
 	@Override
 	public PersistedModel deletePersistedModel(PersistedModel persistedModel)
 		throws PortalException {
@@ -582,6 +610,10 @@ public abstract class CommercePriceModifierLocalServiceBaseImpl
 
 	/**
 	 * Updates the commerce price modifier in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
+	 *
+	 * <p>
+	 * <strong>Important:</strong> Inspect CommercePriceModifierLocalServiceImpl for overloaded versions of the method. If provided, use these entry points to the API, as the implementation logic may require the additional parameters defined there.
+	 * </p>
 	 *
 	 * @param commercePriceModifier the commerce price modifier
 	 * @return the commerce price modifier that was updated
