@@ -1,0 +1,5 @@
+Bundle-Name: Liferay Commerce Pricing Service
+Bundle-SymbolicName: com.liferay.commerce.pricing.service
+Bundle-Version: 1.0.22
+Liferay-Require-SchemaVersion: 2.0.1
+Liferay-Service: true
