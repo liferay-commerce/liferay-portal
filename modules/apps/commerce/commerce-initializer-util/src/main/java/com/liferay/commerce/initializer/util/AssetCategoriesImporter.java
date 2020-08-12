@@ -258,7 +258,7 @@ public class AssetCategoriesImporter {
 
 	private AssetVocabulary _addAssetVocabulary(
 			String name, ServiceContext serviceContext)
-		throws PortalException {
+		throws Exception {
 
 		AssetVocabulary assetVocabulary =
 			_assetVocabularyLocalService.fetchGroupVocabulary(

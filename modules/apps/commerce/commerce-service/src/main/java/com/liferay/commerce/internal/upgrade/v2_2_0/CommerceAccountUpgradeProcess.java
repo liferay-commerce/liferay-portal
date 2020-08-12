@@ -112,7 +112,7 @@ public class CommerceAccountUpgradeProcess extends UpgradeProcess {
 
 	private void _addCommerceAccount(
 			Organization organization, long parentCommerceAccountId)
-		throws PortalException {
+		throws Exception {
 
 		String email = _getOrganizationEmailAddress(organization);
 
@@ -155,7 +155,7 @@ public class CommerceAccountUpgradeProcess extends UpgradeProcess {
 	}
 
 	private long _getParentCommerceAccountId(long parentOrganizationId)
-		throws PortalException, SQLException {
+		throws Exception {
 
 		if (parentOrganizationId == 0) {
 			return 0;

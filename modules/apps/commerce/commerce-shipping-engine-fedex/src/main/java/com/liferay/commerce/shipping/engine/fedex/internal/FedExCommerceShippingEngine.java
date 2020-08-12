@@ -93,8 +93,8 @@ public class FedExCommerceShippingEngine implements CommerceShippingEngine {
 			return fedExCommerceShippingOptionHelper.
 				getCommerceShippingOptions();
 		}
-		catch (CommerceShippingEngineException csee) {
-			throw csee;
+		catch (CommerceShippingEngineException commerceShippingEngineException) {
+			throw commerceShippingEngineException;
 		}
 		catch (Exception exception) {
 			throw new CommerceShippingEngineException(exception);

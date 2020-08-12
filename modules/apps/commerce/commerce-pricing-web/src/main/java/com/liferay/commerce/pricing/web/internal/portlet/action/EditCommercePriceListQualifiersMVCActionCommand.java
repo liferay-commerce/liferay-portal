@@ -100,7 +100,7 @@ public class EditCommercePriceListQualifiersMVCActionCommand
 
 	private void _deleteCommercePriceListAccountGroupRels(
 			long commercePriceListId)
-		throws PortalException {
+		throws Exception {
 
 		if (_commercePriceListCommerceAccountGroupRelService.
 				getCommercePriceListCommerceAccountGroupRelsCount(
@@ -115,7 +115,7 @@ public class EditCommercePriceListQualifiersMVCActionCommand
 	}
 
 	private void _deleteCommercePriceListAccountRels(long commercePriceListId)
-		throws PortalException {
+		throws Exception {
 
 		if (_commercePriceListAccountRelService.
 				getCommercePriceListAccountRelsCount(commercePriceListId) ==

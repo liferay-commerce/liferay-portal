@@ -113,7 +113,7 @@ public class CommerceShippingOriginLocatorImpl
 
 	private CommerceInventoryWarehouse _getClosestCommerceInventoryWarehouse(
 			long groupId, CommerceAddress commerceAddress, String sku)
-		throws PortalException {
+		throws Exception {
 
 		List<CommerceInventoryWarehouse> commerceInventoryWarehouses =
 			_commerceInventoryWarehouseLocalService.
@@ -164,7 +164,7 @@ public class CommerceShippingOriginLocatorImpl
 
 	private CommerceAddress _getCommerceAddress(
 			CommerceInventoryWarehouse commerceInventoryWarehouse, long groupId)
-		throws PortalException {
+		throws Exception {
 
 		CommerceAddress commerceAddress =
 			_commerceAddressLocalService.createCommerceAddress(

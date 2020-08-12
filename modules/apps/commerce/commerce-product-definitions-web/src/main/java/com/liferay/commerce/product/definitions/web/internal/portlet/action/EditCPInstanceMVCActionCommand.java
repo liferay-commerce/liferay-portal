@@ -143,24 +143,25 @@ public class EditCPInstanceMVCActionCommand extends BaseMVCActionCommand {
 				updateSubscriptionInfo(actionRequest);
 			}
 		}
-		catch (Throwable t) {
-			if (t instanceof CommerceUndefinedBasePriceListException ||
-				t instanceof CPDefinitionIgnoreSKUCombinationsException ||
-				t instanceof CPInstanceJsonException ||
-				t instanceof CPInstanceSkuException ||
-				t instanceof
+		catch (Throwable throwable) {
+			if (throwable instanceof CommerceUndefinedBasePriceListException ||
+				throwable instanceof
+					CPDefinitionIgnoreSKUCombinationsException ||
+				throwable instanceof CPInstanceJsonException ||
+				throwable instanceof CPInstanceSkuException ||
+				throwable instanceof
 					NoSuchSkuContributorCPDefinitionOptionRelException) {
 
 				hideDefaultErrorMessage(actionRequest);
 				hideDefaultSuccessMessage(actionRequest);
 
-				SessionErrors.add(actionRequest, t.getClass());
+				SessionErrors.add(actionRequest, throwable.getClass());
 
 				actionResponse.setRenderParameter(
 					"mvcRenderCommandName", "editProductInstance");
 			}
 			else {
-				throw new PortletException(t);
+				throw new PortletException(throwable);
 			}
 		}
 	}
@@ -357,7 +358,7 @@ public class EditCPInstanceMVCActionCommand extends BaseMVCActionCommand {
 	}
 
 	private String _getCommercePricingConfigurationKey()
-		throws ConfigurationException {
+		throws Exception {
 
 		CommercePricingConfiguration commercePricingConfiguration =
 			_configurationProvider.getConfiguration(
@@ -371,7 +372,7 @@ public class EditCPInstanceMVCActionCommand extends BaseMVCActionCommand {
 	private void _updateCommercePriceEntry(
 			CPInstance cpInstance, String type, BigDecimal price,
 			ServiceContext serviceContext)
-		throws PortalException {
+		throws Exception {
 
 		CommercePriceList commercePriceList =
 			_commercePriceListLocalService.

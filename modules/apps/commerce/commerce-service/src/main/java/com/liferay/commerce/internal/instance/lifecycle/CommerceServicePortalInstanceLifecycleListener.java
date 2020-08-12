@@ -96,7 +96,7 @@ public class CommerceServicePortalInstanceLifecycleListener
 	}
 
 	private void _addSAPEntries(long companyId, long userId)
-		throws PortalException {
+		throws Exception {
 
 		Class<?> clazz = getClass();
 

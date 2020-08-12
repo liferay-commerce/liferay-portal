@@ -277,7 +277,7 @@ public class MercanetCommercePaymentMethod implements CommercePaymentMethod {
 	}
 
 	private MercanetGroupServiceConfiguration _getConfiguration(long groupId)
-		throws ConfigurationException {
+		throws Exception {
 
 		return _configurationProvider.getConfiguration(
 			MercanetGroupServiceConfiguration.class,

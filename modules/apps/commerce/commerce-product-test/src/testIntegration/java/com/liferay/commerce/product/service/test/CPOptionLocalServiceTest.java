@@ -189,7 +189,7 @@ public class CPOptionLocalServiceTest {
 	private void _addCPOptions(
 			String[] optionFieldTypes, boolean skuContributor,
 			ServiceContext serviceContext)
-		throws PortalException {
+		throws Exception {
 
 		for (String optionFieldType : optionFieldTypes) {
 			_cpOptionLocalService.addCPOption(

@@ -592,8 +592,8 @@ public class CommerceGrossPricingTest {
 			StringBundler.concat(
 				"If a price list does not contain the current price entry ",
 				"then the price modifiers configured on the price list are ",
-				"not applied on top of the base price if the priceType of ",
-				"the base and active pricelist is the same")
+				"not applied on top of the base price if the priceType of the ",
+				"base and active pricelist is the same")
 		).given(
 			"A price list not containing the current product price entry and " +
 				"price modifiers targeting the product defined for the price " +
@@ -1674,7 +1674,7 @@ public class CommerceGrossPricingTest {
 	private CommercePriceModifier _addCommercePriceModifier(
 			long groupId, String target, long commercePriceListId, String type,
 			BigDecimal amount, boolean neverExpire)
-		throws PortalException {
+		throws Exception {
 
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(groupId);

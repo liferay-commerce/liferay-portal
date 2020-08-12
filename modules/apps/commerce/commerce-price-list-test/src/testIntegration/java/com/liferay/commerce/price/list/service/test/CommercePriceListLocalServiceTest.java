@@ -723,7 +723,7 @@ public class CommercePriceListLocalServiceTest {
 
 	private static void _assertPriceListAttributes(
 			Currency currency, String name, CommercePriceList commercePriceList)
-		throws PortalException {
+		throws Exception {
 
 		CommerceCurrency commerceCurrency =
 			commercePriceList.getCommerceCurrency();

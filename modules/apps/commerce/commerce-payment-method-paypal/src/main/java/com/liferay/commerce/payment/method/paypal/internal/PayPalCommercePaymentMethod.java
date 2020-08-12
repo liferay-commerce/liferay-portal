@@ -294,10 +294,10 @@ public class PayPalCommercePaymentMethod implements CommercePaymentMethod {
 				CommerceOrderConstants.PAYMENT_STATUS_PAID, false, null, null,
 				messages, success);
 		}
-		catch (PayPalRESTException ppre) {
-			_log.error(ppre.getMessage(), ppre);
+		catch (PayPalRESTException payPalRESTException) {
+			_log.error(payPalRESTException.getMessage(), payPalRESTException);
 
-			List<String> resultMessages = _getErrorMessages(ppre);
+			List<String> resultMessages = _getErrorMessages(payPalRESTException);
 
 			return new CommercePaymentResult(
 				null, commercePaymentRequest.getCommerceOrderId(),
@@ -345,10 +345,10 @@ public class PayPalCommercePaymentMethod implements CommercePaymentMethod {
 				CommerceOrderConstants.PAYMENT_STATUS_PAID, false, null, null,
 				messages, success);
 		}
-		catch (PayPalRESTException ppre) {
-			_log.error(ppre.getMessage(), ppre);
+		catch (PayPalRESTException payPalRESTException) {
+			_log.error(payPalRESTException.getMessage(), payPalRESTException);
 
-			List<String> resultMessages = _getErrorMessages(ppre);
+			List<String> resultMessages = _getErrorMessages(payPalRESTException);
 
 			return new CommercePaymentResult(
 				null, commercePaymentRequest.getCommerceOrderId(),
@@ -596,10 +596,10 @@ public class PayPalCommercePaymentMethod implements CommercePaymentMethod {
 				payment.getId(), commercePaymentRequest.getCommerceOrderId(),
 				status, true, url, null, messages, success);
 		}
-		catch (PayPalRESTException ppre) {
-			_log.error(ppre.getMessage(), ppre);
+		catch (PayPalRESTException payPalRESTException) {
+			_log.error(payPalRESTException.getMessage(), payPalRESTException);
 
-			List<String> resultMessages = _getErrorMessages(ppre);
+			List<String> resultMessages = _getErrorMessages(payPalRESTException);
 
 			return new CommercePaymentResult(
 				null, commercePaymentRequest.getCommerceOrderId(), status, true,
@@ -664,10 +664,10 @@ public class PayPalCommercePaymentMethod implements CommercePaymentMethod {
 				token, commercePaymentRequest.getCommerceOrderId(), status,
 				true, url, null, messages, success);
 		}
-		catch (PayPalRESTException ppre) {
-			_log.error(ppre.getMessage(), ppre);
+		catch (PayPalRESTException payPalRESTException) {
+			_log.error(payPalRESTException.getMessage(), payPalRESTException);
 
-			List<String> resultMessages = _getErrorMessages(ppre);
+			List<String> resultMessages = _getErrorMessages(payPalRESTException);
 
 			return new CommercePaymentResult(
 				null, commercePaymentRequest.getCommerceOrderId(), status, true,
@@ -877,10 +877,10 @@ public class PayPalCommercePaymentMethod implements CommercePaymentMethod {
 			payPalGroupServiceConfiguration.mode());
 	}
 
-	private List<String> _getErrorMessages(PayPalRESTException ppre) {
+	private List<String> _getErrorMessages(PayPalRESTException payPalRESTException) {
 		List<String> resultMessages = new ArrayList<>();
 
-		Error details = ppre.getDetails();
+		Error details = payPalRESTException.getDetails();
 
 		resultMessages.add(details.getName());
 		resultMessages.add(details.getMessage());
@@ -1136,7 +1136,7 @@ public class PayPalCommercePaymentMethod implements CommercePaymentMethod {
 		try {
 			Integer.parseInt(attemptsMaxCount);
 		}
-		catch (NumberFormatException nfe) {
+		catch (NumberFormatException numberFormatException) {
 			attemptsMaxCount = "0";
 		}
 

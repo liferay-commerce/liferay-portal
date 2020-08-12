@@ -185,8 +185,8 @@ public class FedExCommerceShippingOptionHelper {
 			try {
 				_executeRateRequest(rates, entry.getValue(), entry.getKey());
 			}
-			catch (CommerceShippingEngineException csee) {
-				_log.error(csee, csee);
+			catch (CommerceShippingEngineException commerceShippingEngineException) {
+				_log.error(commerceShippingEngineException, commerceShippingEngineException);
 			}
 		}
 
@@ -365,7 +365,7 @@ public class FedExCommerceShippingOptionHelper {
 	}
 
 	private BigDecimal _getAmount(Money money)
-		throws CommerceShippingEngineException {
+		throws Exception {
 
 		CommerceCurrency moneyCommerceCurrency = null;
 
@@ -415,7 +415,7 @@ public class FedExCommerceShippingOptionHelper {
 	}
 
 	private CPMeasurementUnit _getCPMeasurementUnit(int type, String... keys)
-		throws CommerceShippingEngineException {
+		throws Exception {
 
 		List<CPMeasurementUnit> cpMeasurementUnits =
 			_cpMeasurementUnitLocalService.getCPMeasurementUnits(
@@ -485,7 +485,7 @@ public class FedExCommerceShippingOptionHelper {
 	}
 
 	private Party _getParty(CommerceAddress commerceAddress)
-		throws PortalException {
+		throws Exception {
 
 		Party party = new Party();
 
@@ -571,7 +571,7 @@ public class FedExCommerceShippingOptionHelper {
 	private RequestedPackageLineItem[]
 			_getRequestedPackageLineItemsByDimensions(
 				List<CommerceOrderItem> commerceOrderItems)
-		throws PortalException {
+		throws Exception {
 
 		int maxSize =
 			_fedExCommerceShippingEngineGroupServiceConfiguration.

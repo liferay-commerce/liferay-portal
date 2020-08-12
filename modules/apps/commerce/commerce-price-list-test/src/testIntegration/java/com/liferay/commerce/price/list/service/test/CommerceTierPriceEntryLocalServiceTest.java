@@ -408,7 +408,7 @@ public class CommerceTierPriceEntryLocalServiceTest {
 			CommercePriceEntry commercePriceEntry, int minQuantity,
 			double price, double promoPrice,
 			CommerceTierPriceEntry commerceTierPriceEntry)
-		throws PortalException {
+		throws Exception {
 
 		CommercePriceEntry actualCommercePriceEntry =
 			commerceTierPriceEntry.getCommercePriceEntry();

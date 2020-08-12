@@ -214,23 +214,23 @@ public class CommerceVirtualOrderItemLocalServiceImpl
 		CommerceOrderItem commerceOrderItem =
 			commerceVirtualOrderItem.getCommerceOrderItem();
 
-		InputStream contentStream;
+		InputStream inputStream;
 		String extension = StringPool.BLANK;
 
 		if (commerceVirtualOrderItem.getFileEntryId() > 0) {
 			FileEntry fileEntry = commerceVirtualOrderItem.getFileEntry();
 
-			contentStream = fileEntry.getContentStream();
+			inputStream = fileEntry.getContentStream();
 
 			extension = fileEntry.getExtension();
 		}
 		else {
 			URL url = new URL(commerceVirtualOrderItem.getUrl());
 
-			contentStream = url.openStream();
+			inputStream = url.openStream();
 
 			String mimeType = URLConnection.guessContentTypeFromStream(
-				contentStream);
+				inputStream);
 
 			Set<String> extensions = MimeTypesUtil.getExtensions(mimeType);
 
@@ -241,7 +241,7 @@ public class CommerceVirtualOrderItemLocalServiceImpl
 			}
 		}
 
-		File tempFile = FileUtil.createTempFile(contentStream);
+		File tempFile = FileUtil.createTempFile(inputStream);
 
 		File file = new File(
 			tempFile.getParent(),
@@ -430,8 +430,9 @@ public class CommerceVirtualOrderItemLocalServiceImpl
 			try {
 				dlAppLocalService.getFileEntry(fileEntryId);
 			}
-			catch (NoSuchFileEntryException nsfee) {
-				throw new CommerceVirtualOrderItemFileEntryIdException(nsfee);
+			catch (NoSuchFileEntryException noSuchFileEntryException) {
+				throw new CommerceVirtualOrderItemFileEntryIdException(
+					noSuchFileEntryException);
 			}
 		}
 		else if ((fileEntryId <= 0) && Validator.isNull(url)) {

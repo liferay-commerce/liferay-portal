@@ -143,7 +143,7 @@ public class MoneyOrderCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 
 	private CommerceOrder _getCommerceOrder(
 			HttpServletRequest httpServletRequest)
-		throws PortalException {
+		throws Exception {
 
 		String commerceOrderUuid = ParamUtil.getString(
 			httpServletRequest, "commerceOrderUuid");

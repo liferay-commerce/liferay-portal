@@ -338,8 +338,8 @@ public class CPDefinitionLocalServiceImpl
 			expirationDateDay, expirationDateYear, expirationDateHour,
 			expirationDateMinute, neverExpire, defaultSku, subscriptionEnabled,
 			subscriptionLength, subscriptionType,
-			subscriptionTypeSettingsUnicodeProperties, maxSubscriptionCycles, false, 1,
-			null, null, 0, externalReferenceCode, serviceContext);
+			subscriptionTypeSettingsUnicodeProperties, maxSubscriptionCycles,
+			false, 1, null, null, 0, externalReferenceCode, serviceContext);
 	}
 
 	@Override
@@ -1325,14 +1325,14 @@ public class CPDefinitionLocalServiceImpl
 			return;
 		}
 
-		OrderByComparator<CPDefinition> obc =
+		OrderByComparator<CPDefinition> orderByComparator =
 			OrderByComparatorFactoryUtil.create(
 				CPDefinitionModelImpl.TABLE_NAME, Field.VERSION, false);
 
 		List<CPDefinition> deletableCPDefinitions =
 			cpDefinitionPersistence.findByC_S(
 				cProductId, WorkflowConstants.STATUS_APPROVED, threshold,
-				threshold + Short.MAX_VALUE, obc);
+				threshold + Short.MAX_VALUE, orderByComparator);
 
 		for (CPDefinition cpDefinition : deletableCPDefinitions) {
 			cpDefinitionLocalService.deleteCPDefinition(cpDefinition);
@@ -1907,9 +1907,9 @@ public class CPDefinitionLocalServiceImpl
 				return cpDefinitionLocalService.updateSubscriptionInfo(
 					cpDefinition.getCPDefinitionId(), subscriptionEnabled,
 					subscriptionLength, subscriptionType,
-					subscriptionTypeSettingsUnicodeProperties, maxSubscriptionCycles,
-					deliverySubscriptionEnabled, deliverySubscriptionLength,
-					deliverySubscriptionType,
+					subscriptionTypeSettingsUnicodeProperties,
+					maxSubscriptionCycles, deliverySubscriptionEnabled,
+					deliverySubscriptionLength, deliverySubscriptionType,
 					deliverySubscriptionTypeSettingsUnicodeProperties,
 					deliveryMaxSubscriptionCycles);
 			}
@@ -1970,8 +1970,8 @@ public class CPDefinitionLocalServiceImpl
 			expirationDateDay, expirationDateYear, expirationDateHour,
 			expirationDateMinute, neverExpire, defaultSku, subscriptionEnabled,
 			subscriptionLength, subscriptionType,
-			subscriptionTypeSettingsUnicodeProperties, maxSubscriptionCycles, false, 1,
-			null, null, 0, externalReferenceCode, serviceContext);
+			subscriptionTypeSettingsUnicodeProperties, maxSubscriptionCycles,
+			false, 1, null, null, 0, externalReferenceCode, serviceContext);
 	}
 
 	protected SearchContext buildSearchContext(

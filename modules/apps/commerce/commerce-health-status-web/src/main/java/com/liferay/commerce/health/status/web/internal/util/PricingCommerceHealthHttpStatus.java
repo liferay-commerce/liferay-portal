@@ -87,8 +87,8 @@ public class PricingCommerceHealthHttpStatus
 
 			TransactionInvokerUtil.invoke(_transactionConfig, pricingCallable);
 		}
-		catch (Throwable t) {
-			_log.error(t, t);
+		catch (Throwable throwable) {
+			_log.error(throwable, throwable);
 		}
 	}
 
@@ -170,7 +170,7 @@ public class PricingCommerceHealthHttpStatus
 	private void _addBaseCommercePriceListEntries(
 			CPDefinition cpDefinition, CommercePriceList commercePriceList,
 			ServiceContext serviceContext)
-		throws PortalException {
+		throws Exception {
 
 		List<CPInstance> cpInstances =
 			_cpInstanceLocalService.getCPDefinitionApprovedCPInstances(
@@ -195,7 +195,7 @@ public class PricingCommerceHealthHttpStatus
 	private void _addCommerceCatalogBasePriceList(
 			CommerceCatalog commerceCatalog, String type, String name,
 			ServiceContext serviceContext)
-		throws PortalException {
+		throws Exception {
 
 		CommercePriceList commercePriceList =
 			_commercePriceListLocalService.

@@ -694,7 +694,7 @@ public class CommercePriceEntryLocalServiceTest {
 	private static void _assertPriceEntryAttributes(
 			CPInstance cpInstance, double price, double promoPrice,
 			CommercePriceEntry commercePriceEntry)
-		throws PortalException {
+		throws Exception {
 
 		CPInstance actualCpInstance = commercePriceEntry.getCPInstance();
 

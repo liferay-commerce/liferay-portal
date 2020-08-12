@@ -851,7 +851,7 @@ public class CPDefinitionOptionValueRelLocalServiceTest {
 			CPDefinitionOptionValueRel cpDefinitionOptionValueRel,
 			long cpInstanceId, boolean preselected, BigDecimal price,
 			int quantity)
-		throws PortalException {
+		throws Exception {
 
 		return _cpDefinitionOptionValueRelLocalService.
 			updateCPDefinitionOptionValueRel(

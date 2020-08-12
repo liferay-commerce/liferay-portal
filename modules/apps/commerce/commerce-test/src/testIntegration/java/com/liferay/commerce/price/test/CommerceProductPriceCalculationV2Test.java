@@ -1966,7 +1966,7 @@ public class CommerceProductPriceCalculationV2Test {
 	private CommercePriceModifier _addCommercePriceModifier(
 			long groupId, String target, long commercePriceListId, String type,
 			BigDecimal amount, boolean neverExpire)
-		throws PortalException {
+		throws Exception {
 
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(groupId);

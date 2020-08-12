@@ -26,7 +26,6 @@ import com.liferay.commerce.product.exception.CommerceCatalogSystemException;
 import com.liferay.commerce.product.exception.NoSuchCatalogException;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.service.CommerceCatalogService;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
@@ -113,29 +112,29 @@ public class EditCommerceCatalogMVCActionCommand extends BaseMVCActionCommand {
 					_transactionConfig, commerceCatalogCallable);
 			}
 		}
-		catch (Throwable t) {
-			if (t instanceof CommerceCatalogProductsException ||
-				t instanceof CommerceCatalogSystemException ||
-				t instanceof NoSuchPriceListException) {
+		catch (Throwable throwable) {
+			if (throwable instanceof CommerceCatalogProductsException ||
+				throwable instanceof CommerceCatalogSystemException ||
+				throwable instanceof NoSuchPriceListException) {
 
 				hideDefaultErrorMessage(actionRequest);
 
-				SessionErrors.add(actionRequest, t.getClass());
+				SessionErrors.add(actionRequest, throwable.getClass());
 
 				String redirect = ParamUtil.getString(
 					actionRequest, "redirect");
 
 				sendRedirect(actionRequest, actionResponse, redirect);
 			}
-			else if (t instanceof NoSuchCatalogException ||
-					 t instanceof PrincipalException) {
+			else if (throwable instanceof NoSuchCatalogException ||
+					 throwable instanceof PrincipalException) {
 
-				SessionErrors.add(actionRequest, t.getClass());
+				SessionErrors.add(actionRequest, throwable.getClass());
 
 				actionResponse.setRenderParameter("mvcPath", "/error.jsp");
 			}
 			else {
-				_log.error(t, t);
+				_log.error(throwable, throwable);
 			}
 		}
 	}
@@ -194,7 +193,7 @@ public class EditCommerceCatalogMVCActionCommand extends BaseMVCActionCommand {
 
 	private void _updateBasePriceListAndPromotion(
 			ActionRequest actionRequest, CommerceCatalog commerceCatalog)
-		throws PortalException {
+		throws Exception {
 
 		CommercePricingConfiguration commercePricingConfiguration =
 			_configurationProvider.getConfiguration(

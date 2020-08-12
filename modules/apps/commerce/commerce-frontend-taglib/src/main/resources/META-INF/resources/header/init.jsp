@@ -70,7 +70,7 @@ String wrapperCssClasses = (String)request.getAttribute("liferay-commerce:header
 
 long beanId = 0;
 
-BaseModel beanBaseModel = (BaseModel)bean;
+BaseModel<?> beanBaseModel = (BaseModel)bean;
 
 if (beanBaseModel != null) {
 	beanId = (long)beanBaseModel.getPrimaryKeyObj();

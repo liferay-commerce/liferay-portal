@@ -885,7 +885,7 @@ public class CPTestUtil {
 
 	private static List<CPInstance> _getSimpleCPDefinitionCPInstances(
 			long groupId, int size)
-		throws PortalException {
+		throws Exception {
 
 		List<CPInstance> cpInstances = new ArrayList<>();
 

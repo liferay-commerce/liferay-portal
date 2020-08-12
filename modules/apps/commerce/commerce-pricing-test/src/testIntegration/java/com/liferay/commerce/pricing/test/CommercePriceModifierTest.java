@@ -408,7 +408,7 @@ public class CommercePriceModifierTest {
 	private static CommercePriceEntry _addCommercePriceEntry(
 			long cpProductId, String cpInstanceUuid, long commercePriceListId,
 			String externalReferenceCode, BigDecimal price)
-		throws PortalException {
+		throws Exception {
 
 		CommercePriceList commercePriceList =
 			CommercePriceListLocalServiceUtil.getCommercePriceList(

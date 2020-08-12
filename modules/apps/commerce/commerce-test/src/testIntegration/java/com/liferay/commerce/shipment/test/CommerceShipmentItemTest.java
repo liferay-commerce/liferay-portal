@@ -321,7 +321,7 @@ public class CommerceShipmentItemTest {
 	@Rule
 	public FrutillaRule frutillaRule = new FrutillaRule();
 
-	private void _resetCommerceShipment() throws PortalException {
+	private void _resetCommerceShipment() throws Exception {
 		CommerceShipmentLocalServiceUtil.deleteCommerceShipment(
 			_commerceShipment, true);
 

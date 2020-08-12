@@ -1554,7 +1554,7 @@ public class CommerceDiscountTargetGrossV2Test {
 	public FrutillaRule frutillaRule = new FrutillaRule();
 
 	private void _assertPrices(BigDecimal expectedPrice, BigDecimal actualPrice)
-		throws PortalException {
+		throws Exception {
 
 		_commerceCurrency.setFormatPattern("$###,##0.00", LocaleUtil.US);
 

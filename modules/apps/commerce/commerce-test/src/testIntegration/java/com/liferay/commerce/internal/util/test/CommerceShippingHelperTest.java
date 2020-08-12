@@ -215,7 +215,7 @@ public class CommerceShippingHelperTest {
 	}
 
 	private static void _addCPDefinitionProperties(CPInstance cpInstance)
-		throws PortalException {
+		throws Exception {
 
 		CPDefinition cpDefinition = cpInstance.getCPDefinition();
 

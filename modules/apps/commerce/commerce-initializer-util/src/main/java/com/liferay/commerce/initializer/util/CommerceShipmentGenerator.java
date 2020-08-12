@@ -70,8 +70,8 @@ public class CommerceShipmentGenerator {
 			TransactionInvokerUtil.invoke(
 				_transactionConfig, generateShipmentsCallable);
 		}
-		catch (Throwable t) {
-			_log.error(t, t);
+		catch (Throwable throwable) {
+			_log.error(throwable, throwable);
 		}
 	}
 
@@ -92,7 +92,7 @@ public class CommerceShipmentGenerator {
 	private void _generateCommerceShipment(
 			CommerceOrder commerceOrder,
 			List<CommerceInventoryWarehouse> commerceInventoryWarehouses)
-		throws PortalException {
+		throws Exception {
 
 		// Commerce order items
 
@@ -149,7 +149,7 @@ public class CommerceShipmentGenerator {
 			long commerceShipmentId, List<CommerceOrderItem> commerceOrderItems,
 			List<CommerceInventoryWarehouse> commerceInventoryWarehouses,
 			ServiceContext serviceContext)
-		throws PortalException {
+		throws Exception {
 
 		for (CommerceOrderItem commerceOrderItem : commerceOrderItems) {
 			CommerceInventoryWarehouse commerceInventoryWarehouse =
@@ -221,7 +221,7 @@ public class CommerceShipmentGenerator {
 
 	private List<CommerceInventoryWarehouse> _getCommerceInventoryWarehouses(
 			long groupId)
-		throws PortalException {
+		throws Exception {
 
 		Group group = _groupLocalService.getGroup(groupId);
 
@@ -239,7 +239,7 @@ public class CommerceShipmentGenerator {
 	private int _getRandomCommerceInventoryWarehouseItemQuantity(
 			CommerceOrderItem commerceOrderItem,
 			CommerceInventoryWarehouse commerceInventoryWarehouse, int quantity)
-		throws PortalException {
+		throws Exception {
 
 		int commerceInventoryWarehouseItemQuantity =
 			_commerceOrderItemService.getCommerceInventoryWarehouseItemQuantity(

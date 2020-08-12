@@ -339,7 +339,7 @@ public class CommerceTierPriceEntryLocalServiceImpl
 					commercePriceEntryId, quantity,
 					new CommerceTierPriceEntryMinQuantityComparator(false));
 		}
-		catch (NoSuchTierPriceEntryException nstpee) {
+		catch (NoSuchTierPriceEntryException noSuchTierPriceEntryException) {
 		}
 
 		return commerceTierPriceEntry;
@@ -630,7 +630,7 @@ public class CommerceTierPriceEntryLocalServiceImpl
 					expirationDateDay, expirationDateYear, expirationDateHour,
 					expirationDateMinute, neverExpire, serviceContext);
 			}
-			catch (NoSuchTierPriceEntryException nstpee) {
+			catch (NoSuchTierPriceEntryException noSuchTierPriceEntryException) {
 				if (_log.isDebugEnabled()) {
 					_log.debug(
 						"Unable to find tier price entry with ID: " +

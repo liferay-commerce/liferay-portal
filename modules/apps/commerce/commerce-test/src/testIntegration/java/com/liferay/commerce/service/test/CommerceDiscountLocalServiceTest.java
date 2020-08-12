@@ -562,7 +562,7 @@ public class CommerceDiscountLocalServiceTest {
 
 	private void _orderAssertEquals(
 			CommerceDiscount expectedDiscount, String type)
-		throws PortalException {
+		throws Exception {
 
 		List<CommerceDiscount> commerceDiscounts =
 			_getOrderCommerceDiscountByHierarchy(
@@ -579,7 +579,7 @@ public class CommerceDiscountLocalServiceTest {
 
 	private void _productAssertEquals(
 			CommerceDiscount expectedDiscount, long cpDefinitionId)
-		throws PortalException {
+		throws Exception {
 
 		List<CommerceDiscount> commerceDiscounts =
 			_getProductCommerceDiscountByHierarchy(

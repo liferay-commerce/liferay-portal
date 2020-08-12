@@ -226,7 +226,7 @@ public class CommerceOptionValueHelperTest {
 
 	private String _getRandomCPDefinitionOptionValueRelsCombinationJSONString(
 			long cpDefinitionId)
-		throws PortalException {
+		throws Exception {
 
 		List<CPDefinitionOptionValueRel> randomCPDefinitionOptionValueRels =
 			CPTestUtil.getRandomCPDefinitionOptionValueRels(cpDefinitionId);

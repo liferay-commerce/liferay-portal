@@ -142,8 +142,8 @@ public class ProductFeedXMLGenerator {
 
 			return xmlMapper.writeValueAsString(feed);
 		}
-		catch (JsonProcessingException jpe) {
-			throw new PortalException(jpe);
+		catch (JsonProcessingException jsonProcessingException) {
+			throw new PortalException(jsonProcessingException);
 		}
 	}
 
