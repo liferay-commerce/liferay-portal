@@ -1,2 +1,2 @@
-Liferay-Releng-Suite-Description: This suite is available in the ${liferay.releng.app.title.prefix} bundle.
+Liferay-Releng-Suite-Description: Liferay Commerce provides a full set of digital commerce features integrated with Liferay DXP, including:<br />- Site and Content Management<br /> Catalog Management<br />- Catalog and Product Browsing<br />- Checkout<br />- Discounts and Pricing<br />- Payments and Shipping<br />- Order Management<br />- Customer Accounts<br />This app will appear in Liferay DXP’s product menu and widget menu once installed.<br />This suite is available in the ${liferay.releng.app.title.prefix} bundle.
 Liferay-Releng-Suite-Title: ${liferay.releng.app.title.prefix} Commerce
