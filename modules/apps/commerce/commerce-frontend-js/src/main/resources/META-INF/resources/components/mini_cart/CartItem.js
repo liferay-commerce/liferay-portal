@@ -34,7 +34,7 @@ const REMOVAL_TIMEOUT = 2000,
 		isRemoved: false,
 		isShowingErrors: false,
 		previousQuantity: null,
-		removalTimeoutRef: null
+		removalTimeoutRef: null,
 	};
 
 function CartItem({item: cartItem}) {
@@ -48,7 +48,7 @@ function CartItem({item: cartItem}) {
 		settings,
 		sku,
 		skuId,
-		thumbnail
+		thumbnail,
 	} = cartItem;
 
 	const {
@@ -57,7 +57,7 @@ function CartItem({item: cartItem}) {
 			displayDiscountLevels,
 			setIsUpdating,
 			spritemap,
-			updateCartModel
+			updateCartModel,
 		} = useContext(MiniCartContext),
 		{id: orderId} = cartState,
 		[itemState, setItemState] = useState(INITIAL_ITEM_STATE),
@@ -74,7 +74,7 @@ function CartItem({item: cartItem}) {
 			isShowingErrors: true,
 			removalTimeoutRef: setTimeout(() => {
 				setItemState(INITIAL_ITEM_STATE);
-			}, REMOVAL_ERRORS_TIMEOUT)
+			}, REMOVAL_ERRORS_TIMEOUT),
 		});
 
 		return Promise.resolve();
@@ -90,7 +90,7 @@ function CartItem({item: cartItem}) {
 					setIsUpdating(false);
 
 					setItemState(INITIAL_ITEM_STATE);
-				}, REMOVAL_CANCELING_TIMEOUT)
+				}, REMOVAL_CANCELING_TIMEOUT),
 			});
 		},
 		removeItem = () => {
@@ -110,23 +110,23 @@ function CartItem({item: cartItem}) {
 								.then(() => {
 									setIsUpdating(false);
 									Liferay.fire(PRODUCT_REMOVED, {
-										skuId
+										skuId,
 									});
 								})
 								.catch(showErrors);
-						}, REMOVAL_CANCELING_TIMEOUT)
+						}, REMOVAL_CANCELING_TIMEOUT),
 					});
-				}, REMOVAL_TIMEOUT)
+				}, REMOVAL_TIMEOUT),
 			});
 		};
 
 	const updateItemQuantity = useCallback(
-		quantity => {
+		(quantity) => {
 			setIsUpdating(true);
 
 			AJAX.updateItemById(cartItemId, {
 				...cartItem,
-				quantity
+				quantity,
 			})
 				.catch(showErrors)
 				.then(({price: updatedPrice}) => {
@@ -159,7 +159,7 @@ function CartItem({item: cartItem}) {
 		isRemovalCanceled,
 		isRemoved,
 		isShowingErrors,
-		removalTimeoutRef
+		removalTimeoutRef,
 	} = itemState;
 
 	return (
@@ -252,7 +252,7 @@ function CartItem({item: cartItem}) {
 }
 
 CartItem.propTypes = {
-	item: PropTypes.object
+	item: PropTypes.object,
 };
 
 export default CartItem;

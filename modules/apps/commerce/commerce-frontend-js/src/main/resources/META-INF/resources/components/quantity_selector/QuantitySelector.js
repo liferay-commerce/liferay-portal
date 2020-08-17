@@ -59,7 +59,7 @@ function QuantitySelector(props) {
 		currentQuantity,
 		props.maxQuantity,
 		props.minQuantity,
-		props.multipleQuantity
+		props.multipleQuantity,
 	]);
 
 	function updateCurrentQuantity(newQuantity) {
@@ -140,7 +140,7 @@ function QuantitySelector(props) {
 						ref={inputRef}
 						value={currentQuantity}
 					>
-						{props.allowedQuantities.map(val => (
+						{props.allowedQuantities.map((val) => (
 							<option key={val} value={val}>
 								{val}
 							</option>
@@ -272,7 +272,7 @@ QuantitySelector.propTypes = {
 	size: PropTypes.oneOf(['large', 'medium', 'small']),
 	spritemap: PropTypes.string,
 	style: PropTypes.oneOf(['default', 'simple']),
-	updateQuantity: PropTypes.func
+	updateQuantity: PropTypes.func,
 };
 
 QuantitySelector.defaultProps = {
@@ -280,7 +280,7 @@ QuantitySelector.defaultProps = {
 	maxQuantity: 99999999,
 	minQuantity: 1,
 	multipleQuantity: 1,
-	style: 'default'
+	style: 'default',
 };
 
 export default QuantitySelector;
