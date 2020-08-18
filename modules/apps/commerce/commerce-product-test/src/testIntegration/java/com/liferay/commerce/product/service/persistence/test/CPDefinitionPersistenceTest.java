@@ -125,8 +125,6 @@ public class CPDefinitionPersistenceTest {
 
 		CPDefinition newCPDefinition = _persistence.create(pk);
 
-		newCPDefinition.setMvccVersion(RandomTestUtil.nextLong());
-
 		newCPDefinition.setUuid(RandomTestUtil.randomString());
 
 		newCPDefinition.setDefaultLanguageId(RandomTestUtil.randomString());
@@ -230,9 +228,6 @@ public class CPDefinitionPersistenceTest {
 		CPDefinition existingCPDefinition = _persistence.findByPrimaryKey(
 			newCPDefinition.getPrimaryKey());
 
-		Assert.assertEquals(
-			existingCPDefinition.getMvccVersion(),
-			newCPDefinition.getMvccVersion());
 		Assert.assertEquals(
 			existingCPDefinition.getUuid(), newCPDefinition.getUuid());
 		Assert.assertEquals(
@@ -473,11 +468,11 @@ public class CPDefinitionPersistenceTest {
 
 	protected OrderByComparator<CPDefinition> getOrderByComparator() {
 		return OrderByComparatorFactoryUtil.create(
-			"CPDefinition", "mvccVersion", true, "uuid", true,
-			"defaultLanguageId", true, "CPDefinitionId", true, "groupId", true,
-			"companyId", true, "userId", true, "userName", true, "createDate",
-			true, "modifiedDate", true, "CProductId", true, "CPTaxCategoryId",
-			true, "productTypeName", true, "availableIndividually", true,
+			"CPDefinition", "uuid", true, "defaultLanguageId", true,
+			"CPDefinitionId", true, "groupId", true, "companyId", true,
+			"userId", true, "userName", true, "createDate", true,
+			"modifiedDate", true, "CProductId", true, "CPTaxCategoryId", true,
+			"productTypeName", true, "availableIndividually", true,
 			"ignoreSKUCombinations", true, "shippable", true, "freeShipping",
 			true, "shipSeparately", true, "shippingExtraPrice", true, "width",
 			true, "height", true, "depth", true, "weight", true, "taxExempt",
@@ -741,8 +736,6 @@ public class CPDefinitionPersistenceTest {
 		long pk = RandomTestUtil.nextLong();
 
 		CPDefinition cpDefinition = _persistence.create(pk);
-
-		cpDefinition.setMvccVersion(RandomTestUtil.nextLong());
 
 		cpDefinition.setUuid(RandomTestUtil.randomString());
 

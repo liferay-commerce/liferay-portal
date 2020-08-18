@@ -125,8 +125,6 @@ public class CPDefinitionLinkPersistenceTest {
 
 		CPDefinitionLink newCPDefinitionLink = _persistence.create(pk);
 
-		newCPDefinitionLink.setMvccVersion(RandomTestUtil.nextLong());
-
 		newCPDefinitionLink.setUuid(RandomTestUtil.randomString());
 
 		newCPDefinitionLink.setGroupId(RandomTestUtil.nextLong());
@@ -154,9 +152,6 @@ public class CPDefinitionLinkPersistenceTest {
 		CPDefinitionLink existingCPDefinitionLink =
 			_persistence.findByPrimaryKey(newCPDefinitionLink.getPrimaryKey());
 
-		Assert.assertEquals(
-			existingCPDefinitionLink.getMvccVersion(),
-			newCPDefinitionLink.getMvccVersion());
 		Assert.assertEquals(
 			existingCPDefinitionLink.getUuid(), newCPDefinitionLink.getUuid());
 		Assert.assertEquals(
@@ -287,11 +282,10 @@ public class CPDefinitionLinkPersistenceTest {
 
 	protected OrderByComparator<CPDefinitionLink> getOrderByComparator() {
 		return OrderByComparatorFactoryUtil.create(
-			"CPDefinitionLink", "mvccVersion", true, "uuid", true,
-			"CPDefinitionLinkId", true, "groupId", true, "companyId", true,
-			"userId", true, "userName", true, "createDate", true,
-			"modifiedDate", true, "CPDefinitionId", true, "CProductId", true,
-			"priority", true, "type", true);
+			"CPDefinitionLink", "uuid", true, "CPDefinitionLinkId", true,
+			"groupId", true, "companyId", true, "userId", true, "userName",
+			true, "createDate", true, "modifiedDate", true, "CPDefinitionId",
+			true, "CProductId", true, "priority", true, "type", true);
 	}
 
 	@Test
@@ -554,8 +548,6 @@ public class CPDefinitionLinkPersistenceTest {
 		long pk = RandomTestUtil.nextLong();
 
 		CPDefinitionLink cpDefinitionLink = _persistence.create(pk);
-
-		cpDefinitionLink.setMvccVersion(RandomTestUtil.nextLong());
 
 		cpDefinitionLink.setUuid(RandomTestUtil.randomString());
 
