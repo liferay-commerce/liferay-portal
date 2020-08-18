@@ -130,8 +130,6 @@ public class CPDefinitionVirtualSettingPersistenceTest {
 		CPDefinitionVirtualSetting newCPDefinitionVirtualSetting =
 			_persistence.create(pk);
 
-		newCPDefinitionVirtualSetting.setMvccVersion(RandomTestUtil.nextLong());
-
 		newCPDefinitionVirtualSetting.setUuid(RandomTestUtil.randomString());
 
 		newCPDefinitionVirtualSetting.setGroupId(RandomTestUtil.nextLong());
@@ -195,9 +193,6 @@ public class CPDefinitionVirtualSettingPersistenceTest {
 			_persistence.findByPrimaryKey(
 				newCPDefinitionVirtualSetting.getPrimaryKey());
 
-		Assert.assertEquals(
-			existingCPDefinitionVirtualSetting.getMvccVersion(),
-			newCPDefinitionVirtualSetting.getMvccVersion());
 		Assert.assertEquals(
 			existingCPDefinitionVirtualSetting.getUuid(),
 			newCPDefinitionVirtualSetting.getUuid());
@@ -343,7 +338,7 @@ public class CPDefinitionVirtualSettingPersistenceTest {
 		getOrderByComparator() {
 
 		return OrderByComparatorFactoryUtil.create(
-			"CPDefinitionVirtualSetting", "mvccVersion", true, "uuid", true,
+			"CPDefinitionVirtualSetting", "uuid", true,
 			"CPDefinitionVirtualSettingId", true, "groupId", true, "companyId",
 			true, "userId", true, "userName", true, "createDate", true,
 			"modifiedDate", true, "classNameId", true, "classPK", true,
@@ -642,8 +637,6 @@ public class CPDefinitionVirtualSettingPersistenceTest {
 
 		CPDefinitionVirtualSetting cpDefinitionVirtualSetting =
 			_persistence.create(pk);
-
-		cpDefinitionVirtualSetting.setMvccVersion(RandomTestUtil.nextLong());
 
 		cpDefinitionVirtualSetting.setUuid(RandomTestUtil.randomString());
 

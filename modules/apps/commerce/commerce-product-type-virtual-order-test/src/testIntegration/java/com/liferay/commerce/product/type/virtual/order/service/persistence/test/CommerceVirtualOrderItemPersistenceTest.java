@@ -130,8 +130,6 @@ public class CommerceVirtualOrderItemPersistenceTest {
 		CommerceVirtualOrderItem newCommerceVirtualOrderItem =
 			_persistence.create(pk);
 
-		newCommerceVirtualOrderItem.setMvccVersion(RandomTestUtil.nextLong());
-
 		newCommerceVirtualOrderItem.setUuid(RandomTestUtil.randomString());
 
 		newCommerceVirtualOrderItem.setGroupId(RandomTestUtil.nextLong());
@@ -175,9 +173,6 @@ public class CommerceVirtualOrderItemPersistenceTest {
 			_persistence.findByPrimaryKey(
 				newCommerceVirtualOrderItem.getPrimaryKey());
 
-		Assert.assertEquals(
-			existingCommerceVirtualOrderItem.getMvccVersion(),
-			newCommerceVirtualOrderItem.getMvccVersion());
 		Assert.assertEquals(
 			existingCommerceVirtualOrderItem.getUuid(),
 			newCommerceVirtualOrderItem.getUuid());
@@ -304,7 +299,7 @@ public class CommerceVirtualOrderItemPersistenceTest {
 		getOrderByComparator() {
 
 		return OrderByComparatorFactoryUtil.create(
-			"CommerceVirtualOrderItem", "mvccVersion", true, "uuid", true,
+			"CommerceVirtualOrderItem", "uuid", true,
 			"commerceVirtualOrderItemId", true, "groupId", true, "companyId",
 			true, "userId", true, "userName", true, "createDate", true,
 			"modifiedDate", true, "commerceOrderItemId", true, "fileEntryId",
@@ -589,8 +584,6 @@ public class CommerceVirtualOrderItemPersistenceTest {
 
 		CommerceVirtualOrderItem commerceVirtualOrderItem = _persistence.create(
 			pk);
-
-		commerceVirtualOrderItem.setMvccVersion(RandomTestUtil.nextLong());
 
 		commerceVirtualOrderItem.setUuid(RandomTestUtil.randomString());
 

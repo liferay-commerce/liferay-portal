@@ -125,8 +125,6 @@ public class CommerceRegionPersistenceTest {
 
 		CommerceRegion newCommerceRegion = _persistence.create(pk);
 
-		newCommerceRegion.setMvccVersion(RandomTestUtil.nextLong());
-
 		newCommerceRegion.setUuid(RandomTestUtil.randomString());
 
 		newCommerceRegion.setCompanyId(RandomTestUtil.nextLong());
@@ -156,9 +154,6 @@ public class CommerceRegionPersistenceTest {
 		CommerceRegion existingCommerceRegion = _persistence.findByPrimaryKey(
 			newCommerceRegion.getPrimaryKey());
 
-		Assert.assertEquals(
-			existingCommerceRegion.getMvccVersion(),
-			newCommerceRegion.getMvccVersion());
 		Assert.assertEquals(
 			existingCommerceRegion.getUuid(), newCommerceRegion.getUuid());
 		Assert.assertEquals(
@@ -262,11 +257,11 @@ public class CommerceRegionPersistenceTest {
 
 	protected OrderByComparator<CommerceRegion> getOrderByComparator() {
 		return OrderByComparatorFactoryUtil.create(
-			"CommerceRegion", "mvccVersion", true, "uuid", true,
-			"commerceRegionId", true, "companyId", true, "userId", true,
-			"userName", true, "createDate", true, "modifiedDate", true,
-			"commerceCountryId", true, "name", true, "code", true, "priority",
-			true, "active", true, "lastPublishDate", true);
+			"CommerceRegion", "uuid", true, "commerceRegionId", true,
+			"companyId", true, "userId", true, "userName", true, "createDate",
+			true, "modifiedDate", true, "commerceCountryId", true, "name", true,
+			"code", true, "priority", true, "active", true, "lastPublishDate",
+			true);
 	}
 
 	@Test
@@ -509,8 +504,6 @@ public class CommerceRegionPersistenceTest {
 		long pk = RandomTestUtil.nextLong();
 
 		CommerceRegion commerceRegion = _persistence.create(pk);
-
-		commerceRegion.setMvccVersion(RandomTestUtil.nextLong());
 
 		commerceRegion.setUuid(RandomTestUtil.randomString());
 

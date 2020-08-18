@@ -128,8 +128,6 @@ public class CommerceWishListItemPersistenceTest {
 
 		CommerceWishListItem newCommerceWishListItem = _persistence.create(pk);
 
-		newCommerceWishListItem.setMvccVersion(RandomTestUtil.nextLong());
-
 		newCommerceWishListItem.setGroupId(RandomTestUtil.nextLong());
 
 		newCommerceWishListItem.setCompanyId(RandomTestUtil.nextLong());
@@ -159,9 +157,6 @@ public class CommerceWishListItemPersistenceTest {
 			_persistence.findByPrimaryKey(
 				newCommerceWishListItem.getPrimaryKey());
 
-		Assert.assertEquals(
-			existingCommerceWishListItem.getMvccVersion(),
-			newCommerceWishListItem.getMvccVersion());
 		Assert.assertEquals(
 			existingCommerceWishListItem.getCommerceWishListItemId(),
 			newCommerceWishListItem.getCommerceWishListItemId());
@@ -277,11 +272,10 @@ public class CommerceWishListItemPersistenceTest {
 
 	protected OrderByComparator<CommerceWishListItem> getOrderByComparator() {
 		return OrderByComparatorFactoryUtil.create(
-			"CommerceWishListItem", "mvccVersion", true,
-			"commerceWishListItemId", true, "groupId", true, "companyId", true,
-			"userId", true, "userName", true, "createDate", true,
-			"modifiedDate", true, "commerceWishListId", true, "CPInstanceUuid",
-			true, "CProductId", true);
+			"CommerceWishListItem", "commerceWishListItemId", true, "groupId",
+			true, "companyId", true, "userId", true, "userName", true,
+			"createDate", true, "modifiedDate", true, "commerceWishListId",
+			true, "CPInstanceUuid", true, "CProductId", true);
 	}
 
 	@Test
@@ -551,8 +545,6 @@ public class CommerceWishListItemPersistenceTest {
 		long pk = RandomTestUtil.nextLong();
 
 		CommerceWishListItem commerceWishListItem = _persistence.create(pk);
-
-		commerceWishListItem.setMvccVersion(RandomTestUtil.nextLong());
 
 		commerceWishListItem.setGroupId(RandomTestUtil.nextLong());
 
