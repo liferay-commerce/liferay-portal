@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Commerce Product Type Simple
 Bundle-SymbolicName: com.liferay.commerce.product.type.simple
-Bundle-Version: 1.0.34
+Bundle-Version: 3.0.0
 Export-Package: com.liferay.commerce.product.type.simple.constants
 Provide-Capability:\
 	liferay.resource.bundle;\

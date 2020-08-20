@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Commerce Talend Job Deployer API
 Bundle-SymbolicName: com.liferay.commerce.talend.job.deployer.api
-Bundle-Version: 1.0.6
+Bundle-Version: 3.0.0
 Export-Package: com.liferay.commerce.talend.job.deployer
 Provide-Capability:\
 	liferay.resource.bundle;\

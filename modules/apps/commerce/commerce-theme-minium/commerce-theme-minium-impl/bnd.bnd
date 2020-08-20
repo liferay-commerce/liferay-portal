@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Commerce Theme Minium Implementation
 Bundle-SymbolicName: com.liferay.commerce.theme.minium.impl
-Bundle-Version: 2.0.41
+Bundle-Version: 4.0.0
 Provide-Capability:\
 	liferay.resource.bundle;\
 		resource.bundle.aggregate:String="(bundle.symbolic.name=com.liferay.commerce.lang)";\

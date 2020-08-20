@@ -17,5 +17,5 @@
 		"watch": "liferay-npm-scripts webpack --watch"
 	},
 	"sideEffects": false,
-	"version": "1.0.34"
+	"version": "3.0.0"
 }
