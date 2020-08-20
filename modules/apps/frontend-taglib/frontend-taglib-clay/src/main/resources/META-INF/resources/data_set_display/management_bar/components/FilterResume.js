@@ -19,11 +19,11 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, {useState} from 'react';
 
-import getAppContext from './Context';
+import {useAppState} from './Context';
 import {Filter} from './filters/index';
 
 function FilterResume(props) {
-	const {actions} = getAppContext();
+	const {actions} = useAppState();
 	const [open, setOpen] = useState(false);
 
 	const label = (

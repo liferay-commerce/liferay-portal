@@ -18,11 +18,11 @@ import ClayPanel from '@clayui/panel';
 import classNames from 'classnames';
 import React, {useEffect, useState} from 'react';
 
-import getAppContext from './Context';
+import {useAppState} from './Context';
 import {Filter} from './filters/index';
 
 function DropdownFilterItem(props) {
-	const {actions} = getAppContext();
+	const {actions} = useAppState();
 
 	return (
 		<ClayPanel
@@ -45,7 +45,7 @@ function DropdownFilterItem(props) {
 function FiltersDropdown() {
 	const [active, setActive] = useState(false);
 	const [query, setQuery] = useState('');
-	const {state} = getAppContext();
+	const {state} = useAppState();
 	const [visibleFilters, setVisibleFilter] = useState(
 		state.filters.filter((filter) => !filter.invisible)
 	);
