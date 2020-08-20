@@ -51,7 +51,16 @@ export function getValueFromItem(item, fieldName) {
 		return null;
 	}
 	if (Array.isArray(fieldName)) {
-		return fieldName.reduce((acc, key) => acc[key], item);
+		return fieldName.reduce((acc, key) => {
+			if (key === 'LANG') {
+				return (
+					acc[Liferay.ThemeDisplay.getLanguageId()] ||
+					acc[Liferay.ThemeDisplay.getDefaultLanguageId()]
+				);
+			}
+
+			return acc[key];
+		}, item);
 	}
 
 	return item[fieldName];
