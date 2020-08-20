@@ -20,11 +20,13 @@ import {logError} from '../utilities/logError';
 import TooltipTextRenderer from './TooltipTextRenderer';
 
 function DefaultRenderer({value}) {
-	if (typeof value === 'number') {
-		return <>{value}</>;
-	}
-	else if (typeof value === 'string' || value === undefined) {
-		return <>{value || ''}</>;
+	if (
+		typeof value === 'number' ||
+		typeof value === 'string' ||
+		value === undefined ||
+		value === null
+	) {
+		return <>{value ?? ''}</>;
 	}
 	else if (value.icon) {
 		return <ClayIcon symbol={value.icon} />;
