@@ -22,12 +22,17 @@ import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
+import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
+import com.liferay.portal.vulcan.aggregation.Aggregation;
+import com.liferay.portal.vulcan.aggregation.Facet;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLField;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLName;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 
@@ -143,7 +148,7 @@ public class Query {
 
 		public ChannelPage(Page channelPage) {
 			actions = channelPage.getActions();
-
+			facets = channelPage.getFacets();
 			items = channelPage.getItems();
 			lastPage = channelPage.getLastPage();
 			page = channelPage.getPage();
@@ -153,6 +158,9 @@ public class Query {
 
 		@GraphQLField
 		protected Map<String, Map> actions;
+
+		@GraphQLField
+		protected List<Facet> facets;
 
 		@GraphQLField
 		protected java.util.Collection<Channel> items;
@@ -176,7 +184,7 @@ public class Query {
 
 		public TaxCategoryPage(Page taxCategoryPage) {
 			actions = taxCategoryPage.getActions();
-
+			facets = taxCategoryPage.getFacets();
 			items = taxCategoryPage.getItems();
 			lastPage = taxCategoryPage.getLastPage();
 			page = taxCategoryPage.getPage();
@@ -186,6 +194,9 @@ public class Query {
 
 		@GraphQLField
 		protected Map<String, Map> actions;
+
+		@GraphQLField
+		protected List<Facet> facets;
 
 		@GraphQLField
 		protected java.util.Collection<TaxCategory> items;
@@ -232,6 +243,8 @@ public class Query {
 		channelResource.setContextHttpServletResponse(_httpServletResponse);
 		channelResource.setContextUriInfo(_uriInfo);
 		channelResource.setContextUser(_user);
+		channelResource.setGroupLocalService(_groupLocalService);
+		channelResource.setRoleLocalService(_roleLocalService);
 	}
 
 	private void _populateResourceContext(
@@ -244,6 +257,8 @@ public class Query {
 		taxCategoryResource.setContextHttpServletResponse(_httpServletResponse);
 		taxCategoryResource.setContextUriInfo(_uriInfo);
 		taxCategoryResource.setContextUser(_user);
+		taxCategoryResource.setGroupLocalService(_groupLocalService);
+		taxCategoryResource.setRoleLocalService(_roleLocalService);
 	}
 
 	private static ComponentServiceObjects<ChannelResource>
@@ -252,12 +267,16 @@ public class Query {
 		_taxCategoryResourceComponentServiceObjects;
 
 	private AcceptLanguage _acceptLanguage;
-	private BiFunction<Object, String, Filter> _filterBiFunction;
-	private BiFunction<Object, String, Sort[]> _sortsBiFunction;
+	private BiFunction<Object, List<String>, Aggregation>
+		_aggregationBiFunction;
 	private com.liferay.portal.kernel.model.Company _company;
-	private com.liferay.portal.kernel.model.User _user;
+	private BiFunction<Object, String, Filter> _filterBiFunction;
+	private GroupLocalService _groupLocalService;
 	private HttpServletRequest _httpServletRequest;
 	private HttpServletResponse _httpServletResponse;
+	private RoleLocalService _roleLocalService;
+	private BiFunction<Object, String, Sort[]> _sortsBiFunction;
 	private UriInfo _uriInfo;
+	private com.liferay.portal.kernel.model.User _user;
 
 }

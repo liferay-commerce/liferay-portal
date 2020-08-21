@@ -26,12 +26,17 @@ import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
+import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
+import com.liferay.portal.vulcan.aggregation.Aggregation;
+import com.liferay.portal.vulcan.aggregation.Facet;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLField;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLName;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 
@@ -234,7 +239,7 @@ public class Query {
 
 		public AvailabilityEstimatePage(Page availabilityEstimatePage) {
 			actions = availabilityEstimatePage.getActions();
-
+			facets = availabilityEstimatePage.getFacets();
 			items = availabilityEstimatePage.getItems();
 			lastPage = availabilityEstimatePage.getLastPage();
 			page = availabilityEstimatePage.getPage();
@@ -244,6 +249,9 @@ public class Query {
 
 		@GraphQLField
 		protected Map<String, Map> actions;
+
+		@GraphQLField
+		protected List<Facet> facets;
 
 		@GraphQLField
 		protected java.util.Collection<AvailabilityEstimate> items;
@@ -267,7 +275,7 @@ public class Query {
 
 		public MeasurementUnitPage(Page measurementUnitPage) {
 			actions = measurementUnitPage.getActions();
-
+			facets = measurementUnitPage.getFacets();
 			items = measurementUnitPage.getItems();
 			lastPage = measurementUnitPage.getLastPage();
 			page = measurementUnitPage.getPage();
@@ -277,6 +285,9 @@ public class Query {
 
 		@GraphQLField
 		protected Map<String, Map> actions;
+
+		@GraphQLField
+		protected List<Facet> facets;
 
 		@GraphQLField
 		protected java.util.Collection<MeasurementUnit> items;
@@ -300,7 +311,7 @@ public class Query {
 
 		public TaxCategoryPage(Page taxCategoryPage) {
 			actions = taxCategoryPage.getActions();
-
+			facets = taxCategoryPage.getFacets();
 			items = taxCategoryPage.getItems();
 			lastPage = taxCategoryPage.getLastPage();
 			page = taxCategoryPage.getPage();
@@ -310,6 +321,9 @@ public class Query {
 
 		@GraphQLField
 		protected Map<String, Map> actions;
+
+		@GraphQLField
+		protected List<Facet> facets;
 
 		@GraphQLField
 		protected java.util.Collection<TaxCategory> items;
@@ -333,7 +347,7 @@ public class Query {
 
 		public WarehousePage(Page warehousePage) {
 			actions = warehousePage.getActions();
-
+			facets = warehousePage.getFacets();
 			items = warehousePage.getItems();
 			lastPage = warehousePage.getLastPage();
 			page = warehousePage.getPage();
@@ -343,6 +357,9 @@ public class Query {
 
 		@GraphQLField
 		protected Map<String, Map> actions;
+
+		@GraphQLField
+		protected List<Facet> facets;
 
 		@GraphQLField
 		protected java.util.Collection<Warehouse> items;
@@ -392,6 +409,8 @@ public class Query {
 			_httpServletResponse);
 		availabilityEstimateResource.setContextUriInfo(_uriInfo);
 		availabilityEstimateResource.setContextUser(_user);
+		availabilityEstimateResource.setGroupLocalService(_groupLocalService);
+		availabilityEstimateResource.setRoleLocalService(_roleLocalService);
 	}
 
 	private void _populateResourceContext(
@@ -406,6 +425,8 @@ public class Query {
 			_httpServletResponse);
 		measurementUnitResource.setContextUriInfo(_uriInfo);
 		measurementUnitResource.setContextUser(_user);
+		measurementUnitResource.setGroupLocalService(_groupLocalService);
+		measurementUnitResource.setRoleLocalService(_roleLocalService);
 	}
 
 	private void _populateResourceContext(
@@ -418,6 +439,8 @@ public class Query {
 		taxCategoryResource.setContextHttpServletResponse(_httpServletResponse);
 		taxCategoryResource.setContextUriInfo(_uriInfo);
 		taxCategoryResource.setContextUser(_user);
+		taxCategoryResource.setGroupLocalService(_groupLocalService);
+		taxCategoryResource.setRoleLocalService(_roleLocalService);
 	}
 
 	private void _populateResourceContext(WarehouseResource warehouseResource)
@@ -429,6 +452,8 @@ public class Query {
 		warehouseResource.setContextHttpServletResponse(_httpServletResponse);
 		warehouseResource.setContextUriInfo(_uriInfo);
 		warehouseResource.setContextUser(_user);
+		warehouseResource.setGroupLocalService(_groupLocalService);
+		warehouseResource.setRoleLocalService(_roleLocalService);
 	}
 
 	private static ComponentServiceObjects<AvailabilityEstimateResource>
@@ -441,12 +466,16 @@ public class Query {
 		_warehouseResourceComponentServiceObjects;
 
 	private AcceptLanguage _acceptLanguage;
-	private BiFunction<Object, String, Filter> _filterBiFunction;
-	private BiFunction<Object, String, Sort[]> _sortsBiFunction;
+	private BiFunction<Object, List<String>, Aggregation>
+		_aggregationBiFunction;
 	private com.liferay.portal.kernel.model.Company _company;
-	private com.liferay.portal.kernel.model.User _user;
+	private BiFunction<Object, String, Filter> _filterBiFunction;
+	private GroupLocalService _groupLocalService;
 	private HttpServletRequest _httpServletRequest;
 	private HttpServletResponse _httpServletResponse;
+	private RoleLocalService _roleLocalService;
+	private BiFunction<Object, String, Sort[]> _sortsBiFunction;
 	private UriInfo _uriInfo;
+	private com.liferay.portal.kernel.model.User _user;
 
 }
