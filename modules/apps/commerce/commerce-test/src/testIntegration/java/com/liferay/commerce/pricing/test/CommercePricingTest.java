@@ -35,7 +35,6 @@ import com.liferay.commerce.price.list.service.CommercePriceListAccountRelLocalS
 import com.liferay.commerce.price.list.test.util.CommercePriceEntryTestUtil;
 import com.liferay.commerce.price.list.test.util.CommercePriceListTestUtil;
 import com.liferay.commerce.pricing.constants.CommercePriceModifierConstants;
-import com.liferay.commerce.pricing.exception.CommerceUndefinedBasePriceListException;
 import com.liferay.commerce.pricing.model.CommercePriceModifier;
 import com.liferay.commerce.pricing.model.CommercePricingClass;
 import com.liferay.commerce.pricing.service.CommercePriceModifierLocalService;
@@ -1070,31 +1069,6 @@ public class CommercePricingTest {
 			finalPromoPrice.stripTrailingZeros());
 	}
 
-	@Test(expected = CommerceUndefinedBasePriceListException.class)
-	public void testWithoutBasePricelist() throws Exception {
-		frutillaRule.scenario(
-			"When a catalog is created without a base price list and a price " +
-				"is not found an exception is raised"
-		).given(
-			"A catalog without a base price list"
-		).when(
-			"I search for the final price of a product"
-		).then(
-			"A CommerceUndefinedBasePriceListException is raised"
-		);
-
-		CommercePriceListTestUtil.addCommercePriceList(
-			_group.getGroupId(), 1.0);
-
-		CPInstance cpInstance = CPTestUtil.addCPInstance();
-
-		CommerceContext commerceContext = new TestCommerceContext(
-			_commerceCurrency, null, _user, _group, _commerceAccount, null);
-
-		_commerceProductPriceCalculation.getCommerceProductPrice(
-			cpInstance.getCPInstanceId(), 1, commerceContext);
-	}
-
 	@Rule
 	public FrutillaRule frutillaRule = new FrutillaRule();
 
@@ -1158,7 +1132,7 @@ public class CommercePricingTest {
 	@Inject
 	private CommercePricingClassLocalService _commercePricingClassLocalService;
 
-	@Inject(filter = "commerce.price.calculation.key=v2.0")
+	@Inject
 	private CommerceProductPriceCalculation _commerceProductPriceCalculation;
 
 	@DeleteAfterTestRun

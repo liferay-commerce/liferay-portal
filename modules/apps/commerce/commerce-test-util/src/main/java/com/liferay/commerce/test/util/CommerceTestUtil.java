@@ -146,11 +146,10 @@ public class CommerceTestUtil {
 
 		long groupId = commerceOrder.getGroupId();
 
-		CPInstance cpInstance = CPTestUtil.addCPInstanceWithRandomSku(groupId);
-
 		BigDecimal price = BigDecimal.valueOf(RandomTestUtil.randomDouble());
 
-		cpInstance.setPrice(price);
+		CPInstance cpInstance = CPTestUtil.addCPInstanceWithRandomSku(
+			groupId, price);
 
 		if (paymentSubscription) {
 			cpInstance.setOverrideSubscriptionInfo(true);

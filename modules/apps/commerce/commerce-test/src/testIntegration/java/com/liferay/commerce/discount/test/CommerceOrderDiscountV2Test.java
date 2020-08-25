@@ -30,10 +30,8 @@ import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.price.CommerceOrderPriceCalculation;
 import com.liferay.commerce.price.list.model.CommercePriceEntry;
 import com.liferay.commerce.price.list.model.CommercePriceList;
+import com.liferay.commerce.price.list.service.CommercePriceListLocalService;
 import com.liferay.commerce.price.list.test.util.CommercePriceEntryTestUtil;
-import com.liferay.commerce.price.list.test.util.CommercePriceListTestUtil;
-import com.liferay.commerce.pricing.configuration.CommercePricingConfiguration;
-import com.liferay.commerce.pricing.constants.CommercePricingConstants;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CommerceCatalog;
@@ -46,7 +44,6 @@ import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.commerce.test.util.TestCommerceContext;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -62,8 +59,6 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import java.math.BigDecimal;
 
 import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.Hashtable;
 import java.util.List;
 
 import org.frutilla.FrutillaRule;
@@ -102,15 +97,6 @@ public class CommerceOrderDiscountV2Test {
 			_group.getCompanyId());
 
 		_commerceOrders = new ArrayList<>();
-
-		_properties = new Hashtable<>();
-
-		_properties.put(
-			"commercePricingCalculationKey",
-			CommercePricingConstants.VERSION_2_0);
-
-		ConfigurationProviderUtil.saveSystemConfiguration(
-			CommercePricingConfiguration.class, _properties);
 	}
 
 	@After
@@ -122,13 +108,6 @@ public class CommerceOrderDiscountV2Test {
 		_commerceAccountLocalService.deleteCommerceAccount(_commerceAccount);
 		GroupTestUtil.deleteGroup(_group);
 		_userLocalService.deleteUser(_user);
-
-		_properties.put(
-			"commercePricingCalculationKey",
-			CommercePricingConstants.VERSION_1_0);
-
-		ConfigurationProviderUtil.saveSystemConfiguration(
-			CommercePricingConfiguration.class, _properties);
 
 		_commerceDiscountLocalService.deleteCommerceDiscounts(
 			_user.getCompanyId());
@@ -172,8 +151,8 @@ public class CommerceOrderDiscountV2Test {
 				catalog.getGroupId());
 
 		CommercePriceList commercePriceList =
-			CommercePriceListTestUtil.addCommercePriceList(
-				catalog.getGroupId(), true, "price-list", 1.0);
+			_commercePriceListLocalService.fetchCommerceCatalogBasePriceList(
+				catalog.getGroupId());
 
 		CPDefinition cpDefinition = cpInstanceDiscount.getCPDefinition();
 
@@ -269,8 +248,8 @@ public class CommerceOrderDiscountV2Test {
 		CPDefinition cpDefinitionPlan = cpInstancePlain.getCPDefinition();
 
 		CommercePriceList commercePriceList =
-			CommercePriceListTestUtil.addCommercePriceList(
-				catalog.getGroupId(), true, "price-list", 1.0);
+			_commercePriceListLocalService.fetchCommerceCatalogBasePriceList(
+				catalog.getGroupId());
 
 		CommercePriceEntry commercePriceEntryDiscount =
 			CommercePriceEntryTestUtil.addCommercePriceEntry(
@@ -404,8 +383,8 @@ public class CommerceOrderDiscountV2Test {
 		CPDefinition cpDefinitionPlan = cpInstancePlain.getCPDefinition();
 
 		CommercePriceList commercePriceList =
-			CommercePriceListTestUtil.addCommercePriceList(
-				catalog.getGroupId(), true, "price-list", 1.0);
+			_commercePriceListLocalService.fetchCommerceCatalogBasePriceList(
+				catalog.getGroupId());
 
 		CommercePriceEntry commercePriceEntryDiscount =
 			CommercePriceEntryTestUtil.addCommercePriceEntry(
@@ -522,12 +501,15 @@ public class CommerceOrderDiscountV2Test {
 	@Inject
 	private CommerceOrderLocalService _commerceOrderLocalService;
 
-	@Inject(filter = "commerce.price.calculation.key=v2.0")
+	@Inject
 	private CommerceOrderPriceCalculation _commerceOrderPriceCalculation;
 
 	private List<CommerceOrder> _commerceOrders;
+
+	@Inject
+	private CommercePriceListLocalService _commercePriceListLocalService;
+
 	private Group _group;
-	private Dictionary<String, Object> _properties;
 	private User _user;
 
 	@Inject

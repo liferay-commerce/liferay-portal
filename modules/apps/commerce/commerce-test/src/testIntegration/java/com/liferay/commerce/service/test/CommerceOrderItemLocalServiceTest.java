@@ -27,6 +27,10 @@ import com.liferay.commerce.inventory.model.CommerceInventoryWarehouse;
 import com.liferay.commerce.inventory.service.CommerceInventoryBookedQuantityLocalService;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderItem;
+import com.liferay.commerce.price.list.model.CommercePriceEntry;
+import com.liferay.commerce.price.list.model.CommercePriceList;
+import com.liferay.commerce.price.list.service.CommercePriceListLocalService;
+import com.liferay.commerce.price.list.test.util.CommercePriceEntryTestUtil;
 import com.liferay.commerce.product.CommerceProductTestUtil;
 import com.liferay.commerce.product.constants.CPConstants;
 import com.liferay.commerce.product.model.CPDefinition;
@@ -491,6 +495,15 @@ public class CommerceOrderItemLocalServiceTest {
 		CPInstance bundleCPInstance = _buildProductBundleSingleOptionCPInstance(
 			bundleCPDefinition.getCPDefinitionId(), _toValueKey(option2Key));
 
+		CommercePriceList commercePriceList =
+			_commercePriceListLocalService.fetchCommerceCatalogBasePriceList(
+				bundleCPInstance.getGroupId());
+
+		CommercePriceEntryTestUtil.addCommercePriceEntry(
+			bundleCPDefinition.getCProductId(),
+			bundleCPInstance.getCPInstanceUuid(),
+			commercePriceList.getCommercePriceListId(), "", BigDecimal.ZERO);
+
 		CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
 			_user.getUserId(), commerceInventoryWarehouse,
 			bundleCPInstance.getSku(), 100);
@@ -909,9 +922,17 @@ public class CommerceOrderItemLocalServiceTest {
 			CPTestUtil.addCPInstanceWithRandomSkuFromCatalog(
 				_commerceCatalog.getGroupId());
 
-		optionSKU1.setPrice(option1Price);
+		CommercePriceList commercePriceList =
+			_commercePriceListLocalService.fetchCommerceCatalogBasePriceList(
+				optionSKU1.getGroupId());
 
-		_cpInstanceLocalService.updateCPInstance(optionSKU1);
+		CPDefinition option1CPDefinition = optionSKU1.getCPDefinition();
+
+		CommercePriceEntry optionSKU1PriceEntry =
+			CommercePriceEntryTestUtil.addCommercePriceEntry(
+				option1CPDefinition.getCProductId(),
+				optionSKU1.getCPInstanceUuid(),
+				commercePriceList.getCommercePriceListId(), "", option1Price);
 
 		CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
 			_user.getUserId(), commerceInventoryWarehouse, optionSKU1.getSku(),
@@ -923,9 +944,13 @@ public class CommerceOrderItemLocalServiceTest {
 			CPTestUtil.addCPInstanceWithRandomSkuFromCatalog(
 				_commerceCatalog.getGroupId());
 
-		optionSKU2.setPrice(option2Price);
+		CPDefinition option2CPDefinition = optionSKU2.getCPDefinition();
 
-		_cpInstanceLocalService.updateCPInstance(optionSKU2);
+		CommercePriceEntry optionSKU2PriceEntry =
+			CommercePriceEntryTestUtil.addCommercePriceEntry(
+				option2CPDefinition.getCProductId(),
+				optionSKU2.getCPInstanceUuid(),
+				commercePriceList.getCommercePriceListId(), "", option2Price);
 
 		CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
 			_user.getUserId(), commerceInventoryWarehouse, optionSKU2.getSku(),
@@ -992,6 +1017,11 @@ public class CommerceOrderItemLocalServiceTest {
 		CPInstance bundleCPInstance = _buildProductBundleSingleOptionCPInstance(
 			bundleCPDefinition.getCPDefinitionId(), _toValueKey(option2Key));
 
+		CommercePriceEntryTestUtil.addCommercePriceEntry(
+			bundleCPDefinition.getCProductId(),
+			bundleCPInstance.getCPInstanceUuid(),
+			commercePriceList.getCommercePriceListId(), "", BigDecimal.ZERO);
+
 		CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
 			_user.getUserId(), commerceInventoryWarehouse,
 			bundleCPInstance.getSku(), 100);
@@ -1028,7 +1058,11 @@ public class CommerceOrderItemLocalServiceTest {
 		BigDecimal expectedOrderFinalPrice = option2Price;
 
 		if (priceType.equals(CPConstants.PRODUCT_OPTION_PRICE_TYPE_DYNAMIC)) {
-			expectedOrderFinalPrice = optionSKU2.getPrice();
+			expectedOrderFinalPrice = optionSKU2PriceEntry.getPrice();
+
+			if (useSameCPInstanceForOptions) {
+				expectedOrderFinalPrice = optionSKU1PriceEntry.getPrice();
+			}
 		}
 
 		expectedOrderFinalPrice = expectedOrderFinalPrice.multiply(
@@ -1122,6 +1156,15 @@ public class CommerceOrderItemLocalServiceTest {
 				cpDefinitionOptionValueRel.getCPDefinitionOptionRelId(),
 				bundleCPInstances, cpInstance1);
 
+		CommercePriceList commercePriceList =
+			_commercePriceListLocalService.fetchCommerceCatalogBasePriceList(
+				bundleCPInstanceWithUnavailableChildSKU.getGroupId());
+
+		CommercePriceEntryTestUtil.addCommercePriceEntry(
+			bundleCPDefinition.getCProductId(),
+			bundleCPInstanceWithUnavailableChildSKU.getCPInstanceUuid(),
+			commercePriceList.getCommercePriceListId(), "", BigDecimal.ZERO);
+
 		CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
 			_user.getUserId(), commerceInventoryWarehouse,
 			bundleCPInstanceWithUnavailableChildSKU.getSku(), 1);
@@ -1171,9 +1214,18 @@ public class CommerceOrderItemLocalServiceTest {
 			CPTestUtil.addCPInstanceWithRandomSkuFromCatalog(
 				_commerceCatalog.getGroupId());
 
-		optionSKU1.setPrice(new BigDecimal("111"));
+		CommercePriceList commercePriceList =
+			_commercePriceListLocalService.fetchCommerceCatalogBasePriceList(
+				optionSKU1.getGroupId());
 
-		_cpInstanceLocalService.updateCPInstance(optionSKU1);
+		CPDefinition option1CPDefinition = optionSKU1.getCPDefinition();
+
+		CommercePriceEntry optionSKU1PriceEntry =
+			CommercePriceEntryTestUtil.addCommercePriceEntry(
+				option1CPDefinition.getCProductId(),
+				optionSKU1.getCPInstanceUuid(),
+				commercePriceList.getCommercePriceListId(), "",
+				new BigDecimal("111"));
 
 		CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
 			_user.getUserId(), commerceInventoryWarehouse, optionSKU1.getSku(),
@@ -1202,9 +1254,11 @@ public class CommerceOrderItemLocalServiceTest {
 			CPTestUtil.addCPInstanceWithRandomSkuFromCatalog(
 				_commerceCatalog.getGroupId());
 
-		optionSKU2.setPrice(option2Price);
+		CPDefinition option2CPDefinition = optionSKU2.getCPDefinition();
 
-		_cpInstanceLocalService.updateCPInstance(optionSKU2);
+		CommercePriceEntryTestUtil.addCommercePriceEntry(
+			option2CPDefinition.getCProductId(), optionSKU2.getCPInstanceUuid(),
+			commercePriceList.getCommercePriceListId(), "", option2Price);
 
 		CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
 			_user.getUserId(), commerceInventoryWarehouse, optionSKU2.getSku(),
@@ -1253,6 +1307,11 @@ public class CommerceOrderItemLocalServiceTest {
 		CPInstance bundleCPInstance = _buildProductBundleSingleOptionCPInstance(
 			bundleCPDefinition.getCPDefinitionId(), _toValueKey(option1Key));
 
+		CommercePriceEntryTestUtil.addCommercePriceEntry(
+			bundleCPDefinition.getCProductId(),
+			bundleCPInstance.getCPInstanceUuid(),
+			commercePriceList.getCommercePriceListId(), "", BigDecimal.ZERO);
+
 		CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
 			_user.getUserId(), commerceInventoryWarehouse,
 			bundleCPInstance.getSku(), 100);
@@ -1294,7 +1353,7 @@ public class CommerceOrderItemLocalServiceTest {
 		BigDecimal expectedOrderFinalPrice = option1Price;
 
 		if (priceType.equals(CPConstants.PRODUCT_OPTION_PRICE_TYPE_DYNAMIC)) {
-			expectedOrderFinalPrice = optionSKU1.getPrice();
+			expectedOrderFinalPrice = optionSKU1PriceEntry.getPrice();
 		}
 
 		expectedOrderFinalPrice = expectedOrderFinalPrice.multiply(
@@ -1303,7 +1362,7 @@ public class CommerceOrderItemLocalServiceTest {
 		expectedOrderFinalPrice = expectedOrderFinalPrice.add(
 			bundleOrderItem.getFinalPrice());
 
-		BigDecimal nonbundleFinalPrice = optionSKU1.getPrice();
+		BigDecimal nonbundleFinalPrice = optionSKU1PriceEntry.getPrice();
 
 		nonbundleFinalPrice = nonbundleFinalPrice.multiply(
 			BigDecimal.valueOf(nonbundleQuantity));
@@ -1516,6 +1575,9 @@ public class CommerceOrderItemLocalServiceTest {
 
 	@Inject
 	private CommerceOrderLocalService _commerceOrderLocalService;
+
+	@Inject
+	private CommercePriceListLocalService _commercePriceListLocalService;
 
 	@Inject
 	private CPDefinitionLocalService _cpDefinitionLocalService;

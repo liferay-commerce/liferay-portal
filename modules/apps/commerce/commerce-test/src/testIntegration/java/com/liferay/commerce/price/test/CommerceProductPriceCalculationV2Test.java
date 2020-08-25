@@ -1040,8 +1040,8 @@ public class CommerceProductPriceCalculationV2Test {
 				LocaleUtil.US.getDisplayLanguage(), null, _serviceContext);
 
 		CommercePriceList basePriceList =
-			CommercePriceListTestUtil.addCommercePriceList(
-				catalog.getGroupId(), true, 0.0);
+			_commercePriceListLocalService.fetchCommerceCatalogBasePriceList(
+				catalog.getGroupId());
 
 		CommercePriceList commercePriceList =
 			CommercePriceListTestUtil.addCommercePriceList(
@@ -2008,7 +2008,7 @@ public class CommerceProductPriceCalculationV2Test {
 	private CommercePriceModifierRelLocalService
 		_commercePriceModifierRelLocalService;
 
-	@Inject(filter = "commerce.price.calculation.key=v2.0")
+	@Inject
 	private CommerceProductPriceCalculation _commerceProductPriceCalculation;
 
 	@Inject
