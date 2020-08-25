@@ -122,8 +122,14 @@ public abstract class BaseCommerceOrderPriceCalculation
 
 		BigDecimal total = commerceOrder.getTotal();
 
+		BigDecimal totalDiscountAmount = BigDecimal.ZERO;
+
+		if (commerceOrder.getTotalDiscountAmount() != null) {
+			totalDiscountAmount = commerceOrder.getTotalDiscountAmount();
+		}
+
 		CommerceDiscountValue totalDiscountValue = _createCommerceDiscountValue(
-			total.add(commerceOrder.getTotalDiscountAmount()), commerceCurrency,
+			total.add(totalDiscountAmount), commerceCurrency,
 			commerceOrder.getTotalDiscountAmount(),
 			commerceOrder.getTotalDiscountPercentageLevel1(),
 			commerceOrder.getTotalDiscountPercentageLevel2(),
@@ -132,10 +138,16 @@ public abstract class BaseCommerceOrderPriceCalculation
 
 		BigDecimal totalWithTaxAmount = commerceOrder.getTotalWithTaxAmount();
 
+		BigDecimal totalDiscountWithTaxAmount = BigDecimal.ZERO;
+
+		if (commerceOrder.getTotalDiscountWithTaxAmount() != null) {
+			totalDiscountWithTaxAmount =
+				commerceOrder.getTotalDiscountWithTaxAmount();
+		}
+
 		CommerceDiscountValue totalDiscountValueWithTaxAmount =
 			_createCommerceDiscountValue(
-				totalWithTaxAmount.add(
-					commerceOrder.getTotalDiscountWithTaxAmount()),
+				totalWithTaxAmount.add(totalDiscountWithTaxAmount),
 				commerceCurrency, commerceOrder.getTotalDiscountWithTaxAmount(),
 				commerceOrder.getTotalDiscountPercentageLevel1WithTaxAmount(),
 				commerceOrder.getTotalDiscountPercentageLevel2WithTaxAmount(),
