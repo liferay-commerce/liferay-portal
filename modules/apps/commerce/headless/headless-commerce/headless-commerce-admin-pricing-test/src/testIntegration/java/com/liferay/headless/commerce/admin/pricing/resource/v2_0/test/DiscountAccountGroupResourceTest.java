@@ -42,6 +42,7 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
@@ -154,10 +155,38 @@ public class DiscountAccountGroupResourceTest
 	}
 
 	@Override
+	@Test
+	public void testGetDiscountIdDiscountAccountGroupsPageWithFilterDateTimeEquals()
+		throws Exception {
+	}
+
+	@Override
+	@Test
+	public void testGetDiscountIdDiscountAccountGroupsPageWithFilterStringEquals()
+		throws Exception {
+	}
+
+	@Override
+	@Test
+	public void testGetDiscountIdDiscountAccountGroupsPageWithSortDateTime()
+		throws Exception {
+	}
+
+	@Override
+	@Test
+	public void testGetDiscountIdDiscountAccountGroupsPageWithSortInteger()
+		throws Exception {
+	}
+
+	@Override
+	@Test
+	public void testGetDiscountIdDiscountAccountGroupsPageWithSortString()
+		throws Exception {
+	}
+
+	@Override
 	protected String[] getAdditionalAssertFieldNames() {
-		return new String[] {
-			"accountGroupName", "accountGroupId", "discountId"
-		};
+		return new String[] {"accountGroupId", "discountId"};
 	}
 
 	@Override
@@ -169,9 +198,10 @@ public class DiscountAccountGroupResourceTest
 
 		CommerceDiscount commerceDiscount =
 			_commerceDiscountLocalService.upsertCommerceDiscount(
-				_user.getUserId(), 0, RandomTestUtil.randomString(), "product",
-				false, null, false, BigDecimal.ZERO, BigDecimal.ONE,
-				BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
+				_user.getUserId(), 0, RandomTestUtil.randomString(),
+				CommerceDiscountConstants.TARGET_PRODUCTS, false, null, false,
+				BigDecimal.ZERO, BigDecimal.ONE, BigDecimal.ZERO,
+				BigDecimal.ZERO, BigDecimal.ZERO,
 				CommerceDiscountConstants.LIMITATION_TYPE_UNLIMITED, 0, true,
 				calendar.get(Calendar.MONTH),
 				calendar.get(Calendar.DAY_OF_MONTH),
@@ -245,9 +275,9 @@ public class DiscountAccountGroupResourceTest
 			_commerceDiscount =
 				_commerceDiscountLocalService.upsertCommerceDiscount(
 					_user.getUserId(), 0, RandomTestUtil.randomString(),
-					"product", false, null, false, BigDecimal.ZERO,
-					BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.ZERO,
-					BigDecimal.ZERO,
+					CommerceDiscountConstants.TARGET_PRODUCTS, false, null,
+					false, BigDecimal.ZERO, BigDecimal.ONE, BigDecimal.ZERO,
+					BigDecimal.ZERO, BigDecimal.ZERO,
 					CommerceDiscountConstants.LIMITATION_TYPE_UNLIMITED, 0,
 					true, calendar.get(Calendar.MONTH),
 					calendar.get(Calendar.DAY_OF_MONTH),
@@ -294,9 +324,9 @@ public class DiscountAccountGroupResourceTest
 			_commerceDiscount =
 				_commerceDiscountLocalService.upsertCommerceDiscount(
 					_user.getUserId(), 0, RandomTestUtil.randomString(),
-					"product", false, null, false, BigDecimal.ZERO,
-					BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.ZERO,
-					BigDecimal.ZERO,
+					CommerceDiscountConstants.TARGET_PRODUCTS, false, null,
+					false, BigDecimal.ZERO, BigDecimal.ONE, BigDecimal.ZERO,
+					BigDecimal.ZERO, BigDecimal.ZERO,
 					CommerceDiscountConstants.LIMITATION_TYPE_UNLIMITED, 0,
 					true, calendar.get(Calendar.MONTH),
 					calendar.get(Calendar.DAY_OF_MONTH),
