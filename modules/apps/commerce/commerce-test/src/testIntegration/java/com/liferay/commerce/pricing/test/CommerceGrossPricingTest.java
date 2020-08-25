@@ -1731,7 +1731,7 @@ public class CommerceGrossPricingTest {
 	@Inject
 	private CommercePricingClassLocalService _commercePricingClassLocalService;
 
-	@Inject(filter = "commerce.price.calculation.key=v2.0")
+	@Inject
 	private CommerceProductPriceCalculation _commerceProductPriceCalculation;
 
 	private long _commerceTaxCategoryId;

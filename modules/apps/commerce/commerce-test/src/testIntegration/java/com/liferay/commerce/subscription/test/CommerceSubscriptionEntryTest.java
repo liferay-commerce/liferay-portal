@@ -20,6 +20,9 @@ import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
 import com.liferay.commerce.exception.CommerceOrderValidatorException;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceSubscriptionEntry;
+import com.liferay.commerce.price.list.model.CommercePriceList;
+import com.liferay.commerce.price.list.service.CommercePriceListLocalService;
+import com.liferay.commerce.price.list.test.util.CommercePriceEntryTestUtil;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CPOption;
@@ -50,6 +53,8 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+
+import java.math.BigDecimal;
 
 import java.util.List;
 
@@ -248,6 +253,10 @@ public class CommerceSubscriptionEntryTest {
 			_user.getUserId(), _commerceChannel.getGroupId(),
 			_commerceCurrency);
 
+		CommercePriceList commercePriceList =
+			_commercePriceListLocalService.fetchCommerceCatalogBasePriceList(
+				cpDefinition.getGroupId());
+
 		List<CPInstance> cpInstances =
 			_cpInstanceLocalService.getCPDefinitionInstances(
 				cpDefinition.getCPDefinitionId(),
@@ -255,6 +264,11 @@ public class CommerceSubscriptionEntryTest {
 				QueryUtil.ALL_POS, null);
 
 		for (CPInstance cpInstance : cpInstances) {
+			CommercePriceEntryTestUtil.addCommercePriceEntry(
+				cpDefinition.getCProductId(), cpInstance.getCPInstanceUuid(),
+				commercePriceList.getCommercePriceListId(), "",
+				BigDecimal.ZERO);
+
 			if (cpInstances.indexOf(cpInstance) == 0) {
 				cpInstance.setOverrideSubscriptionInfo(true);
 				cpInstance.setSubscriptionEnabled(
@@ -363,6 +377,9 @@ public class CommerceSubscriptionEntryTest {
 
 	@DeleteAfterTestRun
 	private CommerceCurrency _commerceCurrency;
+
+	@Inject
+	private CommercePriceListLocalService _commercePriceListLocalService;
 
 	@Inject
 	private CommerceSubscriptionEntryHelper _commerceSubscriptionEntryHelper;

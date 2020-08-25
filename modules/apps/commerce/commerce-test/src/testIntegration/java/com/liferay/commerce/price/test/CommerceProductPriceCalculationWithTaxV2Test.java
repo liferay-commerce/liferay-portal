@@ -331,7 +331,7 @@ public class CommerceProductPriceCalculationWithTaxV2Test {
 
 	private CommerceCurrency _commerceCurrency;
 
-	@Inject(filter = "commerce.price.calculation.key=v2.0")
+	@Inject
 	private CommerceProductPriceCalculation _commerceProductPriceCalculation;
 
 	@DeleteAfterTestRun

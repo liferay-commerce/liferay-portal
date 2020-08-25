@@ -20,6 +20,9 @@ import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderItem;
+import com.liferay.commerce.price.list.model.CommercePriceList;
+import com.liferay.commerce.price.list.service.CommercePriceEntryLocalService;
+import com.liferay.commerce.price.list.service.CommercePriceListLocalService;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CommerceCatalog;
@@ -41,10 +44,13 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+
+import java.math.BigDecimal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -129,7 +135,17 @@ public class CommerceVirtualOrderItemLocalServiceTest {
 
 		CommerceTestUtil.updateBackOrderCPDefinitionInventory(cpDefinition);
 
+		CommercePriceList commercePriceList =
+			_commercePriceListLocalService.fetchCommerceCatalogBasePriceList(
+				cpDefinition.getGroupId());
+
 		for (CPInstance cpInstance : cpDefinition.getCPInstances()) {
+			_commercePriceEntryLocalService.addCommercePriceEntry(
+				cpDefinition.getCProductId(), cpInstance.getCPInstanceUuid(),
+				commercePriceList.getCommercePriceListId(), BigDecimal.ZERO,
+				BigDecimal.ZERO,
+				ServiceContextTestUtil.getServiceContext(_user.getGroupId()));
+
 			CommerceTestUtil.addCommerceOrderItem(
 				commerceOrder.getCommerceOrderId(),
 				cpInstance.getCPInstanceId(), 1);
@@ -207,9 +223,19 @@ public class CommerceVirtualOrderItemLocalServiceTest {
 
 		int subscriptionLength = 1;
 
+		CommercePriceList commercePriceList =
+			_commercePriceListLocalService.fetchCommerceCatalogBasePriceList(
+				cpDefinition.getGroupId());
+
 		for (CPInstance cpInstance : cpDefinition.getCPInstances()) {
 			cpInstance = _setCPInstanceSubscriptionInfo(
 				cpInstance, subscriptionLength, "daily");
+
+			_commercePriceEntryLocalService.addCommercePriceEntry(
+				cpDefinition.getCProductId(), cpInstance.getCPInstanceUuid(),
+				commercePriceList.getCommercePriceListId(), BigDecimal.ZERO,
+				BigDecimal.ZERO,
+				ServiceContextTestUtil.getServiceContext(_user.getGroupId()));
 
 			CommerceTestUtil.addCommerceOrderItem(
 				commerceOrder.getCommerceOrderId(),
@@ -293,6 +319,12 @@ public class CommerceVirtualOrderItemLocalServiceTest {
 	private CommerceOrderLocalService _commerceOrderLocalService;
 
 	private List<CommerceOrder> _commerceOrders;
+
+	@Inject
+	private CommercePriceEntryLocalService _commercePriceEntryLocalService;
+
+	@Inject
+	private CommercePriceListLocalService _commercePriceListLocalService;
 
 	@Inject
 	private CommerceSubscriptionEntryHelper _commerceSubscriptionEntryHelper;

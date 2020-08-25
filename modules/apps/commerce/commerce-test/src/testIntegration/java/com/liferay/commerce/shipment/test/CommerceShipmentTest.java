@@ -37,6 +37,7 @@ import com.liferay.commerce.model.CommerceShippingMethod;
 import com.liferay.commerce.order.engine.CommerceOrderEngine;
 import com.liferay.commerce.price.CommerceOrderPrice;
 import com.liferay.commerce.price.CommerceOrderPriceCalculation;
+import com.liferay.commerce.price.list.service.CommercePriceListLocalService;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CommerceChannel;
@@ -325,11 +326,7 @@ public class CommerceShipmentTest {
 			"The price object has the shipping amount correctly set"
 		);
 
-		CPInstance cpInstance = _createCPInstance();
-
-		cpInstance.setPrice(BigDecimal.valueOf(25));
-
-		_cpInstanceLocalService.updateCPInstance(cpInstance);
+		CPInstance cpInstance = _createCPInstance(BigDecimal.valueOf(25));
 
 		CommerceInventoryWarehouse commerceInventoryWarehouse =
 			_createCommerceInventoryWarehouse(
@@ -384,11 +381,7 @@ public class CommerceShipmentTest {
 			"The price object has the shipping discounts correctly set"
 		);
 
-		CPInstance cpInstance = _createCPInstance();
-
-		cpInstance.setPrice(BigDecimal.valueOf(25));
-
-		_cpInstanceLocalService.updateCPInstance(cpInstance);
+		CPInstance cpInstance = _createCPInstance(BigDecimal.valueOf(25));
 
 		CommerceInventoryWarehouse commerceInventoryWarehouse =
 			_createCommerceInventoryWarehouse(
@@ -922,6 +915,13 @@ public class CommerceShipmentTest {
 		return CPTestUtil.addCPInstanceWithRandomSku(group.getGroupId());
 	}
 
+	private CPInstance _createCPInstance(BigDecimal price) throws Exception {
+		Group group = GroupTestUtil.addGroup(
+			_company.getGroupId(), _user.getUserId(), 0);
+
+		return CPTestUtil.addCPInstanceWithRandomSku(group.getGroupId(), price);
+	}
+
 	private CPInstance _createCPInstance(long groupId) throws Exception {
 		return CPTestUtil.addCPInstanceWithRandomSku(groupId);
 	}
@@ -952,6 +952,9 @@ public class CommerceShipmentTest {
 	private CommerceOrderPriceCalculation _commerceOrderPriceCalculation;
 
 	private List<CommerceOrder> _commerceOrders;
+
+	@Inject
+	private CommercePriceListLocalService _commercePriceListLocalService;
 
 	@Inject
 	private CommerceShipmentItemLocalService _commerceShipmentItemLocalService;
