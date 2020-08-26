@@ -37,7 +37,7 @@ import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
-import com.liferay.portal.search.test.util.HitsAssert;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -120,11 +120,35 @@ public class CommercePriceListIndexerTest {
 
 		Hits hits = _indexer.search(searchContext);
 
-		Document document = HitsAssert.assertOnlyOne(hits);
+		List<Document> documents = hits.toList();
 
-		Assert.assertEquals(
-			String.valueOf(commercePriceList.getCommercePriceListId()),
-			document.get(Field.ENTRY_CLASS_PK));
+		Assert.assertEquals(hits.toString(), 3, hits.getLength());
+
+		for (Document document : documents) {
+			long commercePriceListId = GetterUtil.getLong(
+				document.get(Field.ENTRY_CLASS_PK));
+
+			CommercePriceList retrievedCommercePriceList =
+				_commercePriceListLocalService.getCommercePriceList(
+					commercePriceListId);
+
+			if (retrievedCommercePriceList.isCatalogBasePriceList()) {
+				CommercePriceList basePriceList =
+					_commercePriceListLocalService.
+						fetchCommerceCatalogBasePriceListByType(
+							commerceCatalog.getGroupId(),
+							retrievedCommercePriceList.getType());
+
+				Assert.assertEquals(
+					commercePriceListId,
+					basePriceList.getCommercePriceListId());
+			}
+			else {
+				Assert.assertEquals(
+					commercePriceList.getCommercePriceListId(),
+					commercePriceListId);
+			}
+		}
 	}
 
 	@Rule
