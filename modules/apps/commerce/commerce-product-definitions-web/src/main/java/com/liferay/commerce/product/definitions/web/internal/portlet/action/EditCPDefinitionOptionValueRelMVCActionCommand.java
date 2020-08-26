@@ -95,10 +95,12 @@ public class EditCPDefinitionOptionValueRelMVCActionCommand
 			}
 		}
 		catch (Exception exception) {
-			if (exception instanceof CPDefinitionOptionValueRelCPInstanceException ||
+			if (exception instanceof
+					CPDefinitionOptionValueRelCPInstanceException ||
 				exception instanceof CPDefinitionOptionValueRelKeyException ||
 				exception instanceof CPDefinitionOptionValueRelPriceException ||
-				exception instanceof CPDefinitionOptionValueRelQuantityException) {
+				exception instanceof
+					CPDefinitionOptionValueRelQuantityException) {
 
 				hideDefaultErrorMessage(actionRequest);
 
