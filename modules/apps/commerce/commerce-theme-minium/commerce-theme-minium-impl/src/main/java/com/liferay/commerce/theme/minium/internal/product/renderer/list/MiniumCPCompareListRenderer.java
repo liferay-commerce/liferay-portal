@@ -147,13 +147,6 @@ public class MiniumCPCompareListRenderer implements CPContentListRenderer {
 			products = products.subList(0, limit);
 		}
 
-		PortletURL editCompareProductActionURL = PortletURLFactoryUtil.create(
-			httpServletRequest, CPPortletKeys.CP_COMPARE_CONTENT_WEB,
-			PortletRequest.ACTION_PHASE);
-
-		editCompareProductActionURL.setParameter(
-			ActionRequest.ACTION_NAME, "editCompareProduct");
-
 		ComponentDescriptor componentDescriptor = new ComponentDescriptor(
 			"ProductsCompare.render",
 			"commerce-frontend-taglib/products_compare/ProductsCompare.es");
@@ -163,7 +156,18 @@ public class MiniumCPCompareListRenderer implements CPContentListRenderer {
 			cpCompareContentHelper.getCompareProductsURL(themeDisplay)
 		).put(
 			"editCompareProductActionURL",
-			editCompareProductActionURL.toString()
+			() -> {
+				PortletURL editCompareProductActionURL =
+					PortletURLFactoryUtil.create(
+						httpServletRequest,
+						CPPortletKeys.CP_COMPARE_CONTENT_WEB,
+						PortletRequest.ACTION_PHASE);
+
+				editCompareProductActionURL.setParameter(
+					ActionRequest.ACTION_NAME, "editCompareProduct");
+
+				return editCompareProductActionURL.toString();
+			}
 		).put(
 			"limit", limit
 		).put(
