@@ -502,7 +502,8 @@ public class CommerceOrderItemLocalServiceTest {
 		CommercePriceEntryTestUtil.addCommercePriceEntry(
 			bundleCPDefinition.getCProductId(),
 			bundleCPInstance.getCPInstanceUuid(),
-			commercePriceList.getCommercePriceListId(), "", BigDecimal.ZERO);
+			commercePriceList.getCommercePriceListId(), StringPool.BLANK,
+			BigDecimal.ZERO);
 
 		CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
 			_user.getUserId(), commerceInventoryWarehouse,
@@ -932,7 +933,8 @@ public class CommerceOrderItemLocalServiceTest {
 			CommercePriceEntryTestUtil.addCommercePriceEntry(
 				option1CPDefinition.getCProductId(),
 				optionSKU1.getCPInstanceUuid(),
-				commercePriceList.getCommercePriceListId(), "", option1Price);
+				commercePriceList.getCommercePriceListId(), StringPool.BLANK,
+				option1Price);
 
 		CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
 			_user.getUserId(), commerceInventoryWarehouse, optionSKU1.getSku(),
@@ -950,7 +952,8 @@ public class CommerceOrderItemLocalServiceTest {
 			CommercePriceEntryTestUtil.addCommercePriceEntry(
 				option2CPDefinition.getCProductId(),
 				optionSKU2.getCPInstanceUuid(),
-				commercePriceList.getCommercePriceListId(), "", option2Price);
+				commercePriceList.getCommercePriceListId(), StringPool.BLANK,
+				option2Price);
 
 		CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
 			_user.getUserId(), commerceInventoryWarehouse, optionSKU2.getSku(),
@@ -1020,7 +1023,8 @@ public class CommerceOrderItemLocalServiceTest {
 		CommercePriceEntryTestUtil.addCommercePriceEntry(
 			bundleCPDefinition.getCProductId(),
 			bundleCPInstance.getCPInstanceUuid(),
-			commercePriceList.getCommercePriceListId(), "", BigDecimal.ZERO);
+			commercePriceList.getCommercePriceListId(), StringPool.BLANK,
+			BigDecimal.ZERO);
 
 		CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
 			_user.getUserId(), commerceInventoryWarehouse,
@@ -1163,7 +1167,8 @@ public class CommerceOrderItemLocalServiceTest {
 		CommercePriceEntryTestUtil.addCommercePriceEntry(
 			bundleCPDefinition.getCProductId(),
 			bundleCPInstanceWithUnavailableChildSKU.getCPInstanceUuid(),
-			commercePriceList.getCommercePriceListId(), "", BigDecimal.ZERO);
+			commercePriceList.getCommercePriceListId(), StringPool.BLANK,
+			BigDecimal.ZERO);
 
 		CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
 			_user.getUserId(), commerceInventoryWarehouse,
@@ -1224,7 +1229,7 @@ public class CommerceOrderItemLocalServiceTest {
 			CommercePriceEntryTestUtil.addCommercePriceEntry(
 				option1CPDefinition.getCProductId(),
 				optionSKU1.getCPInstanceUuid(),
-				commercePriceList.getCommercePriceListId(), "",
+				commercePriceList.getCommercePriceListId(), StringPool.BLANK,
 				new BigDecimal("111"));
 
 		CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
@@ -1258,7 +1263,8 @@ public class CommerceOrderItemLocalServiceTest {
 
 		CommercePriceEntryTestUtil.addCommercePriceEntry(
 			option2CPDefinition.getCProductId(), optionSKU2.getCPInstanceUuid(),
-			commercePriceList.getCommercePriceListId(), "", option2Price);
+			commercePriceList.getCommercePriceListId(), StringPool.BLANK,
+			option2Price);
 
 		CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
 			_user.getUserId(), commerceInventoryWarehouse, optionSKU2.getSku(),
@@ -1310,7 +1316,8 @@ public class CommerceOrderItemLocalServiceTest {
 		CommercePriceEntryTestUtil.addCommercePriceEntry(
 			bundleCPDefinition.getCProductId(),
 			bundleCPInstance.getCPInstanceUuid(),
-			commercePriceList.getCommercePriceListId(), "", BigDecimal.ZERO);
+			commercePriceList.getCommercePriceListId(), StringPool.BLANK,
+			BigDecimal.ZERO);
 
 		CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
 			_user.getUserId(), commerceInventoryWarehouse,

@@ -40,6 +40,7 @@ import com.liferay.commerce.subscription.CommerceSubscriptionEntryHelper;
 import com.liferay.commerce.subscription.test.util.CommerceSubscriptionEntryTestUtil;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.commerce.util.comparator.CommerceSubscriptionEntryCreateDateComparator;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
@@ -266,7 +267,7 @@ public class CommerceSubscriptionEntryTest {
 		for (CPInstance cpInstance : cpInstances) {
 			CommercePriceEntryTestUtil.addCommercePriceEntry(
 				cpDefinition.getCProductId(), cpInstance.getCPInstanceUuid(),
-				commercePriceList.getCommercePriceListId(), "",
+				commercePriceList.getCommercePriceListId(), StringPool.BLANK,
 				BigDecimal.ZERO);
 
 			if (cpInstances.indexOf(cpInstance) == 0) {
