@@ -111,7 +111,9 @@ public abstract class BaseTaxCategoryResourceTestCase {
 
 		TaxCategoryResource.Builder builder = TaxCategoryResource.builder();
 
-		taxCategoryResource = builder.locale(
+		taxCategoryResource = builder.authentication(
+			"test@liferay.com", "test"
+		).locale(
 			LocaleUtil.getDefault()
 		).build();
 	}
@@ -525,7 +527,7 @@ public abstract class BaseTaxCategoryResourceTestCase {
 		}
 	}
 
-	protected void assertValid(TaxCategory taxCategory) {
+	protected void assertValid(TaxCategory taxCategory) throws Exception {
 		boolean valid = true;
 
 		if (taxCategory.getId() == null) {

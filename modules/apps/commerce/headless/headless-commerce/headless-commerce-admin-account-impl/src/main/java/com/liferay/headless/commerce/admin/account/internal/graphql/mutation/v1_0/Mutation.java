@@ -29,6 +29,8 @@ import com.liferay.headless.commerce.admin.account.resource.v1_0.UserResource;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLField;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLName;
@@ -718,6 +720,8 @@ public class Mutation {
 		accountResource.setContextHttpServletResponse(_httpServletResponse);
 		accountResource.setContextUriInfo(_uriInfo);
 		accountResource.setContextUser(_user);
+		accountResource.setGroupLocalService(_groupLocalService);
+		accountResource.setRoleLocalService(_roleLocalService);
 	}
 
 	private void _populateResourceContext(
@@ -732,6 +736,8 @@ public class Mutation {
 			_httpServletResponse);
 		accountAddressResource.setContextUriInfo(_uriInfo);
 		accountAddressResource.setContextUser(_user);
+		accountAddressResource.setGroupLocalService(_groupLocalService);
+		accountAddressResource.setRoleLocalService(_roleLocalService);
 	}
 
 	private void _populateResourceContext(
@@ -745,6 +751,8 @@ public class Mutation {
 			_httpServletResponse);
 		accountGroupResource.setContextUriInfo(_uriInfo);
 		accountGroupResource.setContextUser(_user);
+		accountGroupResource.setGroupLocalService(_groupLocalService);
+		accountGroupResource.setRoleLocalService(_roleLocalService);
 	}
 
 	private void _populateResourceContext(
@@ -758,6 +766,8 @@ public class Mutation {
 			_httpServletResponse);
 		accountMemberResource.setContextUriInfo(_uriInfo);
 		accountMemberResource.setContextUser(_user);
+		accountMemberResource.setGroupLocalService(_groupLocalService);
+		accountMemberResource.setRoleLocalService(_roleLocalService);
 	}
 
 	private void _populateResourceContext(
@@ -772,6 +782,8 @@ public class Mutation {
 			_httpServletResponse);
 		accountOrganizationResource.setContextUriInfo(_uriInfo);
 		accountOrganizationResource.setContextUser(_user);
+		accountOrganizationResource.setGroupLocalService(_groupLocalService);
+		accountOrganizationResource.setRoleLocalService(_roleLocalService);
 	}
 
 	private void _populateResourceContext(UserResource userResource)
@@ -783,6 +795,8 @@ public class Mutation {
 		userResource.setContextHttpServletResponse(_httpServletResponse);
 		userResource.setContextUriInfo(_uriInfo);
 		userResource.setContextUser(_user);
+		userResource.setGroupLocalService(_groupLocalService);
+		userResource.setRoleLocalService(_roleLocalService);
 	}
 
 	private static ComponentServiceObjects<AccountResource>
@@ -800,10 +814,12 @@ public class Mutation {
 
 	private AcceptLanguage _acceptLanguage;
 	private com.liferay.portal.kernel.model.Company _company;
-	private BiFunction<Object, String, Sort[]> _sortsBiFunction;
-	private com.liferay.portal.kernel.model.User _user;
+	private GroupLocalService _groupLocalService;
 	private HttpServletRequest _httpServletRequest;
 	private HttpServletResponse _httpServletResponse;
+	private RoleLocalService _roleLocalService;
+	private BiFunction<Object, String, Sort[]> _sortsBiFunction;
 	private UriInfo _uriInfo;
+	private com.liferay.portal.kernel.model.User _user;
 
 }

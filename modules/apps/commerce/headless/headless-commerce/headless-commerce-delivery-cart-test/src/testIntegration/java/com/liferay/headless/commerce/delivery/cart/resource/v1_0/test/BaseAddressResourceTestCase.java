@@ -107,7 +107,9 @@ public abstract class BaseAddressResourceTestCase {
 
 		AddressResource.Builder builder = AddressResource.builder();
 
-		addressResource = builder.locale(
+		addressResource = builder.authentication(
+			"test@liferay.com", "test"
+		).locale(
 			LocaleUtil.getDefault()
 		).build();
 	}
@@ -379,7 +381,7 @@ public abstract class BaseAddressResourceTestCase {
 		}
 	}
 
-	protected void assertValid(Address address) {
+	protected void assertValid(Address address) throws Exception {
 		boolean valid = true;
 
 		if (address.getId() == null) {

@@ -107,7 +107,9 @@ public abstract class BaseUserResourceTestCase {
 
 		UserResource.Builder builder = UserResource.builder();
 
-		userResource = builder.locale(
+		userResource = builder.authentication(
+			"test@liferay.com", "test"
+		).locale(
 			LocaleUtil.getDefault()
 		).build();
 	}
@@ -270,7 +272,7 @@ public abstract class BaseUserResourceTestCase {
 		}
 	}
 
-	protected void assertValid(User user) {
+	protected void assertValid(User user) throws Exception {
 		boolean valid = true;
 
 		if (user.getId() == null) {

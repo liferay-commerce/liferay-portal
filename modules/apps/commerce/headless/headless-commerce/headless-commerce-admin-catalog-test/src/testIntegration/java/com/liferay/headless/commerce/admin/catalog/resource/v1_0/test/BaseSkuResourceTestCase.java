@@ -119,7 +119,9 @@ public abstract class BaseSkuResourceTestCase {
 
 		SkuResource.Builder builder = SkuResource.builder();
 
-		skuResource = builder.locale(
+		skuResource = builder.authentication(
+			"test@liferay.com", "test"
+		).locale(
 			LocaleUtil.getDefault()
 		).build();
 	}
@@ -990,7 +992,7 @@ public abstract class BaseSkuResourceTestCase {
 		}
 	}
 
-	protected void assertValid(Sku sku) {
+	protected void assertValid(Sku sku) throws Exception {
 		boolean valid = true;
 
 		if (sku.getId() == null) {

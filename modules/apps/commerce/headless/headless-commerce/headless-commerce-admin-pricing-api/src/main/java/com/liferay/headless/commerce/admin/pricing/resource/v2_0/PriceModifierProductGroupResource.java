@@ -17,6 +17,8 @@ package com.liferay.headless.commerce.admin.pricing.resource.v2_0;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceModifierProductGroup;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
+import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
@@ -101,6 +103,10 @@ public interface PriceModifierProductGroupResource {
 
 	public void setContextUser(
 		com.liferay.portal.kernel.model.User contextUser);
+
+	public void setGroupLocalService(GroupLocalService groupLocalService);
+
+	public void setRoleLocalService(RoleLocalService roleLocalService);
 
 	public static class FactoryHolder {
 

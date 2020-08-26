@@ -113,7 +113,9 @@ public abstract class BaseDiscountProductResourceTestCase {
 		DiscountProductResource.Builder builder =
 			DiscountProductResource.builder();
 
-		discountProductResource = builder.locale(
+		discountProductResource = builder.authentication(
+			"test@liferay.com", "test"
+		).locale(
 			LocaleUtil.getDefault()
 		).build();
 	}
@@ -624,7 +626,9 @@ public abstract class BaseDiscountProductResourceTestCase {
 		}
 	}
 
-	protected void assertValid(DiscountProduct discountProduct) {
+	protected void assertValid(DiscountProduct discountProduct)
+		throws Exception {
+
 		boolean valid = true;
 
 		if (discountProduct.getId() == null) {

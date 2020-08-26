@@ -113,7 +113,9 @@ public abstract class BaseWarehouseItemResourceTestCase {
 
 		WarehouseItemResource.Builder builder = WarehouseItemResource.builder();
 
-		warehouseItemResource = builder.locale(
+		warehouseItemResource = builder.authentication(
+			"test@liferay.com", "test"
+		).locale(
 			LocaleUtil.getDefault()
 		).build();
 	}
@@ -974,7 +976,7 @@ public abstract class BaseWarehouseItemResourceTestCase {
 		}
 	}
 
-	protected void assertValid(WarehouseItem warehouseItem) {
+	protected void assertValid(WarehouseItem warehouseItem) throws Exception {
 		boolean valid = true;
 
 		if (warehouseItem.getId() == null) {

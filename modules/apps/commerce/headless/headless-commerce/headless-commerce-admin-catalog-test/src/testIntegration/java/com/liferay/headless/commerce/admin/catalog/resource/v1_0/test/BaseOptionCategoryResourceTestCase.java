@@ -112,7 +112,9 @@ public abstract class BaseOptionCategoryResourceTestCase {
 		OptionCategoryResource.Builder builder =
 			OptionCategoryResource.builder();
 
-		optionCategoryResource = builder.locale(
+		optionCategoryResource = builder.authentication(
+			"test@liferay.com", "test"
+		).locale(
 			LocaleUtil.getDefault()
 		).build();
 	}
@@ -448,7 +450,7 @@ public abstract class BaseOptionCategoryResourceTestCase {
 		}
 	}
 
-	protected void assertValid(OptionCategory optionCategory) {
+	protected void assertValid(OptionCategory optionCategory) throws Exception {
 		boolean valid = true;
 
 		if (optionCategory.getId() == null) {

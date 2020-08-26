@@ -18,6 +18,8 @@ import com.liferay.headless.commerce.admin.account.dto.v1_0.Account;
 import com.liferay.headless.commerce.admin.account.dto.v1_0.User;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
+import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.multipart.MultipartBody;
 import com.liferay.portal.vulcan.pagination.Page;
@@ -117,6 +119,10 @@ public interface AccountResource {
 
 	public void setContextUser(
 		com.liferay.portal.kernel.model.User contextUser);
+
+	public void setGroupLocalService(GroupLocalService groupLocalService);
+
+	public void setRoleLocalService(RoleLocalService roleLocalService);
 
 	public static class FactoryHolder {
 

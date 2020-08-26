@@ -109,7 +109,9 @@ public abstract class BaseProductOptionValueResourceTestCase {
 		ProductOptionValueResource.Builder builder =
 			ProductOptionValueResource.builder();
 
-		productOptionValueResource = builder.locale(
+		productOptionValueResource = builder.authentication(
+			"test@liferay.com", "test"
+		).locale(
 			LocaleUtil.getDefault()
 		).build();
 	}
@@ -413,7 +415,9 @@ public abstract class BaseProductOptionValueResourceTestCase {
 		}
 	}
 
-	protected void assertValid(ProductOptionValue productOptionValue) {
+	protected void assertValid(ProductOptionValue productOptionValue)
+		throws Exception {
+
 		boolean valid = true;
 
 		if (productOptionValue.getId() == null) {

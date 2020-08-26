@@ -107,7 +107,9 @@ public abstract class BaseProductShippingConfigurationResourceTestCase {
 		ProductShippingConfigurationResource.Builder builder =
 			ProductShippingConfigurationResource.builder();
 
-		productShippingConfigurationResource = builder.locale(
+		productShippingConfigurationResource = builder.authentication(
+			"test@liferay.com", "test"
+		).locale(
 			LocaleUtil.getDefault()
 		).build();
 	}
@@ -319,7 +321,8 @@ public abstract class BaseProductShippingConfigurationResourceTestCase {
 	}
 
 	protected void assertValid(
-		ProductShippingConfiguration productShippingConfiguration) {
+			ProductShippingConfiguration productShippingConfiguration)
+		throws Exception {
 
 		boolean valid = true;
 

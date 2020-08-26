@@ -108,7 +108,9 @@ public abstract class BaseBillingAddressResourceTestCase {
 		BillingAddressResource.Builder builder =
 			BillingAddressResource.builder();
 
-		billingAddressResource = builder.locale(
+		billingAddressResource = builder.authentication(
+			"test@liferay.com", "test"
+		).locale(
 			LocaleUtil.getDefault()
 		).build();
 	}
@@ -424,7 +426,7 @@ public abstract class BaseBillingAddressResourceTestCase {
 		}
 	}
 
-	protected void assertValid(BillingAddress billingAddress) {
+	protected void assertValid(BillingAddress billingAddress) throws Exception {
 		boolean valid = true;
 
 		if (billingAddress.getId() == null) {

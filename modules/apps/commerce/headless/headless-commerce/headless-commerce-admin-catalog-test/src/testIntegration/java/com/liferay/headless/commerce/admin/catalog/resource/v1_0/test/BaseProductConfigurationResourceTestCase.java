@@ -108,7 +108,9 @@ public abstract class BaseProductConfigurationResourceTestCase {
 		ProductConfigurationResource.Builder builder =
 			ProductConfigurationResource.builder();
 
-		productConfigurationResource = builder.locale(
+		productConfigurationResource = builder.authentication(
+			"test@liferay.com", "test"
+		).locale(
 			LocaleUtil.getDefault()
 		).build();
 	}
@@ -308,7 +310,9 @@ public abstract class BaseProductConfigurationResourceTestCase {
 		}
 	}
 
-	protected void assertValid(ProductConfiguration productConfiguration) {
+	protected void assertValid(ProductConfiguration productConfiguration)
+		throws Exception {
+
 		boolean valid = true;
 
 		for (String additionalAssertFieldName :

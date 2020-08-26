@@ -120,7 +120,9 @@ public abstract class BasePriceListChannelResourceTestCase {
 		PriceListChannelResource.Builder builder =
 			PriceListChannelResource.builder();
 
-		priceListChannelResource = builder.locale(
+		priceListChannelResource = builder.authentication(
+			"test@liferay.com", "test"
+		).locale(
 			LocaleUtil.getDefault()
 		).build();
 	}
@@ -838,7 +840,9 @@ public abstract class BasePriceListChannelResourceTestCase {
 		}
 	}
 
-	protected void assertValid(PriceListChannel priceListChannel) {
+	protected void assertValid(PriceListChannel priceListChannel)
+		throws Exception {
+
 		boolean valid = true;
 
 		if (priceListChannel.getId() == null) {

@@ -15,6 +15,8 @@
 package com.liferay.headless.commerce.admin.pricing.resource.v1_0;
 
 import com.liferay.headless.commerce.admin.pricing.dto.v1_0.DiscountProduct;
+import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
@@ -94,6 +96,10 @@ public interface DiscountProductResource {
 
 	public void setContextUser(
 		com.liferay.portal.kernel.model.User contextUser);
+
+	public void setGroupLocalService(GroupLocalService groupLocalService);
+
+	public void setRoleLocalService(RoleLocalService roleLocalService);
 
 	public static class FactoryHolder {
 

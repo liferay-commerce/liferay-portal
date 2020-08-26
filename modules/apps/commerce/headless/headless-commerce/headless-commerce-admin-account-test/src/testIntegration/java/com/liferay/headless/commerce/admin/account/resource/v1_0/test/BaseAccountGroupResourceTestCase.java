@@ -111,7 +111,9 @@ public abstract class BaseAccountGroupResourceTestCase {
 
 		AccountGroupResource.Builder builder = AccountGroupResource.builder();
 
-		accountGroupResource = builder.locale(
+		accountGroupResource = builder.authentication(
+			"test@liferay.com", "test"
+		).locale(
 			LocaleUtil.getDefault()
 		).build();
 	}
@@ -573,7 +575,7 @@ public abstract class BaseAccountGroupResourceTestCase {
 		}
 	}
 
-	protected void assertValid(AccountGroup accountGroup) {
+	protected void assertValid(AccountGroup accountGroup) throws Exception {
 		boolean valid = true;
 
 		if (accountGroup.getId() == null) {

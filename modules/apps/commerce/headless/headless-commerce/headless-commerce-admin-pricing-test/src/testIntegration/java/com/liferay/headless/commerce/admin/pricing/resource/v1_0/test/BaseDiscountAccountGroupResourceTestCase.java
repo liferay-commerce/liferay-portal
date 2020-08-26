@@ -113,7 +113,9 @@ public abstract class BaseDiscountAccountGroupResourceTestCase {
 		DiscountAccountGroupResource.Builder builder =
 			DiscountAccountGroupResource.builder();
 
-		discountAccountGroupResource = builder.locale(
+		discountAccountGroupResource = builder.authentication(
+			"test@liferay.com", "test"
+		).locale(
 			LocaleUtil.getDefault()
 		).build();
 	}
@@ -654,7 +656,9 @@ public abstract class BaseDiscountAccountGroupResourceTestCase {
 		}
 	}
 
-	protected void assertValid(DiscountAccountGroup discountAccountGroup) {
+	protected void assertValid(DiscountAccountGroup discountAccountGroup)
+		throws Exception {
+
 		boolean valid = true;
 
 		if (discountAccountGroup.getId() == null) {

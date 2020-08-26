@@ -120,7 +120,9 @@ public abstract class BaseDiscountProductGroupResourceTestCase {
 		DiscountProductGroupResource.Builder builder =
 			DiscountProductGroupResource.builder();
 
-		discountProductGroupResource = builder.locale(
+		discountProductGroupResource = builder.authentication(
+			"test@liferay.com", "test"
+		).locale(
 			LocaleUtil.getDefault()
 		).build();
 	}
@@ -872,7 +874,9 @@ public abstract class BaseDiscountProductGroupResourceTestCase {
 		}
 	}
 
-	protected void assertValid(DiscountProductGroup discountProductGroup) {
+	protected void assertValid(DiscountProductGroup discountProductGroup)
+		throws Exception {
+
 		boolean valid = true;
 
 		if (discountProductGroup.getId() == null) {

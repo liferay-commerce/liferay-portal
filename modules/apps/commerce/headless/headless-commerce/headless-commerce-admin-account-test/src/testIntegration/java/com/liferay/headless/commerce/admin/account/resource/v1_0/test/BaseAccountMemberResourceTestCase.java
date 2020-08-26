@@ -108,7 +108,9 @@ public abstract class BaseAccountMemberResourceTestCase {
 
 		AccountMemberResource.Builder builder = AccountMemberResource.builder();
 
-		accountMemberResource = builder.locale(
+		accountMemberResource = builder.authentication(
+			"test@liferay.com", "test"
+		).locale(
 			LocaleUtil.getDefault()
 		).build();
 	}
@@ -604,7 +606,7 @@ public abstract class BaseAccountMemberResourceTestCase {
 		}
 	}
 
-	protected void assertValid(AccountMember accountMember) {
+	protected void assertValid(AccountMember accountMember) throws Exception {
 		boolean valid = true;
 
 		for (String additionalAssertFieldName :

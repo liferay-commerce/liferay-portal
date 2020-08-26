@@ -108,7 +108,9 @@ public abstract class BaseShippingAddressResourceTestCase {
 		ShippingAddressResource.Builder builder =
 			ShippingAddressResource.builder();
 
-		shippingAddressResource = builder.locale(
+		shippingAddressResource = builder.authentication(
+			"test@liferay.com", "test"
+		).locale(
 			LocaleUtil.getDefault()
 		).build();
 	}
@@ -426,7 +428,9 @@ public abstract class BaseShippingAddressResourceTestCase {
 		}
 	}
 
-	protected void assertValid(ShippingAddress shippingAddress) {
+	protected void assertValid(ShippingAddress shippingAddress)
+		throws Exception {
+
 		boolean valid = true;
 
 		if (shippingAddress.getId() == null) {

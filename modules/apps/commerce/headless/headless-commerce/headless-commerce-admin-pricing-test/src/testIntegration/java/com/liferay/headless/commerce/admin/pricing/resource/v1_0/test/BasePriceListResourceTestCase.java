@@ -112,7 +112,9 @@ public abstract class BasePriceListResourceTestCase {
 
 		PriceListResource.Builder builder = PriceListResource.builder();
 
-		priceListResource = builder.locale(
+		priceListResource = builder.authentication(
+			"test@liferay.com", "test"
+		).locale(
 			LocaleUtil.getDefault()
 		).build();
 	}
@@ -552,7 +554,7 @@ public abstract class BasePriceListResourceTestCase {
 		}
 	}
 
-	protected void assertValid(PriceList priceList) {
+	protected void assertValid(PriceList priceList) throws Exception {
 		boolean valid = true;
 
 		if (priceList.getId() == null) {

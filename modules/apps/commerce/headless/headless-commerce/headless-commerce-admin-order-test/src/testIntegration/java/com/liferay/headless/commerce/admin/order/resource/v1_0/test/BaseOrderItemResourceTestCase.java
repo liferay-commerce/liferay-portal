@@ -113,7 +113,9 @@ public abstract class BaseOrderItemResourceTestCase {
 
 		OrderItemResource.Builder builder = OrderItemResource.builder();
 
-		orderItemResource = builder.locale(
+		orderItemResource = builder.authentication(
+			"test@liferay.com", "test"
+		).locale(
 			LocaleUtil.getDefault()
 		).build();
 	}
@@ -788,7 +790,7 @@ public abstract class BaseOrderItemResourceTestCase {
 		}
 	}
 
-	protected void assertValid(OrderItem orderItem) {
+	protected void assertValid(OrderItem orderItem) throws Exception {
 		boolean valid = true;
 
 		if (orderItem.getId() == null) {

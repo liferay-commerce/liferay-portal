@@ -112,7 +112,9 @@ public abstract class BaseTierPriceResourceTestCase {
 
 		TierPriceResource.Builder builder = TierPriceResource.builder();
 
-		tierPriceResource = builder.locale(
+		tierPriceResource = builder.authentication(
+			"test@liferay.com", "test"
+		).locale(
 			LocaleUtil.getDefault()
 		).build();
 	}
@@ -789,7 +791,7 @@ public abstract class BaseTierPriceResourceTestCase {
 		}
 	}
 
-	protected void assertValid(TierPrice tierPrice) {
+	protected void assertValid(TierPrice tierPrice) throws Exception {
 		boolean valid = true;
 
 		if (tierPrice.getId() == null) {
