@@ -397,12 +397,12 @@ public class CPInstanceHelperTest {
 		while (iterator.hasNext()) {
 			String optionKey = iterator.next();
 			sb.append(StringPool.OPEN_CURLY_BRACE);
-			sb.append("\"key\"=");
+			sb.append("\"key\":");
 			sb.append(StringPool.QUOTE);
 			sb.append(optionKey);
 			sb.append(StringPool.QUOTE);
 			sb.append(StringPool.COMMA);
-			sb.append("\"value\"=");
+			sb.append("\"value\":");
 			sb.append(StringPool.OPEN_BRACKET);
 
 			List<String> optionValues =
