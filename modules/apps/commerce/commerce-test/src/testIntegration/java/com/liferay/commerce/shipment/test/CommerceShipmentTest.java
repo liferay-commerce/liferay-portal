@@ -55,6 +55,7 @@ import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.commerce.test.util.TestCommerceContext;
 import com.liferay.commerce.util.CommerceShippingHelper;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
@@ -129,7 +130,7 @@ public class CommerceShipmentTest {
 		_companyLocalService.deleteCompany(_company);
 	}
 
-	@Test(expected = CommerceOrderShippingAddressException.class)
+	@Test
 	public void testCheckoutWihoutShippingAddress() throws Exception {
 		frutillaRule.scenario(
 			"It should not be possible to create an order without shipment " +
@@ -142,25 +143,34 @@ public class CommerceShipmentTest {
 			"An exception is raised"
 		);
 
-		BigDecimal value = BigDecimal.valueOf(RandomTestUtil.nextDouble());
+		try {
+			BigDecimal value = BigDecimal.valueOf(RandomTestUtil.nextDouble());
 
-		CommerceOrder commerceOrder = CommerceTestUtil.addB2CCommerceOrder(
-			_user.getUserId(), _commerceChannel.getGroupId(),
-			_commerceCurrency);
+			CommerceOrder commerceOrder = CommerceTestUtil.addB2CCommerceOrder(
+				_user.getUserId(), _commerceChannel.getGroupId(),
+				_commerceCurrency);
 
-		CommerceShippingMethod commerceShippingMethod =
-			CommerceTestUtil.addFixedRateCommerceShippingMethod(
-				_user.getUserId(), commerceOrder.getGroupId(), value);
+			CommerceShippingMethod commerceShippingMethod =
+				CommerceTestUtil.addFixedRateCommerceShippingMethod(
+					_user.getUserId(), commerceOrder.getGroupId(), value);
 
-		commerceOrder.setCommerceShippingMethodId(
-			commerceShippingMethod.getCommerceShippingMethodId());
+			commerceOrder.setCommerceShippingMethodId(
+				commerceShippingMethod.getCommerceShippingMethodId());
 
-		_commerceOrderLocalService.updateCommerceOrder(commerceOrder);
+			_commerceOrderLocalService.updateCommerceOrder(commerceOrder);
 
-		_commerceOrders.add(commerceOrder);
+			_commerceOrders.add(commerceOrder);
 
-		_commerceOrderEngine.checkoutCommerceOrder(
-			commerceOrder, _user.getUserId());
+			_commerceOrderEngine.checkoutCommerceOrder(
+				commerceOrder, _user.getUserId());
+		}
+		catch (PortalException portalException) {
+			Throwable throwable = portalException.getCause();
+
+			Assert.assertSame(
+				CommerceOrderShippingAddressException.class,
+				throwable.getClass());
+		}
 	}
 
 	@Test
@@ -590,7 +600,7 @@ public class CommerceShipmentTest {
 			false, _commerceShippingHelper.isShippable(commerceOrder));
 	}
 
-	@Test(expected = CommerceOrderStatusException.class)
+	@Test
 	public void testCreateShippingForCancelledOrder() throws Exception {
 		frutillaRule.scenario(
 			"Attach a shipment to an order with order status CANCELLED "
@@ -604,25 +614,33 @@ public class CommerceShipmentTest {
 			"An exception shall be raised"
 		);
 
-		BigDecimal value = BigDecimal.valueOf(RandomTestUtil.nextDouble());
+		try {
+			BigDecimal value = BigDecimal.valueOf(RandomTestUtil.nextDouble());
 
-		CommerceOrder commerceOrder =
-			CommerceTestUtil.createCommerceOrderForShipping(
-				_user.getUserId(), _commerceChannel.getGroupId(),
-				_commerceCurrency.getCommerceCurrencyId(), value);
+			CommerceOrder commerceOrder =
+				CommerceTestUtil.createCommerceOrderForShipping(
+					_user.getUserId(), _commerceChannel.getGroupId(),
+					_commerceCurrency.getCommerceCurrencyId(), value);
 
-		_commerceOrders.add(commerceOrder);
+			_commerceOrders.add(commerceOrder);
 
-		commerceOrder.setOrderStatus(
-			CommerceOrderConstants.ORDER_STATUS_CANCELLED);
+			commerceOrder.setOrderStatus(
+				CommerceOrderConstants.ORDER_STATUS_CANCELLED);
 
-		_commerceOrderLocalService.updateCommerceOrder(commerceOrder);
+			_commerceOrderLocalService.updateCommerceOrder(commerceOrder);
 
-		CommerceShipmentTestUtil.createEmptyOrderShipment(
-			commerceOrder.getGroupId(), commerceOrder.getCommerceOrderId());
+			CommerceShipmentTestUtil.createEmptyOrderShipment(
+				commerceOrder.getGroupId(), commerceOrder.getCommerceOrderId());
 
-		_commerceOrderEngine.checkoutCommerceOrder(
-			commerceOrder, _user.getUserId());
+			_commerceOrderEngine.checkoutCommerceOrder(
+				commerceOrder, _user.getUserId());
+		}
+		catch (PortalException portalException) {
+			Throwable throwable = portalException.getCause();
+
+			Assert.assertSame(
+				CommerceOrderStatusException.class, throwable.getClass());
+		}
 	}
 
 	@Test
