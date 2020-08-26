@@ -33,6 +33,7 @@ import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.service.CommerceOrderLocalServiceUtil;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -157,7 +158,7 @@ public class CommerceCheckoutTest {
 		Assert.assertTrue(commerceOrder.isGuestOrder());
 	}
 
-	@Test(expected = PrincipalException.MustHavePermission.class)
+	@Test
 	public void testGuestUserCheckoutFromAnotherGuestUser() throws Exception {
 		frutillaRule.scenario(
 			"When a guest creates an order other guests should not be able " +
@@ -172,63 +173,72 @@ public class CommerceCheckoutTest {
 			"A Permission exception should be thrown"
 		);
 
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(
-				_company.getCompanyId(), _group.getGroupId(),
-				_user.getUserId());
+		try {
+			ServiceContext serviceContext =
+				ServiceContextTestUtil.getServiceContext(
+					_company.getCompanyId(), _group.getGroupId(),
+					_user.getUserId());
 
-		User user = UserTestUtil.addUser(_company);
+			User user = UserTestUtil.addUser(_company);
 
-		serviceContext.setUserId(user.getUserId());
+			serviceContext.setUserId(user.getUserId());
 
-		PermissionChecker permissionChecker =
-			PermissionCheckerFactoryUtil.create(user);
+			PermissionChecker permissionChecker =
+				PermissionCheckerFactoryUtil.create(user);
 
-		PrincipalThreadLocal.setName(user.getUserId());
+			PrincipalThreadLocal.setName(user.getUserId());
 
-		PermissionThreadLocal.setPermissionChecker(permissionChecker);
+			PermissionThreadLocal.setPermissionChecker(permissionChecker);
 
-		CommerceAccount commerceAccount =
-			_commerceAccountLocalService.addCommerceAccount(
-				RandomTestUtil.randomString(),
-				CommerceAccountConstants.DEFAULT_PARENT_ACCOUNT_ID,
-				user.getEmailAddress(), StringPool.BLANK,
-				CommerceAccountConstants.ACCOUNT_TYPE_GUEST, true, null,
-				serviceContext);
+			CommerceAccount commerceAccount =
+				_commerceAccountLocalService.addCommerceAccount(
+					RandomTestUtil.randomString(),
+					CommerceAccountConstants.DEFAULT_PARENT_ACCOUNT_ID,
+					user.getEmailAddress(), StringPool.BLANK,
+					CommerceAccountConstants.ACCOUNT_TYPE_GUEST, true, null,
+					serviceContext);
 
-		Role role = RoleTestUtil.addRole(
-			CommerceAccountConstants.ROLE_NAME_ACCOUNT_ADMINISTRATOR,
-			RoleConstants.TYPE_SITE, "com.liferay.commerce.order",
-			ResourceConstants.SCOPE_GROUP_TEMPLATE,
-			String.valueOf(GroupConstants.DEFAULT_PARENT_GROUP_ID),
-			CommerceOrderActionKeys.CHECKOUT_OPEN_COMMERCE_ORDERS);
+			Role role = RoleTestUtil.addRole(
+				CommerceAccountConstants.ROLE_NAME_ACCOUNT_ADMINISTRATOR,
+				RoleConstants.TYPE_SITE, "com.liferay.commerce.order",
+				ResourceConstants.SCOPE_GROUP_TEMPLATE,
+				String.valueOf(GroupConstants.DEFAULT_PARENT_GROUP_ID),
+				CommerceOrderActionKeys.CHECKOUT_OPEN_COMMERCE_ORDERS);
 
-		CommerceAccountUserRelLocalServiceUtil.addCommerceAccountUserRel(
-			commerceAccount.getCommerceAccountId(), user.getUserId(),
-			new long[] {role.getRoleId()}, serviceContext);
+			CommerceAccountUserRelLocalServiceUtil.addCommerceAccountUserRel(
+				commerceAccount.getCommerceAccountId(), user.getUserId(),
+				new long[] {role.getRoleId()}, serviceContext);
 
-		CommerceOrder commerceOrder =
-			CommerceOrderLocalServiceUtil.addCommerceOrder(
-				user.getUserId(), _commerceChannel.getGroupId(),
-				commerceAccount.getCommerceAccountId(),
-				_commerceCurrency.getCommerceCurrencyId());
+			CommerceOrder commerceOrder =
+				CommerceOrderLocalServiceUtil.addCommerceOrder(
+					user.getUserId(), _commerceChannel.getGroupId(),
+					commerceAccount.getCommerceAccountId(),
+					_commerceCurrency.getCommerceCurrencyId());
 
-		CommerceTestUtil.addCheckoutDetailsToUserOrder(
-			commerceOrder, commerceOrder.getUserId(), false);
+			CommerceTestUtil.addCheckoutDetailsToUserOrder(
+				commerceOrder, commerceOrder.getUserId(), false);
 
-		User user2 = UserTestUtil.addUser(_company);
+			User user2 = UserTestUtil.addUser(_company);
 
-		permissionChecker = PermissionCheckerFactoryUtil.create(user2);
+			permissionChecker = PermissionCheckerFactoryUtil.create(user2);
 
-		PrincipalThreadLocal.setName(user2.getUserId());
+			PrincipalThreadLocal.setName(user2.getUserId());
 
-		PermissionThreadLocal.setPermissionChecker(permissionChecker);
+			PermissionThreadLocal.setPermissionChecker(permissionChecker);
 
-		_commerceOrderEngine.checkoutCommerceOrder(
-			commerceOrder, user2.getUserId());
+			_commerceOrderEngine.checkoutCommerceOrder(
+				commerceOrder, user2.getUserId());
+		}
+		catch (PortalException portalException) {
+			Throwable throwable = portalException.getCause();
+
+			Assert.assertSame(
+				PrincipalException.MustHavePermission.class,
+				throwable.getClass());
+		}
 	}
 
-	@Test(expected = CommerceOrderGuestCheckoutException.class)
+	@Test
 	public void testGuestUserCheckoutWithGuestCheckoutDisabled()
 		throws Exception {
 
@@ -246,41 +256,50 @@ public class CommerceCheckoutTest {
 			"The guest should be able to place the order"
 		);
 
-		Settings settings = _settingsFactory.getSettings(
-			new GroupServiceSettingsLocator(
-				_commerceChannel.getGroupId(),
-				CommerceConstants.ORDER_SERVICE_NAME));
+		try {
+			Settings settings = _settingsFactory.getSettings(
+				new GroupServiceSettingsLocator(
+					_commerceChannel.getGroupId(),
+					CommerceConstants.ORDER_SERVICE_NAME));
 
-		ModifiableSettings modifiableSettings =
-			settings.getModifiableSettings();
+			ModifiableSettings modifiableSettings =
+				settings.getModifiableSettings();
 
-		modifiableSettings.setValue(
-			"guestCheckoutEnabled", Boolean.FALSE.toString());
+			modifiableSettings.setValue(
+				"guestCheckoutEnabled", Boolean.FALSE.toString());
 
-		modifiableSettings.store();
+			modifiableSettings.store();
 
-		User user = _company.getDefaultUser();
+			User user = _company.getDefaultUser();
 
-		CommerceAccount commerceAccount =
-			_commerceAccountLocalService.getGuestCommerceAccount(
-				_company.getCompanyId());
+			CommerceAccount commerceAccount =
+				_commerceAccountLocalService.getGuestCommerceAccount(
+					_company.getCompanyId());
 
-		CommerceOrder commerceOrder =
-			CommerceOrderLocalServiceUtil.addCommerceOrder(
-				user.getUserId(), _commerceChannel.getGroupId(),
-				commerceAccount.getCommerceAccountId(),
-				_commerceCurrency.getCommerceCurrencyId());
+			CommerceOrder commerceOrder =
+				CommerceOrderLocalServiceUtil.addCommerceOrder(
+					user.getUserId(), _commerceChannel.getGroupId(),
+					commerceAccount.getCommerceAccountId(),
+					_commerceCurrency.getCommerceCurrencyId());
 
-		CommerceTestUtil.addCheckoutDetailsToUserOrder(
-			commerceOrder, commerceOrder.getUserId(), false);
+			CommerceTestUtil.addCheckoutDetailsToUserOrder(
+				commerceOrder, commerceOrder.getUserId(), false);
 
-		_commerceOrderEngine.checkoutCommerceOrder(
-			commerceOrder, user.getUserId());
+			_commerceOrderEngine.checkoutCommerceOrder(
+				commerceOrder, user.getUserId());
 
-		Assert.assertNotEquals(
-			commerceOrder.getOrderStatus(),
-			CommerceOrderConstants.ORDER_STATUS_PENDING);
-		Assert.assertTrue(commerceOrder.isGuestOrder());
+			Assert.assertNotEquals(
+				commerceOrder.getOrderStatus(),
+				CommerceOrderConstants.ORDER_STATUS_PENDING);
+			Assert.assertTrue(commerceOrder.isGuestOrder());
+		}
+		catch (PortalException portalException) {
+			Throwable throwable = portalException.getCause();
+
+			Assert.assertSame(
+				CommerceOrderGuestCheckoutException.class,
+				throwable.getClass());
+		}
 	}
 
 	@Test

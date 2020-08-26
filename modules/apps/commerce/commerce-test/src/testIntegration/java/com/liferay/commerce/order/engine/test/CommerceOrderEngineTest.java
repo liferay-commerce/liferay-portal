@@ -377,7 +377,7 @@ public class CommerceOrderEngineTest {
 			_commerceOrder.getOrderStatus());
 	}
 
-	@Test(expected = CommerceOrderStatusException.class)
+	@Test
 	public void testCancelOrder() throws Exception {
 		frutillaRule.scenario(
 			"Use the Order Engine to cancel a placed Order"
@@ -390,29 +390,37 @@ public class CommerceOrderEngineTest {
 				"able to be transitioned to anything else."
 		);
 
-		_commerceOrder = _commerceOrderEngine.checkoutCommerceOrder(
-			_commerceOrder, _user.getUserId());
+		try {
+			_commerceOrder = _commerceOrderEngine.checkoutCommerceOrder(
+				_commerceOrder, _user.getUserId());
 
-		_commerceOrder = _commerceOrderEngine.transitionCommerceOrder(
-			_commerceOrder, CommerceOrderConstants.ORDER_STATUS_CANCELLED,
-			_user.getUserId());
+			_commerceOrder = _commerceOrderEngine.transitionCommerceOrder(
+				_commerceOrder, CommerceOrderConstants.ORDER_STATUS_CANCELLED,
+				_user.getUserId());
 
-		Thread.sleep(1000);
+			Thread.sleep(1000);
 
-		Assert.assertEquals(
-			_commerceOrder.getOrderStatus(),
-			CancelledCommerceOrderStatusImpl.KEY);
+			Assert.assertEquals(
+				_commerceOrder.getOrderStatus(),
+				CancelledCommerceOrderStatusImpl.KEY);
 
-		_commerceOrder = _commerceOrderEngine.transitionCommerceOrder(
-			_commerceOrder, CommerceOrderConstants.ORDER_STATUS_PROCESSING,
-			_user.getUserId());
+			_commerceOrder = _commerceOrderEngine.transitionCommerceOrder(
+				_commerceOrder, CommerceOrderConstants.ORDER_STATUS_PROCESSING,
+				_user.getUserId());
 
-		Assert.assertNotEquals(
-			ProcessingCommerceOrderStatusImpl.KEY,
-			_commerceOrder.getOrderStatus());
+			Assert.assertNotEquals(
+				ProcessingCommerceOrderStatusImpl.KEY,
+				_commerceOrder.getOrderStatus());
+		}
+		catch (PortalException portalException) {
+			Throwable throwable = portalException.getCause();
+
+			Assert.assertSame(
+				CommerceOrderStatusException.class, throwable.getClass());
+		}
 	}
 
-	@Test(expected = PrincipalException.MustHavePermission.class)
+	@Test
 	public void testCheckOrderWithoutPermissions() throws Exception {
 		frutillaRule.scenario(
 			"Use the Order Engine to try to checkout an order that a user " +
@@ -427,23 +435,33 @@ public class CommerceOrderEngineTest {
 			"The order engine should throw a permission exception"
 		);
 
-		Assert.assertEquals(
-			_commerceOrder.getOrderStatus(), OpenCommerceOrderStatusImpl.KEY);
+		try {
+			Assert.assertEquals(
+				_commerceOrder.getOrderStatus(),
+				OpenCommerceOrderStatusImpl.KEY);
 
-		User nonadminUser = UserTestUtil.addUser();
+			User nonadminUser = UserTestUtil.addUser();
 
-		PrincipalThreadLocal.setName(nonadminUser.getUserId());
+			PrincipalThreadLocal.setName(nonadminUser.getUserId());
 
-		PermissionChecker permissionChecker =
-			PermissionCheckerFactoryUtil.create(nonadminUser);
+			PermissionChecker permissionChecker =
+				PermissionCheckerFactoryUtil.create(nonadminUser);
 
-		PermissionThreadLocal.setPermissionChecker(permissionChecker);
+			PermissionThreadLocal.setPermissionChecker(permissionChecker);
 
-		_commerceOrder = _commerceOrderEngine.checkoutCommerceOrder(
-			_commerceOrder, nonadminUser.getUserId());
+			_commerceOrder = _commerceOrderEngine.checkoutCommerceOrder(
+				_commerceOrder, nonadminUser.getUserId());
+		}
+		catch (PortalException portalException) {
+			Throwable throwable = portalException.getCause();
+
+			Assert.assertSame(
+				PrincipalException.MustHavePermission.class,
+				throwable.getClass());
+		}
 	}
 
-	@Test(expected = CommerceOrderStatusException.class)
+	@Test
 	public void testCheckoutAlreadyCheckedOutOrder() throws Exception {
 		frutillaRule.scenario(
 			"Use the Order Engine to try to checkout an order twice"
@@ -457,14 +475,23 @@ public class CommerceOrderEngineTest {
 			"We should not be able to check it out again"
 		);
 
-		Assert.assertEquals(
-			_commerceOrder.getOrderStatus(), OpenCommerceOrderStatusImpl.KEY);
+		try {
+			Assert.assertEquals(
+				_commerceOrder.getOrderStatus(),
+				OpenCommerceOrderStatusImpl.KEY);
 
-		_commerceOrder = _commerceOrderEngine.checkoutCommerceOrder(
-			_commerceOrder, _user.getUserId());
+			_commerceOrder = _commerceOrderEngine.checkoutCommerceOrder(
+				_commerceOrder, _user.getUserId());
 
-		_commerceOrder = _commerceOrderEngine.checkoutCommerceOrder(
-			_commerceOrder, _user.getUserId());
+			_commerceOrder = _commerceOrderEngine.checkoutCommerceOrder(
+				_commerceOrder, _user.getUserId());
+		}
+		catch (PortalException portalException) {
+			Throwable throwable = portalException.getCause();
+
+			Assert.assertSame(
+				CommerceOrderStatusException.class, throwable.getClass());
+		}
 	}
 
 	@Test
@@ -555,7 +582,7 @@ public class CommerceOrderEngineTest {
 			_commerceOrder.getOrderStatus());
 	}
 
-	@Test(expected = CommerceOrderBillingAddressException.class)
+	@Test
 	public void testCheckoutOrderWithoutBillingAddress() throws Exception {
 		frutillaRule.scenario(
 			"Use the Order Engine to checkout an Order without billing address"
@@ -570,17 +597,27 @@ public class CommerceOrderEngineTest {
 				"is required"
 		);
 
-		Assert.assertEquals(
-			_commerceOrder.getOrderStatus(), OpenCommerceOrderStatusImpl.KEY);
+		try {
+			Assert.assertEquals(
+				_commerceOrder.getOrderStatus(),
+				OpenCommerceOrderStatusImpl.KEY);
 
-		_commerceOrder = _commerceOrderLocalService.updateBillingAddress(
-			_commerceOrder.getCommerceOrderId(), 0);
+			_commerceOrder = _commerceOrderLocalService.updateBillingAddress(
+				_commerceOrder.getCommerceOrderId(), 0);
 
-		_commerceOrderEngine.checkoutCommerceOrder(
-			_commerceOrder, _user.getUserId());
+			_commerceOrderEngine.checkoutCommerceOrder(
+				_commerceOrder, _user.getUserId());
+		}
+		catch (PortalException portalException) {
+			Throwable throwable = portalException.getCause();
+
+			Assert.assertSame(
+				CommerceOrderBillingAddressException.class,
+				throwable.getClass());
+		}
 	}
 
-	@Test(expected = CommerceOrderShippingAddressException.class)
+	@Test
 	public void testCheckoutOrderWithoutShippingAddress() throws Exception {
 		frutillaRule.scenario(
 			"Use the Order Engine to checkout an Order without shipping address"
@@ -595,17 +632,27 @@ public class CommerceOrderEngineTest {
 				"is required"
 		);
 
-		Assert.assertEquals(
-			_commerceOrder.getOrderStatus(), OpenCommerceOrderStatusImpl.KEY);
+		try {
+			Assert.assertEquals(
+				_commerceOrder.getOrderStatus(),
+				OpenCommerceOrderStatusImpl.KEY);
 
-		_commerceOrder = _commerceOrderLocalService.updateShippingAddress(
-			_commerceOrder.getCommerceOrderId(), 0);
+			_commerceOrder = _commerceOrderLocalService.updateShippingAddress(
+				_commerceOrder.getCommerceOrderId(), 0);
 
-		_commerceOrderEngine.checkoutCommerceOrder(
-			_commerceOrder, _user.getUserId());
+			_commerceOrderEngine.checkoutCommerceOrder(
+				_commerceOrder, _user.getUserId());
+		}
+		catch (PortalException portalException) {
+			Throwable throwable = portalException.getCause();
+
+			Assert.assertSame(
+				CommerceOrderShippingAddressException.class,
+				throwable.getClass());
+		}
 	}
 
-	@Test(expected = CommerceOrderShippingMethodException.class)
+	@Test
 	public void testCheckoutOrderWithoutShippingMethod() throws Exception {
 		frutillaRule.scenario(
 			"Use the Order Engine to checkout an Order without shipping " +
@@ -623,15 +670,25 @@ public class CommerceOrderEngineTest {
 				"is required"
 		);
 
-		Assert.assertEquals(
-			_commerceOrder.getOrderStatus(), OpenCommerceOrderStatusImpl.KEY);
+		try {
+			Assert.assertEquals(
+				_commerceOrder.getOrderStatus(),
+				OpenCommerceOrderStatusImpl.KEY);
 
-		_commerceOrder = _commerceOrderLocalService.updateShippingMethod(
-			_commerceOrder.getCommerceOrderId(), 0, null, BigDecimal.ZERO,
-			_commerceContext);
+			_commerceOrder = _commerceOrderLocalService.updateShippingMethod(
+				_commerceOrder.getCommerceOrderId(), 0, null, BigDecimal.ZERO,
+				_commerceContext);
 
-		_commerceOrderEngine.checkoutCommerceOrder(
-			_commerceOrder, _user.getUserId());
+			_commerceOrderEngine.checkoutCommerceOrder(
+				_commerceOrder, _user.getUserId());
+		}
+		catch (PortalException portalException) {
+			Throwable throwable = portalException.getCause();
+
+			Assert.assertSame(
+				CommerceOrderShippingMethodException.class,
+				throwable.getClass());
+		}
 	}
 
 	@Test
