@@ -73,7 +73,7 @@ public class CPDefinitionHelperTest {
 
 		_commerceCatalog = _commerceCatalogLocalService.addCommerceCatalog(
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			LocaleUtil.US.getDisplayLanguage(), null,
+			LocaleUtil.toLanguageId(LocaleUtil.US), null,
 			ServiceContextTestUtil.getServiceContext(_company.getGroupId()));
 	}
 
