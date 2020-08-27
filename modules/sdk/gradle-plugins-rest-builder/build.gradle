@@ -31,3 +31,7 @@ gradleTest {
 pluginBundle {
 	tags = ["java", "rest", "service"]
 }
+
+updateFileVersions {
+	match(/classpath group: "com\.liferay", name: "com\.liferay\.gradle\.plugins\.rest\.builder", version: "(\d.+)"/, "../../../modules/dxp/apps/commerce-punchout/headless/headless-commerce-punchout-impl/build.gradle")
+}
