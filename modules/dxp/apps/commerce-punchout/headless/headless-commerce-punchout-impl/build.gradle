@@ -44,6 +44,4 @@ dependencies {
 	compileOnly project(":dxp:apps:commerce-punchout:commerce-punchout-oauth2-provider-api")
 	compileOnly project(":dxp:apps:commerce-punchout:commerce-punchout-portal-security-auto-login")
 	compileOnly project(":dxp:apps:commerce-punchout:headless:headless-commerce-punchout-api")
-
-	testCompile group: "org.mockito", name: "mockito-core", version: "1.10.8"
 }
