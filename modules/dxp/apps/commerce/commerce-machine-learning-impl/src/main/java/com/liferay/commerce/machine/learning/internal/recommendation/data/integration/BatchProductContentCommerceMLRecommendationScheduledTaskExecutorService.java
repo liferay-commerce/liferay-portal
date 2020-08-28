@@ -39,7 +39,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Riccardo Ferrari
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = "data.integration.service.executor.key=" + BatchProductContentCommerceMLRecommendationProcessType.KEY,
 	service = ScheduledTaskExecutorService.class
 )

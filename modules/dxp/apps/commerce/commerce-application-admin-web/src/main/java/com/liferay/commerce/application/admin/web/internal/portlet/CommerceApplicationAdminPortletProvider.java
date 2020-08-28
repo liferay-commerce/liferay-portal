@@ -24,7 +24,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = "model.class.name=com.liferay.commerce.application.model.CommerceApplicationBrand",
 	service = ManagePortletProvider.class
 )

@@ -25,7 +25,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Marco Leo
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = {
 		"commerce.data.integration.process.type.key=" + TalendProcessType.KEY,
 		"commerce.data.integration.process.type.order=100"

@@ -50,6 +50,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  */
 @Component(
+	enabled = false,
 	property = {
 		"javax.portlet.name=" + CommerceDataIntegrationPortletKeys.COMMERCE_DATA_INTEGRATION,
 		"mvc.command.name=editCommerceDataIntegrationProcess"

@@ -28,7 +28,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Alessio Antonio Rendina
  */
-@Component(immediate = true, service = CommerceBOMDefinitionPermission.class)
+@Component(
+	enabled = false, immediate = true,
+	service = CommerceBOMDefinitionPermission.class
+)
 public class CommerceBOMDefinitionPermissionImpl
 	implements CommerceBOMDefinitionPermission {
 

@@ -26,7 +26,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Riccardo Ferrari
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = "data.integration.service.executor.key=" + AssetCategoryCommerceMLForecastProcessType.KEY,
 	service = ScheduledTaskExecutorService.class
 )

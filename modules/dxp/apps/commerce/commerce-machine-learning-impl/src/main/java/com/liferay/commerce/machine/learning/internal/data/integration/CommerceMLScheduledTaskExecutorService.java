@@ -35,7 +35,8 @@ import org.osgi.service.component.annotations.Reference;
  * @author Riccardo Ferrari
  */
 @Component(
-	immediate = true, service = CommerceMLScheduledTaskExecutorService.class
+	enabled = false, immediate = true,
+	service = CommerceMLScheduledTaskExecutorService.class
 )
 public class CommerceMLScheduledTaskExecutorService {
 

@@ -31,7 +31,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	property = "model.class.name=commerceProductInstance",
+	enabled = false, property = "model.class.name=commerceProductInstance",
 	service = {DTOConverter.class, ProductDTOConverter.class}
 )
 public class ProductDTOConverter implements DTOConverter<CPInstance, Product> {

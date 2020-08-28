@@ -43,7 +43,8 @@ import org.osgi.service.component.annotations.Component;
  * @author Riccardo Ferrari
  */
 @Component(
-	immediate = true, service = CommerceAccountCommerceMLForecastService.class
+	enabled = false, immediate = true,
+	service = CommerceAccountCommerceMLForecastService.class
 )
 public class CommerceAccountCommerceMLForecastServiceImpl
 	extends BaseCommerceMLForecastServiceImpl<CommerceAccountCommerceMLForecast>

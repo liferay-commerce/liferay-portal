@@ -35,7 +35,7 @@ import org.osgi.service.component.annotations.ServiceScope;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	properties = "OSGI-INF/liferay/rest/v1_0/spot.properties",
+	enabled = false, properties = "OSGI-INF/liferay/rest/v1_0/spot.properties",
 	scope = ServiceScope.PROTOTYPE, service = SpotResource.class
 )
 public class SpotResourceImpl extends BaseSpotResourceImpl {

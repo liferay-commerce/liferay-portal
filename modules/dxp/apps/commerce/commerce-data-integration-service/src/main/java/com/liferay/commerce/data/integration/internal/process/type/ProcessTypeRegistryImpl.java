@@ -38,7 +38,9 @@ import org.osgi.service.component.annotations.Deactivate;
 /**
  * @author Alessio Antonio Rendina
  */
-@Component(immediate = true, service = ProcessTypeRegistry.class)
+@Component(
+	enabled = false, immediate = true, service = ProcessTypeRegistry.class
+)
 public class ProcessTypeRegistryImpl implements ProcessTypeRegistry {
 
 	@Override

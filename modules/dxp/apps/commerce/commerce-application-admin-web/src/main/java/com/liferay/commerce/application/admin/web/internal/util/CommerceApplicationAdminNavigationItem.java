@@ -41,7 +41,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = {
 		"commerce.product.navigation.item.key=" + CommerceApplicationPortletKeys.COMMERCE_APPLICATION_ADMIN,
 		"commerce.product.navigation.item.order:Integer=50"

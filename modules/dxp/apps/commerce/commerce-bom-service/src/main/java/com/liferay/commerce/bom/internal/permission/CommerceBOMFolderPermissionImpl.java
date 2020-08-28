@@ -28,7 +28,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Alessio Antonio Rendina
  */
-@Component(immediate = true, service = CommerceBOMFolderPermission.class)
+@Component(
+	enabled = false, immediate = true,
+	service = CommerceBOMFolderPermission.class
+)
 public class CommerceBOMFolderPermissionImpl
 	implements CommerceBOMFolderPermission {
 

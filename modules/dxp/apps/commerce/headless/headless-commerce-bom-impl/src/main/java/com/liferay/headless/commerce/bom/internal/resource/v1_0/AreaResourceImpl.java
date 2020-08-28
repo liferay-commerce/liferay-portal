@@ -48,7 +48,7 @@ import org.osgi.service.component.annotations.ServiceScope;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	properties = "OSGI-INF/liferay/rest/v1_0/area.properties",
+	enabled = false, properties = "OSGI-INF/liferay/rest/v1_0/area.properties",
 	scope = ServiceScope.PROTOTYPE, service = AreaResource.class
 )
 public class AreaResourceImpl extends BaseAreaResourceImpl {

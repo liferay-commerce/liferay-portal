@@ -42,7 +42,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Alessio Antonio Rendina
  */
-@Component(immediate = true, service = Indexer.class)
+@Component(enabled = false, immediate = true, service = Indexer.class)
 public class CommerceBOMFolderIndexer extends BaseIndexer<CommerceBOMFolder> {
 
 	public static final String CLASS_NAME = CommerceBOMFolder.class.getName();

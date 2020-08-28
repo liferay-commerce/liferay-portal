@@ -27,7 +27,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	property = "model.class.name=breadcrumb",
+	enabled = false, property = "model.class.name=breadcrumb",
 	service = {BreadcrumbDTOConverter.class, DTOConverter.class}
 )
 public class BreadcrumbDTOConverter
