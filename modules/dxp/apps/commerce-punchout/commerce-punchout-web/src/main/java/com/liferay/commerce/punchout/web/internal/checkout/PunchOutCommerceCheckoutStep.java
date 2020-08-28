@@ -42,7 +42,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Jaclyn Ong
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = {
 		"commerce.checkout.step.name=" + PunchOutCommerceCheckoutStep.NAME,
 		"commerce.checkout.step.order:Integer=" + Integer.MIN_VALUE
