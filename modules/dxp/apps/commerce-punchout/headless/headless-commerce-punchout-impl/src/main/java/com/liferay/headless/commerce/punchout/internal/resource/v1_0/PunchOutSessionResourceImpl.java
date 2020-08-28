@@ -78,6 +78,7 @@ import org.osgi.service.component.annotations.ServiceScope;
  * @author Jaclyn Ong
  */
 @Component(
+	enabled = false,
 	properties = "OSGI-INF/liferay/rest/v1_0/punch-out-session.properties",
 	scope = ServiceScope.PROTOTYPE, service = PunchOutSessionResource.class
 )

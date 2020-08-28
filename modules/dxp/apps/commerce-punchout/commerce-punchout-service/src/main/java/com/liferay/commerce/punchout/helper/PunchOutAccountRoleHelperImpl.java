@@ -33,7 +33,9 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Jaclyn Ong
  */
-@Component(immediate = true, service = PunchOutAccountRoleHelper.class)
+@Component(
+	enabled = false, immediate = true, service = PunchOutAccountRoleHelper.class
+)
 public class PunchOutAccountRoleHelperImpl
 	implements PunchOutAccountRoleHelper {
 

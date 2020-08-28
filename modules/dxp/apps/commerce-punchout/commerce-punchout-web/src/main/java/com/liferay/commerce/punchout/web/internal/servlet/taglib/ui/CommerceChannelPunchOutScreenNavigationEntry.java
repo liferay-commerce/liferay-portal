@@ -47,6 +47,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Jaclyn Ong
  */
 @Component(
+	enabled = false,
 	property = {
 		"screen.navigation.category.order:Integer=" + Integer.MAX_VALUE,
 		"screen.navigation.entry.order:Integer=" + Integer.MAX_VALUE

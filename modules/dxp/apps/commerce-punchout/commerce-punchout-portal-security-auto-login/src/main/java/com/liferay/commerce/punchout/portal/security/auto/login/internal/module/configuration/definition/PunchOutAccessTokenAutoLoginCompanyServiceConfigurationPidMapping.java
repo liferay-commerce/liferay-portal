@@ -23,7 +23,7 @@ import org.osgi.service.component.annotations.Component;
 /**
  * @author Jaclyn Ong
  */
-@Component(service = ConfigurationPidMapping.class)
+@Component(enabled = false, service = ConfigurationPidMapping.class)
 public class PunchOutAccessTokenAutoLoginCompanyServiceConfigurationPidMapping
 	implements ConfigurationPidMapping {
 
