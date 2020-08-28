@@ -56,7 +56,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Riccardo Ferrari
  */
-@Component(service = CommerceMLForecastImporter.class)
+@Component(enabled = false, service = CommerceMLForecastImporter.class)
 public class CommerceMLForecastImporter {
 
 	public void importCommerceMLForecasts(
