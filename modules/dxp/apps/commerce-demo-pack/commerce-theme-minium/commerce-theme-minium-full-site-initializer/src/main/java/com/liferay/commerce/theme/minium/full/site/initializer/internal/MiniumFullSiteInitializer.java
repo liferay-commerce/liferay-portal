@@ -51,7 +51,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alec Sloan
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = "site.initializer.key=" + MiniumFullSiteInitializer.KEY,
 	service = SiteInitializer.class
 )
