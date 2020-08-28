@@ -74,7 +74,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alec Sloan
  * @author Alessio Antonio Rendina
  */
-@Component(service = CommerceMediaResolver.class)
+@Component(enabled = false, service = CommerceMediaResolver.class)
 public class DefaultCommerceMediaResolver implements CommerceMediaResolver {
 
 	@Override

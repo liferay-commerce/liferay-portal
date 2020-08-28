@@ -97,6 +97,7 @@ import org.osgi.service.component.annotations.ServiceScope;
  * @author Riccardo Alberti
  */
 @Component(
+	enabled = false,
 	properties = "OSGI-INF/liferay/rest/v2_0/price-list.properties",
 	scope = ServiceScope.PROTOTYPE, service = PriceListResource.class
 )

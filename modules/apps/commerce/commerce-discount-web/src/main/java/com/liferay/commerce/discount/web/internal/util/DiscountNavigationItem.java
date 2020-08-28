@@ -46,7 +46,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = {
 		"commerce.pricing.navigation.item.key=" + CommerceDiscountPortletKeys.COMMERCE_DISCOUNT,
 		"commerce.pricing.navigation.item.order:Integer=40"

@@ -35,7 +35,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Riccardo Ferrari
  */
-@Component(immediate = true, service = ProductSpecificationHelper.class)
+@Component(
+	enabled = false, immediate = true,
+	service = ProductSpecificationHelper.class
+)
 public class ProductSpecificationHelper {
 
 	public Page<ProductSpecification> getProductSpecificationsPage(

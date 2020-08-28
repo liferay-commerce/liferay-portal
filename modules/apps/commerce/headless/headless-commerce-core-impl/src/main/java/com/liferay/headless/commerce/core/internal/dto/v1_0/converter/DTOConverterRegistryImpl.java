@@ -29,7 +29,9 @@ import org.osgi.service.component.annotations.Deactivate;
 /**
  * @author Alessio Antonio Rendina
  */
-@Component(immediate = true, service = DTOConverterRegistry.class)
+@Component(
+	enabled = false, immediate = true, service = DTOConverterRegistry.class
+)
 public class DTOConverterRegistryImpl implements DTOConverterRegistry {
 
 	public DTOConverter getDTOConverter(String modelClassName) {

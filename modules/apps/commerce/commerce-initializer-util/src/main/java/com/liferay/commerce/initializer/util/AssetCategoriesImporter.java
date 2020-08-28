@@ -56,7 +56,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Andrea Di Giorgi
  */
-@Component(service = AssetCategoriesImporter.class)
+@Component(enabled = false, service = AssetCategoriesImporter.class)
 public class AssetCategoriesImporter {
 
 	public List<AssetCategory> importAssetCategories(

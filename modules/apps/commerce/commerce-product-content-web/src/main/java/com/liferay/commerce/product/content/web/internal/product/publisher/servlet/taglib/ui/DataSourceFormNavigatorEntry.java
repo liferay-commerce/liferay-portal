@@ -38,7 +38,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Marco Leo
  */
 @Component(
-	property = "form.navigator.entry.order:Integer=400",
+	enabled = false, property = "form.navigator.entry.order:Integer=400",
 	service = FormNavigatorEntry.class
 )
 public class DataSourceFormNavigatorEntry

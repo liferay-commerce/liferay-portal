@@ -34,7 +34,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Ethan Bustad
  */
 @Component(
-	property = "form.navigator.entry.order:Integer=10",
+	enabled = false, property = "form.navigator.entry.order:Integer=10",
 	service = FormNavigatorEntry.class
 )
 public class CommerceInventoryWarehouseCustomFieldsFormNavigatorEntry

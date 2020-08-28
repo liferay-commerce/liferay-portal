@@ -40,7 +40,9 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  * @author Zoltán Takács
  */
-@Component(immediate = true, service = MeasurementUnitHelper.class)
+@Component(
+	enabled = false, immediate = true, service = MeasurementUnitHelper.class
+)
 public class MeasurementUnitHelper {
 
 	public void deleteMeasurementUnit(Long id) throws PortalException {

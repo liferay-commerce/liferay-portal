@@ -40,7 +40,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	configurationPid = "com.liferay.commerce.inventory.configuration.CommerceInventorySystemConfiguration",
-	immediate = true,
+	enabled = false, immediate = true,
 	service = CheckCommerceInventoryBookedQuantityMessageListener.class
 )
 public class CheckCommerceInventoryBookedQuantityMessageListener

@@ -69,7 +69,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = {
 		"clay.data.provider.key=" + CommerceAccountClayDataSetDataSetDisplayView.NAME,
 		"clay.data.set.display.name=" + CommerceAccountClayDataSetDataSetDisplayView.NAME

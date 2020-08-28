@@ -53,7 +53,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Michael C. Han
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = {"recipient.type=ROLE", "service.ranking:Integer=100"},
 	service = {
 		NotificationRecipientBuilder.class,

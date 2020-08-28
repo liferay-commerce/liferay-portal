@@ -68,7 +68,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Steven Smith
  */
-@Component(service = DDMFormImporter.class)
+@Component(enabled = false, service = DDMFormImporter.class)
 public class DDMFormImporter {
 
 	public void importDDMForms(

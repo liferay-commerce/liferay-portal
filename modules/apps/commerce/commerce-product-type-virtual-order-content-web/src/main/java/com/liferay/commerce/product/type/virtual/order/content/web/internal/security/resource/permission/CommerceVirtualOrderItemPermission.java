@@ -25,7 +25,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Alessio Antonio Rendina
  */
-@Component(immediate = true, service = CommerceVirtualOrderItemPermission.class)
+@Component(
+	enabled = false, immediate = true,
+	service = CommerceVirtualOrderItemPermission.class
+)
 public class CommerceVirtualOrderItemPermission {
 
 	public static boolean contains(

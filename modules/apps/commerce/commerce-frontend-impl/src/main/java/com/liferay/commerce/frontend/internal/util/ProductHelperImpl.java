@@ -51,7 +51,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Marco Leo
  * @author Alessio Antonio Rendina
  */
-@Component(service = ProductHelper.class)
+@Component(enabled = false, service = ProductHelper.class)
 public class ProductHelperImpl implements ProductHelper {
 
 	@Override

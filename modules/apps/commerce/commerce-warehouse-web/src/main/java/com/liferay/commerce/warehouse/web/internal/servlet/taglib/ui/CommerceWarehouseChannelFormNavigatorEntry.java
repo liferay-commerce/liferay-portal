@@ -32,7 +32,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	property = "form.navigator.entry.order:Integer=40",
+	enabled = false, property = "form.navigator.entry.order:Integer=40",
 	service = FormNavigatorEntry.class
 )
 public class CommerceWarehouseChannelFormNavigatorEntry

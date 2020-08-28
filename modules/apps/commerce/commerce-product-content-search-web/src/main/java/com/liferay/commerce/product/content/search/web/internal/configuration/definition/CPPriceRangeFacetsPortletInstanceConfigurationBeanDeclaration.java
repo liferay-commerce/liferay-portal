@@ -22,7 +22,7 @@ import org.osgi.service.component.annotations.Component;
 /**
  * @author Alec Sloan
  */
-@Component(service = ConfigurationBeanDeclaration.class)
+@Component(enabled = false, service = ConfigurationBeanDeclaration.class)
 public class CPPriceRangeFacetsPortletInstanceConfigurationBeanDeclaration
 	implements ConfigurationBeanDeclaration {
 

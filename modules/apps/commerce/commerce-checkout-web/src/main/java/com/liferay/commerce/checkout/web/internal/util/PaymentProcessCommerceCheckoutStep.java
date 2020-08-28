@@ -45,7 +45,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Luca Pellizzon
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = {
 		"commerce.checkout.step.name=" + PaymentProcessCommerceCheckoutStep.NAME,
 		"commerce.checkout.step.order:Integer=" + (Integer.MAX_VALUE - 90)

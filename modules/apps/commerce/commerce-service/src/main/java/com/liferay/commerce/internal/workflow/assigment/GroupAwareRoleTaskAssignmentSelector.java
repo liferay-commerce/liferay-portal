@@ -43,7 +43,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Michael C. Han
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = {
 		"assignee.class.name=com.liferay.portal.kernel.model.Role",
 		"service.ranking:Integer=100"

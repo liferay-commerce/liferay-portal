@@ -26,7 +26,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	property = "form.navigator.category.order:Integer=10",
+	enabled = false, property = "form.navigator.category.order:Integer=10",
 	service = FormNavigatorCategory.class
 )
 public class PaginationFormNavigatorCategory implements FormNavigatorCategory {

@@ -34,7 +34,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Alec Sloan
  */
-@Component(service = OrganizationImporter.class)
+@Component(enabled = false, service = OrganizationImporter.class)
 public class OrganizationImporter {
 
 	public void importOrganizations(

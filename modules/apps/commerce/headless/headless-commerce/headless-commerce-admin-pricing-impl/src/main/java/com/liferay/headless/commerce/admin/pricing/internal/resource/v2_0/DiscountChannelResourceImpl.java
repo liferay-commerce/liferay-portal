@@ -46,6 +46,7 @@ import org.osgi.service.component.annotations.ServiceScope;
  * @author Riccardo Alberti
  */
 @Component(
+	enabled = false,
 	properties = "OSGI-INF/liferay/rest/v2_0/discount-channel.properties",
 	scope = ServiceScope.PROTOTYPE, service = DiscountChannelResource.class
 )

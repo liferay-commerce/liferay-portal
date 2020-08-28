@@ -41,7 +41,9 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Igor Beslic
  */
-@Component(immediate = true, service = CommerceOptionValueHelper.class)
+@Component(
+	enabled = false, immediate = true, service = CommerceOptionValueHelper.class
+)
 public class CommerceOptionValueHelperImpl
 	implements CommerceOptionValueHelper {
 

@@ -50,7 +50,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Riccardo Ferrari
  */
-@Component(service = RatingsImporter.class)
+@Component(enabled = false, service = RatingsImporter.class)
 public class RatingsImporter {
 
 	public void importRatings(File ratingsFile, long scopeGroupId, long userId)

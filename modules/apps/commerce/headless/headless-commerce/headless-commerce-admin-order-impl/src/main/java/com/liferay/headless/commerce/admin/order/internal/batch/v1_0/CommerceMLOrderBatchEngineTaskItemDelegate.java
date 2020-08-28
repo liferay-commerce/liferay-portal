@@ -41,7 +41,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Riccardo Ferrari
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = "batch.engine.task.item.delegate.name=" + OrderBatchEngineTaskItemDelegateConstants.COMMERCE_ML_ORDER,
 	service = BatchEngineTaskItemDelegate.class
 )

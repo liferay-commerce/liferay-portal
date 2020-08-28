@@ -26,7 +26,8 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	immediate = true, service = CommerceNotificationTemplatePermission.class
+	enabled = false, immediate = true,
+	service = CommerceNotificationTemplatePermission.class
 )
 public class CommerceNotificationTemplatePermission {
 

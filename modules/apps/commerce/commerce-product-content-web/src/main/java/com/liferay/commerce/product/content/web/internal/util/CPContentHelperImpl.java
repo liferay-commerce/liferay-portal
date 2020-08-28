@@ -88,7 +88,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Alessio Antonio Rendina
  */
-@Component(immediate = true, service = CPContentHelper.class)
+@Component(enabled = false, immediate = true, service = CPContentHelper.class)
 public class CPContentHelperImpl implements CPContentHelper {
 
 	@Override

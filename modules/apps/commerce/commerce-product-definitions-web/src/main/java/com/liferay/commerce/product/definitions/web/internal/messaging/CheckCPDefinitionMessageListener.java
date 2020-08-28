@@ -41,7 +41,8 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	configurationPid = "com.liferay.commerce.product.definitions.web.internal.configuration.CPDefinitionConfiguration",
-	immediate = true, service = CheckCPDefinitionMessageListener.class
+	enabled = false, immediate = true,
+	service = CheckCPDefinitionMessageListener.class
 )
 public class CheckCPDefinitionMessageListener extends BaseMessageListener {
 

@@ -30,7 +30,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Alec Sloan
  */
-@Component(service = AssetTagsImporter.class)
+@Component(enabled = false, service = AssetTagsImporter.class)
 public class AssetTagsImporter {
 
 	public List<AssetTag> importAssetTags(

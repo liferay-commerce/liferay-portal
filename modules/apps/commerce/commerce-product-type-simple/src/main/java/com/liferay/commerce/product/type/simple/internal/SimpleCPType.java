@@ -27,7 +27,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Marco Leo
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = {
 		"commerce.product.type.display.order:Integer=5",
 		"commerce.product.type.name=" + SimpleCPTypeConstants.NAME

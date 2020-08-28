@@ -70,7 +70,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  * @author Igor Beslic
  */
-@Component(immediate = true, service = DDMHelper.class)
+@Component(enabled = false, immediate = true, service = DDMHelper.class)
 public class DDMHelperImpl implements DDMHelper {
 
 	@Override

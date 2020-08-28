@@ -28,7 +28,8 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	immediate = true, service = PortletResourcePermissionDefinition.class
+	enabled = false, immediate = true,
+	service = PortletResourcePermissionDefinition.class
 )
 public class CommerceNotificationPortletResourcePermissionDefinition
 	implements PortletResourcePermissionDefinition {

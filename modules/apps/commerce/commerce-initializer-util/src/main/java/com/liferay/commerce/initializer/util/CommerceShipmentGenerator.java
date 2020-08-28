@@ -58,7 +58,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Alessio Antonio Rendina
  */
-@Component(service = CommerceShipmentGenerator.class)
+@Component(enabled = false, service = CommerceShipmentGenerator.class)
 public class CommerceShipmentGenerator {
 
 	public void generate(long groupId, int shipmentsCount) {

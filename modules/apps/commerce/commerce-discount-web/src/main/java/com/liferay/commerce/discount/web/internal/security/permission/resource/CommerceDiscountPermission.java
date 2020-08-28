@@ -25,7 +25,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Alessio Antonio Rendina
  */
-@Component(immediate = true, service = CommerceDiscountPermission.class)
+@Component(
+	enabled = false, immediate = true,
+	service = CommerceDiscountPermission.class
+)
 public class CommerceDiscountPermission {
 
 	public static boolean contains(

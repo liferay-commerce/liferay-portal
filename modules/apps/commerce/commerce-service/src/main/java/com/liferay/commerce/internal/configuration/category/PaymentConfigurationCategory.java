@@ -21,7 +21,7 @@ import org.osgi.service.component.annotations.Component;
 /**
  * @author Alessio Antonio Rendina
  */
-@Component(service = ConfigurationCategory.class)
+@Component(enabled = false, service = ConfigurationCategory.class)
 public class PaymentConfigurationCategory implements ConfigurationCategory {
 
 	@Override

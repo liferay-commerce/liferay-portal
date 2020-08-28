@@ -57,7 +57,9 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  * @author Igor Beslic
  */
-@Component(immediate = true, service = UpgradeStepRegistrator.class)
+@Component(
+	enabled = false, immediate = true, service = UpgradeStepRegistrator.class
+)
 public class CommerceProductUpgradeStepRegistrator
 	implements UpgradeStepRegistrator {
 

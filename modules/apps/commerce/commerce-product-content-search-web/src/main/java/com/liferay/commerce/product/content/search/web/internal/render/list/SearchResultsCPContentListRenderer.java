@@ -33,7 +33,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = {
 		"commerce.product.content.list.renderer.key=" + CPPortletKeys.CP_SEARCH_RESULTS,
 		"commerce.product.content.list.renderer.order=1000",

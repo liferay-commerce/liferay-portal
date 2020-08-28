@@ -34,6 +34,7 @@ import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
  * @author Marco Leo
  */
 @Component(
+	enabled = false,
 	property = {
 		JaxrsWhiteboardConstants.JAX_RS_APPLICATION_BASE + "=/commerce-ui",
 		JaxrsWhiteboardConstants.JAX_RS_NAME + "=CommerceUi.Application",

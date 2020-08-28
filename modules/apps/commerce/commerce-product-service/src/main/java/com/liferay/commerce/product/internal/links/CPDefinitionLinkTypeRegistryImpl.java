@@ -30,7 +30,10 @@ import org.osgi.service.component.annotations.Deactivate;
 /**
  * @author Marco Leo
  */
-@Component(immediate = true, service = CPDefinitionLinkTypeRegistry.class)
+@Component(
+	enabled = false, immediate = true,
+	service = CPDefinitionLinkTypeRegistry.class
+)
 public class CPDefinitionLinkTypeRegistryImpl
 	implements CPDefinitionLinkTypeRegistry {
 

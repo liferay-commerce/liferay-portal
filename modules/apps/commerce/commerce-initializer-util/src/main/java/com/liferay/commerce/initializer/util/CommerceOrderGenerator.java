@@ -90,7 +90,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  * @author Luca Pellizzon
  */
-@Component(service = CommerceOrderGenerator.class)
+@Component(enabled = false, service = CommerceOrderGenerator.class)
 public class CommerceOrderGenerator {
 
 	public void generate(long groupId, int ordersCount) {

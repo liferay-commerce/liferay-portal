@@ -40,7 +40,10 @@ import org.osgi.service.component.annotations.Deactivate;
 /**
  * @author Alessio Antonio Rendina
  */
-@Component(immediate = true, service = PricingNavigationItemRegistry.class)
+@Component(
+	enabled = false, immediate = true,
+	service = PricingNavigationItemRegistry.class
+)
 public class PricingNavigationItemRegistryImpl
 	implements PricingNavigationItemRegistry {
 

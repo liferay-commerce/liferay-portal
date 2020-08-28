@@ -21,7 +21,7 @@ import org.osgi.service.component.annotations.Component;
 /**
  * @author Eric Chin
  */
-@Component(service = ConfigurationCategory.class)
+@Component(enabled = false, service = ConfigurationCategory.class)
 public class GoogleMerchantConfigurationCategory
 	implements ConfigurationCategory {
 

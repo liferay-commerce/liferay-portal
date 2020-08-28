@@ -43,7 +43,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Luca Pellizzon
  * @author Alessio Antonio Rendina
  */
-@Component(immediate = true, service = CommerceSubscriptionEngine.class)
+@Component(
+	enabled = false, immediate = true,
+	service = CommerceSubscriptionEngine.class
+)
 public class CommerceSubscriptionEngineImpl
 	implements CommerceSubscriptionEngine {
 

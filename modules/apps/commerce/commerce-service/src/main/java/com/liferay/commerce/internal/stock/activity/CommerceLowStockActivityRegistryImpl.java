@@ -39,7 +39,10 @@ import org.osgi.service.component.annotations.Deactivate;
 /**
  * @author Alessio Antonio Rendina
  */
-@Component(immediate = true, service = CommerceLowStockActivityRegistry.class)
+@Component(
+	enabled = false, immediate = true,
+	service = CommerceLowStockActivityRegistry.class
+)
 public class CommerceLowStockActivityRegistryImpl
 	implements CommerceLowStockActivityRegistry {
 
