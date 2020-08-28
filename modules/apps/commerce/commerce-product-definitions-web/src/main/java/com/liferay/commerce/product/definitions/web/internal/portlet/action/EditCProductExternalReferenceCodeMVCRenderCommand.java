@@ -37,6 +37,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  */
 @Component(
+	enabled = false,
 	property = {
 		"javax.portlet.name=" + CPPortletKeys.CP_DEFINITIONS,
 		"mvc.command.name=editCProductExternalReferenceCode"

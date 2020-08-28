@@ -36,7 +36,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Luca Pellizzon
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = "destination.name=" + CommerceDestinationNames.STOCK_QUANTITY,
 	service = MessageListener.class
 )

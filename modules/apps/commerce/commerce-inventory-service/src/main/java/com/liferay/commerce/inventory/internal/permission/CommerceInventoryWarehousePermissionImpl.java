@@ -33,7 +33,8 @@ import org.osgi.service.component.annotations.Reference;
  * @author Luca Pellizzon
  */
 @Component(
-	immediate = true, service = CommerceInventoryWarehousePermission.class
+	enabled = false, immediate = true,
+	service = CommerceInventoryWarehousePermission.class
 )
 public class CommerceInventoryWarehousePermissionImpl
 	implements CommerceInventoryWarehousePermission {

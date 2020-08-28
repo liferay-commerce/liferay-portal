@@ -31,7 +31,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Andrea Di Giorgi
  */
 @Component(
-	property = "form.navigator.entry.order:Integer=10",
+	enabled = false, property = "form.navigator.entry.order:Integer=10",
 	service = FormNavigatorEntry.class
 )
 public class CPSpecificationOptionDetailsCustomFieldsFormNavigatorEntry

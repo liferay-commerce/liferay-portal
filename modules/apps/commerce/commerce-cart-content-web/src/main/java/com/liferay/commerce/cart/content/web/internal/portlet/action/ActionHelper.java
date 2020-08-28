@@ -28,7 +28,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Alessio Antonio Rendina
  */
-@Component(service = ActionHelper.class)
+@Component(enabled = false, service = ActionHelper.class)
 public class ActionHelper {
 
 	public CommerceOrder getCommerceOrder(RenderRequest renderRequest)

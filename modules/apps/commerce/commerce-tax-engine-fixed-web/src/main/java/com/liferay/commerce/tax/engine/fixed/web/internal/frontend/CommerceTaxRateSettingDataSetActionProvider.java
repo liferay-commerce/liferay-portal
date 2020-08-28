@@ -49,7 +49,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alec Sloan
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = {
 		"clay.data.provider.key=" + CommerceTaxRateSettingDataSetConstants.COMMERCE_DATA_SET_KEY_PERCENTAGE_TAX_RATE_SETTING,
 		"clay.data.provider.key=" + CommerceTaxRateSettingDataSetConstants.COMMERCE_DATA_SET_KEY_TAX_RATE_SETTING

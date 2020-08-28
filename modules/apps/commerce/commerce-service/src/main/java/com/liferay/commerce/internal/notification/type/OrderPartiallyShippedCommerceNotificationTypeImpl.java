@@ -29,7 +29,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Luca Pellizzon
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = {
 		"commerce.notification.type.key=" + CommerceOrderConstants.ORDER_NOTIFICATION_PARTIALLY_SHIPPED,
 		"commerce.notification.type.order:Integer=60"

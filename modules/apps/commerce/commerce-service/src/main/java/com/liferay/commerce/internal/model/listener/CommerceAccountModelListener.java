@@ -26,7 +26,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Alec Sloan
  */
-@Component(immediate = true, service = ModelListener.class)
+@Component(enabled = false, immediate = true, service = ModelListener.class)
 public class CommerceAccountModelListener
 	extends BaseModelListener<CommerceAccount> {
 

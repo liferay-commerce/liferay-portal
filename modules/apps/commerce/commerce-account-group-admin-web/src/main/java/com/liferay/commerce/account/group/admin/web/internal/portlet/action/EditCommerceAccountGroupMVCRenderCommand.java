@@ -27,7 +27,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = {
 		"javax.portlet.name=" + CommerceAccountPortletKeys.COMMERCE_ACCOUNT_GROUP_ADMIN,
 		"mvc.command.name=editCommerceAccountGroup"

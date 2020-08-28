@@ -31,7 +31,9 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Zoltán Takács
  */
-@Component(immediate = true, service = ServiceContextHelper.class)
+@Component(
+	enabled = false, immediate = true, service = ServiceContextHelper.class
+)
 public class ServiceContextHelperImpl implements ServiceContextHelper {
 
 	public ServiceContext getServiceContext() throws PortalException {

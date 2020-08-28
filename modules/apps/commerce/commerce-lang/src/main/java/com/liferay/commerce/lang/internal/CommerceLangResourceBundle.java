@@ -26,7 +26,8 @@ import org.osgi.service.component.annotations.Component;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	property = "language.id=" + StringPool.BLANK, service = ResourceBundle.class
+	enabled = false, property = "language.id=" + StringPool.BLANK,
+	service = ResourceBundle.class
 )
 public class CommerceLangResourceBundle extends ResourceBundle {
 

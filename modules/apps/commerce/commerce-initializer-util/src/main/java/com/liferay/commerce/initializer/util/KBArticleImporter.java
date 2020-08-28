@@ -37,7 +37,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Steven Smith
  */
-@Component(service = KBArticleImporter.class)
+@Component(enabled = false, service = KBArticleImporter.class)
 public class KBArticleImporter {
 
 	public void importKBArticles(

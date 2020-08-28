@@ -25,7 +25,9 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Ethan Bustad
  */
-@Component(immediate = true, service = CPVersionContributor.class)
+@Component(
+	enabled = false, immediate = true, service = CPVersionContributor.class
+)
 public class CPDefinitionVirtualSettingCPVersionContributor
 	implements CPVersionContributor {
 

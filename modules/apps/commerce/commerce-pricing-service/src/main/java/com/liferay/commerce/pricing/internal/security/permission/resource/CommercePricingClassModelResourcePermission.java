@@ -28,7 +28,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Riccardo Alberti
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = "model.class.name=com.liferay.commerce.pricing.model.CommercePricingClass",
 	service = ModelResourcePermission.class
 )

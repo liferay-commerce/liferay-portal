@@ -24,7 +24,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Andrea Sbarra
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = "clay.data.set.display.name=" + CommerceProductDataSetConstants.COMMERCE_DATA_SET_KEY_ALL_PRODUCT_INSTANCES,
 	service = ClayDataSetDisplayView.class
 )

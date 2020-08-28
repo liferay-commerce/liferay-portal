@@ -28,7 +28,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Luca Pellizzon
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = "clay.data.set.display.name=" + CommerceInventoryDataSetConstants.COMMERCE_DATA_SET_KEY_INVENTORY_REPLENISHMENT,
 	service = ClayDataSetDisplayView.class
 )

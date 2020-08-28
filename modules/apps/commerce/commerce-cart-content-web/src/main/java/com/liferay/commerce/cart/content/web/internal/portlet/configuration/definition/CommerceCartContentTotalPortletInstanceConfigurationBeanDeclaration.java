@@ -22,7 +22,7 @@ import org.osgi.service.component.annotations.Component;
 /**
  * @author Alessio Antonio Rendina
  */
-@Component(service = ConfigurationBeanDeclaration.class)
+@Component(enabled = false, service = ConfigurationBeanDeclaration.class)
 public class CommerceCartContentTotalPortletInstanceConfigurationBeanDeclaration
 	implements ConfigurationBeanDeclaration {
 

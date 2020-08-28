@@ -34,6 +34,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Andrea Di Giorgi
  */
 @Component(
+	enabled = false,
 	property = {
 		"javax.portlet.name=" + CommercePortletKeys.COMMERCE_ORDER,
 		"mvc.command.name=editCommerceOrderNote"

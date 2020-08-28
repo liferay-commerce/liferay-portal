@@ -40,7 +40,9 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  * @author Luca Pellizzon
  */
-@Component(immediate = true, service = ServletContextUtil.class)
+@Component(
+	enabled = false, immediate = true, service = ServletContextUtil.class
+)
 public class ServletContextUtil {
 
 	public static final CommerceWorkflowedModelHelper getCommerceOrderHelper() {

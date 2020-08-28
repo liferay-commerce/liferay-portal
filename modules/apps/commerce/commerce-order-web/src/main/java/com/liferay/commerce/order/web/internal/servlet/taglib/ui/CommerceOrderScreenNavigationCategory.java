@@ -27,7 +27,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Alec Sloan
  */
 @Component(
-	property = "screen.navigation.category.order:Integer=50",
+	enabled = false, property = "screen.navigation.category.order:Integer=50",
 	service = ScreenNavigationCategory.class
 )
 public class CommerceOrderScreenNavigationCategory

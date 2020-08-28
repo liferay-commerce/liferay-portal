@@ -62,7 +62,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = {
 		"clay.data.provider.key=" + CommerceNotificationEntryClayTable.NAME,
 		"clay.data.set.display.name=" + CommerceNotificationEntryClayTable.NAME

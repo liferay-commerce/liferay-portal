@@ -30,7 +30,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = "commerce.product.subscription.type.jsp.contributor.key=" + CPConstants.WEEKLY_SUBSCRIPTION_TYPE,
 	service = CPSubscriptionTypeJSPContributor.class
 )

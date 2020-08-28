@@ -28,7 +28,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alec Sloan
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = "clay.data.set.display.name=" + CommerceShipmentDataSetConstants.COMMERCE_DATA_SET_KEY_SHIPPABLE_ORDER_ITEMS,
 	service = ClayDataSetDisplayView.class
 )

@@ -49,7 +49,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Riccardo Alberti
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = "clay.data.provider.key=" + CommercePricingDataSetConstants.COMMERCE_DATA_SET_KEY_PRICING_CLASSES_PRODUCT_DEFINITIONS,
 	service = ClayDataSetDataProvider.class
 )

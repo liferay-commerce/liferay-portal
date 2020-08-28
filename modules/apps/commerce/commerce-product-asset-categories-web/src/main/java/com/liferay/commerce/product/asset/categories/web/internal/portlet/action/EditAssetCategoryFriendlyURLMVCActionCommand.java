@@ -45,7 +45,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Marco Leo
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = {
 		"javax.portlet.name=com_liferay_asset_categories_admin_web_portlet_AssetCategoriesAdminPortlet",
 		"mvc.command.name=editAssetCategoryFriendlyURL"

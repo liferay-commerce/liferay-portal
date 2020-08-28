@@ -26,7 +26,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Marco Leo
  */
 @Component(
-	property = "form.navigator.category.order:Integer=30",
+	enabled = false, property = "form.navigator.category.order:Integer=30",
 	service = FormNavigatorCategory.class
 )
 public class ProductSelectionFormNavigatorCategory

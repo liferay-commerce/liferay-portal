@@ -44,7 +44,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = {
 		"commerce.discount.target.key=" + CommerceDiscountConstants.TARGET_PRODUCTS,
 		"commerce.discount.target.order:Integer=20"

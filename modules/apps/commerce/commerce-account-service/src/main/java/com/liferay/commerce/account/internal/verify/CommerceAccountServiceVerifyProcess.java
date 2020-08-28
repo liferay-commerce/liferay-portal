@@ -39,7 +39,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = "verify.process.name=com.liferay.commerce.account.service",
 	service = {CommerceAccountServiceVerifyProcess.class, VerifyProcess.class}
 )

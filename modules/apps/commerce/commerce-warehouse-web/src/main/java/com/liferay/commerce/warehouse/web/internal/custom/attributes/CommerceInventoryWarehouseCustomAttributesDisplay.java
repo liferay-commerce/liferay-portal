@@ -25,7 +25,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Ethan Bustad
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = "javax.portlet.name=" + CommerceAdminPortletKeys.COMMERCE_ADMIN,
 	service = CustomAttributesDisplay.class
 )

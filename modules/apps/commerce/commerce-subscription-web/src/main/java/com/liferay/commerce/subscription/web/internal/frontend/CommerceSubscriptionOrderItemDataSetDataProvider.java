@@ -57,7 +57,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Luca Pellizzon
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = "clay.data.provider.key=" + CommerceSubscriptionDataSetConstants.COMMERCE_DATA_SET_KEY_SUBSCRIPTION_ORDER_ITEMS,
 	service = ClayDataSetDataProvider.class
 )

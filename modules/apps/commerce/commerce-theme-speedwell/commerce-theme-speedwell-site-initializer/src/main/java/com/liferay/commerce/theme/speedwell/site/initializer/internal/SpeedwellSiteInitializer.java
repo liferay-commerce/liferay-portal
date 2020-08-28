@@ -129,7 +129,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Gianmarco Brunialti Masera
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = "site.initializer.key=" + SpeedwellSiteInitializer.KEY,
 	service = SiteInitializer.class
 )

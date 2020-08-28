@@ -52,7 +52,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Marco Leo
  */
-@Component(service = FriendlyURLResolver.class)
+@Component(enabled = false, service = FriendlyURLResolver.class)
 public class AssetCategoryFriendlyURLResolver implements FriendlyURLResolver {
 
 	@Override

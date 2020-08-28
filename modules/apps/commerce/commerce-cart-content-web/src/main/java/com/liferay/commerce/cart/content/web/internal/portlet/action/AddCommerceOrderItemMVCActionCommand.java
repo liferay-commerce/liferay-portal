@@ -58,7 +58,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Marco Leo
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = {
 		"javax.portlet.name=" + CommercePortletKeys.COMMERCE_CART_CONTENT,
 		"javax.portlet.name=" + CommercePortletKeys.COMMERCE_CART_CONTENT_MINI,

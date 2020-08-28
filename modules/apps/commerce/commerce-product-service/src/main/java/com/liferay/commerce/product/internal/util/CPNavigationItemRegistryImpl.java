@@ -40,7 +40,9 @@ import org.osgi.service.component.annotations.Deactivate;
 /**
  * @author Alessio Antonio Rendina
  */
-@Component(immediate = true, service = CPNavigationItemRegistry.class)
+@Component(
+	enabled = false, immediate = true, service = CPNavigationItemRegistry.class
+)
 public class CPNavigationItemRegistryImpl implements CPNavigationItemRegistry {
 
 	@Override

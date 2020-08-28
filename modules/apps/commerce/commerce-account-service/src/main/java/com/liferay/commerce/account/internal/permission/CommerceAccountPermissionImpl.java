@@ -32,7 +32,9 @@ import org.osgi.service.component.annotations.Reference;
  * @author Marco Leo
  * @author Alessio Antonio Rendina
  */
-@Component(immediate = true, service = CommerceAccountPermission.class)
+@Component(
+	enabled = false, immediate = true, service = CommerceAccountPermission.class
+)
 public class CommerceAccountPermissionImpl
 	implements CommerceAccountPermission {
 

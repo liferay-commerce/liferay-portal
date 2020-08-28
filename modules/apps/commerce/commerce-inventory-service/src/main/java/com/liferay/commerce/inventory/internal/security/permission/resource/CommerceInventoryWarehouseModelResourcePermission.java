@@ -28,7 +28,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Luca Pellizzon
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = "model.class.name=com.liferay.commerce.inventory.model.CommerceInventoryWarehouse",
 	service = ModelResourcePermission.class
 )

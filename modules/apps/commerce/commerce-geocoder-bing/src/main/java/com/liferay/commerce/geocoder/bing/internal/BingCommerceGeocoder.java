@@ -49,7 +49,7 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
  */
 @Component(
 	configurationPid = "com.liferay.commerce.geocoder.bing.internal.configuration.BingCommerceGeocoderConfiguration",
-	immediate = true, service = CommerceGeocoder.class
+	enabled = false, immediate = true, service = CommerceGeocoder.class
 )
 public class BingCommerceGeocoder implements CommerceGeocoder {
 

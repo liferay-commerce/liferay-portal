@@ -67,7 +67,7 @@ import org.osgi.service.component.annotations.ServiceScope;
  * @author Andrea Sbarra
  */
 @Component(
-	properties = "OSGI-INF/liferay/rest/v1_0/cart.properties",
+	enabled = false, properties = "OSGI-INF/liferay/rest/v1_0/cart.properties",
 	scope = ServiceScope.PROTOTYPE, service = CartResource.class
 )
 public class CartResourceImpl extends BaseCartResourceImpl {

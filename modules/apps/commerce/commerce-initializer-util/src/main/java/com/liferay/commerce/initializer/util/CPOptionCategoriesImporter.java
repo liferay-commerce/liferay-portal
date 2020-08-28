@@ -37,7 +37,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Andrea Di Giorgi
  */
-@Component(service = CPOptionCategoriesImporter.class)
+@Component(enabled = false, service = CPOptionCategoriesImporter.class)
 public class CPOptionCategoriesImporter {
 
 	public List<CPOptionCategory> importCPOptionCategories(

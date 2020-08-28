@@ -49,7 +49,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  * @author Luca Pellizzon
  */
-@Component(immediate = true, service = CommerceCheckoutStepHelper.class)
+@Component(
+	enabled = false, immediate = true,
+	service = CommerceCheckoutStepHelper.class
+)
 public class CommerceCheckoutStepHelper {
 
 	public String getOrderDetailURL(

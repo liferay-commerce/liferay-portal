@@ -50,6 +50,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Andrea Sbarra
  */
 @Component(
+	enabled = false,
 	property = "model.class.name=com.liferay.headless.commerce.delivery.cart.dto.v1_0.Cart",
 	service = {CartDTOConverter.class, DTOConverter.class}
 )

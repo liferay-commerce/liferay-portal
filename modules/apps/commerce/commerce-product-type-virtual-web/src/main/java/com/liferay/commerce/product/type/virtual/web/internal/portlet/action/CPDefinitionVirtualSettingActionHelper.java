@@ -30,7 +30,9 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Alessio Antonio Rendina
  */
-@Component(service = CPDefinitionVirtualSettingActionHelper.class)
+@Component(
+	enabled = false, service = CPDefinitionVirtualSettingActionHelper.class
+)
 public class CPDefinitionVirtualSettingActionHelper {
 
 	public CPDefinitionVirtualSetting getCPDefinitionVirtualSetting(

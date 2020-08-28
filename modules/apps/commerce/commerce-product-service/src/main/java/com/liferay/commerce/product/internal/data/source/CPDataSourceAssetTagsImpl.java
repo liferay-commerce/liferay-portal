@@ -35,7 +35,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Ethan Bustad
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = "commerce.product.data.source.name=" + CPDataSourceAssetTagsImpl.NAME,
 	service = CPDataSource.class
 )

@@ -27,7 +27,10 @@ import org.osgi.service.component.annotations.Deactivate;
 /**
  * @author Marco Leo
  */
-@Component(immediate = true, service = ExchangeRateProviderRegistry.class)
+@Component(
+	enabled = false, immediate = true,
+	service = ExchangeRateProviderRegistry.class
+)
 public class ExchangeRateProviderRegistryImpl
 	implements ExchangeRateProviderRegistry {
 

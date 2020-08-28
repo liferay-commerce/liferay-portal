@@ -29,7 +29,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = "clay.data.set.display.name=" + CommercePricingDataSetConstants.COMMERCE_DATA_SET_KEY_PRICE_LIST_QUALIFIER_ACCOUNT_GROUPS,
 	service = ClayDataSetDisplayView.class
 )

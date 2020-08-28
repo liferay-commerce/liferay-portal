@@ -86,7 +86,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Marco Leo
  * @author Alessio Antonio Rendina
  */
-@Component(service = CommerceSearchResource.class)
+@Component(enabled = false, service = CommerceSearchResource.class)
 public class CommerceSearchResource {
 
 	@GET

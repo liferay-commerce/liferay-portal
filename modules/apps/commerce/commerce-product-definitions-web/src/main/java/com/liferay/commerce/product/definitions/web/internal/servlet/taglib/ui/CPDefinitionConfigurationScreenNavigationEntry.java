@@ -60,6 +60,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  */
 @Component(
+	enabled = false,
 	property = {
 		"screen.navigation.category.order:Integer=120",
 		"screen.navigation.entry.order:Integer=10"

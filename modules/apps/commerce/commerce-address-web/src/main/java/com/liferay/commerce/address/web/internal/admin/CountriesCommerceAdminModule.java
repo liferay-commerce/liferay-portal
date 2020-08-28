@@ -52,7 +52,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = "commerce.admin.module.key=" + CountriesCommerceAdminModule.KEY,
 	service = CommerceAdminModule.class
 )

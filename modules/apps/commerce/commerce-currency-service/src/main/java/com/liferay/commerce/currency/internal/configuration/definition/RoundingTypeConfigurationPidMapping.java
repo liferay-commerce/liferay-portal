@@ -23,7 +23,7 @@ import org.osgi.service.component.annotations.Component;
 /**
  * @author Alessio Antonio Rendina
  */
-@Component(service = ConfigurationPidMapping.class)
+@Component(enabled = false, service = ConfigurationPidMapping.class)
 public class RoundingTypeConfigurationPidMapping
 	implements ConfigurationPidMapping {
 

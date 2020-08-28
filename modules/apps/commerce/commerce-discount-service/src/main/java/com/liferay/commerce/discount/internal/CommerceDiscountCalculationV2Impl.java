@@ -65,7 +65,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
  * @author Riccardo Alberti
  */
 @Component(
-	property = "commerce.discount.calculation.key=v2.0",
+	enabled = false, property = "commerce.discount.calculation.key=v2.0",
 	service = CommerceDiscountCalculation.class
 )
 public class CommerceDiscountCalculationV2Impl

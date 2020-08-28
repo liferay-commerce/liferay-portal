@@ -32,7 +32,10 @@ import org.osgi.service.component.annotations.Deactivate;
 /**
  * @author Riccardo Alberti
  */
-@Component(immediate = true, service = CommercePriceCalculationRegistry.class)
+@Component(
+	enabled = false, immediate = true,
+	service = CommercePriceCalculationRegistry.class
+)
 public class CommercePriceCalculationRegistryImpl
 	implements CommercePriceCalculationRegistry {
 

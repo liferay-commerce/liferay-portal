@@ -49,7 +49,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = "commerce.admin.module.key=" + TaxCategoriesCommerceAdminModule.KEY,
 	service = CommerceAdminModule.class
 )

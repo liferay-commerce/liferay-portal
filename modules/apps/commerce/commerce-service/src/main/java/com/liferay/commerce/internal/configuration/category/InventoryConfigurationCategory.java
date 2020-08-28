@@ -21,7 +21,7 @@ import org.osgi.service.component.annotations.Component;
 /**
  * @author Luca Pellizzon
  */
-@Component(service = ConfigurationCategory.class)
+@Component(enabled = false, service = ConfigurationCategory.class)
 public class InventoryConfigurationCategory implements ConfigurationCategory {
 
 	@Override

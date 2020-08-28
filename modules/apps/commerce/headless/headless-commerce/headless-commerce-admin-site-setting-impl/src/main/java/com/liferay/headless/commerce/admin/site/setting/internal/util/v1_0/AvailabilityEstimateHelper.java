@@ -40,7 +40,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  * @author Zoltán Takács
  */
-@Component(immediate = true, service = AvailabilityEstimateHelper.class)
+@Component(
+	enabled = false, immediate = true,
+	service = AvailabilityEstimateHelper.class
+)
 public class AvailabilityEstimateHelper {
 
 	public void deleteAvailabilityEstimate(Long id) throws PortalException {

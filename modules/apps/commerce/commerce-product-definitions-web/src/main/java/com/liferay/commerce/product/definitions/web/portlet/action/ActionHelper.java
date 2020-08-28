@@ -60,7 +60,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Marco Leo
  * @author Alessio Antonio Rendina
  */
-@Component(service = ActionHelper.class)
+@Component(enabled = false, service = ActionHelper.class)
 public class ActionHelper {
 
 	public List<CPAttachmentFileEntry> getCPAttachmentFileEntries(

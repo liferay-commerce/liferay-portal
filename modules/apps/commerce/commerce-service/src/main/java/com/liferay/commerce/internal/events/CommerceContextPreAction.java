@@ -30,7 +30,8 @@ import org.osgi.service.component.annotations.Reference;
  * @author Marco Leo
  */
 @Component(
-	property = "key=servlet.service.events.pre", service = LifecycleAction.class
+	enabled = false, property = "key=servlet.service.events.pre",
+	service = LifecycleAction.class
 )
 public class CommerceContextPreAction extends Action {
 

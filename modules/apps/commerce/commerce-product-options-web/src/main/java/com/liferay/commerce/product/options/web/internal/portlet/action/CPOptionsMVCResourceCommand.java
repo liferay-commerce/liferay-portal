@@ -48,7 +48,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Marco Leo
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = {
 		"javax.portlet.name=" + CPPortletKeys.CP_OPTIONS,
 		"mvc.command.name=cpOptions"

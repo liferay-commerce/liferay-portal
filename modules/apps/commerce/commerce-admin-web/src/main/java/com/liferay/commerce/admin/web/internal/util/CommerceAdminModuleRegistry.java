@@ -34,7 +34,10 @@ import org.osgi.service.component.annotations.Deactivate;
  * @author Andrea Di Giorgi
  * @author Alessio Antonio Rendina
  */
-@Component(immediate = true, service = CommerceAdminModuleRegistry.class)
+@Component(
+	enabled = false, immediate = true,
+	service = CommerceAdminModuleRegistry.class
+)
 public class CommerceAdminModuleRegistry {
 
 	public NavigableMap<String, CommerceAdminModule> getCommerceAdminModules() {

@@ -37,7 +37,8 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	configurationPid = "com.liferay.commerce.pricing.configuration.CommercePricingConfiguration",
-	immediate = true, service = CommerceOrderPriceCalculationFactory.class
+	enabled = false, immediate = true,
+	service = CommerceOrderPriceCalculationFactory.class
 )
 public class CommerceOrderPriceCalculationFactoryImpl
 	implements CommerceOrderPriceCalculationFactory {

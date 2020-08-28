@@ -39,7 +39,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Andrea Di Giorgi
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	service = CommerceOrderModelResourcePermissionRegistrar.class
 )
 public class CommerceOrderModelResourcePermissionRegistrar {

@@ -41,7 +41,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = {
 		"commerce.product.navigation.item.key=" + CPPortletKeys.CP_OPTION_CATEGORIES,
 		"commerce.product.navigation.item.order:Integer=30"

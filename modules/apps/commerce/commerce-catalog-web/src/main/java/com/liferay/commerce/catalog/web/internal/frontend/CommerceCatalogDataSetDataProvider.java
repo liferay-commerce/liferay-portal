@@ -38,7 +38,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Gianmarco Brunialti Masera
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = "clay.data.provider.key=" + CommerceCatalogDataSetConstants.COMMERCE_DATA_SET_KEY_CATALOGS,
 	service = ClayDataSetDataProvider.class
 )

@@ -27,7 +27,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Marco Leo
  */
-@Component(service = MiniumLayoutsInitializer.class)
+@Component(enabled = false, service = MiniumLayoutsInitializer.class)
 public class MiniumLayoutsInitializer {
 
 	public void initialize(ServiceContext serviceContext) throws Exception {

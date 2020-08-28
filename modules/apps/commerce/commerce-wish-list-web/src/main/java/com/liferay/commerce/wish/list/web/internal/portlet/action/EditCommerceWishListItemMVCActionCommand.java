@@ -36,7 +36,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Andrea Di Giorgi
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = {
 		"javax.portlet.name=" + CommerceWishListPortletKeys.COMMERCE_WISH_LIST_CONTENT,
 		"mvc.command.name=editCommerceWishListItem"

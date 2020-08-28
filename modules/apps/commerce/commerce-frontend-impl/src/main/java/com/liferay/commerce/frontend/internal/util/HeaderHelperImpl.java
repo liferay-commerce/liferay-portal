@@ -34,7 +34,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Alec Sloan
  */
-@Component(service = HeaderHelper.class)
+@Component(enabled = false, service = HeaderHelper.class)
 public class HeaderHelperImpl implements HeaderHelper {
 
 	public WorkflowTask getReviewWorkflowTask(

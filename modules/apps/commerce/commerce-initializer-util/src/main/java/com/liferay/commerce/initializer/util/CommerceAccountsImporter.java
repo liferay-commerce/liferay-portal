@@ -67,7 +67,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Alec Sloan
  */
-@Component(service = CommerceAccountsImporter.class)
+@Component(enabled = false, service = CommerceAccountsImporter.class)
 public class CommerceAccountsImporter {
 
 	public void importCommerceAccounts(

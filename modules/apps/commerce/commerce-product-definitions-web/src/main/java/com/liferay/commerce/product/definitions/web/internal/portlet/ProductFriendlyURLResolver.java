@@ -66,7 +66,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Marco Leo
  * @author Alessio Antonio Rendina
  */
-@Component(service = FriendlyURLResolver.class)
+@Component(enabled = false, service = FriendlyURLResolver.class)
 public class ProductFriendlyURLResolver implements FriendlyURLResolver {
 
 	@Override

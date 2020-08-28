@@ -57,7 +57,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
  */
 @Component(
 	configurationPid = "com.liferay.commerce.pricing.configuration.CommercePricingConfiguration",
-	immediate = true, service = ServiceFactory.class
+	enabled = false, immediate = true, service = ServiceFactory.class
 )
 public class CommerceProductPriceCalculationServiceFactory
 	implements ServiceFactory<CommerceProductPriceCalculation> {

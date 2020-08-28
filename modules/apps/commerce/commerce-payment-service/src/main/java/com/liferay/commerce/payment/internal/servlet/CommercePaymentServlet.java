@@ -56,7 +56,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Luca Pellizzon
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = {
 		"osgi.http.whiteboard.context.path=/" + CommercePaymentConstants.SERVLET_PATH,
 		"osgi.http.whiteboard.servlet.name=com.liferay.commerce.payment.internal.servlet.CommercePaymentServlet",

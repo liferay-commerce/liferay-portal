@@ -42,7 +42,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Andrea Di Giorgi
  * @author Alessio Antonio Rendina
  */
-@Component(service = CommerceInventoryWarehousesImporter.class)
+@Component(enabled = false, service = CommerceInventoryWarehousesImporter.class)
 public class CommerceInventoryWarehousesImporter {
 
 	public List<CommerceInventoryWarehouse> importCommerceInventoryWarehouses(

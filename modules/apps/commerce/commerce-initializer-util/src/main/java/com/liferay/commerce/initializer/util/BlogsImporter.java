@@ -42,7 +42,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Steven Smith
  */
-@Component(service = BlogsImporter.class)
+@Component(enabled = false, service = BlogsImporter.class)
 public class BlogsImporter {
 
 	public void importBlogsEntries(

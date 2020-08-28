@@ -23,7 +23,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Alessio Antonio Rendina
  */
-@Component(service = CPAssetCategoryWebPortletUtil.class)
+@Component(enabled = false, service = CPAssetCategoryWebPortletUtil.class)
 public class CPAssetCategoryWebPortletUtil {
 
 	public CPType getCPType(String name) {

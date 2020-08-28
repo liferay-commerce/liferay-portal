@@ -60,7 +60,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Marco Leo
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = {
 		"clay.data.provider.key=" + CommerceShippingMethodClayTable.NAME,
 		"clay.data.set.display.name=" + CommerceShippingMethodClayTable.NAME

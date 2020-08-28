@@ -36,7 +36,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Marco Leo
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = {
 		"commerce.product.content.renderer.key=" + MiniumCPContentRenderer.KEY,
 		"commerce.product.content.renderer.type=grouped",

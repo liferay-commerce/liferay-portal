@@ -23,7 +23,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Marco Leo
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = "clay.data.set.display.name=" + CommerceOrderDataSetConstants.COMMERCE_DATA_SET_KEY_ALL_ORDERS,
 	service = ClayDataSetFilter.class
 )

@@ -47,7 +47,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Marco Leo
  */
-@Component(service = CPPublisherWebHelper.class)
+@Component(enabled = false, service = CPPublisherWebHelper.class)
 public class CPPublisherWebHelper {
 
 	public List<CPCatalogEntry> getCPCatalogEntries(

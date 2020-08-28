@@ -36,7 +36,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alec Sloan
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = "javax.portlet.name=" + CPPortletKeys.CP_PRICE_RANGE_FACETS,
 	service = ConfigurationAction.class
 )

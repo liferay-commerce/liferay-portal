@@ -51,7 +51,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = {
 		"javax.portlet.name=" + CommerceAdminPortletKeys.COMMERCE_ADMIN,
 		"mvc.command.name=editExchangeRate"

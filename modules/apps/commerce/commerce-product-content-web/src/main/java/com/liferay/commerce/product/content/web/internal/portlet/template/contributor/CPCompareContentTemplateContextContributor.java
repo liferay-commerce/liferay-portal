@@ -28,7 +28,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = "type=" + TemplateContextContributor.TYPE_GLOBAL,
 	service = TemplateContextContributor.class
 )

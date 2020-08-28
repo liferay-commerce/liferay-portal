@@ -24,7 +24,9 @@ import org.osgi.service.component.annotations.Component;
 /**
  * @author Ethan Bustad
  */
-@Component(immediate = true, service = UpgradeStepRegistrator.class)
+@Component(
+	enabled = false, immediate = true, service = UpgradeStepRegistrator.class
+)
 public class CommerceProductTypeGroupedUpgradeStepRegistrator
 	implements UpgradeStepRegistrator {
 

@@ -25,7 +25,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Riccardo Alberti
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = "commerce.region.starter.key=" + SouthKoreaCommerceRegionsStarter.SOUTH_KOREA_NUMERIC_ISO_CODE,
 	service = CommerceRegionsStarter.class
 )

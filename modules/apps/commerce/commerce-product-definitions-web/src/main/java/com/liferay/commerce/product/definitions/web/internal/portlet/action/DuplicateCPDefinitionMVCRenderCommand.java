@@ -37,6 +37,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alec Sloan
  */
 @Component(
+	enabled = false,
 	property = {
 		"javax.portlet.name=" + CPPortletKeys.CP_DEFINITIONS,
 		"mvc.command.name=duplicateCPDefinition"

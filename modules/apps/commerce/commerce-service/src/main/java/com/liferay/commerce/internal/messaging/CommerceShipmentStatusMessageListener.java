@@ -32,7 +32,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alec Sloan
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = "destination.name=" + CommerceDestinationNames.SHIPMENT_STATUS,
 	service = MessageListener.class
 )

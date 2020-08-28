@@ -61,7 +61,7 @@ import org.osgi.service.component.annotations.ServiceScope;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	properties = "OSGI-INF/liferay/rest/v1_0/sku.properties",
+	enabled = false, properties = "OSGI-INF/liferay/rest/v1_0/sku.properties",
 	scope = ServiceScope.PROTOTYPE, service = SkuResource.class
 )
 public class SkuResourceImpl extends BaseSkuResourceImpl {

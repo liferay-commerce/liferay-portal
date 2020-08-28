@@ -31,7 +31,10 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 /**
  * @author Alessio Antonio Rendina
  */
-@Component(immediate = true, service = CPDefinitionLinkTypeSettings.class)
+@Component(
+	enabled = false, immediate = true,
+	service = CPDefinitionLinkTypeSettings.class
+)
 public class CPDefinitionLinkTypeSettingsImpl
 	implements CPDefinitionLinkTypeSettings {
 

@@ -38,7 +38,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Marco Leo
  */
-@Component(service = ActionHelper.class)
+@Component(enabled = false, service = ActionHelper.class)
 public class ActionHelper {
 
 	public CPOption getCPOption(RenderRequest renderRequest)

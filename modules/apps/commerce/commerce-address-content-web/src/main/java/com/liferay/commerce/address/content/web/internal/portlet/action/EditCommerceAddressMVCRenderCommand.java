@@ -41,7 +41,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = {
 		"javax.portlet.name=" + CommercePortletKeys.COMMERCE_ADDRESS_CONTENT,
 		"mvc.command.name=editCommerceAddress"

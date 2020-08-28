@@ -36,7 +36,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Andrea Di Giorgi
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = {
 		"commerce.product.content.renderer.key=" + SimpleCPContentRenderer.KEY,
 		"commerce.product.content.renderer.order=" + Integer.MIN_VALUE,

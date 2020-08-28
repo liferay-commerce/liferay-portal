@@ -33,7 +33,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Alec Sloan
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = {
 		"panel.category.key=" + PanelCategoryKeys.CONTROL_PANEL,
 		"panel.category.order:Integer=325"

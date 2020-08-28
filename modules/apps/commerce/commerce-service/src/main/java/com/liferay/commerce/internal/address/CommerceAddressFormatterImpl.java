@@ -28,7 +28,9 @@ import org.osgi.service.component.annotations.Component;
 /**
  * @author Alec Sloan
  */
-@Component(immediate = true, service = CommerceAddressFormatter.class)
+@Component(
+	enabled = false, immediate = true, service = CommerceAddressFormatter.class
+)
 public class CommerceAddressFormatterImpl implements CommerceAddressFormatter {
 
 	@Override

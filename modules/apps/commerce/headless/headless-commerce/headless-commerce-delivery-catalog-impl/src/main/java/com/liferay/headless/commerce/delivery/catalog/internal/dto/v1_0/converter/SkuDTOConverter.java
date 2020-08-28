@@ -56,7 +56,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Andrea Sbarra
  */
 @Component(
-	property = "model.class.name=CPSku",
+	enabled = false, property = "model.class.name=CPSku",
 	service = {DTOConverter.class, SkuDTOConverter.class}
 )
 public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
