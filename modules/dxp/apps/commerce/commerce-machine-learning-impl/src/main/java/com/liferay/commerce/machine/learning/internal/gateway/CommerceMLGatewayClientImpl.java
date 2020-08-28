@@ -59,8 +59,8 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	configurationPid = "com.liferay.commerce.machine.learning.internal.configuration.CommerceMLConfiguration",
-	configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true,
-	service = CommerceMLGatewayClient.class
+	configurationPolicy = ConfigurationPolicy.OPTIONAL, enabled = false,
+	immediate = true, service = CommerceMLGatewayClient.class
 )
 public class CommerceMLGatewayClientImpl implements CommerceMLGatewayClient {
 

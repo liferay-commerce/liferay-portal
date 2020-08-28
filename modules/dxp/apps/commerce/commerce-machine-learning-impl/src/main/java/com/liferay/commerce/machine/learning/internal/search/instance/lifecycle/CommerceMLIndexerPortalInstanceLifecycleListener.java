@@ -38,7 +38,10 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 /**
  * @author Marco Leo
  */
-@Component(immediate = true, service = PortalInstanceLifecycleListener.class)
+@Component(
+	enabled = false, immediate = true,
+	service = PortalInstanceLifecycleListener.class
+)
 public class CommerceMLIndexerPortalInstanceLifecycleListener
 	extends BasePortalInstanceLifecycleListener {
 

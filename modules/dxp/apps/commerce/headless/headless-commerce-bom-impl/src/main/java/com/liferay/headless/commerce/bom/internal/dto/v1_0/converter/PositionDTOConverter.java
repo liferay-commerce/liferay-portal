@@ -27,7 +27,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	property = "model.class.name=commerceBOMEntryPosition",
+	enabled = false, property = "model.class.name=commerceBOMEntryPosition",
 	service = {DTOConverter.class, PositionDTOConverter.class}
 )
 public class PositionDTOConverter

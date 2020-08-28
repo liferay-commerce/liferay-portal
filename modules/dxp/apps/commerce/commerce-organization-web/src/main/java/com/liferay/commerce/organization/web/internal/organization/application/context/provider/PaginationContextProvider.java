@@ -30,7 +30,9 @@ import org.osgi.service.component.annotations.Component;
 /**
  * @author Alessio Antonio Rendina
  */
-@Component(immediate = true, service = PaginationContextProvider.class)
+@Component(
+	enabled = false, immediate = true, service = PaginationContextProvider.class
+)
 @Provider
 public class PaginationContextProvider implements ContextProvider<Pagination> {
 

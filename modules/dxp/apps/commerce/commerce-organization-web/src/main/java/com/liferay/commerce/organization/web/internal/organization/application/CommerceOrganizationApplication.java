@@ -32,6 +32,7 @@ import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
  * @author Alessio Antonio Rendina
  */
 @Component(
+	enabled = false,
 	property = {
 		JaxrsWhiteboardConstants.JAX_RS_APPLICATION_BASE + "=/commerce-organization",
 		JaxrsWhiteboardConstants.JAX_RS_NAME + "=CommerceOrganization.Application",

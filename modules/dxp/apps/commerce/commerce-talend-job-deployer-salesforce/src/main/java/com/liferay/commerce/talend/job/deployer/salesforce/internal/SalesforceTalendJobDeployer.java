@@ -41,7 +41,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Danny Situ
  */
-@Component(immediate = true, service = SalesforceTalendJobDeployer.class)
+@Component(
+	enabled = false, immediate = true,
+	service = SalesforceTalendJobDeployer.class
+)
 public class SalesforceTalendJobDeployer {
 
 	@Activate

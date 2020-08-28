@@ -23,7 +23,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Riccardo Ferrari
  */
-@Component(immediate = true, service = CommerceMLIndexer.class)
+@Component(enabled = false, immediate = true, service = CommerceMLIndexer.class)
 public class ProductContentCommerceMLRecommendationIndexer
 	implements CommerceMLIndexer {
 

@@ -47,7 +47,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	configurationPid = "com.liferay.commerce.data.integration.talend.internal.configuration.CommerceDataIntegrationProcessConfiguration",
-	configurationPolicy = ConfigurationPolicy.OPTIONAL,
+	configurationPolicy = ConfigurationPolicy.OPTIONAL, enabled = false,
 	service = TalendProcessTypeHelper.class
 )
 public class TalendProcessTypeHelperImpl implements TalendProcessTypeHelper {

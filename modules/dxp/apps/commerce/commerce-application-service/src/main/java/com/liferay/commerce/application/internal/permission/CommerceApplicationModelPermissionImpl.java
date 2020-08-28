@@ -28,7 +28,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Alessio Antonio Rendina
  */
-@Component(immediate = true, service = CommerceApplicationModelPermission.class)
+@Component(
+	enabled = false, immediate = true,
+	service = CommerceApplicationModelPermission.class
+)
 public class CommerceApplicationModelPermissionImpl
 	implements CommerceApplicationModelPermission {
 

@@ -27,7 +27,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Riccardo Ferrari
  */
 @Component(
-	immediate = true,
+	enabled = false, immediate = true,
 	property = {
 		"commerce.data.integration.process.type.key=" + CommerceMLForecastAlertEntryProcessType.KEY,
 		"commerce.data.integration.process.type.order=100"

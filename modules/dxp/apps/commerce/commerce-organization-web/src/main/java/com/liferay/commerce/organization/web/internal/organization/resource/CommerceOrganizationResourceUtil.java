@@ -45,7 +45,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Alessio Antonio Rendina
  */
-@Component(service = CommerceOrganizationResourceUtil.class)
+@Component(enabled = false, service = CommerceOrganizationResourceUtil.class)
 public class CommerceOrganizationResourceUtil {
 
 	public Organization getOrganization(
