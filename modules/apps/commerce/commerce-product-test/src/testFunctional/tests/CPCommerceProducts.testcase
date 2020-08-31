@@ -29,6 +29,7 @@ definition {
 		}
 	}
 
+	@ignore = "true"
 	test ProductPublishing {
 		property environment.acceptance = "true";
 		property portal.acceptance = "true";
@@ -119,6 +120,7 @@ definition {
 		CommerceEntry.viewProductSkus(skusList = "WHITESKU:30.00,BLUESKU:20.00,BLACKSKU:10.00");
 	}
 
+	@ignore = "true"
 	test TranslateProductName {
 		property portal.acceptance = "true";
 		property test.name.skip.portal.instance = "CPCommerceProducts#TranslateProductName";

@@ -12,6 +12,8 @@ definition {
 		User.firstLoginPG();
 	}
 
+	@ignore = "true"
+
 	tearDown {
 		var testPortalInstance = PropsUtil.get("test.portal.instance");
 
@@ -32,6 +34,7 @@ definition {
 		}
 	}
 
+	@ignore = "true"
 	test CreateNewChannel {
 		property portal.acceptance = "true";
 		property test.name.skip.portal.instance = "CPCommerceChannels#CreateNewChannel";

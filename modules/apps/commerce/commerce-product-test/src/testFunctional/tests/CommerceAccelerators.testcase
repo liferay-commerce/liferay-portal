@@ -29,6 +29,7 @@ definition {
 		}
 	}
 
+	@ignore = "true"
 	test DeactivateCommerceAccount {
 		property portal.acceptance = "true";
 		property test.name.skip.portal.instance = "CommerceAccelerators#DeactivateCommerceAccount";
@@ -106,6 +107,7 @@ definition {
 		AssertElementPresent(locator1 = "CommerceNavigation#EMPTY_SEARCH_CONTAINER");
 	}
 
+	@ignore = "true"
 	test InitializeNewMiniumSite {
 		property environment.acceptance = "true";
 		property portal.acceptance = "true";
@@ -159,6 +161,7 @@ definition {
 		CommerceEntry.viewSpecificationGroupsEntries(specificationGroupsEntries = "Warranty,Fit,Dimensions,Quantity,Material");
 	}
 
+	@ignore = "true"
 	test InitializeNewSpeedwellSite {
 		property environment.acceptance = "true";
 		property portal.acceptance = "true";
@@ -212,6 +215,7 @@ definition {
 		CommerceEntry.viewSpecificationGroupsEntries(specificationGroupsEntries = "Quantity,Fit,Material,Dimensions,Warranty");
 	}
 
+	@ignore = "true"
 	test MiniumSiteFullFlow {
 		property portal.acceptance = "true";
 		property test.name.skip.portal.instance = "CommerceAccelerators#MiniumSiteFullFlow";
@@ -367,6 +371,7 @@ definition {
 			productUnitPrice = "50.00");
 	}
 
+	@ignore = "true"
 	test SpeedwellSiteFullFlow {
 		property portal.acceptance = "true";
 		property test.name.skip.portal.instance = "CommerceAccelerators#SpeedwellSiteFullFlow";

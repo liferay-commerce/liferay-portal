@@ -35,6 +35,7 @@ definition {
 		}
 	}
 
+	@ignore = "true"
 	test AssertGuestCartIsTransferredToAccount {
 		property portal.acceptance = "true";
 		property test.name.skip.portal.instance = "GuestCheckout#AssertGuestCartIsTransferredToAccount";
@@ -135,6 +136,7 @@ definition {
 		Click(locator1 = "CommerceAccelerators#MINI_CART_CLOSE");
 	}
 
+	@ignore = "true"
 	test AssertGuestCartItemIsNotTransferredIfSkuIsAlreadyPresent {
 		property portal.acceptance = "true";
 		property test.name.skip.portal.instance = "GuestCheckout#AssertGuestCartItemIsNotTransferredIfSkuIsAlreadyPresent";
@@ -265,6 +267,7 @@ definition {
 			cartSummaryTotal = "${cartSummarySubtotal}");
 	}
 
+	@ignore = "true"
 	test AssertGuestCartItemIsTransferredToExistingCart {
 		property portal.acceptance = "true";
 		property test.name.skip.portal.instance = "GuestCheckout#AssertGuestCartItemIsTransferredToExistingCart";
@@ -395,6 +398,7 @@ definition {
 			cartSummaryTotal = "${cartSummarySubtotal}");
 	}
 
+	@ignore = "true"
 	test AssertGuestCheckoutAuthenticationPage {
 		property portal.acceptance = "true";
 		property test.name.skip.portal.instance = "GuestCheckout#AssertGuestCheckoutAuthenticationPage";
@@ -447,6 +451,7 @@ definition {
 		GuestCheckout.assertGuestCheckoutAuthenticationPage();
 	}
 
+	@ignore = "true"
 	test AssertGuestsWithSameEmailHaveDifferentAccounts {
 		property portal.acceptance = "true";
 		property test.name.skip.portal.instance = "GuestCheckout#AssertGuestsWithSameEmailHaveDifferentAccounts";
@@ -568,6 +573,7 @@ definition {
 			isAccountActive = "true");
 	}
 
+	@ignore = "true"
 	test AssertNewAccountIsCreatedAfterGuestCheckout {
 		property portal.acceptance = "true";
 		property test.name.skip.portal.instance = "GuestCheckout#AssertNewAccountIsCreatedAfterGuestCheckout";
@@ -644,6 +650,7 @@ definition {
 			value1 = "buyer@liferay.com");
 	}
 
+	@ignore = "true"
 	test GuestAccountIsNotCombinedWithExistingUserAccount {
 		property portal.acceptance = "true";
 		property test.name.skip.portal.instance = "GuestCheckout#GuestAccountIsNotCombinedWithExistingUserAccount";
@@ -809,6 +816,7 @@ definition {
 			isAccountActive = "true");
 	}
 
+	@ignore = "true"
 	test GuestCheckoutDisabled {
 		property portal.acceptance = "true";
 		property test.name.skip.portal.instance = "GuestCheckout#GuestCheckoutDisabled";
@@ -909,6 +917,7 @@ definition {
 		Click(locator1 = "Button#CONTINUE");
 	}
 
+	@ignore = "true"
 	test GuestCheckoutEnabled {
 		property portal.acceptance = "true";
 		property test.name.skip.portal.instance = "GuestCheckout#GuestCheckoutEnabled";
@@ -972,6 +981,7 @@ definition {
 			shippingMethod = "Standard");
 	}
 
+	@ignore = "true"
 	test GuestCheckoutWithNoShippableProduct {
 		property portal.acceptance = "true";
 		property test.name.skip.portal.instance = "GuestCheckout#GuestCheckoutWithNoShippableProduct";
@@ -1052,6 +1062,7 @@ definition {
 			shippingMethod = "Standard");
 	}
 
+	@ignore = "true"
 	test GuestCheckoutWithShippableProduct {
 		property portal.acceptance = "true";
 		property test.name.skip.portal.instance = "GuestCheckout#GuestCheckoutWithShippableProduct";
@@ -1113,6 +1124,7 @@ definition {
 			shippingMethod = "Standard");
 	}
 
+	@ignore = "true"
 	test UserAccountIsNotCombinedWithExistingGuestAccount {
 		property portal.acceptance = "true";
 		property test.name.skip.portal.instance = "GuestCheckout#UserAccountIsNotCombinedWithExistingGuestAccount";

@@ -46,6 +46,7 @@ definition {
 		}
 	}
 
+	@ignore = "true"
 	test CreateNewSpecificationOptions {
 		property environment.acceptance = "true";
 		property portal.acceptance = "true";
@@ -83,6 +84,7 @@ definition {
 			specificationTitle = "specification-1");
 	}
 
+	@ignore = "true"
 	test PublishSimpleProduct {
 		property environment.acceptance = "true";
 		property portal.acceptance = "true";
