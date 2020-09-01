@@ -57,6 +57,7 @@ import org.frutilla.FrutillaRule;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -91,6 +92,7 @@ public class CommerceOrderItemIndexerTest {
 		_indexer = _indexerRegistry.getIndexer(CommerceOrderItem.class);
 	}
 
+	@Ignore
 	@Test
 	public void testEmptyQuery() throws Exception {
 		_addCommerceOrderItems(1);

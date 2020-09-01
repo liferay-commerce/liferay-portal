@@ -156,6 +156,17 @@ public class DiscountAccountGroupResourceTest
 
 	@Override
 	@Test
+	public void testGetDiscountByExternalReferenceCodeDiscountAccountGroupsPage()
+		throws Exception {
+	}
+
+	@Override
+	@Test
+	public void testGetDiscountIdDiscountAccountGroupsPage() throws Exception {
+	}
+
+	@Override
+	@Test
 	public void testGetDiscountIdDiscountAccountGroupsPageWithFilterDateTimeEquals()
 		throws Exception {
 	}
@@ -182,6 +193,11 @@ public class DiscountAccountGroupResourceTest
 	@Test
 	public void testGetDiscountIdDiscountAccountGroupsPageWithSortString()
 		throws Exception {
+	}
+
+	@Override
+	@Test
+	public void testGraphQLDeleteDiscountAccountGroup() throws Exception {
 	}
 
 	@Override
