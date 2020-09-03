@@ -24,6 +24,7 @@ import com.liferay.commerce.account.service.CommerceAccountUserRelLocalService;
 import com.liferay.commerce.account.util.CommerceAccountHelper;
 import com.liferay.commerce.constants.CommerceAddressConstants;
 import com.liferay.commerce.constants.CommerceOrderConstants;
+import com.liferay.commerce.context.CommerceContext;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
 import com.liferay.commerce.model.CommerceAddress;
@@ -39,6 +40,8 @@ import com.liferay.commerce.service.CommerceCountryLocalService;
 import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.service.CommerceOrderService;
 import com.liferay.commerce.service.CommerceRegionLocalService;
+import com.liferay.commerce.test.util.CommerceTestUtil;
+import com.liferay.commerce.test.util.TestCommerceContext;
 import com.liferay.petra.lang.CentralizedThreadLocal;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -138,6 +141,25 @@ public class CommerceOrderTest {
 	@After
 	public void tearDown() {
 		CentralizedThreadLocal.clearShortLivedThreadLocals();
+	}
+
+	@Test
+	public void testCommerceOrderCurrency() throws Exception {
+		CommerceCurrency commerceCurrency2 = CommerceCurrencyTestUtil.addCommerceCurrency(
+			_group.getCompanyId());
+
+		CommerceOrder commerceOrder = CommerceTestUtil.addB2CCommerceOrder(
+			_user.getUserId(), _group.getGroupId(), commerceCurrency2);
+
+		Assert.assertEquals(
+			commerceCurrency2, commerceOrder.getCommerceCurrency());
+
+		CommerceCurrency orderCommerceCurrency =
+			commerceOrder.getCommerceCurrency();
+
+		Assert.assertNotEquals(
+			orderCommerceCurrency.getCode(),
+			_commerceChannel.getCommerceCurrencyCode());
 	}
 
 	@Test
