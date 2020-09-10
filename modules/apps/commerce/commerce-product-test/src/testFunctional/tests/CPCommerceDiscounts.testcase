@@ -66,10 +66,7 @@ definition {
 
 		AssertElementPresent(locator1 = "Message#SUCCESS");
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Commerce",
-			panel = "Control Panel",
-			portlet = "Discounts");
+			portlet = "Discount");
 
 		CommerceNavigator.gotoEntry(entryName = "New Discount");
 

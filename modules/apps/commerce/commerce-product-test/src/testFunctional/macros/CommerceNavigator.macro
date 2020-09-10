@@ -42,6 +42,26 @@ definition {
 		AssertElementPresent(locator1 = "CommerceEntry#NAME_FIELD");
 	}
 
+	macro gotoPortlet {
+		if (IsElementPresent(locator1 = "ApplicationsMenu#TOGGLE")) {
+			ApplicationsMenu.gotoPortlet(
+				category = "${category}",
+				panel = "${panel}",
+				portlet = "${portlet}");
+		}
+		else {
+			if ("${panel}" == "Commerce") {
+				CommerceNavigator.gotoProductMenuCommercePortlet(portlet = "${portlet}");
+			}
+			else {
+				ProductMenu.gotoPortlet(
+					category = "${category}",
+					panel = "${panel}",
+					portlet = "${portlet}");
+			}
+		}
+	}
+
 	macro gotoProductMenuCommercePortlet {
 		if (("${portlet}" == "Products") || ("${portlet}" == "Options") || ("${portlet}" == "Specifications")
 			|| ("${portlet}" == "Bill of Materials") || ("${portlet}" == "Applications")) {
