@@ -40,12 +40,10 @@ definition {
 		property portal.acceptance = "quarantine";
 		property test.name.skip.portal.instance = "CPCommerceProducts#ProductPublishing";
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Commerce",
-			panel = "Control Panel",
-			portlet = "Products");
-
-		CommerceNavigator.gotoCommercePortletNavItem(navItem = "Options");
+		CommerceNavigator.gotoPortlet(
+			category = "Product Management",
+			panel = "Commerce",
+			portlet = "Options");
 
 		Pause(locator1 = "2000");
 
@@ -56,7 +54,10 @@ definition {
 			optionValuesList = "Black,Blue,White",
 			valuePriority = "1");
 
-		CommerceNavigator.gotoCommercePortletNavItem(navItem = "Products");
+		CommerceNavigator.gotoPortlet(
+			category = "Product Management",
+			panel = "Commerce",
+			portlet = "Products");
 
 		CPCommerceCatalog.newProductsEntry(
 			productName = "Simple T-Shirt",
@@ -76,12 +77,10 @@ definition {
 
 		CommerceProductImages.addProductImages(optionValuesList = "Black,Blue,White");
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Commerce",
-			panel = "Control Panel",
-			portlet = "Products");
-
-		CommerceNavigator.gotoCommercePortletNavItem(navItem = "Specifications");
+		CommerceNavigator.gotoPortlet(
+			category = "Product Management",
+			panel = "Commerce",
+			portlet = "Specifications");
 
 		CommerceNavigator.gotoCommercePortletNavItem(navItem = "Specification Groups");
 
@@ -89,21 +88,19 @@ definition {
 			specificationDescription = "SpecificationGroups",
 			specificationTitle = "SpecificationGroups");
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Commerce",
-			panel = "Control Panel",
-			portlet = "Products");
-
-		CommerceNavigator.gotoCommercePortletNavItem(navItem = "Specifications");
+		CommerceNavigator.gotoPortlet(
+			category = "Product Management",
+			panel = "Commerce",
+			portlet = "Specifications");
 
 		CommerceEntry.createNewSpecificationLabels(
 			specificationDescription = "SpecificationLabel",
 			specificationGroupTitle = "SpecificationGroups",
 			specificationTitle = "SpecificationLabel");
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Commerce",
-			panel = "Control Panel",
+		CommerceNavigator.gotoPortlet(
+			category = "Product Management",
+			panel = "Commerce",
 			portlet = "Products");
 
 		CommerceNavigator.gotoEntry(entryName = "Simple T-Shirt");
@@ -131,9 +128,9 @@ definition {
 
 		CommerceAccelerators.initializeAccelerator(siteName = "Minium");
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Commerce",
-			panel = "Control Panel",
+		CommerceNavigator.gotoPortlet(
+			category = "Product Management",
+			panel = "Commerce",
 			portlet = "Products");
 
 		CommerceNavigator.searchEntry(entryName = "Shock Absorber");

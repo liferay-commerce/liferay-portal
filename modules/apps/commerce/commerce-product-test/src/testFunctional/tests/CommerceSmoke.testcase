@@ -31,12 +31,10 @@ definition {
 
 			CommerceConfiguration.commerceInitializersTearDown();
 
-			ApplicationsMenu.gotoPortlet(
-				category = "Commerce",
-				panel = "Control Panel",
-				portlet = "Products");
-
-			CommerceNavigator.gotoCommercePortletNavItem(navItem = "Specifications");
+			CommerceNavigator.gotoPortlet(
+				category = "Product Management",
+				panel = "Commerce",
+				portlet = "Specifications");
 
 			while (IsElementNotPresent(locator1 = "CommerceNavigation#EMPTY_SEARCH_CONTAINER")) {
 				PortletEntry.deleteViaMenuItem(rowEntry = "");
@@ -56,12 +54,10 @@ definition {
 		property environment.acceptance = "quarantine";
 		property portal.acceptance = "quarantine";
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Commerce",
-			panel = "Control Panel",
-			portlet = "Products");
-
-		CommerceNavigator.gotoCommercePortletNavItem(navItem = "Specifications");
+		CommerceNavigator.gotoPortlet(
+			category = "Product Management",
+			panel = "Commerce",
+			portlet = "Specifications");
 
 		CommerceEntry.createNewSpecificationLabels(
 			specificationDescription = "Specification-1 Description",
@@ -71,12 +67,10 @@ definition {
 			specificationDescription = "Specification-1 Description",
 			specificationTitle = "specification-1");
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Commerce",
-			panel = "Control Panel",
-			portlet = "Products");
-
-		CommerceNavigator.gotoCommercePortletNavItem(navItem = "Specifications");
+		CommerceNavigator.gotoPortlet(
+			category = "Product Management",
+			panel = "Commerce",
+			portlet = "Specifications");
 
 		CommerceNavigator.gotoCommercePortletNavItem(navItem = "Specification Groups");
 
@@ -94,19 +88,19 @@ definition {
 		property portal.acceptance = "quarantine";
 		property test.name.skip.portal.instance = "CommerceSmoke#PublishSimpleProduct";
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Commerce",
-			panel = "Control Panel",
+		CommerceNavigator.gotoPortlet(
+			category = "Product Management",
+			panel = "Commerce",
 			portlet = "Products");
 
 		CPCommerceCatalog.newProductsEntry(
 			productName = "Simple T-Shirt",
 			productType = "Simple");
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Commerce",
-			panel = "Control Panel",
-			portlet = "Products");
+		CommerceNavigator.gotoPortlet(
+			category = "Product Management",
+			panel = "Commerce",
+			portlet = "Specifications");
 
 		CommerceNavigator.gotoEntry(entryName = "Simple T-Shirt");
 

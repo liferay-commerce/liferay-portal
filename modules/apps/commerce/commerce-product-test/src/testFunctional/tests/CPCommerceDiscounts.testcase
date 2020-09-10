@@ -20,9 +20,9 @@ definition {
 		else {
 			Navigator.openURL();
 
-			ApplicationsMenu.gotoPortlet(
-				category = "Commerce",
-				panel = "Control Panel",
+			CommerceNavigator.gotoPortlet(
+				category = "Pricing",
+				panel = "Commerce",
 				portlet = "Discounts");
 
 			if (IsElementNotPresent(locator1 = "CommerceNavigation#EMPTY_SEARCH_CONTAINER")) {
@@ -35,9 +35,9 @@ definition {
 		property portal.acceptance = "quarantine";
 		property test.name.skip.portal.instance = "CPCommerceDiscounts#CreateNewDiscount";
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Commerce",
-			panel = "Control Panel",
+		CommerceNavigator.gotoPortlet(
+			category = "Store Management",
+			panel = "Commerce",
 			portlet = "Channels");
 
 		Click(locator1 = "Button#PLUS");
@@ -48,9 +48,9 @@ definition {
 			channelType = "Site",
 			siteName = "Guest");
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Commerce",
-			panel = "Control Panel",
+		CommerceNavigator.gotoPortlet(
+			category = "Pricing",
+			panel = "Commerce",
 			portlet = "Discounts");
 
 		Click(locator1 = "Button#PLUS");
@@ -66,7 +66,10 @@ definition {
 
 		AssertElementPresent(locator1 = "Message#SUCCESS");
 
-			portlet = "Discount");
+		CommerceNavigator.gotoPortlet(
+			category = "Pricing",
+			panel = "Commerce",
+			portlet = "Discounts");
 
 		CommerceNavigator.gotoEntry(entryName = "New Discount");
 

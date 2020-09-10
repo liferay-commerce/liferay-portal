@@ -27,14 +27,17 @@ definition {
 	test ViewStoreFrontSimpleProduct {
 		property portal.acceptance = "quarantine";
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Commerce",
-			panel = "Control Panel",
+		CommerceNavigator.gotoPortlet(
+			category = "Product Management",
+			panel = "Commerce",
 			portlet = "Products");
 
 		echo("Creating new Option complete with Values...");
 
-		CommerceNavigator.gotoCommercePortletNavItem(navItem = "Options");
+		CommerceNavigator.gotoPortlet(
+			category = "Product Management",
+			panel = "Commerce",
+			portlet = "Options");
 
 		Pause(locator1 = "2000");
 
@@ -47,7 +50,10 @@ definition {
 
 		echo("Creating new Product...");
 
-		CommerceNavigator.gotoCommercePortletNavItem(navItem = "Products");
+		CommerceNavigator.gotoPortlet(
+			category = "Product Management",
+			panel = "Commerce",
+			portlet = "Products");
 
 		CPCommerceCatalog.newProductsEntry(
 			productName = "Simple T-Shirt",

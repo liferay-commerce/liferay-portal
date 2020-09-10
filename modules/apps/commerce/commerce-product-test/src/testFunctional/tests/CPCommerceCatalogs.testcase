@@ -27,9 +27,9 @@ definition {
 		else {
 			Navigator.openURL();
 
-			ApplicationsMenu.gotoPortlet(
-				category = "Commerce",
-				panel = "Control Panel",
+			CommerceNavigator.gotoPortlet(
+				category = "Product Management",
+				panel = "Commerce",
 				portlet = "Catalogs");
 
 			if (IsElementNotPresent(locator1 = "CommerceNavigation#EMPTY_SEARCH_CONTAINER")) {
@@ -42,9 +42,9 @@ definition {
 		property portal.acceptance = "quarantine";
 		property test.name.skip.portal.instance = "CPCommerceCatalogs#CreateNewCatalog";
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Commerce",
-			panel = "Control Panel",
+		CommerceNavigator.gotoPortlet(
+			category = "Product Management",
+			panel = "Commerce",
 			portlet = "Catalogs");
 
 		Click(locator1 = "Button#PLUS");
@@ -60,9 +60,9 @@ definition {
 
 		Refresh();
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Commerce",
-			panel = "Control Panel",
+		CommerceNavigator.gotoPortlet(
+			category = "Product Management",
+			panel = "Commerce",
 			portlet = "Catalogs");
 
 		CommerceNavigator.gotoEntry(entryName = "Test Catalog");

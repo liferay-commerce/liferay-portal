@@ -20,9 +20,9 @@ definition {
 		else {
 			Navigator.openURL();
 
-			ApplicationsMenu.gotoPortlet(
-				category = "Commerce",
-				panel = "Control Panel",
+			CommerceNavigator.gotoPortlet(
+				category = "Pricing",
+				panel = "Commerce",
 				portlet = "Price Lists");
 
 			if (IsElementNotPresent(locator1 = "CommerceNavigation#EMPTY_SEARCH_CONTAINER")) {
@@ -35,9 +35,9 @@ definition {
 		property portal.acceptance = "quarantine";
 		property test.name.skip.portal.instance = "CPCommercePriceLists#CreateNewPriceList";
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Commerce",
-			panel = "Control Panel",
+		CommerceNavigator.gotoPortlet(
+			category = "Pricing",
+			panel = "Commerce",
 			portlet = "Price Lists");
 
 		Click(locator1 = "Button#PLUS");
@@ -50,9 +50,9 @@ definition {
 
 		AssertElementPresent(locator1 = "Message#SUCCESS");
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Commerce",
-			panel = "Control Panel",
+		CommerceNavigator.gotoPortlet(
+			category = "Pricing",
+			panel = "Commerce",
 			portlet = "Price Lists");
 
 		Click(
