@@ -42,6 +42,51 @@ definition {
 		AssertElementPresent(locator1 = "CommerceEntry#NAME_FIELD");
 	}
 
+	macro gotoProductMenuCommercePortlet {
+		if (("${portlet}" == "Products") || ("${portlet}" == "Options") || ("${portlet}" == "Specifications")
+			|| ("${portlet}" == "Bill of Materials") || ("${portlet}" == "Applications")) {
+
+			ProductMenu.gotoPortlet(
+				category = "Commerce",
+				panel = "Control Panel",
+				portlet = "Products");
+
+			if ("${portlet}" == "Bill of Materials") {
+				CommerceNavigator.gotoCommercePortletNavItem(navItem = "BOM Admin");
+			}
+			else {
+				CommerceNavigator.gotoCommercePortletNavItem(navItem = "${portlet}");
+			}
+		}
+		else if (("${portlet}" == "Price Lists") || ("${portlet}" == "Discounts") || ("${portlet}" == "Promotions")
+			|| ("${portlet}" == "Product Groups")) {
+
+			ProductMenu.gotoPortlet(
+				category = "Commerce",
+				panel = "Control Panel",
+				portlet = "Pricing");
+
+			CommerceNavigator.gotoCommercePortletNavItem(navItem = "${portlet}");
+		}
+		else if (("${portlet}" == "Availability Estimates") || ("${portlet}" == "Countries") || ("${portlet}" == "Currencies")
+			|| ("${portlet}" == "Measurement Units") || ("${portlet}" == "Tax Categories") || ("${portlet}" == "Health Check")
+			|| ("${portlet}" == "Warehouses")) {
+
+			ProductMenu.gotoPortlet(
+				category = "Commerce",
+				panel = "Control Panel",
+				portlet = "Settings");
+
+			CommerceNavigator.gotoCommercePortletNavItem(navItem = "${portlet}");
+		}
+		else {
+			ProductMenu.gotoPortlet(
+				category = "Commerce",
+				panel = "Control Panel",
+				portlet = "${portlet}");
+		}
+	}
+
 	macro gotoSpeedwellAccountDropdownItem {
 		Click(locator1 = "CommerceAccelerators#SPEEDWELL_ACCOUNT_DROPDOWN");
 
