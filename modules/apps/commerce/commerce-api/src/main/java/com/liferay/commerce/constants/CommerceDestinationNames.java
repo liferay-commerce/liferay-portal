@@ -20,15 +20,18 @@ package com.liferay.commerce.constants;
  */
 public class CommerceDestinationNames {
 
-	public static final String ORDER_STATUS = "liferay/order_status";
+	public static final String ORDER_STATUS = "liferay/commerce_order_status";
 
-	public static final String PAYMENT_STATUS = "liferay/payment_status";
+	public static final String PAYMENT_STATUS =
+		"liferay/commerce_payment_status";
 
-	public static final String SHIPMENT_STATUS = "liferay/shipment_status";
+	public static final String SHIPMENT_STATUS =
+		"liferay/commerce_shipment_status";
 
-	public static final String STOCK_QUANTITY = "liferay/stock_quantity";
+	public static final String STOCK_QUANTITY =
+		"liferay/commerce_stock_quantity";
 
 	public static final String SUBSCRIPTION_STATUS =
-		"liferay/subscription_status";
+		"liferay/commerce_subscription_status";
 
 }
