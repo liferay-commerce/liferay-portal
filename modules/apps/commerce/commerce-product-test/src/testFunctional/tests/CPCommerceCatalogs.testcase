@@ -32,9 +32,7 @@ definition {
 				panel = "Commerce",
 				portlet = "Catalogs");
 
-			if (IsElementNotPresent(locator1 = "CommerceNavigation#EMPTY_SEARCH_CONTAINER")) {
-				CommerceProducts.deleteProductsEntry();
-			}
+			CommerceConfiguration.commerceCatalogsTearDown();
 		}
 	}
 
