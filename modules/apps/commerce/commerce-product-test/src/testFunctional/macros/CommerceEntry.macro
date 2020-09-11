@@ -100,8 +100,6 @@ definition {
 
 			Button.clickSave();
 		}
-
-		Pause(locator1 = "5000");
 	}
 
 	macro addNewCountriesEntry {
