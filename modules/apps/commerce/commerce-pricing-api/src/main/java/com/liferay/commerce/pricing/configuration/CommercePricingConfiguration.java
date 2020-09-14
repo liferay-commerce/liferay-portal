@@ -66,7 +66,7 @@ public interface CommercePricingConfiguration {
 
 	@Meta.AD(
 		deflt = "" + CommercePricingConstants.DISCOUNT_CHAIN_METHOD,
-		name = "discount-application-strategy", required = false
+		name = "promotion-application-strategy", required = false
 	)
 	public String commerceDiscountApplicationStrategy();
 

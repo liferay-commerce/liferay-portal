@@ -21,7 +21,7 @@ public class CommercePricingClassScreenNavigationConstants {
 
 	public static final String CATEGORY_KEY_DETAILS = "details";
 
-	public static final String CATEGORY_KEY_DISCOUNTS = "discounts";
+	public static final String CATEGORY_KEY_DISCOUNTS = "promotions";
 
 	public static final String CATEGORY_KEY_PRICE_LISTS = "price-lists";
 

@@ -339,7 +339,7 @@ public class CommerceDiscountDisplayContext extends BasePricingDisplayContext {
 					dropdownItem.setLabel(
 						LanguageUtil.get(
 							commercePricingRequestHelper.getRequest(),
-							"add-discount"));
+							"add-promotion"));
 					dropdownItem.setTarget("modal");
 				});
 		}
@@ -382,7 +382,7 @@ public class CommerceDiscountDisplayContext extends BasePricingDisplayContext {
 					dropdownItem.setLabel(
 						LanguageUtil.get(
 							commercePricingRequestHelper.getRequest(),
-							"add-discount-rule"));
+							"add-promotion-rule"));
 					dropdownItem.setTarget("modal");
 				});
 		}
