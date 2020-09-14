@@ -21,6 +21,8 @@ import com.liferay.portal.kernel.messaging.DestinationFactory;
 import com.liferay.portal.kernel.util.HashMapDictionary;
 
 import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -41,39 +43,58 @@ public class CommerceMessagingConfigurator {
 
 	@Activate
 	protected void activate(BundleContext bundleContext) {
-		_orderStatusServiceRegistration = _registerDestination(
-			bundleContext, CommerceDestinationNames.ORDER_STATUS);
-		_paymentStatusServiceRegistration = _registerDestination(
-			bundleContext, CommerceDestinationNames.PAYMENT_STATUS);
-		_shipmentStatusServiceRegistration = _registerDestination(
-			bundleContext, CommerceDestinationNames.SHIPMENT_STATUS);
-		_stockQuantityServiceRegistration = _registerDestination(
-			bundleContext, CommerceDestinationNames.STOCK_QUANTITY);
-		_subscriptionStatusServiceRegistration = _registerDestination(
-			bundleContext, CommerceDestinationNames.SUBSCRIPTION_STATUS);
+		_serviceRegistrations.put(
+			"orderStatus",
+			_registerDestination(
+				bundleContext, CommerceDestinationNames.ORDER_STATUS));
+		_serviceRegistrations.put(
+			"orderStatusOld",
+			_registerDestination(bundleContext, "liferay/order_status"));
+
+		_serviceRegistrations.put(
+			"paymentStatus",
+			_registerDestination(
+				bundleContext, CommerceDestinationNames.PAYMENT_STATUS));
+		_serviceRegistrations.put(
+			"paymentStatusOld",
+			_registerDestination(bundleContext, "liferay/payment_status"));
+
+		_serviceRegistrations.put(
+			"shipmentStatus",
+			_registerDestination(
+				bundleContext, CommerceDestinationNames.SHIPMENT_STATUS));
+		_serviceRegistrations.put(
+			"shipmentStatusOld",
+			_registerDestination(bundleContext, "liferay/shipment_status"));
+
+		_serviceRegistrations.put(
+			"stockQuantity",
+			_registerDestination(
+				bundleContext, CommerceDestinationNames.STOCK_QUANTITY));
+		_serviceRegistrations.put(
+			"stockQuantityOld",
+			_registerDestination(bundleContext, "liferay/stock_quantity"));
+
+		_serviceRegistrations.put(
+			"subscriptionStatus",
+			_registerDestination(
+				bundleContext, CommerceDestinationNames.SUBSCRIPTION_STATUS));
+		_serviceRegistrations.put(
+			"subscriptionStatusOld",
+			_registerDestination(bundleContext, "liferay/subscription_status"));
 	}
 
 	@Deactivate
 	protected void deactivate() {
-		if (_orderStatusServiceRegistration != null) {
-			_orderStatusServiceRegistration.unregister();
+		for (ServiceRegistration<Destination> serviceRegistration :
+				_serviceRegistrations.values()) {
+
+			if (serviceRegistration != null) {
+				serviceRegistration.unregister();
+			}
 		}
 
-		if (_paymentStatusServiceRegistration != null) {
-			_paymentStatusServiceRegistration.unregister();
-		}
-
-		if (_shipmentStatusServiceRegistration != null) {
-			_shipmentStatusServiceRegistration.unregister();
-		}
-
-		if (_stockQuantityServiceRegistration != null) {
-			_stockQuantityServiceRegistration.unregister();
-		}
-
-		if (_subscriptionStatusServiceRegistration != null) {
-			_subscriptionStatusServiceRegistration.unregister();
-		}
+		_serviceRegistrations.clear();
 	}
 
 	private ServiceRegistration<Destination> _registerDestination(
@@ -97,15 +118,7 @@ public class CommerceMessagingConfigurator {
 	@Reference
 	private DestinationFactory _destinationFactory;
 
-	private volatile ServiceRegistration<Destination>
-		_orderStatusServiceRegistration;
-	private volatile ServiceRegistration<Destination>
-		_paymentStatusServiceRegistration;
-	private volatile ServiceRegistration<Destination>
-		_shipmentStatusServiceRegistration;
-	private volatile ServiceRegistration<Destination>
-		_stockQuantityServiceRegistration;
-	private volatile ServiceRegistration<Destination>
-		_subscriptionStatusServiceRegistration;
+	private final Map<String, ServiceRegistration<Destination>>
+		_serviceRegistrations = new HashMap<>();
 
 }
