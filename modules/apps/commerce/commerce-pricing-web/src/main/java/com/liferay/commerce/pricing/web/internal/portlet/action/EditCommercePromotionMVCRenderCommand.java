@@ -12,34 +12,36 @@
  * details.
  */
 
-package com.liferay.commerce.pricing.web.internal.portlet;
+package com.liferay.commerce.pricing.web.internal.portlet.action;
 
 import com.liferay.commerce.pricing.constants.CommercePricingPortletKeys;
-import com.liferay.portal.kernel.portlet.BasePortletProvider;
-import com.liferay.portal.kernel.portlet.EditPortletProvider;
-import com.liferay.portal.kernel.portlet.ManagePortletProvider;
-import com.liferay.portal.kernel.portlet.ViewPortletProvider;
+import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
+
+import javax.portlet.PortletException;
+import javax.portlet.RenderRequest;
+import javax.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Component;
 
 /**
- * @author Marco Leo
+ * @author Alec Sloan
  */
 @Component(
 	enabled = false, immediate = true,
-	property = "model.class.name=com.liferay.commerce.discount.model.CommerceDiscount",
-	service = {
-		EditPortletProvider.class, ManagePortletProvider.class,
-		ViewPortletProvider.class
-	}
+	property = {
+		"javax.portlet.name=" + CommercePricingPortletKeys.COMMERCE_PROMOTION,
+		"mvc.command.name=editCommerceDiscount"
+	},
+	service = MVCRenderCommand.class
 )
-public class CommerceDiscountPortletProvider
-	extends BasePortletProvider
-	implements EditPortletProvider, ManagePortletProvider, ViewPortletProvider {
+public class EditCommerceDiscountMVCRenderCommand implements MVCRenderCommand {
 
 	@Override
-	public String getPortletName() {
-		return CommercePricingPortletKeys.COMMERCE_PROMOTION;
+	public String render(
+			RenderRequest renderRequest, RenderResponse renderResponse)
+		throws PortletException {
+
+		return "/discount/edit_discount.jsp";
 	}
 
 }

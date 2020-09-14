@@ -14,15 +14,14 @@
 
 package com.liferay.commerce.pricing.web.internal.portlet;
 
-import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
-import com.liferay.commerce.discount.model.CommerceDiscount;
-import com.liferay.commerce.discount.rule.type.CommerceDiscountRuleTypeRegistry;
-import com.liferay.commerce.discount.service.CommerceDiscountRuleService;
-import com.liferay.commerce.discount.service.CommerceDiscountService;
-import com.liferay.commerce.discount.target.CommerceDiscountTargetRegistry;
-import com.liferay.commerce.percentage.PercentageFormatter;
+import com.liferay.commerce.currency.service.CommerceCurrencyService;
+import com.liferay.commerce.price.list.model.CommercePriceList;
+import com.liferay.commerce.price.list.service.CommercePriceListService;
 import com.liferay.commerce.pricing.constants.CommercePricingPortletKeys;
-import com.liferay.commerce.pricing.web.internal.display.context.CommerceDiscountDisplayContext;
+import com.liferay.commerce.pricing.service.CommercePriceModifierService;
+import com.liferay.commerce.pricing.type.CommercePriceModifierTypeRegistry;
+import com.liferay.commerce.pricing.web.internal.display.context.CommercePriceListDisplayContext;
+import com.liferay.commerce.product.service.CommerceCatalogService;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.util.Portal;
@@ -45,7 +44,7 @@ import org.osgi.service.component.annotations.Reference;
 	enabled = false, immediate = true,
 	property = {
 		"com.liferay.portlet.add-default-resource=true",
-		"com.liferay.portlet.css-class-wrapper=portlet-commerce-discount",
+		"com.liferay.portlet.css-class-wrapper=portlet-commerce-promotion",
 		"com.liferay.portlet.display-category=category.hidden",
 		"com.liferay.portlet.header-portlet-css=/css/main.css",
 		"com.liferay.portlet.layout-cacheable=true",
@@ -55,60 +54,57 @@ import org.osgi.service.component.annotations.Reference;
 		"com.liferay.portlet.private-session-attributes=false",
 		"com.liferay.portlet.render-weight=50",
 		"com.liferay.portlet.scopeable=true",
-		"javax.portlet.display-name=Promotions",
+		"javax.portlet.display-name=Sale Price Lists",
 		"javax.portlet.expiration-cache=0",
-		"javax.portlet.init-param.view-template=/discount/view.jsp",
-		"javax.portlet.name=" + CommercePricingPortletKeys.COMMERCE_PROMOTION,
+		"javax.portlet.init-param.view-template=/price_lists/view.jsp",
+		"javax.portlet.name=" + CommercePricingPortletKeys.COMMERCE_SALE_PRICE_LIST,
 		"javax.portlet.resource-bundle=content.Language",
 		"javax.portlet.security-role-ref=power-user,user"
 	},
-	service = {CommerceDiscountPortlet.class, Portlet.class}
+	service = {CommercePromotionPortlet.class, Portlet.class}
 )
-public class CommerceDiscountPortlet extends MVCPortlet {
+public class CommercePromotionPortlet extends MVCPortlet {
 
 	@Override
 	public void render(
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws IOException, PortletException {
 
-		CommerceDiscountDisplayContext commerceDiscountDisplayContext =
-			new CommerceDiscountDisplayContext(
-				_commerceCurrencyLocalService,
-				_commerceDiscountModelResourcePermission,
-				_commerceDiscountService, _commerceDiscountRuleService,
-				_commerceDiscountRuleTypeRegistry,
-				_commerceDiscountTargetRegistry, _percentageFormatter,
-				_portal.getHttpServletRequest(renderRequest), _portal);
+		CommercePriceListDisplayContext commercePriceListDisplayContext =
+			new CommercePriceListDisplayContext(
+				_commerceCatalogService, _commerceCurrencyService,
+				_commercePriceListModelResourcePermission,
+				_commercePriceListService, _commercePriceModifierService,
+				_commercePriceModifierTypeRegistry,
+				_portal.getHttpServletRequest(renderRequest));
 
 		renderRequest.setAttribute(
-			WebKeys.PORTLET_DISPLAY_CONTEXT, commerceDiscountDisplayContext);
+			WebKeys.PORTLET_DISPLAY_CONTEXT, commercePriceListDisplayContext);
 
 		super.render(renderRequest, renderResponse);
 	}
 
 	@Reference
-	private CommerceCurrencyLocalService _commerceCurrencyLocalService;
+	private CommerceCatalogService _commerceCatalogService;
+
+	@Reference
+	private CommerceCurrencyService _commerceCurrencyService;
 
 	@Reference(
-		target = "(model.class.name=com.liferay.commerce.discount.model.CommerceDiscount)"
+		target = "(model.class.name=com.liferay.commerce.price.list.model.CommercePriceList)"
 	)
-	private ModelResourcePermission<CommerceDiscount>
-		_commerceDiscountModelResourcePermission;
+	private ModelResourcePermission<CommercePriceList>
+		_commercePriceListModelResourcePermission;
 
 	@Reference
-	private CommerceDiscountRuleService _commerceDiscountRuleService;
+	private CommercePriceListService _commercePriceListService;
 
 	@Reference
-	private CommerceDiscountRuleTypeRegistry _commerceDiscountRuleTypeRegistry;
+	private CommercePriceModifierService _commercePriceModifierService;
 
 	@Reference
-	private CommerceDiscountService _commerceDiscountService;
-
-	@Reference
-	private CommerceDiscountTargetRegistry _commerceDiscountTargetRegistry;
-
-	@Reference
-	private PercentageFormatter _percentageFormatter;
+	private CommercePriceModifierTypeRegistry
+		_commercePriceModifierTypeRegistry;
 
 	@Reference
 	private Portal _portal;
