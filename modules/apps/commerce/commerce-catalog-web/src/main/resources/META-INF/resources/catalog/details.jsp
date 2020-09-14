@@ -74,7 +74,7 @@ boolean isViewOnly = !commerceCatalogDisplayContext.hasPermission(commerceCatalo
 
 					</aui:select>
 
-					<aui:select disabled="<%= isViewOnly %>" label="currency" name="commerceCurrencyCode" required="<%= true %>" title="currency">
+					<aui:select disabled="<%= isViewOnly %>" label="default-currency" name="commerceCurrencyCode" required="<%= true %>" title="currency">
 
 						<%
 						for (CommerceCurrency commerceCurrency : commerceCurrencies) {

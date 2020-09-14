@@ -55,7 +55,7 @@ List<CommerceCurrency> commerceCurrencies = commerceCatalogDisplayContext.getCom
 
 			</aui:select>
 
-			<aui:select label="currency" name="currencyCode" required="<%= true %>" title="currency">
+			<aui:select label="default-currency" name="currencyCode" required="<%= true %>" title="currency">
 
 				<%
 				for (CommerceCurrency commerceCurrency : commerceCurrencies) {
