@@ -46,7 +46,7 @@ public interface CommercePricingConfiguration {
 
 	@Meta.AD(
 		deflt = CommercePricingConstants.ORDER_BY_HIERARCHY,
-		name = "promotion-discovery-method", required = false
+		name = "sale-price-list-discovery-method", required = false
 	)
 	public String commercePromotionDiscovery();
 

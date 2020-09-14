@@ -290,7 +290,7 @@ public class PricingCommerceHealthHttpStatus
 						LanguageUtil.format(
 							LocaleUtil.fromLanguageId(
 								commerceCatalog.getCatalogDefaultLanguageId()),
-							"x-base-promotion", commerceCatalog.getName(),
+							"x-base-sale-price-list", commerceCatalog.getName(),
 							false),
 						_serviceContext);
 				}

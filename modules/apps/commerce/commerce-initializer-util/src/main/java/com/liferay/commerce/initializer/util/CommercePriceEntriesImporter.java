@@ -88,7 +88,7 @@ public class CommercePriceEntriesImporter {
 				else if (priceListType.equals(
 							CommercePriceListConstants.TYPE_PROMOTION)) {
 
-					_log.warn("Catalog base promotion is not present");
+					_log.warn("Catalog base sale price list is not present");
 				}
 			}
 

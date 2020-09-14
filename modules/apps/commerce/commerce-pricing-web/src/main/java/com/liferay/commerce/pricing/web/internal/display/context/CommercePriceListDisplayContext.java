@@ -240,7 +240,7 @@ public class CommercePriceListDisplayContext
 		else if (portletName.equals(
 					CommercePricingPortletKeys.COMMERCE_PROMOTION)) {
 
-			title = "create-new-promotion";
+			title = "create-new-sale-price-list";
 		}
 
 		return LanguageUtil.get(httpServletRequest, title);

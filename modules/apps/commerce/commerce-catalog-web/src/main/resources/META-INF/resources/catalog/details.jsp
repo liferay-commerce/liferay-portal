@@ -123,7 +123,7 @@ boolean isViewOnly = !commerceCatalogDisplayContext.hasPermission(commerceCatalo
 							});
 						</aui:script>
 
-						<label class="control-label" for="basePromotionCommercePriceListId"><%= LanguageUtil.get(request, "base-promotion") %></label>
+						<label class="control-label" for="basePromotionCommercePriceListId"><%= LanguageUtil.get(request, "base-sale-price-list") %></label>
 
 						<div class="mb-4" id="base-promotion-autocomplete-root"></div>
 

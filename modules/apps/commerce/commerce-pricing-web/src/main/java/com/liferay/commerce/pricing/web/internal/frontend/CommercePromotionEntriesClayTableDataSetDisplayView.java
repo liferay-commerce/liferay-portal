@@ -57,10 +57,10 @@ public class CommercePromotionEntriesClayTableDataSetDisplayView
 			"product.name.LANG", "name");
 
 		clayTableSchemaBuilder.addClayTableSchemaField(
-			"sku.basePromoPriceFormatted", "base-promotion-price");
+			"sku.basePromoPriceFormatted", "base-sale-price");
 
 		clayTableSchemaBuilder.addClayTableSchemaField(
-			"priceFormatted", "promotion-price");
+			"priceFormatted", "sale-price");
 
 		clayTableSchemaBuilder.addClayTableSchemaField(
 			"discountLevelsFormatted", "unit-discount");
