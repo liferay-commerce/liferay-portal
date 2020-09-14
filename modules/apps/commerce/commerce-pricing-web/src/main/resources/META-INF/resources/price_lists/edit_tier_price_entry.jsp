@@ -43,7 +43,7 @@ if ((commerceTierPriceEntry != null) && (commerceTierPriceEntry.getExpirationDat
 <portlet:actionURL name="editCommerceTierPriceEntry" var="editCommerceTierPriceEntryActionURL" />
 
 <commerce-ui:side-panel-content
-	title='<%= LanguageUtil.get(request, "edit-price-tier") %>'
+	title='<%= LanguageUtil.get(request, "edit-sale-price") %>'
 >
 	<aui:form action="<%= editCommerceTierPriceEntryActionURL %>" cssClass="container-fluid-1280" method="post" name="fm">
 		<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.UPDATE %>" />

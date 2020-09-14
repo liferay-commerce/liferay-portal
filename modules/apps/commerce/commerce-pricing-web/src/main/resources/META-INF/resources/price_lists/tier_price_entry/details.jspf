@@ -24,7 +24,7 @@ boolean discountDiscovery = BeanParamUtil.getBoolean(commerceTierPriceEntry, req
 
 <aui:input label='<%= LanguageUtil.get(request, "quantity") %>' name="minQuantity" />
 
-<aui:input label="tier-price" name="price" suffix="<%= HtmlUtil.escape(commerceCurrency.getCode()) %>" type="text" value="<%= commerceCurrency.round(price) %>">
+<aui:input label="sale-price" name="price" suffix="<%= HtmlUtil.escape(commerceCurrency.getCode()) %>" type="text" value="<%= commerceCurrency.round(price) %>">
 	<aui:validator name="number" />
 </aui:input>
 

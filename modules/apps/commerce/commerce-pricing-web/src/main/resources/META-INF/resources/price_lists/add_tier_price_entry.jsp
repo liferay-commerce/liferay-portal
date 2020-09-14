@@ -31,7 +31,7 @@ boolean neverExpire = true;
 <portlet:actionURL name="editCommerceTierPriceEntry" var="editCommerceTierPriceEntryActionURL" />
 
 <commerce-ui:modal-content
-	title='<%= LanguageUtil.get(request, "add-new-price-tier") %>'
+	title='<%= LanguageUtil.get(request, "add-new-sale-price") %>'
 >
 	<aui:form action="<%= editCommerceTierPriceEntryActionURL %>" cssClass="container-fluid-1280" method="post" name="fm">
 		<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.ADD %>" />

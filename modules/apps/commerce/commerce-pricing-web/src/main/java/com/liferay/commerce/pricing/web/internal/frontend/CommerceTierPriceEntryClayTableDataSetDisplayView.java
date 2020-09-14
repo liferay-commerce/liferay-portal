@@ -45,7 +45,7 @@ public class CommerceTierPriceEntryClayTableDataSetDisplayView
 
 		ClayTableSchemaField priceField =
 			clayTableSchemaBuilder.addClayTableSchemaField(
-				"price", "tier-price");
+				"price", "sale-price");
 
 		priceField.setContentRenderer("actionLink");
 
