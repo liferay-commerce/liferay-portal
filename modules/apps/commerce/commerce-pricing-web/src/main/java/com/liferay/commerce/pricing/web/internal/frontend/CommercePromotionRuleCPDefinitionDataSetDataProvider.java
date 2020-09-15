@@ -63,7 +63,7 @@ public class CommercePromotionRuleCPDefinitionDataSetDataProvider
 		throws PortalException {
 
 		try {
-			return _getDiscountRuleCPDefinitions(httpServletRequest, filter);
+			return _getPromotionRuleCPDefinitions(httpServletRequest, filter);
 		}
 		catch (Exception exception) {
 			_log.error(exception, exception);
@@ -79,7 +79,7 @@ public class CommercePromotionRuleCPDefinitionDataSetDataProvider
 
 		try {
 			List<PromotionRuleCPDefinition> promotionRuleCPDefinitions =
-				_getDiscountRuleCPDefinitions(httpServletRequest, filter);
+				_getPromotionRuleCPDefinitions(httpServletRequest, filter);
 
 			return promotionRuleCPDefinitions.size();
 		}
@@ -90,7 +90,7 @@ public class CommercePromotionRuleCPDefinitionDataSetDataProvider
 		return 0;
 	}
 
-	private List<PromotionRuleCPDefinition> _getDiscountRuleCPDefinitions(
+	private List<PromotionRuleCPDefinition> _getPromotionRuleCPDefinitions(
 			HttpServletRequest httpServletRequest, Filter filter)
 		throws Exception {
 
