@@ -17,8 +17,7 @@
 <%@ include file="/init.jsp" %>
 
 <%
-CommercePromotionRuleDisplayContext
-	commercePromotionRuleDisplayContext = (CommercePromotionRuleDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
+CommercePromotionRuleDisplayContext commercePromotionRuleDisplayContext = (CommercePromotionRuleDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
 
 CommerceDiscountRule commerceDiscountRule = commercePromotionRuleDisplayContext.getCommerceDiscountRule();
 

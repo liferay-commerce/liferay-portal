@@ -56,10 +56,10 @@ public class EditCommercePromotionRuleMVCRenderCommand
 
 		CommercePromotionRuleDisplayContext
 			commercePromotionRuleDisplayContext =
-			new CommercePromotionRuleDisplayContext(
-				_commerceDiscountRuleService,
-				_commerceDiscountRuleTypeJSPContributorRegistry,
-				_commerceDiscountRuleTypeRegistry, httpServletRequest);
+				new CommercePromotionRuleDisplayContext(
+					_commerceDiscountRuleService,
+					_commerceDiscountRuleTypeJSPContributorRegistry,
+					_commerceDiscountRuleTypeRegistry, httpServletRequest);
 
 		httpServletRequest.setAttribute(
 			WebKeys.PORTLET_DISPLAY_CONTEXT,

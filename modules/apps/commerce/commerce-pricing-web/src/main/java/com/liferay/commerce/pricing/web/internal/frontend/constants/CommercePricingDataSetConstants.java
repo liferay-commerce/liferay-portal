@@ -20,38 +20,6 @@ package com.liferay.commerce.pricing.web.internal.frontend.constants;
  */
 public class CommercePricingDataSetConstants {
 
-	public static final String COMMERCE_DATA_SET_KEY_PROMOTION_CATEGORIES =
-		"commercePromotionCategories";
-
-	public static final String COMMERCE_DATA_SET_KEY_PROMOTION_PRICING_CLASSES =
-		"commercePromotionPricingClasses";
-
-	public static final String
-		COMMERCE_DATA_SET_KEY_PROMOTION_PRODUCT_DEFINITIONS =
-			"commercePromotionProductDefinitions";
-
-	public static final String
-		COMMERCE_DATA_SET_KEY_PROMOTION_QUALIFIER_ACCOUNT_GROUPS =
-			"commercePromotionQualifierAccountGroups";
-
-	public static final String
-		COMMERCE_DATA_SET_KEY_PROMOTION_QUALIFIER_ACCOUNTS =
-			"commercePromotionQualifierAccounts";
-
-	public static final String
-		COMMERCE_DATA_SET_KEY_PROMOTION_QUALIFIER_CHANNELS =
-			"commercePromotionQualifierChannels";
-
-	public static final String
-		COMMERCE_DATA_SET_KEY_PROMOTION_RULE_PRODUCT_DEFINITIONS =
-			"commercePromotionRuleProductDefinitions";
-
-	public static final String COMMERCE_DATA_SET_KEY_PROMOTION_RULES =
-		"commercePromotionRules";
-
-	public static final String COMMERCE_DATA_SET_KEY_PROMOTIONS =
-		"commercePromotions";
-
 	public static final String COMMERCE_DATA_SET_KEY_PRICE_LIST_ENTRIES =
 		"commercePriceListEntries";
 
@@ -87,9 +55,6 @@ public class CommercePricingDataSetConstants {
 	public static final String COMMERCE_DATA_SET_KEY_PRICING_CLASSES =
 		"commercePricingClasses";
 
-	public static final String COMMERCE_DATA_SET_KEY_PRICING_CLASSES_PROMOTIONS =
-		"commercePricingClassesPromotions";
-
 	public static final String
 		COMMERCE_DATA_SET_KEY_PRICING_CLASSES_PRICE_LISTS =
 			"commercePricingClassesPriceLists";
@@ -97,6 +62,42 @@ public class CommercePricingDataSetConstants {
 	public static final String
 		COMMERCE_DATA_SET_KEY_PRICING_CLASSES_PRODUCT_DEFINITIONS =
 			"commercePricingClassesCPDefinitions";
+
+	public static final String
+		COMMERCE_DATA_SET_KEY_PRICING_CLASSES_PROMOTIONS =
+			"commercePricingClassesPromotions";
+
+	public static final String COMMERCE_DATA_SET_KEY_PROMOTION_CATEGORIES =
+		"commercePromotionCategories";
+
+	public static final String COMMERCE_DATA_SET_KEY_PROMOTION_PRICING_CLASSES =
+		"commercePromotionPricingClasses";
+
+	public static final String
+		COMMERCE_DATA_SET_KEY_PROMOTION_PRODUCT_DEFINITIONS =
+			"commercePromotionProductDefinitions";
+
+	public static final String
+		COMMERCE_DATA_SET_KEY_PROMOTION_QUALIFIER_ACCOUNT_GROUPS =
+			"commercePromotionQualifierAccountGroups";
+
+	public static final String
+		COMMERCE_DATA_SET_KEY_PROMOTION_QUALIFIER_ACCOUNTS =
+			"commercePromotionQualifierAccounts";
+
+	public static final String
+		COMMERCE_DATA_SET_KEY_PROMOTION_QUALIFIER_CHANNELS =
+			"commercePromotionQualifierChannels";
+
+	public static final String
+		COMMERCE_DATA_SET_KEY_PROMOTION_RULE_PRODUCT_DEFINITIONS =
+			"commercePromotionRuleProductDefinitions";
+
+	public static final String COMMERCE_DATA_SET_KEY_PROMOTION_RULES =
+		"commercePromotionRules";
+
+	public static final String COMMERCE_DATA_SET_KEY_PROMOTIONS =
+		"commercePromotions";
 
 	public static final String COMMERCE_DATA_SET_KEY_SALE_PRICE_LIST_ENTRIES =
 		"commerceSalePriceListEntries";

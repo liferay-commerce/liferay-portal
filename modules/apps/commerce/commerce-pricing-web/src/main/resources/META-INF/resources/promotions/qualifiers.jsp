@@ -17,8 +17,7 @@
 <%@ include file="/init.jsp" %>
 
 <%
-CommercePromotionQualifiersDisplayContext
-	commerceDiscountQualifiersDisplayContext = (CommercePromotionQualifiersDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
+CommercePromotionQualifiersDisplayContext commerceDiscountQualifiersDisplayContext = (CommercePromotionQualifiersDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
 
 CommerceDiscount commerceDiscount = commerceDiscountQualifiersDisplayContext.getCommerceDiscount();
 long commerceDiscountId = commerceDiscountQualifiersDisplayContext.getCommerceDiscountId();

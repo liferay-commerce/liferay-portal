@@ -17,8 +17,7 @@
 <%@ include file="/init.jsp" %>
 
 <%
-CommercePricingClassPromotionDisplayContext
-	commercePricingClassPromotionDisplayContext = (CommercePricingClassPromotionDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
+CommercePricingClassPromotionDisplayContext commercePricingClassPromotionDisplayContext = (CommercePricingClassPromotionDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
 
 boolean hasPermission = commercePricingClassPromotionDisplayContext.hasPermission();
 

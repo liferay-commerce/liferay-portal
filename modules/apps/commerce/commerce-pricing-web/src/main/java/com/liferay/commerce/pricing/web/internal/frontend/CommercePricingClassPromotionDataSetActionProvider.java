@@ -55,7 +55,8 @@ public class CommercePricingClassPromotionDataSetActionProvider
 			HttpServletRequest httpServletRequest, long groupId, Object model)
 		throws PortalException {
 
-		PricingClassPromotion pricingClassPromotion = (PricingClassPromotion)model;
+		PricingClassPromotion pricingClassPromotion =
+			(PricingClassPromotion)model;
 
 		return DropdownItemListBuilder.add(
 			() -> _commerceDiscountModelResourcePermission.contains(

@@ -59,8 +59,8 @@ public class CommerceDiscountPanelApp extends BasePanelApp {
 
 		if (show) {
 			boolean viewCommerceDiscounts = _portletPermission.contains(
-				permissionChecker, CommercePricingPortletKeys.COMMERCE_PROMOTION,
-				ActionKeys.VIEW);
+				permissionChecker,
+				CommercePricingPortletKeys.COMMERCE_PROMOTION, ActionKeys.VIEW);
 
 			if (!viewCommerceDiscounts ||
 				!Objects.equals(
