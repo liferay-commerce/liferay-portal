@@ -26,7 +26,7 @@ import org.osgi.service.component.annotations.Component;
 @Component(
 	enabled = false, immediate = true,
 	property = {
-		"clay.data.set.display.name=" + CommercePricingDataSetConstants.COMMERCE_DATA_SET_KEY_DISCOUNTS,
+		"clay.data.set.display.name=" + CommercePricingDataSetConstants.COMMERCE_DATA_SET_KEY_PROMOTIONS,
 		"clay.data.set.display.name=" + CommercePricingDataSetConstants.COMMERCE_DATA_SET_KEY_PRICE_LISTS
 	},
 	service = ClayDataSetFilter.class
