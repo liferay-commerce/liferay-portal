@@ -43,7 +43,7 @@ import org.osgi.service.component.annotations.Reference;
 	},
 	service = MVCRenderCommand.class
 )
-public class EditCommerceDiscountRuleMVCRenderCommand
+public class EditCommercePromotionRuleMVCRenderCommand
 	implements MVCRenderCommand {
 
 	@Override
@@ -65,7 +65,7 @@ public class EditCommerceDiscountRuleMVCRenderCommand
 			WebKeys.PORTLET_DISPLAY_CONTEXT,
 			commercePromotionRuleDisplayContext);
 
-		return "/discount/rule/edit_discount_rule.jsp";
+		return "/promotions/rule/edit_promotion_rule.jsp";
 	}
 
 	@Reference

@@ -34,7 +34,7 @@ import org.osgi.service.component.annotations.Component;
 	},
 	service = MVCRenderCommand.class
 )
-public class EditCommerceDiscountExternalReferenceCodeMVCRenderCommand
+public class EditCommercePromotionExternalReferenceCodeMVCRenderCommand
 	implements MVCRenderCommand {
 
 	@Override
@@ -42,7 +42,7 @@ public class EditCommerceDiscountExternalReferenceCodeMVCRenderCommand
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws PortletException {
 
-		return "/discount/external_reference_code.jsp";
+		return "/promotions/external_reference_code.jsp";
 	}
 
 }

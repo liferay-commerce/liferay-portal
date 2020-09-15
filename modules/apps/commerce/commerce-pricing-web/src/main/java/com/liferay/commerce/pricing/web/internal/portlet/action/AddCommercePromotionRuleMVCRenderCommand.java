@@ -34,7 +34,7 @@ import org.osgi.service.component.annotations.Component;
 	},
 	service = MVCRenderCommand.class
 )
-public class AddCommerceDiscountRuleMVCRenderCommand
+public class AddCommercePromotionRuleMVCRenderCommand
 	implements MVCRenderCommand {
 
 	@Override
@@ -42,7 +42,7 @@ public class AddCommerceDiscountRuleMVCRenderCommand
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws PortletException {
 
-		return "/discount/rule/add_discount_rule.jsp";
+		return "/promotions/rule/add_promotion_rule.jsp";
 	}
 
 }

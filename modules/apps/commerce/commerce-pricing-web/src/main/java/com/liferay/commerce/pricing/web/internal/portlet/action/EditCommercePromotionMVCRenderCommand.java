@@ -34,14 +34,14 @@ import org.osgi.service.component.annotations.Component;
 	},
 	service = MVCRenderCommand.class
 )
-public class EditCommerceDiscountMVCRenderCommand implements MVCRenderCommand {
+public class EditCommercePromotionMVCRenderCommand implements MVCRenderCommand {
 
 	@Override
 	public String render(
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws PortletException {
 
-		return "/discount/edit_discount.jsp";
+		return "/promotions/edit_promotion.jsp";
 	}
 
 }
