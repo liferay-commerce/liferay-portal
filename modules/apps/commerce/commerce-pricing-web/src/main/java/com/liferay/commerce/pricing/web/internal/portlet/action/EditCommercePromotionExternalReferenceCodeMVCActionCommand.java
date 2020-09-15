@@ -43,7 +43,7 @@ import org.osgi.service.component.annotations.Reference;
 	},
 	service = MVCActionCommand.class
 )
-public class EditCommerceDiscountExternalReferenceCodeMVCActionCommand
+public class EditCommercePromotionExternalReferenceCodeMVCActionCommand
 	extends BaseMVCActionCommand {
 
 	@Override
@@ -91,7 +91,7 @@ public class EditCommerceDiscountExternalReferenceCodeMVCActionCommand
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		EditCommerceDiscountExternalReferenceCodeMVCActionCommand.class);
+		EditCommercePromotionExternalReferenceCodeMVCActionCommand.class);
 
 	@Reference
 	private CommerceDiscountService _commerceDiscountService;

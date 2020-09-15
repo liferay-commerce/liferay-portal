@@ -44,7 +44,7 @@ import org.osgi.service.component.annotations.Reference;
 	},
 	service = MVCActionCommand.class
 )
-public class EditCommerceDiscountQualifiersMVCActionCommand
+public class EditCommercePromotionQualifiersMVCActionCommand
 	extends BaseMVCActionCommand {
 
 	@Override

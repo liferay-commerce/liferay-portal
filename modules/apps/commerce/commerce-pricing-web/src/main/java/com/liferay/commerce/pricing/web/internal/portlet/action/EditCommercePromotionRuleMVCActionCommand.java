@@ -45,7 +45,7 @@ import org.osgi.service.component.annotations.Reference;
 	},
 	service = MVCActionCommand.class
 )
-public class EditCommerceDiscountRuleMVCActionCommand
+public class EditCommercePromotionRuleMVCActionCommand
 	extends BaseMVCActionCommand {
 
 	protected void deleteCommerceDiscountCPDefinition(

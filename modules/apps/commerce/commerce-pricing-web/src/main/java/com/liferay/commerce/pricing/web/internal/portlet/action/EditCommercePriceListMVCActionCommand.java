@@ -59,7 +59,7 @@ import org.osgi.service.component.annotations.Reference;
 	enabled = false, immediate = true,
 	property = {
 		"javax.portlet.name=" + CommercePricingPortletKeys.COMMERCE_PRICE_LIST,
-		"javax.portlet.name=" + CommercePricingPortletKeys.COMMERCE_PROMOTION,
+		"javax.portlet.name=" + CommercePricingPortletKeys.COMMERCE_SALE_PRICE_LIST,
 		"mvc.command.name=editCommercePriceList"
 	},
 	service = MVCActionCommand.class
@@ -159,7 +159,7 @@ public class EditCommercePriceListMVCActionCommand
 				CommercePriceList.class.getName(), PortletProvider.Action.EDIT);
 		}
 		else if (portletName.equals(
-					CommercePricingPortletKeys.COMMERCE_PROMOTION)) {
+					CommercePricingPortletKeys.COMMERCE_SALE_PRICE_LIST)) {
 
 			portletURL = PortletProviderUtil.getPortletURL(
 				actionRequest, themeDisplay.getScopeGroup(),
