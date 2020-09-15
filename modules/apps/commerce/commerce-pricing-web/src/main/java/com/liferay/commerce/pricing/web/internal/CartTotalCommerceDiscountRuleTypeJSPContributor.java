@@ -68,12 +68,12 @@ public class CartTotalCommerceDiscountRuleTypeJSPContributor
 
 			_jspRenderer.renderJSP(
 				_servletContext, httpServletRequest, httpServletResponse,
-				"/discount/rule/type/cart_total/v1_0/view.jsp");
+				"/promotions/rule/type/cart_total/v1_0/view.jsp");
 		}
 		else {
 			_jspRenderer.renderJSP(
 				_servletContext, httpServletRequest, httpServletResponse,
-				"/discount/rule/type/cart_total/v2_0/view.jsp");
+				"/promotions/rule/type/cart_total/v2_0/view.jsp");
 		}
 	}
 

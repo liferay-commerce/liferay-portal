@@ -69,12 +69,12 @@ public class AddedAllCommerceDiscountRuleTypeJSPContributor
 
 			_jspRenderer.renderJSP(
 				_servletContext, httpServletRequest, httpServletResponse,
-				"/discount/rule/type/added_all/v1_0/view.jsp");
+				"/promotions/rule/type/added_all/v1_0/view.jsp");
 		}
 		else {
 			_jspRenderer.renderJSP(
 				_servletContext, httpServletRequest, httpServletResponse,
-				"/discount/rule/type/added_all/v2_0/view.jsp");
+				"/promotions/rule/type/added_all/v2_0/view.jsp");
 		}
 	}
 
