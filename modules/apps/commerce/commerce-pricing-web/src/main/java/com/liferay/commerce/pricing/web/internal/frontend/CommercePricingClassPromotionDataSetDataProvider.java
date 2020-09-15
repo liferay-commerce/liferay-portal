@@ -18,7 +18,7 @@ import com.liferay.commerce.discount.model.CommerceDiscount;
 import com.liferay.commerce.discount.service.CommerceDiscountService;
 import com.liferay.commerce.frontend.model.LabelField;
 import com.liferay.commerce.pricing.web.internal.frontend.constants.CommercePricingDataSetConstants;
-import com.liferay.commerce.pricing.web.internal.model.PricingClassDiscount;
+import com.liferay.commerce.pricing.web.internal.model.PricingClassPromotion;
 import com.liferay.frontend.taglib.clay.data.Filter;
 import com.liferay.frontend.taglib.clay.data.Pagination;
 import com.liferay.frontend.taglib.clay.data.set.provider.ClayDataSetDataProvider;
@@ -45,16 +45,16 @@ import org.osgi.service.component.annotations.Reference;
 	property = "clay.data.provider.key=" + CommercePricingDataSetConstants.COMMERCE_DATA_SET_KEY_PRICING_CLASSES_PROMOTIONS,
 	service = ClayDataSetDataProvider.class
 )
-public class CommercePricingClassDiscountDataSetDataProvider
-	implements ClayDataSetDataProvider<PricingClassDiscount> {
+public class CommercePricingClassPromotionDataSetDataProvider
+	implements ClayDataSetDataProvider<PricingClassPromotion> {
 
 	@Override
-	public List<PricingClassDiscount> getItems(
+	public List<PricingClassPromotion> getItems(
 			HttpServletRequest httpServletRequest, Filter filter,
 			Pagination pagination, Sort sort)
 		throws PortalException {
 
-		List<PricingClassDiscount> priceClassDiscounts = new ArrayList<>();
+		List<PricingClassPromotion> pricingClassPromotions = new ArrayList<>();
 
 		long commercePricingClassId = ParamUtil.getLong(
 			httpServletRequest, "commercePricingClassId");
@@ -83,8 +83,8 @@ public class CommercePricingClassDiscountDataSetDataProvider
 				statusDisplayStyle = "warning";
 			}
 
-			priceClassDiscounts.add(
-				new PricingClassDiscount(
+			pricingClassPromotions.add(
+				new PricingClassPromotion(
 					commerceDiscount.getCommerceDiscountId(),
 					commerceDiscount.getTitle(), "Product Group",
 					_getDiscountType(commerceDiscount.isUsePercentage()),
@@ -96,7 +96,7 @@ public class CommercePricingClassDiscountDataSetDataProvider
 								commerceDiscount.getStatus())))));
 		}
 
-		return priceClassDiscounts;
+		return pricingClassPromotions;
 	}
 
 	@Override

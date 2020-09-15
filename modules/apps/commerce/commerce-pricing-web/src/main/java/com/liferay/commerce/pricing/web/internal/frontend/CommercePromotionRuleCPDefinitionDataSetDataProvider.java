@@ -18,7 +18,7 @@ import com.liferay.commerce.discount.model.CommerceDiscountRule;
 import com.liferay.commerce.discount.service.CommerceDiscountRuleService;
 import com.liferay.commerce.frontend.model.ImageField;
 import com.liferay.commerce.pricing.web.internal.frontend.constants.CommercePricingDataSetConstants;
-import com.liferay.commerce.pricing.web.internal.model.DiscountRuleCPDefinition;
+import com.liferay.commerce.pricing.web.internal.model.PromotionRuleCPDefinition;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.service.CPDefinitionService;
@@ -53,11 +53,11 @@ import org.osgi.service.component.annotations.Reference;
 	property = "clay.data.provider.key=" + CommercePricingDataSetConstants.COMMERCE_DATA_SET_KEY_PROMOTION_RULE_PRODUCT_DEFINITIONS,
 	service = ClayDataSetDataProvider.class
 )
-public class CommerceDiscountRuleCPDefinitionDataSetDataProvider
-	implements ClayDataSetDataProvider<DiscountRuleCPDefinition> {
+public class CommercePromotionRuleCPDefinitionDataSetDataProvider
+	implements ClayDataSetDataProvider<PromotionRuleCPDefinition> {
 
 	@Override
-	public List<DiscountRuleCPDefinition> getItems(
+	public List<PromotionRuleCPDefinition> getItems(
 			HttpServletRequest httpServletRequest, Filter filter,
 			Pagination pagination, Sort sort)
 		throws PortalException {
@@ -78,10 +78,10 @@ public class CommerceDiscountRuleCPDefinitionDataSetDataProvider
 		throws PortalException {
 
 		try {
-			List<DiscountRuleCPDefinition> discountRuleCPDefinitions =
+			List<PromotionRuleCPDefinition> promotionRuleCPDefinitions =
 				_getDiscountRuleCPDefinitions(httpServletRequest, filter);
 
-			return discountRuleCPDefinitions.size();
+			return promotionRuleCPDefinitions.size();
 		}
 		catch (Exception exception) {
 			_log.error(exception, exception);
@@ -90,11 +90,11 @@ public class CommerceDiscountRuleCPDefinitionDataSetDataProvider
 		return 0;
 	}
 
-	private List<DiscountRuleCPDefinition> _getDiscountRuleCPDefinitions(
+	private List<PromotionRuleCPDefinition> _getDiscountRuleCPDefinitions(
 			HttpServletRequest httpServletRequest, Filter filter)
 		throws Exception {
 
-		List<DiscountRuleCPDefinition> discountRuleCPDefinitions =
+		List<PromotionRuleCPDefinition> promotionRuleCPDefinitions =
 			new ArrayList<>();
 
 		long commerceDiscountRuleId = ParamUtil.getLong(
@@ -134,8 +134,8 @@ public class CommerceDiscountRuleCPDefinitionDataSetDataProvider
 				continue;
 			}
 
-			discountRuleCPDefinitions.add(
-				new DiscountRuleCPDefinition(
+			promotionRuleCPDefinitions.add(
+				new PromotionRuleCPDefinition(
 					commerceDiscountRule.getCommerceDiscountRuleId(),
 					cpDefinition.getCPDefinitionId(), cpDefinitionName,
 					_getSku(cpDefinition, locale),
@@ -144,7 +144,7 @@ public class CommerceDiscountRuleCPDefinitionDataSetDataProvider
 						cpDefinition.getDefaultImageThumbnailSrc())));
 		}
 
-		return discountRuleCPDefinitions;
+		return promotionRuleCPDefinitions;
 	}
 
 	private String _getSku(CPDefinition cpDefinition, Locale locale) {
@@ -164,7 +164,7 @@ public class CommerceDiscountRuleCPDefinitionDataSetDataProvider
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		CommerceDiscountRuleCPDefinitionDataSetDataProvider.class);
+		CommercePromotionRuleCPDefinitionDataSetDataProvider.class);
 
 	@Reference
 	private CommerceDiscountRuleService _commerceDiscountRuleService;

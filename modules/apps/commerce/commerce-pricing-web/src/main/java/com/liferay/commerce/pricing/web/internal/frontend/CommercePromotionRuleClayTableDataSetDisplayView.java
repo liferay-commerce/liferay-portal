@@ -33,7 +33,7 @@ import org.osgi.service.component.annotations.Reference;
 	property = "clay.data.set.display.name=" + CommercePricingDataSetConstants.COMMERCE_DATA_SET_KEY_PROMOTION_RULES,
 	service = ClayDataSetDisplayView.class
 )
-public class CommerceDiscountRuleClayTableDataSetDisplayView
+public class CommercePromotionRuleClayTableDataSetDisplayView
 	extends BaseTableClayDataSetDisplayView {
 
 	@Override

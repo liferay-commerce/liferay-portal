@@ -17,7 +17,7 @@ package com.liferay.commerce.pricing.web.internal.frontend;
 import com.liferay.commerce.discount.model.CommerceDiscount;
 import com.liferay.commerce.pricing.constants.CommercePricingPortletKeys;
 import com.liferay.commerce.pricing.web.internal.frontend.constants.CommercePricingDataSetConstants;
-import com.liferay.commerce.pricing.web.internal.model.PricingClassDiscount;
+import com.liferay.commerce.pricing.web.internal.model.PricingClassPromotion;
 import com.liferay.frontend.taglib.clay.data.set.ClayDataSetActionProvider;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
@@ -47,7 +47,7 @@ import org.osgi.service.component.annotations.Reference;
 	property = "clay.data.provider.key=" + CommercePricingDataSetConstants.COMMERCE_DATA_SET_KEY_PRICING_CLASSES_PROMOTIONS,
 	service = ClayDataSetActionProvider.class
 )
-public class CommercePricingClassDiscountDataSetActionProvider
+public class CommercePricingClassPromotionDataSetActionProvider
 	implements ClayDataSetActionProvider {
 
 	@Override
@@ -55,17 +55,17 @@ public class CommercePricingClassDiscountDataSetActionProvider
 			HttpServletRequest httpServletRequest, long groupId, Object model)
 		throws PortalException {
 
-		PricingClassDiscount pricingClassDiscount = (PricingClassDiscount)model;
+		PricingClassPromotion pricingClassPromotion = (PricingClassPromotion)model;
 
 		return DropdownItemListBuilder.add(
 			() -> _commerceDiscountModelResourcePermission.contains(
 				PermissionThreadLocal.getPermissionChecker(),
-				pricingClassDiscount.getCommerceDiscountId(),
+				pricingClassPromotion.getCommerceDiscountId(),
 				ActionKeys.UPDATE),
 			dropdownItem -> {
 				dropdownItem.setHref(
 					_getDiscountEditURL(
-						pricingClassDiscount.getCommerceDiscountId(),
+						pricingClassPromotion.getCommerceDiscountId(),
 						httpServletRequest));
 				dropdownItem.setLabel(
 					LanguageUtil.get(httpServletRequest, "edit"));

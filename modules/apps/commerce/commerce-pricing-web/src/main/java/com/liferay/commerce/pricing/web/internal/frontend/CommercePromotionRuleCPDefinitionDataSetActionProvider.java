@@ -19,7 +19,7 @@ import com.liferay.commerce.discount.model.CommerceDiscountRule;
 import com.liferay.commerce.discount.service.CommerceDiscountRuleService;
 import com.liferay.commerce.pricing.constants.CommercePricingPortletKeys;
 import com.liferay.commerce.pricing.web.internal.frontend.constants.CommercePricingDataSetConstants;
-import com.liferay.commerce.pricing.web.internal.model.DiscountRuleCPDefinition;
+import com.liferay.commerce.pricing.web.internal.model.PromotionRuleCPDefinition;
 import com.liferay.frontend.taglib.clay.data.set.ClayDataSetActionProvider;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
@@ -55,7 +55,7 @@ import org.osgi.service.component.annotations.Reference;
 	property = "clay.data.provider.key=" + CommercePricingDataSetConstants.COMMERCE_DATA_SET_KEY_PROMOTION_RULE_PRODUCT_DEFINITIONS,
 	service = ClayDataSetActionProvider.class
 )
-public class CommerceDiscountRuleCPDefinitionDataSetActionProvider
+public class CommercePromotionRuleCPDefinitionDataSetActionProvider
 	implements ClayDataSetActionProvider {
 
 	@Override
@@ -63,12 +63,12 @@ public class CommerceDiscountRuleCPDefinitionDataSetActionProvider
 			HttpServletRequest httpServletRequest, long groupId, Object model)
 		throws PortalException {
 
-		DiscountRuleCPDefinition discountRuleCPDefinition =
-			(DiscountRuleCPDefinition)model;
+		PromotionRuleCPDefinition promotionRuleCPDefinition =
+			(PromotionRuleCPDefinition)model;
 
 		CommerceDiscountRule commerceDiscountRule =
 			_commerceDiscountRuleService.getCommerceDiscountRule(
-				discountRuleCPDefinition.getDiscountRuleId());
+				promotionRuleCPDefinition.getDiscountRuleId());
 
 		return DropdownItemListBuilder.add(
 			() -> _commerceDiscountModelResourcePermission.contains(
@@ -78,8 +78,8 @@ public class CommerceDiscountRuleCPDefinitionDataSetActionProvider
 			dropdownItem -> {
 				dropdownItem.setHref(
 					_getDiscountRuleDeleteCPDefinitionURL(
-						discountRuleCPDefinition.getCPDefinitionId(),
-						discountRuleCPDefinition.getDiscountRuleId(),
+						promotionRuleCPDefinition.getCPDefinitionId(),
+						promotionRuleCPDefinition.getDiscountRuleId(),
 						httpServletRequest));
 				dropdownItem.setLabel(
 					LanguageUtil.get(httpServletRequest, Constants.REMOVE));
@@ -122,7 +122,7 @@ public class CommerceDiscountRuleCPDefinitionDataSetActionProvider
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		CommerceDiscountRuleCPDefinitionDataSetActionProvider.class);
+		CommercePromotionRuleCPDefinitionDataSetActionProvider.class);
 
 	@Reference(
 		target = "(model.class.name=com.liferay.commerce.discount.model.CommerceDiscount)"
