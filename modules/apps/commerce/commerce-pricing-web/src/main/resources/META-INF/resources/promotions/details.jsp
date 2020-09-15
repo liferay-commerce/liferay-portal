@@ -175,21 +175,21 @@ boolean hasPermission = commercePromotionDisplayContext.hasPermission(ActionKeys
 		</div>
 	</div>
 
-	<%@ include file="/discount/coupon_code.jspf" %>
+	<%@ include file="/promotions/coupon_code.jspf" %>
 
 	<c:if test="<%= Objects.equals(target, CommerceDiscountConstants.TARGET_PRODUCT) %>">
-		<%@ include file="/discount/target/products.jspf" %>
+		<%@ include file="/promotions/target/products.jspf" %>
 	</c:if>
 
 	<c:if test="<%= Objects.equals(target, CommerceDiscountConstants.TARGET_CATEGORIES) %>">
-		<%@ include file="/discount/target/categories.jspf" %>
+		<%@ include file="/promotions/target/categories.jspf" %>
 	</c:if>
 
 	<c:if test="<%= Objects.equals(target, CommerceDiscountConstants.TARGET_PRICING_CLASS) %>">
-		<%@ include file="/discount/target/pricing_classes.jspf" %>
+		<%@ include file="/promotions/target/pricing_classes.jspf" %>
 	</c:if>
 
-	<%@ include file="/discount/rules.jspf" %>
+	<%@ include file="/promotions/rules.jspf" %>
 </aui:form>
 
 <aui:script>

@@ -25,7 +25,7 @@ long commercePriceListId = commercePriceEntryDisplayContext.getCommercePriceList
 String datasetId = CommercePricingDataSetConstants.COMMERCE_DATA_SET_KEY_PRICE_LIST_ENTRIES;
 
 if (CommercePriceListConstants.TYPE_PROMOTION.equals(commercePriceEntryDisplayContext.getCommercePriceListType(portletName))) {
-	datasetId = CommercePricingDataSetConstants.COMMERCE_DATA_SET_KEY_PROMOTION_ENTRIES;
+	datasetId = CommercePricingDataSetConstants.COMMERCE_DATA_SET_KEY_SALE_PRICE_LIST_ENTRIES;
 }
 %>
 

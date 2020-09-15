@@ -17,11 +17,12 @@
 <%@ include file="/init.jsp" %>
 
 <%
-CommercePricingClassDiscountDisplayContext commercePricingClassDiscountDisplayContext = (CommercePricingClassDiscountDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
+CommercePricingClassPromotionDisplayContext
+	commercePricingClassPromotionDisplayContext = (CommercePricingClassPromotionDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
 
-boolean hasPermission = commercePricingClassDiscountDisplayContext.hasPermission();
+boolean hasPermission = commercePricingClassPromotionDisplayContext.hasPermission();
 
-CommercePricingClass commercePricingClass = commercePricingClassDiscountDisplayContext.getCommercePricingClass();
+CommercePricingClass commercePricingClass = commercePricingClassPromotionDisplayContext.getCommercePricingClass();
 %>
 
 <c:if test="<%= hasPermission %>">
@@ -32,8 +33,8 @@ CommercePricingClass commercePricingClass = commercePricingClassDiscountDisplayC
 					"commercePricingClassId", String.valueOf(commercePricingClass.getCommercePricingClassId())
 				).build()
 			%>'
-			dataProviderKey="<%= CommercePricingDataSetConstants.COMMERCE_DATA_SET_KEY_PRICING_CLASSES_DISCOUNTS %>"
-			id="<%= CommercePricingDataSetConstants.COMMERCE_DATA_SET_KEY_PRICING_CLASSES_DISCOUNTS %>"
+			dataProviderKey="<%= CommercePricingDataSetConstants.COMMERCE_DATA_SET_KEY_PRICING_CLASSES_PROMOTIONS %>"
+			id="<%= CommercePricingDataSetConstants.COMMERCE_DATA_SET_KEY_PRICING_CLASSES_PROMOTIONS %>"
 			itemsPerPage="<%= 10 %>"
 			namespace="<%= liferayPortletResponse.getNamespace() %>"
 			pageNumber="<%= 1 %>"
