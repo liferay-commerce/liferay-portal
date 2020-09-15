@@ -30,7 +30,7 @@ import com.liferay.commerce.frontend.model.HeaderActionModel;
 import com.liferay.commerce.percentage.PercentageFormatter;
 import com.liferay.commerce.pricing.constants.CommercePricingPortletKeys;
 import com.liferay.commerce.pricing.model.CommercePricingClass;
-import com.liferay.commerce.pricing.web.internal.constants.CommerceDiscountScreenNavigationConstants;
+import com.liferay.commerce.pricing.web.internal.constants.CommercePromotionScreenNavigationConstants;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.frontend.taglib.clay.data.set.servlet.taglib.util.ClayDataSetActionDropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
@@ -74,9 +74,9 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @author Alessio Antonio Rendina
  */
-public class CommerceDiscountDisplayContext extends BasePricingDisplayContext {
+public class CommercePromotionDisplayContext extends BasePricingDisplayContext {
 
-	public CommerceDiscountDisplayContext(
+	public CommercePromotionDisplayContext(
 		CommerceCurrencyLocalService commerceCurrencyLocalService,
 		ModelResourcePermission<CommerceDiscount>
 			commerceDiscountModelResourcePermission,
@@ -282,7 +282,7 @@ public class CommerceDiscountDisplayContext extends BasePricingDisplayContext {
 		portletURL.setParameter("usePercentage", "{usePercentage}");
 		portletURL.setParameter(
 			"screenNavigationCategoryKey",
-			CommerceDiscountScreenNavigationConstants.CATEGORY_KEY_DETAILS);
+			CommercePromotionScreenNavigationConstants.CATEGORY_KEY_DETAILS);
 
 		clayDataSetActionDropdownItems.add(
 			new ClayDataSetActionDropdownItem(
@@ -410,7 +410,7 @@ public class CommerceDiscountDisplayContext extends BasePricingDisplayContext {
 		portletURL.setParameter("commerceDiscountRuleId", "{id}");
 		portletURL.setParameter(
 			"screenNavigationCategoryKey",
-			CommerceDiscountScreenNavigationConstants.CATEGORY_KEY_DETAILS);
+			CommercePromotionScreenNavigationConstants.CATEGORY_KEY_DETAILS);
 
 		try {
 			portletURL.setWindowState(LiferayWindowState.POP_UP);
@@ -421,29 +421,6 @@ public class CommerceDiscountDisplayContext extends BasePricingDisplayContext {
 
 		return getClayHeadlessDataSetActionTemplates(
 			portletURL.toString(), true);
-	}
-
-	public String getEditCommerceDiscountActionURL() throws Exception {
-		CommerceDiscount commerceDiscount = getCommerceDiscount();
-
-		if (commerceDiscount == null) {
-			return StringPool.BLANK;
-		}
-
-		PortletURL portletURL = _portal.getControlPanelPortletURL(
-			commercePricingRequestHelper.getRequest(),
-			CommercePricingPortletKeys.COMMERCE_PROMOTION,
-			PortletRequest.ACTION_PHASE);
-
-		portletURL.setParameter(
-			ActionRequest.ACTION_NAME, "editCommerceDiscount");
-		portletURL.setParameter(Constants.CMD, Constants.UPDATE);
-		portletURL.setParameter(
-			"commerceDiscountId",
-			String.valueOf(commerceDiscount.getCommerceDiscountId()));
-		portletURL.setWindowState(LiferayWindowState.POP_UP);
-
-		return portletURL.toString();
 	}
 
 	public PortletURL getEditCommerceDiscountRenderURL() {
@@ -691,7 +668,7 @@ public class CommerceDiscountDisplayContext extends BasePricingDisplayContext {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		CommerceDiscountDisplayContext.class);
+		CommercePromotionDisplayContext.class);
 
 	private final CommerceCurrencyLocalService _commerceCurrencyLocalService;
 	private CommerceDiscount _commerceDiscount;

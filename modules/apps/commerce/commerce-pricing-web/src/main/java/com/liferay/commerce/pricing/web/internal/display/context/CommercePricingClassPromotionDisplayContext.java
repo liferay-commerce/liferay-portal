@@ -26,10 +26,10 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @author Riccardo Alberti
  */
-public class CommercePricingClassDiscountDisplayContext
+public class CommercePricingClassPromotionDisplayContext
 	extends BasePricingDisplayContext {
 
-	public CommercePricingClassDiscountDisplayContext(
+	public CommercePricingClassPromotionDisplayContext(
 		HttpServletRequest httpServletRequest,
 		ModelResourcePermission<CommercePricingClass>
 			commercePricingClassModelResourcePermission,

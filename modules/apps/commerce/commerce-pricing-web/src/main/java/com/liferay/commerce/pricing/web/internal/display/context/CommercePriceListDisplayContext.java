@@ -238,7 +238,7 @@ public class CommercePriceListDisplayContext
 			title = "create-new-price-list";
 		}
 		else if (portletName.equals(
-					CommercePricingPortletKeys.COMMERCE_PROMOTION)) {
+					CommercePricingPortletKeys.COMMERCE_SALE_PRICE_LIST)) {
 
 			title = "create-new-sale-price-list";
 		}

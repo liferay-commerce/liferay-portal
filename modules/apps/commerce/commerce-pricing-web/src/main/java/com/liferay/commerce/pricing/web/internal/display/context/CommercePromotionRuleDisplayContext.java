@@ -31,10 +31,10 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @author Alessio Antonio Rendina
  */
-public class CommerceDiscountRuleDisplayContext
+public class CommercePromotionRuleDisplayContext
 	extends BasePricingDisplayContext {
 
-	public CommerceDiscountRuleDisplayContext(
+	public CommercePromotionRuleDisplayContext(
 		CommerceDiscountRuleService commerceDiscountRuleService,
 		CommerceDiscountRuleTypeJSPContributorRegistry
 			commerceDiscountRuleTypeJSPContributorRegistry,

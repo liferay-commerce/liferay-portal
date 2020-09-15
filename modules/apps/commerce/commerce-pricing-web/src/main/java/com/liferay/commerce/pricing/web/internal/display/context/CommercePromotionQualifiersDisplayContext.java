@@ -44,10 +44,10 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @author Alessio Antonio Rendina
  */
-public class CommerceDiscountQualifiersDisplayContext
-	extends CommerceDiscountDisplayContext {
+public class CommercePromotionQualifiersDisplayContext
+	extends CommercePromotionDisplayContext {
 
-	public CommerceDiscountQualifiersDisplayContext(
+	public CommercePromotionQualifiersDisplayContext(
 		CommerceChannelRelService commerceChannelRelService,
 		CommerceCurrencyLocalService commerceCurrencyLocalService,
 		ModelResourcePermission<CommerceDiscount>

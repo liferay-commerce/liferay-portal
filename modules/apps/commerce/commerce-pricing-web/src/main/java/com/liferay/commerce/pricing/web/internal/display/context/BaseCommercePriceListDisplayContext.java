@@ -106,7 +106,7 @@ public abstract class BaseCommercePriceListDisplayContext
 			return CommercePriceListConstants.TYPE_PRICE_LIST;
 		}
 		else if (portletName.equals(
-					CommercePricingPortletKeys.COMMERCE_PROMOTION)) {
+					CommercePricingPortletKeys.COMMERCE_SALE_PRICE_LIST)) {
 
 			return CommercePriceListConstants.TYPE_PROMOTION;
 		}
