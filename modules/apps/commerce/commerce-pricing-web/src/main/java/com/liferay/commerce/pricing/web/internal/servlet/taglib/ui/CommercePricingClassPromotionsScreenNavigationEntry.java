@@ -53,7 +53,7 @@ import org.osgi.service.component.annotations.Reference;
 	},
 	service = {ScreenNavigationCategory.class, ScreenNavigationEntry.class}
 )
-public class CommercePricingClassDiscountsScreenNavigationEntry
+public class CommercePricingClassPromotionsScreenNavigationEntry
 	implements ScreenNavigationCategory,
 			   ScreenNavigationEntry<CommercePricingClass> {
 
@@ -135,7 +135,7 @@ public class CommercePricingClassDiscountsScreenNavigationEntry
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		CommercePricingClassDiscountsScreenNavigationEntry.class);
+		CommercePricingClassPromotionsScreenNavigationEntry.class);
 
 	@Reference(
 		target = "(model.class.name=com.liferay.commerce.pricing.model.CommercePricingClass)"

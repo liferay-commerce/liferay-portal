@@ -48,7 +48,7 @@ public class CommercePromotionPanelApp extends BasePanelApp {
 
 	@Override
 	public String getPortletId() {
-		return CommercePricingPortletKeys.COMMERCE_PROMOTION;
+		return CommercePricingPortletKeys.COMMERCE_SALE_PRICE_LIST;
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public class CommercePromotionPanelApp extends BasePanelApp {
 
 	@Override
 	@Reference(
-		target = "(javax.portlet.name=" + CommercePricingPortletKeys.COMMERCE_PROMOTION + ")",
+		target = "(javax.portlet.name=" + CommercePricingPortletKeys.COMMERCE_SALE_PRICE_LIST + ")",
 		unbind = "-"
 	)
 	public void setPortlet(Portlet portlet) {

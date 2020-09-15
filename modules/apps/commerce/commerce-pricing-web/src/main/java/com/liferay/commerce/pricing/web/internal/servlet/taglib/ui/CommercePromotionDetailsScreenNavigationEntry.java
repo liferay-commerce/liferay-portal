@@ -59,7 +59,7 @@ import org.osgi.service.component.annotations.Reference;
 	},
 	service = {ScreenNavigationCategory.class, ScreenNavigationEntry.class}
 )
-public class CommerceDiscountDetailsScreenNavigationEntry
+public class CommercePromotionDetailsScreenNavigationEntry
 	implements ScreenNavigationCategory,
 			   ScreenNavigationEntry<CommerceDiscount> {
 
@@ -130,11 +130,11 @@ public class CommerceDiscountDetailsScreenNavigationEntry
 			WebKeys.PORTLET_DISPLAY_CONTEXT, commercePromotionDisplayContext);
 
 		_jspRenderer.renderJSP(
-			httpServletRequest, httpServletResponse, "/discount/details.jsp");
+			httpServletRequest, httpServletResponse, "/promotions/details.jsp");
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		CommerceDiscountDetailsScreenNavigationEntry.class);
+		CommercePromotionDetailsScreenNavigationEntry.class);
 
 	@Reference
 	private CommerceCurrencyLocalService _commerceCurrencyLocalService;

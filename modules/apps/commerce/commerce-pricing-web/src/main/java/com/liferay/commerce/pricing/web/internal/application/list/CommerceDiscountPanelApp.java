@@ -48,7 +48,7 @@ public class CommerceDiscountPanelApp extends BasePanelApp {
 
 	@Override
 	public String getPortletId() {
-		return CommercePricingPortletKeys.COMMERCE_DISCOUNT;
+		return CommercePricingPortletKeys.COMMERCE_PROMOTION;
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public class CommerceDiscountPanelApp extends BasePanelApp {
 
 		if (show) {
 			boolean viewCommerceDiscounts = _portletPermission.contains(
-				permissionChecker, CommercePricingPortletKeys.COMMERCE_DISCOUNT,
+				permissionChecker, CommercePricingPortletKeys.COMMERCE_PROMOTION,
 				ActionKeys.VIEW);
 
 			if (!viewCommerceDiscounts ||
@@ -77,7 +77,7 @@ public class CommerceDiscountPanelApp extends BasePanelApp {
 
 	@Override
 	@Reference(
-		target = "(javax.portlet.name=" + CommercePricingPortletKeys.COMMERCE_DISCOUNT + ")",
+		target = "(javax.portlet.name=" + CommercePricingPortletKeys.COMMERCE_PROMOTION + ")",
 		unbind = "-"
 	)
 	public void setPortlet(Portlet portlet) {
