@@ -20,9 +20,13 @@ package com.liferay.commerce.pricing.constants;
  */
 public class CommercePricingPortletKeys {
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x)
+	 */
+	@Deprecated
 	public static final String COMMERCE_DISCOUNT =
 		"com_liferay_commerce_pricing_web_internal_portlet_" +
-			"CommerceDiscountPortlet";
+			"CommercePromotionPortlet";
 
 	public static final String COMMERCE_PRICE_LIST =
 		"com_liferay_commerce_pricing_web_internal_portlet_" +
@@ -35,5 +39,9 @@ public class CommercePricingPortletKeys {
 	public static final String COMMERCE_PROMOTION =
 		"com_liferay_commerce_pricing_web_internal_portlet_" +
 			"CommercePromotionPortlet";
+
+	public static final String COMMERCE_SALE_PRICE_LIST =
+		"com_liferay_commerce_pricing_web_internal_portlet_" +
+			"CommerceSalePriceListPortlet";
 
 }

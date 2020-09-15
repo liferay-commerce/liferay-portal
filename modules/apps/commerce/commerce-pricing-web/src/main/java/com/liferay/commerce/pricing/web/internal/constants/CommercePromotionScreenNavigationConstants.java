@@ -17,7 +17,7 @@ package com.liferay.commerce.pricing.web.internal.constants;
 /**
  * @author Alessio Antonio Rendina
  */
-public class CommerceDiscountScreenNavigationConstants {
+public class CommercePromotionScreenNavigationConstants {
 
 	public static final String CATEGORY_KEY_DETAILS = "details";
 
