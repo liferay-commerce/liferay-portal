@@ -33,7 +33,7 @@ import org.osgi.service.component.annotations.Component;
 		ViewPortletProvider.class
 	}
 )
-public class CommerceDiscountPortletProvider
+public class CommercePromotionPortletProvider
 	extends BasePortletProvider
 	implements EditPortletProvider, ManagePortletProvider, ViewPortletProvider {
 

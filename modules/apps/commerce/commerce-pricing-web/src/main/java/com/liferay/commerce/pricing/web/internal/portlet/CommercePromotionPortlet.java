@@ -22,7 +22,7 @@ import com.liferay.commerce.discount.service.CommerceDiscountService;
 import com.liferay.commerce.discount.target.CommerceDiscountTargetRegistry;
 import com.liferay.commerce.percentage.PercentageFormatter;
 import com.liferay.commerce.pricing.constants.CommercePricingPortletKeys;
-import com.liferay.commerce.pricing.web.internal.display.context.CommerceDiscountDisplayContext;
+import com.liferay.commerce.pricing.web.internal.display.context.CommercePromotionDisplayContext;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.util.Portal;
@@ -57,22 +57,22 @@ import org.osgi.service.component.annotations.Reference;
 		"com.liferay.portlet.scopeable=true",
 		"javax.portlet.display-name=Promotions",
 		"javax.portlet.expiration-cache=0",
-		"javax.portlet.init-param.view-template=/discount/view.jsp",
+		"javax.portlet.init-param.view-template=/promotions/view.jsp",
 		"javax.portlet.name=" + CommercePricingPortletKeys.COMMERCE_PROMOTION,
 		"javax.portlet.resource-bundle=content.Language",
 		"javax.portlet.security-role-ref=power-user,user"
 	},
-	service = {CommerceDiscountPortlet.class, Portlet.class}
+	service = {CommercePromotionPortlet.class, Portlet.class}
 )
-public class CommerceDiscountPortlet extends MVCPortlet {
+public class CommercePromotionPortlet extends MVCPortlet {
 
 	@Override
 	public void render(
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws IOException, PortletException {
 
-		CommerceDiscountDisplayContext commerceDiscountDisplayContext =
-			new CommerceDiscountDisplayContext(
+		CommercePromotionDisplayContext commercePromotionDisplayContext =
+			new CommercePromotionDisplayContext(
 				_commerceCurrencyLocalService,
 				_commerceDiscountModelResourcePermission,
 				_commerceDiscountService, _commerceDiscountRuleService,
@@ -81,7 +81,7 @@ public class CommerceDiscountPortlet extends MVCPortlet {
 				_portal.getHttpServletRequest(renderRequest), _portal);
 
 		renderRequest.setAttribute(
-			WebKeys.PORTLET_DISPLAY_CONTEXT, commerceDiscountDisplayContext);
+			WebKeys.PORTLET_DISPLAY_CONTEXT, commercePromotionDisplayContext);
 
 		super.render(renderRequest, renderResponse);
 	}

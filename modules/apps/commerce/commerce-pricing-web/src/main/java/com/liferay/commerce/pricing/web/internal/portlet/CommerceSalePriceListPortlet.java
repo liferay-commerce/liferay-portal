@@ -61,9 +61,9 @@ import org.osgi.service.component.annotations.Reference;
 		"javax.portlet.resource-bundle=content.Language",
 		"javax.portlet.security-role-ref=power-user,user"
 	},
-	service = {CommercePromotionPortlet.class, Portlet.class}
+	service = {CommerceSalePriceListPortlet.class, Portlet.class}
 )
-public class CommercePromotionPortlet extends MVCPortlet {
+public class CommerceSalePriceListPortlet extends MVCPortlet {
 
 	@Override
 	public void render(
