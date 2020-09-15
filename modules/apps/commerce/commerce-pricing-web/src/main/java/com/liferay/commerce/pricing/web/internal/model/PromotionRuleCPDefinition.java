@@ -19,9 +19,9 @@ import com.liferay.commerce.frontend.model.ImageField;
 /**
  * @author Riccardo Alberti
  */
-public class DiscountRuleCPDefinition {
+public class PromotionRuleCPDefinition {
 
-	public DiscountRuleCPDefinition(
+	public PromotionRuleCPDefinition(
 		long discountRuleId, long cpDefinitionId, String name, String sku,
 		ImageField image) {
 

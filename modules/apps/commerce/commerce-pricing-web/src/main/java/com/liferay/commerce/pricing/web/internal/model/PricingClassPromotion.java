@@ -19,9 +19,9 @@ import com.liferay.commerce.frontend.model.LabelField;
 /**
  * @author Riccardo Alberti
  */
-public class PricingClassDiscount {
+public class PricingClassPromotion {
 
-	public PricingClassDiscount(
+	public PricingClassPromotion(
 		long commerceDiscountId, String name, String target, String type,
 		LabelField status) {
 
