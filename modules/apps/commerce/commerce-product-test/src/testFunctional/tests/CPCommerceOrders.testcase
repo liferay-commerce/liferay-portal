@@ -87,7 +87,7 @@ definition {
 			shippingMethod = "Standard");
 
 		CommerceNavigator.gotoPortlet(
-			category = "Orders Management",
+			category = "Order Management",
 			panel = "Commerce",
 			portlet = "Orders");
 
@@ -102,7 +102,7 @@ definition {
 			orderItemSKU = "MIN93015");
 
 		CommerceNavigator.gotoPortlet(
-			category = "Orders Management",
+			category = "Order Management",
 			panel = "Commerce",
 			portlet = "Orders");
 

@@ -345,7 +345,7 @@ definition {
 			productUnitPrice = "50.00");
 
 		CommerceNavigator.gotoPortlet(
-			category = "Orders Management",
+			category = "Order Management",
 			panel = "Commerce",
 			portlet = "Orders");
 
@@ -363,7 +363,7 @@ definition {
 			productUnitPrice = "50.00");
 
 		CommerceNavigator.gotoPortlet(
-			category = "Orders Management",
+			category = "Order Management",
 			panel = "Commerce",
 			portlet = "Orders");
 
@@ -494,7 +494,7 @@ definition {
 		Refresh();
 
 		CommerceNavigator.gotoPortlet(
-			category = "Orders Management",
+			category = "Order Management",
 			panel = "Commerce",
 			portlet = "Orders");
 
@@ -512,7 +512,7 @@ definition {
 			productUnitPrice = "50.00");
 
 		CommerceNavigator.gotoPortlet(
-			category = "Orders Management",
+			category = "Order Management",
 			panel = "Commerce",
 			portlet = "Orders");
 
