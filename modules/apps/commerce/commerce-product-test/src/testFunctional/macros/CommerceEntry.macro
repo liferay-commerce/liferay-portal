@@ -61,8 +61,6 @@ definition {
 	macro addNewChannelsEntry {
 		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
 
-		Pause(locator1 = "3000");
-
 		Type(
 			locator1 = "TextInput#NAME",
 			value1 = "${channelName}");
