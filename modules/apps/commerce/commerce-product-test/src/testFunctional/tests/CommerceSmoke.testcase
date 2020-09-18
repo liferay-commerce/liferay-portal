@@ -100,7 +100,7 @@ definition {
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
 			panel = "Commerce",
-			portlet = "Specifications");
+			portlet = "Products");
 
 		CommerceNavigator.gotoEntry(entryName = "Simple T-Shirt");
 
