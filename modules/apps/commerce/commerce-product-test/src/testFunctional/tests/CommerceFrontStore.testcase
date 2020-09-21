@@ -60,12 +60,8 @@ definition {
 	}
 
 	test ViewStoreFrontSimpleProduct {
-		property portal.acceptance = "quarantine";
-
-		CommerceNavigator.gotoPortlet(
-			category = "Product Management",
-			panel = "Commerce",
-			portlet = "Products");
+		property environment.acceptance = "true";
+		property portal.acceptance = "true";
 
 		echo("Creating new Option complete with Values...");
 
@@ -98,7 +94,9 @@ definition {
 
 		CommerceEntry.gotoMenuTab(menuTab = "Options");
 
-		CommerceRelations.assignSingleRelationToProductsEntry(entryName = "Color");
+		CommerceRelations.assignSingleRelationToProductsEntry(
+			entryName = "Color",
+			title = "Add Options");
 
 		echo("Creating SKUs...");
 
@@ -108,7 +106,7 @@ definition {
 
 		echo("Adding Product Images...");
 
-		CommerceEntry.gotoMenuTab(menuTab = "Images");
+		CommerceEntry.gotoMenuTab(menuTab = "Media");
 
 		CommerceProductImages.addProductImages(optionValuesList = "Black,Blue,White");
 
