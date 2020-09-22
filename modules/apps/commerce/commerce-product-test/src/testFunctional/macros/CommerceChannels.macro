@@ -6,7 +6,7 @@ definition {
 			key_table = "Payment Methods",
 			locator1 = "CommerceEntry#TABLE_ENTRY_EDIT_BUTTON");
 
-		SelectFrame(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
 
 		Type(
 			locator1 = "TextInput#NAME",
