@@ -2,8 +2,9 @@ definition {
 
 	macro activatePaymentMethod {
 		Click(
-			key_paymentMethod = "${paymentMethod}",
-			locator1 = "CommerceEntry#CHANNEL_PAYMENT_METHOD_NAME");
+			key_entryName = "${paymentMethod}",
+			key_table = "Payment Methods",
+			locator1 = "CommerceEntry#TABLE_ENTRY_EDIT_BUTTON");
 
 		SelectFrame(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
 
