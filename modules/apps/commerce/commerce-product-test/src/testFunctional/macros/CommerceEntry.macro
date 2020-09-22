@@ -59,7 +59,7 @@ definition {
 	}
 
 	macro addNewChannelsEntry {
-		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
+		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_IFRAME");
 
 		Type(
 			locator1 = "TextInput#NAME",
@@ -87,7 +87,7 @@ definition {
 				locator1 = "Button#SELECT",
 				value1 = "Select Site");
 
-			SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
+			SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_IFRAME");
 
 			Click(
 				key_siteName = "${siteName}",
@@ -152,7 +152,7 @@ definition {
 	}
 
 	macro addNewDiscountsEntry {
-		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
+		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_IFRAME");
 
 		Type(
 			locator1 = "TextInput#NAME",
