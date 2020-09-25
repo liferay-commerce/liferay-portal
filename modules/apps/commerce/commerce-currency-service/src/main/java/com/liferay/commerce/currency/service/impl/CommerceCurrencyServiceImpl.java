@@ -16,11 +16,17 @@ package com.liferay.commerce.currency.service.impl;
 
 import com.liferay.commerce.currency.constants.CommerceCurrencyActionKeys;
 import com.liferay.commerce.currency.model.CommerceCurrency;
+import com.liferay.commerce.currency.model.CommerceCurrencyConstants;
 import com.liferay.commerce.currency.service.base.CommerceCurrencyServiceBaseImpl;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
+import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermissionFactory;
+import com.liferay.portal.kernel.service.CompanyService;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.permission.PortalPermissionUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.spring.extender.service.ServiceReference;
 
 import java.math.BigDecimal;
 
@@ -44,8 +50,12 @@ public class CommerceCurrencyServiceImpl
 			double priority, boolean active)
 		throws PortalException {
 
-		PortalPermissionUtil.check(
-			getPermissionChecker(),
+		User user = userService.getUserById(userId);
+
+		Company company = _companyService.getCompanyById(user.getCompanyId());
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), company.getGroupId(),
 			CommerceCurrencyActionKeys.MANAGE_COMMERCE_CURRENCIES);
 
 		return commerceCurrencyLocalService.addCommerceCurrency(
@@ -58,8 +68,12 @@ public class CommerceCurrencyServiceImpl
 	public void deleteCommerceCurrency(long commerceCurrencyId)
 		throws PortalException {
 
-		PortalPermissionUtil.check(
-			getPermissionChecker(),
+		User user = userService.getUserById(getUserId());
+
+		Company company = _companyService.getCompanyById(user.getCompanyId());
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), company.getGroupId(),
 			CommerceCurrencyActionKeys.MANAGE_COMMERCE_CURRENCIES);
 
 		commerceCurrencyLocalService.deleteCommerceCurrency(commerceCurrencyId);
@@ -69,8 +83,10 @@ public class CommerceCurrencyServiceImpl
 	public CommerceCurrency fetchPrimaryCommerceCurrency(long companyId)
 		throws PortalException {
 
-		PortalPermissionUtil.check(
-			getPermissionChecker(),
+		Company company = _companyService.getCompanyById(companyId);
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), company.getGroupId(),
 			CommerceCurrencyActionKeys.MANAGE_COMMERCE_CURRENCIES);
 
 		return commerceCurrencyLocalService.fetchPrimaryCommerceCurrency(
@@ -83,8 +99,10 @@ public class CommerceCurrencyServiceImpl
 			OrderByComparator<CommerceCurrency> orderByComparator)
 		throws PortalException {
 
-		PortalPermissionUtil.check(
-			getPermissionChecker(),
+		Company company = _companyService.getCompanyById(companyId);
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), company.getGroupId(),
 			CommerceCurrencyActionKeys.MANAGE_COMMERCE_CURRENCIES);
 
 		return commerceCurrencyLocalService.getCommerceCurrencies(
@@ -97,8 +115,10 @@ public class CommerceCurrencyServiceImpl
 			OrderByComparator<CommerceCurrency> orderByComparator)
 		throws PortalException {
 
-		PortalPermissionUtil.check(
-			getPermissionChecker(),
+		Company company = _companyService.getCompanyById(companyId);
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), company.getGroupId(),
 			CommerceCurrencyActionKeys.MANAGE_COMMERCE_CURRENCIES);
 
 		return commerceCurrencyLocalService.getCommerceCurrencies(
@@ -109,8 +129,10 @@ public class CommerceCurrencyServiceImpl
 	public int getCommerceCurrenciesCount(long companyId)
 		throws PortalException {
 
-		PortalPermissionUtil.check(
-			getPermissionChecker(),
+		Company company = _companyService.getCompanyById(companyId);
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), company.getGroupId(),
 			CommerceCurrencyActionKeys.MANAGE_COMMERCE_CURRENCIES);
 
 		return commerceCurrencyLocalService.getCommerceCurrenciesCount(
@@ -121,8 +143,10 @@ public class CommerceCurrencyServiceImpl
 	public int getCommerceCurrenciesCount(long companyId, boolean active)
 		throws PortalException {
 
-		PortalPermissionUtil.check(
-			getPermissionChecker(),
+		Company company = _companyService.getCompanyById(companyId);
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), company.getGroupId(),
 			CommerceCurrencyActionKeys.MANAGE_COMMERCE_CURRENCIES);
 
 		return commerceCurrencyLocalService.getCommerceCurrenciesCount(
@@ -133,8 +157,12 @@ public class CommerceCurrencyServiceImpl
 	public CommerceCurrency getCommerceCurrency(long commerceCurrencyId)
 		throws PortalException {
 
-		PortalPermissionUtil.check(
-			getPermissionChecker(),
+		User user = userService.getUserById(getUserId());
+
+		Company company = _companyService.getCompanyById(user.getCompanyId());
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), company.getGroupId(),
 			CommerceCurrencyActionKeys.MANAGE_COMMERCE_CURRENCIES);
 
 		return commerceCurrencyLocalService.getCommerceCurrency(
@@ -145,8 +173,10 @@ public class CommerceCurrencyServiceImpl
 	public CommerceCurrency getCommerceCurrency(long companyId, String code)
 		throws PortalException {
 
-		PortalPermissionUtil.check(
-			getPermissionChecker(),
+		Company company = _companyService.getCompanyById(companyId);
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), company.getGroupId(),
 			CommerceCurrencyActionKeys.MANAGE_COMMERCE_CURRENCIES);
 
 		return commerceCurrencyLocalService.getCommerceCurrency(
@@ -157,8 +187,12 @@ public class CommerceCurrencyServiceImpl
 	public CommerceCurrency setActive(long commerceCurrencyId, boolean active)
 		throws PortalException {
 
-		PortalPermissionUtil.check(
-			getPermissionChecker(),
+		User user = userService.getUserById(getUserId());
+
+		Company company = _companyService.getCompanyById(user.getCompanyId());
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), company.getGroupId(),
 			CommerceCurrencyActionKeys.MANAGE_COMMERCE_CURRENCIES);
 
 		return commerceCurrencyLocalService.setActive(
@@ -169,8 +203,12 @@ public class CommerceCurrencyServiceImpl
 	public CommerceCurrency setPrimary(long commerceCurrencyId, boolean primary)
 		throws PortalException {
 
-		PortalPermissionUtil.check(
-			getPermissionChecker(),
+		User user = userService.getUserById(getUserId());
+
+		Company company = _companyService.getCompanyById(user.getCompanyId());
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), company.getGroupId(),
 			CommerceCurrencyActionKeys.MANAGE_COMMERCE_CURRENCIES);
 
 		return commerceCurrencyLocalService.setPrimary(
@@ -186,8 +224,12 @@ public class CommerceCurrencyServiceImpl
 			double priority, boolean active, ServiceContext serviceContext)
 		throws PortalException {
 
-		PortalPermissionUtil.check(
-			getPermissionChecker(),
+		User user = userService.getUserById(getUserId());
+
+		Company company = _companyService.getCompanyById(user.getCompanyId());
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), company.getGroupId(),
 			CommerceCurrencyActionKeys.MANAGE_COMMERCE_CURRENCIES);
 
 		return commerceCurrencyLocalService.updateCommerceCurrency(
@@ -201,8 +243,12 @@ public class CommerceCurrencyServiceImpl
 			long commerceCurrencyId, String exchangeRateProviderKey)
 		throws PortalException {
 
-		PortalPermissionUtil.check(
-			getPermissionChecker(),
+		User user = userService.getUserById(getUserId());
+
+		Company company = _companyService.getCompanyById(user.getCompanyId());
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), company.getGroupId(),
 			CommerceCurrencyActionKeys.MANAGE_COMMERCE_CURRENCIES);
 
 		commerceCurrencyLocalService.updateExchangeRate(
@@ -211,11 +257,24 @@ public class CommerceCurrencyServiceImpl
 
 	@Override
 	public void updateExchangeRates() throws PortalException {
-		PortalPermissionUtil.check(
-			getPermissionChecker(),
+		User user = userService.getUserById(getUserId());
+
+		Company company = _companyService.getCompanyById(user.getCompanyId());
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), company.getGroupId(),
 			CommerceCurrencyActionKeys.MANAGE_COMMERCE_CURRENCIES);
 
 		commerceCurrencyLocalService.updateExchangeRates();
 	}
+
+	private static volatile PortletResourcePermission
+		_portletResourcePermission =
+			PortletResourcePermissionFactory.getInstance(
+				CommerceCurrencyServiceImpl.class, "_portletResourcePermission",
+				CommerceCurrencyConstants.RESOURCE_NAME);
+
+	@ServiceReference(type = CompanyService.class)
+	private CompanyService _companyService;
 
 }
