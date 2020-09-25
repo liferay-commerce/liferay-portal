@@ -24,14 +24,16 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionFactory;
+import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
+import com.liferay.portal.kernel.service.CompanyService;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.permission.PortalPermissionUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.spring.extender.service.ServiceReference;
 
@@ -61,8 +63,12 @@ public class CommerceDiscountServiceImpl
 			boolean neverExpire, ServiceContext serviceContext)
 		throws PortalException {
 
-		PortalPermissionUtil.check(
-			getPermissionChecker(),
+		long companyId = serviceContext.getCompanyId();
+
+		Company company = _companyService.getCompanyById(companyId);
+
+		_checkPortletResourcePermission(
+			company.getGroupId(),
 			CommerceDiscountActionKeys.ADD_COMMERCE_DISCOUNT);
 
 		return commerceDiscountLocalService.addCommerceDiscount(
@@ -90,8 +96,12 @@ public class CommerceDiscountServiceImpl
 			boolean neverExpire, ServiceContext serviceContext)
 		throws PortalException {
 
-		PortalPermissionUtil.check(
-			getPermissionChecker(),
+		long companyId = serviceContext.getCompanyId();
+
+		Company company = _companyService.getCompanyById(companyId);
+
+		_checkPortletResourcePermission(
+			company.getGroupId(),
 			CommerceDiscountActionKeys.ADD_COMMERCE_DISCOUNT);
 
 		return commerceDiscountLocalService.addCommerceDiscount(
@@ -120,8 +130,12 @@ public class CommerceDiscountServiceImpl
 			boolean neverExpire, ServiceContext serviceContext)
 		throws PortalException {
 
-		PortalPermissionUtil.check(
-			getPermissionChecker(),
+		long companyId = serviceContext.getCompanyId();
+
+		Company company = _companyService.getCompanyById(companyId);
+
+		_checkPortletResourcePermission(
+			company.getGroupId(),
 			CommerceDiscountActionKeys.ADD_COMMERCE_DISCOUNT);
 
 		return commerceDiscountLocalService.addCommerceDiscount(
@@ -475,6 +489,16 @@ public class CommerceDiscountServiceImpl
 			neverExpire, serviceContext);
 	}
 
+	private void _checkPortletResourcePermission(long groupId, String actionId)
+		throws PrincipalException {
+
+		PortletResourcePermission portletResourcePermission =
+			_commerceDiscountResourcePermission.getPortletResourcePermission();
+
+		portletResourcePermission.check(
+			getPermissionChecker(), groupId, actionId);
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		CommerceDiscountServiceImpl.class);
 
@@ -486,5 +510,8 @@ public class CommerceDiscountServiceImpl
 
 	@ServiceReference(type = CommerceChannelService.class)
 	private CommerceChannelService _commerceChannelService;
+
+	@ServiceReference(type = CompanyService.class)
+	private CompanyService _companyService;
 
 }
