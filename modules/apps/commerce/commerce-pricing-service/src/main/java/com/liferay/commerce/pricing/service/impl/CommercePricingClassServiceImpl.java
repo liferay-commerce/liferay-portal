@@ -21,16 +21,20 @@ import com.liferay.commerce.pricing.service.base.CommercePricingClassServiceBase
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionFactory;
+import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
+import com.liferay.portal.kernel.service.CompanyService;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.permission.PortalPermissionUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.spring.extender.service.ServiceReference;
 
 import java.util.List;
 import java.util.Locale;
@@ -49,8 +53,12 @@ public class CommercePricingClassServiceImpl
 			Map<Locale, String> descriptionMap, ServiceContext serviceContext)
 		throws PortalException {
 
-		PortalPermissionUtil.check(
-			getPermissionChecker(),
+		User user = userService.getUserById(userId);
+
+		Company company = _companyService.getCompanyById(user.getCompanyId());
+
+		_checkPortletResourcePermission(
+			company.getGroupId(),
 			CommercePricingClassActionKeys.ADD_COMMERCE_PRICING_CLASS);
 
 		return commercePricingClassLocalService.addCommercePricingClass(
@@ -64,8 +72,12 @@ public class CommercePricingClassServiceImpl
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		PortalPermissionUtil.check(
-			getPermissionChecker(),
+		User user = userService.getUserById(userId);
+
+		Company company = _companyService.getCompanyById(user.getCompanyId());
+
+		_checkPortletResourcePermission(
+			company.getGroupId(),
 			CommercePricingClassActionKeys.ADD_COMMERCE_PRICING_CLASS);
 
 		return commercePricingClassLocalService.addCommercePricingClass(
@@ -254,6 +266,17 @@ public class CommercePricingClassServiceImpl
 			serviceContext);
 	}
 
+	private void _checkPortletResourcePermission(long groupId, String actionId)
+		throws PrincipalException {
+
+		PortletResourcePermission portletResourcePermission =
+			_commercePricingClassResourcePermission.
+				getPortletResourcePermission();
+
+		portletResourcePermission.check(
+			getPermissionChecker(), groupId, actionId);
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		CommercePricingClassServiceImpl.class);
 
@@ -263,5 +286,8 @@ public class CommercePricingClassServiceImpl
 				CommercePricingClassServiceImpl.class,
 				"_commercePricingClassResourcePermission",
 				CommercePricingClass.class);
+
+	@ServiceReference(type = CompanyService.class)
+	private CompanyService _companyService;
 
 }
