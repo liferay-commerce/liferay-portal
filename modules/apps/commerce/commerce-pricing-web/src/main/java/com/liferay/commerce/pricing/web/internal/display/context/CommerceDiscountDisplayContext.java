@@ -39,14 +39,15 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletProvider;
 import com.liferay.portal.kernel.portlet.PortletProviderUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalServiceUtil;
-import com.liferay.portal.kernel.service.permission.PortalPermissionUtil;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -588,8 +589,15 @@ public class CommerceDiscountDisplayContext extends BasePricingDisplayContext {
 	}
 
 	public boolean hasAddPermission() throws PortalException {
-		return PortalPermissionUtil.contains(
+		Company company = commercePricingRequestHelper.getCompany();
+
+		PortletResourcePermission portletResourcePermission =
+			_commerceDiscountModelResourcePermission.
+				getPortletResourcePermission();
+
+		return portletResourcePermission.contains(
 			commercePricingRequestHelper.getPermissionChecker(),
+			company.getGroupId(),
 			CommerceDiscountActionKeys.ADD_COMMERCE_DISCOUNT);
 	}
 
