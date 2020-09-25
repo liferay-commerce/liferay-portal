@@ -19,6 +19,9 @@ package com.liferay.commerce.price.list.constants;
  */
 public class CommercePriceListConstants {
 
+	public static final String RESOURCE_NAME =
+		"com.liferay.commerce.price.list";
+
 	public static final String TYPE_CONTRACT = "contract";
 
 	public static final String TYPE_PRICE_LIST = "price-list";
