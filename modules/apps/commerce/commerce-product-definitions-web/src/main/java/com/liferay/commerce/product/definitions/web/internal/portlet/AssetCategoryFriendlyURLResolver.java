@@ -192,7 +192,7 @@ public class AssetCategoryFriendlyURLResolver implements FriendlyURLResolver {
 
 		CPDisplayLayout cpDisplayLayout =
 			_cpDisplayLayoutLocalService.fetchCPDisplayLayout(
-				AssetCategory.class, categoryId);
+				groupId, AssetCategory.class, categoryId);
 
 		if ((cpDisplayLayout == null) ||
 			Validator.isNull(cpDisplayLayout.getLayoutUuid())) {
