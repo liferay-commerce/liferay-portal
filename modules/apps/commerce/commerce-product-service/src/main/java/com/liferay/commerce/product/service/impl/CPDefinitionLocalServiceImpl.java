@@ -1152,11 +1152,28 @@ public class CPDefinitionLocalServiceImpl
 		return facets;
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x)
+	 */
+	@Deprecated
 	@Override
 	public String getLayoutUuid(long cpDefinitionId) {
 		CPDisplayLayout cpDisplayLayout =
 			cpDisplayLayoutLocalService.fetchCPDisplayLayout(
 				CPDefinition.class, cpDefinitionId);
+
+		if (cpDisplayLayout == null) {
+			return null;
+		}
+
+		return cpDisplayLayout.getLayoutUuid();
+	}
+
+	@Override
+	public String getLayoutUuid(long groupId, long cpDefinitionId) {
+		CPDisplayLayout cpDisplayLayout =
+			cpDisplayLayoutLocalService.fetchCPDisplayLayout(
+				groupId, CPDefinition.class, cpDefinitionId);
 
 		if (cpDisplayLayout == null) {
 			return null;
