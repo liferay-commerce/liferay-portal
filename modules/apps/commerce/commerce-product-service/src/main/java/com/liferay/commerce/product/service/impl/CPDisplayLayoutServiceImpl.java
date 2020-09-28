@@ -67,6 +67,10 @@ public class CPDisplayLayoutServiceImpl extends CPDisplayLayoutServiceBaseImpl {
 			userId, groupId, clazz, classPK, layoutUuid);
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x)
+	 */
+	@Deprecated
 	@Override
 	public void deleteCPDisplayLayout(Class<?> clazz, long classPK)
 		throws PortalException {
