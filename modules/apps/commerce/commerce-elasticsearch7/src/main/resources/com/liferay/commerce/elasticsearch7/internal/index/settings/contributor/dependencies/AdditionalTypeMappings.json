@@ -98,6 +98,10 @@
 			"store": true,
 			"type": "keyword"
 		},
+		"sku": {
+			"store": true,
+			"type": "keyword"
+		},
 		"specificationOptionsIds": {
 			"store": true,
 			"type": "keyword"
