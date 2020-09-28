@@ -18,11 +18,13 @@ import com.liferay.commerce.price.list.model.CommercePriceEntry;
 import com.liferay.commerce.price.list.service.CommercePriceEntryLocalService;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.BaseIndexer;
+import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
@@ -31,7 +33,9 @@ import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
+import com.liferay.portal.kernel.search.generic.WildcardQueryImpl;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.LinkedHashMap;
@@ -94,7 +98,14 @@ public class CommercePriceEntryIndexer extends BaseIndexer<CommercePriceEntry> {
 		addSearchTerm(
 			searchQuery, searchContext, FIELD_EXTERNAL_REFERENCE_CODE, false);
 
-		addSearchTerm(searchQuery, searchContext, "sku", false);
+		if (searchContext.getKeywords() == null) {
+			addSearchTerm(searchQuery, searchContext, "sku", false);
+		}
+		else {
+			addWildcardPrefixQuery(
+				searchQuery, "sku", searchContext.getKeywords());
+		}
+
 		addSearchLocalizedTerm(
 			searchQuery, searchContext, "cpDefinitionName", false);
 
@@ -108,6 +119,16 @@ public class CommercePriceEntryIndexer extends BaseIndexer<CommercePriceEntry> {
 				addSearchExpando(searchQuery, searchContext, expandoAttributes);
 			}
 		}
+	}
+
+	protected void addWildcardPrefixQuery(
+			BooleanQuery searchQuery, String field, String keywords)
+		throws Exception {
+
+		WildcardQueryImpl wildcardQueryImpl = new WildcardQueryImpl(
+			field, StringUtil.toLowerCase(keywords) + StringPool.STAR);
+
+		searchQuery.add(wildcardQueryImpl, BooleanClauseOccur.SHOULD);
 	}
 
 	@Override
@@ -140,7 +161,7 @@ public class CommercePriceEntryIndexer extends BaseIndexer<CommercePriceEntry> {
 		CPInstance cpInstance = commercePriceEntry.getCPInstance();
 
 		document.addKeyword("cpInstanceId", cpInstance.getCPInstanceId());
-		document.addKeyword("sku", cpInstance.getSku());
+		document.addKeyword("sku", cpInstance.getSku(), true);
 
 		CPDefinition cpDefinition = cpInstance.getCPDefinition();
 

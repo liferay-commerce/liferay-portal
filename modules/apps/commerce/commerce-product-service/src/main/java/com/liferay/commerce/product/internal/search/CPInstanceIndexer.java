@@ -21,11 +21,13 @@ import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CPInstanceLocalService;
 import com.liferay.commerce.product.util.CPInstanceHelper;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.BaseIndexer;
+import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
@@ -34,8 +36,10 @@ import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
+import com.liferay.portal.kernel.search.generic.WildcardQueryImpl;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocalizationUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
@@ -158,10 +162,17 @@ public class CPInstanceIndexer extends BaseIndexer<CPInstance> {
 		addSearchLocalizedTerm(searchQuery, searchContext, Field.NAME, false);
 		addSearchTerm(searchQuery, searchContext, Field.ENTRY_CLASS_PK, false);
 		addSearchTerm(searchQuery, searchContext, Field.NAME, false);
-		addSearchTerm(searchQuery, searchContext, CPField.SKU, false);
 		addSearchTerm(searchQuery, searchContext, Field.USER_NAME, false);
 		addSearchTerm(
 			searchQuery, searchContext, CPField.EXTERNAL_REFERENCE_CODE, false);
+
+		if (searchContext.getKeywords() == null) {
+			addSearchTerm(searchQuery, searchContext, CPField.SKU, false);
+		}
+		else {
+			addWildcardPrefixQuery(
+				searchQuery, CPField.SKU, searchContext.getKeywords());
+		}
 
 		LinkedHashMap<String, Object> params =
 			(LinkedHashMap<String, Object>)searchContext.getAttribute("params");
@@ -173,6 +184,16 @@ public class CPInstanceIndexer extends BaseIndexer<CPInstance> {
 				addSearchExpando(searchQuery, searchContext, expandoAttributes);
 			}
 		}
+	}
+
+	protected void addWildcardPrefixQuery(
+			BooleanQuery searchQuery, String field, String keywords)
+		throws Exception {
+
+		WildcardQueryImpl wildcardQueryImpl = new WildcardQueryImpl(
+			field, StringUtil.toLowerCase(keywords) + StringPool.STAR);
+
+		searchQuery.add(wildcardQueryImpl, BooleanClauseOccur.SHOULD);
 	}
 
 	@Override
@@ -219,7 +240,7 @@ public class CPInstanceIndexer extends BaseIndexer<CPInstance> {
 		document.addText(Field.CONTENT, cpInstance.getSku());
 		document.addDateSortable(
 			CPField.DISPLAY_DATE, cpInstance.getDisplayDate());
-		document.addTextSortable(CPField.SKU, cpInstance.getSku());
+		document.addKeyword(CPField.SKU, cpInstance.getSku(), true);
 		document.addKeyword(
 			CPField.CP_DEFINITION_ID, cpInstance.getCPDefinitionId());
 		document.addKeyword(
