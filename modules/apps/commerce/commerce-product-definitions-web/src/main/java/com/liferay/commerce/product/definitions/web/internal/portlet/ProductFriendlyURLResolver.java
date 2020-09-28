@@ -222,7 +222,7 @@ public class ProductFriendlyURLResolver implements FriendlyURLResolver {
 		throws PortalException {
 
 		String layoutUuid = _cpDefinitionLocalService.getLayoutUuid(
-			cpDefinitionId);
+			groupId, cpDefinitionId);
 
 		if (Validator.isNotNull(layoutUuid)) {
 			return _layoutLocalService.getLayoutByUuidAndGroupId(
