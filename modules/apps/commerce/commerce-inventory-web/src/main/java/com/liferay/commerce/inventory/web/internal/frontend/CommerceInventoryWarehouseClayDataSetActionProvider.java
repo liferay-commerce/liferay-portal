@@ -17,6 +17,7 @@ package com.liferay.commerce.inventory.web.internal.frontend;
 import static com.liferay.portal.kernel.security.permission.PermissionThreadLocal.getPermissionChecker;
 
 import com.liferay.commerce.inventory.constants.CommerceInventoryActionKeys;
+import com.liferay.commerce.inventory.model.CommerceInventoryWarehouse;
 import com.liferay.commerce.inventory.web.internal.frontend.constants.CommerceInventoryDataSetConstants;
 import com.liferay.commerce.inventory.web.internal.model.Warehouse;
 import com.liferay.commerce.product.constants.CPPortletKeys;
@@ -29,7 +30,9 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
-import com.liferay.portal.kernel.service.permission.PortalPermissionUtil;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
@@ -69,9 +72,7 @@ public class CommerceInventoryWarehouseClayDataSetActionProvider
 		Warehouse warehouse = (Warehouse)model;
 
 		return DropdownItemListBuilder.add(
-			() -> PortalPermissionUtil.contains(
-				getPermissionChecker(),
-				CommerceInventoryActionKeys.MANAGE_INVENTORY),
+			() -> _hasPermission(),
 			dropdownItem -> {
 				dropdownItem.setHref(
 					_getWarehouseEditURL(
@@ -82,9 +83,7 @@ public class CommerceInventoryWarehouseClayDataSetActionProvider
 				dropdownItem.setTarget("sidePanel");
 			}
 		).add(
-			() -> PortalPermissionUtil.contains(
-				getPermissionChecker(),
-				CommerceInventoryActionKeys.MANAGE_INVENTORY),
+			() -> _hasPermission(),
 			dropdownItem -> {
 				dropdownItem.setHref(
 					_getWarehouseDeleteURL(
@@ -152,8 +151,24 @@ public class CommerceInventoryWarehouseClayDataSetActionProvider
 		return portletURL.toString();
 	}
 
+	private boolean _hasPermission() throws PrincipalException {
+		PortletResourcePermission portletResourcePermission =
+			_commerceInventoryWarehouseModelResourcePermission.
+				getPortletResourcePermission();
+
+		return portletResourcePermission.contains(
+			getPermissionChecker(), null,
+			CommerceInventoryActionKeys.MANAGE_INVENTORY);
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		CommerceInventoryWarehouseClayDataSetActionProvider.class);
+
+	@Reference(
+		target = "(model.class.name=com.liferay.commerce.inventory.model.CommerceInventoryWarehouse)"
+	)
+	private ModelResourcePermission<CommerceInventoryWarehouse>
+		_commerceInventoryWarehouseModelResourcePermission;
 
 	@Reference
 	private Portal _portal;
