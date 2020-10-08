@@ -14,10 +14,22 @@
 
 package com.liferay.dispatch.constants;
 
+import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstants;
+
 /**
  * @author Marco Leo
+ * @author Igor Beslic
  */
 public class DispatchConstants {
+
+	public static final int[] ALLOWED_BACKGROUND_TASK_STATUSES = {
+		BackgroundTaskConstants.STATUS_CANCELLED,
+		BackgroundTaskConstants.STATUS_FAILED,
+		BackgroundTaskConstants.STATUS_IN_PROGRESS,
+		BackgroundTaskConstants.STATUS_NEW,
+		BackgroundTaskConstants.STATUS_QUEUED,
+		BackgroundTaskConstants.STATUS_SUCCESSFUL
+	};
 
 	public static final String CATEGORY_KEY_DISPATCH_DETAILS = "details";
 
