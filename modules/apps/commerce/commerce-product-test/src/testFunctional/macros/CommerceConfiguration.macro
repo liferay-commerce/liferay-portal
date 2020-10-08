@@ -251,7 +251,7 @@ definition {
 			category = "Sites",
 			panel = "Control Panel",
 			portlet = "Sites");
-		
+
 		PortletEntry.selectAll();
 
 		if (IsElementPresent(locator1 = "Icon#DELETE")) {
