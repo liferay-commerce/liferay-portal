@@ -14,11 +14,16 @@
 
 package com.liferay.dispatch.service.impl;
 
+import com.liferay.dispatch.constants.DispatchConstants;
+import com.liferay.dispatch.exception.DispatchLogStartDateException;
+import com.liferay.dispatch.exception.DispatchLogStatusException;
 import com.liferay.dispatch.model.DispatchLog;
+import com.liferay.dispatch.model.DispatchTrigger;
 import com.liferay.dispatch.service.base.DispatchLogLocalServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.util.ArrayUtil;
 
 import java.util.Date;
 import java.util.List;
@@ -27,6 +32,7 @@ import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Alessio Antonio Rendina
+ * @author Igor Beslic
  */
 @Component(
 	property = "model.class.name=com.liferay.dispatch.model.DispatchLog",
@@ -41,6 +47,12 @@ public class DispatchLogLocalServiceImpl
 			String output, Date startDate, int status)
 		throws PortalException {
 
+		_checkDispatchLogPeriod(startDate, endDate);
+		_checkStatus(status);
+
+		DispatchTrigger dispatchTrigger =
+			dispatchTriggerPersistence.findByPrimaryKey(dispatchTriggerId);
+
 		User user = userLocalService.getUser(userId);
 
 		DispatchLog dispatchLog = dispatchLogPersistence.create(
@@ -49,7 +61,8 @@ public class DispatchLogLocalServiceImpl
 		dispatchLog.setCompanyId(user.getCompanyId());
 		dispatchLog.setUserId(user.getUserId());
 		dispatchLog.setUserName(user.getFullName());
-		dispatchLog.setDispatchTriggerId(dispatchTriggerId);
+		dispatchLog.setDispatchTriggerId(
+			dispatchTrigger.getDispatchTriggerId());
 		dispatchLog.setEndDate(endDate);
 		dispatchLog.setError(error);
 		dispatchLog.setOutput(output);
@@ -87,12 +100,43 @@ public class DispatchLogLocalServiceImpl
 		DispatchLog dispatchLog = dispatchLogPersistence.findByPrimaryKey(
 			dispatchLogId);
 
+		_checkDispatchLogPeriod(dispatchLog.getStartDate(), endDate);
+
+		_checkStatus(status);
+
 		dispatchLog.setEndDate(endDate);
 		dispatchLog.setError(error);
 		dispatchLog.setOutput(output);
 		dispatchLog.setStatus(status);
 
 		return dispatchLogPersistence.update(dispatchLog);
+	}
+
+	private void _checkDispatchLogPeriod(Date startDate, Date endDate)
+		throws PortalException {
+
+		if (startDate == null) {
+			throw new DispatchLogStartDateException("Start date is required");
+		}
+
+		if (endDate == null) {
+			return;
+		}
+
+		if (startDate.after(endDate)) {
+			throw new DispatchLogStartDateException(
+				"Start date must precede end date");
+		}
+	}
+
+	private void _checkStatus(int status) throws PortalException {
+		if (ArrayUtil.contains(
+				DispatchConstants.ALLOWED_BACKGROUND_TASK_STATUSES, status)) {
+
+			return;
+		}
+
+		throw new DispatchLogStatusException("Status value is not allowed");
 	}
 
 }
