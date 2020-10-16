@@ -39,7 +39,7 @@ definition {
 	}
 
 	test CreateNewDiscount {
-		property portal.acceptance = "quarantine";
+		property portal.acceptance = "commerce";
 		property test.name.skip.portal.instance = "CPCommerceDiscounts#CreateNewDiscount";
 
 		CommerceNavigator.gotoPortlet(

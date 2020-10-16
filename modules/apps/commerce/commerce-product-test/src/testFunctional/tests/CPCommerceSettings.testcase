@@ -25,7 +25,7 @@ definition {
 	}
 
 	test CreateNewAvailabilityEstimate {
-		property portal.acceptance = "quarantine";
+		property portal.acceptance = "commerce";
 		property test.name.skip.portal.instance = "CPCommerceSettings#CreateNewAvailabilityEstimate";
 
 		CommerceNavigator.gotoPortlet(
@@ -42,7 +42,7 @@ definition {
 	}
 
 	test CreateNewCountry {
-		property portal.acceptance = "quarantine";
+		property portal.acceptance = "commerce";
 		property test.name.skip.portal.instance = "CPCommerceSettings#CreateNewCountry";
 
 		CommerceNavigator.gotoPortlet(
@@ -75,7 +75,7 @@ definition {
 	}
 
 	test CreateNewMeasurementUnits {
-		property portal.acceptance = "quarantine";
+		property portal.acceptance = "commerce";
 		property test.name.skip.portal.instance = "CPCommerceSettings#CreateNewMeasurementUnits";
 
 		CommerceNavigator.gotoPortlet(

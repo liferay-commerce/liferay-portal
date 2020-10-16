@@ -47,7 +47,7 @@ definition {
 	}
 
 	test AssertPriceEntriesAreProductsInTheSameCatalogAsPriceList {
-		property portal.acceptance = "true";
+		property portal.acceptance = "commerce";
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -132,7 +132,7 @@ definition {
 	}
 
 	test AssertPriceListCannotBeMovedToADifferentCatalog {
-		property portal.acceptance = "true";
+		property portal.acceptance = "commerce";
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -174,7 +174,7 @@ definition {
 	}
 
 	test CreateNewPriceList {
-		property portal.acceptance = "quarantine";
+		property portal.acceptance = "commerce";
 		property test.name.skip.portal.instance = "CPCommercePriceLists#CreateNewPriceList";
 
 		CommerceNavigator.gotoPortlet(
@@ -222,7 +222,7 @@ definition {
 	}
 
 	test PriceListExistsOnlyInOneCatalog {
-		property portal.acceptance = "true";
+		property portal.acceptance = "commerce";
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",

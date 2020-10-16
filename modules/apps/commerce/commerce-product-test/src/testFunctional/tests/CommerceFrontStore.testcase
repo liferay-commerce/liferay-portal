@@ -34,7 +34,7 @@ definition {
 	}
 
 	test ViewStoreFrontSimpleProduct {
-		property portal.acceptance = "quarantine";
+		property portal.acceptance = "commerce";
 		property test.name.skip.portal.instance = "CommerceFrontStore#ViewStoreFrontSimpleProduct";
 
 		CommerceNavigator.gotoPortlet(

@@ -55,7 +55,7 @@ definition {
 
 	test CreateNewSpecificationOptions {
 		property environment.acceptance = "quarantine";
-		property portal.acceptance = "quarantine";
+		property portal.acceptance = "commerce";
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -86,7 +86,7 @@ definition {
 
 	test PublishSimpleProduct {
 		property environment.acceptance = "quarantine";
-		property portal.acceptance = "quarantine";
+		property portal.acceptance = "commerce";
 		property test.name.skip.portal.instance = "CommerceSmoke#PublishSimpleProduct";
 
 		CommerceNavigator.gotoPortlet(
