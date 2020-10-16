@@ -74,7 +74,7 @@ if (fileEntryId != 0) {
 
 		<div class="file-validation-info">
 			<c:if test="<%= Validator.isNotNull(validExtensions) %>">
-				<strong><%= validExtensions %></strong>
+				<strong><%= HtmlUtil.escape(validExtensions) %></strong>
 			</c:if>
 
 			<c:if test="<%= maxFileSize != 0 %>">
@@ -150,7 +150,7 @@ if (!draggableImage.equals("none")) {
 		paramName: '<portlet:namespace /><%= paramName %>',
 		rootNode: '#<%= randomNamespace %>taglibImageSelector',
 		uploadURL: '<%= uploadURL %>',
-		validExtensions: '<%= validExtensions %>',
+		validExtensions: '<%= HtmlUtil.escapeJS(validExtensions) %>',
 	});
 
 	<c:if test='<%= !draggableImage.equals("none") %>'>

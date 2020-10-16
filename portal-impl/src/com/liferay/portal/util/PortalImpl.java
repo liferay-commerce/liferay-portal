@@ -1074,7 +1074,7 @@ public class PortalImpl implements Portal {
 			WebKeys.RENDER_PORTLET_COLUMN_ID);
 
 		if (columnId != null) {
-			sb.append(JS.getSafeName(columnId.toString()));
+			sb.append(HtmlUtil.getAUICompatibleId(columnId.toString()));
 		}
 
 		sb.append(StringPool.UNDERLINE);
@@ -1083,7 +1083,7 @@ public class PortalImpl implements Portal {
 			WebKeys.RENDER_PORTLET_COLUMN_POS);
 
 		if (columnPos != null) {
-			sb.append(JS.getSafeName(columnPos.toString()));
+			sb.append(HtmlUtil.getAUICompatibleId(columnPos.toString()));
 		}
 
 		return sb.toString();

@@ -30,7 +30,7 @@ List<FormNavigatorEntry<Object>> formNavigatorEntries = (List<FormNavigatorEntry
 	String errorSection = null;
 	%>
 
-	<!-- Begin fragment <%= sectionId %> -->
+	<!-- Begin fragment <%= HtmlUtil.escape(sectionId) %> -->
 
 	<liferay-frontend:fieldset
 		collapsible="<%= formNavigatorEntries.size() > 1 %>"
@@ -59,7 +59,7 @@ List<FormNavigatorEntry<Object>> formNavigatorEntries = (List<FormNavigatorEntry
 
 	</liferay-frontend:fieldset>
 
-	<!-- End fragment <%= sectionId %> -->
+	<!-- End fragment <%= HtmlUtil.escape(sectionId) %> -->
 
 	<%
 	for (int i = 1; i < formNavigatorEntries.size(); i++) {
@@ -68,7 +68,7 @@ List<FormNavigatorEntry<Object>> formNavigatorEntries = (List<FormNavigatorEntry
 		sectionId = namespace + _getSectionId(curFormNavigatorEntry.getKey());
 	%>
 
-		<!-- Begin fragment <%= sectionId %> -->
+		<!-- Begin fragment <%= HtmlUtil.escape(sectionId) %> -->
 
 		<liferay-frontend:fieldset
 			collapsed="<%= true %>"
@@ -92,7 +92,7 @@ List<FormNavigatorEntry<Object>> formNavigatorEntries = (List<FormNavigatorEntry
 
 		</liferay-frontend:fieldset>
 
-		<!-- End fragment <%= sectionId %> -->
+		<!-- End fragment <%= HtmlUtil.escape(sectionId) %> -->
 
 	<%
 		String curErrorSection = (String)request.getAttribute(WebKeys.ERROR_SECTION);
@@ -116,7 +116,7 @@ List<FormNavigatorEntry<Object>> formNavigatorEntries = (List<FormNavigatorEntry
 			var focusField;
 
 			var sectionContent = document.querySelector(
-				'#<%= _getSectionId(errorSection) %>Content'
+				'#<%= HtmlUtil.escapeJS(_getSectionId(errorSection)) %>Content'
 			);
 
 			<%
@@ -126,7 +126,7 @@ List<FormNavigatorEntry<Object>> formNavigatorEntries = (List<FormNavigatorEntry
 			<c:choose>
 				<c:when test="<%= Validator.isNotNull(focusField) %>">
 					focusField = sectionContent.querySelector(
-						'#<portlet:namespace /><%= focusField %>'
+						'#<portlet:namespace /><%= HtmlUtil.escapeJS(focusField) %>'
 					);
 				</c:when>
 				<c:otherwise>
