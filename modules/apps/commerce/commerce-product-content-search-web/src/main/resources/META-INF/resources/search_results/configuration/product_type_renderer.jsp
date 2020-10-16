@@ -27,8 +27,13 @@ CPSearchResultsDisplayContext cpSearchResultsDisplayContext = (CPSearchResultsDi
 		for (CPType cpType : cpSearchResultsDisplayContext.getCPTypes()) {
 		%>
 
+<<<<<<< HEAD
 			<li class="nav-item">
 				<a class="nav-link" href="#<%= cpType.getName() %>"><%= cpType.getLabel(locale) %></a>
+=======
+			<li>
+				<a href="#<%= cpType.getName() %>"><%= HtmlUtil.escape(cpType.getLabel(locale)) %></a>
+>>>>>>> COMMERCE-5017 Improve output handling
 			</li>
 
 		<%
@@ -45,7 +50,7 @@ CPSearchResultsDisplayContext cpSearchResultsDisplayContext = (CPSearchResultsDi
 
 			<div id="<%= cpType.getName() %>">
 				<aui:fieldset markupView="lexicon">
-					<aui:select label='<%= cpType.getLabel(locale) + StringPool.SPACE + LanguageUtil.get(request, "cp-type-list-entry-renderer-key") %>' name='<%= "preferences--" + cpType.getName() + "--cpTypeListEntryRendererKey--" %>'>
+					<aui:select label='<%= HtmlUtil.escape(cpType.getLabel(locale)) + StringPool.SPACE + LanguageUtil.get(request, "cp-type-list-entry-renderer-key") %>' name='<%= "preferences--" + cpType.getName() + "--cpTypeListEntryRendererKey--" %>'>
 
 						<%
 						List<CPContentListEntryRenderer> cpContentListEntryRenderers = cpSearchResultsDisplayContext.getCPContentListEntryRenderers(cpType.getName());
@@ -54,7 +59,7 @@ CPSearchResultsDisplayContext cpSearchResultsDisplayContext = (CPSearchResultsDi
 							String key = cpContentListEntryRenderer.getKey();
 						%>
 
-							<aui:option label="<%= cpContentListEntryRenderer.getLabel(locale) %>" selected="<%= key.equals(cpSearchResultsDisplayContext.getCPTypeListEntryRendererKey(cpType.getName())) %>" value="<%= key %>" />
+							<aui:option label="<%= HtmlUtil.escape(cpContentListEntryRenderer.getLabel(locale)) %>" selected="<%= key.equals(cpSearchResultsDisplayContext.getCPTypeListEntryRendererKey(cpType.getName())) %>" value="<%= key %>" />
 
 						<%
 						}

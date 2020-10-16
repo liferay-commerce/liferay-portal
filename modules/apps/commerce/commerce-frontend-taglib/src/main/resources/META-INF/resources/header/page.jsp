@@ -30,6 +30,7 @@ if (bean instanceof WorkflowedModel) {
 String myWorkflowTasksPortletNamespace = PortalUtil.getPortletNamespace(PortletKeys.MY_WORKFLOW_TASK);
 %>
 
+<<<<<<< HEAD
 <div class="bg-white border-bottom commerce-header<%= fullWidth ? " container-fluid" : StringPool.BLANK %><%= Validator.isNotNull(wrapperCssClasses) ? StringPool.SPACE + wrapperCssClasses : StringPool.BLANK %> side-panel-top-anchor">
 	<div class="container<%= Validator.isNotNull(cssClasses) ? StringPool.SPACE + cssClasses : StringPool.BLANK %>">
 		<div class="align-items-center c-py-3 c-py-lg-2 d-lg-flex">
@@ -52,6 +53,113 @@ String myWorkflowTasksPortletNamespace = PortalUtil.getPortletNamespace(PortletK
 						<%
 						WorkflowedModel workflowedModel = (WorkflowedModel)bean;
 						%>
+=======
+<div class="bg-white border-bottom commerce-header<%= fullWidth ? " container-fluid" : StringPool.BLANK %><%= Validator.isNotNull(wrapperCssClasses) ? StringPool.SPACE + HtmlUtil.escapeAttribute(wrapperCssClasses) : StringPool.BLANK %> side-panel-top-anchor">
+	<div class="container<%= Validator.isNotNull(cssClasses) ? StringPool.SPACE + HtmlUtil.escapeAttribute(cssClasses) : StringPool.BLANK %>">
+		<div class="d-lg-flex py-2">
+			<div class="align-items-center d-flex flex-grow-1">
+				<div class="flex-grow-1 row">
+					<c:if test="<%= Validator.isNotNull(thumbnailUrl) %>">
+						<div class="col-auto">
+							<span class="sticker sticker-primary sticker-xl">
+								<span class="sticker-overlay">
+									<img alt="thumbnail" class="img-fluid" src="<%= HtmlUtil.escapeAttribute(thumbnailUrl) %>" />
+								</span>
+							</span>
+						</div>
+					</c:if>
+
+					<div class="col">
+						<div class="row">
+							<div class="col-auto">
+								<h3 class="commerce-header-title mb-0 truncate-text">
+									<%= HtmlUtil.escape(title) %>
+								</h3>
+
+								<c:if test="<%= isWorkflowedModel %>">
+
+									<%
+									WorkflowedModel workflowedModel = (WorkflowedModel)bean;
+									%>
+
+									<c:if test="<%= workflowedModel != null %>">
+										<div>
+											<aui:workflow-status bean="<%= bean %>" model="<%= model %>" showHelpMessage="<%= false %>" showIcon="<%= false %>" showLabel="<%= false %>" status="<%= workflowedModel.getStatus() %>" />
+										</div>
+									</c:if>
+								</c:if>
+							</div>
+
+							<div class="col d-flex flex-column justify-content-center separator-left">
+								<c:if test="<%= Validator.isNotNull(beanIdLabel) %>">
+									<small class="d-block">
+										<span class="header-info-title">
+											<liferay-ui:message key="<%= HtmlUtil.escape(beanIdLabel) %>" />:
+										</span>
+
+										<strong class="header-info-value">
+											<%= beanId %>
+										</strong>
+
+										<clay:button
+											cssClass="lfr-portal-tooltip text-secondary"
+											displayType="unstyled"
+											icon="question-circle"
+											small="<%= true %>"
+											title='<%= LanguageUtil.get(request, "identification-number") %>'
+										/>
+									</small>
+								</c:if>
+
+								<c:if test="<%= Validator.isNotNull(externalReferenceCode) || Validator.isNotNull(externalReferenceCodeEditUrl) %>">
+									<small class="d-block">
+										<span class="header-info-title">
+											<liferay-ui:message key="erc" />:
+										</span>
+
+										<strong class="header-info-value">
+											<%= HtmlUtil.escape(externalReferenceCode) %>
+										</strong>
+
+										<clay:button
+											cssClass="lfr-portal-tooltip text-secondary"
+											displayType="unstyled"
+											icon="question-circle"
+											small="<%= true %>"
+											title='<%= LanguageUtil.get(request, "external-reference-code") %>'
+										/>
+
+										<c:if test="<%= Validator.isNotNull(externalReferenceCodeEditUrl) %>">
+											<clay:button
+												cssClass="text-secondary"
+												displayType="unstyled"
+												icon="pencil"
+												id="erc-edit-modal-opener"
+												small="<%= true %>"
+											/>
+
+											<aui:script require="commerce-frontend-js/utilities/eventsDefinitions as events">
+												document
+													.querySelector('#erc-edit-modal-opener')
+													.addEventListener('click', function (e) {
+														e.preventDefault();
+														Liferay.fire(events.OPEN_MODAL, {id: 'erc-edit-modal'});
+													});
+											</aui:script>
+
+											<commerce-ui:modal
+												id="erc-edit-modal"
+												refreshPageOnClose="<%= true %>"
+												title='<%= LanguageUtil.format(request, "edit-x", "external-reference-code") %>'
+												url="<%= externalReferenceCodeEditUrl %>"
+											/>
+										</c:if>
+									</small>
+								</c:if>
+							</div>
+						</div>
+					</div>
+>>>>>>> COMMERCE-5017 Improve output handling
 
 						<c:if test="<%= workflowedModel != null %>">
 							<aui:workflow-status bean="<%= bean %>" model="<%= model %>" showHelpMessage="<%= false %>" showIcon="<%= false %>" showLabel="<%= false %>" status="<%= workflowedModel.getStatus() %>" />
@@ -84,9 +192,98 @@ String myWorkflowTasksPortletNamespace = PortalUtil.getPortletNamespace(PortletK
 								<liferay-ui:message key="erc" />:
 							</span>
 
+<<<<<<< HEAD
 							<strong class="c-ml-1 header-info-value">
 								<%= externalReferenceCode %>
 							</strong>
+=======
+						<div class="border-right col col-12 col-lg-auto d-flex mt-3 mt-lg-0">
+							<small class="d-block">
+								<span class="header-info-title mr-1">
+									<liferay-ui:message key="assigned-to" />:
+								</span>
+
+								<button aria-expanded="false" aria-haspopup="true" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" onclick="<portlet:namespace />toggleDropdown();" type="button">
+									<liferay-ui:message key="<%= HtmlUtil.escape(assignee) %>" />
+
+									<clay:icon
+										symbol="caret-bottom"
+									/>
+								</button>
+
+								<div class="dropdown-menu dropdown-menu-right" id="<portlet:namespace />commerce-dropdown-assigned-to">
+									<c:if test="<%= !assignedToCurrentUser %>">
+										<clay:button
+											elementClasses="dropdown-item transition-link"
+											id='<%= liferayPortletResponse.getNamespace() + "assign-to-me-modal-opener" %>'
+											label='<%= LanguageUtil.get(request, "assign-to-me") %>'
+											size="lg"
+											style="secondary"
+										/>
+
+										<liferay-portlet:renderURL portletName="<%= PortletKeys.MY_WORKFLOW_TASK %>" var="assignToMeURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
+											<portlet:param name="mvcPath" value="/workflow_task_assign.jsp" />
+											<portlet:param name="hideDefaultSuccessMessage" value="<%= Boolean.TRUE.toString() %>" />
+											<portlet:param name="workflowTaskId" value="<%= String.valueOf(reviewWorkflowTask.getWorkflowTaskId()) %>" />
+											<portlet:param name="assigneeUserId" value="<%= String.valueOf(user.getUserId()) %>" />
+										</liferay-portlet:renderURL>
+
+										<aui:script>
+											document
+												.querySelector('#<portlet:namespace />assign-to-me-modal-opener')
+												.addEventListener('click', function (e) {
+													Liferay.Util.openWindow({
+														dialog: {
+															destroyOnHide: true,
+															height: 430,
+															resizable: false,
+															width: 896,
+														},
+														dialogIframe: {
+															bodyCssClass: 'dialog-with-footer task-dialog',
+														},
+														id: '<%= myWorkflowTasksPortletNamespace %>assignToDialog',
+														title: '<liferay-ui:message key="assign-to-me" />',
+														uri: '<%= HtmlUtil.escapeJS(assignToMeURL) %>',
+													});
+												});
+										</aui:script>
+									</c:if>
+
+									<clay:button
+										elementClasses="dropdown-item transition-link"
+										id='<%= liferayPortletResponse.getNamespace() + "assign-to-modal-opener" %>'
+										label='<%= LanguageUtil.get(request, "assign-to-...") %>'
+										size="lg"
+										style="secondary"
+									/>
+
+									<liferay-portlet:renderURL portletName="<%= PortletKeys.MY_WORKFLOW_TASK %>" var="assignToURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
+										<portlet:param name="mvcPath" value="/workflow_task_assign.jsp" />
+										<portlet:param name="hideDefaultSuccessMessage" value="<%= Boolean.TRUE.toString() %>" />
+										<portlet:param name="workflowTaskId" value="<%= String.valueOf(reviewWorkflowTask.getWorkflowTaskId()) %>" />
+									</liferay-portlet:renderURL>
+
+									<aui:script>
+										document
+											.querySelector('#<portlet:namespace />assign-to-modal-opener')
+											.addEventListener('click', function (e) {
+												Liferay.Util.openWindow({
+													dialog: {
+														destroyOnHide: true,
+														height: 430,
+														resizable: false,
+														width: 896,
+													},
+													dialogIframe: {
+														bodyCssClass: 'dialog-with-footer task-dialog',
+													},
+													id: '<%= myWorkflowTasksPortletNamespace %>assignToDialog',
+													title: '<liferay-ui:message key="assign-to-..." />',
+													uri: '<%= HtmlUtil.escapeJS(assignToURL) %>',
+												});
+											});
+>>>>>>> COMMERCE-5017 Improve output handling
 
 							<span class="c-ml-1 lfr-portal-tooltip text-secondary" title="<%= LanguageUtil.get(request, "external-reference-code") %>">
 								<clay:icon
@@ -129,12 +326,21 @@ String myWorkflowTasksPortletNamespace = PortalUtil.getPortletNamespace(PortletK
 			<div class="align-items-center c-ml-auto d-flex justify-content-end">
 				<c:if test="<%= Validator.isNotNull(reviewWorkflowTask) %>">
 
+<<<<<<< HEAD
 					<%
 					boolean assignedToCurrentUser = false;
 
 					if (reviewWorkflowTask.getAssigneeUserId() == user.getUserId()) {
 						assignedToCurrentUser = true;
 					}
+=======
+								if (Validator.isNotNull(action.getAdditionalClasses())) {
+									buttonClasses += HtmlUtil.escapeAttribute(action.getAdditionalClasses());
+								}
+								else {
+									buttonClasses += "btn-default";
+								}
+>>>>>>> COMMERCE-5017 Improve output handling
 
 					String assignee = PortalUtil.getUserName(reviewWorkflowTask.getAssigneeUserId(), "nobody");
 
@@ -143,6 +349,7 @@ String myWorkflowTasksPortletNamespace = PortalUtil.getPortletNamespace(PortletK
 					}
 					%>
 
+<<<<<<< HEAD
 					<div class="border-right c-mr-1 c-mr-sm-3 c-pr-sm-3 position-relative">
 						<div class="bg-white c-px-1 header-assign-label position-absolute text-secondary">
 							<liferay-ui:message key="assigned-to" />:
@@ -190,6 +397,35 @@ String myWorkflowTasksPortletNamespace = PortalUtil.getPortletNamespace(PortletK
 												id: '<%= myWorkflowTasksPortletNamespace %>assignToDialog',
 												title: '<liferay-ui:message key="assign-to-me" />',
 												uri: '<%= assignToMeURL %>',
+=======
+								<clay:link
+									elementClasses="<%= HtmlUtil.escape(buttonClasses) %>"
+									href="<%= Validator.isNotNull(action.getHref()) ? action.getHref() : StringPool.POUND %>"
+									id="<%= HtmlUtil.escape(actionId) %>"
+									label="<%= LanguageUtil.get(request, HtmlUtil.escape(action.getLabel())) %>"
+								/>
+
+								<%
+								if (submitCheck && Validator.isNotNull(action.getFormId())) {
+								%>
+
+									<aui:script>
+										document
+											.getElementById('<%= HtmlUtil.escapeJS(actionId) %>')
+											.addEventListener('click', function (e) {
+												e.preventDefault();
+												var form = document.getElementById(
+													'<%= HtmlUtil.escapeJS(action.getFormId()) %>'
+												);
+												if (!form) {
+													throw new Error(
+														'Form with id: ' +
+															<%= HtmlUtil.escapeJS(action.getFormId()) %> +
+															' not found!'
+													);
+												}
+												submitForm(form);
+>>>>>>> COMMERCE-5017 Improve output handling
 											});
 										});
 								</aui:script>

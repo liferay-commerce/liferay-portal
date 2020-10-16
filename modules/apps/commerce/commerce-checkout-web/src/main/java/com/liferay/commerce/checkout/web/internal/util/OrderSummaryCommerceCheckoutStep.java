@@ -47,6 +47,7 @@ import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
@@ -162,8 +163,8 @@ public class OrderSummaryCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 						httpServletResponseWrapper.getResponse();
 			}
 
-			goToConfirmation = httpServletResponse.encodeRedirectURL(
-				goToConfirmation);
+			goToConfirmation = _portal.escapeRedirect(
+				URLCodec.encodeURL(goToConfirmation));
 
 			httpServletResponse.sendRedirect(goToConfirmation);
 		}

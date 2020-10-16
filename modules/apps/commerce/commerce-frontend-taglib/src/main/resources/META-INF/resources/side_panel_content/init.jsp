@@ -20,7 +20,11 @@
 taglib uri="http://liferay.com/tld/frontend" prefix="liferay-frontend" %><%@
 taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %>
 
+<<<<<<< HEAD
 <%@ page import="com.liferay.portal.kernel.util.PortalUtil" %><%@
+=======
+<%@ page import="com.liferay.portal.kernel.util.HtmlUtil" %><%@
+>>>>>>> COMMERCE-5017 Improve output handling
 page import="com.liferay.portal.kernel.util.Validator" %>
 
 <%@ page import="javax.portlet.PortletURL" %>

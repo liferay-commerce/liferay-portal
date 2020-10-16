@@ -28,6 +28,11 @@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 page import="com.liferay.commerce.payment.method.money.order.internal.configuration.MoneyOrderGroupServiceConfiguration" %><%@
 page import="com.liferay.commerce.payment.method.money.order.internal.display.context.MoneyOrderCheckoutStepDisplayContext" %><%@
 page import="com.liferay.portal.kernel.util.Constants" %><%@
+<<<<<<< HEAD
+=======
+page import="com.liferay.portal.kernel.util.HtmlUtil" %><%@
+page import="com.liferay.portal.kernel.util.LocalizationUtil" %><%@
+>>>>>>> COMMERCE-5017 Improve output handling
 page import="com.liferay.portal.kernel.util.ParamUtil" %><%@
 page import="com.liferay.portal.kernel.util.Validator" %>
 
