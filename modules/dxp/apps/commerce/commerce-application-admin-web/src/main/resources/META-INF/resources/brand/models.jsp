@@ -103,13 +103,14 @@ CommerceApplicationAdminDisplayContext commerceApplicationAdminDisplayContext = 
 
 				<liferay-ui:search-container-column-text
 					cssClass="important table-cell-content"
-					href="<%= rowURL %>"
-					property="name"
+					name="name"
+					value="<%= HtmlUtil.escape(commerceApplicationModel.getName()) %>"
 				/>
 
 				<liferay-ui:search-container-column-text
 					cssClass="table-cell-content"
-					property="year"
+					name="year"
+					value="<%= HtmlUtil.escape(commerceApplicationModel.getYear()) %>"
 				/>
 
 				<liferay-ui:search-container-column-jsp

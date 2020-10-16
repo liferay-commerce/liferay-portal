@@ -29,7 +29,8 @@ page import="com.liferay.commerce.data.integration.constants.CommerceDataIntegra
 page import="com.liferay.commerce.data.integration.model.CommerceDataIntegrationProcess" %><%@
 page import="com.liferay.commerce.data.integration.talend.TalendProcessTypeHelper" %><%@
 page import="com.liferay.petra.string.StringPool" %><%@
-page import="com.liferay.portal.kernel.repository.model.FileEntry" %>
+page import="com.liferay.portal.kernel.repository.model.FileEntry" %><%@
+page import="com.liferay.portal.kernel.util.HtmlUtil" %>
 
 <liferay-frontend:defineObjects />
 

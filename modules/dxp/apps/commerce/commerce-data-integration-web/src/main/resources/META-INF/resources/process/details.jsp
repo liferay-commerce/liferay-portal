@@ -84,7 +84,7 @@ if (commerceDataIntegrationProcess != null) {
 			var processType = A.one(<portlet:namespace />type).val();
 
 			var portletURL = new Liferay.PortletURL.createURL(
-				'<%= currentURLObj %>'
+				'<%= HtmlUtil.escapeJS(String.valueOf(currentURLObj)) %>'
 			);
 
 			portletURL.setParameter('type', processType);

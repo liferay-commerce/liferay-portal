@@ -44,7 +44,7 @@ TalendProcessTypeHelper talendProcessTypeHelper = (TalendProcessTypeHelper)reque
 					/>
 				</span>
 				<span>
-					<%= (fileEntry != null) ? fileEntry.getFileName() : StringPool.BLANK %>
+					<%= (fileEntry != null) ? HtmlUtil.escape(fileEntry.getFileName()) : StringPool.BLANK %>
 				</span>
 			</p>
 

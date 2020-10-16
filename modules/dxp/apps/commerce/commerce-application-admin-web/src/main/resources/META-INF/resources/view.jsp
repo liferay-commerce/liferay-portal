@@ -99,7 +99,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "applications"));
 				<liferay-ui:search-container-column-text
 					cssClass="important table-cell-content"
 					href="<%= rowURL %>"
-					property="name"
+					value="<%= HtmlUtil.escape(commerceApplicationBrand.getName()) %>"
 				/>
 
 				<liferay-ui:search-container-column-jsp
