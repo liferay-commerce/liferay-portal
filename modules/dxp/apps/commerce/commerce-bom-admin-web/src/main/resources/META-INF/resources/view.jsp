@@ -135,7 +135,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "shop-by-diagram"));
 						cssClass="important table-cell-expand"
 						href="<%= rowURL %>"
 						name="name"
-						value="<%= commerceBOMDefinition.getName() %>"
+						value="<%= HtmlUtil.escape(commerceBOMDefinition.getName()) %>"
 					/>
 
 					<liferay-ui:search-container-column-jsp
@@ -155,7 +155,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "shop-by-diagram"));
 						cssClass="important table-cell-expand"
 						href="<%= rowURL %>"
 						name="name"
-						value="<%= commerceBOMFolder.getName() %>"
+						value="<%= HtmlUtil.escape(commerceBOMFolder.getName()) %>"
 					/>
 
 					<liferay-ui:search-container-column-jsp
