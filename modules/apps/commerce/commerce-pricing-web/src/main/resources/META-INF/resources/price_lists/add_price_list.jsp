@@ -48,7 +48,7 @@ CommercePriceList commercePriceList = commercePriceListDisplayContext.getCommerc
 				for (CommerceCatalog commerceCatalog : commerceCatalogs) {
 				%>
 
-					<aui:option label="<%= commerceCatalog.getName() %>" selected="<%= (commercePriceList == null) ? (commerceCatalogs.size() == 1) : commercePriceListDisplayContext.isSelectedCatalog(commerceCatalog) %>" value="<%= commerceCatalog.getGroupId() %>" />
+					<aui:option label="<%= HtmlUtil.escape(commerceCatalog.getName()) %>" selected="<%= (commercePriceList == null) ? (commerceCatalogs.size() == 1) : commercePriceListDisplayContext.isSelectedCatalog(commerceCatalog) %>" value="<%= commerceCatalog.getGroupId() %>" />
 
 				<%
 				}

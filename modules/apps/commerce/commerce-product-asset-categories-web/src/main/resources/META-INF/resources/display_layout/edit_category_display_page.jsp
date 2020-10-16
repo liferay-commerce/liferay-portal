@@ -153,7 +153,7 @@ if (cpDisplayLayout != null) {
 	var assetCategoryId = <%= (assetCategory == null) ? "null" : assetCategory.getCategoryId() %>;
 
 	var assetCategoryName =
-		'<%= (assetCategory == null) ? "" : assetCategory.getTitle(locale) %>';
+		'<%= (assetCategory == null) ? "" : HtmlUtil.escapeJS(assetCategory.getTitle(locale)) %>';
 
 	var categoriesContainer = document.querySelector(
 		'#<portlet:namespace />categoriesContainer'

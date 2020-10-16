@@ -34,7 +34,7 @@ CommerceShipmentDisplayContext commerceShipmentDisplayContext = (CommerceShipmen
 			for (CommerceChannel commerceChannel : commerceShipmentDisplayContext.getCommerceChannels()) {
 			%>
 
-				<aui:option label="<%= commerceChannel.getName() %>" value="<%= commerceChannel.getGroupId() %>" />
+				<aui:option label="<%= HtmlUtil.escape(commerceChannel.getName()) %>" value="<%= commerceChannel.getGroupId() %>" />
 
 			<%
 			}
@@ -48,7 +48,7 @@ CommerceShipmentDisplayContext commerceShipmentDisplayContext = (CommerceShipmen
 			for (CommerceAccount commerceAccount : commerceShipmentDisplayContext.getCommerceAccountsWithShippableOrders()) {
 			%>
 
-				<aui:option label="<%= commerceAccount.getName() %>" value="<%= commerceAccount.getCommerceAccountId() %>" />
+				<aui:option label="<%= HtmlUtil.escape(commerceAccount.getName()) %>" value="<%= commerceAccount.getCommerceAccountId() %>" />
 
 			<%
 			}

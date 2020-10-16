@@ -110,7 +110,7 @@ long cpDefinitionOptionValueRelId = cpDefinitionOptionValueRelDisplayContext.get
 			autocomplete.default('autocomplete', 'autocomplete-root', {
 				apiUrl:
 					'/o/headless-commerce-admin-catalog/v1.0/skus?filter=(catalogId eq <%= cpDefinitionOptionValueRelDisplayContext.getCommerceCatalogId() %>) and (hasChildCPDefinitions eq false)',
-				initialLabel: '<%= cpInstanceLabel %>',
+				initialLabel: '<%= HtmlUtil.escapeJS(cpInstanceLabel) %>',
 				initialValue: '<%= cpInstanceId %>',
 				inputId: 'skuId',
 				inputName: '<%= liferayPortletResponse.getNamespace() %>cpInstanceId',

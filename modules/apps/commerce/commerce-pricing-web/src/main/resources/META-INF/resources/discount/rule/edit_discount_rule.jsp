@@ -104,7 +104,7 @@ String type = BeanParamUtil.getString(commerceDiscountRule, request, "type");
 
 			var discountRuleData = {
 				name: name,
-				type: '<%= commerceDiscountRule.getType() %>',
+				type: '<%= HtmlUtil.escapeJS(commerceDiscountRule.getType()) %>',
 				typeSettings: typeSettings,
 			};
 

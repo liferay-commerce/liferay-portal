@@ -21,5 +21,5 @@ String formattedPrice = (String)request.getAttribute("liferay-commerce:format-pr
 %>
 
 <c:if test="<%= Validator.isNotNull(formattedPrice) %>">
-	<span class="product-price"><%= formattedPrice %></span>
+	<span class="product-price"><%= HtmlUtil.escape(formattedPrice) %></span>
 </c:if>

@@ -141,7 +141,7 @@ SearchContainer<CommerceDiscountRel> commercePricingClassCommerceDiscountRelSear
 					},
 				},
 				title:
-					'<liferay-ui:message arguments="<%= commerceDiscount.getTitle() %>" key="add-new-product-group-to-x" />',
+					'<liferay-ui:message arguments="<%= HtmlUtil.escapeJS(commerceDiscount.getTitle()) %>" key="add-new-product-group-to-x" />',
 				url:
 					'<%= commerceDiscountRelDisplayContext.getPricingClassItemSelectorUrl() %>',
 			});

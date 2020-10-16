@@ -43,7 +43,7 @@ CPDefinition cpDefinition = cpDefinitionsDisplayContext.getCPDefinition();
 		var <portlet:namespace />defaultLanguageId = null;
 		var <portlet:namespace />product = {
 			active: true,
-			productType: '<%= cpDefinition.getProductTypeName() %>',
+			productType: '<%= HtmlUtil.escapeJS(cpDefinition.getProductTypeName()) %>',
 		};
 
 		Liferay.provide(
@@ -88,7 +88,7 @@ CPDefinition cpDefinition = cpDefinitionsDisplayContext.getCPDefinition();
 							redirectURL.setParameter('cpDefinitionId', payload.id);
 							redirectURL.setParameter(
 								'p_p_state',
-								'<%= LiferayWindowState.MAXIMIZED.toString() %>'
+								'<%= WindowState.MAXIMIZED.toString() %>'
 							);
 
 							window.parent.Liferay.fire(events.CLOSE_MODAL, {

@@ -56,7 +56,7 @@ CommerceAddress shippingAddress = commerceShipmentDisplayContext.getShippingAddr
 			for (CommerceCountry commerceCountry : commerceCountries) {
 			%>
 
-				<aui:option label="<%= commerceCountry.getName(LanguageUtil.getLanguageId(locale)) %>" selected="<%= shippingAddress.getCommerceCountryId() == commerceCountry.getCommerceCountryId() %>" value="<%= commerceCountry.getCommerceCountryId() %>" />
+				<aui:option label="<%= HtmlUtil.escape(commerceCountry.getName(LanguageUtil.getLanguageId(locale))) %>" selected="<%= shippingAddress.getCommerceCountryId() == commerceCountry.getCommerceCountryId() %>" value="<%= commerceCountry.getCommerceCountryId() %>" />
 
 			<%
 			}
@@ -72,7 +72,7 @@ CommerceAddress shippingAddress = commerceShipmentDisplayContext.getShippingAddr
 			for (CommerceRegion commerceRegion : commerceRegions) {
 			%>
 
-				<aui:option label="<%= commerceRegion.getName() %>" selected="<%= shippingAddress.getCommerceRegionId() == commerceRegion.getCommerceRegionId() %>" value="<%= shippingAddress.getCommerceRegionId() %>" />
+				<aui:option label="<%= HtmlUtil.escape(commerceRegion.getName()) %>" selected="<%= shippingAddress.getCommerceRegionId() == commerceRegion.getCommerceRegionId() %>" value="<%= shippingAddress.getCommerceRegionId() %>" />
 
 			<%
 			}

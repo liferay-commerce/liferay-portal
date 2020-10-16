@@ -31,7 +31,7 @@ CProduct cProduct = cpDefinition.getCProduct();
 		<aui:script require="commerce-frontend-js/components/item_finder/entry as itemFinder, commerce-frontend-js/utilities/slugify as slugify, commerce-frontend-js/utilities/eventsDefinitions as events, commerce-frontend-js/utilities/index as utilities">
 			var headers = utilities.fetchParams.headers;
 			var productId = <%= cpDefinition.getCProductId() %>;
-			var productExternalReferenceCode = '<%= cProduct.getExternalReferenceCode() %>';
+			var productExternalReferenceCode = '<%= HtmlUtil.escapeJS(cProduct.getExternalReferenceCode()) %>';
 
 			function selectItem(productPricingClass) {
 				return Liferay.Util.fetch(

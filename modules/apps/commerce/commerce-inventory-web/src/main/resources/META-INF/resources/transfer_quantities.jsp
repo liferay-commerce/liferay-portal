@@ -42,7 +42,7 @@ CommerceInventoryDisplayContext commerceInventoryDisplayContext = (CommerceInven
 			for (CommerceInventoryWarehouse commerceInventoryWarehouse : commerceInventoryWarehouses) {
 			%>
 
-				<aui:option label="<%= commerceInventoryWarehouse.getName() %>" value="<%= commerceInventoryWarehouse.getCommerceInventoryWarehouseId() %>" />
+				<aui:option label="<%= HtmlUtil.escape(commerceInventoryWarehouse.getName()) %>" value="<%= commerceInventoryWarehouse.getCommerceInventoryWarehouseId() %>" />
 
 			<%
 			}
@@ -58,7 +58,7 @@ CommerceInventoryDisplayContext commerceInventoryDisplayContext = (CommerceInven
 			for (CommerceInventoryWarehouse commerceInventoryWarehouse : commerceInventoryWarehouses) {
 			%>
 
-				<aui:option label="<%= commerceInventoryWarehouse.getName() %>" value="<%= commerceInventoryWarehouse.getCommerceInventoryWarehouseId() %>" />
+				<aui:option label="<%= HtmlUtil.escape(commerceInventoryWarehouse.getName()) %>" value="<%= commerceInventoryWarehouse.getCommerceInventoryWarehouseId() %>" />
 
 			<%
 			}

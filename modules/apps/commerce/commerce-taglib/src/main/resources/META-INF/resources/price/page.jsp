@@ -40,18 +40,18 @@ boolean showPriceRange = (boolean)request.getAttribute("liferay-commerce:price:s
 				</span>
 			</c:if>
 
-			<%= formattedPrice %>
+			<%= HtmlUtil.escape(formattedPrice) %>
 		</span>
 	</c:when>
 	<c:otherwise>
 		<c:choose>
 			<c:when test="<%= showDiscount && Validator.isNotNull(formattedPromoPrice) %>">
 				<span class="product-promo-price">
-					<%= Validator.isNull(promoPriceLabel) ? StringPool.BLANK : promoPriceLabel %>
+					<%= Validator.isNull(promoPriceLabel) ? StringPool.BLANK : HtmlUtil.escape(promoPriceLabel) %>
 
-					<del><%= formattedPrice %></del>
+					<del><%= HtmlUtil.escape(formattedPrice) %></del>
 				</span>
-				<span class="product-price"><%= formattedPromoPrice %></span>
+				<span class="product-price"><%= HtmlUtil.escape(formattedPromoPrice) %></span>
 
 				<c:if test="<%= commerceDiscountValue != null %>">
 
@@ -60,7 +60,7 @@ boolean showPriceRange = (boolean)request.getAttribute("liferay-commerce:price:s
 					%>
 
 					<span class="commerce-discount">
-						<%= Validator.isNull(discountLabel) ? StringPool.BLANK : discountLabel %>
+						<%= Validator.isNull(discountLabel) ? StringPool.BLANK : HtmlUtil.escape(discountLabel) %>
 
 						<c:if test='<%= (boolean)request.getAttribute("liferay-commerce:price:showDiscountAmount") %>'>
 							<span class="discount-amount"><%= HtmlUtil.escape(discountAmountCommerceMoney.format(locale)) %></span>
@@ -101,10 +101,10 @@ boolean showPriceRange = (boolean)request.getAttribute("liferay-commerce:price:s
 			<c:otherwise>
 				<c:choose>
 					<c:when test="<%= Validator.isNotNull(formattedPromoPrice) %>">
-						<span class="product-price"><%= formattedPromoPrice %></span>
+						<span class="product-price"><%= HtmlUtil.escape(formattedPromoPrice) %></span>
 					</c:when>
 					<c:otherwise>
-						<span class="product-price"><%= formattedPrice %></span>
+						<span class="product-price"><%= HtmlUtil.escape(formattedPrice) %></span>
 					</c:otherwise>
 				</c:choose>
 			</c:otherwise>

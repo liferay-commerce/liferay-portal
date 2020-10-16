@@ -141,7 +141,7 @@ SearchContainer<CommerceDiscountRel> cpDefinitionCommerceDiscountRelSearchContai
 					},
 				},
 				title:
-					'<liferay-ui:message arguments="<%= commerceDiscount.getTitle() %>" key="add-new-product-to-x" />',
+					'<liferay-ui:message arguments="<%= HtmlUtil.escapeJS(commerceDiscount.getTitle()) %>" key="add-new-product-to-x" />',
 				url:
 					'<%= commerceDiscountRelDisplayContext.getItemSelectorUrl() %>',
 			});

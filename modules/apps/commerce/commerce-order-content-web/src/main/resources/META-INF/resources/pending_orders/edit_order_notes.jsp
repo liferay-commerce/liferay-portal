@@ -92,7 +92,7 @@ boolean manageRestrictedNotesPermission = commerceOrderContentDisplayContext.has
 									<liferay-ui:user-portrait
 										cssClass="user-icon-lg"
 										userId="<%= commerceOrderNote.getUserId() %>"
-										userName="<%= commerceOrderNote.getUserName() %>"
+										userName="<%= HtmlUtil.escape(commerceOrderNote.getUserName()) %>"
 									/>
 								</div>
 

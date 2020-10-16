@@ -67,7 +67,7 @@
 
 						redirectURL.setParameter(
 							'p_p_state',
-							'<%= LiferayWindowState.MAXIMIZED.toString() %>'
+							'<%= WindowState.MAXIMIZED.toString() %>'
 						);
 
 						redirectURL.setParameter('cpDefinitionId', cpDefinition.id);

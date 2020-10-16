@@ -80,7 +80,7 @@ String defaultLanguageId = cpDefinitionOptionRelDisplayContext.getCatalogDefault
 						for (DDMFormFieldType ddmFormFieldType : ddmFormFieldTypes) {
 						%>
 
-							<aui:option label="<%= cpDefinitionOptionRelDisplayContext.getDDMFormFieldTypeLabel(ddmFormFieldType, locale) %>" selected="<%= (cpDefinitionOptionRel != null) && cpDefinitionOptionRel.getDDMFormFieldTypeName().equals(ddmFormFieldType.getName()) %>" value="<%= ddmFormFieldType.getName() %>" />
+							<aui:option label="<%= HtmlUtil.escape(cpDefinitionOptionRelDisplayContext.getDDMFormFieldTypeLabel(ddmFormFieldType, locale)) %>" selected="<%= (cpDefinitionOptionRel != null) && cpDefinitionOptionRel.getDDMFormFieldTypeName().equals(ddmFormFieldType.getName()) %>" value="<%= HtmlUtil.escape(ddmFormFieldType.getName()) %>" />
 
 						<%
 						}
@@ -154,7 +154,7 @@ String defaultLanguageId = cpDefinitionOptionRelDisplayContext.getCatalogDefault
 				'<%= StringPool.COMMA %>'
 			);
 			var availableTypeNames =
-				'<%= cpDefinitionOptionRelDisplayContext.getDDMFormFieldTypeNames() %>';
+				'<%= HtmlUtil.escapeJS(cpDefinitionOptionRelDisplayContext.getDDMFormFieldTypeNames()) %>';
 			var availableFieldTypeSelectOptions = availableTypeNames.split(
 				'<%= StringPool.COMMA %>'
 			);

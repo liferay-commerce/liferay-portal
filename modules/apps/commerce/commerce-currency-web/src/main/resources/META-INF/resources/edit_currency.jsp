@@ -88,7 +88,7 @@ if (Validator.isNotNull(backURL)) {
 				String taglibLabel = "exchange-rate";
 
 				if (primaryCommerceCurrency != null) {
-					taglibLabel = LanguageUtil.format(request, "exchange-rate-with-x", primaryCommerceCurrency.getName(locale), false);
+					taglibLabel = LanguageUtil.format(request, "exchange-rate-with-x", HtmlUtil.escape(primaryCommerceCurrency.getName(locale)), false);
 				}
 				%>
 

@@ -31,25 +31,25 @@ CPCatalogEntry cpCatalogEntry = cpContentHelper.getCPCatalogEntry(request);
 					icon="times"
 					markupView="lexicon"
 					message="remove"
-					url="<%= cpCompareContentHelper.getDeleteCompareProductURL(cpCatalogEntry.getCPDefinitionId(), renderRequest, renderResponse) %>"
+					url="<%= HtmlUtil.escape(cpCompareContentHelper.getDeleteCompareProductURL(cpCatalogEntry.getCPDefinitionId(), renderRequest, renderResponse)) %>"
 				/>
 			</div>
 
-			<a class="aspect-ratio" href="<%= cpContentHelper.getFriendlyURL(cpCatalogEntry, themeDisplay) %>">
+			<a class="aspect-ratio" href="<%= HtmlUtil.escapeHREF(cpContentHelper.getFriendlyURL(cpCatalogEntry, themeDisplay)) %>">
 
 				<%
 				String img = cpCatalogEntry.getDefaultImageFileUrl();
 				%>
 
 				<c:if test="<%= Validator.isNotNull(img) %>">
-					<img class="aspect-ratio-item-center-middle aspect-ratio-item-fluid" src="<%= img %>" />
+					<img class="aspect-ratio-item-center-middle aspect-ratio-item-fluid" src="<%= HtmlUtil.escapeAttribute(img) %>" />
 				</c:if>
 			</a>
 		</div>
 	</div>
 
 	<div class="autofit-col autofit-col-expand">
-		<a class="compare-link" href="<%= cpContentHelper.getFriendlyURL(cpCatalogEntry, themeDisplay) %>">
+		<a class="compare-link" href="<%= HtmlUtil.escapeHREF(cpContentHelper.getFriendlyURL(cpCatalogEntry, themeDisplay)) %>">
 			<%= HtmlUtil.escape(cpCatalogEntry.getName()) %>
 		</a>
 	</div>

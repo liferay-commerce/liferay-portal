@@ -60,7 +60,7 @@ if (commerceShippingFixedOptionRel != null) {
 						for (CommerceShippingFixedOption commerceShippingFixedOption : commerceShippingFixedOptions) {
 						%>
 
-							<aui:option label="<%= commerceShippingFixedOption.getName(languageId) %>" value="<%= commerceShippingFixedOption.getCommerceShippingFixedOptionId() %>" />
+							<aui:option label="<%= HtmlUtil.escape(commerceShippingFixedOption.getName(languageId)) %>" value="<%= commerceShippingFixedOption.getCommerceShippingFixedOptionId() %>" />
 
 						<%
 						}
@@ -78,7 +78,7 @@ if (commerceShippingFixedOptionRel != null) {
 						for (CommerceInventoryWarehouse commerceInventoryWarehouse : commerceInventoryWarehouses) {
 						%>
 
-							<aui:option label="<%= commerceInventoryWarehouse.getName() %>" value="<%= commerceInventoryWarehouse.getCommerceInventoryWarehouseId() %>" />
+							<aui:option label="<%= HtmlUtil.escape(commerceInventoryWarehouse.getName()) %>" value="<%= commerceInventoryWarehouse.getCommerceInventoryWarehouseId() %>" />
 
 						<%
 						}
@@ -98,7 +98,7 @@ if (commerceShippingFixedOptionRel != null) {
 						for (CommerceCountry commerceCountry : commerceCountries) {
 						%>
 
-							<aui:option label="<%= commerceCountry.getName(languageId) %>" selected="<%= (commerceShippingFixedOptionRel != null) && (commerceShippingFixedOptionRel.getCommerceCountryId() == commerceCountry.getCommerceCountryId()) %>" value="<%= commerceCountry.getCommerceCountryId() %>" />
+							<aui:option label="<%= HtmlUtil.escape(commerceCountry.getName(languageId)) %>" selected="<%= (commerceShippingFixedOptionRel != null) && (commerceShippingFixedOptionRel.getCommerceCountryId() == commerceCountry.getCommerceCountryId()) %>" value="<%= commerceCountry.getCommerceCountryId() %>" />
 
 						<%
 						}
@@ -116,7 +116,7 @@ if (commerceShippingFixedOptionRel != null) {
 						for (CommerceRegion commerceRegion : commerceRegions) {
 						%>
 
-							<aui:option label="<%= commerceRegion.getName() %>" selected="<%= (commerceShippingFixedOptionRel != null) && (commerceShippingFixedOptionRel.getCommerceRegionId() == commerceRegion.getCommerceRegionId()) %>" value="<%= commerceRegion.getCommerceRegionId() %>" />
+							<aui:option label="<%= HtmlUtil.escape(commerceRegion.getName()) %>" selected="<%= (commerceShippingFixedOptionRel != null) && (commerceShippingFixedOptionRel.getCommerceRegionId() == commerceRegion.getCommerceRegionId()) %>" value="<%= commerceRegion.getCommerceRegionId() %>" />
 
 						<%
 						}
@@ -136,19 +136,19 @@ if (commerceShippingFixedOptionRel != null) {
 		>
 			<div class="row">
 				<div class="col-md-6">
-					<aui:input bean="<%= commerceShippingFixedOptionRel %>" model="<%= CommerceShippingFixedOptionRel.class %>" name="weightFrom" suffix="<%= commerceShippingFixedOptionRelsDisplayContext.getCPMeasurementUnitName(CPMeasurementUnitConstants.TYPE_WEIGHT) %>" />
+					<aui:input bean="<%= commerceShippingFixedOptionRel %>" model="<%= CommerceShippingFixedOptionRel.class %>" name="weightFrom" suffix="<%= HtmlUtil.escape(commerceShippingFixedOptionRelsDisplayContext.getCPMeasurementUnitName(CPMeasurementUnitConstants.TYPE_WEIGHT)) %>" />
 				</div>
 
 				<div class="col-md-6">
-					<aui:input bean="<%= commerceShippingFixedOptionRel %>" model="<%= CommerceShippingFixedOptionRel.class %>" name="weightTo" suffix="<%= commerceShippingFixedOptionRelsDisplayContext.getCPMeasurementUnitName(CPMeasurementUnitConstants.TYPE_WEIGHT) %>" />
+					<aui:input bean="<%= commerceShippingFixedOptionRel %>" model="<%= CommerceShippingFixedOptionRel.class %>" name="weightTo" suffix="<%= HtmlUtil.escape(commerceShippingFixedOptionRelsDisplayContext.getCPMeasurementUnitName(CPMeasurementUnitConstants.TYPE_WEIGHT)) %>" />
 				</div>
 			</div>
 
-			<aui:input name="fixedPrice" suffix="<%= commerceShippingFixedOptionRelsDisplayContext.getCommerceCurrencyCode() %>" type="text" value="<%= (commerceShippingFixedOptionRel == null) ? BigDecimal.ZERO : commerceShippingFixedOptionRelsDisplayContext.round(commerceShippingFixedOptionRel.getFixedPrice()) %>">
+			<aui:input name="fixedPrice" suffix="<%= HtmlUtil.escape(commerceShippingFixedOptionRelsDisplayContext.getCommerceCurrencyCode()) %>" type="text" value="<%= (commerceShippingFixedOptionRel == null) ? BigDecimal.ZERO : commerceShippingFixedOptionRelsDisplayContext.round(commerceShippingFixedOptionRel.getFixedPrice()) %>">
 				<aui:validator name="number" />
 			</aui:input>
 
-			<aui:input label="price-per-unit-of-weight" name="rateUnitWeightPrice" suffix="<%= commerceShippingFixedOptionRelsDisplayContext.getCommerceCurrencyCode() %>" type="text" value="<%= (commerceShippingFixedOptionRel == null) ? BigDecimal.ZERO : commerceShippingFixedOptionRelsDisplayContext.round(commerceShippingFixedOptionRel.getRateUnitWeightPrice()) %>">
+			<aui:input label="price-per-unit-of-weight" name="rateUnitWeightPrice" suffix="<%= HtmlUtil.escape(commerceShippingFixedOptionRelsDisplayContext.getCommerceCurrencyCode()) %>" type="text" value="<%= (commerceShippingFixedOptionRel == null) ? BigDecimal.ZERO : commerceShippingFixedOptionRelsDisplayContext.round(commerceShippingFixedOptionRel.getRateUnitWeightPrice()) %>">
 				<aui:validator name="number" />
 			</aui:input>
 

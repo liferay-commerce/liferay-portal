@@ -54,7 +54,7 @@ boolean shipSeparately = BeanParamUtil.getBoolean(cpDefinition, request, "shipSe
 							for (CPTaxCategory cpTaxCategory : cpTaxCategories) {
 							%>
 
-								<aui:option label="<%= cpTaxCategory.getName(locale) %>" selected="<%= (cpDefinition != null) && (cpDefinition.getCPTaxCategoryId() == cpTaxCategory.getCPTaxCategoryId()) %>" value="<%= cpTaxCategory.getCPTaxCategoryId() %>" />
+								<aui:option label="<%= HtmlUtil.escape(cpTaxCategory.getName(locale)) %>" selected="<%= (cpDefinition != null) && (cpDefinition.getCPTaxCategoryId() == cpTaxCategory.getCPTaxCategoryId()) %>" value="<%= cpTaxCategory.getCPTaxCategoryId() %>" />
 
 							<%
 							}
@@ -85,7 +85,7 @@ boolean shipSeparately = BeanParamUtil.getBoolean(cpDefinition, request, "shipSe
 								String cpDefinitionInventoryEngineName = cpDefinitionInventoryEngine.getKey();
 							%>
 
-								<aui:option label="<%= cpDefinitionInventoryEngine.getLabel(locale) %>" selected="<%= (cpDefinitionInventory != null) && cpDefinitionInventoryEngineName.equals(cpDefinitionInventory.getCPDefinitionInventoryEngine()) %>" value="<%= cpDefinitionInventoryEngineName %>" />
+								<aui:option label="<%= HtmlUtil.escape(cpDefinitionInventoryEngine.getLabel(locale)) %>" selected="<%= (cpDefinitionInventory != null) && cpDefinitionInventoryEngineName.equals(cpDefinitionInventory.getCPDefinitionInventoryEngine()) %>" value="<%= HtmlUtil.escape(cpDefinitionInventoryEngineName) %>" />
 
 							<%
 							}
@@ -101,7 +101,7 @@ boolean shipSeparately = BeanParamUtil.getBoolean(cpDefinition, request, "shipSe
 							for (CommerceAvailabilityEstimate commerceAvailabilityEstimate : commerceAvailabilityEstimates) {
 							%>
 
-								<aui:option label="<%= commerceAvailabilityEstimate.getTitle(languageId) %>" selected="<%= (cpdAvailabilityEstimate != null) && (commerceAvailabilityEstimate.getCommerceAvailabilityEstimateId() == cpdAvailabilityEstimate.getCommerceAvailabilityEstimateId()) %>" value="<%= commerceAvailabilityEstimate.getCommerceAvailabilityEstimateId() %>" />
+								<aui:option label="<%= HtmlUtil.escape(commerceAvailabilityEstimate.getTitle(languageId)) %>" selected="<%= (cpdAvailabilityEstimate != null) && (commerceAvailabilityEstimate.getCommerceAvailabilityEstimateId() == cpdAvailabilityEstimate.getCommerceAvailabilityEstimateId()) %>" value="<%= commerceAvailabilityEstimate.getCommerceAvailabilityEstimateId() %>" />
 
 							<%
 							}
@@ -132,7 +132,7 @@ boolean shipSeparately = BeanParamUtil.getBoolean(cpDefinition, request, "shipSe
 								String commerceLowStockActivityName = commerceLowStockActivity.getKey();
 							%>
 
-								<aui:option label="<%= commerceLowStockActivity.getLabel(locale) %>" selected="<%= (cpDefinitionInventory != null) && commerceLowStockActivityName.equals(cpDefinitionInventory.getLowStockActivity()) %>" value="<%= commerceLowStockActivityName %>" />
+								<aui:option label="<%= HtmlUtil.escape(commerceLowStockActivity.getLabel(locale)) %>" selected="<%= (cpDefinitionInventory != null) && commerceLowStockActivityName.equals(cpDefinitionInventory.getLowStockActivity()) %>" value="<%= HtmlUtil.escape(commerceLowStockActivityName) %>" />
 
 							<%
 							}

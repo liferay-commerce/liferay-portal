@@ -89,7 +89,7 @@ boolean canEditUser = (selectedUser.getUserId() == user.getUserId()) || commerce
 			}
 			%>
 
-			<liferay-ui:message arguments="<%= sb.toString() %>" key="your-portal-administrator-has-disabled-the-ability-to-modify-the-following-fields" translateArguments="<%= false %>" />
+			<liferay-ui:message arguments="<%= HtmlUtil.escape(sb.toString()) %>" key="your-portal-administrator-has-disabled-the-ability-to-modify-the-following-fields" translateArguments="<%= false %>" />
 		</liferay-ui:error>
 
 		<liferay-ui:error exception="<%= UserScreenNameException.MustNotBeDuplicate.class %>" focusField="screenName" message="the-screen-name-you-requested-is-already-taken" />
@@ -124,14 +124,14 @@ boolean canEditUser = (selectedUser.getUserId() == user.getUserId()) || commerce
 									<liferay-ui:logo-selector
 										currentLogoURL="<%= selectedUser.getPortraitURL(themeDisplay) %>"
 										defaultLogo="<%= selectedUser.getPortraitId() == 0 %>"
-										defaultLogoURL="<%= UserConstants.getPortraitURL(themeDisplay.getPathImage(), selectedUser.isMale(), 0, null) %>"
+										defaultLogoURL="<%= HtmlUtil.escape(UserConstants.getPortraitURL(themeDisplay.getPathImage(), selectedUser.isMale(), 0, null)) %>"
 										logoDisplaySelector=".user-logo"
 										maxFileSize="<%= userFileUploadsConfiguration.imageMaxSize() %>"
 										tempImageFileName="<%= String.valueOf(selectedUser.getUserId()) %>"
 									/>
 								</c:when>
 								<c:otherwise>
-									<img alt="<liferay-ui:message escapeAttribute="<%= true %>" key="portrait" />" src="<%= selectedUser.getPortraitURL(themeDisplay) %>" />
+									<img alt="<liferay-ui:message escapeAttribute="<%= true %>" key="portrait" />" src="<%= HtmlUtil.escapeAttribute(selectedUser.getPortraitURL(themeDisplay)) %>" />
 								</c:otherwise>
 							</c:choose>
 						</aui:fieldset>
@@ -236,7 +236,7 @@ boolean canEditUser = (selectedUser.getUserId() == user.getUserId()) || commerce
 							UserPasswordException.MustComplyWithRegex upe = (UserPasswordException.MustComplyWithRegex)errorException;
 							%>
 
-							<liferay-ui:message arguments="<%= upe.regex %>" key="that-password-does-not-comply-with-the-regular-expression" translateArguments="<%= false %>" />
+							<liferay-ui:message arguments="<%= HtmlUtil.escape(upe.regex) %>" key="that-password-does-not-comply-with-the-regular-expression" translateArguments="<%= false %>" />
 						</liferay-ui:error>
 
 						<liferay-ui:error exception="<%= UserPasswordException.MustMatch.class %>" message="the-passwords-you-entered-do-not-match" />

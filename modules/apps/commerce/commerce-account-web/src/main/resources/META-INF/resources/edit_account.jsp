@@ -93,7 +93,7 @@ if (commerceAddress != null) {
 						for (CommerceAddress billingAddress : commerceAccountDisplayContext.getBillingCommerceAddresses()) {
 						%>
 
-							<aui:option label="<%= billingAddress.getName() %>" selected="<%= billingAddress.getCommerceAddressId() == commerceAccount.getDefaultBillingAddressId() %>" value="<%= billingAddress.getCommerceAddressId() %>" />
+							<aui:option label="<%= HtmlUtil.escape(billingAddress.getName()) %>" selected="<%= billingAddress.getCommerceAddressId() == commerceAccount.getDefaultBillingAddressId() %>" value="<%= billingAddress.getCommerceAddressId() %>" />
 
 						<%
 						}
@@ -107,7 +107,7 @@ if (commerceAddress != null) {
 						for (CommerceAddress shippingAddress : commerceAccountDisplayContext.getShippingCommerceAddresses()) {
 						%>
 
-							<aui:option label="<%= shippingAddress.getName() %>" selected="<%= shippingAddress.getCommerceAddressId() == commerceAccount.getDefaultShippingAddressId() %>" value="<%= shippingAddress.getCommerceAddressId() %>" />
+							<aui:option label="<%= HtmlUtil.escape(shippingAddress.getName()) %>" selected="<%= shippingAddress.getCommerceAddressId() == commerceAccount.getDefaultShippingAddressId() %>" value="<%= shippingAddress.getCommerceAddressId() %>" />
 
 						<%
 						}

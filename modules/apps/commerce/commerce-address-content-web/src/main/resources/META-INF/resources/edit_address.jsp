@@ -79,7 +79,7 @@ CommerceAccount commerceAccount = commerceAddressDisplayContext.getCommerceAccou
 					for (CommerceCountry commerceCountry : commerceCountries) {
 					%>
 
-						<aui:option label="<%= commerceCountry.getName(languageId) %>" selected="<%= (commerceAddress != null) && (commerceAddress.getCommerceCountryId() == commerceCountry.getCommerceCountryId()) %>" value="<%= commerceCountry.getCommerceCountryId() %>" />
+						<aui:option label="<%= HtmlUtil.escape(commerceCountry.getName(languageId)) %>" selected="<%= (commerceAddress != null) && (commerceAddress.getCommerceCountryId() == commerceCountry.getCommerceCountryId()) %>" value="<%= commerceCountry.getCommerceCountryId() %>" />
 
 					<%
 					}
@@ -95,7 +95,7 @@ CommerceAccount commerceAccount = commerceAddressDisplayContext.getCommerceAccou
 					for (CommerceRegion commerceRegion : commerceRegions) {
 					%>
 
-						<aui:option label="<%= commerceRegion.getName() %>" selected="<%= (commerceAddress != null) && (commerceAddress.getCommerceRegionId() == commerceRegion.getCommerceRegionId()) %>" value="<%= commerceRegion.getCommerceRegionId() %>" />
+						<aui:option label="<%= HtmlUtil.escape(commerceRegion.getName()) %>" selected="<%= (commerceAddress != null) && (commerceAddress.getCommerceRegionId() == commerceRegion.getCommerceRegionId()) %>" value="<%= commerceRegion.getCommerceRegionId() %>" />
 
 					<%
 					}

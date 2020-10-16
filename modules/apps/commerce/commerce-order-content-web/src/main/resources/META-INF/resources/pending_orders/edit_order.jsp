@@ -81,7 +81,7 @@ List<CommerceAddress> billingAddresses = commerceOrderContentDisplayContext.getB
 		for (CommerceOrderValidatorResult commerceOrderValidatorResult : commerceOrderValidatorResults) {
 		%>
 
-			<liferay-ui:message key="<%= commerceOrderValidatorResult.getLocalizedMessage() %>" />
+			<liferay-ui:message key="<%= HtmlUtil.escape(commerceOrderValidatorResult.getLocalizedMessage()) %>" />
 
 		<%
 		}
@@ -167,7 +167,7 @@ List<CommerceAddress> billingAddresses = commerceOrderContentDisplayContext.getB
 											<aui:input cssClass="commerce-input" inlineField="<%= true %>" label="" name="purchaseOrderNumber" wrappedField="<%= false %>" />
 										</c:when>
 										<c:otherwise>
-											<%= commerceOrder.getPurchaseOrderNumber() %>
+											<%= HtmlUtil.escape(commerceOrder.getPurchaseOrderNumber()) %>
 										</c:otherwise>
 									</c:choose>
 								</dl>
@@ -195,7 +195,7 @@ List<CommerceAddress> billingAddresses = commerceOrderContentDisplayContext.getB
 											for (CommerceAddress commerceAddress : billingAddresses) {
 											%>
 
-												<aui:option label="<%= commerceAddress.getName() %>" selected="<%= billingCommerceAddressId == commerceAddress.getCommerceAddressId() %>" value="<%= commerceAddress.getCommerceAddressId() %>" />
+												<aui:option label="<%= HtmlUtil.escape(commerceAddress.getName()) %>" selected="<%= billingCommerceAddressId == commerceAddress.getCommerceAddressId() %>" value="<%= commerceAddress.getCommerceAddressId() %>" />
 
 											<%
 											}
@@ -206,8 +206,8 @@ List<CommerceAddress> billingAddresses = commerceOrderContentDisplayContext.getB
 								</c:when>
 								<c:otherwise>
 									<c:if test="<%= billingCommerceAddress != null %>">
-										<%= billingCommerceAddress.getStreet1() %><br />
-										<%= billingCommerceAddress.getCity() + StringPool.SPACE + billingCommerceAddress.getZip() %>
+										<%= HtmlUtil.escape(billingCommerceAddress.getStreet1()) %><br />
+										<%= HtmlUtil.escape(billingCommerceAddress.getCity() + StringPool.SPACE + billingCommerceAddress.getZip()) %>
 									</c:if>
 								</c:otherwise>
 							</c:choose>
@@ -232,7 +232,7 @@ List<CommerceAddress> billingAddresses = commerceOrderContentDisplayContext.getB
 											for (CommerceAddress commerceAddress : shippingAddresses) {
 											%>
 
-												<aui:option label="<%= commerceAddress.getName() %>" selected="<%= shippingCommerceAddressId == commerceAddress.getCommerceAddressId() %>" value="<%= commerceAddress.getCommerceAddressId() %>" />
+												<aui:option label="<%= HtmlUtil.escape(commerceAddress.getName()) %>" selected="<%= shippingCommerceAddressId == commerceAddress.getCommerceAddressId() %>" value="<%= commerceAddress.getCommerceAddressId() %>" />
 
 											<%
 											}
@@ -243,8 +243,8 @@ List<CommerceAddress> billingAddresses = commerceOrderContentDisplayContext.getB
 								</c:when>
 								<c:otherwise>
 									<c:if test="<%= shippingCommerceAddress != null %>">
-										<%= shippingCommerceAddress.getStreet1() %><br />
-										<%= shippingCommerceAddress.getCity() + StringPool.SPACE + shippingCommerceAddress.getZip() %>
+										<%= HtmlUtil.escape(shippingCommerceAddress.getStreet1()) %><br />
+										<%= HtmlUtil.escape(shippingCommerceAddress.getCity() + StringPool.SPACE + shippingCommerceAddress.getZip()) %>
 									</c:if>
 								</c:otherwise>
 							</c:choose>

@@ -62,7 +62,7 @@ if (commerceAddress != null) {
 		markupView="lexicon"
 		message='<%= LanguageUtil.get(resourceBundle, "back") %>'
 		method="get"
-		url="<%= layout.getRegularURL(request) %>"
+		url="<%= HtmlUtil.escape(layout.getRegularURL(request)) %>"
 	/>
 
 	<div class="autofit-float autofit-row header-title-bar">
@@ -123,7 +123,7 @@ if (commerceAddress != null) {
 					<p><%= HtmlUtil.escape(street3) %></p>
 				</c:if>
 
-				<p><%= city + StringPool.COMMA_AND_SPACE + regionCode + StringPool.SPACE + zip %></p>
+				<p><%= HtmlUtil.escape(city + StringPool.COMMA_AND_SPACE + regionCode + StringPool.SPACE + zip) %></p>
 
 				<c:if test="<%= Validator.isNotNull(phoneNumber) %>">
 					<p><%= HtmlUtil.escape(phoneNumber) %></p>
@@ -233,7 +233,7 @@ if (commerceAddress != null) {
 		<liferay-ui:search-container-column-text
 			cssClass="table-cell-content"
 			name="name"
-			value="<%= (commerceOrderItem == null) ? StringPool.BLANK : commerceOrderItem.getName(languageId) %>"
+			value="<%= (commerceOrderItem == null) ? StringPool.BLANK : HtmlUtil.escape(commerceOrderItem.getName(languageId)) %>"
 		/>
 
 		<liferay-ui:search-container-column-text

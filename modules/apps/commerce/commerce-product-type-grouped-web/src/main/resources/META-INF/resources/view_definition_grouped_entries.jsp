@@ -235,9 +235,9 @@ renderResponse.setTitle(cpDefinition.getName(themeDisplay.getLanguageId()));
 					},
 				},
 				title:
-					'<liferay-ui:message arguments="<%= cpDefinition.getName(themeDisplay.getLanguageId()) %>" key="add-new-grouped-entry-to-x" />',
+					'<liferay-ui:message arguments="<%= HtmlUtil.escapeJS(cpDefinition.getName(themeDisplay.getLanguageId())) %>" key="add-new-grouped-entry-to-x" />',
 				url:
-					'<%= cpDefinitionGroupedEntriesDisplayContext.getItemSelectorUrl() %>',
+					'<%= HtmlUtil.escapeJS(cpDefinitionGroupedEntriesDisplayContext.getItemSelectorUrl()) %>',
 			});
 
 			itemSelectorDialog.open();

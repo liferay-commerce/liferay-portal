@@ -45,7 +45,6 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
-import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -155,8 +154,8 @@ public class CommerceAccountUserClayDataSetDataSetDisplayView
 
 			members.add(
 				new Member(
-					user.getUserId(), commerceAccountId,
-					HtmlUtil.escape(user.getFullName()), user.getEmailAddress(),
+					user.getUserId(), commerceAccountId, user.getFullName(),
+					user.getEmailAddress(),
 					getUserRoles(
 						user, commerceAccount.getCommerceAccountGroupId()),
 					_getAccountUserViewDetailURL(

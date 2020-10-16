@@ -25,7 +25,7 @@
 		<div class="side-panel-iframe-header">
 			<div class="side-panel-iframe-title">
 				<h3 class="mb-0">
-					<%= title %>
+					<%= HtmlUtil.escape(title) %>
 				</h3>
 			</div>
 

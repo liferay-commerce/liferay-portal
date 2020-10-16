@@ -77,9 +77,9 @@ String addToCartId = PortalUtil.generateRandomKey(request, "add-to-cart");
 
 			<c:choose>
 				<c:when test="<%= cpSku != null %>">
-					<div class="availability mt-1"><%= cpContentHelper.getAvailabilityLabel(request) %></div>
-					<div class="availability-estimate mt-1"><%= cpContentHelper.getAvailabilityEstimateLabel(request) %></div>
-					<div class="mt-1 stock-quantity"><%= cpContentHelper.getStockQuantityLabel(request) %></div>
+					<div class="availability mt-1"><%= HtmlUtil.escape(cpContentHelper.getAvailabilityLabel(request)) %></div>
+					<div class="availability-estimate mt-1"><%= HtmlUtil.escape(cpContentHelper.getAvailabilityEstimateLabel(request)) %></div>
+					<div class="mt-1 stock-quantity"><%= HtmlUtil.escape(cpContentHelper.getStockQuantityLabel(request)) %></div>
 				</c:when>
 				<c:otherwise>
 					<div class="availability mt-1" data-text-cp-instance-availability></div>

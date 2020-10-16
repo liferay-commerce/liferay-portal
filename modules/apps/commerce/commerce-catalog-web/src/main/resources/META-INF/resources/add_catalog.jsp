@@ -62,7 +62,7 @@ List<CommerceCurrency> commerceCurrencies = commerceCatalogDisplayContext.getCom
 					String commerceCurrencyCode = commerceCurrency.getCode();
 				%>
 
-					<aui:option label="<%= commerceCurrency.getName(locale) %>" selected="<%= (commerceCatalog == null) ? commerceCurrency.isPrimary() : commerceCurrencyCode.equals(commerceCatalog.getCommerceCurrencyCode()) %>" value="<%= commerceCurrencyCode %>" />
+					<aui:option label="<%= HtmlUtil.escape(commerceCurrency.getName(locale)) %>" selected="<%= (commerceCatalog == null) ? commerceCurrency.isPrimary() : commerceCurrencyCode.equals(commerceCatalog.getCommerceCurrencyCode()) %>" value="<%= HtmlUtil.escape(commerceCurrencyCode) %>" />
 
 				<%
 				}

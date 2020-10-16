@@ -102,7 +102,7 @@ portletURL.setParameter("mvcRenderCommandName", "viewCommerceAccount");
 						<liferay-ui:message key="vat-number" />
 					</span>
 					<span class="account-management__value">
-						<%= taxId %>
+						<%= HtmlUtil.escape(taxId) %>
 					</span>
 				</div>
 			</c:if>

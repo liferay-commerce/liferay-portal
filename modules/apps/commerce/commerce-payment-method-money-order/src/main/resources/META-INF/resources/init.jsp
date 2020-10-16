@@ -29,6 +29,7 @@ page import="com.liferay.commerce.payment.method.money.order.internal.configurat
 page import="com.liferay.commerce.payment.method.money.order.internal.display.context.MoneyOrderCheckoutStepDisplayContext" %><%@
 page import="com.liferay.portal.kernel.settings.LocalizedValuesMap" %><%@
 page import="com.liferay.portal.kernel.util.Constants" %><%@
+page import="com.liferay.portal.kernel.util.HtmlUtil" %><%@
 page import="com.liferay.portal.kernel.util.LocalizationUtil" %><%@
 page import="com.liferay.portal.kernel.util.ParamUtil" %><%@
 page import="com.liferay.portal.kernel.util.Validator" %>

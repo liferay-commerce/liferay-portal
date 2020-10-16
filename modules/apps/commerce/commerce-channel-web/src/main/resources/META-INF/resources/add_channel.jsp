@@ -55,7 +55,7 @@ PortletURL editCommerceChannelRenderURL = commerceChannelDisplayContext.getEditC
 				for (CommerceCurrency commerceCurrency : commerceCurrencies) {
 				%>
 
-					<aui:option label="<%= commerceCurrency.getName(locale) %>" selected="<%= (commerceChannel == null) ? commerceCurrency.isPrimary() : commerceCurrencyCode.equals(commerceCurrency.getCode()) %>" value="<%= commerceCurrency.getCode() %>" />
+					<aui:option label="<%= HtmlUtil.escape(commerceCurrency.getName(locale)) %>" selected="<%= (commerceChannel == null) ? commerceCurrency.isPrimary() : commerceCurrencyCode.equals(commerceCurrency.getCode()) %>" value="<%= HtmlUtil.escape(commerceCurrency.getCode()) %>" />
 
 				<%
 				}

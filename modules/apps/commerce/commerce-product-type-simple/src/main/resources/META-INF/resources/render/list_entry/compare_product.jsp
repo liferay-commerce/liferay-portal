@@ -32,25 +32,25 @@ CPSku cpSku = cpContentHelper.getDefaultCPSku(cpCatalogEntry);
 				cssClass="compare-remove-item link-monospaced"
 				icon="times"
 				markupView="lexicon"
-				url="<%= cpCompareContentHelper.getDeleteCompareProductURL(cpCatalogEntry.getCPDefinitionId(), renderRequest, renderResponse) %>"
+				url="<%= HtmlUtil.escape(cpCompareContentHelper.getDeleteCompareProductURL(cpCatalogEntry.getCPDefinitionId(), renderRequest, renderResponse)) %>"
 			/>
 		</div>
 	</div>
 
-	<a class="product-image-container" href="<%= cpContentHelper.getFriendlyURL(cpCatalogEntry, themeDisplay) %>">
+	<a class="product-image-container" href="<%= HtmlUtil.escapeHREF(cpContentHelper.getFriendlyURL(cpCatalogEntry, themeDisplay)) %>">
 
 		<%
 		String img = cpCatalogEntry.getDefaultImageFileUrl();
 		%>
 
 		<c:if test="<%= Validator.isNotNull(img) %>">
-			<img class="img-responsive product-image" src="<%= img %>" />
+			<img class="img-responsive product-image" src="<%= HtmlUtil.escapeAttribute(img) %>" />
 		</c:if>
 	</a>
 
 	<div class="card-section-expand">
 		<div class="card-title">
-			<a href="<%= cpContentHelper.getFriendlyURL(cpCatalogEntry, themeDisplay) %>">
+			<a href="<%= HtmlUtil.escapeHREF(cpContentHelper.getFriendlyURL(cpCatalogEntry, themeDisplay)) %>">
 				<%= HtmlUtil.escape(cpCatalogEntry.getName()) %>
 			</a>
 		</div>
