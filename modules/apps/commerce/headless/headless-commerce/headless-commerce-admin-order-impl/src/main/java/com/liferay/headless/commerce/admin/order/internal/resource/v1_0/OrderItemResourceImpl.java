@@ -15,6 +15,7 @@
 package com.liferay.headless.commerce.admin.order.internal.resource.v1_0;
 
 import com.liferay.commerce.constants.CommerceActionKeys;
+import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.context.CommerceContextFactory;
 import com.liferay.commerce.exception.NoSuchOrderException;
 import com.liferay.commerce.exception.NoSuchOrderItemException;
@@ -32,7 +33,7 @@ import com.liferay.headless.commerce.admin.order.resource.v1_0.OrderItemResource
 import com.liferay.headless.commerce.core.util.ExpandoUtil;
 import com.liferay.headless.commerce.core.util.ServiceContextHelper;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
-import com.liferay.portal.kernel.service.permission.PortalPermissionUtil;
+import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.fields.NestedField;
@@ -262,8 +263,8 @@ public class OrderItemResourceImpl
 
 		// Pricing
 
-		if (PortalPermissionUtil.contains(
-				PermissionThreadLocal.getPermissionChecker(),
+		if (_portletResourcePermission.contains(
+				PermissionThreadLocal.getPermissionChecker(), null,
 				CommerceActionKeys.MANAGE_COMMERCE_ORDER_PRICES)) {
 
 			commerceOrderItem =
@@ -353,8 +354,8 @@ public class OrderItemResourceImpl
 
 		// Pricing
 
-		if (PortalPermissionUtil.contains(
-				PermissionThreadLocal.getPermissionChecker(),
+		if (_portletResourcePermission.contains(
+				PermissionThreadLocal.getPermissionChecker(), null,
 				CommerceActionKeys.MANAGE_COMMERCE_ORDER_PRICES)) {
 
 			commerceOrderItem =
@@ -444,6 +445,11 @@ public class OrderItemResourceImpl
 
 	@Reference
 	private OrderItemHelper _orderItemHelper;
+
+	@Reference(
+		target = "(resource.name=" + CommerceOrderConstants.RESOURCE_NAME + ")"
+	)
+	private PortletResourcePermission _portletResourcePermission;
 
 	@Reference
 	private ServiceContextHelper _serviceContextHelper;
