@@ -651,8 +651,11 @@ public class CommerceOrderServiceImpl extends CommerceOrderServiceBaseImpl {
 		_commerceOrderModelResourcePermission.check(
 			getPermissionChecker(), commerceOrderId, ActionKeys.UPDATE);
 
-		PortalPermissionUtil.check(
-			getPermissionChecker(),
+		CommerceOrder commerceOrder =
+			commerceOrderLocalService.getCommerceOrder(commerceOrderId);
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), commerceOrder.getGroupId(),
 			CommerceActionKeys.MANAGE_COMMERCE_ORDER_PRICES);
 
 		return commerceOrderLocalService.updateCommerceOrderPrices(
@@ -708,8 +711,11 @@ public class CommerceOrderServiceImpl extends CommerceOrderServiceBaseImpl {
 		_commerceOrderModelResourcePermission.check(
 			getPermissionChecker(), commerceOrderId, ActionKeys.UPDATE);
 
-		PortalPermissionUtil.check(
-			getPermissionChecker(),
+		CommerceOrder commerceOrder =
+			commerceOrderLocalService.getCommerceOrder(commerceOrderId);
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), commerceOrder.getGroupId(),
 			CommerceActionKeys.MANAGE_COMMERCE_ORDER_PRICES);
 
 		return commerceOrderLocalService.updateCommerceOrderPrices(
