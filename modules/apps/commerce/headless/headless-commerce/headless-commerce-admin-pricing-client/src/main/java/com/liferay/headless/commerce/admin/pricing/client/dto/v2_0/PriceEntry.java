@@ -333,6 +333,27 @@ public class PriceEntry implements Cloneable {
 
 	protected Boolean hasTierPrice;
 
+	public String getHasTierPriceString() {
+		return hasTierPriceString;
+	}
+
+	public void setHasTierPriceString(String hasTierPriceString) {
+		this.hasTierPriceString = hasTierPriceString;
+	}
+
+	public void setHasTierPriceString(
+		UnsafeSupplier<String, Exception> hasTierPriceStringUnsafeSupplier) {
+
+		try {
+			hasTierPriceString = hasTierPriceStringUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String hasTierPriceString;
+
 	public Boolean getNeverExpire() {
 		return neverExpire;
 	}

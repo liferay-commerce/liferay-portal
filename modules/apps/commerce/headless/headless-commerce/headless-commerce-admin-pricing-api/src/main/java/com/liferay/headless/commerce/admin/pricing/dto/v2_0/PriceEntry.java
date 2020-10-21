@@ -466,6 +466,34 @@ public class PriceEntry {
 	protected Boolean hasTierPrice;
 
 	@Schema
+	public String getHasTierPriceString() {
+		return hasTierPriceString;
+	}
+
+	public void setHasTierPriceString(String hasTierPriceString) {
+		this.hasTierPriceString = hasTierPriceString;
+	}
+
+	@JsonIgnore
+	public void setHasTierPriceString(
+		UnsafeSupplier<String, Exception> hasTierPriceStringUnsafeSupplier) {
+
+		try {
+			hasTierPriceString = hasTierPriceStringUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String hasTierPriceString;
+
+	@Schema
 	public Boolean getNeverExpire() {
 		return neverExpire;
 	}
@@ -968,6 +996,20 @@ public class PriceEntry {
 			sb.append("\"hasTierPrice\": ");
 
 			sb.append(hasTierPrice);
+		}
+
+		if (hasTierPriceString != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"hasTierPriceString\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(hasTierPriceString));
+
+			sb.append("\"");
 		}
 
 		if (neverExpire != null) {

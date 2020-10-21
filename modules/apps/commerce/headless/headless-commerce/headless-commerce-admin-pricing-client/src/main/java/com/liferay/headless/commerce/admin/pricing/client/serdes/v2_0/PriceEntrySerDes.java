@@ -221,6 +221,20 @@ public class PriceEntrySerDes {
 			sb.append(priceEntry.getHasTierPrice());
 		}
 
+		if (priceEntry.getHasTierPriceString() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"hasTierPriceString\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(priceEntry.getHasTierPriceString()));
+
+			sb.append("\"");
+		}
+
 		if (priceEntry.getNeverExpire() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -492,6 +506,15 @@ public class PriceEntrySerDes {
 				"hasTierPrice", String.valueOf(priceEntry.getHasTierPrice()));
 		}
 
+		if (priceEntry.getHasTierPriceString() == null) {
+			map.put("hasTierPriceString", null);
+		}
+		else {
+			map.put(
+				"hasTierPriceString",
+				String.valueOf(priceEntry.getHasTierPriceString()));
+		}
+
 		if (priceEntry.getNeverExpire() == null) {
 			map.put("neverExpire", null);
 		}
@@ -682,6 +705,14 @@ public class PriceEntrySerDes {
 			else if (Objects.equals(jsonParserFieldName, "hasTierPrice")) {
 				if (jsonParserFieldValue != null) {
 					priceEntry.setHasTierPrice((Boolean)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "hasTierPriceString")) {
+
+				if (jsonParserFieldValue != null) {
+					priceEntry.setHasTierPriceString(
+						(String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "neverExpire")) {
