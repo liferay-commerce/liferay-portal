@@ -67,7 +67,7 @@ public class CommercePriceEntryClayTableDataSetDisplayView
 
 		ClayTableSchemaField tieredPrice =
 			clayTableSchemaBuilder.addClayTableSchemaField(
-				"hasTierPrice", "tiered-price");
+				"hasTierPriceString", "tiered-price");
 
 		tieredPrice.setContentRenderer("boolean");
 
