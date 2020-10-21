@@ -23,12 +23,15 @@ import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceEntry;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.language.LanguageResources;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 
 import java.math.BigDecimal;
 
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -71,6 +74,9 @@ public class PriceEntryDTOConverter
 
 		Locale locale = dtoConverterContext.getLocale();
 
+		ResourceBundle resourceBundle = LanguageResources.getResourceBundle(
+			locale);
+
 		return new PriceEntry() {
 			{
 				actions = dtoConverterContext.getActions();
@@ -88,6 +94,9 @@ public class PriceEntryDTOConverter
 				externalReferenceCode =
 					commercePriceEntry.getExternalReferenceCode();
 				hasTierPrice = commercePriceEntry.isHasTierPrice();
+				hasTierPriceString = commercePriceEntry.isHasTierPrice() ?
+					LanguageUtil.get(resourceBundle, "yes") :
+						LanguageUtil.get(resourceBundle, "no");
 				price = priceEntryPrice.doubleValue();
 				priceEntryId = commercePriceEntry.getCommercePriceEntryId();
 				priceFormatted = _formatPrice(
