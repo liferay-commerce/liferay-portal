@@ -23,6 +23,8 @@ import com.liferay.portal.kernel.service.permission.PortalPermissionUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * @author Alessio Antonio Rendina
@@ -32,8 +34,8 @@ public class CommerceRegionServiceImpl extends CommerceRegionServiceBaseImpl {
 
 	@Override
 	public CommerceRegion addCommerceRegion(
-			long commerceCountryId, String name, String code, double priority,
-			boolean active, ServiceContext serviceContext)
+			long commerceCountryId, Map<Locale, String> nameMap, String code,
+			double priority, boolean active, ServiceContext serviceContext)
 		throws PortalException {
 
 		PortalPermissionUtil.check(
@@ -41,7 +43,7 @@ public class CommerceRegionServiceImpl extends CommerceRegionServiceBaseImpl {
 			CommerceActionKeys.MANAGE_COMMERCE_COUNTRIES);
 
 		return commerceRegionLocalService.addCommerceRegion(
-			commerceCountryId, name, code, priority, active, serviceContext);
+			commerceCountryId, nameMap, code, priority, active, serviceContext);
 	}
 
 	@Override
@@ -148,8 +150,8 @@ public class CommerceRegionServiceImpl extends CommerceRegionServiceBaseImpl {
 
 	@Override
 	public CommerceRegion updateCommerceRegion(
-			long commerceRegionId, String name, String code, double priority,
-			boolean active, ServiceContext serviceContext)
+			long commerceRegionId, Map<Locale, String> nameMap, String code,
+			double priority, boolean active, ServiceContext serviceContext)
 		throws PortalException {
 
 		CommerceRegion commerceRegion =
@@ -160,8 +162,8 @@ public class CommerceRegionServiceImpl extends CommerceRegionServiceBaseImpl {
 			CommerceActionKeys.MANAGE_COMMERCE_COUNTRIES);
 
 		return commerceRegionLocalService.updateCommerceRegion(
-			commerceRegion.getCommerceRegionId(), name, code, priority, active,
-			serviceContext);
+			commerceRegion.getCommerceRegionId(), nameMap, code, priority,
+			active, serviceContext);
 	}
 
 }

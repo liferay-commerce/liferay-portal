@@ -17,6 +17,7 @@ package com.liferay.commerce.service.impl;
 import com.liferay.commerce.exception.CommerceRegionNameException;
 import com.liferay.commerce.model.CommerceCountry;
 import com.liferay.commerce.model.CommerceRegion;
+import com.liferay.commerce.model.CommerceRegionLocalization;
 import com.liferay.commerce.service.base.CommerceRegionLocalServiceBaseImpl;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -24,10 +25,16 @@ import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Alessio Antonio Rendina
@@ -39,8 +46,8 @@ public class CommerceRegionLocalServiceImpl
 
 	@Override
 	public CommerceRegion addCommerceRegion(
-			long commerceCountryId, String name, String code, double priority,
-			boolean active, ServiceContext serviceContext)
+			long commerceCountryId, Map<Locale, String> nameMap, String code,
+			double priority, boolean active, ServiceContext serviceContext)
 		throws PortalException {
 
 		User user = userLocalService.getUser(serviceContext.getUserId());
@@ -48,7 +55,7 @@ public class CommerceRegionLocalServiceImpl
 		CommerceCountry commerceCountry =
 			commerceCountryPersistence.findByPrimaryKey(commerceCountryId);
 
-		validate(name);
+		validate(nameMap);
 
 		long commerceRegionId = counterLocalService.increment();
 
@@ -60,10 +67,14 @@ public class CommerceRegionLocalServiceImpl
 		commerceRegion.setUserName(user.getFullName());
 		commerceRegion.setCommerceCountryId(
 			commerceCountry.getCommerceCountryId());
-		commerceRegion.setName(name);
 		commerceRegion.setCode(code);
 		commerceRegion.setPriority(priority);
 		commerceRegion.setActive(active);
+
+		// add CommerceRegion localization
+
+		_addCommerceRegionLocalizedFields(
+			user.getCompanyId(), commerceRegionId, nameMap);
 
 		return commerceRegionPersistence.update(commerceRegion);
 	}
@@ -178,27 +189,118 @@ public class CommerceRegionLocalServiceImpl
 
 	@Override
 	public CommerceRegion updateCommerceRegion(
-			long commerceRegionId, String name, String code, double priority,
-			boolean active, ServiceContext serviceContext)
+			long commerceRegionId, Map<Locale, String> nameMap, String code,
+			double priority, boolean active, ServiceContext serviceContext)
 		throws PortalException {
 
 		CommerceRegion commerceRegion =
 			commerceRegionPersistence.findByPrimaryKey(commerceRegionId);
 
-		validate(name);
+		validate(nameMap);
 
-		commerceRegion.setName(name);
 		commerceRegion.setCode(code);
 		commerceRegion.setPriority(priority);
 		commerceRegion.setActive(active);
 
+		// Update CommerceRegion localization
+
+		_updateCommerceRegionLocalizedFields(
+			commerceRegion.getCompanyId(), commerceRegionId, nameMap);
+
 		return commerceRegionPersistence.update(commerceRegion);
 	}
 
-	protected void validate(String name) throws PortalException {
-		if (Validator.isNull(name)) {
+	protected void validate(Map<Locale, String> nameMap)
+		throws PortalException {
+
+		if (nameMap == null) {
 			throw new CommerceRegionNameException();
 		}
+	}
+
+	private List<CommerceRegionLocalization> _addCommerceRegionLocalizedFields(
+		long companyId, long commerceRegionId, Map<Locale, String> nameMap) {
+
+		List<CommerceRegionLocalization> commerceRegionLocalizations =
+			new ArrayList<>();
+
+		Set<Locale> localeSet = new HashSet<>();
+
+		if (nameMap != null) {
+			localeSet.addAll(nameMap.keySet());
+		}
+
+		for (Locale locale : localeSet) {
+			String name = nameMap.get(locale);
+
+			if (Validator.isNull(name)) {
+				continue;
+			}
+
+			CommerceRegionLocalization commerceRegionLocalization =
+				_addCommerceRegionLocalizedFields(
+					companyId, commerceRegionId, name,
+					LocaleUtil.toLanguageId(locale));
+
+			commerceRegionLocalizations.add(commerceRegionLocalization);
+		}
+
+		return commerceRegionLocalizations;
+	}
+
+	private CommerceRegionLocalization _addCommerceRegionLocalizedFields(
+		long companyId, long commerceRegionId, String name, String languageId) {
+
+		CommerceRegionLocalization commerceRegionLocalization =
+			commerceRegionLocalizationPersistence.
+				fetchByCommerceRegionId_LanguageId(
+					commerceRegionId, languageId);
+
+		if (commerceRegionLocalization == null) {
+			long commerceRegionLocalizationId = counterLocalService.increment();
+
+			commerceRegionLocalization =
+				commerceRegionLocalizationPersistence.create(
+					commerceRegionLocalizationId);
+
+			commerceRegionLocalization.setCompanyId(companyId);
+			commerceRegionLocalization.setCommerceRegionId(commerceRegionId);
+			commerceRegionLocalization.setLanguageId(languageId);
+			commerceRegionLocalization.setName(name);
+		}
+		else {
+			commerceRegionLocalization.setName(name);
+		}
+
+		return commerceRegionLocalizationPersistence.update(
+			commerceRegionLocalization);
+	}
+
+	private List<CommerceRegionLocalization>
+		_updateCommerceRegionLocalizedFields(
+			long companyId, long commerceRegionId,
+			Map<Locale, String> nameMap) {
+
+		List<CommerceRegionLocalization> oldCommerceRegionLocalizations =
+			new ArrayList<>(
+				commerceRegionLocalizationPersistence.findByCommerceRegionId(
+					commerceRegionId));
+
+		List<CommerceRegionLocalization> newCommerceRegionLocalizations =
+			_addCommerceRegionLocalizedFields(
+				companyId, commerceRegionId, nameMap);
+
+		oldCommerceRegionLocalizations.removeAll(
+			newCommerceRegionLocalizations);
+
+		for (CommerceRegionLocalization oldCommerceRegionLocalization :
+				oldCommerceRegionLocalizations) {
+
+			commerceRegionLocalizationPersistence.remove(
+				oldCommerceRegionLocalization);
+		}
+
+		return newCommerceRegionLocalizations;
 	}
 
 }
