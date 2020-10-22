@@ -27,9 +27,13 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
+
+import java.util.Locale;
+import java.util.Map;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -133,7 +137,8 @@ public class EditCommerceRegionMVCActionCommand extends BaseMVCActionCommand {
 		long commerceRegionId = ParamUtil.getLong(
 			actionRequest, "commerceRegionId");
 
-		String name = ParamUtil.getString(actionRequest, "name");
+		Map<Locale, String> nameMap = LocalizationUtil.getLocalizationMap(
+			actionRequest, "nameMapAsXML");
 		String code = ParamUtil.getString(actionRequest, "code");
 		double priority = ParamUtil.getDouble(actionRequest, "priority");
 		boolean active = ParamUtil.getBoolean(actionRequest, "active");
@@ -145,12 +150,13 @@ public class EditCommerceRegionMVCActionCommand extends BaseMVCActionCommand {
 
 		if (commerceRegionId <= 0) {
 			commerceRegion = _commerceRegionService.addCommerceRegion(
-				commerceCountryId, name, code, priority, active,
+				commerceCountryId, nameMap, code, priority, active,
 				serviceContext);
 		}
 		else {
 			commerceRegion = _commerceRegionService.updateCommerceRegion(
-				commerceRegionId, name, code, priority, active, serviceContext);
+				commerceRegionId, nameMap, code, priority, active,
+				serviceContext);
 		}
 
 		return commerceRegion;

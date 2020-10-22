@@ -25,6 +25,8 @@ CommerceRegion commerceRegion = commerceRegionsDisplayContext.getCommerceRegion(
 
 long commerceRegionId = commerceRegionsDisplayContext.getCommerceRegionId();
 
+String defaultLanguageId = commerceRegion.getDefaultLanguageId();
+
 portletDisplay.setShowBackIcon(true);
 
 if (Validator.isNull(redirect)) {
@@ -50,7 +52,9 @@ else {
 
 		<aui:fieldset-group markupView="lexicon">
 			<aui:fieldset>
-				<aui:input autoFocus="<%= true %>" name="name" />
+				<aui:input autoFocus="<%= true %>" defaultLanguageId="<%= defaultLanguageId %>" label="name" localized="<%= true %>" name="nameMapAsXML" type="text">
+					<aui:validator name="required" />
+				</aui:input>
 
 				<aui:input name="code" />
 

@@ -199,7 +199,7 @@ public class CommerceInventoryTestUtil {
 		throws PortalException {
 
 		return CommerceRegionLocalServiceUtil.addCommerceRegion(
-			commerceCountryId, RandomTestUtil.randomString(),
+			commerceCountryId, RandomTestUtil.randomLocaleStringMap(),
 			RandomTestUtil.randomString(), 0, true, serviceContext);
 	}
 
@@ -244,8 +244,9 @@ public class CommerceInventoryTestUtil {
 		catch (Exception exception) {
 			commerceRegion = CommerceRegionLocalServiceUtil.addCommerceRegion(
 				commerceCountry.getCommerceCountryId(),
-				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				RandomTestUtil.randomDouble(), true, serviceContext);
+				RandomTestUtil.randomLocaleStringMap(),
+				RandomTestUtil.randomString(), RandomTestUtil.randomDouble(),
+				true, serviceContext);
 		}
 
 		return commerceRegion;

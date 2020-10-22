@@ -858,7 +858,7 @@ public class CommerceOrderTest {
 
 			_commerceRegion = _commerceRegionLocalService.addCommerceRegion(
 				_commerceCountry.getCommerceCountryId(),
-				RandomTestUtil.randomString(), "ZZ",
+				RandomTestUtil.randomLocaleStringMap(), "ZZ",
 				RandomTestUtil.randomDouble(), true, _serviceContext);
 		}
 		else {

@@ -590,8 +590,9 @@ public class CommerceTestUtil {
 		catch (Exception exception) {
 			commerceRegion = CommerceRegionLocalServiceUtil.addCommerceRegion(
 				commerceCountry.getCommerceCountryId(),
-				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				RandomTestUtil.randomDouble(), true, serviceContext);
+				RandomTestUtil.randomLocaleStringMap(),
+				RandomTestUtil.randomString(), RandomTestUtil.randomDouble(),
+				true, serviceContext);
 		}
 
 		return commerceRegion;
