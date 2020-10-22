@@ -552,11 +552,16 @@
 		<!-- Other fields -->
 
 		<column name="commerceCountryId" type="long" />
-		<column name="name" type="String" />
 		<column name="code" type="String" />
 		<column name="priority" type="double" />
 		<column name="active" type="boolean" />
 		<column name="lastPublishDate" type="Date" />
+
+		<!-- Localized entity -->
+
+		<localized-entity>
+			<localized-column name="name" />
+		</localized-entity>
 
 		<!-- Order -->
 
