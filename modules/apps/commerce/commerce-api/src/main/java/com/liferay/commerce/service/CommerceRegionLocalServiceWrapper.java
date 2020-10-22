@@ -52,13 +52,14 @@ public class CommerceRegionLocalServiceWrapper
 
 	@Override
 	public com.liferay.commerce.model.CommerceRegion addCommerceRegion(
-			long commerceCountryId, String name, String code, double priority,
-			boolean active,
+			long commerceCountryId,
+			java.util.Map<java.util.Locale, String> nameMap, String code,
+			double priority, boolean active,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _commerceRegionLocalService.addCommerceRegion(
-			commerceCountryId, name, code, priority, active, serviceContext);
+			commerceCountryId, nameMap, code, priority, active, serviceContext);
 	}
 
 	/**
@@ -263,6 +264,15 @@ public class CommerceRegionLocalServiceWrapper
 	}
 
 	@Override
+	public com.liferay.commerce.model.CommerceRegionLocalization
+		fetchCommerceRegionLocalization(
+			long commerceRegionId, String languageId) {
+
+		return _commerceRegionLocalService.fetchCommerceRegionLocalization(
+			commerceRegionId, languageId);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -308,6 +318,24 @@ public class CommerceRegionLocalServiceWrapper
 
 		return _commerceRegionLocalService.getCommerceRegionByUuidAndCompanyId(
 			uuid, companyId);
+	}
+
+	@Override
+	public com.liferay.commerce.model.CommerceRegionLocalization
+			getCommerceRegionLocalization(
+				long commerceRegionId, String languageId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceRegionLocalService.getCommerceRegionLocalization(
+			commerceRegionId, languageId);
+	}
+
+	@Override
+	public java.util.List<com.liferay.commerce.model.CommerceRegionLocalization>
+		getCommerceRegionLocalizations(long commerceRegionId) {
+
+		return _commerceRegionLocalService.getCommerceRegionLocalizations(
+			commerceRegionId);
 	}
 
 	/**
@@ -455,13 +483,36 @@ public class CommerceRegionLocalServiceWrapper
 
 	@Override
 	public com.liferay.commerce.model.CommerceRegion updateCommerceRegion(
-			long commerceRegionId, String name, String code, double priority,
-			boolean active,
+			long commerceRegionId,
+			java.util.Map<java.util.Locale, String> nameMap, String code,
+			double priority, boolean active,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _commerceRegionLocalService.updateCommerceRegion(
-			commerceRegionId, name, code, priority, active, serviceContext);
+			commerceRegionId, nameMap, code, priority, active, serviceContext);
+	}
+
+	@Override
+	public com.liferay.commerce.model.CommerceRegionLocalization
+			updateCommerceRegionLocalization(
+				com.liferay.commerce.model.CommerceRegion commerceRegion,
+				String languageId, String name)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceRegionLocalService.updateCommerceRegionLocalization(
+			commerceRegion, languageId, name);
+	}
+
+	@Override
+	public java.util.List<com.liferay.commerce.model.CommerceRegionLocalization>
+			updateCommerceRegionLocalizations(
+				com.liferay.commerce.model.CommerceRegion commerceRegion,
+				java.util.Map<String, String> nameMap)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceRegionLocalService.updateCommerceRegionLocalizations(
+			commerceRegion, nameMap);
 	}
 
 	@Override

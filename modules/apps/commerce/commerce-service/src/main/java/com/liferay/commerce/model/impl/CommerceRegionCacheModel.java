@@ -66,6 +66,8 @@ public class CommerceRegionCacheModel
 
 		sb.append("{uuid=");
 		sb.append(uuid);
+		sb.append(", defaultLanguageId=");
+		sb.append(defaultLanguageId);
 		sb.append(", commerceRegionId=");
 		sb.append(commerceRegionId);
 		sb.append(", companyId=");
@@ -80,8 +82,6 @@ public class CommerceRegionCacheModel
 		sb.append(modifiedDate);
 		sb.append(", commerceCountryId=");
 		sb.append(commerceCountryId);
-		sb.append(", name=");
-		sb.append(name);
 		sb.append(", code=");
 		sb.append(code);
 		sb.append(", priority=");
@@ -104,6 +104,13 @@ public class CommerceRegionCacheModel
 		}
 		else {
 			commerceRegionImpl.setUuid(uuid);
+		}
+
+		if (defaultLanguageId == null) {
+			commerceRegionImpl.setDefaultLanguageId("");
+		}
+		else {
+			commerceRegionImpl.setDefaultLanguageId(defaultLanguageId);
 		}
 
 		commerceRegionImpl.setCommerceRegionId(commerceRegionId);
@@ -133,13 +140,6 @@ public class CommerceRegionCacheModel
 
 		commerceRegionImpl.setCommerceCountryId(commerceCountryId);
 
-		if (name == null) {
-			commerceRegionImpl.setName("");
-		}
-		else {
-			commerceRegionImpl.setName(name);
-		}
-
 		if (code == null) {
 			commerceRegionImpl.setCode("");
 		}
@@ -165,6 +165,7 @@ public class CommerceRegionCacheModel
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		uuid = objectInput.readUTF();
+		defaultLanguageId = objectInput.readUTF();
 
 		commerceRegionId = objectInput.readLong();
 
@@ -176,7 +177,6 @@ public class CommerceRegionCacheModel
 		modifiedDate = objectInput.readLong();
 
 		commerceCountryId = objectInput.readLong();
-		name = objectInput.readUTF();
 		code = objectInput.readUTF();
 
 		priority = objectInput.readDouble();
@@ -192,6 +192,13 @@ public class CommerceRegionCacheModel
 		}
 		else {
 			objectOutput.writeUTF(uuid);
+		}
+
+		if (defaultLanguageId == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(defaultLanguageId);
 		}
 
 		objectOutput.writeLong(commerceRegionId);
@@ -212,13 +219,6 @@ public class CommerceRegionCacheModel
 
 		objectOutput.writeLong(commerceCountryId);
 
-		if (name == null) {
-			objectOutput.writeUTF("");
-		}
-		else {
-			objectOutput.writeUTF(name);
-		}
-
 		if (code == null) {
 			objectOutput.writeUTF("");
 		}
@@ -233,6 +233,7 @@ public class CommerceRegionCacheModel
 	}
 
 	public String uuid;
+	public String defaultLanguageId;
 	public long commerceRegionId;
 	public long companyId;
 	public long userId;
@@ -240,7 +241,6 @@ public class CommerceRegionCacheModel
 	public long createDate;
 	public long modifiedDate;
 	public long commerceCountryId;
-	public String name;
 	public String code;
 	public double priority;
 	public boolean active;

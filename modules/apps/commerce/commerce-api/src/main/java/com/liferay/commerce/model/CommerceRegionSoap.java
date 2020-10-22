@@ -34,6 +34,7 @@ public class CommerceRegionSoap implements Serializable {
 		CommerceRegionSoap soapModel = new CommerceRegionSoap();
 
 		soapModel.setUuid(model.getUuid());
+		soapModel.setDefaultLanguageId(model.getDefaultLanguageId());
 		soapModel.setCommerceRegionId(model.getCommerceRegionId());
 		soapModel.setCompanyId(model.getCompanyId());
 		soapModel.setUserId(model.getUserId());
@@ -41,7 +42,6 @@ public class CommerceRegionSoap implements Serializable {
 		soapModel.setCreateDate(model.getCreateDate());
 		soapModel.setModifiedDate(model.getModifiedDate());
 		soapModel.setCommerceCountryId(model.getCommerceCountryId());
-		soapModel.setName(model.getName());
 		soapModel.setCode(model.getCode());
 		soapModel.setPriority(model.getPriority());
 		soapModel.setActive(model.isActive());
@@ -112,6 +112,14 @@ public class CommerceRegionSoap implements Serializable {
 		_uuid = uuid;
 	}
 
+	public String getDefaultLanguageId() {
+		return _defaultLanguageId;
+	}
+
+	public void setDefaultLanguageId(String defaultLanguageId) {
+		_defaultLanguageId = defaultLanguageId;
+	}
+
 	public long getCommerceRegionId() {
 		return _commerceRegionId;
 	}
@@ -168,14 +176,6 @@ public class CommerceRegionSoap implements Serializable {
 		_commerceCountryId = commerceCountryId;
 	}
 
-	public String getName() {
-		return _name;
-	}
-
-	public void setName(String name) {
-		_name = name;
-	}
-
 	public String getCode() {
 		return _code;
 	}
@@ -213,6 +213,7 @@ public class CommerceRegionSoap implements Serializable {
 	}
 
 	private String _uuid;
+	private String _defaultLanguageId;
 	private long _commerceRegionId;
 	private long _companyId;
 	private long _userId;
@@ -220,7 +221,6 @@ public class CommerceRegionSoap implements Serializable {
 	private Date _createDate;
 	private Date _modifiedDate;
 	private long _commerceCountryId;
-	private String _name;
 	private String _code;
 	private double _priority;
 	private boolean _active;

@@ -127,6 +127,8 @@ public class CommerceRegionPersistenceTest {
 
 		newCommerceRegion.setUuid(RandomTestUtil.randomString());
 
+		newCommerceRegion.setDefaultLanguageId(RandomTestUtil.randomString());
+
 		newCommerceRegion.setCompanyId(RandomTestUtil.nextLong());
 
 		newCommerceRegion.setUserId(RandomTestUtil.nextLong());
@@ -138,8 +140,6 @@ public class CommerceRegionPersistenceTest {
 		newCommerceRegion.setModifiedDate(RandomTestUtil.nextDate());
 
 		newCommerceRegion.setCommerceCountryId(RandomTestUtil.nextLong());
-
-		newCommerceRegion.setName(RandomTestUtil.randomString());
 
 		newCommerceRegion.setCode(RandomTestUtil.randomString());
 
@@ -156,6 +156,9 @@ public class CommerceRegionPersistenceTest {
 
 		Assert.assertEquals(
 			existingCommerceRegion.getUuid(), newCommerceRegion.getUuid());
+		Assert.assertEquals(
+			existingCommerceRegion.getDefaultLanguageId(),
+			newCommerceRegion.getDefaultLanguageId());
 		Assert.assertEquals(
 			existingCommerceRegion.getCommerceRegionId(),
 			newCommerceRegion.getCommerceRegionId());
@@ -176,8 +179,6 @@ public class CommerceRegionPersistenceTest {
 		Assert.assertEquals(
 			existingCommerceRegion.getCommerceCountryId(),
 			newCommerceRegion.getCommerceCountryId());
-		Assert.assertEquals(
-			existingCommerceRegion.getName(), newCommerceRegion.getName());
 		Assert.assertEquals(
 			existingCommerceRegion.getCode(), newCommerceRegion.getCode());
 		AssertUtils.assertEquals(
@@ -257,11 +258,11 @@ public class CommerceRegionPersistenceTest {
 
 	protected OrderByComparator<CommerceRegion> getOrderByComparator() {
 		return OrderByComparatorFactoryUtil.create(
-			"CommerceRegion", "uuid", true, "commerceRegionId", true,
-			"companyId", true, "userId", true, "userName", true, "createDate",
-			true, "modifiedDate", true, "commerceCountryId", true, "name", true,
-			"code", true, "priority", true, "active", true, "lastPublishDate",
-			true);
+			"CommerceRegion", "uuid", true, "defaultLanguageId", true,
+			"commerceRegionId", true, "companyId", true, "userId", true,
+			"userName", true, "createDate", true, "modifiedDate", true,
+			"commerceCountryId", true, "code", true, "priority", true, "active",
+			true, "lastPublishDate", true);
 	}
 
 	@Test
@@ -548,6 +549,8 @@ public class CommerceRegionPersistenceTest {
 
 		commerceRegion.setUuid(RandomTestUtil.randomString());
 
+		commerceRegion.setDefaultLanguageId(RandomTestUtil.randomString());
+
 		commerceRegion.setCompanyId(RandomTestUtil.nextLong());
 
 		commerceRegion.setUserId(RandomTestUtil.nextLong());
@@ -559,8 +562,6 @@ public class CommerceRegionPersistenceTest {
 		commerceRegion.setModifiedDate(RandomTestUtil.nextDate());
 
 		commerceRegion.setCommerceCountryId(RandomTestUtil.nextLong());
-
-		commerceRegion.setName(RandomTestUtil.randomString());
 
 		commerceRegion.setCode(RandomTestUtil.randomString());
 

@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.model.ShardedModel;
 import com.liferay.portal.kernel.model.StagedAuditedModel;
 
 import java.util.Date;
+import java.util.Map;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -74,6 +75,21 @@ public interface CommerceRegionModel
 	 */
 	@Override
 	public void setUuid(String uuid);
+
+	/**
+	 * Returns the default language ID of this commerce region.
+	 *
+	 * @return the default language ID of this commerce region
+	 */
+	@AutoEscape
+	public String getDefaultLanguageId();
+
+	/**
+	 * Sets the default language ID of this commerce region.
+	 *
+	 * @param defaultLanguageId the default language ID of this commerce region
+	 */
+	public void setDefaultLanguageId(String defaultLanguageId);
 
 	/**
 	 * Returns the commerce region ID of this commerce region.
@@ -201,21 +217,6 @@ public interface CommerceRegionModel
 	public void setCommerceCountryId(long commerceCountryId);
 
 	/**
-	 * Returns the name of this commerce region.
-	 *
-	 * @return the name of this commerce region
-	 */
-	@AutoEscape
-	public String getName();
-
-	/**
-	 * Sets the name of this commerce region.
-	 *
-	 * @param name the name of this commerce region
-	 */
-	public void setName(String name);
-
-	/**
 	 * Returns the code of this commerce region.
 	 *
 	 * @return the code of this commerce region
@@ -278,5 +279,17 @@ public interface CommerceRegionModel
 	 * @param lastPublishDate the last publish date of this commerce region
 	 */
 	public void setLastPublishDate(Date lastPublishDate);
+
+	public String[] getAvailableLanguageIds();
+
+	public String getName();
+
+	public String getName(String languageId);
+
+	public String getName(String languageId, boolean useDefault);
+
+	public String getNameMapAsXML();
+
+	public Map<String, String> getLanguageIdToNameMap();
 
 }

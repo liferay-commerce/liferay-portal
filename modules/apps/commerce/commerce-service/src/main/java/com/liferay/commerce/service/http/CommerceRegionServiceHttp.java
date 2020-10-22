@@ -52,8 +52,9 @@ import com.liferay.portal.kernel.util.MethodKey;
 public class CommerceRegionServiceHttp {
 
 	public static com.liferay.commerce.model.CommerceRegion addCommerceRegion(
-			HttpPrincipal httpPrincipal, long commerceCountryId, String name,
-			String code, double priority, boolean active,
+			HttpPrincipal httpPrincipal, long commerceCountryId,
+			java.util.Map<java.util.Locale, String> nameMap, String code,
+			double priority, boolean active,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -63,7 +64,7 @@ public class CommerceRegionServiceHttp {
 				_addCommerceRegionParameterTypes0);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, commerceCountryId, name, code, priority, active,
+				methodKey, commerceCountryId, nameMap, code, priority, active,
 				serviceContext);
 
 			Object returnObj = null;
@@ -463,8 +464,9 @@ public class CommerceRegionServiceHttp {
 
 	public static com.liferay.commerce.model.CommerceRegion
 			updateCommerceRegion(
-				HttpPrincipal httpPrincipal, long commerceRegionId, String name,
-				String code, double priority, boolean active,
+				HttpPrincipal httpPrincipal, long commerceRegionId,
+				java.util.Map<java.util.Locale, String> nameMap, String code,
+				double priority, boolean active,
 				com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -474,7 +476,7 @@ public class CommerceRegionServiceHttp {
 				_updateCommerceRegionParameterTypes10);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, commerceRegionId, name, code, priority, active,
+				methodKey, commerceRegionId, nameMap, code, priority, active,
 				serviceContext);
 
 			Object returnObj = null;
@@ -510,7 +512,8 @@ public class CommerceRegionServiceHttp {
 
 	private static final Class<?>[] _addCommerceRegionParameterTypes0 =
 		new Class[] {
-			long.class, String.class, String.class, double.class, boolean.class,
+			long.class, java.util.Map.class, String.class, double.class,
+			boolean.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
 	private static final Class<?>[] _deleteCommerceRegionParameterTypes1 =
@@ -540,7 +543,8 @@ public class CommerceRegionServiceHttp {
 	};
 	private static final Class<?>[] _updateCommerceRegionParameterTypes10 =
 		new Class[] {
-			long.class, String.class, String.class, double.class, boolean.class,
+			long.class, java.util.Map.class, String.class, double.class,
+			boolean.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
 

@@ -36,6 +36,7 @@
 	<bean class="com.liferay.commerce.service.impl.CommerceRegionLocalServiceImpl" id="com.liferay.commerce.service.CommerceRegionLocalService" />
 	<bean class="com.liferay.commerce.service.impl.CommerceRegionServiceImpl" id="com.liferay.commerce.service.CommerceRegionService" />
 	<bean class="com.liferay.commerce.service.persistence.impl.CommerceRegionPersistenceImpl" id="com.liferay.commerce.service.persistence.CommerceRegionPersistence" />
+	<bean class="com.liferay.commerce.service.persistence.impl.CommerceRegionLocalizationPersistenceImpl" id="com.liferay.commerce.service.persistence.CommerceRegionLocalizationPersistence" />
 	<bean class="com.liferay.commerce.service.impl.CommerceShipmentLocalServiceImpl" id="com.liferay.commerce.service.CommerceShipmentLocalService" />
 	<bean class="com.liferay.commerce.service.impl.CommerceShipmentServiceImpl" id="com.liferay.commerce.service.CommerceShipmentService" />
 	<bean class="com.liferay.commerce.service.persistence.impl.CommerceShipmentPersistenceImpl" id="com.liferay.commerce.service.persistence.CommerceShipmentPersistence" />

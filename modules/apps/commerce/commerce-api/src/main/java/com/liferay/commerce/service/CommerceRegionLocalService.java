@@ -15,6 +15,7 @@
 package com.liferay.commerce.service;
 
 import com.liferay.commerce.model.CommerceRegion;
+import com.liferay.commerce.model.CommerceRegionLocalization;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
@@ -40,6 +41,8 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import java.io.Serializable;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -81,8 +84,8 @@ public interface CommerceRegionLocalService
 	public CommerceRegion addCommerceRegion(CommerceRegion commerceRegion);
 
 	public CommerceRegion addCommerceRegion(
-			long commerceCountryId, String name, String code, double priority,
-			boolean active, ServiceContext serviceContext)
+			long commerceCountryId, Map<Locale, String> nameMap, String code,
+			double priority, boolean active, ServiceContext serviceContext)
 		throws PortalException;
 
 	/**
@@ -225,6 +228,10 @@ public interface CommerceRegionLocalService
 		String uuid, long companyId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CommerceRegionLocalization fetchCommerceRegionLocalization(
+		long commerceRegionId, String languageId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	/**
@@ -254,6 +261,15 @@ public interface CommerceRegionLocalService
 	public CommerceRegion getCommerceRegionByUuidAndCompanyId(
 			String uuid, long companyId)
 		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CommerceRegionLocalization getCommerceRegionLocalization(
+			long commerceRegionId, String languageId)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<CommerceRegionLocalization> getCommerceRegionLocalizations(
+		long commerceRegionId);
 
 	/**
 	 * Returns a range of all the commerce regions.
@@ -341,8 +357,16 @@ public interface CommerceRegionLocalService
 	public CommerceRegion updateCommerceRegion(CommerceRegion commerceRegion);
 
 	public CommerceRegion updateCommerceRegion(
-			long commerceRegionId, String name, String code, double priority,
-			boolean active, ServiceContext serviceContext)
+			long commerceRegionId, Map<Locale, String> nameMap, String code,
+			double priority, boolean active, ServiceContext serviceContext)
+		throws PortalException;
+
+	public CommerceRegionLocalization updateCommerceRegionLocalization(
+			CommerceRegion commerceRegion, String languageId, String name)
+		throws PortalException;
+
+	public List<CommerceRegionLocalization> updateCommerceRegionLocalizations(
+			CommerceRegion commerceRegion, Map<String, String> nameMap)
 		throws PortalException;
 
 }

@@ -34,13 +34,14 @@ public class CommerceRegionServiceWrapper
 
 	@Override
 	public com.liferay.commerce.model.CommerceRegion addCommerceRegion(
-			long commerceCountryId, String name, String code, double priority,
-			boolean active,
+			long commerceCountryId,
+			java.util.Map<java.util.Locale, String> nameMap, String code,
+			double priority, boolean active,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _commerceRegionService.addCommerceRegion(
-			commerceCountryId, name, code, priority, active, serviceContext);
+			commerceCountryId, nameMap, code, priority, active, serviceContext);
 	}
 
 	@Override
@@ -138,13 +139,14 @@ public class CommerceRegionServiceWrapper
 
 	@Override
 	public com.liferay.commerce.model.CommerceRegion updateCommerceRegion(
-			long commerceRegionId, String name, String code, double priority,
-			boolean active,
+			long commerceRegionId,
+			java.util.Map<java.util.Locale, String> nameMap, String code,
+			double priority, boolean active,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _commerceRegionService.updateCommerceRegion(
-			commerceRegionId, name, code, priority, active, serviceContext);
+			commerceRegionId, nameMap, code, priority, active, serviceContext);
 	}
 
 	@Override

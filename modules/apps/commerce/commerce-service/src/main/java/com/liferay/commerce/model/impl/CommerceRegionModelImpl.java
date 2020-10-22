@@ -15,8 +15,10 @@
 package com.liferay.commerce.model.impl;
 
 import com.liferay.commerce.model.CommerceRegion;
+import com.liferay.commerce.model.CommerceRegionLocalization;
 import com.liferay.commerce.model.CommerceRegionModel;
 import com.liferay.commerce.model.CommerceRegionSoap;
+import com.liferay.commerce.service.CommerceRegionLocalServiceUtil;
 import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.expando.kernel.util.ExpandoBridgeFactoryUtil;
 import com.liferay.exportimport.kernel.lar.StagedModelType;
@@ -31,6 +33,7 @@ import com.liferay.portal.kernel.model.impl.BaseModelImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 
@@ -74,11 +77,11 @@ public class CommerceRegionModelImpl
 	public static final String TABLE_NAME = "CommerceRegion";
 
 	public static final Object[][] TABLE_COLUMNS = {
-		{"uuid_", Types.VARCHAR}, {"commerceRegionId", Types.BIGINT},
-		{"companyId", Types.BIGINT}, {"userId", Types.BIGINT},
-		{"userName", Types.VARCHAR}, {"createDate", Types.TIMESTAMP},
-		{"modifiedDate", Types.TIMESTAMP}, {"commerceCountryId", Types.BIGINT},
-		{"name", Types.VARCHAR}, {"code_", Types.VARCHAR},
+		{"uuid_", Types.VARCHAR}, {"defaultLanguageId", Types.VARCHAR},
+		{"commerceRegionId", Types.BIGINT}, {"companyId", Types.BIGINT},
+		{"userId", Types.BIGINT}, {"userName", Types.VARCHAR},
+		{"createDate", Types.TIMESTAMP}, {"modifiedDate", Types.TIMESTAMP},
+		{"commerceCountryId", Types.BIGINT}, {"code_", Types.VARCHAR},
 		{"priority", Types.DOUBLE}, {"active_", Types.BOOLEAN},
 		{"lastPublishDate", Types.TIMESTAMP}
 	};
@@ -88,6 +91,7 @@ public class CommerceRegionModelImpl
 
 	static {
 		TABLE_COLUMNS_MAP.put("uuid_", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("defaultLanguageId", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("commerceRegionId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userId", Types.BIGINT);
@@ -95,7 +99,6 @@ public class CommerceRegionModelImpl
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("commerceCountryId", Types.BIGINT);
-		TABLE_COLUMNS_MAP.put("name", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("code_", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("priority", Types.DOUBLE);
 		TABLE_COLUMNS_MAP.put("active_", Types.BOOLEAN);
@@ -103,7 +106,7 @@ public class CommerceRegionModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table CommerceRegion (uuid_ VARCHAR(75) null,commerceRegionId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,commerceCountryId LONG,name VARCHAR(75) null,code_ VARCHAR(75) null,priority DOUBLE,active_ BOOLEAN,lastPublishDate DATE null)";
+		"create table CommerceRegion (uuid_ VARCHAR(75) null,defaultLanguageId VARCHAR(75) null,commerceRegionId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,commerceCountryId LONG,code_ VARCHAR(75) null,priority DOUBLE,active_ BOOLEAN,lastPublishDate DATE null)";
 
 	public static final String TABLE_SQL_DROP = "drop table CommerceRegion";
 
@@ -190,6 +193,7 @@ public class CommerceRegionModelImpl
 		CommerceRegion model = new CommerceRegionImpl();
 
 		model.setUuid(soapModel.getUuid());
+		model.setDefaultLanguageId(soapModel.getDefaultLanguageId());
 		model.setCommerceRegionId(soapModel.getCommerceRegionId());
 		model.setCompanyId(soapModel.getCompanyId());
 		model.setUserId(soapModel.getUserId());
@@ -197,7 +201,6 @@ public class CommerceRegionModelImpl
 		model.setCreateDate(soapModel.getCreateDate());
 		model.setModifiedDate(soapModel.getModifiedDate());
 		model.setCommerceCountryId(soapModel.getCommerceCountryId());
-		model.setName(soapModel.getName());
 		model.setCode(soapModel.getCode());
 		model.setPriority(soapModel.getPriority());
 		model.setActive(soapModel.isActive());
@@ -364,6 +367,12 @@ public class CommerceRegionModelImpl
 			"uuid",
 			(BiConsumer<CommerceRegion, String>)CommerceRegion::setUuid);
 		attributeGetterFunctions.put(
+			"defaultLanguageId", CommerceRegion::getDefaultLanguageId);
+		attributeSetterBiConsumers.put(
+			"defaultLanguageId",
+			(BiConsumer<CommerceRegion, String>)
+				CommerceRegion::setDefaultLanguageId);
+		attributeGetterFunctions.put(
 			"commerceRegionId", CommerceRegion::getCommerceRegionId);
 		attributeSetterBiConsumers.put(
 			"commerceRegionId",
@@ -397,10 +406,6 @@ public class CommerceRegionModelImpl
 			"commerceCountryId",
 			(BiConsumer<CommerceRegion, Long>)
 				CommerceRegion::setCommerceCountryId);
-		attributeGetterFunctions.put("name", CommerceRegion::getName);
-		attributeSetterBiConsumers.put(
-			"name",
-			(BiConsumer<CommerceRegion, String>)CommerceRegion::setName);
 		attributeGetterFunctions.put("code", CommerceRegion::getCode);
 		attributeSetterBiConsumers.put(
 			"code",
@@ -424,6 +429,91 @@ public class CommerceRegionModelImpl
 			attributeGetterFunctions);
 		_attributeSetterBiConsumers = Collections.unmodifiableMap(
 			(Map)attributeSetterBiConsumers);
+	}
+
+	@Override
+	public String[] getAvailableLanguageIds() {
+		List<CommerceRegionLocalization> commerceRegionLocalizations =
+			CommerceRegionLocalServiceUtil.getCommerceRegionLocalizations(
+				getPrimaryKey());
+
+		String[] availableLanguageIds =
+			new String[commerceRegionLocalizations.size()];
+
+		for (int i = 0; i < availableLanguageIds.length; i++) {
+			CommerceRegionLocalization commerceRegionLocalization =
+				commerceRegionLocalizations.get(i);
+
+			availableLanguageIds[i] =
+				commerceRegionLocalization.getLanguageId();
+		}
+
+		return availableLanguageIds;
+	}
+
+	@Override
+	public String getName() {
+		return getName(getDefaultLanguageId(), false);
+	}
+
+	@Override
+	public String getName(String languageId) {
+		return getName(languageId, true);
+	}
+
+	@Override
+	public String getName(String languageId, boolean useDefault) {
+		if (useDefault) {
+			return LocalizationUtil.getLocalization(
+				new Function<String, String>() {
+
+					@Override
+					public String apply(String languageId) {
+						return _getName(languageId);
+					}
+
+				},
+				languageId, getDefaultLanguageId());
+		}
+
+		return _getName(languageId);
+	}
+
+	@Override
+	public String getNameMapAsXML() {
+		return LocalizationUtil.getXml(
+			getLanguageIdToNameMap(), getDefaultLanguageId(), "Name");
+	}
+
+	@Override
+	public Map<String, String> getLanguageIdToNameMap() {
+		Map<String, String> languageIdToNameMap = new HashMap<String, String>();
+
+		List<CommerceRegionLocalization> commerceRegionLocalizations =
+			CommerceRegionLocalServiceUtil.getCommerceRegionLocalizations(
+				getPrimaryKey());
+
+		for (CommerceRegionLocalization commerceRegionLocalization :
+				commerceRegionLocalizations) {
+
+			languageIdToNameMap.put(
+				commerceRegionLocalization.getLanguageId(),
+				commerceRegionLocalization.getName());
+		}
+
+		return languageIdToNameMap;
+	}
+
+	private String _getName(String languageId) {
+		CommerceRegionLocalization commerceRegionLocalization =
+			CommerceRegionLocalServiceUtil.fetchCommerceRegionLocalization(
+				getPrimaryKey(), languageId);
+
+		if (commerceRegionLocalization == null) {
+			return "";
+		}
+
+		return commerceRegionLocalization.getName();
 	}
 
 	@JSON
@@ -453,6 +543,26 @@ public class CommerceRegionModelImpl
 	@Deprecated
 	public String getOriginalUuid() {
 		return getColumnOriginalValue("uuid_");
+	}
+
+	@JSON
+	@Override
+	public String getDefaultLanguageId() {
+		if (_defaultLanguageId == null) {
+			return "";
+		}
+		else {
+			return _defaultLanguageId;
+		}
+	}
+
+	@Override
+	public void setDefaultLanguageId(String defaultLanguageId) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_defaultLanguageId = defaultLanguageId;
 	}
 
 	@JSON
@@ -609,26 +719,6 @@ public class CommerceRegionModelImpl
 
 	@JSON
 	@Override
-	public String getName() {
-		if (_name == null) {
-			return "";
-		}
-		else {
-			return _name;
-		}
-	}
-
-	@Override
-	public void setName(String name) {
-		if (_columnOriginalValues == Collections.EMPTY_MAP) {
-			_setColumnOriginalValues();
-		}
-
-		_name = name;
-	}
-
-	@JSON
-	@Override
 	public String getCode() {
 		if (_code == null) {
 			return "";
@@ -778,6 +868,7 @@ public class CommerceRegionModelImpl
 		CommerceRegionImpl commerceRegionImpl = new CommerceRegionImpl();
 
 		commerceRegionImpl.setUuid(getUuid());
+		commerceRegionImpl.setDefaultLanguageId(getDefaultLanguageId());
 		commerceRegionImpl.setCommerceRegionId(getCommerceRegionId());
 		commerceRegionImpl.setCompanyId(getCompanyId());
 		commerceRegionImpl.setUserId(getUserId());
@@ -785,7 +876,6 @@ public class CommerceRegionModelImpl
 		commerceRegionImpl.setCreateDate(getCreateDate());
 		commerceRegionImpl.setModifiedDate(getModifiedDate());
 		commerceRegionImpl.setCommerceCountryId(getCommerceCountryId());
-		commerceRegionImpl.setName(getName());
 		commerceRegionImpl.setCode(getCode());
 		commerceRegionImpl.setPriority(getPriority());
 		commerceRegionImpl.setActive(isActive());
@@ -884,6 +974,14 @@ public class CommerceRegionModelImpl
 			commerceRegionCacheModel.uuid = null;
 		}
 
+		commerceRegionCacheModel.defaultLanguageId = getDefaultLanguageId();
+
+		String defaultLanguageId = commerceRegionCacheModel.defaultLanguageId;
+
+		if ((defaultLanguageId != null) && (defaultLanguageId.length() == 0)) {
+			commerceRegionCacheModel.defaultLanguageId = null;
+		}
+
 		commerceRegionCacheModel.commerceRegionId = getCommerceRegionId();
 
 		commerceRegionCacheModel.companyId = getCompanyId();
@@ -917,14 +1015,6 @@ public class CommerceRegionModelImpl
 		}
 
 		commerceRegionCacheModel.commerceCountryId = getCommerceCountryId();
-
-		commerceRegionCacheModel.name = getName();
-
-		String name = commerceRegionCacheModel.name;
-
-		if ((name != null) && (name.length() == 0)) {
-			commerceRegionCacheModel.name = null;
-		}
 
 		commerceRegionCacheModel.code = getCode();
 
@@ -1022,6 +1112,7 @@ public class CommerceRegionModelImpl
 	}
 
 	private String _uuid;
+	private String _defaultLanguageId;
 	private long _commerceRegionId;
 	private long _companyId;
 	private long _userId;
@@ -1030,7 +1121,6 @@ public class CommerceRegionModelImpl
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
 	private long _commerceCountryId;
-	private String _name;
 	private String _code;
 	private double _priority;
 	private boolean _active;
@@ -1066,6 +1156,7 @@ public class CommerceRegionModelImpl
 		_columnOriginalValues = new HashMap<String, Object>();
 
 		_columnOriginalValues.put("uuid_", _uuid);
+		_columnOriginalValues.put("defaultLanguageId", _defaultLanguageId);
 		_columnOriginalValues.put("commerceRegionId", _commerceRegionId);
 		_columnOriginalValues.put("companyId", _companyId);
 		_columnOriginalValues.put("userId", _userId);
@@ -1073,7 +1164,6 @@ public class CommerceRegionModelImpl
 		_columnOriginalValues.put("createDate", _createDate);
 		_columnOriginalValues.put("modifiedDate", _modifiedDate);
 		_columnOriginalValues.put("commerceCountryId", _commerceCountryId);
-		_columnOriginalValues.put("name", _name);
 		_columnOriginalValues.put("code_", _code);
 		_columnOriginalValues.put("priority", _priority);
 		_columnOriginalValues.put("active_", _active);
@@ -1105,21 +1195,21 @@ public class CommerceRegionModelImpl
 
 		columnBitmasks.put("uuid_", 1L);
 
-		columnBitmasks.put("commerceRegionId", 2L);
+		columnBitmasks.put("defaultLanguageId", 2L);
 
-		columnBitmasks.put("companyId", 4L);
+		columnBitmasks.put("commerceRegionId", 4L);
 
-		columnBitmasks.put("userId", 8L);
+		columnBitmasks.put("companyId", 8L);
 
-		columnBitmasks.put("userName", 16L);
+		columnBitmasks.put("userId", 16L);
 
-		columnBitmasks.put("createDate", 32L);
+		columnBitmasks.put("userName", 32L);
 
-		columnBitmasks.put("modifiedDate", 64L);
+		columnBitmasks.put("createDate", 64L);
 
-		columnBitmasks.put("commerceCountryId", 128L);
+		columnBitmasks.put("modifiedDate", 128L);
 
-		columnBitmasks.put("name", 256L);
+		columnBitmasks.put("commerceCountryId", 256L);
 
 		columnBitmasks.put("code_", 512L);
 

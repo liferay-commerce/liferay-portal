@@ -28,6 +28,8 @@ import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -62,8 +64,8 @@ public interface CommerceRegionService extends BaseService {
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.commerce.service.impl.CommerceRegionServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the commerce region remote service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link CommerceRegionServiceUtil} if injection and service tracking are not available.
 	 */
 	public CommerceRegion addCommerceRegion(
-			long commerceCountryId, String name, String code, double priority,
-			boolean active, ServiceContext serviceContext)
+			long commerceCountryId, Map<Locale, String> nameMap, String code,
+			double priority, boolean active, ServiceContext serviceContext)
 		throws PortalException;
 
 	public void deleteCommerceRegion(long commerceRegionId)
@@ -113,8 +115,8 @@ public interface CommerceRegionService extends BaseService {
 		throws PortalException;
 
 	public CommerceRegion updateCommerceRegion(
-			long commerceRegionId, String name, String code, double priority,
-			boolean active, ServiceContext serviceContext)
+			long commerceRegionId, Map<Locale, String> nameMap, String code,
+			double priority, boolean active, ServiceContext serviceContext)
 		throws PortalException;
 
 }

@@ -253,6 +253,7 @@ create table CommerceOrderPayment (
 
 create table CommerceRegion (
 	uuid_ VARCHAR(75) null,
+	defaultLanguageId VARCHAR(75) null,
 	commerceRegionId LONG not null primary key,
 	companyId LONG,
 	userId LONG,
@@ -260,11 +261,19 @@ create table CommerceRegion (
 	createDate DATE null,
 	modifiedDate DATE null,
 	commerceCountryId LONG,
-	name VARCHAR(75) null,
 	code_ VARCHAR(75) null,
 	priority DOUBLE,
 	active_ BOOLEAN,
 	lastPublishDate DATE null
+);
+
+create table CommerceRegionLocalization (
+	mvccVersion LONG default 0 not null,
+	commerceRegionLocalizationId LONG not null primary key,
+	companyId LONG,
+	commerceRegionId LONG,
+	languageId VARCHAR(75) null,
+	name VARCHAR(75) null
 );
 
 create table CommerceShipment (

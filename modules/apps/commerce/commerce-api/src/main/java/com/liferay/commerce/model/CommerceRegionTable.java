@@ -35,6 +35,10 @@ public class CommerceRegionTable extends BaseTable<CommerceRegionTable> {
 
 	public final Column<CommerceRegionTable, String> uuid = createColumn(
 		"uuid_", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<CommerceRegionTable, String> defaultLanguageId =
+		createColumn(
+			"defaultLanguageId", String.class, Types.VARCHAR,
+			Column.FLAG_DEFAULT);
 	public final Column<CommerceRegionTable, Long> commerceRegionId =
 		createColumn(
 			"commerceRegionId", Long.class, Types.BIGINT, Column.FLAG_PRIMARY);
@@ -51,8 +55,6 @@ public class CommerceRegionTable extends BaseTable<CommerceRegionTable> {
 	public final Column<CommerceRegionTable, Long> commerceCountryId =
 		createColumn(
 			"commerceCountryId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
-	public final Column<CommerceRegionTable, String> name = createColumn(
-		"name", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<CommerceRegionTable, String> code = createColumn(
 		"code_", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<CommerceRegionTable, Double> priority = createColumn(

@@ -17,8 +17,12 @@ package com.liferay.commerce.service.http;
 import com.liferay.commerce.service.CommerceRegionServiceUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.LocalizationUtil;
 
 import java.rmi.RemoteException;
+
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Provides the SOAP utility for the
@@ -65,15 +69,19 @@ public class CommerceRegionServiceSoap {
 
 	public static com.liferay.commerce.model.CommerceRegionSoap
 			addCommerceRegion(
-				long commerceCountryId, String name, String code,
-				double priority, boolean active,
+				long commerceCountryId, String[] nameMapLanguageIds,
+				String[] nameMapValues, String code, double priority,
+				boolean active,
 				com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws RemoteException {
 
 		try {
+			Map<Locale, String> nameMap = LocalizationUtil.getLocalizationMap(
+				nameMapLanguageIds, nameMapValues);
+
 			com.liferay.commerce.model.CommerceRegion returnValue =
 				CommerceRegionServiceUtil.addCommerceRegion(
-					commerceCountryId, name, code, priority, active,
+					commerceCountryId, nameMap, code, priority, active,
 					serviceContext);
 
 			return com.liferay.commerce.model.CommerceRegionSoap.toSoapModel(
@@ -255,15 +263,19 @@ public class CommerceRegionServiceSoap {
 
 	public static com.liferay.commerce.model.CommerceRegionSoap
 			updateCommerceRegion(
-				long commerceRegionId, String name, String code,
-				double priority, boolean active,
+				long commerceRegionId, String[] nameMapLanguageIds,
+				String[] nameMapValues, String code, double priority,
+				boolean active,
 				com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws RemoteException {
 
 		try {
+			Map<Locale, String> nameMap = LocalizationUtil.getLocalizationMap(
+				nameMapLanguageIds, nameMapValues);
+
 			com.liferay.commerce.model.CommerceRegion returnValue =
 				CommerceRegionServiceUtil.updateCommerceRegion(
-					commerceRegionId, name, code, priority, active,
+					commerceRegionId, nameMap, code, priority, active,
 					serviceContext);
 
 			return com.liferay.commerce.model.CommerceRegionSoap.toSoapModel(

@@ -44,6 +44,7 @@ public class CommerceRegionWrapper
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
 		attributes.put("uuid", getUuid());
+		attributes.put("defaultLanguageId", getDefaultLanguageId());
 		attributes.put("commerceRegionId", getCommerceRegionId());
 		attributes.put("companyId", getCompanyId());
 		attributes.put("userId", getUserId());
@@ -51,7 +52,6 @@ public class CommerceRegionWrapper
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put("commerceCountryId", getCommerceCountryId());
-		attributes.put("name", getName());
 		attributes.put("code", getCode());
 		attributes.put("priority", getPriority());
 		attributes.put("active", isActive());
@@ -66,6 +66,12 @@ public class CommerceRegionWrapper
 
 		if (uuid != null) {
 			setUuid(uuid);
+		}
+
+		String defaultLanguageId = (String)attributes.get("defaultLanguageId");
+
+		if (defaultLanguageId != null) {
+			setDefaultLanguageId(defaultLanguageId);
 		}
 
 		Long commerceRegionId = (Long)attributes.get("commerceRegionId");
@@ -110,12 +116,6 @@ public class CommerceRegionWrapper
 			setCommerceCountryId(commerceCountryId);
 		}
 
-		String name = (String)attributes.get("name");
-
-		if (name != null) {
-			setName(name);
-		}
-
 		String code = (String)attributes.get("code");
 
 		if (code != null) {
@@ -149,6 +149,11 @@ public class CommerceRegionWrapper
 	@Override
 	public boolean getActive() {
 		return model.getActive();
+	}
+
+	@Override
+	public String[] getAvailableLanguageIds() {
+		return model.getAvailableLanguageIds();
 	}
 
 	/**
@@ -209,6 +214,21 @@ public class CommerceRegionWrapper
 	}
 
 	/**
+	 * Returns the default language ID of this commerce region.
+	 *
+	 * @return the default language ID of this commerce region
+	 */
+	@Override
+	public String getDefaultLanguageId() {
+		return model.getDefaultLanguageId();
+	}
+
+	@Override
+	public Map<String, String> getLanguageIdToNameMap() {
+		return model.getLanguageIdToNameMap();
+	}
+
+	/**
 	 * Returns the last publish date of this commerce region.
 	 *
 	 * @return the last publish date of this commerce region
@@ -228,14 +248,24 @@ public class CommerceRegionWrapper
 		return model.getModifiedDate();
 	}
 
-	/**
-	 * Returns the name of this commerce region.
-	 *
-	 * @return the name of this commerce region
-	 */
 	@Override
 	public String getName() {
 		return model.getName();
+	}
+
+	@Override
+	public String getName(String languageId) {
+		return model.getName(languageId);
+	}
+
+	@Override
+	public String getName(String languageId, boolean useDefault) {
+		return model.getName(languageId, useDefault);
+	}
+
+	@Override
+	public String getNameMapAsXML() {
+		return model.getNameMapAsXML();
 	}
 
 	/**
@@ -374,6 +404,16 @@ public class CommerceRegionWrapper
 	}
 
 	/**
+	 * Sets the default language ID of this commerce region.
+	 *
+	 * @param defaultLanguageId the default language ID of this commerce region
+	 */
+	@Override
+	public void setDefaultLanguageId(String defaultLanguageId) {
+		model.setDefaultLanguageId(defaultLanguageId);
+	}
+
+	/**
 	 * Sets the last publish date of this commerce region.
 	 *
 	 * @param lastPublishDate the last publish date of this commerce region
@@ -391,16 +431,6 @@ public class CommerceRegionWrapper
 	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		model.setModifiedDate(modifiedDate);
-	}
-
-	/**
-	 * Sets the name of this commerce region.
-	 *
-	 * @param name the name of this commerce region
-	 */
-	@Override
-	public void setName(String name) {
-		model.setName(name);
 	}
 
 	/**

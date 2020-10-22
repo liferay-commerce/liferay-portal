@@ -15,6 +15,7 @@
 package com.liferay.commerce.service.base;
 
 import com.liferay.commerce.model.CommerceRegion;
+import com.liferay.commerce.model.CommerceRegionLocalization;
 import com.liferay.commerce.service.CommerceRegionLocalService;
 import com.liferay.commerce.service.persistence.CPDAvailabilityEstimatePersistence;
 import com.liferay.commerce.service.persistence.CPDefinitionInventoryPersistence;
@@ -29,6 +30,7 @@ import com.liferay.commerce.service.persistence.CommerceOrderItemPersistence;
 import com.liferay.commerce.service.persistence.CommerceOrderNotePersistence;
 import com.liferay.commerce.service.persistence.CommerceOrderPaymentPersistence;
 import com.liferay.commerce.service.persistence.CommerceOrderPersistence;
+import com.liferay.commerce.service.persistence.CommerceRegionLocalizationPersistence;
 import com.liferay.commerce.service.persistence.CommerceRegionPersistence;
 import com.liferay.commerce.service.persistence.CommerceShipmentFinder;
 import com.liferay.commerce.service.persistence.CommerceShipmentItemFinder;
@@ -73,7 +75,10 @@ import com.liferay.portal.spring.extender.service.ServiceReference;
 
 import java.io.Serializable;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -494,6 +499,158 @@ public abstract class CommerceRegionLocalServiceBaseImpl
 	@Override
 	public CommerceRegion updateCommerceRegion(CommerceRegion commerceRegion) {
 		return commerceRegionPersistence.update(commerceRegion);
+	}
+
+	@Override
+	public CommerceRegionLocalization fetchCommerceRegionLocalization(
+		long commerceRegionId, String languageId) {
+
+		return commerceRegionLocalizationPersistence.
+			fetchByCommerceRegionId_LanguageId(commerceRegionId, languageId);
+	}
+
+	@Override
+	public CommerceRegionLocalization getCommerceRegionLocalization(
+			long commerceRegionId, String languageId)
+		throws PortalException {
+
+		return commerceRegionLocalizationPersistence.
+			findByCommerceRegionId_LanguageId(commerceRegionId, languageId);
+	}
+
+	@Override
+	public List<CommerceRegionLocalization> getCommerceRegionLocalizations(
+		long commerceRegionId) {
+
+		return commerceRegionLocalizationPersistence.findByCommerceRegionId(
+			commerceRegionId);
+	}
+
+	@Override
+	public CommerceRegionLocalization updateCommerceRegionLocalization(
+			CommerceRegion commerceRegion, String languageId, String name)
+		throws PortalException {
+
+		commerceRegion = commerceRegionPersistence.findByPrimaryKey(
+			commerceRegion.getPrimaryKey());
+
+		CommerceRegionLocalization commerceRegionLocalization =
+			commerceRegionLocalizationPersistence.
+				fetchByCommerceRegionId_LanguageId(
+					commerceRegion.getCommerceRegionId(), languageId);
+
+		return _updateCommerceRegionLocalization(
+			commerceRegion, commerceRegionLocalization, languageId, name);
+	}
+
+	@Override
+	public List<CommerceRegionLocalization> updateCommerceRegionLocalizations(
+			CommerceRegion commerceRegion, Map<String, String> nameMap)
+		throws PortalException {
+
+		commerceRegion = commerceRegionPersistence.findByPrimaryKey(
+			commerceRegion.getPrimaryKey());
+
+		Map<String, String[]> localizedValuesMap =
+			new HashMap<String, String[]>();
+
+		for (Map.Entry<String, String> entry : nameMap.entrySet()) {
+			String languageId = entry.getKey();
+
+			String[] localizedValues = localizedValuesMap.get(languageId);
+
+			if (localizedValues == null) {
+				localizedValues = new String[1];
+
+				localizedValuesMap.put(languageId, localizedValues);
+			}
+
+			localizedValues[0] = entry.getValue();
+		}
+
+		List<CommerceRegionLocalization> commerceRegionLocalizations =
+			new ArrayList<CommerceRegionLocalization>(
+				localizedValuesMap.size());
+
+		for (CommerceRegionLocalization commerceRegionLocalization :
+				commerceRegionLocalizationPersistence.findByCommerceRegionId(
+					commerceRegion.getCommerceRegionId())) {
+
+			String[] localizedValues = localizedValuesMap.remove(
+				commerceRegionLocalization.getLanguageId());
+
+			if (localizedValues == null) {
+				commerceRegionLocalizationPersistence.remove(
+					commerceRegionLocalization);
+			}
+			else {
+				commerceRegionLocalization.setCompanyId(
+					commerceRegion.getCompanyId());
+
+				commerceRegionLocalization.setName(localizedValues[0]);
+
+				commerceRegionLocalizations.add(
+					commerceRegionLocalizationPersistence.update(
+						commerceRegionLocalization));
+			}
+		}
+
+		long batchCounter =
+			counterLocalService.increment(
+				CommerceRegionLocalization.class.getName(),
+				localizedValuesMap.size()) - localizedValuesMap.size();
+
+		for (Map.Entry<String, String[]> entry :
+				localizedValuesMap.entrySet()) {
+
+			String languageId = entry.getKey();
+			String[] localizedValues = entry.getValue();
+
+			CommerceRegionLocalization commerceRegionLocalization =
+				commerceRegionLocalizationPersistence.create(++batchCounter);
+
+			commerceRegionLocalization.setCommerceRegionId(
+				commerceRegion.getCommerceRegionId());
+			commerceRegionLocalization.setCompanyId(
+				commerceRegion.getCompanyId());
+
+			commerceRegionLocalization.setLanguageId(languageId);
+
+			commerceRegionLocalization.setName(localizedValues[0]);
+
+			commerceRegionLocalizations.add(
+				commerceRegionLocalizationPersistence.update(
+					commerceRegionLocalization));
+		}
+
+		return commerceRegionLocalizations;
+	}
+
+	private CommerceRegionLocalization _updateCommerceRegionLocalization(
+			CommerceRegion commerceRegion,
+			CommerceRegionLocalization commerceRegionLocalization,
+			String languageId, String name)
+		throws PortalException {
+
+		if (commerceRegionLocalization == null) {
+			long commerceRegionLocalizationId = counterLocalService.increment(
+				CommerceRegionLocalization.class.getName());
+
+			commerceRegionLocalization =
+				commerceRegionLocalizationPersistence.create(
+					commerceRegionLocalizationId);
+
+			commerceRegionLocalization.setCommerceRegionId(
+				commerceRegion.getCommerceRegionId());
+			commerceRegionLocalization.setLanguageId(languageId);
+		}
+
+		commerceRegionLocalization.setCompanyId(commerceRegion.getCompanyId());
+
+		commerceRegionLocalization.setName(name);
+
+		return commerceRegionLocalizationPersistence.update(
+			commerceRegionLocalization);
 	}
 
 	/**
@@ -951,6 +1108,30 @@ public abstract class CommerceRegionLocalServiceBaseImpl
 		CommerceRegionPersistence commerceRegionPersistence) {
 
 		this.commerceRegionPersistence = commerceRegionPersistence;
+	}
+
+	/**
+	 * Returns the commerce region localization persistence.
+	 *
+	 * @return the commerce region localization persistence
+	 */
+	public CommerceRegionLocalizationPersistence
+		getCommerceRegionLocalizationPersistence() {
+
+		return commerceRegionLocalizationPersistence;
+	}
+
+	/**
+	 * Sets the commerce region localization persistence.
+	 *
+	 * @param commerceRegionLocalizationPersistence the commerce region localization persistence
+	 */
+	public void setCommerceRegionLocalizationPersistence(
+		CommerceRegionLocalizationPersistence
+			commerceRegionLocalizationPersistence) {
+
+		this.commerceRegionLocalizationPersistence =
+			commerceRegionLocalizationPersistence;
 	}
 
 	/**
@@ -1565,6 +1746,10 @@ public abstract class CommerceRegionLocalServiceBaseImpl
 
 	@BeanReference(type = CommerceRegionPersistence.class)
 	protected CommerceRegionPersistence commerceRegionPersistence;
+
+	@BeanReference(type = CommerceRegionLocalizationPersistence.class)
+	protected CommerceRegionLocalizationPersistence
+		commerceRegionLocalizationPersistence;
 
 	@BeanReference(
 		type = com.liferay.commerce.service.CommerceShipmentLocalService.class

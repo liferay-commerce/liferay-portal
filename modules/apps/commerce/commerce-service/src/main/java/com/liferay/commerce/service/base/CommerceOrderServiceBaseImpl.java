@@ -29,6 +29,7 @@ import com.liferay.commerce.service.persistence.CommerceOrderItemPersistence;
 import com.liferay.commerce.service.persistence.CommerceOrderNotePersistence;
 import com.liferay.commerce.service.persistence.CommerceOrderPaymentPersistence;
 import com.liferay.commerce.service.persistence.CommerceOrderPersistence;
+import com.liferay.commerce.service.persistence.CommerceRegionLocalizationPersistence;
 import com.liferay.commerce.service.persistence.CommerceRegionPersistence;
 import com.liferay.commerce.service.persistence.CommerceShipmentFinder;
 import com.liferay.commerce.service.persistence.CommerceShipmentItemFinder;
@@ -718,6 +719,30 @@ public abstract class CommerceOrderServiceBaseImpl
 		CommerceRegionPersistence commerceRegionPersistence) {
 
 		this.commerceRegionPersistence = commerceRegionPersistence;
+	}
+
+	/**
+	 * Returns the commerce region localization persistence.
+	 *
+	 * @return the commerce region localization persistence
+	 */
+	public CommerceRegionLocalizationPersistence
+		getCommerceRegionLocalizationPersistence() {
+
+		return commerceRegionLocalizationPersistence;
+	}
+
+	/**
+	 * Sets the commerce region localization persistence.
+	 *
+	 * @param commerceRegionLocalizationPersistence the commerce region localization persistence
+	 */
+	public void setCommerceRegionLocalizationPersistence(
+		CommerceRegionLocalizationPersistence
+			commerceRegionLocalizationPersistence) {
+
+		this.commerceRegionLocalizationPersistence =
+			commerceRegionLocalizationPersistence;
 	}
 
 	/**
@@ -1752,6 +1777,10 @@ public abstract class CommerceOrderServiceBaseImpl
 
 	@BeanReference(type = CommerceRegionPersistence.class)
 	protected CommerceRegionPersistence commerceRegionPersistence;
+
+	@BeanReference(type = CommerceRegionLocalizationPersistence.class)
+	protected CommerceRegionLocalizationPersistence
+		commerceRegionLocalizationPersistence;
 
 	@BeanReference(
 		type = com.liferay.commerce.service.CommerceShipmentLocalService.class

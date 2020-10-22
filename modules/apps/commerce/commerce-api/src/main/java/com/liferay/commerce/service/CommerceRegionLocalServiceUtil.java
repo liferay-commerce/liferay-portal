@@ -55,13 +55,14 @@ public class CommerceRegionLocalServiceUtil {
 	}
 
 	public static com.liferay.commerce.model.CommerceRegion addCommerceRegion(
-			long commerceCountryId, String name, String code, double priority,
-			boolean active,
+			long commerceCountryId,
+			java.util.Map<java.util.Locale, String> nameMap, String code,
+			double priority, boolean active,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return getService().addCommerceRegion(
-			commerceCountryId, name, code, priority, active, serviceContext);
+			commerceCountryId, nameMap, code, priority, active, serviceContext);
 	}
 
 	/**
@@ -251,6 +252,14 @@ public class CommerceRegionLocalServiceUtil {
 			uuid, companyId);
 	}
 
+	public static com.liferay.commerce.model.CommerceRegionLocalization
+		fetchCommerceRegionLocalization(
+			long commerceRegionId, String languageId) {
+
+		return getService().fetchCommerceRegionLocalization(
+			commerceRegionId, languageId);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -292,6 +301,22 @@ public class CommerceRegionLocalServiceUtil {
 
 		return getService().getCommerceRegionByUuidAndCompanyId(
 			uuid, companyId);
+	}
+
+	public static com.liferay.commerce.model.CommerceRegionLocalization
+			getCommerceRegionLocalization(
+				long commerceRegionId, String languageId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return getService().getCommerceRegionLocalization(
+			commerceRegionId, languageId);
+	}
+
+	public static java.util.List
+		<com.liferay.commerce.model.CommerceRegionLocalization>
+			getCommerceRegionLocalizations(long commerceRegionId) {
+
+		return getService().getCommerceRegionLocalizations(commerceRegionId);
 	}
 
 	/**
@@ -425,13 +450,35 @@ public class CommerceRegionLocalServiceUtil {
 
 	public static com.liferay.commerce.model.CommerceRegion
 			updateCommerceRegion(
-				long commerceRegionId, String name, String code,
+				long commerceRegionId,
+				java.util.Map<java.util.Locale, String> nameMap, String code,
 				double priority, boolean active,
 				com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return getService().updateCommerceRegion(
-			commerceRegionId, name, code, priority, active, serviceContext);
+			commerceRegionId, nameMap, code, priority, active, serviceContext);
+	}
+
+	public static com.liferay.commerce.model.CommerceRegionLocalization
+			updateCommerceRegionLocalization(
+				com.liferay.commerce.model.CommerceRegion commerceRegion,
+				String languageId, String name)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return getService().updateCommerceRegionLocalization(
+			commerceRegion, languageId, name);
+	}
+
+	public static java.util.List
+		<com.liferay.commerce.model.CommerceRegionLocalization>
+				updateCommerceRegionLocalizations(
+					com.liferay.commerce.model.CommerceRegion commerceRegion,
+					java.util.Map<String, String> nameMap)
+			throws com.liferay.portal.kernel.exception.PortalException {
+
+		return getService().updateCommerceRegionLocalizations(
+			commerceRegion, nameMap);
 	}
 
 	public static CommerceRegionLocalService getService() {

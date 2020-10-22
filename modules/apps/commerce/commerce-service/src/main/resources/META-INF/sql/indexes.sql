@@ -58,6 +58,8 @@ create index IX_49C93338 on CommerceRegion (commerceCountryId, active_);
 create unique index IX_2D8BEE31 on CommerceRegion (commerceCountryId, code_[$COLUMN_LENGTH:75$]);
 create index IX_3BC85C89 on CommerceRegion (uuid_[$COLUMN_LENGTH:75$], companyId);
 
+create unique index IX_CBFFC33 on CommerceRegionLocalization (commerceRegionId, languageId[$COLUMN_LENGTH:75$]);
+
 create index IX_616BDD15 on CommerceShipment (groupId, commerceAddressId);
 create index IX_68FBA2B5 on CommerceShipment (groupId, status);
 
