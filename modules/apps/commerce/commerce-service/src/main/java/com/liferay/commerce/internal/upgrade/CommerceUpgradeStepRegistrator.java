@@ -37,6 +37,9 @@ import com.liferay.commerce.internal.upgrade.v4_6_0.SubscriptionUpgradeProcess;
 import com.liferay.commerce.internal.upgrade.v4_8_1.CommerceOrderStatusesUpgradeProcess;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CPInstanceLocalService;
+import com.liferay.commerce.service.CommerceRegionLocalService;
+import com.liferay.commerce.service.persistence.CommerceRegionLocalizationPersistence;
+import com.liferay.counter.kernel.service.CounterLocalService;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
@@ -176,6 +179,14 @@ public class CommerceUpgradeStepRegistrator implements UpgradeStepRegistrator {
 			new com.liferay.commerce.internal.upgrade.v4_9_0.
 				CommerceOrderItemUpgradeProcess());
 
+		registry.register(
+			"4.9.0", "5.0.0",
+			new com.liferay.commerce.internal.upgrade.v5_0_0.
+				CommerceRegionUpgradeProcess(
+					_commerceRegionLocalService,
+					_commerceRegionLocalizationPersistence,
+					_counterLocalService));
+
 		if (_log.isInfoEnabled()) {
 			_log.info("Commerce upgrade step registrator finished");
 		}
@@ -193,6 +204,16 @@ public class CommerceUpgradeStepRegistrator implements UpgradeStepRegistrator {
 	@Reference
 	private CommerceAccountOrganizationRelLocalService
 		_commerceAccountOrganizationRelLocalService;
+
+	@Reference
+	private CommerceRegionLocalizationPersistence
+		_commerceRegionLocalizationPersistence;
+
+	@Reference
+	private CommerceRegionLocalService _commerceRegionLocalService;
+
+	@Reference
+	private CounterLocalService _counterLocalService;
 
 	@Reference
 	private CPDefinitionLocalService _cpDefinitionLocalService;
