@@ -92,13 +92,13 @@
 	}
 
 	function updateProductFields(productData) {
-		document.querySelector('[data-text-cp-instance-sku]').innerHTML =
-			Liferay.Util.escape(productData.sku) || '';
+		document.querySelector('[data-text-cp-instance-sku]').innerText =
+			productData.sku || '';
 		document.querySelector(
 			'[data-text-cp-instance-manufacturer-part-number]'
-		).innerHTML = Liferay.Util.escape(productData.manufacturerPartNumber) || '';
-		document.querySelector('[data-text-cp-instance-gtin]').innerHTML =
-			Liferay.Util.escape(productData.gtin) || '';
+		).innerText = productData.manufacturerPartNumber || '';
+		document.querySelector('[data-text-cp-instance-gtin]').innerText =
+			productData.gtin || '';
 
 		var availabilityEstimateContainer = document.querySelector(
 			'[data-text-cp-instance-availability-estimate]'
@@ -115,18 +115,18 @@
 			availabilityContainer &&
 			stockQuantityContainer
 		) {
-			availabilityContainer.innerHTML = productData.availability || '';
-			availabilityEstimateContainer.innerHTML =
+			availabilityContainer.innerText = productData.availability || '';
+			availabilityEstimateContainer.innerText =
 				productData.availabilityEstimate || '';
-			stockQuantityContainer.innerHTML = productData.stockQuantity || '';
+			stockQuantityContainer.innerText = productData.stockQuantity || '';
 		}
 
 		document.querySelector(
 			'[data-text-cp-instance-subscription-info]'
-		).innerHTML = productData.subscriptionInfo || '';
+		).innerText = productData.subscriptionInfo || '';
 		document.querySelector(
 			'[data-text-cp-instance-delivery-subscription-info]'
-		).innerHTML = productData.deliverySubscriptionInfo || '';
+		).innerText = productData.deliverySubscriptionInfo || '';
 
 		Liferay.fire('priceUpdated', {
 			displayDiscountLevels: productData.displayDiscountLevels,

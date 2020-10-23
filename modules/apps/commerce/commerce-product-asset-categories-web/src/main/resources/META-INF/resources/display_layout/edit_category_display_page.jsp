@@ -125,7 +125,7 @@ if (cpDisplayLayout != null) {
 						if (selectedItem) {
 							pagesContainerInput.value = selectedItem.id;
 
-							displayPageNameInput.innerHTML = selectedItem.name;
+							displayPageNameInput.innerText = selectedItem.name;
 
 							displayPageItemRemove.classList.remove('hide');
 						}
@@ -141,7 +141,7 @@ if (cpDisplayLayout != null) {
 		});
 
 	displayPageItemRemove.addEventListener('click', function () {
-		displayPageNameInput.innerHTML = '<liferay-ui:message key="none" />';
+		displayPageNameInput.innerText = '<liferay-ui:message key="none" />';
 
 		pagesContainerInput.value = '';
 
