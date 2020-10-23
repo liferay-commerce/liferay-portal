@@ -239,7 +239,7 @@ if (cpDisplayLayout != null) {
 						if (selectedItem) {
 							pagesContainerInput.value = selectedItem.id;
 
-							displayPageNameInput.innerHTML = selectedItem.name;
+							displayPageNameInput.innerText = selectedItem.name;
 
 							displayPageItemRemove.classList.remove('hide');
 						}
