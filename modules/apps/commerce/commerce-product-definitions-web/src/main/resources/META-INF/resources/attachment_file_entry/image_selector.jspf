@@ -81,7 +81,7 @@ long fileEntryId = BeanParamUtil.getLong(cpAttachmentFileEntry, request, "fileEn
 
 							window.document.querySelector(
 								'#<portlet:namespace />fileEntryTitle'
-							).innerHTML = value.title;
+							).innerText = value.title;
 
 							window.document
 								.querySelector(
@@ -120,7 +120,7 @@ long fileEntryId = BeanParamUtil.getLong(cpAttachmentFileEntry, request, "fileEn
 
 			window.document.querySelector(
 				'#<portlet:namespace />fileEntryTitle'
-			).innerHTML = '';
+			).innerText = '';
 
 			window.document
 				.querySelector('#<portlet:namespace />fileEntryContainer')
