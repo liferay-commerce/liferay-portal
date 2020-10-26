@@ -15,9 +15,10 @@
 package com.liferay.dispatch.talend.web.internal.frontend.taglib.servlet.taglib.ui;
 
 import com.liferay.dispatch.constants.DispatchConstants;
+import com.liferay.dispatch.constants.DispatchWebKeys;
 import com.liferay.dispatch.model.DispatchTrigger;
+import com.liferay.dispatch.repository.DispatchFileRepository;
 import com.liferay.dispatch.talend.web.internal.executor.TalendDispatchTaskExecutor;
-import com.liferay.dispatch.talend.web.internal.executor.TalendDispatchTaskExecutorHelper;
 import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationCategory;
 import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationEntry;
 import com.liferay.frontend.taglib.servlet.taglib.util.JSPRenderer;
@@ -100,13 +101,15 @@ public class DispatchTalendScreenNavigationCategory
 		throws IOException {
 
 		httpServletRequest.setAttribute(
-			TalendDispatchTaskExecutorHelper.class.getName(),
-			_talendDispatchTaskExecutorHelper);
+			DispatchWebKeys.DISPATCH_FILE_NAME, _dispatchFileRepository);
 
 		_jspRenderer.renderJSP(
 			_servletContext, httpServletRequest, httpServletResponse,
 			"/view.jsp");
 	}
+
+	@Reference
+	private DispatchFileRepository _dispatchFileRepository;
 
 	@Reference
 	private JSPRenderer _jspRenderer;
@@ -115,8 +118,5 @@ public class DispatchTalendScreenNavigationCategory
 		target = "(osgi.web.symbolicname=com.liferay.dispatch.talend.web)"
 	)
 	private ServletContext _servletContext;
-
-	@Reference
-	private TalendDispatchTaskExecutorHelper _talendDispatchTaskExecutorHelper;
 
 }
