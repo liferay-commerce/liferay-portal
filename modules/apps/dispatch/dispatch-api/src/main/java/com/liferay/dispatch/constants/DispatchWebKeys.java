@@ -20,6 +20,8 @@ package com.liferay.dispatch.constants;
  */
 public class DispatchWebKeys {
 
+	public static final String DISPATCH_FILE_NAME = "DISPATCH_FILE_NAME";
+
 	public static final String DISPATCH_TRIGGER = "DISPATCH_TRIGGER";
 
 }

@@ -32,4 +32,6 @@ public class DispatchConstants {
 	public static final String SCREEN_NAVIGATION_KEY_DISPATCH_GENERAL =
 		"dispatch.general";
 
+	public static final String STORAGE_FOLDER_NAME = "dispatch";
+
 }
