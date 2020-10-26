@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.dispatch.repository.DispatchFileRepository;
 
 import java.io.InputStream;
 
@@ -51,12 +52,13 @@ import org.osgi.service.component.annotations.Reference;
 	configurationPolicy = ConfigurationPolicy.OPTIONAL,
 	service = TalendDispatchTaskExecutorHelper.class
 )
-public class TalendDispatchTaskExecutorHelper {
+public class TalendDispatchTaskExecutorHelper implements DispatchFileRepository {
 
+	@Override
 	public FileEntry addFileEntry(
-			long companyId, long userId, long dispatchTriggerId,
-			String fileName, long size, String contentType,
-			InputStream inputStream)
+		long companyId, long userId, long dispatchTriggerId,
+		String fileName, long size, String contentType,
+		InputStream inputStream)
 		throws PortalException {
 
 		_validateFile(fileName, size);
@@ -68,6 +70,7 @@ public class TalendDispatchTaskExecutorHelper {
 			inputStream);
 	}
 
+	@Override
 	public FileEntry getFileEntry(long dispatchTriggerId)
 		throws PortalException {
 
