@@ -12,12 +12,14 @@
  * details.
  */
 
-package com.liferay.dispatch.talend.web.internal.executor;
+package com.liferay.dispatch.internal.repository;
 
+import com.liferay.dispatch.configuration.DispatchConfiguration;
+import com.liferay.dispatch.constants.DispatchConstants;
 import com.liferay.dispatch.constants.DispatchPortletKeys;
 import com.liferay.dispatch.model.DispatchTrigger;
+import com.liferay.dispatch.repository.DispatchFileRepository;
 import com.liferay.dispatch.service.DispatchTriggerLocalService;
-import com.liferay.dispatch.talend.web.internal.configuration.DispatchTalendConfiguration;
 import com.liferay.document.library.kernel.exception.FileExtensionException;
 import com.liferay.document.library.kernel.exception.FileSizeException;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
@@ -32,7 +34,6 @@ import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.FileUtil;
-import com.liferay.dispatch.repository.DispatchFileRepository;
 
 import java.io.InputStream;
 
@@ -46,19 +47,20 @@ import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Alessio Antonio Rendina
+ * @author Igor Beslic
  */
 @Component(
-	configurationPid = "com.liferay.dispatch.talend.web.internal.configuration.DispatchTalendConfiguration",
+	configurationPid = "com.liferay.dispatch.configuration.DispatchConfiguration",
 	configurationPolicy = ConfigurationPolicy.OPTIONAL,
-	service = TalendDispatchTaskExecutorHelper.class
+	service = DispatchFileRepository.class
 )
-public class TalendDispatchTaskExecutorHelper implements DispatchFileRepository {
+public class DispatchFileRepositoryImpl implements DispatchFileRepository {
 
 	@Override
 	public FileEntry addFileEntry(
-		long companyId, long userId, long dispatchTriggerId,
-		String fileName, long size, String contentType,
-		InputStream inputStream)
+			long companyId, long userId, long dispatchTriggerId,
+			String fileName, long size, String contentType,
+			InputStream inputStream)
 		throws PortalException {
 
 		_validateFile(fileName, size);
@@ -90,8 +92,8 @@ public class TalendDispatchTaskExecutorHelper implements DispatchFileRepository 
 
 	@Activate
 	protected void activate(Map<String, Object> properties) {
-		_dispatchTalendConfiguration = ConfigurableUtil.createConfigurable(
-			DispatchTalendConfiguration.class, properties);
+		_dispatchConfiguration = ConfigurableUtil.createConfigurable(
+			DispatchConfiguration.class, properties);
 	}
 
 	private FileEntry _addFileEntry(
@@ -129,24 +131,21 @@ public class TalendDispatchTaskExecutorHelper implements DispatchFileRepository 
 		return PortletFileRepositoryUtil.addPortletFolder(
 			userId, repository.getRepositoryId(),
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			TalendDispatchTaskExecutor.DISPATCH_TASK_EXECUTOR_TYPE_TALEND,
-			serviceContext);
+			DispatchConstants.STORAGE_FOLDER_NAME, serviceContext);
 	}
 
 	private void _validateFile(String fileName, long size)
 		throws FileExtensionException, FileSizeException {
 
-		if ((_dispatchTalendConfiguration.imageMaxSize() > 0) &&
-			(size > _dispatchTalendConfiguration.imageMaxSize())) {
+		if ((_dispatchConfiguration.fileMaxSize() > 0) &&
+			(size > _dispatchConfiguration.fileMaxSize())) {
 
 			throw new FileSizeException("File size exceeds configured limit");
 		}
 
 		String extension = StringPool.PERIOD + FileUtil.getExtension(fileName);
 
-		for (String imageExtension :
-				_dispatchTalendConfiguration.imageExtensions()) {
-
+		for (String imageExtension : _dispatchConfiguration.fileExtensions()) {
 			if (Objects.equals(StringPool.STAR, imageExtension) ||
 				Objects.equals(imageExtension, extension)) {
 
@@ -161,7 +160,7 @@ public class TalendDispatchTaskExecutorHelper implements DispatchFileRepository 
 	@Reference
 	private CompanyLocalService _companyLocalService;
 
-	private volatile DispatchTalendConfiguration _dispatchTalendConfiguration;
+	private volatile DispatchConfiguration _dispatchConfiguration;
 
 	@Reference
 	private DispatchTriggerLocalService _dispatchTriggerLocalService;
