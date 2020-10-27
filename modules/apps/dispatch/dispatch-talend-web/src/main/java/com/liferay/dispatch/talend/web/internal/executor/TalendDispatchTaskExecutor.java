@@ -159,13 +159,15 @@ public class TalendDispatchTaskExecutor extends BaseDispatchTaskExecutor {
 	}
 
 	private List<String> _getArguments(
-		DispatchTrigger dispatchTrigger, Path executablePath) {
+		DispatchTrigger dispatchTrigger, Path executableFilePath) {
 
 		List<String> arguments = new ArrayList<>();
 
-		Path executableFilePath = executablePath.getFileName();
+		arguments.add("java");
 
-		arguments.add(executableFilePath.toString());
+		Path executableFileName = executableFilePath.getFileName();
+
+		arguments.add(executableFileName.toString());
 
 		arguments.add(
 			"--context_param companyId=" + dispatchTrigger.getCompanyId());
@@ -211,9 +213,12 @@ public class TalendDispatchTaskExecutor extends BaseDispatchTaskExecutor {
 	}
 
 	private String _getExecutableName(String rootDirectoryName) {
-		String[] strings = FileUtil.find(rootDirectoryName, "**\\*.jar", null);
+		String[] paths = FileUtil.find(rootDirectoryName, "**\\*.jar", null);
 
-		return FileUtil.stripParentheticalSuffix(strings[0]);
+		String executablePath = paths[0];
+
+		return executablePath.substring(
+			executablePath.lastIndexOf(File.separator) + 1);
 	}
 
 	@Reference
