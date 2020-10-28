@@ -192,6 +192,10 @@ public abstract class BaseCartItemResourceImpl
 			existingCartItem.setCustomFields(cartItem.getCustomFields());
 		}
 
+		if (cartItem.getErrorMessage() != null) {
+			existingCartItem.setErrorMessage(cartItem.getErrorMessage());
+		}
+
 		if (cartItem.getName() != null) {
 			existingCartItem.setName(cartItem.getName());
 		}

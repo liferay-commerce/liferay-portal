@@ -84,6 +84,20 @@ public class CartItemSerDes {
 			sb.append(_toJSON(cartItem.getCustomFields()));
 		}
 
+		if (cartItem.getErrorMessage() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"errorMessage\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(cartItem.getErrorMessage()));
+
+			sb.append("\"");
+		}
+
 		if (cartItem.getId() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -252,6 +266,13 @@ public class CartItemSerDes {
 			map.put("customFields", String.valueOf(cartItem.getCustomFields()));
 		}
 
+		if (cartItem.getErrorMessage() == null) {
+			map.put("errorMessage", null);
+		}
+		else {
+			map.put("errorMessage", String.valueOf(cartItem.getErrorMessage()));
+		}
+
 		if (cartItem.getId() == null) {
 			map.put("id", null);
 		}
@@ -375,6 +396,11 @@ public class CartItemSerDes {
 					cartItem.setCustomFields(
 						(Map)CartItemSerDes.toMap(
 							(String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "errorMessage")) {
+				if (jsonParserFieldValue != null) {
+					cartItem.setErrorMessage((String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "id")) {

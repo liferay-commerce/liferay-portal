@@ -184,6 +184,7 @@ public abstract class BaseCartItemResourceTestCase {
 
 		CartItem cartItem = randomCartItem();
 
+		cartItem.setErrorMessage(regex);
 		cartItem.setName(regex);
 		cartItem.setOptions(regex);
 		cartItem.setSku(regex);
@@ -195,6 +196,7 @@ public abstract class BaseCartItemResourceTestCase {
 
 		cartItem = CartItemSerDes.toDTO(json);
 
+		Assert.assertEquals(regex, cartItem.getErrorMessage());
 		Assert.assertEquals(regex, cartItem.getName());
 		Assert.assertEquals(regex, cartItem.getOptions());
 		Assert.assertEquals(regex, cartItem.getSku());
@@ -598,6 +600,14 @@ public abstract class BaseCartItemResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("errorMessage", additionalAssertFieldName)) {
+				if (cartItem.getErrorMessage() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("name", additionalAssertFieldName)) {
 				if (cartItem.getName() == null) {
 					valid = false;
@@ -790,6 +800,17 @@ public abstract class BaseCartItemResourceTestCase {
 				if (!equals(
 						(Map)cartItem1.getCustomFields(),
 						(Map)cartItem2.getCustomFields())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("errorMessage", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						cartItem1.getErrorMessage(),
+						cartItem2.getErrorMessage())) {
 
 					return false;
 				}
@@ -1011,6 +1032,14 @@ public abstract class BaseCartItemResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("errorMessage")) {
+			sb.append("'");
+			sb.append(String.valueOf(cartItem.getErrorMessage()));
+			sb.append("'");
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("id")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -1127,6 +1156,8 @@ public abstract class BaseCartItemResourceTestCase {
 	protected CartItem randomCartItem() throws Exception {
 		return new CartItem() {
 			{
+				errorMessage = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
 				id = RandomTestUtil.randomLong();
 				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				options = StringUtil.toLowerCase(RandomTestUtil.randomString());
