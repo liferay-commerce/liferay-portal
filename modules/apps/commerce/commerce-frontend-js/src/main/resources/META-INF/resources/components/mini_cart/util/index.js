@@ -97,3 +97,7 @@ export function summaryDataMapper(summary) {
 		return values;
 	}, []);
 }
+
+export function hasErrors(cartItems) {
+	return !!cartItems.find(({errorMessage}) => !!errorMessage);
+}
