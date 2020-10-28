@@ -34,12 +34,14 @@ import com.liferay.headless.commerce.delivery.cart.dto.v1_0.Price;
 import com.liferay.headless.commerce.delivery.cart.dto.v1_0.Settings;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.language.LanguageResources;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 
 import java.math.BigDecimal;
 
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -77,6 +79,7 @@ public class CartItemDTOConverter
 		return new CartItem() {
 			{
 				customFields = expandoBridge.getAttributes();
+				errorMessage = _getErrorMessage(commerceOrderItem, locale);
 				id = commerceOrderItem.getCommerceOrderItemId();
 				name = commerceOrderItem.getName(languageId);
 				options = commerceOrderItem.getJson();
@@ -93,6 +96,24 @@ public class CartItemDTOConverter
 					commerceOrderItem.getCPInstanceId());
 			}
 		};
+	}
+
+	private String _getErrorMessage(
+		CommerceOrderItem commerceOrderItem, Locale locale) {
+
+		String error = null;
+
+		CPInstance cpInstance = commerceOrderItem.fetchCPInstance();
+
+		if (cpInstance == null) {
+			ResourceBundle resourceBundle = LanguageResources.getResourceBundle(
+				locale);
+
+			error = LanguageUtil.get(
+				resourceBundle, "the-product-is-no-longer-available");
+		}
+
+		return error;
 	}
 
 	private Price _getPrice(CommerceOrderItem commerceOrderItem, Locale locale)
