@@ -104,6 +104,7 @@ definition {
 	}
 
 	test ViewInstanceCurrenciesAvailable {
+		portal.acceptance = "commerce";
 		property environment.acceptance = "true";
 		property test.name.skip.portal.instance = "CommerceSmoke#ViewAvailableCurrencies";
 
