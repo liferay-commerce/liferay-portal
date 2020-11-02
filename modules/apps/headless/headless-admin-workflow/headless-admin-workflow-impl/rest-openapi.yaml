@@ -1,3 +1,103 @@
+                    # @review
+                    additionalProperties: true
+    allOf:
+        - $ref: "#/components/schemas/Creator"
+    allOf:
+        - $ref: "#/components/schemas/Role"
+    allOf:
+        - $ref: "#/components/schemas/ObjectReviewed"
+    description:
+        The instance's current state.
+    description:
+        The name of the instance's workflow definition.
+    description:
+        The user account of the person auditing the workflow.
+    description:
+        The log's comments.
+    description:
+        The log's creation date.
+    description:
+        The log's ID.
+    description:
+        The person assigned to the workflow.
+    description:
+        The previous person assigned to the workflow.
+    description:
+        The workflow's previous state.
+    description:
+        The workflow's current state.
+    description:
+        The workflow log's type.
+    description:
+        The task associated with this workflow log.
+    description:
+        A flag that indicates whether the task is complete.
+    description:
+        The task's completion date.
+    description:
+        The task's creation date.
+    description:
+        The date the task should be completed by.
+    description:
+        The task's description.
+    description:
+        The task's ID.
+    description:
+        The task's name.
+    description:
+        The object/asset that the task's workflow is managing.
+    description:
+        The name of the task's workflow definition.
+    description:
+        An optional comment to add when accepting the workflow task.
+    description:
+        The date on which the workflow task should be executed.
+    description:
+        An optional comment to add when assigning the workflow task.
+    description:
+        The ID of the role to assign the workflow task.
+    description:
+        The ID of the user to assign the workflow task.
+    enum: [TaskAssign, TaskCompletion, TaskUpdate, Transition]
+    format: date-time
+    format: int64
+    items:
+        $ref: "#/components/schemas/Role"
+    items:
+        properties:
+            assignableUsers:
+                items:
+    $ref: "#/components/schemas/Assignee"
+                type: array
+            workflowTaskId:
+                format: int64
+                type: integer
+        type: object
+    items:
+        format: int64
+        type: integer
+    items:
+        properties:
+            transitions:
+                items:
+    $ref: "#/components/schemas/Transition"
+                type: array
+            workflowDefinitionVersion:
+                type: string
+            workflowTaskLabel:
+                type: string
+            workflowTaskName:
+                type: string
+        type: object
+    items:
+        type: string
+    readOnly: true
+    type: array
+    type: boolean
+    type: integer
+    type: object
+    type: string
+    writeOnly: true
 components:
     schemas:
         Assignee:
@@ -237,339 +337,6 @@ components:
                         The object/asset that the instance's workflow is managing.
                     readOnly: true
                 state:
-					# @review
-                    description:
-                        The instance's current state.
-                    readOnly: true
-                    type: string
-                workflowDefinitionName:
-                    description:
-                        The name of the instance's workflow definition.
-                    readOnly: true
-                    type: string
-                workflowDefinitionVersion:
-                    readOnly: true
-                    type: string
-            type: object
-        WorkflowInstanceSubmit:
-            properties:
-                context:
-                    additionalProperties: true
-                    type: object
-                    writeOnly: true
-                siteId:
-                    format: int64
-                    type: integer
-                    writeOnly: true
-                transitionName:
-                    type: string
-                    writeOnly: true
-                workflowDefinitionName:
-                    type: string
-                    writeOnly: true
-                workflowDefinitionVersion:
-                    type: string
-                    writeOnly: true
-            type: object
-        WorkflowLog:
-            description:
-                Represents the log containing the workflow's activity history (e.g., transitions, assignees, etc.).
-            properties:
-                auditPerson:
-                    allOf:
-                        - $ref: "#/components/schemas/Creator"
-                    description:
-                        The user account of the person auditing the workflow.
-                    readOnly: true
-                commentLog:
-                    description:
-                        The log's comments.
-                    readOnly: true
-                    type: string
-                dateCreated:
-                    description:
-                        The log's creation date.
-                    format: date-time
-                    readOnly: true
-                    type: string
-                id:
-                    description:
-                        The log's ID.
-                    format: int64
-                    readOnly: true
-                    type: integer
-                person:
-                    allOf:
-                        - $ref: "#/components/schemas/Creator"
-                    description:
-                        The person assigned to the workflow.
-                    readOnly: true
-                previousPerson:
-                    allOf:
-                        - $ref: "#/components/schemas/Creator"
-                    description:
-                        The previous person assigned to the workflow.
-                    readOnly: true
-                previousRole:
-                    allOf:
-                        - $ref: "#/components/schemas/Role"
-                    readOnly: true
-                previousState:
-                    description:
-                        The workflow's previous state.
-                    readOnly: true
-                    type: string
-                role:
-                    allOf:
-                        - $ref: "#/components/schemas/Role"
-                    readOnly: true
-                state:
-                    description:
-                        The workflow's current state.
-                    readOnly: true
-                    type: string
-                type:
-                    description:
-                        The workflow log's type.
-                    enum: [TaskAssign, TaskCompletion, TaskUpdate, Transition]
-                    readOnly: true
-                    type: string
-                workflowTaskId:
-                    description:
-                        The task associated with this workflow log.
-                    format: int64
-                    readOnly: true
-                    type: integer
-            type: object
-        WorkflowTask:
-            description:
-                Represents a task to be executed in a workflow.
-            properties:
-                assigneePerson:
-                    allOf:
-                        - $ref: "#/components/schemas/Creator"
-                assigneeRoles:
-                    items:
-                        $ref: "#/components/schemas/Role"
-                    type: array
-                completed:
-                    description:
-                        A flag that indicates whether the task is complete.
-                    readOnly: true
-                    type: boolean
-                dateCompletion:
-                    description:
-                        The task's completion date.
-                    format: date-time
-                    readOnly: true
-                    type: string
-                dateCreated:
-                    description:
-                        The task's creation date.
-                    format: date-time
-                    readOnly: true
-                    type: string
-                dateDue:
-                    description:
-                        The date the task should be completed by.
-                    format: date-time
-                    readOnly: true
-                    type: string
-                description:
-                    description:
-                        The task's description.
-                    readOnly: true
-                    type: string
-                id:
-                    description:
-                        The task's ID.
-                    format: int64
-                    readOnly: true
-                    type: integer
-                label:
-                    readOnly: true
-                    type: string
-                name:
-                    description:
-                        The task's name.
-                    readOnly: true
-                    type: string
-                objectReviewed:
-                    allOf:
-                        - $ref: "#/components/schemas/ObjectReviewed"
-                    description:
-                        The object/asset that the task's workflow is managing.
-                    readOnly: true
-                workflowDefinitionId:
-                    format: int64
-                    readOnly: true
-                    type: integer
-                workflowDefinitionName:
-                    description:
-                        The name of the task's workflow definition.
-                    readOnly: true
-                    type: string
-                workflowDefinitionVersion:
-                    readOnly: true
-                    type: string
-                workflowInstanceId:
-                    format: int64
-                    readOnly: true
-                    type: integer
-            type: object
-        WorkflowTaskAssignToMe:
-            description:
-                Represents a write-only schema to assign a workflow task to the currently logged-in user.
-            properties:
-                comment:
-                    description:
-                        An optional comment to add when accepting the workflow task.
-                    type: string
-                    writeOnly: true
-                dueDate:
-                    description:
-                        The date on which the workflow task should be executed.
-                    format: date-time
-                    type: string
-                    writeOnly: true
-                workflowTaskId:
-                    format: int64
-                    type: integer
-                    writeOnly: true
-            type: object
-        WorkflowTaskAssignToRole:
-            description:
-                Represents a write-only schema to assign a workflow task to a specific role.
-            properties:
-                comment:
-                    description:
-                        An optional comment to add when assigning the workflow task.
-                    type: string
-                    writeOnly: true
-                dueDate:
-                    description:
-                        The date on which the workflow task should be executed.
-                    format: date-time
-                    type: string
-                    writeOnly: true
-                roleId:
-                    description:
-                        The ID of the role to assign the workflow task.
-                    format: int64
-                    type: integer
-                    writeOnly: true
-            type: object
-        WorkflowTaskAssignToUser:
-            description:
-                Represents a write-only schema to assign a workflow task to a specific user.
-            properties:
-                assigneeId:
-                    description:
-                        The ID of the user to assign the workflow task.
-                    format: int64
-                    type: integer
-                    writeOnly: true
-                comment:
-                    description:
-                        An optional comment to add when assigning the workflow task.
-                    type: string
-                    writeOnly: true
-                dueDate:
-                    description:
-                        The date on which the workflow task should be executed.
-                    format: date-time
-                    type: string
-                    writeOnly: true
-                workflowTaskId:
-                    format: int64
-                    type: integer
-            type: object
-        WorkflowTaskAssignableUsers:
-            properties:
-                workflowTaskAssignableUsers:
-                    items:
-                        properties:
-                            assignableUsers:
-                                items:
-                                    $ref: "#/components/schemas/Assignee"
-                                type: array
-                            workflowTaskId:
-                                format: int64
-                                type: integer
-                        type: object
-                    type: array
-            type: object
-        WorkflowTaskIds:
-            properties:
-                workflowTaskIds:
-                    items:
-                        format: int64
-                        type: integer
-                    type: array
-            type: object
-        WorkflowTaskTransitions:
-            properties:
-                workflowTaskTransitions:
-                    items:
-                        properties:
-                            transitions:
-                                items:
-                                    $ref: "#/components/schemas/Transition"
-                                type: array
-                            workflowDefinitionVersion:
-                                type: string
-                            workflowTaskLabel:
-                                type: string
-                            workflowTaskName:
-                                type: string
-                        type: object
-                    type: array
-            type: object
-        WorkflowTasksBulkSelection:
-            properties:
-                andOperator:
-                    type: boolean
-                assetPrimaryKeys:
-                    items:
-                        format: int64
-                        type: integer
-                    type: array
-                assetTitle:
-                    type: string
-                assetTypes:
-                    items:
-                        type: string
-                    type: array
-                assigneeIds:
-                    items:
-                        format: int64
-                        type: integer
-                    type: array
-                completed:
-                    type: boolean
-                dateDueEnd:
-                    format: date-time
-                    type: string
-                dateDueStart:
-                    format: date-time
-                    type: string
-                searchByRoles:
-                    type: boolean
-                searchByUserRoles:
-                    type: boolean
-                workflowDefinitionId:
-                    format: int64
-                    type: integer
-                workflowInstanceIds:
-                    items:
-                        format: int64
-                        type: integer
-                    type: array
-                workflowTaskNames:
-                    items:
-                        type: string
-                    type: array
-            type: object
 info:
     description:
         "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID
