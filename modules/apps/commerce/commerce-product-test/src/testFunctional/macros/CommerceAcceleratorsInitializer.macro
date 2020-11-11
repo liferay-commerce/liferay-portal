@@ -88,6 +88,16 @@ definition {
 			key_productName = "${productName}",
 			locator1 = "CommerceAccelerators#MINIUM_CARD_NAME");
 	}
+			
+	macro selectCommerceAccountViaFront {
+		Click(
+			key_entryName = "${accountName}",
+			locator1 = "CommerceEntry#ENTRY_NAME_BODY_VERTICAL_ELLIPSIS");
+
+		CommerceEntry.clickNoError(menuItem = "Select");
+
+		Alert.viewSuccessMessage();
+	}
 
 	macro inviteNewMemberWithRoleToAccount {
 		Click(
