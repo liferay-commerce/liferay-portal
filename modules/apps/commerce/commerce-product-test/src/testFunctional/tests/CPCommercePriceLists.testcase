@@ -505,4 +505,109 @@ definition {
 			locator1 = "MenuItem#DROPDOWN_MENU_ITEM");
 	}
 
+	test AssertPriceListIsAppliedToAllAssociatedAccountGroups {
+		property portal.acceptance = "true";
+
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+
+		CommerceEntry.createNewAccountGroup(
+			accountCriteriaType = "Business",
+			accountGroupsEntryName = "Test Account Group 1",
+			accountsEntryName = "Test Account 1",
+			user = "Test Test");
+
+		CommerceEntry.createNewAccountGroup(
+			accountCriteriaType = "Business",
+			accountGroupsEntryName = "Test Account Group 2",
+			accountsEntryName = "Test Account 2",
+			user = "Test Test");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Accounts");
+
+		Click(locator1 = "Button#PLUS");
+
+		CommerceEntry.addNewAccountsEntry(
+			criteriaType = "Business",
+			entryName = "Test Account 3",
+			user = "Test Test");
+
+		CommerceNavigator.gotoPortlet(
+			category = "Pricing",
+			panel = "Commerce",
+			portlet = "Price Lists");
+
+		Click(locator1 = "Button#PLUS");
+
+		CommerceEntry.addNewPriceListsEntry(
+			priceListCatalog = "Minium",
+			priceListCurrency = "USD",
+			priceListName = "Test Price List");
+
+		Button.click(button = "Submit");
+
+		CommerceNavigator.gotoEntry(entryName = "Test Price List");
+
+		CommerceEntry.gotoMenuTab(menuTab = "Eligibility");
+
+		CommerceEntry.setEntryEligibility(accountGroupsEligibility = "Test Account Group 1,Test Account Group 2");
+
+		CommerceEntry.gotoMenuTab(menuTab = "Entries");
+
+		CommerceRelations.assignSingleRelationToProductsEntry(
+			entryName = "MIN55861",
+			title = "Add SKUs");
+
+		CommerceNavigator.gotoEntry(entryName = "MIN55861");
+
+		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+		Type(
+			locator1 = "TextInput#ANY",
+			key_text = "Price List Price",
+			value1 = "10");
+
+		Button.clickSave();
+
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
+
+		CommerceAcceleratorsInitializer.selectCommerceAccountViaFront(accountName = "Test Account 1");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
+		CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "U-Joint");
+
+		AssertTextEquals.assertPartialText(
+			locator1 = "CommerceAccelerators#PRODUCT_DETAILS_PRICE_VALUE",
+			value1 = "10.00");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
+
+		CommerceAcceleratorsInitializer.selectCommerceAccountViaFront(accountName = "Test Account 2");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
+		CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "U-Joint");
+
+		AssertTextEquals.assertPartialText(
+			locator1 = "CommerceAccelerators#PRODUCT_DETAILS_PRICE_VALUE",
+			value1 = "10.00");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
+
+		CommerceAcceleratorsInitializer.selectCommerceAccountViaFront(accountName = "Test Account 3");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
+		CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "U-Joint");
+
+		AssertTextEquals.assertPartialText(
+			locator1 = "CommerceAccelerators#PRODUCT_DETAILS_PRICE_VALUE",
+			value1 = "24.00");
+	}
+
 }
