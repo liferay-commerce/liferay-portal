@@ -14,6 +14,7 @@
 
 package com.liferay.commerce.product.content.web.internal.layout.display.page;
 
+import com.liferay.commerce.product.constants.CPConstants;
 import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.service.CProductLocalService;
 import com.liferay.info.item.InfoItemReference;
@@ -84,7 +85,7 @@ public class CProductLayoutDisplayPageProvider
 
 	@Override
 	public String getURLSeparator() {
-		return "/c/";
+		return CPConstants.SEPARATOR_PRODUCT_URL;
 	}
 
 	@Reference

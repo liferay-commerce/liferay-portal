@@ -15,6 +15,7 @@
 package com.liferay.commerce.product.content.web.internal.layout.display.page.portlet;
 
 import com.liferay.asset.display.page.portlet.BaseAssetDisplayPageFriendlyURLResolver;
+import com.liferay.commerce.product.constants.CPConstants;
 import com.liferay.portal.kernel.portlet.FriendlyURLResolver;
 
 import org.osgi.service.component.annotations.Component;
@@ -28,7 +29,7 @@ public class CProductAssetDisplayPageFriendlyURLResolver
 
 	@Override
 	public String getURLSeparator() {
-		return "/c/";
+		return CPConstants.SEPARATOR_PRODUCT_URL;
 	}
 
 }
