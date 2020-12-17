@@ -21,40 +21,29 @@ import com.liferay.commerce.frontend.taglib.internal.servlet.ServletContextUtil;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.service.CPDefinitionLocalServiceUtil;
 import com.liferay.commerce.product.util.CPCompareHelperUtil;
-import com.liferay.frontend.js.loader.modules.extender.npm.NPMResolver;
-import com.liferay.frontend.taglib.soy.servlet.taglib.ComponentRendererTag;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.taglib.util.IncludeTag;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
 
 /**
  * @author Fabio Diego Mastrorilli
  */
-public class CompareCheckboxTag extends ComponentRendererTag {
+public class CompareCheckboxTag extends IncludeTag {
 
 	@Override
-	public int doStartTag() {
-		putValue("checkboxVisible", true);
-		putValue("compareAvailable", true);
-		putValue("inCompare", false);
-		putValue("labelVisible", true);
-
-		Map<String, Object> context = getContext();
-
-		long cpDefinitionId = GetterUtil.getLong(context.get("productId"));
-
+	public int doStartTag() throws JspException {
 		try {
 			CPDefinition cpDefinition =
-				CPDefinitionLocalServiceUtil.getCPDefinition(cpDefinitionId);
+				CPDefinitionLocalServiceUtil.getCPDefinition(_cpDefinitionId);
 
-			putValue("pictureUrl", cpDefinition.getDefaultImageThumbnailSrc());
+			_pictureUrl = cpDefinition.getDefaultImageThumbnailSrc();
 
 			long commerceAccountId = 0;
 
@@ -76,34 +65,77 @@ public class CompareCheckboxTag extends ComponentRendererTag {
 				commerceContext.getCommerceChannelGroupId(), commerceAccountId,
 				originalHttpServletRequest.getSession());
 
-			putValue("inCompare", cpDefinitionIds.contains(cpDefinitionId));
+			_inCompare = cpDefinitionIds.contains(_cpDefinitionId);
 		}
 		catch (Exception exception) {
 			_log.error(exception, exception);
 		}
 
-		setTemplateNamespace("CompareCheckbox.render");
-
 		return super.doStartTag();
 	}
 
-	@Override
-	public String getModule() {
-		NPMResolver npmResolver = ServletContextUtil.getNPMResolver();
+	public long getCPDefinitionId() {
+		return _cpDefinitionId;
+	}
 
-		if (npmResolver == null) {
-			return StringPool.BLANK;
-		}
-
-		return npmResolver.resolveModuleName(
-			"commerce-frontend-taglib/compare_checkbox/CompareCheckbox.es");
+	public String getLabel() {
+		return _label;
 	}
 
 	public void setCPDefinitionId(long cpDefinitionId) {
-		putValue("productId", cpDefinitionId);
+		_cpDefinitionId = cpDefinitionId;
 	}
+
+	public void setLabel(String label) {
+		_label = label;
+	}
+
+	@Override
+	public void setPageContext(PageContext pageContext) {
+		super.setPageContext(pageContext);
+
+		servletContext = ServletContextUtil.getServletContext();
+	}
+
+	@Override
+	protected void cleanUp() {
+		super.cleanUp();
+
+		_cpDefinitionId = 0;
+		_disabled = false;
+		_inCompare = false;
+		_label = "";
+		_pictureUrl = null;
+	}
+
+	@Override
+	protected String getPage() {
+		return _PAGE;
+	}
+
+	@Override
+	protected void setAttributes(HttpServletRequest httpServletRequest) {
+		httpServletRequest.setAttribute(
+			"liferay-commerce:compare-checkbox:disabled", _disabled);
+		httpServletRequest.setAttribute(
+			"liferay-commerce:compare-checkbox:inCompare", _inCompare);
+		httpServletRequest.setAttribute(
+			"liferay-commerce:compare-checkbox:itemId", _cpDefinitionId);
+		httpServletRequest.setAttribute(
+			"liferay-commerce:compare-checkbox:label", _label);
+		httpServletRequest.setAttribute(
+			"liferay-commerce:compare-checkbox:pictureUrl", _pictureUrl);
+	}
+
+	private static final String _PAGE = "/compare_checkbox/page.jsp";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		CompareCheckboxTag.class);
+
+	private long _cpDefinitionId;
+	private boolean _disabled;
+	private boolean _inCompare;
+	private String _label = "";
+	private String _pictureUrl;
 
 }

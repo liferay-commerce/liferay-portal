@@ -31,7 +31,12 @@ export const OPEN_SIDE_PANEL = 'open-side-panel';
 export const PRODUCT_OPTIONS_CHANGED = 'product-options-changed';
 export const PRODUCT_REMOVED = 'productRemovedFromCart';
 export const SIDE_PANEL_CLOSED = 'side-panel-closed';
-export const UPDATE_DATASET_DISPLAY = 'update-data-set-display';
+export const UPDATE_DATASET_DISPLAY = 'update-dataset-display';
+export const COMPARE_IS_AVAILABLE = 'compareIsAvailable';
+export const COMPARE_IS_UNAVAILABLE = 'compareIsUnavailable';
+export const ITEM_REMOVED_FROM_COMPARE = 'itemRemovedFromCompare';
+export const ADD_ITEM_TO_COMPARE = 'addItemToCompare';
+export const REMOVE_ITEM_FROM_COMPARE = 'removeItemFromCompare';
 
 export default {
 	ADD_TO_ORDER,
@@ -41,6 +46,8 @@ export default {
 	CHANGE_ORDER,
 	CLOSE_MODAL,
 	CLOSE_SIDE_PANEL,
+	COMPARE_IS_AVAILABLE,
+	COMPARE_IS_UNAVAILABLE,
 	CP_INSTANCE_CHANGED,
 	CURRENT_PRODUCT_STATUS_CHANGED,
 	CURRENT_PRODUCT_UPDATED,
