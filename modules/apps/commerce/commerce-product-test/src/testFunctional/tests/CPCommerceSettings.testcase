@@ -23,6 +23,19 @@ definition {
 		}
 	}
 
+	test AssertInstanceCurrenciesAvailable {
+		property environment.acceptance = "true";
+		property portal.acceptance = "quarantine";
+		property portal.upstream = "quarantine";
+		property test.name.skip.portal.instance = "CPCommerceSettings#AssertInstanceCurrenciesAvailable";
+
+		CommerceNavigator.gotoPortlet(
+			category = "Store Management",
+			portlet = "Currencies");
+
+		CommerceEntry.viewCurrenciesEntry(currenciesList = "US Dollar,Australian Dollar,British Pound,Canadian Dollar,Chinese Yuan Renminbi,Euro,Hong Kong Dollar,Japanese Yen,Indian Rupee,Brazilian Real");
+	}
+
 	test CreateNewAvailabilityEstimate {
 		property portal.acceptance = "quarantine";
 		property portal.upstream = "quarantine";
@@ -101,19 +114,6 @@ definition {
 		Button.clickSave();
 
 		AssertElementPresent(locator1 = "Message#SUCCESS");
-	}
-
-	test ViewInstanceCurrenciesAvailable {
-		property environment.acceptance = "true";
-		property portal.acceptance = "quarantine";
-		property portal.upstream = "quarantine";
-		property test.name.skip.portal.instance = "CommerceSmoke#ViewAvailableCurrencies";
-
-		CommerceNavigator.gotoPortlet(
-			category = "Store Management",
-			portlet = "Currencies");
-
-		CommerceEntry.viewCurrenciesEntry(currenciesList = "US Dollar,Australian Dollar,British Pound,Canadian Dollar,Chinese Yuan Renminbi,Euro,Hong Kong Dollar,Japanese Yen,Indian Rupee,Brazilian real");
 	}
 
 }
