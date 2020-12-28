@@ -14,9 +14,9 @@
 
 package com.liferay.commerce.internal.security.permission.resource;
 
-import com.liferay.commerce.constants.CommerceConstants;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermissionLogic;
-import com.liferay.portal.kernel.security.permission.resource.definition.PortletResourcePermissionDefinition;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -25,29 +25,21 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 	enabled = false, immediate = true,
-	service = PortletResourcePermissionDefinition.class
+	service = CommerceServicePortletResourcePermissionLogic.class
 )
-public class CommerceSubscriptionPortletResourcePermissionDefinition
-	implements PortletResourcePermissionDefinition {
+public class CommerceServicePortletResourcePermissionLogic
+	implements PortletResourcePermissionLogic {
 
 	@Override
-	public PortletResourcePermissionLogic[]
-		getPortletResourcePermissionLogics() {
+	public Boolean contains(
+		PermissionChecker permissionChecker, String name, Group group,
+		String actionId) {
 
-		return new PortletResourcePermissionLogic[] {
-			(permissionChecker, name, group, actionId) -> {
-				if (permissionChecker.hasPermission(group, name, 0, actionId)) {
-					return true;
-				}
+		if (permissionChecker.hasPermission(group, name, 0, actionId)) {
+			return true;
+		}
 
-				return false;
-			}
-		};
-	}
-
-	@Override
-	public String getResourceName() {
-		return CommerceConstants.SUBSCRIPTION_RESOURCE_NAME;
+		return false;
 	}
 
 }
