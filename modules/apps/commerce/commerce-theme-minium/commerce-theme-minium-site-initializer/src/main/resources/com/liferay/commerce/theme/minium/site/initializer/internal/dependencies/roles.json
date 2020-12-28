@@ -5,7 +5,13 @@
 				"actionIds": [
 					"MANAGE_AVAILABLE_ACCOUNTS"
 				],
-				"resource": "90"
+				"resource": "com_liferay_commerce_account_group_admin_web_internal_portlet_CommerceAccountGroupAdminPortlet"
+			},
+			{
+				"actionIds": [
+					"MANAGE_AVAILABLE_ACCOUNTS"
+				],
+				"resource": "com_liferay_commerce_account_web_internal_portlet_CommerceAccountPortlet"
 			},
 			{
 				"actionIds": [
@@ -113,7 +119,6 @@
 		"actions": [
 			{
 				"actionIds": [
-					"MANAGE_ALL_ACCOUNTS",
 					"VIEW_CONTROL_PANEL"
 				],
 				"resource": "90"
@@ -165,6 +170,18 @@
 					"MANAGE_COMMERCE_ORDERS"
 				],
 				"resource": "com.liferay.commerce.order"
+			},
+			{
+				"actionIds": [
+					"MANAGE_ALL_ACCOUNTS"
+				],
+				"resource": "com_liferay_commerce_account_group_admin_web_internal_portlet_CommerceAccountGroupAdminPortlet"
+			},
+			{
+				"actionIds": [
+					"MANAGE_ALL_ACCOUNTS"
+				],
+				"resource": "com_liferay_commerce_account_web_internal_portlet_CommerceAccountPortlet"
 			}
 		],
 		"name": "Operations Manager",
