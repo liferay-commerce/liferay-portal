@@ -33,7 +33,6 @@ import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermi
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermissionFactory;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.permission.PortalPermissionUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.spring.extender.service.ServiceReference;
 
@@ -997,8 +996,12 @@ public class CommerceOrderServiceImpl extends CommerceOrderServiceBaseImpl {
 	}
 
 	private long[] _getCommerceAccountIds(long groupId) throws PortalException {
-		if (!PortalPermissionUtil.contains(
-				getPermissionChecker(),
+		PortletResourcePermission portletResourcePermission =
+			_commerceOrderModelResourcePermission.
+				getPortletResourcePermission();
+
+		if (!portletResourcePermission.contains(
+				getPermissionChecker(), groupId,
 				CommerceAccountActionKeys.MANAGE_ALL_ACCOUNTS)) {
 
 			return _commerceAccountHelper.getUserCommerceAccountIds(
