@@ -18,6 +18,7 @@ import com.liferay.commerce.discount.model.CommerceDiscount;
 import com.liferay.commerce.discount.model.CommerceDiscountCommerceAccountGroupRel;
 import com.liferay.commerce.discount.model.impl.CommerceDiscountCommerceAccountGroupRelImpl;
 import com.liferay.commerce.discount.service.persistence.CommerceDiscountCommerceAccountGroupRelFinder;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
 import com.liferay.portal.kernel.dao.orm.QueryPos;
@@ -41,6 +42,10 @@ public class CommerceDiscountCommerceAccountGroupRelFinderImpl
 	extends CommerceDiscountCommerceAccountGroupRelFinderBaseImpl
 	implements CommerceDiscountCommerceAccountGroupRelFinder {
 
+	public static final String COUNT_BY_COMMERCE_ACCOUNT_GROUP_IDS =
+		CommerceDiscountCommerceAccountGroupRelFinder.class.getName() +
+			".countByCommerceAccountGroupIds";
+
 	public static final String COUNT_BY_COMMERCE_DISCOUNT_ID =
 		CommerceDiscountCommerceAccountGroupRelFinder.class.getName() +
 			".countByCommerceDiscountId";
@@ -48,6 +53,57 @@ public class CommerceDiscountCommerceAccountGroupRelFinderImpl
 	public static final String FIND_BY_COMMERCE_DISCOUNT_ID =
 		CommerceDiscountCommerceAccountGroupRelFinder.class.getName() +
 			".findByCommerceDiscountId";
+
+	@Override
+	public int countByCommerceAccountGroupIds(
+		long commerceDiscountId, long[] commerceAccountGroupIds) {
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			String sql = _customSQL.get(
+				getClass(), COUNT_BY_COMMERCE_ACCOUNT_GROUP_IDS);
+
+			if ((commerceAccountGroupIds != null) &&
+				(commerceAccountGroupIds.length > 0)) {
+
+				sql = replaceQueryClassPKs(
+					sql, "[$ACCOUNT_GROUP_IDS$]", commerceAccountGroupIds);
+			}
+			else {
+				sql = replaceQueryClassPKs(
+					sql, "[$ACCOUNT_GROUP_IDS$]", new long[] {0});
+			}
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			sqlQuery.addScalar(COUNT_COLUMN_NAME, Type.LONG);
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			queryPos.add(commerceDiscountId);
+
+			Iterator<Long> iterator = sqlQuery.iterate();
+
+			if (iterator.hasNext()) {
+				Long count = iterator.next();
+
+				if (count != null) {
+					return count.intValue();
+				}
+			}
+
+			return 0;
+		}
+		catch (Exception exception) {
+			throw new SystemException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
 
 	@Override
 	public int countByCommerceDiscountId(long commerceDiscountId, String name) {
@@ -188,6 +244,22 @@ public class CommerceDiscountCommerceAccountGroupRelFinderImpl
 		finally {
 			closeSession(session);
 		}
+	}
+
+	protected String replaceQueryClassPKs(
+		String sql, String queryPlaceholder, long[] classPKs) {
+
+		StringBundler sb = new StringBundler(classPKs.length);
+
+		for (int i = 0; i < classPKs.length; i++) {
+			sb.append(classPKs[i]);
+
+			if (i != (classPKs.length - 1)) {
+				sb.append(", ");
+			}
+		}
+
+		return StringUtil.replace(sql, queryPlaceholder, sb.toString());
 	}
 
 	@ServiceReference(type = CustomSQL.class)

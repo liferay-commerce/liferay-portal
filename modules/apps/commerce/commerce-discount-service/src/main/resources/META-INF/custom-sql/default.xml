@@ -35,6 +35,23 @@
 				(LOWER(CommerceAccount.name) LIKE ? [$AND_OR_NULL_CHECK$])
 		]]>
 	</sql>
+	<sql id="com.liferay.commerce.discount.service.persistence.CommerceDiscountCommerceAccountGroupRelFinder.countByCommerceAccountGroupIds">
+		<![CDATA[
+			SELECT
+				COUNT(DISTINCT CDiscountCAccountGroupRel.CDiscountCAccountGroupRelId) AS COUNT_VALUE
+			FROM
+				CDiscountCAccountGroupRel
+			JOIN
+				CommerceDiscount ON
+					CDiscountCAccountGroupRel.commerceDiscountId = CommerceDiscount.commerceDiscountId
+			JOIN
+				CommerceAccountGroup ON
+					CDiscountCAccountGroupRel.commerceAccountGroupId = CommerceAccountGroup.commerceAccountGroupId
+			WHERE
+				(CommerceDiscount.commerceDiscountId = ?) AND
+				(CDiscountCAccountGroupRel.commerceAccountGroupId IN ([$ACCOUNT_GROUP_IDS$]))
+		]]>
+	</sql>
 	<sql id="com.liferay.commerce.discount.service.persistence.CommerceDiscountCommerceAccountGroupRelFinder.countByCommerceDiscountId">
 		<![CDATA[
 			SELECT

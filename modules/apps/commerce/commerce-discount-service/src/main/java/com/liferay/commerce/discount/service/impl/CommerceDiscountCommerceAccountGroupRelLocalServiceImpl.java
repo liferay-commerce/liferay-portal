@@ -70,6 +70,15 @@ public class CommerceDiscountCommerceAccountGroupRelLocalServiceImpl
 	}
 
 	@Override
+	public int getCommerceDiscountCommerceAccountGroupRelsCount(
+		long commerceDiscountId, long[] commerceAccountGroupIds) {
+
+		return commerceDiscountCommerceAccountGroupRelFinder.
+			countByCommerceAccountGroupIds(
+				commerceDiscountId, commerceAccountGroupIds);
+	}
+
+	@Override
 	public CommerceDiscountCommerceAccountGroupRel
 			deleteCommerceDiscountCommerceAccountGroupRel(
 				CommerceDiscountCommerceAccountGroupRel
