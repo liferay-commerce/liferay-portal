@@ -46,6 +46,7 @@ public abstract class BaseCommerceCountriesDisplayContext<T> {
 		this.renderResponse = renderResponse;
 
 		_portletResourcePermission = portletResourcePermission;
+
 		_defaultOrderByCol = "priority";
 		_defaultOrderByType = "asc";
 	}
