@@ -416,6 +416,15 @@ public class CommerceDiscountCommerceAccountGroupRelLocalServiceWrapper
 
 	@Override
 	public int getCommerceDiscountCommerceAccountGroupRelsCount(
+		long commerceDiscountId, long[] commerceAccountGroupIds) {
+
+		return _commerceDiscountCommerceAccountGroupRelLocalService.
+			getCommerceDiscountCommerceAccountGroupRelsCount(
+				commerceDiscountId, commerceAccountGroupIds);
+	}
+
+	@Override
+	public int getCommerceDiscountCommerceAccountGroupRelsCount(
 		long commerceDiscountId, String name) {
 
 		return _commerceDiscountCommerceAccountGroupRelLocalService.

@@ -293,6 +293,10 @@ public interface CommerceDiscountCommerceAccountGroupRelLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceDiscountCommerceAccountGroupRelsCount(
+		long commerceDiscountId, long[] commerceAccountGroupIds);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getCommerceDiscountCommerceAccountGroupRelsCount(
 		long commerceDiscountId, String name);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

@@ -23,6 +23,9 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface CommerceDiscountCommerceAccountGroupRelFinder {
 
+	public int countByCommerceAccountGroupIds(
+		long commerceDiscountId, long[] commerceAccountGroupIds);
+
 	public int countByCommerceDiscountId(long commerceDiscountId, String name);
 
 	public int countByCommerceDiscountId(

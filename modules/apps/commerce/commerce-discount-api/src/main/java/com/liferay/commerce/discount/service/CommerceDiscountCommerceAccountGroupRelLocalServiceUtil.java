@@ -376,6 +376,13 @@ public class CommerceDiscountCommerceAccountGroupRelLocalServiceUtil {
 	}
 
 	public static int getCommerceDiscountCommerceAccountGroupRelsCount(
+		long commerceDiscountId, long[] commerceAccountGroupIds) {
+
+		return getService().getCommerceDiscountCommerceAccountGroupRelsCount(
+			commerceDiscountId, commerceAccountGroupIds);
+	}
+
+	public static int getCommerceDiscountCommerceAccountGroupRelsCount(
 		long commerceDiscountId, String name) {
 
 		return getService().getCommerceDiscountCommerceAccountGroupRelsCount(
