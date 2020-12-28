@@ -47,7 +47,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "applications"));
 			selectedDisplayStyle="list"
 		/>
 
-		<c:if test="<%= commerceApplicationAdminDisplayContext.hasPermissions(CommerceApplicationActionKeys.ADD_COMMERCE_BRAND) %>">
+		<c:if test="<%= commerceApplicationAdminDisplayContext.hasBrandPermissions(CommerceApplicationActionKeys.ADD_COMMERCE_BRAND) %>">
 			<liferay-frontend:add-menu
 				inline="<%= true %>"
 			>
@@ -137,7 +137,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "applications"));
 	}
 </aui:script>
 
-<c:if test="<%= commerceApplicationAdminDisplayContext.hasPermissions(CommerceApplicationActionKeys.ADD_COMMERCE_BRAND) %>">
+<c:if test="<%= commerceApplicationAdminDisplayContext.hasBrandPermissions(CommerceApplicationActionKeys.ADD_COMMERCE_BRAND) %>">
 	<portlet:actionURL name="editCommerceApplicationBrand" var="editCommerceApplicationBrandActionURL">
 		<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.ADD %>" />
 		<portlet:param name="redirect" value="<%= currentURL %>" />
