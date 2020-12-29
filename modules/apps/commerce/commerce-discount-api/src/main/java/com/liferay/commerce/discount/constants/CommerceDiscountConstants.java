@@ -90,4 +90,8 @@ public class CommerceDiscountConstants {
 
 	public static final String[] TYPES = {TYPE_PERCENTAGE, TYPE_FIXED_AMOUNT};
 
+	public static final String VALIDATOR_TYPE_FULL = "full";
+
+	public static final String VALIDATOR_TYPE_PARTIAL = "partial";
+
 }
