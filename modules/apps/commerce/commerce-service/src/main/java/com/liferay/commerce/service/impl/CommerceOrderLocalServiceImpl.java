@@ -25,11 +25,14 @@ import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.model.CommerceMoney;
 import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.discount.CommerceDiscountValue;
+import com.liferay.commerce.discount.constants.CommerceDiscountConstants;
 import com.liferay.commerce.discount.exception.CommerceDiscountCouponCodeException;
 import com.liferay.commerce.discount.exception.CommerceDiscountLimitationTimesException;
 import com.liferay.commerce.discount.model.CommerceDiscount;
 import com.liferay.commerce.discount.service.CommerceDiscountLocalService;
 import com.liferay.commerce.discount.service.CommerceDiscountUsageEntryLocalService;
+import com.liferay.commerce.discount.validator.CommerceDiscountValidatorRequest;
+import com.liferay.commerce.discount.validator.helper.CommerceDiscountValidatorHelper;
 import com.liferay.commerce.exception.CommerceOrderAccountLimitException;
 import com.liferay.commerce.exception.CommerceOrderBillingAddressException;
 import com.liferay.commerce.exception.CommerceOrderDateException;
@@ -346,6 +349,17 @@ public class CommerceOrderLocalServiceImpl
 			CommerceDiscount commerceDiscount =
 				_commerceDiscountLocalService.getActiveCommerceDiscount(
 					commerceOrder.getCompanyId(), couponCode, true);
+
+			CommerceDiscountValidatorRequest commerceDiscountValidatorRequest =
+				new CommerceDiscountValidatorRequest(
+					commerceContext, commerceDiscount);
+
+			if (!_commerceDiscountValidatorHelper.isValid(
+					commerceDiscountValidatorRequest,
+					CommerceDiscountConstants.VALIDATOR_TYPE_FULL)) {
+
+				throw new CommerceDiscountCouponCodeException();
+			}
 
 			long commerceAccountId = 0;
 
@@ -2221,6 +2235,9 @@ public class CommerceOrderLocalServiceImpl
 	@ServiceReference(type = CommerceDiscountUsageEntryLocalService.class)
 	private CommerceDiscountUsageEntryLocalService
 		_commerceDiscountUsageEntryLocalService;
+
+	@ServiceReference(type = CommerceDiscountValidatorHelper.class)
+	private CommerceDiscountValidatorHelper _commerceDiscountValidatorHelper;
 
 	@ServiceReference(type = CommerceOrderConfiguration.class)
 	private CommerceOrderConfiguration _commerceOrderConfiguration;
