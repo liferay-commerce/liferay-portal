@@ -1,0 +1,236 @@
+/**
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ */
+
+package com.liferay.commerce.discount.test;
+
+import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.commerce.discount.constants.CommerceDiscountConstants;
+import com.liferay.commerce.discount.model.CommerceDiscount;
+import com.liferay.commerce.discount.service.CommerceDiscountLocalService;
+import com.liferay.commerce.discount.test.util.CommerceDiscountTestUtil;
+import com.liferay.commerce.discount.validator.CommerceDiscountValidatorRequest;
+import com.liferay.commerce.discount.validator.CommerceDiscountValidatorResult;
+import com.liferay.commerce.discount.validator.helper.CommerceDiscountValidatorHelper;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DataGuard;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.CompanyTestUtil;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.test.rule.Inject;
+import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+
+import java.util.List;
+
+import org.frutilla.FrutillaRule;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+/**
+ * @author Riccardo Alberti
+ */
+@DataGuard(scope = DataGuard.Scope.METHOD)
+@RunWith(Arquillian.class)
+public class CommerceDiscountValidatorTest {
+
+	@ClassRule
+	@Rule
+	public static AggregateTestRule aggregateTestRule = new AggregateTestRule(
+		new LiferayIntegrationTestRule(),
+		PermissionCheckerMethodTestRule.INSTANCE);
+
+	@Before
+	public void setUp() throws Exception {
+		_company = CompanyTestUtil.addCompany();
+
+		_user = UserTestUtil.addUser(_company);
+
+		_group = GroupTestUtil.addGroup(
+			_company.getCompanyId(), _user.getUserId(), 0);
+	}
+
+	@Test
+	public void testIsValidNotValidDiscount() throws Exception {
+		frutillaRule.scenario(
+			"Verify that the discount is validated by a discount validator"
+		).given(
+			"A not valid discount"
+		).and(
+			"A discount validator"
+		).when(
+			"I check if the discount is valid using the validator"
+		).then(
+			"The discount should result not valid"
+		);
+
+		CommerceDiscount commerceDiscount =
+			CommerceDiscountTestUtil.addFixedCommerceDiscount(
+				_user.getGroupId(), 1, CommerceDiscountConstants.TARGET_TOTAL,
+				null);
+
+		commerceDiscount.setTitle("notValidDiscount");
+
+		commerceDiscount = _commerceDiscountLocalService.updateCommerceDiscount(
+			commerceDiscount);
+
+		CommerceDiscountValidatorRequest commerceDiscountValidatorRequest =
+			new CommerceDiscountValidatorRequest();
+
+		commerceDiscountValidatorRequest.setCommerceDiscount(commerceDiscount);
+
+		Assert.assertFalse(
+			_commerceDiscountValidatorHelper.isValid(
+				commerceDiscountValidatorRequest, "test"));
+	}
+
+	@Test
+	public void testIsValidValidDiscount() throws Exception {
+		frutillaRule.scenario(
+			"Verify that the discount is validated by a discount validator"
+		).given(
+			"A valid discount"
+		).and(
+			"A discount validator"
+		).when(
+			"I check if the discount is valid using the validator"
+		).then(
+			"The discount should be result valid"
+		);
+
+		CommerceDiscount commerceDiscount =
+			CommerceDiscountTestUtil.addFixedCommerceDiscount(
+				_user.getGroupId(), 1, CommerceDiscountConstants.TARGET_TOTAL,
+				null);
+
+		commerceDiscount.setTitle("validDiscount");
+
+		commerceDiscount = _commerceDiscountLocalService.updateCommerceDiscount(
+			commerceDiscount);
+
+		CommerceDiscountValidatorRequest commerceDiscountValidatorRequest =
+			new CommerceDiscountValidatorRequest();
+
+		commerceDiscountValidatorRequest.setCommerceDiscount(commerceDiscount);
+
+		Assert.assertTrue(
+			_commerceDiscountValidatorHelper.isValid(
+				commerceDiscountValidatorRequest, "test"));
+	}
+
+	@Test
+	public void testValidateNotValidDiscount() throws Exception {
+		frutillaRule.scenario(
+			"Verify that the discount is validated by a discount validator"
+		).given(
+			"A not valid discount"
+		).and(
+			"A discount validator"
+		).when(
+			"I check if the discount is valid using the validator"
+		).then(
+			"The discount should result not valid"
+		);
+
+		CommerceDiscount commerceDiscount =
+			CommerceDiscountTestUtil.addFixedCommerceDiscount(
+				_user.getGroupId(), 1, CommerceDiscountConstants.TARGET_TOTAL,
+				null);
+
+		commerceDiscount.setTitle("notValidDiscount");
+
+		commerceDiscount = _commerceDiscountLocalService.updateCommerceDiscount(
+			commerceDiscount);
+
+		CommerceDiscountValidatorRequest commerceDiscountValidatorRequest =
+			new CommerceDiscountValidatorRequest();
+
+		commerceDiscountValidatorRequest.setCommerceDiscount(commerceDiscount);
+
+		List<CommerceDiscountValidatorResult> commerceDiscountValidatorResults =
+			_commerceDiscountValidatorHelper.validate(
+				commerceDiscountValidatorRequest, "test");
+
+		Assert.assertEquals(
+			commerceDiscountValidatorResults.toString(), 1,
+			commerceDiscountValidatorResults.size());
+
+		CommerceDiscountValidatorResult commerceDiscountValidatorResult =
+			commerceDiscountValidatorResults.get(0);
+
+		Assert.assertFalse(commerceDiscountValidatorResult.isValid());
+	}
+
+	@Test
+	public void testValidateValidDiscount() throws Exception {
+		frutillaRule.scenario(
+			"Verify that the discount is validated by a discount validator"
+		).given(
+			"A valid discount"
+		).and(
+			"A discount validator"
+		).when(
+			"I check if the discount is valid using the validator"
+		).then(
+			"The discount should be result valid"
+		);
+
+		CommerceDiscount commerceDiscount =
+			CommerceDiscountTestUtil.addFixedCommerceDiscount(
+				_user.getGroupId(), 1, CommerceDiscountConstants.TARGET_TOTAL,
+				null);
+
+		commerceDiscount.setTitle("validDiscount");
+
+		commerceDiscount = _commerceDiscountLocalService.updateCommerceDiscount(
+			commerceDiscount);
+
+		CommerceDiscountValidatorRequest commerceDiscountValidatorRequest =
+			new CommerceDiscountValidatorRequest();
+
+		commerceDiscountValidatorRequest.setCommerceDiscount(commerceDiscount);
+
+		List<CommerceDiscountValidatorResult> commerceDiscountValidatorResults =
+			_commerceDiscountValidatorHelper.validate(
+				commerceDiscountValidatorRequest, "test");
+
+		Assert.assertEquals(
+			commerceDiscountValidatorResults.toString(), 0,
+			commerceDiscountValidatorResults.size());
+	}
+
+	@Rule
+	public FrutillaRule frutillaRule = new FrutillaRule();
+
+	@Inject
+	private CommerceDiscountLocalService _commerceDiscountLocalService;
+
+	@Inject
+	private CommerceDiscountValidatorHelper _commerceDiscountValidatorHelper;
+
+	@DeleteAfterTestRun
+	private Company _company;
+
+	private Group _group;
+	private User _user;
+
+}
