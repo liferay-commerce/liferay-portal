@@ -74,13 +74,13 @@ public class CommerceDiscountValidatorTest {
 		frutillaRule.scenario(
 			"Verify that the discount is validated by a discount validator"
 		).given(
-			"A not valid discount"
+			"A invalid discount"
 		).and(
 			"A discount validator"
 		).when(
 			"I check if the discount is valid using the validator"
 		).then(
-			"The discount should result not valid"
+			"The discount should result as not valid"
 		);
 
 		CommerceDiscount commerceDiscount =
@@ -114,7 +114,7 @@ public class CommerceDiscountValidatorTest {
 		).when(
 			"I check if the discount is valid using the validator"
 		).then(
-			"The discount should be result valid"
+			"The discount should result as valid"
 		);
 
 		CommerceDiscount commerceDiscount =
@@ -142,13 +142,13 @@ public class CommerceDiscountValidatorTest {
 		frutillaRule.scenario(
 			"Verify that the discount is validated by a discount validator"
 		).given(
-			"A not valid discount"
+			"A invalid discount"
 		).and(
 			"A discount validator"
 		).when(
 			"I check if the discount is valid using the validator"
 		).then(
-			"The discount should result not valid"
+			"The discount should result as not valid"
 		);
 
 		CommerceDiscount commerceDiscount =
@@ -191,7 +191,7 @@ public class CommerceDiscountValidatorTest {
 		).when(
 			"I check if the discount is valid using the validator"
 		).then(
-			"The discount should be result valid"
+			"The discount should result as valid"
 		);
 
 		CommerceDiscount commerceDiscount =
