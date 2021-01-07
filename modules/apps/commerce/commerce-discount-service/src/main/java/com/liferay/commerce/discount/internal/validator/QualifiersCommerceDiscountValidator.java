@@ -26,6 +26,7 @@ import com.liferay.commerce.discount.validator.CommerceDiscountValidatorRequest;
 import com.liferay.commerce.discount.validator.CommerceDiscountValidatorResult;
 import com.liferay.commerce.product.model.CommerceChannelRel;
 import com.liferay.commerce.product.service.CommerceChannelRelLocalService;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 
 import org.osgi.service.component.annotations.Component;
@@ -116,7 +117,8 @@ public class QualifiersCommerceDiscountValidator
 	private boolean _isUnqualifiedCommerceDiscount(long commerceDiscountId) {
 		int commerceDiscountAccountRelsCount =
 			_commerceDiscountAccountRelLocalService.
-				getCommerceDiscountAccountRelsCount(commerceDiscountId, null);
+				getCommerceDiscountAccountRelsCount(
+					commerceDiscountId, StringPool.BLANK);
 
 		if (commerceDiscountAccountRelsCount > 0) {
 			return false;
@@ -125,7 +127,7 @@ public class QualifiersCommerceDiscountValidator
 		int commerceDiscountCommerceAccountGroupRelsCount =
 			_commerceDiscountCommerceAccountGroupRelLocalService.
 				getCommerceDiscountCommerceAccountGroupRelsCount(
-					commerceDiscountId, null);
+					commerceDiscountId, StringPool.BLANK);
 
 		if (commerceDiscountCommerceAccountGroupRelsCount > 0) {
 			return false;
@@ -133,7 +135,8 @@ public class QualifiersCommerceDiscountValidator
 
 		int commerceChannelRelsCount =
 			_commerceChannelRelLocalService.getCommerceChannelRelsCount(
-				CommerceDiscount.class.getName(), commerceDiscountId, null);
+				CommerceDiscount.class.getName(), commerceDiscountId,
+				StringPool.BLANK);
 
 		if (commerceChannelRelsCount > 0) {
 			return false;
