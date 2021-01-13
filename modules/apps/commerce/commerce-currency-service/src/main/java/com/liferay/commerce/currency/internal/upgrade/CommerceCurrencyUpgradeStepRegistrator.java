@@ -16,6 +16,7 @@ package com.liferay.commerce.currency.internal.upgrade;
 
 import com.liferay.commerce.currency.internal.upgrade.v1_1_0.CommerceCurrencyUpgradeProcess;
 import com.liferay.commerce.currency.internal.upgrade.v1_2_0.CommerceCurrencySymbolUpgradeProcess;
+import com.liferay.commerce.currency.internal.upgrade.v1_2_1.CommerceCurrencyModelResourcePermissionUpgradeProcess;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
@@ -42,6 +43,10 @@ public class CommerceCurrencyUpgradeStepRegistrator
 
 		registry.register(
 			"1.1.0", "1.2.0", new CommerceCurrencySymbolUpgradeProcess());
+
+		registry.register(
+			"1.2.0", "1.2.1",
+			new CommerceCurrencyModelResourcePermissionUpgradeProcess());
 
 		if (_log.isInfoEnabled()) {
 			_log.info("Commerce currency upgrade step registrator finished");
