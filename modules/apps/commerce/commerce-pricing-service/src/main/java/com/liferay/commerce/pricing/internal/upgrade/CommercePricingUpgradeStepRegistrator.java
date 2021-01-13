@@ -17,6 +17,7 @@ package com.liferay.commerce.pricing.internal.upgrade;
 import com.liferay.commerce.pricing.internal.upgrade.v1_1_0.CommercePricingClassUpgradeProcess;
 import com.liferay.commerce.pricing.internal.upgrade.v2_0_1.CommercePriceModifierUpgradeProcess;
 import com.liferay.commerce.pricing.internal.upgrade.v2_1_0.CommercePricingConfigurationUpgradeProcess;
+import com.liferay.commerce.pricing.internal.upgrade.v2_1_1.CommercePricingClassModelResourcePermissionUpgradeProcess;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
@@ -58,6 +59,10 @@ public class CommercePricingUpgradeStepRegistrator
 			"2.0.1", "2.1.0",
 			new CommercePricingConfigurationUpgradeProcess(
 				_configurationProvider));
+
+		registry.register(
+			"2.1.0", "2.1.1",
+			new CommercePricingClassModelResourcePermissionUpgradeProcess());
 
 		if (_log.isInfoEnabled()) {
 			_log.info("Commerce pricing upgrade step registrator finished");
