@@ -38,6 +38,7 @@ import com.liferay.commerce.product.internal.upgrade.v2_2_0.CPDefinitionOptionVa
 import com.liferay.commerce.product.internal.upgrade.v2_3_0.CommerceChannelUpgradeProcess;
 import com.liferay.commerce.product.internal.upgrade.v2_5_0.FriendlyURLEntryUpgradeProcess;
 import com.liferay.commerce.product.internal.upgrade.v3_1_0.CPTaxCategoryUpgradeProcess;
+import com.liferay.commerce.product.internal.upgrade.v3_2_1.CommerceProductServiceModelResourcePermissionUpgradeProcess;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -185,6 +186,10 @@ public class CommerceProductUpgradeStepRegistrator
 			new com.liferay.commerce.product.internal.upgrade.v3_2_0.
 				FriendlyURLEntryUpgradeProcess(
 					_classNameLocalService, _groupLocalService));
+
+		registry.register(
+			"3.2.0", "3.2.1",
+			new CommerceProductServiceModelResourcePermissionUpgradeProcess());
 
 		if (_log.isInfoEnabled()) {
 			_log.info("Commerce product upgrade step registrator finished");
