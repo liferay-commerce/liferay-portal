@@ -16,6 +16,7 @@ package com.liferay.commerce.data.integration.internal.upgrade;
 
 import com.liferay.commerce.data.integration.internal.upgrade.v1_1_0.CommerceDataIntegrationProcessLogUpgradeProcess;
 import com.liferay.commerce.data.integration.internal.upgrade.v2_0_0.CommerceDataIntegrationProcessSystemUpgradeProcess;
+import com.liferay.commerce.data.integration.internal.upgrade.v2_0_1.CommerceDataIntegrationModelResourcePermissionUpgradeProcess;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
@@ -45,6 +46,10 @@ public class CommerceDataIntegrationUpgradeStepRegistrator
 		registry.register(
 			"1.1.0", "2.0.0",
 			new CommerceDataIntegrationProcessSystemUpgradeProcess());
+
+		registry.register(
+			"2.0.0", "2.0.1",
+			new CommerceDataIntegrationModelResourcePermissionUpgradeProcess());
 
 		if (_log.isInfoEnabled()) {
 			_log.info(
