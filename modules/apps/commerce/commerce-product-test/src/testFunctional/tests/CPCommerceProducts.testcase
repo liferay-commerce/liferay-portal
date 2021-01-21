@@ -2,7 +2,7 @@
 definition {
 
 	property portal.release = "true";
-	property portal.upstream = "quarantine";
+	property portal.upstream = "true";
 	property testray.main.component.name = "Commerce";
 
 	setUp {
@@ -109,6 +109,7 @@ definition {
 	test ProductPublishing {
 		property environment.acceptance = "quarantine";
 		property portal.acceptance = "quarantine";
+		property portal.upstream = "quarantine";
 		property test.name.skip.portal.instance = "CPCommerceProducts#ProductPublishing";
 
 		CommerceNavigator.gotoPortlet(
@@ -188,6 +189,7 @@ definition {
 
 	test TranslateProductName {
 		property portal.acceptance = "quarantine";
+		property portal.upstream = "quarantine";
 		property test.name.skip.portal.instance = "CPCommerceProducts#TranslateProductName";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
