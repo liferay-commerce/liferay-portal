@@ -213,7 +213,7 @@ definition {
 		Click.clickNoMouseOver(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN");
 
 		AssertTextEquals(
-			locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_SELECTED_ACCOUNT",
+			locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN_MENU_SELECTED_ACCOUNT",
 			value1 = "${selectedAccount}");
 
 		Click.clickNoMouseOver(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN");
