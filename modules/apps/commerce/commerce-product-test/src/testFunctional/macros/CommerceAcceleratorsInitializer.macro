@@ -68,9 +68,7 @@ definition {
 	macro createNewOrderFromAccountSelectorDropdown {
 		Click(locator1 = "Button#ANGLE_DOWN");
 
-		Click(
-			key_button = "Create New Order",
-			locator1 = "CommerceAccelerators#ANY_BUTTON");
+		Button.click(button = "Create New Order");
 	}
 
 	macro deactivateCommerceAccountViaFront {
