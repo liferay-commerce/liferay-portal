@@ -74,7 +74,7 @@ definition {
 
 		Refresh();
 
-		while (IsElementPresent(locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS")) {
+		while (IsElementNotPresent(locator1 = "CommerceNavigation#EMPTY_SEARCH_CONTAINER")) {
 			CommerceEntry.deleteCommerceEntry();
 		}
 
