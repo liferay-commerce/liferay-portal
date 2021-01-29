@@ -29,7 +29,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>ACCOUNT_SELECTOR_SELECTED_ACCOUNT</td>
+	<td>ACCOUNT_SELECTOR_DROPDOWN_MENU_SELECTED_ACCOUNT</td>
 	<td>//div[contains(@class,'account-selector-dropdown-menu')]//h4</td>
 	<td></td>
 </tr>
