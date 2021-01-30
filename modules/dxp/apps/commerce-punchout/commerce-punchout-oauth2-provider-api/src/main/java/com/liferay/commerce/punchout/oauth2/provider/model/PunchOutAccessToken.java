@@ -14,12 +14,14 @@
 
 package com.liferay.commerce.punchout.oauth2.provider.model;
 
+import java.io.Serializable;
+
 import java.util.HashMap;
 
 /**
  * @author Jaclyn Ong
  */
-public class PunchOutAccessToken {
+public class PunchOutAccessToken implements Serializable {
 
 	public long getCommerceAccountId() {
 		return _commerceAccountId;
