@@ -197,7 +197,7 @@ public class PunchOutSessionResourceImpl
 				cart.getCurrencyCode(), buyerLiferayUser.getEmailAddress(),
 				commerceOrderUuid, punchOutSessionAttributes);
 
-		String tokenString = String.valueOf(punchOutAccessToken.getToken());
+		String tokenString = new String(punchOutAccessToken.getToken());
 
 		punchOutStartURL +=
 			StringPool.QUESTION + _PUNCH_OUT_ACCESS_TOKEN_PARAMETER +
