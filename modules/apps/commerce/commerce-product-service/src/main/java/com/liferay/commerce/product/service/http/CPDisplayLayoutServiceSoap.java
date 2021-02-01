@@ -109,6 +109,10 @@ public class CPDisplayLayoutServiceSoap {
 		}
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x)
+	 */
+	@Deprecated
 	public static void deleteCPDisplayLayout(Class<?> clazz, long classPK)
 		throws RemoteException {
 

@@ -243,6 +243,15 @@ public class CPDisplayLayoutPersistenceTest {
 	}
 
 	@Test
+	public void testCountByG_C_C() throws Exception {
+		_persistence.countByG_C_C(
+			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
+			RandomTestUtil.nextLong());
+
+		_persistence.countByG_C_C(0L, 0L, 0L);
+	}
+
+	@Test
 	public void testFindByPrimaryKeyExisting() throws Exception {
 		CPDisplayLayout newCPDisplayLayout = addCPDisplayLayout();
 
@@ -551,6 +560,22 @@ public class CPDisplayLayoutPersistenceTest {
 				cpDisplayLayout, "getColumnOriginalValue",
 				new Class<?>[] {String.class}, "groupId"));
 
+		Assert.assertEquals(
+			Long.valueOf(cpDisplayLayout.getClassNameId()),
+			ReflectionTestUtil.<Long>invoke(
+				cpDisplayLayout, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "classNameId"));
+		Assert.assertEquals(
+			Long.valueOf(cpDisplayLayout.getClassPK()),
+			ReflectionTestUtil.<Long>invoke(
+				cpDisplayLayout, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "classPK"));
+
+		Assert.assertEquals(
+			Long.valueOf(cpDisplayLayout.getGroupId()),
+			ReflectionTestUtil.<Long>invoke(
+				cpDisplayLayout, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "groupId"));
 		Assert.assertEquals(
 			Long.valueOf(cpDisplayLayout.getClassNameId()),
 			ReflectionTestUtil.<Long>invoke(
