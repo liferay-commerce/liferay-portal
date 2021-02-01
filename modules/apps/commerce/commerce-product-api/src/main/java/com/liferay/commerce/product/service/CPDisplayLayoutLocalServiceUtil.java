@@ -257,6 +257,10 @@ public class CPDisplayLayoutLocalServiceUtil {
 		return getService().dynamicQueryCount(dynamicQuery, projection);
 	}
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x)
+	 */
+	@Deprecated
 	public static com.liferay.commerce.product.model.CPDisplayLayout
 		fetchCPDisplayLayout(Class<?> clazz, long classPK) {
 
@@ -267,6 +271,12 @@ public class CPDisplayLayoutLocalServiceUtil {
 		fetchCPDisplayLayout(long CPDisplayLayoutId) {
 
 		return getService().fetchCPDisplayLayout(CPDisplayLayoutId);
+	}
+
+	public static com.liferay.commerce.product.model.CPDisplayLayout
+		fetchCPDisplayLayout(long groupId, Class<?> clazz, long classPK) {
+
+		return getService().fetchCPDisplayLayout(groupId, clazz, classPK);
 	}
 
 	public static java.util.List

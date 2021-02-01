@@ -75,6 +75,10 @@ public interface CPDisplayLayoutService extends BaseService {
 			String layoutUuid)
 		throws PortalException;
 
+	/**
+	 * @deprecated As of Athanasius (7.3.x)
+	 */
+	@Deprecated
 	public void deleteCPDisplayLayout(Class<?> clazz, long classPK)
 		throws PortalException;
 

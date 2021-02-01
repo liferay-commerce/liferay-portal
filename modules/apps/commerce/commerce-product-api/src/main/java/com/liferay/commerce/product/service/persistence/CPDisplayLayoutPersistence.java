@@ -893,6 +893,64 @@ public interface CPDisplayLayoutPersistence
 	public int countByC_C(long classNameId, long classPK);
 
 	/**
+	 * Returns the cp display layout where groupId = &#63; and classNameId = &#63; and classPK = &#63; or throws a <code>NoSuchCPDisplayLayoutException</code> if it could not be found.
+	 *
+	 * @param groupId the group ID
+	 * @param classNameId the class name ID
+	 * @param classPK the class pk
+	 * @return the matching cp display layout
+	 * @throws NoSuchCPDisplayLayoutException if a matching cp display layout could not be found
+	 */
+	public CPDisplayLayout findByG_C_C(
+			long groupId, long classNameId, long classPK)
+		throws NoSuchCPDisplayLayoutException;
+
+	/**
+	 * Returns the cp display layout where groupId = &#63; and classNameId = &#63; and classPK = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param classNameId the class name ID
+	 * @param classPK the class pk
+	 * @return the matching cp display layout, or <code>null</code> if a matching cp display layout could not be found
+	 */
+	public CPDisplayLayout fetchByG_C_C(
+		long groupId, long classNameId, long classPK);
+
+	/**
+	 * Returns the cp display layout where groupId = &#63; and classNameId = &#63; and classPK = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param groupId the group ID
+	 * @param classNameId the class name ID
+	 * @param classPK the class pk
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching cp display layout, or <code>null</code> if a matching cp display layout could not be found
+	 */
+	public CPDisplayLayout fetchByG_C_C(
+		long groupId, long classNameId, long classPK, boolean useFinderCache);
+
+	/**
+	 * Removes the cp display layout where groupId = &#63; and classNameId = &#63; and classPK = &#63; from the database.
+	 *
+	 * @param groupId the group ID
+	 * @param classNameId the class name ID
+	 * @param classPK the class pk
+	 * @return the cp display layout that was removed
+	 */
+	public CPDisplayLayout removeByG_C_C(
+			long groupId, long classNameId, long classPK)
+		throws NoSuchCPDisplayLayoutException;
+
+	/**
+	 * Returns the number of cp display layouts where groupId = &#63; and classNameId = &#63; and classPK = &#63;.
+	 *
+	 * @param groupId the group ID
+	 * @param classNameId the class name ID
+	 * @param classPK the class pk
+	 * @return the number of matching cp display layouts
+	 */
+	public int countByG_C_C(long groupId, long classNameId, long classPK);
+
+	/**
 	 * Caches the cp display layout in the entity cache if it is enabled.
 	 *
 	 * @param cpDisplayLayout the cp display layout
