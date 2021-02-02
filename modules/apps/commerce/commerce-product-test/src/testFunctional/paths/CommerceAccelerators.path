@@ -94,6 +94,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>PRODUCT_CARD_QUANTITY_SELECTOR_SELECT_FIELD</td>
+	<td>//p[@title='${key_productName}']//../..//select[(@class='form-control quantity-selector')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>PRODUCT_DETAILS_DISCOUNT</td>
 	<td>//h2[contains(@class,'commerce-price')]//span[contains(@class,'price-value-discount')]</td>
 	<td></td>
