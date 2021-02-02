@@ -45,7 +45,7 @@
 </tr>
 <tr>
 	<td>ADD_TO_CART_BUTTON</td>
-	<td>//a[contains(.,'${key_productName}')]//..//button[contains(@class,'add-to-cart')]</td>
+	<td>//p[@title='${key_productName}']//../..//button[contains(@class,'add-to-cart')]</td>
 	<td></td>
 </tr>
 <tr>
