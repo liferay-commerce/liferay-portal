@@ -55,6 +55,8 @@ definition {
 			category = "${category}",
 			panel = "Commerce",
 			portlet = "${portlet}");
+
+		ApplicationMenuHelper.closeApplicationsMenu();
 	}
 
 	macro gotoSpeedwellAccountDropdownItem {

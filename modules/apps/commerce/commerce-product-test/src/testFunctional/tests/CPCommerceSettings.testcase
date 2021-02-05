@@ -24,8 +24,8 @@ definition {
 	}
 
 	test CreateNewAvailabilityEstimate {
-		property portal.acceptance = "quarantine";
-		property portal.upstream = "quarantine";
+		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "CPCommerceSettings#CreateNewAvailabilityEstimate";
 
 		CommerceNavigator.gotoPortlet(
@@ -42,8 +42,8 @@ definition {
 	}
 
 	test CreateNewCountry {
-		property portal.acceptance = "quarantine";
-		property portal.upstream = "quarantine";
+		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "CPCommerceSettings#CreateNewCountry";
 
 		CommerceNavigator.gotoPortlet(
@@ -76,8 +76,8 @@ definition {
 	}
 
 	test CreateNewMeasurementUnits {
-		property portal.acceptance = "quarantine";
-		property portal.upstream = "quarantine";
+		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "CPCommerceSettings#CreateNewMeasurementUnits";
 
 		CommerceNavigator.gotoPortlet(
@@ -105,8 +105,8 @@ definition {
 
 	test ViewInstanceCurrenciesAvailable {
 		property environment.acceptance = "true";
-		property portal.acceptance = "quarantine";
-		property portal.upstream = "quarantine";
+		property portal.acceptance = "true";
+		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "CommerceSmoke#ViewAvailableCurrencies";
 
 		CommerceNavigator.gotoPortlet(
