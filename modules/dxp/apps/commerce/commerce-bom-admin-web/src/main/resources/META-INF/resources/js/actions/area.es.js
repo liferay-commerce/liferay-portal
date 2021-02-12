@@ -37,20 +37,9 @@ export const actionDefinition = {
 	UPDATE_FORM_VALUE: 'updateFormValue',
 };
 
-export function getAcceptLanguageHeaderParam() {
-	const browserLang = navigator.language || navigator.userLanguage;
-	const themeLang = Liferay.ThemeDisplay.getLanguageId().replace('_', '-');
-
-	if (browserLang === themeLang) {
-		return browserLang;
-	}
-
-	return `${browserLang}, ${themeLang};q=0.8`;
-}
-
 export const fetchHeaders = new Headers({
 	Accept: 'application/json',
-	'Accept-Language': getAcceptLanguageHeaderParam(),
+	'Accept-Language': Liferay.ThemeDisplay.getBCP47LanguageId(),
 	'Content-Type': 'application/json',
 });
 

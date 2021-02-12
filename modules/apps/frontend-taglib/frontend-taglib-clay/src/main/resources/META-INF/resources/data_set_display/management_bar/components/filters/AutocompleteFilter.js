@@ -23,11 +23,7 @@ import {fetch} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 
-import {
-	getAcceptLanguageHeaderParam,
-	getValueFromItem,
-	isValuesArrayChanged,
-} from '../../../utils/index';
+import {getValueFromItem, isValuesArrayChanged} from '../../../utils/index';
 import {logError} from '../../../utils/logError';
 
 const DEFAULT_PAGE_SIZE = 10;
@@ -44,7 +40,7 @@ function fetchData(apiURL, searchParam, currentPage = 1) {
 
 	return fetch(url, {
 		headers: {
-			'Accept-Language': getAcceptLanguageHeaderParam(),
+			'Accept-Language': Liferay.ThemeDisplay.getBCP47LanguageId(),
 		},
 	}).then((response) => response.json());
 }

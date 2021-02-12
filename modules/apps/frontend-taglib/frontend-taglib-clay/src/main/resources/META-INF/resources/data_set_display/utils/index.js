@@ -22,15 +22,6 @@ export function delay(duration) {
 	});
 }
 
-export function getAcceptLanguageHeaderParam() {
-	const browserLang = navigator.language ?? navigator.userLanguage;
-	const themeLang = Liferay.ThemeDisplay.getLanguageId().replace('_', '-');
-
-	return browserLang === themeLang
-		? browserLang
-		: `${browserLang}, ${themeLang};q=0.8`;
-}
-
 export function getData(apiURL, query) {
 	const url = new URL(apiURL);
 
@@ -162,7 +153,7 @@ export function executeAsyncAction(url, method = 'GET') {
 	return fetch(url, {
 		headers: {
 			Accept: 'application/json',
-			'Accept-Language': getAcceptLanguageHeaderParam(),
+			'Accept-Language': Liferay.ThemeDisplay.getBCP47LanguageId(),
 			'Content-Type': 'application/json',
 		},
 		method,
