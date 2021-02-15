@@ -69,6 +69,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>COMMERCE_QUANTITY_SELECTOR_SELECT</td>
+	<td>//a/span[contains(.,'${key_productName}')]//..//..//..//..//select[contains(@class,'quantity-selector')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>MINI_CART_BUTTON</td>
 	<td>//div[contains(@class,'mini-cart')]/button[contains(@class,'mini-cart-opener')]</td>
 	<td></td>
