@@ -109,7 +109,7 @@ definition {
 			productListPrice = "50.00",
 			productName = "ABS Sensor",
 			productQuantity = "4",
-			productSKU = "SPEED93015",
+			productSKU = "MIN93015",
 			productTotalPrice = "100.00");
 	}
 
