@@ -983,8 +983,12 @@ definition {
 
 			Refresh();
 
+			AssertTextEquals(
+				locator1 = "CommerceNavigation#DATA_SET_ENTRY_NAME",
+				key_entryName = "${sku}");
+
 			Click(
-				key_entryName = "${sku}",
+				key_entryName = "${sku}SKU",
 				locator1 = "CommerceNavigation#ENTRY_NAME");
 
 			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
