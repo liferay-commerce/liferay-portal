@@ -146,7 +146,7 @@ definition {
 
 		CommerceEntry.gotoMenuTab(menuTab = "Media");
 
-		CommerceProductImages.addProductImages(optionValuesList = "6,12,24,48,112");
+		CommerceProductImages.addProductImages(optionValuesList = "Black,Black,Blue,Blue,White");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
