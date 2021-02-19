@@ -111,6 +111,8 @@ definition {
 		property portal.acceptance = "true";
 		property test.name.skip.portal.instance = "CPCommerceProducts#ProductPublishing";
 
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
 			portlet = "Options");
@@ -135,16 +137,16 @@ definition {
 		CommerceEntry.gotoMenuTab(menuTab = "Options");
 
 		CommerceRelations.assignSingleRelationToProductsEntry(
-			entryName = "Color",
+			entryName = "Package Quantity",
 			title = "Add Option");
 
 		CommerceEntry.gotoMenuTab(menuTab = "SKUs");
 
-		CommerceSKUs.addSKU(optionValuesList = "Black:10.0,Blue:20.0,White:30.0");
+		CommerceSKUs.addSKU(optionValuesList = "6:10.0,12:20.0,24:30.0,48:40.0,112:50.0");
 
 		CommerceEntry.gotoMenuTab(menuTab = "Media");
 
-		CommerceProductImages.addProductImages(optionValuesList = "Black,Blue,White");
+		CommerceProductImages.addProductImages(optionValuesList = "6,12,24,48,112");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -169,6 +171,10 @@ definition {
 			category = "Product Management",
 			portlet = "Products");
 
+		Pause(locator1 = "2000");
+
+		CommerceNavigator.searchEntry(entryName = "Simple T-Shirt");
+
 		CommerceNavigator.gotoEntry(entryName = "Simple T-Shirt");
 
 		CommerceRelations.assignSingleRelationToProductsEntry(
@@ -178,12 +184,12 @@ definition {
 		CommerceEntry.gotoMenuTab(menuTab = "Options");
 
 		CommerceEntry.viewProductOptions(
-			optionList = "Black,Blue,White",
-			optionName = "Color");
+			optionList = "6,12,24,48,112",
+			optionName = "Package Quantity");
 
 		CommerceEntry.gotoMenuTab(menuTab = "SKUs");
 
-		CommerceEntry.viewProductSkus(skusList = "WHITESKU:30.00,BLUESKU:20.00,BLACKSKU:10.00");
+		CommerceEntry.viewProductSkus(skusList = "6:10.00,12:20.00,24:30.00,48:40.00,112:50.00");
 	}
 
 	test TranslateProductName {
