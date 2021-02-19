@@ -25,8 +25,7 @@ definition {
 	}
 
 	test CreateNewAvailabilityEstimate {
-		property portal.acceptance = "quarantine";
-		property portal.upstream = "quarantine";
+		property portal.acceptance = "true";
 		property test.name.skip.portal.instance = "CPCommerceSettings#CreateNewAvailabilityEstimate";
 
 		CommerceNavigator.gotoPortlet(
