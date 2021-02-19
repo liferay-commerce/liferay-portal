@@ -984,8 +984,8 @@ definition {
 			Refresh();
 
 			AssertTextEquals(
-				locator1 = "CommerceNavigation#DATA_SET_ENTRY_NAME",
-				key_entryName = "${sku}");
+				key_entryName = "${sku}",
+				locator1 = "CommerceNavigation#DATA_SET_ENTRY_NAME");
 
 			Click(
 				key_entryName = "${sku}SKU",
