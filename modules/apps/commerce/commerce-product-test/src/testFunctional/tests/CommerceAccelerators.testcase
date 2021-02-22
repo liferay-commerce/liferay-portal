@@ -567,13 +567,9 @@ definition {
 
 		CommerceNavigator.gotoMiniCart();
 
-		Pause(locator1 = "5000");
-
 		Button.click(button = "View Details");
 
 		Button.click(button = "Checkout");
-
-		Pause(locator1 = "3000");
 
 		CommerceCheckout.initializersCheckout(
 			newAddressAddress = "Test Address",
