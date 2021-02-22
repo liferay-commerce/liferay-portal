@@ -277,6 +277,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>MINI_CART_OPENED</td>
+	<td>//div[@class='is-open mini-cart']</td>
+	<td></td>
+</tr>
+<tr>
 	<td>MINI_CART_SUMMARY_TABLE_ITEM</td>
 	<td>//div[contains(@class,'summary-table')]//span[contains(.,'${key_summaryTableItem}')]/following::span</td>
 	<td></td>
