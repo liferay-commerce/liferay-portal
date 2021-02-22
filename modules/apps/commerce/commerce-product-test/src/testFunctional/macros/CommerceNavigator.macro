@@ -23,6 +23,8 @@ definition {
 
 	macro gotoMiniCart {
 		Click.clickNoMouseOver(locator1 = "CommerceAccelerators#MINI_CART_BUTTON");
+
+		WaitForElementPresent(locator1 = "CommerceAccelerators#MINI_CART_OPENED");
 	}
 
 	macro gotoMiniumSidebarItem {
