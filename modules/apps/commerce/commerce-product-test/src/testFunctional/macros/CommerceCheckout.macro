@@ -1,6 +1,10 @@
 definition {
 
 	macro initializersCheckout {
+		WaitForElementPresent(
+			key_portletName = "Checkout",
+			locator1 = "Portlet#BODY");
+
 		if (isSet(newAddressName)) {
 			Type(
 				key_fieldName = "Name",
