@@ -118,8 +118,8 @@ definition {
 			portlet = "Products");
 
 		CPCommerceCatalog.newProductsEntry(
-			productName = "Simple T-Shirt",
 			productCatalog = "Minium",
+			productName = "Simple T-Shirt",
 			productType = "Simple");
 
 		CommerceEntry.gotoMenuTab(menuTab = "Options");
