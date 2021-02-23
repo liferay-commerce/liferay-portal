@@ -115,23 +115,11 @@ definition {
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
-			portlet = "Options");
-
-		Pause(locator1 = "2000");
-
-		CPCommerceCatalog.newOptionsEntry(
-			optionDescription = "Option Description",
-			optionFieldType = "Select from List",
-			optionName = "Color",
-			optionValuesList = "Black,Blue,White",
-			valuePriority = "1");
-
-		CommerceNavigator.gotoPortlet(
-			category = "Product Management",
 			portlet = "Products");
 
 		CPCommerceCatalog.newProductsEntry(
 			productName = "Simple T-Shirt",
+			productCatalog = "Minium",
 			productType = "Simple");
 
 		CommerceEntry.gotoMenuTab(menuTab = "Options");
