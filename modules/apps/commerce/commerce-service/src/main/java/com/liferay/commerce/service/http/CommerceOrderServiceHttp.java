@@ -2362,17 +2362,18 @@ public class CommerceOrderServiceHttp {
 		}
 	}
 
-	public static com.liferay.commerce.model.CommerceOrder updateShippingMethod(
-			HttpPrincipal httpPrincipal, long commerceOrderId,
-			long commerceShippingMethodId, String shippingOptionName,
-			com.liferay.commerce.context.CommerceContext commerceContext,
-			java.util.Locale locale)
+	public static com.liferay.commerce.model.CommerceOrder
+			updateCommerceShippingMethod(
+				HttpPrincipal httpPrincipal, long commerceOrderId,
+				long commerceShippingMethodId, String shippingOptionName,
+				com.liferay.commerce.context.CommerceContext commerceContext,
+				java.util.Locale locale)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
 			MethodKey methodKey = new MethodKey(
-				CommerceOrderServiceUtil.class, "updateShippingMethod",
-				_updateShippingMethodParameterTypes52);
+				CommerceOrderServiceUtil.class, "updateCommerceShippingMethod",
+				_updateCommerceShippingMethodParameterTypes52);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, commerceOrderId, commerceShippingMethodId,
@@ -2941,8 +2942,8 @@ public class CommerceOrderServiceHttp {
 			String.class, String.class, String.class, long.class, long.class,
 			String.class, com.liferay.portal.kernel.service.ServiceContext.class
 		};
-	private static final Class<?>[] _updateShippingMethodParameterTypes52 =
-		new Class[] {
+	private static final Class<?>[]
+		_updateCommerceShippingMethodParameterTypes52 = new Class[] {
 			long.class, long.class, String.class,
 			com.liferay.commerce.context.CommerceContext.class,
 			java.util.Locale.class

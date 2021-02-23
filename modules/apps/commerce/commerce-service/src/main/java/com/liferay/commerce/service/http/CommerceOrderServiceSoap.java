@@ -1252,7 +1252,7 @@ public class CommerceOrderServiceSoap {
 	}
 
 	public static com.liferay.commerce.model.CommerceOrderSoap
-			updateShippingMethod(
+			updateCommerceShippingMethod(
 				long commerceOrderId, long commerceShippingMethodId,
 				String shippingOptionName,
 				com.liferay.commerce.context.CommerceContext commerceContext,
@@ -1261,7 +1261,7 @@ public class CommerceOrderServiceSoap {
 
 		try {
 			com.liferay.commerce.model.CommerceOrder returnValue =
-				CommerceOrderServiceUtil.updateShippingMethod(
+				CommerceOrderServiceUtil.updateCommerceShippingMethod(
 					commerceOrderId, commerceShippingMethodId,
 					shippingOptionName, commerceContext,
 					LocaleUtil.fromLanguageId(locale));
