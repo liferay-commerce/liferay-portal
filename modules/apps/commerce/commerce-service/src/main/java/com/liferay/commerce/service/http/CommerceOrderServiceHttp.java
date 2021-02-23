@@ -2365,7 +2365,8 @@ public class CommerceOrderServiceHttp {
 	public static com.liferay.commerce.model.CommerceOrder
 			updateCommerceShippingMethod(
 				HttpPrincipal httpPrincipal, long commerceOrderId,
-				long commerceShippingMethodId, String shippingOptionName,
+				long commerceShippingMethodId,
+				String commerceShippingOptionName,
 				com.liferay.commerce.context.CommerceContext commerceContext,
 				java.util.Locale locale)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -2377,7 +2378,7 @@ public class CommerceOrderServiceHttp {
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, commerceOrderId, commerceShippingMethodId,
-				shippingOptionName, commerceContext, locale);
+				commerceShippingOptionName, commerceContext, locale);
 
 			Object returnObj = null;
 

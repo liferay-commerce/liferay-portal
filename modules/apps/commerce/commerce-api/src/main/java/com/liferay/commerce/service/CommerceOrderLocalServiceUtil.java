@@ -970,26 +970,27 @@ public class CommerceOrderLocalServiceUtil {
 	public static com.liferay.commerce.model.CommerceOrder
 			updateCommerceShippingMethod(
 				long commerceOrderId, long commerceShippingMethodId,
-				String shippingOptionName, java.math.BigDecimal shippingAmount,
+				String commerceShippingOptionName,
+				java.math.BigDecimal shippingAmount,
 				com.liferay.commerce.context.CommerceContext commerceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return getService().updateCommerceShippingMethod(
-			commerceOrderId, commerceShippingMethodId, shippingOptionName,
-			shippingAmount, commerceContext);
+			commerceOrderId, commerceShippingMethodId,
+			commerceShippingOptionName, shippingAmount, commerceContext);
 	}
 
 	public static com.liferay.commerce.model.CommerceOrder
 			updateCommerceShippingMethod(
 				long commerceOrderId, long commerceShippingMethodId,
-				String shippingOptionName,
+				String commerceShippingOptionName,
 				com.liferay.commerce.context.CommerceContext commerceContext,
 				java.util.Locale locale)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return getService().updateCommerceShippingMethod(
-			commerceOrderId, commerceShippingMethodId, shippingOptionName,
-			commerceContext, locale);
+			commerceOrderId, commerceShippingMethodId,
+			commerceShippingOptionName, commerceContext, locale);
 	}
 
 	public static com.liferay.commerce.model.CommerceOrder updateCustomFields(

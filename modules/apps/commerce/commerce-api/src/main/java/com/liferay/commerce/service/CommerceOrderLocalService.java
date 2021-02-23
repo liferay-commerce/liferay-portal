@@ -662,14 +662,14 @@ public interface CommerceOrderLocalService
 	@Indexable(type = IndexableType.REINDEX)
 	public CommerceOrder updateCommerceShippingMethod(
 			long commerceOrderId, long commerceShippingMethodId,
-			String shippingOptionName, BigDecimal shippingAmount,
+			String commerceShippingOptionName, BigDecimal shippingAmount,
 			CommerceContext commerceContext)
 		throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
 	public CommerceOrder updateCommerceShippingMethod(
 			long commerceOrderId, long commerceShippingMethodId,
-			String shippingOptionName, CommerceContext commerceContext,
+			String commerceShippingOptionName, CommerceContext commerceContext,
 			Locale locale)
 		throws PortalException;
 

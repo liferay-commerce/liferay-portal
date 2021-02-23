@@ -340,7 +340,7 @@ public interface CommerceOrderService extends BaseService {
 
 	public CommerceOrder updateCommerceShippingMethod(
 			long commerceOrderId, long commerceShippingMethodId,
-			String shippingOptionName, CommerceContext commerceContext,
+			String commerceShippingOptionName, CommerceContext commerceContext,
 			Locale locale)
 		throws PortalException;
 

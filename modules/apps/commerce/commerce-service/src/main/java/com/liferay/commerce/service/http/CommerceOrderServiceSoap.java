@@ -1254,7 +1254,7 @@ public class CommerceOrderServiceSoap {
 	public static com.liferay.commerce.model.CommerceOrderSoap
 			updateCommerceShippingMethod(
 				long commerceOrderId, long commerceShippingMethodId,
-				String shippingOptionName,
+				String commerceShippingOptionName,
 				com.liferay.commerce.context.CommerceContext commerceContext,
 				String locale)
 		throws RemoteException {
@@ -1263,7 +1263,7 @@ public class CommerceOrderServiceSoap {
 			com.liferay.commerce.model.CommerceOrder returnValue =
 				CommerceOrderServiceUtil.updateCommerceShippingMethod(
 					commerceOrderId, commerceShippingMethodId,
-					shippingOptionName, commerceContext,
+					commerceShippingOptionName, commerceContext,
 					LocaleUtil.fromLanguageId(locale));
 
 			return com.liferay.commerce.model.CommerceOrderSoap.toSoapModel(
