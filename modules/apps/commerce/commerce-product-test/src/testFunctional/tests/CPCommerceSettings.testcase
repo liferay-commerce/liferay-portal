@@ -54,7 +54,7 @@ definition {
 		CommerceEntry.addNewCountriesEntry(
 			entryIsoNumber = "020",
 			entryIsoThreeLetters = "TCO",
-			entryIsoTwoLetters = "TC",
+			entryIsoTwoLetters = "54",
 			entryName = "Test Country");
 
 		Button.clickSave();
