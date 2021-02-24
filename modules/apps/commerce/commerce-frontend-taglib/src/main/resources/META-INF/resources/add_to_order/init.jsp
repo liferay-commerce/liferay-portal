@@ -28,18 +28,18 @@ page import="com.liferay.portal.kernel.util.PortalUtil" %>
 <liferay-theme:defineObjects />
 
 <%
-String block = (String)request.getAttribute("liferay-commerce:add-to-order:block");
-String commerceAccountId = (String)request.getAttribute("liferay-commerce:add-to-order:commerceAccountId");
+boolean block = GetterUtil.getBoolean(request.getAttribute("liferay-commerce:add-to-order:block"));
+long commerceAccountId = GetterUtil.getLong(request.getAttribute("liferay-commerce:add-to-order:commerceAccountId"));
 String currencyCode = (String)request.getAttribute("liferay-commerce:add-to-order:currencyCode");
-String channelId = (String)request.getAttribute("liferay-commerce:add-to-order:channelId");
-String disabled = (String)request.getAttribute("liferay-commerce:add-to-order:disabled");
-String inCart = (String)request.getAttribute("liferay-commerce:add-to-order:inCart");
+long channelId = GetterUtil.getLong(request.getAttribute("liferay-commerce:add-to-order:channelId"));
+boolean disabled = GetterUtil.getBoolean(request.getAttribute("liferay-commerce:add-to-order:disabled"));
+boolean inCart = GetterUtil.getBoolean(request.getAttribute("liferay-commerce:add-to-order:inCart"));
 String options = (String)request.getAttribute("liferay-commerce:add-to-order:options");
-String orderId = (String)request.getAttribute("liferay-commerce:add-to-order:orderId");
-String skuId = (String)request.getAttribute("liferay-commerce:add-to-order:skuId");
+long orderId = GetterUtil.getLong(request.getAttribute("liferay-commerce:add-to-order:orderId"));
+long skuId = GetterUtil.getLong(request.getAttribute("liferay-commerce:add-to-order:skuId"));
 String spritemap = (String)request.getAttribute("liferay-commerce:add-to-order:spritemap");
-String stockQuantity = (String)request.getAttribute("liferay-commerce:add-to-order:stockQuantity");
-String willUpdate = (String)request.getAttribute("liferay-commerce:add-to-order:willUpdate");
+int stockQuantity = GetterUtil.getInteger(request.getAttribute("liferay-commerce:add-to-order:stockQuantity"));
+boolean willUpdate = GetterUtil.getBoolean(request.getAttribute("liferay-commerce:add-to-order:willUpdate"));
 
 String randomNamespace = PortalUtil.generateRandomKey(request, "taglib") + StringPool.UNDERLINE;
 
