@@ -18,32 +18,45 @@
 
 <div class="add-to-cart mb-2" id="<%= addToCartId %>">
 	<liferay-util:include page="/add_to_order/skeleton.jsp" servletContext="<%= application %>" />
+
+	<react:component
+		module="add_to_order/AddToOrder"
+		props='<%=
+			HashMapBuilder.<String, Object>put(
+				"channel", HashMapBuilder.<String, Object>put(
+					"currencyCode", currencyCode
+				).put(
+					"id", channelId
+				).build()
+			).put(
+				"cpInstance", HashMapBuilder.<String, Object>put(
+					"accountId", commerceAccountId
+				).put(
+					"inCart", inCart
+				).put(
+					"options", options
+				).put(
+					"skuId", skuId
+				).put(
+					"stockQuantity", stockQuantity
+				).build()
+			).put(
+				"orderId", orderId
+			).put(
+				"settings", HashMapBuilder.<String, Object>put(
+					"block", block
+				).put(
+					"disabled", disabled
+				).put(
+					"willUpdate", willUpdate
+				).put(
+					"withQuantity", HashMapBuilder.<String, Object>put(
+						"forceDropdown", true
+					).build()
+				).build()
+			).put(
+				"spritemap", spritemap
+			).build()
+		%>'
+	/>
 </div>
-
-<aui:script require="commerce-frontend-js/components/add_to_cart/entry as AddToCart">
-	const initialProps = {
-		channel: {
-			currencyCode: '<%= currencyCode %>',
-			id: <%= channelId %>,
-		},
-		cpInstance: {
-			accountId: <%= commerceAccountId %>,
-			inCart: <%= inCart %>,
-			options: '<%= options %>',
-			skuId: <%= skuId %>,
-			stockQuantity: <%= stockQuantity %>,
-		},
-		orderId: <%= orderId %>,
-		settings: {
-			block: <%= block %>,
-			disabled: <%= disabled %>,
-			willUpdate: <%= willUpdate %>,
-			withQuantity: {
-				forceDropdown: true,
-			},
-		},
-		spritemap: '<%= spritemap %>',
-	};
-
-	AddToCart.default('<%= addToCartId %>', '<%= addToCartId %>', initialProps);
-</aui:script>
