@@ -16,7 +16,7 @@
  * Base components exposure to Liferay module dynamic load-up
  */
 
-export {default as AddToCart} from './add_to_cart/entry';
+export {default as AddToCart} from './add_to_cart/AddToCart';
 export {default as AddToWishList} from './add_to_wish_list/entry';
 export {default as Autocomplete} from './autocomplete/entry';
 export {default as DropdownMenu} from './dropdown/entry';
