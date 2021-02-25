@@ -25,7 +25,7 @@ definition {
 	macro uploadSingleFile {
 		var key_uploadFileName = "${uploadFileName}";
 
-		SelectFrameTop(value1 = "relative=top");
+		WaitForElementPresent(locator1 = "ItemSelector#ITEM_SELECTOR_IFRAME");
 
 		SelectFrame.selectFrameNoLoading(locator1 = "ItemSelector#ITEM_SELECTOR_IFRAME");
 
