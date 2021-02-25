@@ -2,7 +2,7 @@
 definition {
 
 	property portal.release = "true";
-	property portal.upstream = "quarantine";
+	property portal.upstream = "true";
 	property testray.main.component.name = "Commerce";
 
 	setUp {
@@ -102,6 +102,7 @@ definition {
 
 	test DeactivateCommerceAccount {
 		property portal.acceptance = "quarantine";
+		property portal.upstream = "quarantine";
 		property test.name.skip.portal.instance = "CommerceAccelerators#DeactivateCommerceAccount";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
@@ -178,8 +179,8 @@ definition {
 	}
 
 	test InitializeNewMiniumSite {
-		property environment.acceptance = "quarantine";
-		property portal.acceptance = "quarantine";
+		property environment.acceptance = "true";
+		property portal.acceptance = "true";
 		property test.name.skip.portal.instance = "CommerceAccelerators#InitializeNewMiniumSite";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
@@ -232,8 +233,8 @@ definition {
 	}
 
 	test InitializeNewSpeedwellSite {
-		property environment.acceptance = "quarantine";
-		property portal.acceptance = "quarantine";
+		property environment.acceptance = "true";
+		property portal.acceptance = "true";
 		property test.name.skip.portal.instance = "CommerceAccelerators#InitializeNewSpeedwellSite";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Speedwell");
@@ -287,6 +288,7 @@ definition {
 
 	test MiniumSiteFullFlow {
 		property portal.acceptance = "quarantine";
+		property portal.upstream = "quarantine";
 		property test.name.skip.portal.instance = "CommerceAccelerators#MiniumSiteFullFlow";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
@@ -430,7 +432,7 @@ definition {
 	}
 
 	test SpeedwellSiteFullFlow {
-		property portal.acceptance = "quarantine";
+		property portal.acceptance = "true";
 		property test.name.skip.portal.instance = "CommerceAccelerators#SpeedwellSiteFullFlow";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Speedwell");
