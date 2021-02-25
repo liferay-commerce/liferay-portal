@@ -1,9 +1,9 @@
 @component-name = "portal-commerce"
 definition {
 
+	property portal.acceptance = "true";
 	property portal.release = "true";
 	property portal.upstream = "true";
-	property portal.acceptance = "true";
 	property testray.main.component.name = "Commerce";
 
 	setUp {
