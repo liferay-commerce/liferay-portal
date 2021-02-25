@@ -93,7 +93,6 @@ definition {
 			newAddressCountry = "United States",
 			newAddressName = "Address Name",
 			newAddressZipCode = "Test Zip Code",
-			paymentMethod = "Money Order",
 			productName = "U-Joint",
 			productQuantity = "1",
 			productUnitPrice = "24",
