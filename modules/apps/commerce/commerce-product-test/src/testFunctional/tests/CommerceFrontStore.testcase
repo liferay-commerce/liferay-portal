@@ -12,7 +12,7 @@ definition {
 
 		CommerceConfiguration.commerceStoreFrontSetUp();
 
-		CommerceNavigator.gotoPortlet(
+		ApplicationsMenu.gotoPortlet(
 			category = "Configuration",
 			panel = "Control Panel",
 			portlet = "Search");
