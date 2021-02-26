@@ -37,6 +37,9 @@ definition {
 	}
 
 	test EditOrder {
+		property portal.acceptance = "quarantine";
+		property portal.release = "quarantine";
+		property portal.upstream = "quarantine";
 		property test.name.skip.portal.instance = "CPCommerceOrders#EditOrder";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
@@ -70,6 +73,86 @@ definition {
 		CommerceNavigator.gotoMiniCart();
 
 		Button.click(button = "Submit");
+
+		Pause(locator1 = "3000");
+
+		CommerceCheckout.initializersCheckout(
+			newAddressAddress = "Test Address",
+			newAddressCity = "Test City",
+			newAddressCountry = "United States",
+			newAddressName = "Address Name",
+			newAddressZipCode = "Test Zip Code",
+			paymentMethod = "Money Order",
+			productName = "ABS Sensor",
+			productQuantity = "2",
+			productUnitPrice = "50",
+			shippingMethod = "Standard");
+
+		CommerceNavigator.gotoPortlet(
+			category = "Order Management",
+			portlet = "Orders");
+
+		CommerceNavigator.gotoOrderEntryViaAdmin(status = "Pending");
+
+		CommerceOrders.editOrderItemDetails(
+			orderItemQuantity = "4",
+			orderItemSKU = "MIN93015");
+
+		CommerceNavigator.gotoPortlet(
+			category = "Order Management",
+			portlet = "Orders");
+
+		CommerceNavigator.gotoOrderEntryViaAdmin(status = "Pending");
+
+		CommerceOrders.viewOrdersEntry(
+			addressAddress = "Test Address",
+			addressCity = "Test City",
+			addressZipCode = "Test Zip Code",
+			paymentMethod = "Money Order",
+			productListPrice = "50.00",
+			productName = "ABS Sensor",
+			productQuantity = "4",
+			productSKU = "MIN93015",
+			productTotalPrice = "100.00");
+	}
+
+	@description = "This is a workaround for an issue with Minium's sidebar on CI"
+	test EditOrderCheckingOutViaOrderDetails {
+		property test.name.skip.portal.instance = "CPCommerceOrders#EditOrderCheckingOutViaOrderDetails";
+
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+
+		CommerceNavigator.gotoPortlet(
+			category = "Store Management",
+			portlet = "Channels");
+
+		CommerceNavigator.gotoEntry(entryName = "Minium Portal");
+
+		CommerceChannels.activatePaymentMethod(paymentMethod = "Money Order");
+
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
+
+		CommerceAcceleratorsInitializer.createNewAccountViaFront(
+			accountName = "Commerce Account",
+			adminEmailAddress = "test@liferay.com");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
+		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
+
+		FrontStore.addInitializerProductToCart(
+			productName = "ABS Sensor",
+			productQuantity = "2");
+
+		Pause(locator1 = "5000");
+
+		CommerceNavigator.gotoMiniCart();
+
+		Button.click(button = "View Details");
+
+		Button.click(button = "Checkout");
 
 		Pause(locator1 = "3000");
 
