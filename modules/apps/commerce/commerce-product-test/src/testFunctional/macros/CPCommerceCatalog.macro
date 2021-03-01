@@ -3,21 +3,24 @@ definition {
 	macro addOptionValues {
 		var optionValuesList = "${optionValuesList}";
 
-		CommerceNavigator.gotoOptionValues(optionEntryName = "${optionEntryName}");
-
 		for (var optionValues : list "${optionValuesList}") {
-			if (IsElementPresent(locator1 = "CommerceEntry#MODAL_DELETE")) {
-				Click(locator1 = "CommerceEntry#MODAL_PLUS");
-			}
+			var optionValue = StringUtil.extractFirst("${optionValues}", ":");
+			var optionPosition = StringUtil.extractLast("${optionValues}", ":");
+			
+			Refresh();
+
+			Click(locator1 = "CommerceEntry#ADD_BUTTON");
+
+			WaitForElementPresent(locator1 = "IFrame#MODAL_BODY");
+
+			SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
 
 			CommerceEntry.addOptionValue(
-				valueName = "${optionValues}",
-				valuePriority = "${valuePriority}");
+				valueName = "${optionValue}",
+				valuePosition = "${optionPosition}");
 
-			Click(locator1 = "CommerceEntry#MODAL_SAVE");
+			Button.click(button = "Submit");
 		}
-
-		Click(locator1 = "CommerceEntry#MODAL_CLOSE");
 	}
 
 	macro newOptionsEntry {
