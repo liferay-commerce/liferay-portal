@@ -6,7 +6,7 @@ definition {
 		for (var optionValues : list "${optionValuesList}") {
 			var optionValue = StringUtil.extractFirst("${optionValues}", ":");
 			var optionPosition = StringUtil.extractLast("${optionValues}", ":");
-			
+
 			Refresh();
 
 			Click(locator1 = "CommerceEntry#ADD_BUTTON");

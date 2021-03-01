@@ -1,16 +1,17 @@
 @component-name = "portal-commerce"
 definition {
-    property portal.release = "true";
+
+	property portal.release = "true";
 	property portal.upstream = "true";
 	property testray.main.component.name = "Commerce";
 
-    setUp {
+	setUp {
 		TestCase.setUpPortalInstance();
 
 		User.firstLoginPG();
 	}
 
-    tearDown {
+	tearDown {
 		var testPortalInstance = PropsUtil.get("test.portal.instance");
 
 		if ("${testPortalInstance}" == "true") {
@@ -27,7 +28,7 @@ definition {
 		}
 	}
 
-    test CreateAnOption {
+	test CreateAnOption {
 		property portal.acceptance = "true";
 		property test.name.skip.portal.instance = "CPCommerceOptions#CreateAnOption";
 
@@ -48,5 +49,6 @@ definition {
 		CommerceEntry.viewOptionsEntry(
 			optionDescription = "Option Description",
 			optionName = "Color");
-    }
+	}
+
 }
