@@ -97,6 +97,7 @@ definition {
 			value1 = "24.00");
 	}
 
+	@description = "This is a test for COMMERCE-5706. As a system admin i want to be able to create / update and delete a new warehouse"
 	test CreateNewDiscount {
 		property portal.acceptance = "true";
 		property portal.upstream = "true";
