@@ -134,7 +134,7 @@ definition {
 
 		CommerceEntry.gotoMenuTab(menuTab = "Media");
 
-		CommerceProductImages.addProductImages(optionValuesList = "Black,Black,Blue,Blue,White");
+		CommerceProductImages.addProductImages(optionValuesList = "Black,Black:1,Blue,Blue:1,White");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
