@@ -39,8 +39,7 @@ definition {
 		CPCommerceCatalog.newOptionsEntry(
 			optionDescription = "Option Description",
 			optionFieldType = "Text",
-			optionName = "Color",
-			valuePriority = "1");
+			optionName = "Color");
 
 		Button.clickSave();
 
