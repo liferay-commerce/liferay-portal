@@ -2,14 +2,11 @@ definition {
 
 	macro addProductImages {
 		for (var optionValues : list "${optionValuesList}") {
-
 			echo("optionValues is equal to ${optionValues}");
 
 			var image = StringUtil.extractFirst("${optionValues}", ":");
 
 			var number = StringUtil.extractLast("${optionValues}", ":");
-
-
 
 			if ("${image}" == "") {
 				image = "${optionValues}";
@@ -37,13 +34,13 @@ definition {
 
 			if ("${number}" != "") {
 				AssertElementPresent(
-					locator1 = "CommerceNavigation#ANY_ENTRY_NAME_WITHOUT_CONTAINS",
-					key_entry = "Commerce_${image} (${number}).jpg");
+					key_entry = "Commerce_${image} (${number}).jpg",
+					locator1 = "CommerceNavigation#ANY_ENTRY_NAME_WITHOUT_CONTAINS");
 			}
 			else {
 				AssertElementPresent(
-					locator1 = "CommerceNavigation#ANY_ENTRY_NAME_WITHOUT_CONTAINS",
-					key_entry = "${uploadFileName}");
+					key_entry = "${uploadFileName}",
+					locator1 = "CommerceNavigation#ANY_ENTRY_NAME_WITHOUT_CONTAINS");
 			}
 		}
 
