@@ -41,6 +41,8 @@ public class AccountMemberResourceTest
 	public void setUp() throws Exception {
 		super.setUp();
 
+		_user = UserTestUtil.addUser(testCompany);
+
 		_serviceContext = ServiceContextTestUtil.getServiceContext(
 			testCompany.getCompanyId(), testGroup.getGroupId(),
 			_user.getUserId());
