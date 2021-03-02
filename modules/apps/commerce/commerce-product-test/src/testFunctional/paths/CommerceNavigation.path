@@ -84,6 +84,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>ANY_ENTRY_NAME_WITHOUT_CONTAINS</td>
+	<td>//a[(text()='${key_entry}')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>DATA_SET_ENTRY_NAME</td>
 	<td>//div[@class='data-set-display-content-wrapper']//td[text()='${key_entryName}']</td>
 	<td></td>
