@@ -20,32 +20,32 @@
 </tr>
 <tr>
     <td>ORDER_DETAILS_PRODUCT_DISCOUNT</td>
-    <td>//table[contains(@class,'table')]//td[contains(.,'${key_productDiscount}')]</td>
+    <td>//div[@class='dnd-td' and contains(.,'${key_productDiscount}')]</td>
     <td></td>
 </tr>
 <tr>
     <td>ORDER_DETAILS_PRODUCT_NAME</td>
-    <td>//table[contains(@class,'table')]//td[contains(.,'${key_productName}')]</td>
+    <td>//div[@class='dnd-td' and contains(.,'${key_productName}')]</td>
     <td></td>
 </tr>
 <tr>
     <td>ORDER_DETAILS_TOTAL_PRICE</td>
-    <td>//table[contains(@class,'table')]//td[contains(.,'${key_productTotalPrice}')]</td>
+    <td>//div[@class='dnd-td' and contains(.,'${key_productTotalPrice}')]</td>
     <td></td>
 </tr>
 <tr>
     <td>ORDER_DETAILS_PRODUCT_QUANTITY</td>
-    <td>//table[contains(@class,'table')]//td[contains(.,'${key_productQuantity}')]</td>
+    <td>//div[@class='dnd-td' and contains(.,'${key_productQuantity}')]</td>
     <td></td>
 </tr>
 <tr>
     <td>ORDER_DETAILS_PRODUCT_SKU</td>
-    <td>//table[contains(@class,'table')]//td[2]//a[contains(.,'${key_productSKU}')]</td>
+    <td>//div[@class='dnd-td' and contains(.,'${key_productSKU}')]</td>
     <td></td>
 </tr>
 <tr>
     <td>ORDER_DETAILS_PRODUCT_LIST_PRICE</td>
-    <td>//table[contains(@class,'table')]//td[contains(.,'${key_productListPrice}')]</td>
+    <td>//div[@class='dnd-td' and contains(.,'${key_productListPrice}')]</td>
     <td></td>
 </tr>
 <tr>
