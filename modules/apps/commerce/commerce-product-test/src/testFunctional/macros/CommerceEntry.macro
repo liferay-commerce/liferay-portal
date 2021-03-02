@@ -321,7 +321,7 @@ definition {
 		Check.checkToggleSwitch(locator1 = "CommerceEntry#REQUIRED_CHECKBOX");
 
 		if (("${optionFieldType}" == "checkbox-multiple") || ("${optionFieldType}" == "Select from List") || ("${optionFieldType}" == "Radio")) {
-		 	Check.checkToggleSwitch(locator1 = "CommerceEntry#SKU_CONTRIBUTOR_CHECKBOX");
+			Check.checkToggleSwitch(locator1 = "CommerceEntry#SKU_CONTRIBUTOR_CHECKBOX");
 		}
 	}
 
