@@ -2,13 +2,28 @@ definition {
 
 	macro addProductImages {
 		for (var optionValues : list "${optionValuesList}") {
+
+			echo("optionValues is equal to ${optionValues}");
+
+			var image = StringUtil.extractFirst("${optionValues}", ":");
+
+			var number = StringUtil.extractLast("${optionValues}", ":");
+
+
+
+			if ("${image}" == "") {
+				image = "${optionValues}";
+			}
+
+			var uploadFileName = "Commerce_${image}.jpg";
+
 			Refresh();
 
 			Click(locator1 = "CommerceEntry#IMAGES_PLUS_BUTTON");
 
 			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
 
-			CommerceEntry.uploadCatalogEntrySingleImage(uploadFileName = "Commerce_${optionValues}.jpg");
+			CommerceEntry.uploadCatalogEntrySingleImage(uploadFileName = "${uploadFileName}");
 
 			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
 
@@ -17,6 +32,19 @@ definition {
 			CommerceEntry.publishProductImage();
 
 			Click(locator1 = "Icon#CLOSE");
+
+			Refresh();
+
+			if ("${number}" != "") {
+				AssertElementPresent(
+					locator1 = "CommerceNavigation#ANY_ENTRY_NAME_WITHOUT_CONTAINS",
+					key_entry = "Commerce_${image} (${number}).jpg");
+			}
+			else {
+				AssertElementPresent(
+					locator1 = "CommerceNavigation#ANY_ENTRY_NAME_WITHOUT_CONTAINS",
+					key_entry = "${uploadFileName}");
+			}
 		}
 
 		Refresh();
