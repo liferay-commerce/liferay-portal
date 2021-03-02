@@ -549,12 +549,6 @@ definition {
 	}
 
 	macro publishProductImage {
-		SelectFrameTop(value1 = "relative=top");
-
-		//SelectFrame(locator1 = "ItemSelector#ITEM_SELECTOR_IFRAME");
-
-		SelectFrame(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
-
 		Button.clickPublish();
 
 		AssertElementPresent(locator1 = "Message#SUCCESS");
