@@ -61,10 +61,7 @@ String productDetailURL = cpContentHelper.getFriendlyURL(cpCatalogEntry, themeDi
 				<p class="card-text">
 					<span class="text-truncate-inline">
 						<span class="d-flex flex-row text-truncate">
-							<commerce-ui:price
-								CPDefinitionId='<%= cpCatalogEntry.getCPDefinitionId() %>'
-								displayOneLine="<%= true %>"
-							/>
+							<commerce-ui:price CPCatalogEntry='<%= cpCatalogEntry %>' />
 						</span>
 					</span>
 				</p>
