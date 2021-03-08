@@ -371,6 +371,40 @@ public class CommerceInventoryWarehouseItemServiceSoap {
 		}
 	}
 
+	public static int getStockQuantity(long companyId, long groupId, String sku)
+		throws RemoteException {
+
+		try {
+			int returnValue =
+				CommerceInventoryWarehouseItemServiceUtil.getStockQuantity(
+					companyId, groupId, sku);
+
+			return returnValue;
+		}
+		catch (Exception exception) {
+			_log.error(exception, exception);
+
+			throw new RemoteException(exception.getMessage());
+		}
+	}
+
+	public static int getStockQuantity(long companyId, String sku)
+		throws RemoteException {
+
+		try {
+			int returnValue =
+				CommerceInventoryWarehouseItemServiceUtil.getStockQuantity(
+					companyId, sku);
+
+			return returnValue;
+		}
+		catch (Exception exception) {
+			_log.error(exception, exception);
+
+			throw new RemoteException(exception.getMessage());
+		}
+	}
+
 	public static
 		com.liferay.commerce.inventory.model.
 			CommerceInventoryWarehouseItemSoap[]
