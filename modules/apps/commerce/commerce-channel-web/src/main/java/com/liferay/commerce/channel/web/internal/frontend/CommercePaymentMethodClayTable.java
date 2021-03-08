@@ -33,23 +33,28 @@ import com.liferay.frontend.taglib.clay.data.set.view.table.ClayTableSchemaBuild
 import com.liferay.frontend.taglib.clay.data.set.view.table.ClayTableSchemaBuilderFactory;
 import com.liferay.frontend.taglib.clay.data.set.view.table.ClayTableSchemaField;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemList;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletProvider;
 import com.liferay.portal.kernel.portlet.PortletProviderUtil;
+import com.liferay.portal.kernel.portlet.PortletQName;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.portlet.ActionRequest;
 import javax.portlet.PortletURL;
+import javax.portlet.WindowStateException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -106,13 +111,13 @@ public class CommercePaymentMethodClayTable
 			HttpServletRequest httpServletRequest, long groupId, Object model)
 		throws PortalException {
 
-		return DropdownItemListBuilder.add(
+		PaymentMethod paymentMethod = (PaymentMethod)model;
+
+		long commerceChannelId = ParamUtil.getLong(
+			httpServletRequest, "commerceChannelId");
+
+		DropdownItemList dropdownItemList = DropdownItemListBuilder.add(
 			dropdownItem -> {
-				PaymentMethod paymentMethod = (PaymentMethod)model;
-
-				long commerceChannelId = ParamUtil.getLong(
-					httpServletRequest, "commerceChannelId");
-
 				PortletURL portletURL = PortletProviderUtil.getPortletURL(
 					httpServletRequest,
 					CommercePaymentMethodGroupRel.class.getName(),
@@ -133,6 +138,29 @@ public class CommercePaymentMethodClayTable
 				dropdownItem.setTarget("sidePanel");
 			}
 		).build();
+
+		CommerceChannel commerceChannel =
+			_commerceChannelService.getCommerceChannel(commerceChannelId);
+
+		CommercePaymentMethodGroupRel commercePaymentMethodGroupRel =
+			_commercePaymentMethodGroupRelService.
+				fetchCommercePaymentMethodGroupRel(
+					commerceChannel.getGroupId(), paymentMethod.getKey());
+
+		if (commercePaymentMethodGroupRel != null) {
+			dropdownItemList.add(
+				dropdownItem -> {
+					dropdownItem.setHref(
+						_getPaymentMethodPermissionURL(
+							commercePaymentMethodGroupRel,
+							paymentMethod.getKey(), httpServletRequest));
+					dropdownItem.setLabel(
+						LanguageUtil.get(httpServletRequest, "permissions"));
+					dropdownItem.setTarget("modal-permissions");
+				});
+		}
+
+		return dropdownItemList;
 	}
 
 	@Override
@@ -207,6 +235,44 @@ public class CommercePaymentMethodClayTable
 		return commercePaymentMethodMap.size();
 	}
 
+	private PortletURL _getPaymentMethodPermissionURL(
+			CommercePaymentMethodGroupRel commercePaymentMethodGroupRel,
+			String paymentMethodKey, HttpServletRequest httpServletRequest)
+		throws PortalException {
+
+		PortletURL portletURL = _portal.getControlPanelPortletURL(
+			httpServletRequest,
+			"com_liferay_portlet_configuration_web_portlet_" +
+				"PortletConfigurationPortlet",
+			ActionRequest.RENDER_PHASE);
+
+		String redirect = ParamUtil.getString(
+			httpServletRequest, "currentUrl",
+			_portal.getCurrentURL(httpServletRequest));
+
+		portletURL.setParameter("mvcPath", "/edit_permissions.jsp");
+		portletURL.setParameter(
+			PortletQName.PUBLIC_RENDER_PARAMETER_NAMESPACE + "backURL",
+			redirect);
+		portletURL.setParameter(
+			"modelResource", CommercePaymentMethodGroupRel.class.getName());
+		portletURL.setParameter("modelResourceDescription", paymentMethodKey);
+		portletURL.setParameter(
+			"resourcePrimKey",
+			String.valueOf(
+				commercePaymentMethodGroupRel.
+					getCommercePaymentMethodGroupRelId()));
+
+		try {
+			portletURL.setWindowState(LiferayWindowState.POP_UP);
+		}
+		catch (WindowStateException windowStateException) {
+			throw new PortalException(windowStateException);
+		}
+
+		return portletURL;
+	}
+
 	private boolean _isActive(
 		CommercePaymentMethodGroupRel commercePaymentMethodGroupRel) {
 
@@ -229,5 +295,8 @@ public class CommercePaymentMethodClayTable
 
 	@Reference
 	private CommercePaymentMethodRegistry _commercePaymentMethodRegistry;
+
+	@Reference
+	private Portal _portal;
 
 }
