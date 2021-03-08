@@ -22,6 +22,7 @@ import com.liferay.commerce.inventory.model.CommerceInventoryWarehouseItem;
 import com.liferay.commerce.inventory.service.CommerceInventoryAuditLocalService;
 import com.liferay.commerce.inventory.service.CommerceInventoryBookedQuantityLocalService;
 import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseItemLocalService;
+import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseItemService;
 import com.liferay.commerce.inventory.type.CommerceInventoryAuditType;
 import com.liferay.commerce.inventory.type.CommerceInventoryAuditTypeRegistry;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -125,7 +126,7 @@ public class CommerceInventoryEngineImpl implements CommerceInventoryEngine {
 		long companyId, long channelGroupId, String sku) {
 
 		int stockQuantity =
-			_commerceInventoryWarehouseItemLocalService.getStockQuantity(
+			_commerceInventoryWarehouseItemService.getStockQuantity(
 				companyId, channelGroupId, sku);
 
 		int commerceBookedQuantity =
@@ -138,7 +139,7 @@ public class CommerceInventoryEngineImpl implements CommerceInventoryEngine {
 	@Override
 	public int getStockQuantity(long companyId, String sku) {
 		int stockQuantity =
-			_commerceInventoryWarehouseItemLocalService.getStockQuantity(
+			_commerceInventoryWarehouseItemService.getStockQuantity(
 				companyId, sku);
 
 		int commerceBookedQuantity =
@@ -233,5 +234,9 @@ public class CommerceInventoryEngineImpl implements CommerceInventoryEngine {
 	@Reference
 	private CommerceInventoryWarehouseItemLocalService
 		_commerceInventoryWarehouseItemLocalService;
+
+	@Reference
+	private CommerceInventoryWarehouseItemService
+		_commerceInventoryWarehouseItemService;
 
 }
