@@ -22,23 +22,23 @@ import java.net.URISyntaxException;
  */
 public class URIBuilder {
 
-	public static URIBuilderWrapper create(String string)
+	public static URIBuilderBuilder create(String string)
 		throws URISyntaxException {
 
-		return new URIBuilderWrapper(new URI(string));
+		return new URIBuilderBuilder(new URI(string));
 	}
 
-	public static URIBuilderWrapper create(URI uri) {
-		return new URIBuilderWrapper(uri);
+	public static URIBuilderBuilder create(URI uri) {
+		return new URIBuilderBuilder(uri);
 	}
 
-	public static final class URIBuilderWrapper {
+	public static final class URIBuilderBuilder {
 
-		public URIBuilderWrapper(URI uri) {
+		public URIBuilderBuilder(URI uri) {
 			_uriBuilder = new org.apache.http.client.utils.URIBuilder(uri);
 		}
 
-		public URIBuilderWrapper addParameter(String name, String value) {
+		public URIBuilderBuilder addParameter(String name, String value) {
 			if (value != null) {
 				_uriBuilder.addParameter(name, value);
 			}
@@ -46,7 +46,7 @@ public class URIBuilder {
 			return this;
 		}
 
-		public URIBuilderWrapper addParameter(
+		public URIBuilderBuilder addParameter(
 			String name,
 			UnsafeSupplier<String, Exception> valueUnsafeSupplier) {
 
@@ -68,7 +68,7 @@ public class URIBuilder {
 			}
 		}
 
-		public URIBuilderWrapper addParameter(
+		public URIBuilderBuilder addParameter(
 			UnsafeSupplier<String, Exception> nameUnsafeSupplier,
 			String value) {
 
@@ -86,7 +86,7 @@ public class URIBuilder {
 			}
 		}
 
-		public URIBuilderWrapper addParameter(
+		public URIBuilderBuilder addParameter(
 			UnsafeSupplier<String, Exception> nameUnsafeSupplier,
 			UnsafeSupplier<String, Exception> valueUnsafeSupplier) {
 
@@ -118,7 +118,7 @@ public class URIBuilder {
 	}
 
 	@FunctionalInterface
-	private interface UnsafeSupplier<String, E extends Throwable> {
+	public interface UnsafeSupplier<String, E extends Throwable> {
 
 		public String get() throws E;
 
