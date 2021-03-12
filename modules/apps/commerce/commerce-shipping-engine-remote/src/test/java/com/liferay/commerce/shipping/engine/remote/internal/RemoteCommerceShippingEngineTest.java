@@ -20,9 +20,7 @@ import com.liferay.commerce.account.model.CommerceAccount;
 import com.liferay.commerce.context.CommerceContext;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.model.CommerceAddress;
-import com.liferay.commerce.model.CommerceCountry;
 import com.liferay.commerce.model.CommerceOrder;
-import com.liferay.commerce.model.CommerceRegion;
 import com.liferay.commerce.model.CommerceShippingMethod;
 import com.liferay.commerce.model.CommerceShippingOption;
 import com.liferay.commerce.product.model.CommerceChannel;
@@ -30,6 +28,8 @@ import com.liferay.commerce.shipping.engine.remote.internal.configuration.Remote
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.Country;
+import com.liferay.portal.kernel.model.Region;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 
@@ -171,10 +171,10 @@ public class RemoteCommerceShippingEngineTest {
 			commerceAddress.getCity(),
 			_recordedParameterMap.get(prefix + "AddressCity"));
 
-		CommerceCountry commerceCountry = commerceAddress.getCommerceCountry();
+		Country country = commerceAddress.getCountry();
 
 		Assert.assertEquals(
-			String.valueOf(commerceCountry.getThreeLettersISOCode()),
+			String.valueOf(country.getA3()),
 			_recordedParameterMap.get(prefix + "AddressCountryISOCode"));
 
 		Assert.assertEquals(
@@ -194,10 +194,10 @@ public class RemoteCommerceShippingEngineTest {
 			commerceAddress.getPhoneNumber(),
 			_recordedParameterMap.get(prefix + "AddressPhoneNumber"));
 
-		CommerceRegion commerceRegion = commerceAddress.getCommerceRegion();
+		Region region = commerceAddress.getRegion();
 
 		Assert.assertEquals(
-			commerceRegion.getCode(),
+			region.getRegionCode(),
 			_recordedParameterMap.get(prefix + "AddressRegionISOCode"));
 
 		Assert.assertEquals(
@@ -461,21 +461,20 @@ public class RemoteCommerceShippingEngineTest {
 			zip
 		);
 
-		CommerceCountry commerceCountry = _getCommerceCountry(
-			commerceCountryThreeLettersISOCode);
+		Country country = _getCountry(commerceCountryThreeLettersISOCode);
 
 		Mockito.when(
-			commerceAddress.getCommerceCountry()
+			commerceAddress.getCountry()
 		).thenReturn(
-			commerceCountry
+			country
 		);
 
-		CommerceRegion commerceRegion = _getCommerceRegion(commerceRegionCode);
+		Region region = _getRegion(commerceRegionCode);
 
 		Mockito.when(
-			commerceAddress.getCommerceRegion()
+			commerceAddress.getRegion()
 		).thenReturn(
-			commerceRegion
+			region
 		);
 
 		return commerceAddress;
@@ -552,18 +551,6 @@ public class RemoteCommerceShippingEngineTest {
 			}
 
 		};
-	}
-
-	private CommerceCountry _getCommerceCountry(String threeLettersISOCode) {
-		CommerceCountry commerceCountry = Mockito.mock(CommerceCountry.class);
-
-		Mockito.when(
-			commerceCountry.getThreeLettersISOCode()
-		).thenReturn(
-			threeLettersISOCode
-		);
-
-		return commerceCountry;
 	}
 
 	private CommerceCurrency _getCommerceCurrency() {
@@ -814,18 +801,6 @@ public class RemoteCommerceShippingEngineTest {
 		return commerceOrder;
 	}
 
-	private CommerceRegion _getCommerceRegion(String code) {
-		CommerceRegion commerceRegion = Mockito.mock(CommerceRegion.class);
-
-		Mockito.when(
-			commerceRegion.getCode()
-		).thenReturn(
-			code
-		);
-
-		return commerceRegion;
-	}
-
 	private CommerceShippingMethod _getCommerceShippingMethod() {
 		CommerceShippingMethod commerceShippingMethod = Mockito.mock(
 			CommerceShippingMethod.class);
@@ -837,6 +812,30 @@ public class RemoteCommerceShippingEngineTest {
 		);
 
 		return commerceShippingMethod;
+	}
+
+	private Country _getCountry(String a3) {
+		Country country = Mockito.mock(Country.class);
+
+		Mockito.when(
+			country.getA3()
+		).thenReturn(
+			a3
+		);
+
+		return country;
+	}
+
+	private Region _getRegion(String code) {
+		Region region = Mockito.mock(Region.class);
+
+		Mockito.when(
+			region.getRegionCode()
+		).thenReturn(
+			code
+		);
+
+		return region;
 	}
 
 	private RemoteCommerceShippingEngineConfiguration

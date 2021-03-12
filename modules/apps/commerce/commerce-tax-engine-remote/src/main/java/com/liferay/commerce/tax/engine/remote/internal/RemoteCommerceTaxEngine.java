@@ -214,6 +214,10 @@ public class RemoteCommerceTaxEngine implements CommerceTaxEngine {
 			() -> {
 				Region region = commerceAddress.getRegion();
 
+				if (region == null) {
+					return null;
+				}
+
 				return region.getRegionCode();
 			}
 		).put(

@@ -22,22 +22,24 @@ import com.liferay.commerce.context.CommerceContext;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.exception.CommerceShippingEngineException;
 import com.liferay.commerce.model.CommerceAddress;
-import com.liferay.commerce.model.CommerceCountry;
 import com.liferay.commerce.model.CommerceOrder;
-import com.liferay.commerce.model.CommerceRegion;
 import com.liferay.commerce.model.CommerceShippingEngine;
 import com.liferay.commerce.model.CommerceShippingMethod;
 import com.liferay.commerce.model.CommerceShippingOption;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelService;
 import com.liferay.commerce.shipping.engine.remote.internal.configuration.RemoteCommerceShippingEngineConfiguration;
+import com.liferay.petra.apache.http.components.URIBuilder;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Country;
+import com.liferay.portal.kernel.model.Region;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -49,18 +51,18 @@ import java.net.URISyntaxException;
 
 import java.nio.charset.StandardCharsets;
 
-import java.text.DateFormat;
+import java.text.Format;
 import java.text.SimpleDateFormat;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
@@ -187,213 +189,195 @@ public class RemoteCommerceShippingEngine implements CommerceShippingEngine {
 		}
 	}
 
-	private void _addCommerceAddressParameters(
-			CommerceAddress commerceAddress, String prefix,
-			URIBuilder uriBuilder)
+	private Map<String, String> _getCommerceAddressParameters(
+			CommerceAddress commerceAddress, String prefix)
 		throws PortalException {
 
-		_addParameter(
-			prefix + "AddressCity", commerceAddress.getCity(), uriBuilder);
-
-		CommerceCountry commerceCountry = commerceAddress.getCommerceCountry();
-
-		_addParameter(
+		return HashMapBuilder.put(
+			prefix + "AddressCity", commerceAddress.getCity()
+		).put(
 			prefix + "AddressCountryISOCode",
-			commerceCountry.getThreeLettersISOCode(), uriBuilder);
+			() -> {
+				Country country = commerceAddress.getCountry();
 
-		_addParameter(
+				return country.getA3();
+			}
+		).put(
 			prefix + "AddressExternalReferenceCode",
-			commerceAddress.getExternalReferenceCode(), uriBuilder);
-
-		_addParameter(
+			commerceAddress.getExternalReferenceCode()
+		).put(
 			prefix + "AddressId",
-			String.valueOf(commerceAddress.getCommerceAddressId()), uriBuilder);
-		_addParameter(
+			String.valueOf(commerceAddress.getCommerceAddressId())
+		).put(
 			prefix + "AddressLatitude",
-			String.valueOf(commerceAddress.getLatitude()), uriBuilder);
-		_addParameter(
+			String.valueOf(commerceAddress.getLatitude())
+		).put(
 			prefix + "AddressLongitude",
-			String.valueOf(commerceAddress.getLongitude()), uriBuilder);
-		_addParameter(
-			prefix + "AddressPhoneNumber", commerceAddress.getPhoneNumber(),
-			uriBuilder);
+			String.valueOf(commerceAddress.getLongitude())
+		).put(
+			prefix + "AddressPhoneNumber", commerceAddress.getPhoneNumber()
+		).put(
+			prefix + "AddressRegionISOCode",
+			() -> {
+				Region region = commerceAddress.getRegion();
 
-		CommerceRegion commerceRegion = commerceAddress.getCommerceRegion();
+				if (region == null) {
+					return null;
+				}
 
-		if (commerceRegion != null) {
-			_addParameter(
-				prefix + "AddressRegionISOCode", commerceRegion.getCode(),
-				uriBuilder);
-		}
-
-		_addParameter(
-			prefix + "AddressStreet1", commerceAddress.getStreet1(),
-			uriBuilder);
-		_addParameter(
-			prefix + "AddressStreet2", commerceAddress.getStreet2(),
-			uriBuilder);
-		_addParameter(
-			prefix + "AddressStreet3", commerceAddress.getStreet3(),
-			uriBuilder);
-		_addParameter(
-			prefix + "AddressZip", commerceAddress.getZip(), uriBuilder);
+				return region.getRegionCode();
+			}
+		).put(
+			prefix + "AddressStreet1", commerceAddress.getStreet1()
+		).put(
+			prefix + "AddressStreet2", commerceAddress.getStreet2()
+		).put(
+			prefix + "AddressStreet3", commerceAddress.getStreet3()
+		).put(
+			prefix + "AddressZip", commerceAddress.getZip()
+		).build();
 	}
 
-	private void _addCommerceOrderParameters(
-			CommerceOrder commerceOrder, URIBuilder uriBuilder)
+	private Map<String, String> _getCommerceOrderParameters(
+			CommerceOrder commerceOrder)
 		throws PortalException {
 
-		CommerceAccount commerceAccount = commerceOrder.getCommerceAccount();
+		Format dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
-		_addParameter(
+		return HashMapBuilder.put(
 			"orderAccountExternalReferenceCode",
-			commerceAccount.getExternalReferenceCode(), uriBuilder);
-		_addParameter(
+			() -> {
+				CommerceAccount commerceAccount =
+					commerceOrder.getCommerceAccount();
+
+				return commerceAccount.getExternalReferenceCode();
+			}
+		).put(
 			"orderAccountId",
-			String.valueOf(commerceAccount.getCommerceAccountId()), uriBuilder);
+			() -> {
+				CommerceAccount commerceAccount =
+					commerceOrder.getCommerceAccount();
 
-		_addParameter(
-			"orderAdvanceStatus", commerceOrder.getAdvanceStatus(), uriBuilder);
-
-		_addCommerceAddressParameters(
-			commerceOrder.getBillingAddress(), "orderBilling", uriBuilder);
-
-		_addParameter(
-			"orderCouponCode", commerceOrder.getCouponCode(), uriBuilder);
-		_addParameter(
+				return String.valueOf(commerceAccount.getCommerceAccountId());
+			}
+		).put(
+			"orderAdvanceStatus", commerceOrder.getAdvanceStatus()
+		).putAll(
+			_getCommerceAddressParameters(
+				commerceOrder.getBillingAddress(), "orderBilling")
+		).put(
+			"orderCouponCode", commerceOrder.getCouponCode()
+		).put(
 			"orderExternalReferenceCode",
-			commerceOrder.getExternalReferenceCode(), uriBuilder);
-		_addParameter(
-			"orderId", String.valueOf(commerceOrder.getCommerceOrderId()),
-			uriBuilder);
+			commerceOrder.getExternalReferenceCode()
+		).put(
+			"orderId", String.valueOf(commerceOrder.getCommerceOrderId())
+		).put(
+			"orderLastPriceUpdateDate",
+			() -> {
+				if (commerceOrder.getLastPriceUpdateDate() == null) {
+					return null;
+				}
 
-		DateFormat dateFormat = new SimpleDateFormat(
-			"yyyy-MM-dd'T'HH:mm:ss'Z'");
+				return dateFormat.format(
+					commerceOrder.getLastPriceUpdateDate());
+			}
+		).put(
+			"orderDate",
+			() -> {
+				if (commerceOrder.getOrderDate() == null) {
+					return null;
+				}
 
-		if (commerceOrder.getLastPriceUpdateDate() != null) {
-			_addParameter(
-				"orderLastPriceUpdateDate",
-				dateFormat.format(commerceOrder.getLastPriceUpdateDate()),
-				uriBuilder);
-		}
-
-		if (commerceOrder.getOrderDate() != null) {
-			_addParameter(
-				"orderDate", dateFormat.format(commerceOrder.getOrderDate()),
-				uriBuilder);
-		}
-
-		_addParameter(
-			"orderStatus", String.valueOf(commerceOrder.getOrderStatus()),
-			uriBuilder);
-		_addParameter(
-			"orderPaymentMethod", commerceOrder.getCommercePaymentMethodKey(),
-			uriBuilder);
-		_addParameter(
+				return dateFormat.format(commerceOrder.getOrderDate());
+			}
+		).put(
+			"orderStatus", String.valueOf(commerceOrder.getOrderStatus())
+		).put(
+			"orderPaymentMethod", commerceOrder.getCommercePaymentMethodKey()
+		).put(
 			"orderPaymentStatus",
-			String.valueOf(commerceOrder.getPaymentStatus()), uriBuilder);
-		_addParameter(
-			"orderPurchaseOrderNumber", commerceOrder.getPurchaseOrderNumber(),
-			uriBuilder);
+			String.valueOf(commerceOrder.getPaymentStatus())
+		).put(
+			"orderPurchaseOrderNumber", commerceOrder.getPurchaseOrderNumber()
+		).put(
+			"orderRequestedDeliveryDate",
+			() -> {
+				if (commerceOrder.getRequestedDeliveryDate() == null) {
+					return null;
+				}
 
-		if (commerceOrder.getRequestedDeliveryDate() != null) {
-			_addParameter(
-				"orderRequestedDeliveryDate",
-				dateFormat.format(commerceOrder.getRequestedDeliveryDate()),
-				uriBuilder);
-		}
-
-		_addCommerceAddressParameters(
-			commerceOrder.getShippingAddress(), "orderShipping", uriBuilder);
-
-		_addParameter(
+				return dateFormat.format(
+					commerceOrder.getRequestedDeliveryDate());
+			}
+		).putAll(
+			_getCommerceAddressParameters(
+				commerceOrder.getShippingAddress(), "orderShipping")
+		).put(
 			"orderShippingAmount",
-			String.valueOf(commerceOrder.getShippingAmount()), uriBuilder);
-		_addParameter(
+			String.valueOf(commerceOrder.getShippingAmount())
+		).put(
 			"orderShippingDiscountAmount",
-			String.valueOf(commerceOrder.getShippingDiscountAmount()),
-			uriBuilder);
-		_addParameter(
+			String.valueOf(commerceOrder.getShippingDiscountAmount())
+		).put(
 			"orderShippingDiscountPercentageLevel1",
-			String.valueOf(commerceOrder.getShippingDiscountPercentageLevel1()),
-			uriBuilder);
-		_addParameter(
+			String.valueOf(commerceOrder.getShippingDiscountPercentageLevel1())
+		).put(
 			"orderShippingDiscountPercentageLevel2",
-			String.valueOf(commerceOrder.getShippingDiscountPercentageLevel2()),
-			uriBuilder);
-		_addParameter(
+			String.valueOf(commerceOrder.getShippingDiscountPercentageLevel2())
+		).put(
 			"orderShippingDiscountPercentageLevel3",
-			String.valueOf(commerceOrder.getShippingDiscountPercentageLevel3()),
-			uriBuilder);
-		_addParameter(
+			String.valueOf(commerceOrder.getShippingDiscountPercentageLevel3())
+		).put(
 			"orderShippingDiscountPercentageLevel4",
-			String.valueOf(commerceOrder.getShippingDiscountPercentageLevel4()),
-			uriBuilder);
+			String.valueOf(commerceOrder.getShippingDiscountPercentageLevel4())
+		).put(
+			"orderShippingMethod",
+			() -> {
+				CommerceShippingMethod commerceShippingMethod =
+					commerceOrder.getCommerceShippingMethod();
 
-		CommerceShippingMethod commerceShippingMethod =
-			commerceOrder.getCommerceShippingMethod();
-
-		_addParameter(
-			"orderShippingMethod", commerceShippingMethod.getEngineKey(),
-			uriBuilder);
-
-		_addParameter(
-			"orderSubtotal", String.valueOf(commerceOrder.getSubtotal()),
-			uriBuilder);
-		_addParameter(
+				return commerceShippingMethod.getEngineKey();
+			}
+		).put(
+			"orderSubtotal", String.valueOf(commerceOrder.getSubtotal())
+		).put(
 			"orderSubtotalDiscountAmount",
-			String.valueOf(commerceOrder.getSubtotalDiscountAmount()),
-			uriBuilder);
-		_addParameter(
+			String.valueOf(commerceOrder.getSubtotalDiscountAmount())
+		).put(
 			"orderSubtotalDiscountPercentageLevel1",
-			String.valueOf(commerceOrder.getSubtotalDiscountPercentageLevel1()),
-			uriBuilder);
-		_addParameter(
+			String.valueOf(commerceOrder.getSubtotalDiscountPercentageLevel1())
+		).put(
 			"orderSubtotalDiscountPercentageLevel2",
-			String.valueOf(commerceOrder.getSubtotalDiscountPercentageLevel2()),
-			uriBuilder);
-		_addParameter(
+			String.valueOf(commerceOrder.getSubtotalDiscountPercentageLevel2())
+		).put(
 			"orderSubtotalDiscountPercentageLevel3",
-			String.valueOf(commerceOrder.getSubtotalDiscountPercentageLevel3()),
-			uriBuilder);
-		_addParameter(
+			String.valueOf(commerceOrder.getSubtotalDiscountPercentageLevel3())
+		).put(
 			"orderSubtotalDiscountPercentageLevel4",
-			String.valueOf(commerceOrder.getSubtotalDiscountPercentageLevel4()),
-			uriBuilder);
-		_addParameter(
-			"orderTaxAmount", String.valueOf(commerceOrder.getTaxAmount()),
-			uriBuilder);
-		_addParameter(
-			"orderTotal", String.valueOf(commerceOrder.getTotal()), uriBuilder);
-		_addParameter(
+			String.valueOf(commerceOrder.getSubtotalDiscountPercentageLevel4())
+		).put(
+			"orderTaxAmount", String.valueOf(commerceOrder.getTaxAmount())
+		).put(
+			"orderTotal", String.valueOf(commerceOrder.getTotal())
+		).put(
 			"orderTotalDiscountAmount",
-			String.valueOf(commerceOrder.getTotalDiscountAmount()), uriBuilder);
-		_addParameter(
+			String.valueOf(commerceOrder.getTotalDiscountAmount())
+		).put(
 			"orderTotalDiscountPercentageLevel1",
-			String.valueOf(commerceOrder.getTotalDiscountPercentageLevel1()),
-			uriBuilder);
-		_addParameter(
+			String.valueOf(commerceOrder.getTotalDiscountPercentageLevel1())
+		).put(
 			"orderTotalDiscountPercentageLevel2",
-			String.valueOf(commerceOrder.getTotalDiscountPercentageLevel2()),
-			uriBuilder);
-		_addParameter(
+			String.valueOf(commerceOrder.getTotalDiscountPercentageLevel2())
+		).put(
 			"orderTotalDiscountPercentageLevel3",
-			String.valueOf(commerceOrder.getTotalDiscountPercentageLevel3()),
-			uriBuilder);
-		_addParameter(
+			String.valueOf(commerceOrder.getTotalDiscountPercentageLevel3())
+		).put(
 			"orderTotalDiscountPercentageLevel4",
-			String.valueOf(commerceOrder.getTotalDiscountPercentageLevel4()),
-			uriBuilder);
-		_addParameter(
-			"orderTransactionId", commerceOrder.getTransactionId(), uriBuilder);
-	}
-
-	private void _addParameter(
-		String parameterName, String parameterValue, URIBuilder uriBuilder) {
-
-		if (Validator.isNotNull(parameterValue)) {
-			uriBuilder.addParameter(parameterName, parameterValue);
-		}
+			String.valueOf(commerceOrder.getTotalDiscountPercentageLevel4())
+		).put(
+			"orderTransactionId", commerceOrder.getTransactionId()
+		).build();
 	}
 
 	private List<CommerceShippingOption> _getCommerceShippingOptions(
@@ -431,48 +415,75 @@ public class RemoteCommerceShippingEngine implements CommerceShippingEngine {
 				getRemoteCommerceShippingEngineConfiguration(
 					commerceContext.getCommerceChannelGroupId());
 
-		URIBuilder uriBuilder = new URIBuilder(
-			commerceShippingEngineConfiguration.shippingOptionsEndpointURL());
+		HttpGet httpGet = new HttpGet(
+			URIBuilder.create(
+				commerceShippingEngineConfiguration.shippingOptionsEndpointURL()
+			).addParameter(
+				"accountExternalReferenceCode",
+				() -> {
+					CommerceAccount commerceAccount =
+						commerceContext.getCommerceAccount();
 
-		CommerceAccount commerceAccount = commerceContext.getCommerceAccount();
+					return commerceAccount.getExternalReferenceCode();
+				}
+			).addParameter(
+				"accountId",
+				() -> {
+					CommerceAccount commerceAccount =
+						commerceContext.getCommerceAccount();
 
-		_addParameter(
-			"accountExternalReferenceCode",
-			commerceAccount.getExternalReferenceCode(), uriBuilder);
-		_addParameter(
-			"accountId", String.valueOf(commerceAccount.getCommerceAccountId()),
-			uriBuilder);
+					return String.valueOf(
+						commerceAccount.getCommerceAccountId());
+				}
+			).addParameter(
+				"channelCurrencyCode",
+				() -> {
+					CommerceChannel commerceChannel = getCommerceChannel(
+						commerceContext.getCommerceChannelId());
 
-		CommerceChannel commerceChannel = getCommerceChannel(
-			commerceContext.getCommerceChannelId());
+					return commerceChannel.getCommerceCurrencyCode();
+				}
+			).addParameter(
+				"channelExternalReferenceCode",
+				() -> {
+					CommerceChannel commerceChannel = getCommerceChannel(
+						commerceContext.getCommerceChannelId());
 
-		_addParameter(
-			"channelCurrencyCode", commerceChannel.getCommerceCurrencyCode(),
-			uriBuilder);
-		_addParameter(
-			"channelExternalReferenceCode",
-			commerceChannel.getExternalReferenceCode(), uriBuilder);
-		_addParameter(
-			"channelId", String.valueOf(commerceChannel.getCommerceChannelId()),
-			uriBuilder);
-		_addParameter(
-			"channelType", String.valueOf(commerceChannel.getType()),
-			uriBuilder);
+					return commerceChannel.getExternalReferenceCode();
+				}
+			).addParameter(
+				"channelId",
+				() -> {
+					CommerceChannel commerceChannel = getCommerceChannel(
+						commerceContext.getCommerceChannelId());
 
-		CommerceCurrency commerceCurrency =
-			commerceContext.getCommerceCurrency();
+					return String.valueOf(
+						commerceChannel.getCommerceChannelId());
+				}
+			).addParameter(
+				"channelType",
+				() -> {
+					CommerceChannel commerceChannel = getCommerceChannel(
+						commerceContext.getCommerceChannelId());
 
-		_addParameter("currencyCode", commerceCurrency.getCode(), uriBuilder);
+					return String.valueOf(commerceChannel.getType());
+				}
+			).addParameter(
+				"currencyCode",
+				() -> {
+					CommerceCurrency commerceCurrency =
+						commerceContext.getCommerceCurrency();
 
-		_addParameter(
-			"siteType", String.valueOf(commerceContext.getCommerceSiteType()),
-			uriBuilder);
-
-		_addCommerceOrderParameters(commerceOrder, uriBuilder);
-
-		_addParameter("locale", locale.toString(), uriBuilder);
-
-		HttpGet httpGet = new HttpGet(uriBuilder.build());
+					return commerceCurrency.getCode();
+				}
+			).addParameter(
+				"siteType",
+				String.valueOf(commerceContext.getCommerceSiteType())
+			).addParameters(
+				_getCommerceOrderParameters(commerceOrder)
+			).addParameter(
+				"locale", locale.toString()
+			).build());
 
 		if (Validator.isNotNull(
 				commerceShippingEngineConfiguration.
