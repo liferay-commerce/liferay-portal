@@ -78,7 +78,7 @@ import javax.ws.rs.core.UriInfo;
 @Generated("")
 @Path("/v1.0")
 public abstract class BaseShipmentResourceImpl
-	implements ShipmentResource, EntityModelResource,
+	implements EntityModelResource, ShipmentResource,
 			   VulcanBatchEngineTaskItemDelegate<Shipment> {
 
 	/**
@@ -86,8 +86,8 @@ public abstract class BaseShipmentResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-shipment/v1.0/shipments'  -u 'test@liferay.com:test'
 	 */
-	@Override
 	@GET
+	@Override
 	@Parameters(
 		value = {
 			@Parameter(in = ParameterIn.QUERY, name = "search"),
@@ -114,10 +114,10 @@ public abstract class BaseShipmentResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-shipment/v1.0/shipments' -d $'{"carrier": ___, "expectedDate": ___, "orderId": ___, "shipmentItems": ___, "shippingAddress": ___, "shippingAddressId": ___, "shippingDate": ___, "trackingNumber": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
-	@Override
 	@Consumes({"application/json", "application/xml"})
-	@POST
+	@Override
 	@Path("/shipments")
+	@POST
 	@Produces({"application/json", "application/xml"})
 	@Tags(value = {@Tag(name = "Shipment")})
 	public Shipment postShipment(Shipment shipment) throws Exception {
@@ -129,18 +129,18 @@ public abstract class BaseShipmentResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-shipment/v1.0/shipments/batch'  -u 'test@liferay.com:test'
 	 */
-	@Override
 	@Consumes("application/json")
-	@POST
+	@Override
 	@Parameters(
 		value = {@Parameter(in = ParameterIn.QUERY, name = "callbackURL")}
 	)
 	@Path("/shipments/batch")
+	@POST
 	@Produces("application/json")
 	@Tags(value = {@Tag(name = "Shipment")})
 	public Response postShipmentBatch(
-			@Parameter(hidden = true) @QueryParam("callbackURL") String
-				callbackURL,
+			@Parameter(hidden = true) @QueryParam("callbackURL")
+				String callbackURL,
 			Object object)
 		throws Exception {
 
@@ -165,8 +165,8 @@ public abstract class BaseShipmentResourceImpl
 	 *
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-shipment/v1.0/shipments/{shipmentId}'  -u 'test@liferay.com:test'
 	 */
-	@Override
 	@DELETE
+	@Override
 	@Parameters(
 		value = {@Parameter(in = ParameterIn.PATH, name = "shipmentId")}
 	)
@@ -174,8 +174,8 @@ public abstract class BaseShipmentResourceImpl
 	@Produces({"application/json", "application/xml"})
 	@Tags(value = {@Tag(name = "Shipment")})
 	public void deleteShipment(
-			@NotNull @Parameter(hidden = true) @PathParam("shipmentId") Long
-				shipmentId)
+			@NotNull @Parameter(hidden = true) @PathParam("shipmentId")
+				Long shipmentId)
 		throws Exception {
 	}
 
@@ -184,9 +184,9 @@ public abstract class BaseShipmentResourceImpl
 	 *
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-shipment/v1.0/shipments/batch'  -u 'test@liferay.com:test'
 	 */
-	@Override
 	@Consumes("application/json")
 	@DELETE
+	@Override
 	@Parameters(
 		value = {@Parameter(in = ParameterIn.QUERY, name = "callbackURL")}
 	)
@@ -194,8 +194,8 @@ public abstract class BaseShipmentResourceImpl
 	@Produces("application/json")
 	@Tags(value = {@Tag(name = "Shipment")})
 	public Response deleteShipmentBatch(
-			@Parameter(hidden = true) @QueryParam("callbackURL") String
-				callbackURL,
+			@Parameter(hidden = true) @QueryParam("callbackURL")
+				String callbackURL,
 			Object object)
 		throws Exception {
 
@@ -220,8 +220,8 @@ public abstract class BaseShipmentResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-shipment/v1.0/shipments/{shipmentId}'  -u 'test@liferay.com:test'
 	 */
-	@Override
 	@GET
+	@Override
 	@Parameters(
 		value = {@Parameter(in = ParameterIn.PATH, name = "shipmentId")}
 	)
@@ -229,8 +229,8 @@ public abstract class BaseShipmentResourceImpl
 	@Produces({"application/json", "application/xml"})
 	@Tags(value = {@Tag(name = "Shipment")})
 	public Shipment getShipment(
-			@NotNull @Parameter(hidden = true) @PathParam("shipmentId") Long
-				shipmentId)
+			@NotNull @Parameter(hidden = true) @PathParam("shipmentId")
+				Long shipmentId)
 		throws Exception {
 
 		return new Shipment();
@@ -241,18 +241,18 @@ public abstract class BaseShipmentResourceImpl
 	 *
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-shipment/v1.0/shipments/{shipmentId}' -d $'{"carrier": ___, "expectedDate": ___, "orderId": ___, "shipmentItems": ___, "shippingAddress": ___, "shippingAddressId": ___, "shippingDate": ___, "trackingNumber": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
-	@Override
 	@Consumes({"application/json", "application/xml"})
-	@PATCH
+	@Override
 	@Parameters(
 		value = {@Parameter(in = ParameterIn.PATH, name = "shipmentId")}
 	)
+	@PATCH
 	@Path("/shipments/{shipmentId}")
 	@Produces({"application/json", "application/xml"})
 	@Tags(value = {@Tag(name = "Shipment")})
 	public Shipment patchShipment(
-			@NotNull @Parameter(hidden = true) @PathParam("shipmentId") Long
-				shipmentId,
+			@NotNull @Parameter(hidden = true) @PathParam("shipmentId")
+				Long shipmentId,
 			Shipment shipment)
 		throws Exception {
 
@@ -265,16 +265,16 @@ public abstract class BaseShipmentResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-shipment/v1.0/shipments/{shipmentId}/status-delivered'  -u 'test@liferay.com:test'
 	 */
 	@Override
-	@POST
 	@Parameters(
 		value = {@Parameter(in = ParameterIn.PATH, name = "shipmentId")}
 	)
 	@Path("/shipments/{shipmentId}/status-delivered")
+	@POST
 	@Produces({"application/json", "application/xml"})
 	@Tags(value = {@Tag(name = "Shipment")})
 	public Shipment postShipmentStatusDelivered(
-			@NotNull @Parameter(hidden = true) @PathParam("shipmentId") Long
-				shipmentId)
+			@NotNull @Parameter(hidden = true) @PathParam("shipmentId")
+				Long shipmentId)
 		throws Exception {
 
 		return new Shipment();
@@ -286,16 +286,16 @@ public abstract class BaseShipmentResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-shipment/v1.0/shipments/{shipmentId}/status-finish-processing'  -u 'test@liferay.com:test'
 	 */
 	@Override
-	@POST
 	@Parameters(
 		value = {@Parameter(in = ParameterIn.PATH, name = "shipmentId")}
 	)
 	@Path("/shipments/{shipmentId}/status-finish-processing")
+	@POST
 	@Produces({"application/json", "application/xml"})
 	@Tags(value = {@Tag(name = "Shipment")})
 	public Shipment postShipmentStatusFinishProcessing(
-			@NotNull @Parameter(hidden = true) @PathParam("shipmentId") Long
-				shipmentId)
+			@NotNull @Parameter(hidden = true) @PathParam("shipmentId")
+				Long shipmentId)
 		throws Exception {
 
 		return new Shipment();
@@ -307,16 +307,16 @@ public abstract class BaseShipmentResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-shipment/v1.0/shipments/{shipmentId}/status-shipped'  -u 'test@liferay.com:test'
 	 */
 	@Override
-	@POST
 	@Parameters(
 		value = {@Parameter(in = ParameterIn.PATH, name = "shipmentId")}
 	)
 	@Path("/shipments/{shipmentId}/status-shipped")
+	@POST
 	@Produces({"application/json", "application/xml"})
 	@Tags(value = {@Tag(name = "Shipment")})
 	public Shipment postShipmentStatusShipped(
-			@NotNull @Parameter(hidden = true) @PathParam("shipmentId") Long
-				shipmentId)
+			@NotNull @Parameter(hidden = true) @PathParam("shipmentId")
+				Long shipmentId)
 		throws Exception {
 
 		return new Shipment();

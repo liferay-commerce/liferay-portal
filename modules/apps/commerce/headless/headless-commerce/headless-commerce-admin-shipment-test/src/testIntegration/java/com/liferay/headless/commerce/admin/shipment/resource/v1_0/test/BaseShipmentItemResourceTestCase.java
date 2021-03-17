@@ -351,7 +351,7 @@ public abstract class BaseShipmentItemResourceTestCase {
 		Long irrelevantShipmentId =
 			testGetShipmentItemsPage_getIrrelevantShipmentId();
 
-		if ((irrelevantShipmentId != null)) {
+		if (irrelevantShipmentId != null) {
 			ShipmentItem irrelevantShipmentItem =
 				testGetShipmentItemsPage_addShipmentItem(
 					irrelevantShipmentId, randomIrrelevantShipmentItem());

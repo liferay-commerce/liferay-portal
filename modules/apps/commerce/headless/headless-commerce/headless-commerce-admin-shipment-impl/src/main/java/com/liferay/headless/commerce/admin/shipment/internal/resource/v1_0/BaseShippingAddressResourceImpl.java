@@ -72,7 +72,7 @@ import javax.ws.rs.core.UriInfo;
 @Generated("")
 @Path("/v1.0")
 public abstract class BaseShippingAddressResourceImpl
-	implements ShippingAddressResource, EntityModelResource,
+	implements EntityModelResource, ShippingAddressResource,
 			   VulcanBatchEngineTaskItemDelegate<ShippingAddress> {
 
 	/**
@@ -80,8 +80,8 @@ public abstract class BaseShippingAddressResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-shipment/v1.0/shipments/{shipmentId}/shipping-address'  -u 'test@liferay.com:test'
 	 */
-	@Override
 	@GET
+	@Override
 	@Parameters(
 		value = {@Parameter(in = ParameterIn.PATH, name = "shipmentId")}
 	)
@@ -89,8 +89,8 @@ public abstract class BaseShippingAddressResourceImpl
 	@Produces({"application/json", "application/xml"})
 	@Tags(value = {@Tag(name = "ShippingAddress")})
 	public ShippingAddress getShipmentShippingAddress(
-			@NotNull @Parameter(hidden = true) @PathParam("shipmentId") Long
-				shipmentId)
+			@NotNull @Parameter(hidden = true) @PathParam("shipmentId")
+				Long shipmentId)
 		throws Exception {
 
 		return new ShippingAddress();
@@ -101,18 +101,18 @@ public abstract class BaseShippingAddressResourceImpl
 	 *
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-shipment/v1.0/shipments/{shipmentId}/shipping-address' -d $'{"city": ___, "countryISOCode": ___, "description": ___, "id": ___, "latitude": ___, "longitude": ___, "name": ___, "phoneNumber": ___, "regionISOCode": ___, "street1": ___, "street2": ___, "street3": ___, "zip": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
-	@Override
 	@Consumes({"application/json", "application/xml"})
-	@PATCH
+	@Override
 	@Parameters(
 		value = {@Parameter(in = ParameterIn.PATH, name = "shipmentId")}
 	)
+	@PATCH
 	@Path("/shipments/{shipmentId}/shipping-address")
 	@Produces({"application/json", "application/xml"})
 	@Tags(value = {@Tag(name = "ShippingAddress")})
 	public ShippingAddress patchShipmentShippingAddress(
-			@NotNull @Parameter(hidden = true) @PathParam("shipmentId") Long
-				shipmentId,
+			@NotNull @Parameter(hidden = true) @PathParam("shipmentId")
+				Long shipmentId,
 			ShippingAddress shippingAddress)
 		throws Exception {
 
