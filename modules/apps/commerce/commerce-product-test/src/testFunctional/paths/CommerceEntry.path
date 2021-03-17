@@ -545,6 +545,11 @@
 	<td>//div[contains(@class,'commerce-health-status-check-row-icon-check${key_value}')][not(contains(@class,'hide'))]</td>
 	<td></td>
 </tr>
+<tr>
+	<td>CHECK_CURRENCY_DEFAULT_PLACED_ORDER</td>
+	<td>//div[@class='dnd-tr with-bg']/div[contains(.,'$')]</td>
+	<td></td>
+</tr>
 </tbody>
 </table>
 </body>
