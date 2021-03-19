@@ -105,7 +105,7 @@
 </tr>
 <tr>
 	<td>PRODUCT_DETAILS_LIST_PRICE</td>
-	<td>//div[contains(@class,'price')]//span[@class='price-value']</td>
+	<td>//div[contains(@class,'price')]//span[contains(@class,'price-value')]</td>
 	<td></td>
 </tr>
 <tr>
