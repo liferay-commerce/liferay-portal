@@ -12,24 +12,26 @@
  *
  */
 
-package com.liferay.commerce.machine.learning.internal.forecast.constants;
+package com.liferay.commerce.machine.learning.internal.forecast;
+
+import com.liferay.commerce.machine.learning.forecast.CPInstanceCommerceMLForecast;
 
 /**
  * @author Riccardo Ferrari
  */
-public enum CommerceMLForecastScope {
+public class CPInstanceCommerceMLForecastImpl
+	extends BaseCommerceMLForecastImpl implements CPInstanceCommerceMLForecast {
 
-	ASSET_CATEGORY("asset-category"), COMMERCE_ACCOUNT("commerce-account"),
-	CP_INSTANCE("cp-instance");
-
-	public String getLabel() {
-		return _label;
+	@Override
+	public String getSku() {
+		return _sku;
 	}
 
-	private CommerceMLForecastScope(String label) {
-		_label = label;
+	@Override
+	public void setSku(String sku) {
+		_sku = sku;
 	}
 
-	private final String _label;
+	private String _sku;
 
 }
