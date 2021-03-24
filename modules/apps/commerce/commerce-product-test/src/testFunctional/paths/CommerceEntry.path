@@ -545,6 +545,11 @@
 	<td>//div[contains(@class,'commerce-health-status-check-row-icon-check${key_value}')][not(contains(@class,'hide'))]</td>
 	<td></td>
 </tr>
+<tr>
+	<td>NO_ITEMS_WERE_FOUND_CHECK</td>
+	<td>//div[contains(@class,'sheet-text text-center')]</td>
+	<td></td>
+</tr>
 </tbody>
 </table>
 </body>
