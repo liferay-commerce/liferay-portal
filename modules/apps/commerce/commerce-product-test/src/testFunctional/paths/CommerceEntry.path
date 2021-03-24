@@ -656,6 +656,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>PRODUCT_CARD_SKU</td>
+	<td>//div[@class="cp-information"]//span[contains(text(),'${key_productSKU}')]//following::p[contains(.,'${key_productName}')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>PAYMENT_SUBSCRIPTION_TOGGLE</td>
 	<td>//h4[contains(text(), 'Payment Subscription')]//following-sibling::span[contains(@class,'toggle-switch-handle')]</td>
 	<td></td>
@@ -710,6 +715,11 @@
 	<td>MODAL_BUTTON_CLOSE</td>
 	<td>//div[contains(@class,'side-panel-iframe-header')]//button[contains(@class,'side-panel-iframe-close')]</td>
 <!--INVENTORY-->
+<tr>
+	<td>NO_ITEMS_WERE_FOUND_CHECK</td>
+	<td>//div[contains(@class,'sheet-text text-center')]</td>
+	<td></td>
+</tr>
 <tr>
 	<td>ON_ORDER_QUANTITY</td>
 	<td>//div[@class="dnd-tr with-bg"]//div[contains(text(),'1')]</td>
@@ -782,6 +792,6 @@
 	<td></td>
 </tr>
 </tbody>
-</table> 
+</table>
 </body>
 </html>
