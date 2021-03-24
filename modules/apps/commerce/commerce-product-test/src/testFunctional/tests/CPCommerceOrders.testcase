@@ -303,7 +303,6 @@ definition {
 
 		Button.click(button = "Submit");
 
-
 		Pause(locator1 = "3000");
 
 		CommerceCheckout.initializersCheckout(
