@@ -691,6 +691,7 @@ definition {
 			value1 = "Amortiguador");
 	}
 
+<<<<<<< HEAD
 	@description = "This is a test for COMMERCE-6304. UseFriendlyURL"
 	@ignore = "true"
 	@priority = "3"
@@ -707,6 +708,134 @@ definition {
 		property portal.acceptance = "false";
 
 		// TODO COMMERCE-6303 UseSchedule
+=======
+	@description = "COMMERCE-5802. Use a filter always check that the results are correct"
+	@ignore = "true"
+	@priority = "3"
+	test UseFilters {
+		property portal.acceptance = "false";
+
+		CommerceNavigator.gotoPortlet(
+			category = "Store Management",
+			portlet = "Channels");
+
+		Click(locator1 = "Button#PLUS");
+
+		CommerceEntry.addNewChannelsEntry(
+			channelCurrency = "US Dollar",
+			channelName = "Test Channel",
+			channelType = "Site");
+
+		Button.clickSave();
+
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+
+		CommerceNavigator.gotoPortlet(
+			category = "Product Management",
+			portlet = "Products");
+
+		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
+
+		Click(
+			key_categoryFilter = "Category",
+			locator1 = "CommerceEntry#FILTER_SELECT_CATEGORY");
+
+		Check.checkNotVisible(
+			checkboxName = "Brake System",
+			locator1 = "Checkbox#ANY_CHECKBOX");
+
+		Click(
+			key_menuItem = "Add Filter",
+			locator1 = "CommerceEntry#ANY_MENU_ITEM");
+
+		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
+
+		AssertElementPresent(
+			key_entryName = "Premium Brake Fluid",
+			locator1 = "CommerceEntry#TABLE_LIST_TITLE");
+
+		Button.click(button = "Reset Filters");
+
+		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
+
+		Click(locator1 = "CommerceEntry#FILTER_BACK_ARROW");
+
+		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
+
+		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
+
+		Click(
+			key_categoryFilter = "Catalog",
+			locator1 = "CommerceEntry#FILTER_SELECT_CATEGORY");
+
+		Click(
+			key_fieldType = "Test",
+			locator1 = "FormViewBuilder#FIELD_LABEL_MULTIPLE_SELECTION");
+
+		Click(
+			key_menuItem = "Add Filter",
+			locator1 = "CommerceEntry#ANY_MENU_ITEM");
+
+		AssertElementPresent(
+			key_entryName = "Hoses",
+			locator1 = "CommerceEntry#TABLE_LIST_TITLE");
+
+		Button.click(button = "Reset Filters");
+
+		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
+
+		Click(locator1 = "CommerceEntry#FILTER_BACK_ARROW");
+
+		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
+
+		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
+
+		Click(
+			key_categoryFilter = "Channel",
+			locator1 = "CommerceEntry#FILTER_SELECT_CATEGORY");
+
+		Check.checkNotVisible(
+			checkboxName = "Test Channel",
+			locator1 = "Checkbox#ANY_CHECKBOX");
+
+		Click(
+			key_menuItem = "Add Filter",
+			locator1 = "CommerceEntry#ANY_MENU_ITEM");
+
+		AssertElementPresent(locator1 = "CommerceEntry#NO_ITEMS_WERE_FOUND_CHECK");
+
+		Button.click(button = "Reset Filters");
+
+		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
+
+		Click(locator1 = "CommerceEntry#FILTER_BACK_ARROW");
+
+		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
+
+		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
+
+		Click(
+			key_categoryFilter = "Product Type",
+			locator1 = "CommerceEntry#FILTER_SELECT_CATEGORY");
+
+		Click(
+			key_fieldType = "Virtual",
+			locator1 = "FormViewBuilder#FIELD_LABEL_MULTIPLE_SELECTION");
+
+		Click(
+			key_menuItem = "Add Filter",
+			locator1 = "CommerceEntry#ANY_MENU_ITEM");
+
+		AssertElementPresent(locator1 = "CommerceEntry#NO_ITEMS_WERE_FOUND_CHECK");
+
+		Button.click(button = "Reset Filters");
+
+		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
+
+		Click(locator1 = "CommerceEntry#FILTER_BACK_ARROW");
+
+		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
+>>>>>>> d866ede (COMMERCE-5802 Adding UseFilters test)
 	}
 
 	@description = "This is a test for COMMERCE-5805. UseSearchBarAndPagination"
