@@ -545,7 +545,13 @@
 	<td>//div[contains(@class,'commerce-health-status-check-row-icon-check${key_value}')][not(contains(@class,'hide'))]</td>
 	<td></td>
 </tr>
+<!--INVENTORY-->
+<tr>
+	<td>ON_ORDER_QUANTITY</td>
+	<td>//div[@class="dnd-tr with-bg"]//div[contains(text(),'1')]</td>
+	<td></td>
+</tr>
 </tbody>
-</table>
+</table> 
 </body>
 </html>
