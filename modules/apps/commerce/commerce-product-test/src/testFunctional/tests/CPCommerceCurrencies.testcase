@@ -59,9 +59,11 @@ definition {
 		ClickNoError(
 			key_entryName = "US Dollar",
 			locator1 = "CommerceNavigation#ENTRY_NAME");
+
 		Type(
 			locator1 = "CommerceEntry#PRIORITY_FIELD",
 			value1 = "1");
+
 		Button.clickSave();
 
 		AssertElementPresent(locator1 = "CommerceEntry#FIRST_CURRENCY_ELEMENT");
