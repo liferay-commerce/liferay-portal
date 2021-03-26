@@ -267,8 +267,8 @@ definition {
 			locator1 = "CommerceAccelerators#PRODUCT_CARD_NAME");
 
 		AssertTextEquals(
-			value1 = "MIN55861",
-			locator1 = "CommerceFrontStore#FS_PRODUCT_SKU");
+			locator1 = "CommerceFrontStore#FS_PRODUCT_SKU",
+			value1 = "MIN55861");
 
 		// TODO COMMERCE-5862 ViewProductCardSKU pending implementation
 	}
