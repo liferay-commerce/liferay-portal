@@ -519,6 +519,11 @@
 	<td>//p[@title='${card_name}']//following-sibling::p[@class='card-text']//span[@class='price-value']</td>
 	<td></td>
 </tr>
+<tr>
+	<td>DEFAULT_PRODUCT_IMAGE</td>
+	<td>//div[contains(@style,'default')]</td>
+	<td></td>
+</tr>
 <!--OPTION-->
 <tr>
 	<td>DELETE_OPTION_BUTTON</td>
