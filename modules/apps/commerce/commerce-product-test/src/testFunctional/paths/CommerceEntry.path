@@ -509,6 +509,12 @@
 	<td>//div/label[@class='control-label' and contains(.,'${key_customFieldName}')]/..//p</td>
 	<td></td>
 </tr>
+<tr>
+	<td>DEFAULT_PRODUCT_IMAGE</td>
+	<td>//div[contains(@style,'default')]</td>
+	<td></td>
+</tr>
+
 <!--OPTION-->
 <tr>
 	<td>DELETE_OPTION_BUTTON</td>
