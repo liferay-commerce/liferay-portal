@@ -276,7 +276,25 @@ definition {
 	test ViewProductCardStartingPrice {
 		property portal.acceptance = "false";
 
-		// TODO COMMERCE-5865 ViewProductCardStartingPrice pending implementation
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+
+		ApplicationsMenu.gotoSite(site = "Minium");	
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
+
+		CommerceAcceleratorsInitializer.createNewAccountViaFront(
+			accountName = "Commerce Account",
+			adminEmailAddress = "test@liferay.com");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
+		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");	
+
+		AssertTextEquals.assertPartialText(
+			card_name = "Brake Fluid",
+			locator1 = "CommerceEntry#PRODUCT_CARD_NAME_AND_PRICE",
+			value1 = "From $ 80.00");
+
 	}
 
 }
