@@ -658,6 +658,11 @@
 	<td>//h4[contains(text(), 'Delivery Subscription')]//following-sibling::span[contains(@class,'toggle-switch-handle')]</td>
 	<td></td>
 </tr>
+<tr>
+	<td>PRODUCT_CARD_NAME_AND_PRICE</td>
+	<td>//p[@title='${card_name}']//following-sibling::p[@class='card-text']//span[@class='price-value']</td>
+	<td></td>
+</tr>
 <!--OPTION-->
 <tr>
 	<td>DELETE_OPTION_BUTTON</td>
