@@ -209,12 +209,16 @@
 	<td></td>
 </tr>
 <tr>
+<<<<<<< HEAD
 	<td>PRODUCT_DETAILS_ADD_TO_WISH_LIST</td>
 	<td>//div[contains(@class,'product-detail')]//div[@class='add-to-wish-list']//button</td>
 	<td></td>
 </tr>
 <tr>
 	<td>PRODUCT_CARD_AVAILABILITY_LABEL</td>
+=======
+	<td>PRODUCT_LABEL_PRODUCT_AVAILABLE</td>
+>>>>>>> fe338a92 (COMMERCE-5872 Adding AssertProductIsAvailable Test)
 	<td>//a[contains(@href,'${key_productName}')]//span[contains(@class,'m-0')]</td>
 	<td></td>
 </tr>
