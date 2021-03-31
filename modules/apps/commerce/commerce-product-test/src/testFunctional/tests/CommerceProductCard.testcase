@@ -267,7 +267,16 @@ definition {
 	test ViewProductCardSKU {
 		property portal.acceptance = "false";
 
-		// TODO COMMERCE-5862 ViewProductCardSKU pending implementation
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium");
+
+		Click(
+			key_productName = "U-Joint",
+			locator1 = "CommerceAccelerators#PRODUCT_CARD_NAME");
+
+		AssertTextEquals(
+			locator1 = "CommerceFrontStore#FS_PRODUCT_SKU",
+			value1 = "MIN55861");
 	}
 
 	@description = "COMMERCE-5865. As a buyer, I want to view starting price on product card when product has different SKUs with different prices"
