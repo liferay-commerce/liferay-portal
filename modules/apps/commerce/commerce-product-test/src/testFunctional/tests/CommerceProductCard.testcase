@@ -27,13 +27,44 @@ definition {
 	}
 
 	@description = "COMMERCE-5866. As a buyer, I want to be able to add a product to my wish list, by clicking on an Add To Wish List button"
-	@ignore = "true"
 	@priority = "3"
 	test AddProductToWishListFromProductCard {
 		property portal.acceptance = "false";
 
-		// TODO COMMERCE-5866 AddProductToWishListFromProductCard pending implementation
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
+		ApplicationsMenu.gotoSite(site = "Minium");
+		
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
+	
+		CommerceAcceleratorsInitializer.createNewAccountViaFront(
+			accountName = "Commerce Account",
+			adminEmailAddress = "test@liferay.com");
+	
+		Click(
+			key_navUnderline = "Members",
+			locator1 = "NavUnderline#NAV_UNDERLINE_LINK");
+	
+		CommerceAcceleratorsInitializer.inviteNewMemberWithRoleToAccount(
+			emailAddress = "buyer@liferay.com",
+			role = "Buyer");
+
+		ApplicationsMenu.gotoSite(site = "Minium");
+
+		Click(
+			key_productName = "U-Joint",
+			locator1 = "CommerceEntry#ADD_TO_WISH_LIST_BUTTON");
+
+		Click(
+			locator1 = "CommerceAccelerators#MINIUM_SIDEBAR_USER_AVATAR");
+	
+		Click(
+			key_menuItem = "My Lists",
+			locator1 = "CommerceAccelerators#MINIUM_SIDEBAR_MENU_ITEM");
+
+		AssertTextEquals(
+			value1 = "U-Joint",
+			locator1 = "AppBuilder#ITEM_ON_THE_TABLE");
 	}
 
 	@description = "COMMERCE-5859. As a buyer, I want to view the product price with the default channel currency"
