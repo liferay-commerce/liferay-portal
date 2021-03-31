@@ -19,6 +19,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>ADD_TO_WISH_LIST_BUTTON</td>
+	<td>//p[@title='${key_productName}']//../..//span[contains(@class,'wish-list-icon')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>CHANNEL_CHECKBOX</td>
 	<td>//input[contains(@id,'Channel') and (@type='checkbox')]</td>
 	<td></td>
