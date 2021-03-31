@@ -151,7 +151,6 @@ definition {
 			role = "Buyer");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
-		
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
 
