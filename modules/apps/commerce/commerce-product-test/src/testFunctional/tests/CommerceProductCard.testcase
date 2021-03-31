@@ -34,17 +34,17 @@ definition {
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
-		
+
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
-	
+
 		CommerceAcceleratorsInitializer.createNewAccountViaFront(
 			accountName = "Commerce Account",
 			adminEmailAddress = "test@liferay.com");
-	
+
 		Click(
 			key_navUnderline = "Members",
 			locator1 = "NavUnderline#NAV_UNDERLINE_LINK");
-	
+
 		CommerceAcceleratorsInitializer.inviteNewMemberWithRoleToAccount(
 			emailAddress = "buyer@liferay.com",
 			role = "Buyer");
@@ -55,16 +55,15 @@ definition {
 			key_productName = "U-Joint",
 			locator1 = "CommerceEntry#ADD_TO_WISH_LIST_BUTTON");
 
-		Click(
-			locator1 = "CommerceAccelerators#MINIUM_SIDEBAR_USER_AVATAR");
-	
+		Click(locator1 = "CommerceAccelerators#MINIUM_SIDEBAR_USER_AVATAR");
+
 		Click(
 			key_menuItem = "My Lists",
 			locator1 = "CommerceAccelerators#MINIUM_SIDEBAR_MENU_ITEM");
 
 		AssertTextEquals(
-			value1 = "U-Joint",
-			locator1 = "AppBuilder#ITEM_ON_THE_TABLE");
+			locator1 = "AppBuilder#ITEM_ON_THE_TABLE",
+			value1 = "U-Joint");
 	}
 
 	@description = "COMMERCE-5859. As a buyer, I want to view the product price with the default channel currency"
@@ -74,6 +73,7 @@ definition {
 		property portal.acceptance = "false";
 
 		// TODO COMMERCE-5859 AssertDefaultChannelCurrencyIsAppliedToProductCard pending implementation
+
 	}
 
 	@description = "COMMERCE-5907. As a buyer, I want to be unable to add multiple SKU product to the cart directly, I want to be unable to select the quantity of the product directly and I want to be unable to check the availability of the product directly"
