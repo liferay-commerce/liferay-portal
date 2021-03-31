@@ -132,7 +132,33 @@ definition {
 	test AssertProductIsAvailable {
 		property portal.acceptance = "false";
 
-		// TODO COMMERCE-5872 AssertProductIsAvailable pending implementation
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+
+		ApplicationsMenu.gotoSite(site = "Minium");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
+
+		CommerceAcceleratorsInitializer.createNewAccountViaFront(
+			accountName = "Commerce Account",
+			adminEmailAddress = "test@liferay.com");
+
+		Click(
+			key_navUnderline = "Members",
+			locator1 = "NavUnderline#NAV_UNDERLINE_LINK");
+
+		CommerceAcceleratorsInitializer.inviteNewMemberWithRoleToAccount(
+			emailAddress = "buyer@liferay.com",
+			role = "Buyer");
+
+		ApplicationsMenu.gotoSite(site = "Minium");
+		
+
+		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
+
+		AssertTextEquals(
+			key_productName = "abs-sensor",
+			locator1 = "CommerceAccelerators#PRODUCT_LABEL_PRODUCT_AVAILABLE",
+			value1 = "Available");
 	}
 
 	@description = "COMMERCE-5871. As a buyer, I want to view the availability of the product, if set and configured admin-side(product unavailable)"
