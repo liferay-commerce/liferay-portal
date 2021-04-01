@@ -144,6 +144,16 @@
 	<td></td>
 </tr>
 <tr>
+	<td>SELECT_CHECKBOX</td>
+	<td>//p[@title='${key_productName}']//../..//input[contains(@aria-label,'Compare')]</td>
+	<td></td> 
+</tr>
+<tr>
+	<td>ASSERT_MINI_COMPARE</td>
+	<td>//div[@class="mini-compare-item active"]//div[@class="mini-compare-thumbnail"]</td>
+	<td></td> 
+</tr>
+<tr>
 	<td>BILLING_ALLOWED_CHECKBOX</td>
 	<td>//input[contains(@id,'billingAllowed') and (@type='checkbox')]</td>
 	<td></td>
