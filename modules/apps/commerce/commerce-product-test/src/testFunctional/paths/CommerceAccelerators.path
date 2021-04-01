@@ -262,6 +262,11 @@
 	<td></td>
 </tr>
 <tr>
+    <td>PRODUCT_VIEW_ALL_VARIANTS</td>
+    <td>//div[contains(@class,'add-to-cart d-flex my-2 pt-5')]//a[contains(@href,'${key_productName}')]</td>
+    <td></td>
+</tr>
+<tr>
 	<td>MINI_CART_ITEM_SKU</td>
 	<td>//p[@class='item-sku' and contains(.,'${key_cartItemSKU}')]</td>
 	<td></td>

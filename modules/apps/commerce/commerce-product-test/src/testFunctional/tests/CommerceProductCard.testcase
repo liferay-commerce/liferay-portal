@@ -177,7 +177,34 @@ definition {
 	test AssertViewAllVariantsButtonRedirectsToProductDetailsPage {
 		property portal.acceptance = "false";
 
-		// TODO COMMERCE-5873 AssertViewAllVariantsButtonRedirectsToProductDetailsPage pending implementation
+		var key_productName = "brake-fluid";
+
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		
+		ApplicationsMenu.gotoSite(site = "Minium");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
+
+		CommerceAcceleratorsInitializer.createNewAccountViaFront(
+			accountName = "Commerce Account",
+			adminEmailAddress = "test@liferay.com");
+		Click(
+			key_navUnderline = "Members",
+			locator1 = "NavUnderline#NAV_UNDERLINE_LINK");
+		CommerceAcceleratorsInitializer.inviteNewMemberWithRoleToAccount(
+			emailAddress = "buyer@liferay.com",
+			role = "Buyer");
+		ApplicationsMenu.gotoSite(site = "Minium");
+		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
+		Click(
+			locator1 = "CommerceAccelerators#PRODUCT_VIEW_ALL_VARIANTS",
+			value1 = "key_productName");
+		AssertTextEquals(
+			locator1 = "CommerceFrontStore#FS_PRODUCT_SKU",
+			value1 = "MIN93016A");
+		AssertTextEquals(
+			locator1 = "CommerceFrontStore#FS_PRODUCT_NAME",
+			value1 = "Brake Fluid");
 	}
 
 	@description = "COMMERCE-5868. As a buyer, I want to be able to compare a product with other ones in a product comparison items list, by checking the product via checkbox"
