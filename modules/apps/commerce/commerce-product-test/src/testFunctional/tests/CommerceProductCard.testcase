@@ -221,12 +221,19 @@ definition {
 	}
 
 	@description = "COMMERCE-5871. As a buyer, I want to view the availability of the product, if set and configured admin-side(product unavailable)"
-	@ignore = "true"
 	@priority = "3"
 	test AssertProductIsUnavailable {
 		property portal.acceptance = "false";
 
-		// TODO COMMERCE-5871 AssertProductIsUnavailable pending implementation
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium");
+
+		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
+
+		SelectFrame.selectFrameNoLoading(locator1 = "//main[contains(@class,'minium-frame')]");
+
+		AssertElementPresent(locator1 = "//p[contains(@title, ");
 	}
 
 	@description = "COMMERCE-5861. As a buyer, I want to view the product name with the correct localization"
