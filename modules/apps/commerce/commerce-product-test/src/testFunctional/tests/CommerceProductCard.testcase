@@ -6,7 +6,7 @@ definition {
 	property testray.main.component.name = "Commerce";
 
 	setUp {
-		//TestCase.setUpPortalInstance();
+		TestCase.setUpPortalInstance();
 
 		User.firstLoginPG();
 	}
