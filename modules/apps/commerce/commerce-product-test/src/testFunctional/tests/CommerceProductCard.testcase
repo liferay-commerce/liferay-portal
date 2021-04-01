@@ -205,7 +205,6 @@ definition {
 			role = "Buyer");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
-		
 
 		Check.checkToggleSwitch(
 			key_productName = "U-Joint",
