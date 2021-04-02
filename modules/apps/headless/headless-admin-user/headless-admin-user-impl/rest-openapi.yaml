@@ -198,6 +198,10 @@ components:
                         The number of this organization's child organizations.
                     readOnly: true
                     type: integer
+                organizationAccounts:
+                    items:
+                        $ref: "#/components/schemas/OrganizationAccount"
+                    type: array
                 organizationContactInformation:
                     description:
                         The organization's contact information, which includes email addresses, postal addresses, phone
@@ -266,6 +270,47 @@ components:
                                 type: string
                         type: object
                     type: array
+                userAccounts:
+                    items:
+                        $ref: "#/components/schemas/UserAccount"
+                    type: array
+            type: object
+        OrganizationAccount:
+            # @review
+            description:
+                An account represents an external account, for example a customer business.
+            properties:
+                description:
+                    type: string
+                domains:
+                    # @review
+                    description:
+                        The account's email domains. Users assigned to this account generally will have email addresses
+                        under one of these domains.
+                    items:
+                        type: string
+                    type: array
+                externalReferenceCode:
+                    # @review
+                    description:
+                        The optional external key of this account.
+                    type: string
+                id:
+                    format: int64
+                    readOnly: true
+                    type: integer
+                name:
+                    type: string
+                organizationIds:
+                    items:
+                        format: int64
+                        type: integer
+                    type: array
+                parentAccountId:
+                    format: int64
+                    type: integer
+                status:
+                    type: integer
             type: object
         OrganizationBrief:
             description:
@@ -1135,6 +1180,54 @@ paths:
                     description:
                         "Organization successfully replaced"
             tags: ["Organization"]
+    "/organizations/{organizationId}/accounts":
+        get:
+            description:
+                Retrieves the organization's members (accounts). Results can be paginated, filtered, searched, and
+                sorted.
+            operationId: getOrganizationAccountsPage
+            parameters:
+                - in: path
+                  name: organizationId
+                  required: true
+                  schema:
+                      type: string
+                - in: query
+                  name: filter
+                  schema:
+                      type: string
+                - in: query
+                  name: page
+                  schema:
+                      type: integer
+                - in: query
+                  name: pageSize
+                  schema:
+                      type: integer
+                - in: query
+                  name: search
+                  schema:
+                      type: string
+                - in: query
+                  name: sort
+                  schema:
+                      type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/OrganizationAccount"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/OrganizationAccount"
+                                type: array
+                    description:
+                        ""
+            tags: [ "OrganizationAccount" ]
     "/organizations/{organizationId}/email-addresses":
         get:
             description:
