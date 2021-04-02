@@ -92,6 +92,10 @@ public interface AccountEntryService extends BaseService {
 			OrderByComparator<AccountEntry> orderByComparator)
 		throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public AccountEntry getAccountEntry(long accountEntryId)
+		throws PortalException;
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *

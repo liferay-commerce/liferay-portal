@@ -94,6 +94,12 @@ public class AccountEntryServiceUtil {
 			companyId, status, start, end, orderByComparator);
 	}
 
+	public static AccountEntry getAccountEntry(long accountEntryId)
+		throws PortalException {
+
+		return getService().getAccountEntry(accountEntryId);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *

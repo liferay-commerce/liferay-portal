@@ -164,6 +164,24 @@ public class AccountEntryServiceSoap {
 		}
 	}
 
+	public static com.liferay.account.model.AccountEntrySoap getAccountEntry(
+			long accountEntryId)
+		throws RemoteException {
+
+		try {
+			com.liferay.account.model.AccountEntry returnValue =
+				AccountEntryServiceUtil.getAccountEntry(accountEntryId);
+
+			return com.liferay.account.model.AccountEntrySoap.toSoapModel(
+				returnValue);
+		}
+		catch (Exception exception) {
+			_log.error(exception, exception);
+
+			throw new RemoteException(exception.getMessage());
+		}
+	}
+
 	private static Log _log = LogFactoryUtil.getLog(
 		AccountEntryServiceSoap.class);
 
