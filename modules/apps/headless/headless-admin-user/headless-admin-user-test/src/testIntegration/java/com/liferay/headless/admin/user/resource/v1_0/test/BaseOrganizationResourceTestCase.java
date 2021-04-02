@@ -1160,6 +1160,16 @@ public abstract class BaseOrganizationResourceTestCase {
 			}
 
 			if (Objects.equals(
+					"organizationAccounts", additionalAssertFieldName)) {
+
+				if (organization.getOrganizationAccounts() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
 					"organizationContactInformation",
 					additionalAssertFieldName)) {
 
@@ -1182,6 +1192,14 @@ public abstract class BaseOrganizationResourceTestCase {
 
 			if (Objects.equals("services", additionalAssertFieldName)) {
 				if (organization.getServices() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("userAccounts", additionalAssertFieldName)) {
+				if (organization.getUserAccounts() == null) {
 					valid = false;
 				}
 
@@ -1401,6 +1419,19 @@ public abstract class BaseOrganizationResourceTestCase {
 			}
 
 			if (Objects.equals(
+					"organizationAccounts", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						organization1.getOrganizationAccounts(),
+						organization2.getOrganizationAccounts())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
 					"organizationContactInformation",
 					additionalAssertFieldName)) {
 
@@ -1431,6 +1462,17 @@ public abstract class BaseOrganizationResourceTestCase {
 				if (!Objects.deepEquals(
 						organization1.getServices(),
 						organization2.getServices())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("userAccounts", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						organization1.getUserAccounts(),
+						organization2.getUserAccounts())) {
 
 					return false;
 				}
@@ -1645,6 +1687,11 @@ public abstract class BaseOrganizationResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("organizationAccounts")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("organizationContactInformation")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -1656,6 +1703,11 @@ public abstract class BaseOrganizationResourceTestCase {
 		}
 
 		if (entityFieldName.equals("services")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("userAccounts")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
 		}

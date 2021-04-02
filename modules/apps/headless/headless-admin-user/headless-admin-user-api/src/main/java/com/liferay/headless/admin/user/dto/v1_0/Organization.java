@@ -387,6 +387,38 @@ public class Organization implements Serializable {
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Integer numberOfOrganizations;
 
+	@Schema
+	@Valid
+	public OrganizationAccount[] getOrganizationAccounts() {
+		return organizationAccounts;
+	}
+
+	public void setOrganizationAccounts(
+		OrganizationAccount[] organizationAccounts) {
+
+		this.organizationAccounts = organizationAccounts;
+	}
+
+	@JsonIgnore
+	public void setOrganizationAccounts(
+		UnsafeSupplier<OrganizationAccount[], Exception>
+			organizationAccountsUnsafeSupplier) {
+
+		try {
+			organizationAccounts = organizationAccountsUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected OrganizationAccount[] organizationAccounts;
+
 	@Schema(
 		description = "The organization's contact information, which includes email addresses, postal addresses, phone numbers, and web URLs. This is modeled internally as a `Contact`."
 	)
@@ -486,6 +518,35 @@ public class Organization implements Serializable {
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Service[] services;
+
+	@Schema
+	@Valid
+	public UserAccount[] getUserAccounts() {
+		return userAccounts;
+	}
+
+	public void setUserAccounts(UserAccount[] userAccounts) {
+		this.userAccounts = userAccounts;
+	}
+
+	@JsonIgnore
+	public void setUserAccounts(
+		UnsafeSupplier<UserAccount[], Exception> userAccountsUnsafeSupplier) {
+
+		try {
+			userAccounts = userAccountsUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected UserAccount[] userAccounts;
 
 	@Override
 	public boolean equals(Object object) {
@@ -675,6 +736,26 @@ public class Organization implements Serializable {
 			sb.append(numberOfOrganizations);
 		}
 
+		if (organizationAccounts != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"organizationAccounts\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < organizationAccounts.length; i++) {
+				sb.append(String.valueOf(organizationAccounts[i]));
+
+				if ((i + 1) < organizationAccounts.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
 		if (organizationContactInformation != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -708,6 +789,26 @@ public class Organization implements Serializable {
 				sb.append(String.valueOf(services[i]));
 
 				if ((i + 1) < services.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
+		if (userAccounts != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"userAccounts\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < userAccounts.length; i++) {
+				sb.append(String.valueOf(userAccounts[i]));
+
+				if ((i + 1) < userAccounts.length) {
 					sb.append(", ");
 				}
 			}

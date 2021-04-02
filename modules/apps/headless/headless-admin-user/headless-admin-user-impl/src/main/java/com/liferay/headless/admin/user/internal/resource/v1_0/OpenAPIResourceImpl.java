@@ -84,6 +84,8 @@ public class OpenAPIResourceImpl {
 
 			add(OrganizationResourceImpl.class);
 
+			add(OrganizationAccountResourceImpl.class);
+
 			add(PhoneResourceImpl.class);
 
 			add(PostalAddressResourceImpl.class);

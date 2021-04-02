@@ -16,6 +16,7 @@ package com.liferay.headless.admin.user.internal.graphql.query.v1_0;
 
 import com.liferay.headless.admin.user.dto.v1_0.EmailAddress;
 import com.liferay.headless.admin.user.dto.v1_0.Organization;
+import com.liferay.headless.admin.user.dto.v1_0.OrganizationAccount;
 import com.liferay.headless.admin.user.dto.v1_0.Phone;
 import com.liferay.headless.admin.user.dto.v1_0.PostalAddress;
 import com.liferay.headless.admin.user.dto.v1_0.Role;
@@ -26,6 +27,7 @@ import com.liferay.headless.admin.user.dto.v1_0.Subscription;
 import com.liferay.headless.admin.user.dto.v1_0.UserAccount;
 import com.liferay.headless.admin.user.dto.v1_0.WebUrl;
 import com.liferay.headless.admin.user.resource.v1_0.EmailAddressResource;
+import com.liferay.headless.admin.user.resource.v1_0.OrganizationAccountResource;
 import com.liferay.headless.admin.user.resource.v1_0.OrganizationResource;
 import com.liferay.headless.admin.user.resource.v1_0.PhoneResource;
 import com.liferay.headless.admin.user.resource.v1_0.PostalAddressResource;
@@ -84,6 +86,14 @@ public class Query {
 
 		_organizationResourceComponentServiceObjects =
 			organizationResourceComponentServiceObjects;
+	}
+
+	public static void setOrganizationAccountResourceComponentServiceObjects(
+		ComponentServiceObjects<OrganizationAccountResource>
+			organizationAccountResourceComponentServiceObjects) {
+
+		_organizationAccountResourceComponentServiceObjects =
+			organizationAccountResourceComponentServiceObjects;
 	}
 
 	public static void setPhoneResourceComponentServiceObjects(
@@ -243,7 +253,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {organization(organizationId: ___){actions, comment, customFields, dateCreated, dateModified, id, image, keywords, location, name, numberOfOrganizations, organizationContactInformation, parentOrganization, services}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {organization(organizationId: ___){actions, comment, customFields, dateCreated, dateModified, id, image, keywords, location, name, numberOfOrganizations, organizationAccounts, organizationContactInformation, userAccounts, parentOrganization, services}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(description = "Retrieves the organization.")
 	public Organization organization(
@@ -285,6 +295,36 @@ public class Query {
 					Pagination.of(page, pageSize),
 					_sortsBiFunction.apply(
 						organizationResource, sortsString))));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {organizationAccounts(filter: ___, organizationId: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField(
+		description = "Retrieves the organization's members (accounts). Results can be paginated, filtered, searched, and sorted."
+	)
+	public OrganizationAccountPage organizationAccounts(
+			@GraphQLName("organizationId") String organizationId,
+			@GraphQLName("search") String search,
+			@GraphQLName("filter") String filterString,
+			@GraphQLName("pageSize") int pageSize,
+			@GraphQLName("page") int page,
+			@GraphQLName("sort") String sortsString)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_organizationAccountResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			organizationAccountResource -> new OrganizationAccountPage(
+				organizationAccountResource.getOrganizationAccountsPage(
+					organizationId, search,
+					_filterBiFunction.apply(
+						organizationAccountResource, filterString),
+					Pagination.of(page, pageSize),
+					_sortsBiFunction.apply(
+						organizationAccountResource, sortsString))));
 	}
 
 	/**
@@ -792,6 +832,43 @@ public class Query {
 
 	}
 
+	@GraphQLTypeExtension(Organization.class)
+	public class GetOrganizationAccountsPageTypeExtension {
+
+		public GetOrganizationAccountsPageTypeExtension(
+			Organization organization) {
+
+			_organization = organization;
+		}
+
+		@GraphQLField(
+			description = "Retrieves the organization's members (accounts). Results can be paginated, filtered, searched, and sorted."
+		)
+		public OrganizationAccountPage accounts(
+				@GraphQLName("search") String search,
+				@GraphQLName("filter") String filterString,
+				@GraphQLName("pageSize") int pageSize,
+				@GraphQLName("page") int page,
+				@GraphQLName("sort") String sortsString)
+			throws Exception {
+
+			return _applyComponentServiceObjects(
+				_organizationAccountResourceComponentServiceObjects,
+				Query.this::_populateResourceContext,
+				organizationAccountResource -> new OrganizationAccountPage(
+					organizationAccountResource.getOrganizationAccountsPage(
+						_organization.getId(), search,
+						_filterBiFunction.apply(
+							organizationAccountResource, filterString),
+						Pagination.of(page, pageSize),
+						_sortsBiFunction.apply(
+							organizationAccountResource, sortsString))));
+		}
+
+		private Organization _organization;
+
+	}
+
 	@GraphQLTypeExtension(Site.class)
 	public class GetSiteSegmentsPageTypeExtension {
 
@@ -906,43 +983,6 @@ public class Query {
 				webUrlResource -> new WebUrlPage(
 					webUrlResource.getOrganizationWebUrlsPage(
 						_organization.getId())));
-		}
-
-		private Organization _organization;
-
-	}
-
-	@GraphQLTypeExtension(Organization.class)
-	public class GetOrganizationUserAccountsPageTypeExtension {
-
-		public GetOrganizationUserAccountsPageTypeExtension(
-			Organization organization) {
-
-			_organization = organization;
-		}
-
-		@GraphQLField(
-			description = "Retrieves the organization's members (users). Results can be paginated, filtered, searched, and sorted."
-		)
-		public UserAccountPage userAccounts(
-				@GraphQLName("search") String search,
-				@GraphQLName("filter") String filterString,
-				@GraphQLName("pageSize") int pageSize,
-				@GraphQLName("page") int page,
-				@GraphQLName("sort") String sortsString)
-			throws Exception {
-
-			return _applyComponentServiceObjects(
-				_userAccountResourceComponentServiceObjects,
-				Query.this::_populateResourceContext,
-				userAccountResource -> new UserAccountPage(
-					userAccountResource.getOrganizationUserAccountsPage(
-						_organization.getId(), search,
-						_filterBiFunction.apply(
-							userAccountResource, filterString),
-						Pagination.of(page, pageSize),
-						_sortsBiFunction.apply(
-							userAccountResource, sortsString))));
 		}
 
 		private Organization _organization;
@@ -1154,6 +1194,39 @@ public class Query {
 
 		@GraphQLField
 		protected java.util.Collection<Organization> items;
+
+		@GraphQLField
+		protected long lastPage;
+
+		@GraphQLField
+		protected long page;
+
+		@GraphQLField
+		protected long pageSize;
+
+		@GraphQLField
+		protected long totalCount;
+
+	}
+
+	@GraphQLName("OrganizationAccountPage")
+	public class OrganizationAccountPage {
+
+		public OrganizationAccountPage(Page organizationAccountPage) {
+			actions = organizationAccountPage.getActions();
+
+			items = organizationAccountPage.getItems();
+			lastPage = organizationAccountPage.getLastPage();
+			page = organizationAccountPage.getPage();
+			pageSize = organizationAccountPage.getPageSize();
+			totalCount = organizationAccountPage.getTotalCount();
+		}
+
+		@GraphQLField
+		protected Map<String, Map> actions;
+
+		@GraphQLField
+		protected java.util.Collection<OrganizationAccount> items;
 
 		@GraphQLField
 		protected long lastPage;
@@ -1538,6 +1611,22 @@ public class Query {
 		organizationResource.setRoleLocalService(_roleLocalService);
 	}
 
+	private void _populateResourceContext(
+			OrganizationAccountResource organizationAccountResource)
+		throws Exception {
+
+		organizationAccountResource.setContextAcceptLanguage(_acceptLanguage);
+		organizationAccountResource.setContextCompany(_company);
+		organizationAccountResource.setContextHttpServletRequest(
+			_httpServletRequest);
+		organizationAccountResource.setContextHttpServletResponse(
+			_httpServletResponse);
+		organizationAccountResource.setContextUriInfo(_uriInfo);
+		organizationAccountResource.setContextUser(_user);
+		organizationAccountResource.setGroupLocalService(_groupLocalService);
+		organizationAccountResource.setRoleLocalService(_roleLocalService);
+	}
+
 	private void _populateResourceContext(PhoneResource phoneResource)
 		throws Exception {
 
@@ -1665,6 +1754,8 @@ public class Query {
 		_emailAddressResourceComponentServiceObjects;
 	private static ComponentServiceObjects<OrganizationResource>
 		_organizationResourceComponentServiceObjects;
+	private static ComponentServiceObjects<OrganizationAccountResource>
+		_organizationAccountResourceComponentServiceObjects;
 	private static ComponentServiceObjects<PhoneResource>
 		_phoneResourceComponentServiceObjects;
 	private static ComponentServiceObjects<PostalAddressResource>
