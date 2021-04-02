@@ -273,7 +273,6 @@ definition {
 	}
 
 	@description = "COMMERCE-5868. As a buyer, I want to be able to compare a product with other ones in a product comparison items list, by checking the product via checkbox"
-	@ignore = "true"
 	@priority = "3"
 	test CompareProductFromProductCard {
 		property portal.acceptance = "false";
