@@ -158,18 +158,19 @@ definition {
 	@priority = "3"
 	test AssertQuantityCanBeSelectedUpToAMaximumQuantitySet {
 		property portal.acceptance = "false";
+
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
-		
+
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
 			portlet = "Products");
-		
+
 		AppBuilderAdmin.searchByItem(itemName = "U-Joint");
 
 		Click(
 			key_entryName = "U-Joint",
 			locator1 = "CommerceEntry#TABLE_LIST_TITLE");
-		
+
 		CommerceEntry.gotoMenuTab(menuTab = "Configuration");
 
 		Type(
@@ -190,7 +191,7 @@ definition {
 		Click(
 			key_navUnderline = "Members",
 			locator1 = "NavUnderline#NAV_UNDERLINE_LINK");
-	
+
 		CommerceAcceleratorsInitializer.inviteNewMemberWithRoleToAccount(
 			emailAddress = "buyer@liferay.com",
 			role = "Buyer");
@@ -199,19 +200,17 @@ definition {
 
 		Click(
 			key_productName = "U-Joint",
-			locator1 = "CommerceAccelerators#PRODUCT_CARD_QUANTITY_SELECTOR_SELECT_FIELD"
-		);
+			locator1 = "CommerceAccelerators#PRODUCT_CARD_QUANTITY_SELECTOR_SELECT_FIELD");
 
 		AssertElementPresent(
-			key_productName = "U-Joint",
 			key_optionValue = "4",
-			locator1= "CommerceAccelerators#PRODUCT_CARD_QUANTITY_SELECTOR_SELECT_FIELD_OPTION_VALUE");
-		
-		AssertElementNotPresent(
 			key_productName = "U-Joint",
-			key_optionValue = "5",
-			locator1= "CommerceAccelerators#PRODUCT_CARD_QUANTITY_SELECTOR_SELECT_FIELD_OPTION_VALUE");
+			locator1 = "CommerceAccelerators#PRODUCT_CARD_QUANTITY_SELECTOR_SELECT_FIELD_OPTION_VALUE");
 
+		AssertElementNotPresent(
+			key_optionValue = "5",
+			key_productName = "U-Joint",
+			locator1 = "CommerceAccelerators#PRODUCT_CARD_QUANTITY_SELECTOR_SELECT_FIELD_OPTION_VALUE");
 	}
 
 	@description = "COMMERCE-6161. As a buyer, I want to be able to select the quantity of a product starting from a minimum quantity, if set"
