@@ -76,7 +76,6 @@ definition {
 			card_name = "U-Joint",
 			locator1 = "CommerceEntry#PRODUCT_CARD_NAME_AND_PRICE",
 			value1 = "€ 20.32");
-			
 	}
 
 	@description = "COMMERCE-5907. As a buyer, I want to be unable to add multiple SKU product to the cart directly, I want to be unable to select the quantity of the product directly and I want to be unable to check the availability of the product directly"
