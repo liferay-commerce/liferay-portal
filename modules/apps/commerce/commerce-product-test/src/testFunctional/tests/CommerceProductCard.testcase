@@ -144,23 +144,7 @@ definition {
 			locator1 = "CommerceEntry#CATALOGS_FORM",
 			value1 = "${currencyName}");
 
-		AssertSelectedLabel(
-			key_title = "Currency",
-			locator1 = "CommerceEntry#CATALOGS_FORM",
-			value1 = "${currencyName}");
-
 		Button.clickSave();
-
-		CommerceNavigator.gotoPortlet(
-			category = "Product Management",
-			portlet = "Catalogs");
-
-		CommerceNavigator.gotoEntry(entryName = "Minium");
-
-		Select(
-			key_title = "Currency",
-			locator1 = "CommerceEntry#CATALOGS_FORM",
-			value1 = "${currencyName}");
 
 		AssertSelectedLabel(
 			key_title = "Currency",
@@ -169,13 +153,10 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
-		Click(
-			key_productName = "U-Joint",
-			locator1 = "CommerceAccelerators#PRODUCT_CARD_NAME");
-
 		AssertTextEquals.assertPartialText(
-			locator1 = "CommerceAccelerators#PRODUCT_DETAILS_LIST_PRICE",
-			value1 = "€");
+			card_name = "U-Joint",
+			locator1 = "CommerceEntry#PRODUCT_CARD_NAME_AND_PRICE",
+			value1 = "€ 20.32");
 	}
 
 	@description = "COMMERCE-5856. As a buyer, I want to view the product image container in the top area and I want to be able to click on the product image to navigate to the product detail page"
