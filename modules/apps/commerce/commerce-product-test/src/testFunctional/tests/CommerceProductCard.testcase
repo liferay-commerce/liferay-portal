@@ -72,13 +72,10 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
-		Click(
-			key_productName = "U-Joint",
-			locator1 = "CommerceAccelerators#PRODUCT_CARD_NAME");
-
 		AssertTextEquals.assertPartialText(
-			locator1 = "CommerceAccelerators#PRODUCT_DETAILS_LIST_PRICE",
-			value1 = "$");
+			card_name = "U-Joint",
+			locator1 = "CommerceEntry#PRODUCT_CARD_NAME_AND_PRICE",
+			value1 = "$ 24.00");
 	}
 
 	@description = "COMMERCE-5907. As a buyer, I want to be unable to add multiple SKU product to the cart directly, I want to be unable to select the quantity of the product directly and I want to be unable to check the availability of the product directly"
