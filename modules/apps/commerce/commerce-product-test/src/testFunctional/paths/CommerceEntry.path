@@ -598,7 +598,7 @@
 </tr>
 <tr>
 	<td>ON_ORDER_QUANTITY</td>
-	<td>//div[@class="dnd-tr with-bg"]//div[contains(text(),'1')]</td>
+	<td>//div[@class="dnd-tr with-bg"]//div[contains(text(),'${key_orderQuantity}')]</td>
 	<td></td>
 </tr>
 <tr>
