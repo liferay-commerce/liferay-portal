@@ -11,12 +11,13 @@ definition {
 
 		User.firstLoginPG();
 
-		// ApplicationsMenu.gotoPortlet(
-		// 	category = "Configuration",
-		// 	panel = "Control Panel",
-		// 	portlet = "Search");
+		//ApplicationsMenu.gotoPortlet(
+		//	category = "Configuration",
+		//	panel = "Control Panel",
+		//	portlet = "Search");
 
-		// SearchAdministration.executeSearchActions(actionsDescription = "Reindex all search indexes.");
+		//SearchAdministration.executeSearchActions(actionsDescription = "Reindex all search indexes.");
+
 	}
 
 	tearDown {
@@ -43,7 +44,6 @@ definition {
 		property portal.acceptance = "false";
 
 		// TODO COMMERCE-6215 AccountMaximumOpenOrderActive Pending Implementation
-
 	}
 
 	@description = "This is a test for COMMERCE-6210. Shipment cancelled"
@@ -511,16 +511,15 @@ definition {
 		CommerceNavigator.searchEntry(entryName = "MIN55861");
 
 		AssertElementPresent(
-			key_orderQuantity= "1",
+			key_orderQuantity = "1",
 			locator1 = "CommerceEntry#ON_ORDER_QUANTITY");
 
 		CommerceNavigator.gotoEntry(entryName = "MIN55861");
 
 		Navigator.gotoNavTab(navTab = "On Order");
-		
 
 		AssertElementPresent(
-			key_orderQuantity= "1",
+			key_orderQuantity = "1",
 			locator1 = "CommerceEntry#ON_ORDER_QUANTITY");
 	}
 
