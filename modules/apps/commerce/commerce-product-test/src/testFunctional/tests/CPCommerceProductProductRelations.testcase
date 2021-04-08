@@ -44,139 +44,143 @@ definition {
 		property portal.acceptance = "false";
 
 		CommerceNavigator.gotoPortlet(
-           category = "Product Management",
-           portlet = "Catalogs");
+			category = "Product Management",
+			portlet = "Catalogs");
 
-       Click(locator1 = "Button#PLUS");
+		Click(locator1 = "Button#PLUS");
 
-       CommerceEntry.addNewCatalogsEntry(
-           catalogCurrency = "US Dollar",
-           catalogLanguage = "English (United States)",
-           catalogName = "Master");
+		CommerceEntry.addNewCatalogsEntry(
+			catalogCurrency = "US Dollar",
+			catalogLanguage = "English (United States)",
+			catalogName = "Master");
 
-       AssertClickNoError(
-           locator1 = "Button#SUBMIT",
-           value1 = "Submit");
+		AssertClickNoError(
+			locator1 = "Button#SUBMIT",
+			value1 = "Submit");
 
-       Refresh();
+		Refresh();
 
-       CommerceNavigator.gotoPortlet(
-           category = "Product Management",
-           portlet = "Products");
+		CommerceNavigator.gotoPortlet(
+			category = "Product Management",
+			portlet = "Products");
 
-       CPCommerceCatalog.newProductsEntry(
-           productCatalog = "Master",
-           productName = "Simple T-Shirt",
-           productType = "Simple");
+		CPCommerceCatalog.newProductsEntry(
+			productCatalog = "Master",
+			productName = "Simple T-Shirt",
+			productType = "Simple");
 
-        Click(locator1 = "Icon#BACK");
+		Click(locator1 = "Icon#BACK");
 
-        CPCommerceCatalog.newProductsEntry(
-           productCatalog = "Master",
-           productName = "Shoes",
-           productType = "Simple");
+		CPCommerceCatalog.newProductsEntry(
+			productCatalog = "Master",
+			productName = "Shoes",
+			productType = "Simple");
 
-        Click(locator1 = "Icon#BACK");
+		Click(locator1 = "Icon#BACK");
 
-        CommerceNavigator.gotoEntry(entryName = "Simple T-Shirt");
+		CommerceNavigator.gotoEntry(entryName = "Simple T-Shirt");
 
-        CommerceEntry.gotoMenuTab(menuTab = "Product Relations");
+		CommerceEntry.gotoMenuTab(menuTab = "Product Relations");
 
-        Click(locator1 = "Button#PLUS");
+		Click(locator1 = "Button#PLUS");
 
-        Click(locator1 = "FormViewBuilder#OBJECT_FIELD_BUTTON_DROPDOWN",
-            key_fieldName = "Up-Sell Product");
+		Click(
+			key_fieldName = "Up-Sell Product",
+			locator1 = "FormViewBuilder#OBJECT_FIELD_BUTTON_DROPDOWN");
 
-        SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
+		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
 
-        Check(
-            key_checkboxName = "Shoes",
-            locator1 = "Checkbox#ENABLE_CHECKBOX");
+		Check(
+			key_checkboxName = "Shoes",
+			locator1 = "Checkbox#ENABLE_CHECKBOX");
 
-        SelectFrameTop();
+		SelectFrameTop();
 
-        Button.click(button = "Add");
+		Button.click(button = "Add");
 
-        SelectFrameTop();
+		SelectFrameTop();
 
-        AssertElementPresent(locator1 = "Message#SUCCESS");
+		AssertElementPresent(locator1 = "Message#SUCCESS");
 
-        Click(locator1 = "Button#PLUS");
+		Click(locator1 = "Button#PLUS");
 
-        Click(locator1 = "FormViewBuilder#OBJECT_FIELD_BUTTON_DROPDOWN",
-            key_fieldName = "Add Cross-Sell Product");
+		Click(
+			key_fieldName = "Add Cross-Sell Product",
+			locator1 = "FormViewBuilder#OBJECT_FIELD_BUTTON_DROPDOWN");
 
-        SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
+		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
 
-        Check(
-            key_checkboxName = "Shoes",
-            locator1 = "Checkbox#ENABLE_CHECKBOX");
+		Check(
+			key_checkboxName = "Shoes",
+			locator1 = "Checkbox#ENABLE_CHECKBOX");
 
-        SelectFrameTop();
+		SelectFrameTop();
 
-        Button.click(button = "Add");
+		Button.click(button = "Add");
 
-        SelectFrameTop();
+		SelectFrameTop();
 
-        AssertElementPresent(locator1 = "Message#SUCCESS");
+		AssertElementPresent(locator1 = "Message#SUCCESS");
 
-        Click(locator1 = "Button#PLUS");
+		Click(locator1 = "Button#PLUS");
 
-        Click(locator1 = "FormViewBuilder#OBJECT_FIELD_BUTTON_DROPDOWN",
-            key_fieldName = "Related Product");
+		Click(
+			key_fieldName = "Related Product",
+			locator1 = "FormViewBuilder#OBJECT_FIELD_BUTTON_DROPDOWN");
 
-        SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
+		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
 
-        Check(
-            key_checkboxName = "Shoes",
-            locator1 = "Checkbox#ENABLE_CHECKBOX");
+		Check(
+			key_checkboxName = "Shoes",
+			locator1 = "Checkbox#ENABLE_CHECKBOX");
 
-        SelectFrameTop();
+		SelectFrameTop();
 
-        Button.click(button = "Add");
+		Button.click(button = "Add");
 
-        SelectFrameTop();
+		SelectFrameTop();
 
-        AssertElementPresent(locator1 = "Message#SUCCESS");
+		AssertElementPresent(locator1 = "Message#SUCCESS");
 
-        Click(locator1 = "Button#PLUS");
+		Click(locator1 = "Button#PLUS");
 
-        Click(locator1 = "FormViewBuilder#OBJECT_FIELD_BUTTON_DROPDOWN",
-            key_fieldName = "Accessories Product");
+		Click(
+			key_fieldName = "Accessories Product",
+			locator1 = "FormViewBuilder#OBJECT_FIELD_BUTTON_DROPDOWN");
 
-        SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
+		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
 
-        Check(
-            key_checkboxName = "Shoes",
-            locator1 = "Checkbox#ENABLE_CHECKBOX");
+		Check(
+			key_checkboxName = "Shoes",
+			locator1 = "Checkbox#ENABLE_CHECKBOX");
 
-        SelectFrameTop();
+		SelectFrameTop();
 
-        Button.click(button = "Add");
+		Button.click(button = "Add");
 
-        SelectFrameTop();
+		SelectFrameTop();
 
-        AssertElementPresent(locator1 = "Message#SUCCESS");
+		AssertElementPresent(locator1 = "Message#SUCCESS");
 
-        Click(locator1 = "Button#PLUS");
+		Click(locator1 = "Button#PLUS");
 
-        Click(locator1 = "FormViewBuilder#OBJECT_FIELD_BUTTON_DROPDOWN",
-            key_fieldName = "Spare Product");
+		Click(
+			key_fieldName = "Spare Product",
+			locator1 = "FormViewBuilder#OBJECT_FIELD_BUTTON_DROPDOWN");
 
-        SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
+		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
 
-        Check(
-            key_checkboxName = "Shoes",
-            locator1 = "Checkbox#ENABLE_CHECKBOX");
+		Check(
+			key_checkboxName = "Shoes",
+			locator1 = "Checkbox#ENABLE_CHECKBOX");
 
-        SelectFrameTop();
+		SelectFrameTop();
 
-        Button.click(button = "Add");
+		Button.click(button = "Add");
 
-        SelectFrameTop();
+		SelectFrameTop();
 
-        AssertElementPresent(locator1 = "Message#SUCCESS"); 
-
+		AssertElementPresent(locator1 = "Message#SUCCESS");
 	}
 
 	@description = "This is a test for COMMERCE-6064. EditAProductRelations"
@@ -186,6 +190,7 @@ definition {
 		property portal.acceptance = "false";
 
 		// TODO COMMERCE-6064 EditAProductRelations
+
 	}
 
 	@description = "This is a test for COMMERCE-6063. RemoveAProductRelations"
