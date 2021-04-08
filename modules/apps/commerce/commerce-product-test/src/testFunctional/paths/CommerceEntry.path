@@ -562,11 +562,6 @@
     <td></td>
 </tr>
 <tr>
-	<td>NO_ITEMS_WERE_FOUND_CHECK</td>
-	<td>//div[contains(@class,'sheet-text text-center')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>ON_ORDER_QUANTITY</td>
 	<td>//div[@class="dnd-tr with-bg"]//div[contains(text(),'${key_orderQuantity}')]</td>
 	<td></td>
