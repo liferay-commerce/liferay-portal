@@ -59,6 +59,11 @@
 	<td></td>
 </tr>
 <tr>
+    <td>SPECIFIC_TOGGLE_SWITCH</td>
+    <td>//span[contains(@id,'${key_toggleSwitch}')]</td>
+    <td></td>
+</tr>
+<tr>
 	<td>USE_CUSTOM_TITLE</td>
 	<td>//label[contains(.,'Use Custom Title')]//input[@type='checkbox']</td>
 	<td></td>
