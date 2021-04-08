@@ -59,79 +59,78 @@ definition {
 	@description = "This is a test for COMMERCE-6089. RemoveAccountGroupFilter"
 	@priority = "3"
 	test RemoveAccountGroupFilter {
-		
 		property portal.acceptance = "false";
-	
+
 		CommerceNavigator.gotoPortlet(
-            category = "Product Management",
-            portlet = "Catalogs");
+			category = "Product Management",
+			portlet = "Catalogs");
 
-        Click(locator1 = "Button#PLUS");
+		Click(locator1 = "Button#PLUS");
 
-        CommerceEntry.addNewCatalogsEntry(
-            catalogCurrency = "US Dollar",
-            catalogLanguage = "English (United States)",
-            catalogName = "Master");
+		CommerceEntry.addNewCatalogsEntry(
+			catalogCurrency = "US Dollar",
+			catalogLanguage = "English (United States)",
+			catalogName = "Master");
 
-        AssertClickNoError(
-            locator1 = "Button#SUBMIT",
-            value1 = "Submit");
+		AssertClickNoError(
+			locator1 = "Button#SUBMIT",
+			value1 = "Submit");
 
-        Refresh();
+		Refresh();
 
-        ApplicationsMenu.gotoPortlet(
-            category = "Users",
-            panel = "Control Panel",
-            portlet = "Account Groups");
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Account Groups");
 
-        Click(locator1 = "Button#PLUS");
+		Click(locator1 = "Button#PLUS");
 
-        CommerceEntry.addNewAccountGroupsEntry(entryName = "Guest");
+		CommerceEntry.addNewAccountGroupsEntry(entryName = "Guest");
 
-        Button.clickSave();
+		Button.clickSave();
 
-        CommerceNavigator.gotoPortlet(
-            category = "Product Management",
-            portlet = "Products");
+		CommerceNavigator.gotoPortlet(
+			category = "Product Management",
+			portlet = "Products");
 
-        CPCommerceCatalog.newProductsEntry(
-            productCatalog = "Master",
-            productName = "Simple T-Shirt",
-            productType = "Simple");
+		CPCommerceCatalog.newProductsEntry(
+			productCatalog = "Master",
+			productName = "Simple T-Shirt",
+			productType = "Simple");
 
-        CommerceEntry.gotoMenuTab(menuTab = "Visibility");
+		CommerceEntry.gotoMenuTab(menuTab = "Visibility");
 
-        Click(
-            key_toggleSwitch = "wiwk___toggle-switch",
-            locator1 = "ToggleSwitch#SPECIFIC_TOGGLE_SWITCH");
+		Click(
+			key_toggleSwitch = "wiwk___toggle-switch",
+			locator1 = "ToggleSwitch#SPECIFIC_TOGGLE_SWITCH");
 
-        ClickNoError.clickNoMouseOver(
-            key_webContentTitle = "Add Account Group Relation to Simple T-Shirt",
-            locator1 = "Button#TITLE");
+		ClickNoError.clickNoMouseOver(
+			key_webContentTitle = "Add Account Group Relation to Simple T-Shirt",
+			locator1 = "Button#TITLE");
 
-        SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
+		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
 
-        Check(
-            key_checkboxName = "Guest",
-            locator1 = "Checkbox#ENABLE_CHECKBOX_SELECT_CHANNEL");
+		Check(
+			key_checkboxName = "Guest",
+			locator1 = "Checkbox#ENABLE_CHECKBOX_SELECT_CHANNEL");
 
-        SelectFrameTop();
+		SelectFrameTop();
 
-        Button.click(button = "Add");
+		Button.click(button = "Add");
 
-        SelectFrameTop();
+		SelectFrameTop();
 
-        AssertElementPresent(locator1 = "Message#SUCCESS");
+		AssertElementPresent(locator1 = "Message#SUCCESS");
 
-        Button.click(button = "Delete");
+		Button.click(button = "Delete");
 
-        SelectFrameTop();
+		SelectFrameTop();
 
-        AssertElementPresent(locator1 = "Message#SUCCESS");
-		
-        Click(
-            key_toggleSwitch = "wiwk___toggle-switch",
-            locator1 = "ToggleSwitch#SPECIFIC_TOGGLE_SWITCH");
+		AssertElementPresent(locator1 = "Message#SUCCESS");
+
+		Click(
+			key_toggleSwitch = "wiwk___toggle-switch",
+			locator1 = "ToggleSwitch#SPECIFIC_TOGGLE_SWITCH");
 	}
 
 	@description = "This is a test for COMMERCE-6087. RemoveAChannelFilter"
