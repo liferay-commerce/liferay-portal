@@ -18,6 +18,7 @@ definition {
 			portlet = "Search");
 
 		SearchAdministration.executeSearchActions(actionsDescription = "Reindex all search indexes.");
+
 	}
 
 	tearDown {
@@ -507,29 +508,12 @@ definition {
 	}
 
 	@description = "This is a test for COMMERCE-5808. EditAProduct"
+	@ignore = "true"
 	@priority = "3"
 	test EditAProduct {
 		property portal.acceptance = "false";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
-
-		CommerceNavigator.gotoPortlet(
-			category = "Product Management",
-			portlet = "Products");
-
-		CommerceNavigator.gotoEntry(entryName = "ABS Sensor");
-
-		Type(
-			locator1 = "CommerceEntry#NAME_FIELD",
-			value1 = "ABS");
-
-		Button.clickPublish();
-
-		Alert.viewSuccessMessage();
-
-		AssertTextEquals(
-			locator1 = "CommerceEntry#NAME_FIELD",
-			value1 = "ABS");
+		// TODO COMMERCE-5808 EditAProduct
 	}
 
 	@description = "This is a test for COMMERCE-6022. EditASKU"
@@ -542,43 +526,12 @@ definition {
 	}
 
 	@description = "This is a test for COMMERCE-5807. EditSkuAndDelete"
+	@ignore = "true"
 	@priority = "3"
 	test EditSkuAndDelete {
 		property portal.acceptance = "false";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
-
-		CommerceNavigator.gotoPortlet(
-			category = "Product Management",
-			portlet = "Products");
-
-		CommerceEntry.gotoMenuTab(menuTab = "SKUs");
-
-		CommerceNavigator.searchEntry(entryName = "MIN93017");
-
-		CommerceNavigator.gotoEntry(entryName = "MIN93017");
-
-		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
-
-		Type(
-			locator1 = "CommerceEntry#SKU_FIELD",
-			value1 = "MIN930178");
-
-		Button.clickPublish();
-
-		AssertVisible(locator1 = "Message#SUCCESS");
-
-		Click(locator1 = "Icon#CLOSE");
-
-		Refresh();
-
-		CommerceNavigator.searchEntry(entryName = "MIN930178");
-
-		if (IsElementPresent(locator1 = "CommerceNavigation#ANY_ENTRY_NAME")) {
-			CommerceEntry.deleteCommerceEntry();
-
-			AssertVisible(locator1 = "Message#SUCCESS");
-		}
+		// TODO COMMERCE-5807 EditSkuAndDelete
 	}
 
 	test ProductPublishing {
@@ -691,7 +644,7 @@ definition {
 			value1 = "Amortiguador");
 	}
 
-<<<<<<< HEAD
+
 	@description = "This is a test for COMMERCE-6304. UseFriendlyURL"
 	@ignore = "true"
 	@priority = "3"
@@ -708,25 +661,12 @@ definition {
 		property portal.acceptance = "false";
 
 		// TODO COMMERCE-6303 UseSchedule
-=======
+	}
 	@description = "COMMERCE-5802. Use a filter always check that the results are correct"
 	@ignore = "true"
 	@priority = "3"
 	test UseFilters {
 		property portal.acceptance = "false";
-
-		CommerceNavigator.gotoPortlet(
-			category = "Store Management",
-			portlet = "Channels");
-
-		Click(locator1 = "Button#PLUS");
-
-		CommerceEntry.addNewChannelsEntry(
-			channelCurrency = "US Dollar",
-			channelName = "Test Channel",
-			channelType = "Site");
-
-		Button.clickSave();
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
@@ -750,33 +690,29 @@ definition {
 
 		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
 
-		AssertElementPresent(
-			key_entryName = "Premium Brake Fluid",
+		AssertElementNotPresent(
+			key_entryName = "Timing Chain",
 			locator1 = "CommerceEntry#TABLE_LIST_TITLE");
-
+			
 		Button.click(button = "Reset Filters");
 
 		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
 
 		Click(locator1 = "CommerceEntry#FILTER_BACK_ARROW");
 
-		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
-
-		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
-
 		Click(
 			key_categoryFilter = "Catalog",
 			locator1 = "CommerceEntry#FILTER_SELECT_CATEGORY");
 
 		Click(
-			key_fieldType = "Test",
+			key_fieldType = "Master",
 			locator1 = "FormViewBuilder#FIELD_LABEL_MULTIPLE_SELECTION");
 
 		Click(
 			key_menuItem = "Add Filter",
 			locator1 = "CommerceEntry#ANY_MENU_ITEM");
 
-		AssertElementPresent(
+		AssertElementNotPresent(
 			key_entryName = "Hoses",
 			locator1 = "CommerceEntry#TABLE_LIST_TITLE");
 
@@ -785,10 +721,6 @@ definition {
 		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
 
 		Click(locator1 = "CommerceEntry#FILTER_BACK_ARROW");
-
-		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
-
-		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
 
 		Click(
 			key_categoryFilter = "Channel",
@@ -802,17 +734,13 @@ definition {
 			key_menuItem = "Add Filter",
 			locator1 = "CommerceEntry#ANY_MENU_ITEM");
 
-		AssertElementPresent(locator1 = "CommerceEntry#NO_ITEMS_WERE_FOUND_CHECK");
+		AssertElementPresent(locator1 = "CommerceNavigation#EMPTY_SEARCH_CONTAINER");
 
 		Button.click(button = "Reset Filters");
 
 		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
 
 		Click(locator1 = "CommerceEntry#FILTER_BACK_ARROW");
-
-		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
-
-		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
 
 		Click(
 			key_categoryFilter = "Product Type",
@@ -826,7 +754,7 @@ definition {
 			key_menuItem = "Add Filter",
 			locator1 = "CommerceEntry#ANY_MENU_ITEM");
 
-		AssertElementPresent(locator1 = "CommerceEntry#NO_ITEMS_WERE_FOUND_CHECK");
+		AssertElementPresent(locator1 = "CommerceNavigation#EMPTY_SEARCH_CONTAINER");
 
 		Button.click(button = "Reset Filters");
 
@@ -835,7 +763,7 @@ definition {
 		Click(locator1 = "CommerceEntry#FILTER_BACK_ARROW");
 
 		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
->>>>>>> d866ede (COMMERCE-5802 Adding UseFilters test)
+
 	}
 
 	@description = "This is a test for COMMERCE-5805. UseSearchBarAndPagination"
@@ -871,55 +799,22 @@ definition {
 			value1 = "Showing 1 to 2 of 2");
 	}
 
-	@description = "This is a test for COMMERCE-5806. UseSkuSearchBarAndPagination"
+	@description = "This is a test for COMMERCE-5801. UseSkuSearchBarAndPagination"
+	@ignore = "true"
 	@priority = "3"
 	test UseSkuSearchBarAndPagination {
 		property portal.acceptance = "false";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
-
-		CommerceNavigator.gotoPortlet(
-			category = "Product Management",
-			portlet = "Products");
-
-		CommerceEntry.gotoMenuTab(menuTab = "SKUs");
-
-		Click(locator1 = "Pagination#NEXT_LINK");
-
-		CommerceEntry.viewPaginationResults(results = "Showing 11 to 20 of 54");
-
-		CommerceProducts.searchProduct(search = "MIN55861");
-
-		AssertElementPresent(
-			key_entryName = "MIN55861",
-			locator1 = "CommerceEntry#TABLE_LIST_TITLE");
+		// TODO COMMERCE-5801 UseSkuSearchBarAndPagination
 	}
 
 	@description = "This is a test for COMMERCE-5803. UseSortingByNameAndDate"
+	@ignore = "true"
 	@priority = "3"
 	test UseSortingByNameAndDate {
 		property portal.acceptance = "false";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
-
-		CommerceNavigator.gotoPortlet(
-			category = "Product Management",
-			portlet = "Products");
-		CommerceNavigator.sortField(sortFieldName = "Name");
-
-		CommerceNavigator.viewFilterResultsSpecificOrder(resultsList = "ABS Sensor,Ball Joints,Bearings");
-
-		CommerceNavigator.sortField(sortFieldName = "Name");
-
-		CommerceNavigator.viewFilterResultsSpecificOrder(resultsList = "Wheel Seal - Front,Wheel Bearing Grease,Wear Sensors");
-
-		CommerceNavigator.sortField(sortFieldName = "Modified Date");
-
-		CommerceNavigator.viewFilterResultsSpecificOrder(resultsList = "ABS Sensor,Brake Fluid,Premium Brake Fluid");
-
-		CommerceNavigator.sortField(sortFieldName = "Modified Date");
-
-		CommerceNavigator.viewFilterResultsSpecificOrder(resultsList = "U-Joint,Transmission Cooler Line Assembly,Torque Converters");
+		// TODO COMMERCE-5803 UseSortingByNameAndDate
 	}
 
 }
