@@ -10,14 +10,15 @@ definition {
 
 		User.firstLoginPG();
 
-		CommerceConfiguration.commerceStoreFrontSetUp();
+		//CommerceConfiguration.commerceStoreFrontSetUp();
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Configuration",
-			panel = "Control Panel",
-			portlet = "Search");
+		//ApplicationsMenu.gotoPortlet(
+		//	category = "Configuration",
+		//	panel = "Control Panel",
+		//	portlet = "Search");
 
-		SearchAdministration.executeSearchActions(actionsDescription = "Reindex all search indexes.");
+		//SearchAdministration.executeSearchActions(actionsDescription = "Reindex all search indexes.");
+
 	}
 
 	tearDown {
@@ -54,6 +55,7 @@ definition {
 		property portal.acceptance = "false";
 
 		// TODO COMMERCE-6020 AddASKU
+<<<<<<< HEAD
 	}
 
 	@description = "This is a test for COMMERCE-6287. AddASpecificationAndVerifyIfIsPresent"
@@ -81,6 +83,8 @@ definition {
 		property portal.acceptance = "false";
 
 		// TODO COMMERCE-6301 AddVirtualProduct
+=======
+>>>>>>> ce3a033 (COMMERCE-5802 Adding UseFilters test)
 	}
 
 	test CreateProductBundleWithPriceTypeDynamic {
@@ -338,19 +342,6 @@ definition {
 	test UseFilters {
 		property portal.acceptance = "false";
 
-		CommerceNavigator.gotoPortlet(
-			category = "Store Management",
-			portlet = "Channels");
-
-		Click(locator1 = "Button#PLUS");
-
-		CommerceEntry.addNewChannelsEntry(
-			channelCurrency = "US Dollar",
-			channelName = "Test Channel",
-			channelType = "Site");
-
-		Button.clickSave();
-
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
 		CommerceNavigator.gotoPortlet(
@@ -383,23 +374,19 @@ definition {
 
 		Click(locator1 = "CommerceEntry#FILTER_BACK_ARROW");
 
-		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
-
-		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
-
 		Click(
 			key_categoryFilter = "Catalog",
 			locator1 = "CommerceEntry#FILTER_SELECT_CATEGORY");
 
 		Click(
-			key_fieldType = "Test",
+			key_fieldType = "Master",
 			locator1 = "FormViewBuilder#FIELD_LABEL_MULTIPLE_SELECTION");
 
 		Click(
 			key_menuItem = "Add Filter",
 			locator1 = "CommerceEntry#ANY_MENU_ITEM");
 
-		AssertElementPresent(
+		AssertElementNotPresent(
 			key_entryName = "Hoses",
 			locator1 = "CommerceEntry#TABLE_LIST_TITLE");
 
@@ -408,10 +395,6 @@ definition {
 		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
 
 		Click(locator1 = "CommerceEntry#FILTER_BACK_ARROW");
-
-		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
-
-		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
 
 		Click(
 			key_categoryFilter = "Channel",
@@ -425,17 +408,13 @@ definition {
 			key_menuItem = "Add Filter",
 			locator1 = "CommerceEntry#ANY_MENU_ITEM");
 
-		AssertElementPresent(locator1 = "CommerceEntry#NO_ITEMS_WERE_FOUND_CHECK");
+		AssertElementPresent(locator1 = "CommerceNavigation#EMPTY_SEARCH_CONTAINER");
 
 		Button.click(button = "Reset Filters");
 
 		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
 
 		Click(locator1 = "CommerceEntry#FILTER_BACK_ARROW");
-
-		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
-
-		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
 
 		Click(
 			key_categoryFilter = "Product Type",
@@ -449,16 +428,20 @@ definition {
 			key_menuItem = "Add Filter",
 			locator1 = "CommerceEntry#ANY_MENU_ITEM");
 
-		AssertElementPresent(locator1 = "CommerceEntry#NO_ITEMS_WERE_FOUND_CHECK");
+		AssertElementPresent(locator1 = "CommerceNavigation#EMPTY_SEARCH_CONTAINER");
 
 		Button.click(button = "Reset Filters");
 
 		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
 
 		Click(locator1 = "CommerceEntry#FILTER_BACK_ARROW");
+<<<<<<< HEAD
 
 		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
 >>>>>>> d866ede (COMMERCE-5802 Adding UseFilters test)
+=======
+		
+>>>>>>> ce3a033 (COMMERCE-5802 Adding UseFilters test)
 	}
 
 	@description = "This is a test for COMMERCE-5805. UseSearchBarAndPagination"
