@@ -332,6 +332,11 @@
 	<td>//div[contains(text(), '${productName}')]/../..//td//input[@type='checkbox']</td>
 	<td></td>
 </tr>
+ <tr>
+    <td>ACCOUNT_ORDER_NAME</td>
+    <td>xpath=(//div[contains(@class,'dnd-td') and contains(text(),'${accountName}')])[1]</td>
+    <td></td>
+</tr>
 </tbody>
 </table>
 </body>
