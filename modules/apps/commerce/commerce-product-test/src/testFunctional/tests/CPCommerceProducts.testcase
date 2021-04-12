@@ -10,15 +10,14 @@ definition {
 
 		User.firstLoginPG();
 
-		//CommerceConfiguration.commerceStoreFrontSetUp();
+		CommerceConfiguration.commerceStoreFrontSetUp();
 
-		//ApplicationsMenu.gotoPortlet(
-		//	category = "Configuration",
-		//	panel = "Control Panel",
-		//	portlet = "Search");
+		ApplicationsMenu.gotoPortlet(
+			category = "Configuration",
+			panel = "Control Panel",
+			portlet = "Search");
 
-		//SearchAdministration.executeSearchActions(actionsDescription = "Reindex all search indexes.");
-
+		SearchAdministration.executeSearchActions(actionsDescription = "Reindex all search indexes.");
 	}
 
 	tearDown {
@@ -55,7 +54,6 @@ definition {
 		property portal.acceptance = "false";
 
 		// TODO COMMERCE-6020 AddASKU
-<<<<<<< HEAD
 	}
 
 	@description = "This is a test for COMMERCE-6287. AddASpecificationAndVerifyIfIsPresent"
@@ -83,8 +81,6 @@ definition {
 		property portal.acceptance = "false";
 
 		// TODO COMMERCE-6301 AddVirtualProduct
-=======
->>>>>>> ce3a033 (COMMERCE-5802 Adding UseFilters test)
 	}
 
 	test CreateProductBundleWithPriceTypeDynamic {
@@ -318,24 +314,6 @@ definition {
 			value1 = "Amortiguador");
 	}
 
-<<<<<<< HEAD
-	@description = "This is a test for COMMERCE-6304. UseFriendlyURL"
-	@ignore = "true"
-	@priority = "3"
-	test UseFriendlyURL {
-		property portal.acceptance = "false";
-
-		// TODO COMMERCE-6304 UseFriendlyURL
-	}
-
-	@description = "This is a test for COMMERCE-6303. UseSchedule"
-	@ignore = "true"
-	@priority = "3"
-	test UseSchedule {
-		property portal.acceptance = "false";
-
-		// TODO COMMERCE-6303 UseSchedule
-=======
 	@description = "COMMERCE-5802. Use a filter always check that the results are correct"
 	@ignore = "true"
 	@priority = "3"
@@ -435,13 +413,26 @@ definition {
 		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
 
 		Click(locator1 = "CommerceEntry#FILTER_BACK_ARROW");
-<<<<<<< HEAD
 
 		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
->>>>>>> d866ede (COMMERCE-5802 Adding UseFilters test)
-=======
-		
->>>>>>> ce3a033 (COMMERCE-5802 Adding UseFilters test)
+	}
+
+	@description = "This is a test for COMMERCE-6304. UseFriendlyURL"
+	@ignore = "true"
+	@priority = "3"
+	test UseFriendlyURL {
+		property portal.acceptance = "false";
+
+		// TODO COMMERCE-6304 UseFriendlyURL
+	}
+
+	@description = "This is a test for COMMERCE-6303. UseSchedule"
+	@ignore = "true"
+	@priority = "3"
+	test UseSchedule {
+		property portal.acceptance = "false";
+
+		// TODO COMMERCE-6303 UseSchedule
 	}
 
 	@description = "This is a test for COMMERCE-5805. UseSearchBarAndPagination"

@@ -11,12 +11,12 @@ definition {
 
 		User.firstLoginPG();
 
-		//ApplicationsMenu.gotoPortlet(
-		//	category = "Configuration",
-		//	panel = "Control Panel",
-		//	portlet = "Search");
+		ApplicationsMenu.gotoPortlet(
+			category = "Configuration",
+			panel = "Control Panel",
+			portlet = "Search");
 
-		//SearchAdministration.executeSearchActions(actionsDescription = "Reindex all search indexes.");
+		SearchAdministration.executeSearchActions(actionsDescription = "Reindex all search indexes.");
 
 	}
 
@@ -428,22 +428,24 @@ definition {
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
-		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
-
 		FrontStore.addInitializerProductToCart(
-			productName = "ABS Sensor",
+			productName = "U-Joint",
 			productQuantity = "2");
 
 		Pause(locator1 = "5000");
 
-		CommerceAcceleratorsInitializer.createNewOrderFromAccountSelectorDropdown();
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
+
+		CommerceAcceleratorsInitializer.createNewAccountViaFront(
+			accountName = "Commerce Account 2",
+			adminEmailAddress = "test@liferay.com");
+
+		CommerceAcceleratorsInitializer.selectAccountFromAccountSelector(accountName = "Commerce Account 2");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
-		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
-
 		FrontStore.addInitializerProductToCart(
-			productName = "Ball Joints",
+			productName = "Transmission Cooler Line Assembly",
 			productQuantity = "3");
 
 		Pause(locator1 = "5000");
@@ -453,6 +455,17 @@ definition {
 			portlet = "Orders");
 
 		Button.click(button = "Order Date");
+
+		var index = "1";
+
+		for (var accountName : list "Commerce Account,Commerce Account 2") {
+			AssertTextEquals.assertPartialText(
+				index = "${index}",
+				locator1 = "CommerceAccelerators#ACCOUNT_ORDER_NAME",
+				value1 = "${accountName}");
+
+			var index = ${index} + 1;
+		}
 	}
 
 	@description = "This is a test for COMMERCE-5845. As a product specialist I want to see if a SKU is on order"
