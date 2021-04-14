@@ -5,6 +5,12 @@ components:
             description:
                 An account represents an external account, for example a customer business.
             properties:
+                accountUsers:
+                    description:
+                        The users linked to the account
+                    items:
+                        $ref: "#/components/schemas/AccountUser"
+                    type: array
                 description:
                     type: string
                 domains:
@@ -71,6 +77,18 @@ components:
             description:
                 A user that is a member of an account.
             properties:
+                dateCreated:
+                    description:
+                        The creation date of the user's account.
+                    format: date-time
+                    readOnly: true
+                    type: string
+                dateModified:
+                    description:
+                        The last time any field of the user's account was changed.
+                    format: date-time
+                    readOnly: true
+                    type: string
                 emailAddress:
                     format: email
                     type: string
