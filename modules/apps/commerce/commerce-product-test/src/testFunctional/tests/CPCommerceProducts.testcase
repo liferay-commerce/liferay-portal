@@ -47,15 +47,6 @@ definition {
 
 	}
 
-	@description = "This is a test for COMMERCE-6020. AddASKU"
-	@ignore = "true"
-	@priority = "3"
-	test AddASKU {
-		property portal.acceptance = "false";
-
-		// TODO COMMERCE-6020 AddASKU
-	}
-
 	@description = "This is a test for COMMERCE-6287. AddASpecificationAndVerifyIfIsPresent"
 	@ignore = "true"
 	@priority = "3"
@@ -81,6 +72,14 @@ definition {
 		property portal.acceptance = "false";
 
 		// TODO COMMERCE-6301 AddVirtualProduct
+	}
+
+	@description = "This is a test for COMMERCE-6020. AddASKU"
+	@priority = "3"
+	test AddASKU {
+		property portal.acceptance = "false";
+
+		// TODO COMMERCE-6020 AddASKU
 	}
 
 	test CreateProductBundleWithPriceTypeDynamic {
