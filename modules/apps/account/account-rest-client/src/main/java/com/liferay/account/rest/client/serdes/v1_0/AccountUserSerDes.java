@@ -17,6 +17,9 @@ package com.liferay.account.rest.client.serdes.v1_0;
 import com.liferay.account.rest.client.dto.v1_0.AccountUser;
 import com.liferay.account.rest.client.json.BaseJSONParser;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -54,6 +57,39 @@ public class AccountUserSerDes {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("{");
+
+		DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
+			"yyyy-MM-dd'T'HH:mm:ss'Z'");
+
+		if (accountUser.getDateCreated() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"dateCreated\": ");
+
+			sb.append("\"");
+
+			sb.append(
+				liferayToJSONDateFormat.format(accountUser.getDateCreated()));
+
+			sb.append("\"");
+		}
+
+		if (accountUser.getDateModified() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"dateModified\": ");
+
+			sb.append("\"");
+
+			sb.append(
+				liferayToJSONDateFormat.format(accountUser.getDateModified()));
+
+			sb.append("\"");
+		}
 
 		if (accountUser.getEmailAddress() != null) {
 			if (sb.length() > 1) {
@@ -196,6 +232,27 @@ public class AccountUserSerDes {
 
 		Map<String, String> map = new TreeMap<>();
 
+		DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
+			"yyyy-MM-dd'T'HH:mm:ss'Z'");
+
+		if (accountUser.getDateCreated() == null) {
+			map.put("dateCreated", null);
+		}
+		else {
+			map.put(
+				"dateCreated",
+				liferayToJSONDateFormat.format(accountUser.getDateCreated()));
+		}
+
+		if (accountUser.getDateModified() == null) {
+			map.put("dateModified", null);
+		}
+		else {
+			map.put(
+				"dateModified",
+				liferayToJSONDateFormat.format(accountUser.getDateModified()));
+		}
+
 		if (accountUser.getEmailAddress() == null) {
 			map.put("emailAddress", null);
 		}
@@ -283,7 +340,19 @@ public class AccountUserSerDes {
 			AccountUser accountUser, String jsonParserFieldName,
 			Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "emailAddress")) {
+			if (Objects.equals(jsonParserFieldName, "dateCreated")) {
+				if (jsonParserFieldValue != null) {
+					accountUser.setDateCreated(
+						toDate((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "dateModified")) {
+				if (jsonParserFieldValue != null) {
+					accountUser.setDateModified(
+						toDate((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "emailAddress")) {
 				if (jsonParserFieldValue != null) {
 					accountUser.setEmailAddress((String)jsonParserFieldValue);
 				}

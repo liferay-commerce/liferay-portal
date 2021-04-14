@@ -35,6 +35,8 @@ import java.util.Set;
 
 import javax.annotation.Generated;
 
+import javax.validation.Valid;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -53,6 +55,35 @@ public class Account implements Serializable {
 	public static Account toDTO(String json) {
 		return ObjectMapperUtil.readValue(Account.class, json);
 	}
+
+	@Schema(description = "The users linked to the account")
+	@Valid
+	public AccountUser[] getAccountUsers() {
+		return accountUsers;
+	}
+
+	public void setAccountUsers(AccountUser[] accountUsers) {
+		this.accountUsers = accountUsers;
+	}
+
+	@JsonIgnore
+	public void setAccountUsers(
+		UnsafeSupplier<AccountUser[], Exception> accountUsersUnsafeSupplier) {
+
+		try {
+			accountUsers = accountUsersUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField(description = "The users linked to the account")
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected AccountUser[] accountUsers;
 
 	@Schema
 	public String getDescription() {
@@ -304,6 +335,26 @@ public class Account implements Serializable {
 		StringBundler sb = new StringBundler();
 
 		sb.append("{");
+
+		if (accountUsers != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"accountUsers\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < accountUsers.length; i++) {
+				sb.append(String.valueOf(accountUsers[i]));
+
+				if ((i + 1) < accountUsers.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
 
 		if (description != null) {
 			if (sb.length() > 1) {

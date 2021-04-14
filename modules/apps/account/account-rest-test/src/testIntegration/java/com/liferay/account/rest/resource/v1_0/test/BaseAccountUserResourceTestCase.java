@@ -958,6 +958,14 @@ public abstract class BaseAccountUserResourceTestCase {
 	protected void assertValid(AccountUser accountUser) throws Exception {
 		boolean valid = true;
 
+		if (accountUser.getDateCreated() == null) {
+			valid = false;
+		}
+
+		if (accountUser.getDateModified() == null) {
+			valid = false;
+		}
+
 		if (accountUser.getId() == null) {
 			valid = false;
 		}
@@ -1121,6 +1129,28 @@ public abstract class BaseAccountUserResourceTestCase {
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
+
+			if (Objects.equals("dateCreated", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						accountUser1.getDateCreated(),
+						accountUser2.getDateCreated())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("dateModified", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						accountUser1.getDateModified(),
+						accountUser2.getDateModified())) {
+
+					return false;
+				}
+
+				continue;
+			}
 
 			if (Objects.equals("emailAddress", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
@@ -1304,6 +1334,71 @@ public abstract class BaseAccountUserResourceTestCase {
 		sb.append(operator);
 		sb.append(" ");
 
+		if (entityFieldName.equals("dateCreated")) {
+			if (operator.equals("between")) {
+				sb = new StringBundler();
+
+				sb.append("(");
+				sb.append(entityFieldName);
+				sb.append(" gt ");
+				sb.append(
+					_dateFormat.format(
+						DateUtils.addSeconds(
+							accountUser.getDateCreated(), -2)));
+				sb.append(" and ");
+				sb.append(entityFieldName);
+				sb.append(" lt ");
+				sb.append(
+					_dateFormat.format(
+						DateUtils.addSeconds(accountUser.getDateCreated(), 2)));
+				sb.append(")");
+			}
+			else {
+				sb.append(entityFieldName);
+
+				sb.append(" ");
+				sb.append(operator);
+				sb.append(" ");
+
+				sb.append(_dateFormat.format(accountUser.getDateCreated()));
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("dateModified")) {
+			if (operator.equals("between")) {
+				sb = new StringBundler();
+
+				sb.append("(");
+				sb.append(entityFieldName);
+				sb.append(" gt ");
+				sb.append(
+					_dateFormat.format(
+						DateUtils.addSeconds(
+							accountUser.getDateModified(), -2)));
+				sb.append(" and ");
+				sb.append(entityFieldName);
+				sb.append(" lt ");
+				sb.append(
+					_dateFormat.format(
+						DateUtils.addSeconds(
+							accountUser.getDateModified(), 2)));
+				sb.append(")");
+			}
+			else {
+				sb.append(entityFieldName);
+
+				sb.append(" ");
+				sb.append(operator);
+				sb.append(" ");
+
+				sb.append(_dateFormat.format(accountUser.getDateModified()));
+			}
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("emailAddress")) {
 			sb.append("'");
 			sb.append(String.valueOf(accountUser.getEmailAddress()));
@@ -1417,6 +1512,8 @@ public abstract class BaseAccountUserResourceTestCase {
 	protected AccountUser randomAccountUser() throws Exception {
 		return new AccountUser() {
 			{
+				dateCreated = RandomTestUtil.nextDate();
+				dateModified = RandomTestUtil.nextDate();
 				emailAddress =
 					StringUtil.toLowerCase(RandomTestUtil.randomString()) +
 						"@liferay.com";

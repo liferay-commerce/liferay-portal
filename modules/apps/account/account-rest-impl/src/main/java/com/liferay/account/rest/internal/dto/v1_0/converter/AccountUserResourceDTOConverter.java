@@ -75,6 +75,8 @@ public class AccountUserResourceDTOConverter
 
 		return new AccountUser() {
 			{
+				dateCreated = user.getCreateDate();
+				dateModified = user.getModifiedDate();
 				emailAddress = user.getEmailAddress();
 				externalReferenceCode = user.getExternalReferenceCode();
 				firstName = user.getFirstName();
