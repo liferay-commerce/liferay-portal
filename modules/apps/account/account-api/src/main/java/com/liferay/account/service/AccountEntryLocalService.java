@@ -352,6 +352,10 @@ public interface AccountEntryLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getOrganizationAccountEntriesCount(
+		long companyId, long organizationId);
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *

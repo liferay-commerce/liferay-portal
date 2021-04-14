@@ -431,6 +431,13 @@ public class AccountEntryLocalServiceUtil {
 		return getService().getIndexableActionableDynamicQuery();
 	}
 
+	public static int getOrganizationAccountEntriesCount(
+		long companyId, long organizationId) {
+
+		return getService().getOrganizationAccountEntriesCount(
+			companyId, organizationId);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *

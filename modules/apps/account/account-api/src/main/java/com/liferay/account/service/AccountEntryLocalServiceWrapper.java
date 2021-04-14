@@ -491,6 +491,14 @@ public class AccountEntryLocalServiceWrapper
 		return _accountEntryLocalService.getIndexableActionableDynamicQuery();
 	}
 
+	@Override
+	public int getOrganizationAccountEntriesCount(
+		long companyId, long organizationId) {
+
+		return _accountEntryLocalService.getOrganizationAccountEntriesCount(
+			companyId, organizationId);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
