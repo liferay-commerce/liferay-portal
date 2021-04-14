@@ -260,6 +260,10 @@ public abstract class BaseAccountResourceImpl
 			existingAccount.setName(account.getName());
 		}
 
+		if (account.getNumberOfUsers() != null) {
+			existingAccount.setNumberOfUsers(account.getNumberOfUsers());
+		}
+
 		if (account.getOrganizationIds() != null) {
 			existingAccount.setOrganizationIds(account.getOrganizationIds());
 		}
@@ -419,6 +423,10 @@ public abstract class BaseAccountResourceImpl
 
 		if (account.getName() != null) {
 			existingAccount.setName(account.getName());
+		}
+
+		if (account.getNumberOfUsers() != null) {
+			existingAccount.setNumberOfUsers(account.getNumberOfUsers());
 		}
 
 		if (account.getOrganizationIds() != null) {

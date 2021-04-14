@@ -156,6 +156,27 @@ public class Account implements Cloneable, Serializable {
 
 	protected String name;
 
+	public Integer getNumberOfUsers() {
+		return numberOfUsers;
+	}
+
+	public void setNumberOfUsers(Integer numberOfUsers) {
+		this.numberOfUsers = numberOfUsers;
+	}
+
+	public void setNumberOfUsers(
+		UnsafeSupplier<Integer, Exception> numberOfUsersUnsafeSupplier) {
+
+		try {
+			numberOfUsers = numberOfUsersUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Integer numberOfUsers;
+
 	public Long[] getOrganizationIds() {
 		return organizationIds;
 	}
