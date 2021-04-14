@@ -58,6 +58,7 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Portal;
@@ -490,6 +491,21 @@ public class AccountEntryLocalServiceImpl
 					DSLQueryFactoryUtil.countDistinct(
 						AccountEntryTable.INSTANCE.accountEntryId),
 					userId, parentAccountEntryId, keywords, types, status)));
+	}
+
+	@Override
+	public int getOrganizationAccountEntriesCount(
+		long companyId, long organizationId){
+
+		SearchResponse searchResponse = _searcher.search(
+			_getSearchRequest(
+				companyId, null, LinkedHashMapBuilder.<String, Object>put(
+					"organizationIds",
+					new long[] {organizationId}
+				).build(), QueryUtil.ALL_POS, QueryUtil.ALL_POS, "name",
+				false));
+
+		return searchResponse.getTotalHits();
 	}
 
 	@Override
