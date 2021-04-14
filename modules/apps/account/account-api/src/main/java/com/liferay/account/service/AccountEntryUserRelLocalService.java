@@ -294,7 +294,7 @@ public interface AccountEntryUserRelLocalService
 	public int getAccountEntryUserRelsCount();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public long getAccountEntryUserRelsCountByAccountEntryId(
+	public int getAccountEntryUserRelsCountByAccountEntryId(
 		long accountEntryId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

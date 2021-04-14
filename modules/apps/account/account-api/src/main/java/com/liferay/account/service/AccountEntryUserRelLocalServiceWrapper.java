@@ -402,7 +402,7 @@ public class AccountEntryUserRelLocalServiceWrapper
 	}
 
 	@Override
-	public long getAccountEntryUserRelsCountByAccountEntryId(
+	public int getAccountEntryUserRelsCountByAccountEntryId(
 		long accountEntryId) {
 
 		return _accountEntryUserRelLocalService.

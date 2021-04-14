@@ -358,7 +358,7 @@ public class AccountEntryUserRelLocalServiceUtil {
 		return getService().getAccountEntryUserRelsCount();
 	}
 
-	public static long getAccountEntryUserRelsCountByAccountEntryId(
+	public static int getAccountEntryUserRelsCountByAccountEntryId(
 		long accountEntryId) {
 
 		return getService().getAccountEntryUserRelsCountByAccountEntryId(
