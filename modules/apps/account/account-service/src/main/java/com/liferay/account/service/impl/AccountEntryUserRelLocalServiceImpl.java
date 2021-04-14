@@ -323,7 +323,7 @@ public class AccountEntryUserRelLocalServiceImpl
 	}
 
 	@Override
-	public long getAccountEntryUserRelsCountByAccountEntryId(
+	public int getAccountEntryUserRelsCountByAccountEntryId(
 		long accountEntryId) {
 
 		return accountEntryUserRelPersistence.countByAEI(accountEntryId);
