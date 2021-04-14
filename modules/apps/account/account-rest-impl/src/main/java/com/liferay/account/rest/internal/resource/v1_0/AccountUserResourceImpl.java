@@ -15,6 +15,7 @@
 package com.liferay.account.rest.internal.resource.v1_0;
 
 import com.liferay.account.model.AccountEntryUserRel;
+import com.liferay.account.rest.dto.v1_0.Account;
 import com.liferay.account.rest.dto.v1_0.AccountUser;
 import com.liferay.account.rest.internal.dto.v1_0.converter.AccountResourceDTOConverter;
 import com.liferay.account.rest.internal.dto.v1_0.converter.AccountUserResourceDTOConverter;
@@ -34,9 +35,10 @@ import com.liferay.portal.kernel.service.ListTypeLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.odata.entity.EntityModel;
+import com.liferay.portal.vulcan.fields.NestedField;
+import com.liferay.portal.vulcan.fields.NestedFieldSupport;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
-import com.liferay.portal.vulcan.resource.EntityModelResource;
 import com.liferay.portal.vulcan.util.SearchUtil;
 
 import java.util.Collections;
@@ -53,10 +55,11 @@ import org.osgi.service.component.annotations.ServiceScope;
  */
 @Component(
 	properties = "OSGI-INF/liferay/rest/v1_0/account-user.properties",
-	scope = ServiceScope.PROTOTYPE, service = AccountUserResource.class
+	scope = ServiceScope.PROTOTYPE,
+	service = {AccountUserResource.class, NestedFieldSupport.class}
 )
 public class AccountUserResourceImpl
-	extends BaseAccountUserResourceImpl implements EntityModelResource {
+	extends BaseAccountUserResourceImpl implements NestedFieldSupport {
 
 	@Override
 	public Page<AccountUser> getAccountUsersByExternalReferenceCodePage(
@@ -70,6 +73,7 @@ public class AccountUserResourceImpl
 			search, filter, pagination, sorts);
 	}
 
+	@NestedField(parentClass = Account.class, value = "accountUsers")
 	@Override
 	public Page<AccountUser> getAccountUsersPage(
 			Long accountId, String search, Filter filter, Pagination pagination,
