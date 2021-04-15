@@ -75,10 +75,10 @@ definition {
 		CommerceCheckout.addProductRelation(
 			key_productName = "Simple T-Shirt",
 			key_productNameRelation = "Shoes");
-			
+
 		CommerceCheckout.productRelationSetPriority(
-			key_productRelation = "Shoes",
-			key_priorityValue = "1");
+			key_priorityValue = "1",
+			key_productRelation = "Shoes");
 
 		AssertElementPresent(
 			key_orderValue = "1",
