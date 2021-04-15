@@ -150,4 +150,57 @@ definition {
 			value1 = "${totalValue}");
 	}
 
+	macro addProductRelation{
+
+		AppBuilderAdmin.searchByItem(itemName = "${key_productName}");	
+	
+		CommerceNavigator.gotoEntry(entryName = "${key_productName}");
+
+		CommerceEntry.gotoMenuTab(menuTab = "Product Relations");
+
+		Click(locator1 = "Button#PLUS");
+
+		Click(
+			key_selectAction = "Add Up-Sell Product",
+			locator1 = "FormViewBuilder#FIELD_ELLIPSIS_ACTION_FIELDSET");
+
+		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_IFRAME");
+		
+		Type(
+			value1 = "${key_productNameRelation}",
+			locator1="CommerceEntry#SEARCH_PRODUCT_RELATIONS");
+		
+		Click(
+			locator1="Button#SEARCH");	
+	
+		Check.checkToggleSwitch(
+			key_productName = "${key_productNameRelation}",
+			locator1 = "CommerceAccelerators#CHECKOUT_SELECT_PRODUCT_RELATIONS");
+
+		Pause(locator1 = "3000");
+
+		SelectFrameTop();
+
+		Button.clickAdd();
+
+		Alert.viewSuccessMessage();
+	}
+
+	macro productRelationSetPriority{
+		Click(
+			key_value = "${key_productRelation}",
+			locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS");
+
+		MenuItem.click(menuItem = "Edit");
+
+		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_IFRAME");
+
+		Type( 
+			key_fieldLabel="Priority",
+			value1="${key_priorityValue}", 
+			locator1="TextInput#GENERIC_TEXT_INPUT");
+
+		Button.clickSubmitButton();
+	}
+
 }
