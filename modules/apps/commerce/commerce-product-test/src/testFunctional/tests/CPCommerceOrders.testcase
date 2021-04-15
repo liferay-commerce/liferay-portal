@@ -19,8 +19,7 @@ definition {
 			PortalInstances.tearDownCP();
 		}
 		else {
-		
-		Navigator.openURL();
+			Navigator.openURL();
 
 			CommerceConfiguration.commerceAdminTearDown();
 
@@ -230,7 +229,6 @@ definition {
 	}
 
 	@description = "This is a test for COMMERCE-5997. As an order manager, I want to filter orders by Channel, Account, Order Data Range and Order Status"
-	@ignore = "true"
 	@priority = "3"
 	test FilterOrderByAccount {
 		property portal.acceptance = "false";
@@ -244,24 +242,23 @@ definition {
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
-		
+
 		AssertElementPresent(
 			key_entryName = "Minium Portal",
 			locator1 = "CommerceNavigation#ENTRY_NAME");
 
 		AssertElementPresent(
 			key_entryName = "Minium2 Portal",
-			locator1 = "CommerceNavigation#ENTRY_NAME");	
-		
-			
+			locator1 = "CommerceNavigation#ENTRY_NAME");
+
 		ApplicationsMenu.gotoSite(site = "Minium");
-		
+
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
 		CommerceAcceleratorsInitializer.createNewAccountViaFront(
 			accountName = "Commerce Account 1",
 			adminEmailAddress = "test@liferay.com");
-		
+
 		Click(locator1 = "Link#BACK");
 
 		CommerceAcceleratorsInitializer.createNewAccountViaFront(
@@ -273,7 +270,7 @@ definition {
 		FrontStore.addInitializerProductToCart(
 			productName = "U-Joint",
 			productQuantity = "1");
-		
+
 		Refresh();
 
 		CommerceNavigator.gotoMiniCart();
@@ -294,155 +291,146 @@ definition {
 			shippingMethod = "Standard");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
-	
+
 		CommerceAcceleratorsInitializer.selectAccountFromAccountSelector(accountName = "Commerce Account 2");
 
 		FrontStore.addInitializerProductToCart(
 			productName = "U-Joint",
 			productQuantity = "1");
-					
-		ApplicationsMenu.gotoSite(site = "Minium2");		
+
+		ApplicationsMenu.gotoSite(site = "Minium2");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
 		AssertTextEquals.assertPartialText(
-				locator1 = "Account#ACCOUNT_MANAGEMENT",
-				value1 = "Commerce Account 1");
-		
+			locator1 = "Account#ACCOUNT_MANAGEMENT",
+			value1 = "Commerce Account 1");
+
 		AssertTextEquals.assertPartialText(
-				locator1 = "Account#ACCOUNT_MANAGEMENT",
-				value1 = "Commerce Account 2");
+			locator1 = "Account#ACCOUNT_MANAGEMENT",
+			value1 = "Commerce Account 2");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Order Management",
 			portlet = "Orders");
-		
+
 		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
 
 		Click(
 			key_categoryFilter = "Account",
 			locator1 = "CommerceEntry#FILTER_SELECT_CATEGORY");
-		
+
 		Check.checkNotVisible(
-            checkboxName = "Commerce Account 1",
-            locator1 = "Checkbox#ANY_CHECKBOX");
-		
+			checkboxName = "Commerce Account 1",
+			locator1 = "Checkbox#ANY_CHECKBOX");
+
 		Click(
 			key_menuItem = "Add Filter",
 			locator1 = "CommerceEntry#ANY_MENU_ITEM");
-		
+
 		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
 
 		AssertElementPresent(
-			locator1 = "CommerceOrders#ORDER_DETAILS_PRODUCT_NAME",
-			key_productName = "Commerce Account 1");
+			key_productName = "Commerce Account 1",
+			locator1 = "CommerceOrders#ORDER_DETAILS_PRODUCT_NAME");
 
 		Button.click(button = "Reset Filters");
 
 		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
-		
+
 		Check.checkNotVisible(
-            checkboxName = "Commerce Account 2",
-            locator1 = "Checkbox#ANY_CHECKBOX");
-		
+			checkboxName = "Commerce Account 2",
+			locator1 = "Checkbox#ANY_CHECKBOX");
+
 		Click(
 			key_menuItem = "Add Filter",
 			locator1 = "CommerceEntry#ANY_MENU_ITEM");
-		
+
 		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
 
 		AssertElementPresent(
-			locator1 = "CommerceOrders#ORDER_DETAILS_PRODUCT_NAME",
-			key_productName = "Commerce Account 2");
+			key_productName = "Commerce Account 2",
+			locator1 = "CommerceOrders#ORDER_DETAILS_PRODUCT_NAME");
 
 		Button.click(button = "Reset Filters");
 
 		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
 
 		Click(locator1 = "CommerceEntry#FILTER_BACK_ARROW");
-
-		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
-
-		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
 
 		Click(
 			key_categoryFilter = "Channel",
 			locator1 = "CommerceEntry#FILTER_SELECT_CATEGORY");
-		
+
 		Click(
-            key_fieldType = "Minium Portal",
-            locator1 = "FormViewBuilder#FIELD_LABEL_MULTIPLE_SELECTION");
+			key_fieldType = "Minium Portal",
+			locator1 = "FormViewBuilder#FIELD_LABEL_MULTIPLE_SELECTION");
 
 		Click(
 			key_menuItem = "Add Filter",
 			locator1 = "CommerceEntry#ANY_MENU_ITEM");
 
 		AssertElementPresent(
-			locator1 = "CommerceOrders#ORDER_DETAILS_PRODUCT_NAME",
-			key_productName = "Commerce Account 2");
+			key_productName = "Commerce Account 2",
+			locator1 = "CommerceOrders#ORDER_DETAILS_PRODUCT_NAME");
 
 		Button.click(button = "Reset Filters");
 
 		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
 
 		Click(
-            key_fieldType = "Minium2 Portal",
-            locator1 = "FormViewBuilder#FIELD_LABEL_MULTIPLE_SELECTION");
+			key_fieldType = "Minium2 Portal",
+			locator1 = "FormViewBuilder#FIELD_LABEL_MULTIPLE_SELECTION");
 
 		Click(
 			key_menuItem = "Add Filter",
 			locator1 = "CommerceEntry#ANY_MENU_ITEM");
-		
+
 		AssertElementNotPresent(
-			locator1 = "CommerceOrders#ORDER_DETAILS_PRODUCT_NAME",
-			key_productName = "Commerce Account 2");
-		
+			key_productName = "Commerce Account 2",
+			locator1 = "CommerceOrders#ORDER_DETAILS_PRODUCT_NAME");
+
 		Button.click(button = "Reset Filters");
 
 		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
 
 		Click(locator1 = "CommerceEntry#FILTER_BACK_ARROW");
-
-		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
-
-		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
 
 		Click(
 			key_categoryFilter = "Order Status",
 			locator1 = "CommerceEntry#FILTER_SELECT_CATEGORY");
 
 		Check.checkNotVisible(
-            checkboxName = "Open",
-            locator1 = "Checkbox#ANY_CHECKBOX");
-		
+			checkboxName = "Open",
+			locator1 = "Checkbox#ANY_CHECKBOX");
+
 		Click(
 			key_menuItem = "Add Filter",
 			locator1 = "CommerceEntry#ANY_MENU_ITEM");
-		
+
 		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
 
 		AssertElementPresent(
-			locator1 = "CommerceOrders#ORDER_DETAILS_PRODUCT_NAME",
-			key_productName = "Commerce Account 2");
-		
+			key_productName = "Commerce Account 2",
+			locator1 = "CommerceOrders#ORDER_DETAILS_PRODUCT_NAME");
+
 		Button.click(button = "Reset Filters");
-		
+
 		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
 
 		Check.checkNotVisible(
-            checkboxName = "Pending",
-            locator1 = "Checkbox#ANY_CHECKBOX");
-		
+			checkboxName = "Pending",
+			locator1 = "Checkbox#ANY_CHECKBOX");
+
 		Click(
 			key_menuItem = "Add Filter",
 			locator1 = "CommerceEntry#ANY_MENU_ITEM");
-		
+
 		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
 
 		AssertElementPresent(
-			locator1 = "CommerceOrders#ORDER_DETAILS_PRODUCT_NAME",
-			key_productName = "Commerce Account 1");
-
+			key_productName = "Commerce Account 1",
+			locator1 = "CommerceOrders#ORDER_DETAILS_PRODUCT_NAME");
 	}
 
 	@description = "This is a test for COMMERCE-5997. As an order manager, I want to filter orders by Channel, Account, Order Data Range and Order Status"
