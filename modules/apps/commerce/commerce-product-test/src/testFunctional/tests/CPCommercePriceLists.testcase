@@ -75,13 +75,12 @@ definition {
 			panel = "Applications",
 			portlet = "Accounts");
 
-
 		Accounts.addCP(
 			accountDescription = "This is an Account added for Account Group.",
 			accountName = "Account1");
 
 		Navigator.gotoBack();
-		
+
 		Accounts.addCP(
 			accountDescription = "This is an Account added for Account Group.",
 			accountName = "Account2");
@@ -136,9 +135,8 @@ definition {
 		Navigator.gotoNavTab(navTab = "Eligibility");
 
 		Type(
-			value1 = "AccountGroup1",
-			locator1 = "CommerceNavigation#SEARCH_FIELD"
-		);
+			locator1 = "CommerceNavigation#SEARCH_FIELD",
+			value1 = "AccountGroup1");
 
 		Click(locator1 = "AppBuilder#SEARCH_BUTTON");
 
@@ -148,8 +146,7 @@ definition {
 
 		Button.clickPublish();
 
-		CommerceEntry.setEntryEligibility(
-			accountsEligibility = "Account1");
+		CommerceEntry.setEntryEligibility(accountsEligibility = "Account1");
 
 		CommerceEntry.viewEntryEligibility(accountsEligibility = "Account1");
 
@@ -162,9 +159,8 @@ definition {
 		Navigator.gotoNavTab(navTab = "Eligibility");
 
 		Type(
-			value1 = "Account1",
-			locator1 = "CommerceNavigation#SEARCH_FIELD"
-		);
+			locator1 = "CommerceNavigation#SEARCH_FIELD",
+			value1 = "Account1");
 
 		Click(locator1 = "AppBuilder#SEARCH_BUTTON");
 
@@ -178,8 +174,7 @@ definition {
 
 		Button.clickPublish();
 
-		CommerceEntry.setEntryEligibility(
-			channelsEligibility = "Minium Portal");
+		CommerceEntry.setEntryEligibility(channelsEligibility = "Minium Portal");
 
 		CommerceEntry.viewEntryEligibility(channelsEligibility = "Minium Portal");
 
@@ -200,7 +195,6 @@ definition {
 		MenuItem.click(menuItem = "Remove");
 
 		Button.clickPublish();
-
 	}
 
 	@description = "This is a test for COMMERCE-6235. Product Group Lifecycle"
