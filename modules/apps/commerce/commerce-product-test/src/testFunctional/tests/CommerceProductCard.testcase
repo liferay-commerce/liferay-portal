@@ -69,55 +69,51 @@ definition {
 		property portal.acceptance = "false";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
-        
-
-
-
 
 		CommerceNavigator.gotoPortlet(
-            category = "Product Management",
-            portlet = "Products");
-        
+			category = "Product Management",
+			portlet = "Products");
+
 		CommerceNavigator.searchEntry(entryName = "U-Joint");
-        
+
 		CommerceNavigator.gotoEntry(entryName = "U-Joint");
-        
+
 		CommerceEntry.gotoMenuTab(menuTab = "Configuration");
-        
+
 		AssertElementPresent(
-            key_labelName = "Multiple Order Quantity",
-            locator1 = "TextInput#SPECIFIC_LABEL_TEXT_INPUT");
-        
+			key_labelName = "Multiple Order Quantity",
+			locator1 = "TextInput#SPECIFIC_LABEL_TEXT_INPUT");
+
 		Type(
-            key_labelName = "Multiple Order Quantity",
-            locator1 = "TextInput#SPECIFIC_LABEL_TEXT_INPUT",
-            value1 = "3");
-        
+			key_labelName = "Multiple Order Quantity",
+			locator1 = "TextInput#SPECIFIC_LABEL_TEXT_INPUT",
+			value1 = "3");
+
 		Button.clickPublish();
-        
+
 		AssertElementPresent(
-		    key_labelName = "Multiple Order Quantity",
-            locator1 = "TextInput#SPECIFIC_LABEL_TEXT_INPUT",
-            value1 = "3");
-        
+			key_labelName = "Multiple Order Quantity",
+			locator1 = "TextInput#SPECIFIC_LABEL_TEXT_INPUT",
+			value1 = "3");
+
 		ApplicationsMenu.gotoSite(site = "Minium");
-        
+
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
-        
+
 		CommerceAcceleratorsInitializer.createNewAccountViaFront(
-            accountName = "Test",
-            adminEmailAddress = "test@liferay.com");
-        
+			accountName = "Test",
+			adminEmailAddress = "test@liferay.com");
+
 		ApplicationsMenu.gotoSite(site = "Minium");
-        
+
 		Click(
-            key_productName = "U-Joint",
-            locator1 = "CommerceAccelerators#PRODUCT_CARD_QUANTITY_SELECTOR_SELECT_FIELD");
-        
+			key_productName = "U-Joint",
+			locator1 = "CommerceAccelerators#PRODUCT_CARD_QUANTITY_SELECTOR_SELECT_FIELD");
+
 		AssertElementPresent(
-            key_dropdownOption = "U-Joint",
-            locator1 = "AppBuilder#PRODUCT_MENU_SITE_DROPDOWN_OPTION",
-            value1 = "3 6 9 12 15 18");
+			key_dropdownOption = "U-Joint",
+			locator1 = "AppBuilder#PRODUCT_MENU_SITE_DROPDOWN_OPTION",
+			value1 = "3 6 9 12 15 18");
 	}
 
 	@description = "COMMERCE-6164. As a buyer I want to be able to add a product to the cart regardless of the availability, if back ordererabilty of that product is enabled"
