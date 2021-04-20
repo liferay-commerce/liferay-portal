@@ -21,7 +21,6 @@ definition {
 			portlet = "Search");
 
 		SearchAdministration.executeSearchActions(actionsDescription = "Reindex all search indexes.");
-
 	}
 
 	tearDown {
@@ -48,6 +47,7 @@ definition {
 		property portal.acceptance = "false";
 
 		// TODO COMMERCE-6215 AccountMaximumOpenOrderActive Pending Implementation
+
 	}
 
 	@description = "This is a test for COMMERCE-6210. Shipment cancelled"

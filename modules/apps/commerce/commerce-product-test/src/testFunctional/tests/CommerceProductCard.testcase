@@ -375,10 +375,9 @@ definition {
 		ApplicationsMenu.gotoSite(site = "Minium");
 
 		AssertElementPresent(
-			key_productSKU = "MIN55861",
 			key_productName = "U-Joint",
-			locator1 = "CommerceEntry#PRODUCT_CARD_SKU"
-		);
+			key_productSKU = "MIN55861",
+			locator1 = "CommerceEntry#PRODUCT_CARD_SKU");
 	}
 
 	@description = "COMMERCE-5865. As a buyer, I want to view starting price on product card when product has different SKUs with different prices"

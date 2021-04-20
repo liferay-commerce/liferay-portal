@@ -643,24 +643,6 @@ definition {
 			value1 = "Amortiguador");
 	}
 
-
-	@description = "This is a test for COMMERCE-6304. UseFriendlyURL"
-	@ignore = "true"
-	@priority = "3"
-	test UseFriendlyURL {
-		property portal.acceptance = "false";
-
-		// TODO COMMERCE-6304 UseFriendlyURL
-	}
-
-	@description = "This is a test for COMMERCE-6303. UseSchedule"
-	@ignore = "true"
-	@priority = "3"
-	test UseSchedule {
-		property portal.acceptance = "false";
-
-		// TODO COMMERCE-6303 UseSchedule
-	}
 	@description = "COMMERCE-5802. Use a filter always check that the results are correct"
 	@ignore = "true"
 	@priority = "3"
@@ -692,7 +674,7 @@ definition {
 		AssertElementNotPresent(
 			key_entryName = "Timing Chain",
 			locator1 = "CommerceEntry#TABLE_LIST_TITLE");
-			
+
 		Button.click(button = "Reset Filters");
 
 		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
@@ -762,7 +744,24 @@ definition {
 		Click(locator1 = "CommerceEntry#FILTER_BACK_ARROW");
 
 		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
-		
+	}
+
+	@description = "This is a test for COMMERCE-6304. UseFriendlyURL"
+	@ignore = "true"
+	@priority = "3"
+	test UseFriendlyURL {
+		property portal.acceptance = "false";
+
+		// TODO COMMERCE-6304 UseFriendlyURL
+	}
+
+	@description = "This is a test for COMMERCE-6303. UseSchedule"
+	@ignore = "true"
+	@priority = "3"
+	test UseSchedule {
+		property portal.acceptance = "false";
+
+		// TODO COMMERCE-6303 UseSchedule
 	}
 
 	@description = "This is a test for COMMERCE-5805. UseSearchBarAndPagination"
