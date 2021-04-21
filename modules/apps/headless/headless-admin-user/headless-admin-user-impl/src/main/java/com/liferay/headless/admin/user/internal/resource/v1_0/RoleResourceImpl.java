@@ -95,8 +95,8 @@ public class RoleResourceImpl extends BaseRoleResourceImpl {
 	@Override
 	public Page<Role> getRolesPage(Pagination pagination) throws Exception {
 		Integer[] types = {
-			RoleConstants.TYPE_ORGANIZATION, RoleConstants.TYPE_REGULAR,
-			RoleConstants.TYPE_SITE
+			RoleConstants.TYPE_ACCOUNT, RoleConstants.TYPE_ORGANIZATION,
+			RoleConstants.TYPE_REGULAR, RoleConstants.TYPE_SITE
 		};
 
 		return Page.of(
