@@ -10,7 +10,7 @@ definition {
 
 		User.firstLoginPG();
 
-		// CommerceConfiguration.commerceStoreFrontSetUp();
+		//CommerceConfiguration.commerceStoreFrontSetUp();
 
 		ApplicationsMenu.gotoPortlet(
 			category = "Configuration",
@@ -72,9 +72,7 @@ definition {
 
 		ApplicationsMenu.gotoPortlet(
 			category = "Accounts",
-
 			panel = "Applications",
-			
 			portlet = "Accounts");
 
 		Accounts.addCP(
