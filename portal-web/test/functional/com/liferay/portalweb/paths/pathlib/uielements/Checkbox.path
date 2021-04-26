@@ -483,6 +483,7 @@
 	<td>//label[contains(.,'This is a minor edit.')]/input[@type='checkbox']</td>
 	<td></td>
 </tr>
+
 <tr>
 	<td>TWITTER</td>
 	<td>//input[contains(@id,'twitter')]</td>
@@ -498,6 +499,7 @@
 	<td>//label[contains(.,'${key_checkboxOption}')]/input[@type='checkbox']/../span</td>
 	<td></td>
 </tr>
+
 <tr>
 	<td>UPLOAD_FILE_ENTRY</td>
 	<td>//li[contains(@class,'upload-file')]//input[@type='checkbox' and contains(@data-title,'${key_fileName}')]</td>
