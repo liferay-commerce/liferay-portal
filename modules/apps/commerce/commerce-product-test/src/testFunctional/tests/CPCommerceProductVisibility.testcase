@@ -59,7 +59,6 @@ definition {
 
 		Click(locator1 = "Button#PLUS");
 
-
 		CommerceEntry.addNewChannelsEntry(
 			channelCurrency = "US Dollar",
 			channelName = "Test Channel",
