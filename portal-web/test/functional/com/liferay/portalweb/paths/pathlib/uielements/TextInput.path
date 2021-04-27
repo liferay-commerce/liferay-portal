@@ -34,6 +34,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>ID</td>
+	<td>//input[contains(@id,'${key_value}')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>ASSET_PRIORITY</td>
 	<td>//input[contains(@id,'assetPriority')]</td>
 	<td></td>
@@ -216,6 +221,11 @@
 <tr>
 	<td>EXPIRATION_DATE</td>
 	<td>//input[contains(@id,'expirationDate')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>EXPIRATION_DATE_TIME</td>
+	<td>//input[contains(@id,'expirationDateTime')]</td>
 	<td></td>
 </tr>
 <tr>
