@@ -169,12 +169,12 @@
 	<td></td>
 </tr>
 <tr>
-	<td>SELECT_CHECKBOX</td>
+	<td>PRODUCT_CARD_COMPARE_CHECKBOX</td>
 	<td>//p[@title='${key_productName}']//../..//input[contains(@aria-label,'Compare')]</td>
 	<td></td> 
 </tr>
 <tr>
-	<td>ASSERT_MINI_COMPARE</td>
+	<td>MINI_COMPARE_ITEM_ACTIVE</td>
 	<td>//div[@class="mini-compare-item active"]//div[@class="mini-compare-thumbnail"]</td>
 	<td></td> 
 </tr>

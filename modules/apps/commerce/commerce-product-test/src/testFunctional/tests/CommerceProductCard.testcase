@@ -901,14 +901,22 @@ definition {
 		CommerceAcceleratorsInitializer.inviteNewMemberWithRoleToAccount(
 			emailAddress = "buyer@liferay.com",
 			role = "Buyer");
+	}
+
+	@description = "COMMERCE-5868. As a buyer, I want to be able to compare a product with other ones in a product comparison items list, by checking the product via checkbox"
+	@priority = "3"
+	test CompareProductFromProductCard {
+		property portal.acceptance = "false";
+
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
 		Check.checkToggleSwitch(
 			key_productName = "U-Joint",
-			locator1 = "CommerceEntry#SELECT_CHECKBOX");
+			locator1 = "CommerceEntry#PRODUCT_CARD_COMPARE_CHECKBOX");
 
-		AssertElementPresent(locator1 = "CommerceEntry#ASSERT_MINI_COMPARE");
+		AssertElementPresent(locator1 = "CommerceEntry#MINI_COMPARE_ITEM_ACTIVE");
 	}
 
 	@description = "COMMERCE-5869. As a buyer, I want to be able to remove a product from a product comparison items list, by unchecking the product via checkbox"
