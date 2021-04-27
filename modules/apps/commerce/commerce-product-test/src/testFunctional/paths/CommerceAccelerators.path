@@ -234,8 +234,11 @@
     <td></td>
 </tr>
 <tr>
+<<<<<<< HEAD
 >>>>>>> b249d84 (COMMERCE-5871 Adding AssertProductIsUnavailable Test)
 <tr>
+=======
+>>>>>>> ce99fa1 (COMMERCE-5872 Adding AssertProductIsAvailable Test)
 	<td>ROLES_BUTTON</td>
 	<td>//button[contains(.,'Roles')]</td>
 	<td></td>
