@@ -37,12 +37,181 @@ definition {
 	}
 
 	@description = "This is a test for COMMERCE-6232. Discount Rules lifecycle"
-	@ignore = "true"
 	@priority = "3"
 	test AddEditAndRemoveDiscountRule {
 		property portal.acceptance = "false";
 
-		// TODO COMMERCE-6232 AddEditAndRemoveDiscountRule Pending Implementation
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+
+		CommerceNavigator.gotoPortlet(
+			category = "Pricing",
+			portlet = "Discounts");
+
+		Click(locator1 = "Button#PLUS");
+
+		CommerceEntry.addNewDiscountsEntry(
+			discountAmount = "",
+			discountName = "discount1",
+			discountTarget = "Products",
+			discountType = "Percentage");
+
+		Click(locator1 = "Button#PLUS");
+
+		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
+
+		Type(
+			key_fieldLabel = "Name",
+			locator1 = "TextInput#GENERIC_TEXT_INPUT",
+			value1 = "rule1");
+
+		Click(
+			key_typeName = "Cart Total",
+			locator1 = "Select#TYPE_SELECTED");
+
+		Button.click(button = "Submit");
+
+		SelectFrameTop();
+
+		ClickNoError(
+			key_value = "rule1",
+			locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS");
+
+		ClickNoError(
+			key_selectAction = "Edit",
+			locator1 = "FormViewBuilder#FIELD_ELLIPSIS_ACTION");
+
+		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+		Type(
+			key_fieldLabel = "Cart Total Minimum Amount",
+			locator1 = "TextInput#GENERIC_TEXT_INPUT",
+			value1 = "10");
+
+		Button.clickSave();
+
+		Type(
+			key_fieldLabel = "Cart Total Minimum Amount",
+			locator1 = "TextInput#GENERIC_TEXT_INPUT",
+			value1 = "20");
+
+		Button.clickSave();
+
+		Alert.viewSuccessMessage();
+
+		Click(locator1 = "TableViewBuilder#CLEAR_SEARCH");
+
+		SelectFrameTop();
+
+		Click(locator1 = "Button#PLUS");
+
+		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
+
+		Type(
+			key_fieldLabel = "Name",
+			locator1 = "TextInput#GENERIC_TEXT_INPUT",
+			value1 = "rule2");
+
+		Click(
+			key_typeName = "Has All of These Products",
+			locator1 = "Select#TYPE_SELECTED");
+
+		Button.click(button = "Submit");
+
+		SelectFrameTop();
+
+		ClickNoError(
+			key_value = "rule2",
+			locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS");
+
+
+		ClickNoError(
+			key_selectAction = "Edit",
+			locator1 = "FormViewBuilder#FIELD_ELLIPSIS_ACTION");
+
+		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+		Type(
+			locator1 = "AppBuilder#SEARCH_BAR_INPUT",
+			value1 = "Ball joints");
+
+		Click(locator1 = "Button#SELECT");
+
+		Type(
+			locator1 = "AppBuilder#SEARCH_BAR_INPUT",
+			value1 = "Cams");
+
+		Click(locator1 = "Button#SELECT");
+
+		Click(
+			key_text = "Remove",
+			locator1 = "Button#ANY");
+
+		Type(
+			locator1 = "AppBuilder#SEARCH_BAR_INPUT",
+			value1 = "Hoses");
+
+		Click(locator1 = "Button#SELECT");
+
+		Button.clickSave();
+
+		Alert.viewSuccessMessage();
+
+		Click(locator1 = "TableViewBuilder#CLEAR_SEARCH");
+
+		SelectFrameTop();
+
+		Click(locator1 = "Button#PLUS");
+
+		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
+
+		Type(
+			key_fieldLabel = "Name",
+			locator1 = "TextInput#GENERIC_TEXT_INPUT",
+			value1 = "rule3");
+
+		Click(
+			key_typeName = "Has One of These Products",
+			locator1 = "Select#TYPE_SELECTED");
+
+		Button.click(button = "Submit");
+
+		SelectFrameTop();
+
+		ClickNoError(
+			key_value = "rule3",
+			locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS");
+
+		ClickNoError(
+			key_selectAction = "Edit",
+			locator1 = "FormViewBuilder#FIELD_ELLIPSIS_ACTION");
+
+		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+		Type(
+			locator1 = "AppBuilder#SEARCH_BAR_INPUT",
+			value1 = "Ball joints");
+
+		Click(locator1 = "Button#SELECT");
+
+		Type(
+			locator1 = "AppBuilder#SEARCH_BAR_INPUT",
+			value1 = "Cams");
+
+		Click(locator1 = "Button#SELECT");
+
+		Click(
+			key_text = "Remove",
+			locator1 = "Button#ANY");
+
+		Type(
+			locator1 = "AppBuilder#SEARCH_BAR_INPUT",
+			value1 = "Hoses");
+
+		Click(locator1 = "Button#SELECT");
+
+		Button.clickSave();
+
+		Alert.viewSuccessMessage();
 	}
 
 	test AssertDiscountIsAppliedToChannel {
