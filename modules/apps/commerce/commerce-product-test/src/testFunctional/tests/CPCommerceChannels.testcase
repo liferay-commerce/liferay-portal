@@ -231,7 +231,7 @@ definition {
 
 		SelectFrameTop();
 
-		//TODO Iframe fix at COMMERCE-6481
+		// TODO Iframe fix at COMMERCE-6481
 
 		SelectFrame.selectFrameNoLoading(locator1 = "//body/div[25]/div[2]/div[1]/div[1]/div[1]/iframe[1]");
 
