@@ -958,39 +958,19 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
-		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
-
-		CommerceAcceleratorsInitializer.createNewAccountViaFront(
-			accountName = "Commerce Account",
-			adminEmailAddress = "test@liferay.com");
-
-		Click(
-			key_navUnderline = "Members",
-			locator1 = "NavUnderline#NAV_UNDERLINE_LINK");
-
-		CommerceAcceleratorsInitializer.inviteNewMemberWithRoleToAccount(
-			emailAddress = "buyer@liferay.com",
-			role = "Buyer");
-
-		ApplicationsMenu.gotoSite(site = "Minium");
-
 		ClickNoError(
 			key_productName = "U-Joint",
 			locator1 = "CommerceEntry#PRODUCT_CARD_ADD_TO_WISH_LIST_BUTTON");
 
-		ClickNoError(locator1 = "CommerceAccelerators#MINIUM_SIDEBAR_USER_AVATAR");
-
-		Click(
-			key_menuItem = "My Lists",
-			locator1 = "CommerceAccelerators#MINIUM_SIDEBAR_MENU_ITEM");
-
 		AssertElementPresent(
-			key_userName = "U-Joint",
-			locator1 = "Account#USER_TABLE_NAME");
-
-		ApplicationsMenu.gotoSite(site = "Minium");
+			key_productName = "U-Joint",
+			locator1 = "CommerceEntry#PRODUCT_CARD_ASSERT_WISH_LIST_HEART_FULL");
 
 		Refresh();
+
+		AssertElementPresent(
+			key_productName = "U-Joint",
+			locator1 = "CommerceEntry#PRODUCT_CARD_ASSERT_WISH_LIST_HEART_FULL");
 
 		ClickNoError(
 			key_productName = "U-Joint",
