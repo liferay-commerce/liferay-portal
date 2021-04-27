@@ -29,7 +29,7 @@
     <td></td>
 </tr>
 <tr>
-	<td>ADD_TO_WISH_LIST_BUTTON</td>
+	<td>PRODUCT_CARD_ADD_TO_WISH_LIST_BUTTON</td>
 	<td>//p[@title='${key_productName}']//../..//span[contains(@class,'wish-list-icon')]</td>
 	<td></td>
 </tr>

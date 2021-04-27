@@ -35,25 +35,9 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
-		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
-
-		CommerceAcceleratorsInitializer.createNewAccountViaFront(
-			accountName = "Commerce Account",
-			adminEmailAddress = "test@liferay.com");
-
-		Click(
-			key_navUnderline = "Members",
-			locator1 = "NavUnderline#NAV_UNDERLINE_LINK");
-
-		CommerceAcceleratorsInitializer.inviteNewMemberWithRoleToAccount(
-			emailAddress = "buyer@liferay.com",
-			role = "Buyer");
-
-		ApplicationsMenu.gotoSite(site = "Minium");
-
 		Click(
 			key_productName = "U-Joint",
-			locator1 = "CommerceEntry#ADD_TO_WISH_LIST_BUTTON");
+			locator1 = "CommerceEntry#PRODUCT_CARD_ADD_TO_WISH_LIST_BUTTON");
 
 		Click(locator1 = "CommerceAccelerators#MINIUM_SIDEBAR_USER_AVATAR");
 
@@ -64,6 +48,7 @@ definition {
 		AssertTextEquals(
 			locator1 = "AppBuilder#ITEM_ON_THE_TABLE",
 			value1 = "U-Joint");
+
 	}
 
 	@description = "COMMERCE-5859. As a buyer, I want to view the product price with the default channel currency"
@@ -983,7 +968,7 @@ definition {
 
 		ClickNoError(
 			key_productName = "U-Joint",
-			locator1 = "CommerceEntry#ADD_TO_WISH_LIST_BUTTON");
+			locator1 = "CommerceEntry#PRODUCT_CARD_ADD_TO_WISH_LIST_BUTTON");
 
 		ClickNoError(locator1 = "CommerceAccelerators#MINIUM_SIDEBAR_USER_AVATAR");
 
@@ -1001,7 +986,7 @@ definition {
 
 		ClickNoError(
 			key_productName = "U-Joint",
-			locator1 = "CommerceEntry#ADD_TO_WISH_LIST_BUTTON");
+			locator1 = "CommerceEntry#PRODUCT_CARD_ADD_TO_WISH_LIST_BUTTON");
 
 		ClickNoError(locator1 = "CommerceAccelerators#MINIUM_SIDEBAR_USER_AVATAR");
 
