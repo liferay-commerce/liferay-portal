@@ -123,7 +123,6 @@ definition {
 			key_value = "rule2",
 			locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS");
 
-
 		ClickNoError(
 			key_selectAction = "Edit",
 			locator1 = "FormViewBuilder#FIELD_ELLIPSIS_ACTION");
