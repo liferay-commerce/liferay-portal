@@ -19,16 +19,6 @@
 	<td></td>
 </tr>
 <tr>
-    <td>PRODUCT_CARD_COMPARE_CHECKBOX</td>
-    <td>//p[@title='${key_productName}']//../..//input[contains(@aria-label,'Compare')]</td>
-    <td></td>
-</tr>
-<tr>
-    <td>MINI_COMPARE_ITEM_ACTIVE</td>
-    <td>//div[@class="mini-compare-item active"]//div[@class="mini-compare-thumbnail"]</td>
-    <td></td>
-</tr>
-<tr>
 	<td>PRODUCT_CARD_ADD_TO_WISH_LIST_BUTTON</td>
 	<td>//p[@title='${key_productName}']//../..//span[contains(@class,'wish-list-icon')]</td>
 	<td></td>
@@ -174,11 +164,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>PRODUCT_CARD_COMPARE_CHECKBOX</td>
-	<td>//p[@title='${key_productName}']//../..//input[contains(@aria-label,'Compare')]</td>
-	<td></td> 
-</tr>
-<tr>
 	<td>MINI_COMPARE_ITEM_ACTIVE</td>
 	<td>//div[@class="mini-compare-item active"]//div[@class="mini-compare-thumbnail"]</td>
 	<td></td> 
@@ -187,6 +172,11 @@
 	<td>BILLING_ALLOWED_CHECKBOX</td>
 	<td>//input[contains(@id,'billingAllowed') and (@type='checkbox')]</td>
 	<td></td>
+</tr>
+<tr>
+	<td>PRODUCT_CARD_COMPARE_CHECKBOX</td>
+	<td>//p[@title='${key_productName}']//../..//input[contains(@aria-label,'Compare')]</td>
+	<td></td> 
 </tr>
 <tr>
 	<td>SHIPPING_ALLOWED_CHECKBOX</td>
