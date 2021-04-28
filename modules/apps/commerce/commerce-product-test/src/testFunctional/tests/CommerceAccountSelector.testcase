@@ -124,36 +124,33 @@ definition {
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
-        ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium");
 
-        CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
-        CommerceAcceleratorsInitializer.createNewAccountViaFront(
-            accountName = "Commerce Account 1",
-            adminEmailAddress = "test@liferay.com");
+		CommerceAcceleratorsInitializer.createNewAccountViaFront(
+			accountName = "Commerce Account 1",
+			adminEmailAddress = "test@liferay.com");
 
-        CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
 
-        Button.click(button = "Add Order");
+		Button.click(button = "Add Order");
 
-        CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
 
-        Button.click(button = "Add Order");
+		Button.click(button = "Add Order");
 
-        CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
-        Click.clickNoMouseOver(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN");
-
-		AssertElementPresent(
-			locator1 = "AppBuilder#VALIDATE_LIST_TITLE_NAME_AT_ROW",
-			key_RowNumber = "1");
+		Click.clickNoMouseOver(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN");
 
 		AssertElementPresent(
-			locator1 = "AppBuilder#VALIDATE_LIST_TITLE_NAME_AT_ROW",
-			key_RowNumber = "2");
+			key_RowNumber = "1",
+			locator1 = "AppBuilder#VALIDATE_LIST_TITLE_NAME_AT_ROW");
 
-			
-
+		AssertElementPresent(
+			key_RowNumber = "2",
+			locator1 = "AppBuilder#VALIDATE_LIST_TITLE_NAME_AT_ROW");
 	}
 
 }
