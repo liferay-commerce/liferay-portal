@@ -473,6 +473,27 @@ definition {
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
+		CommerceNavigator.gotoPortlet(
+			category = "Product Management",
+			portlet = "Products");
+
+		CPCommerceCatalog.newProductsEntry(
+			productCatalog = "Minium",
+			productName = "Simple T-Shirt",
+			productType = "Simple");
+
+		ApplicationsMenu.gotoSite(site = "Minium");
+
+		ClickNoError(
+			key_productName = "Simple T-Shirt",
+			locator1 = "CommerceAccelerators#PRODUCT_CARD_NAME"
+		);
+
+		AssertElementPresent(
+			key_productName = "Simple T-Shirt",
+			locator1 = "CommerceEntry#PRODUCT_CARD_DEFAULT_IMAGE");
+	}
+
 		ApplicationsMenu.gotoSite(site = "Minium");
 
 		ClickNoError(
@@ -582,7 +603,7 @@ definition {
         ApplicationsMenu.gotoSite(site = "Minium");
 
         CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
-		
+
         AssertTextEquals(
             key_productName = "catalytic-converters",
             locator1 = "CommerceAccelerators#PRODUCT_CARD_AVAILABILITY_LABEL",
