@@ -46,12 +46,26 @@ definition {
 	}
 
 	@description = "COMMERCE-5925. As a buyer, I want the account I have currently selected to be highlighted in the account selector bar"
-	@ignore = "true"
 	@priority = "3"
 	test AssertActiveAccountIsVisibleOnAccountSelectorBar {
 		property portal.acceptance = "false";
 
-		// TODO COMMERCE-5925 AssertActiveAccountIsVisibleOnAccountSelectorBar pending implementation
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+
+        ApplicationsMenu.gotoSite(site = "Minium");
+
+        CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
+
+        CommerceAcceleratorsInitializer.createNewAccountViaFront(
+			accountName = "Commerce Account",
+			adminEmailAddress = "test@liferay.com");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+		
+		AssertElementPresent(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN");
+
+
+		
 	}
 
 	@description = "COMMERCE-5924. As a buyer, I want the account I have currently selected to be highlighted in the account selector dropdown"
