@@ -533,8 +533,6 @@ definition {
 	test RemoveShippingSettingOptionVariableRate {
 		property portal.acceptance = "false";
 
-		
-
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
 		CommerceNavigator.gotoPortlet(
@@ -549,7 +547,6 @@ definition {
 
 		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
 
-
 		Check.checkToggleSwitch(
 			key_toggleSwitchLabel = "Active",
 			locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
@@ -561,10 +558,9 @@ definition {
 		CommerceEntry.gotoMenuTab(menuTab = "Shipping Options");
 
 		CommerceEntry.AddShippingOptionVariableRate(
-		 	key_name = "Standard",
-		 	key_description = "Standard Description",
-			key_priority = ""
-		 ); 
+			key_description = "Standard Description",
+			key_name = "Standard",
+			key_priority = "");
 
 		Alert.viewSuccessMessage();
 
@@ -577,17 +573,16 @@ definition {
 		CommerceEntry.gotoMenuTab(menuTab = "Shipping Option Settings");
 
 		CommerceEntry.AddShippingOptionSettingsVariableRate(
-		 	key_shippingOption = "Standard",
-		 	key_Warehouse = "Italy",
 			key_country = "Italy",
-			key_region = "Roma",
-			key_zip = "0100",
-			key_weightFrom = "1",
-			key_weightTo = "1",
 			key_fixedPrice = "1",
 			key_priceUnitWeight = "1",
-			key_subtotal = "1"
-		 ); 
+			key_region = "Roma",
+			key_shippingOption = "Standard",
+			key_subtotal = "1",
+			key_Warehouse = "Italy",
+			key_weightFrom = "1",
+			key_weightTo = "1",
+			key_zip = "0100");
 
 		Alert.viewSuccessMessage();
 
@@ -597,12 +592,12 @@ definition {
 
 		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
 
-		Click( 
-			locator1 = "Icon#ANY_VERTICAL_ELLIPSIS",
-			key_text = "Standard");
-			MenuItem.clickNoError(menuItem = "Delete");
+		Click(
+			key_text = "Standard",
+			locator1 = "Icon#ANY_VERTICAL_ELLIPSIS");
+		MenuItem.clickNoError(menuItem = "Delete");
 
-		Alert.viewSuccessMessage();	
+		Alert.viewSuccessMessage();
 	}
 
 	@description = "This is a test for COMMERCE-6121. RemoveTaxRateSettingsByAddressTaxCalculation"
