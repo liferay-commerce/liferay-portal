@@ -35,7 +35,7 @@ definition {
 
 			User.logoutPG();
 		}
-	}	
+	}
 
 	@description = "This is a test for COMMERCE-6269. AddAnOptionAndVerifyIfIsPresent"
 	@priority = "3"
@@ -71,8 +71,6 @@ definition {
 		AssertElementPresent(
 			key_entryName = "Color",
 			locator1 = "CommerceEntry#TABLE_LIST_TITLE");
-
-
 	}
 
 	@description = "This is a test for COMMERCE-6021. AddASKU"
@@ -82,6 +80,7 @@ definition {
 		property portal.acceptance = "false";
 
 		// TODO COMMERCE-6021 AddASKU
+
 	}
 
 	@description = "This is a test for COMMERCE-6287. AddASpecificationAndVerifyIfIsPresent"
