@@ -33,12 +33,17 @@ public class CPMediaImpl implements CPMedia {
 			ThemeDisplay themeDisplay)
 		throws PortalException {
 
-		FileEntry fileEntry = cpAttachmentFileEntry.getFileEntry();
+		FileEntry fileEntry = cpAttachmentFileEntry.fetchFileEntry();
 
 		_downloadUrl = CommerceMediaResolverUtil.getDownloadUrl(
 			cpAttachmentFileEntry.getCPAttachmentFileEntryId());
 		_id = cpAttachmentFileEntry.getCPAttachmentFileEntryId();
-		_mimeType = fileEntry.getMimeType();
+		if(fileEntry == null){
+			_mimeType = StringPool.BLANK;
+		}
+		else{
+			_mimeType = fileEntry.getMimeType();
+		}
 		_url = CommerceMediaResolverUtil.getUrl(
 			cpAttachmentFileEntry.getCPAttachmentFileEntryId());
 		_title = cpAttachmentFileEntry.getTitle(themeDisplay.getLanguageId());
