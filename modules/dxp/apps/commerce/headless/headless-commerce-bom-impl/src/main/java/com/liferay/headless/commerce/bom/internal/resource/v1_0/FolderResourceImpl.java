@@ -180,7 +180,7 @@ public class FolderResourceImpl extends BaseFolderResourceImpl {
 		CPAttachmentFileEntry cpAttachmentFileEntry =
 			commerceBOMDefinition.fetchCPAttachmentFileEntry();
 
-		FileEntry fileEntry = cpAttachmentFileEntry.getFileEntry();
+		FileEntry fileEntry = cpAttachmentFileEntry.fetchFileEntry();
 
 		String thumbnailURL = DLUtil.getDownloadURL(
 			fileEntry, fileEntry.getFileVersion(), null, null);

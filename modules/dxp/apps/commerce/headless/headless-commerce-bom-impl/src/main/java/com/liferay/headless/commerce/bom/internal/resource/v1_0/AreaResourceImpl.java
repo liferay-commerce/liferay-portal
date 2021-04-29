@@ -65,7 +65,7 @@ public class AreaResourceImpl extends BaseAreaResourceImpl {
 		CPAttachmentFileEntry cpAttachmentFileEntry =
 			commerceBOMDefinition.fetchCPAttachmentFileEntry();
 
-		FileEntry fileEntry = cpAttachmentFileEntry.getFileEntry();
+		FileEntry fileEntry = cpAttachmentFileEntry.fetchFileEntry();
 
 		String url = DLUtil.getDownloadURL(
 			fileEntry, fileEntry.getFileVersion(), null, null);

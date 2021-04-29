@@ -212,7 +212,7 @@ public class EditCommerceBOMDefinitionMVCActionCommand
 						serviceContext);
 			}
 			else {
-				FileEntry fileEntry = cpAttachmentFileEntry.getFileEntry();
+				FileEntry fileEntry = cpAttachmentFileEntry.fetchFileEntry();
 
 				if (fileEntry.getFileEntryId() != fileEntryId) {
 					cpAttachmentFileEntry =
