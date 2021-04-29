@@ -20,7 +20,6 @@ import com.liferay.commerce.product.service.CPAttachmentFileEntryService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Attachment;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.AttachmentBase64;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.AttachmentUrl;
-import com.liferay.headless.commerce.admin.catalog.internal.jaxrs.exception.MethodRequiredParameterMissingException;
 import com.liferay.headless.commerce.admin.catalog.internal.util.DateConfigUtil;
 import com.liferay.headless.commerce.core.util.DateConfig;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
@@ -145,10 +144,6 @@ public class AttachmentUtil {
 			int type, ServiceContext serviceContext)
 		throws Exception {
 
-		_validateMethodRequiredParams(
-			attachmentBase64.getId(),
-			attachmentBase64.getExternalReferenceCode());
-
 		Calendar displayCalendar = CalendarFactoryUtil.getCalendar(
 			serviceContext.getTimeZone());
 
@@ -203,9 +198,6 @@ public class AttachmentUtil {
 			AttachmentUrl attachmentUrl, long classNameId, long classPK,
 			int type, ServiceContext serviceContext)
 		throws Exception {
-
-		_validateMethodRequiredParams(
-			attachmentUrl.getId(), attachmentUrl.getExternalReferenceCode());
 
 		Calendar displayCalendar = CalendarFactoryUtil.getCalendar(
 			serviceContext.getTimeZone());
@@ -263,9 +255,6 @@ public class AttachmentUtil {
 			ServiceContext serviceContext)
 		throws Exception {
 
-		_validateMethodRequiredParams(
-			attachment.getId(), attachment.getExternalReferenceCode());
-
 		Calendar displayCalendar = CalendarFactoryUtil.getCalendar(
 			serviceContext.getTimeZone());
 
@@ -301,6 +290,7 @@ public class AttachmentUtil {
 		return cpAttachmentFileEntryService.upsertCPAttachmentFileEntry(
 			attachment.getExternalReferenceCode(), groupId, classNameId,
 			classPK, GetterUtil.getLong(attachment.getId()), fileEntryId,
+			GetterUtil.getString(attachment.getCdnUrl()),GetterUtil.get(attachment.getCdn(), false),
 			displayDateConfig.getMonth(), displayDateConfig.getDay(),
 			displayDateConfig.getYear(), displayDateConfig.getHour(),
 			displayDateConfig.getMinute(), expirationDateConfig.getMonth(),
@@ -350,17 +340,6 @@ public class AttachmentUtil {
 			}
 
 			return false;
-		}
-	}
-
-	private static void _validateMethodRequiredParams(
-			Long id, String externalReferenceCode)
-		throws Exception {
-
-		if (Validator.isNull(id) && Validator.isNull(externalReferenceCode)) {
-			throw new MethodRequiredParameterMissingException(
-				"Unable to complete operation if attachment misses both ID " +
-					"and externalReferenceCode");
 		}
 	}
 
