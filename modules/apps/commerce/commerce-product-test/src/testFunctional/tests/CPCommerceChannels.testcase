@@ -529,12 +529,80 @@ definition {
 	}
 
 	@description = "This is a test for COMMERCE-6115. RemoveShippingSettingOptionVariableRate"
-	@ignore = "true"
 	@priority = "3"
 	test RemoveShippingSettingOptionVariableRate {
 		property portal.acceptance = "false";
 
-		// TODO COMMERCE-6115 RemoveShippingSettingOptionVariableRate
+		
+
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+
+		CommerceNavigator.gotoPortlet(
+			category = "Store Management",
+			portlet = "Channels");
+
+		CommerceNavigator.gotoEntry(entryName = "Minium Portal");
+
+		Click(
+			key_entryName = "Variable Rate",
+			locator1 = "CommerceEntry#CHANNELS_GENERAL_TAB_EDITS");
+
+		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+
+		Check.checkToggleSwitch(
+			key_toggleSwitchLabel = "Active",
+			locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
+
+		Button.clickSave();
+
+		Alert.viewSuccessMessage();
+
+		CommerceEntry.gotoMenuTab(menuTab = "Shipping Options");
+
+		CommerceEntry.AddShippingOptionVariableRate(
+		 	key_name = "Standard",
+		 	key_description = "Standard Description",
+			key_priority = ""
+		 ); 
+
+		Alert.viewSuccessMessage();
+
+		Click(locator1 = "Icon#CLOSE");
+
+		SelectFrameTop();
+
+		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+		CommerceEntry.gotoMenuTab(menuTab = "Shipping Option Settings");
+
+		CommerceEntry.AddShippingOptionSettingsVariableRate(
+		 	key_shippingOption = "Standard",
+		 	key_Warehouse = "Italy",
+			key_country = "Italy",
+			key_region = "Roma",
+			key_zip = "0100",
+			key_weightFrom = "1",
+			key_weightTo = "1",
+			key_fixedPrice = "1",
+			key_priceUnitWeight = "1",
+			key_subtotal = "1"
+		 ); 
+
+		Alert.viewSuccessMessage();
+
+		Click(locator1 = "Icon#CLOSE");
+
+		SelectFrameTop();
+
+		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+		Click( 
+			locator1 = "Icon#ANY_VERTICAL_ELLIPSIS",
+			key_text = "Standard");
+			MenuItem.clickNoError(menuItem = "Delete");
+
+		Alert.viewSuccessMessage();	
 	}
 
 	@description = "This is a test for COMMERCE-6121. RemoveTaxRateSettingsByAddressTaxCalculation"
