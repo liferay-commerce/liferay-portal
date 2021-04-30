@@ -141,8 +141,6 @@ definition {
 
 		Click(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN_BACK_BUTTON");
 
-
-
 		AssertElementPresent(
 			key_accountName = "Commerce Account 1",
 			locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_ACCOUNT_LIST_ITEM");
