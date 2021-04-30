@@ -90,7 +90,7 @@ public class CommerceProductAttachmentDataSetDataProvider
 
 			FileEntry fileEntry = cpAttachmentFileEntry.fetchFileEntry();
 
-			if(fileEntry != null){
+			if (fileEntry != null) {
 				extension = HtmlUtil.escape(fileEntry.getExtension());
 			}
 
@@ -115,8 +115,7 @@ public class CommerceProductAttachmentDataSetDataProvider
 						title, "rounded", "lg",
 						CommerceMediaResolverUtil.getThumbnailUrl(
 							cpAttachmentFileEntryId)),
-					HtmlUtil.escape(title),
-						extension,
+					HtmlUtil.escape(title), extension,
 					cpAttachmentFileEntry.getPriority(),
 					LanguageUtil.format(
 						httpServletRequest, "x-ago", modifiedDateDescription,

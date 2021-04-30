@@ -56,13 +56,12 @@ cpAttachmentFileEntrySearchContainer.setResults(cpAttachmentFileEntries);
 
 			FileEntry fileEntry = cpAttachmentFileEntry.fetchFileEntry();
 
-			if(fileEntry == null){
+			if (fileEntry == null) {
 					thumbnailSrc = cpAttachmentFileEntry.getCdnUrl();
 				}
-				else{
+				else {
 					thumbnailSrc = CommerceMediaResolverUtil.getThumbnailUrl(cpAttachmentFileEntry.getCPAttachmentFileEntryId());
 				}
-
 				%>
 
 			<c:choose>
