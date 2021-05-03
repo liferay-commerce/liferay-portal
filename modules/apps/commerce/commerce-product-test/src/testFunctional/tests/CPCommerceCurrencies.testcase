@@ -47,7 +47,6 @@ definition {
 			currencyPriority = "0.0",
 			currencyRoundingMode = "HALF EVEN",
 			currencySymbol = "&");
-			
 
 		Click(
 			key_itemName = "Test Currency",

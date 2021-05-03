@@ -1,7 +1,6 @@
 definition {
 
 	macro addCurrencyEntry {
-
 		Type(
 			key_text = "Name",
 			locator1 = "TextInput#ANY",
@@ -21,7 +20,6 @@ definition {
 			key_text = "Symbol",
 			locator1 = "TextInput#ANY",
 			value1 = "${currencySymbol}");
-
 
 		Type(
 			key_text = "Format Pattern",
@@ -65,7 +63,6 @@ definition {
 			key_text = "Name",
 			locator1 = "TextInput#ANY",
 			value1 = "${currencyName}");
-
 
 		Type(
 			key_text = "Code",
@@ -692,7 +689,6 @@ definition {
 	}
 
 	macro editCurrencyEntry {
-		
 		if (isSet(currencyName)) {
 			Type(
 				key_text = "Name",
