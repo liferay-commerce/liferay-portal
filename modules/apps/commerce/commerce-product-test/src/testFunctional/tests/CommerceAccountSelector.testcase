@@ -98,19 +98,19 @@ definition {
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
-        
+
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
-        
+
 		CommerceAcceleratorsInitializer.createNewAccountViaFront(
-            accountName = "First Account",
-            adminEmailAddress = "test@liferay.com");
-		
+			accountName = "First Account",
+			adminEmailAddress = "test@liferay.com");
+
 		Click(locator1 = "Link#BACK");
-		
+
 		CommerceAcceleratorsInitializer.createNewAccountViaFront(
-		    accountName = "Second Account",
-            adminEmailAddress = "test@liferay.com");
-        
+			accountName = "Second Account",
+			adminEmailAddress = "test@liferay.com");
+
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		Click.clickNoMouseOver(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN");
@@ -122,21 +122,20 @@ definition {
 			value1 = "Second");
 
 		AssertElementPresent(
-			locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_ACCOUNT_LIST_ITEM",
-			key_accountName  = "Second Account");
+			key_accountName = "Second Account",
+			locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_ACCOUNT_LIST_ITEM");
 
 		AssertElementNotPresent(
-			locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_ACCOUNT_LIST_ITEM",
-			key_accountName  = "First Account");
+			key_accountName = "First Account",
+			locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_ACCOUNT_LIST_ITEM");
 
 		Click(
-			locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_ACCOUNT_LIST_ITEM",
-			key_accountName = "Second Account");
-				
+			key_accountName = "Second Account",
+			locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_ACCOUNT_LIST_ITEM");
+
 		AssertTextPresent(
 			locator1 = "ContentDashboard#INFO_PANEL_TITLE",
-			value1  = "Second Account");
-
+			value1 = "Second Account");
 	}
 
 	@description = "COMMERCE-5957. As a buyer, I want to search for an order in the orders list, and select it as active order"
