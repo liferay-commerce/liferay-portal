@@ -241,7 +241,6 @@ definition {
 		Button.clickSave();
 
 		AssertElementPresent(locator1 = "Message#SUCCESS");
-		
 	}
 
 	test CreateNewChannel {
