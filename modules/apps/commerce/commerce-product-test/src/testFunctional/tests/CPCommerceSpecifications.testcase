@@ -82,9 +82,6 @@ definition {
 		AssertElementPresent(
 			key_rowEntry = "Test",
 			locator1 = "ContentRow#ENTRY_CONTENT_ENTRY_NAME");
-
-
-			
 	}
 
 	@description = "This is a test for COMMERCE-6282. RemoveSpecificationGroup"
