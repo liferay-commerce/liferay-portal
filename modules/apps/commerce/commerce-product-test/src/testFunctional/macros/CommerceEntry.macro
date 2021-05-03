@@ -1,5 +1,123 @@
 definition {
 
+	macro addCurrencyEntry {
+
+		Type(
+			key_text = "Name",
+			locator1 = "TextInput#ANY",
+			value1 = "${currencyName}");
+
+		Type(
+			key_text = "Code",
+			locator1 = "TextInput#ANY",
+			value1 = "${currencyCode}");
+
+		Type(
+			key_text = "Symbol",
+			locator1 = "TextInput#ANY",
+			value1 = "${currencySymbol}");
+
+		Type(
+			key_text = "Symbol",
+			locator1 = "TextInput#ANY",
+			value1 = "${currencySymbol}");
+
+
+		Type(
+			key_text = "Format Pattern",
+			locator1 = "TextInput#ANY",
+			value1 = "${currencyFormatPattern}");
+
+		Type(
+			key_text = "Maximum Decimal Places",
+			locator1 = "TextInput#ANY",
+			value1 = "${currencyMaximumDecimalPlaces}");
+
+		Type(
+			key_text = "Minimum Decimal Places",
+			locator1 = "TextInput#ANY",
+			value1 = "${currencyMinimumDecimalPlaces}");
+
+		Select(
+			key_fieldLabel = "Rounding Mode",
+			locator1 = "Select#GENERIC_SELECT_FIELD",
+			value1 = "${currencyRoundingMode}");
+
+		Type(
+			key_text = "Exchange Rate with US Dollar",
+			locator1 = "TextInput#ANY",
+			value1 = "${currencyExchangeRatewithUSDollar}");
+
+		Type(
+			key_text = "Priority",
+			locator1 = "TextInput#ANY",
+			value1 = "${currencyPriority}");
+
+		Check.checkToggleSwitch(
+			key_toggleSwitchLabel = "Active",
+			locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
+
+		Button.clickSave();
+	}
+
+	macro addCurrencyPrimaryEntry {
+		Type(
+			key_text = "Name",
+			locator1 = "TextInput#ANY",
+			value1 = "${currencyName}");
+
+
+		Type(
+			key_text = "Code",
+			locator1 = "TextInput#ANY",
+			value1 = "${currencyCode}");
+
+		Type(
+			key_text = "Symbol",
+			locator1 = "TextInput#ANY",
+			value1 = "${currencySymbol}");
+
+		Type(
+			key_text = "Symbol",
+			locator1 = "TextInput#ANY",
+			value1 = "${currencySymbol}");
+
+		Type(
+			key_text = "Format Pattern",
+			locator1 = "TextInput#ANY",
+			value1 = "${currencyFormatPattern}");
+
+		Type(
+			key_text = "Maximum Decimal Places",
+			locator1 = "TextInput#ANY",
+			value1 = "${currencyMaximumDecimalPlaces}");
+
+		Type(
+			key_text = "Minimum Decimal Places",
+			locator1 = "TextInput#ANY",
+			value1 = "${currencyMinimumDecimalPlaces}");
+
+		Select(
+			key_fieldLabel = "Rounding Mode",
+			locator1 = "Select#GENERIC_SELECT_FIELD",
+			value1 = "${currencyRoundingMode}");
+
+		Check.checkToggleSwitch(
+			key_toggleSwitchLabel = "Primary",
+			locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
+
+		Type(
+			key_text = "Priority",
+			locator1 = "TextInput#ANY",
+			value1 = "${currencyPriority}");
+
+		Check.checkToggleSwitch(
+			key_toggleSwitchLabel = "Active",
+			locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
+
+		Button.clickSave();
+	}
+
 	macro addFullDescriptionViaAlloyEditor {
 		AlloyEditor.typeEditor(
 			content = "${entryFullDescription}",
@@ -571,6 +689,74 @@ definition {
 		AssertElementNotPresent(
 			key_value = "${keyName}",
 			locator1 = "TextInput#GENERIC_TEXT_INPUT");
+	}
+
+	macro editCurrencyEntry {
+		
+		if (isSet(currencyName)) {
+			Type(
+				key_text = "Name",
+				locator1 = "TextInput#ANY",
+				value1 = "${currencyName}");
+		}
+
+		if (isSet(currencyCode)) {
+			Type(
+				key_text = "Code",
+				locator1 = "TextInput#ANY",
+				value1 = "${currencyCode}");
+		}
+
+		if (isSet(currencySymbol)) {
+			Type(
+				key_text = "Symbol",
+				locator1 = "TextInput#ANY",
+				value1 = "${currencySymbol}");
+		}
+
+		if (isSet(currencyFormatPattern)) {
+			Type(
+				key_text = "Format Pattern",
+				locator1 = "TextInput#ANY",
+				value1 = "${currencyFormatPattern}");
+		}
+
+		if (isSet(currencyMaximumDecimalPlaces)) {
+			Type(
+				key_text = "Maximum Decimal Places",
+				locator1 = "TextInput#ANY",
+				value1 = "${currencyMaximumDecimalPlaces}");
+		}
+
+		if (isSet(currencyMinimumDecimalPlaces)) {
+			Type(
+				key_text = "Minimum Decimal Places",
+				locator1 = "TextInput#ANY",
+				value1 = "${currencyMinimumDecimalPlaces}");
+		}
+
+		if (isSet(currencyRoundingMode)) {
+			Select(
+				key_fieldLabel = "Rounding Mode",
+				locator1 = "Select#GENERIC_SELECT_FIELD",
+				value1 = "${currencyRoundingMode}");
+		}
+
+		if (isSet(currencyExchangeRatewithUSDollar)) {
+			Type(
+				key_text = "Exchange Rate with US Dollar",
+				locator1 = "TextInput#ANY",
+				value1 = "${currencyExchangeRatewithUSDollar}");
+		}
+
+		if (isSet(currencyPriority)) {
+			Type(
+				key_text = "Priority",
+				locator1 = "TextInput#ANY",
+				value1 = "${currencyPriority}");
+		}
+
+		Button.clickSave();
 	}
 
 	macro editEntryFullDescription {

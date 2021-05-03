@@ -27,14 +27,46 @@ definition {
 	}
 
 	@description = "This is a test for COMMERCE-5839. As a system admin i want to be able to create / update and delete a new currency"
-	@ignore = "true"
 	@priority = "3"
 	test CreateAndUpdateNewCurrency {
 		property portal.acceptance = "false";
 
-		// TODO COMMERCE-5839 CreateAndUpdateNewCurrency Pending Implementation
-		// NOTE: 1. Delete action is already handled by commerceAdminTearDown
+		CommerceNavigator.gotoPortlet(
+			category = "Store Management",
+			portlet = "Currencies");
 
+		Click(locator1 = "Button#PLUS");
+
+		CommerceEntry.addCurrencyEntry(
+			currencyCode = "TCY",
+			currencyExchangeRatewithUSDollar = "1.5",
+			currencyFormatPattern = "$ ###,##0.00",
+			currencyMaximumDecimalPlaces = "2",
+			currencyMinimumDecimalPlaces = "2",
+			currencyName = "Test Currency",
+			currencyPriority = "0.0",
+			currencyRoundingMode = "HALF EVEN",
+			currencySymbol = "&");
+			
+
+		Click(
+			key_itemName = "Test Currency",
+			locator1 = "CommerceEntry#SPECIFIC_MENU_ITEM");
+
+		MenuItem.clickNoError(menuItem = "Edit");
+
+		CommerceEntry.editCurrencyEntry(
+			currencyCode = "TCYE",
+			currencyExchangeRatewithUSDollar = "1.00",
+			currencyName = "Test Currency Edited");
+
+		Click(
+			key_itemName = "Test Currency",
+			locator1 = "CommerceEntry#SPECIFIC_MENU_ITEM");
+
+		MenuItem.clickNoError(menuItem = "Delete");
+
+		AssertConfirm(value1 = "Are you sure you want to delete this? It will be deleted immediately.");
 	}
 
 	@description = "This is a test for COMMERCE-5843. As a system administrator I want disabled currencies not to be available in Price Lists, Catalogs and Channels"
@@ -44,6 +76,7 @@ definition {
 		property portal.acceptance = "false";
 
 		// TODO COMMERCE-5843 DeactivateCurrency Pending Implementation
+
 	}
 
 	@description = "This is a test for COMMERCE-5842. As a system administrator I want currencies to be sorted by priority"

@@ -23,6 +23,12 @@
 	<td>//input[contains(@id,'Channel') and (@type='checkbox')]</td>
 	<td></td>
 </tr>
+
+<tr>
+    <td>SPECIFIC_MENU_ITEM</td>
+    <td>//a[contains(text(),'${key_itemName}')]//..//..//*[name()='svg'][contains(@class,'lexicon-icon lexicon-icon-ellipsis-v')]</td>
+    <td></td>
+</tr>
 <tr>
 	<td>ADD_TAG_BUTTON</td>
 	<td>//div/button[@title='Add Tags']</td>
