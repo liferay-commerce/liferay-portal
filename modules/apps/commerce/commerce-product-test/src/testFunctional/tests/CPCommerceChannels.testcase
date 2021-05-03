@@ -198,12 +198,50 @@ definition {
 	}
 
 	@description = "This is a test for COMMERCE-6195. CreateCategoryDisplayPage"
-	@ignore = "true"
 	@priority = "3"
 	test CreateCategoryDisplayPage {
 		property portal.acceptance = "false";
 
-		// TODO COMMERCE-6195 CreateCategoryDisplayPage
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+
+		CommerceNavigator.gotoPortlet(
+			category = "Store Management",
+			portlet = "Channels");
+
+		CommerceNavigator.gotoEntry(entryName = "Minium Portal");
+
+		CommerceEntry.gotoMenuTab(menuTab = "Category Display Pages");
+
+		Click(locator1 = "Button#PLUS");
+
+		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+		Click(locator1 = "Button#SELECT");
+
+		AssetCategorization.gotoSelectCategory();
+
+		AssetCategorization.selectCategory(categoryName = "Brake System");
+
+		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+		Click(locator1 = "Button#CHOOSE");
+
+		SelectFrameTop();
+
+		LexiconCard.clickCard(card = "Login");
+
+		SelectFrameTop();
+
+		AssertClick(
+			locator1 = "Button#DONE",
+			value1 = "Done");
+
+		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+		Button.clickSave();
+
+		AssertElementPresent(locator1 = "Message#SUCCESS");
+		
 	}
 
 	test CreateNewChannel {
