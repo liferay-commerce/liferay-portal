@@ -41,7 +41,6 @@ definition {
 	@priority = "3"
 	test EditSpecificationGroup {
 		property portal.acceptance = "false";
-
 		property test.name.skip.portal.instance = "CPCommerceSpecifications#EditSpecificationGroup";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
@@ -75,9 +74,6 @@ definition {
 		AssertElementPresent(
 			key_rowEntry = "Test",
 			locator1 = "ContentRow#ENTRY_CONTENT_ENTRY_NAME");
-
-
-
 	}
 
 	@description = "This is a test for COMMERCE-6284. EditSpecificationLabel"
@@ -87,6 +83,7 @@ definition {
 		property portal.acceptance = "false";
 
 		// TODO COMMERCE-6284 EditSpecificationLabel
+
 	}
 
 	@description = "This is a test for COMMERCE-6282. RemoveSpecificationGroup"
@@ -94,7 +91,7 @@ definition {
 	@priority = "3"
 	test RemoveSpecificationGroup {
 		property portal.acceptance = "false";
-		
+
 		// TODO COMMERCE-6282 RemoveSpecificationGroup
 	}
 
