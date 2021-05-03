@@ -133,6 +133,13 @@
 	<td>//input[contains(@name,'displayImmediately')]</td>
 	<td></td>
 </tr>
+
+<tr>
+<td>ENABLE_CHECKBOX_SELECT_CHANNEL</td>
+    <td>//tr[contains(@data-name,'${key_checkboxName}')]//input[contains(@type,'checkbox')]</td>
+    <td></td>
+</tr>
+
 <tr>
 	<td>ENABLE_AUTO_TAGGING</td>
 	<td>//label[contains(.,'Enable Auto Tagging')]//input[@type='checkbox']</td>
