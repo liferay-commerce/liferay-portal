@@ -92,7 +92,7 @@ definition {
 	test EditAPermissionOnACatalog {
 		property portal.acceptance = "false";
 		property test.name.skip.portal.instance = "CPCommerceCatalogs#EditAPermissionOnACatalog";
-		
+
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
 			portlet = "Catalogs");
@@ -153,13 +153,13 @@ definition {
 		IFrame.selectPermissionsFrame();
 
 		AssertChecked(
-				key_roleTitle = "user",
-				locator1 = "Permissions#INLINE_PERMISSIONS_UPDATE_CHECKBOX");
+			key_roleTitle = "user",
+			locator1 = "Permissions#INLINE_PERMISSIONS_UPDATE_CHECKBOX");
 
 		AssertChecked(
 			key_roleTitle = "user",
 			locator1 = "Permissions#INLINE_PERMISSIONS_DELETE_CHECKBOX");
-			
+
 		AssertChecked(
 			key_roleTitle = "user",
 			locator1 = "Permissions#INLINE_PERMISSIONS_PERMISSIONS_CHECKBOX");
@@ -167,8 +167,6 @@ definition {
 		AssertChecked(
 			key_roleTitle = "user",
 			locator1 = "Permissions#INLINE_PERMISSIONS_VIEW_CHECKBOX");
-
-			
 	}
 
 	@description = "This is a test for COMMERCE-6272. RemoveACatalog"
