@@ -105,7 +105,6 @@ definition {
 			accountName = "Test",
 			adminEmailAddress = "test@liferay.com");
 
-
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		FrontStore.addInitializerProductToCart(
@@ -114,7 +113,6 @@ definition {
 
 		FrontStore.addInitializerProductToCart(
 			productName = "Torque Converters",
-			
 			productQuantity = "1");
 
 		CommerceNavigator.gotoMiniCart();
