@@ -135,9 +135,6 @@ definition {
 			key_cartItemSKU = "MIN55859",
 			locator1 = "CommerceAccelerators#MINI_CART_ITEM_NAME",
 			value1 = "Torque Converters");
-			
-
-			
 	}
 
 	@description = "COMMERCE-6331. As a buyer, I want to be able to remove an item from cart by clicking on the delete button('x')"
