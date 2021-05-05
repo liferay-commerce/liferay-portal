@@ -472,30 +472,29 @@ definition {
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
-	
+
 		CommerceNavigator.gotoEntry(entryName = "Minium Portal");
 
-
 		CommerceEntry.gotoMenuTab(menuTab = "Notification Templates");
-		
+
 		Click(locator1 = "Button#PLUS");
-		
+
 		SelectFrameTop();
 
 		CommerceEntry.addNewNotificationTemplate(
 			entryName = "Test Notification Template",
-			notificationType = "Order Placed",
 			fromAddress = "test@liferay.com",
-			fromName = "Test");
+			fromName = "Test",
+			notificationType = "Order Placed");
 
 		Type(
-		key_fieldLabel = "To",
-		locator1 = "TextInput#GENERIC_TEXT_INPUT",
-		value1 = "[%ACCOUNT_ROLE_ADMINISTRATOR%]");
-		
-		Button.clickSave();	
+			key_fieldLabel = "To",
+			locator1 = "TextInput#GENERIC_TEXT_INPUT",
+			value1 = "[%ACCOUNT_ROLE_ADMINISTRATOR%]");
 
-		Alert.viewSuccessMessage();	
+		Button.clickSave();
+
+		Alert.viewSuccessMessage();
 
 		Click(locator1 = "Icon#CLOSE");
 
@@ -505,32 +504,31 @@ definition {
 			key_productQuantity = "Test Notification Template",
 			locator1 = "CommerceOrders#ORDER_DETAILS_PRODUCT_QUANTITY");
 
-		Click( 
-			locator1 = "Icon#ANY_VERTICAL_ELLIPSIS",
-			key_text = "Test Notification Template");
+		Click(
+			key_text = "Test Notification Template",
+			locator1 = "Icon#ANY_VERTICAL_ELLIPSIS");
 
 		MenuItem.clickNoError(menuItem = "Edit");
-
 
 		SelectFrameTop();
 
 		CommerceEntry.addNewNotificationTemplate(
 			entryName = "Notification Template",
-			notificationType = "Order Completed",
 			fromAddress = "test@liferay.com",
-			fromName = "Test");
+			fromName = "Test",
+			notificationType = "Order Completed");
 
 		Type(
 			key_fieldLabel = "To",
 			locator1 = "TextInput#GENERIC_TEXT_INPUT",
 			value1 = "[%ACCOUNT_ROLE_ORDER_MANAGER%]");
 
-		Button.clickSave();	
+		Button.clickSave();
 
-		Alert.viewSuccessMessage();	
+		Alert.viewSuccessMessage();
 
 		Click(locator1 = "Icon#CLOSE");
-		
+
 		Refresh();
 
 		AssertVisible(
