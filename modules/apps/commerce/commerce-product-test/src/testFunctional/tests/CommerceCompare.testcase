@@ -148,6 +148,7 @@ definition {
 		property portal.acceptance = "false";
 
 		// TODO COMMERCE-5916 EditMaxNumberOfComparisonItemsInMiniCompare pending implementation
+
 	}
 
 	@description = "COMMERCE-5918. As a buyer, I want to deselect a item in Product Compare page"
