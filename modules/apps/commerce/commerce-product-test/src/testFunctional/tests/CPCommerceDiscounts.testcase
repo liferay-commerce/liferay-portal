@@ -24,7 +24,6 @@ definition {
 
 			CommerceConfiguration.commerceInitializersTearDown();
 		}
-
 	}
 
 	@description = "This is a test for COMMERCE-6231. Discount lifecycle"
@@ -34,6 +33,7 @@ definition {
 		property portal.acceptance = "false";
 
 		// TODO COMMERCE-6231 AddEditAndDeleteDiscountEntry Pending Implementation
+
 	}
 
 	@description = "This is a test for COMMERCE-6232. Discount Rules lifecycle"
@@ -208,7 +208,7 @@ definition {
 		Type(
 			key_fieldLabel = "Add Products",
 			locator1 = "AppBuilder#SEARCH_BAR_INPUT",
-			value1 = ""U-Joint"");
+			value1 = "");
 
 		Button.clickSelect();
 
@@ -403,10 +403,6 @@ definition {
 		AssertTextEquals.assertPartialText(
 			locator1 = "Message#ERROR",
 			value1 = "The inserted coupon code has reached its usage limit.");
-
-
-
-			
 	}
 
 	@description = "This is a test for COMMERCE-6229. Discount coupon code validators"
