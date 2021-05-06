@@ -183,96 +183,96 @@ definition {
 		property test.name.skip.portal.instance = "ViewCouponCodeNotAppliedToNotQualifiedAccount";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
-        
+
 		ApplicationsMenu.gotoSite(site = "Minium");
-        
+
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
-        
+
 		CommerceAcceleratorsInitializer.createNewAccountViaFront(
-            accountName = "account1",
-            adminEmailAddress = "test@liferay.com");
-		
+			accountName = "account1",
+			adminEmailAddress = "test@liferay.com");
+
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
-        
+
 		CommerceAcceleratorsInitializer.createNewAccountViaFront(
-            accountName = "account2",
-            adminEmailAddress = "test@liferay.com");
-		
+			accountName = "account2",
+			adminEmailAddress = "test@liferay.com");
+
 		CommerceNavigator.gotoPortlet(
 			category = "Pricing",
 			portlet = "Discounts");
-		
+
 		Click(locator1 = "Button#PLUS");
-		
+
 		CommerceEntry.addNewDiscountsEntry(
 			discountAmount = "10",
 			discountName = "Test Discount",
 			discountTarget = "Total",
 			discountType = "Percentage");
-		
+
 		Click(
-			locator1 = "ToggleSwitch#ENABLE_TOGGLE_SWITCH_VIA_SPAN",
-			key_toggleSwitch = "Coupon Code");
-		
+			key_toggleSwitch = "Coupon Code",
+			locator1 = "ToggleSwitch#ENABLE_TOGGLE_SWITCH_VIA_SPAN");
+
 		Pause(locator1 = "5000");
-		
+
 		Type(
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
 			key_fieldLabel = "Coupon Code",
+			locator1 = "TextInput#GENERIC_TEXT_INPUT",
 			value1 = "TEST");
-		
+
 		CommerceEntry.gotoMenuTab(menuTab = "Eligibility");
-		
+
 		Click(
 			key_radioOption = "Specific Accounts",
 			locator1 = "CommerceEntry#RADIO_BUTTON");
-		
+
 		Type(
-			locator1 = "AppBuilder#SEARCH_BAR_INPUT",
 			key_fieldLabel = "Add Accounts",
+			locator1 = "AppBuilder#SEARCH_BAR_INPUT",
 			value1 = "account1");
-		
+
 		Button.clickSelect();
-		
+
 		Button.clickPublish();
-		
+
 		ApplicationsMenu.gotoSite(site = "Minium");
-		
+
 		Click.clickNoMouseOver(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN");
-		
+
 		Click(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN_BACK_BUTTON");
-		
+
 		Click(
-			locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_ACCOUNT_LIST_ITEM",
-			key_accountName = "account2");
-		
+			key_accountName = "account2",
+			locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_ACCOUNT_LIST_ITEM");
+
 		FrontStore.addInitializerProductToCart(
-            productName = "U-Joint",
-            productQuantity = "1");
-        
+			productName = "U-Joint",
+			productQuantity = "1");
+
 		CommerceNavigator.gotoMiniCart();
-        
+
 		Button.click(button = "Submit");
-		
+
 		Click(locator1 = "Icon#PLUS");
-		
+
 		Type(
-			locator1 = "TextInput#ANY",
 			key_text = "Search",
+			locator1 = "TextInput#ANY",
 			value1 = "Coupon Code Entry");
-		
+
 		Click(
-			locator1 = "ContentDashboard#CATEGORY_NAME_ELEMENT",
-			categoryName = "Coupon Code Entry");
-		
+			categoryName = "Coupon Code Entry",
+			locator1 = "ContentDashboard#CATEGORY_NAME_ELEMENT");
+
 		Click(locator1 = "Button#PLUS");
-		
+
 		Type(
 			locator1 = "TextInput#DISCOUNT",
 			value1 = "TEST");
-		
+
 		Button.click(button = "Apply");
-		
+
 		AssertTextEquals.assertPartialText(
 			locator1 = "Message#ERROR",
 			value1 = "Please enter a valid coupon code.");
