@@ -529,7 +529,7 @@ definition {
 			entryTo = "[%ACCOUNT_ROLE_ADMINISTRATOR%]",
 			fromAddress = "test@liferay.com",
 			fromName = "Test",
-			notificationType = "Order Placed");		
+			notificationType = "Order Placed");
 
 		Button.clickSave();
 
