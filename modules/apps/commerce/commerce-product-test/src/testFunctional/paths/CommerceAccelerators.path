@@ -260,6 +260,11 @@
 	<td>//div[@class='multi-step-indicator-label' and contains(.,'${key_label}')]</td>
 	<td></td>
 </tr>
+<tr>
+	<td>CHECKOUT_COUPON_DISCOUNT</td>
+	<td>//div[contains(@class,'coupon-code-body')]//h3[contains(@class,'d-inline') and contains(.,'${key_couponName}')]</td>
+	<td></td>
+</tr>
 <!--MINICART-->
 <tr>
 	<td>MINI_CART_CLOSE</td>

@@ -63,6 +63,11 @@
 	<td>//label[contains(.,'Use Custom Title')]//input[@type='checkbox']</td>
 	<td></td>
 </tr>
+<tr>
+	<td>ENABLE_TOGGLE_SWITCH_VIA_SPAN</td>
+	<td>//*[contains(text(),'${key_toggleSwitch}')]//span[contains(@class,'toggle-switch')]</td>
+	<td></td>
+</tr>
 </tbody>
 </table>
 </body>
