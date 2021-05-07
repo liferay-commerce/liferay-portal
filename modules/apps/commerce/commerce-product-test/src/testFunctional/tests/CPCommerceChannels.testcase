@@ -192,6 +192,9 @@ definition {
 	@priority = "3"
 	test AddTaxRateSettingsFixedTaxRateTaxCalculation {
 		property portal.acceptance = "false";
+		property test.name.skip.portal.instance = "CPCommerceChannels#AddTaxRateSettingsFixedTaxRateTaxCalculation";
+
+		// TODO Fix Commerce tests that are skipping portal instances - COMMERCE-6586; COMMERCE-6588
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
