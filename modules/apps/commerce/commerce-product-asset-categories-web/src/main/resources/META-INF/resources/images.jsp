@@ -52,17 +52,17 @@ cpAttachmentFileEntrySearchContainer.setResults(cpAttachmentFileEntries);
 		>
 
 			<%
-				String thumbnailSrc = StringPool.BLANK;
+			String thumbnailSrc = StringPool.BLANK;
 
 			FileEntry fileEntry = cpAttachmentFileEntry.fetchFileEntry();
 
 			if (fileEntry == null) {
-					thumbnailSrc = cpAttachmentFileEntry.getCdnUrl();
-				}
-				else {
-					thumbnailSrc = CommerceMediaResolverUtil.getThumbnailUrl(cpAttachmentFileEntry.getCPAttachmentFileEntryId());
-				}
-				%>
+				thumbnailSrc = cpAttachmentFileEntry.getCdnUrl();
+			}
+			else {
+				thumbnailSrc = CommerceMediaResolverUtil.getThumbnailUrl(cpAttachmentFileEntry.getCPAttachmentFileEntryId());
+			}
+			%>
 
 			<c:choose>
 				<c:when test="<%= Validator.isNotNull(thumbnailSrc) %>">
