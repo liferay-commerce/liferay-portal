@@ -246,8 +246,6 @@ definition {
 		AssertTextEquals.assertPartialText(
 			locator1 = "CommerceAccelerators#PRODUCT_DETAILS_NET_PRICE",
 			value1 = "$ 36.00");
-
-			
 	}
 
 	@description = "COMMERCE-6340. As a buyer, I want to be able to view subtotal and it's total price changed in the mini-cart summary when a discount with target 'Subtotal' is set"
