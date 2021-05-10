@@ -43,13 +43,6 @@ definition {
 			locator1 = "WorkflowMetrics#SEARCH_FIELD_MAPPINGS_METRICS_INDEXES");
 
 		Click(locator1 = "Icon#BACK");
-
-
-
-
-
-
-		
 	}
 
 	macro editOrderItemDetails {

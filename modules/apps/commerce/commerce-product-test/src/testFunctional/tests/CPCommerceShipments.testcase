@@ -197,12 +197,6 @@ definition {
 		AssertElementPresent(
 			key_orderStatus = "Completed",
 			locator1 = "CommerceOrders#ORDER_ELLIPSIS_BY_STATUS");
-
-
-
-
-
-			
 	}
 
 	@description = "This is a test for COMMERCE-6237. Create a shipment from an order"
