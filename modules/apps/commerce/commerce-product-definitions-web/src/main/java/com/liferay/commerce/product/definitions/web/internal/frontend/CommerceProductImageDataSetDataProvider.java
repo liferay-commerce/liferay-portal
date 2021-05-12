@@ -14,6 +14,7 @@
 
 package com.liferay.commerce.product.definitions.web.internal.frontend;
 
+import com.liferay.commerce.account.constants.CommerceAccountConstants;
 import com.liferay.commerce.frontend.model.ImageField;
 import com.liferay.commerce.frontend.model.LabelField;
 import com.liferay.commerce.media.CommerceMediaResolverUtil;
@@ -114,6 +115,7 @@ public class CommerceProductImageDataSetDataProvider
 					new ImageField(
 						title, "rounded", "lg",
 						CommerceMediaResolverUtil.getThumbnailUrl(
+							CommerceAccountConstants.ACCOUNT_ID_GUEST,
 							cpAttachmentFileEntryId)),
 					HtmlUtil.escape(title), extension,
 					cpAttachmentFileEntry.getPriority(),

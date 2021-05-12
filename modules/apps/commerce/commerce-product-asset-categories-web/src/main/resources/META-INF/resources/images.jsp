@@ -60,7 +60,7 @@ cpAttachmentFileEntrySearchContainer.setResults(cpAttachmentFileEntries);
 				thumbnailSrc = cpAttachmentFileEntry.getCdnUrl();
 			}
 			else {
-				thumbnailSrc = CommerceMediaResolverUtil.getThumbnailUrl(cpAttachmentFileEntry.getCPAttachmentFileEntryId());
+				thumbnailSrc = CommerceMediaResolverUtil.getThumbnailUrl(CommerceAccountConstants.ACCOUNT_ID_GUEST, cpAttachmentFileEntry.getCPAttachmentFileEntryId());
 			}
 			%>
 
