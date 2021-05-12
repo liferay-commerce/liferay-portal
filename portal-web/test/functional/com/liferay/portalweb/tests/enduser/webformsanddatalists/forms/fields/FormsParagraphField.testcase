@@ -184,7 +184,6 @@ definition {
 		ProductMenu.gotoPortlet(
 			category = "Content &amp; Data",
 			portlet = "Forms");
-			
 
 		FormsAdminNavigator.gotoAddForm();
 
@@ -194,20 +193,18 @@ definition {
 			fieldPositionNumber = "1",
 			fieldType = "Paragraph");
 
-		Click(
-			locator1 = "CKEditor#TOOLBAR_TABLE_BUTTON");
+		Click(locator1 = "CKEditor#TOOLBAR_TABLE_BUTTON");
 
-		Click(
-			locator1 = "CKEditor#OK_BUTTON");
-		
+		Click(locator1 = "CKEditor#OK_BUTTON");
+
 		Form.save();
-		
+
 		AssertElementPresent(locator1 = "Message#SUCCESS");
 
 		ProductMenu.gotoPortlet(
 			category = "Content &amp; Data",
 			portlet = "Forms");
-	
+
 		Click(
 			key_metadataSetName = "Form 1",
 			locator1 = "DocumentsAndMediaMetadataSets#METADATA_SETS_NAME");
@@ -219,7 +216,6 @@ definition {
 		AssertElementPresent(
 			key_fieldName = "liferay-ddm-form-field-paragraph-text",
 			locator1 = "FormFields#PARAGRAPH_BODY_CONTENT_TABLE");
-
 	}
 
 	@description = "Verify that a Video can be uploaded to the Body Text"
