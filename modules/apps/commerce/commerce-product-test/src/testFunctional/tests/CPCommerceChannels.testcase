@@ -601,8 +601,6 @@ definition {
 			locator1 = "CommerceEntry#DROPDOWN");
 
 		MenuItem.click(menuItem = "Delete");
-
-
 	}
 
 	@description = "This is a test for COMMERCE-6271. RemoveNotificationTemplate"
