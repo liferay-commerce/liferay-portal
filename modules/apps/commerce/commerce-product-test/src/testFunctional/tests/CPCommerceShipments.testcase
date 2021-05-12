@@ -163,8 +163,6 @@ definition {
 		AssertElementPresent(
 			key_warehouseName = "Italy",
 			locator1 = "CommerceOrders#ORDER_WAREHOUSE_BY_ACTIVE_STATUS");
-
-
 	}
 
 	@description = "This is a test for COMMERCE-6254. Shipment weight should be correctly calculated"
