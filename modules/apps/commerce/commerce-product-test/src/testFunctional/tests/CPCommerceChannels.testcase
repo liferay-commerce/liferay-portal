@@ -722,8 +722,6 @@ definition {
 			key_name = "Test",
 			key_order = "1",
 			locator1 = "CommerceEntry#ASSERT_NOTIFICATION_QUEUE");
-
-			
 	}
 
 }
