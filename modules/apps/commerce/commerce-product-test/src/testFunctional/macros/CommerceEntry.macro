@@ -251,6 +251,10 @@ definition {
 			locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
 
 		Type(
+			locator1 = "CommerceEntry#NOTIFICATION_TEMPLATE_TO_FIELD",
+			value1 = "${entryTo}");
+
+		Type(
 			locator1 = "CommerceEntry#NOTIFICATION_TEMPLATE_FROM_ADDRESS_FIELD",
 			value1 = "${fromAddress}");
 
