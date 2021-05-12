@@ -131,8 +131,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td></td>
-	<td></td>
+	<td>TOOLBAR_TABLE_BUTTON</td>
+	<td>//a[contains(@class,'cke_button') and contains(@class,'table')]</td>
 	<td></td>
 </tr>
 <!-- CONTENT_AUDIO_LINK -->
