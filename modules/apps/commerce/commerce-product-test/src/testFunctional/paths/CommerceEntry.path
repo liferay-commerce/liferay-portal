@@ -119,6 +119,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>NOTIFICATION_TEMPLATE_TO_FIELD</td>
+	<td>//input[contains(@id,'_to')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>NOTIFICATION_TEMPLATE_FROM_NAME_FIELD</td>
 	<td>//label[contains(.,'From Name')]//..//input[contains(@id,'from')]</td>
 	<td></td>
@@ -391,6 +396,11 @@
 <tr>
 	<td>BODY_VERTICAL_ELLIPSIS</td>
 	<td>//div[@class='table-list-title']/../../../*[contains(.,'${key_value}')]//*[name()='svg'][contains(@class,'icon-ellipsis')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DROPDOWN</td>
+	<td>//*[name()='svg'][contains(@class,'icon-ellipsis')]</td>
 	<td></td>
 </tr>
 <tr>
