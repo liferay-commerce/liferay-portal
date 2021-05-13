@@ -149,8 +149,6 @@ definition {
 
 		ClickNoError(locator1 = "CommerceAccelerators#MINIUM_SIDEBAR_USER_AVATAR");
 
-		
-
 		Click(
 			key_menuItem = "My Lists",
 			locator1 = "CommerceAccelerators#MINIUM_SIDEBAR_MENU_ITEM");
@@ -158,11 +156,6 @@ definition {
 		AssertElementNotPresent(
 			key_formViewName = "U-Joint",
 			locator1 = "FormViewBuilder#ASSERT_FORM");
-
-
-
-
-
 	}
 
 	@description = "COMMERCE-6370. As a buyer, I want to be able to select an option value, and add the product to cart in Product Details"
