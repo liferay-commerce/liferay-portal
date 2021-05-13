@@ -129,6 +129,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>PRODUCT_DETAILS_ADD_TO_WISH_LIST</td>
+	<td>//div[@id='ggzi_column1_0_add_to_wish_list']</td>
+	<td></td>
+</tr>
+<tr>
 	<td>PRODUCT_CARD_AVAILABILITY_LABEL</td>
 	<td>//a[contains(@href,'${key_productName}')]//span[contains(@class,'m-0')]</td>
 	<td></td>
