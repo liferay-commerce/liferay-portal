@@ -372,19 +372,19 @@ long regionId = BeanParamUtil.getLong(currentCommerceAddress, request, "regionId
 				select: '<portlet:namespace />countryId',
 				selectData: function (callback) {
 					function injectCountryPlaceholder(list) {
-						var formattedList = list.map(function(countryObj) {
+						var formattedList = list.map((countryObj) => {
 							return {
 								commerceCountryId: countryObj.commerceCountryId,
 								nameCurrentValue: Liferay.Language.get(
 									countryObj.nameCurrentValue
-								)
+								),
 							};
 						});
 
 						formattedList.unshift({
 							commerceCountryId: '0',
 							nameCurrentValue:
-								'- <liferay-ui:message key="select-country" />'
+								'- <liferay-ui:message key="select-country" />',
 						});
 
 						callback(formattedList);
@@ -410,16 +410,16 @@ long regionId = BeanParamUtil.getLong(currentCommerceAddress, request, "regionId
 				select: '<portlet:namespace />regionId',
 				selectData: function (callback, selectKey) {
 					function injectRegionPlaceholder(list) {
-						var formattedList = list.map(function(regionObj) {
+						var formattedList = list.map((regionObj) => {
 							return {
 								commerceRegionId: regionObj.commerceRegionId,
-								name: Liferay.Language.get(regionObj.name)
+								name: Liferay.Language.get(regionObj.name),
 							};
 						});
 
 						formattedList.unshift({
 							commerceRegionId: '0',
-							name: '- <liferay-ui:message key="select-region" />'
+							name: '- <liferay-ui:message key="select-region" />',
 						});
 
 						callback(formattedList);
