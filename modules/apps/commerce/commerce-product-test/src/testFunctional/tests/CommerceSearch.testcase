@@ -482,8 +482,6 @@ definition {
 
 			var iterator = MathUtil.sum("${iterator}", "1");
 		}
-
-		
 	}
 
 	@description = "COMMERCE-6146. As a buyer, I want to change the number of items to display for every page from Search Results widget configuration"
