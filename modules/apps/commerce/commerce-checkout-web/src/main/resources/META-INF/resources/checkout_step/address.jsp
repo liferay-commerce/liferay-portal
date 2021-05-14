@@ -372,19 +372,22 @@ long regionId = BeanParamUtil.getLong(currentCommerceAddress, request, "regionId
 				select: '<portlet:namespace />countryId',
 				selectData: function (callback) {
 					function injectCountryPlaceholder(list) {
-						var callbackList = [
-							{
-								countryId: '0',
-								nameCurrentValue:
-									'- <liferay-ui:message key="select-country" />',
-							},
-						];
-
-						list.forEach((listElement) => {
-							callbackList.push(listElement);
+						var formattedList = list.map(function(countryObj) {
+							return {
+								commerceCountryId: countryObj.commerceCountryId,
+								nameCurrentValue: Liferay.Language.get(
+									countryObj.nameCurrentValue
+								)
+							};
 						});
 
-						callback(callbackList);
+						formattedList.unshift({
+							commerceCountryId: '0',
+							nameCurrentValue:
+								'- <liferay-ui:message key="select-country" />'
+						});
+
+						callback(formattedList);
 					}
 
 					Liferay.Service(
@@ -407,21 +410,19 @@ long regionId = BeanParamUtil.getLong(currentCommerceAddress, request, "regionId
 				select: '<portlet:namespace />regionId',
 				selectData: function (callback, selectKey) {
 					function injectRegionPlaceholder(list) {
-						var callbackList = [
-							{
-								regionId: '0',
-								name:
-									'- <liferay-ui:message key="select-region" />',
-								nameCurrentValue:
-									'- <liferay-ui:message key="select-region" />',
-							},
-						];
-
-						list.forEach((listElement) => {
-							callbackList.push(listElement);
+						var formattedList = list.map(function(regionObj) {
+							return {
+								commerceRegionId: regionObj.commerceRegionId,
+								name: Liferay.Language.get(regionObj.name)
+							};
 						});
 
-						callback(callbackList);
+						formattedList.unshift({
+							commerceRegionId: '0',
+							name: '- <liferay-ui:message key="select-region" />'
+						});
+
+						callback(formattedList);
 					}
 
 					Liferay.Service(
