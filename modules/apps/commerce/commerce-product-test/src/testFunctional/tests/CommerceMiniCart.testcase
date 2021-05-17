@@ -317,7 +317,7 @@ definition {
 			key_text = "Minimum Order Quantity",
 			locator1 = "TextInput#ANY",
 			value1 = "6");
-		
+
 		Type(
 			key_text = "Multiple Order Quantity",
 			locator1 = "TextInput#ANY",
