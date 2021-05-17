@@ -98,7 +98,6 @@ definition {
 					value1 = "${quantity}");
 			}
 		}
-		
 	}
 
 	@description = "COMMERCE-6345. As a buyer, I want to be able to select the quantity of a cart item up to a maximum quantity, if set"
