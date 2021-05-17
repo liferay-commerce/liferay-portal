@@ -141,7 +141,7 @@ definition {
 
 		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
 
-			Check.checkToggleSwitch(
+		Check.checkToggleSwitch(
 			key_toggleSwitchLabel = "Active",
 			locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
 
@@ -186,21 +186,20 @@ definition {
 			locator1 = "CommerceEntry#SEARCH_TABLES_CHANNELS");
 
 		AssertTextEquals(
-				key_nameColumn = "Fixed Tax Rate",
-				locator1 = "CommerceEntry#ASSERT_COLUMN_STATUS_TAX_CALCULATIONS",
-				value1 = "Inactive");
+			key_nameColumn = "Fixed Tax Rate",
+			locator1 = "CommerceEntry#ASSERT_COLUMN_STATUS_TAX_CALCULATIONS",
+			value1 = "Inactive");
 
 		Click(
 			key_entryName = "Fixed Tax Rate",
 			key_table = "Tax Calculations",
 			locator1 = "CommerceEntry#TABLE_ENTRY_EDIT_BUTTON");
 
-			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
 
-			AssertNotChecked.assertNotCheckedNotVisible(
-				key_toggleSwitchLabel = "Active",
+		AssertNotChecked.assertNotCheckedNotVisible(
+			key_toggleSwitchLabel = "Active",
 			locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
-
 	}
 
 	@description = "This is a test for COMMERCE-6259. Add tax rates to the newly activated engine (ByAddress)"
