@@ -363,7 +363,6 @@ definition {
 				locator1 = "CommerceAccelerators#MINI_CART_ITEM_QUANTITY",
 				value1 = "5");
 		}
-		
 	}
 
 	@description = "COMMERCE-6334. As a buyer, I want to be able to view bundled product details in the mini-cart(Name, SKU, Bundled Items, Quantity, List Price, Image)"
