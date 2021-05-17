@@ -105,8 +105,6 @@ definition {
 					value1 = "${iterator}");
 			}
 		}
-
-
 	}
 
 	@description = "COMMERCE-6344. As a buyer, I want to be able to select the quantity of a cart item starting from a minimum quantity, if set"
