@@ -24,6 +24,8 @@ import com.liferay.commerce.pricing.constants.CommercePricingConstants;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.settings.SystemSettingsLocator;
@@ -61,6 +63,13 @@ public class CommerceBasePriceListHelper {
 		serviceContext.setScopeGroupId(commerceCatalog.getGroupId());
 		serviceContext.setUserId(commerceCatalog.getUserId());
 		serviceContext.setCompanyId(commerceCatalog.getCompanyId());
+
+		try {
+			_commerceCurrencyLocalService.importDefaultValues(serviceContext);
+		}
+		catch (Exception exception) {
+			_log.error(exception, exception);
+		}
 
 		_addCatalogBaseCommercePriceList(
 			commerceCatalog, CommercePriceListConstants.TYPE_PRICE_LIST,
@@ -126,6 +135,9 @@ public class CommerceBasePriceListHelper {
 				catalogBaseCommercePriceList);
 		}
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		CommerceBasePriceListHelper.class);
 
 	@Reference
 	private CommerceCurrencyLocalService _commerceCurrencyLocalService;
