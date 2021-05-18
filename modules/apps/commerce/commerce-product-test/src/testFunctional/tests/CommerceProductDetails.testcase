@@ -204,7 +204,6 @@ definition {
 				locator1 = "CommerceFrontStore#PRODUCT_DETAILS_QUANTITY_INPUT",
 				value1 = "10");
 		}
-		
 	}
 
 	@description = "COMMERCE-6366. As a buyer, I want the first selectable quantity of a product in Product Details to be the minimum multiple quantity if Minimum Order Quantity is lower than Multiple Order Quantity"
