@@ -106,8 +106,8 @@ definition {
 	@priority = "3"
 	test AssertQuantityInProductDetailsCanBeSelectedUpToAMaximumQuantitySet {
 		property portal.acceptance = "false";
-
 		property test.name.skip.portal.instance = "CommerceProductDetails#AssertQuantityInProductDetailsCanBeSelectedUpToAMaximumQuantitySet";
+
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
 		CommerceNavigator.gotoPortlet(
@@ -144,7 +144,6 @@ definition {
 		AssertElementPresent(
 			key_value = "4",
 			locator1 = "CommerceFrontStore#MAX_QUANTITY_SELECTOR_PRODUCT_DETAILS");
-			
 	}
 
 	@description = "COMMERCE-6360. As a buyer, I want to be able to select the quantity of a product in Product Details starting from a minimum quantity, if set"
