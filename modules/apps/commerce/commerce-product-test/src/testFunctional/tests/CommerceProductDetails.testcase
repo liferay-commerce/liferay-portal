@@ -111,7 +111,7 @@ definition {
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		var product = "U-Joint";
-		
+
 		Click(
 			key_productName = "${product}",
 			locator1 = "CommerceAccelerators#PRODUCT_CARD_NAME");
@@ -135,7 +135,6 @@ definition {
 					value1 = "${quantity}");
 			}
 		}
-	
 	}
 
 	@description = "COMMERCE-6369. As a buyer, I want to be able to add a product to the cart in Product Details regardless of the availability, if back ordererabilty of that product is enabled"
