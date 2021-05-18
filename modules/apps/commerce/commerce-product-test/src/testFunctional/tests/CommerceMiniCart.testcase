@@ -91,8 +91,6 @@ definition {
 		AssertElementPresent(
 			key_dropdownOption = "11",
 			locator1 = "AppBuilder#PRODUCT_MENU_PLACE_IT_DROPDOWN_OPTION");
-
-
 	}
 
 	@description = "COMMERCE-6346. As a buyer, I want to be able to select the quantity of a cart item by multiple value, if set"
