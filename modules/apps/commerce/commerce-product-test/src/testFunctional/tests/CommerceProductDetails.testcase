@@ -213,7 +213,6 @@ definition {
 				locator1 = "CommerceFrontStore#PRODUCT_DETAILS_QUANTITY_INPUT",
 				value1 = "5");
 		}
-
 	}
 
 	@description = "COMMERCE-6358. As a buyer, I want to see the barred list price and a sale price of a product in Product Details, if a promotion is set"
