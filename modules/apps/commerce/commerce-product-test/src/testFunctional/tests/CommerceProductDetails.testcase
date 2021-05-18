@@ -171,7 +171,6 @@ definition {
 					value1 = "${quantity}");
 			}
 		}
-
 	}
 
 	@description = "COMMERCE-6355. As a buyer, I want to be able to remove a product from wish list from Product Details"
