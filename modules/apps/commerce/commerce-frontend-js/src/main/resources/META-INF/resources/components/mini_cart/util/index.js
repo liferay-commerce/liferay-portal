@@ -68,6 +68,7 @@ export function summaryDataMapper({
 	itemsQuantity,
 	subtotalDiscountValueFormatted,
 	subtotalFormatted,
+	taxValueFormatted,
 	totalDiscountValueFormatted,
 	totalFormatted,
 }) {
@@ -79,6 +80,10 @@ export function summaryDataMapper({
 		{
 			label: Liferay.Language.get('subtotal'),
 			value: subtotalFormatted,
+		},
+		{
+			label: Liferay.Language.get('tax'),
+			value: taxValueFormatted,
 		},
 		{
 			label: Liferay.Language.get('subtotal-discount'),
