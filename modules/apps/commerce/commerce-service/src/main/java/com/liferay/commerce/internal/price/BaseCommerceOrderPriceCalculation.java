@@ -123,6 +123,10 @@ public abstract class BaseCommerceOrderPriceCalculation
 
 		BigDecimal total = commerceOrder.getTotal();
 
+		if (CommerceBigDecimalUtil.gte(total, commerceOrder.getTaxAmount())) {
+			total = total.subtract(commerceOrder.getTaxAmount());
+		}
+
 		BigDecimal totalDiscountAmount = BigDecimal.ZERO;
 
 		if (commerceOrder.getTotalDiscountAmount() != null) {
@@ -340,6 +344,10 @@ public abstract class BaseCommerceOrderPriceCalculation
 
 		BigDecimal discountPercentage = discountAmount.divide(
 			amount, RoundingMode.valueOf(commerceCurrency.getRoundingMode()));
+
+		if (CommerceBigDecimalUtil.gt(discountPercentage, BigDecimal.ONE)) {
+			discountPercentage = BigDecimal.ONE;
+		}
 
 		discountPercentage = discountPercentage.multiply(
 			BigDecimal.valueOf(100));
