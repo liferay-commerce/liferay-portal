@@ -183,6 +183,23 @@ public class OrderSummaryCheckoutStepDisplayContext {
 			paymentMethodKey, locale);
 	}
 
+	public boolean hasCommerceDiscount(
+		CommerceDiscountValue commerceDiscountValue) {
+
+		if (commerceDiscountValue == null) {
+			return false;
+		}
+
+		CommerceMoney discountAmount =
+			commerceDiscountValue.getDiscountAmount();
+
+		if (discountAmount.isEmpty()) {
+			return false;
+		}
+
+		return !CommerceBigDecimalUtil.isZero(discountAmount.getPrice());
+	}
+
 	private CommerceProductPrice _getCommerceProductPrice(
 			CommerceOrderItem commerceOrderItem,
 			CommerceContext commerceContext)

@@ -267,7 +267,7 @@ Map<Long, List<CommerceOrderValidatorResult>> commerceOrderValidatorResultMap = 
 					</div>
 				</li>
 
-				<c:if test="<%= subtotalCommerceDiscountValue != null %>">
+				<c:if test="<%= orderSummaryCheckoutStepDisplayContext.hasCommerceDiscount(subtotalCommerceDiscountValue) %>">
 
 					<%
 					CommerceMoney subtotalDiscountAmountCommerceMoney = subtotalCommerceDiscountValue.getDiscountAmount();
@@ -301,7 +301,7 @@ Map<Long, List<CommerceOrderValidatorResult>> commerceOrderValidatorResultMap = 
 					</div>
 				</li>
 
-				<c:if test="<%= shippingDiscountValue != null %>">
+				<c:if test="<%= orderSummaryCheckoutStepDisplayContext.hasCommerceDiscount(shippingDiscountValue) %>">
 
 					<%
 					CommerceMoney shippingDiscountAmountCommerceMoney = shippingDiscountValue.getDiscountAmount();
@@ -337,7 +337,7 @@ Map<Long, List<CommerceOrderValidatorResult>> commerceOrderValidatorResultMap = 
 					</li>
 				</c:if>
 
-				<c:if test="<%= totalCommerceDiscountValue != null %>">
+				<c:if test="<%= orderSummaryCheckoutStepDisplayContext.hasCommerceDiscount(totalCommerceDiscountValue) %>">
 
 					<%
 					CommerceMoney totalDiscountAmountCommerceAmount = totalCommerceDiscountValue.getDiscountAmount();
