@@ -44,7 +44,6 @@ definition {
 			priceListCurrency = "USD",
 			priceListName = "pricelist1");
 
-
 		AssertClickNoError(
 			locator1 = "Button#SUBMIT",
 			value1 = "Submit");
