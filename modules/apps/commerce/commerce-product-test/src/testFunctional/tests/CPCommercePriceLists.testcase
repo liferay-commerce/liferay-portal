@@ -1317,7 +1317,7 @@ definition {
 	test ViewExpiredPL {
 		property portal.acceptance = "false";
 		property test.name.skip.portal.instance = "CPCommercePriceLists#ViewExpiredPL";
-		
+
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
 		ApplicationsMenu.gotoPortlet(
@@ -1428,7 +1428,6 @@ definition {
 			key_name = "Test Price List",
 			locator1 = "CommerceEntry#ASSERT_PRICE_LIST_STATUS",
 			value1 = "EXPIRED");
-
 	}
 
 	@description = "This is a test for COMMERCE-6222. Price Entry expiration management"
