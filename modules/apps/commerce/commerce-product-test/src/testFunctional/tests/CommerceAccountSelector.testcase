@@ -167,7 +167,6 @@ definition {
 		Click(locator1 = "CommerceAccelerators#MINI_CART_BUTTON");
 
 		AssertElementPresent(locator1 = "CommerceAccelerators#MINI_CART_EMPTY");
-
 	}
 
 	@description = "COMMERCE-5936. As a buyer, I want to be able to create a new order from the account selector dropdown's order list view, The created order should then be the selected order"
