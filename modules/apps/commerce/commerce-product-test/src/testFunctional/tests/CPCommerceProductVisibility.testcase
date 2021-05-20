@@ -129,8 +129,6 @@ definition {
 			channelName = "Test Channel",
 			channelType = "Site");
 
-			
-
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
 			portlet = "Products");
