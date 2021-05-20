@@ -299,8 +299,6 @@ definition {
 			key_text = "Submit",
 			locator1 = "Button#ANY");
 
-
-
 		CommerceNavigator.gotoPortlet(
 			category = "Order Management",
 			portlet = "Orders");
@@ -318,8 +316,6 @@ definition {
 		AssertTextEquals(
 			locator1 = "CommerceOrders#ORDER_DETAILS_PAYMENT_METHOD_NAME",
 			value1 = "PayPal");
-
-
 	}
 
 	@description = "This is a test for COMMERCE-5980. As an order manager, I want to edit the payment method and payment status of a submitted order"
@@ -431,8 +427,6 @@ definition {
 		AssertTextEquals(
 			locator1 = "CommerceOrders#PAYMENT_METHOD_STATUS_CHECK",
 			value1 = "Completed");
-
-			
 	}
 
 	@description = "This is a test for COMMERCE-5997. As an order manager, I want to filter orders by Channel, Account, Order Data Range and Order Status"
