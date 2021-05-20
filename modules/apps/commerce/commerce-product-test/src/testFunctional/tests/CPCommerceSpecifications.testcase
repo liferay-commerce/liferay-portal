@@ -111,13 +111,32 @@ definition {
 	}
 
 	@description = "This is a test for COMMERCE-6282. RemoveSpecificationGroup"
-	@ignore = "true"
 	@priority = "3"
 	test RemoveSpecificationGroup {
 		property portal.acceptance = "false";
+		property test.name.skip.portal.instance = "CPCommerceSpecifications#RemoveSpecificationGroup";
 
-		// TODO COMMERCE-6282 RemoveSpecificationGroup
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
+		CommerceNavigator.gotoPortlet(
+			category = "Product Management",
+			portlet = "Specifications");
+
+		Click(
+			locator1 = "Icon#SVG_ELLIPSIS",
+			value1 = "Quantity");
+
+		MenuItem.clickNoError(menuItem = "Delete");
+
+		AssertConfirm.waitForConfirmation(value1 = "Are you sure you want to delete this? It will be deleted immediately.");
+
+		AssertElementPresent(locator1 = "Message#SUCCESS");
+
+		AssertElementNotPresent(
+			key_rowEntry = "Quantity",
+			locator1 = "ContentRow#ENTRY_CONTENT_ENTRY_NAME");
+
+			
 	}
 
 	@description = "This is a test for COMMERCE-6281. RemoveSpecificationLabel"
