@@ -46,8 +46,6 @@ definition {
 		property portal.acceptance = "false";
 		property test.name.skip.portal.instance = "CPCommerceProductVisibility#AddAChannelFilter";
 
-
-
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
