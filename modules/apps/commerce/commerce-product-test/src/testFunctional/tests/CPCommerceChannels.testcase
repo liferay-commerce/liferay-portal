@@ -829,8 +829,6 @@ definition {
 		MenuItem.clickNoError(menuItem = "Delete");
 
 		AssertElementPresent(locator1 = "Message#SUCCESS");
-
-		
 	}
 
 	@description = "This is a test for COMMERCE-6270. RemoveNotificationQueue"
