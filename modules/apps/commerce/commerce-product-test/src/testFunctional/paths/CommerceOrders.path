@@ -68,6 +68,21 @@
     <td>//div[contains(text(),'${key_warehouseName}')]//following-sibling::div[@class = 'dnd-td']//following-sibling::div[@class = 'dnd-td']//input[contains(@class, 'form-control')]</td>
     <td></td>
 </tr>
+<tr>
+	<td>EDIT_PAYMENT_METHOD_STATUS</td>
+	<td>//a[@id='order-payment-${key_value}-modal']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PAYMENT_METHOD_RADIO</td>
+	<td>//p[contains(text(), '${key_value}')]//preceding::input[@type='radio'][1]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PAYMENT_METHOD_STATUS_CHECK</td>
+	<td>//h4[contains(text(),'Payment Status')]/following-sibling::div//span//span</td>
+	<td></td>
+</tr>
 </tbody>
 </table>
 </body>

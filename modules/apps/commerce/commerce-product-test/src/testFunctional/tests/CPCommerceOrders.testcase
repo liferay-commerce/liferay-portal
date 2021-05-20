@@ -209,23 +209,230 @@ definition {
 	}
 
 	@description = "This is a test for COMMERCE-5980. As an order manager, I want to edit the payment method and payment status of a submitted order"
-	@ignore = "true"
 	@priority = "3"
 	test EditOrderPaymentMethod {
 		property portal.acceptance = "false";
 
-		// TODO COMMERCE-5980 EditOrderPaymentMethod Pending Implementation
-		// NOTE: 1. Delete action is already handled by commerceAdminTearDown
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+
+		CommerceNavigator.gotoPortlet(
+			category = "Store Management",
+			portlet = "Channels");
+
+		CommerceNavigator.gotoEntry(entryName = "Minium Portal");
+
+		CommerceChannels.activatePaymentMethod(paymentMethod = "Money Order");
+
+		Refresh();
+
+		CommerceChannels.activatePaymentMethod(paymentMethod = "PayPal");
+
+		Refresh();
+
+		CommerceChannels.configurationPaypal(paymentMethod = "PayPal");
+
+		Refresh();
+
+		ApplicationsMenu.gotoSite(site = "Minium");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
+
+		CommerceAcceleratorsInitializer.createNewAccountViaFront(
+			accountName = "Commerce Account",
+			adminEmailAddress = "test@liferay.com");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
+		FrontStore.addInitializerProductToCart(
+			productName = "U-Joint",
+			productQuantity = "1");
+
+		CommerceNavigator.gotoMiniCart();
+
+		Button.click(button = "Submit");
+
+		Pause(locator1 = "3000");
+
+		CommerceCheckout.initializersCheckout(
+			newAddressAddress = "Test Address",
+			newAddressCity = "Test City",
+			newAddressCountry = "Italy",
+			newAddressName = "Address Name",
+			newAddressZipCode = "Test Zip Code",
+			paymentMethod = "Money Order",
+			productName = "U-Joint",
+			productQuantity = "1",
+			productUnitPrice = "24",
+			shippingMethod = "Standard");
+
+		CommerceNavigator.gotoPortlet(
+			category = "Order Management",
+			portlet = "Orders");
+
+		Click(
+			key_value = "",
+			locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS");
+
+		MenuItem.click(menuItem = "View");
+
+		Click(
+			key_text = "Accept Order",
+			locator1 = "Link#ANY");
+
+		Click(
+			key_text = "Payments",
+			locator1 = "Link#ANY");
+
+		Click(
+			key_value = "method",
+			locator1 = "CommerceOrders#EDIT_PAYMENT_METHOD_STATUS");
+
+		SelectFrame.selectFrameNoLoading(
+			key_title = "Edit Payment Method",
+			locator1 = "IFrame#MODAL_BODY");
+
+		Click.javaScriptClick(
+			key_value = "PayPal",
+			locator1 = "CommerceOrders#PAYMENT_METHOD_RADIO");
+
+		Click(
+			key_text = "Submit",
+			locator1 = "Button#ANY");
+
+
+
+		CommerceNavigator.gotoPortlet(
+			category = "Order Management",
+			portlet = "Orders");
+
+		Click(
+			key_value = "",
+			locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS");
+
+		MenuItem.click(menuItem = "View");
+
+		Click(
+			key_text = "Payments",
+			locator1 = "Link#ANY");
+
+		AssertTextEquals(
+			locator1 = "CommerceOrders#ORDER_DETAILS_PAYMENT_METHOD_NAME",
+			value1 = "PayPal");
+
+
 	}
 
 	@description = "This is a test for COMMERCE-5980. As an order manager, I want to edit the payment method and payment status of a submitted order"
-	@ignore = "true"
 	@priority = "3"
 	test EditOrderPaymentStatus {
 		property portal.acceptance = "false";
 
-		// TODO COMMERCE-5980 EditOrderPaymentStatus Pending Implementation
-		// NOTE: 1. Delete action is already handled by commerceAdminTearDown
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+
+		CommerceNavigator.gotoPortlet(
+			category = "Store Management",
+			portlet = "Channels");
+
+		CommerceNavigator.gotoEntry(entryName = "Minium Portal");
+
+		CommerceChannels.activatePaymentMethod(paymentMethod = "Money Order");
+
+		Refresh();
+
+		CommerceChannels.activatePaymentMethod(paymentMethod = "PayPal");
+
+		Refresh();
+
+		CommerceChannels.configurationPaypal(paymentMethod = "PayPal");
+
+		Refresh();
+
+		ApplicationsMenu.gotoSite(site = "Minium");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
+
+		CommerceAcceleratorsInitializer.createNewAccountViaFront(
+			accountName = "Commerce Account",
+			adminEmailAddress = "test@liferay.com");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
+		FrontStore.addInitializerProductToCart(
+			productName = "U-Joint",
+			productQuantity = "1");
+
+		CommerceNavigator.gotoMiniCart();
+
+		Button.click(button = "Submit");
+
+		Pause(locator1 = "3000");
+
+		CommerceCheckout.initializersCheckout(
+			newAddressAddress = "Test Address",
+			newAddressCity = "Test City",
+			newAddressCountry = "Italy",
+			newAddressName = "Address Name",
+			newAddressZipCode = "Test Zip Code",
+			paymentMethod = "Money Order",
+			productName = "U-Joint",
+			productQuantity = "1",
+			productUnitPrice = "24",
+			shippingMethod = "Standard");
+
+		CommerceNavigator.gotoPortlet(
+			category = "Order Management",
+			portlet = "Orders");
+
+		Click(
+			key_value = "",
+			locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS");
+
+		MenuItem.click(menuItem = "View");
+
+		Click(
+			key_text = "Accept Order",
+			locator1 = "Link#ANY");
+
+		Click(
+			key_text = "Payments",
+			locator1 = "Link#ANY");
+
+		Click(
+			key_value = "status",
+			locator1 = "CommerceOrders#EDIT_PAYMENT_METHOD_STATUS");
+
+		SelectFrame.selectFrameNoLoading(
+			key_title = "Edit Payment Status",
+			locator1 = "IFrame#MODAL_BODY");
+
+		Select(
+			key_fieldLabel = "Payment Status",
+			locator1 = "Select#GENERIC_SELECT_FIELD",
+			value1 = "Completed");
+
+		Click(
+			key_text = "Submit",
+			locator1 = "Button#ANY");
+
+		CommerceNavigator.gotoPortlet(
+			category = "Order Management",
+			portlet = "Orders");
+
+		Click(
+			key_value = "",
+			locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS");
+
+		MenuItem.click(menuItem = "View");
+
+		Click(
+			key_text = "Payments",
+			locator1 = "Link#ANY");
+
+		AssertTextEquals(
+			locator1 = "CommerceOrders#PAYMENT_METHOD_STATUS_CHECK",
+			value1 = "Completed");
+
+			
 	}
 
 	@description = "This is a test for COMMERCE-5997. As an order manager, I want to filter orders by Channel, Account, Order Data Range and Order Status"
