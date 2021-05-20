@@ -67,7 +67,6 @@ import com.liferay.portal.kernel.settings.ModifiableSettings;
 import com.liferay.portal.kernel.settings.Settings;
 import com.liferay.portal.kernel.settings.SettingsFactory;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -105,7 +104,6 @@ import org.springframework.mock.web.MockHttpServletRequest;
 /**
  * @author Alec Sloan
  */
-@DataGuard(scope = DataGuard.Scope.CLASS)
 @RunWith(Arquillian.class)
 public class CommerceOrderTest {
 
