@@ -194,9 +194,6 @@ definition {
 		AssertVisible(
 			key_productQuantity = "0",
 			locator1 = "CommerceOrders#ORDER_DETAILS_PRODUCT_QUANTITY");
-	
-	
-	
 	}
 
 	@description = "This is a test for COMMERCE-6199. Get available quantities of one item in multiple warehouses"
