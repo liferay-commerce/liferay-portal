@@ -135,8 +135,6 @@ definition {
 		AssertElementNotPresent(
 			key_rowEntry = "Quantity",
 			locator1 = "ContentRow#ENTRY_CONTENT_ENTRY_NAME");
-
-			
 	}
 
 	@description = "This is a test for COMMERCE-6281. RemoveSpecificationLabel"
