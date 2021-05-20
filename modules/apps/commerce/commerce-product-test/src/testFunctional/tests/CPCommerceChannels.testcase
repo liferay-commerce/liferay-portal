@@ -995,7 +995,7 @@ definition {
 	@priority = "3"
 	test RemoveTaxRateSettingsFixedTaxRateTaxCalculation {
 		property portal.acceptance = "false";
-		
+
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
 		CommerceNavigator.gotoPortlet(
@@ -1056,9 +1056,6 @@ definition {
 		MenuItem.click(menuItem = "Delete");
 
 		Alert.viewSuccessMessage();
-		
-		
-
 	}
 
 	@description = "This is a test for COMMERCE-6267. UsePunchOut"
