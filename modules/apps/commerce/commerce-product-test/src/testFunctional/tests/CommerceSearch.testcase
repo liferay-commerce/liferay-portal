@@ -298,8 +298,6 @@ definition {
 		AssertElementPresent(
 			key_accountName = "Commerce Account",
 			locator1 = "Account#ACCOUNT_MANAGEMENT_PAGE");
-
-			
 	}
 
 	@description = "COMMERCE-6319. As a buyer, I want to be able to search a Catalog entry using Global Search(Product Name, Product Name with single quotes, Product Name with double quotes) and I want to be able to click on a suggested entry and get redirected to that product Details page"
