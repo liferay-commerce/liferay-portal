@@ -776,12 +776,61 @@ definition {
 	}
 
 	@description = "This is a test for COMMERCE-6198. RemoveCategoryDisplayPage"
-	@ignore = "true"
 	@priority = "3"
 	test RemoveCategoryDisplayPage {
 		property portal.acceptance = "false";
 
-		// TODO COMMERCE-6198 RemoveCategoryDisplayPage
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+
+		CommerceNavigator.gotoPortlet(
+			category = "Store Management",
+			portlet = "Channels");
+
+		CommerceNavigator.gotoEntry(entryName = "Minium Portal");
+
+		CommerceEntry.gotoMenuTab(menuTab = "Category Display Pages");
+
+		Click(locator1 = "Button#PLUS");
+
+		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+		Click(locator1 = "Button#SELECT");
+
+		AssetCategorization.gotoSelectCategory();
+
+		AssetCategorization.selectCategory(categoryName = "Brake System");
+
+		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+		Click(locator1 = "Button#CHOOSE");
+
+		SelectFrameTop();
+
+		LexiconCard.clickCard(card = "Login");
+
+		SelectFrameTop();
+
+		AssertClick(
+			locator1 = "Button#DONE",
+			value1 = "Done");
+
+		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+		Button.clickSave();
+
+		AssertElementPresent(locator1 = "Message#SUCCESS");
+
+		Refresh();
+
+		Click(
+			locator1 = "Icon#SVG_ELLIPSIS",
+			value1 = "Brake System");
+
+		MenuItem.clickNoError(menuItem = "Delete");
+
+		AssertElementPresent(locator1 = "Message#SUCCESS");
+
+		
 	}
 
 	@description = "This is a test for COMMERCE-6270. RemoveNotificationQueue"
