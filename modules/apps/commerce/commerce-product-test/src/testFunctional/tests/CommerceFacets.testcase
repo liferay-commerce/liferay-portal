@@ -85,13 +85,12 @@ definition {
 			locator1 = "FormFields#CHECKBOX");
 
 		AssertElementPresent(
-				key_productName = "Premium Brake Pads",
-				locator1 = "CommerceAccelerators#PRODUCT_CARD_NAME");
-		
+			key_productName = "Premium Brake Pads",
+			locator1 = "CommerceAccelerators#PRODUCT_CARD_NAME");
+
 		AssertElementNotPresent(
 			key_value = "U-Joint",
 			locator1 = "CommerceAccelerators#PRODUCT_CARD_NAME");
-
 	}
 
 }
