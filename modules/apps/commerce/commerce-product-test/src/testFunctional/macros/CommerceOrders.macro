@@ -1,6 +1,6 @@
 definition {
 
-	macro createShipment {
+	macro CreateShipment {
 		Click(
 			key_index = "Create Shipment",
 			locator1 = "WorkflowMetrics#SEARCH_FIELD_MAPPINGS_METRICS_INDEXES");
@@ -40,6 +40,10 @@ definition {
 
 		Click(
 			key_index = "Ship",
+			locator1 = "WorkflowMetrics#SEARCH_FIELD_MAPPINGS_METRICS_INDEXES");
+
+		Click(
+			key_index = "Deliver",
 			locator1 = "WorkflowMetrics#SEARCH_FIELD_MAPPINGS_METRICS_INDEXES");
 
 		Click(locator1 = "Icon#BACK");
