@@ -118,7 +118,6 @@ definition {
 
 		Click(locator1 = "Button#PLUS");
 
-
 		CommerceEntry.addNewCatalogsEntry(
 			catalogCurrency = "US Dollar",
 			catalogLanguage = "English (United States)",
