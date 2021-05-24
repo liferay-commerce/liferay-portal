@@ -10,7 +10,6 @@ definition {
 
 		User.firstLoginPG();
 
-
 		CommerceConfiguration.commerceStoreFrontSetUp();
 	}
 
@@ -742,7 +741,6 @@ definition {
 		property portal.acceptance = "false";
 		property test.name.skip.portal.instance = "CPCommerceProducts#UseFriendlyURL";
 
-
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
@@ -798,8 +796,6 @@ definition {
 		AssertTextEquals(
 			locator1 = "CommerceFrontStore#FS_PRODUCT_NAME",
 			value1 = "Orange");
-
-			
 	}
 
 	@description = "This is a test for COMMERCE-6303. UseSchedule"
