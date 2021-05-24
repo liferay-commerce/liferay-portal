@@ -103,8 +103,6 @@ definition {
 			key_index = "1",
 			locator1 = "CommerceAccelerators#PRODUCT_CARD_NAME_BY_INDEX",
 			value1 = "ABS Sensor 2");
-
-
 	}
 
 }
