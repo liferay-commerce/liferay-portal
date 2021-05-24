@@ -809,7 +809,6 @@ definition {
 				locator1 = "CommerceAccelerators#MINI_CART_ITEM_PRICE_VALUE",
 				value1 = "$ 100.00");
 		}
-
 	}
 
 	@description = "This is a test for COMMERCE-6234. Price List Qualifier Lifecycle"
