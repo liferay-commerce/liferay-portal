@@ -10,6 +10,7 @@ definition {
 
 		User.firstLoginPG();
 
+
 		CommerceConfiguration.commerceStoreFrontSetUp();
 	}
 
@@ -736,12 +737,69 @@ definition {
 	}
 
 	@description = "This is a test for COMMERCE-6304. UseFriendlyURL"
-	@ignore = "true"
 	@priority = "3"
 	test UseFriendlyURL {
 		property portal.acceptance = "false";
+		property test.name.skip.portal.instance = "CPCommerceProducts#UseFriendlyURL";
 
-		// TODO COMMERCE-6304 UseFriendlyURL
+
+		CommerceNavigator.gotoPortlet(
+			category = "Store Management",
+			portlet = "Channels");
+
+		Click(locator1 = "Button#PLUS");
+
+		CommerceEntry.addNewChannelsEntry(
+			channelCurrency = "US Dollar",
+			channelName = "Test Channel",
+			channelType = "Site");
+
+		Navigator.gotoNavTab(navTab = "Type");
+
+		Click(
+			key_text = "Select Site",
+			locator1 = "Button#ANY");
+
+		WaitForElementPresent(locator1 = "IFrame#MODAL_IFRAME");
+
+		SelectFrame(locator1 = "IFrame#MODAL_IFRAME");
+
+		Click(
+			key_siteName = "Guest",
+			locator1 = "CommerceNavigation#CHOOSE_SITE_BUTTON");
+
+		SelectFrameTop();
+
+		Button.clickSave();
+
+		Alert.viewSuccessMessage();
+
+		Navigator.gotoNavTab(navTab = "General");
+
+		ScrollWebElementIntoView(
+			key_nameTableChannels = "Health Checks",
+			locator1 = "CommerceEntry#SEARCH_TABLES_CHANNELS");
+
+		Click(
+			key_fixIssueButtonName = "Product Detail",
+			locator1 = "CommerceEntry#FIX_ISSUE_BUTTON");
+
+		CommerceNavigator.gotoPortlet(
+			category = "Product Management",
+			portlet = "Products");
+
+		CPCommerceCatalog.newProductsEntry(
+			productCatalog = "Master",
+			productName = "Orange",
+			productType = "Simple");
+
+		Navigator.openSpecificURL(url = "http://localhost:8080/web/guest/p/orange");
+
+		AssertTextEquals(
+			locator1 = "CommerceFrontStore#FS_PRODUCT_NAME",
+			value1 = "Orange");
+
+			
 	}
 
 	@description = "This is a test for COMMERCE-6303. UseSchedule"
