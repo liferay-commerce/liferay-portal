@@ -150,8 +150,8 @@ definition {
 
 		CommerceOrders.createShipment(
 			carrierDetail = "Test Carrier",
-			productSKUList = "MIN55861",
 			complement = "Deliver",
+			productSKUList = "MIN55861",
 			warehouseName = "Italy");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
@@ -172,20 +172,16 @@ definition {
 			key_title = "Shipments",
 			locator1 = "Header#H2_TITLE");
 
-		for(var currentRow : list "status;Delivered,carrier;Test Carrier,tracking-number;Test Tracking Number"){
+		for (var currentRow : list "status;Delivered,carrier;Test Carrier,tracking-number;Test Tracking Number") {
 			var currentColumn = StringUtil.extractFirst("${currentRow}",";");
 			var currentValue = StringUtil.extractLast("${currentRow}",";");
 
 			AssertTextEquals(
-				key_tableEntry = "",
 				key_columnName = "${currentColumn}",
+				key_tableEntry = "",
 				locator1 = "LexiconTable#TABLE_ENTRY_INFO",
 				value1 = "${currentValue}");
 		}
-
-
-		
-
 	}
 
 }

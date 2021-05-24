@@ -5,7 +5,7 @@ definition {
 			key_text = "Create Shipment",
 			locator1 = "Button#ANY");
 
-		if(isSet(carrierDetail)){
+		if (isSet(carrierDetail)) {
 			Click(
 				key_text = "Carrier Details",
 				locator1 = "CommerceOrders#EDIT_SHIPMENT_DETAILS");
@@ -17,12 +17,13 @@ definition {
 				locator1 = "TextInput#GENERIC_TEXT_INPUT",
 				value1 = "${carrierDetail}");
 
-			if(isSet(trackingNumber)){
+			if (isSet(trackingNumber)) {
 				Type(
 					key_fieldLabel = "Tracking Number",
 					locator1 = "TextInput#GENERIC_TEXT_INPUT",
 					value1 = "${trackingNumber}");
-			} else {
+			}
+			else {
 				Type(
 					key_fieldLabel = "Tracking Number",
 					locator1 = "TextInput#GENERIC_TEXT_INPUT",
@@ -69,11 +70,12 @@ definition {
 			key_text = "Ship",
 			locator1 = "Button#ANY");
 
-		if(isSet(complement)){
+		if (isSet(complement)) {
 			Click(
 				key_text = "${complement}",
 				locator1 = "Button#ANY");
-		} else{
+		}
+		else {
 			Click(locator1 = "Icon#BACK");
 		}
 	}
