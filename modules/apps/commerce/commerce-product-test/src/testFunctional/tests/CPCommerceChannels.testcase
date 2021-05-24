@@ -19,7 +19,7 @@ definition {
 		}
 		else {
 			Navigator.openURL();
-			
+
 			CommerceNavigator.gotoPortlet(
 				category = "Store Management",
 				portlet = "Channels");
