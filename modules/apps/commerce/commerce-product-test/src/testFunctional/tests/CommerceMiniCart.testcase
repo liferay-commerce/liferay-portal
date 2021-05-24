@@ -843,7 +843,7 @@ definition {
 			key_summaryTableItem = "Subtotal",
 			locator1 = "CommerceAccelerators#MINI_CART_SUMMARY_TABLE_ITEM",
 			value1 = "$ 50.00");
-		
+
 		AssertTextEquals(
 			key_summaryTableItem = "Subtotal Discount",
 			locator1 = "CommerceAccelerators#MINI_CART_SUMMARY_TABLE_ITEM",
@@ -852,7 +852,6 @@ definition {
 		AssertTextEquals(
 			locator1 = "CommerceAccelerators#MINI_CART_SUMMARY_TABLE_TOTAL",
 			value1 = "$ 40.00");
-
 	}
 
 	@description = "COMMERCE-6341. As a buyer, I want to be able to view order discount and it's total price changed in the mini-cart summary when a discount with target 'Total' is set"
