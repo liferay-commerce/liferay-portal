@@ -736,56 +736,6 @@ definition {
 			value1 = "Amortiguador");
 	}
 
-	@description = "This is a test for COMMERCE-6304. UseFriendlyURL"
-	@ignore = "true"
-	@priority = "3"
-	test UseFriendlyURL {
-		property portal.acceptance = "false";
-
-		// TODO COMMERCE-6304 UseFriendlyURL
-	}
-
-	@description = "This is a test for COMMERCE-6303. UseSchedule"
-	@priority = "3"
-	test UseSchedule {
-		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CPCommerceProducts#UseSchedule";
-
-		// TODO Review
-
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
-
-		CommerceNavigator.gotoPortlet(
-			category = "Product Management",
-			portlet = "Products");
-
-		AppBuilderAdmin.searchByItem(itemName = '''"Brake Fluid"''');
-
-		Click(
-			key_entryName = "Brake Fluid",
-			locator1 = "CommerceEntry#TABLE_LIST_TITLE");
-
-		Uncheck.uncheckToggleSwitch(
-			key_toggleSwitchLabel = "Never Expire",
-			locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
-
-		Click(locator1 = "CommerceEntry#EXPIRATION_DATE_FIELD");
-
-		var displayDateDay = DateUtil.getCurrentDate();
-		var displayDateMonth = DateUtil.getCurrentMonth();
-		var displayDateYear = DateUtil.getCurrentYear();
-		var futureYear = ${displayDateYear} + 1;
-		var displayDate = "${displayDateMonth}/${displayDateDay}/${futureYear}";
-
-		Type(
-			locator1 = "CommerceEntry#EXPIRATION_DATE_FIELD",
-			value1 = "${displayDate}");
-
-		Button.clickPublish();
-
-		AssertElementPresent(locator1 = "Message#SUCCESS");
-	}
-	
 	@description = "COMMERCE-5802. Use a filter always check that the results are correct"
 	@priority = "3"
 	test UseFilters {
@@ -816,7 +766,7 @@ definition {
 		AssertElementNotPresent(
 			key_entryName = "Timing Chain",
 			locator1 = "CommerceEntry#TABLE_LIST_TITLE");
-			
+
 		Button.click(button = "Reset Filters");
 
 		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
@@ -886,6 +836,56 @@ definition {
 		Click(locator1 = "CommerceEntry#FILTER_BACK_ARROW");
 
 		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
+	}
+
+	@description = "This is a test for COMMERCE-6304. UseFriendlyURL"
+	@ignore = "true"
+	@priority = "3"
+	test UseFriendlyURL {
+		property portal.acceptance = "false";
+
+		// TODO COMMERCE-6304 UseFriendlyURL
+	}
+
+	@description = "This is a test for COMMERCE-6303. UseSchedule"
+	@priority = "3"
+	test UseSchedule {
+		property portal.acceptance = "false";
+		property test.name.skip.portal.instance = "CPCommerceProducts#UseSchedule";
+
+		// TODO Review
+
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+
+		CommerceNavigator.gotoPortlet(
+			category = "Product Management",
+			portlet = "Products");
+
+		AppBuilderAdmin.searchByItem(itemName = '''"Brake Fluid"''');
+
+		Click(
+			key_entryName = "Brake Fluid",
+			locator1 = "CommerceEntry#TABLE_LIST_TITLE");
+
+		Uncheck.uncheckToggleSwitch(
+			key_toggleSwitchLabel = "Never Expire",
+			locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
+
+		Click(locator1 = "CommerceEntry#EXPIRATION_DATE_FIELD");
+
+		var displayDateDay = DateUtil.getCurrentDate();
+		var displayDateMonth = DateUtil.getCurrentMonth();
+		var displayDateYear = DateUtil.getCurrentYear();
+		var futureYear = ${displayDateYear} + 1;
+		var displayDate = "${displayDateMonth}/${displayDateDay}/${futureYear}";
+
+		Type(
+			locator1 = "CommerceEntry#EXPIRATION_DATE_FIELD",
+			value1 = "${displayDate}");
+
+		Button.clickPublish();
+
+		AssertElementPresent(locator1 = "Message#SUCCESS");
 	}
 
 	@description = "This is a test for COMMERCE-5805. UseSearchBarAndPagination"
