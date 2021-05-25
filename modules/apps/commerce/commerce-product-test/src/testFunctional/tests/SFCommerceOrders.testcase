@@ -78,7 +78,6 @@ definition {
 		property portal.acceptance = "false";
 		property test.name.skip.portal.instance = "SFCommerceOrders#SearchOrderInPlacedOrdersPage";
 
-
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
