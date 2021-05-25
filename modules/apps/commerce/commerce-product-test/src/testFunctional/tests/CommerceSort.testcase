@@ -40,11 +40,10 @@ definition {
 	@priority = "3"
 	test AssertProductsAreSortedByNameDescending {
 		property portal.acceptance = "false";
-
 		property test.name.skip.portal.instance = "CommerceSort#AssertProductsAreSortedByNameDescending";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
-		
+
 		ApplicationsMenu.gotoSite(site = "Minium");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Descending");
@@ -78,9 +77,6 @@ definition {
 			key_index = "6",
 			locator1 = "CommerceAccelerators#PRODUCT_CARD_NAME_BY_INDEX",
 			value1 = "Universal CV Boot");
-
-
-		
 	}
 
 	@description = "COMMERCE-6176. As a buyer, I want to sort products by New Items using Sort widget and the results should be visible on the Search Results widget"
