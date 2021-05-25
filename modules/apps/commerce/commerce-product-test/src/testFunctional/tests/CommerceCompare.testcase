@@ -138,8 +138,6 @@ definition {
 		AssertElementPresent(
 			key_productName = "Mount",
 			locator1 = "CommerceEntry#PRODUCT_CARD_COMPARE_CHECKBOX_DISABLED");
-
-			
 	}
 
 	@description = "COMMERCE-5918. As a buyer, I want to deselect a item in Product Compare page"
