@@ -30,7 +30,6 @@ definition {
 	@priority = "3"
 	test AssertProductsAreSortedByNameAscending {
 		property portal.acceptance = "false";
-
 		property test.name.skip.portal.instance = "CommerceSort#AssertProductsAreSortedByNameAscending";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
@@ -68,8 +67,6 @@ definition {
 			key_index = "6",
 			locator1 = "CommerceAccelerators#PRODUCT_CARD_NAME_BY_INDEX",
 			value1 = "Brake Rotors");
-
-
 	}
 
 	@description = "COMMERCE-6174. As a buyer, I want to sort products by Name(descending) using Sort widget and the results should be visible on the Search Results widget"
@@ -79,6 +76,7 @@ definition {
 		property portal.acceptance = "false";
 
 		// TODO COMMERCE-6174 AssertProductsAreSortedByNameDescending pending implementation
+
 	}
 
 	@description = "COMMERCE-6176. As a buyer, I want to sort products by New Items using Sort widget and the results should be visible on the Search Results widget"
