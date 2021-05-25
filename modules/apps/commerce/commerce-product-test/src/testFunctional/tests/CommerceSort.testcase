@@ -100,7 +100,6 @@ definition {
 				locator1 = "CommerceAccelerators#PRODUCT_CARD_PRICE",
 				value1 = "${curr_price}");
 		}
-		
 	}
 
 	@description = "COMMERCE-6175. As a buyer, I want to sort products by Relevance using Sort widget and the results should be visible on the Search Results widget"
