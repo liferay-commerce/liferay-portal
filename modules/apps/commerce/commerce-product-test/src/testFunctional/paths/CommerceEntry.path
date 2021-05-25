@@ -24,6 +24,11 @@
     <td></td>
 </tr>
 <tr>
+    <td>PRODUCT_CARD_COMPARE_CHECKBOX_DISABLED</td>
+    <td>//p[@title='${key_productName}']//../..//input[contains(@aria-label,'Compare') and @disabled]</td>
+    <td></td>
+</tr>
+<tr>
     <td>MINI_COMPARE_ITEM_ACTIVE</td>
     <td>//div[@class="mini-compare-item active"]//div[@class="mini-compare-thumbnail"]</td>
     <td></td>
@@ -166,6 +171,21 @@
 <tr>
 	<td>BILLING_ALLOWED_CHECKBOX</td>
 	<td>//input[contains(@id,'billingAllowed') and (@type='checkbox')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PRODUCTS_LIMIT_CONFIGURATION_FIELD</td>
+	<td>//div[label[contains(.,'Products Limit')]]//input[@type='number'] | //div[contains(@class,'ddm-field') and contains(.,'Products Limit')]//input[@type='number']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CATALOG_PRODUCT_COMPARISON_BAR</td>
+	<td>//*[@id='portlet_com_liferay_commerce_product_content_web_internal_portlet_CPCompareContentMiniPortlet_INSTANCE_catalog']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>BUTTON_PRODUCT_COMPARISON_BAR</td>
+	<td>//body/div[@id='content-default']/div[@id='wrapper']/main[@id='minium']/div[3]/div[1]/div[1]/div[1]/div[2]/div[1]/div[3]/section[1]/div[2]/menu[1]/div[1]/a[1]/span[1]/*[1]</td>
 	<td></td>
 </tr>
 <tr>

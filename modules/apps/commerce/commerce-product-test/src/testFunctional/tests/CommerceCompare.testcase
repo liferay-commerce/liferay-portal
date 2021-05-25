@@ -81,12 +81,65 @@ definition {
 	}
 
 	@description = "COMMERCE-5916. As a buyer, I want to see max number of compare items allowed in MiniCompare widget"
-	@ignore = "true"
 	@priority = "3"
 	test EditMaxNumberOfComparisonItemsInMiniCompare {
 		property portal.acceptance = "false";
 
-		// TODO COMMERCE-5916 EditMaxNumberOfComparisonItemsInMiniCompare pending implementation
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
+
+		CommerceAcceleratorsInitializer.createNewAccountViaFront(
+			accountName = "Commerce Account",
+			adminEmailAddress = "test@liferay.com");
+
+		Click(
+			key_navUnderline = "Members",
+			locator1 = "NavUnderline#NAV_UNDERLINE_LINK");
+
+		CommerceAcceleratorsInitializer.inviteNewMemberWithRoleToAccount(
+			emailAddress = "buyer@liferay.com",
+			role = "Buyer");
+
+		ApplicationsMenu.gotoSite(site = "Minium");
+
+		MouseOver.mouseOverNotVisible(locator1 = "CommerceEntry#CATALOG_PRODUCT_COMPARISON_BAR");
+
+		Click.clickAtNotVisible(locator1 = "CommerceEntry#BUTTON_PRODUCT_COMPARISON_BAR");
+
+		MenuItem.clickNoError(menuItem = "Configuration");
+
+		SelectFrame(locator1 = "IFrame#MODAL_BODY");
+
+		Type(
+			locator1 = "CommerceEntry#PRODUCTS_LIMIT_CONFIGURATION_FIELD",
+			value1 = "3");
+
+		Button.clickSave();
+
+		AssertElementPresent(locator1 = "Message#SUCCESS");
+
+		Button.clickCancel();
+
+		Check.checkToggleSwitch(
+			key_productName = "U-Joint",
+			locator1 = "CommerceEntry#PRODUCT_CARD_COMPARE_CHECKBOX");
+
+		Check.checkToggleSwitch(
+			key_productName = "Transmission Fluid",
+			locator1 = "CommerceEntry#PRODUCT_CARD_COMPARE_CHECKBOX");
+
+		Check.checkToggleSwitch(
+			key_productName = "Torque Converters",
+			locator1 = "CommerceEntry#PRODUCT_CARD_COMPARE_CHECKBOX");
+
+		AssertElementPresent(
+			key_productName = "Mount",
+			locator1 = "CommerceEntry#PRODUCT_CARD_COMPARE_CHECKBOX_DISABLED");
+
+			
 	}
 
 	@description = "COMMERCE-5918. As a buyer, I want to deselect a item in Product Compare page"
