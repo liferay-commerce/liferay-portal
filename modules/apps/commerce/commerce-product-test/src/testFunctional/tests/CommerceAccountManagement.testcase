@@ -84,7 +84,7 @@ definition {
 	test AddOrganizationToAccount {
 		property portal.acceptance = "false";
 		property test.name.skip.portal.instance = "CommerceAccountManagement#AddOrganizationToAccount";
-		
+
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
 		ApplicationsMenu.gotoPortlet(
@@ -119,7 +119,6 @@ definition {
 		AssertElementPresent(
 			key_addressType = "Test Organization",
 			locator1 = "CommerceAccelerators#ACCOUNT_MANAGEMENT_ADDRESS_TYPE");
-		
 	}
 
 	@description = "COMMERCE-6347. In Info tab, I want to be unable to add an organization that is already added to the account"
@@ -129,6 +128,7 @@ definition {
 		property portal.acceptance = "false";
 
 		// TODO COMMERCE-6347 AssertOrganizationThatIsPartOfTheAccountCannotBeAddedAgain pending implementation
+
 	}
 
 	@description = "COMMERCE-6357. In Members tab, I want to be unable to add a user that is already a member of the account"
