@@ -30,7 +30,6 @@ definition {
 	@priority = "3"
 	test AssertProductsAreFilteredByCategoryFacet {
 		property portal.acceptance = "false";
-
 		property test.name.skip.portal.instance = "CommerceFacets#AssertProductsAreFilteredByCategoryFacet";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
@@ -49,8 +48,6 @@ definition {
 		AssertElementNotPresent(
 			key_value = "U-Joint",
 			locator1 = "CommerceAccelerators#PRODUCT_CARD_NAME");
-
-			
 	}
 
 	@description = "COMMERCE-6165. As a buyer, I want to filter products using Option Facet widget and the results should be visible on the Search Results widget"
@@ -87,6 +84,7 @@ definition {
 		property portal.acceptance = "false";
 
 		// TODO COMMERCE-6170 AssertProductsAreFilteredByPriceRangeFacet pending implementation
+
 	}
 
 	@description = "COMMERCE-6166. As a buyer, I want to filter products using Specification Facet widget and the results should be visible on the Search Results widget"
