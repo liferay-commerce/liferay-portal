@@ -24,7 +24,6 @@ definition {
 
 			CommerceConfiguration.commerceInitializersTearDown();
 		}
-
 	}
 
 	@description = "COMMERCE-5866. As a buyer, I want to be able to add a product to my wish list, by clicking on an Add To Wish List button"
@@ -34,6 +33,7 @@ definition {
 		property portal.acceptance = "false";
 
 		// TODO COMMERCE-5866 AddProductToWishListFromProductCard pending implementation
+
 	}
 
 	@description = "COMMERCE-5859. As a buyer, I want to view the product price with the default channel currency"
@@ -890,8 +890,6 @@ definition {
 			key_optionValue = "10",
 			key_productName = "U-Joint",
 			locator1 = "CommerceAccelerators#PRODUCT_CARD_QUANTITY_SELECTOR_INPUT_FIELD_OPTION_VALUE");
-
-
 	}
 
 	@description = "COMMERCE-6194. As a buyer, I want the first selectable quantity of a product to be the minimum multiple quantity if Minimum Order Quantity is lower than Multiple Order Quantity"
