@@ -31,7 +31,7 @@ definition {
 	test DisableSearchResultsWidgetPagination {
 		property portal.acceptance = "false";
 		property test.name.skip.portal.instance = "CommerceSearch#DisableSearchResultsWidgetPagination";
-		
+
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
@@ -55,7 +55,6 @@ definition {
 		IFrame.closeFrame();
 
 		AssertElementNotPresent(locator1 = "CommerceEntry#PAGINATION_BAR");
-
 	}
 
 	@description = "COMMERCE-6323. As a buyer, I want to be able to search an entry in Accounts using Global Search and I want the results to be visible in Account Management page"
@@ -65,6 +64,7 @@ definition {
 		property portal.acceptance = "false";
 
 		// TODO COMMERCE-6323 GlobalSearchSearchEntryInAccounts pending implementation
+
 	}
 
 	@description = "COMMERCE-6326. As a buyer, I want to be able to search an entry in All Content using Global Search and the results should be visible on Search page"
