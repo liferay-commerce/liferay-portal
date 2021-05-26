@@ -448,7 +448,6 @@ definition {
 		property portal.acceptance = "false";
 
 		// TODO COMMERCE-6201 ConsumeQuantitiesFromMultipleWarehouses Pending Implementation
-
 	}
 
 	@description = "This is a test for COMMERCE-5706. As a system admin i want to be able to create / update and delete a new warehouse"
@@ -652,13 +651,126 @@ definition {
 	}
 
 	@description = "This is a test for COMMERCE-5707. As a product specialist i want to be able to deactivate a warehouse"
-	@ignore = "true"
 	@priority = "3"
 	test DeactivateWarehouse {
 		property portal.acceptance = "false";
+		property test.name.skip.portal.instance = "CPCommerceWarehouses#DeactivateWarehouse";
 
-		// TODO COMMERCE-5707 DeactivateWarehouse Pending Implementation
+		ApplicationsMenu.gotoPortlet(
+			category = "Inventory Management",
+			panel = "Commerce",
+			portlet = "Warehouses");
 
+		Click(locator1 = "Button#PLUS");
+
+		Check.checkToggleSwitch(
+			key_toggleSwitchLabel = "Active",
+			locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
+
+		Click(
+			key_fieldsetTitle = "addressTitle",
+			locator1 = "CommerceEntry#WAREHOUSES_FORMS");
+
+		Click(
+			key_fieldsetTitle = "geolocationTitle",
+			locator1 = "CommerceEntry#WAREHOUSES_FORMS");
+
+		var curr_fieldLabel = "";
+		var curr_value1 = "";
+
+		for (var current : list "Name-Test Warehouse,Description-Test Warehouse Description,Street 1-Test Address,Postal Code-12345,City-Test City,Latitude-12345,Longitude-12345") {
+			curr_fieldLabel = StringUtil.extractFirst("${current}","-");
+			curr_value1 = StringUtil.extractLast("${current}","-");
+
+			Type(
+				key_fieldLabel = "${curr_fieldLabel}",
+				locator1 = "TextInput#GENERIC_TEXT_INPUT",
+				value1 = "${curr_value1}");
+		}
+
+		Button.clickSave();
+
+		CommerceNavigator.gotoPortlet(
+			category = "Product Management",
+			panel = "Commerce",
+			portlet = "Catalogs");
+
+		Click(locator1 = "Button#PLUS");
+
+		CommerceEntry.addNewCatalogsEntry(
+			catalogCurrency = "US Dollar",
+			catalogLanguage = "English (United States)",
+			catalogName = "Master");
+
+		Button.click(button = "Submit");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Product Management",
+			panel = "Commerce",
+			portlet = "Products");
+
+		CPCommerceCatalog.newProductsEntry(
+			productCatalog = "Master",
+			productName = "Test Product",
+			productType = "Simple");
+
+		Button.clickPublish();
+
+		CommerceEntry.gotoMenuTab(menuTab = "SKUs");
+
+		CommerceNavigator.gotoEntry(entryName = "default");
+
+		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+		CommerceEntry.gotoMenuTab(menuTab = "Inventory");
+
+		Type(
+			fieldLabel = "0",
+			key_fieldType = "ItemQuantity",
+			locator1 = "FormViewBuilder#FIELD_VALUE",
+			value1 = "10");
+
+		Button.clickSave();
+
+		Click(locator1 = "Icon#CLOSE");
+
+		Refresh();
+
+		AssertVisible(
+			key_productQuantity = "10",
+			locator1 = "CommerceOrders#ORDER_DETAILS_PRODUCT_QUANTITY");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Inventory Management",
+			panel = "Commerce",
+			portlet = "Warehouses");
+
+		Click(
+			key_text = "Test Warehouse",
+			locator1 = "Icon#ANY_VERTICAL_ELLIPSIS");
+
+		MenuItem.clickNoError(menuItem = "Deactivate");
+
+		AssertElementPresent(
+			key_warehouseName = "Test Warehouse",
+			locator1 = "CommerceOrders#ORDER_WAREHOUSE_BY_INACTIVE_STATUS");
+
+		CommerceNavigator.gotoPortlet(
+			category = "Product Management",
+			panel = "Commerce",
+			portlet = "Products");
+
+		Click(
+			key_text = "Test Product",
+			locator1 = "Icon#ANY_VERTICAL_ELLIPSIS");
+
+		MenuItem.clickNoError(menuItem = "View");
+
+		CommerceEntry.gotoMenuTab(menuTab = "SKUs");
+
+		AssertVisible(
+			key_productQuantity = "0",
+			locator1 = "CommerceOrders#ORDER_DETAILS_PRODUCT_QUANTITY");
 	}
 
 	@description = "This is a test for COMMERCE-6199. Get available quantities of one item in multiple warehouses"
@@ -1006,7 +1118,6 @@ definition {
 		property portal.acceptance = "false";
 
 		// TODO COMMERCE-6208 ManageInventoryEntityConcurrency Pending Implementation
-
 	}
 
 	@description = "This is a test for COMMERCE-5708. As a product specialist i want to update the quantity of a product inside a warehouse"

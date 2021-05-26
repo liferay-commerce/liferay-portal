@@ -717,6 +717,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>WAREHOUSES_FORMS</td>
+	<td>//div[contains(@id, '${key_fieldsetTitle}')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>SEARCH_PRODUCT_RELATIONS</td>
 	<td>//input[@data-qa-id='searchInput']</td>
 	<td></td>
