@@ -35,6 +35,8 @@ definition {
 	test CreateAnOptionForAllTheFieldType {
 		property portal.acceptance = "false";
 
+		// TODO Review
+
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
 		CommerceNavigator.gotoPortlet(

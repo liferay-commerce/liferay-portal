@@ -225,6 +225,8 @@ definition {
 	test AddShippingOptionFlatRate {
 		property portal.acceptance = "false";
 
+		// TODO Review
+
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
 		CommerceNavigator.gotoPortlet(
@@ -622,6 +624,8 @@ definition {
 	test EditAuthorizePaymentMethod {
 		property portal.acceptance = "false";
 
+		// TODO Review
+
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
 		CommerceNavigator.gotoPortlet(
@@ -812,6 +816,8 @@ definition {
 	test EditMercanetPaymentMethod {
 		property portal.acceptance = "false";
 
+		// TODO Review
+
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
 		CommerceNavigator.gotoPortlet(
@@ -859,6 +865,8 @@ definition {
 	@priority = "3"
 	test EditMoneyOrderPaymentMethod {
 		property portal.acceptance = "false";
+
+		// TODO Review
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
@@ -1386,6 +1394,8 @@ definition {
 	@priority = "3"
 	test UseSearchBar {
 		property portal.acceptance = "false";
+
+		// TODO Review
 
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",

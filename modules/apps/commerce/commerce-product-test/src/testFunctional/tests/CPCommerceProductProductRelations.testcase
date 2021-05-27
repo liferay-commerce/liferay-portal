@@ -88,6 +88,8 @@ definition {
 		property portal.acceptance = "false";
 		property portal.upstream = "quarantine";
 
+		// TODO Review
+
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
 			portlet = "Products");
@@ -131,6 +133,8 @@ definition {
 	test RemoveAProductRelations {
 		property portal.acceptance = "false";
 		property portal.upstream = "quarantine";
+
+		// TODO Review
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
