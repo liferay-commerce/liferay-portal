@@ -669,7 +669,7 @@ definition {
 	@description = "COMMERCE-6350. As a buyer, I want to be redirected to Order Details page after clicking 'Review Order' button on mini-cart, if Buyer Order Approval Workflow is active"
 	@priority = "3"
 	test MiniumSiteFullFlowWithBuyerOrderApprovalWorkflow {
-		property portal.acceptance = "false";
+		property portal.acceptance = "Intern Test";
 		property test.name.skip.portal.instance = "CommerceAccelerators#MiniumSiteFullFlowWithBuyerOrderApprovalWorkflow";
 
 		// TODO Review
