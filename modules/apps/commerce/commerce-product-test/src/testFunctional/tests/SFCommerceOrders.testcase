@@ -41,7 +41,6 @@ definition {
 	test DeleteOrderFromPendingOrderDetailsPage {
 		property portal.acceptance = "false";
 		property test.name.skip.portal.instance = "SFCommerceOrders#DeleteOrderFromPendingOrderDetailsPage";
-		
 
 		// TODO Review
 
