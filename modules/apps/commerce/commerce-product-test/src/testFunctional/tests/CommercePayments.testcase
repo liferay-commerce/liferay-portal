@@ -40,11 +40,10 @@ definition {
 	@priority = "3"
 	test MoneyOrderCheckout {
 		property portal.acceptance = "false";
-		
 		property test.name.skip.portal.instance ="CommercePayments#MoneyOrderCheckout";
 
-		//TODO Review
-		
+		// TODO Review
+
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
 		CommerceNavigator.gotoPortlet(
