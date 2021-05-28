@@ -8,7 +8,7 @@ definition {
 	setUp {
 		TestCase.setUpPortalInstance();
 
-		User.firstLoginUI();
+		User.firstLoginPG();
 
 		PortalSettings.gotoConfiguration(
 			configurationCategory = "User Authentication",
@@ -672,6 +672,8 @@ definition {
 		property portal.acceptance = "false";
 		property test.name.skip.portal.instance = "CommerceAccelerators#MiniumSiteFullFlowWithBuyerOrderApprovalWorkflow";
 
+		// TODO Review
+
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
 		CommerceNavigator.gotoPortlet(
@@ -683,7 +685,7 @@ definition {
 		CommerceChannels.activatePaymentMethod(paymentMethod = "Money Order");
 
 		Refresh();
-		
+
 		Select(
 			key_title = "Buyer Order Approval Workflow",
 			locator1 = "CommerceEntry#CATALOGS_FORM",
@@ -694,31 +696,31 @@ definition {
 		ApplicationsMenu.gotoSite(site = "Minium");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
-		
+
 		CommerceAcceleratorsInitializer.createNewAccountViaFront(
 			accountName = "Test Account",
 			adminEmailAddress = "test@liferay.com");
-		
+
 		Click(
 			key_navUnderline = "Members",
 			locator1 = "NavUnderline#NAV_UNDERLINE_LINK");
-		
+
 		CommerceAcceleratorsInitializer.inviteNewMemberWithRoleToAccount(
 			emailAddress = "buyer@liferay.com",
 			role = "Buyer");
-		
+
 		ApplicationsMenu.gotoPortlet(
 			category = "Users",
 			panel = "Control Panel",
 			portlet = "Users and Organizations");
-		
+
 		CommerceLogin.editPasswordCP(
 			newPassword = "ttest",
 			requirePasswordReset = "true",
 			userScreenName = "buyer");
-		
+
 		User.logoutPG();
-		
+
 		CommerceLogin.miniumLogin(
 			password = "ttest",
 			resetPassword = "test",
@@ -728,9 +730,9 @@ definition {
 		FrontStore.addInitializerProductToCart(
 			productName = "U-Joint",
 			productQuantity = "2");
-		
+
 		CommerceNavigator.gotoMiniCart();
-		
+
 		Button.click(button = "Review Order");
 
 		Pause(locator1 = "3000");
@@ -743,7 +745,7 @@ definition {
 			password = "test",
 			urlAppend = "web/minium",
 			userEmailAddress = "test@liferay.com");
-		
+
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
 
 		Click(
@@ -760,7 +762,7 @@ definition {
 			password = "test",
 			urlAppend = "web/minium",
 			userEmailAddress = "buyer@liferay.com");
-		
+
 		CommerceNavigator.gotoMiniCart();
 
 		Button.click(button = "Submit");
@@ -786,7 +788,7 @@ definition {
 			userEmailAddress = "test@liferay.com");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
-		
+
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Placed Orders");
 
 		CommerceAcceleratorsInitializer.reviewOrder(
@@ -796,19 +798,18 @@ definition {
 			productQuantity = "2",
 			productSKU = "MIN55861",
 			productUnitPrice = "24.00");
-		
+
 		CommerceNavigator.gotoPortlet(
 			category = "Order Management",
 			portlet = "Orders");
-		
+
 		AssertElementPresent(
 			key_orderStatus = "Pending",
 			locator1 = "CommerceOrders#ORDER_ELLIPSIS_BY_STATUS");
-		
+
 		AssertElementPresent(
-				key_orderStatus = "Approved",
-				locator1 = "CommerceOrders#ORDER_ELLIPSIS_BY_STATUS");
-		
+			key_orderStatus = "Approved",
+			locator1 = "CommerceOrders#ORDER_ELLIPSIS_BY_STATUS");
 	}
 
 	test SpeedwellSiteFullFlow {
