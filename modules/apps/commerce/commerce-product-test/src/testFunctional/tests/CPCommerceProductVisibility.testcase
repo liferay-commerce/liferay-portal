@@ -31,13 +31,49 @@ definition {
 	}
 
 	@description = "This is a test for COMMERCE-6088. AddAccountGroupFilter"
-	@ignore = "true"
 	@priority = "3"
 	test AddAccountGroupFilter {
 		property portal.acceptance = "false";
+		property test.name.skip.portal.instance = "CPCommerceProductVisibility#AddAccountGroupFilter";
 
-		// TODO COMMERCE-6088 AddAccountGroupFilter
+		CommerceEntry.createNewAccountGroup(
+			accountCriteriaType = "Guest",
+			accountGroupsEntryName = "Guest",
+			accountsEntryName = "Guest",
+			user = "Test Test");
 
+		CommerceNavigator.gotoPortlet(
+			category = "Product Management",
+			portlet = "Products");
+
+		CPCommerceCatalog.newProductsEntry(
+			productCatalog = "Master",
+			productName = "Simple T-Shirt",
+			productType = "Simple");
+
+		CommerceEntry.gotoMenuTab(menuTab = "Visibility");
+
+		Click(
+			key_name = "Account Groups",
+			locator1 = "ToggleSwitch#ENABLE_SPECIFIC_TOGGLE_SWITCH");
+
+		ClickNoError.clickNoMouseOver(
+			key_webContentTitle = "Add Account Group Relation to Simple T-Shirt",
+			locator1 = "Button#BUTTON_PLUS_PRODUCT_VISIBILITY");
+
+		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
+
+		Check(
+			key_checkboxName = "Guest",
+			locator1 = "Checkbox#ENABLE_CHECKBOX");
+
+		SelectFrameTop();
+
+		Button.click(button = "Add");
+
+		SelectFrameTop();
+
+		AssertElementPresent(locator1 = "Message#SUCCESS");
 	}
 
 	@description = "This is a test for COMMERCE-6086. AddAChannelFilter"
