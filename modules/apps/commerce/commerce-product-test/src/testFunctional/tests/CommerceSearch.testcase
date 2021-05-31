@@ -379,7 +379,7 @@ definition {
 	@description = "COMMERCE-6148. As a buyer, I want to search a product by its name using the Search Bar widget and I want the results to be visible on the Search Results widget"
 	@priority = "3"
 	test SearchBarWidgetSearchProductByName {
-		property portal.acceptance = "false";
+		property portal.acceptance = "Intern Test";
 		property test.name.skip.portal.instance = "CommerceSearch#SearchBarWidgetSearchProductByName";
 
 		// TODO Review
