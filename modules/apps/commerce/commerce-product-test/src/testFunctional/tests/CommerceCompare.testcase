@@ -73,7 +73,7 @@ definition {
 	@description = "COMMERCE-5915. As a buyer, I want to see max number of compare items allowed in Compare page"
 	@priority = "3"
 	test EditMaxNumberOfComparisonItemsInComparePage {
-		property portal.acceptance = "false";
+		property portal.acceptance = "Intern Test";
 		property test.name.skip.portal.instance = "CommerceCompare#EditMaxNumberOfComparisonItemsInComparePage";
 
 		// TODO Review
