@@ -71,13 +71,66 @@ definition {
 	}
 
 	@description = "COMMERCE-5915. As a buyer, I want to see max number of compare items allowed in Compare page"
-	@ignore = "true"
 	@priority = "3"
 	test EditMaxNumberOfComparisonItemsInComparePage {
 		property portal.acceptance = "false";
+		property test.name.skip.portal.instance = "CommerceCompare#EditMaxNumberOfComparisonItemsInComparePage";
 
-		// TODO COMMERCE-5915 EditMaxNumberOfComparisonItemsInComparePage pending implementation
+		// TODO Review
 
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+
+		ApplicationsMenu.gotoSite(site = "Minium");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
+
+		CommerceAcceleratorsInitializer.createNewAccountViaFront(
+			accountName = "Commerce Account",
+			adminEmailAddress = "test@liferay.com");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
+		for ( var product : list "U-Joint,Transmission Fluid,Torque Converters,Mount") {
+			Check.checkToggleSwitch(
+				key_productName = "${product}",
+				locator1 = "CommerceEntry#PRODUCT_CARD_COMPARE_CHECKBOX");
+		}
+
+		Click(
+			key_text = "Compare",
+			locator1 = "Link#ANY");
+
+		MouseOver.mouseOverNotVisible(locator1 = "Portlet#OPTIONS_ICON");
+
+		Click(locator1 = "Portlet#OPTIONS_ICON");
+
+		MenuItem.clickNoError(menuItem = "Configuration");
+
+		SelectFrame(locator1 = "IFrame#MODAL_BODY");
+
+		Type(
+			key_fieldLabel = "Products Limit",
+			locator1 = "TextInput#GENERIC_NUMBER_INPUT",
+			value1 = "3");
+
+		Button.clickSave();
+
+		AssertElementPresent(locator1 = "Message#SUCCESS");
+
+		Button.clickCancel();
+
+		for (var product : list "U-Joint,Transmission Fluid,Torque Converters,Mount") {
+			if ("${product}" == "Mount") {
+				AssertElementNotPresent(
+					key_productName = "${product}",
+					locator1 = "CommerceAccelerators#PRODUCT_CARD_NAME");
+			}
+			else {
+				AssertElementPresent(
+					key_productName = "${product}",
+					locator1 = "CommerceAccelerators#PRODUCT_CARD_NAME");
+			}
+		}
 	}
 
 	@description = "COMMERCE-5916. As a buyer, I want to see max number of compare items allowed in MiniCompare widget"
