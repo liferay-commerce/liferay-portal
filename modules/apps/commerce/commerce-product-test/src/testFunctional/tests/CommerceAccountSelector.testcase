@@ -101,7 +101,7 @@ definition {
 	@description = "COMMERCE-5927. As a buyer, I want to be able to select an account from the list (which is not the selected one), and have the selected account change to the newly selected account"
 	@priority = "3"
 	test ChangeActiveAccountFromAccountsList {
-		property portal.acceptance = "false";
+		property portal.acceptance = "Intern Test";
 		property test.name.skip.portal.instance = "CommerceAccountSelector#ChangeActiveAccountFromAccountsList";
 
 		// TODO Review
