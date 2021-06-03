@@ -171,7 +171,7 @@ definition {
 	@description = "This is a test for COMMERCE-6230. Discount coupon code limitations"
 	@priority = "3"
 	test LimitCouponCodeUsability {
-		property portal.acceptance = "false";
+		property portal.acceptance = "Intern Test";
 		property test.name.skip.portal.instance = "CPCommerceDiscounts#LimitCouponCodeUsability";
 
 		// TODO Review
