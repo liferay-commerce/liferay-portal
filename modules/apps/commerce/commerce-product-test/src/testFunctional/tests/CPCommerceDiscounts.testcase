@@ -39,7 +39,7 @@ definition {
 	@description = "This is a test for COMMERCE-6232. Discount Rules lifecycle"
 	@priority = "3"
 	test AddEditAndRemoveDiscountRule {
-		property portal.acceptance = "false";
+		property portal.acceptance = "Intern Test";
 		property test.name.skip.portal.instance = "CPCommerceDiscounts#AddEditAndRemoveDiscountRule";
 
 		// TODO Review
