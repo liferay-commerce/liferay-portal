@@ -1545,7 +1545,7 @@ definition {
 	@description = "This is a test for COMMERCE-6121. RemoveTaxRateSettingsByAddressTaxCalculation"
 	@priority = "3"
 	test RemoveTaxRateSettingsByAddressTaxCalculation {
-		property portal.acceptance = "false";
+		property portal.acceptance = "Intern Test";
 		property test.name.skip.portal.instance = "CPCommerceChannels#RemoveTaxRateSettingsByAddressTaxCalculation";
 
 		// TODO Review
