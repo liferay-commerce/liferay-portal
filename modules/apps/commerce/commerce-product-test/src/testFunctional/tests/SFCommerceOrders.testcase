@@ -297,7 +297,7 @@ definition {
 	@description = "COMMERCE-6665. I want to be able to select a Display Template in Pending Orders widget and see it applied to the widget"
 	@priority = "3"
 	test UseADTInPendingOrdersWidget {
-		property portal.acceptance = "false";
+		property portal.acceptance = "Intern Test";
 		property test.name.skip.portal.instance = "SFCommerceOrders#UseADTInPendingOrdersWidget";
 
 		// TODO Review
