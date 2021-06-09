@@ -82,7 +82,7 @@ definition {
 	@description = "COMMERCE-6170. As a buyer, I want to filter products using Price Range Facet widget and the results should be visible on the Search Results widget"
 	@priority = "3"
 	test AssertProductsAreFilteredByPriceRangeFacet {
-		property portal.acceptance = "false";
+		property portal.acceptance = "Intern Test";
 		property test.name.skip.portal.instance = "CommerceFacets#AssertProductsAreFilteredByPriceRangeFacet";
 
 		// TODO Review
