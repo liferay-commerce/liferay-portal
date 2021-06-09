@@ -1406,7 +1406,7 @@ definition {
 	@description = "This is a test for COMMERCE-6236. Check info about where a product group is used"
 	@priority = "3"
 	test CheckPLProductGroupUsageInfo {
-		property portal.acceptance = "false";
+		property portal.acceptance = "Intern Test";
 		property test.name.skip.portal.instance = "CPCommercePriceLists#CheckPLProductGroupUsageInfo";
 
 		// TODO Review
