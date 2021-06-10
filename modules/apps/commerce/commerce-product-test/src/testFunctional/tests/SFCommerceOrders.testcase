@@ -226,7 +226,7 @@ definition {
 	@description = "COMMERCE-6383. As a buyer, I want to be able to Reorder the Placed Order by clicking on 'Reorder' button"
 	@priority = "3"
 	test ReorderFromPlacedOrdersDetailsPage {
-		property portal.acceptance = "false";
+		property portal.acceptance = "Intern Test";
 		property test.name.skip.portal.instance = "SFCommerceOrders#ReorderFromPlacedOrdersDetailsPage";
 
 		// TODO Review
