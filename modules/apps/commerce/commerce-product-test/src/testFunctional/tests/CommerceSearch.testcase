@@ -799,7 +799,7 @@ definition {
 	@description = "COMMERCE-6663. I want to be able to use ADT to render Search Results widget and I want to be able to select a Display Template and see it applied to the widget"
 	@priority = "3"
 	test UseADTInSearchResultsWidget {
-		property portal.acceptance = "false";
+		property portal.acceptance = "Intern Test";
 		property test.name.skip.portal.instance = "CommerceSearch#UseADTInSearchResultsWidget";
 
 		// TODO Review
