@@ -40,7 +40,7 @@ definition {
 	@description = "COMMERCE-5725. New functional test for COMMERCE-5485"
 	@priority = "3"
 	test AssertCheckoutMinicart {
-		property portal.acceptance = "false";
+		property portal.acceptance = "Intern Test";
 		property test.name.skip.portal.instance = "CommerceAccelerators#AssertCheckoutMinicart";
 
 		// TODO Review
