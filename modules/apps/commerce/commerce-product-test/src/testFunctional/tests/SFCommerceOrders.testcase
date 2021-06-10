@@ -287,9 +287,8 @@ definition {
 	@description = "COMMERCE-6381. As a buyer, I want to be able to search for one placed order using the search bar"
 	@priority = "3"
 	test SearchOrderInPlacedOrdersPage {
-		property portal.acceptance = "false";
+		property portal.acceptance = "Intern Test";
 		property test.name.skip.portal.instance = "SFCommerceOrders#SearchOrderInPlacedOrdersPage";
-
 
 		// TODO Review
 
