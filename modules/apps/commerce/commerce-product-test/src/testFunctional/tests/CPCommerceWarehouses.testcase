@@ -39,7 +39,7 @@ definition {
 	@description = "This is a test for COMMERCE-6206. Add income items"
 	@priority = "3"
 	test AddIncomeItems {
-		property portal.acceptance = "false";
+		property portal.acceptance = "Intern Test";
 		property test.name.skip.portal.instance = "CPCommerceWarehouses#AddIncomeItems";
 
 		// TODO Review
