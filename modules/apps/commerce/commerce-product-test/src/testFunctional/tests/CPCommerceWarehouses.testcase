@@ -279,7 +279,7 @@ definition {
 	@description = "This is a test for COMMERCE-6199. Get available quantities of one item in multiple warehouses"
 	@priority = "3"
 	test GetAvailableQuantityFromMultipleWarehouses {
-		property portal.acceptance = "false";
+		property portal.acceptance = "Intern Test";
 		property test.name.skip.portal.instance = "CPCommerceWarehouses#GetAvailableQuantityFromMultipleWarehouses";
 
 		// TODO Review
