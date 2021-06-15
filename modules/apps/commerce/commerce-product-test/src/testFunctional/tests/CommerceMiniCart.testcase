@@ -836,13 +836,12 @@ definition {
 	@description = "COMMERCE-6339. As a buyer, I want to see the barred list price, the discount levels and the discounted price of an item in the mini-cart, if discount levels are set and visible"
 	@priority = "3"
 	test ViewMiniCartItemWithDiscountLevels {
-		property portal.acceptance = "false";
+		property portal.acceptance = "Intern Test";
 		property test.name.skip.portal.instance = "CommerceMiniCart#ViewMiniCartItemWithDiscountLevels";
 
 		// TODO Review
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
-
 
 		ApplicationsMenu.gotoPortlet(
 			category = "Configuration",
