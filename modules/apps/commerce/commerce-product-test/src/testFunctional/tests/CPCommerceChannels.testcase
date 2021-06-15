@@ -478,7 +478,7 @@ definition {
 	@description = "This is a test for COMMERCE-6123. AddTaxRateSettingsFixedTaxRateTaxCalculation"
 	@priority = "3"
 	test AddTaxRateSettingsFixedTaxRateTaxCalculation {
-		property portal.acceptance = "false";
+		property portal.acceptance = "Intern Test";
 		property test.name.skip.portal.instance = "CPCommerceChannels#AddTaxRateSettingsFixedTaxRateTaxCalculation";
 
 		// TODO Review
