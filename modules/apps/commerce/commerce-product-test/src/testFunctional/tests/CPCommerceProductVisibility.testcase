@@ -43,7 +43,7 @@ definition {
 	@description = "This is a test for COMMERCE-6086. AddAChannelFilter"
 	@priority = "3"
 	test AddAChannelFilter {
-		property portal.acceptance = "false";
+		property portal.acceptance = "Intern Test";
 		property test.name.skip.portal.instance = "CPCommerceProductVisibility#AddAChannelFilter";
 
 		// TODO Review
