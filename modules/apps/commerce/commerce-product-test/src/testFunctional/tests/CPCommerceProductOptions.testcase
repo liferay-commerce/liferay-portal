@@ -89,7 +89,7 @@ definition {
 	@description = "This is a test for COMMERCE-6019. EditAndRemoveAnOptionWithValues"
 	@priority = "3"
 	test EditAndRemoveAnOptionWithValues {
-		property portal.acceptance = "false";
+		property portal.acceptance = "Intern Test";
 		property test.name.skip.portal.instance = "CPCommerceProductOptions#EditAndRemoveAnOptionWithValues";
 
 		// TODO Review
