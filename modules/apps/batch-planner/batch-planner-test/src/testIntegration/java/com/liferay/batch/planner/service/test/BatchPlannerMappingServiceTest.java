@@ -23,10 +23,12 @@ import com.liferay.batch.planner.model.BatchPlannerMapping;
 import com.liferay.batch.planner.service.BatchPlannerMappingService;
 import com.liferay.batch.planner.service.BatchPlannerPlanService;
 import com.liferay.batch.planner.service.test.util.BatchPlannerMappingTestUtil;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.ResourceLocalServiceUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.SynchronousDestinationTestRule;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
@@ -131,6 +133,12 @@ public class BatchPlannerMappingServiceTest {
 
 		User user2 = UserTestUtil.addUser(
 			_companyLocalService.getCompany(TestPropsValues.getCompanyId()));
+
+		ResourceLocalServiceUtil.addResources(
+			TestPropsValues.getCompanyId(),
+			GroupConstants.DEFAULT_LIVE_GROUP_ID, user2.getUserId(),
+			BatchPlannerConstants.RESOURCE_NAME, "ADD_BATCH_PLANNER_PLAN",
+			false, false, false);
 
 		UserTestUtil.setUser(user2);
 
