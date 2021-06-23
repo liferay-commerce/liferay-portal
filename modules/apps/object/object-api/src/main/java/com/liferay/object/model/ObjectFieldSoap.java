@@ -42,6 +42,9 @@ public class ObjectFieldSoap implements Serializable {
 		soapModel.setCreateDate(model.getCreateDate());
 		soapModel.setModifiedDate(model.getModifiedDate());
 		soapModel.setObjectDefinitionId(model.getObjectDefinitionId());
+		soapModel.setIndexed(model.isIndexed());
+		soapModel.setIndexedAsKeyword(model.isIndexedAsKeyword());
+		soapModel.setIndexedLanguageId(model.getIndexedLanguageId());
 		soapModel.setName(model.getName());
 		soapModel.setType(model.getType());
 
@@ -169,6 +172,38 @@ public class ObjectFieldSoap implements Serializable {
 		_objectDefinitionId = objectDefinitionId;
 	}
 
+	public boolean getIndexed() {
+		return _indexed;
+	}
+
+	public boolean isIndexed() {
+		return _indexed;
+	}
+
+	public void setIndexed(boolean indexed) {
+		_indexed = indexed;
+	}
+
+	public boolean getIndexedAsKeyword() {
+		return _indexedAsKeyword;
+	}
+
+	public boolean isIndexedAsKeyword() {
+		return _indexedAsKeyword;
+	}
+
+	public void setIndexedAsKeyword(boolean indexedAsKeyword) {
+		_indexedAsKeyword = indexedAsKeyword;
+	}
+
+	public String getIndexedLanguageId() {
+		return _indexedLanguageId;
+	}
+
+	public void setIndexedLanguageId(String indexedLanguageId) {
+		_indexedLanguageId = indexedLanguageId;
+	}
+
 	public String getName() {
 		return _name;
 	}
@@ -194,6 +229,9 @@ public class ObjectFieldSoap implements Serializable {
 	private Date _createDate;
 	private Date _modifiedDate;
 	private long _objectDefinitionId;
+	private boolean _indexed;
+	private boolean _indexedAsKeyword;
+	private String _indexedLanguageId;
 	private String _name;
 	private String _type;
 

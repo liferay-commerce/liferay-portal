@@ -506,7 +506,7 @@ public class ContentDashboardAdminManagementToolbarDisplayContext
 				);
 			}
 		).setParameter(
-			"singleSelect", Boolean.FALSE.toString()
+			"singleSelect", false
 		).setParameter(
 			"vocabularyIds",
 			() -> {

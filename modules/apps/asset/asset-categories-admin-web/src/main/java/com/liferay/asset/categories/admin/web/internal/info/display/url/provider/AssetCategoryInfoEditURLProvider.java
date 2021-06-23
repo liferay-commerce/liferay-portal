@@ -77,9 +77,9 @@ public class AssetCategoryInfoEditURLProvider
 				return themeDisplay.getURLCurrent();
 			}
 		).setParameter(
-			"categoryId", String.valueOf(assetCategory.getCategoryId())
+			"categoryId", assetCategory.getCategoryId()
 		).setParameter(
-			"vocabularyId", String.valueOf(assetCategory.getVocabularyId())
+			"vocabularyId", assetCategory.getVocabularyId()
 		).build();
 
 		return portletURL.toString();

@@ -13,7 +13,7 @@
  */
 
 import ClayEmptyState from '@clayui/empty-state';
-import {useQuery} from 'graphql-hooks';
+import {useManualQuery} from 'graphql-hooks';
 import React, {useContext, useEffect, useState} from 'react';
 import {withRouter} from 'react-router-dom';
 
@@ -23,10 +23,11 @@ import QuestionRow from '../../components/QuestionRow.es';
 import UserIcon from '../../components/UserIcon.es';
 import useQueryParams from '../../hooks/useQueryParams.es';
 import {getUserActivityQuery} from '../../utils/client.es';
-import {isWebCrawler} from '../../utils/utils.es';
+import {historyPushWithSlug} from '../../utils/utils.es';
 
 export default withRouter(
 	({
+		history,
 		location,
 		match: {
 			params: {creatorId},
@@ -35,8 +36,10 @@ export default withRouter(
 		const context = useContext(AppContext);
 		const queryParams = useQueryParams(location);
 		const siteKey = context.siteKey;
-		const [page, setPage] = useState(1);
-		const [pageSize, setPageSize] = useState(20);
+		const [loading, setLoading] = useState(true);
+		const [page, setPage] = useState(null);
+		const [pageSize, setPageSize] = useState(null);
+		const [totalCount, setTotalCount] = useState(0);
 		const [userInfo, setUserInfo] = useState({
 			id: creatorId,
 			image: null,
@@ -60,9 +63,27 @@ export default withRouter(
 			document.title = creatorId;
 		}, [creatorId]);
 
-		const {data, loading} = useQuery(getUserActivityQuery, {
-			onCompleted(data) {
-				if (data.messageBoardMessages.items.lenght) {
+		const [fetchUserActivity, {data}] = useManualQuery(
+			getUserActivityQuery,
+			{
+				variables: {
+					filter: `creatorId eq ${creatorId}`,
+					page,
+					pageSize,
+					siteKey,
+				},
+			}
+		);
+
+		useEffect(() => {
+			if (!page || !pageSize) {
+				return;
+			}
+
+			setLoading(true);
+
+			fetchUserActivity().then(({data, loading}) => {
+				if (data.messageBoardMessages.items.length) {
 					const {
 						creator,
 						creatorStatistics,
@@ -75,19 +96,20 @@ export default withRouter(
 						rank: creatorStatistics.rank,
 					});
 				}
-			},
-			variables: {
-				filter: `creatorId eq ${creatorId}`,
-				page,
-				pageSize,
-				siteKey,
-			},
-		});
+				setTotalCount(data?.messageBoardMessages.totalCount || 0);
+				setLoading(loading);
+			});
+		}, [fetchUserActivity, page, pageSize]);
 
-		const hrefConstructor = (page) =>
-			`${
-				isWebCrawler() ? '/-' : '#'
-			}/activity/${creatorId}?page=${page}&pagesize=${pageSize}`;
+		const historyPushParser = historyPushWithSlug(history.push);
+
+		function buildUrl(page, pageSize) {
+			return `/questions/activity/${creatorId}?page=${page}&pagesize=${pageSize}`;
+		}
+
+		function changePage(page, pageSize) {
+			historyPushParser(buildUrl(page, pageSize));
+		}
 
 		const addSectionToQuestion = (question) => {
 			return {
@@ -140,7 +162,10 @@ export default withRouter(
 						<PaginatedList
 							activeDelta={pageSize}
 							activePage={page}
-							changeDelta={setPageSize}
+							changeDelta={(pageSize) =>
+								changePage(page, pageSize)
+							}
+							changePage={(page) => changePage(page, pageSize)}
 							data={data && data.messageBoardMessages}
 							emptyState={
 								<ClayEmptyState
@@ -150,8 +175,8 @@ export default withRouter(
 									}
 								/>
 							}
-							hrefConstructor={hrefConstructor}
 							loading={loading}
+							totalCount={totalCount}
 						>
 							{(question) => (
 								<QuestionRow

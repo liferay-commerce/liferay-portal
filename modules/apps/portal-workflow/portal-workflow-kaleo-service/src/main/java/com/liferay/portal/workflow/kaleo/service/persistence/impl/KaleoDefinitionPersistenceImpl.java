@@ -3453,25 +3453,25 @@ public class KaleoDefinitionPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (kaleoDefinition.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				kaleoDefinition.setCreateDate(now);
+				kaleoDefinition.setCreateDate(date);
 			}
 			else {
 				kaleoDefinition.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!kaleoDefinitionModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				kaleoDefinition.setModifiedDate(now);
+				kaleoDefinition.setModifiedDate(date);
 			}
 			else {
 				kaleoDefinition.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

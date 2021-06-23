@@ -67,11 +67,6 @@ definition {
 			emailAddress = "test@liferay.com",
 			emailSenderName = "Joe Bloggs");
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Users",
-			panel = "Control Panel",
-			portlet = "Users and Organizations");
-
 		for (var userNum : list "1,2") {
 			JSONUser.addUser(
 				userEmailAddress = "userea${userNum}@liferay.com",
@@ -87,7 +82,7 @@ definition {
 
 		SignOut.signOut();
 
-		SignIn.signIn(userEmailAddress = "userea2@liferay.com");
+		Navigator.openSpecificURL(url = "${portalURL}/web/guest?SM_USER=userea2@liferay.com");
 
 		User.verifyEmail(
 			portalURL = "${portalURL}",
@@ -298,6 +293,79 @@ definition {
 			userFirstName = "userfn",
 			userLastName = "userln",
 			userScreenName = "usersn");
+	}
+
+	@priority = "4"
+	test FactoryConfigurationCanBeDeleted {
+		property test.name.skip.portal.instance = "InstanceSettings#FactoryConfigurationCanBeDeleted";
+
+		var openIDConnectClientID = PropsUtil.get("google.client.id.1");
+		var openIDConnectClientSecret = PropsUtil.get("google.client.secret.1");
+
+		PortalSettings.gotoConfiguration(
+			configurationCategory = "SSO",
+			configurationName = "OpenID Connect Provider",
+			configurationScope = "Virtual Instance Scope");
+
+		OpenIDConnect.addProvider(
+			openIDConnectClientID = "${openIDConnectClientID}",
+			openIDConnectClientSecret = "${openIDConnectClientSecret}",
+			providerName = "Google");
+
+		LexiconEntry.viewEntryName(rowEntry = "Google");
+
+		LexiconEntry.gotoEntryMenuItem(
+			menuItem = "Delete",
+			rowEntry = "Google");
+
+		Alert.viewSuccessMessage();
+
+		LexiconEntry.viewNoEntry(rowEntry = "Google");
+
+		AssertElementPresent(locator1 = "Message#EMPTY_INFO_TAGLIB");
+
+		PortalSettings.gotoConfiguration(
+			configurationCategory = "SSO",
+			configurationName = "OpenID Connect Provider",
+			configurationScope = "Virtual Instance Scope");
+
+		LexiconEntry.viewNoEntry(rowEntry = "Google");
+
+		AssertElementPresent(locator1 = "Message#EMPTY_INFO_TAGLIB");
+	}
+
+	@priority = "4"
+	test FactoryConfigurationCanBeEdited {
+		property test.name.skip.portal.instance = "InstanceSettings#FactoryConfigurationCanBeEdited";
+
+		var openIDConnectClientID = PropsUtil.get("google.client.id.1");
+		var openIDConnectClientSecret = PropsUtil.get("google.client.secret.1");
+
+		PortalSettings.gotoConfiguration(
+			configurationCategory = "SSO",
+			configurationName = "OpenID Connect Provider",
+			configurationScope = "Virtual Instance Scope");
+
+		OpenIDConnect.addProvider(
+			openIDConnectClientID = "${openIDConnectClientID}",
+			openIDConnectClientSecret = "${openIDConnectClientSecret}",
+			providerName = "Google");
+
+		LexiconEntry.viewEntryName(rowEntry = "Google");
+
+		LexiconEntry.gotoEntryMenuItem(
+			menuItem = "Edit",
+			rowEntry = "Google");
+
+		FormFields.editTextMultiline(
+			fieldName = "providerName",
+			fieldValue = "Edit Google");
+
+		PortletEntry.update();
+
+		LexiconEntry.viewNoEntry(rowEntry = "Google");
+
+		LexiconEntry.viewEntryName(rowEntry = "Edit Google");
 	}
 
 	@priority = "4"

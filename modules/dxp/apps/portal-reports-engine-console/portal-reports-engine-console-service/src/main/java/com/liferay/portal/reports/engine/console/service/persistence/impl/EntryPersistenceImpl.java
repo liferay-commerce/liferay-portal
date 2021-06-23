@@ -294,23 +294,23 @@ public class EntryPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (entry.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				entry.setCreateDate(now);
+				entry.setCreateDate(date);
 			}
 			else {
-				entry.setCreateDate(serviceContext.getCreateDate(now));
+				entry.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!entryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				entry.setModifiedDate(now);
+				entry.setModifiedDate(date);
 			}
 			else {
-				entry.setModifiedDate(serviceContext.getModifiedDate(now));
+				entry.setModifiedDate(serviceContext.getModifiedDate(date));
 			}
 		}
 

@@ -28,39 +28,28 @@ import isHovered from './isHovered';
 
 const CollectionWithControls = React.forwardRef(({children, item}, ref) => {
 	const [hovered, setHovered] = useState(false);
-	const hoveredItemType = useHoveredItemType();
-	const hoveredItemId = useHoveredItemId();
+
 	const [setRef, itemElement] = useSetRef(ref);
 
-	const isMapped =
-		item.type === LAYOUT_DATA_ITEM_TYPES.collection &&
-		'collection' in item.config;
-
-	useEffect(() => {
-		if (isMapped) {
-			setHovered(
-				isHovered({
-					editableValue: item.config.collection,
-					hoveredItemId,
-					hoveredItemType,
-				})
-			);
-		}
-	}, [isMapped, item, hoveredItemId, hoveredItemType]);
-
 	return (
-		<Topper
-			className={classNames({
-				'page-editor__topper--hovered': hovered,
-			})}
-			isMapped={isMapped}
-			item={item}
-			itemElement={itemElement}
-		>
-			<Collection item={item} ref={setRef}>
-				{children}
-			</Collection>
-		</Topper>
+		<>
+			<HoverHandler
+				hovered={hovered}
+				item={item}
+				setHovered={setHovered}
+			/>
+			<Topper
+				className={classNames({
+					'page-editor__topper--hovered': hovered,
+				})}
+				item={item}
+				itemElement={itemElement}
+			>
+				<Collection item={item} ref={setRef}>
+					{children}
+				</Collection>
+			</Topper>
+		</>
 	);
 });
 
@@ -69,3 +58,28 @@ CollectionWithControls.propTypes = {
 };
 
 export default CollectionWithControls;
+
+const HoverHandler = (item, setHovered, hovered) => {
+	const hoveredItemType = useHoveredItemType();
+	const hoveredItemId = useHoveredItemId();
+
+	useEffect(() => {
+		const isMapped =
+			item.type === LAYOUT_DATA_ITEM_TYPES.collection &&
+			'collection' in item.config;
+
+		if (isMapped) {
+			const nextHovered = isHovered({
+				editableValue: item.config.collection,
+				hoveredItemId,
+				hoveredItemType,
+			});
+
+			if (hovered !== nextHovered) {
+				setHovered(nextHovered);
+			}
+		}
+	}, [item, hoveredItemId, hoveredItemType, setHovered, hovered]);
+
+	return null;
+};

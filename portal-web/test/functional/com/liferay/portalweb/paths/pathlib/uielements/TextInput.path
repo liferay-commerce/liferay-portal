@@ -2,11 +2,13 @@
 <head>
 <title>TextInput</title>
 </head>
+
 <body>
-<table cellpadding="1" cellspacing="1" border="1">
+<table border="1" cellpadding="1" cellspacing="1">
 <thead>
 <tr><td rowspan="1" colspan="3">TextInput</td></tr>
 </thead>
+
 <tbody>
 <tr>
 	<td>ADDRESS</td>
@@ -31,6 +33,11 @@
 <tr>
 	<td>ANY</td>
 	<td>//div[label[contains(.,'${key_text}')]]//input</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ANY_ID</td>
+	<td>//input[contains(@id,'${key_value}')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -116,6 +123,11 @@
 <tr>
 	<td>DATA_DEFINITION</td>
 	<td>//div[label[contains(.,'Data Definition')]]/input[@type='text']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DATE_TIME_PRICE_LISTS</td>
+	<td>//input[contains(@id,'displayDateTime')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -380,7 +392,7 @@
 </tr>
 <tr>
 	<td>OPEN_GRAPH_CUSTOM_IMAGE_INPUT</td>
-	<td>//div[label[contains(.,'Image')]]//input[contains(@value,'${key_dmDocumentURL}') and @readonly='readonly']</td>
+	<td>//div[label[contains(.,'Image')]]//input[contains(@value,'${key_dmDocumentURL}') and @readonly]</td>
 	<td></td>
 </tr>
 <tr>

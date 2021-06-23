@@ -56,8 +56,8 @@ public class KaleoDesignerWebVerifyProcess extends VerifyProcess {
 		if (serviceContext == null) {
 			serviceContext = new ServiceContext();
 
-			serviceContext.setAddGuestPermissions(true);
 			serviceContext.setAddGroupPermissions(true);
+			serviceContext.setAddGuestPermissions(true);
 		}
 
 		return serviceContext;

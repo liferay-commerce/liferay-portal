@@ -21,7 +21,7 @@ const VALID_EXTENSIONS = '.xliff,.xlf';
 export default function ImportTranslation({
 	saveDraftBtnId,
 	submitBtnId,
-	worflowPending = false,
+	workflowPending = false,
 }) {
 	const [importFile, setImportFile] = useState();
 
@@ -31,9 +31,9 @@ export default function ImportTranslation({
 		Liferay.Util.toggleDisabled('#' + saveDraftBtnId, !importFile);
 		Liferay.Util.toggleDisabled(
 			'#' + submitBtnId,
-			!importFile || worflowPending
+			!importFile || workflowPending
 		);
-	}, [importFile, saveDraftBtnId, submitBtnId, worflowPending]);
+	}, [importFile, saveDraftBtnId, submitBtnId, workflowPending]);
 
 	return (
 		<div>
@@ -53,8 +53,8 @@ export default function ImportTranslation({
 					accept={VALID_EXTENSIONS}
 					className="d-none"
 					name="file"
-					onChange={(e) => {
-						setImportFile(e.target.files[0]);
+					onChange={(event) => {
+						setImportFile(event.target.files[0]);
 					}}
 					ref={inputFileRef}
 					type="file"

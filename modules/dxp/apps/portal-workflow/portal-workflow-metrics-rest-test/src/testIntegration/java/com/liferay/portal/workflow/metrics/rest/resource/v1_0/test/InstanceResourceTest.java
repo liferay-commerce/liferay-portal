@@ -16,14 +16,18 @@ package com.liferay.portal.workflow.metrics.rest.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.function.UnsafeConsumer;
+import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.test.randomizerbumpers.NumericStringRandomizerBumper;
+import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBumper;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.search.test.util.SearchTestRule;
 import com.liferay.portal.test.rule.Inject;
@@ -40,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -83,6 +88,38 @@ public class InstanceResourceTest extends BaseInstanceResourceTestCase {
 		}
 
 		_deleteInstances();
+	}
+
+	@Override
+	@Test
+	public void testGetProcessInstance() throws Exception {
+		Instance instance = randomInstance();
+
+		instance.setSlaResults(
+			Stream.of(
+				_toSLAResult(true, SLAResult.Status.NEW),
+				_toSLAResult(true, SLAResult.Status.NEW),
+				_toSLAResult(true, SLAResult.Status.PAUSED),
+				_toSLAResult(true, SLAResult.Status.PAUSED),
+				_toSLAResult(true, SLAResult.Status.RUNNING),
+				_toSLAResult(true, SLAResult.Status.RUNNING),
+				_toSLAResult(true, SLAResult.Status.RUNNING),
+				_toSLAResult(true, SLAResult.Status.STOPPED),
+				_toSLAResult(true, SLAResult.Status.STOPPED),
+				_toSLAResult(true, SLAResult.Status.STOPPED)
+			).sorted(
+				Comparator.comparing(SLAResult::getRemainingTime)
+			).toArray(
+				SLAResult[]::new
+			));
+
+		testGetProcessInstancesPage_addInstance(_process.getId(), instance);
+
+		Instance getInstance = instanceResource.getProcessInstance(
+			instance.getProcessId(), instance.getId());
+
+		assertEquals(instance, getInstance);
+		assertValid(getInstance);
 	}
 
 	@Override
@@ -183,7 +220,86 @@ public class InstanceResourceTest extends BaseInstanceResourceTestCase {
 				else {
 					BeanUtils.setProperty(
 						instance1, entityField.getName(),
-						DateUtils.addMinutes(new Date(), -2));
+						DateUtils.addMinutes(
+							DateUtils.truncate(new Date(), Calendar.SECOND),
+							-2));
+				}
+			});
+	}
+
+	@Override
+	@Test
+	public void testGetProcessInstancesPageWithSortString() throws Exception {
+		testGetProcessInstancesPageWithSort(
+			EntityField.Type.STRING,
+			(entityField, instance1, instance2) -> {
+				String entityFieldName = entityField.getName();
+
+				if (StringUtil.equals("assigneeName", entityFieldName)) {
+					instance1.setAssignees(
+						() -> {
+							User user = _addUser("aaa");
+
+							return new Assignee[] {
+								new Assignee() {
+									{
+										id = user.getUserId();
+										name = user.getFullName();
+									}
+								}
+							};
+						});
+
+					instance2.setAssignees(
+						() -> {
+							User user = _addUser("bbb");
+
+							return new Assignee[] {
+								new Assignee() {
+									{
+										id = user.getUserId();
+										name = user.getFullName();
+									}
+								}
+							};
+						});
+				}
+				else if (StringUtil.equals("userName", entityFieldName)) {
+					instance1.setCreator(
+						() -> {
+							User user = _addUser("aaa");
+
+							return new Creator() {
+								{
+									id = user.getUserId();
+									name = user.getFullName();
+								}
+							};
+						});
+
+					instance2.setCreator(
+						() -> {
+							User user = _addUser("bbb");
+
+							return new Creator() {
+								{
+									id = user.getUserId();
+									name = user.getFullName();
+								}
+							};
+						});
+				}
+				else {
+					BeanUtils.setProperty(
+						instance1, entityFieldName,
+						"aaa".concat(
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString())));
+					BeanUtils.setProperty(
+						instance2, entityFieldName,
+						"bbb".concat(
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString())));
 				}
 			});
 	}
@@ -192,10 +308,35 @@ public class InstanceResourceTest extends BaseInstanceResourceTestCase {
 	public SearchTestRule searchTestRule = new SearchTestRule();
 
 	@Override
+	protected boolean equals(Instance instance1, Instance instance2) {
+		if (super.equals(instance1, instance2)) {
+			return Objects.deepEquals(
+				instance1.getDateCreated(), instance2.getDateCreated());
+		}
+
+		return false;
+	}
+
+	@Override
 	protected String[] getAdditionalAssertFieldNames() {
 		return new String[] {
-			"assetTitle", "assetType", "classPK", "processId", "slaResults"
+			"assetTitle", "assetType", "classPK", "creator", "processId",
+			"slaResults"
 		};
+	}
+
+	@Override
+	protected List<GraphQLField> getGraphQLFields() throws Exception {
+		List<GraphQLField> graphQLFields = super.getGraphQLFields();
+
+		graphQLFields.addAll(
+			getGraphQLFields(
+				ReflectionUtil.getDeclaredField(
+					com.liferay.portal.workflow.metrics.rest.dto.v1_0.Instance.
+						class,
+					"dateCreated")));
+
+		return graphQLFields;
 	}
 
 	@Override
@@ -225,6 +366,8 @@ public class InstanceResourceTest extends BaseInstanceResourceTestCase {
 
 		instance.setCompleted(false);
 		instance.setDateCompletion((Date)null);
+		instance.setDateCreated(
+			DateUtils.truncate(new Date(), Calendar.SECOND));
 		instance.setProcessId(_process.getId());
 		instance.setProcessVersion(_process.getVersion());
 		instance.setSlaResults(
@@ -312,6 +455,18 @@ public class InstanceResourceTest extends BaseInstanceResourceTestCase {
 			_process.getId(), instance);
 	}
 
+	private User _addUser(String firstName) throws Exception {
+		return UserTestUtil.addUser(
+			RandomTestUtil.randomString(
+				NumericStringRandomizerBumper.INSTANCE,
+				UniqueStringRandomizerBumper.INSTANCE),
+			LocaleUtil.getDefault(),
+			firstName.concat(
+				StringUtil.toLowerCase(RandomTestUtil.randomString())),
+			RandomTestUtil.randomString(),
+			new long[] {TestPropsValues.getGroupId()});
+	}
+
 	private void _deleteInstances() throws Exception {
 		for (Instance instance : _instances) {
 			_workflowMetricsRESTTestHelper.deleteInstance(
@@ -345,7 +500,8 @@ public class InstanceResourceTest extends BaseInstanceResourceTestCase {
 				id = RandomTestUtil.randomLong();
 				name = StringPool.BLANK;
 				onTime = !overdue;
-				remainingTime = overdue ? -1L : 1L;
+				remainingTime = overdue ? -RandomTestUtil.randomLong() :
+					RandomTestUtil.randomLong();
 				status = slaResultStatus;
 			}
 		};

@@ -74,7 +74,7 @@ public class KBTemplateLocalServiceImpl extends KBTemplateLocalServiceBaseImpl {
 
 		User user = userLocalService.getUser(userId);
 		long groupId = serviceContext.getScopeGroupId();
-		Date now = new Date();
+		Date date = new Date();
 
 		validate(title, content);
 
@@ -87,8 +87,8 @@ public class KBTemplateLocalServiceImpl extends KBTemplateLocalServiceBaseImpl {
 		kbTemplate.setCompanyId(user.getCompanyId());
 		kbTemplate.setUserId(user.getUserId());
 		kbTemplate.setUserName(user.getFullName());
-		kbTemplate.setCreateDate(serviceContext.getCreateDate(now));
-		kbTemplate.setModifiedDate(serviceContext.getModifiedDate(now));
+		kbTemplate.setCreateDate(serviceContext.getCreateDate(date));
+		kbTemplate.setModifiedDate(serviceContext.getModifiedDate(date));
 		kbTemplate.setTitle(title);
 		kbTemplate.setContent(content);
 

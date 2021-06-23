@@ -343,7 +343,7 @@ public class FragmentDisplayContext {
 			).setMVCRenderCommandName(
 				"/fragment/view_fragment_collections"
 			).setParameter(
-				"includeGlobalFragmentCollections", Boolean.TRUE.toString()
+				"includeGlobalFragmentCollections", true
 			).setWindowState(
 				LiferayWindowState.POP_UP
 			).buildString()

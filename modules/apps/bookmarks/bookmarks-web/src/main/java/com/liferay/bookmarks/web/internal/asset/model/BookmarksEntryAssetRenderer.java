@@ -151,7 +151,7 @@ public class BookmarksEntryAssetRenderer
 		).setParameter(
 			"folderId", _entry.getFolderId()
 		).setParameter(
-			"showFolderSelector", Boolean.TRUE.toString()
+			"showFolderSelector", true
 		).build();
 	}
 

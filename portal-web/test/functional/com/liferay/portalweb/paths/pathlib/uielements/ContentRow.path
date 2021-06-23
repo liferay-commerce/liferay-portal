@@ -2,11 +2,13 @@
 <head>
 <title>ContentRow</title>
 </head>
+
 <body>
-<table cellpadding="1" cellspacing="1" border="1">
+<table border="1" cellpadding="1" cellspacing="1">
 <thead>
 <tr><td rowspan="1" colspan="3">ContentRow</td></tr>
 </thead>
+
 <tbody>
 <tr>
 	<td>ENTRY_CONTENT_ROW_1</td>
@@ -82,6 +84,11 @@
 <tr>
 	<td>ENTRY_CONTENT_ENTRY_NAME_LINK</td>
 	<td>//*[@data-qa-id='row']//a[normalize-space(text())='${key_rowEntry}']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ENTRY_CONTENT_PARTIAL_TEXt</td>
+	<td>//*[@data-qa-id='row'][contains(.,'${key_rowEntry}')]</td>
 	<td></td>
 </tr>
 <tr>

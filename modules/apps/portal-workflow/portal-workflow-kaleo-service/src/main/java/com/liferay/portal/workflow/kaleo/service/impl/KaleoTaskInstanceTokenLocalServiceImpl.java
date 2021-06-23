@@ -96,7 +96,7 @@ public class KaleoTaskInstanceTokenLocalServiceImpl
 				kaleoInstanceTokenId);
 
 		User user = userLocalService.getUser(serviceContext.getGuestOrUserId());
-		Date now = new Date();
+		Date date = new Date();
 
 		long kaleoTaskInstanceTokenId = counterLocalService.increment();
 
@@ -111,8 +111,8 @@ public class KaleoTaskInstanceTokenLocalServiceImpl
 		kaleoTaskInstanceToken.setCompanyId(user.getCompanyId());
 		kaleoTaskInstanceToken.setUserId(user.getUserId());
 		kaleoTaskInstanceToken.setUserName(user.getFullName());
-		kaleoTaskInstanceToken.setCreateDate(now);
-		kaleoTaskInstanceToken.setModifiedDate(now);
+		kaleoTaskInstanceToken.setCreateDate(date);
+		kaleoTaskInstanceToken.setModifiedDate(date);
 		kaleoTaskInstanceToken.setKaleoDefinitionId(
 			kaleoInstanceToken.getKaleoDefinitionId());
 		kaleoTaskInstanceToken.setKaleoDefinitionVersionId(
@@ -782,29 +782,39 @@ public class KaleoTaskInstanceTokenLocalServiceImpl
 				ServiceContext serviceContext)
 		throws PortalException {
 
-		KaleoTaskInstanceTokenQuery kaleoTaskInstanceTokenQuery =
-			new KaleoTaskInstanceTokenQuery(serviceContext);
-
-		kaleoTaskInstanceTokenQuery.setAndOperator(andOperator);
-		kaleoTaskInstanceTokenQuery.setAssetTitle(assetTitle);
-		kaleoTaskInstanceTokenQuery.setAssetTypes(assetTypes);
-		kaleoTaskInstanceTokenQuery.setAssetPrimaryKeys(assetPrimaryKeys);
-		kaleoTaskInstanceTokenQuery.setAssigneeClassName(assigneeClassName);
-		kaleoTaskInstanceTokenQuery.setAssigneeClassPKs(assigneeClassPKs);
-		kaleoTaskInstanceTokenQuery.setCompleted(completed);
-		kaleoTaskInstanceTokenQuery.setDueDateGT(dueDateGT);
-		kaleoTaskInstanceTokenQuery.setDueDateLT(dueDateLT);
-		kaleoTaskInstanceTokenQuery.setEnd(end);
-		kaleoTaskInstanceTokenQuery.setKaleoDefinitionId(kaleoDefinitionId);
-		kaleoTaskInstanceTokenQuery.setKaleoInstanceIds(kaleoInstanceIds);
-		kaleoTaskInstanceTokenQuery.setOrderByComparator(orderByComparator);
-		kaleoTaskInstanceTokenQuery.setSearchByUserRoles(searchByUserRoles);
-		kaleoTaskInstanceTokenQuery.setStart(start);
-		kaleoTaskInstanceTokenQuery.setTaskNames(taskNames);
-
 		Hits hits = doSearch(
 			HashMapBuilder.<String, Serializable>put(
-				"kaleoTaskInstanceTokenQuery", kaleoTaskInstanceTokenQuery
+				"kaleoTaskInstanceTokenQuery",
+				() -> {
+					KaleoTaskInstanceTokenQuery kaleoTaskInstanceTokenQuery =
+						new KaleoTaskInstanceTokenQuery(serviceContext);
+
+					kaleoTaskInstanceTokenQuery.setAndOperator(andOperator);
+					kaleoTaskInstanceTokenQuery.setAssetTitle(assetTitle);
+					kaleoTaskInstanceTokenQuery.setAssetTypes(assetTypes);
+					kaleoTaskInstanceTokenQuery.setAssetPrimaryKeys(
+						assetPrimaryKeys);
+					kaleoTaskInstanceTokenQuery.setAssigneeClassName(
+						assigneeClassName);
+					kaleoTaskInstanceTokenQuery.setAssigneeClassPKs(
+						assigneeClassPKs);
+					kaleoTaskInstanceTokenQuery.setCompleted(completed);
+					kaleoTaskInstanceTokenQuery.setDueDateGT(dueDateGT);
+					kaleoTaskInstanceTokenQuery.setDueDateLT(dueDateLT);
+					kaleoTaskInstanceTokenQuery.setEnd(end);
+					kaleoTaskInstanceTokenQuery.setKaleoDefinitionId(
+						kaleoDefinitionId);
+					kaleoTaskInstanceTokenQuery.setKaleoInstanceIds(
+						kaleoInstanceIds);
+					kaleoTaskInstanceTokenQuery.setOrderByComparator(
+						orderByComparator);
+					kaleoTaskInstanceTokenQuery.setSearchByUserRoles(
+						searchByUserRoles);
+					kaleoTaskInstanceTokenQuery.setStart(start);
+					kaleoTaskInstanceTokenQuery.setTaskNames(taskNames);
+
+					return kaleoTaskInstanceTokenQuery;
+				}
 			).build(),
 			start, end, orderByComparator, serviceContext);
 

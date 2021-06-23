@@ -1458,25 +1458,25 @@ public class ObjectRelationshipPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (objectRelationship.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				objectRelationship.setCreateDate(now);
+				objectRelationship.setCreateDate(date);
 			}
 			else {
 				objectRelationship.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!objectRelationshipModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				objectRelationship.setModifiedDate(now);
+				objectRelationship.setModifiedDate(date);
 			}
 			else {
 				objectRelationship.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

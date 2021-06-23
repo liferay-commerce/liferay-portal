@@ -1446,25 +1446,25 @@ public class CommerceInventoryAuditPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commerceInventoryAudit.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commerceInventoryAudit.setCreateDate(now);
+				commerceInventoryAudit.setCreateDate(date);
 			}
 			else {
 				commerceInventoryAudit.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commerceInventoryAuditModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commerceInventoryAudit.setModifiedDate(now);
+				commerceInventoryAudit.setModifiedDate(date);
 			}
 			else {
 				commerceInventoryAudit.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

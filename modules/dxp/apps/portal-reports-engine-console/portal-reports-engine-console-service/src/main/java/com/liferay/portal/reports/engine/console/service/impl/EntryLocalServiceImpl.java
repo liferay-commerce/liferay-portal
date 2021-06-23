@@ -103,7 +103,7 @@ public class EntryLocalServiceImpl extends EntryLocalServiceBaseImpl {
 		// Entry
 
 		User user = userLocalService.getUser(userId);
-		Date now = new Date();
+		Date date = new Date();
 
 		validate(emailNotifications, emailDelivery, reportName);
 
@@ -115,8 +115,8 @@ public class EntryLocalServiceImpl extends EntryLocalServiceBaseImpl {
 		entry.setCompanyId(user.getCompanyId());
 		entry.setUserId(user.getUserId());
 		entry.setUserName(user.getFullName());
-		entry.setCreateDate(serviceContext.getCreateDate(now));
-		entry.setModifiedDate(serviceContext.getModifiedDate(now));
+		entry.setCreateDate(serviceContext.getCreateDate(date));
+		entry.setModifiedDate(serviceContext.getModifiedDate(date));
 		entry.setDefinitionId(definitionId);
 		entry.setFormat(format);
 		entry.setScheduleRequest(schedulerRequest);
@@ -374,7 +374,7 @@ public class EntryLocalServiceImpl extends EntryLocalServiceBaseImpl {
 		throws PortalException {
 
 		Entry entry = entryPersistence.findByPrimaryKey(entryId);
-		Date now = new Date();
+		Date date = new Date();
 
 		if (entry.isScheduleRequest()) {
 			StringBundler sb = new StringBundler(4);
@@ -384,7 +384,7 @@ public class EntryLocalServiceImpl extends EntryLocalServiceBaseImpl {
 			DateFormat dateFormat = DateFormatFactoryUtil.getSimpleDateFormat(
 				"MM_dd_yyyy_HH_mm");
 
-			sb.append(dateFormat.format(now));
+			sb.append(dateFormat.format(date));
 
 			sb.append(StringPool.PERIOD);
 			sb.append(StringUtil.extractLast(reportName, StringPool.PERIOD));
@@ -407,7 +407,7 @@ public class EntryLocalServiceImpl extends EntryLocalServiceBaseImpl {
 
 		sendEmails(entryId, fileName, emailAddresses, true);
 
-		entry.setModifiedDate(now);
+		entry.setModifiedDate(date);
 		entry.setStatus(ReportStatus.COMPLETE.getValue());
 
 		entryPersistence.update(entry);

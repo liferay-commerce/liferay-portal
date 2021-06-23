@@ -32,7 +32,7 @@ PortletURL portletURL = PortletURLBuilder.createRenderURL(
 ).setRedirect(
 	redirect
 ).setParameter(
-	"structureId", String.valueOf(structureId)
+	"structureId", structureId
 ).build();
 
 PortletURL backURL = PortletURLBuilder.createRenderURL(
@@ -42,9 +42,9 @@ PortletURL backURL = PortletURLBuilder.createRenderURL(
 ).setRedirect(
 	redirect
 ).setParameter(
-	"classNameId", String.valueOf(PortalUtil.getClassNameId(DDMStructure.class))
+	"classNameId", PortalUtil.getClassNameId(DDMStructure.class)
 ).setParameter(
-	"classPK", String.valueOf(structure.getStructureId())
+	"classPK", structure.getStructureId()
 ).build();
 %>
 

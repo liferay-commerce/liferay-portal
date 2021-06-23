@@ -62,3 +62,8 @@ a0f5be6d9c1eb3b28f17dc40d30bfac384e3b7f7^..718e619ffd259c5b4e28ffe0fd7b708cfa902
 # Bundle Version 6.0.1
 #
 8f0012cdc7cb09acb04bc7e43294272fe73a625b^..2ec792defdaa0f85b4c458595aa000bf9d63ddd8=LPS-129722
+
+#
+# Bundle Version 6.0.2
+#
+2ec792defdaa0f85b4c458595aa000bf9d63ddd8^..e0e28ddd5863bbfbc137d2edb3f1d9fa775035d5=LPS-105380 LPS-132448 LPS-132587

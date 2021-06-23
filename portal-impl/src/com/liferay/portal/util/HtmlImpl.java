@@ -506,6 +506,8 @@ public class HtmlImpl implements Html {
 			return StringPool.BLANK;
 		}
 
+		link = link.trim();
+
 		if (link.indexOf(StringPool.COLON) == 10) {
 			String protocol = StringUtil.toLowerCase(link.substring(0, 10));
 

@@ -19,12 +19,17 @@ import {EDITABLE_TYPES} from '../../../../../app/config/constants/editableTypes'
 import {config} from '../../../../../app/config/index';
 import {useSelector} from '../../../../../app/contexts/StoreContext';
 import selectLanguageId from '../../../../../app/selectors/selectLanguageId';
+import {selectPageContents} from '../../../../../app/selectors/selectPageContents';
 import isMapped from '../../../../../app/utils/editable-value/isMapped';
 import SidebarPanelContent from '../../../../../common/components/SidebarPanelContent';
 import NoPageContents from './NoPageContents';
 import PageContents from './PageContents';
 
 const getEditableTitle = (editable, languageId) => {
+	if (editable.type === EDITABLE_TYPES['rich-text']) {
+		return Liferay.Language.get('rich-text');
+	}
+
 	const div = document.createElement('div');
 
 	div.innerHTML =
@@ -63,6 +68,7 @@ const getEditableValues = (fragmentEntryLinks, segmentsExperienceId) =>
 				.map(([key, value]) => ({
 					...value,
 					editableId: `${fragmentEntryLink.fragmentEntryLinkId}-${key}`,
+					type: fragmentEntryLink.editableTypes[key],
 				}));
 		})
 		.reduce(
@@ -93,7 +99,7 @@ const normalizePageContents = (pageContents) =>
 export default function ContentsSidebar() {
 	const fragmentEntryLinks = useSelector((state) => state.fragmentEntryLinks);
 	const languageId = useSelector(selectLanguageId);
-	const pageContents = useSelector((state) => state.pageContents);
+	const pageContents = useSelector(selectPageContents);
 	const segmentsExperienceId = useSelector(
 		(state) => state.segmentsExperienceId
 	);

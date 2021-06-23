@@ -89,7 +89,7 @@ public class KaleoProcessLocalServiceImpl
 		// Kaleo process
 
 		User user = userLocalService.getUser(userId);
-		Date now = new Date();
+		Date date = new Date();
 
 		validate(ddmTemplateId);
 
@@ -102,8 +102,8 @@ public class KaleoProcessLocalServiceImpl
 		kaleoProcess.setCompanyId(user.getCompanyId());
 		kaleoProcess.setUserId(user.getUserId());
 		kaleoProcess.setUserName(user.getFullName());
-		kaleoProcess.setCreateDate(serviceContext.getCreateDate(now));
-		kaleoProcess.setModifiedDate(serviceContext.getModifiedDate(now));
+		kaleoProcess.setCreateDate(serviceContext.getCreateDate(date));
+		kaleoProcess.setModifiedDate(serviceContext.getModifiedDate(date));
 
 		DDLRecordSet ddlRecordSet = addDDLRecordSet(
 			userId, groupId, ddmStructureId, nameMap, descriptionMap,

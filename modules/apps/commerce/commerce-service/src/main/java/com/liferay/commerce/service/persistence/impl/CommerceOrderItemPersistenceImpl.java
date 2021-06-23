@@ -3995,25 +3995,25 @@ public class CommerceOrderItemPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commerceOrderItem.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commerceOrderItem.setCreateDate(now);
+				commerceOrderItem.setCreateDate(date);
 			}
 			else {
 				commerceOrderItem.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commerceOrderItemModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commerceOrderItem.setModifiedDate(now);
+				commerceOrderItem.setModifiedDate(date);
 			}
 			else {
 				commerceOrderItem.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

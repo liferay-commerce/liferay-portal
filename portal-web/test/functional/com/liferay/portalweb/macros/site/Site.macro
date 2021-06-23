@@ -100,7 +100,10 @@ definition {
 		if (isSet(parentSiteName)) {
 			WaitForLiferayEvent.initializeLiferayEventLog();
 
-			Button.click(button = "Change");
+			Click(
+				key_fieldLabel = "Parent Site",
+				key_text = "Change",
+				locator1 = "Button#ANY_WITH_LABEL");
 
 			var key_parentSiteName = "${parentSiteName}";
 
@@ -726,7 +729,15 @@ definition {
 			locator1 = "TextInput#PIWIK",
 			value1 = "${piwik}");
 
-		PortletEntry.save();
+		Button.click(button = "Save");
+
+		if (isSet(confirmationText)) {
+			AssertConfirm(value1 = "${confirmationText}");
+		}
+
+		Alert.viewSuccessMessage();
+
+		WaitForLiferayEvent.initializeLiferayEventLog();
 	}
 
 	macro getSiteId {
@@ -1101,7 +1112,10 @@ definition {
 			key_itemName = "Site Configuration",
 			locator1 = "ListGroupItem#ITEM_TEXT");
 
-		Button.click(button = "Change");
+		Click(
+			key_fieldLabel = "Parent Site",
+			key_text = "Change",
+			locator1 = "Button#ANY_WITH_LABEL");
 
 		var key_parentSiteName = "${parentSiteName}";
 

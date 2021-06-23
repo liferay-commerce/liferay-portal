@@ -1,24 +1,49 @@
 @import 'atlas-variables';
 
+$header-height: 64px;
+
 .lfr-layout-reports-panel {
 	&.open-admin-panel.sidenav-menu-slider {
 		visibility: visible;
-		width: 330px;
+		width: 320px;
+	}
+
+	.dropdown-menu__languages {
+		max-height: 295px;
+	}
+
+	.failing-element {
+		&:not(:first-child) {
+			margin-top: 8px;
+		}
+
+		&:not(:last-child) {
+			border-width: 0 0 1px;
+		}
+
+		border-width: 0;
+	}
+
+	.issue {
+		cursor: pointer;
+	}
+
+	.list-group {
+		margin-bottom: 0.5rem;
+	}
+
+	.section-label {
+		user-select: none;
+	}
+
+	.sidebar {
+		border-left: 1px solid $gray-300;
+		box-shadow: none;
 	}
 
 	.sidebar-header {
-		background-color: $dark;
-		color: $white;
-		height: 56px;
+		height: $header-height;
 		line-height: 32px;
-		padding-bottom: 8px;
-		padding-right: 9px;
-		padding-top: 8px;
-
-		.sidenav-close,
-		.sidenav-relaunch {
-			color: $white;
-		}
 	}
 
 	@media only screen and (min-width: 576px) {
@@ -33,7 +58,7 @@
 		left: 0;
 		position: absolute;
 		right: 0;
-		top: 56px;
+		top: $header-height;
 
 		.chart-loading-indicator {
 			position: absolute;
@@ -52,12 +77,4 @@
 	.text-truncate-reverse {
 		direction: rtl;
 	}
-
-	.list-group {
-		margin-bottom: 0.5rem;
-	}
-}
-
-.dropdown-menu__languages {
-	max-height: 295px;
 }

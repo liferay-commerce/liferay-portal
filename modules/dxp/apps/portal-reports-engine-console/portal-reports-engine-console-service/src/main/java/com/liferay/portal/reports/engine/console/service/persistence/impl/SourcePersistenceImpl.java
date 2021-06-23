@@ -3024,23 +3024,23 @@ public class SourcePersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (source.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				source.setCreateDate(now);
+				source.setCreateDate(date);
 			}
 			else {
-				source.setCreateDate(serviceContext.getCreateDate(now));
+				source.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!sourceModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				source.setModifiedDate(now);
+				source.setModifiedDate(date);
 			}
 			else {
-				source.setModifiedDate(serviceContext.getModifiedDate(now));
+				source.setModifiedDate(serviceContext.getModifiedDate(date));
 			}
 		}
 

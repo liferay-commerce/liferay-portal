@@ -19,8 +19,6 @@ definition {
 
 		Click(locator1 = "ACSegments#ADD_MEMBERS_BUTTON");
 
-		ACSegments.searchSegment(findSegment = "${searchTerm}");
-
 		Click(locator1 = "ACSegments#TABLE_CHECKBOX");
 
 		Click(locator1 = "ACSegments#ADD_BUTTON");
@@ -61,11 +59,41 @@ definition {
 	}
 
 	macro editDateCriterion {
-		var key_MonthInput = "${monthInput}";
-		var key_DayInput = "${dayInput}";
-		var key_YearInput = "${yearInput}";
+		var key_year = "${year}";
+		var key_month = "${month}";
+		var key_day = "${day}";
 
 		Click(locator1 = "ACSegments#CALENDAR_INPUT");
+
+		for (var n : list "${repetitionList}") {
+			var key_indexCalendar = "2";
+
+			Click(locator1 = "ACSegments#MONTH_AND_YEAR_CALENDAR");
+
+			Click(locator1 = "ACSegments#YEAR_CALENDAR_OPTION");
+
+			var key_indexCalendar = "1";
+
+			Click(locator1 = "ACSegments#MONTH_AND_YEAR_CALENDAR");
+
+			Click(locator1 = "ACSegments#MONTH_CALENDAR_OPTION");
+
+			Click(locator1 = "ACSegments#DAY_CALENDAR_OPTION");
+
+			var key_year = "${year2}";
+			var key_month = "${month2}";
+			var key_day = "${day2}";
+		}
+	}
+
+	macro editFormControlCriterion {
+		var key_Criterion = "${criterionName}";
+
+		var key_option = "${option}";
+
+		Click(locator1 = "ACSegments#FORM_CONTROL_CRITERION");
+
+		Click(locator1 = "ACSegments#FORM_CONTROL_CRITERION_OPTION");
 	}
 
 	macro editSegment {
@@ -91,22 +119,82 @@ definition {
 	}
 
 	macro editWebBehaviorCriterion {
-		var key_AtLeastMostOption = "${atLeastMost}";
+		if (isSet(activitiesOption)) {
+			Select(
+				key_indexField = "${indexField}",
+				locator1 = "ACSegments#ACTIVITIES_CRITERION",
+				value1 = "${activitiesOption}");
+		}
 
-		Click(locator1 = "ACSegments#SELECT_BUTTON");
+		if (isSet(searchTerm)) {
+			ACSegments.selectDocument(
+				documentTitle = "${searchTerm}",
+				indexField = "${indexField}");
+		}
 
-		ACSegments.searchSegment(findSegment = "${searchTerm}");
+		if (isSet(atLeastMost)) {
+			Select(
+				key_indexField = "${indexField}",
+				locator1 = "ACSegments#OCCURENCE_SELECT",
+				value1 = "${atLeastMost}");
+		}
 
-		Click(locator1 = "ACSegments#TABLE_CHECKBOX");
+		if (isSet(occurenceNumber)) {
+			ACSegments.setOccurence(occurenceNumber = "${occurenceNumber}");
+		}
 
-		Click(locator1 = "ACSegments#ADD_BUTTON");
-
-		Select(
-			locator1 = "ACSegments#OPTION_SELECT",
-			value1 = "${atLeastMost}");
+		if (isSet(timeOption) || isSet(timePeriod)) {
+			ACSegments.editWebBehaviorTimeCriterion(
+				day = "${day}",
+				day2 = "${day2}",
+				indexField = "${indexField}",
+				month = "${month}",
+				month2 = "${month2}",
+				timeOption = "${timeOption}",
+				timePeriod = "${timePeriod}",
+				year = "${year}",
+				year2 = "${year2}");
+		}
 	}
 
-	macro goToSidebarAttrributes {
+	macro editWebBehaviorTimeCriterion {
+		if (isSet(timeOption)) {
+			Select(
+				key_indexField = "${indexField}",
+				locator1 = "ACSegments#TIME_INPUT_CRITERION_CONJUNCTION",
+				value1 = "${timeOption}");
+		}
+
+		if (isSet(timePeriod)) {
+			if ("${timeOption}" == "since" || !(isSet(timeOption))) {
+				Select(
+					key_indexField = "${indexField}",
+					locator1 = "ACSegments#TIME_INPUT_CRITERION",
+					value1 = "${timePeriod}");
+			}
+		}
+
+		if ("${timeOption}" == "after" || "${timeOption}" == "before" || "${timeOption}" == "on") {
+			ACSegments.editDateCriterion(
+				day = "${day}",
+				month = "${month}",
+				repetitionList = "1",
+				year = "${year}");
+		}
+
+		if ("${timeOption}" == "between") {
+			ACSegments.editDateCriterion(
+				day = "${day}",
+				day2 = "${day2}",
+				month = "${month}",
+				month2 = "${month2}",
+				repetitionList = "1,2",
+				year = "${year}",
+				year2 = "${year2}");
+		}
+	}
+
+	macro goToSidebarAttributes {
 		var key_Criterion = "${criterion}";
 
 		Click(locator1 = "ACSegments#CRITERION_TYPE_DROPDOWN");
@@ -117,7 +205,7 @@ definition {
 	}
 
 	macro includeAnonymous {
-		Click(locator1 = "ACSegments#ANONYMOUS_SWITCH");
+		Check.checkToggleSwitch(locator1 = "ACSegments#ANONYMOUS_SWITCH");
 	}
 
 	macro nameSegment {
@@ -143,35 +231,41 @@ definition {
 	}
 
 	macro searchSegment {
-		var key_SearchTerm = "${searchTerm}";
+		var searchTerm = "${findSegment}";
 
 		Type(
 			locator1 = "ACSegments#SEARCH_SEGMENT",
 			value1 = "${searchTerm}");
+
+		KeyPress(
+			locator1 = "ACSettings#SEARCH_BAR",
+			value1 = "\ENTER");
 	}
 
 	macro selectDocument {
 		var key_indexField = "${indexField}";
 
-		var key_titleName = "${titleName}";
+		var key_TableMember = "${documentTitle}";
 
 		Click(locator1 = "ACSegments#SELECT_BUTTON");
 
-		Click(locator1 = "ACSegments#SELECT_DOCUMENT");
+		ACSegments.searchSegment(findSegment = "${documentTitle}");
+
+		Click(locator1 = "ACSegments#TABLE_CHECKBOX");
 
 		Click(locator1 = "ACSegments#ADD_BUTTON");
-	}
-
-	macro selectSegmentProfile {
-		var key_segmentProfile = "${segmentProfile}";
-
-		Click(locator1 = "ACSegments#SELECT_SEGMENT_PROFILE");
 	}
 
 	macro selectSegmentType {
 		var key_SegmentType = "${segmentType}";
 
 		Click(locator1 = "ACSegments#SELECT_SEGMENT_TYPE");
+	}
+
+	macro setOccurence {
+		Type(
+			locator1 = "ACSegments#OCCURENCE_INPUT",
+			value1 = "${occurenceNumber}");
 	}
 
 	macro viewActivePageCreationModel {
@@ -184,6 +278,14 @@ definition {
 		AssertTextPresent(
 			locator1 = "ACSegments#DELETED_CRITERIA",
 			value1 = "Drag and drop criterion from the right to add rules.");
+	}
+
+	macro viewDeletedSegmentName {
+		var key_segmentName = "${searchTerm}";
+
+		ACSegments.searchSegment(findSegment = "${searchTerm}");
+
+		AssertElementNotPresent(locator1 = "ACSegments#SELECT_SEGMENT");
 	}
 
 	macro viewDuplicatedCriteria {
@@ -203,9 +305,7 @@ definition {
 	}
 
 	macro viewIncludeAnonymousLabel {
-		AssertTextPresent(
-			locator1 = "ACSegments#ANONYMOUS_LABEL",
-			value1 = "Include Anonymous");
+		AssertElementPresent(locator1 = "ACSegments#ANONYMOUS_LABEL");
 	}
 
 	macro viewSegmentComposition {
@@ -237,6 +337,82 @@ definition {
 		AssertTextEquals(
 			locator1 = "ACSegments#SEGMENT_CRITERIA_CRITERIA_VALUE",
 			value1 = "${criteriaValue}");
+	}
+
+	macro viewSegmentCriteriaWebBehavior {
+		if (isSet(activitiesOption)) {
+			AssertTextEquals(
+				key_index = "1",
+				locator1 = "ACSegments#SEGMENT_CRITERIA_WEB_BEHAVIOR_SPAN",
+				value1 = "${activitiesOption}");
+		}
+
+		if (isSet(searchTerm)) {
+			AssertTextEquals(
+				key_index = "1",
+				locator1 = "ACSegments#SEGMENT_CRITERIA_WEB_BEHAVIOR_B",
+				value1 = "${searchTerm}");
+		}
+
+		if (isSet(atLeastMost)) {
+			AssertTextEquals(
+				key_index = "3",
+				locator1 = "ACSegments#SEGMENT_CRITERIA_WEB_BEHAVIOR_SPAN",
+				value1 = "${atLeastMost}");
+		}
+
+		if (isSet(occurenceNumber)) {
+			AssertTextEquals(
+				key_index = "2",
+				locator1 = "ACSegments#SEGMENT_CRITERIA_WEB_BEHAVIOR_B",
+				value1 = "${occurenceNumber}");
+		}
+
+		if (isSet(timeOption)) {
+			AssertTextEquals(
+				key_index = "5",
+				locator1 = "ACSegments#SEGMENT_CRITERIA_WEB_BEHAVIOR_SPAN",
+				value1 = "${timeOption}");
+		}
+
+		if (isSet(timePeriod)) {
+			AssertTextEquals(
+				key_index = "3",
+				locator1 = "ACSegments#SEGMENT_CRITERIA_WEB_BEHAVIOR_B",
+				value1 = "${timePeriod}");
+		}
+
+		if (isSet(date)) {
+			AssertTextEquals(
+				key_index = "3",
+				locator1 = "ACSegments#SEGMENT_CRITERIA_WEB_BEHAVIOR_B",
+				value1 = "${date}");
+		}
+	}
+
+	macro viewSegmentMembershipLegendNumbers {
+		AssertTextEquals(
+			key_memberType = "Known Members:",
+			locator1 = "ACSegments#SEGMENT_MEMBERSHIP_LEGEND",
+			value1 = "${knownNumber}");
+
+		AssertTextEquals(
+			key_memberType = "Anonymous Members:",
+			locator1 = "ACSegments#SEGMENT_MEMBERSHIP_LEGEND",
+			value1 = "${anonymousNumber}");
+
+		AssertTextEquals(
+			key_memberType = "Total Members:",
+			locator1 = "ACSegments#SEGMENT_MEMBERSHIP_LEGEND",
+			value1 = "${totalNumber}");
+	}
+
+	macro viewSegmentName {
+		var key_segmentName = "${searchTerm}";
+
+		ACSegments.searchSegment(findSegment = "${searchTerm}");
+
+		AssertElementPresent(locator1 = "ACSegments#SELECT_SEGMENT");
 	}
 
 	macro viewSegmentProfileCards {

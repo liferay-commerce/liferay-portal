@@ -129,7 +129,7 @@ definition {
 	@priority = "4"
 	@refactorneeded
 	test DocumentCanBeRepublishedAfterCheckout {
-		property custom.properties = "jsonws.web.service.paths.excludes=";
+		property custom.properties = "jsonws.web.service.paths.excludes=${line.separator}tunneling.servlet.shared.secret=1234567890123456${line.separator}auth.verifier.TunnelAuthVerifier.hosts.allowed=";
 		property test.name.skip.portal.instance = "RemoteStagingDM#DocumentCanBeRepublishedAfterCheckout";
 
 		Navigator.gotoSitePage(
@@ -325,7 +325,7 @@ definition {
 			baseURL = "http://localhost:9080",
 			siteURLKey = "remote-site");
 
-		DMNavigator.gotoDocumentCP(dmDocumentTitle = "DM Document Title");
+		DMNavigator.gotoDocumentCP(dmDocumentTitle = "DM Document Title Edit");
 
 		DMDocument.viewCP(
 			dmDocumentDescription = "DM Document Description Edit",
@@ -935,12 +935,14 @@ definition {
 	test ViewWebContentWithDeletedImage {
 		property test.name.skip.portal.instance = "RemoteStagingDM#ViewWebContentWithDeletedImage";
 
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "site-name");
-
-		DMDocument.addCP(
+		JSONDocument.addFileWithUploadedFile(
 			dmDocumentDescription = "DM Document Description",
-			dmDocumentFile = "Document_2.jpg",
-			dmDocumentTitle = "Document_2.jpg");
+			dmDocumentTitle = "Document_2.jpg",
+			groupName = "Site Name",
+			mimeType = "image/jpeg",
+			sourceFileName = "Document_2.jpg");
+
+		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "site-name");
 
 		Staging.publishViaSAP(
 			confirmMessage = "Are you sure you want to publish the selected document?",
@@ -1045,12 +1047,14 @@ definition {
 	test ViewWebContentWithRepublishedImage {
 		property test.name.skip.portal.instance = "RemoteStagingDM#ViewWebContentWithRepublishedImage";
 
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "site-name");
-
-		DMDocument.addCP(
+		JSONDocument.addFileWithUploadedFile(
 			dmDocumentDescription = "DM Document Description",
-			dmDocumentFile = "Document_2.jpg",
-			dmDocumentTitle = "Document_2.jpg");
+			dmDocumentTitle = "Document_2.jpg",
+			groupName = "Site Name",
+			mimeType = "image/jpeg",
+			sourceFileName = "Document_2.jpg");
+
+		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "site-name");
 
 		Staging.publishViaSAP(
 			confirmMessage = "Are you sure you want to publish the selected document?",

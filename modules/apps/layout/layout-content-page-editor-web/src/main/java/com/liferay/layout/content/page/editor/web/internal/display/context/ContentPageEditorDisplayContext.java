@@ -353,10 +353,6 @@ public class ContentPageEditorDisplayContext {
 					return layout.isDraft();
 				}
 			).put(
-				"dropdownWidgetTopperEnabled",
-				_ffLayoutContentPageEditorConfiguration.
-					dropdownWidgetTopperEnabled()
-			).put(
 				"duplicateItemURL",
 				getFragmentEntryActionURL(
 					"/layout_content_page_editor/duplicate_item")
@@ -488,17 +484,17 @@ public class ContentPageEditorDisplayContext {
 			).put(
 				"paddingOptions",
 				() -> {
-					Set<Map.Entry<Integer, Integer>> entrySet =
+					Set<Map.Entry<String, String>> entrySet =
 						PaddingConverter.externalToInternalValuesMap.entrySet();
 
 					List<Map<String, String>> list = new ArrayList<>();
 
-					for (Map.Entry<Integer, Integer> entry : entrySet) {
+					for (Map.Entry<String, String> entry : entrySet) {
 						list.add(
 							HashMapBuilder.put(
-								"label", String.valueOf(entry.getKey())
+								"label", entry.getKey()
 							).put(
-								"value", String.valueOf(entry.getValue())
+								"value", entry.getValue()
 							).build());
 					}
 
@@ -531,6 +527,10 @@ public class ContentPageEditorDisplayContext {
 				"publishURL", getPublishURL()
 			).put(
 				"redirectURL", _getRedirect()
+			).put(
+				"relatedItemCollectionProvidersEnabled",
+				_ffLayoutContentPageEditorConfiguration.
+					relatedItemCollectionProvidersEnabled()
 			).put(
 				"renderFragmentEntryURL",
 				getResourceURL(
@@ -629,7 +629,9 @@ public class ContentPageEditorDisplayContext {
 			).put(
 				"pageContents",
 				ContentUtil.getPageContentsJSONArray(
-					httpServletRequest, themeDisplay.getPlid())
+					httpServletRequest,
+					PortalUtil.getHttpServletResponse(_renderResponse),
+					themeDisplay.getPlid())
 			).put(
 				"permissions",
 				HashMapBuilder.<String, Object>put(

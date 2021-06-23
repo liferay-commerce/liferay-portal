@@ -6777,23 +6777,24 @@ public class CPInstancePersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (cpInstance.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				cpInstance.setCreateDate(now);
+				cpInstance.setCreateDate(date);
 			}
 			else {
-				cpInstance.setCreateDate(serviceContext.getCreateDate(now));
+				cpInstance.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!cpInstanceModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				cpInstance.setModifiedDate(now);
+				cpInstance.setModifiedDate(date);
 			}
 			else {
-				cpInstance.setModifiedDate(serviceContext.getModifiedDate(now));
+				cpInstance.setModifiedDate(
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

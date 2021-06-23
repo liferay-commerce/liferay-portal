@@ -2276,7 +2276,7 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 						String group = excludeRule.getGroup();
 						String name = excludeRule.getModule();
 
-						File file;
+						File file = null;
 
 						if (_isTaglibDependency(group, name)) {
 							String fileName = name + ".jar";
@@ -2298,7 +2298,14 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 						else if (_isUtilTaglibDependency(group, name)) {
 							file = new File(
 								utilTaglibDependencyDir,
-								"WEB-INF/lib/util-taglib.jar");
+								"WEB-INF/shielded-container-lib" +
+									"/util-taglib.jar");
+
+							if (!file.exists()) {
+								file = new File(
+									utilTaglibDependencyDir,
+									"WEB-INF/lib/util-taglib.jar");
+							}
 
 							if (!file.exists()) {
 								throw new GradleException(

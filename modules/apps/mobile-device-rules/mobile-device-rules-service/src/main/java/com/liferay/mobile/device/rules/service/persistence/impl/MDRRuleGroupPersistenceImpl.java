@@ -3026,24 +3026,24 @@ public class MDRRuleGroupPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (mdrRuleGroup.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				mdrRuleGroup.setCreateDate(now);
+				mdrRuleGroup.setCreateDate(date);
 			}
 			else {
-				mdrRuleGroup.setCreateDate(serviceContext.getCreateDate(now));
+				mdrRuleGroup.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!mdrRuleGroupModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				mdrRuleGroup.setModifiedDate(now);
+				mdrRuleGroup.setModifiedDate(date);
 			}
 			else {
 				mdrRuleGroup.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

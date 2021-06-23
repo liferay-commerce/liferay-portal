@@ -16,7 +16,6 @@ import BasicInformation from './BasicInformation';
 import Chart from './Chart';
 import TotalCount from './TotalCount';
 import TrafficSources from './TrafficSources';
-import Translation from './Translation';
 
 export default function Main({
 	author,
@@ -33,20 +32,15 @@ export default function Main({
 	viewURLs,
 }) {
 	return (
-		<div className="c-p-3">
+		<div className="pb-3 px-3">
 			<BasicInformation
 				author={author}
 				canonicalURL={canonicalURL}
+				onSelectedLanguageClick={onSelectedLanguageClick}
 				publishDate={pagePublishDate}
 				title={pageTitle}
+				viewURLs={viewURLs}
 			/>
-
-			<div className="mt-4">
-				<Translation
-					onSelectedLanguageClick={onSelectedLanguageClick}
-					viewURLs={viewURLs}
-				/>
-			</div>
 
 			<h5 className="mt-3 sheet-subtitle">
 				{Liferay.Language.get('engagement')}

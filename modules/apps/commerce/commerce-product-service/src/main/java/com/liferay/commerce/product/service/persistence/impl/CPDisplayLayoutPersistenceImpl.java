@@ -4123,25 +4123,25 @@ public class CPDisplayLayoutPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (cpDisplayLayout.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				cpDisplayLayout.setCreateDate(now);
+				cpDisplayLayout.setCreateDate(date);
 			}
 			else {
 				cpDisplayLayout.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!cpDisplayLayoutModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				cpDisplayLayout.setModifiedDate(now);
+				cpDisplayLayout.setModifiedDate(date);
 			}
 			else {
 				cpDisplayLayout.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

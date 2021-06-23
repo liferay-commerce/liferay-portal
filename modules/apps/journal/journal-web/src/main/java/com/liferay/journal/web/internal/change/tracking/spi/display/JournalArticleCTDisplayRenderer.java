@@ -62,9 +62,10 @@ public class JournalArticleCTDisplayRenderer
 			JournalArticle journalArticle)
 		throws Exception {
 
-		return _getContent(
-			liferayPortletRequest, liferayPortletResponse, journalArticle,
-			journalArticle.getDefaultLanguageId());
+		return getJournalArticleContent(
+			journalArticle, _journalArticleLocalService,
+			journalArticle.getDefaultLanguageId(), liferayPortletRequest,
+			liferayPortletResponse);
 	}
 
 	@Override
@@ -113,10 +114,10 @@ public class JournalArticleCTDisplayRenderer
 			JournalArticle previousJournalArticle)
 		throws Exception {
 
-		return _getContent(
-			liferayPortletRequest, liferayPortletResponse,
-			previousJournalArticle,
-			currentJournalArticle.getDefaultLanguageId());
+		return getJournalArticleContent(
+			previousJournalArticle, _journalArticleLocalService,
+			currentJournalArticle.getDefaultLanguageId(), liferayPortletRequest,
+			liferayPortletResponse);
 	}
 
 	@Override
@@ -160,6 +161,33 @@ public class JournalArticleCTDisplayRenderer
 	@Override
 	public boolean isVersioned() {
 		return true;
+	}
+
+	protected static String getJournalArticleContent(
+			JournalArticle journalArticle,
+			JournalArticleLocalService journalArticleLocalService,
+			String languageId, LiferayPortletRequest liferayPortletRequest,
+			LiferayPortletResponse liferayPortletResponse)
+		throws PortalException {
+
+		PortletRequestModel portletRequestModel = new PortletRequestModel(
+			liferayPortletRequest, liferayPortletResponse);
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)liferayPortletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		if (!journalArticleLocalService.isRenderable(
+				journalArticle, portletRequestModel, themeDisplay)) {
+
+			throw new CompareVersionsException(journalArticle.getVersion());
+		}
+
+		JournalArticleDisplay journalArticleDisplay =
+			journalArticleLocalService.getArticleDisplay(
+				journalArticle, null, Constants.VIEW, languageId, 1,
+				portletRequestModel, themeDisplay);
+
+		return journalArticleDisplay.getContent();
 	}
 
 	@Override
@@ -221,32 +249,6 @@ public class JournalArticleCTDisplayRenderer
 		).display(
 			"content", journalArticleDisplay.getContent(), false
 		);
-	}
-
-	private String _getContent(
-			LiferayPortletRequest liferayPortletRequest,
-			LiferayPortletResponse liferayPortletResponse,
-			JournalArticle journalArticle, String languageId)
-		throws Exception {
-
-		PortletRequestModel portletRequestModel = new PortletRequestModel(
-			liferayPortletRequest, liferayPortletResponse);
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)liferayPortletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
-		if (!_journalArticleLocalService.isRenderable(
-				journalArticle, portletRequestModel, themeDisplay)) {
-
-			throw new CompareVersionsException(journalArticle.getVersion());
-		}
-
-		JournalArticleDisplay journalArticleDisplay =
-			_journalArticleLocalService.getArticleDisplay(
-				journalArticle, null, Constants.VIEW, languageId, 1,
-				portletRequestModel, themeDisplay);
-
-		return journalArticleDisplay.getContent();
 	}
 
 	@Reference

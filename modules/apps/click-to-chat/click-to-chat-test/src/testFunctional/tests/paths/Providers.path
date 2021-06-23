@@ -2,11 +2,13 @@
 <head>
 <title>Providers</title>
 </head>
+
 <body>
-<table cellpadding="1" cellspacing="1" border="1">
+<table border="1" cellpadding="1" cellspacing="1">
 <thead>
 <tr><td rowspan="1" colspan="3">Providers</td></tr>
 </thead>
+
 <tbody>
 <tr>
 	<td>CHAT_CHATWOOT</td>
@@ -50,7 +52,7 @@
 </tr>
 <tr>
 	<td>CHAT_TIDIO</td>
-	<td>//body[contains(@class,'awesome-iframe')]</td>
+	<td>//iframe[contains(@id,'tidio-chat-code')]</td>
 	<td></td>
 </tr>
 <tr>

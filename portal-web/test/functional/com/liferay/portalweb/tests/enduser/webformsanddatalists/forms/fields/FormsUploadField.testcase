@@ -1,0 +1,714 @@
+@component-name = "portal-web-forms-and-data-lists"
+definition {
+
+	property custom.properties = "minifier.enabled=true";
+	property portal.release = "true";
+	property portal.upstream = "true";
+	property testray.main.component.name = "Forms";
+
+	setUp {
+		TestCase.setUpPortalInstance();
+
+		User.firstLoginPG();
+	}
+
+	tearDown {
+		var testPortalInstance = PropsUtil.get("test.portal.instance");
+
+		if ("${testPortalInstance}" == "true") {
+			PortalInstances.tearDownCP();
+		}
+		else {
+			Navigator.openURL();
+
+			ProductMenu.gotoPortlet(
+				category = "Content &amp; Data",
+				portlet = "Forms");
+
+			FormsAdmin.teardownForms();
+
+			Page.tearDownCP();
+		}
+	}
+
+	@description = "Verify that a user can upload up to 5 files when the Repeatable option is enabled"
+	@priority = "3"
+	test AllowsFiveUploadsWhenRepeatableIsEnabled {
+		property forms.functional = "true";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Upload");
+
+		Form.gotoAdvancedTab();
+
+		FormFields.enableSwitcher(fieldName = "repeatable");
+
+		FormFields.viewRepeatableFieldDuplicateVisible();
+
+		Form.save();
+
+		Form.publishForm();
+
+		FormsAdminNavigator.gotoPublishedForm();
+
+		FormFields.addRepeatableField(
+			fieldName = "Upload",
+			repeatableFieldNumber = "1");
+
+		FormFields.addRepeatableField(
+			fieldName = "Upload",
+			repeatableFieldNumber = "1");
+
+		FormFields.addRepeatableField(
+			fieldName = "Upload",
+			repeatableFieldNumber = "1");
+
+		FormFields.addRepeatableField(
+			fieldName = "Upload",
+			repeatableFieldNumber = "1");
+
+		FormFields.viewRepeatableFieldDuplicateHidden();
+
+		FormFields.viewRepeatableFields(
+			fieldName = "Upload",
+			rows = "1,2,3,4,5");
+
+		FormFields.selectFileUpload(
+			fieldName = "Upload",
+			fileName = "Document_1.docx",
+			navTab = "Documents and Media",
+			rowNumber = "1");
+
+		FormFields.selectFileUpload(
+			fieldName = "Upload",
+			fileName = "Document_1.pdf",
+			navTab = "Documents and Media",
+			rowNumber = "2");
+
+		FormFields.selectFileUpload(
+			fieldName = "Upload",
+			fileName = "Document_1.pptx",
+			navTab = "Documents and Media",
+			rowNumber = "3");
+
+		FormFields.selectFileUpload(
+			fieldName = "Upload",
+			fileName = "Document_1.xlsx",
+			navTab = "Documents and Media",
+			rowNumber = "4");
+
+		FormFields.selectFileUpload(
+			fieldName = "Upload",
+			fileName = "Document_1.jpg",
+			navTab = "Documents and Media",
+			rowNumber = "5");
+
+		FormPortlet.submit();
+
+		FormPortlet.viewSuccessPage(
+			successPageDescription = "Your information was successfully received. Thank you for filling out the form.",
+			successPageTitle = "Thank you.");
+	}
+
+	@description = "Verify that, by default, guest users cannot upload files"
+	@priority = "5"
+	test ByDefaultCannotBeUsedByGuestUser {
+		property forms.functional = "true";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Upload");
+
+		Form.save();
+
+		Form.publishForm();
+
+		FormsAdminNavigator.gotoPublishCopyURLLink();
+
+		var publishedFormPublicURL = Form.getPublishedFormPublicURL(
+			publishedFormPublicURL = "${publishedFormPublicURL}"
+		);
+
+		User.logoutPG();
+
+		Navigator.openSpecificURL(url = "${publishedFormPublicURL}");
+
+		FormPortlet.viewValidationErrorMessage(validationErrorMessage = "You need to be signed in to edit this field.");
+
+		AssertElementPresent(locator1 = "FormFields#SELECT_UPLOAD_FIELD_DISABLE");
+	}
+
+	@description = "Verify that a file added to the Upload field can be removed by clicking the Clear button"
+	@priority = "5"
+	test CanBeCleared {
+		property forms.functional = "true";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Upload",
+			formPageNumber = "0");
+
+		Form.save();
+
+		Form.publishForm();
+
+		FormsAdminNavigator.gotoPublishedForm();
+
+		ItemSelector.gotoItemSelectorViaSelectButton();
+
+		ItemSelector.uploadFile(
+			navTab = "Documents and Media",
+			uploadFileName = "Document_1.docx");
+
+		FormFields.viewTextValue(
+			fieldName = "",
+			fieldValue = "Document_1.docx");
+
+		FormFields.clearUploadField();
+	}
+
+	@description = "Verify that an Upload Field can be created"
+	@priority = "5"
+	test CanBeCreated {
+		property forms.functional = "true";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Upload");
+
+		Form.save();
+
+		Click(locator1 = "Icon#BACK");
+
+		FormsAdminNavigator.gotoEditFormByName(formName = "Form 1");
+
+		AssertElementPresent(
+			key_fieldLabel = "Upload",
+			locator1 = "FormFields#LABEL");
+	}
+
+	@description = "Verify that an Upload Field can be deleted"
+	@priority = "5"
+	test CanBeDeleted {
+		property forms.functional = "true";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Upload");
+
+		Form.closeSidebar();
+
+		Form.addTextField(fieldPositionNumber = "1");
+
+		Form.closeSidebar();
+
+		FormsAdminNavigator.gotoDeleteField(fieldName = "Upload");
+
+		FormFields.viewDeletedFieldLabel(fieldName = "Upload");
+
+		Form.save();
+
+		FormsAdminNavigator.gotoBack();
+
+		FormsAdminNavigator.gotoEditFormByName(formName = "Form1");
+
+		FormViewBuilder.validateFieldLabelIsNotShown(fieldLabel = "Upload");
+	}
+
+	@description = "Verify that an Upload Field can be duplicated"
+	@priority = "5"
+	test CanBeDuplicated {
+		property forms.functional = "true";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Upload",
+			formPageNumber = "0");
+
+		FormFields.editHelpText(
+			fieldHelpText = "Help Text Test",
+			fieldName = "tip",
+			key_fieldLabel = "");
+
+		FormFields.duplicateField();
+
+		FormViewBuilder.validateFieldLabel(fieldLabel = "Upload");
+
+		FormViewBuilder.validateFieldLabel(fieldLabel = "Copy of Upload");
+
+		FormViewBuilder.assertHelpTextPresent(
+			fieldName = "Upload",
+			fieldValue = "Help Text Test");
+
+		FormViewBuilder.assertHelpTextPresent(
+			fieldName = "Copy of Upload",
+			fieldValue = "Help Text Test");
+	}
+
+	@description = "Verify that an Upload Field can be edited"
+	@priority = "5"
+	test CanBeEdited {
+		property forms.functional = "true";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Upload");
+
+		Form.save();
+
+		Click(locator1 = "Icon#BACK");
+
+		FormsAdminNavigator.gotoEditFormByName(formName = "Form 1");
+
+		Click(
+			key_name = "Upload",
+			locator1 = "FormFields#FIELD_TARGET_LABEL");
+
+		Form.editFieldLabelMetal(fieldValue = "Test Upload");
+
+		Form.save();
+
+		Click(locator1 = "Icon#BACK");
+
+		FormsAdminNavigator.gotoEditFormByName(formName = "Form 1");
+
+		AssertElementPresent(
+			key_name = "Test Upload",
+			locator1 = "FormFields#FIELD_TARGET_LABEL");
+
+		FormViewBuilder.validateFieldLabelIsNotShown(fieldLabel = "Upload");
+	}
+
+	@description = "Verify that an Upload Field can be required"
+	@priority = "5"
+	test CanBeRequired {
+		property forms.functional = "true";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Upload");
+
+		FormViewBuilder.setFieldRequired();
+
+		Form.save();
+
+		Form.publishForm();
+
+		FormsAdminNavigator.gotoPublishedForm();
+
+		FormViewBuilder.validateFieldLabelRequired(fieldLabel = "Upload");
+
+		FormPortlet.clickSubmit();
+
+		FormPortlet.viewValidationErrorMessage(validationErrorMessage = "This field is required.");
+
+		ItemSelector.gotoItemSelectorViaSelectButton();
+
+		ItemSelector.uploadFile(
+			navTab = "Documents and Media",
+			uploadFileName = "Document_1.docx");
+
+		FormPortlet.waitForValidationErrorNotPresent(validationErrorMessage = "This field is required.");
+
+		FormPortlet.submitSuccessfully();
+
+		FormPortlet.viewSuccessPage(
+			successPageDescription = "Your information was successfully received. Thank you for filling out the form.",
+			successPageTitle = "Thank you.");
+	}
+
+	@description = "Verify that an Upload Field can be set to repeatable"
+	@priority = "5"
+	test CanBeSetToRepeatable {
+		property forms.functional = "quarantine";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Upload",
+			formPageNumber = "0");
+
+		Form.gotoAdvancedTab();
+
+		FormFields.enableSwitcher(fieldName = "Repeatable");
+
+		FormFields.viewFieldRepeatableButton(
+			fieldName = "Upload",
+			key_repeatableFieldsNumber = "1");
+
+		Form.save();
+
+		Form.publishForm();
+
+		FormsAdminNavigator.gotoPublishedForm();
+
+		FormFields.addRepeatableField(
+			key_fieldName = "Upload",
+			key_repeatableFieldsNumber = "1");
+
+		FormFields.viewFieldRepeatableButton(
+			fieldName = "Upload",
+			key_repeatableFieldsNumber = "1,2");
+
+		ItemSelector.gotoItemSelectorViaSelectButton();
+
+		ItemSelector.uploadFile(
+			navTab = "Documents and Media",
+			uploadFileName = "Document_1.docx");
+
+		ItemSelector.gotoItemSelectorViaSelectButtonByIndex(index = "2");
+
+		ItemSelector.uploadFile(
+			navTab = "Documents and Media",
+			uploadFileName = "Document_1.docx");
+
+		FormPortlet.submitSuccessfully();
+	}
+
+	@description = "Verify that changes to the Field can be canceled"
+	@ignore = "Test Stub"
+	@priority = "4"
+	test ChangesCanBeCanceled {
+		property forms.functional = "false";
+		property portal.acceptance = "false";
+
+		// TODO LPS-133218 ChangesCanBeCanceled pending implementation
+
+	}
+
+	@description = "Verify that guest users can only access upload fields that have guest user uploads enabled"
+	@priority = "5"
+	test GuestUserCanOnlyAccessEnabledFields {
+		property forms.functional = "true";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Upload");
+
+		var uploadFieldName = FormFields.getFieldName();
+
+		Form.editFieldLabelMetal(fieldValue = "Guest Upload");
+
+		FormFields.enableSwitcher(fieldName = "allowGuestUsers");
+
+		FormViewBuilder.closeSidebar();
+
+		Form.gotoAddField(
+			fieldPositionNumber = "1",
+			fieldType = "Upload");
+
+		Form.save();
+
+		Form.publishForm();
+
+		FormsAdminNavigator.gotoPublishCopyURLLink();
+
+		var publishFormURL = Form.getPublishedFormPublicURL();
+
+		User.logoutPG();
+
+		Navigator.openSpecificURL(url = "${publishFormURL}");
+
+		FormFields.viewFieldValidationErrorMessage(
+			fieldName = "Upload",
+			fieldValidationErrorMessage = "You need to be signed in to edit this field.");
+
+		AssertElementPresent(locator1 = "FormFields#SELECT_UPLOAD_FIELD_DISABLE");
+
+		UploadCommonFile.uploadCommonFileHiddenNoMouseOver(
+			key_fieldName = "${uploadFieldName}",
+			locator1 = "FormFields#UPLOAD_FIELD",
+			value1 = "Document_1.jpg");
+
+		FormPortlet.submit();
+
+		FormPortlet.viewSuccessPage(
+			successPageDescription = "Your information was successfully received. Thank you for filling out the form.",
+			successPageTitle = "Thank you.");
+	}
+
+	@description = "Verify that a help text can be added to an Upload Field"
+	@priority = "5"
+	test HelpTextCanBeAdded {
+		property forms.functional = "true";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Upload");
+
+		FormViewBuilder.setFieldHelpText(fieldLabel = "Test Help Text");
+
+		FormViewBuilder.assertHelpTextPresent(
+			fieldName = "Upload",
+			fieldValue = "Test Help Text");
+
+		Form.save();
+
+		Form.publishForm();
+
+		FormsAdminNavigator.gotoPublishedForm();
+
+		FormViewBuilder.assertHelpTextPresent(
+			fieldName = "Upload",
+			fieldValue = "Test Help Text");
+
+		ItemSelector.gotoItemSelectorViaSelectButton();
+
+		ItemSelector.uploadFile(
+			navTab = "Documents and Media",
+			uploadFileName = "Document_1.docx");
+
+		FormPortlet.submitSuccessfullyAndViewSuccessPage();
+	}
+
+	@description = "Verify that the Field Label can be edited"
+	@priority = "5"
+	test LabelCanBeEdited {
+		property forms.functional = "true";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Upload",
+			formPageNumber = "0");
+
+		Form.editFieldLabelMetal(fieldValue = "Test Upload");
+
+		Form.save();
+
+		Form.publishForm();
+
+		FormsAdminNavigator.gotoPublishedForm();
+
+		FormFields.viewRadioLabel(
+			fieldLabel = "Test Upload",
+			fieldName = "Test Upload");
+	}
+
+	@description = "Veriy that the Field Label can be hidden"
+	@ignore = "Test Stub"
+	@priority = "5"
+	test LabelCanBeHidden {
+		property forms.functional = "false";
+		property portal.acceptance = "false";
+
+		// TODO LPS-133220 LabelCanBeHidden pending implementation
+
+	}
+
+	@description = "Verify that the Field Reference can be Edited"
+	@priority = "5"
+	test ReferenceCanBeEdited {
+		property forms.functional = "true";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Upload");
+
+		Form.gotoAdvancedTab();
+
+		Form.editFieldReferenceMetal(fieldValue = "Upload1234");
+
+		Form.save();
+
+		FormsAdminNavigator.gotoBack();
+
+		Click(
+			key_formName = "Form 1",
+			locator1 = "FormsAdmin#FORMS_TABLE_NAME");
+
+		Click(
+			key_name = "Upload",
+			locator1 = "FormFields#FIELD_TARGET_LABEL");
+
+		Form.gotoAdvancedTab();
+
+		AssertElementPresent(
+			key_fieldName = "",
+			key_fieldValue = "Upload1234",
+			locator1 = "Translation#TARGET_LANGUAGE_FIELD");
+	}
+
+	@description = "Verify that guest users cannot see files submitted by other users"
+	@priority = "5"
+	test SubmittedFilesCannotBeSeenByGuestUsers {
+		property forms.functional = "true";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Upload");
+
+		FormFields.enableSwitcher(fieldName = "Allow Guest Users to Send Files");
+
+		Form.save();
+
+		Form.publishForm();
+
+		FormsAdminNavigator.gotoPublishCopyURLLink();
+
+		var publishedFormPublicURL = Form.getPublishedFormPublicURL(
+			publishedFormPublicURL = "${publishedFormPublicURL}"
+		);
+
+		FormsAdminNavigator.gotoPublishedForm();
+
+		ItemSelector.gotoItemSelectorViaSelectButton();
+
+		ItemSelector.uploadFile(
+			navTab = "Documents and Media",
+			uploadFileName = "Document_1.docx");
+
+		FormPortlet.submitSuccessfully();
+
+		FormPortlet.viewSuccessPage(
+			successPageDescription = "Your information was successfully received. Thank you for filling out the form.",
+			successPageTitle = "Thank you.");
+
+		Navigator.openURL();
+
+		User.logoutPG();
+
+		Navigator.openSpecificURL(url = "${publishedFormPublicURL}");
+
+		ItemSelector.gotoItemSelectorViaSelectButtonByGuest(fieldName = "Upload");
+
+		AssertElementNotPresent(locator1 = "IFrame#MODAL_IFRAME");
+	}
+
+	@description = "Verify that the Field Type can be changed"
+	@ignore = "Test Stub"
+	@priority = "5"
+	test TypeCanBeChanged {
+		property forms.functional = "false";
+		property portal.acceptance = "false";
+
+		// TODO LPS-133217 TypeCanBeChanged pending implementation
+
+	}
+
+}

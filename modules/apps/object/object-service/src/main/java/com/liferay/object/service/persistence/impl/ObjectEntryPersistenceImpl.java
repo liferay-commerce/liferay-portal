@@ -2211,24 +2211,24 @@ public class ObjectEntryPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (objectEntry.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				objectEntry.setCreateDate(now);
+				objectEntry.setCreateDate(date);
 			}
 			else {
-				objectEntry.setCreateDate(serviceContext.getCreateDate(now));
+				objectEntry.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!objectEntryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				objectEntry.setModifiedDate(now);
+				objectEntry.setModifiedDate(date);
 			}
 			else {
 				objectEntry.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

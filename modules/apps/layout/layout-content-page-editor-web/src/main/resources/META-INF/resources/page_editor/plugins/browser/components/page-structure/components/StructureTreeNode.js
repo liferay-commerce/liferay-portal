@@ -23,7 +23,6 @@ import {fromControlsId} from '../../../../../app/components/layout-data-items/Co
 import {ITEM_ACTIVATION_ORIGINS} from '../../../../../app/config/constants/itemActivationOrigins';
 import {ITEM_TYPES} from '../../../../../app/config/constants/itemTypes';
 import {LAYOUT_DATA_ITEM_TYPES} from '../../../../../app/config/constants/layoutDataItemTypes';
-import {useToControlsId} from '../../../../../app/contexts/CollectionItemContext';
 import {
 	useActivationOrigin,
 	useActiveItemId,
@@ -49,12 +48,12 @@ import getDropTargetPosition from '../../../../../app/utils/drag-and-drop/getDro
 import getTargetData from '../../../../../app/utils/drag-and-drop/getTargetData';
 import getTargetPositions from '../../../../../app/utils/drag-and-drop/getTargetPositions';
 import itemIsAncestor from '../../../../../app/utils/drag-and-drop/itemIsAncestor';
-import toControlsId from '../../../../../app/utils/drag-and-drop/toControlsId';
 import {
 	initialDragDrop,
 	useDragItem,
 	useDropTarget,
 } from '../../../../../app/utils/drag-and-drop/useDragAndDrop';
+import getMappingFieldsKey from '../../../../../app/utils/getMappingFieldsKey';
 
 const HOVER_EXPAND_DELAY = 1000;
 
@@ -109,12 +108,15 @@ export default function StructureTreeNode({node}) {
 
 			const {
 				classNameId,
+				classPK,
 				itemSubtype,
 				itemType,
 				key: collectionKey,
 			} = item.config.collection;
 
-			const key = classNameId || collectionKey;
+			const key = classNameId
+				? getMappingFieldsKey(classNameId, classPK)
+				: collectionKey;
 
 			if (!mappingFields[key]) {
 				loadCollectionFields(dispatch, itemType, itemSubtype, key);
@@ -173,7 +175,6 @@ function StructureTreeNodeContent({
 	const nodeRef = useRef();
 	const segmentsExperienceId = useSelector(selectSegmentsExperienceId);
 	const selectItem = useSelectItem();
-	const toControlsId = useToControlsId();
 
 	const item = {
 		children: node.children,
@@ -273,7 +274,7 @@ function StructureTreeNodeContent({
 					event.target.focus();
 
 					if (node.activable) {
-						selectItem(toControlsId(node.id), {
+						selectItem(node.id, {
 							itemType: node.itemType,
 							origin: ITEM_ACTIVATION_ORIGINS.sidebar,
 						});
@@ -383,12 +384,7 @@ function computeHover({
 		targetPositionWithMiddle,
 		targetPositionWithoutMiddle,
 		elevation,
-	] = getItemPosition(
-		siblingItem || targetItem,
-		monitor,
-		layoutDataRef,
-		targetRefs
-	);
+	] = getItemPosition(siblingItem || targetItem, monitor, targetRefs);
 
 	// Drop inside target
 
@@ -458,14 +454,12 @@ function computeHover({
 				const [targetPosition] = getItemPosition(
 					target,
 					monitor,
-					layoutDataRef,
 					targetRefs
 				);
 
 				const [parentPosition] = getItemPosition(
 					parent,
 					monitor,
-					layoutDataRef,
 					targetRefs
 				);
 
@@ -501,8 +495,8 @@ function computeHover({
 
 const ELEVATION_BORDER_SIZE = 5;
 
-function getItemPosition(item, monitor, layoutDataRef, targetRefs) {
-	const targetRef = targetRefs.get(toControlsId(layoutDataRef, item));
+function getItemPosition(item, monitor, targetRefs) {
+	const targetRef = targetRefs.get(item.itemId);
 
 	if (!targetRef || !targetRef.current) {
 		return [null, null];

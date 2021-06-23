@@ -793,6 +793,85 @@ definition {
 		}
 	}
 
+	@description = "This is a test for LPS-129830. The user could remove multiple manual selection asset entries in Asset Publisher."
+	@priority = "4"
+	test RemoveMultipleManualSelectionAssetEntries {
+		property test.name.skip.portal.instance = "AssetPublisherUseCase#RemoveMultipleManualSelectionAssetEntries";
+
+		task ("Stop and start com.liferay.layout.type.controller.portlet bundle via GogoShell") {
+			GogoShell.openGogoShellAdmin(siteURLKey = "test-site-name");
+
+			var moduleID = GogoShell.getModuleID(moduleName = "com.liferay.layout.type.controller.portlet");
+
+			GogoShell.stopModule(moduleID = "${moduleID}");
+
+			GogoShell.viewModuleStatus(
+				moduleName = "com.liferay.layout.type.controller.portlet",
+				moduleStatus = "Resolved");
+
+			GogoShell.startModule(moduleID = "${moduleID}");
+
+			GogoShell.viewModuleStatus(
+				moduleName = "com.liferay.layout.type.controller.portlet",
+				moduleStatus = "Active");
+		}
+
+		task ("Add three web contents based on Basic Web Content") {
+			for (var n : list "1,2,3") {
+				JSONWebcontent.addWebContent(
+					content = "Web Content Content",
+					groupName = "Test Site Name",
+					title = "Web Content Title ${n}");
+			}
+		}
+
+		task ("Select all web contents as manual selection in Asset Publisher") {
+			Navigator.gotoSitePage(
+				pageName = "Asset Publisher Page",
+				siteName = "Test Site Name");
+
+			AssetPublisherPortlet.configureManualAssetSelectionPG(
+				assetType = "Basic Web Content",
+				searchInfo = "3 Results for Web Content",
+				searchTerm = "Web Content");
+		}
+
+		task ("View all web contents are selected in Asset Publisher") {
+			SelectFrame.selectFrameNoLoading(
+				key_title = "Asset Publisher",
+				locator1 = "IFrame#MODAL_ANY");
+
+			for (var n : list "1,2,3") {
+				AssertTextEquals(
+					key_assetTitle = "Web Content Title ${n}",
+					locator1 = "AssetLists#ASSET_TITLE_ROW",
+					value1 = "Web Content Title ${n}");
+			}
+
+			IFrame.closeFrame();
+		}
+
+		task ("Remove two web contents from manual selection in Asset Publisher") {
+			AssetPublisherPortlet.gotoConfigurationPG(portletName = "Asset Publisher");
+
+			for (var n : list "2,3") {
+				AssetListsAdmin.deleteManualSelectionAssets(assetsList = "Web Content Title ${n}");
+			}
+		}
+
+		task ("View only the first web content is selected as manual selection in Asset Publisher") {
+			for (var n : list "2,3") {
+				AssertElementNotPresent(
+					key_assetTitle = "Web Content Title ${n}",
+					locator1 = "AssetLists#ASSET_TITLE_ROW");
+			}
+
+			AssertVisible(
+				key_assetTitle = "Web Content Title 1",
+				locator1 = "AssetLists#ASSET_TITLE_ROW");
+		}
+	}
+
 	@description = "View assets filter by tag or category in Asset Publisher."
 	@priority = "4"
 	test ViewAssetsFilterByTagOrCategoryInAssetPublisher {
@@ -1463,6 +1542,86 @@ definition {
 				author = "author2",
 				webContentContent = "WC WebContent Content Edit",
 				webContentTitle = "WC WebContent Title Edit");
+		}
+	}
+
+	@description = "This is a test for LPS-129012. View web content in associated public content page."
+	@priority = "4"
+	test ViewWebContentInAssociatedPublicContentPage {
+		task ("Add a content page") {
+			JSONLayout.addPublicLayout(
+				groupName = "Test Site Name",
+				layoutName = "Content Page Name",
+				type = "content");
+		}
+
+		task ("Add an Asset Publisher widget to page") {
+			ContentPagesNavigator.openEditContentPage(
+				pageName = "Content Page Name",
+				siteName = "Test Site Name");
+
+			PageEditor.addWidget(portletName = "Asset Publisher");
+		}
+
+		task ("Set the Asset Publisher as default for page") {
+			AssetPublisherPortlet.configureDisplaySettings(displaySettings = "Set as the Default Asset Publisher for This Page");
+
+			IFrame.closeFrame();
+
+			PageEditor.clickPublish();
+		}
+
+		task ("Add a web content") {
+			JSONWebcontent.addWebContent(
+				content = "Webcontent Content",
+				groupName = "Test Site Name",
+				title = "Webcontent Title");
+		}
+
+		task ("Select the content page in web content") {
+			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
+
+			WebContentNavigator.gotoEditCP(webContentTitle = "Webcontent Title");
+
+			WebContent.editDisplayPage(
+				pageName = "Content Page Name",
+				pageType = "Public Pages");
+
+			PortletEntry.publish();
+		}
+
+		task ("View web content in associated public page") {
+			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
+
+			WebContentNavigator.gotoEntryMenuItem(
+				entry = "Webcontent Title",
+				menuItem = "View Content");
+
+			ControlMenu.viewHeaderTitle(headerTitle = "Content Page Name");
+
+			AssertVisible(
+				key_assetTitle = "Webcontent Title",
+				locator1 = "AP#ASSET_ABSTRACT_TITLE");
+
+			AssertVisible(
+				key_assetContent = "Webcontent Content",
+				locator1 = "APAsset#ASSET_CONTENT");
+		}
+
+		task ("View the friendly URL shown in address") {
+			AssertLocation.assertPartialLocation(value1 = "web/test-site-name/-/webcontent-title");
+		}
+
+		task ("Access to edit the web content via Asset Publisher") {
+			AssetPublisherPortlet.gotoEditAssetPG(assetTitle = "Webcontent Title");
+
+			WebContent.addCP(webContentContent = "Webcontent Content Edit");
+
+			PortletEntry.publish();
+		}
+
+		task ("View the friendly URL shown in address") {
+			AssertLocation.assertPartialLocation(value1 = "web/test-site-name/-/webcontent-title");
 		}
 	}
 

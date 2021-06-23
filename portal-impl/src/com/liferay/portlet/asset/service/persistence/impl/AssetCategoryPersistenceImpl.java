@@ -12445,24 +12445,24 @@ public class AssetCategoryPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (assetCategory.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				assetCategory.setCreateDate(now);
+				assetCategory.setCreateDate(date);
 			}
 			else {
-				assetCategory.setCreateDate(serviceContext.getCreateDate(now));
+				assetCategory.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!assetCategoryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				assetCategory.setModifiedDate(now);
+				assetCategory.setModifiedDate(date);
 			}
 			else {
 				assetCategory.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

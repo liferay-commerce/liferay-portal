@@ -1554,24 +1554,25 @@ public class KaleoConditionPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (kaleoCondition.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				kaleoCondition.setCreateDate(now);
+				kaleoCondition.setCreateDate(date);
 			}
 			else {
-				kaleoCondition.setCreateDate(serviceContext.getCreateDate(now));
+				kaleoCondition.setCreateDate(
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!kaleoConditionModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				kaleoCondition.setModifiedDate(now);
+				kaleoCondition.setModifiedDate(date);
 			}
 			else {
 				kaleoCondition.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

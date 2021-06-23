@@ -165,6 +165,10 @@ public class AssetEntryUsageLocalServiceImpl
 
 		Layout layout = layoutLocalService.fetchLayout(plid);
 
+		if (layout == null) {
+			return AssetEntryUsageConstants.TYPE_DEFAULT;
+		}
+
 		if ((layout.getClassNameId() > 0) && (layout.getClassPK() > 0)) {
 			plid = layout.getClassPK();
 		}

@@ -87,8 +87,10 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -234,11 +236,12 @@ public class DataLayoutTaglibUtil {
 	}
 
 	public static JSONArray getFieldTypesJSONArray(
-			HttpServletRequest httpServletRequest, Set<String> scopes)
+			HttpServletRequest httpServletRequest, Set<String> scopes,
+			boolean searchableFieldsDisabled)
 		throws Exception {
 
 		return _dataLayoutTaglibUtil._getFieldTypesJSONArray(
-			httpServletRequest, scopes);
+			httpServletRequest, scopes, searchableFieldsDisabled);
 	}
 
 	public static String renderDataLayout(
@@ -510,7 +513,8 @@ public class DataLayoutTaglibUtil {
 	}
 
 	private JSONArray _getFieldTypesJSONArray(
-			HttpServletRequest httpServletRequest, Set<String> scopes)
+			HttpServletRequest httpServletRequest, Set<String> scopes,
+			boolean searchableFieldsDisabled)
 		throws Exception {
 
 		JSONArray fieldTypesJSONArray = _jsonFactory.createJSONArray();
@@ -546,6 +550,11 @@ public class DataLayoutTaglibUtil {
 
 				if (anyMatch) {
 					fieldTypesJSONArray.put(jsonObject);
+
+					if (searchableFieldsDisabled) {
+						_setFieldIndexTypeNone(
+							jsonObject.getJSONObject("settingsContext"));
+					}
 				}
 			}
 
@@ -609,6 +618,42 @@ public class DataLayoutTaglibUtil {
 		}
 
 		return _npmResolver.resolveModuleName(ddmFormFieldType.getModuleName());
+	}
+
+	private void _setFieldIndexTypeNone(JSONObject jsonObject) {
+		_stream(
+			"rows",
+			rowJSONObject -> _stream(
+				"fields", null, _stream(rowJSONObject.getJSONArray("columns"))),
+			_stream(jsonObject.getJSONArray("pages"))
+		).filter(
+			fieldJSONObject -> Objects.equals(
+				fieldJSONObject.getString("fieldName"), "indexType")
+		).findFirst(
+		).ifPresent(
+			fieldJSONObject -> fieldJSONObject.put("value", "none")
+		);
+	}
+
+	private Stream<JSONObject> _stream(JSONArray jsonArray) {
+		return StreamSupport.stream(jsonArray.spliterator(), true);
+	}
+
+	private Stream<JSONObject> _stream(
+		String key, Function<JSONObject, Stream<JSONObject>> function,
+		Stream<JSONObject> stream) {
+
+		return stream.flatMap(
+			jsonObject -> {
+				Stream<JSONObject> nestedStream = _stream(
+					jsonObject.getJSONArray(key));
+
+				if (function == null) {
+					return nestedStream;
+				}
+
+				return nestedStream.flatMap(function);
+			});
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

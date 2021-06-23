@@ -927,24 +927,24 @@ public class RatingsStatsPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (ratingsStats.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				ratingsStats.setCreateDate(now);
+				ratingsStats.setCreateDate(date);
 			}
 			else {
-				ratingsStats.setCreateDate(serviceContext.getCreateDate(now));
+				ratingsStats.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!ratingsStatsModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				ratingsStats.setModifiedDate(now);
+				ratingsStats.setModifiedDate(date);
 			}
 			else {
 				ratingsStats.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

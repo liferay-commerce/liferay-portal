@@ -168,9 +168,9 @@ public class StagingLocalServiceTest {
 			ServiceContext serviceContext =
 				ServiceContextThreadLocal.getServiceContext();
 
-			serviceContext.setCommand("delete");
 			serviceContext.setAttribute(
 				"removePortletIds", new String[] {portletId});
+			serviceContext.setCommand("delete");
 			serviceContext.setWorkflowAction(
 				WorkflowConstants.ACTION_SAVE_DRAFT);
 

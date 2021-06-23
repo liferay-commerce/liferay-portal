@@ -74,11 +74,11 @@ PortletURL portletURL = PortletURLBuilder.createRenderURL(
 ).setMVCRenderCommandName(
 	"/export_import/view_export_configurations"
 ).setParameter(
-	"groupId", String.valueOf(groupId)
+	"groupId", groupId
 ).setParameter(
-	"liveGroupId", String.valueOf(liveGroupId)
+	"liveGroupId", liveGroupId
 ).setParameter(
-	"privateLayout", String.valueOf(privateLayout)
+	"privateLayout", privateLayout
 ).build();
 
 portletDisplay.setShowBackIcon(true);

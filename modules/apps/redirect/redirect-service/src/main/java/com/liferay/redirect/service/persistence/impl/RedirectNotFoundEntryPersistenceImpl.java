@@ -1108,25 +1108,25 @@ public class RedirectNotFoundEntryPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (redirectNotFoundEntry.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				redirectNotFoundEntry.setCreateDate(now);
+				redirectNotFoundEntry.setCreateDate(date);
 			}
 			else {
 				redirectNotFoundEntry.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!redirectNotFoundEntryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				redirectNotFoundEntry.setModifiedDate(now);
+				redirectNotFoundEntry.setModifiedDate(date);
 			}
 			else {
 				redirectNotFoundEntry.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

@@ -2224,24 +2224,24 @@ public class ObjectFieldPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (objectField.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				objectField.setCreateDate(now);
+				objectField.setCreateDate(date);
 			}
 			else {
-				objectField.setCreateDate(serviceContext.getCreateDate(now));
+				objectField.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!objectFieldModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				objectField.setModifiedDate(now);
+				objectField.setModifiedDate(date);
 			}
 			else {
 				objectField.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

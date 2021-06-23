@@ -125,6 +125,16 @@ public class TestClassGroupFactory {
 				batchTestClassGroup = new IntegrationJUnitBatchTestClassGroup(
 					batchName, portalTestClassJob);
 			}
+			else if (batchName.startsWith("js-test-") ||
+					 batchName.startsWith("portal-frontend-js-")) {
+
+				batchTestClassGroup = new NPMTestBatchTestClassGroup(
+					batchName, portalTestClassJob);
+			}
+			else if (batchName.startsWith("js-unit-")) {
+				batchTestClassGroup = new JSUnitModulesBatchTestClassGroup(
+					batchName, portalTestClassJob);
+			}
 			else if (batchName.startsWith("junit-test-") ||
 					 batchName.startsWith(
 						 "modules-integration-project-templates-") ||
@@ -133,12 +143,8 @@ public class TestClassGroupFactory {
 				batchTestClassGroup = new JUnitBatchTestClassGroup(
 					batchName, portalTestClassJob);
 			}
-			else if (batchName.startsWith("unit-")) {
-				batchTestClassGroup = new UnitJUnitBatchTestClassGroup(
-					batchName, portalTestClassJob);
-			}
 			else if (batchName.startsWith("modules-compile-")) {
-				batchTestClassGroup = new ModulesCompileBatchTestClassGroup(
+				batchTestClassGroup = new CompileModulesBatchTestClassGroup(
 					batchName, portalTestClassJob);
 			}
 			else if ((batchName.startsWith("modules-integration-") &&
@@ -159,7 +165,7 @@ public class TestClassGroupFactory {
 					batchName, portalTestClassJob);
 			}
 			else if (batchName.startsWith("modules-semantic-versioning-")) {
-				batchTestClassGroup = new ModulesSemVerBatchTestClassGroup(
+				batchTestClassGroup = new SemVerModulesBatchTestClassGroup(
 					batchName, portalTestClassJob);
 			}
 			else if (batchName.startsWith("plugins-compile-")) {
@@ -181,22 +187,21 @@ public class TestClassGroupFactory {
 					new QAWebsitesFunctionalBatchTestClassGroup(
 						batchName, (QAWebsitesGitRepositoryJob)job);
 			}
-			else if (batchName.startsWith("js-test-") ||
-					 batchName.startsWith("portal-frontend-js-")) {
-
-				batchTestClassGroup = new NPMTestBatchTestClassGroup(
-					batchName, portalTestClassJob);
-			}
 			else if (batchName.startsWith("rest-builder-")) {
-				batchTestClassGroup = new RESTBuilderBatchTestClassGroup(
+				batchTestClassGroup = new RESTBuilderModulesBatchTestClassGroup(
 					batchName, portalTestClassJob);
 			}
 			else if (batchName.startsWith("service-builder-")) {
-				batchTestClassGroup = new ServiceBuilderBatchTestClassGroup(
-					batchName, portalTestClassJob);
+				batchTestClassGroup =
+					new ServiceBuilderModulesBatchTestClassGroup(
+						batchName, portalTestClassJob);
 			}
 			else if (batchName.startsWith("tck-")) {
 				batchTestClassGroup = new TCKJunitBatchTestClassGroup(
+					batchName, portalTestClassJob);
+			}
+			else if (batchName.startsWith("unit-")) {
+				batchTestClassGroup = new UnitJUnitBatchTestClassGroup(
 					batchName, portalTestClassJob);
 			}
 			else {
@@ -247,6 +252,11 @@ public class TestClassGroupFactory {
 				 batchTestClassGroup instanceof JUnitRCABatchTestClassGroup) {
 
 			return new JUnitSegmentTestClassGroup(batchTestClassGroup);
+		}
+		else if (batchTestClassGroup instanceof
+					JSUnitModulesBatchTestClassGroup) {
+
+			return new JSUnitModulesSegmentTestClassGroup(batchTestClassGroup);
 		}
 		else if (batchTestClassGroup instanceof PluginsBatchTestClassGroup) {
 			return new PluginsSegmentTestClassGroup(

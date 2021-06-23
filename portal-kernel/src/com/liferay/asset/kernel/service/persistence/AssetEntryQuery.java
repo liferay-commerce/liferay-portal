@@ -73,10 +73,10 @@ public class AssetEntryQuery {
 	}
 
 	public AssetEntryQuery() {
-		Date now = new Date();
+		Date date = new Date();
 
-		_expirationDate = now;
-		_publishDate = now;
+		_expirationDate = date;
+		_publishDate = date;
 	}
 
 	public AssetEntryQuery(AssetEntryQuery assetEntryQuery) {

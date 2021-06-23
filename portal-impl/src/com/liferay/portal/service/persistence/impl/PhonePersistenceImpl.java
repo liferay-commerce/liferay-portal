@@ -4121,23 +4121,23 @@ public class PhonePersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (phone.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				phone.setCreateDate(now);
+				phone.setCreateDate(date);
 			}
 			else {
-				phone.setCreateDate(serviceContext.getCreateDate(now));
+				phone.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!phoneModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				phone.setModifiedDate(now);
+				phone.setModifiedDate(date);
 			}
 			else {
-				phone.setModifiedDate(serviceContext.getModifiedDate(now));
+				phone.setModifiedDate(serviceContext.getModifiedDate(date));
 			}
 		}
 

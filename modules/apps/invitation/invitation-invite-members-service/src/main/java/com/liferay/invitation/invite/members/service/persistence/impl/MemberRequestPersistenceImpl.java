@@ -1893,24 +1893,24 @@ public class MemberRequestPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (memberRequest.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				memberRequest.setCreateDate(now);
+				memberRequest.setCreateDate(date);
 			}
 			else {
-				memberRequest.setCreateDate(serviceContext.getCreateDate(now));
+				memberRequest.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!memberRequestModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				memberRequest.setModifiedDate(now);
+				memberRequest.setModifiedDate(date);
 			}
 			else {
 				memberRequest.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

@@ -79,7 +79,7 @@ public class StagingConfigurationPortletConfigurationIcon
 				return themeDisplay.getURLCurrent();
 			}
 		).setParameter(
-			"showStagingConfiguration", Boolean.TRUE.toString()
+			"showStagingConfiguration", true
 		).buildString();
 	}
 

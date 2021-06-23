@@ -77,25 +77,112 @@ definition {
 	}
 
 	@description = "Verify that a Form can be submitted"
-	@ignore = "Test Stub"
 	@priority = "5"
 	test CanBeSubmitted {
 		property forms.functional = "true";
 		property portal.acceptance = "false";
 
-		// TODO LPS-131018 CanBeSubmitted pending implementation
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
 
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Text");
+
+		Form.save();
+
+		Form.publishForm();
+
+		FormsAdminNavigator.gotoPublishedForm();
+
+		FormFields.editText(
+			fieldName = "Text",
+			fieldValue = "Test");
+
+		FormPortlet.submitSuccessfully();
+
+		FormPortlet.viewSuccessPage(
+			successPageDescription = "Your information was successfully received. Thank you for filling out the form.",
+			successPageTitle = "Thank you.");
 	}
 
 	@description = "Verify that a Form can be submitted from the Forms Widget"
-	@ignore = "Test Stub"
 	@priority = "5"
 	test CanBeSubmittedFromWidget {
 		property forms.functional = "true";
 		property portal.acceptance = "false";
 
-		// TODO LPS-131019 CanBeSubmittedFromWidget pending implementation
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
 
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Text");
+
+		var textFieldName = FormFields.getFieldName();
+
+		Form.save();
+
+		Form.publishForm();
+
+		ProductMenu.gotoPortlet(
+			category = "Site Builder",
+			portlet = "Pages");
+
+		SitePages.addPublicPage(
+			pageName = "Form Page",
+			sitePageType = "Widget Page");
+
+		Navigator.gotoPage(pageName = "Form Page");
+
+		Portlet.addPG(
+			pageName = "Form Page",
+			portletName = "Form");
+
+		FormPortletNavigator.gotoSelectForm();
+
+		FormPortletConfiguration.selectForm(formName = "Form 1");
+
+		PortletEntry.save();
+
+		FormPortletNavigator.exitWidgetModal();
+
+		FormFields.editText(
+			fieldName = "${textFieldName}",
+			fieldValue = "Test Text");
+
+		FormPortlet.clickSubmit();
+
+		FormPortlet.viewSuccessPage(
+			successPageDescription = "Your information was successfully received. Thank you for filling out the form.",
+			successPageTitle = "Thank you.");
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoViewEntries();
+
+		FormsAdmin.viewFormTableEntry(
+			fieldLabel = "Text",
+			fieldValue = "Test Text");
+
+		FormsAdminNavigator.gotoView();
+
+		FormsAdmin.viewTextEntry(
+			fieldLabel = "Text",
+			fieldName = "${textFieldName}",
+			fieldValue = "Test Text");
 	}
 
 	@description = "Verify that a Form that is partially filled out can be submitted"
@@ -138,21 +225,57 @@ definition {
 	}
 
 	@description = "Verify that a Form with multiple pages can be submitted"
-	@ignore = "Test Stub"
 	@priority = "5"
 	test CanBeSubmittedWithMultiplePages {
 		property forms.functional = "true";
 		property portal.acceptance = "false";
 
-		// TODO LPS-131151 CanBeSubmittedWithMultiplePages pending implementation
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
 
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(fieldType = "Text");
+
+		Form.closeSidebar();
+
+		Form.addPage(formAddNewPageNumber = "1");
+
+		Form.gotoAddField(
+			fieldType = "Numeric",
+			formPageNumber = "1");
+
+		Form.save();
+
+		Form.publishForm();
+
+		FormsAdminNavigator.gotoPublishedForm();
+
+		FormFields.editText(
+			fieldName = "Text",
+			fieldValue = "Test Text");
+
+		FormPortlet.clickNextPage();
+
+		FormFields.editText(
+			fieldName = "Numeric",
+			fieldValue = "5");
+
+		FormPortlet.submitSuccessfully();
+
+		FormPortlet.viewSuccessPage(
+			successPageDescription = "Your information was successfully received. Thank you for filling out the form.",
+			successPageTitle = "Thank you.");
 	}
 
 	@description = "Verify that a Form can redirect a user after being submitted"
 	@ignore = "Test Stub"
 	@priority = "5"
 	test CanRedirectUserAfterFormSubmission {
-		property forms.functional = "true";
+		property forms.functional = "false";
 		property portal.acceptance = "false";
 
 		// TODO LPS-131026 CanRedirectUserAfterFormSubmission pending implementation
@@ -160,21 +283,69 @@ definition {
 	}
 
 	@description = "Verify that a Form can require user authentication before being accessed"
-	@ignore = "Test Stub"
 	@priority = "5"
 	test CanRequireUserAuthentication {
 		property forms.functional = "true";
 		property portal.acceptance = "false";
 
-		// TODO LPS-131024 CanRequireUserAuthentication pending implementation
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
 
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.addTextField(fieldPositionNumber = "0");
+
+		FormsAdminNavigator.gotoSettings();
+
+		Form.configureRequireAuthentication();
+
+		Form.save();
+
+		Form.publishForm();
+
+		FormsAdminNavigator.gotoPublishCopyURLLink();
+
+		var publishedFormPublicURL = Form.getPublishedFormPublicURL(
+			publishedFormPublicURL = "${publishedFormPublicURL}"
+		);
+
+		SignOut.signOut();
+
+		Navigator.openSpecificURL(url = "${publishedFormPublicURL}");
+
+		User.viewLoginPG();
+
+		Navigator.openSpecificURL(url = "${publishedFormPublicURL}?SM_USER=test@liferay.com");
+
+		AssertElementPresent(
+			key_formName = "Form 1",
+			locator1 = "Form#PUBLISH_FORM_NAME_FIELD");
+
+		FormFields.viewTextLabel(
+			fieldLabel = "Text",
+			fieldName = "Text");
+
+		Form.viewSubmitButtonText(key_buttonText = "Submit");
+
+		FormViewBuilder.editText(
+			fieldName = "Text",
+			fieldValue = "Test Text");
+
+		FormPortlet.submit();
+
+		FormPortlet.viewSuccessPage(
+			successPageDescription = "Your information was successfully received. Thank you for filling out the form.",
+			successPageTitle = "Thank you.");
 	}
 
 	@description = "Verify that a Form's Success Page can be restored"
 	@ignore = "Test Stub"
 	@priority = "5"
 	test DefaultSuccessPageCanBeRestored {
-		property forms.functional = "true";
+		property forms.functional = "false";
 		property portal.acceptance = "false";
 
 		// TODO LPS-131035 DefaultSuccessPageCanBeRestored pending implementation
@@ -182,69 +353,227 @@ definition {
 	}
 
 	@description = "Verify that the Submit button's default value is restored if the Submit Button Label is left blank"
-	@ignore = "Test Stub"
 	@priority = "4"
 	test SubmitButtonRestoredToDefaultIfLeftBlank {
 		property forms.functional = "true";
 		property portal.acceptance = "false";
 
-		// TODO LPS-131032 SubmitButtonRestoredToDefaultIfLeftBlank pending implementation
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
 
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.addTextField(fieldPositionNumber = "0");
+
+		FormsAdminNavigator.gotoSettings();
+
+		Form.configureSubmitLabel(submitLabel = "Send Form");
+
+		Form.save();
+
+		Form.publishForm();
+
+		FormsAdminNavigator.gotoPublishedForm();
+
+		Form.viewSubmitButtonText(key_buttonText = "Send Form");
+
+		Navigator.openURL();
+
+		ProductMenu.gotoPortlet(
+			category = "Content & Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoEditFormByName(formName = "Form 1");
+
+		FormsAdminNavigator.gotoSettings();
+
+		Form.configureSubmitLabel(submitLabel = " ");
+
+		Button.clickDone();
+
+		Form.save();
+
+		FormsAdminNavigator.gotoPublishedForm();
+
+		Form.viewSubmitButtonText(key_buttonText = "Submit");
+
+		Button.clickSubmitButton();
+
+		FormPortlet.viewSuccessPage(
+			successPageDescription = "Your information was successfully received. Thank you for filling out the form.",
+			successPageTitle = "Thank you.");
 	}
 
 	@description = "Verify that a Form's Submit button's text can be customized"
-	@ignore = "Test Stub"
 	@priority = "5"
 	test SubmitButtonTextCanBeCustomized {
 		property forms.functional = "true";
 		property portal.acceptance = "false";
 
-		// TODO LPS-131028 SubmitButtonTextCanBeCustomized pending implementation
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
 
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.addTextField(fieldPositionNumber = "0");
+
+		FormsAdminNavigator.gotoSettings();
+
+		Form.configureSubmitLabel(submitLabel = "Send Form");
+
+		Form.save();
+
+		Form.publishForm();
+
+		FormsAdminNavigator.gotoPublishedForm();
+
+		Form.viewSubmitButtonText(key_buttonText = "Send Form");
+
+		FormPortlet.submitLocalizedSuccessfully(buttonName = "Send Form");
+
+		FormPortlet.viewSuccessPage(
+			successPageDescription = "Your information was successfully received. Thank you for filling out the form.",
+			successPageTitle = "Thank you.");
 	}
 
 	@description = "Verify that a Form's Submit button's text can be customized multiple times"
-	@ignore = "Test Stub"
 	@priority = "3"
 	test SubmitButtonTextCanBeCustomizedMultipleTimes {
 		property forms.functional = "true";
 		property portal.acceptance = "false";
 
-		// TODO LPS-131031 SubmitButtonTextCanBeCustomizedMultipleTimes pending implementation
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
 
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.addTextField(fieldPositionNumber = "0");
+
+		FormsAdminNavigator.gotoSettings();
+
+		Form.configureSubmitLabel(submitLabel = "Send Form");
+
+		Form.save();
+
+		Form.publishForm();
+
+		FormsAdminNavigator.gotoPublishedForm();
+
+		Form.viewSubmitButtonText(key_buttonText = "Send Form");
+
+		FormPortlet.submitLocalizedSuccessfully(buttonName = "Send Form");
+
+		Navigator.openURL();
+
+		ProductMenu.gotoPortlet(
+			category = "Content & Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoEditFormByName(formName = "Form 1");
+
+		FormsAdminNavigator.gotoSettings();
+
+		Form.configureSubmitLabel(submitLabel = "Complete");
+
+		Form.save();
+
+		FormsAdminNavigator.gotoPublishedForm();
+
+		Form.viewSubmitButtonText(key_buttonText = "Complete");
+
+		FormPortlet.submitLocalizedSuccessfully(buttonName = "Complete");
 	}
 
 	@description = "Verify that a Form's Submit button's text can be customized with numbers"
-	@ignore = "Test Stub"
 	@priority = "3"
 	test SubmitButtonTextCanBeCustomizedWithNumbers {
 		property forms.functional = "true";
 		property portal.acceptance = "false";
 
-		// TODO LPS-131030 SubmitButtonTextCanBeCustomizedWithNumbers pending implementation
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
 
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Text");
+
+		FormsAdminNavigator.gotoSettings();
+
+		Form.configureSubmitLabel(submitLabel = "123456789");
+
+		Form.save();
+
+		Form.publishForm();
+
+		FormsAdminNavigator.gotoPublishedForm();
+
+		FormPortlet.submitLocalizedSuccessfully(buttonName = "123456789");
+
+		FormPortlet.viewSuccessPage(
+			successPageDescription = "Your information was successfully received. Thank you for filling out the form.",
+			successPageTitle = "Thank you.");
 	}
 
 	@description = "Verify that a Form's Submit button's text can be customized with special characters"
-	@ignore = "Test Stub"
 	@priority = "3"
 	test SubmitButtonTextCanBeCustomizedWithSpecialCharacters {
 		property forms.functional = "true";
 		property portal.acceptance = "false";
 
-		// TODO LPS-131029 SubmitButtonTextCanBeCustomizedWithSpecialCharacters pending implementation
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
 
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.addTextField(fieldPositionNumber = "0");
+
+		FormsAdminNavigator.gotoSettings();
+
+		Form.configureSubmitLabel(submitLabel = "!@#$%^&*()+?");
+
+		Form.save();
+
+		Form.publishForm();
+
+		FormsAdminNavigator.gotoPublishedForm();
+
+		Form.viewSubmitButtonText(key_buttonText = "!@#$%^&*()+?");
+
+		FormPortlet.submitLocalizedSuccessfully(buttonName = "!@#$%^&*()+?");
 	}
 
 	@description = "Verify that a Form's Success Page can be deleted"
-	@ignore = "Test Stub"
 	@priority = "5"
 	test SuccessPageCanBeDeleted {
 		property forms.functional = "true";
 		property portal.acceptance = "false";
 
-		// TODO LPS-131034 SuccessPageCanBeDeleted pending implementation
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
 
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.deleteSuccessPage(formPageNumber = "2");
+
+		AssertElementPresent(locator1 = "Form#SUCCESS_PAGE_ADD");
 	}
 
 }

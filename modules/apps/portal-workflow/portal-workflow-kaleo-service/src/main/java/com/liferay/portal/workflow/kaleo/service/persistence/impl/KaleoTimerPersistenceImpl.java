@@ -1521,23 +1521,24 @@ public class KaleoTimerPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (kaleoTimer.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				kaleoTimer.setCreateDate(now);
+				kaleoTimer.setCreateDate(date);
 			}
 			else {
-				kaleoTimer.setCreateDate(serviceContext.getCreateDate(now));
+				kaleoTimer.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!kaleoTimerModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				kaleoTimer.setModifiedDate(now);
+				kaleoTimer.setModifiedDate(date);
 			}
 			else {
-				kaleoTimer.setModifiedDate(serviceContext.getModifiedDate(now));
+				kaleoTimer.setModifiedDate(
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

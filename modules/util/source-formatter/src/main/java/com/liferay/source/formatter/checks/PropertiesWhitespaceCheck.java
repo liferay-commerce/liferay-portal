@@ -65,6 +65,10 @@ public class PropertiesWhitespaceCheck extends WhitespaceCheck {
 						line = StringUtil.replaceFirst(
 							line, leadingSpaces, expectedLeadingSpaces);
 					}
+
+					if (line.matches("    ]")) {
+						line = line.trim();
+					}
 				}
 
 				sb.append(line);

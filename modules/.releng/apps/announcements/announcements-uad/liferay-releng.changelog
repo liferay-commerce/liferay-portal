@@ -12,3 +12,8 @@
 # Bundle Version 6.0.0
 #
 1ab06b597bba7c92ea8c697d605c6d55f23bf40f^..8334c1a207febeddca1f7453e60cf2a9bdf2d321=LPS-77699 LPS-119446 LPS-121824 LPS-122403 LRQA-51488
+
+#
+# Bundle Version 6.0.2
+#
+8334c1a207febeddca1f7453e60cf2a9bdf2d321^..42c6efeb8d807d0dc2f3be4e224253aa9fa8a3b7=LRQA-51488

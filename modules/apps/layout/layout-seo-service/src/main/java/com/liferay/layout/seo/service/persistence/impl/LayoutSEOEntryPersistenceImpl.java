@@ -2051,24 +2051,25 @@ public class LayoutSEOEntryPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (layoutSEOEntry.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				layoutSEOEntry.setCreateDate(now);
+				layoutSEOEntry.setCreateDate(date);
 			}
 			else {
-				layoutSEOEntry.setCreateDate(serviceContext.getCreateDate(now));
+				layoutSEOEntry.setCreateDate(
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!layoutSEOEntryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				layoutSEOEntry.setModifiedDate(now);
+				layoutSEOEntry.setModifiedDate(date);
 			}
 			else {
 				layoutSEOEntry.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

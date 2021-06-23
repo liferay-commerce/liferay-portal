@@ -77,11 +77,11 @@ PortletURL portletURL = PortletURLBuilder.createRenderURL(
 ).setParameter(
 	"displayStyle", displayStyle
 ).setParameter(
-	"groupId", String.valueOf(groupId)
+	"groupId", groupId
 ).setParameter(
-	"liveGroupId", String.valueOf(liveGroupId)
+	"liveGroupId", liveGroupId
 ).setParameter(
-	"privateLayout", String.valueOf(privateLayout)
+	"privateLayout", privateLayout
 ).build();
 
 if (Validator.isBlank(backURL)) {

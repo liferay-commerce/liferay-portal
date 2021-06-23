@@ -47,7 +47,7 @@ public class OAuthUserLocalServiceImpl extends OAuthUserLocalServiceBaseImpl {
 		// OAuth user
 
 		User user = userLocalService.getUser(userId);
-		Date now = new Date();
+		Date date = new Date();
 
 		validate(oAuthApplicationId);
 
@@ -58,8 +58,8 @@ public class OAuthUserLocalServiceImpl extends OAuthUserLocalServiceBaseImpl {
 		oAuthUser.setCompanyId(user.getCompanyId());
 		oAuthUser.setUserId(user.getUserId());
 		oAuthUser.setUserName(user.getFullName());
-		oAuthUser.setCreateDate(serviceContext.getCreateDate(now));
-		oAuthUser.setModifiedDate(serviceContext.getModifiedDate(now));
+		oAuthUser.setCreateDate(serviceContext.getCreateDate(date));
+		oAuthUser.setModifiedDate(serviceContext.getModifiedDate(date));
 		oAuthUser.setOAuthApplicationId(oAuthApplicationId);
 		oAuthUser.setAccessToken(accessToken);
 		oAuthUser.setAccessSecret(accessSecret);

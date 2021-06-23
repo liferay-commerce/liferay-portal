@@ -3435,24 +3435,24 @@ public class AccountEntryPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (accountEntry.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				accountEntry.setCreateDate(now);
+				accountEntry.setCreateDate(date);
 			}
 			else {
-				accountEntry.setCreateDate(serviceContext.getCreateDate(now));
+				accountEntry.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!accountEntryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				accountEntry.setModifiedDate(now);
+				accountEntry.setModifiedDate(date);
 			}
 			else {
 				accountEntry.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

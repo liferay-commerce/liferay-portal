@@ -3527,25 +3527,25 @@ public class CommercePricingClassPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commercePricingClass.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commercePricingClass.setCreateDate(now);
+				commercePricingClass.setCreateDate(date);
 			}
 			else {
 				commercePricingClass.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commercePricingClassModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commercePricingClass.setModifiedDate(now);
+				commercePricingClass.setModifiedDate(date);
 			}
 			else {
 				commercePricingClass.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

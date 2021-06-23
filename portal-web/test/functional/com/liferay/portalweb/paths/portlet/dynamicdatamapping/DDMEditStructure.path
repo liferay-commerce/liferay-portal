@@ -2,15 +2,17 @@
 <head>
 <title>DDMEditStructure</title>
 </head>
+
 <body>
-<table cellpadding="1" cellspacing="1" border="1">
+<table border="1" cellpadding="1" cellspacing="1">
 <thead>
 <tr><td rowspan="1" colspan="3">DDMEditStructure</td></tr>
 </thead>
+
 <tbody>
 <tr>
 	<td>IFRAME</td>
-	<td>//div[contains(@class,'dialog-iframe-bd')]/iframe[contains(@src,'selectDDMStructure')] | //div[contains(@class,'dialog-iframe-bd')]/iframe[contains(@src,'selectStructure')]</td>
+	<td>//div[contains(@class,'dialog-iframe-bd')]/iframe[contains(@src,'selectDDMStructure')] | //div[contains(@class,'dialog-iframe-bd')]/iframe[contains(@src,'selectStructure')] | //iframe[contains(@id,'selectStructure')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -166,6 +168,11 @@
 <tr>
 	<td>FORM_FIELD_CONTAINER</td>
 	<td>//label[normalize-space(text())='${key_fieldFieldLabel}']/parent::div[contains(@class,'form-group')] | //legend[normalize-space(text())='${key_fieldFieldLabel}']/parent::fieldset/parent::div[contains(@class,'form-group')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>FORM_FIELD_CONTAINER_ANY</td>
+	<td>//div[contains(@data-field-name,'${key_fieldFieldName}')]//label[normalize-space(text())='${key_fieldFieldLabel}']/parent::div[contains(@class,'form-group')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -362,11 +369,6 @@
 <tr>
 	<td>SETTINGS_CELL_EDITOR_WEB_CONTENT_ARTICLE_CONTENT</td>
 	<td>//form[contains(@class,'journal-article-cell-editor-content')]/span</td>
-	<td></td>
-</tr>
-<tr>
-	<td>GRID_OPTIONS_OPTION_VALUE_FIELD</td>
-	<td>//div[contains(@class,'form-group') and contains(.//label, '${key_gridField}')]//div[@class='ddm-field-options'][${key_rowNumber}]//input[contains(@class,'ddm-field-text')]</td>
 	<td></td>
 </tr>
 <tr>

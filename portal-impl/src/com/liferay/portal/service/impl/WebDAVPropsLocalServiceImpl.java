@@ -50,11 +50,11 @@ public class WebDAVPropsLocalServiceImpl
 			webDAVProps = webDAVPropsPersistence.create(
 				counterLocalService.increment());
 
-			Date now = new Date();
+			Date date = new Date();
 
 			webDAVProps.setCompanyId(companyId);
-			webDAVProps.setCreateDate(now);
-			webDAVProps.setModifiedDate(now);
+			webDAVProps.setCreateDate(date);
+			webDAVProps.setModifiedDate(date);
 			webDAVProps.setClassNameId(classNameId);
 			webDAVProps.setClassPK(classPK);
 

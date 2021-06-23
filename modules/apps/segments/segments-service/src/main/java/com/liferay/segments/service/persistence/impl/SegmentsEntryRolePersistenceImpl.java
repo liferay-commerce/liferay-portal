@@ -1624,25 +1624,25 @@ public class SegmentsEntryRolePersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (segmentsEntryRole.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				segmentsEntryRole.setCreateDate(now);
+				segmentsEntryRole.setCreateDate(date);
 			}
 			else {
 				segmentsEntryRole.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!segmentsEntryRoleModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				segmentsEntryRole.setModifiedDate(now);
+				segmentsEntryRole.setModifiedDate(date);
 			}
 			else {
 				segmentsEntryRole.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

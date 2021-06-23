@@ -13,10 +13,14 @@
  */
 
 import ClayLayout from '@clayui/layout';
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useContext, useEffect, useMemo, useState} from 'react';
 
 import {COLUMN_SIZE_MODULE_PER_ROW_SIZES} from '../../config/constants/columnSizes';
-import {CollectionItemContextProvider} from '../../contexts/CollectionItemContext';
+import {
+	CollectionItemContext,
+	CollectionItemContextProvider,
+	useToControlsId,
+} from '../../contexts/CollectionItemContext';
 import {useDisplayPagePreviewItem} from '../../contexts/DisplayPagePreviewItemContext';
 import {useDispatch, useSelector} from '../../contexts/StoreContext';
 import selectLanguageId from '../../selectors/selectLanguageId';
@@ -33,13 +37,15 @@ function getCollectionPrefix(collectionId, index) {
 	return `collection-${collectionId}-${index}${COLLECTION_ID_DIVIDER}`;
 }
 
-export function getToControlsId(collectionId, index) {
+export function getToControlsId(collectionId, index, toControlsId) {
 	return (itemId) => {
 		if (!itemId) {
 			return null;
 		}
 
-		return `${getCollectionPrefix(collectionId, index)}${itemId}`;
+		return toControlsId(
+			`${getCollectionPrefix(collectionId, index)}${itemId}`
+		);
 	};
 }
 
@@ -48,7 +54,9 @@ export function fromControlsId(controlsItemId) {
 		return null;
 	}
 
-	const [, itemId] = controlsItemId.split(COLLECTION_ID_DIVIDER);
+	const splits = controlsItemId.split(COLLECTION_ID_DIVIDER);
+
+	const itemId = splits.pop();
 
 	return itemId || controlsItemId;
 }
@@ -65,6 +73,7 @@ const Grid = ({
 	collectionConfig,
 	collectionId,
 	collectionLength,
+	customCollectionSelectorURL,
 }) => {
 	const maxNumberOfItems = Math.min(
 		collectionLength,
@@ -95,6 +104,9 @@ const Grid = ({
 									collectionConfig={collectionConfig}
 									collectionId={collectionId}
 									collectionItem={collection[index]}
+									customCollectionSelectorURL={
+										customCollectionSelectorURL
+									}
 									index={index}
 								>
 									{React.cloneElement(child)}
@@ -113,18 +125,29 @@ const ColumnContext = ({
 	collectionConfig,
 	collectionId,
 	collectionItem,
+	customCollectionSelectorURL,
 	index,
 }) => {
+	const toControlsId = useToControlsId();
+
 	const contextValue = useMemo(
 		() => ({
 			collectionConfig,
 			collectionItem,
 			collectionItemIndex: index,
-			fromControlsId: index === 0 ? null : fromControlsId,
-			toControlsId:
-				index === 0 ? null : getToControlsId(collectionId, index),
+			customCollectionSelectorURL,
+			fromControlsId,
+			parentToControlsId: toControlsId,
+			toControlsId: getToControlsId(collectionId, index, toControlsId),
 		}),
-		[collectionConfig, collectionId, collectionItem, index]
+		[
+			collectionConfig,
+			collectionId,
+			collectionItem,
+			index,
+			toControlsId,
+			customCollectionSelectorURL,
+		]
 	);
 
 	return (
@@ -148,13 +171,20 @@ const Collection = React.forwardRef(({children, item}, ref) => {
 
 	const [collection, setCollection] = useState(DEFAULT_COLLECTION);
 
+	const context = useContext(CollectionItemContext);
+	const {classNameId, classPK} = context.collectionItem || {};
+
 	const displayPagePreviewItemData = useDisplayPagePreviewItem()?.data ?? {};
+
+	const itemClassNameId =
+		classNameId || displayPagePreviewItemData.classNameId;
+	const itemClassPK = classPK || displayPagePreviewItemData.classPK;
 
 	useEffect(() => {
 		if (collectionConfig.collection) {
 			CollectionService.getCollectionField({
-				classNameId: displayPagePreviewItemData.classNameId,
-				classPK: displayPagePreviewItemData.classPK,
+				classNameId: itemClassNameId,
+				classPK: itemClassPK,
 				collection: collectionConfig.collection,
 				languageId,
 				listItemStyle: collectionConfig.listItemStyle || null,
@@ -177,8 +207,8 @@ const Collection = React.forwardRef(({children, item}, ref) => {
 				});
 		}
 	}, [
-		displayPagePreviewItemData.classNameId,
-		displayPagePreviewItemData.classPK,
+		itemClassNameId,
+		itemClassPK,
 		collectionConfig.collection,
 		collectionConfig.listItemStyle,
 		collectionConfig.listStyle,
@@ -201,10 +231,15 @@ const Collection = React.forwardRef(({children, item}, ref) => {
 					collectionConfig={collectionConfig}
 					collectionId={item.itemId}
 					collectionLength={collection.items.length}
+					customCollectionSelectorURL={
+						collection.customCollectionSelectorURL
+					}
 				/>
 			)}
 		</div>
 	);
 });
+
+Collection.displayName = 'Collection';
 
 export default Collection;

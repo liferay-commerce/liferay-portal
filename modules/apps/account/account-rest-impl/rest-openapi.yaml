@@ -499,6 +499,81 @@ paths:
                     description:
                         ""
             tags: ["AccountUser"]
+    "/accounts/by-external-reference-code/{externalReferenceCode}/account-users/by-email-address":
+        delete:
+            # @review
+            description:
+                Removes users from an account by their email addresses
+            operationId: deleteAccountUsersByExternalReferenceCodeByEmailAddress
+            parameters:
+                - in: path
+                  name: externalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            items:
+                                format: email
+                                type: string
+                            type: array
+                    application/xml:
+                        schema:
+                            items:
+                                format: email
+                                type: string
+                            type: array
+                # @review
+                description:
+                    A list of user email addresses to remove from the account
+                required: true
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+                    description:
+                        ""
+            tags: ["AccountUser"]
+        post:
+            # @review
+            description:
+                Assigns users to an account by their email addresses
+            operationId: postAccountUsersByExternalReferenceCodeByEmailAddress
+            parameters:
+                - in: path
+                  name: externalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            items:
+                                format: email
+                                type: string
+                            type: array
+                    application/xml:
+                        schema:
+                            items:
+                                format: email
+                                type: string
+                            type: array
+                # @review
+                description:
+                    A list of user email addresses to assign to the account
+                required: true
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+                    description:
+                        ""
+            tags: ["AccountUser"]
     "/accounts/by-external-reference-code/{externalReferenceCode}/account-users/by-email-address/{emailAddress}":
         delete:
             # @review
@@ -884,8 +959,86 @@ paths:
                     description:
                         ""
             tags: ["AccountUser"]
+    "/accounts/{accountId}/account-users/by-email-address":
+        delete:
+            # @review
+            description:
+                Removes users from an account by their email addresses
+            operationId: deleteAccountUsersByEmailAddress
+            parameters:
+                - in: path
+                  name: accountId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            items:
+                                format: email
+                                type: string
+                            type: array
+                    application/xml:
+                        schema:
+                            items:
+                                format: email
+                                type: string
+                            type: array
+                # @review
+                description:
+                    A list of user email addresses to remove from the account
+                required: true
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+                    description:
+                        ""
+            tags: ["AccountUser"]
+        post:
+            # @review
+            description:
+                Assigns users to an account by their email addresses
+            operationId: postAccountUsersByEmailAddress
+            parameters:
+                - in: path
+                  name: accountId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            items:
+                                format: email
+                                type: string
+                            type: array
+                    application/xml:
+                        schema:
+                            items:
+                                format: email
+                                type: string
+                            type: array
+                # @review
+                description:
+                    A list of user email addresses to assign to the account
+                required: true
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+                    description:
+                        ""
+            tags: ["AccountUser"]
     "/accounts/{accountId}/account-users/by-email-address/{emailAddress}":
         delete:
+            # @review
             description:
                 Removes a user from an account by their email address
             operationId: deleteAccountUserByEmailAddress
@@ -910,6 +1063,7 @@ paths:
                         ""
             tags: ["AccountUser"]
         post:
+            # @review
             description:
                 Assigns a user to an account by their email address
             operationId: postAccountUserByEmailAddress
@@ -933,3 +1087,218 @@ paths:
                     description:
                         ""
             tags: ["AccountUser"]
+    "/organizations/move-accounts/{sourceOrganizationId}/{targetOrganizationId}":
+        patch:
+            operationId: patchOrganizationMoveAccounts
+            parameters:
+                - in: path
+                  name: sourceOrganizationId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+                - in: path
+                  name: targetOrganizationId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            items:
+                                format: int64
+                                type: integer
+                            type: array
+                    application/xml:
+                        schema:
+                            items:
+                                format: int64
+                                type: integer
+                            type: array
+                # @review
+                description:
+                    An array of accountIds to move from the source organization to the target organization
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+                    description:
+                        ""
+            tags: ["Account"]
+    "/organizations/move-accounts/{sourceOrganizationId}/{targetOrganizationId}/by-external-reference-code":
+        patch:
+            operationId: patchOrganizationMoveAccountsByExternalReferenceCode
+            parameters:
+                - in: path
+                  name: sourceOrganizationId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+                - in: path
+                  name: targetOrganizationId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            items:
+                                type: string
+                            type: array
+                    application/xml:
+                        schema:
+                            items:
+                                type: string
+                            type: array
+                # @review
+                description:
+                    An array of account external reference codes to move from the source organization to the target
+                    organization
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+                    description:
+                        ""
+            tags: ["Account"]
+    "/organizations/{organizationId}/accounts":
+        delete:
+            operationId: deleteOrganizationAccounts
+            parameters:
+                - in: path
+                  name: organizationId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            items:
+                                format: int64
+                                type: integer
+                            type: array
+                    application/xml:
+                        schema:
+                            items:
+                                format: int64
+                                type: integer
+                            type: array
+                # @review
+                description:
+                    An array of accountIds to remove from an organization
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+                    description:
+                        ""
+            tags: ["Account"]
+        post:
+            operationId: postOrganizationAccounts
+            parameters:
+                - in: path
+                  name: organizationId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            items:
+                                format: int64
+                                type: integer
+                            type: array
+                    application/xml:
+                        schema:
+                            items:
+                                format: int64
+                                type: integer
+                            type: array
+                # @review
+                description:
+                    An array of accountIds to add to an organization
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+                    description:
+                        ""
+            tags: ["Account"]
+    "/organizations/{organizationId}/accounts/by-external-reference-code":
+        delete:
+            operationId: deleteOrganizationAccountsByExternalReferenceCode
+            parameters:
+                - in: path
+                  name: organizationId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            items:
+                                type: string
+                            type: array
+                    application/xml:
+                        schema:
+                            items:
+                                type: string
+                            type: array
+                # @review
+                description:
+                    An array of account external reference codes to remove from an organization
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+                    description:
+                        ""
+            tags: ["Account"]
+        post:
+            operationId: postOrganizationAccountsByExternalReferenceCode
+            parameters:
+                - in: path
+                  name: organizationId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            items:
+                                type: string
+                            type: array
+                    application/xml:
+                        schema:
+                            items:
+                                type: string
+                            type: array
+                # @review
+                description:
+                    An array of account external reference codes to add to an organization
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+                    description:
+                        ""
+            tags: ["Account"]

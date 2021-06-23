@@ -1975,25 +1975,25 @@ public class ReadingTimeEntryPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (readingTimeEntry.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				readingTimeEntry.setCreateDate(now);
+				readingTimeEntry.setCreateDate(date);
 			}
 			else {
 				readingTimeEntry.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!readingTimeEntryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				readingTimeEntry.setModifiedDate(now);
+				readingTimeEntry.setModifiedDate(date);
 			}
 			else {
 				readingTimeEntry.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

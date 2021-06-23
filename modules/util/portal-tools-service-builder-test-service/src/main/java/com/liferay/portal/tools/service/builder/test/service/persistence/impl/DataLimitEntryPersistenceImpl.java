@@ -298,24 +298,25 @@ public class DataLimitEntryPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (dataLimitEntry.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				dataLimitEntry.setCreateDate(now);
+				dataLimitEntry.setCreateDate(date);
 			}
 			else {
-				dataLimitEntry.setCreateDate(serviceContext.getCreateDate(now));
+				dataLimitEntry.setCreateDate(
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!dataLimitEntryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				dataLimitEntry.setModifiedDate(now);
+				dataLimitEntry.setModifiedDate(date);
 			}
 			else {
 				dataLimitEntry.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

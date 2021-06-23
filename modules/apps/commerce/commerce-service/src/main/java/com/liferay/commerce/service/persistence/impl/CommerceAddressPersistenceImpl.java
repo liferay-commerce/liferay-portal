@@ -5181,25 +5181,25 @@ public class CommerceAddressPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commerceAddress.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commerceAddress.setCreateDate(now);
+				commerceAddress.setCreateDate(date);
 			}
 			else {
 				commerceAddress.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commerceAddressModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commerceAddress.setModifiedDate(now);
+				commerceAddress.setModifiedDate(date);
 			}
 			else {
 				commerceAddress.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

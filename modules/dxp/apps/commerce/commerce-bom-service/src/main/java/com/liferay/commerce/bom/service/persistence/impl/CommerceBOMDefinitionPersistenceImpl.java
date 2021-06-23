@@ -1224,25 +1224,25 @@ public class CommerceBOMDefinitionPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commerceBOMDefinition.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commerceBOMDefinition.setCreateDate(now);
+				commerceBOMDefinition.setCreateDate(date);
 			}
 			else {
 				commerceBOMDefinition.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commerceBOMDefinitionModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commerceBOMDefinition.setModifiedDate(now);
+				commerceBOMDefinition.setModifiedDate(date);
 			}
 			else {
 				commerceBOMDefinition.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

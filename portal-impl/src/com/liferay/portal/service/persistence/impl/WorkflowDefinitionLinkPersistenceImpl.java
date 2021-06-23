@@ -3125,25 +3125,25 @@ public class WorkflowDefinitionLinkPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (workflowDefinitionLink.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				workflowDefinitionLink.setCreateDate(now);
+				workflowDefinitionLink.setCreateDate(date);
 			}
 			else {
 				workflowDefinitionLink.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!workflowDefinitionLinkModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				workflowDefinitionLink.setModifiedDate(now);
+				workflowDefinitionLink.setModifiedDate(date);
 			}
 			else {
 				workflowDefinitionLink.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

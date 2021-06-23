@@ -46,7 +46,6 @@ import com.liferay.message.boards.model.MBThread;
 import com.liferay.message.boards.model.impl.MBCategoryImpl;
 import com.liferay.message.boards.model.impl.MBMessageDisplayImpl;
 import com.liferay.message.boards.service.MBDiscussionLocalService;
-import com.liferay.message.boards.service.MBStatsUserLocalService;
 import com.liferay.message.boards.service.MBThreadLocalService;
 import com.liferay.message.boards.service.base.MBMessageLocalServiceBaseImpl;
 import com.liferay.message.boards.service.persistence.MBCategoryPersistence;
@@ -87,7 +86,6 @@ import com.liferay.portal.kernel.sanitizer.SanitizerUtil;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.search.Indexer;
-import com.liferay.portal.kernel.search.IndexerRegistry;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -219,14 +217,14 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 		serviceContext.setAttribute("className", className);
 		serviceContext.setAttribute("classPK", String.valueOf(classPK));
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (serviceContext.getCreateDate() == null) {
-			serviceContext.setCreateDate(now);
+			serviceContext.setCreateDate(date);
 		}
 
 		if (serviceContext.getModifiedDate() == null) {
-			serviceContext.setModifiedDate(now);
+			serviceContext.setModifiedDate(date);
 		}
 
 		MBMessage message = addMessage(
@@ -403,9 +401,9 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 			anonymous = true;
 		}
 
-		Date now = new Date();
+		Date date = new Date();
 
-		Date modifiedDate = serviceContext.getModifiedDate(now);
+		Date modifiedDate = serviceContext.getModifiedDate(date);
 
 		long messageId = counterLocalService.increment();
 
@@ -419,17 +417,20 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 
 		body = getBody(subject, body, format);
 
-		boolean discussion = false;
-
-		if (categoryId == MBCategoryConstants.DISCUSSION_CATEGORY_ID) {
-			discussion = true;
-		}
-
 		body = SanitizerUtil.sanitize(
 			user.getCompanyId(), groupId, userId, MBMessage.class.getName(),
 			messageId, "text/" + format, Sanitizer.MODE_ALL, body,
 			HashMapBuilder.<String, Object>put(
-				"discussion", discussion
+				"discussion",
+				() -> {
+					if (categoryId ==
+							MBCategoryConstants.DISCUSSION_CATEGORY_ID) {
+
+						return true;
+					}
+
+					return false;
+				}
 			).build());
 
 		validate(subject, body);
@@ -442,7 +443,7 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 		message.setCompanyId(user.getCompanyId());
 		message.setUserId(user.getUserId());
 		message.setUserName(userName);
-		message.setCreateDate(serviceContext.getCreateDate(now));
+		message.setCreateDate(serviceContext.getCreateDate(date));
 		message.setModifiedDate(modifiedDate);
 
 		if (threadId > 0) {
@@ -872,13 +873,6 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 		// Message
 
 		mbMessagePersistence.remove(message);
-
-		// Statistics
-
-		if (!message.isDiscussion()) {
-			_mbStatsUserLocalService.updateStatsUser(
-				message.getGroupId(), message.getUserId());
-		}
 
 		// Workflow
 
@@ -1747,9 +1741,7 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 
 		User user = userLocalService.getUser(userId);
 
-		Date now = new Date();
-
-		Date modifiedDate = serviceContext.getModifiedDate(now);
+		Date modifiedDate = serviceContext.getModifiedDate(new Date());
 
 		message.setStatus(status);
 		message.setStatusByUserId(userId);
@@ -1828,13 +1820,6 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 			// Indexer
 
 			indexer.delete(message);
-		}
-
-		// Statistics
-
-		if (!message.isDiscussion()) {
-			_mbStatsUserLocalService.updateStatsUser(
-				message.getGroupId(), userId, modifiedDate);
 		}
 
 		return message;
@@ -2689,16 +2674,6 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 
 		message = mbMessagePersistence.update(message);
 
-		// Statistics
-
-		if ((serviceContext.getWorkflowAction() ==
-				WorkflowConstants.ACTION_SAVE_DRAFT) &&
-			!message.isDiscussion()) {
-
-			_mbStatsUserLocalService.updateStatsUser(
-				message.getGroupId(), userId, message.getModifiedDate());
-		}
-
 		// Thread
 
 		if ((priority != MBThreadConstants.PRIORITY_NOT_GIVEN) &&
@@ -2829,16 +2804,10 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 	private Http _http;
 
 	@Reference
-	private IndexerRegistry _indexerRegistry;
-
-	@Reference
 	private MBCategoryPersistence _mbCategoryPersistence;
 
 	@Reference
 	private MBDiscussionLocalService _mbDiscussionLocalService;
-
-	@Reference
-	private MBStatsUserLocalService _mbStatsUserLocalService;
 
 	@Reference
 	private MBThreadLocalService _mbThreadLocalService;

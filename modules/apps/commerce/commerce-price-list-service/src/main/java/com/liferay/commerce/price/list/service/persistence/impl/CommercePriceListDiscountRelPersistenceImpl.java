@@ -2268,25 +2268,25 @@ public class CommercePriceListDiscountRelPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commercePriceListDiscountRel.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commercePriceListDiscountRel.setCreateDate(now);
+				commercePriceListDiscountRel.setCreateDate(date);
 			}
 			else {
 				commercePriceListDiscountRel.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commercePriceListDiscountRelModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commercePriceListDiscountRel.setModifiedDate(now);
+				commercePriceListDiscountRel.setModifiedDate(date);
 			}
 			else {
 				commercePriceListDiscountRel.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

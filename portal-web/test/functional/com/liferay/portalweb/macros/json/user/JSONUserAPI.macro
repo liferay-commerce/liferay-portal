@@ -87,6 +87,26 @@ definition {
 		com.liferay.poshi.runner.util.JSONCurlUtil.post("${curl}");
 	}
 
+	macro _agreeToTermsAndAnswerReminderQueryByScreenName {
+		Variables.assertDefined(parameterList = "${userId}");
+
+		var portalURL = JSONCompany.getPortalURL();
+
+		var curl = '''
+			${portalURL}/api/jsonws/user/update-agreed-to-terms-of-use/user-id/${userId}/agreed-to-terms-of-use/true \
+				-u test:test
+		''';
+
+		com.liferay.poshi.runner.util.JSONCurlUtil.post("${curl}");
+
+		var curl = '''
+			${portalURL}/api/jsonws/user/update-reminder-query/user-id/${userId}/question/what-is-your-father%27s-middle-name/answer/test \
+				-u test:test
+		''';
+
+		com.liferay.poshi.runner.util.JSONCurlUtil.post("${curl}");
+	}
+
 	macro _deleteUser {
 		Variables.assertDefined(parameterList = "${userId}");
 
@@ -109,21 +129,9 @@ definition {
 	}
 
 	macro _disablePasswordChangeRequired {
-		var companyId = JSONCompany.getCompanyId();
-
 		var portalURL = JSONCompany.getPortalURL();
 
-		var curl = '''
-			${portalURL}/api/jsonws/passwordpolicy/search \
-				-u test@liferay.com:test
-				-d companyId=${companyId} \
-				-d "name=Default%20Password%20Policy" \
-				-d "start=-1" \
-				-d "end=-1" \
-				-d -orderByComparator=
-		''';
-
-		var passwordPolicyId = JSONCurlUtil.post("${curl}", "$.[?(@['name'] == 'Default Password Policy')]['passwordPolicyId']");
+		var passwordPolicyId = JSONPasswordPolicy.getPasswordPolicyIdByName(passwordPolicyName = "Default Password Policy");
 
 		var curl = '''
 			${portalURL}/api/jsonws/passwordpolicy/update-password-policy \
@@ -187,6 +195,35 @@ definition {
 		return "${userId}";
 	}
 
+	macro _getUserIdByScreenName {
+		Variables.assertDefined(parameterList = "${userScreenName}");
+
+		var companyId = JSONCompany.getCompanyId(
+			authenticationMethod = "By Screen Name",
+			creatorPassword = "${creatorPassword}",
+			portalInstanceName = "${portalInstanceName}",
+			userScreenName = "${userScreenName}");
+
+		var portalURL = JSONCompany.getPortalURL();
+
+		if (!(isSet(userScreenName))) {
+			var userScreenName = "test";
+		}
+
+		if (!(isSet(creatorPassword))) {
+			var creatorPassword = "test";
+		}
+
+		var curl = '''
+			${portalURL}/api/jsonws/user/get-user-by-screen-name/company-id/${companyId}/screen-name/${userScreenName} \
+				-u ${userScreenName}:${creatorPassword}
+		''';
+
+		var userId = JSONCurlUtil.get("${curl}", "$['userId']");
+
+		return "${userId}";
+	}
+
 	macro _getUserIds {
 		var companyId = JSONCompany.getCompanyId(authenticationMethod = "${authenticationMethod}");
 
@@ -208,9 +245,6 @@ definition {
 		''';
 
 		var userIds = JSONCurlUtil.post("${curl}", "$..['userId']");
-		var userIds = StringUtil.replace("${userIds}", "[", "");
-		var userIds = StringUtil.replace("${userIds}", "]", "");
-		var userIds = StringUtil.replace("${userIds}", "&quot;", "");
 
 		return "${userIds}";
 	}

@@ -8082,24 +8082,24 @@ public class CommerceOrderPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commerceOrder.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commerceOrder.setCreateDate(now);
+				commerceOrder.setCreateDate(date);
 			}
 			else {
-				commerceOrder.setCreateDate(serviceContext.getCreateDate(now));
+				commerceOrder.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commerceOrderModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commerceOrder.setModifiedDate(now);
+				commerceOrder.setModifiedDate(date);
 			}
 			else {
 				commerceOrder.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

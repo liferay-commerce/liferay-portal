@@ -1,0 +1,166 @@
+definition {
+
+	macro addSiteAndPage {
+		JSONGroup.addGroup(groupName = "Site Name");
+
+		JSONLayout.addPublicLayout(
+			groupName = "Site Name",
+			layoutName = "AC Page");
+	}
+
+	macro addWidgetToPage {
+		JSONLayout.addWidgetToPublicLayout(
+			groupName = "Site Name",
+			layoutName = "AC Page",
+			widgetName = "${widgetName}");
+	}
+
+	macro clearSearchBar {
+		Click(locator1 = "ACUtils#CLEAR_SEARCH_BAR_BUTTON");
+	}
+
+	macro closeAllSessions {
+		var analyticsCloudAsahCuratorURL = PropsUtil.get("analytics.cloud.asah.curator.url");
+
+		var cleanCurl = '''
+			${analyticsCloudAsahCuratorURL}/admin/sessions/close \
+			-H 'Content-Type: application/json' \
+			-d '{
+				"query": {
+					"match_all": {}
+				}
+			}'
+		''';
+
+		com.liferay.poshi.runner.util.JSONCurlUtil.post("${cleanCurl}");
+	}
+
+	macro closeModal {
+		Click(locator1 = "ACUtils#MODAL_CLOSE_BUTTON");
+	}
+
+	macro createBlogsAndAddToPage {
+		ACUtils.addWidgetToPage(widgetName = "Blogs");
+
+		Navigator.openSiteURL(siteName = "Site Name");
+
+		if (!(isSet(entryTitle))) {
+			entryTitle = "Blogs AC Title";
+		}
+		Blogs.addEntry(
+			entryContent = "This is the blog test for AC",
+			entrySubtitle = "Blogs AC Subtitle",
+			entryTitle = "${entryTitle}");
+
+		Navigator.gotoSitePage(
+			pageName = "AC Page",
+			siteName = "Site Name");
+	}
+
+	macro createDMAndAddToPage {
+		ACUtils.addWidgetToPage(widgetName = "Documents and Media");
+
+		Navigator.openSiteURL(siteName = "Site Name");
+
+		DMDocument.enableActionsMenuOnPortlet();
+
+		DMDocument.addPG(
+			dmDocumentFile = "Document_1.jpg",
+			dmDocumentTitle = "DM AC Title");
+
+		Navigator.gotoSitePage(
+			pageName = "AC Page",
+			siteName = "Site Name");
+	}
+
+	macro createFormAndAddToPage {
+		ACUtils.addWidgetToPage(widgetName = "Form");
+
+		Navigator.openSiteURL(siteName = "Site Name");
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName();
+
+		Form.addTextField(fieldPositionNumber = "0");
+
+		Form.closeSidebar();
+
+		Form.save();
+
+		Navigator.gotoSitePage(
+			pageName = "AC Page",
+			siteName = "Site Name");
+
+		FormPortletNavigator.gotoSelectForm();
+
+		FormPortletConfiguration.selectForm();
+
+		PortletEntry.save();
+	}
+
+	macro createWCAndAddToPage {
+		ACUtils.addWidgetToPage(widgetName = "Web Content Display");
+
+		Navigator.openSiteURL(siteName = "Site Name");
+
+		WebContent.addPGViaWCD(
+			webContentContent = "This is the web content test for AC",
+			webContentTitle = "Web Content AC Title");
+
+		Pause(locator1 = "500");
+
+		Navigator.gotoSitePage(
+			pageName = "AC Page",
+			siteName = "Site Name");
+	}
+
+	macro launchAC {
+		var analyticsCloudURL = PropsUtil.get("analytics.cloud.url");
+
+		Navigator.openURL(baseURL = "${analyticsCloudURL}");
+
+		ACLogin.loginAs();
+
+		ACWorkspace.openWorkspace();
+	}
+
+	macro launchDXP {
+		Navigator.openURL();
+
+		if (IsElementNotPresent(locator1 = "ApplicationsMenu#APPLICATIONS_MENU")) {
+			User.firstLoginPG();
+		}
+	}
+
+	macro searchBar {
+		Click(locator1 = "ACSettings#SEARCH_BAR");
+
+		Type(
+			locator1 = "ACSettings#SEARCH_BAR",
+			value1 = "${searchItem}");
+
+		KeyPress(
+			locator1 = "ACSettings#SEARCH_BAR",
+			value1 = "\ENTER");
+	}
+
+	macro tearDownAC {
+		ACUtils.launchAC();
+
+		ACSettings.deleteAllProperties();
+
+		ACSettings.deleteDataSource(dataSourceName = "Liferay DXP");
+	}
+
+	macro tearDownDXP {
+		ACUtils.launchDXP();
+
+		ACDXPSettings.disconnectDXPFromAnalyticsCloud();
+	}
+
+}

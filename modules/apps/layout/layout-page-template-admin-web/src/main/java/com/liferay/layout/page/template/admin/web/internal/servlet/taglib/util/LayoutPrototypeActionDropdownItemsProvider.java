@@ -161,12 +161,12 @@ public class LayoutPrototypeActionDropdownItemsProvider {
 				).setParameter(
 					"groupId", _layoutPrototype.getGroupId()
 				).setParameter(
-					"privateLayout", Boolean.TRUE.toString()
+					"privateLayout", true
 				).setParameter(
 					"rootNodeName",
 					_layoutPrototype.getName(_themeDisplay.getLocale())
 				).setParameter(
-					"showHeader", Boolean.FALSE.toString()
+					"showHeader", false
 				).setWindowState(
 					LiferayWindowState.POP_UP
 				).buildString());
@@ -194,12 +194,12 @@ public class LayoutPrototypeActionDropdownItemsProvider {
 				).setParameter(
 					"groupId", _layoutPrototype.getGroupId()
 				).setParameter(
-					"privateLayout", Boolean.TRUE.toString()
+					"privateLayout", true
 				).setParameter(
 					"rootNodeName",
 					_layoutPrototype.getName(_themeDisplay.getLocale())
 				).setParameter(
-					"showHeader", Boolean.FALSE.toString()
+					"showHeader", false
 				).setWindowState(
 					LiferayWindowState.POP_UP
 				).buildString());

@@ -3054,23 +3054,24 @@ public class DefinitionPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (definition.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				definition.setCreateDate(now);
+				definition.setCreateDate(date);
 			}
 			else {
-				definition.setCreateDate(serviceContext.getCreateDate(now));
+				definition.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!definitionModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				definition.setModifiedDate(now);
+				definition.setModifiedDate(date);
 			}
 			else {
-				definition.setModifiedDate(serviceContext.getModifiedDate(now));
+				definition.setModifiedDate(
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

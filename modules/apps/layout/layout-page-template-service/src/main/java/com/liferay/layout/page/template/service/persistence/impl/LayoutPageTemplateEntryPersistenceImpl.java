@@ -24011,25 +24011,25 @@ public class LayoutPageTemplateEntryPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (layoutPageTemplateEntry.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				layoutPageTemplateEntry.setCreateDate(now);
+				layoutPageTemplateEntry.setCreateDate(date);
 			}
 			else {
 				layoutPageTemplateEntry.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!layoutPageTemplateEntryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				layoutPageTemplateEntry.setModifiedDate(now);
+				layoutPageTemplateEntry.setModifiedDate(date);
 			}
 			else {
 				layoutPageTemplateEntry.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

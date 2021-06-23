@@ -70,8 +70,8 @@ public class JournalArticleFixture {
 			ServiceContextTestUtil.getServiceContext(
 				_group.getGroupId(), TestPropsValues.getUserId());
 
-		serviceContext.setAddGuestPermissions(false);
 		serviceContext.setAddGroupPermissions(false);
+		serviceContext.setAddGuestPermissions(false);
 
 		return serviceContext;
 	}

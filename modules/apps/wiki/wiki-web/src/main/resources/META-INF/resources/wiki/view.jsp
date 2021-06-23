@@ -82,7 +82,7 @@ PortletURL addPageURL = PortletURLBuilder.createRenderURL(
 ).setParameter(
 	"editTitle", "1"
 ).setParameter(
-	"nodeId", String.valueOf(node.getNodeId())
+	"nodeId", node.getNodeId()
 ).setParameter(
 	"parentTitle", wikiPage.getTitle()
 ).setParameter(
@@ -96,7 +96,7 @@ PortletURL editPageURL = PortletURLBuilder.createRenderURL(
 ).setRedirect(
 	currentURL
 ).setParameter(
-	"nodeId", String.valueOf(node.getNodeId())
+	"nodeId", node.getNodeId()
 ).setParameter(
 	"title", title
 ).build();
@@ -114,7 +114,7 @@ PortletURL categorizedPagesURL = PortletURLBuilder.createRenderURL(
 ).setMVCRenderCommandName(
 	"/wiki/view_categorized_pages"
 ).setParameter(
-	"nodeId", String.valueOf(node.getNodeId())
+	"nodeId", node.getNodeId()
 ).build();
 
 PortletURL taggedPagesURL = PortletURLBuilder.createRenderURL(
@@ -122,7 +122,7 @@ PortletURL taggedPagesURL = PortletURLBuilder.createRenderURL(
 ).setMVCRenderCommandName(
 	"/wiki/view_tagged_pages"
 ).setParameter(
-	"nodeId", String.valueOf(node.getNodeId())
+	"nodeId", node.getNodeId()
 ).build();
 
 AssetEntry layoutAssetEntry = AssetEntryLocalServiceUtil.getEntry(WikiPage.class.getName(), wikiPage.getResourcePrimKey());

@@ -3761,25 +3761,25 @@ public class FragmentCollectionPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (fragmentCollection.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				fragmentCollection.setCreateDate(now);
+				fragmentCollection.setCreateDate(date);
 			}
 			else {
 				fragmentCollection.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!fragmentCollectionModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				fragmentCollection.setModifiedDate(now);
+				fragmentCollection.setModifiedDate(date);
 			}
 			else {
 				fragmentCollection.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

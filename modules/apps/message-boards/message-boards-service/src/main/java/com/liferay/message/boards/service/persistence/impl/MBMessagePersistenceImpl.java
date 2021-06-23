@@ -21684,23 +21684,23 @@ public class MBMessagePersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (mbMessage.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				mbMessage.setCreateDate(now);
+				mbMessage.setCreateDate(date);
 			}
 			else {
-				mbMessage.setCreateDate(serviceContext.getCreateDate(now));
+				mbMessage.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!mbMessageModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				mbMessage.setModifiedDate(now);
+				mbMessage.setModifiedDate(date);
 			}
 			else {
-				mbMessage.setModifiedDate(serviceContext.getModifiedDate(now));
+				mbMessage.setModifiedDate(serviceContext.getModifiedDate(date));
 			}
 		}
 

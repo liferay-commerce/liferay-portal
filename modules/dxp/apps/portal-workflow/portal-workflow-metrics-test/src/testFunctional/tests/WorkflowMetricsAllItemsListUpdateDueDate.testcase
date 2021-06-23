@@ -1,0 +1,122 @@
+@component-name = "portal-workflow"
+definition {
+
+	property portal.release = "true";
+	property portal.upstream = "true";
+	property test.run.environment = "EE";
+	property testray.main.component.name = "Workflow Metrics";
+
+	setUp {
+		TestCase.setUpPortalInstance();
+
+		var testPortalInstance = PropsUtil.get("test.portal.instance");
+
+		User.firstLoginPG();
+
+		Navigator.openURL();
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Workflow",
+			panel = "Applications",
+			portlet = "Metrics");
+	}
+
+	tearDown {
+		var testPortalInstance = PropsUtil.get("test.portal.instance");
+
+		if ("${testPortalInstance}" == "true") {
+			PortalInstances.tearDownCP();
+		}
+	}
+
+	@description = "LPS-105498 - Verify that when the user selects an instance with more than 1 pending task, the bulk update due date modal is triggered"
+	@ignore = "Test Stub"
+	@priority = "5"
+	test BulkUpdateModalIsDisplayedWhenMoreThan1PendingTaskIsSelected {
+
+		// TODO LRQA-67822 BulkUpdateModalIsDisplayedWhenMoreThan1PendingTaskIsSelected pending implementation
+
+	}
+
+	@description = "LPS-105498 - Verify that the user can filter the tasks by Assignee on Select Tasks to Update step"
+	@ignore = "Test Stub"
+	@priority = "3"
+	test CanFilterTasksByAssignee {
+
+		// TODO LRQA-67828 CanFilterTasksByAssignee pending implementation
+
+	}
+
+	@description = "LPS-105498 - Verify that the user can filter the tasks by Step on Select Tasks to Update step"
+	@ignore = "Test Stub"
+	@priority = "3"
+	test CanFilterTasksByStep {
+
+		// TODO LRQA-67827 CanFilterTasksByStep pending implementation
+
+	}
+
+	@description = "LPS-105498 - Verify that the user cannot update the due date of unassigned tasks that are also not assigned to its current role"
+	@ignore = "Test Stub"
+	@priority = "4"
+	test CanNotUpdateDueDateOfUnassignedTasks {
+
+		// TODO LRQA-67826 CanNotUpdateDueDateOfUnassignedTasks pending implementation
+
+	}
+
+	@description = "LPS-105497 - Verify that users can hover over a row to see action options and select to Update Task Due Date by hovering over the calendar icon"
+	@ignore = "Test Stub"
+	@priority = "3"
+	test CanSelectUpDateDueDateByHoveringOverIcon {
+
+		// TODO LRQA-67821 CanSelectUpDateDueDateByHoveringOverIcon pending implementation
+
+	}
+
+	@description = "LPS-105497 - Verify that the user can select Update Task Due Date in the kebab menu for a particular row"
+	@ignore = "Test Stub"
+	@priority = "4"
+	test CanSelectUpDateDueDateInKebabMenu {
+
+		// TODO LRQA-67824 CanSelectUpDateDueDateInKebabMenu pending implementation
+
+	}
+
+	@description = "LPS-105497 - Verify that the current date/time is pre-populated into the Update Task Due Date form getting the data how it is in My Workflow Tasks"
+	@ignore = "Test Stub"
+	@priority = "3"
+	test CurrentDateTimeIsPrePopulated {
+
+		// TODO LRQA-67816 CurrentDateTimeIsPrePopulated pending implementation
+
+	}
+
+	@description = "LPS-105497 - Verify that when there is an unexpected error, the modal displays the specific error state message in the banner"
+	@ignore = "Test Stub"
+	@priority = "2"
+	test DisplaysSpecificErrorStateForUnexpectedError {
+
+		// TODO LRQA-67825 DisplaysSpecificErrorStateForUnexpectedError pending implementation
+
+	}
+
+	@description = "LPS-105498 - Verify that the message Error Your request has failed. Select Done to retry. is displayed when the network connection is lost when retrieving the tasks"
+	@ignore = "Test Stub"
+	@priority = "2"
+	test ErrorMessageIsDisplayedOnNetworkConnectionIsLost {
+
+		// TODO LRQA-67819 ErrorMessageIsDisplayedOnNetworkConnectionIsLost pending implementation
+
+	}
+
+	@description = "LPS-105498 - Verify that the message The due dates for theses tasks have been updated is displayed when the bulk update due date action is successful"
+	@ignore = "Test Stub"
+	@priority = "3"
+	test MessageIsDisplayedWhenBulkUpdateActionIsSuccessful {
+
+		// TODO LRQA-67817 MessageIsDisplayedWhenBulkUpdateActionIsSuccessful pending implementation
+
+	}
+
+}

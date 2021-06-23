@@ -23764,23 +23764,23 @@ public class WikiPagePersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (wikiPage.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				wikiPage.setCreateDate(now);
+				wikiPage.setCreateDate(date);
 			}
 			else {
-				wikiPage.setCreateDate(serviceContext.getCreateDate(now));
+				wikiPage.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!wikiPageModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				wikiPage.setModifiedDate(now);
+				wikiPage.setModifiedDate(date);
 			}
 			else {
-				wikiPage.setModifiedDate(serviceContext.getModifiedDate(now));
+				wikiPage.setModifiedDate(serviceContext.getModifiedDate(date));
 			}
 		}
 

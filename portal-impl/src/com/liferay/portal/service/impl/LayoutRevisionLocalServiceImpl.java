@@ -77,7 +77,7 @@ public class LayoutRevisionLocalServiceImpl
 			layoutSetBranchPersistence.findByPrimaryKey(layoutSetBranchId);
 		parentLayoutRevisionId = getParentLayoutRevisionId(
 			layoutSetBranchId, parentLayoutRevisionId, plid);
-		Date now = new Date();
+		Date date = new Date();
 
 		long layoutRevisionId = counterLocalService.increment();
 
@@ -105,7 +105,7 @@ public class LayoutRevisionLocalServiceImpl
 		layoutRevision.setColorSchemeId(colorSchemeId);
 		layoutRevision.setCss(css);
 		layoutRevision.setStatus(WorkflowConstants.STATUS_DRAFT);
-		layoutRevision.setStatusDate(serviceContext.getModifiedDate(now));
+		layoutRevision.setStatusDate(serviceContext.getModifiedDate(date));
 
 		layoutRevision = layoutRevisionPersistence.update(layoutRevision);
 
@@ -276,6 +276,15 @@ public class LayoutRevisionLocalServiceImpl
 
 		return layoutRevisionPersistence.fetchByL_P_First(
 			layoutSetBranchId, plid,
+			new LayoutRevisionCreateDateComparator(false));
+	}
+
+	@Override
+	public LayoutRevision fetchLatestLayoutRevision(
+		long layoutSetBranchId, long layoutBranchId, long plid) {
+
+		return layoutRevisionPersistence.fetchByL_L_P_First(
+			layoutSetBranchId, layoutBranchId, plid,
 			new LayoutRevisionCreateDateComparator(false));
 	}
 

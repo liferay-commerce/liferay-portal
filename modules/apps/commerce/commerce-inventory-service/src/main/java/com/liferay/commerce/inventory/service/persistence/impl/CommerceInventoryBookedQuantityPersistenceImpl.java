@@ -2043,27 +2043,27 @@ public class CommerceInventoryBookedQuantityPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew &&
 			(commerceInventoryBookedQuantity.getCreateDate() == null)) {
 
 			if (serviceContext == null) {
-				commerceInventoryBookedQuantity.setCreateDate(now);
+				commerceInventoryBookedQuantity.setCreateDate(date);
 			}
 			else {
 				commerceInventoryBookedQuantity.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commerceInventoryBookedQuantityModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commerceInventoryBookedQuantity.setModifiedDate(now);
+				commerceInventoryBookedQuantity.setModifiedDate(date);
 			}
 			else {
 				commerceInventoryBookedQuantity.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

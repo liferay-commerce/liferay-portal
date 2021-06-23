@@ -224,7 +224,7 @@ public class StagingConfigurationPortlet extends MVCPortlet {
 						StagingProcessesPortletKeys.STAGING_PROCESSES, 0, 0,
 						PortletRequest.RENDER_PHASE)
 				).setParameter(
-					"localStagingEnabled", Boolean.TRUE.toString()
+					"localStagingEnabled", true
 				).build();
 			}
 			else if (stagingType == StagingConstants.TYPE_REMOTE_STAGING) {
@@ -234,7 +234,7 @@ public class StagingConfigurationPortlet extends MVCPortlet {
 						StagingProcessesPortletKeys.STAGING_PROCESSES, 0, 0,
 						PortletRequest.RENDER_PHASE)
 				).setParameter(
-					"remoteStagingEnabled", Boolean.TRUE.toString()
+					"remoteStagingEnabled", true
 				).build();
 			}
 
@@ -254,7 +254,7 @@ public class StagingConfigurationPortlet extends MVCPortlet {
 					StagingProcessesPortletKeys.STAGING_PROCESSES, 0, 0,
 					PortletRequest.RENDER_PHASE)
 			).setParameter(
-				"showStagingConfiguration", Boolean.TRUE.toString()
+				"showStagingConfiguration", true
 			).build();
 
 			if (portletURL != null) {
@@ -278,7 +278,7 @@ public class StagingConfigurationPortlet extends MVCPortlet {
 					StagingProcessesPortletKeys.STAGING_PROCESSES, 0, 0,
 					PortletRequest.RENDER_PHASE)
 			).setParameter(
-				"showStagingConfiguration", Boolean.TRUE.toString()
+				"showStagingConfiguration", true
 			).build();
 
 			if (portletURL != null) {

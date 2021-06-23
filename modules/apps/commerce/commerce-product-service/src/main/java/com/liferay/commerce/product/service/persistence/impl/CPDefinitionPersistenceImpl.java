@@ -5621,24 +5621,24 @@ public class CPDefinitionPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (cpDefinition.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				cpDefinition.setCreateDate(now);
+				cpDefinition.setCreateDate(date);
 			}
 			else {
-				cpDefinition.setCreateDate(serviceContext.getCreateDate(now));
+				cpDefinition.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!cpDefinitionModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				cpDefinition.setModifiedDate(now);
+				cpDefinition.setModifiedDate(date);
 			}
 			else {
 				cpDefinition.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

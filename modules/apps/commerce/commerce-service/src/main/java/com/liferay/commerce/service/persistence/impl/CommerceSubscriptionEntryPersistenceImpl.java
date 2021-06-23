@@ -4953,25 +4953,25 @@ public class CommerceSubscriptionEntryPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commerceSubscriptionEntry.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commerceSubscriptionEntry.setCreateDate(now);
+				commerceSubscriptionEntry.setCreateDate(date);
 			}
 			else {
 				commerceSubscriptionEntry.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commerceSubscriptionEntryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commerceSubscriptionEntry.setModifiedDate(now);
+				commerceSubscriptionEntry.setModifiedDate(date);
 			}
 			else {
 				commerceSubscriptionEntry.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

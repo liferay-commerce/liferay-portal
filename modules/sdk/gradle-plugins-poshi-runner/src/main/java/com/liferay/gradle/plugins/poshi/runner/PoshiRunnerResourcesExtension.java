@@ -54,11 +54,11 @@ public class PoshiRunnerResourcesExtension {
 
 			@Override
 			public String call() throws Exception {
-				Date now = new Date();
+				Date date = new Date();
 
 				DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
 
-				return dateFormat.format(now) + "-" +
+				return dateFormat.format(date) + "-" +
 					_gitRepositoryBuildAdapter.getHeadHash(_project);
 			}
 

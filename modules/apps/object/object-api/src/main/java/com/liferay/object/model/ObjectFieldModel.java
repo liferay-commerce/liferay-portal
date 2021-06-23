@@ -219,6 +219,63 @@ public interface ObjectFieldModel
 	public void setObjectDefinitionId(long objectDefinitionId);
 
 	/**
+	 * Returns the indexed of this object field.
+	 *
+	 * @return the indexed of this object field
+	 */
+	public boolean getIndexed();
+
+	/**
+	 * Returns <code>true</code> if this object field is indexed.
+	 *
+	 * @return <code>true</code> if this object field is indexed; <code>false</code> otherwise
+	 */
+	public boolean isIndexed();
+
+	/**
+	 * Sets whether this object field is indexed.
+	 *
+	 * @param indexed the indexed of this object field
+	 */
+	public void setIndexed(boolean indexed);
+
+	/**
+	 * Returns the indexed as keyword of this object field.
+	 *
+	 * @return the indexed as keyword of this object field
+	 */
+	public boolean getIndexedAsKeyword();
+
+	/**
+	 * Returns <code>true</code> if this object field is indexed as keyword.
+	 *
+	 * @return <code>true</code> if this object field is indexed as keyword; <code>false</code> otherwise
+	 */
+	public boolean isIndexedAsKeyword();
+
+	/**
+	 * Sets whether this object field is indexed as keyword.
+	 *
+	 * @param indexedAsKeyword the indexed as keyword of this object field
+	 */
+	public void setIndexedAsKeyword(boolean indexedAsKeyword);
+
+	/**
+	 * Returns the indexed language ID of this object field.
+	 *
+	 * @return the indexed language ID of this object field
+	 */
+	@AutoEscape
+	public String getIndexedLanguageId();
+
+	/**
+	 * Sets the indexed language ID of this object field.
+	 *
+	 * @param indexedLanguageId the indexed language ID of this object field
+	 */
+	public void setIndexedLanguageId(String indexedLanguageId);
+
+	/**
 	 * Returns the name of this object field.
 	 *
 	 * @return the name of this object field

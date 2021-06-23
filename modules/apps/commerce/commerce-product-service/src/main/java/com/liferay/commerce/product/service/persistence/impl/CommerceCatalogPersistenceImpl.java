@@ -2429,25 +2429,25 @@ public class CommerceCatalogPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commerceCatalog.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commerceCatalog.setCreateDate(now);
+				commerceCatalog.setCreateDate(date);
 			}
 			else {
 				commerceCatalog.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commerceCatalogModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commerceCatalog.setModifiedDate(now);
+				commerceCatalog.setModifiedDate(date);
 			}
 			else {
 				commerceCatalog.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

@@ -2773,23 +2773,24 @@ public class DDMContentPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (ddmContent.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				ddmContent.setCreateDate(now);
+				ddmContent.setCreateDate(date);
 			}
 			else {
-				ddmContent.setCreateDate(serviceContext.getCreateDate(now));
+				ddmContent.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!ddmContentModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				ddmContent.setModifiedDate(now);
+				ddmContent.setModifiedDate(date);
 			}
 			else {
-				ddmContent.setModifiedDate(serviceContext.getModifiedDate(now));
+				ddmContent.setModifiedDate(
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

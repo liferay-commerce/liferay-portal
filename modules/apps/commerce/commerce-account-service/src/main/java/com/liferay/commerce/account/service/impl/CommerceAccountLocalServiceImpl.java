@@ -42,7 +42,6 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Organization;
-import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.SystemEventConstants;
@@ -163,6 +162,35 @@ public class CommerceAccountLocalServiceImpl
 	}
 
 	@Override
+	public CommerceAccount addOrUpdateCommerceAccount(
+			String name, long parentCommerceAccountId, boolean logo,
+			byte[] logoBytes, String email, String taxId, int type,
+			boolean active, String externalReferenceCode,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		if (Validator.isBlank(externalReferenceCode)) {
+			externalReferenceCode = null;
+		}
+		else {
+			CommerceAccount commerceAccount =
+				CommerceAccountImpl.fromAccountEntry(
+					accountEntryLocalService.fetchAccountEntryByReferenceCode(
+						serviceContext.getCompanyId(), externalReferenceCode));
+
+			if (commerceAccount != null) {
+				return commerceAccountLocalService.updateCommerceAccount(
+					commerceAccount.getCommerceAccountId(), name, logo,
+					logoBytes, email, taxId, active, serviceContext);
+			}
+		}
+
+		return commerceAccountLocalService.addCommerceAccount(
+			name, parentCommerceAccountId, email, taxId, type, active,
+			externalReferenceCode, serviceContext);
+	}
+
+	@Override
 	public CommerceAccount addPersonalCommerceAccount(
 			long userId, String taxId, String externalReferenceCode,
 			ServiceContext serviceContext)
@@ -194,15 +222,6 @@ public class CommerceAccountLocalServiceImpl
 	public CommerceAccount createCommerceAccount(long commerceAccountId) {
 		return CommerceAccountImpl.fromAccountEntry(
 			accountEntryLocalService.createAccountEntry(commerceAccountId));
-	}
-
-	@Override
-	public PersistedModel createPersistedModel(Serializable primaryKeyObj)
-		throws PortalException {
-
-		return CommerceAccountImpl.fromAccountEntry(
-			(AccountEntry)accountEntryLocalService.createPersistedModel(
-				primaryKeyObj));
 	}
 
 	@Indexable(type = IndexableType.DELETE)
@@ -279,17 +298,6 @@ public class CommerceAccountLocalServiceImpl
 	}
 
 	@Override
-	public PersistedModel deletePersistedModel(PersistedModel persistedModel)
-		throws PortalException {
-
-		CommerceAccount commerceAccount = (CommerceAccount)persistedModel;
-
-		return accountEntryLocalService.deletePersistedModel(
-			accountEntryLocalService.getPersistedModel(
-				commerceAccount.getPrimaryKeyObj()));
-	}
-
-	@Override
 	public <T> T dslQuery(DSLQuery dslQuery) {
 		throw new UnsupportedOperationException();
 	}
@@ -303,7 +311,7 @@ public class CommerceAccountLocalServiceImpl
 		}
 
 		return CommerceAccountImpl.fromAccountEntry(
-			accountEntryLocalService.fetchAccountEntryByReferenceCode(
+			accountEntryLocalService.fetchAccountEntryByExternalReferenceCode(
 				companyId, externalReferenceCode));
 	}
 
@@ -318,7 +326,7 @@ public class CommerceAccountLocalServiceImpl
 		long companyId, String externalReferenceCode) {
 
 		return CommerceAccountImpl.fromAccountEntry(
-			accountEntryLocalService.fetchAccountEntryByReferenceCode(
+			accountEntryLocalService.fetchAccountEntryByExternalReferenceCode(
 				companyId, externalReferenceCode));
 	}
 
@@ -373,15 +381,6 @@ public class CommerceAccountLocalServiceImpl
 
 		return CommerceAccountImpl.fromAccountEntry(
 			accountEntryLocalService.getGuestAccountEntry(companyId));
-	}
-
-	@Override
-	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
-		throws PortalException {
-
-		return CommerceAccountImpl.fromAccountEntry(
-			(AccountEntry)accountEntryLocalService.getPersistedModel(
-				primaryKeyObj));
 	}
 
 	@Override
@@ -665,35 +664,6 @@ public class CommerceAccountLocalServiceImpl
 
 		return CommerceAccountImpl.fromAccountEntry(
 			accountEntryLocalService.updateStatus(commerceAccountId, status));
-	}
-
-	@Override
-	public CommerceAccount upsertCommerceAccount(
-			String name, long parentCommerceAccountId, boolean logo,
-			byte[] logoBytes, String email, String taxId, int type,
-			boolean active, String externalReferenceCode,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		if (Validator.isBlank(externalReferenceCode)) {
-			externalReferenceCode = null;
-		}
-		else {
-			CommerceAccount commerceAccount =
-				CommerceAccountImpl.fromAccountEntry(
-					accountEntryLocalService.fetchAccountEntryByReferenceCode(
-						serviceContext.getCompanyId(), externalReferenceCode));
-
-			if (commerceAccount != null) {
-				return commerceAccountLocalService.updateCommerceAccount(
-					commerceAccount.getCommerceAccountId(), name, logo,
-					logoBytes, email, taxId, active, serviceContext);
-			}
-		}
-
-		return commerceAccountLocalService.addCommerceAccount(
-			name, parentCommerceAccountId, email, taxId, type, active,
-			externalReferenceCode, serviceContext);
 	}
 
 	protected long getParentCommerceAccountId(

@@ -31,7 +31,7 @@
 				).setMVCRenderCommandName(
 					"/blogs_aggregator/view"
 				).setParameter(
-					"blogsPortletFound", Boolean.FALSE.toString()
+					"blogsPortletFound", false
 				).buildString()));
 		sb.append("&entryId=");
 		sb.append(entry.getEntryId());

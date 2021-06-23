@@ -2156,25 +2156,25 @@ public class CommerceApplicationModelPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commerceApplicationModel.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commerceApplicationModel.setCreateDate(now);
+				commerceApplicationModel.setCreateDate(date);
 			}
 			else {
 				commerceApplicationModel.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commerceApplicationModelModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commerceApplicationModel.setModifiedDate(now);
+				commerceApplicationModel.setModifiedDate(date);
 			}
 			else {
 				commerceApplicationModel.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

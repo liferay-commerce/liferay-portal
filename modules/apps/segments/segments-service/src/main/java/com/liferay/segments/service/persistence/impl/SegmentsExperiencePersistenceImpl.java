@@ -10949,25 +10949,25 @@ public class SegmentsExperiencePersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (segmentsExperience.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				segmentsExperience.setCreateDate(now);
+				segmentsExperience.setCreateDate(date);
 			}
 			else {
 				segmentsExperience.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!segmentsExperienceModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				segmentsExperience.setModifiedDate(now);
+				segmentsExperience.setModifiedDate(date);
 			}
 			else {
 				segmentsExperience.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

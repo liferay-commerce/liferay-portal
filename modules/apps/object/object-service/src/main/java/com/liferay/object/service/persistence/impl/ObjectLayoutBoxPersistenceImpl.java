@@ -1443,25 +1443,25 @@ public class ObjectLayoutBoxPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (objectLayoutBox.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				objectLayoutBox.setCreateDate(now);
+				objectLayoutBox.setCreateDate(date);
 			}
 			else {
 				objectLayoutBox.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!objectLayoutBoxModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				objectLayoutBox.setModifiedDate(now);
+				objectLayoutBox.setModifiedDate(date);
 			}
 			else {
 				objectLayoutBox.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

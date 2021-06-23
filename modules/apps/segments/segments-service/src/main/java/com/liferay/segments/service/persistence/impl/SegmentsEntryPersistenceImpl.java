@@ -10184,24 +10184,24 @@ public class SegmentsEntryPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (segmentsEntry.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				segmentsEntry.setCreateDate(now);
+				segmentsEntry.setCreateDate(date);
 			}
 			else {
-				segmentsEntry.setCreateDate(serviceContext.getCreateDate(now));
+				segmentsEntry.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!segmentsEntryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				segmentsEntry.setModifiedDate(now);
+				segmentsEntry.setModifiedDate(date);
 			}
 			else {
 				segmentsEntry.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

@@ -202,7 +202,7 @@ public class GoogleLoginStrutsAction implements StrutsAction {
 				).setMVCRenderCommandName(
 					"/login/login_redirect"
 				).setParameter(
-					"anonymousUser", Boolean.FALSE.toString()
+					"anonymousUser", false
 				).setParameter(
 					"emailAddress", user.getEmailAddress()
 				).setPortletMode(
@@ -217,7 +217,7 @@ public class GoogleLoginStrutsAction implements StrutsAction {
 			).setParameter(
 				"lastName", user.getLastName()
 			).setParameter(
-				"saveLastPath", Boolean.FALSE.toString()
+				"saveLastPath", false
 			).setParameter(
 				"userId", user.getUserId()
 			).setPortletMode(

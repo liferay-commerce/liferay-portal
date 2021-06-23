@@ -1430,27 +1430,27 @@ public class CommerceBOMFolderApplicationRelPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew &&
 			(commerceBOMFolderApplicationRel.getCreateDate() == null)) {
 
 			if (serviceContext == null) {
-				commerceBOMFolderApplicationRel.setCreateDate(now);
+				commerceBOMFolderApplicationRel.setCreateDate(date);
 			}
 			else {
 				commerceBOMFolderApplicationRel.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commerceBOMFolderApplicationRelModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commerceBOMFolderApplicationRel.setModifiedDate(now);
+				commerceBOMFolderApplicationRel.setModifiedDate(date);
 			}
 			else {
 				commerceBOMFolderApplicationRel.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

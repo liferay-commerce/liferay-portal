@@ -177,7 +177,7 @@ public class KBSuggestionListManagementToolbarDisplayContext {
 		return PortletURLBuilder.create(
 			PortletURLUtil.clone(_currentURLObj, _liferayPortletResponse)
 		).setParameter(
-			"storeOrderByPreference", Boolean.TRUE.toString()
+			"storeOrderByPreference", true
 		).build();
 	}
 
@@ -195,7 +195,7 @@ public class KBSuggestionListManagementToolbarDisplayContext {
 					PortletURLUtil.clone(
 						_currentURLObj, _liferayPortletResponse)
 				).setParameter(
-					"storeOrderByPreference", Boolean.FALSE.toString()
+					"storeOrderByPreference", false
 				).build();
 
 				for (String navigationKey : navigationKeys) {

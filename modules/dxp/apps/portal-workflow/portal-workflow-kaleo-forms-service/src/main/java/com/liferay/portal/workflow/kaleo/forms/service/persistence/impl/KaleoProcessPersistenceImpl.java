@@ -2797,24 +2797,24 @@ public class KaleoProcessPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (kaleoProcess.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				kaleoProcess.setCreateDate(now);
+				kaleoProcess.setCreateDate(date);
 			}
 			else {
-				kaleoProcess.setCreateDate(serviceContext.getCreateDate(now));
+				kaleoProcess.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!kaleoProcessModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				kaleoProcess.setModifiedDate(now);
+				kaleoProcess.setModifiedDate(date);
 			}
 			else {
 				kaleoProcess.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

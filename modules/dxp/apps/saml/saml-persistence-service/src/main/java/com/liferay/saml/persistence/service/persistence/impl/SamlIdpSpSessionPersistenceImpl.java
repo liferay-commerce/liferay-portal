@@ -1355,25 +1355,25 @@ public class SamlIdpSpSessionPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (samlIdpSpSession.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				samlIdpSpSession.setCreateDate(now);
+				samlIdpSpSession.setCreateDate(date);
 			}
 			else {
 				samlIdpSpSession.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!samlIdpSpSessionModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				samlIdpSpSession.setModifiedDate(now);
+				samlIdpSpSession.setModifiedDate(date);
 			}
 			else {
 				samlIdpSpSession.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

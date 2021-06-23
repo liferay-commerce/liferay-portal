@@ -1290,23 +1290,23 @@ public class CTCommentPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (ctComment.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				ctComment.setCreateDate(now);
+				ctComment.setCreateDate(date);
 			}
 			else {
-				ctComment.setCreateDate(serviceContext.getCreateDate(now));
+				ctComment.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!ctCommentModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				ctComment.setModifiedDate(now);
+				ctComment.setModifiedDate(date);
 			}
 			else {
-				ctComment.setModifiedDate(serviceContext.getModifiedDate(now));
+				ctComment.setModifiedDate(serviceContext.getModifiedDate(date));
 			}
 		}
 

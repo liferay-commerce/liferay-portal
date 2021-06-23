@@ -684,8 +684,7 @@ public class JournalContentDisplayContext {
 				latestArticleAssetRenderer.getURLEdit(
 					PortalUtil.getLiferayPortletRequest(_portletRequest), null,
 					LiferayWindowState.NORMAL, _themeDisplay.getURLCurrent())
-			).setParameter(
-				"portletResource",
+			).setPortletResource(
 				() -> {
 					PortletDisplay portletDisplay =
 						_themeDisplay.getPortletDisplay();

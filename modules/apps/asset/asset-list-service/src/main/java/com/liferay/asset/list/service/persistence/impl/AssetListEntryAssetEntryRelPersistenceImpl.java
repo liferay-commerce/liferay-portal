@@ -4143,25 +4143,25 @@ public class AssetListEntryAssetEntryRelPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (assetListEntryAssetEntryRel.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				assetListEntryAssetEntryRel.setCreateDate(now);
+				assetListEntryAssetEntryRel.setCreateDate(date);
 			}
 			else {
 				assetListEntryAssetEntryRel.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!assetListEntryAssetEntryRelModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				assetListEntryAssetEntryRel.setModifiedDate(now);
+				assetListEntryAssetEntryRel.setModifiedDate(date);
 			}
 			else {
 				assetListEntryAssetEntryRel.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

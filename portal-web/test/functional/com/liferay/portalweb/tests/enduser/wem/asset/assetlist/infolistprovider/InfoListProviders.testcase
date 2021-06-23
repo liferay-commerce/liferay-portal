@@ -26,6 +26,7 @@ definition {
 
 	@description = "This is a use case for LPS-110191. The related assets should be in AP when select Related Assets as Collection Provider."
 	@priority = "5"
+	@uitest
 	test DisplayRelatedAssetsInAssetPublisher {
 		property portal.acceptance = "true";
 
@@ -135,7 +136,9 @@ definition {
 				locator1 = "APConfiguration#SELECT_COLLECTION_PROVIDER_FIELD",
 				value1 = "Related Assets");
 
-			Pause(locator1 = "3000");
+			WaitForElementNotPresent(
+				key_text = "Save",
+				locator1 = "Button#ANY_DISABLED");
 
 			PortletEntry.save();
 
@@ -168,6 +171,7 @@ definition {
 
 	@description = "This is a use case for LPS-91001. The assets are sorted correctly in Asset Publisher when select collection provider and enable pagination."
 	@priority = "4"
+	@uitest
 	test ViewAssetsInAssetPublisherWhenSelectHighestRatedAssetsAndEnablePagination {
 		task ("Add 5 Web Content Articles") {
 			for (var n : list "1,2,3,4,5") {
@@ -217,8 +221,6 @@ definition {
 					ratingStarCount = "${n}");
 
 				var n = ${n} + 1;
-
-				Pause(locator1 = "3000");
 			}
 		}
 
@@ -275,6 +277,7 @@ definition {
 
 	@description = "This is a use case for LPS-91001. The collection providers should be available in all areas where the Asset Publisher is available."
 	@priority = "4"
+	@uitest
 	test ViewCollectionProvidersInAssetPublisher {
 		task ("Add a widget page") {
 			JSONLayout.addPublicLayout(

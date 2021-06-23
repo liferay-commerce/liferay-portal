@@ -1217,25 +1217,25 @@ public class CommerceApplicationBrandPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commerceApplicationBrand.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commerceApplicationBrand.setCreateDate(now);
+				commerceApplicationBrand.setCreateDate(date);
 			}
 			else {
 				commerceApplicationBrand.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commerceApplicationBrandModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commerceApplicationBrand.setModifiedDate(now);
+				commerceApplicationBrand.setModifiedDate(date);
 			}
 			else {
 				commerceApplicationBrand.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

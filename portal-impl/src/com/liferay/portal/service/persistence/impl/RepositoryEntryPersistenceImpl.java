@@ -2472,25 +2472,25 @@ public class RepositoryEntryPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (repositoryEntry.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				repositoryEntry.setCreateDate(now);
+				repositoryEntry.setCreateDate(date);
 			}
 			else {
 				repositoryEntry.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!repositoryEntryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				repositoryEntry.setModifiedDate(now);
+				repositoryEntry.setModifiedDate(date);
 			}
 			else {
 				repositoryEntry.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

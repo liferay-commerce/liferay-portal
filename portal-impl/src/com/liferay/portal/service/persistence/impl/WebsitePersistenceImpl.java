@@ -4126,23 +4126,23 @@ public class WebsitePersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (website.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				website.setCreateDate(now);
+				website.setCreateDate(date);
 			}
 			else {
-				website.setCreateDate(serviceContext.getCreateDate(now));
+				website.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!websiteModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				website.setModifiedDate(now);
+				website.setModifiedDate(date);
 			}
 			else {
-				website.setModifiedDate(serviceContext.getModifiedDate(now));
+				website.setModifiedDate(serviceContext.getModifiedDate(date));
 			}
 		}
 

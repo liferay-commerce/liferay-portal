@@ -18,6 +18,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.ResourcePermission;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LoggingTimer;
 
 import java.sql.PreparedStatement;
@@ -38,17 +39,27 @@ public abstract class BaseUpgradeAdminPortlets extends UpgradeProcess {
 		throws Exception {
 
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
-				"insert into ResourcePermission (resourcePermissionId, " +
-					"companyId, name, scope, primKey, roleId, actionIds) " +
-						"values (?, ?, ?, ?, ?, ?, ?)")) {
+				StringBundler.concat(
+					"insert into ResourcePermission (resourcePermissionId, ",
+					"companyId, name, scope, primKey, primKeyId, roleId, ",
+					"actionIds, viewActionId) values (?, ?, ?, ?, ?, ?, ?, ?, ",
+					"?)"))) {
+
+			boolean viewActionId = false;
+
+			if ((actionIds % 2) == 1) {
+				viewActionId = true;
+			}
 
 			preparedStatement.setLong(1, resourcePermissionId);
 			preparedStatement.setLong(2, companyId);
 			preparedStatement.setString(3, name);
 			preparedStatement.setInt(4, scope);
 			preparedStatement.setString(5, primKey);
-			preparedStatement.setLong(6, roleId);
-			preparedStatement.setLong(7, actionIds);
+			preparedStatement.setLong(6, GetterUtil.getLong(primKey));
+			preparedStatement.setLong(7, roleId);
+			preparedStatement.setLong(8, actionIds);
+			preparedStatement.setBoolean(9, viewActionId);
 
 			preparedStatement.executeUpdate();
 		}

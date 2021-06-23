@@ -488,11 +488,11 @@ public class ExportImportDateUtil {
 			}
 		}
 		else if (range.equals(RANGE_LAST)) {
-			Date now = new Date();
+			Date date = new Date();
 
-			startDate = new Date(now.getTime() - (rangeLast * Time.HOUR));
+			startDate = new Date(date.getTime() - (rangeLast * Time.HOUR));
 
-			endDate = now;
+			endDate = date;
 		}
 
 		return new DateRange(startDate, endDate);

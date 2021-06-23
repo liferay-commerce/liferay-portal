@@ -5296,25 +5296,25 @@ public class CPAttachmentFileEntryPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (cpAttachmentFileEntry.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				cpAttachmentFileEntry.setCreateDate(now);
+				cpAttachmentFileEntry.setCreateDate(date);
 			}
 			else {
 				cpAttachmentFileEntry.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!cpAttachmentFileEntryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				cpAttachmentFileEntry.setModifiedDate(now);
+				cpAttachmentFileEntry.setModifiedDate(date);
 			}
 			else {
 				cpAttachmentFileEntry.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

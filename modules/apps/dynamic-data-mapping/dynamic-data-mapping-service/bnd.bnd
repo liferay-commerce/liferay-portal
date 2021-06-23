@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Dynamic Data Mapping Service
 Bundle-SymbolicName: com.liferay.dynamic.data.mapping.service
-Bundle-Version: 6.0.9
+Bundle-Version: 6.0.17
 Export-Package: com.liferay.dynamic.data.mapping.service.http
 Import-Package:\
 	!com.fasterxml.jackson.*,\
@@ -35,7 +35,7 @@ Import-Package:\
 	org.tukaani.*;resolution:=optional,\
 	\
 	*
-Liferay-Require-SchemaVersion: 4.3.3
+Liferay-Require-SchemaVersion: 4.3.4
 Liferay-Service: true
 Provide-Capability:\
 	liferay.resource.bundle;\

@@ -30,7 +30,7 @@ PortletURL portletURL = PortletURLBuilder.createRenderURL(
 ).setTabs1(
 	tabs1
 ).setParameter(
-	"delta", String.valueOf(delta)
+	"delta", delta
 ).build();
 %>
 

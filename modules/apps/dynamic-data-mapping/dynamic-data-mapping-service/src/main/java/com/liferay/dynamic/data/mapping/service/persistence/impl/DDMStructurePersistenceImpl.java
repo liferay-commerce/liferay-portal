@@ -10591,24 +10591,24 @@ public class DDMStructurePersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (ddmStructure.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				ddmStructure.setCreateDate(now);
+				ddmStructure.setCreateDate(date);
 			}
 			else {
-				ddmStructure.setCreateDate(serviceContext.getCreateDate(now));
+				ddmStructure.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!ddmStructureModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				ddmStructure.setModifiedDate(now);
+				ddmStructure.setModifiedDate(date);
 			}
 			else {
 				ddmStructure.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

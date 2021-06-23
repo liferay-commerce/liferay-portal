@@ -3130,25 +3130,25 @@ public class SiteFriendlyURLPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (siteFriendlyURL.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				siteFriendlyURL.setCreateDate(now);
+				siteFriendlyURL.setCreateDate(date);
 			}
 			else {
 				siteFriendlyURL.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!siteFriendlyURLModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				siteFriendlyURL.setModifiedDate(now);
+				siteFriendlyURL.setModifiedDate(date);
 			}
 			else {
 				siteFriendlyURL.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

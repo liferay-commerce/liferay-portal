@@ -25,20 +25,19 @@ import {Body, Footer} from './PerformanceByAssigneeCardBody.es';
 function Header({disableFilters, prefixKey, processId}) {
 	return (
 		<PanelHeaderWithOptions
-			className="dashboard-panel-header"
+			className="tabs-panel-header"
 			description={Liferay.Language.get(
 				'performance-by-assignee-description'
 			)}
 			title={Liferay.Language.get('performance-by-assignee')}
 		>
 			<ClayLayout.ContentCol className="m-0 management-bar management-bar-light navbar">
-				<ul className="navbar-nav">
+				<div className="navbar-nav">
 					<ProcessStepFilter
 						disabled={disableFilters}
 						options={{
 							hideControl: true,
 							multiple: false,
-							position: 'right',
 							withAllSteps: true,
 							withSelectionTitle: true,
 						}}
@@ -49,10 +48,9 @@ function Header({disableFilters, prefixKey, processId}) {
 					<TimeRangeFilter
 						className="pl-3"
 						disabled={disableFilters}
-						options={{position: 'right'}}
 						prefixKey={prefixKey}
 					/>
-				</ul>
+				</div>
 			</ClayLayout.ContentCol>
 		</PanelHeaderWithOptions>
 	);
@@ -106,7 +104,7 @@ function PerformanceByAssigneeCard({routeParams}) {
 	}, [filtersError, postData, timeRange.dateEnd, timeRange.dateStart]);
 
 	return (
-		<ClayPanel className="dashboard-card mt-4">
+		<ClayPanel className="mt-4 tabs-card">
 			<PromisesResolver promises={promises}>
 				<PerformanceByAssigneeCard.Header
 					disableFilters={filtersError}

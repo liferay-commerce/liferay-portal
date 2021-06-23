@@ -11830,23 +11830,24 @@ public class MBCategoryPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (mbCategory.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				mbCategory.setCreateDate(now);
+				mbCategory.setCreateDate(date);
 			}
 			else {
-				mbCategory.setCreateDate(serviceContext.getCreateDate(now));
+				mbCategory.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!mbCategoryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				mbCategory.setModifiedDate(now);
+				mbCategory.setModifiedDate(date);
 			}
 			else {
-				mbCategory.setModifiedDate(serviceContext.getModifiedDate(now));
+				mbCategory.setModifiedDate(
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

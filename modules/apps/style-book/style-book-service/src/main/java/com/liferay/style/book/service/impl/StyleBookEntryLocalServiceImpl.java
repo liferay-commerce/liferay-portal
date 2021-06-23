@@ -89,12 +89,19 @@ public class StyleBookEntryLocalServiceImpl
 		if (Validator.isNull(styleBookEntryKey)) {
 			styleBookEntryKey = generateStyleBookEntryKey(groupId, name);
 		}
-
-		styleBookEntryKey = _getStyleBookEntryKey(styleBookEntryKey);
+		else {
+			styleBookEntryKey = _getStyleBookEntryKey(styleBookEntryKey);
+		}
 
 		_validateStyleBookEntryKey(groupId, styleBookEntryKey);
 
 		StyleBookEntry styleBookEntry = create();
+
+		String uuid = serviceContext.getUuid();
+
+		if (Validator.isNotNull(uuid)) {
+			styleBookEntry.setUuid(uuid);
+		}
 
 		styleBookEntry.setGroupId(groupId);
 		styleBookEntry.setCompanyId(companyId);
@@ -393,11 +400,17 @@ public class StyleBookEntryLocalServiceImpl
 			styleBookEntryKey = generateStyleBookEntryKey(
 				styleBookEntry.getGroupId(), name);
 		}
+		else {
+			styleBookEntryKey = _getStyleBookEntryKey(styleBookEntryKey);
+		}
 
-		styleBookEntryKey = _getStyleBookEntryKey(styleBookEntryKey);
+		if (!StringUtil.equals(
+				_getStyleBookEntryKey(styleBookEntry.getStyleBookEntryKey()),
+				styleBookEntryKey)) {
 
-		_validateStyleBookEntryKey(
-			styleBookEntry.getGroupId(), styleBookEntryKey);
+			_validateStyleBookEntryKey(
+				styleBookEntry.getGroupId(), styleBookEntryKey);
+		}
 
 		styleBookEntry.setUserId(userId);
 		styleBookEntry.setDefaultStyleBookEntry(defaultStylebookEntry);

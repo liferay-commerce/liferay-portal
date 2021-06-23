@@ -24,21 +24,15 @@ long clockSkew = GetterUtil.getLong(request.getAttribute(SamlWebKeys.SAML_CLOCK_
 SamlSpIdpConnection samlSpIdpConnection = (SamlSpIdpConnection)request.getAttribute(SamlWebKeys.SAML_SP_IDP_CONNECTION);
 UserFieldExpressionResolverRegistry userFieldExpressionResolverRegistry = (UserFieldExpressionResolverRegistry)request.getAttribute(UserFieldExpressionResolverRegistry.class.getName());
 
-String userIdentifierExpression = StringPool.BLANK;
+String userIdentifierExpression;
 
 if (samlSpIdpConnection != null) {
 	userIdentifierExpression = samlSpIdpConnection.getUserIdentifierExpression();
 }
+else {
+	userIdentifierExpression = userFieldExpressionResolverRegistry.getDefaultUserFieldExpressionResolverKey();
+}
 %>
-
-<clay:container-fluid
-	cssClass="container-fluid container-fluid-max-xl sheet"
->
-	<liferay-ui:header
-		backURL="<%= redirect %>"
-		title='<%= (samlSpIdpConnection != null) ? samlSpIdpConnection.getName() : "new-identity-provider" %>'
-	/>
-</clay:container-fluid>
 
 <portlet:actionURL name="/admin/update_identity_provider_connection" var="updateIdentityProviderConnectionURL">
 	<portlet:param name="mvcRenderCommandName" value="/admin/edit_identity_provider_connection" />
@@ -46,6 +40,13 @@ if (samlSpIdpConnection != null) {
 </portlet:actionURL>
 
 <aui:form action="<%= updateIdentityProviderConnectionURL %>" cssClass="container-fluid container-fluid-max-xl sheet" enctype="multipart/form-data">
+	<clay:container-fluid>
+		<liferay-ui:header
+			backURL="<%= redirect %>"
+			title='<%= (samlSpIdpConnection != null) ? samlSpIdpConnection.getName() : "new-identity-provider" %>'
+		/>
+	</clay:container-fluid>
+
 	<aui:input name="redirect" type="hidden" value="<%= redirect %>" />
 
 	<liferay-ui:error exception="<%= DuplicateSamlSpIdpConnectionSamlIdpEntityIdException.class %>" message="please-enter-a-unique-identity-provider-entity-id" />
@@ -82,7 +83,7 @@ if (samlSpIdpConnection != null) {
 	<aui:fieldset helpMessage="identity-provider-metadata-help" label="metadata">
 		<aui:input name="metadataUrl" />
 
-		<aui:button-row>
+		<aui:button-row cssClass="sheet-footer">
 			<aui:button onClick='<%= liferayPortletResponse.getNamespace() + "uploadMetadataXml();" %>' value="upload-metadata-xml" />
 		</aui:button-row>
 
@@ -122,6 +123,8 @@ if (samlSpIdpConnection != null) {
 		%>
 
 	</aui:fieldset>
+
+	<br />
 
 	<liferay-util:include page="/admin/user_attribute_mapping.jsp" servletContext="<%= application %>" />
 

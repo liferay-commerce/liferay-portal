@@ -1565,25 +1565,25 @@ public class WorkflowInstanceLinkPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (workflowInstanceLink.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				workflowInstanceLink.setCreateDate(now);
+				workflowInstanceLink.setCreateDate(date);
 			}
 			else {
 				workflowInstanceLink.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!workflowInstanceLinkModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				workflowInstanceLink.setModifiedDate(now);
+				workflowInstanceLink.setModifiedDate(date);
 			}
 			else {
 				workflowInstanceLink.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

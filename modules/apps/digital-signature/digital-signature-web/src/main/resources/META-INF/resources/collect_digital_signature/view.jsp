@@ -31,11 +31,11 @@ if (digitalSignatureTitle != null) {
 		module="js/pages/CollectDigitalSignature"
 		props='<%=
 			HashMapBuilder.<String, Object>put(
-				"basePortletURL", String.valueOf(renderResponse.createRenderURL())
+				"allowedFileExtensions", StringUtil.merge(DigitalSignatureConstants.ALLOWED_FILE_EXTENSIONS)
 			).put(
 				"baseResourceURL", String.valueOf(baseResourceURL)
 			).put(
-				"fileEntryId", (Long)request.getAttribute(DigitalSignatureWebKeys.DIGITAL_SIGNATURE_FILE_ENTRY_ID)
+				"fileEntries", request.getAttribute(DigitalSignatureWebKeys.DIGITAL_SIGNATURE_FILE_ENTRIES)
 			).build()
 		%>'
 	/>

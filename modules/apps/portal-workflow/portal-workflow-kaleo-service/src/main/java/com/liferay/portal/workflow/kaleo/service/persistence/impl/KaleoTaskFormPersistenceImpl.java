@@ -2615,24 +2615,24 @@ public class KaleoTaskFormPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (kaleoTaskForm.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				kaleoTaskForm.setCreateDate(now);
+				kaleoTaskForm.setCreateDate(date);
 			}
 			else {
-				kaleoTaskForm.setCreateDate(serviceContext.getCreateDate(now));
+				kaleoTaskForm.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!kaleoTaskFormModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				kaleoTaskForm.setModifiedDate(now);
+				kaleoTaskForm.setModifiedDate(date);
 			}
 			else {
 				kaleoTaskForm.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

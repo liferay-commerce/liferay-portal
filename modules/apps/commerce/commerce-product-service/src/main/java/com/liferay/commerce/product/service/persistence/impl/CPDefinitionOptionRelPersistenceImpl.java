@@ -4862,25 +4862,25 @@ public class CPDefinitionOptionRelPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (cpDefinitionOptionRel.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				cpDefinitionOptionRel.setCreateDate(now);
+				cpDefinitionOptionRel.setCreateDate(date);
 			}
 			else {
 				cpDefinitionOptionRel.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!cpDefinitionOptionRelModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				cpDefinitionOptionRel.setModifiedDate(now);
+				cpDefinitionOptionRel.setModifiedDate(date);
 			}
 			else {
 				cpDefinitionOptionRel.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

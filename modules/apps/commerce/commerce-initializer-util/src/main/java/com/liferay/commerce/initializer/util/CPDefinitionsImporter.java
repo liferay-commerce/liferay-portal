@@ -180,9 +180,9 @@ public class CPDefinitionsImporter {
 
 		ServiceContext serviceContext = new ServiceContext();
 
+		serviceContext.setCompanyId(user.getCompanyId());
 		serviceContext.setScopeGroupId(scopeGroupId);
 		serviceContext.setUserId(userId);
-		serviceContext.setCompanyId(user.getCompanyId());
 
 		return serviceContext;
 	}
@@ -271,7 +271,7 @@ public class CPDefinitionsImporter {
 					commerceInventoryWarehouseIds[i];
 
 				_commerceInventoryWarehouseItemLocalService.
-					upsertCommerceInventoryWarehouseItem(
+					addOrUpdateCommerceInventoryWarehouseItem(
 						serviceContext.getUserId(),
 						commerceInventoryWarehouseId, cpInstance.getSku(),
 						quantity);

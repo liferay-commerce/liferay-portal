@@ -18,12 +18,18 @@ import com.liferay.info.pagination.Pagination;
 
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * @author Eudaldo Alonso
  */
 public class DefaultLayoutListRetrieverContext
 	implements LayoutListRetrieverContext {
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	@Override
 	public Optional<long[][]> getAssetCategoryIdsOptional() {
 		return Optional.ofNullable(_assetCategoryIds);
@@ -32,6 +38,11 @@ public class DefaultLayoutListRetrieverContext
 	@Override
 	public Optional<Object> getContextObjectOptional() {
 		return Optional.ofNullable(_contextObject);
+	}
+
+	@Override
+	public Optional<HttpServletRequest> getHttpServletRequestOptional() {
+		return Optional.ofNullable(_httpServletRequest);
 	}
 
 	@Override
@@ -53,12 +64,20 @@ public class DefaultLayoutListRetrieverContext
 		return Optional.ofNullable(_segmentsExperienceIds);
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public void setAssetCategoryIds(long[][] assetCategoryIds) {
 		_assetCategoryIds = assetCategoryIds;
 	}
 
 	public void setContextObject(Object contextObject) {
 		_contextObject = contextObject;
+	}
+
+	public void setHttpServletRequest(HttpServletRequest httpServletRequest) {
+		_httpServletRequest = httpServletRequest;
 	}
 
 	public void setPagination(Pagination pagination) {
@@ -88,6 +107,7 @@ public class DefaultLayoutListRetrieverContext
 
 	private long[][] _assetCategoryIds;
 	private Object _contextObject;
+	private HttpServletRequest _httpServletRequest;
 	private Pagination _pagination;
 	private long[] _segmentsEntryIds;
 	private long[] _segmentsExperienceIds;

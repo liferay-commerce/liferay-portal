@@ -27,7 +27,7 @@ PortletURL searchURL = PortletURLBuilder.createRenderURL(
 ).setTabs1(
 	tabs1
 ).setParameter(
-	"delta", String.valueOf(delta)
+	"delta", delta
 ).build();
 
 PortletURL clearResultsURL = PortletURLBuilder.create(

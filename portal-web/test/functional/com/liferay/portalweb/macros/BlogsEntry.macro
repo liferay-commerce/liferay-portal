@@ -11,9 +11,17 @@ definition {
 
 		ItemSelector.gotoItemSelectorViaAlloyEditor();
 
-		ItemSelector.uploadFile(
-			navTab = "${navTab}",
-			uploadFileName = "${uploadFileName}");
+		if (isSet(depotName)) {
+			ItemSelector.selectRepositoryImage(
+				depotName = "${depotName}",
+				imageFileName = "${imageFileName}",
+				navTab = "${navTab}");
+		}
+		else {
+			ItemSelector.uploadFile(
+				navTab = "${navTab}",
+				uploadFileName = "${uploadFileName}");
+		}
 	}
 
 	macro addCustomAbstract {
@@ -141,6 +149,8 @@ definition {
 	}
 
 	macro addSmallImage {
+		Panel.expandPanel(panel = "Configuration");
+
 		if (isSet(browseImage)) {
 			Click(locator1 = "BlogsEntry#SMALL_IMAGE_BROWSE_IMAGE");
 		}
@@ -513,6 +523,8 @@ definition {
 	}
 
 	macro removeSmallImage {
+		Panel.expandPanel(panel = "Configuration");
+
 		if (isSet(images)) {
 			Click(locator1 = "Button#REMOVE_IMAGE_LAST");
 		}
@@ -555,6 +567,8 @@ definition {
 	}
 
 	macro scheduleBlogEntry {
+		Panel.expandPanel(panel = "Configuration");
+
 		var displayDateDay = selenium.getElementValue("TextInput#DISPLAY_DATE_DAY");
 		var displayDateMonth = selenium.getElementValue("TextInput#DISPLAY_DATE_MONTH");
 		var displayDateMonth = ${displayDateMonth} + 1;
@@ -573,7 +587,7 @@ definition {
 		}
 
 		var displayDateMinute = selenium.getElementValue("TextInput#DISPLAY_DATE_MINUTE");
-		var displayDateMinuteFuture = ${displayDateMinute} + 3;
+		var displayDateMinuteFuture = ${displayDateMinute} + 2;
 		var displayDateMinuteFutureLength = StringUtil.length("${displayDateMinuteFuture}");
 
 		if ("${displayDateMinuteFutureLength}" == "1") {

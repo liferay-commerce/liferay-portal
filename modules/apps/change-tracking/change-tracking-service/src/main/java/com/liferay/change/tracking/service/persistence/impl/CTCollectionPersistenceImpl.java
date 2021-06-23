@@ -3499,24 +3499,24 @@ public class CTCollectionPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (ctCollection.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				ctCollection.setCreateDate(now);
+				ctCollection.setCreateDate(date);
 			}
 			else {
-				ctCollection.setCreateDate(serviceContext.getCreateDate(now));
+				ctCollection.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!ctCollectionModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				ctCollection.setModifiedDate(now);
+				ctCollection.setModifiedDate(date);
 			}
 			else {
 				ctCollection.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

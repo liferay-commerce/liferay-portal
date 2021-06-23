@@ -46,7 +46,7 @@ public class DLSelectRestrictedFileEntryTypesDisplayContext
 		).setMVCPath(
 			"/document_library/select_restricted_file_entry_type.jsp"
 		).setParameter(
-			"includeBasicFileEntryType", Boolean.TRUE.toString()
+			"includeBasicFileEntryType", true
 		).build();
 	}
 

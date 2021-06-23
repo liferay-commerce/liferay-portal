@@ -2,11 +2,13 @@
 <head>
 <title>Icon</title>
 </head>
+
 <body>
-<table cellpadding="1" cellspacing="1" border="1">
+<table border="1" cellpadding="1" cellspacing="1">
 <thead>
 <tr><td rowspan="1" colspan="3">Icon</td></tr>
 </thead>
+
 <tbody>
 <tr>
 	<td>ADD_FAVORITE</td>
@@ -219,6 +221,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>FLAG_1</td>
+	<td>//*[*[name()='svg'][contains(@class,'exicon-icon-es-es')]]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>INFO</td>
 	<td>//*[@data-qa-id='infoButton'] | //div[contains(@class,'management-bar-default')]//a[contains(@class,'infoPanelToggler')] | //button[*[name()='svg'][contains(@class,'lexicon-icon-info')]]</td>
 	<td></td>
@@ -306,6 +313,11 @@
 <tr>
 	<td>TIMES</td>
 	<td>//button[*[name()='svg'][contains(@class,'icon-times')]]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>TIMES_2</td>
+	<td>xpath=(//button[*[name()='svg'][contains(@class,'icon-times')]])[2]</td>
 	<td></td>
 </tr>
 <tr>
@@ -427,6 +439,11 @@
 <tr>
 	<td>SVG_ELLIPSIS</td>
 	<td>//*[name()='svg'][contains(@class,'icon-ellipsis')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SVG_ELLIPSIS_BY_ID</td>
+	<td>//span[contains(@id,'${key_text}')]//*[name()='svg'][contains(@class,'icon-ellipsis')]</td>
 	<td></td>
 </tr>
 <tr>

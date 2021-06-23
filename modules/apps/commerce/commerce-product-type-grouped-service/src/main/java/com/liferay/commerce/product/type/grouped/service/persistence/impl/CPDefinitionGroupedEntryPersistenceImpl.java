@@ -2504,25 +2504,25 @@ public class CPDefinitionGroupedEntryPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (cpDefinitionGroupedEntry.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				cpDefinitionGroupedEntry.setCreateDate(now);
+				cpDefinitionGroupedEntry.setCreateDate(date);
 			}
 			else {
 				cpDefinitionGroupedEntry.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!cpDefinitionGroupedEntryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				cpDefinitionGroupedEntry.setModifiedDate(now);
+				cpDefinitionGroupedEntry.setModifiedDate(date);
 			}
 			else {
 				cpDefinitionGroupedEntry.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

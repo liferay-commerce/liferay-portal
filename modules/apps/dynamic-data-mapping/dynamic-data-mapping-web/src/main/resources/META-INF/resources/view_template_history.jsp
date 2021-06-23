@@ -32,7 +32,7 @@ PortletURL portletURL = PortletURLBuilder.createRenderURL(
 ).setRedirect(
 	redirect
 ).setParameter(
-	"templateId", String.valueOf(templateId)
+	"templateId", templateId
 ).build();
 
 PortletURL backURL = PortletURLBuilder.createRenderURL(
@@ -42,7 +42,7 @@ PortletURL backURL = PortletURLBuilder.createRenderURL(
 ).setRedirect(
 	redirect
 ).setParameter(
-	"templateId", String.valueOf(templateId)
+	"templateId", templateId
 ).build();
 %>
 

@@ -67,6 +67,22 @@ definition {
 		Portlet.expandTree();
 	}
 
+	macro removeCategories {
+		for (var categoryName : list "${categoryNameList}") {
+			var key_categoryName = "${categoryName}";
+
+			AssertTextEquals(
+				locator1 = "AssetCategorization#CATEGORY",
+				value1 = "${categoryName}");
+
+			Click(
+				key_itemName = "${categoryName}",
+				locator1 = "AssetCategorization#ITEM_REMOVE");
+
+			AssertElementNotPresent(locator1 = "AssetCategorization#CATEGORY");
+		}
+	}
+
 	macro removeTag {
 		var key_tagName = "${tagName}";
 
@@ -74,7 +90,9 @@ definition {
 			locator1 = "AssetCategorization#TAG",
 			value1 = "${tagName}");
 
-		Click(locator1 = "AssetCategorization#TAG_REMOVE");
+		Click(
+			key_itemName = "${tagName}",
+			locator1 = "AssetCategorization#ITEM_REMOVE");
 
 		AssertElementNotPresent(locator1 = "AssetCategorization#TAG");
 	}
@@ -134,6 +152,18 @@ definition {
 			key_categoryName = "${categoryName}",
 			locator1 = "AssetCategorization#CATEGORY",
 			value1 = "${categoryName}");
+	}
+
+	macro viewNoAddPermissions {
+		Panel.expandPanel(panel = "Categorization");
+
+		Click(
+			key_vocabularyName = "${vocabularyName}",
+			locator1 = "AssetCategorization#CATEGORY_SELECT");
+
+		IFrame.selectCategoryFrame();
+
+		AssertElementNotPresent(locator1 = "Button#PLUS");
 	}
 
 	macro viewNoVocabularyField {

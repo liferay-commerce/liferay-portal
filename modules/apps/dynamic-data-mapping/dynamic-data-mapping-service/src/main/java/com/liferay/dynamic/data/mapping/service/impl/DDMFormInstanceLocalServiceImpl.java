@@ -394,14 +394,14 @@ public class DDMFormInstanceLocalServiceImpl
 			long formInstanceId, DDMFormValues settingsDDMFormValues)
 		throws PortalException {
 
-		Date now = new Date();
+		Date date = new Date();
 
 		validateFormInstanceSettings(settingsDDMFormValues);
 
 		DDMFormInstance formInstance =
 			ddmFormInstancePersistence.findByPrimaryKey(formInstanceId);
 
-		formInstance.setModifiedDate(now);
+		formInstance.setModifiedDate(date);
 		formInstance.setSettings(serialize(settingsDDMFormValues));
 
 		return ddmFormInstancePersistence.update(formInstance);

@@ -43,23 +43,18 @@ definition {
 
 	@priority = "5"
 	test AddAudioViaWebContent {
-		property custom.properties = "xuggler.enabled=true";
 		property dummy.socket.proxy.disabled = "true";
 		property portal.acceptance = "true";
 		property test.name.skip.portal.instance = "WebContentDisplay#AddAudioViaWebContent";
 		property testray.component.names = "Training,Web Content Administration";
 
-		ServerAdministration.openServerAdmin();
+		task ("Enable the FFMPEG Audio Converter in System Settings") {
+			DMNavigator.openToConfigInSystemSettings(portlet = "FFMPEG Audio Converter");
 
-		ServerAdministration.configureExternalServices(installXuggler = "true");
+			FormFields.enableCheckbox(fieldName = "enabled");
 
-		Portlet.shutdownServer();
-
-		Portlet.startServer(deleteLiferayHome = "false");
-
-		ServerAdministration.openServerAdmin();
-
-		ServerAdministration.configureExternalServices(enableXuggler = "true");
+			SystemSettings.saveConfiguration();
+		}
 
 		JSONDocument.addFileWithUploadedFile(
 			dmDocumentDescription = "DM Document Description",
@@ -245,6 +240,7 @@ definition {
 
 	@priority = "4"
 	test AddVideoViaWebContent {
+		property dummy.socket.proxy.disabled = "true";
 		property testray.component.names = "Web Content Administration,Web Content Display";
 
 		task ("Add an external video shortcut") {
@@ -588,6 +584,83 @@ Welcome to Liferay Community Edition Portal 7.4.0 CE GA1''';
 		WebContent.viewPGViaWCD(webContentContent = "WC WebContent Content");
 	}
 
+	@description = "This is a test for LPS-129944. The user could configure WCD when selected web content based on template with embedded widget."
+	@priority = "4"
+	test ConfigureWCDWhenSelectedWebContentBasedOnTemplateWithEmbeddedWidget {
+		task ("Add a web content structure") {
+			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
+
+			NavItem.gotoStructures();
+
+			WebContentStructures.addCP(structureName = "WC Structure Name");
+
+			DataEngine.addField(
+				fieldFieldLabel = "Text",
+				fieldName = "Text");
+
+			WebContentStructures.saveCP();
+		}
+
+		task ("Add a web content template for new structure") {
+			NavItem.gotoTemplates();
+
+			var instanceId = StringUtil.randomString("12");
+
+			var templateScript = '''<@liferay_portlet["runtime"] portletName="com_liferay_journal_content_web_portlet_JournalContentPortlet" instanceId="${instanceId}" />''';
+
+			WebContentTemplates.addCP(
+				structureName = "WC Structure Name",
+				templateName = "WC Template Name",
+				templateScript = "${templateScript}");
+		}
+
+		task ("Add a web content based on new structure") {
+			NavItem.gotoWebContent();
+
+			WebContentNavigator.gotoAddWithStructureCP(structureName = "WC Structure Name");
+
+			WebContent.addWithStructureCP(webContentTitle = "WC WebContent Title");
+
+			PortletEntry.publish();
+		}
+
+		task ("Add a widget page") {
+			JSONLayout.addPublicLayout(
+				groupName = "Test Site Name",
+				layoutName = "Test Page Name");
+		}
+
+		task ("Add the web content to page via Content tab of Add panel") {
+			Navigator.gotoSitePage(
+				pageName = "Test Page Name",
+				siteName = "Test Site Name");
+
+			Content.addPG(
+				assetTitle = "WC WebContent Title",
+				pageName = "Test Page Name");
+		}
+
+		task ("Enable the Related Assets in WCD") {
+			Portlet.gotoPortletOptions(
+				portletName = "Web Content Display",
+				portletOption = "Configuration");
+
+			WebContentDisplayPortlet.configureSetupPG(metadataNameList = "Related Assets");
+
+			WebContentDisplayPortlet.saveConfiguration();
+
+			IFrame.closeFrame();
+		}
+
+		task ("View the web content shown on WCD") {
+			Portlet.viewTitle(portletName = "WC WebContent Title");
+
+			Portlet.viewTitle(portletName = "Web Content Display");
+
+			WebContentDisplayPortlet.viewDefaultMessage();
+		}
+	}
+
 	@description = "This is a use case for LPS-118702. Display web content article from other site."
 	@priority = "5"
 	test DisplayWebContentFromOtherSite {
@@ -612,6 +685,52 @@ Welcome to Liferay Community Edition Portal 7.4.0 CE GA1''';
 
 		task ("Assert the web content article is shown in Web Content Display") {
 			WebContent.viewPGViaWCD(webContentContent = "Web Content Content");
+		}
+	}
+
+	@description = "This is a use case for LPS-130033. Display web content with Geolocation field in Web Content Display."
+	@priority = "4"
+	test DisplayWebContentWithGeolocationField {
+		task ("Add a web content structure with a Geolocation field") {
+			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
+
+			NavItem.gotoStructures();
+
+			WebContentStructures.addCP(structureName = "WC Structure Name");
+
+			DataEngine.addField(
+				fieldFieldLabel = "Geolocation",
+				fieldName = "Geolocation");
+
+			WebContentStructures.saveCP();
+		}
+
+		task ("Add a web content based on new structure") {
+			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
+
+			WebContentNavigator.gotoAddWithStructureCP(structureName = "WC Structure Name");
+
+			WebContent.addWithStructureCP(webContentTitle = "Web Content Title");
+
+			PortletEntry.publish();
+		}
+
+		task ("Select the web content in Web Content Display") {
+			Navigator.gotoSitePage(
+				pageName = "Web Content Display Page",
+				siteName = "Test Site Name");
+
+			WebContentDisplayPortlet.selectWebContent(webContentTitle = "Web Content Title");
+
+			IFrame.closeFrame();
+		}
+
+		task ("View the web content is shown in Web Content Display") {
+			Portlet.viewTitle(portletName = "Web Content Title");
+
+			AssertVisible(
+				key_content = "//div[contains(@id,'Geolocation')]",
+				locator1 = "WCD#WEB_CONTENT_CONTENT_ANY");
 		}
 	}
 
@@ -714,7 +833,7 @@ Welcome to Liferay Community Edition Portal 7.4.0 CE GA1''';
 			pageName = "Web Content Display Page",
 			siteName = "Test Site Name");
 
-		WebContentDisplayPortlet.searchWebContentNo(webContentTitle = "WC2 WebContent2 Title2");
+		WebContentDisplayPortlet.searchForNoWebContent(webContentTitle = "WC2 WebContent2 Title2");
 
 		Navigator.gotoSitePage(
 			pageName = "Web Content Display Page",
@@ -728,7 +847,7 @@ Welcome to Liferay Community Edition Portal 7.4.0 CE GA1''';
 			pageName = "Web Content Display Page",
 			siteName = "Test Site Name");
 
-		WebContentDisplayPortlet.searchWebContentNo(
+		WebContentDisplayPortlet.searchForNoWebContent(
 			webContentSearchValue = "&quot;WC2 WebContent2 Title2&quot;",
 			webContentTitle = "WC2 WebContent2 Title2");
 	}

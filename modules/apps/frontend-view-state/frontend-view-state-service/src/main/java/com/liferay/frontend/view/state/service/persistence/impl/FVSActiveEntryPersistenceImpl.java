@@ -1801,24 +1801,25 @@ public class FVSActiveEntryPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (fvsActiveEntry.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				fvsActiveEntry.setCreateDate(now);
+				fvsActiveEntry.setCreateDate(date);
 			}
 			else {
-				fvsActiveEntry.setCreateDate(serviceContext.getCreateDate(now));
+				fvsActiveEntry.setCreateDate(
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!fvsActiveEntryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				fvsActiveEntry.setModifiedDate(now);
+				fvsActiveEntry.setModifiedDate(date);
 			}
 			else {
 				fvsActiveEntry.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

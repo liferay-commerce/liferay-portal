@@ -24,8 +24,6 @@ CPCatalogEntry cpCatalogEntry = cpContentHelper.getCPCatalogEntry(request);
 CPSku cpSku = cpContentHelper.getDefaultCPSku(cpCatalogEntry);
 
 long cpDefinitionId = cpCatalogEntry.getCPDefinitionId();
-
-String productContentAuthToken = AuthTokenUtil.getToken(request, plid, CPPortletKeys.CP_CONTENT_WEB);
 %>
 
 <div class="container-fluid product-detail" id="<portlet:namespace /><%= cpCatalogEntry.getCPDefinitionId() %>ProductContent">
@@ -40,8 +38,8 @@ String productContentAuthToken = AuthTokenUtil.getToken(request, plid, CPPortlet
 							for (CPMedia cpMedia : cpContentHelper.getImages(cpDefinitionId, themeDisplay)) {
 							%>
 
-								<div class="card thumb" data-url="<%= HtmlUtil.escapeAttribute(cpMedia.getUrl()) %>">
-									<img class="center-block img-fluid" src="<%= HtmlUtil.escapeAttribute(cpMedia.getUrl()) %>" />
+								<div class="card thumb" data-url="<%= HtmlUtil.escapeAttribute(cpMedia.getURL()) %>">
+									<img class="center-block img-fluid" src="<%= HtmlUtil.escapeAttribute(cpMedia.getURL()) %>" />
 								</div>
 
 							<%
@@ -232,7 +230,7 @@ String productContentAuthToken = AuthTokenUtil.getToken(request, plid, CPPortlet
 												<span><%= HtmlUtil.escape(curCPMedia.getTitle()) %></span>
 
 												<span>
-													<aui:icon cssClass="icon-monospaced" image="download" markupView="lexicon" target="_blank" url="<%= curCPMedia.getDownloadUrl() %>" />
+													<aui:icon cssClass="icon-monospaced" image="download" markupView="lexicon" target="_blank" url="<%= curCPMedia.getDownloadURL() %>" />
 												</span>
 											</td>
 										</tr>
@@ -279,7 +277,8 @@ String productContentAuthToken = AuthTokenUtil.getToken(request, plid, CPPortlet
 		cpDefinitionId: <%= cpDefinitionId %>,
 		fullImageSelector: '#<portlet:namespace />full-image',
 		namespace: '<portlet:namespace />',
-		productContentAuthToken: '<%= productContentAuthToken %>',
+		productContentAuthToken:
+			'<%= AuthTokenUtil.getToken(request, plid, CPPortletKeys.CP_CONTENT_WEB) %>',
 		productContentSelector:
 			'#<portlet:namespace /><%= cpDefinitionId %>ProductContent',
 		thumbsContainerSelector: '#<portlet:namespace />thumbs-container',

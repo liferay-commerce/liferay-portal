@@ -62,6 +62,20 @@ export const MARK_PAGE_LOAD_TIME = 'pageLoadTimeSPA';
 
 export const MARK_VIEW_DURATION = 'viewDurationSPA';
 
+// Params Constants
+
+export const PARAM_PORTLET_ID_KEY = 'p_p_id';
+
+export const PARAM_CONFIGURATION_PORTLET_NAME =
+	'com_liferay_portlet_configuration_web_portlet_PortletConfigurationPortlet';
+
+export const PARAM_MODE_KEY = 'p_l_mode';
+
+export const PARAM_PAGE_EDITOR_PORTLET_NAME =
+	'com_liferay_layout_content_page_editor_web_internal_portlet_ContentPageEditorPortlet';
+
+export const PARAM_VIEW_MODE = 'view';
+
 // Read metrics Constants
 
 export const READ_CHARS_PER_MIN = 500;
@@ -81,6 +95,8 @@ export const TRACK_DEFAULT_OPTIONS = {
 };
 
 // Validation
+
+export const VALIDATION_PROPERTIES_MAXIMUM_LENGTH = 25;
 
 export const VALIDATION_PROPERTY_NAME_MAXIMUM_LENGTH = 255;
 

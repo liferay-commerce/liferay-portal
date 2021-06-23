@@ -27,8 +27,8 @@ PortletURL portletURL = PortletURLBuilder.createRenderURL(
 	"/export_import/export_import"
 ).setRedirect(
 	ParamUtil.getString(request, "redirect")
-).setParameter(
-	"portletResource", portletResource
+).setPortletResource(
+	portletResource
 ).setParameter(
 	"returnToFullPageURL", returnToFullPageURL
 ).build();

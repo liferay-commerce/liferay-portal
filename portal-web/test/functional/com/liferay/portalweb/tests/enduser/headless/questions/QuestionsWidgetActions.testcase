@@ -85,17 +85,14 @@ definition {
 			key_categoryItem = "Questions Test Category",
 			locator1 = "Questions#QUESTIONS_CATEGORY_LABEL_ITEM");
 
-		MessageBoardsAdmin.openMessageBoardsAdmin(siteURLKey = "guest");
-
-		MessageboardsCategory.gotoCP(categoryName = "Questions Test Category");
-
-		var messageBoardsCategoryURL = selenium.getLocation();
-
-		var parentCategoryId = StringUtil.extractLast("${messageBoardsCategoryURL}", "mbCategoryId=");
+		var parentCategoryId = JSONMBMessage.getCategoryIdByName(
+			categoryName = "Questions Test Category",
+			groupName = "Guest");
 
 		JSONMBMessage.addCategory(
-			categoryDescription = "Subcategory Description",
+			categoryDescription = "MB Subcategory Description",
 			categoryName = "Questions Test Subcategory",
+			groupName = "Guest",
 			parentCategoryId = "${parentCategoryId}",
 			userEmailAddress = "test@liferay.com");
 
@@ -241,15 +238,9 @@ definition {
 			mimeType = "image/jpeg",
 			sourceFileName = "Document_2.jpeg");
 
-		DepotNavigator.openDepotAdmin();
-
-		DepotNavigator.gotoEdit(depotName = "Test Depot Name");
-
-		DepotNavigator.gotoSites(depotName = "Test Depot Name");
-
-		var siteName = TestCase.getSiteName(siteName = "${siteName}");
-
-		Depot.connectSite(siteList = "${siteName}");
+		JSONDepot.connectSite(
+			depotName = "Test Depot Name",
+			groupName = "Guest");
 
 		JSONMBMessage.addCategory(
 			categoryDescription = "Description",
@@ -265,11 +256,9 @@ definition {
 			titleField = "Title AddQuestionWithTheALImage",
 			topicName = "questions-test-category");
 
-		Questions.openToQuestionDetails(
-			layoutName = "questions-page",
-			questionsTitle = "title-addquestionwiththealimage",
-			siteURLKey = "guest",
-			topicName = "questions-test-category");
+		Questions.gotoDetails(
+			questionTabField = "Questions",
+			questionTitle = "Title AddQuestionWithTheALImage");
 
 		Questions.viewImageInQuestion(imageFileName = "Document_2.jpeg");
 	}
@@ -499,18 +488,13 @@ definition {
 			groupName = "Guest",
 			titleField = "Title AddQuestion");
 
-		JSONQuestions.addAnswer(
-			categoryName = "Questions Test Category",
-			groupName = "Guest",
-			replyBody = "This is my answer",
-			threadSubject = "Title AddQuestion",
-			titleField = "Title AddQuestion");
-
 		Questions.openToQuestionDetails(
 			layoutName = "questions-page",
 			questionsTitle = "title-addquestion",
 			siteURLKey = "guest",
 			topicName = "questions-test-category");
+
+		Questions.answerQuestion(contentField = "This is my answer");
 
 		Questions.editAnswer(contentField = "This is my edited answer");
 	}
@@ -709,6 +693,45 @@ definition {
 		Questions.replyToComment(
 			commentReply = "This is my reply text.",
 			repliedLabel = "true");
+	}
+
+	@description = "Validate if a user can view question details after restoring history router to default setting."
+	@priority = "3"
+	test CanRestoreHistoryRouterToDefaultSetting {
+		property test.name.skip.portal.instance = "QuestionsWidgetActions#CanRestoreHistoryRouterToDefaultSetting";
+
+		Questions.openToConfigInSystemSettings(portlet = "Questions");
+
+		SystemSettings.editTextAreaSetting(
+			settingName = "Set Base Path for History Router",
+			settingValue = "/questions-page");
+
+		SystemSettings.saveConfiguration();
+
+		SystemSettings.editTextAreaSetting(
+			settingName = "Set Base Path for History Router",
+			settingValue = " ");
+
+		SystemSettings.saveConfiguration();
+
+		JSONMBMessage.addCategory(
+			categoryDescription = "Description",
+			categoryName = "Questions Test Category",
+			userEmailAddress = "test@liferay.com");
+
+		JSONQuestions.addQuestion(
+			bodyField = "Body AddQuestion",
+			categoryName = "Questions Test Category",
+			groupName = "Guest",
+			titleField = "Title AddQuestion");
+
+		Questions.openToQuestionDetails(
+			layoutName = "questions-page",
+			questionsTitle = "title-addquestion",
+			siteURLKey = "guest",
+			topicName = "questions-test-category");
+
+		Questions.viewDetailsTitle(questionTitle = "Title AddQuestion");
 	}
 
 	@description = "Validate if the user can unsubscribe a question from the details page, it also covers LPS-125842."
@@ -944,6 +967,41 @@ definition {
 			headerName = "Youngling",
 			itemNameList = "Posts,Join Date,Last Post Date",
 			userName = "Test Test");
+	}
+
+	@description = "Validate if a user can view question details when using history router."
+	@priority = "4"
+	test DetailsCanbeViewedWithHistoryRouter {
+		property test.name.skip.portal.instance = "QuestionsWidgetActions#DetailsCanbeViewedWithHistoryRouter";
+
+		Questions.openToConfigInSystemSettings(portlet = "Questions");
+
+		SystemSettings.editTextAreaSetting(
+			settingName = "Set Base Path for History Router",
+			settingValue = "/questions-page");
+
+		SystemSettings.saveConfiguration();
+
+		JSONMBMessage.addCategory(
+			categoryDescription = "Description",
+			categoryName = "Questions Test Category",
+			userEmailAddress = "test@liferay.com");
+
+		JSONQuestions.addQuestion(
+			bodyField = "Body AddQuestion",
+			categoryName = "Questions Test Category",
+			groupName = "Guest",
+			titleField = "Title AddQuestion");
+
+		Navigator.gotoPage(pageName = "Questions Page");
+
+		Questions.gotoCategory(categoryName = "Questions Test Category");
+
+		Questions.gotoDetails(
+			questionTabField = "Questions",
+			questionTitle = "Title AddQuestion");
+
+		AssertLocation(value1 = "http://localhost:8080/web/guest/questions-page/questions/questions-test-category/title-addquestion");
 	}
 
 	@description = "Validate if the user can lock and unlock a question through the MB."
@@ -1579,33 +1637,25 @@ definition {
 			categoryName = "Questions Test Category1",
 			userEmailAddress = "test@liferay.com");
 
-		MessageBoardsAdmin.openMessageBoardsAdmin(siteURLKey = "guest");
-
-		MessageboardsCategory.gotoCP(categoryName = "Questions Test Category1");
-
-		var messageBoardsCategoryURL = selenium.getLocation();
-
-		var parentCategoryId = StringUtil.extractLast("${messageBoardsCategoryURL}", "mbCategoryId=");
+		var parentCategoryId = JSONMBMessage.getCategoryIdByName(
+			categoryName = "Questions Test Category1",
+			groupName = "Guest");
 
 		JSONMBMessage.addCategory(
-			categoryDescription = "Subcategory Description",
+			categoryDescription = "MB Subcategory Description",
 			categoryName = "Questions Test Category2",
+			groupName = "Guest",
 			parentCategoryId = "${parentCategoryId}",
 			userEmailAddress = "test@liferay.com");
 
-		MessageBoardsAdmin.openMessageBoardsAdmin(siteURLKey = "guest");
-
-		MessageboardsCategory.gotoCP(categoryName = "Questions Test Category1");
-
-		MessageboardsCategory.gotoCP(categoryName = "Questions Test Category2");
-
-		var messageBoardsCategoryURL = selenium.getLocation();
-
-		var parentCategoryId = StringUtil.extractLast("${messageBoardsCategoryURL}", "mbCategoryId=");
+		var parentCategoryId = JSONMBMessage.getCategoryIdByName(
+			categoryName = "Questions Test Category2",
+			groupName = "Guest");
 
 		JSONMBMessage.addCategory(
-			categoryDescription = "Subcategory Description",
+			categoryDescription = "MB Subcategory Description",
 			categoryName = "Questions Test Category3",
+			groupName = "Guest",
 			parentCategoryId = "${parentCategoryId}",
 			userEmailAddress = "test@liferay.com");
 
@@ -1769,17 +1819,15 @@ definition {
 			key_topicName = "Questions Test Category",
 			locator1 = "Questions#QUESTIONS_BREADCRUMB_TOPIC_DROPDOWN_TOGGLE");
 
-		MessageBoardsAdmin.openMessageBoardsAdmin(siteURLKey = "guest");
-
-		MessageboardsCategory.gotoCP(categoryName = "Questions Test Category");
-
-		var messageBoardsCategoryURL = selenium.getLocation();
-		var parentCategoryId = StringUtil.extractLast("${messageBoardsCategoryURL}", "mbCategoryId=");
-
 		for (var num : list "1,2") {
+			var parentCategoryId = JSONMBMessage.getCategoryIdByName(
+				categoryName = "Questions Test Category",
+				groupName = "Guest");
+
 			JSONMBMessage.addCategory(
-				categoryDescription = "Subcategory Description",
+				categoryDescription = "MB Subcategory Description",
 				categoryName = "Questions Subcategory${num}",
+				groupName = "Guest",
 				parentCategoryId = "${parentCategoryId}",
 				userEmailAddress = "test@liferay.com");
 		}

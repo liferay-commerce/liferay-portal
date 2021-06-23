@@ -42,7 +42,7 @@ PortletURL editPageURL = PortletURLBuilder.createRenderURL(
 ).setRedirect(
 	viewPageURL.toString()
 ).setParameter(
-	"nodeId", String.valueOf(node.getNodeId())
+	"nodeId", node.getNodeId()
 ).setParameter(
 	"title", title
 ).build();
@@ -54,7 +54,7 @@ PortletURL viewPageDetailsURL = PortletURLBuilder.createRenderURL(
 ).setRedirect(
 	viewPageURL.toString()
 ).setParameter(
-	"nodeId", String.valueOf(node.getNodeId())
+	"nodeId", node.getNodeId()
 ).setParameter(
 	"title", wikiPage.getTitle()
 ).build();

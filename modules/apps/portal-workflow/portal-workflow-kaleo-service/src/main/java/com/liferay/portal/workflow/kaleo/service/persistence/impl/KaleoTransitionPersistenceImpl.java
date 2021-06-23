@@ -2377,25 +2377,25 @@ public class KaleoTransitionPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (kaleoTransition.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				kaleoTransition.setCreateDate(now);
+				kaleoTransition.setCreateDate(date);
 			}
 			else {
 				kaleoTransition.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!kaleoTransitionModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				kaleoTransition.setModifiedDate(now);
+				kaleoTransition.setModifiedDate(date);
 			}
 			else {
 				kaleoTransition.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

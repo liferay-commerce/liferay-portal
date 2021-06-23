@@ -51,9 +51,9 @@ public class CPSpecificationOptionsImporter {
 
 		ServiceContext serviceContext = new ServiceContext();
 
+		serviceContext.setCompanyId(user.getCompanyId());
 		serviceContext.setScopeGroupId(scopeGroupId);
 		serviceContext.setUserId(userId);
-		serviceContext.setCompanyId(user.getCompanyId());
 
 		List<CPSpecificationOption> cpSpecificationOptions = new ArrayList<>(
 			jsonArray.length());

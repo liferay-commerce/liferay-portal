@@ -6021,24 +6021,24 @@ public class DLFileVersionPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (dlFileVersion.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				dlFileVersion.setCreateDate(now);
+				dlFileVersion.setCreateDate(date);
 			}
 			else {
-				dlFileVersion.setCreateDate(serviceContext.getCreateDate(now));
+				dlFileVersion.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!dlFileVersionModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				dlFileVersion.setModifiedDate(now);
+				dlFileVersion.setModifiedDate(date);
 			}
 			else {
 				dlFileVersion.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

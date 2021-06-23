@@ -56,15 +56,15 @@
 			</a>
 		</#if>
 
-		<#if validator.isNotNull(portlet_display.getPortletDecoratorId()) && !stringUtil.equals(portlet_display.getPortletDecoratorId(), "barebone")>
-			<div class="portlet-header">
+		<div class="portlet-header">
+			<#if validator.isNotNull(portlet_display.getPortletDecoratorId()) && !stringUtil.equals(portlet_display.getPortletDecoratorId(), "barebone")>
 				<h2 class="portlet-title-text">${portlet_title}</h2>
+			</#if>
 
-				<div class="portlet-header-tools">
-					<@liferay_util["dynamic-include"] key="portlet_header_${portlet_display_root_portlet_id}" />
-				</div>
+			<div class="portlet-header-tools">
+				<@liferay_util["dynamic-include"] key="portlet_header_${portlet_display_root_portlet_id}" />
 			</div>
-		</#if>
+		</div>
 
 		${portlet_display.writeContent(writer)}
 	</div>

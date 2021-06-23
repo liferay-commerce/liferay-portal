@@ -62,8 +62,7 @@ public class CategoryCPAttachmentFileEntriesManagementToolbarDisplayContext
 					).setRedirect(
 						currentURLObj.toString()
 					).setParameter(
-						"categoryId",
-						String.valueOf(assetCategory.getCategoryId())
+						"categoryId", assetCategory.getCategoryId()
 					).build());
 
 				dropdownItem.setLabel(

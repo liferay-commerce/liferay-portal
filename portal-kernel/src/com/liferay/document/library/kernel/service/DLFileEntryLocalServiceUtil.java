@@ -110,6 +110,12 @@ public class DLFileEntryLocalServiceUtil {
 		return getService().cancelCheckOut(userId, fileEntryId);
 	}
 
+	public static void checkFileEntries(long checkInterval)
+		throws PortalException {
+
+		getService().checkFileEntries(checkInterval);
+	}
+
 	public static void checkInFileEntry(
 			long userId, long fileEntryId,
 			com.liferay.document.library.kernel.model.DLVersionNumberIncrease
@@ -458,6 +464,13 @@ public class DLFileEntryLocalServiceUtil {
 
 	public static DLFileEntry fetchFileEntryByAnyImageId(long imageId) {
 		return getService().fetchFileEntryByAnyImageId(imageId);
+	}
+
+	public static DLFileEntry fetchFileEntryByExternalReferenceCode(
+		long groupId, String externalReferenceCode) {
+
+		return getService().fetchFileEntryByExternalReferenceCode(
+			groupId, externalReferenceCode);
 	}
 
 	public static DLFileEntry fetchFileEntryByFileName(

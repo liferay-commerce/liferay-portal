@@ -70,7 +70,7 @@ public class WeDeployAuthorizeStrutsAction implements StrutsAction {
 				"redirectURI",
 				ParamUtil.getString(httpServletRequest, "redirect_uri")
 			).setParameter(
-				"saveLastPath", Boolean.FALSE.toString()
+				"saveLastPath", false
 			).setPortletMode(
 				PortletMode.VIEW
 			).buildString());
@@ -91,7 +91,7 @@ public class WeDeployAuthorizeStrutsAction implements StrutsAction {
 			).setMVCRenderCommandName(
 				"/login/login"
 			).setParameter(
-				"saveLastPath", Boolean.FALSE.toString()
+				"saveLastPath", false
 			).setPortletMode(
 				PortletMode.VIEW
 			).setWindowState(

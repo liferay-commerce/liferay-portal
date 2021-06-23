@@ -6014,23 +6014,23 @@ public class AddressPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (address.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				address.setCreateDate(now);
+				address.setCreateDate(date);
 			}
 			else {
-				address.setCreateDate(serviceContext.getCreateDate(now));
+				address.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!addressModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				address.setModifiedDate(now);
+				address.setModifiedDate(date);
 			}
 			else {
-				address.setModifiedDate(serviceContext.getModifiedDate(now));
+				address.setModifiedDate(serviceContext.getModifiedDate(date));
 			}
 		}
 

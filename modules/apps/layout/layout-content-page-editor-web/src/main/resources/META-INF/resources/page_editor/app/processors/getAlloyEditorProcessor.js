@@ -31,7 +31,9 @@ const defaultGetEditorWrapper = (element) => {
 };
 
 const defaultRender = (element, value) => {
-	element.innerHTML = value;
+	if (value) {
+		element.innerHTML = value;
+	}
 };
 
 const keyupHandler = (event) => {
@@ -95,7 +97,7 @@ export default function getAlloyEditorProcessor(
 				) => {
 					openSelectionModal({
 						onSelect: changeLinkCallback,
-						selectEventName: editor.title + 'selectItem',
+						selectEventName: editorName + 'selectItem',
 						title: Liferay.Language.get('select-item'),
 						url,
 					});
@@ -116,7 +118,7 @@ export default function getAlloyEditorProcessor(
 					editorName
 				),
 
-				title: editorName,
+				title: '',
 			});
 
 			const nativeEditor = _editor.get('nativeEditor');

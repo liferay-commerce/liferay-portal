@@ -74,7 +74,7 @@ KaleoProcess kaleoProcess = kaleoFormsViewRecordsDisplayContext.getKaleoProcess(
 			).setRedirect(
 				redirect
 			).setParameter(
-				"kaleoProcessId", String.valueOf(kaleoProcess.getKaleoProcessId())
+				"kaleoProcessId", kaleoProcess.getKaleoProcessId()
 			).buildString()
 		%>'
 		method="post"

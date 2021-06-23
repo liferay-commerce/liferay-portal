@@ -111,9 +111,9 @@ public abstract class BaseBlogsEntryDemoDataCreator
 
 		long start = calendar.getTimeInMillis();
 
-		Date now = new Date();
+		Date date = new Date();
 
-		long end = now.getTime();
+		long end = date.getTime();
 
 		ThreadLocalRandom current = ThreadLocalRandom.current();
 

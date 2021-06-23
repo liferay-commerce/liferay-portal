@@ -1,5 +1,39 @@
 definition {
 
+	macro addCategoriesFilter {
+		Panel.expandPanel(panel = "Filter");
+
+		if (isSet(queryAndOperator)) {
+			Select(
+				locator1 = "APConfiguration#FILTER_QUERY_AND_OPERATOR",
+				value1 = "${queryAndOperator}");
+		}
+
+		if (isSet(queryContains)) {
+			Select(
+				locator1 = "APConfiguration#FILTER_QUERY_CONTAINS",
+				value1 = "${queryContains}");
+		}
+
+		Select(
+			locator1 = "APConfiguration#FILTER_CATEGORIZATION_SELECT",
+			value1 = "Categories");
+
+		Click(locator1 = "Button#SELECT_CATEGORIES");
+
+		AssetCategorization.gotoSelectCategory();
+
+		for (var categoryName : list "${categoryNameList}") {
+			Portlet.selectTreeNode(nodeName = "${categoryName}");
+		}
+
+		SelectFrameTop();
+
+		Click(locator1 = "Button#DONE");
+
+		PortletEntry.save();
+	}
+
 	macro addDynamicSelection {
 		if (isSet(depotName)) {
 			Click(locator1 = "Message#EMPTY_INFO_TAGLIB");
@@ -25,9 +59,7 @@ definition {
 			fieldLabel = "Title",
 			text = "${assetListTitle}");
 
-		Button.clickSave();
-
-		Alert.viewSuccessMessage();
+		PortletEntry.save();
 	}
 
 	macro addKeywordsFilter {
@@ -89,9 +121,7 @@ definition {
 			fieldLabel = "Title",
 			text = "${assetListTitle}");
 
-		Button.clickSave();
-
-		Alert.viewSuccessMessage();
+		PortletEntry.save();
 	}
 
 	macro addSelection {
@@ -109,11 +139,11 @@ definition {
 			locator1 = "APConfiguration#SOURCE_SCOPE_ASSET_TYPE_SELECT",
 			value1 = "${selectedAsset}");
 
-		Pause(locator1 = "3000");
+		WaitForElementNotPresent(
+			key_text = "Save",
+			locator1 = "Button#ANY_DISABLED");
 
 		PortletEntry.save();
-
-		Alert.viewSuccessMessage();
 	}
 
 	macro addTagsFilter {
@@ -157,11 +187,9 @@ definition {
 	macro configureFilterByField {
 		Check.checkToggleSwitch(locator1 = "APConfiguration#SOURCE_SCOPE_FILTER_BY_FIELD_CHECKBOX");
 
-		Pause(locator1 = "3000");
+		WaitForElementPresent(locator1 = "APConfiguration#SOURCE_SCOPE_FILTER_BY_FIELD_SELECT_BUTTON_ENABLED");
 
 		Click(locator1 = "APConfiguration#SOURCE_SCOPE_FILTER_BY_FIELD_SELECT_BUTTON");
-
-		Pause(locator1 = "3000");
 
 		SelectFrame(locator1 = "IFrame#MODAL_BODY");
 
@@ -177,17 +205,17 @@ definition {
 			Select(
 				locator1 = "APConfiguration#SOURCE_SCOPE_ASSET_TYPE_SELECT",
 				value1 = "${itemType}");
-
-			Pause(locator1 = "3000");
 		}
 
 		if (isSet(itemSubtype)) {
 			Select(
 				locator1 = "APConfiguration#SOURCE_SCOPE_ASSET_SUBTYPE_SELECT",
 				value1 = "${itemSubtype}");
-
-			Pause(locator1 = "3000");
 		}
+
+		WaitForElementNotPresent(
+			key_text = "Save",
+			locator1 = "Button#ANY_DISABLED");
 
 		PortletEntry.save();
 	}
@@ -197,17 +225,17 @@ definition {
 			Select(
 				locator1 = "APConfiguration#SOURCE_SCOPE_ASSET_TYPE_SELECT",
 				value1 = "${itemType}");
-
-			Pause(locator1 = "3000");
 		}
 
 		if (isSet(itemSubtype)) {
 			Select(
 				locator1 = "APConfiguration#SOURCE_SCOPE_ASSET_SUBTYPE_SELECT",
 				value1 = "${itemSubtype}");
-
-			Pause(locator1 = "3000");
 		}
+
+		WaitForElementNotPresent(
+			key_text = "Save",
+			locator1 = "Button#ANY_DISABLED");
 
 		PortletEntry.save();
 	}
@@ -279,6 +307,8 @@ definition {
 		AssetListsAdmin.gotoEntryMenuItem(
 			assetListTitle = "${assetListTitle}",
 			item = "Edit");
+
+		WaitForPageLoad();
 	}
 
 	macro gotoEntry {
@@ -345,9 +375,8 @@ definition {
 			Click(
 				key_title = "${assetListName}",
 				locator1 = "AssetLists#ASSET_LIST_ENTRY_TITLE");
+			WaitForPageLoad();
 		}
-
-		Pause(locator1 = "3000");
 
 		if (IsElementPresent(locator1 = "APConfiguration#SOURCE_SCOPE_ASSET_TYPE_SELECT")) {
 			AssetListsAdmin.configureItemTypeInManualCollection(
@@ -360,8 +389,6 @@ definition {
 		Click(locator1 = "AssetLists#ASSET_TYPE_DROPDOWN_ITEM");
 
 		SelectFrame(locator1 = "IFrame#MODAL_BODY");
-
-		Pause(locator1 = "3000");
 
 		if (isSet(depotName)) {
 			AssertClick(
@@ -380,8 +407,6 @@ definition {
 		if (isSet(entryList)) {
 			for (var assetName : list "${entryList}") {
 				LexiconEntry.selectEntry(rowEntry = "${assetName}");
-
-				Pause(locator1 = "3000");
 			}
 		}
 		else {
@@ -425,7 +450,9 @@ definition {
 						value1 = "${itemSubtype}");
 				}
 
-				Pause(locator1 = "3000");
+				WaitForElementNotPresent(
+					key_text = "Save",
+					locator1 = "Button#ANY_DISABLED");
 
 				PortletEntry.save();
 			}
@@ -492,15 +519,15 @@ definition {
 				value1 = "${assetTitle}");
 		}
 
-		SelectFrameTop();
-
-		Click(locator1 = "Icon#CLOSE");
+		IFrame.closeFrame();
 	}
 
 	macro viewContent {
 		Click(
 			key_title = "${assetListTitle}",
 			locator1 = "AssetLists#ASSET_LIST_ENTRY_TITLE");
+
+		WaitForLiferayEvent.initializeLiferayEventLog();
 
 		Click(locator1 = "AssetLists#ASSET_LIST_ELLIPSIS");
 
@@ -520,15 +547,15 @@ definition {
 			locator1 = "AssetLists#ASSET_TYPE_ROW",
 			value1 = "${assetType}");
 
-		SelectFrameTop();
-
-		Click(locator1 = "Icon#CLOSE");
+		IFrame.closeFrame();
 	}
 
 	macro viewNoContent {
 		Click(
 			key_title = "${assetListTitle}",
 			locator1 = "AssetLists#ASSET_LIST_ENTRY_TITLE");
+
+		WaitForLiferayEvent.initializeLiferayEventLog();
 
 		Click(locator1 = "AssetLists#ASSET_LIST_ELLIPSIS");
 
@@ -544,9 +571,7 @@ definition {
 
 		AssertElementNotPresent(locator1 = "AssetLists#ASSET_TYPE_ROW");
 
-		SelectFrameTop();
-
-		Click(locator1 = "Icon#CLOSE");
+		IFrame.closeFrame();
 	}
 
 	macro viewUsages {

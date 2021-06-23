@@ -4601,25 +4601,25 @@ public class SiteNavigationMenuItemPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (siteNavigationMenuItem.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				siteNavigationMenuItem.setCreateDate(now);
+				siteNavigationMenuItem.setCreateDate(date);
 			}
 			else {
 				siteNavigationMenuItem.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!siteNavigationMenuItemModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				siteNavigationMenuItem.setModifiedDate(now);
+				siteNavigationMenuItem.setModifiedDate(date);
 			}
 			else {
 				siteNavigationMenuItem.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

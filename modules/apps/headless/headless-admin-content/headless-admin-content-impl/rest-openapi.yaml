@@ -186,7 +186,7 @@ components:
 info:
     description:
         "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID
-        'com.liferay.headless.admin.content.client', and version '2.0.3'."
+        'com.liferay.headless.admin.content.client', and version '2.0.4'."
     license:
         name: "Apache 2.0"
         url: "http://www.apache.org/licenses/LICENSE-2.0.html"
@@ -395,7 +395,7 @@ paths:
                                 $ref: "../../headless-delivery/headless-delivery-impl/rest-openapi.yaml#StructuredContent"
                     description:
                         ""
-            tags: [ "StructuredContent" ]
+            tags: ["StructuredContent"]
     "/structured-contents/{structuredContentId}/by-version/{version}":
         delete:
             # @review
@@ -418,8 +418,8 @@ paths:
             responses:
                 204:
                     content:
-                        application/json: { }
-                        application/xml: { }
+                        application/json: {}
+                        application/xml: {}
                     description:
                         ""
             tags: ["StructuredContent"]

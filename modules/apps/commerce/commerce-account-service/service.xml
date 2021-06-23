@@ -4,7 +4,7 @@
 <service-builder auto-namespace-tables="false" mvcc-enabled="false" package-path="com.liferay.commerce.account">
 	<author>Marco Leo</author>
 	<namespace>Commerce</namespace>
-	<entity external-reference-code="true" local-service="true" name="CommerceAccount" remote-service="true">
+	<entity external-reference-code="true" local-service="true" name="CommerceAccount" persistence="false" remote-service="true">
 
 		<!-- PK fields -->
 
@@ -137,7 +137,7 @@
 			<finder-column name="commerceAccountId" />
 		</finder>
 	</entity>
-	<entity local-service="true" name="CommerceAccountGroupRel" remote-service="true">
+	<entity local-service="true" name="CommerceAccountGroupRel" persistence="false" remote-service="true">
 
 		<!-- PK fields -->
 
@@ -177,8 +177,12 @@
 			<finder-column name="classPK" />
 			<finder-column name="commerceAccountGroupId" />
 		</finder>
+
+		<!-- References -->
+
+		<reference entity="AccountGroupRel" package-path="com.liferay.account" />
 	</entity>
-	<entity local-service="true" name="CommerceAccountOrganizationRel" remote-service="true">
+	<entity local-service="true" name="CommerceAccountOrganizationRel" persistence="false" remote-service="true">
 
 		<!-- PK fields -->
 
@@ -212,7 +216,7 @@
 
 		<reference entity="AccountEntryOrganizationRel" package-path="com.liferay.account" />
 	</entity>
-	<entity local-service="true" name="CommerceAccountUserRel" remote-service="true">
+	<entity local-service="true" name="CommerceAccountUserRel" persistence="false" remote-service="true">
 
 		<!-- PK fields -->
 

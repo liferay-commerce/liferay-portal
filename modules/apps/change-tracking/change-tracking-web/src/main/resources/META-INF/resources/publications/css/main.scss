@@ -153,6 +153,34 @@
 	}
 }
 
+.publications-invite-users-modal {
+	.form-group:last-child {
+		margin-bottom: 0;
+	}
+
+	.modal-title .autofit-col {
+		padding: 2px;
+	}
+
+	.publications-invite-users-modal-body {
+		max-height: 70vh;
+	}
+
+	.table-responsive {
+		margin-bottom: 0;
+
+		.table-add,
+		.table-list .table-add td {
+			background-color: #edf9f0;
+		}
+
+		.table-delete,
+		.table-list .table-delete td {
+			background-color: #feefef;
+		}
+	}
+}
+
 .publications-hidden {
 	visibility: hidden;
 }
@@ -308,6 +336,14 @@ table.publications-render-view {
 	font-size: 14px;
 	height: auto;
 	min-height: 3.5rem;
+
+	.autofit-col {
+		padding-left: 16px;
+	}
+
+	.autofit-col:first-child {
+		padding-left: 0;
+	}
 
 	.publication-name {
 		color: #272833;

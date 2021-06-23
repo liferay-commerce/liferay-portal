@@ -270,7 +270,7 @@ public class CommerceDiscountLocalServiceImpl
 			serviceContext.getCompanyId(), 0, title, target, useCouponCode,
 			couponCode, limitationType);
 
-		Date now = new Date();
+		Date date = new Date();
 
 		Date displayDate = PortalUtil.getDate(
 			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
@@ -333,7 +333,7 @@ public class CommerceDiscountLocalServiceImpl
 		commerceDiscount.setDisplayDate(displayDate);
 		commerceDiscount.setExpirationDate(expirationDate);
 
-		if ((expirationDate == null) || expirationDate.after(now)) {
+		if ((expirationDate == null) || expirationDate.after(date)) {
 			commerceDiscount.setStatus(WorkflowConstants.STATUS_DRAFT);
 		}
 		else {
@@ -341,7 +341,7 @@ public class CommerceDiscountLocalServiceImpl
 		}
 
 		commerceDiscount.setStatusByUserId(user.getUserId());
-		commerceDiscount.setStatusDate(serviceContext.getModifiedDate(now));
+		commerceDiscount.setStatusDate(serviceContext.getModifiedDate(date));
 		commerceDiscount.setExpandoBridgeAttributes(serviceContext);
 
 		commerceDiscount = commerceDiscountPersistence.update(commerceDiscount);
@@ -355,6 +355,180 @@ public class CommerceDiscountLocalServiceImpl
 
 		return startWorkflowInstance(
 			user.getUserId(), commerceDiscount, serviceContext);
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public CommerceDiscount addOrUpdateCommerceDiscount(
+			String externalReferenceCode, long userId, long commerceDiscountId,
+			String title, String target, boolean useCouponCode,
+			String couponCode, boolean usePercentage,
+			BigDecimal maximumDiscountAmount, BigDecimal level1,
+			BigDecimal level2, BigDecimal level3, BigDecimal level4,
+			String limitationType, int limitationTimes, boolean active,
+			int displayDateMonth, int displayDateDay, int displayDateYear,
+			int displayDateHour, int displayDateMinute, int expirationDateMonth,
+			int expirationDateDay, int expirationDateYear,
+			int expirationDateHour, int expirationDateMinute,
+			boolean neverExpire, ServiceContext serviceContext)
+		throws PortalException {
+
+		return addOrUpdateCommerceDiscount(
+			externalReferenceCode, userId, commerceDiscountId, title, target,
+			useCouponCode, couponCode, usePercentage, maximumDiscountAmount,
+			StringPool.BLANK, level1, level2, level3, level4, limitationType,
+			limitationTimes, 0, true, active, displayDateMonth, displayDateDay,
+			displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, neverExpire,
+			serviceContext);
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public CommerceDiscount addOrUpdateCommerceDiscount(
+			String externalReferenceCode, long userId, long commerceDiscountId,
+			String title, String target, boolean useCouponCode,
+			String couponCode, boolean usePercentage,
+			BigDecimal maximumDiscountAmount, String level, BigDecimal level1,
+			BigDecimal level2, BigDecimal level3, BigDecimal level4,
+			String limitationType, int limitationTimes,
+			boolean rulesConjunction, boolean active, int displayDateMonth,
+			int displayDateDay, int displayDateYear, int displayDateHour,
+			int displayDateMinute, int expirationDateMonth,
+			int expirationDateDay, int expirationDateYear,
+			int expirationDateHour, int expirationDateMinute,
+			boolean neverExpire, ServiceContext serviceContext)
+		throws PortalException {
+
+		// Update
+
+		if (commerceDiscountId > 0) {
+			try {
+				return commerceDiscountLocalService.updateCommerceDiscount(
+					commerceDiscountId, title, target, useCouponCode,
+					couponCode, usePercentage, maximumDiscountAmount, level,
+					level1, level2, level3, level4, limitationType,
+					limitationTimes, rulesConjunction, active, displayDateMonth,
+					displayDateDay, displayDateYear, displayDateHour,
+					displayDateMinute, expirationDateMonth, expirationDateDay,
+					expirationDateYear, expirationDateHour,
+					expirationDateMinute, neverExpire, serviceContext);
+			}
+			catch (NoSuchDiscountException noSuchDiscountException) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(
+						"Unable to find discount with ID: " +
+							commerceDiscountId,
+						noSuchDiscountException);
+				}
+			}
+		}
+
+		if (!Validator.isBlank(externalReferenceCode)) {
+			CommerceDiscount commerceDiscount =
+				commerceDiscountPersistence.fetchByC_ERC(
+					serviceContext.getCompanyId(), externalReferenceCode);
+
+			if (commerceDiscount != null) {
+				return commerceDiscountLocalService.updateCommerceDiscount(
+					commerceDiscountId, title, target, useCouponCode,
+					couponCode, usePercentage, maximumDiscountAmount, level,
+					level1, level2, level3, level4, limitationType,
+					limitationTimes, rulesConjunction, active, displayDateMonth,
+					displayDateDay, displayDateYear, displayDateHour,
+					displayDateMinute, expirationDateMonth, expirationDateDay,
+					expirationDateYear, expirationDateHour,
+					expirationDateMinute, neverExpire, serviceContext);
+			}
+		}
+
+		// Add
+
+		return commerceDiscountLocalService.addCommerceDiscount(
+			externalReferenceCode, userId, title, target, useCouponCode,
+			couponCode, usePercentage, maximumDiscountAmount, level, level1,
+			level2, level3, level4, limitationType, limitationTimes,
+			rulesConjunction, active, displayDateMonth, displayDateDay,
+			displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, neverExpire,
+			serviceContext);
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public CommerceDiscount addOrUpdateCommerceDiscount(
+			String externalReferenceCode, long userId, long commerceDiscountId,
+			String title, String target, boolean useCouponCode,
+			String couponCode, boolean usePercentage,
+			BigDecimal maximumDiscountAmount, String level, BigDecimal level1,
+			BigDecimal level2, BigDecimal level3, BigDecimal level4,
+			String limitationType, int limitationTimes,
+			int limitationTimesPerAccount, boolean rulesConjunction,
+			boolean active, int displayDateMonth, int displayDateDay,
+			int displayDateYear, int displayDateHour, int displayDateMinute,
+			int expirationDateMonth, int expirationDateDay,
+			int expirationDateYear, int expirationDateHour,
+			int expirationDateMinute, boolean neverExpire,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		// Update
+
+		if (commerceDiscountId > 0) {
+			try {
+				return commerceDiscountLocalService.updateCommerceDiscount(
+					commerceDiscountId, title, target, useCouponCode,
+					couponCode, usePercentage, maximumDiscountAmount, level,
+					level1, level2, level3, level4, limitationType,
+					limitationTimes, limitationTimesPerAccount,
+					rulesConjunction, active, displayDateMonth, displayDateDay,
+					displayDateYear, displayDateHour, displayDateMinute,
+					expirationDateMonth, expirationDateDay, expirationDateYear,
+					expirationDateHour, expirationDateMinute, neverExpire,
+					serviceContext);
+			}
+			catch (NoSuchDiscountException noSuchDiscountException) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(
+						"Unable to find discount with ID: " +
+							commerceDiscountId,
+						noSuchDiscountException);
+				}
+			}
+		}
+
+		if (!Validator.isBlank(externalReferenceCode)) {
+			CommerceDiscount commerceDiscount =
+				commerceDiscountPersistence.fetchByC_ERC(
+					serviceContext.getCompanyId(), externalReferenceCode);
+
+			if (commerceDiscount != null) {
+				return commerceDiscountLocalService.updateCommerceDiscount(
+					commerceDiscountId, title, target, useCouponCode,
+					couponCode, usePercentage, maximumDiscountAmount, level,
+					level1, level2, level3, level4, limitationType,
+					limitationTimes, limitationTimesPerAccount,
+					rulesConjunction, active, displayDateMonth, displayDateDay,
+					displayDateYear, displayDateHour, displayDateMinute,
+					expirationDateMonth, expirationDateDay, expirationDateYear,
+					expirationDateHour, expirationDateMinute, neverExpire,
+					serviceContext);
+			}
+		}
+
+		// Add
+
+		return commerceDiscountLocalService.addCommerceDiscount(
+			externalReferenceCode, userId, title, target, useCouponCode,
+			couponCode, usePercentage, maximumDiscountAmount, level, level1,
+			level2, level3, level4, limitationType, limitationTimes,
+			limitationTimesPerAccount, rulesConjunction, active,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			neverExpire, serviceContext);
 	}
 
 	@Override
@@ -760,7 +934,7 @@ public class CommerceDiscountLocalServiceImpl
 			serviceContext.getCompanyId(), commerceDiscountId, title, target,
 			useCouponCode, couponCode, limitationType);
 
-		Date now = new Date();
+		Date date = new Date();
 
 		Date displayDate = PortalUtil.getDate(
 			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
@@ -794,7 +968,7 @@ public class CommerceDiscountLocalServiceImpl
 		commerceDiscount.setDisplayDate(displayDate);
 		commerceDiscount.setExpirationDate(expirationDate);
 
-		if ((expirationDate == null) || expirationDate.after(now)) {
+		if ((expirationDate == null) || expirationDate.after(date)) {
 			commerceDiscount.setStatus(WorkflowConstants.STATUS_DRAFT);
 		}
 		else {
@@ -802,7 +976,7 @@ public class CommerceDiscountLocalServiceImpl
 		}
 
 		commerceDiscount.setStatusByUserId(user.getUserId());
-		commerceDiscount.setStatusDate(serviceContext.getModifiedDate(now));
+		commerceDiscount.setStatusDate(serviceContext.getModifiedDate(date));
 		commerceDiscount.setExpandoBridgeAttributes(serviceContext);
 
 		commerceDiscount = commerceDiscountPersistence.update(commerceDiscount);
@@ -837,7 +1011,7 @@ public class CommerceDiscountLocalServiceImpl
 			serviceContext.getCompanyId(), commerceDiscountId, title, target,
 			useCouponCode, couponCode, limitationType);
 
-		Date now = new Date();
+		Date date = new Date();
 
 		Date displayDate = PortalUtil.getDate(
 			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
@@ -873,7 +1047,7 @@ public class CommerceDiscountLocalServiceImpl
 		commerceDiscount.setDisplayDate(displayDate);
 		commerceDiscount.setExpirationDate(expirationDate);
 
-		if ((expirationDate == null) || expirationDate.after(now)) {
+		if ((expirationDate == null) || expirationDate.after(date)) {
 			commerceDiscount.setStatus(WorkflowConstants.STATUS_DRAFT);
 		}
 		else {
@@ -881,7 +1055,7 @@ public class CommerceDiscountLocalServiceImpl
 		}
 
 		commerceDiscount.setStatusByUserId(user.getUserId());
-		commerceDiscount.setStatusDate(serviceContext.getModifiedDate(now));
+		commerceDiscount.setStatusDate(serviceContext.getModifiedDate(date));
 		commerceDiscount.setExpandoBridgeAttributes(serviceContext);
 
 		commerceDiscount = commerceDiscountPersistence.update(commerceDiscount);
@@ -930,14 +1104,14 @@ public class CommerceDiscountLocalServiceImpl
 		throws PortalException {
 
 		User user = userLocalService.getUser(userId);
-		Date now = new Date();
+		Date date = new Date();
 
 		CommerceDiscount commerceDiscount =
 			commerceDiscountPersistence.findByPrimaryKey(commerceDiscountId);
 
 		if ((status == WorkflowConstants.STATUS_APPROVED) &&
 			(commerceDiscount.getDisplayDate() != null) &&
-			now.before(commerceDiscount.getDisplayDate())) {
+			date.before(commerceDiscount.getDisplayDate())) {
 
 			commerceDiscount.setActive(false);
 
@@ -947,7 +1121,7 @@ public class CommerceDiscountLocalServiceImpl
 		if (status == WorkflowConstants.STATUS_APPROVED) {
 			Date expirationDate = commerceDiscount.getExpirationDate();
 
-			if ((expirationDate != null) && expirationDate.before(now)) {
+			if ((expirationDate != null) && expirationDate.before(date)) {
 				commerceDiscount.setExpirationDate(null);
 			}
 
@@ -960,20 +1134,20 @@ public class CommerceDiscountLocalServiceImpl
 
 		if (status == WorkflowConstants.STATUS_EXPIRED) {
 			commerceDiscount.setActive(false);
-			commerceDiscount.setExpirationDate(now);
+			commerceDiscount.setExpirationDate(date);
 		}
 
 		commerceDiscount.setStatus(status);
 		commerceDiscount.setStatusByUserId(user.getUserId());
 		commerceDiscount.setStatusByUserName(user.getFullName());
-		commerceDiscount.setStatusDate(serviceContext.getModifiedDate(now));
+		commerceDiscount.setStatusDate(serviceContext.getModifiedDate(date));
 
 		return commerceDiscountPersistence.update(commerceDiscount);
 	}
 
 	/**
 	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
-	 *             #upsertCommerceDiscount(String, long, long, String, String,
+	 *             #addOrUpdateCommerceDiscount(String, long, long, String, String,
 	 *             boolean, String, boolean, BigDecimal, BigDecimal,
 	 *             BigDecimal, BigDecimal, BigDecimal, String, int, boolean,
 	 *             int, int, int, int, int, int, int, int, int, int, boolean,
@@ -996,7 +1170,7 @@ public class CommerceDiscountLocalServiceImpl
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		return upsertCommerceDiscount(
+		return addOrUpdateCommerceDiscount(
 			externalReferenceCode, userId, commerceDiscountId, title, target,
 			useCouponCode, couponCode, usePercentage, maximumDiscountAmount,
 			StringPool.BLANK, level1, level2, level3, level4, limitationType,
@@ -1009,7 +1183,7 @@ public class CommerceDiscountLocalServiceImpl
 
 	/**
 	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
-	 *             #upsertCommerceDiscount(String, long, long, String, String,
+	 *             #addOrUpdateCommerceDiscount(String, long, long, String, String,
 	 *             boolean, String, boolean, BigDecimal, String, BigDecimal,
 	 *             BigDecimal, BigDecimal, BigDecimal, String, int, boolean,
 	 *             boolean, int, int, int, int, int, int, int, int, int, int,
@@ -1033,7 +1207,7 @@ public class CommerceDiscountLocalServiceImpl
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		return upsertCommerceDiscount(
+		return addOrUpdateCommerceDiscount(
 			externalReferenceCode, userId, commerceDiscountId, title, target,
 			useCouponCode, couponCode, usePercentage, maximumDiscountAmount,
 			level, level1, level2, level3, level4, limitationType,
@@ -1046,7 +1220,7 @@ public class CommerceDiscountLocalServiceImpl
 
 	/**
 	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
-	 *             #upsertCommerceDiscount(String, long, long, String, String,
+	 *             #addOrUpdateCommerceDiscount(String, long, long, String, String,
 	 *             boolean, String, boolean, BigDecimal, String, BigDecimal,
 	 *             BigDecimal, BigDecimal, BigDecimal, String, int, int,
 	 *             boolean, boolean, int, int, int, int, int, int, int, int,
@@ -1070,7 +1244,7 @@ public class CommerceDiscountLocalServiceImpl
 			boolean neverExpire, ServiceContext serviceContext)
 		throws PortalException {
 
-		return upsertCommerceDiscount(
+		return addOrUpdateCommerceDiscount(
 			externalReferenceCode, userId, commerceDiscountId, title, target,
 			useCouponCode, couponCode, usePercentage, maximumDiscountAmount,
 			level, level1, level2, level3, level4, limitationType,
@@ -1079,180 +1253,6 @@ public class CommerceDiscountLocalServiceImpl
 			displayDateHour, displayDateMinute, expirationDateMonth,
 			expirationDateDay, expirationDateYear, expirationDateHour,
 			expirationDateMinute, neverExpire, serviceContext);
-	}
-
-	@Indexable(type = IndexableType.REINDEX)
-	@Override
-	public CommerceDiscount upsertCommerceDiscount(
-			String externalReferenceCode, long userId, long commerceDiscountId,
-			String title, String target, boolean useCouponCode,
-			String couponCode, boolean usePercentage,
-			BigDecimal maximumDiscountAmount, BigDecimal level1,
-			BigDecimal level2, BigDecimal level3, BigDecimal level4,
-			String limitationType, int limitationTimes, boolean active,
-			int displayDateMonth, int displayDateDay, int displayDateYear,
-			int displayDateHour, int displayDateMinute, int expirationDateMonth,
-			int expirationDateDay, int expirationDateYear,
-			int expirationDateHour, int expirationDateMinute,
-			boolean neverExpire, ServiceContext serviceContext)
-		throws PortalException {
-
-		return upsertCommerceDiscount(
-			externalReferenceCode, userId, commerceDiscountId, title, target,
-			useCouponCode, couponCode, usePercentage, maximumDiscountAmount,
-			StringPool.BLANK, level1, level2, level3, level4, limitationType,
-			limitationTimes, 0, true, active, displayDateMonth, displayDateDay,
-			displayDateYear, displayDateHour, displayDateMinute,
-			expirationDateMonth, expirationDateDay, expirationDateYear,
-			expirationDateHour, expirationDateMinute, neverExpire,
-			serviceContext);
-	}
-
-	@Indexable(type = IndexableType.REINDEX)
-	@Override
-	public CommerceDiscount upsertCommerceDiscount(
-			String externalReferenceCode, long userId, long commerceDiscountId,
-			String title, String target, boolean useCouponCode,
-			String couponCode, boolean usePercentage,
-			BigDecimal maximumDiscountAmount, String level, BigDecimal level1,
-			BigDecimal level2, BigDecimal level3, BigDecimal level4,
-			String limitationType, int limitationTimes,
-			boolean rulesConjunction, boolean active, int displayDateMonth,
-			int displayDateDay, int displayDateYear, int displayDateHour,
-			int displayDateMinute, int expirationDateMonth,
-			int expirationDateDay, int expirationDateYear,
-			int expirationDateHour, int expirationDateMinute,
-			boolean neverExpire, ServiceContext serviceContext)
-		throws PortalException {
-
-		// Update
-
-		if (commerceDiscountId > 0) {
-			try {
-				return commerceDiscountLocalService.updateCommerceDiscount(
-					commerceDiscountId, title, target, useCouponCode,
-					couponCode, usePercentage, maximumDiscountAmount, level,
-					level1, level2, level3, level4, limitationType,
-					limitationTimes, rulesConjunction, active, displayDateMonth,
-					displayDateDay, displayDateYear, displayDateHour,
-					displayDateMinute, expirationDateMonth, expirationDateDay,
-					expirationDateYear, expirationDateHour,
-					expirationDateMinute, neverExpire, serviceContext);
-			}
-			catch (NoSuchDiscountException noSuchDiscountException) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(
-						"Unable to find discount with ID: " +
-							commerceDiscountId,
-						noSuchDiscountException);
-				}
-			}
-		}
-
-		if (!Validator.isBlank(externalReferenceCode)) {
-			CommerceDiscount commerceDiscount =
-				commerceDiscountPersistence.fetchByC_ERC(
-					serviceContext.getCompanyId(), externalReferenceCode);
-
-			if (commerceDiscount != null) {
-				return commerceDiscountLocalService.updateCommerceDiscount(
-					commerceDiscountId, title, target, useCouponCode,
-					couponCode, usePercentage, maximumDiscountAmount, level,
-					level1, level2, level3, level4, limitationType,
-					limitationTimes, rulesConjunction, active, displayDateMonth,
-					displayDateDay, displayDateYear, displayDateHour,
-					displayDateMinute, expirationDateMonth, expirationDateDay,
-					expirationDateYear, expirationDateHour,
-					expirationDateMinute, neverExpire, serviceContext);
-			}
-		}
-
-		// Add
-
-		return commerceDiscountLocalService.addCommerceDiscount(
-			externalReferenceCode, userId, title, target, useCouponCode,
-			couponCode, usePercentage, maximumDiscountAmount, level, level1,
-			level2, level3, level4, limitationType, limitationTimes,
-			rulesConjunction, active, displayDateMonth, displayDateDay,
-			displayDateYear, displayDateHour, displayDateMinute,
-			expirationDateMonth, expirationDateDay, expirationDateYear,
-			expirationDateHour, expirationDateMinute, neverExpire,
-			serviceContext);
-	}
-
-	@Indexable(type = IndexableType.REINDEX)
-	@Override
-	public CommerceDiscount upsertCommerceDiscount(
-			String externalReferenceCode, long userId, long commerceDiscountId,
-			String title, String target, boolean useCouponCode,
-			String couponCode, boolean usePercentage,
-			BigDecimal maximumDiscountAmount, String level, BigDecimal level1,
-			BigDecimal level2, BigDecimal level3, BigDecimal level4,
-			String limitationType, int limitationTimes,
-			int limitationTimesPerAccount, boolean rulesConjunction,
-			boolean active, int displayDateMonth, int displayDateDay,
-			int displayDateYear, int displayDateHour, int displayDateMinute,
-			int expirationDateMonth, int expirationDateDay,
-			int expirationDateYear, int expirationDateHour,
-			int expirationDateMinute, boolean neverExpire,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		// Update
-
-		if (commerceDiscountId > 0) {
-			try {
-				return commerceDiscountLocalService.updateCommerceDiscount(
-					commerceDiscountId, title, target, useCouponCode,
-					couponCode, usePercentage, maximumDiscountAmount, level,
-					level1, level2, level3, level4, limitationType,
-					limitationTimes, limitationTimesPerAccount,
-					rulesConjunction, active, displayDateMonth, displayDateDay,
-					displayDateYear, displayDateHour, displayDateMinute,
-					expirationDateMonth, expirationDateDay, expirationDateYear,
-					expirationDateHour, expirationDateMinute, neverExpire,
-					serviceContext);
-			}
-			catch (NoSuchDiscountException noSuchDiscountException) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(
-						"Unable to find discount with ID: " +
-							commerceDiscountId,
-						noSuchDiscountException);
-				}
-			}
-		}
-
-		if (!Validator.isBlank(externalReferenceCode)) {
-			CommerceDiscount commerceDiscount =
-				commerceDiscountPersistence.fetchByC_ERC(
-					serviceContext.getCompanyId(), externalReferenceCode);
-
-			if (commerceDiscount != null) {
-				return commerceDiscountLocalService.updateCommerceDiscount(
-					commerceDiscountId, title, target, useCouponCode,
-					couponCode, usePercentage, maximumDiscountAmount, level,
-					level1, level2, level3, level4, limitationType,
-					limitationTimes, limitationTimesPerAccount,
-					rulesConjunction, active, displayDateMonth, displayDateDay,
-					displayDateYear, displayDateHour, displayDateMinute,
-					expirationDateMonth, expirationDateDay, expirationDateYear,
-					expirationDateHour, expirationDateMinute, neverExpire,
-					serviceContext);
-			}
-		}
-
-		// Add
-
-		return commerceDiscountLocalService.addCommerceDiscount(
-			externalReferenceCode, userId, title, target, useCouponCode,
-			couponCode, usePercentage, maximumDiscountAmount, level, level1,
-			level2, level3, level4, limitationType, limitationTimes,
-			limitationTimesPerAccount, rulesConjunction, active,
-			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
-			displayDateMinute, expirationDateMonth, expirationDateDay,
-			expirationDateYear, expirationDateHour, expirationDateMinute,
-			neverExpire, serviceContext);
 	}
 
 	protected SearchContext buildSearchContext(

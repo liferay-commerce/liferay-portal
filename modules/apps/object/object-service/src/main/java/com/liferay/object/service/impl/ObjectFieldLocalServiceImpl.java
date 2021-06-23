@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
@@ -49,8 +50,12 @@ public class ObjectFieldLocalServiceImpl
 
 	@Override
 	public ObjectField addObjectField(
-			long userId, long objectDefinitionId, String name, String type)
+			long userId, long objectDefinitionId, boolean indexed,
+			boolean indexedAsKeyword, String indexedLanguageId, String name,
+			String type)
 		throws PortalException {
+
+		_validateIndexed(indexed, indexedAsKeyword, indexedLanguageId, type);
 
 		name = StringUtil.trim(name);
 
@@ -68,6 +73,9 @@ public class ObjectFieldLocalServiceImpl
 		objectField.setUserName(user.getFullName());
 
 		objectField.setObjectDefinitionId(objectDefinitionId);
+		objectField.setIndexed(indexed);
+		objectField.setIndexedAsKeyword(indexedAsKeyword);
+		objectField.setIndexedLanguageId(indexedLanguageId);
 		objectField.setName(name);
 		objectField.setType(type);
 
@@ -78,6 +86,26 @@ public class ObjectFieldLocalServiceImpl
 	public List<ObjectField> getObjectFields(long objectDefinitionId) {
 		return objectFieldPersistence.findByObjectDefinitionId(
 			objectDefinitionId);
+	}
+
+	private void _validateIndexed(
+			boolean indexed, boolean indexedAsKeyword, String indexedLanguageId,
+			String type)
+		throws PortalException {
+
+		// TODO Add a test for this
+
+		if (indexed && Objects.equals(type, "Blob")) {
+			throw new ObjectFieldTypeException("Blob type is not indexable");
+		}
+
+		if ((!Objects.equals(type, "String") || indexedAsKeyword) &&
+			!Validator.isBlank(indexedLanguageId)) {
+
+			throw new ObjectFieldTypeException(
+				"Indexed language ID can only be applied with type " +
+					"\"String\" that is not indexed as a keyword");
+		}
 	}
 
 	private void _validateName(long objectDefinitionId, String name)

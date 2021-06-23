@@ -1697,25 +1697,25 @@ public class BatchPlannerLogPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (batchPlannerLog.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				batchPlannerLog.setCreateDate(now);
+				batchPlannerLog.setCreateDate(date);
 			}
 			else {
 				batchPlannerLog.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!batchPlannerLogModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				batchPlannerLog.setModifiedDate(now);
+				batchPlannerLog.setModifiedDate(date);
 			}
 			else {
 				batchPlannerLog.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

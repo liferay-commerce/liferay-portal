@@ -3016,25 +3016,25 @@ public class ExportImportConfigurationPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (exportImportConfiguration.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				exportImportConfiguration.setCreateDate(now);
+				exportImportConfiguration.setCreateDate(date);
 			}
 			else {
 				exportImportConfiguration.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!exportImportConfigurationModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				exportImportConfiguration.setModifiedDate(now);
+				exportImportConfiguration.setModifiedDate(date);
 			}
 			else {
 				exportImportConfiguration.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

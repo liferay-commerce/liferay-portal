@@ -90,9 +90,9 @@ public class FieldSetsPortletConfigurationIcon
 		).setParameter(
 			"refererWebDAVToken", WebDAVUtil.getStorageToken(portlet)
 		).setParameter(
-			"showAncestorScopes", Boolean.TRUE.toString()
+			"showAncestorScopes", true
 		).setParameter(
-			"showManageTemplates", Boolean.TRUE.toString()
+			"showManageTemplates", true
 		).buildString();
 	}
 

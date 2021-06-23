@@ -12424,24 +12424,24 @@ public class DDMTemplatePersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (ddmTemplate.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				ddmTemplate.setCreateDate(now);
+				ddmTemplate.setCreateDate(date);
 			}
 			else {
-				ddmTemplate.setCreateDate(serviceContext.getCreateDate(now));
+				ddmTemplate.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!ddmTemplateModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				ddmTemplate.setModifiedDate(now);
+				ddmTemplate.setModifiedDate(date);
 			}
 			else {
 				ddmTemplate.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

@@ -1,0 +1,170 @@
+@component-name = "portal-web-forms-and-data-lists"
+definition {
+
+	property custom.properties = "minifier.enabled=true";
+	property portal.release = "true";
+	property portal.upstream = "true";
+	property testray.main.component.name = "Forms";
+
+	setUp {
+		TestCase.setUpPortalInstance();
+
+		User.firstLoginPG();
+	}
+
+	tearDown {
+		var testPortalInstance = PropsUtil.get("test.portal.instance");
+
+		if ("${testPortalInstance}" == "true") {
+			PortalInstances.tearDownCP();
+		}
+		else {
+			Navigator.openURL();
+
+			ProductMenu.gotoPortlet(
+				category = "Content &amp; Data",
+				portlet = "Forms");
+
+			FormsAdmin.teardownForms();
+
+			Navigator.gotoNavItem(navItem = "Element Sets");
+
+			FormsAdmin.teardownElementSets();
+
+			Page.tearDownCP();
+		}
+	}
+
+	@description = "Verify if individual fields can be moved to different positions after being added via element set"
+	@ignore = "Test Stub"
+	@priority = "5"
+	test FieldsAddedViaElementSetCanBeReordered {
+		property forms.functional = "true";
+		property portal.acceptance = "false";
+
+		// TODO LPS-134252 FieldsAddedViaElementSetCanBeReordered pending implementation
+
+	}
+
+	@description = "Verify that fields can be moved between pages"
+	@ignore = "Test Stub"
+	@priority = "5"
+	test FieldsCanBeMovedBetweenPages {
+		property forms.functional = "true";
+		property portal.acceptance = "false";
+
+		// TODO LPS-134241 FieldsCanBeMovedBetweenPages pending implementation
+
+	}
+
+	@description = "Verify that fields can be reordered by DND"
+	@ignore = "Test Stub"
+	@priority = "5"
+	test FieldsCanBeReorderedViaDND {
+		property forms.functional = "true";
+		property portal.acceptance = "false";
+
+		// TODO LPS-134240 FieldsCanBeReorderedViaDND pending implementation
+
+	}
+
+	@description = "Verify that fields can be resized"
+	@ignore = "Test Stub"
+	@priority = "5"
+	test FieldsCanBeResized {
+		property forms.functional = "true";
+		property portal.acceptance = "false";
+
+		// TODO LPS-134242 FieldsCanBeResized pending implementation
+
+	}
+
+	@description = "Verify that after resizing, the field does not lose any functionality (edit, duplicate, etc...)"
+	@ignore = "Test Stub"
+	@priority = "5"
+	test FieldsDoNotLoseFunctionalityAfterResizing {
+		property forms.functional = "true";
+		property portal.acceptance = "false";
+
+		// TODO LPS-134245 FieldsDoNotLoseFunctionalityAfterResizing pending implementation
+
+	}
+
+	@description = "Verify that after resizing, the labels, text fields, help text, properties, etc. remain the same"
+	@ignore = "Test Stub"
+	@priority = "5"
+	test FieldsDoNotLosePropertiesAfterResizing {
+		property forms.functional = "true";
+		property portal.acceptance = "false";
+
+		// TODO LPS-134246 FieldsDoNotLosePropertiesAfterResizing pending implementation
+
+	}
+
+	@description = "Verify that Fields Groups can be reordered by DND"
+	@ignore = "Test Stub"
+	@priority = "5"
+	test FieldsGroupsCanBeReorderedViaDND {
+		property forms.functional = "true";
+		property portal.acceptance = "false";
+
+		// TODO LPS-134247 FieldsGroupsCanBeReorderedViaDND pending implementation
+
+	}
+
+	@description = "Verify that Fields Groups can be resized"
+	@ignore = "Test Stub"
+	@priority = "5"
+	test FieldsGroupsCanBeResized {
+		property forms.functional = "true";
+		property portal.acceptance = "false";
+
+		// TODO LPS-134248 FieldsGroupsCanBeResized pending implementation
+
+	}
+
+	@description = "Verify that a second field can be added to the same row as a resized field"
+	@ignore = "Test Stub"
+	@priority = "5"
+	test MultipleFieldsCanBeAddedToARow {
+		property forms.functional = "true";
+		property portal.acceptance = "false";
+
+		// TODO LPS-134243 MultipleFieldsCanBeAddedToARow pending implementation
+
+	}
+
+	@description = "Verify that a second Fields Group can be added to the same row as a resized Fields Group"
+	@ignore = "Test Stub"
+	@priority = "5"
+	test MultipleFieldsGroupsCanBeAddedToARow {
+		property forms.functional = "true";
+		property portal.acceptance = "false";
+
+		// TODO LPS-134250 MultipleFieldsGroupsCanBeAddedToARow pending implementation
+
+	}
+
+	@description = "Verify that when there is more than one Fields Group per row and one of the Fields Groups is resized, the non-resized Fields Group adapts its width as well"
+	@ignore = "Test Stub"
+	@priority = "5"
+	test MultipleFieldsGroupsInARowCanBeResized {
+		property forms.functional = "true";
+		property portal.acceptance = "false";
+
+		// TODO LPS-134251 MultipleFieldsGroupsInARowCanBeResized pending implementation
+
+	}
+
+	@description = "Verify that when there is more than one field per row and one of those fields is resized, the non-resized field adapts its width as well"
+	@ignore = "Test Stub"
+	@priority = "5"
+	test MultipleFieldsInARowCanBeResized {
+		property forms.functional = "true";
+		property portal.acceptance = "false";
+
+		// TODO LPS-134244 MultipleFieldsInARowCanBeResized pending implementation
+
+	}
+
+}

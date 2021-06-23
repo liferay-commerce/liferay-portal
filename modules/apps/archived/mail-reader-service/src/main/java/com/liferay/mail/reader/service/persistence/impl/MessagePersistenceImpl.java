@@ -1536,23 +1536,23 @@ public class MessagePersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (message.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				message.setCreateDate(now);
+				message.setCreateDate(date);
 			}
 			else {
-				message.setCreateDate(serviceContext.getCreateDate(now));
+				message.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!messageModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				message.setModifiedDate(now);
+				message.setModifiedDate(date);
 			}
 			else {
-				message.setModifiedDate(serviceContext.getModifiedDate(now));
+				message.setModifiedDate(serviceContext.getModifiedDate(date));
 			}
 		}
 

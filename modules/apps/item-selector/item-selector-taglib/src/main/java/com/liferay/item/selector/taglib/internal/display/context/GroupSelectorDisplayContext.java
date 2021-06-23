@@ -83,7 +83,7 @@ public class GroupSelectorDisplayContext {
 			"selectedTab",
 			ParamUtil.getString(_liferayPortletRequest, "selectedTab")
 		).setParameter(
-			"showGroupSelector", Boolean.TRUE.toString()
+			"showGroupSelector", true
 		).build();
 	}
 
@@ -190,7 +190,7 @@ public class GroupSelectorDisplayContext {
 			"selectedTab",
 			ParamUtil.getString(_liferayPortletRequest, "selectedTab")
 		).setParameter(
-			"showGroupSelector", Boolean.TRUE.toString()
+			"showGroupSelector", true
 		).build();
 	}
 

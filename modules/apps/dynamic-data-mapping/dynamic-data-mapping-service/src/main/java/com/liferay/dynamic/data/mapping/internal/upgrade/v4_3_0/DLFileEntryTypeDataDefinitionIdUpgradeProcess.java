@@ -147,10 +147,10 @@ public class DLFileEntryTypeDataDefinitionIdUpgradeProcess
 			preparedStatement.setLong(7, userId);
 			preparedStatement.setString(8, userName);
 
-			Date now = new Date(System.currentTimeMillis());
+			Date date = new Date(System.currentTimeMillis());
 
-			preparedStatement.setDate(9, now);
-			preparedStatement.setDate(10, now);
+			preparedStatement.setDate(9, date);
+			preparedStatement.setDate(10, date);
 
 			preparedStatement.setLong(11, classNameId);
 
@@ -188,10 +188,10 @@ public class DLFileEntryTypeDataDefinitionIdUpgradeProcess
 			preparedStatement.setLong(5, userId);
 			preparedStatement.setString(6, userName);
 
-			Date now = new Date(System.currentTimeMillis());
+			Date date = new Date(System.currentTimeMillis());
 
-			preparedStatement.setDate(7, now);
-			preparedStatement.setDate(8, now);
+			preparedStatement.setDate(7, date);
+			preparedStatement.setDate(8, date);
 
 			preparedStatement.setLong(9, classNameId);
 
@@ -229,9 +229,9 @@ public class DLFileEntryTypeDataDefinitionIdUpgradeProcess
 			preparedStatement.setLong(4, userId);
 			preparedStatement.setString(5, userName);
 
-			Date now = new Date(System.currentTimeMillis());
+			Date date = new Date(System.currentTimeMillis());
 
-			preparedStatement.setDate(6, now);
+			preparedStatement.setDate(6, date);
 
 			preparedStatement.setLong(7, ddmStructureId);
 			preparedStatement.setString(8, name);
@@ -239,7 +239,7 @@ public class DLFileEntryTypeDataDefinitionIdUpgradeProcess
 
 			preparedStatement.setLong(10, userId);
 			preparedStatement.setString(11, userName);
-			preparedStatement.setDate(12, now);
+			preparedStatement.setDate(12, date);
 
 			preparedStatement.executeUpdate();
 

@@ -32,76 +32,332 @@ definition {
 	}
 
 	@description = "Verify that a Grid can be created"
-	@ignore = "Test Stub"
 	@priority = "5"
 	test CanBeCreated {
 		property forms.functional = "true";
 		property portal.acceptance = "false";
 
-		// TODO LPS-132451 CanBeCreated pending implementation
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
 
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Grid");
+
+		Form.save();
+
+		Click(locator1 = "Icon#BACK");
+
+		FormsAdminNavigator.gotoEditFormByName(formName = "Form 1");
+
+		AssertElementPresent(
+			key_fieldLabel = "Grid",
+			locator1 = "FormFields#LABEL");
 	}
 
 	@description = "Verify that a Grid can be deleted"
-	@ignore = "Test Stub"
 	@priority = "5"
 	test CanBeDeleted {
 		property forms.functional = "true";
 		property portal.acceptance = "false";
 
-		// TODO LPS-132453 CanBeDeleted pending implementation
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
 
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Grid",
+			formPageNumber = "0");
+
+		FormViewBuilder.closeSidebar();
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Numeric");
+
+		FormViewBuilder.closeSidebar();
+
+		FormsAdminNavigator.gotoDeleteField(fieldName = "Grid");
+
+		FormFields.viewDeletedFieldLabel(fieldName = "Grid");
+
+		Form.save();
+
+		FormsAdminNavigator.gotoBack();
+
+		FormsAdminNavigator.gotoEditFormByName(formName = "Form 1");
+
+		FormFields.viewDeletedFieldLabel(fieldName = "Grid");
 	}
 
 	@description = "Verify that a Grid can be duplicated"
-	@ignore = "Test Stub"
 	@priority = "5"
 	test CanBeDuplicated {
-		property forms.functional = "true";
+		property forms.functional = "quarantine";
 		property portal.acceptance = "false";
 
-		// TODO LPS-132455 CanBeDuplicated pending implementation
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
 
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Grid");
+
+		Click(
+			key_name = "Grid",
+			locator1 = "FormFields#FIELD_TARGET_LABEL");
+
+		FormFields.editGridOptions(
+			gridField = "Rows",
+			optionValue = "Option 1",
+			rowNumber = "1");
+
+		FormFields.editGridOptions(
+			gridField = "Columns",
+			optionValue = "Option 2",
+			rowNumber = "1");
+
+		FormViewBuilder.setFieldHelpText(fieldLabel = "Help Text Test");
+
+		FormFields.duplicateField();
+
+		FormViewBuilder.validateFieldLabel(fieldLabel = "Grid");
+
+		FormViewBuilder.validateFieldLabel(fieldLabel = "Copy of Grid");
+
+		AssertElementPresent(
+			key_bodyText = "Option 1",
+			key_fieldName = "Grid",
+			locator1 = "FormFields#FIELD_TARGET_LABEL_AND_BODY_OPTION");
+
+		AssertElementPresent(
+			key_bodyText = "Option 2",
+			key_fieldName = "Grid",
+			locator1 = "FormFields#FIELD_TARGET_LABEL_AND_BODY_OPTION");
+
+		AssertElementPresent(
+			key_bodyText = "Option 1",
+			key_fieldName = "Copy of Grid",
+			locator1 = "FormFields#FIELD_TARGET_LABEL_AND_BODY_OPTION");
+
+		AssertElementPresent(
+			key_bodyText = "Option 2",
+			key_fieldName = "Copy of Grid",
+			locator1 = "FormFields#FIELD_TARGET_LABEL_AND_BODY_OPTION");
+
+		FormViewBuilder.assertHelpTextPresent(
+			fieldName = "Grid",
+			fieldValue = "Help Text Test");
+
+		FormViewBuilder.assertHelpTextPresent(
+			fieldName = "Copy of Grid",
+			fieldValue = "Help Text Test");
 	}
 
 	@description = "Verify that a Grid can be edited"
-	@ignore = "Test Stub"
 	@priority = "5"
 	test CanBeEdited {
 		property forms.functional = "true";
 		property portal.acceptance = "false";
 
-		// TODO LPS-132452 CanBeEdited pending implementation
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
 
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Grid");
+
+		Form.save();
+
+		FormsAdminNavigator.gotoBack();
+
+		FormsAdminNavigator.gotoEditFormByName(formName = "Form 1");
+
+		FormViewBuilder.clickFieldLabel(fieldLabel = "Grid");
+
+		FormViewBuilder.editFieldLabel(
+			fieldLabel = "Grid",
+			label = "Test Grid");
+
+		FormViewBuilder.validateFieldLabel(fieldLabel = "Test Grid");
+
+		Form.save();
+
+		FormsAdminNavigator.gotoBack();
+
+		FormsAdminNavigator.gotoEditFormByName(formName = "Form 1");
+
+		FormViewBuilder.validateFieldLabel(fieldLabel = "Test Grid");
+
+		FormViewBuilder.validateNoFieldLabel(fieldLabel = "Grid");
 	}
 
 	@description = "Verify that a Grid can be required"
-	@ignore = "Test Stub"
 	@priority = "5"
 	test CanBeRequired {
-		property forms.functional = "true";
+		property forms.functional = "quarantine";
 		property portal.acceptance = "false";
 
-		// TODO LPS-132454 CanBeRequired pending implementation
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
 
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Grid",
+			formPageNumber = "0");
+
+		FormFields.editGridOptions(
+			gridField = "Rows",
+			optionValue = "Option 1",
+			rowNumber = "1");
+
+		FormFields.editGridOptions(
+			gridField = "Rows",
+			optionValue = "Option 2",
+			rowNumber = "2");
+
+		FormFields.editGridOptions(
+			gridField = "Columns",
+			optionValue = "Option 3",
+			rowNumber = "1");
+
+		FormFields.editGridOptions(
+			gridField = "Columns",
+			optionValue = "Option 4",
+			rowNumber = "2");
+
+		FormFields.enableSwitcher(fieldName = "Required Field");
+
+		Form.save();
+
+		Form.publishForm();
+
+		FormsAdminNavigator.gotoPublishedForm();
+
+		FormViewBuilder.validateFieldLabelRequired(fieldLabel = "Grid");
+
+		FormPortlet.waitFormRenderer(text = "Submit");
+
+		FormPortlet.submitWithValidationError(validationErrorMessage = "This field is required.");
+
+		FormFields.selectGridRadioOptionWithoutCategory(
+			fieldName = "",
+			optionColumnNumber = "3",
+			optionRowNumber = "1");
+
+		FormFields.selectGridRadioOptionWithoutCategory(
+			fieldName = "",
+			optionColumnNumber = "4",
+			optionRowNumber = "2");
+
+		FormPortlet.submitSuccessfully();
 	}
 
 	@description = "Verify that a Form can be submitted with the Grid Field"
-	@ignore = "Test Stub"
 	@priority = "5"
 	test CanBeSubmitted {
-		property forms.functional = "true";
+		property forms.functional = "quarantine";
 		property portal.acceptance = "false";
 
-		// TODO LPS-132463 CanBeSubmitted pending implementation
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
 
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Grid",
+			formPageNumber = "0");
+
+		FormFields.editGridOptions(
+			gridField = "Rows",
+			optionValue = "Option 1",
+			rowNumber = "1");
+
+		FormFields.editGridOptions(
+			gridField = "Rows",
+			optionValue = "Option 2",
+			rowNumber = "2");
+
+		FormFields.editGridOptions(
+			gridField = "Columns",
+			optionValue = "Option 3",
+			rowNumber = "1");
+
+		FormFields.editGridOptions(
+			gridField = "Columns",
+			optionValue = "Option 4",
+			rowNumber = "2");
+
+		Form.save();
+
+		Form.publishForm();
+
+		FormsAdminNavigator.gotoPublishedForm();
+
+		FormFields.viewTextLabel(fieldLabel = "Grid");
+
+		FormFields.selectGridRadioOptionWithoutCategory(
+			fieldName = "",
+			optionColumnNumber = "3",
+			optionRowNumber = "1");
+
+		FormPortlet.submitSuccessfully();
+
+		FormPortlet.viewSuccessPage(
+			successPageDescription = "Your information was successfully received. Thank you for filling out the form.",
+			successPageTitle = "Thank you.");
+
+		Navigator.openURL();
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoViewEntries();
+
+		FormsAdminNavigator.gotoView();
+
+		FormFields.viewTextLabel(fieldLabel = "Grid");
+
+		FormFields.assertGridOptionChecked(
+			columnValue = "Option 3",
+			rowValue = "Option 1");
 	}
 
 	@description = "Verify that edits to the Field can be canceled"
 	@ignore = "Test Stub"
 	@priority = "4"
 	test ChangesCanBeCanceled {
-		property forms.functional = "true";
+		property forms.functional = "false";
 		property portal.acceptance = "false";
 
 		// TODO LPS-132458 ChangesCanBeCanceled pending implementation
@@ -109,98 +365,392 @@ definition {
 	}
 
 	@description = "Verify that an option's Field References can be edited"
-	@ignore = "Test Stub"
 	@priority = "5"
 	test FieldReferencesOfOptionsCanBeEdited {
 		property forms.functional = "true";
 		property portal.acceptance = "false";
 
-		// TODO LPS-132467 FieldReferencesOfOptionsCanBeEdited pending implementation
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
 
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Grid");
+
+		Form.save();
+
+		FormsAdminNavigator.gotoEditField(fieldName = "Grid");
+
+		FormFields.editGridOptions(
+			gridField = "Rows",
+			optionValue = "Option 1",
+			rowNumber = "1");
+
+		FormFields.editGridOptions(
+			gridField = "Columns",
+			optionValue = "Option 2",
+			rowNumber = "1");
+
+		FormFields.editOptionsRowValueOrFieldReference(
+			fieldReference = "Option1234",
+			optionValue = "Option 1",
+			rowNumber = "1");
+
+		Form.save();
+
+		FormsAdminNavigator.gotoBack();
+
+		FormsAdminNavigator.gotoEditFormByName(formName = "Form 1");
+
+		FormsAdminNavigator.gotoEditField(fieldName = "Grid");
+
+		FormFields.viewOptionsRowFieldValueOrFieldReference(
+			fieldReference = "Option1234",
+			fieldValue = "Option 1",
+			rowNumber = "1");
 	}
 
 	@description = "Verify that a help text can be added"
-	@ignore = "Test Stub"
 	@priority = "5"
 	test HelpTextCanBeAdded {
 		property forms.functional = "true";
 		property portal.acceptance = "false";
 
-		// TODO LPS-132461 HelpTextCanBeAdded pending implementation
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
 
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Grid");
+
+		FormFields.editGridOptions(
+			gridField = "Rows",
+			optionValue = "Option 1",
+			rowNumber = "1");
+
+		FormFields.editGridOptions(
+			gridField = "Columns",
+			optionValue = "Option 2",
+			rowNumber = "1");
+
+		FormFields.editHelpText(
+			fieldHelpText = "Grid Help Text",
+			fieldName = "tip",
+			key_fieldLabel = "");
+
+		FormFields.viewFieldHelpText(
+			fieldHelpText = "Grid Help Text",
+			fieldName = "Grid");
+
+		Form.save();
+
+		Form.publishForm();
+
+		FormsAdminNavigator.gotoPublishedForm();
+
+		FormFields.viewFieldHelpText(
+			fieldHelpText = "Grid Help Text",
+			fieldName = "Grid");
+
+		FormFields.selectGridRadioOptionWithoutCategory(
+			fieldName = "",
+			optionColumnNumber = "2",
+			optionRowNumber = "1");
+
+		FormPortlet.submit();
+
+		FormPortlet.viewSuccessPage(
+			successPageDescription = "Your information was successfully received. Thank you for filling out the form.",
+			successPageTitle = "Thank you.");
 	}
 
 	@description = "Veriy that the Field Label can be edited"
-	@ignore = "Test Stub"
 	@priority = "5"
 	test LabelCanBeEdited {
 		property forms.functional = "true";
 		property portal.acceptance = "false";
 
-		// TODO LPS-132456 LabelCanBeEdited pending implementation
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
 
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Grid",
+			formPageNumber = "0");
+
+		Form.editFieldLabelMetal(fieldValue = "Test Grid");
+
+		Form.save();
+
+		Form.publishForm();
+
+		FormsAdminNavigator.gotoPublishedForm();
+
+		FormFields.viewRadioLabel(
+			fieldLabel = "Test Grid",
+			fieldName = "Test Grid");
 	}
 
 	@description = "Verify that the Field Label can be hidden"
-	@ignore = "Test Stub"
 	@priority = "5"
 	test LabelCanBeHidden {
 		property forms.functional = "true";
 		property portal.acceptance = "false";
 
-		// TODO LPS-132459 LabelCanBeHidden pending implementation
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
 
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Grid");
+
+		Form.gotoAdvancedTab();
+
+		FormViewBuilder.clickShowLabel();
+
+		Form.save();
+
+		Form.publishForm();
+
+		FormsAdminNavigator.gotoPreviewForm();
+
+		FormViewBuilder.validateFieldLabelIsNotShown(fieldLabel = "Grid");
 	}
 
 	@description = "Verify that options can be added"
-	@ignore = "Test Stub"
 	@priority = "5"
 	test OptionsCanBeAdded {
 		property forms.functional = "true";
 		property portal.acceptance = "false";
 
-		// TODO LPS-132464 OptionsCanBeAdded pending implementation
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
 
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Grid");
+
+		Form.save();
+
+		Click(
+			key_name = "Grid",
+			locator1 = "FormFields#FIELD_TARGET_LABEL");
+
+		FormFields.editGridOptions(
+			gridField = "Rows",
+			optionValue = "Option 1 & Option 2",
+			rowNumber = "1");
+
+		FormFields.editGridOptions(
+			gridField = "Columns",
+			optionValue = "Option A & Option B",
+			rowNumber = "1");
+
+		Form.save();
+
+		Click(locator1 = "Icon#BACK");
+
+		FormsAdminNavigator.gotoEditFormByName(formName = "Form 1");
+
+		Click(
+			key_name = "Grid",
+			locator1 = "FormFields#FIELD_TARGET_LABEL");
+
+		FormFields.viewGridOptionsFieldValue(
+			fieldValue = "Option 1 & Option 2",
+			gridField = "Rows");
+
+		FormFields.viewGridOptionsFieldValue(
+			fieldValue = "Option A & Option B",
+			gridField = "Columns");
 	}
 
 	@description = "Verify that option can be deleted"
-	@ignore = "Test Stub"
 	@priority = "5"
 	test OptionsCanBeDeleted {
-		property forms.functional = "true";
+		property forms.functional = "quarantine";
 		property portal.acceptance = "false";
 
-		// TODO LPS-132465 OptionsCanBeDeleted pending implementation
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
 
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Grid");
+
+		FormFields.editGridOptions(
+			gridField = "Rows",
+			optionValue = "Option 1",
+			rowNumber = "1");
+
+		FormFields.editGridOptions(
+			gridField = "Rows",
+			optionValue = "Option 2",
+			rowNumber = "2");
+
+		FormFields.editGridOptions(
+			gridField = "Columns",
+			optionValue = "Option A",
+			rowNumber = "1");
+
+		FormFields.deleteGridOptionsRow(
+			gridField = "Rows",
+			rowNumber = "1");
+
+		FormFields.viewOptionRowName(
+			fieldTitle = "Grid",
+			optionName = "Option 1",
+			rowNumber = "1");
+
+		Form.save();
+
+		Form.publishForm();
+
+		FormsAdminNavigator.gotoPublishedForm();
+
+		FormFields.viewOptionRowName(
+			fieldTitle = "Grid",
+			optionName = "Option 1",
+			rowNumber = "1");
+
+		FormFields.viewOptionRowName(
+			fieldTitle = "Grid",
+			optionName = "Option 2",
+			rowNumber = "1");
+
+		FormFields.viewOptionRowName(
+			fieldTitle = "Grid",
+			optionName = "Option A",
+			rowNumber = "1");
 	}
 
 	@description = "Verify that options can be rearranged"
-	@ignore = "Test Stub"
 	@priority = "5"
 	test OptionsCanBeRearranged {
 		property forms.functional = "true";
 		property portal.acceptance = "false";
 
-		// TODO LPS-132466 OptionsCanBeRearranged pending implementation
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
 
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Grid");
+
+		FormFields.editGridOptions(
+			gridField = "Rows",
+			optionValue = "Option 1",
+			rowNumber = "1");
+
+		FormFields.editGridOptions(
+			gridField = "Rows",
+			optionValue = "Option 2",
+			rowNumber = "2");
+
+		FormFields.editGridOptions(
+			gridField = "Columns",
+			optionValue = "Option A",
+			rowNumber = "1");
+
+		FormFields.moveOptionsRow(
+			rowNumberEnd = "1",
+			rowNumberStart = "2");
+
+		FormFields.viewOptionRowName(
+			fieldTitle = "Grid",
+			optionName = "Option 2",
+			rowNumber = "1");
+
+		FormFields.viewOptionRowName(
+			fieldTitle = "Grid",
+			optionName = "Option 1",
+			rowNumber = "2");
+
+		Form.save();
+
+		Form.publishForm();
+
+		FormsAdminNavigator.gotoPublishedForm();
+
+		FormFields.viewOptionRowName(
+			fieldTitle = "Grid",
+			optionName = "Option 2",
+			rowNumber = "1");
 	}
 
 	@description = "Verify that the Field Reference can be edited"
-	@ignore = "Test Stub"
 	@priority = "5"
 	test ReferenceCanBeEdited {
 		property forms.functional = "true";
 		property portal.acceptance = "false";
 
-		// TODO LPS-132462 ReferenceCanBeEdited pending implementation
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
 
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Grid");
+
+		Form.gotoAdvancedTab();
+
+		Form.editFieldReferenceMetal(fieldValue = "Grid1234");
+
+		Form.save();
+
+		FormsAdminNavigator.gotoBack();
+
+		FormsAdminNavigator.gotoEditFormByName(formName = "Form 1");
+
+		FormFields.viewFieldReference(
+			fieldName = "Grid",
+			key_fieldReferenceValue = "Grid1234");
 	}
 
 	@description = "Verify that the Field Type can be changed"
 	@ignore = "Test Stub"
 	@priority = "5"
 	test TypeCanBeChanged {
-		property forms.functional = "true";
+		property forms.functional = "false";
 		property portal.acceptance = "false";
 
 		// TODO LPS-132457 TypeCanBeChanged pending implementation

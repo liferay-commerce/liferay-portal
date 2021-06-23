@@ -185,10 +185,10 @@ public class PasswordPolicyToolkit extends BasicToolkit {
 		Date passwordModifiedDate = user.getPasswordModifiedDate();
 
 		if (passwordModifiedDate != null) {
-			Date now = new Date();
+			Date date = new Date();
 
 			long passwordModificationElapsedTime =
-				now.getTime() - passwordModifiedDate.getTime();
+				date.getTime() - passwordModifiedDate.getTime();
 
 			long minAge = passwordPolicy.getMinAge() * 1000;
 

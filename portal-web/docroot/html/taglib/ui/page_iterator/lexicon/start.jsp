@@ -335,20 +335,26 @@ NumberFormat numberFormat = NumberFormat.getNumberInstance(locale);
 </c:if>
 
 <c:if test="<%= pages > initialPages %>">
-	<aui:script require="frontend-js-web/liferay/DynamicInlineScroll.es">
-		new frontendJsWebLiferayDynamicInlineScrollEs.default(
+	<aui:script require="frontend-js-web/liferay/DynamicInlineScroll.es as DynamicInlineScroll">
+		Liferay.component(
+			'<%= randomNamespace %>dynamicInlineScroll',
+			new DynamicInlineScroll.default(
+				{
+					cur: '<%= cur %>',
+					curParam: '<%= curParam %>',
+					forcePost: <%= forcePost %>,
+					formName: '<%= formName %>',
+					initialPages: '<%= initialPages %>',
+					jsCall: '<%= jsCall %>',
+					namespace: '<%= namespace %>',
+					pages: '<%= pages %>',
+					randomNamespace: '<%= randomNamespace %>',
+					url: '<%= HtmlUtil.escapeJS(HttpUtil.removeParameter(url, curParam)) %>',
+					urlAnchor: '<%= urlAnchor %>'
+				}
+			),
 			{
-				cur: '<%= cur %>',
-				curParam: '<%= curParam %>',
-				forcePost: <%= forcePost %>,
-				formName: '<%= formName %>',
-				initialPages: '<%= initialPages %>',
-				jsCall: '<%= jsCall %>',
-				namespace: '<%= namespace %>',
-				pages: '<%= pages %>',
-				randomNamespace: '<%= randomNamespace %>',
-				url: '<%= HtmlUtil.escapeJS(url) %>',
-				urlAnchor: '<%= urlAnchor %>'
+				portletId: '<%= portletDisplay.getPortletName() %>'
 			}
 		);
 	</aui:script>

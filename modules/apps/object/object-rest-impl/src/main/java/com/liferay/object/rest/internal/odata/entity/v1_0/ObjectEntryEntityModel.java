@@ -29,6 +29,7 @@ import com.liferay.portal.odata.entity.StringEntityField;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -82,41 +83,65 @@ public class ObjectEntryEntityModel implements EntityModel {
 	}
 
 	private Optional<EntityField> _getEntityField(ObjectField objectField) {
-		String entityFieldName = objectField.getName();
-
-		String type = objectField.getType();
-
-		if (type.equals("Boolean")) {
-			return Optional.of(
-				new BooleanEntityField(
-					entityFieldName, locale -> entityFieldName));
-		}
-		else if (type.equals("BigDecimal") || type.equals("Double")) {
-			return Optional.of(
-				new DoubleEntityField(
-					entityFieldName, locale -> entityFieldName));
-		}
-		else if (type.equals("Date")) {
-			return Optional.of(
-				new DateEntityField(
-					entityFieldName,
-					locale -> Field.getSortableFieldName(
-						entityFieldName + "_Number"),
-					locale -> entityFieldName));
-		}
-		else if (type.equals("Integer") || type.equals("Long")) {
-			return Optional.of(
-				new IntegerEntityField(
-					entityFieldName,
-					locale -> Field.getSortableFieldName(
-						entityFieldName + "_Number")));
-		}
-		else if (type.equals("String")) {
+		if (objectField.isIndexedAsKeyword()) {
 			return Optional.of(
 				new StringEntityField(
-					entityFieldName,
-					locale -> Field.getSortableFieldName(
-						entityFieldName + "_String")));
+					objectField.getName(),
+					locale ->
+						"nestedFieldArray.value_keyword#" +
+							objectField.getName()));
+		}
+		else if (Objects.equals(objectField.getType(), "Boolean")) {
+			return Optional.of(
+				new BooleanEntityField(
+					objectField.getName(),
+					locale ->
+						"nestedFieldArray.value_boolean#" +
+							objectField.getName()));
+		}
+		else if (Objects.equals(objectField.getType(), "BigDecimal") ||
+				 Objects.equals(objectField.getType(), "Double")) {
+
+			return Optional.of(
+				new DoubleEntityField(
+					objectField.getName(),
+					locale ->
+						"nestedFieldArray.value_double#" +
+							objectField.getName()));
+		}
+		else if (Objects.equals(objectField.getType(), "Date")) {
+			return Optional.of(
+				new DateEntityField(
+					objectField.getName(),
+					locale ->
+						"nestedFieldArray.value_date#" + objectField.getName(),
+					locale ->
+						"nestedFieldArray.value_date#" +
+							objectField.getName()));
+		}
+		else if (Objects.equals(objectField.getType(), "Integer")) {
+			return Optional.of(
+				new IntegerEntityField(
+					objectField.getName(),
+					locale ->
+						"nestedFieldArray.value_integer#" +
+							objectField.getName()));
+		}
+		else if (Objects.equals(objectField.getType(), "Long")) {
+			return Optional.of(
+				new IntegerEntityField(
+					objectField.getName(),
+					locale ->
+						"nestedFieldArray.value_long#" +
+							objectField.getName()));
+		}
+		else if (Objects.equals(objectField.getType(), "String")) {
+			return Optional.of(
+				new StringEntityField(
+					objectField.getName(),
+					locale ->
+						"nestedFieldArray.value_keyword_lowercase#" +
+							objectField.getName()));
 		}
 
 		return Optional.empty();

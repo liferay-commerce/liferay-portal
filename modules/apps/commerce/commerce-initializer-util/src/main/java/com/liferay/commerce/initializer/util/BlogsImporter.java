@@ -54,16 +54,16 @@ public class BlogsImporter {
 
 		ServiceContext serviceContext = new ServiceContext();
 
+		serviceContext.setCompanyId(user.getCompanyId());
 		serviceContext.setScopeGroupId(scopeGroupId);
 		serviceContext.setUserId(userId);
-		serviceContext.setCompanyId(user.getCompanyId());
 
-		Date now = new Date();
+		Date date = new Date();
 
 		for (int i = 0; i < jsonArray.length(); i++) {
 			_addBlogsEntry(
 				jsonArray.getJSONObject(i), classLoader, imageDependenciesPath,
-				userId, now, serviceContext);
+				userId, date, serviceContext);
 		}
 	}
 

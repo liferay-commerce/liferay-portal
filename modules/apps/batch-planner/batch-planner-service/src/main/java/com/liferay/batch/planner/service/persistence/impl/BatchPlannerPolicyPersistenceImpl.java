@@ -1105,25 +1105,25 @@ public class BatchPlannerPolicyPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (batchPlannerPolicy.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				batchPlannerPolicy.setCreateDate(now);
+				batchPlannerPolicy.setCreateDate(date);
 			}
 			else {
 				batchPlannerPolicy.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!batchPlannerPolicyModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				batchPlannerPolicy.setModifiedDate(now);
+				batchPlannerPolicy.setModifiedDate(date);
 			}
 			else {
 				batchPlannerPolicy.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

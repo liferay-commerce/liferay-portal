@@ -1,0 +1,86 @@
+@component-name = "portal-solutions"
+definition {
+
+	property portal.release = "true";
+	property portal.upstream = "true";
+	property testray.main.component.name = "Digital Signature";
+
+	setUp {
+		TestCase.setUpPortalInstance();
+
+		User.firstLoginUI();
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Configuration",
+			panel = "Control Panel",
+			portlet = "Instance Settings");
+
+		SystemSettings.gotoConfiguration(
+			configurationCategory = "Digital Signature",
+			configurationName = "Digital Signature Configuration",
+			configurationScope = "Virtual Instance Scope");
+
+		FormFields.enableCheckbox(fieldName = "enabled");
+	}
+
+	tearDown {
+		var testPortalInstance = PropsUtil.get("test.portal.instance");
+
+		if ("${testPortalInstance}" == "true") {
+			PortalInstances.tearDownCP();
+		}
+		else {
+			User.logoutPG();
+		}
+	}
+
+	@description = "This is a test for LPS-131712. Verify if the Digital Signature data persists after enabled"
+	@priority = "5"
+	test DigitalSignatureDataPersistsInSiteSettings {
+		DigitalSignature.enableDigitalSignature();
+
+		Navigator.openURL();
+
+		ProductMenu.gotoPortlet(
+			category = "Configuration",
+			portlet = "Site Settings");
+
+		Click(
+			key_itemName = "Digital Signature",
+			locator1 = "ListGroupItem#ITEM_TEXT");
+
+		var siteSettingsStrategy = "Always Inherit";
+		var digitalSignatureApiUsername = "${digitalSignatureApiUsername}";
+		var digitalSignatureApiAccountId = "${digitalSignatureApiAccountId}";
+		var digitalSignatureAccountBaseUri = "${digitalSignatureAccountBaseUri}";
+		var digitalSignatureIntegrationKey = "${digitalSignatureIntegrationKey}";
+		var digitalSignatureRsaPrivateKey = "${digitalSignatureRsaPrivateKey}";
+
+		AssertElementPresent(
+			locator1 = "ClickToChatConfiguration#SITE_SETTINGS_STRATEGY_CHOOSEN",
+			siteSettingsStrategy = "${siteSettingsStrategy}");
+
+		AssertElementPresent(locator1 = "ClickToChatConfiguration#CHECK_INPUT_ENABLED");
+
+		AssertElementPresent(
+			digitalSignatureApiUsername = "${digitalSignatureApiUsername}",
+			locator1 = "DigitalSignatureConfiguration#DIGITAL_SIGNATURE_USER_ID");
+
+		AssertElementPresent(
+			digitalSignatureApiAccountId = "${digitalSignatureApiAccountId}",
+			locator1 = "DigitalSignatureConfiguration#DIGITAL_SIGNATURE_ACCOUNT_ID");
+
+		AssertElementPresent(
+			digitalSignatureAccountBaseUri = "${digitalSignatureAccountBaseUri}",
+			locator1 = "DigitalSignatureConfiguration#DIGITAL_SIGNATURE_BASE_URI");
+
+		AssertElementPresent(
+			digitalSignatureIntegrationKey = "${digitalSignatureIntegrationKey}",
+			locator1 = "DigitalSignatureConfiguration#DIGITAL_SIGNATURE_INTEGRATION_KEY");
+
+		AssertElementPresent(
+			digitalSignatureRsaPrivateKey = "${digitalSignatureRsaPrivateKey}",
+			locator1 = "DigitalSignatureConfiguration#DIGITAL_SIGNATURE_RSA_PRIVATE_KEY");
+	}
+
+}

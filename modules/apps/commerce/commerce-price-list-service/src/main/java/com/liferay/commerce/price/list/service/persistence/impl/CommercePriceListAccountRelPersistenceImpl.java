@@ -2267,25 +2267,25 @@ public class CommercePriceListAccountRelPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commercePriceListAccountRel.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commercePriceListAccountRel.setCreateDate(now);
+				commercePriceListAccountRel.setCreateDate(date);
 			}
 			else {
 				commercePriceListAccountRel.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commercePriceListAccountRelModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commercePriceListAccountRel.setModifiedDate(now);
+				commercePriceListAccountRel.setModifiedDate(date);
 			}
 			else {
 				commercePriceListAccountRel.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

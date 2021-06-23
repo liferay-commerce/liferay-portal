@@ -27,7 +27,13 @@ public interface DDMValidation {
 
 	public String getParameterMessage(Locale locale);
 
-	public String getRegex();
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
+	public default String getRegex() {
+		return null;
+	}
 
 	public String getTemplate();
 

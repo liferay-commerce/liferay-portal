@@ -89,8 +89,8 @@ public class AddDefaultDocumentLibraryStructuresPortalInstanceLifecycleListener
 	protected void addDLRawMetadataStructures(long companyId) throws Exception {
 		ServiceContext serviceContext = new ServiceContext();
 
-		serviceContext.setAddGuestPermissions(true);
 		serviceContext.setAddGroupPermissions(true);
+		serviceContext.setAddGuestPermissions(true);
 
 		Group group = _groupLocalService.getCompanyGroup(companyId);
 

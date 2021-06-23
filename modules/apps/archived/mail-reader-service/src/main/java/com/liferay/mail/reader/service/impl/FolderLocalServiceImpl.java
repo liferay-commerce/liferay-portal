@@ -45,7 +45,7 @@ public class FolderLocalServiceImpl extends FolderLocalServiceBaseImpl {
 		throws PortalException {
 
 		User user = userLocalService.getUser(userId);
-		Date now = new Date();
+		Date date = new Date();
 
 		long folderId = counterLocalService.increment();
 
@@ -54,8 +54,8 @@ public class FolderLocalServiceImpl extends FolderLocalServiceBaseImpl {
 		folder.setCompanyId(user.getCompanyId());
 		folder.setUserId(user.getUserId());
 		folder.setUserName(user.getFullName());
-		folder.setCreateDate(now);
-		folder.setModifiedDate(now);
+		folder.setCreateDate(date);
+		folder.setModifiedDate(date);
 		folder.setAccountId(accountId);
 		folder.setFullName(fullName);
 		folder.setDisplayName(displayName);

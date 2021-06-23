@@ -34,7 +34,10 @@ const Table = ({items, totalCount}) => {
 					</ClayTable.Cell>
 
 					<ClayTable.Cell headingCell style={{width: '13%'}}>
-						{Liferay.Language.get('item-subject')}
+						<ListHeadItem
+							name="assetType"
+							title={Liferay.Language.get('item-subject')}
+						/>
 					</ClayTable.Cell>
 
 					<ClayTable.Cell headingCell style={{width: '14%'}}>
@@ -42,11 +45,17 @@ const Table = ({items, totalCount}) => {
 					</ClayTable.Cell>
 
 					<ClayTable.Cell headingCell style={{width: '14%'}}>
-						{Liferay.Language.get('assignee')}
+						<ListHeadItem
+							name="assigneeName"
+							title={Liferay.Language.get('assignee')}
+						/>
 					</ClayTable.Cell>
 
 					<ClayTable.Cell headingCell style={{width: '14%'}}>
-						{Liferay.Language.get('created-by')}
+						<ListHeadItem
+							name="userName"
+							title={Liferay.Language.get('created-by')}
+						/>
 					</ClayTable.Cell>
 
 					<ClayTable.Cell headingCell style={{width: '16%'}}>

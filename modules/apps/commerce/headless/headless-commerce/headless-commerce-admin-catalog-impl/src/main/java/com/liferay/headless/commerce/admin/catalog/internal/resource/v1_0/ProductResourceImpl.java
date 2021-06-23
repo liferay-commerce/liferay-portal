@@ -20,6 +20,7 @@ import com.liferay.asset.kernel.service.AssetTagService;
 import com.liferay.commerce.product.constants.CPAttachmentFileEntryConstants;
 import com.liferay.commerce.product.exception.NoSuchCPDefinitionException;
 import com.liferay.commerce.product.exception.NoSuchCatalogException;
+import com.liferay.commerce.product.model.CPAttachmentFileEntry;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.model.CommerceCatalog;
@@ -49,6 +50,7 @@ import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductTaxConfigurat
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.RelatedProduct;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Sku;
 import com.liferay.headless.commerce.admin.catalog.internal.dto.v1_0.converter.ProductDTOConverter;
+import com.liferay.headless.commerce.admin.catalog.internal.dto.v1_0.util.CustomFieldsUtil;
 import com.liferay.headless.commerce.admin.catalog.internal.helper.v1_0.ProductHelper;
 import com.liferay.headless.commerce.admin.catalog.internal.odata.entity.v1_0.ProductEntityModel;
 import com.liferay.headless.commerce.admin.catalog.internal.util.v1_0.AttachmentUtil;
@@ -354,6 +356,13 @@ public class ProductResourceImpl
 
 		serviceContext.setAssetTagNames(assetTagNames);
 
+		Map<String, Serializable> expandoBridgeAttributes =
+			_getExpandoBridgeAttributes(product);
+
+		if (expandoBridgeAttributes != null) {
+			serviceContext.setExpandoBridgeAttributes(expandoBridgeAttributes);
+		}
+
 		Calendar displayCalendar = CalendarFactoryUtil.getCalendar(
 			serviceContext.getTimeZone());
 
@@ -413,7 +422,7 @@ public class ProductResourceImpl
 			ignoreSKUCombinations = cpDefinition.isIgnoreSKUCombinations();
 		}
 
-		cpDefinition = _cpDefinitionService.upsertCPDefinition(
+		cpDefinition = _cpDefinitionService.addOrUpdateCPDefinition(
 			product.getExternalReferenceCode(), commerceCatalog.getGroupId(),
 			contextUser.getUserId(), LanguageUtils.getLocalizedMap(nameMap),
 			LanguageUtils.getLocalizedMap(shortDescriptionMap),
@@ -511,6 +520,24 @@ public class ProductResourceImpl
 		);
 	}
 
+	private Map<String, Serializable> _getExpandoBridgeAttributes(
+		Attachment attachment) {
+
+		return CustomFieldsUtil.toMap(
+			CPAttachmentFileEntry.class.getName(),
+			contextCompany.getCompanyId(), attachment.getCustomFields(),
+			contextAcceptLanguage.getPreferredLocale());
+	}
+
+	private Map<String, Serializable> _getExpandoBridgeAttributes(
+		Product product) {
+
+		return CustomFieldsUtil.toMap(
+			CPDefinition.class.getName(), contextCompany.getCompanyId(),
+			product.getCustomFields(),
+			contextAcceptLanguage.getPreferredLocale());
+	}
+
 	private ProductShippingConfiguration _getProductShippingConfiguration(
 		Product product) {
 
@@ -567,6 +594,8 @@ public class ProductResourceImpl
 			ServiceContext serviceContext)
 		throws Exception {
 
+		serviceContext.setExpandoBridgeAttributes(null);
+
 		// Product configuration
 
 		ProductConfiguration productConfiguration = product.getConfiguration();
@@ -614,38 +643,6 @@ public class ProductResourceImpl
 					cpDefinition);
 		}
 
-		// Images
-
-		Attachment[] images = product.getImages();
-
-		if (images != null) {
-			for (Attachment attachment : images) {
-				AttachmentUtil.upsertCPAttachmentFileEntry(
-					cpDefinition.getGroupId(), _cpAttachmentFileEntryService,
-					_uniqueFileNameProvider, attachment,
-					_classNameLocalService.getClassNameId(
-						cpDefinition.getModelClassName()),
-					cpDefinition.getCPDefinitionId(),
-					CPAttachmentFileEntryConstants.TYPE_IMAGE, serviceContext);
-			}
-		}
-
-		// Attachments
-
-		Attachment[] attachments = product.getAttachments();
-
-		if (attachments != null) {
-			for (Attachment attachment : attachments) {
-				AttachmentUtil.upsertCPAttachmentFileEntry(
-					cpDefinition.getGroupId(), _cpAttachmentFileEntryService,
-					_uniqueFileNameProvider, attachment,
-					_classNameLocalService.getClassNameId(
-						cpDefinition.getModelClassName()),
-					cpDefinition.getCPDefinitionId(),
-					CPAttachmentFileEntryConstants.TYPE_OTHER, serviceContext);
-			}
-		}
-
 		// Product specifications
 
 		ProductSpecification[] productSpecifications =
@@ -675,7 +672,7 @@ public class ProductResourceImpl
 		if (productOptions != null) {
 			for (ProductOption productOption : productOptions) {
 				CPDefinitionOptionRel cpDefinitionOptionRel =
-					ProductOptionUtil.upsertCPDefinitionOptionRel(
+					ProductOptionUtil.addOrUpdateCPDefinitionOptionRel(
 						_cpDefinitionOptionRelService, _cpOptionService,
 						productOption, cpDefinition.getCPDefinitionId(),
 						serviceContext);
@@ -687,11 +684,13 @@ public class ProductResourceImpl
 					for (ProductOptionValue productOptionValue :
 							productOptionValues) {
 
-						ProductOptionValueUtil.upsertCPDefinitionOptionValueRel(
-							_cpDefinitionOptionValueRelService,
-							productOptionValue,
-							cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
-							serviceContext);
+						ProductOptionValueUtil.
+							addOrUpdateCPDefinitionOptionValueRel(
+								_cpDefinitionOptionValueRelService,
+								productOptionValue,
+								cpDefinitionOptionRel.
+									getCPDefinitionOptionRelId(),
+								serviceContext);
 					}
 				}
 			}
@@ -703,7 +702,7 @@ public class ProductResourceImpl
 
 		if (relatedProducts != null) {
 			for (RelatedProduct relatedProduct : relatedProducts) {
-				RelatedProductUtil.upsertCPDefinitionLink(
+				RelatedProductUtil.addOrUpdateCPDefinitionLink(
 					_cpDefinitionLinkService, _cpDefinitionService,
 					relatedProduct, cpDefinition.getCPDefinitionId(),
 					_serviceContextHelper.getServiceContext(
@@ -717,7 +716,7 @@ public class ProductResourceImpl
 
 		if (skus != null) {
 			for (Sku sku : skus) {
-				SkuUtil.upsertCPInstance(
+				SkuUtil.addOrUpdateCPInstance(
 					_cpInstanceService, sku, cpDefinition, serviceContext);
 			}
 		}
@@ -728,8 +727,56 @@ public class ProductResourceImpl
 
 		if (categories != null) {
 
-			// TODO upsert categories
+			// TODO addOrUpdate categories
 
+		}
+
+		// Images
+
+		Attachment[] images = product.getImages();
+
+		if (images != null) {
+			for (Attachment attachment : images) {
+				Map<String, Serializable> expandoBridgeAttributes =
+					_getExpandoBridgeAttributes(attachment);
+
+				if (expandoBridgeAttributes != null) {
+					serviceContext.setExpandoBridgeAttributes(
+						expandoBridgeAttributes);
+				}
+
+				AttachmentUtil.addOrUpdateCPAttachmentFileEntry(
+					cpDefinition.getGroupId(), _cpAttachmentFileEntryService,
+					_uniqueFileNameProvider, attachment,
+					_classNameLocalService.getClassNameId(
+						cpDefinition.getModelClassName()),
+					cpDefinition.getCPDefinitionId(),
+					CPAttachmentFileEntryConstants.TYPE_IMAGE, serviceContext);
+			}
+		}
+
+		// Attachments
+
+		Attachment[] attachments = product.getAttachments();
+
+		if (attachments != null) {
+			for (Attachment attachment : attachments) {
+				Map<String, Serializable> expandoBridgeAttributes =
+					_getExpandoBridgeAttributes(attachment);
+
+				if (expandoBridgeAttributes != null) {
+					serviceContext.setExpandoBridgeAttributes(
+						expandoBridgeAttributes);
+				}
+
+				AttachmentUtil.addOrUpdateCPAttachmentFileEntry(
+					cpDefinition.getGroupId(), _cpAttachmentFileEntryService,
+					_uniqueFileNameProvider, attachment,
+					_classNameLocalService.getClassNameId(
+						cpDefinition.getModelClassName()),
+					cpDefinition.getCPDefinitionId(),
+					CPAttachmentFileEntryConstants.TYPE_OTHER, serviceContext);
+			}
 		}
 
 		// Channels visibility
@@ -782,6 +829,13 @@ public class ProductResourceImpl
 		}
 
 		serviceContext.setAssetTagNames(assetTags);
+
+		Map<String, Serializable> expandoBridgeAttributes =
+			_getExpandoBridgeAttributes(product);
+
+		if (expandoBridgeAttributes != null) {
+			serviceContext.setExpandoBridgeAttributes(expandoBridgeAttributes);
+		}
 
 		Calendar displayCalendar = CalendarFactoryUtil.getCalendar(
 			serviceContext.getTimeZone());

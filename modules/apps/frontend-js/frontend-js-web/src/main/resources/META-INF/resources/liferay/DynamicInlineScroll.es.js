@@ -77,9 +77,9 @@ class DynamicInlineScroll extends PortletBase {
 	addListItem_(listElement, pageIndex) {
 		const listItem = document.createElement('li');
 
-		listItem.append(
-			`<a href="${this.getHREF_(pageIndex)}">${pageIndex}</a>`
-		);
+		listItem.innerHTML = `<a class="dropdown-item" href="${this.getHREF_(
+			pageIndex
+		)}">${pageIndex}</a>`;
 
 		pageIndex++;
 
@@ -102,7 +102,7 @@ class DynamicInlineScroll extends PortletBase {
 		let href = `javascript:document.${formName}.${namespace}${curParam}.value = "${pageIndex}; ${jsCall}`;
 
 		if (this.url !== null) {
-			href = `${url}${namespace}${curParam}=${pageIndex}${urlAnchor}`;
+			href = `${url}&${namespace}${curParam}=${pageIndex}${urlAnchor}`;
 		}
 
 		return href;

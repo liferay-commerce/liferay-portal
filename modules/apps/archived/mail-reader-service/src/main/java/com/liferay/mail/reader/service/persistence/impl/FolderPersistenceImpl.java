@@ -1061,23 +1061,23 @@ public class FolderPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (folder.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				folder.setCreateDate(now);
+				folder.setCreateDate(date);
 			}
 			else {
-				folder.setCreateDate(serviceContext.getCreateDate(now));
+				folder.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!folderModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				folder.setModifiedDate(now);
+				folder.setModifiedDate(date);
 			}
 			else {
-				folder.setModifiedDate(serviceContext.getModifiedDate(now));
+				folder.setModifiedDate(serviceContext.getModifiedDate(date));
 			}
 		}
 

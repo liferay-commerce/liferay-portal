@@ -2689,25 +2689,25 @@ public class CommerceShipmentItemPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commerceShipmentItem.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commerceShipmentItem.setCreateDate(now);
+				commerceShipmentItem.setCreateDate(date);
 			}
 			else {
 				commerceShipmentItem.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commerceShipmentItemModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commerceShipmentItem.setModifiedDate(now);
+				commerceShipmentItem.setModifiedDate(date);
 			}
 			else {
 				commerceShipmentItem.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

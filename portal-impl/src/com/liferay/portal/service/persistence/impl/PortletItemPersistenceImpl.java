@@ -1821,24 +1821,24 @@ public class PortletItemPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (portletItem.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				portletItem.setCreateDate(now);
+				portletItem.setCreateDate(date);
 			}
 			else {
-				portletItem.setCreateDate(serviceContext.getCreateDate(now));
+				portletItem.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!portletItemModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				portletItem.setModifiedDate(now);
+				portletItem.setModifiedDate(date);
 			}
 			else {
 				portletItem.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

@@ -8195,24 +8195,25 @@ public class StyleBookEntryPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (styleBookEntry.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				styleBookEntry.setCreateDate(now);
+				styleBookEntry.setCreateDate(date);
 			}
 			else {
-				styleBookEntry.setCreateDate(serviceContext.getCreateDate(now));
+				styleBookEntry.setCreateDate(
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!styleBookEntryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				styleBookEntry.setModifiedDate(now);
+				styleBookEntry.setModifiedDate(date);
 			}
 			else {
 				styleBookEntry.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

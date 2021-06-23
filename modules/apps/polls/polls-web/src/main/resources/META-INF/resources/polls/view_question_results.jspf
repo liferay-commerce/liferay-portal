@@ -134,7 +134,7 @@ NumberFormat percentFormat = NumberFormat.getPercentInstance(locale);
 		).setParameter(
 			"questionId", question.getQuestionId()
 		).setParameter(
-			"viewResults", Boolean.TRUE.toString()
+			"viewResults", true
 		).build();
 
 		List<String> headerNames = new ArrayList<String>();

@@ -34,7 +34,7 @@ definition {
 		WebContentStructures.addCP(structureName = "WC Structure Name");
 
 		DataEngine.createNewFieldset(
-			fieldNameList = "Date",
+			fieldNameList = "Text",
 			fieldsetName = "New Fieldset");
 
 		DataEngine.addFieldsetToBuilder(fieldsetName = "New Fieldset");
@@ -248,8 +248,6 @@ definition {
 			fieldsetName = "New Fieldset",
 			localeList = "pt-BR");
 
-		Refresh();
-
 		DataEngine.toggleFieldRepeatable(fieldsetLabel = "New Fieldset");
 
 		PortletEntry.changeLocale(locale = "pt_BR");
@@ -335,6 +333,10 @@ definition {
 
 		Alert.viewSuccessMessage();
 
+		WebContentStructures.saveCP();
+
+		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Name");
+
 		DataEngine.addTranslationToFieldset(
 			fieldNameList = "Text,Numeric,Date",
 			fieldsetName = "New Fieldset Test",
@@ -407,7 +409,7 @@ definition {
 		PortletEntry.publish();
 
 		WebContent.viewWithStructureCP(
-			webContentDate = "22/02/2021",
+			webContentDate = "23/02/2021",
 			webContentDateFieldLabel = "Date pt-BR",
 			webContentLocaleFieldLabel = "pt-BR",
 			webContentNumeric = "2",
@@ -569,15 +571,11 @@ definition {
 
 		DataEngine.addFieldsetToBuilder(fieldsetName = "New Fieldset");
 
-		DataEngine.addFieldsetToBuilder(fieldsetName = "New Fieldset");
-
 		DataEngine.addTranslationToFieldset(
 			fieldHelp = "true",
 			fieldNameList = "Text",
 			fieldsetName = "New Fieldset",
 			localeList = "pt-BR");
-
-		Refresh();
 
 		WebContentStructures.saveCP(structureName = "Structure Name");
 
@@ -820,7 +818,7 @@ definition {
 
 		DataEngine.editFieldTip(
 			fieldFieldLabel = "Rich Text",
-			fieldHelp = "Rich Text Field",
+			fieldHelp = "Rich Text Field Help",
 			fieldsetModal = "true");
 
 		PortletEntry.changeLocale(
@@ -865,7 +863,7 @@ definition {
 
 		NavItem.click(navItem = "Web Content");
 
-		WebContentNavigator.gotoAddWithStructureCP(structureName = "New Fieldset");
+		WebContentNavigator.gotoAddWithStructureCP(structureName = "WC Structure Name");
 
 		WebContent.addCP(webContentTitle = "Web Content Title");
 
@@ -945,15 +943,11 @@ definition {
 
 		DataEngine.addFieldsetToBuilder(fieldsetName = "New Fieldset");
 
-		DataEngine.addFieldsetToBuilder(fieldsetName = "New Fieldset");
-
 		DataEngine.addTranslationToFieldset(
 			fieldHelp = "true",
 			fieldNameList = "Text",
 			fieldsetName = "New Fieldset",
 			localeList = "pt-BR");
-
-		Refresh();
 
 		WebContentStructures.saveCP();
 

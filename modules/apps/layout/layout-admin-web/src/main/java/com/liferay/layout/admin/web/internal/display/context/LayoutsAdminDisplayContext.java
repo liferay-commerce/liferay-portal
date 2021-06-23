@@ -183,16 +183,16 @@ public class LayoutsAdminDisplayContext {
 			"/select_layout_page_template_entry.jsp"
 		).setBackURL(
 			getBackURL()
+		).setPortletResource(
+			getPortletResource()
 		).setParameter(
-			"explicitCreation", Boolean.TRUE.toString()
+			"explicitCreation", true
 		).setParameter(
 			"groupId", getGroupId()
 		).setParameter(
 			"liveGroupId", getLiveGroupId()
 		).setParameter(
 			"parentLayoutId", getParentLayoutId()
-		).setParameter(
-			"portletResource", getPortletResource()
 		).setParameter(
 			"privateLayout", isPrivateLayout()
 		).setParameter(
@@ -276,16 +276,15 @@ public class LayoutsAdminDisplayContext {
 			themeDisplay.getURLCurrent()
 		).setBackURL(
 			themeDisplay.getURLCurrent()
-		).setParameter(
-			"groupId", layout.getGroupId()
-		).setParameter(
-			"portletResource",
+		).setPortletResource(
 			() -> {
 				PortletDisplay portletDisplay =
 					themeDisplay.getPortletDisplay();
 
 				return portletDisplay.getId();
 			}
+		).setParameter(
+			"groupId", layout.getGroupId()
 		).setParameter(
 			"privateLayout", layout.isPrivateLayout()
 		).setParameter(
@@ -626,19 +625,16 @@ public class LayoutsAdminDisplayContext {
 
 		layoutsSearchContainer.setRowChecker(emptyOnClickRowChecker);
 
-		int layoutsCount = LayoutServiceUtil.getLayoutsCount(
-			getSelGroupId(), isPrivateLayout(), getKeywords(),
-			new String[] {
-				LayoutConstants.TYPE_COLLECTION, LayoutConstants.TYPE_CONTENT,
-				LayoutConstants.TYPE_EMBEDDED,
-				LayoutConstants.TYPE_LINK_TO_LAYOUT,
-				LayoutConstants.TYPE_FULL_PAGE_APPLICATION,
-				LayoutConstants.TYPE_PANEL, LayoutConstants.TYPE_PORTLET,
-				LayoutConstants.TYPE_URL
-			});
+		String keywords = getKeywords();
 
-		List<Layout> layouts = LayoutServiceUtil.getLayouts(
-			getSelGroupId(), isPrivateLayout(), getKeywords(),
+		int[] statuses = null;
+
+		if (Validator.isNotNull(keywords)) {
+			statuses = new int[] {WorkflowConstants.STATUS_ANY};
+		}
+
+		int layoutsCount = LayoutServiceUtil.getLayoutsCount(
+			getSelGroupId(), isPrivateLayout(), keywords,
 			new String[] {
 				LayoutConstants.TYPE_COLLECTION, LayoutConstants.TYPE_CONTENT,
 				LayoutConstants.TYPE_EMBEDDED,
@@ -647,7 +643,20 @@ public class LayoutsAdminDisplayContext {
 				LayoutConstants.TYPE_PANEL, LayoutConstants.TYPE_PORTLET,
 				LayoutConstants.TYPE_URL
 			},
-			layoutsSearchContainer.getStart(), layoutsSearchContainer.getEnd(),
+			statuses);
+
+		List<Layout> layouts = LayoutServiceUtil.getLayouts(
+			getSelGroupId(), isPrivateLayout(), keywords,
+			new String[] {
+				LayoutConstants.TYPE_COLLECTION, LayoutConstants.TYPE_CONTENT,
+				LayoutConstants.TYPE_EMBEDDED,
+				LayoutConstants.TYPE_LINK_TO_LAYOUT,
+				LayoutConstants.TYPE_FULL_PAGE_APPLICATION,
+				LayoutConstants.TYPE_PANEL, LayoutConstants.TYPE_PORTLET,
+				LayoutConstants.TYPE_URL
+			},
+			statuses, layoutsSearchContainer.getStart(),
+			layoutsSearchContainer.getEnd(),
 			layoutsSearchContainer.getOrderByComparator());
 
 		layoutsSearchContainer.setTotal(layoutsCount);
@@ -910,8 +919,7 @@ public class LayoutsAdminDisplayContext {
 			getPortletURL()
 		).setMVCRenderCommandName(
 			"/layout_admin/edit_layout"
-		).setParameter(
-			"portletResource",
+		).setPortletResource(
 			ParamUtil.getString(httpServletRequest, "portletResource")
 		).setParameter(
 			"selPlid", getSelPlid()
@@ -1102,7 +1110,7 @@ public class LayoutsAdminDisplayContext {
 					).setParameter(
 						"groupId", themeDisplay.getScopeGroupId()
 					).setParameter(
-						"privateLayout", Boolean.FALSE.toString()
+						"privateLayout", false
 					).setWindowState(
 						LiferayWindowState.MAXIMIZED
 					).buildString() + "\">",

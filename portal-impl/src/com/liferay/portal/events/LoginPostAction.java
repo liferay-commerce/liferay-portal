@@ -146,16 +146,16 @@ public class LoginPostAction extends Action {
 			PasswordPolicy passwordPolicy, User user)
 		throws PortalException {
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (user.getPasswordModifiedDate() == null) {
 			HttpSession httpSession = httpServletRequest.getSession(false);
 
 			if (httpSession != null) {
-				now = new Date(httpSession.getCreationTime());
+				date = new Date(httpSession.getCreationTime());
 			}
 
-			user.setPasswordModifiedDate(now);
+			user.setPasswordModifiedDate(date);
 
 			UserLocalServiceUtil.updateUser(user);
 		}
@@ -169,9 +169,9 @@ public class LoginPostAction extends Action {
 		long startWarningTime =
 			passwordExpirationTime - (passwordPolicy.getWarningTime() * 1000);
 
-		if (now.getTime() > startWarningTime) {
+		if (date.getTime() > startWarningTime) {
 			int passwordExpiresInXDays =
-				(int)((passwordExpirationTime - now.getTime()) / Time.DAY);
+				(int)((passwordExpirationTime - date.getTime()) / Time.DAY);
 
 			if (passwordExpiresInXDays >= 0) {
 				SessionMessages.add(

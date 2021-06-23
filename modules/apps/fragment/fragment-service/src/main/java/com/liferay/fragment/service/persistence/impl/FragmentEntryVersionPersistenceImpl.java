@@ -15341,25 +15341,25 @@ public class FragmentEntryVersionPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (fragmentEntryVersion.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				fragmentEntryVersion.setCreateDate(now);
+				fragmentEntryVersion.setCreateDate(date);
 			}
 			else {
 				fragmentEntryVersion.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!fragmentEntryVersionModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				fragmentEntryVersion.setModifiedDate(now);
+				fragmentEntryVersion.setModifiedDate(date);
 			}
 			else {
 				fragmentEntryVersion.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

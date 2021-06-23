@@ -5295,25 +5295,25 @@ public class CommerceTierPriceEntryPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commerceTierPriceEntry.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commerceTierPriceEntry.setCreateDate(now);
+				commerceTierPriceEntry.setCreateDate(date);
 			}
 			else {
 				commerceTierPriceEntry.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commerceTierPriceEntryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commerceTierPriceEntry.setModifiedDate(now);
+				commerceTierPriceEntry.setModifiedDate(date);
 			}
 			else {
 				commerceTierPriceEntry.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

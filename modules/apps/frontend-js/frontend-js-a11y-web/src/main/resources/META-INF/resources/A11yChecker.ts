@@ -31,7 +31,7 @@ type Selector<T> = (
 	this: void,
 	value: T,
 	index: number,
-	obj: Array<T>
+	object: Array<T>
 ) => unknown;
 
 class Queue<T> {
@@ -158,6 +158,7 @@ export class Scheduler<T> {
 				// If there's more work, schedule the next callback at the
 				// end of the preceding one.
 
+				this.isCallbackScheduled = true;
 				this.requestHostCallback();
 			}
 		});
@@ -191,7 +192,15 @@ export class Scheduler<T> {
 				break;
 			}
 
-			await this.currentTask.callback(this.currentTask.target);
+			// Catch the exception of some error in the callback to avoid
+			// breaking the loop flow.
+
+			try {
+				await this.currentTask.callback(this.currentTask.target);
+			}
+			catch (error) {
+				console.error(error);
+			}
 
 			this.queue.dequeue();
 
@@ -221,20 +230,11 @@ export class Scheduler<T> {
 	}
 }
 
-type Mutation = {
-
-	/**
-	 * Attributes are the attributes of a node. The array is considered a
-	 * conditional `or`, the same for the values of an attribute.
-	 */
-	attributes: Record<string, Array<string>>;
-
-	/**
-	 * NodeNames is an array of node names. This array is considered as a
-	 * conditional `or`.
-	 */
-	nodeNames: Array<string>;
-};
+/**
+ * Attributes are the attributes of a node. The array is considered a
+ * conditional `or`, the same for the values of an attribute.
+ */
+type Attributes = Record<string, Array<string>>;
 
 export interface A11yCheckerOptions {
 
@@ -258,7 +258,7 @@ export interface A11yCheckerOptions {
 	 * Mutation is an optional list of criteria on which a new analysis will be
 	 * ignored.
 	 */
-	mutations?: Record<MutationRecordType, Mutation>;
+	mutations: Record<string, Attributes>;
 
 	/**
 	 * Targets is a list or element that represents the subtree(s) to be
@@ -274,7 +274,7 @@ export class A11yChecker {
 		target: string;
 		mutation: MutationObserver;
 	}>;
-	private mutations?: Record<MutationRecordType, Mutation>;
+	private mutations: Record<string, Attributes>;
 	readonly axeOptions: RunOptions;
 	readonly denylist?: Array<Array<string>>;
 
@@ -290,7 +290,7 @@ export class A11yChecker {
 			reporter: 'v2',
 		} as const;
 
-		this.axeOptions = axeOptions ? axeOptions : defaultOptions;
+		this.axeOptions = {...defaultOptions, ...axeOptions};
 
 		this.callback = callback;
 		this.denylist = denylist
@@ -322,7 +322,7 @@ export class A11yChecker {
 		const context = this.denylist
 			? {
 					exclude: this.denylist,
-					include: target,
+					include: [target],
 			  }
 			: target;
 
@@ -351,16 +351,54 @@ export class A11yChecker {
 	}
 
 	private mutationCallback(records: Array<MutationRecord>) {
-		records.forEach((record) => {
-			if (this.mutations) {
-				const condition = this.mutations[record.type];
+		const denylistTargets = this.denylist?.map((selector) => [
+			...document.querySelectorAll(selector.join(' ')),
+		]);
 
-				if (condition && hasValidMutation(record, condition)) {
+		records.forEach((record) => {
+			const {
+				addedNodes,
+				attributeName,
+				removedNodes,
+				target,
+				type,
+			} = record;
+
+			const node =
+				type === 'attributes' || removedNodes.length > 0
+					? target
+					: addedNodes[0];
+
+			if (type === 'attributes') {
+				const attributes =
+					this.mutations[node.nodeName.toLowerCase()] ??
+					this.mutations?.any;
+
+				const attributeValue = (node as Element).getAttribute(
+					attributeName as string
+				);
+
+				if (
+					attributes[attributeName as string]?.some((value) =>
+						value === '*' ? true : attributeValue?.includes(value)
+					)
+				) {
 					return;
 				}
 			}
 
-			this.recordCallback(record.target);
+			// Ignores the mutation if the target was through some element
+			// within the denylist.
+
+			const hasTargetInDenylist = denylistTargets?.some((targets) =>
+				targets?.some((target) => target.contains(node))
+			);
+
+			if (hasTargetInDenylist) {
+				return;
+			}
+
+			this.recordCallback(node);
 		});
 	}
 
@@ -387,36 +425,4 @@ export class A11yChecker {
 		this.scheduler.cancelHostCallback();
 		this.observers.forEach(({mutation}) => mutation.disconnect());
 	}
-}
-
-function hasValidMutation(record: MutationRecord, mutation: Mutation) {
-	const {addedNodes, removedNodes, target} = record;
-	const {attributes, nodeNames} = mutation;
-
-	// Is a removal or added mutation with type childList
-
-	if (removedNodes.length > 0 || addedNodes.length > 0) {
-		const [node] = removedNodes.length > 0 ? removedNodes : addedNodes;
-
-		return (
-			nodeNames.includes(node.nodeName) &&
-			compareAttributes(node as Element, attributes)
-		);
-	}
-	else {
-		return compareAttributes(target as Element, attributes);
-	}
-}
-
-function compareAttributes(
-	node: Element,
-	attributes: Record<string, Array<string>>
-) {
-	const attributesNames = Object.keys(attributes);
-
-	return attributesNames.some((name) => {
-		const key = node.getAttribute(name);
-
-		return attributes[name].some((value) => key?.includes(value));
-	});
 }

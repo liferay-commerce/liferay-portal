@@ -13,11 +13,10 @@
  */
 
 import ClayLayout from '@clayui/layout';
-import {ClayTooltipProvider} from '@clayui/tooltip';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import LanguagesDropdown from './LanguagesDropdown';
+import Translation from './Translation';
 
 export default function BasicInformation({
 	defaultLanguageId,
@@ -35,7 +34,7 @@ export default function BasicInformation({
 				<div className="inline-item-before">
 					<ClayLayout.ContentRow>
 						<ClayLayout.ContentCol>
-							<LanguagesDropdown
+							<Translation
 								defaultLanguageId={defaultLanguageId}
 								pageURLs={pageURLs}
 								selectedLanguageId={selectedPageURL.languageId}
@@ -46,30 +45,26 @@ export default function BasicInformation({
 			</ClayLayout.ContentCol>
 			<ClayLayout.ContentCol expand>
 				<ClayLayout.ContentRow>
-					<ClayTooltipProvider>
-						<span className="font-weight-semi-bold text-truncate-inline">
-							<span
-								className="text-truncate"
-								data-tooltip-align="bottom"
-								title={selectedPageURL.title}
-							>
-								{selectedPageURL.title}
-							</span>
+					<span className="font-weight-semi-bold text-truncate-inline">
+						<span
+							className="text-truncate"
+							data-tooltip-align="bottom"
+							title={selectedPageURL.title}
+						>
+							{selectedPageURL.title}
 						</span>
-					</ClayTooltipProvider>
+					</span>
 				</ClayLayout.ContentRow>
 				<ClayLayout.ContentRow>
-					<ClayTooltipProvider>
-						<span
-							className="text-truncate text-truncate-reverse"
-							data-tooltip-align="bottom"
-							title={selectedPageURL.url}
-						>
-							<bdi className="text-secondary">
-								{selectedPageURL.url}
-							</bdi>
-						</span>
-					</ClayTooltipProvider>
+					<span
+						className="text-truncate text-truncate-reverse"
+						data-tooltip-align="bottom"
+						title={selectedPageURL.url}
+					>
+						<bdi className="text-secondary">
+							{selectedPageURL.url}
+						</bdi>
+					</span>
 				</ClayLayout.ContentRow>
 			</ClayLayout.ContentCol>
 		</ClayLayout.ContentRow>

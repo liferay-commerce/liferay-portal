@@ -198,6 +198,5 @@ tasks:
           owner: rancher
     - copy:
           content: |-
-              {{ github_repos | sort | join('
-              ') }}
+              {{ github_repos | sort | join(' ') }}
           dest: "/data/slaves/{{ item.hostname }}/git/liferay/.repositories"

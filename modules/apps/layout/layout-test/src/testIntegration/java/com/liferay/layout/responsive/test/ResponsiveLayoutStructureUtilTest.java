@@ -178,10 +178,8 @@ public class ResponsiveLayoutStructureUtilTest {
 
 		httpServletRequest.setMethod(HttpMethods.GET);
 
-		MockHttpServletResponse httpServletResponse =
-			new MockHttpServletResponse();
-
-		_layout.includeLayoutContent(httpServletRequest, httpServletResponse);
+		_layout.includeLayoutContent(
+			httpServletRequest, new MockHttpServletResponse());
 
 		String content = String.valueOf(
 			(StringBundler)httpServletRequest.getAttribute(
@@ -191,12 +189,6 @@ public class ResponsiveLayoutStructureUtilTest {
 			if (viewportSize.equals(ViewportSize.DESKTOP)) {
 				continue;
 			}
-
-			String alignClassName =
-				"align-items" + viewportSize.getCssClassPrefix();
-
-			Assert.assertThat(
-				content, CoreMatchers.containsString(alignClassName));
 
 			String flexClassName =
 				"flex" + viewportSize.getCssClassPrefix() + "row";

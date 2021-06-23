@@ -667,14 +667,51 @@ definition {
 	}
 
 	@description = "Verify that a Form can be created"
-	@ignore = "Test Stub"
 	@priority = "5"
 	test CanBeCreated {
 		property forms.functional = "true";
 		property portal.acceptance = "false";
 
-		// TODO LPS-130500 CanBeCreated pending implementation
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
 
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.editDescription(formDescription = "Form 1 Description");
+
+		Form.editPageTitle(
+			formPageName = "Page 1",
+			formTitleNumber = "1");
+
+		Form.editPageDescription(formPageDescriptionName = "Page 1 Descripton");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Text");
+
+		Form.save();
+
+		FormsAdminNavigator.gotoBack();
+
+		FormsAdminNavigator.gotoEditFormByName(formName = "Form 1");
+
+		Form.viewFormName(formName = "Form 1");
+
+		Form.viewFormDescription(formDescription = "Form 1 Description");
+
+		AssertTextEquals(
+			key_titleNumber = "1",
+			locator1 = "Form#PAGE_TITLE_FIELD",
+			value1 = "Page 1");
+
+		AssertTextEquals(
+			locator1 = "Form#PAGE_DESCRIPTION_FIELD",
+			value1 = "Page 1 Descripton");
+
+		FormFields.viewTextLabel(fieldLabel = "Text");
 	}
 
 	@description = "Verify that a Form can be published from an autosaved draft"
@@ -725,14 +762,75 @@ definition {
 	}
 
 	@description = "Verify that a Form can be created with more than one page"
-	@ignore = "Test Stub"
 	@priority = "5"
 	test CanBeCreatedWithMultiplePages {
 		property forms.functional = "true";
 		property portal.acceptance = "false";
 
-		// TODO LPS-130996 CanBeCreatedWithMultiplePages pending implementation
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
 
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.addPage(formAddNewPageNumber = "1");
+
+		FormFields.viewPaginationField(
+			key_currentPage = "1",
+			key_lastPage = "2");
+
+		FormFields.viewPaginationField(
+			key_currentPage = "2",
+			key_lastPage = "2");
+
+		AssertElementPresent(
+			key_pageNumber = "1",
+			locator1 = "Form#PAGE_DEFAULT_TITLE_BY_NUMBER");
+
+		AssertElementPresent(
+			key_pageNumber = "1",
+			locator1 = "Form#PAGE_DEFAULT_DESCRIPTION_BY_NUMBER");
+
+		AssertElementPresent(
+			key_pageNumber = "1",
+			locator1 = "FormViewBuilder#EMPTY_FORM_FIELD_BY_NUMBER");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Text",
+			formPageNumber = "1");
+
+		Type(
+			key_pageNumber = "1",
+			locator1 = "Form#PAGE_DEFAULT_TITLE_BY_NUMBER",
+			value1 = "Page Title Test");
+
+		Type(
+			key_pageNumber = "1",
+			locator1 = "Form#PAGE_DEFAULT_DESCRIPTION_BY_NUMBER",
+			value1 = "Page Description");
+
+		Form.save();
+
+		FormsAdminNavigator.gotoBack();
+
+		FormsAdminNavigator.gotoEditFormByName(formName = "Form 1");
+
+		AssertElementPresent(
+			key_pageNumber = "1",
+			key_value = "Page Title Test",
+			locator1 = "Form#PAGE_TITLE_BY_NUMBER");
+
+		AssertElementPresent(
+			key_pageNumber = "1",
+			key_value = "Page Description",
+			locator1 = "Form#PAGE_DESCRIPTION_BY_NUMBER");
+
+		AssertElementNotPresent(
+			key_pageNumber = "1",
+			locator1 = "FormViewBuilder#EMPTY_FORM_FIELD_BY_NUMBER");
 	}
 
 	@description = "Verify that a Form can be deleted"
@@ -2339,14 +2437,60 @@ definition {
 	}
 
 	@description = "Verify that multiple Forms can be deleted"
-	@ignore = "Test Stub"
 	@priority = "5"
 	test MultipleFormsCanBeDeleted {
 		property forms.functional = "true";
 		property portal.acceptance = "false";
 
-		// TODO LPS-131744 MultipleFormsCanBeDeleted pending implementation
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
 
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Text");
+
+		Click(locator1 = "Button#SAVE");
+
+		Click(locator1 = "Icon#BACK");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 2");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Text");
+
+		Click(locator1 = "Button#SAVE");
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		Check(
+			key_formName = "Form 1",
+			locator1 = "FormsAdmin#FORM_ENTRY_CHECKBOX");
+
+		Check(
+			key_formName = "Form 2",
+			locator1 = "FormsAdmin#FORM_ENTRY_CHECKBOX");
+
+		ClickNoError(locator1 = "Icon#DELETE");
+
+		AssertConfirm(value1 = "Are you sure you want to delete this? It will be deleted immediately.");
+
+		AssertElementNotPresent(
+			key_formName = "Form 1",
+			locator1 = "FormsAdmin#FORM_ENTRY_LINK");
+
+		AssertElementNotPresent(
+			key_formName = "Form 2",
+			locator1 = "FormsAdmin#FORM_ENTRY_LINK");
 	}
 
 	@description = "This is a use case for LPS-59331"
@@ -2441,25 +2585,142 @@ definition {
 	}
 
 	@description = "Verify that Form Pages can be reordered"
-	@ignore = "Test Stub"
 	@priority = "5"
 	test PagesCanBeReordered {
 		property forms.functional = "true";
 		property portal.acceptance = "false";
 
-		// TODO LPS-130999 PagesCanBeReordered pending implementation
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
 
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.editPageTitle(
+			formPageName = "Page A",
+			formTitleNumber = "1");
+
+		Form.addPage(formAddNewPageNumber = "1");
+
+		Form.editPageTitle(
+			formPageName = "Page B",
+			formTitleNumber = "2");
+
+		Form.addPage(formAddNewPageNumber = "2");
+
+		Form.editPageTitle(
+			formPageName = "Page C",
+			formTitleNumber = "3");
+
+		AssertElementPresent(
+			key_fieldName = "Page A",
+			key_movePage = "Move Page Up",
+			locator1 = "Form#PAGE_MOVE_DISABLED");
+
+		AssertElementPresent(
+			key_fieldName = "Page A",
+			key_movePage = "Move Page Down",
+			locator1 = "Form#PAGE_MOVE_ACTIVATED");
+
+		AssertElementPresent(
+			key_fieldName = "Page B",
+			key_movePage = "Move Page Up",
+			locator1 = "Form#PAGE_MOVE_ACTIVATED");
+
+		AssertElementPresent(
+			key_fieldName = "Page B",
+			key_movePage = "Move Page Down",
+			locator1 = "Form#PAGE_MOVE_ACTIVATED");
+
+		AssertElementPresent(
+			key_fieldName = "Page C",
+			key_movePage = "Move Page Down",
+			locator1 = "Form#PAGE_MOVE_DISABLED");
+
+		AssertElementPresent(
+			key_fieldName = "Page C",
+			key_movePage = "Move Page Up",
+			locator1 = "Form#PAGE_MOVE_ACTIVATED");
+
+		Click(
+			key_fieldName = "Page C",
+			key_movePage = "Move Page Up",
+			locator1 = "Form#PAGE_MOVE_ACTIVATED");
+
+		Click(
+			key_fieldName = "Page C",
+			key_movePage = "Move Page Up",
+			locator1 = "Form#PAGE_MOVE_ACTIVATED");
+
+		AssertElementPresent(
+			key_fieldName = "Page C",
+			key_pagination = "Page 1 of 3",
+			locator1 = "Form#PAGE_PAGINATION");
+
+		AssertElementPresent(
+			key_fieldName = "Page C",
+			key_movePage = "Move Page Up",
+			locator1 = "Form#PAGE_MOVE_DISABLED");
+
+		AssertElementPresent(
+			key_fieldName = "Page C",
+			key_movePage = "Move Page Down",
+			locator1 = "Form#PAGE_MOVE_ACTIVATED");
+
+		Click(
+			key_fieldName = "Page A",
+			key_movePage = "Move Page Down",
+			locator1 = "Form#PAGE_MOVE_ACTIVATED");
+
+		AssertElementPresent(
+			key_fieldName = "Page A",
+			key_pagination = "Page 3 of 3",
+			locator1 = "Form#PAGE_PAGINATION");
+
+		AssertElementPresent(
+			key_fieldName = "Page A",
+			key_movePage = "Move Page Down",
+			locator1 = "Form#PAGE_MOVE_DISABLED");
+
+		AssertElementPresent(
+			key_fieldName = "Page A",
+			key_movePage = "Move Page Up",
+			locator1 = "Form#PAGE_MOVE_ACTIVATED");
 	}
 
 	@description = "Verify that Form Pages can be reset"
-	@ignore = "Test Stub"
 	@priority = "5"
 	test PagesCanBeReset {
 		property forms.functional = "true";
 		property portal.acceptance = "false";
 
-		// TODO LPS-131000 PagesCanBeReset pending implementation
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
 
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.editPageTitle(
+			formPageName = "Test title",
+			formTitleNumber = "1");
+
+		Form.editPageDescription(formPageDescriptionName = "Text");
+
+		Form.addTextField(fieldPositionNumber = "0");
+
+		Form.save();
+
+		Form.pageReset(pageIndex = "1");
+
+		Form.viewFormPlaceholderPage(pageIndex = "0");
+
+		Form.viewPageTitleDefault(pageIndex = "0");
+
+		Form.viewPageEmptyField(pageIndex = "0");
 	}
 
 	@description = "This is a use case for LPS-61740"
@@ -3838,7 +4099,7 @@ definition {
 		FormFields.enableSwitcher(fieldName = "Validation");
 
 		FormFields.editValidation(
-			validationArgument = "Does not contain",
+			validationArgument = "Contains",
 			validationErrorMessage = "Text must contain &apos;&apos;Test&apos;&apos;",
 			validationInput = "Test");
 
@@ -5734,14 +5995,36 @@ definition {
 	}
 
 	@description = "Verify that a Form autosaves after 1 minute by default"
-	@ignore = "Test Stub"
 	@priority = "5"
 	test WillAutosaveAfterOneMinute {
 		property forms.functional = "true";
 		property portal.acceptance = "false";
 
-		// TODO LPS-130510 WillAutosaveAfterOneMinute pending implementation
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
 
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.editDescription(formDescription = "Form Description");
+
+		Form.addTextField(fieldPositionNumber = "0");
+
+		Pause(locator1 = "60000");
+
+		Form.viewSaveNotification();
+
+		FormsAdminNavigator.gotoBack();
+
+		FormsAdminNavigator.gotoEditFormByName(formName = "Form 1");
+
+		Form.viewFormName(formName = "Form 1");
+
+		Form.viewFormDescription(formDescription = "Form Description");
+
+		FormFields.viewTextLabel(fieldLabel = "Text");
 	}
 
 }

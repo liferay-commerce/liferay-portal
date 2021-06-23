@@ -3181,23 +3181,23 @@ public class RegionPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (region.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				region.setCreateDate(now);
+				region.setCreateDate(date);
 			}
 			else {
-				region.setCreateDate(serviceContext.getCreateDate(now));
+				region.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!regionModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				region.setModifiedDate(now);
+				region.setModifiedDate(date);
 			}
 			else {
-				region.setModifiedDate(serviceContext.getModifiedDate(now));
+				region.setModifiedDate(serviceContext.getModifiedDate(date));
 			}
 		}
 

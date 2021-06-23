@@ -824,25 +824,25 @@ public class CommerceOrderPaymentPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commerceOrderPayment.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commerceOrderPayment.setCreateDate(now);
+				commerceOrderPayment.setCreateDate(date);
 			}
 			else {
 				commerceOrderPayment.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commerceOrderPaymentModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commerceOrderPayment.setModifiedDate(now);
+				commerceOrderPayment.setModifiedDate(date);
 			}
 			else {
 				commerceOrderPayment.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

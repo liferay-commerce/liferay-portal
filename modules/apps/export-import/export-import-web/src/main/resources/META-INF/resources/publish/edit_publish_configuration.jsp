@@ -100,7 +100,7 @@ PortletURL portletURL = PortletURLBuilder.createActionURL(
 ).setParameter(
 	"closeRedirect", closeRedirect
 ).setParameter(
-	"stagingGroupId", String.valueOf(stagingGroupId)
+	"stagingGroupId", stagingGroupId
 ).build();
 
 PortletURL redirectURL = PortletURLBuilder.createRenderURL(
@@ -110,13 +110,13 @@ PortletURL redirectURL = PortletURLBuilder.createRenderURL(
 ).setParameter(
 	"closeRedirect", closeRedirect
 ).setParameter(
-	"groupId", String.valueOf(stagingGroupId)
+	"groupId", stagingGroupId
 ).setParameter(
-	"layoutSetBranchId", String.valueOf(layoutSetBranchId)
+	"layoutSetBranchId", layoutSetBranchId
 ).setParameter(
 	"layoutSetBranchName", layoutSetBranchName
 ).setParameter(
-	"privateLayout", String.valueOf(privateLayout)
+	"privateLayout", privateLayout
 ).build();
 
 response.setHeader("Ajax-ID", request.getHeader("Ajax-ID"));

@@ -102,7 +102,7 @@ public class CommerceCatalogUpgradeProcess extends UpgradeProcess {
 				long companyId = resultSet.getLong("companyId");
 				long userId = resultSet.getLong("userId");
 				String userName = resultSet.getString("userName");
-				Date now = new Date(System.currentTimeMillis());
+				Date date = new Date(System.currentTimeMillis());
 				String defaultLanguageId = resultSet.getString(
 					"defaultLanguageId");
 
@@ -112,8 +112,8 @@ public class CommerceCatalogUpgradeProcess extends UpgradeProcess {
 				preparedStatement1.setLong(2, companyId);
 				preparedStatement1.setLong(3, userId);
 				preparedStatement1.setString(4, userName);
-				preparedStatement1.setDate(5, now);
-				preparedStatement1.setDate(6, now);
+				preparedStatement1.setDate(5, date);
+				preparedStatement1.setDate(6, date);
 
 				preparedStatement1.setString(
 					7, siteGroup.getName(defaultLanguageId));
@@ -126,8 +126,8 @@ public class CommerceCatalogUpgradeProcess extends UpgradeProcess {
 				preparedStatement2.setLong(2, companyId);
 				preparedStatement2.setLong(3, userId);
 				preparedStatement2.setString(4, userName);
-				preparedStatement2.setDate(5, now);
-				preparedStatement2.setDate(6, now);
+				preparedStatement2.setDate(5, date);
+				preparedStatement2.setDate(6, date);
 				preparedStatement2.setString(
 					7, siteGroup.getName(defaultLanguageId));
 				preparedStatement2.setLong(8, siteGroup.getGroupId());
@@ -177,8 +177,8 @@ public class CommerceCatalogUpgradeProcess extends UpgradeProcess {
 					preparedStatement3.setLong(2, companyId);
 					preparedStatement3.setLong(3, userId);
 					preparedStatement3.setString(4, userName);
-					preparedStatement3.setDate(5, now);
-					preparedStatement3.setDate(6, now);
+					preparedStatement3.setDate(5, date);
+					preparedStatement3.setDate(6, date);
 					preparedStatement3.setLong(7, cpDefinitionClassNameId);
 					preparedStatement3.setLong(
 						8, cpDefinitionsResultSet.getLong("cpDefinitionId"));

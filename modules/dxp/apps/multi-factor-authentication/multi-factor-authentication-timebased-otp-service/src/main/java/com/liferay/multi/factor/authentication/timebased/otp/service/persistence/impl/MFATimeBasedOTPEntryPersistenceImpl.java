@@ -537,25 +537,25 @@ public class MFATimeBasedOTPEntryPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (mfaTimeBasedOTPEntry.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				mfaTimeBasedOTPEntry.setCreateDate(now);
+				mfaTimeBasedOTPEntry.setCreateDate(date);
 			}
 			else {
 				mfaTimeBasedOTPEntry.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!mfaTimeBasedOTPEntryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				mfaTimeBasedOTPEntry.setModifiedDate(now);
+				mfaTimeBasedOTPEntry.setModifiedDate(date);
 			}
 			else {
 				mfaTimeBasedOTPEntry.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

@@ -537,6 +537,60 @@ definition {
 		}
 	}
 
+	@description = "This is a use case for LPS-125564. Publish the draft content page to live site."
+	@priority = "4"
+	test PublishDraftContentPageToLive {
+		task ("Add a draft content page") {
+			JSONLayout.addPublicLayout(
+				groupName = "Test Site Name (Staging)",
+				layoutName = "Test Content Page Name",
+				site = "false",
+				type = "content");
+		}
+
+		task ("Publish to live") {
+			Staging.openStagingAdmin(siteURLKey = "test-site-name-staging");
+
+			Staging.publishCustomPublication();
+		}
+
+		task ("Navigate to Live site via Product Menu") {
+			ProductMenu.gotoLiveSite();
+		}
+
+		task ("View the header title") {
+			ControlMenu.viewHeaderTitle(headerTitle = "Test Content Page Name");
+		}
+
+		task ("Navigate to staging site via Product Menu") {
+			ProductMenu.gotoStagingSite();
+		}
+
+		task ("Add a Heading fragment to page in the staging site") {
+			ContentPagesNavigator.openEditContentPage(
+				pageName = "Test Content Page Name",
+				siteName = "Test Site Name Staging");
+
+			PageEditor.addFragment(
+				collectionName = "Basic Components",
+				fragmentName = "Heading");
+		}
+
+		task ("Publish to live") {
+			Staging.openStagingAdmin(siteURLKey = "test-site-name-staging");
+
+			Staging.publishCustomPublication();
+		}
+
+		task ("Navigate to Live site via Product Menu") {
+			ProductMenu.gotoLiveSite();
+		}
+
+		task ("View the header title") {
+			ControlMenu.viewHeaderTitle(headerTitle = "Test Content Page Name");
+		}
+	}
+
 	@description = "Changes of content pages should not appear in the live site until after published."
 	@priority = "5"
 	test PublishEditedContentPageToLive {
@@ -749,6 +803,116 @@ definition {
 				key_fragmentName = "paragraph",
 				locator1 = "Fragment#FRAGMENT_BASIC_COMPONENT",
 				value1 = "A paragraph is a self-contained unit of a discourse in writing dealing with a particular point or idea. Paragraphs are usually an expected part of formal writing, used to organize longer prose.");
+		}
+	}
+
+	@description = "This is a test for LPS-130482. View the custom CSS of content page in staging site."
+	@priority = "4"
+	test ViewCustomCSSOfContentPageInStagingSite {
+		task ("Add a content page") {
+			JSONLayout.addPublicLayout(
+				groupName = "Test Site Name (Staging)",
+				layoutName = "Test Content Page Name",
+				site = "false",
+				type = "content");
+		}
+
+		task ("Navigate to the content page at edit mode in staging site") {
+			ContentPagesNavigator.openEditContentPage(
+				pageName = "Test Content Page Name",
+				siteName = "Test Site Name Staging");
+		}
+
+		task ("Navigate to the Look and Feel settings") {
+			PageEditor.gotoTab(tabName = "Page Design Options");
+
+			Click(locator1 = "PageEditor#MORE_LINK");
+		}
+
+		task ("Define the custom CSS") {
+			Theme.configureLookAndFeelSpecificLook();
+
+			Theme.configureLookAndFeelCustomCSS(cssText = '''div.component-paragraph {background-color: red; color:white;}''');
+
+			PortletEntry.save();
+
+			Navigator.gotoBack();
+		}
+
+		task ("Add a Paragraph fragment to the content page and publish") {
+			PageEditor.addFragment(
+				collectionName = "Basic Components",
+				fragmentName = "Paragraph");
+
+			PageEditor.clickPublish();
+		}
+
+		task ("Navigate to the content page at view mode in staging site") {
+			ContentPagesNavigator.openViewContentPage(
+				pageName = "Test Content Page Name",
+				siteName = "Test Site Name Staging");
+		}
+
+		task ("View the Text Color of Paragraph") {
+			AssertCssValue(
+				key_fragmentName = "paragraph",
+				locator1 = "Fragment#FRAGMENT_BASIC_COMPONENT",
+				locator2 = "color",
+				value1 = "rgba(255, 255, 255, 1)");
+		}
+
+		task ("View the Background Color of Paragraph") {
+			AssertCssValue(
+				key_fragmentName = "paragraph",
+				locator1 = "Fragment#FRAGMENT_BASIC_COMPONENT",
+				locator2 = "background-color",
+				value1 = "rgba(255, 0, 0, 1)");
+		}
+
+		task ("Navigate to the content page at edit mode in staging site") {
+			ContentPagesNavigator.openEditContentPage(
+				pageName = "Test Content Page Name",
+				siteName = "Test Site Name Staging");
+		}
+
+		task ("Navigate to the Look and Feel settings") {
+			PageEditor.gotoTab(tabName = "Page Design Options");
+
+			Click(locator1 = "PageEditor#MORE_LINK");
+		}
+
+		task ("Change the custom CSS") {
+			Theme.configureLookAndFeelCustomCSS(cssText = '''div.component-paragraph {background-color: blue; color:black;}''');
+
+			PortletEntry.save();
+
+			Navigator.gotoBack();
+
+			PageEditor.assertFragmentSidebarLoaded();
+
+			PageEditor.clickPublish();
+		}
+
+		task ("Navigate to the content page at view mode in staging site") {
+			ContentPagesNavigator.openViewContentPage(
+				pageName = "Test Content Page Name",
+				siteName = "Test Site Name Staging");
+		}
+
+		task ("View the Text Color of Paragraph") {
+			AssertCssValue(
+				key_fragmentName = "paragraph",
+				locator1 = "Fragment#FRAGMENT_BASIC_COMPONENT",
+				locator2 = "color",
+				value1 = "rgba(0, 0, 0, 1)");
+		}
+
+		task ("View the Background Color of Paragraph") {
+			AssertCssValue(
+				key_fragmentName = "paragraph",
+				locator1 = "Fragment#FRAGMENT_BASIC_COMPONENT",
+				locator2 = "background-color",
+				value1 = "rgba(0, 0, 255, 1)");
 		}
 	}
 

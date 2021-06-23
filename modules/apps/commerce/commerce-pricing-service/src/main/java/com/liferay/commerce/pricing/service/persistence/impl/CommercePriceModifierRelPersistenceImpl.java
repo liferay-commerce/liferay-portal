@@ -2230,25 +2230,25 @@ public class CommercePriceModifierRelPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commercePriceModifierRel.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commercePriceModifierRel.setCreateDate(now);
+				commercePriceModifierRel.setCreateDate(date);
 			}
 			else {
 				commercePriceModifierRel.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commercePriceModifierRelModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commercePriceModifierRel.setModifiedDate(now);
+				commercePriceModifierRel.setModifiedDate(date);
 			}
 			else {
 				commercePriceModifierRel.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

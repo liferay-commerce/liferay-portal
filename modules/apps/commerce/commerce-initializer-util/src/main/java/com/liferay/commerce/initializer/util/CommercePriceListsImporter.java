@@ -55,9 +55,9 @@ public class CommercePriceListsImporter {
 
 		ServiceContext serviceContext = new ServiceContext();
 
+		serviceContext.setCompanyId(user.getCompanyId());
 		serviceContext.setScopeGroupId(scopeGroupId);
 		serviceContext.setUserId(userId);
-		serviceContext.setCompanyId(user.getCompanyId());
 
 		for (int i = 0; i < jsonArray.length(); i++) {
 			_importCommercePriceList(
@@ -164,7 +164,7 @@ public class CommercePriceListsImporter {
 				name);
 
 			CommercePriceList commercePriceList =
-				_commercePriceListLocalService.upsertCommercePriceList(
+				_commercePriceListLocalService.addOrUpdateCommercePriceList(
 					externalReferenceCode, catalogGroupId, user.getUserId(), 0,
 					commerceCurrency.getCommerceCurrencyId(), parentPriceListId,
 					name, priority, displayDateMonth, displayDateDay,

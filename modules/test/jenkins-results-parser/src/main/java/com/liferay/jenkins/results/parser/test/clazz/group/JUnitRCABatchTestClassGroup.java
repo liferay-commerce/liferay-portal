@@ -118,7 +118,8 @@ public class JUnitRCABatchTestClassGroup extends RCABatchTestClassGroup {
 
 					@Override
 					public FileVisitResult preVisitDirectory(
-							Path filePath, BasicFileAttributes attrs)
+							Path filePath,
+							BasicFileAttributes basicFileAttributes)
 						throws IOException {
 
 						if (JenkinsResultsParserUtil.isFileExcluded(
@@ -133,7 +134,8 @@ public class JUnitRCABatchTestClassGroup extends RCABatchTestClassGroup {
 
 					@Override
 					public FileVisitResult visitFile(
-							Path filePath, BasicFileAttributes attrs)
+							Path filePath,
+							BasicFileAttributes basicFileAttributes)
 						throws IOException {
 
 						if (JenkinsResultsParserUtil.isFileIncluded(

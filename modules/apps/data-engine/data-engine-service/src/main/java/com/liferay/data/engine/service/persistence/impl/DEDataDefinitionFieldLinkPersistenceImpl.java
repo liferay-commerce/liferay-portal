@@ -5905,25 +5905,25 @@ public class DEDataDefinitionFieldLinkPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (deDataDefinitionFieldLink.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				deDataDefinitionFieldLink.setCreateDate(now);
+				deDataDefinitionFieldLink.setCreateDate(date);
 			}
 			else {
 				deDataDefinitionFieldLink.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!deDataDefinitionFieldLinkModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				deDataDefinitionFieldLink.setModifiedDate(now);
+				deDataDefinitionFieldLink.setModifiedDate(date);
 			}
 			else {
 				deDataDefinitionFieldLink.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

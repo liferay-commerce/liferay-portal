@@ -708,6 +708,10 @@ public class FragmentEntryLinkLocalServiceImpl
 
 		fragmentEntryLink.setHtml(fragmentEntry.getHtml());
 
+		// LPS-132154 Set configuration before processing the HTML
+
+		fragmentEntryLink.setConfiguration(fragmentEntry.getConfiguration());
+
 		String processedHTML = _getProcessedHTML(
 			fragmentEntryLink, ServiceContextThreadLocal.getServiceContext());
 
@@ -717,7 +721,6 @@ public class FragmentEntryLinkLocalServiceImpl
 
 		fragmentEntryLink.setCss(fragmentEntry.getCss());
 		fragmentEntryLink.setJs(fragmentEntry.getJs());
-		fragmentEntryLink.setConfiguration(fragmentEntry.getConfiguration());
 
 		String newEditableValues = _mergeEditableValues(
 			defaultEditableValues, fragmentEntryLink.getEditableValues());

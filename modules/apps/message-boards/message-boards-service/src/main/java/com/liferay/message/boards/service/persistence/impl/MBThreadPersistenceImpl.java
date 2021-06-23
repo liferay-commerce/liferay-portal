@@ -13494,23 +13494,23 @@ public class MBThreadPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (mbThread.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				mbThread.setCreateDate(now);
+				mbThread.setCreateDate(date);
 			}
 			else {
-				mbThread.setCreateDate(serviceContext.getCreateDate(now));
+				mbThread.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!mbThreadModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				mbThread.setModifiedDate(now);
+				mbThread.setModifiedDate(date);
 			}
 			else {
-				mbThread.setModifiedDate(serviceContext.getModifiedDate(now));
+				mbThread.setModifiedDate(serviceContext.getModifiedDate(date));
 			}
 		}
 

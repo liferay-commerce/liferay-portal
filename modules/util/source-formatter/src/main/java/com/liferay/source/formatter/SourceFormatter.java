@@ -99,9 +99,7 @@ public class SourceFormatter {
 				ExcludeSyntax.GLOB, "**/node_modules_cache/**"),
 			new ExcludeSyntaxPattern(
 				ExcludeSyntax.REGEX,
-				"^((?!/frontend-js-node-shims/src/).)*/node_modules/.*"),
-			new ExcludeSyntaxPattern(
-				ExcludeSyntax.REGEX, ".*/([^/.]+\\.){2,}properties")
+				"^((?!/frontend-js-node-shims/src/).)*/node_modules/.*")
 		};
 
 	public static void main(String[] args) throws Exception {
@@ -172,7 +170,17 @@ public class SourceFormatter {
 
 			sourceFormatterArgs.setGitWorkingBranchName(gitWorkingBranchName);
 
-			if (formatCurrentBranch) {
+			int commitCount = ArgumentsUtil.getInteger(
+				arguments, "commit.count", SourceFormatterArgs.COMMIT_COUNT);
+
+			sourceFormatterArgs.setCommitCount(commitCount);
+
+			if (commitCount > 0) {
+				sourceFormatterArgs.addRecentChangesFileNames(
+					GitUtil.getModifiedFileNames(baseDirName, commitCount),
+					baseDirName);
+			}
+			else if (formatCurrentBranch) {
 				sourceFormatterArgs.addRecentChangesFileNames(
 					GitUtil.getCurrentBranchFileNames(
 						baseDirName, gitWorkingBranchName, false),
@@ -367,7 +375,7 @@ public class SourceFormatter {
 		_sourceProcessors.add(new FTLSourceProcessor());
 		_sourceProcessors.add(new GradleSourceProcessor());
 		_sourceProcessors.add(new GroovySourceProcessor());
-		_sourceProcessors.add(new HTMLSourceProcessor());
+		//_sourceProcessors.add(new HTMLSourceProcessor());
 		_sourceProcessors.add(new JavaSourceProcessor());
 		_sourceProcessors.add(new JSONSourceProcessor());
 		_sourceProcessors.add(new JSPSourceProcessor());
@@ -446,8 +454,22 @@ public class SourceFormatter {
 			String outputFileName = _sourceFormatterArgs.getOutputFileName();
 
 			if (outputFileName != null) {
-				File file = new File(
-					_sourceFormatterArgs.getBaseDirName() + outputFileName);
+				File file = null;
+
+				int pos = outputFileName.lastIndexOf(File.separator);
+
+				if (pos != -1) {
+					File directory = new File(outputFileName.substring(0, pos));
+
+					if (directory.exists()) {
+						file = new File(outputFileName);
+					}
+				}
+
+				if (file == null) {
+					file = new File(
+						_sourceFormatterArgs.getBaseDirName() + outputFileName);
+				}
 
 				FileUtil.write(file, _getOutputFileContent());
 			}
@@ -1004,6 +1026,14 @@ public class SourceFormatter {
 
 		for (String modulePropertiesFileName : modulePropertiesFileNames) {
 			_readProperties(new File(modulePropertiesFileName));
+		}
+
+		for (Properties properties : _propertiesMap.values()) {
+			if (GetterUtil.getBoolean(properties.get("liferay.source"))) {
+				_portalSource = true;
+
+				break;
+			}
 		}
 
 		if (!_portalSource && _containsDir("modules/private/apps")) {

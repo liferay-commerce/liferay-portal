@@ -7008,25 +7008,25 @@ public class BookmarksFolderPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (bookmarksFolder.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				bookmarksFolder.setCreateDate(now);
+				bookmarksFolder.setCreateDate(date);
 			}
 			else {
 				bookmarksFolder.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!bookmarksFolderModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				bookmarksFolder.setModifiedDate(now);
+				bookmarksFolder.setModifiedDate(date);
 			}
 			else {
 				bookmarksFolder.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

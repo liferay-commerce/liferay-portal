@@ -4663,25 +4663,25 @@ public class CommerceMLForecastAlertEntryPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commerceMLForecastAlertEntry.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commerceMLForecastAlertEntry.setCreateDate(now);
+				commerceMLForecastAlertEntry.setCreateDate(date);
 			}
 			else {
 				commerceMLForecastAlertEntry.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commerceMLForecastAlertEntryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commerceMLForecastAlertEntry.setModifiedDate(now);
+				commerceMLForecastAlertEntry.setModifiedDate(date);
 			}
 			else {
 				commerceMLForecastAlertEntry.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.saml.persistence.exception.DuplicateSamlIdpSpSessionException;
+import com.liferay.saml.persistence.exception.NoSuchIdpSpSessionException;
 import com.liferay.saml.persistence.model.SamlIdpSpSession;
 import com.liferay.saml.persistence.model.SamlPeerBinding;
 import com.liferay.saml.persistence.service.SamlPeerBindingLocalService;
@@ -51,7 +52,7 @@ public class SamlIdpSpSessionLocalServiceImpl
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		SamlIdpSpSession samlIdpSpSession = getSamlIdpSpSession(
+		SamlIdpSpSession samlIdpSpSession = _fetchSamlIdpSpSession(
 			samlIdpSsoSessionId, samlSpEntityId);
 
 		if (samlIdpSpSession != null) {
@@ -95,25 +96,14 @@ public class SamlIdpSpSessionLocalServiceImpl
 			long samlIdpSsoSessionId, String samlSpEntityId)
 		throws PortalException {
 
-		List<SamlIdpSpSession> samlIdpSsoSessions =
-			samlIdpSpSessionPersistence.findBySamlIdpSsoSessionId(
-				samlIdpSsoSessionId);
+		SamlIdpSpSession samlIdpSpSession = _fetchSamlIdpSpSession(
+			samlIdpSsoSessionId, samlSpEntityId);
 
-		Stream<SamlIdpSpSession> stream = samlIdpSsoSessions.stream();
+		if (samlIdpSpSession == null) {
+			throw new NoSuchIdpSpSessionException();
+		}
 
-		return stream.filter(
-			samlIdpSsoSession -> {
-				SamlPeerBinding samlPeerBinding =
-					_samlPeerBindingLocalService.fetchSamlPeerBinding(
-						samlIdpSsoSession.getSamlPeerBindingId());
-
-				return Objects.equals(
-					samlSpEntityId, samlPeerBinding.getSamlPeerEntityId());
-			}
-		).findFirst(
-		).orElse(
-			null
-		);
+		return samlIdpSpSession;
 	}
 
 	@Override
@@ -135,6 +125,30 @@ public class SamlIdpSpSessionLocalServiceImpl
 		samlIdpSpSession.setModifiedDate(new Date());
 
 		return samlIdpSpSessionPersistence.update(samlIdpSpSession);
+	}
+
+	private SamlIdpSpSession _fetchSamlIdpSpSession(
+		long samlIdpSsoSessionId, String samlSpEntityId) {
+
+		List<SamlIdpSpSession> samlIdpSsoSessions =
+			samlIdpSpSessionPersistence.findBySamlIdpSsoSessionId(
+				samlIdpSsoSessionId);
+
+		Stream<SamlIdpSpSession> stream = samlIdpSsoSessions.stream();
+
+		return stream.filter(
+			samlIdpSsoSession -> {
+				SamlPeerBinding samlPeerBinding =
+					_samlPeerBindingLocalService.fetchSamlPeerBinding(
+						samlIdpSsoSession.getSamlPeerBindingId());
+
+				return Objects.equals(
+					samlSpEntityId, samlPeerBinding.getSamlPeerEntityId());
+			}
+		).findFirst(
+		).orElse(
+			null
+		);
 	}
 
 	@Reference

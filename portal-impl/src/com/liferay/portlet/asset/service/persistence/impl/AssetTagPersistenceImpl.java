@@ -4519,23 +4519,23 @@ public class AssetTagPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (assetTag.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				assetTag.setCreateDate(now);
+				assetTag.setCreateDate(date);
 			}
 			else {
-				assetTag.setCreateDate(serviceContext.getCreateDate(now));
+				assetTag.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!assetTagModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				assetTag.setModifiedDate(now);
+				assetTag.setModifiedDate(date);
 			}
 			else {
-				assetTag.setModifiedDate(serviceContext.getModifiedDate(now));
+				assetTag.setModifiedDate(serviceContext.getModifiedDate(date));
 			}
 		}
 

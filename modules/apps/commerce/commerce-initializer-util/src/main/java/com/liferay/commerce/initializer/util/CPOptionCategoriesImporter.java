@@ -48,9 +48,9 @@ public class CPOptionCategoriesImporter {
 
 		ServiceContext serviceContext = new ServiceContext();
 
+		serviceContext.setCompanyId(user.getCompanyId());
 		serviceContext.setScopeGroupId(scopeGroupId);
 		serviceContext.setUserId(userId);
-		serviceContext.setCompanyId(user.getCompanyId());
 
 		List<CPOptionCategory> cpOptionCategories = new ArrayList<>(
 			jsonArray.length());

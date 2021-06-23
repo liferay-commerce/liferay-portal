@@ -4133,25 +4133,25 @@ public class LayoutPrototypePersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (layoutPrototype.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				layoutPrototype.setCreateDate(now);
+				layoutPrototype.setCreateDate(date);
 			}
 			else {
 				layoutPrototype.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!layoutPrototypeModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				layoutPrototype.setModifiedDate(now);
+				layoutPrototype.setModifiedDate(date);
 			}
 			else {
 				layoutPrototype.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

@@ -18,6 +18,7 @@
 
 <%
 DLAdminDisplayContext dlAdminDisplayContext = (DLAdminDisplayContext)request.getAttribute(DLAdminDisplayContext.class.getName());
+DLAdminManagementToolbarDisplayContext dlAdminManagementToolbarDisplayContext = (DLAdminManagementToolbarDisplayContext)request.getAttribute(DLAdminManagementToolbarDisplayContext.class.getName());
 
 DLViewDisplayContext dlViewDisplayContext = new DLViewDisplayContext(dlAdminDisplayContext, request, renderRequest, renderResponse);
 %>
@@ -49,6 +50,10 @@ DLViewDisplayContext dlViewDisplayContext = new DLViewDisplayContext(dlAdminDisp
 		<clay:management-toolbar
 			additionalProps='<%=
 				HashMapBuilder.<String, Object>put(
+					"collectDigitalSignaturePortlet", DigitalSignaturePortletKeys.COLLECT_DIGITAL_SIGNATURE
+				).put(
+					"digitalSignatureAllowedExtensions", StringUtil.merge(DigitalSignatureConstants.ALLOWED_FILE_EXTENSIONS)
+				).put(
 					"downloadEntryURL", dlViewDisplayContext.getDownloadEntryURL()
 				).put(
 					"editEntryURL", dlViewDisplayContext.getEditEntryURL()
@@ -65,6 +70,8 @@ DLViewDisplayContext dlViewDisplayContext = new DLViewDisplayContext(dlAdminDisp
 						).build()
 					).build()
 				).put(
+					"isDigitalSignatureEnabled", dlAdminManagementToolbarDisplayContext.isDigitalSignatureEnabled()
+				).put(
 					"openViewMoreFileEntryTypesURL", dlViewDisplayContext.getViewMoreFileEntryTypesURL()
 				).put(
 					"selectFileEntryTypeURL", dlViewDisplayContext.getSelectFileEntryTypeURL()
@@ -78,7 +85,7 @@ DLViewDisplayContext dlViewDisplayContext = new DLViewDisplayContext(dlAdminDisp
 					"viewFileEntryURL", dlViewDisplayContext.getViewFileEntryURL()
 				).build()
 			%>'
-			managementToolbarDisplayContext="<%= (DLAdminManagementToolbarDisplayContext)request.getAttribute(DLAdminManagementToolbarDisplayContext.class.getName()) %>"
+			managementToolbarDisplayContext="<%= dlAdminManagementToolbarDisplayContext %>"
 			propsTransformer="document_library/js/DLManagementToolbarPropsTransformer"
 		/>
 
@@ -386,3 +393,16 @@ DLViewDisplayContext dlViewDisplayContext = new DLViewDisplayContext(dlAdminDisp
 		<liferay-util:dynamic-include key="com.liferay.document.library.web#/document_library/view.jsp#post" />
 	</c:otherwise>
 </c:choose>
+
+<c:if test="<%= dlAdminManagementToolbarDisplayContext.isDigitalSignatureEnabled() %>">
+	<div>
+		<react:component
+			module="document_library/js/digital-signature/DigitalSignature"
+			props='<%=
+				HashMapBuilder.<String, Object>put(
+					"digitalSignatureAllowedExtensions", StringUtil.merge(DigitalSignatureConstants.ALLOWED_FILE_EXTENSIONS)
+				).build()
+			%>'
+		/>
+	</div>
+</c:if>

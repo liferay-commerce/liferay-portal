@@ -5037,23 +5037,23 @@ public class WikiNodePersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (wikiNode.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				wikiNode.setCreateDate(now);
+				wikiNode.setCreateDate(date);
 			}
 			else {
-				wikiNode.setCreateDate(serviceContext.getCreateDate(now));
+				wikiNode.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!wikiNodeModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				wikiNode.setModifiedDate(now);
+				wikiNode.setModifiedDate(date);
 			}
 			else {
-				wikiNode.setModifiedDate(serviceContext.getModifiedDate(now));
+				wikiNode.setModifiedDate(serviceContext.getModifiedDate(date));
 			}
 		}
 

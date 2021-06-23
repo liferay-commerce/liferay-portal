@@ -32912,24 +32912,25 @@ public class JournalArticlePersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (journalArticle.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				journalArticle.setCreateDate(now);
+				journalArticle.setCreateDate(date);
 			}
 			else {
-				journalArticle.setCreateDate(serviceContext.getCreateDate(now));
+				journalArticle.setCreateDate(
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!journalArticleModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				journalArticle.setModifiedDate(now);
+				journalArticle.setModifiedDate(date);
 			}
 			else {
 				journalArticle.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

@@ -50,7 +50,6 @@ long accountEntryId = accountEntryDisplay.getAccountEntryId();
 		<portlet:renderURL var="manageUsersURL">
 			<portlet:param name="mvcRenderCommandName" value="/account_admin/edit_account_entry" />
 			<portlet:param name="screenNavigationCategoryKey" value="<%= AccountScreenNavigationEntryConstants.CATEGORY_KEY_USERS %>" />
-			<portlet:param name="backURL" value="<%= currentURL %>" />
 			<portlet:param name="accountEntryId" value="<%= String.valueOf(accountEntryId) %>" />
 		</portlet:renderURL>
 

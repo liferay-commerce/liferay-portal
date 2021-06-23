@@ -3630,23 +3630,23 @@ public class KaleoLogPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (kaleoLog.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				kaleoLog.setCreateDate(now);
+				kaleoLog.setCreateDate(date);
 			}
 			else {
-				kaleoLog.setCreateDate(serviceContext.getCreateDate(now));
+				kaleoLog.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!kaleoLogModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				kaleoLog.setModifiedDate(now);
+				kaleoLog.setModifiedDate(date);
 			}
 			else {
-				kaleoLog.setModifiedDate(serviceContext.getModifiedDate(now));
+				kaleoLog.setModifiedDate(serviceContext.getModifiedDate(date));
 			}
 		}
 

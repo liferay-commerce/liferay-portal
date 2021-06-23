@@ -1443,25 +1443,25 @@ public class ObjectLayoutTabPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (objectLayoutTab.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				objectLayoutTab.setCreateDate(now);
+				objectLayoutTab.setCreateDate(date);
 			}
 			else {
 				objectLayoutTab.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!objectLayoutTabModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				objectLayoutTab.setModifiedDate(now);
+				objectLayoutTab.setModifiedDate(date);
 			}
 			else {
 				objectLayoutTab.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

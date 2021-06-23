@@ -66,7 +66,7 @@ boolean showIconsActions = themeDisplay.isSignedIn() && !layout.isLayoutPrototyp
 			).setParameter(
 				"referringPortletResource", portletDisplay.getId()
 			).setParameter(
-				"showHeader", Boolean.FALSE.toString()
+				"showHeader", false
 			).setParameter(
 				"struts_action", "/polls/edit_question"
 			).setWindowState(
@@ -100,7 +100,7 @@ boolean showIconsActions = themeDisplay.isSignedIn() && !layout.isLayoutPrototyp
 			).setParameter(
 				"referringPortletResource", portletDisplay.getId()
 			).setParameter(
-				"showHeader", Boolean.FALSE.toString()
+				"showHeader", false
 			).setWindowState(
 				LiferayWindowState.POP_UP
 			).buildString();

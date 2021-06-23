@@ -5641,25 +5641,25 @@ public class CalendarBookingPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (calendarBooking.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				calendarBooking.setCreateDate(now);
+				calendarBooking.setCreateDate(date);
 			}
 			else {
 				calendarBooking.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!calendarBookingModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				calendarBooking.setModifiedDate(now);
+				calendarBooking.setModifiedDate(date);
 			}
 			else {
 				calendarBooking.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

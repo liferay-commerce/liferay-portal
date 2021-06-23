@@ -23,6 +23,7 @@ import {LAYOUT_TYPES} from '../../app/config/constants/layoutTypes';
 import {config} from '../../app/config/index';
 import {useCollectionConfig} from '../../app/contexts/CollectionItemContext';
 import {useDispatch, useSelector} from '../../app/contexts/StoreContext';
+import {selectPageContents} from '../../app/selectors/selectPageContents';
 import CollectionService from '../../app/services/CollectionService';
 import InfoItemService from '../../app/services/InfoItemService';
 import isMapped from '../../app/utils/editable-value/isMapped';
@@ -123,9 +124,11 @@ export default function MappingSelectorWrapper({
 			return;
 		}
 
-		const key =
-			collectionConfig.collection.classNameId ||
-			collectionConfig.collection.key;
+		const {classNameId, classPK} = collectionConfig.collection;
+
+		const key = classNameId
+			? getMappingFieldsKey(classNameId, classPK)
+			: collectionConfig.collection.key;
 
 		const fields = mappingFields[key];
 
@@ -204,7 +207,7 @@ function MappingSelector({fieldType, mappedItem, onMappingSelect}) {
 	const dispatch = useDispatch();
 	const mappedInfoItems = useSelector((state) => state.mappedInfoItems);
 	const mappingFields = useSelector((state) => state.mappingFields);
-	const pageContents = useSelector((state) => state.pageContents);
+	const pageContents = useSelector(selectPageContents);
 	const mappingSelectorSourceSelectId = useId();
 
 	const {selectedMappingTypes} = config;
@@ -393,9 +396,9 @@ function MappingSelector({fieldType, mappedItem, onMappingSelect}) {
 
 			{selectedSourceType === MAPPING_SOURCE_TYPES.content && (
 				<ItemSelector
-					label={Liferay.Language.get('content')}
+					label={Liferay.Language.get('item')}
 					onItemSelect={onInfoItemSelect}
-					selectedItemTitle={selectedItem.title}
+					selectedItem={selectedItem}
 					transformValueCallback={itemSelectorValueToInfoItem}
 				/>
 			)}

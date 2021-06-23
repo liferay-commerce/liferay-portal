@@ -353,14 +353,14 @@ public class PortletDataContextFactoryImpl
 					PortletDataException.START_DATE_AFTER_END_DATE);
 			}
 
-			Date now = new Date();
+			Date date = new Date();
 
-			if (startDate.after(now)) {
+			if (startDate.after(date)) {
 				throw new PortletDataException(
 					PortletDataException.FUTURE_START_DATE);
 			}
 
-			if (endDate.after(now)) {
+			if (endDate.after(date)) {
 				throw new PortletDataException(
 					PortletDataException.FUTURE_END_DATE);
 			}

@@ -2,11 +2,13 @@
 <head>
 <title>KaleoFormsAdminEditProcess</title>
 </head>
+
 <body>
-<table cellpadding="1" cellspacing="1" border="1">
+<table border="1" cellpadding="1" cellspacing="1">
 <thead>
 <tr><td rowspan="1" colspan="3">KaleoFormsAdminEditProcess</td></tr>
 </thead>
+
 <tbody>
 <tr>
 	<td>NEXT_BUTTON_INACTIVE</td>
@@ -21,7 +23,7 @@
 <!--FORM_NAVIGATOR-->
 <tr>
 	<td>FORM_NAVIGATOR_PROGRESS_BAR_NAME</td>
-	<td>//ul[contains(@class,'nav-list')]/li[contains(@id,'${key_kfProgressName}Tab')]//div[@class='progress-bar-title']</td>
+	<td>//div[@class='progress-bar-title' and text()='${key_kfProgressName}']</td>
 	<td></td>
 </tr>
 <tr>

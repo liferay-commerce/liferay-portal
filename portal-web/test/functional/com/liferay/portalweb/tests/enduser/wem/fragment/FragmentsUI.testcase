@@ -34,9 +34,15 @@ definition {
 
 			FragmentsEditor.typeFileContent(fileName = "fragment_button.html");
 
+			FragmentsEditor.waitForAutoSave();
+
 			FragmentsEditor.typeFileContent(fileName = "fragment_button.css");
 
+			FragmentsEditor.waitForAutoSave();
+
 			FragmentsEditor.typeFileContent(fileName = "fragment_button.js");
+
+			FragmentsEditor.waitForAutoSave();
 		}
 	}
 
@@ -60,7 +66,7 @@ definition {
 		property portal.acceptance = "true";
 
 		task ("Publish the fragment") {
-			Button.clickPublish();
+			PortletEntry.publish();
 		}
 
 		task ("Assert the fragment appears in Fragments Admin") {

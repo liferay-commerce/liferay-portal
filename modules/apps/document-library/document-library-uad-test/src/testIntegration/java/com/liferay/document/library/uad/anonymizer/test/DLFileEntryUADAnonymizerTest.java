@@ -121,10 +121,10 @@ public class DLFileEntryUADAnonymizerTest
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(dlFileEntry.getGroupId());
 
-		serviceContext.setAssetTagNames(new String[0]);
+		serviceContext.setAssetEntryVisible(true);
 		serviceContext.setAssetLinkEntryIds(
 			new long[] {dlFileEntryAssetEntry.getEntryId()});
-		serviceContext.setAssetEntryVisible(true);
+		serviceContext.setAssetTagNames(new String[0]);
 
 		MBMessage mbMessage = MBTestUtil.addMessageWithWorkflow(
 			dlFileEntry.getGroupId(),

@@ -4074,25 +4074,25 @@ public class DepotEntryGroupRelPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (depotEntryGroupRel.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				depotEntryGroupRel.setCreateDate(now);
+				depotEntryGroupRel.setCreateDate(date);
 			}
 			else {
 				depotEntryGroupRel.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!depotEntryGroupRelModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				depotEntryGroupRel.setModifiedDate(now);
+				depotEntryGroupRel.setModifiedDate(date);
 			}
 			else {
 				depotEntryGroupRel.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

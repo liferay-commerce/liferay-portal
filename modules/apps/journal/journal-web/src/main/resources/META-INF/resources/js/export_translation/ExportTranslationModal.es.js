@@ -23,12 +23,12 @@ import ExportTranslationContext from './ExportTranslationContext.es';
 const noop = () => {};
 
 const ExportTranslationModal = ({
-	articleIds,
 	availableExportFileFormats,
 	availableSourceLocales,
 	availableTargetLocales,
 	defaultSourceLanguageId,
 	exportTranslationURL,
+	keys,
 	observer,
 	onModalClose = noop,
 }) => {
@@ -49,8 +49,8 @@ const ExportTranslationModal = ({
 	const exportTranslationPortletURL = Liferay.Util.PortletURL.createPortletURL(
 		exportTranslationURL,
 		{
-			articleId: articleIds[0],
 			exportMimeType,
+			key: keys[0],
 			sourceLanguageId,
 			targetLanguageIds: selectedTargetLanguageIds.join(','),
 		}
@@ -84,8 +84,8 @@ const ExportTranslationModal = ({
 			return (
 				<ClaySelect
 					name={`_${namespace}_sourceLanguageId`}
-					onChange={(e) => {
-						setSourceLanguageId(e.currentTarget.value);
+					onChange={(event) => {
+						setSourceLanguageId(event.currentTarget.value);
 					}}
 					value={sourceLanguageId}
 				>
@@ -114,8 +114,8 @@ const ExportTranslationModal = ({
 			return (
 				<ClaySelect
 					name={`_${namespace}_exportMimeType`}
-					onChange={(e) => {
-						setExportMimeType(e.currentTarget.value);
+					onChange={(event) => {
+						setExportMimeType(event.currentTarget.value);
 					}}
 					value={exportMimeType}
 				>
@@ -155,8 +155,8 @@ const ExportTranslationModal = ({
 
 			<ClayForm
 				className="export-modal-content"
-				onSubmit={(e) => {
-					e.preventDefault();
+				onSubmit={(event) => {
+					event.preventDefault();
 					onModalClose();
 					location.href = Liferay.Util.addParams(
 						'download=true',
@@ -191,12 +191,6 @@ const ExportTranslationModal = ({
 							/>
 						))}
 					</ClayForm.Group>
-
-					<ClayInput
-						name={`_${namespace}_articleIdsIds`}
-						type="hidden"
-						value={articleIds}
-					/>
 				</ClayModal.Body>
 
 				<ClayModal.Footer
@@ -227,7 +221,6 @@ const ExportTranslationModal = ({
 };
 
 ExportTranslationModal.propTypes = {
-	articleIds: PropTypes.array,
 	availableExportFileFormats: PropTypes.arrayOf(
 		PropTypes.shape({
 			displayName: PropTypes.string,
@@ -247,6 +240,7 @@ ExportTranslationModal.propTypes = {
 		})
 	).isRequired,
 	defaultSourceLanguageId: PropTypes.string.isRequired,
+	keys: PropTypes.array,
 };
 
 export default ExportTranslationModal;

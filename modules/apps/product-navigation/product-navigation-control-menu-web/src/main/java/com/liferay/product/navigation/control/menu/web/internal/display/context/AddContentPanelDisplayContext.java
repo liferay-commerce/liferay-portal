@@ -360,8 +360,7 @@ public class AddContentPanelDisplayContext {
 						curGroupId, _themeDisplay.getPlid(),
 						PortletURLBuilder.create(
 							assetPublisherAddItemHolder.getPortletURL()
-						).setParameter(
-							"portletResource",
+						).setPortletResource(
 							ProductNavigationControlMenuPortletKeys.
 								PRODUCT_NAVIGATION_CONTROL_MENU
 						).build(),

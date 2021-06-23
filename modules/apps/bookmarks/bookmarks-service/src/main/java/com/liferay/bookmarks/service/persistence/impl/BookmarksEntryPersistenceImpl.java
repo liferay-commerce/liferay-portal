@@ -12703,24 +12703,25 @@ public class BookmarksEntryPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (bookmarksEntry.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				bookmarksEntry.setCreateDate(now);
+				bookmarksEntry.setCreateDate(date);
 			}
 			else {
-				bookmarksEntry.setCreateDate(serviceContext.getCreateDate(now));
+				bookmarksEntry.setCreateDate(
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!bookmarksEntryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				bookmarksEntry.setModifiedDate(now);
+				bookmarksEntry.setModifiedDate(date);
 			}
 			else {
 				bookmarksEntry.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

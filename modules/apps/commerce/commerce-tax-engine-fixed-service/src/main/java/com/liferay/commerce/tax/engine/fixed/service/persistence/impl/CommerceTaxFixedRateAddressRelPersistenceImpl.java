@@ -1902,25 +1902,25 @@ public class CommerceTaxFixedRateAddressRelPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commerceTaxFixedRateAddressRel.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commerceTaxFixedRateAddressRel.setCreateDate(now);
+				commerceTaxFixedRateAddressRel.setCreateDate(date);
 			}
 			else {
 				commerceTaxFixedRateAddressRel.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commerceTaxFixedRateAddressRelModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commerceTaxFixedRateAddressRel.setModifiedDate(now);
+				commerceTaxFixedRateAddressRel.setModifiedDate(date);
 			}
 			else {
 				commerceTaxFixedRateAddressRel.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

@@ -57,7 +57,7 @@ public class NumericDDMFormFieldTemplateContextContributor
 
 		Locale locale = ddmFormFieldRenderingContext.getLocale();
 
-		Map<String, Object> parameters = HashMapBuilder.<String, Object>put(
+		return HashMapBuilder.<String, Object>put(
 			"confirmationErrorMessage",
 			DDMFormFieldTypeUtil.getPropertyValue(
 				ddmFormField, locale, "confirmationErrorMessage")
@@ -70,6 +70,24 @@ public class NumericDDMFormFieldTemplateContextContributor
 		).put(
 			"direction", ddmFormField.getProperty("direction")
 		).put(
+			"hideField",
+			GetterUtil.getBoolean(ddmFormField.getProperty("hideField"))
+		).put(
+			"inputMask",
+			GetterUtil.getBoolean(ddmFormField.getProperty("inputMask"))
+		).put(
+			"inputMaskFormat",
+			() -> {
+				if (!GetterUtil.getBoolean(
+						ddmFormField.getProperty("inputMask"))) {
+
+					return StringPool.BLANK;
+				}
+
+				return DDMFormFieldTypeUtil.getPropertyValue(
+					ddmFormField, locale, "inputMaskFormat");
+			}
+		).put(
 			"placeholder",
 			DDMFormFieldTypeUtil.getPropertyValue(
 				ddmFormField, locale, "placeholder")
@@ -77,8 +95,8 @@ public class NumericDDMFormFieldTemplateContextContributor
 			"predefinedValue",
 			getFormattedValue(
 				ddmFormFieldRenderingContext, locale,
-				DDMFormFieldTypeUtil.getPropertyValue(
-					ddmFormField, locale, "predefinedValue"))
+				DDMFormFieldTypeUtil.getPredefinedValue(
+					ddmFormField, ddmFormFieldRenderingContext))
 		).put(
 			"requireConfirmation",
 			GetterUtil.getBoolean(
@@ -89,21 +107,20 @@ public class NumericDDMFormFieldTemplateContextContributor
 			"tooltip",
 			DDMFormFieldTypeUtil.getPropertyValue(
 				ddmFormField, locale, "tooltip")
+		).put(
+			"value",
+			() -> {
+				String value = HtmlUtil.extractText(
+					ddmFormFieldRenderingContext.getValue());
+
+				if (Objects.equals(value, "NaN")) {
+					return StringPool.BLANK;
+				}
+
+				return getFormattedValue(
+					ddmFormFieldRenderingContext, locale, value);
+			}
 		).build();
-
-		String value = HtmlUtil.extractText(
-			ddmFormFieldRenderingContext.getValue());
-
-		if (Objects.equals(value, "NaN")) {
-			parameters.put("value", "");
-		}
-		else {
-			parameters.put(
-				"value",
-				getFormattedValue(ddmFormFieldRenderingContext, locale, value));
-		}
-
-		return parameters;
 	}
 
 	protected String getDataType(

@@ -29,9 +29,12 @@ const defaultToControlsId = (controlId) => controlId;
 
 export const INITIAL_STATE = {
 	collectionConfig: null,
+	collectionId: null,
 	collectionItem: null,
 	collectionItemIndex: null,
+	customCollectionSelectorURL: null,
 	fromControlsId: defaultFromControlsId,
+	parentToControlsId: defaultToControlsId,
 	setCollectionItemContent: () => null,
 	toControlsId: defaultToControlsId,
 };
@@ -40,16 +43,22 @@ const CollectionItemContext = React.createContext(INITIAL_STATE);
 
 const CollectionItemContextProvider = CollectionItemContext.Provider;
 
-const useFromControlsId = () => {
-	const context = useContext(CollectionItemContext);
-
-	return context.fromControlsId || defaultFromControlsId;
-};
-
 const useCollectionItemIndex = () => {
 	const context = useContext(CollectionItemContext);
 
 	return context.collectionItemIndex;
+};
+
+const useCustomCollectionSelectorURL = () => {
+	const context = useContext(CollectionItemContext);
+
+	return context.customCollectionSelectorURL;
+};
+
+const useParentToControlsId = () => {
+	const context = useContext(CollectionItemContext);
+
+	return context.parentToControlsId;
 };
 
 const useToControlsId = () => {
@@ -69,8 +78,12 @@ const useGetContent = (fragmentEntryLink, languageId, segmentsExperienceId) => {
 	const dispatch = useDispatch();
 
 	const {className, classPK} = context.collectionItem || {};
+	const toControlsId = useToControlsId();
 
 	const fieldSets = fragmentEntryLink.configuration?.fieldSets;
+	const collectionContentId = toControlsId(
+		fragmentEntryLink.fragmentEntryLinkId
+	);
 
 	useEffect(() => {
 		const hasLocalizable =
@@ -89,7 +102,7 @@ const useGetContent = (fragmentEntryLink, languageId, segmentsExperienceId) => {
 			}).then(({content}) => {
 				dispatch(
 					updateFragmentEntryLinkContent({
-						collectionItemIndex: context.collectionItemIndex,
+						collectionContentId,
 						content,
 						fragmentEntryLinkId:
 							fragmentEntryLink.fragmentEntryLinkId,
@@ -99,6 +112,7 @@ const useGetContent = (fragmentEntryLink, languageId, segmentsExperienceId) => {
 		}
 	}, [
 		className,
+		collectionContentId,
 		classPK,
 		context.collectionItemIndex,
 		dispatch,
@@ -110,11 +124,10 @@ const useGetContent = (fragmentEntryLink, languageId, segmentsExperienceId) => {
 	]);
 
 	if (context.collectionItemIndex != null) {
-		const collectionContent = fragmentEntryLink.collectionContent || [];
+		const collectionContent = fragmentEntryLink.collectionContent || {};
 
 		return (
-			collectionContent[context.collectionItemIndex] ||
-			fragmentEntryLink.content
+			collectionContent[collectionContentId] || fragmentEntryLink.content
 		);
 	}
 
@@ -217,7 +230,8 @@ export {
 	useGetContent,
 	useCollectionConfig,
 	useCollectionItemIndex,
-	useFromControlsId,
+	useCustomCollectionSelectorURL,
+	useParentToControlsId,
 	useToControlsId,
 	useGetFieldValue,
 };

@@ -1014,7 +1014,7 @@ public class ContactsCenterPortlet extends MVCPortlet {
 			).setParameter(
 				"entryId", entry.getEntryId()
 			).setParameter(
-				"portalUser", Boolean.FALSE.toString()
+				"portalUser", false
 			).setWindowState(
 				LiferayWindowState.EXCLUSIVE
 			).buildString()
@@ -1107,7 +1107,7 @@ public class ContactsCenterPortlet extends MVCPortlet {
 			).setMVCPath(
 				"/contacts_center/view_resources.jsp"
 			).setParameter(
-				"portalUser", Boolean.TRUE.toString()
+				"portalUser", true
 			).setParameter(
 				"userId", user.getUserId()
 			).setWindowState(

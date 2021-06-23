@@ -85,7 +85,7 @@ public class SignInNavigationPrePageInclude implements PageInclude {
 			).setMVCRenderCommandName(
 				"/login/login"
 			).setParameter(
-				"saveLastPath", Boolean.FALSE.toString()
+				"saveLastPath", false
 			).build();
 
 			try {

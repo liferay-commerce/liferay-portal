@@ -108,7 +108,8 @@ public class TCKJunitBatchTestClassGroup extends BatchTestClassGroup {
 
 					@Override
 					public FileVisitResult visitFile(
-							Path filePath, BasicFileAttributes attrs)
+							Path filePath,
+							BasicFileAttributes basicFileAttributes)
 						throws IOException {
 
 						if (JenkinsResultsParserUtil.isFileExcluded(

@@ -17,6 +17,8 @@ package com.liferay.source.formatter.checks;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.io.unsync.UnsyncBufferedReader;
+import com.liferay.portal.kernel.io.unsync.UnsyncStringReader;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.source.formatter.checks.util.YMLSourceUtil;
@@ -87,11 +89,7 @@ public class YMLWhitespaceCheck extends WhitespaceCheck {
 			return content;
 		}
 
-		if (content.endsWith("\n")) {
-			content = content.substring(0, content.length() - 1);
-		}
-
-		return content;
+		return _formatWhitespace(content);
 	}
 
 	private String _formatDefinition(
@@ -292,6 +290,42 @@ public class YMLWhitespaceCheck extends WhitespaceCheck {
 
 			content = StringUtil.replaceFirst(
 				content, matcher.group(), lines[0] + newContent);
+		}
+
+		return content;
+	}
+
+	private String _formatWhitespace(String content) throws IOException {
+		StringBundler sb = new StringBundler();
+
+		try (UnsyncBufferedReader unsyncBufferedReader =
+				new UnsyncBufferedReader(new UnsyncStringReader(content))) {
+
+			String line = null;
+
+			while ((line = unsyncBufferedReader.readLine()) != null) {
+				line = formatIncorrectSyntax(line, "{ ", "{", false);
+				line = formatIncorrectSyntax(line, "[ ", "[", false);
+
+				String trimmedLine = StringUtil.trimLeading(line);
+
+				if (!trimmedLine.startsWith("}") &&
+					!trimmedLine.startsWith("]")) {
+
+					line = formatIncorrectSyntax(line, " }", "}", false);
+					line = formatIncorrectSyntax(line, " ]", "]", false);
+				}
+
+				sb.append(line);
+
+				sb.append("\n");
+			}
+		}
+
+		content = sb.toString();
+
+		if (content.endsWith("\n")) {
+			content = content.substring(0, content.length() - 1);
 		}
 
 		return content;

@@ -32,5 +32,5 @@
 </div>
 
 <liferay-frontend:component
-	module="side_panel_content/index"
+	module="side_panel_content/SidePanelListenersInitializer"
 />

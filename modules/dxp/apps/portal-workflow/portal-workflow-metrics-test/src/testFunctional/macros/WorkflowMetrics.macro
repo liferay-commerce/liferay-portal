@@ -168,6 +168,15 @@ definition {
 			value1 = "inst / day");
 	}
 
+	macro assertErrorSlaPresent {
+		AssertElementPresent(locator1 = "Message#ERROR");
+
+		AssertTextEquals.assertPartialText(
+			key_errorMessage = "${errorMessage}",
+			locator1 = "Message#ERROR",
+			value1 = "${errorMessage}");
+	}
+
 	macro assertMetricsIndexes {
 		AssertElementPresent(
 			key_index = "liferay-${companyId}-workflow-metrics-instances",
@@ -255,6 +264,13 @@ definition {
 			value1 = "Current Assignee");
 	}
 
+	macro assertSlaPosition {
+		AssertElementPresent(
+			key_slaPosition = "${slaPosition}",
+			key_slaTitle = "${slaTitle}",
+			locator1 = "WorkflowMetricsSLA#SLA_POSITION_BY_TITLE");
+	}
+
 	macro assertTransitionTaskOptionNotPresent {
 		var key_taskName = "${taskName}";
 		var key_transitionOption = "${transitionOption}";
@@ -272,6 +288,22 @@ definition {
 	macro assertTransitionTaskPresent {
 		var key_taskName = "${taskName}";
 		AssertElementPresent(locator1 = "WorkflowTransitionModal#TASK_PANEL");
+	}
+
+	macro assertWarningBlockedSlaNotPresent {
+		while (IsElementNotPresent(
+				key_warningMessage = "${warningMessage}",
+				locator1 = "Message#WARNING_SPECIFIC")) {
+			Pause(locator1 = "10000");
+			Refresh();
+		}
+	}
+
+	macro assertWarningBlockedSlaPresent {
+		AssertTextEquals.assertPartialText(
+			key_warningMessage = "${warningMessage}",
+			locator1 = "Message#WARNING_SPECIFIC",
+			value1 = "${warningMessage}");
 	}
 
 	macro assertWorkflowProcessPresent {
@@ -606,14 +638,6 @@ definition {
 				value1 = "${key_slaDefinitionStart}");
 		}
 
-		if (isSet(slaDefinitionPause)) {
-			Click(locator1 = "WorkflowMetricsSLA#SLA_DEFINITION_PAUSE");
-
-			AssertClick(
-				locator1 = "WorkflowMetricsSLA#SLA_DROPDOWN_PAUSE_OPTION",
-				value1 = "${key_slaDefinitionPause}");
-		}
-
 		if (isSet(slaDefinitionEnd)) {
 			Click(locator1 = "WorkflowMetricsSLA#SLA_DEFINITION_STOP");
 
@@ -621,6 +645,13 @@ definition {
 				locator1 = "WorkflowMetricsSLA#SLA_DROPDOWN_STOP_OPTION",
 				value1 = "${key_slaDefinitionEnd}");
 		}
+
+		if (isSet(slaDefinitionPause)) {
+			Click(locator1 = "WorkflowMetricsSLA#SLA_DEFINITION_PAUSE");
+
+			Click(locator1 = "WorkflowMetricsSLA#SLA_DROPDOWN_PAUSE_OPTION");
+		}
+
 		Type(
 			locator1 = "WorkflowMetricsSLA#SLA_DEFINITION_DAYS",
 			value1 = "${key_slaDefinitionDays}");
@@ -732,6 +763,15 @@ definition {
 		Click(locator1 = "WorkflowMetrics#DASHBOARD_TOTAL_PENDING_ITEMS_VALUE");
 	}
 
+	macro goToWorkflowAllItemsByStatus {
+		var key_status = "${completedItemStatus}";
+		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "${workflowProcessName}");
+
+		Navigator.gotoNavItem(navItem = "Performance");
+
+		Click(locator1 = "WorkflowMetrics#PERFORMANCE_COMPLETED_ITEMS_BY_STATUS");
+	}
+
 	macro goToWorkflowProcessMetrics {
 		var key_workflowProcessName = "${workflowProcessName}";
 
@@ -803,7 +843,10 @@ definition {
 		var key_endDateRange = "${endDateRange}";
 		var key_startDateRange = "${startDateRange}";
 
-		Click(locator1 = "WorkflowMetrics#METRICS_COMPLETION_VELOCITY_DATE_RANGE_DROPDOWN");
+		Click(
+			key_dateRange = "${dateRange}",
+			key_title = "${title}",
+			locator1 = "WorkflowMetrics#METRICS_DATE_RANGE_DROPDOWN_BY_TITLE");
 
 		Click(locator1 = "WorkflowMetrics#METRICS_COMPLETION_VELOCITY_DATE_RANGE_DROPDOWN_OPTION");
 
@@ -1048,6 +1091,14 @@ definition {
 		}
 	}
 
+	macro validateDueDateBySLA {
+		var key_days = "${daysLeft}";
+		var key_hours = "${hoursLeft}";
+		var key_mins = "${minutesLeft}";
+
+		AssertElementPresent(locator1 = "WorkflowAllItems#DETAIL_PAGE_ASSET_TIME_LEFT");
+	}
+
 	macro validateInstanceDetails {
 		var key_instanceId = "${instanceId}";
 		var key_slaMessage = "${slaMessage}";
@@ -1253,6 +1304,12 @@ definition {
 		}
 	}
 
+	macro viewDateRangeErrorMessage {
+		var key_errorMessage = "${errorMessage}";
+
+		AssertElementPresent(locator1 = "WorkflowMetrics#ERROR_MESSAGE_CUSTOM_RANGE");
+	}
+
 	macro viewItemFilterByOnAllItemsPage {
 		var key_allItemsFilterName = "${allItemsFilterName}";
 		var key_assigneeName = "${assigneeName}";
@@ -1317,6 +1374,18 @@ definition {
 		var key_errorMessage = "${errorMessage}";
 
 		AssertElementPresent(locator1 = "WorkflowMetricsSLA#SLA_ERROR_MESSAGE");
+	}
+
+	macro viewSLASuccessMessage {
+		WaitForElementPresent(locator1 = "WorkflowMetricsSLA#SLA_SUCCESS_MESSAGE");
+	}
+
+	macro viewTooltipCompletionVelocity {
+		MouseOver(locator1 = "WorkflowMetrics#METRICS_COMPLETION_VELOCITY_TOOLTIP");
+
+		AssertTextEquals.assertPartialText(
+			locator1 = "Message#TOOLTIP",
+			value1 = "Completion velocity tracks the number of completed workflow instances over the selected time period.");
 	}
 
 	macro viewUserWorkloadByStepOnAllItems {

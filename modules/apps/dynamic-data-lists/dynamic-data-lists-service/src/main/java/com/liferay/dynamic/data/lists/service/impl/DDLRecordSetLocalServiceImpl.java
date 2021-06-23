@@ -659,14 +659,14 @@ public class DDLRecordSetLocalServiceImpl
 			long recordSetId, DDMFormValues settingsDDMFormValues)
 		throws PortalException {
 
-		Date now = new Date();
+		Date date = new Date();
 
 		ddmFormValuesValidator.validate(settingsDDMFormValues);
 
 		DDLRecordSet recordSet = ddlRecordSetPersistence.findByPrimaryKey(
 			recordSetId);
 
-		recordSet.setModifiedDate(now);
+		recordSet.setModifiedDate(date);
 		recordSet.setSettings(serialize(settingsDDMFormValues));
 
 		return ddlRecordSetPersistence.update(recordSet);

@@ -3151,25 +3151,25 @@ public class AssetDisplayPageEntryPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (assetDisplayPageEntry.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				assetDisplayPageEntry.setCreateDate(now);
+				assetDisplayPageEntry.setCreateDate(date);
 			}
 			else {
 				assetDisplayPageEntry.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!assetDisplayPageEntryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				assetDisplayPageEntry.setModifiedDate(now);
+				assetDisplayPageEntry.setModifiedDate(date);
 			}
 			else {
 				assetDisplayPageEntry.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

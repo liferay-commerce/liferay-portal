@@ -99,7 +99,6 @@ export interface Config {
 	discardDraftRedirectURL: string;
 	discardDraftURL: string;
 	draft: boolean;
-	dropdownWidgetTopperEnabled: boolean;
 	duplicateItemURL: string;
 	duplicateSegmentsExperienceURL: string;
 	editFragmentEntryLinkCommentURL: string;
@@ -155,6 +154,7 @@ export interface Config {
 	previewPageURL: string;
 	publishURL: string;
 	redirectURL: string;
+	relatedItemCollectionProvidersEnabled: boolean;
 	renderFragmentEntryURL: string;
 	selectedSegmentsEntryId: string;
 

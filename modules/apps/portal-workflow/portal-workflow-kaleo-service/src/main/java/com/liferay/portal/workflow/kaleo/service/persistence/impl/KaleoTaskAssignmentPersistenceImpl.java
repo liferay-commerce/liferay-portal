@@ -2619,25 +2619,25 @@ public class KaleoTaskAssignmentPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (kaleoTaskAssignment.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				kaleoTaskAssignment.setCreateDate(now);
+				kaleoTaskAssignment.setCreateDate(date);
 			}
 			else {
 				kaleoTaskAssignment.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!kaleoTaskAssignmentModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				kaleoTaskAssignment.setModifiedDate(now);
+				kaleoTaskAssignment.setModifiedDate(date);
 			}
 			else {
 				kaleoTaskAssignment.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

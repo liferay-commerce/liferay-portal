@@ -64,12 +64,12 @@ public class DEDataDefinitionFieldLinkLocalServiceImpl
 
 		deDataDefinitionFieldLink.setCompanyId(group.getCompanyId());
 
-		Date now = new Date();
+		Date date = new Date();
 
 		deDataDefinitionFieldLink.setCreateDate(
-			serviceContext.getCreateDate(now));
+			serviceContext.getCreateDate(date));
 		deDataDefinitionFieldLink.setModifiedDate(
-			serviceContext.getModifiedDate(now));
+			serviceContext.getModifiedDate(date));
 
 		deDataDefinitionFieldLink.setClassNameId(classNameId);
 		deDataDefinitionFieldLink.setClassPK(classPK);

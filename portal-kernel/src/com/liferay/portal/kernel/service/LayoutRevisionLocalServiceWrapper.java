@@ -294,6 +294,15 @@ public class LayoutRevisionLocalServiceWrapper
 	}
 
 	@Override
+	public com.liferay.portal.kernel.model.LayoutRevision
+		fetchLatestLayoutRevision(
+			long layoutSetBranchId, long layoutBranchId, long plid) {
+
+		return _layoutRevisionLocalService.fetchLatestLayoutRevision(
+			layoutSetBranchId, layoutBranchId, plid);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.model.LayoutRevision fetchLayoutRevision(
 		long layoutRevisionId) {
 

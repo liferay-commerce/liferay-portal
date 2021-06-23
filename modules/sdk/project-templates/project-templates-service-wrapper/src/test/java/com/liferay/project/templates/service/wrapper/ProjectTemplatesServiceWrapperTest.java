@@ -14,12 +14,10 @@
 
 package com.liferay.project.templates.service.wrapper;
 
-import aQute.bnd.version.Version;
-import aQute.bnd.version.VersionRange;
-
 import com.liferay.maven.executor.MavenExecutor;
 import com.liferay.project.templates.BaseProjectTemplatesTestCase;
 import com.liferay.project.templates.extensions.util.Validator;
+import com.liferay.project.templates.extensions.util.VersionUtil;
 import com.liferay.project.templates.util.FileTestUtil;
 
 import java.io.File;
@@ -95,11 +93,7 @@ public class ProjectTemplatesServiceWrapperTest
 
 		testExists(gradleProjectDir, "bnd.bnd");
 
-		Version version = Version.parseVersion(_liferayVersion);
-
-		VersionRange versionRange = new VersionRange("[7.0,7.3)");
-
-		if (versionRange.includes(version)) {
+		if (VersionUtil.getMinorVersion(_liferayVersion) < 3) {
 			testContains(
 				gradleProjectDir, "build.gradle",
 				DEPENDENCY_ORG_OSGI_ANNOTATIONS);
@@ -139,7 +133,7 @@ public class ProjectTemplatesServiceWrapperTest
 			File gradleOutputDir = new File(gradleProjectDir, "build/libs");
 			File mavenOutputDir = new File(mavenProjectDir, "target");
 
-			if (_liferayVersion.equals("7.3.5")) {
+			if (_liferayVersion.startsWith("7.3")) {
 				File buildGradleFile = testExists(
 					gradleProjectDir, "build.gradle");
 				File pomXmlFile = testExists(mavenProjectDir, "pom.xml");

@@ -2272,25 +2272,25 @@ public class AssetCategoryPropertyPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (assetCategoryProperty.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				assetCategoryProperty.setCreateDate(now);
+				assetCategoryProperty.setCreateDate(date);
 			}
 			else {
 				assetCategoryProperty.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!assetCategoryPropertyModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				assetCategoryProperty.setModifiedDate(now);
+				assetCategoryProperty.setModifiedDate(date);
 			}
 			else {
 				assetCategoryProperty.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

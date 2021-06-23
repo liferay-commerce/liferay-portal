@@ -90,7 +90,7 @@ public class OAuthApplicationLocalServiceImpl
 		// OAuth application
 
 		User user = userLocalService.getUser(userId);
-		Date now = new Date();
+		Date date = new Date();
 
 		validate(name, callbackURI, websiteURL);
 
@@ -102,8 +102,8 @@ public class OAuthApplicationLocalServiceImpl
 		oAuthApplication.setCompanyId(user.getCompanyId());
 		oAuthApplication.setUserId(user.getUserId());
 		oAuthApplication.setUserName(user.getFullName());
-		oAuthApplication.setCreateDate(serviceContext.getCreateDate(now));
-		oAuthApplication.setModifiedDate(serviceContext.getModifiedDate(now));
+		oAuthApplication.setCreateDate(serviceContext.getCreateDate(date));
+		oAuthApplication.setModifiedDate(serviceContext.getModifiedDate(date));
 		oAuthApplication.setName(name);
 		oAuthApplication.setDescription(description);
 

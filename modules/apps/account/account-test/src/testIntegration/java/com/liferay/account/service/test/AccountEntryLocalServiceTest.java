@@ -689,6 +689,24 @@ public class AccountEntryLocalServiceTest {
 	}
 
 	@Test
+	public void testSearchByUserName() throws Exception {
+		User user = UserTestUtil.addUser();
+
+		_accountEntryLocalService.addAccountEntry(
+			user.getUserId(), 0L, RandomTestUtil.randomString(50),
+			RandomTestUtil.randomString(50), null, null, null,
+			RandomTestUtil.randomString(50),
+			AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS,
+			WorkflowConstants.STATUS_APPROVED,
+			ServiceContextTestUtil.getServiceContext());
+
+		BaseModelSearchResult<AccountEntry> baseModelSearchResult =
+			_keywordSearch(user.getFullName());
+
+		Assert.assertEquals(0, baseModelSearchResult.getLength());
+	}
+
+	@Test
 	public void testSearchIndexerDocument() throws Exception {
 		AccountEntry accountEntry = _addAccountEntry();
 

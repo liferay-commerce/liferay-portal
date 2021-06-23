@@ -1434,24 +1434,24 @@ public class ObjectLayoutPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (objectLayout.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				objectLayout.setCreateDate(now);
+				objectLayout.setCreateDate(date);
 			}
 			else {
-				objectLayout.setCreateDate(serviceContext.getCreateDate(now));
+				objectLayout.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!objectLayoutModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				objectLayout.setModifiedDate(now);
+				objectLayout.setModifiedDate(date);
 			}
 			else {
 				objectLayout.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

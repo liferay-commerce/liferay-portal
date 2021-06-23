@@ -254,7 +254,7 @@ public class FlagsRequestMessageListener extends BaseMessageListener {
 			ServiceContext serviceContext)
 		throws Exception {
 
-		Date now = new Date();
+		Date date = new Date();
 
 		SubscriptionSender subscriptionSender = new SubscriptionSender();
 
@@ -263,7 +263,7 @@ public class FlagsRequestMessageListener extends BaseMessageListener {
 		subscriptionSender.setContextAttributes(
 			"[$CONTENT_ID$]", contentId, "[$CONTENT_TITLE$]", contentTitle,
 			"[$CONTENT_TYPE$]", contentType, "[$CONTENT_URL$]", contentURL,
-			"[$DATE$]", now.toString(), "[$REASON$]", reason,
+			"[$DATE$]", date.toString(), "[$REASON$]", reason,
 			"[$REPORTED_USER_ADDRESS$]", reportedEmailAddress,
 			"[$REPORTED_USER_NAME$]", reportedUserName, "[$REPORTED_USER_URL$]",
 			reportedUserURL, "[$REPORTER_USER_ADDRESS$]", reporterEmailAddress,

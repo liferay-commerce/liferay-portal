@@ -104,6 +104,8 @@ import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.auth.ScreenNameGenerator;
 import com.liferay.portal.kernel.security.auth.ScreenNameValidator;
 import com.liferay.portal.kernel.security.ldap.LDAPSettingsUtil;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.pwd.PasswordEncryptorUtil;
 import com.liferay.portal.kernel.service.BaseServiceImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -6069,6 +6071,13 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		queryConfig.setHighlightEnabled(false);
 		queryConfig.setScoreEnabled(false);
 
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		if (permissionChecker != null) {
+			searchContext.setUserId(permissionChecker.getUserId());
+		}
+
 		return searchContext;
 	}
 
@@ -6081,7 +6090,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 		// Reset failure count
 
-		Date now = new Date();
+		Date date = new Date();
 		int failedLoginAttempts = user.getFailedLoginAttempts();
 
 		if (failedLoginAttempts > 0) {
@@ -6089,7 +6098,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 			long failedLoginTime = lastFailedLoginDate.getTime();
 
-			long elapsedTime = now.getTime() - failedLoginTime;
+			long elapsedTime = date.getTime() - failedLoginTime;
 
 			long requiredElapsedTime =
 				passwordPolicy.getResetFailureCount() * 1000;
@@ -6110,7 +6119,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 			long lockoutTime = lockoutDate.getTime();
 
-			long elapsedTime = now.getTime() - lockoutTime;
+			long elapsedTime = date.getTime() - lockoutTime;
 
 			long requiredElapsedTime =
 				passwordPolicy.getLockoutDuration() * 1000;

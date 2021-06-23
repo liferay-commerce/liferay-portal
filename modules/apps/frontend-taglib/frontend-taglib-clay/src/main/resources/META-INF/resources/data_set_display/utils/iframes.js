@@ -13,44 +13,41 @@
  */
 
 import {OPEN_MODAL, OPEN_MODAL_FROM_IFRAME} from './eventsDefinitions';
-
-const iframeHandlerModalNamespace = 'iframe-handler-modal_';
-let modalsCounter = 0;
-const registeredModals = new Map();
-
-Liferay.on(OPEN_MODAL_FROM_IFRAME, (payload) => {
-	let firstAvailableModalId = null;
-
-	// eslint-disable-next-line no-for-of-loops/no-for-of-loops
-	for (const [modalId, modalRef] of registeredModals.entries()) {
-		if (modalRef) {
-			firstAvailableModalId = modalId;
-			break;
-		}
-	}
-
-	window.top.Liferay.fire(OPEN_MODAL, {
-		...payload,
-		id: firstAvailableModalId,
-	});
-});
-
-Liferay.on('endNavigate', () => {
-	registeredModals.clear();
-});
-
-export function subscribeModal(modalNode) {
-	const id = `${iframeHandlerModalNamespace}${modalsCounter++}`;
-
-	registeredModals.set(id, modalNode);
-
-	return id;
-}
-
-export function unsubscribeModal(modalId) {
-	registeredModals.delete(modalId);
-}
+import {logError} from './logError';
 
 export function isPageInIframe() {
 	return window.location !== window.parent.location;
+}
+
+const registeredModals = new Set();
+let modalsCounter = 0;
+
+if (!isPageInIframe()) {
+	Liferay.on(OPEN_MODAL_FROM_IFRAME, (payload) => {
+		if (!registeredModals.size) {
+			return logError('No registered modals found.');
+		}
+
+		const modalsArray = Array.from(registeredModals);
+		const lastRegisteredModal = modalsArray[modalsArray.length - 1];
+
+		Liferay.fire(OPEN_MODAL, {
+			...payload,
+			id: lastRegisteredModal,
+		});
+	});
+}
+
+Liferay.on('beforeNavigate', () => {
+	registeredModals.clear();
+});
+
+export function subscribeModal() {
+	registeredModals.add(++modalsCounter);
+
+	return modalsCounter;
+}
+
+export function unsubscribeModal(id) {
+	registeredModals.delete(id);
 }

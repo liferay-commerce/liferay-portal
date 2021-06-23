@@ -71,7 +71,8 @@ public class DataLayoutBuilderTag extends BaseDataLayoutBuilderTag {
 			setNamespacedAttribute(
 				httpServletRequest, "fieldTypes",
 				DataLayoutTaglibUtil.getFieldTypesJSONArray(
-					httpServletRequest, getScopes()));
+					httpServletRequest, getScopes(),
+					getSearchableFieldsDisabled()));
 			setNamespacedAttribute(
 				httpServletRequest, "fieldTypesModules",
 				DataLayoutTaglibUtil.resolveFieldTypesModules());
@@ -158,7 +159,7 @@ public class DataLayoutBuilderTag extends BaseDataLayoutBuilderTag {
 
 	private String _getModule() {
 		if (Validator.isBlank(getModule())) {
-			return "data_layout_builder/new-js/App";
+			return "data_layout_builder/js/App";
 		}
 
 		return getModule();
@@ -174,7 +175,7 @@ public class DataLayoutBuilderTag extends BaseDataLayoutBuilderTag {
 
 	private String _getPluginEntryPoint(String value) {
 		return DataLayoutTaglibUtil.resolveModule(
-			"data-engine-taglib/data_layout_builder/new-js/plugins/" + value +
+			"data-engine-taglib/data_layout_builder/js/plugins/" + value +
 				"/index");
 	}
 

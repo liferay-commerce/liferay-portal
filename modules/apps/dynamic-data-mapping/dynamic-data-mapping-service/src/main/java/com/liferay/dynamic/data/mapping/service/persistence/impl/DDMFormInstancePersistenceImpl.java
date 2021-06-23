@@ -3147,25 +3147,25 @@ public class DDMFormInstancePersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (ddmFormInstance.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				ddmFormInstance.setCreateDate(now);
+				ddmFormInstance.setCreateDate(date);
 			}
 			else {
 				ddmFormInstance.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!ddmFormInstanceModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				ddmFormInstance.setModifiedDate(now);
+				ddmFormInstance.setModifiedDate(date);
 			}
 			else {
 				ddmFormInstance.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

@@ -3637,23 +3637,23 @@ public class CalendarPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (calendar.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				calendar.setCreateDate(now);
+				calendar.setCreateDate(date);
 			}
 			else {
-				calendar.setCreateDate(serviceContext.getCreateDate(now));
+				calendar.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!calendarModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				calendar.setModifiedDate(now);
+				calendar.setModifiedDate(date);
 			}
 			else {
-				calendar.setModifiedDate(serviceContext.getModifiedDate(now));
+				calendar.setModifiedDate(serviceContext.getModifiedDate(date));
 			}
 		}
 

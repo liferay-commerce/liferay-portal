@@ -107,7 +107,7 @@ public class FolderActionDisplayContext {
 		).setRedirect(
 			_dlRequestHelper.getCurrentURL()
 		).setParameter(
-			"ignoreRootFolder", Boolean.TRUE.toString()
+			"ignoreRootFolder", true
 		).setParameter(
 			"parentFolderId", _getFolderId()
 		).setParameter(

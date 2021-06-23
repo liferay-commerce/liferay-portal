@@ -167,7 +167,7 @@ public class CalendarBookingLocalServiceImpl
 			firstReminder = originalSecondReminder;
 		}
 
-		Date now = new Date();
+		Date date = new Date();
 
 		validate(startTimeJCalendar, endTimeJCalendar, recurrence);
 
@@ -180,12 +180,12 @@ public class CalendarBookingLocalServiceImpl
 		calendarBooking.setUserId(user.getUserId());
 		calendarBooking.setUserName(user.getFullName());
 
-		Date createDate = serviceContext.getCreateDate(now);
+		Date createDate = serviceContext.getCreateDate(date);
 
 		calendarBooking.setCreateDate(createDate);
 		serviceContext.setCreateDate(createDate);
 
-		Date modifiedDate = serviceContext.getModifiedDate(now);
+		Date modifiedDate = serviceContext.getModifiedDate(date);
 
 		calendarBooking.setModifiedDate(modifiedDate);
 		serviceContext.setModifiedDate(modifiedDate);
@@ -247,7 +247,7 @@ public class CalendarBookingLocalServiceImpl
 		}
 
 		calendarBooking.setStatus(status);
-		calendarBooking.setStatusDate(serviceContext.getModifiedDate(now));
+		calendarBooking.setStatusDate(serviceContext.getModifiedDate(date));
 
 		calendarBooking = calendarBookingPersistence.update(calendarBooking);
 
@@ -294,15 +294,15 @@ public class CalendarBookingLocalServiceImpl
 
 	@Override
 	public void checkCalendarBookings() throws PortalException {
-		Date now = new Date();
+		Date date = new Date();
 
 		List<CalendarBooking> calendarBookings =
-			calendarBookingFinder.findByFutureReminders(now.getTime());
+			calendarBookingFinder.findByFutureReminders(date.getTime());
 
-		long endTime = now.getTime() + Time.MONTH;
+		long endTime = date.getTime() + Time.MONTH;
 
 		calendarBookings = RecurrenceUtil.expandCalendarBookings(
-			calendarBookings, now.getTime(), endTime, 1);
+			calendarBookings, date.getTime(), endTime, 1);
 
 		for (CalendarBooking calendarBooking : calendarBookings) {
 			try {
@@ -313,7 +313,7 @@ public class CalendarBookingLocalServiceImpl
 					!isStagingCalendarBooking(calendarBooking)) {
 
 					_notifyCalendarBookingReminders(
-						calendarBooking, now.getTime());
+						calendarBooking, date.getTime());
 				}
 			}
 			catch (PortalException portalException) {
@@ -1531,16 +1531,16 @@ public class CalendarBookingLocalServiceImpl
 		// Calendar booking
 
 		User user = userLocalService.getUser(userId);
-		Date now = new Date();
+		Date date = new Date();
 
 		Date oldModifiedDate = calendarBooking.getModifiedDate();
 		int oldStatus = calendarBooking.getStatus();
 
-		calendarBooking.setModifiedDate(serviceContext.getModifiedDate(now));
+		calendarBooking.setModifiedDate(serviceContext.getModifiedDate(date));
 		calendarBooking.setStatus(status);
 		calendarBooking.setStatusByUserId(user.getUserId());
 		calendarBooking.setStatusByUserName(user.getFullName());
-		calendarBooking.setStatusDate(serviceContext.getModifiedDate(now));
+		calendarBooking.setStatusDate(serviceContext.getModifiedDate(date));
 
 		calendarBooking = calendarBookingPersistence.update(calendarBooking);
 

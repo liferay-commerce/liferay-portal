@@ -3217,23 +3217,23 @@ public class PollsVotePersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (pollsVote.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				pollsVote.setCreateDate(now);
+				pollsVote.setCreateDate(date);
 			}
 			else {
-				pollsVote.setCreateDate(serviceContext.getCreateDate(now));
+				pollsVote.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!pollsVoteModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				pollsVote.setModifiedDate(now);
+				pollsVote.setModifiedDate(date);
 			}
 			else {
-				pollsVote.setModifiedDate(serviceContext.getModifiedDate(now));
+				pollsVote.setModifiedDate(serviceContext.getModifiedDate(date));
 			}
 		}
 

@@ -34,7 +34,7 @@ folder = folder.toEscapedModel();
 			).setRedirect(
 				currentURL
 			).setParameter(
-				"folderId", String.valueOf(folder.getFolderId())
+				"folderId", folder.getFolderId()
 			).buildString()
 		%>'
 	>

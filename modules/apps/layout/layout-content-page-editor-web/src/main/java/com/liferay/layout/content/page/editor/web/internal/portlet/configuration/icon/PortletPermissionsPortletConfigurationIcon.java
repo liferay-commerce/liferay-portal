@@ -203,10 +203,10 @@ public class PortletPermissionsPortletConfigurationIcon
 				PortletProvider.Action.VIEW)
 		).setMVCPath(
 			"/edit_permissions.jsp"
+		).setPortletResource(
+			portletDisplay.getId()
 		).setParameter(
-			"portletConfiguration", Boolean.TRUE.toString()
-		).setParameter(
-			"portletResource", portletDisplay.getId()
+			"portletConfiguration", true
 		).setParameter(
 			"resourcePrimKey",
 			PortletPermissionUtil.getPrimaryKey(

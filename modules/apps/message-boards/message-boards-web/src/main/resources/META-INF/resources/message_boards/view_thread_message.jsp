@@ -89,13 +89,13 @@ User messageUser = UserLocalServiceUtil.fetchUser(message.getUserId());
 				</h4>
 
 				<%
-				MBStatsUser statsUser = null;
+				int messageCount = 0;
 
 				if (!message.isAnonymous()) {
-					statsUser = MBStatsUserLocalServiceUtil.getStatsUser(scopeGroupId, message.getUserId());
+					messageCount = MBStatsUserLocalServiceUtil.getMessageCount(scopeGroupId, message.getUserId());
 				}
 
-				int posts = message.isAnonymous() ? 1 : statsUser.getMessageCount();
+				int posts = message.isAnonymous() ? 1 : messageCount;
 
 				String[] ranks = {StringPool.BLANK, StringPool.BLANK};
 

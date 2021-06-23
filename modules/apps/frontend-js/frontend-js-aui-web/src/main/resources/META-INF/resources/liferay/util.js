@@ -41,7 +41,7 @@
 	var STR_RIGHT_SQUARE_BRACKET = ']';
 
 	var TPL_LEXICON_ICON =
-		'<svg class="lexicon-icon lexicon-icon-{0} {1}" focusable="false" role="image">' +
+		'<svg aria-hidden="true" class="lexicon-icon lexicon-icon-{0} {1}" focusable="false" role="presentation">' +
 		'<use href="' +
 		themeDisplay.getPathThemeImages() +
 		'/clay/icons.svg#{0}" />' +
@@ -262,8 +262,8 @@
 			}
 		},
 
-		disableElements(el) {
-			const currentElement = Util.getElement(el);
+		disableElements(element) {
+			const currentElement = Util.getElement(element);
 
 			if (currentElement) {
 				var children = currentElement.getElementsByTagName('*');
@@ -373,14 +373,14 @@
 			}
 		},
 
-		getAttributes(el, attributeGetter) {
+		getAttributes(element, attributeGetter) {
 			var result = null;
 
-			if (el) {
-				el = Util.getDOM(el);
+			if (element) {
+				element = Util.getDOM(element);
 
-				if (el.jquery) {
-					el = el[0];
+				if (element.jquery) {
+					element = element[0];
 				}
 
 				result = {};
@@ -388,7 +388,7 @@
 				var getterFn = typeof attributeGetter === 'function';
 				var getterString = typeof attributeGetter === 'string';
 
-				var attrs = el.attributes;
+				var attrs = element.attributes;
 				var length = attrs.length;
 
 				while (length--) {
@@ -494,7 +494,7 @@
 
 						parentThemeDisplay = parentWindow.themeDisplay;
 					}
-					catch (e) {
+					catch (error) {
 						break;
 					}
 
@@ -830,26 +830,26 @@
 			}
 		},
 
-		setCursorPosition(el, position) {
+		setCursorPosition(element, position) {
 			var instance = this;
 
-			instance.setSelectionRange(el, position, position);
+			instance.setSelectionRange(element, position, position);
 		},
 
-		setSelectionRange(el, selectionStart, selectionEnd) {
-			el = Util.getDOM(el);
+		setSelectionRange(element, selectionStart, selectionEnd) {
+			element = Util.getDOM(element);
 
-			if (el.jquery) {
-				el = el[0];
+			if (element.jquery) {
+				element = element[0];
 			}
 
-			if (el.setSelectionRange) {
-				el.focus();
+			if (element.setSelectionRange) {
+				element.focus();
 
-				el.setSelectionRange(selectionStart, selectionEnd);
+				element.setSelectionRange(selectionStart, selectionEnd);
 			}
-			else if (el.createTextRange) {
-				var textRange = el.createTextRange();
+			else if (element.createTextRange) {
+				var textRange = element.createTextRange();
 
 				textRange.collapse(true);
 
@@ -1156,6 +1156,9 @@
 		['aui-base']
 	);
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by `openSelectionModal`
+	 */
 	Liferay.provide(
 		Util,
 		'openDDMPortlet',
@@ -1287,9 +1290,9 @@
 						onSuccess();
 					}
 				}
-				catch (e) {
+				catch (error) {
 					if (Lang.isFunction(onError)) {
-						onError(e);
+						onError(error);
 					}
 				}
 			}
@@ -1297,6 +1300,9 @@
 		['aui-base']
 	);
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
 	Liferay.provide(
 		Util,
 		'selectEntityHandler',
@@ -1372,12 +1378,12 @@
 		Util,
 		'portletTitleEdit',
 		(options) => {
-			var obj = options.obj;
+			var object = options.obj;
 
 			A.Event.defineOutside('mouseup');
 
-			if (obj) {
-				var title = obj.one('.portlet-title-text');
+			if (object) {
+				var title = object.one('.portlet-title-text');
 
 				if (title && !title.hasClass('not-editable')) {
 					title.addClass('portlet-title-editable');
@@ -1497,6 +1503,9 @@
 		['aui-base', 'liferay-util-window']
 	);
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by `openSelectionModal`
+	 */
 	Liferay.provide(
 		Util,
 		'selectEntity',

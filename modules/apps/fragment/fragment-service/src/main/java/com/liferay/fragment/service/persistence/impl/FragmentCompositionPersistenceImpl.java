@@ -5612,25 +5612,25 @@ public class FragmentCompositionPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (fragmentComposition.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				fragmentComposition.setCreateDate(now);
+				fragmentComposition.setCreateDate(date);
 			}
 			else {
 				fragmentComposition.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!fragmentCompositionModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				fragmentComposition.setModifiedDate(now);
+				fragmentComposition.setModifiedDate(date);
 			}
 			else {
 				fragmentComposition.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

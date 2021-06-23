@@ -29,6 +29,8 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 
 import java.io.Serializable;
 
+import java.math.BigDecimal;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -82,7 +84,14 @@ public class ObjectDefinitionSampleGenerator {
 					_createObjectField("able", "Long"),
 					_createObjectField("baker", "Boolean"),
 					_createObjectField("dog", "Date"),
-					_createObjectField("easy", "String")));
+					_createObjectField("easy", "String"),
+					_createObjectField(true, true, null, "fox", "String"),
+					_createObjectField(
+						true, false, "en_US", "george", "String"),
+					_createObjectField(false, false, null, "how", "String"),
+					_createObjectField("item", "Double"),
+					_createObjectField("jig", "Integer"),
+					_createObjectField("king", "BigDecimal")));
 
 		for (int i = 0; i < 100; i++) {
 			_objectEntryLocalService.addObjectEntry(
@@ -90,24 +99,48 @@ public class ObjectDefinitionSampleGenerator {
 				HashMapBuilder.<String, Serializable>put(
 					"able", 10 + i
 				).put(
-					"baker", true
+					"baker", (i % 2) == 0
 				).put(
 					"dog", new Date()
 				).put(
 					"easy",
 					"The quick brown fox jumps over the lazy dog. " + i + "!"
+				).put(
+					"fox", "test" + i
+				).put(
+					"george",
+					"The english brown fox trusted the lazy dog. " + i + "!"
+				).put(
+					"how",
+					"The unsearchable brown fox jumps over the lazy dog. " + i
+				).put(
+					"item", 180.5D + i
+				).put(
+					"jig", 5 + i
+				).put(
+					"king", BigDecimal.valueOf(45L + i)
 				).build(),
 				new ServiceContext());
 		}
 	}
 
-	private ObjectField _createObjectField(String name, String type) {
+	private ObjectField _createObjectField(
+		boolean indexed, boolean indexedAsKeyword, String indexedLanguageId,
+		String name, String type) {
+
 		ObjectField objectField = _objectFieldLocalService.createObjectField(0);
 
+		objectField.setIndexed(indexed);
+		objectField.setIndexedAsKeyword(indexedAsKeyword);
+		objectField.setIndexedLanguageId(indexedLanguageId);
 		objectField.setName(name);
 		objectField.setType(type);
 
 		return objectField;
+	}
+
+	private ObjectField _createObjectField(String name, String type) {
+		return _createObjectField(true, false, null, name, type);
 	}
 
 	@Reference

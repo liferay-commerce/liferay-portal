@@ -3361,25 +3361,25 @@ public class CommerceWishListItemPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commerceWishListItem.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commerceWishListItem.setCreateDate(now);
+				commerceWishListItem.setCreateDate(date);
 			}
 			else {
 				commerceWishListItem.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commerceWishListItemModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commerceWishListItem.setModifiedDate(now);
+				commerceWishListItem.setModifiedDate(date);
 			}
 			else {
 				commerceWishListItem.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

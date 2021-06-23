@@ -3095,25 +3095,25 @@ public class CommerceNotificationQueueEntryPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commerceNotificationQueueEntry.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commerceNotificationQueueEntry.setCreateDate(now);
+				commerceNotificationQueueEntry.setCreateDate(date);
 			}
 			else {
 				commerceNotificationQueueEntry.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commerceNotificationQueueEntryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commerceNotificationQueueEntry.setModifiedDate(now);
+				commerceNotificationQueueEntry.setModifiedDate(date);
 			}
 			else {
 				commerceNotificationQueueEntry.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

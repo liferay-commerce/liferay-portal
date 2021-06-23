@@ -4731,25 +4731,25 @@ public class CommerceNotificationTemplatePersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commerceNotificationTemplate.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commerceNotificationTemplate.setCreateDate(now);
+				commerceNotificationTemplate.setCreateDate(date);
 			}
 			else {
 				commerceNotificationTemplate.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commerceNotificationTemplateModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commerceNotificationTemplate.setModifiedDate(now);
+				commerceNotificationTemplate.setModifiedDate(date);
 			}
 			else {
 				commerceNotificationTemplate.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

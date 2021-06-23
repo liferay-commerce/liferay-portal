@@ -2,11 +2,13 @@
 <head>
 <title>PageEditor</title>
 </head>
+
 <body>
-<table cellpadding="1" cellspacing="1" border="1">
+<table border="1" cellpadding="1" cellspacing="1">
 <thead>
 <tr><td rowspan="1" colspan="3">PageEditor</td></tr>
 </thead>
+
 <tbody>
 <!--BASED_ON_CUSTOM_MASTERS-->
 <tr>
@@ -277,17 +279,17 @@
 </tr>
 <tr>
 	<td>EXPERIENCE_DELETE_BUTTON</td>
-	<td>//div[contains(@class,'toolbar-experience')]//button[contains(@title,'Delete Experience')]</td>
+	<td>//div[contains(@class,'toolbar-experience')]//button[@*[contains(.,'Delete Experience')]]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>EXPERIENCE_DUPLICATE_BUTTON</td>
-	<td>//div[contains(@class,'toolbar-experience')]//button[contains(@title,'Duplicate Experience')]</td>
+	<td>//div[contains(@class,'toolbar-experience')]//button[@*[contains(.,'Duplicate Experience')]]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>EXPERIENCE_EDIT_BUTTON</td>
-	<td>//div[contains(@class,'toolbar-experience')]//button[contains(@title,'Edit Experience')]</td>
+	<td>//div[contains(@class,'toolbar-experience')]//button[@*[contains(.,'Edit Experience')]]</td>
 	<td></td>
 </tr>
 <tr>
@@ -307,7 +309,7 @@
 </tr>
 <tr>
 	<td>EXPERIENCE_PRIORITIZE_BUTTON</td>
-	<td>//div[contains(@class,'toolbar-experience')]//button[contains(@title,'Prioritize Experience')]</td>
+	<td>//div[contains(@class,'toolbar-experience')]//button[@*[contains(.,'Prioritize Experience')]]</td>
 	<td></td>
 </tr>
 <tr>
@@ -386,10 +388,10 @@
 	<td>//strong[contains(@class,'text-dark') and contains(.,'${key_fragmentName}')]</td>
 	<td></td>
 </tr>
-<tr>	
-	<td>FRAGMENT_SIDEBAR_COMMENT_LIST_SECONDARY_TEXT</td>	
-	<td>//span[contains(@class,'text-secondary') and contains(.,'${key_commentCount}')]</td>	
-	<td></td>	
+<tr>
+	<td>FRAGMENT_SIDEBAR_COMMENT_LIST_SECONDARY_TEXT</td>
+	<td>//span[contains(@class,'text-secondary') and contains(.,'${key_commentCount}')]</td>
+	<td></td>
 </tr>
 <tr>
 	<td>FRAGMENT_SIDEBAR_COMMENT_LIST_TITLE</td>
@@ -523,13 +525,28 @@
 </tr>
 <!--FRAGMENTS_AND_WIDGETS-->
 <tr>
+	<td>FRAGMENTS_AND_WIDGETS_DISPLAY_STYLE_BUTTON</td>
+	<td>//div[contains(@class,'fragments-widgets-panel')]//button[contains(@class,'tooltip')][*[name()='svg'][contains(@class,'icon-${key_displayStyle}')]]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>FRAGMENTS_AND_WIDGETS_TAB_FRAGMENT</td>
 	<td>//button[normalize-space()='${key_collectionName}']/following-sibling::div/ul/li[contains(@class,'page-editor__fragments-widgets__tab-list-item')][normalize-space()='${key_fragmentName}']</td>
 	<td></td>
 </tr>
 <tr>
+	<td>FRAGMENTS_AND_WIDGETS_TAB_FRAGMENT_CARD_ITEM</td>
+	<td>//button[normalize-space()='${key_collectionName}']/following-sibling::div/ul/li[contains(@class,'page-editor__fragments-widgets__tab-card-item')][normalize-space()='${key_fragmentName}']</td>
+	<td></td>
+</tr>
+<tr>
 	<td>FRAGMENTS_AND_WIDGETS_TAB_WIDGET</td>
 	<td>//li[contains(@class,'page-editor__fragments-widgets__tab-list-item')][normalize-space()='${key_portletName}']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>FRAGMENTS_AND_WIDGETS_TAB_WIDGET_CARD_ITEM</td>
+	<td>//li[contains(@class,'page-editor__fragments-widgets__tab-card-item')][normalize-space()='${key_portletName}']</td>
 	<td></td>
 </tr>
 <tr>
@@ -556,9 +573,9 @@
 	<td></td>
 </tr>
 <tr>
-  <td>CONTAINER_CONTAINER_EMPTY</td>
-  <td>xpath=(//div[contains(@class,'page-editor__topper__bar') and contains(.,'Container')]//following-sibling::div[contains(@class,'page-editor__topper__content')])[${key_position}]/div[contains(@class,'page-editor__container')][contains(@class,'empty')]</td>
-  <td></td>
+<td>CONTAINER_CONTAINER_EMPTY</td>
+<td>xpath=(//div[contains(@class,'page-editor__topper__bar') and contains(.,'Container')]//following-sibling::div[contains(@class,'page-editor__topper__content')])[${key_position}]/div[contains(@class,'page-editor__container')][contains(@class,'empty')]</td>
+<td></td>
 </tr>
 <tr>
 	<td>CONTAINER_CONTAINER_NESTED_ELEMENT</td>
@@ -571,9 +588,9 @@
 	<td></td>
 </tr>
 <tr>
-  <td>GRID_COLUMN_EMPTY</td>
-  <td>xpath=(//div[contains(@class,'page-editor__topper__bar') and contains(.,'Grid')]//following-sibling::div[contains(@class,'page-editor__topper__content')])[${key_position}]//div[contains(@class,'page-editor__row')][contains(@class,'empty')]</td>
-  <td></td>
+<td>GRID_COLUMN_EMPTY</td>
+<td>xpath=(//div[contains(@class,'page-editor__topper__bar') and contains(.,'Grid')]//following-sibling::div[contains(@class,'page-editor__topper__content')])[${key_position}]//div[contains(@class,'page-editor__row')][contains(@class,'empty')]</td>
+<td></td>
 </tr>
 <tr>
 	<td>GRID_COLUMN_NESTED_ELEMENT</td>
@@ -719,7 +736,7 @@
 <!--MANAGEMENT_BAR-->
 <tr>
 	<td>AUTOSAVE_MESSAGE</td>
-	<td>//div[contains(@class,'management-bar')]//span[contains(@class,'navbar-text')]</td>
+	<td>//div[contains(@class,'management-bar')]//span[contains(@class,'text-success')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -787,6 +804,11 @@
 <tr>
 	<td>ITEM_SELECTOR_CONTENT_INPUT</td>
 	<td>//input[contains(@class,'item-selector__content-input')][contains(@value,'${key_contentName}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ITEM_SELECTOR_DROPDOWN_TOGGLE</td>
+	<td>//label[normalize-space(text())='${key_fieldLabel}']/following-sibling::div//button[contains(@class,'dropdown-toggle')]</td>
 	<td></td>
 </tr>
 <tr>

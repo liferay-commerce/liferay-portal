@@ -471,9 +471,9 @@ public class JournalArticleLocalServiceImpl
 		article.setSmallImageId(counterLocalService.increment());
 		article.setSmallImageURL(smallImageURL);
 
-		Date now = new Date();
+		Date date = new Date();
 
-		if ((expirationDate == null) || expirationDate.after(now)) {
+		if ((expirationDate == null) || expirationDate.after(date)) {
 			article.setStatus(WorkflowConstants.STATUS_DRAFT);
 		}
 		else {
@@ -481,7 +481,7 @@ public class JournalArticleLocalServiceImpl
 		}
 
 		article.setStatusByUserId(userId);
-		article.setStatusDate(serviceContext.getModifiedDate(now));
+		article.setStatusDate(serviceContext.getModifiedDate(date));
 		article.setExpandoBridgeAttributes(serviceContext);
 
 		article = journalArticlePersistence.update(article);
@@ -527,13 +527,9 @@ public class JournalArticleLocalServiceImpl
 		updateDDMFields(
 			article, _formatContent(article, content, groupId, user));
 
-		if (classNameLocalService.getClassNameId(DDMStructure.class) ==
+		if (classNameLocalService.getClassNameId(DDMStructure.class) !=
 				classNameId) {
 
-			updateDDMStructurePredefinedValues(
-				classPK, content, serviceContext);
-		}
-		else {
 			updateDDMLinks(id, groupId, ddmStructureKey, ddmTemplateKey, true);
 		}
 
@@ -843,8 +839,6 @@ public class JournalArticleLocalServiceImpl
 
 		updateDDMFields(article, content);
 
-		updateDDMStructurePredefinedValues(classPK, content, serviceContext);
-
 		return journalArticlePersistence.findByPrimaryKey(article.getId());
 	}
 
@@ -944,15 +938,15 @@ public class JournalArticleLocalServiceImpl
 	 */
 	@Override
 	public void checkArticles() throws PortalException {
-		Date now = new Date();
+		Date date = new Date();
 
-		checkArticlesByExpirationDate(now);
+		checkArticlesByExpirationDate(date);
 
-		checkArticlesByReviewDate(now);
+		checkArticlesByReviewDate(date);
 
-		checkArticlesByDisplayDate(now);
+		checkArticlesByDisplayDate(date);
 
-		_previousCheckDate = now;
+		_previousCheckDate = date;
 	}
 
 	/**
@@ -1835,14 +1829,14 @@ public class JournalArticleLocalServiceImpl
 			return null;
 		}
 
-		Date now = new Date();
+		Date date = new Date();
 
 		for (JournalArticle article : articles) {
 			Date displayDate = article.getDisplayDate();
 			Date expirationDate = article.getExpirationDate();
 
-			if (((displayDate == null) || displayDate.before(now)) &&
-				((expirationDate == null) || expirationDate.after(now))) {
+			if (((displayDate == null) || displayDate.before(date)) &&
+				((expirationDate == null) || expirationDate.after(date))) {
 
 				return article;
 			}
@@ -2360,7 +2354,7 @@ public class JournalArticleLocalServiceImpl
 			PortletRequestModel portletRequestModel, ThemeDisplay themeDisplay)
 		throws PortalException {
 
-		Date now = new Date();
+		Date date = new Date();
 
 		JournalArticle article = journalArticlePersistence.findByG_A_V(
 			groupId, articleId, version);
@@ -2368,14 +2362,14 @@ public class JournalArticleLocalServiceImpl
 		if (article.isExpired()) {
 			Date expirationDate = article.getExpirationDate();
 
-			if ((expirationDate != null) && expirationDate.before(now)) {
+			if ((expirationDate != null) && expirationDate.before(date)) {
 				return null;
 			}
 		}
 
 		Date displayDate = article.getDisplayDate();
 
-		if ((displayDate != null) && displayDate.after(now) &&
+		if ((displayDate != null) && displayDate.after(date) &&
 			!Objects.equals(viewMode, Constants.PREVIEW)) {
 
 			return null;
@@ -3138,14 +3132,14 @@ public class JournalArticleLocalServiceImpl
 					", urlTitle=", urlTitle, "}"));
 		}
 
-		Date now = new Date();
+		Date date = new Date();
 
 		for (JournalArticle article : articles) {
 			Date displayDate = article.getDisplayDate();
 			Date expirationDate = article.getExpirationDate();
 
-			if ((displayDate != null) && displayDate.before(now) &&
-				((expirationDate == null) || expirationDate.after(now))) {
+			if ((displayDate != null) && displayDate.before(date) &&
+				((expirationDate == null) || expirationDate.after(date))) {
 
 				return article;
 			}
@@ -5578,11 +5572,11 @@ public class JournalArticleLocalServiceImpl
 				ArticleReviewDateException.class);
 		}
 
-		Date now = new Date();
+		Date date = new Date();
 
 		boolean expired = false;
 
-		if ((expirationDate != null) && expirationDate.before(now)) {
+		if ((expirationDate != null) && expirationDate.before(date)) {
 			expired = true;
 		}
 
@@ -5628,7 +5622,7 @@ public class JournalArticleLocalServiceImpl
 			article.setUserId(user.getUserId());
 			article.setUserName(user.getFullName());
 			article.setCreateDate(latestArticle.getCreateDate());
-			article.setModifiedDate(serviceContext.getModifiedDate(now));
+			article.setModifiedDate(serviceContext.getModifiedDate(date));
 			article.setClassNameId(latestArticle.getClassNameId());
 			article.setClassPK(latestArticle.getClassPK());
 			article.setArticleId(articleId);
@@ -5636,7 +5630,7 @@ public class JournalArticleLocalServiceImpl
 			article.setSmallImageId(latestArticle.getSmallImageId());
 			article.setStatusByUserId(user.getUserId());
 			article.setStatusByUserName(user.getFullName());
-			article.setStatusDate(serviceContext.getModifiedDate(now));
+			article.setStatusDate(serviceContext.getModifiedDate(date));
 
 			serviceContext.setAttribute("version", version);
 
@@ -6189,9 +6183,6 @@ public class JournalArticleLocalServiceImpl
 
 		updateDDMFields(article, content);
 
-		updateDDMStructurePredefinedValues(
-			article.getClassPK(), content, serviceContext);
-
 		// Small image
 
 		saveImages(
@@ -6479,25 +6470,25 @@ public class JournalArticleLocalServiceImpl
 
 		User user = userLocalService.getUser(userId);
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if ((status == WorkflowConstants.STATUS_APPROVED) &&
 			(article.getDisplayDate() != null) &&
-			now.before(article.getDisplayDate())) {
+			date.before(article.getDisplayDate())) {
 
 			status = WorkflowConstants.STATUS_SCHEDULED;
 		}
 
 		int oldStatus = article.getStatus();
 
-		Date modifiedDate = serviceContext.getModifiedDate(now);
+		Date modifiedDate = serviceContext.getModifiedDate(date);
 
 		article.setModifiedDate(modifiedDate);
 
 		Date expirationDate = article.getExpirationDate();
 
 		if ((status == WorkflowConstants.STATUS_APPROVED) &&
-			(expirationDate != null) && expirationDate.before(now)) {
+			(expirationDate != null) && expirationDate.before(date)) {
 
 			article.setExpirationDate(null);
 		}
@@ -6505,7 +6496,7 @@ public class JournalArticleLocalServiceImpl
 		if ((status == WorkflowConstants.STATUS_EXPIRED) &&
 			(expirationDate == null)) {
 
-			article.setExpirationDate(now);
+			article.setExpirationDate(date);
 		}
 
 		article.setStatus(status);
@@ -6516,7 +6507,7 @@ public class JournalArticleLocalServiceImpl
 		article = journalArticlePersistence.update(article);
 
 		if (isExpireAllArticleVersions(article.getCompanyId()) &&
-			(expirationDate != null) && expirationDate.before(now)) {
+			(expirationDate != null) && expirationDate.before(date)) {
 
 			article = setArticlesExpirationDate(article);
 		}
@@ -7608,15 +7599,12 @@ public class JournalArticleLocalServiceImpl
 				cacheable = _journalDefaultTemplateProvider.isCacheable();
 			}
 
-			Map<String, Object> contextObjects =
-				HashMapBuilder.<String, Object>put(
-					"friendlyURLs", _getFriendlyURLMap(article, themeDisplay)
-				).build();
-
 			content = JournalUtil.transform(
 				themeDisplay, tokens, viewMode, languageId, document,
 				portletRequestModel, script, langType, propagateException,
-				contextObjects);
+				HashMapBuilder.<String, Object>put(
+					"friendlyURLs", _getFriendlyURLMap(article, themeDisplay)
+				).build());
 
 			if (!pageFlow) {
 				JournalServiceConfiguration journalServiceConfiguration =
@@ -8500,60 +8488,6 @@ public class JournalArticleLocalServiceImpl
 					classNameLocalService.getClassNameId(JournalArticle.class),
 					id, ddmTemplate.getTemplateId());
 			}
-		}
-	}
-
-	protected void updateDDMStructurePredefinedValues(
-			long ddmStructureId, String content, ServiceContext serviceContext)
-		throws PortalException {
-
-		DDMStructure ddmStructure = ddmStructureLocalService.fetchDDMStructure(
-			ddmStructureId);
-
-		if (ddmStructure == null) {
-			return;
-		}
-
-		DDMForm ddmForm = ddmStructure.getDDMForm();
-
-		Map<String, DDMFormField> ddmFormFieldsMap =
-			ddmForm.getDDMFormFieldsMap(true);
-
-		Map<String, DDMFormField> fullHierarchyDDMFormFieldsMap =
-			ddmStructure.getFullHierarchyDDMFormFieldsMap(true);
-
-		Map<String, LocalizedValue> fieldsValuesMap = createFieldsValuesMap(
-			content);
-
-		for (Map.Entry<String, LocalizedValue> fieldValue :
-				fieldsValuesMap.entrySet()) {
-
-			String ddmFormFieldName = fieldValue.getKey();
-			LocalizedValue ddmFormFieldValue = fieldValue.getValue();
-
-			if (fullHierarchyDDMFormFieldsMap.containsKey(ddmFormFieldName)) {
-				updateDDMFormFieldPredefinedValue(
-					fullHierarchyDDMFormFieldsMap.get(ddmFormFieldName),
-					ddmFormFieldValue);
-			}
-
-			if (ddmFormFieldsMap.containsKey(ddmFormFieldName)) {
-				updateDDMFormFieldPredefinedValue(
-					ddmFormFieldsMap.get(ddmFormFieldName), ddmFormFieldValue);
-			}
-		}
-
-		boolean indexingEnabled = serviceContext.isIndexingEnabled();
-
-		try {
-			serviceContext.setIndexingEnabled(false);
-
-			ddmStructureLocalService.updateStructure(
-				serviceContext.getUserId(), ddmStructureId, ddmForm,
-				ddmStructure.getDDMFormLayout(), serviceContext);
-		}
-		finally {
-			serviceContext.setIndexingEnabled(indexingEnabled);
 		}
 	}
 

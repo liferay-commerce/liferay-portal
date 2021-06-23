@@ -66,14 +66,14 @@ const RichText = ({
 				editorConfig={editorConfig}
 				name={name}
 				onChange={(data) => {
-					if (currentValue !== data) {
+					if (currentValue?.trim() !== data?.trim()) {
 						setCurrentValue(data);
 						setDirty(true);
 
 						onChange({}, data);
 					}
 					else if (!dirty) {
-						CKEDITOR.instances[name].resetUndo();
+						CKEDITOR.instances[name]?.resetUndo();
 					}
 				}}
 				onMode={({editor}) => {

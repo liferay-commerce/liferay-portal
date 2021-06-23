@@ -4564,24 +4564,24 @@ public class KaleoInstancePersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (kaleoInstance.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				kaleoInstance.setCreateDate(now);
+				kaleoInstance.setCreateDate(date);
 			}
 			else {
-				kaleoInstance.setCreateDate(serviceContext.getCreateDate(now));
+				kaleoInstance.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!kaleoInstanceModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				kaleoInstance.setModifiedDate(now);
+				kaleoInstance.setModifiedDate(date);
 			}
 			else {
 				kaleoInstance.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

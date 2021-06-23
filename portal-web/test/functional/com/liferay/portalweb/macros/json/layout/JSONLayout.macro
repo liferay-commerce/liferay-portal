@@ -21,7 +21,7 @@ definition {
 
 		var type = JSONLayoutSetter.setType(type = "${type}");
 
-		JSONLayoutAPI._addLayout(
+		var plid = JSONLayoutAPI._addLayout(
 			friendlyURL = "${friendlyURL}",
 			groupId = "${groupId}",
 			layoutName = "${layoutName}",
@@ -29,6 +29,8 @@ definition {
 			privateLayout = "true",
 			serviceContext = "${serviceContext}",
 			type = "${type}");
+
+		return "${plid}";
 	}
 
 	@summary = "Add a public site page  or public child site page to an existing site or child site via groupName"
@@ -52,7 +54,7 @@ definition {
 
 		var type = JSONLayoutSetter.setType(type = "${type}");
 
-		JSONLayoutAPI._addLayout(
+		var plid = JSONLayoutAPI._addLayout(
 			friendlyURL = "${friendlyURL}",
 			groupId = "${groupId}",
 			layoutName = "${layoutName}",
@@ -60,6 +62,8 @@ definition {
 			privateLayout = "false",
 			serviceContext = "${serviceContext}",
 			type = "${type}");
+
+		return "${plid}";
 	}
 
 	@summary = "Add a widget to a private layout via widgetName"
@@ -144,6 +148,34 @@ definition {
 		JSONLayoutAPI._getDefaultPlidByGroupId(
 			groupId = "${groupId}",
 			privateLayout = "false");
+	}
+
+	@summary = "Get the plid from a layout by groupName and layoutName"
+	macro getPlid {
+		Variables.assertDefined(parameterList = "${groupName},${layoutName}");
+
+		var groupId = JSONLayoutSetter.setGroupId(groupName = "${groupName}");
+
+		if (!(isSet(privateLayout))) {
+			privateLayout = "false";
+		}
+
+		JSONLayoutAPI._getPlidByName(
+			groupId = "${groupId}",
+			layoutName = "${layoutName}",
+			privateLayout = "${privateLayout}");
+	}
+
+	@summary = "Publish the draft layout"
+	macro publishLayout {
+		Variables.assertDefined(parameterList = "${groupName},${layoutName}");
+
+		var plid = JSONLayout.getPlid(
+			groupName = "${groupName}",
+			layoutName = "${layoutName}",
+			privateLayout = "${privateLayout}");
+
+		JSONLayoutAPI._publishLayoutByPlid(plid = "${plid}");
 	}
 
 	macro updateLayoutTemplateOfPublicLayout {

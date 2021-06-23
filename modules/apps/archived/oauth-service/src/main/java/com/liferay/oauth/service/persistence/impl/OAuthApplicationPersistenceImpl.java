@@ -4345,25 +4345,25 @@ public class OAuthApplicationPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (oAuthApplication.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				oAuthApplication.setCreateDate(now);
+				oAuthApplication.setCreateDate(date);
 			}
 			else {
 				oAuthApplication.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!oAuthApplicationModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				oAuthApplication.setModifiedDate(now);
+				oAuthApplication.setModifiedDate(date);
 			}
 			else {
 				oAuthApplication.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

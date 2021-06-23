@@ -882,7 +882,7 @@ public class ${entity.name}ModelImpl extends BaseModelImpl<${entity.name}> imple
 			}
 		</#if>
 
-		<#if entity.hasEntityColumn("createDate", "Date") && entity.hasEntityColumn("modifiedDate", "Date") && stringUtil.equals(entityColumn.name, "modifiedDate")>
+		<#if entity.hasEntityColumn("modifiedDate", "Date") && stringUtil.equals(entityColumn.name, "modifiedDate")>
 			public boolean hasSetModifiedDate() {
 				return _setModifiedDate;
 			}
@@ -892,7 +892,7 @@ public class ${entity.name}ModelImpl extends BaseModelImpl<${entity.name}> imple
 			@Override
 		</#if>
 		public void set${entityColumn.methodName}(${entityColumn.genericizedType} ${entityColumn.name}) {
-			<#if entity.hasEntityColumn("createDate", "Date") && entity.hasEntityColumn("modifiedDate", "Date") && stringUtil.equals(entityColumn.name, "modifiedDate")>
+			<#if entity.hasEntityColumn("modifiedDate", "Date") && stringUtil.equals(entityColumn.name, "modifiedDate")>
 				_setModifiedDate = true;
 			</#if>
 
@@ -1691,7 +1691,7 @@ public class ${entity.name}ModelImpl extends BaseModelImpl<${entity.name}> imple
 				</#if>
 			</#if>
 
-			<#if entity.hasEntityColumn("createDate", "Date") && entity.hasEntityColumn("modifiedDate", "Date") && stringUtil.equals(entityColumn.name, "modifiedDate")>
+			<#if entity.hasEntityColumn("modifiedDate", "Date") && stringUtil.equals(entityColumn.name, "modifiedDate")>
 				_setModifiedDate = false;
 			</#if>
 		</#list>
@@ -1901,7 +1901,7 @@ public class ${entity.name}ModelImpl extends BaseModelImpl<${entity.name}> imple
 				</#if>
 			</#if>
 
-			<#if entity.hasEntityColumn("createDate", "Date") && entity.hasEntityColumn("modifiedDate", "Date") && stringUtil.equals(entityColumn.name, "modifiedDate")>
+			<#if entity.hasEntityColumn("modifiedDate", "Date") && stringUtil.equals(entityColumn.name, "modifiedDate")>
 				private boolean _setModifiedDate;
 			</#if>
 		</#if>

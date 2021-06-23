@@ -595,6 +595,53 @@ definition {
 		}
 	}
 
+	macro assertFieldOptionLabels {
+		if (IsElementNotPresent(key_tabName = "Builder", locator1 = "Sidebar#ACTIVE_TAB")) {
+			Navigator.gotoSidebarTab(tabName = "Builder");
+		}
+
+		AssertClick.assertPartialTextClickAt(
+			key_fieldFieldLabel = "${fieldFieldLabel}",
+			locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL",
+			value1 = "${fieldFieldLabel}");
+
+		if (IsTextEqual(locator1 = "DataEngineBuilder#SIDEBAR_FIELD_NAME_BUTTON", value1 = "Grid")) {
+			var index = "1";
+			for (var optionLabel : list "${optionLabelList}") {
+				AssertTextEquals(
+					index = "${index}",
+					key_optionFieldLabel = "${optionFieldLabel}",
+					locator1 = "Sidebar#OPTION_INPUT",
+					value1 = "${optionLabel}");
+
+				var index = ${index} + 1;
+			}
+		}
+		else if (IsTextEqual(locator1 = "DataEngineBuilder#SIDEBAR_FIELD_NAME_BUTTON", value1 = "Select from List")) {
+			var index = "1";
+			for (var optionLabel : list "${optionLabelList}") {
+				AssertTextEquals(
+					index = "${index}",
+					locator1 = "Sidebar#OPTION_INPUT_WITHOUT_LABEL",
+					value1 = "${optionLabel}");
+
+				var index = ${index} + 1;
+			}
+		}
+		else {
+			var index = "1";
+			for (var optionLabel : list "${optionLabelList}") {
+				AssertTextEquals(
+					index = "${index}",
+					key_optionFieldLabel = "Options",
+					locator1 = "Sidebar#OPTION_INPUT",
+					value1 = "${optionLabel}");
+
+				var index = ${index} + 1;
+			}
+		}
+	}
+
 	macro assertFieldRepeated {
 		AssertElementPresent(
 			key_fieldName = "${fieldName}",
@@ -849,12 +896,14 @@ definition {
 
 		Type(
 			key_fieldLabel = "Label",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
+			key_fieldName = "label",
+			locator1 = "Sidebar#TEXT_INPUT",
 			value1 = "${fieldFieldLabelEdit}");
 
-		AssertTextEquals(
+		AssertTextEquals.assertValue(
 			key_fieldLabel = "Label",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
+			key_fieldName = "label",
+			locator1 = "Sidebar#TEXT_INPUT",
 			value1 = "${fieldFieldLabelEdit}");
 
 		AssertElementPresent(
@@ -896,7 +945,7 @@ definition {
 
 		Navigator.gotoNavTab(navTab = "Advanced");
 
-		Type.sendKeys(
+		Type(
 			key_fieldLabel = "Field Reference",
 			key_fieldName = "fieldReference",
 			locator1 = "Sidebar#TEXT_INPUT",
@@ -945,28 +994,6 @@ definition {
 		if (isSet(fieldFieldLabel)) {
 			Click(locator1 = "Sidebar#BACK");
 		}
-	}
-
-	macro editFieldReferenceWithInvalidCharacters {
-		Click(
-			key_fieldFieldLabel = "${fieldFieldLabel}",
-			locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER");
-
-		Navigator.gotoNavTab(navTab = "Advanced");
-
-		Type.sendKeys(
-			key_fieldLabel = "Field Reference",
-			key_fieldName = "fieldReference",
-			locator1 = "Sidebar#TEXT_INPUT",
-			value1 = "${fieldReference}");
-
-		AssertTextEquals.assertValue(
-			key_fieldLabel = "Field Reference",
-			key_fieldName = "fieldReference",
-			locator1 = "Sidebar#TEXT_INPUT",
-			value1 = "${assertFieldReference}");
-
-		Click(locator1 = "Sidebar#BACK");
 	}
 
 	macro editFieldRequired {
@@ -1168,15 +1195,6 @@ definition {
 		Click(locator1 = "Sidebar#BACK");
 	}
 
-	macro editGridOptions {
-		var key_gridField = "${gridField}";
-		var key_rowNumber = "${rowNumber}";
-
-		Type(
-			locator1 = "DDMEditStructure#GRID_OPTIONS_OPTION_VALUE_FIELD",
-			value1 = "${optionValue}");
-	}
-
 	macro editImageFieldPredefinedValue {
 		AssertClick.assertPartialTextClickAt(
 			key_fieldFieldLabel = "${fieldFieldLabel}",
@@ -1359,6 +1377,19 @@ definition {
 			locator1 = "Checkbox#ANY_CHECKBOX");
 
 		Click(locator1 = "Sidebar#BACK");
+	}
+
+	macro toggleMultipleSelectionOption {
+		AssertVisible(locator1 = "WCEditWebContent#SIDEBAR");
+
+		if (!(isSet(webContentMultipleSelectionFieldLabel))) {
+			var webContentMultipleSelectionFieldLabel = "Multiple Selection";
+		}
+
+		Click.clickAtNotVisible(
+			key_fieldFieldLabel = "${webContentMultipleSelectionFieldLabel}",
+			key_optionValue = "${webContentMultipleSelection}",
+			locator1 = "WCEditWebContent#SELECTION_OPTION");
 	}
 
 	macro viewField {

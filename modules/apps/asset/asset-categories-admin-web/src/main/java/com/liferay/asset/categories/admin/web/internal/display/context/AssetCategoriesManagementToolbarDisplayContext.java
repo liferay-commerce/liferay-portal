@@ -14,6 +14,7 @@
 
 package com.liferay.asset.categories.admin.web.internal.display.context;
 
+import com.liferay.asset.categories.admin.web.internal.util.FFAssetCategoriesAdminWebConfigurationUtil;
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.frontend.taglib.clay.servlet.taglib.display.context.SearchContainerManagementToolbarDisplayContext;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
@@ -24,6 +25,7 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItemListBuilder;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.petra.string.StringPool;
+import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
@@ -36,6 +38,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -66,6 +69,36 @@ public class AssetCategoriesManagementToolbarDisplayContext
 	@Override
 	public List<DropdownItem> getActionDropdownItems() {
 		return DropdownItemListBuilder.add(
+			FFAssetCategoriesAdminWebConfigurationUtil::
+				setDisplayPageTemplateEnabled,
+			dropdownItem -> {
+				PortletURL setCategoryDisplayPageTemplateURL =
+					PortletURLBuilder.createRenderURL(
+						liferayPortletResponse
+					).setMVCPath(
+						"/set_category_display_page_template.jsp"
+					).setRedirect(
+						currentURLObj.toString()
+					).setParameter(
+						"parentCategoryId",
+						_assetCategoriesDisplayContext.getCategoryId()
+					).setParameter(
+						"vocabularyId",
+						_assetCategoriesDisplayContext.getVocabularyId()
+					).build();
+
+				dropdownItem.putData(
+					"action", "setCategoryDisplayPageTemplate");
+				dropdownItem.putData(
+					"setCategoryDisplayPageTemplateURL",
+					setCategoryDisplayPageTemplateURL.toString());
+				dropdownItem.setIcon("page");
+				dropdownItem.setLabel(
+					LanguageUtil.get(
+						httpServletRequest, "assign-display-page-template"));
+				dropdownItem.setQuickAction(true);
+			}
+		).add(
 			dropdownItem -> {
 				dropdownItem.putData("action", "deleteSelectedCategories");
 				dropdownItem.setIcon("times-circle");
@@ -79,13 +112,21 @@ public class AssetCategoriesManagementToolbarDisplayContext
 	public String getAvailableActions(AssetCategory category)
 		throws PortalException {
 
+		List<String> availableActions = new ArrayList<>();
+
 		if (_assetCategoriesDisplayContext.hasPermission(
 				category, ActionKeys.UPDATE)) {
 
-			return "deleteSelectedCategories";
+			availableActions.add("setCategoryDisplayPageTemplate");
 		}
 
-		return StringPool.BLANK;
+		if (_assetCategoriesDisplayContext.hasPermission(
+				category, ActionKeys.DELETE)) {
+
+			availableActions.add("deleteSelectedCategories");
+		}
+
+		return StringUtil.merge(availableActions, StringPool.COMMA);
 	}
 
 	@Override
@@ -256,7 +297,7 @@ public class AssetCategoriesManagementToolbarDisplayContext
 			"eventName",
 			liferayPortletResponse.getNamespace() + "selectCategory"
 		).setParameter(
-			"singleSelect", Boolean.TRUE.toString()
+			"singleSelect", true
 		).setParameter(
 			"vocabularyIds", _assetCategoriesDisplayContext.getVocabularyId()
 		).setWindowState(

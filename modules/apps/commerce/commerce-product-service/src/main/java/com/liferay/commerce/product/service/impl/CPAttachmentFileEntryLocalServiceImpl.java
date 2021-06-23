@@ -182,14 +182,14 @@ public class CPAttachmentFileEntryLocalServiceImpl
 			throw new DuplicateCPAttachmentFileEntryException();
 		}
 
-		Date now = new Date();
+		Date date = new Date();
 
 		cpAttachmentFileEntry.setFileEntryId(fileEntryId);
 
 		cpAttachmentFileEntry.setDisplayDate(displayDate);
 		cpAttachmentFileEntry.setExpirationDate(expirationDate);
 
-		if ((expirationDate == null) || expirationDate.after(now)) {
+		if ((expirationDate == null) || expirationDate.after(date)) {
 			cpAttachmentFileEntry.setStatus(WorkflowConstants.STATUS_DRAFT);
 		}
 		else {
@@ -214,6 +214,56 @@ public class CPAttachmentFileEntryLocalServiceImpl
 
 		return startWorkflowInstance(
 			user.getUserId(), cpAttachmentFileEntry, serviceContext);
+	}
+
+	@Override
+	public CPAttachmentFileEntry addOrUpdateCPAttachmentFileEntry(
+			String externalReferenceCode, long groupId, long classNameId,
+			long classPK, long cpAttachmentFileEntryId, long fileEntryId,
+			int displayDateMonth, int displayDateDay, int displayDateYear,
+			int displayDateHour, int displayDateMinute, int expirationDateMonth,
+			int expirationDateDay, int expirationDateYear,
+			int expirationDateHour, int expirationDateMinute,
+			boolean neverExpire, Map<Locale, String> titleMap, String json,
+			double priority, int type, ServiceContext serviceContext)
+		throws PortalException {
+
+		CPAttachmentFileEntry cpAttachmentFileEntry = null;
+
+		if (cpAttachmentFileEntryId != 0) {
+			cpAttachmentFileEntry =
+				cpAttachmentFileEntryPersistence.fetchByPrimaryKey(
+					cpAttachmentFileEntryId);
+		}
+		else if (Validator.isNotNull(externalReferenceCode)) {
+			cpAttachmentFileEntry =
+				cpAttachmentFileEntryLocalService.fetchByExternalReferenceCode(
+					externalReferenceCode, serviceContext.getCompanyId());
+		}
+
+		if (cpAttachmentFileEntry == null) {
+			cpAttachmentFileEntry =
+				cpAttachmentFileEntryLocalService.addCPAttachmentFileEntry(
+					externalReferenceCode, serviceContext.getUserId(), groupId,
+					classNameId, classPK, fileEntryId, displayDateMonth,
+					displayDateDay, displayDateYear, displayDateHour,
+					displayDateMinute, expirationDateMonth, expirationDateDay,
+					expirationDateYear, expirationDateHour,
+					expirationDateMinute, neverExpire, titleMap, json, priority,
+					type, serviceContext);
+		}
+		else {
+			cpAttachmentFileEntry =
+				cpAttachmentFileEntryLocalService.updateCPAttachmentFileEntry(
+					cpAttachmentFileEntry.getCPAttachmentFileEntryId(),
+					fileEntryId, displayDateMonth, displayDateDay,
+					displayDateYear, displayDateHour, displayDateMinute,
+					expirationDateMonth, expirationDateDay, expirationDateYear,
+					expirationDateHour, expirationDateMinute, neverExpire,
+					titleMap, json, priority, type, serviceContext);
+		}
+
+		return cpAttachmentFileEntry;
 	}
 
 	@Override
@@ -586,7 +636,7 @@ public class CPAttachmentFileEntryLocalServiceImpl
 				"Expiration date " + expirationDate + " is in the past");
 		}
 
-		Date now = new Date();
+		Date date = new Date();
 
 		FileEntry fileEntry = dlAppLocalService.getFileEntry(fileEntryId);
 
@@ -600,7 +650,7 @@ public class CPAttachmentFileEntryLocalServiceImpl
 		cpAttachmentFileEntry.setDisplayDate(displayDate);
 		cpAttachmentFileEntry.setExpirationDate(expirationDate);
 
-		if ((expirationDate == null) || expirationDate.after(now)) {
+		if ((expirationDate == null) || expirationDate.after(date)) {
 			cpAttachmentFileEntry.setStatus(WorkflowConstants.STATUS_DRAFT);
 		}
 		else {
@@ -634,7 +684,7 @@ public class CPAttachmentFileEntryLocalServiceImpl
 		throws PortalException {
 
 		User user = userLocalService.getUser(userId);
-		Date now = new Date();
+		Date date = new Date();
 
 		CPAttachmentFileEntry cpAttachmentFileEntry =
 			cpAttachmentFileEntryPersistence.findByPrimaryKey(
@@ -642,23 +692,23 @@ public class CPAttachmentFileEntryLocalServiceImpl
 
 		if ((status == WorkflowConstants.STATUS_APPROVED) &&
 			(cpAttachmentFileEntry.getDisplayDate() != null) &&
-			now.before(cpAttachmentFileEntry.getDisplayDate())) {
+			date.before(cpAttachmentFileEntry.getDisplayDate())) {
 
 			status = WorkflowConstants.STATUS_SCHEDULED;
 		}
 
-		Date modifiedDate = serviceContext.getModifiedDate(now);
+		Date modifiedDate = serviceContext.getModifiedDate(date);
 
 		if (status == WorkflowConstants.STATUS_APPROVED) {
 			Date expirationDate = cpAttachmentFileEntry.getExpirationDate();
 
-			if ((expirationDate != null) && expirationDate.before(now)) {
+			if ((expirationDate != null) && expirationDate.before(date)) {
 				cpAttachmentFileEntry.setExpirationDate(null);
 			}
 		}
 
 		if (status == WorkflowConstants.STATUS_EXPIRED) {
-			cpAttachmentFileEntry.setExpirationDate(now);
+			cpAttachmentFileEntry.setExpirationDate(date);
 		}
 
 		cpAttachmentFileEntry.setStatus(status);
@@ -699,7 +749,7 @@ public class CPAttachmentFileEntryLocalServiceImpl
 	 * @param      serviceContext
 	 * @throws     PortalException
 	 * @deprecated As of Athanasius (7.3.x), use {@link
-	 *             #upsertCPAttachmentFileEntry(long, long, long, long, int,
+	 *             #addOrUpdateCPAttachmentFileEntry(long, long, long, long, int,
 	 *             int, int, int, int, int, int, int, int, int, boolean, Map,
 	 *             String, double, int, String, ServiceContext)}
 	 */
@@ -716,63 +766,13 @@ public class CPAttachmentFileEntryLocalServiceImpl
 			double priority, int type, ServiceContext serviceContext)
 		throws PortalException {
 
-		return upsertCPAttachmentFileEntry(
+		return addOrUpdateCPAttachmentFileEntry(
 			externalReferenceCode, groupId, classNameId, classPK, 0,
 			fileEntryId, displayDateMonth, displayDateDay, displayDateYear,
 			displayDateHour, displayDateMinute, expirationDateMonth,
 			expirationDateDay, expirationDateYear, expirationDateHour,
 			expirationDateMinute, neverExpire, titleMap, json, priority, type,
 			serviceContext);
-	}
-
-	@Override
-	public CPAttachmentFileEntry upsertCPAttachmentFileEntry(
-			String externalReferenceCode, long groupId, long classNameId,
-			long classPK, long cpAttachmentFileEntryId, long fileEntryId,
-			int displayDateMonth, int displayDateDay, int displayDateYear,
-			int displayDateHour, int displayDateMinute, int expirationDateMonth,
-			int expirationDateDay, int expirationDateYear,
-			int expirationDateHour, int expirationDateMinute,
-			boolean neverExpire, Map<Locale, String> titleMap, String json,
-			double priority, int type, ServiceContext serviceContext)
-		throws PortalException {
-
-		CPAttachmentFileEntry cpAttachmentFileEntry = null;
-
-		if (cpAttachmentFileEntryId != 0) {
-			cpAttachmentFileEntry =
-				cpAttachmentFileEntryPersistence.fetchByPrimaryKey(
-					cpAttachmentFileEntryId);
-		}
-		else if (Validator.isNotNull(externalReferenceCode)) {
-			cpAttachmentFileEntry =
-				cpAttachmentFileEntryLocalService.fetchByExternalReferenceCode(
-					externalReferenceCode, serviceContext.getCompanyId());
-		}
-
-		if (cpAttachmentFileEntry == null) {
-			cpAttachmentFileEntry =
-				cpAttachmentFileEntryLocalService.addCPAttachmentFileEntry(
-					externalReferenceCode, serviceContext.getUserId(), groupId,
-					classNameId, classPK, fileEntryId, displayDateMonth,
-					displayDateDay, displayDateYear, displayDateHour,
-					displayDateMinute, expirationDateMonth, expirationDateDay,
-					expirationDateYear, expirationDateHour,
-					expirationDateMinute, neverExpire, titleMap, json, priority,
-					type, serviceContext);
-		}
-		else {
-			cpAttachmentFileEntry =
-				cpAttachmentFileEntryLocalService.updateCPAttachmentFileEntry(
-					cpAttachmentFileEntry.getCPAttachmentFileEntryId(),
-					fileEntryId, displayDateMonth, displayDateDay,
-					displayDateYear, displayDateHour, displayDateMinute,
-					expirationDateMonth, expirationDateDay, expirationDateYear,
-					expirationDateHour, expirationDateMinute, neverExpire,
-					titleMap, json, priority, type, serviceContext);
-		}
-
-		return cpAttachmentFileEntry;
 	}
 
 	protected void checkCPAttachmentFileEntriesByDisplayDate()

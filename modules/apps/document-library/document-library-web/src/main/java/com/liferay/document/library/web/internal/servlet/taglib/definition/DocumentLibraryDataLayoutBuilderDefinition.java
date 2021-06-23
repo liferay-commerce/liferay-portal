@@ -34,6 +34,11 @@ public class DocumentLibraryDataLayoutBuilderDefinition
 	}
 
 	@Override
+	public String[] getDisabledProperties() {
+		return new String[] {"requiredErrorMessage"};
+	}
+
+	@Override
 	public String[] getDisabledTabs() {
 		return new String[] {"Autocomplete"};
 	}
@@ -41,8 +46,9 @@ public class DocumentLibraryDataLayoutBuilderDefinition
 	@Override
 	public String[] getUnimplementedProperties() {
 		return new String[] {
-			"allowGuestUsers", "fieldNamespace", "inputMask", "readOnly",
-			"requireConfirmation", "validation", "visibilityExpression"
+			"allowGuestUsers", "fieldNamespace", "hideField", "inputMask",
+			"readOnly", "requireConfirmation", "validation",
+			"visibilityExpression"
 		};
 	}
 

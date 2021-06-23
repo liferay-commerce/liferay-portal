@@ -81,7 +81,7 @@ public class ViewNodeDeletedAttachmentsPortletConfigurationIcon
 					return node.getNodeId();
 				}
 			).setParameter(
-				"viewTrashAttachments", Boolean.TRUE.toString()
+				"viewTrashAttachments", true
 			).buildString();
 		}
 		catch (Exception exception) {

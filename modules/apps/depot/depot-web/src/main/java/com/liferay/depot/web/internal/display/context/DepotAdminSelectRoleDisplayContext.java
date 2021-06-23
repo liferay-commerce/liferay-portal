@@ -200,7 +200,7 @@ public class DepotAdminSelectRoleDisplayContext {
 			return PortletURLBuilder.create(
 				_getPortletURL(_renderRequest, _renderResponse, _user)
 			).setParameter(
-				"resetCur", Boolean.TRUE.toString()
+				"resetCur", true
 			).setParameter(
 				"step", Step2.TYPE
 			).build();

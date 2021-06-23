@@ -96,7 +96,7 @@ renderResponse.setTitle((formInstance == null) ? LanguageUtil.get(request, "new-
 					</c:choose>
 				</li>
 				<li class="nav-item pr-2">
-					<button class="btn btn-secondary btn-sm lfr-ddm-button lfr-ddm-preview-button">
+					<button class="btn btn-secondary btn-sm lfr-ddm-button lfr-ddm-preview-button" title="<%= LanguageUtil.get(request, "a-form-draft-will-be-saved-before-the-preview") %>">
 						<%= LanguageUtil.get(request, "preview") %>
 					</button>
 				</li>
@@ -154,6 +154,8 @@ renderResponse.setTitle((formInstance == null) ? LanguageUtil.get(request, "new-
 						"autosaveInterval", ddmFormAdminDisplayContext.getAutosaveInterval()
 					).put(
 						"autosaveURL", autoSaveFormInstanceURL.toString()
+					).put(
+						"availableLanguageIds", ddmFormAdminDisplayContext.getAvailableLanguageIdsJSONArray()
 					).put(
 						"context", formBuilderContextJSONObject
 					).put(

@@ -3279,24 +3279,24 @@ public class RatingsEntryPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (ratingsEntry.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				ratingsEntry.setCreateDate(now);
+				ratingsEntry.setCreateDate(date);
 			}
 			else {
-				ratingsEntry.setCreateDate(serviceContext.getCreateDate(now));
+				ratingsEntry.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!ratingsEntryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				ratingsEntry.setModifiedDate(now);
+				ratingsEntry.setModifiedDate(date);
 			}
 			else {
 				ratingsEntry.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

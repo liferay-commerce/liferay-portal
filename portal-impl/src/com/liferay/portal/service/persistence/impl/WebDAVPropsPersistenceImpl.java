@@ -531,24 +531,24 @@ public class WebDAVPropsPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (webDAVProps.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				webDAVProps.setCreateDate(now);
+				webDAVProps.setCreateDate(date);
 			}
 			else {
-				webDAVProps.setCreateDate(serviceContext.getCreateDate(now));
+				webDAVProps.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!webDAVPropsModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				webDAVProps.setModifiedDate(now);
+				webDAVProps.setModifiedDate(date);
 			}
 			else {
 				webDAVProps.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

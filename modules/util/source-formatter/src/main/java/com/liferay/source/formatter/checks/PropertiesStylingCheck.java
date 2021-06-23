@@ -42,6 +42,8 @@ public class PropertiesStylingCheck extends BaseFileCheck {
 			"(\\A|(?<!\\\\)\n)( *[\\w.-]+)(( +=)|(= +))(.*)(\\Z|\n)",
 			"$1$2=$6$7");
 
+		content = content.replaceAll("(?m)^(.*,) +(\\\\)$", "$1$2");
+
 		Matcher matcher = _sqlPattern1.matcher(content);
 
 		while (matcher.find()) {

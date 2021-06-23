@@ -178,6 +178,78 @@ public class Mutation {
 				callbackURL, object));
 	}
 
+	@GraphQLField(
+		description = "Removes users from an organization by their email addresses"
+	)
+	public boolean deleteUserAccountsByEmailAddress(
+			@GraphQLName("organizationId") String organizationId,
+			@GraphQLName("strings") String[] strings)
+		throws Exception {
+
+		_applyVoidComponentServiceObjects(
+			_organizationResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			organizationResource ->
+				organizationResource.deleteUserAccountsByEmailAddress(
+					organizationId, strings));
+
+		return true;
+	}
+
+	@GraphQLField(
+		description = "Assigns users to an organization by their email addresses"
+	)
+	public boolean createUserAccountsByEmailAddress(
+			@GraphQLName("organizationId") String organizationId,
+			@GraphQLName("strings") String[] strings)
+		throws Exception {
+
+		_applyVoidComponentServiceObjects(
+			_organizationResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			organizationResource ->
+				organizationResource.postUserAccountsByEmailAddress(
+					organizationId, strings));
+
+		return true;
+	}
+
+	@GraphQLField(
+		description = "Removes a user from an organization by their email address"
+	)
+	public boolean deleteUserAccountByEmailAddress(
+			@GraphQLName("organizationId") String organizationId,
+			@GraphQLName("emailAddress") String emailAddress)
+		throws Exception {
+
+		_applyVoidComponentServiceObjects(
+			_organizationResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			organizationResource ->
+				organizationResource.deleteUserAccountByEmailAddress(
+					organizationId, emailAddress));
+
+		return true;
+	}
+
+	@GraphQLField(
+		description = "Assigns a user to an organization by their email address"
+	)
+	public boolean createUserAccountByEmailAddress(
+			@GraphQLName("organizationId") String organizationId,
+			@GraphQLName("emailAddress") String emailAddress)
+		throws Exception {
+
+		_applyVoidComponentServiceObjects(
+			_organizationResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			organizationResource ->
+				organizationResource.postUserAccountByEmailAddress(
+					organizationId, emailAddress));
+
+		return true;
+	}
+
 	@GraphQLField(description = "Unassociates a role with a user account")
 	public boolean deleteRoleUserAccountAssociation(
 			@GraphQLName("roleId") Long roleId,

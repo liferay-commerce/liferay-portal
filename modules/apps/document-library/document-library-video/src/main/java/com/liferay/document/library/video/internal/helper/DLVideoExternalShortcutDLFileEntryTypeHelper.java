@@ -80,8 +80,8 @@ public class DLVideoExternalShortcutDLFileEntryTypeHelper {
 
 		ServiceContext serviceContext = new ServiceContext();
 
-		serviceContext.setAddGuestPermissions(true);
 		serviceContext.setAddGroupPermissions(true);
+		serviceContext.setAddGuestPermissions(true);
 		serviceContext.setScopeGroupId(_company.getGroupId());
 
 		long defaultUserId = _userLocalService.getDefaultUserId(
@@ -126,8 +126,8 @@ public class DLVideoExternalShortcutDLFileEntryTypeHelper {
 
 		ServiceContext serviceContext = new ServiceContext();
 
-		serviceContext.setAddGuestPermissions(true);
 		serviceContext.setAddGroupPermissions(true);
+		serviceContext.setAddGuestPermissions(true);
 		serviceContext.setScopeGroupId(_company.getGroupId());
 		serviceContext.setUserId(defaultUserId);
 

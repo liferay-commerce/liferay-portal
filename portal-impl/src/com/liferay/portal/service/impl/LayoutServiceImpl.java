@@ -783,6 +783,24 @@ public class LayoutServiceImpl extends LayoutServiceBaseImpl {
 	}
 
 	@Override
+	public List<Layout> getLayouts(
+			long groupId, boolean privateLayout, String keywords,
+			String[] types, int[] statuses, int start, int end,
+			OrderByComparator<Layout> orderByComparator)
+		throws PortalException {
+
+		if (Validator.isNull(keywords)) {
+			return layoutPersistence.filterFindByG_P_ST(
+				groupId, privateLayout, statuses, start, end,
+				orderByComparator);
+		}
+
+		return layoutLocalService.getLayouts(
+			groupId, getUserId(), privateLayout, keywords, types, statuses,
+			start, end, orderByComparator);
+	}
+
+	@Override
 	public List<Layout> getLayouts(long groupId, String type) {
 		return layoutPersistence.filterFindByG_T(groupId, type);
 	}
@@ -836,6 +854,21 @@ public class LayoutServiceImpl extends LayoutServiceBaseImpl {
 
 		return layoutLocalService.getLayoutsCount(
 			groupId, getUserId(), privateLayout, keywords, types);
+	}
+
+	@Override
+	public int getLayoutsCount(
+			long groupId, boolean privateLayout, String keywords,
+			String[] types, int[] statuses)
+		throws PortalException {
+
+		if (Validator.isNull(keywords)) {
+			return layoutPersistence.filterCountByG_P_ST(
+				groupId, privateLayout, statuses);
+		}
+
+		return layoutLocalService.getLayoutsCount(
+			groupId, getUserId(), privateLayout, keywords, types, statuses);
 	}
 
 	@Override
@@ -900,6 +933,11 @@ public class LayoutServiceImpl extends LayoutServiceBaseImpl {
 		}
 
 		return false;
+	}
+
+	@Override
+	public Layout publishLayout(long plid) throws Exception {
+		throw new UnsupportedOperationException();
 	}
 
 	/**

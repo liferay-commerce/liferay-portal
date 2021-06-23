@@ -426,7 +426,7 @@ currentURLObj.setParameter("historyKey", liferayPortletResponse.getNamespace() +
 						).setParameter(
 							"p_u_i_d", (selUser == null) ? "0" : String.valueOf(selUser.getUserId())
 						).setParameter(
-							"roleType", String.valueOf(RoleConstants.TYPE_ORGANIZATION)
+							"roleType", RoleConstants.TYPE_ORGANIZATION
 						).setParameter(
 							"step", "1"
 						).setWindowState(
@@ -624,7 +624,7 @@ currentURLObj.setParameter("historyKey", liferayPortletResponse.getNamespace() +
 									).setParameter(
 										"p_u_i_d", (selUser == null) ? "0" : String.valueOf(selUser.getUserId())
 									).setParameter(
-										"roleType", String.valueOf(RoleConstants.TYPE_SITE)
+										"roleType", RoleConstants.TYPE_SITE
 									).setParameter(
 										"step", "1"
 									).setWindowState(

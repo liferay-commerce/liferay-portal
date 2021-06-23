@@ -20,7 +20,7 @@
 PortletURL searchURL = PortletURLBuilder.create(
 	PortletURLUtil.clone(currentURLObj, liferayPortletResponse)
 ).setParameter(
-	"resetCur", Boolean.TRUE.toString()
+	"resetCur", true
 ).build();
 %>
 

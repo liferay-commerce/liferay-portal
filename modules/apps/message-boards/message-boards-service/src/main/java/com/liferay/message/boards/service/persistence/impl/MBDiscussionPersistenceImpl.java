@@ -2232,24 +2232,24 @@ public class MBDiscussionPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (mbDiscussion.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				mbDiscussion.setCreateDate(now);
+				mbDiscussion.setCreateDate(date);
 			}
 			else {
-				mbDiscussion.setCreateDate(serviceContext.getCreateDate(now));
+				mbDiscussion.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!mbDiscussionModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				mbDiscussion.setModifiedDate(now);
+				mbDiscussion.setModifiedDate(date);
 			}
 			else {
 				mbDiscussion.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

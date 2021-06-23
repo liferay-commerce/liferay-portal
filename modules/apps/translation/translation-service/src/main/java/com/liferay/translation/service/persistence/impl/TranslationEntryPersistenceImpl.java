@@ -2638,25 +2638,25 @@ public class TranslationEntryPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (translationEntry.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				translationEntry.setCreateDate(now);
+				translationEntry.setCreateDate(date);
 			}
 			else {
 				translationEntry.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!translationEntryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				translationEntry.setModifiedDate(now);
+				translationEntry.setModifiedDate(date);
 			}
 			else {
 				translationEntry.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

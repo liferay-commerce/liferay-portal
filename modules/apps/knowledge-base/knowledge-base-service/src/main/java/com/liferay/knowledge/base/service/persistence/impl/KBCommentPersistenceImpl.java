@@ -5234,23 +5234,23 @@ public class KBCommentPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (kbComment.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				kbComment.setCreateDate(now);
+				kbComment.setCreateDate(date);
 			}
 			else {
-				kbComment.setCreateDate(serviceContext.getCreateDate(now));
+				kbComment.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!kbCommentModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				kbComment.setModifiedDate(now);
+				kbComment.setModifiedDate(date);
 			}
 			else {
-				kbComment.setModifiedDate(serviceContext.getModifiedDate(now));
+				kbComment.setModifiedDate(serviceContext.getModifiedDate(date));
 			}
 		}
 

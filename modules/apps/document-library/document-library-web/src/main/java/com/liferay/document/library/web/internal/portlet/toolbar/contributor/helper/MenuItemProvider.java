@@ -104,8 +104,6 @@ public class MenuItemProvider {
 				PortalUtil.getHttpServletRequest(portletRequest),
 				"file-upload"));
 
-		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
-
 		urlMenuItem.setURL(
 			PortletURLBuilder.create(
 				_getPortletURL(themeDisplay, portletRequest)
@@ -115,12 +113,17 @@ public class MenuItemProvider {
 				Constants.ADD
 			).setRedirect(
 				PortalUtil.getCurrentURL(portletRequest)
+			).setPortletResource(
+				() -> {
+					PortletDisplay portletDisplay =
+						themeDisplay.getPortletDisplay();
+
+					return portletDisplay.getId();
+				}
 			).setParameter(
 				"fileEntryTypeId", _getDefaultFileEntryTypeId(folderId)
 			).setParameter(
 				"folderId", folderId
-			).setParameter(
-				"portletResource", portletDisplay.getId()
 			).setParameter(
 				"repositoryId", _getRepositoryId(folder, themeDisplay)
 			).buildString());
@@ -150,8 +153,6 @@ public class MenuItemProvider {
 			LanguageUtil.get(
 				PortalUtil.getHttpServletRequest(portletRequest), "folder"));
 
-		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
-
 		urlMenuItem.setURL(
 			PortletURLBuilder.create(
 				_getPortletURL(themeDisplay, portletRequest)
@@ -159,12 +160,17 @@ public class MenuItemProvider {
 				"/document_library/edit_folder"
 			).setRedirect(
 				PortalUtil.getCurrentURL(portletRequest)
+			).setPortletResource(
+				() -> {
+					PortletDisplay portletDisplay =
+						themeDisplay.getPortletDisplay();
+
+					return portletDisplay.getId();
+				}
 			).setParameter(
-				"ignoreRootFolder", Boolean.TRUE.toString()
+				"ignoreRootFolder", true
 			).setParameter(
 				"parentFolderId", folderId
-			).setParameter(
-				"portletResource", portletDisplay.getId()
 			).setParameter(
 				"repositoryId", _getRepositoryId(folder, themeDisplay)
 			).buildString());
@@ -200,8 +206,6 @@ public class MenuItemProvider {
 		urlMenuItem.setLabel(
 			LanguageUtil.get(resourceBundle, "multiple-files-upload"));
 
-		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
-
 		urlMenuItem.setURL(
 			PortletURLBuilder.create(
 				_getPortletURL(themeDisplay, portletRequest)
@@ -209,10 +213,15 @@ public class MenuItemProvider {
 				"/document_library/upload_multiple_file_entries"
 			).setRedirect(
 				PortalUtil.getCurrentURL(portletRequest)
+			).setPortletResource(
+				() -> {
+					PortletDisplay portletDisplay =
+						themeDisplay.getPortletDisplay();
+
+					return portletDisplay.getId();
+				}
 			).setParameter(
 				"folderId", folderId
-			).setParameter(
-				"portletResource", portletDisplay.getId()
 			).setParameter(
 				"repositoryId", _getRepositoryId(folder, themeDisplay)
 			).buildString());
@@ -289,6 +298,13 @@ public class MenuItemProvider {
 				"/document_library/edit_file_shortcut"
 			).setRedirect(
 				PortalUtil.getCurrentURL(portletRequest)
+			).setPortletResource(
+				() -> {
+					PortletDisplay portletDisplay =
+						themeDisplay.getPortletDisplay();
+
+					return portletDisplay.getId();
+				}
 			).setParameter(
 				"folderId", folderId
 			).setParameter(
@@ -337,8 +353,6 @@ public class MenuItemProvider {
 
 		urlMenuItem.setLabel(label);
 
-		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
-
 		urlMenuItem.setURL(
 			PortletURLBuilder.create(
 				_getPortletURL(themeDisplay, portletRequest)
@@ -348,12 +362,17 @@ public class MenuItemProvider {
 				Constants.ADD
 			).setRedirect(
 				PortalUtil.getCurrentURL(portletRequest)
+			).setPortletResource(
+				() -> {
+					PortletDisplay portletDisplay =
+						themeDisplay.getPortletDisplay();
+
+					return portletDisplay.getId();
+				}
 			).setParameter(
 				"fileEntryTypeId", fileEntryType.getFileEntryTypeId()
 			).setParameter(
 				"folderId", _getFolderId(folder)
-			).setParameter(
-				"portletResource", portletDisplay.getId()
 			).setParameter(
 				"repositoryId", _getRepositoryId(folder, themeDisplay)
 			).buildString());

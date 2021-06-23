@@ -4623,25 +4623,25 @@ public class DDMStructureLayoutPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (ddmStructureLayout.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				ddmStructureLayout.setCreateDate(now);
+				ddmStructureLayout.setCreateDate(date);
 			}
 			else {
 				ddmStructureLayout.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!ddmStructureLayoutModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				ddmStructureLayout.setModifiedDate(now);
+				ddmStructureLayout.setModifiedDate(date);
 			}
 			else {
 				ddmStructureLayout.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

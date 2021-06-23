@@ -205,10 +205,10 @@ public class LayoutSEOEntryLocalServiceImpl
 
 		layoutSEOEntry.setUserId(userId);
 
-		Date now = DateUtil.newDate();
+		Date date = DateUtil.newDate();
 
-		layoutSEOEntry.setCreateDate(now);
-		layoutSEOEntry.setModifiedDate(now);
+		layoutSEOEntry.setCreateDate(date);
+		layoutSEOEntry.setModifiedDate(date);
 
 		layoutSEOEntry.setPrivateLayout(privateLayout);
 		layoutSEOEntry.setLayoutId(layoutId);

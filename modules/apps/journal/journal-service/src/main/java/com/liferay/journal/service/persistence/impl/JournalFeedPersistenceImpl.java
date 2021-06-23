@@ -2916,24 +2916,24 @@ public class JournalFeedPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (journalFeed.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				journalFeed.setCreateDate(now);
+				journalFeed.setCreateDate(date);
 			}
 			else {
-				journalFeed.setCreateDate(serviceContext.getCreateDate(now));
+				journalFeed.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!journalFeedModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				journalFeed.setModifiedDate(now);
+				journalFeed.setModifiedDate(date);
 			}
 			else {
 				journalFeed.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

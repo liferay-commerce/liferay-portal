@@ -133,6 +133,19 @@ public class JavaPackagePathCheck extends BaseJavaTermCheck {
 				return;
 			}
 		}
+		else {
+			if (implementedClassNames.size() != 1) {
+				return;
+			}
+
+			for (String extendedClassName : javaClass.getExtendedClassNames()) {
+				if (extendedClassName.startsWith("Base") &&
+					!extendedClassName.endsWith(implementedClassName)) {
+
+					return;
+				}
+			}
+		}
 
 		BNDSettings bndSettings = getBNDSettings(fileName);
 

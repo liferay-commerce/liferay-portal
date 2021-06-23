@@ -1645,25 +1645,25 @@ public class CommerceShippingMethodPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commerceShippingMethod.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commerceShippingMethod.setCreateDate(now);
+				commerceShippingMethod.setCreateDate(date);
 			}
 			else {
 				commerceShippingMethod.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commerceShippingMethodModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commerceShippingMethod.setModifiedDate(now);
+				commerceShippingMethod.setModifiedDate(date);
 			}
 			else {
 				commerceShippingMethod.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

@@ -2340,25 +2340,25 @@ public class CommerceNotificationAttachmentPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commerceNotificationAttachment.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commerceNotificationAttachment.setCreateDate(now);
+				commerceNotificationAttachment.setCreateDate(date);
 			}
 			else {
 				commerceNotificationAttachment.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commerceNotificationAttachmentModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commerceNotificationAttachment.setModifiedDate(now);
+				commerceNotificationAttachment.setModifiedDate(date);
 			}
 			else {
 				commerceNotificationAttachment.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

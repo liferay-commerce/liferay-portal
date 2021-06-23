@@ -37,22 +37,27 @@ CommerceTaxFixedRateAddressRelsDisplayContext commerceTaxFixedRateAddressRelsDis
 		</aui:select>
 	</commerce-ui:panel>
 
-	<clay:data-set-display
-		contextParams='<%=
-			HashMapBuilder.<String, String>put(
-				"commerceChannelId", String.valueOf(commerceTaxFixedRateAddressRelsDisplayContext.getCommerceChannelId())
-			).put(
-				"commerceTaxMethodId", String.valueOf(commerceTaxFixedRateAddressRelsDisplayContext.getCommerceTaxMethodId())
-			).build()
-		%>'
-		creationMenu="<%= commerceTaxFixedRateAddressRelsDisplayContext.getCreationMenu() %>"
-		dataProviderKey="<%= CommerceTaxRateSettingDataSetConstants.COMMERCE_DATA_SET_KEY_TAX_RATE_SETTING %>"
-		id="<%= commerceTaxFixedRateAddressRelsDisplayContext.getDatasetView() %>"
-		itemsPerPage="<%= 10 %>"
-		namespace="<%= liferayPortletResponse.getNamespace() %>"
-		pageNumber="<%= 1 %>"
-		portletURL="<%= commerceTaxFixedRateAddressRelsDisplayContext.getPortletURL() %>"
-	/>
+	<commerce-ui:panel
+		bodyClasses="p-0"
+	>
+		<clay:data-set-display
+			contextParams='<%=
+				HashMapBuilder.<String, String>put(
+					"commerceChannelId", String.valueOf(commerceTaxFixedRateAddressRelsDisplayContext.getCommerceChannelId())
+				).put(
+					"commerceTaxMethodId", String.valueOf(commerceTaxFixedRateAddressRelsDisplayContext.getCommerceTaxMethodId())
+				).build()
+			%>'
+			creationMenu="<%= commerceTaxFixedRateAddressRelsDisplayContext.getCreationMenu() %>"
+			dataProviderKey="<%= CommerceTaxRateSettingDataSetConstants.COMMERCE_DATA_SET_KEY_TAX_RATE_SETTING %>"
+			id="<%= commerceTaxFixedRateAddressRelsDisplayContext.getDatasetView() %>"
+			itemsPerPage="<%= 10 %>"
+			namespace="<%= liferayPortletResponse.getNamespace() %>"
+			pageNumber="<%= 1 %>"
+			portletURL="<%= commerceTaxFixedRateAddressRelsDisplayContext.getPortletURL() %>"
+			selectedItemsKey="taxRateSettingId"
+		/>
+	</commerce-ui:panel>
 
 	<aui:button-row>
 		<aui:button cssClass="btn-lg" type="submit" />

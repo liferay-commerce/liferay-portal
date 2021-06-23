@@ -105,10 +105,11 @@ public class JabberUtil {
 	@Activate
 	@Modified
 	protected void activate(Map<String, Object> properties) {
-		_chatGroupServiceConfiguration = ConfigurableUtil.createConfigurable(
-			ChatGroupServiceConfiguration.class, properties);
+		ChatGroupServiceConfiguration chatGroupServiceConfiguration =
+			ConfigurableUtil.createConfigurable(
+				ChatGroupServiceConfiguration.class, properties);
 
-		_jabberEnabled = _chatGroupServiceConfiguration.jabberEnabled();
+		_jabberEnabled = chatGroupServiceConfiguration.jabberEnabled();
 	}
 
 	@Reference(unbind = "-")
@@ -116,9 +117,7 @@ public class JabberUtil {
 		_jabber = jabber;
 	}
 
-	private static volatile ChatGroupServiceConfiguration
-		_chatGroupServiceConfiguration;
 	private static Jabber _jabber;
-	private static boolean _jabberEnabled;
+	private static volatile boolean _jabberEnabled;
 
 }

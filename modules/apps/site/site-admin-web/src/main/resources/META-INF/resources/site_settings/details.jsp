@@ -189,9 +189,9 @@ if (parentGroupId != GroupConstants.DEFAULT_PARENT_GROUP_ID) {
 				).setParameter(
 					"eventName", liferayPortletResponse.getNamespace() + "selectGroup"
 				).setParameter(
-					"groupId", String.valueOf(siteGroup.getGroupId())
+					"groupId", siteGroup.getGroupId()
 				).setParameter(
-					"includeCurrentGroup", Boolean.FALSE.toString()
+					"includeCurrentGroup", false
 				).setWindowState(
 					LiferayWindowState.POP_UP
 				).build();

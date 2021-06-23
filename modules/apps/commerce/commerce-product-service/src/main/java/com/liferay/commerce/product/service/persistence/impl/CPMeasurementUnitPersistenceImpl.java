@@ -3624,25 +3624,25 @@ public class CPMeasurementUnitPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (cpMeasurementUnit.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				cpMeasurementUnit.setCreateDate(now);
+				cpMeasurementUnit.setCreateDate(date);
 			}
 			else {
 				cpMeasurementUnit.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!cpMeasurementUnitModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				cpMeasurementUnit.setModifiedDate(now);
+				cpMeasurementUnit.setModifiedDate(date);
 			}
 			else {
 				cpMeasurementUnit.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

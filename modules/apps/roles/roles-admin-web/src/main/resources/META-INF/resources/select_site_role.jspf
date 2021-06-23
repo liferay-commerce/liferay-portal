@@ -170,10 +170,12 @@ SearchContainer<Role> roleSearchContainer = selectRoleManagementToolbarDisplayCo
 			<c:if test="<%= selUser != null %>">
 
 				<%
+				portletURL.setParameter("groupId", (String)null);
 				portletURL.setParameter("step", "1");
 
 				String breadcrumbs = "<a href=\"" + portletURL.toString() + "\">" + LanguageUtil.get(request, "sites") + "</a> &raquo; " + HtmlUtil.escape(group.getDescriptiveName(locale));
 
+				portletURL.setParameter("groupId", String.valueOf(groupId));
 				portletURL.setParameter("step", String.valueOf(step));
 				%>
 

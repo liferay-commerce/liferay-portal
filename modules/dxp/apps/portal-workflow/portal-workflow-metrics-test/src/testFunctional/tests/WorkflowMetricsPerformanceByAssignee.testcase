@@ -1,0 +1,149 @@
+@component-name = "portal-workflow-ee"
+definition {
+
+	property portal.release = "true";
+	property portal.upstream = "true";
+	property test.run.environment = "EE";
+	property testray.main.component.name = "Workflow Metrics";
+
+	setUp {
+		TestCase.setUpPortalInstance();
+
+		var testPortalInstance = PropsUtil.get("test.portal.instance");
+
+		User.firstLoginPG();
+
+		Navigator.openURL();
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Workflow",
+			panel = "Applications",
+			portlet = "Metrics");
+	}
+
+	tearDown {
+		var testPortalInstance = PropsUtil.get("test.portal.instance");
+
+		if ("${testPortalInstance}" == "true") {
+			PortalInstances.tearDownCP();
+		}
+	}
+
+	@description = "LPS-97666 - Verify that the names inside the steps filter component from Performance by Assignee card are breaking into another line when the component width exceeds 240px"
+	@ignore = "Test Stub"
+	@priority = "3"
+	test AssigneeNamesBreaksIntoAnotherLine {
+
+		// TODO LRQA-67704 AssigneeNamesBreaksIntoAnotherLine pending implementation
+
+	}
+
+	@description = "LPS-97666 - Verify that the Performance by Assignee card are also considering inactive users"
+	@ignore = "Test Stub"
+	@priority = "5"
+	test CardConsideresInactiveUser {
+
+		// TODO LRQA-67706 CardConsideresInactiveUser pending implementation
+
+	}
+
+	@description = "LPS-97666 - Verify that, when there is an unexpected error, the Performance by Assignee card displays the specific error state"
+	@ignore = "Test Stub"
+	@priority = "2"
+	test CardDisplaysSpecificErrorStateOnUnexpectedError {
+
+		// TODO LRQA-67711 CardDisplaysSpecificErrorStateOnUnexpectedError pending implementation
+
+	}
+
+	@description = "LPS-99441 - Verify that the roles and Process Steps filters values inside Performance by Assignee page are alphabetically sorted"
+	@ignore = "Test Stub"
+	@priority = "3"
+	test FiltersValuesAreAlphabeticallyOrdered {
+
+		// TODO LRQA-67695 FiltersValuesAreAlphabeticallyOrdered pending implementation
+
+	}
+
+	@description = "LPS-99441 - Verify that the Performance by Assignee page functionalities are working when the portal is set to a non-en_US locale"
+	@ignore = "Test Stub"
+	@priority = "3"
+	test FunctionalitiesWorksProperlyWhenThePortalIsSetToANonEnUsLocale {
+
+		// TODO LRQA-67710 FunctionalitiesWorksProperlyWhenThePortalIsSetToANonEnUsLocale pending implementation
+
+	}
+
+	@description = "LPS-97666 - Verify that, when hovering the info icon next to the card title, there is a tooltip"
+	@ignore = "Test Stub"
+	@priority = "2"
+	test InfoIconDisplaysMessageOnHover {
+
+		// TODO LRQA-67693 InfoIconDisplaysMessageOnHover pending implementation
+
+	}
+
+	@description = "LPS-99441 - Verify that when there are no completed items, the table inside Performance by Assignee page is displaying the specific empty state"
+	@ignore = "Test Stub"
+	@priority = "3"
+	test PageDisplaysSpecificEmptyStateWhenThereAreNoCompletedItems {
+
+		// TODO LRQA-67717 PageDisplaysSpecificEmptyStateWhenThereAreNoCompletedItems pending implementation
+
+	}
+
+	@description = "LPS-99441 - Verify that when there is an unexpected error in Performance by Assignee page, the table displays the specific error state"
+	@ignore = "Test Stub"
+	@priority = "2"
+	test PageDisplaysSpecificErrorStateOnUnexpectedError {
+
+		// TODO LRQA-67713 PageDisplaysSpecificErrorStateOnUnexpectedError pending implementation
+
+	}
+
+	@description = "LPS-97666 - Verify that the steps filter inside the card Performance by Assignee has All Steps as the first option from the dropdown menu"
+	@ignore = "Test Stub"
+	@priority = "3"
+	test StepsFilterHasAllStepsAsFirstOption {
+
+		// TODO LRQA-67697 StepsFilterHasAllStepsAsFirstOption pending implementation
+
+	}
+
+	@description = "LPS-97666 - Verify that the steps filter inside the card Performance by Assignee is ordered alphabetically"
+	@ignore = "Test Stub"
+	@priority = "3"
+	test StepsFilterIsOrderedAlphabetivally {
+
+		// TODO LRQA-67702 StepsFilterIsOrderedAlphabetivally pending implementation
+
+	}
+
+	@description = "LPS-97666 - Verify that, after deleting a completed task, the Performance by Assignee results are updated accordingly"
+	@ignore = "Test Stub"
+	@priority = "4"
+	test TableIsUpdatedAfterACompletedTaskIsDeleted {
+
+		// TODO LRQA-67714 TableIsUpdatedAfterACompletedTaskIsDeleted pending implementation
+
+	}
+
+	@description = "LPS-97666 - Verify that the card Performance by Assigned provides a vertical scroll if there are more than 5 entries"
+	@ignore = "Test Stub"
+	@priority = "3"
+	test TableProvidesVerticalScrollWhenThereAreMoreThan5Entries {
+
+		// TODO LRQA-67692 TableProvidesVerticalScrollWhenThereAreMoreThan5Entries pending implementation
+
+	}
+
+	@description = "LPS-103760 - Verify that the user can filter the results inside Performance by Assignee by assignee names that contain non-ascii chars such as ç,é,コン, etc using the search field"
+	@ignore = "Test Stub"
+	@priority = "3"
+	test UserCanSearchNamesContainingNoAsciiChars {
+
+		// TODO LRQA-67696 UserCanSearchNamesContainingNoAsciiChars pending implementation
+
+	}
+
+}

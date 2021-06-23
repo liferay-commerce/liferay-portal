@@ -49,8 +49,8 @@ Set<PublicRenderParameter> publicRenderParameters = (Set<PublicRenderParameter>)
 					"/edit_public_render_parameters.jsp"
 				).setRedirect(
 					ParamUtil.getString(request, "redirect")
-				).setParameter(
-					"portletResource", portletResource
+				).setPortletResource(
+					portletResource
 				).setParameter(
 					"returnToFullPageURL", returnToFullPageURL
 				).buildString()

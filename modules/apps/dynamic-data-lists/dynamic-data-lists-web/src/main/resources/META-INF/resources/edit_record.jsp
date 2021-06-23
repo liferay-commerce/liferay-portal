@@ -303,7 +303,7 @@ PortalUtil.addPortletBreadcrumbEntry(
 	).setMVCPath(
 		"/view_record_set.jsp"
 	).setParameter(
-		"recordSetId", String.valueOf(recordSetId)
+		"recordSetId", recordSetId
 	).buildString());
 
 if (record != null) {

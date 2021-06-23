@@ -1634,25 +1634,25 @@ public class CommerceChannelRelPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commerceChannelRel.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commerceChannelRel.setCreateDate(now);
+				commerceChannelRel.setCreateDate(date);
 			}
 			else {
 				commerceChannelRel.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commerceChannelRelModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commerceChannelRel.setModifiedDate(now);
+				commerceChannelRel.setModifiedDate(date);
 			}
 			else {
 				commerceChannelRel.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

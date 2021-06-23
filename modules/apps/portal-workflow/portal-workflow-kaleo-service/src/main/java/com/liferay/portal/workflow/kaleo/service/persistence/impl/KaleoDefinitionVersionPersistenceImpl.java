@@ -1741,25 +1741,25 @@ public class KaleoDefinitionVersionPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (kaleoDefinitionVersion.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				kaleoDefinitionVersion.setCreateDate(now);
+				kaleoDefinitionVersion.setCreateDate(date);
 			}
 			else {
 				kaleoDefinitionVersion.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!kaleoDefinitionVersionModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				kaleoDefinitionVersion.setModifiedDate(now);
+				kaleoDefinitionVersion.setModifiedDate(date);
 			}
 			else {
 				kaleoDefinitionVersion.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

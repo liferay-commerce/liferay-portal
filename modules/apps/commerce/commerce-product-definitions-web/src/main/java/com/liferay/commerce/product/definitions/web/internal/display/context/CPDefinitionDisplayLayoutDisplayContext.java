@@ -212,7 +212,7 @@ public class CPDefinitionDisplayLayoutDisplayContext
 				requestBackedPortletURLFactory, "productDefinitionsSelectItem",
 				cpDefinitionItemSelectorCriterion)
 		).setParameter(
-			"singleSelection", Boolean.toString(true)
+			"singleSelection", true
 		).buildString();
 	}
 

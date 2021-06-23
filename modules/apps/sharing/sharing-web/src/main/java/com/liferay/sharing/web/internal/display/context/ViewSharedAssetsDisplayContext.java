@@ -152,7 +152,7 @@ public class ViewSharedAssetsDisplayContext {
 					PortletURLBuilder.createRenderURL(
 						_liferayPortletResponse
 					).setParameter(
-						"incoming", Boolean.TRUE.toString()
+						"incoming", true
 					).build());
 
 				navigationItem.setLabel(
@@ -166,7 +166,7 @@ public class ViewSharedAssetsDisplayContext {
 					PortletURLBuilder.createRenderURL(
 						_liferayPortletResponse
 					).setParameter(
-						"incoming", Boolean.FALSE.toString()
+						"incoming", false
 					).build());
 
 				navigationItem.setLabel(

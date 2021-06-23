@@ -364,7 +364,8 @@
 			<message key="builder.inline.2" value="Inline variable definition ''{0}'' ({1}) and dependent statements ({2}) inside ''{3}'' ({4})" />
 			<message key="builder.use" value="Use ''{0}'' ({1}, {2})" />
 			<message key="builder.use.instead" value="Use ''{0}'' instead of new instance of ''{1}''" />
-			<message key="keyword.reserved" value="Do not use ''addParameter'' to set parameter ''{0}'', use ''{1}'' instead" />
+			<message key="keyword.reserved" value="Do not use ''{0}'' to set parameter ''{1}'', use ''{2}'' instead" />
+			<message key="string.cast.unneeded" value="No need to cast parameter to ''String'' when passing to method ''{0}''" />
 		</module>
 		<module name="com.liferay.source.formatter.checkstyle.checks.SemiColonCheck">
 			<property name="category" value="Styling" />

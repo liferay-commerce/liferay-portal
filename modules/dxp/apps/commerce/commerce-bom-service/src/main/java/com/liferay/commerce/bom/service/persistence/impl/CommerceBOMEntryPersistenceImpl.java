@@ -828,25 +828,25 @@ public class CommerceBOMEntryPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commerceBOMEntry.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commerceBOMEntry.setCreateDate(now);
+				commerceBOMEntry.setCreateDate(date);
 			}
 			else {
 				commerceBOMEntry.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commerceBOMEntryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commerceBOMEntry.setModifiedDate(now);
+				commerceBOMEntry.setModifiedDate(date);
 			}
 			else {
 				commerceBOMEntry.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

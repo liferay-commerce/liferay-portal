@@ -419,8 +419,14 @@ public class UserTrackerModelImpl
 		return _modifiedDate;
 	}
 
+	public boolean hasSetModifiedDate() {
+		return _setModifiedDate;
+	}
+
 	@Override
 	public void setModifiedDate(Date modifiedDate) {
+		_setModifiedDate = true;
+
 		if (_columnOriginalValues == Collections.EMPTY_MAP) {
 			_setColumnOriginalValues();
 		}
@@ -648,6 +654,8 @@ public class UserTrackerModelImpl
 	public void resetOriginalValues() {
 		_columnOriginalValues = Collections.emptyMap();
 
+		_setModifiedDate = false;
+
 		_columnBitmask = 0;
 	}
 
@@ -783,6 +791,7 @@ public class UserTrackerModelImpl
 	private long _companyId;
 	private long _userId;
 	private Date _modifiedDate;
+	private boolean _setModifiedDate;
 	private String _sessionId;
 	private String _remoteAddr;
 	private String _remoteHost;

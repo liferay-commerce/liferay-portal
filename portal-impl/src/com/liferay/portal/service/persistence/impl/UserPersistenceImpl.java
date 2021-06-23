@@ -8551,23 +8551,23 @@ public class UserPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (user.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				user.setCreateDate(now);
+				user.setCreateDate(date);
 			}
 			else {
-				user.setCreateDate(serviceContext.getCreateDate(now));
+				user.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!userModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				user.setModifiedDate(now);
+				user.setModifiedDate(date);
 			}
 			else {
-				user.setModifiedDate(serviceContext.getModifiedDate(now));
+				user.setModifiedDate(serviceContext.getModifiedDate(date));
 			}
 		}
 

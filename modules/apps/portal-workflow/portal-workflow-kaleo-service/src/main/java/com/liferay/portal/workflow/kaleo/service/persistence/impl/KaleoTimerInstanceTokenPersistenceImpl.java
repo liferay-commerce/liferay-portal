@@ -2258,25 +2258,25 @@ public class KaleoTimerInstanceTokenPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (kaleoTimerInstanceToken.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				kaleoTimerInstanceToken.setCreateDate(now);
+				kaleoTimerInstanceToken.setCreateDate(date);
 			}
 			else {
 				kaleoTimerInstanceToken.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!kaleoTimerInstanceTokenModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				kaleoTimerInstanceToken.setModifiedDate(now);
+				kaleoTimerInstanceToken.setModifiedDate(date);
 			}
 			else {
 				kaleoTimerInstanceToken.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

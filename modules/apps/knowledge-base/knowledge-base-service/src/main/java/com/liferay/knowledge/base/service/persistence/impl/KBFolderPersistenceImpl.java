@@ -3732,23 +3732,23 @@ public class KBFolderPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (kbFolder.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				kbFolder.setCreateDate(now);
+				kbFolder.setCreateDate(date);
 			}
 			else {
-				kbFolder.setCreateDate(serviceContext.getCreateDate(now));
+				kbFolder.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!kbFolderModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				kbFolder.setModifiedDate(now);
+				kbFolder.setModifiedDate(date);
 			}
 			else {
-				kbFolder.setModifiedDate(serviceContext.getModifiedDate(now));
+				kbFolder.setModifiedDate(serviceContext.getModifiedDate(date));
 			}
 		}
 

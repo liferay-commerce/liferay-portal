@@ -39,25 +39,23 @@ definition {
 	@priority = "5"
 	@refactorneeded
 	test StagingRemoteLiveBlogsPG {
+		property app.server.bundles.size = "1";
 		property custom.properties = "tunneling.servlet.shared.secret=1234567890123456${line.separator}auth.verifier.TunnelAuthVerifier.hosts.allowed=";
+		property databases.size = "1";
 		property test.name.skip.portal.instance = "Staging#StagingRemoteLiveBlogsPG";
 
 		Staging.remoteStagingSetUpViaJson(
-			groupName = "Remote Site",
+			groupName = "Site Name",
 			remotePort = "9080");
+
+		JSONBlog.addEntry(
+			entryContent = "Blogs Entry Content",
+			entryTitle = "Blogs Entry Title",
+			groupName = "Site Name");
 
 		Navigator.gotoSitePage(
 			pageName = "Staging Blogs Page",
 			siteName = "Site Name");
-
-		Blogs.addEntry(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
-
-		BlogsNavigator.openToBlogEntry(
-			entryTitle = "Blogs Entry Title",
-			layoutName = "Staging Blogs Page",
-			siteURLKey = "site-name");
 
 		Staging.gotoPublishToLive();
 
@@ -67,10 +65,21 @@ definition {
 
 		AssertConsoleTextNotPresent(value1 = "RuntimeException");
 
-		BlogsNavigator.openToBlogEntry(
-			entryTitle = "Blogs Entry Title",
-			layoutName = "Staging Blogs Page",
-			siteURLKey = "remote-site");
+		User.logoutPG();
+
+		User.firstLoginUI(
+			password = "test",
+			specificURL = "http://localhost:9080",
+			userEmailAddress = "test@liferay.com");
+
+		Navigator.gotoSitePage(
+			baseURL = "http://localhost:9080",
+			pageName = "Staging Blogs Page",
+			siteName = "Remote Site");
+
+		BlogsNavigator.gotoEntryPG(
+			entryContent = "Blogs Entry Content",
+			entryTitle = "Blogs Entry Title");
 
 		BlogsEntry.viewEntryPG(
 			entryContent = "Blogs Entry Content",

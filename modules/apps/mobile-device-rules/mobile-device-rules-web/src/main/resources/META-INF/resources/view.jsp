@@ -25,7 +25,7 @@ String displayStyle = ParamUtil.getString(request, "displayStyle", "list");
 PortletURL portletURL = PortletURLBuilder.createRenderURL(
 	renderResponse
 ).setParameter(
-	"groupId", String.valueOf(groupId)
+	"groupId", groupId
 ).build();
 
 RuleGroupSearch ruleGroupSearch = new RuleGroupSearch(liferayPortletRequest, PortletURLUtil.clone(portletURL, renderResponse));

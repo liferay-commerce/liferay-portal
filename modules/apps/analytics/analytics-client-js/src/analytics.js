@@ -259,7 +259,7 @@ class Analytics {
 			return;
 		}
 
-		//eslint-disable-next-line
+		// eslint-disable-next-line
 		const mergedOptions = Object.assign({}, TRACK_DEFAULT_OPTIONS, options);
 
 		const currentContextHash = this._getCurrentContextHash();
@@ -307,7 +307,9 @@ class Analytics {
 			);
 		}
 
-		const hashedIdentity = {emailAddressHashed: hash(identity.email)};
+		const hashedIdentity = {
+			emailAddressHashed: hash(identity.email.toLowerCase()),
+		};
 
 		this.config.identity = hashedIdentity;
 

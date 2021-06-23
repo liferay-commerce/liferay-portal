@@ -2892,24 +2892,25 @@ public class DEDataListViewPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (deDataListView.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				deDataListView.setCreateDate(now);
+				deDataListView.setCreateDate(date);
 			}
 			else {
-				deDataListView.setCreateDate(serviceContext.getCreateDate(now));
+				deDataListView.setCreateDate(
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!deDataListViewModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				deDataListView.setModifiedDate(now);
+				deDataListView.setModifiedDate(date);
 			}
 			else {
 				deDataListView.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

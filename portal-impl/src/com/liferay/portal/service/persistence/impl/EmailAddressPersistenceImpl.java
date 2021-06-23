@@ -4148,24 +4148,24 @@ public class EmailAddressPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (emailAddress.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				emailAddress.setCreateDate(now);
+				emailAddress.setCreateDate(date);
 			}
 			else {
-				emailAddress.setCreateDate(serviceContext.getCreateDate(now));
+				emailAddress.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!emailAddressModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				emailAddress.setModifiedDate(now);
+				emailAddress.setModifiedDate(date);
 			}
 			else {
 				emailAddress.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

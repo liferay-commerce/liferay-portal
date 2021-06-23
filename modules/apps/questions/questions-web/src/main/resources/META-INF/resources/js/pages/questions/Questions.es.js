@@ -35,13 +35,14 @@ import {
 	getSectionBySectionTitleQuery,
 	getSectionThreadsQuery,
 	getSectionsQuery,
+	getSubscriptionsQuery,
 	getThreadsQuery,
 } from '../../utils/client.es';
 import {
+	deleteCacheKey,
 	getBasePath,
 	getFullPath,
 	historyPushWithSlug,
-	isWebCrawler,
 	slugToText,
 	useDebounceCallback,
 } from '../../utils/utils.es';
@@ -103,11 +104,13 @@ export default withRouter(
 		const [error, setError] = useState({});
 		const [filter, setFilter] = useState();
 		const [loading, setLoading] = useState(true);
-		const [page, setPage] = useState(1);
-		const [pageSize, setPageSize] = useState(20);
+		const [page, setPage] = useState(null);
+		const [pageSize, setPageSize] = useState(null);
 		const [questions, setQuestions] = useState([]);
-		const [search, setSearch] = useState('');
+		const [search, setSearch] = useState(null);
 		const [section, setSection] = useState({});
+		const [sectionQuery, setSectionQuery] = useState('');
+		const [sectionQueryVariables, setSectionQueryVariables] = useState({});
 		const [totalCount, setTotalCount] = useState(0);
 
 		const queryParams = useQueryParams(location);
@@ -115,11 +118,6 @@ export default withRouter(
 		const context = useContext(AppContext);
 
 		const siteKey = context.siteKey;
-
-		const historyPushParser = useCallback(
-			(url) => historyPushWithSlug(history.push)(url),
-			[history.push]
-		);
 
 		const [getSections] = useManualQuery(getSectionsQuery, {
 			variables: {siteKey: context.siteKey},
@@ -302,6 +300,10 @@ export default withRouter(
 		);
 
 		useEffect(() => {
+			if (!page || !pageSize || search == null) {
+				return;
+			}
+
 			if (section.id == null && !currentTag) {
 				return;
 			}
@@ -370,18 +372,10 @@ export default withRouter(
 			getThreadsCallback,
 		]);
 
-		function buildURL(needHashtag, search, page, pageSize) {
-			let pathname = window.location.pathname;
+		const historyPushParser = historyPushWithSlug(history.push);
 
-			pathname = pathname.endsWith('/')
-				? pathname.slice(0, -1)
-				: pathname;
-
-			let url = isWebCrawler()
-				? pathname + '/-/questions'
-				: needHashtag
-				? pathname + '/#/questions'
-				: '/questions';
+		function buildURL(search, page, pageSize) {
+			let url = '/questions';
 
 			if (sectionTitle || sectionTitle === '0') {
 				url += `/${sectionTitle}`;
@@ -405,29 +399,36 @@ export default withRouter(
 			return url;
 		}
 
+		function changePage(search, page, pageSize) {
+			historyPushParser(buildURL(search, page, pageSize));
+		}
+
 		const [debounceCallback] = useDebounceCallback(
-			(needHashtag, search) => {
-				setLoading(true);
-				historyPushParser(buildURL(needHashtag, search, 1, 20));
-			},
+			(search) => changePage(search, 1, 20),
 			500
 		);
 
 		useEffect(() => {
 			if (sectionTitle && sectionTitle !== '0') {
+				const variables = {
+					filter: `title eq '${slugToText(
+						sectionTitle
+					)}' or id eq '${slugToText(sectionTitle)}'`,
+					siteKey: context.siteKey,
+				};
 				getSectionBySectionTitle({
-					variables: {
-						filter: `title eq '${slugToText(
-							sectionTitle
-						)}' or id eq '${slugToText(sectionTitle)}'`,
-						siteKey: context.siteKey,
-					},
-				}).then(({data}) =>
-					setSection(data.messageBoardSections.items[0])
-				);
+					variables,
+				}).then(({data}) => {
+					setSection(data.messageBoardSections.items[0]);
+					setSectionQuery(getSectionBySectionTitleQuery);
+					setSectionQueryVariables(variables);
+				});
 			}
 			else if (sectionTitle === '0') {
-				getSections({variables: {siteKey: context.siteKey}})
+				const variables = {siteKey: context.siteKey};
+				getSections({
+					variables,
+				})
 					.then(({data: {messageBoardSections}}) => ({
 						actions: messageBoardSections.actions,
 						id: 0,
@@ -437,7 +438,11 @@ export default withRouter(
 							messageBoardSections.items &&
 							messageBoardSections.items.length,
 					}))
-					.then(setSection);
+					.then((section) => {
+						setSection(section);
+						setSectionQuery(getSectionsQuery);
+						setSectionQueryVariables(variables);
+					});
 			}
 		}, [
 			sectionTitle,
@@ -465,9 +470,6 @@ export default withRouter(
 			return false;
 		};
 
-		const hrefConstructor = (page) =>
-			buildURL(true, search, page, pageSize);
-
 		return (
 			<section className="questions-section questions-section-list">
 				<Breadcrumb
@@ -491,10 +493,15 @@ export default withRouter(
 						<PaginatedList
 							activeDelta={pageSize}
 							activePage={page}
-							changeDelta={setPageSize}
+							changeDelta={(pageSize) =>
+								changePage(search, page, pageSize)
+							}
+							changePage={(page) =>
+								changePage(search, page, pageSize)
+							}
 							data={questions}
 							emptyState={
-								!search && !filter ? (
+								sectionTitle && !search && !filter ? (
 									<ClayEmptyState
 										description={Liferay.Language.get(
 											'there-are-no-questions-inside-this-topic-be-the-first-to-ask-something'
@@ -528,7 +535,6 @@ export default withRouter(
 									/>
 								)
 							}
-							hrefConstructor={hrefConstructor}
 							loading={loading}
 							totalCount={totalCount}
 						>
@@ -558,7 +564,22 @@ export default withRouter(
 							section.actions &&
 							section.actions.subscribe && (
 								<div className="c-ml-3">
-									<SectionSubscription section={section} />
+									<SectionSubscription
+										onSubscription={() => {
+											deleteCacheKey(
+												sectionQuery,
+												sectionQueryVariables
+											);
+											deleteCacheKey(
+												getSubscriptionsQuery,
+												{
+													contentType:
+														'MessageBoardSection',
+												}
+											);
+										}}
+										section={section}
+									/>
 								</div>
 							)}
 					</div>
@@ -615,10 +636,7 @@ export default withRouter(
 											!questions.items.length
 										}
 										onChange={(event) =>
-											debounceCallback(
-												false,
-												event.target.value
-											)
+											debounceCallback(event.target.value)
 										}
 										placeholder={Liferay.Language.get(
 											'search'
@@ -647,10 +665,7 @@ export default withRouter(
 												<ClayButtonWithIcon
 													displayType="unstyled"
 													onClick={() => {
-														debounceCallback(
-															false,
-															''
-														);
+														debounceCallback('');
 													}}
 													symbol="times-circle"
 													type="submit"

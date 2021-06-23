@@ -6467,25 +6467,25 @@ public class CalendarResourcePersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (calendarResource.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				calendarResource.setCreateDate(now);
+				calendarResource.setCreateDate(date);
 			}
 			else {
 				calendarResource.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!calendarResourceModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				calendarResource.setModifiedDate(now);
+				calendarResource.setModifiedDate(date);
 			}
 			else {
 				calendarResource.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

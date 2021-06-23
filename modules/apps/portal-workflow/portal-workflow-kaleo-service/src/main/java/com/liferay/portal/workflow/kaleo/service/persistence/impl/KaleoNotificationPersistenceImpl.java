@@ -2610,25 +2610,25 @@ public class KaleoNotificationPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (kaleoNotification.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				kaleoNotification.setCreateDate(now);
+				kaleoNotification.setCreateDate(date);
 			}
 			else {
 				kaleoNotification.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!kaleoNotificationModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				kaleoNotification.setModifiedDate(now);
+				kaleoNotification.setModifiedDate(date);
 			}
 			else {
 				kaleoNotification.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

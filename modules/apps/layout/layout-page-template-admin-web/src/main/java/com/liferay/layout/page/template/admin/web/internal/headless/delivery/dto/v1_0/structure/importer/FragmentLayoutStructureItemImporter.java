@@ -47,9 +47,11 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -291,15 +293,14 @@ public class FragmentLayoutStructureItemImporter
 			return jsonObject;
 		}
 
-		Map<String, Object> valueI18nMap = (Map<String, Object>)map.get(
-			"value_i18n");
+		Map<String, Object> valueMap = (Map<String, Object>)map.get("value");
 
-		if (valueI18nMap != null) {
-			for (Map.Entry<String, Object> entry : valueI18nMap.entrySet()) {
-				jsonObject.put(entry.getKey(), entry.getValue());
+		if (valueMap != null) {
+			String title = String.valueOf(valueMap.get("title"));
+
+			if (title != null) {
+				jsonObject.put("defaultValue", title);
 			}
-
-			return jsonObject;
 		}
 
 		Map<String, Object> defaultFragmentInlineValueMap =
@@ -313,6 +314,17 @@ public class FragmentLayoutStructureItemImporter
 		if (defaultFragmentInlineValueMap != null) {
 			jsonObject.put(
 				"defaultValue", defaultFragmentInlineValueMap.get("value"));
+		}
+
+		Map<String, Object> valueI18nMap = (Map<String, Object>)map.get(
+			"value_i18n");
+
+		if (valueI18nMap != null) {
+			for (Map.Entry<String, Object> entry : valueI18nMap.entrySet()) {
+				jsonObject.put(entry.getKey(), entry.getValue());
+			}
+
+			return jsonObject;
 		}
 
 		processMapping(jsonObject, (Map<String, Object>)map.get("mapping"));
@@ -684,6 +696,14 @@ public class FragmentLayoutStructureItemImporter
 				widgetInstanceId =
 					fragmentEntryLink.getNamespace() + widgetInstanceId;
 			}
+			else {
+				Portlet portlet = _portletLocalService.getPortletById(
+					widgetName);
+
+				if ((portlet != null) && portlet.isInstanceable()) {
+					widgetInstanceId = fragmentEntryLink.getNamespace();
+				}
+			}
 
 			Map<String, Object> widgetConfigDefinitionMap =
 				(Map<String, Object>)widgetInstanceMap.get("widgetConfig");
@@ -993,6 +1013,9 @@ public class FragmentLayoutStructureItemImporter
 
 	@Reference
 	private PortletFileRepository _portletFileRepository;
+
+	@Reference
+	private PortletLocalService _portletLocalService;
 
 	@Reference
 	private PortletPermissionsImporterHelper _portletPermissionsImporterHelper;

@@ -59,6 +59,7 @@ import java.util.Map;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -76,11 +77,14 @@ public class AccountEntryServiceWhenSearchingAccountEntriesTest {
 	public static final LiferayIntegrationTestRule liferayIntegrationTestRule =
 		new LiferayIntegrationTestRule();
 
+	@BeforeClass
+	public static void setUpClass() throws Exception {
+		_company = CompanyTestUtil.addCompany();
+	}
+
 	@Before
 	public void setUp() throws Exception {
-		Company company = CompanyTestUtil.addCompany();
-
-		_companyAdminUser = UserTestUtil.addCompanyAdminUser(company);
+		_companyAdminUser = UserTestUtil.addCompanyAdminUser(_company);
 
 		_rootOrganization = _organizationLocalService.addOrganization(
 			_companyAdminUser.getUserId(),
@@ -107,7 +111,7 @@ public class AccountEntryServiceWhenSearchingAccountEntriesTest {
 			_suborganization,
 			_addAccountEntryWithOrganization(_suborganization));
 
-		_user = UserTestUtil.addUser(company);
+		_user = UserTestUtil.addUser(_company);
 
 		_originalPermissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
@@ -281,6 +285,8 @@ public class AccountEntryServiceWhenSearchingAccountEntriesTest {
 
 		return false;
 	}
+
+	private static Company _company;
 
 	@Inject
 	private AccountEntryLocalService _accountEntryLocalService;

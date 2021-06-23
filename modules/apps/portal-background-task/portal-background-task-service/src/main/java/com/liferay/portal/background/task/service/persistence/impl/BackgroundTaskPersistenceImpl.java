@@ -8882,24 +8882,25 @@ public class BackgroundTaskPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (backgroundTask.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				backgroundTask.setCreateDate(now);
+				backgroundTask.setCreateDate(date);
 			}
 			else {
-				backgroundTask.setCreateDate(serviceContext.getCreateDate(now));
+				backgroundTask.setCreateDate(
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!backgroundTaskModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				backgroundTask.setModifiedDate(now);
+				backgroundTask.setModifiedDate(date);
 			}
 			else {
 				backgroundTask.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

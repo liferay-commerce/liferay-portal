@@ -25,7 +25,7 @@ PortletURL portletURL = PortletURLBuilder.createActionURL(
 ).setActionName(
 	"/wiki/view"
 ).setParameter(
-	"nodeId", String.valueOf(node.getNodeId())
+	"nodeId", node.getNodeId()
 ).setParameter(
 	"title", wikiPage.getTitle()
 ).build();
@@ -55,7 +55,7 @@ PortletURL iteratorURL = PortletURLBuilder.createRenderURL(
 ).setRedirect(
 	currentURL
 ).setParameter(
-	"nodeId", String.valueOf(node.getNodeId())
+	"nodeId", node.getNodeId()
 ).setParameter(
 	"title", wikiPage.getTitle()
 ).build();

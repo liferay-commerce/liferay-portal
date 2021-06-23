@@ -5214,25 +5214,25 @@ public class WorkflowMetricsSLADefinitionPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (workflowMetricsSLADefinition.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				workflowMetricsSLADefinition.setCreateDate(now);
+				workflowMetricsSLADefinition.setCreateDate(date);
 			}
 			else {
 				workflowMetricsSLADefinition.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!workflowMetricsSLADefinitionModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				workflowMetricsSLADefinition.setModifiedDate(now);
+				workflowMetricsSLADefinition.setModifiedDate(date);
 			}
 			else {
 				workflowMetricsSLADefinition.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

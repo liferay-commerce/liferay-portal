@@ -1441,24 +1441,25 @@ public class FVSCustomEntryPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (fvsCustomEntry.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				fvsCustomEntry.setCreateDate(now);
+				fvsCustomEntry.setCreateDate(date);
 			}
 			else {
-				fvsCustomEntry.setCreateDate(serviceContext.getCreateDate(now));
+				fvsCustomEntry.setCreateDate(
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!fvsCustomEntryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				fvsCustomEntry.setModifiedDate(now);
+				fvsCustomEntry.setModifiedDate(date);
 			}
 			else {
 				fvsCustomEntry.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

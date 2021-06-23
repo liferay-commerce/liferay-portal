@@ -1708,24 +1708,25 @@ public class RemoteAppEntryPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (remoteAppEntry.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				remoteAppEntry.setCreateDate(now);
+				remoteAppEntry.setCreateDate(date);
 			}
 			else {
-				remoteAppEntry.setCreateDate(serviceContext.getCreateDate(now));
+				remoteAppEntry.setCreateDate(
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!remoteAppEntryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				remoteAppEntry.setModifiedDate(now);
+				remoteAppEntry.setModifiedDate(date);
 			}
 			else {
 				remoteAppEntry.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

@@ -1541,23 +1541,23 @@ public class KaleoTaskPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (kaleoTask.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				kaleoTask.setCreateDate(now);
+				kaleoTask.setCreateDate(date);
 			}
 			else {
-				kaleoTask.setCreateDate(serviceContext.getCreateDate(now));
+				kaleoTask.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!kaleoTaskModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				kaleoTask.setModifiedDate(now);
+				kaleoTask.setModifiedDate(date);
 			}
 			else {
-				kaleoTask.setModifiedDate(serviceContext.getModifiedDate(now));
+				kaleoTask.setModifiedDate(serviceContext.getModifiedDate(date));
 			}
 		}
 

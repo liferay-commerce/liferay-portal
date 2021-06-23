@@ -112,9 +112,7 @@ definition {
 	test DefaultTitlePersistsUponFirstlyTranslatingForAnotherLocale {
 		WebContentStructures.addCP();
 
-		Navigator.gotoNavTab(navTab = "Fieldsets");
-
-		Click(locator1 = "FormViewBuilder#CREATE_NEW_FIELD_SETS");
+		DataEngine.gotoCreateNewFieldset();
 
 		Navigator.gotoNavTab(navTab = "Fields");
 
@@ -202,8 +200,6 @@ definition {
 			fieldsetName = "${fieldsetNameEN}",
 			localeList = "pt-BR,de-DE,es-ES");
 
-		Refresh();
-
 		WebContentStructures.saveCP();
 
 		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Name");
@@ -212,46 +208,6 @@ definition {
 			fieldNameList = "Text,Numeric",
 			fieldsetName = "${fieldsetNameEN}",
 			localeList = "pt-BR,de-DE,es-ES");
-
-		Navigator.gotoNavTab(navTab = "Web Content");
-
-		WebContentNavigator.gotoAddWithStructureCP(structureName = "WC Structure Name");
-
-		AssertVisible(locator1 = "WCEditWebContent#SIDEBAR");
-
-		PortletEntry.viewLocale(locale = "en-US");
-
-		AssertVisible(
-			key_fieldsetLabel = "New Fieldset",
-			locator1 = "DDMEditStructure#FORM_FIELD_SETS_CONTAINER_LABEL");
-
-		AssertVisible(
-			key_fieldFieldLabel = "Text",
-			locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL");
-
-		AssertVisible(
-			key_helpText = "Text Help Text",
-			locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_HELP_TEXT");
-
-		PortletEntry.changeLocale(locale = "pt-BR");
-
-		PortletEntry.viewLocale(locale = "pt-BR");
-
-		AssertVisible(
-			key_fieldsetLabel = "New Fieldset pt-BR",
-			locator1 = "DDMEditStructure#FORM_FIELD_SETS_CONTAINER_LABEL");
-
-		AssertVisible(
-			key_fieldFieldLabel = "Text pt-BR",
-			locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL");
-
-		AssertVisible(
-			key_helpText = "Text Help Text pt-BR",
-			locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_HELP_TEXT");
-
-		DataEngine.deleteFieldsetFromSideBar(
-			fieldsetName = "New Fieldset",
-			siteURLKey = "test-site-name");
 	}
 
 	@description = "This test ensures that translations on a fieldset with nested fields persists."
@@ -1120,8 +1076,6 @@ definition {
 			fieldsetName = "Fieldset Name",
 			localeList = "pt-BR");
 
-		Refresh();
-
 		WebContentStructures.addLocalization(
 			locale = "pt-BR",
 			localization1Name = "Nome da Estrutura WC");
@@ -1146,6 +1100,8 @@ definition {
 	@description = "This test ensures it's not possible to edit a fieldset inside a field group on a structure."
 	@priority = "4"
 	test VerifyNestedFieldsetEditionOnStructure {
+		property portal.upstream = "quarantine";
+
 		WebContentStructures.addCP(structureName = "WC Structure Name");
 
 		DataEngine.addField(

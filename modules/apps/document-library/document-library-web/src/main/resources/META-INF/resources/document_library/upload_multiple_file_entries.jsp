@@ -115,11 +115,11 @@ if (portletTitleBasedNavigation) {
 							Liferay.on('tempFileRemoved', () => {
 								Liferay.Util.openToast({
 									message:
-										'<%= LanguageUtil.get(request, "your-request-completed-successfully") %>',
+										'<%= HtmlUtil.escapeJS(LanguageUtil.get(request, "your-request-completed-successfully")) %>',
 								});
 							});
 
-							window['<portlet:namespace />updateMultipleFiles'] = function () {
+							function submit() {
 								var Lang = A.Lang;
 
 								var commonFileMetadataContainer = A.one(
@@ -237,7 +237,7 @@ if (portletTitleBasedNavigation) {
 										commonFileMetadataContainer.unplug(A.LoadingMask);
 
 										if (!itemFailed) {
-											location.href = '<%= HtmlUtil.escapeJS(redirect) %>';
+											Liferay.Util.navigate('<%= HtmlUtil.escapeJS(redirect) %>');
 										}
 									})
 									.catch((error) => {
@@ -258,7 +258,43 @@ if (portletTitleBasedNavigation) {
 
 										commonFileMetadataContainer.loadingmask.hide();
 									});
+							}
+
+							function ddmFormValid(event) {
+								if (event.formWrapperId === document.<portlet:namespace />fm2.id) {
+									submit();
+								}
+							}
+
+							function ddmFormError(event) {
+								if (event.formWrapperId === document.<portlet:namespace />fm2.id) {
+									Liferay.CollapseProvider.show({
+										panel: document.querySelector('.document-type .panel-collapse'),
+									});
+								}
+							}
+
+							Liferay.on('ddmFormValid', ddmFormValid);
+
+							Liferay.on('ddmFormError', ddmFormError);
+
+							window['<portlet:namespace />updateMultipleFiles'] = function () {
+								var isDataEngineControlled = Boolean(
+									document.querySelector('[data-ddm-fieldset]')
+								);
+
+								if (!isDataEngineControlled) {
+									submit();
+								}
 							};
+
+							function cleanUp() {
+								Liferay.detach('ddmFormValid', ddmFormValid);
+								Liferay.detach('ddmFormError', ddmFormError);
+								Liferay.detach('destroyPortlet', cleanUp);
+							}
+
+							Liferay.on('destroyPortlet', cleanUp);
 						</aui:script>
 					</clay:col>
 				</clay:row>

@@ -38,6 +38,9 @@ create table ObjectField (
 	createDate DATE null,
 	modifiedDate DATE null,
 	objectDefinitionId LONG,
+	indexed BOOLEAN,
+	indexedAsKeyword BOOLEAN,
+	indexedLanguageId VARCHAR(75) null,
 	name VARCHAR(75) null,
 	type_ VARCHAR(75) null
 );

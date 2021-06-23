@@ -729,7 +729,7 @@ public class ${entity.name}PersistenceImpl extends BasePersistenceImpl<${entity.
 	public ${entity.name} updateImpl(${apiPackagePath}.model.${entity.name} ${entity.variableName}) {
 		boolean isNew = ${entity.variableName}.isNew();
 
-		<#if entity.isHierarchicalTree() || (entity.collectionEntityFinders?size != 0) || (entity.uniqueEntityFinders?size &gt; 0) || (entity.hasEntityColumn("createDate", "Date") && entity.hasEntityColumn("modifiedDate", "Date"))>
+		<#if entity.isHierarchicalTree() || (entity.collectionEntityFinders?size != 0) || (entity.uniqueEntityFinders?size &gt; 0) || entity.hasEntityColumn("createDate", "Date") || entity.hasEntityColumn("modifiedDate", "Date")>
 			if (!(${entity.variableName} instanceof ${entity.name}ModelImpl)) {
 				InvocationHandler invocationHandler = null;
 
@@ -756,23 +756,41 @@ public class ${entity.name}PersistenceImpl extends BasePersistenceImpl<${entity.
 		<#if entity.hasEntityColumn("createDate", "Date") && entity.hasEntityColumn("modifiedDate", "Date")>
 			ServiceContext serviceContext = ServiceContextThreadLocal.getServiceContext();
 
-			Date now = new Date();
+			Date date = new Date();
+		</#if>
 
+		<#if entity.hasEntityColumn("createDate", "Date")>
 			if (isNew && (${entity.variableName}.getCreateDate() == null)) {
+
+			<#if !entity.hasEntityColumn("modifiedDate", "Date")>
+				ServiceContext serviceContext = ServiceContextThreadLocal.getServiceContext();
+
+				Date date = new Date();
+			</#if>
+
 				if (serviceContext == null) {
-					${entity.variableName}.setCreateDate(now);
+					${entity.variableName}.setCreateDate(date);
 				}
 				else {
-					${entity.variableName}.setCreateDate(serviceContext.getCreateDate(now));
+					${entity.variableName}.setCreateDate(serviceContext.getCreateDate(date));
 				}
 			}
+		</#if>
 
+		<#if entity.hasEntityColumn("modifiedDate", "Date")>
 			if (!${entity.variableName}ModelImpl.hasSetModifiedDate()) {
+
+			<#if !entity.hasEntityColumn("createDate", "Date")>
+				ServiceContext serviceContext = ServiceContextThreadLocal.getServiceContext();
+
+				Date date = new Date();
+			</#if>
+
 				if (serviceContext == null) {
-					${entity.variableName}.setModifiedDate(now);
+					${entity.variableName}.setModifiedDate(date);
 				}
 				else {
-					${entity.variableName}.setModifiedDate(serviceContext.getModifiedDate(now));
+					${entity.variableName}.setModifiedDate(serviceContext.getModifiedDate(date));
 				}
 			}
 		</#if>

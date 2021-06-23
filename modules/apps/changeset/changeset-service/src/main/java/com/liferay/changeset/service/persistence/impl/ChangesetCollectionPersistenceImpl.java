@@ -2715,25 +2715,25 @@ public class ChangesetCollectionPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (changesetCollection.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				changesetCollection.setCreateDate(now);
+				changesetCollection.setCreateDate(date);
 			}
 			else {
 				changesetCollection.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!changesetCollectionModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				changesetCollection.setModifiedDate(now);
+				changesetCollection.setModifiedDate(date);
 			}
 			else {
 				changesetCollection.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

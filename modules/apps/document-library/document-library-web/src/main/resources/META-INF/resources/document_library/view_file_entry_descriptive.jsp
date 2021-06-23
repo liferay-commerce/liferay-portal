@@ -81,7 +81,7 @@ else {
 			).setRedirect(
 				HttpUtil.removeParameter(currentURL, liferayPortletResponse.getNamespace() + "ajax")
 			).setParameter(
-				"fileEntryId", String.valueOf(fileEntry.getFileEntryId())
+				"fileEntryId", fileEntry.getFileEntryId()
 			).buildString()
 		%>'
 	>

@@ -351,6 +351,7 @@ information.
 				<arg value="log" />
 				<arg value="--format=%s" />
 				<arg value="${latest.artifact.git.id}..HEAD" />
+				<arg value=":(exclude)test" />
 				<arg value="." />
 			</exec>
 

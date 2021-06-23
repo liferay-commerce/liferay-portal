@@ -22,10 +22,18 @@ import com.liferay.asset.list.model.AssetListEntry;
 import com.liferay.asset.list.model.AssetListEntryUsage;
 import com.liferay.asset.list.service.AssetListEntryLocalServiceUtil;
 import com.liferay.asset.list.service.AssetListEntryUsageLocalServiceUtil;
+import com.liferay.asset.util.AssetPublisherAddItemHolder;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentEntryLinkLocalServiceUtil;
+import com.liferay.info.item.InfoItemServiceTracker;
+import com.liferay.info.list.provider.InfoItemRelatedListProvider;
 import com.liferay.info.list.provider.InfoListProvider;
+import com.liferay.info.list.provider.item.selector.criterion.InfoListProviderItemSelectorReturnType;
+import com.liferay.item.selector.criteria.InfoListItemSelectorReturnType;
+import com.liferay.layout.content.page.editor.web.internal.info.item.InfoItemServiceTrackerUtil;
+import com.liferay.layout.content.page.editor.web.internal.info.list.provider.InfoListProviderTrackerUtil;
+import com.liferay.layout.content.page.editor.web.internal.security.permission.resource.ModelResourcePermissionUtil;
 import com.liferay.layout.content.page.editor.web.internal.util.layout.structure.LayoutStructureUtil;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
@@ -37,15 +45,26 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.portlet.LiferayWindowState;
+import com.liferay.portal.kernel.portlet.PortletProvider;
+import com.liferay.portal.kernel.portlet.PortletProviderUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.taglib.security.PermissionsURLTag;
 
 import java.util.HashSet;
 import java.util.List;
@@ -53,7 +72,10 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.portlet.PortletURL;
+
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Víctor Galán
@@ -61,7 +83,8 @@ import javax.servlet.http.HttpServletRequest;
 public class AssetListEntryUsagesUtil {
 
 	public static JSONArray getPageContentsJSONArray(
-			HttpServletRequest httpServletRequest, long plid)
+			HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse, long plid)
 		throws PortalException {
 
 		JSONArray mappedContentsJSONArray = JSONFactoryUtil.createJSONArray();
@@ -86,7 +109,8 @@ public class AssetListEntryUsagesUtil {
 
 			mappedContentsJSONArray.put(
 				_getPageContentJSONObject(
-					assetListEntryUsage, httpServletRequest));
+					assetListEntryUsage, httpServletRequest,
+					httpServletResponse));
 
 			uniqueAssetListEntryUsagesKeys.add(
 				_generateUniqueLayoutClassedModelUsageKey(assetListEntryUsage));
@@ -117,6 +141,177 @@ public class AssetListEntryUsagesUtil {
 		return typeLabel + " - " + subtypeLabel;
 	}
 
+	private static JSONObject _getAssetListEntryActionsJSONObject(
+		AssetListEntry assetListEntry, HttpServletRequest httpServletRequest,
+		HttpServletResponse httpServletResponse, String redirect) {
+
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+
+		String editURL = _getAssetListEntryEditURL(
+			assetListEntry, httpServletRequest, redirect);
+
+		if (Validator.isNotNull(editURL)) {
+			jsonObject.put("editURL", editURL);
+		}
+
+		String permissionsURL = _getAssetListEntryPermissionsURL(
+			assetListEntry, httpServletRequest);
+
+		if (Validator.isNotNull(permissionsURL)) {
+			jsonObject.put("permissionsURL", permissionsURL);
+		}
+
+		String viewItemsURL = _getAssetListEntryViewItemsURL(
+			assetListEntry, httpServletRequest, redirect);
+
+		if (Validator.isNotNull(viewItemsURL)) {
+			jsonObject.put("viewItemsURL", viewItemsURL);
+		}
+
+		try {
+			JSONArray addItemsJSONArray = _getAssetListEntryAddItemsJSONArray(
+				assetListEntry, httpServletRequest, httpServletResponse);
+
+			if ((addItemsJSONArray != null) &&
+				(addItemsJSONArray.length() > 0)) {
+
+				jsonObject.put("addItems", addItemsJSONArray);
+			}
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception, exception);
+			}
+		}
+
+		return jsonObject;
+	}
+
+	private static JSONArray _getAssetListEntryAddItemsJSONArray(
+			AssetListEntry assetListEntry,
+			HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse)
+		throws Exception {
+
+		JSONArray addItemsJSONArray = JSONFactoryUtil.createJSONArray();
+
+		List<AssetPublisherAddItemHolder> assetPublisherAddItemHolders =
+			AssetHelperUtil.getAssetPublisherAddItemHolders(
+				assetListEntry, httpServletRequest, httpServletResponse);
+
+		for (AssetPublisherAddItemHolder assetPublisherAddItemHolder :
+				assetPublisherAddItemHolders) {
+
+			addItemsJSONArray.put(
+				JSONUtil.put(
+					"href", assetPublisherAddItemHolder.getPortletURL()
+				).put(
+					"label", assetPublisherAddItemHolder.getModelResource()
+				));
+		}
+
+		return addItemsJSONArray;
+	}
+
+	private static String _getAssetListEntryEditURL(
+		AssetListEntry assetListEntry, HttpServletRequest httpServletRequest,
+		String redirect) {
+
+		PortletURL portletURL = null;
+
+		try {
+			portletURL = PortletProviderUtil.getPortletURL(
+				httpServletRequest, AssetListEntry.class.getName(),
+				PortletProvider.Action.EDIT);
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException, portalException);
+			}
+		}
+
+		if (portletURL == null) {
+			return StringPool.BLANK;
+		}
+
+		portletURL.setParameter("redirect", redirect);
+		portletURL.setParameter("backURL", redirect);
+
+		portletURL.setParameter(
+			"assetListEntryId",
+			String.valueOf(assetListEntry.getAssetListEntryId()));
+
+		return portletURL.toString();
+	}
+
+	private static String _getAssetListEntryPermissionsURL(
+		AssetListEntry assetListEntry, HttpServletRequest httpServletRequest) {
+
+		String permissionsURL = null;
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		if (ModelResourcePermissionUtil.contains(
+				themeDisplay.getPermissionChecker(),
+				AssetListEntry.class.getName(),
+				assetListEntry.getAssetListEntryId(), ActionKeys.PERMISSIONS)) {
+
+			try {
+				permissionsURL = PermissionsURLTag.doTag(
+					StringPool.BLANK, AssetListEntry.class.getName(),
+					HtmlUtil.escape(assetListEntry.getTitle()), null,
+					String.valueOf(assetListEntry.getAssetListEntryId()),
+					LiferayWindowState.POP_UP.toString(), null,
+					httpServletRequest);
+			}
+			catch (Exception exception) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(exception, exception);
+				}
+			}
+		}
+
+		return permissionsURL;
+	}
+
+	private static String _getAssetListEntryViewItemsURL(
+		AssetListEntry assetListEntry, HttpServletRequest httpServletRequest,
+		String redirect) {
+
+		PortletURL portletURL = null;
+
+		try {
+			portletURL = PortletProviderUtil.getPortletURL(
+				httpServletRequest, AssetListEntry.class.getName(),
+				PortletProvider.Action.BROWSE);
+
+			if (portletURL == null) {
+				return StringPool.BLANK;
+			}
+
+			portletURL.setParameter("redirect", redirect);
+
+			portletURL.setParameter(
+				"collectionPK",
+				String.valueOf(assetListEntry.getAssetListEntryId()));
+			portletURL.setParameter(
+				"collectionType",
+				InfoListItemSelectorReturnType.class.getName());
+			portletURL.setParameter(
+				"showActions", String.valueOf(Boolean.TRUE));
+			portletURL.setWindowState(LiferayWindowState.POP_UP);
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception, exception);
+			}
+		}
+
+		return portletURL.toString();
+	}
+
 	private static AssetRendererFactory<?> _getAssetRendererFactory(
 		String className) {
 
@@ -128,6 +323,58 @@ public class AssetListEntryUsagesUtil {
 
 		return AssetRendererFactoryRegistryUtil.
 			getAssetRendererFactoryByClassName(className);
+	}
+
+	private static JSONObject _getInfoListProviderActionsJSONObject(
+		InfoListProvider<?> infoListProvider,
+		HttpServletRequest httpServletRequest, String redirect) {
+
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+
+		String viewItemsURL = _getInfoListProviderViewItemsURL(
+			infoListProvider, httpServletRequest, redirect);
+
+		if (Validator.isNotNull(viewItemsURL)) {
+			jsonObject.put("viewItemsURL", viewItemsURL);
+		}
+
+		return jsonObject;
+	}
+
+	private static String _getInfoListProviderViewItemsURL(
+		InfoListProvider<?> infoListProvider,
+		HttpServletRequest httpServletRequest, String redirect) {
+
+		PortletURL portletURL = null;
+
+		try {
+			portletURL = PortletProviderUtil.getPortletURL(
+				httpServletRequest, AssetListEntry.class.getName(),
+				PortletProvider.Action.BROWSE);
+
+			if (portletURL == null) {
+				return StringPool.BLANK;
+			}
+
+			portletURL.setParameter("redirect", redirect);
+
+			portletURL.setParameter(
+				"collectionPK", String.valueOf(infoListProvider.getKey()));
+			portletURL.setParameter(
+				"collectionType",
+				InfoListProviderItemSelectorReturnType.class.getName());
+			portletURL.setParameter(
+				"showActions", String.valueOf(Boolean.TRUE));
+
+			portletURL.setWindowState(LiferayWindowState.POP_UP);
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception, exception);
+			}
+		}
+
+		return portletURL.toString();
 	}
 
 	private static LayoutStructure _getLayoutStructure(
@@ -145,11 +392,14 @@ public class AssetListEntryUsagesUtil {
 
 	private static JSONObject _getPageContentJSONObject(
 		AssetListEntryUsage assetListEntryUsage,
-		HttpServletRequest httpServletRequest) {
+		HttpServletRequest httpServletRequest,
+		HttpServletResponse httpServletResponse) {
 
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
+
+		String redirect = _getRedirect(httpServletRequest);
 
 		JSONObject mappedContentJSONObject = JSONUtil.put(
 			"className", assetListEntryUsage.getClassName()
@@ -173,6 +423,11 @@ public class AssetListEntryUsagesUtil {
 
 			if (assetListEntry != null) {
 				mappedContentJSONObject.put(
+					"actions",
+					_getAssetListEntryActionsJSONObject(
+						assetListEntry, httpServletRequest, httpServletResponse,
+						redirect)
+				).put(
 					"subtype",
 					_getAssetEntryListSubtypeLabel(
 						assetListEntry, themeDisplay.getLocale())
@@ -192,6 +447,10 @@ public class AssetListEntryUsagesUtil {
 
 			if (infoListProvider != null) {
 				mappedContentJSONObject.put(
+					"actions",
+					_getInfoListProviderActionsJSONObject(
+						infoListProvider, httpServletRequest, redirect)
+				).put(
 					"subtype",
 					ResourceActionsUtil.getModelResource(
 						themeDisplay.getLocale(),
@@ -200,9 +459,46 @@ public class AssetListEntryUsagesUtil {
 					"title", infoListProvider.getLabel(themeDisplay.getLocale())
 				);
 			}
+			else {
+				InfoItemServiceTracker infoItemServiceTracker =
+					InfoItemServiceTrackerUtil.getInfoItemServiceTracker();
+
+				InfoItemRelatedListProvider infoItemRelatedListProvider =
+					infoItemServiceTracker.getInfoItemService(
+						InfoItemRelatedListProvider.class,
+						assetListEntryUsage.getKey());
+
+				if (infoItemRelatedListProvider != null) {
+					mappedContentJSONObject.put(
+						"title",
+						infoItemRelatedListProvider.getLabel(
+							themeDisplay.getLocale()));
+				}
+			}
 		}
 
 		return mappedContentJSONObject;
+	}
+
+	private static String _getRedirect(HttpServletRequest httpServletRequest) {
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		Layout layout = themeDisplay.getLayout();
+
+		try {
+			return HttpUtil.setParameter(
+				PortalUtil.getLayoutRelativeURL(layout, themeDisplay),
+				"p_l_mode", Constants.EDIT);
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception, exception);
+			}
+		}
+
+		return themeDisplay.getURLCurrent();
 	}
 
 	private static String _getSubtypeLabel(
@@ -274,5 +570,8 @@ public class AssetListEntryUsagesUtil {
 
 		return false;
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		AssetListEntryUsagesUtil.class);
 
 }

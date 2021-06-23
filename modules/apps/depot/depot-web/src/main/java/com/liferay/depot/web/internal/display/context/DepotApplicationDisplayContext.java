@@ -104,7 +104,7 @@ public class DepotApplicationDisplayContext {
 		).setParameter(
 			"groupType", "site"
 		).setParameter(
-			"showGroupSelector", Boolean.TRUE.toString()
+			"showGroupSelector", true
 		).buildString();
 	}
 

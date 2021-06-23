@@ -27,6 +27,11 @@ public class YMLSourceProcessorTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
+	public void testIncorrectWhitespace() throws Exception {
+		test("IncorrectWhitespace.testyaml");
+	}
+
+	@Test
 	public void testIncorrectWhitespaceOnHelmYaml() throws Exception {
 		test("IncorrectWhitespaceOnHelmYaml.testyaml");
 	}

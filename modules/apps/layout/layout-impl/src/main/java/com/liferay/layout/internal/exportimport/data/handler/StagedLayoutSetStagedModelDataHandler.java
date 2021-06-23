@@ -14,6 +14,7 @@
 
 package com.liferay.layout.internal.exportimport.data.handler;
 
+import com.liferay.exportimport.content.processor.ExportImportContentProcessor;
 import com.liferay.exportimport.data.handler.base.BaseStagedModelDataHandler;
 import com.liferay.exportimport.kernel.lar.ExportImportDateUtil;
 import com.liferay.exportimport.kernel.lar.ExportImportHelper;
@@ -369,7 +370,7 @@ public class StagedLayoutSetStagedModelDataHandler
 			"lfr-theme:regular:show-maximize-minimize-application-links",
 			Boolean.FALSE.toString(),
 			"lfr-theme:regular:wrap-widget-page-content",
-			Boolean.TRUE.toString());
+			Boolean.TRUE.toString(), "javascript", null);
 
 		// Last merge time
 
@@ -523,8 +524,9 @@ public class StagedLayoutSetStagedModelDataHandler
 	}
 
 	protected void exportTheme(
-		PortletDataContext portletDataContext,
-		StagedLayoutSet stagedLayoutSet) {
+			PortletDataContext portletDataContext,
+			StagedLayoutSet stagedLayoutSet)
+		throws Exception {
 
 		boolean exportThemeSettings = MapUtil.getBoolean(
 			portletDataContext.getParameterMap(),
@@ -542,6 +544,14 @@ public class StagedLayoutSetStagedModelDataHandler
 
 			return;
 		}
+
+		String css =
+			_dlReferencesExportImportContentProcessor.
+				replaceExportContentReferences(
+					portletDataContext, stagedLayoutSet, layoutSet.getCss(),
+					true, false);
+
+		layoutSet.setCss(css);
 
 		long layoutSetBranchId = MapUtil.getLong(
 			portletDataContext.getParameterMap(), "layoutSetBranchId");
@@ -649,6 +659,14 @@ public class StagedLayoutSetStagedModelDataHandler
 		LayoutSet layoutSet = stagedLayoutSet.getLayoutSet();
 
 		try {
+			String css =
+				_dlReferencesExportImportContentProcessor.
+					replaceImportContentReferences(
+						portletDataContext, stagedLayoutSet,
+						layoutSet.getCss());
+
+			layoutSet.setCss(css);
+
 			_themeImporter.importTheme(portletDataContext, layoutSet);
 		}
 		catch (Exception exception) {
@@ -899,6 +917,10 @@ public class StagedLayoutSetStagedModelDataHandler
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		StagedLayoutSetStagedModelDataHandler.class);
+
+	@Reference(target = "(content.processor.type=DLReferences)")
+	private ExportImportContentProcessor<String>
+		_dlReferencesExportImportContentProcessor;
 
 	@Reference
 	private ExportImportHelper _exportImportHelper;

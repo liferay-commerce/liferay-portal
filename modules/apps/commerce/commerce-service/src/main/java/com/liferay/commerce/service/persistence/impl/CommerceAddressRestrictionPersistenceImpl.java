@@ -1658,25 +1658,25 @@ public class CommerceAddressRestrictionPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commerceAddressRestriction.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commerceAddressRestriction.setCreateDate(now);
+				commerceAddressRestriction.setCreateDate(date);
 			}
 			else {
 				commerceAddressRestriction.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commerceAddressRestrictionModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commerceAddressRestriction.setModifiedDate(now);
+				commerceAddressRestriction.setModifiedDate(date);
 			}
 			else {
 				commerceAddressRestriction.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

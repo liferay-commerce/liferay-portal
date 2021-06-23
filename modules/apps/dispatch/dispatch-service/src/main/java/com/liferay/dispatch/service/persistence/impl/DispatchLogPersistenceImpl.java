@@ -1357,24 +1357,24 @@ public class DispatchLogPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (dispatchLog.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				dispatchLog.setCreateDate(now);
+				dispatchLog.setCreateDate(date);
 			}
 			else {
-				dispatchLog.setCreateDate(serviceContext.getCreateDate(now));
+				dispatchLog.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!dispatchLogModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				dispatchLog.setModifiedDate(now);
+				dispatchLog.setModifiedDate(date);
 			}
 			else {
 				dispatchLog.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

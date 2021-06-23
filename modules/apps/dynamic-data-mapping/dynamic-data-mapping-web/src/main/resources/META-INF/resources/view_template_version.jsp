@@ -34,7 +34,7 @@ PortletURL backURL = PortletURLBuilder.createRenderURL(
 ).setRedirect(
 	redirect
 ).setParameter(
-	"templateId", String.valueOf(template.getTemplateId())
+	"templateId", template.getTemplateId()
 ).build();
 %>
 

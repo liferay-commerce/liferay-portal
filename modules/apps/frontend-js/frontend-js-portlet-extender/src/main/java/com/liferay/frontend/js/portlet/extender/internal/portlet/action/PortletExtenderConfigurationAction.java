@@ -258,12 +258,12 @@ public class PortletExtenderConfigurationAction
 			"editConfiguration"
 		).setMVCPath(
 			"/edit_configuration.jsp"
+		).setPortletResource(
+			portletDisplay.getPortletResource()
 		).setParameter(
 			"p_auth", AuthTokenUtil.getToken(httpServletRequest)
 		).setParameter(
-			"portletConfiguration", Boolean.TRUE.toString()
-		).setParameter(
-			"portletResource", portletDisplay.getPortletResource()
+			"portletConfiguration", true
 		).setParameter(
 			"previewWidth", StringPool.BLANK
 		).setParameter(

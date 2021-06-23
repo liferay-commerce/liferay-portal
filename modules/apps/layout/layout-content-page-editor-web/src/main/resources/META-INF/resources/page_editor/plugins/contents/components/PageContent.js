@@ -13,12 +13,11 @@
  */
 
 import ClayButton from '@clayui/button';
-import ClayDropDown from '@clayui/drop-down';
+import {ClayDropDownWithItems} from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
 import ClayLabel from '@clayui/label';
 import ClayLayout from '@clayui/layout';
 import classNames from 'classnames';
-import {openModal} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useEffect, useState} from 'react';
 
@@ -28,11 +27,18 @@ import {
 	useHoverItem,
 	useHoveredItemId,
 } from '../../../app/contexts/ControlsContext';
-import {useSelector} from '../../../app/contexts/StoreContext';
+import {
+	useSelector,
+	useSelectorCallback,
+} from '../../../app/contexts/StoreContext';
+import {selectPageContentDropdownItems} from '../../../app/selectors/selectPageContentDropdownItems';
 
 export default function PageContent(props) {
 	const [active, setActive] = useState(false);
-	const {editURL, permissionsURL, viewUsagesURL} = props.actions;
+	const dropdownItems = useSelectorCallback(
+		selectPageContentDropdownItems(props.classPK),
+		[props.classPK]
+	);
 	const hoverItem = useHoverItem();
 	const hoveredItemId = useHoveredItemId();
 	const fragmentEntryLinks = useSelector((state) => state.fragmentEntryLinks);
@@ -92,7 +98,7 @@ export default function PageContent(props) {
 						{props.title}
 					</strong>
 
-					<span className="small text-secondary">{props.name}</span>
+					<span className="small text-secondary">{props.type}</span>
 
 					<span className="small text-secondary">
 						{props.usagesCount === 1
@@ -115,9 +121,10 @@ export default function PageContent(props) {
 					</div>
 				</ClayLayout.ContentCol>
 
-				{(editURL || permissionsURL || viewUsagesURL) && (
-					<ClayDropDown
+				{dropdownItems && (
+					<ClayDropDownWithItems
 						active={active}
+						items={dropdownItems}
 						onActiveChange={setActive}
 						trigger={
 							<ClayButton
@@ -130,47 +137,7 @@ export default function PageContent(props) {
 								<ClayIcon symbol="ellipsis-v" />
 							</ClayButton>
 						}
-					>
-						<ClayDropDown.ItemList>
-							{editURL && (
-								<ClayDropDown.Item href={editURL} key="editURL">
-									{Liferay.Language.get('edit')}
-								</ClayDropDown.Item>
-							)}
-
-							{permissionsURL && (
-								<ClayDropDown.Item
-									key="permissionsURL"
-									onClick={() => {
-										openModal({
-											title: Liferay.Language.get(
-												'permissions'
-											),
-											url: permissionsURL,
-										});
-									}}
-								>
-									{Liferay.Language.get('permissions')}
-								</ClayDropDown.Item>
-							)}
-
-							{viewUsagesURL && (
-								<ClayDropDown.Item
-									key="viewUsagesURL"
-									onClick={() => {
-										openModal({
-											title: Liferay.Language.get(
-												'view-usages'
-											),
-											url: viewUsagesURL,
-										});
-									}}
-								>
-									{Liferay.Language.get('view-usages')}
-								</ClayDropDown.Item>
-							)}
-						</ClayDropDown.ItemList>
-					</ClayDropDown>
+					/>
 				)}
 			</div>
 		</li>
@@ -178,13 +145,13 @@ export default function PageContent(props) {
 }
 
 PageContent.propTypes = {
-	actions: PropTypes.object,
-	name: PropTypes.string.isRequired,
+	classPK: PropTypes.string,
 	status: PropTypes.shape({
 		hasApprovedVersion: PropTypes.bool,
 		label: PropTypes.string,
 		style: PropTypes.string,
 	}),
 	title: PropTypes.string.isRequired,
+	type: PropTypes.string.isRequired,
 	usagesCount: PropTypes.number.isRequired,
 };

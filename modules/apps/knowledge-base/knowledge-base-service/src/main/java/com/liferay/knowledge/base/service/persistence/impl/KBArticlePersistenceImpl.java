@@ -33671,23 +33671,23 @@ public class KBArticlePersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (kbArticle.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				kbArticle.setCreateDate(now);
+				kbArticle.setCreateDate(date);
 			}
 			else {
-				kbArticle.setCreateDate(serviceContext.getCreateDate(now));
+				kbArticle.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!kbArticleModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				kbArticle.setModifiedDate(now);
+				kbArticle.setModifiedDate(date);
 			}
 			else {
-				kbArticle.setModifiedDate(serviceContext.getModifiedDate(now));
+				kbArticle.setModifiedDate(serviceContext.getModifiedDate(date));
 			}
 		}
 

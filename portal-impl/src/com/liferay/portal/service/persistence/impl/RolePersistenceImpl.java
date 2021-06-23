@@ -10197,23 +10197,23 @@ public class RolePersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (role.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				role.setCreateDate(now);
+				role.setCreateDate(date);
 			}
 			else {
-				role.setCreateDate(serviceContext.getCreateDate(now));
+				role.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!roleModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				role.setModifiedDate(now);
+				role.setModifiedDate(date);
 			}
 			else {
-				role.setModifiedDate(serviceContext.getModifiedDate(now));
+				role.setModifiedDate(serviceContext.getModifiedDate(date));
 			}
 		}
 

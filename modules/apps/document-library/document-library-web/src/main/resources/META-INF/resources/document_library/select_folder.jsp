@@ -86,7 +86,7 @@ DLVisualizationHelper dlVisualizationHelper = new DLVisualizationHelper(dlReques
 				).setParameter(
 					"folderId", folderId
 				).setParameter(
-					"ignoreRootFolder", Boolean.TRUE.toString()
+					"ignoreRootFolder", true
 				).setParameter(
 					"selectedFolderId", selectedFolderId
 				).setParameter(

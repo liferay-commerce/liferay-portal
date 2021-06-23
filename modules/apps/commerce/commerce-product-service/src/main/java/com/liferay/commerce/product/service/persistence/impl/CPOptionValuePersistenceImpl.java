@@ -2985,24 +2985,24 @@ public class CPOptionValuePersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (cpOptionValue.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				cpOptionValue.setCreateDate(now);
+				cpOptionValue.setCreateDate(date);
 			}
 			else {
-				cpOptionValue.setCreateDate(serviceContext.getCreateDate(now));
+				cpOptionValue.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!cpOptionValueModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				cpOptionValue.setModifiedDate(now);
+				cpOptionValue.setModifiedDate(date);
 			}
 			else {
 				cpOptionValue.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

@@ -92,7 +92,7 @@ public class CalendarResourceLocalServiceImpl
 			code = StringUtil.toUpperCase(StringUtil.trim(code));
 		}
 
-		Date now = new Date();
+		Date date = new Date();
 
 		validate(groupId, classNameId, classPK, code, nameMap);
 
@@ -104,8 +104,8 @@ public class CalendarResourceLocalServiceImpl
 		calendarResource.setCompanyId(user.getCompanyId());
 		calendarResource.setUserId(user.getUserId());
 		calendarResource.setUserName(user.getFullName());
-		calendarResource.setCreateDate(serviceContext.getCreateDate(now));
-		calendarResource.setModifiedDate(serviceContext.getModifiedDate(now));
+		calendarResource.setCreateDate(serviceContext.getCreateDate(date));
+		calendarResource.setModifiedDate(serviceContext.getModifiedDate(date));
 		calendarResource.setClassNameId(classNameId);
 		calendarResource.setClassPK(classPK);
 		calendarResource.setClassUuid(classUuid);

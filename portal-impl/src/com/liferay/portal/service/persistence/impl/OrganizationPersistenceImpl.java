@@ -9472,24 +9472,24 @@ public class OrganizationPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (organization.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				organization.setCreateDate(now);
+				organization.setCreateDate(date);
 			}
 			else {
-				organization.setCreateDate(serviceContext.getCreateDate(now));
+				organization.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!organizationModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				organization.setModifiedDate(now);
+				organization.setModifiedDate(date);
 			}
 			else {
 				organization.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

@@ -1,5 +1,27 @@
 # Poshi Runner Change Log
 
+## 1.0.307
+
+### Other
+
+* [LRCI-2320](https://issues.liferay.com/browse/LRCI-2320) - SF Failures in test.cloud-10-0-10-111.lax.liferay.com.properties, test.case.method.names.properties and sql.profile-dxp.properties
+
+### Utils
+
+* [POSHI-171](https://issues.liferay.com/browse/POSHI-171) - Allow JSONCurlUtil to pass along URLs as parameters in the curl
+* [POSHI-172](https://issues.liferay.com/browse/POSHI-172) - Add JSONCurlUtil method that removes quotes from the json-path query result
+* [POSHI-173](https://issues.liferay.com/browse/POSHI-173) - Provide easy and clean delimited String lists usage in Poshi
+
+## 1.0.306
+
+### PQL
+
+* [LRCI-2310](https://issues.liferay.com/browse/LRCI-2310) - Add ability to create PQL to match by class name & case name
+
+### Utils
+
+* [POSHI-169](https://issues.liferay.com/browse/POSHI-169) - As a test engineer, it should be possible to process/parse a Har file returned from BrowerMob
+
 ## 1.0.304
 
 ### Core

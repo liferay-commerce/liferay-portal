@@ -3065,25 +3065,25 @@ public class KaleoInstanceTokenPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (kaleoInstanceToken.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				kaleoInstanceToken.setCreateDate(now);
+				kaleoInstanceToken.setCreateDate(date);
 			}
 			else {
 				kaleoInstanceToken.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!kaleoInstanceTokenModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				kaleoInstanceToken.setModifiedDate(now);
+				kaleoInstanceToken.setModifiedDate(date);
 			}
 			else {
 				kaleoInstanceToken.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

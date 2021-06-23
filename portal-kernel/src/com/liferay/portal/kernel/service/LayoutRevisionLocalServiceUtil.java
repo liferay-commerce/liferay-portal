@@ -267,6 +267,13 @@ public class LayoutRevisionLocalServiceUtil {
 		return getService().fetchLatestLayoutRevision(layoutSetBranchId, plid);
 	}
 
+	public static LayoutRevision fetchLatestLayoutRevision(
+		long layoutSetBranchId, long layoutBranchId, long plid) {
+
+		return getService().fetchLatestLayoutRevision(
+			layoutSetBranchId, layoutBranchId, plid);
+	}
+
 	public static LayoutRevision fetchLayoutRevision(long layoutRevisionId) {
 		return getService().fetchLayoutRevision(layoutRevisionId);
 	}

@@ -33,7 +33,6 @@ import lang from '../../utils/lang.es';
 import {
 	dateToInternationalHuman,
 	historyPushWithSlug,
-	isWebCrawler,
 	useDebounceCallback,
 } from '../../utils/utils.es';
 
@@ -57,9 +56,9 @@ export default withRouter(({history, location}) => {
 	const [searchBoxValue, setSearchBoxValue] = useState('');
 	const [loading, setLoading] = useState(true);
 	const [orderBy, setOrderBy] = useState('number-of-usages');
-	const [page, setPage] = useState(1);
-	const [pageSize, setPageSize] = useState(20);
-	const [search, setSearch] = useState('');
+	const [page, setPage] = useState(null);
+	const [pageSize, setPageSize] = useState(null);
+	const [search, setSearch] = useState(null);
 	const [tags, setTags] = useState([]);
 
 	const [tagsByDate] = useManualQuery(getTagsOrderByDateCreatedQuery, {
@@ -71,6 +70,10 @@ export default withRouter(({history, location}) => {
 	});
 
 	useEffect(() => {
+		if (!page || !pageSize || search == null) {
+			return;
+		}
+
 		const fn =
 			orderBy === 'latest-created'
 				? tagsByDate().then(({data, loading}) => ({
@@ -116,16 +119,8 @@ export default withRouter(({history, location}) => {
 
 	const historyPushParser = historyPushWithSlug(history.push);
 
-	function buildURL(needHashtag, search, page, pageSize) {
-		let pathname = window.location.pathname;
-
-		pathname = pathname.endsWith('/') ? pathname.slice(0, -1) : pathname;
-
-		let url = isWebCrawler()
-			? pathname + '/-/tags?'
-			: needHashtag
-			? pathname + '/#/tags?'
-			: '/tags?';
+	function buildURL(search, page, pageSize) {
+		let url = '/tags?';
 
 		if (search) {
 			url += `search=${search}&`;
@@ -136,14 +131,16 @@ export default withRouter(({history, location}) => {
 		return url;
 	}
 
+	function changePage(search, page, pageSize) {
+		historyPushParser(buildURL(search, page, pageSize));
+	}
+
 	const orderByOptions = getOrderByOptions();
 
-	const [debounceCallback] = useDebounceCallback((needHashtag, search) => {
-		setLoading(true);
-		historyPushParser(buildURL(needHashtag, search, 1, pageSize));
-	}, 500);
-
-	const hrefConstructor = (page) => buildURL(true, search, page, pageSize);
+	const [debounceCallback] = useDebounceCallback(
+		(search) => changePage(search, 1, 20),
+		500
+	);
 
 	return (
 		<>
@@ -196,10 +193,7 @@ export default withRouter(({history, location}) => {
 									}
 									onChange={(event) => {
 										setSearchBoxValue(event.target.value);
-										debounceCallback(
-											false,
-											event.target.value
-										);
+										debounceCallback(event.target.value);
 									}}
 									placeholder={Liferay.Language.get('search')}
 									type="text"
@@ -217,7 +211,7 @@ export default withRouter(({history, location}) => {
 											<ClayButtonWithIcon
 												displayType="unstyled"
 												onClick={() => {
-													debounceCallback(false, '');
+													debounceCallback('');
 												}}
 												symbol="times-circle"
 												type="submit"
@@ -239,7 +233,12 @@ export default withRouter(({history, location}) => {
 					<PaginatedList
 						activeDelta={pageSize}
 						activePage={page}
-						changeDelta={setPageSize}
+						changeDelta={(pageSize) =>
+							changePage(search, page, pageSize)
+						}
+						changePage={(page) =>
+							changePage(search, page, pageSize)
+						}
 						data={tags}
 						emptyState={
 							<ClayEmptyState
@@ -249,7 +248,6 @@ export default withRouter(({history, location}) => {
 								)}
 							/>
 						}
-						hrefConstructor={hrefConstructor}
 						loading={loading}
 					>
 						{(tag) => (

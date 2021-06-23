@@ -22,7 +22,7 @@ String servletPath = GetterUtil.getString(request.getServletPath());
 PortletURL baseURL = PortletURLBuilder.createRenderURL(
 	liferayPortletResponse
 ).setParameter(
-	"p_u_i_d", String.valueOf(selectedUser.getUserId())
+	"p_u_i_d", selectedUser.getUserId()
 ).build();
 %>
 

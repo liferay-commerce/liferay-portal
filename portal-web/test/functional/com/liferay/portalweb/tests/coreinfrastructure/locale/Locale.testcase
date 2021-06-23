@@ -30,7 +30,7 @@ definition {
 		property custom.properties = "company.default.locale=es_ES${line.separator}locales.enabled=es_ES${line.separator}locales=es_ES";
 		property test.name.skip.portal.instance = "Locale#AddFormWithSpanishAsOnlyLocale";
 
-		User.firstLoginPG(
+		User.firstLoginUI(
 			localization = "ES",
 			localizedAgree = "Acepto",
 			localizedAnswer = "Respuesta",
@@ -410,7 +410,7 @@ definition {
 
 	@priority = "4"
 	test RestrictEnabledLocales {
-		property custom.properties = "locales.enabled=zh_CN,en_US,fr_FR,de_DE,es_ES${line.separator}locales=zh_CN-en_US,fr_FR,de_DE,es_ES,pt_BR,hu_HU";
+		property custom.properties = "locales.enabled=zh_CN,en_US,fr_FR,de_DE,es_ES${line.separator}locales=zh_CN,en_US,fr_FR,de_DE,es_ES,pt_BR,hu_HU";
 		property test.name.skip.portal.instance = "Locale#RestrictEnabledLocales";
 
 		User.firstLoginPG();
@@ -440,6 +440,7 @@ definition {
 	@priority = "3"
 	test UserLockoutShowsTimezoneInformation {
 		property test.name.skip.portal.instance = "Locale#UserLockoutShowsTimezoneInformation";
+		property testray.component.names = "Password Policies";
 		property user.time.zone = "UTC";
 
 		User.firstLoginPG();
@@ -462,11 +463,10 @@ definition {
 			panel = "Control Panel",
 			portlet = "Password Policies");
 
-		PasswordPoliciesNavigator.gotoPolicy(passwordPolicyName = "Default Password Policy");
-
-		PasswordPolicies.enableDefaultPasswordPolicyLockout();
-
-		PasswordPolicies.setLockoutDuration(duration = "5 Minutes");
+		PasswordPolicies.enableLockout(
+			lockoutDuration = "5 Minutes",
+			passwordPolicyName = "Default Password Policy",
+			passwordPolicyPanel = "Lockout");
 
 		User.logoutPG();
 
@@ -479,7 +479,7 @@ definition {
 
 		task ("Assert Timezone is included with account lockout message.") {
 			AssertTextEquals.assertPartialText(
-				locator1 = "Message#ERROR_1",
+				locator1 = "Message#ERROR_DISMISSIBLE",
 				value1 = "CEST.");
 		}
 	}
@@ -576,14 +576,14 @@ definition {
 			portalInstanceId = "www.able.com",
 			virtualHost = "www.able.com");
 
-		User.firstLoginPG(
+		User.firstLoginUI(
 			localization = "IT",
 			localizedAgree = "Sono d'accordo",
 			localizedAnswer = "Risposta",
 			localizedSaveButton = "Salva",
 			password = "test",
-			userEmailAddress = "test@www.able.com",
-			virtualHostsURL = "http://www.able.com:8080");
+			specificURL = "http://www.able.com:8080",
+			userEmailAddress = "test@www.able.com");
 	}
 
 	@priority = "5"

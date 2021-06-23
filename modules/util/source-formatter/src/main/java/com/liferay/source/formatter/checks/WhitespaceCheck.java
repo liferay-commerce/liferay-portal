@@ -182,6 +182,8 @@ public class WhitespaceCheck extends BaseFileCheck {
 
 		if (javaSource) {
 			linePart = formatIncorrectSyntax(linePart, " ...", "...", false);
+			linePart = formatIncorrectSyntax(linePart, " .", ".", false);
+			linePart = formatIncorrectSyntax(linePart, ". ", ".", false);
 			linePart = formatIncorrectSyntax(linePart, " [", "[", false);
 			linePart = formatIncorrectSyntax(linePart, "{ ", "{", false);
 			linePart = formatIncorrectSyntax(linePart, " }", "}", false);

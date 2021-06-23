@@ -17,12 +17,13 @@ package com.liferay.social.bookmarks.taglib.servlet.taglib;
 import com.liferay.social.bookmarks.SocialBookmark;
 import com.liferay.social.bookmarks.taglib.internal.servlet.ServletContextUtil;
 import com.liferay.social.bookmarks.taglib.internal.util.SocialBookmarksRegistryUtil;
-import com.liferay.taglib.servlet.PipingServletResponse;
+import com.liferay.taglib.servlet.PipingServletResponseFactory;
 import com.liferay.taglib.util.AttributesTagSupport;
 
 import java.io.IOException;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
@@ -39,24 +40,26 @@ public class SocialBookmarkTag extends AttributesTagSupport {
 			SocialBookmark socialBookmark = _getSocialBookmark();
 
 			if (socialBookmark != null) {
-				request.setAttribute(
+				HttpServletRequest httpServletRequest = getRequest();
+
+				httpServletRequest.setAttribute(
 					"liferay-social-bookmarks:bookmark:displayStyle",
 					_displayStyle);
-				request.setAttribute(
+				httpServletRequest.setAttribute(
 					"liferay-social-bookmarks:bookmark:socialBookmark",
 					_getSocialBookmark());
-				request.setAttribute(
+				httpServletRequest.setAttribute(
 					"liferay-social-bookmarks:bookmark:target", _target);
-				request.setAttribute(
+				httpServletRequest.setAttribute(
 					"liferay-social-bookmarks:bookmark:title", _title);
-				request.setAttribute(
+				httpServletRequest.setAttribute(
 					"liferay-social-bookmarks:bookmark:type", _type);
-				request.setAttribute(
+				httpServletRequest.setAttribute(
 					"liferay-social-bookmarks:bookmark:url", _url);
 
 				socialBookmark.render(
-					_target, _title, _url, request,
-					PipingServletResponse.createPipingServletResponse(
+					_target, _title, _url, httpServletRequest,
+					PipingServletResponseFactory.createPipingServletResponse(
 						pageContext));
 			}
 
@@ -75,7 +78,7 @@ public class SocialBookmarkTag extends AttributesTagSupport {
 	public void setPageContext(PageContext pageContext) {
 		super.setPageContext(pageContext);
 
-		servletContext = ServletContextUtil.getServletContext();
+		setServletContext(ServletContextUtil.getServletContext());
 	}
 
 	public void setTarget(String target) {

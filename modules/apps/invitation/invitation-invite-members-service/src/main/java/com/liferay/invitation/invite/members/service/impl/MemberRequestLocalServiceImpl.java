@@ -96,7 +96,7 @@ public class MemberRequestLocalServiceImpl
 			}
 		}
 
-		Date now = new Date();
+		Date date = new Date();
 
 		long memberRequestId = counterLocalService.increment();
 
@@ -107,8 +107,8 @@ public class MemberRequestLocalServiceImpl
 		memberRequest.setCompanyId(user.getCompanyId());
 		memberRequest.setUserId(userId);
 		memberRequest.setUserName(user.getFullName());
-		memberRequest.setCreateDate(now);
-		memberRequest.setModifiedDate(now);
+		memberRequest.setCreateDate(date);
+		memberRequest.setModifiedDate(date);
 		memberRequest.setKey(PortalUUIDUtil.generate());
 		memberRequest.setReceiverUserId(receiverUserId);
 		memberRequest.setInvitedRoleId(invitedRoleId);

@@ -2834,24 +2834,24 @@ public class AccountGroupPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (accountGroup.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				accountGroup.setCreateDate(now);
+				accountGroup.setCreateDate(date);
 			}
 			else {
-				accountGroup.setCreateDate(serviceContext.getCreateDate(now));
+				accountGroup.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!accountGroupModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				accountGroup.setModifiedDate(now);
+				accountGroup.setModifiedDate(date);
 			}
 			else {
 				accountGroup.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

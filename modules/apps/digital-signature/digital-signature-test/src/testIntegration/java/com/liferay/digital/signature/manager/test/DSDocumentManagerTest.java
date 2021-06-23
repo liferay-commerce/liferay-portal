@@ -50,8 +50,6 @@ public class DSDocumentManagerTest {
 
 	@Test
 	public void testGetDSDocumentsAsBytes() throws Exception {
-		Class<?> clazz = getClass();
-
 		DSEnvelope dsEnvelope = _dsEnvelopeManager.addDSEnvelope(
 			TestPropsValues.getCompanyId(), TestPropsValues.getGroupId(),
 			new DSEnvelope() {
@@ -61,8 +59,8 @@ public class DSDocumentManagerTest {
 							{
 								data = Base64.encode(
 									FileUtil.getBytes(
-										clazz.getResourceAsStream(
-											"dependencies/Document.pdf")));
+										getClass(),
+										"dependencies/Document.pdf"));
 								dsDocumentId = "1";
 								name = RandomTestUtil.randomString();
 							}

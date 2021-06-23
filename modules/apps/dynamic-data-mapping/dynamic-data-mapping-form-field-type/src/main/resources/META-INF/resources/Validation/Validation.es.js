@@ -74,7 +74,7 @@ const Validation = ({
 				expression = {
 					name: newState.selectedValidation.name,
 					value: subWords(newState.selectedValidation.template, {
-						name: validation.fieldName,
+						name: validation?.fieldName,
 					}),
 				};
 			}
@@ -122,15 +122,22 @@ const Validation = ({
 		}
 	}, [defaultLanguageId, editingLanguageId, prevEditingLanguageId, value]);
 
+	useEffect(() => {
+		if (readOnly || !visible) {
+			handleChange('enableValidation', false);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [readOnly, visible]);
+
 	return (
 		<ClayForm.Group className="lfr-ddm-form-field-validation">
 			<Checkbox
-				disabled={readOnly}
 				label={label}
 				name="enableValidation"
 				onChange={(event, value) =>
 					handleChange('enableValidation', value)
 				}
+				readOnly={readOnly}
 				showAsSwitcher
 				spritemap={spritemap}
 				value={enableValidation}
@@ -141,7 +148,7 @@ const Validation = ({
 				<>
 					<Select
 						disableEmptyOption
-						label={Liferay.Language.get('if-input')}
+						label={Liferay.Language.get('accept-if-input')}
 						name="selectedValidation"
 						onChange={(event, value) =>
 							handleChange(
@@ -160,7 +167,7 @@ const Validation = ({
 					{selectedValidation.parameterMessage && (
 						<DynamicComponent
 							dataType={dataType}
-							label={Liferay.Language.get('the-value')}
+							label={Liferay.Language.get('value')}
 							name={`${name}_parameter`}
 							onChange={(event) =>
 								handleChange('parameter', event.target.value)
@@ -174,12 +181,12 @@ const Validation = ({
 						/>
 					)}
 					<Text
-						label={Liferay.Language.get('show-error-message')}
+						label={Liferay.Language.get('error-message')}
 						name={`${name}_errorMessage`}
 						onChange={(event) =>
 							handleChange('errorMessage', event.target.value)
 						}
-						placeholder={Liferay.Language.get('show-error-message')}
+						placeholder={Liferay.Language.get('error-message')}
 						readOnly={readOnly}
 						required={false}
 						spritemap={spritemap}

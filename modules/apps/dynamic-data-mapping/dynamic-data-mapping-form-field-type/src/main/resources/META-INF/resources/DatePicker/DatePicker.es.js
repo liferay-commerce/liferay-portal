@@ -122,9 +122,15 @@ const getInitialMonth = (value) => {
 	return moment().toDate();
 };
 
-const getValueForHidden = (value) => {
-	if (moment(value).isValid()) {
-		return moment(value).format('YYYY-MM-DD');
+const getValueForHidden = (value, locale) => {
+	const momentLocale = moment().locale(locale);
+
+	const momentLocaleFormatted = momentLocale.localeData().longDateFormat('L');
+
+	const newMoment = moment(value, momentLocaleFormatted, true);
+
+	if (newMoment.isValid()) {
+		return newMoment.format('YYYY-MM-DD');
 	}
 
 	return '';
@@ -227,7 +233,7 @@ const DatePicker = ({
 				id={name + '_fieldDetails'}
 				name={name}
 				type="hidden"
-				value={getValueForHidden(value)}
+				value={getValueForHidden(value, locale)}
 			/>
 			<ClayDatePicker
 				aria-labelledby={name + '_fieldDetails'}
@@ -266,7 +272,13 @@ const DatePicker = ({
 						return onChange('');
 					}
 
-					if (moment(value).isValid()) {
+					if (
+						moment(
+							value,
+							getLocaleDateFormat(locale),
+							true
+						).isValid()
+					) {
 						onChange(
 							moment(value, getLocaleDateFormat(locale)).format(
 								'L'

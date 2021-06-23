@@ -768,12 +768,7 @@ definition {
 					locator1 = "DDLRecord#FIELD_1",
 					value1 = "${fieldFieldLabel} ${ddlRecordFieldData_1}");
 			}
-			else if ("${field}" == "Number" || "${field}" == "Boolean" || "${field}" == "Color" || "${field}" == "Documents and Media" || "${field}" == "Geolocation" || "${field}" == "Link to Page" || "${field}" == "Radio" || "${field}" == "Select" || "${field}" == "Text") {
-				AssertTextEquals(
-					locator1 = "DDLRecord#FIELD_1",
-					value1 = "${fieldFieldLabel} ${ddlRecordFieldData}");
-			}
-			else {
+			else if ("${field}" == "Decimal" || "${field}" == "Integer") {
 				AssertTextEquals(
 					locator1 = "DDLRecord#FIELD_1",
 					value1 = "${fieldFieldLabel}");
@@ -782,6 +777,11 @@ definition {
 					key_value = "${ddlRecordFieldData}",
 					locator1 = "DDLRecord#FIELD_1_VALUE",
 					value1 = "${ddlRecordFieldData}");
+			}
+			else {
+				AssertTextEquals(
+					locator1 = "DDLRecord#FIELD_1",
+					value1 = "${fieldFieldLabel} ${ddlRecordFieldData}");
 			}
 		}
 	}

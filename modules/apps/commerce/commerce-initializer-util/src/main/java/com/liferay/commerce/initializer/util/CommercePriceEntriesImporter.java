@@ -97,9 +97,9 @@ public class CommercePriceEntriesImporter {
 
 		ServiceContext serviceContext = new ServiceContext();
 
+		serviceContext.setCompanyId(commerceCatalog.getCompanyId());
 		serviceContext.setScopeGroupId(commerceCatalog.getGroupId());
 		serviceContext.setUserId(commerceCatalog.getUserId());
-		serviceContext.setCompanyId(commerceCatalog.getCompanyId());
 
 		for (CPDefinition cpDefinition : cpDefinitions) {
 			_importBaseCommercePriceListEntries(
@@ -115,9 +115,9 @@ public class CommercePriceEntriesImporter {
 
 		ServiceContext serviceContext = new ServiceContext();
 
+		serviceContext.setCompanyId(user.getCompanyId());
 		serviceContext.setScopeGroupId(scopeGroupId);
 		serviceContext.setUserId(userId);
-		serviceContext.setCompanyId(user.getCompanyId());
 
 		for (int i = 0; i < jsonArray.length(); i++) {
 			_importCommercePriceEntry(

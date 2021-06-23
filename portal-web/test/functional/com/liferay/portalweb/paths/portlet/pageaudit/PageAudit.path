@@ -2,11 +2,13 @@
 <head>
 <title>PageAudit</title>
 </head>
+
 <body>
-<table cellpadding="1" cellspacing="1" border="1">
+<table border="1" cellpadding="1" cellspacing="1">
 <thead>
 <tr><td rowspan="1" colspan="3">PageAudit</td></tr>
 </thead>
+
 <tbody>
 <tr>
 	<td>CHECK_ISSUES_TEXT</td>
@@ -20,7 +22,7 @@
 </tr>
 <tr>
 	<td>GOOGLE_PAGESPEED_TITLE</td>
-	<td>//h2[contains(text(), 'Google PageSpeed')]</td>
+	<td>//h2[contains(text(), 'Google PageSpeed Insights')]</td>
 	<td></td>
 </tr>
 <tr>

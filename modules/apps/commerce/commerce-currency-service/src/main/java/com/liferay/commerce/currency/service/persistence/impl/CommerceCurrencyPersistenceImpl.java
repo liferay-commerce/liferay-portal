@@ -3869,25 +3869,25 @@ public class CommerceCurrencyPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commerceCurrency.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commerceCurrency.setCreateDate(now);
+				commerceCurrency.setCreateDate(date);
 			}
 			else {
 				commerceCurrency.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commerceCurrencyModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commerceCurrency.setModifiedDate(now);
+				commerceCurrency.setModifiedDate(date);
 			}
 			else {
 				commerceCurrency.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

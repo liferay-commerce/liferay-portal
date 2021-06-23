@@ -196,8 +196,8 @@ public class PortletConfigurationTemplatesDisplayContext {
 			"/edit_configuration_templates.jsp"
 		).setRedirect(
 			getRedirect()
-		).setParameter(
-			"portletResource", getPortletResource()
+		).setPortletResource(
+			getPortletResource()
 		).setParameter(
 			"returnToFullPageURL", getReturnToFullPageURL()
 		).build();

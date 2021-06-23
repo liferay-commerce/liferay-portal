@@ -14,7 +14,9 @@
 
 package com.liferay.portal.workflow.metrics.internal.search.index;
 
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.search.document.Document;
@@ -130,7 +132,7 @@ public class TaskWorkflowMetricsIndexerImpl
 					return;
 				}
 
-				ScriptBuilder builder = scripts.builder();
+				ScriptBuilder scriptBuilder = scripts.builder();
 
 				UpdateDocumentRequest updateDocumentRequest =
 					new UpdateDocumentRequest(
@@ -138,7 +140,7 @@ public class TaskWorkflowMetricsIndexerImpl
 						WorkflowMetricsIndexerUtil.digest(
 							_instanceWorkflowMetricsIndex.getIndexType(),
 							companyId, instanceId),
-						builder.idOrCode(
+						scriptBuilder.idOrCode(
 							StringUtil.read(
 								getClass(),
 								"dependencies/workflow-metrics-add-task-" +
@@ -149,6 +151,22 @@ public class TaskWorkflowMetricsIndexerImpl
 							"task",
 							HashMapBuilder.<String, Object>put(
 								"assigneeIds", assigneeIds
+							).put(
+								"assigneeName",
+								() -> {
+									if (!Objects.equals(
+											assigneeType,
+											User.class.getName()) ||
+										(assigneeIds == null)) {
+
+										return null;
+									}
+
+									User user = _userLocalService.fetchUser(
+										assigneeIds[0]);
+
+									return user.getFullName();
+								}
 							).put(
 								"assigneeType", assigneeType
 							).put(
@@ -305,28 +323,41 @@ public class TaskWorkflowMetricsIndexerImpl
 					).build(),
 					booleanQuery);
 
-				ScriptBuilder builder = scripts.builder();
+				ScriptBuilder scriptBuilder = scripts.builder();
+
+				scriptBuilder.idOrCode(
+					StringUtil.read(
+						getClass(),
+						"dependencies/workflow-metrics-update-task-" +
+							"script.painless")
+				).language(
+					"painless"
+				).putParameter(
+					"assigneeIds", assigneeIds
+				);
+
+				if (Objects.equals(assigneeType, User.class.getName()) &&
+					(assigneeIds != null)) {
+
+					User user = _userLocalService.fetchUser(assigneeIds[0]);
+
+					scriptBuilder.putParameter(
+						"assigneeName", user.getFullName());
+				}
+
+				scriptBuilder.putParameter(
+					"assigneeType", assigneeType
+				).putParameter(
+					"taskId", taskId
+				).scriptType(
+					ScriptType.INLINE
+				);
 
 				searchEngineAdapter.execute(
 					new UpdateByQueryDocumentRequest(
 						queries.nested(
 							"tasks", queries.term("tasks.taskId", taskId)),
-						builder.idOrCode(
-							StringUtil.read(
-								getClass(),
-								"dependencies/workflow-metrics-update-task-" +
-									"script.painless")
-						).language(
-							"painless"
-						).putParameter(
-							"assigneeIds", assigneeIds
-						).putParameter(
-							"assigneeType", assigneeType
-						).putParameter(
-							"taskId", taskId
-						).scriptType(
-							ScriptType.INLINE
-						).build(),
+						scriptBuilder.build(),
 						_instanceWorkflowMetricsIndex.getIndexName(companyId)));
 			});
 
@@ -334,12 +365,12 @@ public class TaskWorkflowMetricsIndexerImpl
 	}
 
 	private void _deleteTask(long companyId, long taskId) {
-		ScriptBuilder builder = scripts.builder();
+		ScriptBuilder scriptBuilder = scripts.builder();
 
 		searchEngineAdapter.execute(
 			new UpdateByQueryDocumentRequest(
 				queries.nested("tasks", queries.term("tasks.taskId", taskId)),
-				builder.idOrCode(
+				scriptBuilder.idOrCode(
 					StringUtil.read(
 						getClass(),
 						"dependencies/workflow-metrics-delete-task-" +
@@ -370,5 +401,8 @@ public class TaskWorkflowMetricsIndexerImpl
 
 	@Reference(target = "(workflow.metrics.index.entity.name=task)")
 	private WorkflowMetricsIndex _taskWorkflowMetricsIndex;
+
+	@Reference
+	private UserLocalService _userLocalService;
 
 }

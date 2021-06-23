@@ -1953,25 +1953,25 @@ public class CPDefinitionInventoryPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (cpDefinitionInventory.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				cpDefinitionInventory.setCreateDate(now);
+				cpDefinitionInventory.setCreateDate(date);
 			}
 			else {
 				cpDefinitionInventory.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!cpDefinitionInventoryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				cpDefinitionInventory.setModifiedDate(now);
+				cpDefinitionInventory.setModifiedDate(date);
 			}
 			else {
 				cpDefinitionInventory.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

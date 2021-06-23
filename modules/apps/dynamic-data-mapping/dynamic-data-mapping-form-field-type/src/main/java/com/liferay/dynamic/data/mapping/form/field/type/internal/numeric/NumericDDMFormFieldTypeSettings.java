@@ -32,6 +32,30 @@ import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 	rules = {
 		@DDMFormRule(
 			actions = {
+				"setVisible('inputMask', TRUE)",
+				"setVisible('repeatable', TRUE)",
+				"setVisible('requireConfirmation', TRUE)",
+				"setVisible('required', TRUE)", "setVisible('showLabel', TRUE)",
+				"setVisible('validation', TRUE)"
+			},
+			condition = "equals(getValue('hideField'), FALSE)"
+		),
+		@DDMFormRule(
+			actions = {
+				"setValue('inputMask', FALSE)", "setValue('repeatable', FALSE)",
+				"setValue('requireConfirmation', FALSE)",
+				"setValue('required', FALSE)", "setValue('showLabel', TRUE)",
+				"setVisible('inputMask', FALSE)",
+				"setVisible('repeatable', FALSE)",
+				"setVisible('requireConfirmation', FALSE)",
+				"setVisible('required', FALSE)",
+				"setVisible('showLabel', FALSE)",
+				"setVisible('validation', FALSE)"
+			},
+			condition = "equals(getValue('hideField'), TRUE)"
+		),
+		@DDMFormRule(
+			actions = {
 				"setValue('inputMask', FALSE)", "setVisible('inputMask', FALSE)"
 			},
 			condition = "equals(getValue('dataType'), 'double')"
@@ -84,7 +108,7 @@ import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 								"visibilityExpression", "fieldNamespace",
 								"indexType", "labelAtStructureLevel",
 								"localizable", "nativeField", "readOnly",
-								"type", "showLabel", "repeatable",
+								"type", "hideField", "showLabel", "repeatable",
 								"requireConfirmation", "direction",
 								"confirmationLabel", "confirmationErrorMessage",
 								"validation", "tooltip", "inputMask",
@@ -131,6 +155,15 @@ public interface NumericDDMFormFieldTypeSettings
 		properties = "showEmptyOption=false", type = "select"
 	)
 	public String direction();
+
+	@DDMFormField(
+		label = "%hide-field",
+		properties = {
+			"showAsSwitcher=true",
+			"tooltip=%the-user-filling-the-form-will-not-be-able-to-see-this-field"
+		}
+	)
+	public boolean hideField();
 
 	@DDMFormField(label = "%input-mask", properties = "showAsSwitcher=true")
 	public boolean inputMask();

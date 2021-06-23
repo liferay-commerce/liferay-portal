@@ -4023,25 +4023,25 @@ public class DDMFormInstanceRecordPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (ddmFormInstanceRecord.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				ddmFormInstanceRecord.setCreateDate(now);
+				ddmFormInstanceRecord.setCreateDate(date);
 			}
 			else {
 				ddmFormInstanceRecord.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!ddmFormInstanceRecordModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				ddmFormInstanceRecord.setModifiedDate(now);
+				ddmFormInstanceRecord.setModifiedDate(date);
 			}
 			else {
 				ddmFormInstanceRecord.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

@@ -55,7 +55,7 @@ public class KaleoNodeLocalServiceImpl extends KaleoNodeLocalServiceBaseImpl {
 		// Kaleo node
 
 		User user = userLocalService.getUser(serviceContext.getGuestOrUserId());
-		Date now = new Date();
+		Date date = new Date();
 
 		long kaleoNodeId = counterLocalService.increment();
 
@@ -64,8 +64,8 @@ public class KaleoNodeLocalServiceImpl extends KaleoNodeLocalServiceBaseImpl {
 		kaleoNode.setCompanyId(user.getCompanyId());
 		kaleoNode.setUserId(user.getUserId());
 		kaleoNode.setUserName(user.getFullName());
-		kaleoNode.setCreateDate(now);
-		kaleoNode.setModifiedDate(now);
+		kaleoNode.setCreateDate(date);
+		kaleoNode.setModifiedDate(date);
 		kaleoNode.setKaleoDefinitionId(kaleoDefinitionId);
 		kaleoNode.setKaleoDefinitionVersionId(kaleoDefinitionVersionId);
 		kaleoNode.setName(node.getName());

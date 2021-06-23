@@ -2488,23 +2488,24 @@ public class SyncDevicePersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (syncDevice.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				syncDevice.setCreateDate(now);
+				syncDevice.setCreateDate(date);
 			}
 			else {
-				syncDevice.setCreateDate(serviceContext.getCreateDate(now));
+				syncDevice.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!syncDeviceModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				syncDevice.setModifiedDate(now);
+				syncDevice.setModifiedDate(date);
 			}
 			else {
-				syncDevice.setModifiedDate(serviceContext.getModifiedDate(now));
+				syncDevice.setModifiedDate(
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

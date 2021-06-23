@@ -21,7 +21,7 @@ definition {
 
 		var structureId = JSONCurlUtil.post("${curl}", "$.[?(@['nameCurrentValue'] == '${structureName}')]['structureId']");
 
-		if ("${structureId}" == "[]") {
+		if ("${structureId}" == "") {
 			fail("FAIL. Cannot find structureId.");
 		}
 
@@ -48,9 +48,6 @@ definition {
 		''';
 
 		var structureIds = JSONCurlUtil.post("${curl}", "$..structureId");
-		var structureIds = StringUtil.replace("${structureIds}", "[", "");
-		var structureIds = StringUtil.replace("${structureIds}", "]", "");
-		var structureIds = StringUtil.replace("${structureIds}", "&quot;", "");
 
 		return "${structureIds}";
 	}

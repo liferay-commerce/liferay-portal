@@ -247,7 +247,7 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 			groupId, privateLayout, layoutId, parentLayoutId, name, type,
 			hidden, friendlyURLMap, serviceContext);
 
-		Date now = new Date();
+		Date date = new Date();
 
 		long plid = counterLocalService.increment(Layout.class.getName());
 
@@ -263,8 +263,8 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 		layout.setCompanyId(user.getCompanyId());
 		layout.setUserId(user.getUserId());
 		layout.setUserName(user.getFullName());
-		layout.setCreateDate(serviceContext.getCreateDate(now));
-		layout.setModifiedDate(serviceContext.getModifiedDate(now));
+		layout.setCreateDate(serviceContext.getCreateDate(date));
+		layout.setModifiedDate(serviceContext.getModifiedDate(date));
 		layout.setParentPlid(
 			_getParentPlid(groupId, privateLayout, parentLayoutId));
 		layout.setPrivateLayout(privateLayout);
@@ -327,7 +327,7 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 			layout.setLayoutPrototypeLinkEnabled(layoutPrototypeLinkEnabled);
 		}
 
-		layout.setPublishDate(serviceContext.getModifiedDate(now));
+		layout.setPublishDate(serviceContext.getModifiedDate(date));
 
 		if (workflowDefinitionLinkLocalService.hasWorkflowDefinitionLink(
 				layout.getCompanyId(), layout.getGroupId(),
@@ -344,7 +344,7 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 
 		layout.setStatusByUserId(userId);
 		layout.setStatusByUserName(user.getFullName());
-		layout.setStatusDate(serviceContext.getCreateDate(now));
+		layout.setStatusDate(serviceContext.getCreateDate(date));
 		layout.setExpandoBridgeAttributes(serviceContext);
 
 		layout = layoutLocalService.updateLayout(layout);
@@ -406,7 +406,7 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 			 Objects.equals(type, LayoutConstants.TYPE_CONTENT) ||
 			 layout.isTypeAssetDisplay())) {
 
-			serviceContext.setModifiedDate(now);
+			serviceContext.setModifiedDate(date);
 
 			addLayout(
 				userId, groupId, privateLayout, parentLayoutId,
@@ -1422,6 +1422,26 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 	}
 
 	/**
+	 * Returns a range of all the layouts belonging to the group.
+	 *
+	 * @param  groupId the primary key of the group
+	 * @param  privateLayout whether the layout is private to the group
+	 * @param  start the lower bound of the range of layouts
+	 * @param  end the upper bound of the range of layouts (not inclusive)
+	 * @param  orderByComparator the comparator to order the layouts
+	 * @return the matching layouts, or <code>null</code> if no matches were
+	 *         found
+	 */
+	@Override
+	public List<Layout> getLayouts(
+		long groupId, boolean privateLayout, int[] statuses, int start, int end,
+		OrderByComparator<Layout> orderByComparator) {
+
+		return layoutPersistence.findByG_P_ST(
+			groupId, privateLayout, statuses, start, end, orderByComparator);
+	}
+
+	/**
 	 * Returns all the layouts belonging to the group that are children of the
 	 * parent layout.
 	 *
@@ -1678,9 +1698,36 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 			OrderByComparator<Layout> orderByComparator)
 		throws PortalException {
 
+		return getLayouts(
+			groupId, userId, privateLayout, keywords, types, new int[0], start,
+			end, orderByComparator);
+	}
+
+	/**
+	 * Returns a range of all the layouts belonging to the group.
+	 *
+	 * @param  groupId the primary key of the group
+	 * @param  userId the primary key of the user
+	 * @param  privateLayout whether the layout is private to the group
+	 * @param  keywords keywords
+	 * @param  types layout types
+	 * @param  start the lower bound of the range of layouts
+	 * @param  end the upper bound of the range of layouts (not inclusive)
+	 * @param  orderByComparator the comparator to order the layouts
+	 * @return the matching layouts, or <code>null</code> if no matches were
+	 *         found
+	 */
+	@Override
+	public List<Layout> getLayouts(
+			long groupId, long userId, boolean privateLayout, String keywords,
+			String[] types, int[] statuses, int start, int end,
+			OrderByComparator<Layout> orderByComparator)
+		throws PortalException {
+
 		if (Validator.isNull(keywords)) {
 			return getLayouts(
-				groupId, privateLayout, start, end, orderByComparator);
+				groupId, privateLayout, statuses, start, end,
+				orderByComparator);
 		}
 
 		Indexer<Layout> indexer = IndexerRegistryUtil.getIndexer(
@@ -1688,8 +1735,8 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 
 		Hits hits = indexer.search(
 			_buildSearchContext(
-				groupId, userId, privateLayout, keywords, types, start, end,
-				orderByComparator));
+				groupId, userId, privateLayout, keywords, types, statuses,
+				start, end, orderByComparator));
 
 		List<Document> documents = hits.toList();
 
@@ -1750,6 +1797,29 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 			OrderByComparator<Layout> orderByComparator)
 		throws PortalException {
 
+		return getLayouts(
+			groupId, keywords, types, new int[0], start, end,
+			orderByComparator);
+	}
+
+	/**
+	 * Returns a range of all the layouts belonging to the group.
+	 *
+	 * @param  groupId the primary key of the group
+	 * @param  keywords keywords
+	 * @param  types layout types
+	 * @param  start the lower bound of the range of layouts
+	 * @param  end the upper bound of the range of layouts (not inclusive)
+	 * @param  orderByComparator the comparator to order the layouts
+	 * @return the matching layouts, or <code>null</code> if no matches were
+	 *         found
+	 */
+	@Override
+	public List<Layout> getLayouts(
+			long groupId, String keywords, String[] types, int[] statuses,
+			int start, int end, OrderByComparator<Layout> orderByComparator)
+		throws PortalException {
+
 		if (Validator.isNull(keywords)) {
 			return getLayouts(groupId, start, end, orderByComparator);
 		}
@@ -1759,7 +1829,8 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 
 		Hits hits = indexer.search(
 			_buildSearchContext(
-				groupId, null, keywords, types, start, end, orderByComparator));
+				groupId, null, keywords, types, statuses, start, end,
+				orderByComparator));
 
 		List<Document> documents = hits.toList();
 
@@ -1902,7 +1973,28 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 
 		Hits hits = indexer.search(
 			_buildSearchContext(
-				groupId, userId, privateLayout, keywords, types,
+				groupId, userId, privateLayout, keywords, types, new int[0],
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null));
+
+		return hits.getLength();
+	}
+
+	@Override
+	public int getLayoutsCount(
+			long groupId, long userId, boolean privateLayout, String keywords,
+			String[] types, int[] statuses)
+		throws PortalException {
+
+		if (Validator.isNull(keywords)) {
+			return getLayoutsCount(groupId, privateLayout);
+		}
+
+		Indexer<Layout> indexer = IndexerRegistryUtil.getIndexer(
+			Layout.class.getName());
+
+		Hits hits = indexer.search(
+			_buildSearchContext(
+				groupId, userId, privateLayout, keywords, types, statuses,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null));
 
 		return hits.getLength();
@@ -1921,7 +2013,27 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 
 		Hits hits = indexer.search(
 			_buildSearchContext(
-				groupId, null, keywords, types, QueryUtil.ALL_POS,
+				groupId, null, keywords, types, new int[0], QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null));
+
+		return hits.getLength();
+	}
+
+	@Override
+	public int getLayoutsCount(
+			long groupId, String keywords, String[] types, int[] statuses)
+		throws PortalException {
+
+		if (Validator.isNull(keywords)) {
+			return getLayoutsCount(groupId);
+		}
+
+		Indexer<Layout> indexer = IndexerRegistryUtil.getIndexer(
+			Layout.class.getName());
+
+		Hits hits = indexer.search(
+			_buildSearchContext(
+				groupId, null, keywords, types, statuses, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null));
 
 		return hits.getLength();
@@ -2375,7 +2487,7 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 			long userId, long plid, String friendlyURL, String languageId)
 		throws PortalException {
 
-		Date now = new Date();
+		Date date = new Date();
 
 		Layout layout = layoutPersistence.findByPrimaryKey(plid);
 
@@ -2392,7 +2504,7 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 			layout.getPlid(), layout.isPrivateLayout(), friendlyURL, languageId,
 			new ServiceContext());
 
-		layout.setModifiedDate(now);
+		layout.setModifiedDate(date);
 
 		String defaultLanguageId = LocaleUtil.toLanguageId(
 			LocaleUtil.getSiteDefault());
@@ -2540,7 +2652,7 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 		layoutLocalServiceHelper.validateParentLayoutId(
 			groupId, privateLayout, layoutId, parentLayoutId);
 
-		Date now = new Date();
+		Date date = new Date();
 
 		Layout layout = layoutPersistence.findByG_P_L(
 			groupId, privateLayout, layoutId);
@@ -2556,7 +2668,7 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 			layout.setPriority(priority);
 		}
 
-		layout.setModifiedDate(serviceContext.getModifiedDate(now));
+		layout.setModifiedDate(serviceContext.getModifiedDate(date));
 		layout.setParentLayoutId(parentLayoutId);
 		layout.setNameMap(nameMap);
 		layout.setTitleMap(titleMap);
@@ -2654,7 +2766,7 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 			String typeSettings)
 		throws PortalException {
 
-		Date now = new Date();
+		Date date = new Date();
 
 		UnicodeProperties typeSettingsUnicodeProperties =
 			new UnicodeProperties();
@@ -2666,11 +2778,11 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 
 		validateTypeSettingsProperties(layout, typeSettingsUnicodeProperties);
 
-		layout.setModifiedDate(now);
+		layout.setModifiedDate(date);
 		layout.setTypeSettings(typeSettingsUnicodeProperties.toString());
 
 		if (layout.isSystem() && (layout.getClassPK() > 0)) {
-			layout.setPublishDate(now);
+			layout.setPublishDate(date);
 		}
 
 		return layoutPersistence.update(layout);
@@ -2694,12 +2806,12 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 			String colorSchemeId, String css)
 		throws PortalException {
 
-		Date now = new Date();
+		Date date = new Date();
 
 		Layout layout = layoutPersistence.findByG_P_L(
 			groupId, privateLayout, layoutId);
 
-		layout.setModifiedDate(now);
+		layout.setModifiedDate(date);
 
 		layout.setThemeId(themeId);
 		layout.setColorSchemeId(colorSchemeId);
@@ -2746,11 +2858,11 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 	public Layout updateName(Layout layout, String name, String languageId)
 		throws PortalException {
 
-		Date now = new Date();
+		Date date = new Date();
 
 		layoutLocalServiceHelper.validateName(name, languageId);
 
-		layout.setModifiedDate(now);
+		layout.setModifiedDate(date);
 		layout.setName(name, LocaleUtil.fromLanguageId(languageId));
 
 		layout = layoutPersistence.update(layout);
@@ -2762,7 +2874,7 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 				layoutPrototypeLocalService.getLayoutPrototype(
 					group.getClassPK());
 
-			layoutPrototype.setModifiedDate(now);
+			layoutPrototype.setModifiedDate(date);
 			layoutPrototype.setName(
 				name, LocaleUtil.fromLanguageId(languageId));
 
@@ -2839,7 +2951,7 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 		layoutLocalServiceHelper.validateParentLayoutId(
 			groupId, privateLayout, layoutId, parentLayoutId);
 
-		Date now = new Date();
+		Date date = new Date();
 
 		Layout layout = layoutPersistence.findByG_P_L(
 			groupId, privateLayout, layoutId);
@@ -2855,7 +2967,7 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 			layout.setPriority(priority);
 		}
 
-		layout.setModifiedDate(now);
+		layout.setModifiedDate(date);
 		layout.setParentLayoutId(parentLayoutId);
 
 		Layout draftLayout = layout.fetchDraftLayout();
@@ -2890,7 +3002,7 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 			return layout;
 		}
 
-		Date now = new Date();
+		Date date = new Date();
 
 		long parentLayoutId = LayoutConstants.DEFAULT_PARENT_LAYOUT_ID;
 
@@ -2918,7 +3030,7 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 			layout.setPriority(priority);
 		}
 
-		layout.setModifiedDate(now);
+		layout.setModifiedDate(date);
 		layout.setParentPlid(parentPlid);
 		layout.setParentLayoutId(parentLayoutId);
 
@@ -3407,22 +3519,26 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 
 	private SearchContext _buildSearchContext(
 			long groupId, Boolean privateLayout, String keywords,
-			String[] types, int start, int end,
+			String[] types, int[] statuses, int start, int end,
 			OrderByComparator<Layout> orderByComparator)
 		throws PortalException {
 
 		return _buildSearchContext(
-			groupId, 0, privateLayout, keywords, types, start, end,
+			groupId, 0, privateLayout, keywords, types, statuses, start, end,
 			orderByComparator);
 	}
 
 	private SearchContext _buildSearchContext(
 			long groupId, long userId, Boolean privateLayout, String keywords,
-			String[] types, int start, int end,
+			String[] types, int[] statuses, int start, int end,
 			OrderByComparator<Layout> orderByComparator)
 		throws PortalException {
 
 		SearchContext searchContext = new SearchContext();
+
+		if (ArrayUtil.isNotEmpty(statuses)) {
+			searchContext.setAttribute(Field.STATUS, statuses);
+		}
 
 		searchContext.setAttribute(Field.TITLE, keywords);
 		searchContext.setAttribute(Field.TYPE, types);

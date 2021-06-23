@@ -77,7 +77,7 @@ public class ObjectFieldCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(23);
+		StringBundler sb = new StringBundler(29);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -97,6 +97,12 @@ public class ObjectFieldCacheModel
 		sb.append(modifiedDate);
 		sb.append(", objectDefinitionId=");
 		sb.append(objectDefinitionId);
+		sb.append(", indexed=");
+		sb.append(indexed);
+		sb.append(", indexedAsKeyword=");
+		sb.append(indexedAsKeyword);
+		sb.append(", indexedLanguageId=");
+		sb.append(indexedLanguageId);
 		sb.append(", name=");
 		sb.append(name);
 		sb.append(", type=");
@@ -145,6 +151,15 @@ public class ObjectFieldCacheModel
 		}
 
 		objectFieldImpl.setObjectDefinitionId(objectDefinitionId);
+		objectFieldImpl.setIndexed(indexed);
+		objectFieldImpl.setIndexedAsKeyword(indexedAsKeyword);
+
+		if (indexedLanguageId == null) {
+			objectFieldImpl.setIndexedLanguageId("");
+		}
+		else {
+			objectFieldImpl.setIndexedLanguageId(indexedLanguageId);
+		}
 
 		if (name == null) {
 			objectFieldImpl.setName("");
@@ -180,6 +195,11 @@ public class ObjectFieldCacheModel
 		modifiedDate = objectInput.readLong();
 
 		objectDefinitionId = objectInput.readLong();
+
+		indexed = objectInput.readBoolean();
+
+		indexedAsKeyword = objectInput.readBoolean();
+		indexedLanguageId = objectInput.readUTF();
 		name = objectInput.readUTF();
 		type = objectInput.readUTF();
 	}
@@ -213,6 +233,17 @@ public class ObjectFieldCacheModel
 
 		objectOutput.writeLong(objectDefinitionId);
 
+		objectOutput.writeBoolean(indexed);
+
+		objectOutput.writeBoolean(indexedAsKeyword);
+
+		if (indexedLanguageId == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(indexedLanguageId);
+		}
+
 		if (name == null) {
 			objectOutput.writeUTF("");
 		}
@@ -237,6 +268,9 @@ public class ObjectFieldCacheModel
 	public long createDate;
 	public long modifiedDate;
 	public long objectDefinitionId;
+	public boolean indexed;
+	public boolean indexedAsKeyword;
+	public String indexedLanguageId;
 	public String name;
 	public String type;
 

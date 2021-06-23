@@ -15,10 +15,10 @@
 import ClayButton from '@clayui/button';
 import ClayIcon from '@clayui/icon';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
+import {ReactPortal} from '@liferay/frontend-js-react-web';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
-import ReactDOM from 'react-dom';
 
 import Modal from '../modal/Modal';
 import debounce from '../utils/debounce';
@@ -47,7 +47,7 @@ export default class SidePanel extends React.Component {
 			active: null,
 			closeButtonStyle: null,
 			currentURL: props.url || null,
-			iframeHandlerModalId: null,
+			iframeHandlerModalId: subscribeModal(),
 			loading: true,
 			menuCoverTopDistance: 0,
 			moving: false,
@@ -72,7 +72,6 @@ export default class SidePanel extends React.Component {
 		this.updateTop = this.updateTop.bind(this);
 		this.debouncedUpdateTop = debounce(this.updateTop, 250);
 		this.panel = React.createRef();
-		this.modalRef = React.createRef();
 		this.iframeRef = React.createRef();
 	}
 
@@ -107,14 +106,6 @@ export default class SidePanel extends React.Component {
 			url: this.state.currentURL,
 			visible: this.state.visible,
 		}));
-
-		if (!this.state.iframeHandlerModalId && this.modalRef.current) {
-			const modalId = subscribeModal(this.modalRef.current);
-
-			this.setState({
-				iframeHandlerModalId: modalId,
-			});
-		}
 	}
 
 	handlePanelOpenEvent(event) {
@@ -355,10 +346,7 @@ export default class SidePanel extends React.Component {
 
 		const content = (
 			<>
-				<Modal
-					id={this.state.iframeHandlerModalId}
-					ref={this.modalRef}
-				/>
+				<Modal id={this.state.iframeHandlerModalId} />
 				<div
 					className={classNames(
 						'side-panel-nav-cover navigation-bar border-bottom',
@@ -435,7 +423,9 @@ export default class SidePanel extends React.Component {
 			</>
 		);
 
-		return ReactDOM.createPortal(content, this.state.wrapper);
+		return (
+			<ReactPortal container={this.state.wrapper}>{content}</ReactPortal>
+		);
 	}
 }
 

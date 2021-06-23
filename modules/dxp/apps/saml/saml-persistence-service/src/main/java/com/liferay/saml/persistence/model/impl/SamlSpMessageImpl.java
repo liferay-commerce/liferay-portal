@@ -26,11 +26,11 @@ public class SamlSpMessageImpl extends SamlSpMessageBaseImpl {
 
 	@Override
 	public boolean isExpired() {
-		Date now = new Date();
+		Date date = new Date();
 
 		Date expirationDate = getExpirationDate();
 
-		return expirationDate.before(now);
+		return expirationDate.before(date);
 	}
 
 }

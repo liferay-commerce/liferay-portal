@@ -4932,25 +4932,25 @@ public class DispatchTriggerPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (dispatchTrigger.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				dispatchTrigger.setCreateDate(now);
+				dispatchTrigger.setCreateDate(date);
 			}
 			else {
 				dispatchTrigger.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!dispatchTriggerModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				dispatchTrigger.setModifiedDate(now);
+				dispatchTrigger.setModifiedDate(date);
 			}
 			else {
 				dispatchTrigger.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

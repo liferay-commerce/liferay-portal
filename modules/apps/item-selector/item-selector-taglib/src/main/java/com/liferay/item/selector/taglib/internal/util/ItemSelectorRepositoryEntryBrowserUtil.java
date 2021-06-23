@@ -236,7 +236,7 @@ public class ItemSelectorRepositoryEntryBrowserUtil {
 			).setParameter(
 				"groupType", "site"
 			).setParameter(
-				"showGroupSelector", Boolean.TRUE.toString()
+				"showGroupSelector", true
 			).buildString());
 	}
 

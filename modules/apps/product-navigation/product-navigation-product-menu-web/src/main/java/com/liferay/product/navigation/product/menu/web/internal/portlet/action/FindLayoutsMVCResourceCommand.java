@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.product.navigation.product.menu.constants.ProductNavigationProductMenuPortletKeys;
 
 import java.util.Collections;
@@ -99,7 +100,7 @@ public class FindLayoutsMVCResourceCommand extends BaseMVCResourceCommand {
 				LayoutConstants.TYPE_PANEL, LayoutConstants.TYPE_PORTLET,
 				LayoutConstants.TYPE_URL
 			},
-			0, 10, null);
+			new int[] {WorkflowConstants.STATUS_ANY}, 0, 10, null);
 
 		for (Layout layout : layouts) {
 			JSONArray layoutPathJSONArray = _getLayoutPathJSONArray(
@@ -125,7 +126,8 @@ public class FindLayoutsMVCResourceCommand extends BaseMVCResourceCommand {
 				LayoutConstants.TYPE_FULL_PAGE_APPLICATION,
 				LayoutConstants.TYPE_PANEL, LayoutConstants.TYPE_PORTLET,
 				LayoutConstants.TYPE_URL
-			});
+			},
+			new int[] {WorkflowConstants.STATUS_ANY});
 
 		jsonObject.put("totalCount", totalCount);
 

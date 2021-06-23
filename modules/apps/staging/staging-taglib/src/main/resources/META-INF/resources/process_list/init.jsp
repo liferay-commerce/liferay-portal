@@ -58,7 +58,7 @@ PortletURL renderURL = PortletURLBuilder.createRenderURL(
 ).setParameter(
 	"displayStyle", displayStyle
 ).setParameter(
-	"localPublishing", String.valueOf(localPublishing)
+	"localPublishing", localPublishing
 ).setParameter(
 	"orderByCol", orderByCol
 ).setParameter(

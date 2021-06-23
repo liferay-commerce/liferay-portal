@@ -59,6 +59,7 @@ import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocalizationUtil;
@@ -778,7 +779,7 @@ public class RolesAdminPortlet extends MVCPortlet {
 				ActionKeys.VIEW_SITE_ADMINISTRATION, true, scope,
 				ArrayUtil.filter(
 					groupIds,
-					groupId -> _isDepotGroup(role.getCompanyId(), groupId)));
+					groupId -> _isDepotGroup(GetterUtil.getLong(groupId))));
 
 			selResource = Group.class.getName();
 			actionId = ActionKeys.VIEW_SITE_ADMINISTRATION;
@@ -828,9 +829,9 @@ public class RolesAdminPortlet extends MVCPortlet {
 		return panelCategoryKeys.toArray(new String[0]);
 	}
 
-	private boolean _isDepotGroup(long companyId, String groupKey) {
+	private boolean _isDepotGroup(long groupId) {
 		try {
-			Group group = _groupService.getGroup(companyId, groupKey);
+			Group group = _groupService.getGroup(groupId);
 
 			if (group.isDepot()) {
 				return true;

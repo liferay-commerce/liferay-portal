@@ -68,8 +68,8 @@ public class DLFileEntrySharingTest extends BaseSharingTestCase<DLFileEntry> {
 			ServiceContextTestUtil.getServiceContext(
 				group.getGroupId(), user.getUserId());
 
-		serviceContext.setAddGuestPermissions(false);
 		serviceContext.setAddGroupPermissions(false);
+		serviceContext.setAddGuestPermissions(false);
 
 		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
 			null, user.getUserId(), group.getGroupId(),
@@ -102,8 +102,8 @@ public class DLFileEntrySharingTest extends BaseSharingTestCase<DLFileEntry> {
 			ServiceContextTestUtil.getServiceContext(
 				group.getGroupId(), user.getUserId());
 
-		serviceContext.setAddGuestPermissions(false);
 		serviceContext.setAddGroupPermissions(false);
+		serviceContext.setAddGuestPermissions(false);
 
 		Folder folder = _dlAppLocalService.addFolder(
 			user.getUserId(), group.getGroupId(),

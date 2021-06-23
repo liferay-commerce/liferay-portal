@@ -18,6 +18,8 @@ import com.liferay.info.pagination.Pagination;
 
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.osgi.annotation.versioning.ProviderType;
 
 /**
@@ -26,9 +28,15 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface LayoutListRetrieverContext {
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public Optional<long[][]> getAssetCategoryIdsOptional();
 
 	public Optional<Object> getContextObjectOptional();
+
+	public Optional<HttpServletRequest> getHttpServletRequestOptional();
 
 	public Optional<Pagination> getPaginationOptional();
 

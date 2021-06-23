@@ -8120,25 +8120,25 @@ public class AnnouncementsEntryPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (announcementsEntry.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				announcementsEntry.setCreateDate(now);
+				announcementsEntry.setCreateDate(date);
 			}
 			else {
 				announcementsEntry.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!announcementsEntryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				announcementsEntry.setModifiedDate(now);
+				announcementsEntry.setModifiedDate(date);
 			}
 			else {
 				announcementsEntry.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

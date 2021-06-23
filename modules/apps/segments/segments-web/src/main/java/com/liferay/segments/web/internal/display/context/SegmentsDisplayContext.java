@@ -249,7 +249,7 @@ public class SegmentsDisplayContext {
 		).setParameter(
 			"segmentsEntryId", segmentsEntry.getSegmentsEntryId()
 		).setParameter(
-			"showInEditMode", Boolean.FALSE.toString()
+			"showInEditMode", false
 		).buildString();
 	}
 

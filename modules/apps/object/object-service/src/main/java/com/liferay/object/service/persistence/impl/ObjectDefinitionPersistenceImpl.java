@@ -2230,25 +2230,25 @@ public class ObjectDefinitionPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (objectDefinition.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				objectDefinition.setCreateDate(now);
+				objectDefinition.setCreateDate(date);
 			}
 			else {
 				objectDefinition.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!objectDefinitionModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				objectDefinition.setModifiedDate(now);
+				objectDefinition.setModifiedDate(date);
 			}
 			else {
 				objectDefinition.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

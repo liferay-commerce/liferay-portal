@@ -83,6 +83,26 @@ definition {
 		PortletEntry.publish();
 	}
 
+	macro addEntryWithCoverImageFromDepot {
+		BlogsNavigator.openToAddEntry(siteURLKey = "${siteURLKey}");
+
+		BlogsEntry.addTitle(entryTitle = "${entryTitle}");
+
+		BlogsEntry.addEntryContent(
+			entryContent = "${entryContent}",
+			entrySubtitle = "${entrySubtitle}",
+			entryTitle = "${entryTitle}");
+
+		BlogsNavigator.gotoSelectFile();
+
+		ItemSelector.selectRepositoryImage(
+			depotName = "${depotName}",
+			imageFileName = "${imageFileName}",
+			navTab = "Documents and Media");
+
+		Button.clickPublish();
+	}
+
 	macro addEntryWithCoverImageFromDMFolders {
 		BlogsNavigator.gotoAddEntry();
 
@@ -422,7 +442,16 @@ definition {
 	}
 
 	macro editEntryPG {
-		BlogsNavigator.gotoEditPG(entryTitle = "${entryTitle}");
+		if (isSet(siteURLKey)) {
+			BlogsNavigator.openToEditEntryInSite(
+				entryTitle = "${entryTitle}",
+				groupName = "${groupName}",
+				siteURLKey = "${siteURLKey}");
+		}
+
+		else {
+			BlogsNavigator.gotoEditPG(entryTitle = "${entryTitle}");
+		}
 
 		BlogsEntry.editEntryContent(
 			entryContent = "${entryContent}",

@@ -214,9 +214,9 @@ public class EditCommerceTierPriceEntryMVCActionCommand
 		BigDecimal discountLevel4 = (BigDecimal)ParamUtil.getNumber(
 			actionRequest, "discountLevel4", BigDecimal.ZERO);
 
-		Date now = new Date();
+		Date date = new Date();
 
-		Calendar calendar = CalendarFactoryUtil.getCalendar(now.getTime());
+		Calendar calendar = CalendarFactoryUtil.getCalendar(date.getTime());
 
 		int displayDateMonth = ParamUtil.getInteger(
 			actionRequest, "displayDateMonth", calendar.get(Calendar.MONTH));

@@ -1090,24 +1090,24 @@ public class CPTaxCategoryPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (cpTaxCategory.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				cpTaxCategory.setCreateDate(now);
+				cpTaxCategory.setCreateDate(date);
 			}
 			else {
-				cpTaxCategory.setCreateDate(serviceContext.getCreateDate(now));
+				cpTaxCategory.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!cpTaxCategoryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				cpTaxCategory.setModifiedDate(now);
+				cpTaxCategory.setModifiedDate(date);
 			}
 			else {
 				cpTaxCategory.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

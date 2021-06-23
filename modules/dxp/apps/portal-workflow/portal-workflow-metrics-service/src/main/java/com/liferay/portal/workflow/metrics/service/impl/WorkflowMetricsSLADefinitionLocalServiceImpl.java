@@ -107,10 +107,10 @@ public class WorkflowMetricsSLADefinitionLocalServiceImpl
 		workflowMetricsSLADefinition.setUserId(user.getUserId());
 		workflowMetricsSLADefinition.setUserName(user.getFullName());
 
-		Date now = new Date();
+		Date date = new Date();
 
-		workflowMetricsSLADefinition.setCreateDate(now);
-		workflowMetricsSLADefinition.setModifiedDate(now);
+		workflowMetricsSLADefinition.setCreateDate(date);
+		workflowMetricsSLADefinition.setModifiedDate(date);
 
 		workflowMetricsSLADefinition.setActive(true);
 		workflowMetricsSLADefinition.setCalendarKey(calendarKey);
@@ -259,10 +259,10 @@ public class WorkflowMetricsSLADefinitionLocalServiceImpl
 				startNodeKeys, stopNodeKeys);
 		}
 
-		Date now = new Date();
+		Date date = new Date();
 
 		workflowMetricsSLADefinition.setModifiedDate(
-			serviceContext.getModifiedDate(now));
+			serviceContext.getModifiedDate(date));
 
 		workflowMetricsSLADefinition.setCalendarKey(calendarKey);
 		workflowMetricsSLADefinition.setDescription(description);
@@ -285,7 +285,7 @@ public class WorkflowMetricsSLADefinitionLocalServiceImpl
 		workflowMetricsSLADefinition.setStatusByUserName(user.getFullName());
 
 		workflowMetricsSLADefinition.setStatusDate(
-			serviceContext.getModifiedDate(now));
+			serviceContext.getModifiedDate(date));
 
 		workflowMetricsSLADefinition =
 			workflowMetricsSLADefinitionPersistence.update(
@@ -329,10 +329,10 @@ public class WorkflowMetricsSLADefinitionLocalServiceImpl
 		workflowMetricsSLADefinitionVersion.setUserId(user.getUserId());
 		workflowMetricsSLADefinitionVersion.setUserName(user.getFullName());
 
-		Date now = new Date();
+		Date date = new Date();
 
-		workflowMetricsSLADefinitionVersion.setCreateDate(now);
-		workflowMetricsSLADefinitionVersion.setModifiedDate(now);
+		workflowMetricsSLADefinitionVersion.setCreateDate(date);
+		workflowMetricsSLADefinitionVersion.setModifiedDate(date);
 
 		workflowMetricsSLADefinitionVersion.setActive(
 			workflowMetricsSLADefinition.isActive());
@@ -362,7 +362,7 @@ public class WorkflowMetricsSLADefinitionLocalServiceImpl
 			workflowMetricsSLADefinition.getStatus());
 		workflowMetricsSLADefinition.setStatusByUserId(user.getUserId());
 		workflowMetricsSLADefinition.setStatusByUserName(user.getFullName());
-		workflowMetricsSLADefinition.setStatusDate(now);
+		workflowMetricsSLADefinition.setStatusDate(date);
 
 		return workflowMetricsSLADefinitionVersionPersistence.update(
 			workflowMetricsSLADefinitionVersion);

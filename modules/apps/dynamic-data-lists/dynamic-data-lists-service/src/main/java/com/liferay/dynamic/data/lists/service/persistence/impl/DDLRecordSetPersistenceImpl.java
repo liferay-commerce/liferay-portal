@@ -4192,24 +4192,24 @@ public class DDLRecordSetPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (ddlRecordSet.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				ddlRecordSet.setCreateDate(now);
+				ddlRecordSet.setCreateDate(date);
 			}
 			else {
-				ddlRecordSet.setCreateDate(serviceContext.getCreateDate(now));
+				ddlRecordSet.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!ddlRecordSetModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				ddlRecordSet.setModifiedDate(now);
+				ddlRecordSet.setModifiedDate(date);
 			}
 			else {
 				ddlRecordSet.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

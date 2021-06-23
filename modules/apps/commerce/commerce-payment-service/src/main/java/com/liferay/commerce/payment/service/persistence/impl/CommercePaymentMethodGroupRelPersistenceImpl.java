@@ -1680,25 +1680,25 @@ public class CommercePaymentMethodGroupRelPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commercePaymentMethodGroupRel.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commercePaymentMethodGroupRel.setCreateDate(now);
+				commercePaymentMethodGroupRel.setCreateDate(date);
 			}
 			else {
 				commercePaymentMethodGroupRel.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commercePaymentMethodGroupRelModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commercePaymentMethodGroupRel.setModifiedDate(now);
+				commercePaymentMethodGroupRel.setModifiedDate(date);
 			}
 			else {
 				commercePaymentMethodGroupRel.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

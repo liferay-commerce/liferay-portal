@@ -196,21 +196,21 @@ public class AuthorizeNetCommercePaymentMethod
 		if ((response != null) && (response.getToken() != null)) {
 			String token = response.getToken();
 
-			String redirectUrl =
+			String redirectURL =
 				AuthorizeNetCommercePaymentMethodConstants.SANDBOX_REDIRECT_URL;
 
 			String environmentName = environment.name();
 
 			if (environmentName.equals(Environment.PRODUCTION.name())) {
-				redirectUrl =
+				redirectURL =
 					AuthorizeNetCommercePaymentMethodConstants.
 						PRODUCTION_REDIRECT_URL;
 			}
 
 			String url = StringBundler.concat(
 				_getServletUrl(authorizeNetCommercePaymentRequest),
-				"?redirectUrl=", URLCodec.encodeURL(redirectUrl), "&token=",
-				URLEncoder.encode(token, "UTF-8"));
+				"?redirectURL=", URLCodec.encodeURL(redirectURL), "&token=",
+				URLEncoder.encode(token, StringPool.UTF8));
 
 			List<String> resultMessages = new ArrayList<>();
 

@@ -8201,25 +8201,25 @@ public class FragmentEntryLinkPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (fragmentEntryLink.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				fragmentEntryLink.setCreateDate(now);
+				fragmentEntryLink.setCreateDate(date);
 			}
 			else {
 				fragmentEntryLink.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!fragmentEntryLinkModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				fragmentEntryLink.setModifiedDate(now);
+				fragmentEntryLink.setModifiedDate(date);
 			}
 			else {
 				fragmentEntryLink.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

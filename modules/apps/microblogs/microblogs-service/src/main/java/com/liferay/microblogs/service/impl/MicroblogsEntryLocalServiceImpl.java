@@ -79,7 +79,7 @@ public class MicroblogsEntryLocalServiceImpl
 
 		User user = userLocalService.getUser(userId);
 
-		Date now = new Date();
+		Date date = new Date();
 
 		validate(type, parentMicroblogsEntryId);
 
@@ -95,8 +95,8 @@ public class MicroblogsEntryLocalServiceImpl
 		microblogsEntry.setCompanyId(user.getCompanyId());
 		microblogsEntry.setUserId(user.getUserId());
 		microblogsEntry.setUserName(user.getFullName());
-		microblogsEntry.setCreateDate(now);
-		microblogsEntry.setModifiedDate(now);
+		microblogsEntry.setCreateDate(date);
+		microblogsEntry.setModifiedDate(date);
 		microblogsEntry.setCreatorClassNameId(creatorClassNameId);
 		microblogsEntry.setCreatorClassPK(creatorClassPK);
 		microblogsEntry.setContent(content);
@@ -129,7 +129,7 @@ public class MicroblogsEntryLocalServiceImpl
 
 		User user = userLocalService.getUser(userId);
 
-		Date now = new Date();
+		Date date = new Date();
 
 		validate(type, parentMicroblogsEntryId);
 
@@ -145,8 +145,8 @@ public class MicroblogsEntryLocalServiceImpl
 		microblogsEntry.setCompanyId(user.getCompanyId());
 		microblogsEntry.setUserId(user.getUserId());
 		microblogsEntry.setUserName(user.getFullName());
-		microblogsEntry.setCreateDate(now);
-		microblogsEntry.setModifiedDate(now);
+		microblogsEntry.setCreateDate(date);
+		microblogsEntry.setModifiedDate(date);
 		microblogsEntry.setCreatorClassNameId(
 			classNameLocalService.getClassNameId(User.class));
 		microblogsEntry.setCreatorClassPK(user.getUserId());

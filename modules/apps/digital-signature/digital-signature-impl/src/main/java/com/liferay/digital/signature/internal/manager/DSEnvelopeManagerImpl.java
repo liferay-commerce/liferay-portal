@@ -21,14 +21,18 @@ import com.liferay.digital.signature.model.DSCustomField;
 import com.liferay.digital.signature.model.DSDocument;
 import com.liferay.digital.signature.model.DSEnvelope;
 import com.liferay.digital.signature.model.DSRecipient;
-import com.liferay.petra.string.StringPool;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.vulcan.pagination.Page;
+import com.liferay.portal.vulcan.pagination.Pagination;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -36,6 +40,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -56,7 +62,7 @@ public class DSEnvelopeManagerImpl implements DSEnvelopeManager {
 
 		dsEnvelope = _toDSEnvelope(
 			_dsHttp.post(
-				companyId, groupId, "envelopes", _toJSONObject(dsEnvelope)));
+				companyId, groupId, "envelopes", dsEnvelope.toJSONObject()));
 
 		_dsCustomFieldManager.addDSCustomFields(
 			companyId, groupId, dsEnvelope.getDSEnvelopeId(),
@@ -75,12 +81,22 @@ public class DSEnvelopeManagerImpl implements DSEnvelopeManager {
 				}
 			});
 
-		return dsEnvelope;
+		return getDSEnvelope(
+			companyId, groupId, dsEnvelope.getDSEnvelopeId(),
+			"custom_fields,recipients");
 	}
 
 	@Override
 	public void deleteDSEnvelopes(
-		long companyId, long groupId, String... dsEnvelopeIds) {
+			long companyId, long groupId, String... dsEnvelopeIds)
+		throws Exception {
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		if (!permissionChecker.isCompanyAdmin(companyId)) {
+			throw new PrincipalException.MustBeCompanyAdmin(permissionChecker);
+		}
 
 		_dsHttp.put(
 			companyId, groupId, "folders/recyclebin",
@@ -94,44 +110,62 @@ public class DSEnvelopeManagerImpl implements DSEnvelopeManager {
 	public DSEnvelope getDSEnvelope(
 		long companyId, long groupId, String dsEnvelopeId) {
 
+		return getDSEnvelope(
+			companyId, groupId, dsEnvelopeId,
+			"custom_fields,documents,recipients");
+	}
+
+	@Override
+	public DSEnvelope getDSEnvelope(
+		long companyId, long groupId, String dsEnvelopeId, String include) {
+
 		JSONObject jsonObject = _dsHttp.get(
 			companyId, groupId,
 			StringBundler.concat(
-				"envelopes/", dsEnvelopeId,
-				"?include=custom_fields,documents,recipients"));
+				"envelopes/", dsEnvelopeId, "?include=", include));
 
 		return _toDSEnvelope(jsonObject);
 	}
 
 	@Override
-	public List<DSEnvelope> getDSEnvelopes(
-		long companyId, long groupId, String fromDateString) {
+	public Page<DSEnvelope> getDSEnvelopesPage(
+		long companyId, long groupId, String fromDateString, String keywords,
+		String order, Pagination pagination, String status) {
 
-		JSONObject jsonObject = _dsHttp.get(
-			companyId, groupId,
-			StringBundler.concat(
-				"envelopes?from_date=", fromDateString,
-				"&include=custom_fields,documents,recipients&order=desc"));
+		Matcher matcher = _pattern.matcher(keywords);
 
-		return JSONUtil.toList(
-			jsonObject.getJSONArray("envelopes"),
-			evenlopeJSONObject -> _toDSEnvelope(evenlopeJSONObject), _log);
-	}
+		if (matcher.matches()) {
+			DSEnvelope dsEnvelope = getDSEnvelope(companyId, groupId, keywords);
 
-	@Override
-	public List<DSEnvelope> getDSEnvelopes(
-		long companyId, long groupId, String... dsEnvelopeIds) {
+			if (Validator.isNull(dsEnvelope.getDSEnvelopeId())) {
+				return Page.of(Collections.emptyList(), pagination, 0);
+			}
 
-		JSONObject jsonObject = _dsHttp.get(
-			companyId, groupId,
-			StringBundler.concat(
-				"envelopes/?envelope_ids=",
-				ArrayUtil.toString(dsEnvelopeIds, StringPool.BLANK),
-				"&include=custom_fields,documents,recipients"));
+			return Page.of(
+				Collections.singletonList(dsEnvelope), pagination, 1);
+		}
 
-		return JSONUtil.toList(
-			jsonObject.getJSONArray("envelopes"),
-			evenlopeJSONObject -> _toDSEnvelope(evenlopeJSONObject), _log);
+		String location = StringBundler.concat(
+			"envelopes?count=", pagination.getPageSize(), "&from_date=",
+			fromDateString, "&folder_types=sentitems&start_position=",
+			pagination.getStartPosition(),
+			"&include=custom_fields,documents,recipients&order=", order);
+
+		if (!Validator.isBlank(keywords)) {
+			location += "&search_text=" + keywords;
+		}
+
+		if (!Validator.isBlank(status)) {
+			location += "&status=" + status;
+		}
+
+		JSONObject jsonObject = _dsHttp.get(companyId, groupId, location);
+
+		return Page.of(
+			JSONUtil.toList(
+				jsonObject.getJSONArray("envelopes"),
+				envelopeJSONObject -> _toDSEnvelope(envelopeJSONObject), _log),
+			pagination, jsonObject.getInt("totalSetSize"));
 	}
 
 	private List<DSDocument> _getDSDocuments(JSONArray jsonArray) {
@@ -140,6 +174,7 @@ public class DSEnvelopeManagerImpl implements DSEnvelopeManager {
 			jsonObject -> new DSDocument() {
 				{
 					dsDocumentId = jsonObject.getString("documentId");
+					fileExtension = jsonObject.getString("fileExtension");
 					name = jsonObject.getString("name");
 					uri = jsonObject.getString("uri");
 				}
@@ -159,6 +194,7 @@ public class DSEnvelopeManagerImpl implements DSEnvelopeManager {
 					dsRecipientId = signerJSONObject.getString("recipientId");
 					emailAddress = signerJSONObject.getString("email");
 					name = signerJSONObject.getString("name");
+					status = signerJSONObject.getString("status");
 				}
 			},
 			_log);
@@ -208,9 +244,6 @@ public class DSEnvelopeManagerImpl implements DSEnvelopeManager {
 					jsonObject.getJSONObject("recipients"));
 				emailBlurb = jsonObject.getString("emailBlurb");
 				emailSubject = jsonObject.getString("emailSubject");
-				name = jsonObject.getString("envelopeName");
-				senderEmailAddress = jsonObject.getString(
-					"envelopeSenderEmailAddress");
 				status = jsonObject.getString("status");
 			}
 		};
@@ -219,44 +252,6 @@ public class DSEnvelopeManagerImpl implements DSEnvelopeManager {
 			dsEnvelope, jsonObject.getJSONObject("customFields"));
 
 		return dsEnvelope;
-	}
-
-	private JSONObject _toJSONObject(DSEnvelope dsEnvelope) {
-		return JSONUtil.put(
-			"documents",
-			JSONUtil.toJSONArray(
-				dsEnvelope.getDSDocuments(),
-				dsDocument -> JSONUtil.put(
-					"documentBase64", dsDocument.getData()
-				).put(
-					"documentId", dsDocument.getDSDocumentId()
-				).put(
-					"name", dsDocument.getName()
-				),
-				_log)
-		).put(
-			"emailBlurb", dsEnvelope.getEmailBlurb()
-		).put(
-			"emailSubject", dsEnvelope.getEmailSubject()
-		).put(
-			"envelopeId", dsEnvelope.getDSEnvelopeId()
-		).put(
-			"recipients",
-			JSONUtil.put(
-				"signers",
-				JSONUtil.toJSONArray(
-					dsEnvelope.getDSRecipients(),
-					dsRecipient -> JSONUtil.put(
-						"email", dsRecipient.getEmailAddress()
-					).put(
-						"name", dsRecipient.getName()
-					).put(
-						"recipientId", dsRecipient.getDSRecipientId()
-					),
-					_log))
-		).put(
-			"status", dsEnvelope.getStatus()
-		);
 	}
 
 	private LocalDateTime _toLocalDateTime(String localDateTimeString) {
@@ -276,6 +271,10 @@ public class DSEnvelopeManagerImpl implements DSEnvelopeManager {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		DSEnvelopeManagerImpl.class);
+
+	private static final Pattern _pattern = Pattern.compile(
+		"[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}" +
+			"\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}");
 
 	@Reference
 	private DSCustomFieldManager _dsCustomFieldManager;

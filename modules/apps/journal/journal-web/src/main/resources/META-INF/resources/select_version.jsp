@@ -30,9 +30,9 @@ PortletURL portletURL = PortletURLBuilder.createRenderURL(
 ).setParameter(
 	"articleId", articleId
 ).setParameter(
-	"groupId", String.valueOf(groupId)
+	"groupId", groupId
 ).setParameter(
-	"sourceVersion", String.valueOf(sourceVersion)
+	"sourceVersion", sourceVersion
 ).build();
 %>
 

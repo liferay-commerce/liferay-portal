@@ -3485,23 +3485,23 @@ public class MBBanPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (mbBan.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				mbBan.setCreateDate(now);
+				mbBan.setCreateDate(date);
 			}
 			else {
-				mbBan.setCreateDate(serviceContext.getCreateDate(now));
+				mbBan.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!mbBanModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				mbBan.setModifiedDate(now);
+				mbBan.setModifiedDate(date);
 			}
 			else {
-				mbBan.setModifiedDate(serviceContext.getModifiedDate(now));
+				mbBan.setModifiedDate(serviceContext.getModifiedDate(date));
 			}
 		}
 

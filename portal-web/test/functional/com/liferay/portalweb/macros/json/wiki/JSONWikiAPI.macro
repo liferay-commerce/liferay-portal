@@ -31,7 +31,7 @@ definition {
 
 	@summary = "Helper function to add a wiki child page via JSON"
 	macro _addWikiChildPage {
-		Variables.assertDefined(parameterList = "${pageId},${headline}");
+		Variables.assertDefined(parameterList = "${parentResourcePrimKey},${headline}");
 
 		var portalURL = JSONCompany.getPortalURL();
 
@@ -64,7 +64,7 @@ definition {
 		}
 
 		var curl = '''
-			${portalURL}/o/headless-delivery/v1.0/wiki-pages/${pageId}/wiki-pages \
+			${portalURL}/o/headless-delivery/v1.0/wiki-pages/${parentResourcePrimKey}/wiki-pages \
 			-H 'Content-Type: application/json' \
 			-u 'test@liferay.com:test' \
 			-d '{
@@ -84,7 +84,7 @@ definition {
 
 	@summary = "Helper function to add a wiki node via JSON"
 	macro _addWikiNode {
-		Variables.assertDefined(parameterList = "${groupId}");
+		Variables.assertDefined(parameterList = "${name}");
 
 		var portalURL = JSONCompany.getPortalURL();
 
@@ -95,26 +95,15 @@ definition {
 			var description = "";
 		}
 
-		if (isSet(viewableBy)) {
-			var viewableBy = "${viewableBy}";
-		}
-		else {
-			var viewableBy = "Anyone";
-		}
-
 		var curl = '''
-			${portalURL}/o/headless-delivery/v1.0/sites/${groupId}/wiki-nodes \
-			-H 'Content-Type: application/json' \
-			-u 'test@liferay.com:test' \
-			-d '{
-				"creator": {},
-				"description": "${description}",
-				"name": "${name}",
-				"viewableBy": "${viewableBy}"
-			}'
+			${portalURL}/api/jsonws/wiki.wikinode/add-node \
+				-u test@liferay.com:test \
+				-d name=${name} \
+				-d description=${description} \
+				-d serviceContext=${serviceContext}
 		''';
 
-		var messageId = JSONCurlUtil.post("${curl}");
+		com.liferay.poshi.runner.util.JSONCurlUtil.post("${curl}");
 	}
 
 	@summary = "Helper function to add a wiki page via JSON"
@@ -184,7 +173,7 @@ definition {
 
 		var nodeId = JSONCurlUtil.get("${curl}", "$.[?(@['name'] == '${name}')]['nodeId']");
 
-		if ("${nodeId}" == "[]") {
+		if ("${nodeId}" == "") {
 			fail("FAIL. Cannot find node.");
 		}
 
@@ -210,7 +199,7 @@ definition {
 
 		var pageId = JSONCurlUtil.post("${curl}", "$.[?(@['title'] == '${title}')]['pageId']");
 
-		if ("${pageId}" == "[]") {
+		if ("${pageId}" == "") {
 			fail("FAIL. Cannot find wiki page.");
 		}
 
@@ -219,17 +208,59 @@ definition {
 		return "${pageId}";
 	}
 
-	@summary = "Helper function to update the existing wiki page via JSON."
-	macro _updateWikiPage {
-		Variables.assertDefined(parameterList = "${content},${headline},${nodeId},${serviceContext}");
+	@summary = "Get the resourcePrimKey by pagename"
+	macro _getPageResourcePrimKey {
+		Variables.assertDefined(parameterList = "${nodeId},${title}");
+
+		if (!(isSet(portalURL))) {
+			var portalURL = JSONCompany.getPortalURL();
+		}
+
+		var curl = '''
+			${portalURL}/api/jsonws/wiki.wikipage/get-page \
+				-u test@liferay.com:test \
+				-d nodeId=${nodeId} \
+				-d title=${title}
+		''';
+
+		var resourcePrimKey = JSONCurlUtil.post("${curl}", "$.[?(@['title'] == '${title}')]['resourcePrimKey']");
+
+		if ("${resourcePrimKey}" == "[]") {
+			fail("FAIL. Cannot find wiki page resourcePrimKey.");
+		}
+
+		echo("## * resourcePrimKey: ${resourcePrimKey}");
+
+		return "${resourcePrimKey}";
+	}
+
+	@summary = "Helper function to move the wiki page to trash via JSON."
+	macro _movePageToTrash {
+		Variables.assertDefined(parameterList = "${title},${nodeId}");
 
 		var portalURL = JSONCompany.getPortalURL();
 
-		if (isSet(description)) {
-			var description = "${description}";
+		var curl = '''
+			${portalURL}/api/jsonws/wiki.wikipage/move-page-to-trash \
+				-u test@liferay.com:test \
+				-d nodeId=${nodeId} \
+				-d title=${title}
+		''';
+
+		var messageId = JSONCurlUtil.post("${curl}");
+	}
+
+	@summary = "Helper function to update the existing wiki page via JSON."
+	macro _updateWikiPage {
+		Variables.assertDefined(parameterList = "${resourcePrimKey}");
+
+		var portalURL = JSONCompany.getPortalURL();
+
+		if (isSet(viewableBy)) {
+			var viewableBy = "${viewableBy}";
 		}
 		else {
-			var description = "";
+			var viewableBy = "Anyone";
 		}
 
 		if (isSet(encodingFormat)) {
@@ -239,36 +270,37 @@ definition {
 			var encodingFormat = "creole";
 		}
 
-		if (isSet(version)) {
-			var version = "${version}";
+		if (isSet(tagName)) {
+			var tagName = '''"${tagName}"''';
 		}
 		else {
-			var version = "1.0";
+			var tagName = "";
 		}
 
-		if (isSet(minorEdit)) {
-			var minorEdit = "${minorEdit}";
+		if (isSet(assetCategoryIds)) {
+			var assetCategoryIds = "${assetCategoryIds}";
 		}
 		else {
-			var minorEdit = "true";
+			var assetCategoryIds = "0";
 		}
 
 		var curl = '''
-			${portalURL}/api/jsonws/wiki.wikipage/update-page \
-				-u test@liferay.com:test \
-				-d nodeId=${nodeId} \
-				-d title=${headline} \
-				-d version=${version} \
-				-d content=${content} \
-				-d summary=${description} \
-				-d minorEdit=${minorEdit} \
-				-d format=${encodingFormat} \
-				-d parentTitle= \
-				-d redirectTitle= \
-				-d serviceContext=${serviceContext}
+			${portalURL}/o/headless-delivery/v1.0/wiki-pages/${resourcePrimKey} \
+			-H 'Content-Type: application/json' \
+			-u 'test@liferay.com:test' \
+			-d '{
+				"content": "${content}",
+				"creator": {},
+				"encodingFormat": "${encodingFormat}",
+				"headline": "${headline}",
+				"keywords": [${tagName}],
+				"taxonomyCategoryIds": [${assetCategoryIds}],
+				"viewableBy": "${viewableBy}",
+				"wikiNodeId": 0
+			}'
 		''';
 
-		com.liferay.poshi.runner.util.JSONCurlUtil.post("${curl}");
+		var messageId = JSONCurlUtil.put("${curl}");
 	}
 
 }

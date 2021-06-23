@@ -125,12 +125,12 @@ public class AnnouncementsEntryLocalServiceImpl
 
 	@Override
 	public void checkEntries() throws PortalException {
-		Date now = new Date();
+		Date date = new Date();
 
 		Date previousCheckDate = new Date(
-			now.getTime() - _ANNOUNCEMENTS_ENTRY_CHECK_INTERVAL);
+			date.getTime() - _ANNOUNCEMENTS_ENTRY_CHECK_INTERVAL);
 
-		checkEntries(previousCheckDate, now);
+		checkEntries(previousCheckDate, date);
 	}
 
 	@Override

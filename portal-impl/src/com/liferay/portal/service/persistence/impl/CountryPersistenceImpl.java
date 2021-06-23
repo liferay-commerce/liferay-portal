@@ -5142,23 +5142,23 @@ public class CountryPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (country.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				country.setCreateDate(now);
+				country.setCreateDate(date);
 			}
 			else {
-				country.setCreateDate(serviceContext.getCreateDate(now));
+				country.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!countryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				country.setModifiedDate(now);
+				country.setModifiedDate(date);
 			}
 			else {
-				country.setModifiedDate(serviceContext.getModifiedDate(now));
+				country.setModifiedDate(serviceContext.getModifiedDate(date));
 			}
 		}
 

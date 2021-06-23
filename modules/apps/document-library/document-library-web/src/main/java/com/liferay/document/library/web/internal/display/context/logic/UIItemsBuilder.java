@@ -14,6 +14,10 @@
 
 package com.liferay.document.library.web.internal.display.context.logic;
 
+import com.liferay.digital.signature.configuration.DigitalSignatureConfiguration;
+import com.liferay.digital.signature.configuration.DigitalSignatureConfigurationUtil;
+import com.liferay.digital.signature.constants.DigitalSignatureConstants;
+import com.liferay.digital.signature.constants.DigitalSignaturePortletKeys;
 import com.liferay.document.library.constants.DLPortletKeys;
 import com.liferay.document.library.display.context.DLUIItemKeys;
 import com.liferay.document.library.kernel.document.conversion.DocumentConversionUtil;
@@ -24,7 +28,6 @@ import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.versioning.VersioningStrategy;
 import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.document.library.web.internal.helper.DLTrashHelper;
-import com.liferay.document.library.web.internal.util.FFImageEditorConfigurationUtil;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandler;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandlerRegistryUtil;
 import com.liferay.petra.io.unsync.UnsyncStringWriter;
@@ -257,6 +260,21 @@ public class UIItemsBuilder {
 	}
 
 	public void addCollectDigitalSignatureMenuItem(List<MenuItem> menuItems) {
+		DigitalSignatureConfiguration digitalSignatureConfiguration =
+			DigitalSignatureConfigurationUtil.getDigitalSignatureConfiguration(
+				_themeDisplay.getCompanyId(), _themeDisplay.getSiteGroupId());
+
+		if (!digitalSignatureConfiguration.enabled()) {
+			return;
+		}
+
+		if (!ArrayUtil.contains(
+				DigitalSignatureConstants.ALLOWED_FILE_EXTENSIONS,
+				_fileEntry.getExtension())) {
+
+			return;
+		}
+
 		RequestBackedPortletURLFactory requestBackedPortletURLFactory =
 			RequestBackedPortletURLFactoryUtil.create(_httpServletRequest);
 
@@ -266,13 +284,23 @@ public class UIItemsBuilder {
 			LanguageUtil.get(_resourceBundle, "collect-digital-signature"),
 			PortletURLBuilder.create(
 				requestBackedPortletURLFactory.createActionURL(
-					"com_liferay_digital_signature_web_internal_portlet_" +
-						"CollectDigitalSignaturePortlet")
+					DigitalSignaturePortletKeys.COLLECT_DIGITAL_SIGNATURE)
 			).setBackURL(
 				_getCurrentURL()
 			).setParameter(
-				"fileEntryId", String.valueOf(_fileEntry.getFileEntryId())
+				"fileEntryId", _fileEntry.getFileEntryId()
 			).buildString());
+	}
+
+	public void addCollectDigitalSignatureToolbarItem(
+			List<ToolbarItem> toolbarItems)
+		throws PortalException {
+
+		_addJavaScriptUIItem(
+			new JavaScriptToolbarItem(), toolbarItems,
+			DLUIItemKeys.COLLECT_DIGITAL_SIGNATURE,
+			LanguageUtil.get(_resourceBundle, "collect-digital-signature"),
+			null);
 	}
 
 	public void addCompareToMenuItem(List<MenuItem> menuItems)
@@ -549,10 +577,6 @@ public class UIItemsBuilder {
 
 	public void addEditImageItem(List<MenuItem> menuItems)
 		throws PortalException {
-
-		if (!FFImageEditorConfigurationUtil.enabled()) {
-			return;
-		}
 
 		if ((_fileShortcut != null) ||
 			!_fileEntryDisplayContextHelper.

@@ -1,5 +1,39 @@
 definition {
 
+	macro addAndEditExternalApplication {
+		var portalURL = PropsUtil.get("portal.url");
+
+		OAuth2.openOAuth2Admin();
+
+		OAuth2.addApplication(
+			applicationName = "${applicationName}",
+			callbackURI = '''http://martamedio.com/oauth2-tester/?url=${portalURL}&client_id=${clientId}''',
+			clientProfile = "Web Application");
+
+		if (isSet(checkboxCheckList)) {
+			Check(
+				key_checkboxName = "${checkboxCheckList}",
+				locator1 = "OAuth2#ADMIN_INPUT_FORM_CHECKBOX");
+		}
+
+		if (isSet(websiteURL)) {
+			PortletEntry.inputText(
+				fieldLabel = "Website URL",
+				text = "${websiteURL}");
+		}
+
+		OAuth2.inputApplicationValues(
+			clientId = "${clientId}",
+			clientSecret = "${clientSecret}");
+
+		Navigator.gotoBack();
+
+		OAuth2.editScopes(
+			applicationName = "${applicationName}",
+			resourceCheckList = "liferay-json-web-services.everything.read.userprofile",
+			resourcePanels = "Portal Services");
+	}
+
 	macro addApplication {
 		LexiconEntry.gotoAdd();
 
@@ -52,6 +86,54 @@ definition {
 			fieldValue = "${separator}");
 
 		PortletEntry.save();
+	}
+
+	macro authorizeMyApplication {
+		if ("${newTab}" == "true") {
+			Open.openInTheNewTab(locator1 = "http://martamedio.com/oauth2-tester/");
+
+			SelectWindow.selectPopUp(locator1 = "null");
+		}
+		else {
+			Navigator.openSpecificURL(url = "http://martamedio.com/oauth2-tester/");
+		}
+
+		Type(
+			locator1 = "OAuth2#OAUTH2_TESTER_CLIENT_ID",
+			value1 = "${clientId}");
+
+		Button.click(button = "Authorize My Application");
+
+		if (IsElementPresent(locator1 = "Button#SIGN_IN")) {
+			Type(
+				locator1 = "TextInput#EMAIL_ADDRESS",
+				value1 = "test@liferay.com");
+
+			Type(
+				locator1 = "TextInput#PASSWORD",
+				value1 = "test");
+
+			Click(locator1 = "Button#SIGN_IN");
+		}
+
+		if (isSet(rememberDevice)) {
+			Check(
+				key_checkboxName = "Remember Device",
+				locator1 = "OAuth2#ADMIN_INPUT_FORM_CHECKBOX");
+		}
+
+		if ("${noAuthorize}" == "true") {
+			Pause(locator1 = "1000");
+		}
+		else {
+			Button.click(button = "Authorize");
+		}
+
+		Type(
+			locator1 = "OAuth2#OAUTH2_TESTER_CLIENT_SECRET",
+			value1 = "${clientSecret}");
+
+		Button.click(button = "Obtain OAuth2 Access");
 	}
 
 	macro deleteApplication {
@@ -347,6 +429,20 @@ definition {
 		}
 
 		PortletEntry.save();
+	}
+
+	macro launchRequest {
+		Button.click(button = "Launch Request");
+
+		AssertTextEquals.assertPartialText(
+			locator1 = "OAuth2#OAUTH2_TESTER_REQUEST_RESULTS",
+			value1 = "test@liferay.com");
+	}
+
+	macro openOAuth2Admin {
+		Navigator.openWithAppendToBaseURL(
+			baseURL = "${baseURL}",
+			urlAppend = "group/guest/~/control_panel/manage?p_p_id=com_liferay_oauth2_provider_web_internal_portlet_OAuth2AdminPortlet");
 	}
 
 	macro revokeGrantedAuthViaAdmin {

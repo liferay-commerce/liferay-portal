@@ -12,9 +12,9 @@
  * details.
  */
 
+import {ReactPortal} from '@liferay/frontend-js-react-web';
 import PropTypes from 'prop-types';
 import React from 'react';
-import ReactDOM from 'react-dom';
 
 import RawDOM from '../../common/components/RawDOM';
 
@@ -112,8 +112,10 @@ export default class UnsafeHTML extends React.PureComponent {
 
 		ref.removeAttribute('style');
 
-		Object.keys(this.props.style).forEach((key) => {
-			ref.style[key] = this.props.style[key];
+		Object.entries(this.props.style).forEach(([key, value]) => {
+			if (value !== undefined && value !== null) {
+				ref.style[key] = value;
+			}
 		});
 	}
 
@@ -152,9 +154,11 @@ export default class UnsafeHTML extends React.PureComponent {
 					elementRef={this._updateRef}
 				/>
 
-				{this.state.portals.map(({Component, element}) =>
-					ReactDOM.createPortal(<Component />, element)
-				)}
+				{this.state.portals.map(({Component, element}, i) => (
+					<ReactPortal container={element} key={i}>
+						<Component />
+					</ReactPortal>
+				))}
 			</>
 		);
 	}

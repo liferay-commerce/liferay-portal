@@ -15306,24 +15306,24 @@ public class DLFileEntryPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (dlFileEntry.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				dlFileEntry.setCreateDate(now);
+				dlFileEntry.setCreateDate(date);
 			}
 			else {
-				dlFileEntry.setCreateDate(serviceContext.getCreateDate(now));
+				dlFileEntry.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!dlFileEntryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				dlFileEntry.setModifiedDate(now);
+				dlFileEntry.setModifiedDate(date);
 			}
 			else {
 				dlFileEntry.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

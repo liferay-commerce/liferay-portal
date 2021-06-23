@@ -601,25 +601,25 @@ public class DDMFormInstanceReportPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (ddmFormInstanceReport.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				ddmFormInstanceReport.setCreateDate(now);
+				ddmFormInstanceReport.setCreateDate(date);
 			}
 			else {
 				ddmFormInstanceReport.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!ddmFormInstanceReportModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				ddmFormInstanceReport.setModifiedDate(now);
+				ddmFormInstanceReport.setModifiedDate(date);
 			}
 			else {
 				ddmFormInstanceReport.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

@@ -29,8 +29,9 @@ import com.liferay.dynamic.data.mapping.service.DDMStructureLayoutLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.util.DDM;
 import com.liferay.dynamic.data.mapping.util.SettingsDDMFormFieldsUtil;
+import com.liferay.osgi.service.tracker.collections.ServiceTrackerMapBuilder;
+import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceComparator;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
-import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -153,8 +154,16 @@ public class DDMFormTemplateContextFactoryImpl
 
 	@Activate
 	protected void activate(BundleContext bundleContext) {
-		_serviceTrackerMap = ServiceTrackerMapFactory.openMultiValueMap(
-			bundleContext, DDMValidation.class, "ddm.validation.data.type");
+		_serviceTrackerMap =
+			ServiceTrackerMapBuilder.SelectorFactory.newSelector(
+				bundleContext, DDMValidation.class
+			).map(
+				"ddm.validation.data.type"
+			).collectMultiValue(
+				Collections.reverseOrder(
+					new PropertyServiceReferenceComparator<>(
+						"ddm.validation.ranking"))
+			).build();
 	}
 
 	protected void collectResourceBundles(
@@ -292,6 +301,8 @@ public class DDMFormTemplateContextFactoryImpl
 
 		templateContext.put("submitLabel", submitLabel);
 
+		templateContext.put(
+			"submittable", ddmFormRenderingContext.isSubmittable());
 		templateContext.put(
 			"templateNamespace", getTemplateNamespace(ddmFormLayout));
 		templateContext.put("validations", _getValidations(locale));
@@ -441,8 +452,6 @@ public class DDMFormTemplateContextFactoryImpl
 					).put(
 						"parameterMessage",
 						ddmValidation.getParameterMessage(locale)
-					).put(
-						"regex", ddmValidation.getRegex()
 					).put(
 						"template", ddmValidation.getTemplate()
 					).build()

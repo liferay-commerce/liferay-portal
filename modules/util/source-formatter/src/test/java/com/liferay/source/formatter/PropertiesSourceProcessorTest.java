@@ -22,6 +22,11 @@ import org.junit.Test;
 public class PropertiesSourceProcessorTest extends BaseSourceProcessorTestCase {
 
 	@Test
+	public void testIncorrectWhitespaceCheck() throws Exception {
+		test("IncorrectWhitespaceCheck.testproperties");
+	}
+
+	@Test
 	public void testSortDefinitionKeys() throws Exception {
 		test("FormatProperties/liferay-plugin-package.testproperties");
 		test("FormatProperties/TLiferayBatchFileProperties.testproperties");

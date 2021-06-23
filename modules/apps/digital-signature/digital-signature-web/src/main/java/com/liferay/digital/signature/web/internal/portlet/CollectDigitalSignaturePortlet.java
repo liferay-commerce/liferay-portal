@@ -17,14 +17,18 @@ package com.liferay.digital.signature.web.internal.portlet;
 import com.liferay.digital.signature.constants.DigitalSignaturePortletKeys;
 import com.liferay.digital.signature.web.internal.constants.DigitalSignatureWebKeys;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
-import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import java.io.IOException;
@@ -68,37 +72,65 @@ public class CollectDigitalSignaturePortlet extends MVCPortlet {
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws IOException, PortletException {
 
-		ThemeDisplay themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
-
-		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
-
-		portletDisplay.setShowBackIcon(true);
-		portletDisplay.setURLBack(
-			ParamUtil.getString(renderRequest, "backURL"));
-
 		try {
-			long fileEntryId = ParamUtil.getLong(renderRequest, "fileEntryId");
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)renderRequest.getAttribute(WebKeys.THEME_DISPLAY);
+
+			PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
+
+			portletDisplay.setShowBackIcon(true);
+			portletDisplay.setURLBack(
+				ParamUtil.getString(renderRequest, "backURL"));
+
+			long[] fileEntryIds = ParamUtil.getLongValues(
+				renderRequest, "fileEntryId");
+
+			JSONArray jsonArray = JSONUtil.toJSONArray(
+				ArrayUtil.toLongArray(fileEntryIds),
+				fileEntryId -> {
+					FileEntry fileEntry = _dlAppLocalService.getFileEntry(
+						fileEntryId);
+
+					return JSONUtil.put(
+						"extension", fileEntry.getExtension()
+					).put(
+						"fileEntryId", fileEntryId
+					).put(
+						"groupId", fileEntry.getGroupId()
+					).put(
+						"title", fileEntry.getTitle()
+					);
+				});
 
 			renderRequest.setAttribute(
-				DigitalSignatureWebKeys.DIGITAL_SIGNATURE_FILE_ENTRY_ID,
-				fileEntryId);
-
-			FileEntry fileEntry = _dlAppLocalService.getFileEntry(fileEntryId);
-
-			if (fileEntry != null) {
-				renderRequest.setAttribute(
-					DigitalSignatureWebKeys.DIGITAL_SIGNATURE_TITLE,
-					fileEntry.getTitle());
-			}
+				DigitalSignatureWebKeys.DIGITAL_SIGNATURE_FILE_ENTRIES,
+				jsonArray);
+			renderRequest.setAttribute(
+				DigitalSignatureWebKeys.DIGITAL_SIGNATURE_TITLE,
+				_getTitle(
+					jsonArray.getJSONObject(
+						0
+					).getString(
+						"title"
+					),
+					fileEntryIds.length - 1));
 		}
-		catch (PortalException portalException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(portalException, portalException);
-			}
+		catch (Exception exception) {
+			_log.error(exception, exception);
 		}
 
 		super.render(renderRequest, renderResponse);
+	}
+
+	private String _getTitle(String fileEntryTitle, int count) {
+		if (count == 0) {
+			return fileEntryTitle;
+		}
+
+		return LanguageUtil.format(
+			ResourceBundleUtil.getBundle("content.Language", getClass()),
+			(count == 1) ? "x-and-x-other-file" : "x-and-x-other-files",
+			new String[] {fileEntryTitle, String.valueOf(count)}, false);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

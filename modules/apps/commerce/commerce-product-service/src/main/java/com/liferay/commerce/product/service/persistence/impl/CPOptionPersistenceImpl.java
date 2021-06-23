@@ -3676,23 +3676,23 @@ public class CPOptionPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (cpOption.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				cpOption.setCreateDate(now);
+				cpOption.setCreateDate(date);
 			}
 			else {
-				cpOption.setCreateDate(serviceContext.getCreateDate(now));
+				cpOption.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!cpOptionModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				cpOption.setModifiedDate(now);
+				cpOption.setModifiedDate(date);
 			}
 			else {
-				cpOption.setModifiedDate(serviceContext.getModifiedDate(now));
+				cpOption.setModifiedDate(serviceContext.getModifiedDate(date));
 			}
 		}
 

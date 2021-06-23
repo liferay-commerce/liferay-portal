@@ -64,8 +64,7 @@ public class PortletConfigurationCSSPortletConfigurationIcon
 					PortletRequest.RENDER_PHASE)
 			).setMVCPath(
 				"/view.jsp"
-			).setParameter(
-				"portletResource",
+			).setPortletResource(
 				() -> {
 					ThemeDisplay themeDisplay =
 						(ThemeDisplay)portletRequest.getAttribute(

@@ -32,7 +32,9 @@ import javax.servlet.ServletContext;
 
 /**
  * @author Shuyang Zhou
+ * @deprecated As of Cavanaugh (7.4.x), replaced by {@link com.liferay.portal.kernel.servlet.FileAvailabilityUtil}
  */
+@Deprecated
 public class FileAvailabilityUtil {
 
 	public static void clearAvailabilities() {

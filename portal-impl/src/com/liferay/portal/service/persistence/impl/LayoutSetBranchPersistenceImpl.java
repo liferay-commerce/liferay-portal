@@ -3441,25 +3441,25 @@ public class LayoutSetBranchPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (layoutSetBranch.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				layoutSetBranch.setCreateDate(now);
+				layoutSetBranch.setCreateDate(date);
 			}
 			else {
 				layoutSetBranch.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!layoutSetBranchModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				layoutSetBranch.setModifiedDate(now);
+				layoutSetBranch.setModifiedDate(date);
 			}
 			else {
 				layoutSetBranch.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

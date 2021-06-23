@@ -286,7 +286,7 @@ public class FacebookConnectStrutsAction implements StrutsAction {
 			).setParameter(
 				"lastName", user.getLastName()
 			).setParameter(
-				"saveLastPath", Boolean.FALSE.toString()
+				"saveLastPath", false
 			).setParameter(
 				"userId", user.getUserId()
 			).setPortletMode(

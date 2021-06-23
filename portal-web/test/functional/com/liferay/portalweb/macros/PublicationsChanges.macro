@@ -1,9 +1,64 @@
 definition {
 
+	macro addComment {
+		Type(
+			locator1 = "PublicationsChanges#COMMENT_BODY",
+			value1 = "${commentValue}");
+
+		Pause(locator1 = "3000");
+
+		SelectFrame(value1 = "relative=top");
+
+		AssertClick(
+			locator1 = "Button#REPLY",
+			value1 = "Reply");
+
+		Pause(locator1 = "3000");
+	}
+
 	macro changeDisplayStyle {
 		Click(locator1 = "PublicationsChanges#CURRENT_DISPLAY_STYLE");
 
 		MenuItem.click(menuItem = StringUtil.upperCaseFirstLetter("${displayStyle}"));
+	}
+
+	macro deleteComment {
+		Click.mouseOverClick(
+			key_commentValue = "${commentValue}",
+			locator1 = "PublicationsChanges#COMMENT_ACTIONS");
+
+		AssertClickNoError(
+			key_menuItem = "Delete",
+			locator1 = "MenuItem#ANY_MENU_ITEM",
+			value1 = "Delete");
+
+		AssertConfirm(value1 = "Are you sure you want to delete this? It will be deleted immediately.");
+
+		AssertTextNotPresent(value1 = "${commentValue}");
+	}
+
+	macro editComment {
+		Click.mouseOverClick(
+			key_commentValue = "${commentValue}",
+			locator1 = "PublicationsChanges#COMMENT_ACTIONS");
+
+		MenuItem.click(menuItem = "Edit");
+
+		Pause(locator1 = "500");
+
+		Type.clickAtType(
+			key_userName = "${userName}",
+			locator1 = "PublicationsChanges#COMMENT_BODY_SPECIFIC",
+			value1 = "${commentValueEdit}");
+
+		SelectFrame(value1 = "relative=top");
+
+		Button.clickSave();
+
+		AssertElementPresent(
+			key_commentValue = "${commentValueEdit}",
+			locator1 = "PublicationsChanges#COMMENT_VALUE",
+			value1 = "${commentValueEdit}");
 	}
 
 	macro viewChangesViaChangesStyle {

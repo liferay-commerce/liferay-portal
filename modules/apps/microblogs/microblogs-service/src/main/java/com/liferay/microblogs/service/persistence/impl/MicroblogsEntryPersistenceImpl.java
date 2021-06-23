@@ -13386,25 +13386,25 @@ public class MicroblogsEntryPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (microblogsEntry.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				microblogsEntry.setCreateDate(now);
+				microblogsEntry.setCreateDate(date);
 			}
 			else {
 				microblogsEntry.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!microblogsEntryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				microblogsEntry.setModifiedDate(now);
+				microblogsEntry.setModifiedDate(date);
 			}
 			else {
 				microblogsEntry.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

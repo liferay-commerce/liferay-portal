@@ -326,8 +326,8 @@ public class ActionUtil {
 					ddmStructure.getGroupId(), DDMStructure.class.getName(),
 					ddmStructure.getStructureId());
 
-				article.getTitleMap();
 				article.getDescriptionMap();
+				article.getTitleMap();
 
 				article.setNew(true);
 				article.setId(0);

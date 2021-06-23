@@ -519,10 +519,22 @@ public class JournalArticleActionDropdownItemsProvider {
 
 		return dropdownItem -> {
 			dropdownItem.setHref(
-				_liferayPortletResponse.createRenderURL(), "mvcPath",
-				"/import_translation.jsp", "redirect", _getRedirect(),
-				"referringPortletResource", _getReferringPortletResource(),
-				"articleId", _article.getArticleId());
+				PortletURLBuilder.createRenderURL(
+					_liferayPortletResponse
+				).setMVCRenderCommandName(
+					"/journal/import_translation"
+				).setRedirect(
+					_getRedirect()
+				).setParameter(
+					"classNameId",
+					PortalUtil.getClassNameId(JournalArticle.class)
+				).setParameter(
+					"classPK", _article.getResourcePrimKey()
+				).setParameter(
+					"groupId", _article.getGroupId()
+				).setParameter(
+					"referringPortletResource", _getReferringPortletResource()
+				).build());
 			dropdownItem.setLabel(
 				LanguageUtil.get(_httpServletRequest, "import-translation"));
 		};

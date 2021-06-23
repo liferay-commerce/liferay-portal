@@ -58,6 +58,7 @@ public class AccountEntryModelDocumentContributor
 		document.addKeyword(
 			"parentAccountEntryId", accountEntry.getParentAccountEntryId());
 		document.addText("taxIdNumber", accountEntry.getTaxIdNumber());
+		document.remove(Field.USER_NAME);
 	}
 
 	private long[] _getAccountGroupIds(AccountEntry accountEntry) {

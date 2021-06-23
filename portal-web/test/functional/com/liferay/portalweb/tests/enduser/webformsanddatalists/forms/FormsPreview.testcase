@@ -1,0 +1,1424 @@
+@component-name = "portal-web-forms-and-data-lists"
+definition {
+
+	property custom.properties = "minifier.enabled=true";
+	property portal.release = "true";
+	property portal.upstream = "true";
+	property testray.main.component.name = "Forms";
+
+	setUp {
+		TestCase.setUpPortalInstance();
+
+		User.firstLoginPG();
+	}
+
+	tearDown {
+		var testPortalInstance = PropsUtil.get("test.portal.instance");
+
+		if ("${testPortalInstance}" == "true") {
+			PortalInstances.tearDownCP();
+		}
+		else {
+			Navigator.openURL();
+
+			ProductMenu.gotoPortlet(
+				category = "Content &amp; Data",
+				portlet = "Forms");
+
+			FormsAdmin.teardownForms();
+
+			Navigator.gotoNavItem(navItem = "Element Sets");
+
+			FormsAdmin.teardownElementSets();
+
+			Page.tearDownCP();
+		}
+	}
+
+	@description = "Verify that a rule with an (Autofill) action can be previewed"
+	@ignore = "Test Stub"
+	@priority = "5"
+	test AutofillRuleCanBePreviewed {
+		property forms.functional = "false";
+		property portal.acceptance = "false";
+
+		// TODO LPS-133811 AutofillRuleCanBePreviewed pending implementation
+
+	}
+
+	@description = "Verify that a rule with a (Calculate) action can be previewed"
+	@priority = "5"
+	test CalculateRuleCanBePreviewed {
+		property forms.functional = "false";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.addTextField(fieldPositionNumber = "0");
+
+		Form.closeSidebar();
+
+		Form.gotoAddField(
+			fieldPositionNumber = "1",
+			fieldType = "Numeric");
+
+		FormsAdminNavigator.gotoRules();
+
+		FormRules.addRule();
+
+		FormRules.configureConditionOptions(
+			conditionField = "Text",
+			conditionFieldValue = "Test",
+			conditionOperator = "Contains",
+			conditionRowNumber = "1",
+			conditionValueType = "Value");
+
+		FormRules.configureActionOptions(
+			action = "Calculate",
+			actionRowNumber = "1",
+			actionTarget = "Numeric");
+
+		FormRules.clickOnCalculatorNumbersKeyboard(buttonName = "1");
+
+		FormRules.clickOnCalculatorNumbersKeyboard(buttonName = "0");
+
+		FormRules.chooseCalculateOperator(calculateOperator = "+");
+
+		FormRules.clickOnCalculatorNumbersKeyboard(buttonName = "1");
+
+		FormRules.clickOnCalculatorNumbersKeyboard(buttonName = "0");
+
+		FormRules.save();
+
+		FormsAdminNavigator.gotoFormBuilder();
+
+		FormsAdminNavigator.gotoPreviewForm();
+
+		Navigator.selectSpecificWindow(windowTitle = "Form - Forms");
+
+		FormFields.editText(
+			fieldName = "Text",
+			fieldValue = "Test");
+
+		FormFields.viewTextValue(
+			fieldName = "Numeric",
+			fieldValue = "20");
+	}
+
+	@description = "Verify that a user can navigate to different pages of a preview"
+	@priority = "5"
+	test CanNavigateToDifferentPages {
+		property forms.functional = "true";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Text");
+
+		Form.addPage(formAddNewPageNumber = "1");
+
+		Form.editPageTitle(
+			formPageName = "Page A",
+			formTitleNumber = "1");
+
+		Form.editPageTitle(
+			formPageName = "Page B",
+			formTitleNumber = "2");
+
+		FormsAdminNavigator.gotoPreviewForm();
+
+		Navigator.selectSpecificWindow(windowTitle = "Form - Forms");
+
+		AssertElementPresent(
+			key_formPageName = "Page A",
+			locator1 = "FormPortlet#FORM_PAGE_ACTIVE");
+
+		FormPortlet.nextPage(
+			formPageCurrent = "Page A",
+			formPageNext = "Page B");
+
+		AssertElementPresent(
+			key_formPageName = "Page B",
+			locator1 = "FormPortlet#FORM_PAGE_ACTIVE");
+
+		FormPortlet.previousPage();
+
+		AssertElementPresent(
+			key_formPageName = "Page A",
+			locator1 = "FormPortlet#FORM_PAGE_ACTIVE");
+	}
+
+	@description = "Verify that it is not possible to submit a preview of a Form"
+	@priority = "4"
+	test CannotBeSubmitted {
+		property forms.functional = "true";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Text");
+
+		FormsAdminNavigator.gotoPreviewForm();
+
+		AssertElementNotPresent(locator1 = "FormPortlet#SUBMIT_BUTTON");
+	}
+
+	@description = "Verify that a user cannot navigate to a new page without completing a required field"
+	@priority = "5"
+	test CannotNavigateToANewPageWithoutCompletingARequiredField {
+		property forms.functional = "false";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.editPageTitle(
+			formPageName = "Page A",
+			formTitleNumber = "1");
+
+		Form.addTextField(fieldPositionNumber = "0");
+
+		FormFields.enableSwitcher(fieldName = "Required");
+
+		Form.addPage(formAddNewPageNumber = "1");
+
+		Form.editPageTitle(
+			formPageName = "Page B",
+			formTitleNumber = "2");
+
+		FormsAdminNavigator.gotoPreviewForm();
+
+		Navigator.selectSpecificWindow(windowTitle = "Form - Forms");
+
+		Form.viewPageName(
+			formPageName = "Page A",
+			formTitleNumber = "1");
+
+		Form.viewRequiredFieldIndicator();
+
+		FormPortlet.clickNextPage();
+
+		FormPortlet.viewValidationErrorMessage(validationErrorMessage = "This field is required.");
+
+		FormFields.editText(
+			fieldName = "Text",
+			fieldValue = "Test");
+
+		FormPortlet.waitForValidationErrorNotPresent(validationErrorMessage = "This field is required.");
+
+		FormPortlet.clickNextPage();
+
+		Form.viewPageName(
+			formPageName = "Page B",
+			formTitleNumber = "2");
+	}
+
+	@description = "Verify that a Color Field can be previewed"
+	@priority = "5"
+	test ColorFieldCanBePreviewed {
+		property forms.functional = "true";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Color");
+
+		FormFields.editHelpText(
+			fieldHelpText = "Test Help Text",
+			fieldName = "tip");
+
+		FormsAdminNavigator.gotoPreviewForm();
+
+		Navigator.selectSpecificWindow(windowTitle = "Form - Forms");
+
+		FormFields.viewColorLabel(fieldLabel = "Color");
+
+		FormFields.viewFieldHelpText(
+			fieldHelpText = "Test Help Text",
+			fieldName = "Test Help Text");
+
+		FormFields.editColor(
+			colorSwatchItem = "2BA676",
+			fieldLabel = "Color");
+
+		FormFields.viewColorValue(
+			fieldName = "Color",
+			fieldValue = "2BA676");
+	}
+
+	@description = "Verify that a rule with a (Contains) condition can be previewed"
+	@priority = "5"
+	test ContainsRuleCanBePreviewed {
+		property forms.functional = "false";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Text");
+
+		Form.closeSidebar();
+
+		Form.gotoAddField(
+			fieldPositionNumber = "1",
+			fieldType = "Numeric");
+
+		FormsAdminNavigator.gotoRules();
+
+		FormRules.addRule();
+
+		FormRules.configureConditionOptions(
+			conditionField = "Text",
+			conditionFieldValue = "Test",
+			conditionOperator = "Contains",
+			conditionRowNumber = "1",
+			conditionValueType = "Value");
+
+		FormRules.configureActionOptions(
+			action = "Show",
+			actionRowNumber = "1",
+			actionTarget = "Numeric");
+
+		FormRules.save();
+
+		FormsAdminNavigator.gotoFormBuilder();
+
+		FormsAdminNavigator.gotoPreviewForm();
+
+		Navigator.selectSpecificWindow(windowTitle = "Form - Forms");
+
+		FormFields.viewFieldHidden(fieldName = "Numeric");
+
+		FormFields.editText(
+			fieldName = "Text",
+			fieldValue = "Test");
+
+		FormFields.viewField(fieldName = "Numeric");
+	}
+
+	@description = "Verify that a Date Field can be previewed"
+	@ignore = "Test Stub"
+	@priority = "5"
+	test DateFieldCanBePreviewed {
+		property forms.functional = "false";
+		property portal.acceptance = "false";
+
+		// TODO LPS-133787 DateFieldCanBePreviewed pending implementation
+
+	}
+
+	@description = "Verify that a rule with a (Does not contain) condition can be previewed"
+	@priority = "5"
+	test DoesNotContainRuleCanBePreviewed {
+		property forms.functional = "false";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.addTextField(fieldPositionNumber = "0");
+
+		Form.closeSidebar();
+
+		Form.gotoAddField(
+			fieldPositionNumber = "1",
+			fieldType = "Numeric",
+			formPageNumber = "0");
+
+		FormsAdminNavigator.gotoRules();
+
+		FormRules.addRule();
+
+		FormRules.configureConditionOptions(
+			conditionField = "Text",
+			conditionFieldValue = "Test",
+			conditionOperator = "Does not contain",
+			conditionRowNumber = "1",
+			conditionValueType = "Value");
+
+		FormRules.configureActionOptions(
+			action = "Show",
+			actionRowNumber = "1",
+			actionTarget = "Numeric");
+
+		FormRules.save();
+
+		FormsAdminNavigator.gotoFormBuilder();
+
+		FormsAdminNavigator.gotoPreviewForm();
+
+		Navigator.selectSpecificWindow(windowTitle = "Form - Forms");
+
+		FormFields.viewTextLabel(fieldLabel = "Numeric");
+
+		FormFields.editText(
+			fieldName = "Text",
+			fieldValue = "Test",
+			key_fieldLabel = "Text");
+
+		FormFields.viewFieldHidden(fieldName = "Numeric");
+	}
+
+	@description = "Verify that a rule with an (Enable) action can be previewed"
+	@ignore = "Test Stub"
+	@priority = "5"
+	test EnableRuleCanBePreviewed {
+		property forms.functional = "false";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Text");
+
+		Form.closeSidebar();
+
+		Form.gotoAddField(
+			fieldPositionNumber = "1",
+			fieldType = "Numeric");
+
+		Form.closeSidebar();
+
+		FormsAdminNavigator.gotoRules();
+
+		FormRules.addRule();
+
+		FormRules.configureConditionOptions(
+			conditionField = "Text",
+			conditionFieldValue = "Test",
+			conditionOperator = "Contains",
+			conditionRowNumber = "1",
+			conditionValueType = "Value");
+
+		FormRules.configureActionOptions(
+			action = "Enable",
+			actionRowNumber = "1",
+			actionTarget = "Numeric");
+
+		FormRules.save();
+
+		FormsAdminNavigator.gotoFormBuilder();
+
+		FormsAdminNavigator.gotoPreviewForm();
+
+		Navigator.selectSpecificWindow(windowTitle = "Form - Forms");
+
+		AssertElementPresent(
+			key_fieldLabel = "Numeric",
+			locator1 = "FormFields#FIELD_DISABLED");
+
+		FormFields.editText(
+			fieldName = "Text",
+			fieldValue = "Test");
+
+		FormFields.editText(
+			fieldName = "Numeric",
+			fieldValue = "123");
+	}
+
+	@description = "Verify that a Fieldsets can be previewed"
+	@priority = "5"
+	test FieldsetsCanBePreviewed {
+		property forms.functional = "false";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		Navigator.gotoNavItem(navItem = "Element Sets");
+
+		FormsAdminNavigator.gotoAddElementSet();
+
+		Form.editName(formName = "Element Set 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Text");
+
+		Form.closeSidebar();
+
+		Form.gotoAddField(
+			fieldPositionNumber = "1",
+			fieldType = "Numeric");
+
+		Form.saveElementSet();
+
+		FormsAdminNavigator.gotoBack();
+
+		Navigator.gotoNavItem(navItem = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddElementSet(
+			elementSetTitle = "Element Set 1",
+			fieldPositionNumber = "0");
+
+		FormsAdminNavigator.gotoPreviewForm();
+
+		Navigator.selectSpecificWindow(windowTitle = "Form - Forms");
+
+		FormFields.viewFieldLabel(
+			fieldName = "Text",
+			fieldValue = "");
+
+		FormFields.viewFieldLabel(
+			fieldName = "Numeric",
+			fieldValue = "");
+	}
+
+	@description = "Verify that a Fields Groups can be previewed"
+	@ignore = "Test Stub"
+	@priority = "5"
+	test FieldsGroupsCanBePreviewed {
+		property forms.functional = "false";
+		property portal.acceptance = "false";
+
+		// TODO LPS-133800 FieldsGroupsCanBePreviewed pending implementation
+
+	}
+
+	@description = "Verify that a Grid Field can be previewed"
+	@priority = "5"
+	test GridFieldCanBePreviewed {
+		property forms.functional = "true";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Grid");
+
+		FormFields.editGridOptions(
+			gridField = "Rows",
+			optionValue = "Option 1",
+			rowNumber = "1");
+
+		FormFields.editGridOptions(
+			gridField = "Rows",
+			optionValue = "Option 2",
+			rowNumber = "2");
+
+		FormFields.editGridOptions(
+			gridField = "Columns",
+			optionValue = "Option A",
+			rowNumber = "1");
+
+		FormFields.editGridOptions(
+			gridField = "Columns",
+			optionValue = "Option B",
+			rowNumber = "2");
+
+		FormFields.editHelpText(
+			fieldHelpText = "Test Help Text",
+			fieldName = "tip");
+
+		FormsAdminNavigator.gotoPreviewForm();
+
+		Navigator.selectSpecificWindow(windowTitle = "Form - Forms");
+
+		FormFields.viewLabel(
+			fieldLabel = "Grid",
+			fieldName = "Grid");
+
+		FormFields.viewFieldHelpText(
+			fieldHelpText = "Test Help Text",
+			fieldName = "Test Help Text");
+
+		FormFields.viewOptionRowName(
+			fieldTitle = "Grid",
+			optionName = "Option 1",
+			rowNumber = "1");
+
+		FormFields.viewOptionRowName(
+			fieldTitle = "Grid",
+			optionName = "Option 2",
+			rowNumber = "2");
+
+		FormFields.viewOptionColumnsName(
+			fieldTitle = "Grid",
+			optionName = "Option A",
+			rowNumber = "1");
+
+		FormFields.viewOptionColumnsName(
+			fieldTitle = "Grid",
+			optionName = "Option B",
+			rowNumber = "1");
+
+		FormFields.selectGridRadioOptionWithoutCategory(
+			fieldName = "Grid",
+			optionColumnNumber = "A",
+			optionRowNumber = "1");
+
+		AssertChecked.assertCheckedNotVisible(
+			key_fieldName = "Grid",
+			key_optionNumber = "1",
+			locator1 = "FormFields#GRID_RADIO_OPTIONS");
+	}
+
+	@description = "Verify that an Image Field can be previewed"
+	@priority = "5"
+	test ImageFieldCanBePreviewed {
+		property forms.functional = "false";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Image");
+
+		FormFields.editHelpText(
+			fieldHelpText = "Test Help Text",
+			fieldName = "tip");
+
+		FormsAdminNavigator.gotoPreviewForm();
+
+		Navigator.selectSpecificWindow(windowTitle = "Form - Forms");
+
+		FormFields.viewLabel(
+			fieldLabel = "Image",
+			fieldName = "Image");
+
+		FormFields.viewFieldHelpText(
+			fieldHelpText = "Test Help Text",
+			fieldName = "Image");
+
+		FormFields.selectImageUpload(
+			fileName = "Document_1.jpg",
+			navTab = "Documents and Media",
+			rowNumber = "1");
+
+		FormFields.validateImagePredefinedValue(fileName = "Document_1.jpg");
+	}
+
+	@description = "Verify that is is not possible to preview an invalid Form (ie. no Fields or a Paragraph field with no body text)"
+	@ignore = "Test Stub"
+	@priority = "5"
+	test InvalidFormCannotBePreviewed {
+		property forms.functional = "false";
+		property portal.acceptance = "false";
+
+		// TODO LPS-133730 InvalidFormCannotBePreviewed pending implementation
+
+	}
+
+	@description = "Verify that a rule with an (Is empty) condition can be previewed"
+	@priority = "5"
+	test IsEmptyRuleCanBePreviewed {
+		property forms.functional = "false";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(fieldType = "Text");
+
+		Form.closeSidebar();
+
+		Form.gotoAddField(
+			fieldPositionNumber = "1",
+			fieldType = "Numeric");
+
+		FormsAdminNavigator.gotoRules();
+
+		FormRules.addRule();
+
+		FormRules.configureConditionOptions(
+			conditionField = "Text",
+			conditionOperator = "Is empty",
+			conditionRowNumber = "1");
+
+		FormRules.configureActionOptions(
+			action = "Show",
+			actionRowNumber = "1",
+			actionTarget = "Numeric");
+
+		FormRules.save();
+
+		FormsAdminNavigator.gotoFormBuilder();
+
+		FormsAdminNavigator.gotoPreviewForm();
+
+		Navigator.selectSpecificWindow(windowTitle = "Form - Forms");
+
+		FormFields.viewField(fieldName = "Numeric");
+
+		FormFields.editText(
+			fieldName = "Text",
+			fieldValue = "Test");
+
+		FormFields.viewFieldHidden(fieldName = "Numeric");
+	}
+
+	@description = "Verify that a rule with an (Is equal to) condition can be previewed"
+	@priority = "5"
+	test IsEqualToRuleCanBePreviewed {
+		property forms.functional = "true";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Text");
+
+		Form.closeSidebar();
+
+		Form.gotoAddField(
+			fieldPositionNumber = "1",
+			fieldType = "Numeric");
+
+		FormsAdminNavigator.gotoRules();
+
+		FormRules.addRule();
+
+		FormRules.configureConditionOptions(
+			conditionField = "Text",
+			conditionFieldValue = "Test",
+			conditionOperator = "Is equal to",
+			conditionRowNumber = "1",
+			conditionValueType = "Value");
+
+		FormRules.configureActionOptions(
+			action = "Show",
+			actionRowNumber = "1",
+			actionTarget = "Numeric");
+
+		FormRules.save();
+
+		FormsAdminNavigator.gotoFormBuilder();
+
+		FormsAdminNavigator.gotoPreviewForm();
+
+		Navigator.selectSpecificWindow(windowTitle = "Form - Forms");
+
+		FormFields.viewTextFieldNotVisible(
+			fieldLabel = "Numeric",
+			fieldName = "Numeric");
+
+		FormFields.editText(
+			fieldName = "Text",
+			fieldValue = "Test");
+
+		FormFields.viewTextLabel(fieldLabel = "Numeric");
+	}
+
+	@description = "Verify that a rule with an (Is not empty) condition can be previewed"
+	@priority = "5"
+	test IsNotEmptyRuleCanBePreviewed {
+		property forms.functional = "false";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(fieldType = "Text");
+
+		Form.closeSidebar();
+
+		Form.gotoAddField(
+			fieldPositionNumber = "1",
+			fieldType = "Numeric");
+
+		FormsAdminNavigator.gotoRules();
+
+		FormRules.addRule();
+
+		FormRules.configureConditionOptions(
+			conditionField = "Text",
+			conditionOperator = "Is not empty",
+			conditionRowNumber = "1");
+
+		FormRules.configureActionOptions(
+			action = "Show",
+			actionRowNumber = "1",
+			actionTarget = "Text");
+
+		FormRules.save();
+
+		FormsAdminNavigator.gotoFormBuilder();
+
+		FormsAdminNavigator.gotoPreviewForm();
+
+		Navigator.selectSpecificWindow(windowTitle = "Form - Forms");
+
+		FormFields.viewFieldHidden(fieldName = "Text");
+
+		FormFields.viewField(fieldName = "Numeric");
+
+		FormFields.editText(
+			fieldName = "Numeric",
+			fieldValue = "123");
+	}
+
+	@description = "Verify that a rule with an (Is not equal to) condition can be previewed"
+	@priority = "5"
+	test IsNotEqualToRuleCanBePreviewed {
+		property forms.functional = "false";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Text");
+
+		Form.closeSidebar();
+
+		Form.gotoAddField(
+			fieldPositionNumber = "1",
+			fieldType = "Numeric");
+
+		FormsAdminNavigator.gotoRules();
+
+		FormRules.addRule();
+
+		FormRules.configureConditionOptions(
+			conditionField = "Text",
+			conditionFieldValue = "Test",
+			conditionOperator = "Is not equal to",
+			conditionRowNumber = "1",
+			conditionValueType = "Value");
+
+		FormRules.configureActionOptions(
+			action = "Show",
+			actionRowNumber = "1",
+			actionTarget = "Numeric");
+
+		FormRules.save();
+
+		FormsAdminNavigator.gotoFormBuilder();
+
+		FormsAdminNavigator.gotoPreviewForm();
+
+		Navigator.selectSpecificWindow(windowTitle = "Form - Forms");
+
+		FormFields.viewFieldLabel(
+			fieldName = "Numeric",
+			fieldValue = "");
+
+		FormFields.editText(
+			fieldName = "Text",
+			fieldValue = "Test");
+
+		FormFields.viewFieldHidden(fieldName = "Numeric");
+	}
+
+	@description = "Verify that a rule with a (Jump to Page) action can be previewed"
+	@priority = "5"
+	test JumpToPageRuleCanBePreviewed {
+		property forms.functional = "false";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.editPageTitle(
+			formPageName = "Page A",
+			formTitleNumber = "1");
+
+		Form.addTextField(fieldPositionNumber = "0");
+
+		Form.addPage(formAddNewPageNumber = "1");
+
+		Form.editPageTitle(
+			formPageName = "Page B",
+			formTitleNumber = "2");
+
+		Form.addPage(formAddNewPageNumber = "2");
+
+		Form.editPageTitle(
+			formPageName = "Page C",
+			formTitleNumber = "3");
+
+		FormsAdminNavigator.gotoRules();
+
+		FormRules.addRule();
+
+		FormRules.configureConditionOptions(
+			conditionField = "Text",
+			conditionFieldValue = "Test",
+			conditionOperator = "Contains",
+			conditionRowNumber = "1",
+			conditionValueType = "Value");
+
+		FormRules.configureActionOptions(
+			action = "Jump to Page",
+			actionRowNumber = "1",
+			actionTarget = "3 Page C");
+
+		FormRules.save();
+
+		FormsAdminNavigator.gotoFormBuilder();
+
+		FormsAdminNavigator.gotoPreviewForm();
+
+		Navigator.selectSpecificWindow(windowTitle = "Form - Forms");
+
+		Form.viewPageName(
+			formPageName = "Page A",
+			formTitleNumber = "1");
+
+		FormFields.editText(
+			fieldName = "Text",
+			fieldValue = "Test");
+
+		Button.clickNext();
+
+		Form.viewPageName(
+			formPageName = "Page C",
+			formTitleNumber = "3");
+	}
+
+	@description = "Verify that a Multiple Selection Field can be previewed"
+	@priority = "5"
+	test MultipleSelectionFieldCanBePreviewed {
+		property forms.functional = "true";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Multiple Selection");
+
+		FormFields.editOptionsRow(
+			optionValue = "Option 1",
+			rowNumber = "1");
+
+		FormFields.editOptionsRow(
+			optionValue = "Option 2",
+			rowNumber = "2");
+
+		FormFields.editHelpTextFieldAtMultipleSelection(
+			fieldName = "tip",
+			fieldValue = "Test Help Text");
+
+		FormsAdminNavigator.gotoPreviewForm();
+
+		Navigator.selectSpecificWindow(windowTitle = "Form - Forms");
+
+		FormFields.viewLabel(
+			fieldLabel = "Multiple Selection",
+			fieldName = "Multiple Selection");
+
+		for (var label : list "Option 1,Option 2") {
+			FormFields.viewCheckboxLabel(
+				fieldLabel = "${label}",
+				fieldName = "${label}");
+		}
+
+		FormFields.viewFieldHelpText(
+			fieldHelpText = "Test Help Text",
+			fieldName = "Multiple Selection");
+
+		FormFields.enableCheckbox(fieldName = "Option 1");
+
+		FormFields.viewCheckboxChecked(fieldName = "Option 1");
+	}
+
+	@description = "Verify that a Numeric Field can be previewed"
+	@ignore = "Test Stub"
+	@priority = "5"
+	test NumericFieldCanBePreviewed {
+		property forms.functional = "false";
+		property portal.acceptance = "false";
+
+		// TODO LPS-133788 NumericFieldCanBePreviewed pending implementation
+
+	}
+
+	@description = "Verify that a Paragraph Field can be previewed"
+	@priority = "5"
+	test ParagraphFieldCanBePreviewed {
+		property forms.functional = "false";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Paragraph");
+
+		FormFields.editParagraphBody(content = "Test");
+
+		FormsAdminNavigator.gotoPreviewForm();
+
+		FormFields.viewParagraphBodyContent(bodyName = "Test");
+	}
+
+	@description = "Verify that a rule with a (Require) action can be previewed"
+	@priority = "5"
+	test RequireRuleCanBePreviewed {
+		property forms.functional = "false";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.addTextField(fieldPositionNumber = "0");
+
+		FormsAdminNavigator.gotoRules();
+
+		FormRules.addRule();
+
+		FormRules.configureConditionOptions(
+			conditionField = "Text",
+			conditionFieldValue = "Test",
+			conditionOperator = "Contains",
+			conditionRowNumber = "1",
+			conditionValueType = "Value");
+
+		FormRules.configureActionOptions(
+			action = "Require",
+			actionRowNumber = "1",
+			actionTarget = "Text");
+
+		FormRules.save();
+
+		FormsAdminNavigator.gotoFormBuilder();
+
+		FormsAdminNavigator.gotoPreviewForm();
+
+		Navigator.selectSpecificWindow(windowTitle = "Form - Forms");
+
+		FormFields.editText(
+			fieldName = "Text",
+			fieldValue = "Test");
+
+		FormFields.viewRequiredAsteriskDataField(fieldFieldLabel = "Text");
+
+		FormFields.viewTextLabel(fieldLabel = "Indicates Required Fields");
+	}
+
+	@description = "Verify that a Rich Text Field can be previewed"
+	@priority = "5"
+	test RichTextFieldCanBePreviewed {
+		property forms.functional = "false";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Rich Text");
+
+		FormFields.editHelpText(
+			fieldHelpText = "Test Help Text",
+			fieldName = "tip");
+
+		FormsAdminNavigator.gotoPreviewForm();
+
+		Navigator.selectSpecificWindow(windowTitle = "Form - Forms");
+
+		FormFields.viewTextLabel(fieldLabel = "Rich Text");
+
+		FormFields.viewFieldHelpText(
+			fieldHelpText = "Test Help Text",
+			fieldName = "Test Help Text");
+
+		FormFields.editFrameField(
+			fieldLabel = "Rich Text",
+			fielName = "Test");
+
+		Navigator.selectSpecificWindow(windowTitle = "Form - Forms");
+
+		FormFields.viewRichTextValue(fieldValue = "Test");
+	}
+
+	@description = "Verify that a Select From List Field can be previewed"
+	@priority = "5"
+	test SelectFromListFieldCanBePreviewed {
+		property forms.functional = "true";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Select from List");
+
+		FormFields.editHelpText(
+			fieldHelpText = "Test Help Text",
+			fieldName = "tip",
+			key_fieldLabel = "");
+
+		FormFields.editOptionsRow(
+			optionValue = "Option 1",
+			rowNumber = "1");
+
+		FormFields.editOptionsRow(
+			optionValue = "Option 2",
+			rowNumber = "2");
+
+		FormsAdminNavigator.gotoPreviewForm();
+
+		Navigator.selectSpecificWindow(windowTitle = "Form - Forms");
+
+		FormFields.viewLabel(
+			fieldLabel = "Select from List",
+			fieldName = "Select from List");
+
+		FormFields.viewSelectOptionsList(
+			fieldName = "Select from List",
+			selectOption = "Choose an Option");
+
+		FormFields.viewSelectFromListOption(optionValue = "Option 1");
+
+		FormFields.viewSelectFromListOption(optionValue = "Option 2");
+
+		FormFields.viewFieldHelpText(
+			fieldHelpText = "Test Help Text",
+			fieldName = "Select from List");
+
+		Refresh();
+
+		FormFields.selectSelectOption(
+			fieldName = "Select from List",
+			selectOption = "Option 1");
+
+		FormFields.viewSelectFromListOption(optionValue = "Option 1");
+	}
+
+	@description = "Verify that a Separator Field can be previewed"
+	@priority = "5"
+	test SeparatorFieldCanBePreviewed {
+		property forms.functional = "false";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Separator");
+
+		FormViewBuilder.setFieldHelpText(fieldLabel = "Test Help Text");
+
+		FormsAdminNavigator.gotoPreviewForm();
+
+		Navigator.selectSpecificWindow(windowTitle = "Form - Forms");
+
+		FormFields.viewFieldHelpText(
+			fieldHelpText = "Test Help Text",
+			fieldName = "Test Help Text");
+
+		FormFields.viewSeparator(fieldLabel = "Separator");
+	}
+
+	@description = "Verify that a rule with a (Show) action can be previewed"
+	@priority = "5"
+	test ShowRuleCanBePreviewed {
+		property forms.functional = "false";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(fieldType = "Text");
+
+		Form.closeSidebar();
+
+		Form.gotoAddField(
+			fieldPositionNumber = "1",
+			fieldType = "Numeric");
+
+		FormsAdminNavigator.gotoRules();
+
+		FormRules.addRule();
+
+		FormRules.configureConditionOptions(
+			conditionField = "Text",
+			conditionFieldValue = "Test",
+			conditionOperator = "Contains",
+			conditionRowNumber = "1",
+			conditionValueType = "Value");
+
+		FormRules.configureActionOptions(
+			action = "Show",
+			actionRowNumber = "1",
+			actionTarget = "Numeric");
+
+		FormRules.save();
+
+		FormsAdminNavigator.gotoFormBuilder();
+
+		FormsAdminNavigator.gotoPreviewForm();
+
+		Navigator.selectSpecificWindow(windowTitle = "Form - Forms");
+
+		FormFields.viewFieldHidden(fieldName = "Numeric");
+
+		FormFields.editText(
+			fieldName = "Text",
+			fieldValue = "Test");
+
+		FormFields.viewField(fieldName = "Numeric");
+	}
+
+	@description = "Verify that a Single Selection Field can be previewed"
+	@priority = "5"
+	test SingleSelectionFieldCanBePreviewed {
+		property forms.functional = "false";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Single Selection");
+
+		FormFields.addSingleSelectionOption(
+			optionName = "Option 1",
+			optionValue = "1");
+
+		FormFields.addSingleSelectionOption(
+			optionName = "Option 2",
+			optionValue = "2");
+
+		FormFields.editHelpText(
+			fieldHelpText = "Test Help Text",
+			fieldName = "tip");
+
+		FormsAdminNavigator.gotoPreviewForm();
+
+		Navigator.selectSpecificWindow(windowTitle = "Form - Forms");
+
+		FormFields.viewLabel(
+			fieldLabel = "Single Selection",
+			fieldName = "Single Selection");
+
+		FormFields.viewFieldHelpText(
+			fieldHelpText = "Test Help Text",
+			fieldName = "Test Help Text");
+
+		FormFields.viewSingleSelectionOption(
+			key_optionLabel = "Option 1",
+			key_position = "1");
+
+		FormFields.viewSingleSelectionOption(
+			key_optionLabel = "Option 2",
+			key_position = "2");
+
+		FormFields.editRepeatableSingleSelection(
+			fieldName = "SingleSelection",
+			optionValue = "Option 1",
+			rowNumber = "1");
+
+		AssertChecked.assertCheckedNotVisible(
+			key_fieldName = "SingleSelection",
+			key_optionNumber = "",
+			locator1 = "FormFields#GRID_RADIO_OPTIONS");
+	}
+
+	@description = "Verify that a Text Field can be previewed"
+	@ignore = "Test Stub"
+	@priority = "5"
+	test TextFieldCanBePreviewed {
+		property forms.functional = "false";
+		property portal.acceptance = "false";
+
+		// TODO LPS-133783 TextFieldCanBePreviewed pending implementation
+
+	}
+
+	@description = "Verify that translations can be previewed"
+	@ignore = "Test Stub"
+	@priority = "5"
+	test TranslationsCanBePreviewed {
+		property forms.functional = "false";
+		property portal.acceptance = "false";
+
+		// TODO LPS-133781 TranslationsCanBePreviewed pending implementation
+
+	}
+
+	@description = "Verify that an Upload Field can be previewed"
+	@priority = "5"
+	test UploadFieldCanBePreviewed {
+		property forms.functional = "true";
+		property portal.acceptance = "false";
+
+		ProductMenu.gotoPortlet(
+			category = "Content &amp; Data",
+			portlet = "Forms");
+
+		FormsAdminNavigator.gotoAddForm();
+
+		Form.editName(formName = "Form 1");
+
+		Form.gotoAddField(
+			fieldPositionNumber = "0",
+			fieldType = "Upload");
+
+		FormFields.editHelpText(
+			fieldHelpText = "Test Help Text",
+			fieldName = "tip");
+
+		FormsAdminNavigator.gotoPreviewForm();
+
+		Navigator.selectSpecificWindow(windowTitle = "Form - Forms");
+
+		FormFields.viewLabel(
+			fieldLabel = "Upload",
+			fieldName = "Upload");
+
+		FormFields.viewFieldHelpText(
+			fieldHelpText = "Test Help Text",
+			fieldName = "Test Help Text");
+
+		ItemSelector.gotoItemSelectorViaSelectButton();
+
+		ItemSelector.uploadFile(
+			navTab = "Documents and Media",
+			uploadFileName = "Document_1.docx");
+
+		AssertElementPresent(
+			key_fieldName = "Upload",
+			key_value = "Document_1.docx",
+			locator1 = "FormFields#UPLOAD_FIELD_BY_VALUE");
+	}
+
+}

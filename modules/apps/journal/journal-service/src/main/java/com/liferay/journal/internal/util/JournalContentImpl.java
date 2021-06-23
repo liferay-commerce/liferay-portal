@@ -417,13 +417,13 @@ public class JournalContentImpl
 			return null;
 		}
 
-		Date now = new Date();
+		Date date = new Date();
 
 		Date displayDate = article.getDisplayDate();
 		Date expirationDate = article.getExpirationDate();
 
-		if (((displayDate != null) && displayDate.after(now)) ||
-			((expirationDate != null) && expirationDate.before(now))) {
+		if (((displayDate != null) && displayDate.after(date)) ||
+			((expirationDate != null) && expirationDate.before(date))) {
 
 			return null;
 		}

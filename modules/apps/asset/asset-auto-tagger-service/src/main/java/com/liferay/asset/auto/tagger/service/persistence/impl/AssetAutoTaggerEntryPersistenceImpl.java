@@ -1642,25 +1642,25 @@ public class AssetAutoTaggerEntryPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (assetAutoTaggerEntry.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				assetAutoTaggerEntry.setCreateDate(now);
+				assetAutoTaggerEntry.setCreateDate(date);
 			}
 			else {
 				assetAutoTaggerEntry.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!assetAutoTaggerEntryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				assetAutoTaggerEntry.setModifiedDate(now);
+				assetAutoTaggerEntry.setModifiedDate(date);
 			}
 			else {
 				assetAutoTaggerEntry.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

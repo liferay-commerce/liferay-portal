@@ -2368,25 +2368,25 @@ public class FriendlyURLEntryPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (friendlyURLEntry.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				friendlyURLEntry.setCreateDate(now);
+				friendlyURLEntry.setCreateDate(date);
 			}
 			else {
 				friendlyURLEntry.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!friendlyURLEntryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				friendlyURLEntry.setModifiedDate(now);
+				friendlyURLEntry.setModifiedDate(date);
 			}
 			else {
 				friendlyURLEntry.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

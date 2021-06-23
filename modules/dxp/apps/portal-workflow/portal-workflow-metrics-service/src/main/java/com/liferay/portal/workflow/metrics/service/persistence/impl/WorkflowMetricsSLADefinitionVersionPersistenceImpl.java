@@ -2720,17 +2720,17 @@ public class WorkflowMetricsSLADefinitionVersionPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew &&
 			(workflowMetricsSLADefinitionVersion.getCreateDate() == null)) {
 
 			if (serviceContext == null) {
-				workflowMetricsSLADefinitionVersion.setCreateDate(now);
+				workflowMetricsSLADefinitionVersion.setCreateDate(date);
 			}
 			else {
 				workflowMetricsSLADefinitionVersion.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
@@ -2738,11 +2738,11 @@ public class WorkflowMetricsSLADefinitionVersionPersistenceImpl
 				hasSetModifiedDate()) {
 
 			if (serviceContext == null) {
-				workflowMetricsSLADefinitionVersion.setModifiedDate(now);
+				workflowMetricsSLADefinitionVersion.setModifiedDate(date);
 			}
 			else {
 				workflowMetricsSLADefinitionVersion.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

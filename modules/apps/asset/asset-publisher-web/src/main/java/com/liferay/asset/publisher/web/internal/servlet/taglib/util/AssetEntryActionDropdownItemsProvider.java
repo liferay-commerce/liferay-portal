@@ -152,8 +152,7 @@ public class AssetEntryActionDropdownItemsProvider {
 				_assetRenderer.getURLEdit(
 					_liferayPortletRequest, _liferayPortletResponse,
 					LiferayWindowState.NORMAL, redirect)
-			).setParameter(
-				"portletResource",
+			).setPortletResource(
 				() -> {
 					PortletDisplay portletDisplay =
 						_themeDisplay.getPortletDisplay();

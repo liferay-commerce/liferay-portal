@@ -1119,25 +1119,25 @@ public class SamlSpIdpConnectionPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (samlSpIdpConnection.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				samlSpIdpConnection.setCreateDate(now);
+				samlSpIdpConnection.setCreateDate(date);
 			}
 			else {
 				samlSpIdpConnection.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!samlSpIdpConnectionModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				samlSpIdpConnection.setModifiedDate(now);
+				samlSpIdpConnection.setModifiedDate(date);
 			}
 			else {
 				samlSpIdpConnection.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

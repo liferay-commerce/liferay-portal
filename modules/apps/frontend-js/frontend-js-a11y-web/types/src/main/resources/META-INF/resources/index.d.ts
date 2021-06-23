@@ -12,4 +12,18 @@
  * details.
  */
 
-export {A11y} from './A11y';
+import type {A11yCheckerOptions} from './A11yChecker';
+declare global {
+	var Liferay: {
+		Language: {
+			get(value: string): string;
+		};
+		Util: {
+			sub(...value: string[]): string;
+		};
+	};
+}
+declare const _default: (
+	props: Omit<A11yCheckerOptions, 'callback' | 'targets'>
+) => void;
+export default _default;

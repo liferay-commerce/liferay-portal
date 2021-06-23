@@ -83,10 +83,10 @@ public class CProductUpgradeProcess
 				preparedStatement1.setLong(5, userId);
 				preparedStatement1.setString(6, userName);
 
-				Date now = new Date(System.currentTimeMillis());
+				Date date = new Date(System.currentTimeMillis());
 
-				preparedStatement1.setDate(7, now);
-				preparedStatement1.setDate(8, now);
+				preparedStatement1.setDate(7, date);
+				preparedStatement1.setDate(8, date);
 
 				preparedStatement1.setLong(9, cpDefinitionId);
 

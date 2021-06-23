@@ -125,6 +125,7 @@ definition {
 	@priority = "5"
 	@refactordone
 	test CanAddEntryWithEmbeddedVideo {
+		property dummy.socket.proxy.disabled = "true";
 		property portal.acceptance = "true";
 		property testray.component.names = "WYSIWYG";
 
@@ -784,8 +785,6 @@ definition {
 			entryContent = "Blogs Entry Content",
 			entryTitle = "Blogs Entry with Small Image");
 
-		Panel.expandPanel(panel = "Configuration");
-
 		BlogsEntry.addSmallImage(
 			navTab = "Documents and Media",
 			uploadFileName = "Document_1.jpg");
@@ -827,8 +826,6 @@ definition {
 			entryContent = "Blogs Entry Content",
 			entryTitle = "Blogs Entry Title");
 
-		Panel.expandPanel(panel = "Configuration");
-
 		BlogsEntry.addSmallImage(
 			navTab = "Documents and Media",
 			uploadFileName = "Document_1.jpg");
@@ -839,8 +836,6 @@ definition {
 			entryTitle = "Blogs Entry Title",
 			groupName = "Guest",
 			siteURLKey = "guest");
-
-		Panel.expandPanel(panel = "Configuration");
 
 		BlogsEntry.addSmallImage(
 			browseImage = "true",
@@ -868,8 +863,6 @@ definition {
 		BlogsEntry.addEntryContent(
 			entryContent = "Blogs Entry Content",
 			entryTitle = "Blogs Entry Title");
-
-		Panel.expandPanel(panel = "Configuration");
 
 		BlogsEntry.scheduleBlogEntry();
 
@@ -1112,8 +1105,6 @@ definition {
 			navTab = "Blog Images",
 			uploadFileName = "Document_1.jpg");
 
-		Panel.expandPanel(panel = "Configuration");
-
 		BlogsEntry.addSmallImage(
 			navTab = "Documents and Media",
 			uploadFileName = "Document_2.jpg");
@@ -1124,8 +1115,6 @@ definition {
 			entryTitle = "Blogs Entry Title",
 			groupName = "Guest",
 			siteURLKey = "guest");
-
-		Panel.expandPanel(panel = "Configuration");
 
 		BlogsEntry.removeSmallImage(
 			images = "true",

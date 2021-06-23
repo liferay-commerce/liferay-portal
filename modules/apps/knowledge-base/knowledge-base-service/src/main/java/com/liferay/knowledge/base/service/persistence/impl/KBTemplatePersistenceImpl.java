@@ -2563,23 +2563,24 @@ public class KBTemplatePersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (kbTemplate.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				kbTemplate.setCreateDate(now);
+				kbTemplate.setCreateDate(date);
 			}
 			else {
-				kbTemplate.setCreateDate(serviceContext.getCreateDate(now));
+				kbTemplate.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!kbTemplateModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				kbTemplate.setModifiedDate(now);
+				kbTemplate.setModifiedDate(date);
 			}
 			else {
-				kbTemplate.setModifiedDate(serviceContext.getModifiedDate(now));
+				kbTemplate.setModifiedDate(
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

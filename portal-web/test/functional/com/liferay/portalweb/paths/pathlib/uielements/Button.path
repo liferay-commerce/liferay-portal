@@ -2,11 +2,13 @@
 <head>
 <title>Button</title>
 </head>
+
 <body>
-<table cellpadding="1" cellspacing="1" border="1">
+<table border="1" cellpadding="1" cellspacing="1">
 <thead>
 <tr><td rowspan="1" colspan="3">Button</td></tr>
 </thead>
+
 <tbody>
 <tr>
 	<td>ADD_ACTION</td>
@@ -74,18 +76,33 @@
 	<td></td>
 </tr>
 <tr>
+	<td>ANY_TITLE</td>
+	<td>//button[@title='${key_title}']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ANY_TITLE_DISABLED</td>
+	<td>//button[@title='${key_title}' and @disabled]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>ANY_WITH_COLOR</td>
 	<td>//*[contains(@class,'btn-${key_color}')][normalize-space(text())='${key_text}']</td>
 	<td></td>
 </tr>
 <tr>
+	<td>ANY_WITH_LABEL</td>
+	<td>//label[normalize-space(text())='${key_fieldLabel}']/following-sibling::div//button[normalize-space()='${key_text}']</td>
+	<td></td>
+</tr>
+<tr>
 	<td>ANY_DISABLED</td>
-	<td>//*[contains(@class,'btn')][normalize-space(text())='${key_text}'][@disabled='']</td>
+	<td>//button[@disabled][contains(@class,'btn')][normalize-space()='${key_text}']</td>
 	<td></td>
 </tr>
 <tr>
 	<td>ANY_ENABLED</td>
-	<td>//*[contains(@class,'btn')][normalize-space(text())='${key_text}'][not(@disabled='')]</td>
+	<td>//button[not(@disabled)][contains(@class,'btn')][normalize-space()='${key_text}']</td>
 	<td></td>
 </tr>
 <tr>
@@ -280,7 +297,12 @@
 </tr>
 <tr>
 	<td>DOWNLOAD</td>
-	<td>//a[2][contains(@class,'btn') and contains(.,'Download')] | //button[contains(.,'Download')]</td>
+	<td>//a[contains(@class,'btn-secondary') and contains(.,'Download')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DOWNLOAD_SIDEBAR</td>
+	<td>//div[contains(@class,'sidebar-section')]//a[contains(@class,'btn') and contains(.,'Download')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -724,18 +746,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>SELECT_OPEN_GRAPH_IMAGE</td>
-	<td>//button[contains(@name,'openGraphImageButton')][contains(.,'Select')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>TRANSLATIONS_LOCALIZATION</td>
 	<td>//div[contains(@class,'dropdown')]//button[contains(@class,'dropdown-toggle')]//*[name()='svg'][contains(@class,'lexicon-icon-${key_currentLocale}')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>CLEAR_OPEN_GRAPH_IMAGE</td>
-	<td>//button[contains(@name,'openGraphClearImageButton')][contains(.,'Clear')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -889,9 +901,9 @@
 	<td></td>
 </tr>
 <tr>
-    <td>BUTTON_PLUS_PRODUCT_VISIBILITY</td>
-    <td>//li[contains(@class,'nav-item')]//button[contains(@title,'${key_webContentTitle}')]</td>
-    <td></td>
+	<td>BUTTON_PLUS_PRODUCT_VISIBILITY</td>
+	<td>//li[contains(@class,'nav-item')]//button[contains(@title,'${key_webContentTitle}')]</td>
+	<td></td>
 </tr>
 </tbody>
 </table>

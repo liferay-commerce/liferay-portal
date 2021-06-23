@@ -867,25 +867,25 @@ public class CommerceShippingFixedOptionPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commerceShippingFixedOption.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commerceShippingFixedOption.setCreateDate(now);
+				commerceShippingFixedOption.setCreateDate(date);
 			}
 			else {
 				commerceShippingFixedOption.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commerceShippingFixedOptionModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commerceShippingFixedOption.setModifiedDate(now);
+				commerceShippingFixedOption.setModifiedDate(date);
 			}
 			else {
 				commerceShippingFixedOption.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

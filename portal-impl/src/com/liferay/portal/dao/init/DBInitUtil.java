@@ -88,10 +88,10 @@ public class DBInitUtil {
 					"buildNumber, verified, testString) values (",
 					ReleaseConstants.DEFAULT_ID, ", ?, ?, ?, ?, ?, ?, ?)"))) {
 
-			Date now = new Date(System.currentTimeMillis());
+			Date date = new Date(System.currentTimeMillis());
 
-			preparedStatement.setDate(1, now);
-			preparedStatement.setDate(2, now);
+			preparedStatement.setDate(1, date);
+			preparedStatement.setDate(2, date);
 
 			preparedStatement.setString(
 				3, ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME);

@@ -5604,25 +5604,25 @@ public class LayoutFriendlyURLPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (layoutFriendlyURL.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				layoutFriendlyURL.setCreateDate(now);
+				layoutFriendlyURL.setCreateDate(date);
 			}
 			else {
 				layoutFriendlyURL.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!layoutFriendlyURLModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				layoutFriendlyURL.setModifiedDate(now);
+				layoutFriendlyURL.setModifiedDate(date);
 			}
 			else {
 				layoutFriendlyURL.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

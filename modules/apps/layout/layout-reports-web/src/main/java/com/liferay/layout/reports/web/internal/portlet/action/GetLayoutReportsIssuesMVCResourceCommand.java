@@ -14,11 +14,14 @@
 
 package com.liferay.layout.reports.web.internal.portlet.action;
 
+import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
+import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.reports.web.internal.configuration.provider.LayoutReportsGooglePageSpeedConfigurationProvider;
 import com.liferay.layout.reports.web.internal.constants.LayoutReportsPortletKeys;
 import com.liferay.layout.reports.web.internal.data.provider.LayoutReportsDataProvider;
 import com.liferay.layout.reports.web.internal.model.LayoutReportsIssue;
-import com.liferay.layout.seo.kernel.LayoutSEOLinkManager;
+import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
@@ -33,8 +36,8 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
+import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
@@ -45,6 +48,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.stream.Stream;
 
+import javax.portlet.PortletRequest;
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 
@@ -116,12 +120,15 @@ public class GetLayoutReportsIssuesMVCResourceCommand
 			LayoutReportsDataProvider layoutReportsDataProvider =
 				new LayoutReportsDataProvider(
 					_layoutReportsGooglePageSpeedConfigurationProvider.
-						getApiKey(group));
+						getApiKey(group),
+					_layoutReportsGooglePageSpeedConfigurationProvider.
+						getStrategy(group));
 
 			String url = ParamUtil.getString(resourceRequest, "url");
 
 			List<LayoutReportsIssue> layoutReportsIssues =
-				layoutReportsDataProvider.getLayoutReportsIssues(url);
+				layoutReportsDataProvider.getLayoutReportsIssues(
+					themeDisplay.getLocale(), url);
 
 			Stream<LayoutReportsIssue> stream = layoutReportsIssues.stream();
 
@@ -132,7 +139,10 @@ public class GetLayoutReportsIssuesMVCResourceCommand
 					JSONUtil.putAll(
 						stream.map(
 							layoutReportsIssue ->
-								layoutReportsIssue.toJSONObject(resourceBundle)
+								layoutReportsIssue.toJSONObject(
+									_getConfigureLayoutSeoURL(themeDisplay),
+									_getConfigurePagesSeoURL(themeDisplay),
+									resourceBundle)
 						).toArray(
 							size -> new JSONObject[size]
 						))));
@@ -146,6 +156,91 @@ public class GetLayoutReportsIssuesMVCResourceCommand
 					"error",
 					_language.get(locale, "an-unexpected-error-occurred")));
 		}
+	}
+
+	private String _getCompleteURL(ThemeDisplay themeDisplay) {
+		try {
+			return _portal.getLayoutURL(themeDisplay);
+		}
+		catch (PortalException portalException) {
+			_log.error(portalException, portalException);
+
+			return _portal.getCurrentCompleteURL(themeDisplay.getRequest());
+		}
+	}
+
+	private String _getConfigureLayoutSeoURL(ThemeDisplay themeDisplay) {
+		Layout layout = themeDisplay.getLayout();
+
+		try {
+			if (LayoutPermissionUtil.contains(
+					themeDisplay.getPermissionChecker(), layout,
+					ActionKeys.UPDATE)) {
+
+				String completeURL = _getCompleteURL(themeDisplay);
+
+				return PortletURLBuilder.create(
+					_portal.getControlPanelPortletURL(
+						themeDisplay.getRequest(),
+						LayoutAdminPortletKeys.GROUP_PAGES,
+						PortletRequest.RENDER_PHASE)
+				).setMVCRenderCommandName(
+					"/layout_admin/edit_layout"
+				).setRedirect(
+					completeURL
+				).setBackURL(
+					completeURL
+				).setPortletResource(
+					() -> {
+						PortletDisplay portletDisplay =
+							themeDisplay.getPortletDisplay();
+
+						return portletDisplay.getId();
+					}
+				).setParameter(
+					"groupId", layout.getGroupId()
+				).setParameter(
+					"privateLayout", layout.isPrivateLayout()
+				).setParameter(
+					"screenNavigationEntryKey", "seo"
+				).setParameter(
+					"selPlid", layout.getPlid()
+				).buildString();
+			}
+		}
+		catch (PortalException portalException) {
+			_log.error(portalException, portalException);
+		}
+
+		return null;
+	}
+
+	private String _getConfigurePagesSeoURL(ThemeDisplay themeDisplay) {
+		PermissionChecker permissionChecker =
+			themeDisplay.getPermissionChecker();
+
+		if (permissionChecker.isCompanyAdmin()) {
+			String configurationPid =
+				"com.liferay.layout.seo.internal.configuration." +
+					"LayoutSEOCompanyConfiguration";
+
+			return PortletURLBuilder.create(
+				_portal.getControlPanelPortletURL(
+					themeDisplay.getRequest(),
+					ConfigurationAdminPortletKeys.INSTANCE_SETTINGS,
+					PortletRequest.RENDER_PHASE)
+			).setMVCRenderCommandName(
+				"/configuration_admin/edit_configuration"
+			).setRedirect(
+				_getCompleteURL(themeDisplay)
+			).setParameter(
+				"factoryPid", configurationPid
+			).setParameter(
+				"pid", configurationPid
+			).buildString();
+		}
+
+		return null;
 	}
 
 	private boolean _hasViewPermission(
@@ -168,17 +263,11 @@ public class GetLayoutReportsIssuesMVCResourceCommand
 	private GroupLocalService _groupLocalService;
 
 	@Reference
-	private Http _http;
-
-	@Reference
 	private Language _language;
 
 	@Reference
 	private LayoutReportsGooglePageSpeedConfigurationProvider
 		_layoutReportsGooglePageSpeedConfigurationProvider;
-
-	@Reference
-	private LayoutSEOLinkManager _layoutSEOLinkManager;
 
 	@Reference
 	private Portal _portal;

@@ -666,7 +666,7 @@ public class KaleoLogLocalServiceImpl extends KaleoLogLocalServiceBaseImpl {
 		throws PortalException {
 
 		User user = userLocalService.getUser(serviceContext.getGuestOrUserId());
-		Date now = new Date();
+		Date date = new Date();
 
 		long kaleoLogId = counterLocalService.increment();
 
@@ -675,8 +675,8 @@ public class KaleoLogLocalServiceImpl extends KaleoLogLocalServiceBaseImpl {
 		kaleoLog.setCompanyId(user.getCompanyId());
 		kaleoLog.setUserId(user.getUserId());
 		kaleoLog.setUserName(user.getFullName());
-		kaleoLog.setCreateDate(now);
-		kaleoLog.setModifiedDate(now);
+		kaleoLog.setCreateDate(date);
+		kaleoLog.setModifiedDate(date);
 		kaleoLog.setKaleoDefinitionId(
 			kaleoInstanceToken.getKaleoDefinitionId());
 		kaleoLog.setKaleoDefinitionVersionId(

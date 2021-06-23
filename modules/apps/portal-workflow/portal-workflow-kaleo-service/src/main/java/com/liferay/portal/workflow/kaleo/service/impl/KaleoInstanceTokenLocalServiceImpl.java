@@ -69,7 +69,7 @@ public class KaleoInstanceTokenLocalServiceImpl
 		throws PortalException {
 
 		User user = userLocalService.getUser(serviceContext.getGuestOrUserId());
-		Date now = new Date();
+		Date date = new Date();
 
 		long kaleoInstanceTokenId = counterLocalService.increment();
 
@@ -84,8 +84,8 @@ public class KaleoInstanceTokenLocalServiceImpl
 		kaleoInstanceToken.setCompanyId(user.getCompanyId());
 		kaleoInstanceToken.setUserId(user.getUserId());
 		kaleoInstanceToken.setUserName(user.getFullName());
-		kaleoInstanceToken.setCreateDate(now);
-		kaleoInstanceToken.setModifiedDate(now);
+		kaleoInstanceToken.setCreateDate(date);
+		kaleoInstanceToken.setModifiedDate(date);
 		kaleoInstanceToken.setKaleoDefinitionId(kaleoDefinitionId);
 		kaleoInstanceToken.setKaleoDefinitionVersionId(
 			kaleoDefinitionVersionId);

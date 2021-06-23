@@ -40,7 +40,9 @@ String assetTagName = ParamUtil.getString(request, "tag");
 	<%
 	AssetEntryQuery assetEntryQuery = new AssetEntryQuery(KBArticle.class.getName(), searchContainer);
 
-	searchContainer.setTotal(AssetEntryServiceUtil.getEntriesCount(assetEntryQuery));
+	total = AssetEntryServiceUtil.getEntriesCount(assetEntryQuery);
+
+	searchContainer.setTotal(total);
 
 	assetEntryQuery.setEnd(searchContainer.getEnd());
 	assetEntryQuery.setStart(searchContainer.getStart());

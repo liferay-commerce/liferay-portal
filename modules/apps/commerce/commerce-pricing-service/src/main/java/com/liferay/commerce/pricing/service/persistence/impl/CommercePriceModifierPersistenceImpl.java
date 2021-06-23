@@ -6517,25 +6517,25 @@ public class CommercePriceModifierPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commercePriceModifier.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commercePriceModifier.setCreateDate(now);
+				commercePriceModifier.setCreateDate(date);
 			}
 			else {
 				commercePriceModifier.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commercePriceModifierModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commercePriceModifier.setModifiedDate(now);
+				commercePriceModifier.setModifiedDate(date);
 			}
 			else {
 				commercePriceModifier.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

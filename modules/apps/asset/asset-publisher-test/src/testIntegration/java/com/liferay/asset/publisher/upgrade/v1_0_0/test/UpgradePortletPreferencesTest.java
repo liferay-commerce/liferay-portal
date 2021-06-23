@@ -103,9 +103,9 @@ public class UpgradePortletPreferencesTest {
 
 	@Test
 	public void testUpgradeDLDateFieldsValues() throws Exception {
-		Date now = new Date();
+		Date date = new Date();
 
-		String dateString = _oldDateFormat.format(now);
+		String dateString = _oldDateFormat.format(date);
 
 		PortletPreferences portletPreferences = updatePortletPreferences(
 			getPortletId(),
@@ -147,7 +147,7 @@ public class UpgradePortletPreferencesTest {
 		ddmStructureFieldValue = portletPreferences.getValue(
 			"ddmStructureFieldValue", StringPool.BLANK);
 
-		dateString = _newDateFormat.format(now);
+		dateString = _newDateFormat.format(date);
 
 		Assert.assertEquals(dateString, ddmStructureFieldValue);
 	}
@@ -194,9 +194,9 @@ public class UpgradePortletPreferencesTest {
 
 	@Test
 	public void testUpgradeJournalDateFieldValue() throws Exception {
-		Date now = new Date();
+		Date date = new Date();
 
-		String dateString = _oldDateFormat.format(now);
+		String dateString = _oldDateFormat.format(date);
 
 		PortletPreferences portletPreferences = updatePortletPreferences(
 			getPortletId(),
@@ -231,7 +231,7 @@ public class UpgradePortletPreferencesTest {
 		fieldValue = portletPreferences.getValue(
 			"ddmStructureFieldValue", StringPool.BLANK);
 
-		dateString = _newDateFormat.format(now);
+		dateString = _newDateFormat.format(date);
 
 		Assert.assertEquals(dateString, fieldValue);
 	}

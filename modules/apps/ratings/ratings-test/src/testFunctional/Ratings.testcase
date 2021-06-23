@@ -23,7 +23,8 @@ definition {
 	}
 
 	@priority = "4"
-	test ChangeBlogsRatingType {
+	@refactordone
+	test CanChangeBlogsRatingType {
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",
 			layoutName = "Blogs Page");
@@ -38,51 +39,44 @@ definition {
 			entryContent = "Blogs Entry Content",
 			entryTitle = "Blogs Entry Title");
 
-		PortalSettings.gotoConfiguration(
-			configurationCategory = "Community Tools",
-			configurationName = "Ratings",
-			configurationScope = "Virtual Instance Scope");
+		Ratings.openToConfigInInstanceSettings(portlet = "Ratings");
 
-		PortalSettings.configureBlogsRatingType(ratingType = "Stars");
-
-		Navigator.openURL();
+		PortalSettings.configureRatingType(
+			configureBlogsRatingType = "true",
+			ratingType = "Stars");
 
 		Navigator.gotoPage(pageName = "Blogs Page");
 
-		AssertTextEquals(
-			locator1 = "Ratings#AVERAGE_STAR_RESULT",
-			value1 = "0.0");
-
-		AssertElementPresent(locator1 = "Ratings#YOUR_RATING_STAR_EMPTY");
+		Ratings.viewDefault();
 	}
 
 	@description = "This is a use case for LPS-74621."
+	@refactordone
 	@priority = "3"
-	test CommentAndRateBlogsEntryOnLiveSite {
+	test CanCommentAndRateBlogsEntryOnLiveSite {
 		JSONGroup.addGroup(groupName = "Site Name");
 
 		JSONLayout.addPublicLayout(
 			groupName = "Site Name",
 			layoutName = "Staging Blogs Page");
 
-		Navigator.openSiteURL(siteName = "Site Name");
+		JSONLayout.addWidgetToPublicLayout(
+			column = "1",
+			groupName = "Site Name",
+			layoutName = "Staging Blogs Page",
+			widgetName = "Blogs");
 
-		ProductMenu.gotoPortlet(
-			category = "Publishing",
-			panel = "Site Administration",
-			portlet = "Staging");
-
-		Staging.activateStagingCP(siteName = "Site Name");
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Staging Blogs Page",
-			siteName = "Site Name");
-
-		Portlet.addPG(portletName = "Blogs");
-
-		Blogs.addEntry(
+		JSONBlog.addEntry(
 			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
+			entryTitle = "Blogs Entry Title",
+			groupName = "Site Name");
+
+		JSONBlog.addComment(
+			commentBody = "Blogs Entry Comment",
+			entryTitle = "Blogs Entry Title",
+			groupName = "Site Name");
+
+		JSONStaging.enableLocalStaging(groupName = "Site Name");
 
 		Navigator.gotoStagedSitePage(
 			pageName = "Staging Blogs Page",
@@ -92,61 +86,14 @@ definition {
 
 		Staging.publishToLive();
 
-		Navigator.gotoSitePage(
-			pageName = "Staging Blogs Page",
-			siteName = "Site Name");
-
-		BlogsEntry.viewEntryPG(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
-
-		BlogsNavigator.gotoEntryPG(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
-
-		Pause(locator1 = "3000");
+		BlogsNavigator.openToBlogEntry(
+			entryTitle = "Blogs Entry Title",
+			layoutName = "Staging Blogs Page",
+			siteURLKey = "site-name");
 
 		Ratings.rateThumb(ratingResult = "Rate this as good");
 
-		Comments.addPG(entryComment = "Blogs Entry Comment");
-
-		Navigator.gotoSitePage(
-			pageName = "Staging Blogs Page",
-			siteName = "Site Name");
-
-		BlogsNavigator.gotoEntryPG(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
-
-		Ratings.viewRateThumb(
-			ratingResult = "You have rated this as good",
-			voteCount = "1");
-
-		Comments.viewPG(
-			commentCount = "1",
-			entryComment = "Blogs Entry Comment",
-			userFullName = "Test Test (You)");
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Staging Blogs Page",
-			siteName = "Site Name");
-
-		BlogsNavigator.gotoEntryPG(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
-
-		Comments.viewCommentReadOnly();
-
-		Ratings.viewRateThumbReadOnly();
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Staging Blogs Page",
-			siteName = "Site Name");
-
-		ProductMenu.gotoPortlet(
-			category = "Publishing",
-			panel = "Site Administration",
-			portlet = "Staging");
+		Staging.openStagingAdmin(siteURLKey = "site-name-staging");
 
 		Staging.deactivateStagingCP(siteName = "Site Name");
 
@@ -162,23 +109,20 @@ definition {
 			groupName = "Second Site",
 			layoutName = "Blogs Page");
 
-		Navigator.openSiteURL(siteName = "Second Site");
-
-		Portlet.addPG(portletName = "Blogs");
+		JSONLayout.addWidgetToPublicLayout(
+			column = "1",
+			groupName = "Second Site",
+			layoutName = "Blogs Page",
+			widgetName = "Blogs");
 
 		Navigator.openSiteURL(siteName = "Second Site");
 
 		LAR.importPortlet(larFileName = "Blogs.portlet.lar");
 
-		Navigator.openSiteURL(siteName = "Second Site");
-
-		BlogsEntry.viewEntryPG(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
-
-		BlogsNavigator.gotoEntryPG(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
+		BlogsNavigator.openToBlogEntry(
+			entryTitle = "Blogs Entry Title",
+			layoutName = "Blogs Page",
+			siteURLKey = "second-site");
 
 		Ratings.viewRateThumb(
 			ratingResult = "You have rated this as good",
@@ -191,25 +135,30 @@ definition {
 	}
 
 	@description = "This is a use case for LPS-74621."
+	@refactordone
 	@priority = "3"
-	test CommentAndRateWikiFrontPageOnLiveSite {
+	test CanCommentAndRateWikiFrontPageOnLiveSite {
 		JSONGroup.addGroup(groupName = "Site Name");
 
 		JSONLayout.addPublicLayout(
 			groupName = "Site Name",
 			layoutName = "Staging Test Page");
 
-		Staging.openStagingAdmin(siteURLKey = "site-name");
+		JSONLayout.addWidgetToPublicLayout(
+			column = "1",
+			groupName = "Site Name",
+			layoutName = "Staging Test Page",
+			widgetName = "Wiki");
 
-		Staging.activateStagingCP(siteName = "Site Name");
+		Navigator.openSiteURL(siteName = "Site Name");
 
-		Navigator.gotoStagedSitePage(
-			pageName = "Staging Test Page",
-			siteName = "Site Name");
+		JSONWiki.updateWikiPage(
+			groupName = "Site Name",
+			wikiNodeName = "Main",
+			wikiPageContent = "Wiki FrontPage Content",
+			wikiPageName = "FrontPage");
 
-		Portlet.addPG(portletName = "Wiki");
-
-		WikiPage.addFrontPagePG(wikiPageContent = "Wiki FrontPage Content");
+		JSONStaging.enableLocalStaging(groupName = "Site Name");
 
 		Navigator.gotoStagedSitePage(
 			pageName = "Staging Test Page",
@@ -219,44 +168,15 @@ definition {
 
 		Staging.publishToLive();
 
-		Navigator.gotoSitePage(
-			pageName = "Staging Test Page",
-			siteName = "Site Name");
-
-		WikiNavigator.gotoFrontPagePG();
-
-		WikiPage.viewFrontPagePG(
-			wikiPageContent = "Wiki FrontPage Content",
+		WikiNavigator.openToWikiPage(
+			layoutURLKey = "staging-test-page",
+			siteURLKey = "site-name",
+			wikiNodeName = "Main",
 			wikiPageTitle = "FrontPage");
 
 		Ratings.rateStar(ratingStarCount = "2");
 
 		Comments.addPG(entryComment = "Wiki FrontPage Comment");
-
-		Navigator.gotoSitePage(
-			pageName = "Staging Test Page",
-			siteName = "Site Name");
-
-		Ratings.viewRateStar(
-			averageRatingStarCount = "2.0",
-			ratingStarCount = "2");
-
-		Comments.viewPG(
-			commentCount = "1",
-			entryComment = "Wiki FrontPage Comment",
-			userFullName = "Test Test (You)");
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Staging Test Page",
-			siteName = "Site Name");
-
-		WikiPage.viewFrontPagePG(
-			wikiPageContent = "Wiki FrontPage Content",
-			wikiPageTitle = "FrontPage");
-
-		Comments.viewCommentReadOnly();
-
-		Ratings.viewRateStarReadOnly();
 
 		Staging.openStagingAdmin(siteURLKey = "site-name-staging");
 
@@ -288,12 +208,10 @@ definition {
 			larFileName = "Wiki.portlet.lar",
 			wikiPortlet = "true");
 
-		Navigator.openSiteURL(siteName = "Second Site");
-
-		WikiPage.viewFrontPagePG(
-			viewWikiNode = "true",
+		WikiNavigator.openToWikiPage(
+			layoutURLKey = "wiki-page",
+			siteURLKey = "second-site",
 			wikiNodeName = "Main 2",
-			wikiPageContent = "Wiki FrontPage Content",
 			wikiPageTitle = "FrontPage");
 
 		Ratings.viewRateStar(
@@ -306,114 +224,9 @@ definition {
 			userFullName = "Test Test (You)");
 	}
 
-	@description = "This is a use case for LPS-96470."
-	@priority = "3"
-	test ExportImportSiteWithCommentsAndRatingsUnderBlogsEntry {
-		property custom.properties = "default.layout.template.id=1_column";
-
-		JSONLayout.addPublicLayout(
-			groupName = "Guest",
-			layoutName = "Blogs Page");
-
-		JSONLayout.addWidgetToPublicLayout(
-			column = "1",
-			groupName = "Guest",
-			layoutName = "Blogs Page",
-			widgetName = "Blogs");
-
-		JSONBlog.addEntry(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
-
-		Navigator.gotoPage(pageName = "Blogs Page");
-
-		BlogsNavigator.gotoEntryPG(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
-
-		Ratings.rateThumb(ratingResult = "Rate this as good");
-
-		Comments.addPG(entryComment = "Blogs Entry Comment");
-
-		Ratings.rateThumb(
-			blogCommentRating = "true",
-			ratingResult = "Rate this as good");
-
-		Navigator.gotoPage(pageName = "Blogs Page");
-
-		BlogsNavigator.gotoEntryPG(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
-
-		Ratings.viewRateThumb(
-			ratingResult = "You have rated this as good",
-			voteCount = "1");
-
-		Comments.viewPG(
-			commentCount = "1",
-			entryComment = "Blogs Entry Comment",
-			userFullName = "Test Test (You)");
-
-		Ratings.viewRateThumb(
-			commentRating = "true",
-			ratingResult = "You have rated this as good",
-			voteCount = "1");
-
-		LAR.openExportAdmin(siteScopeName = "Guest");
-
-		LexiconEntry.gotoAdd();
-
-		LAR.configureExportOptions(checkContentNameList = "Blogs");
-
-		AssertClick(
-			locator1 = "SitePagesExport#EXPORT_BUTTON",
-			value1 = "Export");
-
-		var key_larFileName = "${larFileName}";
-
-		AssertTextEquals.assertPartialText(
-			locator1 = "SitePagesExport#CURRENT_AND_PREVIOUS_STATUS",
-			value1 = "Successful");
-
-		var larFileName = LAR.getLarFileName();
-
-		LAR.downloadLar();
-
-		JSONGroup.addGroup(groupName = "Second Site");
-
-		LAR.importSiteCP(
-			larFileName = "${larFileName}",
-			siteName = "Second Site");
-
-		Navigator.gotoSitePage(
-			pageName = "Blogs Page",
-			siteName = "Second Site");
-
-		BlogsEntry.viewEntryPG(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
-
-		BlogsNavigator.gotoEntryPG(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
-
-		Ratings.viewRateThumb(
-			ratingResult = "You have rated this as good",
-			voteCount = "1");
-
-		Comments.viewPG(
-			commentCount = "1",
-			entryComment = "Blogs Entry Comment",
-			userFullName = "Test Test (You)");
-
-		Ratings.viewRateThumb(
-			commentRating = "true",
-			ratingResult = "You have rated this as good",
-			voteCount = "1");
-	}
-
 	@priority = "5"
-	test RateAndEditWikiPageComment {
+	@refactordone
+	test CanRateAndEditWikiPageComment {
 		property custom.properties = "default.layout.template.id=1_column";
 
 		JSONLayout.addPublicLayout(
@@ -426,25 +239,17 @@ definition {
 			layoutName = "Wiki Test Page",
 			widgetName = "Wiki");
 
-		WikiNavigator.openWikiAdmin(siteURLKey = "guest");
-
-		WikiNavigator.gotoNode(wikiNodeName = "Main");
-
-		WikiPage.addCP(
+		JSONWiki.addWikiPage(
+			groupName = "Guest",
+			wikiNodeName = "Main",
 			wikiPageContent = "Wiki Page Content 1",
+			wikiPageName = "Wiki Page 1");
+
+		WikiNavigator.openToWikiPage(
+			layoutURLKey = "wiki-test-page",
+			siteURLKey = "guest",
+			wikiNodeName = "Main",
 			wikiPageTitle = "Wiki Page 1");
-
-		Navigator.gotoPage(pageName = "Wiki Test Page");
-
-		WikiNavigator.gotoAllPagesPG();
-
-		WikiTable.viewEntry(
-			draftStatus = "APPROVED",
-			wikiPageTitle = "Wiki Page 1");
-
-		WikiNavigator.gotoEntryViaPGTable(wikiPageTitle = "Wiki Page 1");
-
-		WikiEntry.viewPageContentBody(wikiPageContent = "Wiki Page Content 1");
 
 		WikiPage.addComment(entryComment = "Wiki Page Comment");
 
@@ -456,14 +261,10 @@ definition {
 			entryComment = "Wiki Page Comment",
 			entryCommentEdit = "Wiki Page Comment Edited");
 
-		Navigator.gotoPage(pageName = "Wiki Test Page");
-
-		WikiNavigator.gotoAllPagesPG();
-
-		WikiNavigator.gotoEntryViaPGTable(wikiPageTitle = "Wiki Page 1");
-
-		WikiPage.viewCommentPG(
-			entryComment = "Wiki Page Comment Edited",
+		WikiNavigator.openToWikiPage(
+			layoutURLKey = "wiki-test-page",
+			siteURLKey = "guest",
+			wikiNodeName = "Main",
 			wikiPageTitle = "Wiki Page 1");
 
 		Ratings.viewRateThumb(
@@ -478,7 +279,8 @@ definition {
 	}
 
 	@priority = "4"
-	test RateBlogsEntry {
+	@refactordone
+	test CanRateBlogsEntry {
 		property custom.properties = "jsonws.web.service.paths.excludes=";
 		property portal.acceptance = "true";
 
@@ -511,11 +313,10 @@ definition {
 			entryContent = "Blogs Entry Content",
 			entryTitle = "Blogs Entry Title");
 
-		Navigator.gotoPage(pageName = "Blogs Page");
-
-		BlogsNavigator.gotoEntryPG(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
+		BlogsNavigator.openToBlogEntry(
+			entryTitle = "Blogs Entry Title",
+			layoutName = "Blogs Page",
+			siteURLKey = "guest");
 
 		Ratings.rateThumb(
 			blogRating = "true",
@@ -541,17 +342,14 @@ definition {
 			ratingResult = "Rate this as bad",
 			voteCount = "0");
 
-		User.logoutPG();
+		User.logoutAndLoginPG(
+			userLoginEmailAddress = "userea@liferay.com",
+			userLoginFullName = "userfn userln");
 
-		User.loginUserPG(
-			password = "test",
-			userEmailAddress = "userea@liferay.com");
-
-		Navigator.gotoPage(pageName = "Blogs Page");
-
-		BlogsNavigator.gotoEntryPG(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
+		BlogsNavigator.openToBlogEntry(
+			entryTitle = "Blogs Entry Title",
+			layoutName = "Blogs Page",
+			siteURLKey = "guest");
 
 		Ratings.rateThumb(
 			blogRating = "true",
@@ -579,7 +377,8 @@ definition {
 	}
 
 	@priority = "4"
-	test RateKBArticleWithoutSuggestions {
+	@refactordone
+	test CanRateKBArticleWithoutSuggestions {
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",
 			layoutName = "Knowledge Base Display Page");
@@ -590,9 +389,8 @@ definition {
 			layoutName = "Knowledge Base Display Page",
 			widgetName = "Knowledge Base Display");
 
-		KBAdmin.openKBAdmin(siteURLKey = "guest");
-
-		KBArticle.addCP(
+		JSONKnowledgeBase.addkBArticle(
+			groupName = "Guest",
 			kbArticleContent = "Knowledge Base Article Content",
 			kbArticleTitle = "Knowledge Base Article Title");
 
@@ -606,7 +404,8 @@ definition {
 	}
 
 	@priority = "4"
-	test RateMBThreadAndReply {
+	@refactordone
+	test CanRateMBThreadAndReply {
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",
 			layoutName = "Message Boards Page");
@@ -617,29 +416,15 @@ definition {
 			layoutName = "Message Boards Page",
 			widgetName = "Message Boards");
 
-		ProductMenu.gotoPortlet(
-			category = "Site Builder",
-			panel = "Site Administration",
-			portlet = "Pages",
-			site = "Guest");
-
-		SitePages.configurePage(
-			columnName = "1 Column",
-			pageName = "Message Boards Page",
-			privacy = "Public Pages",
-			sitePageType = "Widget Page");
-
 		JSONMBMessage.addMessage(
 			groupName = "Guest",
 			threadBody = "MB Thread Message Body",
 			threadSubject = "MB Thread Message Subject");
 
-		Navigator.gotoPage(pageName = "Message Boards Page");
-
-		MessageboardsThread.gotoPG(
-			lastPostUserName = "Test Test",
-			replyCount = "0",
-			threadBody = "",
+		MessageboardsThread.openToThread(
+			groupName = "Guest",
+			layoutName = "message-boards-page",
+			siteURLKey = "guest",
 			threadSubject = "MB Thread Message Subject");
 
 		Ratings.rateThumb(ratingResult = "Rate this as good");
@@ -648,11 +433,15 @@ definition {
 			ratingResult = "You have rated this as good",
 			voteCount = "1");
 
-		Navigator.gotoPage(pageName = "Message Boards Page");
+		JSONMBMessage.addMessageReply(
+			groupName = "Guest",
+			replyBody = "MB Thread Message Reply Body",
+			threadSubject = "MB Thread Message Subject");
 
-		MessageboardsThread.replyPG(
-			threadBody = "MB Thread Message Body",
-			threadReplyBody = "MB Thread Message Reply Body",
+		MessageboardsThread.openToThread(
+			groupName = "Guest",
+			layoutName = "message-boards-page",
+			siteURLKey = "guest",
 			threadSubject = "MB Thread Message Subject");
 
 		Ratings.rateThumb(
@@ -666,7 +455,8 @@ definition {
 	}
 
 	@priority = "5"
-	test RateWikiPage {
+	@refactordone
+	test CanRateWikiPage {
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",
 			layoutName = "Wiki Test Page");
@@ -677,35 +467,25 @@ definition {
 			layoutName = "Wiki Test Page",
 			widgetName = "Wiki");
 
-		WikiNavigator.openWikiAdmin(siteURLKey = "guest");
-
-		WikiNavigator.gotoNode(wikiNodeName = "Main");
-
-		WikiPage.addCP(
+		JSONWiki.addWikiPage(
+			groupName = "Guest",
+			wikiNodeName = "Main",
 			wikiPageContent = "Wiki Page Content 1",
+			wikiPageName = "Wiki Page 1");
+
+		WikiNavigator.openToWikiPage(
+			layoutURLKey = "wiki-test-page",
+			siteURLKey = "guest",
+			wikiNodeName = "Main",
 			wikiPageTitle = "Wiki Page 1");
-
-		Navigator.gotoPage(pageName = "Wiki Test Page");
-
-		WikiNavigator.gotoAllPagesPG();
-
-		WikiTable.viewEntry(
-			draftStatus = "APPROVED",
-			wikiPageTitle = "Wiki Page 1");
-
-		WikiNavigator.gotoEntryViaPGTable(wikiPageTitle = "Wiki Page 1");
-
-		WikiEntry.viewPageContentBody(wikiPageContent = "Wiki Page Content 1");
 
 		Ratings.rateStar(ratingStarCount = "4");
 
-		Navigator.gotoPage(pageName = "Wiki Test Page");
-
-		WikiNavigator.gotoAllPagesPG();
-
-		WikiNavigator.gotoEntryViaPGTable(wikiPageTitle = "Wiki Page 1");
-
-		WikiEntry.viewPageContentBody(wikiPageContent = "Wiki Page Content 1");
+		WikiNavigator.openToWikiPage(
+			layoutURLKey = "wiki-test-page",
+			siteURLKey = "guest",
+			wikiNodeName = "Main",
+			wikiPageTitle = "Wiki Page 1");
 
 		Ratings.viewRateStar(
 			averageRatingStarCount = "4.0",
@@ -713,12 +493,9 @@ definition {
 	}
 
 	@description = "This test covers LPS-117741. It ensures that the rated stacked stars can be removed from the blog entry."
+	@refactordone
 	@priority = "4"
-	test RemoveRatedStackedStarsFromBlogsEntry {
-		Ratings.configureRatingType(
-			applications = "Blogs",
-			ratingType = "Stacked Stars");
-
+	test CanRemoveRatedStackedStarsFromBlogsEntry {
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",
 			layoutName = "Blogs Page");
@@ -733,11 +510,15 @@ definition {
 			entryContent = "Blogs Entry Content",
 			entryTitle = "Blogs Entry Title");
 
+		Ratings.configureRatingType(
+			applications = "Blogs",
+			portlet = "Ratings",
+			ratingType = "Stacked Stars",
+			siteURLKey = "guest");
+
 		Navigator.gotoPage(pageName = "Blogs Page");
 
 		Ratings.rateStackedStars(ratingStarCount = "3");
-
-		Navigator.gotoPage(pageName = "Blogs Page");
 
 		Ratings.viewRateStackedStar(
 			averageStarCount = "3.0",
@@ -749,8 +530,9 @@ definition {
 	}
 
 	@description = "This ensures that the stars rating can be revoked."
+	@refactordone
 	@priority = "5"
-	test RevokeBlogsStarsRating {
+	test CanRevokeBlogsStarsRating {
 		property custom.properties = "jsonws.web.service.paths.excludes=";
 
 		JSONLayout.addPublicLayout(
@@ -779,15 +561,15 @@ definition {
 			requireReset = "false",
 			userEmailAddress = "userea@liferay.com");
 
-		User.openUsersAdmin();
-
-		User.assignRegularRoleCP(
+		JSONRole.assignRoleToUser(
 			roleTitle = "Administrator",
-			userScreenName = "usersn");
+			userEmailAddress = "userea@liferay.com");
 
 		Ratings.configureRatingType(
 			applications = "Blogs",
-			ratingType = "Stars");
+			portlet = "Ratings",
+			ratingType = "Stars",
+			siteURLKey = "guest");
 
 		Navigator.gotoPage(pageName = "Blogs Page");
 
@@ -813,9 +595,8 @@ definition {
 	}
 
 	@priority = "3"
-	test ViewKBArticleWithEditedStarRatings {
-		property test.name.skip.portal.instance = "Ratings#ViewKBArticleWithEditedStarRatings";
-
+	@refactordone
+	test CanViewKBArticleWithEditedStarRatings {
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",
 			layoutName = "Knowledge Base Display Page");
@@ -826,32 +607,16 @@ definition {
 			layoutName = "Knowledge Base Display Page",
 			widgetName = "Knowledge Base Display");
 
-		KBAdmin.openKBAdmin(siteURLKey = "guest");
-
-		KBArticle.addCP(
+		JSONKnowledgeBase.addkBArticle(
+			groupName = "Guest",
 			kbArticleContent = "Knowledge Base Article Content",
 			kbArticleTitle = "Knowledge Base Article Title");
 
-		Navigator.gotoPage(pageName = "Knowledge Base Display Page");
+		Ratings.openToConfigInInstanceSettings(portlet = "Ratings");
 
-		KBArticle.viewViaKBDisplayPG(
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleTitle = "Knowledge Base Article Title");
-
-		PortalSettings.gotoConfiguration(
-			configurationCategory = "Community Tools",
-			configurationName = "Ratings",
-			configurationScope = "Virtual Instance Scope");
-
-		Select(
-			locator1 = "Select#KNOWLEDGE_BASE_RATING",
-			value1 = "Stars");
-
-		AssertClickNoError(
-			locator1 = "Button#SAVE",
-			value1 = "Save");
-
-		AssertConfirm(value1 = "Existing ratings data values will be adapted to match the new ratings type even though it may not be accurate. Do you want to continue?");
+		PortalSettings.configureRatingType(
+			configureKBRatingType = "true",
+			ratingType = "Stars");
 
 		Navigator.gotoPage(pageName = "Knowledge Base Display Page");
 
@@ -869,9 +634,8 @@ definition {
 	}
 
 	@priority = "4"
-	test ViewKBArticleWithStarRatings {
-		property test.name.skip.portal.instance = "Ratings#ViewKBArticleWithStarRatings";
-
+	@refactordone
+	test CanViewKBArticleWithStarRatings {
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",
 			layoutName = "Knowledge Base Display Page");
@@ -882,17 +646,12 @@ definition {
 			layoutName = "Knowledge Base Display Page",
 			widgetName = "Knowledge Base Display");
 
-		KBAdmin.openKBAdmin(siteURLKey = "guest");
-
-		KBArticle.addCP(
+		JSONKnowledgeBase.addkBArticle(
+			groupName = "Guest",
 			kbArticleContent = "Knowledge Base Article Content",
 			kbArticleTitle = "Knowledge Base Article Title");
 
 		Navigator.gotoPage(pageName = "Knowledge Base Display Page");
-
-		KBArticle.viewViaKBDisplayPG(
-			kbArticleContent = "Knowledge Base Article Content",
-			kbArticleTitle = "Knowledge Base Article Title");
 
 		Ratings.rateThumb(ratingResult = "Rate this as good");
 
@@ -900,20 +659,11 @@ definition {
 			ratingResult = "You have rated this as good",
 			voteCount = "1");
 
-		PortalSettings.gotoConfiguration(
-			configurationCategory = "Community Tools",
-			configurationName = "Ratings",
-			configurationScope = "Virtual Instance Scope");
+		Ratings.openToConfigInInstanceSettings(portlet = "Ratings");
 
-		Select(
-			locator1 = "Select#KNOWLEDGE_BASE_RATING",
-			value1 = "Stars");
-
-		AssertClickNoError(
-			locator1 = "Button#SAVE",
-			value1 = "Save");
-
-		AssertConfirm(value1 = "Existing ratings data values will be adapted to match the new ratings type even though it may not be accurate. Do you want to continue?");
+		PortalSettings.configureRatingType(
+			configureKBRatingType = "true",
+			ratingType = "Stars");
 
 		Navigator.gotoPage(pageName = "Knowledge Base Display Page");
 
@@ -921,20 +671,11 @@ definition {
 			averageRatingStarCount = "5.0",
 			ratingStarCount = "5");
 
-		PortalSettings.gotoConfiguration(
-			configurationCategory = "Community Tools",
-			configurationName = "Ratings",
-			configurationScope = "Virtual Instance Scope");
+		Ratings.openToConfigInInstanceSettings(portlet = "Ratings");
 
-		Select(
-			locator1 = "Select#KNOWLEDGE_BASE_RATING",
-			value1 = "Thumbs");
-
-		AssertClickNoError(
-			locator1 = "Button#SAVE",
-			value1 = "Save");
-
-		AssertConfirm(value1 = "Existing ratings data values will be adapted to match the new ratings type even though it may not be accurate. Do you want to continue?");
+		PortalSettings.configureRatingType(
+			configureKBRatingType = "true",
+			ratingType = "Thumbs");
 
 		Navigator.gotoPage(pageName = "Knowledge Base Display Page");
 
@@ -944,12 +685,15 @@ definition {
 	}
 
 	@priority = "4"
-	test ViewLikeCountForDocument {
+	@refactordone
+	test CanViewLikeCountForDocument {
 		property custom.properties = "jsonws.web.service.paths.excludes=";
 
 		Ratings.configureRatingType(
 			applications = "document",
-			ratingType = "Like");
+			portlet = "Ratings",
+			ratingType = "Like",
+			siteURLKey = "guest");
 
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",
@@ -961,20 +705,17 @@ definition {
 			layoutName = "Documents and Media Page",
 			widgetName = "Documents and Media");
 
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		DMDocument.enableActionsMenuOnPortlet();
-
-		LexiconEntry.changeDisplayStyle(displayStyle = "list");
-
-		JSONDocument.addFile(
-			dmDocumentDescription = "DM Description",
+		JSONDocument.addFileWithUploadedFile(
+			dmDocumentDescription = "DM Document Description",
 			dmDocumentTitle = "DM Title",
-			groupName = "Guest");
+			groupName = "Guest",
+			mimeType = "text/plain",
+			sourceFileName = "Document_1.txt");
 
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		DMNavigator.gotoDocumentPG(dmDocumentTitle = "DM Title");
+		DMNavigator.openToEntryInAdmin(
+			dmDocumentTitle = "DM Title",
+			groupName = "Guest",
+			siteURLKey = "guest");
 
 		DMDocument.expandInfo();
 
@@ -997,15 +738,14 @@ definition {
 			roleTitle = "Administrator",
 			userEmailAddress = "userea@liferay.com");
 
-		User.logoutPG();
+		User.logoutAndLoginPG(
+			userLoginEmailAddress = "userea@liferay.com",
+			userLoginFullName = "userfn userln");
 
-		User.loginUserPG(
-			password = "test",
-			userEmailAddress = "userea@liferay.com");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		DMNavigator.gotoDocumentPG(dmDocumentTitle = "DM Title");
+		DMNavigator.openToEntryInAdmin(
+			dmDocumentTitle = "DM Title",
+			groupName = "Guest",
+			siteURLKey = "guest");
 
 		DMDocument.expandInfo();
 

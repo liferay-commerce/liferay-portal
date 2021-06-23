@@ -81,10 +81,23 @@ public class BatchEngineImportTaskLocalServiceImpl
 
 	@Override
 	public List<BatchEngineImportTask> getBatchEngineImportTasks(
+		long companyId, int start, int end) {
+
+		return batchEngineImportTaskPersistence.findByCompanyId(
+			companyId, start, end);
+	}
+
+	@Override
+	public List<BatchEngineImportTask> getBatchEngineImportTasks(
 		String executeStatus) {
 
 		return batchEngineImportTaskPersistence.findByExecuteStatus(
 			executeStatus);
+	}
+
+	@Override
+	public int getBatchEngineImportTasksCount(long companyId) {
+		return batchEngineImportTaskPersistence.countByCompanyId(companyId);
 	}
 
 }

@@ -39,6 +39,9 @@
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="objectDefinitionId" type="long" />
+		<field name="indexed" type="boolean" />
+		<field name="indexedAsKeyword" type="boolean" />
+		<field name="indexedLanguageId" type="String" />
 		<field name="name" type="String" />
 		<field name="type" type="String" />
 	</model>

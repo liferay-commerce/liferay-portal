@@ -100,7 +100,7 @@ public class ExportImportConfigurationLocalServiceImpl
 		throws PortalException {
 
 		User user = userPersistence.findByPrimaryKey(userId);
-		Date now = new Date();
+		Date date = new Date();
 
 		long exportImportConfigurationId = counterLocalService.increment();
 
@@ -124,7 +124,7 @@ public class ExportImportConfigurationLocalServiceImpl
 		exportImportConfiguration.setStatus(status);
 		exportImportConfiguration.setStatusByUserId(userId);
 		exportImportConfiguration.setStatusByUserName(user.getScreenName());
-		exportImportConfiguration.setStatusDate(now);
+		exportImportConfiguration.setStatusDate(date);
 
 		return exportImportConfigurationPersistence.update(
 			exportImportConfiguration);

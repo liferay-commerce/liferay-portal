@@ -60,17 +60,17 @@ definition {
 
 	@description = "This test covers LPS-77658. It publishes a blog entry to live via Single Asset Publishing."
 	@priority = "4"
-	@refactorneeded
+	@refactordone
 	test CanPublishEntryViaSAP {
+		JSONBlog.addEntry(
+			entryContent = "Blogs Entry Content",
+			entryTitle = "Blogs Entry Title",
+			groupName = "Site Name (Staging)",
+			site = "false");
+
 		BlogsNavigator.openToStagingCP(
 			groupName = "Site Name",
 			siteURLKey = "site-name-staging");
-
-		// Need to check if we can add blog entry directly to staging via JSON
-
-		Blogs.addEntry(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
 
 		LexiconEntry.changeDisplayStyle(displayStyle = "Cards");
 
@@ -99,6 +99,52 @@ definition {
 			publicationType = "Local");
 	}
 
+	@priority = "3"
+	@refactorneeded
+	test CanPublishScheduledEntry {
+		property test.name.skip.portal.instance = "BlogsUsecase#StagingBlogsWithScheduledPublishing";
+
+		// Can still explore how to schedule a Blog entry through JSON. This would involve using DateUtil.java
+
+		BlogsNavigator.openToAddEntry(siteURLKey = "site-name-staging");
+
+		BlogsEntry.addEntryContent(
+			entryContent = "Blogs Entry Content",
+			entryTitle = "Blogs Entry Title");
+
+		BlogsEntry.scheduleBlogEntry();
+
+		PortletEntry.publish();
+
+		Navigator.gotoStagedSitePage(
+			pageName = "Staging Blogs Page",
+			siteName = "Site Name");
+
+		Navigator.gotoNavItem(navItem = "Not Published (1)");
+
+		Staging.gotoPublishToLive();
+
+		Staging.configurePublishToLive(
+			checkContentNameList = "Blogs",
+			checkPageName = "Staging Blogs Page");
+
+		Staging.publishToLive();
+
+		Navigator.gotoSitePage(
+			pageName = "Staging Blogs Page",
+			siteName = "Site Name");
+
+		Blogs.viewNoEntryCP();
+
+		Pause(locator1 = "120000");
+
+		Refresh();
+
+		BlogsEntry.viewEntryPG(
+			entryContent = "Blogs Entry Content",
+			entryTitle = "Blogs Entry Title");
+	}
+
 	@description = "This is a use case for LPS-122140. It ensures that a small image can be published."
 	@priority = "5"
 	@refactordone
@@ -108,8 +154,6 @@ definition {
 		BlogsEntry.addEntryContent(
 			entryContent = "Blogs Entry Content",
 			entryTitle = "Blogs Entry Title");
-
-		Panel.expandPanel(panel = "Configuration");
 
 		BlogsEntry.addSmallImage(
 			navTab = "Blog Images",
@@ -148,8 +192,6 @@ definition {
 			entryContent = "Blogs Entry Content",
 			entryTitle = "Blogs Entry Title");
 
-		Panel.expandPanel(panel = "Configuration");
-
 		BlogsEntry.addSmallImage(
 			navTab = "Blog Images",
 			uploadFileName = "Document_3.jpg");
@@ -164,13 +206,11 @@ definition {
 
 		Staging.publishToLive();
 
-		BlogsNavigator.openToStagingCP(
-			groupName = "Site Name",
+		BlogsNavigator.openToEditEntryInSite(
+			entryTitle = "Blogs Entry Title",
+			groupName = "Site Name (Staging)",
+			site = "false",
 			siteURLKey = "site-name-staging");
-
-		BlogsNavigator.gotoEditCP(entryTitle = "Blogs Entry Title");
-
-		Panel.expandPanel(panel = "Configuration");
 
 		BlogsEntry.removeSmallImage(uploadFileName = "Document_3.jpg");
 
@@ -201,8 +241,8 @@ definition {
 
 	@description = "This test covers LPS-99265. It ensures that a staged blogs entry cannot be shared unless it is first published to Live."
 	@priority = "4"
-	@refactorneeded
-	test ShareBlogsEntryOnLiveSite {
+	@refactordone
+	test CanShareBlogsEntryOnLiveSite {
 		property custom.properties = "jsonws.web.service.paths.excludes=";
 
 		JSONUser.addUser(
@@ -216,23 +256,15 @@ definition {
 			requireReset = "false",
 			userEmailAddress = "userea@liferay.com");
 
-		BlogsNavigator.openToStagingCP(
-			groupName = "Site Name",
-			siteURLKey = "site-name-staging");
-
-		Blogs.addEntry(
+		JSONBlog.addEntry(
 			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
+			entryTitle = "Blogs Entry Title",
+			groupName = "Site Name (Staging)",
+			site = "false");
 
 		BlogsNavigator.openToStagingCP(
 			groupName = "Site Name",
 			siteURLKey = "site-name-staging");
-
-		LexiconEntry.changeDisplayStyle(displayStyle = "list");
-
-		Click(
-			key_listEntry = "Blogs Entry Title",
-			locator1 = "LexiconList#LIST_ENTRY_ELLIPSIS");
 
 		AssertElementNotPresent(
 			key_menuItem = "Share",
@@ -246,11 +278,7 @@ definition {
 
 		Staging.publishToLive();
 
-		ProductMenu.gotoLiveSite();
-
-		ProductMenu.gotoPortlet(
-			category = "Content &amp; Data",
-			portlet = "Blogs");
+		BlogsNavigator.openBlogsAdmin(siteURLKey = "site-name");
 
 		BlogsNavigator.gotoShare(entryTitle = "Blogs Entry Title");
 
@@ -275,273 +303,15 @@ definition {
 			ownerName = "Test Test");
 	}
 
-	@priority = "5"
-	@refactorneeded
-	test StagingBlogsCP {
-		property testray.component.names = "Training";
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Staging Blogs Page",
-			siteName = "Site Name");
-
-		ProductMenu.gotoPortlet(
-			category = "Publishing",
-			portlet = "Staging");
-
-		Staging.modifyVariation(enableOnPublicPages = "true");
-
-		BlogsNavigator.openToStagingCP(
-			groupName = "Site Name",
-			siteURLKey = "site-name-staging");
-
-		Blogs.addEntry(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
-
-		Navigator.openSiteURL(siteName = "Site Name");
-
-		Navigator.gotoStagedView();
-
-		Staging.gotoPublishToLive();
-
-		Staging.publishToLive();
-	}
-
-	@priority = "3"
-	@refactorneeded
-	test StagingBlogsPG {
-		Navigator.gotoStagedSitePage(
-			pageName = "Staging Blogs Page",
-			siteName = "Site Name");
-
-		ProductMenu.gotoPortlet(
-			category = "Site Builder",
-			portlet = "Pages");
-
-		SitePages.addPublicPage(
-			pageName = "Blogs Page 1",
-			sitePageType = "Widget Page");
-
-		SitePages.configurePage(
-			columnName = "1 Column",
-			pageName = "Blogs Page 1",
-			privacy = "Public Pages",
-			sitePageType = "Widget Page");
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Blogs Page 1",
-			siteName = "Site Name");
-
-		Portlet.addPG(portletName = "Blogs");
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Blogs Page 1",
-			siteName = "Site Name");
-
-		Portlet.addPG(portletName = "Blogs Aggregator");
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Blogs Page 1",
-			siteName = "Site Name");
-
-		Portlet.addPG(portletName = "Recent Bloggers");
-
-		Navigator.openSiteURL(siteName = "Site Name");
-
-		Navigator.gotoStagedView();
-
-		ProductMenu.gotoPortlet(
-			category = "Site Builder",
-			portlet = "Pages");
-
-		SitePages.addPublicPage(
-			pageName = "Blogs Page 2",
-			sitePageType = "Widget Page");
-
-		SitePages.configurePage(
-			columnName = "1 Column",
-			pageName = "Blogs Page 2",
-			privacy = "Public Pages",
-			sitePageType = "Widget Page");
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Blogs Page 2",
-			siteName = "Site Name");
-
-		Portlet.addPG(portletName = "Blogs");
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Blogs Page 1",
-			siteName = "Site Name");
-
-		Blogs.addEntry(
-			entryContent = "Blogs Entry Content 1",
-			entryTitle = "Blogs Entry Title 1");
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Blogs Page 1",
-			siteName = "Site Name");
-
-		RecentBloggers.viewPG(
-			entryAuthor = "Test Test",
-			postCount = "1");
-
-		BlogsAggregatorPortlet.viewBlogsEntryViaBAPortletPG(viewEntryTitle = "Blogs Entry Title 1");
-
-		BlogsEntry.viewPG(
-			entryContent = "Blogs Entry Content 1",
-			entryTitle = "Blogs Entry Title 1");
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Staging Blogs Page",
-			siteName = "Site Name");
-
-		Staging.gotoPublishToLive();
-
-		Staging.configurePublishToLive(
-			checkContentNameList = "Blogs",
-			checkPageName = "Blogs Page 1");
-
-		Staging.publishToLive();
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Blogs Page 1",
-			siteName = "Site Name");
-
-		RecentBloggers.viewPG(
-			entryAuthor = "Test Test",
-			postCount = "1");
-
-		BlogsAggregatorPortlet.viewBlogsEntryViaBAPortletPG(viewEntryTitle = "Blogs Entry Title 1");
-
-		BlogsNavigator.gotoEntryPG(
-			entryContent = "Blogs Entry Content 1",
-			entryTitle = "Blogs Entry Title 1");
-
-		BlogsEntry.viewPG(
-			entryContent = "Blogs Entry Content 1",
-			entryTitle = "Blogs Entry Title 1");
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Blogs Page 2",
-			siteName = "Site Name");
-
-		Portlet.selectScopePG(
-			portletName = "Blogs",
-			scope = "Blogs Page 2");
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Blogs Page 2",
-			siteName = "Site Name");
-
-		Blogs.addEntry(
-			entryContent = "Blogs Entry Content 2",
-			entryTitle = "Blogs Entry Title 2");
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Blogs Page 1",
-			siteName = "Site Name");
-
-		BlogsAggregatorPortlet.viewBlogsEntryViaBAPortletPG(viewEntryTitle = "Blogs Entry Title 1,Blogs Entry Title 2");
-
-		BlogsAggregatorPortlet.configureSelectionMethod(selectionMethod = "Scope");
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Blogs Page 1",
-			siteName = "Site Name");
-
-		BlogsAggregatorPortlet.viewBlogsEntryViaBAPortletPG(
-			viewEntryTitle = "Blogs Entry Title 1",
-			viewNoEntryTitle = "Blogs Entry Title 2");
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Blogs Page 1",
-			siteName = "Site Name");
-
-		Staging.gotoPublishToLive();
-
-		Staging.configurePublishToLive(
-			checkContentNameList = "Blogs",
-			checkPageName = "Blogs Page 2",
-			contentDateRange = "All");
-
-		Staging.publishToLive();
-
-		BlogsNavigator.openToBlogEntry(
-			entryTitle = "Blogs Entry Title 2",
-			layoutName = "Blogs Page 2",
-			siteURLKey = "site-name");
-
-		BlogsEntry.viewPG(
-			entryContent = "Blogs Entry Content 2",
-			entryTitle = "Blogs Entry Title 2");
-
-		Navigator.gotoSitePage(
-			pageName = "Blogs Page 1",
-			siteName = "Site Name");
-
-		BlogsAggregatorPortlet.viewBlogsEntryViaBAPortletPG(
-			viewEntryTitle = "Blogs Entry Title 1",
-			viewNoEntryTitle = "Blogs Entry Title 2");
-	}
-
-	@priority = "3"
-	@refactorneeded
-	test StagingBlogsWithScheduledPublishing {
-		property test.name.skip.portal.instance = "BlogsUsecase#StagingBlogsWithScheduledPublishing";
-
-		BlogsNavigator.openToAddEntry(siteURLKey = "site-name-staging");
-
-		BlogsEntry.addEntryContent(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
-
-		Panel.expandPanel(panel = "Configuration");
-
-		BlogsEntry.scheduleBlogEntry();
-
-		PortletEntry.publish();
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Staging Blogs Page",
-			siteName = "Site Name");
-
-		Navigator.gotoNavItem(navItem = "Not Published (1)");
-
-		Staging.gotoPublishToLive();
-
-		Staging.configurePublishToLive(
-			checkContentNameList = "Blogs",
-			checkPageName = "Staging Blogs Page");
-
-		Staging.publishToLive();
-
-		Navigator.gotoSitePage(
-			pageName = "Staging Blogs Page",
-			siteName = "Site Name");
-
-		Blogs.viewNoEntryCP();
-
-		Pause(locator1 = "180000");
-
-		Refresh();
-
-		BlogsEntry.viewEntryPG(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
-	}
-
 	@description = "This is a use case for LPS-72949."
 	@priority = "5"
 	@refactorneeded
 	test StagingLocalLiveLockAndEditBlogsEntry {
-		Navigator.gotoStagedSitePage(
-			pageName = "Staging Blogs Page",
-			siteName = "Site Name");
-
-		Blogs.addEntry(
+		JSONBlog.addEntry(
 			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
+			entryTitle = "Blogs Entry Title",
+			groupName = "Site Name (Staging)",
+			site = "false");
 
 		Navigator.gotoStagedSitePage(
 			pageName = "Staging Blogs Page",

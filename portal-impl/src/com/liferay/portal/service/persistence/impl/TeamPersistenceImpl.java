@@ -3392,23 +3392,23 @@ public class TeamPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (team.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				team.setCreateDate(now);
+				team.setCreateDate(date);
 			}
 			else {
-				team.setCreateDate(serviceContext.getCreateDate(now));
+				team.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!teamModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				team.setModifiedDate(now);
+				team.setModifiedDate(date);
 			}
 			else {
-				team.setModifiedDate(serviceContext.getModifiedDate(now));
+				team.setModifiedDate(serviceContext.getModifiedDate(date));
 			}
 		}
 

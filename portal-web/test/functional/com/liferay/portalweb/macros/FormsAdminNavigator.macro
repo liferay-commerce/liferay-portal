@@ -3,6 +3,14 @@ definition {
 	var formName = "Created Form Name";
 	var rowIndexNumber = "1";
 
+	macro closePublishedFormWindow {
+		Navigator.openURL();
+
+		ProductMenu.gotoPortlet(
+			category = "Content & Data",
+			portlet = "Forms");
+	}
+
 	macro enableLocalNetworkDataProvider {
 		Navigator.openURL();
 
@@ -67,7 +75,7 @@ definition {
 	}
 
 	macro gotoEditField {
-		Form.openSidebar();
+		WaitForElementPresent(locator1 = "Form#SIDEBAR_CONTENT_OPEN");
 
 		Form.gotoFieldsTab();
 
@@ -112,6 +120,17 @@ definition {
 		AssertClick(
 			locator1 = "FormsAdmin#FORMS_NAVIGATION_BAR_ITEM",
 			value1 = "Entries");
+	}
+
+	macro gotoEntriesLabel {
+		Click(
+			key_fieldName = "${key_value}",
+			locator1 = "FormFields#TEXT_FIELD_LABEL_REPORT_CARD");
+
+		AssertVisible(
+			key_type = "${key_key_type}",
+			key_value = "${key_value}",
+			locator1 = "FormFields#ENTRY_ANY_LABEL");
 	}
 
 	macro gotoFormBuilder {

@@ -288,7 +288,7 @@
 			},
 
 			hr: {regex: /(^|\n)\s*----\s*(\n|$)/, tag: 'hr'},
-
+			// eslint-disable-next-line @liferay/liferay/no-abbreviations
 			img: {
 				build(node, r, options) {
 					var imagePath = r[1];
@@ -300,15 +300,15 @@
 						}
 					}
 
-					var img = document.createElement('img');
-					img.src = imagePath;
+					var image = document.createElement('img');
+					image.src = imagePath;
 					if (r[2]) {
-						img.alt = r[2].replace(/~(.)/g, '$1');
+						image.alt = r[2].replace(/~(.)/g, '$1');
 					}
 					else if (options && options.defaultImageText) {
-						img.alt = options.defaultImageText;
+						image.alt = options.defaultImageText;
 					}
-					node.appendChild(img);
+					node.appendChild(image);
 				},
 				regex: rx.img,
 			},

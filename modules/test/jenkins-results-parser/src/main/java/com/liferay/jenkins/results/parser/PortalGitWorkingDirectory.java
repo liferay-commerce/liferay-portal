@@ -151,7 +151,7 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 
 				@Override
 				public FileVisitResult preVisitDirectory(
-					Path filePath, BasicFileAttributes attrs) {
+					Path filePath, BasicFileAttributes basicFileAttributes) {
 
 					if (!JenkinsResultsParserUtil.isFileIncluded(
 							excludedModulesPathMatchers,

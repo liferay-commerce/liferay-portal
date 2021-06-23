@@ -1618,25 +1618,25 @@ public class CommerceTaxMethodPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commerceTaxMethod.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commerceTaxMethod.setCreateDate(now);
+				commerceTaxMethod.setCreateDate(date);
 			}
 			else {
 				commerceTaxMethod.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commerceTaxMethodModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commerceTaxMethod.setModifiedDate(now);
+				commerceTaxMethod.setModifiedDate(date);
 			}
 			else {
 				commerceTaxMethod.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

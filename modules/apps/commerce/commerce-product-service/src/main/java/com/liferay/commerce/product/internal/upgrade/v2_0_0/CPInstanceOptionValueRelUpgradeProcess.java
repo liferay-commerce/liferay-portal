@@ -227,10 +227,10 @@ public class CPInstanceOptionValueRelUpgradeProcess
 				preparedStatement.setLong(5, userId);
 				preparedStatement.setString(6, userName);
 
-				Date now = new Date(System.currentTimeMillis());
+				Date date = new Date(System.currentTimeMillis());
 
-				preparedStatement.setDate(7, now);
-				preparedStatement.setDate(8, now);
+				preparedStatement.setDate(7, date);
+				preparedStatement.setDate(8, date);
 
 				preparedStatement.setLong(9, cpDefinitionOptionRelId);
 				preparedStatement.setLong(10, cpDefinitionOptionValueRelId);

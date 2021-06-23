@@ -458,15 +458,14 @@ public class UpdateArticleMVCActionCommand extends BaseMVCActionCommand {
 			"/edit_article.jsp"
 		).setRedirect(
 			redirect
+		).setPortletResource(
+			ParamUtil.getString(actionRequest, "portletResource")
 		).setParameter(
 			"articleId", article.getArticleId()
 		).setParameter(
 			"folderId", article.getFolderId()
 		).setParameter(
 			"groupId", article.getGroupId()
-		).setParameter(
-			"portletResource",
-			ParamUtil.getString(actionRequest, "portletResource")
 		).setParameter(
 			"referringPortletResource",
 			ParamUtil.getString(actionRequest, "referringPortletResource")

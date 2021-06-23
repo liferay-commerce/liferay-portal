@@ -16,6 +16,7 @@ import './FieldBase.scss';
 
 import ClayButton from '@clayui/button';
 import ClayIcon from '@clayui/icon';
+import ClayLabel from '@clayui/label';
 import ClayPopover from '@clayui/popover';
 import classNames from 'classnames';
 import {
@@ -70,6 +71,59 @@ const getDefaultRows = (nestedFields) => {
 	});
 };
 
+const getFieldDetails = (props) => {
+	let fieldDetails = '';
+
+	const {errorMessage, hasError, required, text, tip} = props;
+
+	if (tip) {
+		fieldDetails += Liferay.Util.escape(tip) + '<br>';
+	}
+
+	if (text) {
+		fieldDetails += Liferay.Util.escape(text) + '<br>';
+	}
+
+	if (hasError) {
+		fieldDetails += Liferay.Util.escape(errorMessage);
+	}
+	else if (required) {
+		fieldDetails += Liferay.Language.get('required');
+	}
+
+	return fieldDetails;
+};
+
+const HideFieldProperty = () => {
+	return (
+		<ClayLabel className="ml-1" displayType="secondary">
+			{Liferay.Language.get('hidden')}
+		</ClayLabel>
+	);
+};
+
+const LabelProperty = ({hideField, label}) => {
+	return hideField ? <span className="text-secondary">{label}</span> : label;
+};
+
+const RequiredProperty = () => {
+	return (
+		<span className="ddm-label-required reference-mark">
+			<ClayIcon symbol="asterisk" />
+		</span>
+	);
+};
+
+const TooltipProperty = ({showPopover, tooltip}) => {
+	return showPopover ? (
+		<Popover tooltip={tooltip} />
+	) : (
+		<span className="ddm-tooltip" title={tooltip}>
+			<ClayIcon symbol="question-circle-full" />
+		</span>
+	);
+};
+
 const Popover = ({tooltip}) => {
 	const [isPopoverVisible, setPopoverVisible] = useState(false);
 
@@ -107,35 +161,12 @@ const Popover = ({tooltip}) => {
 	);
 };
 
-const FieldProperties = ({required, showPopover, tooltip}) => {
-	return (
-		<>
-			{required && (
-				<span className="ddm-label-required reference-mark">
-					<ClayIcon symbol="asterisk" />
-				</span>
-			)}
-
-			{tooltip && (
-				<>
-					{showPopover ? (
-						<Popover tooltip={tooltip} />
-					) : (
-						<span className="ddm-tooltip" title={tooltip}>
-							<ClayIcon symbol="question-circle-full" />
-						</span>
-					)}
-				</>
-			)}
-		</>
-	);
-};
-
 function FieldBase({
 	children,
 	displayErrors,
 	errorMessage,
 	fieldName,
+	hideField,
 	id,
 	label,
 	localizedValue = {},
@@ -157,7 +188,18 @@ function FieldBase({
 }) {
 	const {editingLanguageId} = useFormState();
 	const dispatch = useForm();
-	const inputEditedName = name + '_edited';
+
+	const hasError = displayErrors && errorMessage && !valid;
+
+	const fieldDetails = getFieldDetails({
+		errorMessage,
+		hasError,
+		required,
+		text,
+		tip,
+	});
+
+	const fieldDetailsId = id ? id + '_fieldDetails' : name + '_fieldDetails';
 
 	const hiddenTranslations = useMemo(() => {
 		const array = [];
@@ -179,38 +221,16 @@ function FieldBase({
 		return array;
 	}, [localizedValue, editingLanguageId, name]);
 
+	const inputEditedName = name + '_edited';
 	const renderLabel =
-		(label && showLabel) || required || tooltip || repeatable;
-
+		(label && showLabel) || hideField || repeatable || required || tooltip;
 	const repeatedIndex = useMemo(() => getRepeatedIndex(name), [name]);
-
 	const showLegend =
 		type &&
 		(type === 'checkbox_multiple' ||
 			type === 'grid' ||
 			type === 'paragraph' ||
 			type === 'radio');
-
-	const fieldDetailsId = id ? id + '_fieldDetails' : name + '_fieldDetails';
-	const hasError = displayErrors && errorMessage && !valid;
-
-	let fieldDetails = '';
-
-	if (tip) {
-		fieldDetails += tip + '<br>';
-	}
-
-	if (text) {
-		fieldDetails += text + '<br>';
-	}
-
-	if (hasError) {
-		fieldDetails += errorMessage;
-	}
-	else if (required) {
-		fieldDetails += Liferay.Language.get('required');
-	}
-
 	const showPopover = fieldName === 'inputMaskFormat';
 
 	return (
@@ -277,13 +297,16 @@ function FieldBase({
 								className="lfr-ddm-legend"
 								tabIndex="0"
 							>
-								{label && showLabel && label}
+								{showLabel && label}
 
-								<FieldProperties
-									required={required}
-									showPopover={showPopover}
-									tooltip={tooltip}
-								/>
+								{required && <RequiredProperty />}
+
+								{tooltip && (
+									<TooltipProperty
+										showPopover={showPopover}
+										tooltip={tooltip}
+									/>
+								)}
 							</legend>
 							{children}
 						</fieldset>
@@ -297,15 +320,33 @@ function FieldBase({
 								})}
 								tabIndex="0"
 							>
-								{label && showLabel && label}
+								{showLabel && label && (
+									<LabelProperty
+										hideField={hideField}
+										label={label}
+									/>
+								)}
 
-								<FieldProperties
-									required={required}
+								{required && <RequiredProperty />}
+
+								{hideField && <HideFieldProperty />}
+
+								{showLabel && tooltip && (
+									<TooltipProperty
+										showPopover={showPopover}
+										tooltip={tooltip}
+									/>
+								)}
+							</label>
+
+							{children}
+
+							{!showLabel && tooltip && (
+								<TooltipProperty
 									showPopover={showPopover}
 									tooltip={tooltip}
 								/>
-							</label>
-							{children}
+							)}
 						</>
 					)}
 				</>
@@ -331,12 +372,14 @@ function FieldBase({
 					/>
 				))}
 
-			<input
-				key={inputEditedName}
-				name={inputEditedName}
-				type="hidden"
-				value={localizedValue[editingLanguageId] !== undefined}
-			/>
+			{type !== 'captcha' && (
+				<input
+					key={inputEditedName}
+					name={inputEditedName}
+					type="hidden"
+					value={localizedValue[editingLanguageId] !== undefined}
+				/>
+			)}
 
 			{typeof tip === 'string' && (
 				<span aria-hidden="true" className="form-text">

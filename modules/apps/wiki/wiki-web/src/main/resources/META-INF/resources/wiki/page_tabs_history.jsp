@@ -35,7 +35,7 @@ PortletURL viewPageHistoryURL = PortletURLBuilder.createRenderURL(
 		"title", wikiPage.getTitle()
 	).buildString()
 ).setParameter(
-	"nodeId", String.valueOf(node.getNodeId())
+	"nodeId", node.getNodeId()
 ).setParameter(
 	"title", wikiPage.getTitle()
 ).build();

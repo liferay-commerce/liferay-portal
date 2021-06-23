@@ -1591,25 +1591,25 @@ public class CommerceTaxFixedRatePersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commerceTaxFixedRate.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commerceTaxFixedRate.setCreateDate(now);
+				commerceTaxFixedRate.setCreateDate(date);
 			}
 			else {
 				commerceTaxFixedRate.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commerceTaxFixedRateModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commerceTaxFixedRate.setModifiedDate(now);
+				commerceTaxFixedRate.setModifiedDate(date);
 			}
 			else {
 				commerceTaxFixedRate.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

@@ -1914,25 +1914,25 @@ public class CommerceDiscountRelPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commerceDiscountRel.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commerceDiscountRel.setCreateDate(now);
+				commerceDiscountRel.setCreateDate(date);
 			}
 			else {
 				commerceDiscountRel.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commerceDiscountRelModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commerceDiscountRel.setModifiedDate(now);
+				commerceDiscountRel.setModifiedDate(date);
 			}
 			else {
 				commerceDiscountRel.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

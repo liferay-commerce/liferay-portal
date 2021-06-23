@@ -1972,25 +1972,25 @@ public class CommerceVirtualOrderItemPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commerceVirtualOrderItem.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commerceVirtualOrderItem.setCreateDate(now);
+				commerceVirtualOrderItem.setCreateDate(date);
 			}
 			else {
 				commerceVirtualOrderItem.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commerceVirtualOrderItemModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commerceVirtualOrderItem.setModifiedDate(now);
+				commerceVirtualOrderItem.setModifiedDate(date);
 			}
 			else {
 				commerceVirtualOrderItem.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

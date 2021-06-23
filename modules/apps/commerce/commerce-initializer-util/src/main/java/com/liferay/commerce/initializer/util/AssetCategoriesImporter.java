@@ -80,10 +80,10 @@ public class AssetCategoriesImporter {
 
 		ServiceContext serviceContext = new ServiceContext();
 
+		serviceContext.setAddGuestPermissions(addGuestPermissions);
+		serviceContext.setCompanyId(user.getCompanyId());
 		serviceContext.setScopeGroupId(scopeGroupId);
 		serviceContext.setUserId(userId);
-		serviceContext.setCompanyId(user.getCompanyId());
-		serviceContext.setAddGuestPermissions(addGuestPermissions);
 
 		List<AssetCategory> assetCategories = new ArrayList<>(
 			jsonArray.length());

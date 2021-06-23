@@ -43,7 +43,7 @@ PortletURL portletURL = PortletURLBuilder.createRenderURL(
 ).setRedirect(
 	redirect
 ).setParameter(
-	"nodeId", String.valueOf(nodeId)
+	"nodeId", nodeId
 ).build();
 
 portletDisplay.setShowBackIcon(true);

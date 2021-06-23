@@ -38,6 +38,8 @@ definition {
 	@description = "This is a test for LPS-130453. Display video from Documents and Media in External Video fragment."
 	@priority = "5"
 	test DisplayVideoFromDocumentsAndMediaInExternalVideo {
+		property dummy.socket.proxy.disabled = "true";
+
 		task ("Add an external video shortcut") {
 			DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "test-site-name");
 
@@ -89,6 +91,12 @@ definition {
 			IFrame.closeFrame();
 
 			WaitForElementPresent(locator1 = "YoutubePortlet#VIDEO_IFRAME");
+		}
+
+		task ("View the selected video name is shown in item selector input") {
+			AssertVisible(
+				key_contentName = "Liferay Digital Experience Platform",
+				locator1 = "PageEditor#ITEM_SELECTOR_CONTENT_INPUT");
 
 			PageEditor.clickPublish();
 		}
@@ -105,6 +113,8 @@ definition {
 	@description = "This is a test for LPS-130453. Display video from URL in External Video fragment."
 	@priority = "5"
 	test DisplayVideoFromURLInExternalVideo {
+		property dummy.socket.proxy.disabled = "true";
+
 		task ("Add an External Video fragment to page") {
 			ContentPagesNavigator.openEditContentPage(
 				pageName = "Content Page Name",
@@ -148,6 +158,12 @@ definition {
 			IFrame.closeFrame();
 
 			WaitForElementPresent(locator1 = "YoutubePortlet#VIDEO_IFRAME");
+		}
+
+		task ("View the selected video name is shown in item selector input") {
+			AssertVisible(
+				key_contentName = "Liferay Digital Experience Platform",
+				locator1 = "PageEditor#ITEM_SELECTOR_CONTENT_INPUT");
 
 			PageEditor.clickPublish();
 		}

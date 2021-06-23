@@ -103,7 +103,7 @@ public class GroupPagesRenderParametersRenderFilter implements RenderFilter {
 						renderRequest, LayoutAdminPortletKeys.GROUP_PAGES,
 						PortletRequest.RENDER_PHASE)
 				).setParameter(
-					"p_v_l_s_g_id", String.valueOf(selGroup.getGroupId())
+					"p_v_l_s_g_id", selGroup.getGroupId()
 				).build();
 
 				httpServletResponse.sendRedirect(portletURL.toString());

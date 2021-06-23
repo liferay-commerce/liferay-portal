@@ -2,11 +2,13 @@
 <head>
 <title>WorkflowAllItems</title>
 </head>
+
 <body>
-<table cellpadding="1" cellspacing="1" border="1">
+<table border="1" cellpadding="1" cellspacing="1">
 <thead>
 <tr><td rowspan="1" colspan="3">WorkflowAllItems</td></tr>
 </thead>
+
 <tbody>
 <tr>
 	<td>WORKFLOW_ALL_ITEMS_SELECT_ALL</td>
@@ -59,6 +61,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>DETAIL_PAGE_ASSET_TIME_LEFT</td>
+	<td>//div[contains(@class,'sla-result')]//span[@class='small'][contains(.,'${key_days}d ${key_hours}h ${key_mins}min Left')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>DETAIL_PAGE_ASSET_TITLE</td>
 	<td>//div[contains(@class,'modal-body')]/p[@class='row'][contains(.,'Asset Title')]/span[2]</td>
 	<td></td>
@@ -104,6 +111,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>DETAIL_PAGE_SLA_ENGLISH_HOUR_FORMAT</td>
+	<td>//span[text()='${key_slaName}']/following-sibling::span[contains(text(), 'PM')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>DETAIL_PAGE_SLA_MESSAGE</td>
 	<td>//div[contains(@class,'modal-body')]/h4[contains(.,'Due Date by SLA')]//following-sibling::p/span</td>
 	<td></td>
@@ -114,18 +126,23 @@
 	<td></td>
 </tr>
 <tr>
-    <td>METRICS_ALL_ITEMS_TABLE_ROW</td>
-    <td>//tr[${key_rowNumber}]//td[4]</td>
-    <td></td>
+	<td>METRICS_ALL_ITEMS_TABLE_ROW</td>
+	<td>//tr[${key_rowNumber}]//td[4]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>METRICS_PROCESS_NAME_TABLE_ROW</td>
+	<td>//tr[${key_rowNumber}]//td[1]</td>
+	<td></td>
 </tr>
 <tr>
 	<td>WORKFLOW_ALL_ITEMS_FILTER_BY</td>
-	<td>//ul[contains(@class,'navbar-nav')]//li[contains(@class,'dropdown nav-item')]//button[contains(.,'${key_allItemsFilterName}')]</td>
+	<td>//button[contains(@class, 'filter-dropdown-button')][contains(text(), '${key_allItemsFilterName}')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>WORKFLOW_ALL_ITEMS_FILTER_BY_ASSIGNEE_VALUE</td>
-	<td>//div[@class='dropdown-menu show dropdown-menu-left']/ul[@class='list-unstyled']//span[contains(.,'${assigneeName}')]</td>
+	<td>//span[contains(@class, 'dropdown-item')]//span[contains(@class, 'custom-control-label-text')][contains(text(), '${assigneeName}')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -171,6 +188,16 @@
 <tr>
 	<td>WORKFLOW_ALL_ITEMS_SELECT_ALL_MODAL</td>
 	<td>xpath=(//li[@class='nav-item ml-2']//label)[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>WORKFLOW_FILTER_TAB_NAME</td>
+	<td>//li[contains(@class,'tbar-item')]//*[contains(text(),'${key_value}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>WORKFLOW_HEADER_TITLE</td>
+	<td>//div[contains(@id,'headerTitle') and contains(text(),'${key_value}')]</td>
 	<td></td>
 </tr>
 </tbody>

@@ -34,13 +34,13 @@ PortletURL portletURL = PortletURLBuilder.createRenderURL(
 ).setParameter(
 	"displayStyle", displayStyle
 ).setParameter(
-	"groupId", String.valueOf(groupId)
+	"groupId", groupId
 ).setParameter(
 	"orderByCol", orderByCol
 ).setParameter(
 	"orderByType", orderByType
 ).setParameter(
-	"privateLayout", String.valueOf(privateLayout)
+	"privateLayout", privateLayout
 ).setParameter(
 	"searchContainerId", searchContainerId
 ).build();

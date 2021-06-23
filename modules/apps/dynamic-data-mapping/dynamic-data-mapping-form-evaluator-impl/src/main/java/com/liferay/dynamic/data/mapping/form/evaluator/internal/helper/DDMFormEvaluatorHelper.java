@@ -550,6 +550,13 @@ public class DDMFormEvaluatorHelper {
 			ddmFormEvaluatorFieldContextKey, "visible", true);
 	}
 
+	protected boolean isHideField(
+		DDMFormEvaluatorFieldContextKey ddmFormEvaluatorFieldContextKey) {
+
+		return getBooleanPropertyValue(
+			ddmFormEvaluatorFieldContextKey, "hideField", false);
+	}
+
 	protected void setFieldAsInvalid(
 		DDMFormEvaluatorFieldContextKey ddmFormEvaluatorFieldContextKey,
 		String errorMessage) {
@@ -594,6 +601,7 @@ public class DDMFormEvaluatorHelper {
 		validateFieldsMarkedAsRequired();
 		validateFieldsWithConfirmationField();
 		validateFieldsWithDDMFormFieldValidation();
+		validateNumericFieldsWithInputMask();
 	}
 
 	protected void validateFieldsMarkedAsRequired() {
@@ -620,8 +628,7 @@ public class DDMFormEvaluatorHelper {
 					ddmFormField.getRequiredErrorMessage();
 
 				if (localizedValue != null) {
-					Map<Locale, String> values =
-						(Map<Locale, String>)localizedValue.getValues();
+					Map<Locale, String> values = localizedValue.getValues();
 
 					String value = values.get(
 						_ddmFormEvaluatorEvaluateRequest.getLocale());
@@ -699,6 +706,10 @@ public class DDMFormEvaluatorHelper {
 		}
 
 		if (!isFieldVisible(ddmFormEvaluatorFieldContextKey)) {
+			return;
+		}
+
+		if (isHideField(ddmFormEvaluatorFieldContextKey)) {
 			return;
 		}
 
@@ -791,6 +802,28 @@ public class DDMFormEvaluatorHelper {
 		ddmFormEvaluatorExpressionObserver.updateFieldProperty(builder.build());
 	}
 
+	protected void validateNumericFieldsWithInputMask() {
+		Collection<DDMFormField> ddmFormFields = _ddmFormFieldsMap.values();
+
+		Stream<DDMFormField> stream = ddmFormFields.stream();
+
+		stream.filter(
+			this::_isIntegerNumericField
+		).flatMap(
+			ddmFormField -> _getDDMFormEvaluatorFieldContextKey(
+				ddmFormField.getName())
+		).filter(
+			this::_filterVisibleFieldsWithInputMask
+		).filter(
+			this::_isValueWithInputMaskInvalid
+		).forEach(
+			ddmFormEvaluatorFieldContextKey -> setFieldAsInvalid(
+				ddmFormEvaluatorFieldContextKey,
+				LanguageUtil.get(
+					_resourceBundle, "input-format-is-not-satisfied"))
+		);
+	}
+
 	protected final DDMFormEvaluatorExpressionFieldAccessor
 		ddmFormEvaluatorDDMExpressionFieldAccessor;
 	protected DDMFormEvaluatorExpressionActionHandler
@@ -802,6 +835,19 @@ public class DDMFormEvaluatorHelper {
 	protected final DDMFormFieldValueAccessor<String>
 		defaultDDMFormFieldValueAccessor =
 			new DefaultDDMFormFieldValueAccessor();
+
+	private boolean _filterVisibleFieldsWithInputMask(
+		DDMFormEvaluatorFieldContextKey ddmFormEvaluatorFieldContextKey) {
+
+		if (!getBooleanPropertyValue(
+				ddmFormEvaluatorFieldContextKey, "inputMask", false)) {
+
+			return false;
+		}
+
+		return getBooleanPropertyValue(
+			ddmFormEvaluatorFieldContextKey, "visible", true);
+	}
 
 	private Stream<DDMFormEvaluatorFieldContextKey>
 		_getDDMFormEvaluatorFieldContextKey(String name) {
@@ -832,10 +878,59 @@ public class DDMFormEvaluatorHelper {
 		return getFieldPropertyResponse.getValue();
 	}
 
-	private boolean _isNumericField(DDMFormField ddmFormField) {
-		String type = ddmFormField.getType();
+	private boolean _isIntegerNumericField(DDMFormField ddmFormField) {
+		if (Objects.equals(ddmFormField.getDataType(), "integer") &&
+			Objects.equals(ddmFormField.getType(), "numeric")) {
 
-		return type.equals("numeric");
+			return true;
+		}
+
+		return false;
+	}
+
+	private boolean _isNumericField(DDMFormField ddmFormField) {
+		return Objects.equals(ddmFormField.getType(), "numeric");
+	}
+
+	private boolean _isValueWithInputMaskInvalid(
+		DDMFormEvaluatorFieldContextKey ddmFormEvaluatorFieldContextKey) {
+
+		DDMFormFieldValue ddmFormFieldValue = getDDMFormFieldValue(
+			ddmFormEvaluatorFieldContextKey);
+
+		if (ddmFormFieldValue == null) {
+			return false;
+		}
+
+		Value value = ddmFormFieldValue.getValue();
+
+		if (value == null) {
+			return false;
+		}
+
+		String valueString = value.getString(
+			_ddmFormEvaluatorEvaluateRequest.getLocale());
+
+		if (Validator.isNull(valueString)) {
+			return false;
+		}
+
+		LocalizedValue localizedValue =
+			(LocalizedValue)_getFieldPropertyResponseValue(
+				ddmFormEvaluatorFieldContextKey, "inputMaskFormat");
+
+		if (localizedValue == null) {
+			return false;
+		}
+
+		String inputMaskFormat = localizedValue.getString(
+			_ddmFormEvaluatorEvaluateRequest.getLocale());
+
+		if (valueString.length() < StringUtil.count(inputMaskFormat, "9")) {
+			return true;
+		}
+
+		return false;
 	}
 
 	private void _localizeDDMFormFieldValue(

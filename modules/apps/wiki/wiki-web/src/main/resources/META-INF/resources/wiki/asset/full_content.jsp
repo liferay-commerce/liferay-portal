@@ -24,7 +24,7 @@ PortletURL viewPageURL = PortletURLBuilder.create(
 ).setActionName(
 	"/wiki/view"
 ).setParameter(
-	"nodeId", String.valueOf(wikiPage.getNodeId())
+	"nodeId", wikiPage.getNodeId()
 ).setPortletMode(
 	PortletMode.VIEW
 ).setWindowState(

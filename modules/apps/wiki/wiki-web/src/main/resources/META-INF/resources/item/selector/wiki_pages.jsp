@@ -67,7 +67,7 @@ String searchURL = HttpUtil.removeParameter(
 	PortletURLBuilder.create(
 		PortletURLUtil.clone(currentURLObj, liferayPortletResponse)
 	).setParameter(
-		"resetCur", Boolean.TRUE.toString()
+		"resetCur", true
 	).buildString(),
 	liferayPortletResponse.getNamespace() + "keywords");
 %>

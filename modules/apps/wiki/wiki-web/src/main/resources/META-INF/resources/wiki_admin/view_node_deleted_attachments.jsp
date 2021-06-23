@@ -28,7 +28,7 @@ PortletURL portletURL = PortletURLBuilder.createRenderURL(
 ).setRedirect(
 	currentURL
 ).setParameter(
-	"nodeId", String.valueOf(node.getNodeId())
+	"nodeId", node.getNodeId()
 ).build();
 
 PortalUtil.addPortletBreadcrumbEntry(request, node.getName(), portletURL.toString());
@@ -77,7 +77,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "removed-attachments"));
 	).setParameter(
 		"nodeId", node.getNodeId()
 	).setParameter(
-		"viewTrashAttachments", Boolean.TRUE.toString()
+		"viewTrashAttachments", true
 	).build();
 
 	boolean paginate = true;

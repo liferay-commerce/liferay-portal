@@ -1180,25 +1180,25 @@ public class BatchPlannerMappingPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (batchPlannerMapping.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				batchPlannerMapping.setCreateDate(now);
+				batchPlannerMapping.setCreateDate(date);
 			}
 			else {
 				batchPlannerMapping.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!batchPlannerMappingModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				batchPlannerMapping.setModifiedDate(now);
+				batchPlannerMapping.setModifiedDate(date);
 			}
 			else {
 				batchPlannerMapping.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

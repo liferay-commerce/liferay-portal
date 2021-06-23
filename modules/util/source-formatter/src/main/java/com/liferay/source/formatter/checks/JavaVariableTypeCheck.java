@@ -98,6 +98,18 @@ public class JavaVariableTypeCheck extends BaseJavaTermCheck {
 			}
 		}
 		else if (!_containsNonaccessModifier(javaVariable, "volatile")) {
+			if (isAttributeValue(_CHECK_VOLATILE_FIELDS_KEY, absolutePath) &&
+				_isVolatileField(javaClass, javaVariable)) {
+
+				String javaVariableContent = javaVariable.getContent();
+
+				String newJavaVariableContent = StringUtil.replaceFirst(
+					javaVariableContent, fieldType, "volatile " + fieldType);
+
+				return StringUtil.replace(
+					classContent, javaVariableContent, newJavaVariableContent);
+			}
+
 			classContent = _formatFinalableFieldType(
 				classContent, javaClass, javaVariable, fieldType);
 		}
@@ -346,6 +358,29 @@ public class JavaVariableTypeCheck extends BaseJavaTermCheck {
 
 		return false;
 	}
+
+	private boolean _isVolatileField(
+		JavaClass javaClass, JavaVariable javaVariable) {
+
+		for (JavaTerm childJavaTerm : javaClass.getChildJavaTerms()) {
+			if (!childJavaTerm.isJavaMethod() ||
+				!childJavaTerm.hasAnnotation("Modified")) {
+
+				continue;
+			}
+
+			String methodContent = childJavaTerm.getContent();
+
+			if (methodContent.contains("\t" + javaVariable.getName() + " =")) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private static final String _CHECK_VOLATILE_FIELDS_KEY =
+		"checkVolatileFields";
 
 	private static final String _IMMUTABLE_FIELD_TYPES_KEY =
 		"immutableFieldTypes";

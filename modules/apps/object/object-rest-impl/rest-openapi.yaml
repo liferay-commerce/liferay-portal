@@ -111,7 +111,7 @@ paths:
                                 $ref: "#/components/schemas/ObjectEntry"
                     description:
                         ""
-            tags: [ "ObjectEntry" ]
+            tags: ["ObjectEntry"]
     "/{objectEntryId}":
         delete:
             operationId: deleteObjectEntry
@@ -125,8 +125,8 @@ paths:
             responses:
                 204:
                     content:
-                        application/json: { }
-                        application/xml: { }
+                        application/json: {}
+                        application/xml: {}
                     description:
                         ""
             tags: ["ObjectEntry"]

@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.Validator;
 
+import javax.portlet.ActionResponse;
 import javax.portlet.MimeResponse;
 import javax.portlet.MutableRenderParameters;
 import javax.portlet.PortletMode;
@@ -29,12 +30,19 @@ import javax.portlet.PortletSecurityException;
 import javax.portlet.RenderURL;
 import javax.portlet.WindowState;
 import javax.portlet.WindowStateException;
+import javax.portlet.annotations.PortletSerializable;
 
 /**
  * @author Hugo Huijser
  * @author Neil Griffin
  */
 public class RenderURLBuilder {
+
+	public static RenderURLStep createRedirectURL(
+		ActionResponse actionResponse, MimeResponse.Copy copy) {
+
+		return new RenderURLStep(actionResponse.createRedirectURL(copy));
+	}
 
 	public static RenderURLStep createRenderURL(
 		LiferayPortletResponse liferayPortletResponse) {
@@ -79,15 +87,18 @@ public class RenderURLBuilder {
 	}
 
 	public static class RenderURLStep
-		implements AfterBackURLStep, AfterCMDStep, AfterKeywordsStep,
+		implements AfterBackURLStep, AfterBeanParameterStep, AfterCMDStep,
+				   AfterFragmentIdentifierStep, AfterKeywordsStep,
 				   AfterMVCPathStep, AfterMVCRenderCommandNameStep,
 				   AfterNavigationStep, AfterParameterStep,
-				   AfterPortletModeStep, AfterRedirectStep, AfterSecureStep,
-				   AfterTabs1Step, AfterTabs2Step, AfterWindowStateStep,
-				   BackURLStep, BuildStep, CMDStep, KeywordsStep, MVCPathStep,
+				   AfterPortletModeStep, AfterPortletResourceStep,
+				   AfterRedirectStep, AfterSecureStep, AfterTabs1Step,
+				   AfterTabs2Step, AfterWindowStateStep, BackURLStep,
+				   BeanParameterStep, BuildStep, CMDStep,
+				   FragmentIdentifierStep, KeywordsStep, MVCPathStep,
 				   MVCRenderCommandNameStep, NavigationStep, ParameterStep,
-				   PortletModeStep, RedirectStep, SecureStep, Tabs1Step,
-				   Tabs2Step, WindowStateStep {
+				   PortletModeStep, PortletResourceStep, RedirectStep,
+				   SecureStep, Tabs1Step, Tabs2Step, WindowStateStep {
 
 		public RenderURLStep(RenderURL renderURL) {
 			_renderURL = renderURL;
@@ -104,7 +115,7 @@ public class RenderURLBuilder {
 		}
 
 		@Override
-		public AfterParameterStep removeRenderParameter(String name) {
+		public AfterParameterStep removeParameter(String name) {
 			MutableRenderParameters mutableRenderParameters =
 				_renderURL.getRenderParameters();
 
@@ -115,7 +126,7 @@ public class RenderURLBuilder {
 
 		@Override
 		public AfterBackURLStep setBackURL(String value) {
-			_setRenderParameter("backURL", value, false);
+			_setParameter("backURL", value, false);
 
 			return this;
 		}
@@ -124,14 +135,23 @@ public class RenderURLBuilder {
 		public AfterBackURLStep setBackURL(
 			UnsafeSupplier<Object, Exception> valueUnsafeSupplier) {
 
-			_setRenderParameter("backURL", valueUnsafeSupplier, false);
+			_setParameter("backURL", valueUnsafeSupplier, false);
+
+			return this;
+		}
+
+		@Override
+		public AfterBeanParameterStep setBeanParameter(
+			PortletSerializable portletSerializable) {
+
+			_renderURL.setBeanParameter(portletSerializable);
 
 			return this;
 		}
 
 		@Override
 		public AfterCMDStep setCMD(String value) {
-			_setRenderParameter(Constants.CMD, value, false);
+			_setParameter(Constants.CMD, value, false);
 
 			return this;
 		}
@@ -140,14 +160,23 @@ public class RenderURLBuilder {
 		public AfterCMDStep setCMD(
 			UnsafeSupplier<Object, Exception> valueUnsafeSupplier) {
 
-			_setRenderParameter(Constants.CMD, valueUnsafeSupplier, false);
+			_setParameter(Constants.CMD, valueUnsafeSupplier, false);
+
+			return this;
+		}
+
+		@Override
+		public AfterFragmentIdentifierStep setFragmentIdentifier(
+			String fragment) {
+
+			_renderURL.setFragmentIdentifier(fragment);
 
 			return this;
 		}
 
 		@Override
 		public AfterKeywordsStep setKeywords(String value) {
-			_setRenderParameter("keywords", value, false);
+			_setParameter("keywords", value, false);
 
 			return this;
 		}
@@ -156,14 +185,14 @@ public class RenderURLBuilder {
 		public AfterKeywordsStep setKeywords(
 			UnsafeSupplier<Object, Exception> valueUnsafeSupplier) {
 
-			_setRenderParameter("keywords", valueUnsafeSupplier, false);
+			_setParameter("keywords", valueUnsafeSupplier, false);
 
 			return this;
 		}
 
 		@Override
 		public AfterMVCPathStep setMVCPath(String value) {
-			_setRenderParameter("mvcPath", value, false);
+			_setParameter("mvcPath", value, false);
 
 			return this;
 		}
@@ -172,7 +201,7 @@ public class RenderURLBuilder {
 		public AfterMVCPathStep setMVCPath(
 			UnsafeSupplier<Object, Exception> valueUnsafeSupplier) {
 
-			_setRenderParameter("mvcPath", valueUnsafeSupplier, false);
+			_setParameter("mvcPath", valueUnsafeSupplier, false);
 
 			return this;
 		}
@@ -181,7 +210,7 @@ public class RenderURLBuilder {
 		public AfterMVCRenderCommandNameStep setMVCRenderCommandName(
 			String value) {
 
-			_setRenderParameter("mvcRenderCommandName", value, false);
+			_setParameter("mvcRenderCommandName", value, false);
 
 			return this;
 		}
@@ -191,7 +220,7 @@ public class RenderURLBuilder {
 			String value, boolean allowNullValue) {
 
 			if (allowNullValue || Validator.isNotNull(value)) {
-				_setRenderParameter("mvcRenderCommandName", value, false);
+				_setParameter("mvcRenderCommandName", value, false);
 			}
 
 			return this;
@@ -201,15 +230,14 @@ public class RenderURLBuilder {
 		public AfterMVCRenderCommandNameStep setMVCRenderCommandName(
 			UnsafeSupplier<Object, Exception> valueUnsafeSupplier) {
 
-			_setRenderParameter(
-				"mvcRenderCommandName", valueUnsafeSupplier, false);
+			_setParameter("mvcRenderCommandName", valueUnsafeSupplier, false);
 
 			return this;
 		}
 
 		@Override
 		public AfterNavigationStep setNavigation(String value) {
-			_setRenderParameter("navigation", value, false);
+			_setParameter("navigation", value, false);
 
 			return this;
 		}
@@ -218,7 +246,72 @@ public class RenderURLBuilder {
 		public AfterNavigationStep setNavigation(
 			UnsafeSupplier<Object, Exception> valueUnsafeSupplier) {
 
-			_setRenderParameter("navigation", valueUnsafeSupplier, false);
+			_setParameter("navigation", valueUnsafeSupplier, false);
+
+			return this;
+		}
+
+		@Override
+		public AfterParameterStep setParameter(String key, Object value) {
+			_setParameter(key, String.valueOf(value), true);
+
+			return this;
+		}
+
+		@Override
+		public AfterParameterStep setParameter(
+			String name, Object value, boolean allowNullValue) {
+
+			setParameter(name, String.valueOf(value), allowNullValue);
+
+			return this;
+		}
+
+		@Override
+		public AfterParameterStep setParameter(String key, String value) {
+			_setParameter(key, value, true);
+
+			return this;
+		}
+
+		@Override
+		public AfterParameterStep setParameter(String key, String... values) {
+			MutableRenderParameters mutableRenderParameters =
+				_renderURL.getRenderParameters();
+
+			mutableRenderParameters.setValues(key, values);
+
+			return this;
+		}
+
+		@Override
+		public AfterParameterStep setParameter(
+			String name, String value, boolean allowNullValue) {
+
+			if (allowNullValue || Validator.isNotNull(value)) {
+				_setParameter(name, value, true);
+			}
+
+			return this;
+		}
+
+		@Override
+		public AfterParameterStep setParameter(
+			String key, UnsafeSupplier<Object, Exception> valueUnsafeSupplier) {
+
+			_setParameter(key, valueUnsafeSupplier, true);
+
+			return this;
+		}
+
+		@Override
+		public AfterParameterStep setParameters(
+			PortletParameters portletParameters) {
+
+			MutableRenderParameters mutableRenderParameters =
+				_renderURL.getRenderParameters();
+
+			mutableRenderParameters.set(portletParameters);
 
 			return this;
 		}
@@ -236,8 +329,24 @@ public class RenderURLBuilder {
 		}
 
 		@Override
+		public AfterPortletResourceStep setPortletResource(String value) {
+			_setParameter("portletResource", value, false);
+
+			return this;
+		}
+
+		@Override
+		public AfterPortletResourceStep setPortletResource(
+			UnsafeSupplier<Object, Exception> valueUnsafeSupplier) {
+
+			_setParameter("portletResource", valueUnsafeSupplier, false);
+
+			return this;
+		}
+
+		@Override
 		public AfterRedirectStep setRedirect(String value) {
-			_setRenderParameter("redirect", value, false);
+			_setParameter("redirect", value, false);
 
 			return this;
 		}
@@ -246,74 +355,7 @@ public class RenderURLBuilder {
 		public AfterRedirectStep setRedirect(
 			UnsafeSupplier<Object, Exception> valueUnsafeSupplier) {
 
-			_setRenderParameter("redirect", valueUnsafeSupplier, false);
-
-			return this;
-		}
-
-		@Override
-		public AfterParameterStep setRenderParameter(String key, Object value) {
-			_setRenderParameter(key, String.valueOf(value), true);
-
-			return this;
-		}
-
-		@Override
-		public AfterParameterStep setRenderParameter(
-			String name, Object value, boolean allowNullValue) {
-
-			setRenderParameter(name, String.valueOf(value), allowNullValue);
-
-			return this;
-		}
-
-		@Override
-		public AfterParameterStep setRenderParameter(String key, String value) {
-			_setRenderParameter(key, value, true);
-
-			return this;
-		}
-
-		@Override
-		public AfterParameterStep setRenderParameter(
-			String key, String... values) {
-
-			MutableRenderParameters mutableRenderParameters =
-				_renderURL.getRenderParameters();
-
-			mutableRenderParameters.setValues(key, values);
-
-			return this;
-		}
-
-		@Override
-		public AfterParameterStep setRenderParameter(
-			String name, String value, boolean allowNullValue) {
-
-			if (allowNullValue || Validator.isNotNull(value)) {
-				_setRenderParameter(name, value, true);
-			}
-
-			return this;
-		}
-
-		@Override
-		public AfterParameterStep setRenderParameter(
-			String key, UnsafeSupplier<Object, Exception> valueUnsafeSupplier) {
-
-			_setRenderParameter(key, valueUnsafeSupplier, true);
-
-			return this;
-		}
-
-		@Override
-		public AfterParameterStep setRenderParameters(
-			PortletParameters portletParameters) {
-
-			MutableRenderParameters mutableRenderParameters =
-				_renderURL.getRenderParameters();
-
-			mutableRenderParameters.set(portletParameters);
+			_setParameter("redirect", valueUnsafeSupplier, false);
 
 			return this;
 		}
@@ -332,7 +374,7 @@ public class RenderURLBuilder {
 
 		@Override
 		public AfterTabs1Step setTabs1(String value) {
-			_setRenderParameter("tabs1", value, false);
+			_setParameter("tabs1", value, false);
 
 			return this;
 		}
@@ -341,14 +383,14 @@ public class RenderURLBuilder {
 		public AfterTabs1Step setTabs1(
 			UnsafeSupplier<Object, Exception> valueUnsafeSupplier) {
 
-			_setRenderParameter("tabs1", valueUnsafeSupplier, false);
+			_setParameter("tabs1", valueUnsafeSupplier, false);
 
 			return this;
 		}
 
 		@Override
 		public AfterTabs2Step setTabs2(String value) {
-			_setRenderParameter("tabs2", value, false);
+			_setParameter("tabs2", value, false);
 
 			return this;
 		}
@@ -357,7 +399,7 @@ public class RenderURLBuilder {
 		public AfterTabs2Step setTabs2(
 			UnsafeSupplier<Object, Exception> valueUnsafeSupplier) {
 
-			_setRenderParameter("tabs2", valueUnsafeSupplier, false);
+			_setParameter("tabs2", valueUnsafeSupplier, false);
 
 			return this;
 		}
@@ -374,7 +416,7 @@ public class RenderURLBuilder {
 			return this;
 		}
 
-		private void _setRenderParameter(
+		private void _setParameter(
 			String key, String value, boolean validateKey) {
 
 			if (validateKey) {
@@ -387,7 +429,7 @@ public class RenderURLBuilder {
 			mutableRenderParameters.setValue(key, value);
 		}
 
-		private void _setRenderParameter(
+		private void _setParameter(
 			String key, UnsafeSupplier<Object, Exception> valueUnsafeSupplier,
 			boolean validateKey) {
 
@@ -440,8 +482,10 @@ public class RenderURLBuilder {
 			{"keywords", "setKeywords"}, {"mvcPath", "setMVCPath"},
 			{"mvcRenderCommandName", "setMVCRenderCommandName"},
 			{"navigation", "setNavigation"}, {"p_p_mode", "setPortletMode"},
-			{"p_p_state", "setWindowState"}, {"redirect", "setRedirect"},
-			{"tabs1", "setTabs1"}, {"tabs2", "setTabs2"}
+			{"p_p_state", "setWindowState"},
+			{"portletResource", "setPortletResource"},
+			{"redirect", "setRedirect"}, {"tabs1", "setTabs1"},
+			{"tabs2", "setTabs2"}
 		};
 
 		private final RenderURL _renderURL;
@@ -449,37 +493,56 @@ public class RenderURLBuilder {
 	}
 
 	public interface AfterBackURLStep
-		extends BuildStep, KeywordsStep, NavigationStep, ParameterStep,
-				PortletModeStep, SecureStep, Tabs1Step, Tabs2Step,
+		extends BeanParameterStep, BuildStep, FragmentIdentifierStep,
+				KeywordsStep, NavigationStep, ParameterStep, PortletModeStep,
+				PortletResourceStep, SecureStep, Tabs1Step, Tabs2Step,
 				WindowStateStep {
+	}
+
+	public interface AfterBeanParameterStep
+		extends BuildStep, FragmentIdentifierStep, ParameterStep,
+				PortletModeStep, SecureStep, WindowStateStep {
 	}
 
 	public interface AfterCMDStep
-		extends BackURLStep, BuildStep, KeywordsStep, NavigationStep,
-				ParameterStep, PortletModeStep, RedirectStep, SecureStep,
-				Tabs1Step, Tabs2Step, WindowStateStep {
-	}
-
-	public interface AfterKeywordsStep
-		extends BuildStep, NavigationStep, ParameterStep, PortletModeStep,
-				SecureStep, Tabs1Step, Tabs2Step, WindowStateStep {
-	}
-
-	public interface AfterMVCPathStep
-		extends BackURLStep, BuildStep, CMDStep, KeywordsStep,
-				MVCRenderCommandNameStep, NavigationStep, ParameterStep,
-				PortletModeStep, RedirectStep, SecureStep, Tabs1Step, Tabs2Step,
+		extends BackURLStep, BeanParameterStep, BuildStep,
+				FragmentIdentifierStep, KeywordsStep, NavigationStep,
+				ParameterStep, PortletModeStep, PortletResourceStep,
+				RedirectStep, SecureStep, Tabs1Step, Tabs2Step,
 				WindowStateStep {
 	}
 
+	public interface AfterFragmentIdentifierStep
+		extends BuildStep, ParameterStep, PortletModeStep, SecureStep,
+				WindowStateStep {
+	}
+
+	public interface AfterKeywordsStep
+		extends BeanParameterStep, BuildStep, FragmentIdentifierStep,
+				NavigationStep, ParameterStep, PortletModeStep,
+				PortletResourceStep, SecureStep, Tabs1Step, Tabs2Step,
+				WindowStateStep {
+	}
+
+	public interface AfterMVCPathStep
+		extends BackURLStep, BeanParameterStep, BuildStep, CMDStep,
+				FragmentIdentifierStep, KeywordsStep, MVCRenderCommandNameStep,
+				NavigationStep, ParameterStep, PortletModeStep,
+				PortletResourceStep, RedirectStep, SecureStep, Tabs1Step,
+				Tabs2Step, WindowStateStep {
+	}
+
 	public interface AfterMVCRenderCommandNameStep
-		extends BackURLStep, BuildStep, CMDStep, KeywordsStep, NavigationStep,
-				ParameterStep, PortletModeStep, RedirectStep, SecureStep,
-				Tabs1Step, Tabs2Step, WindowStateStep {
+		extends BackURLStep, BeanParameterStep, BuildStep, CMDStep,
+				FragmentIdentifierStep, KeywordsStep, NavigationStep,
+				ParameterStep, PortletModeStep, PortletResourceStep,
+				RedirectStep, SecureStep, Tabs1Step, Tabs2Step,
+				WindowStateStep {
 	}
 
 	public interface AfterNavigationStep
-		extends BuildStep, ParameterStep, PortletModeStep, SecureStep,
+		extends BeanParameterStep, BuildStep, FragmentIdentifierStep,
+				ParameterStep, PortletModeStep, PortletResourceStep, SecureStep,
 				Tabs1Step, Tabs2Step, WindowStateStep {
 	}
 
@@ -492,23 +555,31 @@ public class RenderURLBuilder {
 		extends BuildStep, SecureStep, WindowStateStep {
 	}
 
-	public interface AfterRedirectStep
-		extends BackURLStep, BuildStep, KeywordsStep, NavigationStep,
+	public interface AfterPortletResourceStep
+		extends BeanParameterStep, BuildStep, FragmentIdentifierStep,
 				ParameterStep, PortletModeStep, SecureStep, Tabs1Step,
 				Tabs2Step, WindowStateStep {
+	}
+
+	public interface AfterRedirectStep
+		extends BackURLStep, BeanParameterStep, BuildStep,
+				FragmentIdentifierStep, KeywordsStep, NavigationStep,
+				ParameterStep, PortletModeStep, PortletResourceStep, SecureStep,
+				Tabs1Step, Tabs2Step, WindowStateStep {
 	}
 
 	public interface AfterSecureStep extends BuildStep, WindowStateStep {
 	}
 
 	public interface AfterTabs1Step
-		extends BuildStep, ParameterStep, PortletModeStep, SecureStep,
-				Tabs2Step, WindowStateStep {
+		extends BeanParameterStep, BuildStep, FragmentIdentifierStep,
+				ParameterStep, PortletModeStep, SecureStep, Tabs2Step,
+				WindowStateStep {
 	}
 
 	public interface AfterTabs2Step
-		extends BuildStep, ParameterStep, PortletModeStep, SecureStep,
-				WindowStateStep {
+		extends BeanParameterStep, BuildStep, FragmentIdentifierStep,
+				ParameterStep, PortletModeStep, SecureStep, WindowStateStep {
 	}
 
 	public interface AfterWindowStateStep extends BuildStep {
@@ -520,6 +591,13 @@ public class RenderURLBuilder {
 
 		public AfterBackURLStep setBackURL(
 			UnsafeSupplier<Object, Exception> valueUnsafeSupplier);
+
+	}
+
+	public interface BeanParameterStep {
+
+		public AfterBeanParameterStep setBeanParameter(
+			PortletSerializable portletSerializable);
 
 	}
 
@@ -537,6 +615,13 @@ public class RenderURLBuilder {
 
 		public AfterCMDStep setCMD(
 			UnsafeSupplier<Object, Exception> valueUnsafeSupplier);
+
+	}
+
+	public interface FragmentIdentifierStep {
+
+		public AfterFragmentIdentifierStep setFragmentIdentifier(
+			String fragment);
 
 	}
 
@@ -582,25 +667,24 @@ public class RenderURLBuilder {
 
 	public interface ParameterStep {
 
-		public AfterParameterStep removeRenderParameter(String name);
+		public AfterParameterStep removeParameter(String name);
 
-		public AfterParameterStep setRenderParameter(String key, Object value);
+		public AfterParameterStep setParameter(String key, Object value);
 
-		public AfterParameterStep setRenderParameter(
+		public AfterParameterStep setParameter(
 			String key, Object value, boolean allowNullValue);
 
-		public AfterParameterStep setRenderParameter(String key, String value);
+		public AfterParameterStep setParameter(String key, String value);
 
-		public AfterParameterStep setRenderParameter(
-			String key, String... values);
+		public AfterParameterStep setParameter(String key, String... values);
 
-		public AfterParameterStep setRenderParameter(
+		public AfterParameterStep setParameter(
 			String key, String value, boolean allowNullValue);
 
-		public AfterParameterStep setRenderParameter(
+		public AfterParameterStep setParameter(
 			String key, UnsafeSupplier<Object, Exception> valueUnsafeSupplier);
 
-		public AfterParameterStep setRenderParameters(
+		public AfterParameterStep setParameters(
 			PortletParameters portletParameters);
 
 	}
@@ -608,6 +692,15 @@ public class RenderURLBuilder {
 	public interface PortletModeStep {
 
 		public AfterPortletModeStep setPortletMode(PortletMode portletMode);
+
+	}
+
+	public interface PortletResourceStep {
+
+		public AfterPortletResourceStep setPortletResource(String value);
+
+		public AfterPortletResourceStep setPortletResource(
+			UnsafeSupplier<Object, Exception> valueUnsafeSupplier);
 
 	}
 

@@ -386,13 +386,6 @@ public class DDMFormValuesToFieldsConverterTest extends BaseDDMTestCase {
 
 	@Test
 	public void testConversionWithTransientField1() throws Exception {
-		DDMForm ddmForm = createDDMForm();
-
-		addDDMFormFields(
-			ddmForm, createTextDDMFormField("Name", "", true, true, false));
-
-		DDMStructure ddmStructure = createStructure("Test Structure", ddmForm);
-
 		DDMForm templateDDMForm = createDDMForm();
 
 		DDMFormField paragraphDDMFormField = createParagraphDDMFormField(
@@ -402,6 +395,9 @@ public class DDMFormValuesToFieldsConverterTest extends BaseDDMTestCase {
 			createTextDDMFormField("Name", "", true, true, false));
 
 		addDDMFormFields(templateDDMForm, paragraphDDMFormField);
+
+		DDMStructure ddmStructure = createStructure(
+			"Test Structure", templateDDMForm);
 
 		DDMFormValues templateDDMFormValues = createDDMFormValues(
 			templateDDMForm, _availableLocales, LocaleUtil.US);
@@ -449,14 +445,6 @@ public class DDMFormValuesToFieldsConverterTest extends BaseDDMTestCase {
 
 	@Test
 	public void testConversionWithTransientField2() throws Exception {
-		DDMForm ddmForm = createDDMForm();
-
-		addDDMFormFields(
-			ddmForm, createTextDDMFormField("Name", "", true, false, false),
-			createTextDDMFormField("Phone", "", true, true, false));
-
-		DDMStructure ddmStructure = createStructure("Test Structure", ddmForm);
-
 		DDMForm templateDDMForm = createDDMForm();
 
 		DDMFormField separatorDDMFormField = createSeparatorDDMFormField(
@@ -468,6 +456,9 @@ public class DDMFormValuesToFieldsConverterTest extends BaseDDMTestCase {
 		addDDMFormFields(
 			templateDDMForm, separatorDDMFormField,
 			createTextDDMFormField("Phone", "", true, true, false));
+
+		DDMStructure ddmStructure = createStructure(
+			"Test Structure", templateDDMForm);
 
 		DDMFormValues templateDDMFormValues = createDDMFormValues(
 			templateDDMForm, _availableLocales, LocaleUtil.US);

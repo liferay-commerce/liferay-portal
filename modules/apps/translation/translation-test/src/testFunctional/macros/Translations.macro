@@ -121,6 +121,21 @@ definition {
 		}
 	}
 
+	macro openToTranslateEntry {
+		var classNameId = JSONClassname._getClassNameId(value = "com.liferay.journal.model.JournalArticle");
+
+		var urlTitle = StringUtil.replace("${webContentTitle}", " ", "-");
+		var urlTitle = StringUtil.lowerCase("${urlTitle}");
+
+		var resourcePrimKey = JSONWebcontentAPI._getResourcePrimKeyByURLTitle(
+			groupName = "${groupName}",
+			urlTitle = "${urlTitle}");
+
+		Navigator.openWithAppendToBaseURL(
+			baseURL = "${baseURL}",
+			urlAppend = "group/${siteURLKey}/~/control_panel/manage?p_p_id=com_liferay_translation_web_internal_portlet_TranslationPortlet&_com_liferay_translation_web_internal_portlet_TranslationPortlet_mvcRenderCommandName=%2Ftranslation%2Ftranslate&_com_liferay_translation_web_internal_portlet_TranslationPortlet_classNameId=${classNameId}&_com_liferay_translation_web_internal_portlet_TranslationPortlet_classPK=${resourcePrimKey}&_com_liferay_translation_web_internal_portlet_TranslationPortlet_sourceLanguageId=${sourceLanguageId}&_com_liferay_translation_web_internal_portlet_TranslationPortlet_targetLanguageId=${targetLanguageId}");
+	}
+
 	macro openTranslationAdmin {
 		Navigator.openWithAppendToBaseURL(
 			baseURL = "${baseURL}",
@@ -215,7 +230,20 @@ definition {
 	macro translateFile {
 		AntCommand(
 			locator1 = "build-test.xml",
-			value1 = "update-translation-file -Dtranslation.content.target.original=<![CDATA[${webContentContent}]]></target> -Dtranslation.content.target=<![CDATA[${contentTranslateion}]]></target> -Dtranslation.description.target.original=<![CDATA[${webContentDescription}]]></target> -Dtranslation.description.target=<![CDATA[${descriptionTranslateion}]]></target> -Dtranslation.file.encoding=${encoding} -Dtranslation.title.target.original=<![CDATA[${webContentTitle}]]></target> -Dtranslation.title.target=<![CDATA[${titleTranslation}]]></target> -Dtranslation.zip.file.name=${translationZipFileName} -Dtranslation.file.name=${translationFileName} -Dtranslation.file.rename=${translationFileRename}");
+			value1 = "update-translation-file -Dtranslation.content.target.original=<![CDATA[<p>${webContentContent}</p>]]></target> -Dtranslation.content.target=<![CDATA[<p>${contentTranslateion}</p>]]></target> -Dtranslation.description.target.original=<![CDATA[<p>${webContentDescription}</p>]]></target> -Dtranslation.description.target=<![CDATA[<p>${descriptionTranslateion}</p>]]></target> -Dtranslation.file.encoding=${encoding} -Dtranslation.title.target.original=<![CDATA[${webContentTitle}]]></target> -Dtranslation.title.target=<![CDATA[${titleTranslation}]]></target> -Dtranslation.zip.file.name=${translationZipFileName} -Dtranslation.file.name=${translationFileName} -Dtranslation.file.rename=${translationFileRename}");
+	}
+
+	macro translateSpecificFieldsWithGoogle {
+		for (var fieldName : list "${fieldNameList}") {
+			Click.clickNoMouseOver(
+				key_title = "Auto Translate ${fieldName} Field",
+				locator1 = "Button#ANY_TITLE");
+
+			AssertTextEquals(
+				key_fieldName = "${fieldName}",
+				locator1 = "Message#SUCCESS_SPECIFIC_FORM_FIELD_REQUIRED",
+				value1 = "Field Translated");
+		}
 	}
 
 	macro translateWithGoogle {
@@ -296,6 +324,22 @@ definition {
 					key_fieldValue = "${webContentNumeric}",
 					locator1 = "Translation#BASE_LANGUAGE_FIELD");
 			}
+		}
+	}
+
+	macro viewDisabledFieldTranslationButtons {
+		for (var fieldName : list "${fieldNameList}") {
+			AssertVisible(
+				key_title = "Auto Translate ${fieldName} Field",
+				locator1 = "Button#ANY_TITLE_DISABLED");
+		}
+	}
+
+	macro viewEnabledFieldTranslationButtons {
+		for (var fieldName : list "${fieldNameList}") {
+			AssertVisible(
+				key_title = "Auto Translate ${fieldName} Field",
+				locator1 = "Button#ANY_TITLE");
 		}
 	}
 

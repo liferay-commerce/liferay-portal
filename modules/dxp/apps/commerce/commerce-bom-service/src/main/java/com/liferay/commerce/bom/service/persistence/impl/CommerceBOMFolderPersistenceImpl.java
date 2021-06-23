@@ -2161,25 +2161,25 @@ public class CommerceBOMFolderPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commerceBOMFolder.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commerceBOMFolder.setCreateDate(now);
+				commerceBOMFolder.setCreateDate(date);
 			}
 			else {
 				commerceBOMFolder.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commerceBOMFolderModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commerceBOMFolder.setModifiedDate(now);
+				commerceBOMFolder.setModifiedDate(date);
 			}
 			else {
 				commerceBOMFolder.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

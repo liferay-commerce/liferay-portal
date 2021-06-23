@@ -1656,25 +1656,25 @@ public class CommerceOrderNotePersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commerceOrderNote.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commerceOrderNote.setCreateDate(now);
+				commerceOrderNote.setCreateDate(date);
 			}
 			else {
 				commerceOrderNote.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commerceOrderNoteModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commerceOrderNote.setModifiedDate(now);
+				commerceOrderNote.setModifiedDate(date);
 			}
 			else {
 				commerceOrderNote.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

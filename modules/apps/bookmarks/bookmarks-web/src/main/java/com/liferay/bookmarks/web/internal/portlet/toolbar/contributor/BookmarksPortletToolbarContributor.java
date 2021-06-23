@@ -103,16 +103,15 @@ public class BookmarksPortletToolbarContributor
 				"/bookmarks/edit_entry"
 			).setRedirect(
 				_portal.getCurrentURL(portletRequest)
-			).setParameter(
-				"folderId", folderId
-			).setParameter(
-				"portletResource",
+			).setPortletResource(
 				() -> {
 					PortletDisplay portletDisplay =
 						themeDisplay.getPortletDisplay();
 
 					return portletDisplay.getId();
 				}
+			).setParameter(
+				"folderId", folderId
 			).buildString());
 
 		menuItems.add(urlMenuItem);
@@ -149,16 +148,15 @@ public class BookmarksPortletToolbarContributor
 				"/bookmarks/edit_folder"
 			).setRedirect(
 				_portal.getCurrentURL(portletRequest)
-			).setParameter(
-				"parentFolderId", folderId
-			).setParameter(
-				"portletResource",
+			).setPortletResource(
 				() -> {
 					PortletDisplay portletDisplay =
 						themeDisplay.getPortletDisplay();
 
 					return portletDisplay.getId();
 				}
+			).setParameter(
+				"parentFolderId", folderId
 			).buildString());
 
 		menuItems.add(urlMenuItem);

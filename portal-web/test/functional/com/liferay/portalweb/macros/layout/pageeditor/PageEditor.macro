@@ -1,11 +1,9 @@
 definition {
 
 	macro addComment {
-		WaitForPageLoad();
+		PageEditor.assertFragmentSidebarLoaded();
 
 		PageEditor.gotoTab(tabName = "Comments");
-
-		Pause(locator1 = "3000");
 
 		if (IsElementNotPresent(key_fragmentName = "${fragmentName}", locator1 = "PageEditor#FRAGMENT_SIDEBAR_COMMENT_SECTION_NAME")) {
 			Click(
@@ -73,31 +71,80 @@ definition {
 
 		PageEditor.gotoTab(tabName = "Fragments and Widgets");
 
-		if ("${navTab}" == "Fragments") {
-			Navigator.gotoNavTab(navTab = "${navTab}");
+		if (!(isSet(displayStyle))) {
+			var displayStyle = "list";
+		}
 
+		if (IsElementNotPresent(key_displayStyle = "${displayStyle}", locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_DISPLAY_STYLE_BUTTON")) {
+			Click(
+				key_displayStyle = "",
+				locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_DISPLAY_STYLE_BUTTON");
+		}
+
+		AssertVisible(
+			key_displayStyle = "${displayStyle}",
+			locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_DISPLAY_STYLE_BUTTON");
+
+		Navigator.gotoNavTab(navTab = "${navTab}");
+
+		if (("${navTab}" == "Fragments") && ("${displayStyle}" == "card")) {
 			PageEditor.expandFragmentCollection(collectionName = "${collectionName}");
 
-			if (isSet(targetFragmentName)) {
-				if ("${height}" == "Short") {
-					DragAndDrop.javaScriptDragAndDropObjectBelowShortNestedObject(
-						key_collectionName = "${collectionName}",
-						key_fragmentName = "${fragmentName}",
-						key_targetFragmentName = "${targetFragmentName}",
-						locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_FRAGMENT",
-						locator2 = "PageEditor#ANY_NESTED_FRAGMENT_DROP_TARGET",
-						value1 = "");
-				}
-				else if ("${height}" == "Tall") {
-					DragAndDrop.javaScriptDragAndDropObjectBelowTallNestedObject(
-						key_collectionName = "${collectionName}",
-						key_fragmentName = "${fragmentName}",
-						key_targetFragmentName = "${targetFragmentName}",
-						locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_FRAGMENT",
-						locator2 = "PageEditor#ANY_NESTED_FRAGMENT_DROP_TARGET",
-						value1 = "");
-				}
+			if ((isSet(targetFragmentName)) && ("${height}" == "Short")) {
+				DragAndDrop.javaScriptDragAndDropObjectBelowShortNestedObject(
+					key_collectionName = "${collectionName}",
+					key_fragmentName = "${fragmentName}",
+					key_targetFragmentName = "${targetFragmentName}",
+					locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_FRAGMENT_CARD_ITEM",
+					locator2 = "PageEditor#ANY_NESTED_FRAGMENT_DROP_TARGET",
+					value1 = "");
 			}
+
+			if ((isSet(targetFragmentName)) && ("${height}" == "Tall")) {
+				DragAndDrop.javaScriptDragAndDropObjectBelowTallNestedObject(
+					key_collectionName = "${collectionName}",
+					key_fragmentName = "${fragmentName}",
+					key_targetFragmentName = "${targetFragmentName}",
+					locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_FRAGMENT_CARD_ITEM",
+					locator2 = "PageEditor#ANY_NESTED_FRAGMENT_DROP_TARGET",
+					value1 = "");
+			}
+
+			else {
+				DragAndDrop.javaScriptDragAndDropToObject(
+					key_collectionName = "${collectionName}",
+					key_columnNumber = "${columnNumber}",
+					key_fragmentName = "${fragmentName}",
+					key_position = "${position}",
+					locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_FRAGMENT_CARD_ITEM",
+					locator2 = "PageEditor#GRID_COLUMN",
+					value1 = "");
+			}
+		}
+
+		if (("${navTab}" == "Fragments") && ("${displayStyle}" == "list")) {
+			PageEditor.expandFragmentCollection(collectionName = "${collectionName}");
+
+			if ((isSet(targetFragmentName)) && ("${height}" == "Short")) {
+				DragAndDrop.javaScriptDragAndDropObjectBelowShortNestedObject(
+					key_collectionName = "${collectionName}",
+					key_fragmentName = "${fragmentName}",
+					key_targetFragmentName = "${targetFragmentName}",
+					locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_FRAGMENT",
+					locator2 = "PageEditor#ANY_NESTED_FRAGMENT_DROP_TARGET",
+					value1 = "");
+			}
+
+			if ((isSet(targetFragmentName)) && ("${height}" == "Tall")) {
+				DragAndDrop.javaScriptDragAndDropObjectBelowTallNestedObject(
+					key_collectionName = "${collectionName}",
+					key_fragmentName = "${fragmentName}",
+					key_targetFragmentName = "${targetFragmentName}",
+					locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_FRAGMENT",
+					locator2 = "PageEditor#ANY_NESTED_FRAGMENT_DROP_TARGET",
+					value1 = "");
+			}
+
 			else {
 				DragAndDrop.javaScriptDragAndDropToObject(
 					key_collectionName = "${collectionName}",
@@ -108,40 +155,65 @@ definition {
 					locator2 = "PageEditor#GRID_COLUMN",
 					value1 = "");
 			}
-
-			PageEditor.waitForAutoSave();
-
-			AssertElementPresent(
-				key_columnNumber = "${columnNumber}",
-				key_elementHeader = "//li[contains(@class,'topper__title') and contains(.,'${fragmentName}')]",
-				key_position = "${position}",
-				locator1 = "PageEditor#GRID_COLUMN_NESTED_ELEMENT");
 		}
-		else if ("${navTab}" == "Widgets") {
-			Navigator.gotoNavTab(navTab = "${navTab}");
 
+		if (("${navTab}" == "Widgets") && ("${displayStyle}" == "card")) {
 			Type.sendKeysApplicationSearch(
 				locator1 = "PageEditor#WIDGETS_APPLICATION_SEARCH_FIELD",
 				value1 = "${portletName}");
 
-			if (isSet(targetFragmentName)) {
-				if ("${height}" == "Short") {
-					DragAndDrop.javaScriptDragAndDropObjectBelowShortNestedObject(
-						key_portletName = "${portletName}",
-						key_targetFragmentName = "${targetFragmentName}",
-						locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_WIDGET",
-						locator2 = "PageEditor#ANY_NESTED_FRAGMENT_DROP_TARGET",
-						value1 = "${portletName}");
-				}
-				else if ("${height}" == "Tall") {
-					DragAndDrop.javaScriptDragAndDropObjectBelowTallNestedObject(
-						key_portletName = "${portletName}",
-						key_targetFragmentName = "${targetFragmentName}",
-						locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_WIDGET",
-						locator2 = "PageEditor#ANY_NESTED_FRAGMENT_DROP_TARGET",
-						value1 = "${portletName}");
-				}
+			if ((isSet(targetFragmentName)) && ("${height}" == "Short")) {
+				DragAndDrop.javaScriptDragAndDropObjectBelowShortNestedObject(
+					key_portletName = "${portletName}",
+					key_targetFragmentName = "${targetFragmentName}",
+					locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_WIDGET_CARD_ITEM",
+					locator2 = "PageEditor#ANY_NESTED_FRAGMENT_DROP_TARGET",
+					value1 = "${portletName}");
 			}
+
+			if ((isSet(targetFragmentName)) && ("${height}" == "Tall")) {
+				DragAndDrop.javaScriptDragAndDropObjectBelowTallNestedObject(
+					key_portletName = "${portletName}",
+					key_targetFragmentName = "${targetFragmentName}",
+					locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_WIDGET_CARD_ITEM",
+					locator2 = "PageEditor#ANY_NESTED_FRAGMENT_DROP_TARGET",
+					value1 = "${portletName}");
+			}
+
+			else {
+				DragAndDrop.javaScriptDragAndDropToObject(
+					key_columnNumber = "${columnNumber}",
+					key_portletName = "${portletName}",
+					key_position = "${position}",
+					locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_WIDGET_CARD_ITEM",
+					locator2 = "PageEditor#GRID_COLUMN",
+					value1 = "${portletName}");
+			}
+		}
+
+		if (("${navTab}" == "Widgets") && ("${displayStyle}" == "list")) {
+			Type.sendKeysApplicationSearch(
+				locator1 = "PageEditor#WIDGETS_APPLICATION_SEARCH_FIELD",
+				value1 = "${portletName}");
+
+			if ((isSet(targetFragmentName)) && ("${height}" == "Short")) {
+				DragAndDrop.javaScriptDragAndDropObjectBelowShortNestedObject(
+					key_portletName = "${portletName}",
+					key_targetFragmentName = "${targetFragmentName}",
+					locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_WIDGET",
+					locator2 = "PageEditor#ANY_NESTED_FRAGMENT_DROP_TARGET",
+					value1 = "${portletName}");
+			}
+
+			if ((isSet(targetFragmentName)) && ("${height}" == "Tall")) {
+				DragAndDrop.javaScriptDragAndDropObjectBelowTallNestedObject(
+					key_portletName = "${portletName}",
+					key_targetFragmentName = "${targetFragmentName}",
+					locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_WIDGET",
+					locator2 = "PageEditor#ANY_NESTED_FRAGMENT_DROP_TARGET",
+					value1 = "${portletName}");
+			}
+
 			else {
 				DragAndDrop.javaScriptDragAndDropToObject(
 					key_columnNumber = "${columnNumber}",
@@ -151,11 +223,19 @@ definition {
 					locator2 = "PageEditor#GRID_COLUMN",
 					value1 = "${portletName}");
 			}
+		}
 
-			Pause(locator1 = "5000");
+		PageEditor.waitForAutoSave();
 
-			PageEditor.waitForAutoSave();
+		if ("${navTab}" == "Fragments") {
+			AssertElementPresent(
+				key_columnNumber = "${columnNumber}",
+				key_elementHeader = "//li[contains(@class,'topper__title') and contains(.,'${fragmentName}')]",
+				key_position = "${position}",
+				locator1 = "PageEditor#GRID_COLUMN_NESTED_ELEMENT");
+		}
 
+		if ("${navTab}" == "Widgets") {
 			AssertElementPresent(
 				key_columnNumber = "${columnNumber}",
 				key_elementHeader = "//li[contains(@class,'topper__title') and contains(.,'${portletName}')]",
@@ -177,9 +257,36 @@ definition {
 
 		PageEditor.gotoTab(tabName = "Fragments and Widgets");
 
-		if ("${navTab}" == "Fragments") {
-			Navigator.gotoNavTab(navTab = "${navTab}");
+		if (!(isSet(displayStyle))) {
+			var displayStyle = "list";
+		}
 
+		if (IsElementNotPresent(key_displayStyle = "${displayStyle}", locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_DISPLAY_STYLE_BUTTON")) {
+			Click(
+				key_displayStyle = "",
+				locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_DISPLAY_STYLE_BUTTON");
+		}
+
+		AssertVisible(
+			key_displayStyle = "${displayStyle}",
+			locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_DISPLAY_STYLE_BUTTON");
+
+		Navigator.gotoNavTab(navTab = "${navTab}");
+
+		if (("${navTab}" == "Fragments") && ("${displayStyle}" == "card")) {
+			PageEditor.expandFragmentCollection(collectionName = "${collectionName}");
+
+			DragAndDrop.javaScriptDragAndDropToObject(
+				key_collectionName = "${collectionName}",
+				key_elementType = "Container",
+				key_fragmentName = "${fragmentName}",
+				key_position = "${position}",
+				locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_FRAGMENT_CARD_ITEM",
+				locator2 = "PageEditor#CONTAINER_CONTAINER",
+				value1 = "");
+		}
+
+		if (("${navTab}" == "Fragments") && ("${displayStyle}" == "list")) {
 			PageEditor.expandFragmentCollection(collectionName = "${collectionName}");
 
 			DragAndDrop.javaScriptDragAndDropToObject(
@@ -190,18 +297,23 @@ definition {
 				locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_FRAGMENT",
 				locator2 = "PageEditor#CONTAINER_CONTAINER",
 				value1 = "");
-
-			PageEditor.waitForAutoSave();
-
-			AssertElementPresent(
-				key_elementHeader = "//li[contains(@class,'topper__title') and contains(.,'${fragmentName}')]",
-				key_elementType = "Container",
-				key_position = "${position}",
-				locator1 = "PageEditor#CONTAINER_CONTAINER_NESTED_ELEMENT");
 		}
-		else if ("${navTab}" == "Widgets") {
-			Navigator.gotoNavTab(navTab = "${navTab}");
 
+		if (("${navTab}" == "Widgets") && ("${displayStyle}" == "card")) {
+			Type.sendKeysApplicationSearch(
+				locator1 = "PageEditor#WIDGETS_APPLICATION_SEARCH_FIELD",
+				value1 = "${portletName}");
+
+			DragAndDrop.javaScriptDragAndDropToObject(
+				key_elementType = "Container",
+				key_portletName = "${portletName}",
+				key_position = "${position}",
+				locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_WIDGET_CARD_ITEM",
+				locator2 = "PageEditor#CONTAINER_CONTAINER",
+				value1 = "${portletName}");
+		}
+
+		if (("${navTab}" == "Widgets") && ("${displayStyle}" == "list")) {
 			Type.sendKeysApplicationSearch(
 				locator1 = "PageEditor#WIDGETS_APPLICATION_SEARCH_FIELD",
 				value1 = "${portletName}");
@@ -213,11 +325,19 @@ definition {
 				locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_WIDGET",
 				locator2 = "PageEditor#CONTAINER_CONTAINER",
 				value1 = "${portletName}");
+		}
 
-			Pause(locator1 = "5000");
+		PageEditor.waitForAutoSave();
 
-			PageEditor.waitForAutoSave();
+		if ("${navTab}" == "Fragments") {
+			AssertElementPresent(
+				key_elementHeader = "//li[contains(@class,'topper__title') and contains(.,'${fragmentName}')]",
+				key_elementType = "Container",
+				key_position = "${position}",
+				locator1 = "PageEditor#CONTAINER_CONTAINER_NESTED_ELEMENT");
+		}
 
+		if ("${navTab}" == "Widgets") {
 			AssertElementPresent(
 				key_elementHeader = "//li[contains(@class,'topper__title') and contains(.,'${portletName}')]",
 				key_elementType = "Container",
@@ -235,9 +355,34 @@ definition {
 	macro addElementToDropdownPanel {
 		PageEditor.gotoTab(tabName = "Fragments and Widgets");
 
-		if ("${navTab}" == "Fragments") {
-			Navigator.gotoNavTab(navTab = "${navTab}");
+		if (!(isSet(displayStyle))) {
+			var displayStyle = "list";
+		}
 
+		if (IsElementNotPresent(key_displayStyle = "${displayStyle}", locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_DISPLAY_STYLE_BUTTON")) {
+			Click(
+				key_displayStyle = "",
+				locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_DISPLAY_STYLE_BUTTON");
+		}
+
+		AssertVisible(
+			key_displayStyle = "${displayStyle}",
+			locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_DISPLAY_STYLE_BUTTON");
+
+		Navigator.gotoNavTab(navTab = "${navTab}");
+
+		if (("${navTab}" == "Fragments") && ("${displayStyle}" == "card")) {
+			PageEditor.expandFragmentCollection(collectionName = "${collectionName}");
+
+			DragAndDrop.javaScriptDragAndDropToObject(
+				key_collectionName = "${collectionName}",
+				key_element = "//div[contains(@class,'page-editor__root page-editor__topper')]",
+				key_fragmentName = "${fragmentName}",
+				locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_FRAGMENT_CARD_ITEM",
+				locator2 = "Fragment#DROPDOWN_FRAGMENT_MENU_CONTENT");
+		}
+
+		if (("${navTab}" == "Fragments") && ("${displayStyle}" == "list")) {
 			PageEditor.expandFragmentCollection(collectionName = "${collectionName}");
 
 			DragAndDrop.javaScriptDragAndDropToObject(
@@ -246,15 +391,21 @@ definition {
 				key_fragmentName = "${fragmentName}",
 				locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_FRAGMENT",
 				locator2 = "Fragment#DROPDOWN_FRAGMENT_MENU_CONTENT");
-
-			AssertElementPresent(
-				key_fragmentName = "${fragmentName}",
-				key_inFragmentName = "Dropdown",
-				locator1 = "Fragment#FRAGMENT_BODY_IN_FRAGMENT");
 		}
-		else if ("${navTab}" == "Widgets") {
-			Navigator.gotoNavTab(navTab = "${navTab}");
 
+		if (("${navTab}" == "Widgets") && ("${displayStyle}" == "card")) {
+			Type.sendKeysApplicationSearch(
+				locator1 = "PageEditor#WIDGETS_APPLICATION_SEARCH_FIELD",
+				value1 = "${portletName}");
+
+			DragAndDrop.javaScriptDragAndDropToObject(
+				key_element = "//div[contains(@class,'page-editor__root page-editor__topper')]",
+				key_portletName = "${portletName}",
+				locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_WIDGET_CARD_ITEM",
+				locator2 = "Fragment#DROPDOWN_FRAGMENT_MENU_CONTENT");
+		}
+
+		if (("${navTab}" == "Widgets") && ("${displayStyle}" == "list")) {
 			Type.sendKeysApplicationSearch(
 				locator1 = "PageEditor#WIDGETS_APPLICATION_SEARCH_FIELD",
 				value1 = "${portletName}");
@@ -264,11 +415,18 @@ definition {
 				key_portletName = "${portletName}",
 				locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_WIDGET",
 				locator2 = "Fragment#DROPDOWN_FRAGMENT_MENU_CONTENT");
+		}
 
-			Pause(locator1 = "5000");
+		PageEditor.waitForAutoSave();
 
-			PageEditor.waitForAutoSave();
+		if ("${navTab}" == "Fragments") {
+			AssertElementPresent(
+				key_fragmentName = "${fragmentName}",
+				key_inFragmentName = "Dropdown",
+				locator1 = "Fragment#FRAGMENT_BODY_IN_FRAGMENT");
+		}
 
+		if ("${navTab}" == "Widgets") {
 			AssertElementPresent(
 				key_fragmentName = "${portletName}",
 				key_inFragmentName = "Dropdown",
@@ -293,9 +451,35 @@ definition {
 
 		PageEditor.gotoTab(tabName = "Fragments and Widgets");
 
-		if ("${navTab}" == "Fragments") {
-			Navigator.gotoNavTab(navTab = "${navTab}");
+		if (!(isSet(displayStyle))) {
+			var displayStyle = "list";
+		}
 
+		if (IsElementNotPresent(key_displayStyle = "${displayStyle}", locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_DISPLAY_STYLE_BUTTON")) {
+			Click(
+				key_displayStyle = "",
+				locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_DISPLAY_STYLE_BUTTON");
+		}
+
+		AssertVisible(
+			key_displayStyle = "${displayStyle}",
+			locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_DISPLAY_STYLE_BUTTON");
+
+		Navigator.gotoNavTab(navTab = "${navTab}");
+
+		if (("${navTab}" == "Fragments") && ("${displayStyle}" == "card")) {
+			PageEditor.expandFragmentCollection(collectionName = "${collectionName}");
+
+			DragAndDrop.javaScriptDragAndDropToObject(
+				key_collectionName = "${collectionName}",
+				key_fragmentName = "${fragmentName}",
+				key_index = "${index}",
+				locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_FRAGMENT_CARD_ITEM",
+				locator2 = "PageEditor#FRAGMENT_WITH_DROP_TARGET",
+				value1 = "");
+		}
+
+		if (("${navTab}" == "Fragments") && ("${displayStyle}" == "list")) {
 			PageEditor.expandFragmentCollection(collectionName = "${collectionName}");
 
 			DragAndDrop.javaScriptDragAndDropToObject(
@@ -305,15 +489,22 @@ definition {
 				locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_FRAGMENT",
 				locator2 = "PageEditor#FRAGMENT_WITH_DROP_TARGET",
 				value1 = "");
-
-			AssertElementPresent(
-				key_fragmentName = "${fragmentName}",
-				key_inFragmentName = "Tabs",
-				locator1 = "Fragment#FRAGMENT_BODY_IN_FRAGMENT");
 		}
-		else if ("${navTab}" == "Widgets") {
-			Navigator.gotoNavTab(navTab = "${navTab}");
 
+		if (("${navTab}" == "Widgets") && ("${displayStyle}" == "card")) {
+			Type.sendKeysApplicationSearch(
+				locator1 = "PageEditor#WIDGETS_APPLICATION_SEARCH_FIELD",
+				value1 = "${portletName}");
+
+			DragAndDrop.javaScriptDragAndDropToObject(
+				key_index = "${index}",
+				key_portletName = "${portletName}",
+				locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_WIDGET_CARD_ITEM",
+				locator2 = "PageEditor#FRAGMENT_WITH_DROP_TARGET",
+				value1 = "${portletName}");
+		}
+
+		if (("${navTab}" == "Widgets") && ("${displayStyle}" == "list")) {
 			Type.sendKeysApplicationSearch(
 				locator1 = "PageEditor#WIDGETS_APPLICATION_SEARCH_FIELD",
 				value1 = "${portletName}");
@@ -324,11 +515,18 @@ definition {
 				locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_WIDGET",
 				locator2 = "PageEditor#FRAGMENT_WITH_DROP_TARGET",
 				value1 = "${portletName}");
+		}
 
-			Pause(locator1 = "5000");
+		PageEditor.waitForAutoSave();
 
-			PageEditor.waitForAutoSave();
+		if ("${navTab}" == "Fragments") {
+			AssertElementPresent(
+				key_fragmentName = "${fragmentName}",
+				key_inFragmentName = "Tabs",
+				locator1 = "Fragment#FRAGMENT_BODY_IN_FRAGMENT");
+		}
 
+		if ("${navTab}" == "Widgets") {
 			AssertElementPresent(
 				key_fragmentName = "${portletName}",
 				key_inFragmentName = "Tabs",
@@ -441,16 +639,79 @@ definition {
 	}
 
 	macro addFragment {
-		WaitForPageLoad();
+		PageEditor.assertFragmentSidebarLoaded();
 
 		PageEditor.gotoTab(tabName = "Fragments and Widgets");
+
+		if (!(isSet(displayStyle))) {
+			var displayStyle = "list";
+		}
+
+		if (IsElementNotPresent(key_displayStyle = "${displayStyle}", locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_DISPLAY_STYLE_BUTTON")) {
+			Click(
+				key_displayStyle = "",
+				locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_DISPLAY_STYLE_BUTTON");
+		}
+
+		AssertVisible(
+			key_displayStyle = "${displayStyle}",
+			locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_DISPLAY_STYLE_BUTTON");
 
 		Navigator.gotoNavTab(navTab = "Fragments");
 
 		PageEditor.expandFragmentCollection(collectionName = "${collectionName}");
 
-		if ("${scope}" == "Master") {
-			if ("${dropTarget}" == "Header") {
+		if ("${displayStyle}" == "card") {
+			if (("${scope}" == "Master") && ("${dropTarget}" == "Header")) {
+				DragAndDrop.javaScriptDragAndDropToUp(
+					key_collectionName = "${collectionName}",
+					key_fragmentName = "${fragmentName}",
+					locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_FRAGMENT_CARD_ITEM",
+					locator2 = "PageEditor#HEADER_DROP_TARGET",
+					value1 = "");
+			}
+
+			if (("${scope}" == "Master") && ("${dropTarget}" == "Footer")) {
+				DragAndDrop.javaScriptDragAndDropToBottom(
+					key_collectionName = "${collectionName}",
+					key_fragmentName = "${fragmentName}",
+					key_targetFragmentName = "Drop Zone",
+					locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_FRAGMENT_CARD_ITEM",
+					locator2 = "PageEditor#ANY_FRAGMENT_DROP_TARGET",
+					value1 = "");
+			}
+
+			if ((isSet(targetFragmentName)) && ("${dropTarget}" == "Header")) {
+				DragAndDrop.javaScriptDragAndDropToUp(
+					key_collectionName = "${collectionName}",
+					key_fragmentName = "${fragmentName}",
+					key_targetFragmentName = "${targetFragmentName}",
+					locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_FRAGMENT_CARD_ITEM",
+					locator2 = "PageEditor#ANY_FRAGMENT_DROP_TARGET");
+			}
+
+			if ((isSet(targetFragmentName)) && (!(isSet(dropTarget)))) {
+				DragAndDrop.javaScriptDragAndDropToBottom(
+					key_collectionName = "${collectionName}",
+					key_fragmentName = "${fragmentName}",
+					key_targetFragmentName = "${targetFragmentName}",
+					locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_FRAGMENT_CARD_ITEM",
+					locator2 = "PageEditor#ANY_FRAGMENT_DROP_TARGET",
+					value1 = "");
+			}
+
+			else {
+				DragAndDrop.javaScriptDragAndDropToObject(
+					key_collectionName = "${collectionName}",
+					key_fragmentName = "${fragmentName}",
+					locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_FRAGMENT_CARD_ITEM",
+					locator2 = "PageEditor#FRAGMENT_DROP_TARGET",
+					value1 = "");
+			}
+		}
+
+		if ("${displayStyle}" == "list") {
+			if (("${scope}" == "Master") && ("${dropTarget}" == "Header")) {
 				DragAndDrop.javaScriptDragAndDropToUp(
 					key_collectionName = "${collectionName}",
 					key_fragmentName = "${fragmentName}",
@@ -458,7 +719,8 @@ definition {
 					locator2 = "PageEditor#HEADER_DROP_TARGET",
 					value1 = "");
 			}
-			else if ("${dropTarget}" == "Footer") {
+
+			if (("${scope}" == "Master") && ("${dropTarget}" == "Footer")) {
 				DragAndDrop.javaScriptDragAndDropToBottom(
 					key_collectionName = "${collectionName}",
 					key_fragmentName = "${fragmentName}",
@@ -467,9 +729,8 @@ definition {
 					locator2 = "PageEditor#ANY_FRAGMENT_DROP_TARGET",
 					value1 = "");
 			}
-		}
-		else if (isSet(targetFragmentName)) {
-			if ("${dropTarget}" == "Header") {
+
+			if ((isSet(targetFragmentName)) && ("${dropTarget}" == "Header")) {
 				DragAndDrop.javaScriptDragAndDropToUp(
 					key_collectionName = "${collectionName}",
 					key_fragmentName = "${fragmentName}",
@@ -477,7 +738,8 @@ definition {
 					locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_FRAGMENT",
 					locator2 = "PageEditor#ANY_FRAGMENT_DROP_TARGET");
 			}
-			else {
+
+			if ((isSet(targetFragmentName)) && (!(isSet(dropTarget)))) {
 				DragAndDrop.javaScriptDragAndDropToBottom(
 					key_collectionName = "${collectionName}",
 					key_fragmentName = "${fragmentName}",
@@ -486,72 +748,55 @@ definition {
 					locator2 = "PageEditor#ANY_FRAGMENT_DROP_TARGET",
 					value1 = "");
 			}
-		}
-		else {
-			DragAndDrop.javaScriptDragAndDropToObject(
-				key_collectionName = "${collectionName}",
-				key_fragmentName = "${fragmentName}",
-				locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_FRAGMENT",
-				locator2 = "PageEditor#FRAGMENT_DROP_TARGET",
-				value1 = "");
+
+			else {
+				DragAndDrop.javaScriptDragAndDropToObject(
+					key_collectionName = "${collectionName}",
+					key_fragmentName = "${fragmentName}",
+					locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_FRAGMENT",
+					locator2 = "PageEditor#FRAGMENT_DROP_TARGET",
+					value1 = "");
+			}
 		}
 
 		PageEditor.waitForAutoSave();
 
-		if ("${collectionName}" == "Layout Elements") {
-			if ("${fragmentName}" == "Grid") {
-				if (isSet(position)) {
-					var key_position = "${position}";
-				}
-				else {
-					var key_position = "1";
-				}
-
-				AssertElementPresent(
-					key_elementType = "${fragmentName}",
-					locator1 = "PageEditor#LAYOUT_ELEMENTS_HEADER");
-			}
-			else if ("${fragmentName}" == "Container") {
-				if (isSet(position)) {
-					var key_position = "${position}";
-				}
-				else {
-					var key_position = "1";
-				}
-
-				AssertElementPresent(
-					key_elementType = "${fragmentName}",
-					locator1 = "PageEditor#LAYOUT_ELEMENTS_HEADER");
-			}
+		if (!(isSet(position))) {
+			var key_position = "1";
 		}
-		else if ("${collectionName}" == "Content Display") {
-			if ("${fragmentName}" == "Collection Display") {
-				AssertElementPresent(
-					key_fragmentName = "${fragmentName}",
-					key_message = "No Collection Selected Yet",
-					locator1 = "Fragment#NOT_COLLECTION_SELECTED_MESSAGE");
-			}
-			else if ("${fragmentName}" == "Content Display") {
-				AssertElementPresent(
-					key_fragmentName = "${fragmentName}",
-					key_messageIfo = "The selected content will be shown here.",
-					locator1 = "Fragment#MESSAGE_INFO");
-			}
-			else if ("${fragmentName}" == "Display Page Content") {
-				AssertElementPresent(
-					key_fragmentName = "${fragmentName}",
-					key_messageIfo = "The display page content will be shown here.",
-					locator1 = "Fragment#MESSAGE_INFO");
-			}
-			else {
-				AssertElementPresent(
-					key_fragmentName = "${fragmentName}",
-					locator1 = "Fragment#FRAGMENT_HEADER");
-			}
+
+		if (("${fragmentName}" == "Grid") || ("${fragmentName}" == "Container")) {
+			AssertElementPresent(
+				key_elementType = "${fragmentName}",
+				key_position = "${position}",
+				locator1 = "PageEditor#LAYOUT_ELEMENTS_HEADER");
 		}
-		else if ("${composition}" == "true") {
+
+		if ("${fragmentName}" == "Collection Display") {
+			AssertElementPresent(
+				key_fragmentName = "${fragmentName}",
+				key_message = "No Collection Selected Yet",
+				locator1 = "Fragment#NOT_COLLECTION_SELECTED_MESSAGE");
+		}
+
+		if ("${fragmentName}" == "Content Display") {
+			AssertElementPresent(
+				key_fragmentName = "${fragmentName}",
+				key_messageIfo = "The selected content will be shown here.",
+				locator1 = "Fragment#MESSAGE_INFO");
+		}
+
+		if ("${fragmentName}" == "Display Page Content") {
+			AssertElementPresent(
+				key_fragmentName = "${fragmentName}",
+				key_messageIfo = "The display page content will be shown here.",
+				locator1 = "Fragment#MESSAGE_INFO");
+		}
+
+		if (isSet(composition)) {
 			echo("## Adding a composition of fragments");
 		}
+
 		else {
 			AssertElementPresent(
 				key_fragmentName = "${fragmentName}",
@@ -560,15 +805,39 @@ definition {
 	}
 
 	macro addFragmentToCollectionDisplay {
-		WaitForPageLoad();
+		PageEditor.assertFragmentSidebarLoaded();
 
 		PageEditor.gotoTab(tabName = "Fragments and Widgets");
+
+		if (!(isSet(displayStyle))) {
+			var displayStyle = "list";
+		}
+
+		if (IsElementNotPresent(key_displayStyle = "${displayStyle}", locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_DISPLAY_STYLE_BUTTON")) {
+			Click(
+				key_displayStyle = "",
+				locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_DISPLAY_STYLE_BUTTON");
+		}
+
+		AssertVisible(
+			key_displayStyle = "${displayStyle}",
+			locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_DISPLAY_STYLE_BUTTON");
 
 		Navigator.gotoNavTab(navTab = "Fragments");
 
 		PageEditor.expandFragmentCollection(collectionName = "${collectionName}");
 
-		if (isSet(targetFragmentName)) {
+		if ((isSet(targetFragmentName)) && ("${displayStyle}" == "card")) {
+			DragAndDrop.javaScriptDragAndDropToBottom(
+				key_collectionName = "${collectionName}",
+				key_fragmentName = "${fragmentName}",
+				key_targetFragmentName = "${targetFragmentName}",
+				locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_FRAGMENT_CARD_ITEM",
+				locator2 = "PageEditor#ANY_NESTED_FRAGMENT_DROP_TARGET",
+				value1 = "");
+		}
+
+		if ((isSet(targetFragmentName)) && ("${displayStyle}" == "list")) {
 			DragAndDrop.javaScriptDragAndDropToBottom(
 				key_collectionName = "${collectionName}",
 				key_fragmentName = "${fragmentName}",
@@ -577,7 +846,18 @@ definition {
 				locator2 = "PageEditor#ANY_NESTED_FRAGMENT_DROP_TARGET",
 				value1 = "");
 		}
-		else {
+
+		if ((!(isSet(targetFragmentName))) && ("${displayStyle}" == "card")) {
+			DragAndDrop.javaScriptDragAndDropToObject(
+				key_collectionName = "${collectionName}",
+				key_entryTitle = "${entryTitle}",
+				key_fragmentName = "${fragmentName}",
+				locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_FRAGMENT_CARD_ITEM",
+				locator2 = "PageEditor#COLLECTION_CELL",
+				value1 = "");
+		}
+
+		if ((!(isSet(targetFragmentName))) && ("${displayStyle}" == "list")) {
 			DragAndDrop.javaScriptDragAndDropToObject(
 				key_collectionName = "${collectionName}",
 				key_entryTitle = "${entryTitle}",
@@ -603,9 +883,23 @@ definition {
 	}
 
 	macro addWidget {
-		WaitForPageLoad();
+		PageEditor.assertFragmentSidebarLoaded();
 
 		PageEditor.gotoTab(tabName = "Fragments and Widgets");
+
+		if (!(isSet(displayStyle))) {
+			var displayStyle = "list";
+		}
+
+		if (IsElementNotPresent(key_displayStyle = "${displayStyle}", locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_DISPLAY_STYLE_BUTTON")) {
+			Click(
+				key_displayStyle = "",
+				locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_DISPLAY_STYLE_BUTTON");
+		}
+
+		AssertVisible(
+			key_displayStyle = "${displayStyle}",
+			locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_DISPLAY_STYLE_BUTTON");
 
 		Navigator.gotoNavTab(navTab = "Widgets");
 
@@ -615,23 +909,65 @@ definition {
 
 		var key_portletName = "${portletName}";
 
-		if ("${scope}" == "Master") {
-			if ("${dropTarget}" == "Header") {
+		if ("${displayStyle}" == "card") {
+			if ((isSet(scope)) && ("${dropTarget}" == "Header")) {
+				DragAndDrop.javaScriptDragAndDropToUp(
+					locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_WIDGET_CARD_ITEM",
+					locator2 = "PageEditor#HEADER_DROP_TARGET",
+					value1 = "");
+			}
+
+			if ((isSet(scope)) && ("${dropTarget}" == "Footer")) {
+				DragAndDrop.javaScriptDragAndDropToBottom(
+					key_targetFragmentName = "Drop Zone",
+					locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_WIDGET_CARD_ITEM",
+					locator2 = "PageEditor#ANY_FRAGMENT_DROP_TARGET",
+					value1 = "");
+			}
+
+			if ((isSet(targetFragmentName)) && (isSet(collectionName))) {
+				DragAndDrop.javaScriptDragAndDropToBottom(
+					key_collectionName = "${collectionName}",
+					key_fragmentName = "${portletName}",
+					key_targetFragmentName = "${targetFragmentName}",
+					locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_WIDGET_CARD_ITEM",
+					locator2 = "PageEditor#ANY_FRAGMENT_DROP_TARGET",
+					value1 = "");
+			}
+
+			if ((isSet(targetFragmentName)) && (!(isSet(collectionName)))) {
+				DragAndDrop.javaScriptDragAndDropToBottom(
+					key_targetFragmentName = "${targetFragmentName}",
+					locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_WIDGET_CARD_ITEM",
+					locator2 = "PageEditor#ANY_FRAGMENT_DROP_TARGET",
+					value1 = "${portletName}");
+			}
+
+			else {
+				DragAndDrop.javaScriptDragAndDropToObject(
+					locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_WIDGET_CARD_ITEM",
+					locator2 = "PageEditor#FRAGMENT_DROP_TARGET",
+					value1 = "${portletName}");
+			}
+		}
+
+		if ("${displayStyle}" == "list") {
+			if ((isSet(scope)) && ("${dropTarget}" == "Header")) {
 				DragAndDrop.javaScriptDragAndDropToUp(
 					locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_WIDGET",
 					locator2 = "PageEditor#HEADER_DROP_TARGET",
 					value1 = "");
 			}
-			else if ("${dropTarget}" == "Footer") {
+
+			if ((isSet(scope)) && ("${dropTarget}" == "Footer")) {
 				DragAndDrop.javaScriptDragAndDropToBottom(
 					key_targetFragmentName = "Drop Zone",
 					locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_WIDGET",
 					locator2 = "PageEditor#ANY_FRAGMENT_DROP_TARGET",
 					value1 = "");
 			}
-		}
-		else if (isSet(targetFragmentName)) {
-			if (isSet(collectionName)) {
+
+			if ((isSet(targetFragmentName)) && (isSet(collectionName))) {
 				DragAndDrop.javaScriptDragAndDropToBottom(
 					key_collectionName = "${collectionName}",
 					key_fragmentName = "${portletName}",
@@ -640,22 +976,24 @@ definition {
 					locator2 = "PageEditor#ANY_FRAGMENT_DROP_TARGET",
 					value1 = "");
 			}
-			else {
+
+			if ((isSet(targetFragmentName)) && (!(isSet(collectionName)))) {
 				DragAndDrop.javaScriptDragAndDropToBottom(
 					key_targetFragmentName = "${targetFragmentName}",
 					locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_WIDGET",
 					locator2 = "PageEditor#ANY_FRAGMENT_DROP_TARGET",
 					value1 = "${portletName}");
 			}
-		}
-		else {
-			DragAndDrop.javaScriptDragAndDropToObject(
-				locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_WIDGET",
-				locator2 = "PageEditor#FRAGMENT_DROP_TARGET",
-				value1 = "${portletName}");
+
+			else {
+				DragAndDrop.javaScriptDragAndDropToObject(
+					locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_WIDGET",
+					locator2 = "PageEditor#FRAGMENT_DROP_TARGET",
+					value1 = "${portletName}");
+			}
 		}
 
-		Pause(locator1 = "5000");
+		PageEditor.waitForAutoSave();
 
 		AssertElementPresent(
 			key_fragmentName = "${portletName}",
@@ -1151,22 +1489,22 @@ definition {
 				columnName = "name",
 				tableEntry = "${vocabularyName}");
 
-			for (var categoryName : list "${categoryNameList}") {
+			for (var category : list "${categoryNameList}") {
 				AssertVisible(
 					key_columnName = "name",
-					key_tableEntry = "${categoryName}",
+					key_tableEntry = "${category}",
 					locator1 = "LexiconTable#TABLE_ENTRY_COLUMN_LINK");
 			}
 
-			if (isSet(subcategoryName)) {
+			if (isSet(categoryName)) {
 				LexiconTable.clickTableEntryColumnLink(
 					columnName = "name",
 					tableEntry = "${categoryName}");
 
-				for (var subcategoryName : list "${subcategoryNameList}") {
+				for (var subcategory : list "${subcategoryNameList}") {
 					AssertVisible(
 						key_columnName = "name",
-						key_tableEntry = "${subcategoryName}",
+						key_tableEntry = "${subcategory}",
 						locator1 = "LexiconTable#TABLE_ENTRY_COLUMN_LINK");
 				}
 
@@ -1379,19 +1717,23 @@ definition {
 				value1 = "${templateOption}");
 		}
 		else {
-			var itemSelectorContentInputValue = selenium.getElementValue("//label[normalize-space(text())='Content']/following-sibling::div//input[contains(@class,'item-selector__content-input')]");
+			var itemSelectorContentInputValue = selenium.getElementValue("//label[normalize-space(text())='Item']/following-sibling::div//input[contains(@class,'item-selector__content-input')]");
 
 			if ("${itemSelectorContentInputValue}" == "") {
 				Click(
-					key_fieldLabel = "Content",
+					key_fieldLabel = "Item",
 					key_text = "plus",
 					locator1 = "Icon#ANY_ITEM_SELECTOR");
 			}
 			else {
 				Click(
-					key_fieldLabel = "Content",
+					key_fieldLabel = "Item",
 					key_text = "change",
 					locator1 = "Icon#ANY_ITEM_SELECTOR");
+			}
+
+			if (IsElementPresent(key_menuItem = "Select Item...",locator1 = "MenuItem#ANY_MENU_ITEM")) {
+				MenuItem.click(menuItem = "Select Item...");
 			}
 
 			SelectFrame(locator1 = "IFrame#MODAL_BODY");
@@ -1423,6 +1765,20 @@ definition {
 				AssertTextEquals(
 					locator1 = "Fragment#FRAGMENT_BODY",
 					value1 = "${entryContent}");
+			}
+
+			if (isSet(categories)) {
+				NavItem.click(navItem = "Categories");
+
+				Portlet.expandTree();
+
+				AssertVisible(
+					key_nodeName = "${assetTitle}",
+					locator1 = "Treeview#NODE_ITEM");
+
+				Click(
+					key_nodeName = "${assetTitle}",
+					locator1 = "Treeview#NODE_UNSELECTED");
 			}
 
 			if (isSet(webcontent)) {
@@ -1702,19 +2058,23 @@ definition {
 			fragmentName = "${fragmentName}",
 			id = "${id}");
 
-		if ("${contributed}" == "false") {
+		if (isSet(text)) {
 			Type(
-				id = "${id}",
-				key_fragmentName = "${fragmentName}",
-				locator1 = "Fragment#EDITABLE_FIELD_CK_EDITOR",
+				key_editor = "content",
+				locator1 = "AlloyEditor#EDITOR",
 				value1 = "${text}");
 		}
-		else {
-			Type(
-				id = "${id}",
-				key_fragmentName = "${fragmentName}",
-				locator1 = "Fragment#CONTRIBUTED_FRAGMENT_EDITABLE_FIELD_CK_EDITOR",
-				value1 = "${text}");
+
+		if (isSet(style)) {
+			SelectFieldText(
+				key_editor = "content",
+				locator1 = "AlloyEditor#EDITOR");
+
+			Click(locator1 = "AlloyEditor#TEXT_FORMATTING_STYLE");
+
+			Click(
+				key_styleFormat = "${style}",
+				locator1 = "AlloyEditor#TEXT_FORMATTING_STYLE_DROPDOWN");
 		}
 
 		PageEditor.clickManagementBar();
@@ -2347,8 +2707,6 @@ definition {
 
 		Click(locator1 = "Fragment#FRAGMENT_COMMENT_ICON");
 
-		Pause(locator1 = "3000");
-
 		if (IsElementNotPresent(locator1 = "PageEditor#FRAGMENT_SIDEBAR_COMMENT_SECTION_NAME")) {
 			Click(
 				key_content = "${content}",
@@ -2423,6 +2781,14 @@ definition {
 		}
 	}
 
+	macro gotoEllipsisMenuItemInItemSelector {
+		Click(
+			key_fieldLabel = "${fieldLabel}",
+			locator1 = "PageEditor#ITEM_SELECTOR_DROPDOWN_TOGGLE");
+
+		MenuItem.click(menuItem = "${menuItem}");
+	}
+
 	macro gotoSaveAsFragment {
 		key_fragmentName = "${fragmentName}";
 
@@ -2443,17 +2809,17 @@ definition {
 			locator1 = "PageEditor#NAV_ITEM_BUTTON",
 			value1 = "General");
 
-		var itemSelectorContentInputValue = selenium.getElementValue("//label[normalize-space(text())='Content']/following-sibling::div//input[contains(@class,'item-selector__content-input')]");
+		var itemSelectorContentInputValue = selenium.getElementValue("//label[normalize-space(text())='Item']/following-sibling::div//input[contains(@class,'item-selector__content-input')]");
 
 		if ("${itemSelectorContentInputValue}" == "") {
 			Click(
-				key_fieldLabel = "Content",
+				key_fieldLabel = "Item",
 				key_text = "plus",
 				locator1 = "Icon#ANY_ITEM_SELECTOR");
 		}
 		else {
 			Click(
-				key_fieldLabel = "Content",
+				key_fieldLabel = "Item",
 				key_text = "change",
 				locator1 = "Icon#ANY_ITEM_SELECTOR");
 		}
@@ -2477,8 +2843,6 @@ definition {
 	}
 
 	macro gotoTab {
-		Pause(locator1 = "3000");
-
 		if (IsElementNotPresent(key_sidebarButton = "${tabName}", locator1 = "PageEditor#FRAGMENT_SIDEBAR_TITLE")) {
 			Click.clickNoMouseOver(
 				key_tabName = "${tabName}",
@@ -2968,12 +3332,25 @@ definition {
 	}
 
 	macro viewFragmentEditableText {
+		if (!(isSet(position))) {
+			var position = "1";
+		}
+
 		if ("${contributed}" == "false") {
 			AssertTextEquals(
 				id = "${id}",
 				key_fragmentName = "${fragmentName}",
 				locator1 = "Fragment#EDITABLE_FIELD",
 				value1 = "${editableText}");
+
+			if (isSet(style)) {
+				AssertVisible(
+					id = "${id}",
+					key_position = "${position}",
+					key_style = "${style}",
+					key_text = "${editableText}",
+					locator1 = "Fragment#INLINE_RICH_TEXT_STYLE");
+			}
 		}
 		else {
 			AssertTextEquals(
@@ -2981,6 +3358,15 @@ definition {
 				key_fragmentName = "${fragmentName}",
 				locator1 = "Fragment#CONTRIBUTED_FRAGMENT_EDITABLE_FIELD",
 				value1 = "${editableText}");
+
+			if (isSet(style)) {
+				AssertVisible(
+					id = "${id}",
+					key_position = "${position}",
+					key_style = "${style}",
+					key_text = "${editableText}",
+					locator1 = "Fragment#CONTRIBUTED_FRAGMENT_INLINE_RICH_TEXT_STYLE");
+			}
 		}
 	}
 
@@ -3240,6 +3626,28 @@ definition {
 		}
 	}
 
+	macro viewMentionsDisplayOption {
+		Click.clickAt(locator1 = "PageEditor#FRAGMENT_SIDEBAR_COMMENTS");
+
+		Type.sendKeys(
+			locator1 = "PageEditor#FRAGMENT_SIDEBAR_COMMENTS",
+			value1 = "${fragmentComment}");
+
+		if (isSet(noMentionsUserScreenName)) {
+			AssertElementNotPresent(
+				key_mentionsUserScreenName = "${noMentionsUserScreenName}",
+				locator1 = "Mentions#MENTIONS_USER_DISPLAY_OPTION");
+		}
+
+		AssertElementPresent(
+			key_mentionsUserScreenName = "${mentionsUserScreenName}",
+			locator1 = "Mentions#MENTIONS_USER_DISPLAY_OPTION");
+
+		Click.clickNoMouseOver(
+			key_mentionsUserScreenName = "${mentionsUserScreenName}",
+			locator1 = "Mentions#MENTIONS_USER_DISPLAY_OPTION");
+	}
+
 	macro viewNoFragment {
 		AssertElementNotPresent(
 			key_fragmentName = "${fragmentName}",
@@ -3247,11 +3655,7 @@ definition {
 	}
 
 	macro waitForAutoSave {
-		Pause(locator1 = "1000");
-
-		AssertTextEquals.assertPartialText(
-			locator1 = "PageEditor#AUTOSAVE_MESSAGE",
-			value1 = "Saved");
+		WaitForElementPresent(locator1 = "PageEditor#AUTOSAVE_MESSAGE");
 	}
 
 }

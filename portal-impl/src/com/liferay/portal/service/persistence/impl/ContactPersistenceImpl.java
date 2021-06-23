@@ -1807,23 +1807,23 @@ public class ContactPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (contact.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				contact.setCreateDate(now);
+				contact.setCreateDate(date);
 			}
 			else {
-				contact.setCreateDate(serviceContext.getCreateDate(now));
+				contact.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!contactModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				contact.setModifiedDate(now);
+				contact.setModifiedDate(date);
 			}
 			else {
-				contact.setModifiedDate(serviceContext.getModifiedDate(now));
+				contact.setModifiedDate(serviceContext.getModifiedDate(date));
 			}
 		}
 

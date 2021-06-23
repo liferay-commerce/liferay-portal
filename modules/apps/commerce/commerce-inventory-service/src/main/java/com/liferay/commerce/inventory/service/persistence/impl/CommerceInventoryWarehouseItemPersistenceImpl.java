@@ -2583,25 +2583,25 @@ public class CommerceInventoryWarehouseItemPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commerceInventoryWarehouseItem.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commerceInventoryWarehouseItem.setCreateDate(now);
+				commerceInventoryWarehouseItem.setCreateDate(date);
 			}
 			else {
 				commerceInventoryWarehouseItem.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commerceInventoryWarehouseItemModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commerceInventoryWarehouseItem.setModifiedDate(now);
+				commerceInventoryWarehouseItem.setModifiedDate(date);
 			}
 			else {
 				commerceInventoryWarehouseItem.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

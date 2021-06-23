@@ -517,25 +517,25 @@ public class MFAEmailOTPEntryPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (mfaEmailOTPEntry.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				mfaEmailOTPEntry.setCreateDate(now);
+				mfaEmailOTPEntry.setCreateDate(date);
 			}
 			else {
 				mfaEmailOTPEntry.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!mfaEmailOTPEntryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				mfaEmailOTPEntry.setModifiedDate(now);
+				mfaEmailOTPEntry.setModifiedDate(date);
 			}
 			else {
 				mfaEmailOTPEntry.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

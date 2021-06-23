@@ -2286,25 +2286,25 @@ public class SegmentsEntryRelPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (segmentsEntryRel.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				segmentsEntryRel.setCreateDate(now);
+				segmentsEntryRel.setCreateDate(date);
 			}
 			else {
 				segmentsEntryRel.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!segmentsEntryRelModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				segmentsEntryRel.setModifiedDate(now);
+				segmentsEntryRel.setModifiedDate(date);
 			}
 			else {
 				segmentsEntryRel.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

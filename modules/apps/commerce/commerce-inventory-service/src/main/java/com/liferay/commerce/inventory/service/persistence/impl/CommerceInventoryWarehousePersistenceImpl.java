@@ -4684,25 +4684,25 @@ public class CommerceInventoryWarehousePersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commerceInventoryWarehouse.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commerceInventoryWarehouse.setCreateDate(now);
+				commerceInventoryWarehouse.setCreateDate(date);
 			}
 			else {
 				commerceInventoryWarehouse.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commerceInventoryWarehouseModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commerceInventoryWarehouse.setModifiedDate(now);
+				commerceInventoryWarehouse.setModifiedDate(date);
 			}
 			else {
 				commerceInventoryWarehouse.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

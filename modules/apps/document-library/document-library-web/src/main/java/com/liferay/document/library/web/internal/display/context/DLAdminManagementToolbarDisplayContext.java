@@ -17,6 +17,8 @@ package com.liferay.document.library.web.internal.display.context;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryServiceUtil;
 import com.liferay.asset.kernel.service.AssetVocabularyServiceUtil;
+import com.liferay.digital.signature.configuration.DigitalSignatureConfiguration;
+import com.liferay.digital.signature.configuration.DigitalSignatureConfigurationUtil;
 import com.liferay.document.library.constants.DLPortletKeys;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFileEntryType;
@@ -52,6 +54,7 @@ import com.liferay.portal.kernel.portlet.toolbar.contributor.PortletToolbarContr
 import com.liferay.portal.kernel.service.ClassNameLocalServiceUtil;
 import com.liferay.portal.kernel.servlet.taglib.ui.Menu;
 import com.liferay.portal.kernel.servlet.taglib.ui.URLMenuItem;
+import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -119,6 +122,16 @@ public class DLAdminManagementToolbarDisplayContext
 		User user = _themeDisplay.getUser();
 
 		return DropdownItemListBuilder.add(
+			() -> isDigitalSignatureEnabled() && stagedActions,
+			dropdownItem -> {
+				dropdownItem.putData("action", "collectDigitalSignature");
+				dropdownItem.setIcon("signature");
+				dropdownItem.setLabel(
+					LanguageUtil.get(
+						_httpServletRequest, "collect-digital-signature"));
+				dropdownItem.setQuickAction(true);
+			}
+		).add(
 			() -> stagedActions,
 			dropdownItem -> {
 				dropdownItem.putData("action", "download");
@@ -232,9 +245,11 @@ public class DLAdminManagementToolbarDisplayContext
 
 	@Override
 	public CreationMenu getCreationMenu() {
-		String portletName = _liferayPortletRequest.getPortletName();
+		PortletDisplay portletDisplay = _themeDisplay.getPortletDisplay();
 
-		if (portletName.equals(DLPortletKeys.MEDIA_GALLERY_DISPLAY)) {
+		String rootPortletId = portletDisplay.getRootPortletId();
+
+		if (rootPortletId.equals(DLPortletKeys.MEDIA_GALLERY_DISPLAY)) {
 			return null;
 		}
 
@@ -514,6 +529,14 @@ public class DLAdminManagementToolbarDisplayContext
 				}
 			}
 		};
+	}
+
+	public boolean isDigitalSignatureEnabled() {
+		DigitalSignatureConfiguration digitalSignatureConfiguration =
+			DigitalSignatureConfigurationUtil.getDigitalSignatureConfiguration(
+				_themeDisplay.getCompanyId(), _themeDisplay.getSiteGroupId());
+
+		return digitalSignatureConfiguration.enabled();
 	}
 
 	@Override

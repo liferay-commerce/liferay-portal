@@ -403,8 +403,7 @@ public class SiteNavigationAdminDisplayContext {
 				_liferayPortletResponse
 			).setMVCPath(
 				"/add_site_navigation_menu_item_redirect.jsp"
-			).setParameter(
-				"portletResource",
+			).setPortletResource(
 				() -> {
 					ThemeDisplay themeDisplay =
 						(ThemeDisplay)_httpServletRequest.getAttribute(

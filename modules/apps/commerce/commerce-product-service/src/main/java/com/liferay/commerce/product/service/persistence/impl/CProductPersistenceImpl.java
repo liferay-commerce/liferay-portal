@@ -2451,23 +2451,23 @@ public class CProductPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (cProduct.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				cProduct.setCreateDate(now);
+				cProduct.setCreateDate(date);
 			}
 			else {
-				cProduct.setCreateDate(serviceContext.getCreateDate(now));
+				cProduct.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!cProductModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				cProduct.setModifiedDate(now);
+				cProduct.setModifiedDate(date);
 			}
 			else {
-				cProduct.setModifiedDate(serviceContext.getModifiedDate(now));
+				cProduct.setModifiedDate(serviceContext.getModifiedDate(date));
 			}
 		}
 

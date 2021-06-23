@@ -246,7 +246,7 @@ StagingGroupHelper stagingGroupHelper = StagingGroupHelperUtil.getStagingGroupHe
 		).setMVCRenderCommandName(
 			"/login/login"
 		).setParameter(
-			"saveLastPath", Boolean.FALSE.toString()
+			"saveLastPath", false
 		).setPortletMode(
 			PortletMode.VIEW
 		).setWindowState(

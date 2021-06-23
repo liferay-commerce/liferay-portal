@@ -66,7 +66,7 @@ PortletURL portletURL = PortletURLBuilder.createRenderURL(
 ).setParameter(
 	"className", className
 ).setParameter(
-	"groupId", String.valueOf(group.getGroupId())
+	"groupId", group.getGroupId()
 ).build();
 
 if (role != null) {

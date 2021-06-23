@@ -6799,25 +6799,25 @@ public class AssetVocabularyPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (assetVocabulary.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				assetVocabulary.setCreateDate(now);
+				assetVocabulary.setCreateDate(date);
 			}
 			else {
 				assetVocabulary.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!assetVocabularyModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				assetVocabulary.setModifiedDate(now);
+				assetVocabulary.setModifiedDate(date);
 			}
 			else {
 				assetVocabulary.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

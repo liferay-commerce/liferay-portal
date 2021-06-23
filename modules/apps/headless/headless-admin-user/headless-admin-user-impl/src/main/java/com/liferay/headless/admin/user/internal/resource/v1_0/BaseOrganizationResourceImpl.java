@@ -377,6 +377,112 @@ public abstract class BaseOrganizationResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
+	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-admin-user/v1.0/organizations/{organizationId}/user-accounts/by-email-address'  -u 'test@liferay.com:test'
+	 */
+	@Consumes({"application/json", "application/xml"})
+	@DELETE
+	@Operation(
+		description = "Removes users from an organization by their email addresses"
+	)
+	@Override
+	@Parameters(
+		value = {@Parameter(in = ParameterIn.PATH, name = "organizationId")}
+	)
+	@Path("/organizations/{organizationId}/user-accounts/by-email-address")
+	@Produces({"application/json", "application/xml"})
+	@Tags(value = {@Tag(name = "Organization")})
+	public void deleteUserAccountsByEmailAddress(
+			@NotNull @Parameter(hidden = true) @PathParam("organizationId")
+				String organizationId,
+			String[] strings)
+		throws Exception {
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-admin-user/v1.0/organizations/{organizationId}/user-accounts/by-email-address'  -u 'test@liferay.com:test'
+	 */
+	@Consumes({"application/json", "application/xml"})
+	@Operation(
+		description = "Assigns users to an organization by their email addresses"
+	)
+	@Override
+	@Parameters(
+		value = {@Parameter(in = ParameterIn.PATH, name = "organizationId")}
+	)
+	@Path("/organizations/{organizationId}/user-accounts/by-email-address")
+	@POST
+	@Produces({"application/json", "application/xml"})
+	@Tags(value = {@Tag(name = "Organization")})
+	public void postUserAccountsByEmailAddress(
+			@NotNull @Parameter(hidden = true) @PathParam("organizationId")
+				String organizationId,
+			String[] strings)
+		throws Exception {
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-admin-user/v1.0/organizations/{organizationId}/user-accounts/by-email-address/{emailAddress}'  -u 'test@liferay.com:test'
+	 */
+	@DELETE
+	@Operation(
+		description = "Removes a user from an organization by their email address"
+	)
+	@Override
+	@Parameters(
+		value = {
+			@Parameter(in = ParameterIn.PATH, name = "organizationId"),
+			@Parameter(in = ParameterIn.PATH, name = "emailAddress")
+		}
+	)
+	@Path(
+		"/organizations/{organizationId}/user-accounts/by-email-address/{emailAddress}"
+	)
+	@Produces({"application/json", "application/xml"})
+	@Tags(value = {@Tag(name = "Organization")})
+	public void deleteUserAccountByEmailAddress(
+			@NotNull @Parameter(hidden = true) @PathParam("organizationId")
+				String organizationId,
+			@NotNull @Parameter(hidden = true) @PathParam("emailAddress") String
+				emailAddress)
+		throws Exception {
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-admin-user/v1.0/organizations/{organizationId}/user-accounts/by-email-address/{emailAddress}'  -u 'test@liferay.com:test'
+	 */
+	@Operation(
+		description = "Assigns a user to an organization by their email address"
+	)
+	@Override
+	@Parameters(
+		value = {
+			@Parameter(in = ParameterIn.PATH, name = "organizationId"),
+			@Parameter(in = ParameterIn.PATH, name = "emailAddress")
+		}
+	)
+	@Path(
+		"/organizations/{organizationId}/user-accounts/by-email-address/{emailAddress}"
+	)
+	@POST
+	@Produces({"application/json", "application/xml"})
+	@Tags(value = {@Tag(name = "Organization")})
+	public void postUserAccountByEmailAddress(
+			@NotNull @Parameter(hidden = true) @PathParam("organizationId")
+				String organizationId,
+			@NotNull @Parameter(hidden = true) @PathParam("emailAddress") String
+				emailAddress)
+		throws Exception {
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-admin-user/v1.0/organizations/{parentOrganizationId}/organizations'  -u 'test@liferay.com:test'
 	 */
 	@GET

@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.exportimport.UserImporter;
 import com.liferay.saml.opensaml.integration.field.expression.handler.UserFieldExpressionHandler;
 import com.liferay.saml.opensaml.integration.processor.context.ProcessorContext;
@@ -36,10 +37,12 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import org.joda.time.DateTime;
 
@@ -154,6 +157,11 @@ public class DefaultUserFieldExpressionHandler
 		return _validFieldExpressions;
 	}
 
+	@Override
+	public boolean isSupportedForUserMatching(String userFieldExpression) {
+		return _authFieldExpressions.contains(userFieldExpression);
+	}
+
 	@Activate
 	protected void activate(Map<String, Object> properties) {
 		_processingIndex = GetterUtil.getInteger(
@@ -175,6 +183,10 @@ public class DefaultUserFieldExpressionHandler
 		int birthdayDay = 1;
 		int birthdayYear = 1970;
 		boolean sendEmail = false;
+
+		if (!Validator.isBlank(newUser.getUuid())) {
+			serviceContext.setUuid(newUser.getUuid());
+		}
 
 		User user = _userLocalService.addUser(
 			creatorUserId, newUser.getCompanyId(), autoPassword, password1,
@@ -208,6 +220,8 @@ public class DefaultUserFieldExpressionHandler
 			return _addUser(newUser, serviceContext);
 		}
 
+		currentUser = _userLocalService.getUserById(currentUser.getUserId());
+
 		if (!Objects.equals(
 				currentUser.getEmailAddress(), newUser.getEmailAddress())) {
 
@@ -223,9 +237,10 @@ public class DefaultUserFieldExpressionHandler
 				currentUser.getFirstName(), newUser.getFirstName()) &&
 			Objects.equals(currentUser.getLastName(), newUser.getLastName()) &&
 			Objects.equals(
-				currentUser.getScreenName(), newUser.getScreenName()) &&
+				currentUser.getModifiedDate(), newUser.getModifiedDate()) &&
 			Objects.equals(
-				currentUser.getModifiedDate(), newUser.getModifiedDate())) {
+				currentUser.getScreenName(), newUser.getScreenName()) &&
+			Objects.equals(currentUser.getUuid(), newUser.getUuid())) {
 
 			return newUser;
 		}
@@ -236,6 +251,8 @@ public class DefaultUserFieldExpressionHandler
 		birthdayCalendar.setTime(contact.getBirthday());
 
 		Date modifiedDate = newUser.getModifiedDate();
+
+		serviceContext.setUuid(newUser.getUuid());
 
 		newUser = _userLocalService.updateUser(
 			newUser.getUserId(), StringPool.BLANK, StringPool.BLANK,
@@ -266,6 +283,8 @@ public class DefaultUserFieldExpressionHandler
 	private static final Log _log = LogFactoryUtil.getLog(
 		DefaultUserFieldExpressionHandler.class);
 
+	private final Set<String> _authFieldExpressions = new HashSet<>(
+		Arrays.asList("emailAddress", "screenName", "uuid"));
 	private int _processingIndex;
 
 	@Reference

@@ -2176,23 +2176,23 @@ public class MDRRulePersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (mdrRule.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				mdrRule.setCreateDate(now);
+				mdrRule.setCreateDate(date);
 			}
 			else {
-				mdrRule.setCreateDate(serviceContext.getCreateDate(now));
+				mdrRule.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!mdrRuleModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				mdrRule.setModifiedDate(now);
+				mdrRule.setModifiedDate(date);
 			}
 			else {
-				mdrRule.setModifiedDate(serviceContext.getModifiedDate(now));
+				mdrRule.setModifiedDate(serviceContext.getModifiedDate(date));
 			}
 		}
 

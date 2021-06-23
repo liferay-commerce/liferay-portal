@@ -3468,25 +3468,25 @@ public class CPOptionCategoryPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (cpOptionCategory.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				cpOptionCategory.setCreateDate(now);
+				cpOptionCategory.setCreateDate(date);
 			}
 			else {
 				cpOptionCategory.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!cpOptionCategoryModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				cpOptionCategory.setModifiedDate(now);
+				cpOptionCategory.setModifiedDate(date);
 			}
 			else {
 				cpOptionCategory.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

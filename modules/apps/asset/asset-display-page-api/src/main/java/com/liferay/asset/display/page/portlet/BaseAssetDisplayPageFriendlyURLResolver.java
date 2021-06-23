@@ -74,6 +74,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.portlet.PortletMode;
 import javax.portlet.WindowState;
@@ -148,7 +150,7 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 		portal.setPageDescription(
 			HtmlUtil.unescape(
 				HtmlUtil.stripHtml(
-					_getMappedField(
+					_processMappedFieldTemplate(
 						layoutDisplayPageObjectProvider, locale,
 						layout.getTypeSettingsProperty("mapped-description"),
 						layoutDisplayPageObjectProvider::getDescription))),
@@ -158,7 +160,7 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 			layoutDisplayPageObjectProvider.getKeywords(locale),
 			httpServletRequest);
 		portal.setPageTitle(
-			_getMappedField(
+			_processMappedFieldTemplate(
 				layoutDisplayPageObjectProvider, locale,
 				layout.getTypeSettingsProperty("mapped-title"),
 				layoutDisplayPageObjectProvider::getTitle),
@@ -390,31 +392,6 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 		return layoutDisplayPageProvider;
 	}
 
-	private String _getMappedField(
-		LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider,
-		Locale locale, String mappedFieldName,
-		Function<Locale, String> defaultValueFunction) {
-
-		if (layoutDisplayPageObjectProvider != null) {
-			InfoItemFieldValuesProvider<Object> infoItemFieldValuesProvider =
-				infoItemServiceTracker.getFirstInfoItemService(
-					InfoItemFieldValuesProvider.class,
-					portal.getClassName(
-						layoutDisplayPageObjectProvider.getClassNameId()));
-
-			InfoFieldValue<Object> infoFieldValue =
-				infoItemFieldValuesProvider.getInfoItemFieldValue(
-					layoutDisplayPageObjectProvider.getDisplayObject(),
-					mappedFieldName);
-
-			if (infoFieldValue != null) {
-				return String.valueOf(infoFieldValue.getValue(locale));
-			}
-		}
-
-		return defaultValueFunction.apply(locale);
-	}
-
 	private LayoutQueryStringComposite
 		_getPortletFriendlyURLMapperLayoutQueryStringComposite(
 			String url, Map<String, String[]> params,
@@ -586,7 +563,55 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 		return GetterUtil.getLong(versions[0]);
 	}
 
+	private String _processMappedFieldTemplate(
+		LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider,
+		Locale locale, String template,
+		Function<Locale, String> defaultValueFunction) {
+
+		if ((layoutDisplayPageObjectProvider == null) ||
+			Validator.isNull(template)) {
+
+			return defaultValueFunction.apply(locale);
+		}
+
+		InfoItemFieldValuesProvider<Object> infoItemFieldValuesProvider =
+			infoItemServiceTracker.getFirstInfoItemService(
+				InfoItemFieldValuesProvider.class,
+				portal.getClassName(
+					layoutDisplayPageObjectProvider.getClassNameId()));
+
+		StringBuffer sb = new StringBuffer();
+
+		Matcher matcher = _pattern.matcher(template);
+
+		while (matcher.find()) {
+			String variableName = matcher.group(1);
+
+			InfoFieldValue<Object> infoFieldValue =
+				infoItemFieldValuesProvider.getInfoItemFieldValue(
+					layoutDisplayPageObjectProvider.getDisplayObject(),
+					variableName);
+
+			if (infoFieldValue != null) {
+				matcher.appendReplacement(
+					sb,
+					Matcher.quoteReplacement(
+						String.valueOf(infoFieldValue.getValue(locale))));
+			}
+			else {
+				matcher.appendReplacement(
+					sb, Matcher.quoteReplacement(variableName));
+			}
+		}
+
+		matcher.appendTail(sb);
+
+		return sb.toString();
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		BaseAssetDisplayPageFriendlyURLResolver.class);
+
+	private static final Pattern _pattern = Pattern.compile("\\$\\{([^}]+)\\}");
 
 }

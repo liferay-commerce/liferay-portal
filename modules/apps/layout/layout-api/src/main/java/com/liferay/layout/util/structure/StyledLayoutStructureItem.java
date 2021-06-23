@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.HashMap;
 import java.util.List;
@@ -94,8 +95,8 @@ public abstract class StyledLayoutStructureItem extends LayoutStructureItem {
 		return GetterUtil.getString(_getStyleProperty("borderRadius"));
 	}
 
-	public int getBorderWidth() {
-		return GetterUtil.getInteger(_getStyleProperty("borderWidth"));
+	public String getBorderWidth() {
+		return _getStringStyleProperty("borderWidth");
 	}
 
 	public String getContentDisplay() {
@@ -129,20 +130,6 @@ public abstract class StyledLayoutStructureItem extends LayoutStructureItem {
 
 	@Override
 	public JSONObject getItemConfigJSONObject() {
-		try {
-			Map<String, Object> defaultValues =
-				CommonStylesUtil.getDefaultStyleValues();
-
-			for (Map.Entry<String, Object> entry : defaultValues.entrySet()) {
-				if (!stylesJSONObject.has(entry.getKey())) {
-					stylesJSONObject.put(entry.getKey(), entry.getValue());
-				}
-			}
-		}
-		catch (Exception exception) {
-			_log.error("Unable to get default style values", exception);
-		}
-
 		JSONObject jsonObject = JSONUtil.put("styles", stylesJSONObject);
 
 		for (ViewportSize viewportSize : ViewportSize.values()) {
@@ -166,20 +153,20 @@ public abstract class StyledLayoutStructureItem extends LayoutStructureItem {
 		return GetterUtil.getString(_getStyleProperty("justify"));
 	}
 
-	public int getMarginBottom() {
-		return GetterUtil.getInteger(_getStyleProperty("marginBottom"));
+	public String getMarginBottom() {
+		return _getStringStyleProperty("marginBottom");
 	}
 
-	public int getMarginLeft() {
-		return GetterUtil.getInteger(_getStyleProperty("marginLeft"));
+	public String getMarginLeft() {
+		return _getStringStyleProperty("marginLeft");
 	}
 
-	public int getMarginRight() {
-		return GetterUtil.getInteger(_getStyleProperty("marginRight"));
+	public String getMarginRight() {
+		return _getStringStyleProperty("marginRight");
 	}
 
-	public int getMarginTop() {
-		return GetterUtil.getInteger(_getStyleProperty("marginTop"));
+	public String getMarginTop() {
+		return _getStringStyleProperty("marginTop");
 	}
 
 	public String getMaxHeight() {
@@ -198,28 +185,28 @@ public abstract class StyledLayoutStructureItem extends LayoutStructureItem {
 		return GetterUtil.getString(_getStyleProperty("minWidth"));
 	}
 
-	public int getOpacity() {
-		return GetterUtil.getInteger(_getStyleProperty("opacity"));
+	public String getOpacity() {
+		return _getStringStyleProperty("opacity");
 	}
 
 	public String getOverflow() {
 		return GetterUtil.getString(_getStyleProperty("overflow"));
 	}
 
-	public int getPaddingBottom() {
-		return GetterUtil.getInteger(_getStyleProperty("paddingBottom"));
+	public String getPaddingBottom() {
+		return _getStringStyleProperty("paddingBottom");
 	}
 
-	public int getPaddingLeft() {
-		return GetterUtil.getInteger(_getStyleProperty("paddingLeft"));
+	public String getPaddingLeft() {
+		return _getStringStyleProperty("paddingLeft");
 	}
 
-	public int getPaddingRight() {
-		return GetterUtil.getInteger(_getStyleProperty("paddingRight"));
+	public String getPaddingRight() {
+		return _getStringStyleProperty("paddingRight");
 	}
 
-	public int getPaddingTop() {
-		return GetterUtil.getInteger(_getStyleProperty("paddingTop"));
+	public String getPaddingTop() {
+		return _getStringStyleProperty("paddingTop");
 	}
 
 	public String getShadow() {
@@ -250,26 +237,13 @@ public abstract class StyledLayoutStructureItem extends LayoutStructureItem {
 	@Override
 	public void updateItemConfig(JSONObject itemConfigJSONObject) {
 		try {
-			List<String> availableStyleNames =
-				CommonStylesUtil.getAvailableStyleNames();
-
-			for (String styleName : availableStyleNames) {
-				if (itemConfigJSONObject.has(styleName)) {
-					stylesJSONObject.put(
-						styleName, itemConfigJSONObject.get(styleName));
-				}
-			}
+			_updateItemConfigValues(stylesJSONObject, itemConfigJSONObject);
 
 			if (itemConfigJSONObject.has("styles")) {
 				JSONObject newStylesJSONObject =
 					itemConfigJSONObject.getJSONObject("styles");
 
-				for (String styleName : availableStyleNames) {
-					if (newStylesJSONObject.has(styleName)) {
-						stylesJSONObject.put(
-							styleName, newStylesJSONObject.get(styleName));
-					}
-				}
+				_updateItemConfigValues(stylesJSONObject, newStylesJSONObject);
 			}
 
 			for (ViewportSize viewportSize : ViewportSize.values()) {
@@ -296,12 +270,8 @@ public abstract class StyledLayoutStructureItem extends LayoutStructureItem {
 						continue;
 					}
 
-					for (String styleName : availableStyleNames) {
-						if (newStylesJSONObject.has(styleName)) {
-							currentViewportStyleJSONObject.put(
-								styleName, newStylesJSONObject.get(styleName));
-						}
-					}
+					_updateItemConfigValues(
+						currentViewportStyleJSONObject, newStylesJSONObject);
 				}
 
 				viewportStyleJSONObjects.put(
@@ -386,6 +356,16 @@ public abstract class StyledLayoutStructureItem extends LayoutStructureItem {
 			styleColorJSONObject.getString("color", StringPool.BLANK));
 	}
 
+	private String _getStringStyleProperty(String propertyKey) {
+		Object object = _getStyleProperty(propertyKey);
+
+		if (Validator.isNull(object)) {
+			return StringPool.BLANK;
+		}
+
+		return String.valueOf(object);
+	}
+
 	private Object _getStyleProperty(String propertyKey) {
 		JSONObject configJSONObject = getItemConfigJSONObject();
 
@@ -402,6 +382,30 @@ public abstract class StyledLayoutStructureItem extends LayoutStructureItem {
 		}
 
 		return CommonStylesUtil.getDefaultStyleValue(propertyKey);
+	}
+
+	private void _updateItemConfigValues(
+			JSONObject currentJSONObject, JSONObject newJSONObject)
+		throws Exception {
+
+		List<String> availableStyleNames =
+			CommonStylesUtil.getAvailableStyleNames();
+
+		for (String styleName : availableStyleNames) {
+			if (newJSONObject.has(styleName)) {
+				Object styleValue = newJSONObject.get(styleName);
+
+				if (Objects.equals(
+						styleValue,
+						CommonStylesUtil.getDefaultStyleValue(styleName))) {
+
+					currentJSONObject.remove(styleName);
+				}
+				else {
+					currentJSONObject.put(styleName, styleValue);
+				}
+			}
+		}
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

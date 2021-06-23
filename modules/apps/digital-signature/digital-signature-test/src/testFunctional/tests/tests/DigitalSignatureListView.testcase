@@ -1,0 +1,123 @@
+@component-name = "portal-solutions"
+definition {
+
+	property portal.release = "true";
+	property portal.upstream = "true";
+	property testray.main.component.name = "Digital Signature";
+
+	setUp {
+		TestCase.setUpPortalInstance();
+
+		User.firstLoginUI();
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Configuration",
+			panel = "Control Panel",
+			portlet = "Instance Settings");
+
+		SystemSettings.gotoConfiguration(
+			configurationCategory = "Digital Signature",
+			configurationName = "Digital Signature Configuration",
+			configurationScope = "Virtual Instance Scope");
+
+		FormFields.enableCheckbox(fieldName = "enabled");
+	}
+
+	tearDown {
+		var testPortalInstance = PropsUtil.get("test.portal.instance");
+
+		if ("${testPortalInstance}" == "true") {
+			PortalInstances.tearDownCP();
+		}
+		else {
+			User.logoutPG();
+		}
+	}
+
+	@description = "This is a test for LPS-131712. Verify if its possible download envelopes"
+	@priority = "3"
+	test CanDownloadEnvelope {
+		DigitalSignature.enableDigitalSignature();
+
+		Navigator.openURL();
+
+		ProductMenu.gotoPortlet(
+			category = "Content & Data",
+			portlet = "Digital Signature");
+
+		var envelopeName = "Test";
+
+		Click(
+			envelopeName = "${envelopeName}",
+			locator1 = "DigitalSignatureListView#DIGITAL_SIGNATURE_ENVELOPE_NAME");
+
+		AssertElementPresent(locator1 = "DigitalSignatureListView#DIGITAL_SIGNATURE_DOWNLOAD_BUTTON");
+	}
+
+	@description = "This is a test for LPS-131712. Verify if is possible navigate between pages"
+	@priority = "3"
+	test CanNavigateBetweenPages {
+		DigitalSignature.enableDigitalSignature();
+
+		Navigator.openURL();
+
+		ProductMenu.gotoPortlet(
+			category = "Content & Data",
+			portlet = "Digital Signature");
+
+		AssertElementPresent(locator1 = "DigitalSignatureListView#DIGITAL_SIGNATURE_NAVIGATE_NEXT");
+	}
+
+	@description = "This is a test for LPS-131712. Verify if its possible view envelope details"
+	@priority = "4"
+	test CanViewEnvelopeDetails {
+		DigitalSignature.enableDigitalSignature();
+
+		Navigator.openURL();
+
+		ProductMenu.gotoPortlet(
+			category = "Content & Data",
+			portlet = "Digital Signature");
+
+		var envelopeName = "Test";
+
+		Click(
+			envelopeName = "${envelopeName}",
+			locator1 = "DigitalSignatureListView#DIGITAL_SIGNATURE_ENVELOPE_NAME");
+
+		AssertElementPresent(locator1 = "DigitalSignatureListView#DIGITAL_SIGNATURE_ENVELOPE_ID");
+	}
+
+	@description = "This is a test for LPS-131712. Verify if Digital Signature can be enabled"
+	@priority = "5"
+	test DigitalSignatureCanBeEnabled {
+		DigitalSignature.enableDigitalSignature();
+
+		Navigator.openURL();
+
+		ProductMenu.gotoPortlet(
+			category = "Content & Data",
+			portlet = "Digital Signature");
+
+		var dsStatus = "Sent";
+
+		AssertElementPresent(
+			dsStatus = "${dsStatus}",
+			locator1 = "DigitalSignatureListView#DIGITAL_SIGNATURE_STATUS");
+	}
+
+	@description = "This is a test for LPS-131712. Verify if have more recipients than one"
+	@priority = "3"
+	test HaveMoreRecipientsThanOne {
+		DigitalSignature.enableDigitalSignature();
+
+		Navigator.openURL();
+
+		ProductMenu.gotoPortlet(
+			category = "Content & Data",
+			portlet = "Digital Signature");
+
+		AssertElementPresent(locator1 = "DigitalSignatureListView#DIGITAL_SIGNATURE_RECIPIENTS_BADGE");
+	}
+
+}

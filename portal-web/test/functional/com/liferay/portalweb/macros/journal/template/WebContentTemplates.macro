@@ -119,6 +119,24 @@ definition {
 		SelectFrameTop();
 	}
 
+	macro copyCP {
+		WebContentTemplates.gotoTemplateEllipsisItem(
+			item = "Copy",
+			templateName = "${templateName}");
+
+		if (isSet(templateCopyName)) {
+			PortletEntry.inputName(name = "${templateCopyName}");
+		}
+
+		if (isSet(description)) {
+			PortletEntry.inputDescription(description = "${description}");
+		}
+
+		Click(locator1 = "Button#COPY");
+
+		Alert.viewSuccessMessage();
+	}
+
 	@summary = "Attempt to delete the template '${templateName}'"
 	macro deleteCP {
 		var key_ddlTemplateName = "${templateName}";
@@ -284,11 +302,7 @@ definition {
 
 	@summary = "Assert that the cards entry for template '${templateName}' is present"
 	macro viewCardsEntryCP {
-		var key_ddlTemplateName = "${templateName}";
-
-		AssertTextEquals(
-			locator1 = "DDMSelectTemplate#TEMPLATE_CARDS_NAME",
-			value1 = "${templateName}");
+		LexiconCard.viewCardTitle(card = "${templateName}");
 
 		if (isSet(templateSmallImage)) {
 			AssertVisible(

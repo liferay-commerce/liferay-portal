@@ -34,11 +34,7 @@ definition {
 	@priority = "3"
 	test AddAnAttachment {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CPCommerceProductMedia#AddAnAttachment";
-
-		// TODO Review
-
-		// TODO Fix Commerce tests that are skipping portal instances - COMMERCE-6586
+		property portal.upstream = "quarantine";
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -69,11 +65,7 @@ definition {
 
 	test AddAnImage {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CPCommerceProductMedia#AddAnImage";
-
-		// TODO Review
-
-		// TODO Fix Commerce tests that are skipping portal instances - COMMERCE-6586
+		property portal.upstream = "quarantine";
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -94,7 +86,7 @@ definition {
 	@priority = "3"
 	test AddAnImageToAnOption {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CPCommerceProductMedia#AddAnImageToAnOption";
+		property portal.upstream = "quarantine";
 
 		// TODO Review
 
@@ -152,11 +144,7 @@ definition {
 	@priority = "3"
 	test EditAnAttachment {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CPCommerceProductMedia#EditAnAttachment";
-
-		// TODO Review
-
-		// TODO Fix Commerce tests that are skipping portal instances - COMMERCE-6586
+		property portal.upstream = "quarantine";
 
 		ApplicationsMenu.gotoPortlet(
 			category = "Configuration",
@@ -247,7 +235,7 @@ definition {
 	@priority = "3"
 	test RemoveAnAttachment {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CPCommerceProductMedia#RemoveAnAttachment";
+		property portal.upstream = "quarantine";
 
 		// TODO Review
 
@@ -277,7 +265,7 @@ definition {
 	@priority = "3"
 	test RemoveAnImage {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CPCommerceProductMedia#RemoveAnImage";
+		property portal.upstream = "quarantine";
 
 		// TODO Review
 

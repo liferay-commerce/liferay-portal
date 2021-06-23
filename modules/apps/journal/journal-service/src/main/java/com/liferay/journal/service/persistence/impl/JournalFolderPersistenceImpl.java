@@ -7750,24 +7750,24 @@ public class JournalFolderPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (journalFolder.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				journalFolder.setCreateDate(now);
+				journalFolder.setCreateDate(date);
 			}
 			else {
-				journalFolder.setCreateDate(serviceContext.getCreateDate(now));
+				journalFolder.setCreateDate(serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!journalFolderModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				journalFolder.setModifiedDate(now);
+				journalFolder.setModifiedDate(date);
 			}
 			else {
 				journalFolder.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

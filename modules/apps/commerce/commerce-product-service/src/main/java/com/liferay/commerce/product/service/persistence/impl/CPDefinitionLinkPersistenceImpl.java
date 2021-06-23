@@ -4181,25 +4181,25 @@ public class CPDefinitionLinkPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (cpDefinitionLink.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				cpDefinitionLink.setCreateDate(now);
+				cpDefinitionLink.setCreateDate(date);
 			}
 			else {
 				cpDefinitionLink.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!cpDefinitionLinkModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				cpDefinitionLink.setModifiedDate(now);
+				cpDefinitionLink.setModifiedDate(date);
 			}
 			else {
 				cpDefinitionLink.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

@@ -4506,25 +4506,25 @@ public class LayoutClassedModelUsagePersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (layoutClassedModelUsage.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				layoutClassedModelUsage.setCreateDate(now);
+				layoutClassedModelUsage.setCreateDate(date);
 			}
 			else {
 				layoutClassedModelUsage.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!layoutClassedModelUsageModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				layoutClassedModelUsage.setModifiedDate(now);
+				layoutClassedModelUsage.setModifiedDate(date);
 			}
 			else {
 				layoutClassedModelUsage.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

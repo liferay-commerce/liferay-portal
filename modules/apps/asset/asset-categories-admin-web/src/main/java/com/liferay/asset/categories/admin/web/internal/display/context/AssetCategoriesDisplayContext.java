@@ -20,7 +20,7 @@ import com.liferay.asset.categories.admin.web.internal.constants.AssetCategories
 import com.liferay.asset.categories.admin.web.internal.constants.AssetCategoriesAdminWebKeys;
 import com.liferay.asset.categories.admin.web.internal.util.AssetCategoryTreePathComparator;
 import com.liferay.asset.categories.configuration.AssetCategoriesCompanyConfiguration;
-import com.liferay.asset.display.page.util.AssetDisplayPageUtil;
+import com.liferay.asset.display.page.portlet.AssetDisplayPageFriendlyURLProvider;
 import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetCategoryConstants;
@@ -39,8 +39,6 @@ import com.liferay.depot.service.DepotEntryServiceUtil;
 import com.liferay.exportimport.kernel.staging.permission.StagingPermissionUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
-import com.liferay.layout.display.page.LayoutDisplayPageProvider;
-import com.liferay.layout.display.page.LayoutDisplayPageProviderTracker;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -113,15 +111,11 @@ public class AssetCategoriesDisplayContext {
 		_themeDisplay = (ThemeDisplay)_httpServletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		LayoutDisplayPageProviderTracker layoutDisplayPageProviderTracker =
-			(LayoutDisplayPageProviderTracker)_httpServletRequest.getAttribute(
-				AssetCategoriesAdminWebKeys.
-					LAYOUT_DISPLAY_PAGE_PROVIDER_TRACKER);
-
-		_layoutDisplayPageProvider =
-			layoutDisplayPageProviderTracker.
-				getLayoutDisplayPageProviderByClassName(
-					AssetCategory.class.getName());
+		_assetDisplayPageFriendlyURLProvider =
+			(AssetDisplayPageFriendlyURLProvider)
+				_httpServletRequest.getAttribute(
+					AssetCategoriesAdminWebKeys.
+						ASSET_DISPLAY_PAGE_FRIENDLY_URL_PROVIDER);
 	}
 
 	public String getAddCategoryRedirect() throws PortalException {
@@ -422,30 +416,9 @@ public class AssetCategoriesDisplayContext {
 	public String getDisplayPageURL(AssetCategory category)
 		throws PortalException {
 
-		if (!AssetDisplayPageUtil.hasAssetDisplayPage(
-				category.getGroupId(),
-				PortalUtil.getClassNameId(AssetCategory.class.getName()),
-				category.getCategoryId(), 0) ||
-			(_layoutDisplayPageProvider == null)) {
-
-			return StringPool.BLANK;
-		}
-
-		StringBundler sb = new StringBundler(6);
-
-		sb.append(PortalUtil.getPortalURL(_httpServletRequest));
-
-		sb.append(_themeDisplay.getPathContext());
-		sb.append(_themeDisplay.getPathFriendlyURLPublic());
-
-		Group group = _themeDisplay.getScopeGroup();
-
-		sb.append(group.getFriendlyURL());
-
-		sb.append(_layoutDisplayPageProvider.getURLSeparator());
-		sb.append(category.getCategoryId());
-
-		return sb.toString();
+		return _assetDisplayPageFriendlyURLProvider.getFriendlyURL(
+			AssetCategory.class.getName(), category.getCategoryId(),
+			_themeDisplay);
 	}
 
 	public String getDisplayStyle() {
@@ -594,13 +567,13 @@ public class AssetCategoriesDisplayContext {
 				_httpServletRequest, AssetCategory.class.getName(),
 				PortletProvider.Action.BROWSE)
 		).setParameter(
-			"allowedSelectVocabularies", Boolean.TRUE.toString()
+			"allowedSelectVocabularies", true
 		).setParameter(
 			"eventName", _renderResponse.getNamespace() + "selectCategory"
 		).setParameter(
-			"moveCategory", Boolean.TRUE.toString()
+			"moveCategory", true
 		).setParameter(
-			"singleSelect", Boolean.TRUE.toString()
+			"singleSelect", true
 		).setParameter(
 			"vocabularyIds",
 			() -> {
@@ -860,6 +833,24 @@ public class AssetCategoriesDisplayContext {
 		return false;
 	}
 
+	public boolean isShowSelectAssetDisplayPage() {
+		if (_showSelectAssetDisplayPage != null) {
+			return _showSelectAssetDisplayPage;
+		}
+
+		boolean showSelectAssetDisplayPage = true;
+
+		Group group = _themeDisplay.getScopeGroup();
+
+		if (group.isCompany() || group.isDepot()) {
+			showSelectAssetDisplayPage = false;
+		}
+
+		_showSelectAssetDisplayPage = showSelectAssetDisplayPage;
+
+		return _showSelectAssetDisplayPage;
+	}
+
 	private long _getDefaultVocabularyId() throws PortalException {
 		List<AssetVocabulary> vocabularies = getVocabularies();
 
@@ -943,6 +934,8 @@ public class AssetCategoriesDisplayContext {
 
 	private final AssetCategoriesAdminWebConfiguration
 		_assetCategoriesAdminWebConfiguration;
+	private final AssetDisplayPageFriendlyURLProvider
+		_assetDisplayPageFriendlyURLProvider;
 	private SearchContainer<AssetCategory> _categoriesSearchContainer;
 	private AssetCategory _category;
 	private Long _categoryId;
@@ -950,13 +943,13 @@ public class AssetCategoriesDisplayContext {
 	private final HttpServletRequest _httpServletRequest;
 	private Map<String, List<AssetVocabulary>> _inheritedVocabularies;
 	private String _keywords;
-	private final LayoutDisplayPageProvider _layoutDisplayPageProvider;
 	private String _navigation;
 	private String _orderByCol;
 	private String _orderByType;
 	private final RenderRequest _renderRequest;
 	private final RenderResponse _renderResponse;
 	private String _selectCategoryURL;
+	private Boolean _showSelectAssetDisplayPage;
 	private final ThemeDisplay _themeDisplay;
 	private List<AssetVocabulary> _vocabularies;
 	private SearchContainer<AssetVocabulary> _vocabulariesSearchContainer;

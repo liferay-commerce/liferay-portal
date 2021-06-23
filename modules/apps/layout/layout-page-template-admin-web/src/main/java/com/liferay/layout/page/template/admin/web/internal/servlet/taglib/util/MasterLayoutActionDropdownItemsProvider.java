@@ -341,7 +341,7 @@ public class MasterLayoutActionDropdownItemsProvider {
 				).setRedirect(
 					_themeDisplay.getURLCurrent()
 				).setParameter(
-					"defaultTemplate", Boolean.FALSE.toString()
+					"defaultTemplate", false
 				).setParameter(
 					"layoutPageTemplateEntryId",
 					defaultLayoutPageTemplateEntry.
@@ -377,7 +377,7 @@ public class MasterLayoutActionDropdownItemsProvider {
 				).setRedirect(
 					_themeDisplay.getURLCurrent()
 				).setParameter(
-					"defaultTemplate", Boolean.TRUE.toString()
+					"defaultTemplate", true
 				).setParameter(
 					"layoutPageTemplateEntryId",
 					_layoutPageTemplateEntry.getLayoutPageTemplateEntryId()

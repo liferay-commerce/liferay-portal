@@ -2,11 +2,13 @@
 <head>
 <title>Message</title>
 </head>
+
 <body>
-<table cellpadding="1" cellspacing="1" border="1">
+<table border="1" cellpadding="1" cellspacing="1">
 <thead>
 <tr><td rowspan="1" colspan="3">Message</td></tr>
 </thead>
+
 <tbody>
 <tr>
 	<td>ALERT_DISMISSIBLE</td>
@@ -59,6 +61,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>ROLE_EMPTY_MUTED_INFO</td>
+	<td>//div[h3[*[*[contains(text(),'${key_RoleType}')]]]]//div[*[contains(@class,'text-muted')]or contains(@class,'text-muted')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>EMPTY_INFO_DEPOT</td>
 	<td>//p[contains(@class,'text-muted')]</td>
 	<td></td>
@@ -85,7 +92,7 @@
 </tr>
 <tr>
 	<td>ERROR</td>
-	<td>//div[contains(@class,'alert') and (contains(@class,'alert-error') or contains(@class,'alert-danger'))]</td>
+	<td>//div[contains(@class,'alert') and (contains(@class,'alert-error') or contains(@class,'alert-danger'))][not(contains(@style,'display: none'))]</td>
 	<td></td>
 </tr>
 <tr>
@@ -376,6 +383,11 @@
 <tr>
 	<td>SUCCESS_RESTORE_LOCATION</td>
 	<td>//div[@class='portlet-body']/div/em[2]/a[contains(.,'${key_assetRestoreLocation}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SUCCESS_SPECIFIC_FORM_FIELD_REQUIRED</td>
+	<td>//div[@class='form-group' and contains(.,'${key_fieldName}')]//div[contains(@class,'form-feedback-item')]</td>
 	<td></td>
 </tr>
 <tr>

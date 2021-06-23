@@ -29,6 +29,9 @@ module.exports = {
 		bundler: {
 			config: {
 				imports: {
+					'@liferay/frontend-js-a11y-web': {
+						'/': '*',
+					},
 					'@liferay/frontend-js-react-web': {
 						'/': '*',
 						classnames: '*',
@@ -43,9 +46,6 @@ module.exports = {
 						'/': '*',
 					},
 					'@liferay/frontend-taglib': {
-						'/': '*',
-					},
-					'app-builder-web': {
 						'/': '*',
 					},
 					'asset-taglib': {

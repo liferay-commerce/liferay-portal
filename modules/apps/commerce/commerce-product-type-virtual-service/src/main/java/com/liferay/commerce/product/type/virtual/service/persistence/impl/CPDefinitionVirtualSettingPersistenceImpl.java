@@ -2008,25 +2008,25 @@ public class CPDefinitionVirtualSettingPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (cpDefinitionVirtualSetting.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				cpDefinitionVirtualSetting.setCreateDate(now);
+				cpDefinitionVirtualSetting.setCreateDate(date);
 			}
 			else {
 				cpDefinitionVirtualSetting.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!cpDefinitionVirtualSettingModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				cpDefinitionVirtualSetting.setModifiedDate(now);
+				cpDefinitionVirtualSetting.setModifiedDate(date);
 			}
 			else {
 				cpDefinitionVirtualSetting.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

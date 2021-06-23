@@ -215,8 +215,8 @@ public class AssetPublisherPortletToolbarContributor
 
 		PortletURL portletURL = PortletURLBuilder.create(
 			assetPublisherAddItemHolder.getPortletURL()
-		).setParameter(
-			"portletResource", AssetPublisherPortletKeys.ASSET_PUBLISHER
+		).setPortletResource(
+			AssetPublisherPortletKeys.ASSET_PUBLISHER
 		).build();
 
 		boolean addDisplayPageParameter =

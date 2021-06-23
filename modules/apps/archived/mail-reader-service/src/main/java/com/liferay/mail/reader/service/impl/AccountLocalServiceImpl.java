@@ -52,7 +52,7 @@ public class AccountLocalServiceImpl extends AccountLocalServiceBaseImpl {
 		throws PortalException {
 
 		User user = userLocalService.getUser(userId);
-		Date now = new Date();
+		Date date = new Date();
 
 		long accountId = counterLocalService.increment();
 
@@ -61,8 +61,8 @@ public class AccountLocalServiceImpl extends AccountLocalServiceBaseImpl {
 		account.setCompanyId(user.getCompanyId());
 		account.setUserId(user.getUserId());
 		account.setUserName(user.getFullName());
-		account.setCreateDate(now);
-		account.setModifiedDate(now);
+		account.setCreateDate(date);
+		account.setModifiedDate(date);
 		account.setAddress(address);
 		account.setPersonalName(personalName);
 		account.setProtocol(protocol);

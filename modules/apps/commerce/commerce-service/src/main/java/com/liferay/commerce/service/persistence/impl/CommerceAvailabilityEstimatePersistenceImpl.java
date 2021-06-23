@@ -2005,25 +2005,25 @@ public class CommerceAvailabilityEstimatePersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commerceAvailabilityEstimate.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commerceAvailabilityEstimate.setCreateDate(now);
+				commerceAvailabilityEstimate.setCreateDate(date);
 			}
 			else {
 				commerceAvailabilityEstimate.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commerceAvailabilityEstimateModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commerceAvailabilityEstimate.setModifiedDate(now);
+				commerceAvailabilityEstimate.setModifiedDate(date);
 			}
 			else {
 				commerceAvailabilityEstimate.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

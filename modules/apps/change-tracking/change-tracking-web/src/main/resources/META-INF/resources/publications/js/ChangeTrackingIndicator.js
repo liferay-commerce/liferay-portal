@@ -390,19 +390,18 @@ const PublicationsSearchContainer = ({
 						title={Liferay.Language.get('reverse-sort-direction')}
 					>
 						<ClayButton
-							className={
-								'nav-link nav-link-monospaced ' +
-								(ascending
-									? 'order-arrow-down-active'
-									: 'order-arrow-up-active')
-							}
+							className="nav-link nav-link-monospaced"
 							disabled={filterDisabled}
 							displayType="unstyled"
 							onClick={() => setAscending(!ascending)}
 						>
 							<ClayIcon
 								spritemap={spritemap}
-								symbol="order-arrow"
+								symbol={
+									ascending
+										? 'order-list-down'
+										: 'order-list-up'
+								}
 							/>
 						</ClayButton>
 					</ClayManagementToolbar.Item>
@@ -706,10 +705,8 @@ export default ({
 	orderByAscending,
 	orderByColumn,
 	preferencesPrefix,
-	publishDropdownItem,
 	reviewDropdownItem,
 	saveDisplayPreferenceURL,
-	scheduleDropdownItem,
 	spritemap,
 	title,
 }) => {
@@ -757,15 +754,6 @@ export default ({
 	if (reviewDropdownItem) {
 		dropdownItems.push({type: 'divider'});
 		dropdownItems.push(reviewDropdownItem);
-	}
-
-	if (publishDropdownItem) {
-		dropdownItems.push({type: 'divider'});
-		dropdownItems.push(publishDropdownItem);
-	}
-
-	if (scheduleDropdownItem) {
-		dropdownItems.push(scheduleDropdownItem);
 	}
 
 	/* eslint-disable no-unused-vars */
@@ -862,62 +850,200 @@ export default ({
 	};
 
 	const getListItem = (entry, fetchData) => {
+		const dropdownItems = [];
+
+		let itemField = (
+			<ClayList.ItemField
+				className="font-italic"
+				data-tooltip-align="top"
+				expand
+				title={Liferay.Language.get(
+					'already-working-on-this-publication'
+				)}
+			>
+				<ClayList.ItemTitle>{entry.name}</ClayList.ItemTitle>
+				<ClayList.ItemText subtext>
+					{entry.description}
+				</ClayList.ItemText>
+			</ClayList.ItemField>
+		);
+
 		if (entry.checkoutURL) {
-			return (
-				<ClayList.Item flex>
-					<ClayList.ItemField>
-						{renderUserPortrait(entry, fetchData.userInfo)}
-					</ClayList.ItemField>
-					<ClayList.ItemField>
-						<a
-							onClick={() => {
-								AUI().use('liferay-portlet-url', () => {
-									const portletURL = Liferay.PortletURL.createURL(
-										entry.checkoutURL
-									);
+			dropdownItems.push({
+				label: Liferay.Language.get('work-on-publication'),
+				onClick: () => {
+					AUI().use('liferay-portlet-url', () => {
+						const portletURL = Liferay.PortletURL.createURL(
+							entry.checkoutURL
+						);
 
-									portletURL.setParameter(
-										'redirect',
-										window.location.pathname +
-											window.location.search
-									);
+						portletURL.setParameter(
+							'redirect',
+							window.location.pathname + window.location.search
+						);
 
-									submitForm(
-										document.hrefFm,
-										portletURL.toString()
-									);
-								});
-							}}
-						>
-							<ClayList.ItemTitle>
-								{entry.name}
-							</ClayList.ItemTitle>
-							<ClayList.ItemText subtext>
-								{entry.description}
-							</ClayList.ItemText>
-						</a>
-					</ClayList.ItemField>
-				</ClayList.Item>
+						submitForm(document.hrefFm, portletURL.toString());
+					});
+				},
+				symbolLeft: 'radio-button',
+			});
+
+			itemField = (
+				<ClayList.ItemField expand>
+					<a
+						onClick={() => {
+							AUI().use('liferay-portlet-url', () => {
+								const portletURL = Liferay.PortletURL.createURL(
+									entry.checkoutURL
+								);
+
+								portletURL.setParameter(
+									'redirect',
+									window.location.pathname +
+										window.location.search
+								);
+
+								submitForm(
+									document.hrefFm,
+									portletURL.toString()
+								);
+							});
+						}}
+					>
+						<ClayList.ItemTitle>{entry.name}</ClayList.ItemTitle>
+						<ClayList.ItemText subtext>
+							{entry.description}
+						</ClayList.ItemText>
+					</a>
+				</ClayList.ItemField>
 			);
 		}
+		else if (entry.readOnly) {
+			itemField = (
+				<ClayList.ItemField expand>
+					<ClayButton
+						data-tooltip-align="top"
+						disabled
+						displayType="unstyled"
+						title={Liferay.Language.get(
+							'you-do-not-have-permission-to-update-this-publication'
+						)}
+					>
+						<ClayList.ItemTitle>{entry.name}</ClayList.ItemTitle>
+						<ClayList.ItemText subtext>
+							{entry.description}
+						</ClayList.ItemText>
+					</ClayButton>
+				</ClayList.ItemField>
+			);
+		}
+
+		dropdownItems.push({
+			label: Liferay.Language.get('review-changes'),
+			onClick: () => {
+				AUI().use('liferay-portlet-url', () => {
+					const portletURL = Liferay.PortletURL.createURL(
+						entry.viewURL
+					);
+
+					portletURL.setParameter(
+						'redirect',
+						window.location.pathname + window.location.search
+					);
+
+					submitForm(document.hrefFm, portletURL.toString());
+				});
+			},
+			symbolLeft: 'list-ul',
+		});
 
 		return (
 			<ClayList.Item flex>
 				<ClayList.ItemField>
 					{renderUserPortrait(entry, fetchData.userInfo)}
 				</ClayList.ItemField>
-				<ClayList.ItemField
-					className="font-italic"
-					data-tooltip-align="top"
-					title={Liferay.Language.get(
-						'already-working-on-this-publication'
-					)}
-				>
-					<ClayList.ItemTitle>{entry.name}</ClayList.ItemTitle>
-					<ClayList.ItemText subtext>
-						{entry.description}
-					</ClayList.ItemText>
-				</ClayList.ItemField>
+				{itemField}
+				{entry.viewURL && (
+					<>
+						<ClayList.ItemField>
+							<ClayList.QuickActionMenu>
+								{entry.checkoutURL && (
+									<ClayList.QuickActionMenu.Item
+										data-tooltip-align="top"
+										onClick={() => {
+											AUI().use(
+												'liferay-portlet-url',
+												() => {
+													const portletURL = Liferay.PortletURL.createURL(
+														entry.checkoutURL
+													);
+
+													portletURL.setParameter(
+														'redirect',
+														window.location
+															.pathname +
+															window.location
+																.search
+													);
+
+													submitForm(
+														document.hrefFm,
+														portletURL.toString()
+													);
+												}
+											);
+										}}
+										spritemap={spritemap}
+										symbol="radio-button"
+										title={Liferay.Language.get(
+											'work-on-publication'
+										)}
+									/>
+								)}
+								<ClayList.QuickActionMenu.Item
+									data-tooltip-align="top"
+									onClick={() => {
+										AUI().use('liferay-portlet-url', () => {
+											const portletURL = Liferay.PortletURL.createURL(
+												entry.viewURL
+											);
+
+											portletURL.setParameter(
+												'redirect',
+												window.location.pathname +
+													window.location.search
+											);
+
+											submitForm(
+												document.hrefFm,
+												portletURL.toString()
+											);
+										});
+									}}
+									spritemap={spritemap}
+									symbol="list-ul"
+									title={Liferay.Language.get(
+										'review-changes'
+									)}
+								/>
+							</ClayList.QuickActionMenu>
+						</ClayList.ItemField>
+						<ClayList.ItemField>
+							<ClayDropDownWithItems
+								alignmentPosition={Align.BottomLeft}
+								items={dropdownItems}
+								trigger={
+									<ClayButtonWithIcon
+										displayType="unstyled"
+										small
+										spritemap={spritemap}
+										symbol="ellipsis-v"
+									/>
+								}
+							/>
+						</ClayList.ItemField>
+					</>
+				)}
 			</ClayList.Item>
 		);
 	};

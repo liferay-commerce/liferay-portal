@@ -4394,25 +4394,25 @@ public class CommerceWishListPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commerceWishList.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commerceWishList.setCreateDate(now);
+				commerceWishList.setCreateDate(date);
 			}
 			else {
 				commerceWishList.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commerceWishListModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commerceWishList.setModifiedDate(now);
+				commerceWishList.setModifiedDate(date);
 			}
 			else {
 				commerceWishList.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

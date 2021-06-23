@@ -27,7 +27,10 @@ import org.osgi.service.component.annotations.Component;
  * @author Marcela Cunha
  */
 @Component(
-	immediate = true, property = "ddm.validation.data.type=string",
+	immediate = true,
+	property = {
+		"ddm.validation.data.type=string", "ddm.validation.ranking:Float=3"
+	},
 	service = DDMValidation.class
 )
 public class IsURLDDMValidation implements DDMValidation {
@@ -48,11 +51,6 @@ public class IsURLDDMValidation implements DDMValidation {
 	@Override
 	public String getParameterMessage(Locale locale) {
 		return StringPool.BLANK;
-	}
-
-	@Override
-	public String getRegex() {
-		return "/^isURL\\((.+)\\)$/";
 	}
 
 	@Override

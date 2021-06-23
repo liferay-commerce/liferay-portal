@@ -47,7 +47,7 @@ public class KaleoActionLocalServiceImpl
 		throws PortalException {
 
 		User user = userLocalService.getUser(serviceContext.getGuestOrUserId());
-		Date now = new Date();
+		Date date = new Date();
 
 		long kaleoActionId = counterLocalService.increment();
 
@@ -56,8 +56,8 @@ public class KaleoActionLocalServiceImpl
 		kaleoAction.setCompanyId(user.getCompanyId());
 		kaleoAction.setUserId(user.getUserId());
 		kaleoAction.setUserName(user.getFullName());
-		kaleoAction.setCreateDate(now);
-		kaleoAction.setModifiedDate(now);
+		kaleoAction.setCreateDate(date);
+		kaleoAction.setModifiedDate(date);
 		kaleoAction.setKaleoClassName(kaleoClassName);
 		kaleoAction.setKaleoClassPK(kaleoClassPK);
 		kaleoAction.setKaleoDefinitionId(kaleoDefinitionId);

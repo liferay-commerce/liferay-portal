@@ -942,25 +942,25 @@ public class WeDeployAuthTokenPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (weDeployAuthToken.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				weDeployAuthToken.setCreateDate(now);
+				weDeployAuthToken.setCreateDate(date);
 			}
 			else {
 				weDeployAuthToken.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!weDeployAuthTokenModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				weDeployAuthToken.setModifiedDate(now);
+				weDeployAuthToken.setModifiedDate(date);
 			}
 			else {
 				weDeployAuthToken.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

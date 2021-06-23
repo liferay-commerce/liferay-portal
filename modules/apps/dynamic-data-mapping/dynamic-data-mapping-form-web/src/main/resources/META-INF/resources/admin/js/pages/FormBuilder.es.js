@@ -45,7 +45,6 @@ import {submitEmailContent} from '../util/submitEmailContent.es';
 export const FormBuilder = () => {
 	const {
 		autocompleteUserURL,
-		formInstanceId,
 		portletNamespace,
 		publishFormInstanceURL,
 		published,
@@ -144,6 +143,10 @@ export const FormBuilder = () => {
 				({fieldName}) => fieldName === 'requireAuthentication'
 			);
 
+			const formInstanceId = document.querySelector(
+				`#${portletNamespace}formInstanceId`
+			).value;
+
 			return createFormURL(path, {
 				formInstanceId,
 				requireAuthentication,
@@ -151,7 +154,7 @@ export const FormBuilder = () => {
 				sharedFormURL,
 			});
 		},
-		[formInstanceId, restrictedFormURL, sharedFormURL]
+		[portletNamespace, restrictedFormURL, sharedFormURL]
 	);
 
 	useEffect(() => {
@@ -183,9 +186,9 @@ export const FormBuilder = () => {
 			event.preventDefault();
 
 			try {
-				const url = await getFormUrl('/preview');
-
 				await doSave(true);
+
+				const url = await getFormUrl('/preview');
 
 				window.open(url, '_blank');
 			}

@@ -835,25 +835,25 @@ public class CommerceDiscountRulePersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (commerceDiscountRule.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				commerceDiscountRule.setCreateDate(now);
+				commerceDiscountRule.setCreateDate(date);
 			}
 			else {
 				commerceDiscountRule.setCreateDate(
-					serviceContext.getCreateDate(now));
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!commerceDiscountRuleModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				commerceDiscountRule.setModifiedDate(now);
+				commerceDiscountRule.setModifiedDate(date);
 			}
 			else {
 				commerceDiscountRule.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

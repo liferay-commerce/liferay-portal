@@ -95,12 +95,24 @@ public class JavaClassNameCheck extends BaseJavaTermCheck {
 		List<String> enforceImplementedClassNames = getAttributeValues(
 			_ENFORCE_IMPLEMENTED_CLASS_NAMES_KEY, absolutePath);
 
+		outerLoop:
 		for (String implementedClassName : enforceImplementedClassNames) {
 			if (!implementedClassNames.contains(implementedClassName)) {
 				continue;
 			}
 
-			if (!className.endsWith(implementedClassName)) {
+			for (String extendedClassName : javaClass.getExtendedClassNames()) {
+				if (extendedClassName.startsWith("Base") &&
+					!extendedClassName.endsWith(implementedClassName)) {
+
+					continue outerLoop;
+				}
+			}
+
+			if (!className.endsWith(implementedClassName) &&
+				((implementedClassNames.size() == 1) ||
+				 implementedClassName.equals("ScreenNavigationCategory"))) {
+
 				addMessage(
 					fileName,
 					StringBundler.concat(

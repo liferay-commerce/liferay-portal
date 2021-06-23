@@ -80,7 +80,7 @@ public class CalendarLocalServiceImpl extends CalendarLocalServiceBaseImpl {
 			color = CalendarServiceConfigurationValues.CALENDAR_COLOR_DEFAULT;
 		}
 
-		Date now = new Date();
+		Date date = new Date();
 
 		validate(nameMap);
 
@@ -93,8 +93,8 @@ public class CalendarLocalServiceImpl extends CalendarLocalServiceBaseImpl {
 		calendar.setCompanyId(user.getCompanyId());
 		calendar.setUserId(user.getUserId());
 		calendar.setUserName(user.getFullName());
-		calendar.setCreateDate(serviceContext.getCreateDate(now));
-		calendar.setModifiedDate(serviceContext.getModifiedDate(now));
+		calendar.setCreateDate(serviceContext.getCreateDate(date));
+		calendar.setModifiedDate(serviceContext.getModifiedDate(date));
 		calendar.setCalendarResourceId(calendarResourceId);
 		calendar.setNameMap(nameMap);
 		calendar.setDescriptionMap(descriptionMap);

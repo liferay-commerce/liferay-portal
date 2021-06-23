@@ -240,7 +240,7 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 
 		User user = userLocalService.getUser(userId);
 		WikiNode node = wikiNodePersistence.findByPrimaryKey(nodeId);
-		Date now = new Date();
+		Date date = new Date();
 
 		long pageId = counterLocalService.increment();
 
@@ -285,7 +285,7 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 		page.setRedirectTitle(redirectTitle);
 		page.setStatus(WorkflowConstants.STATUS_DRAFT);
 		page.setStatusByUserId(userId);
-		page.setStatusDate(serviceContext.getModifiedDate(now));
+		page.setStatusDate(serviceContext.getModifiedDate(date));
 		page.setExpandoBridgeAttributes(serviceContext);
 
 		page = wikiPagePersistence.update(page);
@@ -306,7 +306,7 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 		// Node
 
 		wikiPageLocalService.updateLastPostDate(
-			node.getNodeId(), serviceContext.getModifiedDate(now));
+			node.getNodeId(), serviceContext.getModifiedDate(date));
 
 		// Asset
 
@@ -3325,7 +3325,7 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 			_wikiPageResourceLocalService.getPageResourcePrimKey(
 				oldPage.getGroupId(), oldPage.getNodeId(), oldPage.getTitle());
 
-		Date now = new Date();
+		Date date = new Date();
 
 		WikiPage page = oldPage;
 
@@ -3380,7 +3380,7 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 		// Node
 
 		wikiPageLocalService.updateLastPostDate(
-			nodeId, serviceContext.getModifiedDate(now));
+			nodeId, serviceContext.getModifiedDate(date));
 
 		// Asset
 

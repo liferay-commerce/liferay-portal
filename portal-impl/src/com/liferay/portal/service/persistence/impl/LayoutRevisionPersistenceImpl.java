@@ -8005,24 +8005,25 @@ public class LayoutRevisionPersistenceImpl
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Date now = new Date();
+		Date date = new Date();
 
 		if (isNew && (layoutRevision.getCreateDate() == null)) {
 			if (serviceContext == null) {
-				layoutRevision.setCreateDate(now);
+				layoutRevision.setCreateDate(date);
 			}
 			else {
-				layoutRevision.setCreateDate(serviceContext.getCreateDate(now));
+				layoutRevision.setCreateDate(
+					serviceContext.getCreateDate(date));
 			}
 		}
 
 		if (!layoutRevisionModelImpl.hasSetModifiedDate()) {
 			if (serviceContext == null) {
-				layoutRevision.setModifiedDate(now);
+				layoutRevision.setModifiedDate(date);
 			}
 			else {
 				layoutRevision.setModifiedDate(
-					serviceContext.getModifiedDate(now));
+					serviceContext.getModifiedDate(date));
 			}
 		}
 

@@ -195,7 +195,7 @@ public class CreateAnonymousAccountMVCActionCommand
 		).setMVCRenderCommandName(
 			"/login/login_redirect"
 		).setParameter(
-			"anonymousUser", Boolean.TRUE.toString()
+			"anonymousUser", true
 		).setParameter(
 			"emailAddress", emailAddress
 		).setWindowState(

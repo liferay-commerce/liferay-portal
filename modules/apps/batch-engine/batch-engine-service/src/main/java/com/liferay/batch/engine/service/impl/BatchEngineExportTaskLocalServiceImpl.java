@@ -68,10 +68,23 @@ public class BatchEngineExportTaskLocalServiceImpl
 
 	@Override
 	public List<BatchEngineExportTask> getBatchEngineExportTasks(
+		long companyId, int start, int end) {
+
+		return batchEngineExportTaskPersistence.findByCompanyId(
+			companyId, start, end);
+	}
+
+	@Override
+	public List<BatchEngineExportTask> getBatchEngineExportTasks(
 		String executeStatus) {
 
 		return batchEngineExportTaskPersistence.findByExecuteStatus(
 			executeStatus);
+	}
+
+	@Override
+	public int getBatchEngineExportTasksCount(long companyId) {
+		return batchEngineExportTaskPersistence.countByCompanyId(companyId);
 	}
 
 }

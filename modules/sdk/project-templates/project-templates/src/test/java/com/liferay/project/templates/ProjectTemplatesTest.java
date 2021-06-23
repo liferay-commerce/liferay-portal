@@ -81,26 +81,6 @@ public class ProjectTemplatesTest implements BaseProjectTemplatesTestCase {
 			"--dependency-management-enabled");
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testBuildTemplateLiferayVersionInvalid62() throws Exception {
-		_buildTemplateWithGradle(
-			"mvc-portlet", "test", "--liferay-version", "6.2");
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testBuildTemplateLiferayVersionInvalid70test()
-		throws Exception {
-
-		_buildTemplateWithGradle(
-			"mvc-portlet", "test", "--liferay-version", "7.0test");
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testBuildTemplateLiferayVersionInvalid80() throws Exception {
-		_buildTemplateWithGradle(
-			"mvc-portlet", "test", "--liferay-version", "8.0.0");
-	}
-
 	@Test
 	public void testBuildTemplateLiferayVersionValid70() throws Exception {
 		_buildTemplateWithGradle(
@@ -108,9 +88,60 @@ public class ProjectTemplatesTest implements BaseProjectTemplatesTestCase {
 	}
 
 	@Test
+	public void testBuildTemplateLiferayVersionValid70Maven() throws Exception {
+		_buildTemplateWithMaven(
+			"mvc-portlet", "test", "-DliferayVersion=7.0.6", "-DclassName=Foo",
+			"-Dpackage=foo.portlet");
+	}
+
+	@Test
+	public void testBuildTemplateLiferayVersionValid80() throws Exception {
+		_buildTemplateWithGradle(
+			"mvc-portlet", "test", "--liferay-version", "8.0.0");
+	}
+
+	@Test
 	public void testBuildTemplateLiferayVersionValid712() throws Exception {
 		_buildTemplateWithGradle(
 			"mvc-portlet", "test", "--liferay-version", "7.1.2");
+	}
+
+	@Test
+	public void testBuildTemplateLiferayVersionValid7200() throws Exception {
+		_buildTemplateWithGradle(
+			"mvc-portlet", "test", "--liferay-version", "7.20.0");
+	}
+
+	@Test
+	public void testBuildTemplateLiferayVersionValid7200Maven()
+		throws Exception {
+
+		_buildTemplateWithMaven(
+			"mvc-portlet", "test", "-DliferayVersion=7.20.0", "-DclassName=Foo",
+			"-Dpackage=foo.portlet");
+	}
+
+	@Test
+	public void testBuildTemplateLiferayVersionValid7310() throws Exception {
+		_buildTemplateWithGradle(
+			"mvc-portlet", "test", "--liferay-version", "7.3.10");
+	}
+
+	@Test
+	public void testBuildTemplateLiferayVersionValid7310Maven()
+		throws Exception {
+
+		_buildTemplateWithMaven(
+			"mvc-portlet", "test", "-DliferayVersion=7.3.10", "-DclassName=Foo",
+			"-Dpackage=foo.portlet");
+	}
+
+	@Test
+	public void testBuildTemplateLiferayVersionValidLiferay10()
+		throws Exception {
+
+		_buildTemplateWithGradle(
+			"mvc-portlet", "test", "--liferay-version", "10.0.0");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -206,6 +237,16 @@ public class ProjectTemplatesTest implements BaseProjectTemplatesTestCase {
 		throws Exception {
 
 		return buildTemplateWithGradle(temporaryFolder, template, name, args);
+	}
+
+	private File _buildTemplateWithMaven(
+			String template, String name, String... args)
+		throws Exception {
+
+		String groupId = "com.liferay";
+
+		return buildTemplateWithMaven(
+			temporaryFolder, template, name, groupId, mavenExecutor, args);
 	}
 
 	private void _testBuildTemplateWithWorkspace(

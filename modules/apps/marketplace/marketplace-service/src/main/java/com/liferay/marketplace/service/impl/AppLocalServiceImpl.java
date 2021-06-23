@@ -358,7 +358,7 @@ public class AppLocalServiceImpl extends AppLocalServiceBaseImpl {
 		// App
 
 		User user = userLocalService.fetchUser(userId);
-		Date now = new Date();
+		Date date = new Date();
 
 		validate(title, version);
 
@@ -376,8 +376,8 @@ public class AppLocalServiceImpl extends AppLocalServiceBaseImpl {
 			app.setUserName(user.getFullName());
 		}
 
-		app.setCreateDate(now);
-		app.setModifiedDate(now);
+		app.setCreateDate(date);
+		app.setModifiedDate(date);
 		app.setRemoteAppId(remoteAppId);
 		app.setTitle(title);
 		app.setDescription(description);
