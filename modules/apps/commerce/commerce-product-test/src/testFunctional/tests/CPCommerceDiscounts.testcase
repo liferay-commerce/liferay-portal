@@ -29,7 +29,7 @@ definition {
 	@description = "This is a test for COMMERCE-6231. Discount lifecycle"
 	@priority = "3"
 	test AddEditAndDeleteDiscountEntry {
-		property portal.acceptance = "false";
+		property portal.acceptance = "Intern Test";
 		property test.name.skip.portal.instance ="CPCommerceDiscounts#AddEditAndDeleteDiscountEntry";
 
 		// TODO Review
@@ -156,7 +156,6 @@ definition {
 		MenuItem.click(menuItem = "Delete");
 
 		Alert.viewSuccessMessage();
-		
 	}
 
 	@description = "This is a test for COMMERCE-6232. Discount Rules lifecycle"
