@@ -1585,6 +1585,7 @@ public class CommerceOrderItemLocalServiceTest {
 	@Inject
 	private CommerceCatalogLocalService _commerceCatalogLocalService;
 
+	@DeleteAfterTestRun
 	private CommerceChannel _commerceChannel;
 	private CommerceContext _commerceContext;
 

@@ -382,6 +382,7 @@ public class OrderStockManagementTest {
 	private static Company _company;
 	private static User _user;
 
+	@DeleteAfterTestRun
 	private CommerceChannel _commerceChannel;
 
 	@Inject

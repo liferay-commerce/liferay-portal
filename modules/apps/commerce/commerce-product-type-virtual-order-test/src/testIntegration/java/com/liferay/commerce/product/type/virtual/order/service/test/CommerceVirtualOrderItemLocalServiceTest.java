@@ -315,6 +315,8 @@ public class CommerceVirtualOrderItemLocalServiceTest {
 	private static User _user;
 
 	private CommerceCatalog _commerceCatalog;
+
+	@DeleteAfterTestRun
 	private CommerceChannel _commerceChannel;
 
 	@DeleteAfterTestRun
