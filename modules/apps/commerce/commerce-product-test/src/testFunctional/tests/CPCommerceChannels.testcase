@@ -1401,10 +1401,10 @@ definition {
 	@description = "This is a test for COMMERCE-6270. RemoveNotificationQueue"
 	@priority = "3"
 	test RemoveNotificationQueue {
-		property portal.acceptance = "false";
+		property portal.acceptance = "Intern Test";
 		property test.name.skip.portal.instance = "CPCommerceChannels#RemoveNotificationQueue";
 
-		//TODO Review
+		// TODO Review
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
@@ -1476,7 +1476,7 @@ definition {
 		CommerceNavigator.gotoMiniCart();
 
 		Button.click(button = "View Details");
-		
+
 		Button.click(button = "Checkout");
 
 		Pause(locator1 = "3000");
@@ -1505,8 +1505,6 @@ definition {
 			locator1 = "CommerceEntry#DROPDOWN");
 
 		MenuItem.click(menuItem = "Delete");
-
-
 	}
 
 	@description = "This is a test for COMMERCE-6271. RemoveNotificationTemplate"
