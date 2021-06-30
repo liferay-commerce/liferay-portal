@@ -65,7 +65,7 @@ definition {
 
 	test AddAnImage {
 		property portal.acceptance = "false";
-		property portal.upstream = "quarantine";
+		property portal.upstream = "true";
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -235,7 +235,7 @@ definition {
 	@priority = "3"
 	test RemoveAnAttachment {
 		property portal.acceptance = "false";
-		property portal.upstream = "quarantine";
+		property portal.upstream = "true";
 
 		// TODO Review
 
@@ -265,7 +265,7 @@ definition {
 	@priority = "3"
 	test RemoveAnImage {
 		property portal.acceptance = "false";
-		property portal.upstream = "quarantine";
+		property portal.upstream = "true";
 
 		// TODO Review
 
