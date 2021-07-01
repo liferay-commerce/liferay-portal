@@ -119,6 +119,7 @@ definition {
 		property portal.acceptance = "false";
 
 		// TODO COMMERCE-6210 CancelShipmentAndCreateNewFromPendingOrder Pending Implementation
+
 	}
 
 	test DeactivateCurrency {
@@ -737,7 +738,7 @@ definition {
 		CommerceNavigator.gotoMiniCart();
 
 		Button.click(button = "View Details");
-		
+
 		Button.click(button = "Checkout");
 
 		Pause(locator1 = "3000");
