@@ -1066,6 +1066,14 @@ public abstract class BaseAccountResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("numberOfUsers", additionalAssertFieldName)) {
+				if (account.getNumberOfUsers() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("organizationIds", additionalAssertFieldName)) {
 				if (account.getOrganizationIds() == null) {
 					valid = false;
@@ -1252,6 +1260,17 @@ public abstract class BaseAccountResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("numberOfUsers", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						account1.getNumberOfUsers(),
+						account2.getNumberOfUsers())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("organizationIds", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						account1.getOrganizationIds(),
@@ -1423,6 +1442,11 @@ public abstract class BaseAccountResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("numberOfUsers")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("organizationIds")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -1488,6 +1512,7 @@ public abstract class BaseAccountResourceTestCase {
 					RandomTestUtil.randomString());
 				id = RandomTestUtil.randomLong();
 				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
+				numberOfUsers = RandomTestUtil.randomInt();
 				parentAccountId = RandomTestUtil.randomLong();
 				status = RandomTestUtil.randomInt();
 			}
