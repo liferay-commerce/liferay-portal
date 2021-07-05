@@ -56,6 +56,35 @@ public class Account implements Serializable {
 		return ObjectMapperUtil.readValue(Account.class, json);
 	}
 
+	@Schema(description = "The users linked to the account")
+	@Valid
+	public AccountUser[] getAccountUsers() {
+		return accountUsers;
+	}
+
+	public void setAccountUsers(AccountUser[] accountUsers) {
+		this.accountUsers = accountUsers;
+	}
+
+	@JsonIgnore
+	public void setAccountUsers(
+		UnsafeSupplier<AccountUser[], Exception> accountUsersUnsafeSupplier) {
+
+		try {
+			accountUsers = accountUsersUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField(description = "The users linked to the account")
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected AccountUser[] accountUsers;
+
 	@Schema(
 		description = "Block of actions allowed by the user making the request."
 	)
@@ -340,6 +369,26 @@ public class Account implements Serializable {
 		StringBundler sb = new StringBundler();
 
 		sb.append("{");
+
+		if (accountUsers != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"accountUsers\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < accountUsers.length; i++) {
+				sb.append(String.valueOf(accountUsers[i]));
+
+				if ((i + 1) < accountUsers.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
 
 		if (actions != null) {
 			if (sb.length() > 1) {

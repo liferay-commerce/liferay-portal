@@ -15,6 +15,7 @@
 package com.liferay.account.rest.client.serdes.v1_0;
 
 import com.liferay.account.rest.client.dto.v1_0.Account;
+import com.liferay.account.rest.client.dto.v1_0.AccountUser;
 import com.liferay.account.rest.client.json.BaseJSONParser;
 
 import java.util.Iterator;
@@ -22,6 +23,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.stream.Stream;
 
 import javax.annotation.Generated;
 
@@ -52,6 +54,26 @@ public class AccountSerDes {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("{");
+
+		if (account.getAccountUsers() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"accountUsers\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < account.getAccountUsers().length; i++) {
+				sb.append(String.valueOf(account.getAccountUsers()[i]));
+
+				if ((i + 1) < account.getAccountUsers().length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
 
 		if (account.getActions() != null) {
 			if (sb.length() > 1) {
@@ -197,6 +219,13 @@ public class AccountSerDes {
 
 		Map<String, String> map = new TreeMap<>();
 
+		if (account.getAccountUsers() == null) {
+			map.put("accountUsers", null);
+		}
+		else {
+			map.put("accountUsers", String.valueOf(account.getAccountUsers()));
+		}
+
 		if (account.getActions() == null) {
 			map.put("actions", null);
 		}
@@ -286,7 +315,19 @@ public class AccountSerDes {
 			Account account, String jsonParserFieldName,
 			Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "actions")) {
+			if (Objects.equals(jsonParserFieldName, "accountUsers")) {
+				if (jsonParserFieldValue != null) {
+					account.setAccountUsers(
+						Stream.of(
+							toStrings((Object[])jsonParserFieldValue)
+						).map(
+							object -> AccountUserSerDes.toDTO((String)object)
+						).toArray(
+							size -> new AccountUser[size]
+						));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "actions")) {
 				if (jsonParserFieldValue != null) {
 					account.setActions(
 						(Map)AccountSerDes.toMap((String)jsonParserFieldValue));

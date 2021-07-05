@@ -35,6 +35,27 @@ public class Account implements Cloneable, Serializable {
 		return AccountSerDes.toDTO(json);
 	}
 
+	public AccountUser[] getAccountUsers() {
+		return accountUsers;
+	}
+
+	public void setAccountUsers(AccountUser[] accountUsers) {
+		this.accountUsers = accountUsers;
+	}
+
+	public void setAccountUsers(
+		UnsafeSupplier<AccountUser[], Exception> accountUsersUnsafeSupplier) {
+
+		try {
+			accountUsers = accountUsersUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected AccountUser[] accountUsers;
+
 	public Map<String, Map<String, String>> getActions() {
 		return actions;
 	}
