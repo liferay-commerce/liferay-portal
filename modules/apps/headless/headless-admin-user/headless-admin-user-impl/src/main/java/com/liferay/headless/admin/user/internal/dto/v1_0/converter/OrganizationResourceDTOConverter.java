@@ -48,11 +48,13 @@ import com.liferay.portal.kernel.service.OrganizationLocalService;
 import com.liferay.portal.kernel.service.OrganizationService;
 import com.liferay.portal.kernel.service.PhoneService;
 import com.liferay.portal.kernel.service.RegionService;
+import com.liferay.portal.kernel.service.UserService;
 import com.liferay.portal.kernel.service.WebsiteService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 import com.liferay.portal.vulcan.util.TransformUtil;
@@ -207,6 +209,9 @@ public class OrganizationResourceDTOConverter
 					_organizationService.getOrganizationsCount(
 						organization.getCompanyId(),
 						organization.getOrganizationId());
+				numberOfUsers = _userService.getOrganizationUsersCount(
+					organization.getOrganizationId(),
+					WorkflowConstants.STATUS_ANY);
 				organizationContactInformation =
 					new OrganizationContactInformation() {
 						{
@@ -358,6 +363,9 @@ public class OrganizationResourceDTOConverter
 
 	@Reference
 	private RegionService _regionService;
+
+	@Reference
+	private UserService _userService;
 
 	@Reference
 	private WebsiteService _websiteService;
