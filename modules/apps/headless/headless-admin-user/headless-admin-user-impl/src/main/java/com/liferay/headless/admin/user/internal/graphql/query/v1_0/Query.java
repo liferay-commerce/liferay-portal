@@ -243,7 +243,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {organization(organizationId: ___){accountInformation, actions, comment, customFields, dateCreated, dateModified, id, image, keywords, location, name, numberOfOrganizations, organizationContactInformation, parentOrganization, services}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {organization(organizationId: ___){accountInformation, actions, comment, customFields, dateCreated, dateModified, id, image, keywords, location, name, numberOfOrganizations, organizationContactInformation, parentOrganization, services, userAccounts}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(description = "Retrieves the organization.")
 	public Organization organization(
@@ -906,43 +906,6 @@ public class Query {
 				webUrlResource -> new WebUrlPage(
 					webUrlResource.getOrganizationWebUrlsPage(
 						_organization.getId())));
-		}
-
-		private Organization _organization;
-
-	}
-
-	@GraphQLTypeExtension(Organization.class)
-	public class GetOrganizationUserAccountsPageTypeExtension {
-
-		public GetOrganizationUserAccountsPageTypeExtension(
-			Organization organization) {
-
-			_organization = organization;
-		}
-
-		@GraphQLField(
-			description = "Retrieves the organization's members (users). Results can be paginated, filtered, searched, and sorted."
-		)
-		public UserAccountPage userAccounts(
-				@GraphQLName("search") String search,
-				@GraphQLName("filter") String filterString,
-				@GraphQLName("pageSize") int pageSize,
-				@GraphQLName("page") int page,
-				@GraphQLName("sort") String sortsString)
-			throws Exception {
-
-			return _applyComponentServiceObjects(
-				_userAccountResourceComponentServiceObjects,
-				Query.this::_populateResourceContext,
-				userAccountResource -> new UserAccountPage(
-					userAccountResource.getOrganizationUserAccountsPage(
-						_organization.getId(), search,
-						_filterBiFunction.apply(
-							userAccountResource, filterString),
-						Pagination.of(page, pageSize),
-						_sortsBiFunction.apply(
-							userAccountResource, sortsString))));
 		}
 
 		private Organization _organization;
