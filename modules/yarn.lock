@@ -875,7 +875,7 @@
     "@clayui/layout" "^3.3.0"
     classnames "^2.2.6"
 
-"@clayui/autocomplete@3.30.0", "@clayui/autocomplete@^3.30.0":
+"@clayui/autocomplete@3.30.0", "@clayui/autocomplete@^3.25.1", "@clayui/autocomplete@^3.30.0":
   version "3.30.0"
   resolved "https://registry.yarnpkg.com/@clayui/autocomplete/-/autocomplete-3.30.0.tgz#0c59eaa37af6343ea5eb20161725b780dc262b74"
   integrity sha512-jEe7xnk95rbuQaTu4cC5VHk0fC4E20mDpoV+Sxg8K/8Y/TUga/bLABvHap91bR+l0lPvQKgbn/AJ49Iu8H2taQ==
@@ -956,7 +956,7 @@
   resolved "https://registry.yarnpkg.com/@clayui/css/-/css-3.30.0.tgz#5338f0d81924a8dde1443261742a99f87ce6da32"
   integrity sha512-3WdF16DTzQtGSzV78eWANx5uKy/9P2Xe57lrGTiCPxP5i3UUB/VtpknxC+150mTkhTuq2rPesrIK4/B5YxyUnA==
 
-"@clayui/data-provider@3.29.0":
+"@clayui/data-provider@3.29.0", "@clayui/data-provider@^3.3.10":
   version "3.29.0"
   resolved "https://registry.yarnpkg.com/@clayui/data-provider/-/data-provider-3.29.0.tgz#b1ec977e71319683da49276f15532c99e7f6b2f3"
   integrity sha512-qxvUjrVCzRTIfLVtFDA7bFP15MwZRwSXQOzhGFHLXO9aSwzUWEtXHEAmZHMalaHxQKaecNcAZMfTY63sSaamMQ==
@@ -979,7 +979,7 @@
     classnames "^2.2.6"
     date-fns "^2.14.0"
 
-"@clayui/drop-down@3.30.0", "@clayui/drop-down@^3.30.0":
+"@clayui/drop-down@3.30.0", "@clayui/drop-down@^3.25.1", "@clayui/drop-down@^3.30.0":
   version "3.30.0"
   resolved "https://registry.yarnpkg.com/@clayui/drop-down/-/drop-down-3.30.0.tgz#7bf6abb3a20cd961772b4fffaaeb8c85cf80ee9a"
   integrity sha512-57o4yVFSpKxEs8nMTPbJa0w5VbVxP8UAaiqnnQLXDvTQZthWNbJfCShz9kpEj5VlmoOBvVjyQQ9tASpeVGVv6w==
@@ -1078,7 +1078,7 @@
     "@clayui/layout" "^3.3.0"
     classnames "^2.2.6"
 
-"@clayui/management-toolbar@3.3.0":
+"@clayui/management-toolbar@3.3.0", "@clayui/management-toolbar@^3.3.0":
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/@clayui/management-toolbar/-/management-toolbar-3.3.0.tgz#bedf513b56e5b5756e0287149c1cd90f8b8f3043"
   integrity sha512-O0pAmcyWxP+j80TZtCokyPL88sfNzq9mzBHqsnKlc+nsCgMMZlxTPmR7O/T4nrA3jWaIsQH4lsRBQReCz00IHQ==
@@ -1086,7 +1086,7 @@
     "@clayui/layout" "^3.3.0"
     classnames "^2.2.6"
 
-"@clayui/modal@3.29.0":
+"@clayui/modal@3.29.0", "@clayui/modal@^3.8.5":
   version "3.29.0"
   resolved "https://registry.yarnpkg.com/@clayui/modal/-/modal-3.29.0.tgz#dc9b4ffba3d311a58fd35e8d2f09bb02a31d7db8"
   integrity sha512-HhYlyYcrRfY4naPP2MHw8uRtJ00vbiNhv2HI5yQcnPiMpATflQEPUj2I0aA/TczpBy9CAlF818X+uu7kHq8lhw==
@@ -1097,7 +1097,7 @@
     classnames "^2.2.6"
     warning "^4.0.3"
 
-"@clayui/multi-select@3.30.0":
+"@clayui/multi-select@3.30.0", "@clayui/multi-select@^3.25.3":
   version "3.30.0"
   resolved "https://registry.yarnpkg.com/@clayui/multi-select/-/multi-select-3.30.0.tgz#9bad4a5d63ac2d2f20968dbbe910d7292ebc3521"
   integrity sha512-ToFvgvcqX6gcRHrv3z+8H1bJL/Z1rWpGyKMnIscQcRb45wp6wJJRm7LPmc1vfsKbO+8I5ro6rmhObtxMR9HJ+Q==
@@ -3750,6 +3750,11 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
+classnames@2.2.6:
+  version "2.2.6"
+  resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.6.tgz#43935bffdd291f326dad0a205309b38d00f650ce"
+  integrity sha512-JR/iSQOSt+LQIWwrwEzJ9uk0xfN3mTVYMwt1Ir5mUcSN6pU+V4zQFFaJsclJbPuAUQH+yfWef6tm7l1quW3C8Q==
+
 classnames@2.3.1, classnames@^2.2.5, classnames@^2.2.6, classnames@^2.3.1:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.3.1.tgz#dfcfa3891e306ec1dad105d0e88f4417b8535e8e"
@@ -5088,6 +5093,43 @@ d3@5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/d3/-/d3-5.0.0.tgz#b373ce8ccc953cbe09cef4c1e7e2223b42441df9"
   integrity sha512-JAuq1vvO8AQnAvZ5Gi3OsUWAoB1dOZlIQZEcj+JzEnafmwLlrWcW24o5I7fM9x+tsrZpsi8n9L12iHyHr0HTlg==
+  dependencies:
+    d3-array "1"
+    d3-axis "1"
+    d3-brush "1"
+    d3-chord "1"
+    d3-collection "1"
+    d3-color "1"
+    d3-contour "1"
+    d3-dispatch "1"
+    d3-drag "1"
+    d3-dsv "1"
+    d3-ease "1"
+    d3-fetch "1"
+    d3-force "1"
+    d3-format "1"
+    d3-geo "1"
+    d3-hierarchy "1"
+    d3-interpolate "1"
+    d3-path "1"
+    d3-polygon "1"
+    d3-quadtree "1"
+    d3-random "1"
+    d3-scale "2"
+    d3-scale-chromatic "1"
+    d3-selection "1"
+    d3-shape "1"
+    d3-time "1"
+    d3-time-format "2"
+    d3-timer "1"
+    d3-transition "1"
+    d3-voronoi "1"
+    d3-zoom "1"
+
+d3@5.9.3:
+  version "5.9.3"
+  resolved "https://registry.yarnpkg.com/d3/-/d3-5.9.3.tgz#08c6e43cec69429d38544af30a3fac8407e33ebc"
+  integrity sha512-cN3FjT0qg+5/mEdya0c7ApTXvF6+m1jhSgU7J+C7Qzm0g7zzospwURBoOGUab4E6QSxf7l60dLBlkGABZBkYeg==
   dependencies:
     d3-array "1"
     d3-axis "1"
