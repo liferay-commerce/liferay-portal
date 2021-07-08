@@ -1,11 +1,27 @@
 {
 	"dependencies": {
+		"@clayui/autocomplete": "^3.25.1",
+		"@clayui/button": "^3.6.0",
+		"@clayui/data-provider": "^3.3.10",
+		"@clayui/drop-down": "^3.25.1",
+		"@clayui/icon": "^3.1.0",
+		"@clayui/management-toolbar": "^3.3.0",
+		"@clayui/modal": "^3.8.5",
+		"@clayui/multi-select": "^3.25.3",
 		"@liferay/frontend-js-react-web": "*",
-		"classnames": "2.3.1",
-		"d3": "5.0.0",
+		"@liferay/frontend-js-state-web": "*",
+		"classnames": "2.2.6",
+		"commerce-frontend-js": "*",
+		"d3": "5.9.3",
+		"frontend-js-web": "*",
 		"prop-types": "15.7.2",
 		"react": "16.12.0",
 		"react-dom": "16.12.0"
+	},
+	"jest": {
+		"testPathIgnorePatterns": [
+			"<rootDir>/test/dev/"
+		]
 	},
 	"name": "commerce-organization-web",
 	"private": true,
@@ -13,8 +29,8 @@
 		"build": "liferay-npm-scripts build",
 		"checkFormat": "liferay-npm-scripts check",
 		"format": "liferay-npm-scripts format",
-		"test:watch": "env TZ=utc liferay-npm-scripts test --watch",
-		"test_DISABLED": "env TZ=utc liferay-npm-scripts test",
+		"test": "liferay-npm-scripts test",
+		"test:watch": "liferay-npm-scripts test --watch",
 		"watch": "liferay-npm-scripts webpack --watch"
 	},
 	"version": "5.0.7"
