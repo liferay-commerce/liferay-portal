@@ -21,6 +21,15 @@ export function getAccounts(query) {
 	return fetchFromHeadless(url);
 }
 
+export function deleteAccount(id) {
+	const url = new URL(
+		`${ACCOUNTS_ROOT_ENDPOINT}/${id}`,
+		themeDisplay.getPortalURL()
+	);
+
+	return fetchFromHeadless(url, {method: 'DELETE'}, null, true);
+}
+
 export function getAccount(id) {
 	const accountUrl = new URL(
 		`${ACCOUNTS_ROOT_ENDPOINT}/${id}`,

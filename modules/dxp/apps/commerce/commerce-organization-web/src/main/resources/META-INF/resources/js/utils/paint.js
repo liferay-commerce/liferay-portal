@@ -9,10 +9,12 @@
  * distribution rights of the Software.
  */
 
-import {linkHorizontal} from 'd3';
+import {event as d3event, linkHorizontal} from 'd3';
 
 import {formatItemDescription, formatItemName} from '.';
 import {
+	NODE_BUTTON_WIDTH,
+	NODE_PADDING,
 	RECT_SIZES,
 	SYMBOLS_MAP,
 } from './constants';
@@ -110,7 +112,7 @@ export function fillAddButtons(nodeEnter, spritemap, openModal) {
 	}
 }
 
-export function fillEntityNode(nodeEnter, spritemap) {
+export function fillEntityNode(nodeEnter, spritemap, openMenu) {
 	nodeEnter
 		.append('rect')
 		.attr('width', (d) => RECT_SIZES[d.data.type].width)
@@ -141,4 +143,25 @@ export function fillEntityNode(nodeEnter, spritemap) {
 		.append('text')
 		.attr('class', 'node-description')
 		.text(formatItemDescription);
+
+	const menuWrapper = nodeEnter
+		.append('g')
+		.attr('class', 'node-menu-wrapper')
+		.attr('transform', (d) => {
+			const x =
+				RECT_SIZES[d.data.type].width -
+				NODE_BUTTON_WIDTH -
+				NODE_PADDING;
+
+			return `translate(${x}, -14)`;
+		})
+		.on('mousedown', (d) => {
+			d3event.stopPropagation();
+
+			openMenu(d3event.currentTarget, d.data, d.parent?.data);
+		});
+
+	menuWrapper.append('rect').attr('class', 'node-menu-btn');
+
+	appendIcon(menuWrapper, `${spritemap}#ellipsis-v`, 16, 'node-menu-icon');
 }

@@ -42,6 +42,7 @@ class D3OrganizationChart {
 		refs,
 		spritemap,
 		modalActions,
+		nodeMenuActions,
 		rootVisible = true
 	) {
 		this._spritemap = spritemap;
@@ -53,6 +54,7 @@ class D3OrganizationChart {
 		this._handleNodeMouseDown = this._handleNodeMouseDown.bind(this);
 		this._hideChildrenAndUpdate = this._hideChildrenAndUpdate.bind(this);
 		this._currentScale = 1;
+		this._nodeMenuActions = nodeMenuActions;
 		this._modalActions = modalActions;
 		this._selectedNodes = new Map();
 		this._rootVisible = rootVisible;
@@ -305,6 +307,7 @@ class D3OrganizationChart {
 
 		this.svg = d3
 			.select(this._refs.svg)
+			.on('mousedown', this._nodeMenuActions.close)
 			.call(this._zoom);
 
 		this._zoomHandler = this.svg.append('g');
@@ -325,6 +328,7 @@ class D3OrganizationChart {
 
 	_handleNodeMouseDown(d) {
 		d3.event.stopPropagation();
+		this._nodeMenuActions.close();
 
 		if (d.data.type === 'user') {
 			this._createTransition();
@@ -457,7 +461,7 @@ class D3OrganizationChart {
 		const children = nodes.filter((d) => d.data.type !== 'add');
 
 		children.attr('transform', `translate(${source.y0},${source.x0})`);
-		fillEntityNode(children, this._spritemap);
+		fillEntityNode(children, this._spritemap, this._nodeMenuActions.open);
 
 		children
 			.on('mousedown', this._handleNodeMouseDown);

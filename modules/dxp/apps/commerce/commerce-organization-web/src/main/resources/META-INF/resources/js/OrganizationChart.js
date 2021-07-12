@@ -19,6 +19,7 @@ import ChartContext from './ChartContext';
 import D3OrganizationChart from './D3OrganizationChart';
 import ManagementBar from './ManagementBar/ManagementBar';
 import {getOrganization} from './data/organizations';
+import MenuProvider from './menu/MenuProvider';
 import ModalProvider from './modals/ModalProvider';
 import {VIEWS} from './utils/constants';
 
@@ -27,7 +28,10 @@ function OrganizationChartApp({rootOrganizationId, spritemap, templatesURL}) {
 	const [modalData, updateModalData] = useState(null);
 	const [currentView, updateCurrentView] = useState(VIEWS[0]);
 	const [expanded, updateExpanded] = useState(false);
+	const [menuData, updateMenuData] = useState(null);
+	const [menuParentData, updateMenuParentData] = useState(null);
 	const [rootData, updateRootData] = useState(null);
+	const clickedMenuButtonRef = useRef(null);
 	const chartSVGRef = useRef(null);
 	const chartInstanceRef = useRef(null);
 	const zoomOutRef = useRef(null);
@@ -54,6 +58,18 @@ function OrganizationChartApp({rootOrganizationId, spritemap, templatesURL}) {
 							type,
 						});
 						updateModalActive(true);
+					},
+				},
+				{
+					close: () => {
+						clickedMenuButtonRef.current = null;
+						updateMenuData(null);
+						updateMenuParentData(null);
+					},
+					open: (target, data, parentData) => {
+						clickedMenuButtonRef.current = target;
+						updateMenuData(data);
+						updateMenuParentData(parentData);
 					},
 				}
 			);
@@ -98,6 +114,11 @@ function OrganizationChartApp({rootOrganizationId, spritemap, templatesURL}) {
 						</ClayButton.Group>
 					</div>
 				</div>
+				<MenuProvider
+					alignElementRef={clickedMenuButtonRef}
+					data={menuData}
+					parentData={menuParentData}
+				/>
 				<ModalProvider
 					active={modalActive}
 					closeModal={() => updateModalActive(false)}

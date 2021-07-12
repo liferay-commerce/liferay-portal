@@ -82,3 +82,12 @@ export function getUsers(query) {
 
 	return fetchFromHeadless(url);
 }
+
+export function deleteUser(id) {
+	const url = new URL(
+		`${USERS_ROOT_ENDPOINT}/${id}`,
+		themeDisplay.getPortalURL()
+	);
+
+	return fetchFromHeadless(url, {method: 'DELETE'}, null, true);
+}

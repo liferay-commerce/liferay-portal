@@ -57,6 +57,15 @@ export function getOrganization(id) {
 	return fetchFromHeadless(url);
 }
 
+export function deleteOrganization(id) {
+	const url = new URL(
+		`${ORGANIZATIONS_ROOT_ENDPOINT}/${id}`,
+		themeDisplay.getPortalURL()
+	);
+
+	return fetchFromHeadless(url, {method: 'DELETE'}, null, true);
+}
+
 export function updateOrganization(id, body) {
 	const url = new URL(
 		`${ORGANIZATIONS_ROOT_ENDPOINT}/${id}`,
