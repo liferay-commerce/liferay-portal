@@ -9,7 +9,7 @@
  * distribution rights of the Software.
  */
 
-import { getEntityId } from '../utils';
+import {getEntityId} from '../utils';
 import {
 	ACCOUNTS_PROPERTY_NAME,
 	ORGANIZATIONS_PROPERTY_NAME,

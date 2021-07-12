@@ -14,6 +14,13 @@ import {fetchFromHeadless} from '../utils/fetch';
 
 const ACCOUNTS_ROOT_ENDPOINT = '/o/account-rest/v1.0/accounts';
 
+export function getAccounts(query) {
+	const url = new URL(ACCOUNTS_ROOT_ENDPOINT, themeDisplay.getPortalURL());
+	url.searchParams.append('search', query);
+
+	return fetchFromHeadless(url);
+}
+
 export function getAccount(id) {
 	const accountUrl = new URL(
 		`${ACCOUNTS_ROOT_ENDPOINT}/${id}`,
@@ -26,4 +33,16 @@ export function getAccount(id) {
 	);
 
 	return fetchFromHeadless(accountUrl);
+}
+
+export function updateAccountDetails(id, details) {
+	const url = new URL(
+		`${ACCOUNTS_ROOT_ENDPOINT}/${id}`,
+		themeDisplay.getPortalURL()
+	);
+
+	return fetchFromHeadless(url, {
+		body: JSON.stringify(details),
+		method: 'PATCH',
+	});
 }

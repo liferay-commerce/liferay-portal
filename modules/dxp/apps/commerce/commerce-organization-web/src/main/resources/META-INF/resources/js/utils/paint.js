@@ -16,6 +16,7 @@ import {
 	RECT_SIZES,
 	SYMBOLS_MAP,
 } from './constants';
+import {USER_INVITATION_ENABLED} from './flags';
 
 export function appendIcon(node, symbol, size, className) {
 	return node
@@ -59,6 +60,55 @@ export const getLinkDiagonal = linkHorizontal()
 				return [target.y, target.x];
 		}
 	});
+
+export function appendCircle(node, size, className) {
+	return node.append('circle').attr('r', size).attr('class', className);
+}
+
+export function createAddActionButton(wrapper, type, openModal, spritemap) {
+	const newButtonContainer = wrapper
+		.append('g')
+		.attr('class', `add-action-wrapper ${type}`)
+		.on('mousedown', (node) => {
+			openModal(node.parent.data, type);
+		});
+
+	appendCircle(newButtonContainer, 16, 'action-circle');
+	appendIcon(
+		newButtonContainer,
+		`${spritemap}#${SYMBOLS_MAP[type]}`,
+		16,
+		'action-icon'
+	);
+}
+
+export function fillAddButtons(nodeEnter, spritemap, openModal) {
+	const actionsWrapper = nodeEnter
+		.append('g')
+		.attr('class', 'actions-wrapper');
+
+	const openActionsWrapper = actionsWrapper
+		.append('g')
+		.attr('class', 'open-actions-wrapper')
+		.on('mousedown', (node) => {
+			if (node.parent.data.type === 'account') {
+				openModal(node.parent.data, 'user');
+			}
+			else {
+				actionsWrapper.node().classList.toggle('menu-open');
+			}
+		});
+
+	appendCircle(openActionsWrapper, 36, 'action-circle');
+	appendIcon(openActionsWrapper, `${spritemap}#plus`, 18, 'action-icon');
+
+	createAddActionButton(actionsWrapper, 'account', openModal, spritemap);
+	createAddActionButton(actionsWrapper, 'organization', openModal, spritemap);
+
+	if (USER_INVITATION_ENABLED) {
+		createAddActionButton(actionsWrapper, 'user', openModal, spritemap);
+	}
+}
 
 export function fillEntityNode(nodeEnter, spritemap) {
 	nodeEnter

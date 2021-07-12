@@ -19,9 +19,12 @@ import ChartContext from './ChartContext';
 import D3OrganizationChart from './D3OrganizationChart';
 import ManagementBar from './ManagementBar/ManagementBar';
 import {getOrganization} from './data/organizations';
+import ModalProvider from './modals/ModalProvider';
 import {VIEWS} from './utils/constants';
 
 function OrganizationChartApp({rootOrganizationId, spritemap, templatesURL}) {
+	const [modalActive, updateModalActive] = useState(false);
+	const [modalData, updateModalData] = useState(null);
 	const [currentView, updateCurrentView] = useState(VIEWS[0]);
 	const [expanded, updateExpanded] = useState(false);
 	const [rootData, updateRootData] = useState(null);
@@ -43,7 +46,16 @@ function OrganizationChartApp({rootOrganizationId, spritemap, templatesURL}) {
 					zoomIn: zoomInRef.current,
 					zoomOut: zoomOutRef.current,
 				},
-				spritemap
+				spritemap,
+				{
+					open: (parentData, type) => {
+						updateModalData({
+							parentData,
+							type,
+						});
+						updateModalActive(true);
+					},
+				}
 			);
 		}
 
@@ -86,6 +98,12 @@ function OrganizationChartApp({rootOrganizationId, spritemap, templatesURL}) {
 						</ClayButton.Group>
 					</div>
 				</div>
+				<ModalProvider
+					active={modalActive}
+					closeModal={() => updateModalActive(false)}
+					parentData={modalData?.parentData}
+					type={modalData?.type}
+				/>
 			</ChartContext.Provider>
 		</ClayIconSpriteContext.Provider>
 	);

@@ -30,11 +30,12 @@ import {
 	getEntityId,
 	getMinWidth,
 	hideChildren,
+	insertAddButtons,
 	insertChildrenIntoNode,
 	showChildren,
 	tree,
 } from './utils/index';
-import {fillEntityNode, getLinkDiagonal} from './utils/paint';
+import {fillAddButtons, fillEntityNode, getLinkDiagonal} from './utils/paint';
 class D3OrganizationChart {
 	constructor(
 		rootData,
@@ -335,6 +336,7 @@ class D3OrganizationChart {
 	}
 
 	_update(source, recenter = true, sourcesMap, showDeleteTransition) {
+		insertAddButtons(this._root, this._selectedNodes);
 		tree(this._root);
 
 		this._root.eachBefore((d) => {
@@ -449,6 +451,8 @@ class D3OrganizationChart {
 			'transform',
 			(d) => `translate(${d.y},${d.x}) scale(0)`
 		);
+
+		fillAddButtons(addButtons, this._spritemap, this._modalActions.open);
 
 		const children = nodes.filter((d) => d.data.type !== 'add');
 
