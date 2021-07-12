@@ -21,7 +21,10 @@ import {
 	TRANSITION_TIME,
 	ZOOM_EXTENT,
 } from './utils/constants';
+import {ACCOUNTS_DND_ENABLED} from './utils/flags';
+import handleDnd from './utils/handleDnd';
 import {
+	changeNodesParentOrganization,
 	formatChild,
 	formatItem,
 	formatItemDescription,
@@ -336,7 +339,90 @@ class D3OrganizationChart {
 			return this._recenterViewport(d);
 		}
 
-		return this._handleNodeClick(d3.event, d);
+		if (!ACCOUNTS_DND_ENABLED && d.data.type === 'account') {
+			return this._handleNodeClick(d3.event, d);
+		}
+
+		return handleDnd(
+			d3.event,
+			d,
+			this._selectedNodes,
+			this._refs.svg,
+			this._nodesGroup,
+			this._currentScale
+		).then(({event, target, type}) => {
+			if (type === 'click') {
+				return this._handleNodeClick(event, d);
+			}
+
+			if (target) {
+				const nodesToBeMoved = [];
+
+				if (this._selectedNodes.has(d.data.chartNodeId)) {
+					nodesToBeMoved.push(
+						...Array.from(this._selectedNodes.values())
+					);
+				}
+				else {
+					nodesToBeMoved.push(d);
+				}
+
+				this._moveNodes(nodesToBeMoved, target);
+			}
+		});
+	}
+
+	_moveNodes(nodes, target) {
+		changeNodesParentOrganization(nodes, target).then(
+			({fulfilled: fulfilledNodes, rejected: rejectedNodes}) => {
+				if (fulfilledNodes.length) {
+					const fulfilledNodesData = fulfilledNodes.map(
+						(node) => node.data
+					);
+
+					fulfilledNodes.forEach((node) => {
+						const countersMap = {
+							account: 'numberOfAccounts',
+							organization: 'numberOfOrganizations',
+							user: 'numberOfUsers',
+						};
+
+						node.parent.data = {
+							...node.parent.data,
+							[countersMap[node.data.type]]:
+								node.parent.data[countersMap[node.data.type]] -
+								1,
+						};
+
+						target.data[countersMap[node.data.type]] =
+							target.data[countersMap[node.data.type]] + 1;
+						this.updateNodeContent(node.parent.data);
+					});
+
+					this.updateNodeContent(target.data);
+
+					this.deleteNodes(fulfilledNodesData, false, false);
+
+					if (target.data.fetched) {
+						insertChildrenIntoNode(fulfilledNodesData, target);
+					}
+
+					this._update(target);
+				}
+
+				if (rejectedNodes.length) {
+					rejectedNodes.forEach((node) => {
+						openToast({
+							message: Liferay.Util.sub(
+								Liferay.Language.get('x-could-not-be-moved'),
+								node.data.name
+							),
+							type: 'danger',
+						});
+					});
+				}
+			}
+		);
 	}
 
 	_update(source, recenter = true, sourcesMap, showDeleteTransition) {
