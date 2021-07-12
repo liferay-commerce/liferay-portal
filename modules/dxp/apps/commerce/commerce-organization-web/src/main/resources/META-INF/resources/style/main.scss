@@ -1,0 +1,246 @@
+@import 'atlas-variables';
+
+$text: $gray-600;
+$btn-size: 28px;
+
+.org-chart-container {
+	position: relative;
+	background-color: $light;
+	height: 700px;
+
+	&.expanded {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		height: auto;
+	}
+
+	.zoom-controls {
+		position: absolute;
+		bottom: $spacer;
+		right: $spacer;
+	}
+
+	.svg-chart {
+		width: 100%;
+		height: 100%;
+
+		&.dragging {
+			cursor: grabbing;
+		}
+	}
+
+	.chart-link {
+		fill: none;
+		stroke: $secondary-l2;
+		stroke-width: 1.5;
+	}
+
+	.chart-rect {
+		transition: fill 0.2s ease-in, stroke 0.2s ease-in;
+		fill: white;
+		stroke: $secondary-l2;
+		stroke-width: 1.5;
+	}
+
+	.dnd-handle-content {
+		opacity: 0;
+		transition: transform 0.2s linear;
+		pointer-events: none;
+
+		.chart-rect {
+			stroke: rgba($primary, 0.6);
+		}
+	}
+
+	.dnd-handle.dragging .dnd-handle-content {
+		transform: scale(0.8);
+		opacity: 1;
+	}
+
+	.selected {
+		.chart-rect {
+			stroke: $primary;
+		}
+	}
+
+	.chart-data-wrapper {
+		opacity: 1;
+		transition: opacity 0.5s ease-in;
+
+		&.hidden {
+			opacity: 0;
+			pointer-events: none;
+		}
+	}
+
+	.chart-item {
+		cursor: pointer;
+		transition: opacity 0.1s ease-in;
+	}
+
+	.unselectable {
+		cursor: no-drop;
+	}
+
+	.disabled {
+		opacity: 0.4;
+	}
+
+	.drop-allowed {
+		cursor: copy;
+
+		&:hover .chart-rect {
+			stroke: $success-l1;
+			fill: $success-l2;
+		}
+	}
+
+	.drop-not-allowed {
+		opacity: 0.4;
+		cursor: no-drop;
+
+		&:hover .chart-rect {
+			stroke: $danger;
+			fill: $danger-l2;
+		}
+	}
+
+	.node-type-icon {
+		transform: translate(24px, -8px);
+	}
+
+	.icon-circle {
+		r: 16px;
+		transform: translate(16px * 2, 0);
+		fill: var(--icon-color);
+	}
+
+	.chart-item-organization {
+		--icon-color: #5fc8ff;
+	}
+
+	.chart-item-account {
+		--icon-color: #50d2a0;
+	}
+
+	.chart-item-user {
+		--icon-color: #ffd76e;
+	}
+
+	.node-title {
+		transition: fill 0.2s ease-in;
+		font-size: 14px;
+		font-weight: bold;
+		transform: translate(#{16px * 4}, -3px);
+		text-anchor: start;
+		user-select: none;
+	}
+
+	.node-description {
+		transition: fill 0.2s ease-in;
+		fill: $text;
+		font-size: 14px;
+		transform: translate(#{16px * 4}, 15px);
+		text-anchor: start;
+		user-select: none;
+	}
+
+	.actions-wrapper {
+		transform: translate(36px, 0px);
+		fill: $text;
+	}
+
+	.action-circle {
+		fill: white;
+		stroke: $secondary-l2;
+		stroke-width: 1.5px;
+		transition: stroke 0.1s ease-in-out;
+	}
+
+	.open-actions-wrapper,
+	.add-action-wrapper {
+		&:hover .action-circle {
+			stroke: $secondary;
+		}
+	}
+
+	.open-actions-wrapper {
+		transform: rotate(0);
+		transition: transform 0.5s ease-in-out;
+
+		.action-icon {
+			transform: translate(-9px, -9px);
+		}
+	}
+
+	.add-action-wrapper {
+		transition: transform 0.2s ease-in;
+
+		.action-icon {
+			transform: translate(-8px, -8px);
+		}
+
+		&.account {
+			transition-delay: 0.1s;
+			transform: translate(35px, -35px) scale(0);
+		}
+
+		&.organization {
+			transform: translate(0px, -50px) scale(0);
+		}
+
+		&.user {
+			transition-delay: 0.2s;
+			transform: translate(50px, 0) scale(0);
+		}
+	}
+
+	.menu-open {
+		.account {
+			transform: translate(43px, -43px) scale(1);
+		}
+
+		.organization {
+			transform: translate(0px, -60px) scale(1);
+		}
+
+		.user {
+			transform: translate(60px, 0) scale(1);
+		}
+
+		.open-actions-wrapper {
+			transform: rotate(45deg * 5);
+		}
+	}
+
+	.node-menu-wrapper {
+		&:hover {
+			.node-menu-btn {
+				fill: #f7f8f9;
+			}
+
+			.node-menu-icon {
+				fill: #272833;
+			}
+		}
+
+		.node-menu-btn {
+			transition: fill 0.2s ease-in;
+			fill: transparent;
+			width: $btn-size;
+			height: $btn-size;
+			rx: 5;
+		}
+
+		.node-menu-icon {
+			transition: fill 0.2s ease-in;
+			fill: #6b6c7e;
+			x: 6;
+			y: 6;
+			pointer-events: none;
+		}
+	}
+}
