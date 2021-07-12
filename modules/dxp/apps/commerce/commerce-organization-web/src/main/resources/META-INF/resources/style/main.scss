@@ -36,6 +36,10 @@ $btn-size: 28px;
 		fill: none;
 		stroke: $secondary-l2;
 		stroke-width: 1.5;
+
+		&.highlighted {
+			stroke: rgba($primary, 0.4);
+		}
 	}
 
 	.chart-rect {
@@ -58,6 +62,12 @@ $btn-size: 28px;
 	.dnd-handle.dragging .dnd-handle-content {
 		transform: scale(0.8);
 		opacity: 1;
+	}
+
+	.highlighted {
+		.chart-rect {
+			stroke: rgba($primary, 0.6);
+		}
 	}
 
 	.selected {

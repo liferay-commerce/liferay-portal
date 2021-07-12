@@ -10,6 +10,7 @@
  */
 
 import {DRAGGING_THRESHOLD, ZOOM_EXTENT} from './constants';
+import {disableHighlight, enableHighlight} from './highlight';
 
 let mouseStartPositions = null;
 let dragging = false;
@@ -44,6 +45,7 @@ function createDragHandle(startingNode, itemsTotal, nodesWrapper) {
 		.attr('class', 'dnd-handle-content');
 
 	const startingNodeClone = startingNode.cloneNode(true);
+	startingNodeClone.classList.remove('highlighted');
 	startingNodeClone.removeAttribute('transform');
 
 	const itemsToBeAppended = Math.min(3, itemsTotal - 1);
@@ -75,6 +77,8 @@ function handleMouseMove(
 				y: event.offsetY,
 			})
 		) {
+			disableHighlight();
+
 			dragging = true;
 
 			const targetsNotAllowed = new Map();
@@ -166,6 +170,7 @@ function handleMouseUp(mouseDownEvent, mouseUpEvent, d, svgRef, resolve) {
 	mouseStartPositions = null;
 	svgRef.classList.remove('dragging');
 	dragging = false;
+	enableHighlight();
 
 	const target = mouseUpEvent.target.closest('.drop-allowed');
 
