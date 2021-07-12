@@ -24,6 +24,10 @@ import {
 import {ACCOUNTS_DND_ENABLED} from './utils/flags';
 import handleDnd from './utils/handleDnd';
 import {
+	resetSelectableItems,
+	updateSelectableItems,
+} from './utils/handleMultiSelect';
+import {
 	changeNodesParentOrganization,
 	formatChild,
 	formatItem,
@@ -55,6 +59,7 @@ class D3OrganizationChart {
 		this._handleZoomOutClick = this._handleZoomOutClick.bind(this);
 		this._handleNodeClick = this._handleNodeClick.bind(this);
 		this._handleNodeMouseDown = this._handleNodeMouseDown.bind(this);
+		this._handleShiftKeyDown = this._handleShiftKeyDown.bind(this);
 		this._hideChildrenAndUpdate = this._hideChildrenAndUpdate.bind(this);
 		this._currentScale = 1;
 		this._nodeMenuActions = nodeMenuActions;
@@ -65,6 +70,25 @@ class D3OrganizationChart {
 		this._createChart();
 		this._initializeData(formatRootData(rootData, this._rootVisible));
 		this._update(this._root);
+		this._addListeners();
+	}
+
+	_handleShiftKeyDown(event) {
+		if (event.shiftKey) {
+			updateSelectableItems(this._selectedNodes, this._nodesGroup);
+		}
+
+		document.addEventListener(
+			'keyup',
+			() => {
+				resetSelectableItems();
+			},
+			{once: true}
+		);
+	}
+
+	_addListeners() {
+		document.addEventListener('keydown', this._handleShiftKeyDown);
 	}
 
 	addNodes(children, type, parentData) {
@@ -88,6 +112,10 @@ class D3OrganizationChart {
 		if (lastNodeAdded) {
 			this._recenterViewport(lastNodeAdded);
 		}
+	}
+
+	cleanUp() {
+		document.removeEventListener('keydown', this._handleShiftKeyDown);
 	}
 
 	deleteNodes(nodesToBeDeleted, allNodeInstances = true, forceUpdate = true) {
@@ -289,6 +317,13 @@ class D3OrganizationChart {
 					d.data.fetched = true;
 
 					this._update(d);
+
+					if (event.shiftKey) {
+						updateSelectableItems(
+							this._selectedNodes,
+							this._nodesGroup
+						);
+					}
 				});
 		}
 
@@ -300,6 +335,10 @@ class D3OrganizationChart {
 		}
 
 		this._update(d);
+
+		if (event.shiftKey) {
+			updateSelectableItems(this._selectedNodes, this._nodesGroup);
+		}
 	}
 
 	_createChart() {
