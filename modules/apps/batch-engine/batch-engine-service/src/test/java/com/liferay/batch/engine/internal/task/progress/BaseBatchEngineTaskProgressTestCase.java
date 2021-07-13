@@ -14,7 +14,8 @@
 
 package com.liferay.batch.engine.internal.task.progress;
 
-import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import java.io.ByteArrayOutputStream;
@@ -22,10 +23,29 @@ import java.io.ByteArrayOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.junit.BeforeClass;
+
 /**
  * @author Matija Petanjek
  */
 public abstract class BaseBatchEngineTaskProgressTestCase {
+
+	@BeforeClass
+	public static void setUpClass() {
+		productJSON = JSONUtil.put(
+			"active", true
+		).put(
+			"catalogId", 111
+		).put(
+			"name", MapUtil.singletonDictionary("en_US", "Test Product")
+		).put(
+			"productType", "simple"
+		).put(
+			"tags", new String[0]
+		).put(
+			"workflowStatusInfo", MapUtil.singletonDictionary("code", 0)
+		).toString();
+	}
 
 	protected byte[] compressContent(byte[] content, String contentType)
 		throws Exception {
@@ -48,12 +68,8 @@ public abstract class BaseBatchEngineTaskProgressTestCase {
 		}
 	}
 
-	protected static final String PRODUCT_JSON = StringBundler.concat(
-		"{\"active\":true,\"catalogId\":111,\"name\":{\"en_US\":",
-		"\"Test Product\"},\"productType\":\"simple\",\"tags\":[],",
-		"\"workflowStatusInfo\":{\"code\":0,\"label\":\"approved\",",
-		"\"label_i18n\":\"Approved\"}}");
-
 	protected static final int PRODUCTS_COUNT = 10;
+
+	protected static String productJSON;
 
 }

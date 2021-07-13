@@ -82,18 +82,16 @@ public class JSONBatchEngineTaskProgressTest
 		sb.append(StringPool.OPEN_BRACKET);
 
 		for (int i = 0; i < productsCount; i++) {
-			sb.append(PRODUCT_JSON);
+			sb.append(productJSON);
 
 			if (i < (PRODUCTS_COUNT - 1)) {
 				sb.append(StringPool.COMMA);
 			}
 		}
 
-		if (invalidJson) {
-			sb.append("invalidJson");
+		if (!invalidJson) {
+			sb.append(StringPool.CLOSE_BRACKET);
 		}
-
-		sb.append(StringPool.CLOSE_BRACKET);
 
 		return sb.toString();
 	}
