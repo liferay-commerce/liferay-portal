@@ -399,7 +399,6 @@ public class BatchEngineImportTaskExecutorTest
 	private void _assertCreatedBlogPostings() {
 		Assert.assertEquals(
 			ROWS_COUNT, blogsEntryLocalService.getBlogsEntriesCount());
-
 		Assert.assertEquals(
 			ROWS_COUNT, _batchEngineImportTask.getProcessedItemsCount());
 
@@ -423,14 +422,12 @@ public class BatchEngineImportTaskExecutorTest
 
 	private void _assertDeletedBlogPostings() {
 		Assert.assertEquals(0, blogsEntryLocalService.getBlogsEntriesCount());
-
 		Assert.assertEquals(
 			ROWS_COUNT, _batchEngineImportTask.getProcessedItemsCount());
 	}
 
 	private void _assertInvalidFile(LogCapture logCapture) {
 		Assert.assertEquals(0, blogsEntryLocalService.getBlogsEntriesCount());
-
 		Assert.assertEquals(0, _batchEngineImportTask.getProcessedItemsCount());
 
 		List<LogEntry> logEntries = logCapture.getLogEntries();
@@ -450,7 +447,6 @@ public class BatchEngineImportTaskExecutorTest
 	private void _assertUpdatedBlogPostings() {
 		Assert.assertEquals(
 			ROWS_COUNT, blogsEntryLocalService.getBlogsEntriesCount());
-
 		Assert.assertEquals(
 			ROWS_COUNT, _batchEngineImportTask.getProcessedItemsCount());
 
