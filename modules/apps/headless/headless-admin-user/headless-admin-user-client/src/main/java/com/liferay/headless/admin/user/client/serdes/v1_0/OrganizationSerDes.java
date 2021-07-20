@@ -17,6 +17,7 @@ package com.liferay.headless.admin.user.client.serdes.v1_0;
 import com.liferay.headless.admin.user.client.dto.v1_0.CustomField;
 import com.liferay.headless.admin.user.client.dto.v1_0.Organization;
 import com.liferay.headless.admin.user.client.dto.v1_0.Service;
+import com.liferay.headless.admin.user.client.dto.v1_0.UserAccount;
 import com.liferay.headless.admin.user.client.json.BaseJSONParser;
 
 import java.text.DateFormat;
@@ -266,6 +267,26 @@ public class OrganizationSerDes {
 			sb.append("]");
 		}
 
+		if (organization.getUserAccounts() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"userAccounts\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < organization.getUserAccounts().length; i++) {
+				sb.append(String.valueOf(organization.getUserAccounts()[i]));
+
+				if ((i + 1) < organization.getUserAccounts().length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
 		sb.append("}");
 
 		return sb.toString();
@@ -398,6 +419,14 @@ public class OrganizationSerDes {
 			map.put("services", String.valueOf(organization.getServices()));
 		}
 
+		if (organization.getUserAccounts() == null) {
+			map.put("userAccounts", null);
+		}
+		else {
+			map.put(
+				"userAccounts", String.valueOf(organization.getUserAccounts()));
+		}
+
 		return map;
 	}
 
@@ -517,6 +546,18 @@ public class OrganizationSerDes {
 							object -> ServiceSerDes.toDTO((String)object)
 						).toArray(
 							size -> new Service[size]
+						));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "userAccounts")) {
+				if (jsonParserFieldValue != null) {
+					organization.setUserAccounts(
+						Stream.of(
+							toStrings((Object[])jsonParserFieldValue)
+						).map(
+							object -> UserAccountSerDes.toDTO((String)object)
+						).toArray(
+							size -> new UserAccount[size]
 						));
 				}
 			}
