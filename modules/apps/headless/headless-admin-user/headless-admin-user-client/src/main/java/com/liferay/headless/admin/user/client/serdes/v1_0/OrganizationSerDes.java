@@ -238,6 +238,16 @@ public class OrganizationSerDes {
 			sb.append("\"");
 		}
 
+		if (organization.getNumberOfAccounts() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"numberOfAccounts\": ");
+
+			sb.append(organization.getNumberOfAccounts());
+		}
+
 		if (organization.getNumberOfOrganizations() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -246,6 +256,16 @@ public class OrganizationSerDes {
 			sb.append("\"numberOfOrganizations\": ");
 
 			sb.append(organization.getNumberOfOrganizations());
+		}
+
+		if (organization.getNumberOfUsers() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"numberOfUsers\": ");
+
+			sb.append(organization.getNumberOfUsers());
 		}
 
 		if (organization.getOrganizationContactInformation() != null) {
@@ -416,6 +436,15 @@ public class OrganizationSerDes {
 			map.put("name", String.valueOf(organization.getName()));
 		}
 
+		if (organization.getNumberOfAccounts() == null) {
+			map.put("numberOfAccounts", null);
+		}
+		else {
+			map.put(
+				"numberOfAccounts",
+				String.valueOf(organization.getNumberOfAccounts()));
+		}
+
 		if (organization.getNumberOfOrganizations() == null) {
 			map.put("numberOfOrganizations", null);
 		}
@@ -423,6 +452,15 @@ public class OrganizationSerDes {
 			map.put(
 				"numberOfOrganizations",
 				String.valueOf(organization.getNumberOfOrganizations()));
+		}
+
+		if (organization.getNumberOfUsers() == null) {
+			map.put("numberOfUsers", null);
+		}
+		else {
+			map.put(
+				"numberOfUsers",
+				String.valueOf(organization.getNumberOfUsers()));
 		}
 
 		if (organization.getOrganizationContactInformation() == null) {
@@ -557,11 +595,23 @@ public class OrganizationSerDes {
 					organization.setName((String)jsonParserFieldValue);
 				}
 			}
+			else if (Objects.equals(jsonParserFieldName, "numberOfAccounts")) {
+				if (jsonParserFieldValue != null) {
+					organization.setNumberOfAccounts(
+						Integer.valueOf((String)jsonParserFieldValue));
+				}
+			}
 			else if (Objects.equals(
 						jsonParserFieldName, "numberOfOrganizations")) {
 
 				if (jsonParserFieldValue != null) {
 					organization.setNumberOfOrganizations(
+						Integer.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "numberOfUsers")) {
+				if (jsonParserFieldValue != null) {
+					organization.setNumberOfUsers(
 						Integer.valueOf((String)jsonParserFieldValue));
 				}
 			}

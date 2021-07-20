@@ -385,6 +385,38 @@ public class Organization implements Serializable {
 	protected String name;
 
 	@Schema(
+		description = "The number of this organization's associated accounts."
+	)
+	public Integer getNumberOfAccounts() {
+		return numberOfAccounts;
+	}
+
+	public void setNumberOfAccounts(Integer numberOfAccounts) {
+		this.numberOfAccounts = numberOfAccounts;
+	}
+
+	@JsonIgnore
+	public void setNumberOfAccounts(
+		UnsafeSupplier<Integer, Exception> numberOfAccountsUnsafeSupplier) {
+
+		try {
+			numberOfAccounts = numberOfAccountsUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField(
+		description = "The number of this organization's associated accounts."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Integer numberOfAccounts;
+
+	@Schema(
 		description = "The number of this organization's child organizations."
 	)
 	public Integer getNumberOfOrganizations() {
@@ -416,6 +448,36 @@ public class Organization implements Serializable {
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Integer numberOfOrganizations;
+
+	@Schema(description = "The number of this organization's associated users.")
+	public Integer getNumberOfUsers() {
+		return numberOfUsers;
+	}
+
+	public void setNumberOfUsers(Integer numberOfUsers) {
+		this.numberOfUsers = numberOfUsers;
+	}
+
+	@JsonIgnore
+	public void setNumberOfUsers(
+		UnsafeSupplier<Integer, Exception> numberOfUsersUnsafeSupplier) {
+
+		try {
+			numberOfUsers = numberOfUsersUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField(
+		description = "The number of this organization's associated users."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Integer numberOfUsers;
 
 	@Schema(
 		description = "The organization's contact information, which includes email addresses, postal addresses, phone numbers, and web URLs. This is modeled internally as a `Contact`."
@@ -744,6 +806,16 @@ public class Organization implements Serializable {
 			sb.append("\"");
 		}
 
+		if (numberOfAccounts != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"numberOfAccounts\": ");
+
+			sb.append(numberOfAccounts);
+		}
+
 		if (numberOfOrganizations != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -752,6 +824,16 @@ public class Organization implements Serializable {
 			sb.append("\"numberOfOrganizations\": ");
 
 			sb.append(numberOfOrganizations);
+		}
+
+		if (numberOfUsers != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"numberOfUsers\": ");
+
+			sb.append(numberOfUsers);
 		}
 
 		if (organizationContactInformation != null) {

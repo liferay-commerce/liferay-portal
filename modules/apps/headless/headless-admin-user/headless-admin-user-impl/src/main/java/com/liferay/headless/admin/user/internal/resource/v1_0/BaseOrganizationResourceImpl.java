@@ -302,9 +302,19 @@ public abstract class BaseOrganizationResourceImpl
 			existingOrganization.setName(organization.getName());
 		}
 
+		if (organization.getNumberOfAccounts() != null) {
+			existingOrganization.setNumberOfAccounts(
+				organization.getNumberOfAccounts());
+		}
+
 		if (organization.getNumberOfOrganizations() != null) {
 			existingOrganization.setNumberOfOrganizations(
 				organization.getNumberOfOrganizations());
+		}
+
+		if (organization.getNumberOfUsers() != null) {
+			existingOrganization.setNumberOfUsers(
+				organization.getNumberOfUsers());
 		}
 
 		preparePatch(organization, existingOrganization);
