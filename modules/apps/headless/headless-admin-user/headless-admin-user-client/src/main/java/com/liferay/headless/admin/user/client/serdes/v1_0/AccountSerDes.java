@@ -55,6 +55,26 @@ public class AccountSerDes {
 
 		sb.append("{");
 
+		if (account.getAccountUserAccounts() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"accountUserAccounts\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < account.getAccountUserAccounts().length; i++) {
+				sb.append(String.valueOf(account.getAccountUserAccounts()[i]));
+
+				if ((i + 1) < account.getAccountUserAccounts().length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
 		if (account.getActions() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -141,6 +161,16 @@ public class AccountSerDes {
 			sb.append("\"");
 		}
 
+		if (account.getNumberOfUsers() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"numberOfUsers\": ");
+
+			sb.append(account.getNumberOfUsers());
+		}
+
 		if (account.getOrganizationIds() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -181,26 +211,6 @@ public class AccountSerDes {
 			sb.append(account.getStatus());
 		}
 
-		if (account.getUserAccounts() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"userAccounts\": ");
-
-			sb.append("[");
-
-			for (int i = 0; i < account.getUserAccounts().length; i++) {
-				sb.append(String.valueOf(account.getUserAccounts()[i]));
-
-				if ((i + 1) < account.getUserAccounts().length) {
-					sb.append(", ");
-				}
-			}
-
-			sb.append("]");
-		}
-
 		sb.append("}");
 
 		return sb.toString();
@@ -218,6 +228,15 @@ public class AccountSerDes {
 		}
 
 		Map<String, String> map = new TreeMap<>();
+
+		if (account.getAccountUserAccounts() == null) {
+			map.put("accountUserAccounts", null);
+		}
+		else {
+			map.put(
+				"accountUserAccounts",
+				String.valueOf(account.getAccountUserAccounts()));
+		}
 
 		if (account.getActions() == null) {
 			map.put("actions", null);
@@ -263,6 +282,14 @@ public class AccountSerDes {
 			map.put("name", String.valueOf(account.getName()));
 		}
 
+		if (account.getNumberOfUsers() == null) {
+			map.put("numberOfUsers", null);
+		}
+		else {
+			map.put(
+				"numberOfUsers", String.valueOf(account.getNumberOfUsers()));
+		}
+
 		if (account.getOrganizationIds() == null) {
 			map.put("organizationIds", null);
 		}
@@ -288,13 +315,6 @@ public class AccountSerDes {
 			map.put("status", String.valueOf(account.getStatus()));
 		}
 
-		if (account.getUserAccounts() == null) {
-			map.put("userAccounts", null);
-		}
-		else {
-			map.put("userAccounts", String.valueOf(account.getUserAccounts()));
-		}
-
 		return map;
 	}
 
@@ -315,7 +335,19 @@ public class AccountSerDes {
 			Account account, String jsonParserFieldName,
 			Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "actions")) {
+			if (Objects.equals(jsonParserFieldName, "accountUserAccounts")) {
+				if (jsonParserFieldValue != null) {
+					account.setAccountUserAccounts(
+						Stream.of(
+							toStrings((Object[])jsonParserFieldValue)
+						).map(
+							object -> UserAccountSerDes.toDTO((String)object)
+						).toArray(
+							size -> new UserAccount[size]
+						));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "actions")) {
 				if (jsonParserFieldValue != null) {
 					account.setActions(
 						(Map)AccountSerDes.toMap((String)jsonParserFieldValue));
@@ -350,6 +382,12 @@ public class AccountSerDes {
 					account.setName((String)jsonParserFieldValue);
 				}
 			}
+			else if (Objects.equals(jsonParserFieldName, "numberOfUsers")) {
+				if (jsonParserFieldValue != null) {
+					account.setNumberOfUsers(
+						Integer.valueOf((String)jsonParserFieldValue));
+				}
+			}
 			else if (Objects.equals(jsonParserFieldName, "organizationIds")) {
 				if (jsonParserFieldValue != null) {
 					account.setOrganizationIds(
@@ -366,18 +404,6 @@ public class AccountSerDes {
 				if (jsonParserFieldValue != null) {
 					account.setStatus(
 						Integer.valueOf((String)jsonParserFieldValue));
-				}
-			}
-			else if (Objects.equals(jsonParserFieldName, "userAccounts")) {
-				if (jsonParserFieldValue != null) {
-					account.setUserAccounts(
-						Stream.of(
-							toStrings((Object[])jsonParserFieldValue)
-						).map(
-							object -> UserAccountSerDes.toDTO((String)object)
-						).toArray(
-							size -> new UserAccount[size]
-						));
 				}
 			}
 		}

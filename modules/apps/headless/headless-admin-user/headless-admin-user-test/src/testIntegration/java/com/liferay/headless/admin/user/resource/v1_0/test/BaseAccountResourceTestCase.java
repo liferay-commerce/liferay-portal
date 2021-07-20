@@ -1016,6 +1016,16 @@ public abstract class BaseAccountResourceTestCase {
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
 
+			if (Objects.equals(
+					"accountUserAccounts", additionalAssertFieldName)) {
+
+				if (account.getAccountUserAccounts() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("actions", additionalAssertFieldName)) {
 				if (account.getActions() == null) {
 					valid = false;
@@ -1058,6 +1068,14 @@ public abstract class BaseAccountResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("numberOfUsers", additionalAssertFieldName)) {
+				if (account.getNumberOfUsers() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("organizationIds", additionalAssertFieldName)) {
 				if (account.getOrganizationIds() == null) {
 					valid = false;
@@ -1076,14 +1094,6 @@ public abstract class BaseAccountResourceTestCase {
 
 			if (Objects.equals("status", additionalAssertFieldName)) {
 				if (account.getStatus() == null) {
-					valid = false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals("userAccounts", additionalAssertFieldName)) {
-				if (account.getUserAccounts() == null) {
 					valid = false;
 				}
 
@@ -1179,6 +1189,19 @@ public abstract class BaseAccountResourceTestCase {
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
 
+			if (Objects.equals(
+					"accountUserAccounts", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						account1.getAccountUserAccounts(),
+						account2.getAccountUserAccounts())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("actions", additionalAssertFieldName)) {
 				if (!equals(
 						(Map)account1.getActions(),
@@ -1241,6 +1264,17 @@ public abstract class BaseAccountResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("numberOfUsers", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						account1.getNumberOfUsers(),
+						account2.getNumberOfUsers())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("organizationIds", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						account1.getOrganizationIds(),
@@ -1266,17 +1300,6 @@ public abstract class BaseAccountResourceTestCase {
 			if (Objects.equals("status", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						account1.getStatus(), account2.getStatus())) {
-
-					return false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals("userAccounts", additionalAssertFieldName)) {
-				if (!Objects.deepEquals(
-						account1.getUserAccounts(),
-						account2.getUserAccounts())) {
 
 					return false;
 				}
@@ -1379,6 +1402,11 @@ public abstract class BaseAccountResourceTestCase {
 		sb.append(operator);
 		sb.append(" ");
 
+		if (entityFieldName.equals("accountUserAccounts")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("actions")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -1418,6 +1446,11 @@ public abstract class BaseAccountResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("numberOfUsers")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("organizationIds")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -1429,11 +1462,6 @@ public abstract class BaseAccountResourceTestCase {
 		}
 
 		if (entityFieldName.equals("status")) {
-			throw new IllegalArgumentException(
-				"Invalid entity field " + entityFieldName);
-		}
-
-		if (entityFieldName.equals("userAccounts")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
 		}
@@ -1488,6 +1516,7 @@ public abstract class BaseAccountResourceTestCase {
 					RandomTestUtil.randomString());
 				id = RandomTestUtil.randomLong();
 				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
+				numberOfUsers = RandomTestUtil.randomInt();
 				parentAccountId = RandomTestUtil.randomLong();
 				status = RandomTestUtil.randomInt();
 			}

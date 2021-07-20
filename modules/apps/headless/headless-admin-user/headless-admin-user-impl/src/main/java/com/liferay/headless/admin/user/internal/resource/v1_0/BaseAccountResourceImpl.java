@@ -117,7 +117,7 @@ public abstract class BaseAccountResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-admin-user/v1.0/accounts' -d $'{"description": ___, "domains": ___, "externalReferenceCode": ___, "name": ___, "organizationIds": ___, "parentAccountId": ___, "status": ___, "userAccounts": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-admin-user/v1.0/accounts' -d $'{"accountUserAccounts": ___, "description": ___, "domains": ___, "externalReferenceCode": ___, "name": ___, "organizationIds": ___, "parentAccountId": ___, "status": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@Consumes({"application/json", "application/xml"})
 	@Operation(description = "Creates a new account")
@@ -217,7 +217,7 @@ public abstract class BaseAccountResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-admin-user/v1.0/accounts/by-external-reference-code/{externalReferenceCode}' -d $'{"description": ___, "domains": ___, "externalReferenceCode": ___, "name": ___, "organizationIds": ___, "parentAccountId": ___, "status": ___, "userAccounts": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-admin-user/v1.0/accounts/by-external-reference-code/{externalReferenceCode}' -d $'{"accountUserAccounts": ___, "description": ___, "domains": ___, "externalReferenceCode": ___, "name": ___, "organizationIds": ___, "parentAccountId": ___, "status": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@Consumes({"application/json", "application/xml"})
 	@Operation(
@@ -264,6 +264,10 @@ public abstract class BaseAccountResourceImpl
 			existingAccount.setName(account.getName());
 		}
 
+		if (account.getNumberOfUsers() != null) {
+			existingAccount.setNumberOfUsers(account.getNumberOfUsers());
+		}
+
 		if (account.getOrganizationIds() != null) {
 			existingAccount.setOrganizationIds(account.getOrganizationIds());
 		}
@@ -285,7 +289,7 @@ public abstract class BaseAccountResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PUT' 'http://localhost:8080/o/headless-admin-user/v1.0/accounts/by-external-reference-code/{externalReferenceCode}' -d $'{"description": ___, "domains": ___, "externalReferenceCode": ___, "name": ___, "organizationIds": ___, "parentAccountId": ___, "status": ___, "userAccounts": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PUT' 'http://localhost:8080/o/headless-admin-user/v1.0/accounts/by-external-reference-code/{externalReferenceCode}' -d $'{"accountUserAccounts": ___, "description": ___, "domains": ___, "externalReferenceCode": ___, "name": ___, "organizationIds": ___, "parentAccountId": ___, "status": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@Consumes({"application/json", "application/xml"})
 	@Operation(
@@ -388,7 +392,7 @@ public abstract class BaseAccountResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-admin-user/v1.0/accounts/{accountId}' -d $'{"description": ___, "domains": ___, "externalReferenceCode": ___, "name": ___, "organizationIds": ___, "parentAccountId": ___, "status": ___, "userAccounts": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-admin-user/v1.0/accounts/{accountId}' -d $'{"accountUserAccounts": ___, "description": ___, "domains": ___, "externalReferenceCode": ___, "name": ___, "organizationIds": ___, "parentAccountId": ___, "status": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@Consumes({"application/json", "application/xml"})
 	@Operation(
@@ -429,6 +433,10 @@ public abstract class BaseAccountResourceImpl
 			existingAccount.setName(account.getName());
 		}
 
+		if (account.getNumberOfUsers() != null) {
+			existingAccount.setNumberOfUsers(account.getNumberOfUsers());
+		}
+
 		if (account.getOrganizationIds() != null) {
 			existingAccount.setOrganizationIds(account.getOrganizationIds());
 		}
@@ -449,7 +457,7 @@ public abstract class BaseAccountResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PUT' 'http://localhost:8080/o/headless-admin-user/v1.0/accounts/{accountId}' -d $'{"description": ___, "domains": ___, "externalReferenceCode": ___, "name": ___, "organizationIds": ___, "parentAccountId": ___, "status": ___, "userAccounts": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PUT' 'http://localhost:8080/o/headless-admin-user/v1.0/accounts/{accountId}' -d $'{"accountUserAccounts": ___, "description": ___, "domains": ___, "externalReferenceCode": ___, "name": ___, "organizationIds": ___, "parentAccountId": ___, "status": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@Consumes({"application/json", "application/xml"})
 	@Operation(
