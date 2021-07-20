@@ -479,6 +479,36 @@ public class Organization implements Serializable {
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Integer numberOfUsers;
 
+	@Schema
+	@Valid
+	public Account[] getOrganizationAccounts() {
+		return organizationAccounts;
+	}
+
+	public void setOrganizationAccounts(Account[] organizationAccounts) {
+		this.organizationAccounts = organizationAccounts;
+	}
+
+	@JsonIgnore
+	public void setOrganizationAccounts(
+		UnsafeSupplier<Account[], Exception>
+			organizationAccountsUnsafeSupplier) {
+
+		try {
+			organizationAccounts = organizationAccountsUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Account[] organizationAccounts;
+
 	@Schema(
 		description = "The organization's contact information, which includes email addresses, postal addresses, phone numbers, and web URLs. This is modeled internally as a `Contact`."
 	)
@@ -834,6 +864,26 @@ public class Organization implements Serializable {
 			sb.append("\"numberOfUsers\": ");
 
 			sb.append(numberOfUsers);
+		}
+
+		if (organizationAccounts != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"organizationAccounts\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < organizationAccounts.length; i++) {
+				sb.append(String.valueOf(organizationAccounts[i]));
+
+				if ((i + 1) < organizationAccounts.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
 		}
 
 		if (organizationContactInformation != null) {

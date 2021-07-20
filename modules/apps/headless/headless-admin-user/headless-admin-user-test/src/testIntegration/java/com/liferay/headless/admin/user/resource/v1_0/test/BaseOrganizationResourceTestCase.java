@@ -1601,6 +1601,16 @@ public abstract class BaseOrganizationResourceTestCase {
 			}
 
 			if (Objects.equals(
+					"organizationAccounts", additionalAssertFieldName)) {
+
+				if (organization.getOrganizationAccounts() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
 					"organizationContactInformation",
 					additionalAssertFieldName)) {
 
@@ -1877,6 +1887,19 @@ public abstract class BaseOrganizationResourceTestCase {
 				if (!Objects.deepEquals(
 						organization1.getNumberOfUsers(),
 						organization2.getNumberOfUsers())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"organizationAccounts", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						organization1.getOrganizationAccounts(),
+						organization2.getOrganizationAccounts())) {
 
 					return false;
 				}
@@ -2162,6 +2185,11 @@ public abstract class BaseOrganizationResourceTestCase {
 		}
 
 		if (entityFieldName.equals("numberOfUsers")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("organizationAccounts")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
 		}

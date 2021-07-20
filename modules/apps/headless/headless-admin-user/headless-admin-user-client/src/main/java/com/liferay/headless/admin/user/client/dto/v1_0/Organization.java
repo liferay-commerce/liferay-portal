@@ -329,6 +329,28 @@ public class Organization implements Cloneable, Serializable {
 
 	protected Integer numberOfUsers;
 
+	public Account[] getOrganizationAccounts() {
+		return organizationAccounts;
+	}
+
+	public void setOrganizationAccounts(Account[] organizationAccounts) {
+		this.organizationAccounts = organizationAccounts;
+	}
+
+	public void setOrganizationAccounts(
+		UnsafeSupplier<Account[], Exception>
+			organizationAccountsUnsafeSupplier) {
+
+		try {
+			organizationAccounts = organizationAccountsUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Account[] organizationAccounts;
+
 	public OrganizationContactInformation getOrganizationContactInformation() {
 		return organizationContactInformation;
 	}

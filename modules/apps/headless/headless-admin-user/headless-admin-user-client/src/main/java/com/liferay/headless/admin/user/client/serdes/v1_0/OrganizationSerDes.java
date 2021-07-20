@@ -14,6 +14,7 @@
 
 package com.liferay.headless.admin.user.client.serdes.v1_0;
 
+import com.liferay.headless.admin.user.client.dto.v1_0.Account;
 import com.liferay.headless.admin.user.client.dto.v1_0.CustomField;
 import com.liferay.headless.admin.user.client.dto.v1_0.Organization;
 import com.liferay.headless.admin.user.client.dto.v1_0.Service;
@@ -268,6 +269,29 @@ public class OrganizationSerDes {
 			sb.append(organization.getNumberOfUsers());
 		}
 
+		if (organization.getOrganizationAccounts() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"organizationAccounts\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < organization.getOrganizationAccounts().length;
+				 i++) {
+
+				sb.append(
+					String.valueOf(organization.getOrganizationAccounts()[i]));
+
+				if ((i + 1) < organization.getOrganizationAccounts().length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
 		if (organization.getOrganizationContactInformation() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -463,6 +487,15 @@ public class OrganizationSerDes {
 				String.valueOf(organization.getNumberOfUsers()));
 		}
 
+		if (organization.getOrganizationAccounts() == null) {
+			map.put("organizationAccounts", null);
+		}
+		else {
+			map.put(
+				"organizationAccounts",
+				String.valueOf(organization.getOrganizationAccounts()));
+		}
+
 		if (organization.getOrganizationContactInformation() == null) {
 			map.put("organizationContactInformation", null);
 		}
@@ -613,6 +646,20 @@ public class OrganizationSerDes {
 				if (jsonParserFieldValue != null) {
 					organization.setNumberOfUsers(
 						Integer.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "organizationAccounts")) {
+
+				if (jsonParserFieldValue != null) {
+					organization.setOrganizationAccounts(
+						Stream.of(
+							toStrings((Object[])jsonParserFieldValue)
+						).map(
+							object -> AccountSerDes.toDTO((String)object)
+						).toArray(
+							size -> new Account[size]
+						));
 				}
 			}
 			else if (Objects.equals(
