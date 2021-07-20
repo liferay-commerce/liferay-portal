@@ -15,6 +15,7 @@
 package com.liferay.headless.admin.user.client.serdes.v1_0;
 
 import com.liferay.headless.admin.user.client.dto.v1_0.Account;
+import com.liferay.headless.admin.user.client.dto.v1_0.UserAccount;
 import com.liferay.headless.admin.user.client.json.BaseJSONParser;
 
 import java.util.Iterator;
@@ -22,6 +23,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.stream.Stream;
 
 import javax.annotation.Generated;
 
@@ -179,6 +181,26 @@ public class AccountSerDes {
 			sb.append(account.getStatus());
 		}
 
+		if (account.getUserAccounts() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"userAccounts\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < account.getUserAccounts().length; i++) {
+				sb.append(String.valueOf(account.getUserAccounts()[i]));
+
+				if ((i + 1) < account.getUserAccounts().length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
 		sb.append("}");
 
 		return sb.toString();
@@ -266,6 +288,13 @@ public class AccountSerDes {
 			map.put("status", String.valueOf(account.getStatus()));
 		}
 
+		if (account.getUserAccounts() == null) {
+			map.put("userAccounts", null);
+		}
+		else {
+			map.put("userAccounts", String.valueOf(account.getUserAccounts()));
+		}
+
 		return map;
 	}
 
@@ -337,6 +366,18 @@ public class AccountSerDes {
 				if (jsonParserFieldValue != null) {
 					account.setStatus(
 						Integer.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "userAccounts")) {
+				if (jsonParserFieldValue != null) {
+					account.setUserAccounts(
+						Stream.of(
+							toStrings((Object[])jsonParserFieldValue)
+						).map(
+							object -> UserAccountSerDes.toDTO((String)object)
+						).toArray(
+							size -> new UserAccount[size]
+						));
 				}
 			}
 		}
