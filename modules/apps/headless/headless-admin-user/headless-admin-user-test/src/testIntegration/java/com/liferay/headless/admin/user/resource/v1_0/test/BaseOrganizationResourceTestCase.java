@@ -1574,10 +1574,26 @@ public abstract class BaseOrganizationResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("numberOfAccounts", additionalAssertFieldName)) {
+				if (organization.getNumberOfAccounts() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals(
 					"numberOfOrganizations", additionalAssertFieldName)) {
 
 				if (organization.getNumberOfOrganizations() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("numberOfUsers", additionalAssertFieldName)) {
+				if (organization.getNumberOfUsers() == null) {
 					valid = false;
 				}
 
@@ -1833,12 +1849,34 @@ public abstract class BaseOrganizationResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("numberOfAccounts", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						organization1.getNumberOfAccounts(),
+						organization2.getNumberOfAccounts())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals(
 					"numberOfOrganizations", additionalAssertFieldName)) {
 
 				if (!Objects.deepEquals(
 						organization1.getNumberOfOrganizations(),
 						organization2.getNumberOfOrganizations())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("numberOfUsers", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						organization1.getNumberOfUsers(),
+						organization2.getNumberOfUsers())) {
 
 					return false;
 				}
@@ -2113,7 +2151,17 @@ public abstract class BaseOrganizationResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("numberOfAccounts")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("numberOfOrganizations")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("numberOfUsers")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
 		}
@@ -2188,7 +2236,9 @@ public abstract class BaseOrganizationResourceTestCase {
 				id = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				image = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
+				numberOfAccounts = RandomTestUtil.randomInt();
 				numberOfOrganizations = RandomTestUtil.randomInt();
+				numberOfUsers = RandomTestUtil.randomInt();
 			}
 		};
 	}
