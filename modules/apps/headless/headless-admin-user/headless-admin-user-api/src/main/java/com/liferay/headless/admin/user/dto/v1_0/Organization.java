@@ -487,6 +487,35 @@ public class Organization implements Serializable {
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Service[] services;
 
+	@Schema
+	@Valid
+	public UserAccount[] getUserAccounts() {
+		return userAccounts;
+	}
+
+	public void setUserAccounts(UserAccount[] userAccounts) {
+		this.userAccounts = userAccounts;
+	}
+
+	@JsonIgnore
+	public void setUserAccounts(
+		UnsafeSupplier<UserAccount[], Exception> userAccountsUnsafeSupplier) {
+
+		try {
+			userAccounts = userAccountsUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected UserAccount[] userAccounts;
+
 	@Override
 	public boolean equals(Object object) {
 		if (this == object) {
@@ -708,6 +737,26 @@ public class Organization implements Serializable {
 				sb.append(String.valueOf(services[i]));
 
 				if ((i + 1) < services.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
+		if (userAccounts != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"userAccounts\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < userAccounts.length; i++) {
+				sb.append(String.valueOf(userAccounts[i]));
+
+				if ((i + 1) < userAccounts.length) {
 					sb.append(", ");
 				}
 			}
