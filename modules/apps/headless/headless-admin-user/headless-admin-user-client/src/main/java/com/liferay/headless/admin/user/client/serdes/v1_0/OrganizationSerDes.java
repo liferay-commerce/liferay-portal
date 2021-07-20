@@ -75,6 +75,29 @@ public class OrganizationSerDes {
 			sb.append(_toJSON(organization.getActions()));
 		}
 
+		if (organization.getChildOrganizations() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"childOrganizations\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < organization.getChildOrganizations().length;
+				 i++) {
+
+				sb.append(
+					String.valueOf(organization.getChildOrganizations()[i]));
+
+				if ((i + 1) < organization.getChildOrganizations().length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
 		if (organization.getComment() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -316,6 +339,15 @@ public class OrganizationSerDes {
 			map.put("actions", String.valueOf(organization.getActions()));
 		}
 
+		if (organization.getChildOrganizations() == null) {
+			map.put("childOrganizations", null);
+		}
+		else {
+			map.put(
+				"childOrganizations",
+				String.valueOf(organization.getChildOrganizations()));
+		}
+
 		if (organization.getComment() == null) {
 			map.put("comment", null);
 		}
@@ -453,6 +485,20 @@ public class OrganizationSerDes {
 					organization.setActions(
 						(Map)OrganizationSerDes.toMap(
 							(String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "childOrganizations")) {
+
+				if (jsonParserFieldValue != null) {
+					organization.setChildOrganizations(
+						Stream.of(
+							toStrings((Object[])jsonParserFieldValue)
+						).map(
+							object -> OrganizationSerDes.toDTO((String)object)
+						).toArray(
+							size -> new Organization[size]
+						));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "comment")) {

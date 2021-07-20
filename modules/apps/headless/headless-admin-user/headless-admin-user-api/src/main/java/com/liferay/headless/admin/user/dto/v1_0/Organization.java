@@ -90,6 +90,36 @@ public class Organization implements Serializable {
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Map<String, Map<String, String>> actions;
 
+	@Schema
+	@Valid
+	public Organization[] getChildOrganizations() {
+		return childOrganizations;
+	}
+
+	public void setChildOrganizations(Organization[] childOrganizations) {
+		this.childOrganizations = childOrganizations;
+	}
+
+	@JsonIgnore
+	public void setChildOrganizations(
+		UnsafeSupplier<Organization[], Exception>
+			childOrganizationsUnsafeSupplier) {
+
+		try {
+			childOrganizations = childOrganizationsUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Organization[] childOrganizations;
+
 	@Schema(
 		description = "The text of a comment associated with the organization."
 	)
@@ -554,6 +584,26 @@ public class Organization implements Serializable {
 			sb.append("\"actions\": ");
 
 			sb.append(_toJSON(actions));
+		}
+
+		if (childOrganizations != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"childOrganizations\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < childOrganizations.length; i++) {
+				sb.append(String.valueOf(childOrganizations[i]));
+
+				if ((i + 1) < childOrganizations.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
 		}
 
 		if (comment != null) {
