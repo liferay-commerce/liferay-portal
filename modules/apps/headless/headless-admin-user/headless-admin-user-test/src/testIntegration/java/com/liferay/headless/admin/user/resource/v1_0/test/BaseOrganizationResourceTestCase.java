@@ -687,6 +687,334 @@ public abstract class BaseOrganizationResourceTestCase {
 	}
 
 	@Test
+	public void testGetOrganizationChildOrganizationsPage() throws Exception {
+		Page<Organization> page =
+			organizationResource.getOrganizationChildOrganizationsPage(
+				testGetOrganizationChildOrganizationsPage_getOrganizationId(),
+				null, RandomTestUtil.randomString(), null, Pagination.of(1, 2),
+				null);
+
+		Assert.assertEquals(0, page.getTotalCount());
+
+		String organizationId =
+			testGetOrganizationChildOrganizationsPage_getOrganizationId();
+		String irrelevantOrganizationId =
+			testGetOrganizationChildOrganizationsPage_getIrrelevantOrganizationId();
+
+		if (irrelevantOrganizationId != null) {
+			Organization irrelevantOrganization =
+				testGetOrganizationChildOrganizationsPage_addOrganization(
+					irrelevantOrganizationId, randomIrrelevantOrganization());
+
+			page = organizationResource.getOrganizationChildOrganizationsPage(
+				irrelevantOrganizationId, null, null, null, Pagination.of(1, 2),
+				null);
+
+			Assert.assertEquals(1, page.getTotalCount());
+
+			assertEquals(
+				Arrays.asList(irrelevantOrganization),
+				(List<Organization>)page.getItems());
+			assertValid(page);
+		}
+
+		Organization organization1 =
+			testGetOrganizationChildOrganizationsPage_addOrganization(
+				organizationId, randomOrganization());
+
+		Organization organization2 =
+			testGetOrganizationChildOrganizationsPage_addOrganization(
+				organizationId, randomOrganization());
+
+		page = organizationResource.getOrganizationChildOrganizationsPage(
+			organizationId, null, null, null, Pagination.of(1, 2), null);
+
+		Assert.assertEquals(2, page.getTotalCount());
+
+		assertEqualsIgnoringOrder(
+			Arrays.asList(organization1, organization2),
+			(List<Organization>)page.getItems());
+		assertValid(page);
+
+		organizationResource.deleteOrganization(organization1.getId());
+
+		organizationResource.deleteOrganization(organization2.getId());
+	}
+
+	@Test
+	public void testGetOrganizationChildOrganizationsPageWithFilterDateTimeEquals()
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(
+			EntityField.Type.DATE_TIME);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		String organizationId =
+			testGetOrganizationChildOrganizationsPage_getOrganizationId();
+
+		Organization organization1 = randomOrganization();
+
+		organization1 =
+			testGetOrganizationChildOrganizationsPage_addOrganization(
+				organizationId, organization1);
+
+		for (EntityField entityField : entityFields) {
+			Page<Organization> page =
+				organizationResource.getOrganizationChildOrganizationsPage(
+					organizationId, null, null,
+					getFilterString(entityField, "between", organization1),
+					Pagination.of(1, 2), null);
+
+			assertEquals(
+				Collections.singletonList(organization1),
+				(List<Organization>)page.getItems());
+		}
+	}
+
+	@Test
+	public void testGetOrganizationChildOrganizationsPageWithFilterStringEquals()
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(
+			EntityField.Type.STRING);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		String organizationId =
+			testGetOrganizationChildOrganizationsPage_getOrganizationId();
+
+		Organization organization1 =
+			testGetOrganizationChildOrganizationsPage_addOrganization(
+				organizationId, randomOrganization());
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		Organization organization2 =
+			testGetOrganizationChildOrganizationsPage_addOrganization(
+				organizationId, randomOrganization());
+
+		for (EntityField entityField : entityFields) {
+			Page<Organization> page =
+				organizationResource.getOrganizationChildOrganizationsPage(
+					organizationId, null, null,
+					getFilterString(entityField, "eq", organization1),
+					Pagination.of(1, 2), null);
+
+			assertEquals(
+				Collections.singletonList(organization1),
+				(List<Organization>)page.getItems());
+		}
+	}
+
+	@Test
+	public void testGetOrganizationChildOrganizationsPageWithPagination()
+		throws Exception {
+
+		String organizationId =
+			testGetOrganizationChildOrganizationsPage_getOrganizationId();
+
+		Organization organization1 =
+			testGetOrganizationChildOrganizationsPage_addOrganization(
+				organizationId, randomOrganization());
+
+		Organization organization2 =
+			testGetOrganizationChildOrganizationsPage_addOrganization(
+				organizationId, randomOrganization());
+
+		Organization organization3 =
+			testGetOrganizationChildOrganizationsPage_addOrganization(
+				organizationId, randomOrganization());
+
+		Page<Organization> page1 =
+			organizationResource.getOrganizationChildOrganizationsPage(
+				organizationId, null, null, null, Pagination.of(1, 2), null);
+
+		List<Organization> organizations1 =
+			(List<Organization>)page1.getItems();
+
+		Assert.assertEquals(
+			organizations1.toString(), 2, organizations1.size());
+
+		Page<Organization> page2 =
+			organizationResource.getOrganizationChildOrganizationsPage(
+				organizationId, null, null, null, Pagination.of(2, 2), null);
+
+		Assert.assertEquals(3, page2.getTotalCount());
+
+		List<Organization> organizations2 =
+			(List<Organization>)page2.getItems();
+
+		Assert.assertEquals(
+			organizations2.toString(), 1, organizations2.size());
+
+		Page<Organization> page3 =
+			organizationResource.getOrganizationChildOrganizationsPage(
+				organizationId, null, null, null, Pagination.of(1, 3), null);
+
+		assertEqualsIgnoringOrder(
+			Arrays.asList(organization1, organization2, organization3),
+			(List<Organization>)page3.getItems());
+	}
+
+	@Test
+	public void testGetOrganizationChildOrganizationsPageWithSortDateTime()
+		throws Exception {
+
+		testGetOrganizationChildOrganizationsPageWithSort(
+			EntityField.Type.DATE_TIME,
+			(entityField, organization1, organization2) -> {
+				BeanUtils.setProperty(
+					organization1, entityField.getName(),
+					DateUtils.addMinutes(new Date(), -2));
+			});
+	}
+
+	@Test
+	public void testGetOrganizationChildOrganizationsPageWithSortInteger()
+		throws Exception {
+
+		testGetOrganizationChildOrganizationsPageWithSort(
+			EntityField.Type.INTEGER,
+			(entityField, organization1, organization2) -> {
+				BeanUtils.setProperty(organization1, entityField.getName(), 0);
+				BeanUtils.setProperty(organization2, entityField.getName(), 1);
+			});
+	}
+
+	@Test
+	public void testGetOrganizationChildOrganizationsPageWithSortString()
+		throws Exception {
+
+		testGetOrganizationChildOrganizationsPageWithSort(
+			EntityField.Type.STRING,
+			(entityField, organization1, organization2) -> {
+				Class<?> clazz = organization1.getClass();
+
+				String entityFieldName = entityField.getName();
+
+				Method method = clazz.getMethod(
+					"get" + StringUtil.upperCaseFirstLetter(entityFieldName));
+
+				Class<?> returnType = method.getReturnType();
+
+				if (returnType.isAssignableFrom(Map.class)) {
+					BeanUtils.setProperty(
+						organization1, entityFieldName,
+						Collections.singletonMap("Aaa", "Aaa"));
+					BeanUtils.setProperty(
+						organization2, entityFieldName,
+						Collections.singletonMap("Bbb", "Bbb"));
+				}
+				else if (entityFieldName.contains("email")) {
+					BeanUtils.setProperty(
+						organization1, entityFieldName,
+						"aaa" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()) +
+									"@liferay.com");
+					BeanUtils.setProperty(
+						organization2, entityFieldName,
+						"bbb" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()) +
+									"@liferay.com");
+				}
+				else {
+					BeanUtils.setProperty(
+						organization1, entityFieldName,
+						"aaa" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()));
+					BeanUtils.setProperty(
+						organization2, entityFieldName,
+						"bbb" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()));
+				}
+			});
+	}
+
+	protected void testGetOrganizationChildOrganizationsPageWithSort(
+			EntityField.Type type,
+			UnsafeTriConsumer
+				<EntityField, Organization, Organization, Exception>
+					unsafeTriConsumer)
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(type);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		String organizationId =
+			testGetOrganizationChildOrganizationsPage_getOrganizationId();
+
+		Organization organization1 = randomOrganization();
+		Organization organization2 = randomOrganization();
+
+		for (EntityField entityField : entityFields) {
+			unsafeTriConsumer.accept(entityField, organization1, organization2);
+		}
+
+		organization1 =
+			testGetOrganizationChildOrganizationsPage_addOrganization(
+				organizationId, organization1);
+
+		organization2 =
+			testGetOrganizationChildOrganizationsPage_addOrganization(
+				organizationId, organization2);
+
+		for (EntityField entityField : entityFields) {
+			Page<Organization> ascPage =
+				organizationResource.getOrganizationChildOrganizationsPage(
+					organizationId, null, null, null, Pagination.of(1, 2),
+					entityField.getName() + ":asc");
+
+			assertEquals(
+				Arrays.asList(organization1, organization2),
+				(List<Organization>)ascPage.getItems());
+
+			Page<Organization> descPage =
+				organizationResource.getOrganizationChildOrganizationsPage(
+					organizationId, null, null, null, Pagination.of(1, 2),
+					entityField.getName() + ":desc");
+
+			assertEquals(
+				Arrays.asList(organization2, organization1),
+				(List<Organization>)descPage.getItems());
+		}
+	}
+
+	protected Organization
+			testGetOrganizationChildOrganizationsPage_addOrganization(
+				String organizationId, Organization organization)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String
+			testGetOrganizationChildOrganizationsPage_getOrganizationId()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String
+			testGetOrganizationChildOrganizationsPage_getIrrelevantOrganizationId()
+		throws Exception {
+
+		return null;
+	}
+
+	@Test
 	public void testDeleteUserAccountsByEmailAddress() throws Exception {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		Organization organization =
@@ -1188,6 +1516,16 @@ public abstract class BaseOrganizationResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals(
+					"childOrganizations", additionalAssertFieldName)) {
+
+				if (organization.getChildOrganizations() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("comment", additionalAssertFieldName)) {
 				if (organization.getComment() == null) {
 					valid = false;
@@ -1379,6 +1717,19 @@ public abstract class BaseOrganizationResourceTestCase {
 				if (!equals(
 						(Map)organization1.getActions(),
 						(Map)organization2.getActions())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"childOrganizations", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						organization1.getChildOrganizations(),
+						organization2.getChildOrganizations())) {
 
 					return false;
 				}
@@ -1640,6 +1991,11 @@ public abstract class BaseOrganizationResourceTestCase {
 		sb.append(" ");
 
 		if (entityFieldName.equals("actions")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("childOrganizations")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
 		}
