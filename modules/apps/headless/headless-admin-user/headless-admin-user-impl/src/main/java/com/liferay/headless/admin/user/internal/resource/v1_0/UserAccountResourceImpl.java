@@ -19,6 +19,7 @@ import com.liferay.account.service.AccountEntryUserRelLocalService;
 import com.liferay.announcements.kernel.service.AnnouncementsDeliveryLocalService;
 import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.asset.kernel.service.AssetTagLocalService;
+import com.liferay.headless.admin.user.dto.v1_0.Account;
 import com.liferay.headless.admin.user.dto.v1_0.EmailAddress;
 import com.liferay.headless.admin.user.dto.v1_0.OrganizationBrief;
 import com.liferay.headless.admin.user.dto.v1_0.Phone;
@@ -166,6 +167,7 @@ public class UserAccountResourceImpl
 			search, filter, pagination, sorts);
 	}
 
+	@NestedField(parentClass = Account.class, value = "accountUserAccounts")
 	@Override
 	public Page<UserAccount> getAccountUsersPage(
 			Long accountId, String search, Filter filter, Pagination pagination,
