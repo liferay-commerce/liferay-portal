@@ -42,6 +42,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.fields.NestedField;
+import com.liferay.portal.vulcan.fields.NestedFieldSupport;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.util.SearchUtil;
@@ -61,9 +62,11 @@ import org.osgi.service.component.annotations.ServiceScope;
  */
 @Component(
 	properties = "OSGI-INF/liferay/rest/v1_0/account.properties",
-	scope = ServiceScope.PROTOTYPE, service = AccountResource.class
+	scope = ServiceScope.PROTOTYPE,
+	service = {AccountResource.class, NestedFieldSupport.class}
 )
-public class AccountResourceImpl extends BaseAccountResourceImpl {
+public class AccountResourceImpl
+	extends BaseAccountResourceImpl implements NestedFieldSupport {
 
 	@Override
 	public void deleteAccount(Long accountId) throws Exception {
