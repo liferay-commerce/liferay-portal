@@ -89,12 +89,15 @@ import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import com.liferay.portal.vulcan.util.SearchUtil;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
 import javax.ws.rs.core.MultivaluedMap;
 
@@ -430,6 +433,18 @@ public class UserAccountResourceImpl
 		String skype = null;
 		String twitter = null;
 
+		AccountBrief[] accountBriefs = userAccount.getAccountBriefs();
+
+		if (accountBriefs != null) {
+			_accountEntryUserRelLocalService.
+				deleteAccountEntryUserRelsByAccountUserId(userAccountId);
+
+			for (AccountBrief accountBrief : accountBriefs) {
+				_accountEntryUserRelLocalService.addAccountEntryUserRel(
+					accountBrief.getId(), userAccountId);
+			}
+		}
+
 		UserAccountContactInformation userAccountContactInformation =
 			userAccount.getUserAccountContactInformation();
 
@@ -439,6 +454,20 @@ public class UserAccountResourceImpl
 			jabber = userAccountContactInformation.getJabber();
 			skype = userAccountContactInformation.getSkype();
 			twitter = userAccountContactInformation.getTwitter();
+		}
+
+		OrganizationBrief[] organizationBriefs =
+			userAccount.getOrganizationBriefs();
+
+		long[] organizationIds = user.getOrganizationIds();
+
+		if (organizationBriefs != null) {
+			Stream<OrganizationBrief> stream = Arrays.stream(
+				organizationBriefs);
+
+			LongStream longStream = stream.mapToLong(OrganizationBrief::getId);
+
+			organizationIds = longStream.toArray();
 		}
 
 		return _toUserAccount(
@@ -452,8 +481,8 @@ public class UserAccountResourceImpl
 				_getSuffixId(userAccount), true, _getBirthdayMonth(userAccount),
 				_getBirthdayDay(userAccount), _getBirthdayYear(userAccount),
 				sms, facebook, jabber, skype, twitter,
-				userAccount.getJobTitle(), user.getGroupIds(),
-				user.getOrganizationIds(), user.getRoleIds(),
+				userAccount.getJobTitle(), user.getGroupIds(), organizationIds,
+				user.getRoleIds(),
 				_userGroupRoleLocalService.getUserGroupRoles(userAccountId),
 				user.getUserGroupIds(), _getAddresses(userAccount),
 				_getServiceBuilderEmailAddresses(userAccount),
@@ -473,6 +502,19 @@ public class UserAccountResourceImpl
 	@Override
 	protected void preparePatch(
 		UserAccount userAccount, UserAccount existingUserAccount) {
+
+		AccountBrief[] accountBriefs = userAccount.getAccountBriefs();
+
+		if (accountBriefs != null) {
+			existingUserAccount.setAccountBriefs(accountBriefs);
+		}
+
+		OrganizationBrief[] organizationBriefs =
+			userAccount.getOrganizationBriefs();
+
+		if (organizationBriefs != null) {
+			existingUserAccount.setOrganizationBriefs(organizationBriefs);
+		}
 
 		UserAccountContactInformation userAccountContactInformation =
 			userAccount.getUserAccountContactInformation();
