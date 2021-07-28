@@ -14,6 +14,8 @@
 
 package com.liferay.headless.admin.user.internal.resource.v1_0;
 
+import com.liferay.account.model.AccountRole;
+import com.liferay.account.service.AccountRoleLocalService;
 import com.liferay.headless.admin.user.dto.v1_0.Role;
 import com.liferay.headless.admin.user.internal.dto.v1_0.util.CreatorUtil;
 import com.liferay.headless.admin.user.resource.v1_0.RoleResource;
@@ -27,11 +29,14 @@ import com.liferay.portal.kernel.service.RoleService;
 import com.liferay.portal.kernel.service.UserGroupRoleService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.UserService;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
+
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -99,20 +104,29 @@ public class RoleResourceImpl extends BaseRoleResourceImpl {
 		if (types == null) {
 			types = new Integer[] {
 				RoleConstants.TYPE_ORGANIZATION, RoleConstants.TYPE_REGULAR,
-				RoleConstants.TYPE_SITE
+				RoleConstants.TYPE_SITE, RoleConstants.TYPE_ACCOUNT
 			};
 		}
 
-		return Page.of(
-			transform(
-				_roleService.search(
-					contextCompany.getCompanyId(), null, types, null,
-					pagination.getStartPosition(), pagination.getEndPosition(),
-					null),
-				this::_toRole),
-			pagination,
-			_roleService.searchCount(
-				contextCompany.getCompanyId(), null, types, null));
+		List<com.liferay.portal.kernel.model.Role> roles = _roleService.search(
+			contextCompany.getCompanyId(), null, types, null,
+			pagination.getStartPosition(), pagination.getEndPosition(), null);
+
+		int rolesCount = _roleService.searchCount(
+			contextCompany.getCompanyId(), null, types, null);
+
+		if (ArrayUtil.contains(types, RoleConstants.TYPE_ACCOUNT)) {
+			List<AccountRole> accountRoles =
+				_accountRoleLocalService.getAccountRoles(
+					pagination.getStartPosition(), pagination.getEndPosition());
+
+			for (AccountRole accountRole : accountRoles) {
+				roles.add(accountRole.getRole());
+				rolesCount = rolesCount + 1;
+			}
+		}
+
+		return Page.of(transform(roles, this::_toRole), pagination, rolesCount);
 	}
 
 	@Override
@@ -188,6 +202,9 @@ public class RoleResourceImpl extends BaseRoleResourceImpl {
 			}
 		};
 	}
+
+	@Reference
+	private AccountRoleLocalService _accountRoleLocalService;
 
 	@Reference
 	private OrganizationService _organizationService;
