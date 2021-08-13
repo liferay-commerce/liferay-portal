@@ -2457,7 +2457,9 @@ public class CPDefinitionLocalServiceImpl
 		long classNameId = classNameLocalService.getClassNameId(CProduct.class);
 
 		for (Map.Entry<Locale, String> titleEntry : urlTitleMap.entrySet()) {
-			String urlTitle = urlTitleMap.get(titleEntry.getKey());
+			Locale locale = titleEntry.getKey();
+
+			String urlTitle = urlTitleMap.get(locale);
 
 			if (Validator.isNotNull(urlTitle)) {
 				urlTitle = _friendlyURLEntryLocalService.getUniqueUrlTitle(
@@ -2466,6 +2468,33 @@ public class CPDefinitionLocalServiceImpl
 
 				newURLTitleMap.put(
 					LocaleUtil.toLanguageId(titleEntry.getKey()), urlTitle);
+			}
+			else if ((urlTitle != null) && urlTitle.equals("")) {
+				FriendlyURLEntry friendlyURLEntry =
+					_friendlyURLEntryLocalService.getMainFriendlyURLEntry(
+						classNameId, cpDefinition.getCProductId());
+
+				if (friendlyURLEntry == null) {
+					continue;
+				}
+
+				String defaultLanguageId =
+					friendlyURLEntry.getDefaultLanguageId();
+
+				if (!defaultLanguageId.equals(locale.toString())) {
+					FriendlyURLEntryLocalization friendlyURLEntryLocalization =
+						_friendlyURLEntryLocalService.
+							fetchFriendlyURLEntryLocalization(
+								friendlyURLEntry.getFriendlyURLEntryId(),
+								locale.toString());
+
+					if (friendlyURLEntryLocalization != null) {
+						_friendlyURLEntryLocalService.
+							deleteFriendlyURLLocalizationEntry(
+								friendlyURLEntry.getFriendlyURLEntryId(),
+								locale.toString());
+					}
+				}
 			}
 		}
 

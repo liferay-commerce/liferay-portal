@@ -17,6 +17,7 @@ package com.liferay.commerce.product.asset.categories.web.internal.portlet.actio
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.service.AssetCategoryService;
 import com.liferay.friendly.url.model.FriendlyURLEntry;
+import com.liferay.friendly.url.model.FriendlyURLEntryLocalization;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -125,6 +126,33 @@ public class EditAssetCategoryFriendlyURLMVCActionCommand
 					assetCategory.getCategoryId(), urlTitle);
 
 				newUrlTitleMap.put(LocaleUtil.toLanguageId(locale), urlTitle);
+			}
+			else if ((urlTitle != null) && urlTitle.equals("")) {
+				FriendlyURLEntry friendlyURLEntry =
+					_friendlyURLEntryLocalService.getMainFriendlyURLEntry(
+						classNameId, assetCategory.getCategoryId());
+
+				if (friendlyURLEntry == null) {
+					continue;
+				}
+
+				String defaultLanguageId =
+					friendlyURLEntry.getDefaultLanguageId();
+
+				if (!defaultLanguageId.equals(locale.toString())) {
+					FriendlyURLEntryLocalization friendlyURLEntryLocalization =
+						_friendlyURLEntryLocalService.
+							fetchFriendlyURLEntryLocalization(
+								friendlyURLEntry.getFriendlyURLEntryId(),
+								locale.toString());
+
+					if (friendlyURLEntryLocalization != null) {
+						_friendlyURLEntryLocalService.
+							deleteFriendlyURLLocalizationEntry(
+								friendlyURLEntry.getFriendlyURLEntryId(),
+								locale.toString());
+					}
+				}
 			}
 		}
 
