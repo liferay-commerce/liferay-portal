@@ -199,6 +199,8 @@ definition {
 
 		Alert.viewSuccessMessage();
 
+		Refresh();
+
 		Button.click(button = "Delete");
 
 		Alert.viewSuccessMessage();
