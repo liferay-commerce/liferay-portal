@@ -31,6 +31,7 @@ page import="com.liferay.portal.kernel.util.Validator" %>
 String createNewOrderURL = (String)request.getAttribute("liferay-commerce:account-selector:createNewOrderURL");
 CurrentCommerceAccountModel currentAccount = (CurrentCommerceAccountModel)request.getAttribute("liferay-commerce:account-selector:currentAccount");
 CurrentCommerceOrderModel currentOrder = (CurrentCommerceOrderModel)request.getAttribute("liferay-commerce:account-selector:currentOrder");
+boolean showOrderTypeModal = (boolean)request.getAttribute("liferay-commerce:account-selector:showOrderTypeModal");
 JSONSerializer jsonSerializer = JSONFactoryUtil.createJSONSerializer();
 String selectOrderURL = (String)request.getAttribute("liferay-commerce:account-selector:selectOrderURL");
 String setCurrentAccountURL = (String)request.getAttribute("liferay-commerce:account-selector:setCurrentAccountURL");
