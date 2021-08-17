@@ -52,6 +52,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>DELETE_SEGMENT_INLINE_BUTTON</td>
+	<td>//td[contains(.,'${key_segmentName}')]/following-sibling::td//button[contains(@aria-label,'Delete')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>DELETED_CRITERIA</td>
 	<td>//div[@class='criteria-message']</td>
 	<td></td>
@@ -74,6 +79,11 @@
 <tr>
 	<td>EDIT_NAME_BUTTON</td>
 	<td>//div[contains(@class,'editor')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>FORM_HEADER_LOADING_ANIMATION</td>
+	<td>//div[contains(@class,'form-header')]//span[contains(@class,'loading-animation')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -239,12 +249,12 @@
 </tr>
 <tr>
 	<td>SEGMENT_DROP_AREA</td>
-	<td>//div[@class='drop-zone-target p-5']</td>
+	<td>xpath=(//div[contains(@class,'drop-zone-target')])[last()]</td>
 	<td></td>
 </tr>
 <tr>
-	<td>SEGMENT_MEMBERSHIP_BUTTON</td>
-	<td>//div[@class='total-members']/following-sibling::button</td>
+	<td>TOTAL_MEMBERS</td>
+	<td>//div[contains(@class,'total-members')]</td>
 	<td></td>
 </tr>
 <tr>

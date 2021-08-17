@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.site.initializer.SiteInitializer;
+import com.liferay.style.book.zip.processor.StyleBookEntryZipProcessor;
 
 import javax.servlet.ServletContext;
 
@@ -39,6 +40,7 @@ public class SiteInitializerRegistrar {
 		DocumentResource.Factory documentResourceFactory,
 		FragmentsImporter fragmentsImporter, JSONFactory jsonFactory,
 		ObjectDefinitionResource.Factory objectDefinitionResourceFactory,
+		StyleBookEntryZipProcessor styleBookEntryZipProcessor,
 		TaxonomyVocabularyResource.Factory taxonomyVocabularyResourceFactory,
 		UserLocalService userLocalService) {
 
@@ -48,6 +50,7 @@ public class SiteInitializerRegistrar {
 		_fragmentsImporter = fragmentsImporter;
 		_jsonFactory = jsonFactory;
 		_objectDefinitionResourceFactory = objectDefinitionResourceFactory;
+		_styleBookEntryZipProcessor = styleBookEntryZipProcessor;
 		_taxonomyVocabularyResourceFactory = taxonomyVocabularyResourceFactory;
 		_userLocalService = userLocalService;
 	}
@@ -62,7 +65,8 @@ public class SiteInitializerRegistrar {
 			new BundleSiteInitializer(
 				_bundle, _documentResourceFactory, _fragmentsImporter,
 				_jsonFactory, _objectDefinitionResourceFactory, _servletContext,
-				_taxonomyVocabularyResourceFactory, _userLocalService),
+				_styleBookEntryZipProcessor, _taxonomyVocabularyResourceFactory,
+				_userLocalService),
 			MapUtil.singletonDictionary(
 				"site.initializer.key", _bundle.getSymbolicName()));
 	}
@@ -80,6 +84,7 @@ public class SiteInitializerRegistrar {
 		_objectDefinitionResourceFactory;
 	private ServiceRegistration<?> _serviceRegistration;
 	private ServletContext _servletContext;
+	private final StyleBookEntryZipProcessor _styleBookEntryZipProcessor;
 	private final TaxonomyVocabularyResource.Factory
 		_taxonomyVocabularyResourceFactory;
 	private final UserLocalService _userLocalService;

@@ -115,6 +115,7 @@ public class CartDTOConverter implements DTOConverter<CommerceOrder, Cart> {
 				orderStatusInfo = _getOrderStatusInfo(
 					commerceOrder.getOrderStatus(), commerceOrderStatusLabel,
 					commerceOrderStatusLabelI18n);
+				orderTypeId = commerceOrder.getCommerceOrderTypeId();
 				orderUUID = commerceOrder.getUuid();
 				paymentMethod = commerceOrder.getCommercePaymentMethodKey();
 				paymentStatus = commerceOrder.getPaymentStatus();

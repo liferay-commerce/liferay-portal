@@ -31,7 +31,6 @@ import com.liferay.commerce.order.engine.CommerceOrderEngine;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.service.CommerceOrderService;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.portlet.PortletProvider;
 import com.liferay.portal.kernel.portlet.PortletProviderUtil;
@@ -103,10 +102,13 @@ public class EditCommerceOrderMVCActionCommand extends BaseMVCActionCommand {
 			_commerceChannelLocalService.getCommerceChannelGroupIdBySiteGroupId(
 				themeDisplay.getScopeGroupId());
 
+		long commerceOrderTypeId = ParamUtil.getLong(
+			actionRequest, "commerceOrderTypeId");
+
 		try {
 			return _commerceOrderService.addCommerceOrder(
 				commerceChannelGroupId, commerceAccount.getCommerceAccountId(),
-				commerceCurrencyId, 0, StringPool.BLANK);
+				commerceCurrencyId, 0, commerceOrderTypeId);
 		}
 		catch (Exception exception) {
 			if (exception instanceof CommerceOrderAccountLimitException) {

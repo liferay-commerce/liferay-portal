@@ -456,11 +456,15 @@ definition {
 
 		ACAssets.gotoViewsByTechnologyTab(tabName = "Browsers");
 
-		ACAssets.viewViewsByTechnologyTabActive(tabName = "Browsers");
+		ACAssets.viewViewsByTechnologyTabActive(
+			cardTitle = "Views by Technology",
+			tabName = "Browsers");
 
-		ACAssets.viewViewsByTechnologyBrowserPercentage(
-			browserName = "Chrome",
-			percentageValue = "100%");
+		ACAssets.viewTechnologyBrowsersMetric(
+			browserMetricValue = "Chrome",
+			cardTitle = "Views by Technology",
+			cssValue = "rgb(75, 155, 255)",
+			percentageMetricValue = "100%");
 	}
 
 	@description = "Feature ID: Legacy | Automation ID: LRAC-8453 | Test Summary: Web content submissions by technology card shows views by expected device"
@@ -508,10 +512,11 @@ definition {
 
 		ACNavigation.viewActiveSwitchTab(tabName = "Overview");
 
-		ACAssets.viewViewsByTechnologyDeviceViewsAndPercentage(
+		ACAssets.viewTechnologyDeviceViewsAndPercentage(
+			actionValue = "3 Views",
+			cardTitle = "Views by Technology",
 			deviceName = "Desktop",
-			percentageValue = "100%",
-			viewsValue = "3");
+			percentageValue = "100%");
 	}
 
 }

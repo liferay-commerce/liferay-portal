@@ -20,6 +20,7 @@ import com.liferay.headless.delivery.resource.v1_0.DocumentResource;
 import com.liferay.object.admin.rest.resource.v1_0.ObjectDefinitionResource;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.style.book.zip.processor.StyleBookEntryZipProcessor;
 
 import javax.servlet.ServletContext;
 
@@ -40,6 +41,7 @@ public class SiteInitializerExtension {
 		DocumentResource.Factory documentResourceFactory,
 		FragmentsImporter fragmentsImporter, JSONFactory jsonFactory,
 		ObjectDefinitionResource.Factory objectDefinitionResourceFactory,
+		StyleBookEntryZipProcessor styleBookEntryZipProcessor,
 		TaxonomyVocabularyResource.Factory taxonomyVocabularyResourceFactory,
 		UserLocalService userLocalService) {
 
@@ -51,7 +53,8 @@ public class SiteInitializerExtension {
 			new SiteInitializerRegistrar(
 				bundle, bundleContext, documentResourceFactory,
 				fragmentsImporter, jsonFactory, objectDefinitionResourceFactory,
-				taxonomyVocabularyResourceFactory, userLocalService));
+				styleBookEntryZipProcessor, taxonomyVocabularyResourceFactory,
+				userLocalService));
 
 		ServiceDependency serviceDependency =
 			_dependencyManager.createServiceDependency();

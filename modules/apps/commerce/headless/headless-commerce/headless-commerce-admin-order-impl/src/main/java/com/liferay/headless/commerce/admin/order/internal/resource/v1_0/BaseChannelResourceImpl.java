@@ -76,6 +76,27 @@ public abstract class BaseChannelResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
+	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-order/v1.0/order-type-channels/{orderTypeChannelId}/channel'  -u 'test@liferay.com:test'
+	 */
+	@GET
+	@Override
+	@Parameters(
+		value = {@Parameter(in = ParameterIn.PATH, name = "orderTypeChannelId")}
+	)
+	@Path("/order-type-channels/{orderTypeChannelId}/channel")
+	@Produces({"application/json", "application/xml"})
+	@Tags(value = {@Tag(name = "Channel")})
+	public Channel getOrderTypeChannelChannel(
+			@NotNull @Parameter(hidden = true) @PathParam("orderTypeChannelId")
+				Long orderTypeChannelId)
+		throws Exception {
+
+		return new Channel();
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-order/v1.0/orders/by-externalReferenceCode/{externalReferenceCode}/channel'  -u 'test@liferay.com:test'
 	 */
 	@GET

@@ -20,7 +20,7 @@ import com.liferay.headless.delivery.resource.v1_0.DocumentResource;
 import com.liferay.object.admin.rest.resource.v1_0.ObjectDefinitionResource;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.style.book.zip.processor.StyleBookEntryZipProcessor;
 
 import java.util.List;
 
@@ -52,7 +52,7 @@ public class SiteInitializerExtender
 		List<BundleCapability> bundleCapabilities =
 			bundleWiring.getCapabilities("liferay.site.initializer");
 
-		if (ListUtil.isEmpty(bundleCapabilities)) {
+		if (bundleCapabilities == null) {
 			return null;
 		}
 
@@ -60,7 +60,7 @@ public class SiteInitializerExtender
 			new SiteInitializerExtension(
 				bundle, _bundleContext, _documentResourceFactory,
 				_fragmentsImporter, _jsonFactory,
-				_objectDefinitionResourceFactory,
+				_objectDefinitionResourceFactory, _styleBookEntryZipProcessor,
 				_taxonomyVocabularyResourceFactory, _userLocalService);
 
 		siteInitializerExtension.start();
@@ -111,6 +111,9 @@ public class SiteInitializerExtender
 
 	@Reference
 	private ObjectDefinitionResource.Factory _objectDefinitionResourceFactory;
+
+	@Reference
+	private StyleBookEntryZipProcessor _styleBookEntryZipProcessor;
 
 	@Reference
 	private TaxonomyVocabularyResource.Factory

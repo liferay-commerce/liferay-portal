@@ -1,0 +1,48 @@
+<%--
+/**
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ */
+--%>
+
+<%@ include file="/init.jsp" %>
+
+<%
+CommerceOrderTypeDisplayContext commerceOrderTypeDisplayContext = (CommerceOrderTypeDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
+
+PortletURL editCommerceOrderTypePortletURL = commerceOrderTypeDisplayContext.getEditCommerceOrderTypeRenderURL();
+
+String defaultLanguageId = LocaleUtil.toLanguageId(locale);
+%>
+
+<portlet:actionURL name="/commerce_order_type/edit_commerce_order_type" var="editCommerceOrderTypeActionURL" />
+
+<commerce-ui:modal-content
+	title='<%= LanguageUtil.get(request, "add-order-type") %>'
+>
+	<aui:form method="post" name="fm" useNamespace="<%= false %>">
+		<aui:input bean="<%= commerceOrderTypeDisplayContext.getCommerceOrderType() %>" label="name" model="<%= CommerceOrderType.class %>" name="name" required="<%= true %>" />
+
+		<aui:input name="description" type="textarea" />
+	</aui:form>
+
+	<liferay-frontend:component
+		context='<%=
+			HashMapBuilder.<String, Object>put(
+				"defaultLanguageId", defaultLanguageId
+			).put(
+				"editCommerceOrderTypePortletURL", editCommerceOrderTypePortletURL.toString()
+			).build()
+		%>'
+		module="js/add_commerce_order_type"
+	/>
+</commerce-ui:modal-content>

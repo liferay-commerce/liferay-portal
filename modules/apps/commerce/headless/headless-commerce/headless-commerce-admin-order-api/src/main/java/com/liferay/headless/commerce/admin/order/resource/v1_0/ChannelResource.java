@@ -46,6 +46,9 @@ public interface ChannelResource {
 		return FactoryHolder.factory.create();
 	}
 
+	public Channel getOrderTypeChannelChannel(Long orderTypeChannelId)
+		throws Exception;
+
 	public Channel getOrderByExternalReferenceCodeChannel(
 			String externalReferenceCode)
 		throws Exception;

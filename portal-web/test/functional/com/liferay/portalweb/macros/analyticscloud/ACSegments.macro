@@ -7,6 +7,10 @@ definition {
 	}
 
 	macro addSegmentField {
+		Type(
+			locator1 = "ACSegments#SEARCH_SEGMENT",
+			value1 = "${segmentField}");
+
 		var key_SegmentField = "${segmentField}";
 
 		DragAndDrop.javaScriptDragAndDropToObject(
@@ -67,6 +71,14 @@ definition {
 			locator1 = "ACSegments#CRITERIA_ELLIPSIS");
 
 		MenuItem.click(menuItem = "Delete");
+	}
+
+	macro deleteSegmentViaSegmentListInlineButton {
+		var key_segmentName = "${segmentName}";
+
+		Click.javaScriptClick(locator1 = "ACSegments#DELETE_SEGMENT_INLINE_BUTTON");
+
+		Click(locator1 = "ACSegments#CONFIRM_DELETION");
 	}
 
 	macro duplicateSegmentCriteria {
@@ -137,6 +149,8 @@ definition {
 			index = "${index}",
 			locator1 = "ACSegments#TEXT_INPUT",
 			value1 = "${textInput}");
+
+		Click(locator1 = "ACSegments#TOTAL_MEMBERS");
 	}
 
 	macro editWebBehaviorCriterion {
@@ -256,7 +270,9 @@ definition {
 	}
 
 	macro previewSegmentMembership {
-		Click(locator1 = "ACSegments#SEGMENT_MEMBERSHIP_BUTTON");
+		WaitForElementNotPresent(locator1 = "ACSegments#FORM_HEADER_LOADING_ANIMATION");
+
+		Click(locator1 = "Icon#EYE_PREVIEW");
 	}
 
 	macro saveSegment {

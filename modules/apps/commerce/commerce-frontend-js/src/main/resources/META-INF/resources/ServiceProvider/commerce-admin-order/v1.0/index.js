@@ -13,3 +13,5 @@
  */
 
 export {default as orderAPI} from './Order';
+export {default as orderTypeAPI} from './OrderType';
+export {default as orderTypeChannelAPI} from './OrderTypeChannel';

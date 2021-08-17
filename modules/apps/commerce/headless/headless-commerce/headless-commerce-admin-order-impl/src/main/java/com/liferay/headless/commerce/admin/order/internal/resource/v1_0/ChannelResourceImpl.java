@@ -16,11 +16,14 @@ package com.liferay.headless.commerce.admin.order.internal.resource.v1_0;
 
 import com.liferay.commerce.exception.NoSuchOrderException;
 import com.liferay.commerce.model.CommerceOrder;
+import com.liferay.commerce.model.CommerceOrderTypeRel;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.service.CommerceOrderService;
+import com.liferay.commerce.service.CommerceOrderTypeRelService;
 import com.liferay.headless.commerce.admin.order.dto.v1_0.Channel;
 import com.liferay.headless.commerce.admin.order.dto.v1_0.Order;
+import com.liferay.headless.commerce.admin.order.dto.v1_0.OrderTypeChannel;
 import com.liferay.headless.commerce.admin.order.internal.dto.v1_0.converter.ChannelDTOConverter;
 import com.liferay.headless.commerce.admin.order.resource.v1_0.ChannelResource;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
@@ -78,6 +81,19 @@ public class ChannelResourceImpl
 		return _toChannel(commerceChannel.getCommerceChannelId());
 	}
 
+	@NestedField(parentClass = OrderTypeChannel.class, value = "channel")
+	@Override
+	public Channel getOrderTypeChannelChannel(Long id) throws Exception {
+		CommerceOrderTypeRel commerceOrderTypeRel =
+			_commerceOrderTypeRelService.getCommerceOrderTypeRel(id);
+
+		CommerceChannel commerceChannel =
+			_commerceChannelLocalService.getCommerceChannel(
+				commerceOrderTypeRel.getClassPK());
+
+		return _toChannel(commerceChannel.getCommerceChannelId());
+	}
+
 	private Channel _toChannel(long commerceChannelId) throws Exception {
 		return _channelDTOConverter.toDTO(
 			new DefaultDTOConverterContext(
@@ -92,5 +108,8 @@ public class ChannelResourceImpl
 
 	@Reference
 	private CommerceOrderService _commerceOrderService;
+
+	@Reference
+	private CommerceOrderTypeRelService _commerceOrderTypeRelService;
 
 }

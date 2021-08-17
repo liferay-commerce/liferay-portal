@@ -50,37 +50,50 @@ definition {
 			value1 = "${value}");
 	}
 
-	macro viewViewsByTechnologyBrowserPercentage {
+	macro viewTechnologyBrowsersMetric {
+		var key_cardTitle = "${cardTitle}";
+
 		AssertTextEquals(
-			key_browserName = "${browserName}",
-			locator1 = "ACAssets#VIEWS_BY_TECHNOLOGY_BROWSER_CHART_LEGEND_BROWSER_PERCENTAGE_VALUE",
-			value1 = "${percentageValue}");
+			locator1 = "ACAssets#BROWSERS_METRIC_VALUE",
+			value1 = "${browserMetricValue}");
+
+		AssertTextEquals(
+			locator1 = "ACAssets#BROWSERS_PERCENTAGE_METRIC_VALUE",
+			value1 = "${percentageMetricValue}");
+
+		AssertCssValue(
+			locator1 = "ACAssets#BROWSERS_PIE_CHART",
+			locator2 = "fill",
+			value1 = "${cssValue}");
 	}
 
-	macro viewViewsByTechnologyDeviceViewsAndPercentage {
-		ScrollWebElementIntoView(locator1 = "ACAssets#VIEWS_BY_TECHNOLOGY_BAR_CHART");
+	macro viewTechnologyDeviceViewsAndPercentage {
+		var key_cardTitle = "${cardTitle}";
+
+		ScrollWebElementIntoView(locator1 = "ACAssets#TECHNOLOGY_BAR_CHART");
 
 		Pause(locator1 = "5000");
 
-		MouseOver(locator1 = "ACAssets#VIEWS_BY_TECHNOLOGY_BAR_CHART");
+		MouseOver(locator1 = "ACAssets#TECHNOLOGY_BAR_CHART");
 
 		AssertTextEquals(
-			locator1 = "ACAssets#VIEWS_BY_TECHNOLOGY_DEVICE_CHART_TOOLTIP_DEVICE_HEADER",
+			locator1 = "ACAssets#TECHNOLOGY_DEVICE_CHART_TOOLTIP_DEVICE_HEADER",
 			value1 = "${deviceName}");
 
 		AssertTextEquals(
-			locator1 = "ACAssets#VIEWS_BY_TECHNOLOGY_DEVICE_CHART_TOOLTIP_VIEWS_HEADER",
-			value1 = "${viewsValue} Views");
+			locator1 = "ACAssets#TECHNOLOGY_DEVICE_CHART_TOOLTIP_VIEWS_HEADER",
+			value1 = "${actionValue}");
 
 		AssertTextEquals(
-			locator1 = "ACAssets#VIEWS_BY_TECHNOLOGY_DEVICE_CHART_TOOLTIP_PERCENTAGE_HEADER",
+			locator1 = "ACAssets#TECHNOLOGY_DEVICE_CHART_TOOLTIP_PERCENTAGE_HEADER",
 			value1 = "${percentageValue}");
 	}
 
 	macro viewViewsByTechnologyTabActive {
 		AssertVisible(
+			key_cardTitle = "${cardTitle}",
 			key_tabName = "${tabName}",
-			locator1 = "ACAssets#VIEWS_BY_TECHNOLOGY_TAB_ACTIVE");
+			locator1 = "ACAssets#TECHNOLOGY_TAB_ACTIVE");
 	}
 
 	macro viewVisitorsBehaviorMetric {
