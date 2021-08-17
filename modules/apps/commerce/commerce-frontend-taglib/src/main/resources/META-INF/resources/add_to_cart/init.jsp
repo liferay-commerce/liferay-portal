@@ -36,6 +36,7 @@ String commerceAccountId = (String)request.getAttribute("liferay-commerce:add-to
 String commerceChannelId = (String)request.getAttribute("liferay-commerce:add-to-cart:commerceChannelId");
 String commerceCurrencyCode = (String)request.getAttribute("liferay-commerce:add-to-cart:commerceCurrencyCode");
 String commerceOrderId = (String)request.getAttribute("liferay-commerce:add-to-cart:commerceOrderId");
+String commerceOrderTypeModalURL = (String)request.getAttribute("liferay-commerce:add-to-cart:commerceOrderTypeModalURL");
 String cpInstanceId = (String)request.getAttribute("liferay-commerce:add-to-cart:cpInstanceId");
 String inCart = (String)request.getAttribute("liferay-commerce:add-to-cart:inCart");
 String namespace = (String)request.getAttribute("liferay-commerce:add-to-cart:namespace");

@@ -30,6 +30,7 @@ AddToCart.defaultProps = {
 
 AddToCart.propTypes = {
 	settings: PropTypes.shape({
+		orderTypeModalURL: PropTypes.string,
 		withQuantity: PropTypes.oneOfType([
 			PropTypes.bool,
 			PropTypes.shape({

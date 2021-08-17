@@ -84,6 +84,7 @@ WrapperWithQuantity.propTypes = {
 		block: PropTypes.bool,
 		disabled: PropTypes.bool,
 		namespace: PropTypes.bool,
+		orderTypeModalURL: PropTypes.string,
 		withQuantity: PropTypes.shape({
 			allowedQuantities: PropTypes.arrayOf(PropTypes.number),
 			disabled: PropTypes.bool,

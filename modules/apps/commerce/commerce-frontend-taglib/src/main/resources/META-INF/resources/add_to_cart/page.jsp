@@ -59,6 +59,7 @@ else {
 			block: <%= block %>,
 			disabled: <%= disabled %>,
 			namespace: '<%= namespace %>',
+			orderTypeModalURL: '<%= commerceOrderTypeModalURL %>',
 		},
 		spritemap: '<%= spritemap %>',
 	};
