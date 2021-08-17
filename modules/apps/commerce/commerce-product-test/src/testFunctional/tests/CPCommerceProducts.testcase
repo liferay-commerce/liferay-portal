@@ -1026,6 +1026,10 @@ definition {
 
 		CommerceNavigator.gotoEntry(entryName = "Test Channel");
 
+		ScrollBy(value1 = "0, 400");
+
+		takeScreenshot();
+
 		for (var fixIssueButtonName : list "Product Detail") {
 			if (IsElementPresent(locator1 = "CommerceEntry#FIX_ISSUE_BUTTON", key_fixIssueButtonName = "${fixIssueButtonName}")) {
 				Click(
@@ -1035,6 +1039,8 @@ definition {
 				Alert.viewSuccessMessage();
 			}
 		}
+
+		takeScreenshot();
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",

@@ -160,17 +160,6 @@ definition {
 		property test.name.skip.portal.instance = "CPCommerceProductVisibility#RemoveAChannelFilter";
 
 		CommerceNavigator.gotoPortlet(
-			category = "Store Management",
-			portlet = "Channels");
-
-		Click(locator1 = "Button#PLUS");
-
-		CommerceEntry.addNewChannelsEntry(
-			channelCurrency = "US Dollar",
-			channelName = "Test Channel",
-			channelType = "Site");
-
-		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
 			portlet = "Products");
 
@@ -195,13 +184,19 @@ definition {
 
 		SelectFrameTop();
 
+		takeScreenshot();
+
 		Button.click(button = "Add");
 
 		Alert.viewSuccessMessage();
 
+		takeScreenshot();
+
 		Refresh();
 
 		Button.click(button = "Delete");
+
+		takeScreenshot();
 
 		Alert.viewSuccessMessage();
 
