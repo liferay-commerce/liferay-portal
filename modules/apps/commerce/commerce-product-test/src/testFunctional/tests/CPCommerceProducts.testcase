@@ -1051,6 +1051,8 @@ definition {
 			productName = "Orange",
 			productType = "Simple");
 
+		takeScreenshot();
+
 		Navigator.openSpecificURL(url = "http://localhost:8080/web/guest/p/orange");
 
 		AssertTextEquals(
