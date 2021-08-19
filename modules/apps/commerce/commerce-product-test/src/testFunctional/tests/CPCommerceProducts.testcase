@@ -1019,6 +1019,7 @@ definition {
 	@priority = "3"
 	test UseFriendlyURL {
 		property portal.acceptance = "false";
+		property test.name.skip.portal.instance = "CPCommerceProducts#UseFriendlyURL";
 
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
