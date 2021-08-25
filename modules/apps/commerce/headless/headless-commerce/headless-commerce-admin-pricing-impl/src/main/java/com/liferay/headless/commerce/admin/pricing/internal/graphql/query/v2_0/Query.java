@@ -23,16 +23,19 @@ import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountAccount;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountAccountGroup;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountCategory;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountChannel;
+import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountOrderType;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountProduct;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountProductGroup;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountRule;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountSku;
+import com.liferay.headless.commerce.admin.pricing.dto.v2_0.OrderType;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceEntry;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceList;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceListAccount;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceListAccountGroup;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceListChannel;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceListDiscount;
+import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceListOrderType;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceModifier;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceModifierCategory;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceModifierProduct;
@@ -49,16 +52,19 @@ import com.liferay.headless.commerce.admin.pricing.resource.v2_0.DiscountAccount
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.DiscountAccountResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.DiscountCategoryResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.DiscountChannelResource;
+import com.liferay.headless.commerce.admin.pricing.resource.v2_0.DiscountOrderTypeResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.DiscountProductGroupResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.DiscountProductResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.DiscountResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.DiscountRuleResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.DiscountSkuResource;
+import com.liferay.headless.commerce.admin.pricing.resource.v2_0.OrderTypeResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.PriceEntryResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.PriceListAccountGroupResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.PriceListAccountResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.PriceListChannelResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.PriceListDiscountResource;
+import com.liferay.headless.commerce.admin.pricing.resource.v2_0.PriceListOrderTypeResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.PriceListResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.PriceModifierCategoryResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.PriceModifierProductGroupResource;
@@ -172,6 +178,14 @@ public class Query {
 			discountChannelResourceComponentServiceObjects;
 	}
 
+	public static void setDiscountOrderTypeResourceComponentServiceObjects(
+		ComponentServiceObjects<DiscountOrderTypeResource>
+			discountOrderTypeResourceComponentServiceObjects) {
+
+		_discountOrderTypeResourceComponentServiceObjects =
+			discountOrderTypeResourceComponentServiceObjects;
+	}
+
 	public static void setDiscountProductResourceComponentServiceObjects(
 		ComponentServiceObjects<DiscountProductResource>
 			discountProductResourceComponentServiceObjects) {
@@ -202,6 +216,14 @@ public class Query {
 
 		_discountSkuResourceComponentServiceObjects =
 			discountSkuResourceComponentServiceObjects;
+	}
+
+	public static void setOrderTypeResourceComponentServiceObjects(
+		ComponentServiceObjects<OrderTypeResource>
+			orderTypeResourceComponentServiceObjects) {
+
+		_orderTypeResourceComponentServiceObjects =
+			orderTypeResourceComponentServiceObjects;
 	}
 
 	public static void setPriceEntryResourceComponentServiceObjects(
@@ -250,6 +272,14 @@ public class Query {
 
 		_priceListDiscountResourceComponentServiceObjects =
 			priceListDiscountResourceComponentServiceObjects;
+	}
+
+	public static void setPriceListOrderTypeResourceComponentServiceObjects(
+		ComponentServiceObjects<PriceListOrderTypeResource>
+			priceListOrderTypeResourceComponentServiceObjects) {
+
+		_priceListOrderTypeResourceComponentServiceObjects =
+			priceListOrderTypeResourceComponentServiceObjects;
 	}
 
 	public static void setPriceModifierResourceComponentServiceObjects(
@@ -714,6 +744,56 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {discountByExternalReferenceCodeDiscountOrderTypes(externalReferenceCode: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField
+	public DiscountOrderTypePage
+			discountByExternalReferenceCodeDiscountOrderTypes(
+				@GraphQLName("externalReferenceCode") String
+					externalReferenceCode,
+				@GraphQLName("pageSize") int pageSize,
+				@GraphQLName("page") int page)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_discountOrderTypeResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			discountOrderTypeResource -> new DiscountOrderTypePage(
+				discountOrderTypeResource.
+					getDiscountByExternalReferenceCodeDiscountOrderTypesPage(
+						externalReferenceCode, Pagination.of(page, pageSize))));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {discountIdDiscountOrderTypes(filter: ___, id: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField
+	public DiscountOrderTypePage discountIdDiscountOrderTypes(
+			@GraphQLName("id") Long id, @GraphQLName("search") String search,
+			@GraphQLName("filter") String filterString,
+			@GraphQLName("pageSize") int pageSize,
+			@GraphQLName("page") int page,
+			@GraphQLName("sort") String sortsString)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_discountOrderTypeResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			discountOrderTypeResource -> new DiscountOrderTypePage(
+				discountOrderTypeResource.getDiscountIdDiscountOrderTypesPage(
+					id, search,
+					_filterBiFunction.apply(
+						discountOrderTypeResource, filterString),
+					Pagination.of(page, pageSize),
+					_sortsBiFunction.apply(
+						discountOrderTypeResource, sortsString))));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {discountByExternalReferenceCodeDiscountProducts(externalReferenceCode: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField
@@ -916,6 +996,42 @@ public class Query {
 					_filterBiFunction.apply(discountSkuResource, filterString),
 					Pagination.of(page, pageSize),
 					_sortsBiFunction.apply(discountSkuResource, sortsString))));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {discountOrderTypeOrderType(discountOrderTypeId: ___){id, name}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField
+	public OrderType discountOrderTypeOrderType(
+			@GraphQLName("discountOrderTypeId") Long discountOrderTypeId)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_orderTypeResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			orderTypeResource ->
+				orderTypeResource.getDiscountOrderTypeOrderType(
+					discountOrderTypeId));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {priceListOrderTypeOrderType(priceListOrderTypeId: ___){id, name}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField
+	public OrderType priceListOrderTypeOrderType(
+			@GraphQLName("priceListOrderTypeId") Long priceListOrderTypeId)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_orderTypeResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			orderTypeResource ->
+				orderTypeResource.getPriceListOrderTypeOrderType(
+					priceListOrderTypeId));
 	}
 
 	/**
@@ -1245,6 +1361,50 @@ public class Query {
 			priceListDiscountResource -> new PriceListDiscountPage(
 				priceListDiscountResource.getPriceListIdPriceListDiscountsPage(
 					id, Pagination.of(page, pageSize))));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {priceListByExternalReferenceCodePriceListOrderTypes(externalReferenceCode: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField
+	public PriceListOrderTypePage
+			priceListByExternalReferenceCodePriceListOrderTypes(
+				@GraphQLName("externalReferenceCode") String
+					externalReferenceCode,
+				@GraphQLName("pageSize") int pageSize,
+				@GraphQLName("page") int page)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_priceListOrderTypeResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			priceListOrderTypeResource -> new PriceListOrderTypePage(
+				priceListOrderTypeResource.
+					getPriceListByExternalReferenceCodePriceListOrderTypesPage(
+						externalReferenceCode, Pagination.of(page, pageSize))));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {priceListIdPriceListOrderTypes(id: ___, page: ___, pageSize: ___, search: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField
+	public PriceListOrderTypePage priceListIdPriceListOrderTypes(
+			@GraphQLName("id") Long id, @GraphQLName("search") String search,
+			@GraphQLName("pageSize") int pageSize,
+			@GraphQLName("page") int page)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_priceListOrderTypeResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			priceListOrderTypeResource -> new PriceListOrderTypePage(
+				priceListOrderTypeResource.
+					getPriceListIdPriceListOrderTypesPage(
+						id, search, Pagination.of(page, pageSize))));
 	}
 
 	/**
@@ -1907,6 +2067,67 @@ public class Query {
 				priceListResource ->
 					priceListResource.getPriceListByExternalReferenceCode(
 						_discount.getExternalReferenceCode()));
+		}
+
+		private Discount _discount;
+
+	}
+
+	@GraphQLTypeExtension(Discount.class)
+	public class
+		GetPriceListByExternalReferenceCodePriceListOrderTypesPageTypeExtension {
+
+		public GetPriceListByExternalReferenceCodePriceListOrderTypesPageTypeExtension(
+			Discount discount) {
+
+			_discount = discount;
+		}
+
+		@GraphQLField
+		public PriceListOrderTypePage
+				priceListByExternalReferenceCodePriceListOrderTypes(
+					@GraphQLName("pageSize") int pageSize,
+					@GraphQLName("page") int page)
+			throws Exception {
+
+			return _applyComponentServiceObjects(
+				_priceListOrderTypeResourceComponentServiceObjects,
+				Query.this::_populateResourceContext,
+				priceListOrderTypeResource -> new PriceListOrderTypePage(
+					priceListOrderTypeResource.
+						getPriceListByExternalReferenceCodePriceListOrderTypesPage(
+							_discount.getExternalReferenceCode(),
+							Pagination.of(page, pageSize))));
+		}
+
+		private Discount _discount;
+
+	}
+
+	@GraphQLTypeExtension(Discount.class)
+	public class
+		GetDiscountByExternalReferenceCodeDiscountOrderTypesPageTypeExtension {
+
+		public GetDiscountByExternalReferenceCodeDiscountOrderTypesPageTypeExtension(
+			Discount discount) {
+
+			_discount = discount;
+		}
+
+		@GraphQLField
+		public DiscountOrderTypePage byExternalReferenceCodeDiscountOrderTypes(
+				@GraphQLName("pageSize") int pageSize,
+				@GraphQLName("page") int page)
+			throws Exception {
+
+			return _applyComponentServiceObjects(
+				_discountOrderTypeResourceComponentServiceObjects,
+				Query.this::_populateResourceContext,
+				discountOrderTypeResource -> new DiscountOrderTypePage(
+					discountOrderTypeResource.
+						getDiscountByExternalReferenceCodeDiscountOrderTypesPage(
+							_discount.getExternalReferenceCode(),
+							Pagination.of(page, pageSize))));
 		}
 
 		private Discount _discount;
@@ -2730,6 +2951,39 @@ public class Query {
 
 	}
 
+	@GraphQLName("DiscountOrderTypePage")
+	public class DiscountOrderTypePage {
+
+		public DiscountOrderTypePage(Page discountOrderTypePage) {
+			actions = discountOrderTypePage.getActions();
+
+			items = discountOrderTypePage.getItems();
+			lastPage = discountOrderTypePage.getLastPage();
+			page = discountOrderTypePage.getPage();
+			pageSize = discountOrderTypePage.getPageSize();
+			totalCount = discountOrderTypePage.getTotalCount();
+		}
+
+		@GraphQLField
+		protected Map<String, Map> actions;
+
+		@GraphQLField
+		protected java.util.Collection<DiscountOrderType> items;
+
+		@GraphQLField
+		protected long lastPage;
+
+		@GraphQLField
+		protected long page;
+
+		@GraphQLField
+		protected long pageSize;
+
+		@GraphQLField
+		protected long totalCount;
+
+	}
+
 	@GraphQLName("DiscountProductPage")
 	public class DiscountProductPage {
 
@@ -2847,6 +3101,39 @@ public class Query {
 
 		@GraphQLField
 		protected java.util.Collection<DiscountSku> items;
+
+		@GraphQLField
+		protected long lastPage;
+
+		@GraphQLField
+		protected long page;
+
+		@GraphQLField
+		protected long pageSize;
+
+		@GraphQLField
+		protected long totalCount;
+
+	}
+
+	@GraphQLName("OrderTypePage")
+	public class OrderTypePage {
+
+		public OrderTypePage(Page orderTypePage) {
+			actions = orderTypePage.getActions();
+
+			items = orderTypePage.getItems();
+			lastPage = orderTypePage.getLastPage();
+			page = orderTypePage.getPage();
+			pageSize = orderTypePage.getPageSize();
+			totalCount = orderTypePage.getTotalCount();
+		}
+
+		@GraphQLField
+		protected Map<String, Map> actions;
+
+		@GraphQLField
+		protected java.util.Collection<OrderType> items;
 
 		@GraphQLField
 		protected long lastPage;
@@ -3045,6 +3332,39 @@ public class Query {
 
 		@GraphQLField
 		protected java.util.Collection<PriceListDiscount> items;
+
+		@GraphQLField
+		protected long lastPage;
+
+		@GraphQLField
+		protected long page;
+
+		@GraphQLField
+		protected long pageSize;
+
+		@GraphQLField
+		protected long totalCount;
+
+	}
+
+	@GraphQLName("PriceListOrderTypePage")
+	public class PriceListOrderTypePage {
+
+		public PriceListOrderTypePage(Page priceListOrderTypePage) {
+			actions = priceListOrderTypePage.getActions();
+
+			items = priceListOrderTypePage.getItems();
+			lastPage = priceListOrderTypePage.getLastPage();
+			page = priceListOrderTypePage.getPage();
+			pageSize = priceListOrderTypePage.getPageSize();
+			totalCount = priceListOrderTypePage.getTotalCount();
+		}
+
+		@GraphQLField
+		protected Map<String, Map> actions;
+
+		@GraphQLField
+		protected java.util.Collection<PriceListOrderType> items;
 
 		@GraphQLField
 		protected long lastPage;
@@ -3477,6 +3797,22 @@ public class Query {
 	}
 
 	private void _populateResourceContext(
+			DiscountOrderTypeResource discountOrderTypeResource)
+		throws Exception {
+
+		discountOrderTypeResource.setContextAcceptLanguage(_acceptLanguage);
+		discountOrderTypeResource.setContextCompany(_company);
+		discountOrderTypeResource.setContextHttpServletRequest(
+			_httpServletRequest);
+		discountOrderTypeResource.setContextHttpServletResponse(
+			_httpServletResponse);
+		discountOrderTypeResource.setContextUriInfo(_uriInfo);
+		discountOrderTypeResource.setContextUser(_user);
+		discountOrderTypeResource.setGroupLocalService(_groupLocalService);
+		discountOrderTypeResource.setRoleLocalService(_roleLocalService);
+	}
+
+	private void _populateResourceContext(
 			DiscountProductResource discountProductResource)
 		throws Exception {
 
@@ -3535,6 +3871,19 @@ public class Query {
 		discountSkuResource.setContextUser(_user);
 		discountSkuResource.setGroupLocalService(_groupLocalService);
 		discountSkuResource.setRoleLocalService(_roleLocalService);
+	}
+
+	private void _populateResourceContext(OrderTypeResource orderTypeResource)
+		throws Exception {
+
+		orderTypeResource.setContextAcceptLanguage(_acceptLanguage);
+		orderTypeResource.setContextCompany(_company);
+		orderTypeResource.setContextHttpServletRequest(_httpServletRequest);
+		orderTypeResource.setContextHttpServletResponse(_httpServletResponse);
+		orderTypeResource.setContextUriInfo(_uriInfo);
+		orderTypeResource.setContextUser(_user);
+		orderTypeResource.setGroupLocalService(_groupLocalService);
+		orderTypeResource.setRoleLocalService(_roleLocalService);
 	}
 
 	private void _populateResourceContext(PriceEntryResource priceEntryResource)
@@ -3625,6 +3974,22 @@ public class Query {
 		priceListDiscountResource.setContextUser(_user);
 		priceListDiscountResource.setGroupLocalService(_groupLocalService);
 		priceListDiscountResource.setRoleLocalService(_roleLocalService);
+	}
+
+	private void _populateResourceContext(
+			PriceListOrderTypeResource priceListOrderTypeResource)
+		throws Exception {
+
+		priceListOrderTypeResource.setContextAcceptLanguage(_acceptLanguage);
+		priceListOrderTypeResource.setContextCompany(_company);
+		priceListOrderTypeResource.setContextHttpServletRequest(
+			_httpServletRequest);
+		priceListOrderTypeResource.setContextHttpServletResponse(
+			_httpServletResponse);
+		priceListOrderTypeResource.setContextUriInfo(_uriInfo);
+		priceListOrderTypeResource.setContextUser(_user);
+		priceListOrderTypeResource.setGroupLocalService(_groupLocalService);
+		priceListOrderTypeResource.setRoleLocalService(_roleLocalService);
 	}
 
 	private void _populateResourceContext(
@@ -3765,6 +4130,8 @@ public class Query {
 		_discountCategoryResourceComponentServiceObjects;
 	private static ComponentServiceObjects<DiscountChannelResource>
 		_discountChannelResourceComponentServiceObjects;
+	private static ComponentServiceObjects<DiscountOrderTypeResource>
+		_discountOrderTypeResourceComponentServiceObjects;
 	private static ComponentServiceObjects<DiscountProductResource>
 		_discountProductResourceComponentServiceObjects;
 	private static ComponentServiceObjects<DiscountProductGroupResource>
@@ -3773,6 +4140,8 @@ public class Query {
 		_discountRuleResourceComponentServiceObjects;
 	private static ComponentServiceObjects<DiscountSkuResource>
 		_discountSkuResourceComponentServiceObjects;
+	private static ComponentServiceObjects<OrderTypeResource>
+		_orderTypeResourceComponentServiceObjects;
 	private static ComponentServiceObjects<PriceEntryResource>
 		_priceEntryResourceComponentServiceObjects;
 	private static ComponentServiceObjects<PriceListResource>
@@ -3785,6 +4154,8 @@ public class Query {
 		_priceListChannelResourceComponentServiceObjects;
 	private static ComponentServiceObjects<PriceListDiscountResource>
 		_priceListDiscountResourceComponentServiceObjects;
+	private static ComponentServiceObjects<PriceListOrderTypeResource>
+		_priceListOrderTypeResourceComponentServiceObjects;
 	private static ComponentServiceObjects<PriceModifierResource>
 		_priceModifierResourceComponentServiceObjects;
 	private static ComponentServiceObjects<PriceModifierCategoryResource>

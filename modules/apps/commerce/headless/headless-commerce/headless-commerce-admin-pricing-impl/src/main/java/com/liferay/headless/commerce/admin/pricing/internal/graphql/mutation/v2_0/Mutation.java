@@ -19,6 +19,7 @@ import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountAccount;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountAccountGroup;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountCategory;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountChannel;
+import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountOrderType;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountProduct;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountProductGroup;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountRule;
@@ -29,6 +30,7 @@ import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceListAccount;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceListAccountGroup;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceListChannel;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceListDiscount;
+import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceListOrderType;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceModifier;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceModifierCategory;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceModifierProduct;
@@ -38,6 +40,7 @@ import com.liferay.headless.commerce.admin.pricing.resource.v2_0.DiscountAccount
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.DiscountAccountResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.DiscountCategoryResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.DiscountChannelResource;
+import com.liferay.headless.commerce.admin.pricing.resource.v2_0.DiscountOrderTypeResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.DiscountProductGroupResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.DiscountProductResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.DiscountResource;
@@ -48,6 +51,7 @@ import com.liferay.headless.commerce.admin.pricing.resource.v2_0.PriceListAccoun
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.PriceListAccountResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.PriceListChannelResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.PriceListDiscountResource;
+import com.liferay.headless.commerce.admin.pricing.resource.v2_0.PriceListOrderTypeResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.PriceListResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.PriceModifierCategoryResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.PriceModifierProductGroupResource;
@@ -120,6 +124,14 @@ public class Mutation {
 
 		_discountChannelResourceComponentServiceObjects =
 			discountChannelResourceComponentServiceObjects;
+	}
+
+	public static void setDiscountOrderTypeResourceComponentServiceObjects(
+		ComponentServiceObjects<DiscountOrderTypeResource>
+			discountOrderTypeResourceComponentServiceObjects) {
+
+		_discountOrderTypeResourceComponentServiceObjects =
+			discountOrderTypeResourceComponentServiceObjects;
 	}
 
 	public static void setDiscountProductResourceComponentServiceObjects(
@@ -200,6 +212,14 @@ public class Mutation {
 
 		_priceListDiscountResourceComponentServiceObjects =
 			priceListDiscountResourceComponentServiceObjects;
+	}
+
+	public static void setPriceListOrderTypeResourceComponentServiceObjects(
+		ComponentServiceObjects<PriceListOrderTypeResource>
+			priceListOrderTypeResourceComponentServiceObjects) {
+
+		_priceListOrderTypeResourceComponentServiceObjects =
+			priceListOrderTypeResourceComponentServiceObjects;
 	}
 
 	public static void setPriceModifierResourceComponentServiceObjects(
@@ -628,6 +648,83 @@ public class Mutation {
 			this::_populateResourceContext,
 			discountChannelResource ->
 				discountChannelResource.postDiscountIdDiscountChannelBatch(
+					id, callbackURL, object));
+	}
+
+	@GraphQLField
+	public boolean deleteDiscountOrderType(
+			@GraphQLName("discountOrderTypeId") Long discountOrderTypeId)
+		throws Exception {
+
+		_applyVoidComponentServiceObjects(
+			_discountOrderTypeResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			discountOrderTypeResource ->
+				discountOrderTypeResource.deleteDiscountOrderType(
+					discountOrderTypeId));
+
+		return true;
+	}
+
+	@GraphQLField
+	public Response deleteDiscountOrderTypeBatch(
+			@GraphQLName("callbackURL") String callbackURL,
+			@GraphQLName("object") Object object)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_discountOrderTypeResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			discountOrderTypeResource ->
+				discountOrderTypeResource.deleteDiscountOrderTypeBatch(
+					callbackURL, object));
+	}
+
+	@GraphQLField
+	public DiscountOrderType
+			createDiscountByExternalReferenceCodeDiscountOrderType(
+				@GraphQLName("externalReferenceCode") String
+					externalReferenceCode,
+				@GraphQLName("discountOrderType") DiscountOrderType
+					discountOrderType)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_discountOrderTypeResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			discountOrderTypeResource ->
+				discountOrderTypeResource.
+					postDiscountByExternalReferenceCodeDiscountOrderType(
+						externalReferenceCode, discountOrderType));
+	}
+
+	@GraphQLField
+	public DiscountOrderType createDiscountIdDiscountOrderType(
+			@GraphQLName("id") Long id,
+			@GraphQLName("discountOrderType") DiscountOrderType
+				discountOrderType)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_discountOrderTypeResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			discountOrderTypeResource ->
+				discountOrderTypeResource.postDiscountIdDiscountOrderType(
+					id, discountOrderType));
+	}
+
+	@GraphQLField
+	public Response createDiscountIdDiscountOrderTypeBatch(
+			@GraphQLName("id") Long id,
+			@GraphQLName("callbackURL") String callbackURL,
+			@GraphQLName("object") Object object)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_discountOrderTypeResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			discountOrderTypeResource ->
+				discountOrderTypeResource.postDiscountIdDiscountOrderTypeBatch(
 					id, callbackURL, object));
 	}
 
@@ -1451,6 +1548,84 @@ public class Mutation {
 	}
 
 	@GraphQLField
+	public boolean deletePriceListOrderType(
+			@GraphQLName("priceListOrderTypeId") Long priceListOrderTypeId)
+		throws Exception {
+
+		_applyVoidComponentServiceObjects(
+			_priceListOrderTypeResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			priceListOrderTypeResource ->
+				priceListOrderTypeResource.deletePriceListOrderType(
+					priceListOrderTypeId));
+
+		return true;
+	}
+
+	@GraphQLField
+	public Response deletePriceListOrderTypeBatch(
+			@GraphQLName("callbackURL") String callbackURL,
+			@GraphQLName("object") Object object)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_priceListOrderTypeResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			priceListOrderTypeResource ->
+				priceListOrderTypeResource.deletePriceListOrderTypeBatch(
+					callbackURL, object));
+	}
+
+	@GraphQLField
+	public PriceListOrderType
+			createPriceListByExternalReferenceCodePriceListOrderType(
+				@GraphQLName("externalReferenceCode") String
+					externalReferenceCode,
+				@GraphQLName("priceListOrderType") PriceListOrderType
+					priceListOrderType)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_priceListOrderTypeResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			priceListOrderTypeResource ->
+				priceListOrderTypeResource.
+					postPriceListByExternalReferenceCodePriceListOrderType(
+						externalReferenceCode, priceListOrderType));
+	}
+
+	@GraphQLField
+	public PriceListOrderType createPriceListIdPriceListOrderType(
+			@GraphQLName("id") Long id,
+			@GraphQLName("priceListOrderType") PriceListOrderType
+				priceListOrderType)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_priceListOrderTypeResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			priceListOrderTypeResource ->
+				priceListOrderTypeResource.postPriceListIdPriceListOrderType(
+					id, priceListOrderType));
+	}
+
+	@GraphQLField
+	public Response createPriceListIdPriceListOrderTypeBatch(
+			@GraphQLName("id") Long id,
+			@GraphQLName("callbackURL") String callbackURL,
+			@GraphQLName("object") Object object)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_priceListOrderTypeResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			priceListOrderTypeResource ->
+				priceListOrderTypeResource.
+					postPriceListIdPriceListOrderTypeBatch(
+						id, callbackURL, object));
+	}
+
+	@GraphQLField
 	public PriceModifier createPriceListByExternalReferenceCodePriceModifier(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
 			@GraphQLName("priceModifier") PriceModifier priceModifier)
@@ -2033,6 +2208,22 @@ public class Mutation {
 	}
 
 	private void _populateResourceContext(
+			DiscountOrderTypeResource discountOrderTypeResource)
+		throws Exception {
+
+		discountOrderTypeResource.setContextAcceptLanguage(_acceptLanguage);
+		discountOrderTypeResource.setContextCompany(_company);
+		discountOrderTypeResource.setContextHttpServletRequest(
+			_httpServletRequest);
+		discountOrderTypeResource.setContextHttpServletResponse(
+			_httpServletResponse);
+		discountOrderTypeResource.setContextUriInfo(_uriInfo);
+		discountOrderTypeResource.setContextUser(_user);
+		discountOrderTypeResource.setGroupLocalService(_groupLocalService);
+		discountOrderTypeResource.setRoleLocalService(_roleLocalService);
+	}
+
+	private void _populateResourceContext(
 			DiscountProductResource discountProductResource)
 		throws Exception {
 
@@ -2184,6 +2375,22 @@ public class Mutation {
 	}
 
 	private void _populateResourceContext(
+			PriceListOrderTypeResource priceListOrderTypeResource)
+		throws Exception {
+
+		priceListOrderTypeResource.setContextAcceptLanguage(_acceptLanguage);
+		priceListOrderTypeResource.setContextCompany(_company);
+		priceListOrderTypeResource.setContextHttpServletRequest(
+			_httpServletRequest);
+		priceListOrderTypeResource.setContextHttpServletResponse(
+			_httpServletResponse);
+		priceListOrderTypeResource.setContextUriInfo(_uriInfo);
+		priceListOrderTypeResource.setContextUser(_user);
+		priceListOrderTypeResource.setGroupLocalService(_groupLocalService);
+		priceListOrderTypeResource.setRoleLocalService(_roleLocalService);
+	}
+
+	private void _populateResourceContext(
 			PriceModifierResource priceModifierResource)
 		throws Exception {
 
@@ -2272,6 +2479,8 @@ public class Mutation {
 		_discountCategoryResourceComponentServiceObjects;
 	private static ComponentServiceObjects<DiscountChannelResource>
 		_discountChannelResourceComponentServiceObjects;
+	private static ComponentServiceObjects<DiscountOrderTypeResource>
+		_discountOrderTypeResourceComponentServiceObjects;
 	private static ComponentServiceObjects<DiscountProductResource>
 		_discountProductResourceComponentServiceObjects;
 	private static ComponentServiceObjects<DiscountProductGroupResource>
@@ -2292,6 +2501,8 @@ public class Mutation {
 		_priceListChannelResourceComponentServiceObjects;
 	private static ComponentServiceObjects<PriceListDiscountResource>
 		_priceListDiscountResourceComponentServiceObjects;
+	private static ComponentServiceObjects<PriceListOrderTypeResource>
+		_priceListOrderTypeResourceComponentServiceObjects;
 	private static ComponentServiceObjects<PriceModifierResource>
 		_priceModifierResourceComponentServiceObjects;
 	private static ComponentServiceObjects<PriceModifierCategoryResource>

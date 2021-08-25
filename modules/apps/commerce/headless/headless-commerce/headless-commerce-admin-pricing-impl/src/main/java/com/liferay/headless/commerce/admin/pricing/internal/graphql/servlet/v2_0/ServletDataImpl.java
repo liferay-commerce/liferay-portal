@@ -24,16 +24,19 @@ import com.liferay.headless.commerce.admin.pricing.resource.v2_0.DiscountAccount
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.DiscountAccountResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.DiscountCategoryResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.DiscountChannelResource;
+import com.liferay.headless.commerce.admin.pricing.resource.v2_0.DiscountOrderTypeResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.DiscountProductGroupResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.DiscountProductResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.DiscountResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.DiscountRuleResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.DiscountSkuResource;
+import com.liferay.headless.commerce.admin.pricing.resource.v2_0.OrderTypeResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.PriceEntryResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.PriceListAccountGroupResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.PriceListAccountResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.PriceListChannelResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.PriceListDiscountResource;
+import com.liferay.headless.commerce.admin.pricing.resource.v2_0.PriceListOrderTypeResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.PriceListResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.PriceModifierCategoryResource;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.PriceModifierProductGroupResource;
@@ -74,6 +77,8 @@ public class ServletDataImpl implements ServletData {
 			_discountCategoryResourceComponentServiceObjects);
 		Mutation.setDiscountChannelResourceComponentServiceObjects(
 			_discountChannelResourceComponentServiceObjects);
+		Mutation.setDiscountOrderTypeResourceComponentServiceObjects(
+			_discountOrderTypeResourceComponentServiceObjects);
 		Mutation.setDiscountProductResourceComponentServiceObjects(
 			_discountProductResourceComponentServiceObjects);
 		Mutation.setDiscountProductGroupResourceComponentServiceObjects(
@@ -94,6 +99,8 @@ public class ServletDataImpl implements ServletData {
 			_priceListChannelResourceComponentServiceObjects);
 		Mutation.setPriceListDiscountResourceComponentServiceObjects(
 			_priceListDiscountResourceComponentServiceObjects);
+		Mutation.setPriceListOrderTypeResourceComponentServiceObjects(
+			_priceListOrderTypeResourceComponentServiceObjects);
 		Mutation.setPriceModifierResourceComponentServiceObjects(
 			_priceModifierResourceComponentServiceObjects);
 		Mutation.setPriceModifierCategoryResourceComponentServiceObjects(
@@ -123,6 +130,8 @@ public class ServletDataImpl implements ServletData {
 			_discountCategoryResourceComponentServiceObjects);
 		Query.setDiscountChannelResourceComponentServiceObjects(
 			_discountChannelResourceComponentServiceObjects);
+		Query.setDiscountOrderTypeResourceComponentServiceObjects(
+			_discountOrderTypeResourceComponentServiceObjects);
 		Query.setDiscountProductResourceComponentServiceObjects(
 			_discountProductResourceComponentServiceObjects);
 		Query.setDiscountProductGroupResourceComponentServiceObjects(
@@ -131,6 +140,8 @@ public class ServletDataImpl implements ServletData {
 			_discountRuleResourceComponentServiceObjects);
 		Query.setDiscountSkuResourceComponentServiceObjects(
 			_discountSkuResourceComponentServiceObjects);
+		Query.setOrderTypeResourceComponentServiceObjects(
+			_orderTypeResourceComponentServiceObjects);
 		Query.setPriceEntryResourceComponentServiceObjects(
 			_priceEntryResourceComponentServiceObjects);
 		Query.setPriceListResourceComponentServiceObjects(
@@ -143,6 +154,8 @@ public class ServletDataImpl implements ServletData {
 			_priceListChannelResourceComponentServiceObjects);
 		Query.setPriceListDiscountResourceComponentServiceObjects(
 			_priceListDiscountResourceComponentServiceObjects);
+		Query.setPriceListOrderTypeResourceComponentServiceObjects(
+			_priceListOrderTypeResourceComponentServiceObjects);
 		Query.setPriceModifierResourceComponentServiceObjects(
 			_priceModifierResourceComponentServiceObjects);
 		Query.setPriceModifierCategoryResourceComponentServiceObjects(
@@ -197,6 +210,10 @@ public class ServletDataImpl implements ServletData {
 		_discountChannelResourceComponentServiceObjects;
 
 	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
+	private ComponentServiceObjects<DiscountOrderTypeResource>
+		_discountOrderTypeResourceComponentServiceObjects;
+
+	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
 	private ComponentServiceObjects<DiscountProductResource>
 		_discountProductResourceComponentServiceObjects;
 
@@ -237,6 +254,10 @@ public class ServletDataImpl implements ServletData {
 		_priceListDiscountResourceComponentServiceObjects;
 
 	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
+	private ComponentServiceObjects<PriceListOrderTypeResource>
+		_priceListOrderTypeResourceComponentServiceObjects;
+
+	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
 	private ComponentServiceObjects<PriceModifierResource>
 		_priceModifierResourceComponentServiceObjects;
 
@@ -271,6 +292,10 @@ public class ServletDataImpl implements ServletData {
 	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
 	private ComponentServiceObjects<ChannelResource>
 		_channelResourceComponentServiceObjects;
+
+	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
+	private ComponentServiceObjects<OrderTypeResource>
+		_orderTypeResourceComponentServiceObjects;
 
 	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
 	private ComponentServiceObjects<ProductResource>
