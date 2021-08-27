@@ -25,7 +25,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 @ProviderType
 public interface CommerceMediaResolver {
 
-	public String getDefaultURL(long groupId);
+	public String getDefaultURL(long groupId) throws PortalException;
 
 	public String getDownloadURL(
 			long commerceAccountId, long cpAttachmentFileEntryId)
