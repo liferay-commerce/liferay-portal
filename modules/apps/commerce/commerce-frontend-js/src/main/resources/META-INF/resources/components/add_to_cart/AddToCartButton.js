@@ -23,9 +23,11 @@ import CommerceCookie from '../../utilities/cookies';
 import {
 	CP_INSTANCE_CHANGED,
 	CURRENT_ORDER_UPDATED,
+	OPEN_MODAL,
 	PRODUCT_REMOVED_FROM_CART,
 } from '../../utilities/eventsDefinitions';
 import {showErrorNotification} from '../../utilities/notifications';
+import Modal from '../modal/Modal';
 import {ALL, GUEST_COMMERCE_ORDER_COOKIE_IDENTIFIER} from './constants';
 
 const orderCookie = new CommerceCookie(GUEST_COMMERCE_ORDER_COOKIE_IDENTIFIER);
@@ -151,27 +153,46 @@ function AddToCartButton({
 				disabled={disabled}
 				displayType="primary"
 				onClick={() =>
-					add()
-						.then((order) => {
-							const orderDidChange = order.id !== activeOrder.id;
+					settings.orderTypeModalURL
+						? Liferay.fire(OPEN_MODAL, {
+								closeOnSubmit: true,
+								id: 'add-order-modal',
+								url:
+									settings.orderTypeModalURL +
+									'&options=' +
+									catalogItem.options.toString() +
+									'&quantity=' +
+									quantity +
+									'&skuId=' +
+									catalogItem.skuId,
+						  })
+						: add()
+								.then((order) => {
+									const orderDidChange =
+										order.id !== activeOrder.id;
 
-							Liferay.fire(
-								CURRENT_ORDER_UPDATED,
-								orderDidChange ? {...order} : {...activeOrder}
-							);
+									Liferay.fire(
+										CURRENT_ORDER_UPDATED,
+										orderDidChange
+											? {...order}
+											: {...activeOrder}
+									);
 
-							updateCatalogItem({...catalogItem, inCart: true});
+									updateCatalogItem({
+										...catalogItem,
+										inCart: true,
+									});
 
-							if (orderDidChange) {
-								orderCookie.setValue(
-									channel.groupId,
-									order.orderUUID
-								);
+									if (orderDidChange) {
+										orderCookie.setValue(
+											channel.groupId,
+											order.orderUUID
+										);
 
-								setActiveOrder(order);
-							}
-						})
-						.catch(showErrorNotification)
+										setActiveOrder(order);
+									}
+								})
+								.catch(showErrorNotification)
 				}
 			>
 				{!settings.iconOnly && (
@@ -202,6 +223,7 @@ AddToCartButton.defaultProps = {
 	settings: {
 		block: false,
 		iconOnly: false,
+		orderTypeModalURL: '',
 		withQuantity: false,
 	},
 };
@@ -235,6 +257,7 @@ AddToCartButton.propTypes = {
 		disabled: PropTypes.bool,
 		iconOnly: PropTypes.bool,
 		namespace: PropTypes.string,
+		orderTypeModalURL: PropTypes.string,
 	}),
 	spritemap: PropTypes.string,
 };

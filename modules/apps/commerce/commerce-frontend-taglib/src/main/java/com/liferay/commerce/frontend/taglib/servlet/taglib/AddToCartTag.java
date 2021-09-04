@@ -15,6 +15,7 @@
 package com.liferay.commerce.frontend.taglib.servlet.taglib;
 
 import com.liferay.commerce.account.model.CommerceAccount;
+import com.liferay.commerce.constants.CommercePortletKeys;
 import com.liferay.commerce.constants.CommerceWebKeys;
 import com.liferay.commerce.context.CommerceContext;
 import com.liferay.commerce.currency.model.CommerceCurrency;
@@ -29,9 +30,13 @@ import com.liferay.commerce.product.catalog.CPCatalogEntry;
 import com.liferay.commerce.product.catalog.CPSku;
 import com.liferay.commerce.product.content.util.CPContentHelper;
 import com.liferay.commerce.service.CommerceOrderItemLocalService;
+import com.liferay.commerce.service.CommerceOrderTypeLocalService;
+import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.portlet.LiferayWindowState;
+import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -39,6 +44,9 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.taglib.util.IncludeTag;
 
 import java.util.List;
+
+import javax.portlet.PortletRequest;
+import javax.portlet.PortletURL;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -79,6 +87,42 @@ public class AddToCartTag extends IncludeTag {
 
 			if (commerceOrder != null) {
 				_commerceOrderId = commerceOrder.getCommerceOrderId();
+
+				_commerceOrderTypeModalURL = StringPool.BLANK;
+			}
+			else {
+				int commerceOrderTypesCount =
+					_commerceOrderTypeLocalService.getCommerceOrderTypesCount();
+
+				if (commerceOrderTypesCount > 1) {
+					long groupId = PortalUtil.getScopeGroupId(
+						httpServletRequest);
+
+					long plid = PortalUtil.getPlidFromPortletId(
+						groupId,
+						CommercePortletKeys.COMMERCE_OPEN_ORDER_CONTENT);
+
+					PortletURL portletURL = PortletURLFactoryUtil.create(
+						httpServletRequest,
+						CommercePortletKeys.COMMERCE_OPEN_ORDER_CONTENT,
+						PortletRequest.ACTION_PHASE);
+
+					if (plid > 0) {
+						portletURL = PortletURLFactoryUtil.create(
+							httpServletRequest,
+							CommercePortletKeys.COMMERCE_OPEN_ORDER_CONTENT,
+							plid, PortletRequest.ACTION_PHASE);
+					}
+
+					_commerceOrderTypeModalURL = PortletURLBuilder.create(
+						portletURL
+					).setMVCRenderCommandName(
+						"/commerce_order_content" +
+							"/view_commerce_order_order_type_modal"
+					).setWindowState(
+						LiferayWindowState.POP_UP
+					).buildString();
+				}
 			}
 
 			CPSku cpSku = null;
@@ -191,6 +235,9 @@ public class AddToCartTag extends IncludeTag {
 		setNamespacedAttribute(
 			httpServletRequest, "commerceOrderId", _commerceOrderId);
 		setNamespacedAttribute(
+			httpServletRequest, "commerceOrderTypeModalURL",
+			_commerceOrderTypeModalURL);
+		setNamespacedAttribute(
 			httpServletRequest, "cpInstanceId", _cpInstanceId);
 		setNamespacedAttribute(httpServletRequest, "disabled", _disabled);
 		setNamespacedAttribute(httpServletRequest, "inCart", _inCart);
@@ -245,6 +292,8 @@ public class AddToCartTag extends IncludeTag {
 			ServletContextUtil.getCommerceInventoryEngine();
 		_commerceOrderItemLocalService =
 			ServletContextUtil.getCommerceOrderItemLocalService();
+		_commerceOrderTypeLocalService =
+			ServletContextUtil.getCommerceOrderTypeLocalService();
 		_cpContentHelper = ServletContextUtil.getCPContentHelper();
 		_productHelper = ServletContextUtil.getProductHelper();
 	}
@@ -266,6 +315,8 @@ public class AddToCartTag extends IncludeTag {
 		_commerceOrderHttpHelper = null;
 		_commerceOrderId = 0;
 		_commerceOrderItemLocalService = null;
+		_commerceOrderTypeLocalService = null;
+		_commerceOrderTypeModalURL = StringPool.BLANK;
 		_cpCatalogEntry = null;
 		_cpContentHelper = null;
 		_cpInstanceId = 0;
@@ -300,6 +351,8 @@ public class AddToCartTag extends IncludeTag {
 	private CommerceOrderHttpHelper _commerceOrderHttpHelper;
 	private long _commerceOrderId;
 	private CommerceOrderItemLocalService _commerceOrderItemLocalService;
+	private CommerceOrderTypeLocalService _commerceOrderTypeLocalService;
+	private String _commerceOrderTypeModalURL = StringPool.BLANK;
 	private CPCatalogEntry _cpCatalogEntry;
 	private CPContentHelper _cpContentHelper;
 	private long _cpInstanceId;

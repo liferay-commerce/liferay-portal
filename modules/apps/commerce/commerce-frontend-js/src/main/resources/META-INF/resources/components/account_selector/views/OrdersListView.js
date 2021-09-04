@@ -14,10 +14,13 @@
 
 import {ClayButtonWithIcon} from '@clayui/button';
 import ClayDropDown from '@clayui/drop-down';
-import ClayLink from '@clayui/link';
+import ClayButton from '@clayui/button';
 import React, {useMemo, useRef} from 'react';
 
 import ServiceProvider from '../../../ServiceProvider/index';
+import {liferayNavigate} from '../../../utilities/index';
+import {OPEN_MODAL} from '../../../utilities/eventsDefinitions';
+import Modal from '../../modal/Modal';
 import OrdersTable from '../OrdersTable';
 import {VIEWS} from '../util/constants';
 import EmptyListView from './EmptyListView';
@@ -28,6 +31,7 @@ function OrdersListView({
 	createOrderURL,
 	currentAccount,
 	disabled,
+	showOrderTypeModal,
 	selectOrderURL,
 	setCurrentView,
 }) {
@@ -92,14 +96,26 @@ function OrdersListView({
 			</li>
 
 			<ClayDropDown.Section>
-				<ClayLink
-					className="btn btn-primary d-block"
-					displayType="unstyled"
-					href={createOrderURL}
+				<ClayButton
+					className="m-auto w-100"
+					displayType="primary"
+					onClick={() =>
+						showOrderTypeModal
+							? Liferay.fire(OPEN_MODAL, {id: 'add-order-modal'})
+							: liferayNavigate(createOrderURL)
+					}
 				>
 					{Liferay.Language.get('create-new-order')}
-				</ClayLink>
+				</ClayButton>
 			</ClayDropDown.Section>
+
+			{showOrderTypeModal ? (
+				<Modal
+					id="add-order-modal"
+					refreshPageOnClose={true}
+					url={createOrderURL}
+				/>
+			) : null}
 		</ClayDropDown.ItemList>
 	);
 }

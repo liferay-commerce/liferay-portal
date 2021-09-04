@@ -37,6 +37,7 @@ function AccountSelector({
 	refreshPageOnAccountSelected: forceRefresh,
 	selectOrderURL,
 	setCurrentAccountURL,
+	showOrderTypeModal,
 	spritemap,
 }) {
 	const [active, setActive] = useState(false);
@@ -114,6 +115,7 @@ function AccountSelector({
 						createOrderURL={createNewOrderURL}
 						currentAccount={currentAccount}
 						disabled={!active}
+						showOrderTypeModal={showOrderTypeModal}
 						selectOrderURL={selectOrderURL}
 						setCurrentView={setCurrentView}
 					/>
@@ -141,6 +143,7 @@ AccountSelector.propTypes = {
 	refreshPageOnAccountSelected: PropTypes.bool,
 	selectOrderURL: PropTypes.string.isRequired,
 	setCurrentAccountURL: PropTypes.string.isRequired,
+	showOrderTypeModal: PropTypes.bool,
 	spritemap: PropTypes.string.isRequired,
 };
 

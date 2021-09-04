@@ -30,6 +30,7 @@ import com.liferay.commerce.frontend.model.HeaderActionModel;
 import com.liferay.commerce.model.CommerceAddress;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderNote;
+import com.liferay.commerce.model.CommerceOrderType;
 import com.liferay.commerce.model.CommerceShipmentItem;
 import com.liferay.commerce.order.content.web.internal.portlet.configuration.CommerceOpenOrderContentPortletInstanceConfiguration;
 import com.liferay.commerce.order.content.web.internal.portlet.configuration.CommerceOrderContentPortletInstanceConfiguration;
@@ -44,6 +45,7 @@ import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.service.CommerceAddressService;
 import com.liferay.commerce.service.CommerceOrderNoteService;
 import com.liferay.commerce.service.CommerceOrderService;
+import com.liferay.commerce.service.CommerceOrderTypeLocalServiceUtil;
 import com.liferay.commerce.service.CommerceShipmentItemService;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
@@ -312,6 +314,15 @@ public class CommerceOrderContentDisplayContext {
 		}
 
 		return totalCommerceMoney.format(_cpRequestHelper.getLocale());
+	}
+
+	public List<CommerceOrderType> getCommerceOrderTypes() {
+		return CommerceOrderTypeLocalServiceUtil.getCommerceOrderTypes(
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+	}
+
+	public int getCommerceOrderTypesCount() {
+		return CommerceOrderTypeLocalServiceUtil.getCommerceOrderTypesCount();
 	}
 
 	public String getCommercePriceDisplayType() {
