@@ -14,7 +14,6 @@ import {ClayIconSpriteContext} from '@clayui/icon';
 import ClayModal, {useModal} from '@clayui/modal';
 import {fetch, openToast} from 'frontend-js-web';
 import {UPDATE_DATASET_DISPLAY} from 'frontend-taglib-clay/data_set_display/utils/eventsDefinitions';
-import { searchSkus} from './utilities/utilities'
 import PropTypes from 'prop-types';
 import React, {useCallback, useEffect, useState} from 'react';
 
@@ -117,6 +116,7 @@ const Diagram = ({
 			});
 
 			setPinImport(pinData);
+
 			return pinData;
 		}
 	}, [svgString]);
@@ -152,7 +152,6 @@ const Diagram = ({
 	};
 
 	const updatePin = (node) => {
-
 		if (node.id) {
 			return fetch(`${pinsEndpoint}${PINS}/${node.id}`, {
 				body: JSON.stringify(node),
@@ -160,6 +159,7 @@ const Diagram = ({
 				method: 'PATCH',
 			});
 		}
+
 		return fetch(`${pinsEndpoint}${PRODUCTS}/${productId}/${PINS}`, {
 			body: JSON.stringify(node),
 			headers: HEADERS,
@@ -202,14 +202,6 @@ const Diagram = ({
 				});
 			});
 	};
-
-	const updateMappedProduct = (node) => {
-		return fetch(`${pinsEndpoint}${PRODUCTS}/${productId}/diagramEntries`, {
-			headers: HEADERS,
-			method: 'GET',
-		}).then((res) => res.json())
-		.then(console.log)
-	}
 
 	const pinClickAction = (updatedPin) => {
 		setShowTooltip({
@@ -281,6 +273,7 @@ const Diagram = ({
 					loadPins();
 				}
 			});
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [imageState, pinsEndpoint, productId, loadPins, type]);
 
 	return imageState ? (
@@ -338,7 +331,6 @@ const Diagram = ({
 					showTooltip={showTooltip}
 					svgString={svgString}
 					type={type}
-					visible={visible}
 					zoomController={zoomController}
 					zoomInHandler={zoomInHandler}
 					zoomOutHandler={zoomOutHandler}
@@ -446,7 +438,6 @@ const Diagram = ({
 							/>
 						</ClayModal>
 					)}
-
 					{showTooltip.tooltip && type !== 'diagram.type.svg' && (
 						<AdminTooltipDefault
 							namespace={namespace}
@@ -526,8 +517,7 @@ Diagram.defaultProps = {
 		defaultRadius: 10,
 	},
 	pins: [],
-	pinsEndpoint:
-		'/o/headless-commerce-admin-catalog/v1.0/',
+	pinsEndpoint: '/o/headless-commerce-admin-catalog/v1.0/',
 	productId: 44206,
 	showTooltip: {
 		details: {
