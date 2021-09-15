@@ -1357,7 +1357,7 @@ definition {
 	@priority = "3"
 	test ViewMiniCartItemWithPromotion {
 		property portal.acceptance = "TestCommerce";
-        property test.name.skip.portal.instance = "CommerceMiniCart#ViewMiniCartItemDetails";
+        property test.name.skip.portal.instance = "CommerceMiniCart#ViewMiniCartItemWithPromotion";
 
 		// TODO Review
 
