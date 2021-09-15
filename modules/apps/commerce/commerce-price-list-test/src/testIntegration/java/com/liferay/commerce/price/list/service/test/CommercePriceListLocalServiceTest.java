@@ -22,16 +22,20 @@ import com.liferay.commerce.price.list.model.CommercePriceList;
 import com.liferay.commerce.price.list.service.CommercePriceListLocalService;
 import com.liferay.commerce.price.list.test.util.CommercePriceListTestUtil;
 import com.liferay.commerce.product.model.CommerceCatalog;
+import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalServiceUtil;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -40,6 +44,7 @@ import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.frutilla.FrutillaRule;
 
@@ -587,6 +592,42 @@ public class CommercePriceListLocalServiceTest {
 	}
 
 	@Test
+	public void testSearchBasePriceList() throws Exception {
+		frutillaRule.scenario(
+			"Verify presence of Base Pricelist"
+		).given(
+			"Portal is successfully started"
+		).when(
+			"I search for the base PriceList"
+		).then(
+			"The base PriceList is found"
+		);
+
+		List<CommerceCatalog> commerceCatalogs =
+			_commerceCatalogLocalService.searchCommerceCatalogs(
+				_company.getCompanyId(), null, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null);
+
+		Stream<CommerceCatalog> stream = commerceCatalogs.stream();
+
+		long[] groupIds = stream.mapToLong(
+			CommerceCatalog::getGroupId
+		).toArray();
+
+		BaseModelSearchResult<CommercePriceList>
+			commercePriceListBaseModelSearchResult =
+				_commercePriceListLocalService.searchCommercePriceLists(
+					_company.getCompanyId(), groupIds, null,
+					WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, null);
+
+		List<CommercePriceList> commercePriceLists =
+			commercePriceListBaseModelSearchResult.getBaseModels();
+
+		Assert.assertFalse(commercePriceLists.isEmpty());
+	}
+
+	@Test
 	public void testUpdateCommercePriceList1() throws Exception {
 		frutillaRule.scenario(
 			"Update an existing Price List"
@@ -764,6 +805,9 @@ public class CommercePriceListLocalServiceTest {
 	}
 
 	private static Company _company;
+
+	@Inject
+	private CommerceCatalogLocalService _commerceCatalogLocalService;
 
 	@Inject
 	private CommercePriceListLocalService _commercePriceListLocalService;
