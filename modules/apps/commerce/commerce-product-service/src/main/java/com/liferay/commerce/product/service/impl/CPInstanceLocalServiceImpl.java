@@ -870,8 +870,8 @@ public class CPInstanceLocalServiceImpl extends CPInstanceLocalServiceBaseImpl {
 	}
 
 	@Override
-	public void checkCPInstances() throws PortalException {
-		checkCPInstancesByDisplayDate(0);
+	public void checkCPInstances(long cpDefinitionId) throws PortalException {
+		checkCPInstancesByDisplayDate(cpDefinitionId);
 		checkCPInstancesByExpirationDate();
 	}
 
