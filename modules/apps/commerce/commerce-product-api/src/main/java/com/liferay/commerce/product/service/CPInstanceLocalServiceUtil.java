@@ -653,8 +653,10 @@ public class CPInstanceLocalServiceUtil {
 		getService().buildCPInstances(cpDefinitionId, serviceContext);
 	}
 
-	public static void checkCPInstances() throws PortalException {
-		getService().checkCPInstances();
+	public static void checkCPInstances(long cpDefinitionId)
+		throws PortalException {
+
+		getService().checkCPInstances(cpDefinitionId);
 	}
 
 	public static void checkCPInstancesByDisplayDate(long cpDefinitionId)

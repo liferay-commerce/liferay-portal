@@ -657,10 +657,10 @@ public class CPInstanceLocalServiceWrapper
 	}
 
 	@Override
-	public void checkCPInstances()
+	public void checkCPInstances(long cpDefinitionId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
-		_cpInstanceLocalService.checkCPInstances();
+		_cpInstanceLocalService.checkCPInstances(cpDefinitionId);
 	}
 
 	@Override

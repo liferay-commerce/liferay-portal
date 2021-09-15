@@ -519,7 +519,7 @@ public interface CPInstanceLocalService
 			long cpDefinitionId, ServiceContext serviceContext)
 		throws PortalException;
 
-	public void checkCPInstances() throws PortalException;
+	public void checkCPInstances(long cpDefinitionId) throws PortalException;
 
 	public void checkCPInstancesByDisplayDate(long cpDefinitionId)
 		throws PortalException;
