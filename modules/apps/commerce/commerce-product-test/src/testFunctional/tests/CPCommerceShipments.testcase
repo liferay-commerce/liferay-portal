@@ -31,9 +31,8 @@ definition {
 	@description = "This is a test for COMMERCE-6238. Add shipment items to a shipment"
 	@priority = "3"
 	test AddItemsToShipment {
-		property test.name.skip.portal.instance = "CPCommerceShipments#AddItemsToShipment";
 		property portal.acceptance = "TestCommerce";
-
+		property test.name.skip.portal.instance = "CPCommerceShipments#AddItemsToShipment";
 
 		// TODO Review
 
