@@ -12,6 +12,7 @@ definition {
 	}
 
 	tearDown {
+		var testNameSkipPortalInstance = PropsUtil.get("test.name.skip.portal.instance");
 		var testPortalInstance = PropsUtil.get("test.portal.instance");
 
 		echo("${testPortalInstance}");
