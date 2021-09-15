@@ -12,20 +12,13 @@ definition {
 	}
 
 	tearDown {
-		var testPortalInstance = PropsUtil.get("test.portal.instance");
+		Navigator.openURL();
 
-		if ("${testPortalInstance}" == "true") {
-			PortalInstances.tearDownCP();
-		}
-		else {
-			Navigator.openURL();
+		CommerceConfiguration.commerceAdminTearDown();
 
-			CommerceConfiguration.commerceAdminTearDown();
+		CommerceConfiguration.commerceInitializersTearDown();
 
-			CommerceConfiguration.commerceInitializersTearDown();
-
-			User.logoutPG();
-		}
+		User.logoutPG();
 	}
 
 	@description = "This is a test for COMMERCE-6283. EditSpecificationGroup"
