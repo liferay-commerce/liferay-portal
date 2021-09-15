@@ -14,10 +14,12 @@ definition {
 	tearDown {
 		var testPortalInstance = PropsUtil.get("test.portal.instance");
 
+		echo("${testPortalInstance}");
+
 		if ("${testPortalInstance}" == "true") {
 			PortalInstances.tearDownCP();
 		}
-		else {
+		else if (IsTestName(locator1 = "", value1 = "${testNameSkipPortalInstance}")) {
 			Navigator.openURL();
 
 			CommerceConfiguration.commerceAdminTearDown();
@@ -30,6 +32,8 @@ definition {
 	@priority = "3"
 	test AddItemsToShipment {
 		property test.name.skip.portal.instance = "CPCommerceShipments#AddItemsToShipment";
+		property testray.main.component.name = "TestCommerce";
+
 
 		// TODO Review
 
