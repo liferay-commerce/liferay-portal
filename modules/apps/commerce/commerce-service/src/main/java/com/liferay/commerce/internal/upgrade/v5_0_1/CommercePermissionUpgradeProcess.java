@@ -19,8 +19,10 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.ResourceAction;
 import com.liferay.portal.kernel.model.ResourcePermission;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -29,8 +31,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author Riccardo Alberti
@@ -40,10 +40,12 @@ public class CommercePermissionUpgradeProcess
 
 	public CommercePermissionUpgradeProcess(
 		ResourceActionLocalService resourceActionLocalService,
-		ResourcePermissionLocalService resourcePermissionLocalService) {
+		ResourcePermissionLocalService resourcePermissionLocalService,
+		RoleLocalService roleLocalService) {
 
 		_resourceActionLocalService = resourceActionLocalService;
 		_resourcePermissionLocalService = resourcePermissionLocalService;
+		_roleLocalService = roleLocalService;
 	}
 
 	@Override
@@ -68,13 +70,9 @@ public class CommercePermissionUpgradeProcess
 						_PORTLET_NAME_COMMERCE_DISCOUNT)) {
 
 					_setResourcePermissions(
-						resourcePermission.getCompanyId(),
 						_PORTLET_NAME_COMMERCE_DISCOUNT_PRICING,
-						_PORTLET_NAME_COMMERCE_DISCOUNT,
-						resourcePermission.getPrimKey(),
 						resourcePermission.getRoleId(),
-						_resourceActionLocalService.getResourceActions(
-							resourcePermission.getName()),
+						resourcePermission.getActionIds(),
 						resourcePermission.getScope());
 
 					_resourcePermissionLocalService.deleteResourcePermission(
@@ -84,24 +82,16 @@ public class CommercePermissionUpgradeProcess
 							resourcePermission.getName(),
 							_PORTLET_NAME_COMMERCE_PRICE_LIST)) {
 
-					List<ResourceAction> resourceActions =
-						_resourceActionLocalService.getResourceActions(
-							resourcePermission.getName());
-
 					_setResourcePermissions(
-						resourcePermission.getCompanyId(),
 						_PORTLET_NAME_COMMERCE_PRICE_LIST_PRICING,
-						_PORTLET_NAME_COMMERCE_PRICE_LIST,
-						resourcePermission.getPrimKey(),
-						resourcePermission.getRoleId(), resourceActions,
+						resourcePermission.getRoleId(),
+						resourcePermission.getActionIds(),
 						resourcePermission.getScope());
 
 					_setResourcePermissions(
-						resourcePermission.getCompanyId(),
 						_PORTLET_NAME_COMMERCE_PROMOTION_PRICING,
-						_PORTLET_NAME_COMMERCE_PRICE_LIST,
-						resourcePermission.getPrimKey(),
-						resourcePermission.getRoleId(), resourceActions,
+						resourcePermission.getRoleId(),
+						resourcePermission.getActionIds(),
 						resourcePermission.getScope());
 
 					_resourcePermissionLocalService.deleteResourcePermission(
@@ -176,31 +166,6 @@ public class CommercePermissionUpgradeProcess
 	}
 
 	private void _setResourcePermissions(
-			long companyId, String newName, String oldName, String primKey,
-			long roleId, List<ResourceAction> resourceActions, int scope)
-		throws Exception {
-
-		if (primKey.equals(oldName)) {
-			primKey = newName;
-		}
-
-		Stream<ResourceAction> stream = resourceActions.stream();
-
-		List<String> resourceActionIds = stream.map(
-			ResourceAction::getActionId
-		).collect(
-			Collectors.toList()
-		);
-
-		_resourceActionLocalService.checkResourceActions(
-			newName, resourceActionIds);
-
-		_resourcePermissionLocalService.setResourcePermissions(
-			companyId, newName, scope, primKey, roleId,
-			resourceActionIds.toArray(new String[0]));
-	}
-
-	private void _setResourcePermissions(
 			Map<String, String> resourceActionNames,
 			ResourcePermission resourcePermission)
 		throws Exception {
@@ -223,6 +188,17 @@ public class CommercePermissionUpgradeProcess
 				resourcePermission.getScope(), resourcePermission.getPrimKey(),
 				resourcePermission.getRoleId(), new String[] {actionId});
 		}
+	}
+
+	private void _setResourcePermissions(
+			String resourceName, long roleId, long resourceActionBitwiseValue,
+			int scope)
+		throws Exception {
+
+		Role role = _roleLocalService.getRole(roleId);
+
+		_resourcePermissionLocalService.addResourcePermissions(
+			resourceName, role.getName(), scope, resourceActionBitwiseValue);
 	}
 
 	private static final String[] _ACTION_IDS = {
@@ -267,5 +243,6 @@ public class CommercePermissionUpgradeProcess
 	private final ResourceActionLocalService _resourceActionLocalService;
 	private final ResourcePermissionLocalService
 		_resourcePermissionLocalService;
+	private final RoleLocalService _roleLocalService;
 
 }

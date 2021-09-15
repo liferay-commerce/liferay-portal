@@ -53,6 +53,7 @@ import com.liferay.portal.kernel.service.PhoneLocalService;
 import com.liferay.portal.kernel.service.RegionLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.upgrade.DummyUpgradeProcess;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
@@ -205,7 +206,8 @@ public class CommerceUpgradeStepRegistrator implements UpgradeStepRegistrator {
 		registry.register(
 			"5.0.0", "5.0.1",
 			new CommercePermissionUpgradeProcess(
-				_resourceActionLocalService, _resourcePermissionLocalService));
+				_resourceActionLocalService, _resourcePermissionLocalService,
+				_roleLocalService));
 
 		registry.register(
 			"5.0.1", "6.0.0",
@@ -287,6 +289,9 @@ public class CommerceUpgradeStepRegistrator implements UpgradeStepRegistrator {
 
 	@Reference
 	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Reference
+	private RoleLocalService _roleLocalService;
 
 	@Reference
 	private UserLocalService _userLocalService;
