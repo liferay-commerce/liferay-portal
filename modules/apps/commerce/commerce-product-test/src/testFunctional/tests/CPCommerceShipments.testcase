@@ -32,7 +32,7 @@ definition {
 	@priority = "3"
 	test AddItemsToShipment {
 		property test.name.skip.portal.instance = "CPCommerceShipments#AddItemsToShipment";
-		property testray.main.component.name = "TestCommerce";
+		property portal.acceptance = "TestCommerce";
 
 
 		// TODO Review
