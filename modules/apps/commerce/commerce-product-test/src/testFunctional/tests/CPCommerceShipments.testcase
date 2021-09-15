@@ -16,10 +16,10 @@ definition {
 
 		echo("${testPortalInstance}");
 
-		if ("${testPortalInstance}" == "true") {
+		if (("${testPortalInstance}" == "true") && (!(IsTestName(locator1 = "", value1 = "${testNameSkipPortalInstance}")))) {
 			PortalInstances.tearDownCP();
 		}
-		else if (IsTestName(locator1 = "", value1 = "${testNameSkipPortalInstance}")) {
+		else {
 			Navigator.openURL();
 
 			CommerceConfiguration.commerceAdminTearDown();
