@@ -6,7 +6,7 @@ definition {
 	property testray.main.component.name = "Product Info Management";
 
 	setUp {
-		TestCase.setUpPortalInstance();
+		//TestCase.setUpPortalInstance();
 
 		User.firstLoginPG();
 
@@ -34,7 +34,6 @@ definition {
 	@priority = "3"
 	test EditSpecificationGroup {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CPCommerceSpecifications#EditSpecificationGroup";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
