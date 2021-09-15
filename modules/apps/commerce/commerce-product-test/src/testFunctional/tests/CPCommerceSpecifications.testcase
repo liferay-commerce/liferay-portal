@@ -6,8 +6,6 @@ definition {
 	property testray.main.component.name = "Product Info Management";
 
 	setUp {
-		//TestCase.setUpPortalInstance();
-
 		User.firstLoginPG();
 
 		CommerceConfiguration.commerceStoreFrontSetUp();
