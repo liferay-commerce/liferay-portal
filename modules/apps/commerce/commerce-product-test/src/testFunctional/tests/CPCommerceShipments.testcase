@@ -6,34 +6,21 @@ definition {
 	property testray.main.component.name = "Order Management";
 
 	setUp {
-		TestCase.setUpPortalInstance();
-
 		User.firstLoginPG();
 	}
 
 	tearDown {
-		var testNameSkipPortalInstance = PropsUtil.get("test.name.skip.portal.instance");
-		var testPortalInstance = PropsUtil.get("test.portal.instance");
+		Navigator.openURL();
 
-		echo("${testPortalInstance}");
+		CommerceConfiguration.commerceAdminTearDown();
 
-		if (("${testPortalInstance}" == "true") && (!(IsTestName(locator1 = "", value1 = "${testNameSkipPortalInstance}")))) {
-			PortalInstances.tearDownCP();
-		}
-		else {
-			Navigator.openURL();
-
-			CommerceConfiguration.commerceAdminTearDown();
-
-			CommerceConfiguration.commerceInitializersTearDown();
-		}
+		CommerceConfiguration.commerceInitializersTearDown();
 	}
 
 	@description = "This is a test for COMMERCE-6238. Add shipment items to a shipment"
 	@priority = "3"
 	test AddItemsToShipment {
 		property portal.acceptance = "TestCommerce";
-		property test.name.skip.portal.instance = "CPCommerceShipments#AddItemsToShipment";
 
 		// TODO Review
 
