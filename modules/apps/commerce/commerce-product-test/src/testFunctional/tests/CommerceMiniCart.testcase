@@ -6,6 +6,8 @@ definition {
 	property testray.main.component.name = "Shopping Experience";
 
 	setUp {
+		TestCase.setUpPortalInstance();
+
 		User.firstLoginPG();
 	}
 

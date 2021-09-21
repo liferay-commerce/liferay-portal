@@ -6,6 +6,8 @@ definition {
 	property testray.main.component.name = "Order Management";
 
 	setUp {
+		TestCase.setUpPortalInstance();
+
 		User.firstLoginPG();
 	}
 
