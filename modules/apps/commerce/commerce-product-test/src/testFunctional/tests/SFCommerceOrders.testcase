@@ -30,7 +30,6 @@ definition {
 	@priority = "3"
 	test CreateNewOrderFromPendingOrdersPage {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "SFCommerceOrders#CreateNewOrderFromPendingOrdersPage";
 
 		// TODO Review
 
@@ -63,7 +62,6 @@ definition {
 	@priority = "3"
 	test DeleteOrderFromPendingOrderDetailsPage {
 		property portal.acceptance = "Intern Test";
-		property test.name.skip.portal.instance = "SFCommerceOrders#DeleteOrderFromPendingOrderDetailsPage";
 
 		// TODO Review
 
@@ -106,7 +104,6 @@ definition {
 	@priority = "3"
 	test EditOrderFromPendingOrderDetailsPage {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "SFCommerceOrders#EditOrderFromPendingOrderDetailsPage";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
@@ -227,7 +224,6 @@ definition {
 	@priority = "3"
 	test ReorderFromPlacedOrdersDetailsPage {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "SFCommerceOrders#ReorderFromPlacedOrdersDetailsPage";
 
 		// TODO Review
 
@@ -294,7 +290,6 @@ definition {
 	@priority = "3"
 	test SearchOrderInPendingOrdersPage {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "SFCommerceOrders#SearchOrderInPendingOrdersPage";
 
 		// TODO Review
 
@@ -345,7 +340,6 @@ definition {
 	@priority = "3"
 	test SearchOrderInPlacedOrdersPage {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "SFCommerceOrders#SearchOrderInPlacedOrdersPage";
 
 		// TODO Review
 
@@ -446,7 +440,6 @@ definition {
 	@priority = "3"
 	test UseADTInPendingOrdersWidget {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "SFCommerceOrders#UseADTInPendingOrdersWidget";
 
 		// TODO Review
 
@@ -535,7 +528,6 @@ definition {
 	@priority = "3"
 	test UseADTInPlacedOrdersWidget {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "SFCommerceOrders#UseADTInPlacedOrdersWidget";
 
 		// TODO Review
 
@@ -639,7 +631,6 @@ definition {
 	@priority = "3"
 	test ViewListOfShipmentsInPlacedOrdersDetailsPage {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "SFCommerceOrders#ViewListOfShipmentsInPlacedOrdersDetailsPage";
 
 		// TODO Review
 

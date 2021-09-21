@@ -30,7 +30,6 @@ definition {
 	@priority = "3"
 	test AddEditAndRemoveItemToWarehouse {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CPCommerceWarehouses#AddEditAndRemoveItemToWarehouse";
 
 		// TODO Review
 
@@ -157,7 +156,6 @@ definition {
 	@priority = "3"
 	test AddIncomeItems {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CPCommerceWarehouses#AddIncomeItems";
 
 		// TODO Review
 
@@ -253,7 +251,6 @@ definition {
 	@priority = "3"
 	test ConsumeBookedQuantitiesFromMultipleWarehouses {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CPCommerceWarehouses#ConsumeBookedQuantitiesFromMultipleWarehouses";
 
 		// TODO Review
 
@@ -447,7 +444,6 @@ definition {
 	@priority = "3"
 	test ConsumeQuantitiesFromMultipleWarehouses {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CPCommerceWarehouses#ConsumeQuantitiesFromMultipleWarehouses";
 
 		// TODO Review
 
@@ -768,7 +764,6 @@ definition {
 	@priority = "3"
 	test GetAvailableQuantityFromMultipleWarehouses {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CPCommerceWarehouses#GetAvailableQuantityFromMultipleWarehouses";
 
 		// TODO Review
 
@@ -819,7 +814,6 @@ definition {
 	@priority = "3"
 	test GetChannelSKUStockQuantity {
 		property portal.acceptance = "Intern Test";
-		property test.name.skip.portal.instance = "CPCommerceWarehouses#GetChannelSKUStockQuantity";
 
 		// TODO Review
 
@@ -1045,7 +1039,6 @@ definition {
 	@priority = "3"
 	test LimitWarehouseStockQuantityByChannel {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CPCommerceWarehouses#LimitWarehouseStockQuantityByChannel";
 
 		// TODO Review
 
@@ -1080,7 +1073,6 @@ definition {
 	@priority = "3"
 	test ManageInventoryEntityConcurrency {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CPCommerceWarehouses#ManageInventoryEntityConcurrency";
 
 		// TODO Review
 

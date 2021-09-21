@@ -29,8 +29,6 @@ definition {
 	@description = "COMMERCE-5937. As a buyer, I want open Account Selector to close if I open the Global Search"
 	@priority = "3"
 	test AssertAccountSelectorIsClosedAfterGlobalSearchIsOpened {
-		property test.name.skip.portal.instance = "CommerceAccountSelector#AssertAccountSelectorIsClosedAfterGlobalSearchIsOpened";
-
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
@@ -84,7 +82,6 @@ definition {
 	@priority = "3"
 	test AssertActiveAccountIsVisibleOnAccountSelectorBar {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceAccountSelector#AssertActiveAccountIsVisibleOnAccountSelectorBar";
 
 		// TODO Review
 
@@ -133,7 +130,6 @@ definition {
 	@priority = "3"
 	test ChangeActiveAccountFromAccountsList {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceAccountSelector#ChangeActiveAccountFromAccountsList";
 
 		// TODO Review
 
@@ -247,7 +243,6 @@ definition {
 	@priority = "3"
 	test CreateNewOrderFromAccountSelectorDropdown {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceAccountSelector#CreateNewOrderFromAccountSelectorDropdown";
 
 		// TODO Review
 
@@ -428,7 +423,6 @@ definition {
 	@priority = "3"
 	test ViewAccountSelectorDropdownOrdersList {
 		property portal.acceptance = "Intern Test";
-		property test.name.skip.portal.instance = "CommerceAccountSelector#ViewAccountSelectorDropdownOrdersList";
 
 		// TODO Review
 

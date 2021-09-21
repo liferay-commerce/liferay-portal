@@ -30,7 +30,6 @@ definition {
 	@priority = "3"
 	test AssertProductsAreSortedByNameAscending {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSort#AssertProductsAreSortedByNameAscending";
 
 		// TODO Review
 
@@ -75,7 +74,6 @@ definition {
 	@priority = "3"
 	test AssertProductsAreSortedByNameDescending {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSort#AssertProductsAreSortedByNameDescending";
 
 		// TODO Review
 
@@ -120,7 +118,6 @@ definition {
 	@priority = "3"
 	test AssertProductsAreSortedByNewItems {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSort#AssertProductsAreSortedByNewItems";
 
 		// TODO Review
 
@@ -149,7 +146,6 @@ definition {
 	@priority = "3"
 	test AssertProductsAreSortedByPriceHighToLow {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSort#AssertProductsAreSortedByPriceHighToLow";
 
 		// TODO Review
 
@@ -190,7 +186,6 @@ definition {
 	@priority = "3"
 	test AssertProductsAreSortedByPriceLowToHigh {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSort#AssertProductsAreSortedByPriceLowToHigh";
 
 		// TODO Review
 
@@ -231,7 +226,6 @@ definition {
 	@priority = "3"
 	test AssertProductsAreSortedByRelevance {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSort#AssertProductsAreSortedByRelevance";
 
 		// TODO Review
 

@@ -30,7 +30,6 @@ definition {
 	@priority = "3"
 	test AssertOnlyAllowedQuantitiesAreSelectableInMiniCartItem {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceMiniCart#AssertOnlyAllowedQuantitiesAreSelectableInMiniCartItem";
 
 		// TODO Review
 
@@ -99,7 +98,6 @@ definition {
 	@priority = "3"
 	test AssertOnlyMultipleValuesAreSelectableQuantitiesInMiniCartItem {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceMiniCart#AssertOnlyMultipleValuesAreSelectableQuantitiesInMiniCartItem";
 
 		// TODO Review
 
@@ -165,7 +163,6 @@ definition {
 	@priority = "3"
 	test AssertQuantityInMiniCartItemCanBeSelectedUpToAMaximumQuantitySet {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceMiniCart#AssertQuantityInMiniCartItemCanBeSelectedUpToAMaximumQuantitySet";
 
 		// TODO Review
 
@@ -229,7 +226,6 @@ definition {
 	@priority = "3"
 	test AssertSelectableQuantitiesInMiniCartItemStartFromMinimumQuantitySet {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceMiniCart#AssertSelectableQuantitiesInMiniCartItemStartFromMinimumQuantitySet";
 
 		// TODO Review
 
@@ -511,7 +507,6 @@ definition {
 	@priority = "3"
 	test RemoveAllItemsFromMiniCart {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceMiniCart#RemoveAllItemsFromMiniCart";
 
 		// TODO Review
 
@@ -570,7 +565,6 @@ definition {
 	@priority = "3"
 	test RemoveSingleCartItemFromMiniCart {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceMiniCart#RemoveSingleCartItemFromMiniCart";
 
 		// TODO Review
 
@@ -610,7 +604,6 @@ definition {
 	@priority = "3"
 	test ViewFirstSelectableQuantityInMiniCartItemWhenMinimumOrderQuantityIsHigherThanMultipleOrderQuantity {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceMiniCart#ViewFirstSelectableQuantityInMiniCartItemWhenMinimumOrderQuantityIsHigherThanMultipleOrderQuantity";
 
 		// TODO Review
 
@@ -673,7 +666,6 @@ definition {
 	@priority = "3"
 	test ViewFirstSelectableQuantityInMiniCartItemWhenMinimumOrderQuantityIsLowerThanMultipleOrderQuantity {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceMiniCart#ViewFirstSelectableQuantityInMiniCartItemWhenMinimumOrderQuantityIsLowerThanMultipleOrderQuantity";
 
 		// TODO Review
 
@@ -736,7 +728,6 @@ definition {
 	@priority = "3"
 	test ViewMiniCartBundledProductDetails {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceMiniCart#ViewMiniCartBundledProductDetails";
 
 		// TODO Review
 
@@ -980,7 +971,6 @@ definition {
 	@priority = "3"
 	test ViewMiniCartItemWithBulkPrice {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceMiniCart#ViewMiniCartItemWithBulkPrice";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
@@ -1081,7 +1071,6 @@ definition {
 	@priority = "3"
 	test ViewMiniCartItemWithDiscount {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceMiniCart#ViewMiniCartItemWithDiscount";
 
 		// TODO Review
 
@@ -1135,7 +1124,6 @@ definition {
 	@priority = "3"
 	test ViewMiniCartItemWithDiscountLevels {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceMiniCart#ViewMiniCartItemWithDiscountLevels";
 
 		// TODO Review
 
@@ -1233,7 +1221,6 @@ definition {
 	@priority = "3"
 	test ViewMiniCartItemWithDiscountToSubtotal {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceMiniCart#ViewMiniCartItemWithDiscountToSubtotal";
 
 		// TODO Review
 
@@ -1298,7 +1285,6 @@ definition {
 	@priority = "3"
 	test ViewMiniCartItemWithDiscountToTotal {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceMiniCart#ViewMiniCartItemWithDiscountToTotal";
 
 		// TODO Review
 
@@ -1399,7 +1385,6 @@ definition {
 	@priority = "3"
 	test ViewMiniCartItemWithTierPrice {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceMiniCart#ViewMiniCartItemWithTierPrice";
 
 		// TODO Review
 

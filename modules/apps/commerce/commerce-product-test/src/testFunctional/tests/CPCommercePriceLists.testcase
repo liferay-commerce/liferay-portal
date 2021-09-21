@@ -130,7 +130,6 @@ definition {
 	@priority = "3"
 	test AddEditAndDeletePriceModifier {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "AddEditAndDeletePriceModifier";
 
 		// TODO Review
 
@@ -758,7 +757,6 @@ definition {
 	@priority = "3"
 	test AddEditAndRemoveProductGroupFromPL {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CPCommercePriceLists#AddEditAndRemoveProductGroupFromPL";
 
 		// TODO Review
 
@@ -831,7 +829,6 @@ definition {
 	@priority = "3"
 	test AddPriceListQualifier {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CPCommercePriceLists#AddPriceListQualifier";
 
 		// TODO Review
 
@@ -1111,7 +1108,6 @@ definition {
 	test AssertPriceEntriesAreProductsInTheSameCatalogAsPriceList {
 		property portal.acceptance = "true";
 		property portal.upstream = "true";
-		property test.name.skip.portal.instance = "CPCommercePriceLists#AssertPriceEntriesAreProductsInTheSameCatalogAsPriceList";
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -1204,7 +1200,6 @@ definition {
 	test AssertPriceListCanBeAssociatedWithAccountAndAccountGroup {
 		property portal.acceptance = "quarantine";
 		property portal.upstream = "quarantine";
-		property test.name.skip.portal.instance = "CPCommercePriceLists#AssertPriceListCanBeAssociatedWithAccountAndAccountGroup";
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -1278,7 +1273,6 @@ definition {
 	test AssertPriceListCannotBeMovedToADifferentCatalog {
 		property portal.acceptance = "true";
 		property portal.upstream = "true";
-		property test.name.skip.portal.instance = "CPCommercePriceLists#AssertPriceListCannotBeMovedToADifferentCatalog";
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -1322,7 +1316,6 @@ definition {
 	test AssertPriceListHaveRequiredNameAndCurrency {
 		property portal.acceptance = "true";
 		property portal.upstream = "true";
-		property test.name.skip.portal.instance = "CPCommercePriceLists#AssertPriceListHaveRequiredNameAndCurrency";
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -1388,7 +1381,6 @@ definition {
 	test AssertPriceListIsAppliedToAllAssociatedAccounts {
 		property portal.acceptance = "true";
 		property portal.upstream = "true";
-		property test.name.skip.portal.instance = "CPCommercePriceLists#AssertPriceListIsAppliedToAllAssociatedAccounts";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
@@ -1488,7 +1480,6 @@ definition {
 	@priority = "3"
 	test CheckPLProductGroupUsageInfo {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CPCommercePriceLists#CheckPLProductGroupUsageInfo";
 
 		// TODO Review
 
@@ -1600,7 +1591,6 @@ definition {
 	test CreateNewPriceList {
 		property portal.acceptance = "true";
 		property portal.upstream = "true";
-		property test.name.skip.portal.instance = "CPCommercePriceLists#CreateNewPriceList";
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -1649,7 +1639,6 @@ definition {
 	test PriceListExistsOnlyInOneCatalog {
 		property portal.acceptance = "true";
 		property portal.upstream = "true";
-		property test.name.skip.portal.instance = "CPCommercePriceLists#PriceListExistsOnlyInOneCatalog";
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -1725,7 +1714,6 @@ definition {
 	@priority = "3"
 	test ViewExpiredPL {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CPCommercePriceLists#ViewExpiredPL";
 
 		// TODO Review
 
@@ -1845,7 +1833,6 @@ definition {
 	@priority = "3"
 	test ViewExpiredPriceEntry {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CPCommercePriceLists#ViewExpiredPriceEntry";
 
 		// TODO Review
 
@@ -2003,7 +1990,6 @@ definition {
 	@priority = "3"
 	test ViewExpiredTierPriceEntry {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CPCommercePriceLists#ViewExpiredTierPriceEntry";
 
 		// TODO Review
 
@@ -2200,7 +2186,6 @@ definition {
 	@priority = "3"
 	test ViewPriceNotAffectedByExpiredPriceEntities {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CPCommercePriceLists#ViewPriceNotAffectedByExpiredPriceEntities";
 
 		// TODO Review
 

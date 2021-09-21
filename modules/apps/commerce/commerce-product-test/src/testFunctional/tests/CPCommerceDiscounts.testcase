@@ -30,7 +30,6 @@ definition {
 	@priority = "3"
 	test AddEditAndDeleteDiscountEntry {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance ="CPCommerceDiscounts#AddEditAndDeleteDiscountEntry";
 
 		// TODO Review
 
@@ -242,7 +241,6 @@ definition {
 	test CreateNewDiscount {
 		property portal.acceptance = "true";
 		property portal.upstream = "true";
-		property test.name.skip.portal.instance = "CPCommerceDiscounts#CreateNewDiscount";
 
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
@@ -294,7 +292,6 @@ definition {
 	@priority = "3"
 	test LimitCouponCodeUsability {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CPCommerceDiscounts#LimitCouponCodeUsability";
 
 		// TODO Review
 
@@ -533,7 +530,6 @@ definition {
 	@priority = "3"
 	test ViewCouponCodeNotAppliedToNotQualifiedAccount {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CPCommerceDiscounts#ViewCouponCodeNotAppliedToNotQualifiedAccount";
 
 		// TODO Review
 
@@ -641,7 +637,6 @@ definition {
 	@priority = "3"
 	test ViewExpiredDiscountEntry {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CPCommerceDiscounts#ViewExpiredDiscountEntry";
 
 		// TODO Review
 

@@ -30,7 +30,6 @@ definition {
 	@priority = "3"
 	test CancelPayment {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommercePayments#CancelPayment";
 
 		// TODO Review
 
@@ -151,7 +150,6 @@ definition {
 	@priority = "3"
 	test MoneyOrderCheckout {
 		property portal.acceptance = "Intern Test";
-		property test.name.skip.portal.instance ="CommercePayments#MoneyOrderCheckout";
 
 		// TODO Review
 

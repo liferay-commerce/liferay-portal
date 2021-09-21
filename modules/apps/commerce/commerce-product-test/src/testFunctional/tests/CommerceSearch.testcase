@@ -30,7 +30,6 @@ definition {
 	@priority = "3"
 	test DisableSearchResultsWidgetPagination {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSearch#DisableSearchResultsWidgetPagination";
 
 		// TODO Review
 
@@ -303,7 +302,6 @@ definition {
 	@priority = "3"
 	test GlobalSearchSuggestedCatalogEntries {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSearch#GlobalSearchSuggestedCatalogEntries";
 
 		// TODO Review
 
@@ -462,7 +460,6 @@ definition {
 	@priority = "3"
 	test SearchBarWidgetSearchProductByName {
 		property portal.acceptance = "Intern Test";
-		property test.name.skip.portal.instance = "CommerceSearch#SearchBarWidgetSearchProductByName";
 
 		// TODO Review
 
@@ -494,7 +491,6 @@ definition {
 	@priority = "3"
 	test SearchBarWidgetSearchProductByNameDoubleQuotes {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSearch#SearchBarWidgetSearchProductByNameDoubleQuotes";
 
 		var product = '''"ABS Sensor"''';
 
@@ -525,7 +521,6 @@ definition {
 	@priority = "3"
 	test SearchBarWidgetSearchProductByNameSingleQuotes {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSearch#SearchBarWidgetSearchProductByNameSingleQuotes";
 
 		// TODO Review
 
@@ -557,7 +552,6 @@ definition {
 	@priority = "3"
 	test SearchBarWidgetSearchProductBySKU {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSearch#SearchBarWidgetSearchProductBySKU";
 
 		// TODO Review
 
@@ -584,7 +578,6 @@ definition {
 	@priority = "3"
 	test SearchBarWidgetSearchProductsByCategory {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSearch#SearchBarWidgetSearchProductsByCategory";
 
 		// TODO Review
 
@@ -613,7 +606,6 @@ definition {
 	@priority = "3"
 	test SearchBarWidgetSearchProductsByDifferentCategories {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSearch#SearchBarWidgetSearchProductsByDifferentCategories";
 
 		// TODO Review
 
@@ -644,7 +636,6 @@ definition {
 	@priority = "3"
 	test SearchBarWidgetSearchProductsByDifferentSKUs {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSearch#SearchBarWidgetSearchProductsByDifferentSKUs";
 
 		// TODO Review
 
@@ -676,7 +667,6 @@ definition {
 	@priority = "3"
 	test SearchBarWidgetSearchProductsByDifferentSpecificationValues {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSearch#SearchBarWidgetSearchProductsByDifferentSpecificationValues";
 
 		// TODO Review
 
@@ -723,7 +713,6 @@ definition {
 	@priority = "3"
 	test SearchBarWidgetSearchProductsBySpecificationValue {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSearch#SearchBarWidgetSearchProductsBySpecificationValue";
 
 		// TODO Review
 
@@ -754,7 +743,6 @@ definition {
 	@priority = "3"
 	test SearchResultsWidgetChangeNumberOfItemsToDisplayFromPaginationBar {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSearch#SearchResultsWidgetChangeNumberOfItemsToDisplayFromPaginationBar";
 
 		// TODO Review
 
@@ -773,7 +761,6 @@ definition {
 	@priority = "3"
 	test SearchResultsWidgetChangeResultsPage {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSearch#SearchResultsWidgetChangeResultsPage";
 
 		// TODO Review
 
@@ -823,7 +810,6 @@ definition {
 	@priority = "3"
 	test SearchResultsWidgetEditNumberOfItemsToDisplayFromConfiguration {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSearch#SearchResultsWidgetEditNumberOfItemsToDisplayFromConfiguration";
 
 		// TODO Review
 
@@ -859,7 +845,6 @@ definition {
 	@priority = "3"
 	test UseADTInSearchResultsWidget {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSearch#UseADTInSearchResultsWidget";
 
 		// TODO Review
 
