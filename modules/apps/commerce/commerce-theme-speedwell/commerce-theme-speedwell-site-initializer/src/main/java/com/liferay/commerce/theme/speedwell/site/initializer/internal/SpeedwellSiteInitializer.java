@@ -14,6 +14,9 @@
 
 package com.liferay.commerce.theme.speedwell.site.initializer.internal;
 
+import com.liferay.account.constants.AccountConstants;
+import com.liferay.account.settings.AccountEntryGroupSettings;
+import com.liferay.commerce.account.configuration.CommerceAccountGroupServiceConfiguration;
 import com.liferay.commerce.account.constants.CommerceAccountConstants;
 import com.liferay.commerce.account.util.CommerceAccountRoleHelper;
 import com.liferay.commerce.currency.model.CommerceCurrency;
@@ -76,6 +79,7 @@ import com.liferay.portal.kernel.model.RoleConstants;
 import com.liferay.portal.kernel.model.Theme;
 import com.liferay.portal.kernel.model.ThemeSetting;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -313,6 +317,9 @@ public class SpeedwellSiteInitializer implements SiteInitializer {
 			String.valueOf(CommerceAccountConstants.SITE_TYPE_B2C));
 
 		modifiableSettings.store();
+
+		_accountEntryGroupSettings.setAllowedTypes(
+			serviceContext.getScopeGroupId(), _getAllowedTypes(groupId));
 	}
 
 	protected CommerceCatalog createCatalog(ServiceContext serviceContext)
@@ -545,6 +552,38 @@ public class SpeedwellSiteInitializer implements SiteInitializer {
 			ResourceConstants.SCOPE_GROUP_TEMPLATE,
 			String.valueOf(GroupConstants.DEFAULT_PARENT_GROUP_ID),
 			role.getRoleId(), "VIEW_PRICE");
+	}
+
+	private String[] _getAllowedTypes(long commerceChannelGroupId)
+		throws Exception {
+
+		CommerceAccountGroupServiceConfiguration
+			commerceAccountGroupServiceConfiguration =
+				_configurationProvider.getConfiguration(
+					CommerceAccountGroupServiceConfiguration.class,
+					new GroupServiceSettingsLocator(
+						commerceChannelGroupId,
+						CommerceAccountConstants.SERVICE_NAME));
+
+		int commerceSiteType =
+			commerceAccountGroupServiceConfiguration.commerceSiteType();
+
+		if (commerceSiteType == CommerceAccountConstants.SITE_TYPE_B2B) {
+			return new String[] {AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS};
+		}
+
+		if (commerceSiteType == CommerceAccountConstants.SITE_TYPE_B2C) {
+			return new String[] {AccountConstants.ACCOUNT_ENTRY_TYPE_PERSON};
+		}
+
+		if (commerceSiteType == CommerceAccountConstants.SITE_TYPE_B2X) {
+			return new String[] {
+				AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS,
+				AccountConstants.ACCOUNT_ENTRY_TYPE_PERSON
+			};
+		}
+
+		return AccountConstants.ACCOUNT_ENTRY_TYPES_DEFAULT_ALLOWED_TYPES;
 	}
 
 	private long[] _getCProductIds(JSONArray jsonArray) {
@@ -974,6 +1013,9 @@ public class SpeedwellSiteInitializer implements SiteInitializer {
 		SpeedwellSiteInitializer.class);
 
 	@Reference
+	private AccountEntryGroupSettings _accountEntryGroupSettings;
+
+	@Reference
 	private AssetCategoriesImporter _assetCategoriesImporter;
 
 	@Reference
@@ -1026,6 +1068,9 @@ public class SpeedwellSiteInitializer implements SiteInitializer {
 
 	@Reference
 	private CompanyLocalService _companyLocalService;
+
+	@Reference
+	private ConfigurationProvider _configurationProvider;
 
 	@Reference
 	private CPDefinitionLinkLocalService _cpDefinitionLinkLocalService;

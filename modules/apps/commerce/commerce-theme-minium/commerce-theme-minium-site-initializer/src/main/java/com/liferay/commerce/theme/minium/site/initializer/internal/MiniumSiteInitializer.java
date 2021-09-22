@@ -14,6 +14,9 @@
 
 package com.liferay.commerce.theme.minium.site.initializer.internal;
 
+import com.liferay.account.constants.AccountConstants;
+import com.liferay.account.settings.AccountEntryGroupSettings;
+import com.liferay.commerce.account.configuration.CommerceAccountGroupServiceConfiguration;
 import com.liferay.commerce.account.constants.CommerceAccountConstants;
 import com.liferay.commerce.account.util.CommerceAccountRoleHelper;
 import com.liferay.commerce.currency.model.CommerceCurrency;
@@ -324,6 +327,9 @@ public class MiniumSiteInitializer implements SiteInitializer {
 			String.valueOf(CommerceAccountConstants.SITE_TYPE_B2B));
 
 		modifiableSettings.store();
+
+		_accountEntryGroupSettings.setAllowedTypes(
+			serviceContext.getScopeGroupId(), _getAllowedTypes(groupId));
 	}
 
 	protected CommerceCatalog createCatalog(ServiceContext serviceContext)
@@ -551,6 +557,38 @@ public class MiniumSiteInitializer implements SiteInitializer {
 			ResourceConstants.SCOPE_GROUP_TEMPLATE,
 			String.valueOf(GroupConstants.DEFAULT_PARENT_GROUP_ID),
 			role.getRoleId(), "VIEW_PRICE");
+	}
+
+	private String[] _getAllowedTypes(long commerceChannelGroupId)
+		throws Exception {
+
+		CommerceAccountGroupServiceConfiguration
+			commerceAccountGroupServiceConfiguration =
+				_configurationProvider.getConfiguration(
+					CommerceAccountGroupServiceConfiguration.class,
+					new GroupServiceSettingsLocator(
+						commerceChannelGroupId,
+						CommerceAccountConstants.SERVICE_NAME));
+
+		int commerceSiteType =
+			commerceAccountGroupServiceConfiguration.commerceSiteType();
+
+		if (commerceSiteType == CommerceAccountConstants.SITE_TYPE_B2B) {
+			return new String[] {AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS};
+		}
+
+		if (commerceSiteType == CommerceAccountConstants.SITE_TYPE_B2C) {
+			return new String[] {AccountConstants.ACCOUNT_ENTRY_TYPE_PERSON};
+		}
+
+		if (commerceSiteType == CommerceAccountConstants.SITE_TYPE_B2X) {
+			return new String[] {
+				AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS,
+				AccountConstants.ACCOUNT_ENTRY_TYPE_PERSON
+			};
+		}
+
+		return AccountConstants.ACCOUNT_ENTRY_TYPES_DEFAULT_ALLOWED_TYPES;
 	}
 
 	private long[] _getCProductIds(JSONArray jsonArray) {
@@ -991,6 +1029,9 @@ public class MiniumSiteInitializer implements SiteInitializer {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		MiniumSiteInitializer.class);
+
+	@Reference
+	private AccountEntryGroupSettings _accountEntryGroupSettings;
 
 	@Reference
 	private AssetCategoriesImporter _assetCategoriesImporter;
