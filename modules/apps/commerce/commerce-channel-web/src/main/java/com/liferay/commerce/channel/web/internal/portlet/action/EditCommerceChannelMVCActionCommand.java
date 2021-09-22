@@ -14,6 +14,8 @@
 
 package com.liferay.commerce.channel.web.internal.portlet.action;
 
+import com.liferay.account.constants.AccountConstants;
+import com.liferay.account.settings.AccountEntryGroupSettings;
 import com.liferay.commerce.account.constants.CommerceAccountConstants;
 import com.liferay.commerce.constants.CommerceConstants;
 import com.liferay.commerce.constants.CommerceOrderConstants;
@@ -201,6 +203,25 @@ public class EditCommerceChannelMVCActionCommand extends BaseMVCActionCommand {
 			workflowDefinitionOVPs);
 	}
 
+	private String[] _getAllowedTypes(int commerceSiteType) {
+		if (commerceSiteType == CommerceAccountConstants.SITE_TYPE_B2B) {
+			return new String[] {AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS};
+		}
+
+		if (commerceSiteType == CommerceAccountConstants.SITE_TYPE_B2C) {
+			return new String[] {AccountConstants.ACCOUNT_ENTRY_TYPE_PERSON};
+		}
+
+		if (commerceSiteType == CommerceAccountConstants.SITE_TYPE_B2X) {
+			return new String[] {
+				AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS,
+				AccountConstants.ACCOUNT_ENTRY_TYPE_PERSON
+			};
+		}
+
+		return AccountConstants.ACCOUNT_ENTRY_TYPES_DEFAULT_ALLOWED_TYPES;
+	}
+
 	private void _updateAccountCartMaxAllowed(
 			CommerceChannel commerceChannel, ActionRequest actionRequest)
 		throws Exception {
@@ -287,7 +308,15 @@ public class EditCommerceChannelMVCActionCommand extends BaseMVCActionCommand {
 		}
 
 		modifiableSettings.store();
+
+		_accountEntryGroupSettings.setAllowedTypes(
+			commerceChannel.getSiteGroupId(),
+			_getAllowedTypes(
+				Integer.valueOf(parameterMap.get("commerceSiteType"))));
 	}
+
+	@Reference
+	private AccountEntryGroupSettings _accountEntryGroupSettings;
 
 	@Reference
 	private CommerceChannelPermission _commerceChannelPermission;
