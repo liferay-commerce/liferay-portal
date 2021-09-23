@@ -14,7 +14,6 @@
 
 package com.liferay.commerce.theme.minium.site.initializer.internal;
 
-import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.settings.AccountEntryGroupSettings;
 import com.liferay.commerce.account.configuration.CommerceAccountGroupServiceConfiguration;
 import com.liferay.commerce.account.constants.CommerceAccountConstants;
@@ -58,6 +57,7 @@ import com.liferay.commerce.service.CommerceShippingMethodLocalService;
 import com.liferay.commerce.shipping.engine.fixed.service.CommerceShippingFixedOptionLocalService;
 import com.liferay.commerce.theme.minium.SiteInitializerDependencyResolver;
 import com.liferay.commerce.theme.minium.SiteInitializerDependencyResolverThreadLocal;
+import com.liferay.commerce.util.AccountEntryAllowedTypesHelper;
 import com.liferay.commerce.util.CommerceShippingEngineRegistry;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -570,25 +570,8 @@ public class MiniumSiteInitializer implements SiteInitializer {
 						commerceChannelGroupId,
 						CommerceAccountConstants.SERVICE_NAME));
 
-		int commerceSiteType =
-			commerceAccountGroupServiceConfiguration.commerceSiteType();
-
-		if (commerceSiteType == CommerceAccountConstants.SITE_TYPE_B2B) {
-			return new String[] {AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS};
-		}
-
-		if (commerceSiteType == CommerceAccountConstants.SITE_TYPE_B2C) {
-			return new String[] {AccountConstants.ACCOUNT_ENTRY_TYPE_PERSON};
-		}
-
-		if (commerceSiteType == CommerceAccountConstants.SITE_TYPE_B2X) {
-			return new String[] {
-				AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS,
-				AccountConstants.ACCOUNT_ENTRY_TYPE_PERSON
-			};
-		}
-
-		return AccountConstants.ACCOUNT_ENTRY_TYPES_DEFAULT_ALLOWED_TYPES;
+		return _accountEntryAllowedTypesHelper.getAllowedTypes(
+			commerceAccountGroupServiceConfiguration.commerceSiteType());
 	}
 
 	private long[] _getCProductIds(JSONArray jsonArray) {
@@ -1029,6 +1012,9 @@ public class MiniumSiteInitializer implements SiteInitializer {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		MiniumSiteInitializer.class);
+
+	@Reference
+	private AccountEntryAllowedTypesHelper _accountEntryAllowedTypesHelper;
 
 	@Reference
 	private AccountEntryGroupSettings _accountEntryGroupSettings;

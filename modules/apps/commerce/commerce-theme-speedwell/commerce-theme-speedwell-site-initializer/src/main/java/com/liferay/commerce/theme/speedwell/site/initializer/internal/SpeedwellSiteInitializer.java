@@ -14,7 +14,6 @@
 
 package com.liferay.commerce.theme.speedwell.site.initializer.internal;
 
-import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.settings.AccountEntryGroupSettings;
 import com.liferay.commerce.account.configuration.CommerceAccountGroupServiceConfiguration;
 import com.liferay.commerce.account.constants.CommerceAccountConstants;
@@ -58,6 +57,7 @@ import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.service.CommerceShippingMethodLocalService;
 import com.liferay.commerce.shipping.engine.fixed.service.CommerceShippingFixedOptionLocalService;
 import com.liferay.commerce.theme.speedwell.site.initializer.internal.dependencies.resolver.SpeedwellDependencyResolver;
+import com.liferay.commerce.util.AccountEntryAllowedTypesHelper;
 import com.liferay.commerce.util.CommerceShippingEngineRegistry;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
@@ -565,25 +565,8 @@ public class SpeedwellSiteInitializer implements SiteInitializer {
 						commerceChannelGroupId,
 						CommerceAccountConstants.SERVICE_NAME));
 
-		int commerceSiteType =
-			commerceAccountGroupServiceConfiguration.commerceSiteType();
-
-		if (commerceSiteType == CommerceAccountConstants.SITE_TYPE_B2B) {
-			return new String[] {AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS};
-		}
-
-		if (commerceSiteType == CommerceAccountConstants.SITE_TYPE_B2C) {
-			return new String[] {AccountConstants.ACCOUNT_ENTRY_TYPE_PERSON};
-		}
-
-		if (commerceSiteType == CommerceAccountConstants.SITE_TYPE_B2X) {
-			return new String[] {
-				AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS,
-				AccountConstants.ACCOUNT_ENTRY_TYPE_PERSON
-			};
-		}
-
-		return AccountConstants.ACCOUNT_ENTRY_TYPES_DEFAULT_ALLOWED_TYPES;
+		return _accountEntryAllowedTypesHelper.getAllowedTypes(
+			commerceAccountGroupServiceConfiguration.commerceSiteType());
 	}
 
 	private long[] _getCProductIds(JSONArray jsonArray) {
@@ -1011,6 +994,9 @@ public class SpeedwellSiteInitializer implements SiteInitializer {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		SpeedwellSiteInitializer.class);
+
+	@Reference
+	private AccountEntryAllowedTypesHelper _accountEntryAllowedTypesHelper;
 
 	@Reference
 	private AccountEntryGroupSettings _accountEntryGroupSettings;

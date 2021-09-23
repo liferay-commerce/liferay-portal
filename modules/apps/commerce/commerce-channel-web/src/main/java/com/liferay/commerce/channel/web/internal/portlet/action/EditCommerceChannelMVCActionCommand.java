@@ -14,7 +14,6 @@
 
 package com.liferay.commerce.channel.web.internal.portlet.action;
 
-import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.settings.AccountEntryGroupSettings;
 import com.liferay.commerce.account.constants.CommerceAccountConstants;
 import com.liferay.commerce.constants.CommerceConstants;
@@ -24,6 +23,7 @@ import com.liferay.commerce.product.constants.CPPortletKeys;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.permission.CommerceChannelPermission;
 import com.liferay.commerce.product.service.CommerceChannelService;
+import com.liferay.commerce.util.AccountEntryAllowedTypesHelper;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
@@ -203,25 +203,6 @@ public class EditCommerceChannelMVCActionCommand extends BaseMVCActionCommand {
 			workflowDefinitionOVPs);
 	}
 
-	private String[] _getAllowedTypes(int commerceSiteType) {
-		if (commerceSiteType == CommerceAccountConstants.SITE_TYPE_B2B) {
-			return new String[] {AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS};
-		}
-
-		if (commerceSiteType == CommerceAccountConstants.SITE_TYPE_B2C) {
-			return new String[] {AccountConstants.ACCOUNT_ENTRY_TYPE_PERSON};
-		}
-
-		if (commerceSiteType == CommerceAccountConstants.SITE_TYPE_B2X) {
-			return new String[] {
-				AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS,
-				AccountConstants.ACCOUNT_ENTRY_TYPE_PERSON
-			};
-		}
-
-		return AccountConstants.ACCOUNT_ENTRY_TYPES_DEFAULT_ALLOWED_TYPES;
-	}
-
 	private void _updateAccountCartMaxAllowed(
 			CommerceChannel commerceChannel, ActionRequest actionRequest)
 		throws Exception {
@@ -311,9 +292,12 @@ public class EditCommerceChannelMVCActionCommand extends BaseMVCActionCommand {
 
 		_accountEntryGroupSettings.setAllowedTypes(
 			commerceChannel.getSiteGroupId(),
-			_getAllowedTypes(
+			_accountEntryAllowedTypesHelper.getAllowedTypes(
 				Integer.valueOf(parameterMap.get("commerceSiteType"))));
 	}
+
+	@Reference
+	private AccountEntryAllowedTypesHelper _accountEntryAllowedTypesHelper;
 
 	@Reference
 	private AccountEntryGroupSettings _accountEntryGroupSettings;

@@ -14,11 +14,11 @@
 
 package com.liferay.commerce.product.internal.upgrade.v3_4_0;
 
-import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.settings.AccountEntryGroupSettings;
 import com.liferay.commerce.account.configuration.CommerceAccountGroupServiceConfiguration;
 import com.liferay.commerce.account.constants.CommerceAccountConstants;
 import com.liferay.commerce.product.model.CommerceChannel;
+import com.liferay.commerce.util.AccountEntryAllowedTypesHelper;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
@@ -35,9 +35,11 @@ import java.sql.ResultSet;
 public class CommerceChannelUpgradeProcess extends UpgradeProcess {
 
 	public CommerceChannelUpgradeProcess(
+		AccountEntryAllowedTypesHelper accountEntryAllowedTypesHelper,
 		AccountEntryGroupSettings accountEntryGroupSettings,
 		ConfigurationProvider configurationProvider) {
 
+		_accountEntryAllowedTypesHelper = accountEntryAllowedTypesHelper;
 		_accountEntryGroupSettings = accountEntryGroupSettings;
 		_configurationProvider = configurationProvider;
 	}
@@ -80,27 +82,12 @@ public class CommerceChannelUpgradeProcess extends UpgradeProcess {
 						commerceChannelGroupId,
 						CommerceAccountConstants.SERVICE_NAME));
 
-		int commerceSiteType =
-			commerceAccountGroupServiceConfiguration.commerceSiteType();
-
-		if (commerceSiteType == CommerceAccountConstants.SITE_TYPE_B2B) {
-			return new String[] {AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS};
-		}
-
-		if (commerceSiteType == CommerceAccountConstants.SITE_TYPE_B2C) {
-			return new String[] {AccountConstants.ACCOUNT_ENTRY_TYPE_PERSON};
-		}
-
-		if (commerceSiteType == CommerceAccountConstants.SITE_TYPE_B2X) {
-			return new String[] {
-				AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS,
-				AccountConstants.ACCOUNT_ENTRY_TYPE_PERSON
-			};
-		}
-
-		return AccountConstants.ACCOUNT_ENTRY_TYPES_DEFAULT_ALLOWED_TYPES;
+		return _accountEntryAllowedTypesHelper.getAllowedTypes(
+			commerceAccountGroupServiceConfiguration.commerceSiteType());
 	}
 
+	private final AccountEntryAllowedTypesHelper
+		_accountEntryAllowedTypesHelper;
 	private final AccountEntryGroupSettings _accountEntryGroupSettings;
 	private final ConfigurationProvider _configurationProvider;
 
