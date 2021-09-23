@@ -384,7 +384,7 @@ public class CommerceCurrencyLocalServiceImpl
 			return;
 		}
 
-		BigDecimal exchangeRate = BigDecimal.ZERO;
+		BigDecimal exchangeRate = commerceCurrency.getRate();
 
 		try {
 			exchangeRate = exchangeRateProvider.getExchangeRate(
