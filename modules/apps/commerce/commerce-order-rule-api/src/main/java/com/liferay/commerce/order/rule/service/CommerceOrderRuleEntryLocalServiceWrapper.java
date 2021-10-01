@@ -54,6 +54,17 @@ public class CommerceOrderRuleEntryLocalServiceWrapper
 			commerceOrderRuleEntry);
 	}
 
+	@Override
+	public com.liferay.commerce.order.rule.model.CommerceOrderRuleEntry
+			addCommerceOrderRuleEntry(
+				long userId, boolean active, String description, String name,
+				int priority, String type, String typeSettings)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceOrderRuleEntryLocalService.addCommerceOrderRuleEntry(
+			userId, active, description, name, priority, type, typeSettings);
+	}
+
 	/**
 	 * Creates a new commerce order rule entry with the primary key. Does not add the commerce order rule entry to the database.
 	 *
@@ -109,12 +120,15 @@ public class CommerceOrderRuleEntryLocalServiceWrapper
 	 *
 	 * @param commerceOrderRuleEntryId the primary key of the commerce order rule entry
 	 * @return the commerce order rule entry that was removed
+	 * @throws NoSuchOrderRuleEntryException
 	 * @throws PortalException if a commerce order rule entry with the primary key could not be found
 	 */
 	@Override
 	public com.liferay.commerce.order.rule.model.CommerceOrderRuleEntry
 			deleteCommerceOrderRuleEntry(long commerceOrderRuleEntryId)
-		throws com.liferay.portal.kernel.exception.PortalException {
+		throws com.liferay.commerce.order.rule.exception.
+			NoSuchOrderRuleEntryException,
+			   com.liferay.portal.kernel.exception.PortalException {
 
 		return _commerceOrderRuleEntryLocalService.deleteCommerceOrderRuleEntry(
 			commerceOrderRuleEntryId);
@@ -271,6 +285,37 @@ public class CommerceOrderRuleEntryLocalServiceWrapper
 			start, end);
 	}
 
+	@Override
+	public java.util.List
+		<com.liferay.commerce.order.rule.model.CommerceOrderRuleEntry>
+			getCommerceOrderRuleEntries(
+				long companyId, boolean active, int start, int end) {
+
+		return _commerceOrderRuleEntryLocalService.getCommerceOrderRuleEntries(
+			companyId, active, start, end);
+	}
+
+	@Override
+	public java.util.List
+		<com.liferay.commerce.order.rule.model.CommerceOrderRuleEntry>
+			getCommerceOrderRuleEntries(
+				long companyId, boolean active, String type, int start,
+				int end) {
+
+		return _commerceOrderRuleEntryLocalService.getCommerceOrderRuleEntries(
+			companyId, active, type, start, end);
+	}
+
+	@Override
+	public java.util.List
+		<com.liferay.commerce.order.rule.model.CommerceOrderRuleEntry>
+			getCommerceOrderRuleEntries(
+				long companyId, String type, int start, int end) {
+
+		return _commerceOrderRuleEntryLocalService.getCommerceOrderRuleEntries(
+			companyId, type, start, end);
+	}
+
 	/**
 	 * Returns the number of commerce order rule entries.
 	 *
@@ -346,6 +391,19 @@ public class CommerceOrderRuleEntryLocalServiceWrapper
 
 		return _commerceOrderRuleEntryLocalService.updateCommerceOrderRuleEntry(
 			commerceOrderRuleEntry);
+	}
+
+	@Override
+	public com.liferay.commerce.order.rule.model.CommerceOrderRuleEntry
+			updateCommerceOrderRuleEntry(
+				long commerceOrderRuleEntryId, boolean active,
+				String description, String name, int priority,
+				String typeSettings)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceOrderRuleEntryLocalService.updateCommerceOrderRuleEntry(
+			commerceOrderRuleEntryId, active, description, name, priority,
+			typeSettings);
 	}
 
 	@Override

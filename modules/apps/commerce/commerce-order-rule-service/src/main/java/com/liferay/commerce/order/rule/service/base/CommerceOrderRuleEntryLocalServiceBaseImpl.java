@@ -121,13 +121,14 @@ public abstract class CommerceOrderRuleEntryLocalServiceBaseImpl
 	 *
 	 * @param commerceOrderRuleEntryId the primary key of the commerce order rule entry
 	 * @return the commerce order rule entry that was removed
+	 * @throws NoSuchOrderRuleEntryException
 	 * @throws PortalException if a commerce order rule entry with the primary key could not be found
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@Override
 	public CommerceOrderRuleEntry deleteCommerceOrderRuleEntry(
 			long commerceOrderRuleEntryId)
-		throws PortalException {
+		throws NoSuchOrderRuleEntryException, PortalException {
 
 		return commerceOrderRuleEntryPersistence.remove(
 			commerceOrderRuleEntryId);

@@ -61,6 +61,15 @@ public class CommerceOrderRuleEntryLocalServiceUtil {
 		return getService().addCommerceOrderRuleEntry(commerceOrderRuleEntry);
 	}
 
+	public static CommerceOrderRuleEntry addCommerceOrderRuleEntry(
+			long userId, boolean active, String description, String name,
+			int priority, String type, String typeSettings)
+		throws PortalException {
+
+		return getService().addCommerceOrderRuleEntry(
+			userId, active, description, name, priority, type, typeSettings);
+	}
+
 	/**
 	 * Creates a new commerce order rule entry with the primary key. Does not add the commerce order rule entry to the database.
 	 *
@@ -110,11 +119,14 @@ public class CommerceOrderRuleEntryLocalServiceUtil {
 	 *
 	 * @param commerceOrderRuleEntryId the primary key of the commerce order rule entry
 	 * @return the commerce order rule entry that was removed
+	 * @throws NoSuchOrderRuleEntryException
 	 * @throws PortalException if a commerce order rule entry with the primary key could not be found
 	 */
 	public static CommerceOrderRuleEntry deleteCommerceOrderRuleEntry(
 			long commerceOrderRuleEntryId)
-		throws PortalException {
+		throws com.liferay.commerce.order.rule.exception.
+			NoSuchOrderRuleEntryException,
+			   PortalException {
 
 		return getService().deleteCommerceOrderRuleEntry(
 			commerceOrderRuleEntryId);
@@ -245,6 +257,27 @@ public class CommerceOrderRuleEntryLocalServiceUtil {
 		return getService().getCommerceOrderRuleEntries(start, end);
 	}
 
+	public static List<CommerceOrderRuleEntry> getCommerceOrderRuleEntries(
+		long companyId, boolean active, int start, int end) {
+
+		return getService().getCommerceOrderRuleEntries(
+			companyId, active, start, end);
+	}
+
+	public static List<CommerceOrderRuleEntry> getCommerceOrderRuleEntries(
+		long companyId, boolean active, String type, int start, int end) {
+
+		return getService().getCommerceOrderRuleEntries(
+			companyId, active, type, start, end);
+	}
+
+	public static List<CommerceOrderRuleEntry> getCommerceOrderRuleEntries(
+		long companyId, String type, int start, int end) {
+
+		return getService().getCommerceOrderRuleEntries(
+			companyId, type, start, end);
+	}
+
 	/**
 	 * Returns the number of commerce order rule entries.
 	 *
@@ -308,6 +341,16 @@ public class CommerceOrderRuleEntryLocalServiceUtil {
 
 		return getService().updateCommerceOrderRuleEntry(
 			commerceOrderRuleEntry);
+	}
+
+	public static CommerceOrderRuleEntry updateCommerceOrderRuleEntry(
+			long commerceOrderRuleEntryId, boolean active, String description,
+			String name, int priority, String typeSettings)
+		throws PortalException {
+
+		return getService().updateCommerceOrderRuleEntry(
+			commerceOrderRuleEntryId, active, description, name, priority,
+			typeSettings);
 	}
 
 	public static CommerceOrderRuleEntryLocalService getService() {
