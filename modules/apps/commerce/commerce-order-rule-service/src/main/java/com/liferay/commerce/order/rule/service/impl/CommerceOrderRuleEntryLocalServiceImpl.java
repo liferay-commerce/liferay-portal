@@ -14,21 +14,44 @@
 
 package com.liferay.commerce.order.rule.service.impl;
 
+import com.liferay.commerce.exception.CommerceOrderRuleEntryDisplayDateException;
+import com.liferay.commerce.exception.CommerceOrderRuleEntryExpirationDateException;
+import com.liferay.commerce.model.CommerceOrderRuleEntry;
+import com.liferay.commerce.model.CommerceOrderRuleEntry;
+import com.liferay.commerce.model.CommerceOrderRuleEntry;
+import com.liferay.commerce.order.rule.exception.CommerceOrderRuleEntryDisplayDateException;
+import com.liferay.commerce.order.rule.exception.CommerceOrderRuleEntryExpirationDateException;
 import com.liferay.commerce.order.rule.exception.NoSuchOrderRuleEntryException;
 import com.liferay.commerce.order.rule.model.CommerceOrderRuleEntry;
+import com.liferay.commerce.order.rule.model.CommerceOrderRuleEntryRel;
+import com.liferay.commerce.order.rule.service.CommerceOrderRuleEntryRelLocalService;
 import com.liferay.commerce.order.rule.service.base.CommerceOrderRuleEntryLocalServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.WorkflowInstanceLinkLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
+import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 
+import java.io.Serializable;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.kernel.workflow.WorkflowHandlerRegistryUtil;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Luca Pellizzon
@@ -45,7 +68,13 @@ public class CommerceOrderRuleEntryLocalServiceImpl
 	@Override
 	public CommerceOrderRuleEntry addCommerceOrderRuleEntry(
 			long userId, boolean active, String description, String name,
-			int priority, String type, String typeSettings)
+			int priority, String type, String typeSettings,
+			int displayDateMonth, int displayDateDay,
+			int displayDateYear, int displayDateHour, int displayDateMinute,
+			int expirationDateMonth, int expirationDateDay,
+			int expirationDateYear, int expirationDateHour,
+			int expirationDateMinute, boolean neverExpire,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		User user = userLocalService.getUser(userId);
@@ -72,18 +101,207 @@ public class CommerceOrderRuleEntryLocalServiceImpl
 
 		commerceOrderRuleEntry.setSettingsProperties(settingsUnicodeProperties);
 
+		Date date = new Date();
+
+		Date displayDate = PortalUtil.getDate(
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, user.getTimeZone(),
+			CommerceOrderRuleEntryDisplayDateException.class);
+
+		Date expirationDate = null;
+
+		if (!neverExpire) {
+			expirationDate = PortalUtil.getDate(
+				expirationDateMonth, expirationDateDay, expirationDateYear,
+				expirationDateHour, expirationDateMinute, user.getTimeZone(),
+				CommerceOrderRuleEntryExpirationDateException.class);
+		}
+
+		commerceOrderRuleEntry.setDisplayDate(displayDate);
+		commerceOrderRuleEntry.setExpirationDate(expirationDate);
+
+		if ((expirationDate == null) || expirationDate.after(date)) {
+			commerceOrderRuleEntry.setStatus(WorkflowConstants.STATUS_DRAFT);
+		}
+		else {
+			commerceOrderRuleEntry.setStatus(WorkflowConstants.STATUS_EXPIRED);
+		}
+
+		commerceOrderRuleEntry.setStatusByUserId(user.getUserId());
+		commerceOrderRuleEntry.setStatusDate(serviceContext.getModifiedDate(date));
+
+		commerceOrderRuleEntry = commerceOrderRuleEntryPersistence.update(
+			commerceOrderRuleEntry);
+
+		resourceLocalService.addModelResources(
+			commerceOrderRuleEntry, serviceContext);
+
+		return _startWorkflowInstance(
+			user.getUserId(), commerceOrderRuleEntry, serviceContext);
+	}
+
+	@Override
+	public void checkCommerceOrderRuleEntries() throws PortalException {
+		_checkCommerceOrderRuleEntriesByDisplayDate();
+		_checkCommerceOrderRuleEntriesByExpirationDate();
+	}
+
+	private void _checkCommerceOrderRuleEntriesByDisplayDate()
+		throws PortalException {
+
+		List<CommerceOrderRuleEntry> commerceOrderRuleEntries =
+			commerceOrderRuleEntryPersistence.findByLtD_S(
+				new Date(), WorkflowConstants.STATUS_SCHEDULED);
+
+		for (CommerceOrderRuleEntry commerceOrderRuleEntry : commerceOrderRuleEntries) {
+			long userId = PortalUtil.getValidUserId(
+				commerceOrderRuleEntry.getCompanyId(),
+				commerceOrderRuleEntry.getUserId());
+
+			ServiceContext serviceContext = new ServiceContext();
+
+			serviceContext.setCommand(Constants.UPDATE);
+
+			commerceOrderRuleEntryLocalService.updateStatus(
+				userId, commerceOrderRuleEntry.getCommerceOrderRuleEntryId(),
+				WorkflowConstants.STATUS_APPROVED, serviceContext);
+		}
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		CommerceOrderRuleEntryLocalServiceImpl.class);
+
+	private void _checkCommerceOrderRuleEntriesByExpirationDate()
+		throws PortalException {
+
+		List<CommerceOrderRuleEntry> commerceOrderRuleEntries =
+			commerceOrderRuleEntryPersistence.findByLtE_S(
+				new Date(), WorkflowConstants.STATUS_APPROVED);
+
+		if (_log.isDebugEnabled()) {
+			_log.debug(
+				"Expiring " + commerceOrderRuleEntries.size() +
+				" commerce order rule entries");
+		}
+
+		for (CommerceOrderRuleEntry commerceOrderRuleEntry : commerceOrderRuleEntries) {
+			long userId = PortalUtil.getValidUserId(
+				commerceOrderRuleEntry.getCompanyId(),
+				commerceOrderRuleEntry.getUserId());
+
+			ServiceContext serviceContext = new ServiceContext();
+
+			serviceContext.setCommand(Constants.UPDATE);
+
+			commerceOrderRuleEntryLocalService.updateStatus(
+				userId, commerceOrderRuleEntry.getCommerceOrderRuleEntryId(),
+				WorkflowConstants.STATUS_EXPIRED, serviceContext);
+		}
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public CommerceOrderRuleEntry updateStatus(
+			long userId, long commerceOrderRuleEntryId, int status,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		CommerceOrderRuleEntry commerceOrderRuleEntry =
+			commerceOrderRuleEntryPersistence.findByPrimaryKey(
+				commerceOrderRuleEntryId);
+
+		Date date = new Date();
+
+		if ((status == WorkflowConstants.STATUS_APPROVED) &&
+			(commerceOrderRuleEntry.getDisplayDate() != null) &&
+			date.before(commerceOrderRuleEntry.getDisplayDate())) {
+
+			commerceOrderRuleEntry.setActive(false);
+
+			status = WorkflowConstants.STATUS_SCHEDULED;
+		}
+
+		if (status == WorkflowConstants.STATUS_APPROVED) {
+			Date expirationDate = commerceOrderRuleEntry.getExpirationDate();
+
+			if ((expirationDate != null) && expirationDate.before(date)) {
+				commerceOrderRuleEntry.setExpirationDate(null);
+			}
+
+			if (commerceOrderRuleEntry.getStatus() ==
+				WorkflowConstants.STATUS_SCHEDULED) {
+
+				commerceOrderRuleEntry.setActive(true);
+			}
+		}
+
+		if (status == WorkflowConstants.STATUS_EXPIRED) {
+			commerceOrderRuleEntry.setActive(false);
+			commerceOrderRuleEntry.setExpirationDate(date);
+		}
+
+		commerceOrderRuleEntry.setStatus(status);
+
+		User user = userLocalService.getUser(userId);
+
+		commerceOrderRuleEntry.setStatusByUserId(user.getUserId());
+		commerceOrderRuleEntry.setStatusByUserName(user.getFullName());
+
+		commerceOrderRuleEntry.setStatusDate(serviceContext.getModifiedDate(date));
+
 		return commerceOrderRuleEntryPersistence.update(commerceOrderRuleEntry);
+	}
+
+	private CommerceOrderRuleEntry _startWorkflowInstance(
+		long userId, CommerceOrderRuleEntry commerceOrderRuleEntry,
+		ServiceContext serviceContext)
+		throws PortalException {
+
+		Map<String, Serializable> workflowContext = new HashMap<>();
+
+		return WorkflowHandlerRegistryUtil.startWorkflowInstance(
+			commerceOrderRuleEntry.getCompanyId(), 0L, userId,
+			CommerceOrderRuleEntry.class.getName(),
+			commerceOrderRuleEntry.getCommerceOrderRuleEntryId(),
+			commerceOrderRuleEntry, serviceContext, workflowContext);
 	}
 
 	@Indexable(type = IndexableType.DELETE)
 	@Override
 	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public CommerceOrderRuleEntry deleteCommerceOrderRuleEntry(
-			long commerceOrderRuleEntryId)
-		throws NoSuchOrderRuleEntryException {
+			CommerceOrderRuleEntry commerceOrderRuleEntry)
+		throws PortalException {
 
-		return commerceOrderRuleEntryPersistence.remove(
-			commerceOrderRuleEntryId);
+		commerceOrderRuleEntryPersistence.remove(commerceOrderRuleEntry);
+
+		resourceLocalService.deleteResource(
+			commerceOrderRuleEntry.getCompanyId(), CommerceOrderRuleEntry.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			commerceOrderRuleEntry.getCommerceOrderRuleEntryId());
+
+		_commerceOrderRuleEntryRelLocalService.deleteCommerceOrderRuleEntryRels(
+			commerceOrderRuleEntry.getCommerceOrderRuleEntryId());
+
+		_workflowInstanceLinkLocalService.deleteWorkflowInstanceLinks(
+			commerceOrderRuleEntry.getCompanyId(), 0L,
+			CommerceOrderRuleEntry.class.getName(),
+			commerceOrderRuleEntry.getCommerceOrderRuleEntryId());
+
+		return commerceOrderRuleEntry;
+	}
+
+	@Override
+	public CommerceOrderRuleEntry deleteCommerceOrderRuleEntry(
+			long commerceOrderRuleEntryId)
+		throws PortalException {
+
+		CommerceOrderRuleEntry commerceOrderRuleEntry =
+			commerceOrderRuleEntryPersistence.findByPrimaryKey(
+				commerceOrderRuleEntryId);
+
+		return commerceOrderRuleEntryLocalService.deleteCommerceOrderRuleEntry(
+			commerceOrderRuleEntry);
 	}
 
 	@Override
@@ -113,8 +331,13 @@ public class CommerceOrderRuleEntryLocalServiceImpl
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public CommerceOrderRuleEntry updateCommerceOrderRuleEntry(
-			long commerceOrderRuleEntryId, boolean active, String description,
-			String name, int priority, String typeSettings)
+			long userId, long commerceOrderRuleEntryId, boolean active,
+			String description, String name, int priority, String typeSettings,
+			int displayDateMonth, int displayDateDay, int displayDateYear,
+			int displayDateHour, int displayDateMinute, int expirationDateMonth,
+			int expirationDateDay, int expirationDateYear,
+			int expirationDateHour, int expirationDateMinute,
+			boolean neverExpire, ServiceContext serviceContext)
 		throws PortalException {
 
 		CommerceOrderRuleEntry commerceOrderRuleEntry =
@@ -134,7 +357,50 @@ public class CommerceOrderRuleEntryLocalServiceImpl
 
 		commerceOrderRuleEntry.setSettingsProperties(settingsUnicodeProperties);
 
-		return commerceOrderRuleEntryPersistence.update(commerceOrderRuleEntry);
+		Date date = new Date();
+
+		User user = userLocalService.getUser(userId);
+
+		commerceOrderRuleEntry.setDisplayDate(
+			PortalUtil.getDate(
+				displayDateMonth, displayDateDay, displayDateYear,
+				displayDateHour, displayDateMinute, user.getTimeZone(),
+				CommerceOrderRuleEntryDisplayDateException.class));
+
+		Date expirationDate = null;
+
+		if (!neverExpire) {
+			expirationDate = PortalUtil.getDate(
+				expirationDateMonth, expirationDateDay, expirationDateYear,
+				expirationDateHour, expirationDateMinute, user.getTimeZone(),
+				CommerceOrderRuleEntryExpirationDateException.class);
+		}
+
+		commerceOrderRuleEntry.setExpirationDate(expirationDate);
+
+		if ((expirationDate == null) || expirationDate.after(date)) {
+			commerceOrderRuleEntry.setStatus(WorkflowConstants.STATUS_DRAFT);
+		}
+		else {
+			commerceOrderRuleEntry.setStatus(WorkflowConstants.STATUS_EXPIRED);
+		}
+
+		commerceOrderRuleEntry.setStatusByUserId(user.getUserId());
+		commerceOrderRuleEntry.setStatusDate(serviceContext.getModifiedDate(date));
+		commerceOrderRuleEntry.setExpandoBridgeAttributes(serviceContext);
+
+		commerceOrderRuleEntry = commerceOrderRuleEntryPersistence.update(
+			commerceOrderRuleEntry);
+
+		return _startWorkflowInstance(
+			user.getUserId(), commerceOrderRuleEntry, serviceContext);
 	}
+	
+	@Reference
+	private WorkflowInstanceLinkLocalService _workflowInstanceLinkLocalService;
+
+	@Reference
+	private CommerceOrderRuleEntryRelLocalService
+		_commerceOrderRuleEntryRelLocalService;
 
 }

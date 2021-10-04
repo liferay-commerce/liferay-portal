@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.security.permission.resource.PortletResourcePer
 
 import java.util.List;
 
+import com.liferay.portal.kernel.service.ServiceContext;
 import org.osgi.service.component.annotations.Component;
 
 /**
@@ -44,8 +45,14 @@ public class CommerceOrderRuleEntryServiceImpl
 
 	@Override
 	public CommerceOrderRuleEntry addCommerceOrderRuleEntry(
-			boolean active, String description, String name, int priority,
-			String type, String typeSettings)
+			long userId, boolean active, String description, String name,
+			int priority, String type, String typeSettings,
+			int displayDateMonth, int displayDateDay,
+			int displayDateYear, int displayDateHour, int displayDateMinute,
+			int expirationDateMonth, int expirationDateDay,
+			int expirationDateYear, int expirationDateHour,
+			int expirationDateMinute, boolean neverExpire,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		PortletResourcePermission portletResourcePermission =
@@ -58,7 +65,8 @@ public class CommerceOrderRuleEntryServiceImpl
 
 		return commerceOrderRuleEntryLocalService.addCommerceOrderRuleEntry(
 			getUserId(), active, description, name, priority, type,
-			typeSettings);
+			typeSettings, displayDateMonth, displayDateDay, displayDateYear,
+			displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
 	}
 
 	@Override
@@ -127,8 +135,13 @@ public class CommerceOrderRuleEntryServiceImpl
 
 	@Override
 	public CommerceOrderRuleEntry updateCommerceOrderRuleEntry(
-			long commerceOrderRuleEntryId, boolean active, String description,
-			String name, int priority, String typeSettings)
+			long userId, long commerceOrderRuleEntryId, boolean active,
+			String description, String name, int priority, String typeSettings,
+			int displayDateMonth, int displayDateDay, int displayDateYear,
+			int displayDateHour, int displayDateMinute, int expirationDateMonth,
+			int expirationDateDay, int expirationDateYear,
+			int expirationDateHour, int expirationDateMinute,
+			boolean neverExpire, ServiceContext serviceContext)
 		throws PortalException {
 
 		_commerceOrderRuleEntryModelResourcePermission.check(
@@ -136,8 +149,8 @@ public class CommerceOrderRuleEntryServiceImpl
 			ActionKeys.UPDATE);
 
 		return commerceOrderRuleEntryLocalService.updateCommerceOrderRuleEntry(
-			commerceOrderRuleEntryId, active, description, name, priority,
-			typeSettings);
+			getUserId(), commerceOrderRuleEntryId, active, description, name,
+			priority, typeSettings, displayDateMonth, displayDateDay, displayDateYear, displayDateHour, displayDateMinute, expirationDateMonth, expirationDateDay, expirationDateYear, expirationDateHour, expirationDateMinute, neverExpire, serviceContext);
 	}
 
 	private static volatile ModelResourcePermission<CommerceOrderRuleEntry>
