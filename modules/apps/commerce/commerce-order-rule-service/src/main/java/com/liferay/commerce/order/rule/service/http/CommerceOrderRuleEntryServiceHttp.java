@@ -53,8 +53,14 @@ public class CommerceOrderRuleEntryServiceHttp {
 
 	public static com.liferay.commerce.order.rule.model.CommerceOrderRuleEntry
 			addCommerceOrderRuleEntry(
-				HttpPrincipal httpPrincipal, boolean active, String description,
-				String name, int priority, String type, String typeSettings)
+				HttpPrincipal httpPrincipal, long userId, boolean active,
+				String description, String name, int priority, String type,
+				String typeSettings, int displayDateMonth, int displayDateDay,
+				int displayDateYear, int displayDateHour, int displayDateMinute,
+				int expirationDateMonth, int expirationDateDay,
+				int expirationDateYear, int expirationDateHour,
+				int expirationDateMinute, boolean neverExpire,
+				com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
@@ -64,8 +70,11 @@ public class CommerceOrderRuleEntryServiceHttp {
 				_addCommerceOrderRuleEntryParameterTypes0);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, active, description, name, priority, type,
-				typeSettings);
+				methodKey, userId, active, description, name, priority, type,
+				typeSettings, displayDateMonth, displayDateDay, displayDateYear,
+				displayDateHour, displayDateMinute, expirationDateMonth,
+				expirationDateDay, expirationDateYear, expirationDateHour,
+				expirationDateMinute, neverExpire, serviceContext);
 
 			Object returnObj = null;
 
@@ -279,9 +288,15 @@ public class CommerceOrderRuleEntryServiceHttp {
 
 	public static com.liferay.commerce.order.rule.model.CommerceOrderRuleEntry
 			updateCommerceOrderRuleEntry(
-				HttpPrincipal httpPrincipal, long commerceOrderRuleEntryId,
-				boolean active, String description, String name, int priority,
-				String typeSettings)
+				HttpPrincipal httpPrincipal, long userId,
+				long commerceOrderRuleEntryId, boolean active,
+				String description, String name, int priority,
+				String typeSettings, int displayDateMonth, int displayDateDay,
+				int displayDateYear, int displayDateHour, int displayDateMinute,
+				int expirationDateMonth, int expirationDateDay,
+				int expirationDateYear, int expirationDateHour,
+				int expirationDateMinute, boolean neverExpire,
+				com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
@@ -291,8 +306,12 @@ public class CommerceOrderRuleEntryServiceHttp {
 				_updateCommerceOrderRuleEntryParameterTypes5);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, commerceOrderRuleEntryId, active, description, name,
-				priority, typeSettings);
+				methodKey, userId, commerceOrderRuleEntryId, active,
+				description, name, priority, typeSettings, displayDateMonth,
+				displayDateDay, displayDateYear, displayDateHour,
+				displayDateMinute, expirationDateMonth, expirationDateDay,
+				expirationDateYear, expirationDateHour, expirationDateMinute,
+				neverExpire, serviceContext);
 
 			Object returnObj = null;
 
@@ -328,8 +347,11 @@ public class CommerceOrderRuleEntryServiceHttp {
 
 	private static final Class<?>[] _addCommerceOrderRuleEntryParameterTypes0 =
 		new Class[] {
-			boolean.class, String.class, String.class, int.class, String.class,
-			String.class
+			long.class, boolean.class, String.class, String.class, int.class,
+			String.class, String.class, int.class, int.class, int.class,
+			int.class, int.class, int.class, int.class, int.class, int.class,
+			int.class, boolean.class,
+			com.liferay.portal.kernel.service.ServiceContext.class
 		};
 	private static final Class<?>[]
 		_deleteCommerceOrderRuleEntryParameterTypes1 = new Class[] {long.class};
@@ -347,8 +369,11 @@ public class CommerceOrderRuleEntryServiceHttp {
 		};
 	private static final Class<?>[]
 		_updateCommerceOrderRuleEntryParameterTypes5 = new Class[] {
-			long.class, boolean.class, String.class, String.class, int.class,
-			String.class
+			long.class, long.class, boolean.class, String.class, String.class,
+			int.class, String.class, int.class, int.class, int.class, int.class,
+			int.class, int.class, int.class, int.class, int.class, int.class,
+			boolean.class,
+			com.liferay.portal.kernel.service.ServiceContext.class
 		};
 
 }

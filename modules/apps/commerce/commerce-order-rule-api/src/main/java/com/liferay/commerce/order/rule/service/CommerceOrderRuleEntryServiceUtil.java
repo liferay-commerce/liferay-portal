@@ -39,12 +39,22 @@ public class CommerceOrderRuleEntryServiceUtil {
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.commerce.order.rule.service.impl.CommerceOrderRuleEntryServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
 	public static CommerceOrderRuleEntry addCommerceOrderRuleEntry(
-			boolean active, String description, String name, int priority,
-			String type, String typeSettings)
+			long userId, boolean active, String description, String name,
+			int priority, String type, String typeSettings,
+			int displayDateMonth, int displayDateDay, int displayDateYear,
+			int displayDateHour, int displayDateMinute, int expirationDateMonth,
+			int expirationDateDay, int expirationDateYear,
+			int expirationDateHour, int expirationDateMinute,
+			boolean neverExpire,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws PortalException {
 
 		return getService().addCommerceOrderRuleEntry(
-			active, description, name, priority, type, typeSettings);
+			userId, active, description, name, priority, type, typeSettings,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			neverExpire, serviceContext);
 	}
 
 	public static CommerceOrderRuleEntry deleteCommerceOrderRuleEntry(
@@ -89,13 +99,23 @@ public class CommerceOrderRuleEntryServiceUtil {
 	}
 
 	public static CommerceOrderRuleEntry updateCommerceOrderRuleEntry(
-			long commerceOrderRuleEntryId, boolean active, String description,
-			String name, int priority, String typeSettings)
+			long userId, long commerceOrderRuleEntryId, boolean active,
+			String description, String name, int priority, String typeSettings,
+			int displayDateMonth, int displayDateDay, int displayDateYear,
+			int displayDateHour, int displayDateMinute, int expirationDateMonth,
+			int expirationDateDay, int expirationDateYear,
+			int expirationDateHour, int expirationDateMinute,
+			boolean neverExpire,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws PortalException {
 
 		return getService().updateCommerceOrderRuleEntry(
-			commerceOrderRuleEntryId, active, description, name, priority,
-			typeSettings);
+			userId, commerceOrderRuleEntryId, active, description, name,
+			priority, typeSettings, displayDateMonth, displayDateDay,
+			displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, neverExpire,
+			serviceContext);
 	}
 
 	public static CommerceOrderRuleEntryService getService() {

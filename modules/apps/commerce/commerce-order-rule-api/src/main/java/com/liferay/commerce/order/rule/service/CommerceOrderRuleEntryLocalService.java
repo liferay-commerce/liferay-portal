@@ -14,7 +14,7 @@
 
 package com.liferay.commerce.order.rule.service;
 
-import com.liferay.commerce.order.rule.exception.NoSuchOrderRuleEntryException;
+import com.liferay.commerce.model.CommerceOrderRuleEntry;
 import com.liferay.commerce.order.rule.model.CommerceOrderRuleEntry;
 import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
@@ -82,8 +83,15 @@ public interface CommerceOrderRuleEntryLocalService
 	@Indexable(type = IndexableType.REINDEX)
 	public CommerceOrderRuleEntry addCommerceOrderRuleEntry(
 			long userId, boolean active, String description, String name,
-			int priority, String type, String typeSettings)
+			int priority, String type, String typeSettings,
+			int displayDateMonth, int displayDateDay, int displayDateYear,
+			int displayDateHour, int displayDateMinute, int expirationDateMonth,
+			int expirationDateDay, int expirationDateYear,
+			int expirationDateHour, int expirationDateMinute,
+			boolean neverExpire, ServiceContext serviceContext)
 		throws PortalException;
+
+	public void checkCommerceOrderRuleEntries() throws PortalException;
 
 	/**
 	 * Creates a new commerce order rule entry with the primary key. Does not add the commerce order rule entry to the database.
@@ -99,6 +107,12 @@ public interface CommerceOrderRuleEntryLocalService
 	 * @throws PortalException
 	 */
 	public PersistedModel createPersistedModel(Serializable primaryKeyObj)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.DELETE)
+	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
+	public CommerceOrderRuleEntry deleteCommerceOrderRuleEntry(
+			CommerceOrderRuleEntry commerceOrderRuleEntry)
 		throws PortalException;
 
 	/**
@@ -124,14 +138,16 @@ public interface CommerceOrderRuleEntryLocalService
 	 *
 	 * @param commerceOrderRuleEntryId the primary key of the commerce order rule entry
 	 * @return the commerce order rule entry that was removed
-	 * @throws NoSuchOrderRuleEntryException
 	 * @throws PortalException if a commerce order rule entry with the primary key could not be found
 	 */
 	@Indexable(type = IndexableType.DELETE)
-	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public CommerceOrderRuleEntry deleteCommerceOrderRuleEntry(
 			long commerceOrderRuleEntryId)
-		throws NoSuchOrderRuleEntryException, PortalException;
+		throws PortalException;
+
+	public CommerceOrderRuleEntry deleteCommerceOrderRuleEntry(
+			long commerceOrderRuleEntryId)
+		throws PortalException;
 
 	/**
 	 * @throws PortalException
@@ -300,8 +316,19 @@ public interface CommerceOrderRuleEntryLocalService
 
 	@Indexable(type = IndexableType.REINDEX)
 	public CommerceOrderRuleEntry updateCommerceOrderRuleEntry(
-			long commerceOrderRuleEntryId, boolean active, String description,
-			String name, int priority, String typeSettings)
+			long userId, long commerceOrderRuleEntryId, boolean active,
+			String description, String name, int priority, String typeSettings,
+			int displayDateMonth, int displayDateDay, int displayDateYear,
+			int displayDateHour, int displayDateMinute, int expirationDateMonth,
+			int expirationDateDay, int expirationDateYear,
+			int expirationDateHour, int expirationDateMinute,
+			boolean neverExpire, ServiceContext serviceContext)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public CommerceOrderRuleEntry updateStatus(
+			long userId, long commerceOrderRuleEntryId, int status,
+			ServiceContext serviceContext)
 		throws PortalException;
 
 }

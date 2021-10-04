@@ -45,9 +45,9 @@ public class CommerceOrderRuleEntryLocalServiceWrapper
 	 * @return the commerce order rule entry that was added
 	 */
 	@Override
-	public com.liferay.commerce.order.rule.model.CommerceOrderRuleEntry
+	public com.liferay.commerce.model.CommerceOrderRuleEntry
 		addCommerceOrderRuleEntry(
-			com.liferay.commerce.order.rule.model.CommerceOrderRuleEntry
+			com.liferay.commerce.model.CommerceOrderRuleEntry
 				commerceOrderRuleEntry) {
 
 		return _commerceOrderRuleEntryLocalService.addCommerceOrderRuleEntry(
@@ -55,14 +55,31 @@ public class CommerceOrderRuleEntryLocalServiceWrapper
 	}
 
 	@Override
-	public com.liferay.commerce.order.rule.model.CommerceOrderRuleEntry
+	public com.liferay.commerce.model.CommerceOrderRuleEntry
 			addCommerceOrderRuleEntry(
 				long userId, boolean active, String description, String name,
-				int priority, String type, String typeSettings)
+				int priority, String type, String typeSettings,
+				int displayDateMonth, int displayDateDay, int displayDateYear,
+				int displayDateHour, int displayDateMinute,
+				int expirationDateMonth, int expirationDateDay,
+				int expirationDateYear, int expirationDateHour,
+				int expirationDateMinute, boolean neverExpire,
+				com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _commerceOrderRuleEntryLocalService.addCommerceOrderRuleEntry(
-			userId, active, description, name, priority, type, typeSettings);
+			userId, active, description, name, priority, type, typeSettings,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			neverExpire, serviceContext);
+	}
+
+	@Override
+	public void checkCommerceOrderRuleEntries()
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_commerceOrderRuleEntryLocalService.checkCommerceOrderRuleEntries();
 	}
 
 	/**
@@ -72,7 +89,7 @@ public class CommerceOrderRuleEntryLocalServiceWrapper
 	 * @return the new commerce order rule entry
 	 */
 	@Override
-	public com.liferay.commerce.order.rule.model.CommerceOrderRuleEntry
+	public com.liferay.commerce.model.CommerceOrderRuleEntry
 		createCommerceOrderRuleEntry(long commerceOrderRuleEntryId) {
 
 		return _commerceOrderRuleEntryLocalService.createCommerceOrderRuleEntry(
@@ -91,6 +108,17 @@ public class CommerceOrderRuleEntryLocalServiceWrapper
 			primaryKeyObj);
 	}
 
+	@Override
+	public com.liferay.commerce.model.CommerceOrderRuleEntry
+			deleteCommerceOrderRuleEntry(
+				com.liferay.commerce.model.CommerceOrderRuleEntry
+					commerceOrderRuleEntry)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceOrderRuleEntryLocalService.deleteCommerceOrderRuleEntry(
+			commerceOrderRuleEntry);
+	}
+
 	/**
 	 * Deletes the commerce order rule entry from the database. Also notifies the appropriate model listeners.
 	 *
@@ -102,9 +130,9 @@ public class CommerceOrderRuleEntryLocalServiceWrapper
 	 * @return the commerce order rule entry that was removed
 	 */
 	@Override
-	public com.liferay.commerce.order.rule.model.CommerceOrderRuleEntry
+	public com.liferay.commerce.model.CommerceOrderRuleEntry
 		deleteCommerceOrderRuleEntry(
-			com.liferay.commerce.order.rule.model.CommerceOrderRuleEntry
+			com.liferay.commerce.model.CommerceOrderRuleEntry
 				commerceOrderRuleEntry) {
 
 		return _commerceOrderRuleEntryLocalService.deleteCommerceOrderRuleEntry(
@@ -120,15 +148,21 @@ public class CommerceOrderRuleEntryLocalServiceWrapper
 	 *
 	 * @param commerceOrderRuleEntryId the primary key of the commerce order rule entry
 	 * @return the commerce order rule entry that was removed
-	 * @throws NoSuchOrderRuleEntryException
 	 * @throws PortalException if a commerce order rule entry with the primary key could not be found
 	 */
 	@Override
-	public com.liferay.commerce.order.rule.model.CommerceOrderRuleEntry
+	public com.liferay.commerce.model.CommerceOrderRuleEntry
 			deleteCommerceOrderRuleEntry(long commerceOrderRuleEntryId)
-		throws com.liferay.commerce.order.rule.exception.
-			NoSuchOrderRuleEntryException,
-			   com.liferay.portal.kernel.exception.PortalException {
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceOrderRuleEntryLocalService.deleteCommerceOrderRuleEntry(
+			commerceOrderRuleEntryId);
+	}
+
+	@Override
+	public com.liferay.commerce.model.CommerceOrderRuleEntry
+			deleteCommerceOrderRuleEntry(long commerceOrderRuleEntryId)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _commerceOrderRuleEntryLocalService.deleteCommerceOrderRuleEntry(
 			commerceOrderRuleEntryId);
@@ -251,7 +285,7 @@ public class CommerceOrderRuleEntryLocalServiceWrapper
 	}
 
 	@Override
-	public com.liferay.commerce.order.rule.model.CommerceOrderRuleEntry
+	public com.liferay.commerce.model.CommerceOrderRuleEntry
 		fetchCommerceOrderRuleEntry(long commerceOrderRuleEntryId) {
 
 		return _commerceOrderRuleEntryLocalService.fetchCommerceOrderRuleEntry(
@@ -277,40 +311,35 @@ public class CommerceOrderRuleEntryLocalServiceWrapper
 	 * @return the range of commerce order rule entries
 	 */
 	@Override
-	public java.util.List
-		<com.liferay.commerce.order.rule.model.CommerceOrderRuleEntry>
-			getCommerceOrderRuleEntries(int start, int end) {
+	public java.util.List<com.liferay.commerce.model.CommerceOrderRuleEntry>
+		getCommerceOrderRuleEntries(int start, int end) {
 
 		return _commerceOrderRuleEntryLocalService.getCommerceOrderRuleEntries(
 			start, end);
 	}
 
 	@Override
-	public java.util.List
-		<com.liferay.commerce.order.rule.model.CommerceOrderRuleEntry>
-			getCommerceOrderRuleEntries(
-				long companyId, boolean active, int start, int end) {
+	public java.util.List<com.liferay.commerce.model.CommerceOrderRuleEntry>
+		getCommerceOrderRuleEntries(
+			long companyId, boolean active, int start, int end) {
 
 		return _commerceOrderRuleEntryLocalService.getCommerceOrderRuleEntries(
 			companyId, active, start, end);
 	}
 
 	@Override
-	public java.util.List
-		<com.liferay.commerce.order.rule.model.CommerceOrderRuleEntry>
-			getCommerceOrderRuleEntries(
-				long companyId, boolean active, String type, int start,
-				int end) {
+	public java.util.List<com.liferay.commerce.model.CommerceOrderRuleEntry>
+		getCommerceOrderRuleEntries(
+			long companyId, boolean active, String type, int start, int end) {
 
 		return _commerceOrderRuleEntryLocalService.getCommerceOrderRuleEntries(
 			companyId, active, type, start, end);
 	}
 
 	@Override
-	public java.util.List
-		<com.liferay.commerce.order.rule.model.CommerceOrderRuleEntry>
-			getCommerceOrderRuleEntries(
-				long companyId, String type, int start, int end) {
+	public java.util.List<com.liferay.commerce.model.CommerceOrderRuleEntry>
+		getCommerceOrderRuleEntries(
+			long companyId, String type, int start, int end) {
 
 		return _commerceOrderRuleEntryLocalService.getCommerceOrderRuleEntries(
 			companyId, type, start, end);
@@ -335,7 +364,7 @@ public class CommerceOrderRuleEntryLocalServiceWrapper
 	 * @throws PortalException if a commerce order rule entry with the primary key could not be found
 	 */
 	@Override
-	public com.liferay.commerce.order.rule.model.CommerceOrderRuleEntry
+	public com.liferay.commerce.model.CommerceOrderRuleEntry
 			getCommerceOrderRuleEntry(long commerceOrderRuleEntryId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -384,9 +413,9 @@ public class CommerceOrderRuleEntryLocalServiceWrapper
 	 * @return the commerce order rule entry that was updated
 	 */
 	@Override
-	public com.liferay.commerce.order.rule.model.CommerceOrderRuleEntry
+	public com.liferay.commerce.model.CommerceOrderRuleEntry
 		updateCommerceOrderRuleEntry(
-			com.liferay.commerce.order.rule.model.CommerceOrderRuleEntry
+			com.liferay.commerce.model.CommerceOrderRuleEntry
 				commerceOrderRuleEntry) {
 
 		return _commerceOrderRuleEntryLocalService.updateCommerceOrderRuleEntry(
@@ -394,16 +423,35 @@ public class CommerceOrderRuleEntryLocalServiceWrapper
 	}
 
 	@Override
-	public com.liferay.commerce.order.rule.model.CommerceOrderRuleEntry
+	public com.liferay.commerce.model.CommerceOrderRuleEntry
 			updateCommerceOrderRuleEntry(
-				long commerceOrderRuleEntryId, boolean active,
+				long userId, long commerceOrderRuleEntryId, boolean active,
 				String description, String name, int priority,
-				String typeSettings)
+				String typeSettings, int displayDateMonth, int displayDateDay,
+				int displayDateYear, int displayDateHour, int displayDateMinute,
+				int expirationDateMonth, int expirationDateDay,
+				int expirationDateYear, int expirationDateHour,
+				int expirationDateMinute, boolean neverExpire,
+				com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _commerceOrderRuleEntryLocalService.updateCommerceOrderRuleEntry(
-			commerceOrderRuleEntryId, active, description, name, priority,
-			typeSettings);
+			userId, commerceOrderRuleEntryId, active, description, name,
+			priority, typeSettings, displayDateMonth, displayDateDay,
+			displayDateYear, displayDateHour, displayDateMinute,
+			expirationDateMonth, expirationDateDay, expirationDateYear,
+			expirationDateHour, expirationDateMinute, neverExpire,
+			serviceContext);
+	}
+
+	@Override
+	public com.liferay.commerce.model.CommerceOrderRuleEntry updateStatus(
+			long userId, long commerceOrderRuleEntryId, int status,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceOrderRuleEntryLocalService.updateStatus(
+			userId, commerceOrderRuleEntryId, status, serviceContext);
 	}
 
 	@Override
