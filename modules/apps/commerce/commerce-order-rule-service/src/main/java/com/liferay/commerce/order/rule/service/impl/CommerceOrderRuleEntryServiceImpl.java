@@ -86,6 +86,24 @@ public class CommerceOrderRuleEntryServiceImpl
 	}
 
 	@Override
+	public CommerceOrderRuleEntry fetchCommerceOrderRuleEntry(
+			long commerceOrderRuleEntryId)
+		throws PortalException {
+
+		CommerceOrderRuleEntry commerceOrderRuleEntry =
+			commerceOrderRuleEntryLocalService.fetchCommerceOrderRuleEntry(
+				commerceOrderRuleEntryId);
+
+		if (commerceOrderRuleEntry != null) {
+			_commerceOrderRuleEntryModelResourcePermission.check(
+				getPermissionChecker(), commerceOrderRuleEntryId,
+				ActionKeys.VIEW);
+		}
+
+		return commerceOrderRuleEntry;
+	}
+
+	@Override
 	public List<CommerceOrderRuleEntry> getCommerceOrderRuleEntries(
 			long companyId, boolean active, int start, int end)
 		throws PortalException {
