@@ -122,6 +122,27 @@ public class CommerceOrderRuleEntryServiceSoap {
 	}
 
 	public static
+		com.liferay.commerce.order.rule.model.CommerceOrderRuleEntrySoap
+				fetchCommerceOrderRuleEntry(long commerceOrderRuleEntryId)
+			throws RemoteException {
+
+		try {
+			com.liferay.commerce.order.rule.model.CommerceOrderRuleEntry
+				returnValue =
+					CommerceOrderRuleEntryServiceUtil.
+						fetchCommerceOrderRuleEntry(commerceOrderRuleEntryId);
+
+			return com.liferay.commerce.order.rule.model.
+				CommerceOrderRuleEntrySoap.toSoapModel(returnValue);
+		}
+		catch (Exception exception) {
+			_log.error(exception, exception);
+
+			throw new RemoteException(exception.getMessage());
+		}
+	}
+
+	public static
 		com.liferay.commerce.order.rule.model.CommerceOrderRuleEntrySoap[]
 				getCommerceOrderRuleEntries(
 					long companyId, boolean active, int start, int end)

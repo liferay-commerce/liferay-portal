@@ -64,6 +64,15 @@ public class CommerceOrderRuleEntryServiceWrapper
 	}
 
 	@Override
+	public com.liferay.commerce.order.rule.model.CommerceOrderRuleEntry
+			fetchCommerceOrderRuleEntry(long commerceOrderRuleEntryId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceOrderRuleEntryService.fetchCommerceOrderRuleEntry(
+			commerceOrderRuleEntryId);
+	}
+
+	@Override
 	public java.util.List
 		<com.liferay.commerce.order.rule.model.CommerceOrderRuleEntry>
 				getCommerceOrderRuleEntries(
