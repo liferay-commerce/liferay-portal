@@ -6,25 +6,24 @@ definition {
 	property testray.main.component.name = "Order Management";
 
 	setUp {
-		TestCase.setUpPortalInstance();
+    		TestCase.setUpPortalInstance();
 
-		User.firstLoginPG();
-	}
+    		User.firstLoginPG();
+    	}
 
-	tearDown {
-		var testPortalInstance = PropsUtil.get("test.portal.instance");
+    	tearDown {
+    		Navigator.openURL();
 
-		if ("${testPortalInstance}" == "true") {
-			PortalInstances.tearDownCP();
-		}
-		else {
-			Navigator.openURL();
+    		if (IsElementPresent(locator1 = "UserBar#USER_AVATAR_IMAGE")) {
+    			User.logoutPG();
+    		}
 
-			CommerceConfiguration.commerceAdminTearDown();
+    		User.firstLoginPG();
 
-			CommerceConfiguration.commerceInitializersTearDown();
-		}
-	}
+    		CommerceConfiguration.commerceAdminTearDown();
+
+    		CommerceConfiguration.commerceInitializersTearDown();
+    	}
 
 	@description = "This is a test for COMMERCE-6226. Price Entry lifecycle"
 	@priority = "3"
@@ -130,8 +129,6 @@ definition {
 	@priority = "3"
 	test AddEditAndDeletePriceModifier {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "AddEditAndDeletePriceModifier";
-
 		// TODO Review
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
@@ -758,8 +755,6 @@ definition {
 	@priority = "3"
 	test AddEditAndRemoveProductGroupFromPL {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CPCommercePriceLists#AddEditAndRemoveProductGroupFromPL";
-
 		// TODO Review
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
@@ -831,8 +826,6 @@ definition {
 	@priority = "3"
 	test AddPriceListQualifier {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CPCommercePriceLists#AddPriceListQualifier";
-
 		// TODO Review
 
 		// TODO Fix Commerce tests that are skipping portal instances - COMMERCE-6586
@@ -1107,7 +1100,6 @@ definition {
 	test AssertPriceEntriesAreProductsInTheSameCatalogAsPriceList {
 		property portal.acceptance = "true";
 		property portal.upstream = "true";
-		property test.name.skip.portal.instance = "CPCommercePriceLists#AssertPriceEntriesAreProductsInTheSameCatalogAsPriceList";
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -1200,7 +1192,6 @@ definition {
 	test AssertPriceListCanBeAssociatedWithAccountAndAccountGroup {
 		property portal.acceptance = "quarantine";
 		property portal.upstream = "quarantine";
-		property test.name.skip.portal.instance = "CPCommercePriceLists#AssertPriceListCanBeAssociatedWithAccountAndAccountGroup";
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -1274,7 +1265,6 @@ definition {
 	test AssertPriceListCannotBeMovedToADifferentCatalog {
 		property portal.acceptance = "true";
 		property portal.upstream = "true";
-		property test.name.skip.portal.instance = "CPCommercePriceLists#AssertPriceListCannotBeMovedToADifferentCatalog";
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -1318,7 +1308,6 @@ definition {
 	test AssertPriceListHaveRequiredNameAndCurrency {
 		property portal.acceptance = "true";
 		property portal.upstream = "true";
-		property test.name.skip.portal.instance = "CPCommercePriceLists#AssertPriceListHaveRequiredNameAndCurrency";
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -1384,7 +1373,6 @@ definition {
 	test AssertPriceListIsAppliedToAllAssociatedAccounts {
 		property portal.acceptance = "true";
 		property portal.upstream = "true";
-		property test.name.skip.portal.instance = "CPCommercePriceLists#AssertPriceListIsAppliedToAllAssociatedAccounts";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
@@ -1478,7 +1466,6 @@ definition {
 	@priority = "3"
 	test CheckPLProductGroupUsageInfo {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CPCommercePriceLists#CheckPLProductGroupUsageInfo";
 
 		// TODO Review
 
@@ -1590,7 +1577,6 @@ definition {
 	test CreateNewPriceList {
 		property portal.acceptance = "true";
 		property portal.upstream = "true";
-		property test.name.skip.portal.instance = "CPCommercePriceLists#CreateNewPriceList";
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -1639,7 +1625,6 @@ definition {
 	test PriceListExistsOnlyInOneCatalog {
 		property portal.acceptance = "true";
 		property portal.upstream = "true";
-		property test.name.skip.portal.instance = "CPCommercePriceLists#PriceListExistsOnlyInOneCatalog";
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
