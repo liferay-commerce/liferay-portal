@@ -6,24 +6,24 @@ definition {
 	property testray.main.component.name = "Shopping Experience";
 
 	setUp {
-    		TestCase.setUpPortalInstance();
+    	TestCase.setUpPortalInstance();
 
-    		User.firstLoginPG();
+    	User.firstLoginPG();
+    }
+
+    tearDown {
+    	Navigator.openURL();
+
+    	if (IsElementPresent(locator1 = "UserBar#USER_AVATAR_IMAGE")) {
+    		User.logoutPG();
     	}
 
-    	tearDown {
-    		Navigator.openURL();
+    	User.firstLoginPG();
 
-    		if (IsElementPresent(locator1 = "UserBar#USER_AVATAR_IMAGE")) {
-    			User.logoutPG();
-    		}
+   		CommerceConfiguration.commerceAdminTearDown();
 
-    		User.firstLoginPG();
-
-    		CommerceConfiguration.commerceAdminTearDown();
-
-    		CommerceConfiguration.commerceInitializersTearDown();
-    	}
+   		CommerceConfiguration.commerceInitializersTearDown();
+   	}
 
 	@description = "COMMERCE-5912. As a buyer, I want to select an item in Product Details for compare in Product Widget"
 	@priority = "3"

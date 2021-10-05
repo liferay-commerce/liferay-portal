@@ -6,24 +6,24 @@ definition {
 	property testray.main.component.name = "Order Management";
 
 	setUp {
-    		TestCase.setUpPortalInstance();
+    	TestCase.setUpPortalInstance();
 
-    		User.firstLoginPG();
+    	User.firstLoginPG();
+    }
+
+    tearDown {
+    	Navigator.openURL();
+
+    	if (IsElementPresent(locator1 = "UserBar#USER_AVATAR_IMAGE")) {
+    		User.logoutPG();
     	}
 
-    	tearDown {
-    		Navigator.openURL();
+    	User.firstLoginPG();
 
-    		if (IsElementPresent(locator1 = "UserBar#USER_AVATAR_IMAGE")) {
-    			User.logoutPG();
-    		}
+    	CommerceConfiguration.commerceAdminTearDown();
 
-    		User.firstLoginPG();
-
-    		CommerceConfiguration.commerceAdminTearDown();
-
-    		CommerceConfiguration.commerceInitializersTearDown();
-    	}
+    	CommerceConfiguration.commerceInitializersTearDown();
+    }
 
 	@description = "This is a test for COMMERCE-6231. Discount lifecycle"
 	@priority = "3"
