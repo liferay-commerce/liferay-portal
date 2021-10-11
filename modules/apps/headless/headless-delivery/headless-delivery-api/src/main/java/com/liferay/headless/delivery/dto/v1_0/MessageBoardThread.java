@@ -67,6 +67,10 @@ public class MessageBoardThread implements Serializable {
 		return ObjectMapperUtil.readValue(MessageBoardThread.class, json);
 	}
 
+	public static MessageBoardThread unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(MessageBoardThread.class, json);
+	}
+
 	@Schema(
 		description = "Block of actions allowed by the user making the request."
 	)

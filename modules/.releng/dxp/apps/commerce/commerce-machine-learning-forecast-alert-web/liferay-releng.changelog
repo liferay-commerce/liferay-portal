@@ -27,3 +27,8 @@
 # Bundle Version 5.0.1
 #
 1c21a510de9a9ffdb2d66fc7ed31185a12d0c666^..786fb9c71711f9269823fec9539cdcb15dff1e3f=COMMERCE-5017
+
+#
+# Bundle Version 5.0.5
+#
+786fb9c71711f9269823fec9539cdcb15dff1e3f^..68885b06d2831bcca6f551f1d020cba5eeddcc4d=COMMERCE-7002 LPS-135504

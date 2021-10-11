@@ -55,6 +55,11 @@ public class ProductAccountGroup implements Serializable {
 		return ObjectMapperUtil.readValue(ProductAccountGroup.class, json);
 	}
 
+	public static ProductAccountGroup unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			ProductAccountGroup.class, json);
+	}
+
 	@DecimalMin("0")
 	@Schema
 	public Long getAccountGroupId() {

@@ -111,7 +111,8 @@ public class EditCollaboratorsMVCActionCommand extends BaseMVCActionCommand {
 			}
 
 			JSONObject jsonObject = JSONUtil.put(
-				"errorMessage", LanguageUtil.get(resourceBundle, errorMessage));
+				"errorMessage",
+				LanguageUtil.get(themeDisplay.getLocale(), errorMessage));
 
 			JSONPortletResponseUtil.writeJSON(
 				actionRequest, actionResponse, jsonObject);

@@ -56,6 +56,10 @@ public class SEOSettingsMapping implements Serializable {
 		return ObjectMapperUtil.readValue(SEOSettingsMapping.class, json);
 	}
 
+	public static SEOSettingsMapping unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(SEOSettingsMapping.class, json);
+	}
+
 	@Schema(
 		description = "Field of the content type that will be used as the description"
 	)

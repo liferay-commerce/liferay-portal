@@ -58,6 +58,11 @@ public class ProductInteractionRecommendation implements Serializable {
 			ProductInteractionRecommendation.class, json);
 	}
 
+	public static ProductInteractionRecommendation unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			ProductInteractionRecommendation.class, json);
+	}
+
 	@Schema
 	public Date getCreateDate() {
 		return createDate;

@@ -425,7 +425,7 @@ public class DocumentLibraryDDMFormFieldTemplateContextContributor
 
 	private String _getItemSelectorURL(
 		DDMFormFieldRenderingContext ddmFormFieldRenderingContext,
-		long folderId, HttpServletRequest httpServletRequest) {
+		long folderId, long repositoryId, ThemeDisplay themeDisplay) {
 
 		if (_itemSelector == null) {
 			return StringPool.BLANK;
@@ -437,11 +437,7 @@ public class DocumentLibraryDDMFormFieldTemplateContextContributor
 		Group group = _groupLocalService.fetchGroup(groupId);
 
 		if (group == null) {
-			ThemeDisplay themeDisplay = getThemeDisplay(httpServletRequest);
-
-			if (themeDisplay != null) {
-				group = themeDisplay.getScopeGroup();
-			}
+			group = themeDisplay.getScopeGroup();
 		}
 
 		List<ItemSelectorCriterion> itemSelectorCriteria = new ArrayList<>();
@@ -454,6 +450,8 @@ public class DocumentLibraryDDMFormFieldTemplateContextContributor
 		ddmUserPersonalFolderItemSelectorCriterion.
 			setDesiredItemSelectorReturnTypes(
 				new FileEntryItemSelectorReturnType());
+		ddmUserPersonalFolderItemSelectorCriterion.setRepositoryId(
+			repositoryId);
 
 		itemSelectorCriteria.add(ddmUserPersonalFolderItemSelectorCriterion);
 
@@ -475,7 +473,8 @@ public class DocumentLibraryDDMFormFieldTemplateContextContributor
 		}
 
 		PortletURL itemSelectorURL = _itemSelector.getItemSelectorURL(
-			RequestBackedPortletURLFactoryUtil.create(httpServletRequest),
+			RequestBackedPortletURLFactoryUtil.create(
+				ddmFormFieldRenderingContext.getHttpServletRequest()),
 			group, groupId, portletNamespace + "selectDocumentLibrary",
 			itemSelectorCriteria.toArray(new ItemSelectorCriterion[0]));
 
@@ -648,9 +647,18 @@ public class DocumentLibraryDDMFormFieldTemplateContextContributor
 			"folderId", privateUserFolderId
 		).put(
 			"itemSelectorURL",
-			_getItemSelectorURL(
-				ddmFormFieldRenderingContext, privateUserFolderId,
-				httpServletRequest)
+			() -> {
+				String itemSelectorURL = GetterUtil.getString(
+					ddmFormField.getProperty("itemSelectorURL"));
+
+				if (Validator.isNotNull(itemSelectorURL)) {
+					return itemSelectorURL;
+				}
+
+				return _getItemSelectorURL(
+					ddmFormFieldRenderingContext, privateUserFolderId,
+					repository.getRepositoryId(), themeDisplay);
+			}
 		).build();
 	}
 

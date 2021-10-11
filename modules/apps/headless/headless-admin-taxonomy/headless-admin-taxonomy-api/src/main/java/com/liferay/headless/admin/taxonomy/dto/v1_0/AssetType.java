@@ -54,6 +54,10 @@ public class AssetType implements Serializable {
 		return ObjectMapperUtil.readValue(AssetType.class, json);
 	}
 
+	public static AssetType unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(AssetType.class, json);
+	}
+
 	@Schema(description = "A flag that marks if this type is required.")
 	public Boolean getRequired() {
 		return required;

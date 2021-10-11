@@ -320,7 +320,7 @@ public class InputAssetLinksDisplayContext {
 	}
 
 	private PortletURL _getAssetEntryItemSelectorPortletURL(
-		AssetRendererFactory<?> rendererFactory, long subtypeSelectionId) {
+		AssetRendererFactory<?> assetRendererFactory, long subtypeSelectionId) {
 
 		AssetEntryItemSelectorCriterion assetEntryItemSelectorCriterion =
 			new AssetEntryItemSelectorCriterion();
@@ -336,7 +336,7 @@ public class InputAssetLinksDisplayContext {
 		assetEntryItemSelectorCriterion.setSubtypeSelectionId(
 			subtypeSelectionId);
 		assetEntryItemSelectorCriterion.setTypeSelection(
-			rendererFactory.getClassName());
+			assetRendererFactory.getClassName());
 
 		ItemSelector itemSelector = ItemSelectorUtil.getItemSelector();
 

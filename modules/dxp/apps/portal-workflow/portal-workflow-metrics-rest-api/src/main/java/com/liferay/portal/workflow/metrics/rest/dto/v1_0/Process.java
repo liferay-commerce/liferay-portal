@@ -57,6 +57,10 @@ public class Process implements Serializable {
 		return ObjectMapperUtil.readValue(Process.class, json);
 	}
 
+	public static Process unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Process.class, json);
+	}
+
 	@Schema
 	public Boolean getActive() {
 		return active;

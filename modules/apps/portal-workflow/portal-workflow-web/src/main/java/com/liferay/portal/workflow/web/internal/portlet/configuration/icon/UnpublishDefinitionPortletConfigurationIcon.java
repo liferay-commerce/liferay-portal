@@ -19,12 +19,9 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.configuration.icon.BasePortletConfigurationIcon;
 import com.liferay.portal.kernel.portlet.configuration.icon.PortletConfigurationIcon;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowDefinition;
 import com.liferay.portal.workflow.constants.WorkflowPortletKeys;
-
-import java.util.ResourceBundle;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
@@ -50,10 +47,7 @@ public class UnpublishDefinitionPortletConfigurationIcon
 
 	@Override
 	public String getMessage(PortletRequest portletRequest) {
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			getLocale(portletRequest), getClass());
-
-		return LanguageUtil.get(resourceBundle, "unpublish");
+		return LanguageUtil.get(getLocale(portletRequest), "unpublish");
 	}
 
 	/**

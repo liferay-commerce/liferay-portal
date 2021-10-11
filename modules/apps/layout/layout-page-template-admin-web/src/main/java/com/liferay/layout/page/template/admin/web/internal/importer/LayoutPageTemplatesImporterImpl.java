@@ -87,7 +87,6 @@ import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.MimeTypesUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortletKeys;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
@@ -107,7 +106,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.zip.ZipEntry;
@@ -328,10 +326,7 @@ public class LayoutPageTemplatesImporterImpl
 			locale = _portal.getSiteDefaultLocale(groupId);
 		}
 
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			locale, getClass());
-
-		return _language.format(resourceBundle, languageKey, arguments);
+		return _language.format(locale, languageKey, arguments);
 	}
 
 	private List<FragmentEntryLink> _getFragmentEntryLinks(

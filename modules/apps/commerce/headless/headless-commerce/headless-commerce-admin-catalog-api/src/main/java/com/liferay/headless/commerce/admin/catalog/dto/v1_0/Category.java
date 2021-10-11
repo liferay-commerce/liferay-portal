@@ -55,6 +55,10 @@ public class Category implements Serializable {
 		return ObjectMapperUtil.readValue(Category.class, json);
 	}
 
+	public static Category unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Category.class, json);
+	}
+
 	@Schema
 	public String getExternalReferenceCode() {
 		return externalReferenceCode;

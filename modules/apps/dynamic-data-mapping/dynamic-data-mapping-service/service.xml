@@ -265,6 +265,10 @@
 			<finder-column name="formInstanceId" />
 			<finder-column name="formInstanceVersion" />
 		</finder>
+
+		<!-- References -->
+
+		<reference entity="AssetEntry" package-path="com.liferay.portlet.asset" />
 	</entity>
 	<entity local-service="true" name="DDMFormInstanceRecordVersion" remote-service="true">
 

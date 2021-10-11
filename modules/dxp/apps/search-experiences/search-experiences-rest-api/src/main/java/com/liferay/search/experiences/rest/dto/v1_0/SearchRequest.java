@@ -51,6 +51,10 @@ public class SearchRequest implements Serializable {
 		return ObjectMapperUtil.readValue(SearchRequest.class, json);
 	}
 
+	public static SearchRequest unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(SearchRequest.class, json);
+	}
+
 	@Schema
 	public String getQueryString() {
 		return queryString;

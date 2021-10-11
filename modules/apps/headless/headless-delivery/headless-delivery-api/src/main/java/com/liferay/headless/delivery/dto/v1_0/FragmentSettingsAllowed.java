@@ -56,6 +56,11 @@ public class FragmentSettingsAllowed implements Serializable {
 		return ObjectMapperUtil.readValue(FragmentSettingsAllowed.class, json);
 	}
 
+	public static FragmentSettingsAllowed unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			FragmentSettingsAllowed.class, json);
+	}
+
 	@Schema(description = "A list of allowed fragments.")
 	@Valid
 	public Fragment[] getAllowedFragments() {

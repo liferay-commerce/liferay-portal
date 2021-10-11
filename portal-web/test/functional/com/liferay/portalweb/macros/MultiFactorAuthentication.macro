@@ -32,6 +32,25 @@ definition {
 			value1 = "Set the time in seconds to block requests after reaching the limit for failed attempts allowed.");
 	}
 
+	macro canAdminDisableBasicAuthentication {
+		if (contains("${userResponse}", "Access denied to com.liferay.portal.kernel.service.UserService#getCurrentUser")) {
+			echo("Instance admin is able to disable Basic Authentication.");
+		}
+		else {
+			fail("Instance admin is unable to disable Basic Authentication..");
+		}
+	}
+
+	macro checkTOTPUI {
+		AssertClick(
+			locator1 = "MultiFactorAuthentication#MFA_CHECKER_LINK",
+			value1 = "Use Email One-Time Password");
+
+		AssertTextEquals(
+			locator1 = "MultiFactorAuthentication#MFA_CHECKER_LINK",
+			value1 = "Use Time-Based One-Time Password");
+	}
+
 	macro configureIPAddress {
 		if ("${enableIP}" == "true") {
 			FormFields.enableCheckbox(fieldName = "enabled");
@@ -235,6 +254,25 @@ definition {
 			value1 = "Your one-time password has been sent by email.");
 	}
 
+	macro setServiceRankingValue {
+		Type(
+			key_fieldName = "service.ranking",
+			locator1 = "MultiFactorAuthentication#EMAIL_OTP_CONFIG_FIELD",
+			value1 = "${orderValue}");
+
+		PortletEntry.update();
+	}
+
+	macro tryWrongTOTP {
+		Type(
+			locator1 = "MultiFactorAuthentication#TOTP_VERIFY_FIELD",
+			value1 = "${wrongValue}");
+
+		Button.click(button = "Submit");
+
+		AssertElementPresent(locator1 = "MultiFactorAuthentication#EMAIL_OTP_VERIFY_FAILED_MESSAGE");
+	}
+
 	macro verifyCustomOTP {
 		if (isSet(specificURL)) {
 			Navigator.openSpecificURL(url = "${specificURL}");
@@ -309,6 +347,29 @@ definition {
 		}
 	}
 
+	macro viewConfigurationPresent {
+		for (var configurationName : list "${configurationNameList}") {
+			AssertElementPresent(
+				key_configurationName = "${configurationName}",
+				key_configurationScope = "${configurationScope}",
+				locator1 = "SystemSettings#SCOPED_CONFIGURATION_NAME");
+		}
+	}
+
+	macro viewEmailOTPVerifyField {
+		AssertElementPresent(locator1 = "MultiFactorAuthentication#EMAIL_OTP_VERIFY_FIELD");
+	}
+
+	macro viewMFAOrderValue {
+		AssertTextEquals(
+			locator1 = "MultiFactorAuthentication#ORDER_FIELD",
+			value1 = "${orderValue}");
+	}
+
+	macro viewNoTOTPField {
+		AssertElementNotPresent(locator1 = "MultiFactorAuthentication#TOTP_FIELD");
+	}
+
 	macro viewOTPEmailSenderCP {
 		AssertTextEquals(
 			locator1 = "MultiFactorAuthentication#EMAIL_OTP_SENDER_ADDRESS_FIELD",
@@ -317,6 +378,38 @@ definition {
 		AssertTextEquals(
 			locator1 = "MultiFactorAuthentication#EMAIL_OTP_SENDER_NAME_FIELD",
 			value1 = "${emailSenderName}");
+	}
+
+	macro viewOTPOrderFieldAvailable {
+		AssertElementPresent(
+			key_fieldName = "service.ranking",
+			locator1 = "MultiFactorAuthentication#EMAIL_OTP_CONFIG_FIELD");
+	}
+
+	macro viewOTPSendEmailButtonPresent {
+		AssertElementPresent(locator1 = "MultiFactorAuthentication#EMAIL_OTP_VERIFY_SEND_EMAIL_BUTTON");
+	}
+
+	macro viewOTPSentElements {
+		for (var element : list "${elementList}") {
+			AssertElementPresent(
+				key_fieldName = "${element}",
+				locator1 = "MultiFactorAuthentication#EMAIL_OTP_TEMPLATE_FIELD");
+		}
+	}
+
+	macro viewTOTPField {
+		AssertElementNotPresent(locator1 = "MultiFactorAuthentication#TOTP_FIELD");
+	}
+
+	macro viewTOTPFieldPresentOnMFA {
+		AssertElementPresent(locator1 = "MultiFactorAuthentication#TOTP_SHARED_SECRET_FIELD");
+	}
+
+	macro viewWarningMessage {
+		AssertTextEquals(
+			locator1 = "MultiFactorAuthentication#TOTP_REMOVE_DESCRIPTION",
+			value1 = "You can only have one time-based one-time password configured for your account. Remove your existing time-based one-time password to generate a new time-based one-time password.");
 	}
 
 }

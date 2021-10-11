@@ -53,6 +53,10 @@ public class Geo implements Serializable {
 		return ObjectMapperUtil.readValue(Geo.class, json);
 	}
 
+	public static Geo unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Geo.class, json);
+	}
+
 	@Schema(description = "The latitude of a point in space.")
 	public Double getLatitude() {
 		return latitude;

@@ -28,7 +28,6 @@ import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.TransientValue;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -37,7 +36,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 
-import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -185,12 +183,10 @@ public class GogoShellPortlet extends MVCPortlet {
 		Matcher matcher = _pattern.matcher(command);
 
 		if (matcher.find()) {
-			ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-				themeDisplay.getLocale(), GogoShellPortlet.class);
-
 			throw new Exception(
 				LanguageUtil.format(
-					resourceBundle, "the-command-x-is-not-supported", command));
+					themeDisplay.getLocale(), "the-command-x-is-not-supported",
+					command));
 		}
 	}
 

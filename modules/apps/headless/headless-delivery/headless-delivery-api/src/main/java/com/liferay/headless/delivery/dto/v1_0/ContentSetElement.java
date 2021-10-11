@@ -56,6 +56,10 @@ public class ContentSetElement implements Serializable {
 		return ObjectMapperUtil.readValue(ContentSetElement.class, json);
 	}
 
+	public static ContentSetElement unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(ContentSetElement.class, json);
+	}
+
 	@Schema(description = "The content's fields.")
 	@Valid
 	public Object getContent() {

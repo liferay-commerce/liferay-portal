@@ -148,6 +148,14 @@ public class ObjectRelationshipLocalServiceUtil {
 			objectRelationshipId, primaryKey1);
 	}
 
+	public static void deleteObjectRelationshipMappingTableValues(
+			long objectRelationshipId, long primaryKey1, long primaryKey2)
+		throws PortalException {
+
+		getService().deleteObjectRelationshipMappingTableValues(
+			objectRelationshipId, primaryKey1, primaryKey2);
+	}
+
 	/**
 	 * @throws PortalException
 	 */
@@ -268,6 +276,13 @@ public class ObjectRelationshipLocalServiceUtil {
 
 		return getService().fetchObjectRelationshipByUuidAndCompanyId(
 			uuid, companyId);
+	}
+
+	public static ObjectRelationship fetchReverseObjectRelationship(
+		ObjectRelationship objectRelationship, boolean reverse) {
+
+		return getService().fetchReverseObjectRelationship(
+			objectRelationship, reverse);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery

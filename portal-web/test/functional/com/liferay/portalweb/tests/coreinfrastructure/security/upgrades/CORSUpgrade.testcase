@@ -24,20 +24,22 @@ definition {
 		property data.archive.type = "data-archive-portal-cors";
 		property portal.version = "7.2.10.1";
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Configuration",
-			panel = "Control Panel",
-			portlet = "System Settings");
+		task ("Go to configuration and view portal CORS") {
+			ApplicationsMenu.gotoPortlet(
+				category = "Configuration",
+				panel = "Control Panel",
+				portlet = "System Settings");
 
-		SystemSettings.gotoConfiguration(
-			configurationCategory = "Security Tools",
-			configurationName = "Portal Cross-Origin Resource Sharing (CORS)",
-			configurationScope = "Virtual Instance Scope");
+			SystemSettings.gotoConfiguration(
+				configurationCategory = "Security Tools",
+				configurationName = "Portal Cross-Origin Resource Sharing (CORS)",
+				configurationScope = "Virtual Instance Scope");
 
-		Upgrade.viewPortalCORS(
-			header = "Test-Header",
-			name = "Test",
-			urlPattern = "/api/*/test");
+			Upgrade.viewPortalCORS(
+				header = "Test-Header",
+				name = "Test",
+				urlPattern = "/api/*/test");
+		}
 	}
 
 	@description = "This is a use case for LRQA-61573."
@@ -46,19 +48,21 @@ definition {
 		property data.archive.type = "data-archive-web-contexts-cors";
 		property portal.version = "7.2.10.1";
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Configuration",
-			panel = "Control Panel",
-			portlet = "System Settings");
+		task ("Go to configuration and view web content CORS") {
+			ApplicationsMenu.gotoPortlet(
+				category = "Configuration",
+				panel = "Control Panel",
+				portlet = "System Settings");
 
-		SystemSettings.gotoConfiguration(
-			configurationCategory = "Security Tools",
-			configurationName = "Web Contexts Cross-Origin Resource Sharing (CORS)",
-			configurationScope = "System Scope");
+			SystemSettings.gotoConfiguration(
+				configurationCategory = "Security Tools",
+				configurationName = "Web Contexts Cross-Origin Resource Sharing (CORS)",
+				configurationScope = "System Scope");
 
-		Upgrade.viewWebContextsCORS(
-			filter = "(&((liferay.cors=true))(osgi.jaxrs.name=*))",
-			urlPattern = "/api/*/test");
+			Upgrade.viewWebContextsCORS(
+				filter = "(&((liferay.cors=true))(osgi.jaxrs.name=*))",
+				urlPattern = "/api/*/test");
+		}
 	}
 
 }

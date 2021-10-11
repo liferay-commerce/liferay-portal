@@ -55,6 +55,10 @@ public class BillingAddress implements Serializable {
 		return ObjectMapperUtil.readValue(BillingAddress.class, json);
 	}
 
+	public static BillingAddress unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(BillingAddress.class, json);
+	}
+
 	@Schema
 	public String getCity() {
 		return city;

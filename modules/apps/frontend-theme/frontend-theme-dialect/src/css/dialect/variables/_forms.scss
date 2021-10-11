@@ -1,10 +1,7 @@
-$form-input-focus-color: var(--color-action-primary-default);
-$form-white-color: var(--color-neutral-10);
-
 $input-label-color: var(--form-input-label-color);
 $input-label-disabled-color: var(--form-input-disabled-label-color);
-$input-label-font-weight: var(--form-input-label-font-weight);
 $input-label-font-size: var(--form-input-label-font-size);
+$input-label-font-weight: var(--form-input-label-font-weight);
 $input-label-margin-bottom: var(--form-input-label-margin-bottom);
 $input-label-reference-mark-color: var(--form-input-label-reference-mark-color);
 $input-label-reference-mark-font-size: 0.3125rem;
@@ -26,15 +23,14 @@ $input-transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
 
 $input-focus-bg: $form-white-color;
 $input-focus-border-color: $form-input-focus-color;
-$input-focus-box-shadow: none;
 
-$input-disabled-border-color: var(
-	--current-form-input-disabled-border-color,
-	var(--form-input-disabled-border-color)
-);
 $input-disabled-bg: var(
 	--form-input-disabled-background-color,
 	var(--form-input-background-color)
+);
+$input-disabled-border-color: var(
+	--current-form-input-disabled-border-color,
+	var(--form-input-disabled-border-color)
 );
 $input-disabled-color: var(--form-input-disabled-color);
 
@@ -42,31 +38,28 @@ $input-placeholder-color: var(--form-input-placeholder-color);
 $input-placeholder-disabled-color: var(--form-input-placeholder-disabled-color);
 $input-placeholder-focus-color: var(--form-input-placeholder-focus-color);
 
-$input-danger-bg: var(--form-input-error-bg, var(--color-state-error-lighten));
+$input-danger-bg: var(--form-input-error-bg, #{danger-l2});
 $input-danger-border-color: var(
 	--form-input-error-border-color,
-	var(--color-state-error)
+	#{$dialect-danger}
 );
+$input-danger-checkbox-label-color: $input-label-color;
 $input-danger-focus-bg: #{$form-white-color};
 $input-danger-focus-border-color: #{$form-input-focus-color};
-$input-success-bg: var(
-	--form-input-success-bg,
-	var(--color-state-success-lighten)
-);
+$input-success-bg: var(--form-input-success-bg, #{success-l2});
 $input-success-border-color: var(
 	--form-input-success-border-color,
-	var(--color-state-success)
+	#{$dialect-success}
 );
+$input-success-checkbox-label-color: $input-label-color;
 $input-success-focus-bg: #{$form-white-color};
 $input-success-focus-border-color: #{$form-input-focus-color};
-$input-warning-bg: var(
-	--form-input-warning-bg,
-	var(--color-state-warning-lighten)
-);
+$input-warning-bg: var(--form-input-warning-bg, #{warning-l2});
 $input-warning-border-color: var(
 	--form-input-warning-border-color,
-	var(--color-state-warning)
+	#{$dialect-warning}
 );
+$input-warning-checkbox-label-color: $input-label-color;
 $input-warning-focus-bg: #{$form-white-color};
 $input-warning-focus-border-color: #{$form-input-focus-color};
 
@@ -75,10 +68,10 @@ $form-feedback-indicator-margin-x: 0.25rem;
 $form-feedback-font-size: var(--form-feedback-item-font-size);
 $form-feedback-font-weight: var(--form-feedback-item-font-weight);
 
-$form-text-font-size: var(--form-text-font-size);
 $form-text-color: var(--form-text-color);
-$form-text-line-height: var(--form-text-line-height);
+$form-text-font-size: var(--form-text-font-size);
 $form-text-font-weight: var(--form-text-font-weight);
+$form-text-line-height: var(--form-text-line-height);
 
 // The following variables must be reset because they cause errors with CSS custom properties as values.
 
@@ -105,4 +98,4 @@ $form-control-inset-margin-y: calc(
 		) / 2
 );
 
-$form-group-item-label-spacer: 0.3125rem !default;
+$form-group-item-label-spacer: 0.3125rem;

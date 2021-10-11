@@ -12,25 +12,23 @@ definition {
 	}
 
 	tearDown {
-		var testPortalInstance = PropsUtil.get("test.portal.instance");
+		Navigator.openURL();
 
-		if ("${testPortalInstance}" == "true") {
-			PortalInstances.tearDownCP();
+		if (IsElementPresent(locator1 = "UserBar#USER_AVATAR_IMAGE")) {
+			User.logoutPG();
 		}
-		else {
-			Navigator.openURL();
 
-			CommerceConfiguration.commerceAdminTearDown();
+		User.firstLoginPG();
 
-			CommerceConfiguration.commerceInitializersTearDown();
-		}
+		CommerceConfiguration.commerceAdminTearDown();
+
+		CommerceConfiguration.commerceInitializersTearDown();
 	}
 
 	@description = "COMMERCE-6169. As a buyer, I want to filter products using Category Facet widget and the results should be visible on the Search Results widget"
 	@priority = "3"
 	test AssertProductsAreFilteredByCategoryFacet {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceFacets#AssertProductsAreFilteredByCategoryFacet";
 
 		// TODO Review
 
@@ -56,7 +54,6 @@ definition {
 	@priority = "3"
 	test AssertProductsAreFilteredByOptionFacet {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceFacets#AssertProductsAreFilteredByOptionFacet";
 
 		// TODO Review
 
@@ -83,7 +80,6 @@ definition {
 	@priority = "3"
 	test AssertProductsAreFilteredByPriceRangeFacet {
 		property portal.acceptance = "Intern Test";
-		property test.name.skip.portal.instance = "CommerceFacets#AssertProductsAreFilteredByPriceRangeFacet";
 
 		// TODO Review
 
@@ -136,7 +132,6 @@ definition {
 	@priority = "3"
 	test AssertProductsAreFilteredBySpecificationFacet {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceFacets#AssertProductsAreFilteredBySpecificationFacet";
 
 		// TODO
 

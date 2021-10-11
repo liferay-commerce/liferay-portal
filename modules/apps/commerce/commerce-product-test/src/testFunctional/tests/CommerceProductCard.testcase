@@ -12,18 +12,17 @@ definition {
 	}
 
 	tearDown {
-		var testPortalInstance = PropsUtil.get("test.portal.instance");
+		Navigator.openURL();
 
-		if ("${testPortalInstance}" == "true") {
-			PortalInstances.tearDownCP();
+		if (IsElementPresent(locator1 = "UserBar#USER_AVATAR_IMAGE")) {
+			User.logoutPG();
 		}
-		else {
-			Navigator.openURL();
 
-			CommerceConfiguration.commerceAdminTearDown();
+		User.firstLoginPG();
 
-			CommerceConfiguration.commerceInitializersTearDown();
-		}
+		CommerceConfiguration.commerceAdminTearDown();
+
+		CommerceConfiguration.commerceInitializersTearDown();
 	}
 
 	@description = "COMMERCE-5866. As a buyer, I want to be able to add a product to my wish list, by clicking on an Add To Wish List button"
@@ -91,7 +90,6 @@ definition {
 	@priority = "3"
 	test AssertDynamicPriceBundledProductCannotBeAddedToCartDirectly {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceProductCard#AssertDynamicPriceBundledProductCannotBeAddedToCartDirectly";
 
 		// TODO Review
 
@@ -328,7 +326,6 @@ definition {
 	@priority = "3"
 	test AssertOnlyMultipleValuesAreSelectableQuantities {
 		property portal.acceptance = "Intern Test";
-		property test.name.skip.portal.instance = "CommerceProductCard#AssertOnlyMultipleValuesAreSelectableQuantities";
 
 		// TODO Review
 
@@ -512,7 +509,6 @@ definition {
 	@priority = "3"
 	test AssertProductCardCurrencyAfterChannelCurrencyChanged {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceProductCard#AssertProductCardCurrencyAfterChannelCurrencyChanged";
 
 		// TODO Review
 
@@ -763,7 +759,6 @@ definition {
 	@priority = "3"
 	test AssertSelectableQuantitiesStartFromMinimumQuantitySet {
 		property portal.acceptance = "Intern Test";
-		property test.name.skip.portal.instance = "CommerceProductCard#AssertSelectableQuantitiesStartFromMinimumQuantitySet";
 
 		// TODO Review
 
@@ -813,7 +808,6 @@ definition {
 	@priority = "3"
 	test AssertStaticPriceBundledProductCannotBeAddedToCartDirectly {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceProductCard#AssertStaticPriceBundledProductCannotBeAddedToCartDirectly";
 
 		// TODO Review
 

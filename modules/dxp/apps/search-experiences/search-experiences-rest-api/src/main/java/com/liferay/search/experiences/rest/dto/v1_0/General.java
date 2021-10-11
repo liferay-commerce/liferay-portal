@@ -51,6 +51,10 @@ public class General implements Serializable {
 		return ObjectMapperUtil.readValue(General.class, json);
 	}
 
+	public static General unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(General.class, json);
+	}
+
 	@Schema
 	public String[] getClauseContributorsExcludes() {
 		return clauseContributorsExcludes;
@@ -114,6 +118,91 @@ public class General implements Serializable {
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String[] clauseContributorsIncludes;
+
+	@Schema
+	public Boolean getEmptySearchEnabled() {
+		return emptySearchEnabled;
+	}
+
+	public void setEmptySearchEnabled(Boolean emptySearchEnabled) {
+		this.emptySearchEnabled = emptySearchEnabled;
+	}
+
+	@JsonIgnore
+	public void setEmptySearchEnabled(
+		UnsafeSupplier<Boolean, Exception> emptySearchEnabledUnsafeSupplier) {
+
+		try {
+			emptySearchEnabled = emptySearchEnabledUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Boolean emptySearchEnabled;
+
+	@Schema
+	public Boolean getExplain() {
+		return explain;
+	}
+
+	public void setExplain(Boolean explain) {
+		this.explain = explain;
+	}
+
+	@JsonIgnore
+	public void setExplain(
+		UnsafeSupplier<Boolean, Exception> explainUnsafeSupplier) {
+
+		try {
+			explain = explainUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Boolean explain;
+
+	@Schema
+	public Boolean getIncludeResponseString() {
+		return includeResponseString;
+	}
+
+	public void setIncludeResponseString(Boolean includeResponseString) {
+		this.includeResponseString = includeResponseString;
+	}
+
+	@JsonIgnore
+	public void setIncludeResponseString(
+		UnsafeSupplier<Boolean, Exception>
+			includeResponseStringUnsafeSupplier) {
+
+		try {
+			includeResponseString = includeResponseStringUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Boolean includeResponseString;
 
 	@Schema
 	public String[] getSearchableAssetTypes() {
@@ -217,6 +306,36 @@ public class General implements Serializable {
 			}
 
 			sb.append("]");
+		}
+
+		if (emptySearchEnabled != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"emptySearchEnabled\": ");
+
+			sb.append(emptySearchEnabled);
+		}
+
+		if (explain != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"explain\": ");
+
+			sb.append(explain);
+		}
+
+		if (includeResponseString != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"includeResponseString\": ");
+
+			sb.append(includeResponseString);
 		}
 
 		if (searchableAssetTypes != null) {

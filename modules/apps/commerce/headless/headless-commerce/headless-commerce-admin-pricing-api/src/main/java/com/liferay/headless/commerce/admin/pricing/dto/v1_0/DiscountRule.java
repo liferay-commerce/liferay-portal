@@ -55,6 +55,10 @@ public class DiscountRule implements Serializable {
 		return ObjectMapperUtil.readValue(DiscountRule.class, json);
 	}
 
+	public static DiscountRule unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(DiscountRule.class, json);
+	}
+
 	@DecimalMin("0")
 	@Schema
 	public Long getDiscountId() {

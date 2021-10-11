@@ -56,6 +56,10 @@ public class Language implements Serializable {
 		return ObjectMapperUtil.readValue(Language.class, json);
 	}
 
+	public static Language unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Language.class, json);
+	}
+
 	@Schema(description = "The language's contry name.")
 	public String getCountryName() {
 		return countryName;

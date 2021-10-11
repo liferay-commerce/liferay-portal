@@ -57,34 +57,34 @@ public class ObjectRelationship implements Cloneable, Serializable {
 
 	protected Map<String, Map<String, String>> actions;
 
-	public DeleteType getDeleteType() {
-		return deleteType;
+	public DeletionType getDeletionType() {
+		return deletionType;
 	}
 
-	public String getDeleteTypeAsString() {
-		if (deleteType == null) {
+	public String getDeletionTypeAsString() {
+		if (deletionType == null) {
 			return null;
 		}
 
-		return deleteType.toString();
+		return deletionType.toString();
 	}
 
-	public void setDeleteType(DeleteType deleteType) {
-		this.deleteType = deleteType;
+	public void setDeletionType(DeletionType deletionType) {
+		this.deletionType = deletionType;
 	}
 
-	public void setDeleteType(
-		UnsafeSupplier<DeleteType, Exception> deleteTypeUnsafeSupplier) {
+	public void setDeletionType(
+		UnsafeSupplier<DeletionType, Exception> deletionTypeUnsafeSupplier) {
 
 		try {
-			deleteType = deleteTypeUnsafeSupplier.get();
+			deletionType = deletionTypeUnsafeSupplier.get();
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	protected DeleteType deleteType;
+	protected DeletionType deletionType;
 
 	public Long getId() {
 		return id;
@@ -266,16 +266,16 @@ public class ObjectRelationship implements Cloneable, Serializable {
 		return ObjectRelationshipSerDes.toJSON(this);
 	}
 
-	public static enum DeleteType {
+	public static enum DeletionType {
 
 		CASCADE("cascade"), DISASSOCIATE("disassociate"), PREVENT("prevent");
 
-		public static DeleteType create(String value) {
-			for (DeleteType deleteType : values()) {
-				if (Objects.equals(deleteType.getValue(), value) ||
-					Objects.equals(deleteType.name(), value)) {
+		public static DeletionType create(String value) {
+			for (DeletionType deletionType : values()) {
+				if (Objects.equals(deletionType.getValue(), value) ||
+					Objects.equals(deletionType.name(), value)) {
 
-					return deleteType;
+					return deletionType;
 				}
 			}
 
@@ -291,7 +291,7 @@ public class ObjectRelationship implements Cloneable, Serializable {
 			return _value;
 		}
 
-		private DeleteType(String value) {
+		private DeletionType(String value) {
 			_value = value;
 		}
 
@@ -301,7 +301,7 @@ public class ObjectRelationship implements Cloneable, Serializable {
 
 	public static enum Type {
 
-		ONE_TO_MANY("one_to_many"), MANY_TO_MANY("many_to_many");
+		ONE_TO_MANY("oneToMany"), MANY_TO_MANY("manyToMany");
 
 		public static Type create(String value) {
 			for (Type type : values()) {

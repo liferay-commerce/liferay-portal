@@ -53,6 +53,11 @@ public class KeywordBulkSelection implements Serializable {
 		return ObjectMapperUtil.readValue(KeywordBulkSelection.class, json);
 	}
 
+	public static KeywordBulkSelection unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			KeywordBulkSelection.class, json);
+	}
+
 	@Schema
 	@Valid
 	public DocumentBulkSelection getDocumentBulkSelection() {

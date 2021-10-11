@@ -55,6 +55,11 @@ public class FragmentImageConfiguration implements Serializable {
 			FragmentImageConfiguration.class, json);
 	}
 
+	public static FragmentImageConfiguration unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			FragmentImageConfiguration.class, json);
+	}
+
 	@Schema(
 		description = "The landscape mobile configuration of the fragment image."
 	)

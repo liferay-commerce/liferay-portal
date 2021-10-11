@@ -55,6 +55,10 @@ public class FormPage implements Serializable {
 		return ObjectMapperUtil.readValue(FormPage.class, json);
 	}
 
+	public static FormPage unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(FormPage.class, json);
+	}
+
 	@Schema
 	@Valid
 	public FormField[] getFormFields() {

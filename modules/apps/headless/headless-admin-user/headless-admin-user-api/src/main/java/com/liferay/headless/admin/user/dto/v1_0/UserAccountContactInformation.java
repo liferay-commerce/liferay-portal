@@ -57,6 +57,11 @@ public class UserAccountContactInformation implements Serializable {
 			UserAccountContactInformation.class, json);
 	}
 
+	public static UserAccountContactInformation unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			UserAccountContactInformation.class, json);
+	}
+
 	@Schema(
 		description = "A list of the user's email addresses, with one optionally marked as primary."
 	)

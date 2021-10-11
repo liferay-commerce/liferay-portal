@@ -14,17 +14,16 @@
 
 package com.liferay.object.action.engine;
 
-import java.io.Serializable;
-
-import java.util.Map;
+import com.liferay.portal.kernel.json.JSONObject;
 
 /**
  * @author Marco Leo
+ * @author Brian Wing Shun Chan
  */
 public interface ObjectActionEngine {
 
 	public void executeObjectActions(
-		long userId, String className, String objectActionTriggerKey,
-		Map<String, Serializable> parameters);
+		String className, long companyId, String objectActionTriggerKey,
+		JSONObject payloadJSONObject, long userId);
 
 }

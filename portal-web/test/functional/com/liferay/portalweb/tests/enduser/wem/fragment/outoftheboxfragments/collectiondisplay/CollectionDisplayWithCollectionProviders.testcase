@@ -40,10 +40,10 @@ definition {
 				groupName = "Test Site Name",
 				title = "Web Content Title");
 
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title",
-				groupName = "Test Site Name");
+			HeadlessBlog.addBlogEntry(
+				content = "Blogs Entry Content",
+				groupName = "Test Site Name",
+				title = "Blogs Entry Title");
 
 			JSONDocument.addFileWithUploadedFile(
 				dmDocumentDescription = "DM Document Description",
@@ -190,10 +190,10 @@ definition {
 				groupName = "Test Site Name",
 				title = "Web Content Title");
 
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title",
-				groupName = "Test Site Name");
+			HeadlessBlog.addBlogEntry(
+				content = "Blogs Entry Content",
+				groupName = "Test Site Name",
+				title = "Blogs Entry Title");
 
 			JSONDocument.addFileWithUploadedFile(
 				dmDocumentDescription = "DM Document Description",
@@ -990,7 +990,7 @@ definition {
 			PageEditor.editContentDisplay(
 				fragmentName = "Content Display",
 				inCollectionDisplay = "true",
-				templateOption = "Abstract");
+				template = "Abstract");
 
 			var n = "1";
 
@@ -1408,10 +1408,10 @@ definition {
 				groupName = "Test Site Name",
 				title = "Web Content Title");
 
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title",
-				groupName = "Test Site Name");
+			HeadlessBlog.addBlogEntry(
+				content = "Blogs Entry Content",
+				groupName = "Test Site Name",
+				title = "Blogs Entry Title");
 
 			JSONDocument.addFileWithUploadedFile(
 				dmDocumentDescription = "DM Document Description",
@@ -1485,10 +1485,10 @@ definition {
 				groupName = "Test Site Name",
 				title = "Web Content Title");
 
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title",
-				groupName = "Test Site Name");
+			HeadlessBlog.addBlogEntry(
+				content = "Blogs Entry Content",
+				groupName = "Test Site Name",
+				title = "Blogs Entry Title");
 
 			JSONDocument.addFileWithUploadedFile(
 				dmDocumentDescription = "DM Document Description",
@@ -1511,7 +1511,7 @@ definition {
 		task ("Assert assets' title are displayed in Collection Display with Content Display") {
 			PageEditor.editCollectionDisplay(
 				fragmentName = "Collection Display",
-				infoListProviderName = "Most Viewed Asset");
+				infoListProviderName = "Most Viewed Assets");
 
 			PageEditor.addFragmentToCollectionDisplay(
 				collectionName = "Content Display",
@@ -1521,7 +1521,7 @@ definition {
 			PageEditor.editContentDisplay(
 				fragmentName = "Content Display",
 				inCollectionDisplay = "true",
-				templateOption = "Full Content");
+				template = "Full Content");
 
 			AssertVisible(
 				key_colPosition = "1",
@@ -2088,10 +2088,10 @@ definition {
 				groupName = "Test Site Name",
 				title = "Web Content Title");
 
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title",
-				groupName = "Test Site Name");
+			HeadlessBlog.addBlogEntry(
+				content = "Blogs Entry Content",
+				groupName = "Test Site Name",
+				title = "Blogs Entry Title");
 
 			JSONDocument.addFileWithUploadedFile(
 				dmDocumentTitle = "Document Title",

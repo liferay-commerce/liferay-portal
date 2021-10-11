@@ -54,6 +54,10 @@ public class RenderedPage implements Serializable {
 		return ObjectMapperUtil.readValue(RenderedPage.class, json);
 	}
 
+	public static RenderedPage unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(RenderedPage.class, json);
+	}
+
 	@Schema(
 		description = "The ID of the master page used to render the content."
 	)

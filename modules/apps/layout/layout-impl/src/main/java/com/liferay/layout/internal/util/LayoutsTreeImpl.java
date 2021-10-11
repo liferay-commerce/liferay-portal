@@ -71,10 +71,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Zsolt Szabó
  * @author Tibor Lipusz
  */
-@Component(
-	configurationPid = "com.liferay.layout.internal.configuration.FFLayoutPreviewDraftConfiguration",
-	immediate = true, service = LayoutsTree.class
-)
+@Component(immediate = true, service = LayoutsTree.class)
 public class LayoutsTreeImpl implements LayoutsTree {
 
 	@Override
@@ -515,7 +512,11 @@ public class LayoutsTreeImpl implements LayoutsTree {
 
 			Layout draftLayout = _getDraftLayout(layout);
 
-			if (draftLayout != null) {
+			if ((draftLayout != null) &&
+				LayoutPermissionUtil.contains(
+					themeDisplay.getPermissionChecker(), layout,
+					ActionKeys.UPDATE)) {
+
 				jsonObject.put("draftStatus", "draft");
 
 				String draftLayoutURL = _portal.getLayoutFriendlyURL(

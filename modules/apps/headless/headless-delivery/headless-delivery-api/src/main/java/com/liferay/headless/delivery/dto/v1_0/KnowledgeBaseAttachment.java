@@ -54,6 +54,11 @@ public class KnowledgeBaseAttachment implements Serializable {
 		return ObjectMapperUtil.readValue(KnowledgeBaseAttachment.class, json);
 	}
 
+	public static KnowledgeBaseAttachment unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			KnowledgeBaseAttachment.class, json);
+	}
+
 	@Schema(description = "The file's relative URL.")
 	public String getContentUrl() {
 		return contentUrl;

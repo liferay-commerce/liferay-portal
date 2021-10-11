@@ -412,7 +412,9 @@ public class RemoteAppEntryLocalServiceImpl
 					customElementCSSURLs.split(StringPool.NEW_LINE)) {
 
 				if (!Validator.isUrl(customElementCSSURL, true)) {
-					throw new RemoteAppEntryCustomElementCSSURLsException();
+					throw new RemoteAppEntryCustomElementCSSURLsException(
+						"Invalid custom element CSS URL " +
+							customElementCSSURL);
 				}
 			}
 		}
@@ -466,14 +468,16 @@ public class RemoteAppEntryLocalServiceImpl
 		}
 
 		if (Validator.isNull(customElementURLs)) {
-			throw new RemoteAppEntryCustomElementURLsException();
+			throw new RemoteAppEntryCustomElementURLsException(
+				"Invalid custom element URLs " + customElementURLs);
 		}
 
 		for (String customElementURL :
 				customElementURLs.split(StringPool.NEW_LINE)) {
 
 			if (!Validator.isUrl(customElementURL, true)) {
-				throw new RemoteAppEntryCustomElementURLsException();
+				throw new RemoteAppEntryCustomElementURLsException(
+					"Invalid custom element URL " + customElementURL);
 			}
 		}
 	}

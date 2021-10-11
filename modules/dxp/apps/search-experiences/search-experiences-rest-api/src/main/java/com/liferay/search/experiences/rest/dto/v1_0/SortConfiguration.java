@@ -53,6 +53,10 @@ public class SortConfiguration implements Serializable {
 		return ObjectMapperUtil.readValue(SortConfiguration.class, json);
 	}
 
+	public static SortConfiguration unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(SortConfiguration.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Object getSorts() {

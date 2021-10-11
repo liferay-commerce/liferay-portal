@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermi
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.search.experiences.constants.SXPConstants;
 import com.liferay.search.experiences.model.SXPElement;
+import com.liferay.search.experiences.service.SXPElementLocalService;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -38,49 +39,61 @@ public class SXPElementModelResourcePermission
 
 	@Override
 	public void check(
-			PermissionChecker permissionChecker, long sxpElementId,
+			PermissionChecker permissionChecker, long sxpBlueprintId,
 			String actionId)
 		throws PortalException {
 
-		if (!contains(permissionChecker, sxpElementId, actionId)) {
+		if (!contains(permissionChecker, sxpBlueprintId, actionId)) {
 			throw new PrincipalException.MustHavePermission(
-				permissionChecker, SXPElement.class.getName(), sxpElementId,
+				permissionChecker, SXPElement.class.getName(), sxpBlueprintId,
 				actionId);
 		}
 	}
 
 	@Override
 	public void check(
-			PermissionChecker permissionChecker, SXPElement sxpElement,
+			PermissionChecker permissionChecker, SXPElement sxpBlueprint,
 			String actionId)
 		throws PortalException {
 
-		if (!contains(permissionChecker, sxpElement, actionId)) {
+		if (!contains(permissionChecker, sxpBlueprint, actionId)) {
 			throw new PrincipalException.MustHavePermission(
 				permissionChecker, SXPElement.class.getName(),
-				sxpElement.getPrimaryKey(), actionId);
+				sxpBlueprint.getPrimaryKey(), actionId);
 		}
 	}
 
 	@Override
 	public boolean contains(
-			PermissionChecker permissionChecker, long sxpElementId,
+			PermissionChecker permissionChecker, long sxpBlueprintId,
 			String actionId)
 		throws PortalException {
 
-		return permissionChecker.hasPermission(
-			null, SXPElement.class.getName(), sxpElementId, actionId);
+		SXPElement sxpBlueprint = _sxpBlueprintLocalService.getSXPElement(
+			sxpBlueprintId);
+
+		return contains(permissionChecker, sxpBlueprint, actionId);
 	}
 
 	@Override
 	public boolean contains(
-			PermissionChecker permissionChecker, SXPElement sxpElement,
+			PermissionChecker permissionChecker, SXPElement sxpBlueprint,
 			String actionId)
 		throws PortalException {
 
-		return permissionChecker.hasPermission(
-			null, SXPElement.class.getName(), sxpElement.getPrimaryKey(),
-			actionId);
+		if (permissionChecker.hasOwnerPermission(
+				permissionChecker.getCompanyId(), SXPElement.class.getName(),
+				sxpBlueprint.getSXPElementId(), sxpBlueprint.getUserId(),
+				actionId) ||
+			(permissionChecker.getUserId() == sxpBlueprint.getUserId()) ||
+			permissionChecker.hasPermission(
+				null, SXPElement.class.getName(), sxpBlueprint.getPrimaryKey(),
+				actionId)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	@Override
@@ -95,5 +108,8 @@ public class SXPElementModelResourcePermission
 
 	@Reference(target = "(resource.name=" + SXPConstants.RESOURCE_NAME + ")")
 	private PortletResourcePermission _portletResourcePermission;
+
+	@Reference
+	private SXPElementLocalService _sxpBlueprintLocalService;
 
 }

@@ -78,7 +78,7 @@ public class ObjectRelationshipCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(33);
+		StringBundler sb = new StringBundler(35);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -110,6 +110,8 @@ public class ObjectRelationshipCacheModel
 		sb.append(label);
 		sb.append(", name=");
 		sb.append(name);
+		sb.append(", reverse=");
+		sb.append(reverse);
 		sb.append(", type=");
 		sb.append(type);
 		sb.append("}");
@@ -188,6 +190,8 @@ public class ObjectRelationshipCacheModel
 			objectRelationshipImpl.setName(name);
 		}
 
+		objectRelationshipImpl.setReverse(reverse);
+
 		if (type == null) {
 			objectRelationshipImpl.setType("");
 		}
@@ -223,6 +227,8 @@ public class ObjectRelationshipCacheModel
 		dbTableName = objectInput.readUTF();
 		label = objectInput.readUTF();
 		name = objectInput.readUTF();
+
+		reverse = objectInput.readBoolean();
 		type = objectInput.readUTF();
 	}
 
@@ -287,6 +293,8 @@ public class ObjectRelationshipCacheModel
 			objectOutput.writeUTF(name);
 		}
 
+		objectOutput.writeBoolean(reverse);
+
 		if (type == null) {
 			objectOutput.writeUTF("");
 		}
@@ -310,6 +318,7 @@ public class ObjectRelationshipCacheModel
 	public String dbTableName;
 	public String label;
 	public String name;
+	public boolean reverse;
 	public String type;
 
 }

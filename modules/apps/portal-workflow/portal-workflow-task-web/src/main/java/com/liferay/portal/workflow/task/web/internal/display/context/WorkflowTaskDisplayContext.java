@@ -1000,8 +1000,8 @@ public class WorkflowTaskDisplayContext {
 				displayTerms.getKeywords(),
 				new String[] {displayTerms.getKeywords()},
 				_getAssetType(displayTerms.getKeywords()), null, null, null,
-				null, null, _getCompleted(), searchByUserRoles, null, null,
-				false, _workflowTaskSearch.getStart(),
+				null, null, _getCompleted(), true, searchByUserRoles, null,
+				null, false, _workflowTaskSearch.getStart(),
 				_workflowTaskSearch.getEnd(),
 				_workflowTaskSearch.getOrderByComparator());
 

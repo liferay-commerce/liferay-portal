@@ -14,37 +14,37 @@
 
 package com.liferay.translation.web.internal.portlet.action;
 
+import com.liferay.info.exception.NoSuchInfoItemException;
 import com.liferay.info.field.InfoFieldValue;
-import com.liferay.info.item.ClassPKInfoItemIdentifier;
-import com.liferay.info.item.GroupKeyInfoItemIdentifier;
-import com.liferay.info.item.InfoItemIdentifier;
 import com.liferay.info.item.InfoItemServiceTracker;
 import com.liferay.info.item.provider.InfoItemFieldValuesProvider;
 import com.liferay.info.item.provider.InfoItemObjectProvider;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.portlet.PortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.zip.ZipWriter;
 import com.liferay.portal.kernel.zip.ZipWriterFactoryUtil;
 import com.liferay.portal.util.PropsValues;
+import com.liferay.segments.constants.SegmentsExperienceConstants;
+import com.liferay.segments.model.SegmentsExperience;
+import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.translation.constants.TranslationPortletKeys;
 import com.liferay.translation.exporter.TranslationInfoItemFieldValuesExporter;
 import com.liferay.translation.exporter.TranslationInfoItemFieldValuesExporterTracker;
+import com.liferay.translation.web.internal.util.TranslationRequestUtil;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import java.util.Locale;
 import java.util.Optional;
 
 import javax.portlet.PortletException;
@@ -72,68 +72,42 @@ public class ExportTranslationMVCResourceCommand implements MVCResourceCommand {
 		throws PortletException {
 
 		try {
-			ThemeDisplay themeDisplay =
-				(ThemeDisplay)resourceRequest.getAttribute(
-					WebKeys.THEME_DISPLAY);
+			long[] segmentsExperienceIds = ParamUtil.getLongValues(
+				resourceRequest, "segmentsExperienceIds");
 
-			long classNameId = ParamUtil.getLong(
-				resourceRequest, "classNameId");
-
-			String className = _portal.getClassName(classNameId);
-
-			InfoItemFieldValuesProvider<Object> infoItemFieldValuesProvider =
-				_infoItemServiceTracker.getFirstInfoItemService(
-					InfoItemFieldValuesProvider.class, className);
-
-			InfoItemObjectProvider<Object> infoItemObjectProvider =
-				_infoItemServiceTracker.getFirstInfoItemService(
-					InfoItemObjectProvider.class, className);
-
-			Object object = infoItemObjectProvider.getInfoItem(
-				_getInfoItemIdentifier(resourceRequest));
-
-			InfoFieldValue<Object> infoFieldValue = _getTitleInfoFieldValue(
-				infoItemFieldValuesProvider, object);
-
-			String escapedTitle = StringUtil.removeSubstrings(
-				(String)infoFieldValue.getValue(themeDisplay.getLocale()),
-				PropsValues.DL_CHAR_BLACKLIST);
-
-			String sourceLanguageId = ParamUtil.getString(
-				resourceRequest, "sourceLanguageId");
-
-			ZipWriter zipWriter = ZipWriterFactoryUtil.getZipWriter();
+			String className = TranslationRequestUtil.getClassName(
+				resourceRequest, segmentsExperienceIds);
 
 			String exportMimeType = ParamUtil.getString(
 				resourceRequest, "exportMimeType");
+			String sourceLanguageId = ParamUtil.getString(
+				resourceRequest, "sourceLanguageId");
+			String[] targetLanguageIds = ParamUtil.getStringValues(
+				resourceRequest, "targetLanguageIds");
 
-			Optional<TranslationInfoItemFieldValuesExporter>
-				exportFileFormatOptional =
-					_translationInfoItemFieldValuesExporterTracker.
-						getTranslationInfoItemFieldValuesExporterOptional(
-							exportMimeType);
+			ZipWriter zipWriter = ZipWriterFactoryUtil.getZipWriter();
 
-			TranslationInfoItemFieldValuesExporter
-				translationInfoItemFieldValuesExporter =
-					exportFileFormatOptional.orElseThrow(
-						() -> new PortalException(
-							"Unknown export mime type: " + exportMimeType));
+			for (long classPK :
+					TranslationRequestUtil.getClassPKs(
+						resourceRequest, segmentsExperienceIds)) {
 
-			for (String targetLanguageId :
-					ParamUtil.getStringValues(
-						resourceRequest, "targetLanguageIds")) {
+				if ((classPK == SegmentsExperienceConstants.ID_DEFAULT) &&
+					className.equals(SegmentsExperience.class.getName())) {
 
-				zipWriter.addEntry(
-					StringBundler.concat(
-						StringPool.FORWARD_SLASH, escapedTitle, StringPool.DASH,
-						sourceLanguageId, StringPool.DASH, targetLanguageId,
-						".xlf"),
-					translationInfoItemFieldValuesExporter.
-						exportInfoItemFieldValues(
-							infoItemFieldValuesProvider.getInfoItemFieldValues(
-								object),
-							LocaleUtil.fromLanguageId(sourceLanguageId),
-							LocaleUtil.fromLanguageId(targetLanguageId)));
+					_addZipEntry(
+						zipWriter,
+						TranslationRequestUtil.getModelClassName(
+							resourceRequest),
+						TranslationRequestUtil.getModelClassPK(resourceRequest),
+						exportMimeType, sourceLanguageId, targetLanguageIds,
+						_portal.getLocale(resourceRequest));
+				}
+				else {
+					_addZipEntry(
+						zipWriter, className, classPK, exportMimeType,
+						sourceLanguageId, targetLanguageIds,
+						_portal.getLocale(resourceRequest));
+				}
 			}
 
 			try (InputStream inputStream = new FileInputStream(
@@ -141,9 +115,11 @@ public class ExportTranslationMVCResourceCommand implements MVCResourceCommand {
 
 				PortletResponseUtil.sendFile(
 					resourceRequest, resourceResponse,
-					StringBundler.concat(
-						escapedTitle, StringPool.DASH, sourceLanguageId,
-						".zip"),
+					_getZipFileName(
+						TranslationRequestUtil.getModelClassName(
+							resourceRequest),
+						TranslationRequestUtil.getModelClassPK(resourceRequest),
+						sourceLanguageId, _portal.getLocale(resourceRequest)),
 					inputStream, ContentTypes.APPLICATION_ZIP);
 			}
 
@@ -154,18 +130,49 @@ public class ExportTranslationMVCResourceCommand implements MVCResourceCommand {
 		}
 	}
 
-	private InfoItemIdentifier _getInfoItemIdentifier(
-		ResourceRequest resourceRequest) {
+	private void _addZipEntry(
+			ZipWriter zipWriter, String className, long classPK,
+			String exportMimeType, String sourceLanguageId,
+			String[] targetLanguageIds, Locale locale)
+		throws IOException, PortalException {
 
-		long groupId = ParamUtil.getLong(resourceRequest, "groupId");
+		InfoItemFieldValuesProvider<Object> infoItemFieldValuesProvider =
+			_infoItemServiceTracker.getFirstInfoItemService(
+				InfoItemFieldValuesProvider.class, className);
 
-		if (groupId == GroupConstants.DEFAULT_PARENT_GROUP_ID) {
-			return new ClassPKInfoItemIdentifier(
-				ParamUtil.getLong(resourceRequest, "key"));
+		InfoItemObjectProvider<Object> infoItemObjectProvider =
+			_infoItemServiceTracker.getFirstInfoItemService(
+				InfoItemObjectProvider.class, className);
+
+		Object object = infoItemObjectProvider.getInfoItem(classPK);
+
+		InfoFieldValue<Object> infoFieldValue = _getTitleInfoFieldValue(
+			infoItemFieldValuesProvider, object);
+
+		Optional<TranslationInfoItemFieldValuesExporter>
+			exportFileFormatOptional =
+				_translationInfoItemFieldValuesExporterTracker.
+					getTranslationInfoItemFieldValuesExporterOptional(
+						exportMimeType);
+
+		TranslationInfoItemFieldValuesExporter
+			translationInfoItemFieldValuesExporter =
+				exportFileFormatOptional.orElseThrow(
+					() -> new PortalException(
+						"Unknown export mime type: " + exportMimeType));
+
+		for (String targetLanguageId : targetLanguageIds) {
+			zipWriter.addEntry(
+				_getXLIFFFileName(
+					className, classPK, (String)infoFieldValue.getValue(locale),
+					sourceLanguageId, targetLanguageId, locale),
+				translationInfoItemFieldValuesExporter.
+					exportInfoItemFieldValues(
+						infoItemFieldValuesProvider.getInfoItemFieldValues(
+							object),
+						LocaleUtil.fromLanguageId(sourceLanguageId),
+						LocaleUtil.fromLanguageId(targetLanguageId)));
 		}
-
-		return new GroupKeyInfoItemIdentifier(
-			groupId, ParamUtil.getString(resourceRequest, "key"));
 	}
 
 	private InfoFieldValue<Object> _getTitleInfoFieldValue(
@@ -182,11 +189,67 @@ public class ExportTranslationMVCResourceCommand implements MVCResourceCommand {
 		return infoItemFieldValuesProvider.getInfoFieldValue(object, "name");
 	}
 
+	private String _getXLIFFFileName(
+			String className, long classPK, String title,
+			String sourceLanguageId, String targetLanguageId, Locale locale)
+		throws PortalException {
+
+		String suffix = StringPool.BLANK;
+
+		if (className.equals(SegmentsExperience.class.getName()) &&
+			(classPK != SegmentsExperienceConstants.ID_DEFAULT)) {
+
+			SegmentsExperience segmentsExperience =
+				_segmentsExperienceLocalService.getSegmentsExperience(classPK);
+
+			suffix = StringBundler.concat(
+				StringPool.SPACE, StringPool.OPEN_PARENTHESIS,
+				segmentsExperience.getName(locale),
+				StringPool.CLOSE_PARENTHESIS);
+		}
+
+		return StringBundler.concat(
+			StringPool.FORWARD_SLASH,
+			StringUtil.removeSubstrings(
+				title + suffix, PropsValues.DL_CHAR_BLACKLIST),
+			StringPool.DASH, sourceLanguageId, StringPool.DASH,
+			targetLanguageId, ".xlf");
+	}
+
+	private String _getZipFileName(
+			String className, long classPK, String sourceLanguageId,
+			Locale locale)
+		throws NoSuchInfoItemException {
+
+		InfoItemFieldValuesProvider<Object> infoItemFieldValuesProvider =
+			_infoItemServiceTracker.getFirstInfoItemService(
+				InfoItemFieldValuesProvider.class, className);
+
+		InfoItemObjectProvider<Object> infoItemObjectProvider =
+			_infoItemServiceTracker.getFirstInfoItemService(
+				InfoItemObjectProvider.class, className);
+
+		Object object = infoItemObjectProvider.getInfoItem(classPK);
+
+		InfoFieldValue<Object> infoFieldValue = _getTitleInfoFieldValue(
+			infoItemFieldValuesProvider, object);
+
+		String escapedTitle = StringUtil.removeSubstrings(
+			(String)infoFieldValue.getValue(locale),
+			PropsValues.DL_CHAR_BLACKLIST);
+
+		return StringBundler.concat(
+			escapedTitle, StringPool.DASH, sourceLanguageId, ".zip");
+	}
+
 	@Reference
 	private InfoItemServiceTracker _infoItemServiceTracker;
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private SegmentsExperienceLocalService _segmentsExperienceLocalService;
 
 	@Reference
 	private TranslationInfoItemFieldValuesExporterTracker

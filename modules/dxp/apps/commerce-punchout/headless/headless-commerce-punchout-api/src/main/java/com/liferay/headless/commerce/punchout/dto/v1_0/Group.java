@@ -54,6 +54,10 @@ public class Group implements Serializable {
 		return ObjectMapperUtil.readValue(Group.class, json);
 	}
 
+	public static Group unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Group.class, json);
+	}
+
 	@Schema
 	public String getId() {
 		return id;

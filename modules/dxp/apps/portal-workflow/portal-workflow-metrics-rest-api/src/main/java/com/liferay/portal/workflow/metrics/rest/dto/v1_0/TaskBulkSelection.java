@@ -54,6 +54,10 @@ public class TaskBulkSelection implements Serializable {
 		return ObjectMapperUtil.readValue(TaskBulkSelection.class, json);
 	}
 
+	public static TaskBulkSelection unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(TaskBulkSelection.class, json);
+	}
+
 	@Schema
 	public Long[] getAssigneeIds() {
 		return assigneeIds;

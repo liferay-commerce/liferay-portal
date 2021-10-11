@@ -56,6 +56,10 @@ public class DiscountRule implements Serializable {
 		return ObjectMapperUtil.readValue(DiscountRule.class, json);
 	}
 
+	public static DiscountRule unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(DiscountRule.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Map<String, Map<String, String>> getActions() {

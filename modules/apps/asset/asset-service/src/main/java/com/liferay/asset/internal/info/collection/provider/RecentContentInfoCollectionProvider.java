@@ -32,12 +32,10 @@ import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.ResourceBundle;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -81,10 +79,7 @@ public class RecentContentInfoCollectionProvider
 
 	@Override
 	public String getLabel(Locale locale) {
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			locale, getClass());
-
-		return LanguageUtil.get(resourceBundle, "recent-content");
+		return LanguageUtil.get(locale, "recent-content");
 	}
 
 	private SearchContext _getSearchContext() {

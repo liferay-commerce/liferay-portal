@@ -57,6 +57,10 @@ public class ObjectAction implements Serializable {
 		return ObjectMapperUtil.readValue(ObjectAction.class, json);
 	}
 
+	public static ObjectAction unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(ObjectAction.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Map<String, Map<String, String>> getActions() {

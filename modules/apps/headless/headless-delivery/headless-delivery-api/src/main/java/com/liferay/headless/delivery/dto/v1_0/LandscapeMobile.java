@@ -51,6 +51,10 @@ public class LandscapeMobile implements Serializable {
 		return ObjectMapperUtil.readValue(LandscapeMobile.class, json);
 	}
 
+	public static LandscapeMobile unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(LandscapeMobile.class, json);
+	}
+
 	@Schema
 	public Integer getModulesPerRow() {
 		return modulesPerRow;

@@ -23,7 +23,6 @@ import com.liferay.info.item.provider.InfoItemFormProvider;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -99,8 +98,8 @@ public class AddTemplateEntryMVCActionCommand
 		try {
 			DDMTemplate ddmTemplate = _ddmTemplateLocalService.addTemplate(
 				themeDisplay.getUserId(), serviceContext.getScopeGroupId(),
-				_portal.getClassNameId(InfoItemFormProvider.class), 0,
-				_portal.getClassNameId(InfoItemFormProvider.class), nameMap,
+				_portal.getClassNameId(TemplateEntry.class), 0,
+				_portal.getClassNameId(TemplateEntry.class), nameMap,
 				Collections.emptyMap(),
 				DDMTemplateConstants.TEMPLATE_TYPE_DISPLAY, StringPool.BLANK,
 				TemplateConstants.LANG_TYPE_FTL, _getScript(), serviceContext);
@@ -112,7 +111,7 @@ public class AddTemplateEntryMVCActionCommand
 				_templateEntryLocalService.addTemplateEntry(
 					themeDisplay.getUserId(), serviceContext.getScopeGroupId(),
 					ddmTemplate.getTemplateId(), infoItemClassName,
-					infoItemFormVariationKey);
+					infoItemFormVariationKey, serviceContext);
 
 			JSONPortletResponseUtil.writeJSON(
 				actionRequest, actionResponse,
@@ -133,37 +132,38 @@ public class AddTemplateEntryMVCActionCommand
 					).buildString()));
 		}
 		catch (PortalException portalException) {
-			JSONObject errorJSONObject = JSONFactoryUtil.createJSONObject();
-
-			if (portalException instanceof TemplateNameException) {
-				errorJSONObject.put(
-					"name",
-					LanguageUtil.get(
-						themeDisplay.getLocale(), "please-enter-a-valid-name"));
-			}
-			else if (portalException instanceof TemplateScriptException) {
-				errorJSONObject.put(
-					"other",
-					LanguageUtil.get(
-						themeDisplay.getLocale(),
-						"please-enter-a-valid-script"));
-			}
-			else {
-				errorJSONObject.put(
-					"other",
-					LanguageUtil.get(
-						themeDisplay.getLocale(),
-						"an-unexpected-error-occurred"));
-
-				if (_log.isDebugEnabled()) {
-					_log.debug(portalException.getMessage(), portalException);
-				}
-			}
-
 			JSONPortletResponseUtil.writeJSON(
 				actionRequest, actionResponse,
-				JSONUtil.put("error", errorJSONObject));
+				JSONUtil.put(
+					"error",
+					_getErrorJSONObject(portalException, themeDisplay)));
 		}
+	}
+
+	private JSONObject _getErrorJSONObject(
+		PortalException portalException, ThemeDisplay themeDisplay) {
+
+		if (portalException instanceof TemplateNameException) {
+			return JSONUtil.put(
+				"name",
+				LanguageUtil.get(
+					themeDisplay.getLocale(), "please-enter-a-valid-name"));
+		}
+		else if (portalException instanceof TemplateScriptException) {
+			return JSONUtil.put(
+				"other",
+				LanguageUtil.get(
+					themeDisplay.getLocale(), "please-enter-a-valid-script"));
+		}
+
+		if (_log.isDebugEnabled()) {
+			_log.debug(portalException.getMessage(), portalException);
+		}
+
+		return JSONUtil.put(
+			"other",
+			LanguageUtil.get(
+				themeDisplay.getLocale(), "an-unexpected-error-occurred"));
 	}
 
 	private String _getScript() {

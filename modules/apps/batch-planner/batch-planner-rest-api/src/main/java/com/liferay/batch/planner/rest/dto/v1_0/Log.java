@@ -51,6 +51,10 @@ public class Log implements Serializable {
 		return ObjectMapperUtil.readValue(Log.class, json);
 	}
 
+	public static Log unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Log.class, json);
+	}
+
 	@Schema
 	public String getDispatchTriggerExternalReferenceCode() {
 		return dispatchTriggerExternalReferenceCode;

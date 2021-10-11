@@ -15,9 +15,12 @@
 package com.liferay.account.admin.web.internal.display.context;
 
 import com.liferay.account.admin.web.internal.display.AddressDisplay;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItem;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
+
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -39,6 +42,11 @@ public class SelectAccountEntryAddressManagementToolbarDisplayContext
 	}
 
 	@Override
+	public List<LabelItem> getFilterLabelItems() {
+		return null;
+	}
+
+	@Override
 	public Boolean isSelectable() {
 		return false;
 	}
@@ -46,6 +54,11 @@ public class SelectAccountEntryAddressManagementToolbarDisplayContext
 	@Override
 	public Boolean isShowCreationMenu() {
 		return false;
+	}
+
+	@Override
+	protected String[] getNavigationKeys() {
+		return null;
 	}
 
 }

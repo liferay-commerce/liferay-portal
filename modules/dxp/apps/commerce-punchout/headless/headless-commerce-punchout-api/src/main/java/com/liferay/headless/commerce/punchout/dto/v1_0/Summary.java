@@ -51,6 +51,10 @@ public class Summary implements Serializable {
 		return ObjectMapperUtil.readValue(Summary.class, json);
 	}
 
+	public static Summary unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Summary.class, json);
+	}
+
 	@Schema
 	public String getCurrency() {
 		return currency;

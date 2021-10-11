@@ -53,10 +53,10 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.search.generic.NestedQuery;
 import com.liferay.portal.kernel.search.generic.TermQueryImpl;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.vulcan.util.TransformUtil;
 
@@ -68,10 +68,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.ResourceBundle;
 
 /**
  * @author Jorge Ferrer
+ * @author Guilherme Camacho
  */
 public class ObjectEntrySingleFormVariationInfoCollectionProvider
 	implements ConfigurableInfoCollectionProvider<ObjectEntry>,
@@ -120,6 +120,11 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 					_objectDefinition.getObjectDefinitionId(),
 				portalException);
 		}
+	}
+
+	@Override
+	public String getCollectionItemClassName() {
+		return _objectDefinition.getClassName();
 	}
 
 	@Override
@@ -186,6 +191,17 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 	@Override
 	public List<InfoFilter> getSupportedInfoFilters() {
 		return Arrays.asList(new KeywordsInfoFilter());
+	}
+
+	@Override
+	public boolean isAvailable() {
+		if (_objectDefinition.getCompanyId() !=
+				CompanyThreadLocal.getCompanyId()) {
+
+			return false;
+		}
+
+		return true;
 	}
 
 	private SearchContext _buildSearchContext(CollectionQuery collectionQuery)
@@ -327,20 +343,21 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			serviceContext.getLocale(), getClass());
-
 		options.add(
 			new SelectInfoFieldType.Option(
-				LanguageUtil.get(resourceBundle, "choose-an-option"), ""));
+				LanguageUtil.get(
+					serviceContext.getLocale(), "choose-an-option"),
+				""));
 
 		if (Objects.equals(objectField.getType(), "Boolean")) {
 			options.add(
 				new SelectInfoFieldType.Option(
-					LanguageUtil.get(resourceBundle, "true"), "true"));
+					LanguageUtil.get(serviceContext.getLocale(), "true"),
+					"true"));
 			options.add(
 				new SelectInfoFieldType.Option(
-					LanguageUtil.get(resourceBundle, "false"), "false"));
+					LanguageUtil.get(serviceContext.getLocale(), "false"),
+					"false"));
 		}
 		else if (objectField.getListTypeDefinitionId() != 0) {
 			options.addAll(

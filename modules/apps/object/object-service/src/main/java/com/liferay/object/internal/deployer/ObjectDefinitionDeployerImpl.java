@@ -16,10 +16,9 @@ package com.liferay.object.internal.deployer;
 
 import com.liferay.info.collection.provider.InfoCollectionProvider;
 import com.liferay.list.type.service.ListTypeEntryLocalService;
-import com.liferay.object.action.trigger.ObjectActionTrigger;
 import com.liferay.object.deployer.ObjectDefinitionDeployer;
-import com.liferay.object.internal.action.trigger.util.ObjectActionTriggerUtil;
 import com.liferay.object.internal.info.collection.provider.ObjectEntrySingleFormVariationInfoCollectionProvider;
+import com.liferay.object.internal.language.ObjectResourceBundle;
 import com.liferay.object.internal.related.models.ObjectEntry1to1ObjectRelatedModelsProviderImpl;
 import com.liferay.object.internal.related.models.ObjectEntry1toMObjectRelatedModelsProviderImpl;
 import com.liferay.object.internal.related.models.ObjectEntryMtoMObjectRelatedModelsProviderImpl;
@@ -41,6 +40,7 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.petra.reflect.ReflectionUtil;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.security.permission.ResourceActions;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
@@ -48,6 +48,8 @@ import com.liferay.portal.kernel.security.permission.resource.PortletResourcePer
 import com.liferay.portal.kernel.service.PersistedModelLocalServiceRegistry;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowHandler;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
@@ -59,6 +61,8 @@ import com.liferay.portal.search.spi.model.query.contributor.ModelPreFilterContr
 import com.liferay.portal.search.spi.model.registrar.ModelSearchRegistrarHelper;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -134,7 +138,9 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 					_listTypeEntryLocalService, objectDefinition,
 					_objectEntryLocalService, _objectFieldLocalService,
 					_objectScopeProviderRegistry),
-				null),
+				HashMapDictionaryBuilder.<String, Object>put(
+					"item.class.name", objectDefinition.getClassName()
+				).build()),
 			_bundleContext.registerService(
 				KeywordQueryContributor.class,
 				new ObjectEntryKeywordQueryContributor(
@@ -225,19 +231,13 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 						objectEntryModelSummaryContributor);
 				}));
 
-		for (ObjectActionTrigger objectActionTrigger :
-				ObjectActionTriggerUtil.getDefaultObjectActionTriggers()) {
-
+		for (Locale locale : LanguageUtil.getAvailableLocales()) {
 			serviceRegistrations.add(
 				_bundleContext.registerService(
-					ObjectActionTrigger.class, objectActionTrigger,
-					HashMapDictionaryBuilder.<String, Object>put(
-						"object.action.trigger.class.name",
-						objectDefinition.getClassName()
-					).put(
-						"object.action.trigger.key",
-						objectActionTrigger.getKey()
-					).build()));
+					ResourceBundle.class,
+					new ObjectResourceBundle(locale, objectDefinition),
+					MapUtil.singletonDictionary(
+						"language.id", LocaleUtil.toLanguageId(locale))));
 		}
 
 		return serviceRegistrations;

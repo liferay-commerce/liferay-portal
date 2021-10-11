@@ -12,20 +12,17 @@ definition {
 	}
 
 	tearDown {
-		var testPortalInstance = PropsUtil.get("test.portal.instance");
+		Navigator.openURL();
 
-		if ("${testPortalInstance}" == "true") {
-			PortalInstances.tearDownCP();
-		}
-		else {
-			Navigator.openURL();
-
-			CommerceConfiguration.commerceAdminTearDown();
-
-			CommerceConfiguration.commerceInitializersTearDown();
-
+		if (IsElementPresent(locator1 = "UserBar#USER_AVATAR_IMAGE")) {
 			User.logoutPG();
 		}
+
+		User.firstLoginPG();
+
+		CommerceConfiguration.commerceAdminTearDown();
+
+		CommerceConfiguration.commerceInitializersTearDown();
 	}
 
 	test CreateAnOption {
@@ -53,7 +50,6 @@ definition {
 	@priority = "3"
 	test RemoveAnOption {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CPCommerceOptions#RemoveAnOption";
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",

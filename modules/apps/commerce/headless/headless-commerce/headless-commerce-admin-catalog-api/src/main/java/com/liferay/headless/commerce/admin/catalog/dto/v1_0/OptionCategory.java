@@ -57,6 +57,10 @@ public class OptionCategory implements Serializable {
 		return ObjectMapperUtil.readValue(OptionCategory.class, json);
 	}
 
+	public static OptionCategory unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(OptionCategory.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Map<String, String> getDescription() {

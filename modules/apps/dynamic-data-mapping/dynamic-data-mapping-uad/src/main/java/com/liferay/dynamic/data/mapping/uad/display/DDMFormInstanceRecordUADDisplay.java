@@ -34,7 +34,6 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -146,11 +145,7 @@ public class DDMFormInstanceRecordUADDisplay
 			sb.append(DDMUADUtil.getFormattedName(ddmFormInstance));
 
 			sb.append(StringPool.SPACE);
-			sb.append(
-				LanguageUtil.get(
-					ResourceBundleUtil.getBundle(
-						locale, DDMFormInstanceRecordUADDisplay.class),
-					"record"));
+			sb.append(LanguageUtil.get(locale, "record"));
 			sb.append(StringPool.SPACE);
 			sb.append(StringPool.POUND);
 			sb.append(_getIndex(ddmFormInstanceRecord) + 1);

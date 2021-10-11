@@ -34,6 +34,8 @@ definition {
 		}
 		else {
 			JSONGroup.deleteGroupByName(groupName = "Site Name");
+
+			JSONUser.tearDownNonAdminUsers();
 		}
 
 		ACUtils.tearDownAC();
@@ -60,12 +62,22 @@ definition {
 			ACSegments.nameSegment(segmentName = "New Segment Test");
 		}
 
-		task ("Add a birthDate field") {
+		task ("Add a birthDate and createDate field") {
 			ACSegments.goToSidebarAttributes(criterion = "Individual Attributes");
 
-			ACSegments.addSegmentField(segmentField = "birthDate");
+			for (var criteriaName : list "birthDate,createDate") {
+				ACSegments.addSegmentField(segmentField = "${criteriaName}");
+			}
 
 			ACSegments.saveSegment();
+		}
+
+		task ("View the segment criteria") {
+			ACSegments.viewSegmentCriteriaIndividualAttributes(attributeName = "birthDate");
+
+			ACSegments.viewSegmentCriteriaIndividualAttributes(
+				attributeName = "createDate",
+				index = "2");
 		}
 
 		task ("Go to Segment and edit it") {
@@ -76,10 +88,16 @@ definition {
 
 		task ("Delete the criteria") {
 			ACSegments.deleteSegmentCriteria(criteriaName = "birthDate");
+
+			ACSegments.saveSegment();
 		}
 
-		task ("View the deleted criteria") {
-			ACSegments.viewDeletedCriteria();
+		task ("View the segment criteria") {
+			ACSegments.viewSegmentCriteriaIndividualAttributes(attributeName = "createDate");
+
+			AssertElementNotPresent(
+				key_CriteriaName = "birthDate",
+				locator1 = "ACSegments#CRITERIA_ROW");
 		}
 	}
 
@@ -252,7 +270,7 @@ definition {
 	@description = "Feature ID: Legacy | Automation ID: LRAC-8592 | Test Summary: Deleting a custom field that is used by a segment should reset the data"
 	@priority = "4"
 	test DeleteCustomFieldUsedSegmentResetData {
-		property portal.acceptance = "quarantine";
+		property portal.upstream = "quarantine";
 
 		// AC Refactor: This testcase fails due to a bug. Known User numbers do not appear.
 		// AC Refactor ticket: LRAC-9300

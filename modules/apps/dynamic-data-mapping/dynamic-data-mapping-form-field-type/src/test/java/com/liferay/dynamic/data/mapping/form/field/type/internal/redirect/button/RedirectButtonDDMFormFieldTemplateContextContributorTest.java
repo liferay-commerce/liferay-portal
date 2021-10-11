@@ -24,12 +24,10 @@ import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletURL;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 import javax.portlet.PortletURL;
 
@@ -49,19 +47,13 @@ import org.powermock.modules.junit4.PowerMockRunner;
 /**
  * @author Rodrigo Paulino
  */
-@PrepareForTest(
-	{
-		LanguageUtil.class, RequestBackedPortletURLFactoryUtil.class,
-		ResourceBundleUtil.class
-	}
-)
+@PrepareForTest({LanguageUtil.class, RequestBackedPortletURLFactoryUtil.class})
 @RunWith(PowerMockRunner.class)
 public class RedirectButtonDDMFormFieldTemplateContextContributorTest {
 
 	@Before
 	public void setUp() throws Exception {
 		_setUpRequestBackedPortletURLFactoryUtil();
-		_setUpResourceBundleUtil();
 	}
 
 	@Test
@@ -149,7 +141,7 @@ public class RedirectButtonDDMFormFieldTemplateContextContributorTest {
 
 		PowerMockito.when(
 			LanguageUtil.format(
-				Matchers.any(ResourceBundle.class), Matchers.eq(message),
+				Matchers.any(Locale.class), Matchers.eq(message),
 				Matchers.eq(messageArguments))
 		).thenReturn(
 			StringUtil.merge(
@@ -192,17 +184,6 @@ public class RedirectButtonDDMFormFieldTemplateContextContributorTest {
 				Matchers.any(HttpServletRequest.class))
 		).thenReturn(
 			requestBackedPortletURLFactory
-		);
-	}
-
-	private void _setUpResourceBundleUtil() {
-		PowerMockito.mockStatic(ResourceBundleUtil.class);
-
-		PowerMockito.when(
-			ResourceBundleUtil.getBundle(
-				Matchers.any(Locale.class), Matchers.any(Class.class))
-		).thenReturn(
-			PowerMockito.mock(ResourceBundle.class)
 		);
 	}
 

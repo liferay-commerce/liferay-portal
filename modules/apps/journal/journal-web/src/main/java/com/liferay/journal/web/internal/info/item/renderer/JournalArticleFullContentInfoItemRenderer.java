@@ -17,11 +17,9 @@ package com.liferay.journal.web.internal.info.item.renderer;
 import com.liferay.info.item.renderer.InfoItemRenderer;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.Locale;
-import java.util.ResourceBundle;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -42,10 +40,7 @@ public class JournalArticleFullContentInfoItemRenderer
 
 	@Override
 	public String getLabel(Locale locale) {
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			locale, getClass());
-
-		return LanguageUtil.get(resourceBundle, "default-template");
+		return LanguageUtil.get(locale, "default-template");
 	}
 
 	@Override

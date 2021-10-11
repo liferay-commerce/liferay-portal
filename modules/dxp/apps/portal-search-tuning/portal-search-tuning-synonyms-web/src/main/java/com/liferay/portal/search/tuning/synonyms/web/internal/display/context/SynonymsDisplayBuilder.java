@@ -40,8 +40,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionURL;
 import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
@@ -100,16 +98,15 @@ public class SynonymsDisplayBuilder {
 	}
 
 	protected RenderURL buildEditRenderURL(SynonymSet synonymSet) {
-		RenderURL editRenderURL = _renderResponse.createRenderURL();
-
-		editRenderURL.setParameter(
-			"mvcRenderCommandName", "/synonyms/edit_synonym_sets");
-		editRenderURL.setParameter(
-			"redirect", _portal.getCurrentURL(_httpServletRequest));
-		editRenderURL.setParameter(
-			"synonymSetId", synonymSet.getSynonymSetDocumentId());
-
-		return editRenderURL;
+		return PortletURLBuilder.createRenderURL(
+			_renderResponse
+		).setMVCRenderCommandName(
+			"/synonyms/edit_synonym_sets"
+		).setRedirect(
+			_portal.getCurrentURL(_httpServletRequest)
+		).setParameter(
+			"synonymSetId", synonymSet.getSynonymSetDocumentId()
+		).buildRenderURL();
 	}
 
 	protected SearchContainer<SynonymSetDisplayContext> buildSearchContainer() {
@@ -190,18 +187,19 @@ public class SynonymsDisplayBuilder {
 		).add(
 			dropdownItem -> {
 				dropdownItem.putData("action", "delete");
-
-				ActionURL deleteURL = _renderResponse.createActionURL();
-
-				deleteURL.setParameter(
-					ActionRequest.ACTION_NAME, "/synonyms/delete_synonym_sets");
-				deleteURL.setParameter(Constants.CMD, Constants.DELETE);
-				deleteURL.setParameter(
-					"rowIds", synonymSet.getSynonymSetDocumentId());
-				deleteURL.setParameter(
-					"redirect", _portal.getCurrentURL(_httpServletRequest));
-
-				dropdownItem.putData("deleteURL", deleteURL.toString());
+				dropdownItem.putData(
+					"deleteURL",
+					PortletURLBuilder.createActionURL(
+						_renderResponse
+					).setActionName(
+						"/synonyms/delete_synonym_sets"
+					).setCMD(
+						Constants.DELETE
+					).setRedirect(
+						_portal.getCurrentURL(_httpServletRequest)
+					).setParameter(
+						"rowIds", synonymSet.getSynonymSetDocumentId()
+					).buildString());
 
 				dropdownItem.setIcon("times");
 				dropdownItem.setLabel(

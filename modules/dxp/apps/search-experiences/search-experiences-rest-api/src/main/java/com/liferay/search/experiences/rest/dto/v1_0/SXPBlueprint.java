@@ -53,6 +53,10 @@ public class SXPBlueprint implements Serializable {
 		return ObjectMapperUtil.readValue(SXPBlueprint.class, json);
 	}
 
+	public static SXPBlueprint unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(SXPBlueprint.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Configuration getConfiguration() {

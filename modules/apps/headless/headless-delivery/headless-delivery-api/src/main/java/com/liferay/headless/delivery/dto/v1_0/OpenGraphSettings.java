@@ -56,6 +56,10 @@ public class OpenGraphSettings implements Serializable {
 		return ObjectMapperUtil.readValue(OpenGraphSettings.class, json);
 	}
 
+	public static OpenGraphSettings unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(OpenGraphSettings.class, json);
+	}
+
 	@Schema(description = "The Open Graph's description.")
 	public String getDescription() {
 		return description;

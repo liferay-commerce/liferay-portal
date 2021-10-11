@@ -56,6 +56,10 @@ public class AccountGroup implements Serializable {
 		return ObjectMapperUtil.readValue(AccountGroup.class, json);
 	}
 
+	public static AccountGroup unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(AccountGroup.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Map<String, ?> getCustomFields() {

@@ -23,6 +23,11 @@ public class BaseModelListener<T extends BaseModel<T>>
 	implements ModelListener<T> {
 
 	@Override
+	public Class<?> getModelClass() {
+		return null;
+	}
+
+	@Override
 	public void onAfterAddAssociation(
 			Object classPK, String associationClassName,
 			Object associationClassPK)

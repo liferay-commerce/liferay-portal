@@ -54,6 +54,10 @@ public class AdaptedImage implements Serializable {
 		return ObjectMapperUtil.readValue(AdaptedImage.class, json);
 	}
 
+	public static AdaptedImage unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(AdaptedImage.class, json);
+	}
+
 	@Schema(description = "The image's relative URL.")
 	public String getContentUrl() {
 		return contentUrl;

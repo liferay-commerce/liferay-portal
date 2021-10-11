@@ -58,6 +58,10 @@ public class AttachmentUrl implements Serializable {
 		return ObjectMapperUtil.readValue(AttachmentUrl.class, json);
 	}
 
+	public static AttachmentUrl unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(AttachmentUrl.class, json);
+	}
+
 	@Schema
 	@Valid
 	public CustomField[] getCustomFields() {

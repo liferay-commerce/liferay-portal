@@ -30,7 +30,6 @@ import com.liferay.portal.kernel.portlet.PortletURLFactory;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PwdGenerator;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import java.io.IOException;
@@ -38,7 +37,6 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.ResourceBundle;
 import java.util.function.Function;
 
 import javax.portlet.PortletRequest;
@@ -119,10 +117,7 @@ public class OAuth2ControllerFactory {
 	}
 
 	private String _translate(Locale locale, String key) {
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			locale, getClass());
-
-		return _language.get(resourceBundle, key);
+		return _language.get(locale, key);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

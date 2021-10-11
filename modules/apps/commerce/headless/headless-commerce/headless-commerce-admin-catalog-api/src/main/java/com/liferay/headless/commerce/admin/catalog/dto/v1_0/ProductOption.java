@@ -57,6 +57,10 @@ public class ProductOption implements Serializable {
 		return ObjectMapperUtil.readValue(ProductOption.class, json);
 	}
 
+	public static ProductOption unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(ProductOption.class, json);
+	}
+
 	@Schema
 	public Long getCatalogId() {
 		return catalogId;

@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Frontend Editor Simple Web
 Bundle-SymbolicName: com.liferay.frontend.editor.simple.web
-Bundle-Version: 5.0.4
+Bundle-Version: 5.0.5
 Web-ContextPath: /frontend-editor-simple-web
 -donotcopy: (\.touch|.*_diffs.*|.*.properties)"

@@ -53,6 +53,11 @@ public class AggregationConfiguration implements Serializable {
 		return ObjectMapperUtil.readValue(AggregationConfiguration.class, json);
 	}
 
+	public static AggregationConfiguration unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			AggregationConfiguration.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Object getAggs() {

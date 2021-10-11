@@ -65,11 +65,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionURL;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
-import javax.portlet.RenderResponse;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -147,23 +144,18 @@ public class CPDefinitionsDisplayContext
 	}
 
 	public List<DropdownItem> getBulkActionDropdownItems() {
-		List<DropdownItem> bulkActions = new ArrayList<>();
-
-		RenderResponse renderResponse = cpRequestHelper.getRenderResponse();
-
-		ActionURL actionURL = renderResponse.createActionURL();
-
-		actionURL.setParameter(
-			ActionRequest.ACTION_NAME, "/cp_definitions/edit_cp_definition");
-		actionURL.setParameter(Constants.CMD, Constants.DELETE);
-
-		bulkActions.add(
+		return ListUtil.fromArray(
 			new ClayDataSetActionDropdownItem(
-				actionURL.toString(), "trash", "delete", "delete",
+				PortletURLBuilder.createActionURL(
+					cpRequestHelper.getRenderResponse()
+				).setActionName(
+					"/cp_definitions/edit_cp_definition"
+				).setCMD(
+					Constants.DELETE
+				).buildString(),
+				"trash", "delete", "delete",
 				LanguageUtil.get(httpServletRequest, "delete"), "delete",
 				null));
-
-		return bulkActions;
 	}
 
 	public String getChannelItemSelectorUrl() throws PortalException {

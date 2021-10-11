@@ -54,6 +54,11 @@ public class RowViewportDefinition implements Serializable {
 		return ObjectMapperUtil.readValue(RowViewportDefinition.class, json);
 	}
 
+	public static RowViewportDefinition unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			RowViewportDefinition.class, json);
+	}
+
 	@Schema(description = "The number of modules per row.")
 	public Integer getModulesPerRow() {
 		return modulesPerRow;

@@ -34,4 +34,9 @@ export declare const firstLetterUppercase: TStringFn;
  * frontend with themeDisplay.getDefaultLanguageId()
  */
 export declare const normalizeLanguageId: TStringFn;
+
+/**
+ * Normalize string in camel case pattern.
+ */
+export declare const toCamelCase: TStringFn;
 export {};

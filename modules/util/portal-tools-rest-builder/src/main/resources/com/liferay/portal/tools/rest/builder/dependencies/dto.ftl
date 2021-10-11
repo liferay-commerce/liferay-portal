@@ -117,6 +117,10 @@ public class ${schemaName} <#if dtoParentClassName?has_content>extends ${dtoPare
 		return ObjectMapperUtil.readValue(${schemaName}.class, json);
 	}
 
+	public static ${schemaName} unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(${schemaName}.class, json);
+	}
+
 	<#assign
 		enumSchemas = freeMarkerTool.getDTOEnumSchemas(openAPIYAML, schema)
 		properties = freeMarkerTool.getDTOProperties(configYAML, openAPIYAML, schema)

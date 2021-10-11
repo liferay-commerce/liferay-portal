@@ -58,6 +58,7 @@ public class ObjectRelationshipWrapper
 		attributes.put("dbTableName", getDBTableName());
 		attributes.put("label", getLabel());
 		attributes.put("name", getName());
+		attributes.put("reverse", isReverse());
 		attributes.put("type", getType());
 
 		return attributes;
@@ -154,6 +155,12 @@ public class ObjectRelationshipWrapper
 
 		if (name != null) {
 			setName(name);
+		}
+
+		Boolean reverse = (Boolean)attributes.get("reverse");
+
+		if (reverse != null) {
+			setReverse(reverse);
 		}
 
 		String type = (String)attributes.get("type");
@@ -375,6 +382,16 @@ public class ObjectRelationshipWrapper
 	}
 
 	/**
+	 * Returns the reverse of this object relationship.
+	 *
+	 * @return the reverse of this object relationship
+	 */
+	@Override
+	public boolean getReverse() {
+		return model.getReverse();
+	}
+
+	/**
 	 * Returns the type of this object relationship.
 	 *
 	 * @return the type of this object relationship
@@ -422,6 +439,16 @@ public class ObjectRelationshipWrapper
 	@Override
 	public String getUuid() {
 		return model.getUuid();
+	}
+
+	/**
+	 * Returns <code>true</code> if this object relationship is reverse.
+	 *
+	 * @return <code>true</code> if this object relationship is reverse; <code>false</code> otherwise
+	 */
+	@Override
+	public boolean isReverse() {
+		return model.isReverse();
 	}
 
 	@Override
@@ -626,6 +653,16 @@ public class ObjectRelationshipWrapper
 	@Override
 	public void setPrimaryKey(long primaryKey) {
 		model.setPrimaryKey(primaryKey);
+	}
+
+	/**
+	 * Sets whether this object relationship is reverse.
+	 *
+	 * @param reverse the reverse of this object relationship
+	 */
+	@Override
+	public void setReverse(boolean reverse) {
+		model.setReverse(reverse);
 	}
 
 	/**

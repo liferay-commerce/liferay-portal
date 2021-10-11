@@ -53,6 +53,10 @@ public class DocumentType implements Serializable {
 		return ObjectMapperUtil.readValue(DocumentType.class, json);
 	}
 
+	public static DocumentType unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(DocumentType.class, json);
+	}
+
 	@Schema(
 		description = "The list of languages the document type has a translation for."
 	)

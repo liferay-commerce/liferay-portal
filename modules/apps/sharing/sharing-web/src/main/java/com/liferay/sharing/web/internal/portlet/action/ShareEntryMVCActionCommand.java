@@ -32,14 +32,12 @@ import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.sharing.constants.SharingPortletKeys;
 import com.liferay.sharing.service.SharingEntryService;
 import com.liferay.sharing.web.internal.display.SharingEntryPermissionDisplayAction;
 
 import java.util.Date;
-import java.util.ResourceBundle;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -91,9 +89,6 @@ public class ShareEntryMVCActionCommand extends BaseMVCActionCommand {
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			actionRequest);
 
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			themeDisplay.getLocale(), getClass());
-
 		try {
 			TransactionInvokerUtil.invoke(
 				_transactionConfig,
@@ -122,7 +117,8 @@ public class ShareEntryMVCActionCommand extends BaseMVCActionCommand {
 			JSONObject jsonObject = JSONUtil.put(
 				"successMessage",
 				LanguageUtil.get(
-					resourceBundle, "the-item-was-shared-successfully"));
+					themeDisplay.getLocale(),
+					"the-item-was-shared-successfully"));
 
 			JSONPortletResponseUtil.writeJSON(
 				actionRequest, actionResponse, jsonObject);
@@ -141,7 +137,8 @@ public class ShareEntryMVCActionCommand extends BaseMVCActionCommand {
 			}
 
 			JSONObject jsonObject = JSONUtil.put(
-				"errorMessage", LanguageUtil.get(resourceBundle, errorMessage));
+				"errorMessage",
+				LanguageUtil.get(themeDisplay.getLocale(), errorMessage));
 
 			JSONPortletResponseUtil.writeJSON(
 				actionRequest, actionResponse, jsonObject);

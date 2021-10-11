@@ -60,6 +60,10 @@ public class OrderItem implements Serializable {
 		return ObjectMapperUtil.readValue(OrderItem.class, json);
 	}
 
+	public static OrderItem unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(OrderItem.class, json);
+	}
+
 	@DecimalMin("0")
 	@Schema
 	public Long getBookedQuantityId() {

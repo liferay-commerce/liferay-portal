@@ -57,6 +57,11 @@ public class OrganizationContactInformation implements Serializable {
 			OrganizationContactInformation.class, json);
 	}
 
+	public static OrganizationContactInformation unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			OrganizationContactInformation.class, json);
+	}
+
 	@Schema(
 		description = "The organization's email addresses, with one optionally marked as primary."
 	)

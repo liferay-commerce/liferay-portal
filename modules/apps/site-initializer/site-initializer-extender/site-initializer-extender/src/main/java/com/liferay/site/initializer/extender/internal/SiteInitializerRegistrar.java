@@ -39,6 +39,7 @@ import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServ
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
 import com.liferay.layout.util.LayoutCopyHelper;
 import com.liferay.object.admin.rest.resource.v1_0.ObjectDefinitionResource;
+import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
@@ -97,7 +98,8 @@ public class SiteInitializerRegistrar {
 			layoutPageTemplateStructureLocalService,
 		LayoutSetLocalService layoutSetLocalService,
 		ObjectDefinitionResource.Factory objectDefinitionResourceFactory,
-		Portal portal, RemoteAppEntryLocalService remoteAppEntryLocalService,
+		ObjectEntryLocalService objectEntryLocalService, Portal portal,
+		RemoteAppEntryLocalService remoteAppEntryLocalService,
 		ResourcePermissionLocalService resourcePermissionLocalService,
 		RoleLocalService roleLocalService,
 		SAPEntryLocalService sapEntryLocalService,
@@ -144,6 +146,7 @@ public class SiteInitializerRegistrar {
 			layoutPageTemplateStructureLocalService;
 		_layoutSetLocalService = layoutSetLocalService;
 		_objectDefinitionResourceFactory = objectDefinitionResourceFactory;
+		_objectEntryLocalService = objectEntryLocalService;
 		_portal = portal;
 		_remoteAppEntryLocalService = remoteAppEntryLocalService;
 		_resourcePermissionLocalService = resourcePermissionLocalService;
@@ -186,7 +189,7 @@ public class SiteInitializerRegistrar {
 				_layoutPageTemplatesImporter,
 				_layoutPageTemplateStructureLocalService,
 				_layoutSetLocalService, _objectDefinitionResourceFactory,
-				_portal, _remoteAppEntryLocalService,
+				_objectEntryLocalService, _portal, _remoteAppEntryLocalService,
 				_resourcePermissionLocalService, _roleLocalService,
 				_sapEntryLocalService, _servletContext, _settingsFactory,
 				_siteNavigationMenuItemLocalService,
@@ -236,6 +239,7 @@ public class SiteInitializerRegistrar {
 	private final LayoutSetLocalService _layoutSetLocalService;
 	private final ObjectDefinitionResource.Factory
 		_objectDefinitionResourceFactory;
+	private final ObjectEntryLocalService _objectEntryLocalService;
 	private final Portal _portal;
 	private final RemoteAppEntryLocalService _remoteAppEntryLocalService;
 	private final ResourcePermissionLocalService

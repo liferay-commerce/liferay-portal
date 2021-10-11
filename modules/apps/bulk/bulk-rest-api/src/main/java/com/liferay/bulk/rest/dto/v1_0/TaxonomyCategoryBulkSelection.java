@@ -54,6 +54,11 @@ public class TaxonomyCategoryBulkSelection implements Serializable {
 			TaxonomyCategoryBulkSelection.class, json);
 	}
 
+	public static TaxonomyCategoryBulkSelection unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			TaxonomyCategoryBulkSelection.class, json);
+	}
+
 	@Schema
 	@Valid
 	public DocumentBulkSelection getDocumentBulkSelection() {

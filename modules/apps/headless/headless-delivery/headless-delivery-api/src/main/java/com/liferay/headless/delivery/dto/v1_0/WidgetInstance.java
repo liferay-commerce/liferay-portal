@@ -55,6 +55,10 @@ public class WidgetInstance implements Serializable {
 		return ObjectMapperUtil.readValue(WidgetInstance.class, json);
 	}
 
+	public static WidgetInstance unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(WidgetInstance.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Map<String, Object> getWidgetConfig() {

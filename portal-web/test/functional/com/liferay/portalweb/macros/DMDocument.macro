@@ -35,9 +35,16 @@ definition {
 		}
 		else {
 			if (isSet(dmDocumentFile)) {
-				UploadCommonFile.uploadCommonFileHiddenNoMouseOver(
-					locator1 = "TextInput#FILE",
-					value1 = "${dmDocumentFile}");
+				if (isSet(dmDocumentFilePath)) {
+					UploadFileWithCustomPath.uploadFile(
+						fileName = "${dmDocumentFile}",
+						filePath = "${dmDocumentFilePath}");
+				}
+				else {
+					UploadCommonFile.uploadCommonFileHiddenNoMouseOver(
+						locator1 = "TextInput#FILE",
+						value1 = "${dmDocumentFile}");
+				}
 			}
 		}
 
@@ -470,9 +477,16 @@ definition {
 						value1 = "${dmDocumentFile}");
 				}
 				else {
-					UploadCommonFile.uploadCommonFileHiddenNoMouseOver(
-						locator1 = "TextInput#FILE",
-						value1 = "${dmDocumentFile}");
+					if (isSet(dmDocumentFilePath)) {
+						UploadFileWithCustomPath.uploadFile(
+							fileName = "${dmDocumentFile}",
+							filePath = "${dmDocumentFilePath}");
+					}
+					else {
+						UploadCommonFile.uploadCommonFileHiddenNoMouseOver(
+							locator1 = "TextInput#FILE",
+							value1 = "${dmDocumentFile}");
+					}
 				}
 
 				AssertChecked(locator1 = "DynamicUploader#SELECT_ALL_CHECKBOX");
@@ -1197,7 +1211,7 @@ definition {
 		else {
 			AssertTextEquals.assertPartialText(
 				locator1 = "Modal#BODY",
-				value1 = "You're editing the categories for the selected item.");
+				value1 = "You are editing the categories for the selected item.");
 		}
 
 		for (var categoryName : list "${categoryNameList}") {
@@ -1598,7 +1612,7 @@ definition {
 		else {
 			AssertTextEquals.assertPartialText(
 				locator1 = "Modal#BODY",
-				value1 = "You're editing the tags for the selected item.");
+				value1 = "You are editing the tags for the selected item.");
 		}
 
 		Type(
@@ -2990,8 +3004,8 @@ definition {
 				value1 = "${dmDocumentType}");
 		}
 
-		if (isSet(titleWithForbiddenCharacters)) {
-			var key_dmDocumentTitle = "${escapedDocumentTitle}";
+		if (isSet(specialCharacters)) {
+			var key_dmDocumentTitle = "${escapedTitle}";
 		}
 
 		AssertClick(

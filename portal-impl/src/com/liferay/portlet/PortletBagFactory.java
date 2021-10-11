@@ -339,19 +339,17 @@ public class PortletBagFactory {
 				assetRendererEnabledPropertyValue, true);
 
 			if (assetRendererEnabledValue) {
-				AssetRendererFactory<?> assetRendererFactoryInstance =
-					_newInstance(
-						AssetRendererFactory.class, assetRendererFactoryClass);
+				AssetRendererFactory<?> assetRendererFactory = _newInstance(
+					AssetRendererFactory.class, assetRendererFactoryClass);
 
-				assetRendererFactoryInstance.setClassName(
-					assetRendererFactoryInstance.getClassName());
-				assetRendererFactoryInstance.setPortletId(
-					portlet.getPortletId());
+				assetRendererFactory.setClassName(
+					assetRendererFactory.getClassName());
+				assetRendererFactory.setPortletId(portlet.getPortletId());
 
 				ServiceRegistration<?> serviceRegistration =
 					bundleContext.registerService(
-						AssetRendererFactory.class,
-						assetRendererFactoryInstance, properties);
+						AssetRendererFactory.class, assetRendererFactory,
+						properties);
 
 				serviceRegistrations.add(serviceRegistration);
 			}

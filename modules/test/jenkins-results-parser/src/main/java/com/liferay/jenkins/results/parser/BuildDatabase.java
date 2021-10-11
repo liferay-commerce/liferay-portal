@@ -31,7 +31,7 @@ public interface BuildDatabase {
 
 	public static final String FILE_NAME_BUILD_DATABASE = "build-database.json";
 
-	public File getBuildDatabaseJSFile();
+	public File getBuildDatabaseFile();
 
 	public JSONObject getBuildDataJSONObject(String key);
 
@@ -41,7 +41,9 @@ public interface BuildDatabase {
 
 	public Properties getProperties(String key, Pattern pattern);
 
-	public Workspace getWorkspace();
+	public PullRequest getPullRequest(String key);
+
+	public Workspace getWorkspace(String key);
 
 	public WorkspaceGitRepository getWorkspaceGitRepository(String key);
 
@@ -49,7 +51,9 @@ public interface BuildDatabase {
 
 	public boolean hasProperties(String key);
 
-	public boolean hasWorkspace();
+	public boolean hasPullRequest(String key);
+
+	public boolean hasWorkspace(String key);
 
 	public boolean hasWorkspaceGitRepository(String key);
 
@@ -59,7 +63,9 @@ public interface BuildDatabase {
 
 	public void putProperties(String key, Properties properties);
 
-	public void putWorkspace(Workspace workspace);
+	public void putPullRequest(String key, PullRequest pullRequest);
+
+	public void putWorkspace(String key, Workspace workspace);
 
 	public void putWorkspaceGitRepository(
 		String key, WorkspaceGitRepository workspaceGitRepository);

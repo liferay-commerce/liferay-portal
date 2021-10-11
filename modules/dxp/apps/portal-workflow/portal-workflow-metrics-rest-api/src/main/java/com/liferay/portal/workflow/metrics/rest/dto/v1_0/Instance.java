@@ -61,6 +61,10 @@ public class Instance implements Serializable {
 		return ObjectMapperUtil.readValue(Instance.class, json);
 	}
 
+	public static Instance unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Instance.class, json);
+	}
+
 	@Schema
 	public String getAssetTitle() {
 		return assetTitle;

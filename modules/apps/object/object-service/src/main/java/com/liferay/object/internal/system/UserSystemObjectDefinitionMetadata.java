@@ -39,13 +39,13 @@ public class UserSystemObjectDefinitionMetadata
 	extends BaseSystemObjectDefinitionMetadata {
 
 	@Override
-	public String getClassName() {
-		return User.class.getName();
+	public Map<Locale, String> getLabelMap() {
+		return createLabelMap("user");
 	}
 
 	@Override
-	public Map<Locale, String> getLabelMap() {
-		return createLabelMap("user");
+	public Class<?> getModelClass() {
+		return User.class;
 	}
 
 	@Override

@@ -51,6 +51,10 @@ public class HighlightField implements Serializable {
 		return ObjectMapperUtil.readValue(HighlightField.class, json);
 	}
 
+	public static HighlightField unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(HighlightField.class, json);
+	}
+
 	@Schema
 	public Integer getFragment_offset() {
 		return fragment_offset;

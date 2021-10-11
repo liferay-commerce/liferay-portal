@@ -57,6 +57,10 @@ public class Error implements Serializable {
 		return ObjectMapperUtil.readValue(Error.class, json);
 	}
 
+	public static Error unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Error.class, json);
+	}
+
 	@Schema(description = "Internal error code mapping")
 	public Integer getErrorCode() {
 		return errorCode;

@@ -56,6 +56,11 @@ public class DiscountProductGroup implements Serializable {
 		return ObjectMapperUtil.readValue(DiscountProductGroup.class, json);
 	}
 
+	public static DiscountProductGroup unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			DiscountProductGroup.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Map<String, Map<String, String>> getActions() {

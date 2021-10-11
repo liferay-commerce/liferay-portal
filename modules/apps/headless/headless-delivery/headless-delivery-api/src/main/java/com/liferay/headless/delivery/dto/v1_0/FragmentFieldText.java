@@ -56,6 +56,10 @@ public class FragmentFieldText implements Serializable {
 		return ObjectMapperUtil.readValue(FragmentFieldText.class, json);
 	}
 
+	public static FragmentFieldText unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(FragmentFieldText.class, json);
+	}
+
 	@Schema(description = "A link to a fragment.")
 	@Valid
 	public FragmentLink getFragmentLink() {

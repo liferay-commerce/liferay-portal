@@ -51,6 +51,10 @@ public class CouponCode implements Serializable {
 		return ObjectMapperUtil.readValue(CouponCode.class, json);
 	}
 
+	public static CouponCode unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(CouponCode.class, json);
+	}
+
 	@Schema
 	public String getCode() {
 		return code;

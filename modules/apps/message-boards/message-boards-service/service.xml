@@ -373,6 +373,10 @@
 			<finder-column name="classPK" />
 			<finder-column name="status" />
 		</finder>
+
+		<!-- References -->
+
+		<reference entity="AssetEntry" package-path="com.liferay.portlet.asset" />
 	</entity>
 	<entity human-name="message boards stats user" local-service="true" name="MBStatsUser" remote-service="false">
 	</entity>
@@ -470,6 +474,10 @@
 			<finder-column comparator="!=" name="categoryId" />
 			<finder-column comparator="!=" name="status" />
 		</finder>
+
+		<!-- References -->
+
+		<reference entity="AssetEntry" package-path="com.liferay.portlet.asset" />
 	</entity>
 	<entity human-name="message boards thread flag" local-service="true" name="MBThreadFlag" remote-service="false" uuid="true">
 

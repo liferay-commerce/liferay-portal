@@ -56,6 +56,10 @@ public class FragmentFieldHTML implements Serializable {
 		return ObjectMapperUtil.readValue(FragmentFieldHTML.class, json);
 	}
 
+	public static FragmentFieldHTML unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(FragmentFieldHTML.class, json);
+	}
+
 	@Schema(
 		description = "The fragment field's HTML. Can be inline or mapped to an external value."
 	)

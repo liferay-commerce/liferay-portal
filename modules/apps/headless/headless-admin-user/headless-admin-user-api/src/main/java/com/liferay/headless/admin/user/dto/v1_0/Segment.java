@@ -65,6 +65,10 @@ public class Segment implements Serializable {
 		return ObjectMapperUtil.readValue(Segment.class, json);
 	}
 
+	public static Segment unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Segment.class, json);
+	}
+
 	@Schema(
 		description = "A flag that indicates whether the segment is active."
 	)

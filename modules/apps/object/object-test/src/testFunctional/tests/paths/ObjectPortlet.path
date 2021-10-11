@@ -61,6 +61,11 @@
 		<td></td>
 	</tr>
 	<tr>
+		<td>NO_FIELDS_WERE_FOUND_MESSAGE</td>
+		<td>//div[contains(@class,'dropdown-section text-muted') and contains (.,'No fields were found.')]</td>
+		<td></td>
+	</tr>
+	<tr>
 		<td>PAGINATION_ITEMS_PER_PAGE_SELECT</td>
 		<td>//div[contains(@class,'pagination-items-per-page')]/button[contains(@class,'dropdown-toggle')]</td>
 		<td></td>

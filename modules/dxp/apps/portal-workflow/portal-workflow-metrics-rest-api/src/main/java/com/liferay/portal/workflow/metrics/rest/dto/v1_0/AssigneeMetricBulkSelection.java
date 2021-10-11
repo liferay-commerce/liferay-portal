@@ -59,6 +59,11 @@ public class AssigneeMetricBulkSelection implements Serializable {
 			AssigneeMetricBulkSelection.class, json);
 	}
 
+	public static AssigneeMetricBulkSelection unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			AssigneeMetricBulkSelection.class, json);
+	}
+
 	@Schema
 	public Boolean getCompleted() {
 		return completed;

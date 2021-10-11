@@ -56,6 +56,10 @@ public class OrganizationBrief implements Serializable {
 		return ObjectMapperUtil.readValue(OrganizationBrief.class, json);
 	}
 
+	public static OrganizationBrief unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(OrganizationBrief.class, json);
+	}
+
 	@Schema(description = "The organization's ID.")
 	public Long getId() {
 		return id;

@@ -54,6 +54,10 @@ public class MasterPage implements Serializable {
 		return ObjectMapperUtil.readValue(MasterPage.class, json);
 	}
 
+	public static MasterPage unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(MasterPage.class, json);
+	}
+
 	@Schema(description = "The master page's key.")
 	public String getKey() {
 		return key;

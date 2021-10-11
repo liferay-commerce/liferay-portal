@@ -58,6 +58,10 @@ public class Sku implements Serializable {
 		return ObjectMapperUtil.readValue(Sku.class, json);
 	}
 
+	public static Sku unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Sku.class, json);
+	}
+
 	@Schema
 	public String[] getAllowedOrderQuantities() {
 		return allowedOrderQuantities;

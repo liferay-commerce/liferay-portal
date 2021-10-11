@@ -54,6 +54,10 @@ public class ContentSubtype implements Serializable {
 		return ObjectMapperUtil.readValue(ContentSubtype.class, json);
 	}
 
+	public static ContentSubtype unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(ContentSubtype.class, json);
+	}
+
 	@Schema(description = "The content subtype's ID.")
 	public Long getSubtypeId() {
 		return subtypeId;

@@ -27,7 +27,7 @@ DDMStructure ddmStructure = journalEditDDMTemplateDisplayContext.getDDMStructure
 <aui:model-context bean="<%= ddmTemplate %>" model="<%= DDMTemplate.class %>" />
 
 <div class="form-group">
-	<label class="control-label" for="<%= liferayPortletResponse.getNamespace() + "ddmStructure" %>">
+	<label class="control-label" for="<portlet:namespace />ddmStructure">
 		<liferay-ui:message key="structure" />
 
 		<liferay-ui:icon-help message="structure-help" />

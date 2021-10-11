@@ -54,6 +54,11 @@ public class WorkflowTaskAssignableUsers implements Serializable {
 			WorkflowTaskAssignableUsers.class, json);
 	}
 
+	public static WorkflowTaskAssignableUsers unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			WorkflowTaskAssignableUsers.class, json);
+	}
+
 	@Schema
 	@Valid
 	public WorkflowTaskAssignableUser[] getWorkflowTaskAssignableUsers() {

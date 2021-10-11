@@ -54,6 +54,10 @@ public class Pin implements Serializable {
 		return ObjectMapperUtil.readValue(Pin.class, json);
 	}
 
+	public static Pin unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Pin.class, json);
+	}
+
 	@DecimalMin("0")
 	@Schema
 	public Long getId() {

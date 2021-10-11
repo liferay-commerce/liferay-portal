@@ -18,7 +18,6 @@ import com.liferay.frontend.taglib.servlet.taglib.util.JSPRenderer;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.site.navigation.constants.SiteNavigationWebKeys;
@@ -29,7 +28,6 @@ import com.liferay.site.navigation.type.SiteNavigationMenuItemType;
 import java.io.IOException;
 
 import java.util.Locale;
-import java.util.ResourceBundle;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -59,10 +57,7 @@ public class NodeSiteNavigationMenuItemType
 
 	@Override
 	public String getLabel(Locale locale) {
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			locale, NodeSiteNavigationMenuItemType.class);
-
-		return LanguageUtil.get(resourceBundle, "submenu");
+		return LanguageUtil.get(locale, "submenu");
 	}
 
 	@Override

@@ -51,6 +51,10 @@ public class Policy implements Serializable {
 		return ObjectMapperUtil.readValue(Policy.class, json);
 	}
 
+	public static Policy unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Policy.class, json);
+	}
+
 	@Schema
 	public Long getId() {
 		return id;

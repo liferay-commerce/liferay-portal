@@ -56,6 +56,10 @@ public class Service implements Serializable {
 		return ObjectMapperUtil.readValue(Service.class, json);
 	}
 
+	public static Service unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Service.class, json);
+	}
+
 	@Schema(
 		description = "A list of hours when the organization is open. This follows the [`OpeningHoursSpecification`](https://www.schema.org/OpeningHoursSpecification) specification."
 	)

@@ -42,7 +42,7 @@
 </tr>
 <tr>
 	<td>ANY_ITEM_SELECTOR</td>
-	<td>//label[normalize-space(text())='${key_fieldLabel}']/following-sibling::div//button[contains(@class,'item-selector')]//*[name()='svg'][contains(@class,'lexicon-icon-${key_text}')]</td>
+	<td>//label[normalize-space(text())='${key_fieldLabel}']/following-sibling::div//button[*[name()='svg'][contains(@class,'lexicon-icon-${key_text}')]]</td>
 	<td></td>
 </tr>
 <tr>
@@ -378,7 +378,7 @@
 </tr>
 <tr>
 	<td>PAGE_CUSTOMIZATION_ELLIPSIS</td>
-	<td>//div[@class='control-menu-level-2']//div[contains(@class,'icon-menu')]</td>
+	<td>//div[contains(@class,'control-menu-level-2')]//div[contains(@class,'icon-menu')]</td>
 	<td></td>
 </tr>
 <tr>

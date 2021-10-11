@@ -60,6 +60,11 @@ public class TaxonomyCategoryProperty implements Serializable {
 		return ObjectMapperUtil.readValue(TaxonomyCategoryProperty.class, json);
 	}
 
+	public static TaxonomyCategoryProperty unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			TaxonomyCategoryProperty.class, json);
+	}
+
 	@Schema(description = "The taxonomy category property's key.")
 	public String getKey() {
 		return key;

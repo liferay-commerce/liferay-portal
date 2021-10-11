@@ -56,6 +56,10 @@ public class RelatedProduct implements Serializable {
 		return ObjectMapperUtil.readValue(RelatedProduct.class, json);
 	}
 
+	public static RelatedProduct unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(RelatedProduct.class, json);
+	}
+
 	@DecimalMin("0")
 	@Schema
 	public Long getId() {

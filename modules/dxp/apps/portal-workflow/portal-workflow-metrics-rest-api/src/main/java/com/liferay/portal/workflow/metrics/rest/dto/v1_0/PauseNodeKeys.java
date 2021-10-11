@@ -53,6 +53,10 @@ public class PauseNodeKeys implements Serializable {
 		return ObjectMapperUtil.readValue(PauseNodeKeys.class, json);
 	}
 
+	public static PauseNodeKeys unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(PauseNodeKeys.class, json);
+	}
+
 	@Schema
 	@Valid
 	public NodeKey[] getNodeKeys() {

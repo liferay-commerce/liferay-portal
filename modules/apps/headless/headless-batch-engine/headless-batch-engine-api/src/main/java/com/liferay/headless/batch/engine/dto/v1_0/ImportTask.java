@@ -60,6 +60,10 @@ public class ImportTask implements Serializable {
 		return ObjectMapperUtil.readValue(ImportTask.class, json);
 	}
 
+	public static ImportTask unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(ImportTask.class, json);
+	}
+
 	@Schema(
 		description = "The item class name for which data will be processed in batch."
 	)

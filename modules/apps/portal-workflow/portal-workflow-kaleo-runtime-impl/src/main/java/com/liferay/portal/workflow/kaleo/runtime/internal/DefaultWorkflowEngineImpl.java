@@ -496,7 +496,8 @@ public class DefaultWorkflowEngineImpl
 	public WorkflowModelSearchResult<WorkflowInstance> searchWorkflowInstances(
 			Long userId, String assetClassName, String assetTitle,
 			String assetDescription, String nodeName,
-			String kaleoDefinitionName, Boolean completed, int start, int end,
+			String kaleoDefinitionName, Boolean completed,
+			boolean searchByActiveWorkflowHandlers, int start, int end,
 			OrderByComparator<WorkflowInstance> orderByComparator,
 			ServiceContext serviceContext)
 		throws WorkflowException {
@@ -505,7 +506,8 @@ public class DefaultWorkflowEngineImpl
 			BaseModelSearchResult<KaleoInstance> baseModelSearchResult =
 				kaleoInstanceLocalService.searchKaleoInstances(
 					userId, assetClassName, assetTitle, assetDescription,
-					nodeName, kaleoDefinitionName, completed, start, end,
+					nodeName, kaleoDefinitionName, completed,
+					searchByActiveWorkflowHandlers, start, end,
 					KaleoInstanceOrderByComparator.getOrderByComparator(
 						orderByComparator, _kaleoWorkflowModelConverter,
 						serviceContext),

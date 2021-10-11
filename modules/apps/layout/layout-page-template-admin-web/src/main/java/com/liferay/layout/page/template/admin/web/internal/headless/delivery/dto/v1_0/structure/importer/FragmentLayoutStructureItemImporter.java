@@ -58,7 +58,6 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -68,7 +67,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -681,12 +679,8 @@ public class FragmentLayoutStructureItemImporter
 			locale = _portal.getSiteDefaultLocale(groupId);
 		}
 
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			locale, getClass());
-
 		return _language.format(
-			resourceBundle,
-			"fragment-with-key-x-was-ignored-because-it-does-not-exist",
+			locale, "fragment-with-key-x-was-ignored-because-it-does-not-exist",
 			new String[] {fragmentKey});
 	}
 

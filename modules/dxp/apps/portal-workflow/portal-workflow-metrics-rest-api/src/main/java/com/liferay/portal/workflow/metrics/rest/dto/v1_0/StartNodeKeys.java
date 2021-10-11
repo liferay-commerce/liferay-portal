@@ -53,6 +53,10 @@ public class StartNodeKeys implements Serializable {
 		return ObjectMapperUtil.readValue(StartNodeKeys.class, json);
 	}
 
+	public static StartNodeKeys unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(StartNodeKeys.class, json);
+	}
+
 	@Schema
 	@Valid
 	public NodeKey[] getNodeKeys() {

@@ -18,24 +18,30 @@ import com.liferay.info.item.InfoItemClassDetails;
 import com.liferay.info.item.InfoItemDetails;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.info.item.provider.InfoItemDetailsProvider;
+import com.liferay.info.localized.InfoLocalizedValue;
+import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
-
-import org.osgi.framework.Constants;
-import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Guilherme Camacho
  */
-@Component(
-	immediate = true, property = Constants.SERVICE_RANKING + ":Integer=10",
-	service = InfoItemDetailsProvider.class
-)
 public class ObjectEntryInfoItemDetailsProvider
 	implements InfoItemDetailsProvider<ObjectEntry> {
 
+	public ObjectEntryInfoItemDetailsProvider(
+		ObjectDefinition objectDefinition) {
+
+		_objectDefinition = objectDefinition;
+	}
+
 	@Override
 	public InfoItemClassDetails getInfoItemClassDetails() {
-		return new InfoItemClassDetails(ObjectEntry.class.getName());
+		return new InfoItemClassDetails(
+			_objectDefinition.getClassName(),
+			InfoLocalizedValue.<String>builder(
+			).values(
+				_objectDefinition.getLabelMap()
+			).build());
 	}
 
 	@Override
@@ -43,7 +49,10 @@ public class ObjectEntryInfoItemDetailsProvider
 		return new InfoItemDetails(
 			getInfoItemClassDetails(),
 			new InfoItemReference(
-				ObjectEntry.class.getName(), objectEntry.getObjectEntryId()));
+				_objectDefinition.getClassName(),
+				objectEntry.getObjectEntryId()));
 	}
+
+	private final ObjectDefinition _objectDefinition;
 
 }

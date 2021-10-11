@@ -2,6 +2,6 @@
 
 <Configuration strict="true">
 	<Loggers>
-		<Logger level="DEBUG" name="com.liferay.digital.signature.internal.manager.DSEnvelopeManagerImpl" />
+		<Logger level="INFO" name="com.liferay.digital.signature.internal.manager.DSEnvelopeManagerImpl" />
 	</Loggers>
 </Configuration>

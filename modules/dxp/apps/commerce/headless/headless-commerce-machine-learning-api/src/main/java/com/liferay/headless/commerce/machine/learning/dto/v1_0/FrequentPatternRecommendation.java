@@ -58,6 +58,11 @@ public class FrequentPatternRecommendation implements Serializable {
 			FrequentPatternRecommendation.class, json);
 	}
 
+	public static FrequentPatternRecommendation unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			FrequentPatternRecommendation.class, json);
+	}
+
 	@Schema
 	public Long[] getAntecedentIds() {
 		return antecedentIds;

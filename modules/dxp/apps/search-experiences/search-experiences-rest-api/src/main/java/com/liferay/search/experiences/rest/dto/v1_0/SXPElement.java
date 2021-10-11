@@ -51,6 +51,10 @@ public class SXPElement implements Serializable {
 		return ObjectMapperUtil.readValue(SXPElement.class, json);
 	}
 
+	public static SXPElement unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(SXPElement.class, json);
+	}
+
 	@Schema
 	public String getDescription() {
 		return description;

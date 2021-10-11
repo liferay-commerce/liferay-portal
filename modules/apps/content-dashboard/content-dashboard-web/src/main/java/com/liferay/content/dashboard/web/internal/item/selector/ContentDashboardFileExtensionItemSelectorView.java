@@ -231,8 +231,7 @@ public class ContentDashboardFileExtensionItemSelectorView
 					).put(
 						"label",
 						LanguageUtil.get(
-							ResourceBundleUtil.getBundle(
-								themeDisplay.getLocale(), getClass()),
+							themeDisplay.getLocale(),
 							fileExtensionGroup.getKey())
 					);
 				}

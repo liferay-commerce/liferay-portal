@@ -1,0 +1,27 @@
+<html>
+<head>
+<title>ContentPerformance</title>
+</head>
+
+<body>
+<table border="1" cellpadding="1" cellspacing="1">
+<thead>
+<tr><td rowspan="1" colspan="3">ContentPerformance</td></tr>
+</thead>
+
+<tbody>
+<tr>
+	<td>CONTENT_PERFORMANCE_BUTTON</td>
+	<td>//*[contains(@class, 'lexicon-icon lexicon-icon-analytics')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SELECT_DATE_RANGE</td>
+	<td>//select[contains(@class,'form-control')]</td>
+	<td></td>
+</tr>
+
+</tbody>
+</table>
+</body>
+</html>

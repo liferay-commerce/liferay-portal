@@ -54,6 +54,10 @@ public class OrderType implements Serializable {
 		return ObjectMapperUtil.readValue(OrderType.class, json);
 	}
 
+	public static OrderType unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(OrderType.class, json);
+	}
+
 	@DecimalMin("0")
 	@Schema
 	public Long getId() {

@@ -55,6 +55,10 @@ public class SEOSettings implements Serializable {
 		return ObjectMapperUtil.readValue(SEOSettings.class, json);
 	}
 
+	public static SEOSettings unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(SEOSettings.class, json);
+	}
+
 	@Schema(description = "The canonical URL of the page, if it exists.")
 	public String getCustomCanonicalURL() {
 		return customCanonicalURL;

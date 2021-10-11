@@ -56,6 +56,11 @@ public class ColumnViewportConfig implements Serializable {
 		return ObjectMapperUtil.readValue(ColumnViewportConfig.class, json);
 	}
 
+	public static ColumnViewportConfig unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			ColumnViewportConfig.class, json);
+	}
+
 	@Schema
 	@Valid
 	public LandscapeMobile getLandscapeMobile() {

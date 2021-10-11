@@ -517,7 +517,7 @@ public class WorkflowInstanceViewDisplayContext
 			WorkflowInstanceManagerUtil.searchWorkflowInstances(
 				workflowInstanceRequestHelper.getCompanyId(), null,
 				getKeywords(), getKeywords(), getAssetType(getKeywords()),
-				getKeywords(), getKeywords(), getCompleted(), start, end,
+				getKeywords(), getKeywords(), getCompleted(), true, start, end,
 				orderByComparator);
 
 		return workflowModelSearchResult;

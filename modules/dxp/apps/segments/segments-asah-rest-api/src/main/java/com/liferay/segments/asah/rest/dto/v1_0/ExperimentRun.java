@@ -57,6 +57,10 @@ public class ExperimentRun implements Serializable {
 		return ObjectMapperUtil.readValue(ExperimentRun.class, json);
 	}
 
+	public static ExperimentRun unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(ExperimentRun.class, json);
+	}
+
 	@DecimalMax("99")
 	@DecimalMin("80")
 	@Schema

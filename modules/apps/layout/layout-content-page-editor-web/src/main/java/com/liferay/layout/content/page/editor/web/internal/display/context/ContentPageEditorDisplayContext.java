@@ -127,7 +127,6 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
@@ -1148,17 +1147,9 @@ public class ContentPageEditorDisplayContext {
 					"fragmentEntries", entry.getValue()
 				).put(
 					"name",
-					() -> {
-						FragmentRenderer fragmentRenderer =
-							fragmentCollectionFragmentRenderers.get(
-								entry.getKey());
-
-						return LanguageUtil.get(
-							ResourceBundleUtil.getBundle(
-								themeDisplay.getLocale(),
-								fragmentRenderer.getClass()),
-							"fragment.collection.label." + entry.getKey());
-					}
+					() -> LanguageUtil.get(
+						themeDisplay.getLocale(),
+						"fragment.collection.label." + entry.getKey())
 				).build());
 		}
 

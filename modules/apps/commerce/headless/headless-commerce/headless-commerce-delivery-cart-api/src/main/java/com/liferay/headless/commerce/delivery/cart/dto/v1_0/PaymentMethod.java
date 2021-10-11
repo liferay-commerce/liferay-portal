@@ -51,6 +51,10 @@ public class PaymentMethod implements Serializable {
 		return ObjectMapperUtil.readValue(PaymentMethod.class, json);
 	}
 
+	public static PaymentMethod unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(PaymentMethod.class, json);
+	}
+
 	@Schema
 	public String getDescription() {
 		return description;

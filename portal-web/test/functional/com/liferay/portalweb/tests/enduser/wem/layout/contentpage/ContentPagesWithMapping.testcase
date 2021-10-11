@@ -142,10 +142,10 @@ definition {
 	@priority = "4"
 	test MapBlogsContentToLinkFragment {
 		task ("Add a blogs entry") {
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title",
-				groupName = "Test Site Name");
+			HeadlessBlog.addBlogEntry(
+				content = "Blogs Entry Content",
+				groupName = "Test Site Name",
+				title = "Blogs Entry Title");
 		}
 
 		task ("Add a Button fragment to page") {
@@ -595,9 +595,10 @@ definition {
 		}
 
 		task ("View the selected page is shown in Page field") {
-			AssertVisible(
-				key_contentName = "Test Public Page Name",
-				locator1 = "PageEditor#ITEM_SELECTOR_CONTENT_INPUT");
+			AssertTextEquals(
+				key_fieldLabel = "Page",
+				locator1 = "PageEditor#ITEM_SELECTOR_CONTENT_INPUT",
+				value1 = "Test Public Page Name");
 		}
 
 		task ("View selected page is linked to Button fragment") {
@@ -643,9 +644,10 @@ definition {
 		}
 
 		task ("View the selected page is shown in Page field") {
-			AssertVisible(
-				key_contentName = "Test Private Page Name",
-				locator1 = "PageEditor#ITEM_SELECTOR_CONTENT_INPUT");
+			AssertTextEquals(
+				key_fieldLabel = "Page",
+				locator1 = "PageEditor#ITEM_SELECTOR_CONTENT_INPUT",
+				value1 = "Test Private Page Name");
 		}
 
 		task ("View selected page is linked to Image fragment") {
@@ -707,11 +709,11 @@ definition {
 		}
 
 		task ("Add a blogs entry with the new category") {
-			JSONBlog.addEntry(
+			HeadlessBlog.addBlogEntry(
 				assetCategoryIds = "${categoryId}",
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title",
-				groupName = "Test Site Name");
+				content = "Blogs Entry Content",
+				groupName = "Test Site Name",
+				title = "Blogs Entry Title");
 		}
 
 		task ("Add a document based on Basic Document with the new category") {
@@ -807,11 +809,11 @@ definition {
 		property portal.acceptance = "true";
 
 		task ("Add a blogs entry with a tag") {
-			JSONBlog.addEntry(
+			HeadlessBlog.addBlogEntry(
 				assetTagNames = "tagname1",
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title",
-				groupName = "Test Site Name");
+				content = "Blogs Entry Content",
+				groupName = "Test Site Name",
+				title = "Blogs Entry Title");
 		}
 
 		task ("Add a Heading fragment to page") {
@@ -1577,9 +1579,10 @@ definition {
 		}
 
 		task ("View the selected page is shown in Page field") {
-			AssertVisible(
-				key_contentName = "Test Widget Page Name",
-				locator1 = "PageEditor#ITEM_SELECTOR_CONTENT_INPUT");
+			AssertTextEquals(
+				key_fieldLabel = "Page",
+				locator1 = "PageEditor#ITEM_SELECTOR_CONTENT_INPUT",
+				value1 = "Test Widget Page Name");
 		}
 
 		task ("View selected page is linked to Button fragment") {
@@ -1639,9 +1642,10 @@ definition {
 				fragmentName = "Button",
 				id = "link");
 
-			AssertVisible(
-				key_contentName = "Test Widget Page Name",
-				locator1 = "PageEditor#ITEM_SELECTOR_CONTENT_INPUT");
+			AssertTextEquals(
+				key_fieldLabel = "Page",
+				locator1 = "PageEditor#ITEM_SELECTOR_CONTENT_INPUT",
+				value1 = "Test Widget Page Name");
 		}
 
 		task ("Publish to content page") {
@@ -1673,10 +1677,10 @@ definition {
 		}
 
 		task ("Add a blogs entry") {
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title",
-				groupName = "Test Site Name");
+			HeadlessBlog.addBlogEntry(
+				content = "Blogs Entry Content",
+				groupName = "Test Site Name",
+				title = "Blogs Entry Title");
 		}
 
 		task ("Add a custom Document type") {

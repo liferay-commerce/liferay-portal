@@ -19,11 +19,7 @@ import ClayModal, {ClayModalProvider, useModal} from '@clayui/modal';
 import React, {useEffect, useState} from 'react';
 
 import useForm from '../hooks/useForm';
-import {
-	firstLetterLowercase,
-	firstLetterUppercase,
-	removeAllSpecialCharacters,
-} from '../utils/string';
+import {toCamelCase} from '../utils/string';
 import Input from './form/Input';
 import Select from './form/Select';
 
@@ -44,16 +40,6 @@ const headers = new Headers({
 	Accept: 'application/json',
 	'Content-Type': 'application/json',
 });
-
-const normalizeName: TNormalizeName = (str) => {
-	const split = str.split(' ');
-	const capitalizeFirstLetters = split.map((str: string) =>
-		firstLetterUppercase(str)
-	);
-	const join = capitalizeFirstLetters.join('');
-
-	return firstLetterLowercase(removeAllSpecialCharacters(join));
-};
 
 const ModalAddObjectField: React.FC<IProps> = ({apiURL, observer, onClose}) => {
 	const [error, setError] = useState<string>('');
@@ -82,7 +68,7 @@ const ModalAddObjectField: React.FC<IProps> = ({apiURL, observer, onClose}) => {
 					[defaultLanguageId]: label,
 				},
 				listTypeDefinitionId,
-				name: name || normalizeName(label),
+				name: name || toCamelCase(label),
 				required,
 				type: type === 'Picklist' ? 'String' : type,
 			}),
@@ -114,7 +100,7 @@ const ModalAddObjectField: React.FC<IProps> = ({apiURL, observer, onClose}) => {
 			errors.label = Liferay.Language.get('required');
 		}
 
-		if (!(values.name ?? normalizeName(values.label))) {
+		if (!(values.name ?? toCamelCase(values.label))) {
 			errors.name = Liferay.Language.get('required');
 		}
 
@@ -164,7 +150,7 @@ const ModalAddObjectField: React.FC<IProps> = ({apiURL, observer, onClose}) => {
 						name="name"
 						onChange={handleChange}
 						required
-						value={values.name ?? normalizeName(values.label)}
+						value={values.name ?? toCamelCase(values.label)}
 					/>
 
 					<Select
@@ -267,8 +253,6 @@ type TPicklist = {
 	id: string;
 	name: string;
 };
-
-type TNormalizeName = (str: string) => string;
 
 type TInitialValues = {
 	label: string;

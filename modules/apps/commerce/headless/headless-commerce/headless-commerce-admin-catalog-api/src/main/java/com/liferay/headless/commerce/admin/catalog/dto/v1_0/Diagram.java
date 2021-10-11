@@ -54,6 +54,10 @@ public class Diagram implements Serializable {
 		return ObjectMapperUtil.readValue(Diagram.class, json);
 	}
 
+	public static Diagram unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Diagram.class, json);
+	}
+
 	@Schema
 	@Valid
 	public AttachmentBase64 getAttachmentBase64() {

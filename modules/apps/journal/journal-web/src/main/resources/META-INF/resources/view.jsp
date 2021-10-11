@@ -51,7 +51,7 @@ else {
 	propsTransformer="js/ManagementToolbarPropsTransformer"
 />
 
-<div class="closed sidenav-container sidenav-right" id="<%= liferayPortletResponse.getNamespace() + "infoPanelId" %>">
+<div class="closed sidenav-container sidenav-right" id="<portlet:namespace />infoPanelId">
 	<c:if test="<%= journalDisplayContext.isShowInfoButton() %>">
 		<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="/journal/info_panel" var="sidebarPanelURL">
 			<portlet:param name="folderId" value="<%= String.valueOf(journalDisplayContext.getFolderId()) %>" />
@@ -140,13 +140,6 @@ else {
 				</c:choose>
 			</aui:form>
 		</clay:container-fluid>
-	</div>
-
-	<div>
-		<react:component
-			module="js/JournalExportTranslation"
-			props="<%= journalDisplayContext.getExportTranslationData() %>"
-		/>
 	</div>
 </div>
 

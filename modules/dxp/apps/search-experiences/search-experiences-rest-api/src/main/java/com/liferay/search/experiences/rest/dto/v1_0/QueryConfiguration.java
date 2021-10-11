@@ -53,6 +53,10 @@ public class QueryConfiguration implements Serializable {
 		return ObjectMapperUtil.readValue(QueryConfiguration.class, json);
 	}
 
+	public static QueryConfiguration unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(QueryConfiguration.class, json);
+	}
+
 	@Schema
 	public Boolean getApplyIndexerClauses() {
 		return applyIndexerClauses;

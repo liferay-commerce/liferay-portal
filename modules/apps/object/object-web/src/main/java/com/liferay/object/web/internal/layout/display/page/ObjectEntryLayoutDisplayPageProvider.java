@@ -23,19 +23,25 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Guilherme Camacho
  */
-@Component(immediate = true, service = LayoutDisplayPageProvider.class)
 public class ObjectEntryLayoutDisplayPageProvider
 	implements LayoutDisplayPageProvider<ObjectEntry> {
 
+	public ObjectEntryLayoutDisplayPageProvider(
+		ObjectDefinition objectDefinition,
+		ObjectDefinitionLocalService objectDefinitionLocalService,
+		ObjectEntryLocalService objectEntryLocalService) {
+
+		_objectDefinition = objectDefinition;
+		_objectDefinitionLocalService = objectDefinitionLocalService;
+		_objectEntryLocalService = objectEntryLocalService;
+	}
+
 	@Override
 	public String getClassName() {
-		return ObjectEntry.class.getName();
+		return _objectDefinition.getClassName();
 	}
 
 	@Override
@@ -77,10 +83,8 @@ public class ObjectEntryLayoutDisplayPageProvider
 		return "/o/";
 	}
 
-	@Reference
-	private ObjectDefinitionLocalService _objectDefinitionLocalService;
-
-	@Reference
-	private ObjectEntryLocalService _objectEntryLocalService;
+	private final ObjectDefinition _objectDefinition;
+	private final ObjectDefinitionLocalService _objectDefinitionLocalService;
+	private final ObjectEntryLocalService _objectEntryLocalService;
 
 }

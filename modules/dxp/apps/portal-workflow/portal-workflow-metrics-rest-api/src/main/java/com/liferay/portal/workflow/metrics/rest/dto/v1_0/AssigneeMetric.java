@@ -55,6 +55,10 @@ public class AssigneeMetric implements Serializable {
 		return ObjectMapperUtil.readValue(AssigneeMetric.class, json);
 	}
 
+	public static AssigneeMetric unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(AssigneeMetric.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Assignee getAssignee() {

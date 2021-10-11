@@ -14,6 +14,8 @@
 
 package com.liferay.journal.uad.anonymizer;
 
+import com.liferay.asset.kernel.model.AssetEntry;
+import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.journal.model.JournalFolder;
 import com.liferay.journal.service.JournalFolderLocalService;
 import com.liferay.journal.uad.constants.JournalUADConstants;
@@ -47,6 +49,8 @@ public abstract class BaseJournalFolderUADAnonymizer
 		if (journalFolder.getUserId() == userId) {
 			journalFolder.setUserId(anonymousUser.getUserId());
 			journalFolder.setUserName(anonymousUser.getFullName());
+
+			autoAnonymizeAssetEntry(journalFolder, anonymousUser);
 		}
 
 		if (journalFolder.getStatusByUserId() == userId) {
@@ -67,6 +71,19 @@ public abstract class BaseJournalFolderUADAnonymizer
 		return JournalFolder.class;
 	}
 
+	protected void autoAnonymizeAssetEntry(
+		JournalFolder journalFolder, User anonymousUser) {
+
+		AssetEntry assetEntry = fetchAssetEntry(journalFolder);
+
+		if (assetEntry != null) {
+			assetEntry.setUserId(anonymousUser.getUserId());
+			assetEntry.setUserName(anonymousUser.getFullName());
+
+			assetEntryLocalService.updateAssetEntry(assetEntry);
+		}
+	}
+
 	@Override
 	protected ActionableDynamicQuery doGetActionableDynamicQuery() {
 		return journalFolderLocalService.getActionableDynamicQuery();
@@ -76,6 +93,14 @@ public abstract class BaseJournalFolderUADAnonymizer
 	protected String[] doGetUserIdFieldNames() {
 		return JournalUADConstants.USER_ID_FIELD_NAMES_JOURNAL_FOLDER;
 	}
+
+	protected AssetEntry fetchAssetEntry(JournalFolder journalFolder) {
+		return assetEntryLocalService.fetchEntry(
+			JournalFolder.class.getName(), journalFolder.getFolderId());
+	}
+
+	@Reference
+	protected AssetEntryLocalService assetEntryLocalService;
 
 	@Reference
 	protected JournalFolderLocalService journalFolderLocalService;

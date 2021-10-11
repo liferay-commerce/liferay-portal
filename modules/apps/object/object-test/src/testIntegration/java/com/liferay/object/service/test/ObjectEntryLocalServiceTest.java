@@ -83,6 +83,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -218,6 +219,16 @@ public class ObjectEntryLocalServiceTest {
 			_objectDefinition.getObjectDefinitionId(), true, false, null,
 			LocalizedMapUtil.getLocalizedMap("Weight"), "weight", false,
 			"Double");
+	}
+
+	@After
+	public void tearDown() throws Exception {
+
+		// Do not rely on @DeleteAfterTestRun because object entries that
+		// reference a required list type entry cannot be deleted before it is
+		// unreferenced
+
+		_objectDefinitionLocalService.deleteObjectDefinition(_objectDefinition);
 	}
 
 	@Test
@@ -1508,8 +1519,6 @@ public class ObjectEntryLocalServiceTest {
 	private ListTypeEntryLocalService _listTypeEntryLocalService;
 
 	private final Queue<Message> _messages = new LinkedList<>();
-
-	@DeleteAfterTestRun
 	private ObjectDefinition _objectDefinition;
 
 	@Inject

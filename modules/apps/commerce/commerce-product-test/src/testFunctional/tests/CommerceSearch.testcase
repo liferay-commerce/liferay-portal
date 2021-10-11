@@ -12,25 +12,23 @@ definition {
 	}
 
 	tearDown {
-		var testPortalInstance = PropsUtil.get("test.portal.instance");
+		Navigator.openURL();
 
-		if ("${testPortalInstance}" == "true") {
-			PortalInstances.tearDownCP();
+		if (IsElementPresent(locator1 = "UserBar#USER_AVATAR_IMAGE")) {
+			User.logoutPG();
 		}
-		else {
-			Navigator.openURL();
 
-			CommerceConfiguration.commerceAdminTearDown();
+		User.firstLoginPG();
 
-			CommerceConfiguration.commerceInitializersTearDown();
-		}
+		CommerceConfiguration.commerceAdminTearDown();
+
+		CommerceConfiguration.commerceInitializersTearDown();
 	}
 
 	@description = "COMMERCE-6664. I want to be able to disable Search Results widget pagination"
 	@priority = "3"
 	test DisableSearchResultsWidgetPagination {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSearch#DisableSearchResultsWidgetPagination";
 
 		// TODO Review
 
@@ -303,7 +301,6 @@ definition {
 	@priority = "3"
 	test GlobalSearchSuggestedCatalogEntries {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSearch#GlobalSearchSuggestedCatalogEntries";
 
 		// TODO Review
 
@@ -460,7 +457,6 @@ definition {
 	@priority = "3"
 	test SearchBarWidgetSearchProductByName {
 		property portal.acceptance = "Intern Test";
-		property test.name.skip.portal.instance = "CommerceSearch#SearchBarWidgetSearchProductByName";
 
 		// TODO Review
 
@@ -492,7 +488,6 @@ definition {
 	@priority = "3"
 	test SearchBarWidgetSearchProductByNameDoubleQuotes {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSearch#SearchBarWidgetSearchProductByNameDoubleQuotes";
 
 		var product = '''"ABS Sensor"''';
 
@@ -523,7 +518,6 @@ definition {
 	@priority = "3"
 	test SearchBarWidgetSearchProductByNameSingleQuotes {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSearch#SearchBarWidgetSearchProductByNameSingleQuotes";
 
 		// TODO Review
 
@@ -555,7 +549,6 @@ definition {
 	@priority = "3"
 	test SearchBarWidgetSearchProductBySKU {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSearch#SearchBarWidgetSearchProductBySKU";
 
 		// TODO Review
 
@@ -582,7 +575,6 @@ definition {
 	@priority = "3"
 	test SearchBarWidgetSearchProductsByCategory {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSearch#SearchBarWidgetSearchProductsByCategory";
 
 		// TODO Review
 
@@ -611,7 +603,6 @@ definition {
 	@priority = "3"
 	test SearchBarWidgetSearchProductsByDifferentCategories {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSearch#SearchBarWidgetSearchProductsByDifferentCategories";
 
 		// TODO Review
 
@@ -642,7 +633,6 @@ definition {
 	@priority = "3"
 	test SearchBarWidgetSearchProductsByDifferentSKUs {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSearch#SearchBarWidgetSearchProductsByDifferentSKUs";
 
 		// TODO Review
 
@@ -674,7 +664,6 @@ definition {
 	@priority = "3"
 	test SearchBarWidgetSearchProductsByDifferentSpecificationValues {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSearch#SearchBarWidgetSearchProductsByDifferentSpecificationValues";
 
 		// TODO Review
 
@@ -721,7 +710,6 @@ definition {
 	@priority = "3"
 	test SearchBarWidgetSearchProductsBySpecificationValue {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSearch#SearchBarWidgetSearchProductsBySpecificationValue";
 
 		// TODO Review
 
@@ -752,7 +740,6 @@ definition {
 	@priority = "3"
 	test SearchResultsWidgetChangeNumberOfItemsToDisplayFromPaginationBar {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSearch#SearchResultsWidgetChangeNumberOfItemsToDisplayFromPaginationBar";
 
 		// TODO Review
 
@@ -771,7 +758,6 @@ definition {
 	@priority = "3"
 	test SearchResultsWidgetChangeResultsPage {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSearch#SearchResultsWidgetChangeResultsPage";
 
 		// TODO Review
 
@@ -821,7 +807,6 @@ definition {
 	@priority = "3"
 	test SearchResultsWidgetEditNumberOfItemsToDisplayFromConfiguration {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSearch#SearchResultsWidgetEditNumberOfItemsToDisplayFromConfiguration";
 
 		// TODO Review
 
@@ -857,7 +842,6 @@ definition {
 	@priority = "3"
 	test UseADTInSearchResultsWidget {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSearch#UseADTInSearchResultsWidget";
 
 		// TODO Review
 

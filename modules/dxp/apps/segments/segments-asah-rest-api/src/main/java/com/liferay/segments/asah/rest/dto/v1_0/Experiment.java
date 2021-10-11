@@ -55,6 +55,10 @@ public class Experiment implements Serializable {
 		return ObjectMapperUtil.readValue(Experiment.class, json);
 	}
 
+	public static Experiment unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Experiment.class, json);
+	}
+
 	@Schema
 	public Date getDateCreated() {
 		return dateCreated;

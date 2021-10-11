@@ -60,6 +60,10 @@ public class Rating implements Serializable {
 		return ObjectMapperUtil.readValue(Rating.class, json);
 	}
 
+	public static Rating unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Rating.class, json);
+	}
+
 	@Schema(
 		description = "Block of actions allowed by the user making the request."
 	)

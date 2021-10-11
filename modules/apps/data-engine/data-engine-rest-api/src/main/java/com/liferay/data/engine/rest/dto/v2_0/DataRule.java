@@ -53,6 +53,10 @@ public class DataRule implements Serializable {
 		return ObjectMapperUtil.readValue(DataRule.class, json);
 	}
 
+	public static DataRule unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(DataRule.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Map[] getActions() {

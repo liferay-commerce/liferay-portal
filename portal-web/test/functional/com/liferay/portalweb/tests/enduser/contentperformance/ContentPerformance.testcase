@@ -7,6 +7,20 @@ definition {
 	property testray.main.component.name = "Content Performance";
 
 	setUp {
+		task ("Open Analytics Cloud") {
+			var analyticsCloudURL = PropsUtil.get("analytics.cloud.url");
+
+			Navigator.openURL(baseURL = "${analyticsCloudURL}");
+		}
+
+		task ("Take token from Analytics Cloud") {
+			AnalyticsCloud.loginAnalyticsCloud(
+				emailAddress = "test@liferay.com",
+				password = "test");
+
+			AnalyticsCloud.takeTokenFromAnalyticsCloud();
+		}
+
 		task ("Go to DXP portal, login and create site") {
 			TestCase.setUpPortalInstance();
 
@@ -16,10 +30,33 @@ definition {
 
 			JSONGroup.addGroup(groupName = "Test Site Name");
 		}
+
+		task ("Connect and synchronyze with Analytics Cloud") {
+			AnalyticsCloud.syncAnalyticsCloud(siteName = "Test Site Name");
+		}
+
+		task ("Create content page") {
+			JSONLayout.addPublicLayout(
+				groupName = "Test Site Name",
+				layoutName = "Content Page",
+				type = "content");
+
+			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
+		}
 	}
 
 	tearDown {
 		var testPortalInstance = PropsUtil.get("test.portal.instance");
+
+		Navigator.openURL();
+
+		AnalyticsCloud.teardownAnalyticsCloud();
+
+		JSONGroup.deleteGroupByName(groupName = "Test Site Name");
+
+		if ("${testPortalInstance}" == "true") {
+			PortalInstances.tearDownCP();
+		}
 	}
 
 	@description = "LPS-108856: When user opens Content Performance panel and AC is connected and synced, the Content Performance panel display all its functionalities"
@@ -35,9 +72,11 @@ definition {
 	@ignore = "true"
 	@priority = "5"
 	test DefaultTimeRangeWeek {
+		task ("Open Content Performance and Assert") {
+			ContentPerformance.openContentPerformance();
 
-		// TODO LPS-139216 DefaultTimeRangeWeek pending implementation
-
+			AssertElementPresent(locator1 = "ContentPerformance#SELECT_DATE_RANGE");
+		}
 	}
 
 	@description = "LPS-108856: When user opens Content Performance panel and AC is not connected, a Dont show me this again button is displayed"

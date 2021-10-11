@@ -53,6 +53,11 @@ public class TaxonomyCategoryBrief implements Serializable {
 		return ObjectMapperUtil.readValue(TaxonomyCategoryBrief.class, json);
 	}
 
+	public static TaxonomyCategoryBrief unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			TaxonomyCategoryBrief.class, json);
+	}
+
 	@Schema(
 		description = "Optional field with the embedded taxonomy category, can be embedded with nestedFields"
 	)

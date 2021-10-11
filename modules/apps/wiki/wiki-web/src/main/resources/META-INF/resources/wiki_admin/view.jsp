@@ -96,7 +96,7 @@ WikiNodesManagementToolbarDisplayContext wikiNodesManagementToolbarDisplayContex
 	viewTypeItems="<%= wikiNodesManagementToolbarDisplayContext.getViewTypes() %>"
 />
 
-<div class="closed sidenav-container sidenav-right" id="<%= liferayPortletResponse.getNamespace() + "infoPanelId" %>">
+<div class="closed sidenav-container sidenav-right" id="<portlet:namespace />infoPanelId">
 	<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="/wiki/node_info_panel" var="sidebarPanelURL" />
 
 	<liferay-frontend:sidebar-panel

@@ -35,9 +35,6 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
-
-import java.util.ResourceBundle;
 
 import javax.portlet.PortletRequest;
 
@@ -106,18 +103,14 @@ public class PublicationInviteUserNotificationHandler
 			return null;
 		}
 
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			serviceContext.getLocale(),
-			PublicationInviteUserNotificationHandler.class);
-
 		String userName = jsonObject.getString("userName");
 
 		return _language.format(
-			resourceBundle, "x-has-invited-you-to-work-on-x-as-a-x",
+			serviceContext.getLocale(), "x-has-invited-you-to-work-on-x-as-a-x",
 			new Object[] {
 				userName, ctCollection.getName(),
 				_language.get(
-					resourceBundle,
+					serviceContext.getLocale(),
 					PublicationRoleConstants.getRoleLabel(roleValue))
 			},
 			false);

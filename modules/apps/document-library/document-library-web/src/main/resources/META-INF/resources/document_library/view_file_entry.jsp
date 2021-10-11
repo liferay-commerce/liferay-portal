@@ -68,7 +68,7 @@ if (portletTitleBasedNavigation) {
 
 	<c:choose>
 		<c:when test="<%= portletTitleBasedNavigation %>">
-			<div class="contextual-sidebar sidebar-light sidebar-preview" id="<%= liferayPortletResponse.getNamespace() + "ContextualSidebar" %>">
+			<div class="contextual-sidebar sidebar-light sidebar-preview" id="<portlet:namespace />ContextualSidebar">
 
 				<%
 				request.setAttribute("info_panel.jsp-fileEntry", dlViewFileEntryDisplayContext.getFileEntry());

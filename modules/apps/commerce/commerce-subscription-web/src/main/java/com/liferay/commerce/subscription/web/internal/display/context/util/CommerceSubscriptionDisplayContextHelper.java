@@ -20,15 +20,12 @@ import com.liferay.commerce.model.CommerceSubscriptionEntry;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemList;
+import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
-import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
-import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.PortalUtil;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionURL;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
 import javax.portlet.PortletURL;
@@ -99,24 +96,19 @@ public class CommerceSubscriptionDisplayContextHelper {
 	}
 
 	private PortletURL _getActionURL(String cmd) {
-		LiferayPortletResponse liferayPortletResponse =
-			PortalUtil.getLiferayPortletResponse(_portletResponse);
-
-		ActionURL actionURL = liferayPortletResponse.createActionURL();
-
-		actionURL.setParameter(
-			ActionRequest.ACTION_NAME,
+		return PortletURLBuilder.createActionURL(
+			PortalUtil.getLiferayPortletResponse(_portletResponse)
+		).setActionName(
 			"/commerce_subscription_content_web" +
-				"/edit_commerce_subscription_content");
-		actionURL.setParameter(Constants.CMD, cmd);
-		actionURL.setParameter(
+				"/edit_commerce_subscription_content"
+		).setCMD(
+			cmd
+		).setRedirect(
+			PortalUtil.getCurrentURL(_portletRequest)
+		).setParameter(
 			"commerceSubscriptionEntryId",
-			String.valueOf(
-				_commerceSubscriptionEntry.getCommerceSubscriptionEntryId()));
-		actionURL.setParameter(
-			"redirect", PortalUtil.getCurrentURL(_portletRequest));
-
-		return actionURL;
+			_commerceSubscriptionEntry.getCommerceSubscriptionEntryId()
+		).buildActionURL();
 	}
 
 	private DropdownItem _getDropdownItem(String cmd) {

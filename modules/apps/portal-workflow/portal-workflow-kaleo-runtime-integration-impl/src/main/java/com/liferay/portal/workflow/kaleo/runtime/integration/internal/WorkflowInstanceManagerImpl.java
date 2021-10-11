@@ -235,7 +235,8 @@ public class WorkflowInstanceManagerImpl implements WorkflowInstanceManager {
 	public WorkflowModelSearchResult<WorkflowInstance> searchWorkflowInstances(
 			long companyId, Long userId, String assetClassName,
 			String assetTitle, String assetDescription, String nodeName,
-			String kaleoDefinitionName, Boolean completed, int start, int end,
+			String kaleoDefinitionName, Boolean completed,
+			boolean searchByActiveWorkflowHandlers, int start, int end,
 			OrderByComparator<WorkflowInstance> orderByComparator)
 		throws WorkflowException {
 
@@ -245,8 +246,8 @@ public class WorkflowInstanceManagerImpl implements WorkflowInstanceManager {
 
 		return _workflowEngine.searchWorkflowInstances(
 			userId, assetClassName, assetTitle, assetDescription, nodeName,
-			kaleoDefinitionName, completed, start, end, orderByComparator,
-			serviceContext);
+			kaleoDefinitionName, completed, searchByActiveWorkflowHandlers,
+			start, end, orderByComparator, serviceContext);
 	}
 
 	@Override

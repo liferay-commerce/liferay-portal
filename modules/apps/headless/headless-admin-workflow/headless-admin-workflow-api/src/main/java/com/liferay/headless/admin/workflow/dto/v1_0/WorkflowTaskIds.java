@@ -51,6 +51,10 @@ public class WorkflowTaskIds implements Serializable {
 		return ObjectMapperUtil.readValue(WorkflowTaskIds.class, json);
 	}
 
+	public static WorkflowTaskIds unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(WorkflowTaskIds.class, json);
+	}
+
 	@Schema
 	public Long[] getWorkflowTaskIds() {
 		return workflowTaskIds;

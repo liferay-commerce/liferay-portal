@@ -56,6 +56,10 @@ public class PriceListOrderType implements Serializable {
 		return ObjectMapperUtil.readValue(PriceListOrderType.class, json);
 	}
 
+	public static PriceListOrderType unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(PriceListOrderType.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Map<String, Map<String, String>> getActions() {

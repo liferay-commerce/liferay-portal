@@ -37,19 +37,23 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Guilherme Camacho
  */
-@Component(immediate = true, service = InfoListRenderer.class)
 public class ObjectEntryTableInfoListRenderer
 	implements InfoListRenderer<ObjectEntry> {
 
+	public ObjectEntryTableInfoListRenderer(
+		InfoItemRendererTracker infoItemRendererTracker,
+		ObjectFieldLocalService objectFieldLocalService) {
+
+		_infoItemRendererTracker = infoItemRendererTracker;
+		_objectFieldLocalService = objectFieldLocalService;
+	}
+
 	@Override
 	public List<InfoItemRenderer<?>> getAvailableInfoItemRenderers() {
-		return infoItemRendererTracker.getInfoItemRenderers(
+		return _infoItemRendererTracker.getInfoItemRenderers(
 			ObjectEntry.class.getName());
 	}
 
@@ -113,13 +117,10 @@ public class ObjectEntryTableInfoListRenderer
 		}
 	}
 
-	@Reference
-	protected InfoItemRendererTracker infoItemRendererTracker;
-
 	private static final Log _log = LogFactoryUtil.getLog(
 		ObjectEntryTableInfoListRenderer.class);
 
-	@Reference
-	private ObjectFieldLocalService _objectFieldLocalService;
+	private final InfoItemRendererTracker _infoItemRendererTracker;
+	private final ObjectFieldLocalService _objectFieldLocalService;
 
 }

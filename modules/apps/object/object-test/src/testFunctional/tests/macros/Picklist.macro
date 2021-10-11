@@ -9,6 +9,22 @@ definition {
 			userPassword = "${userPassword}");
 	}
 
+	macro addPicklistItemViaUI {
+		SelectFrame(locator1 = "Picklist#IFRAME_PICKLIST_MODAL");
+
+		Click.javaScriptClick(locator1 = "Picklist#ADD_ITEM_BUTTON");
+
+		Type(
+			locator1 = "Picklist#ADD_PICKLIST_ITEM_NAME",
+			value1 = "${picklistItemName}");
+
+		Type(
+			locator1 = "Picklist#ADD_PICKLIST_ITEM_KEY",
+			value1 = "${picklistItemKey}");
+
+		Click.javaScriptClick(locator1 = "Picklist#SAVE_BUTTON");
+	}
+
 	macro addPicklistViaAPI {
 		JSONObject.addPicklist(
 			picklistName = "${picklistName}",
@@ -32,10 +48,26 @@ definition {
 		AssertElementPresent(locator1 = "Picklist#VIEW_PICKLIST");
 	}
 
+	macro assertPicklistItem {
+		var key_picklistItemName = "${picklistItemName}";
+
+		var key_picklistItemKey = "${picklistItemKey}";
+
+		if (IsElementNotPresent(locator1 = "Picklist#VIEW_PICKLIST_ITEM")) {
+			Picklist.gotoPicklistView(picklistName = "${picklistItemName}");
+		}
+
+		AssertElementPresent(locator1 = "Picklist#VIEW_PICKLIST_ITEM");
+	}
+
 	macro assertPicklistNotPresent {
 		var key_picklistName = "${picklistName}";
 
 		AssertElementNotPresent(locator1 = "Picklist#VIEW_PICKLIST");
+	}
+
+	macro cancelUpdatePicklist {
+		Click.javaScriptClick(locator1 = "Picklist#CANCEL_UPDATE_PICKLIST");
 	}
 
 	macro deleteAllPicklistsViaAPI {
@@ -55,6 +87,14 @@ definition {
 		Navigator.openSpecificURL(url = "/group/guest/~/control_panel/manage?p_p_id=com_liferay_object_web_internal_list_type_portlet_portlet_ListTypeDefinitionsPortlet");
 	}
 
+	macro gotoPicklistView {
+		Click.javaScriptClick(
+			key_picklistName = "${picklistName}",
+			locator1 = "Picklist#SELECT_PICKLIST_VIEW");
+
+		Click.javaScriptClick(locator1 = "Picklist#GOTO_PICKLIST_VIEW");
+	}
+
 	macro optionsPicklist {
 		Click.javaScriptClick(
 			key_picklistName = "${picklistName}",
@@ -63,6 +103,14 @@ definition {
 		Click.javaScriptClick(
 			key_picklistOption = "${picklistOption}",
 			locator1 = "Picklist#PICKLIST_KEBAB_MENU_OPTION");
+	}
+
+	macro updatePicklistName {
+		SelectFrame(locator1 = "Picklist#IFRAME_PICKLIST_MODAL");
+
+		Type(
+			locator1 = "Picklist#UPDATE_PICKLIST_NAME",
+			value1 = "${picklistName}");
 	}
 
 }

@@ -56,6 +56,10 @@ public class OrderTypeChannel implements Serializable {
 		return ObjectMapperUtil.readValue(OrderTypeChannel.class, json);
 	}
 
+	public static OrderTypeChannel unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(OrderTypeChannel.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Map<String, Map<String, String>> getActions() {

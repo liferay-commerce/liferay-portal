@@ -21,27 +21,25 @@ definition {
 	}
 
 	tearDown {
-		var testPortalInstance = PropsUtil.get("test.portal.instance");
+		Navigator.openURL();
 
-		if ("${testPortalInstance}" == "true") {
-			PortalInstances.tearDownCP();
-		}
-		else {
-			Navigator.openURL();
-
-			CommerceConfiguration.commerceAdminTearDown(userScreenName = "buyer");
-
-			CommerceConfiguration.commerceInitializersTearDown();
-
+		if (IsElementPresent(locator1 = "UserBar#USER_AVATAR_IMAGE")) {
 			User.logoutPG();
 		}
+
+		User.firstLoginPG();
+
+		CommerceConfiguration.commerceAdminTearDown(userScreenName = "buyer");
+
+		CommerceConfiguration.commerceInitializersTearDown();
+
+		User.logoutPG();
 	}
 
 	@description = "COMMERCE-5725. New functional test for COMMERCE-5485"
 	@priority = "3"
 	test AssertCheckoutMinicart {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceAccelerators#AssertCheckoutMinicart";
 
 		// TODO Review
 
@@ -153,7 +151,6 @@ definition {
 	@priority = "3"
 	test AssertPromoProductPriceTotalIsDifferent {
 		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "CommerceAccelerators#AssertPromoProductPriceTotalIsDifferent";
 
 		// TODO Review
 
@@ -185,7 +182,6 @@ definition {
 	@description = "This is a test for COMMERCE-4958."
 	test CheckoutWithOneShippingOption {
 		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "CommerceAccelerators#CheckoutWithOneShippingOption";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Speedwell");
 
@@ -241,7 +237,6 @@ definition {
 		property portal.acceptance = "quarantine";
 		property portal.release = "quarantine";
 		property portal.upstream = "quarantine";
-		property test.name.skip.portal.instance = "CommerceAccelerators#DeactivateCommerceAccount";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
@@ -323,7 +318,6 @@ definition {
 	@description = "This is a workaround for an issue with Minium's sidebar on CI"
 	test DeactivateCommerceAccountAdminLogOut {
 		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "CommerceAccelerators#DeactivateCommerceAccount";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
@@ -405,7 +399,6 @@ definition {
 	test InitializeNewMiniumSite {
 		property environment.acceptance = "true";
 		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "CommerceAccelerators#InitializeNewMiniumSite";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
@@ -461,7 +454,6 @@ definition {
 	test InitializeNewSpeedwellSite {
 		property environment.acceptance = "true";
 		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "CommerceAccelerators#InitializeNewSpeedwellSite";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Speedwell");
 
@@ -518,7 +510,6 @@ definition {
 		property portal.acceptance = "quarantine";
 		property portal.release = "quarantine";
 		property portal.upstream = "quarantine";
-		property test.name.skip.portal.instance = "CommerceAccelerators#MiniumSiteFullFlow";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
@@ -665,7 +656,6 @@ definition {
 	@description = "This is a workaround for an issue with Minium's sidebar on CI"
 	test MiniumSiteFullFlowCheckingOutViaOrderDetails {
 		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "CommerceAccelerators#MiniumSiteFullFlowCheckingOutViaOrderDetails";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
@@ -821,7 +811,6 @@ definition {
 
 	test SpeedwellSiteFullFlow {
 		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "CommerceAccelerators#SpeedwellSiteFullFlow";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Speedwell");
 

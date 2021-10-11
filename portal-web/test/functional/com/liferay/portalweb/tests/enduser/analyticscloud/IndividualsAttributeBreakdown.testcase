@@ -26,15 +26,15 @@ definition {
 
 		task ("Add a new user") {
 			JSONUser.addUser(
-				userEmailAddress = "user1@liferay.com",
-				userFirstName = "user1",
-				userLastName = "user1",
-				userScreenName = "user1");
+				userEmailAddress = "ac@liferay.com",
+				userFirstName = "ac",
+				userLastName = "ac",
+				userScreenName = "ac");
 
 			JSONUser.setFirstPassword(
 				agreeToTermsAndAnswerReminderQuery = "true",
 				requireReset = "false",
-				userEmailAddress = "user1@liferay.com");
+				userEmailAddress = "ac@liferay.com");
 		}
 
 		task ("Connect the DXP to AC") {
@@ -69,8 +69,8 @@ definition {
 
 		task ("Sign in as new user") {
 			User.logoutAndLoginPG(
-				userLoginEmailAddress = "user1@liferay.com",
-				userLoginFullName = "user1 user1");
+				userLoginEmailAddress = "ac@liferay.com",
+				userLoginFullName = "ac ac");
 		}
 
 		task ("View the site page") {
@@ -80,7 +80,7 @@ definition {
 		}
 
 		task ("Close sessions") {
-			ACUtils.closeAllSessions();
+			ACUtils.closeAllSessionsAndWait();
 		}
 
 		task ("Switch to new property in AC") {
@@ -91,8 +91,8 @@ definition {
 
 		task ("Add a CSV Data Source") {
 			ACSettings.addCSVDataSource(
-				dataSourceName = "CSV Country",
-				sourceFileName = "contacts_country.csv");
+				dataSourceName = "CSV Data Source",
+				sourceFileName = "jobTitle.csv");
 		}
 
 		task ("Exit Settings") {
@@ -104,17 +104,15 @@ definition {
 		}
 
 		task ("Add a new breakdown") {
-			ACIndividualsDashboard.addBreakdown(
-				attribute = "country",
-				breakdownName = "Breakdown by Country");
+			ACSegments.addBreakdownByAttribute(
+				attribute = "jobTitle",
+				breakdownName = "Breakdown by Job Title");
 		}
 
 		task ("View the data in new breakdown") {
-			ACIndividualsDashboard.clickBreakdownTab(breakdownName = "Breakdown by Country");
-
 			ACIndividualsDashboard.viewBreakdownRecharts(
 				fillColor = "#4B9BFF",
-				tick = "china");
+				tick = "farmer");
 		}
 	}
 
@@ -125,20 +123,10 @@ definition {
 			var propertyName = ACDXPSettings.getAssignedPropertyName(siteName = "Site Name");
 		}
 
-		task ("View the site page as Test Test") {
-			Navigator.gotoSitePage(
-				pageName = "AC Page",
-				siteName = "Site Name");
-		}
-
-		task ("Wait for sending requests") {
-			Pause(locator1 = "5000");
-		}
-
 		task ("Sign in as new user") {
 			User.logoutAndLoginPG(
-				userLoginEmailAddress = "user1@liferay.com",
-				userLoginFullName = "user1 user1");
+				userLoginEmailAddress = "ac@liferay.com",
+				userLoginFullName = "ac ac");
 		}
 
 		task ("View the site page") {
@@ -147,12 +135,8 @@ definition {
 				siteName = "Site Name");
 		}
 
-		task ("Wait for sending requests") {
-			Pause(locator1 = "5000");
-		}
-
 		task ("Close sessions") {
-			ACUtils.closeAllSessions();
+			ACUtils.closeAllSessionsAndWait();
 		}
 
 		task ("Switch to new property in AC") {
@@ -163,8 +147,8 @@ definition {
 
 		task ("Add a CSV Data Source") {
 			ACSettings.addCSVDataSource(
-				dataSourceName = "CSV Country",
-				sourceFileName = "contacts_country.csv");
+				dataSourceName = "CSV Data Source",
+				sourceFileName = "jobTitle.csv");
 		}
 
 		task ("Exit Settings") {
@@ -178,15 +162,13 @@ definition {
 		}
 
 		task ("Select the country in Breakdown by field") {
-			ACIndividualsDashboard.selectAttribute(
-				attribute = "country",
-				fieldLabel = "Breakdown By");
+			ACSegments.selectDistributionByAttribute(attribute = "jobTitle");
 		}
 
 		task ("View the individual in chart") {
 			ACIndividualsDashboard.viewBreakdownRecharts(
 				fillColor = "#4B9BFF",
-				tick = "china - 50.0%");
+				tick = "farmer - 100.0%");
 		}
 	}
 
@@ -199,8 +181,8 @@ definition {
 
 		task ("Sign in as new user") {
 			User.logoutAndLoginPG(
-				userLoginEmailAddress = "user1@liferay.com",
-				userLoginFullName = "user1 user1");
+				userLoginEmailAddress = "ac@liferay.com",
+				userLoginFullName = "ac ac");
 		}
 
 		task ("View the site page") {
@@ -210,7 +192,7 @@ definition {
 		}
 
 		task ("Close sessions") {
-			ACUtils.closeAllSessions();
+			ACUtils.closeAllSessionsAndWait();
 		}
 
 		task ("Switch to new property in AC") {
@@ -221,8 +203,8 @@ definition {
 
 		task ("Add a CSV Data Source") {
 			ACSettings.addCSVDataSource(
-				dataSourceName = "CSV Country",
-				sourceFileName = "contacts_country.csv");
+				dataSourceName = "CSV Data Source",
+				sourceFileName = "jobTitle.csv");
 		}
 
 		task ("Exit Settings") {
@@ -234,17 +216,17 @@ definition {
 		}
 
 		task ("Add a new breakdown") {
-			ACIndividualsDashboard.addBreakdown(
-				attribute = "country",
-				breakdownName = "Breakdown by Country");
+			ACSegments.addBreakdownByAttribute(
+				attribute = "jobTitle",
+				breakdownName = "Breakdown to Delete");
 		}
 
 		task ("Remove the new breakdown") {
-			ACIndividualsDashboard.deleteBreakdown(breakdownName = "Breakdown by Country");
+			ACIndividualsDashboard.deleteBreakdown(breakdownName = "Breakdown to Delete");
 		}
 
 		task ("View the breakdown is deleted") {
-			ACIndividualsDashboard.viewBreakdownNotPresent(breakdownName = "Breakdown by Country");
+			ACIndividualsDashboard.viewBreakdownNotPresent(breakdownName = "Breakdown to Delete");
 		}
 	}
 
@@ -257,8 +239,8 @@ definition {
 
 		task ("Sign in as new user") {
 			User.logoutAndLoginPG(
-				userLoginEmailAddress = "user1@liferay.com",
-				userLoginFullName = "user1 user1");
+				userLoginEmailAddress = "ac@liferay.com",
+				userLoginFullName = "ac ac");
 		}
 
 		task ("View the site page") {
@@ -268,7 +250,7 @@ definition {
 		}
 
 		task ("Close sessions") {
-			ACUtils.closeAllSessions();
+			ACUtils.closeAllSessionsAndWait();
 		}
 
 		task ("Switch to new property in AC") {
@@ -279,8 +261,8 @@ definition {
 
 		task ("Add a CSV Data Source") {
 			ACSettings.addCSVDataSource(
-				dataSourceName = "CSV Country",
-				sourceFileName = "contacts_country.csv");
+				dataSourceName = "CSV Data Source",
+				sourceFileName = "jobTitle.csv");
 		}
 
 		task ("Exit Settings") {
@@ -292,31 +274,31 @@ definition {
 		}
 
 		task ("Add the first breakdown") {
-			ACIndividualsDashboard.addBreakdown(
-				attribute = "country",
-				breakdownName = "Breakdown by Country");
+			ACSegments.addBreakdownByAttribute(
+				attribute = "jobTitle",
+				breakdownName = "Breakdown by Job Title");
 		}
 
 		task ("Add the second breakdown") {
-			ACIndividualsDashboard.addBreakdown(
-				attribute = "department",
-				breakdownName = "Breakdown by Department");
+			ACSegments.addBreakdownByAttribute(
+				attribute = "familyName",
+				breakdownName = "Breakdown by Family Name");
 		}
 
 		task ("Switch to the first breakdown") {
-			ACIndividualsDashboard.clickBreakdownTab(breakdownName = "Breakdown by Country");
+			ACIndividualsDashboard.clickBreakdownTab(breakdownName = "Breakdown by Job Title");
 
 			ACIndividualsDashboard.viewBreakdownRecharts(
 				fillColor = "#4B9BFF",
-				tick = "china");
+				tick = "farmer");
 		}
 
 		task ("Switch to the second breakdown") {
-			ACIndividualsDashboard.clickBreakdownTab(breakdownName = "Breakdown by Department");
+			ACIndividualsDashboard.clickBreakdownTab(breakdownName = "Breakdown by Family Name");
 
 			ACIndividualsDashboard.viewBreakdownRecharts(
 				fillColor = "#4B9BFF",
-				tick = "finance");
+				tick = "ac");
 		}
 	}
 

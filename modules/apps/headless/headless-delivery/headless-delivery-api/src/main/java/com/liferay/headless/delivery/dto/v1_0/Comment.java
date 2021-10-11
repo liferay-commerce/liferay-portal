@@ -60,6 +60,10 @@ public class Comment implements Serializable {
 		return ObjectMapperUtil.readValue(Comment.class, json);
 	}
 
+	public static Comment unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Comment.class, json);
+	}
+
 	@Schema(
 		description = "Block of actions allowed by the user making the request."
 	)

@@ -56,6 +56,10 @@ public class AccountRole implements Serializable {
 		return ObjectMapperUtil.readValue(AccountRole.class, json);
 	}
 
+	public static AccountRole unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(AccountRole.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Map<String, String> getDescription() {

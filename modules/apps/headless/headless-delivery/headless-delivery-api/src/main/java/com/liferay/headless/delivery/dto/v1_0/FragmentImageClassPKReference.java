@@ -57,6 +57,11 @@ public class FragmentImageClassPKReference implements Serializable {
 			FragmentImageClassPKReference.class, json);
 	}
 
+	public static FragmentImageClassPKReference unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			FragmentImageClassPKReference.class, json);
+	}
+
 	@Schema(description = "A map of class primary key references.")
 	@Valid
 	public Map<String, ClassPKReference> getClassPKReferences() {

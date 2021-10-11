@@ -15,7 +15,6 @@
 package com.liferay.dynamic.data.mapping.form.report.web.internal.display.context;
 
 import com.liferay.dynamic.data.mapping.form.field.type.constants.DDMFormFieldTypeConstants;
-import com.liferay.dynamic.data.mapping.form.report.web.internal.portlet.DDMFormReportPortlet;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
@@ -41,7 +40,6 @@ import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.Date;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -131,9 +129,6 @@ public class DDMFormReportDisplayContext {
 		ThemeDisplay themeDisplay = (ThemeDisplay)_renderRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			themeDisplay.getLocale(), DDMFormReportPortlet.class);
-
 		String languageKey = "the-last-entry-was-sent-on-x";
 
 		Date modifiedDate = _ddmFormInstanceReport.getModifiedDate();
@@ -158,7 +153,8 @@ public class DDMFormReportDisplayContext {
 		}
 
 		return LanguageUtil.format(
-			resourceBundle, languageKey, relativeTimeDescription, false);
+			themeDisplay.getLocale(), languageKey, relativeTimeDescription,
+			false);
 	}
 
 	public int getTotalItems() throws PortalException {

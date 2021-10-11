@@ -51,6 +51,10 @@ public class CartComment implements Serializable {
 		return ObjectMapperUtil.readValue(CartComment.class, json);
 	}
 
+	public static CartComment unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(CartComment.class, json);
+	}
+
 	@Schema
 	public String getAuthor() {
 		return author;

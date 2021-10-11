@@ -54,6 +54,11 @@ public class ParentTaxonomyCategory implements Serializable {
 		return ObjectMapperUtil.readValue(ParentTaxonomyCategory.class, json);
 	}
 
+	public static ParentTaxonomyCategory unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			ParentTaxonomyCategory.class, json);
+	}
+
 	@Schema
 	public Long getId() {
 		return id;

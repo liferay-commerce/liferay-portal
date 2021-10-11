@@ -93,7 +93,7 @@ public class ObjectRelationshipModelImpl
 		{"objectDefinitionId2", Types.BIGINT}, {"objectFieldId2", Types.BIGINT},
 		{"deletionType", Types.VARCHAR}, {"dbTableName", Types.VARCHAR},
 		{"label", Types.VARCHAR}, {"name", Types.VARCHAR},
-		{"type_", Types.VARCHAR}
+		{"reverse", Types.BOOLEAN}, {"type_", Types.VARCHAR}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -115,11 +115,12 @@ public class ObjectRelationshipModelImpl
 		TABLE_COLUMNS_MAP.put("dbTableName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("label", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("name", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("reverse", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("type_", Types.VARCHAR);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table ObjectRelationship (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,objectRelationshipId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,objectDefinitionId1 LONG,objectDefinitionId2 LONG,objectFieldId2 LONG,deletionType VARCHAR(75) null,dbTableName VARCHAR(75) null,label STRING null,name VARCHAR(75) null,type_ VARCHAR(75) null)";
+		"create table ObjectRelationship (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,objectRelationshipId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,objectDefinitionId1 LONG,objectDefinitionId2 LONG,objectFieldId2 LONG,deletionType VARCHAR(75) null,dbTableName VARCHAR(75) null,label STRING null,name VARCHAR(75) null,reverse BOOLEAN,type_ VARCHAR(75) null)";
 
 	public static final String TABLE_SQL_DROP = "drop table ObjectRelationship";
 
@@ -169,20 +170,26 @@ public class ObjectRelationshipModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long TYPE_COLUMN_BITMASK = 32L;
+	public static final long REVERSE_COLUMN_BITMASK = 32L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long UUID_COLUMN_BITMASK = 64L;
+	public static final long TYPE_COLUMN_BITMASK = 64L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long UUID_COLUMN_BITMASK = 128L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long OBJECTRELATIONSHIPID_COLUMN_BITMASK = 128L;
+	public static final long OBJECTRELATIONSHIPID_COLUMN_BITMASK = 256L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -228,6 +235,7 @@ public class ObjectRelationshipModelImpl
 		model.setDBTableName(soapModel.getDBTableName());
 		model.setLabel(soapModel.getLabel());
 		model.setName(soapModel.getName());
+		model.setReverse(soapModel.isReverse());
 		model.setType(soapModel.getType());
 
 		return model;
@@ -472,6 +480,11 @@ public class ObjectRelationshipModelImpl
 			"name",
 			(BiConsumer<ObjectRelationship, String>)
 				ObjectRelationship::setName);
+		attributeGetterFunctions.put("reverse", ObjectRelationship::getReverse);
+		attributeSetterBiConsumers.put(
+			"reverse",
+			(BiConsumer<ObjectRelationship, Boolean>)
+				ObjectRelationship::setReverse);
 		attributeGetterFunctions.put("type", ObjectRelationship::getType);
 		attributeSetterBiConsumers.put(
 			"type",
@@ -910,6 +923,37 @@ public class ObjectRelationshipModelImpl
 
 	@JSON
 	@Override
+	public boolean getReverse() {
+		return _reverse;
+	}
+
+	@JSON
+	@Override
+	public boolean isReverse() {
+		return _reverse;
+	}
+
+	@Override
+	public void setReverse(boolean reverse) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_reverse = reverse;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public boolean getOriginalReverse() {
+		return GetterUtil.getBoolean(
+			this.<Boolean>getColumnOriginalValue("reverse"));
+	}
+
+	@JSON
+	@Override
 	public String getType() {
 		if (_type == null) {
 			return "";
@@ -1083,6 +1127,7 @@ public class ObjectRelationshipModelImpl
 		objectRelationshipImpl.setDBTableName(getDBTableName());
 		objectRelationshipImpl.setLabel(getLabel());
 		objectRelationshipImpl.setName(getName());
+		objectRelationshipImpl.setReverse(isReverse());
 		objectRelationshipImpl.setType(getType());
 
 		objectRelationshipImpl.resetOriginalValues();
@@ -1125,6 +1170,8 @@ public class ObjectRelationshipModelImpl
 			this.<String>getColumnOriginalValue("label"));
 		objectRelationshipImpl.setName(
 			this.<String>getColumnOriginalValue("name"));
+		objectRelationshipImpl.setReverse(
+			this.<Boolean>getColumnOriginalValue("reverse"));
 		objectRelationshipImpl.setType(
 			this.<String>getColumnOriginalValue("type_"));
 
@@ -1288,6 +1335,8 @@ public class ObjectRelationshipModelImpl
 			objectRelationshipCacheModel.name = null;
 		}
 
+		objectRelationshipCacheModel.reverse = isReverse();
+
 		objectRelationshipCacheModel.type = getType();
 
 		String type = objectRelationshipCacheModel.type;
@@ -1404,6 +1453,7 @@ public class ObjectRelationshipModelImpl
 	private String _label;
 	private String _labelCurrentLanguageId;
 	private String _name;
+	private boolean _reverse;
 	private String _type;
 
 	public <T> T getColumnValue(String columnName) {
@@ -1451,6 +1501,7 @@ public class ObjectRelationshipModelImpl
 		_columnOriginalValues.put("dbTableName", _dbTableName);
 		_columnOriginalValues.put("label", _label);
 		_columnOriginalValues.put("name", _name);
+		_columnOriginalValues.put("reverse", _reverse);
 		_columnOriginalValues.put("type_", _type);
 	}
 
@@ -1506,7 +1557,9 @@ public class ObjectRelationshipModelImpl
 
 		columnBitmasks.put("name", 16384L);
 
-		columnBitmasks.put("type_", 32768L);
+		columnBitmasks.put("reverse", 32768L);
+
+		columnBitmasks.put("type_", 65536L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}

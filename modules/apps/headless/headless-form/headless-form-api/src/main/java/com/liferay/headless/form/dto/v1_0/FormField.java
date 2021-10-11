@@ -55,6 +55,10 @@ public class FormField implements Serializable {
 		return ObjectMapperUtil.readValue(FormField.class, json);
 	}
 
+	public static FormField unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(FormField.class, json);
+	}
+
 	@Schema
 	public Boolean getAutocomplete() {
 		return autocomplete;

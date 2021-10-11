@@ -55,6 +55,10 @@ public class FragmentStyle implements Serializable {
 		return ObjectMapperUtil.readValue(FragmentStyle.class, json);
 	}
 
+	public static FragmentStyle unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(FragmentStyle.class, json);
+	}
+
 	@Schema(description = "The fragment's background color.")
 	public String getBackgroundColor() {
 		return backgroundColor;

@@ -56,6 +56,11 @@ public class ContentStructureField implements Serializable {
 		return ObjectMapperUtil.readValue(ContentStructureField.class, json);
 	}
 
+	public static ContentStructureField unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			ContentStructureField.class, json);
+	}
+
 	@Schema(
 		description = "The form field's type (e.g., date, geolocation, text, etc.)."
 	)

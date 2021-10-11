@@ -162,7 +162,7 @@ public class ObjectActionServiceTest {
 			user.getUserId(), _objectDefinition.getObjectDefinitionId(), true,
 			RandomTestUtil.randomString(),
 			ObjectActionExecutorConstants.KEY_WEBHOOK,
-			ObjectActionTriggerConstants.KEY_ON_AFTER_CREATE,
+			ObjectActionTriggerConstants.KEY_ON_AFTER_ADD,
 			new UnicodeProperties());
 	}
 
@@ -183,7 +183,7 @@ public class ObjectActionServiceTest {
 				_objectDefinition.getObjectDefinitionId(), true,
 				RandomTestUtil.randomString(),
 				ObjectActionExecutorConstants.KEY_WEBHOOK,
-				ObjectActionTriggerConstants.KEY_ON_AFTER_CREATE,
+				ObjectActionTriggerConstants.KEY_ON_AFTER_ADD,
 				new UnicodeProperties());
 		}
 		finally {

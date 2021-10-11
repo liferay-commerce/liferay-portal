@@ -25,11 +25,8 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
-
-import java.util.ResourceBundle;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -55,24 +52,20 @@ public class LayoutPageTemplateEntryExceptionRequestHandler {
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			themeDisplay.getLocale(),
-			LayoutPageTemplateEntryExceptionRequestHandler.class);
-
 		String errorMessage = null;
 
 		if (portalException instanceof
 				LayoutPageTemplateEntryNameException.MustNotBeDuplicate) {
 
 			errorMessage = LanguageUtil.get(
-				resourceBundle,
+				themeDisplay.getLocale(),
 				"a-page-template-entry-with-that-name-already-exists");
 		}
 		else if (portalException instanceof
 					LayoutPageTemplateEntryNameException.MustNotBeNull) {
 
 			errorMessage = LanguageUtil.get(
-				resourceBundle, "name-must-not-be-empty");
+				themeDisplay.getLocale(), "name-must-not-be-empty");
 		}
 		else if (portalException instanceof
 					LayoutPageTemplateEntryNameException.
@@ -84,7 +77,7 @@ public class LayoutPageTemplateEntryExceptionRequestHandler {
 						MustNotContainInvalidCharacters)portalException;
 
 			errorMessage = LanguageUtil.format(
-				resourceBundle,
+				themeDisplay.getLocale(),
 				"name-cannot-contain-the-following-invalid-character-x",
 				lptene.character);
 		}
@@ -96,14 +89,14 @@ public class LayoutPageTemplateEntryExceptionRequestHandler {
 				LayoutPageTemplateEntry.class.getName(), "name");
 
 			errorMessage = LanguageUtil.format(
-				resourceBundle,
+				themeDisplay.getLocale(),
 				"please-enter-a-name-with-fewer-than-x-characters",
 				nameMaxLength);
 		}
 
 		if (Validator.isNull(errorMessage)) {
 			errorMessage = LanguageUtil.get(
-				resourceBundle, "an-unexpected-error-occurred");
+				themeDisplay.getLocale(), "an-unexpected-error-occurred");
 
 			_log.error(portalException.getMessage());
 		}

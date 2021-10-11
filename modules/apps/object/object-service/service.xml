@@ -365,6 +365,7 @@
 		<column method-name="DBTableName" name="dbTableName" type="String" />
 		<column localized="true" name="label" type="String" />
 		<column name="name" type="String" />
+		<column name="reverse" type="boolean" />
 		<column name="type" type="String" />
 
 		<!-- Finder methods -->
@@ -388,6 +389,13 @@
 			<finder-column name="name" />
 			<finder-column name="type" />
 		</finder>
+		<finder name="ODI1_ODI2_N_R_T" return-type="ObjectRelationship">
+			<finder-column name="objectDefinitionId1" />
+			<finder-column name="objectDefinitionId2" />
+			<finder-column name="name" />
+			<finder-column name="reverse" />
+			<finder-column name="type" />
+		</finder>
 	</entity>
 	<exceptions>
 		<exception>DefaultObjectLayout</exception>
@@ -397,6 +405,7 @@
 		<exception>ObjectActionExecutorKey</exception>
 		<exception>ObjectActionName</exception>
 		<exception>ObjectActionTriggerKey</exception>
+		<exception>ObjectDefinitionActive</exception>
 		<exception>ObjectDefinitionLabel</exception>
 		<exception>ObjectDefinitionName</exception>
 		<exception>ObjectDefinitionPluralLabel</exception>
@@ -409,6 +418,7 @@
 		<exception>ObjectFieldType</exception>
 		<exception>ObjectLayoutColumnSize</exception>
 		<exception>ObjectRelationshipName</exception>
+		<exception>ObjectRelationshipReverse</exception>
 		<exception>ObjectRelationshipType</exception>
 		<exception>RequiredObjectDefinition</exception>
 		<exception>RequiredObjectField</exception>

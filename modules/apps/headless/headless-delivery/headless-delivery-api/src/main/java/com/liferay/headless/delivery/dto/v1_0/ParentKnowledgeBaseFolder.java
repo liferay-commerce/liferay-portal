@@ -55,6 +55,11 @@ public class ParentKnowledgeBaseFolder implements Serializable {
 			ParentKnowledgeBaseFolder.class, json);
 	}
 
+	public static ParentKnowledgeBaseFolder unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			ParentKnowledgeBaseFolder.class, json);
+	}
+
 	@Schema(description = "The parent folder's ID.")
 	public Long getFolderId() {
 		return folderId;

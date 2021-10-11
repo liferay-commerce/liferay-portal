@@ -53,6 +53,10 @@ public class Category implements Serializable {
 		return ObjectMapperUtil.readValue(Category.class, json);
 	}
 
+	public static Category unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Category.class, json);
+	}
+
 	@DecimalMin("0")
 	@Schema
 	public Long getId() {

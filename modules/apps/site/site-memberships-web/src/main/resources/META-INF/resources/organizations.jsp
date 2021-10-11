@@ -30,7 +30,7 @@ OrganizationsDisplayContext organizationsDisplayContext = new OrganizationsDispl
 	propsTransformer="js/OrganizationsManagementToolbarPropsTransformer"
 />
 
-<div class="closed sidenav-container sidenav-right" id="<%= liferayPortletResponse.getNamespace() + "infoPanelId" %>">
+<div class="closed sidenav-container sidenav-right" id="<portlet:namespace />infoPanelId">
 	<liferay-ui:breadcrumb
 		showLayout="<%= false %>"
 	/>

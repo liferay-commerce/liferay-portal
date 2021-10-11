@@ -1582,7 +1582,7 @@ public class GitHubWebhookPayloadProcessor {
 		String sha = pushEventPayload.getAfterSHA();
 
 		if (_log.isInfoEnabled()) {
-			_log.info("Sync subrepo sha " + sha);
+			_log.info("Sync subrepo SHA " + sha);
 		}
 
 		jsonObject.put("sha", sha);

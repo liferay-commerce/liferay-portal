@@ -53,6 +53,10 @@ public class Histogram implements Serializable {
 		return ObjectMapperUtil.readValue(Histogram.class, json);
 	}
 
+	public static Histogram unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Histogram.class, json);
+	}
+
 	@Schema
 	public String getKey() {
 		return key;

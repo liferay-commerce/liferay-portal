@@ -51,6 +51,10 @@ public class ShippingOption implements Serializable {
 		return ObjectMapperUtil.readValue(ShippingOption.class, json);
 	}
 
+	public static ShippingOption unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(ShippingOption.class, json);
+	}
+
 	@Schema
 	public Double getAmount() {
 		return amount;

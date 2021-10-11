@@ -60,6 +60,10 @@ public class Role implements Serializable {
 		return ObjectMapperUtil.readValue(Role.class, json);
 	}
 
+	public static Role unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Role.class, json);
+	}
+
 	@Schema(
 		description = "Block of actions that the user can perform with the roles."
 	)

@@ -62,6 +62,9 @@ import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -132,7 +135,10 @@ public class JenkinsResultsParserUtil {
 	};
 
 	public static final String[] URLS_GIT_DIRECTORIES_JSON_DEFAULT = {
-		URL_CACHE + "/liferay-jenkins-ee/git-directories.json",
+		URL_CACHE + "/liferay-jenkins-ee/git-directories.json"
+	};
+
+	public static final String[] URLS_GIT_WORKING_DIRECTORIES_JSON_DEFAULT = {
 		URL_CACHE + "/liferay-jenkins-ee/git-working-directories.json"
 	};
 
@@ -959,16 +965,6 @@ public class JenkinsResultsParserUtil {
 	}
 
 	public static String getBuildDirPath() {
-		String buildNumber = System.getenv("BUILD_NUMBER");
-		String jobName = System.getenv("JOB_NAME");
-		String masterHostname = System.getenv("MASTER_HOSTNAME");
-
-		if (isNullOrEmpty(buildNumber) || isNullOrEmpty(jobName) ||
-			isNullOrEmpty(masterHostname)) {
-
-			return null;
-		}
-
 		StringBuilder sb = new StringBuilder();
 
 		if (isWindows()) {
@@ -976,6 +972,22 @@ public class JenkinsResultsParserUtil {
 		}
 
 		sb.append("/tmp/jenkins/");
+
+		String buildNumber = System.getenv("BUILD_NUMBER");
+		String jobName = System.getenv("JOB_NAME");
+		String masterHostname = System.getenv("MASTER_HOSTNAME");
+
+		if (!isCINode() || isNullOrEmpty(buildNumber) ||
+			isNullOrEmpty(jobName) || isNullOrEmpty(masterHostname)) {
+
+			LocalDate localDate = LocalDate.now();
+
+			sb.append(
+				localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+
+			return sb.toString();
+		}
+
 		sb.append(masterHostname);
 		sb.append("/");
 		sb.append(
@@ -1556,27 +1568,17 @@ public class JenkinsResultsParserUtil {
 	public static String getGitDirectoryName(
 		String repositoryName, String upstreamBranchName) {
 
-		JSONArray gitDirectoriesJSONArray = _getGitDirectoriesJSONArray();
+		String targetGitDirectoryName = _getGitDirectoryName(
+			repositoryName, upstreamBranchName,
+			_getGitWorkingDirectoriesJSONArray());
 
-		for (int i = 0; i < gitDirectoriesJSONArray.length(); i++) {
-			JSONObject gitDirectoryJSONObject =
-				gitDirectoriesJSONArray.getJSONObject(i);
-
-			if ((gitDirectoryJSONObject == JSONObject.NULL) ||
-				!Objects.equals(
-					repositoryName,
-					gitDirectoryJSONObject.getString("repository")) ||
-				!Objects.equals(
-					upstreamBranchName,
-					gitDirectoryJSONObject.getString("branch"))) {
-
-				continue;
-			}
-
-			return gitDirectoryJSONObject.getString("name");
+		if (targetGitDirectoryName == null) {
+			targetGitDirectoryName = _getGitDirectoryName(
+				repositoryName, upstreamBranchName,
+				_getGitDirectoriesJSONArray());
 		}
 
-		return null;
+		return targetGitDirectoryName;
 	}
 
 	public static String getGitHubAPIRateLimitStatusMessage() {
@@ -2975,7 +2977,7 @@ public class JenkinsResultsParserUtil {
 
 		Matcher matcher = _shaPattern.matcher(sha);
 
-		return matcher.find();
+		return matcher.matches();
 	}
 
 	public static boolean isWindows() {
@@ -4615,7 +4617,19 @@ public class JenkinsResultsParserUtil {
 	private static JSONObject _getGitDirectoryJSONObject(
 		String gitDirectoryName) {
 
-		JSONArray gitDirectoriesJSONArray = _getGitDirectoriesJSONArray();
+		JSONObject jsonObject = _getGitDirectoryJSONObject(
+			gitDirectoryName, _getGitWorkingDirectoriesJSONArray());
+
+		if (jsonObject == null) {
+			jsonObject = _getGitDirectoryJSONObject(
+				gitDirectoryName, _getGitDirectoriesJSONArray());
+		}
+
+		return jsonObject;
+	}
+
+	private static JSONObject _getGitDirectoryJSONObject(
+		String gitDirectoryName, JSONArray gitDirectoriesJSONArray) {
 
 		for (int i = 0; i < gitDirectoriesJSONArray.length(); i++) {
 			JSONObject gitDirectoryJSONObject =
@@ -4634,6 +4648,31 @@ public class JenkinsResultsParserUtil {
 		return null;
 	}
 
+	private static String _getGitDirectoryName(
+		String repositoryName, String upstreamBranchName,
+		JSONArray gitDirectoriesJSONArray) {
+
+		for (int i = 0; i < gitDirectoriesJSONArray.length(); i++) {
+			JSONObject gitDirectoryJSONObject =
+				gitDirectoriesJSONArray.getJSONObject(i);
+
+			if ((gitDirectoryJSONObject == JSONObject.NULL) ||
+				!Objects.equals(
+					repositoryName,
+					gitDirectoryJSONObject.getString("repository")) ||
+				!Objects.equals(
+					upstreamBranchName,
+					gitDirectoryJSONObject.getString("branch"))) {
+
+				continue;
+			}
+
+			return gitDirectoryJSONObject.getString("name");
+		}
+
+		return null;
+	}
+
 	private static String _getGitHubAPIRateLimitStatusMessage(
 		int limit, int remaining, long reset) {
 
@@ -4647,6 +4686,35 @@ public class JenkinsResultsParserUtil {
 		sb.append(".");
 
 		return sb.toString();
+	}
+
+	private static synchronized JSONArray _getGitWorkingDirectoriesJSONArray() {
+		if (_gitWorkingDirectoriesJSONArray != null) {
+			return _gitWorkingDirectoriesJSONArray;
+		}
+
+		_gitWorkingDirectoriesJSONArray = new JSONArray();
+
+		for (String url : URLS_GIT_WORKING_DIRECTORIES_JSON_DEFAULT) {
+			JSONArray jsonArray;
+
+			try {
+				jsonArray = toJSONArray(getLocalURL(url), false);
+			}
+			catch (IOException ioException) {
+				continue;
+			}
+
+			if (jsonArray == null) {
+				continue;
+			}
+
+			for (int i = 0; i < jsonArray.length(); i++) {
+				_gitWorkingDirectoriesJSONArray.put(jsonArray.get(i));
+			}
+		}
+
+		return _gitWorkingDirectoriesJSONArray;
 	}
 
 	private static Set<Set<String>> _getOrderedOptSets(String... opts) {
@@ -5021,6 +5089,7 @@ public class JenkinsResultsParserUtil {
 	private static JSONArray _gitDirectoriesJSONArray;
 	private static final DateFormat _gitHubDateFormat = new SimpleDateFormat(
 		"yyyy-MM-dd'T'HH:mm:ss");
+	private static JSONArray _gitWorkingDirectoriesJSONArray;
 	private static final Pattern _javaVersionPattern = Pattern.compile(
 		"(\\d+\\.\\d+)");
 	private static final Pattern _jenkinsMasterPattern = Pattern.compile(

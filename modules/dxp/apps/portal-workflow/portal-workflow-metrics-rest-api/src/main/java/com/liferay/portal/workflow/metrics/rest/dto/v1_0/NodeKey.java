@@ -51,6 +51,10 @@ public class NodeKey implements Serializable {
 		return ObjectMapperUtil.readValue(NodeKey.class, json);
 	}
 
+	public static NodeKey unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(NodeKey.class, json);
+	}
+
 	@Schema
 	public String getExecutionType() {
 		return executionType;

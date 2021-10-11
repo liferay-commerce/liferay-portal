@@ -54,6 +54,10 @@ public class ContentAssociation implements Serializable {
 		return ObjectMapperUtil.readValue(ContentAssociation.class, json);
 	}
 
+	public static ContentAssociation unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(ContentAssociation.class, json);
+	}
+
 	@Schema(
 		description = "The subtype of the content. i.e. the Structure name if it's a Structured Content."
 	)

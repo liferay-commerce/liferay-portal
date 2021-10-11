@@ -54,6 +54,10 @@ public class ReindexStatus implements Serializable {
 		return ObjectMapperUtil.readValue(ReindexStatus.class, json);
 	}
 
+	public static ReindexStatus unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(ReindexStatus.class, json);
+	}
+
 	@Schema
 	public Long getCompletionPercentage() {
 		return completionPercentage;

@@ -271,7 +271,8 @@ public class KaleoInstanceTokenLocalServiceImpl
 	public Hits search(
 		Long userId, String assetClassName, String assetTitle,
 		String assetDescription, String currentKaleoNodeName,
-		String kaleoDefinitionName, Boolean completed, int start, int end,
+		String kaleoDefinitionName, Boolean completed,
+		boolean searchByActiveWorkflowHandlers, int start, int end,
 		Sort[] sorts, ServiceContext serviceContext) {
 
 		try {
@@ -285,6 +286,8 @@ public class KaleoInstanceTokenLocalServiceImpl
 			kaleoInstanceTokenQuery.setCurrentKaleoNodeName(
 				currentKaleoNodeName);
 			kaleoInstanceTokenQuery.setKaleoDefinitionName(kaleoDefinitionName);
+			kaleoInstanceTokenQuery.setSearchByActiveWorkflowHandlers(
+				searchByActiveWorkflowHandlers);
 			kaleoInstanceTokenQuery.setUserId(userId);
 
 			Indexer<KaleoInstanceToken> indexer =
@@ -301,12 +304,29 @@ public class KaleoInstanceTokenLocalServiceImpl
 		}
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x)
+	 */
+	@Deprecated
+	@Override
+	public Hits search(
+		Long userId, String assetClassName, String assetTitle,
+		String assetDescription, String currentKaleoNodeName,
+		String kaleoDefinitionName, Boolean completed, int start, int end,
+		Sort[] sorts, ServiceContext serviceContext) {
+
+		return search(
+			userId, assetClassName, assetTitle, assetDescription,
+			currentKaleoNodeName, kaleoDefinitionName, completed, false, start,
+			end, sorts, serviceContext);
+	}
+
 	@Override
 	public int searchCount(
 		Long userId, String assetClassName, String assetTitle,
 		String assetDescription, String currentKaleoNodeName,
 		String kaleoDefinitionName, Boolean completed,
-		ServiceContext serviceContext) {
+		boolean searchByActiveWorkflowHandlers, ServiceContext serviceContext) {
 
 		KaleoInstanceTokenQuery kaleoInstanceTokenQuery =
 			new KaleoInstanceTokenQuery(serviceContext);
@@ -317,6 +337,8 @@ public class KaleoInstanceTokenLocalServiceImpl
 		kaleoInstanceTokenQuery.setCurrentKaleoNodeName(currentKaleoNodeName);
 		kaleoInstanceTokenQuery.setCompleted(completed);
 		kaleoInstanceTokenQuery.setKaleoDefinitionName(kaleoDefinitionName);
+		kaleoInstanceTokenQuery.setSearchByActiveWorkflowHandlers(
+			searchByActiveWorkflowHandlers);
 		kaleoInstanceTokenQuery.setUserId(userId);
 
 		try {
@@ -333,6 +355,23 @@ public class KaleoInstanceTokenLocalServiceImpl
 		catch (SearchException searchException) {
 			throw new SystemException(searchException);
 		}
+	}
+
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x)
+	 */
+	@Deprecated
+	@Override
+	public int searchCount(
+		Long userId, String assetClassName, String assetTitle,
+		String assetDescription, String currentKaleoNodeName,
+		String kaleoDefinitionName, Boolean completed,
+		ServiceContext serviceContext) {
+
+		return searchCount(
+			userId, assetClassName, assetTitle, assetDescription,
+			currentKaleoNodeName, kaleoDefinitionName, completed, false,
+			serviceContext);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)

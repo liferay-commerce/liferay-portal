@@ -60,6 +60,10 @@ public class DataDefinition implements Serializable {
 		return ObjectMapperUtil.readValue(DataDefinition.class, json);
 	}
 
+	public static DataDefinition unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(DataDefinition.class, json);
+	}
+
 	@Schema
 	public String[] getAvailableLanguageIds() {
 		return availableLanguageIds;

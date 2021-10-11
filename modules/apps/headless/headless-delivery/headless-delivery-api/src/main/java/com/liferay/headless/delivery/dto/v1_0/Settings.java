@@ -55,6 +55,10 @@ public class Settings implements Serializable {
 		return ObjectMapperUtil.readValue(Settings.class, json);
 	}
 
+	public static Settings unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Settings.class, json);
+	}
+
 	@Schema(description = "The page's color scheme name.")
 	public String getColorSchemeName() {
 		return colorSchemeName;

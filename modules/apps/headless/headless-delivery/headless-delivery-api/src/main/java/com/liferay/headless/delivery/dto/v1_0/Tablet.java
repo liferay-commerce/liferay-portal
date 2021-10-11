@@ -51,6 +51,10 @@ public class Tablet implements Serializable {
 		return ObjectMapperUtil.readValue(Tablet.class, json);
 	}
 
+	public static Tablet unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Tablet.class, json);
+	}
+
 	@Schema
 	public Integer getModulesPerRow() {
 		return modulesPerRow;

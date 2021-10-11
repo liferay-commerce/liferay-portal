@@ -54,6 +54,11 @@ public class ParentTaxonomyVocabulary implements Serializable {
 		return ObjectMapperUtil.readValue(ParentTaxonomyVocabulary.class, json);
 	}
 
+	public static ParentTaxonomyVocabulary unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			ParentTaxonomyVocabulary.class, json);
+	}
+
 	@Schema
 	public Long getId() {
 		return id;

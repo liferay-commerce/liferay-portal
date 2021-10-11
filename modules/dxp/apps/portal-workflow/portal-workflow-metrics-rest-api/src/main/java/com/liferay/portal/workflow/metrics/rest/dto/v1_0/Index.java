@@ -55,6 +55,10 @@ public class Index implements Serializable {
 		return ObjectMapperUtil.readValue(Index.class, json);
 	}
 
+	public static Index unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Index.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Group getGroup() {

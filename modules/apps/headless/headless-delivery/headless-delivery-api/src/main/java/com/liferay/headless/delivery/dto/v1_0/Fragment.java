@@ -54,6 +54,10 @@ public class Fragment implements Serializable {
 		return ObjectMapperUtil.readValue(Fragment.class, json);
 	}
 
+	public static Fragment unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Fragment.class, json);
+	}
+
 	@Schema(description = "The collection name this fragment belongs to.")
 	public String getCollectionName() {
 		return collectionName;

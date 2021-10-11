@@ -62,6 +62,10 @@ public class Sku implements Serializable {
 		return ObjectMapperUtil.readValue(Sku.class, json);
 	}
 
+	public static Sku unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Sku.class, json);
+	}
+
 	@DecimalMin("0")
 	@Schema
 	@Valid

@@ -59,6 +59,10 @@ public class SLAResult implements Serializable {
 		return ObjectMapperUtil.readValue(SLAResult.class, json);
 	}
 
+	public static SLAResult unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(SLAResult.class, json);
+	}
+
 	@Schema
 	public Date getDateModified() {
 		return dateModified;

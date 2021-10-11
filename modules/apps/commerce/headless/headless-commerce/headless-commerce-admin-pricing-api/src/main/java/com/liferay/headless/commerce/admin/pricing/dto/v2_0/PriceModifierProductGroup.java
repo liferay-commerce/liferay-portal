@@ -57,6 +57,11 @@ public class PriceModifierProductGroup implements Serializable {
 			PriceModifierProductGroup.class, json);
 	}
 
+	public static PriceModifierProductGroup unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			PriceModifierProductGroup.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Map<String, Map<String, String>> getActions() {

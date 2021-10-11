@@ -28,12 +28,8 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.MapUtil;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.taglib.security.PermissionsURLTag;
-
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletResponse;
@@ -55,14 +51,7 @@ public class PermissionsPortletConfigurationIcon
 	@Override
 	public String getMessage(PortletRequest portletRequest) {
 		return LanguageUtil.get(
-			getResourceBundle(getLocale(portletRequest)),
-			"publication-permissions");
-	}
-
-	@Override
-	public ResourceBundle getResourceBundle(Locale locale) {
-		return ResourceBundleUtil.getBundle(
-			locale, PermissionsPortletConfigurationIcon.class);
+			getLocale(portletRequest), "publication-permissions");
 	}
 
 	@Override

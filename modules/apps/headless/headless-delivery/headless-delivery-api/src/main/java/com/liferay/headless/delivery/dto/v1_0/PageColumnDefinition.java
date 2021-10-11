@@ -58,6 +58,11 @@ public class PageColumnDefinition implements Serializable {
 		return ObjectMapperUtil.readValue(PageColumnDefinition.class, json);
 	}
 
+	public static PageColumnDefinition unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			PageColumnDefinition.class, json);
+	}
+
 	@Schema(
 		deprecated = true,
 		description = "Deprecated as of Athanasius (7.3.x), replaced by columnViewports"

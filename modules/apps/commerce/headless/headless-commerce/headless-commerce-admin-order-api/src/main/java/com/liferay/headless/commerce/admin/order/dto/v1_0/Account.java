@@ -55,6 +55,10 @@ public class Account implements Serializable {
 		return ObjectMapperUtil.readValue(Account.class, json);
 	}
 
+	public static Account unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Account.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Map<String, ?> getCustomFields() {

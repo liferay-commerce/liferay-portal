@@ -28,7 +28,6 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.sharing.model.SharingEntry;
 import com.liferay.sharing.service.SharingEntryLocalService;
@@ -154,9 +153,7 @@ public class ViewManageCollaboratorsMVCRenderCommand
 						DateFormatFactoryUtil.getDate(themeDisplay.getLocale());
 
 					expirationDateTooltip = LanguageUtil.format(
-						ResourceBundleUtil.getBundle(
-							themeDisplay.getLocale(), getClass()),
-						"until-x",
+						themeDisplay.getLocale(), "until-x",
 						expirationDateTooltipDateFormat.format(expirationDate));
 				}
 

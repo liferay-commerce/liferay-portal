@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Upload API
 Bundle-SymbolicName: com.liferay.upload.api
-Bundle-Version: 5.0.4
+Bundle-Version: 5.0.5
 Export-Package: com.liferay.upload
 -dsannotations-options: inherit

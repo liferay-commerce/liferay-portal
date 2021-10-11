@@ -56,6 +56,10 @@ public class Validation implements Serializable {
 		return ObjectMapperUtil.readValue(Validation.class, json);
 	}
 
+	public static Validation unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Validation.class, json);
+	}
+
 	@Schema
 	public String getErrorMessage() {
 		return errorMessage;

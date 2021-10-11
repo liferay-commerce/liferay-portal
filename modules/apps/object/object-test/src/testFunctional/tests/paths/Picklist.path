@@ -35,6 +35,56 @@
 		<td>//button[(@class='dropdown-item') and contains(.,'${key_picklistOption}')]</td>
 		<td></td>
 	</tr>
+	<tr>
+		<td>UPDATE_PICKLIST_NAME</td>
+		<td>//input[@aria-describedby]</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>CANCEL_UPDATE_PICKLIST</td>
+		<td>//button[@id='_com_liferay_object_web_internal_list_type_portlet_portlet_ListTypeDefinitionsPortlet_cancel']</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>IFRAME_PICKLIST_MODAL</td>
+		<td>//iframe[contains(@src,'ListTypeDefinitions')]</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>SELECT_PICKLIST_VIEW</td>
+		<td>//a[contains(.,'${key_picklistName}')]/../../..//button[@class='dropdown-toggle component-action dropdown-toggle ml-1 btn btn-monospaced btn-unstyled']</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>GOTO_PICKLIST_VIEW</td>
+		<td>//button[(@class='dropdown-item') and contains(.,'View')]</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>ADD_ITEM_BUTTON</td>
+		<td>//button[@title='Add Item']</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>ADD_PICKLIST_ITEM_NAME</td>
+		<td>//input[@id='locale']</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>ADD_PICKLIST_ITEM_KEY</td>
+		<td>//input[@id='listTypeEntryKey']</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>VIEW_PICKLIST_ITEM</td>
+		<td>//a[contains(.,'${key_picklistItemName}')]/../../..//div[contains(.,'${key_picklistItemKey}')]</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>SAVE_BUTTON</td>
+		<td>//button[@class='btn btn-primary']</td>
+		<td></td>
+	</tr>
 </tbody>
 </table>
 </body>

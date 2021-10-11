@@ -56,6 +56,10 @@ public class ContentDocument implements Serializable {
 		return ObjectMapperUtil.readValue(ContentDocument.class, json);
 	}
 
+	public static ContentDocument unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(ContentDocument.class, json);
+	}
+
 	@Schema(
 		description = "Block of actions allowed by the user making the request."
 	)

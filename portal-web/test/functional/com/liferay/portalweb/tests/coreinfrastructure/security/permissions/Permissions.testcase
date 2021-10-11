@@ -32,42 +32,51 @@ definition {
 		property environment.acceptance = "true";
 		property portal.acceptance = "false";
 
-		ProductMenu.gotoPortlet(
-			category = "Site Builder",
-			portlet = "Pages");
+		task ("Add public page") {
+			ProductMenu.gotoPortlet(
+				category = "Site Builder",
+				portlet = "Pages");
 
-		SitePages.addPublicPage(pageName = "Blogs Page");
-
-		var browserType = PropsUtil.get("browser.type");
-
-		if ("${browserType}" == "safari") {
-			Navigator.openSpecificURL(url = "http://localhost:8080/web/guest/blogs-page");
-		}
-		else {
-			Navigator.gotoPage(pageName = "Blogs Page");
+			SitePages.addPublicPage(pageName = "Blogs Page");
 		}
 
-		Portlet.addPG(portletName = "Blogs");
+		task ("Add new blog") {
+			var browserType = PropsUtil.get("browser.type");
 
-		if ("${browserType}" == "safari") {
-			Navigator.openSpecificURL(url = "http://localhost:8080/web/guest/blogs-page");
-		}
-		else {
-			Navigator.gotoPage(pageName = "Blogs Page");
-		}
+			if ("${browserType}" == "safari") {
+				Navigator.openSpecificURL(url = "http://localhost:8080/web/guest/blogs-page");
+			}
+			else {
+				Navigator.gotoPage(pageName = "Blogs Page");
+			}
 
-		Blogs.viewControlsPG();
-
-		User.logoutPG();
-
-		if ("${browserType}" == "safari") {
-			Navigator.openSpecificURL(url = "http://localhost:8080/web/guest/blogs-page");
-		}
-		else {
-			Navigator.gotoPage(pageName = "Blogs Page");
+			Portlet.addPG(portletName = "Blogs");
 		}
 
-		BlogsConfiguration.viewNoPermissionPG();
+		task ("Go to blogs page") {
+			if ("${browserType}" == "safari") {
+				Navigator.openSpecificURL(url = "http://localhost:8080/web/guest/blogs-page");
+			}
+			else {
+				Navigator.gotoPage(pageName = "Blogs Page");
+			}
+
+			Blogs.viewControlsPG();
+		}
+
+		task ("Logout and go to blogs page") {
+			User.logoutPG();
+
+			if ("${browserType}" == "safari") {
+				Navigator.openSpecificURL(url = "http://localhost:8080/web/guest/blogs-page");
+			}
+			else {
+				Navigator.gotoPage(pageName = "Blogs Page");
+			}
+		}
+		task ("Assert no permission in configuration") {
+			BlogsConfiguration.viewNoPermissionPG();
+		}
 	}
 
 	@description = "This is a use case for LRQA-42712."
@@ -81,23 +90,29 @@ definition {
 		var url1 = "${portalURL}/testxxx/?p_p_id=com_liferay_portlet_configuration_web_portlet_PortletConfigurationPortlet&amp;p_p_lifecycle=0&amp;p_p_state=maximized&amp;_com_liferay_portlet_configuration_web_portlet_PortletConfigurationPortlet_mvcPath=%2Fedit_configuration.jsp&amp;_com_liferay_portlet_configuration_web_portlet_PortletConfigurationPortlet_portletResource=com_liferay_users_admin_web_portlet_UsersAdminPortlet";
 		var url2 = "${portalURL}/testxxx/?p_p_id=com_liferay_users_admin_web_portlet_UsersAdminPortlet&amp;p_p_state=maximized";
 
-		ProductMenu.gotoPortlet(
-			category = "Site Builder",
-			portlet = "Pages");
+		task ("Add public page") {
+			ProductMenu.gotoPortlet(
+				category = "Site Builder",
+				portlet = "Pages");
 
-		SitePages.addPublicPage(pageName = "testxxx");
+			SitePages.addPublicPage(pageName = "testxxx");
+		}
 
-		User.logoutPG();
+		task ("Logout, go to specific url and assert error message") {
+			User.logoutPG();
 
-		Navigator.openSpecificURL(url = "${url1}");
+			Navigator.openSpecificURL(url = "${url1}");
 
-		Alert.viewErrorMessage(errorMessage = "You do not have the required permissions.");
+			Alert.viewErrorMessage(errorMessage = "You do not have the required permissions.");
+		}
 
-		Navigator.openSpecificURL(url = "${url2}");
+		task ("Go to specific url and assert error message") {
+			Navigator.openSpecificURL(url = "${url2}");
 
-		AssertTextEquals(
-			locator1 = "Message#ERROR",
-			value1 = "You do not have the roles required to access this portlet.");
+			AssertTextEquals(
+				locator1 = "Message#ERROR",
+				value1 = "You do not have the roles required to access this portlet.");
+		}
 	}
 
 }

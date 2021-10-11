@@ -680,4 +680,8 @@ public abstract class WikiPageLocalServiceBaseImpl
 	protected com.liferay.counter.kernel.service.CounterLocalService
 		counterLocalService;
 
+	@Reference
+	protected com.liferay.asset.kernel.service.AssetEntryLocalService
+		assetEntryLocalService;
+
 }

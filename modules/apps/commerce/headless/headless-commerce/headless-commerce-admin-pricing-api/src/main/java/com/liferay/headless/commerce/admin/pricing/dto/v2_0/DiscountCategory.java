@@ -56,6 +56,10 @@ public class DiscountCategory implements Serializable {
 		return ObjectMapperUtil.readValue(DiscountCategory.class, json);
 	}
 
+	public static DiscountCategory unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(DiscountCategory.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Map<String, Map<String, String>> getActions() {

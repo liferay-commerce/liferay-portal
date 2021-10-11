@@ -36,12 +36,10 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.util.List;
-import java.util.ResourceBundle;
 
 import javax.portlet.PortletRequest;
 
@@ -81,9 +79,6 @@ public class JournalArticleLayoutClassedModelUsageActionMenuContributor
 					(ThemeDisplay)httpServletRequest.getAttribute(
 						WebKeys.THEME_DISPLAY);
 
-				ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-					themeDisplay.getLocale(), getClass());
-
 				if (approvedArticle != null) {
 					add(
 						dropdownItem -> {
@@ -95,7 +90,7 @@ public class JournalArticleLayoutClassedModelUsageActionMenuContributor
 									httpServletRequest));
 							dropdownItem.setLabel(
 								LanguageUtil.get(
-									resourceBundle, "view-in-page"));
+									themeDisplay.getLocale(), "view-in-page"));
 						});
 				}
 
@@ -117,7 +112,7 @@ public class JournalArticleLayoutClassedModelUsageActionMenuContributor
 							}
 
 							String label = LanguageUtil.get(
-								resourceBundle, key);
+								themeDisplay.getLocale(), key);
 
 							add(
 								dropdownItem -> {

@@ -54,6 +54,10 @@ public class StyleBook implements Serializable {
 		return ObjectMapperUtil.readValue(StyleBook.class, json);
 	}
 
+	public static StyleBook unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(StyleBook.class, json);
+	}
+
 	@Schema(description = "The stylebook's key.")
 	public String getKey() {
 		return key;

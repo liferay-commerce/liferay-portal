@@ -53,6 +53,10 @@ public class Clause implements Serializable {
 		return ObjectMapperUtil.readValue(Clause.class, json);
 	}
 
+	public static Clause unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Clause.class, json);
+	}
+
 	@Schema
 	public String getContext() {
 		return context;

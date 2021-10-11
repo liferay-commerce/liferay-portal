@@ -59,6 +59,10 @@ public class FormRecord implements Serializable {
 		return ObjectMapperUtil.readValue(FormRecord.class, json);
 	}
 
+	public static FormRecord unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(FormRecord.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Creator getCreator() {

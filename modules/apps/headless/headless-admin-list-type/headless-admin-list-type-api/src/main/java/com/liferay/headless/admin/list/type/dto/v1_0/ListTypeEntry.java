@@ -57,6 +57,10 @@ public class ListTypeEntry implements Serializable {
 		return ObjectMapperUtil.readValue(ListTypeEntry.class, json);
 	}
 
+	public static ListTypeEntry unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(ListTypeEntry.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Map<String, Map<String, String>> getActions() {

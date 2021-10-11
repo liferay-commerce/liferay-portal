@@ -14,6 +14,8 @@
 
 package com.liferay.dynamic.data.mapping.uad.anonymizer;
 
+import com.liferay.asset.kernel.model.AssetEntry;
+import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstanceRecord;
 import com.liferay.dynamic.data.mapping.service.DDMFormInstanceRecordLocalService;
 import com.liferay.dynamic.data.mapping.uad.constants.DDMUADConstants;
@@ -48,6 +50,8 @@ public abstract class BaseDDMFormInstanceRecordUADAnonymizer
 		if (ddmFormInstanceRecord.getUserId() == userId) {
 			ddmFormInstanceRecord.setUserId(anonymousUser.getUserId());
 			ddmFormInstanceRecord.setUserName(anonymousUser.getFullName());
+
+			autoAnonymizeAssetEntry(ddmFormInstanceRecord, anonymousUser);
 		}
 
 		if (ddmFormInstanceRecord.getVersionUserId() == userId) {
@@ -73,6 +77,19 @@ public abstract class BaseDDMFormInstanceRecordUADAnonymizer
 		return DDMFormInstanceRecord.class;
 	}
 
+	protected void autoAnonymizeAssetEntry(
+		DDMFormInstanceRecord ddmFormInstanceRecord, User anonymousUser) {
+
+		AssetEntry assetEntry = fetchAssetEntry(ddmFormInstanceRecord);
+
+		if (assetEntry != null) {
+			assetEntry.setUserId(anonymousUser.getUserId());
+			assetEntry.setUserName(anonymousUser.getFullName());
+
+			assetEntryLocalService.updateAssetEntry(assetEntry);
+		}
+	}
+
 	@Override
 	protected ActionableDynamicQuery doGetActionableDynamicQuery() {
 		return ddmFormInstanceRecordLocalService.getActionableDynamicQuery();
@@ -82,6 +99,17 @@ public abstract class BaseDDMFormInstanceRecordUADAnonymizer
 	protected String[] doGetUserIdFieldNames() {
 		return DDMUADConstants.USER_ID_FIELD_NAMES_DDM_FORM_INSTANCE_RECORD;
 	}
+
+	protected AssetEntry fetchAssetEntry(
+		DDMFormInstanceRecord ddmFormInstanceRecord) {
+
+		return assetEntryLocalService.fetchEntry(
+			DDMFormInstanceRecord.class.getName(),
+			ddmFormInstanceRecord.getFormInstanceRecordId());
+	}
+
+	@Reference
+	protected AssetEntryLocalService assetEntryLocalService;
 
 	@Reference
 	protected DDMFormInstanceRecordLocalService

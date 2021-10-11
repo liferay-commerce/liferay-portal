@@ -65,6 +65,10 @@ public class Keyword implements Serializable {
 		return ObjectMapperUtil.readValue(Keyword.class, json);
 	}
 
+	public static Keyword unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Keyword.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Map<String, Map<String, String>> getActions() {

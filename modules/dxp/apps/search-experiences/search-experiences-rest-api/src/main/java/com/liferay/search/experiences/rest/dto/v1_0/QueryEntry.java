@@ -53,6 +53,10 @@ public class QueryEntry implements Serializable {
 		return ObjectMapperUtil.readValue(QueryEntry.class, json);
 	}
 
+	public static QueryEntry unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(QueryEntry.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Clause[] getClauses() {

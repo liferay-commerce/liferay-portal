@@ -9,6 +9,16 @@ definition {
 		TestCase.setUpPortalInstance();
 
 		User.firstLoginPG();
+
+		JSONLayout.addPublicLayout(
+			groupName = "Guest",
+			layoutName = "Documents and Media Page");
+
+		JSONLayout.addWidgetToPublicLayout(
+			column = "1",
+			groupName = "Guest",
+			layoutName = "Documents and Media Page",
+			widgetName = "Documents and Media");
 	}
 
 	tearDown {
@@ -74,6 +84,31 @@ definition {
 			dmDocumentVersionNumber = "1.1");
 	}
 
+	@description = "This test covers LPS-96652. It ensures that the PDF file can be added after enabling text extraction."
+	@priority = "4"
+	@refactordone
+	test CanAddPDFAfterEnablingTextExtraction {
+		property custom.properties = "text.extraction.fork.process.enabled=true${line.separator}text.extraction.fork.process.mime.types=application/x-tika-ooxml,application/pdf";
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.enableActionsMenuOnPortlet();
+
+		LexiconEntry.changeDisplayStyle(displayStyle = "list");
+
+		DMDocument.addPG(
+			dmDocumentDescription = "DM Document Description",
+			dmDocumentFile = "Document_1.pdf",
+			dmDocumentTitle = "Document_1.pdf");
+
+		AssertConsoleTextNotPresent(value1 = "java.lang.ExceptionInInitializerError");
+
+		DMDocument.viewAllPG(
+			dmDocumentDescription = "DM Document Description",
+			dmDocumentTitle = "Document_1.pdf",
+			dmDocumentType = "Basic Document");
+	}
+
 	@description = "This test covers LPS-124959. It ensures that a user can upload documents with a document type via multiple upload."
 	@priority = "4"
 	@refactordone
@@ -101,6 +136,29 @@ definition {
 
 			DMDocument.viewDocumentTypePG(dateValue = "01/01/2022");
 		}
+	}
+
+	@priority = "4"
+	@refactordone
+	test CanCancelCheckout {
+		JSONDocument.addFileWithUploadedFile(
+			dmDocumentDescription = "DM Document Description",
+			dmDocumentTitle = "DM Document Title",
+			groupName = "Guest",
+			mimeType = "application/msword",
+			sourceFileName = "Document_1.doc");
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.enableActionsMenuOnPortlet();
+
+		LexiconEntry.changeDisplayStyle(displayStyle = "list");
+
+		DMDocument.checkoutPG(dmDocumentTitle = "DM Document Title");
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.cancelCheckoutPG(dmDocumentTitle = "DM Document Title");
 	}
 
 	@description = "This test ensures that the document type of a published basic document can be changed."
@@ -405,6 +463,28 @@ definition {
 		DMDocument.viewDefault();
 	}
 
+	@priority = "4"
+	@refactordone
+	test CanDeleteDocumentInSitePage {
+		JSONDocument.addFileWithUploadedFile(
+			dmDocumentTitle = "/D/M/Document Title",
+			groupName = "Guest",
+			mimeType = "application/msword",
+			sourceFileName = "Document_1.doc");
+
+		Navigator.openURL();
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.enableActionsMenuOnPortlet();
+
+		LexiconEntry.changeDisplayStyle(displayStyle = "list");
+
+		DMDocument.deletePG(dmDocumentTitle = "/D/M/Document Title");
+
+		DMDocument.viewDefault();
+	}
+
 	@description = "This case covers LPS-110213. It ensures that a document file can be downloaded after moving it between folders."
 	@priority = "5"
 	@refactordone
@@ -594,6 +674,26 @@ definition {
 		DMDocument.assertFileNameFromTempFolder(downloadedFileName = "document_1_Edit.jpg");
 	}
 
+	@priority = "5"
+	@refactordone
+	test CanDownloadWithSpecialCharactersInTitle {
+		JSONDocument.addFileWithUploadedFile(
+			dmDocumentTitle = "/D/M/@!# Title",
+			groupName = "Guest",
+			mimeType = "application/msword",
+			sourceFileName = "Document_1.doc");
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.enableActionsMenuOnPortlet();
+
+		LexiconEntry.changeDisplayStyle(displayStyle = "list");
+
+		DMDocument.downloadPG(dmDocumentTitle = "/D/M/@!# Title");
+
+		DMDocument.assertFileNameFromTempFolder(downloadedFileName = "/D/M/Document Title");
+	}
+
 	@description = "This test edits the title and description of a document. It asserts minor version increment because only its metadata was updated."
 	@priority = "5"
 	@refactordone
@@ -704,6 +804,162 @@ definition {
 		DMDocument.moveToRecycleBinCP(
 			assetType = "Document",
 			dmDocumentTitle = "DM Document Title");
+	}
+
+	@description = "This validates that the location of the document accurately displays after it is moved from one folder to another."
+	@priority = "4"
+	@refactordone
+	test CanMoveFromOneFolderToAnother {
+		JSONDocument.addFolder(
+			dmFolderDescription = "DM Folder1 Description",
+			dmFolderName = "DM Folder1 Name",
+			groupName = "Guest");
+
+		JSONDocument.addFolder(
+			dmFolderDescription = "DM Folder2 Description",
+			dmFolderName = "DM Folder2 Name",
+			groupName = "Guest");
+
+		JSONDocument.addFileWithUploadedFile(
+			dmDocumentDescription = "DM Document Description",
+			dmDocumentTitle = "DM Document Title",
+			folderName = "DM Folder1 Name",
+			groupName = "Guest",
+			mimeType = "application/msword",
+			sourceFileName = "Document_1.doc");
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.enableActionsMenuOnPortlet();
+
+		LexiconEntry.changeDisplayStyle(displayStyle = "list");
+
+		DMNavigator.gotoFolder(dmFolderName = "DM Folder1 Name");
+
+		DMDocument.moveToFolderPG(
+			dmDocumentTitle = "DM Document Title",
+			dmFolderName = "DM Folder2 Name");
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMNavigator.gotoFolder(dmFolderName = "DM Folder2 Name");
+
+		DMDocument.viewPG(
+			dmDocumentDescription = "DM Document Description",
+			dmDocumentTitle = "DM Document Title",
+			dmFolderName = "DM Folder2 Name",
+			locationFieldName = "true");
+	}
+
+	@priority = "4"
+	@refactordone
+	test CanMoveWithSlashesInTitle {
+		JSONDocument.addFileWithUploadedFile(
+			dmDocumentTitle = "/D/M/Document Title",
+			groupName = "Guest",
+			mimeType = "application/msword",
+			sourceFileName = "Document_1.doc");
+
+		JSONDocument.addFolder(
+			dmFolderDescription = "DM Folder Description",
+			dmFolderName = "DM Folder Name",
+			groupName = "Guest");
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.enableActionsMenuOnPortlet();
+
+		LexiconEntry.changeDisplayStyle(displayStyle = "list");
+
+		DMDocument.moveToFolderPG(
+			dmDocumentTitle = "/D/M/Document Title",
+			dmFolderName = "DM Folder Name");
+
+		DMNavigator.gotoFolder(dmFolderName = "DM Folder Name");
+
+		DMDocument.viewPG(dmDocumentTitle = "/D/M/Document Title");
+	}
+
+	@priority = "4"
+	@refactordone
+	test CannotAddDocumentWithDuplicateName {
+		JSONDocument.addFileWithUploadedFile(
+			dmDocumentTitle = "DM Document Title",
+			groupName = "Guest",
+			mimeType = "application/msword",
+			sourceFileName = "Document_1.doc");
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.enableActionsMenuOnPortlet();
+
+		LexiconEntry.changeDisplayStyle(displayStyle = "list");
+
+		DMDocument.addPG(
+			dmDocument = "Duplicate",
+			dmDocumentDescription = "DM Document Description",
+			dmDocumentFile = "Document_1.doc",
+			dmDocumentTitle = "DM Document Title");
+	}
+
+	@priority = "4"
+	@refactordone
+	test CannotAddSpecialCharacterToName {
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.enableActionsMenuOnPortlet();
+
+		DMFolder.addPG(
+			dmFolder = "Invalid",
+			dmFolderDescription = "DM Folder Description",
+			dmFolderName = "DM Folder Name?");
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMPortlet.viewDefaultPG();
+	}
+
+	@priority = "4"
+	@refactordone
+	test CannotMoveToFolderWithDuplicateTitle {
+		JSONDocument.addFolder(
+			dmFolderDescription = "DM Folder1 Description",
+			dmFolderName = "DM Folder1 Name",
+			groupName = "Guest");
+
+		JSONDocument.addFolder(
+			dmFolderDescription = "DM Folder2 Description",
+			dmFolderName = "DM Folder2 Name",
+			groupName = "Guest");
+
+		JSONDocument.addFileWithUploadedFile(
+			dmDocumentDescription = "DM Document Description",
+			dmDocumentTitle = "DM Document Title",
+			folderName = "DM Folder1 Name",
+			groupName = "Guest",
+			mimeType = "application/msword",
+			sourceFileName = "Document_1.doc");
+
+		JSONDocument.addFileWithUploadedFile(
+			dmDocumentDescription = "DM Document Description",
+			dmDocumentTitle = "DM Document Title",
+			folderName = "DM Folder2 Name",
+			groupName = "Guest",
+			mimeType = "application/msword",
+			sourceFileName = "Document_1.doc");
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.enableActionsMenuOnPortlet();
+
+		LexiconEntry.changeDisplayStyle(displayStyle = "list");
+
+		DMNavigator.gotoFolder(dmFolderName = "DM Folder1 Name");
+
+		DMDocument.moveToFolderPG(
+			dmDocumentTitle = "DM Document Title",
+			dmDuplicateDocument = "true",
+			dmFolderName = "DM Folder2 Name");
 	}
 
 	@description = "This is a test for LPS-91751. It ensures that a user cannot preview a file with size that exceeds the preview limit."
@@ -827,7 +1083,7 @@ definition {
 			groupName = "Guest",
 			siteURLKey = "guest");
 
-		for (var emptyStateInfo : list "No preview available,Hmm... looks like this item doesn't have a preview we can show you.") {
+		for (var emptyStateInfo : list "No preview available,Hmm... looks like this item does not have a preview we can show you.") {
 			AssertTextEquals.assertPartialText(
 				locator1 = "DocumentsAndMediaDocument#DOCUMENT_DETAILS_EMPTY_STATE_PREVIEW",
 				value1 = "${emptyStateInfo}");
@@ -963,6 +1219,30 @@ definition {
 		AssertVisible(locator1 = "DocumentsAndMediaDocument#DOCUMENT_INFO_THUMBNAIL");
 	}
 
+	@description = "This test ensures that a document with special characters in its title can be published successfully."
+	@priority = "5"
+	@refactordone
+	test CanPublishTitleWithSpecialCharacters {
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.enableActionsMenuOnPortlet();
+
+		LexiconEntry.changeDisplayStyle(displayStyle = "list");
+
+		DMDocument.addPG(
+			dmDocumentDescription = "DM Document Description",
+			dmDocumentFile = "Document_1.jpg",
+			dmDocumentTitle = '''/\<>:"?|*''');
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.viewPG(
+			dmDocumentDescription = "DM Document Description",
+			dmDocumentTitle = '''/\<>:"?|*''',
+			escapedTitle = '''/\&lt;&gt;:&#34;?|*''',
+			specialCharacters = "true");
+	}
+
 	@description = "This test ensures that the user can republish an expired document after disabling expiration date."
 	@priority = "4"
 	test CanRepublishDocumentAfterDisablingExpirationDate {
@@ -1002,6 +1282,45 @@ definition {
 		DMDocument.viewStatus(
 			dmDocumentStatus = "Approved",
 			dmDocumentTitle = "Document_5.txt");
+	}
+
+	@priority = "4"
+	@refactordone
+	test CanRevertToOriginal {
+		JSONDocument.addFileWithUploadedFile(
+			dmDocumentDescription = "DM Document Description",
+			dmDocumentTitle = "DM Document Title",
+			groupName = "Guest",
+			mimeType = "application/msword",
+			sourceFileName = "Document_1.doc");
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.enableActionsMenuOnPortlet();
+
+		LexiconEntry.changeDisplayStyle(displayStyle = "list");
+
+		DMDocument.editPG(
+			dmDocumentFileEdit = "Document_2.doc",
+			dmDocumentTitle = "DM Document Title Version 2");
+
+		DMDocument.viewAllPG(
+			dmDocumentDescription = "DM Document Description",
+			dmDocumentTitle = "DM Document Title Version 2",
+			dmDocumentVersionNumber = "2.0");
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.revertPG(
+			dmDocumentTitle = "DM Document Title",
+			dmDocumentVersionNumber = "1.0");
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.viewAllPG(
+			dmDocumentDescription = "DM Document Description",
+			dmDocumentTitle = "DM Document Title",
+			dmDocumentVersionNumber = "3.0");
 	}
 
 	@description = "This test ensures that the user can review a document when the date is changed."
@@ -1269,6 +1588,54 @@ definition {
 			locator1 = "PageEditor#ENTRY_COVER_IMAGE");
 	}
 
+	@description = "This ensures that the user can create a document with the topic from the Global site."
+	@priority = "4"
+	@refactordone
+	test CanViewDocumentWithTopics {
+		JSONCategory.addCategory(
+			groupName = "Global",
+			title = "Apple",
+			vocabularyName = "Topic");
+
+		JSONCategory.addCategory(
+			groupName = "Global",
+			title = "Dragon Fruit",
+			vocabularyName = "Topic");
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.enableActionsMenuOnPortlet();
+
+		LexiconEntry.changeDisplayStyle(displayStyle = "list");
+
+		DMDocument.addPG(
+			categoryName = "Apple",
+			dmDocumentDescription = "Document Description",
+			dmDocumentFile = "Document_1.doc",
+			dmDocumentTitle = "Document_1.doc",
+			vocabularyName = "Topic");
+
+		DMNavigator.openToEditEntryInSite(
+			dmDocumentTitle = "Document_1.doc",
+			groupName = "Guest",
+			siteURLKey = "guest");
+
+		Panel.expandPanel(panel = "Categorization");
+
+		AssetCategorization.addCategory(
+			categoryName = "Dragon Fruit",
+			vocabularyName = "Topic");
+
+		Button.clickPublish();
+
+		DMNavigator.openToEditEntryInSite(
+			dmDocumentTitle = "Document_1.doc",
+			groupName = "Guest",
+			siteURLKey = "guest");
+
+		DMDocument.viewCategories(categoryNameList = "Apple,Dragon Fruit");
+	}
+
 	@description = "This test ensures that the user can view an expired document."
 	@priority = "5"
 	test CanViewExpiredDocument {
@@ -1315,16 +1682,6 @@ definition {
 		property custom.properties = "company.default.time.zone=America/Los_Angeles${line.separator}jsonws.web.service.paths.excludes=";
 		property test.name.skip.portal.instance = "DMFileEntry#CanViewExpiredDocumentAsContentReviewer";
 
-		JSONLayout.addPublicLayout(
-			groupName = "Guest",
-			layoutName = "Documents and Media Page");
-
-		JSONLayout.addWidgetToPublicLayout(
-			column = "1",
-			groupName = "Guest",
-			layoutName = "Documents and Media Page",
-			widgetName = "Documents and Media");
-
 		JSONUser.addUser(
 			userEmailAddress = "userea@liferay.com",
 			userFirstName = "userfn",
@@ -1362,9 +1719,38 @@ definition {
 
 		Navigator.gotoPage(pageName = "Documents and Media Page");
 
+		DMDocument.enableActionsMenuOnPortlet();
+
+		LexiconEntry.changeDisplayStyle(displayStyle = "list");
+
 		DMDocument.viewStatus(
 			dmDocumentStatus = "Expired",
 			dmDocumentTitle = "Document_5.txt");
+	}
+
+	@description = "This ensures that a user can view the information about an image when navigating to info panel."
+	@priority = "4"
+	@refactordone
+	test CanViewImageFromInfoPanel {
+		JSONDocument.addFileWithUploadedFile(
+			dmDocumentDescription = "DM Document Description",
+			dmDocumentTitle = "DM Document Title",
+			groupName = "Guest",
+			mimeType = "image/jpeg",
+			sourceFileName = "Document_2.jpg");
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.enableActionsMenuOnPortlet();
+
+		LexiconEntry.changeDisplayStyle(displayStyle = "list");
+
+		DMDocument.viewPG(
+			dmDocumentDescription = "DM Document Description",
+			dmDocumentExtension = "jpg",
+			dmDocumentFileTypeInfo = "Image",
+			dmDocumentTitle = "DM Document Title",
+			dmDocumentType = "Basic Document");
 	}
 
 	@description = "This ensures that the document title can be displayed correctly in the different views."
@@ -1396,6 +1782,82 @@ definition {
 		DMDocument.viewCP(
 			dmDocumentFileName = "Document_2.doc",
 			dmDocumentTitle = "Document_2");
+	}
+
+	@priority = "4"
+	@refactordone
+	test CanViewOlderVersion {
+		JSONDocument.addFileWithUploadedFile(
+			dmDocumentDescription = "DM Document Description",
+			dmDocumentTitle = "DM Document Title",
+			groupName = "Guest",
+			mimeType = "application/msword",
+			sourceFileName = "Document_1.doc");
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.enableActionsMenuOnPortlet();
+
+		LexiconEntry.changeDisplayStyle(displayStyle = "list");
+
+		DMDocument.editPG(
+			dmDocumentDescriptionEdit = "DM Document Description Edited",
+			dmDocumentTitle = "DM Document Title");
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.viewPG(
+			dmDocumentDescription = "DM Document Description Edited",
+			dmDocumentTitle = "DM Document Title");
+
+		DMDocument.viewOlderVersionPG(
+			dmDocumentDescription = "DM Document Description",
+			dmDocumentTitle = "DM Document Title",
+			dmDocumentVersionNumber = "1.0");
+	}
+
+	@description = "This ensures that the user can view the document through related assets."
+	@priority = "3"
+	@refactordone
+	test CanViewRelatedDocument {
+		JSONDocument.addFileWithUploadedFile(
+			dmDocumentDescription = "DM Document Description",
+			dmDocumentTitle = "Document_1.doc",
+			groupName = "Guest",
+			mimeType = "application/msword",
+			sourceFileName = "Document_1.doc");
+
+		JSONDocument.addFileWithUploadedFile(
+			dmDocumentDescription = "DM Document Description",
+			dmDocumentTitle = "Document_2.jpg",
+			groupName = "Guest",
+			mimeType = "image/jpeg",
+			sourceFileName = "Document_2.jpg");
+
+		DMNavigator.openToEditEntryInSite(
+			dmDocumentTitle = "Document_2.jpg",
+			groupName = "Guest",
+			siteURLKey = "guest");
+
+		RelatedAssets.selectAsset(
+			assetTitle = "Document_1.doc",
+			assetType = "Basic Document");
+
+		Button.clickPublish();
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.enableActionsMenuOnPortlet();
+
+		LexiconEntry.changeDisplayStyle(displayStyle = "list");
+
+		DMNavigator.gotoRelatedAssetPG(
+			assetTitle = "Document_2.jpg",
+			dmDocumentTitle = "Document_1.doc");
+
+		AssertVisible(
+			key_dmDocumentFileName = "Document_2.jpg",
+			locator1 = "DocumentsAndMediaDocument#DOCUMENT_DETAILS_IMAGE_PREVIEW");
 	}
 
 	@description = "This test covers LPS-101667. It makes sure that the file size can be displayed correctly in the different versions after editing the document file."

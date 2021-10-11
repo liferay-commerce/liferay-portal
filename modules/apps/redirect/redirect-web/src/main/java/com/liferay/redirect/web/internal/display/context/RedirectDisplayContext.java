@@ -16,6 +16,7 @@ package com.liferay.redirect.web.internal.display.context;
 
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemList;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
+import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
@@ -58,11 +59,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionURL;
 import javax.portlet.PortletException;
 import javax.portlet.PortletURL;
-import javax.portlet.RenderURL;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -106,22 +104,16 @@ public class RedirectDisplayContext {
 				_themeDisplay.getPermissionChecker(), redirectEntry,
 				ActionKeys.UPDATE),
 			dropdownItem -> {
-				RenderURL editRedirectEntryURL =
-					_liferayPortletResponse.createRenderURL();
-
-				editRedirectEntryURL.setParameter(
-					"mvcRenderCommandName", "/redirect/edit_redirect_entry");
-
-				PortletURL portletURL = _getPortletURL();
-
-				editRedirectEntryURL.setParameter(
-					"redirect", portletURL.toString());
-
-				editRedirectEntryURL.setParameter(
-					"redirectEntryId",
-					String.valueOf(redirectEntry.getRedirectEntryId()));
-
-				dropdownItem.setHref(editRedirectEntryURL);
+				dropdownItem.setHref(
+					PortletURLBuilder.createRenderURL(
+						_liferayPortletResponse
+					).setMVCRenderCommandName(
+						"/redirect/edit_redirect_entry"
+					).setRedirect(
+						_getPortletURL()
+					).setParameter(
+						"redirectEntryId", redirectEntry.getRedirectEntryId()
+					).buildRenderURL());
 
 				dropdownItem.setLabel(
 					LanguageUtil.get(_httpServletRequest, "edit"));
@@ -131,18 +123,14 @@ public class RedirectDisplayContext {
 				_themeDisplay.getPermissionChecker(), redirectEntry,
 				ActionKeys.DELETE),
 			dropdownItem -> {
-				ActionURL deleteRedirectEntryURL =
-					_liferayPortletResponse.createActionURL();
-
-				deleteRedirectEntryURL.setParameter(
-					ActionRequest.ACTION_NAME,
-					"/redirect/delete_redirect_entry");
-
-				deleteRedirectEntryURL.setParameter(
-					"redirectEntryId",
-					String.valueOf(redirectEntry.getRedirectEntryId()));
-
-				dropdownItem.setHref(deleteRedirectEntryURL);
+				dropdownItem.setHref(
+					PortletURLBuilder.createActionURL(
+						_liferayPortletResponse
+					).setActionName(
+						"/redirect/delete_redirect_entry"
+					).setParameter(
+						"redirectEntryId", redirectEntry.getRedirectEntryId()
+					).buildActionURL());
 
 				dropdownItem.setLabel(
 					LanguageUtil.get(_httpServletRequest, "delete"));

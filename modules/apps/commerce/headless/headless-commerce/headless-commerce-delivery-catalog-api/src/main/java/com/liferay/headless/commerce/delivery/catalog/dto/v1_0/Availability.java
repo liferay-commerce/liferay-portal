@@ -51,6 +51,10 @@ public class Availability implements Serializable {
 		return ObjectMapperUtil.readValue(Availability.class, json);
 	}
 
+	public static Availability unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Availability.class, json);
+	}
+
 	@Schema
 	public String getLabel() {
 		return label;

@@ -53,6 +53,10 @@ public class AccountGroup implements Serializable {
 		return ObjectMapperUtil.readValue(AccountGroup.class, json);
 	}
 
+	public static AccountGroup unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(AccountGroup.class, json);
+	}
+
 	@DecimalMin("0")
 	@Schema
 	public Long getId() {

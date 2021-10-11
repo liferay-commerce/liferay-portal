@@ -54,6 +54,10 @@ public class WikiPageAttachment implements Serializable {
 		return ObjectMapperUtil.readValue(WikiPageAttachment.class, json);
 	}
 
+	public static WikiPageAttachment unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(WikiPageAttachment.class, json);
+	}
+
 	@Schema(description = "The file's relative URL.")
 	public String getContentUrl() {
 		return contentUrl;

@@ -66,7 +66,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.portlet.ActionRequest;
 import javax.portlet.ActionURL;
 import javax.portlet.WindowStateException;
 
@@ -416,13 +415,11 @@ public class ContentDashboardAdminDisplayContext {
 	}
 
 	public ActionURL getSwapConfigurationURL() {
-		ActionURL actionURL = _liferayPortletResponse.createActionURL();
-
-		actionURL.setParameter(
-			ActionRequest.ACTION_NAME,
-			"/content_dashboard/swap_content_dashboard_configuration");
-
-		return actionURL;
+		return PortletURLBuilder.createActionURL(
+			_liferayPortletResponse
+		).setActionName(
+			"/content_dashboard/swap_content_dashboard_configuration"
+		).buildActionURL();
 	}
 
 	public long getUserId() {

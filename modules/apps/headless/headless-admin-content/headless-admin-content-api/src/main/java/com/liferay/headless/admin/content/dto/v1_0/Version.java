@@ -53,6 +53,10 @@ public class Version implements Serializable {
 		return ObjectMapperUtil.readValue(Version.class, json);
 	}
 
+	public static Version unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Version.class, json);
+	}
+
 	@Schema(description = "The version of a resource")
 	public Double getNumber() {
 		return number;

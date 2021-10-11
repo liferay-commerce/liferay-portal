@@ -74,9 +74,7 @@ import com.liferay.portal.vulcan.resource.EntityModelResource;
 
 import java.io.File;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 import java.text.DateFormat;
 
@@ -815,7 +813,7 @@ public abstract class Base${schemaName}ResourceTestCase {
 
 								String entityFieldName = entityField.getName();
 
-								Method method = clazz.getMethod( "get" + StringUtil.upperCaseFirstLetter(entityFieldName));
+								java.lang.reflect.Method method = clazz.getMethod( "get" + StringUtil.upperCaseFirstLetter(entityFieldName));
 
 								Class<?> returnType = method.getReturnType();
 
@@ -1794,7 +1792,7 @@ public abstract class Base${schemaName}ResourceTestCase {
 
 						Class<?> clazz = object.getClass();
 
-						for (Field field : getDeclaredFields(clazz.getSuperclass())) {
+						for (java.lang.reflect.Field field : getDeclaredFields(clazz.getSuperclass())) {
 							arraySB.append(field.getName());
 							arraySB.append(": ");
 
@@ -1831,7 +1829,7 @@ public abstract class Base${schemaName}ResourceTestCase {
 
 				StringBuilder sb = new StringBuilder("{");
 
-				for (Field field : getDeclaredFields(${schemaName}.class)) {
+				for (java.lang.reflect.Field field : getDeclaredFields(${schemaName}.class)) {
 					if (!ArrayUtil.contains(getAdditionalAssertFieldNames(), field.getName())) {
 						continue;
 					}
@@ -2112,7 +2110,7 @@ public abstract class Base${schemaName}ResourceTestCase {
 		</#if>
 
 		<#if freeMarkerTool.getJavaDataType(configYAML, openAPIYAML, schemaName)??>
-			for (Field field : getDeclaredFields(${freeMarkerTool.getJavaDataType(configYAML, openAPIYAML, schemaName)}.class)) {
+			for (java.lang.reflect.Field field : getDeclaredFields(${freeMarkerTool.getJavaDataType(configYAML, openAPIYAML, schemaName)}.class)) {
 				if (!ArrayUtil.contains(getAdditionalAssertFieldNames(), field.getName())){
 					continue;
 				}
@@ -2124,10 +2122,10 @@ public abstract class Base${schemaName}ResourceTestCase {
 		return graphQLFields;
 	}
 
-	protected List<GraphQLField> getGraphQLFields(Field... fields) throws Exception {
+	protected List<GraphQLField> getGraphQLFields(java.lang.reflect.Field... fields) throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
 
-		for (Field field : fields) {
+		for (java.lang.reflect.Field field : fields) {
 			com.liferay.portal.vulcan.graphql.annotation.GraphQLField vulcanGraphQLField = field.getAnnotation(com.liferay.portal.vulcan.graphql.annotation.GraphQLField.class);
 
 			if (vulcanGraphQLField != null) {
@@ -2248,12 +2246,12 @@ public abstract class Base${schemaName}ResourceTestCase {
 		}
 	</#list>
 
-	protected Field[] getDeclaredFields(Class clazz) throws Exception {
-		Stream<Field> stream = Stream.of(ReflectionUtil.getDeclaredFields(clazz));
+	protected java.lang.reflect.Field[] getDeclaredFields(Class clazz) throws Exception {
+		Stream<java.lang.reflect.Field> stream = Stream.of(ReflectionUtil.getDeclaredFields(clazz));
 
 		return stream.filter(
 			field -> !field.isSynthetic()
-		).toArray(Field[]::new);
+		).toArray(java.lang.reflect.Field[]::new);
 	}
 
 	protected java.util.Collection<EntityField> getEntityFields() throws Exception {

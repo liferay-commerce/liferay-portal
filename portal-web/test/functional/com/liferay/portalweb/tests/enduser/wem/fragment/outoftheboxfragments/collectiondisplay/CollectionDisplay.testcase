@@ -97,8 +97,9 @@ definition {
 				locator1 = "PageEditor#COLLECTION_ITEM_AVERAGE_STAR");
 
 			AssertTextEquals(
-				key_rowPosition = "${i}",
-				locator1 = "Fragment#CONTENT_FRAGMENT_BODY",
+				index = "${i}",
+				key_fragmentName = "Content Flags",
+				locator1 = "Fragment#FRAGMENT_CONTENT",
 				value1 = "Report");
 		}
 
@@ -115,33 +116,21 @@ definition {
 			var n = ${n} + 1;
 		}
 
-		PageEditor.gotoContentConfiguration(
-			colPosition = "1",
-			entryContent = "Report",
-			fragmentName = "Content Flags",
-			rowPosition = "1");
+		PageEditor.gotoConfiguration(fragmentName = "Content Flags");
 
 		AssertTextEquals(
 			key_text = "Item",
 			locator1 = "TextInput#ANY",
 			value1 = "WC WebContent Title 3");
 
-		PageEditor.gotoContentConfiguration(
-			colPosition = "1",
-			entryContent = "0.0",
-			fragmentName = "Content Ratings",
-			rowPosition = "1");
+		PageEditor.gotoConfiguration(fragmentName = "Content Ratings");
 
 		AssertTextEquals(
 			key_text = "Item",
 			locator1 = "TextInput#ANY",
 			value1 = "WC WebContent Title 3");
 
-		PageEditor.gotoContentConfiguration(
-			colPosition = "1",
-			entryContent = "WC WebContent Content 3",
-			fragmentName = "Content Display",
-			rowPosition = "1");
+		PageEditor.gotoConfiguration(fragmentName = "Content Display");
 
 		AssertTextEquals(
 			key_text = "Item",
@@ -676,10 +665,10 @@ definition {
 
 		task ("Add 5 blogs entries") {
 			for (var i : list "1,2,3,4,5") {
-				JSONBlog.addEntry(
-					entryContent = "Blogs Entry Content ${i}",
-					entryTitle = "Blogs Entry Title ${i}",
-					groupName = "Test Site Name");
+				HeadlessBlog.addBlogEntry(
+					content = "Blogs Entry Content ${i}",
+					groupName = "Test Site Name",
+					title = "Blogs Entry Title ${i}");
 			}
 		}
 
@@ -1086,10 +1075,10 @@ definition {
 
 		task ("Add 5 blogs entries") {
 			for (var i : list "1,2,3,4,5") {
-				JSONBlog.addEntry(
-					entryContent = "Blogs Entry Content ${i}",
-					entryTitle = "Blogs Entry Title ${i}",
-					groupName = "Test Site Name");
+				HeadlessBlog.addBlogEntry(
+					content = "Blogs Entry Content ${i}",
+					groupName = "Test Site Name",
+					title = "Blogs Entry Title ${i}");
 			}
 		}
 
@@ -1509,38 +1498,10 @@ definition {
 		}
 
 		task ("Edit inline Content of Heading in the first column") {
-			Click(locator1 = "PageEditor#CONTENT_PAGE_DISABLED_HEADER");
-
-			Click.clickNoWaitForVisible(
-				key_colPosition = "1",
-				key_element = "//div[contains(@class,'page-editor')]//li[contains(.,'Heading')]",
-				key_fragmentName = "Collection Display",
-				key_rowPosition = "1",
-				locator1 = "PageEditor#COLLECTION_CELL_NESTED_ELEMENT");
-
-			Click(
-				key_colPosition = "1",
-				key_element = "//div[contains(@class,'page-editor__topper') and contains(.,'Heading')]//*[contains(@data-lfr-editable-id,'element-text')]",
-				key_fragmentName = "Collection Display",
-				key_rowPosition = "1",
-				locator1 = "PageEditor#COLLECTION_CELL_NESTED_ELEMENT");
-
-			DoubleClick(
-				key_colPosition = "1",
-				key_element = "//div[contains(@class,'page-editor__topper') and contains(.,'Heading')]//*[contains(@data-lfr-editable-id,'element-text')]",
-				key_fragmentName = "Collection Display",
-				key_rowPosition = "1",
-				locator1 = "PageEditor#COLLECTION_CELL_NESTED_ELEMENT");
-
-			Type(
+			PageEditor.editFragmentText(
+				fragmentName = "Heading",
 				id = "element-text",
-				key_fragmentName = "Heading",
-				locator1 = "Fragment#CONTRIBUTED_FRAGMENT_EDITABLE_FIELD_CK_EDITOR",
-				value1 = "Modified Text");
-
-			PageEditor.clickManagementBar();
-
-			PageEditor.waitForAutoSave();
+				text = "Modified Text");
 		}
 
 		task ("Assert propagate changes of inline content to other cells") {
@@ -1560,10 +1521,10 @@ definition {
 	@priority = "4"
 	test ViewBlogEntryInContentDisplay {
 		for (var i : list "1,2,3") {
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry Content ${i}",
-				entryTitle = "Blogs Entry Title ${i}",
-				groupName = "Test Site Name");
+			HeadlessBlog.addBlogEntry(
+				content = "Blogs Entry Content ${i}",
+				groupName = "Test Site Name",
+				title = "Blogs Entry Title ${i}");
 		}
 
 		JSONAssetlist.addDynamicAssetListEntryWithItemType(
@@ -1720,10 +1681,10 @@ definition {
 				groupName = "Test Site Name",
 				title = "Web Content Title");
 
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title",
-				groupName = "Test Site Name");
+			HeadlessBlog.addBlogEntry(
+				content = "Blogs Entry Content",
+				groupName = "Test Site Name",
+				title = "Blogs Entry Title");
 
 			JSONDocument.addFileWithUploadedFile(
 				dmDocumentDescription = "DM Document Description",
@@ -1779,10 +1740,10 @@ definition {
 				groupName = "Test Site Name",
 				title = "Web Content Title");
 
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title",
-				groupName = "Test Site Name");
+			HeadlessBlog.addBlogEntry(
+				content = "Blogs Entry Content",
+				groupName = "Test Site Name",
+				title = "Blogs Entry Title");
 
 			JSONDocument.addFileWithUploadedFile(
 				dmDocumentDescription = "DM Document Description",
@@ -1888,34 +1849,33 @@ definition {
 
 		for (var i : list "1,2,3") {
 			AssertTextEquals(
-				key_rowPosition = "${i}",
-				locator1 = "Fragment#CONTENT_FRAGMENT_BODY",
+				index = "${i}",
+				key_fragmentName = "Content Flags",
+				locator1 = "Fragment#FRAGMENT_CONTENT",
 				value1 = "Report");
 		}
 
 		PageEditor.waitForAutoSave();
 
-		PageEditor.gotoContentConfiguration(
-			fragmentName = "Content Ratings",
-			rowPosition = "1");
+		PageEditor.gotoConfiguration(fragmentName = "Content Flags");
 
 		AssertTextEquals(
 			key_text = "Item",
 			locator1 = "TextInput#ANY",
 			value1 = "WC WebContent Title 3");
 
-		PageEditor.gotoContentConfiguration(
-			fragmentName = "Content Ratings",
-			rowPosition = "2");
+		PageEditor.gotoConfiguration(
+			fragmentName = "Content Flags",
+			index = "2");
 
 		AssertTextEquals(
 			key_text = "Item",
 			locator1 = "TextInput#ANY",
 			value1 = "WC WebContent Title 2");
 
-		PageEditor.gotoContentConfiguration(
-			fragmentName = "Content Ratings",
-			rowPosition = "3");
+		PageEditor.gotoConfiguration(
+			fragmentName = "Content Flags",
+			index = "3");
 
 		AssertTextEquals(
 			key_text = "Item",
@@ -1931,10 +1891,10 @@ definition {
 			groupName = "Test Site Name",
 			title = "Web Content Title");
 
-		JSONBlog.addEntry(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title",
-			groupName = "Test Site Name");
+		HeadlessBlog.addBlogEntry(
+			content = "Blogs Entry Content",
+			groupName = "Test Site Name",
+			title = "Blogs Entry Title");
 
 		JSONDocument.addFileWithUploadedFile(
 			dmDocumentTitle = "Document Title",
@@ -2135,10 +2095,10 @@ definition {
 			groupName = "Test Site Name",
 			title = "Web Content Title");
 
-		JSONBlog.addEntry(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title",
-			groupName = "Test Site Name");
+		HeadlessBlog.addBlogEntry(
+			content = "Blogs Entry Content",
+			groupName = "Test Site Name",
+			title = "Blogs Entry Title");
 
 		JSONDocument.addFileWithUploadedFile(
 			dmDocumentTitle = "Document Title",
@@ -2246,10 +2206,10 @@ definition {
 				groupName = "Test Site Name",
 				title = "Web Content Title");
 
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title",
-				groupName = "Test Site Name");
+			HeadlessBlog.addBlogEntry(
+				content = "Blogs Entry Content",
+				groupName = "Test Site Name",
+				title = "Blogs Entry Title");
 
 			JSONDocument.addFileWithUploadedFile(
 				dmDocumentDescription = "DM Document Description",
@@ -2328,10 +2288,10 @@ definition {
 		}
 
 		task ("Add a blogs entry") {
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title",
-				groupName = "Test Site Name");
+			HeadlessBlog.addBlogEntry(
+				content = "Blogs Entry Content",
+				groupName = "Test Site Name",
+				title = "Blogs Entry Title");
 		}
 
 		task ("Add a custom Document type") {
@@ -2665,9 +2625,9 @@ definition {
 		var n = "1";
 
 		for (var title : list "WC WebContent Title 3,WC WebContent Title 2,WC WebContent Title 1") {
-			PageEditor.gotoContentConfiguration(
+			PageEditor.gotoConfiguration(
 				fragmentName = "Content Ratings",
-				rowPosition = "${n}");
+				index = "${n}");
 
 			AssertTextEquals(
 				key_text = "Item",
@@ -2690,10 +2650,10 @@ definition {
 				groupName = "Test Site Name",
 				title = "Web Content Title");
 
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title",
-				groupName = "Test Site Name");
+			HeadlessBlog.addBlogEntry(
+				content = "Blogs Entry Content",
+				groupName = "Test Site Name",
+				title = "Blogs Entry Title");
 
 			JSONDocument.addFileWithUploadedFile(
 				dmDocumentDescription = "DM Document Description",
@@ -2939,10 +2899,10 @@ definition {
 
 		task ("Add three Blogs entries") {
 			for (var entryTitle : list "First Blogs Entry,Second Blogs Entry,Third Blogs Entry") {
-				JSONBlog.addEntry(
-					entryContent = "Blogs Entry Content",
-					entryTitle = "${entryTitle}",
-					groupName = "Test Site Name");
+				HeadlessBlog.addBlogEntry(
+					content = "Blogs Entry Content",
+					groupName = "Test Site Name",
+					title = "${entryTitle}");
 			}
 		}
 

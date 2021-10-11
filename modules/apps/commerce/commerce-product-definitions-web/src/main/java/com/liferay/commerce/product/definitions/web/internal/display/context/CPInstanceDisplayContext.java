@@ -38,7 +38,6 @@ import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletProvider;
 import com.liferay.portal.kernel.portlet.PortletProviderUtil;
@@ -53,8 +52,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionURL;
 import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
@@ -297,19 +294,17 @@ public class CPInstanceDisplayContext extends BaseCPDefinitionsDisplayContext {
 	}
 
 	private String _getAddMultipleCPInstancePortletURL() throws Exception {
-		LiferayPortletResponse liferayPortletResponse =
-			cpRequestHelper.getLiferayPortletResponse();
-
-		ActionURL portletURL = liferayPortletResponse.createActionURL();
-
-		portletURL.setParameter(
-			ActionRequest.ACTION_NAME, "/cp_definitions/edit_cp_instance");
-		portletURL.setParameter(Constants.CMD, Constants.ADD_MULTIPLE);
-		portletURL.setParameter("redirect", cpRequestHelper.getCurrentURL());
-		portletURL.setParameter(
-			"cpDefinitionId", String.valueOf(getCPDefinitionId()));
-
-		return portletURL.toString();
+		return PortletURLBuilder.createActionURL(
+			cpRequestHelper.getLiferayPortletResponse()
+		).setActionName(
+			"/cp_definitions/edit_cp_instance"
+		).setCMD(
+			Constants.ADD_MULTIPLE
+		).setRedirect(
+			cpRequestHelper.getCurrentURL()
+		).setParameter(
+			"cpDefinitionId", getCPDefinitionId()
+		).buildString();
 	}
 
 	private String _getEditCPInstancePortletURL() throws Exception {

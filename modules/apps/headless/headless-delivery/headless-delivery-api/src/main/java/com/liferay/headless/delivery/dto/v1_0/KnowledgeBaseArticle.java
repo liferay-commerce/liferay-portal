@@ -67,6 +67,11 @@ public class KnowledgeBaseArticle implements Serializable {
 		return ObjectMapperUtil.readValue(KnowledgeBaseArticle.class, json);
 	}
 
+	public static KnowledgeBaseArticle unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			KnowledgeBaseArticle.class, json);
+	}
+
 	@Schema(
 		description = "Block of actions allowed by the user making the request."
 	)

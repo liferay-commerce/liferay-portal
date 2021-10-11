@@ -12,25 +12,23 @@ definition {
 	}
 
 	tearDown {
-		var testPortalInstance = PropsUtil.get("test.portal.instance");
+		Navigator.openURL();
 
-		if ("${testPortalInstance}" == "true") {
-			PortalInstances.tearDownCP();
+		if (IsElementPresent(locator1 = "UserBar#USER_AVATAR_IMAGE")) {
+			User.logoutPG();
 		}
-		else {
-			Navigator.openURL();
 
-			CommerceConfiguration.commerceAdminTearDown();
+		User.firstLoginPG();
 
-			CommerceConfiguration.commerceInitializersTearDown();
-		}
+		CommerceConfiguration.commerceAdminTearDown();
+
+		CommerceConfiguration.commerceInitializersTearDown();
 	}
 
 	@description = "COMMERCE-6173. As a buyer, I want to sort products by Name(ascending) using Sort widget and the results should be visible on the Search Results widget"
 	@priority = "3"
 	test AssertProductsAreSortedByNameAscending {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSort#AssertProductsAreSortedByNameAscending";
 
 		// TODO Review
 
@@ -75,7 +73,6 @@ definition {
 	@priority = "3"
 	test AssertProductsAreSortedByNameDescending {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSort#AssertProductsAreSortedByNameDescending";
 
 		// TODO Review
 
@@ -120,7 +117,6 @@ definition {
 	@priority = "3"
 	test AssertProductsAreSortedByNewItems {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSort#AssertProductsAreSortedByNewItems";
 
 		// TODO Review
 
@@ -149,7 +145,6 @@ definition {
 	@priority = "3"
 	test AssertProductsAreSortedByPriceHighToLow {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSort#AssertProductsAreSortedByPriceHighToLow";
 
 		// TODO Review
 
@@ -190,7 +185,6 @@ definition {
 	@priority = "3"
 	test AssertProductsAreSortedByPriceLowToHigh {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSort#AssertProductsAreSortedByPriceLowToHigh";
 
 		// TODO Review
 
@@ -231,7 +225,6 @@ definition {
 	@priority = "3"
 	test AssertProductsAreSortedByRelevance {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CommerceSort#AssertProductsAreSortedByRelevance";
 
 		// TODO Review
 

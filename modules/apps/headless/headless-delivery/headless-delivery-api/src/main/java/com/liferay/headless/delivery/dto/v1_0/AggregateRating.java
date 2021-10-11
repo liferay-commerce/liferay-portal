@@ -54,6 +54,10 @@ public class AggregateRating implements Serializable {
 		return ObjectMapperUtil.readValue(AggregateRating.class, json);
 	}
 
+	public static AggregateRating unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(AggregateRating.class, json);
+	}
+
 	@Schema(
 		description = "The highest possible rating (by default normalized to 1.0)."
 	)

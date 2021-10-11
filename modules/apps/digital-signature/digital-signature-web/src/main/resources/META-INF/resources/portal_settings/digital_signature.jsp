@@ -49,7 +49,7 @@ DigitalSignatureConfiguration digitalSignatureConfiguration = (DigitalSignatureC
 	</div>
 </div>
 
-<div id="<%= liferayPortletResponse.getNamespace() + "digitalSignatureProviderCredentials" %>">
+<div id="<portlet:namespace />digitalSignatureProviderCredentials">
 	<div class="mb-4">
 		<liferay-learn:message
 			key="general"

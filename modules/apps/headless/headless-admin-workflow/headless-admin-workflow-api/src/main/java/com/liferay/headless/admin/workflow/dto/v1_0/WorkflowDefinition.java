@@ -57,6 +57,10 @@ public class WorkflowDefinition implements Serializable {
 		return ObjectMapperUtil.readValue(WorkflowDefinition.class, json);
 	}
 
+	public static WorkflowDefinition unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(WorkflowDefinition.class, json);
+	}
+
 	@Schema
 	public Boolean getActive() {
 		return active;

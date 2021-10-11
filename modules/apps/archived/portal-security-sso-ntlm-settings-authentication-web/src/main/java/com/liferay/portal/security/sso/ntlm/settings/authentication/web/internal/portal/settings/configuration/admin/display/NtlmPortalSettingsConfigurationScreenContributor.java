@@ -15,8 +15,6 @@
 package com.liferay.portal.security.sso.ntlm.settings.authentication.web.internal.portal.settings.configuration.admin.display;
 
 import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
-import com.liferay.portal.security.sso.ntlm.configuration.NtlmConfiguration;
 import com.liferay.portal.settings.configuration.admin.display.PortalSettingsConfigurationScreenContributor;
 
 import java.util.Locale;
@@ -55,9 +53,7 @@ public class NtlmPortalSettingsConfigurationScreenContributor
 
 	@Override
 	public String getName(Locale locale) {
-		return LanguageUtil.get(
-			ResourceBundleUtil.getBundle(locale, NtlmConfiguration.class),
-			"ntlm-configuration-name");
+		return LanguageUtil.get(locale, "ntlm-configuration-name");
 	}
 
 	@Override

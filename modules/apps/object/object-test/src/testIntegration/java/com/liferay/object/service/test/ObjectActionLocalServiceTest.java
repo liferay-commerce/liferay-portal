@@ -121,22 +121,22 @@ public class ObjectActionLocalServiceTest {
 			_objectDefinition.getObjectDefinitionId(), true,
 			RandomTestUtil.randomString(),
 			ObjectActionExecutorConstants.KEY_WEBHOOK,
-			ObjectActionTriggerConstants.KEY_ON_AFTER_CREATE,
+			ObjectActionTriggerConstants.KEY_ON_AFTER_ADD,
 			UnicodePropertiesBuilder.put(
-				"secret", "onaftercreate"
+				"secret", "onafteradd"
 			).put(
-				"url", "https://onaftercreate.com"
+				"url", "https://onafteradd.com"
 			).build());
 		ObjectAction objectAction2 = _objectActionLocalService.addObjectAction(
 			TestPropsValues.getUserId(),
 			_objectDefinition.getObjectDefinitionId(), true,
 			RandomTestUtil.randomString(),
 			ObjectActionExecutorConstants.KEY_WEBHOOK,
-			ObjectActionTriggerConstants.KEY_ON_AFTER_REMOVE,
+			ObjectActionTriggerConstants.KEY_ON_AFTER_DELETE,
 			UnicodePropertiesBuilder.put(
-				"secret", "onafterremove"
+				"secret", "onafterdelete"
 			).put(
-				"url", "https://onafterremove.com"
+				"url", "https://onafterdelete.com"
 			).build());
 		ObjectAction objectAction3 = _objectActionLocalService.addObjectAction(
 			TestPropsValues.getUserId(),
@@ -180,7 +180,7 @@ public class ObjectActionLocalServiceTest {
 			body.getContent());
 
 		Assert.assertEquals(
-			ObjectActionTriggerConstants.KEY_ON_AFTER_CREATE,
+			ObjectActionTriggerConstants.KEY_ON_AFTER_ADD,
 			payloadJSONObject.getString("objectActionTriggerKey"));
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_DRAFT,
@@ -195,8 +195,8 @@ public class ObjectActionLocalServiceTest {
 			JSONUtil.getValue(
 				payloadJSONObject, "JSONObject/originalObjectEntry"));
 
-		Assert.assertEquals("onaftercreate", options.getHeader("x-api-key"));
-		Assert.assertEquals("https://onaftercreate.com", options.getLocation());
+		Assert.assertEquals("onafteradd", options.getHeader("x-api-key"));
+		Assert.assertEquals("https://onafteradd.com", options.getLocation());
 
 		// On after update
 
@@ -309,7 +309,7 @@ public class ObjectActionLocalServiceTest {
 		payloadJSONObject = _jsonFactory.createJSONObject(body.getContent());
 
 		Assert.assertEquals(
-			ObjectActionTriggerConstants.KEY_ON_AFTER_REMOVE,
+			ObjectActionTriggerConstants.KEY_ON_AFTER_DELETE,
 			payloadJSONObject.getString("objectActionTriggerKey"));
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_APPROVED,
@@ -324,8 +324,8 @@ public class ObjectActionLocalServiceTest {
 			JSONUtil.getValue(
 				payloadJSONObject, "JSONObject/originalObjectEntry"));
 
-		Assert.assertEquals("onafterremove", options.getHeader("x-api-key"));
-		Assert.assertEquals("https://onafterremove.com", options.getLocation());
+		Assert.assertEquals("onafterdelete", options.getHeader("x-api-key"));
+		Assert.assertEquals("https://onafterdelete.com", options.getLocation());
 
 		// Delete object actions
 
@@ -340,7 +340,7 @@ public class ObjectActionLocalServiceTest {
 			TestPropsValues.getUserId(),
 			_objectDefinition.getObjectDefinitionId(), true, "Able",
 			ObjectActionExecutorConstants.KEY_WEBHOOK,
-			ObjectActionTriggerConstants.KEY_ON_AFTER_CREATE,
+			ObjectActionTriggerConstants.KEY_ON_AFTER_ADD,
 			UnicodePropertiesBuilder.put(
 				"secret", "0123456789"
 			).build());

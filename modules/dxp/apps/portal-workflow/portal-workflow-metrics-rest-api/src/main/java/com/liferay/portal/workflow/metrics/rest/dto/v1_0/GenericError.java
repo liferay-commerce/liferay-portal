@@ -53,6 +53,10 @@ public class GenericError implements Serializable {
 		return ObjectMapperUtil.readValue(GenericError.class, json);
 	}
 
+	public static GenericError unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(GenericError.class, json);
+	}
+
 	@Schema
 	public String getFieldName() {
 		return fieldName;

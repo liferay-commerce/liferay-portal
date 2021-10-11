@@ -57,6 +57,10 @@ public class DataLayout implements Serializable {
 		return ObjectMapperUtil.readValue(DataLayout.class, json);
 	}
 
+	public static DataLayout unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(DataLayout.class, json);
+	}
+
 	@Schema
 	public String getContentType() {
 		return contentType;

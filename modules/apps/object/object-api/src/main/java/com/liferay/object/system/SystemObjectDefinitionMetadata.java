@@ -28,9 +28,11 @@ import java.util.Map;
  */
 public interface SystemObjectDefinitionMetadata {
 
-	public String getClassName();
-
 	public Map<Locale, String> getLabelMap();
+
+	public Class<?> getModelClass();
+
+	public String getModelClassName();
 
 	public String getName();
 

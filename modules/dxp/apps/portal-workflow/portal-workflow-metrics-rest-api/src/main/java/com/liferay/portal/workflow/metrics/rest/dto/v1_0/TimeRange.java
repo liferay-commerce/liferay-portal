@@ -57,6 +57,10 @@ public class TimeRange implements Serializable {
 		return ObjectMapperUtil.readValue(TimeRange.class, json);
 	}
 
+	public static TimeRange unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(TimeRange.class, json);
+	}
+
 	@Schema
 	public Date getDateEnd() {
 		return dateEnd;

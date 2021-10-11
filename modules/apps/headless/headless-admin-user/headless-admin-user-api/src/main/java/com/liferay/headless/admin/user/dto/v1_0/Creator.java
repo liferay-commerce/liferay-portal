@@ -54,6 +54,10 @@ public class Creator implements Serializable {
 		return ObjectMapperUtil.readValue(Creator.class, json);
 	}
 
+	public static Creator unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Creator.class, json);
+	}
+
 	@Schema(
 		description = "The user's additional name, which can be used as a middle name."
 	)

@@ -483,6 +483,31 @@ public class KaleoInstanceLocalServiceWrapper
 				searchKaleoInstances(
 					Long userId, String assetClassName, String assetTitle,
 					String assetDescription, String nodeName,
+					String kaleoDefinitionName, Boolean completed,
+					boolean searchByActiveWorkflowHandlers, int start, int end,
+					com.liferay.portal.kernel.util.OrderByComparator
+						<com.liferay.portal.workflow.kaleo.model.KaleoInstance>
+							orderByComparator,
+					com.liferay.portal.kernel.service.ServiceContext
+						serviceContext)
+			throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _kaleoInstanceLocalService.searchKaleoInstances(
+			userId, assetClassName, assetTitle, assetDescription, nodeName,
+			kaleoDefinitionName, completed, searchByActiveWorkflowHandlers,
+			start, end, orderByComparator, serviceContext);
+	}
+
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x)
+	 */
+	@Deprecated
+	@Override
+	public com.liferay.portal.kernel.search.BaseModelSearchResult
+		<com.liferay.portal.workflow.kaleo.model.KaleoInstance>
+				searchKaleoInstances(
+					Long userId, String assetClassName, String assetTitle,
+					String assetDescription, String nodeName,
 					String kaleoDefinitionName, Boolean completed, int start,
 					int end,
 					com.liferay.portal.kernel.util.OrderByComparator

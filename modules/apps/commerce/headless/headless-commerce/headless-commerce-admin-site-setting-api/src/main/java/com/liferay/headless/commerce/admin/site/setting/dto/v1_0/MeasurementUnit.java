@@ -58,6 +58,10 @@ public class MeasurementUnit implements Serializable {
 		return ObjectMapperUtil.readValue(MeasurementUnit.class, json);
 	}
 
+	public static MeasurementUnit unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(MeasurementUnit.class, json);
+	}
+
 	@DecimalMin("0")
 	@Schema
 	public Long getGroupId() {

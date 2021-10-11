@@ -37,11 +37,20 @@ public class ObjectMapperUtil {
 			return (T)_objectMapper.readValue(json, clazz);
 		}
 		catch (JsonProcessingException jsonProcessingException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(jsonProcessingException, jsonProcessingException);
+			if (_log.isWarnEnabled()) {
+				_log.warn(jsonProcessingException, jsonProcessingException);
 			}
 
 			return null;
+		}
+	}
+
+	public static <T> T unsafeReadValue(Class<?> clazz, String json) {
+		try {
+			return (T)_objectMapper.readValue(json, clazz);
+		}
+		catch (JsonProcessingException jsonProcessingException) {
+			throw new RuntimeException(jsonProcessingException);
 		}
 	}
 

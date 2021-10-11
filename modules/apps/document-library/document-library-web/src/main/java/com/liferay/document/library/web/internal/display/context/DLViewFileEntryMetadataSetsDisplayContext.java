@@ -44,10 +44,7 @@ import com.liferay.portlet.display.template.PortletDisplayTemplate;
 
 import java.util.List;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionURL;
 import javax.portlet.PortletURL;
-import javax.portlet.RenderURL;
 
 /**
  * @author Rafael Praxedes
@@ -72,19 +69,16 @@ public class DLViewFileEntryMetadataSetsDisplayContext {
 	}
 
 	public PortletURL getCopyDDMStructurePortletURL(DDMStructure ddmStructure) {
-		RenderURL renderURL = _liferayPortletResponse.createRenderURL();
-
-		renderURL.setParameter(
-			"mvcPath", "/document_library/ddm/copy_ddm_structure.jsp");
-		renderURL.setParameter(
-			"redirect",
-			String.valueOf(
-				PortletURLUtil.getCurrent(
-					_liferayPortletRequest, _liferayPortletResponse)));
-		renderURL.setParameter(
-			"ddmStructureId", String.valueOf(ddmStructure.getStructureId()));
-
-		return renderURL;
+		return PortletURLBuilder.createRenderURL(
+			_liferayPortletResponse
+		).setMVCPath(
+			"/document_library/ddm/copy_ddm_structure.jsp"
+		).setRedirect(
+			PortletURLUtil.getCurrent(
+				_liferayPortletRequest, _liferayPortletResponse)
+		).setParameter(
+			"ddmStructureId", ddmStructure.getStructureId()
+		).buildRenderURL();
 	}
 
 	public PortletURL getDeleteDDMStructurePortletURL(
@@ -94,24 +88,20 @@ public class DLViewFileEntryMetadataSetsDisplayContext {
 	}
 
 	public PortletURL getEditDDMStructurePortletURL(DDMStructure ddmStructure) {
-		RenderURL renderURL = _liferayPortletResponse.createRenderURL();
-
-		renderURL.setParameter(
-			"mvcRenderCommandName", "/document_library/edit_ddm_structure");
-
-		renderURL.setParameter(
-			"redirect",
+		return PortletURLBuilder.createRenderURL(
+			_liferayPortletResponse
+		).setMVCRenderCommandName(
+			"/document_library/edit_ddm_structure"
+		).setRedirect(
 			PortletURLBuilder.create(
 				PortletURLUtil.getCurrent(
 					_liferayPortletRequest, _liferayPortletResponse)
 			).setNavigation(
 				"file_entry_metadata_sets"
-			).buildString());
-
-		renderURL.setParameter(
-			"ddmStructureId", String.valueOf(ddmStructure.getStructureId()));
-
-		return renderURL;
+			).buildString()
+		).setParameter(
+			"ddmStructureId", ddmStructure.getStructureId()
+		).buildRenderURL();
 	}
 
 	public String getOrderByCol() {
@@ -388,18 +378,19 @@ public class DLViewFileEntryMetadataSetsDisplayContext {
 	private PortletURL _getDeleteDataDefinitionPortletURL(
 		DDMStructure ddmStructure) {
 
-		ActionURL actionURL = _liferayPortletResponse.createActionURL();
-
-		actionURL.setParameter(
-			ActionRequest.ACTION_NAME,
-			"/document_library/delete_data_definition");
-		actionURL.setParameter("navigation", "file_entry_metadata_sets");
-		actionURL.setParameter("redirect", String.valueOf(_getRedirect()));
-		actionURL.setParameter(
-			"dataDefinitionId", String.valueOf(ddmStructure.getStructureId()));
-		actionURL.setParameter("keywords", _getKeywords());
-
-		return actionURL;
+		return PortletURLBuilder.createActionURL(
+			_liferayPortletResponse
+		).setActionName(
+			"/document_library/delete_data_definition"
+		).setRedirect(
+			_getRedirect()
+		).setKeywords(
+			_getKeywords()
+		).setNavigation(
+			"file_entry_metadata_sets"
+		).setParameter(
+			"dataDefinitionId", ddmStructure.getStructureId()
+		).buildActionURL();
 	}
 
 	private String _getKeywords() {

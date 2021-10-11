@@ -44,7 +44,6 @@ import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.io.Serializable;
@@ -54,7 +53,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.ResourceBundle;
 
 /**
  * @author Jürgen Kappler
@@ -141,11 +139,7 @@ public class DLFileEntryTypeRelatedInfoCollectionProvider
 
 	@Override
 	public String getLabel(Locale locale) {
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			locale, getClass());
-
-		return LanguageUtil.get(
-			resourceBundle, _dlFileEntryType.getName(locale));
+		return LanguageUtil.get(locale, _dlFileEntryType.getName(locale));
 	}
 
 	@Override

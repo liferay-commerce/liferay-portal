@@ -55,6 +55,10 @@ public class PageSettings implements Serializable {
 		return ObjectMapperUtil.readValue(PageSettings.class, json);
 	}
 
+	public static PageSettings unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(PageSettings.class, json);
+	}
+
 	@Schema(description = "A list of custom metatags this page has.")
 	@Valid
 	public CustomMetaTag[] getCustomMetaTags() {

@@ -53,6 +53,10 @@ public class Calendar implements Serializable {
 		return ObjectMapperUtil.readValue(Calendar.class, json);
 	}
 
+	public static Calendar unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Calendar.class, json);
+	}
+
 	@Schema
 	public Boolean getDefaultCalendar() {
 		return defaultCalendar;

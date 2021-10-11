@@ -688,7 +688,9 @@ public class PoshiValidation {
 			if (locator != null) {
 				Matcher matcher = _pattern.matcher(locator);
 
-				if (!locator.contains("#") || matcher.find()) {
+				if (locator.startsWith("css=") || !locator.contains("#") ||
+					matcher.find()) {
+
 					continue;
 				}
 
@@ -943,6 +945,19 @@ public class PoshiValidation {
 		}
 	}
 
+	protected static void validateMacroCommandName(
+		Element element, String filePath) {
+
+		String attributeName = element.attributeValue("name");
+
+		if (attributeName.contains("Url")) {
+			_exceptions.add(
+				new ValidationException(
+					element, "Invalid macro command name: ", attributeName,
+					". Use 'URL' instead of 'Url'.\n", filePath));
+		}
+	}
+
 	protected static void validateMacroContext(
 		Element element, String macroType, String filePath) {
 
@@ -972,6 +987,7 @@ public class PoshiValidation {
 			if (childElementName.equals("command")) {
 				validateCommandElement(childElement, filePath);
 				validateHasChildElements(childElement, filePath);
+				validateMacroCommandName(childElement, filePath);
 
 				parseElements(childElement, filePath);
 			}

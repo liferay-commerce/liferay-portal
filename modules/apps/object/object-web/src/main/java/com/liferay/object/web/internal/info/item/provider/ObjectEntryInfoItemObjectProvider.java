@@ -21,22 +21,17 @@ import com.liferay.info.item.provider.InfoItemObjectProvider;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectEntryLocalService;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Guilherme Camacho
  */
-@Component(
-	immediate = true,
-	property = {
-		"info.item.identifier=com.liferay.info.item.ClassPKInfoItemIdentifier",
-		"service.ranking:Integer=100"
-	},
-	service = InfoItemObjectProvider.class
-)
 public class ObjectEntryInfoItemObjectProvider
 	implements InfoItemObjectProvider<ObjectEntry> {
+
+	public ObjectEntryInfoItemObjectProvider(
+		ObjectEntryLocalService objectEntryLocalService) {
+
+		_objectEntryLocalService = objectEntryLocalService;
+	}
 
 	@Override
 	public ObjectEntry getInfoItem(InfoItemIdentifier infoItemIdentifier)
@@ -72,7 +67,6 @@ public class ObjectEntryInfoItemObjectProvider
 		return getInfoItem(classPKInfoItemIdentifier);
 	}
 
-	@Reference
-	private ObjectEntryLocalService _objectEntryLocalService;
+	private final ObjectEntryLocalService _objectEntryLocalService;
 
 }

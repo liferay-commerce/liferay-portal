@@ -163,6 +163,10 @@
 			<finder-column comparator="&lt;" name="displayDate" />
 			<finder-column comparator="!=" name="status" />
 		</finder>
+
+		<!-- References -->
+
+		<reference entity="AssetEntry" package-path="com.liferay.portlet.asset" />
 	</entity>
 	<entity local-service="true" name="BlogsStatsUser" remote-service="false">
 

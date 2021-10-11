@@ -300,10 +300,12 @@ public class FragmentsImporterImpl implements FragmentsImporter {
 					fragmentEntry.getPreviewFileEntryId(), status);
 			}
 
-			fragmentEntry.setReadOnly(readOnly);
+			if (fragmentEntry.isReadOnly() != readOnly) {
+				fragmentEntry.setReadOnly(readOnly);
 
-			fragmentEntry = _fragmentEntryLocalService.updateFragmentEntry(
-				fragmentEntry);
+				fragmentEntry = _fragmentEntryLocalService.updateFragmentEntry(
+					fragmentEntry);
+			}
 
 			FragmentsImporterResultEntry.Status
 				fragmentsImporterResultEntryStatus =
@@ -313,9 +315,6 @@ public class FragmentsImporterImpl implements FragmentsImporter {
 				fragmentsImporterResultEntryStatus =
 					FragmentsImporterResultEntry.Status.IMPORTED_DRAFT;
 			}
-
-			fragmentEntry = _fragmentEntryLocalService.updateFragmentEntry(
-				fragmentEntry);
 
 			_fragmentsImporterResultEntries.add(
 				new FragmentsImporterResultEntry(
@@ -827,6 +826,8 @@ public class FragmentsImporterImpl implements FragmentsImporter {
 			Collectors.toSet()
 		);
 
+		Map<String, String> zipEntryNames = new HashMap<>();
+
 		for (ZipEntry zipEntry : zipEntries) {
 			String[] paths = StringUtil.split(
 				zipEntry.getName(), StringPool.FORWARD_SLASH);
@@ -837,19 +838,25 @@ public class FragmentsImporterImpl implements FragmentsImporter {
 				continue;
 			}
 
-			String fileName = _getFileName(zipEntry.getName());
+			zipEntryNames.put(
+				_getFileName(zipEntry.getName()), zipEntry.getName());
+		}
 
-			InputStream inputStream = _getInputStream(
-				zipFile, zipEntry.getName());
+		for (FileEntry fileEntry :
+				PortletFileRepositoryUtil.getPortletFileEntries(
+					groupId, folderId)) {
 
-			FileEntry fileEntry =
-				PortletFileRepositoryUtil.fetchPortletFileEntry(
-					groupId, folderId, fileName);
-
-			if (fileEntry != null) {
+			if (zipEntryNames.containsKey(fileEntry.getFileName())) {
 				PortletFileRepositoryUtil.deletePortletFileEntry(
 					fileEntry.getFileEntryId());
 			}
+		}
+
+		for (Map.Entry<String, String> entry : zipEntryNames.entrySet()) {
+			InputStream inputStream = _getInputStream(
+				zipFile, entry.getValue());
+
+			String fileName = entry.getKey();
 
 			PortletFileRepositoryUtil.addPortletFileEntry(
 				groupId, userId, FragmentCollection.class.getName(),

@@ -51,6 +51,10 @@ public class DataLayoutColumn implements Serializable {
 		return ObjectMapperUtil.readValue(DataLayoutColumn.class, json);
 	}
 
+	public static DataLayoutColumn unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(DataLayoutColumn.class, json);
+	}
+
 	@Schema
 	public Integer getColumnSize() {
 		return columnSize;

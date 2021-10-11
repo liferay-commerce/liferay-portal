@@ -53,6 +53,10 @@ public class Channel implements Serializable {
 		return ObjectMapperUtil.readValue(Channel.class, json);
 	}
 
+	public static Channel unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Channel.class, json);
+	}
+
 	@Schema
 	public String getCurrencyCode() {
 		return currencyCode;

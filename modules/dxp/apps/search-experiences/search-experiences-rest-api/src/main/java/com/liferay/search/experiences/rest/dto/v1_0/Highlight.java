@@ -53,6 +53,10 @@ public class Highlight implements Serializable {
 		return ObjectMapperUtil.readValue(Highlight.class, json);
 	}
 
+	public static Highlight unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Highlight.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Map<String, HighlightField> getFields() {

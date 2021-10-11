@@ -92,6 +92,9 @@ public class KaleoTaskInstanceTokenModelDocumentContributor
 			KaleoTaskInstanceTokenField.CLASS_NAME,
 			kaleoTaskInstanceToken.getClassName());
 		document.addKeyword(
+			Field.CLASS_NAME_ID,
+			portal.getClassNameId(kaleoTaskInstanceToken.getClassName()));
+		document.addKeyword(
 			Field.CLASS_PK, kaleoTaskInstanceToken.getClassPK());
 		document.addKeywordSortable(
 			KaleoTaskInstanceTokenField.COMPLETED,
@@ -169,6 +172,10 @@ public class KaleoTaskInstanceTokenModelDocumentContributor
 			for (Locale availableLocale :
 					LanguageUtil.getAvailableLocales(
 						kaleoTaskInstanceToken.getGroupId())) {
+
+				if (workflowHandler == null) {
+					continue;
+				}
 
 				document.addText(
 					LocalizationUtil.getLocalizedName(

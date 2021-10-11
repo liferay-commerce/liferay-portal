@@ -106,11 +106,12 @@ public class StoreFactory {
 	}
 
 	public Store getStore() {
-		Store store = _storeServiceTrackerMapHolder.getService(
-			PropsValues.DL_STORE_IMPL);
+		Store store = _defaultStore;
 
 		if (store == null) {
-			throw new IllegalStateException("Store is not available");
+			throw new IllegalStateException(
+				"Store is not available. Caller service needs to wait for " +
+					"store factory with \"dl.store.impl.enabled=true\".");
 		}
 
 		return store;
@@ -137,6 +138,7 @@ public class StoreFactory {
 
 	private static final BundleContext _bundleContext =
 		SystemBundleUtil.getBundleContext();
+	private static volatile Store _defaultStore;
 	private static StoreFactory _storeFactory;
 	private static final StoreServiceTrackerMapHolder
 		_storeServiceTrackerMapHolder = new StoreServiceTrackerMapHolder();
@@ -230,6 +232,8 @@ public class StoreFactory {
 			Store store = _getStore(serviceReference, storeType);
 
 			if (StringUtil.equals(storeType, PropsValues.DL_STORE_IMPL)) {
+				_defaultStore = store;
+
 				_serviceRegistration = _bundleContext.registerService(
 					StoreFactory.class,
 					new StoreFactory() {
@@ -241,7 +245,7 @@ public class StoreFactory {
 
 					},
 					MapUtil.singletonDictionary(
-						"dl.store.impl.enabled", GetterUtil.getObject("true")));
+						"dl.store.impl.enabled", "true"));
 			}
 
 			return store;

@@ -78,6 +78,14 @@ DLPortletInstanceSettingsHelper dlPortletInstanceSettingsHelper = new DLPortletI
 					<div class="form-group">
 						<aui:input label="root-folder" name="rootFolderName" type="resource" value="<%= rootFolderName %>" />
 
+						<div class="alert alert-warning <%= rootFolderInTrash ? StringPool.BLANK : "hide" %>" id="<portlet:namespace />rootFolderInTrash">
+							<liferay-ui:message key="the-selected-root-folder-is-in-the-recycle-bin-please-remove-it-or-select-another-one" />
+						</div>
+
+						<div class="alert alert-warning <%= rootFolderNotFound ? StringPool.BLANK : "hide" %>" id="<portlet:namespace />rootFolderNotFound">
+							<liferay-ui:message key="the-selected-root-folder-cannot-be-found-please-select-another-one" />
+						</div>
+
 						<aui:button name="openFolderSelectorButton" value="select" />
 
 						<%
@@ -117,6 +125,18 @@ DLPortletInstanceSettingsHelper dlPortletInstanceSettingsHelper = new DLPortletI
 					};
 
 					Liferay.Util.selectFolder(folderData, '<portlet:namespace />');
+
+					var rootFolderInTrashWarning = document.querySelector(
+						'#<portlet:namespace />rootFolderInTrash'
+					);
+
+					rootFolderInTrashWarning.classList.add('hide');
+
+					var rootFolderNotFoundWarning = document.querySelector(
+						'#<portlet:namespace />rootFolderNotFound'
+					);
+
+					rootFolderNotFoundWarning.classList.add('hide');
 				},
 				selectEventName:
 					'_<%= HtmlUtil.escapeJS(igRequestHelper.getPortletResource()) %>_selectFolder',
@@ -124,8 +144,9 @@ DLPortletInstanceSettingsHelper dlPortletInstanceSettingsHelper = new DLPortletI
 
 				<liferay-portlet:renderURL portletName="<%= igRequestHelper.getPortletResource() %>" var="selectFolderURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 					<portlet:param name="mvcRenderCommandName" value="/document_library/select_folder" />
-					<portlet:param name="folderId" value="<%= String.valueOf(rootFolderId) %>" />
+					<portlet:param name="folderId" value="<%= (rootFolderInTrash || rootFolderNotFound) ? String.valueOf(DLFolderConstants.DEFAULT_PARENT_FOLDER_ID): String.valueOf(rootFolderId) %>" />
 					<portlet:param name="ignoreRootFolder" value="<%= Boolean.TRUE.toString() %>" />
+					<portlet:param name="selectedFolderId" value="<%= String.valueOf(rootFolderId) %>" />
 				</liferay-portlet:renderURL>
 
 				url: '<%= HtmlUtil.escapeJS(selectFolderURL.toString()) %>',

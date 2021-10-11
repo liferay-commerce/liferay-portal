@@ -54,6 +54,10 @@ public class Status implements Serializable {
 		return ObjectMapperUtil.readValue(Status.class, json);
 	}
 
+	public static Status unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Status.class, json);
+	}
+
 	@Schema
 	public String getStatus() {
 		return status;

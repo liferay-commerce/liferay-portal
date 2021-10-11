@@ -61,6 +61,10 @@ public class PunchOutSession implements Serializable {
 		return ObjectMapperUtil.readValue(PunchOutSession.class, json);
 	}
 
+	public static PunchOutSession unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(PunchOutSession.class, json);
+	}
+
 	@Schema
 	public String getBuyerAccountReferenceCode() {
 		return buyerAccountReferenceCode;

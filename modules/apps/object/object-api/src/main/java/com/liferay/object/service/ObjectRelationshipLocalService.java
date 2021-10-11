@@ -145,6 +145,10 @@ public interface ObjectRelationshipLocalService
 			long objectRelationshipId, long primaryKey1)
 		throws PortalException;
 
+	public void deleteObjectRelationshipMappingTableValues(
+			long objectRelationshipId, long primaryKey1, long primaryKey2)
+		throws PortalException;
+
 	/**
 	 * @throws PortalException
 	 */
@@ -242,6 +246,10 @@ public interface ObjectRelationshipLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ObjectRelationship fetchObjectRelationshipByUuidAndCompanyId(
 		String uuid, long companyId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public ObjectRelationship fetchReverseObjectRelationship(
+		ObjectRelationship objectRelationship, boolean reverse);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();

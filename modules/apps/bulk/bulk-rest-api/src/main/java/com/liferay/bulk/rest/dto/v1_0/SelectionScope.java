@@ -51,6 +51,10 @@ public class SelectionScope implements Serializable {
 		return ObjectMapperUtil.readValue(SelectionScope.class, json);
 	}
 
+	public static SelectionScope unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(SelectionScope.class, json);
+	}
+
 	@Schema
 	public Long getFolderId() {
 		return folderId;

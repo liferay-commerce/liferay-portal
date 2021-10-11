@@ -54,6 +54,10 @@ public class ProcessVersion implements Serializable {
 		return ObjectMapperUtil.readValue(ProcessVersion.class, json);
 	}
 
+	public static ProcessVersion unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(ProcessVersion.class, json);
+	}
+
 	@Schema
 	public String getName() {
 		return name;

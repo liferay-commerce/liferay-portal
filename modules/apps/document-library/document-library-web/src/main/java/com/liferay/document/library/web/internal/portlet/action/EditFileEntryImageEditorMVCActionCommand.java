@@ -72,7 +72,6 @@ import com.liferay.portal.kernel.upload.UploadRequestSizeException;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -83,7 +82,6 @@ import java.io.InputStream;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -375,14 +373,11 @@ public class EditFileEntryImageEditorMVCActionCommand
 			ThemeDisplay themeDisplay =
 				(ThemeDisplay)actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
-			ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-				themeDisplay.getLocale(),
-				EditFileEntryImageEditorMVCActionCommand.class);
-
 			SessionMessages.add(
 				actionRequest, "requestProcessed",
 				LanguageUtil.get(
-					resourceBundle, "the-image-was-edited-successfully"));
+					themeDisplay.getLocale(),
+					"the-image-was-edited-successfully"));
 
 			JSONPortletResponseUtil.writeJSON(
 				actionRequest, actionResponse, jsonObject);

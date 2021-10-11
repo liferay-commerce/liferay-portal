@@ -55,6 +55,10 @@ public class ShippingAddress implements Serializable {
 		return ObjectMapperUtil.readValue(ShippingAddress.class, json);
 	}
 
+	public static ShippingAddress unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(ShippingAddress.class, json);
+	}
+
 	@Schema
 	public String getCity() {
 		return city;

@@ -16,8 +16,9 @@ import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
 import classNames from 'classnames';
 import {Treeview} from 'frontend-js-components-web';
+import {cancelDebounce, debounce} from 'frontend-js-web';
 import PropTypes from 'prop-types';
-import React, {useCallback, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
 import {
 	filterNodes,
@@ -25,6 +26,9 @@ import {
 	selectedDataOutputTransfomer,
 	visit,
 } from '../utils/tree-utils';
+
+const SEARCH_QUERY_MIN_LENGHT = 2;
+const SEARCH_INPUT_DEBOUNCE = 300;
 
 const TreeFilter = ({
 	childrenPropertyKey,
@@ -39,6 +43,8 @@ const TreeFilter = ({
 
 	const selectedNodesRef = useRef(null);
 	const refItemsCount = selectedNodesRef.current?.length || 0;
+
+	const searchInputElement = useRef(null);
 
 	const initialSelectedNodeIds = useMemo(() => {
 		const selectedNodes = [];
@@ -56,7 +62,7 @@ const TreeFilter = ({
 	}, [nodes]);
 
 	const computedNodes = () => {
-		if (!filterQuery) {
+		if (!filterQuery || filterQuery.length < SEARCH_QUERY_MIN_LENGHT) {
 			return nodes;
 		}
 
@@ -126,9 +132,26 @@ const TreeFilter = ({
 		[refItemsCount]
 	);
 
+	const debouncedSetFilterQuery = debounce((event) => {
+		setFilterQuery(event.target.value);
+	}, SEARCH_INPUT_DEBOUNCE);
+
+	const inputSearchHandler = (event) => {
+		event.persist();
+
+		debouncedSetFilterQuery(event);
+	};
+
 	const handleInputClear = () => {
 		setFilterQuery('');
+		searchInputElement.current.value = '';
 	};
+
+	useEffect(() => {
+		return () => {
+			cancelDebounce(debouncedSetFilterQuery);
+		};
+	}, [debouncedSetFilterQuery]);
 
 	return (
 		<div className="tree-filter">
@@ -142,12 +165,10 @@ const TreeFilter = ({
 						<div className="input-group-item">
 							<input
 								className="form-control h-100 input-group-inset input-group-inset-after"
-								onChange={(event) =>
-									setFilterQuery(event.target.value)
-								}
+								onChange={inputSearchHandler}
 								placeholder={Liferay.Language.get('search')}
+								ref={searchInputElement}
 								type="text"
-								value={filterQuery}
 							/>
 
 							<div className="input-group-inset-item input-group-inset-item-after pr-3">

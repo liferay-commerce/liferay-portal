@@ -55,6 +55,10 @@ public class FragmentImage implements Serializable {
 		return ObjectMapperUtil.readValue(FragmentImage.class, json);
 	}
 
+	public static FragmentImage unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(FragmentImage.class, json);
+	}
+
 	@Schema(description = "The fragment image's description.")
 	@Valid
 	public Object getDescription() {

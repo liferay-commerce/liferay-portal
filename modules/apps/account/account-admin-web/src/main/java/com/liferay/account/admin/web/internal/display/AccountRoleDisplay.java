@@ -18,7 +18,6 @@ import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.model.AccountRole;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Role;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 
 import java.util.Locale;
 
@@ -64,9 +63,7 @@ public class AccountRoleDisplay {
 			return LanguageUtil.get(locale, "shared");
 		}
 
-		return LanguageUtil.get(
-			ResourceBundleUtil.getBundle(locale, AccountRoleDisplay.class),
-			"owned");
+		return LanguageUtil.get(locale, "owned");
 	}
 
 	private AccountRoleDisplay(AccountRole accountRole) throws Exception {

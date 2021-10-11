@@ -54,6 +54,10 @@ public class WebUrl implements Serializable {
 		return ObjectMapperUtil.readValue(WebUrl.class, json);
 	}
 
+	public static WebUrl unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(WebUrl.class, json);
+	}
+
 	@Schema(description = "The URL's ID.")
 	public Long getId() {
 		return id;

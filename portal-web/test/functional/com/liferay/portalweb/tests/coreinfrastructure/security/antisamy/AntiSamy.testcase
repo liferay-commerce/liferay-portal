@@ -29,31 +29,37 @@ definition {
 	test AssertNoWikiJavascript {
 		property portal.upstream = "quarantine";
 
-		ProductMenu.gotoPortlet(
-			category = "Site Builder",
-			portlet = "Pages");
+		task ("Add PG") {
+			ProductMenu.gotoPortlet(
+				category = "Site Builder",
+				portlet = "Pages");
 
-		SitePages.addPublicPage(pageName = "AntiSamy Test Page");
+			SitePages.addPublicPage(pageName = "AntiSamy Test Page");
 
-		Navigator.gotoPage(pageName = "AntiSamy Test Page");
+			Navigator.gotoPage(pageName = "AntiSamy Test Page");
 
-		Portlet.addPG(portletName = "Wiki");
+			Portlet.addPG(portletName = "Wiki");
+		}
 
-		var wikiPageContent = '''
-				<p id='demo'>PASS</p>
+		task ("Add front page PG") {
+			var wikiPageContent = '''
+					<p id='demo'>PASS</p>
 
-				<script type='text/javascript'>
-					document.getElementById('demo').innerHTML = 'FAIL';
-				</script>
-			''';
+					<script type='text/javascript'>
+						document.getElementById('demo').innerHTML = 'FAIL';
+					</script>
+				''';
 
-		WikiPage.addFrontPagePG(
-			htmlSource = "true",
-			wikiPageContent = "${wikiPageContent}");
+			WikiPage.addFrontPagePG(
+				htmlSource = "true",
+				wikiPageContent = "${wikiPageContent}");
+		}
 
-		WikiPage.viewPG(
-			wikiPageContent = "PASS",
-			wikiPageTitle = "FrontPage");
+		task ("Assert PG content and title") {
+			WikiPage.viewPG(
+				wikiPageContent = "PASS",
+				wikiPageTitle = "FrontPage");
+		}
 	}
 
 	@description = "This is a use case for LPS-112581 and LPS-115803."
@@ -62,69 +68,66 @@ definition {
 		property antisamy.enabled = "true";
 		property test.name.skip.portal.instance = "AntiSamy#AssertSpecificRulesWorksForModel";
 
-		Pause(locator1 = "5000");
+		task ("Verify address in console") {
+			SAMLNavigation.viewConsoleValue(consoleValue = "STARTED com.liferay.portal.security.antisamy");
+		}
 
-		AssertConsoleTextPresent(value1 = "STARTED com.liferay.portal.security.antisamy");
+		task ("Add and view kb Article") {
+			ProductMenu.gotoPortlet(
+				category = "Content &amp; Data",
+				portlet = "Knowledge Base");
 
-		ProductMenu.gotoPortlet(
-			category = "Content &amp; Data",
-			portlet = "Knowledge Base");
+			KBArticle.addCP(
+				kbArticleAddViaSource = "true",
+				kbArticleContentSource = '''<p data-test="test">Hello Liferay</p>''',
+				kbArticleTitle = "Test AntiSamy");
 
-		KBArticle.addCP(
-			kbArticleAddViaSource = "true",
-			kbArticleContentSource = '''<p data-test="test">Hello Liferay</p>''',
-			kbArticleTitle = "Test AntiSamy");
+			KBAdmin.openKBAdmin(siteURLKey = "guest");
 
-		KBAdmin.openKBAdmin(siteURLKey = "guest");
+			KBArticle.viewCP(
+				kbArticleContent = "Hello Liferay",
+				kbArticleTitle = "Test AntiSamy");
+		}
 
-		KBArticle.viewCP(
-			kbArticleContent = "Hello Liferay",
-			kbArticleTitle = "Test AntiSamy");
+		task ("Edit kb article and save as draft") {
+			ProductMenu.gotoPortlet(
+				category = "Content &amp; Data",
+				portlet = "Knowledge Base");
 
-		ProductMenu.gotoPortlet(
-			category = "Content &amp; Data",
-			portlet = "Knowledge Base");
+			KBArticle.editCP(
+				kbArticleTitle = "Test AntiSamy",
+				saveAsDraft = "true");
+		}
 
-		Click(
-			key_rowEntry = "Test AntiSamy",
-			locator1 = "Icon#ROW_VERTICAL_ELLIPSIS");
+		task ("Assert CKEditor source value") {
+			CKEditor.assertSourceValue(sourceValue = "<p>Hello Liferay</p>");
+		}
 
-		MenuItem.click(menuItem = "Edit");
+		task ("Edit configuration file url") {
+			Navigator.openURL();
 
-		Button.clickSaveAsDraft();
+			ApplicationsMenu.gotoPortlet(
+				category = "Configuration",
+				panel = "Control Panel",
+				portlet = "System Settings");
 
-		Click(locator1 = "CKEditor#TOOLBAR_SOURCE_BUTTON");
+			SystemSettings.gotoConfiguration(
+				configurationCategory = "Security Tools",
+				configurationName = "AntiSamy Sanitizer by Class Name",
+				configurationScope = "System Scope");
 
-		Click.clickAtNotVisible(locator1 = "CKEditor#BODY_FIELD_SOURCE_ON");
+			LexiconEntry.gotoEntryMenuItem(
+				menuItem = "Edit",
+				rowEntry = "com.liferay.knowledge.base.model.KBArticle");
 
-		AssertTextEquals.assertValue(
-			locator1 = "CKEditor#BODY_SOURCE_VALUE",
-			value1 = "<p>Hello Liferay</p>");
+			SystemSettings.editTextAreaSetting(
+				settingName = "Configuration File URL",
+				settingValue = "/META-INF/knowledge-base-sanitizer-configuration.xml");
 
-		Navigator.openURL();
+			SystemSettings.saveConfiguration();
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Configuration",
-			panel = "Control Panel",
-			portlet = "System Settings");
-
-		SystemSettings.gotoConfiguration(
-			configurationCategory = "Security Tools",
-			configurationName = "AntiSamy Sanitizer by Class Name",
-			configurationScope = "System Scope");
-
-		LexiconEntry.gotoEntryMenuItem(
-			menuItem = "Edit",
-			rowEntry = "com.liferay.knowledge.base.model.KBArticle");
-
-		Type(
-			key_label = "Configuration File URL",
-			locator1 = "TextArea#ANY_LABELED",
-			value1 = "/META-INF/knowledge-base-sanitizer-configuration.xml");
-
-		SystemSettings.saveConfiguration();
-
-		AssertElementNotPresent(locator1 = "Message#SUCCESS");
+			AssertElementNotPresent(locator1 = "Message#SUCCESS");
+		}
 	}
 
 	@description = "This is a use case for LRQA-42763."
@@ -132,31 +135,34 @@ definition {
 	test AssertWebContentJavascript {
 		property portal.upstream = "quarantine";
 
-		ProductMenu.gotoPortlet(
-			category = "Site Builder",
-			portlet = "Pages");
+		task ("Add public page") {
+			ProductMenu.gotoPortlet(
+				category = "Site Builder",
+				portlet = "Pages");
 
-		SitePages.addPublicPage(pageName = "Web Content Display Page");
+			SitePages.addPublicPage(pageName = "Web Content Display Page");
+		}
+		task ("Add and view WC") {
+			Navigator.gotoPage(pageName = "Web Content Display Page");
 
-		Navigator.gotoPage(pageName = "Web Content Display Page");
+			Portlet.addPG(portletName = "Web Content Display");
 
-		Portlet.addPG(portletName = "Web Content Display");
+			var webContentContent = '''
+					<p id='demo'>FAIL</p>
 
-		var webContentContent = '''
-				<p id='demo'>FAIL</p>
+					<script type='text/javascript'>
+						document.getElementById('demo').innerHTML = 'PASS';
+					</script>
+				''';
 
-				<script type='text/javascript'>
-					document.getElementById('demo').innerHTML = 'PASS';
-				</script>
-			''';
+			WebContent.addPGViaWCD(
+				webContentContent = "${webContentContent}",
+				webContentTitle = "WC WebContent Title");
 
-		WebContent.addPGViaWCD(
-			webContentContent = "${webContentContent}",
-			webContentTitle = "WC WebContent Title");
-
-		WebContent.viewPGViaWCD(
-			webContentContent = "PASS",
-			webContentTitle = "Web Content Title");
+			WebContent.viewPGViaWCD(
+				webContentContent = "PASS",
+				webContentTitle = "Web Content Title");
+		}
 	}
 
 }

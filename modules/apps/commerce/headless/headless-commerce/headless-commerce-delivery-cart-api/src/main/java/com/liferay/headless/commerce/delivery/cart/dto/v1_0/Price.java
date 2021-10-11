@@ -51,6 +51,10 @@ public class Price implements Serializable {
 		return ObjectMapperUtil.readValue(Price.class, json);
 	}
 
+	public static Price unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Price.class, json);
+	}
+
 	@Schema
 	public String getCurrency() {
 		return currency;

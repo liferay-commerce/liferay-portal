@@ -53,6 +53,10 @@ public class Grid implements Serializable {
 		return ObjectMapperUtil.readValue(Grid.class, json);
 	}
 
+	public static Grid unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Grid.class, json);
+	}
+
 	@Schema
 	@Valid
 	public FormFieldOption[] getColumns() {

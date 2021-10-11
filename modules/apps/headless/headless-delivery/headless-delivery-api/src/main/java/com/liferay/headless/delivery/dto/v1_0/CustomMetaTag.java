@@ -55,6 +55,10 @@ public class CustomMetaTag implements Serializable {
 		return ObjectMapperUtil.readValue(CustomMetaTag.class, json);
 	}
 
+	public static CustomMetaTag unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(CustomMetaTag.class, json);
+	}
+
 	@Schema(description = "The custom metatag's key.")
 	public String getKey() {
 		return key;

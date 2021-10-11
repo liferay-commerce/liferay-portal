@@ -12,7 +12,7 @@
  * details.
  */
 
-type TName = {
+export type TName = {
 	[key: string]: string;
 };
 

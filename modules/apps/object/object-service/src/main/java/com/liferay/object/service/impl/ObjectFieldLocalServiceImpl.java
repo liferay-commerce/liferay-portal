@@ -222,7 +222,7 @@ public class ObjectFieldLocalServiceImpl
 			throw new ObjectDefinitionStatusException();
 		}
 
-		_validateLabel(labelMap, LocaleUtil.getSiteDefault());
+		_validateLabel(labelMap);
 
 		objectField.setLabelMap(labelMap, LocaleUtil.getSiteDefault());
 
@@ -264,7 +264,7 @@ public class ObjectFieldLocalServiceImpl
 			_objectDefinitionPersistence.findByPrimaryKey(objectDefinitionId);
 
 		_validateIndexed(indexed, indexedAsKeyword, indexedLanguageId, type);
-		_validateLabel(labelMap, LocaleUtil.getSiteDefault());
+		_validateLabel(labelMap);
 		_validateName(0, objectDefinition, name);
 		validateType(type);
 
@@ -311,15 +311,14 @@ public class ObjectFieldLocalServiceImpl
 		}
 	}
 
-	private void _validateLabel(
-			Map<Locale, String> labelMap, Locale defaultLocale)
+	private void _validateLabel(Map<Locale, String> labelMap)
 		throws PortalException {
 
-		if ((labelMap == null) ||
-			Validator.isNull(labelMap.get(defaultLocale))) {
+		Locale locale = LocaleUtil.getSiteDefault();
 
+		if ((labelMap == null) || Validator.isNull(labelMap.get(locale))) {
 			throw new ObjectFieldLabelException(
-				"Label is null for locale " + defaultLocale.getDisplayName());
+				"Label is null for locale " + locale.getDisplayName());
 		}
 	}
 

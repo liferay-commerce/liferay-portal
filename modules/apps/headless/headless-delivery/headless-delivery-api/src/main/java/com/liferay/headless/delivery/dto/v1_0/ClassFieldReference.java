@@ -54,6 +54,11 @@ public class ClassFieldReference implements Serializable {
 		return ObjectMapperUtil.readValue(ClassFieldReference.class, json);
 	}
 
+	public static ClassFieldReference unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			ClassFieldReference.class, json);
+	}
+
 	@Schema
 	public String getClassName() {
 		return className;

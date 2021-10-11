@@ -57,6 +57,10 @@ public class UserRecommendation implements Serializable {
 		return ObjectMapperUtil.readValue(UserRecommendation.class, json);
 	}
 
+	public static UserRecommendation unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(UserRecommendation.class, json);
+	}
+
 	@Schema
 	public Long[] getAssetCategoryIds() {
 		return assetCategoryIds;

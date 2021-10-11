@@ -16,11 +16,16 @@ package com.liferay.portal.kernel.model;
 
 import com.liferay.portal.kernel.exception.ModelListenerException;
 
+import org.osgi.annotation.versioning.ProviderType;
+
 /**
  * @author Brian Wing Shun Chan
  * @author Raymond Augé
  */
+@ProviderType
 public interface ModelListener<T> {
+
+	public Class<?> getModelClass();
 
 	public void onAfterAddAssociation(
 			Object classPK, String associationClassName,

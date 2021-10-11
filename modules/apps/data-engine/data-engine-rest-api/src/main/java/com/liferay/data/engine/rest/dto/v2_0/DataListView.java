@@ -57,6 +57,10 @@ public class DataListView implements Serializable {
 		return ObjectMapperUtil.readValue(DataListView.class, json);
 	}
 
+	public static DataListView unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(DataListView.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Map<String, Object> getAppliedFilters() {

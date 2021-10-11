@@ -67,6 +67,10 @@ public class TaxonomyVocabulary implements Serializable {
 		return ObjectMapperUtil.readValue(TaxonomyVocabulary.class, json);
 	}
 
+	public static TaxonomyVocabulary unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(TaxonomyVocabulary.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Map<String, Map<String, String>> getActions() {

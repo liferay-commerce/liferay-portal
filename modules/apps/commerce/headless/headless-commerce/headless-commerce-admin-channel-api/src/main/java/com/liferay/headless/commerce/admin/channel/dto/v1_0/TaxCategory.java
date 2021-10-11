@@ -56,6 +56,10 @@ public class TaxCategory implements Serializable {
 		return ObjectMapperUtil.readValue(TaxCategory.class, json);
 	}
 
+	public static TaxCategory unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(TaxCategory.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Map<String, String> getDescription() {

@@ -44,8 +44,6 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionURL;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.portlet.ResourceURL;
@@ -189,18 +187,18 @@ public class ViewConflictsDisplayContext {
 		);
 
 		if (conflictInfo.isResolved()) {
-			ActionURL dismissURL = _renderResponse.createActionURL();
-
-			dismissURL.setParameter(
-				ActionRequest.ACTION_NAME,
-				"/change_tracking/delete_ct_auto_resolution_info");
-			dismissURL.setParameter(
-				"redirect", _portal.getCurrentURL(_renderRequest));
-			dismissURL.setParameter(
-				"ctAutoResolutionInfoId",
-				String.valueOf(conflictInfo.getCTAutoResolutionInfoId()));
-
-			jsonObject.put("dismissURL", dismissURL.toString());
+			jsonObject.put(
+				"dismissURL",
+				PortletURLBuilder.createActionURL(
+					_renderResponse
+				).setActionName(
+					"/change_tracking/delete_ct_auto_resolution_info"
+				).setRedirect(
+					_portal.getCurrentURL(_renderRequest)
+				).setParameter(
+					"ctAutoResolutionInfoId",
+					conflictInfo.getCTAutoResolutionInfoId()
+				).buildString());
 		}
 
 		ResourceURL dataURL = _renderResponse.createResourceURL();

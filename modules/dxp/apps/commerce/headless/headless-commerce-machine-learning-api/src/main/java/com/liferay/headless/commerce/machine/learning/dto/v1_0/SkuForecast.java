@@ -57,6 +57,10 @@ public class SkuForecast implements Serializable {
 		return ObjectMapperUtil.readValue(SkuForecast.class, json);
 	}
 
+	public static SkuForecast unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(SkuForecast.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Float getActual() {

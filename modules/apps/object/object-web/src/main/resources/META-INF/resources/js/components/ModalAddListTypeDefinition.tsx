@@ -18,43 +18,23 @@ import ClayForm from '@clayui/form';
 import ClayModal, {ClayModalProvider, useModal} from '@clayui/modal';
 import React, {useEffect, useState} from 'react';
 
+import useForm from '../hooks/useForm';
 import Input from './form/Input';
-
-interface IProps extends React.HTMLAttributes<HTMLElement> {
-	apiURL: string;
-}
-
-type TFormState = {
-	name_i18n: {
-		[key: string]: string;
-	};
-};
+import {TName} from './layout/types';
 
 const defaultLanguageId = Liferay.ThemeDisplay.getDefaultLanguageId();
 
-const ModalAddListTypeDefinition: React.FC<IProps> = ({apiURL}) => {
-	const [visibleModal, setVisibleModal] = useState<boolean>(false);
-	const [formState, setFormState] = useState<TFormState>({
-		name_i18n: {
-			[defaultLanguageId]: '',
-		},
-	});
+const ModalAddListTypeDefinition: React.FC<IProps> = ({
+	apiURL,
+	observer,
+	onClose,
+}) => {
+	const initialValues: TInitialValues = {
+		name_i18n: {[defaultLanguageId]: ''},
+	};
 	const [error, setError] = useState<string>('');
-	const [nameError, setNameError] = useState<string>('');
 
-	const {observer, onClose} = useModal({
-		onClose: () => setVisibleModal(false),
-	});
-
-	const handleSaveListTypeDefinition = async () => {
-		const {name_i18n} = formState;
-
-		if (name_i18n[defaultLanguageId] === '') {
-			setNameError(Liferay.Language.get('required'));
-
-			return;
-		}
-
+	const onSubmit = async ({name_i18n}: TInitialValues) => {
 		const response = await Liferay.Util.fetch(apiURL, {
 			body: JSON.stringify({
 				name_i18n,
@@ -83,84 +63,108 @@ const ModalAddListTypeDefinition: React.FC<IProps> = ({apiURL}) => {
 		}
 	};
 
-	const handleOpenListTypeDefinitionModal = () => setVisibleModal(true);
+	const validate = (values: TInitialValues) => {
+		const errors: any = {};
+
+		if (!values.name_i18n[defaultLanguageId]) {
+			errors.name_i18n = Liferay.Language.get('required');
+		}
+
+		return errors;
+	};
+
+	const {errors, handleChange, handleSubmit, values} = useForm({
+		initialValues,
+		onSubmit,
+		validate,
+	});
+
+	return (
+		<ClayModal observer={observer}>
+			<ClayForm onSubmit={handleSubmit}>
+				<ClayModal.Header>
+					{Liferay.Language.get('new-picklist')}
+				</ClayModal.Header>
+				<ClayModal.Body>
+					{error && (
+						<ClayAlert displayType="danger">{error}</ClayAlert>
+					)}
+
+					<Input
+						error={errors.name_i18n}
+						id="listTypeDefinitionName"
+						label={Liferay.Language.get('name')}
+						name="name_i18n"
+						onChange={({target: {value}}: any) => {
+							handleChange({
+								target: {
+									name: 'name_i18n',
+									value: {
+										[defaultLanguageId]: value,
+									},
+								},
+							} as any);
+						}}
+						required
+						value={values.name_i18n[defaultLanguageId]}
+					/>
+				</ClayModal.Body>
+				<ClayModal.Footer
+					last={
+						<ClayButton.Group key={1} spaced>
+							<ClayButton
+								displayType="secondary"
+								onClick={() => onClose()}
+							>
+								{Liferay.Language.get('cancel')}
+							</ClayButton>
+
+							<ClayButton displayType="primary" type="submit">
+								{Liferay.Language.get('save')}
+							</ClayButton>
+						</ClayButton.Group>
+					}
+				/>
+			</ClayForm>
+		</ClayModal>
+	);
+};
+
+interface IProps extends React.HTMLAttributes<HTMLElement> {
+	apiURL: string;
+	observer: any;
+	onClose: () => void;
+}
+
+type TInitialValues = {
+	name_i18n: TName;
+};
+
+const ModalWithProvider: React.FC<IProps> = ({apiURL}) => {
+	const [visibleModal, setVisibleModal] = useState<boolean>(false);
+	const {observer, onClose} = useModal({
+		onClose: () => setVisibleModal(false),
+	});
 
 	useEffect(() => {
-		Liferay.on('addListTypeDefinition', handleOpenListTypeDefinitionModal);
+		Liferay.on('addListTypeDefinition', () => setVisibleModal(true));
 
 		return () => {
-			Liferay.detach(
-				'addListTypeDefinition',
-				handleOpenListTypeDefinitionModal
+			Liferay.detach('addListTypeDefinition', () =>
+				setVisibleModal(true)
 			);
 		};
 	}, []);
 
 	return (
-		<>
-			{visibleModal && (
-				<ClayModal observer={observer}>
-					<ClayModal.Header>
-						{Liferay.Language.get('new-picklist')}
-					</ClayModal.Header>
-					<ClayModal.Body>
-						{error && (
-							<ClayAlert displayType="danger">{error}</ClayAlert>
-						)}
-
-						<ClayForm.Group>
-							<Input
-								error={nameError}
-								id="listTypeDefinitionName"
-								label={Liferay.Language.get('name')}
-								name="name"
-								onChange={({target: {value}}: any) => {
-									setFormState({
-										...formState,
-										name_i18n: {
-											[defaultLanguageId]: value,
-										},
-									});
-
-									error && setError('');
-									value != '' && setNameError('');
-								}}
-								required
-								value={formState.name_i18n[defaultLanguageId]}
-							/>
-						</ClayForm.Group>
-					</ClayModal.Body>
-					<ClayModal.Footer
-						last={
-							<ClayButton.Group key={1} spaced>
-								<ClayButton
-									displayType="secondary"
-									onClick={() => onClose()}
-								>
-									{Liferay.Language.get('cancel')}
-								</ClayButton>
-
-								<ClayButton
-									displayType="primary"
-									onClick={() =>
-										handleSaveListTypeDefinition()
-									}
-								>
-									{Liferay.Language.get('save')}
-								</ClayButton>
-							</ClayButton.Group>
-						}
-					/>
-				</ClayModal>
-			)}
-		</>
-	);
-};
-
-const ModalWithProvider: React.FC<IProps> = ({apiURL}) => {
-	return (
 		<ClayModalProvider>
-			<ModalAddListTypeDefinition apiURL={apiURL} />
+			{visibleModal && (
+				<ModalAddListTypeDefinition
+					apiURL={apiURL}
+					observer={observer}
+					onClose={onClose}
+				/>
+			)}
 		</ClayModalProvider>
 	);
 };

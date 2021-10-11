@@ -51,6 +51,10 @@ public class Body_1 implements Serializable {
 		return ObjectMapperUtil.readValue(Body_1.class, json);
 	}
 
+	public static Body_1 unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Body_1.class, json);
+	}
+
 	@Schema
 	public String getLogo() {
 		return logo;

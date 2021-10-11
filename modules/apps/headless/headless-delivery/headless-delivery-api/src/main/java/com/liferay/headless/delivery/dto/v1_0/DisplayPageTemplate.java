@@ -56,6 +56,11 @@ public class DisplayPageTemplate implements Serializable {
 		return ObjectMapperUtil.readValue(DisplayPageTemplate.class, json);
 	}
 
+	public static DisplayPageTemplate unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			DisplayPageTemplate.class, json);
+	}
+
 	@Schema(description = "The display page template's content subtype.")
 	@Valid
 	public ContentSubtype getContentSubtype() {

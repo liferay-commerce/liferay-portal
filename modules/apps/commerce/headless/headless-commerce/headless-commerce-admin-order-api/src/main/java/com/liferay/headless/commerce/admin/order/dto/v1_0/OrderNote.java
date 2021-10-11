@@ -53,6 +53,10 @@ public class OrderNote implements Serializable {
 		return ObjectMapperUtil.readValue(OrderNote.class, json);
 	}
 
+	public static OrderNote unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(OrderNote.class, json);
+	}
+
 	@Schema
 	public String getAuthor() {
 		return author;

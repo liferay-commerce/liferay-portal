@@ -56,6 +56,10 @@ public class PostalAddress implements Serializable {
 		return ObjectMapperUtil.readValue(PostalAddress.class, json);
 	}
 
+	public static PostalAddress unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(PostalAddress.class, json);
+	}
+
 	@Schema(description = "The address's country (e.g., USA).")
 	public String getAddressCountry() {
 		return addressCountry;

@@ -36,9 +36,6 @@ import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.servlet.MultiSessionMessages;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.transaction.TransactionConfig;
-import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -64,7 +61,6 @@ import com.liferay.sites.kernel.util.Sites;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -95,10 +91,7 @@ public class AddGroupMVCActionCommand extends BaseMVCActionCommand {
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 
 		try {
-			Callable<Group> groupCallable = new GroupCallable(actionRequest);
-
-			Group group = TransactionInvokerUtil.invoke(
-				_transactionConfig, groupCallable);
+			Group group = _updateGroup(actionRequest);
 
 			long liveGroupId = ParamUtil.getLong(actionRequest, "liveGroupId");
 
@@ -497,10 +490,6 @@ public class AddGroupMVCActionCommand extends BaseMVCActionCommand {
 		ActionUtil.updateWorkflowDefinitionLinks(actionRequest, group);
 	}
 
-	private static final TransactionConfig _transactionConfig =
-		TransactionConfig.Factory.create(
-			Propagation.REQUIRED, new Class<?>[] {Exception.class});
-
 	@Reference
 	private GroupExceptionRequestHandler _groupExceptionRequestHandler;
 
@@ -518,20 +507,5 @@ public class AddGroupMVCActionCommand extends BaseMVCActionCommand {
 
 	@Reference
 	private SiteInitializerRegistry _siteInitializerRegistry;
-
-	private class GroupCallable implements Callable<Group> {
-
-		@Override
-		public Group call() throws Exception {
-			return _updateGroup(_actionRequest);
-		}
-
-		private GroupCallable(ActionRequest actionRequest) {
-			_actionRequest = actionRequest;
-		}
-
-		private final ActionRequest _actionRequest;
-
-	}
 
 }

@@ -54,6 +54,11 @@ public class OpenGraphSettingsMapping implements Serializable {
 		return ObjectMapperUtil.readValue(OpenGraphSettingsMapping.class, json);
 	}
 
+	public static OpenGraphSettingsMapping unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			OpenGraphSettingsMapping.class, json);
+	}
+
 	@Schema(
 		description = "Field of the content type that will be used as the description"
 	)

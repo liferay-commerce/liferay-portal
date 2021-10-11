@@ -56,6 +56,10 @@ public class RenderedContent implements Serializable {
 		return ObjectMapperUtil.readValue(RenderedContent.class, json);
 	}
 
+	public static RenderedContent unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(RenderedContent.class, json);
+	}
+
 	@Schema(
 		description = "The ID of the template or display page used to render the content."
 	)

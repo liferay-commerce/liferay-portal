@@ -56,6 +56,11 @@ public class PriceListAccountGroup implements Serializable {
 		return ObjectMapperUtil.readValue(PriceListAccountGroup.class, json);
 	}
 
+	public static PriceListAccountGroup unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			PriceListAccountGroup.class, json);
+	}
+
 	@Schema
 	@Valid
 	public AccountGroup getAccountGroup() {

@@ -60,6 +60,10 @@ public class ShipmentItem implements Serializable {
 		return ObjectMapperUtil.readValue(ShipmentItem.class, json);
 	}
 
+	public static ShipmentItem unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(ShipmentItem.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Map<String, Map<String, String>> getActions() {

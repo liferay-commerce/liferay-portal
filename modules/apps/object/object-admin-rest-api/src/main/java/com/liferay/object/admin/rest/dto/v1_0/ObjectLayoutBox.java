@@ -53,6 +53,10 @@ public class ObjectLayoutBox implements Serializable {
 		return ObjectMapperUtil.readValue(ObjectLayoutBox.class, json);
 	}
 
+	public static ObjectLayoutBox unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(ObjectLayoutBox.class, json);
+	}
+
 	@Schema
 	public Boolean getCollapsable() {
 		return collapsable;

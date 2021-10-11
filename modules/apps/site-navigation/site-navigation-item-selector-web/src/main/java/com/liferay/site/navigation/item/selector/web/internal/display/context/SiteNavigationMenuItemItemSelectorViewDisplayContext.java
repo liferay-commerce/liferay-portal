@@ -162,7 +162,7 @@ public class SiteNavigationMenuItemItemSelectorViewDisplayContext {
 		jsonObject.put(
 			"name",
 			LanguageUtil.get(
-				resourceBundle,
+				themeDisplay.getLocale(),
 				ResourceBundleUtil.getString(resourceBundle, name)));
 
 		jsonArray.put(jsonObject);

@@ -641,6 +641,32 @@ public class KaleoTaskInstanceTokenLocalServiceUtil {
 				Long[] assigneeClassPKs, java.util.Date dueDateGT,
 				java.util.Date dueDateLT, Boolean completed,
 				Long kaleoDefinitionId, Long[] kaleoInstanceIds,
+				boolean searchByActiveWorkflowHandlers,
+				Boolean searchByUserRoles, boolean andOperator, int start,
+				int end,
+				OrderByComparator<KaleoTaskInstanceToken> orderByComparator,
+				com.liferay.portal.kernel.service.ServiceContext serviceContext)
+			throws PortalException {
+
+		return getService().searchKaleoTaskInstanceTokens(
+			assetTitle, taskNames, assetTypes, assetPrimaryKeys,
+			assigneeClassName, assigneeClassPKs, dueDateGT, dueDateLT,
+			completed, kaleoDefinitionId, kaleoInstanceIds,
+			searchByActiveWorkflowHandlers, searchByUserRoles, andOperator,
+			start, end, orderByComparator, serviceContext);
+	}
+
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x)
+	 */
+	@Deprecated
+	public static com.liferay.portal.kernel.search.BaseModelSearchResult
+		<KaleoTaskInstanceToken> searchKaleoTaskInstanceTokens(
+				String assetTitle, String[] taskNames, String[] assetTypes,
+				Long[] assetPrimaryKeys, String assigneeClassName,
+				Long[] assigneeClassPKs, java.util.Date dueDateGT,
+				java.util.Date dueDateLT, Boolean completed,
+				Long kaleoDefinitionId, Long[] kaleoInstanceIds,
 				Boolean searchByUserRoles, boolean andOperator, int start,
 				int end,
 				OrderByComparator<KaleoTaskInstanceToken> orderByComparator,

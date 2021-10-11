@@ -73,13 +73,25 @@ public class DateDDMFormFieldValueRendererTest {
 			new DateDDMFormFieldValueRenderer();
 
 		Assert.assertEquals(
-			"1/25/15",
-			dateDDMFormFieldValueRenderer.render(
-				ddmFormFieldValue, LocaleUtil.US));
-		Assert.assertEquals(
-			"25/01/15",
+			"25/01/2015",
 			dateDDMFormFieldValueRenderer.render(
 				ddmFormFieldValue, LocaleUtil.BRAZIL));
+		Assert.assertEquals(
+			"25.01.2015",
+			dateDDMFormFieldValueRenderer.render(
+				ddmFormFieldValue, LocaleUtil.GERMANY));
+		Assert.assertEquals(
+			"2015.01.25.",
+			dateDDMFormFieldValueRenderer.render(
+				ddmFormFieldValue, LocaleUtil.HUNGARY));
+		Assert.assertEquals(
+			"2015/01/25",
+			dateDDMFormFieldValueRenderer.render(
+				ddmFormFieldValue, LocaleUtil.JAPAN));
+		Assert.assertEquals(
+			"01/25/2015",
+			dateDDMFormFieldValueRenderer.render(
+				ddmFormFieldValue, LocaleUtil.US));
 
 		ddmFormFieldValue.setValue(new UnlocalizedValue(""));
 

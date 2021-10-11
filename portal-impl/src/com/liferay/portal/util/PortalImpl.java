@@ -8255,20 +8255,18 @@ public class PortalImpl implements Portal {
 			Set<Locale> availableLocales)
 		throws PortalException {
 
-		String virtualHostname = getVirtualHostname(
+		TreeMap<String, String> virtualHostnames = getVirtualHostnames(
 			themeDisplay.getLayoutSet());
 
-		if (Validator.isNull(virtualHostname)) {
-			Company company = themeDisplay.getCompany();
-
-			virtualHostname = company.getVirtualHostname();
-		}
+		String virtualHostname = _getVirtualHostname(
+			virtualHostnames, themeDisplay);
 
 		String portalDomain = themeDisplay.getPortalDomain();
 
-		if (!Validator.isBlank(portalDomain) &&
-			!StringUtil.equalsIgnoreCase(portalDomain, _LOCALHOST) &&
-			StringUtil.equalsIgnoreCase(virtualHostname, _LOCALHOST)) {
+		if ((!Validator.isBlank(portalDomain) &&
+			 !StringUtil.equalsIgnoreCase(portalDomain, _LOCALHOST) &&
+			 StringUtil.equalsIgnoreCase(virtualHostname, _LOCALHOST)) ||
+			virtualHostnames.containsKey(portalDomain)) {
 
 			virtualHostname = portalDomain;
 		}
@@ -8765,6 +8763,18 @@ public class PortalImpl implements Portal {
 		}
 
 		return group;
+	}
+
+	private String _getVirtualHostname(
+		TreeMap<String, String> virtualHostnames, ThemeDisplay themeDisplay) {
+
+		if (virtualHostnames.isEmpty()) {
+			Company company = themeDisplay.getCompany();
+
+			return company.getVirtualHostname();
+		}
+
+		return virtualHostnames.firstKey();
 	}
 
 	private boolean _requiresLayoutFriendlyURL(

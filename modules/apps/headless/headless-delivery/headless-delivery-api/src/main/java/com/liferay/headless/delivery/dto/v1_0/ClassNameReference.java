@@ -54,6 +54,10 @@ public class ClassNameReference implements Serializable {
 		return ObjectMapperUtil.readValue(ClassNameReference.class, json);
 	}
 
+	public static ClassNameReference unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(ClassNameReference.class, json);
+	}
+
 	@Schema
 	public String getClassName() {
 		return className;

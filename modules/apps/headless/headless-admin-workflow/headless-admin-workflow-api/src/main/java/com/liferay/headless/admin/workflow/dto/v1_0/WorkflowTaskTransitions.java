@@ -53,6 +53,11 @@ public class WorkflowTaskTransitions implements Serializable {
 		return ObjectMapperUtil.readValue(WorkflowTaskTransitions.class, json);
 	}
 
+	public static WorkflowTaskTransitions unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			WorkflowTaskTransitions.class, json);
+	}
+
 	@Schema
 	@Valid
 	public WorkflowTaskTransition[] getWorkflowTaskTransitions() {

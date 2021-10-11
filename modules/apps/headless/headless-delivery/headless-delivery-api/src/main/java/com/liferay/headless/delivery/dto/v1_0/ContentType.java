@@ -51,6 +51,10 @@ public class ContentType implements Serializable {
 		return ObjectMapperUtil.readValue(ContentType.class, json);
 	}
 
+	public static ContentType unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(ContentType.class, json);
+	}
+
 	@Schema(description = "The content type's class name.")
 	public String getClassName() {
 		return className;

@@ -55,6 +55,10 @@ public class NodeMetric implements Serializable {
 		return ObjectMapperUtil.readValue(NodeMetric.class, json);
 	}
 
+	public static NodeMetric unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(NodeMetric.class, json);
+	}
+
 	@Schema
 	public Long getBreachedInstanceCount() {
 		return breachedInstanceCount;

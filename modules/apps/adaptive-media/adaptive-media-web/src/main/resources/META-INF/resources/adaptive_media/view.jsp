@@ -32,7 +32,7 @@ AMManagementToolbarDisplayContext amManagementToolbarDisplayContext = new AMMana
 	showSearch="<%= false %>"
 />
 
-<div class="closed sidenav-container sidenav-right" id="<%= liferayPortletResponse.getNamespace() + "infoPanelId" %>">
+<div class="closed sidenav-container sidenav-right" id="<portlet:namespace />infoPanelId">
 	<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="/adaptive_media/info_panel" var="sidebarPanelURL" />
 
 	<liferay-frontend:sidebar-panel

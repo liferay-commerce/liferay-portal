@@ -53,6 +53,11 @@ public class DiscountAccountGroup implements Serializable {
 		return ObjectMapperUtil.readValue(DiscountAccountGroup.class, json);
 	}
 
+	public static DiscountAccountGroup unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			DiscountAccountGroup.class, json);
+	}
+
 	@Schema
 	public String getAccountGroupExternalReferenceCode() {
 		return accountGroupExternalReferenceCode;

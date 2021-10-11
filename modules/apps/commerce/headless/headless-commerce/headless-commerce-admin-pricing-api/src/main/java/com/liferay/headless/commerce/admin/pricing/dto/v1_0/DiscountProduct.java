@@ -53,6 +53,10 @@ public class DiscountProduct implements Serializable {
 		return ObjectMapperUtil.readValue(DiscountProduct.class, json);
 	}
 
+	public static DiscountProduct unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(DiscountProduct.class, json);
+	}
+
 	@Schema
 	public String getDiscountExternalReferenceCode() {
 		return discountExternalReferenceCode;

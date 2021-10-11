@@ -141,7 +141,7 @@ public class DepotAssetRendererFactoryTracker {
 				"service.ranking",
 				(int)Math.min(Integer.MAX_VALUE, defaultRanking));
 
-			AssetRendererFactory<?> depotAssetRendererFactoryWrapper =
+			AssetRendererFactory<?> depotAssetRendererFactory =
 				new DepotAssetRendererFactoryWrapper(
 					assetRendererFactory, _depotApplicationController,
 					_depotEntryLocalService, _groupLocalService);
@@ -150,12 +150,12 @@ public class DepotAssetRendererFactoryTracker {
 				_bundleContext.registerService(
 					(Class<AssetRendererFactory<?>>)
 						(Class<?>)AssetRendererFactory.class,
-					depotAssetRendererFactoryWrapper,
+					depotAssetRendererFactory,
 					depotAssetRendererFactoryWrapperProperties);
 
 			_serviceRegistrations.put(serviceReference, serviceRegistration);
 
-			return depotAssetRendererFactoryWrapper;
+			return depotAssetRendererFactory;
 		}
 
 		@Override

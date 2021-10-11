@@ -22,7 +22,6 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.LocalizationUtil;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowDefinitionManager;
 
@@ -78,8 +77,7 @@ public class AddMBModerationWorkflowDefinitionPortalInstanceLifecycleListener
 			titleMap.put(
 				_language.getLanguageId(locale),
 				_language.get(
-					ResourceBundleUtil.getBundle(locale, getClass()),
-					MBModerationConstants.WORKFLOW_DEFINITION_NAME));
+					locale, MBModerationConstants.WORKFLOW_DEFINITION_NAME));
 		}
 
 		return titleMap;

@@ -12,7 +12,12 @@
  * details.
  */
 
-import {cleanup, fireEvent, render} from '@testing-library/react';
+import {
+	cleanup,
+	fireEvent,
+	render,
+	waitForElement,
+} from '@testing-library/react';
 import React from 'react';
 
 import '@testing-library/jest-dom/extend-expect';
@@ -70,28 +75,14 @@ describe('SelectFileExtension', () => {
 		expect(queryByText('Document')).not.toBeInTheDocument();
 	});
 
-	it('renders all children collapsed when the query matches the parent but no children', () => {
-		const {getByPlaceholderText, getByText, queryByText} = render(
-			<TreeFilter {...mockExtensionsProps} />
-		);
-		const input = getByPlaceholderText('search');
-		fireEvent.change(input, {target: {value: 'Image'}});
-		expect(getByText('Image (4 items)')).toBeInTheDocument();
-
-		// The children must be collapsed
-
-		expect(queryByText('gif')).not.toBeInTheDocument();
-		expect(queryByText('jpg')).not.toBeInTheDocument();
-		expect(queryByText('jpeg')).not.toBeInTheDocument();
-		expect(queryByText('png')).not.toBeInTheDocument();
-	});
-
-	it('renders the parent node when the query matches any of its children', () => {
+	it('renders the parent node when the query matches any of its children', async () => {
 		const {getByPlaceholderText, getByText} = render(
 			<TreeFilter {...mockExtensionsProps} />
 		);
 		const input = getByPlaceholderText('search');
 		fireEvent.change(input, {target: {value: 'jp'}});
+
+		await waitForElement(() => getByText('Image (2 items)'));
 		expect(getByText('Image (2 items)')).toBeInTheDocument();
 
 		expect(getByText('jpg')).toBeInTheDocument();
@@ -104,23 +95,26 @@ describe('SelectFileExtension', () => {
 		expect(container.getElementsByClassName('selected').length).toBe(1);
 	});
 
-	it('shows empty state when there are no nodes in the tree', () => {
+	it('shows empty state when there are no nodes in the tree', async () => {
 		const {getByText} = render(<TreeFilter {...mockEmptyTreeProps} />);
 
+		await waitForElement(() => getByText('no-results-were-found'));
 		expect(getByText('no-results-were-found')).toBeInTheDocument();
 	});
 
-	it('shows empty state when the text input does not match with any of the parents or children', () => {
+	it('shows empty state when the text input does not match with any of the parents or children', async () => {
 		const {getByPlaceholderText, getByText} = render(
 			<TreeFilter {...mockExtensionsProps} />
 		);
 
 		const input = getByPlaceholderText('search');
 		fireEvent.change(input, {target: {value: 'blabla'}});
+
+		await waitForElement(() => getByText('no-results-were-found'));
 		expect(getByText('no-results-were-found')).toBeInTheDocument();
 	});
 
-	it('clears the search results by hitting the times icon in the search bar', () => {
+	it('clears the search results by hitting the times icon in the search bar', async () => {
 		const {container, getByPlaceholderText, getByText} = render(
 			<TreeFilter {...mockExtensionsProps} />
 		);
@@ -129,6 +123,8 @@ describe('SelectFileExtension', () => {
 
 		const input = getByPlaceholderText('search');
 		fireEvent.change(input, {target: {value: 'jp'}});
+
+		await waitForElement(() => getByText('Image (2 items)'));
 		expect(getByText('Image (2 items)')).toBeInTheDocument();
 
 		// Then we clear the search input by hitting the clear buttpn

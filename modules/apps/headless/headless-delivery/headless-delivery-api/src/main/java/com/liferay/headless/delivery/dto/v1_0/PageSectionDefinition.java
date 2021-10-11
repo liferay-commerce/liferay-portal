@@ -56,6 +56,11 @@ public class PageSectionDefinition implements Serializable {
 		return ObjectMapperUtil.readValue(PageSectionDefinition.class, json);
 	}
 
+	public static PageSectionDefinition unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			PageSectionDefinition.class, json);
+	}
+
 	@Schema(deprecated = true)
 	public String getBackgroundColor() {
 		return backgroundColor;

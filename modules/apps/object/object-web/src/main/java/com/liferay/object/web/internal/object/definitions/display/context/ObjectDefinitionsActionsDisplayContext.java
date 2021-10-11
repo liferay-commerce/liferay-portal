@@ -163,14 +163,16 @@ public class ObjectDefinitionsActionsDisplayContext {
 					"description",
 					LanguageUtil.get(
 						_objectRequestHelper.getLocale(),
-						objectActionExecutor.getKey() + "-help")
+						"object-action-executor-help[" +
+							objectActionExecutor.getKey() + "]")
 				).put(
 					"key", objectActionExecutor.getKey()
 				).put(
 					"label",
 					LanguageUtil.get(
 						_objectRequestHelper.getLocale(),
-						objectActionExecutor.getKey())
+						"object-action-executor[" +
+							objectActionExecutor.getKey() + "]")
 				)));
 
 		return objectActionExecutorsJSONArray;
@@ -192,14 +194,16 @@ public class ObjectDefinitionsActionsDisplayContext {
 					"description",
 					LanguageUtil.get(
 						_objectRequestHelper.getLocale(),
-						objectActionTrigger.getKey() + "-help")
+						"object-action-trigger-help[" +
+							objectActionTrigger.getKey() + "]")
 				).put(
 					"key", objectActionTrigger.getKey()
 				).put(
 					"label",
 					LanguageUtil.get(
 						_objectRequestHelper.getLocale(),
-						objectActionTrigger.getKey())
+						"object-action-trigger[" +
+							objectActionTrigger.getKey() + "]")
 				)));
 
 		return objectActionTriggersJSONArray;

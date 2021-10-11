@@ -20,7 +20,6 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.site.admin.web.internal.constants.SiteAdminWebKeys;
 import com.liferay.site.settings.configuration.admin.display.SiteSettingsConfigurationScreenContributor;
 
@@ -62,8 +61,7 @@ public class SiteSettingsConfigurationScreen implements ConfigurationScreen {
 	@Override
 	public String getName(Locale locale) {
 		return LanguageUtil.get(
-			ResourceBundleUtil.getBundle(
-				locale, SiteSettingsConfigurationScreen.class),
+			locale,
 			_siteSettingsConfigurationScreenContributor.getName(locale));
 	}
 

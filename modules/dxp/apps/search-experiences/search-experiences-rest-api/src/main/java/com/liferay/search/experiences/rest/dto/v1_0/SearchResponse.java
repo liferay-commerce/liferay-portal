@@ -53,6 +53,10 @@ public class SearchResponse implements Serializable {
 		return ObjectMapperUtil.readValue(SearchResponse.class, json);
 	}
 
+	public static SearchResponse unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(SearchResponse.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Document[] getDocuments() {
@@ -165,6 +169,35 @@ public class SearchResponse implements Serializable {
 	protected Integer pageSize;
 
 	@Schema
+	@Valid
+	public Object getRequest() {
+		return request;
+	}
+
+	public void setRequest(Object request) {
+		this.request = request;
+	}
+
+	@JsonIgnore
+	public void setRequest(
+		UnsafeSupplier<Object, Exception> requestUnsafeSupplier) {
+
+		try {
+			request = requestUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Object request;
+
+	@Schema
 	public String getRequestString() {
 		return requestString;
 	}
@@ -191,6 +224,35 @@ public class SearchResponse implements Serializable {
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String requestString;
+
+	@Schema
+	@Valid
+	public Object getResponse() {
+		return response;
+	}
+
+	public void setResponse(Object response) {
+		this.response = response;
+	}
+
+	@JsonIgnore
+	public void setResponse(
+		UnsafeSupplier<Object, Exception> responseUnsafeSupplier) {
+
+		try {
+			response = responseUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Object response;
 
 	@Schema
 	public String getResponseString() {
@@ -354,6 +416,16 @@ public class SearchResponse implements Serializable {
 			sb.append(pageSize);
 		}
 
+		if (request != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"request\": ");
+
+			sb.append(String.valueOf(request));
+		}
+
 		if (requestString != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -366,6 +438,16 @@ public class SearchResponse implements Serializable {
 			sb.append(_escape(requestString));
 
 			sb.append("\"");
+		}
+
+		if (response != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"response\": ");
+
+			sb.append(String.valueOf(response));
 		}
 
 		if (responseString != null) {

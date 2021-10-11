@@ -112,6 +112,10 @@ public class KaleoTaskInstanceTokenQuery implements Serializable {
 		return _completed;
 	}
 
+	public boolean isSearchByActiveWorkflowHandlers() {
+		return _searchByActiveWorkflowHandlers;
+	}
+
 	public Boolean isSearchByUserRoles() {
 		return _searchByUserRoles;
 	}
@@ -178,6 +182,12 @@ public class KaleoTaskInstanceTokenQuery implements Serializable {
 		_roleIds = roleIds;
 	}
 
+	public void setSearchByActiveWorkflowHandlers(
+		boolean searchByActiveWorkflowHandlers) {
+
+		_searchByActiveWorkflowHandlers = searchByActiveWorkflowHandlers;
+	}
+
 	public void setSearchByUserRoles(Boolean searchByUserRoles) {
 		_searchByUserRoles = searchByUserRoles;
 	}
@@ -213,6 +223,7 @@ public class KaleoTaskInstanceTokenQuery implements Serializable {
 	private Long[] _kaleoInstanceIds;
 	private OrderByComparator<KaleoTaskInstanceToken> _orderByComparator;
 	private List<Long> _roleIds;
+	private boolean _searchByActiveWorkflowHandlers;
 	private Boolean _searchByUserRoles;
 	private ServiceContext _serviceContext;
 	private int _start = QueryUtil.ALL_POS;

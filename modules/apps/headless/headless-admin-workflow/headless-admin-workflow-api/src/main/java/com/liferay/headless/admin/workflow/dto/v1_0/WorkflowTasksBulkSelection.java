@@ -56,6 +56,11 @@ public class WorkflowTasksBulkSelection implements Serializable {
 			WorkflowTasksBulkSelection.class, json);
 	}
 
+	public static WorkflowTasksBulkSelection unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			WorkflowTasksBulkSelection.class, json);
+	}
+
 	@Schema
 	public Boolean getAndOperator() {
 		return andOperator;

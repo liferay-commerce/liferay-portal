@@ -65,9 +65,28 @@ public class UnusedVariableCheck extends BaseCheck {
 		List<DetailAST> variableCallerDetailASTList =
 			getVariableCallerDetailASTList(detailAST, variableName);
 
-		if (variableCallerDetailASTList.isEmpty()) {
-			log(detailAST, _MSG_UNUSED_VARIABLE, variableName);
+		if (modifiersDetailAST.branchContains(TokenTypes.LITERAL_PRIVATE) &&
+			!variableCallerDetailASTList.isEmpty()) {
+
+			return;
 		}
+
+		for (DetailAST variableCallerDetailAST : variableCallerDetailASTList) {
+			DetailAST previousSiblingDetailAST =
+				variableCallerDetailAST.getPreviousSibling();
+
+			if (previousSiblingDetailAST != null) {
+				return;
+			}
+
+			parentDetailAST = variableCallerDetailAST.getParent();
+
+			if (parentDetailAST.getType() != TokenTypes.ASSIGN) {
+				return;
+			}
+		}
+
+		log(detailAST, _MSG_UNUSED_VARIABLE, variableName);
 	}
 
 	private static final String _MSG_UNUSED_VARIABLE = "variable.unused";

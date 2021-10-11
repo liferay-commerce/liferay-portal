@@ -31,7 +31,6 @@ import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -272,8 +271,7 @@ public class UsersDisplayContext {
 
 		userSearch.setEmptyResultsMessage(
 			LanguageUtil.format(
-				ResourceBundleUtil.getBundle(
-					themeDisplay.getLocale(), getClass()),
+				themeDisplay.getLocale(),
 				"no-user-was-found-that-is-a-direct-member-of-this-x",
 				StringUtil.toLowerCase(
 					GroupUtil.getGroupTypeLabel(

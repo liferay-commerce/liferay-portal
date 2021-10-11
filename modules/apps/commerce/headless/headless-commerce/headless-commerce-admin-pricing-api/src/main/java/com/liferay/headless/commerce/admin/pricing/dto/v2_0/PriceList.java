@@ -63,6 +63,10 @@ public class PriceList implements Serializable {
 		return ObjectMapperUtil.readValue(PriceList.class, json);
 	}
 
+	public static PriceList unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(PriceList.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Map<String, Map<String, String>> getActions() {
@@ -697,6 +701,38 @@ public class PriceList implements Serializable {
 
 	@Schema
 	@Valid
+	public PriceListOrderType[] getPriceListOrderTypes() {
+		return priceListOrderTypes;
+	}
+
+	public void setPriceListOrderTypes(
+		PriceListOrderType[] priceListOrderTypes) {
+
+		this.priceListOrderTypes = priceListOrderTypes;
+	}
+
+	@JsonIgnore
+	public void setPriceListOrderTypes(
+		UnsafeSupplier<PriceListOrderType[], Exception>
+			priceListOrderTypesUnsafeSupplier) {
+
+		try {
+			priceListOrderTypes = priceListOrderTypesUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected PriceListOrderType[] priceListOrderTypes;
+
+	@Schema
+	@Valid
 	public PriceModifier[] getPriceModifiers() {
 		return priceModifiers;
 	}
@@ -1144,6 +1180,26 @@ public class PriceList implements Serializable {
 				sb.append(String.valueOf(priceListDiscounts[i]));
 
 				if ((i + 1) < priceListDiscounts.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
+		if (priceListOrderTypes != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"priceListOrderTypes\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < priceListOrderTypes.length; i++) {
+				sb.append(String.valueOf(priceListOrderTypes[i]));
+
+				if ((i + 1) < priceListOrderTypes.length) {
 					sb.append(", ");
 				}
 			}

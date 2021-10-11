@@ -42,7 +42,6 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Html;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.template.react.renderer.ComponentDescriptor;
 import com.liferay.portal.template.react.renderer.ReactRenderer;
@@ -52,7 +51,6 @@ import java.io.IOException;
 import java.io.Writer;
 
 import java.util.Map;
-import java.util.ResourceBundle;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
@@ -244,10 +242,6 @@ public class ChangeTrackingIndicatorDynamicInclude extends BaseDynamicInclude {
 			"spritemap", themeDisplay.getPathThemeImages() + "/clay/icons.svg"
 		).build();
 
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			themeDisplay.getLocale(),
-			ChangeTrackingIndicatorDynamicInclude.class);
-
 		long ctCollectionId = CTConstants.CT_COLLECTION_ID_PRODUCTION;
 
 		if (ctCollection != null) {
@@ -257,7 +251,8 @@ public class ChangeTrackingIndicatorDynamicInclude extends BaseDynamicInclude {
 		if (ctCollection == null) {
 			data.put("iconClass", "change-tracking-indicator-icon-production");
 			data.put("iconName", "simple-circle");
-			data.put("title", _language.get(resourceBundle, "production"));
+			data.put(
+				"title", _language.get(themeDisplay.getLocale(), "production"));
 		}
 		else {
 			data.put("iconClass", "change-tracking-indicator-icon-publication");
@@ -286,7 +281,7 @@ public class ChangeTrackingIndicatorDynamicInclude extends BaseDynamicInclude {
 						).put(
 							"label",
 							_language.format(
-								resourceBundle, "work-on-x",
+								themeDisplay.getLocale(), "work-on-x",
 								previousCTCollection.getName(), false)
 						).put(
 							"symbolLeft", "radio-button"
@@ -304,7 +299,8 @@ public class ChangeTrackingIndicatorDynamicInclude extends BaseDynamicInclude {
 						"href", checkoutURL.toString()
 					).put(
 						"label",
-						_language.get(resourceBundle, "work-on-production")
+						_language.get(
+							themeDisplay.getLocale(), "work-on-production")
 					).put(
 						"symbolLeft", "simple-circle"
 					));
@@ -336,7 +332,8 @@ public class ChangeTrackingIndicatorDynamicInclude extends BaseDynamicInclude {
 					"href", addURL.toString()
 				).put(
 					"label",
-					_language.get(resourceBundle, "create-new-publication")
+					_language.get(
+						themeDisplay.getLocale(), "create-new-publication")
 				).put(
 					"symbolLeft", "plus"
 				));
@@ -358,7 +355,8 @@ public class ChangeTrackingIndicatorDynamicInclude extends BaseDynamicInclude {
 						"ctCollectionId", ctCollectionId
 					).buildString()
 				).put(
-					"label", _language.get(resourceBundle, "review-changes")
+					"label",
+					_language.get(themeDisplay.getLocale(), "review-changes")
 				).put(
 					"symbolLeft", "list-ul"
 				));

@@ -22,12 +22,14 @@ import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.taglib.security.PermissionsURLTag;
+import com.liferay.template.constants.TemplatePortletKeys;
 import com.liferay.template.model.TemplateEntry;
 import com.liferay.template.web.internal.security.permissions.resource.TemplateEntryPermission;
 
@@ -56,13 +58,19 @@ public class TemplateEntryActionDropdownItemsProvider {
 	}
 
 	public List<DropdownItem> getActionDropdownItems() {
+		Group scopeGroup = _themeDisplay.getScopeGroup();
+
 		return DropdownItemListBuilder.addGroup(
 			dropdownGroupItem -> {
 				dropdownGroupItem.setDropdownItems(
 					DropdownItemListBuilder.add(
-						() -> TemplateEntryPermission.contains(
-							_themeDisplay.getPermissionChecker(),
-							_templateEntry, ActionKeys.UPDATE),
+						() ->
+							(!scopeGroup.hasLocalOrRemoteStagingGroup() ||
+							 !scopeGroup.isStagedPortlet(
+								 TemplatePortletKeys.TEMPLATE)) &&
+							TemplateEntryPermission.contains(
+								_themeDisplay.getPermissionChecker(),
+								_templateEntry, ActionKeys.UPDATE),
 						_getEditTemplateEntryActionUnsafeConsumer()
 					).build());
 				dropdownGroupItem.setSeparator(true);
@@ -80,9 +88,13 @@ public class TemplateEntryActionDropdownItemsProvider {
 			dropdownGroupItem -> {
 				dropdownGroupItem.setDropdownItems(
 					DropdownItemListBuilder.add(
-						() -> TemplateEntryPermission.contains(
-							_themeDisplay.getPermissionChecker(),
-							_templateEntry, ActionKeys.PERMISSIONS),
+						() ->
+							(!scopeGroup.hasLocalOrRemoteStagingGroup() ||
+							 !scopeGroup.isStagedPortlet(
+								 TemplatePortletKeys.TEMPLATE)) &&
+							TemplateEntryPermission.contains(
+								_themeDisplay.getPermissionChecker(),
+								_templateEntry, ActionKeys.PERMISSIONS),
 						_getPermissionsTemplateEntryActionUnsafeConsumer()
 					).build());
 				dropdownGroupItem.setSeparator(true);

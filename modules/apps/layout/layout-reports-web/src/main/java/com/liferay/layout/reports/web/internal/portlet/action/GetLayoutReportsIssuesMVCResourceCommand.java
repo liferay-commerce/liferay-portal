@@ -99,8 +99,7 @@ public class GetLayoutReportsIssuesMVCResourceCommand
 				resourceRequest, resourceResponse,
 				JSONUtil.put(
 					"error",
-					_language.get(
-						resourceBundle, "an-unexpected-error-occurred")));
+					_language.get(locale, "an-unexpected-error-occurred")));
 
 			return;
 		}
@@ -118,8 +117,7 @@ public class GetLayoutReportsIssuesMVCResourceCommand
 					JSONUtil.put(
 						"error",
 						_language.format(
-							resourceBundle, "no-site-exists-with-site-id-x",
-							groupId)));
+							locale, "no-site-exists-with-site-id-x", groupId)));
 
 				return;
 			}

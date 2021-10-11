@@ -54,6 +54,11 @@ public class AssigneeBulkSelection implements Serializable {
 		return ObjectMapperUtil.readValue(AssigneeBulkSelection.class, json);
 	}
 
+	public static AssigneeBulkSelection unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			AssigneeBulkSelection.class, json);
+	}
+
 	@Schema
 	public Long[] getInstanceIds() {
 		return instanceIds;

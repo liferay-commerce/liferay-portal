@@ -54,6 +54,10 @@ public class EmailAddress implements Serializable {
 		return ObjectMapperUtil.readValue(EmailAddress.class, json);
 	}
 
+	public static EmailAddress unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(EmailAddress.class, json);
+	}
+
 	@Schema(description = "The email address.")
 	public String getEmailAddress() {
 		return emailAddress;

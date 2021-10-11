@@ -172,5 +172,6 @@ create table ObjectRelationship (
 	dbTableName VARCHAR(75) null,
 	label STRING null,
 	name VARCHAR(75) null,
+	reverse BOOLEAN,
 	type_ VARCHAR(75) null
 );

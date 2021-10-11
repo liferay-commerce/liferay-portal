@@ -14,30 +14,18 @@
 
 import ClayAlert from '@clayui/alert';
 import ClayButton from '@clayui/button';
-import ClayForm, {ClayInput} from '@clayui/form';
-import ClayLocalizedInput from '@clayui/localized-input';
+import ClayForm from '@clayui/form';
 import ClayModal, {ClayModalProvider, useModal} from '@clayui/modal';
 import React, {useEffect, useState} from 'react';
 
-import RequiredMask from './form/RequiredMask';
+import useForm from '../hooks/useForm';
+import {normalizeLanguageId, toCamelCase} from '../utils/string';
+import Input from './form/Input';
+import InputLocalized from './form/InputLocalized/InputLocalized';
 
-interface IProps extends React.HTMLAttributes<HTMLElement> {
-	apiURL: string;
-}
-
-type TFormState = {
-	key: string;
-	name_i18n: {
-		[key: string]: string;
-	};
-};
-
-type TLocale = {
-	label: string;
-	symbol: string;
-};
-
-const defaultLanguageId: string = Liferay.ThemeDisplay.getDefaultLanguageId();
+const defaultLanguageId: string = normalizeLanguageId(
+	Liferay.ThemeDisplay.getDefaultLanguageId()
+);
 
 const availableLocales: TLocale[] = Object.keys(Liferay.Language.available).map(
 	(language) => {
@@ -50,29 +38,24 @@ const availableLocales: TLocale[] = Object.keys(Liferay.Language.available).map(
 	}
 );
 
-const ModalAddListTypeEntry: React.FC<IProps> = ({apiURL}) => {
-	const [visibleModal, setVisibleModal] = useState<boolean>(false);
-	const [formState, setFormState] = useState<TFormState>({
-		key: '',
-		name_i18n: {
-			[defaultLanguageId.replace('_', '-')]: '',
-		},
-	});
+const ModalAddListTypeEntry: React.FC<IProps> = ({
+	apiURL,
+	observer,
+	onClose,
+}) => {
 	const [error, setError] = useState<string>('');
 	const [selectedLocale, setSelectedLocale] = useState<TLocale>(
 		availableLocales[0]
 	);
+	const initialValues: TInitialValues = {
+		key: undefined,
+		name_i18n: {[defaultLanguageId]: ''},
+	};
 
-	const {observer, onClose} = useModal({
-		onClose: () => setVisibleModal(false),
-	});
-
-	const handleSaveListTypeEntry = async () => {
-		const {key, name_i18n} = formState;
-
+	const onSubmit = async ({key, name_i18n}: TInitialValues) => {
 		const response = await Liferay.Util.fetch(apiURL, {
 			body: JSON.stringify({
-				key,
+				key: key || toCamelCase(name_i18n[selectedLocale.label]),
 				name_i18n,
 			}),
 			headers: new Headers({
@@ -99,97 +82,135 @@ const ModalAddListTypeEntry: React.FC<IProps> = ({apiURL}) => {
 		}
 	};
 
-	const handleOpenListTypeEntryModal = () => setVisibleModal(true);
+	const validate = (values: TInitialValues) => {
+		const errors: any = {};
+
+		if (!values.name_i18n[selectedLocale.label]) {
+			errors.name_i18n = Liferay.Language.get('required');
+		}
+
+		if (!(values.key ?? values.name_i18n[selectedLocale.label])) {
+			errors.key = Liferay.Language.get('required');
+		}
+
+		return errors;
+	};
+
+	const {errors, handleChange, handleSubmit, values} = useForm({
+		initialValues,
+		onSubmit,
+		validate,
+	});
+
+	return (
+		<ClayModal observer={observer}>
+			<ClayForm onSubmit={handleSubmit}>
+				<ClayModal.Header>
+					{Liferay.Language.get('new-item')}
+				</ClayModal.Header>
+				<ClayModal.Body>
+					{error && (
+						<ClayAlert displayType="danger">{error}</ClayAlert>
+					)}
+
+					<InputLocalized
+						error={errors.name_i18n}
+						id="locale"
+						label={Liferay.Language.get('name')}
+						locales={availableLocales}
+						onSelectedLocaleChange={setSelectedLocale}
+						onTranslationsChange={(value) => {
+							handleChange({
+								target: {
+									name: 'name_i18n',
+									value,
+								},
+							} as any);
+						}}
+						required
+						selectedLocale={selectedLocale}
+						translations={values.name_i18n}
+					/>
+
+					<Input
+						error={errors.key || errors.name_i18n}
+						id="listTypeEntryKey"
+						label={Liferay.Language.get('key')}
+						name="key"
+						onChange={handleChange}
+						required
+						value={
+							values.key ??
+							toCamelCase(
+								values.name_i18n[selectedLocale.label] ?? ''
+							)
+						}
+					/>
+				</ClayModal.Body>
+				<ClayModal.Footer
+					last={
+						<ClayButton.Group key={1} spaced>
+							<ClayButton
+								displayType="secondary"
+								onClick={() => onClose()}
+							>
+								{Liferay.Language.get('cancel')}
+							</ClayButton>
+
+							<ClayButton displayType="primary" type="submit">
+								{Liferay.Language.get('save')}
+							</ClayButton>
+						</ClayButton.Group>
+					}
+				/>
+			</ClayForm>
+		</ClayModal>
+	);
+};
+
+type TTranslations = {
+	[key: string]: string;
+};
+
+interface IProps extends React.HTMLAttributes<HTMLElement> {
+	apiURL: string;
+	observer: any;
+	onClose: () => void;
+}
+
+type TLocale = {
+	label: string;
+	symbol: string;
+};
+
+type TInitialValues = {
+	name_i18n: TTranslations;
+	key?: string;
+};
+
+const ModalWithProvider: React.FC<IProps> = ({apiURL}) => {
+	const [visibleModal, setVisibleModal] = useState<boolean>(false);
+	const {observer, onClose} = useModal({
+		onClose: () => setVisibleModal(false),
+	});
 
 	useEffect(() => {
-		Liferay.on('addListTypeEntry', handleOpenListTypeEntryModal);
+		Liferay.on('addListTypeEntry', () => setVisibleModal(true));
 
 		return () => {
-			Liferay.detach('addListTypeEntry', handleOpenListTypeEntryModal);
+			Liferay.detach('addListTypeEntry');
 		};
 	}, []);
 
 	return (
-		<>
-			{visibleModal && (
-				<ClayModal observer={observer}>
-					<ClayModal.Header>
-						{Liferay.Language.get('new-item')}
-					</ClayModal.Header>
-					<ClayModal.Body>
-						{error && (
-							<ClayAlert displayType="danger">{error}</ClayAlert>
-						)}
-
-						<ClayLocalizedInput
-							id="locale"
-							label={Liferay.Language.get('name')}
-							locales={availableLocales}
-							onSelectedLocaleChange={setSelectedLocale}
-							onTranslationsChange={(value) => {
-								setFormState({
-									...formState,
-									name_i18n: value,
-								});
-
-								error && setError('');
-							}}
-							required
-							selectedLocale={selectedLocale}
-							translations={formState.name_i18n}
-						/>
-
-						<ClayForm.Group>
-							<label htmlFor="listTypeEntryKey">
-								{Liferay.Language.get('key')}
-
-								<RequiredMask />
-							</label>
-
-							<ClayInput
-								id="listTypeEntryKey"
-								onChange={({target: {value}}) => {
-									setFormState({
-										...formState,
-										key: value,
-									});
-
-									error && setError('');
-								}}
-								type="text"
-								value={formState.key}
-							/>
-						</ClayForm.Group>
-					</ClayModal.Body>
-					<ClayModal.Footer
-						last={
-							<ClayButton.Group key={1} spaced>
-								<ClayButton
-									displayType="secondary"
-									onClick={() => onClose()}
-								>
-									{Liferay.Language.get('cancel')}
-								</ClayButton>
-
-								<ClayButton
-									displayType="primary"
-									onClick={() => handleSaveListTypeEntry()}
-								>
-									{Liferay.Language.get('save')}
-								</ClayButton>
-							</ClayButton.Group>
-						}
-					/>
-				</ClayModal>
-			)}
-		</>
-	);
-};
-
-const ModalWithProvider: React.FC<IProps> = ({apiURL}) => {
-	return (
 		<ClayModalProvider>
-			<ModalAddListTypeEntry apiURL={apiURL} />
+			{visibleModal && (
+				<ModalAddListTypeEntry
+					apiURL={apiURL}
+					observer={observer}
+					onClose={onClose}
+				/>
+			)}
 		</ClayModalProvider>
 	);
 };

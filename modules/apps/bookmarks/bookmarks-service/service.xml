@@ -159,6 +159,10 @@
 			<finder-column name="parentFolderId" />
 			<finder-column comparator="!=" name="status" />
 		</finder>
+
+		<!-- References -->
+
+		<reference entity="AssetEntry" package-path="com.liferay.portlet.asset" />
 	</entity>
 	<exceptions>
 		<exception>EntryURL</exception>

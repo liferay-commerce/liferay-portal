@@ -56,6 +56,10 @@ public class FormPageContext implements Serializable {
 		return ObjectMapperUtil.readValue(FormPageContext.class, json);
 	}
 
+	public static FormPageContext unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(FormPageContext.class, json);
+	}
+
 	@Schema
 	public Boolean getEnabled() {
 		return enabled;

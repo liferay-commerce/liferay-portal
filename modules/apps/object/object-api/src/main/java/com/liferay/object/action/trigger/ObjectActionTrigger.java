@@ -19,20 +19,14 @@ package com.liferay.object.action.trigger;
  */
 public class ObjectActionTrigger {
 
-	public ObjectActionTrigger(String key, String type) {
+	public ObjectActionTrigger(String key) {
 		_key = key;
-		_type = type;
 	}
 
 	public String getKey() {
 		return _key;
 	}
 
-	public String getType() {
-		return _type;
-	}
-
 	private final String _key;
-	private final String _type;
 
 }

@@ -1,19 +1,5 @@
 definition {
 
-	macro addBreakdown {
-		Click(locator1 = "ACIndividualsDashboard#ADD_BREAKDOWN_BUTTON");
-
-		ACIndividualsDashboard.nameBreakdown(breakdownName = "${breakdownName}");
-
-		ACIndividualsDashboard.selectAttribute(
-			attribute = "${attribute}",
-			fieldLabel = "Attribute");
-
-		ACIndividualsDashboard.saveBreakdown();
-
-		ACUtils.waitForLoading();
-	}
-
 	macro assertCustomRangeNotApplied {
 		var key_timeRange = "${timeRange}";
 
@@ -153,26 +139,6 @@ definition {
 			pageName = "${pageName}");
 	}
 
-	macro nameBreakdown {
-		Type(
-			locator1 = "ACIndividualsDashboard#BREAKDOWN_NAME_FIELD",
-			value1 = "${breakdownName}");
-	}
-
-	macro saveBreakdown {
-		Click(locator1 = "ACIndividualsDashboard#SAVE_BREAKDOWN_BUTTON");
-	}
-
-	macro selectAttribute {
-		Click(
-			fieldLabel = "${fieldLabel}",
-			locator1 = "ACIndividualsDashboard#BREAKDOWN_SELECT_INPUT_FIELD");
-
-		Click(
-			locator1 = "ACIndividualsDashboard#DROPDOWN_MENU_ITEM",
-			menuItem = "${attribute}");
-	}
-
 	macro selectDataOnIndividualsActivitiesChart {
 		if (!(isSet(index))) {
 			var index = "1";
@@ -250,6 +216,7 @@ definition {
 		}
 	}
 
+	@summary = "Assert the Individual Activity Chart displays"
 	macro viewRechartsBarOnIndividualsActivitiesChart {
 		if (!(isSet(index))) {
 			var index = "1";
@@ -261,6 +228,10 @@ definition {
 			ACTimeFilter.clickTimeFilterButton();
 
 			ACTimeFilter.setLast24Hours();
+
+			// The pause is necessary for the loop to capture the element.
+
+			Pause(locator1 = "2000");
 		}
 
 		AssertVisible(

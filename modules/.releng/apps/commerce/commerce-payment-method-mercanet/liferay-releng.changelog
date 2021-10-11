@@ -42,3 +42,8 @@ f19b0dc07bafe3fab1c1a2a9ea8b25d0b579bb8b^..541604b4068547efe26fc6cb6d4aaf70b36b0
 # Bundle Version 4.0.5
 #
 541604b4068547efe26fc6cb6d4aaf70b36b00c7^..6f6c38926e18ab02d4ebb4f171a67bedfca4da01=COMMERCE-6577
+
+#
+# Bundle Version 4.0.8
+#
+6f6c38926e18ab02d4ebb4f171a67bedfca4da01^..df1d9e1799a4375f9250c3c81f9a0db44aff30b9=LPS-105380 LPS-129172 LPS-135504

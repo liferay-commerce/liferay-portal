@@ -60,6 +60,10 @@ public class ContentStructure implements Serializable {
 		return ObjectMapperUtil.readValue(ContentStructure.class, json);
 	}
 
+	public static ContentStructure unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(ContentStructure.class, json);
+	}
+
 	@Schema(
 		description = "The key of the asset library to which the content structure is scoped."
 	)

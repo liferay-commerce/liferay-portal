@@ -56,6 +56,10 @@ public class ColumnViewport implements Serializable {
 		return ObjectMapperUtil.readValue(ColumnViewport.class, json);
 	}
 
+	public static ColumnViewport unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(ColumnViewport.class, json);
+	}
+
 	@Schema
 	@Valid
 	public ColumnViewportDefinition getColumnViewportDefinition() {

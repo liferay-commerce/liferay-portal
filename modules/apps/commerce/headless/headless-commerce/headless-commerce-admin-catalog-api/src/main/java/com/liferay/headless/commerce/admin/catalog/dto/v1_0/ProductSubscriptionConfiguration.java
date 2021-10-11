@@ -56,6 +56,11 @@ public class ProductSubscriptionConfiguration implements Serializable {
 			ProductSubscriptionConfiguration.class, json);
 	}
 
+	public static ProductSubscriptionConfiguration unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			ProductSubscriptionConfiguration.class, json);
+	}
+
 	@Schema
 	public Boolean getEnable() {
 		return enable;

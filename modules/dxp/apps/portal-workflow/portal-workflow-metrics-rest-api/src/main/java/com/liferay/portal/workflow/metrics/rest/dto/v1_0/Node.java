@@ -55,6 +55,10 @@ public class Node implements Serializable {
 		return ObjectMapperUtil.readValue(Node.class, json);
 	}
 
+	public static Node unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Node.class, json);
+	}
+
 	@Schema
 	public Date getDateCreated() {
 		return dateCreated;

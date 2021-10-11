@@ -58,6 +58,11 @@ public class DataDefinitionField implements Serializable {
 		return ObjectMapperUtil.readValue(DataDefinitionField.class, json);
 	}
 
+	public static DataDefinitionField unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			DataDefinitionField.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Map<String, Object> getCustomProperties() {

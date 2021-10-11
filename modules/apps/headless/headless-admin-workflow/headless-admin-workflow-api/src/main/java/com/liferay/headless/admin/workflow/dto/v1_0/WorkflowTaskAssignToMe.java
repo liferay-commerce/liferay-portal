@@ -58,6 +58,11 @@ public class WorkflowTaskAssignToMe implements Serializable {
 		return ObjectMapperUtil.readValue(WorkflowTaskAssignToMe.class, json);
 	}
 
+	public static WorkflowTaskAssignToMe unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			WorkflowTaskAssignToMe.class, json);
+	}
+
 	@Schema(
 		description = "An optional comment to add when accepting the workflow task."
 	)

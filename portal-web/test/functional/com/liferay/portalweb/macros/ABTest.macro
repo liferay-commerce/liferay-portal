@@ -116,6 +116,18 @@ definition {
 		Click(locator1 = "ABTest#EDIT_VARIANT_BUTTON");
 	}
 
+	macro openABTestInAC {
+		Click(locator1 = "ABTest#VIEW_DATA_ANALYTICS_CLOUD_BUTTON");
+
+		SelectWindow(locator1 = "name=undefined");
+
+		if (IsElementPresent(locator1 = "AnalyticsCloudConnection#ANALYTICS_CLOUD_USER_LOGIN_FIELD")) {
+			AnalyticsCloud.loginAnalyticsCloud(
+				emailAddress = "test@liferay.com",
+				password = "test");
+		}
+	}
+
 	macro runTest {
 		Click(locator1 = "ABTest#REVIEW_AND_RUN_TEST_BUTTON");
 
@@ -140,6 +152,12 @@ definition {
 			value1 = "Target");
 	}
 
+	macro statusABTestInAC {
+		AssertTextEquals(
+			locator1 = "ABTest#LABEL_ITEM_STATUS",
+			value1 = "${status}");
+	}
+
 	macro terminateTest {
 		if (IsElementPresent(locator1 = "ABTest#TERMINATE_TEST_BUTTON")) {
 			ClickNoError(locator1 = "ABTest#TERMINATE_TEST_BUTTON");
@@ -153,6 +171,20 @@ definition {
 		AssertConfirm.assertConfirmationNoError(value1 = "Are you sure you want to terminate this test?");
 
 		Alert.viewSuccessMessage();
+	}
+
+	macro viewInfoItems {
+		var index = "0";
+
+		for (var values : list "${values}") {
+			var index = ${index} + 1;
+
+			AssertElementPresent(
+				key_index = "${index}",
+				key_value = "${values}",
+				locator1 = "ABTest#VIEW_INFO_ITEMS",
+				value1 = "${values}");
+		}
 	}
 
 	macro viewVariantName {

@@ -1,15 +1,27 @@
+[#assign
+	navUserClass = ""
+	privateUserFriendlyURL = themeDisplay.getPathFriendlyURLPrivateUser() + "/" + themeDisplay.getUser().getFirstName()
+	publicFriendlyURL = themeDisplay.getPathFriendlyURLPublic() + themeDisplay.getSiteGroup().getFriendlyURL()
+	publicSiteNavbarClass =""
+	userName = themeDisplay.getUser().getFirstName()
+/]
+
+[#if !themeDisplay.isSignedIn()]
+	[#assign publicSiteNavbarClass = "logged-in" /]
+[/#if]
+
 <div class="sign-in vh-100">
 	<div class="form-box">
-		<a href="http://localhost:8080/web/bootcamp">
+		<a href="${publicFriendlyURL}">
 			<img alt="" class="sign-in-logo" src="[resources:bootcamp_logo.svg]" />
 		</a>
 
 		<form class="sign-in-form">
-			<p class="sign-in-text mb-5 h3 font-weight-normal">
-				Organically grow the holistic world view of disruptive innovation via workplace diversity.
+			<p class="sign-in-text mb-5 h2 font-weight-normal">
+				Organically grow a disruptive innovation and workplace.
 			</p>
 
-			<div class="form-group mb-3">
+			<div class="form-group mb-2">
 				<label class="form-label" for="exampleInputEmail1">
 					Email address
 				</label>
@@ -31,7 +43,7 @@
 				</label>
 			</div>
 
-			<button class="btn btn-lg btn-primary" type="submit">
+			<button class="bootcamp-btn btn btn-lg btn-primary" type="submit">
 				Sign In<span class="link-arrow ml-3">&#10230;</span>
 			</button>
 

@@ -60,6 +60,10 @@ public class Shipment implements Serializable {
 		return ObjectMapperUtil.readValue(Shipment.class, json);
 	}
 
+	public static Shipment unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Shipment.class, json);
+	}
+
 	@DecimalMin("0")
 	@Schema
 	public Long getAccountId() {

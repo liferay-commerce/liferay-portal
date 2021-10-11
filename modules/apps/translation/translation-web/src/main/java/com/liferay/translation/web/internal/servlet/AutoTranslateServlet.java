@@ -26,7 +26,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.translation.exception.TranslatorException;
 import com.liferay.translation.translator.JSONTranslatorPacket;
@@ -90,8 +89,7 @@ public class AutoTranslateServlet extends HttpServlet {
 			_writeErrorJSON(
 				httpServletResponse,
 				_language.get(
-					ResourceBundleUtil.getBundle(
-						_portal.getLocale(httpServletRequest), getClass()),
+					_portal.getLocale(httpServletRequest),
 					"there-is-a-problem-with-the-translation-service.-please-" +
 						"contact-your-administrator"));
 		}

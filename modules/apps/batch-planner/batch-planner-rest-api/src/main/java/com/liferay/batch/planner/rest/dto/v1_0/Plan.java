@@ -53,6 +53,10 @@ public class Plan implements Serializable {
 		return ObjectMapperUtil.readValue(Plan.class, json);
 	}
 
+	public static Plan unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Plan.class, json);
+	}
+
 	@Schema
 	public Boolean getActive() {
 		return active;

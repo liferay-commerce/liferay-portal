@@ -22,7 +22,6 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Release;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import java.io.IOException;
@@ -49,8 +48,7 @@ public abstract class BaseAnalyticsConfigurationScreen
 
 	@Override
 	public String getName(Locale locale) {
-		return LanguageUtil.get(
-			ResourceBundleUtil.getBundle(locale, getClass()), getKey());
+		return LanguageUtil.get(locale, getKey());
 	}
 
 	@Override

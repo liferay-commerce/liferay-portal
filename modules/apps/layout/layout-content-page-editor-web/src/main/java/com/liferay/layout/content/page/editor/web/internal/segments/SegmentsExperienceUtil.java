@@ -46,7 +46,6 @@ import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -201,10 +200,7 @@ public class SegmentsExperienceUtil {
 
 		return HashMapBuilder.<String, Object>put(
 			"label",
-			LanguageUtil.get(
-				ResourceBundleUtil.getBundle(
-					themeDisplay.getLocale(), SegmentsExperienceUtil.class),
-				status.getLabel())
+			LanguageUtil.get(themeDisplay.getLocale(), status.getLabel())
 		).put(
 			"value", status.getValue()
 		).build();

@@ -29,7 +29,6 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.util.PropsValues;
 import com.liferay.portlet.asset.util.AssetVocabularySettingsHelper;
@@ -85,10 +84,7 @@ public class AddDefaultAssetVocabulariesPortalInstanceLifecycleListener
 				LanguageUtil.getCompanyAvailableLocales(
 					company.getCompanyId())) {
 
-			titleMap.put(
-				locale,
-				LanguageUtil.get(
-					ResourceBundleUtil.getBundle(locale, getClass()), name));
+			titleMap.put(locale, LanguageUtil.get(locale, name));
 		}
 
 		AssetVocabularySettingsHelper assetVocabularySettingsHelper =

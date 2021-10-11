@@ -42,6 +42,7 @@ renderResponse.setTitle(LanguageUtil.format(request, "edit-x", objectDefinition.
 
 	<liferay-frontend:edit-form-body>
 		<liferay-ui:error exception="<%= DuplicateObjectDefinitionException.class %>" />
+		<liferay-ui:error exception="<%= ObjectDefinitionActiveException.class %>" />
 		<liferay-ui:error exception="<%= ObjectDefinitionLabelException.class %>" />
 		<liferay-ui:error exception="<%= ObjectDefinitionNameException.class %>" />
 		<liferay-ui:error exception="<%= ObjectDefinitionPluralLabelException.class %>" />
@@ -77,7 +78,7 @@ renderResponse.setTitle(LanguageUtil.format(request, "edit-x", objectDefinition.
 				</clay:row>
 
 				<aui:field-wrapper cssClass="form-group lfr-input-text-container">
-					<aui:input disabled="<%= objectDefinition.isSystem() %>" label="" labelOff="inactive" labelOn="active" name="active" type="toggle-switch" value="<%= objectDefinition.isActive() %>" />
+					<aui:input disabled="<%= !objectDefinition.isApproved() || objectDefinition.isSystem() %>" label="" labelOff="inactive" labelOn="active" name="active" type="toggle-switch" value="<%= objectDefinition.isActive() %>" />
 				</aui:field-wrapper>
 			</clay:sheet-section>
 

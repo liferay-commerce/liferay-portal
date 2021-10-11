@@ -1295,10 +1295,11 @@ public class AssetEntryLocalServiceImpl extends AssetEntryLocalServiceBaseImpl {
 		long[] classNameIds = new long[rendererFactories.size()];
 
 		for (int i = 0; i < rendererFactories.size(); i++) {
-			AssetRendererFactory<?> rendererFactory = rendererFactories.get(i);
+			AssetRendererFactory<?> assetRendererFactory =
+				rendererFactories.get(i);
 
 			classNameIds[i] = _classNameLocalService.getClassNameId(
-				rendererFactory.getClassName());
+				assetRendererFactory.getClassName());
 		}
 
 		return classNameIds;

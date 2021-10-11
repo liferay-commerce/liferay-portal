@@ -1,0 +1,7 @@
+definition {
+
+	macro openContentPerformance {
+		Click(locator1 = "ContentPerformance#CONTENT_PERFORMANCE_BUTTON");
+	}
+
+}

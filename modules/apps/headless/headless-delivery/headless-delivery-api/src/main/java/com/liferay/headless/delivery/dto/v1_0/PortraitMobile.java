@@ -51,6 +51,10 @@ public class PortraitMobile implements Serializable {
 		return ObjectMapperUtil.readValue(PortraitMobile.class, json);
 	}
 
+	public static PortraitMobile unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(PortraitMobile.class, json);
+	}
+
 	@Schema
 	public Integer getModulesPerRow() {
 		return modulesPerRow;

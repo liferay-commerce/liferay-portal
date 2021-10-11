@@ -46,7 +46,6 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
@@ -56,7 +55,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-import java.util.ResourceBundle;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -317,11 +315,8 @@ public class DepotEntryLocalServiceImpl extends DepotEntryLocalServiceBaseImpl {
 			return Optional.empty();
 		}
 
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			defaultLocale, DepotEntryLocalServiceImpl.class);
-
 		return Optional.of(
-			_language.get(resourceBundle, "unnamed-asset-library"));
+			_language.get(defaultLocale, "unnamed-asset-library"));
 	}
 
 	private boolean _isStaged(DepotEntry depotEntry) throws PortalException {

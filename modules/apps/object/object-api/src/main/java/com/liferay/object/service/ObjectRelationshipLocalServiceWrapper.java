@@ -151,6 +151,16 @@ public class ObjectRelationshipLocalServiceWrapper
 				objectRelationshipId, primaryKey1);
 	}
 
+	@Override
+	public void deleteObjectRelationshipMappingTableValues(
+			long objectRelationshipId, long primaryKey1, long primaryKey2)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_objectRelationshipLocalService.
+			deleteObjectRelationshipMappingTableValues(
+				objectRelationshipId, primaryKey1, primaryKey2);
+	}
+
 	/**
 	 * @throws PortalException
 	 */
@@ -295,6 +305,16 @@ public class ObjectRelationshipLocalServiceWrapper
 
 		return _objectRelationshipLocalService.
 			fetchObjectRelationshipByUuidAndCompanyId(uuid, companyId);
+	}
+
+	@Override
+	public com.liferay.object.model.ObjectRelationship
+		fetchReverseObjectRelationship(
+			com.liferay.object.model.ObjectRelationship objectRelationship,
+			boolean reverse) {
+
+		return _objectRelationshipLocalService.fetchReverseObjectRelationship(
+			objectRelationship, reverse);
 	}
 
 	@Override

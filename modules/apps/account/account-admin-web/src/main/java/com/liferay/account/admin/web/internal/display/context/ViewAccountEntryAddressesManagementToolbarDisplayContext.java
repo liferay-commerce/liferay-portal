@@ -21,6 +21,8 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemList;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItem;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItemListBuilder;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
@@ -33,6 +35,7 @@ import com.liferay.portal.kernel.portlet.PortletURLUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.portlet.PortletURL;
 
@@ -84,6 +87,8 @@ public class ViewAccountEntryAddressesManagementToolbarDisplayContext
 			getPortletURL()
 		).setKeywords(
 			StringPool.BLANK
+		).setParameter(
+			"type", (String)null
 		).buildString();
 	}
 
@@ -104,6 +109,27 @@ public class ViewAccountEntryAddressesManagementToolbarDisplayContext
 					ParamUtil.getLong(liferayPortletRequest, "accountEntryId"));
 				dropdownItem.setLabel(
 					LanguageUtil.get(httpServletRequest, "add-address"));
+			}
+		).build();
+	}
+
+	@Override
+	public List<LabelItem> getFilterLabelItems() {
+		return LabelItemListBuilder.add(
+			() -> !Objects.equals(getNavigation(), "all"),
+			labelItem -> {
+				labelItem.putData(
+					"removeLabelURL",
+					PortletURLBuilder.create(
+						getPortletURL()
+					).setParameter(
+						"type", (String)null
+					).buildString());
+				labelItem.setDismissible(true);
+				labelItem.setLabel(
+					String.format(
+						"%s: %s", LanguageUtil.get(httpServletRequest, "type"),
+						LanguageUtil.get(httpServletRequest, getNavigation())));
 			}
 		).build();
 	}

@@ -20,13 +20,13 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TextFormatter;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.source.formatter.checks.util.SourceUtil;
 import com.liferay.source.formatter.util.FileUtil;
 
 import java.io.File;
 import java.io.IOException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -50,7 +50,11 @@ public class XMLServiceReferenceCheck extends BaseFileCheck {
 			String fileName, String absolutePath, String content)
 		throws DocumentException, IOException {
 
-		if (!fileName.endsWith("/service.xml")) {
+		if (!fileName.endsWith("/service.xml") ||
+			absolutePath.contains("/gradleTest/") ||
+			absolutePath.contains("/samples/") ||
+			absolutePath.contains("-test-service")) {
+
 			return content;
 		}
 
@@ -67,14 +71,17 @@ public class XMLServiceReferenceCheck extends BaseFileCheck {
 		for (Element entityElement :
 				(List<Element>)rootElement.elements("entity")) {
 
+			if (GetterUtil.getBoolean(
+					entityElement.attributeValue("deprecated"))) {
+
+				continue;
+			}
+
 			String entityName = entityElement.attributeValue("name");
 			boolean localService = GetterUtil.getBoolean(
 				entityElement.attributeValue("local-service"));
 			boolean remoteService = GetterUtil.getBoolean(
 				entityElement.attributeValue("remote-service"));
-
-			List<String> requiredEntityNames = _getRequiredEntityNames(
-				entityElement);
 
 			for (Element referenceElement :
 					(List<Element>)entityElement.elements("reference")) {
@@ -82,13 +89,24 @@ public class XMLServiceReferenceCheck extends BaseFileCheck {
 				String referenceEntityName = referenceElement.attributeValue(
 					"entity");
 
-				if (requiredEntityNames.contains(referenceEntityName)) {
+				if (referenceEntityName.equals("AssetEntry") &&
+					_isUADEnabled(entityElement)) {
+
 					continue;
 				}
 
-				if (!_isRequiredReference(
-						entityName, referenceEntityName, localService,
-						remoteService, dirName, packageName)) {
+				if (isAttributeValue(_AVOID_REFERENCES_KEY, absolutePath)) {
+					addMessage(
+						fileName,
+						StringBundler.concat(
+							"Avoid using reference '", referenceEntityName,
+							"' for Entity '", entityName,
+							"', use private variables in *ServiceImpl ",
+							"instead"));
+				}
+				else if (!_isRequiredReference(
+							entityName, referenceEntityName, localService,
+							remoteService, dirName, packageName)) {
 
 					addMessage(
 						fileName,
@@ -140,22 +158,6 @@ public class XMLServiceReferenceCheck extends BaseFileCheck {
 		return null;
 	}
 
-	private List<String> _getRequiredEntityNames(Element entityElement) {
-		List<String> requiredEntityNames = new ArrayList<>();
-
-		for (Element columnElement :
-				(List<Element>)entityElement.elements("column")) {
-
-			String entityName = columnElement.attributeValue("entity");
-
-			if (entityName != null) {
-				requiredEntityNames.add(entityName);
-			}
-		}
-
-		return requiredEntityNames;
-	}
-
 	private boolean _isRequiredReference(
 			String entityName, String referenceEntityName, boolean localService,
 			boolean remoteService, String dirName, String packageName)
@@ -205,5 +207,23 @@ public class XMLServiceReferenceCheck extends BaseFileCheck {
 
 		return false;
 	}
+
+	private boolean _isUADEnabled(Element entityElement) {
+		for (Element columnElement :
+				(List<Element>)entityElement.elements("column")) {
+
+			if (Validator.isNotNull(
+					columnElement.attributeValue("uad-anonymize-field-name")) ||
+				GetterUtil.getBoolean(
+					columnElement.attributeValue("uad-nonanonymizable"))) {
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private static final String _AVOID_REFERENCES_KEY = "avoidReferences";
 
 }

@@ -51,6 +51,10 @@ public class Facet implements Serializable {
 		return ObjectMapperUtil.readValue(Facet.class, json);
 	}
 
+	public static Facet unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Facet.class, json);
+	}
+
 	@Schema
 	public Boolean getEnabled() {
 		return enabled;

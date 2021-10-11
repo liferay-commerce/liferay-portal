@@ -65,7 +65,7 @@ const Field = ({
 			setValid(initialValid);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [pageValidationFailed]);
+	}, [initialValid, pageValidationFailed]);
 
 	return (
 		<FieldBase
@@ -153,6 +153,14 @@ const Main = ({
 	const parsedValue = parse(value, {});
 
 	useEffect(() => {
+		window.gm_authFailure = function () {
+			Liferay.Util.openToast({
+				message: Liferay.Language.get('communication-with-the-api-provider-failed'),
+				title: Liferay.Language.get('error'),
+				type: 'danger',
+			});
+		};
+
 		if (settingsContext) {
 			const options = SettingsContext.getSettingsContextProperty(
 				settingsContext,

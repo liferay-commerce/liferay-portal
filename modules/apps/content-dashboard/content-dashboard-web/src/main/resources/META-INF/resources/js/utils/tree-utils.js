@@ -83,8 +83,8 @@ export const handleNodeName = ({childrenPropertyKey, node}) => {
 };
 
 /**
- * Filters the array of nodes using a string
- * Each node also can have children to be filtered
+ * Handles the node filtering
+ * Needed due to the recursivity of handleNodeFiltering function and the need of expanding first node
  * @param {object} object
  * @param {array} object.nodes - Array of nodes.
  * @param {string} object.query - string used in search input.
@@ -96,19 +96,47 @@ export const filterNodes = ({
 	nodes,
 	query,
 }) => {
+	const filteredNodes = handleNodeFiltering({
+		childrenPropertyKey,
+		namePropertyKey,
+		nodes,
+		query,
+	});
+
+	if (!filteredNodes.length) {
+		return [];
+	}
+
+	filteredNodes[0].expanded = true;
+
+	return filteredNodes;
+};
+
+/**
+ * Filters the array of nodes using a string
+ * Each node also can have children to be filtered
+ * @param {object} object
+ * @param {array} object.nodes - Array of nodes.
+ * @param {string} object.query - string used in search input.
+ * @return {array} A new array of nodes.
+ */
+const handleNodeFiltering = ({
+	childrenPropertyKey,
+	namePropertyKey,
+	nodes,
+	query,
+}) => {
 	const nodeHasChildren = (node) => Array.isArray(node) && node.length > 0;
 
 	return nodes.filter((node) => {
 		if (nodeHasChildren(node.children)) {
 			node.children = [
-				...filterNodes({
+				...handleNodeFiltering({
 					childrenPropertyKey,
 					nodes: node.children,
 					query,
 				}),
 			];
-
-			node.expanded = !!node.children.length;
 
 			node.name = handleNodeName({
 				childrenPropertyKey,

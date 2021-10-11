@@ -53,6 +53,11 @@ public class ProductGroupProduct implements Serializable {
 		return ObjectMapperUtil.readValue(ProductGroupProduct.class, json);
 	}
 
+	public static ProductGroupProduct unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			ProductGroupProduct.class, json);
+	}
+
 	@DecimalMin("0")
 	@Schema
 	public Long getId() {

@@ -55,6 +55,10 @@ public class SiteBrief implements Serializable {
 		return ObjectMapperUtil.readValue(SiteBrief.class, json);
 	}
 
+	public static SiteBrief unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(SiteBrief.class, json);
+	}
+
 	@Schema(description = "The site's ID.")
 	public Long getId() {
 		return id;

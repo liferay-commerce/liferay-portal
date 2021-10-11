@@ -55,6 +55,10 @@ public class ClassPKReference implements Serializable {
 		return ObjectMapperUtil.readValue(ClassPKReference.class, json);
 	}
 
+	public static ClassPKReference unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(ClassPKReference.class, json);
+	}
+
 	@Schema
 	public String getClassName() {
 		return className;

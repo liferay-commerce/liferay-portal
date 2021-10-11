@@ -6,7 +6,6 @@ import {Steps} from '~/apps/get-a-quote/components/containers/Steps';
 import {useStepWizard} from '~/apps/get-a-quote/hooks/useStepWizard';
 import {useTriggerContext} from '~/apps/get-a-quote/hooks/useTriggerContext';
 import {AVAILABLE_STEPS} from '~/apps/get-a-quote/utils/constants';
-import Style from '~/shared/styles/provider.scss';
 import {Providers} from '../Providers';
 
 const QuoteApp = () => {
@@ -37,12 +36,15 @@ const QuoteApp = () => {
 	return (
 		<div className="form-area">
 			<Steps />
+
 			<div>
 				<h2 className="title title-area">
 					<FormTitle />
 				</h2>
+
 				<Forms form={form} />
 			</div>
+
 			<div className="info-area"></div>
 		</div>
 	);
@@ -50,7 +52,6 @@ const QuoteApp = () => {
 
 const GetAQuote = () => (
 	<Providers>
-		<style>{Style}</style>
 		<QuoteApp />
 	</Providers>
 );

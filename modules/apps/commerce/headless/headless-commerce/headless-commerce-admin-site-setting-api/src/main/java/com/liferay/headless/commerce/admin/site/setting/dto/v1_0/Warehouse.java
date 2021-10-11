@@ -57,6 +57,10 @@ public class Warehouse implements Serializable {
 		return ObjectMapperUtil.readValue(Warehouse.class, json);
 	}
 
+	public static Warehouse unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Warehouse.class, json);
+	}
+
 	@Schema
 	public Boolean getActive() {
 		return active;

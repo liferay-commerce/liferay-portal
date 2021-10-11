@@ -58,6 +58,10 @@ public class BlogPostingImage implements Serializable {
 		return ObjectMapperUtil.readValue(BlogPostingImage.class, json);
 	}
 
+	public static BlogPostingImage unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(BlogPostingImage.class, json);
+	}
+
 	@Schema(description = "The image's relative URL.")
 	public String getContentUrl() {
 		return contentUrl;

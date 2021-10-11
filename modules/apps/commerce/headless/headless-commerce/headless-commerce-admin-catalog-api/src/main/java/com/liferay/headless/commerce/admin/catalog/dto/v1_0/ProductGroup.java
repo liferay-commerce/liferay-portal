@@ -54,6 +54,10 @@ public class ProductGroup implements Serializable {
 		return ObjectMapperUtil.readValue(ProductGroup.class, json);
 	}
 
+	public static ProductGroup unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(ProductGroup.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Map<String, ?> getCustomFields() {

@@ -56,6 +56,11 @@ public class PageDropZoneDefinition implements Serializable {
 		return ObjectMapperUtil.readValue(PageDropZoneDefinition.class, json);
 	}
 
+	public static PageDropZoneDefinition unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			PageDropZoneDefinition.class, json);
+	}
+
 	@Schema(
 		description = "The page drop zone's allowed or unallowed fragments."
 	)

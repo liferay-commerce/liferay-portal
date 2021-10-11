@@ -56,6 +56,10 @@ public class Site implements Serializable {
 		return ObjectMapperUtil.readValue(Site.class, json);
 	}
 
+	public static Site unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Site.class, json);
+	}
+
 	@Schema
 	public String[] getAvailableLanguages() {
 		return availableLanguages;

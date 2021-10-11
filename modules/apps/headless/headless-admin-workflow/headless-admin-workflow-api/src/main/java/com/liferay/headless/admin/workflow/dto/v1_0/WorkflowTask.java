@@ -60,6 +60,10 @@ public class WorkflowTask implements Serializable {
 		return ObjectMapperUtil.readValue(WorkflowTask.class, json);
 	}
 
+	public static WorkflowTask unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(WorkflowTask.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Creator getAssigneePerson() {

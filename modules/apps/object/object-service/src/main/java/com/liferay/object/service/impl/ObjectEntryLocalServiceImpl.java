@@ -315,12 +315,12 @@ public class ObjectEntryLocalServiceImpl
 
 	@Override
 	public List<ObjectEntry> getManyToManyRelatedObjectEntries(
-			long groupId, long objectRelationshipId, long primaryKey, int start,
-			int end)
+			long groupId, long objectRelationshipId, long primaryKey,
+			boolean reverse, int start, int end)
 		throws PortalException {
 
 		DSLQuery dslQuery = _getManyToManyRelatedObjectEntriesGroupByStep(
-			groupId, objectRelationshipId, primaryKey,
+			groupId, objectRelationshipId, primaryKey, reverse,
 			DSLQueryFactoryUtil.selectDistinct(ObjectEntryTable.INSTANCE)
 		).limit(
 			start, end
@@ -335,11 +335,12 @@ public class ObjectEntryLocalServiceImpl
 
 	@Override
 	public int getManyToManyRelatedObjectEntriesCount(
-			long groupId, long objectRelationshipId, long primaryKey)
+			long groupId, long objectRelationshipId, long primaryKey,
+			boolean reverse)
 		throws PortalException {
 
 		DSLQuery dslQuery = _getManyToManyRelatedObjectEntriesGroupByStep(
-			groupId, objectRelationshipId, primaryKey,
+			groupId, objectRelationshipId, primaryKey, reverse,
 			DSLQueryFactoryUtil.countDistinct(
 				ObjectEntryTable.INSTANCE.objectEntryId));
 
@@ -783,26 +784,30 @@ public class ObjectEntryLocalServiceImpl
 
 	private GroupByStep _getManyToManyRelatedObjectEntriesGroupByStep(
 			long groupId, long objectRelationshipId, long primaryKey,
-			FromStep fromStep)
+			boolean reverse, FromStep fromStep)
 		throws PortalException {
 
 		ObjectRelationship objectRelationship =
 			_objectRelationshipPersistence.findByPrimaryKey(
 				objectRelationshipId);
 
+		long objectDefinitionId1 = objectRelationship.getObjectDefinitionId1();
+		long objectDefinitionId2 = objectRelationship.getObjectDefinitionId2();
+
+		if (reverse) {
+			objectDefinitionId1 = objectRelationship.getObjectDefinitionId2();
+			objectDefinitionId2 = objectRelationship.getObjectDefinitionId1();
+		}
+
 		DynamicObjectDefinitionTable dynamicObjectDefinitionTable =
-			_getDynamicObjectDefinitionTable(
-				objectRelationship.getObjectDefinitionId2());
+			_getDynamicObjectDefinitionTable(objectDefinitionId2);
 		DynamicObjectDefinitionTable extensionDynamicObjectDefinitionTable =
-			_getExtensionDynamicObjectDefinitionTable(
-				objectRelationship.getObjectDefinitionId2());
+			_getExtensionDynamicObjectDefinitionTable(objectDefinitionId2);
 
 		ObjectDefinition objectDefinition1 =
-			_objectDefinitionPersistence.fetchByPrimaryKey(
-				objectRelationship.getObjectDefinitionId1());
+			_objectDefinitionPersistence.fetchByPrimaryKey(objectDefinitionId1);
 		ObjectDefinition objectDefinition2 =
-			_objectDefinitionPersistence.fetchByPrimaryKey(
-				objectRelationship.getObjectDefinitionId2());
+			_objectDefinitionPersistence.fetchByPrimaryKey(objectDefinitionId2);
 
 		DynamicObjectRelationshipMappingTable
 			dynamicObjectRelationshipMappingTable =
@@ -840,7 +845,7 @@ public class ObjectEntryLocalServiceImpl
 					objectRelationship.getCompanyId())
 			).and(
 				ObjectEntryTable.INSTANCE.objectDefinitionId.eq(
-					objectRelationship.getObjectDefinitionId2())
+					objectDefinitionId2)
 			).and(
 				primaryKeyColumn1.eq(primaryKey)
 			).and(

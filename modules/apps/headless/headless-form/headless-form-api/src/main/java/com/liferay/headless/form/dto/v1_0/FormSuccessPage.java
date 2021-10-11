@@ -56,6 +56,10 @@ public class FormSuccessPage implements Serializable {
 		return ObjectMapperUtil.readValue(FormSuccessPage.class, json);
 	}
 
+	public static FormSuccessPage unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(FormSuccessPage.class, json);
+	}
+
 	@Schema
 	public String getDescription() {
 		return description;

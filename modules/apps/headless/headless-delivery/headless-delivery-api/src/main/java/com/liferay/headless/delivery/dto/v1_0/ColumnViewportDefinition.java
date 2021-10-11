@@ -54,6 +54,11 @@ public class ColumnViewportDefinition implements Serializable {
 		return ObjectMapperUtil.readValue(ColumnViewportDefinition.class, json);
 	}
 
+	public static ColumnViewportDefinition unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			ColumnViewportDefinition.class, json);
+	}
+
 	@DecimalMax("12")
 	@DecimalMin("1")
 	@Schema

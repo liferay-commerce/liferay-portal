@@ -57,6 +57,10 @@ public class Subscription implements Serializable {
 		return ObjectMapperUtil.readValue(Subscription.class, json);
 	}
 
+	public static Subscription unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Subscription.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Object getContentId() {

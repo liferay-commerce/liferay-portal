@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermi
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.search.experiences.constants.SXPConstants;
 import com.liferay.search.experiences.model.SXPBlueprint;
+import com.liferay.search.experiences.service.SXPBlueprintLocalService;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -68,8 +69,10 @@ public class SXPBlueprintModelResourcePermission
 			String actionId)
 		throws PortalException {
 
-		return permissionChecker.hasPermission(
-			null, SXPBlueprint.class.getName(), sxpBlueprintId, actionId);
+		SXPBlueprint sxpBlueprint = _sxpBlueprintLocalService.getSXPBlueprint(
+			sxpBlueprintId);
+
+		return contains(permissionChecker, sxpBlueprint, actionId);
 	}
 
 	@Override
@@ -78,9 +81,19 @@ public class SXPBlueprintModelResourcePermission
 			String actionId)
 		throws PortalException {
 
-		return permissionChecker.hasPermission(
-			null, SXPBlueprint.class.getName(), sxpBlueprint.getPrimaryKey(),
-			actionId);
+		if (permissionChecker.hasOwnerPermission(
+				permissionChecker.getCompanyId(), SXPBlueprint.class.getName(),
+				sxpBlueprint.getSXPBlueprintId(), sxpBlueprint.getUserId(),
+				actionId) ||
+			(permissionChecker.getUserId() == sxpBlueprint.getUserId()) ||
+			permissionChecker.hasPermission(
+				null, SXPBlueprint.class.getName(),
+				sxpBlueprint.getPrimaryKey(), actionId)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	@Override
@@ -95,5 +108,8 @@ public class SXPBlueprintModelResourcePermission
 
 	@Reference(target = "(resource.name=" + SXPConstants.RESOURCE_NAME + ")")
 	private PortletResourcePermission _portletResourcePermission;
+
+	@Reference
+	private SXPBlueprintLocalService _sxpBlueprintLocalService;
 
 }

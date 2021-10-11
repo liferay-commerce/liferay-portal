@@ -56,6 +56,10 @@ public class PageRowDefinition implements Serializable {
 		return ObjectMapperUtil.readValue(PageRowDefinition.class, json);
 	}
 
+	public static PageRowDefinition unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(PageRowDefinition.class, json);
+	}
+
 	@Schema(description = "The fragment style of a Page row.")
 	@Valid
 	public FragmentStyle getFragmentStyle() {

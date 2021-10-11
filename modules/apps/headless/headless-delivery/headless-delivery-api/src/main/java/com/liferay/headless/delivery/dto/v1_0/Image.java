@@ -51,6 +51,10 @@ public class Image implements Serializable {
 		return ObjectMapperUtil.readValue(Image.class, json);
 	}
 
+	public static Image unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Image.class, json);
+	}
+
 	@Schema(description = "The text describing the image.")
 	public String getCaption() {
 		return caption;

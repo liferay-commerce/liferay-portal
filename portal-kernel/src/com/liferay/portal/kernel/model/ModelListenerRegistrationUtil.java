@@ -160,7 +160,13 @@ public class ModelListenerRegistrationUtil {
 		}
 
 		private Class<?> _getModelClass(ModelListener<?> modelListener) {
-			Class<?> clazz = modelListener.getClass();
+			Class<?> clazz = modelListener.getModelClass();
+
+			if (clazz != null) {
+				return clazz;
+			}
+
+			clazz = modelListener.getClass();
 
 			if (ProxyUtil.isProxyClass(clazz)) {
 				InvocationHandler invocationHandler =

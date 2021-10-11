@@ -34,13 +34,11 @@ import com.liferay.portal.kernel.servlet.PipingServletResponse;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.util.Locale;
-import java.util.ResourceBundle;
 
 import javax.portlet.PortletRequest;
 
@@ -163,15 +161,10 @@ public class DDMFormInstanceRecordCTDisplayRenderer
 			}
 		).display(
 			"status",
-			() -> {
-				ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-					displayBuilder.getLocale(), getClass());
-
-				return _language.get(
-					resourceBundle,
-					WorkflowConstants.getStatusLabel(
-						ddmFormInstanceRecord.getStatus()));
-			}
+			() -> _language.get(
+				displayBuilder.getLocale(),
+				WorkflowConstants.getStatusLabel(
+					ddmFormInstanceRecord.getStatus()))
 		).display(
 			"version", ddmFormInstanceRecord.getVersion()
 		);

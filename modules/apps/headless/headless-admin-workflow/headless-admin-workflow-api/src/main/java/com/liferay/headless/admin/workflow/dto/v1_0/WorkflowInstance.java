@@ -60,6 +60,10 @@ public class WorkflowInstance implements Serializable {
 		return ObjectMapperUtil.readValue(WorkflowInstance.class, json);
 	}
 
+	public static WorkflowInstance unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(WorkflowInstance.class, json);
+	}
+
 	@Schema(
 		description = "A flag that indicates whether the instance is complete."
 	)

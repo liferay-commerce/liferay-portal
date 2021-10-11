@@ -56,6 +56,10 @@ public class Catalog implements Serializable {
 		return ObjectMapperUtil.readValue(Catalog.class, json);
 	}
 
+	public static Catalog unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Catalog.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Map<String, Map<String, String>> getActions() {

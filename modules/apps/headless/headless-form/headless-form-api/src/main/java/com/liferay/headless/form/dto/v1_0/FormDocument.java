@@ -53,6 +53,10 @@ public class FormDocument implements Serializable {
 		return ObjectMapperUtil.readValue(FormDocument.class, json);
 	}
 
+	public static FormDocument unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(FormDocument.class, json);
+	}
+
 	@Schema
 	public String getContentUrl() {
 		return contentUrl;

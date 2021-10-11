@@ -26,12 +26,10 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.Set;
 
 /**
@@ -138,12 +136,8 @@ public class GoogleDocsDLFileEntryTypeHelper {
 		Map<Locale, String> nameMap = new HashMap<>();
 
 		for (Locale locale : locales) {
-			ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-				locale, GoogleDocsDLFileEntryTypeHelper.class);
-
 			nameMap.put(
-				locale,
-				LanguageUtil.get(resourceBundle, "google-drive-shortcut"));
+				locale, LanguageUtil.get(locale, "google-drive-shortcut"));
 		}
 
 		return nameMap;

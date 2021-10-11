@@ -57,6 +57,11 @@ public class FragmentSettingsUnallowed implements Serializable {
 			FragmentSettingsUnallowed.class, json);
 	}
 
+	public static FragmentSettingsUnallowed unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			FragmentSettingsUnallowed.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Fragment[] getUnallowedFragments() {

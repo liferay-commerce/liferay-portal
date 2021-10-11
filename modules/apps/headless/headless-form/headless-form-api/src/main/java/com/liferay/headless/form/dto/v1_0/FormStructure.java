@@ -60,6 +60,10 @@ public class FormStructure implements Serializable {
 		return ObjectMapperUtil.readValue(FormStructure.class, json);
 	}
 
+	public static FormStructure unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(FormStructure.class, json);
+	}
+
 	@Schema
 	public String[] getAvailableLanguages() {
 		return availableLanguages;

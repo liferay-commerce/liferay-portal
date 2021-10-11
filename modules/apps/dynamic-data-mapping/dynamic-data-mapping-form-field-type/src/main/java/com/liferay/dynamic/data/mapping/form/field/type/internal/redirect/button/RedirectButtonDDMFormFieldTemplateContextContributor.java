@@ -26,7 +26,6 @@ import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -66,8 +65,7 @@ public class RedirectButtonDDMFormFieldTemplateContextContributor
 				}
 
 				return LanguageUtil.format(
-					ResourceBundleUtil.getBundle(
-						ddmFormFieldRenderingContext.getLocale(), getClass()),
+					ddmFormFieldRenderingContext.getLocale(),
 					GetterUtil.getString(
 						((Object[])ddmFormField.getProperty("messageKey"))[0]),
 					(Object[])ddmFormField.getProperty("messageArguments"));

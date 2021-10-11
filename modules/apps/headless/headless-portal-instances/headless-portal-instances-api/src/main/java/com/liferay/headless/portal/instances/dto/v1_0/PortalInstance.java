@@ -51,6 +51,10 @@ public class PortalInstance implements Serializable {
 		return ObjectMapperUtil.readValue(PortalInstance.class, json);
 	}
 
+	public static PortalInstance unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(PortalInstance.class, json);
+	}
+
 	@Schema
 	public Boolean getActive() {
 		return active;

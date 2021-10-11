@@ -56,6 +56,10 @@ public class DefaultValue implements Serializable {
 		return ObjectMapperUtil.readValue(DefaultValue.class, json);
 	}
 
+	public static DefaultValue unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(DefaultValue.class, json);
+	}
+
 	@Schema
 	public String getValue() {
 		return value;

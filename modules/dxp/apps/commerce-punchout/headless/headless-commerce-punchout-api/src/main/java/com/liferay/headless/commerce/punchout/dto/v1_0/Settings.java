@@ -51,6 +51,10 @@ public class Settings implements Serializable {
 		return ObjectMapperUtil.readValue(Settings.class, json);
 	}
 
+	public static Settings unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Settings.class, json);
+	}
+
 	@Schema
 	public Integer[] getAllowedQuantities() {
 		return allowedQuantities;

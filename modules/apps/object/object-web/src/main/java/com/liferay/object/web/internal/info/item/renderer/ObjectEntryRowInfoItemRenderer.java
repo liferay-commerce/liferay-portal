@@ -26,7 +26,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 
 import java.io.Serializable;
 
@@ -35,7 +34,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -45,24 +43,31 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Jorge Ferrer
+ * @author Guilherme Camacho
  */
-@Component(
-	property = "service.ranking:Integer=100", service = InfoItemRenderer.class
-)
 public class ObjectEntryRowInfoItemRenderer
 	implements InfoItemRenderer<ObjectEntry> {
 
+	public ObjectEntryRowInfoItemRenderer(
+		AssetDisplayPageFriendlyURLProvider assetDisplayPageFriendlyURLProvider,
+		ObjectDefinitionLocalService objectDefinitionLocalService,
+		ObjectEntryLocalService objectEntryLocalService,
+		ObjectFieldLocalService objectFieldLocalService,
+		ServletContext servletContext) {
+
+		_assetDisplayPageFriendlyURLProvider =
+			assetDisplayPageFriendlyURLProvider;
+		_objectDefinitionLocalService = objectDefinitionLocalService;
+		_objectEntryLocalService = objectEntryLocalService;
+		_objectFieldLocalService = objectFieldLocalService;
+		_servletContext = servletContext;
+	}
+
 	@Override
 	public String getLabel(Locale locale) {
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			locale, getClass());
-
-		return LanguageUtil.get(resourceBundle, "row");
+		return LanguageUtil.get(locale, "row");
 	}
 
 	@Override
@@ -92,13 +97,6 @@ public class ObjectEntryRowInfoItemRenderer
 		catch (Exception exception) {
 			throw new RuntimeException(exception);
 		}
-	}
-
-	@Reference(
-		target = "(osgi.web.symbolicname=com.liferay.object.web)", unbind = "-"
-	)
-	public void setServletContext(ServletContext servletContext) {
-		_servletContext = servletContext;
 	}
 
 	private Map<String, Serializable> _getValues(ObjectEntry objectEntry)
@@ -133,19 +131,11 @@ public class ObjectEntryRowInfoItemRenderer
 		);
 	}
 
-	@Reference
-	private AssetDisplayPageFriendlyURLProvider
+	private final AssetDisplayPageFriendlyURLProvider
 		_assetDisplayPageFriendlyURLProvider;
-
-	@Reference
-	private ObjectDefinitionLocalService _objectDefinitionLocalService;
-
-	@Reference
-	private ObjectEntryLocalService _objectEntryLocalService;
-
-	@Reference
-	private ObjectFieldLocalService _objectFieldLocalService;
-
-	private ServletContext _servletContext;
+	private final ObjectDefinitionLocalService _objectDefinitionLocalService;
+	private final ObjectEntryLocalService _objectEntryLocalService;
+	private final ObjectFieldLocalService _objectFieldLocalService;
+	private final ServletContext _servletContext;
 
 }

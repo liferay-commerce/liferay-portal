@@ -67,6 +67,10 @@ public class BlogPosting implements Serializable {
 		return ObjectMapperUtil.readValue(BlogPosting.class, json);
 	}
 
+	public static BlogPosting unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(BlogPosting.class, json);
+	}
+
 	@Schema(
 		description = "Block of actions allowed by the user making the request."
 	)

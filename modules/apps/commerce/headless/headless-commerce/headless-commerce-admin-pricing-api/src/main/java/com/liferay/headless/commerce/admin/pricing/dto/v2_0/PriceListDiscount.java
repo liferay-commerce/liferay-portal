@@ -55,6 +55,10 @@ public class PriceListDiscount implements Serializable {
 		return ObjectMapperUtil.readValue(PriceListDiscount.class, json);
 	}
 
+	public static PriceListDiscount unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(PriceListDiscount.class, json);
+	}
+
 	@Schema
 	public String getDiscountExternalReferenceCode() {
 		return discountExternalReferenceCode;

@@ -41,6 +41,7 @@ import com.liferay.exportimport.kernel.lar.UserIdStrategy;
 import com.liferay.exportimport.kernel.xstream.XStreamAlias;
 import com.liferay.exportimport.kernel.xstream.XStreamConverter;
 import com.liferay.exportimport.kernel.xstream.XStreamType;
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.Conjunction;
@@ -834,9 +835,31 @@ public class PortletDataContextImpl implements PortletDataContext {
 	public Element getImportDataElement(
 		String name, String attribute, String value) {
 
+		Element importDataElement = null;
+		String key = StringPool.BLANK;
+
+		if (_importDataElements != null) {
+			key = StringBundler.concat(
+				_importDataRootElement.attributeValue("self-path"),
+				CharPool.POUND, name, CharPool.POUND, attribute, CharPool.POUND,
+				value);
+
+			importDataElement = _importDataElements.get(key);
+
+			if (importDataElement != null) {
+				return importDataElement;
+			}
+		}
+
 		Element groupElement = getImportDataGroupElement(name);
 
-		return getDataElement(groupElement, attribute, value);
+		importDataElement = getDataElement(groupElement, attribute, value);
+
+		if (_importDataElements != null) {
+			_importDataElements.put(key, importDataElement);
+		}
+
+		return importDataElement;
 	}
 
 	@Override
@@ -1676,6 +1699,18 @@ public class PortletDataContextImpl implements PortletDataContext {
 	}
 
 	@Override
+	public void setImportDataElementCacheEnabled(
+		boolean importDataElementCacheEnabled) {
+
+		if (importDataElementCacheEnabled) {
+			_importDataElements = new HashMap<>();
+		}
+		else {
+			_importDataElements = null;
+		}
+	}
+
+	@Override
 	public void setImportDataRootElement(Element importDataRootElement) {
 		_importDataRootElement = importDataRootElement;
 	}
@@ -2181,11 +2216,30 @@ public class PortletDataContextImpl implements PortletDataContext {
 			return SAXReaderUtil.createElement("EMPTY-ELEMENT");
 		}
 
-		Element groupElement = _deepSearchForFirstChildElement(
+		Element groupElement = null;
+		String key = StringPool.BLANK;
+
+		if (_importDataElements != null) {
+			key = StringBundler.concat(
+				_importDataRootElement.attributeValue("self-path"),
+				CharPool.POUND, name);
+
+			groupElement = _importDataElements.get(key);
+
+			if (groupElement != null) {
+				return groupElement;
+			}
+		}
+
+		groupElement = _deepSearchForFirstChildElement(
 			_importDataRootElement, name);
 
 		if (groupElement == null) {
-			return SAXReaderUtil.createElement("EMPTY-ELEMENT");
+			groupElement = SAXReaderUtil.createElement("EMPTY-ELEMENT");
+		}
+
+		if (_importDataElements != null) {
+			_importDataElements.put(key, groupElement);
 		}
 
 		return groupElement;
@@ -2722,6 +2776,7 @@ public class PortletDataContextImpl implements PortletDataContext {
 	private transient Element _exportDataRootElement;
 	private String _exportImportProcessId;
 	private long _groupId;
+	private Map<String, Element> _importDataElements;
 	private transient Element _importDataRootElement;
 	private transient long[] _layoutIds;
 	private String _layoutSetPrototypeUuid;

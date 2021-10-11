@@ -57,6 +57,11 @@ public class AccountCategoryForecast implements Serializable {
 		return ObjectMapperUtil.readValue(AccountCategoryForecast.class, json);
 	}
 
+	public static AccountCategoryForecast unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			AccountCategoryForecast.class, json);
+	}
+
 	@Schema
 	public Long getAccount() {
 		return account;

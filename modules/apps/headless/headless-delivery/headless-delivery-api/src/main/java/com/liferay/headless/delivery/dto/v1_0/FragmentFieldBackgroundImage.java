@@ -57,6 +57,11 @@ public class FragmentFieldBackgroundImage implements Serializable {
 			FragmentFieldBackgroundImage.class, json);
 	}
 
+	public static FragmentFieldBackgroundImage unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			FragmentFieldBackgroundImage.class, json);
+	}
+
 	@Schema(description = "The fragment field's background image.")
 	@Valid
 	public FragmentImage getBackgroundFragmentImage() {

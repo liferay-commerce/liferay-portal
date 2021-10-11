@@ -57,6 +57,10 @@ public class Experience implements Serializable {
 		return ObjectMapperUtil.readValue(Experience.class, json);
 	}
 
+	public static Experience unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Experience.class, json);
+	}
+
 	@Schema(description = "the experience's key.")
 	public String getKey() {
 		return key;

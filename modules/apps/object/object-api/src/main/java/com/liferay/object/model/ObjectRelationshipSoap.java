@@ -48,6 +48,7 @@ public class ObjectRelationshipSoap implements Serializable {
 		soapModel.setDBTableName(model.getDBTableName());
 		soapModel.setLabel(model.getLabel());
 		soapModel.setName(model.getName());
+		soapModel.setReverse(model.isReverse());
 		soapModel.setType(model.getType());
 
 		return soapModel;
@@ -231,6 +232,18 @@ public class ObjectRelationshipSoap implements Serializable {
 		_name = name;
 	}
 
+	public boolean getReverse() {
+		return _reverse;
+	}
+
+	public boolean isReverse() {
+		return _reverse;
+	}
+
+	public void setReverse(boolean reverse) {
+		_reverse = reverse;
+	}
+
 	public String getType() {
 		return _type;
 	}
@@ -254,6 +267,7 @@ public class ObjectRelationshipSoap implements Serializable {
 	private String _dbTableName;
 	private String _label;
 	private String _name;
+	private boolean _reverse;
 	private String _type;
 
 }

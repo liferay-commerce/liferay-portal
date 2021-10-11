@@ -57,6 +57,10 @@ public class Specification implements Serializable {
 		return ObjectMapperUtil.readValue(Specification.class, json);
 	}
 
+	public static Specification unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Specification.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Map<String, String> getDescription() {

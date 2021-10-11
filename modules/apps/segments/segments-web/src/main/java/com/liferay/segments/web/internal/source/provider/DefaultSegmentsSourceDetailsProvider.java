@@ -15,12 +15,10 @@
 package com.liferay.segments.web.internal.source.provider;
 
 import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.segments.constants.SegmentsEntryConstants;
 import com.liferay.segments.source.provider.SegmentsSourceDetailsProvider;
 
 import java.util.Locale;
-import java.util.ResourceBundle;
 
 import javax.servlet.ServletContext;
 
@@ -44,10 +42,7 @@ public class DefaultSegmentsSourceDetailsProvider
 
 	@Override
 	public String getLabel(Locale locale) {
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			locale, getClass());
-
-		return LanguageUtil.get(resourceBundle, "source.ce");
+		return LanguageUtil.get(locale, "source.ce");
 	}
 
 	@Reference(target = "(osgi.web.symbolicname=com.liferay.segments.web)")

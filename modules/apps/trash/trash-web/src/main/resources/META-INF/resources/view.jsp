@@ -27,7 +27,7 @@ TrashManagementToolbarDisplayContext trashManagementToolbarDisplayContext = new 
 
 <liferay-util:include page="/restore_path.jsp" servletContext="<%= application %>" />
 
-<div class="closed sidenav-container sidenav-right" id="<%= liferayPortletResponse.getNamespace() + "infoPanelId" %>">
+<div class="closed sidenav-container sidenav-right" id="<portlet:namespace />infoPanelId">
 	<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="/trash/info_panel" var="sidebarPanelURL" />
 
 	<liferay-frontend:sidebar-panel

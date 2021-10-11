@@ -23,15 +23,19 @@ import com.liferay.template.info.item.capability.TemplateInfoItemCapability;
 
 import java.util.List;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Guilherme Camacho
  */
-@Component(service = InfoItemCapabilitiesProvider.class)
 public class ObjectEntryInfoItemCapabilitiesProvider
 	implements InfoItemCapabilitiesProvider<ObjectEntry> {
+
+	public ObjectEntryInfoItemCapabilitiesProvider(
+		DisplayPageInfoItemCapability displayPageInfoItemCapability,
+		TemplateInfoItemCapability templatePageInfoItemCapability) {
+
+		_displayPageInfoItemCapability = displayPageInfoItemCapability;
+		_templatePageInfoItemCapability = templatePageInfoItemCapability;
+	}
 
 	@Override
 	public List<InfoItemCapability> getInfoItemCapabilities() {
@@ -39,10 +43,7 @@ public class ObjectEntryInfoItemCapabilitiesProvider
 			_displayPageInfoItemCapability, _templatePageInfoItemCapability);
 	}
 
-	@Reference
-	private DisplayPageInfoItemCapability _displayPageInfoItemCapability;
-
-	@Reference
-	private TemplateInfoItemCapability _templatePageInfoItemCapability;
+	private final DisplayPageInfoItemCapability _displayPageInfoItemCapability;
+	private final TemplateInfoItemCapability _templatePageInfoItemCapability;
 
 }

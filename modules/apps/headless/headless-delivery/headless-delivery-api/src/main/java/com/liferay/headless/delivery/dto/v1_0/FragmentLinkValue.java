@@ -58,6 +58,10 @@ public class FragmentLinkValue implements Serializable {
 		return ObjectMapperUtil.readValue(FragmentLinkValue.class, json);
 	}
 
+	public static FragmentLinkValue unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(FragmentLinkValue.class, json);
+	}
+
 	@Schema(
 		description = "The fragment link value's hypertext reference. Can be inline or mapped to an external value."
 	)

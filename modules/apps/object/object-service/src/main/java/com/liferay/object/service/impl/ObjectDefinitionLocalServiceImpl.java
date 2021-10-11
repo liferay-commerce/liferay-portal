@@ -15,9 +15,11 @@
 package com.liferay.object.service.impl;
 
 import com.liferay.list.type.service.ListTypeEntryLocalService;
+import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.deployer.ObjectDefinitionDeployer;
 import com.liferay.object.exception.DuplicateObjectDefinitionException;
 import com.liferay.object.exception.NoSuchObjectFieldException;
+import com.liferay.object.exception.ObjectDefinitionActiveException;
 import com.liferay.object.exception.ObjectDefinitionLabelException;
 import com.liferay.object.exception.ObjectDefinitionNameException;
 import com.liferay.object.exception.ObjectDefinitionPluralLabelException;
@@ -30,6 +32,7 @@ import com.liferay.object.internal.petra.sql.dsl.DynamicObjectDefinitionTable;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;
+import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.model.impl.ObjectDefinitionImpl;
 import com.liferay.object.scope.ObjectScopeProviderRegistry;
 import com.liferay.object.service.ObjectEntryLocalService;
@@ -45,6 +48,8 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.cluster.Clusterable;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.dependency.manager.DependencyManagerSyncUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -145,7 +150,7 @@ public class ObjectDefinitionLocalServiceImpl
 				systemObjectDefinitionMetadata.getPrimaryKeyColumn();
 
 			return addSystemObjectDefinition(
-				userId, systemObjectDefinitionMetadata.getClassName(),
+				userId, systemObjectDefinitionMetadata.getModelClassName(),
 				table.getTableName(),
 				systemObjectDefinitionMetadata.getLabelMap(),
 				systemObjectDefinitionMetadata.getName(),
@@ -403,6 +408,7 @@ public class ObjectDefinitionLocalServiceImpl
 			throw new ObjectDefinitionStatusException();
 		}
 
+		objectDefinition.setActive(true);
 		objectDefinition.setStatus(WorkflowConstants.STATUS_APPROVED);
 
 		objectDefinition = objectDefinitionPersistence.update(objectDefinition);
@@ -482,7 +488,12 @@ public class ObjectDefinitionLocalServiceImpl
 
 			});
 
-		_objectDefinitionDeployerServiceTracker.open();
+		DependencyManagerSyncUtil.registerSyncCallable(
+			() -> {
+				_objectDefinitionDeployerServiceTracker.open();
+
+				return null;
+			});
 	}
 
 	@Clusterable
@@ -602,9 +613,9 @@ public class ObjectDefinitionLocalServiceImpl
 		pkObjectFieldDBColumnName = _getPKObjectFieldDBColumnName(
 			pkObjectFieldDBColumnName, pkObjectFieldName, system);
 
-		_validateLabel(labelMap, LocaleUtil.getSiteDefault());
+		_validateLabel(labelMap);
 		_validateName(0, user.getCompanyId(), name, system);
-		_validatePluralLabel(pluralLabelMap, LocaleUtil.getSiteDefault());
+		_validatePluralLabel(pluralLabelMap);
 		_validateScope(scope);
 		_validateVersion(system, version);
 
@@ -614,7 +625,7 @@ public class ObjectDefinitionLocalServiceImpl
 		objectDefinition.setCompanyId(user.getCompanyId());
 		objectDefinition.setUserId(user.getUserId());
 		objectDefinition.setUserName(user.getFullName());
-		objectDefinition.setActive(true);
+		objectDefinition.setActive(false);
 		objectDefinition.setDBTableName(dbTableName);
 		objectDefinition.setClassName(
 			_getClassName(
@@ -823,8 +834,9 @@ public class ObjectDefinitionLocalServiceImpl
 
 		_validateObjectFieldId(objectDefinition, descriptionObjectFieldId);
 		_validateObjectFieldId(objectDefinition, titleObjectFieldId);
-		_validateLabel(labelMap, LocaleUtil.getSiteDefault());
-		_validatePluralLabel(pluralLabelMap, LocaleUtil.getSiteDefault());
+		_validateActive(objectDefinition, active);
+		_validateLabel(labelMap);
+		_validatePluralLabel(pluralLabelMap);
 
 		objectDefinition.setDescriptionObjectFieldId(descriptionObjectFieldId);
 		objectDefinition.setTitleObjectFieldId(titleObjectFieldId);
@@ -881,15 +893,54 @@ public class ObjectDefinitionLocalServiceImpl
 		return objectDefinitionPersistence.update(objectDefinition);
 	}
 
-	private void _validateLabel(
-			Map<Locale, String> labelMap, Locale defaultLocale)
+	private void _validateActive(
+			ObjectDefinition objectDefinition, boolean active)
 		throws PortalException {
 
-		if ((labelMap == null) ||
-			Validator.isNull(labelMap.get(defaultLocale))) {
+		// TODO Add an integration test
 
+		if (active && !objectDefinition.isApproved()) {
+			throw new ObjectDefinitionActiveException(
+				"Object definitions must be published before being activated");
+		}
+
+		if (active || !objectDefinition.isActive()) {
+			return;
+		}
+
+		List<ObjectRelationship> objectRelationships =
+			_objectRelationshipLocalService.getObjectRelationships(
+				objectDefinition.getObjectDefinitionId(), QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS);
+
+		for (ObjectRelationship objectRelationship : objectRelationships) {
+			ObjectDefinition objectDefinition2 =
+				objectDefinitionPersistence.fetchByPrimaryKey(
+					objectRelationship.getObjectDefinitionId2());
+
+			if ((Objects.equals(
+					objectRelationship.getType(),
+					ObjectRelationshipConstants.TYPE_ONE_TO_MANY) ||
+				 Objects.equals(
+					 objectRelationship.getType(),
+					 ObjectRelationshipConstants.TYPE_ONE_TO_ONE)) &&
+				objectDefinition2.isActive()) {
+
+				throw new ObjectDefinitionActiveException(
+					"This object definition has a relationship with another " +
+						"active object definition");
+			}
+		}
+	}
+
+	private void _validateLabel(Map<Locale, String> labelMap)
+		throws PortalException {
+
+		Locale locale = LocaleUtil.getSiteDefault();
+
+		if ((labelMap == null) || Validator.isNull(labelMap.get(locale))) {
 			throw new ObjectDefinitionLabelException(
-				"Label is null for locale " + defaultLocale.getDisplayName());
+				"Label is null for locale " + locale.getDisplayName());
 		}
 	}
 
@@ -975,16 +1026,16 @@ public class ObjectDefinitionLocalServiceImpl
 		}
 	}
 
-	private void _validatePluralLabel(
-			Map<Locale, String> pluralLabelMap, Locale defaultLocale)
+	private void _validatePluralLabel(Map<Locale, String> pluralLabelMap)
 		throws PortalException {
 
+		Locale locale = LocaleUtil.getSiteDefault();
+
 		if ((pluralLabelMap == null) ||
-			Validator.isNull(pluralLabelMap.get(defaultLocale))) {
+			Validator.isNull(pluralLabelMap.get(locale))) {
 
 			throw new ObjectDefinitionPluralLabelException(
-				"Plural label is null for locale " +
-					defaultLocale.getDisplayName());
+				"Plural label is null for locale " + locale.getDisplayName());
 		}
 	}
 

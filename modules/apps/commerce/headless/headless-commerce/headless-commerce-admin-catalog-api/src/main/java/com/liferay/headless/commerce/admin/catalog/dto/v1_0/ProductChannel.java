@@ -55,6 +55,10 @@ public class ProductChannel implements Serializable {
 		return ObjectMapperUtil.readValue(ProductChannel.class, json);
 	}
 
+	public static ProductChannel unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(ProductChannel.class, json);
+	}
+
 	@DecimalMin("0")
 	@Schema
 	public Long getChannelId() {

@@ -57,6 +57,11 @@ public class DisplayPageTemplateSettings implements Serializable {
 			DisplayPageTemplateSettings.class, json);
 	}
 
+	public static DisplayPageTemplateSettings unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			DisplayPageTemplateSettings.class, json);
+	}
+
 	@Schema
 	@Valid
 	public ContentAssociation getContentAssociation() {

@@ -59,6 +59,9 @@ public class KaleoInstanceTokenModelDocumentContributor
 		document.addKeyword(
 			KaleoInstanceTokenField.CLASS_NAME,
 			kaleoInstanceToken.getClassName());
+		document.addKeyword(
+			Field.CLASS_NAME_ID,
+			portal.getClassNameId(kaleoInstanceToken.getClassName()));
 		document.addKeyword(Field.CLASS_PK, kaleoInstanceToken.getClassPK());
 		document.addKeywordSortable(
 			KaleoInstanceTokenField.COMPLETED,

@@ -15,12 +15,10 @@
 package com.liferay.wiki.uad.anonymizer;
 
 import com.liferay.asset.kernel.model.AssetEntry;
-import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.user.associated.data.anonymizer.UADAnonymizer;
 import com.liferay.wiki.model.WikiPage;
 
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Brian Wing Shun Chan
@@ -28,12 +26,10 @@ import org.osgi.service.component.annotations.Reference;
 @Component(immediate = true, service = UADAnonymizer.class)
 public class WikiPageUADAnonymizer extends BaseWikiPageUADAnonymizer {
 
+	@Override
 	protected AssetEntry fetchAssetEntry(WikiPage wikiPage) {
 		return assetEntryLocalService.fetchEntry(
 			WikiPage.class.getName(), wikiPage.getResourcePrimKey());
 	}
-
-	@Reference
-	protected AssetEntryLocalService assetEntryLocalService;
 
 }

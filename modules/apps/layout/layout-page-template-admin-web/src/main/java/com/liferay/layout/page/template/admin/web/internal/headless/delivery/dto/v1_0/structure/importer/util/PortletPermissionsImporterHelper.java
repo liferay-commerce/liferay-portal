@@ -36,7 +36,6 @@ import com.liferay.portal.kernel.service.permission.PortletPermission;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,7 +43,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -185,12 +183,8 @@ public class PortletPermissionsImporterHelper {
 			locale = _portal.getSiteDefaultLocale(groupId);
 		}
 
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			locale, getClass());
-
 		return _language.format(
-			resourceBundle,
-			"role-with-key-x-was-ignored-because-it-does-not-exist",
+			locale, "role-with-key-x-was-ignored-because-it-does-not-exist",
 			new String[] {roleKey});
 	}
 

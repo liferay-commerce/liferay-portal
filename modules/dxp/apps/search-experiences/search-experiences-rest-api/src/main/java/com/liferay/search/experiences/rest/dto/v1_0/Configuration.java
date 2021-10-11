@@ -53,6 +53,10 @@ public class Configuration implements Serializable {
 		return ObjectMapperUtil.readValue(Configuration.class, json);
 	}
 
+	public static Configuration unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Configuration.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Advanced getAdvanced() {

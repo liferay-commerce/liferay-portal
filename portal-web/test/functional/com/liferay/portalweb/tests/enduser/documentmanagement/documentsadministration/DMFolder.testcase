@@ -9,6 +9,16 @@ definition {
 		TestCase.setUpPortalInstance();
 
 		User.firstLoginPG();
+
+		JSONLayout.addPublicLayout(
+			groupName = "Guest",
+			layoutName = "Documents and Media Page");
+
+		JSONLayout.addWidgetToPublicLayout(
+			column = "1",
+			groupName = "Guest",
+			layoutName = "Documents and Media Page",
+			widgetName = "Documents and Media");
 	}
 
 	tearDown {
@@ -24,6 +34,205 @@ definition {
 
 			User.logoutPG();
 		}
+	}
+
+	@priority = "5"
+	@refactordone
+	test CanAddDocumentInFolder {
+		JSONDocument.addFolder(
+			dmFolderDescription = "DM Folder Description",
+			dmFolderName = "DM Folder Name",
+			groupName = "Guest");
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.enableActionsMenuOnPortlet();
+
+		LexiconEntry.changeDisplayStyle(displayStyle = "list");
+
+		DMNavigator.gotoFolder(dmFolderName = "DM Folder Name");
+
+		DMDocument.addPG(
+			dmDocumentFile = "Document_1.doc",
+			dmDocumentTitle = "Document_1.doc");
+
+		DMDocument.viewPG(dmDocumentTitle = "Document_1.doc");
+	}
+
+	@priority = "4"
+	@refactordone
+	test CanAddImageInFolder {
+		JSONDocument.addFolder(
+			dmFolderDescription = "DM Folder Description",
+			dmFolderName = "DM Folder Name",
+			groupName = "Guest");
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.enableActionsMenuOnPortlet();
+
+		LexiconEntry.changeDisplayStyle(displayStyle = "list");
+
+		DMNavigator.gotoFolder(dmFolderName = "DM Folder Name");
+
+		DMDocument.addPG(
+			dmDocumentDescription = "DM Image Description",
+			dmDocumentFile = "Document_1.jpg",
+			dmDocumentTitle = "DM Image Title");
+
+		DMDocument.viewPG(
+			dmDocumentDescription = "DM Image Description",
+			dmDocumentTitle = "DM Image Title");
+	}
+
+	@description = "We only need one test to cover performing actions in a subfolder. The rest of the subfolder cases will be covered at the folder level."
+	@priority = "4"
+	@refactordone
+	test CanAddImageInSubFolder {
+		JSONDocument.addFolder(
+			dmFolderDescription = "DM Folder Description",
+			dmFolderName = "DM Folder Name",
+			groupName = "Guest");
+
+		JSONDocument.addFolder(
+			dmFolderDescription = "DM SubFolder Description",
+			dmFolderName = "DM SubFolder Name",
+			groupName = "Guest",
+			parentFolderName = "DM Folder Name");
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.enableActionsMenuOnPortlet();
+
+		LexiconEntry.changeDisplayStyle(displayStyle = "list");
+
+		DMNavigator.gotoFolder(dmFolderName = "DM Folder Name");
+
+		DMNavigator.gotoFolder(dmFolderName = "DM SubFolder Name");
+
+		DMDocument.addPG(
+			dmDocumentDescription = "DM Image Description",
+			dmDocumentFile = "Document_1.jpg",
+			dmDocumentTitle = "DM Image Title");
+
+		DMDocument.viewPG(
+			dmDocumentDescription = "DM Image Description",
+			dmDocumentTitle = "DM Image Title");
+	}
+
+	@priority = "4"
+	@refactordone
+	test CanAddMultipleSubFolders {
+		JSONDocument.addFolder(
+			dmFolderDescription = "DM Folder Description",
+			dmFolderName = "DM Folder Name",
+			groupName = "Guest");
+
+		JSONDocument.addFolder(
+			dmFolderDescription = "DM SubFolder1 Description",
+			dmFolderName = "DM SubFolder1 Name",
+			groupName = "Guest",
+			parentFolderName = "DM Folder Name");
+
+		JSONDocument.addFolder(
+			dmFolderDescription = "DM SubFolder2 Description",
+			dmFolderName = "DM SubFolder2 Name",
+			groupName = "Guest",
+			parentFolderName = "DM Folder Name");
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.enableActionsMenuOnPortlet();
+
+		LexiconEntry.changeDisplayStyle(displayStyle = "list");
+
+		DMNavigator.gotoFolder(dmFolderName = "DM Folder Name");
+
+		DMFolder.viewEntryPresent(dmFolderName = "DM SubFolder1 Name");
+
+		DMFolder.viewEntryPresent(dmFolderName = "DM SubFolder2 Name");
+	}
+
+	@priority = "5"
+	@refactordone
+	test CanDeleteDocumentInFolder {
+		property portal.acceptance = "true";
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.enableActionsMenuOnPortlet();
+
+		LexiconEntry.changeDisplayStyle(displayStyle = "list");
+
+		DMFolder.addPG(
+			dmFolderDescription = "DM Folder Description",
+			dmFolderName = "DM Folder Name");
+
+		JSONDocument.addFileWithUploadedFile(
+			dmDocumentDescription = "DM Document Description",
+			dmDocumentTitle = "DM Document Title",
+			folderName = "DM Folder Name",
+			groupName = "Guest",
+			mimeType = "application/msword",
+			sourceFileName = "Document_1.doc");
+
+		DMNavigator.gotoFolder(dmFolderName = "DM Folder Name");
+
+		DMDocument.deletePG(dmDocumentTitle = "DM Document Title");
+	}
+
+	@priority = "5"
+	@refactordone
+	test CanDeleteFolderWithDocument {
+		JSONDocument.addFolder(
+			dmFolderDescription = "DM Folder Description",
+			dmFolderName = "DM Folder Name",
+			groupName = "Guest");
+
+		JSONDocument.addFileWithUploadedFile(
+			dmDocumentDescription = "DM Document Description 1",
+			dmDocumentTitle = "DM Document Title 1",
+			folderName = "DM Folder Name",
+			groupName = "Guest",
+			mimeType = "application/msword",
+			sourceFileName = "Document_1.doc");
+
+		Navigator.openURL();
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.enableActionsMenuOnPortlet();
+
+		LexiconEntry.changeDisplayStyle(displayStyle = "list");
+
+		DMFolder.deletePG(dmFolderName = "DM Folder Name");
+	}
+
+	@priority = "5"
+	@refactorneeded
+	test CanDeleteSubFolder {
+		JSONDocument.addFolder(
+			dmFolderDescription = "DM Folder Description",
+			dmFolderName = "DM Folder Name",
+			groupName = "Guest");
+
+		JSONDocument.addFolder(
+			dmFolderDescription = "DM SubFolder Description",
+			dmFolderName = "DM SubFolder Name",
+			groupName = "Guest",
+			parentFolderName = "DM Folder Name");
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.enableActionsMenuOnPortlet();
+
+		LexiconEntry.changeDisplayStyle(displayStyle = "list");
+
+		DMNavigator.gotoFolder(dmFolderName = "DM Folder Name");
+
+		Refresh();
+
+		DMFolder.deletePG(dmFolderName = "DM SubFolder Name");
 	}
 
 	@priority = "5"
@@ -45,6 +254,34 @@ definition {
 			dmFolderNameEdit = "DM Folder Name Name");
 
 		DMFolder.viewCP(dmFolderName = "DM Folder Name Name");
+	}
+
+	@priority = "5"
+	@refactordone
+	test CanEditSubFolder {
+		JSONDocument.addFolder(
+			dmFolderDescription = "DM Folder Description",
+			dmFolderName = "DM Folder Name",
+			groupName = "Guest");
+
+		JSONDocument.addFolder(
+			dmFolderDescription = "DM SubFolder Description",
+			dmFolderName = "DM SubFolder Name",
+			groupName = "Guest",
+			parentFolderName = "DM Folder Name");
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.enableActionsMenuOnPortlet();
+
+		LexiconEntry.changeDisplayStyle(displayStyle = "list");
+
+		DMNavigator.gotoFolder(dmFolderName = "DM Folder Name");
+
+		DMFolder.editPG(
+			dmFolderDescriptionEdit = "DM SubFolder Description Edit",
+			dmFolderName = "DM SubFolder Name",
+			dmFolderNameEdit = "DM SubFolder Name Edit");
 	}
 
 	@description = "This case ensures that a document can be viewed after being moved into a folder."
@@ -82,6 +319,35 @@ definition {
 			dmDocumentTitle = "DM Document Title",
 			dmFolderName = "DM Folder Name",
 			locationFieldName = "true");
+	}
+
+	@priority = "4"
+	@refactordone
+	test CanMoveDocumentWithSlashesInTitle {
+		JSONDocument.addFileWithUploadedFile(
+			dmDocumentTitle = "/D/M/Document Title",
+			groupName = "Guest",
+			mimeType = "application/msword",
+			sourceFileName = "Document_1.doc");
+
+		JSONDocument.addFolder(
+			dmFolderDescription = "DM Folder Description",
+			dmFolderName = "DM Folder Name",
+			groupName = "Guest");
+
+		Navigator.gotoPage(pageName = "Documents and Media Page");
+
+		DMDocument.enableActionsMenuOnPortlet();
+
+		LexiconEntry.changeDisplayStyle(displayStyle = "list");
+
+		DMDocument.moveToFolderPG(
+			dmDocumentTitle = "/D/M/Document Title",
+			dmFolderName = "DM Folder Name");
+
+		DMNavigator.gotoFolder(dmFolderName = "DM Folder Name");
+
+		DMDocument.viewPG(dmDocumentTitle = "/D/M/Document Title");
 	}
 
 	@priority = "4"

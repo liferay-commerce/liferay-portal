@@ -60,6 +60,11 @@ public class PageTemplateCollection implements Serializable {
 		return ObjectMapperUtil.readValue(PageTemplateCollection.class, json);
 	}
 
+	public static PageTemplateCollection unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			PageTemplateCollection.class, json);
+	}
+
 	@Schema(description = "The page template collection's creator.")
 	@Valid
 	public Creator getCreator() {

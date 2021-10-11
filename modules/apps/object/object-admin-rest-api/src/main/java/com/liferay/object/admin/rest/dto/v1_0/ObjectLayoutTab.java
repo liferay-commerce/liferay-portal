@@ -53,6 +53,10 @@ public class ObjectLayoutTab implements Serializable {
 		return ObjectMapperUtil.readValue(ObjectLayoutTab.class, json);
 	}
 
+	public static ObjectLayoutTab unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(ObjectLayoutTab.class, json);
+	}
+
 	@Schema
 	public Long getId() {
 		return id;

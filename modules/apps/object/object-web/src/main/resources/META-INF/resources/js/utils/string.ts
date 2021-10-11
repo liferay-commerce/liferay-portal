@@ -41,3 +41,16 @@ export const firstLetterUppercase: TStringFn = (str) => {
  */
 export const normalizeLanguageId: TStringFn = (languageId) =>
 	languageId.replace('_', '-');
+
+/**
+ * Normalize string in camel case pattern.
+ */
+export const toCamelCase: TStringFn = (str) => {
+	const split = str.split(' ');
+	const capitalizeFirstLetters = split.map((str: string) =>
+		firstLetterUppercase(str)
+	);
+	const join = capitalizeFirstLetters.join('');
+
+	return firstLetterLowercase(removeAllSpecialCharacters(join));
+};

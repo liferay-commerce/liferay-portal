@@ -56,6 +56,10 @@ public class FormFieldOption implements Serializable {
 		return ObjectMapperUtil.readValue(FormFieldOption.class, json);
 	}
 
+	public static FormFieldOption unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(FormFieldOption.class, json);
+	}
+
 	@Schema
 	public Long getId() {
 		return id;

@@ -57,6 +57,10 @@ public class ContextReference implements Serializable {
 		return ObjectMapperUtil.readValue(ContextReference.class, json);
 	}
 
+	public static ContextReference unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(ContextReference.class, json);
+	}
+
 	@Schema
 	@Valid
 	public ContextSource getContextSource() {

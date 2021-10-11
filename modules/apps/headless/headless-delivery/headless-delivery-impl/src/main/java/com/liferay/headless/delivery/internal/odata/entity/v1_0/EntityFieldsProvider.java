@@ -126,10 +126,15 @@ public class EntityFieldsProvider {
 					ddmFormField.getFieldReference(), locale, "Number"));
 		}
 		else if (Objects.equals(
-					ddmFormField.getType(), DDMFormFieldTypeConstants.RADIO) ||
-				 (Objects.equals(
-					 ddmFormField.getType(), DDMFormFieldTypeConstants.TEXT) &&
-				  Objects.equals(ddmFormField.getIndexType(), "keyword"))) {
+					ddmFormField.getDataType(),
+					DDMFormFieldTypeConstants.RADIO) ||
+				 (Objects.equals(ddmFormField.getIndexType(), "keyword") &&
+				  (Objects.equals(
+					  ddmFormField.getType(),
+					  DDMFormFieldTypeConstants.SELECT) ||
+				   Objects.equals(
+					   ddmFormField.getType(),
+					   DDMFormFieldTypeConstants.TEXT)))) {
 
 			return new StringEntityField(
 				ddmFormField.getFieldReference(),

@@ -51,6 +51,11 @@ public class ProductConfiguration implements Serializable {
 		return ObjectMapperUtil.readValue(ProductConfiguration.class, json);
 	}
 
+	public static ProductConfiguration unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			ProductConfiguration.class, json);
+	}
+
 	@Schema
 	public Boolean getAllowBackOrder() {
 		return allowBackOrder;

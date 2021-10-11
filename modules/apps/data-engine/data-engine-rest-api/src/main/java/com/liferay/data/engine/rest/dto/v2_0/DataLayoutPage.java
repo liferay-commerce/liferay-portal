@@ -53,6 +53,10 @@ public class DataLayoutPage implements Serializable {
 		return ObjectMapperUtil.readValue(DataLayoutPage.class, json);
 	}
 
+	public static DataLayoutPage unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(DataLayoutPage.class, json);
+	}
+
 	@Schema
 	@Valid
 	public DataLayoutRow[] getDataLayoutRows() {

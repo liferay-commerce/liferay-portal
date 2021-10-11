@@ -18,7 +18,6 @@ import com.liferay.digital.signature.configuration.DigitalSignatureConfiguration
 import com.liferay.digital.signature.configuration.DigitalSignatureConfigurationUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.settings.configuration.admin.display.PortalSettingsConfigurationScreenContributor;
 
@@ -55,9 +54,7 @@ public class DigitalSignaturePortalSettingsConfigurationScreenContributor
 
 	@Override
 	public String getName(Locale locale) {
-		return LanguageUtil.get(
-			ResourceBundleUtil.getBundle(locale, getClass()),
-			"digital-signature-configuration-name");
+		return LanguageUtil.get(locale, "digital-signature-configuration-name");
 	}
 
 	@Override

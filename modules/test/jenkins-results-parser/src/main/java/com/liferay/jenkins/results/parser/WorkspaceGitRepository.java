@@ -23,6 +23,10 @@ public interface WorkspaceGitRepository extends LocalGitRepository {
 
 	public void addPropertyOption(String propertyOption);
 
+	public String getBaseBranchSHA();
+
+	public String getBranchName();
+
 	public String getFileContent(String filePath);
 
 	public String getGitHubDevBranchName();
@@ -31,12 +35,20 @@ public interface WorkspaceGitRepository extends LocalGitRepository {
 
 	public List<LocalGitCommit> getHistoricalLocalGitCommits();
 
+	public String getSenderBranchName();
+
+	public String getSenderBranchSHA();
+
+	public String getSenderBranchUsername();
+
 	public List<List<LocalGitCommit>> partitionLocalGitCommits(
 		List<LocalGitCommit> localGitCommits, int count);
 
-	public void setBranchSHA(String branchSHA);
+	public void setBaseBranchSHA(String branchSHA);
 
 	public void setGitHubURL(String gitHubURL);
+
+	public void setSenderBranchSHA(String branchSHA);
 
 	public void setUp();
 

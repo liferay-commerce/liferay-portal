@@ -53,6 +53,11 @@ public class WorkflowInstanceSubmit implements Serializable {
 		return ObjectMapperUtil.readValue(WorkflowInstanceSubmit.class, json);
 	}
 
+	public static WorkflowInstanceSubmit unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			WorkflowInstanceSubmit.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Map<String, ?> getContext() {

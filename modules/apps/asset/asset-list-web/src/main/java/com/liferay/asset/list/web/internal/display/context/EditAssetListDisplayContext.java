@@ -663,7 +663,7 @@ public class EditAssetListDisplayContext {
 			new AssetRendererFactoryTypeNameComparator(
 				_themeDisplay.getLocale()));
 
-		for (AssetRendererFactory<?> curRendererFactory :
+		for (AssetRendererFactory<?> curAssetRendererFactory :
 				assetRendererFactories) {
 
 			AssetListEntry assetListEntry = getAssetListEntry();
@@ -673,17 +673,18 @@ public class EditAssetListDisplayContext {
 					AssetEntry.class.getName()) &&
 				!Objects.equals(
 					assetListEntry.getAssetEntryType(),
-					curRendererFactory.getClassName())) {
+					curAssetRendererFactory.getClassName())) {
 
 				continue;
 			}
 
-			if (!curRendererFactory.isSupportsClassTypes()) {
+			if (!curAssetRendererFactory.isSupportsClassTypes()) {
 				manualAddIconDataMap.put(
-					curRendererFactory.getTypeName(_themeDisplay.getLocale()),
+					curAssetRendererFactory.getTypeName(
+						_themeDisplay.getLocale()),
 					_getDataMap(
-						curRendererFactory,
-						curRendererFactory.getTypeName(
+						curAssetRendererFactory,
+						curAssetRendererFactory.getTypeName(
 							_themeDisplay.getLocale()),
 						_DEFAULT_SUBTYPE_SELECTION_ID));
 
@@ -691,7 +692,7 @@ public class EditAssetListDisplayContext {
 			}
 
 			ClassTypeReader classTypeReader =
-				curRendererFactory.getClassTypeReader();
+				curAssetRendererFactory.getClassTypeReader();
 
 			List<ClassType> assetAvailableClassTypes =
 				classTypeReader.getAvailableClassTypes(
@@ -713,7 +714,8 @@ public class EditAssetListDisplayContext {
 				manualAddIconDataMap.put(
 					assetAvailableClassType.getName(),
 					_getDataMap(
-						curRendererFactory, assetAvailableClassType.getName(),
+						curAssetRendererFactory,
+						assetAvailableClassType.getName(),
 						assetAvailableClassType.getClassTypeId()));
 			}
 		}
@@ -1153,7 +1155,7 @@ public class EditAssetListDisplayContext {
 	}
 
 	private PortletURL _getAssetEntryItemSelectorPortletURL(
-		AssetRendererFactory<?> rendererFactory, long subtypeSelectionId) {
+		AssetRendererFactory<?> assetRendererFactory, long subtypeSelectionId) {
 
 		AssetEntryItemSelectorCriterion assetEntryItemSelectorCriterion =
 			new AssetEntryItemSelectorCriterion();
@@ -1167,7 +1169,7 @@ public class EditAssetListDisplayContext {
 		assetEntryItemSelectorCriterion.setSubtypeSelectionId(
 			subtypeSelectionId);
 		assetEntryItemSelectorCriterion.setTypeSelection(
-			rendererFactory.getClassName());
+			assetRendererFactory.getClassName());
 
 		return _itemSelector.getItemSelectorURL(
 			RequestBackedPortletURLFactoryUtil.create(_portletRequest),
@@ -1208,7 +1210,7 @@ public class EditAssetListDisplayContext {
 	}
 
 	private Map<String, Object> _getDataMap(
-		AssetRendererFactory<?> rendererFactory, String type,
+		AssetRendererFactory<?> assetRendererFactory, String type,
 		long subtypeSelectionId) {
 
 		return HashMapBuilder.<String, Object>put(
@@ -1219,7 +1221,7 @@ public class EditAssetListDisplayContext {
 			"href",
 			String.valueOf(
 				_getAssetEntryItemSelectorPortletURL(
-					rendererFactory, subtypeSelectionId))
+					assetRendererFactory, subtypeSelectionId))
 		).put(
 			"title",
 			HtmlUtil.escape(

@@ -53,6 +53,10 @@ public class TaxonomyVocabulary implements Serializable {
 		return ObjectMapperUtil.readValue(TaxonomyVocabulary.class, json);
 	}
 
+	public static TaxonomyVocabulary unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(TaxonomyVocabulary.class, json);
+	}
+
 	@Schema
 	public Boolean getMultiValued() {
 		return multiValued;

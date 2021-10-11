@@ -1489,6 +1489,8 @@ jdbc.counter.connectionProperties=oracle.jdbc.ReadTimeout=0;oracle.net.CONNECT_T
 	</macrodef>
 
 	<macrodef name="get-testcase-property">
+		<attribute default="false" name="append" />
+		<attribute default="," name="delimiter" />
 		<attribute name="property.name" />
 
 		<sequential>
@@ -1534,7 +1536,10 @@ jdbc.counter.connectionProperties=oracle.jdbc.ReadTimeout=0;oracle.net.CONNECT_T
 
 							String propertyValue = project.getProperty(sb.toString());
 
-							if (propertyValue == null) {
+							if (@{append} && (propertyValue != null)) {
+								propertyValue = propertyValueDefault + "@{delimiter}" + propertyValue;
+							}
+							else if (propertyValue == null) {
 								sb = new StringBuilder();
 
 								sb.append(testNamespace);
@@ -8678,6 +8683,8 @@ jdbc.counter.maxActive=5
 jdbc.counter.maxIdle=0
 jdbc.counter.minIdle=0
 
+enterprise.product.notification.enabled=false
+
 company.security.strangers.verify=false
 
 browser.launcher.url=
@@ -8799,7 +8806,7 @@ web.server.display.node=true</echo>
 			<then>
 				<echo append="true" file="portal-impl/src/portal-ext.properties">
 
-cluster.link.channel.properties.control=${project.dir}/portal-web/test/functional/com/liferay/portalweb/dependencies/clustering_jdbc_ping.xml</echo>
+cluster.link.channel.properties.control=${project.dir}/portal-web/test/functional/com/liferay/portalweb/tests/coreinfrastructureee/clustering/clusteringframework/dependencies/clustering_jdbc_ping.xml</echo>
 			</then>
 		</if>
 
@@ -9229,37 +9236,6 @@ auto.deploy.dest.dir=C:/WINDOWS/system32/config/systemprofile/liferay/websphere-
 			<then>
 				<echo append="true" file="${test.ext.properties.file}">
 					aws.bucket.id=${aws.bucket.id}
-				</echo>
-			</then>
-		</if>
-
-		<if>
-			<isset property="browser.chrome.bin.args" />
-			<then>
-				<echo append="true" file="${test.ext.properties.file}">
-					browser.chrome.bin.args=${browser.chrome.bin.args}
-				</echo>
-			</then>
-		</if>
-
-		<propertycopy from="browser.chrome.bin.file[${browser.chrome.version}]" name="browser.chrome.bin.file" silent="true" />
-
-		<if>
-			<isset property="browser.chrome.bin.file" />
-			<then>
-				<echo append="true" file="${test.ext.properties.file}">
-					browser.chrome.bin.file=${browser.chrome.bin.file}
-				</echo>
-			</then>
-		</if>
-
-		<propertycopy from="browser.firefox.bin.file[${browser.firefox.version}]" name="browser.firefox.bin.file" silent="true" />
-
-		<if>
-			<isset property="browser.firefox.bin.file" />
-			<then>
-				<echo append="true" file="${test.ext.properties.file}">
-					browser.firefox.bin.file=${browser.firefox.bin.file}
 				</echo>
 			</then>
 		</if>
@@ -9901,6 +9877,9 @@ auto.deploy.dest.dir=C:/WINDOWS/system32/config/systemprofile/liferay/websphere-
 
 	<target name="prepare-selenium-browser">
 		<get-testcase-property property.name="browser.type" />
+		<get-testcase-property property.name="browser.${browser.type}.version" />
+
+		<propertycopy from="browser.${browser.type}.version" name="browser.version" override="true" />
 
 		<echo append="true" file="${test.ext.properties.file}">
 			browser.type=${browser.type}
@@ -9910,6 +9889,28 @@ auto.deploy.dest.dir=C:/WINDOWS/system32/config/systemprofile/liferay/websphere-
 		<if>
 			<equals arg1="${browser.type}" arg2="chrome" />
 			<then>
+				<get-testcase-property append="true" delimiter=" " property.name="browser.chrome.bin.args" />
+
+				<if>
+					<isset property="browser.chrome.bin.args" />
+					<then>
+						<echo append="true" file="${test.ext.properties.file}">
+							browser.chrome.bin.args=${browser.chrome.bin.args}
+						</echo>
+					</then>
+				</if>
+
+				<propertycopy from="browser.chrome.bin.file[${browser.chrome.version}]" name="browser.chrome.bin.file" silent="true" />
+
+				<if>
+					<isset property="browser.chrome.bin.file" />
+					<then>
+						<echo append="true" file="${test.ext.properties.file}">
+							browser.chrome.bin.file=${browser.chrome.bin.file}
+						</echo>
+					</then>
+				</if>
+
 				<prepare-chrome-driver />
 
 				<echo append="true" file="${test.ext.properties.file}">
@@ -9938,6 +9939,17 @@ auto.deploy.dest.dir=C:/WINDOWS/system32/config/systemprofile/liferay/websphere-
 				<equals arg1="${browser.type}" arg2="firefox" />
 			</and>
 			<then>
+				<propertycopy from="browser.firefox.bin.file[${browser.firefox.version}]" name="browser.firefox.bin.file" silent="true" />
+
+				<if>
+					<isset property="browser.firefox.bin.file" />
+					<then>
+						<echo append="true" file="${test.ext.properties.file}">
+							browser.firefox.bin.file=${browser.firefox.bin.file}
+						</echo>
+					</then>
+				</if>
+
 				<prepare-gecko-driver />
 
 				<echo append="true" file="${test.ext.properties.file}">

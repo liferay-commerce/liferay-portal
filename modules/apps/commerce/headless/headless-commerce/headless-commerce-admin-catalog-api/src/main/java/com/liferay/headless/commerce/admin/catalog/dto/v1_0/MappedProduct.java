@@ -56,6 +56,10 @@ public class MappedProduct implements Serializable {
 		return ObjectMapperUtil.readValue(MappedProduct.class, json);
 	}
 
+	public static MappedProduct unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(MappedProduct.class, json);
+	}
+
 	@Schema
 	@Valid
 	public CustomField[] getCustomFields() {

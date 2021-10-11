@@ -67,6 +67,11 @@ public class MessageBoardSection implements Serializable {
 		return ObjectMapperUtil.readValue(MessageBoardSection.class, json);
 	}
 
+	public static MessageBoardSection unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			MessageBoardSection.class, json);
+	}
+
 	@Schema(
 		description = "Block of actions allowed by the user making the request."
 	)

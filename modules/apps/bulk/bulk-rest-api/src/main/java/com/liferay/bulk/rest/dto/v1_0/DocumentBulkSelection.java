@@ -53,6 +53,11 @@ public class DocumentBulkSelection implements Serializable {
 		return ObjectMapperUtil.readValue(DocumentBulkSelection.class, json);
 	}
 
+	public static DocumentBulkSelection unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			DocumentBulkSelection.class, json);
+	}
+
 	@Schema
 	public String[] getDocumentIds() {
 		return documentIds;

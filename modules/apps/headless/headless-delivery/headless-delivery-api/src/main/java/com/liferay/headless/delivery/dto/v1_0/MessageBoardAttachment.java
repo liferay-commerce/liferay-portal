@@ -54,6 +54,11 @@ public class MessageBoardAttachment implements Serializable {
 		return ObjectMapperUtil.readValue(MessageBoardAttachment.class, json);
 	}
 
+	public static MessageBoardAttachment unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			MessageBoardAttachment.class, json);
+	}
+
 	@Schema(description = "The file's relative URL.")
 	public String getContentUrl() {
 		return contentUrl;

@@ -206,8 +206,7 @@ public class ContentDashboardItemSubtypeItemSelectorView
 				}
 
 				return LanguageUtil.format(
-					ResourceBundleUtil.getBundle(locale, getClass()),
-					"x-group-x",
+					locale, "x-group-x",
 					new String[] {
 						labelInfoLocalizedValue.getValue(locale),
 						_getGroupName(group, locale)

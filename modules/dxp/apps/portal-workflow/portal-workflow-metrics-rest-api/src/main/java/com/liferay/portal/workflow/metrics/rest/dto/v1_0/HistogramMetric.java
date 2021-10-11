@@ -58,6 +58,10 @@ public class HistogramMetric implements Serializable {
 		return ObjectMapperUtil.readValue(HistogramMetric.class, json);
 	}
 
+	public static HistogramMetric unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(HistogramMetric.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Histogram[] getHistograms() {

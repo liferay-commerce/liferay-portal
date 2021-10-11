@@ -62,6 +62,10 @@ public class WorkflowLog implements Serializable {
 		return ObjectMapperUtil.readValue(WorkflowLog.class, json);
 	}
 
+	public static WorkflowLog unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(WorkflowLog.class, json);
+	}
+
 	@Schema(
 		description = "The user account of the person auditing the workflow."
 	)

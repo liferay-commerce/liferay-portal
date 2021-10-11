@@ -54,6 +54,10 @@ public class SegmentUser implements Serializable {
 		return ObjectMapperUtil.readValue(SegmentUser.class, json);
 	}
 
+	public static SegmentUser unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(SegmentUser.class, json);
+	}
+
 	@Schema(description = "The user's email address.")
 	public String getEmailAddress() {
 		return emailAddress;

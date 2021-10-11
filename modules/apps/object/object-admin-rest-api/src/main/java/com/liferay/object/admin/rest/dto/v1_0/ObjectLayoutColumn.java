@@ -51,6 +51,10 @@ public class ObjectLayoutColumn implements Serializable {
 		return ObjectMapperUtil.readValue(ObjectLayoutColumn.class, json);
 	}
 
+	public static ObjectLayoutColumn unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(ObjectLayoutColumn.class, json);
+	}
+
 	@Schema
 	public Long getId() {
 		return id;

@@ -12,25 +12,23 @@ definition {
 	}
 
 	tearDown {
-		var testPortalInstance = PropsUtil.get("test.portal.instance");
+		Navigator.openURL();
 
-		if ("${testPortalInstance}" == "true") {
-			PortalInstances.tearDownCP();
+		if (IsElementPresent(locator1 = "UserBar#USER_AVATAR_IMAGE")) {
+			User.logoutPG();
 		}
-		else {
-			Navigator.openURL();
 
-			CommerceConfiguration.commerceAdminTearDown();
+		User.firstLoginPG();
 
-			CommerceConfiguration.commerceInitializersTearDown();
-		}
+		CommerceConfiguration.commerceAdminTearDown();
+
+		CommerceConfiguration.commerceInitializersTearDown();
 	}
 
 	@description = "COMMERCE-6374. As a buyer, I want to be able to create a new order by clicking on 'Add Order' button"
 	@priority = "3"
 	test CreateNewOrderFromPendingOrdersPage {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "SFCommerceOrders#CreateNewOrderFromPendingOrdersPage";
 
 		// TODO Review
 
@@ -61,7 +59,6 @@ definition {
 	@priority = "3"
 	test DeleteOrderFromPendingOrderDetailsPage {
 		property portal.acceptance = "Intern Test";
-		property test.name.skip.portal.instance = "SFCommerceOrders#DeleteOrderFromPendingOrderDetailsPage";
 
 		// TODO Review
 
@@ -102,7 +99,6 @@ definition {
 	@priority = "3"
 	test EditOrderFromPendingOrderDetailsPage {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "SFCommerceOrders#EditOrderFromPendingOrderDetailsPage";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
@@ -221,7 +217,6 @@ definition {
 	@priority = "3"
 	test ReorderFromPlacedOrdersDetailsPage {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "SFCommerceOrders#ReorderFromPlacedOrdersDetailsPage";
 
 		// TODO Review
 
@@ -286,7 +281,6 @@ definition {
 	@priority = "3"
 	test SearchOrderInPendingOrdersPage {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "SFCommerceOrders#SearchOrderInPendingOrdersPage";
 
 		// TODO Review
 
@@ -335,7 +329,6 @@ definition {
 	@priority = "3"
 	test SearchOrderInPlacedOrdersPage {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "SFCommerceOrders#SearchOrderInPlacedOrdersPage";
 
 		// TODO Review
 
@@ -434,7 +427,6 @@ definition {
 	@priority = "3"
 	test UseADTInPendingOrdersWidget {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "SFCommerceOrders#UseADTInPendingOrdersWidget";
 
 		// TODO Review
 
@@ -521,7 +513,6 @@ definition {
 	@priority = "3"
 	test UseADTInPlacedOrdersWidget {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "SFCommerceOrders#UseADTInPlacedOrdersWidget";
 
 		// TODO Review
 
@@ -623,7 +614,6 @@ definition {
 	@priority = "3"
 	test ViewListOfShipmentsInPlacedOrdersDetailsPage {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "SFCommerceOrders#ViewListOfShipmentsInPlacedOrdersDetailsPage";
 
 		// TODO Review
 

@@ -48,6 +48,7 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowHandlerRegistryUtil;
 import com.liferay.portal.search.filter.DateRangeFilterBuilder;
 import com.liferay.portal.search.filter.FilterBuilders;
 import com.liferay.portal.search.spi.model.query.contributor.ModelPreFilterContributor;
@@ -110,6 +111,7 @@ public class KaleoTaskInstanceTokenModelPreFilterContributor
 			booleanFilter.add(innerBooleanFilter, BooleanClauseOccur.MUST);
 		}
 
+		appendClassNameIdsTerm(booleanFilter, kaleoTaskInstanceTokenQuery);
 		appendCompletedTerm(booleanFilter, kaleoTaskInstanceTokenQuery);
 		appendKaleoDefinitionIdTerm(booleanFilter, kaleoTaskInstanceTokenQuery);
 		appendKaleoInstanceIdsTerm(booleanFilter, kaleoTaskInstanceTokenQuery);
@@ -243,6 +245,34 @@ public class KaleoTaskInstanceTokenModelPreFilterContributor
 			));
 
 		booleanFilter.add(assigneeClassPKsTermsFilter);
+	}
+
+	protected void appendClassNameIdsTerm(
+		BooleanFilter booleanFilter,
+		KaleoTaskInstanceTokenQuery kaleoTaskInstanceTokenQuery) {
+
+		if (!kaleoTaskInstanceTokenQuery.isSearchByActiveWorkflowHandlers()) {
+			return;
+		}
+
+		TermsFilter classNameIdsTermsFilter = new TermsFilter(
+			Field.CLASS_NAME_ID);
+
+		classNameIdsTermsFilter.addValues(
+			Stream.of(
+				WorkflowHandlerRegistryUtil.getWorkflowHandlers()
+			).flatMap(
+				List::stream
+			).map(
+				workflowHandler -> portal.getClassNameId(
+					workflowHandler.getClassName())
+			).map(
+				String::valueOf
+			).toArray(
+				String[]::new
+			));
+
+		booleanFilter.add(classNameIdsTermsFilter, BooleanClauseOccur.MUST);
 	}
 
 	protected void appendCompletedTerm(

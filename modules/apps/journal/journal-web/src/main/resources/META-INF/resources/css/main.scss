@@ -193,7 +193,6 @@ $productMenuWidth: 320px;
 				max-height: calc(
 					100vh - #{$controlMenuHeight + $portletLayoutMargin} - #{$toolbarHeight}
 				);
-				overflow: auto;
 
 				@include media-breakpoint-up(lg) {
 					max-height: calc(

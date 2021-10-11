@@ -317,10 +317,10 @@ definition {
 
 		PageEditor.waitForAutoSave();
 
-		AssertVisible(
-			key_fragmentClass = "content",
-			key_image = "Document_1.jpg",
-			locator1 = "Fragment#PAGE_EDITOR_FRAGMENT_IMAGE");
+		PageEditor.viewFragmentEditableImage(
+			id = "image-square",
+			imageDescription = "",
+			imageFileName = "Document_1.jpg");
 
 		PageEditor.gotoSaveAsFragment(fragmentName = "Container");
 
@@ -364,10 +364,10 @@ definition {
 			composition = "true",
 			fragmentName = "New Fragment Name");
 
-		AssertVisible(
-			key_fragmentClass = "content",
-			key_image = "Document_1.jpg",
-			locator1 = "Fragment#PAGE_EDITOR_FRAGMENT_IMAGE");
+		PageEditor.viewFragmentEditableImage(
+			id = "image-square",
+			imageDescription = "",
+			imageFileName = "Document_1.jpg");
 	}
 
 	@description = "This is a test case for LPS-101255. The composition of fragments can be saved in an existing collection."
@@ -519,9 +519,10 @@ definition {
 		}
 
 		task ("View the selected page is shown in Page field") {
-			AssertVisible(
-				key_contentName = "Test Widget Page Name",
-				locator1 = "PageEditor#ITEM_SELECTOR_CONTENT_INPUT");
+			AssertTextEquals(
+				key_fieldLabel = "Page",
+				locator1 = "PageEditor#ITEM_SELECTOR_CONTENT_INPUT",
+				value1 = "Test Widget Page Name");
 		}
 
 		task ("View selected page is linked to Card fragment") {
@@ -1478,9 +1479,9 @@ definition {
 		}
 
 		task ("Import fragment dependencies") {
-			UploadCommonFile(
-				locator1 = "TextInput#FILE",
-				value1 = "collections-HTMLCSSJSJSON-replace.zip");
+			UploadFileWithCustomPath.uploadArchiveFile(
+				fileName = "collections-HTMLCSSJSJSON-replace.zip",
+				filePath = "enduser/wem/fragment");
 
 			SelectFrameTop();
 
@@ -1545,9 +1546,9 @@ definition {
 		}
 
 		task ("Import fragment dependencies") {
-			UploadCommonFile(
-				locator1 = "TextInput#FILE",
-				value1 = "collections-InlineContent-edited.zip");
+			UploadFileWithCustomPath.uploadArchiveFile(
+				fileName = "collections-InlineContent-edited.zip",
+				filePath = "enduser/wem/fragment");
 
 			SelectFrameTop();
 
@@ -1591,9 +1592,9 @@ definition {
 		}
 
 		task ("Import fragment dependencies") {
-			UploadCommonFile(
-				locator1 = "TextInput#FILE",
-				value1 = "fragment-collection.zip");
+			UploadFileWithCustomPath.uploadArchiveFile(
+				fileName = "fragment-collection.zip",
+				filePath = "enduser/wem/fragment");
 
 			SelectFrameTop();
 

@@ -62,6 +62,10 @@ public class Document implements Serializable {
 		return ObjectMapperUtil.readValue(Document.class, json);
 	}
 
+	public static Document unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Document.class, json);
+	}
+
 	@Schema(
 		description = "Block of actions allowed by the user making the request."
 	)

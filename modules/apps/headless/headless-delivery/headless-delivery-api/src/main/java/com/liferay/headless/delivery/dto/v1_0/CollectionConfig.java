@@ -57,6 +57,10 @@ public class CollectionConfig implements Serializable {
 		return ObjectMapperUtil.readValue(CollectionConfig.class, json);
 	}
 
+	public static CollectionConfig unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(CollectionConfig.class, json);
+	}
+
 	@Schema(description = "The page collection's reference.")
 	@Valid
 	public Object getCollectionReference() {

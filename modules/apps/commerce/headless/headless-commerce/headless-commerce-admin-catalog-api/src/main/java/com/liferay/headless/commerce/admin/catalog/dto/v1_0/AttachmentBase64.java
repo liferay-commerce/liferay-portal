@@ -58,6 +58,10 @@ public class AttachmentBase64 implements Serializable {
 		return ObjectMapperUtil.readValue(AttachmentBase64.class, json);
 	}
 
+	public static AttachmentBase64 unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(AttachmentBase64.class, json);
+	}
+
 	@Schema(description = "Base64 encoded file")
 	public String getAttachment() {
 		return attachment;

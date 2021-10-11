@@ -54,6 +54,10 @@ public class HoursAvailable implements Serializable {
 		return ObjectMapperUtil.readValue(HoursAvailable.class, json);
 	}
 
+	public static HoursAvailable unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(HoursAvailable.class, json);
+	}
+
 	@Schema(
 		description = "The organization's closing time (in `HH:MM` format)."
 	)

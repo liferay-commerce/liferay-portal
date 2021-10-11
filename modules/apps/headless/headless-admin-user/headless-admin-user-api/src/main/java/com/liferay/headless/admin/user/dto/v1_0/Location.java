@@ -56,6 +56,10 @@ public class Location implements Serializable {
 		return ObjectMapperUtil.readValue(Location.class, json);
 	}
 
+	public static Location unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Location.class, json);
+	}
+
 	@Schema(
 		description = "The organization's country. This follows the [`addressCountry`](https://schema.org/addressCountry) specification."
 	)

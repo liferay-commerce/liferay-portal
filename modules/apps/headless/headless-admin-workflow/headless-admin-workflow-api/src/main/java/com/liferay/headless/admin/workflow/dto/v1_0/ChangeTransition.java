@@ -54,6 +54,10 @@ public class ChangeTransition implements Serializable {
 		return ObjectMapperUtil.readValue(ChangeTransition.class, json);
 	}
 
+	public static ChangeTransition unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(ChangeTransition.class, json);
+	}
+
 	@Schema
 	public String getComment() {
 		return comment;

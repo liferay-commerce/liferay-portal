@@ -56,6 +56,10 @@ public class ContentFieldValue implements Serializable {
 		return ObjectMapperUtil.readValue(ContentFieldValue.class, json);
 	}
 
+	public static ContentFieldValue unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(ContentFieldValue.class, json);
+	}
+
 	@Schema(description = "The field's content for simple types.")
 	public String getData() {
 		return data;

@@ -53,6 +53,11 @@ public class AccountOrganization implements Serializable {
 		return ObjectMapperUtil.readValue(AccountOrganization.class, json);
 	}
 
+	public static AccountOrganization unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			AccountOrganization.class, json);
+	}
+
 	@DecimalMin("0")
 	@Schema
 	public Long getAccountId() {

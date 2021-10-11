@@ -97,7 +97,7 @@ public class ObjectRelationshipResourceImpl
 		return _toObjectRelationship(
 			_objectRelationshipService.updateObjectRelationship(
 				objectRelationshipId,
-				objectRelationship.getDeleteTypeAsString(),
+				objectRelationship.getDeletionTypeAsString(),
 				LocalizedMapUtil.getLocalizedMap(
 					objectRelationship.getLabel())));
 	}
@@ -118,7 +118,9 @@ public class ObjectRelationshipResourceImpl
 				actions = HashMapBuilder.put(
 					"delete",
 					() -> {
-						if (objectDefinition1.isApproved()) {
+						if (objectDefinition1.isApproved() ||
+							objectRelationship.isReverse()) {
+
 							return null;
 						}
 
@@ -129,7 +131,7 @@ public class ObjectRelationshipResourceImpl
 							objectRelationship.getObjectDefinitionId1());
 					}
 				).build();
-				deleteType = ObjectRelationship.DeleteType.create(
+				deletionType = ObjectRelationship.DeletionType.create(
 					objectRelationship.getDeletionType());
 				id = objectRelationship.getObjectRelationshipId();
 				label = LocalizedMapUtil.getI18nMap(

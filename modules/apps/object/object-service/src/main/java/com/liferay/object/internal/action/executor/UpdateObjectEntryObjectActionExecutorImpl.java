@@ -15,12 +15,15 @@
 package com.liferay.object.internal.action.executor;
 
 import com.liferay.object.action.executor.ObjectActionExecutor;
-import com.liferay.object.action.request.ObjectActionRequest;
 import com.liferay.object.constants.ObjectActionExecutorConstants;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.UnicodeProperties;
+
+import java.io.Serializable;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -33,21 +36,21 @@ public class UpdateObjectEntryObjectActionExecutorImpl
 	implements ObjectActionExecutor {
 
 	@Override
-	public void execute(ObjectActionRequest objectActionRequest)
+	public void execute(
+			long companyId, UnicodeProperties parametersUnicodeProperties,
+			JSONObject payloadJSONObject, long userId)
 		throws Exception {
 
 		_objectEntryLocalService.updateObjectEntry(
-			objectActionRequest.getUserId(),
-			GetterUtil.getLong(
-				objectActionRequest.getParameterValue("classPK")),
-			HashMapBuilder.put(
-				String.valueOf(
-					objectActionRequest.getParameterValue("objectFieldName")),
-				objectActionRequest.getParameterValue("objectFieldValue")
+			userId,
+			GetterUtil.getLong(parametersUnicodeProperties.get("classPK")),
+			HashMapBuilder.<String, Serializable>put(
+				parametersUnicodeProperties.get("objectFieldName"),
+				parametersUnicodeProperties.get("objectFieldValue")
 			).build(),
 			new ServiceContext() {
 				{
-					setUserId(objectActionRequest.getUserId());
+					setUserId(userId);
 				}
 			});
 	}

@@ -56,6 +56,10 @@ public class RoleBrief implements Serializable {
 		return ObjectMapperUtil.readValue(RoleBrief.class, json);
 	}
 
+	public static RoleBrief unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(RoleBrief.class, json);
+	}
+
 	@Schema(description = "The role's ID.")
 	public Long getId() {
 		return id;

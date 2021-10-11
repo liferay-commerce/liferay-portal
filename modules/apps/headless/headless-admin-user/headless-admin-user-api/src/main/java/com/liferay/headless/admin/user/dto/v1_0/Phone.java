@@ -54,6 +54,10 @@ public class Phone implements Serializable {
 		return ObjectMapperUtil.readValue(Phone.class, json);
 	}
 
+	public static Phone unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Phone.class, json);
+	}
+
 	@Schema(description = "The phone number's extension.")
 	public String getExtension() {
 		return extension;

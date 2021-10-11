@@ -56,6 +56,10 @@ public class DiscountAccount implements Serializable {
 		return ObjectMapperUtil.readValue(DiscountAccount.class, json);
 	}
 
+	public static DiscountAccount unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(DiscountAccount.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Account getAccount() {

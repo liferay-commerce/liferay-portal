@@ -56,6 +56,11 @@ public class FragmentInlineValue implements Serializable {
 		return ObjectMapperUtil.readValue(FragmentInlineValue.class, json);
 	}
 
+	public static FragmentInlineValue unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			FragmentInlineValue.class, json);
+	}
+
 	@Schema(description = "The fragment's inline value.")
 	public String getValue() {
 		return value;

@@ -57,6 +57,10 @@ public class SLA implements Serializable {
 		return ObjectMapperUtil.readValue(SLA.class, json);
 	}
 
+	public static SLA unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(SLA.class, json);
+	}
+
 	@Schema
 	public String getCalendarKey() {
 		return calendarKey;

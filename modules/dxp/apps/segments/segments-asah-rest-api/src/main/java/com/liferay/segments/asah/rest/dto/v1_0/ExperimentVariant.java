@@ -54,6 +54,10 @@ public class ExperimentVariant implements Serializable {
 		return ObjectMapperUtil.readValue(ExperimentVariant.class, json);
 	}
 
+	public static ExperimentVariant unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(ExperimentVariant.class, json);
+	}
+
 	@Schema
 	public String getId() {
 		return id;

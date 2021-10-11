@@ -60,6 +60,10 @@ public class ExportTask implements Serializable {
 		return ObjectMapperUtil.readValue(ExportTask.class, json);
 	}
 
+	public static ExportTask unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(ExportTask.class, json);
+	}
+
 	@Schema(
 		description = "The item class name for which data will be exported in batch."
 	)

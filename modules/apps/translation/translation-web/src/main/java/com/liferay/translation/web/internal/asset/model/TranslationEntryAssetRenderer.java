@@ -28,7 +28,6 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.translation.info.field.TranslationInfoFieldChecker;
 import com.liferay.translation.model.TranslationEntry;
@@ -123,8 +122,7 @@ public class TranslationEntryAssetRenderer
 			}
 
 			return LanguageUtil.format(
-				ResourceBundleUtil.getBundle(locale, getClass()),
-				"translation-of-x-to-x",
+				locale, "translation-of-x-to-x",
 				new Object[] {
 					assetRenderer.getTitle(locale),
 					StringUtil.replace(

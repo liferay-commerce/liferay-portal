@@ -37,9 +37,6 @@ import com.liferay.redirect.service.RedirectNotFoundEntryLocalService;
 import java.util.List;
 import java.util.Map;
 
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionURL;
-
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -90,23 +87,19 @@ public class RedirectNotFoundEntriesManagementToolbarDisplayContext
 	public Map<String, Object> getAdditionalProps() {
 		return HashMapBuilder.<String, Object>put(
 			"editRedirectNotFoundEntriesURL",
-			() -> {
-				ActionURL editRedirectNotFoundEntriesURL =
-					liferayPortletResponse.createActionURL();
+			() -> PortletURLBuilder.createActionURL(
+				liferayPortletResponse
+			).setActionName(
+				"/redirect/edit_redirect_not_found_entry"
+			).setRedirect(
+				() -> {
+					ThemeDisplay themeDisplay =
+						(ThemeDisplay)httpServletRequest.getAttribute(
+							WebKeys.THEME_DISPLAY);
 
-				editRedirectNotFoundEntriesURL.setParameter(
-					ActionRequest.ACTION_NAME,
-					"/redirect/edit_redirect_not_found_entry");
-
-				ThemeDisplay themeDisplay =
-					(ThemeDisplay)httpServletRequest.getAttribute(
-						WebKeys.THEME_DISPLAY);
-
-				editRedirectNotFoundEntriesURL.setParameter(
-					"redirect", themeDisplay.getURLCurrent());
-
-				return editRedirectNotFoundEntriesURL.toString();
-			}
+					return themeDisplay.getURLCurrent();
+				}
+			).buildString()
 		).build();
 	}
 

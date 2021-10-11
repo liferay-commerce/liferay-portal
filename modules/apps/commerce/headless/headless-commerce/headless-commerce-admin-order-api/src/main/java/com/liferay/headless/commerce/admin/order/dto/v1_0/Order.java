@@ -63,6 +63,10 @@ public class Order implements Serializable {
 		return ObjectMapperUtil.readValue(Order.class, json);
 	}
 
+	public static Order unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Order.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Account getAccount() {

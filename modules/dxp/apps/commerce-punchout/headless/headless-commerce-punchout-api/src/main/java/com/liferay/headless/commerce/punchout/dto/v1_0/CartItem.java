@@ -54,6 +54,10 @@ public class CartItem implements Serializable {
 		return ObjectMapperUtil.readValue(CartItem.class, json);
 	}
 
+	public static CartItem unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(CartItem.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Map<String, ?> getCustomFields() {

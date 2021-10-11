@@ -101,7 +101,7 @@ const normalizeObjectRelationships: TNormalizeObjectRelationships = ({
 };
 
 const Layout: React.FC<React.HTMLAttributes<HTMLElement>> = () => {
-	const [{objectLayout, objectLayoutId}, dispatch] = useContext(
+	const [{objectFields, objectLayout, objectLayoutId}, dispatch] = useContext(
 		LayoutContext
 	);
 	const [activeIndex, setActiveIndex] = useState<number>(0);
@@ -196,6 +196,19 @@ const Layout: React.FC<React.HTMLAttributes<HTMLElement>> = () => {
 	}, [objectLayoutId, dispatch]);
 
 	const saveObjectLayout = async () => {
+		const hasFieldsInLayout = objectFields.some(
+			(objectField) => objectField.inLayout
+		);
+
+		if (!hasFieldsInLayout) {
+			Liferay.Util.openToast({
+				message: Liferay.Language.get('please-add-at-least-one-field'),
+				type: 'danger',
+			});
+
+			return;
+		}
+
 		const response = await Liferay.Util.fetch(
 			`/o/object-admin/v1.0/object-layouts/${objectLayoutId}`,
 			{

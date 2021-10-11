@@ -778,7 +778,8 @@ public class WorkflowTaskManagerImpl implements WorkflowTaskManager {
 			long companyId, long userId, String assetTitle, String[] taskNames,
 			String[] assetTypes, Long[] assetPrimaryKeys,
 			String assigneeClassName, Long[] assigneeIds, Date dueDateGT,
-			Date dueDateLT, Boolean completed, Boolean searchByUserRoles,
+			Date dueDateLT, Boolean completed,
+			boolean searchByActiveWorkflowHandlers, Boolean searchByUserRoles,
 			Long workflowDefinitionId, Long[] workflowInstanceIds,
 			Boolean andOperator, int start, int end,
 			OrderByComparator<WorkflowTask> orderByComparator)
@@ -797,8 +798,8 @@ public class WorkflowTaskManagerImpl implements WorkflowTaskManager {
 							assetTitle, taskNames, assetTypes, assetPrimaryKeys,
 							assigneeClassName, assigneeIds, dueDateGT,
 							dueDateLT, completed, workflowDefinitionId,
-							workflowInstanceIds, searchByUserRoles, andOperator,
-							start, end,
+							workflowInstanceIds, searchByActiveWorkflowHandlers,
+							searchByUserRoles, andOperator, start, end,
 							KaleoTaskInstanceTokenOrderByComparator.
 								getOrderByComparator(
 									orderByComparator,

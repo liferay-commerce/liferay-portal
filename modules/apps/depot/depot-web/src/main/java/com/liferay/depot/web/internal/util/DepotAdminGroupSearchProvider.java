@@ -27,7 +27,6 @@ import com.liferay.portal.kernel.service.GroupService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portlet.usersadmin.search.GroupSearch;
 import com.liferay.portlet.usersadmin.search.GroupSearchTerms;
@@ -105,9 +104,7 @@ public class DepotAdminGroupSearchProvider {
 
 		groupSearch.setEmptyResultsMessage(
 			LanguageUtil.get(
-				ResourceBundleUtil.getBundle(
-					portletRequest.getLocale(), getClass()),
-				"no-asset-libraries-were-found"));
+				portletRequest.getLocale(), "no-asset-libraries-were-found"));
 
 		return groupSearch;
 	}
@@ -130,9 +127,7 @@ public class DepotAdminGroupSearchProvider {
 
 		groupSearch.setEmptyResultsMessage(
 			LanguageUtil.get(
-				ResourceBundleUtil.getBundle(
-					portletRequest.getLocale(), getClass()),
-				"no-asset-libraries-were-found"));
+				portletRequest.getLocale(), "no-asset-libraries-were-found"));
 
 		GroupSearchTerms searchTerms =
 			(GroupSearchTerms)groupSearch.getSearchTerms();

@@ -57,6 +57,11 @@ public class PageCollectionItemDefinition implements Serializable {
 			PageCollectionItemDefinition.class, json);
 	}
 
+	public static PageCollectionItemDefinition unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			PageCollectionItemDefinition.class, json);
+	}
+
 	@Schema(description = "The page collection item's configuration.")
 	@Valid
 	public Object getCollectionItemConfig() {

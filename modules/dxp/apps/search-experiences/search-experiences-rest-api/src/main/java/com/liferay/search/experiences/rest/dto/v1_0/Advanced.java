@@ -51,6 +51,10 @@ public class Advanced implements Serializable {
 		return ObjectMapperUtil.readValue(Advanced.class, json);
 	}
 
+	public static Advanced unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Advanced.class, json);
+	}
+
 	@Schema
 	public String[] getExcludes() {
 		return excludes;

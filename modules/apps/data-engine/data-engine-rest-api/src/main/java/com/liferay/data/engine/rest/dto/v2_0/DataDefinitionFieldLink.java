@@ -53,6 +53,11 @@ public class DataDefinitionFieldLink implements Serializable {
 		return ObjectMapperUtil.readValue(DataDefinitionFieldLink.class, json);
 	}
 
+	public static DataDefinitionFieldLink unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			DataDefinitionFieldLink.class, json);
+	}
+
 	@Schema
 	@Valid
 	public DataDefinition getDataDefinition() {

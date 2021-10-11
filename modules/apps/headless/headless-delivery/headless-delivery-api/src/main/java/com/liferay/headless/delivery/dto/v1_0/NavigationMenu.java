@@ -61,6 +61,10 @@ public class NavigationMenu implements Serializable {
 		return ObjectMapperUtil.readValue(NavigationMenu.class, json);
 	}
 
+	public static NavigationMenu unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(NavigationMenu.class, json);
+	}
+
 	@Schema(
 		description = "Block of actions allowed by the user making the request."
 	)

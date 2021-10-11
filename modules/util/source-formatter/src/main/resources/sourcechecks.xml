@@ -1542,6 +1542,7 @@
 		<check name="XMLServiceReferenceCheck">
 			<category name="Bug Prevention" />
 			<description name="Checks for unused references in `service.xml` file." />
+			<property name="avoidReferences" value="false" />
 		</check>
 		<check name="XMLSourcechecksFileCheck">
 			<category name="Bug Prevention" />

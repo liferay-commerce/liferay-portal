@@ -55,6 +55,10 @@ public class Layout implements Serializable {
 		return ObjectMapperUtil.readValue(Layout.class, json);
 	}
 
+	public static Layout unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Layout.class, json);
+	}
+
 	@Schema(deprecated = true)
 	@Valid
 	public Align getAlign() {

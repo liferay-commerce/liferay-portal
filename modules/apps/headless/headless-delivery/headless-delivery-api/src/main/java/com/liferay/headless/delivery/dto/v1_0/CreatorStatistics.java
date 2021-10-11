@@ -57,6 +57,10 @@ public class CreatorStatistics implements Serializable {
 		return ObjectMapperUtil.readValue(CreatorStatistics.class, json);
 	}
 
+	public static CreatorStatistics unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(CreatorStatistics.class, json);
+	}
+
 	@Schema(description = "Join date of the author.")
 	public Date getJoinDate() {
 		return joinDate;

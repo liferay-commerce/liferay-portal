@@ -18,6 +18,7 @@ import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.DDMTemplate;
 import com.liferay.dynamic.data.mapping.service.DDMTemplateLocalService;
 import com.liferay.journal.constants.JournalFolderConstants;
+import com.liferay.journal.constants.JournalPortletKeys;
 import com.liferay.journal.internal.transformer.JournalTransformerListenerRegistryUtil;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalArticleDisplay;
@@ -31,6 +32,8 @@ import com.liferay.portal.kernel.diff.CompareVersionsException;
 import com.liferay.portal.kernel.diff.DiffHtmlUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.io.unsync.UnsyncStringReader;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.PortletRequestModel;
 import com.liferay.portal.kernel.search.Document;
@@ -45,15 +48,23 @@ import com.liferay.portal.kernel.templateparser.TransformerListener;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.kernel.xml.DocumentException;
+import com.liferay.portal.kernel.xml.Element;
+import com.liferay.portal.kernel.xml.Node;
+import com.liferay.portal.kernel.xml.SAXReaderUtil;
+import com.liferay.portal.kernel.xml.XPath;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.portlet.PortletRequest;
 
@@ -103,9 +114,24 @@ public class JournalHelperImpl implements JournalHelper {
 				targetArticle, null, Constants.VIEW, languageId, 1,
 				portletRequestModel, themeDisplay);
 
-		return DiffHtmlUtil.diff(
+		String diff = DiffHtmlUtil.diff(
 			new UnsyncStringReader(sourceArticleDisplay.getContent()),
 			new UnsyncStringReader(targetArticleDisplay.getContent()));
+
+		if (!diff.matches(_MAP_REGEX)) {
+			return diff;
+		}
+
+		try {
+			return _processDiff(diff);
+		}
+		catch (DocumentException documentException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug("Invalid content:\n" + diff, documentException);
+			}
+
+			return diff;
+		}
 	}
 
 	@Override
@@ -262,6 +288,96 @@ public class JournalHelperImpl implements JournalHelper {
 
 		return script;
 	}
+
+	private List<String> _getAttributeValues(String content, Pattern pattern) {
+		Matcher matcher = pattern.matcher(content);
+
+		List<String> attributeValues = new ArrayList<>();
+
+		while (matcher.find()) {
+			attributeValues.add(matcher.group(1));
+		}
+
+		return attributeValues;
+	}
+
+	private String _processDiff(String diff) throws Exception {
+		com.liferay.portal.kernel.xml.Document document = SAXReaderUtil.read(
+			diff);
+
+		XPath xPathSelector = SAXReaderUtil.createXPath(
+			"//div[@class='lfr-map']");
+
+		List<Node> mapNodes = xPathSelector.selectNodes(document);
+
+		for (Node mapNode : mapNodes) {
+			Element mapElement = (Element)mapNode;
+
+			Element spanElement = mapElement.element("span");
+
+			if (spanElement == null) {
+				continue;
+			}
+
+			String changes = HtmlUtil.stripHtml(
+				spanElement.attributeValue("changes"));
+
+			if (changes == null) {
+				continue;
+			}
+
+			List<String> latitudes = _getAttributeValues(
+				changes, _latitudePattern);
+
+			String oldLatitude = latitudes.get(0);
+			String newLatitude = latitudes.get(1);
+
+			List<String> longitudes = _getAttributeValues(
+				changes, _longitudePattern);
+
+			String oldLongitude = longitudes.get(0);
+			String newLongitude = longitudes.get(1);
+
+			if (newLatitude.equals(oldLatitude) &&
+				newLongitude.equals(oldLongitude)) {
+
+				continue;
+			}
+
+			mapElement.addAttribute("style", "border: 2px solid #CFC;");
+
+			Element oldMapElement = mapElement.createCopy();
+
+			oldMapElement.addAttribute("data-latitude", oldLatitude);
+			oldMapElement.addAttribute("data-longitude", oldLongitude);
+
+			List<String> ids = _getAttributeValues(changes, _idPattern);
+
+			oldMapElement.addAttribute("id", ids.get(0));
+
+			oldMapElement.addAttribute("style", "border: 2px solid #FDC6C6;");
+
+			Element parentElement = mapElement.getParent();
+
+			List<Element> elements = parentElement.elements();
+
+			elements.add(elements.indexOf(mapElement), oldMapElement);
+		}
+
+		return document.compactString();
+	}
+
+	private static final String _MAP_REGEX = ".*class=\"lfr-map\".*";
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		JournalHelperImpl.class);
+
+	private static final Pattern _idPattern = Pattern.compile(
+		"id (_" + JournalPortletKeys.JOURNAL + "_[-0-9a-zA-Z_]+Map)");
+	private static final Pattern _latitudePattern = Pattern.compile(
+		"data-latitude (-?\\d+(?:\\.\\d+)?)");
+	private static final Pattern _longitudePattern = Pattern.compile(
+		"data-longitude (-?\\d+(?:\\.\\d+)?)");
 
 	@Reference
 	private DDMTemplateLocalService _ddmTemplateLocalService;

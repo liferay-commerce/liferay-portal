@@ -34,6 +34,7 @@ create index IX_F01F1EEA on ObjectLayoutTab (objectLayoutId);
 create index IX_94D361A6 on ObjectLayoutTab (uuid_[$COLUMN_LENGTH:75$], companyId);
 
 create index IX_A71785B6 on ObjectRelationship (objectDefinitionId1, name[$COLUMN_LENGTH:75$]);
+create index IX_59059880 on ObjectRelationship (objectDefinitionId1, objectDefinitionId2, name[$COLUMN_LENGTH:75$], reverse, type_[$COLUMN_LENGTH:75$]);
 create index IX_F6F370B8 on ObjectRelationship (objectDefinitionId1, objectDefinitionId2, name[$COLUMN_LENGTH:75$], type_[$COLUMN_LENGTH:75$]);
 create index IX_DE3EBEF8 on ObjectRelationship (objectDefinitionId2);
 create index IX_F1DC092D on ObjectRelationship (objectFieldId2);

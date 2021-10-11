@@ -278,13 +278,29 @@ public class LayoutActionDropdownItemsProvider {
 					).add(
 						() -> _isShowExportTranslationAction(layout),
 						dropdownItem -> {
-							dropdownItem.putData("action", "exportTranslation");
-							dropdownItem.putData(
-								"plid",
-								String.valueOf(
-									BeanPropertiesUtil.getLong(
-										draftLayout, "plid",
-										layout.getPlid())));
+							dropdownItem.setHref(
+								PortletURLBuilder.create(
+									_translationURLProvider.
+										getExportTranslationURL(
+											layout.getGroupId(),
+											PortalUtil.getClassNameId(
+												Layout.class.getName()),
+											BeanPropertiesUtil.getLong(
+												draftLayout, "plid",
+												layout.getPlid()),
+											RequestBackedPortletURLFactoryUtil.
+												create(_httpServletRequest))
+								).setRedirect(
+									PortalUtil.getCurrentURL(
+										_httpServletRequest)
+								).setPortletResource(
+									() -> {
+										PortletDisplay portletDisplay =
+											_themeDisplay.getPortletDisplay();
+
+										return portletDisplay.getId();
+									}
+								).buildString());
 							dropdownItem.setLabel(
 								LanguageUtil.get(
 									_httpServletRequest,

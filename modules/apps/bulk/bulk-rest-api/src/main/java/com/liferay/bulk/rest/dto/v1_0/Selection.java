@@ -51,6 +51,10 @@ public class Selection implements Serializable {
 		return ObjectMapperUtil.readValue(Selection.class, json);
 	}
 
+	public static Selection unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Selection.class, json);
+	}
+
 	@Schema
 	public Long getSize() {
 		return size;

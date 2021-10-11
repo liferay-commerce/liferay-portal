@@ -54,6 +54,10 @@ public class RelatedContent implements Serializable {
 		return ObjectMapperUtil.readValue(RelatedContent.class, json);
 	}
 
+	public static RelatedContent unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(RelatedContent.class, json);
+	}
+
 	@Schema(description = "The type of the content.")
 	public String getContentType() {
 		return contentType;

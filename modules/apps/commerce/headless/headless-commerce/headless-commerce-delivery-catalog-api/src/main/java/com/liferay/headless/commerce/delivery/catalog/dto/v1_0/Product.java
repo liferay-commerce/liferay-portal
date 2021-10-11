@@ -58,6 +58,10 @@ public class Product implements Serializable {
 		return ObjectMapperUtil.readValue(Product.class, json);
 	}
 
+	public static Product unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Product.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Attachment[] getAttachments() {

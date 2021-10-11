@@ -57,6 +57,11 @@ public class ProductShippingConfiguration implements Serializable {
 			ProductShippingConfiguration.class, json);
 	}
 
+	public static ProductShippingConfiguration unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			ProductShippingConfiguration.class, json);
+	}
+
 	@DecimalMin("0")
 	@Schema
 	@Valid

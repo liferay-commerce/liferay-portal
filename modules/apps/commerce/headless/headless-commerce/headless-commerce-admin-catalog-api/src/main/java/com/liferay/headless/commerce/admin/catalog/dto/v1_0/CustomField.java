@@ -56,6 +56,10 @@ public class CustomField implements Serializable {
 		return ObjectMapperUtil.readValue(CustomField.class, json);
 	}
 
+	public static CustomField unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(CustomField.class, json);
+	}
+
 	@Schema
 	@Valid
 	public CustomValue getCustomValue() {

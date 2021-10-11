@@ -53,6 +53,10 @@ public class CustomValue implements Serializable {
 		return ObjectMapperUtil.readValue(CustomValue.class, json);
 	}
 
+	public static CustomValue unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(CustomValue.class, json);
+	}
+
 	@Schema(description = "The field's content value for simple types.")
 	@Valid
 	public Object getData() {

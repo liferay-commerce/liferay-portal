@@ -33,7 +33,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -416,8 +415,7 @@ public class ConfigurationModelToDDMFormConverter {
 
 			sb.append(
 				LanguageUtil.get(
-					ResourceBundleUtil.getBundle(
-						_locale, ConfigurationModelToDDMFormConverter.class),
+					_locale,
 					"this-field-has-been-set-by-a-portal-property-and-cannot-" +
 						"be-changed-here"));
 		}

@@ -20,11 +20,9 @@ import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.info.item.renderer.InfoItemRenderer;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.Locale;
-import java.util.ResourceBundle;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -45,10 +43,7 @@ public class JournalArticleTitleInfoItemRenderer
 
 	@Override
 	public String getLabel(Locale locale) {
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			locale, getClass());
-
-		return LanguageUtil.get(resourceBundle, "title");
+		return LanguageUtil.get(locale, "title");
 	}
 
 	@Override

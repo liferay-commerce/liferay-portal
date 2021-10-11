@@ -55,6 +55,10 @@ public class Parameter implements Serializable {
 		return ObjectMapperUtil.readValue(Parameter.class, json);
 	}
 
+	public static Parameter unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Parameter.class, json);
+	}
+
 	@Schema
 	public String getDateFormat() {
 		return dateFormat;

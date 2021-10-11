@@ -56,6 +56,11 @@ public class AvailabilityEstimate implements Serializable {
 		return ObjectMapperUtil.readValue(AvailabilityEstimate.class, json);
 	}
 
+	public static AvailabilityEstimate unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			AvailabilityEstimate.class, json);
+	}
+
 	@DecimalMin("0")
 	@Schema
 	public Long getGroupId() {

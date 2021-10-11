@@ -53,6 +53,10 @@ public class ObjectLayoutRow implements Serializable {
 		return ObjectMapperUtil.readValue(ObjectLayoutRow.class, json);
 	}
 
+	public static ObjectLayoutRow unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(ObjectLayoutRow.class, json);
+	}
+
 	@Schema
 	public Long getId() {
 		return id;

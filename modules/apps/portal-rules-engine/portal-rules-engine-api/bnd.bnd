@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Rules Engine API
 Bundle-SymbolicName: com.liferay.portal.rules.engine.api
-Bundle-Version: 6.0.3
+Bundle-Version: 6.0.4
 Export-Package:\
 	com.liferay.portal.rules.engine,\
 	com.liferay.portal.rules.engine.constants

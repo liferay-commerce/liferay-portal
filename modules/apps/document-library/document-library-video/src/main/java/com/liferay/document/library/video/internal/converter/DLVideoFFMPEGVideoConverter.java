@@ -16,6 +16,7 @@ package com.liferay.document.library.video.internal.converter;
 
 import com.liferay.document.library.kernel.util.VideoConverter;
 import com.liferay.document.library.video.internal.configuration.DLVideoFFMPEGVideoConverterConfiguration;
+import com.liferay.petra.io.AutoDeleteFileInputStream;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
@@ -35,7 +36,6 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -83,7 +83,7 @@ public class DLVideoFFMPEGVideoConverter implements VideoConverter {
 					_getVideoFrameRate(videoProperties, containerType)),
 				destinationFile.getAbsolutePath()));
 
-		return new FileInputStream(destinationFile);
+		return new AutoDeleteFileInputStream(destinationFile);
 	}
 
 	@Override
@@ -102,7 +102,7 @@ public class DLVideoFFMPEGVideoConverter implements VideoConverter {
 						PropsValues.DL_FILE_ENTRY_PREVIEW_VIDEO_WIDTH),
 					"-frames:v", "1", destinationFile.getAbsolutePath()));
 
-			return new FileInputStream(destinationFile);
+			return new AutoDeleteFileInputStream(destinationFile);
 		}
 		catch (Exception exception) {
 			String message = exception.getMessage();

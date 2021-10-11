@@ -20,7 +20,6 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.settings.configuration.admin.display.SiteSettingsConfigurationScreenContributor;
 
@@ -57,11 +56,7 @@ public class GooglePlacesSiteSettingsConfigurationScreenContributor
 
 	@Override
 	public String getName(Locale locale) {
-		return LanguageUtil.get(
-			ResourceBundleUtil.getBundle(
-				locale,
-				GooglePlacesSiteSettingsConfigurationScreenContributor.class),
-			"google-places");
+		return LanguageUtil.get(locale, "google-places");
 	}
 
 	@Override

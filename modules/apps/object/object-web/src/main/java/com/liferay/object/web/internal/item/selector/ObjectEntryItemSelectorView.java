@@ -173,13 +173,9 @@ public class ObjectEntryItemSelectorView
 				"className", ObjectEntry.class.getName()
 			).put(
 				"classNameId",
-				_portal.getClassNameId(ObjectEntry.class.getName())
+				_portal.getClassNameId(_objectDefinition.getClassName())
 			).put(
 				"classPK", _objectEntry.getObjectEntryId()
-			).put(
-				"classTypeId", _objectEntry.getObjectDefinitionId()
-			).put(
-				"subtype", _objectDefinition.getLabel(themeDisplay.getLocale())
 			).put(
 				"title",
 				StringBundler.concat(

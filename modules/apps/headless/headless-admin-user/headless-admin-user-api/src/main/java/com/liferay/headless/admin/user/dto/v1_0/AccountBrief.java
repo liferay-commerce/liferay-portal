@@ -56,6 +56,10 @@ public class AccountBrief implements Serializable {
 		return ObjectMapperUtil.readValue(AccountBrief.class, json);
 	}
 
+	public static AccountBrief unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(AccountBrief.class, json);
+	}
+
 	@Schema(description = "The account's external reference code.")
 	public String getExternalReferenceCode() {
 		return externalReferenceCode;

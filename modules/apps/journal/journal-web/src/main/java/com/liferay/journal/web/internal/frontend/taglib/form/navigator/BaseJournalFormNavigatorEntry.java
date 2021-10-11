@@ -55,28 +55,6 @@ public abstract class BaseJournalFormNavigatorEntry
 		return LanguageUtil.get(locale, getKey());
 	}
 
-	protected boolean isDepotOrGlobalScopeArticle(JournalArticle article) {
-		Group group = null;
-
-		if ((article != null) && (article.getId() > 0)) {
-			group = GroupLocalServiceUtil.fetchGroup(article.getGroupId());
-		}
-		else {
-			ServiceContext serviceContext =
-				ServiceContextThreadLocal.getServiceContext();
-
-			ThemeDisplay themeDisplay = serviceContext.getThemeDisplay();
-
-			group = themeDisplay.getScopeGroup();
-		}
-
-		if ((group != null) && (group.isCompany() || group.isDepot())) {
-			return true;
-		}
-
-		return false;
-	}
-
 	protected boolean isEditDefaultValues(JournalArticle article) {
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
@@ -91,6 +69,28 @@ public abstract class BaseJournalFormNavigatorEntry
 			article, portletRequest, "classNameId");
 
 		if (classNameId > JournalArticleConstants.CLASS_NAME_ID_DEFAULT) {
+			return true;
+		}
+
+		return false;
+	}
+
+	protected boolean isGlobalScopeArticle(JournalArticle article) {
+		Group group = null;
+
+		if ((article != null) && (article.getId() > 0)) {
+			group = GroupLocalServiceUtil.fetchGroup(article.getGroupId());
+		}
+		else {
+			ServiceContext serviceContext =
+				ServiceContextThreadLocal.getServiceContext();
+
+			ThemeDisplay themeDisplay = serviceContext.getThemeDisplay();
+
+			group = themeDisplay.getScopeGroup();
+		}
+
+		if ((group != null) && group.isCompany()) {
 			return true;
 		}
 

@@ -53,6 +53,11 @@ public class ProductTaxConfiguration implements Serializable {
 		return ObjectMapperUtil.readValue(ProductTaxConfiguration.class, json);
 	}
 
+	public static ProductTaxConfiguration unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			ProductTaxConfiguration.class, json);
+	}
+
 	@DecimalMin("0")
 	@Schema
 	public Long getId() {

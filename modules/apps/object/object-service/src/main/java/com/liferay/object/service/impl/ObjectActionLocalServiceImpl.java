@@ -68,10 +68,10 @@ public class ObjectActionLocalServiceImpl
 
 		if (!Objects.equals(
 				objectActionTriggerKey,
-				ObjectActionTriggerConstants.KEY_ON_AFTER_CREATE) &&
+				ObjectActionTriggerConstants.KEY_ON_AFTER_ADD) &&
 			!Objects.equals(
 				objectActionTriggerKey,
-				ObjectActionTriggerConstants.KEY_ON_AFTER_REMOVE) &&
+				ObjectActionTriggerConstants.KEY_ON_AFTER_DELETE) &&
 			!Objects.equals(
 				objectActionTriggerKey,
 				ObjectActionTriggerConstants.KEY_ON_AFTER_UPDATE) &&

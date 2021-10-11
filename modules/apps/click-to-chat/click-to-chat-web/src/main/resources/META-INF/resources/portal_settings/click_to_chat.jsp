@@ -49,7 +49,7 @@ ClickToChatConfiguration clickToChatConfiguration = (ClickToChatConfiguration)re
 	</div>
 </div>
 
-<div class="form-group row" id="<%= liferayPortletResponse.getNamespace() + "clickToChatChatProviders" %>">
+<div class="form-group row" id="<portlet:namespace />clickToChatChatProviders">
 	<div class="col-md-6">
 		<aui:select label="chat-provider" name="chatProviderId" onchange='<%= liferayPortletResponse.getNamespace() + "onChangeClickToChatChatProviderId(event);" %>' value="<%= clickToChatConfiguration.chatProviderId() %>">
 			<aui:option label="" value="" />

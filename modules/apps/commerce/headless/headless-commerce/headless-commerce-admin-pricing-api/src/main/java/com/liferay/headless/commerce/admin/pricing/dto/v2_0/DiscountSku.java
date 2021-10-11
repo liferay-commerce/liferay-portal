@@ -56,6 +56,10 @@ public class DiscountSku implements Serializable {
 		return ObjectMapperUtil.readValue(DiscountSku.class, json);
 	}
 
+	public static DiscountSku unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(DiscountSku.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Map<String, Map<String, String>> getActions() {

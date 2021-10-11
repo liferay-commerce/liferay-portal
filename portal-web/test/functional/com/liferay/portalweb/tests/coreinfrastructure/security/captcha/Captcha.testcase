@@ -27,9 +27,11 @@ definition {
 	test ViewCaptchaEnabled {
 		property captcha.enabled = "true";
 
-		SignInNavigator.gotoCreateAccount();
+		task ("View captcha") {
+			SignInNavigator.gotoCreateAccount();
 
-		User.viewCaptchaPG(captchaType = "captcha");
+			User.viewCaptchaPG(captchaType = "captcha");
+		}
 	}
 
 	@description = "This is a use case for LPS-84310. This test will deploy an OSGI configuration file."
@@ -43,37 +45,45 @@ definition {
 		var recaptchaPrivateKey = PropsUtil.get("recaptcha.private.key");
 		var recaptchaPublicKey = PropsUtil.get("recaptcha.public.key");
 
-		User.firstLoginPG();
+		task ("go to reCAPTCHA setting") {
+			User.firstLoginPG();
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Configuration",
-			panel = "Control Panel",
-			portlet = "System Settings");
+			ApplicationsMenu.gotoPortlet(
+				category = "Configuration",
+				panel = "Control Panel",
+				portlet = "System Settings");
 
-		SystemSettings.gotoConfiguration(
-			configurationCategory = "Security Tools",
-			configurationName = "CAPTCHA",
-			configurationScope = "System Scope");
+			SystemSettings.gotoConfiguration(
+				configurationCategory = "Security Tools",
+				configurationName = "CAPTCHA",
+				configurationScope = "System Scope");
 
-		SystemSettings.selectOptionSetting(
-			fieldName = "CAPTCHA Engine",
-			selectOption = "reCAPTCHA");
+			SystemSettings.selectOptionSetting(
+				fieldName = "CAPTCHA Engine",
+				selectOption = "reCAPTCHA");
+		}
 
-		SystemSettings.editTextAreaSetting(
-			settingName = "reCAPTCHA Private Key",
-			settingValue = "${recaptchaPrivateKey}");
+		task ("Edit reCAPTCHA private key") {
+			SystemSettings.editTextAreaSetting(
+				settingName = "reCAPTCHA Private Key",
+				settingValue = "${recaptchaPrivateKey}");
+		}
 
-		SystemSettings.editTextAreaSetting(
-			settingName = "reCAPTCHA Public Key",
-			settingValue = "${recaptchaPublicKey}");
+		task ("Edit reCAPTCHA public key and save configuration") {
+			SystemSettings.editTextAreaSetting(
+				settingName = "reCAPTCHA Public Key",
+				settingValue = "${recaptchaPublicKey}");
 
-		SystemSettings.saveConfiguration();
+			SystemSettings.saveConfiguration();
+		}
 
-		User.logoutPG();
+		task ("Logout and view captcha") {
+			User.logoutPG();
 
-		SignInNavigator.gotoCreateAccount();
+			SignInNavigator.gotoCreateAccount();
 
-		User.viewCaptchaPG(captchaType = "recaptcha");
+			User.viewCaptchaPG(captchaType = "recaptcha");
+		}
 	}
 
 }

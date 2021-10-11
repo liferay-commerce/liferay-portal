@@ -60,6 +60,10 @@ public class NavigationMenuItem implements Serializable {
 		return ObjectMapperUtil.readValue(NavigationMenuItem.class, json);
 	}
 
+	public static NavigationMenuItem unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(NavigationMenuItem.class, json);
+	}
+
 	@Schema(
 		description = "The list of languages the navigation menu item has a translation for."
 	)

@@ -67,6 +67,10 @@ public class TaxonomyCategory implements Serializable {
 		return ObjectMapperUtil.readValue(TaxonomyCategory.class, json);
 	}
 
+	public static TaxonomyCategory unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(TaxonomyCategory.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Map<String, Map<String, String>> getActions() {

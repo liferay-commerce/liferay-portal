@@ -53,9 +53,7 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 import java.text.DateFormat;
 
@@ -497,7 +495,7 @@ public abstract class BaseUserAccountResourceTestCase {
 
 				String entityFieldName = entityField.getName();
 
-				Method method = clazz.getMethod(
+				java.lang.reflect.Method method = clazz.getMethod(
 					"get" + StringUtil.upperCaseFirstLetter(entityFieldName));
 
 				Class<?> returnType = method.getReturnType();
@@ -945,7 +943,7 @@ public abstract class BaseUserAccountResourceTestCase {
 
 				String entityFieldName = entityField.getName();
 
-				Method method = clazz.getMethod(
+				java.lang.reflect.Method method = clazz.getMethod(
 					"get" + StringUtil.upperCaseFirstLetter(entityFieldName));
 
 				Class<?> returnType = method.getReturnType();
@@ -1388,7 +1386,7 @@ public abstract class BaseUserAccountResourceTestCase {
 
 				String entityFieldName = entityField.getName();
 
-				Method method = clazz.getMethod(
+				java.lang.reflect.Method method = clazz.getMethod(
 					"get" + StringUtil.upperCaseFirstLetter(entityFieldName));
 
 				Class<?> returnType = method.getReturnType();
@@ -1680,7 +1678,7 @@ public abstract class BaseUserAccountResourceTestCase {
 
 				String entityFieldName = entityField.getName();
 
-				Method method = clazz.getMethod(
+				java.lang.reflect.Method method = clazz.getMethod(
 					"get" + StringUtil.upperCaseFirstLetter(entityFieldName));
 
 				Class<?> returnType = method.getReturnType();
@@ -1941,7 +1939,7 @@ public abstract class BaseUserAccountResourceTestCase {
 
 				String entityFieldName = entityField.getName();
 
-				Method method = clazz.getMethod(
+				java.lang.reflect.Method method = clazz.getMethod(
 					"get" + StringUtil.upperCaseFirstLetter(entityFieldName));
 
 				Class<?> returnType = method.getReturnType();
@@ -2655,6 +2653,14 @@ public abstract class BaseUserAccountResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("lastLoginDate", additionalAssertFieldName)) {
+				if (userAccount.getLastLoginDate() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("name", additionalAssertFieldName)) {
 				if (userAccount.getName() == null) {
 					valid = false;
@@ -2740,7 +2746,7 @@ public abstract class BaseUserAccountResourceTestCase {
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
 
-		for (Field field :
+		for (java.lang.reflect.Field field :
 				getDeclaredFields(
 					com.liferay.headless.admin.user.dto.v1_0.UserAccount.
 						class)) {
@@ -2757,12 +2763,13 @@ public abstract class BaseUserAccountResourceTestCase {
 		return graphQLFields;
 	}
 
-	protected List<GraphQLField> getGraphQLFields(Field... fields)
+	protected List<GraphQLField> getGraphQLFields(
+			java.lang.reflect.Field... fields)
 		throws Exception {
 
 		List<GraphQLField> graphQLFields = new ArrayList<>();
 
-		for (Field field : fields) {
+		for (java.lang.reflect.Field field : fields) {
 			com.liferay.portal.vulcan.graphql.annotation.GraphQLField
 				vulcanGraphQLField = field.getAnnotation(
 					com.liferay.portal.vulcan.graphql.annotation.GraphQLField.
@@ -3009,6 +3016,17 @@ public abstract class BaseUserAccountResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("lastLoginDate", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						userAccount1.getLastLoginDate(),
+						userAccount2.getLastLoginDate())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("name", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						userAccount1.getName(), userAccount2.getName())) {
@@ -3113,14 +3131,16 @@ public abstract class BaseUserAccountResourceTestCase {
 		return false;
 	}
 
-	protected Field[] getDeclaredFields(Class clazz) throws Exception {
-		Stream<Field> stream = Stream.of(
+	protected java.lang.reflect.Field[] getDeclaredFields(Class clazz)
+		throws Exception {
+
+		Stream<java.lang.reflect.Field> stream = Stream.of(
 			ReflectionUtil.getDeclaredFields(clazz));
 
 		return stream.filter(
 			field -> !field.isSynthetic()
 		).toArray(
-			Field[]::new
+			java.lang.reflect.Field[]::new
 		);
 	}
 
@@ -3383,6 +3403,39 @@ public abstract class BaseUserAccountResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("lastLoginDate")) {
+			if (operator.equals("between")) {
+				sb = new StringBundler();
+
+				sb.append("(");
+				sb.append(entityFieldName);
+				sb.append(" gt ");
+				sb.append(
+					_dateFormat.format(
+						DateUtils.addSeconds(
+							userAccount.getLastLoginDate(), -2)));
+				sb.append(" and ");
+				sb.append(entityFieldName);
+				sb.append(" lt ");
+				sb.append(
+					_dateFormat.format(
+						DateUtils.addSeconds(
+							userAccount.getLastLoginDate(), 2)));
+				sb.append(")");
+			}
+			else {
+				sb.append(entityFieldName);
+
+				sb.append(" ");
+				sb.append(operator);
+				sb.append(" ");
+
+				sb.append(_dateFormat.format(userAccount.getLastLoginDate()));
+			}
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("name")) {
 			sb.append("'");
 			sb.append(String.valueOf(userAccount.getName()));
@@ -3489,6 +3542,7 @@ public abstract class BaseUserAccountResourceTestCase {
 				image = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				jobTitle = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
+				lastLoginDate = RandomTestUtil.nextDate();
 				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				profileURL = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());

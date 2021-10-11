@@ -56,6 +56,10 @@ public class BackgroundImage implements Serializable {
 		return ObjectMapperUtil.readValue(BackgroundImage.class, json);
 	}
 
+	public static BackgroundImage unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(BackgroundImage.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Object getDescription() {

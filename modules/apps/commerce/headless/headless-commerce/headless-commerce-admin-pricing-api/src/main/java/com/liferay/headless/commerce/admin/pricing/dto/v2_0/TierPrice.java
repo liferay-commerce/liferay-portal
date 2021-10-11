@@ -62,6 +62,10 @@ public class TierPrice implements Serializable {
 		return ObjectMapperUtil.readValue(TierPrice.class, json);
 	}
 
+	public static TierPrice unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(TierPrice.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Map<String, Map<String, String>> getActions() {

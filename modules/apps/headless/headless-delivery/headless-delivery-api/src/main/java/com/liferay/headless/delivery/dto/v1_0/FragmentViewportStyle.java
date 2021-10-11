@@ -54,6 +54,11 @@ public class FragmentViewportStyle implements Serializable {
 		return ObjectMapperUtil.readValue(FragmentViewportStyle.class, json);
 	}
 
+	public static FragmentViewportStyle unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			FragmentViewportStyle.class, json);
+	}
+
 	@Schema(description = "The fragment viewport's margin bottom.")
 	public String getMarginBottom() {
 		return marginBottom;

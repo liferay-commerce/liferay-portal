@@ -56,6 +56,10 @@ public class ProcessMetric implements Serializable {
 		return ObjectMapperUtil.readValue(ProcessMetric.class, json);
 	}
 
+	public static ProcessMetric unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(ProcessMetric.class, json);
+	}
+
 	@Schema
 	public Long getInstanceCount() {
 		return instanceCount;

@@ -54,6 +54,11 @@ public class DataLayoutRenderingContext implements Serializable {
 			DataLayoutRenderingContext.class, json);
 	}
 
+	public static DataLayoutRenderingContext unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			DataLayoutRenderingContext.class, json);
+	}
+
 	@Schema
 	public String getContainerId() {
 		return containerId;

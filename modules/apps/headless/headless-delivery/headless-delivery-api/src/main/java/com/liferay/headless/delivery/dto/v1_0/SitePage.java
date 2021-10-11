@@ -67,6 +67,10 @@ public class SitePage implements Serializable {
 		return ObjectMapperUtil.readValue(SitePage.class, json);
 	}
 
+	public static SitePage unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(SitePage.class, json);
+	}
+
 	@Schema(
 		description = "Block of actions allowed by the user making the request."
 	)

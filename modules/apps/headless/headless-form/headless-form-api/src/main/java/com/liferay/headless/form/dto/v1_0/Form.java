@@ -57,6 +57,10 @@ public class Form implements Serializable {
 		return ObjectMapperUtil.readValue(Form.class, json);
 	}
 
+	public static Form unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Form.class, json);
+	}
+
 	@Schema
 	public String[] getAvailableLanguages() {
 		return availableLanguages;

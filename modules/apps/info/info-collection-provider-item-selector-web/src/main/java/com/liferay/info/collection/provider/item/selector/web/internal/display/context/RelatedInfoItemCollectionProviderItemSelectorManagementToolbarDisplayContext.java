@@ -33,13 +33,11 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.KeyValuePair;
 import com.liferay.portal.kernel.util.KeyValuePairComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -84,24 +82,19 @@ public class
 
 	@Override
 	public List<DropdownItem> getFilterDropdownItems() {
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			_themeDisplay.getLocale(), getClass());
-
 		return DropdownItemListBuilder.addGroup(
 			dropdownGroupItem -> {
 				dropdownGroupItem.setDropdownItems(
 					_getFilterTypeDropdownItems());
 				dropdownGroupItem.setLabel(
-					LanguageUtil.get(resourceBundle, "filter-by-item-type"));
+					LanguageUtil.get(
+						_themeDisplay.getLocale(), "filter-by-item-type"));
 			}
 		).build();
 	}
 
 	@Override
 	public List<LabelItem> getFilterLabelItems() {
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			_themeDisplay.getLocale(), getClass());
-
 		return LabelItemListBuilder.add(
 			() -> Validator.isNotNull(_getSelectedItemType()),
 			labelItem -> {
@@ -119,8 +112,8 @@ public class
 					_themeDisplay.getLocale(), _getSelectedItemType());
 
 				labelItem.setLabel(
-					LanguageUtil.get(resourceBundle, "item-type") + ": " +
-						modelResource);
+					LanguageUtil.get(_themeDisplay.getLocale(), "item-type") +
+						": " + modelResource);
 			}
 		).build();
 	}

@@ -15,42 +15,47 @@
 package com.liferay.object.internal.action.executor;
 
 import com.liferay.object.action.executor.ObjectActionExecutor;
-import com.liferay.object.action.request.ObjectActionRequest;
 import com.liferay.object.constants.ObjectActionExecutorConstants;
 import com.liferay.object.internal.action.settings.AddObjectEntryObjectActionSettings;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.UnicodeProperties;
 
 import java.io.Serializable;
 
-import java.util.Map;
+import java.util.Collections;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Marco Leo
+ * @author Brian Wing Shun Chan
  */
 @Component(enabled = false, service = ObjectActionExecutor.class)
 public class AddObjectEntryObjectActionExecutorImpl
 	implements ObjectActionExecutor {
 
 	@Override
-	public void execute(ObjectActionRequest objectActionRequest)
+	public void execute(
+			long companyId, UnicodeProperties parametersUnicodeProperties,
+			JSONObject payloadJSONObject, long userId)
 		throws Exception {
 
 		_objectEntryLocalService.addObjectEntry(
-			objectActionRequest.getUserId(),
+			userId,
 			GetterUtil.getLong(
-				objectActionRequest.getParameterValue("groupId")),
+				parametersUnicodeProperties.get("groupId")),
 			GetterUtil.getLong(
-				objectActionRequest.getParameterValue("objectDefinitionId")),
-			(Map<String, Serializable>)objectActionRequest.getParameterValue(
-				"values"),
+				parametersUnicodeProperties.get("objectDefinitionId")),
+			Collections.<String, Serializable>emptyMap(),
+			//(Map<String, Serializable>)parametersUnicodeProperties.get(
+			//	"values"),
 			new ServiceContext() {
 				{
-					setUserId(objectActionRequest.getUserId());
+					setUserId(userId);
 				}
 			});
 	}

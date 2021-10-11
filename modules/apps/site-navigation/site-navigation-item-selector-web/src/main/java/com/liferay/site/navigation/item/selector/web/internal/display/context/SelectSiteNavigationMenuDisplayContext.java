@@ -32,7 +32,6 @@ import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.navigation.constants.SiteNavigationConstants;
 import com.liferay.site.navigation.item.selector.SiteNavigationMenuItemSelectorReturnType;
@@ -50,7 +49,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 import javax.portlet.PortletException;
 import javax.portlet.PortletRequest;
@@ -120,16 +118,13 @@ public class SelectSiteNavigationMenuDisplayContext {
 
 		if (siteNavigationMenuId == 0) {
 			if (parentSiteNavigationMenuItemId == 0) {
-				ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-					_themeDisplay.getLocale(), getClass());
-
 				String key = "public-pages-hierarchy";
 
 				if (isPrivateLayout()) {
 					key = "private-pages-hierarchy";
 				}
 
-				return LanguageUtil.get(resourceBundle, key);
+				return LanguageUtil.get(_themeDisplay.getLocale(), key);
 			}
 
 			Layout layout = LayoutLocalServiceUtil.fetchLayout(
@@ -339,9 +334,6 @@ public class SelectSiteNavigationMenuDisplayContext {
 
 		List<BreadcrumbEntry> breadcrumbEntries = new ArrayList<>();
 
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			_themeDisplay.getLocale(), getClass());
-
 		String key = "public-pages-hierarchy";
 
 		if (isPrivateLayout()) {
@@ -350,7 +342,7 @@ public class SelectSiteNavigationMenuDisplayContext {
 
 		breadcrumbEntries.add(
 			_createBreadcrumbEntry(
-				LanguageUtil.get(resourceBundle, key),
+				LanguageUtil.get(_themeDisplay.getLocale(), key),
 				_getSelectSiteNavigationMenuLevelURL(
 					getSiteNavigationMenuId(), 0)));
 
@@ -397,15 +389,12 @@ public class SelectSiteNavigationMenuDisplayContext {
 	}
 
 	private BreadcrumbEntry _getMenusBreadcrumbEntry() {
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			_themeDisplay.getLocale(), getClass());
-
 		String backURL = ParamUtil.getString(
 			_httpServletRequest, "backURL",
 			PortalUtil.getCurrentURL(_httpServletRequest));
 
 		return _createBreadcrumbEntry(
-			LanguageUtil.get(resourceBundle, "menus"), backURL);
+			LanguageUtil.get(_themeDisplay.getLocale(), "menus"), backURL);
 	}
 
 	private PortletRequest _getPortletRequest() {
@@ -414,15 +403,13 @@ public class SelectSiteNavigationMenuDisplayContext {
 	}
 
 	private SiteNavigationMenu _getPrivatePagesHierarchySiteNavigationMenu() {
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			_themeDisplay.getLocale(), getClass());
-
 		SiteNavigationMenu siteNavigationMenu =
 			SiteNavigationMenuLocalServiceUtil.createSiteNavigationMenu(0);
 
 		siteNavigationMenu.setGroupId(_themeDisplay.getScopeGroupId());
 		siteNavigationMenu.setName(
-			LanguageUtil.get(resourceBundle, "private-pages-hierarchy"));
+			LanguageUtil.get(
+				_themeDisplay.getLocale(), "private-pages-hierarchy"));
 		siteNavigationMenu.setType(
 			SiteNavigationConstants.TYPE_PRIVATE_PAGES_HIERARCHY);
 
@@ -430,15 +417,13 @@ public class SelectSiteNavigationMenuDisplayContext {
 	}
 
 	private SiteNavigationMenu _getPublicPagesHierarchySiteNavigationMenu() {
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			_themeDisplay.getLocale(), getClass());
-
 		SiteNavigationMenu siteNavigationMenu =
 			SiteNavigationMenuLocalServiceUtil.createSiteNavigationMenu(0);
 
 		siteNavigationMenu.setGroupId(_themeDisplay.getScopeGroupId());
 		siteNavigationMenu.setName(
-			LanguageUtil.get(resourceBundle, "public-pages-hierarchy"));
+			LanguageUtil.get(
+				_themeDisplay.getLocale(), "public-pages-hierarchy"));
 		siteNavigationMenu.setType(
 			SiteNavigationConstants.TYPE_PUBLIC_PAGES_HIERARCHY);
 

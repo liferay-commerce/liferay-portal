@@ -19,7 +19,6 @@ import com.liferay.asset.auto.tagger.configuration.AssetAutoTaggerConfigurationF
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.settings.configuration.admin.display.SiteSettingsConfigurationScreenContributor;
 
@@ -56,9 +55,7 @@ public class AssetAutoTaggerSiteSettingsConfigurationScreenContributor
 
 	@Override
 	public String getName(Locale locale) {
-		return LanguageUtil.get(
-			ResourceBundleUtil.getBundle(locale, getClass()),
-			"asset-auto-tagging");
+		return LanguageUtil.get(locale, "asset-auto-tagging");
 	}
 
 	@Override

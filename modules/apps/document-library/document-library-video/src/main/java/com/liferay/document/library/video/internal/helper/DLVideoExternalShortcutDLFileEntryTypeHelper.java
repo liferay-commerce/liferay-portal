@@ -145,12 +145,8 @@ public class DLVideoExternalShortcutDLFileEntryTypeHelper {
 		Map<Locale, String> nameMap = new HashMap<>();
 
 		for (Locale locale : locales) {
-			ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-				locale, DLVideoExternalShortcutDLFileEntryTypeHelper.class);
-
 			nameMap.put(
-				locale,
-				LanguageUtil.get(resourceBundle, "external-video-shortcut"));
+				locale, LanguageUtil.get(locale, "external-video-shortcut"));
 		}
 
 		return nameMap;

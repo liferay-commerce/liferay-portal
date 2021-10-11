@@ -57,6 +57,10 @@ public class ObjectLayout implements Serializable {
 		return ObjectMapperUtil.readValue(ObjectLayout.class, json);
 	}
 
+	public static ObjectLayout unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(ObjectLayout.class, json);
+	}
+
 	@Schema
 	@Valid
 	public Map<String, Map<String, String>> getActions() {

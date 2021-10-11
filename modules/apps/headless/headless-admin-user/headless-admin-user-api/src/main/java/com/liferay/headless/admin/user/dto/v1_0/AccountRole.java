@@ -53,6 +53,10 @@ public class AccountRole implements Serializable {
 		return ObjectMapperUtil.readValue(AccountRole.class, json);
 	}
 
+	public static AccountRole unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(AccountRole.class, json);
+	}
+
 	@Schema(description = "The primary key of the account that owns this role.")
 	public Long getAccountId() {
 		return accountId;

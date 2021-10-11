@@ -54,6 +54,10 @@ public class Transition implements Serializable {
 		return ObjectMapperUtil.readValue(Transition.class, json);
 	}
 
+	public static Transition unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(Transition.class, json);
+	}
+
 	@Schema
 	public String getLabel() {
 		return label;

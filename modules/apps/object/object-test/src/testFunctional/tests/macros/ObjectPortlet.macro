@@ -31,6 +31,12 @@ definition {
 			locator1 = "ObjectPortlet#CHECK_UNCHECK_DROPDOWN_ITEM");
 	}
 
+	macro assertNoFieldsWereFound {
+		AssertTextEquals(
+			locator1 = "ObjectPortlet#NO_FIELDS_WERE_FOUND_MESSAGE",
+			value1 = "No fields were found.");
+	}
+
 	macro changePagination {
 		Click(locator1 = "ObjectPortlet#PAGINATION_ITEMS_PER_PAGE_SELECT");
 

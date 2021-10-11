@@ -23,11 +23,9 @@ import com.liferay.info.pagination.InfoPage;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 
 import java.util.Collections;
 import java.util.Locale;
-import java.util.ResourceBundle;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -63,10 +61,7 @@ public class HighestRatedAssetsInfoCollectionProvider
 
 	@Override
 	public String getLabel(Locale locale) {
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			locale, getClass());
-
-		return LanguageUtil.get(resourceBundle, "highest-rated-assets");
+		return LanguageUtil.get(locale, "highest-rated-assets");
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

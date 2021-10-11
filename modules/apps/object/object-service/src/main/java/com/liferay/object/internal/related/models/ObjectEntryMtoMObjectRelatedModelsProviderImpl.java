@@ -22,6 +22,7 @@ import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.related.models.ObjectRelatedModelsProvider;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 
 import java.util.List;
@@ -51,9 +52,22 @@ public class ObjectEntryMtoMObjectRelatedModelsProviderImpl
 			long primaryKey)
 		throws PortalException {
 
+		int count = getRelatedModelsCount(
+			groupId, objectRelationshipId, primaryKey);
+
+		if (count == 0) {
+			return;
+		}
+
 		ObjectRelationship objectRelationship =
 			_objectRelationshipLocalService.getObjectRelationship(
 				objectRelationshipId);
+
+		if (objectRelationship.isReverse()) {
+			objectRelationship =
+				_objectRelationshipLocalService.fetchReverseObjectRelationship(
+					objectRelationship, false);
+		}
 
 		if (Objects.equals(
 				objectRelationship.getDeletionType(),
@@ -70,8 +84,23 @@ public class ObjectEntryMtoMObjectRelatedModelsProviderImpl
 					objectRelationship.getDeletionType(),
 					ObjectRelationshipConstants.DELETION_TYPE_PREVENT)) {
 
-			throw new RequiredObjectRelationshipException();
+			throw new RequiredObjectRelationshipException(
+				StringBundler.concat(
+					"Object relationship ",
+					objectRelationship.getObjectRelationshipId(),
+					" does not allow deletes"));
 		}
+	}
+
+	@Override
+	public void disassociateRelatedModels(
+			long userId, long objectRelationshipId, long primaryKey1,
+			long primaryKey2)
+		throws PortalException {
+
+		_objectRelationshipLocalService.
+			deleteObjectRelationshipMappingTableValues(
+				objectRelationshipId, primaryKey1, primaryKey2);
 	}
 
 	public String getClassName() {
@@ -87,8 +116,21 @@ public class ObjectEntryMtoMObjectRelatedModelsProviderImpl
 			int end)
 		throws PortalException {
 
+		ObjectRelationship objectRelationship =
+			_objectRelationshipLocalService.getObjectRelationship(
+				objectRelationshipId);
+
+		boolean reverse = objectRelationship.isReverse();
+
+		if (objectRelationship.isReverse()) {
+			objectRelationship =
+				_objectRelationshipLocalService.fetchReverseObjectRelationship(
+					objectRelationship, false);
+		}
+
 		return _objectEntryLocalService.getManyToManyRelatedObjectEntries(
-			groupId, objectRelationshipId, primaryKey, start, end);
+			groupId, objectRelationship.getObjectRelationshipId(), primaryKey,
+			reverse, start, end);
 	}
 
 	@Override
@@ -96,8 +138,21 @@ public class ObjectEntryMtoMObjectRelatedModelsProviderImpl
 			long groupId, long objectRelationshipId, long primaryKey)
 		throws PortalException {
 
+		ObjectRelationship objectRelationship =
+			_objectRelationshipLocalService.getObjectRelationship(
+				objectRelationshipId);
+
+		boolean reverse = objectRelationship.isReverse();
+
+		if (objectRelationship.isReverse()) {
+			objectRelationship =
+				_objectRelationshipLocalService.fetchReverseObjectRelationship(
+					objectRelationship, false);
+		}
+
 		return _objectEntryLocalService.getManyToManyRelatedObjectEntriesCount(
-			groupId, objectRelationshipId, primaryKey);
+			groupId, objectRelationship.getObjectRelationshipId(), primaryKey,
+			reverse);
 	}
 
 	private final String _className;

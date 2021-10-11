@@ -14,20 +14,17 @@ definition {
 	}
 
 	tearDown {
-		var testPortalInstance = PropsUtil.get("test.portal.instance");
+		Navigator.openURL();
 
-		if ("${testPortalInstance}" == "true") {
-			PortalInstances.tearDownCP();
-		}
-		else {
-			Navigator.openURL();
-
-			CommerceConfiguration.commerceAdminTearDown();
-
-			CommerceConfiguration.commerceInitializersTearDown();
-
+		if (IsElementPresent(locator1 = "UserBar#USER_AVATAR_IMAGE")) {
 			User.logoutPG();
 		}
+
+		User.firstLoginPG();
+
+		CommerceConfiguration.commerceAdminTearDown();
+
+		CommerceConfiguration.commerceInitializersTearDown();
 	}
 
 	@description = "This is a test for COMMERCE-6269. AddAnOptionAndVerifyIfIsPresent"
@@ -82,7 +79,6 @@ definition {
 	@priority = "3"
 	test AddASpecificationAndVerifyIfIsPresent {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CPCommerceProducts#AddASpecificationAndVerifyIfIsPresent";
 
 		// TODO Review
 
@@ -728,7 +724,6 @@ definition {
 	@priority = "3"
 	test EditAProduct {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CPCommerceProducts#EditAProduct";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
@@ -765,7 +760,6 @@ definition {
 	@priority = "3"
 	test EditSkuAndDelete {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CPCommerceProducts#EditSkuAndDelete";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
@@ -914,7 +908,6 @@ definition {
 	@priority = "3"
 	test UseFilters {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CPCommerceProducts#UseFilters";
 
 		// TODO Review
 
@@ -1058,7 +1051,6 @@ definition {
 	@priority = "3"
 	test UseSchedule {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CPCommerceProducts#UseSchedule";
 
 		// TODO Review
 
@@ -1099,7 +1091,6 @@ definition {
 	@priority = "3"
 	test UseSearchBarAndPagination {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CPCommerceProducts#UseSearchBarAndPagination";
 
 		// TODO Review
 
@@ -1134,7 +1125,6 @@ definition {
 	@priority = "3"
 	test UseSkuSearchBarAndPagination {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CPCommerceProducts#UseSkuSearchBarAndPagination";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
@@ -1159,7 +1149,6 @@ definition {
 	@priority = "3"
 	test UseSortingByNameAndDate {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CPCommerceProducts#UseSortingByNameAndDate";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 

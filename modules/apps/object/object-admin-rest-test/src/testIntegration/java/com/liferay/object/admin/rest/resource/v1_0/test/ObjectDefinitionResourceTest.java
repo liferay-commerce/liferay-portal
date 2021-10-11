@@ -74,6 +74,7 @@ public class ObjectDefinitionResourceTest
 	protected ObjectDefinition randomObjectDefinition() throws Exception {
 		ObjectDefinition objectDefinition = super.randomObjectDefinition();
 
+		objectDefinition.setActive(false);
 		objectDefinition.setLabel(
 			Collections.singletonMap(
 				"en_US", "A" + objectDefinition.getName()));

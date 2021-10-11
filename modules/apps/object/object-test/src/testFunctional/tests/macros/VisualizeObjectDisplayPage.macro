@@ -12,6 +12,8 @@ definition {
 			locator1 = "VisualizeObjectDisplayPage#SELECT_OBJECT");
 
 		Click(locator1 = "VisualizeObjectDisplayPage#SELECT_ENTRY");
+
+		SelectFrameTop();
 	}
 
 	macro assertDisplayEntry {
@@ -33,9 +35,7 @@ definition {
 			locator1 = "VisualizeObjectDisplayPage#OBJECT_CONTENT_TYPE",
 			value1 = "${contentType}");
 
-		Select(
-			locator1 = "VisualizeObjectDisplayPage#OBJECT_SUBTYPE",
-			value1 = "${subtype}");
+		Click(locator1 = "VisualizeObjectCollectionDisplay#SAVE_BUTTON");
 	}
 
 	macro openDisplayPage {
@@ -58,12 +58,6 @@ definition {
 		AssertSelectedLabel(
 			locator1 = "VisualizeObjectDisplayPage#OBJECT_CONTENT_TYPE",
 			value1 = "${contentType}");
-	}
-
-	macro validateObjectSubtype {
-		AssertSelectedLabel(
-			locator1 = "VisualizeObjectDisplayPage#OBJECT_SUBTYPE",
-			value1 = "${subtype}");
 	}
 
 }

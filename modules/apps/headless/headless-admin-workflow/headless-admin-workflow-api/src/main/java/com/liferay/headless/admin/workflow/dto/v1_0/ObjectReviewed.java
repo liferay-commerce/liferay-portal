@@ -54,6 +54,10 @@ public class ObjectReviewed implements Serializable {
 		return ObjectMapperUtil.readValue(ObjectReviewed.class, json);
 	}
 
+	public static ObjectReviewed unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(ObjectReviewed.class, json);
+	}
+
 	@Schema
 	public String getAssetTitle() {
 		return assetTitle;

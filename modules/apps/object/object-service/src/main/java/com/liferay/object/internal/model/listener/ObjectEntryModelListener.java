@@ -26,9 +26,6 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
-import com.liferay.portal.kernel.util.HashMapBuilder;
-
-import java.io.Serializable;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -45,8 +42,7 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		throws ModelListenerException {
 
 		_executeObjectActions(
-			ObjectActionTriggerConstants.KEY_ON_AFTER_CREATE, null,
-			objectEntry);
+			ObjectActionTriggerConstants.KEY_ON_AFTER_ADD, null, objectEntry);
 	}
 
 	@Override
@@ -54,7 +50,7 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		throws ModelListenerException {
 
 		_executeObjectActions(
-			ObjectActionTriggerConstants.KEY_ON_AFTER_REMOVE, null,
+			ObjectActionTriggerConstants.KEY_ON_AFTER_DELETE, null,
 			objectEntry);
 	}
 
@@ -81,20 +77,18 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 			}
 
 			_objectActionEngine.executeObjectActions(
-				userId, objectEntry.getModelClassName(), objectActionTriggerKey,
-				HashMapBuilder.<String, Serializable>put(
-					"payload",
-					_getPayload(
-						objectActionTriggerKey, originalObjectEntry,
-						objectEntry)
-				).build());
+				objectEntry.getModelClassName(), objectEntry.getCompanyId(),
+				objectActionTriggerKey,
+				_getPayloadJSONObject(
+					objectActionTriggerKey, originalObjectEntry, objectEntry),
+				userId);
 		}
 		catch (PortalException portalException) {
 			throw new ModelListenerException(portalException);
 		}
 	}
 
-	private Serializable _getPayload(
+	private JSONObject _getPayloadJSONObject(
 			String objectActionTriggerKey, ObjectEntry originalObjectEntry,
 			ObjectEntry objectEntry)
 		throws JSONException {
@@ -120,7 +114,7 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 				"originalObjectEntry", originalObjectEntryJSONObject);
 		}
 
-		return payloadJSONObject.toString();
+		return payloadJSONObject;
 	}
 
 	@Reference

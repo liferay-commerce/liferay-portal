@@ -16,8 +16,7 @@
 		"frontend-js-web": "*",
 		"metal-state": "2.16.8",
 		"prop-types": "15.7.2",
-		"react": "16.12.0",
-		"translation-web": "*"
+		"react": "16.12.0"
 	},
 	"name": "journal-web",
 	"scripts": {
@@ -26,5 +25,5 @@
 		"format": "liferay-npm-scripts fix",
 		"test": "liferay-npm-scripts test"
 	},
-	"version": "5.0.26"
+	"version": "5.0.31"
 }

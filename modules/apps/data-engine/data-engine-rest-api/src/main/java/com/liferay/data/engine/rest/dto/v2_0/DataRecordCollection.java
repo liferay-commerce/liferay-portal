@@ -56,6 +56,11 @@ public class DataRecordCollection implements Serializable {
 		return ObjectMapperUtil.readValue(DataRecordCollection.class, json);
 	}
 
+	public static DataRecordCollection unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			DataRecordCollection.class, json);
+	}
+
 	@Schema
 	public Long getDataDefinitionId() {
 		return dataDefinitionId;

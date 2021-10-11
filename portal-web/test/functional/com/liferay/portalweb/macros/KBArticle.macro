@@ -614,7 +614,9 @@ definition {
 			locator1 = "TextInput#TITLE",
 			value1 = "${kbArticleTitleEdit}");
 
-		CKEditor.addContent(kbArticleContentEdit = "${kbArticleContentEdit}");
+		if (isSet(kbArticleContentEdit)) {
+			CKEditor.addContent(kbArticleContentEdit = "${kbArticleContentEdit}");
+		}
 
 		if (isSet(kbArticleAttachment)) {
 			KBArticle.selectAttachmentCP(kbArticleAttachment = "${kbArticleAttachment}");
@@ -811,9 +813,9 @@ definition {
 	macro importCP {
 		LexiconEntry.gotoAddDropdownMenuItem(menuItem = "Import");
 
-		UploadCommonFile(
-			locator1 = "TextInput#UPLOAD_FILE",
-			value1 = "${kbZipFile}");
+		UploadFileWithCustomPath.uploadFile(
+			fileName = "${kbZipFile}",
+			filePath = "enduser/collaboration/knowledgebase");
 
 		if ("${applyNumericalPrefix}" == "true") {
 			Check(locator1 = "Checkbox#PRIORITIZATION_STRATEGY");

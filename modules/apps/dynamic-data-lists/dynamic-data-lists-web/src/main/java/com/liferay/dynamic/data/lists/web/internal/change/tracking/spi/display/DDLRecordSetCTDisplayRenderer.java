@@ -32,11 +32,9 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.Locale;
-import java.util.ResourceBundle;
 
 import javax.portlet.PortletRequest;
 
@@ -149,10 +147,7 @@ public class DDLRecordSetCTDisplayRenderer
 					return workflowDefinitionLink.getWorkflowDefinitionName();
 				}
 
-				ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-					locale, DDLRecordSetCTDisplayRenderer.class);
-
-				return _language.get(resourceBundle, "no-workflow");
+				return _language.get(locale, "no-workflow");
 			}
 		);
 	}
