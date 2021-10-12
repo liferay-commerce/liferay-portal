@@ -174,6 +174,8 @@ definition {
 
 		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
 
+		takeScreenshot();
+
 		Check(
 			key_checkboxName = "Test Channel",
 			locator1 = "Checkbox#ENABLE_CHECKBOX");
@@ -183,6 +185,12 @@ definition {
 		Button.click(button = "Add");
 
 		Alert.viewSuccessMessage();
+
+		takeScreenshot();
+
+		WaitForElementPresent(
+			key_productName = "Test Channel",
+			locator1 = "CommerceOrders#ORDER_DETAILS_PRODUCT_NAME");
 
 		Button.click(button = "Delete");
 
