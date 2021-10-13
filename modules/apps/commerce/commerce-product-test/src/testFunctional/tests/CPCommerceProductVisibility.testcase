@@ -154,7 +154,6 @@ definition {
 	@priority = "3"
 	test RemoveAChannelFilter {
 		property portal.acceptance = "false";
-		property test.name.skip.portal.instance = "CPCommerceProductVisibility#RemoveAChannelFilter";
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -184,6 +183,8 @@ definition {
 		Button.click(button = "Add");
 
 		Alert.viewSuccessMessage();
+
+		Refresh();
 
 		WaitForElementPresent(
 			key_productName = "Test Channel",
