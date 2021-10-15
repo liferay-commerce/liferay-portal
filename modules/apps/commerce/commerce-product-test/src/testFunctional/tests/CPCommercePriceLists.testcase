@@ -616,6 +616,7 @@ definition {
 	@priority = "3"
 	test AddEditAndRemovePLQualifier {
 		property portal.acceptance = "false";
+		property test.name.skip.portal.instance = "CPCommercePriceLists#AddEditAndRemovePLQualifier";
 
 		// TODO Review
 
@@ -756,6 +757,7 @@ definition {
 	@priority = "3"
 	test AddEditAndRemoveProductGroupFromPL {
 		property portal.acceptance = "false";
+		property test.name.skip.portal.instance = "CPCommercePriceLists#AddEditAndRemoveProductGroupFromPL";
 
 		// TODO Review
 

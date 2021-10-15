@@ -1034,6 +1034,7 @@ definition {
 	@priority = "3"
 	test LimitWarehouseStockQuantityByChannel {
 		property portal.acceptance = "false";
+		property test.name.skip.portal.instance = "CPCommerceWarehouses#LimitWarehouseStockQuantityByChannel";
 
 		// TODO Review
 
@@ -1068,6 +1069,7 @@ definition {
 	@priority = "3"
 	test ManageInventoryEntityConcurrency {
 		property portal.acceptance = "false";
+		property test.name.skip.portal.instance = "CPCommerceWarehouses#ManageInventoryEntityConcurrency";
 
 		// TODO Review
 
