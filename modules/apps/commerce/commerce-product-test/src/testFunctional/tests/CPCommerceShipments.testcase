@@ -1350,6 +1350,7 @@ definition {
 	@description = "This is a test for COMMERCE-6239. Update shipment items to a shipment"
 	@priority = "3"
 	test UpdateShipmentItems {
+		property portal.acceptance = "riccardo";
 
 		// TODO Review
 

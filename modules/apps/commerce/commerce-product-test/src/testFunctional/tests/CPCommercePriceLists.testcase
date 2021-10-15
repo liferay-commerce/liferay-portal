@@ -28,7 +28,7 @@ definition {
 	@description = "This is a test for COMMERCE-6226. Price Entry lifecycle"
 	@priority = "3"
 	test AddEditAndDeletePriceEntry {
-		property portal.acceptance = "false";
+		property portal.acceptance = "riccardo";
 
 		// TODO Review
 
@@ -128,7 +128,7 @@ definition {
 	@description = "This is a test for COMMERCE-6225. Price Modifier lifecycle"
 	@priority = "3"
 	test AddEditAndDeletePriceModifier {
-		property portal.acceptance = "false";
+		property portal.acceptance = "riccardo";
 
 		// TODO Review
 
@@ -1103,7 +1103,7 @@ definition {
 	}
 
 	test AssertPriceEntriesAreProductsInTheSameCatalogAsPriceList {
-		property portal.acceptance = "true";
+		property portal.acceptance = "riccardo";
 		property portal.upstream = "true";
 
 		CommerceNavigator.gotoPortlet(
@@ -1819,7 +1819,7 @@ definition {
 	@description = "This is a test for COMMERCE-6222. Price Entry expiration management"
 	@priority = "3"
 	test ViewExpiredPriceEntry {
-		property portal.acceptance = "false";
+		property portal.acceptance = "riccardo";
 		property test.name.skip.portal.instance = "CPCommercePriceLists#ViewExpiredPriceEntry";
 
 		// TODO Review
@@ -2172,7 +2172,7 @@ definition {
 	@description = "This is a test for COMMERCE-6228. Check that an expired entity is not considered in the price calculation"
 	@priority = "3"
 	test ViewPriceNotAffectedByExpiredPriceEntities {
-		property portal.acceptance = "false";
+		property portal.acceptance = "riccardo";
 		property test.name.skip.portal.instance = "CPCommercePriceLists#ViewPriceNotAffectedByExpiredPriceEntities";
 
 		// TODO Review
