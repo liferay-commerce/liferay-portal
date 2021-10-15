@@ -239,7 +239,7 @@ definition {
 	}
 
 	test CreateNewDiscount {
-		property portal.acceptance = "true";
+		property portal.acceptance = "riccardo";
 		property portal.upstream = "true";
 		property test.name.skip.portal.instance = "CPCommerceDiscounts#CreateNewDiscount";
 
@@ -292,7 +292,7 @@ definition {
 	@description = "This is a test for COMMERCE-6230. Discount coupon code limitations"
 	@priority = "3"
 	test LimitCouponCodeUsability {
-		property portal.acceptance = "false";
+		property portal.acceptance = "riccardo";
 		property test.name.skip.portal.instance = "CPCommerceDiscounts#LimitCouponCodeUsability";
 
 		// TODO Review

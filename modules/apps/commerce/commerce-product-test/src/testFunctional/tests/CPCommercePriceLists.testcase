@@ -615,7 +615,7 @@ definition {
 	@description = "This is a test for COMMERCE-6234. Price List Qualifier Lifecycle"
 	@priority = "3"
 	test AddEditAndRemovePLQualifier {
-		property portal.acceptance = "false";
+		property portal.acceptance = "riccardo";
 		property test.name.skip.portal.instance = "CPCommercePriceLists#AddEditAndRemovePLQualifier";
 
 		// TODO Review
@@ -756,7 +756,7 @@ definition {
 	@description = "This is a test for COMMERCE-6235. Product Group Lifecycle"
 	@priority = "3"
 	test AddEditAndRemoveProductGroupFromPL {
-		property portal.acceptance = "false";
+		property portal.acceptance = "riccardo";
 		property test.name.skip.portal.instance = "CPCommercePriceLists#AddEditAndRemoveProductGroupFromPL";
 
 		// TODO Review

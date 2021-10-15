@@ -1033,7 +1033,7 @@ definition {
 	@description = "This is a test for COMMERCE-6202. It should be possible to limit the warehouse stock quantity by channel"
 	@priority = "3"
 	test LimitWarehouseStockQuantityByChannel {
-		property portal.acceptance = "false";
+		property portal.acceptance = "riccardo";
 		property test.name.skip.portal.instance = "CPCommerceWarehouses#LimitWarehouseStockQuantityByChannel";
 
 		// TODO Review
@@ -1068,7 +1068,7 @@ definition {
 	@description = "This is a test for COMMERCE-6208. Concurrency management for inventory entities"
 	@priority = "3"
 	test ManageInventoryEntityConcurrency {
-		property portal.acceptance = "false";
+		property portal.acceptance = "riccardo";
 		property test.name.skip.portal.instance = "CPCommerceWarehouses#ManageInventoryEntityConcurrency";
 
 		// TODO Review
