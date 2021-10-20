@@ -53,6 +53,7 @@ function MiniCart({
 	labels,
 	onAddToCart,
 	orderId,
+	productURLSeparator,
 	spritemap,
 	summaryDataMapper,
 	toggleable,
@@ -162,6 +163,7 @@ function MiniCart({
 				isUpdating,
 				labels: {...DEFAULT_LABELS, ...labels},
 				openCart,
+				productURLSeparator,
 				setIsUpdating,
 				spritemap,
 				summaryDataMapper,
@@ -211,6 +213,7 @@ MiniCart.propTypes = {
 	cartActionURLs: PropTypes.shape({
 		checkoutURL: PropTypes.string,
 		orderDetailURL: PropTypes.string,
+		productURLSeparator: PropTypes.string,
 		siteDefaultURL: PropTypes.string,
 	}).isRequired,
 	cartViews: PropTypes.shape({

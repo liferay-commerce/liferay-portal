@@ -36,6 +36,9 @@ const CART_ITEMS = [
 			promoPriceFormatted: '$ 26.10',
 		},
 		productId: 42182,
+		productURLs: {
+			en_US: 'u-joint',
+		},
 		quantity: 10,
 		settings: {
 			maxQuantity: 10000,
@@ -71,6 +74,9 @@ const CART_ITEMS = [
 			promoPriceFormatted: '$ 18.90',
 		},
 		productId: 42144,
+		productURLs: {
+			en_US: 'u-joint',
+		},
 		quantity: 5,
 		settings: {
 			maxQuantity: 10000,

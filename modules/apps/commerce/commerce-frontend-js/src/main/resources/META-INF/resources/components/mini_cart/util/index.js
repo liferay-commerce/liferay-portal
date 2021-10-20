@@ -64,6 +64,24 @@ export function regenerateOrderDetailURL(orderUUID, siteDefaultURL) {
 	return orderDetailURL.toString();
 }
 
+export function generateProductPageURL(
+	baseURL,
+	productURLSeparator,
+	productRelativeURLs
+) {
+	const actualLang = themeDisplay.getLanguageId();
+	let productLocalizedURL = productRelativeURLs[actualLang];
+
+	if (!productLocalizedURL) {
+		const defaultLang = themeDisplay.getDefaultLanguageId();
+		productLocalizedURL = productRelativeURLs[defaultLang];
+	}
+
+	return [baseURL, productURLSeparator, productLocalizedURL]
+		.map((url) => url.replace(/^\//, '').replace(/\/$/, ''))
+		.join('/');
+}
+
 export function summaryDataMapper({
 	itemsQuantity,
 	subtotalDiscountValueFormatted,

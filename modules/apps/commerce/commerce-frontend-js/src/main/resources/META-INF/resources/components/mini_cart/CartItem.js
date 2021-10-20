@@ -30,8 +30,7 @@ import {
 	REMOVAL_ERRORS_TIMEOUT,
 	REMOVAL_TIMEOUT,
 } from './util/constants';
-import {parseOptions} from './util/index';
-
+import {generateProductPageURL, parseOptions} from './util/index';
 function CartItem({item: cartItem}) {
 	const {
 		adaptiveMediaImageHTMLTag,
@@ -41,6 +40,7 @@ function CartItem({item: cartItem}) {
 		name,
 		options: rawOptions,
 		price,
+		productURLs,
 		quantity,
 		settings,
 		sku,
@@ -49,12 +49,19 @@ function CartItem({item: cartItem}) {
 
 	const {
 		CartResource,
+		actionURLs,
 		cartState,
 		displayDiscountLevels,
 		setIsUpdating,
 		spritemap,
 		updateCartModel,
 	} = useContext(MiniCartContext);
+
+	const productPageUrl = generateProductPageURL(
+		actionURLs.siteDefaultURL,
+		actionURLs.productURLSeparator,
+		productURLs
+	);
 
 	const isMounted = useIsMounted();
 
@@ -76,7 +83,9 @@ function CartItem({item: cartItem}) {
 		});
 	};
 
-	const cancelRemoveItem = () => {
+	const cancelRemoveItem = (event) => {
+		event.stopPropagation();
+
 		clearTimeout(itemState.removalTimeoutRef);
 
 		setItemState({
@@ -92,7 +101,9 @@ function CartItem({item: cartItem}) {
 		});
 	};
 
-	const removeItem = () => {
+	const removeItem = (event) => {
+		event.stopPropagation();
+
 		setItemState({
 			...INITIAL_ITEM_STATE,
 			isGettingRemoved: true,
@@ -137,34 +148,32 @@ function CartItem({item: cartItem}) {
 
 	return (
 		<div
-			className={classnames({
+			className={classnames('mini-cart-item', {
 				'is-removed': isRemoved,
-				'mini-cart-item': true,
 			})}
 		>
-			{!!adaptiveMediaImageHTMLTag && (
+			<a className="mini-cart-item-anchor" href={productPageUrl}>
+				{!!adaptiveMediaImageHTMLTag && (
+					<div
+						className="mini-cart-item-thumbnail"
+						dangerouslySetInnerHTML={{
+							__html: adaptiveMediaImageHTMLTag,
+						}}
+					/>
+				)}
 				<div
-					className="mini-cart-item-thumbnail"
-					dangerouslySetInnerHTML={{
-						__html: adaptiveMediaImageHTMLTag,
-					}}
-				/>
-			)}
-
-			<div
-				className={classnames({
-					'mini-cart-item-info': true,
-					options: !!options,
-				})}
-			>
-				<ItemInfoView
-					childItems={childItems}
-					name={name}
-					options={options}
-					sku={sku}
-				/>
-			</div>
-
+					className={classnames('mini-cart-item-info ml-3', {
+						options: !!options,
+					})}
+				>
+					<ItemInfoView
+						childItems={childItems}
+						name={name}
+						options={options}
+						sku={sku}
+					/>
+				</div>
+			</a>
 			<div className="mini-cart-item-quantity">
 				<QuantitySelector
 					onUpdate={(freshQuantity) => {
@@ -193,7 +202,6 @@ function CartItem({item: cartItem}) {
 					{...settings}
 				/>
 			</div>
-
 			<div className="mini-cart-item-price">
 				<Price
 					compact={true}
@@ -201,7 +209,6 @@ function CartItem({item: cartItem}) {
 					price={price}
 				/>
 			</div>
-
 			<div className="mini-cart-item-delete">
 				<button
 					className="btn btn-unstyled"
@@ -214,7 +221,6 @@ function CartItem({item: cartItem}) {
 					/>
 				</button>
 			</div>
-
 			{(errorMessages || isShowingErrors) && (
 				<div className="mini-cart-item-errors">
 					<ClayIcon
@@ -227,7 +233,6 @@ function CartItem({item: cartItem}) {
 					</span>
 				</div>
 			)}
-
 			<div
 				className={classnames({
 					active: isGettingRemoved,
