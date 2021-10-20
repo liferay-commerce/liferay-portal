@@ -552,11 +552,11 @@ definition {
 		ApplicationsMenu.gotoSite(site = "Minium");
 
 		Click(
-			key_productName = "u-joint",
+			key_productName = "U-Joint",
 			locator1 = "CommerceFrontStore#PRODUCT_CARD_IMAGE");
 
 		AssertTextEquals(
-			locator1 = "Publications#MANGE_PUBLICATIONS_PAGE_TITLE",
+			locator1 = "Portlet#HEADER",
 			value1 = "Product Detail");
 	}
 
