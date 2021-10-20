@@ -68,6 +68,7 @@ definition {
 	@priority = "3"
 	test AddASKUWithSubscriptions {
 		property portal.acceptance = "false";
+		property test.name.skip.portal.instance = "CPCommerceProductSKUs#AddASKUWithSubscriptions";
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -210,6 +211,7 @@ definition {
 	@priority = "3"
 	test RemoveASKU {
 		property portal.acceptance = "false";
+		property test.name.skip.portal.instance = "CPCommerceProductSKUs#RemoveASKU";
 
 		// TODO Review
 
