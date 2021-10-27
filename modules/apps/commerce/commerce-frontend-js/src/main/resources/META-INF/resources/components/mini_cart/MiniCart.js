@@ -90,14 +90,18 @@ function MiniCart({
 					let latestActionURLs, latestCartState;
 
 					setActionURLs((currentURLs) => {
+						const orderDetailURL = currentURLs.orderDetailURL;
 						const {orderUUID} = model;
 
 						latestActionURLs = {
 							...currentURLs,
-							orderDetailURL: regenerateOrderDetailURL(
-								orderUUID,
-								currentURLs.siteDefaultURL
-							),
+							orderDetailURL:
+								orderDetailURL == null
+									? regenerateOrderDetailURL(
+											orderUUID,
+											currentURLs.siteDefaultURL
+									  )
+									: new URL(orderDetailURL),
 						};
 
 						return latestActionURLs;
