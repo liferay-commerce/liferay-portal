@@ -22,6 +22,7 @@ import com.liferay.commerce.frontend.taglib.internal.servlet.ServletContextUtil;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderItem;
 import com.liferay.commerce.order.CommerceOrderHttpHelper;
+import com.liferay.commerce.product.url.CPFriendlyURL;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -63,6 +64,11 @@ public class MiniCartTag extends IncludeTag {
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
+
+		CPFriendlyURL cpFriendlyURL = ServletContextUtil.getCPFriendlyURL();
+
+		_productURLSeparator = cpFriendlyURL.getProductURLSeparator(
+			themeDisplay.getCompanyId());
 
 		_siteDefaultURL = _getSiteDefaultURL(themeDisplay);
 
@@ -178,6 +184,7 @@ public class MiniCartTag extends IncludeTag {
 		_labels = new HashMap<>();
 		_orderDetailURL = null;
 		_orderId = 0;
+		_productURLSeparator = StringPool.BLANK;
 		_siteDefaultURL = StringPool.BLANK;
 		_spritemap = null;
 		_toggleable = true;
@@ -209,6 +216,8 @@ public class MiniCartTag extends IncludeTag {
 			"liferay-commerce:cart:orderDetailURL", _orderDetailURL);
 		httpServletRequest.setAttribute(
 			"liferay-commerce:cart:orderId", _orderId);
+		httpServletRequest.setAttribute(
+			"liferay-commerce:cart:productURLSeparator", _productURLSeparator);
 		httpServletRequest.setAttribute(
 			"liferay-commerce:cart:siteDefaultURL", _siteDefaultURL);
 		httpServletRequest.setAttribute(
@@ -270,6 +279,7 @@ public class MiniCartTag extends IncludeTag {
 	private Map<String, String> _labels = new HashMap<>();
 	private String _orderDetailURL;
 	private long _orderId;
+	private String _productURLSeparator = StringPool.BLANK;
 	private String _siteDefaultURL = StringPool.BLANK;
 	private String _spritemap;
 	private boolean _toggleable = true;
