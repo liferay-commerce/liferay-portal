@@ -138,14 +138,28 @@ components:
                 currency:
                     type: string
                 discount:
+                    format: double
+                    type: number
+                discountFormatted:
                     type: string
                 discountPercentage:
                     type: string
-                discountPercentages:
-                    items:
-                        type: string
-                    type: array
+                discountPercentageLevel1:
+                    format: double
+                    type: number
+                discountPercentageLevel2:
+                    format: double
+                    type: number
+                discountPercentageLevel3:
+                    format: double
+                    type: number
+                discountPercentageLevel4:
+                    format: double
+                    type: number
                 finalPrice:
+                    format: double
+                    type: number
+                finalPriceFormatted:
                     type: string
                 price:
                     format: double
