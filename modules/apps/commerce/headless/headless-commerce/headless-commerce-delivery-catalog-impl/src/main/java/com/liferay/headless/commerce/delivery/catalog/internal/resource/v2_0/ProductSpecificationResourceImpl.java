@@ -14,9 +14,27 @@
 
 package com.liferay.headless.commerce.delivery.catalog.internal.resource.v2_0;
 
+import com.liferay.commerce.product.exception.NoSuchCPDefinitionException;
+import com.liferay.commerce.product.model.CPDefinition;
+import com.liferay.commerce.product.model.CPDefinitionSpecificationOptionValue;
+import com.liferay.commerce.product.service.CPDefinitionLocalService;
+import com.liferay.commerce.product.service.CPDefinitionSpecificationOptionValueLocalService;
+import com.liferay.headless.commerce.delivery.catalog.dto.v2_0.Product;
+import com.liferay.headless.commerce.delivery.catalog.dto.v2_0.ProductSpecification;
+import com.liferay.headless.commerce.delivery.catalog.internal.dto.v2_0.converter.ProductSpecificationDTOConverter;
 import com.liferay.headless.commerce.delivery.catalog.resource.v2_0.ProductSpecificationResource;
+import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
+import com.liferay.portal.vulcan.fields.NestedField;
+import com.liferay.portal.vulcan.fields.NestedFieldId;
+import com.liferay.portal.vulcan.fields.NestedFieldSupport;
+import com.liferay.portal.vulcan.pagination.Page;
+import com.liferay.portal.vulcan.pagination.Pagination;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ServiceScope;
 
 /**
@@ -25,8 +43,77 @@ import org.osgi.service.component.annotations.ServiceScope;
 @Component(
 	enabled = false,
 	properties = "OSGI-INF/liferay/rest/v2_0/product-specification.properties",
-	scope = ServiceScope.PROTOTYPE, service = ProductSpecificationResource.class
+	scope = ServiceScope.PROTOTYPE,
+	service = {NestedFieldSupport.class, ProductSpecificationResource.class}
 )
 public class ProductSpecificationResourceImpl
-	extends BaseProductSpecificationResourceImpl {
+	extends BaseProductSpecificationResourceImpl implements NestedFieldSupport {
+
+	@NestedField(parentClass = Product.class, value = "productSpecifications")
+	@Override
+	public Page<ProductSpecification>
+			getChannelProductProductSpecificationsPage(
+				Long channelId,
+				@NestedFieldId(value = "productId") Long productId,
+				Pagination pagination)
+		throws Exception {
+
+		CPDefinition cpDefinition =
+			_cpDefinitionLocalService.fetchCPDefinitionByCProductId(productId);
+
+		if (cpDefinition == null) {
+			throw new NoSuchCPDefinitionException(
+				"Unable to find Product with ID: " + productId);
+		}
+
+		List<CPDefinitionSpecificationOptionValue>
+			cpDefinitionSpecificationOptionValues =
+				_cpDefinitionSpecificationOptionValueLocalService.
+					getCPDefinitionSpecificationOptionValues(
+						cpDefinition.getCPDefinitionId(),
+						pagination.getStartPosition(),
+						pagination.getEndPosition(), null);
+
+		int totalItems =
+			_cpDefinitionSpecificationOptionValueLocalService.
+				getCPDefinitionSpecificationOptionValuesCount(
+					cpDefinition.getCPDefinitionId());
+
+		return Page.of(
+			_toProductSpecifications(cpDefinitionSpecificationOptionValues),
+			pagination, totalItems);
+	}
+
+	private List<ProductSpecification> _toProductSpecifications(
+			List<CPDefinitionSpecificationOptionValue>
+				cpDefinitionSpecificationOptionValues)
+		throws Exception {
+
+		List<ProductSpecification> productSpecifications = new ArrayList<>();
+
+		for (CPDefinitionSpecificationOptionValue
+				cpDefinitionSpecificationOptionValue :
+					cpDefinitionSpecificationOptionValues) {
+
+			productSpecifications.add(
+				_productSpecificationDTOConverter.toDTO(
+					new DefaultDTOConverterContext(
+						cpDefinitionSpecificationOptionValue.
+							getCPDefinitionSpecificationOptionValueId(),
+						contextAcceptLanguage.getPreferredLocale())));
+		}
+
+		return productSpecifications;
+	}
+
+	@Reference
+	private CPDefinitionLocalService _cpDefinitionLocalService;
+
+	@Reference
+	private CPDefinitionSpecificationOptionValueLocalService
+		_cpDefinitionSpecificationOptionValueLocalService;
+
+	@Reference
+	private ProductSpecificationDTOConverter _productSpecificationDTOConverter;
+
 }
