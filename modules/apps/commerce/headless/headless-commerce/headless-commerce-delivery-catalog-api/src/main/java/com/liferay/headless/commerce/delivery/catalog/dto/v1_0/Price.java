@@ -84,17 +84,17 @@ public class Price implements Serializable {
 	protected String currency;
 
 	@Schema
-	public String getDiscount() {
+	public Double getDiscount() {
 		return discount;
 	}
 
-	public void setDiscount(String discount) {
+	public void setDiscount(Double discount) {
 		this.discount = discount;
 	}
 
 	@JsonIgnore
 	public void setDiscount(
-		UnsafeSupplier<String, Exception> discountUnsafeSupplier) {
+		UnsafeSupplier<Double, Exception> discountUnsafeSupplier) {
 
 		try {
 			discount = discountUnsafeSupplier.get();
@@ -109,7 +109,35 @@ public class Price implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected String discount;
+	protected Double discount;
+
+	@Schema
+	public String getDiscountFormatted() {
+		return discountFormatted;
+	}
+
+	public void setDiscountFormatted(String discountFormatted) {
+		this.discountFormatted = discountFormatted;
+	}
+
+	@JsonIgnore
+	public void setDiscountFormatted(
+		UnsafeSupplier<String, Exception> discountFormattedUnsafeSupplier) {
+
+		try {
+			discountFormatted = discountFormattedUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String discountFormatted;
 
 	@Schema
 	public String getDiscountPercentage() {
@@ -140,20 +168,22 @@ public class Price implements Serializable {
 	protected String discountPercentage;
 
 	@Schema
-	public String[] getDiscountPercentages() {
-		return discountPercentages;
+	public Double getDiscountPercentageLevel1() {
+		return discountPercentageLevel1;
 	}
 
-	public void setDiscountPercentages(String[] discountPercentages) {
-		this.discountPercentages = discountPercentages;
+	public void setDiscountPercentageLevel1(Double discountPercentageLevel1) {
+		this.discountPercentageLevel1 = discountPercentageLevel1;
 	}
 
 	@JsonIgnore
-	public void setDiscountPercentages(
-		UnsafeSupplier<String[], Exception> discountPercentagesUnsafeSupplier) {
+	public void setDiscountPercentageLevel1(
+		UnsafeSupplier<Double, Exception>
+			discountPercentageLevel1UnsafeSupplier) {
 
 		try {
-			discountPercentages = discountPercentagesUnsafeSupplier.get();
+			discountPercentageLevel1 =
+				discountPercentageLevel1UnsafeSupplier.get();
 		}
 		catch (RuntimeException re) {
 			throw re;
@@ -165,20 +195,110 @@ public class Price implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected String[] discountPercentages;
+	protected Double discountPercentageLevel1;
 
 	@Schema
-	public String getFinalPrice() {
+	public Double getDiscountPercentageLevel2() {
+		return discountPercentageLevel2;
+	}
+
+	public void setDiscountPercentageLevel2(Double discountPercentageLevel2) {
+		this.discountPercentageLevel2 = discountPercentageLevel2;
+	}
+
+	@JsonIgnore
+	public void setDiscountPercentageLevel2(
+		UnsafeSupplier<Double, Exception>
+			discountPercentageLevel2UnsafeSupplier) {
+
+		try {
+			discountPercentageLevel2 =
+				discountPercentageLevel2UnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Double discountPercentageLevel2;
+
+	@Schema
+	public Double getDiscountPercentageLevel3() {
+		return discountPercentageLevel3;
+	}
+
+	public void setDiscountPercentageLevel3(Double discountPercentageLevel3) {
+		this.discountPercentageLevel3 = discountPercentageLevel3;
+	}
+
+	@JsonIgnore
+	public void setDiscountPercentageLevel3(
+		UnsafeSupplier<Double, Exception>
+			discountPercentageLevel3UnsafeSupplier) {
+
+		try {
+			discountPercentageLevel3 =
+				discountPercentageLevel3UnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Double discountPercentageLevel3;
+
+	@Schema
+	public Double getDiscountPercentageLevel4() {
+		return discountPercentageLevel4;
+	}
+
+	public void setDiscountPercentageLevel4(Double discountPercentageLevel4) {
+		this.discountPercentageLevel4 = discountPercentageLevel4;
+	}
+
+	@JsonIgnore
+	public void setDiscountPercentageLevel4(
+		UnsafeSupplier<Double, Exception>
+			discountPercentageLevel4UnsafeSupplier) {
+
+		try {
+			discountPercentageLevel4 =
+				discountPercentageLevel4UnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Double discountPercentageLevel4;
+
+	@Schema
+	public Double getFinalPrice() {
 		return finalPrice;
 	}
 
-	public void setFinalPrice(String finalPrice) {
+	public void setFinalPrice(Double finalPrice) {
 		this.finalPrice = finalPrice;
 	}
 
 	@JsonIgnore
 	public void setFinalPrice(
-		UnsafeSupplier<String, Exception> finalPriceUnsafeSupplier) {
+		UnsafeSupplier<Double, Exception> finalPriceUnsafeSupplier) {
 
 		try {
 			finalPrice = finalPriceUnsafeSupplier.get();
@@ -193,7 +313,35 @@ public class Price implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected String finalPrice;
+	protected Double finalPrice;
+
+	@Schema
+	public String getFinalPriceFormatted() {
+		return finalPriceFormatted;
+	}
+
+	public void setFinalPriceFormatted(String finalPriceFormatted) {
+		this.finalPriceFormatted = finalPriceFormatted;
+	}
+
+	@JsonIgnore
+	public void setFinalPriceFormatted(
+		UnsafeSupplier<String, Exception> finalPriceFormattedUnsafeSupplier) {
+
+		try {
+			finalPriceFormatted = finalPriceFormattedUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String finalPriceFormatted;
 
 	@Schema
 	public Double getPrice() {
@@ -411,9 +559,19 @@ public class Price implements Serializable {
 
 			sb.append("\"discount\": ");
 
+			sb.append(discount);
+		}
+
+		if (discountFormatted != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"discountFormatted\": ");
+
 			sb.append("\"");
 
-			sb.append(_escape(discount));
+			sb.append(_escape(discountFormatted));
 
 			sb.append("\"");
 		}
@@ -432,28 +590,44 @@ public class Price implements Serializable {
 			sb.append("\"");
 		}
 
-		if (discountPercentages != null) {
+		if (discountPercentageLevel1 != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"discountPercentages\": ");
+			sb.append("\"discountPercentageLevel1\": ");
 
-			sb.append("[");
+			sb.append(discountPercentageLevel1);
+		}
 
-			for (int i = 0; i < discountPercentages.length; i++) {
-				sb.append("\"");
-
-				sb.append(_escape(discountPercentages[i]));
-
-				sb.append("\"");
-
-				if ((i + 1) < discountPercentages.length) {
-					sb.append(", ");
-				}
+		if (discountPercentageLevel2 != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
 			}
 
-			sb.append("]");
+			sb.append("\"discountPercentageLevel2\": ");
+
+			sb.append(discountPercentageLevel2);
+		}
+
+		if (discountPercentageLevel3 != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"discountPercentageLevel3\": ");
+
+			sb.append(discountPercentageLevel3);
+		}
+
+		if (discountPercentageLevel4 != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"discountPercentageLevel4\": ");
+
+			sb.append(discountPercentageLevel4);
 		}
 
 		if (finalPrice != null) {
@@ -463,9 +637,19 @@ public class Price implements Serializable {
 
 			sb.append("\"finalPrice\": ");
 
+			sb.append(finalPrice);
+		}
+
+		if (finalPriceFormatted != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"finalPriceFormatted\": ");
+
 			sb.append("\"");
 
-			sb.append(_escape(finalPrice));
+			sb.append(_escape(finalPriceFormatted));
 
 			sb.append("\"");
 		}

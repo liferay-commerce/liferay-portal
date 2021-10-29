@@ -74,9 +74,19 @@ public class PriceSerDes {
 
 			sb.append("\"discount\": ");
 
+			sb.append(price.getDiscount());
+		}
+
+		if (price.getDiscountFormatted() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"discountFormatted\": ");
+
 			sb.append("\"");
 
-			sb.append(_escape(price.getDiscount()));
+			sb.append(_escape(price.getDiscountFormatted()));
 
 			sb.append("\"");
 		}
@@ -95,28 +105,44 @@ public class PriceSerDes {
 			sb.append("\"");
 		}
 
-		if (price.getDiscountPercentages() != null) {
+		if (price.getDiscountPercentageLevel1() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"discountPercentages\": ");
+			sb.append("\"discountPercentageLevel1\": ");
 
-			sb.append("[");
+			sb.append(price.getDiscountPercentageLevel1());
+		}
 
-			for (int i = 0; i < price.getDiscountPercentages().length; i++) {
-				sb.append("\"");
-
-				sb.append(_escape(price.getDiscountPercentages()[i]));
-
-				sb.append("\"");
-
-				if ((i + 1) < price.getDiscountPercentages().length) {
-					sb.append(", ");
-				}
+		if (price.getDiscountPercentageLevel2() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
 			}
 
-			sb.append("]");
+			sb.append("\"discountPercentageLevel2\": ");
+
+			sb.append(price.getDiscountPercentageLevel2());
+		}
+
+		if (price.getDiscountPercentageLevel3() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"discountPercentageLevel3\": ");
+
+			sb.append(price.getDiscountPercentageLevel3());
+		}
+
+		if (price.getDiscountPercentageLevel4() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"discountPercentageLevel4\": ");
+
+			sb.append(price.getDiscountPercentageLevel4());
 		}
 
 		if (price.getFinalPrice() != null) {
@@ -126,9 +152,19 @@ public class PriceSerDes {
 
 			sb.append("\"finalPrice\": ");
 
+			sb.append(price.getFinalPrice());
+		}
+
+		if (price.getFinalPriceFormatted() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"finalPriceFormatted\": ");
+
 			sb.append("\"");
 
-			sb.append(_escape(price.getFinalPrice()));
+			sb.append(_escape(price.getFinalPriceFormatted()));
 
 			sb.append("\"");
 		}
@@ -237,6 +273,15 @@ public class PriceSerDes {
 			map.put("discount", String.valueOf(price.getDiscount()));
 		}
 
+		if (price.getDiscountFormatted() == null) {
+			map.put("discountFormatted", null);
+		}
+		else {
+			map.put(
+				"discountFormatted",
+				String.valueOf(price.getDiscountFormatted()));
+		}
+
 		if (price.getDiscountPercentage() == null) {
 			map.put("discountPercentage", null);
 		}
@@ -246,13 +291,40 @@ public class PriceSerDes {
 				String.valueOf(price.getDiscountPercentage()));
 		}
 
-		if (price.getDiscountPercentages() == null) {
-			map.put("discountPercentages", null);
+		if (price.getDiscountPercentageLevel1() == null) {
+			map.put("discountPercentageLevel1", null);
 		}
 		else {
 			map.put(
-				"discountPercentages",
-				String.valueOf(price.getDiscountPercentages()));
+				"discountPercentageLevel1",
+				String.valueOf(price.getDiscountPercentageLevel1()));
+		}
+
+		if (price.getDiscountPercentageLevel2() == null) {
+			map.put("discountPercentageLevel2", null);
+		}
+		else {
+			map.put(
+				"discountPercentageLevel2",
+				String.valueOf(price.getDiscountPercentageLevel2()));
+		}
+
+		if (price.getDiscountPercentageLevel3() == null) {
+			map.put("discountPercentageLevel3", null);
+		}
+		else {
+			map.put(
+				"discountPercentageLevel3",
+				String.valueOf(price.getDiscountPercentageLevel3()));
+		}
+
+		if (price.getDiscountPercentageLevel4() == null) {
+			map.put("discountPercentageLevel4", null);
+		}
+		else {
+			map.put(
+				"discountPercentageLevel4",
+				String.valueOf(price.getDiscountPercentageLevel4()));
 		}
 
 		if (price.getFinalPrice() == null) {
@@ -260,6 +332,15 @@ public class PriceSerDes {
 		}
 		else {
 			map.put("finalPrice", String.valueOf(price.getFinalPrice()));
+		}
+
+		if (price.getFinalPriceFormatted() == null) {
+			map.put("finalPriceFormatted", null);
+		}
+		else {
+			map.put(
+				"finalPriceFormatted",
+				String.valueOf(price.getFinalPriceFormatted()));
 		}
 
 		if (price.getPrice() == null) {
@@ -336,7 +417,13 @@ public class PriceSerDes {
 			}
 			else if (Objects.equals(jsonParserFieldName, "discount")) {
 				if (jsonParserFieldValue != null) {
-					price.setDiscount((String)jsonParserFieldValue);
+					price.setDiscount(
+						Double.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "discountFormatted")) {
+				if (jsonParserFieldValue != null) {
+					price.setDiscountFormatted((String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(
@@ -347,16 +434,48 @@ public class PriceSerDes {
 				}
 			}
 			else if (Objects.equals(
-						jsonParserFieldName, "discountPercentages")) {
+						jsonParserFieldName, "discountPercentageLevel1")) {
 
 				if (jsonParserFieldValue != null) {
-					price.setDiscountPercentages(
-						toStrings((Object[])jsonParserFieldValue));
+					price.setDiscountPercentageLevel1(
+						Double.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "discountPercentageLevel2")) {
+
+				if (jsonParserFieldValue != null) {
+					price.setDiscountPercentageLevel2(
+						Double.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "discountPercentageLevel3")) {
+
+				if (jsonParserFieldValue != null) {
+					price.setDiscountPercentageLevel3(
+						Double.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "discountPercentageLevel4")) {
+
+				if (jsonParserFieldValue != null) {
+					price.setDiscountPercentageLevel4(
+						Double.valueOf((String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "finalPrice")) {
 				if (jsonParserFieldValue != null) {
-					price.setFinalPrice((String)jsonParserFieldValue);
+					price.setFinalPrice(
+						Double.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "finalPriceFormatted")) {
+
+				if (jsonParserFieldValue != null) {
+					price.setFinalPriceFormatted((String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "price")) {

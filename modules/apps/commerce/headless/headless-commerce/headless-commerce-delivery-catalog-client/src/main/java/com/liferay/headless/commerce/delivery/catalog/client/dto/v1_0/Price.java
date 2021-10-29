@@ -55,16 +55,16 @@ public class Price implements Cloneable, Serializable {
 
 	protected String currency;
 
-	public String getDiscount() {
+	public Double getDiscount() {
 		return discount;
 	}
 
-	public void setDiscount(String discount) {
+	public void setDiscount(Double discount) {
 		this.discount = discount;
 	}
 
 	public void setDiscount(
-		UnsafeSupplier<String, Exception> discountUnsafeSupplier) {
+		UnsafeSupplier<Double, Exception> discountUnsafeSupplier) {
 
 		try {
 			discount = discountUnsafeSupplier.get();
@@ -74,7 +74,28 @@ public class Price implements Cloneable, Serializable {
 		}
 	}
 
-	protected String discount;
+	protected Double discount;
+
+	public String getDiscountFormatted() {
+		return discountFormatted;
+	}
+
+	public void setDiscountFormatted(String discountFormatted) {
+		this.discountFormatted = discountFormatted;
+	}
+
+	public void setDiscountFormatted(
+		UnsafeSupplier<String, Exception> discountFormattedUnsafeSupplier) {
+
+		try {
+			discountFormatted = discountFormattedUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String discountFormatted;
 
 	public String getDiscountPercentage() {
 		return discountPercentage;
@@ -97,37 +118,108 @@ public class Price implements Cloneable, Serializable {
 
 	protected String discountPercentage;
 
-	public String[] getDiscountPercentages() {
-		return discountPercentages;
+	public Double getDiscountPercentageLevel1() {
+		return discountPercentageLevel1;
 	}
 
-	public void setDiscountPercentages(String[] discountPercentages) {
-		this.discountPercentages = discountPercentages;
+	public void setDiscountPercentageLevel1(Double discountPercentageLevel1) {
+		this.discountPercentageLevel1 = discountPercentageLevel1;
 	}
 
-	public void setDiscountPercentages(
-		UnsafeSupplier<String[], Exception> discountPercentagesUnsafeSupplier) {
+	public void setDiscountPercentageLevel1(
+		UnsafeSupplier<Double, Exception>
+			discountPercentageLevel1UnsafeSupplier) {
 
 		try {
-			discountPercentages = discountPercentagesUnsafeSupplier.get();
+			discountPercentageLevel1 =
+				discountPercentageLevel1UnsafeSupplier.get();
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	protected String[] discountPercentages;
+	protected Double discountPercentageLevel1;
 
-	public String getFinalPrice() {
+	public Double getDiscountPercentageLevel2() {
+		return discountPercentageLevel2;
+	}
+
+	public void setDiscountPercentageLevel2(Double discountPercentageLevel2) {
+		this.discountPercentageLevel2 = discountPercentageLevel2;
+	}
+
+	public void setDiscountPercentageLevel2(
+		UnsafeSupplier<Double, Exception>
+			discountPercentageLevel2UnsafeSupplier) {
+
+		try {
+			discountPercentageLevel2 =
+				discountPercentageLevel2UnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Double discountPercentageLevel2;
+
+	public Double getDiscountPercentageLevel3() {
+		return discountPercentageLevel3;
+	}
+
+	public void setDiscountPercentageLevel3(Double discountPercentageLevel3) {
+		this.discountPercentageLevel3 = discountPercentageLevel3;
+	}
+
+	public void setDiscountPercentageLevel3(
+		UnsafeSupplier<Double, Exception>
+			discountPercentageLevel3UnsafeSupplier) {
+
+		try {
+			discountPercentageLevel3 =
+				discountPercentageLevel3UnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Double discountPercentageLevel3;
+
+	public Double getDiscountPercentageLevel4() {
+		return discountPercentageLevel4;
+	}
+
+	public void setDiscountPercentageLevel4(Double discountPercentageLevel4) {
+		this.discountPercentageLevel4 = discountPercentageLevel4;
+	}
+
+	public void setDiscountPercentageLevel4(
+		UnsafeSupplier<Double, Exception>
+			discountPercentageLevel4UnsafeSupplier) {
+
+		try {
+			discountPercentageLevel4 =
+				discountPercentageLevel4UnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Double discountPercentageLevel4;
+
+	public Double getFinalPrice() {
 		return finalPrice;
 	}
 
-	public void setFinalPrice(String finalPrice) {
+	public void setFinalPrice(Double finalPrice) {
 		this.finalPrice = finalPrice;
 	}
 
 	public void setFinalPrice(
-		UnsafeSupplier<String, Exception> finalPriceUnsafeSupplier) {
+		UnsafeSupplier<Double, Exception> finalPriceUnsafeSupplier) {
 
 		try {
 			finalPrice = finalPriceUnsafeSupplier.get();
@@ -137,7 +229,28 @@ public class Price implements Cloneable, Serializable {
 		}
 	}
 
-	protected String finalPrice;
+	protected Double finalPrice;
+
+	public String getFinalPriceFormatted() {
+		return finalPriceFormatted;
+	}
+
+	public void setFinalPriceFormatted(String finalPriceFormatted) {
+		this.finalPriceFormatted = finalPriceFormatted;
+	}
+
+	public void setFinalPriceFormatted(
+		UnsafeSupplier<String, Exception> finalPriceFormattedUnsafeSupplier) {
+
+		try {
+			finalPriceFormatted = finalPriceFormattedUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String finalPriceFormatted;
 
 	public Double getPrice() {
 		return price;
