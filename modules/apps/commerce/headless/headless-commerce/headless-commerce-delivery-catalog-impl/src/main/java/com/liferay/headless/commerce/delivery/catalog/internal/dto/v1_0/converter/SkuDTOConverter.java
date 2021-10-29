@@ -40,7 +40,6 @@ import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 
 import java.math.BigDecimal;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -126,20 +125,6 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 		return availability;
 	}
 
-	private String[] _getFormattedDiscountPercentages(
-			BigDecimal[] discountPercentages, Locale locale)
-		throws Exception {
-
-		List<String> formattedDiscountPercentages = new ArrayList<>();
-
-		for (BigDecimal percentage : discountPercentages) {
-			formattedDiscountPercentages.add(
-				_commercePriceFormatter.format(percentage, locale));
-		}
-
-		return formattedDiscountPercentages.toArray(new String[0]);
-	}
-
 	private Map<String, String> _getOptions(CPInstance cpInstance)
 		throws Exception {
 
@@ -202,11 +187,6 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 		CommerceMoney unitPriceCommerceMoney =
 			commerceProductPrice.getUnitPrice();
 
-		CommerceMoney unitPromoPriceCommerceMoney =
-			commerceProductPrice.getUnitPromoPrice();
-
-		BigDecimal unitPromoPrice = unitPromoPriceCommerceMoney.getPrice();
-
 		BigDecimal unitPrice = unitPriceCommerceMoney.getPrice();
 
 		Price price = new Price() {
@@ -217,15 +197,6 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 			}
 		};
 
-		if ((unitPromoPrice != null) &&
-			(unitPromoPrice.compareTo(BigDecimal.ZERO) > 0) &&
-			(unitPromoPrice.compareTo(unitPriceCommerceMoney.getPrice()) < 0)) {
-
-			price.setPromoPrice(unitPromoPrice.doubleValue());
-			price.setPromoPriceFormatted(
-				unitPromoPriceCommerceMoney.format(locale));
-		}
-
 		CommerceDiscountValue discountValue =
 			commerceProductPrice.getDiscountValue();
 
@@ -233,17 +204,50 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 			CommerceMoney discountAmountCommerceMoney =
 				discountValue.getDiscountAmount();
 
-			CommerceMoney finalPriceCommerceMoney =
-				commerceProductPrice.getFinalPrice();
+			BigDecimal discountAmount = discountAmountCommerceMoney.getPrice();
 
-			price.setDiscount(discountAmountCommerceMoney.format(locale));
+			price.setDiscount(discountAmount.doubleValue());
+
+			price.setDiscountFormatted(
+				discountAmountCommerceMoney.format(locale));
 			price.setDiscountPercentage(
 				_commercePriceFormatter.format(
 					discountValue.getDiscountPercentage(), locale));
-			price.setDiscountPercentages(
-				_getFormattedDiscountPercentages(
-					discountValue.getPercentages(), locale));
-			price.setFinalPrice(finalPriceCommerceMoney.format(locale));
+
+			BigDecimal[] discountPercentages = discountValue.getPercentages();
+
+			price.setDiscountPercentageLevel1(
+				discountPercentages[0].doubleValue());
+			price.setDiscountPercentageLevel2(
+				discountPercentages[1].doubleValue());
+			price.setDiscountPercentageLevel3(
+				discountPercentages[2].doubleValue());
+			price.setDiscountPercentageLevel4(
+				discountPercentages[3].doubleValue());
+
+			CommerceMoney finalPriceCommerceMoney =
+				commerceProductPrice.getFinalPrice();
+
+			BigDecimal finalPrice = finalPriceCommerceMoney.getPrice();
+
+			price.setFinalPrice(finalPrice.doubleValue());
+
+			price.setFinalPriceFormatted(
+				finalPriceCommerceMoney.format(locale));
+		}
+
+		CommerceMoney unitPromoPriceCommerceMoney =
+			commerceProductPrice.getUnitPromoPrice();
+
+		BigDecimal unitPromoPrice = unitPromoPriceCommerceMoney.getPrice();
+
+		if ((unitPromoPrice != null) &&
+			(unitPromoPrice.compareTo(BigDecimal.ZERO) > 0) &&
+			(unitPromoPrice.compareTo(unitPriceCommerceMoney.getPrice()) < 0)) {
+
+			price.setPromoPrice(unitPromoPrice.doubleValue());
+			price.setPromoPriceFormatted(
+				unitPromoPriceCommerceMoney.format(locale));
 		}
 
 		return price;
