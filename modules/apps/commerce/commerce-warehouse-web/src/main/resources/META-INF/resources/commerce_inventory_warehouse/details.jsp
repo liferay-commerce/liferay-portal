@@ -33,10 +33,65 @@ CommerceInventoryWarehouse commerceInventoryWarehouse = commerceInventoryWarehou
 
 <aui:model-context bean="<%= commerceInventoryWarehouse %>" model="<%= CommerceInventoryWarehouse.class %>" />
 
-<aui:fieldset>
-	<aui:input name="name" />
+<%--<aui:form action="<%= editCommercePriceListActionURL %>" cssClass="pt-4" method="post" name="fm">--%>
 
-	<aui:input name="description" />
+<div class="mt-4 row">
+	<div class="col-lg-6">
+		<commerce-ui:panel
+			title='<%= LanguageUtil.get(request, "details") %>'
+		>
+			<aui:fieldset>
+				<aui:input name="name" required="<%= true %>" />
 
-	<aui:input checked="<%= (commerceInventoryWarehouse == null) ? false : commerceInventoryWarehouse.isActive() %>" inlineLabel="right" labelCssClass="simple-toggle-switch" name="active" type="toggle-switch" />
-</aui:fieldset>
+				<aui:input name="description" />
+
+				<aui:input checked="<%= (commerceInventoryWarehouse == null) ? false : commerceInventoryWarehouse.isActive() %>" inlineLabel="right" labelCssClass="simple-toggle-switch" name="active" type="toggle-switch" />
+			</aui:fieldset>
+		</commerce-ui:panel>
+	</div>
+
+	<div class="col-lg-6">
+		<commerce-ui:panel
+			title='<%= LanguageUtil.get(request, "geolocation") %>'
+		>
+			<aui:fieldset>
+				<aui:input name="latitude" />
+
+				<aui:input name="longitude" />
+			</aui:fieldset>
+		</commerce-ui:panel>
+	</div>
+
+	<div class="col">
+		<commerce-ui:panel
+			title='<%= LanguageUtil.get(request, "address") %>'
+		>
+			<%-- <div class="row no-gutters">--%>
+
+			<aui:fieldset>
+				<div class="row">
+					<div class="col-lg-6">
+						<aui:input name="street1" />
+
+						<aui:input name="street3" />
+
+						<aui:select label="region" name="commerceRegionCode" />
+
+						<aui:input name="city" />
+					</div>
+
+					<div class="col-lg-6">
+						<aui:input name="street2" />
+
+						<aui:select label="country" name="countryTwoLettersISOCode" />
+
+						<aui:input label="postal-code" name="zip" />
+					</div>
+				</div>
+			</aui:fieldset>
+
+			<%-- </div>--%>
+		</commerce-ui:panel>
+	</div>
+</div>
+<%--</aui:form>--%>
