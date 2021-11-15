@@ -288,6 +288,8 @@ public class CSVCommerceOrderImporterTypeImpl
 
 		commerceOrderImporterItemImpl.setJSON("[]");
 
+		commerceOrderImporterItemImpl.setJSON("[]");
+
 		commerceOrderImporterItemImpl.setQuantity(quantity);
 
 		return commerceOrderImporterItemImpl;
