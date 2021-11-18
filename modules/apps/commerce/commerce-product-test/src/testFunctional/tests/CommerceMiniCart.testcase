@@ -583,6 +583,82 @@ definition {
 			value1 = "Torque Converters");
 	}
 
+	@description = "COMMERCE-7736, As a buyer, I want to be able to view product details for more than one item in the cart"
+	@priority = "3"
+	test VerifyTheProductDetailPageRedirectWithTwoProducts {
+		property portal.acceptance = "false";
+
+		task ("Set up Commerce Minium Site") {
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+
+			ApplicationsMenu.gotoSite(site = "Minium");
+
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
+
+			CommerceAcceleratorsInitializer.createNewAccountViaFront(accountName = "Commerce Account");
+		}
+
+		task ("Add product to cart") {
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
+			Type(
+				locator1 = "AppBuilder#SEARCH_BAR_INPUT",
+				value1 = "U-Joint");
+
+			Click(locator1 = "Button#SUBMIT");
+
+			FrontStore.addInitializerProductToCart(
+				productName = "U-Joint",
+				productQuantity = "3");
+		}
+
+		task ("Add a second product to cart") {
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
+			Type(
+				locator1 = "AppBuilder#SEARCH_BAR_INPUT",
+				value1 = "ABS Sensor");
+
+			Click(locator1 = "Button#SUBMIT");
+
+			FrontStore.addInitializerProductToCart(
+				productName = "ABS Sensor",
+				productQuantity = "1");
+		}
+
+		task ("Assert both product is added to minicart") {
+			CommerceNavigator.gotoMiniCart();
+
+			FrontStore.viewMiniCartItem(
+				cartItemName = "U-Joint",
+				cartItemQuantity = "3",
+				cartItemSKU = "MIN55861");
+
+			FrontStore.viewMiniCartItem(
+				cartItemName = "ABS Sensor",
+				cartItemQuantity = "1",
+				cartItemSKU = "MIN93015");
+		}
+
+		task ("Assert clicking on product navigates to product detail page") {
+			CommerceNavigator.gotoMiniCartEntry(
+				cartItemSKU = "MIN55861",
+				entryName = "U-Joint");
+
+			FrontStore.viewProductDetail(FSProductName = "U-Joint");
+		}
+
+		task ("Assert clicking on second product navigates to product detail page") {
+			CommerceNavigator.gotoMiniCart();
+
+			CommerceNavigator.gotoMiniCartEntry(
+				cartItemSKU = "MIN93015",
+				entryName = "ABS Sensor");
+
+			FrontStore.viewProductDetail(FSProductName = "ABS Sensor");
+		}
+	}
+
 	@description = "COMMERCE-6348. As a buyer, I want the first selectable quantity of a cart item to be the minimum multiple quantity if Minimum Order Quantity is higher than Multiple Order Quantity"
 	@priority = "3"
 	test ViewFirstSelectableQuantityInMiniCartItemWhenMinimumOrderQuantityIsHigherThanMultipleOrderQuantity {
