@@ -16,6 +16,8 @@
 
 <%
 long fileEntryId = BeanParamUtil.getLong(cpAttachmentFileEntry, request, "fileEntryId");
+
+boolean CDNEnabled = BeanParamUtil.getBoolean(cpAttachmentFileEntry, request, "CDNEnabled");
 %>
 
 <liferay-ui:error exception="<%= DuplicateCPAttachmentFileEntryException.class %>" message="that-attachment-is-already-in-use-on-this-product" />
@@ -24,6 +26,8 @@ long fileEntryId = BeanParamUtil.getLong(cpAttachmentFileEntry, request, "fileEn
 <portlet:actionURL name="/cp_definitions/upload_temp_attachment" var="uploadCoverImageURL">
 	<portlet:param name="cpDefinitionId" value="<%= String.valueOf(cpDefinitionId) %>" />
 </portlet:actionURL>
+
+<aui:input name="CDNEnabled" type="checkbox" value="<%= CDNEnabled %>" />
 
 <c:choose>
 	<c:when test="<%= type == CPAttachmentFileEntryConstants.TYPE_IMAGE %>">
@@ -58,6 +62,21 @@ long fileEntryId = BeanParamUtil.getLong(cpAttachmentFileEntry, request, "fileEn
 </c:choose>
 
 <aui:script sandbox="<%= true %>">
+	const cdnEnabledCheckbox = document.getElementById(
+		'<portlet:namespace />CDNEnabled'
+	);
+
+	if (cdnEnabledCheckbox) {
+		cdnEnabledCheckbox.addEventListener('click', (event) => {
+			const imageSelector = document.getElementsByClassName('lfr-attachment-cover-image-selector');
+			if(event.currentTarget.checked){
+				imageSelector[0].style.display = 'none';
+			}else{
+				imageSelector[0].style.display = 'initial';
+			}
+		});
+	}
+
 	const selectFileButton = document.getElementById(
 		'<portlet:namespace />selectFile'
 	);

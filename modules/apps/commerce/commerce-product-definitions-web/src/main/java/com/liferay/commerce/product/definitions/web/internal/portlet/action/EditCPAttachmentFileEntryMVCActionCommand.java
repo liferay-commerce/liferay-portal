@@ -24,6 +24,7 @@ import com.liferay.commerce.product.service.CPAttachmentFileEntryService;
 import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.commerce.product.util.DDMFormValuesHelper;
 import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
@@ -146,9 +147,9 @@ public class EditCPAttachmentFileEntryMVCActionCommand
 			actionRequest, "cpDefinitionId");
 		long fileEntryId = ParamUtil.getLong(actionRequest, "fileEntryId");
 
-		String cdnURL = ParamUtil.getString(actionRequest, "cdnURL");
+		String cdnURL = "http://www.liferay.com/";
 
-		boolean cdnEnabled = Validator.isNotNull(cdnURL);
+		boolean cdnEnabled = ParamUtil.getBoolean(actionRequest, "CDNEnabled");
 
 		int displayDateMonth = ParamUtil.getInteger(
 			actionRequest, "displayDateMonth");
