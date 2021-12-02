@@ -120,4 +120,11 @@ definition {
 		}
 	}
 
+	macro viewCartPortletEntry {
+		Click(
+			key_productName = "${productName}",
+			locator1 = "CommerceAccelerators#CART_PORTLET_ORDER_DESCRIPTION"
+		);
+	}
+
 }
