@@ -276,6 +276,54 @@ definition {
 		}
 	}
 
+	@description = "COMMERCE-7751 As a buyer, I want to add a cart widget to the pending orders page and I want to view the product details and edit the quantity of an item in the cart widget"
+	@priority = "3"
+	test ClickOnCartItemWidgetRedirectToProductDetails {
+		property portal.acceptance = "false";
+
+		task("Set up Commerce Minium Site"){
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+
+			ApplicationsMenu.gotoSite(site = "Minium");
+
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
+
+			CommerceAcceleratorsInitializer.createNewAccountViaFront(accountName = "Commerce Account");
+		}
+
+		task("Add product to cart"){
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
+			Type(
+				locator1 = "AppBuilder#SEARCH_BAR_INPUT",
+				value1 = "U-Joint");
+
+			Click(locator1 = "Button#SUBMIT");
+
+			FrontStore.addInitializerProductToCart(
+				productName = "U-Joint",
+				productQuantity = "3");
+		}
+
+		task("Add cart widget to pending orders page"){
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
+
+			Portlet.addPGCmd(portletName = "Cart");
+		}
+
+		task("Assert clicking on product in cart widget navigates to product detail page"){
+			CommerceNavigator.viewCartPortletEntry(productName = "U-Joint");
+
+			FrontStore.viewProductDetail(FSProductName = "U-Joint");
+		}
+
+		task("Assert changing quantity in cart widget is correctly changed"){
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
+
+			CommerceOrders.editCartPortletOrderQuantity(orderQuantity = "2");
+		}
+	}
+
 	@description = "COMMERCE-6335. As a buyer, I want to edit the quantity of an bundled product in the mini-cart using it's quantity selector and I want to view the changes applied to the mini-cart summary and the bundled items to change their quantity"
 	@priority = "3"
 	test EditBundledProductQuantityFromMiniCart {
