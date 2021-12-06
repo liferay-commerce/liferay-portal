@@ -276,6 +276,70 @@ definition {
 		}
 	}
 
+	@description = "COMMERCE-7695. As a buyer, I want to verify if I will be redirected to the product details when I click on the item in the minicart"
+	@priority = "3"
+	test ClickOnCartItemRedirectToProductDetails {
+		task ("Set up Commerce Minium Site") {
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+
+			ApplicationsMenu.gotoSite(site = "Minium");
+
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
+
+			CommerceAcceleratorsInitializer.createNewAccountViaFront(accountName = "Commerce Account");
+		}
+
+		task ("Add product to cart") {
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
+			Type(
+				locator1 = "AppBuilder#SEARCH_BAR_INPUT",
+				value1 = "U-Joint");
+
+			Click(locator1 = "Button#SUBMIT");
+
+			FrontStore.addInitializerProductToCart(
+				productName = "U-Joint",
+				productQuantity = "3");
+		}
+
+		task ("Assert product is added to minicart") {
+			CommerceNavigator.gotoMiniCart();
+
+			FrontStore.viewMiniCartItem(
+				cartItemName = "U-Joint",
+				cartItemQuantity = "3",
+				cartItemSKU = "MIN55861");
+		}
+
+		task ("Assert clicking on product navigates to product detail page") {
+			CommerceNavigator.gotoMiniCartEntry(
+				cartItemSKU = "MIN55861",
+				entryName = "U-Joint");
+
+			FrontStore.viewProductDetail(FSProductName = "U-Joint");
+		}
+
+		task ("Assert quantity of product will change after typing new quantity in") {
+			CommerceNavigator.gotoMiniCart();
+
+			FrontStore.viewMiniCartItem(
+				cartItemName = "U-Joint",
+				cartItemQuantity = "3",
+				cartItemSKU = "MIN55861");
+
+			Type(
+				key_cartItemSKU = "MIN55861",
+				locator1 = "CommerceAccelerators#MINI_CART_ITEM_QUANTITY",
+				value1 = "5");
+
+			AssertTextEquals(
+				key_cartItemSKU = "MIN55861",
+				locator1 = "CommerceAccelerators#MINI_CART_ITEM_QUANTITY",
+				value1 = "5");
+		}
+	}
+
 	@description = "COMMERCE-6335. As a buyer, I want to edit the quantity of an bundled product in the mini-cart using it's quantity selector and I want to view the changes applied to the mini-cart summary and the bundled items to change their quantity"
 	@priority = "3"
 	test EditBundledProductQuantityFromMiniCart {
