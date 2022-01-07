@@ -138,6 +138,36 @@ public class MappedProductDTOConverter
 							mappedProductDTOConverterContext.getLocale(),
 							cpInstance.getSku());
 					});
+				setFirstAvailableReplacementMappedProduct(
+					() -> {
+						MappedProduct firstAvailableReplacementMappedProduct =
+							null;
+
+						if ((cpInstance != null) &&
+							cpInstance.isDiscontinued() &&
+							(firstAvailableReplacementCPInstance != null)) {
+
+							mappedProductDTOConverterContext.
+								setReplacementCPInstanceId(
+									firstAvailableReplacementCPInstance.
+										getCPInstanceId());
+
+							mappedProductDTOConverterContext.
+								setReplacementCProductId(
+									cpInstance.getReplacementCProductId());
+
+							firstAvailableReplacementMappedProduct =
+								MappedProductDTOConverter.this.toDTO(
+									mappedProductDTOConverterContext);
+						}
+
+						mappedProductDTOConverterContext.
+							setReplacementCPInstanceId(null);
+						mappedProductDTOConverterContext.
+							setReplacementCProductId(null);
+
+						return firstAvailableReplacementMappedProduct;
+					});
 				setProductConfiguration(
 					() -> {
 						if (cpDefinition == null) {
