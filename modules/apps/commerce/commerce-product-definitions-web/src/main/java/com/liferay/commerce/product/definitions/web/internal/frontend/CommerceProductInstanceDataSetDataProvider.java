@@ -133,8 +133,7 @@ public class CommerceProductInstanceDataSetDataProvider
 							httpServletRequest,
 							WorkflowConstants.getStatusLabel(
 								cpInstance.getStatus()))),
-					LanguageUtil.get(
-						httpServletRequest, discontinued)));
+					LanguageUtil.get(httpServletRequest, discontinued)));
 		}
 
 		return skus;

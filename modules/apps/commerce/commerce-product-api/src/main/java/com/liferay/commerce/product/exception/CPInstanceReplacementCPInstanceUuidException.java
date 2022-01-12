@@ -11,6 +11,7 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
+
 package com.liferay.commerce.product.exception;
 
 import com.liferay.portal.kernel.exception.PortalException;
@@ -18,7 +19,8 @@ import com.liferay.portal.kernel.exception.PortalException;
 /**
  * @author Marco Leo
  */
-public class CPInstanceReplacementCPInstanceUuidException extends PortalException {
+public class CPInstanceReplacementCPInstanceUuidException
+	extends PortalException {
 
 	public CPInstanceReplacementCPInstanceUuidException() {
 	}
@@ -27,7 +29,9 @@ public class CPInstanceReplacementCPInstanceUuidException extends PortalExceptio
 		super(msg);
 	}
 
-	public CPInstanceReplacementCPInstanceUuidException(String msg, Throwable throwable) {
+	public CPInstanceReplacementCPInstanceUuidException(
+		String msg, Throwable throwable) {
+
 		super(msg, throwable);
 	}
 
