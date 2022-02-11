@@ -16,76 +16,53 @@ package com.liferay.commerce.product.content.search.web.internal.display.context
 
 import com.liferay.commerce.constants.CommerceWebKeys;
 import com.liferay.commerce.context.CommerceContext;
-import com.liferay.commerce.product.content.search.web.internal.util.CPSpecificationOptionFacetsUtil;
-import com.liferay.commerce.product.model.CPSpecificationOption;
-import com.liferay.commerce.product.service.CPSpecificationOptionLocalService;
+import com.liferay.commerce.product.content.search.web.internal.configuration.CPSpecificationOptionFacetPortletInstanceConfiguration;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.search.facet.Facet;
-import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.search.web.portlet.shared.search.PortletSharedSearchResponse;
+import com.liferay.portal.kernel.module.configuration.ConfigurationException;
+import com.liferay.portal.kernel.theme.PortletDisplay;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.WebKeys;
+
+import java.io.Serializable;
 
 import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
 
 import javax.portlet.RenderRequest;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Alessio Antonio Rendina
  */
-public class CPSpecificationOptionFacetsDisplayContext {
+public class CPSpecificationOptionFacetsDisplayContext implements Serializable {
 
 	public CPSpecificationOptionFacetsDisplayContext(
-		CPSpecificationOptionLocalService cpSpecificationOptionLocalService,
-		RenderRequest renderRequest, List<Facet> facets,
-		String paginationStartParameterName,
-		PortletSharedSearchResponse portletSharedSearchResponse) {
+			HttpServletRequest httpServletRequest)
+		throws ConfigurationException {
 
-		_cpSpecificationOptionLocalService = cpSpecificationOptionLocalService;
-		_renderRequest = renderRequest;
-		_facets = facets;
-		_paginationStartParameterName = paginationStartParameterName;
-		_portletSharedSearchResponse = portletSharedSearchResponse;
+		_httpServletRequest = httpServletRequest;
 
-		_locale = _renderRequest.getLocale();
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
+
+		_cpSpecificationOptionFacetPortletInstanceConfiguration =
+			portletDisplay.getPortletInstanceConfiguration(
+				CPSpecificationOptionFacetPortletInstanceConfiguration.class);
 	}
 
-	public CPSpecificationOption getCPSpecificationOption(String fieldName)
-		throws PortalException {
+	public CPSpecificationOptionFacetPortletInstanceConfiguration
+		getCPSpecificationOptionFacetPortletInstanceConfiguration() {
 
-		String key =
-			CPSpecificationOptionFacetsUtil.
-				getCPSpecificationOptionKeyFromIndexFieldName(fieldName);
-
-		return _cpSpecificationOptionLocalService.fetchCPSpecificationOption(
-			PortalUtil.getCompanyId(_renderRequest), key);
+		return _cpSpecificationOptionFacetPortletInstanceConfiguration;
 	}
 
-	public String getCPSpecificationOptionKey(String fieldName)
-		throws PortalException {
+	public List<CPSpecificationOptionsSearchFacetDisplayContext>
+		getCpSpecificationOptionsSearchFacetDisplayContext() {
 
-		CPSpecificationOption cpSpecificationOption = getCPSpecificationOption(
-			fieldName);
-
-		return cpSpecificationOption.getKey();
-	}
-
-	public String getCPSpecificationOptionTitle(String fieldName)
-		throws PortalException {
-
-		CPSpecificationOption cpSpecificationOption = getCPSpecificationOption(
-			fieldName);
-
-		return cpSpecificationOption.getTitle(_locale);
-	}
-
-	public List<Facet> getFacets() {
-		return _facets;
-	}
-
-	public String getPaginationStartParameterName() {
-		return _paginationStartParameterName;
+		return _cpSpecificationOptionsSearchFacetDisplayContext;
 	}
 
 	public boolean hasCommerceChannel() throws PortalException {
@@ -102,32 +79,23 @@ public class CPSpecificationOptionFacetsDisplayContext {
 		return false;
 	}
 
-	public boolean isCPDefinitionSpecificationOptionValueSelected(
-			String fieldName, String fieldValue)
-		throws PortalException {
+	public void setCpSpecificationOptionsSearchFacetDisplayContext(
+		List<CPSpecificationOptionsSearchFacetDisplayContext>
+			cpSpecificationOptionsSearchFacetDisplayContext) {
 
-		CPSpecificationOption cpSpecificationOption = getCPSpecificationOption(
-			fieldName);
-
-		Optional<String[]> parameterValuesOptional =
-			_portletSharedSearchResponse.getParameterValues(
-				cpSpecificationOption.getKey(), _renderRequest);
-
-		if (parameterValuesOptional.isPresent()) {
-			String[] parameterValues = parameterValuesOptional.get();
-
-			return ArrayUtil.contains(parameterValues, fieldValue);
-		}
-
-		return false;
+		_cpSpecificationOptionsSearchFacetDisplayContext =
+			cpSpecificationOptionsSearchFacetDisplayContext;
 	}
 
-	private final CPSpecificationOptionLocalService
-		_cpSpecificationOptionLocalService;
-	private final List<Facet> _facets;
-	private final Locale _locale;
-	private final String _paginationStartParameterName;
-	private final PortletSharedSearchResponse _portletSharedSearchResponse;
-	private final RenderRequest _renderRequest;
+	public void setRenderRequest(RenderRequest renderRequest) {
+		_renderRequest = renderRequest;
+	}
+
+	private final CPSpecificationOptionFacetPortletInstanceConfiguration
+		_cpSpecificationOptionFacetPortletInstanceConfiguration;
+	private List<CPSpecificationOptionsSearchFacetDisplayContext>
+		_cpSpecificationOptionsSearchFacetDisplayContext;
+	private final HttpServletRequest _httpServletRequest;
+	private RenderRequest _renderRequest;
 
 }
