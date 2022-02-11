@@ -15,12 +15,37 @@
 package com.liferay.commerce.product.content.search.web.internal.display.builder;
 
 import com.liferay.commerce.product.model.CPSpecificationOption;
+import com.liferay.commerce.product.permission.CPSpecificationOptionPermission;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 
 /**
  * @author Crescenzo Rega
  */
-public interface CPSpecificationOptionPermissionChecker {
+public class CPSpecificationOptionPermissionChecker {
 
-	public boolean hasPermission(CPSpecificationOption cpSpecificationOption);
+	public CPSpecificationOptionPermissionChecker(
+		PermissionChecker permissionChecker,
+		CPSpecificationOptionPermission cpSpecificationOptionPermission) {
+
+		_permissionChecker = permissionChecker;
+		_cpSpecificationOptionPermission = cpSpecificationOptionPermission;
+	}
+
+
+	public boolean hasPermission(CPSpecificationOption cpSpecificationOption) {
+		try {
+			return _cpSpecificationOptionPermission.contains(
+				_permissionChecker, cpSpecificationOption, ActionKeys.VIEW);
+		}
+		catch (PortalException portalException) {
+			throw new RuntimeException(portalException);
+		}
+	}
+
+	private final CPSpecificationOptionPermission
+		_cpSpecificationOptionPermission;
+	private final PermissionChecker _permissionChecker;
 
 }

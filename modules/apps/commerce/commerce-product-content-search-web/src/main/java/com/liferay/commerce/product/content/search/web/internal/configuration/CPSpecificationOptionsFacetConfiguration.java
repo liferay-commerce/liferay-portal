@@ -14,17 +14,40 @@
 
 package com.liferay.commerce.product.content.search.web.internal.configuration;
 
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.search.facet.config.FacetConfiguration;
+
 /**
  * @author Crescenzo Rega
  */
-public interface CPSpecificationOptionsFacetConfiguration {
+public class CPSpecificationOptionsFacetConfiguration {
 
-	public int getFrequencyThreshold();
+	public CPSpecificationOptionsFacetConfiguration(
+		FacetConfiguration facetConfiguration) {
 
-	public int getMaxTerms();
+		_jsonObject = facetConfiguration.getData();
+	}
 
-	public void setFrequencyThreshold(int frequencyThreshold);
 
-	public void setMaxTerms(int maxTerms);
+	public int getFrequencyThreshold() {
+		return _jsonObject.getInt("frequencyThreshold");
+	}
+
+
+	public int getMaxTerms() {
+		return _jsonObject.getInt("maxTerms");
+	}
+
+
+	public void setFrequencyThreshold(int frequencyThreshold) {
+		_jsonObject.put("frequencyThreshold", frequencyThreshold);
+	}
+
+
+	public void setMaxTerms(int maxTerms) {
+		_jsonObject.put("maxTerms", maxTerms);
+	}
+
+	private final JSONObject _jsonObject;
 
 }
