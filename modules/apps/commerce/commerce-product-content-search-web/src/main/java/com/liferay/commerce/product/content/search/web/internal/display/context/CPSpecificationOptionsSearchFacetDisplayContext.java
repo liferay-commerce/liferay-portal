@@ -129,10 +129,6 @@ public class CPSpecificationOptionsSearchFacetDisplayContext
 		return _parameterValue;
 	}
 
-	public List<String> getParameterValues() {
-		return _parameterValues;
-	}
-
 	public List<CPSpecificationOptionsSearchFacetTermDisplayContext>
 		getTermDisplayContexts() {
 

@@ -14,7 +14,6 @@
 
 package com.liferay.commerce.product.content.search.web.internal.display.builder;
 
-import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.commerce.product.content.search.web.internal.display.context.CPSpecificationOptionsSearchFacetDisplayContext;
 import com.liferay.commerce.product.content.search.web.internal.display.context.CPSpecificationOptionsSearchFacetTermDisplayContext;
 import com.liferay.commerce.product.content.search.web.internal.util.CPSpecificationOptionFacetsUtil;
@@ -89,6 +88,11 @@ public class CPSpecificationOptionsSearchFacetDisplayBuilder
 		cpSpecificationOptionsSearchFacetDisplayContext.setLocale(_locale);
 
 		cpSpecificationOptionsSearchFacetDisplayContext.setFacet(_facet);
+
+		cpSpecificationOptionsSearchFacetDisplayContext.setParameterName(
+			CPSpecificationOptionFacetsUtil.
+				getCPSpecificationOptionKeyFromIndexFieldName(
+					_facet.getFieldName()));
 
 		return cpSpecificationOptionsSearchFacetDisplayContext;
 	}
@@ -227,8 +231,6 @@ public class CPSpecificationOptionsSearchFacetDisplayBuilder
 		if (_buckets.isEmpty()) {
 			return getEmptyTermDisplayContexts();
 		}
-
-		_removeExcludedGroup();
 
 		List<CPSpecificationOptionsSearchFacetTermDisplayContext>
 			cpSpecificationOptionsSearchFacetTermDisplayContexts =
@@ -384,28 +386,6 @@ public class CPSpecificationOptionsSearchFacetDisplayBuilder
 		}
 
 		return false;
-	}
-
-	private void _removeExcludedGroup() {
-		Stream<Tuple> stream = _buckets.stream();
-
-		_buckets = stream.filter(
-			tuple -> {
-				if (_excludedGroupId == 0) {
-					return true;
-				}
-
-				AssetCategory assetCategory = (AssetCategory)tuple.getObject(0);
-
-				if (assetCategory.getGroupId() == _excludedGroupId) {
-					return false;
-				}
-
-				return true;
-			}
-		).collect(
-			Collectors.toList()
-		);
 	}
 
 	private List<Tuple> _buckets;
