@@ -33,7 +33,6 @@ public class CPSpecificationOptionPermissionChecker {
 		_cpSpecificationOptionPermission = cpSpecificationOptionPermission;
 	}
 
-
 	public boolean hasPermission(CPSpecificationOption cpSpecificationOption) {
 		try {
 			return _cpSpecificationOptionPermission.contains(

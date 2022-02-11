@@ -28,21 +28,17 @@ public class CPSpecificationOptionsFacetConfiguration {
 		_jsonObject = facetConfiguration.getData();
 	}
 
-
 	public int getFrequencyThreshold() {
 		return _jsonObject.getInt("frequencyThreshold");
 	}
-
 
 	public int getMaxTerms() {
 		return _jsonObject.getInt("maxTerms");
 	}
 
-
 	public void setFrequencyThreshold(int frequencyThreshold) {
 		_jsonObject.put("frequencyThreshold", frequencyThreshold);
 	}
-
 
 	public void setMaxTerms(int maxTerms) {
 		_jsonObject.put("maxTerms", maxTerms);
