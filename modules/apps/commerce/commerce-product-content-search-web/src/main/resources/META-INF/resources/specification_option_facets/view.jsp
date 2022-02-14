@@ -31,10 +31,20 @@ CPSpecificationOptionFacetPortletInstanceConfiguration cpSpecificationOptionFace
 	<c:otherwise>
 
 		<%
+			int j = 0;
 		for (CPSpecificationOptionsSearchFacetDisplayContext cpSpecificationOptionsSearchFacetDisplayContext : cpSpecificationOptionSearchFacetDisplayContext.getCpSpecificationOptionsSearchFacetDisplayContext()) {
+
+			j++;
+
 			Facet facet = cpSpecificationOptionsSearchFacetDisplayContext.getFacet();
 
 			String parameterName = cpSpecificationOptionsSearchFacetDisplayContext.getParameterName();
+
+			String panelTitle = HtmlUtil.escape(cpSpecificationOptionsSearchFacetDisplayContext.getCPSpecificationOptionTitle(facet.getFieldName()));
+
+			String panelContainerId = liferayPortletResponse.getNamespace() + "facetCPSpecificationOptionsPanelContainer" + j;
+
+			String panelId = liferayPortletResponse.getNamespace() + "facetCPSpecificationOptionsPanel" + j;
 		%>
 
 			<aui:form method="post" name='<%= "assetEntriesFacetForm_" + parameterName %>'>
@@ -50,7 +60,11 @@ CPSpecificationOptionFacetPortletInstanceConfiguration cpSpecificationOptionFace
 						).put(
 							"namespace", liferayPortletResponse.getNamespace()
 						).put(
-							"title", HtmlUtil.escape(cpSpecificationOptionsSearchFacetDisplayContext.getCPSpecificationOptionTitle(facet.getFieldName()))
+							"panelTitle", panelTitle
+						).put(
+							"panelContainerId", panelContainerId
+						).put(
+							"panelId", panelId
 						).build()
 					%>'
 					displayStyle="<%= cpSpecificationOptionFacetPortletInstanceConfiguration.displayStyle() %>"
@@ -59,17 +73,17 @@ CPSpecificationOptionFacetPortletInstanceConfiguration cpSpecificationOptionFace
 				>
 					<liferay-ui:panel-container
 						extended="<%= true %>"
-						id='<%= liferayPortletResponse.getNamespace() + "facetCPSpecificationOptionsPanelContainer" %>'
+						id='<%= panelContainerId %>'
 						markupView="lexicon"
 						persistState="<%= true %>"
 					>
 						<liferay-ui:panel
 							collapsible="<%= true %>"
 							cssClass="search-facet"
-							id='<%= liferayPortletResponse.getNamespace() + "facetCPSpecificationOptionsPanel" %>'
+							id='<%= panelId %>'
 							markupView="lexicon"
 							persistState="<%= true %>"
-							title="<%= HtmlUtil.escape(cpSpecificationOptionsSearchFacetDisplayContext.getCPSpecificationOptionTitle(facet.getFieldName())) %>"
+							title="<%= panelTitle %>"
 						>
 							<aui:fieldset>
 								<ul class="list-unstyled">
