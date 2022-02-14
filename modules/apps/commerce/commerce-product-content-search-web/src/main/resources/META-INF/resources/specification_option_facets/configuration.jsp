@@ -37,6 +37,10 @@ CPSpecificationOptionFacetPortletPreferences cpSpecificationOptionFacetPortletPr
 	<aui:input name="redirect" type="hidden" value="<%= configurationRenderURL %>" />
 
 	<liferay-frontend:edit-form-body>
+		<liferay-ui:error key="exceededMaxTermsLimit" message="cp-specification-option-facet-portlet-instance-configuration-exceeded-max-terms-limit" />
+		<liferay-ui:error key="invalidFormatMaxTerms" message="cp-specification-option-facet-portlet-instance-configuration-invalid-format-max-terms" />
+		<liferay-ui:error key="invalidFormatfrequencyThreshold" message="cp-specification-option-facet-portlet-instance-configuration-invalid-format-frequency-threshold" />
+
 		<liferay-frontend:fieldset-group>
 			<liferay-frontend:fieldset
 				collapsible="<%= true %>"
