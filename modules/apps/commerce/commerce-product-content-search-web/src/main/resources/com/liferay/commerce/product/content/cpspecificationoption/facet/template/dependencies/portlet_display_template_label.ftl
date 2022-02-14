@@ -1,16 +1,16 @@
 <@liferay_ui["panel-container"]
 	extended=true
-    id="${panelContainerId}"
+	id="${panelContainerId}"
 	markupView="lexicon"
 	persistState=true
 >
 	<@liferay_ui.panel
 		collapsible=true
 		cssClass="search-facet search-facet-display-label"
-        id="${panelId}"
+		id="${panelId}"
 		markupView="lexicon"
 		persistState=true
-        title="${panelTitle}"
+		title="${panelTitle}"
 	>
 		<#if entries?has_content>
 			<div class="label-container">

@@ -31,9 +31,9 @@ CPSpecificationOptionFacetPortletInstanceConfiguration cpSpecificationOptionFace
 	<c:otherwise>
 
 		<%
-			int j = 0;
-		for (CPSpecificationOptionsSearchFacetDisplayContext cpSpecificationOptionsSearchFacetDisplayContext : cpSpecificationOptionSearchFacetDisplayContext.getCpSpecificationOptionsSearchFacetDisplayContext()) {
+		int j = 0;
 
+		for (CPSpecificationOptionsSearchFacetDisplayContext cpSpecificationOptionsSearchFacetDisplayContext : cpSpecificationOptionSearchFacetDisplayContext.getCpSpecificationOptionsSearchFacetDisplayContext()) {
 			j++;
 
 			Facet facet = cpSpecificationOptionsSearchFacetDisplayContext.getFacet();
@@ -60,11 +60,11 @@ CPSpecificationOptionFacetPortletInstanceConfiguration cpSpecificationOptionFace
 						).put(
 							"namespace", liferayPortletResponse.getNamespace()
 						).put(
-							"panelTitle", panelTitle
-						).put(
 							"panelContainerId", panelContainerId
 						).put(
 							"panelId", panelId
+						).put(
+							"panelTitle", panelTitle
 						).build()
 					%>'
 					displayStyle="<%= cpSpecificationOptionFacetPortletInstanceConfiguration.displayStyle() %>"
@@ -73,14 +73,14 @@ CPSpecificationOptionFacetPortletInstanceConfiguration cpSpecificationOptionFace
 				>
 					<liferay-ui:panel-container
 						extended="<%= true %>"
-						id='<%= panelContainerId %>'
+						id="<%= panelContainerId %>"
 						markupView="lexicon"
 						persistState="<%= true %>"
 					>
 						<liferay-ui:panel
 							collapsible="<%= true %>"
 							cssClass="search-facet"
-							id='<%= panelId %>'
+							id="<%= panelId %>"
 							markupView="lexicon"
 							persistState="<%= true %>"
 							title="<%= panelTitle %>"
