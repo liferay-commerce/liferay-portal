@@ -15,8 +15,22 @@
 package com.liferay.commerce.product.content.search.web.internal.portlet.action;
 
 import com.liferay.commerce.product.constants.CPPortletKeys;
+import com.liferay.commerce.product.content.search.web.internal.configuration.CPSpecificationOptionFacetPortletInstanceConfiguration;
+import com.liferay.commerce.product.content.search.web.internal.portlet.CPSpecificationOptionFacetPortletPreferences;
 import com.liferay.portal.kernel.portlet.ConfigurationAction;
 import com.liferay.portal.kernel.portlet.DefaultConfigurationAction;
+import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.kernel.theme.PortletDisplay;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PropertiesParamUtil;
+import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
+
+import javax.portlet.ActionRequest;
+import javax.portlet.ActionResponse;
+import javax.portlet.PortletConfig;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -37,5 +51,56 @@ public class CPSpecificationtOptionFacetPortletConfigurationAction
 	public String getJspPath(HttpServletRequest httpServletRequest) {
 		return "/specification_option_facets/configuration.jsp";
 	}
+
+	@Override
+	public void processAction(
+			PortletConfig portletConfig, ActionRequest actionRequest,
+			ActionResponse actionResponse)
+		throws Exception {
+
+		UnicodeProperties unicodeProperties = PropertiesParamUtil.getProperties(
+			actionRequest, _PARAMETER_NAME_PREFIX);
+
+		String maxTerms = unicodeProperties.getProperty(
+			CPSpecificationOptionFacetPortletPreferences.
+				PREFERENCE_KEY_MAX_TERMS);
+
+		if (Validator.isNumber(maxTerms)) {
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
+
+			PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
+
+			CPSpecificationOptionFacetPortletInstanceConfiguration
+				cpSpecificationOptionFacetPortletInstanceConfiguration =
+					portletDisplay.getPortletInstanceConfiguration(
+						CPSpecificationOptionFacetPortletInstanceConfiguration.
+							class);
+
+			if (GetterUtil.getInteger(maxTerms) >
+					cpSpecificationOptionFacetPortletInstanceConfiguration.
+						limitMaxTerms()) {
+
+				SessionErrors.add(actionRequest, "exceededMaxTermsLimit");
+			}
+		}
+		else {
+			SessionErrors.add(actionRequest, "invalidFormatMaxTerms");
+		}
+
+		String frequencyThreshold = unicodeProperties.getProperty(
+			CPSpecificationOptionFacetPortletPreferences.
+				PREFERENCE_KEY_FREQUENCY_THRESHOLD);
+
+		if (!Validator.isNumber(frequencyThreshold)) {
+			SessionErrors.add(actionRequest, "invalidFormatfrequencyThreshold");
+		}
+
+		if (SessionErrors.isEmpty(actionRequest)) {
+			super.processAction(portletConfig, actionRequest, actionResponse);
+		}
+	}
+
+	private static final String _PARAMETER_NAME_PREFIX = "preferences--";
 
 }
