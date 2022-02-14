@@ -22,7 +22,7 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
  * @author Crescenzo Rega
  */
 @ExtendedObjectClassDefinition(
-	category = "search",
+	category = "catalog",
 	scope = ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE
 )
 @Meta.OCD(
@@ -37,5 +37,12 @@ public interface CPSpecificationOptionFacetPortletInstanceConfiguration {
 
 	@Meta.AD(name = "display-style", required = false)
 	public String displayStyle();
+
+	@Meta.AD(
+		deflt = "100",
+		name = "cp-specification-option-facet-portlet-instance-configuration-limit-max-terms",
+		required = false
+	)
+	public int limitMaxTerms();
 
 }
