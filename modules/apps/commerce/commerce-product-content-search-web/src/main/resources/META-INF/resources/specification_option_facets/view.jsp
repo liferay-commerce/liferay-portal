@@ -17,13 +17,13 @@
 <%@ include file="/init.jsp" %>
 
 <%
-CPSpecificationOptionFacetsDisplayContext cpSpecificationOptionSearchFacetDisplayContext = (CPSpecificationOptionFacetsDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
+CPSpecificationOptionFacetsDisplayContext cpSpecificationOptionFacetsDisplayContext = (CPSpecificationOptionFacetsDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
 
-CPSpecificationOptionFacetPortletInstanceConfiguration cpSpecificationOptionFacetPortletInstanceConfiguration = cpSpecificationOptionSearchFacetDisplayContext.getCPSpecificationOptionFacetPortletInstanceConfiguration();
+CPSpecificationOptionFacetPortletInstanceConfiguration cpSpecificationOptionFacetPortletInstanceConfiguration = cpSpecificationOptionFacetsDisplayContext.getCPSpecificationOptionFacetPortletInstanceConfiguration();
 %>
 
 <c:choose>
-	<c:when test="<%= !cpSpecificationOptionSearchFacetDisplayContext.hasCommerceChannel() %>">
+	<c:when test="<%= !cpSpecificationOptionFacetsDisplayContext.hasCommerceChannel() %>">
 		<div class="alert alert-info mx-auto">
 			<liferay-ui:message key="this-site-does-not-have-a-channel" />
 		</div>
@@ -33,7 +33,7 @@ CPSpecificationOptionFacetPortletInstanceConfiguration cpSpecificationOptionFace
 		<%
 		int j = 0;
 
-		for (CPSpecificationOptionsSearchFacetDisplayContext cpSpecificationOptionsSearchFacetDisplayContext : cpSpecificationOptionSearchFacetDisplayContext.getCpSpecificationOptionsSearchFacetDisplayContext()) {
+		for (CPSpecificationOptionsSearchFacetDisplayContext cpSpecificationOptionsSearchFacetDisplayContext : cpSpecificationOptionFacetsDisplayContext.getCpSpecificationOptionsSearchFacetDisplayContext()) {
 			j++;
 
 			Facet facet = cpSpecificationOptionsSearchFacetDisplayContext.getFacet();
@@ -68,7 +68,7 @@ CPSpecificationOptionFacetPortletInstanceConfiguration cpSpecificationOptionFace
 						).build()
 					%>'
 					displayStyle="<%= cpSpecificationOptionFacetPortletInstanceConfiguration.displayStyle() %>"
-					displayStyleGroupId="<%= cpSpecificationOptionsSearchFacetDisplayContext.getDisplayStyleGroupId() %>"
+					displayStyleGroupId="<%= cpSpecificationOptionFacetsDisplayContext.getDisplayStyleGroupId() %>"
 					entries="<%= cpSpecificationOptionsSearchFacetDisplayContext.getTermDisplayContexts() %>"
 				>
 					<liferay-ui:panel-container
@@ -127,10 +127,6 @@ CPSpecificationOptionFacetPortletInstanceConfiguration cpSpecificationOptionFace
 
 								</ul>
 							</aui:fieldset>
-
-							<c:if test="<%= !cpSpecificationOptionsSearchFacetDisplayContext.isNothingSelected() %>">
-								<aui:button cssClass="btn-link btn-unstyled facet-clear-btn" onClick="Liferay.Search.FacetUtil.clearSelections(event);" value="clear" />
-							</c:if>
 						</liferay-ui:panel>
 					</liferay-ui:panel-container>
 				</liferay-ddm:template-renderer>

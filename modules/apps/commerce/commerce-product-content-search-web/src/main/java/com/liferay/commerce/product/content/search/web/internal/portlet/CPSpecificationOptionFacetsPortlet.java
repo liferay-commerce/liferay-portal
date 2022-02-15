@@ -14,37 +14,19 @@
 
 package com.liferay.commerce.product.content.search.web.internal.portlet;
 
-import com.liferay.commerce.product.constants.CPField;
 import com.liferay.commerce.product.constants.CPPortletKeys;
-import com.liferay.commerce.product.content.search.web.internal.configuration.CPSpecificationOptionsFacetConfiguration;
-import com.liferay.commerce.product.content.search.web.internal.display.builder.CPSpecificationOptionPermissionChecker;
-import com.liferay.commerce.product.content.search.web.internal.display.builder.CPSpecificationOptionsSearchFacetDisplayBuilder;
 import com.liferay.commerce.product.content.search.web.internal.display.context.CPSpecificationOptionFacetsDisplayContext;
-import com.liferay.commerce.product.content.search.web.internal.display.context.CPSpecificationOptionsSearchFacetDisplayContext;
-import com.liferay.commerce.product.content.search.web.internal.util.CPSpecificationOptionFacetsUtil;
-import com.liferay.commerce.product.model.CPSpecificationOption;
-import com.liferay.commerce.product.permission.CPSpecificationOptionPermission;
+import com.liferay.commerce.product.content.search.web.internal.display.context.builder.CPSpecificationOptionsFacetDisplayContextBuilder;
 import com.liferay.commerce.product.service.CPSpecificationOptionLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
-import com.liferay.portal.kernel.search.facet.Facet;
-import com.liferay.portal.kernel.search.facet.collector.FacetCollector;
-import com.liferay.portal.kernel.search.facet.collector.TermCollector;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.search.searcher.SearchRequest;
-import com.liferay.portal.search.searcher.SearchResponse;
 import com.liferay.portal.search.web.portlet.shared.search.PortletSharedSearchRequest;
-import com.liferay.portal.search.web.portlet.shared.search.PortletSharedSearchResponse;
 
 import java.io.IOException;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.portlet.Portlet;
 import javax.portlet.PortletException;
@@ -87,59 +69,10 @@ public class CPSpecificationOptionFacetsPortlet extends MVCPortlet {
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws IOException, PortletException {
 
-		PortletSharedSearchResponse portletSharedSearchResponse =
-			portletSharedSearchRequest.search(renderRequest);
-
 		try {
-			ThemeDisplay themeDisplay =
-				(ThemeDisplay)renderRequest.getAttribute(WebKeys.THEME_DISPLAY);
-
-			List<Facet> filledFacets = new ArrayList<>();
-
-			Facet facet = portletSharedSearchResponse.getFacet(
-				CPField.SPECIFICATION_NAMES);
-
-			FacetCollector facetCollector = facet.getFacetCollector();
-
-			for (TermCollector termCollector :
-					facetCollector.getTermCollectors()) {
-
-				CPSpecificationOption cpSpecificationOption =
-					_cpSpecificationOptionLocalService.getCPSpecificationOption(
-						themeDisplay.getCompanyId(), termCollector.getTerm());
-
-				if (cpSpecificationOption.isFacetable()) {
-					filledFacets.add(
-						portletSharedSearchResponse.getFacet(
-							CPSpecificationOptionFacetsUtil.getIndexFieldName(
-								termCollector.getTerm(),
-								themeDisplay.getLanguageId())));
-				}
-			}
-
-			List<CPSpecificationOptionsSearchFacetDisplayContext> list =
-				new ArrayList<>();
-
-			for (Facet filledFacet : filledFacets) {
-				CPSpecificationOptionsSearchFacetDisplayContext
-					cpSpecificationOptionsSearchFacetDisplayContext =
-						_buildDisplayContext(
-							filledFacet, portletSharedSearchResponse,
-							renderRequest);
-
-				list.add(cpSpecificationOptionsSearchFacetDisplayContext);
-			}
-
 			CPSpecificationOptionFacetsDisplayContext
 				cpSpecificationOptionSearchFacetDisplayContext =
-					new CPSpecificationOptionFacetsDisplayContext(
-						portal.getHttpServletRequest(renderRequest));
-
-			cpSpecificationOptionSearchFacetDisplayContext.
-				setCpSpecificationOptionsSearchFacetDisplayContext(list);
-
-			cpSpecificationOptionSearchFacetDisplayContext.setRenderRequest(
-				renderRequest);
+					_buildDisplayContext(renderRequest);
 
 			renderRequest.setAttribute(
 				WebKeys.PORTLET_DISPLAY_CONTEXT,
@@ -152,108 +85,28 @@ public class CPSpecificationOptionFacetsPortlet extends MVCPortlet {
 		super.render(renderRequest, renderResponse);
 	}
 
-	protected String getPaginationStartParameterName(
-		PortletSharedSearchResponse portletSharedSearchResponse) {
-
-		SearchResponse searchResponse =
-			portletSharedSearchResponse.getSearchResponse();
-
-		SearchRequest searchRequest = searchResponse.getRequest();
-
-		return searchRequest.getPaginationStartParameterName();
-	}
-
-	@Reference
-	protected CPSpecificationOptionPermission cpSpecificationOptionPermission;
-
-	@Reference
-	protected Portal portal;
-
 	@Reference
 	protected PortletSharedSearchRequest portletSharedSearchRequest;
 
-	private CPSpecificationOptionsSearchFacetDisplayContext
-			_buildDisplayContext(
-				Facet facet,
-				PortletSharedSearchResponse portletSharedSearchResponse,
-				RenderRequest renderRequest)
+	private CPSpecificationOptionFacetsDisplayContext _buildDisplayContext(
+			RenderRequest renderRequest)
 		throws PortalException {
 
-		CPSpecificationOptionFacetPortletPreferences
-			cpSpecificationOptionFacetPortletPreferences =
-				new CPSpecificationOptionFacetPortletPreferences(
-					portletSharedSearchResponse.getPortletPreferences(
-						renderRequest));
+		CPSpecificationOptionsFacetDisplayContextBuilder
+			cpSpecificationOptionsFacetDisplayBuilder =
+				new CPSpecificationOptionsFacetDisplayContextBuilder();
 
-		CPSpecificationOptionsFacetConfiguration
-			cpSpecificationOptionsFacetConfiguration =
-				new CPSpecificationOptionsFacetConfiguration(
-					facet.getFacetConfiguration());
-
-		CPSpecificationOptionsSearchFacetDisplayBuilder
-			cpSpecificationOptionsSearchFacetDisplayBuilder =
-				new CPSpecificationOptionsSearchFacetDisplayBuilder(
-					renderRequest);
-
-		cpSpecificationOptionsSearchFacetDisplayBuilder.
-			setCPSpecificationOptionLocalService(
+		cpSpecificationOptionsFacetDisplayBuilder.
+			setCpSpecificationOptionLocalService(
 				_cpSpecificationOptionLocalService);
-		cpSpecificationOptionsSearchFacetDisplayBuilder.setDisplayStyle(
-			cpSpecificationOptionFacetPortletPreferences.getDisplayStyle());
-		cpSpecificationOptionsSearchFacetDisplayBuilder.setFacet(facet);
-		cpSpecificationOptionsSearchFacetDisplayBuilder.setFrequenciesVisible(
-			cpSpecificationOptionFacetPortletPreferences.
-				isFrequenciesVisible());
-		cpSpecificationOptionsSearchFacetDisplayBuilder.setFrequencyThreshold(
-			cpSpecificationOptionsFacetConfiguration.getFrequencyThreshold());
-		cpSpecificationOptionsSearchFacetDisplayBuilder.setMaxTerms(
-			cpSpecificationOptionsFacetConfiguration.getMaxTerms());
-		cpSpecificationOptionsSearchFacetDisplayBuilder.
-			setPaginationStartParameterName(
-				_getPaginationStartParameterName(portletSharedSearchResponse));
-		cpSpecificationOptionsSearchFacetDisplayBuilder.setPortal(portal);
-
-		cpSpecificationOptionsSearchFacetDisplayBuilder.
-			setPortletSharedSearchResponse(portletSharedSearchResponse);
-
-		ThemeDisplay themeDisplay = portletSharedSearchResponse.getThemeDisplay(
+		cpSpecificationOptionsFacetDisplayBuilder.setPortletSharedSearchRequest(
+			portletSharedSearchRequest);
+		cpSpecificationOptionsFacetDisplayBuilder.setRenderRequest(
 			renderRequest);
+		cpSpecificationOptionsFacetDisplayBuilder.setThemeDisplay(
+			(ThemeDisplay)renderRequest.getAttribute(WebKeys.THEME_DISPLAY));
 
-		Group group = themeDisplay.getScopeGroup();
-
-		Group stagingGroup = group.getStagingGroup();
-
-		if (stagingGroup != null) {
-			cpSpecificationOptionsSearchFacetDisplayBuilder.setExcludedGroupId(
-				stagingGroup.getGroupId());
-		}
-
-		cpSpecificationOptionsSearchFacetDisplayBuilder.setLocale(
-			themeDisplay.getLocale());
-		cpSpecificationOptionsSearchFacetDisplayBuilder.
-			setCPSpecificationOptionPermissionChecker(
-				new CPSpecificationOptionPermissionChecker(
-					themeDisplay.getPermissionChecker(),
-					cpSpecificationOptionPermission));
-
-		CPSpecificationOptionFacetsUtil.copy(
-			() -> portletSharedSearchResponse.getParameterValues(
-				facet.getFieldName(), renderRequest),
-			cpSpecificationOptionsSearchFacetDisplayBuilder::
-				setParameterValues);
-
-		return cpSpecificationOptionsSearchFacetDisplayBuilder.build();
-	}
-
-	private String _getPaginationStartParameterName(
-		PortletSharedSearchResponse portletSharedSearchResponse) {
-
-		SearchResponse searchResponse =
-			portletSharedSearchResponse.getSearchResponse();
-
-		SearchRequest searchRequest = searchResponse.getRequest();
-
-		return searchRequest.getPaginationStartParameterName();
+		return cpSpecificationOptionsFacetDisplayBuilder.build();
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

@@ -16,7 +16,10 @@ package com.liferay.commerce.product.content.search.web.internal.portlet.action;
 
 import com.liferay.commerce.product.constants.CPPortletKeys;
 import com.liferay.commerce.product.content.search.web.internal.configuration.CPSpecificationOptionFacetPortletInstanceConfiguration;
+import com.liferay.commerce.product.content.search.web.internal.display.context.CPSpecificationOptionFacetsDisplayContext;
 import com.liferay.commerce.product.content.search.web.internal.portlet.CPSpecificationOptionFacetPortletPreferences;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.ConfigurationAction;
 import com.liferay.portal.kernel.portlet.DefaultConfigurationAction;
 import com.liferay.portal.kernel.servlet.SessionErrors;
@@ -49,6 +52,32 @@ public class CPSpecificationtOptionFacetPortletConfigurationAction
 
 	@Override
 	public String getJspPath(HttpServletRequest httpServletRequest) {
+		try {
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)httpServletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY);
+
+			PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
+
+			CPSpecificationOptionFacetPortletInstanceConfiguration
+				cpSpecificationOptionFacetPortletInstanceConfiguration =
+					portletDisplay.getPortletInstanceConfiguration(
+						CPSpecificationOptionFacetPortletInstanceConfiguration.
+							class);
+
+			CPSpecificationOptionFacetsDisplayContext
+				cpSpecificationOptionFacetsDisplayContext =
+					new CPSpecificationOptionFacetsDisplayContext(
+						cpSpecificationOptionFacetPortletInstanceConfiguration);
+
+			httpServletRequest.setAttribute(
+				WebKeys.PORTLET_DISPLAY_CONTEXT,
+				cpSpecificationOptionFacetsDisplayContext);
+		}
+		catch (Exception exception) {
+			_log.error(exception, exception);
+		}
+
 		return "/specification_option_facets/configuration.jsp";
 	}
 
@@ -84,17 +113,6 @@ public class CPSpecificationtOptionFacetPortletConfigurationAction
 				SessionErrors.add(actionRequest, "exceededMaxTermsLimit");
 			}
 		}
-		else {
-			SessionErrors.add(actionRequest, "invalidFormatMaxTerms");
-		}
-
-		String frequencyThreshold = unicodeProperties.getProperty(
-			CPSpecificationOptionFacetPortletPreferences.
-				PREFERENCE_KEY_FREQUENCY_THRESHOLD);
-
-		if (!Validator.isNumber(frequencyThreshold)) {
-			SessionErrors.add(actionRequest, "invalidFormatfrequencyThreshold");
-		}
 
 		if (SessionErrors.isEmpty(actionRequest)) {
 			super.processAction(portletConfig, actionRequest, actionResponse);
@@ -102,5 +120,8 @@ public class CPSpecificationtOptionFacetPortletConfigurationAction
 	}
 
 	private static final String _PARAMETER_NAME_PREFIX = "preferences--";
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		CPSpecificationtOptionFacetPortletConfigurationAction.class);
 
 }

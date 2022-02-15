@@ -27,13 +27,5 @@
 				</#list>
 			</#if>
 		</ul>
-
-		<#if !cpSpecificationOptionsSearchFacetDisplayContext.isNothingSelected()>
-			<@liferay_aui.button
-				cssClass="btn-link btn-unstyled facet-clear-btn"
-				onClick="Liferay.Search.FacetUtil.clearSelections(event);"
-				value="clear"
-			/>
-		</#if>
 	</@>
 </@>

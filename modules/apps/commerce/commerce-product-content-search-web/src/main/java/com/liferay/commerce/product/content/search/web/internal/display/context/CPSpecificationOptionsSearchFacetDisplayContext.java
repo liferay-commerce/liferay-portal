@@ -14,17 +14,11 @@
 
 package com.liferay.commerce.product.content.search.web.internal.display.context;
 
-import com.liferay.commerce.product.content.search.web.internal.configuration.CPSpecificationOptionFacetPortletInstanceConfiguration;
 import com.liferay.commerce.product.content.search.web.internal.util.CPSpecificationOptionFacetsUtil;
 import com.liferay.commerce.product.model.CPSpecificationOption;
 import com.liferay.commerce.product.service.CPSpecificationOptionLocalService;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.search.facet.Facet;
-import com.liferay.portal.kernel.theme.PortletDisplay;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.WebKeys;
 
 import java.io.Serializable;
 
@@ -33,84 +27,24 @@ import java.util.Locale;
 
 import javax.portlet.RenderRequest;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * @author Crescenzo Rega
  */
 public class CPSpecificationOptionsSearchFacetDisplayContext
 	implements Serializable {
 
-	public CPSpecificationOptionsSearchFacetDisplayContext(
-			HttpServletRequest httpServletRequest)
-		throws ConfigurationException {
-
-		_httpServletRequest = httpServletRequest;
-
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
-		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
-
-		_cpSpecificationOptionFacetPortletInstanceConfiguration =
-			portletDisplay.getPortletInstanceConfiguration(
-				CPSpecificationOptionFacetPortletInstanceConfiguration.class);
-	}
-
-	public CPSpecificationOption getCPSpecificationOption(String fieldName)
-		throws PortalException {
-
-		String key =
-			CPSpecificationOptionFacetsUtil.
-				getCPSpecificationOptionKeyFromIndexFieldName(fieldName);
-
+	public CPSpecificationOption getCPSpecificationOption(String fieldName) {
 		return _cpSpecificationOptionLocalService.fetchCPSpecificationOption(
-			PortalUtil.getCompanyId(_renderRequest), key);
+			PortalUtil.getCompanyId(_renderRequest),
+			CPSpecificationOptionFacetsUtil.
+				getCPSpecificationOptionKeyFromIndexFieldName(fieldName));
 	}
 
-	public CPSpecificationOptionFacetPortletInstanceConfiguration
-		getCPSpecificationOptionFacetPortletInstanceConfiguration() {
-
-		return _cpSpecificationOptionFacetPortletInstanceConfiguration;
-	}
-
-	public String getCPSpecificationOptionKey(String fieldName)
-		throws PortalException {
-
-		CPSpecificationOption cpSpecificationOption = getCPSpecificationOption(
-			fieldName);
-
-		return cpSpecificationOption.getKey();
-	}
-
-	public String getCPSpecificationOptionTitle(String fieldName)
-		throws PortalException {
-
+	public String getCPSpecificationOptionTitle(String fieldName) {
 		CPSpecificationOption cpSpecificationOption = getCPSpecificationOption(
 			fieldName);
 
 		return cpSpecificationOption.getTitle(_locale);
-	}
-
-	public long getDisplayStyleGroupId() {
-		if (_displayStyleGroupId != 0) {
-			return _displayStyleGroupId;
-		}
-
-		_displayStyleGroupId =
-			_cpSpecificationOptionFacetPortletInstanceConfiguration.
-				displayStyleGroupId();
-
-		if (_displayStyleGroupId <= 0) {
-			ThemeDisplay themeDisplay =
-				(ThemeDisplay)_httpServletRequest.getAttribute(
-					WebKeys.THEME_DISPLAY);
-
-			_displayStyleGroupId = themeDisplay.getScopeGroupId();
-		}
-
-		return _displayStyleGroupId;
 	}
 
 	public Facet getFacet() {
@@ -135,22 +69,6 @@ public class CPSpecificationOptionsSearchFacetDisplayContext
 		return _cpSpecificationOptionsSearchFacetTermDisplayContext;
 	}
 
-	public boolean isCloud() {
-		return _cloud;
-	}
-
-	public boolean isNothingSelected() {
-		return _nothingSelected;
-	}
-
-	public boolean isRenderNothing() {
-		return _renderNothing;
-	}
-
-	public void setCloud(boolean cloud) {
-		_cloud = cloud;
-	}
-
 	public void setCpSpecificationOptionLocalService(
 		CPSpecificationOptionLocalService cpSpecificationOptionLocalService) {
 
@@ -163,10 +81,6 @@ public class CPSpecificationOptionsSearchFacetDisplayContext
 
 	public void setLocale(Locale locale) {
 		_locale = locale;
-	}
-
-	public void setNothingSelected(boolean nothingSelected) {
-		_nothingSelected = nothingSelected;
 	}
 
 	public void setPaginationStartParameterName(
@@ -183,14 +97,6 @@ public class CPSpecificationOptionsSearchFacetDisplayContext
 		_parameterValue = paramValue;
 	}
 
-	public void setParameterValues(List<String> parameterValues) {
-		_parameterValues = parameterValues;
-	}
-
-	public void setRenderNothing(boolean renderNothing) {
-		_renderNothing = renderNothing;
-	}
-
 	public void setRenderRequest(RenderRequest renderRequest) {
 		_renderRequest = renderRequest;
 	}
@@ -203,23 +109,15 @@ public class CPSpecificationOptionsSearchFacetDisplayContext
 			assetCPSpecificationOptionsSearchFacetTermDisplayContext;
 	}
 
-	private boolean _cloud;
-	private final CPSpecificationOptionFacetPortletInstanceConfiguration
-		_cpSpecificationOptionFacetPortletInstanceConfiguration;
 	private CPSpecificationOptionLocalService
 		_cpSpecificationOptionLocalService;
 	private List<CPSpecificationOptionsSearchFacetTermDisplayContext>
 		_cpSpecificationOptionsSearchFacetTermDisplayContext;
-	private long _displayStyleGroupId;
 	private Facet _facet;
-	private final HttpServletRequest _httpServletRequest;
 	private Locale _locale;
-	private boolean _nothingSelected;
 	private String _paginationStartParameterName;
 	private String _parameterName;
 	private String _parameterValue;
-	private List<String> _parameterValues;
-	private boolean _renderNothing;
 	private RenderRequest _renderRequest;
 
 }

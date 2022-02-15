@@ -17,9 +17,9 @@
 <%@ include file="/init.jsp" %>
 
 <%
-CPSpecificationOptionsSearchFacetDisplayContext cpSpecificationOptionsSearchFacetDisplayContext = new CPSpecificationOptionsSearchFacetDisplayContext(request);
+CPSpecificationOptionFacetsDisplayContext cpSpecificationOptionFacetsDisplayContext = (CPSpecificationOptionFacetsDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
 
-CPSpecificationOptionFacetPortletInstanceConfiguration cpSpecificationOptionFacetPortletInstanceConfiguration = cpSpecificationOptionsSearchFacetDisplayContext.getCPSpecificationOptionFacetPortletInstanceConfiguration();
+CPSpecificationOptionFacetPortletInstanceConfiguration cpSpecificationOptionFacetPortletInstanceConfiguration = cpSpecificationOptionFacetsDisplayContext.getCPSpecificationOptionFacetPortletInstanceConfiguration();
 
 CPSpecificationOptionFacetPortletPreferences cpSpecificationOptionFacetPortletPreferences = new CPSpecificationOptionFacetPortletPreferences(java.util.Optional.ofNullable(portletPreferences));
 %>
@@ -38,8 +38,6 @@ CPSpecificationOptionFacetPortletPreferences cpSpecificationOptionFacetPortletPr
 
 	<liferay-frontend:edit-form-body>
 		<liferay-ui:error key="exceededMaxTermsLimit" message="cp-specification-option-facet-portlet-instance-configuration-exceeded-max-terms-limit" />
-		<liferay-ui:error key="invalidFormatMaxTerms" message="cp-specification-option-facet-portlet-instance-configuration-invalid-format-max-terms" />
-		<liferay-ui:error key="invalidFormatfrequencyThreshold" message="cp-specification-option-facet-portlet-instance-configuration-invalid-format-frequency-threshold" />
 
 		<liferay-frontend:fieldset-group>
 			<liferay-frontend:fieldset
@@ -50,7 +48,7 @@ CPSpecificationOptionFacetPortletPreferences cpSpecificationOptionFacetPortletPr
 					<liferay-template:template-selector
 						className="<%= CPSpecificationOptionsSearchFacetTermDisplayContext.class.getName() %>"
 						displayStyle="<%= cpSpecificationOptionFacetPortletInstanceConfiguration.displayStyle() %>"
-						displayStyleGroupId="<%= cpSpecificationOptionsSearchFacetDisplayContext.getDisplayStyleGroupId() %>"
+						displayStyleGroupId="<%= cpSpecificationOptionFacetsDisplayContext.getDisplayStyleGroupId() %>"
 						refreshURL="<%= configurationRenderURL %>"
 						showEmptyOption="<%= true %>"
 					/>
@@ -62,9 +60,7 @@ CPSpecificationOptionFacetPortletPreferences cpSpecificationOptionFacetPortletPr
 				label="advanced-configuration"
 			>
 				<aui:input label="max-terms" name="<%= PortletPreferencesJspUtil.getInputName(CPSpecificationOptionFacetPortletPreferences.PREFERENCE_KEY_MAX_TERMS) %>" value="<%= cpSpecificationOptionFacetPortletPreferences.getMaxTerms() %>" />
-
 				<aui:input label="frequency-threshold" name="<%= PortletPreferencesJspUtil.getInputName(CPSpecificationOptionFacetPortletPreferences.PREFERENCE_KEY_FREQUENCY_THRESHOLD) %>" value="<%= cpSpecificationOptionFacetPortletPreferences.getFrequencyThreshold() %>" />
-
 				<aui:input label="display-frequencies" name="<%= PortletPreferencesJspUtil.getInputName(CPSpecificationOptionFacetPortletPreferences.PREFERENCE_KEY_FREQUENCIES_VISIBLE) %>" type="checkbox" value="<%= cpSpecificationOptionFacetPortletPreferences.isFrequenciesVisible() %>" />
 			</liferay-frontend:fieldset>
 		</liferay-frontend:fieldset-group>

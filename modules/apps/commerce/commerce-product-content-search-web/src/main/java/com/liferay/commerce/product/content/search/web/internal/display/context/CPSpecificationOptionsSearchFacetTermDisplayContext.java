@@ -24,10 +24,6 @@ import java.util.Locale;
 public class CPSpecificationOptionsSearchFacetTermDisplayContext
 	implements Serializable {
 
-	public long getCPSpecificationOptionId() {
-		return _cpSpecificationOptionId;
-	}
-
 	public String getDisplayName() {
 		return _displayName;
 	}
@@ -50,10 +46,6 @@ public class CPSpecificationOptionsSearchFacetTermDisplayContext
 
 	public boolean isSelected() {
 		return _selected;
-	}
-
-	public void setCPSpecificationOptionId(long cpSpecificationOptionId) {
-		_cpSpecificationOptionId = cpSpecificationOptionId;
 	}
 
 	public void setDisplayName(String title) {
@@ -80,7 +72,6 @@ public class CPSpecificationOptionsSearchFacetTermDisplayContext
 		_selected = selected;
 	}
 
-	private long _cpSpecificationOptionId;
 	private String _displayName;
 	private int _frequency;
 	private boolean _frequencyVisible;
