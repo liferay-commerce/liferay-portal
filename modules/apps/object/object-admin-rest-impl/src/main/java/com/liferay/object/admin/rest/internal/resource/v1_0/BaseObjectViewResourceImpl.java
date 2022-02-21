@@ -34,6 +34,7 @@ import com.liferay.portal.odata.filter.FilterParser;
 import com.liferay.portal.odata.filter.FilterParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegate;
+import com.liferay.portal.vulcan.batch.engine.VulcanImportStrategy;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResource;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
@@ -382,7 +383,8 @@ public abstract class BaseObjectViewResourceImpl
 	@SuppressWarnings("PMD.UnusedLocalVariable")
 	public void create(
 			java.util.Collection<ObjectView> objectViews,
-			Map<String, Serializable> parameters)
+			Map<String, Serializable> parameters,
+			VulcanImportStrategy vulcanImportStrategy)
 		throws Exception {
 
 		UnsafeConsumer<ObjectView, Exception> objectViewUnsafeConsumer =
@@ -390,9 +392,7 @@ public abstract class BaseObjectViewResourceImpl
 				Long.parseLong((String)parameters.get("objectDefinitionId")),
 				objectView);
 
-		for (ObjectView objectView : objectViews) {
-			objectViewUnsafeConsumer.accept(objectView);
-		}
+		vulcanImportStrategy.apply(objectViews, objectViewUnsafeConsumer);
 	}
 
 	@Override

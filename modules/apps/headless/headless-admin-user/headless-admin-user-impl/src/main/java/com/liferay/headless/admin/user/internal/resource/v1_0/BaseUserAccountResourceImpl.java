@@ -34,6 +34,7 @@ import com.liferay.portal.odata.filter.FilterParser;
 import com.liferay.portal.odata.filter.FilterParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegate;
+import com.liferay.portal.vulcan.batch.engine.VulcanImportStrategy;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResource;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
@@ -1373,7 +1374,8 @@ public abstract class BaseUserAccountResourceImpl
 	@SuppressWarnings("PMD.UnusedLocalVariable")
 	public void create(
 			java.util.Collection<UserAccount> userAccounts,
-			Map<String, Serializable> parameters)
+			Map<String, Serializable> parameters,
+			VulcanImportStrategy vulcanImportStrategy)
 		throws Exception {
 
 		UnsafeConsumer<UserAccount, Exception> userAccountUnsafeConsumer =
@@ -1381,9 +1383,7 @@ public abstract class BaseUserAccountResourceImpl
 				Long.parseLong((String)parameters.get("accountId")),
 				userAccount);
 
-		for (UserAccount userAccount : userAccounts) {
-			userAccountUnsafeConsumer.accept(userAccount);
-		}
+		vulcanImportStrategy.apply(userAccounts, userAccountUnsafeConsumer);
 	}
 
 	@Override

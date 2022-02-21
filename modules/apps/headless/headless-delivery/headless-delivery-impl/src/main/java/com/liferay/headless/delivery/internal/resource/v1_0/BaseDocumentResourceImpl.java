@@ -42,6 +42,7 @@ import com.liferay.portal.odata.filter.FilterParser;
 import com.liferay.portal.odata.filter.FilterParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegate;
+import com.liferay.portal.vulcan.batch.engine.VulcanImportStrategy;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResource;
 import com.liferay.portal.vulcan.multipart.MultipartBody;
 import com.liferay.portal.vulcan.pagination.Page;
@@ -1423,7 +1424,8 @@ public abstract class BaseDocumentResourceImpl
 	@SuppressWarnings("PMD.UnusedLocalVariable")
 	public void create(
 			java.util.Collection<Document> documents,
-			Map<String, Serializable> parameters)
+			Map<String, Serializable> parameters,
+			VulcanImportStrategy vulcanImportStrategy)
 		throws Exception {
 
 		UnsafeConsumer<Document, Exception> documentUnsafeConsumer =
@@ -1442,9 +1444,7 @@ public abstract class BaseDocumentResourceImpl
 				(MultipartBody)parameters.get("multipartBody"));
 		}
 
-		for (Document document : documents) {
-			documentUnsafeConsumer.accept(document);
-		}
+		vulcanImportStrategy.apply(documents, documentUnsafeConsumer);
 	}
 
 	@Override

@@ -40,6 +40,7 @@ import com.liferay.portal.odata.filter.FilterParser;
 import com.liferay.portal.odata.filter.FilterParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegate;
+import com.liferay.portal.vulcan.batch.engine.VulcanImportStrategy;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResource;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
@@ -831,7 +832,8 @@ public abstract class BaseWikiNodeResourceImpl
 	@SuppressWarnings("PMD.UnusedLocalVariable")
 	public void create(
 			java.util.Collection<WikiNode> wikiNodes,
-			Map<String, Serializable> parameters)
+			Map<String, Serializable> parameters,
+			VulcanImportStrategy vulcanImportStrategy)
 		throws Exception {
 
 		UnsafeConsumer<WikiNode, Exception> wikiNodeUnsafeConsumer =
@@ -843,9 +845,7 @@ public abstract class BaseWikiNodeResourceImpl
 				(Long)parameters.get("siteId"), wikiNode);
 		}
 
-		for (WikiNode wikiNode : wikiNodes) {
-			wikiNodeUnsafeConsumer.accept(wikiNode);
-		}
+		vulcanImportStrategy.apply(wikiNodes, wikiNodeUnsafeConsumer);
 	}
 
 	@Override

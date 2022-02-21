@@ -34,6 +34,7 @@ import com.liferay.portal.odata.filter.FilterParser;
 import com.liferay.portal.odata.filter.FilterParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegate;
+import com.liferay.portal.vulcan.batch.engine.VulcanImportStrategy;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResource;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
@@ -801,7 +802,8 @@ public abstract class BaseCommentResourceImpl
 	@SuppressWarnings("PMD.UnusedLocalVariable")
 	public void create(
 			java.util.Collection<Comment> comments,
-			Map<String, Serializable> parameters)
+			Map<String, Serializable> parameters,
+			VulcanImportStrategy vulcanImportStrategy)
 		throws Exception {
 
 		UnsafeConsumer<Comment, Exception> commentUnsafeConsumer =
@@ -809,9 +811,7 @@ public abstract class BaseCommentResourceImpl
 				Long.parseLong((String)parameters.get("blogPostingId")),
 				comment);
 
-		for (Comment comment : comments) {
-			commentUnsafeConsumer.accept(comment);
-		}
+		vulcanImportStrategy.apply(comments, commentUnsafeConsumer);
 	}
 
 	@Override

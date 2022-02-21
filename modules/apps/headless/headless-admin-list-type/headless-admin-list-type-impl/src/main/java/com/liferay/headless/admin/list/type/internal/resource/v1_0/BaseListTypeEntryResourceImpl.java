@@ -34,6 +34,7 @@ import com.liferay.portal.odata.filter.FilterParser;
 import com.liferay.portal.odata.filter.FilterParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegate;
+import com.liferay.portal.vulcan.batch.engine.VulcanImportStrategy;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResource;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
@@ -414,7 +415,8 @@ public abstract class BaseListTypeEntryResourceImpl
 	@SuppressWarnings("PMD.UnusedLocalVariable")
 	public void create(
 			java.util.Collection<ListTypeEntry> listTypeEntries,
-			Map<String, Serializable> parameters)
+			Map<String, Serializable> parameters,
+			VulcanImportStrategy vulcanImportStrategy)
 		throws Exception {
 
 		UnsafeConsumer<ListTypeEntry, Exception> listTypeEntryUnsafeConsumer =
@@ -422,9 +424,8 @@ public abstract class BaseListTypeEntryResourceImpl
 				Long.parseLong((String)parameters.get("listTypeDefinitionId")),
 				listTypeEntry);
 
-		for (ListTypeEntry listTypeEntry : listTypeEntries) {
-			listTypeEntryUnsafeConsumer.accept(listTypeEntry);
-		}
+		vulcanImportStrategy.apply(
+			listTypeEntries, listTypeEntryUnsafeConsumer);
 	}
 
 	@Override

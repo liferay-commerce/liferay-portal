@@ -34,6 +34,7 @@ import com.liferay.portal.odata.filter.FilterParser;
 import com.liferay.portal.odata.filter.FilterParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegate;
+import com.liferay.portal.vulcan.batch.engine.VulcanImportStrategy;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResource;
 import com.liferay.portal.vulcan.multipart.MultipartBody;
 import com.liferay.portal.vulcan.pagination.Page;
@@ -336,7 +337,8 @@ public abstract class BaseKnowledgeBaseAttachmentResourceImpl
 	public void create(
 			java.util.Collection<KnowledgeBaseAttachment>
 				knowledgeBaseAttachments,
-			Map<String, Serializable> parameters)
+			Map<String, Serializable> parameters,
+			VulcanImportStrategy vulcanImportStrategy)
 		throws Exception {
 
 		UnsafeConsumer<KnowledgeBaseAttachment, Exception>
@@ -346,12 +348,8 @@ public abstract class BaseKnowledgeBaseAttachmentResourceImpl
 						(String)parameters.get("knowledgeBaseArticleId")),
 					(MultipartBody)parameters.get("multipartBody"));
 
-		for (KnowledgeBaseAttachment knowledgeBaseAttachment :
-				knowledgeBaseAttachments) {
-
-			knowledgeBaseAttachmentUnsafeConsumer.accept(
-				knowledgeBaseAttachment);
-		}
+		vulcanImportStrategy.apply(
+			knowledgeBaseAttachments, knowledgeBaseAttachmentUnsafeConsumer);
 	}
 
 	@Override

@@ -34,6 +34,7 @@ import com.liferay.portal.odata.filter.FilterParser;
 import com.liferay.portal.odata.filter.FilterParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegate;
+import com.liferay.portal.vulcan.batch.engine.VulcanImportStrategy;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResource;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
@@ -334,15 +335,15 @@ public abstract class BaseOptionCategoryResourceImpl
 	@SuppressWarnings("PMD.UnusedLocalVariable")
 	public void create(
 			java.util.Collection<OptionCategory> optionCategories,
-			Map<String, Serializable> parameters)
+			Map<String, Serializable> parameters,
+			VulcanImportStrategy vulcanImportStrategy)
 		throws Exception {
 
 		UnsafeConsumer<OptionCategory, Exception> optionCategoryUnsafeConsumer =
 			optionCategory -> postOptionCategory(optionCategory);
 
-		for (OptionCategory optionCategory : optionCategories) {
-			optionCategoryUnsafeConsumer.accept(optionCategory);
-		}
+		vulcanImportStrategy.apply(
+			optionCategories, optionCategoryUnsafeConsumer);
 	}
 
 	@Override

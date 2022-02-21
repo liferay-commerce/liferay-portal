@@ -34,6 +34,7 @@ import com.liferay.portal.odata.filter.FilterParser;
 import com.liferay.portal.odata.filter.FilterParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegate;
+import com.liferay.portal.vulcan.batch.engine.VulcanImportStrategy;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResource;
 import com.liferay.portal.vulcan.multipart.MultipartBody;
 import com.liferay.portal.vulcan.pagination.Page;
@@ -315,7 +316,8 @@ public abstract class BaseWikiPageAttachmentResourceImpl
 	@SuppressWarnings("PMD.UnusedLocalVariable")
 	public void create(
 			java.util.Collection<WikiPageAttachment> wikiPageAttachments,
-			Map<String, Serializable> parameters)
+			Map<String, Serializable> parameters,
+			VulcanImportStrategy vulcanImportStrategy)
 		throws Exception {
 
 		UnsafeConsumer<WikiPageAttachment, Exception>
@@ -324,9 +326,8 @@ public abstract class BaseWikiPageAttachmentResourceImpl
 					Long.parseLong((String)parameters.get("wikiPageId")),
 					(MultipartBody)parameters.get("multipartBody"));
 
-		for (WikiPageAttachment wikiPageAttachment : wikiPageAttachments) {
-			wikiPageAttachmentUnsafeConsumer.accept(wikiPageAttachment);
-		}
+		vulcanImportStrategy.apply(
+			wikiPageAttachments, wikiPageAttachmentUnsafeConsumer);
 	}
 
 	@Override

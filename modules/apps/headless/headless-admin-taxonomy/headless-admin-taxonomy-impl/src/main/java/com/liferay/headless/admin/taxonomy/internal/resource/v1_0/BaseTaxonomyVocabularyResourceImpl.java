@@ -40,6 +40,7 @@ import com.liferay.portal.odata.filter.FilterParser;
 import com.liferay.portal.odata.filter.FilterParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegate;
+import com.liferay.portal.vulcan.batch.engine.VulcanImportStrategy;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResource;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
@@ -1198,7 +1199,8 @@ public abstract class BaseTaxonomyVocabularyResourceImpl
 	@SuppressWarnings("PMD.UnusedLocalVariable")
 	public void create(
 			java.util.Collection<TaxonomyVocabulary> taxonomyVocabularies,
-			Map<String, Serializable> parameters)
+			Map<String, Serializable> parameters,
+			VulcanImportStrategy vulcanImportStrategy)
 		throws Exception {
 
 		UnsafeConsumer<TaxonomyVocabulary, Exception>
@@ -1216,9 +1218,8 @@ public abstract class BaseTaxonomyVocabularyResourceImpl
 					(Long)parameters.get("siteId"), taxonomyVocabulary);
 		}
 
-		for (TaxonomyVocabulary taxonomyVocabulary : taxonomyVocabularies) {
-			taxonomyVocabularyUnsafeConsumer.accept(taxonomyVocabulary);
-		}
+		vulcanImportStrategy.apply(
+			taxonomyVocabularies, taxonomyVocabularyUnsafeConsumer);
 	}
 
 	@Override

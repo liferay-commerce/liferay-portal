@@ -40,6 +40,7 @@ import com.liferay.portal.odata.filter.FilterParser;
 import com.liferay.portal.odata.filter.FilterParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegate;
+import com.liferay.portal.vulcan.batch.engine.VulcanImportStrategy;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResource;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
@@ -1021,7 +1022,8 @@ public abstract class BaseKnowledgeBaseFolderResourceImpl
 	@SuppressWarnings("PMD.UnusedLocalVariable")
 	public void create(
 			java.util.Collection<KnowledgeBaseFolder> knowledgeBaseFolders,
-			Map<String, Serializable> parameters)
+			Map<String, Serializable> parameters,
+			VulcanImportStrategy vulcanImportStrategy)
 		throws Exception {
 
 		UnsafeConsumer<KnowledgeBaseFolder, Exception>
@@ -1034,9 +1036,8 @@ public abstract class BaseKnowledgeBaseFolderResourceImpl
 					(Long)parameters.get("siteId"), knowledgeBaseFolder);
 		}
 
-		for (KnowledgeBaseFolder knowledgeBaseFolder : knowledgeBaseFolders) {
-			knowledgeBaseFolderUnsafeConsumer.accept(knowledgeBaseFolder);
-		}
+		vulcanImportStrategy.apply(
+			knowledgeBaseFolders, knowledgeBaseFolderUnsafeConsumer);
 	}
 
 	@Override

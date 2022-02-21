@@ -34,6 +34,7 @@ import com.liferay.portal.odata.filter.FilterParser;
 import com.liferay.portal.odata.filter.FilterParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegate;
+import com.liferay.portal.vulcan.batch.engine.VulcanImportStrategy;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResource;
 import com.liferay.portal.vulcan.multipart.MultipartBody;
 import com.liferay.portal.vulcan.pagination.Page;
@@ -342,7 +343,8 @@ public abstract class BaseBlogPostingImageResourceImpl
 	@SuppressWarnings("PMD.UnusedLocalVariable")
 	public void create(
 			java.util.Collection<BlogPostingImage> blogPostingImages,
-			Map<String, Serializable> parameters)
+			Map<String, Serializable> parameters,
+			VulcanImportStrategy vulcanImportStrategy)
 		throws Exception {
 
 		UnsafeConsumer<BlogPostingImage, Exception>
@@ -356,9 +358,8 @@ public abstract class BaseBlogPostingImageResourceImpl
 					(MultipartBody)parameters.get("multipartBody"));
 		}
 
-		for (BlogPostingImage blogPostingImage : blogPostingImages) {
-			blogPostingImageUnsafeConsumer.accept(blogPostingImage);
-		}
+		vulcanImportStrategy.apply(
+			blogPostingImages, blogPostingImageUnsafeConsumer);
 	}
 
 	@Override
