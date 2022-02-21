@@ -34,7 +34,8 @@ import java.util.Map;
 public interface VulcanBatchEngineTaskItemDelegate<T> {
 
 	public void create(
-			Collection<T> items, Map<String, Serializable> parameters)
+			Collection<T> items, Map<String, Serializable> parameters,
+			VulcanImportStrategy vulcanImportStrategy)
 		throws Exception;
 
 	public void delete(
