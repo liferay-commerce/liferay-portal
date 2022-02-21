@@ -32,6 +32,7 @@ import com.liferay.portal.odata.filter.FilterParser;
 import com.liferay.portal.odata.filter.FilterParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegate;
+import com.liferay.portal.vulcan.batch.engine.VulcanImportStrategy;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResource;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
@@ -156,16 +157,15 @@ public abstract class BaseStatusResourceImpl
 	@SuppressWarnings("PMD.UnusedLocalVariable")
 	public void create(
 			java.util.Collection<Status> statuses,
-			Map<String, Serializable> parameters)
+			Map<String, Serializable> parameters,
+			VulcanImportStrategy vulcanImportStrategy)
 		throws Exception {
 
 		UnsafeConsumer<Status, Exception> statusUnsafeConsumer =
 			status -> postExperimentStatus(
 				Long.parseLong((String)parameters.get("experimentId")), status);
 
-		for (Status status : statuses) {
-			statusUnsafeConsumer.accept(status);
-		}
+		vulcanImportStrategy.apply(statuses, statusUnsafeConsumer);
 	}
 
 	@Override
