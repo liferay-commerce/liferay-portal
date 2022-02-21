@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.aggregation.Aggregation;
+import com.liferay.portal.vulcan.batch.engine.VulcanImportStrategy;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
@@ -59,7 +60,8 @@ public class ObjectEntryResourceImpl extends BaseObjectEntryResourceImpl {
 	@Override
 	public void create(
 			Collection<ObjectEntry> objectEntries,
-			Map<String, Serializable> parameters)
+			Map<String, Serializable> parameters,
+			VulcanImportStrategy vulcanImportStrategy)
 		throws Exception {
 
 		_loadObjectDefinition(parameters);
@@ -76,9 +78,7 @@ public class ObjectEntryResourceImpl extends BaseObjectEntryResourceImpl {
 				(String)parameters.get("scopeKey"), objectEntry);
 		}
 
-		for (ObjectEntry objectEntry : objectEntries) {
-			unsafeConsumer.accept(objectEntry);
-		}
+		vulcanImportStrategy.apply(objectEntries, unsafeConsumer);
 	}
 
 	@Override
