@@ -41,6 +41,7 @@ import com.liferay.portal.vulcan.permission.ModelPermissionsUtil;
 import com.liferay.portal.vulcan.permission.PermissionUtil;
 
 <#if configYAML.generateBatch>
+	import com.liferay.portal.vulcan.batch.engine.VulcanImportStrategy;
 	import com.liferay.portal.vulcan.resource.EntityModelResource;
 </#if>
 
@@ -332,7 +333,7 @@ public abstract class Base${schemaName}ResourceImpl
 	<#if generateBatch>
 		@Override
 		@SuppressWarnings("PMD.UnusedLocalVariable")
-		public void create(java.util.Collection<${javaDataType}> ${schemaVarNames}, Map<String, Serializable> parameters) throws Exception {
+		public void create(java.util.Collection<${javaDataType}> ${schemaVarNames}, Map<String, Serializable> parameters, VulcanImportStrategy vulcanImportStrategy) throws Exception {
 			<#if postAssetLibraryBatchJavaMethodSignature?? || postSiteBatchJavaMethodSignature?? || postBatchJavaMethodSignature??>
 				UnsafeConsumer<${javaDataType}, Exception> ${schemaVarName}UnsafeConsumer =
 				<#if postBatchJavaMethodSignature??>
@@ -371,9 +372,7 @@ public abstract class Base${schemaName}ResourceImpl
 					}
 				</#if>
 
-				for (${javaDataType} ${schemaVarName} : ${schemaVarNames}) {
-					${schemaVarName}UnsafeConsumer.accept(${schemaVarName});
-				}
+				vulcanImportStrategy.apply(${schemaVarNames}, ${schemaVarName}UnsafeConsumer);
 			</#if>
 		}
 
