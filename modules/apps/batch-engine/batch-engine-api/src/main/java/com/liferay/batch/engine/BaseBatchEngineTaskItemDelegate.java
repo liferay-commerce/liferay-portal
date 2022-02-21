@@ -14,6 +14,7 @@
 
 package com.liferay.batch.engine;
 
+import com.liferay.batch.engine.strategy.ImportStrategy;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.odata.entity.EntityModel;
@@ -32,12 +33,11 @@ public abstract class BaseBatchEngineTaskItemDelegate<T>
 
 	@Override
 	public void create(
-			Collection<T> items, Map<String, Serializable> parameters)
+			ImportStrategy importStrategy, Collection<T> items,
+			Map<String, Serializable> parameters)
 		throws Exception {
 
-		for (T item : items) {
-			createItem(item, parameters);
-		}
+		importStrategy.apply(items, item -> createItem(item, parameters));
 	}
 
 	public void createItem(T item, Map<String, Serializable> parameters)

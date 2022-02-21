@@ -18,6 +18,7 @@ import com.liferay.batch.engine.BatchEngineTaskItemDelegate;
 import com.liferay.batch.engine.BatchEngineTaskOperation;
 import com.liferay.batch.engine.pagination.Page;
 import com.liferay.batch.engine.pagination.Pagination;
+import com.liferay.batch.engine.strategy.ImportStrategy;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Sort;
@@ -81,13 +82,14 @@ public class BatchEngineTaskItemDelegateExecutor implements Closeable {
 
 	public void saveItems(
 			BatchEngineTaskOperation batchEngineTaskOperation,
-			Collection<Object> items)
+			ImportStrategy importStrategy, Collection<Object> items)
 		throws Exception {
 
 		_setContextFields(_batchEngineTaskItemDelegate);
 
 		if (batchEngineTaskOperation == BatchEngineTaskOperation.CREATE) {
-			_batchEngineTaskItemDelegate.create(items, _parameters);
+			_batchEngineTaskItemDelegate.create(
+				importStrategy, items, _parameters);
 		}
 		else if (batchEngineTaskOperation == BatchEngineTaskOperation.DELETE) {
 			_batchEngineTaskItemDelegate.delete(items, _parameters);
