@@ -49,15 +49,15 @@ import org.osgi.service.component.annotations.ServiceScope;
 public class ShippingAddressResourceImpl
 	extends BaseShippingAddressResourceImpl implements NestedFieldSupport {
 
-	@NestedField(parentClass = Shipment.class, value = "shippingAddress")
 	@Override
 	public ShippingAddress getShipmentByExternalReferenceCodeShippingAddress(
 			String externalReferenceCode)
 		throws Exception {
 
 		CommerceShipment commerceShipment =
-			_commerceShipmentService.fetchCommerceShipment(
-				contextCompany.getCompanyId(), externalReferenceCode);
+			_commerceShipmentService.
+				fetchCommerceShipmentByExternalReferenceCode(
+					contextCompany.getCompanyId(), externalReferenceCode);
 
 		if (commerceShipment == null) {
 			throw new NoSuchShipmentException(
@@ -102,15 +102,15 @@ public class ShippingAddressResourceImpl
 				contextAcceptLanguage.getPreferredLocale()));
 	}
 
-	@NestedField(parentClass = Shipment.class, value = "shippingAddress")
 	@Override
 	public ShippingAddress patchShipmentByExternalReferenceCodeShippingAddress(
 			String externalReferenceCode, ShippingAddress shippingAddress)
 		throws Exception {
 
 		CommerceShipment commerceShipment =
-			_commerceShipmentService.fetchCommerceShipment(
-				contextCompany.getCompanyId(), externalReferenceCode);
+			_commerceShipmentService.
+				fetchCommerceShipmentByExternalReferenceCode(
+					contextCompany.getCompanyId(), externalReferenceCode);
 
 		if (commerceShipment == null) {
 			throw new NoSuchShipmentException(
