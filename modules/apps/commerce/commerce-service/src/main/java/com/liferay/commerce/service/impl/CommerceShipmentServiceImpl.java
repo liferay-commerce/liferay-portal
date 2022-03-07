@@ -95,7 +95,7 @@ public class CommerceShipmentServiceImpl
 	}
 
 	@Override
-	public CommerceShipment fetchCommerceShipment(
+	public CommerceShipment fetchCommerceShipmentByExternalReferenceCode(
 			long companyId, String externalReferenceCode)
 		throws PortalException {
 
@@ -414,20 +414,6 @@ public class CommerceShipmentServiceImpl
 	}
 
 	@Override
-	public CommerceShipment updateCommerceShipmentExternalReferenceCode(
-			String externalReferenceCode, long commerceShipmentId)
-		throws PortalException {
-
-		_portletResourcePermission.contains(
-			getPermissionChecker(), null,
-			CommerceActionKeys.MANAGE_COMMERCE_SHIPMENTS);
-
-		return commerceShipmentLocalService.
-			updateCommerceShipmentExternalReferenceCode(
-				externalReferenceCode, commerceShipmentId);
-	}
-
-	@Override
 	public CommerceShipment updateExpectedDate(
 			long commerceShipmentId, int expectedDateMonth, int expectedDateDay,
 			int expectedDateYear, int expectedDateHour, int expectedDateMinute)
@@ -440,6 +426,19 @@ public class CommerceShipmentServiceImpl
 		return commerceShipmentLocalService.updateExpectedDate(
 			commerceShipmentId, expectedDateMonth, expectedDateDay,
 			expectedDateYear, expectedDateHour, expectedDateMinute);
+	}
+
+	@Override
+	public CommerceShipment updateExternalReferenceCode(
+			long commerceShipmentId, String externalReferenceCode)
+		throws PortalException {
+
+		_portletResourcePermission.contains(
+			getPermissionChecker(), null,
+			CommerceActionKeys.MANAGE_COMMERCE_SHIPMENTS);
+
+		return commerceShipmentLocalService.updateExternalReferenceCode(
+			commerceShipmentId, externalReferenceCode);
 	}
 
 	@Override
