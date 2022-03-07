@@ -23,6 +23,7 @@ import com.liferay.commerce.service.CommerceShipmentService;
 import com.liferay.headless.commerce.admin.shipment.dto.v1_0.Shipment;
 import com.liferay.headless.commerce.admin.shipment.dto.v1_0.ShipmentItem;
 import com.liferay.headless.commerce.admin.shipment.internal.dto.v1_0.converter.ShipmentItemDTOConverter;
+import com.liferay.headless.commerce.admin.shipment.internal.util.v1_0.ShipmentItemUtil;
 import com.liferay.headless.commerce.admin.shipment.resource.v1_0.ShipmentItemResource;
 import com.liferay.headless.commerce.core.util.ServiceContextHelper;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -67,8 +68,9 @@ public class ShipmentItemResourceImpl
 		throws Exception {
 
 		CommerceShipmentItem commerceShipmentItem =
-			_commerceShipmentItemService.fetchCommerceShipmentItem(
-				contextCompany.getCompanyId(), externalReferenceCode);
+			_commerceShipmentItemService.
+				fetchCommerceShipmentItemByExternalReferenceCode(
+					contextCompany.getCompanyId(), externalReferenceCode);
 
 		if (commerceShipmentItem == null) {
 			throw new NoSuchShipmentItemException(
@@ -86,8 +88,9 @@ public class ShipmentItemResourceImpl
 		throws Exception {
 
 		CommerceShipmentItem commerceShipmentItem =
-			_commerceShipmentItemService.fetchCommerceShipmentItem(
-				contextCompany.getCompanyId(), externalReferenceCode);
+			_commerceShipmentItemService.
+				fetchCommerceShipmentItemByExternalReferenceCode(
+					contextCompany.getCompanyId(), externalReferenceCode);
 
 		if (commerceShipmentItem == null) {
 			throw new NoSuchShipmentItemException(
@@ -104,8 +107,9 @@ public class ShipmentItemResourceImpl
 		throws Exception {
 
 		CommerceShipment commerceShipment =
-			_commerceShipmentService.fetchCommerceShipment(
-				contextCompany.getCompanyId(), externalReferenceCode);
+			_commerceShipmentService.
+				fetchCommerceShipmentByExternalReferenceCode(
+					contextCompany.getCompanyId(), externalReferenceCode);
 
 		if (commerceShipment == null) {
 			throw new NoSuchShipmentException(
@@ -162,14 +166,13 @@ public class ShipmentItemResourceImpl
 				shipmentItem.getWarehouseId(),
 				commerceShipmentItem.getCommerceInventoryWarehouseId()),
 			GetterUtil.get(
-				shipmentItem.getQuantity(),
-				commerceShipmentItem.getQuantity()));
+				shipmentItem.getQuantity(), commerceShipmentItem.getQuantity()),
+			GetterUtil.getBoolean(shipmentItem.getValidateInventory(), true));
 
 		if (!Validator.isBlank(shipmentItem.getExternalReferenceCode())) {
-			_commerceShipmentItemService.
-				updateCommerceShipmentItemExternalReferenceCode(
-					shipmentItem.getExternalReferenceCode(),
-					commerceShipmentItem.getCommerceShipmentItemId());
+			_commerceShipmentItemService.updateExternalReferenceCode(
+				commerceShipmentItem.getCommerceShipmentItemId(),
+				shipmentItem.getExternalReferenceCode());
 		}
 
 		return _toShipmentItem(shipmentItemId);
@@ -181,8 +184,9 @@ public class ShipmentItemResourceImpl
 		throws Exception {
 
 		CommerceShipmentItem commerceShipmentItem =
-			_commerceShipmentItemService.fetchCommerceShipmentItem(
-				contextCompany.getCompanyId(), externalReferenceCode);
+			_commerceShipmentItemService.
+				fetchCommerceShipmentItemByExternalReferenceCode(
+					contextCompany.getCompanyId(), externalReferenceCode);
 
 		if (commerceShipmentItem == null) {
 			throw new NoSuchShipmentItemException(
@@ -196,8 +200,8 @@ public class ShipmentItemResourceImpl
 				shipmentItem.getWarehouseId(),
 				commerceShipmentItem.getCommerceInventoryWarehouseId()),
 			GetterUtil.get(
-				shipmentItem.getQuantity(),
-				commerceShipmentItem.getQuantity()));
+				shipmentItem.getQuantity(), commerceShipmentItem.getQuantity()),
+			GetterUtil.getBoolean(shipmentItem.getValidateInventory(), true));
 
 		return _toShipmentItem(commerceShipmentItem);
 	}
@@ -223,40 +227,20 @@ public class ShipmentItemResourceImpl
 		throws Exception {
 
 		CommerceShipment commerceShipment =
-			_commerceShipmentService.fetchCommerceShipment(
-				contextCompany.getCompanyId(),
-				shipmentItem.getShipmentExternalReferenceCode());
+			_commerceShipmentService.
+				fetchCommerceShipmentByExternalReferenceCode(
+					contextCompany.getCompanyId(), externalReferenceCode);
 
 		if (commerceShipment == null) {
 			commerceShipment = _commerceShipmentService.getCommerceShipment(
 				GetterUtil.getLong(shipmentItem.getShipmentId()));
 		}
 
-		long defaultOrderItemId = 0;
-		int defaultQuantity = 0;
-		long defaultWarehouseId = 0;
-
-		CommerceShipmentItem commerceShipmentItem =
-			_commerceShipmentItemService.fetchCommerceShipmentItem(
-				contextCompany.getCompanyId(), externalReferenceCode);
-
-		if (commerceShipmentItem != null) {
-			defaultOrderItemId = commerceShipmentItem.getCommerceOrderItemId();
-			defaultQuantity = commerceShipmentItem.getQuantity();
-			defaultWarehouseId =
-				commerceShipmentItem.getCommerceInventoryWarehouseId();
-		}
-
 		return _toShipmentItem(
-			_commerceShipmentItemService.addOrUpdateCommerceShipmentItem(
-				externalReferenceCode, commerceShipment.getCommerceShipmentId(),
-				GetterUtil.getLong(
-					shipmentItem.getOrderItemId(), defaultOrderItemId),
-				GetterUtil.getLong(
-					shipmentItem.getWarehouseId(), defaultWarehouseId),
-				GetterUtil.getInteger(
-					shipmentItem.getQuantity(), defaultQuantity),
-				_serviceContextHelper.getServiceContext()));
+			ShipmentItemUtil.addOrUpdateShipmentItem(
+				shipmentItem.getExternalReferenceCode(), commerceShipment,
+				_commerceShipmentItemService, shipmentItem,
+				_serviceContextHelper));
 	}
 
 	private Map<String, Map<String, String>> _getActions(
