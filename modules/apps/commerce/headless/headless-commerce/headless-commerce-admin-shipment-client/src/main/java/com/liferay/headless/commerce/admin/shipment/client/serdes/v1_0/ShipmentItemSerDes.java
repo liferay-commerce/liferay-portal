@@ -183,6 +183,16 @@ public class ShipmentItemSerDes {
 			sb.append("\"");
 		}
 
+		if (shipmentItem.getValidateInventory() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"validateInventory\": ");
+
+			sb.append(shipmentItem.getValidateInventory());
+		}
+
 		if (shipmentItem.getWarehouseId() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -295,6 +305,15 @@ public class ShipmentItemSerDes {
 			map.put("userName", String.valueOf(shipmentItem.getUserName()));
 		}
 
+		if (shipmentItem.getValidateInventory() == null) {
+			map.put("validateInventory", null);
+		}
+		else {
+			map.put(
+				"validateInventory",
+				String.valueOf(shipmentItem.getValidateInventory()));
+		}
+
 		if (shipmentItem.getWarehouseId() == null) {
 			map.put("warehouseId", null);
 		}
@@ -386,6 +405,12 @@ public class ShipmentItemSerDes {
 			else if (Objects.equals(jsonParserFieldName, "userName")) {
 				if (jsonParserFieldValue != null) {
 					shipmentItem.setUserName((String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "validateInventory")) {
+				if (jsonParserFieldValue != null) {
+					shipmentItem.setValidateInventory(
+						(Boolean)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "warehouseId")) {
