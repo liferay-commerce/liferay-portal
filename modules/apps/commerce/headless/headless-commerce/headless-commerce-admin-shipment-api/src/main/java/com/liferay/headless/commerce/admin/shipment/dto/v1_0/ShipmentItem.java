@@ -355,6 +355,34 @@ public class ShipmentItem implements Serializable {
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String userName;
 
+	@Schema
+	public Boolean getValidateInventory() {
+		return validateInventory;
+	}
+
+	public void setValidateInventory(Boolean validateInventory) {
+		this.validateInventory = validateInventory;
+	}
+
+	@JsonIgnore
+	public void setValidateInventory(
+		UnsafeSupplier<Boolean, Exception> validateInventoryUnsafeSupplier) {
+
+		try {
+			validateInventory = validateInventoryUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Boolean validateInventory;
+
 	@DecimalMin("0")
 	@Schema
 	public Long getWarehouseId() {
@@ -533,6 +561,16 @@ public class ShipmentItem implements Serializable {
 			sb.append(_escape(userName));
 
 			sb.append("\"");
+		}
+
+		if (validateInventory != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"validateInventory\": ");
+
+			sb.append(validateInventory);
 		}
 
 		if (warehouseId != null) {

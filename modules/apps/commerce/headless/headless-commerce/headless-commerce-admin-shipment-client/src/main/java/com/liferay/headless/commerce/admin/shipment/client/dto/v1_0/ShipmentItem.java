@@ -249,6 +249,27 @@ public class ShipmentItem implements Cloneable, Serializable {
 
 	protected String userName;
 
+	public Boolean getValidateInventory() {
+		return validateInventory;
+	}
+
+	public void setValidateInventory(Boolean validateInventory) {
+		this.validateInventory = validateInventory;
+	}
+
+	public void setValidateInventory(
+		UnsafeSupplier<Boolean, Exception> validateInventoryUnsafeSupplier) {
+
+		try {
+			validateInventory = validateInventoryUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Boolean validateInventory;
+
 	public Long getWarehouseId() {
 		return warehouseId;
 	}

@@ -938,6 +938,16 @@ public abstract class BaseShipmentItemResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals(
+					"validateInventory", additionalAssertFieldName)) {
+
+				if (shipmentItem.getValidateInventory() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("warehouseId", additionalAssertFieldName)) {
 				if (shipmentItem.getWarehouseId() == null) {
 					valid = false;
@@ -1146,6 +1156,19 @@ public abstract class BaseShipmentItemResourceTestCase {
 				if (!Objects.deepEquals(
 						shipmentItem1.getUserName(),
 						shipmentItem2.getUserName())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"validateInventory", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						shipmentItem1.getValidateInventory(),
+						shipmentItem2.getValidateInventory())) {
 
 					return false;
 				}
@@ -1377,6 +1400,11 @@ public abstract class BaseShipmentItemResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("validateInventory")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("warehouseId")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -1438,6 +1466,7 @@ public abstract class BaseShipmentItemResourceTestCase {
 				shipmentId = RandomTestUtil.randomLong();
 				userName = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
+				validateInventory = RandomTestUtil.randomBoolean();
 				warehouseId = RandomTestUtil.randomLong();
 			}
 		};
