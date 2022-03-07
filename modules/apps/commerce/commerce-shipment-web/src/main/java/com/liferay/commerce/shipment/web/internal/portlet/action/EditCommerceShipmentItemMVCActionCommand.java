@@ -223,7 +223,7 @@ public class EditCommerceShipmentItemMVCActionCommand
 				commerceShipmentItem =
 					_commerceShipmentItemService.updateCommerceShipmentItem(
 						initialCommerceShipmentItem.getCommerceShipmentItemId(),
-						commerceInventoryWarehouseId, quantity);
+						commerceInventoryWarehouseId, quantity, true);
 
 				initialCommerceShipmentItem = null;
 			}
@@ -239,13 +239,13 @@ public class EditCommerceShipmentItemMVCActionCommand
 				commerceShipmentItem =
 					_commerceShipmentItemService.updateCommerceShipmentItem(
 						commerceShipmentItem.getCommerceShipmentItemId(),
-						commerceInventoryWarehouseId, quantity);
+						commerceInventoryWarehouseId, quantity, true);
 
 				if (quantity == 0) {
 					commerceShipmentItem =
 						_commerceShipmentItemService.updateCommerceShipmentItem(
 							commerceShipmentItem.getCommerceShipmentItemId(), 0,
-							quantity);
+							quantity, true);
 				}
 			}
 		}
