@@ -280,44 +280,6 @@ public class CommerceShipmentItemTest {
 		_resetCommerceShipment();
 	}
 
-	@Test(expected = CommerceShipmentStatusException.class)
-	public void testUpdateCommerceShipmentItemOnShippedShipment()
-		throws Exception {
-
-		frutillaRule.scenario(
-			"Try to increase a Shipment Item's quantity after a shipment is " +
-				"marked as shipped"
-		).given(
-			"A Group"
-		).and(
-			"A ShipmentItem"
-		).when(
-			"A Shipment is marked as shipped"
-		).then(
-			"Shipment Items should not be able to be added"
-		);
-
-		_commerceShipment.setStatus(
-			CommerceShipmentConstants.SHIPMENT_STATUS_SHIPPED);
-
-		_commerceShipment =
-			CommerceShipmentLocalServiceUtil.updateCommerceShipment(
-				_commerceShipment);
-
-		CommerceShipmentItem newCommerceShipmentItem =
-			CommerceShipmentItemLocalServiceUtil.updateCommerceShipmentItem(
-				_commerceShipmentItem.getCommerceShipmentItemId(), 2);
-
-		Assert.assertEquals(
-			_commerceShipment.getStatus(),
-			CommerceShipmentConstants.SHIPMENT_STATUS_SHIPPED);
-		Assert.assertEquals(
-			_commerceShipmentItem.getQuantity(),
-			newCommerceShipmentItem.getQuantity());
-
-		_resetCommerceShipment();
-	}
-
 	@Rule
 	public FrutillaRule frutillaRule = new FrutillaRule();
 
