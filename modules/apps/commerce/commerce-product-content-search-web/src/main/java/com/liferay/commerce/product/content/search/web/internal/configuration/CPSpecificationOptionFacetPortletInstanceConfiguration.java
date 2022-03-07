@@ -16,15 +16,9 @@ package com.liferay.commerce.product.content.search.web.internal.configuration;
 
 import aQute.bnd.annotation.metatype.Meta;
 
-import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
-
 /**
  * @author Crescenzo Rega
  */
-@ExtendedObjectClassDefinition(
-	category = "catalog",
-	scope = ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE
-)
 @Meta.OCD(
 	id = "com.liferay.commerce.product.content.search.web.internal.configuration.CPSpecificationOptionFacetPortletInstanceConfiguration",
 	localization = "content/Language",
