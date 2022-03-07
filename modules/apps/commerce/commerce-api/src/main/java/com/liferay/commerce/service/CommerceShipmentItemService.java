@@ -70,7 +70,8 @@ public interface CommerceShipmentItemService extends BaseService {
 	public CommerceShipmentItem addOrUpdateCommerceShipmentItem(
 			String externalReferenceCode, long commerceShipmentId,
 			long commerceOrderItemId, long commerceInventoryWarehouseId,
-			int quantity, ServiceContext serviceContext)
+			int quantity, boolean validateInventory,
+			ServiceContext serviceContext)
 		throws PortalException;
 
 	/**
@@ -84,6 +85,10 @@ public interface CommerceShipmentItemService extends BaseService {
 			long commerceShipmentItemId, boolean restoreStockQuantity)
 		throws PortalException;
 
+	public void deleteCommerceShipmentItems(
+			long commerceShipmentId, boolean restoreStockQuantity)
+		throws PortalException;
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CommerceShipmentItem fetchCommerceShipmentItem(
 			long commerceShipmentId, long commerceOrderItemId,
@@ -91,8 +96,9 @@ public interface CommerceShipmentItemService extends BaseService {
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public CommerceShipmentItem fetchCommerceShipmentItem(
-			long companyId, String externalReferenceCode)
+	public CommerceShipmentItem
+			fetchCommerceShipmentItemByExternalReferenceCode(
+				long companyId, String externalReferenceCode)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -143,16 +149,12 @@ public interface CommerceShipmentItemService extends BaseService {
 	public String getOSGiServiceIdentifier();
 
 	public CommerceShipmentItem updateCommerceShipmentItem(
-			long commerceShipmentItemId, int quantity)
-		throws PortalException;
-
-	public CommerceShipmentItem updateCommerceShipmentItem(
 			long commerceShipmentItemId, long commerceInventoryWarehouseId,
-			int quantity)
+			int quantity, boolean validateInventory)
 		throws PortalException;
 
-	public CommerceShipmentItem updateCommerceShipmentItemExternalReferenceCode(
-			String externalReferenceCode, long commerceShipmentItemId)
+	public CommerceShipmentItem updateExternalReferenceCode(
+			long commerceShipmentItemId, String externalReferenceCode)
 		throws PortalException;
 
 }
