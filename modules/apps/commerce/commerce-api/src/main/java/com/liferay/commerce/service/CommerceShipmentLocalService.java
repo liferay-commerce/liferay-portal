@@ -450,14 +450,14 @@ public interface CommerceShipmentLocalService
 		throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
-	public CommerceShipment updateCommerceShipmentExternalReferenceCode(
-			String externalReferenceCode, long commerceShipmentId)
-		throws PortalException;
-
-	@Indexable(type = IndexableType.REINDEX)
 	public CommerceShipment updateExpectedDate(
 			long commerceShipmentId, int expectedDateMonth, int expectedDateDay,
 			int expectedDateYear, int expectedDateHour, int expectedDateMinute)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public CommerceShipment updateExternalReferenceCode(
+			long commerceShipmentId, String externalReferenceCode)
 		throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)

@@ -95,7 +95,8 @@ public interface CommerceShipmentItemLocalService
 	public CommerceShipmentItem addOrUpdateCommerceShipmentItem(
 			String externalReferenceCode, long commerceShipmentId,
 			long commerceOrderItemId, long commerceInventoryWarehouseId,
-			int quantity, ServiceContext serviceContext)
+			int quantity, boolean validateInventory,
+			ServiceContext serviceContext)
 		throws PortalException;
 
 	/**
@@ -383,19 +384,15 @@ public interface CommerceShipmentItemLocalService
 	public CommerceShipmentItem updateCommerceShipmentItem(
 		CommerceShipmentItem commerceShipmentItem);
 
-	public CommerceShipmentItem updateCommerceShipmentItem(
-			long commerceShipmentItemId, int quantity)
-		throws PortalException;
-
 	@Indexable(type = IndexableType.REINDEX)
 	public CommerceShipmentItem updateCommerceShipmentItem(
 			long commerceShipmentItemId, long commerceInventoryWarehouseId,
-			int quantity)
+			int quantity, boolean validateInventory)
 		throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
-	public CommerceShipmentItem updateCommerceShipmentItemExternalReferenceCode(
-			String externalReferenceCode, long commerceShipmentItemId)
+	public CommerceShipmentItem updateExternalReferenceCode(
+			long commerceShipmentItemId, String externalReferenceCode)
 		throws PortalException;
 
 }

@@ -213,15 +213,16 @@ public class CommerceShipmentServiceHttp {
 	}
 
 	public static com.liferay.commerce.model.CommerceShipment
-			fetchCommerceShipment(
+			fetchCommerceShipmentByExternalReferenceCode(
 				HttpPrincipal httpPrincipal, long companyId,
 				String externalReferenceCode)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
 			MethodKey methodKey = new MethodKey(
-				CommerceShipmentServiceUtil.class, "fetchCommerceShipment",
-				_fetchCommerceShipmentParameterTypes4);
+				CommerceShipmentServiceUtil.class,
+				"fetchCommerceShipmentByExternalReferenceCode",
+				_fetchCommerceShipmentByExternalReferenceCodeParameterTypes4);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, companyId, externalReferenceCode);
@@ -990,19 +991,22 @@ public class CommerceShipmentServiceHttp {
 	}
 
 	public static com.liferay.commerce.model.CommerceShipment
-			updateCommerceShipmentExternalReferenceCode(
-				HttpPrincipal httpPrincipal, String externalReferenceCode,
-				long commerceShipmentId)
+			updateExpectedDate(
+				HttpPrincipal httpPrincipal, long commerceShipmentId,
+				int expectedDateMonth, int expectedDateDay,
+				int expectedDateYear, int expectedDateHour,
+				int expectedDateMinute)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
 			MethodKey methodKey = new MethodKey(
-				CommerceShipmentServiceUtil.class,
-				"updateCommerceShipmentExternalReferenceCode",
-				_updateCommerceShipmentExternalReferenceCodeParameterTypes22);
+				CommerceShipmentServiceUtil.class, "updateExpectedDate",
+				_updateExpectedDateParameterTypes22);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, externalReferenceCode, commerceShipmentId);
+				methodKey, commerceShipmentId, expectedDateMonth,
+				expectedDateDay, expectedDateYear, expectedDateHour,
+				expectedDateMinute);
 
 			Object returnObj = null;
 
@@ -1033,22 +1037,19 @@ public class CommerceShipmentServiceHttp {
 	}
 
 	public static com.liferay.commerce.model.CommerceShipment
-			updateExpectedDate(
+			updateExternalReferenceCode(
 				HttpPrincipal httpPrincipal, long commerceShipmentId,
-				int expectedDateMonth, int expectedDateDay,
-				int expectedDateYear, int expectedDateHour,
-				int expectedDateMinute)
+				String externalReferenceCode)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
 			MethodKey methodKey = new MethodKey(
-				CommerceShipmentServiceUtil.class, "updateExpectedDate",
-				_updateExpectedDateParameterTypes23);
+				CommerceShipmentServiceUtil.class,
+				"updateExternalReferenceCode",
+				_updateExternalReferenceCodeParameterTypes23);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, commerceShipmentId, expectedDateMonth,
-				expectedDateDay, expectedDateYear, expectedDateHour,
-				expectedDateMinute);
+				methodKey, commerceShipmentId, externalReferenceCode);
 
 			Object returnObj = null;
 
@@ -1180,8 +1181,9 @@ public class CommerceShipmentServiceHttp {
 		new Class[] {long.class};
 	private static final Class<?>[] _deleteCommerceShipmentParameterTypes3 =
 		new Class[] {long.class, boolean.class};
-	private static final Class<?>[] _fetchCommerceShipmentParameterTypes4 =
-		new Class[] {long.class, String.class};
+	private static final Class<?>[]
+		_fetchCommerceShipmentByExternalReferenceCodeParameterTypes4 =
+			new Class[] {long.class, String.class};
 	private static final Class<?>[] _getCommerceShipmentParameterTypes5 =
 		new Class[] {long.class};
 	private static final Class<?>[] _getCommerceShipmentsParameterTypes6 =
@@ -1253,12 +1255,13 @@ public class CommerceShipmentServiceHttp {
 			int.class, int.class, int.class, int.class, int.class, int.class,
 			int.class, int.class, int.class
 		};
-	private static final Class<?>[]
-		_updateCommerceShipmentExternalReferenceCodeParameterTypes22 =
-			new Class[] {String.class, long.class};
-	private static final Class<?>[] _updateExpectedDateParameterTypes23 =
+	private static final Class<?>[] _updateExpectedDateParameterTypes22 =
 		new Class[] {
 			long.class, int.class, int.class, int.class, int.class, int.class
+		};
+	private static final Class<?>[]
+		_updateExternalReferenceCodeParameterTypes23 = new Class[] {
+			long.class, String.class
 		};
 	private static final Class<?>[] _updateShippingDateParameterTypes24 =
 		new Class[] {
