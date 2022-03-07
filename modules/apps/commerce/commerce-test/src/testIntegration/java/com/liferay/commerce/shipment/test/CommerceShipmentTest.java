@@ -918,7 +918,8 @@ public class CommerceShipmentTest {
 
 		_commerceShipmentItemLocalService.updateCommerceShipmentItem(
 			commerceShipmentItem.getCommerceShipmentItemId(),
-			newOrderedQuantity);
+			commerceInventoryWarehouse.getCommerceInventoryWarehouseId(),
+			newOrderedQuantity, true);
 	}
 
 	@Test(expected = NoSuchShipmentItemException.class)
@@ -968,7 +969,8 @@ public class CommerceShipmentTest {
 			orderedQuantity, commerceContext);
 
 		_commerceShipmentItemLocalService.updateCommerceShipmentItem(
-			0, orderedQuantity);
+			0, commerceInventoryWarehouse.getCommerceInventoryWarehouseId(),
+			orderedQuantity, true);
 	}
 
 	@Rule
