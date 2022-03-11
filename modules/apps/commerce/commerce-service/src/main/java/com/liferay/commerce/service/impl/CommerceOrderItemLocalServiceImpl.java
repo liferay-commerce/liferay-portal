@@ -81,6 +81,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.OrderByComparator;
@@ -347,14 +348,45 @@ public class CommerceOrderItemLocalServiceImpl
 							CommerceOrderItemTable.INSTANCE.commerceOrderId.eq(
 								commerceOrderId
 							).and(
-								CommerceOrderItemTable.INSTANCE.
-									commerceOrderItemId.in(
-										commerceOrderItemIds
-									).or(
-										CommerceOrderItemTable.INSTANCE.
+								() -> {
+									if (ArrayUtil.isNotEmpty(
+											commerceOrderItemIds) &&
+										ArrayUtil.isEmpty(
+											externalReferenceCodes)) {
+
+										return CommerceOrderItemTable.INSTANCE.
+											commerceOrderItemId.in(
+												commerceOrderItemIds);
+									}
+
+									if (ArrayUtil.isEmpty(
+											commerceOrderItemIds) &&
+										ArrayUtil.isNotEmpty(
+											externalReferenceCodes)) {
+
+										return CommerceOrderItemTable.INSTANCE.
 											externalReferenceCode.in(
-												externalReferenceCodes)
-									)
+												externalReferenceCodes);
+									}
+
+									if (ArrayUtil.isNotEmpty(
+											commerceOrderItemIds) &&
+										ArrayUtil.isNotEmpty(
+											externalReferenceCodes)) {
+
+										return CommerceOrderItemTable.INSTANCE.
+											commerceOrderItemId.in(
+												commerceOrderItemIds
+											).or(
+												CommerceOrderItemTable.INSTANCE.
+													externalReferenceCode.in(
+														externalReferenceCodes)
+											).withParentheses();
+									}
+
+									return CommerceOrderItemTable.INSTANCE.
+										commerceOrderItemId.eq(0L);
+								}
 							)
 						))
 				)
@@ -518,9 +550,12 @@ public class CommerceOrderItemLocalServiceImpl
 
 		User user = userLocalService.getUser(serviceContext.getUserId());
 
-		CommerceOrderItem commerceOrderItem =
-			commerceOrderItemPersistence.fetchByC_ERC(
+		CommerceOrderItem commerceOrderItem = null;
+
+		if (!Validator.isBlank(externalReferenceCode)) {
+			commerceOrderItem = commerceOrderItemPersistence.fetchByC_ERC(
 				serviceContext.getCompanyId(), externalReferenceCode);
+		}
 
 		if (commerceOrderItem == null) {
 			commerceOrderItem = commerceOrderItemPersistence.fetchByPrimaryKey(
