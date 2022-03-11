@@ -677,7 +677,7 @@ public class CommerceOrderContentDisplayContext {
 			commerceAccount.isPersonalAccount() ||
 			_portletResourcePermission.contains(
 				permissionChecker, commerceAccount.getCommerceAccountGroup(),
-				CommerceWebKeys.VIEW_BILLING_ADDRESS)) {
+				CommerceOrderActionKeys.VIEW_BILLING_ADDRESS)) {
 
 			return true;
 		}
