@@ -74,6 +74,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import javax.ws.rs.HttpMethod;
@@ -487,6 +488,8 @@ public class OrderResourceImpl
 		return stream.map(
 			OrderItem::getExternalReferenceCode
 		).distinct(
+		).filter(
+			Objects::nonNull
 		).toArray(
 			String[]::new
 		);
@@ -498,6 +501,8 @@ public class OrderResourceImpl
 		return stream.map(
 			OrderItem::getId
 		).distinct(
+		).filter(
+			Objects::nonNull
 		).toArray(
 			Long[]::new
 		);
@@ -525,10 +530,16 @@ public class OrderResourceImpl
 		OrderItem[] orderItems = order.getOrderItems();
 
 		if (orderItems != null) {
-			_commerceOrderItemService.deleteMissingCommerceOrderItems(
-				commerceOrder.getCommerceOrderId(),
-				_getOrderItemIds(orderItems),
-				_getOrderItemExternalReferenceCodes(orderItems));
+			if (orderItems.length == 0) {
+				_commerceOrderItemService.deleteCommerceOrderItems(
+					commerceOrder.getCommerceOrderId());
+			}
+			else {
+				_commerceOrderItemService.deleteMissingCommerceOrderItems(
+					commerceOrder.getCommerceOrderId(),
+					_getOrderItemIds(orderItems),
+					_getOrderItemExternalReferenceCodes(orderItems));
+			}
 
 			for (OrderItem orderItem : orderItems) {
 				OrderItemUtil.addOrUpdateCommerceOrderItem(
