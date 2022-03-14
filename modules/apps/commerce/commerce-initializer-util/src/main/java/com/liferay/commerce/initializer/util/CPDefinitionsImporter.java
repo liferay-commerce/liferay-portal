@@ -531,12 +531,6 @@ public class CPDefinitionsImporter {
 
 				cpInstance.setManufacturerPartNumber(manufacturerPartNumber);
 
-				String cpInstanceExternalReferenceCode =
-					_friendlyURLNormalizer.normalize(sku);
-
-				cpInstance.setExternalReferenceCode(
-					cpInstanceExternalReferenceCode);
-
 				_cpInstanceLocalService.updateCPInstance(cpInstance);
 
 				// Commerce warehouse items
@@ -877,8 +871,6 @@ public class CPDefinitionsImporter {
 		CPDefinition cpDefinition = _cpDefinitionLocalService.getCPDefinition(
 			cpDefinitionId);
 
-		String externalReferenceCode = _friendlyURLNormalizer.normalize(sku);
-
 		boolean overrideSubscriptionInfo = false;
 		boolean subscriptionEnabled = false;
 		int subscriptionLength = 0;
@@ -902,8 +894,8 @@ public class CPDefinitionsImporter {
 		}
 
 		CPInstance cpInstance = _cpInstanceLocalService.addCPInstance(
-			externalReferenceCode, cpDefinitionId, cpDefinition.getGroupId(),
-			sku, null, manufacturerPartNumber, true,
+			StringPool.BLANK, cpDefinitionId, cpDefinition.getGroupId(), sku,
+			null, manufacturerPartNumber, true,
 			_cpDefinitionOptionRelLocalService.
 				getCPDefinitionOptionRelCPDefinitionOptionValueRelIds(
 					cpDefinitionId, optionsJSON),
