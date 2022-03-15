@@ -694,22 +694,20 @@ public class CommerceShipmentLocalServiceImpl
 		CommerceShipment commerceShipment =
 			commerceShipmentPersistence.findByPrimaryKey(commerceShipmentId);
 
-		List<CommerceShipmentItem> commerceShipmentItems =
-			_commerceShipmentItemLocalService.getCommerceShipmentItems(
-				commerceShipmentId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+		int commerceShipmentItemsCount =
+			commerceShipmentItemLocalService.getCommerceShipmentItemsCount(
+				commerceShipmentId);
 
-		if (commerceShipmentItems.isEmpty()) {
+		if (commerceShipmentItemsCount == 0) {
 			throw new CommerceShipmentItemQuantityException();
 		}
 
-		for (CommerceShipmentItem commerceShipmentItem :
-				commerceShipmentItems) {
+		int validCommerceShipmentItemsCount =
+			commerceShipmentItemLocalService.getValidCommerceShipmentItemsCount(
+				commerceShipmentId);
 
-			if ((commerceShipmentItem.getQuantity() < 1) ||
-				(commerceShipmentItem.getCommerceInventoryWarehouseId() <= 0)) {
-
-				throw new CommerceShipmentStatusException();
-			}
+		if (validCommerceShipmentItemsCount != commerceShipmentItemsCount) {
+			throw new CommerceShipmentStatusException();
 		}
 
 		commerceShipment.setStatus(status);
