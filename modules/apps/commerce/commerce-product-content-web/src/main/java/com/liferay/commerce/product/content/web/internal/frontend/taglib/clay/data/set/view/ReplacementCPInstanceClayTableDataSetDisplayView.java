@@ -43,18 +43,17 @@ public class ReplacementCPInstanceClayTableDataSetDisplayView
 		ClayTableSchemaBuilder clayTableSchemaBuilder =
 			_clayTableSchemaBuilderFactory.create();
 
-		ClayTableSchemaField skuClayTableSchemaField =
+		ClayTableSchemaField clayTableSchemaField =
 			clayTableSchemaBuilder.addClayTableSchemaField("sku", "sku");
 
-		skuClayTableSchemaField.setContentRenderer("actionLink");
+		clayTableSchemaField.setContentRenderer("actionLink");
 
 		clayTableSchemaBuilder.addClayTableSchemaField("name", "name");
 
-		ClayTableSchemaField priceModelClayTableSchemaField =
-			clayTableSchemaBuilder.addClayTableSchemaField(
-				"priceModel", "price");
+		clayTableSchemaField = clayTableSchemaBuilder.addClayTableSchemaField(
+			"priceModel", "price");
 
-		priceModelClayTableSchemaField.setContentRendererModuleURL(
+		clayTableSchemaField.setContentRendererModuleURL(
 			"commerce-frontend-js/components/data_renderers/PriceRenderer");
 
 		return clayTableSchemaBuilder.build();

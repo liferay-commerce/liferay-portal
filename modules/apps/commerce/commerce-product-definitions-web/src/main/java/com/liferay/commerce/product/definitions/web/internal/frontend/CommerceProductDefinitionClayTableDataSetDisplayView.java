@@ -63,12 +63,12 @@ public class CommerceProductDefinitionClayTableDataSetDisplayView
 
 		clayTableSchemaField.setContentRenderer("status");
 
-		ClayTableSchemaField modifiedDateClayTableSchemaField =
+		ClayTableSchemaField dateclayTableSchemaField =
 			clayTableSchemaBuilder.addClayTableSchemaField(
 				"modifiedDate", "modified-date");
 
-		modifiedDateClayTableSchemaField.setContentRenderer("dateTime");
-		modifiedDateClayTableSchemaField.setSortable(true);
+		dateclayTableSchemaField.setContentRenderer("dateTime");
+		dateclayTableSchemaField.setSortable(true);
 
 		return clayTableSchemaBuilder.build();
 	}
