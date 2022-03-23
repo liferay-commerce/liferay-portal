@@ -1,0 +1,7 @@
+definition {
+       property testray.main.component.name = "Blogs";
+
+        test ViewHelloWorld {
+                User.firstLoginPG();
+        }
+}
