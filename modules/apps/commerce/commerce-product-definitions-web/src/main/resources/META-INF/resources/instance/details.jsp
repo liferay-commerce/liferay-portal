@@ -32,6 +32,8 @@ if ((cpInstance != null) && (cpInstance.getExpirationDate() != null)) {
 }
 
 boolean discontinued = BeanParamUtil.getBoolean(cpInstance, request, "discontinued");
+int minPriceValue = CommercePriceConstants.COMMERCE_MIN_PRICE_VALUE;
+double maxPriceValue = CommercePriceConstants.COMMERCE_MAX_PRICE_VALUE;
 %>
 
 <portlet:actionURL name="/cp_definitions/edit_cp_instance" var="editProductInstanceActionURL" />
@@ -46,9 +48,9 @@ boolean discontinued = BeanParamUtil.getBoolean(cpInstance, request, "discontinu
 	<liferay-ui:error exception="<%= CommerceUndefinedBasePriceListException.class %>" message="there-is-no-base-price-list-associated-with-the-current-sku" />
 	<liferay-ui:error exception="<%= CPDefinitionIgnoreSKUCombinationsException.class %>" message="only-one-sku-can-be-approved" />
 	<liferay-ui:error exception="<%= CPInstanceJsonException.class %>" message="there-is-already-one-sku-with-the-selected-options" />
+	<liferay-ui:error exception="<%= CPInstanceMaxPriceValueException.class %>" message="price-length-exceed-limit" />
 	<liferay-ui:error exception="<%= CPInstanceReplacementCPInstanceUuidException.class %>" message="please-enter-a-valid-replacement" />
 	<liferay-ui:error exception="<%= CPInstanceSkuException.class %>" message="please-enter-a-valid-sku" />
-	<liferay-ui:error exception="<%= CPPriceMaxValueException.class %>" message="price-length-exceed-limit" />
 
 	<commerce-ui:panel
 		title='<%= LanguageUtil.get(request, "details") %>'
@@ -112,24 +114,24 @@ boolean discontinued = BeanParamUtil.getBoolean(cpInstance, request, "discontinu
 		<div class="row">
 			<div class="col-4">
 				<aui:input label="base-price" name="price" suffix="<%= HtmlUtil.escape(commerceCurrencyCode) %>" type="text" value="<%= cpInstanceDisplayContext.getPrice() %>">
-					<aui:validator name="min">0</aui:validator>
-					<aui:validator name="max">99999999.99</aui:validator>
+					<aui:validator name="min"><%= minPriceValue %></aui:validator>
+					<aui:validator name="max"><%= maxPriceValue %></aui:validator>
 					<aui:validator name="number" />
 				</aui:input>
 			</div>
 
 			<div class="col-4">
 				<aui:input label="sale-price" name="promoPrice" suffix="<%= HtmlUtil.escape(commerceCurrencyCode) %>" type="text" value="<%= cpInstanceDisplayContext.getPromoPrice() %>">
-					<aui:validator name="min">0</aui:validator>
-					<aui:validator name="max">99999999.99</aui:validator>
+					<aui:validator name="min"><%= minPriceValue %></aui:validator>
+					<aui:validator name="max"><%= maxPriceValue %></aui:validator>
 					<aui:validator name="number" />
 				</aui:input>
 			</div>
 
 			<div class="col-4">
 				<aui:input name="cost" suffix="<%= HtmlUtil.escape(commerceCurrencyCode) %>" type="text" value="<%= (cpInstance == null) ? StringPool.BLANK : cpInstanceDisplayContext.round(cpInstance.getCost()) %>">
-					<aui:validator name="min">0</aui:validator>
-					<aui:validator name="max">99999999.99</aui:validator>
+					<aui:validator name="min"><%= minPriceValue %></aui:validator>
+					<aui:validator name="max"><%= maxPriceValue %></aui:validator>
 					<aui:validator name="number" />
 				</aui:input>
 			</div>
