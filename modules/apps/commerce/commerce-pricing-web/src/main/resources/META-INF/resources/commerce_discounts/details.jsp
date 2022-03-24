@@ -45,6 +45,9 @@ if (usePercentage) {
 }
 
 boolean hasPermission = commerceDiscountDisplayContext.hasPermission(ActionKeys.UPDATE);
+
+int minPriceValue = CommercePriceConstants.COMMERCE_MIN_PRICE_VALUE;
+double maxPriceValue = CommercePriceConstants.COMMERCE_MAX_PRICE_VALUE;
 %>
 
 <portlet:actionURL name="/commerce_discount/edit_commerce_discount" var="editCommerceDiscountActionURL" />
@@ -57,6 +60,8 @@ boolean hasPermission = commerceDiscountDisplayContext.hasPermission(ActionKeys.
 	<aui:input name="workflowAction" type="hidden" value="<%= String.valueOf(WorkflowConstants.ACTION_SAVE_DRAFT) %>" />
 
 	<aui:model-context bean="<%= commerceDiscount %>" model="<%= CommerceDiscount.class %>" />
+
+	<liferay-ui:error exception="<%= CommerceDiscountMaxPriceValueException.class %>" message="price-length-exceed-limit" />
 
 	<div class="row">
 		<div class="col-12 col-xl-8">
@@ -113,7 +118,8 @@ boolean hasPermission = commerceDiscountDisplayContext.hasPermission(ActionKeys.
 				<div class="row">
 					<div class="<%= colCssClass %>">
 						<aui:input ignoreRequestValue="<%= true %>" name="amount" suffix="<%= amountSuffix %>" type="text" value="<%= commerceDiscountDisplayContext.getCommerceDiscountAmount(locale) %>">
-							<aui:validator name="min">0</aui:validator>
+							<aui:validator name="min"><%= minPriceValue %></aui:validator>
+							<aui:validator name="max"><%= maxPriceValue %></aui:validator>
 							<aui:validator name="number" />
 						</aui:input>
 					</div>
@@ -121,7 +127,8 @@ boolean hasPermission = commerceDiscountDisplayContext.hasPermission(ActionKeys.
 					<c:if test="<%= usePercentage %>">
 						<div class="<%= colCssClass %>">
 							<aui:input ignoreRequestValue="<%= true %>" name="maximumDiscountAmount" suffix="<%= HtmlUtil.escape(commerceDiscountDisplayContext.getDefaultCommerceCurrencyCode()) %>" type="text" value="<%= (commerceDiscount == null) ? BigDecimal.ZERO : commerceDiscountDisplayContext.round(commerceDiscount.getMaximumDiscountAmount()) %>">
-								<aui:validator name="min">0</aui:validator>
+								<aui:validator name="min"><%= minPriceValue %></aui:validator>
+								<aui:validator name="max"><%= maxPriceValue %></aui:validator>
 								<aui:validator name="number" />
 							</aui:input>
 						</div>
