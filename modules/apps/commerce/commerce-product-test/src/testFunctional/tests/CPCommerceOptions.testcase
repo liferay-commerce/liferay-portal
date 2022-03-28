@@ -32,7 +32,7 @@ definition {
 			category = "Product Management",
 			portlet = "Options");
 
-		CPCommerceCatalog.newOptionsEntry(
+		CPCommerceCatalog.newOtionsEntry(
 			optionDescription = "Option Description",
 			optionFieldType = "Text",
 			optionName = "Color");
