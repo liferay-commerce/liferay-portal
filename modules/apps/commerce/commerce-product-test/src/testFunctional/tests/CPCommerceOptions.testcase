@@ -43,7 +43,7 @@ definition {
 
 		CommerceEntry.viewOptionsEntry(
 			optionDescription = "Option Description",
-			optionName = "Color");
+			optionName = "Clor");
 	}
 
 	@description = "This is a test for COMMERCE-6280. RemoveAnOption"
