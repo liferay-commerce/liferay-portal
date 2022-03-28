@@ -74,6 +74,17 @@ EditBatchPlannerPlanDisplayContext editBatchPlannerPlanDisplayContext = (EditBat
 								/>
 							</clay:alert>
 
+							<liferay-frontend:component
+								context='<%=
+									HashMapBuilder.<String, Object>put(
+										"internalClassName", editBatchPlannerPlanDisplayContext.getSelectedInternalClassName()
+									).put(
+										"type", "batchPlannerTemplate"
+									).build()
+								%>'
+								module="js/DownloadHelper"
+							/>
+
 							<div class="mt-2">
 								<clay:checkbox
 									checked="<%= false %>"
