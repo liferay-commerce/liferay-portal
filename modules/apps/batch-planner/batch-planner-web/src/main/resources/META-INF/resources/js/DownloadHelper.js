@@ -16,6 +16,7 @@ import {fetch} from 'frontend-js-web';
 
 const getEndpoint = (type, taskId) => {
 	const endpoints = {
+		batchPlannerTemplate: `/o/batch-planner/v1.0/plans/${taskId}/template`,
 		errorReport: `/o/headless-batch-engine/v1.0/import-task/${taskId}/failed-items/report`,
 		importFile: `/o/headless-batch-engine/v1.0/import-task/${taskId}/content`,
 	};
