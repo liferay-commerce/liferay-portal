@@ -14,7 +14,7 @@
 
 package com.liferay.commerce.internal.permission;
 
-import com.liferay.commerce.internal.context.CommerceGroupThreadLocal;
+import com.liferay.commerce.context.CommerceGroupThreadLocal;
 import com.liferay.commerce.model.CommerceOrderType;
 import com.liferay.commerce.permission.CommerceOrderTypePermission;
 import com.liferay.commerce.service.CommerceOrderTypeLocalService;

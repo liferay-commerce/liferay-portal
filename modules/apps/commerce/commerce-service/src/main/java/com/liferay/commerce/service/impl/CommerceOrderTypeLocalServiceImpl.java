@@ -14,10 +14,10 @@
 
 package com.liferay.commerce.service.impl;
 
+import com.liferay.commerce.context.CommerceGroupThreadLocal;
 import com.liferay.commerce.exception.CommerceOrderTypeDisplayDateException;
 import com.liferay.commerce.exception.CommerceOrderTypeExpirationDateException;
 import com.liferay.commerce.exception.CommerceOrderTypeNameException;
-import com.liferay.commerce.internal.context.CommerceGroupThreadLocal;
 import com.liferay.commerce.model.CommerceOrderType;
 import com.liferay.commerce.model.CommerceOrderTypeRelTable;
 import com.liferay.commerce.model.CommerceOrderTypeTable;

@@ -14,7 +14,7 @@
 
 package com.liferay.commerce.internal.servlet.filter;
 
-import com.liferay.commerce.internal.context.CommerceGroupThreadLocal;
+import com.liferay.commerce.context.CommerceGroupThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
