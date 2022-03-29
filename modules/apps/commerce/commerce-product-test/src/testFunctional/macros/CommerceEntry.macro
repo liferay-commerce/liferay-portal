@@ -380,13 +380,13 @@ definition {
 	macro addOptionsEntry {
 		Type(
 			locator1 = "CommerceEntry#NAME_FIELD",
-			value1 = "${option}");
+			value1 = "${optionName}");
 
 		Select(
 			locator1 = "CommerceEntry#FIELD_TYPE_SELECT",
 			value1 = "${optionFieldType}");
 
-		Button.click(button = "Add");
+		Button.click(button = "Submit");
 
 		Type(
 			locator1 = "CommerceEntry#DESCRIPTION_FIELD",
