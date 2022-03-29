@@ -32,7 +32,7 @@ definition {
 			category = "Product Management",
 			portlet = "Options");
 
-		CPCommerceCatalog.newOtionsEntry(
+		CPCommerceCatalog.newOptionsEntry(
 			optionDescription = "Option Description",
 			optionFieldType = "Text",
 			optionName = "Color");
@@ -43,7 +43,7 @@ definition {
 
 		CommerceEntry.viewOptionsEntry(
 			optionDescription = "Option Description",
-			optionName = "Clor");
+			optionName = "Color");
 	}
 
 	@description = "This is a test for COMMERCE-6280. RemoveAnOption"
