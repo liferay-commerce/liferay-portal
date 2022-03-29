@@ -28,7 +28,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.aop.AopService;
-import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -40,6 +39,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Igor Beslic
@@ -247,7 +247,7 @@ public class BatchPlannerPlanLocalServiceImpl
 	private static final Log _log = LogFactoryUtil.getLog(
 		BatchPlannerPlanLocalServiceImpl.class);
 
-	@BeanReference(type = BatchPlannerLogLocalService.class)
+	@Reference
 	private BatchPlannerLogLocalService _batchPlannerLogLocalService;
 
 }
