@@ -167,7 +167,7 @@
 </tr>
 <tr>
 	<td>NAME_FIELD</td>
-	<td>//div[contains(@id,'name')]</td>
+	<td>//div/input[contains(@id,'name')]</td>
 	<td></td>
 </tr><tr>
 	<td>NAME_FIELD_SPECIAL</td>
