@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.commerce.internal.context;
+package com.liferay.commerce.context;
 
 import com.liferay.petra.lang.CentralizedThreadLocal;
 import com.liferay.petra.lang.SafeCloseable;
