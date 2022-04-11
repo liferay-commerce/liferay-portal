@@ -25,24 +25,38 @@ import com.liferay.batch.planner.exception.RequiredBatchPlannerPlanException;
 import com.liferay.batch.planner.model.BatchPlannerLog;
 import com.liferay.batch.planner.model.BatchPlannerPlan;
 import com.liferay.batch.planner.service.BatchPlannerLogService;
+import com.liferay.batch.planner.service.BatchPlannerMappingService;
 import com.liferay.batch.planner.service.BatchPlannerPlanService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
+import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.upload.UploadPortletRequest;
+import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.nio.file.Files;
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Igor Beslic
@@ -171,18 +185,18 @@ public class BatchPlannerPlanServiceTest {
 			}
 
 			_submitPlan(
-				export, RandomTestUtil.randomString(),
+				export, "com.liferay.headless.commerce.admin.channel.dto.v1_0.Channel",
 				RandomTestUtil.randomString());
 		}
 
-		_submitPlan(true, "internalClassName1", "name1");
-		_submitPlan(true, "internalClassName2", "name2");
-		_submitPlan(true, "internalClassName2", "name3");
-		_submitPlan(false, "internalClassName3", "name4");
-		_submitPlan(false, "internalClassName4", "name5");
+		_submitPlan(true, "com.liferay.headless.commerce.admin.channel.dto.v1_0.Channel", "name1");
+		_submitPlan(true, "com.liferay.headless.commerce.admin.channel.dto.v1_0.Channel", "name2");
+		_submitPlan(true, "com.liferay.headless.commerce.admin.channel.dto.v1_0.Channel", "name3");
+		_submitPlan(false, "com.liferay.headless.commerce.admin.channel.dto.v1_0.Channel", "name4");
+		_submitPlan(false, "com.liferay.headless.commerce.admin.channel.dto.v1_0.Channel", "name5");
 
 		BatchPlannerPlan batchPlannerPlan = _submitPlan(
-			false, "internalClassName4", "name6");
+			false, "com.liferay.headless.commerce.admin.channel.dto.v1_0.Channel", "name6");
 
 		_testSearchExportBatchPlannerLogs(batchPlannerPlan.getCompanyId());
 		_testSearchImportBatchPlannerLogs(batchPlannerPlan.getCompanyId());
@@ -225,6 +239,12 @@ public class BatchPlannerPlanServiceTest {
 				"/" + RandomTestUtil.randomString(), internalClassName, name,
 				null, false);
 
+		_batchPlannerMappingService.addBatchPlannerMapping(
+			batchPlannerPlan.getBatchPlannerPlanId(),
+			"name", "String",
+			"name", "String",
+			StringPool.BLANK);
+
 		_batchEngineBroker.submit(batchPlannerPlan.getBatchPlannerPlanId());
 
 		return batchPlannerPlan;
@@ -241,11 +261,11 @@ public class BatchPlannerPlanServiceTest {
 			batchPlannerLogs.toString(), 1, batchPlannerLogs.size());
 
 		batchPlannerLogs = _batchPlannerLogService.getCompanyBatchPlannerLogs(
-			companyId, true, "internalClassName", "internalClassName2", 0,
+			companyId, true, "internalClassName", "com.liferay.headless.commerce.admin.channel.dto.v1_0.Channel", 0,
 			Integer.MAX_VALUE, null);
 
 		Assert.assertEquals(
-			batchPlannerLogs.toString(), 2, batchPlannerLogs.size());
+			batchPlannerLogs.toString(), 33, batchPlannerLogs.size());
 
 		batchPlannerLogs = _batchPlannerLogService.getCompanyBatchPlannerLogs(
 			companyId, true, "name", RandomTestUtil.randomString(), 0,
@@ -273,11 +293,11 @@ public class BatchPlannerPlanServiceTest {
 			batchPlannerLogs.toString(), 1, batchPlannerLogs.size());
 
 		batchPlannerLogs = _batchPlannerLogService.getCompanyBatchPlannerLogs(
-			companyId, false, "internalClassName", "internalClassName4", 0,
+			companyId, false, "internalClassName", "com.liferay.headless.commerce.admin.channel.dto.v1_0.Channel", 0,
 			Integer.MAX_VALUE, null);
 
 		Assert.assertEquals(
-			batchPlannerLogs.toString(), 2, batchPlannerLogs.size());
+			batchPlannerLogs.toString(), 33, batchPlannerLogs.size());
 
 		batchPlannerLogs = _batchPlannerLogService.getCompanyBatchPlannerLogs(
 			companyId, false, "name", RandomTestUtil.randomString(), 0,
@@ -294,8 +314,33 @@ public class BatchPlannerPlanServiceTest {
 			batchPlannerLogs.toString(), 0, batchPlannerLogs.size());
 	}
 
+	private File _toBatchPlannerFile(
+		String externalType, InputStream inputStream)
+		throws Exception {
+
+		UUID uuid = UUID.randomUUID();
+
+		File file = FileUtil.createTempFile(uuid.toString(), externalType);
+
+		try {
+			Files.copy(inputStream, file.toPath());
+
+			return file;
+		}
+		catch (IOException ioException) {
+			if (file.exists()) {
+				file.delete();
+			}
+
+			throw ioException;
+		}
+	}
+
 	@Inject
 	private BatchEngineBroker _batchEngineBroker;
+
+	@Inject
+	private BatchPlannerMappingService _batchPlannerMappingService;
 
 	@Inject
 	private BatchPlannerLogService _batchPlannerLogService;
