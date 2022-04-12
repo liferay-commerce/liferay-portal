@@ -171,6 +171,18 @@ public class BatchPlannerPlanLocalServiceImpl
 		return batchPlannerPlanPersistence.update(batchPlannerPlan);
 	}
 
+	@Override
+	public BatchPlannerPlan updateStatus(long batchPlannerPlanId, int status)
+		throws PortalException {
+
+		BatchPlannerPlan batchPlannerPlan =
+			batchPlannerPlanPersistence.findByPrimaryKey(batchPlannerPlanId);
+
+		batchPlannerPlan.setStatus(status);
+
+		return batchPlannerPlanPersistence.update(batchPlannerPlan);
+	}
+
 	private String _generateName(String value) {
 		return value.substring(value.lastIndexOf(StringPool.PERIOD) + 1) +
 			" Plan Execution " + System.currentTimeMillis();
