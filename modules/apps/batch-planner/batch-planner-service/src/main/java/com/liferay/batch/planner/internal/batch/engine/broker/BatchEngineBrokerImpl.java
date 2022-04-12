@@ -47,7 +47,6 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 import javax.ws.rs.core.UriInfo;
 
@@ -63,19 +62,9 @@ public class BatchEngineBrokerImpl implements BatchEngineBroker {
 	@Override
 	public void submit(long batchPlannerPlanId) {
 		try {
-			BatchPlannerPlan batchPlannerPlan =
+			_submit(
 				_batchPlannerPlanLocalService.getBatchPlannerPlan(
-					batchPlannerPlanId);
-
-			if (batchPlannerPlan.isExport()) {
-				_submitExportTask(batchPlannerPlan);
-			}
-			else {
-				_submitImportTask(batchPlannerPlan);
-			}
-
-			_batchPlannerPlanLocalService.updateActive(
-				batchPlannerPlanId, true);
+					batchPlannerPlanId));
 		}
 		catch (Exception exception) {
 			_log.error(
@@ -171,6 +160,27 @@ public class BatchEngineBrokerImpl implements BatchEngineBroker {
 		}
 
 		return null;
+	}
+
+	private void _submit(BatchPlannerPlan batchPlannerPlan) throws Exception {
+		try {
+			if (batchPlannerPlan.isExport()) {
+				_submitExportTask(batchPlannerPlan);
+			}
+			else {
+				_submitImportTask(batchPlannerPlan);
+			}
+
+			_batchPlannerPlanLocalService.updateActive(
+				batchPlannerPlan.getBatchPlannerPlanId(), true);
+		}
+		catch (Exception exception) {
+			_batchPlannerPlanLocalService.updateStatus(
+				batchPlannerPlan.getBatchPlannerPlanId(),
+				BatchPlannerPlanConstants.STATUS_FAILED);
+
+			throw exception;
+		}
 	}
 
 	private void _submitExportTask(BatchPlannerPlan batchPlannerPlan)
