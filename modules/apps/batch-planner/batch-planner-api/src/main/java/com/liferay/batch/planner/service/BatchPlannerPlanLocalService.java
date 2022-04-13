@@ -289,4 +289,7 @@ public interface BatchPlannerPlanLocalService
 			String internalClassName, String name)
 		throws PortalException;
 
+	public BatchPlannerPlan updateStatus(long batchPlannerPlanId, int status)
+		throws PortalException;
+
 }

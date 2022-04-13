@@ -384,6 +384,15 @@ public class BatchPlannerPlanLocalServiceWrapper
 	}
 
 	@Override
+	public com.liferay.batch.planner.model.BatchPlannerPlan updateStatus(
+			long batchPlannerPlanId, int status)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _batchPlannerPlanLocalService.updateStatus(
+			batchPlannerPlanId, status);
+	}
+
+	@Override
 	public BatchPlannerPlanLocalService getWrappedService() {
 		return _batchPlannerPlanLocalService;
 	}

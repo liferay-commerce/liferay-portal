@@ -338,6 +338,13 @@ public class BatchPlannerPlanLocalServiceUtil {
 			userId, batchPlannerPlanId, externalType, internalClassName, name);
 	}
 
+	public static BatchPlannerPlan updateStatus(
+			long batchPlannerPlanId, int status)
+		throws PortalException {
+
+		return getService().updateStatus(batchPlannerPlanId, status);
+	}
+
 	public static BatchPlannerPlanLocalService getService() {
 		return _service;
 	}
