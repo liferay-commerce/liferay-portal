@@ -17,6 +17,8 @@ package com.liferay.commerce.inventory.internal.upgrade;
 import com.liferay.commerce.inventory.internal.upgrade.v1_1_0.CommerceInventoryWarehouseItemUpgradeProcess;
 import com.liferay.commerce.inventory.internal.upgrade.v2_0_0.CommerceInventoryAuditUpgradeProcess;
 import com.liferay.commerce.inventory.internal.upgrade.v2_1_0.MVCCUpgradeProcess;
+import com.liferay.commerce.inventory.internal.upgrade.v2_3_0.CommerceInventoryWarehouseUpgradeProcess;
+import com.liferay.commerce.inventory.internal.upgrade.v2_3_0.util.CommerceInventoryWarehouseRelTable;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.upgrade.DummyUpgradeProcess;
@@ -65,6 +67,10 @@ public class CommerceInventoryUpgradeStepRegistrator
 				}
 
 			});
+
+		registry.register(
+			"2.2.0", "2.3.0", CommerceInventoryWarehouseRelTable.create(),
+			new CommerceInventoryWarehouseUpgradeProcess());
 
 		if (_log.isInfoEnabled()) {
 			_log.info("Commerce inventory upgrade step registrator finished");
