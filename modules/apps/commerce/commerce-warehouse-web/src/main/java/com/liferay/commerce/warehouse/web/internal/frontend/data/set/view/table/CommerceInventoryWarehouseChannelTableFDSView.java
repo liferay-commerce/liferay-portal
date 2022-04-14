@@ -28,14 +28,15 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * @author Riccardo Alberti
+ * @author Crescenzo Rega
  */
 @Component(
 	enabled = false, immediate = true,
-	property = "frontend.data.set.name=" + CommerceInventoryWarehouseFDSNames.WAREHOUSES,
+	property = "frontend.data.set.name=" + CommerceInventoryWarehouseFDSNames.COMMERCE_DATA_SET_KEY_INVENTORY_WAREHOUSE_QUALIFIER_CHANNELS,
 	service = FDSView.class
 )
-public class CommerceInventoryWarehouseTableFDSView extends BaseTableFDSView {
+public class CommerceInventoryWarehouseChannelTableFDSView
+	extends BaseTableFDSView {
 
 	@Override
 	public FDSTableSchema getFDSTableSchema(Locale locale) {
@@ -43,16 +44,10 @@ public class CommerceInventoryWarehouseTableFDSView extends BaseTableFDSView {
 			_fdsTableSchemaBuilderFactory.create();
 
 		FDSTableSchemaField nameFDSTableSchemaField =
-			fdsTableSchemaBuilder.addFDSTableSchemaField("name.LANG", "name");
+			fdsTableSchemaBuilder.addFDSTableSchemaField(
+				"channel.name", "name");
 
 		nameFDSTableSchemaField.setContentRenderer("actionLink");
-
-		fdsTableSchemaBuilder.addFDSTableSchemaField("city", "city");
-
-		FDSTableSchemaField activeField =
-			fdsTableSchemaBuilder.addFDSTableSchemaField("active", "active");
-
-		activeField.setContentRenderer("boolean");
 
 		return fdsTableSchemaBuilder.build();
 	}

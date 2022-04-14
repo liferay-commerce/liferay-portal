@@ -14,7 +14,12 @@
 
 package com.liferay.commerce.warehouse.web.internal.frontend.taglib.servlet.taglib;
 
+import com.liferay.commerce.country.CommerceCountryManager;
 import com.liferay.commerce.inventory.model.CommerceInventoryWarehouse;
+import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseRelService;
+import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseService;
+import com.liferay.commerce.product.service.CommerceChannelRelService;
+import com.liferay.commerce.product.service.CommerceChannelService;
 import com.liferay.commerce.warehouse.web.internal.display.context.CommerceInventoryWarehouseQualifiersDisplayContext;
 import com.liferay.commerce.warehouse.web.internal.servlet.taglib.ui.constants.CommerceInventoryWarehouseScreenNavigationConstants;
 import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationCategory;
@@ -27,6 +32,9 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.service.CountryService;
+import com.liferay.portal.kernel.service.RegionService;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
@@ -117,7 +125,12 @@ public class CommerceInventoryWarehouseQualifiersScreenNavigationCategory
 
 		httpServletRequest.setAttribute(
 			WebKeys.PORTLET_DISPLAY_CONTEXT,
-			new CommerceInventoryWarehouseQualifiersDisplayContext());
+			new CommerceInventoryWarehouseQualifiersDisplayContext(
+				_commerceChannelRelService, _commerceChannelService,
+				_commerceCountryManager, _commerceInventoryWarehouseRelService,
+				_commerceInventoryWarehouseService, _countryService,
+				httpServletRequest, _regionService, _portal,
+				_commerceInventoryWarehouseModelResourcePermission));
 
 		_jspRenderer.renderJSP(
 			httpServletRequest, httpServletResponse,
@@ -127,6 +140,15 @@ public class CommerceInventoryWarehouseQualifiersScreenNavigationCategory
 	private static final Log _log = LogFactoryUtil.getLog(
 		CommerceInventoryWarehouseQualifiersScreenNavigationCategory.class);
 
+	@Reference
+	private CommerceChannelRelService _commerceChannelRelService;
+
+	@Reference
+	private CommerceChannelService _commerceChannelService;
+
+	@Reference
+	private CommerceCountryManager _commerceCountryManager;
+
 	@Reference(
 		target = "(model.class.name=com.liferay.commerce.inventory.model.CommerceInventoryWarehouse)"
 	)
@@ -134,6 +156,23 @@ public class CommerceInventoryWarehouseQualifiersScreenNavigationCategory
 		_commerceInventoryWarehouseModelResourcePermission;
 
 	@Reference
+	private CommerceInventoryWarehouseRelService
+		_commerceInventoryWarehouseRelService;
+
+	@Reference
+	private CommerceInventoryWarehouseService
+		_commerceInventoryWarehouseService;
+
+	@Reference
+	private CountryService _countryService;
+
+	@Reference
 	private JSPRenderer _jspRenderer;
+
+	@Reference
+	private Portal _portal;
+
+	@Reference
+	private RegionService _regionService;
 
 }
