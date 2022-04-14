@@ -14,7 +14,8 @@
 
 package com.liferay.headless.commerce.admin.inventory.resource.v1_0;
 
-import com.liferay.headless.commerce.admin.inventory.dto.v1_0.WarehouseItem;
+import com.liferay.headless.commerce.admin.inventory.dto.v1_0.WarehouseChannel;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
@@ -28,7 +29,6 @@ import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -53,61 +53,39 @@ import org.osgi.annotation.versioning.ProviderType;
  */
 @Generated("")
 @ProviderType
-public interface WarehouseItemResource {
+public interface WarehouseChannelResource {
 
 	public static Builder builder() {
 		return FactoryHolder.factory.create();
 	}
 
-	public Response deleteWarehouseItemByExternalReferenceCode(
-			String externalReferenceCode)
+	public void deleteWarehouseChannel(Long warehouseChannelId)
 		throws Exception;
 
-	public WarehouseItem getWarehouseItemByExternalReferenceCode(
-			String externalReferenceCode)
+	public Response deleteWarehouseChannelBatch(
+			String callbackURL, Object object)
 		throws Exception;
 
-	public Response patchWarehouseItemByExternalReferenceCode(
-			String externalReferenceCode, WarehouseItem warehouseItem)
-		throws Exception;
-
-	public WarehouseItem postWarehouseItemByExternalReferenceCode(
-			String externalReferenceCode, WarehouseItem warehouseItem)
-		throws Exception;
-
-	public Page<WarehouseItem> getWarehouseItemsUpdatedPage(
-			Date end, Date start, Pagination pagination)
-		throws Exception;
-
-	public Response deleteWarehouseItem(Long id) throws Exception;
-
-	public Response deleteWarehouseItemBatch(
-			Long id, String callbackURL, Object object)
-		throws Exception;
-
-	public WarehouseItem getWarehouseItem(Long id) throws Exception;
-
-	public Response patchWarehouseItem(Long id, WarehouseItem warehouseItem)
-		throws Exception;
-
-	public Page<WarehouseItem>
-			getWarehouseByExternalReferenceCodeWarehouseItemsPage(
+	public Page<WarehouseChannel>
+			getWarehouseByExternalReferenceCodeWarehouseChannelsPage(
 				String externalReferenceCode, Pagination pagination)
 		throws Exception;
 
-	public WarehouseItem postWarehouseByExternalReferenceCodeWarehouseItem(
-			String externalReferenceCode, WarehouseItem warehouseItem)
+	public WarehouseChannel
+			postWarehouseByExternalReferenceCodeWarehouseChannel(
+				String externalReferenceCode, WarehouseChannel warehouseChannel)
 		throws Exception;
 
-	public Page<WarehouseItem> getWarehouseIdWarehouseItemsPage(
-			Long id, Pagination pagination)
+	public Page<WarehouseChannel> getWarehouseIdWarehouseChannelsPage(
+			Long id, String search, Filter filter, Pagination pagination,
+			Sort[] sorts)
 		throws Exception;
 
-	public WarehouseItem postWarehouseIdWarehouseItem(
-			Long id, WarehouseItem warehouseItem)
+	public WarehouseChannel postWarehouseIdWarehouseChannel(
+			Long id, WarehouseChannel warehouseChannel)
 		throws Exception;
 
-	public Response postWarehouseIdWarehouseItemBatch(
+	public Response postWarehouseIdWarehouseChannelBatch(
 			Long id, String callbackURL, Object object)
 		throws Exception;
 
@@ -172,7 +150,7 @@ public interface WarehouseItemResource {
 	@ProviderType
 	public interface Builder {
 
-		public WarehouseItemResource build();
+		public WarehouseChannelResource build();
 
 		public Builder checkPermissions(boolean checkPermissions);
 

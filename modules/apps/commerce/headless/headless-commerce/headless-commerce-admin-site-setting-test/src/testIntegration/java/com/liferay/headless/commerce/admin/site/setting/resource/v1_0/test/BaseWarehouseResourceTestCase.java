@@ -180,8 +180,6 @@ public abstract class BaseWarehouseResourceTestCase {
 		Warehouse warehouse = randomWarehouse();
 
 		warehouse.setCity(regex);
-		warehouse.setDescription(regex);
-		warehouse.setName(regex);
 		warehouse.setStreet1(regex);
 		warehouse.setStreet2(regex);
 		warehouse.setStreet3(regex);
@@ -194,8 +192,6 @@ public abstract class BaseWarehouseResourceTestCase {
 		warehouse = WarehouseSerDes.toDTO(json);
 
 		Assert.assertEquals(regex, warehouse.getCity());
-		Assert.assertEquals(regex, warehouse.getDescription());
-		Assert.assertEquals(regex, warehouse.getName());
 		Assert.assertEquals(regex, warehouse.getStreet1());
 		Assert.assertEquals(regex, warehouse.getStreet2());
 		Assert.assertEquals(regex, warehouse.getStreet3());
@@ -813,9 +809,9 @@ public abstract class BaseWarehouseResourceTestCase {
 			}
 
 			if (Objects.equals("description", additionalAssertFieldName)) {
-				if (!Objects.deepEquals(
-						warehouse1.getDescription(),
-						warehouse2.getDescription())) {
+				if (!equals(
+						(Map)warehouse1.getDescription(),
+						(Map)warehouse2.getDescription())) {
 
 					return false;
 				}
@@ -875,8 +871,8 @@ public abstract class BaseWarehouseResourceTestCase {
 			}
 
 			if (Objects.equals("name", additionalAssertFieldName)) {
-				if (!Objects.deepEquals(
-						warehouse1.getName(), warehouse2.getName())) {
+				if (!equals(
+						(Map)warehouse1.getName(), (Map)warehouse2.getName())) {
 
 					return false;
 				}
@@ -1055,11 +1051,8 @@ public abstract class BaseWarehouseResourceTestCase {
 		}
 
 		if (entityFieldName.equals("description")) {
-			sb.append("'");
-			sb.append(String.valueOf(warehouse.getDescription()));
-			sb.append("'");
-
-			return sb.toString();
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
 		}
 
 		if (entityFieldName.equals("groupId")) {
@@ -1090,11 +1083,8 @@ public abstract class BaseWarehouseResourceTestCase {
 		}
 
 		if (entityFieldName.equals("name")) {
-			sb.append("'");
-			sb.append(String.valueOf(warehouse.getName()));
-			sb.append("'");
-
-			return sb.toString();
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
 		}
 
 		if (entityFieldName.equals("primary")) {
@@ -1182,13 +1172,10 @@ public abstract class BaseWarehouseResourceTestCase {
 				city = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				commerceCountryId = RandomTestUtil.randomLong();
 				commerceRegionId = RandomTestUtil.randomLong();
-				description = StringUtil.toLowerCase(
-					RandomTestUtil.randomString());
 				groupId = RandomTestUtil.randomLong();
 				id = RandomTestUtil.randomLong();
 				latitude = RandomTestUtil.randomDouble();
 				longitude = RandomTestUtil.randomDouble();
-				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				primary = RandomTestUtil.randomBoolean();
 				street1 = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				street2 = StringUtil.toLowerCase(RandomTestUtil.randomString());

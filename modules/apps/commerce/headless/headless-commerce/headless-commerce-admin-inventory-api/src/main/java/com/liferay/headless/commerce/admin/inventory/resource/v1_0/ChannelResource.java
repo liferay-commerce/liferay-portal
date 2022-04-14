@@ -14,7 +14,7 @@
 
 package com.liferay.headless.commerce.admin.inventory.resource.v1_0;
 
-import com.liferay.headless.commerce.admin.inventory.dto.v1_0.WarehouseItem;
+import com.liferay.headless.commerce.admin.inventory.dto.v1_0.Channel;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
@@ -24,11 +24,8 @@ import com.liferay.portal.odata.filter.ExpressionConvert;
 import com.liferay.portal.odata.filter.FilterParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResource;
-import com.liferay.portal.vulcan.pagination.Page;
-import com.liferay.portal.vulcan.pagination.Pagination;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -38,7 +35,6 @@ import javax.annotation.Generated;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.osgi.annotation.versioning.ProviderType;
@@ -53,62 +49,13 @@ import org.osgi.annotation.versioning.ProviderType;
  */
 @Generated("")
 @ProviderType
-public interface WarehouseItemResource {
+public interface ChannelResource {
 
 	public static Builder builder() {
 		return FactoryHolder.factory.create();
 	}
 
-	public Response deleteWarehouseItemByExternalReferenceCode(
-			String externalReferenceCode)
-		throws Exception;
-
-	public WarehouseItem getWarehouseItemByExternalReferenceCode(
-			String externalReferenceCode)
-		throws Exception;
-
-	public Response patchWarehouseItemByExternalReferenceCode(
-			String externalReferenceCode, WarehouseItem warehouseItem)
-		throws Exception;
-
-	public WarehouseItem postWarehouseItemByExternalReferenceCode(
-			String externalReferenceCode, WarehouseItem warehouseItem)
-		throws Exception;
-
-	public Page<WarehouseItem> getWarehouseItemsUpdatedPage(
-			Date end, Date start, Pagination pagination)
-		throws Exception;
-
-	public Response deleteWarehouseItem(Long id) throws Exception;
-
-	public Response deleteWarehouseItemBatch(
-			Long id, String callbackURL, Object object)
-		throws Exception;
-
-	public WarehouseItem getWarehouseItem(Long id) throws Exception;
-
-	public Response patchWarehouseItem(Long id, WarehouseItem warehouseItem)
-		throws Exception;
-
-	public Page<WarehouseItem>
-			getWarehouseByExternalReferenceCodeWarehouseItemsPage(
-				String externalReferenceCode, Pagination pagination)
-		throws Exception;
-
-	public WarehouseItem postWarehouseByExternalReferenceCodeWarehouseItem(
-			String externalReferenceCode, WarehouseItem warehouseItem)
-		throws Exception;
-
-	public Page<WarehouseItem> getWarehouseIdWarehouseItemsPage(
-			Long id, Pagination pagination)
-		throws Exception;
-
-	public WarehouseItem postWarehouseIdWarehouseItem(
-			Long id, WarehouseItem warehouseItem)
-		throws Exception;
-
-	public Response postWarehouseIdWarehouseItemBatch(
-			Long id, String callbackURL, Object object)
+	public Channel getWarehouseChannelChannel(Long warehouseChannelId)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
@@ -172,7 +119,7 @@ public interface WarehouseItemResource {
 	@ProviderType
 	public interface Builder {
 
-		public WarehouseItemResource build();
+		public ChannelResource build();
 
 		public Builder checkPermissions(boolean checkPermissions);
 
