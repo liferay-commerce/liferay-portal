@@ -60,6 +60,36 @@ public class Warehouse implements Serializable {
 	}
 
 	@Schema
+	@Valid
+	public Map<String, Map<String, String>> getActions() {
+		return actions;
+	}
+
+	public void setActions(Map<String, Map<String, String>> actions) {
+		this.actions = actions;
+	}
+
+	@JsonIgnore
+	public void setActions(
+		UnsafeSupplier<Map<String, Map<String, String>>, Exception>
+			actionsUnsafeSupplier) {
+
+		try {
+			actions = actionsUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Map<String, Map<String, String>> actions;
+
+	@Schema
 	public Boolean getActive() {
 		return active;
 	}
@@ -142,17 +172,19 @@ public class Warehouse implements Serializable {
 	protected String countryISOCode;
 
 	@Schema
-	public String getDescription() {
+	@Valid
+	public Map<String, String> getDescription() {
 		return description;
 	}
 
-	public void setDescription(String description) {
+	public void setDescription(Map<String, String> description) {
 		this.description = description;
 	}
 
 	@JsonIgnore
 	public void setDescription(
-		UnsafeSupplier<String, Exception> descriptionUnsafeSupplier) {
+		UnsafeSupplier<Map<String, String>, Exception>
+			descriptionUnsafeSupplier) {
 
 		try {
 			description = descriptionUnsafeSupplier.get();
@@ -167,7 +199,7 @@ public class Warehouse implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected String description;
+	protected Map<String, String> description;
 
 	@Schema
 	public String getExternalReferenceCode() {
@@ -310,16 +342,19 @@ public class Warehouse implements Serializable {
 	protected Number mvccVersion;
 
 	@Schema
-	public String getName() {
+	@Valid
+	public Map<String, String> getName() {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(Map<String, String> name) {
 		this.name = name;
 	}
 
 	@JsonIgnore
-	public void setName(UnsafeSupplier<String, Exception> nameUnsafeSupplier) {
+	public void setName(
+		UnsafeSupplier<Map<String, String>, Exception> nameUnsafeSupplier) {
+
 		try {
 			name = nameUnsafeSupplier.get();
 		}
@@ -333,7 +368,7 @@ public class Warehouse implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected String name;
+	protected Map<String, String> name;
 
 	@Schema
 	public String getRegionISOCode() {
@@ -556,6 +591,16 @@ public class Warehouse implements Serializable {
 
 		sb.append("{");
 
+		if (actions != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"actions\": ");
+
+			sb.append(_toJSON(actions));
+		}
+
 		if (active != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -601,11 +646,7 @@ public class Warehouse implements Serializable {
 
 			sb.append("\"description\": ");
 
-			sb.append("\"");
-
-			sb.append(_escape(description));
-
-			sb.append("\"");
+			sb.append(_toJSON(description));
 		}
 
 		if (externalReferenceCode != null) {
@@ -669,11 +710,7 @@ public class Warehouse implements Serializable {
 
 			sb.append("\"name\": ");
 
-			sb.append("\"");
-
-			sb.append(_escape(name));
-
-			sb.append("\"");
+			sb.append(_toJSON(name));
 		}
 
 		if (regionISOCode != null) {

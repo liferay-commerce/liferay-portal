@@ -346,6 +346,98 @@ public abstract class BaseWarehouseItemResourceTestCase {
 	}
 
 	@Test
+	public void testGetWarehouseItemsUpdatedPage() throws Exception {
+		Page<WarehouseItem> page =
+			warehouseItemResource.getWarehouseItemsUpdatedPage(
+				RandomTestUtil.nextDate(), RandomTestUtil.nextDate(),
+				Pagination.of(1, 10));
+
+		long totalCount = page.getTotalCount();
+
+		WarehouseItem warehouseItem1 =
+			testGetWarehouseItemsUpdatedPage_addWarehouseItem(
+				randomWarehouseItem());
+
+		WarehouseItem warehouseItem2 =
+			testGetWarehouseItemsUpdatedPage_addWarehouseItem(
+				randomWarehouseItem());
+
+		page = warehouseItemResource.getWarehouseItemsUpdatedPage(
+			null, null, Pagination.of(1, 10));
+
+		Assert.assertEquals(totalCount + 2, page.getTotalCount());
+
+		assertContains(warehouseItem1, (List<WarehouseItem>)page.getItems());
+		assertContains(warehouseItem2, (List<WarehouseItem>)page.getItems());
+		assertValid(page);
+
+		warehouseItemResource.deleteWarehouseItem(warehouseItem1.getId());
+
+		warehouseItemResource.deleteWarehouseItem(warehouseItem2.getId());
+	}
+
+	@Test
+	public void testGetWarehouseItemsUpdatedPageWithPagination()
+		throws Exception {
+
+		Page<WarehouseItem> totalPage =
+			warehouseItemResource.getWarehouseItemsUpdatedPage(
+				null, null, null);
+
+		int totalCount = GetterUtil.getInteger(totalPage.getTotalCount());
+
+		WarehouseItem warehouseItem1 =
+			testGetWarehouseItemsUpdatedPage_addWarehouseItem(
+				randomWarehouseItem());
+
+		WarehouseItem warehouseItem2 =
+			testGetWarehouseItemsUpdatedPage_addWarehouseItem(
+				randomWarehouseItem());
+
+		WarehouseItem warehouseItem3 =
+			testGetWarehouseItemsUpdatedPage_addWarehouseItem(
+				randomWarehouseItem());
+
+		Page<WarehouseItem> page1 =
+			warehouseItemResource.getWarehouseItemsUpdatedPage(
+				null, null, Pagination.of(1, totalCount + 2));
+
+		List<WarehouseItem> warehouseItems1 =
+			(List<WarehouseItem>)page1.getItems();
+
+		Assert.assertEquals(
+			warehouseItems1.toString(), totalCount + 2, warehouseItems1.size());
+
+		Page<WarehouseItem> page2 =
+			warehouseItemResource.getWarehouseItemsUpdatedPage(
+				null, null, Pagination.of(2, totalCount + 2));
+
+		Assert.assertEquals(totalCount + 3, page2.getTotalCount());
+
+		List<WarehouseItem> warehouseItems2 =
+			(List<WarehouseItem>)page2.getItems();
+
+		Assert.assertEquals(
+			warehouseItems2.toString(), 1, warehouseItems2.size());
+
+		Page<WarehouseItem> page3 =
+			warehouseItemResource.getWarehouseItemsUpdatedPage(
+				null, null, Pagination.of(1, totalCount + 3));
+
+		assertContains(warehouseItem1, (List<WarehouseItem>)page3.getItems());
+		assertContains(warehouseItem2, (List<WarehouseItem>)page3.getItems());
+		assertContains(warehouseItem3, (List<WarehouseItem>)page3.getItems());
+	}
+
+	protected WarehouseItem testGetWarehouseItemsUpdatedPage_addWarehouseItem(
+			WarehouseItem warehouseItem)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
 	public void testDeleteWarehouseItem() throws Exception {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		WarehouseItem warehouseItem =
@@ -484,30 +576,30 @@ public abstract class BaseWarehouseItemResourceTestCase {
 	}
 
 	@Test
-	public void testGetWarehousByExternalReferenceCodeWarehouseItemsPage()
+	public void testGetWarehouseByExternalReferenceCodeWarehouseItemsPage()
 		throws Exception {
 
 		String externalReferenceCode =
-			testGetWarehousByExternalReferenceCodeWarehouseItemsPage_getExternalReferenceCode();
+			testGetWarehouseByExternalReferenceCodeWarehouseItemsPage_getExternalReferenceCode();
 		String irrelevantExternalReferenceCode =
-			testGetWarehousByExternalReferenceCodeWarehouseItemsPage_getIrrelevantExternalReferenceCode();
+			testGetWarehouseByExternalReferenceCodeWarehouseItemsPage_getIrrelevantExternalReferenceCode();
 
 		Page<WarehouseItem> page =
 			warehouseItemResource.
-				getWarehousByExternalReferenceCodeWarehouseItemsPage(
+				getWarehouseByExternalReferenceCodeWarehouseItemsPage(
 					externalReferenceCode, Pagination.of(1, 10));
 
 		Assert.assertEquals(0, page.getTotalCount());
 
 		if (irrelevantExternalReferenceCode != null) {
 			WarehouseItem irrelevantWarehouseItem =
-				testGetWarehousByExternalReferenceCodeWarehouseItemsPage_addWarehouseItem(
+				testGetWarehouseByExternalReferenceCodeWarehouseItemsPage_addWarehouseItem(
 					irrelevantExternalReferenceCode,
 					randomIrrelevantWarehouseItem());
 
 			page =
 				warehouseItemResource.
-					getWarehousByExternalReferenceCodeWarehouseItemsPage(
+					getWarehouseByExternalReferenceCodeWarehouseItemsPage(
 						irrelevantExternalReferenceCode, Pagination.of(1, 2));
 
 			Assert.assertEquals(1, page.getTotalCount());
@@ -519,16 +611,16 @@ public abstract class BaseWarehouseItemResourceTestCase {
 		}
 
 		WarehouseItem warehouseItem1 =
-			testGetWarehousByExternalReferenceCodeWarehouseItemsPage_addWarehouseItem(
+			testGetWarehouseByExternalReferenceCodeWarehouseItemsPage_addWarehouseItem(
 				externalReferenceCode, randomWarehouseItem());
 
 		WarehouseItem warehouseItem2 =
-			testGetWarehousByExternalReferenceCodeWarehouseItemsPage_addWarehouseItem(
+			testGetWarehouseByExternalReferenceCodeWarehouseItemsPage_addWarehouseItem(
 				externalReferenceCode, randomWarehouseItem());
 
 		page =
 			warehouseItemResource.
-				getWarehousByExternalReferenceCodeWarehouseItemsPage(
+				getWarehouseByExternalReferenceCodeWarehouseItemsPage(
 					externalReferenceCode, Pagination.of(1, 10));
 
 		Assert.assertEquals(2, page.getTotalCount());
@@ -544,27 +636,27 @@ public abstract class BaseWarehouseItemResourceTestCase {
 	}
 
 	@Test
-	public void testGetWarehousByExternalReferenceCodeWarehouseItemsPageWithPagination()
+	public void testGetWarehouseByExternalReferenceCodeWarehouseItemsPageWithPagination()
 		throws Exception {
 
 		String externalReferenceCode =
-			testGetWarehousByExternalReferenceCodeWarehouseItemsPage_getExternalReferenceCode();
+			testGetWarehouseByExternalReferenceCodeWarehouseItemsPage_getExternalReferenceCode();
 
 		WarehouseItem warehouseItem1 =
-			testGetWarehousByExternalReferenceCodeWarehouseItemsPage_addWarehouseItem(
+			testGetWarehouseByExternalReferenceCodeWarehouseItemsPage_addWarehouseItem(
 				externalReferenceCode, randomWarehouseItem());
 
 		WarehouseItem warehouseItem2 =
-			testGetWarehousByExternalReferenceCodeWarehouseItemsPage_addWarehouseItem(
+			testGetWarehouseByExternalReferenceCodeWarehouseItemsPage_addWarehouseItem(
 				externalReferenceCode, randomWarehouseItem());
 
 		WarehouseItem warehouseItem3 =
-			testGetWarehousByExternalReferenceCodeWarehouseItemsPage_addWarehouseItem(
+			testGetWarehouseByExternalReferenceCodeWarehouseItemsPage_addWarehouseItem(
 				externalReferenceCode, randomWarehouseItem());
 
 		Page<WarehouseItem> page1 =
 			warehouseItemResource.
-				getWarehousByExternalReferenceCodeWarehouseItemsPage(
+				getWarehouseByExternalReferenceCodeWarehouseItemsPage(
 					externalReferenceCode, Pagination.of(1, 2));
 
 		List<WarehouseItem> warehouseItems1 =
@@ -575,7 +667,7 @@ public abstract class BaseWarehouseItemResourceTestCase {
 
 		Page<WarehouseItem> page2 =
 			warehouseItemResource.
-				getWarehousByExternalReferenceCodeWarehouseItemsPage(
+				getWarehouseByExternalReferenceCodeWarehouseItemsPage(
 					externalReferenceCode, Pagination.of(2, 2));
 
 		Assert.assertEquals(3, page2.getTotalCount());
@@ -588,7 +680,7 @@ public abstract class BaseWarehouseItemResourceTestCase {
 
 		Page<WarehouseItem> page3 =
 			warehouseItemResource.
-				getWarehousByExternalReferenceCodeWarehouseItemsPage(
+				getWarehouseByExternalReferenceCodeWarehouseItemsPage(
 					externalReferenceCode, Pagination.of(1, 3));
 
 		assertEqualsIgnoringOrder(
@@ -597,7 +689,7 @@ public abstract class BaseWarehouseItemResourceTestCase {
 	}
 
 	protected WarehouseItem
-			testGetWarehousByExternalReferenceCodeWarehouseItemsPage_addWarehouseItem(
+			testGetWarehouseByExternalReferenceCodeWarehouseItemsPage_addWarehouseItem(
 				String externalReferenceCode, WarehouseItem warehouseItem)
 		throws Exception {
 
@@ -606,7 +698,7 @@ public abstract class BaseWarehouseItemResourceTestCase {
 	}
 
 	protected String
-			testGetWarehousByExternalReferenceCodeWarehouseItemsPage_getExternalReferenceCode()
+			testGetWarehouseByExternalReferenceCodeWarehouseItemsPage_getExternalReferenceCode()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -614,20 +706,20 @@ public abstract class BaseWarehouseItemResourceTestCase {
 	}
 
 	protected String
-			testGetWarehousByExternalReferenceCodeWarehouseItemsPage_getIrrelevantExternalReferenceCode()
+			testGetWarehouseByExternalReferenceCodeWarehouseItemsPage_getIrrelevantExternalReferenceCode()
 		throws Exception {
 
 		return null;
 	}
 
 	@Test
-	public void testPostWarehousByExternalReferenceCodeWarehouseItem()
+	public void testPostWarehouseByExternalReferenceCodeWarehouseItem()
 		throws Exception {
 
 		WarehouseItem randomWarehouseItem = randomWarehouseItem();
 
 		WarehouseItem postWarehouseItem =
-			testPostWarehousByExternalReferenceCodeWarehouseItem_addWarehouseItem(
+			testPostWarehouseByExternalReferenceCodeWarehouseItem_addWarehouseItem(
 				randomWarehouseItem);
 
 		assertEquals(randomWarehouseItem, postWarehouseItem);
@@ -635,7 +727,7 @@ public abstract class BaseWarehouseItemResourceTestCase {
 	}
 
 	protected WarehouseItem
-			testPostWarehousByExternalReferenceCodeWarehouseItem_addWarehouseItem(
+			testPostWarehouseByExternalReferenceCodeWarehouseItem_addWarehouseItem(
 				WarehouseItem warehouseItem)
 		throws Exception {
 
@@ -644,23 +736,23 @@ public abstract class BaseWarehouseItemResourceTestCase {
 	}
 
 	@Test
-	public void testGetWarehousIdWarehouseItemsPage() throws Exception {
-		Long id = testGetWarehousIdWarehouseItemsPage_getId();
+	public void testGetWarehouseIdWarehouseItemsPage() throws Exception {
+		Long id = testGetWarehouseIdWarehouseItemsPage_getId();
 		Long irrelevantId =
-			testGetWarehousIdWarehouseItemsPage_getIrrelevantId();
+			testGetWarehouseIdWarehouseItemsPage_getIrrelevantId();
 
 		Page<WarehouseItem> page =
-			warehouseItemResource.getWarehousIdWarehouseItemsPage(
+			warehouseItemResource.getWarehouseIdWarehouseItemsPage(
 				id, Pagination.of(1, 10));
 
 		Assert.assertEquals(0, page.getTotalCount());
 
 		if (irrelevantId != null) {
 			WarehouseItem irrelevantWarehouseItem =
-				testGetWarehousIdWarehouseItemsPage_addWarehouseItem(
+				testGetWarehouseIdWarehouseItemsPage_addWarehouseItem(
 					irrelevantId, randomIrrelevantWarehouseItem());
 
-			page = warehouseItemResource.getWarehousIdWarehouseItemsPage(
+			page = warehouseItemResource.getWarehouseIdWarehouseItemsPage(
 				irrelevantId, Pagination.of(1, 2));
 
 			Assert.assertEquals(1, page.getTotalCount());
@@ -672,14 +764,14 @@ public abstract class BaseWarehouseItemResourceTestCase {
 		}
 
 		WarehouseItem warehouseItem1 =
-			testGetWarehousIdWarehouseItemsPage_addWarehouseItem(
+			testGetWarehouseIdWarehouseItemsPage_addWarehouseItem(
 				id, randomWarehouseItem());
 
 		WarehouseItem warehouseItem2 =
-			testGetWarehousIdWarehouseItemsPage_addWarehouseItem(
+			testGetWarehouseIdWarehouseItemsPage_addWarehouseItem(
 				id, randomWarehouseItem());
 
-		page = warehouseItemResource.getWarehousIdWarehouseItemsPage(
+		page = warehouseItemResource.getWarehouseIdWarehouseItemsPage(
 			id, Pagination.of(1, 10));
 
 		Assert.assertEquals(2, page.getTotalCount());
@@ -695,25 +787,25 @@ public abstract class BaseWarehouseItemResourceTestCase {
 	}
 
 	@Test
-	public void testGetWarehousIdWarehouseItemsPageWithPagination()
+	public void testGetWarehouseIdWarehouseItemsPageWithPagination()
 		throws Exception {
 
-		Long id = testGetWarehousIdWarehouseItemsPage_getId();
+		Long id = testGetWarehouseIdWarehouseItemsPage_getId();
 
 		WarehouseItem warehouseItem1 =
-			testGetWarehousIdWarehouseItemsPage_addWarehouseItem(
+			testGetWarehouseIdWarehouseItemsPage_addWarehouseItem(
 				id, randomWarehouseItem());
 
 		WarehouseItem warehouseItem2 =
-			testGetWarehousIdWarehouseItemsPage_addWarehouseItem(
+			testGetWarehouseIdWarehouseItemsPage_addWarehouseItem(
 				id, randomWarehouseItem());
 
 		WarehouseItem warehouseItem3 =
-			testGetWarehousIdWarehouseItemsPage_addWarehouseItem(
+			testGetWarehouseIdWarehouseItemsPage_addWarehouseItem(
 				id, randomWarehouseItem());
 
 		Page<WarehouseItem> page1 =
-			warehouseItemResource.getWarehousIdWarehouseItemsPage(
+			warehouseItemResource.getWarehouseIdWarehouseItemsPage(
 				id, Pagination.of(1, 2));
 
 		List<WarehouseItem> warehouseItems1 =
@@ -723,7 +815,7 @@ public abstract class BaseWarehouseItemResourceTestCase {
 			warehouseItems1.toString(), 2, warehouseItems1.size());
 
 		Page<WarehouseItem> page2 =
-			warehouseItemResource.getWarehousIdWarehouseItemsPage(
+			warehouseItemResource.getWarehouseIdWarehouseItemsPage(
 				id, Pagination.of(2, 2));
 
 		Assert.assertEquals(3, page2.getTotalCount());
@@ -735,7 +827,7 @@ public abstract class BaseWarehouseItemResourceTestCase {
 			warehouseItems2.toString(), 1, warehouseItems2.size());
 
 		Page<WarehouseItem> page3 =
-			warehouseItemResource.getWarehousIdWarehouseItemsPage(
+			warehouseItemResource.getWarehouseIdWarehouseItemsPage(
 				id, Pagination.of(1, 3));
 
 		assertEqualsIgnoringOrder(
@@ -744,7 +836,7 @@ public abstract class BaseWarehouseItemResourceTestCase {
 	}
 
 	protected WarehouseItem
-			testGetWarehousIdWarehouseItemsPage_addWarehouseItem(
+			testGetWarehouseIdWarehouseItemsPage_addWarehouseItem(
 				Long id, WarehouseItem warehouseItem)
 		throws Exception {
 
@@ -752,124 +844,32 @@ public abstract class BaseWarehouseItemResourceTestCase {
 			"This method needs to be implemented");
 	}
 
-	protected Long testGetWarehousIdWarehouseItemsPage_getId()
+	protected Long testGetWarehouseIdWarehouseItemsPage_getId()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	protected Long testGetWarehousIdWarehouseItemsPage_getIrrelevantId()
+	protected Long testGetWarehouseIdWarehouseItemsPage_getIrrelevantId()
 		throws Exception {
 
 		return null;
 	}
 
 	@Test
-	public void testPostWarehousIdWarehouseItem() throws Exception {
+	public void testPostWarehouseIdWarehouseItem() throws Exception {
 		WarehouseItem randomWarehouseItem = randomWarehouseItem();
 
 		WarehouseItem postWarehouseItem =
-			testPostWarehousIdWarehouseItem_addWarehouseItem(
+			testPostWarehouseIdWarehouseItem_addWarehouseItem(
 				randomWarehouseItem);
 
 		assertEquals(randomWarehouseItem, postWarehouseItem);
 		assertValid(postWarehouseItem);
 	}
 
-	protected WarehouseItem testPostWarehousIdWarehouseItem_addWarehouseItem(
-			WarehouseItem warehouseItem)
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
-	@Test
-	public void testGetWarehouseItemsUpdatedPage() throws Exception {
-		Page<WarehouseItem> page =
-			warehouseItemResource.getWarehouseItemsUpdatedPage(
-				RandomTestUtil.nextDate(), RandomTestUtil.nextDate(),
-				Pagination.of(1, 10));
-
-		long totalCount = page.getTotalCount();
-
-		WarehouseItem warehouseItem1 =
-			testGetWarehouseItemsUpdatedPage_addWarehouseItem(
-				randomWarehouseItem());
-
-		WarehouseItem warehouseItem2 =
-			testGetWarehouseItemsUpdatedPage_addWarehouseItem(
-				randomWarehouseItem());
-
-		page = warehouseItemResource.getWarehouseItemsUpdatedPage(
-			null, null, Pagination.of(1, 10));
-
-		Assert.assertEquals(totalCount + 2, page.getTotalCount());
-
-		assertContains(warehouseItem1, (List<WarehouseItem>)page.getItems());
-		assertContains(warehouseItem2, (List<WarehouseItem>)page.getItems());
-		assertValid(page);
-
-		warehouseItemResource.deleteWarehouseItem(warehouseItem1.getId());
-
-		warehouseItemResource.deleteWarehouseItem(warehouseItem2.getId());
-	}
-
-	@Test
-	public void testGetWarehouseItemsUpdatedPageWithPagination()
-		throws Exception {
-
-		Page<WarehouseItem> totalPage =
-			warehouseItemResource.getWarehouseItemsUpdatedPage(
-				null, null, null);
-
-		int totalCount = GetterUtil.getInteger(totalPage.getTotalCount());
-
-		WarehouseItem warehouseItem1 =
-			testGetWarehouseItemsUpdatedPage_addWarehouseItem(
-				randomWarehouseItem());
-
-		WarehouseItem warehouseItem2 =
-			testGetWarehouseItemsUpdatedPage_addWarehouseItem(
-				randomWarehouseItem());
-
-		WarehouseItem warehouseItem3 =
-			testGetWarehouseItemsUpdatedPage_addWarehouseItem(
-				randomWarehouseItem());
-
-		Page<WarehouseItem> page1 =
-			warehouseItemResource.getWarehouseItemsUpdatedPage(
-				null, null, Pagination.of(1, totalCount + 2));
-
-		List<WarehouseItem> warehouseItems1 =
-			(List<WarehouseItem>)page1.getItems();
-
-		Assert.assertEquals(
-			warehouseItems1.toString(), totalCount + 2, warehouseItems1.size());
-
-		Page<WarehouseItem> page2 =
-			warehouseItemResource.getWarehouseItemsUpdatedPage(
-				null, null, Pagination.of(2, totalCount + 2));
-
-		Assert.assertEquals(totalCount + 3, page2.getTotalCount());
-
-		List<WarehouseItem> warehouseItems2 =
-			(List<WarehouseItem>)page2.getItems();
-
-		Assert.assertEquals(
-			warehouseItems2.toString(), 1, warehouseItems2.size());
-
-		Page<WarehouseItem> page3 =
-			warehouseItemResource.getWarehouseItemsUpdatedPage(
-				null, null, Pagination.of(1, totalCount + 3));
-
-		assertContains(warehouseItem1, (List<WarehouseItem>)page3.getItems());
-		assertContains(warehouseItem2, (List<WarehouseItem>)page3.getItems());
-		assertContains(warehouseItem3, (List<WarehouseItem>)page3.getItems());
-	}
-
-	protected WarehouseItem testGetWarehouseItemsUpdatedPage_addWarehouseItem(
+	protected WarehouseItem testPostWarehouseIdWarehouseItem_addWarehouseItem(
 			WarehouseItem warehouseItem)
 		throws Exception {
 
