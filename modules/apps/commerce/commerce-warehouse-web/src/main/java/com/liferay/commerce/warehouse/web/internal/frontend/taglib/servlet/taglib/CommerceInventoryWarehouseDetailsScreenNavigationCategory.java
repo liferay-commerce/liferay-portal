@@ -32,6 +32,8 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.CountryService;
+import com.liferay.portal.kernel.service.RegionService;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
@@ -128,7 +130,9 @@ public class CommerceInventoryWarehouseDetailsScreenNavigationCategory
 				new CommerceInventoryWarehousesDisplayContext(
 					_commerceChannelRelService, _commerceChannelService,
 					_commerceCountryManager, _commerceInventoryWarehouseService,
-					_countryService, httpServletRequest);
+					_countryService, httpServletRequest, _regionService,
+					_portal,
+					_commerceInventoryWarehouseModelResourcePermission);
 
 		httpServletRequest.setAttribute(
 			WebKeys.PORTLET_DISPLAY_CONTEXT,
@@ -166,5 +170,11 @@ public class CommerceInventoryWarehouseDetailsScreenNavigationCategory
 
 	@Reference
 	private JSPRenderer _jspRenderer;
+
+	@Reference
+	private Portal _portal;
+
+	@Reference
+	private RegionService _regionService;
 
 }
