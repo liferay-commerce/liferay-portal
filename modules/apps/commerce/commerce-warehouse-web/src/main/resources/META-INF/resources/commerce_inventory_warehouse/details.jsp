@@ -32,6 +32,10 @@ String commerceRegionCode = BeanParamUtil.getString(commerceInventoryWarehouse, 
 
 <portlet:actionURL name="/commerce_inventory_warehouse/edit_commerce_inventory_warehouse" var="editCommerceInventoryWarehouseActionURL" />
 
+<liferay-util:html-top>
+	<link href="<%= PortalUtil.getStaticResourceURL(request, application.getContextPath() + "/css/main.css") %>" rel="stylesheet" type="text/css" />
+</liferay-util:html-top>
+
 <aui:form action="<%= editCommerceInventoryWarehouseActionURL %>" cssClass="pt-4" method="post" name="fm">
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= (commerceInventoryWarehouse == null) ? Constants.ADD : Constants.UPDATE %>" />
 	<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
@@ -57,6 +61,7 @@ String commerceRegionCode = BeanParamUtil.getString(commerceInventoryWarehouse, 
 		<div class="col-lg-6">
 			<commerce-ui:panel
 				bodyClasses="flex-fill"
+				elementClasses="card-full-height h-100"
 				title='<%= LanguageUtil.get(request, "geolocation") %>'
 			>
 				<aui:input name="latitude" />
