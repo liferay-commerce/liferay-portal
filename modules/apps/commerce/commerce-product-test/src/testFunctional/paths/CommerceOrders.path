@@ -115,6 +115,11 @@
 	<td>//a[contains(text(), '${key_warehouseName}')]/ancestor::tr//td//span[contains(@class,'commerce-admin-icon-check')]</td>
 	<td></td>
 </tr>
+<tr>
+	<td>ADDRESSES_IN_SHIPMENT</td>
+	<td>//div//p[contains(text(),'${key_address}')]</td>
+	<td></td>
+</tr>
 </tbody>
 </table>
 </body>
