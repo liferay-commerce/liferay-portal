@@ -1349,13 +1349,6 @@ definition {
 
 		// TODO Review
 
-		PortalSettings.gotoConfiguration(
-			configurationCategory = "User Authentication",
-			configurationName = "General",
-			configurationScope = "Virtual Instance Scope");
-
-		PortalSettings.uncheckStrangersVerifyEmailCheckbox();
-
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
@@ -1486,7 +1479,7 @@ definition {
 
 		Click(locator1 = "Icon#CLOSE");
 
-		Refresh();
+		SelectFrameTop();
 
 		CommerceShipments.assertShipmentItemWarehouseAndQuantityInShipment(
 			quantityInShipment = "1",
