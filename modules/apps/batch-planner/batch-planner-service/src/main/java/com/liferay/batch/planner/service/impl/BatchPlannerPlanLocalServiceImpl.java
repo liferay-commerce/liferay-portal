@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import org.osgi.service.component.annotations.Component;
@@ -116,7 +117,7 @@ public class BatchPlannerPlanLocalServiceImpl
 
 		BatchPlannerPlan batchPlannerPlan =
 			batchPlannerPlanPersistence.fetchByPrimaryKey(
-				Long.getLong(batchEngineTaskERC));
+				GetterUtil.getLong(batchEngineTaskERC));
 
 		if (batchPlannerPlan == null) {
 			if (_log.isDebugEnabled()) {
