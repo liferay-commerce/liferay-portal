@@ -240,7 +240,13 @@ public class BatchPlannerPlanServiceTest {
 			batchPlannerPlan.getBatchPlannerPlanId(), "name", "String", "name",
 			"String", StringPool.BLANK);
 
-		_batchEngineBroker.submit(batchPlannerPlan.getBatchPlannerPlanId());
+		try {
+			_batchEngineBroker.submit(batchPlannerPlan.getBatchPlannerPlanId());
+		}
+		catch (Exception exception) {
+			Assert.assertEquals(
+				IllegalArgumentException.class, exception.getClass());
+		}
 
 		return batchPlannerPlan;
 	}
@@ -313,7 +319,15 @@ public class BatchPlannerPlanServiceTest {
 			BatchPlannerPlan batchPlannerPlan)
 		throws Exception {
 
-		_batchEngineBroker.submit(batchPlannerPlan.getBatchPlannerPlanId());
+		try {
+			_batchEngineBroker.submit(batchPlannerPlan.getBatchPlannerPlanId());
+
+			Assert.fail();
+		}
+		catch (Exception exception) {
+			Assert.assertEquals(
+				IllegalStateException.class, exception.getClass());
+		}
 
 		batchPlannerPlan = _batchPlannerPlanService.getBatchPlannerPlan(
 			batchPlannerPlan.getBatchPlannerPlanId());
