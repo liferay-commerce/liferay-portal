@@ -1198,7 +1198,7 @@ definition {
 	@description = "This is a test for COMMERCE-6242. Update address"
 	@priority = "3"
 	test UpdateShipmentAddress {
-		property portal.acceptance = "false";
+		property portal.acceptance = "FIX";
 
 		// TODO Review
 
