@@ -1,6 +1,7 @@
 @component-name = "portal-commerce"
 definition {
 
+	property custom.properties = "jsonws.web.service.paths.excludes=${line.separator}company.security.strangers.verify=false";
 	property portal.release = "true";
 	property portal.upstream = "true";
 	property testray.main.component.name = "Order Management";
@@ -1202,13 +1203,6 @@ definition {
 
 		// TODO Review
 
-		PortalSettings.gotoConfiguration(
-			configurationCategory = "User Authentication",
-			configurationName = "General",
-			configurationScope = "Virtual Instance Scope");
-
-		PortalSettings.uncheckStrangersVerifyEmailCheckbox();
-
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
@@ -1312,7 +1306,7 @@ definition {
 			key_titleName = "Billing Address",
 			locator1 = "CommerceOrders#ORDER_GENERAL_DETAILS_ADD_EDIT_BUTTON");
 
-		SelectFrame(locator1 = "IFrame#MODAL_BODY");
+		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
 
 		Type(
 			key_fieldLabel = "Street 1",
@@ -1325,14 +1319,14 @@ definition {
 
 		AssertElementPresent(
 			key_errorMessage = "Billing Address",
-			locator1 = "WorkflowMetricsSLA#SLA_ERROR_MESSAGE");
+			locator1 = "CommerceOrders#ADDRESSES_IN_SHIPMENT");
 
 		Click(
 			key_buttonName = "Edit",
 			key_titleName = "Shipping Address",
 			locator1 = "CommerceOrders#ORDER_GENERAL_DETAILS_ADD_EDIT_BUTTON");
 
-		SelectFrame(locator1 = "IFrame#MODAL_BODY");
+		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
 
 		Type(
 			key_fieldLabel = "Street 1",
@@ -1345,7 +1339,7 @@ definition {
 
 		AssertElementPresent(
 			key_errorMessage = "Shipping Address",
-			locator1 = "WorkflowMetricsSLA#SLA_ERROR_MESSAGE");
+			locator1 = "CommerceOrders#ADDRESSES_IN_SHIPMENT");
 	}
 
 	@description = "This is a test for COMMERCE-6239. Update shipment items to a shipment"
