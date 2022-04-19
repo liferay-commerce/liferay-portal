@@ -40,10 +40,13 @@ import com.liferay.portal.kernel.transaction.TransactionConfig;
 import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 
+import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import javax.portlet.ActionRequest;
@@ -242,8 +245,10 @@ public class EditCommerceInventoryWarehouseMVCActionCommand
 		long commerceInventoryWarehouseId = ParamUtil.getLong(
 			actionRequest, "commerceInventoryWarehouseId");
 
-		String name = ParamUtil.getString(actionRequest, "name");
-		String description = ParamUtil.getString(actionRequest, "description");
+		Map<Locale, String> nameMap = LocalizationUtil.getLocalizationMap(
+			actionRequest, "name");
+		Map<Locale, String> descriptionMap =
+			LocalizationUtil.getLocalizationMap(actionRequest, "description");
 		boolean active = ParamUtil.getBoolean(actionRequest, "active");
 		String street1 = ParamUtil.getString(actionRequest, "street1");
 		String street2 = ParamUtil.getString(actionRequest, "street2");
@@ -267,7 +272,7 @@ public class EditCommerceInventoryWarehouseMVCActionCommand
 			commerceInventoryWarehouse =
 				_commerceInventoryWarehouseService.
 					addCommerceInventoryWarehouse(
-						null, name, description, active, street1, street2,
+						null, nameMap, descriptionMap, active, street1, street2,
 						street3, city, zip, commerceRegionCode,
 						commerceCountryCode, latitude, longitude,
 						serviceContext);
@@ -280,8 +285,8 @@ public class EditCommerceInventoryWarehouseMVCActionCommand
 			commerceInventoryWarehouse =
 				_commerceInventoryWarehouseService.
 					updateCommerceInventoryWarehouse(
-						commerceInventoryWarehouseId, name, description, active,
-						street1, street2, street3, city, zip,
+						commerceInventoryWarehouseId, nameMap, descriptionMap,
+						active, street1, street2, street3, city, zip,
 						commerceRegionCode, commerceCountryCode, latitude,
 						longitude, mvccVersion, serviceContext);
 		}
