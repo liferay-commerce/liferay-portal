@@ -72,7 +72,7 @@ public class CommerceInventoryMVCCTest {
 	public void testReplenishmentItemMVCC() throws Exception {
 		CommerceInventoryWarehouse commerceInventoryWarehouse =
 			CommerceInventoryTestUtil.addCommerceInventoryWarehouse(
-				RandomTestUtil.randomString(), true, _serviceContext);
+				RandomTestUtil.randomLocaleStringMap(), true, _serviceContext);
 
 		CPInstance cpInstance =
 			CommerceInventoryTestUtil.addRandomCPInstanceSku(
@@ -105,7 +105,7 @@ public class CommerceInventoryMVCCTest {
 	public void testWarehouseItemMVCC() throws Exception {
 		CommerceInventoryWarehouse commerceInventoryWarehouse =
 			CommerceInventoryTestUtil.addCommerceInventoryWarehouse(
-				RandomTestUtil.randomString(), true, _serviceContext);
+				RandomTestUtil.randomLocaleStringMap(), true, _serviceContext);
 
 		CPInstance cpInstance =
 			CommerceInventoryTestUtil.addRandomCPInstanceSku(
@@ -138,12 +138,13 @@ public class CommerceInventoryMVCCTest {
 	public void testWarehouseMVCC() throws Exception {
 		CommerceInventoryWarehouse commerceInventoryWarehouse =
 			CommerceInventoryTestUtil.addCommerceInventoryWarehouse(
-				RandomTestUtil.randomString(), true, _serviceContext);
+				RandomTestUtil.randomLocaleStringMap(), true, _serviceContext);
 
 		_commerceInventoryWarehouseLocalService.
 			updateCommerceInventoryWarehouse(
 				commerceInventoryWarehouse.getCommerceInventoryWarehouseId(),
-				commerceInventoryWarehouse.getName(), "New Description OK",
+				commerceInventoryWarehouse.getNameMap(),
+				RandomTestUtil.randomLocaleStringMap(),
 				commerceInventoryWarehouse.isActive(),
 				commerceInventoryWarehouse.getStreet1(),
 				commerceInventoryWarehouse.getStreet2(),
@@ -159,7 +160,8 @@ public class CommerceInventoryMVCCTest {
 		_commerceInventoryWarehouseLocalService.
 			updateCommerceInventoryWarehouse(
 				commerceInventoryWarehouse.getCommerceInventoryWarehouseId(),
-				commerceInventoryWarehouse.getName(), "New Description KO",
+				commerceInventoryWarehouse.getNameMap(),
+				RandomTestUtil.randomLocaleStringMap(),
 				commerceInventoryWarehouse.isActive(),
 				commerceInventoryWarehouse.getStreet1(),
 				commerceInventoryWarehouse.getStreet2(),
