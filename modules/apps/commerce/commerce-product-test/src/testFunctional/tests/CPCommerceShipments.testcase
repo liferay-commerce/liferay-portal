@@ -1308,7 +1308,7 @@ definition {
 		Refresh();
 
 		AssertElementPresent(
-			key_errorMessage = "Billing Address",
+			key_address = "Billing Address",
 			locator1 = "CommerceOrders#ADDRESSES_IN_SHIPMENT",
 			value1 = "Billing Address, Test Street");
 
@@ -1329,7 +1329,7 @@ definition {
 		Refresh();
 
 		AssertElementPresent(
-			key_errorMessage = "Shipping Address",
+			key_address = "Shipping Address",
 			locator1 = "CommerceOrders#ADDRESSES_IN_SHIPMENT",
 			value1 = "Shipping Address, Test1 Street");
 	}
@@ -1440,7 +1440,7 @@ definition {
 			locator1 = "CommerceOrders#ORDER_QUANTITY_IN_SHIPMENT_BY_WAREHOUSE",
 			value1 = "1");
 
-		Button.clickSave();
+		Click(locator1 = "CommerceEntry#SAVE_BUTTON");
 
 		Click(locator1 = "Icon#CLOSE");
 
@@ -1465,7 +1465,7 @@ definition {
 			locator1 = "CommerceOrders#ORDER_QUANTITY_IN_SHIPMENT_BY_WAREHOUSE",
 			value1 = "0");
 
-		Button.clickSave();
+		Click(locator1 = "CommerceEntry#SAVE_BUTTON");
 
 		Click(locator1 = "Icon#CLOSE");
 
@@ -1485,7 +1485,7 @@ definition {
 			locator1 = "CommerceOrders#ORDER_QUANTITY_IN_SHIPMENT_BY_WAREHOUSE",
 			value1 = "1");
 
-		Button.clickSave();
+		Click(locator1 = "CommerceEntry#SAVE_BUTTON");
 
 		Click(locator1 = "Icon#CLOSE");
 
