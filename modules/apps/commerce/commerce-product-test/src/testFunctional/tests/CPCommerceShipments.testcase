@@ -1465,11 +1465,15 @@ definition {
 			locator1 = "CommerceOrders#ORDER_QUANTITY_IN_SHIPMENT_BY_WAREHOUSE",
 			value1 = "0");
 
-		takeScreenshot();
-
 		Button.clickSave();
 
-		takeScreenshot();
+		Click(locator1 = "Icon#CLOSE");
+
+        Refresh();
+
+        CommerceNavigator.gotoEntry(entryName = "MIN55861");
+
+        SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
 
 		Type(
 			key_warehouseName = "United States - Southwest",
@@ -1481,15 +1485,9 @@ definition {
 			locator1 = "CommerceOrders#ORDER_QUANTITY_IN_SHIPMENT_BY_WAREHOUSE",
 			value1 = "1");
 
-		takeScreenshot();
-
 		Button.clickSave();
 
-		takeScreenshot();
-
 		Click(locator1 = "Icon#CLOSE");
-
-		takeScreenshot();
 
 		Refresh();
 
