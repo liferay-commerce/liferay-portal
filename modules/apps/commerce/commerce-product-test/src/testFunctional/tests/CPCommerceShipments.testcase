@@ -1,6 +1,7 @@
 @component-name = "portal-commerce"
 definition {
 
+	property custom.properties = "jsonws.web.service.paths.excludes=${line.separator}company.security.strangers.verify=false";
 	property osgi.module.configuration.file.names = "com.liferay.release.feature.flag.web.internal.configuration.ReleaseFeatureFlagConfiguration.config";
 	property osgi.module.configurations = "disabledReleaseFeatureFlags=[&quot;DISABLE_PRIVATE_LAYOUTS&quot;]";
 	property portal.release = "true";
@@ -1192,13 +1193,6 @@ definition {
 
 		// TODO Review
 
-		PortalSettings.gotoConfiguration(
-			configurationCategory = "User Authentication",
-			configurationName = "General",
-			configurationScope = "Virtual Instance Scope");
-
-		PortalSettings.uncheckStrangersVerifyEmailCheckbox();
-
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
@@ -1302,7 +1296,7 @@ definition {
 			key_titleName = "Billing Address",
 			locator1 = "CommerceOrders#ORDER_GENERAL_DETAILS_ADD_EDIT_BUTTON");
 
-		SelectFrame(locator1 = "IFrame#MODAL_BODY");
+		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
 
 		Type(
 			key_fieldLabel = "Street 1",
@@ -1315,14 +1309,15 @@ definition {
 
 		AssertElementPresent(
 			key_errorMessage = "Billing Address",
-			locator1 = "WorkflowMetricsSLA#SLA_ERROR_MESSAGE");
+			locator1 = "CommerceOrders#ADDRESSES_IN_SHIPMENT",
+			value1 = "Billing Address, Test Street");
 
 		Click(
 			key_buttonName = "Edit",
 			key_titleName = "Shipping Address",
 			locator1 = "CommerceOrders#ORDER_GENERAL_DETAILS_ADD_EDIT_BUTTON");
 
-		SelectFrame(locator1 = "IFrame#MODAL_BODY");
+		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
 
 		Type(
 			key_fieldLabel = "Street 1",
@@ -1335,7 +1330,8 @@ definition {
 
 		AssertElementPresent(
 			key_errorMessage = "Shipping Address",
-			locator1 = "WorkflowMetricsSLA#SLA_ERROR_MESSAGE");
+			locator1 = "CommerceOrders#ADDRESSES_IN_SHIPMENT",
+			value1 = "Shipping Address, Test1 Street");
 	}
 
 	@description = "This is a test for COMMERCE-6239. Update shipment items to a shipment"
@@ -1464,9 +1460,19 @@ definition {
 			locator1 = "CommerceOrders#ORDER_QUANTITY_IN_SHIPMENT_BY_WAREHOUSE",
 			value1 = "0");
 
+		AssertElementPresent(
+			key_warehouseName = "Italy",
+			locator1 = "CommerceOrders#ORDER_QUANTITY_IN_SHIPMENT_BY_WAREHOUSE",
+			value1 = "0");
+
 		Button.clickSave();
 
 		Type(
+			key_warehouseName = "United States - Southwest",
+			locator1 = "CommerceOrders#ORDER_QUANTITY_IN_SHIPMENT_BY_WAREHOUSE",
+			value1 = "1");
+
+		AssertElementPresent(
 			key_warehouseName = "United States - Southwest",
 			locator1 = "CommerceOrders#ORDER_QUANTITY_IN_SHIPMENT_BY_WAREHOUSE",
 			value1 = "1");
