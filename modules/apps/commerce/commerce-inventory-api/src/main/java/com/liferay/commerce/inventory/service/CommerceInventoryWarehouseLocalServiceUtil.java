@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import java.io.Serializable;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Provides the local service utility for CommerceInventoryWarehouse. This utility wraps
@@ -60,6 +61,21 @@ public class CommerceInventoryWarehouseLocalServiceUtil {
 
 		return getService().addCommerceInventoryWarehouse(
 			commerceInventoryWarehouse);
+	}
+
+	public static CommerceInventoryWarehouse addCommerceInventoryWarehouse(
+			String externalReferenceCode, Map<java.util.Locale, String> nameMap,
+			Map<java.util.Locale, String> descriptionMap, boolean active,
+			String street1, String street2, String street3, String city,
+			String zip, String commerceRegionCode, String commerceCountryCode,
+			double latitude, double longitude,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws PortalException {
+
+		return getService().addCommerceInventoryWarehouse(
+			externalReferenceCode, nameMap, descriptionMap, active, street1,
+			street2, street3, city, zip, commerceRegionCode,
+			commerceCountryCode, latitude, longitude, serviceContext);
 	}
 
 	/**
@@ -508,6 +524,23 @@ public class CommerceInventoryWarehouseLocalServiceUtil {
 	}
 
 	public static CommerceInventoryWarehouse updateCommerceInventoryWarehouse(
+			long commerceInventoryWarehouseId,
+			Map<java.util.Locale, String> nameMap,
+			Map<java.util.Locale, String> descriptionMap, boolean active,
+			String street1, String street2, String street3, String city,
+			String zip, String commerceRegionCode, String commerceCountryCode,
+			double latitude, double longitude, long mvccVersion,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws PortalException {
+
+		return getService().updateCommerceInventoryWarehouse(
+			commerceInventoryWarehouseId, nameMap, descriptionMap, active,
+			street1, street2, street3, city, zip, commerceRegionCode,
+			commerceCountryCode, latitude, longitude, mvccVersion,
+			serviceContext);
+	}
+
+	public static CommerceInventoryWarehouse updateCommerceInventoryWarehouse(
 			long commerceInventoryWarehouseId, String name, String description,
 			boolean active, String street1, String street2, String street3,
 			String city, String zip, String commerceRegionCode,
@@ -521,6 +554,16 @@ public class CommerceInventoryWarehouseLocalServiceUtil {
 			street2, street3, city, zip, commerceRegionCode,
 			commerceCountryCode, latitude, longitude, mvccVersion,
 			serviceContext);
+	}
+
+	public static CommerceInventoryWarehouse
+			updateCommerceInventoryWarehouseExternalReferenceCode(
+				String externalReferenceCode, long commerceInventoryWarehouseId)
+		throws PortalException {
+
+		return getService().
+			updateCommerceInventoryWarehouseExternalReferenceCode(
+				externalReferenceCode, commerceInventoryWarehouseId);
 	}
 
 	public static CommerceInventoryWarehouseLocalService getService() {

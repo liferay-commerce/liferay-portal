@@ -39,6 +39,8 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import java.io.Serializable;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -79,6 +81,15 @@ public interface CommerceInventoryWarehouseLocalService
 	@Indexable(type = IndexableType.REINDEX)
 	public CommerceInventoryWarehouse addCommerceInventoryWarehouse(
 		CommerceInventoryWarehouse commerceInventoryWarehouse);
+
+	@Indexable(type = IndexableType.REINDEX)
+	public CommerceInventoryWarehouse addCommerceInventoryWarehouse(
+			String externalReferenceCode, Map<Locale, String> nameMap,
+			Map<Locale, String> descriptionMap, boolean active, String street1,
+			String street2, String street3, String city, String zip,
+			String commerceRegionCode, String commerceCountryCode,
+			double latitude, double longitude, ServiceContext serviceContext)
+		throws PortalException;
 
 	/**
 	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
@@ -412,11 +423,27 @@ public interface CommerceInventoryWarehouseLocalService
 
 	@Indexable(type = IndexableType.REINDEX)
 	public CommerceInventoryWarehouse updateCommerceInventoryWarehouse(
+			long commerceInventoryWarehouseId, Map<Locale, String> nameMap,
+			Map<Locale, String> descriptionMap, boolean active, String street1,
+			String street2, String street3, String city, String zip,
+			String commerceRegionCode, String commerceCountryCode,
+			double latitude, double longitude, long mvccVersion,
+			ServiceContext serviceContext)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public CommerceInventoryWarehouse updateCommerceInventoryWarehouse(
 			long commerceInventoryWarehouseId, String name, String description,
 			boolean active, String street1, String street2, String street3,
 			String city, String zip, String commerceRegionCode,
 			String commerceCountryCode, double latitude, double longitude,
 			long mvccVersion, ServiceContext serviceContext)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public CommerceInventoryWarehouse
+			updateCommerceInventoryWarehouseExternalReferenceCode(
+				String externalReferenceCode, long commerceInventoryWarehouseId)
 		throws PortalException;
 
 }
