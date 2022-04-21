@@ -59,6 +59,25 @@ public class CommerceInventoryWarehouseLocalServiceWrapper
 			addCommerceInventoryWarehouse(commerceInventoryWarehouse);
 	}
 
+	@Override
+	public com.liferay.commerce.inventory.model.CommerceInventoryWarehouse
+			addCommerceInventoryWarehouse(
+				String externalReferenceCode,
+				java.util.Map<java.util.Locale, String> nameMap,
+				java.util.Map<java.util.Locale, String> descriptionMap,
+				boolean active, String street1, String street2, String street3,
+				String city, String zip, String commerceRegionCode,
+				String commerceCountryCode, double latitude, double longitude,
+				com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceInventoryWarehouseLocalService.
+			addCommerceInventoryWarehouse(
+				externalReferenceCode, nameMap, descriptionMap, active, street1,
+				street2, street3, city, zip, commerceRegionCode,
+				commerceCountryCode, latitude, longitude, serviceContext);
+	}
+
 	/**
 	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
 	 #addCommerceInventoryWarehouse(String,
@@ -603,6 +622,27 @@ public class CommerceInventoryWarehouseLocalServiceWrapper
 	@Override
 	public com.liferay.commerce.inventory.model.CommerceInventoryWarehouse
 			updateCommerceInventoryWarehouse(
+				long commerceInventoryWarehouseId,
+				java.util.Map<java.util.Locale, String> nameMap,
+				java.util.Map<java.util.Locale, String> descriptionMap,
+				boolean active, String street1, String street2, String street3,
+				String city, String zip, String commerceRegionCode,
+				String commerceCountryCode, double latitude, double longitude,
+				long mvccVersion,
+				com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceInventoryWarehouseLocalService.
+			updateCommerceInventoryWarehouse(
+				commerceInventoryWarehouseId, nameMap, descriptionMap, active,
+				street1, street2, street3, city, zip, commerceRegionCode,
+				commerceCountryCode, latitude, longitude, mvccVersion,
+				serviceContext);
+	}
+
+	@Override
+	public com.liferay.commerce.inventory.model.CommerceInventoryWarehouse
+			updateCommerceInventoryWarehouse(
 				long commerceInventoryWarehouseId, String name,
 				String description, boolean active, String street1,
 				String street2, String street3, String city, String zip,
@@ -617,6 +657,17 @@ public class CommerceInventoryWarehouseLocalServiceWrapper
 				street1, street2, street3, city, zip, commerceRegionCode,
 				commerceCountryCode, latitude, longitude, mvccVersion,
 				serviceContext);
+	}
+
+	@Override
+	public com.liferay.commerce.inventory.model.CommerceInventoryWarehouse
+			updateCommerceInventoryWarehouseExternalReferenceCode(
+				String externalReferenceCode, long commerceInventoryWarehouseId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceInventoryWarehouseLocalService.
+			updateCommerceInventoryWarehouseExternalReferenceCode(
+				externalReferenceCode, commerceInventoryWarehouseId);
 	}
 
 	@Override

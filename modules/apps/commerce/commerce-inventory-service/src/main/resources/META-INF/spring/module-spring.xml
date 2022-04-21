@@ -29,4 +29,8 @@
 	<bean class="com.liferay.commerce.inventory.service.persistence.impl.CommerceInventoryWarehouseItemModelArgumentsResolver" id="com.liferay.commerce.inventory.service.persistence.impl.CommerceInventoryWarehouseItemModelArgumentsResolver" />
 	<bean class="com.liferay.commerce.inventory.service.persistence.impl.CommerceInventoryWarehouseItemPersistenceImpl" id="com.liferay.commerce.inventory.service.persistence.CommerceInventoryWarehouseItemPersistence" />
 	<bean class="com.liferay.commerce.inventory.service.persistence.impl.CommerceInventoryWarehouseItemFinderImpl" id="com.liferay.commerce.inventory.service.persistence.CommerceInventoryWarehouseItemFinder" />
+	<bean class="com.liferay.commerce.inventory.service.impl.CommerceInventoryWarehouseRelLocalServiceImpl" id="com.liferay.commerce.inventory.service.CommerceInventoryWarehouseRelLocalService" />
+	<bean class="com.liferay.commerce.inventory.service.impl.CommerceInventoryWarehouseRelServiceImpl" id="com.liferay.commerce.inventory.service.CommerceInventoryWarehouseRelService" />
+	<bean class="com.liferay.commerce.inventory.service.persistence.impl.CommerceInventoryWarehouseRelModelArgumentsResolver" id="com.liferay.commerce.inventory.service.persistence.impl.CommerceInventoryWarehouseRelModelArgumentsResolver" />
+	<bean class="com.liferay.commerce.inventory.service.persistence.impl.CommerceInventoryWarehouseRelPersistenceImpl" id="com.liferay.commerce.inventory.service.persistence.CommerceInventoryWarehouseRelPersistence" />
 </beans>

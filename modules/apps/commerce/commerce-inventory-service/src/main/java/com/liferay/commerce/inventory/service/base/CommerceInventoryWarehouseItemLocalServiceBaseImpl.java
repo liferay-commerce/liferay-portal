@@ -24,6 +24,7 @@ import com.liferay.commerce.inventory.service.persistence.CommerceInventoryWareh
 import com.liferay.commerce.inventory.service.persistence.CommerceInventoryWarehouseItemFinder;
 import com.liferay.commerce.inventory.service.persistence.CommerceInventoryWarehouseItemPersistence;
 import com.liferay.commerce.inventory.service.persistence.CommerceInventoryWarehousePersistence;
+import com.liferay.commerce.inventory.service.persistence.CommerceInventoryWarehouseRelPersistence;
 import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.dao.db.DB;
@@ -763,6 +764,56 @@ public abstract class CommerceInventoryWarehouseItemLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the commerce inventory warehouse rel local service.
+	 *
+	 * @return the commerce inventory warehouse rel local service
+	 */
+	public com.liferay.commerce.inventory.service.
+		CommerceInventoryWarehouseRelLocalService
+			getCommerceInventoryWarehouseRelLocalService() {
+
+		return commerceInventoryWarehouseRelLocalService;
+	}
+
+	/**
+	 * Sets the commerce inventory warehouse rel local service.
+	 *
+	 * @param commerceInventoryWarehouseRelLocalService the commerce inventory warehouse rel local service
+	 */
+	public void setCommerceInventoryWarehouseRelLocalService(
+		com.liferay.commerce.inventory.service.
+			CommerceInventoryWarehouseRelLocalService
+				commerceInventoryWarehouseRelLocalService) {
+
+		this.commerceInventoryWarehouseRelLocalService =
+			commerceInventoryWarehouseRelLocalService;
+	}
+
+	/**
+	 * Returns the commerce inventory warehouse rel persistence.
+	 *
+	 * @return the commerce inventory warehouse rel persistence
+	 */
+	public CommerceInventoryWarehouseRelPersistence
+		getCommerceInventoryWarehouseRelPersistence() {
+
+		return commerceInventoryWarehouseRelPersistence;
+	}
+
+	/**
+	 * Sets the commerce inventory warehouse rel persistence.
+	 *
+	 * @param commerceInventoryWarehouseRelPersistence the commerce inventory warehouse rel persistence
+	 */
+	public void setCommerceInventoryWarehouseRelPersistence(
+		CommerceInventoryWarehouseRelPersistence
+			commerceInventoryWarehouseRelPersistence) {
+
+		this.commerceInventoryWarehouseRelPersistence =
+			commerceInventoryWarehouseRelPersistence;
+	}
+
+	/**
 	 * Returns the counter local service.
 	 *
 	 * @return the counter local service
@@ -1026,6 +1077,17 @@ public abstract class CommerceInventoryWarehouseItemLocalServiceBaseImpl
 	@BeanReference(type = CommerceInventoryWarehouseItemFinder.class)
 	protected CommerceInventoryWarehouseItemFinder
 		commerceInventoryWarehouseItemFinder;
+
+	@BeanReference(
+		type = com.liferay.commerce.inventory.service.CommerceInventoryWarehouseRelLocalService.class
+	)
+	protected com.liferay.commerce.inventory.service.
+		CommerceInventoryWarehouseRelLocalService
+			commerceInventoryWarehouseRelLocalService;
+
+	@BeanReference(type = CommerceInventoryWarehouseRelPersistence.class)
+	protected CommerceInventoryWarehouseRelPersistence
+		commerceInventoryWarehouseRelPersistence;
 
 	@ServiceReference(
 		type = com.liferay.counter.kernel.service.CounterLocalService.class
