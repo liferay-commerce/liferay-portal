@@ -640,6 +640,8 @@ definition {
 
 		CommerceNavigator.gotoEntry(entryName = "MIN55861");
 
+		WaitForElementPresent(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
 		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
 
 		Type(
