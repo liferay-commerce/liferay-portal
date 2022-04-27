@@ -1470,7 +1470,7 @@ definition {
 
 		Button.clickSave();
 
-		AssertElementPresent(
+		AssertTextEquals(
 			key_warehouseName = "Italy",
 			locator1 = "CommerceOrders#ORDER_QUANTITY_IN_SHIPMENT_BY_WAREHOUSE",
 			value1 = "0");
@@ -1482,7 +1482,7 @@ definition {
 
 		Button.clickSave();
 
-		AssertElementPresent(
+		AssertTextEquals(
 			key_warehouseName = "United States - Southwest",
 			locator1 = "CommerceOrders#ORDER_QUANTITY_IN_SHIPMENT_BY_WAREHOUSE",
 			value1 = "1");
