@@ -1188,7 +1188,7 @@ definition {
 	@description = "This is a test for COMMERCE-6242. Update address"
 	@priority = "3"
 	test UpdateShipmentAddress {
-		property portal.acceptance = "false";
+		property portal.acceptance = "FIX";
 
 		// TODO Review
 
@@ -1345,7 +1345,7 @@ definition {
 	@description = "This is a test for COMMERCE-6239. Update shipment items to a shipment"
 	@priority = "3"
 	test UpdateShipmentItems {
-		property portal.acceptance = "false";
+		property portal.acceptance = "FIX";
 
 		// TODO Review
 
@@ -1470,12 +1470,22 @@ definition {
 
 		Button.clickSave();
 
+		AssertElementPresent(
+			key_warehouseName = "Italy",
+			locator1 = "CommerceOrders#ORDER_QUANTITY_IN_SHIPMENT_BY_WAREHOUSE",
+			value1 = "0");
+
 		Type(
 			key_warehouseName = "United States - Southwest",
 			locator1 = "CommerceOrders#ORDER_QUANTITY_IN_SHIPMENT_BY_WAREHOUSE",
 			value1 = "1");
 
 		Button.clickSave();
+
+		AssertElementPresent(
+			key_warehouseName = "United States - Southwest",
+			locator1 = "CommerceOrders#ORDER_QUANTITY_IN_SHIPMENT_BY_WAREHOUSE",
+			value1 = "1");
 
 		Click(locator1 = "Icon#CLOSE");
 
