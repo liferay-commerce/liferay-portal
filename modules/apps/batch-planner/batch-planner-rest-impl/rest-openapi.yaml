@@ -1,5 +1,15 @@
 components:
     schemas:
+        Field:
+            properties:
+                description:
+                    type: string
+                name:
+                    type: string
+                required:
+                    type: boolean
+                type:
+                    type: string
         Mapping:
             properties:
                 externalFieldName:
@@ -127,6 +137,34 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Plan"
             tags: ["Plan"]
+    /plans/{internalClassName}/fields:
+        get:
+            operationId: getPlanInternalClassNameFieldsPage
+            parameters:
+                - in: path
+                  name: internalClassName
+                  required: true
+                  schema:
+                      type: string
+                - in: query
+                  name: export
+                  required: false
+                  schema:
+                      type: boolean
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/Field"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/Field"
+                                type: array
+            tags: ["Field"]
     /plans/{internalClassName}/template:
         get:
             operationId: getPlanTemplate
