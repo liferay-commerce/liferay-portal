@@ -18,7 +18,6 @@ import com.liferay.batch.planner.constants.BatchPlannerPortletKeys;
 import com.liferay.batch.planner.model.BatchPlannerPlan;
 import com.liferay.batch.planner.service.BatchPlannerPlanService;
 import com.liferay.batch.planner.web.internal.display.context.EditBatchPlannerPlanDisplayContext;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -27,22 +26,16 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegateRegistry;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Set;
 
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.jaxrs.runtime.JaxrsServiceRuntime;
-import org.osgi.service.jaxrs.runtime.dto.ApplicationDTO;
-import org.osgi.service.jaxrs.runtime.dto.ResourceDTO;
-import org.osgi.service.jaxrs.runtime.dto.ResourceMethodInfoDTO;
-import org.osgi.service.jaxrs.runtime.dto.RuntimeDTO;
 
 /**
  * @author Matija Petanjek
@@ -74,49 +67,6 @@ public class EditBatchPlannerPlanMVCRenderCommand implements MVCRenderCommand {
 		return "/view.jsp";
 	}
 
-	private void _addHeadlessEndpoints(
-		ApplicationDTO applicationDTO, Map<String, String> headlessEndpoints,
-		ResourceMethodInfoDTO resourceMethodInfoDTO) {
-
-		String headlessEndpoint = StringBundler.concat(
-			"/o", applicationDTO.base, resourceMethodInfoDTO.path);
-
-		if (!headlessEndpoint.contains("openapi")) {
-			return;
-		}
-
-		headlessEndpoints.put(
-			applicationDTO.base,
-			headlessEndpoint.replaceAll("\\{.+\\}", "json"));
-	}
-
-	private Map<String, String> _getHeadlessEndpoints() {
-		Map<String, String> headlessEndpoints = new HashMap<>();
-
-		RuntimeDTO runtimeDTO = _jaxrsServiceRuntime.getRuntimeDTO();
-
-		for (ApplicationDTO applicationDTO : runtimeDTO.applicationDTOs) {
-			for (ResourceDTO resourceDTO : applicationDTO.resourceDTOs) {
-				for (ResourceMethodInfoDTO resourceMethodInfoDTO :
-						resourceDTO.resourceMethods) {
-
-					_addHeadlessEndpoints(
-						applicationDTO, headlessEndpoints,
-						resourceMethodInfoDTO);
-				}
-			}
-
-			for (ResourceMethodInfoDTO resourceMethod :
-					applicationDTO.resourceMethods) {
-
-				_addHeadlessEndpoints(
-					applicationDTO, headlessEndpoints, resourceMethod);
-			}
-		}
-
-		return headlessEndpoints;
-	}
-
 	private boolean _isExport(String value) {
 		if (value.equals("export")) {
 			return true;
@@ -129,13 +79,10 @@ public class EditBatchPlannerPlanMVCRenderCommand implements MVCRenderCommand {
 		long batchPlannerPlanId = ParamUtil.getLong(
 			renderRequest, "batchPlannerPlanId");
 
+		Set<String> entityClassNames =
+			_vulcanBatchEngineTaskItemDelegateRegistry.getEntityClassNames();
+
 		if (batchPlannerPlanId == 0) {
-			if (Validator.isNull(
-					ParamUtil.getString(renderRequest, "navigation"))) {
-
-				return "/view.jsp";
-			}
-
 			if (_isExport(ParamUtil.getString(renderRequest, "navigation"))) {
 				renderRequest.setAttribute(
 					WebKeys.PORTLET_DISPLAY_CONTEXT,
@@ -143,7 +90,7 @@ public class EditBatchPlannerPlanMVCRenderCommand implements MVCRenderCommand {
 						_batchPlannerPlanService.getBatchPlannerPlans(
 							_portal.getCompanyId(renderRequest), true, true,
 							QueryUtil.ALL_POS, QueryUtil.ALL_POS, null),
-						_getHeadlessEndpoints(), null));
+						entityClassNames, null));
 
 				return "/export/edit_batch_planner_plan.jsp";
 			}
@@ -154,7 +101,7 @@ public class EditBatchPlannerPlanMVCRenderCommand implements MVCRenderCommand {
 					_batchPlannerPlanService.getBatchPlannerPlans(
 						_portal.getCompanyId(renderRequest), false, true,
 						QueryUtil.ALL_POS, QueryUtil.ALL_POS, null),
-					_getHeadlessEndpoints(), null));
+					entityClassNames, null));
 
 			return "/import/edit_batch_planner_plan.jsp";
 		}
@@ -169,7 +116,7 @@ public class EditBatchPlannerPlanMVCRenderCommand implements MVCRenderCommand {
 					_batchPlannerPlanService.getBatchPlannerPlans(
 						_portal.getCompanyId(renderRequest), true, true,
 						QueryUtil.ALL_POS, QueryUtil.ALL_POS, null),
-					_getHeadlessEndpoints(), batchPlannerPlan));
+					entityClassNames, batchPlannerPlan));
 
 			return "/export/edit_batch_planner_plan.jsp";
 		}
@@ -180,7 +127,7 @@ public class EditBatchPlannerPlanMVCRenderCommand implements MVCRenderCommand {
 				_batchPlannerPlanService.getBatchPlannerPlans(
 					_portal.getCompanyId(renderRequest), false, true,
 					QueryUtil.ALL_POS, QueryUtil.ALL_POS, null),
-				_getHeadlessEndpoints(), batchPlannerPlan));
+				entityClassNames, batchPlannerPlan));
 
 		return "/import/edit_batch_planner_plan.jsp";
 	}
@@ -192,9 +139,10 @@ public class EditBatchPlannerPlanMVCRenderCommand implements MVCRenderCommand {
 	private BatchPlannerPlanService _batchPlannerPlanService;
 
 	@Reference
-	private JaxrsServiceRuntime _jaxrsServiceRuntime;
+	private Portal _portal;
 
 	@Reference
-	private Portal _portal;
+	private VulcanBatchEngineTaskItemDelegateRegistry
+		_vulcanBatchEngineTaskItemDelegateRegistry;
 
 }
