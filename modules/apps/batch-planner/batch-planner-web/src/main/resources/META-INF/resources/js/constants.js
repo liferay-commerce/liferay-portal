@@ -25,7 +25,6 @@ export const HEADERS = new Headers({
 
 export const HEADLESS_BATCH_PLANNER_URL = '/o/batch-planner/v1.0';
 export const HEADLESS_BATCH_ENGINE_URL = '/o/headless-batch-engine/v1.0';
-export const HEADLESS_ENDPOINT_POLICY_NAME = 'headlessEndpoint';
 export const JSON_FORMAT = 'json';
 export const JSONL_FORMAT = 'jsonl';
 export const NULL_TEMPLATE_VALUE = '';

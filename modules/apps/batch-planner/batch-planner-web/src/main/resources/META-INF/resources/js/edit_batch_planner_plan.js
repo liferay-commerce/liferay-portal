@@ -17,6 +17,7 @@ import {fetch, openToast} from 'frontend-js-web';
 
 import TemplateSelect from './TemplateSelect';
 import {
+	HEADLESS_BATCH_PLANNER_URL,
 	SCHEMA_SELECTED_EVENT,
 	TEMPLATE_SELECTED_EVENT,
 	TEMPLATE_SOILED_EVENT,
@@ -35,34 +36,14 @@ function trimPackage(name) {
 	return name.substr(name.lastIndexOf('.') + 1);
 }
 
-function getOptionElement(label, schemaName, selected, value) {
-	const optionElement = document.createElement('option');
-
-	optionElement.innerHTML = encodeURIComponent(label);
-	optionElement.value = encodeURIComponent(value);
-
-	if (selected) {
-		optionElement.selected = true;
-	}
-
-	if (schemaName) {
-		optionElement.setAttribute('schemaName', schemaName);
-	}
-
-	return optionElement;
-}
-
 export default function ({
 	initialExternalType,
 	initialTemplateClassName,
-	initialTemplateHeadlessEndpoint,
 	initialTemplateMapping,
+	isExport,
 	namespace,
 	templatesOptions,
 }) {
-	const headlessEnpointSelect = document.querySelector(
-		`#${namespace}headlessEndpoint`
-	);
 	const internalClassNameSelect = document.querySelector(
 		`#${namespace}internalClassName`
 	);
@@ -79,14 +60,6 @@ export default function ({
 				externalTypeInput.value = template.externalType;
 			}
 
-			const headlessTemplateOption = headlessEnpointSelect.querySelector(
-				`option[value='${template.headlessEndpoint}']`
-			);
-
-			headlessTemplateOption.selected = true;
-
-			await handleHeadlessSelectChange();
-
 			const internalClassTemplateOption = internalClassNameSelect.querySelector(
 				`option[value='${template.internalClassName}']`
 			);
@@ -97,87 +70,10 @@ export default function ({
 		}
 	}
 
-	async function handleHeadlessSelectChange(event) {
-		if (event) {
-			Liferay.fire(TEMPLATE_SOILED_EVENT);
-			event.target.disabled = true;
-		}
-
-		const headlessEnpoint = headlessEnpointSelect.value;
-
-		if (!headlessEnpoint) {
-			internalClassNameSelect.innerHTML = '';
-
-			return;
-		}
-
-		try {
-			const response = await fetch(headlessEnpoint, {
-				credentials: 'include',
-				headers: HEADERS,
-			});
-
-			if (!response.ok) {
-				throw new Error(`Failed to fetch: '${headlessEnpointSelect}'`);
-			}
-
-			const {components} = await response.json();
-
-			internalClassNameSelect.innerHTML = '';
-
-			internalClassNameSelect.appendChild(
-				getOptionElement('', '', false, '')
-			);
-
-			const keys = Object.keys(components.schemas).sort();
-
-			keys.forEach((key) => {
-				const properties = components.schemas[key].properties;
-
-				if (!properties || !properties['x-class-name']) {
-					return;
-				}
-
-				const className = properties['x-class-name'].default;
-				const schemaName = properties['x-schema-name']?.default;
-
-				const optionElement = getOptionElement(
-					trimPackage(className),
-					schemaName,
-					false,
-					className
-				);
-
-				internalClassNameSelect.appendChild(optionElement);
-			});
-
-			Liferay.fire(SCHEMA_SELECTED_EVENT, {
-				schema: null,
-			});
-
-			internalClassNameSelect.disabled = false;
-		}
-		catch (error) {
-			openToast({
-				message: Liferay.Language.get('your-request-has-failed'),
-				type: 'danger',
-			});
-
-			console.error('Failed to fetch ' + error);
-		}
-		finally {
-			if (event) {
-				event.target.disabled = false;
-			}
-		}
-	}
-
 	async function handleClassNameSelectChange(event) {
 		if (event) {
 			Liferay.fire(TEMPLATE_SOILED_EVENT);
 		}
-
-		const headlessEnpointValue = headlessEnpointSelect.value;
 
 		const selectedOption =
 			internalClassNameSelect.options[
@@ -201,25 +97,19 @@ export default function ({
 		}
 
 		try {
-			const response = await fetch(headlessEnpointValue, {
-				credentials: 'include',
-				headers: HEADERS,
-			});
+			const response = await fetch(
+				`${HEADLESS_BATCH_PLANNER_URL}/plans/${selectedOption.value}/fields?export=${isExport}`,
+				{
+					credentials: 'include',
+					headers: HEADERS,
+					method: 'GET',
+				}
+			);
 
-			if (!response.ok) {
-				throw new Error(`Failed to fetch: '${headlessEnpointValue}'`);
-			}
-
-			const {components} = await response.json();
-
-			const schemaEntry = components.schemas[internalClassNameValue];
-
-			schemaEntry.required?.forEach((requiredField) => {
-				schemaEntry.properties[requiredField].required = true;
-			});
+			const data = await response.json();
 
 			Liferay.fire(SCHEMA_SELECTED_EVENT, {
-				schema: schemaEntry.properties,
+				schema: data.items,
 			});
 		}
 		catch (error) {
@@ -234,11 +124,6 @@ export default function ({
 
 	Liferay.on(TEMPLATE_SELECTED_EVENT, handleTemplateSelectedEvent);
 
-	headlessEnpointSelect.addEventListener(
-		'change',
-		handleHeadlessSelectChange
-	);
-
 	internalClassNameSelect.addEventListener(
 		'change',
 		handleClassNameSelectChange
@@ -246,14 +131,9 @@ export default function ({
 
 	let initialTemplate;
 
-	if (
-		initialTemplateHeadlessEndpoint &&
-		initialTemplateClassName &&
-		initialTemplateMapping
-	) {
+	if (initialTemplateClassName && initialTemplateMapping) {
 		initialTemplate = {
 			externalType: initialExternalType,
-			headlessEndpoint: initialTemplateHeadlessEndpoint,
 			internalClassName: initialTemplateClassName,
 			mapping: initialTemplateMapping,
 		};
