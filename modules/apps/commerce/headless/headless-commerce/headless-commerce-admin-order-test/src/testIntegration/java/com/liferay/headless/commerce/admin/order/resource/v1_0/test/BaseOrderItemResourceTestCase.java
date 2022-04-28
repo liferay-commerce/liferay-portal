@@ -511,8 +511,8 @@ public abstract class BaseOrderItemResourceTestCase {
 
 		long totalCount = orderItemsJSONObject.getLong("totalCount");
 
-		OrderItem orderItem1 = testGraphQLOrderItem_addOrderItem();
-		OrderItem orderItem2 = testGraphQLOrderItem_addOrderItem();
+		OrderItem orderItem1 = testGraphQLGetOrderItemsPage_addOrderItem();
+		OrderItem orderItem2 = testGraphQLGetOrderItemsPage_addOrderItem();
 
 		orderItemsJSONObject = JSONUtil.getValueAsJSONObject(
 			invokeGraphQLQuery(graphQLField), "JSONObject/data",
@@ -531,6 +531,12 @@ public abstract class BaseOrderItemResourceTestCase {
 			Arrays.asList(
 				OrderItemSerDes.toDTOs(
 					orderItemsJSONObject.getString("items"))));
+	}
+
+	protected OrderItem testGraphQLGetOrderItemsPage_addOrderItem()
+		throws Exception {
+
+		return testGraphQLOrderItem_addOrderItem();
 	}
 
 	@Test
