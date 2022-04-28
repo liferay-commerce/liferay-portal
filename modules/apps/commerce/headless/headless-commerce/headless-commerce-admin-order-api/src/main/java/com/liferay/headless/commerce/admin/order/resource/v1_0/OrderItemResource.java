@@ -75,6 +75,10 @@ public interface OrderItemResource {
 			String externalReferenceCode, OrderItem orderItem)
 		throws Exception;
 
+	public OrderItem putOrderItemByExternalReferenceCode(
+			String externalReferenceCode, OrderItem orderItem)
+		throws Exception;
+
 	public Response deleteOrderItem(Long id) throws Exception;
 
 	public Response deleteOrderItemBatch(
@@ -84,6 +88,13 @@ public interface OrderItemResource {
 	public OrderItem getOrderItem(Long id) throws Exception;
 
 	public Response patchOrderItem(Long id, OrderItem orderItem)
+		throws Exception;
+
+	public OrderItem putOrderItem(Long id, OrderItem orderItem)
+		throws Exception;
+
+	public Response putOrderItemBatch(
+			Long id, String callbackURL, Object object)
 		throws Exception;
 
 	public Page<OrderItem> getOrderByExternalReferenceCodeOrderItemsPage(

@@ -658,6 +658,60 @@ public abstract class BaseOrderItemResourceTestCase {
 	}
 
 	@Test
+	public void testPutOrderItemByExternalReferenceCode() throws Exception {
+		OrderItem postOrderItem =
+			testPutOrderItemByExternalReferenceCode_addOrderItem();
+
+		OrderItem randomOrderItem = randomOrderItem();
+
+		OrderItem putOrderItem =
+			orderItemResource.putOrderItemByExternalReferenceCode(
+				postOrderItem.getExternalReferenceCode(), randomOrderItem);
+
+		assertEquals(randomOrderItem, putOrderItem);
+		assertValid(putOrderItem);
+
+		OrderItem getOrderItem =
+			orderItemResource.getOrderItemByExternalReferenceCode(
+				putOrderItem.getExternalReferenceCode());
+
+		assertEquals(randomOrderItem, getOrderItem);
+		assertValid(getOrderItem);
+
+		OrderItem newOrderItem =
+			testPutOrderItemByExternalReferenceCode_createOrderItem();
+
+		putOrderItem = orderItemResource.putOrderItemByExternalReferenceCode(
+			newOrderItem.getExternalReferenceCode(), newOrderItem);
+
+		assertEquals(newOrderItem, putOrderItem);
+		assertValid(putOrderItem);
+
+		getOrderItem = orderItemResource.getOrderItemByExternalReferenceCode(
+			putOrderItem.getExternalReferenceCode());
+
+		assertEquals(newOrderItem, getOrderItem);
+
+		Assert.assertEquals(
+			newOrderItem.getExternalReferenceCode(),
+			putOrderItem.getExternalReferenceCode());
+	}
+
+	protected OrderItem
+			testPutOrderItemByExternalReferenceCode_createOrderItem()
+		throws Exception {
+
+		return randomOrderItem();
+	}
+
+	protected OrderItem testPutOrderItemByExternalReferenceCode_addOrderItem()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
 	public void testDeleteOrderItem() throws Exception {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		OrderItem orderItem = testDeleteOrderItem_addOrderItem();
@@ -780,6 +834,30 @@ public abstract class BaseOrderItemResourceTestCase {
 	@Test
 	public void testPatchOrderItem() throws Exception {
 		Assert.assertTrue(false);
+	}
+
+	@Test
+	public void testPutOrderItem() throws Exception {
+		OrderItem postOrderItem = testPutOrderItem_addOrderItem();
+
+		OrderItem randomOrderItem = randomOrderItem();
+
+		OrderItem putOrderItem = orderItemResource.putOrderItem(
+			postOrderItem.getId(), randomOrderItem);
+
+		assertEquals(randomOrderItem, putOrderItem);
+		assertValid(putOrderItem);
+
+		OrderItem getOrderItem = orderItemResource.getOrderItem(
+			putOrderItem.getId());
+
+		assertEquals(randomOrderItem, getOrderItem);
+		assertValid(getOrderItem);
+	}
+
+	protected OrderItem testPutOrderItem_addOrderItem() throws Exception {
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
