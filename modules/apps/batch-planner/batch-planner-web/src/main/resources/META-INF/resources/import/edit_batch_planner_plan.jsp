@@ -46,22 +46,16 @@ renderResponse.setTitle(editable ? LanguageUtil.get(request, "edit-template") : 
 						<liferay-frontend:edit-form-body>
 							<div id="<portlet:namespace />templateSelect"></div>
 
-							<clay:select
-								id='<%= liferayPortletResponse.getNamespace() + "headlessEndpoint" %>'
-								label='<%= LanguageUtil.get(request, "headless-endpoint") %>'
-								name="headlessEndpoint"
-								options="<%= editBatchPlannerPlanDisplayContext.getSelectOptions() %>"
-							/>
-
-							<div class="mt-2">
-								<clay:select
-									disabled="<%= true %>"
-									id='<%= liferayPortletResponse.getNamespace() + "internalClassName" %>'
-									label='<%= LanguageUtil.get(request, "entity-name") %>'
-									name="internalClassName"
-									options="<%= editBatchPlannerPlanDisplayContext.getSelectOptions() %>"
-								/>
-							</div>
+							<clay:row>
+								<clay:col>
+									<clay:select
+										id='<%= liferayPortletResponse.getNamespace() + "internalClassName" %>'
+										label='<%= LanguageUtil.get(request, "entity-name") %>'
+										name="internalClassName"
+										options="<%= editBatchPlannerPlanDisplayContext.getInternalClassNameSelectOptions() %>"
+									/>
+								</clay:col>
+							</clay:row>
 
 							<clay:alert
 								displayType="info"
@@ -204,9 +198,9 @@ renderResponse.setTitle(editable ? LanguageUtil.get(request, "edit-template") : 
 		HashMapBuilder.<String, Object>put(
 			"initialTemplateClassName", editBatchPlannerPlanDisplayContext.getSelectedInternalClassName()
 		).put(
-			"initialTemplateHeadlessEndpoint", editBatchPlannerPlanDisplayContext.getSelectedHeadlessEndpoint()
-		).put(
 			"initialTemplateMapping", editBatchPlannerPlanDisplayContext.getSelectedBatchPlannerPlanMappings()
+		).put(
+			"isExport", false
 		).put(
 			"templatesOptions", editBatchPlannerPlanDisplayContext.getTemplateSelectOptions()
 		).build()
