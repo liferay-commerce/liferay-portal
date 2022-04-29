@@ -420,42 +420,62 @@ public class OrderItemResourceImpl
 				commerceOrderItem =
 					_commerceOrderItemService.updateCommerceOrderItemPrices(
 						commerceOrderItem.getCommerceOrderItemId(),
-						(BigDecimal)GetterUtil.getNumber(
-							orderItem.getDiscountAmount()),
-						(BigDecimal)GetterUtil.getNumber(
-							orderItem.getDiscountWithTaxAmount()),
-						(BigDecimal)GetterUtil.getNumber(
-							orderItem.getDiscountPercentageLevel1()),
-						(BigDecimal)GetterUtil.getNumber(
+						(BigDecimal)GetterUtil.get(
+							orderItem.getDiscountAmount(),
+							commerceOrderItem.getDiscountAmount()),
+						(BigDecimal)GetterUtil.get(
+							orderItem.getDiscountWithTaxAmount(),
+							commerceOrderItem.getDiscountWithTaxAmount()),
+						(BigDecimal)GetterUtil.get(
+							orderItem.getDiscountPercentageLevel1(),
+							commerceOrderItem.getDiscountPercentageLevel1()),
+						(BigDecimal)GetterUtil.get(
 							orderItem.
+								getDiscountPercentageLevel1WithTaxAmount(),
+							commerceOrderItem.
 								getDiscountPercentageLevel1WithTaxAmount()),
-						(BigDecimal)GetterUtil.getNumber(
-							orderItem.getDiscountPercentageLevel2()),
-						(BigDecimal)GetterUtil.getNumber(
+						(BigDecimal)GetterUtil.get(
+							orderItem.getDiscountPercentageLevel2(),
+							commerceOrderItem.getDiscountPercentageLevel2()),
+						(BigDecimal)GetterUtil.get(
 							orderItem.
+								getDiscountPercentageLevel2WithTaxAmount(),
+							commerceOrderItem.
 								getDiscountPercentageLevel2WithTaxAmount()),
-						(BigDecimal)GetterUtil.getNumber(
-							orderItem.getDiscountPercentageLevel3()),
-						(BigDecimal)GetterUtil.getNumber(
+						(BigDecimal)GetterUtil.get(
+							orderItem.getDiscountPercentageLevel3(),
+							commerceOrderItem.getDiscountPercentageLevel3()),
+						(BigDecimal)GetterUtil.get(
 							orderItem.
+								getDiscountPercentageLevel3WithTaxAmount(),
+							commerceOrderItem.
 								getDiscountPercentageLevel3WithTaxAmount()),
-						(BigDecimal)GetterUtil.getNumber(
-							orderItem.getDiscountPercentageLevel4()),
-						(BigDecimal)GetterUtil.getNumber(
+						(BigDecimal)GetterUtil.get(
+							orderItem.getDiscountPercentageLevel4(),
+							commerceOrderItem.getDiscountPercentageLevel4()),
+						(BigDecimal)GetterUtil.get(
 							orderItem.
+								getDiscountPercentageLevel4WithTaxAmount(),
+							commerceOrderItem.
 								getDiscountPercentageLevel4WithTaxAmount()),
-						(BigDecimal)GetterUtil.getNumber(
-							orderItem.getFinalPrice()),
-						(BigDecimal)GetterUtil.getNumber(
-							orderItem.getFinalPriceWithTaxAmount()),
-						(BigDecimal)GetterUtil.getNumber(
-							orderItem.getPromoPrice()),
-						(BigDecimal)GetterUtil.getNumber(
-							orderItem.getPromoPriceWithTaxAmount()),
-						(BigDecimal)GetterUtil.getNumber(
-							orderItem.getUnitPrice()),
-						(BigDecimal)GetterUtil.getNumber(
-							orderItem.getUnitPriceWithTaxAmount()));
+						(BigDecimal)GetterUtil.get(
+							orderItem.getFinalPrice(),
+							commerceOrderItem.getFinalPrice()),
+						(BigDecimal)GetterUtil.get(
+							orderItem.getFinalPriceWithTaxAmount(),
+							commerceOrderItem.getFinalPriceWithTaxAmount()),
+						(BigDecimal)GetterUtil.get(
+							orderItem.getPromoPrice(),
+							commerceOrderItem.getPromoPrice()),
+						(BigDecimal)GetterUtil.get(
+							orderItem.getPromoPriceWithTaxAmount(),
+							commerceOrderItem.getPromoPriceWithTaxAmount()),
+						(BigDecimal)GetterUtil.get(
+							orderItem.getUnitPrice(),
+							commerceOrderItem.getUnitPrice()),
+						(BigDecimal)GetterUtil.get(
+							orderItem.getUnitPriceWithTaxAmount(),
+							commerceOrderItem.getUnitPriceWithTaxAmount()));
 			}
 		}
 
