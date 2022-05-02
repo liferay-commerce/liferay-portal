@@ -1349,7 +1349,7 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		/*CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
@@ -1413,7 +1413,7 @@ definition {
 		CommerceLogin.miniumLogin(
 			password = "test",
 			urlAppend = "web/minium",
-			userEmailAddress = "test@liferay.com");
+			userEmailAddress = "test@liferay.com");*/
 
 		CommerceNavigator.gotoPortlet(
 			category = "Order Management",
@@ -1473,7 +1473,7 @@ definition {
 			key_warehouseName = "Italy",
 			locator1 = "CommerceOrders#ORDER_QUANTITY_IN_SHIPMENT_BY_WAREHOUSE");
 
-		RobotType.robotTypeShortcut(locator1 = "Ctrl + a");
+		RunScript(locator1 = "document.querySelectorAll('div.quantity-selector input')[0].value=0");
 
 		Type(
 			key_warehouseName = "Italy",
@@ -1491,7 +1491,7 @@ definition {
 			key_warehouseName = "United States - Southwest",
 			locator1 = "CommerceOrders#ORDER_QUANTITY_IN_SHIPMENT_BY_WAREHOUSE");
 
-		RobotType.robotTypeShortcut(locator1 = "Ctrl + a");
+		RunScript(locator1 = "document.querySelectorAll('div.quantity-selector input')[1].value=0");
 
 		Type(
 			key_warehouseName = "United States - Southwest",
