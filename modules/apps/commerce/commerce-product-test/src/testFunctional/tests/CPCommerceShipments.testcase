@@ -1463,6 +1463,12 @@ definition {
 
 		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
 
+		for (var valueList : list "Italy,United States - Southwest,United States - Northeast") {
+			WaitForElementPresent(
+				key_warehouseName = "${valueList}",
+                locator1 = "CommerceOrders#ORDER_QUANTITY_IN_SHIPMENT_BY_WAREHOUSE");
+		}
+
 		Click(
 			key_warehouseName = "Italy",
 			locator1 = "CommerceOrders#ORDER_QUANTITY_IN_SHIPMENT_BY_WAREHOUSE");
