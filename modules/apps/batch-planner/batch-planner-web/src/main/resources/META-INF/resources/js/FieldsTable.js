@@ -60,7 +60,6 @@ function FieldsTable({portletNamespace}) {
 
 				setSelectedFields(
 					Object.keys(template.mappings).map((fields) => ({
-						label: fields,
 						name: fields,
 					}))
 				);
@@ -151,11 +150,11 @@ function FieldsTable({portletNamespace}) {
 							);
 
 							return (
-								<ClayTable.Row key={field.label}>
+								<ClayTable.Row key={field.name}>
 									<ClayTable.Cell>
 										<ClayCheckbox
 											checked={included}
-											id={`${portletNamespace}fieldName_${field.label}`}
+											id={`${portletNamespace}fieldName_${field.name}`}
 											name={`${portletNamespace}fieldName`}
 											onChange={() => {
 												Liferay.fire(
@@ -184,9 +183,9 @@ function FieldsTable({portletNamespace}) {
 
 									<ClayTable.Cell>
 										<label
-											htmlFor={`${portletNamespace}fieldName_${field.label}`}
+											htmlFor={`${portletNamespace}fieldName_${field.name}`}
 										>
-											{field.label}
+											{field.name}
 										</label>
 									</ClayTable.Cell>
 								</ClayTable.Row>
