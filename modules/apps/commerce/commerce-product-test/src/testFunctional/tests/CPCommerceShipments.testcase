@@ -1467,7 +1467,7 @@ definition {
 			key_warehouseName = "Italy",
 			locator1 = "CommerceOrders#ORDER_QUANTITY_IN_SHIPMENT_BY_WAREHOUSE");
 
-        RobotType.robotTypeShortcut(locator1 = "Ctrl + a");
+		RobotType.robotTypeShortcut(locator1 = "Ctrl + a");
 
 		Type(
 			key_warehouseName = "Italy",
@@ -1485,7 +1485,7 @@ definition {
 			key_warehouseName = "United States - Southwest",
 			locator1 = "CommerceOrders#ORDER_QUANTITY_IN_SHIPMENT_BY_WAREHOUSE");
 
-        RobotType.robotTypeShortcut(locator1 = "Ctrl + a");
+		RobotType.robotTypeShortcut(locator1 = "Ctrl + a");
 
 		Type(
 			key_warehouseName = "United States - Southwest",
