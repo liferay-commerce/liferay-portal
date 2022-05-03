@@ -1346,6 +1346,7 @@ definition {
 	@priority = "3"
 	test UpdateShipmentItems {
 		property portal.acceptance = "FIX";
+		property test.name.skip.portal.instance = "CPCommerceShipments#UpdateShipmentItems";
 
 		// TODO Review
 
