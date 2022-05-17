@@ -20,9 +20,9 @@ definition {
 	test AddToCartButtonAndQuantitySelectorAreDisabledForAdminUser {
 		property portal.acceptance = "false";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		Pagination.changePagination(itemsPerPage = "60");
 
@@ -52,7 +52,7 @@ definition {
 	test AddToCartButtonAndQuantitySelectorAreDisabledForNewUser {
 		property portal.acceptance = "false";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		ApplicationsMenu.gotoPortlet(
 			category = "Users",
@@ -71,14 +71,14 @@ definition {
 			userEmailAddress = "testuser@liferay.com");
 
 		JSONUser.addUserToSite(
-			groupName = "Minium",
+			groupName = "Minium Demo",
 			userEmailAddress = "testuser@liferay.com");
 
 		User.logoutPG();
 
 		CommerceLogin.miniumLogin(
 			password = "test",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "testuser@liferay.com");
 
 		Pagination.changePagination(itemsPerPage = "60");
@@ -111,9 +111,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
@@ -142,7 +142,7 @@ definition {
 			panel = "Commerce",
 			portlet = "Channels");
 
-		CommerceNavigator.gotoEntry(entryName = "Minium Portal");
+		CommerceNavigator.gotoEntry(entryName = "Minium Demo Portal");
 
 		CommerceChannels.activatePaymentMethod(paymentMethod = "PayPal");
 
@@ -158,7 +158,7 @@ definition {
 			portlet = "Products");
 
 		CPCommerceCatalog.newProductsEntry(
-			productCatalog = "Minium",
+			productCatalog = "Minium Demo",
 			productName = "Simple T-Shirt",
 			productType = "Simple");
 
@@ -187,7 +187,7 @@ definition {
 		CommerceLogin.miniumLogin(
 			newPassword = "test",
 			password = "ttest",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "buyer@liferay.com");
 
 		FrontStore.addInitializerProductToCart(
@@ -218,15 +218,15 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
 		CommerceAcceleratorsInitializer.createNewAccountViaFront(accountName = "Commerce Account");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo");
 
 		Pagination.changePagination(itemsPerPage = "60");
 
@@ -241,7 +241,7 @@ definition {
 		AssertTextEquals(
 			key_productName = "Brake Pads",
 			locator1 = "CommerceAccelerators#ORDER_DETAILS_PRICE",
-			value1 = "$ 18.90");
+			value1 = "$ 14.40");
 	}
 
 	@description = "This is a test for COMMERCE-4958."
@@ -304,9 +304,9 @@ definition {
 		property portal.release = "quarantine";
 		property portal.upstream = "quarantine";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
@@ -339,7 +339,7 @@ definition {
 		CommerceLogin.miniumLogin(
 			newPassword = "test",
 			password = "ttest",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "buyer@liferay.com");
 
 		CommerceAcceleratorsInitializer.viewMiniumSelectedAccount(selectedAccount = "Commerce Account");
@@ -352,7 +352,7 @@ definition {
 
 		CommerceLogin.miniumLogin(
 			password = "test",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "test@liferay.com");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
@@ -363,7 +363,7 @@ definition {
 
 		CommerceLogin.miniumLogin(
 			password = "test",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "buyer@liferay.com");
 
 		Click(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN");
@@ -385,9 +385,9 @@ definition {
 	test DeactivateCommerceAccountAdminLogOut {
 		property portal.acceptance = "true";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
@@ -420,7 +420,7 @@ definition {
 		CommerceLogin.miniumLogin(
 			newPassword = "test",
 			password = "ttest",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "buyer@liferay.com");
 
 		CommerceAcceleratorsInitializer.viewMiniumSelectedAccount(selectedAccount = "Commerce Account");
@@ -433,7 +433,7 @@ definition {
 
 		CommerceLogin.miniumLogin(
 			password = "test",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "test@liferay.com");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
@@ -444,7 +444,7 @@ definition {
 
 		CommerceLogin.miniumLogin(
 			password = "test",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "buyer@liferay.com");
 
 		Click(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN");
@@ -465,18 +465,18 @@ definition {
 	@description = "This is for COMMERCE-2658. Can be Drag and Drop fragments on a Minium site page."
 	@priority = "4"
 	test FragmentsCanBeDragAndDroppedToMiniumSitePage {
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		JSONLayout.addPublicLayout(
-			groupName = "Minium",
+			groupName = "Minium Demo",
 			layoutName = "Test Content Page Name",
 			type = "content");
 
 		ContentPagesNavigator.openEditContentPage(
 			pageName = "Test Content Page Name",
-			siteName = "Minium");
+			siteName = "Minium Demo");
 
 		PageEditor.addFragment(
 			collectionName = "Basic Components",
@@ -496,7 +496,7 @@ definition {
 
 		ContentPagesNavigator.openViewContentPage(
 			pageName = "Test Content Page Name",
-			siteName = "Minium");
+			siteName = "Minium Demo");
 
 		ContentPages.viewFragmentText(
 			fragmentName = "heading",
@@ -513,18 +513,18 @@ definition {
 		property environment.acceptance = "true";
 		property portal.acceptance = "true";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
 
-		CommerceNavigator.gotoEntry(entryName = "Minium Portal");
+		CommerceNavigator.gotoEntry(entryName = "Minium Demo Portal");
 
 		CommerceEntry.viewChannelsEntry(
 			channelCurrency = "US Dollar",
-			channelName = "Minium Portal",
-			channelSiteName = "Minium",
+			channelName = "Minium Demo Portal",
+			channelSiteName = "Minium Demo",
 			channelType = "Site",
 			commerceSiteType = "B2B");
 
@@ -532,12 +532,12 @@ definition {
 			category = "Product Management",
 			portlet = "Catalogs");
 
-		CommerceNavigator.gotoEntry(entryName = "Minium");
+		CommerceNavigator.gotoEntry(entryName = "Minium Demo");
 
 		CommerceEntry.viewCatalogsEntry(
 			catalogCurrency = "US Dollar",
 			catalogLanguage = "English (United States)",
-			catalogName = "Minium");
+			catalogName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -624,7 +624,7 @@ definition {
 		property portal.release = "quarantine";
 		property portal.upstream = "quarantine";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
@@ -634,7 +634,7 @@ definition {
 
 		CommerceChannels.activatePaymentMethod(paymentMethod = "Money Order");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
@@ -667,7 +667,7 @@ definition {
 		CommerceLogin.miniumLogin(
 			newPassword = "test",
 			password = "ttest",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "buyer@liferay.com");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
@@ -712,7 +712,7 @@ definition {
 
 		CommerceLogin.miniumLogin(
 			password = "test",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "test@liferay.com");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Placed Orders");
@@ -770,17 +770,17 @@ definition {
 	test MiniumSiteFullFlowCheckingOutViaOrderDetails {
 		property portal.acceptance = "true";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
 
-		CommerceNavigator.gotoTableListEntry(entryName = "Minium Portal");
+		CommerceNavigator.gotoTableListEntry(entryName = "Minium Demo Portal");
 
 		CommerceChannels.activatePaymentMethod(paymentMethod = "Money Order");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
@@ -813,7 +813,7 @@ definition {
 		CommerceLogin.miniumLogin(
 			newPassword = "test",
 			password = "ttest",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "buyer@liferay.com");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
@@ -835,7 +835,7 @@ definition {
 			paymentMethod = "Money Order",
 			productName = "ABS Sensor",
 			productQuantity = "2",
-			productUnitPrice = "50",
+			productUnitPrice = "45",
 			shippingMethod = "Standard");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
@@ -854,7 +854,7 @@ definition {
 
 		CommerceLogin.miniumLogin(
 			password = "test",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "test@liferay.com");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Placed Orders");
@@ -862,20 +862,20 @@ definition {
 		CommerceAcceleratorsInitializer.reviewOrder(
 			orderAuthor = "Buyer User",
 			productName = "ABS Sensor",
-			productPrice = "100.00",
+			productPrice = "72.00",
 			productQuantity = "2",
 			productSku = "MIN93015",
-			productUnitPrice = "50.00");
+			productUnitPrice = "45.00");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
 
 		CommerceAcceleratorsInitializer.reviewOrder(
 			orderAuthor = "Buyer User",
 			productName = "ABS Sensor",
-			productPrice = "100.00",
+			productPrice = "72.00",
 			productQuantity = "2",
 			productSku = "MIN93015",
-			productUnitPrice = "50.00");
+			productUnitPrice = "45.00");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Order Management",
@@ -884,11 +884,11 @@ definition {
 		CommerceNavigator.gotoOrderEntryViaAdmin(status = "Open");
 
 		CommerceOrders.viewOrdersEntry(
-			productListPrice = "50.00",
+			productListPrice = "45.00",
 			productName = "ABS Sensor",
 			productQuantity = "2",
 			productSku = "MIN93015",
-			productTotalPrice = "100.00");
+			productTotalPrice = "72.00");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Order Management",
@@ -901,11 +901,11 @@ definition {
 			addressCity = "Test City",
 			addressZipCode = "Test Zip Code",
 			paymentMethod = "Money Order",
-			productListPrice = "50.00",
+			productListPrice = "45.00",
 			productName = "ABS Sensor",
 			productQuantity = "2",
 			productSku = "MIN93015",
-			productTotalPrice = "100.00");
+			productTotalPrice = "72.00");
 	}
 
 	@description = "COMMERCE-6350. As a buyer, I want to be redirected to Order Details page after clicking 'Review Order' button on mini-cart, if Buyer Order Approval Workflow is active"

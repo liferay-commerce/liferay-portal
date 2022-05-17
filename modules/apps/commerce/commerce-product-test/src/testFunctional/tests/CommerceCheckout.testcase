@@ -21,7 +21,7 @@ definition {
 		property portal.acceptance = "false";
 
 		task ("Given a Minium site with a two buyer users") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 			CommerceEntry.addAccountEntryUser(
 				accountName = "Commerce Account",
@@ -34,7 +34,7 @@ definition {
 				userLastName = "User",
 				userRole = "Buyer",
 				userScreenName = "buyeruser",
-				userSiteMembership = "Minium");
+				userSiteMembership = "Minium Demo");
 
 			CommerceEntry.addAccountEntryUser(
 				accountName = "Commerce Account",
@@ -46,7 +46,7 @@ definition {
 				userLastName = "User 2",
 				userRole = "Buyer",
 				userScreenName = "buyeruser2",
-				userSiteMembership = "Minium");
+				userSiteMembership = "Minium Demo");
 		}
 
 		task ("Given buyer user 1 logs in") {
@@ -54,7 +54,7 @@ definition {
 
 			CommerceLogin.miniumLogin(
 				password = "test",
-				urlAppend = "web/minium",
+				urlAppend = "web/minium-demo",
 				userEmailAddress = "buyer@liferay.com");
 		}
 
@@ -67,7 +67,7 @@ definition {
 
 			CommerceLogin.miniumLogin(
 				password = "test",
-				urlAppend = "web/minium",
+				urlAppend = "web/minium-demo",
 				userEmailAddress = "buyer2@liferay.com");
 		}
 
@@ -103,7 +103,7 @@ definition {
 		property portal.acceptance = "false";
 
 		task ("Given a Minium site with a two buyer users") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 			CommerceEntry.addAccountEntryUser(
 				accountName = "Commerce Account",
@@ -253,7 +253,7 @@ definition {
 		property portal.acceptance = "false";
 
 		task ("Given a Minium site with a two buyer users") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 			CommerceEntry.addAccountEntryUser(
 				accountName = "Commerce Account",
@@ -340,7 +340,7 @@ definition {
 	test AddOrderFromAUserAndCheckoutFromAnotherUserViaOrderDetails {
 		property portal.acceptance = "true";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceEntry.addAccountEntryUser(
 			accountName = "Commerce Account",
@@ -416,7 +416,7 @@ definition {
 	test DeleteOrderAndCheckoutNewOrder {
 		property portal.acceptance = "true";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
