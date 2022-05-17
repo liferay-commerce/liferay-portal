@@ -21,7 +21,7 @@ definition {
 
 		var facetValueNameList = "1 Year Unlimited Mileage Warranty,Limited Lifetime,3 Year Unlimited Mileage Warranty,Steel,Rubber,Aluminum,Cast Iron,Neoprene,Ceramic,Plastic";
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceWidget.updateFacetConfiguration(
 			displayFrequencies = "disable",
@@ -44,7 +44,7 @@ definition {
 		var warrantyTagNameList = "1 Year Unlimited Mileage Warranty,Limited Lifetime,3 Year Unlimited Mileage Warranty";
 		var materialTagNameList = "Steel,Rubber,Aluminum,Cast Iron,Neoprene,Ceramic,Plastic";
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceWidget.updateFacetConfiguration(
 			displayTemplate = "Cloud Layout",
@@ -108,7 +108,7 @@ definition {
 
 		var warrantyLabelNameList = "Limited Lifetime,3 Year Unlimited Mileage Warranty";
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceWidget.updateFacetConfiguration(
 			frequencyThreshold = "30",
@@ -130,7 +130,7 @@ definition {
 	@description = "This is a test for COMMERCE-8399."
 	@priority = "3"
 	test VerifyMaxTermsFieldValue {
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceWidget.updateFacetConfiguration(
 			maxTerms = "101",
@@ -143,7 +143,7 @@ definition {
 
 	@description = "This is for COMMERCE-8384."
 	test VerifySpecificationFacetSetupTab {
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		Portlet.gotoPortletOptions(
 			portletName = "Specification Facet",
@@ -173,7 +173,7 @@ definition {
 			catalogName = "Minium",
 			specificationKey = "material");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceWidget.updateFacetConfiguration(
 			maxTerms = "100",
