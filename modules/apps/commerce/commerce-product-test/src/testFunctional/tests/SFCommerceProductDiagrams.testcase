@@ -197,7 +197,7 @@ definition {
 		}
 
 		task ("When I navigate to a Minium catalog page") {
-			ApplicationsMenu.gotoSite(site = "Minium");
+			ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 		}
@@ -252,7 +252,7 @@ definition {
 		}
 
 		task ("When I go into the product details of the diagram on Minium") {
-			ApplicationsMenu.gotoSite(site = "Minium");
+			ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
@@ -682,7 +682,7 @@ definition {
 		}
 
 		task ("When I go on Minium catalog page") {
-			ApplicationsMenu.gotoSite(site = "Minium");
+			ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 		}
@@ -702,7 +702,7 @@ definition {
 		}
 
 		task ("Then I will be redirected to the Minium Catalog page") {
-			AssertLocation.assertPartialLocation(value1 = "/minium/catalog");
+			AssertLocation.assertPartialLocation(value1 = "/minium-demo/catalog");
 		}
 	}
 
@@ -1079,7 +1079,7 @@ definition {
 		}
 
 		task ("When I go to the Product Details page of the product on Minium") {
-			ApplicationsMenu.gotoSite(site = "Minium");
+			ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
