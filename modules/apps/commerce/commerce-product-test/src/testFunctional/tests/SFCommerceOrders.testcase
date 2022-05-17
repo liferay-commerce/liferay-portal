@@ -21,9 +21,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
@@ -51,9 +51,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
@@ -87,9 +87,9 @@ definition {
 	test EditOrderFromPendingOrderDetailsPage {
 		property portal.acceptance = "false";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
@@ -137,7 +137,7 @@ definition {
 
 		Alert.viewSuccessMessage();
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		FrontStore.addInitializerProductToCart(
 			productName = "U-Joint",
@@ -205,9 +205,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
@@ -265,9 +265,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
@@ -311,9 +311,9 @@ definition {
 	test SearchOrderInPlacedOrdersPage {
 		property portal.acceptance = "false";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
@@ -344,7 +344,7 @@ definition {
 			productUnitPrice = "24",
 			shippingMethod = "Standard");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceAcceleratorsInitializer.createNewOrderFromPendingOrders();
 
@@ -371,7 +371,7 @@ definition {
 			productUnitPrice = "15",
 			shippingMethod = "Standard");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Placed Orders");
 
@@ -391,9 +391,9 @@ definition {
 	test UseADTInPendingOrdersWidget {
 		property portal.acceptance = "false";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		ProductMenu.gotoPortlet(
 			category = "Design",
@@ -405,7 +405,7 @@ definition {
 			adtType = "Open Carts",
 			fieldNameList = "Commerce Orders*");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
@@ -436,9 +436,9 @@ definition {
 	test UseADTInPlacedOrdersWidget {
 		property portal.acceptance = "false";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		ProductMenu.gotoPortlet(
 			category = "Design",
@@ -450,7 +450,7 @@ definition {
 			adtType = "Placed Orders",
 			fieldNameList = "Commerce Orders*");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
@@ -496,9 +496,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
@@ -506,7 +506,7 @@ definition {
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		FrontStore.addInitializerProductToCart(
 			productName = "U-Joint",
@@ -541,7 +541,7 @@ definition {
 			productSkuList = "MIN55861",
 			warehouseName = "Italy");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Placed Orders");
 
