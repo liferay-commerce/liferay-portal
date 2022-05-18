@@ -1101,7 +1101,9 @@ definition {
 			echo("Do not need to click Publish button");
 		}
 		else {
-			Button.clickPublish();
+			Click(
+				key_text = "Publish",
+				locator1 = "Button#ANY");
 		}
 	}
 
