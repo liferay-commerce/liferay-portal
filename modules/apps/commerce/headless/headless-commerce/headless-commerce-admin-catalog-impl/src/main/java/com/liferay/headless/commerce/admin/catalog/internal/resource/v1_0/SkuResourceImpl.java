@@ -19,6 +19,7 @@ import com.liferay.commerce.product.exception.NoSuchCPInstanceException;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.service.CPDefinitionService;
+import com.liferay.commerce.product.service.CPInstanceLocalService;
 import com.liferay.commerce.product.service.CPInstanceService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Product;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Sku;
@@ -46,6 +47,8 @@ import com.liferay.portal.vulcan.fields.NestedFieldId;
 import com.liferay.portal.vulcan.fields.NestedFieldSupport;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
+
+import java.math.BigDecimal;
 
 import java.util.Calendar;
 import java.util.List;
@@ -328,10 +331,18 @@ public class SkuResourceImpl
 
 		DateConfig expirationDateConfig = new DateConfig(expirationCalendar);
 
-		cpInstance = _cpInstanceService.updateCPInstance(
+		cpInstance = _cpInstanceLocalService.updateCPInstance(
 			cpInstance.getCPInstanceId(), sku.getSku(), sku.getGtin(),
 			sku.getManufacturerPartNumber(),
 			GetterUtil.get(sku.getPurchasable(), cpInstance.isPurchasable()),
+			GetterUtil.get(sku.getWidth(), cpInstance.getWidth()),
+			GetterUtil.get(sku.getHeight(), cpInstance.getHeight()),
+			GetterUtil.get(sku.getDepth(), cpInstance.getWeight()),
+			GetterUtil.get(sku.getWeight(), cpInstance.getWeight()),
+			(BigDecimal)GetterUtil.get(sku.getPrice(), cpInstance.getPrice()),
+			(BigDecimal)GetterUtil.get(
+				sku.getPromoPrice(), cpInstance.getPromoPrice()),
+			(BigDecimal)GetterUtil.get(sku.getCost(), cpInstance.getCost()),
 			GetterUtil.get(sku.getPublished(), cpInstance.isPublished()),
 			displayDateConfig.getMonth(), displayDateConfig.getDay(),
 			displayDateConfig.getYear(), displayDateConfig.getHour(),
@@ -353,6 +364,9 @@ public class SkuResourceImpl
 
 	@Reference
 	private CPDefinitionService _cpDefinitionService;
+
+	@Reference
+	private CPInstanceLocalService _cpInstanceLocalService;
 
 	@Reference
 	private CPInstanceService _cpInstanceService;
