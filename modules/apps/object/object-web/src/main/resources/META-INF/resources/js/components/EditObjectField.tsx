@@ -833,6 +833,7 @@ function AttachmentProperties({
 							'/myDocumentsAndMediaFolder'
 						)}
 						label={Liferay.Language.get('storage-folder')}
+						maxLength={255}
 						onChange={({target: {value}}) =>
 							onSettingsChange({
 								name: 'storageDLFolderPath',
