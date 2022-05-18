@@ -857,7 +857,7 @@ definition {
 			key_toggleSwitchLabel = "Minium2 Portal",
 			locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
 
-       	AssertChecked(
+		AssertChecked(
 			key_toggleSwitchLabel = "Minium Portal",
 			locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
 
@@ -883,7 +883,7 @@ definition {
 
 		AssertChecked(
 			key_toggleSwitchLabel = "Minium2 Portal",
-            locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
+			locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
 
 		Button.click(button = "Save");
 

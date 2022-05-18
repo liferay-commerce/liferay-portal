@@ -1091,8 +1091,8 @@ definition {
 					locator1 = "CommerceEntry#ADD_RELATION_CLEAN_INPUT_BUTTON");
 
 				WaitForElementPresent(
-                	key_entryName = "${channel}",
-                	locator1 = "CommerceNavigation#ENTRY_NAME");
+					key_entryName = "${channel}",
+					locator1 = "CommerceNavigation#ENTRY_NAME");
 			}
 		}
 		else {
