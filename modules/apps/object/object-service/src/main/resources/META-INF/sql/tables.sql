@@ -107,7 +107,7 @@ create table ObjectFieldSetting (
 	modifiedDate DATE null,
 	objectFieldId LONG,
 	name VARCHAR(75) null,
-	value VARCHAR(75) null
+	value VARCHAR(255) null
 );
 
 create table ObjectFilter (
