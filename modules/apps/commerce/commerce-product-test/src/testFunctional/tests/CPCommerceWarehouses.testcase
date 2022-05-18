@@ -839,13 +839,6 @@ definition {
 			category = "Inventory Management",
 			portlet = "Warehouses");
 
-		var commerceChannelIds = CommerceJSONChannelsAPI._getCommerceChannelIds();
-
-		for (var commerceChannelId : list "${commerceChannelIds}") {
-			var commerceChannel1 = StringUtil.extractFirst("${commerceChannelIds}", ",");
-			var commerceChannel2 = StringUtil.extractLast("${commerceChannelIds}", ",");
-		}
-
 		Click(
 			key_metadataSetName = "Italy",
 			locator1 = "DocumentsAndMediaMetadataSets#METADATA_SETS_NAME");
@@ -857,10 +850,18 @@ definition {
 		}
 
 		Uncheck.uncheckToggleSwitch(
-			key_toggleSwitchLabel = "${commerceChannel2}",
+			key_toggleSwitchLabel = "Minium2 Portal",
 			locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
 
-		Button.clickSave();
+		AssertNotChecked(
+			key_toggleSwitchLabel = "Minium2 Portal",
+			locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
+
+       	AssertChecked(
+			key_toggleSwitchLabel = "Minium Portal",
+			locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
+
+		Button.click(button = "Save");
 
 		Click(
 			key_metadataSetName = "United States - Northeast",
@@ -873,10 +874,18 @@ definition {
 		}
 
 		Uncheck.uncheckToggleSwitch(
-			key_toggleSwitchLabel = "${commerceChannel1}",
+			key_toggleSwitchLabel = "Minium Portal",
 			locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
 
-		Button.clickSave();
+		AssertNotChecked(
+			key_toggleSwitchLabel = "Minium Portal",
+			locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
+
+		AssertChecked(
+			key_toggleSwitchLabel = "Minium2 Portal",
+            locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
+
+		Button.click(button = "Save");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
