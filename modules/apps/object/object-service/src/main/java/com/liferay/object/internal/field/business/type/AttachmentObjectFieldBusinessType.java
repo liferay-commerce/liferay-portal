@@ -218,6 +218,12 @@ public class AttachmentObjectFieldBusinessType
 						objectFieldName,
 						Collections.singleton("storageDLFolderPath"));
 			}
+			else if (Validator.isNotNull(storageDLFolderPath) &&
+					 (storageDLFolderPath.length() > 255)) {
+
+				throw new ObjectFieldSettingValueException.
+					MustBeLessThan256Characters();
+			}
 
 			for (String directoryName :
 					StringUtil.split(
