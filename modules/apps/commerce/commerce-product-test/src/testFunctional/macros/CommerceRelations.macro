@@ -92,10 +92,6 @@ definition {
 			key_entryName = "${entryName}",
 			key_title = "${title}",
 			locator1 = "CommerceEntry#ADD_RELATION_FIELD_SELECT");
-
-		WaitForElementPresent(
-			key_entryName = "${entryName}",
-			locator1 = "CommerceNavigation#ENTRY_NAME");
 	}
 
 	macro productRelationSetPriority {
