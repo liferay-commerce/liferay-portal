@@ -849,9 +849,9 @@ definition {
 				locator1 = "CommerceEntry#ACCORDION_COLLAPSED");
 		}
 
-		Uncheck.uncheckToggleSwitch(
-			key_toggleSwitchLabel = "Minium2 Portal",
-			locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
+		Click.javaScriptClick(
+			checkboxName = "Minium2 Portal",
+			locator1 = "Checkbox#ANY_CHECKBOX");
 
 		AssertNotChecked(
 			key_toggleSwitchLabel = "Minium2 Portal",
@@ -873,9 +873,9 @@ definition {
 				locator1 = "CommerceEntry#ACCORDION_COLLAPSED");
 		}
 
-		Uncheck.uncheckToggleSwitch(
-			key_toggleSwitchLabel = "Minium Portal",
-			locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
+		Click.javaScriptClick(
+			checkboxName = "Minium Portal",
+			locator1 = "Checkbox#ANY_CHECKBOX");
 
 		AssertNotChecked(
 			key_toggleSwitchLabel = "Minium Portal",

@@ -260,6 +260,8 @@ definition {
 
 		CommerceEntry.setEntryEligibility(channelsEligibility = "Test Channel");
 
+		CommerceEntry.viewEntryEligibility(channelsEligibility = "Test Channel");
+
 		AssertElementPresent(locator1 = "Message#SUCCESS");
 
 		CommerceNavigator.gotoPortlet(
