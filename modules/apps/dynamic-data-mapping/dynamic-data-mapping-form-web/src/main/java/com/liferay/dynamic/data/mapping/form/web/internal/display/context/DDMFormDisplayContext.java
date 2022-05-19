@@ -439,7 +439,9 @@ public class DDMFormDisplayContext {
 
 		ResourceBundle resourceBundle = _getResourceBundle();
 
-		if (_hasWorkflowEnabled(getFormInstance(), getThemeDisplay())) {
+		if (_hasWorkflowEnabled(getFormInstance(), getThemeDisplay()) ||
+			StringUtil.equals(ddmFormInstance.getStorageType(), "object")) {
+
 			DDMFormInstanceRecord ddmFormInstanceRecord =
 				getFormInstanceRecord();
 
