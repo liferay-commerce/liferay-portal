@@ -1086,13 +1086,13 @@ definition {
 					entryName = "${channel}",
 					title = "${title}");
 
-				Click(
-					key_title = "${title}",
-					locator1 = "CommerceEntry#ADD_RELATION_CLEAN_INPUT_BUTTON");
-
 				WaitForElementPresent(
 					key_entryName = "${channel}",
 					locator1 = "CommerceNavigation#ENTRY_NAME");
+
+				Click(
+					key_title = "${title}",
+					locator1 = "CommerceEntry#ADD_RELATION_CLEAN_INPUT_BUTTON");
 			}
 		}
 		else {
