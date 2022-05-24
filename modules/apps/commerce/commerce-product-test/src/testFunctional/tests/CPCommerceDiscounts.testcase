@@ -22,18 +22,18 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(
 			siteName = "Minium 2",
-			siteTemplateName = "Minium");
+			siteTemplateName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
 
 		AssertElementPresent(
-			key_entryName = "Minium Portal",
+			key_entryName = "Minium Demo Portal",
 			locator1 = "CommerceNavigation#ENTRY_NAME");
 
 		AssertElementPresent(
@@ -47,7 +47,7 @@ definition {
 		Click(locator1 = "Button#PLUS");
 
 		CommerceEntry.addNewDiscountsEntry(
-			channelsEligibility = "Minium Portal",
+			channelsEligibility = "Minium Demo Portal",
 			discountAmount = "25",
 			discountName = "Test Discount",
 			discountTarget = "Products",
@@ -61,9 +61,9 @@ definition {
 
 		CommerceEntry.gotoMenuTab(menuTab = "Eligibility");
 
-		CommerceEntry.setEntryEligibility(channelsEligibility = "Minium Portal");
+		CommerceEntry.setEntryEligibility(channelsEligibility = "Minium Demo Portal");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
@@ -108,7 +108,7 @@ definition {
 
 		Refresh();
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
@@ -160,18 +160,18 @@ definition {
 		property portal.acceptance = "false";
 		property portal.upstream = "true";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(
 			siteName = "Minium 2",
-			siteTemplateName = "Minium");
+			siteTemplateName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
 
 		AssertElementPresent(
-			key_entryName = "Minium Portal",
+			key_entryName = "Minium Demo Portal",
 			locator1 = "CommerceNavigation#ENTRY_NAME");
 
 		AssertElementPresent(
@@ -185,7 +185,7 @@ definition {
 		Click(locator1 = "Button#PLUS");
 
 		CommerceEntry.addNewDiscountsEntry(
-			channelsEligibility = "Minium Portal",
+			channelsEligibility = "Minium Demo Portal",
 			discountAmount = "25",
 			discountName = "Test Discount",
 			discountTarget = "Products",
@@ -199,9 +199,9 @@ definition {
 
 		CommerceEntry.gotoMenuTab(menuTab = "Eligibility");
 
-		CommerceEntry.setEntryEligibility(channelsEligibility = "Minium Portal");
+		CommerceEntry.setEntryEligibility(channelsEligibility = "Minium Demo Portal");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
@@ -284,9 +284,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
@@ -337,7 +337,7 @@ definition {
 
 		Button.clickPublish();
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		FrontStore.addInitializerProductToCart(
 			productName = "U-Joint",
@@ -408,7 +408,7 @@ definition {
 
 		Click(locator1 = "Button#CONTINUE");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		Click.clickNoMouseOver(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN");
 
@@ -474,7 +474,7 @@ definition {
 
 		Click(locator1 = "Button#CONTINUE");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		Click.clickNoMouseOver(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN");
 
@@ -510,9 +510,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
@@ -560,7 +560,7 @@ definition {
 
 		Button.clickPublish();
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		Click.clickNoMouseOver(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN");
 

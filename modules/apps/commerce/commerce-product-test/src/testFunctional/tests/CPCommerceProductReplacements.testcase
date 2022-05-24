@@ -21,7 +21,7 @@ definition {
 		property portal.acceptance = "false";
 
 		task ("Given a Minium site with a buyer user") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 			CommerceEntry.addAccountEntryUser(
 				accountName = "Commerce Account",
@@ -34,7 +34,7 @@ definition {
 				userLastName = "User",
 				userRole = "Buyer",
 				userScreenName = "buyeruser",
-				userSiteMembership = "Minium");
+				userSiteMembership = "Minium Demo");
 		}
 
 		task ("And given a discontinued product with an End of Life date") {
@@ -53,7 +53,7 @@ definition {
 
 			CommerceLogin.miniumLogin(
 				password = "test",
-				urlAppend = "web/minium",
+				urlAppend = "web/minium-demo",
 				userEmailAddress = "buyer@liferay.com");
 
 			CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "Test Simple Product");
@@ -72,7 +72,7 @@ definition {
 		property portal.acceptance = "false";
 
 		task ("Given a site created using Minium") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 		}
 
 		task ("And a simple product with a SKU") {
@@ -95,7 +95,7 @@ definition {
 		}
 
 		task ("When the product specialist change the replacement product") {
-			ApplicationsMenu.gotoSite(site = "Minium");
+			ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 

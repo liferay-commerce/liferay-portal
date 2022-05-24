@@ -22,7 +22,7 @@ definition {
 				userLastName = "User",
 				userRole = "Buyer",
 				userScreenName = "buyeruser",
-				userSiteMembership = "Minium");
+				userSiteMembership = "Minium Demo");
 		}
 	}
 
@@ -52,7 +52,7 @@ definition {
 
 			CommerceLogin.miniumLogin(
 				password = "test",
-				urlAppend = "web/minium",
+				urlAppend = "web/minium-demo",
 				userEmailAddress = "buyer@liferay.com");
 
 			CommerceAcceleratorsInitializer.createNewOrderFromAccountSelectorDropdown();
@@ -87,7 +87,7 @@ definition {
 
 			CommerceLogin.miniumLogin(
 				password = "test",
-				urlAppend = "web/minium",
+				urlAppend = "web/minium-demo",
 				userEmailAddress = "buyer@liferay.com");
 
 			CommerceAcceleratorsInitializer.createNewOrderFromPendingOrders();
@@ -117,7 +117,7 @@ definition {
 
 			CommerceLogin.miniumLogin(
 				password = "test",
-				urlAppend = "web/minium",
+				urlAppend = "web/minium-demo",
 				userEmailAddress = "buyer@liferay.com");
 
 			CommerceAcceleratorsInitializer.createNewOrderFromAccountSelectorDropdown();
@@ -147,7 +147,7 @@ definition {
 
 			CommerceLogin.miniumLogin(
 				password = "test",
-				urlAppend = "web/minium",
+				urlAppend = "web/minium-demo",
 				userEmailAddress = "buyer@liferay.com");
 
 			CommerceAcceleratorsInitializer.createNewOrderFromPendingOrders();
@@ -177,7 +177,7 @@ definition {
 
 			CommerceLogin.miniumLogin(
 				password = "test",
-				urlAppend = "web/minium",
+				urlAppend = "web/minium-demo",
 				userEmailAddress = "buyer@liferay.com");
 
 			CommerceAcceleratorsInitializer.createNewOrderFromAccountSelectorDropdown();
@@ -207,7 +207,7 @@ definition {
 
 			CommerceLogin.miniumLogin(
 				password = "test",
-				urlAppend = "web/minium",
+				urlAppend = "web/minium-demo",
 				userEmailAddress = "buyer@liferay.com");
 
 			CommerceAcceleratorsInitializer.createNewOrderFromPendingOrders();
@@ -316,7 +316,7 @@ definition {
 
 			CommerceLogin.miniumLogin(
 				password = "test",
-				urlAppend = "web/minium",
+				urlAppend = "web/minium-demo",
 				userEmailAddress = "buyer@liferay.com");
 
 			FrontStore.addInitializerProductToCart(
@@ -384,7 +384,7 @@ definition {
 
 			CommerceLogin.miniumLogin(
 				password = "test",
-				urlAppend = "web/minium",
+				urlAppend = "web/minium-demo",
 				userEmailAddress = "buyer@liferay.com");
 
 			FrontStore.addInitializerProductToCart(
@@ -420,7 +420,7 @@ definition {
 
 			CommerceLogin.miniumLogin(
 				password = "test",
-				urlAppend = "web/minium",
+				urlAppend = "web/minium-demo",
 				userEmailAddress = "buyer@liferay.com");
 
 			FrontStore.addInitializerProductToCart(
@@ -461,7 +461,7 @@ definition {
 
 			CommerceLogin.miniumLogin(
 				password = "test",
-				urlAppend = "web/minium",
+				urlAppend = "web/minium-demo",
 				userEmailAddress = "buyer@liferay.com");
 
 			CommerceAcceleratorsInitializer.createNewOrderFromAccountSelectorDropdown();
@@ -504,7 +504,7 @@ definition {
 
 			CommerceLogin.miniumLogin(
 				password = "test",
-				urlAppend = "web/minium",
+				urlAppend = "web/minium-demo",
 				userEmailAddress = "buyer@liferay.com");
 
 			CommerceAcceleratorsInitializer.createNewOrderFromPendingOrders();

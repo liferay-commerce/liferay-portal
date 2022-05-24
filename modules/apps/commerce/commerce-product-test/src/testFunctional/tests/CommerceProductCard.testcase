@@ -19,15 +19,15 @@ definition {
 	test AddProductToWishListFromProductCard {
 		property portal.acceptance = "false";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		Click(
 			key_productName = "U-Joint",
 			locator1 = "CommerceEntry#PRODUCT_CARD_ADD_TO_WISH_LIST_BUTTON");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "group/minium/lists");
+		Navigator.openWithAppendToBaseURL(urlAppend = "group/minium-demo/lists");
 
 		AssertTextEquals(
 			locator1 = "AppBuilder#ITEM_ON_THE_TABLE",
@@ -41,13 +41,13 @@ definition {
 
 		var currencyName = "US Dollar";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
 
-		CommerceNavigator.gotoEntry(entryName = "Minium Portal");
+		CommerceNavigator.gotoEntry(entryName = "Minium Demo Portal");
 
 		AssertSelectedLabel(
 			key_title = "Currency",
@@ -60,14 +60,14 @@ definition {
 			category = "Product Management",
 			portlet = "Catalogs");
 
-		CommerceNavigator.gotoEntry(entryName = "Minium");
+		CommerceNavigator.gotoEntry(entryName = "Minium Demo");
 
 		AssertSelectedLabel(
 			key_title = "Currency",
 			locator1 = "CommerceEntry#CATALOGS_FORM",
 			value1 = "${currencyName}");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		AssertTextEquals.assertPartialText(
 			key_productName = "U-Joint",
@@ -82,7 +82,7 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -126,7 +126,7 @@ definition {
 			portlet = "Products");
 
 		CPCommerceCatalog.newProductsEntry(
-			productCatalog = "Minium",
+			productCatalog = "Minium Demo",
 			productName = "Bundled Product",
 			productType = "Simple");
 
@@ -205,7 +205,7 @@ definition {
 
 		Refresh();
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
@@ -238,9 +238,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
 
@@ -268,7 +268,7 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -291,13 +291,13 @@ definition {
 
 		Button.clickPublish();
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
 		CommerceAcceleratorsInitializer.createNewAccountViaFront(accountName = "Test");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		Click(
 			key_productName = "U-Joint",
@@ -321,7 +321,7 @@ definition {
 		var multipleQuantity = "3";
 		var product = "U-Joint";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -340,7 +340,7 @@ definition {
 
 		Button.clickPublish();
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
@@ -393,16 +393,16 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
 			portlet = "Products");
 
 		CPCommerceCatalog.newProductsEntry(
-			productCatalog = "Minium",
+			productCatalog = "Minium Demo",
 			productName = "Simple T-Shirt",
 			productType = "Simple");
 
@@ -421,7 +421,7 @@ definition {
 
 		Button.clickPublish();
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
@@ -449,7 +449,7 @@ definition {
 
 		Button.clickPublish();
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		AssertNotChecked.assertNotCheckedNotVisible(
 			key_productName = "Simple T-Shirt",
@@ -461,9 +461,9 @@ definition {
 	test AssertProductCannotBeAddedToCartIfProductIsNotPurchasable {
 		property portal.acceptance = "true";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
@@ -499,13 +499,13 @@ definition {
 
 		SelectFrameTop(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
 		CommerceAcceleratorsInitializer.createNewAccountViaFront(accountName = "Test");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		AssertElementPresent(
 			key_productName = "U-Joint",
@@ -521,13 +521,13 @@ definition {
 
 		var currencyName = "Euro";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
 
-		CommerceNavigator.gotoEntry(entryName = "Minium Portal");
+		CommerceNavigator.gotoEntry(entryName = "Minium Demo Portal");
 
 		Select(
 			key_title = "Currency",
@@ -541,7 +541,7 @@ definition {
 			locator1 = "CommerceEntry#CATALOGS_FORM",
 			value1 = "${currencyName}");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		AssertTextEquals.assertPartialText(
 			key_productName = "U-Joint",
@@ -554,9 +554,9 @@ definition {
 	test AssertProductCardImageRedirectsToProductDetailsPage {
 		property portal.acceptance = "Intern Test";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		Click(
 			key_productName = "u-joint",
@@ -574,13 +574,13 @@ definition {
 
 		var productName = "Simple T-Shirt";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
 			portlet = "Catalogs");
 
-		CommerceNavigator.gotoEntry(entryName = "Minium");
+		CommerceNavigator.gotoEntry(entryName = "Minium Demo");
 
 		var catalog_default_img = "//img[@class='current-image']";
 
@@ -591,11 +591,11 @@ definition {
 			portlet = "Products");
 
 		CPCommerceCatalog.newProductsEntry(
-			productCatalog = "Minium",
+			productCatalog = "Minium Demo",
 			productName = "${productName}",
 			productType = "Simple");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		WaitForPageLoad();
 
@@ -613,14 +613,14 @@ definition {
 	test AssertProductCardShowsCustomImageIfSet {
 		property portal.acceptance = "false";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
 			portlet = "Products");
 
 		CPCommerceCatalog.newProductsEntry(
-			productCatalog = "Minium",
+			productCatalog = "Minium Demo",
 			productName = "Blue T-Shirt",
 			productType = "Simple");
 
@@ -634,7 +634,7 @@ definition {
 
 		var fileEntryId = CommerceEntry.getFileEntryIDFromProductMedia();
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		AssertElementPresent(
 			key_fileEntryId = "${fileEntryId}",
@@ -647,9 +647,9 @@ definition {
 	test AssertProductIsAvailable {
 		property portal.acceptance = "true";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
 
@@ -666,9 +666,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
 
@@ -682,7 +682,7 @@ definition {
 	test AssertProductNameIsTranslated {
 		property portal.acceptance = "false";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -702,7 +702,7 @@ definition {
 
 		Button.clickPublish();
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceAcceleratorsInitializer.addPortlet(portletName = "Language Selector");
 
@@ -731,7 +731,7 @@ definition {
 		var maximumQuantity = "4";
 		var product = "U-Joint";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -750,7 +750,7 @@ definition {
 
 		Button.clickPublish();
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
@@ -802,7 +802,7 @@ definition {
 		var minimumQuantity = "3";
 		var product = "U-Joint";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -821,7 +821,7 @@ definition {
 
 		Button.clickPublish();
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
@@ -885,7 +885,7 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -929,7 +929,7 @@ definition {
 			portlet = "Products");
 
 		CPCommerceCatalog.newProductsEntry(
-			productCatalog = "Minium",
+			productCatalog = "Minium Demo",
 			productName = "Bundled Product",
 			productType = "Simple");
 
@@ -1013,7 +1013,7 @@ definition {
 
 		Refresh();
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
@@ -1046,9 +1046,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
 
@@ -1066,9 +1066,9 @@ definition {
 	test CompareProductFromProductCard {
 		property portal.acceptance = "false";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		Check.checkToggleSwitch(
 			key_productName = "U-Joint",
@@ -1086,9 +1086,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		Check.checkToggleSwitch(
 			key_productName = "U-Joint",
@@ -1114,9 +1114,9 @@ definition {
 	test RemoveProductFromWishList {
 		property portal.acceptance = "false";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		ClickNoError(
 			key_productName = "U-Joint",
@@ -1136,7 +1136,7 @@ definition {
 			key_productName = "U-Joint",
 			locator1 = "CommerceEntry#PRODUCT_CARD_ADD_TO_WISH_LIST_BUTTON");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "group/minium/lists");
+		Navigator.openWithAppendToBaseURL(urlAppend = "group/minium-demo/lists");
 
 		AssertElementNotPresent(
 			key_userName = "U-Joint",
@@ -1154,7 +1154,7 @@ definition {
 		var multipleQuantity = "5";
 		var product = "U-Joint";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -1178,7 +1178,7 @@ definition {
 
 		Button.clickPublish();
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
@@ -1241,7 +1241,7 @@ definition {
 		var multipleQuantity = "5";
 		var product = "U-Joint";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -1265,7 +1265,7 @@ definition {
 
 		Button.clickPublish();
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
@@ -1329,9 +1329,9 @@ definition {
 	test ViewProductCardPrice {
 		property portal.acceptance = "false";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo");
 
 		AssertTextEquals.assertPartialText(
 			key_productName = "U-Joint",
@@ -1346,9 +1346,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Pricing",
@@ -1357,7 +1357,7 @@ definition {
 		Click(locator1 = "Button#PLUS");
 
 		CommerceEntry.addNewDiscountsEntry(
-			channelsEligibility = "Minium Portal",
+			channelsEligibility = "Minium Demo Portal",
 			discountAmount = "20",
 			discountName = "Test Discount",
 			discountTarget = "Products",
@@ -1369,7 +1369,7 @@ definition {
 
 		Button.clickPublish();
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
 
@@ -1389,9 +1389,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
 
@@ -1409,9 +1409,9 @@ definition {
 	test ViewProductCardSKU {
 		property portal.acceptance = "false";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		AssertElementPresent(
 			key_productName = "U-Joint",
@@ -1424,9 +1424,9 @@ definition {
 	test ViewProductCardStartingPrice {
 		property portal.acceptance = "true";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
 

@@ -147,7 +147,7 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Inventory Management",
@@ -253,7 +253,7 @@ definition {
 
 		PortalSettings.uncheckStrangersVerifyEmailCheckbox();
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -283,7 +283,7 @@ definition {
 
 		Refresh();
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
@@ -312,7 +312,7 @@ definition {
 		CommerceLogin.miniumLogin(
 			newPassword = "test",
 			password = "ttest",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "buyer@liferay.com");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
@@ -338,7 +338,7 @@ definition {
 
 		CommerceLogin.miniumLogin(
 			password = "test",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "test@liferay.com");
 
 		CommerceNavigator.gotoPortlet(
@@ -436,9 +436,9 @@ definition {
 
 		PortalSettings.uncheckStrangersVerifyEmailCheckbox();
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
@@ -467,7 +467,7 @@ definition {
 		CommerceLogin.miniumLogin(
 			newPassword = "test",
 			password = "ttest",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "buyer@liferay.com");
 
 		FrontStore.addInitializerProductToCart(
@@ -491,7 +491,7 @@ definition {
 
 		CommerceLogin.miniumLogin(
 			password = "test",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "test@liferay.com");
 
 		CommerceNavigator.gotoPortlet(
@@ -743,7 +743,7 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -772,7 +772,7 @@ definition {
 
 		Refresh();
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		Type(
 			locator1 = "Search#EMBEDDED_SEARCH_BAR",
@@ -796,11 +796,11 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(
-			siteName = "Minium2",
-			siteTemplateName = "Minium");
+			siteName = "Minium Demo 2",
+			siteTemplateName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -878,7 +878,7 @@ definition {
 
 		Button.clickSave();
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
 
@@ -890,7 +890,7 @@ definition {
 			key_filterOption = "80 in Stock",
 			locator1 = "AppBuilder#CHOOSE_APP_SEARCH_FILTER_BY_OPTION");
 
-		ApplicationsMenu.gotoSite(site = "Minium2");
+		ApplicationsMenu.gotoSite(site = "Minium Demo 2");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
 
@@ -910,7 +910,7 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -1030,7 +1030,7 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Inventory Management",
@@ -1053,7 +1053,7 @@ definition {
 			locator1 = "AppBuilder#ITEM_ON_THE_TABLE_CLICK");
 
 		AssertChecked(
-			checkboxName = "Minium Portal",
+			checkboxName = "Minium Demo Portal",
 			locator1 = "Checkbox#ANY_CHECKBOX_CHECKED");
 	}
 
@@ -1066,7 +1066,7 @@ definition {
 
 		var portalURL = PropsUtil.get("portal.url");
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Inventory Management",

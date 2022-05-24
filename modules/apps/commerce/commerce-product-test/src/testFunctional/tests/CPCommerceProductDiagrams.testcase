@@ -93,12 +93,12 @@ definition {
 	@priority = "4"
 	test CanDragFunctionWorkAfterDoubleClickOnMappedProduct {
 		task ("Given a Minium site") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 		}
 
 		task ("And a diagram product with an image") {
 			CommerceJSONProductsAPI._addCommerceProduct(
-				catalogName = "Minium",
+				catalogName = "Minium Demo",
 				productName = "Diagram T-Shirt",
 				productType = "diagram");
 
@@ -591,7 +591,7 @@ definition {
 	@priority = "3"
 	test UseToolTip {
 		task ("Given a Minium site") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 		}
 
 		task ("And given a diagram product with a diagram image") {
@@ -686,7 +686,7 @@ definition {
 	@priority = "3"
 	test VerifyMappedProductsTableSavesAllPins {
 		task ("Given a minium site") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 		}
 
 		task ("And Given two diagram products") {

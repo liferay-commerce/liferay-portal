@@ -157,7 +157,7 @@ definition {
 		}
 
 		if (isSet(minium)) {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 		}
 	}
 

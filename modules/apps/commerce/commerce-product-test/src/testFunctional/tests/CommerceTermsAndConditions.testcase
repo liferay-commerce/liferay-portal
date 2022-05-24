@@ -23,7 +23,7 @@ definition {
 			userLastName = "User",
 			userRole = "Buyer",
 			userScreenName = "buyeruser",
-			userSiteMembership = "Minium");
+			userSiteMembership = "Minium Demo");
 
 		for (var termsType : list "Delivery,Payment") {
 			CommerceJSONTermsAndConditionsAPI._addCommerceTermsAndConditions(
@@ -48,7 +48,7 @@ definition {
 			category = "Store Management",
 			portlet = "Channels");
 
-		CommerceNavigator.gotoTableListEntry(entryName = "Minium Portal");
+		CommerceNavigator.gotoTableListEntry(entryName = "Minium Demo Portal");
 
 		CommerceEntry.clickTableEntryEditButton(
 			entryName = "Flat Rate",
@@ -103,7 +103,7 @@ definition {
 
 		CommerceLogin.miniumLogin(
 			password = "test",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "buyer@liferay.com");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
@@ -148,7 +148,7 @@ definition {
 			category = "Store Management",
 			portlet = "Channels");
 
-		CommerceNavigator.gotoTableListEntry(entryName = "Minium Portal");
+		CommerceNavigator.gotoTableListEntry(entryName = "Minium Demo Portal");
 
 		CommerceEntry.clickTableEntryEditButton(
 			entryName = "Flat Rate",
@@ -192,7 +192,7 @@ definition {
 
 		CommerceLogin.miniumLogin(
 			password = "test",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "buyer@liferay.com");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
@@ -227,7 +227,7 @@ definition {
 
 		CommerceLogin.miniumLogin(
 			password = "test",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "test@liferay.com");
 
 		ApplicationsMenu.gotoPortlet(
@@ -252,7 +252,7 @@ definition {
 
 		CommerceLogin.miniumLogin(
 			password = "test",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "buyer@liferay.com");
 
 		CommerceNavigator.gotoPortlet(
@@ -284,7 +284,7 @@ definition {
 			category = "Store Management",
 			portlet = "Channels");
 
-		CommerceNavigator.gotoTableListEntry(entryName = "Minium Portal");
+		CommerceNavigator.gotoTableListEntry(entryName = "Minium Demo Portal");
 
 		CommerceEntry.clickTableEntryEditButton(
 			entryName = "Flat Rate",
@@ -328,7 +328,7 @@ definition {
 
 		CommerceLogin.miniumLogin(
 			password = "test",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "buyer@liferay.com");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
@@ -363,7 +363,7 @@ definition {
 
 		CommerceLogin.miniumLogin(
 			password = "test",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "test@liferay.com");
 
 		ApplicationsMenu.gotoPortlet(
@@ -388,7 +388,7 @@ definition {
 
 		CommerceLogin.miniumLogin(
 			password = "test",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "buyer@liferay.com");
 
 		CommerceNavigator.gotoPortlet(
@@ -420,7 +420,7 @@ definition {
 			category = "Store Management",
 			portlet = "Channels");
 
-		CommerceNavigator.gotoTableListEntry(entryName = "Minium Portal");
+		CommerceNavigator.gotoTableListEntry(entryName = "Minium Demo Portal");
 
 		CommerceEntry.clickTableEntryEditButton(
 			entryName = "Flat Rate",
@@ -464,7 +464,7 @@ definition {
 
 		CommerceLogin.miniumLogin(
 			password = "test",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "buyer@liferay.com");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
@@ -522,7 +522,7 @@ definition {
 			category = "Store Management",
 			portlet = "Channels");
 
-		CommerceNavigator.gotoTableListEntry(entryName = "Minium Portal");
+		CommerceNavigator.gotoTableListEntry(entryName = "Minium Demo Portal");
 
 		CommerceEntry.clickTableEntryEditButton(
 			entryName = "Flat Rate",
@@ -550,7 +550,7 @@ definition {
 
 		CommerceLogin.miniumLogin(
 			password = "test",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "buyer@liferay.com");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
@@ -644,7 +644,7 @@ definition {
 			category = "Store Management",
 			portlet = "Channels");
 
-		CommerceNavigator.gotoTableListEntry(entryName = "Minium Portal");
+		CommerceNavigator.gotoTableListEntry(entryName = "Minium Demo Portal");
 
 		CommerceChannels.activatePaymentMethod(paymentMethod = "Money Order");
 
@@ -666,7 +666,7 @@ definition {
 
 		CommerceLogin.miniumLogin(
 			password = "test",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "buyer@liferay.com");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
@@ -761,7 +761,7 @@ definition {
 			category = "Store Management",
 			portlet = "Channels");
 
-		CommerceNavigator.gotoTableListEntry(entryName = "Minium Portal");
+		CommerceNavigator.gotoTableListEntry(entryName = "Minium Demo Portal");
 
 		CommerceEntry.clickTableEntryEditButton(
 			entryName = "Flat Rate",
@@ -805,7 +805,7 @@ definition {
 
 		CommerceLogin.miniumLogin(
 			password = "test",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "buyer@liferay.com");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
@@ -839,7 +839,7 @@ definition {
 
 		CommerceLogin.miniumLogin(
 			password = "test",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "test@liferay.com");
 
 		CommerceNavigator.gotoPortlet(
@@ -890,7 +890,7 @@ definition {
 			category = "Store Management",
 			portlet = "Channels");
 
-		CommerceNavigator.gotoTableListEntry(entryName = "Minium Portal");
+		CommerceNavigator.gotoTableListEntry(entryName = "Minium Demo Portal");
 
 		CommerceEntry.clickTableEntryEditButton(
 			entryName = "Flat Rate",
@@ -918,7 +918,7 @@ definition {
 
 		CommerceLogin.miniumLogin(
 			password = "test",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "buyer@liferay.com");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
@@ -999,7 +999,7 @@ definition {
 			category = "Store Management",
 			portlet = "Channels");
 
-		CommerceNavigator.gotoTableListEntry(entryName = "Minium Portal");
+		CommerceNavigator.gotoTableListEntry(entryName = "Minium Demo Portal");
 
 		CommerceChannels.activatePaymentMethod(paymentMethod = "Money Order");
 
@@ -1021,7 +1021,7 @@ definition {
 
 		CommerceLogin.miniumLogin(
 			password = "test",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "buyer@liferay.com");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
@@ -1100,7 +1100,7 @@ definition {
 			category = "Store Management",
 			portlet = "Channels");
 
-		CommerceNavigator.gotoTableListEntry(entryName = "Minium Portal");
+		CommerceNavigator.gotoTableListEntry(entryName = "Minium Demo Portal");
 
 		CommerceEntry.clickTableEntryEditButton(
 			entryName = "Flat Rate",
@@ -1128,7 +1128,7 @@ definition {
 
 		CommerceLogin.miniumLogin(
 			password = "test",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "buyer@liferay.com");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
@@ -1161,7 +1161,7 @@ definition {
 
 		CommerceLogin.miniumLogin(
 			password = "test",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "test@liferay.com");
 
 		CommerceNavigator.gotoPortlet(
@@ -1191,7 +1191,7 @@ definition {
 			category = "Store Management",
 			portlet = "Channels");
 
-		CommerceNavigator.gotoTableListEntry(entryName = "Minium Portal");
+		CommerceNavigator.gotoTableListEntry(entryName = "Minium Demo Portal");
 
 		CommerceChannels.activatePaymentMethod(paymentMethod = "Money Order");
 
@@ -1213,7 +1213,7 @@ definition {
 
 		CommerceLogin.miniumLogin(
 			password = "test",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "buyer@liferay.com");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
@@ -1247,7 +1247,7 @@ definition {
 
 		CommerceLogin.miniumLogin(
 			password = "test",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "test@liferay.com");
 
 		CommerceNavigator.gotoPortlet(

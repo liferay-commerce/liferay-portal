@@ -21,7 +21,7 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Pricing",
@@ -30,7 +30,7 @@ definition {
 		Click(locator1 = "Button#PLUS");
 
 		CommerceEntry.addNewPriceListsEntry(
-			priceListCatalog = "Minium",
+			priceListCatalog = "Minium Demo",
 			priceListCurrency = "USD",
 			priceListName = "pricelist1");
 
@@ -59,7 +59,7 @@ definition {
 
 		Refresh();
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "U-Joint");
 
@@ -81,7 +81,7 @@ definition {
 
 		Refresh();
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "U-Joint");
 
@@ -105,7 +105,7 @@ definition {
 			key_fieldName = "Remove",
 			locator1 = "FormViewBuilder#OBJECT_FIELD_BUTTON_DROPDOWN");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "U-Joint");
 
@@ -121,7 +121,7 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Pricing",
@@ -130,7 +130,7 @@ definition {
 		Click(locator1 = "Button#PLUS");
 
 		CommerceEntry.addNewPriceListsEntry(
-			priceListCatalog = "Minium",
+			priceListCatalog = "Minium Demo",
 			priceListCurrency = "USD",
 			priceListName = "Price List Test");
 
@@ -172,7 +172,7 @@ definition {
 
 		Click(locator1 = "Icon#CLOSE");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo");
 
 		Type(
 			locator1 = "AppBuilder#SEARCH_BAR_INPUT",
@@ -242,7 +242,7 @@ definition {
 
 		Click(locator1 = "Icon#CLOSE");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo");
 
 		Type(
 			locator1 = "AppBuilder#SEARCH_BAR_INPUT",
@@ -312,7 +312,7 @@ definition {
 
 		Click(locator1 = "Icon#CLOSE");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo");
 
 		Type(
 			locator1 = "AppBuilder#SEARCH_BAR_INPUT",
@@ -401,7 +401,7 @@ definition {
 
 		Click(locator1 = "Icon#CLOSE");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo");
 
 		Click(
 			key_productName = "U-Joint",
@@ -433,7 +433,7 @@ definition {
 
 		Click(locator1 = "Icon#CLOSE");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo");
 
 		var curr_productName = "";
 		var curr_price = "";
@@ -528,7 +528,7 @@ definition {
 
 			var aux_iterator = ${aux_iterator} + 1;
 
-			ApplicationsMenu.gotoSite(site = "Minium");
+			ApplicationsMenu.gotoSite(site = "Minium Demo");
 		}
 
 		CommerceNavigator.gotoPortlet(
@@ -563,7 +563,7 @@ definition {
 
 		Click(locator1 = "Icon#CLOSE");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo");
 
 		AnnouncementsPortlet.configurePaginationCP(itemsPerPage = "60");
 
@@ -613,7 +613,7 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		Accounts.openAccountsAdmin();
 
@@ -653,7 +653,7 @@ definition {
 		Click(locator1 = "Button#PLUS");
 
 		CommerceEntry.addNewDiscountsEntry(
-			channelsEligibility = "Minium Portal",
+			channelsEligibility = "Minium Demo Portal",
 			discountAmount = "25",
 			discountName = "Test Discount",
 			discountTarget = "Products",
@@ -717,9 +717,9 @@ definition {
 
 		Button.clickPublish();
 
-		CommerceEntry.setEntryEligibility(channelsEligibility = "Minium Portal");
+		CommerceEntry.setEntryEligibility(channelsEligibility = "Minium Demo Portal");
 
-		CommerceEntry.viewEntryEligibility(channelsEligibility = "Minium Portal");
+		CommerceEntry.viewEntryEligibility(channelsEligibility = "Minium Demo Portal");
 
 		Button.clickPublish();
 
@@ -729,10 +729,10 @@ definition {
 
 		Navigator.gotoNavTab(navTab = "Eligibility");
 
-		CommerceEntry.viewEntryEligibility(channelsEligibility = "Minium Portal");
+		CommerceEntry.viewEntryEligibility(channelsEligibility = "Minium Demo Portal");
 
 		Click(
-			key_value = "Minium Portal",
+			key_value = "Minium Demo Portal",
 			locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS");
 
 		MenuItem.click(menuItem = "Remove");
@@ -747,7 +747,7 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Pricing",
@@ -824,13 +824,13 @@ definition {
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(
 			siteName = "Site1",
-			siteTemplateName = "Minium");
+			siteTemplateName = "Minium Demo");
 
 		ApplicationsMenu.gotoSite(site = "Site1");
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(
 			siteName = "Site2",
-			siteTemplateName = "Minium");
+			siteTemplateName = "Minium Demo");
 
 		ApplicationsMenu.gotoSite(site = "Site1");
 
@@ -1105,7 +1105,7 @@ definition {
 		// TODO COMMERCE-9089 Find alternative to having a pause to wait for a timed expiration and publication
 
 		task ("Given a Minium site with a buyer user") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 			CommerceEntry.addAccountEntryUser(
 				accountName = "Commerce Account",
@@ -1118,12 +1118,12 @@ definition {
 				userLastName = "User",
 				userRole = "Buyer",
 				userScreenName = "buyeruser",
-				userSiteMembership = "Minium");
+				userSiteMembership = "Minium Demo");
 		}
 
 		task ("And given a new Test Price List") {
 			CommerceJSONPriceListsAndPromotionsAPI._addPriceList(
-				catalogName = "Minium",
+				catalogName = "Minium Demo",
 				currencyCode = "USD",
 				priceListName = "Test Price List");
 		}
@@ -1177,7 +1177,7 @@ definition {
 
 			CommerceLogin.miniumLogin(
 				password = "test",
-				urlAppend = "web/minium",
+				urlAppend = "web/minium-demo",
 				userEmailAddress = "buyer@liferay.com");
 		}
 
@@ -1487,9 +1487,9 @@ definition {
 		property portal.acceptance = "false";
 		property portal.upstream = "true";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
@@ -1510,7 +1510,7 @@ definition {
 		Click(locator1 = "Button#PLUS");
 
 		CommerceEntry.addNewPriceListsEntry(
-			priceListCatalog = "Minium",
+			priceListCatalog = "Minium Demo",
 			priceListCurrency = "USD",
 			priceListName = "Test Price List");
 
@@ -1536,7 +1536,7 @@ definition {
 
 		CommercePriceLists.editPriceListEntryPrice(priceListEntryPrice = "45.00");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
 
@@ -1582,7 +1582,7 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Pricing",
@@ -1614,7 +1614,7 @@ definition {
 		Click(locator1 = "Button#PLUS");
 
 		CommerceEntry.addNewDiscountsEntry(
-			channelsEligibility = "Minium Portal",
+			channelsEligibility = "Minium Demo Portal",
 			discountAmount = "20",
 			discountName = "Test Discount",
 			discountTarget = "Product Groups",
@@ -1631,7 +1631,7 @@ definition {
 		Click(locator1 = "Button#PLUS");
 
 		CommerceEntry.addNewPriceListsEntry(
-			priceListCatalog = "Minium",
+			priceListCatalog = "Minium Demo",
 			priceListCurrency = "USD",
 			priceListName = "Test Price List");
 
@@ -1817,7 +1817,7 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		ApplicationsMenu.gotoPortlet(
 			category = "Configuration",
@@ -1849,7 +1849,7 @@ definition {
 		Click(locator1 = "Button#PLUS");
 
 		CommerceEntry.addNewPriceListsEntry(
-			priceListCatalog = "Minium",
+			priceListCatalog = "Minium Demo",
 			priceListCurrency = "USD",
 			priceListName = "Test Price List");
 
@@ -1937,7 +1937,7 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		ApplicationsMenu.gotoPortlet(
 			category = "Configuration",
@@ -1969,7 +1969,7 @@ definition {
 		Click(locator1 = "Button#PLUS");
 
 		CommerceEntry.addNewPriceListsEntry(
-			priceListCatalog = "Minium",
+			priceListCatalog = "Minium Demo",
 			priceListCurrency = "USD",
 			priceListName = "Test Price List");
 
@@ -2060,7 +2060,7 @@ definition {
 
 		Refresh();
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		AssertTextEquals(
 			key_productName = "U-Joint",
@@ -2095,7 +2095,7 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		ApplicationsMenu.gotoPortlet(
 			category = "Configuration",
@@ -2127,7 +2127,7 @@ definition {
 		Click(locator1 = "Button#PLUS");
 
 		CommerceEntry.addNewPriceListsEntry(
-			priceListCatalog = "Minium",
+			priceListCatalog = "Minium Demo",
 			priceListCurrency = "USD",
 			priceListName = "Test Price List");
 
@@ -2237,7 +2237,7 @@ definition {
 
 		Refresh();
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
@@ -2290,7 +2290,7 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		ApplicationsMenu.gotoPortlet(
 			category = "Configuration",
@@ -2322,7 +2322,7 @@ definition {
 		Click(locator1 = "Button#PLUS");
 
 		CommerceEntry.addNewPriceListsEntry(
-			priceListCatalog = "Minium",
+			priceListCatalog = "Minium Demo",
 			priceListCurrency = "USD",
 			priceListName = "Test Price List");
 
@@ -2413,7 +2413,7 @@ definition {
 			Refresh();
 		}
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		for (var productName : list "U-Joint,ABS Sensor") {
 			if ("${productName}" == "ABS Sensor") {

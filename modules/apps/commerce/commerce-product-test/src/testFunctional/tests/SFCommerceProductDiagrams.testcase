@@ -589,7 +589,7 @@ definition {
 
 			CommerceLogin.miniumLogin(
 				password = "test",
-				urlAppend = "web/minium",
+				urlAppend = "web/minium-demo",
 				userEmailAddress = "buyer@liferay.com");
 
 			CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "Diagram1");
@@ -864,7 +864,7 @@ definition {
 		}
 
 		task ("When I go into the product details of the diagram on Minium") {
-			ApplicationsMenu.gotoSite(site = "Minium");
+			ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 

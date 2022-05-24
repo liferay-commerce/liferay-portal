@@ -21,7 +21,7 @@ definition {
 
 		var facetValueNameList = "6,12,24,48,112";
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceWidget.updateFacetConfiguration(
 			displayFrequencies = "disable",
@@ -43,7 +43,7 @@ definition {
 
 		var packageQuantityTagNameList = "6,12,24,48,112";
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceWidget.updateFacetConfiguration(
 			displayTemplate = "Cloud Layout",
@@ -89,7 +89,7 @@ definition {
 
 		var packageQuantityLabelNameList = "6,12,24,112";
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceWidget.updateFacetConfiguration(
 			frequencyThreshold = "2",
@@ -111,7 +111,7 @@ definition {
 	@description = "This is a test for COMMERCE-8646."
 	@priority = "3"
 	test VerifyMaxTermsFieldValue {
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceWidget.updateFacetConfiguration(
 			maxTerms = "101",
@@ -124,7 +124,7 @@ definition {
 
 	@description = "This is for COMMERCE-8646."
 	test VerifyOptionFacetSetupTab {
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		Portlet.gotoPortletOptions(
 			portletName = "Option Facet",
@@ -151,10 +151,10 @@ definition {
 
 	test View100Terms {
 		CommerceJSONOptionsAPI._addCommerceProductsWithOptionValues(
-			catalogName = "Minium",
+			catalogName = "Minium Demo",
 			optionKey = "package-quantity");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceWidget.updateFacetConfiguration(
 			maxTerms = "100",

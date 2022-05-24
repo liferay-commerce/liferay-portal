@@ -630,7 +630,7 @@ definition {
 			category = "Store Management",
 			portlet = "Channels");
 
-		CommerceNavigator.gotoTableListEntry(entryName = "Minium Portal");
+		CommerceNavigator.gotoTableListEntry(entryName = "Minium Demo Portal");
 
 		CommerceChannels.activatePaymentMethod(paymentMethod = "Money Order");
 

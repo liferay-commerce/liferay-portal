@@ -170,7 +170,7 @@ definition {
 
 	test View100Terms {
 		CommerceJSONSpecificationsAPI._addCommerceProductsWithSpecifications(
-			catalogName = "Minium",
+			catalogName = "Minium Demo",
 			specificationKey = "material");
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");

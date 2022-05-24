@@ -19,14 +19,14 @@ definition {
 	test AddASKU {
 		property portal.acceptance = "false";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
 			portlet = "Products");
 
 		CPCommerceCatalog.newProductsEntry(
-			productCatalog = "Minium",
+			productCatalog = "Minium Demo",
 			productName = "Simple T-Shirt",
 			productType = "Simple");
 
@@ -121,14 +121,14 @@ definition {
 	test EditASKU {
 		property portal.acceptance = "false";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
 			portlet = "Products");
 
 		CPCommerceCatalog.newProductsEntry(
-			productCatalog = "Minium",
+			productCatalog = "Minium Demo",
 			productName = "Simple T-Shirt",
 			productType = "Simple");
 

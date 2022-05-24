@@ -26,7 +26,7 @@ definition {
 		// TODO COMMERCE-9089 Find alternative to having a pause to wait for a timed expiration and publication
 
 		task ("Given a Minium site with a buyer user") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 			CommerceEntry.addAccountEntryUser(
 				accountName = "Commerce Account",
@@ -39,12 +39,12 @@ definition {
 				userLastName = "User",
 				userRole = "Buyer",
 				userScreenName = "buyeruser",
-				userSiteMembership = "Minium");
+				userSiteMembership = "Minium Demo");
 		}
 
 		task ("And given a new Test Promotion") {
 			CommerceJSONPriceListsAndPromotionsAPI._addPromotion(
-				catalogName = "Minium",
+				catalogName = "Minium Demo",
 				currencyCode = "USD",
 				promotionName = "Test Promotion");
 		}
@@ -98,7 +98,7 @@ definition {
 
 			CommerceLogin.miniumLogin(
 				password = "test",
-				urlAppend = "web/minium",
+				urlAppend = "web/minium-demo",
 				userEmailAddress = "buyer@liferay.com");
 		}
 

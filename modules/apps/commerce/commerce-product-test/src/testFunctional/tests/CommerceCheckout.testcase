@@ -116,7 +116,7 @@ definition {
 				userLastName = "User",
 				userRole = "Buyer",
 				userScreenName = "buyeruser",
-				userSiteMembership = "Minium");
+				userSiteMembership = "Minium Demo");
 
 			CommerceEntry.addAccountEntryUser(
 				accountName = "Commerce Account",
@@ -128,7 +128,7 @@ definition {
 				userLastName = "User 2",
 				userRole = "Buyer",
 				userScreenName = "buyeruser2",
-				userSiteMembership = "Minium");
+				userSiteMembership = "Minium Demo");
 		}
 
 		task ("Given buyer user 1 logs in") {
@@ -136,7 +136,7 @@ definition {
 
 			CommerceLogin.miniumLogin(
 				password = "test",
-				urlAppend = "web/minium",
+				urlAppend = "web/minium-demo",
 				userEmailAddress = "buyer@liferay.com");
 		}
 
@@ -149,7 +149,7 @@ definition {
 
 			CommerceLogin.miniumLogin(
 				password = "test",
-				urlAppend = "web/minium",
+				urlAppend = "web/minium-demo",
 				userEmailAddress = "buyer2@liferay.com");
 		}
 
@@ -266,7 +266,7 @@ definition {
 				userLastName = "User",
 				userRole = "Buyer",
 				userScreenName = "buyeruser",
-				userSiteMembership = "Minium");
+				userSiteMembership = "Minium Demo");
 
 			CommerceEntry.addAccountEntryUser(
 				accountName = "Commerce Account",
@@ -278,7 +278,7 @@ definition {
 				userLastName = "User 2",
 				userRole = "Buyer",
 				userScreenName = "buyeruser2",
-				userSiteMembership = "Minium");
+				userSiteMembership = "Minium Demo");
 		}
 
 		task ("Given buyer user 1 logs in") {
@@ -286,7 +286,7 @@ definition {
 
 			CommerceLogin.miniumLogin(
 				password = "test",
-				urlAppend = "web/minium",
+				urlAppend = "web/minium-demo",
 				userEmailAddress = "buyer@liferay.com");
 		}
 
@@ -305,7 +305,7 @@ definition {
 
 			CommerceLogin.miniumLogin(
 				password = "test",
-				urlAppend = "web/minium",
+				urlAppend = "web/minium-demo",
 				userEmailAddress = "buyer2@liferay.com");
 		}
 
@@ -353,7 +353,7 @@ definition {
 			userLastName = "User",
 			userRole = "Buyer",
 			userScreenName = "buyeruser",
-			userSiteMembership = "Minium");
+			userSiteMembership = "Minium Demo");
 
 		CommerceEntry.addAccountEntryUser(
 			accountName = "Commerce Account",
@@ -365,13 +365,13 @@ definition {
 			userLastName = "User 2",
 			userRole = "Buyer",
 			userScreenName = "buyeruser2",
-			userSiteMembership = "Minium");
+			userSiteMembership = "Minium Demo");
 
 		User.logoutPG();
 
 		CommerceLogin.miniumLogin(
 			password = "test",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "buyer@liferay.com");
 
 		FrontStore.addInitializerProductToCart(
@@ -386,7 +386,7 @@ definition {
 
 		CommerceLogin.miniumLogin(
 			password = "test",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "buyer2@liferay.com");
 
 		AssertTextEquals(
@@ -418,7 +418,7 @@ definition {
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
@@ -447,7 +447,7 @@ definition {
 		CommerceLogin.miniumLogin(
 			newPassword = "test",
 			password = "ttest",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "buyer@liferay.com");
 
 		FrontStore.addInitializerProductToCart(

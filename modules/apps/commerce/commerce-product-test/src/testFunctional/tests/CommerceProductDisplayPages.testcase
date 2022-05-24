@@ -18,13 +18,13 @@ definition {
 	@priority = "3"
 	test AssertOldLogicIsAppliedIfDefaultProductDisplayPageIsNotSet {
 		task ("Given a Minium site") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 		}
 
 		task ("And given no default product display page is set") {
 			CommerceChannels.openChannelsAdmin();
 
-			CommerceNavigator.gotoEntry(entryName = "Minium Portal");
+			CommerceNavigator.gotoEntry(entryName = "Minium Demo Portal");
 
 			CommerceEntry.gotoMenuTab(menuTab = "Product Display Pages");
 
@@ -36,7 +36,7 @@ definition {
 		}
 
 		task ("When I click on a product in the catalog page") {
-			ApplicationsMenu.gotoSite(site = "Minium");
+			ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 			CommerceNavigator.gotoProductDetails(productName = "U-Joint");
 		}
@@ -44,7 +44,7 @@ definition {
 		task ("Then I should be redirected to the product detail page") {
 			ControlMenu.viewHeaderTitle(headerTitle = "Product Detail");
 
-			AssertLocation.assertPartialLocation(value1 = "group/minium/p/u-joint");
+			AssertLocation.assertPartialLocation(value1 = "group/minium-demo/p/u-joint");
 
 			FrontStore.assertProductDetails(
 				productListPrice = "24.00",
@@ -57,19 +57,19 @@ definition {
 	@priority = "5"
 	test CanSelectChangeAndRemoveDefaultProductDisplayPage {
 		task ("Given a Minium site") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 		}
 
 		task ("And given the Minium site has two pages with a Product Details widget") {
 			for (var pageNum : list "1,2") {
 				JSONLayout.addPublicLayout(
-					groupName = "Minium",
+					groupName = "Minium Demo",
 					layoutName = "Test Public Widget Page ${pageNum}");
 			}
 
 			for (var widgetNum : list "1,2") {
 				JSONLayout.addWidgetToPublicLayout(
-					groupName = "Minium",
+					groupName = "Minium Demo",
 					layoutName = "Test Public Widget Page ${widgetNum}",
 					widgetName = "Product Details");
 			}
@@ -78,7 +78,7 @@ definition {
 		task ("And given the user set a widget page as Default Product Display Page by navigating to Channels page") {
 			CommerceChannels.openChannelsAdmin();
 
-			CommerceNavigator.gotoEntry(entryName = "Minium Portal");
+			CommerceNavigator.gotoEntry(entryName = "Minium Demo Portal");
 
 			CommerceEntry.gotoMenuTab(menuTab = "Product Display Pages");
 
@@ -116,19 +116,19 @@ definition {
 	@priority = "5"
 	test CanSelectChangeAndRemoveOverrideDefaultProductDisplayPage {
 		task ("Given a Minium site") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 		}
 
 		task ("And given the Minium site has two pages with a Product Details widget") {
 			for (var pageNum : list "1,2") {
 				JSONLayout.addPublicLayout(
-					groupName = "Minium",
+					groupName = "Minium Demo",
 					layoutName = "Test Public Widget Page ${pageNum}");
 			}
 
 			for (var widgetNum : list "1,2") {
 				JSONLayout.addWidgetToPublicLayout(
-					groupName = "Minium",
+					groupName = "Minium Demo",
 					layoutName = "Test Public Widget Page ${widgetNum}",
 					widgetName = "Product Details");
 			}
@@ -137,7 +137,7 @@ definition {
 		task ("When the user sets the first page as Override Default Product Display Page for a product") {
 			CommerceChannels.openChannelsAdmin();
 
-			CommerceNavigator.gotoEntry(entryName = "Minium Portal");
+			CommerceNavigator.gotoEntry(entryName = "Minium Demo Portal");
 
 			CommerceEntry.gotoMenuTab(menuTab = "Product Display Pages");
 
@@ -190,18 +190,18 @@ definition {
 	@priority = "3"
 	test OverrideDefaultProductDisplayPageForDifferentProducts {
 		task ("Given a Minium site") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 		}
 
 		task ("And given the Minium site has a public content page with a Product Details widget") {
 			JSONLayout.addPublicLayout(
-				groupName = "Minium",
+				groupName = "Minium Demo",
 				layoutName = "Test Public Content Page",
 				type = "content");
 
 			ContentPagesNavigator.openEditContentPage(
 				pageName = "Test Public Content Page",
-				siteName = "Minium");
+				siteName = "Minium Demo");
 
 			PageEditor.addWidget(portletName = "Product Details");
 
@@ -210,25 +210,25 @@ definition {
 
 		task ("And given the Minium site has a public widget page with a Product Details widget") {
 			JSONLayout.addPublicLayout(
-				groupName = "Minium",
+				groupName = "Minium Demo",
 				layoutName = "Test Public Widget Page");
 
 			JSONLayout.addWidgetToPublicLayout(
-				groupName = "Minium",
+				groupName = "Minium Demo",
 				layoutName = "Test Public Widget Page",
 				widgetName = "Product Details");
 		}
 
 		task ("And given the Minium site has a private content page with a Product Details widget") {
 			JSONLayout.addPrivateLayout(
-				groupName = "Minium",
+				groupName = "Minium Demo",
 				layoutName = "Test Private Content Page",
 				type = "content");
 
 			ContentPagesNavigator.openEditContentPage(
 				pageName = "Test Private Content Page",
 				privateLayout = "true",
-				siteName = "Minium");
+				siteName = "Minium Demo");
 
 			PageEditor.addWidget(portletName = "Product Details");
 
@@ -240,7 +240,7 @@ definition {
 		task ("And given the Test Public Content Page is set as Default Product Display Page") {
 			CommerceChannels.openChannelsAdmin();
 
-			CommerceNavigator.gotoEntry(entryName = "Minium Portal");
+			CommerceNavigator.gotoEntry(entryName = "Minium Demo Portal");
 
 			CommerceEntry.gotoMenuTab(menuTab = "Product Display Pages");
 
@@ -300,7 +300,7 @@ definition {
 		}
 
 		task ("When I click on U-Joint in the Catalog page") {
-			ApplicationsMenu.gotoSite(site = "Minium");
+			ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 			CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "U-Joint");
 		}
@@ -308,7 +308,7 @@ definition {
 		task ("Then I should be redirected to the Test Public Content Page with the Product Details widget showing the product details") {
 			ControlMenu.viewHeaderTitle(headerTitle = "Test Public Content Page");
 
-			AssertLocation.assertPartialLocation(value1 = "web/minium/p/u-joint");
+			AssertLocation.assertPartialLocation(value1 = "web/minium-demo/p/u-joint");
 
 			FrontStore.assertProductDetails(
 				productListPrice = "24.00",
@@ -317,7 +317,7 @@ definition {
 		}
 
 		task ("When I click on Torque Converters in the Catalog page") {
-			ApplicationsMenu.gotoSite(site = "Minium");
+			ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 			CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "Torque Converters");
 		}
@@ -325,7 +325,7 @@ definition {
 		task ("Then I should be redirected to the Test Public Widget Page with the Product Details widget showing the product details") {
 			ControlMenu.viewHeaderTitle(headerTitle = "Test Public Widget Page");
 
-			AssertLocation.assertPartialLocation(value1 = "web/minium/p/torque-converter");
+			AssertLocation.assertPartialLocation(value1 = "web/minium-demo/p/torque-converter");
 
 			FrontStore.assertProductDetails(
 				productListPrice = "34.00",
@@ -334,7 +334,7 @@ definition {
 		}
 
 		task ("When I click on Transmission Cooler Line Assembly in the Catalog page") {
-			ApplicationsMenu.gotoSite(site = "Minium");
+			ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
@@ -344,7 +344,7 @@ definition {
 		task ("Then I should be redirected to the Test Private Content Page with the Product Details widget showing the product details") {
 			ControlMenu.viewHeaderTitle(headerTitle = "Test Private Content Page");
 
-			AssertLocation.assertPartialLocation(value1 = "group/minium/p/transmission-cooler-line-assembly");
+			AssertLocation.assertPartialLocation(value1 = "group/minium-demo/p/transmission-cooler-line-assembly");
 
 			FrontStore.assertProductDetails(
 				productListPrice = "15.00",
@@ -359,28 +359,28 @@ definition {
 		property portal.acceptance = "false";
 
 		task ("Given that both a private content page and a private widget page are created with a product details widget") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 			JSONLayout.addPrivateLayout(
-				groupName = "Minium",
+				groupName = "Minium Demo",
 				layoutName = "Test Private Content Page",
 				type = "content");
 
 			ContentPagesNavigator.openEditContentPage(
 				pageName = "Test Private Content Page",
 				privateLayout = "true",
-				siteName = "Minium");
+				siteName = "Minium Demo");
 
 			PageEditor.addWidget(portletName = "Product Details");
 
 			Button.clickPublish();
 
 			JSONLayout.addPrivateLayout(
-				groupName = "Minium",
+				groupName = "Minium Demo",
 				layoutName = "Test Private Widget Page");
 
 			JSONLayout.addWidgetToPrivateLayout(
-				groupName = "Minium",
+				groupName = "Minium Demo",
 				layoutName = "Test Private Widget Page",
 				widgetName = "Product Details");
 		}
@@ -388,7 +388,7 @@ definition {
 		task ("And given the private content page is set to be the default product display page") {
 			CommerceChannels.openChannelsAdmin();
 
-			CommerceNavigator.gotoEntry(entryName = "Minium Portal");
+			CommerceNavigator.gotoEntry(entryName = "Minium Demo Portal");
 
 			CommerceEntry.gotoMenuTab(menuTab = "Product Display Pages");
 
@@ -413,7 +413,7 @@ definition {
 		}
 
 		task ("When accessing the Minium catalog and viewing the selected product") {
-			ApplicationsMenu.gotoSite(site = "Minium");
+			ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 			CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "Torque Converters");
 		}
@@ -426,11 +426,11 @@ definition {
 
 			ControlMenu.viewHeaderTitle(headerTitle = "Test Private Widget Page");
 
-			AssertLocation.assertPartialLocation(value1 = "group/minium/p/torque-converters");
+			AssertLocation.assertPartialLocation(value1 = "group/minium-demo/p/torque-converters");
 		}
 
 		task ("When accessing the Minium catalog and viewing another product") {
-			ApplicationsMenu.gotoSite(site = "Minium");
+			ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 			CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "U-Joint");
 		}
@@ -443,7 +443,7 @@ definition {
 
 			ControlMenu.viewHeaderTitle(headerTitle = "Test Private Content Page");
 
-			AssertLocation.assertPartialLocation(value1 = "group/minium/p/u-joint");
+			AssertLocation.assertPartialLocation(value1 = "group/minium-demo/p/u-joint");
 		}
 	}
 
@@ -453,30 +453,30 @@ definition {
 		property portal.acceptance = "false";
 
 		task ("Given that both a public content page and a private content page are created with a product details widget") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 			JSONLayout.addPublicLayout(
-				groupName = "Minium",
+				groupName = "Minium Demo",
 				layoutName = "Test Public Content Page",
 				type = "content");
 
 			ContentPagesNavigator.openEditContentPage(
 				pageName = "Test Public Content Page",
-				siteName = "Minium");
+				siteName = "Minium Demo");
 
 			PageEditor.addWidget(portletName = "Product Details");
 
 			Button.clickPublish();
 
 			JSONLayout.addPrivateLayout(
-				groupName = "Minium",
+				groupName = "Minium Demo",
 				layoutName = "Test Private Content Page",
 				type = "content");
 
 			ContentPagesNavigator.openEditContentPage(
 				pageName = "Test Private Content Page",
 				privateLayout = "true",
-				siteName = "Minium");
+				siteName = "Minium Demo");
 
 			PageEditor.addWidget(portletName = "Product Details");
 
@@ -486,7 +486,7 @@ definition {
 		task ("And given the private content page is set to be the default product display page") {
 			CommerceChannels.openChannelsAdmin();
 
-			CommerceNavigator.gotoEntry(entryName = "Minium Portal");
+			CommerceNavigator.gotoEntry(entryName = "Minium Demo Portal");
 
 			CommerceEntry.gotoMenuTab(menuTab = "Product Display Pages");
 
@@ -511,7 +511,7 @@ definition {
 		}
 
 		task ("When accessing the Minium catalog and viewing the selected product") {
-			ApplicationsMenu.gotoSite(site = "Minium");
+			ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 			CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "Torque Converters");
 		}
@@ -524,11 +524,11 @@ definition {
 
 			ControlMenu.viewHeaderTitle(headerTitle = "Test Public Content Page");
 
-			AssertLocation.assertPartialLocation(value1 = "web/minium/p/torque-converters");
+			AssertLocation.assertPartialLocation(value1 = "web/minium-demo/p/torque-converters");
 		}
 
 		task ("When accessing the Minium catalog and viewing another product") {
-			ApplicationsMenu.gotoSite(site = "Minium");
+			ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 			CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "U-Joint");
 		}
@@ -541,7 +541,7 @@ definition {
 
 			ControlMenu.viewHeaderTitle(headerTitle = "Test Private Content Page");
 
-			AssertLocation.assertPartialLocation(value1 = "group/minium/p/u-joint");
+			AssertLocation.assertPartialLocation(value1 = "group/minium-demo/p/u-joint");
 		}
 	}
 
@@ -551,30 +551,30 @@ definition {
 		property portal.acceptance = "false";
 
 		task ("Given that both a public content page and a private content page are created with a product details widget") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 			JSONLayout.addPublicLayout(
-				groupName = "Minium",
+				groupName = "Minium Demo",
 				layoutName = "Test Public Content Page",
 				type = "content");
 
 			ContentPagesNavigator.openEditContentPage(
 				pageName = "Test Public Content Page",
-				siteName = "Minium");
+				siteName = "Minium Demo");
 
 			PageEditor.addWidget(portletName = "Product Details");
 
 			Button.clickPublish();
 
 			JSONLayout.addPrivateLayout(
-				groupName = "Minium",
+				groupName = "Minium Demo",
 				layoutName = "Test Private Content Page",
 				type = "content");
 
 			ContentPagesNavigator.openEditContentPage(
 				pageName = "Test Private Content Page",
 				privateLayout = "true",
-				siteName = "Minium");
+				siteName = "Minium Demo");
 
 			PageEditor.addWidget(portletName = "Product Details");
 
@@ -584,7 +584,7 @@ definition {
 		task ("And given the public content page is set to be the default product display page") {
 			CommerceChannels.openChannelsAdmin();
 
-			CommerceNavigator.gotoEntry(entryName = "Minium Portal");
+			CommerceNavigator.gotoEntry(entryName = "Minium Demo Portal");
 
 			CommerceEntry.gotoMenuTab(menuTab = "Product Display Pages");
 
@@ -609,7 +609,7 @@ definition {
 		}
 
 		task ("When accessing the Minium catalog and viewing the selected product") {
-			ApplicationsMenu.gotoSite(site = "Minium");
+			ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 			CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "Torque Converters");
 		}
@@ -622,11 +622,11 @@ definition {
 
 			ControlMenu.viewHeaderTitle(headerTitle = "Test Private Content Page");
 
-			AssertLocation.assertPartialLocation(value1 = "group/minium/p/torque-converters");
+			AssertLocation.assertPartialLocation(value1 = "group/minium-demo/p/torque-converters");
 		}
 
 		task ("When accessing the Minium catalog and viewing another product") {
-			ApplicationsMenu.gotoSite(site = "Minium");
+			ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 			CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "U-Joint");
 		}
@@ -639,7 +639,7 @@ definition {
 
 			ControlMenu.viewHeaderTitle(headerTitle = "Test Public Content Page");
 
-			AssertLocation.assertPartialLocation(value1 = "web/minium/p/u-joint");
+			AssertLocation.assertPartialLocation(value1 = "group/minium-demo/p/u-joint");
 		}
 	}
 
@@ -649,25 +649,25 @@ definition {
 		property portal.acceptance = "false";
 
 		task ("Given that both a public widget page and a public content page are created with a product details widget") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 			JSONLayout.addPublicLayout(
-				groupName = "Minium",
+				groupName = "Minium Demo",
 				layoutName = "Test Public Widget Page");
 
 			JSONLayout.addWidgetToPublicLayout(
-				groupName = "Minium",
+				groupName = "Minium Demo",
 				layoutName = "Test Public Widget Page",
 				widgetName = "Product Details");
 
 			JSONLayout.addPublicLayout(
-				groupName = "Minium",
+				groupName = "Minium Demo",
 				layoutName = "Test Public Content Page",
 				type = "content");
 
 			ContentPagesNavigator.openEditContentPage(
 				pageName = "Test Public Content Page",
-				siteName = "Minium");
+				siteName = "Minium Demo");
 
 			PageEditor.addWidget(portletName = "Product Details");
 
@@ -677,7 +677,7 @@ definition {
 		task ("And given the public content page is set to be the default product display page") {
 			CommerceChannels.openChannelsAdmin();
 
-			CommerceNavigator.gotoEntry(entryName = "Minium Portal");
+			CommerceNavigator.gotoEntry(entryName = "Minium Demo Portal");
 
 			CommerceEntry.gotoMenuTab(menuTab = "Product Display Pages");
 
@@ -702,7 +702,7 @@ definition {
 		}
 
 		task ("When accessing the Minium catalog and viewing the selected product") {
-			ApplicationsMenu.gotoSite(site = "Minium");
+			ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 			CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "Torque Converters");
 		}
@@ -715,11 +715,11 @@ definition {
 
 			ControlMenu.viewHeaderTitle(headerTitle = "Test Public Widget Page");
 
-			AssertLocation.assertPartialLocation(value1 = "web/minium/p/torque-converters");
+			AssertLocation.assertPartialLocation(value1 = "web/minium-demo/p/torque-converters");
 		}
 
 		task ("When accessing the Minium catalog and viewing another product") {
-			ApplicationsMenu.gotoSite(site = "Minium");
+			ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 			CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "U-Joint");
 		}
@@ -732,7 +732,7 @@ definition {
 
 			ControlMenu.viewHeaderTitle(headerTitle = "Test Public Content Page");
 
-			AssertLocation.assertPartialLocation(value1 = "web/minium/p/u-joint");
+			AssertLocation.assertPartialLocation(value1 = "web/minium-demo/p/u-joint");
 		}
 	}
 
@@ -740,19 +740,19 @@ definition {
 	@priority = "3"
 	test ViewDefaultProductDisplayPageWithPrivateContentAndWidgetPages {
 		task ("Given a Minium site") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 		}
 
 		task ("And given the Minium site has a private content page with a Product Details widget") {
 			JSONLayout.addPrivateLayout(
-				groupName = "Minium",
+				groupName = "Minium Demo",
 				layoutName = "Test Private Content Page",
 				type = "content");
 
 			ContentPagesNavigator.openEditContentPage(
 				pageName = "Test Private Content Page",
 				privateLayout = "true",
-				siteName = "Minium");
+				siteName = "Minium Demo");
 
 			PageEditor.addWidget(portletName = "Product Details");
 
@@ -764,7 +764,7 @@ definition {
 		task ("And given the content page is set as the Default Product Display Page") {
 			CommerceChannels.openChannelsAdmin();
 
-			CommerceNavigator.gotoEntry(entryName = "Minium Portal");
+			CommerceNavigator.gotoEntry(entryName = "Minium Demo Portal");
 
 			CommerceEntry.gotoMenuTab(menuTab = "Product Display Pages");
 
@@ -778,7 +778,7 @@ definition {
 		}
 
 		task ("When I click on a product in the catalog page") {
-			ApplicationsMenu.gotoSite(site = "Minium");
+			ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 			CommerceNavigator.gotoProductDetails(productName = "U-Joint");
 		}
@@ -791,16 +791,16 @@ definition {
 
 			ControlMenu.viewHeaderTitle(headerTitle = "Test Private Content Page");
 
-			AssertLocation.assertPartialLocation(value1 = "group/minium/p/u-joint");
+			AssertLocation.assertPartialLocation(value1 = "group/minium-demo/p/u-joint");
 		}
 
 		task ("Given the Minium site has a private widget page with a Product Details widget") {
 			JSONLayout.addPrivateLayout(
-				groupName = "Minium",
+				groupName = "Minium Demo",
 				layoutName = "Test Private Widget Page");
 
 			JSONLayout.addWidgetToPrivateLayout(
-				groupName = "Minium",
+				groupName = "Minium Demo",
 				layoutName = "Test Private Widget Page",
 				widgetName = "Product Details");
 		}
@@ -808,7 +808,7 @@ definition {
 		task ("And given the widget page is set as the Default Product Display Page") {
 			CommerceChannels.openChannelsAdmin();
 
-			CommerceNavigator.gotoEntry(entryName = "Minium Portal");
+			CommerceNavigator.gotoEntry(entryName = "Minium Demo Portal");
 
 			CommerceEntry.gotoMenuTab(menuTab = "Product Display Pages");
 
@@ -822,7 +822,7 @@ definition {
 		}
 
 		task ("When I click on a product in the catalog page") {
-			ApplicationsMenu.gotoSite(site = "Minium");
+			ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 			CommerceNavigator.gotoProductDetails(productName = "U-Joint");
 		}
@@ -835,7 +835,7 @@ definition {
 
 			ControlMenu.viewHeaderTitle(headerTitle = "Test Private Widget Page");
 
-			AssertLocation.assertPartialLocation(value1 = "group/minium/p/u-joint");
+			AssertLocation.assertPartialLocation(value1 = "group/minium-demo/p/u-joint");
 		}
 	}
 
@@ -843,18 +843,18 @@ definition {
 	@priority = "3"
 	test ViewDefaultProductDisplayPageWithPublicContentAndWidgetPages {
 		task ("Given a Minium site") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 		}
 
 		task ("And given the Minium site has a public content page with a Product Details widget") {
 			JSONLayout.addPublicLayout(
-				groupName = "Minium",
+				groupName = "Minium Demo",
 				layoutName = "Test Public Content Page",
 				type = "content");
 
 			ContentPagesNavigator.openEditContentPage(
 				pageName = "Test Public Content Page",
-				siteName = "Minium");
+				siteName = "Minium Demo");
 
 			PageEditor.addWidget(portletName = "Product Details");
 
@@ -866,7 +866,7 @@ definition {
 		task ("And given the content page is set as the Default Product Display Page") {
 			CommerceChannels.openChannelsAdmin();
 
-			CommerceNavigator.gotoEntry(entryName = "Minium Portal");
+			CommerceNavigator.gotoEntry(entryName = "Minium Demo Portal");
 
 			CommerceEntry.gotoMenuTab(menuTab = "Product Display Pages");
 
@@ -880,7 +880,7 @@ definition {
 		}
 
 		task ("When I click on a product in the catalog page") {
-			ApplicationsMenu.gotoSite(site = "Minium");
+			ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 			CommerceNavigator.gotoProductDetails(productName = "U-Joint");
 		}
@@ -893,16 +893,16 @@ definition {
 
 			ControlMenu.viewHeaderTitle(headerTitle = "Test Public Content Page");
 
-			AssertLocation.assertPartialLocation(value1 = "web/minium/p/u-joint");
+			AssertLocation.assertPartialLocation(value1 = "group/minium-demo/p/u-joint");
 		}
 
 		task ("Given the Minium site has a public widget page with a Product Details widget") {
 			JSONLayout.addPublicLayout(
-				groupName = "Minium",
+				groupName = "Minium Demo",
 				layoutName = "Test Public Widget Page");
 
 			JSONLayout.addWidgetToPublicLayout(
-				groupName = "Minium",
+				groupName = "Minium Demo",
 				layoutName = "Test Public Widget Page",
 				widgetName = "Product Details");
 		}
@@ -910,7 +910,7 @@ definition {
 		task ("And given the widget page is set as the Default Product Display Page") {
 			CommerceChannels.openChannelsAdmin();
 
-			CommerceNavigator.gotoEntry(entryName = "Minium Portal");
+			CommerceNavigator.gotoEntry(entryName = "Minium Demo Portal");
 
 			CommerceEntry.gotoMenuTab(menuTab = "Product Display Pages");
 
@@ -924,7 +924,7 @@ definition {
 		}
 
 		task ("When I click on a product in the catalog page") {
-			ApplicationsMenu.gotoSite(site = "Minium");
+			ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 			CommerceNavigator.gotoProductDetails(productName = "U-Joint");
 		}
@@ -937,7 +937,7 @@ definition {
 
 			ControlMenu.viewHeaderTitle(headerTitle = "Test Public Widget Page");
 
-			AssertLocation.assertPartialLocation(value1 = "web/minium/p/u-joint");
+			AssertLocation.assertPartialLocation(value1 = "web/minium-demo/p/u-joint");
 		}
 	}
 

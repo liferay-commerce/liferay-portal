@@ -69,7 +69,7 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -360,7 +360,7 @@ definition {
 	test BulkDeleteProducts {
 		property portal.acceptance = "false";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -502,7 +502,7 @@ definition {
 		property custom.properties = "jsonws.web.service.paths.excludes=${line.separator}company.security.strangers.verify=false";
 		property portal.acceptance = "false";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceEntry.addAccountEntryUser(
 			accountName = "Commerce Account",
@@ -514,7 +514,7 @@ definition {
 			userFirstName = "Category",
 			userLastName = "Manager",
 			userScreenName = "categorymanager",
-			userSiteMembership = "Minium");
+			userSiteMembership = "Minium Demo");
 
 		ApplicationsMenu.gotoPortlet(
 			category = "Users",
@@ -531,7 +531,7 @@ definition {
 
 		CommerceLogin.miniumLogin(
 			password = "test",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "categorymanager@liferay.com");
 
 		CommerceNavigator.gotoPortlet(
@@ -540,7 +540,7 @@ definition {
 
 		CPCommerceCatalog.newProductsEntry(
 			compileDescription = "false",
-			productCatalog = "Minium",
+			productCatalog = "Minium Demo",
 			productName = "Simple T-Shirt",
 			productType = "Simple",
 			publishProduct = "false");
@@ -564,7 +564,7 @@ definition {
 
 		CommerceLogin.miniumLogin(
 			password = "test",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "categorymanager@liferay.com");
 
 		CommerceNavigator.gotoPortlet(
@@ -583,7 +583,7 @@ definition {
 
 		CommerceProducts.checkProductStatusAfterDuplicationAndConvertionToDraft(
 			entryName = "Simple T-Shirt",
-			productCatalog = "Minium",
+			productCatalog = "Minium Demo",
 			productName = "Simple T-Shirt",
 			status = "Approved");
 
@@ -756,9 +756,9 @@ definition {
 		property custom.properties = "jsonws.web.service.paths.excludes=${line.separator}company.security.strangers.verify=false";
 		property portal.acceptance = "false";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceEntry.addAccountEntryUser(
 			accountName = "Commerce Account",
@@ -771,14 +771,14 @@ definition {
 			userLastName = "User",
 			userRole = "Buyer",
 			userScreenName = "buyeruser",
-			userSiteMembership = "Minium");
+			userSiteMembership = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
 			portlet = "Products");
 
 		CPCommerceCatalog.newProductsEntry(
-			productCatalog = "Minium",
+			productCatalog = "Minium Demo",
 			productName = "Simple T-Shirt",
 			productType = "Simple",
 			publishProduct = "false");
@@ -795,7 +795,7 @@ definition {
 
 		CommerceLogin.miniumLogin(
 			password = "test",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "buyer@liferay.com");
 
 		Type(
@@ -834,7 +834,7 @@ definition {
 
 		CommerceLogin.miniumLogin(
 			password = "test",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "buyer@liferay.com");
 
 		Type(
@@ -875,7 +875,7 @@ definition {
 		property custom.properties = "jsonws.web.service.paths.excludes=${line.separator}company.security.strangers.verify=false";
 		property portal.acceptance = "false";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceEntry.addAccountEntryUser(
 			accountName = "Commerce Account",
@@ -887,7 +887,7 @@ definition {
 			userFirstName = "Category",
 			userLastName = "Manager",
 			userScreenName = "categorymanager",
-			userSiteMembership = "Minium");
+			userSiteMembership = "Minium Demo");
 
 		ApplicationsMenu.gotoPortlet(
 			category = "Users",
@@ -904,7 +904,7 @@ definition {
 
 		CommerceLogin.miniumLogin(
 			password = "test",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "categorymanager@liferay.com");
 
 		CommerceNavigator.gotoPortlet(
@@ -913,7 +913,7 @@ definition {
 
 		CPCommerceCatalog.newProductsEntry(
 			compileDescription = "false",
-			productCatalog = "Minium",
+			productCatalog = "Minium Demo",
 			productName = "Simple T-Shirt",
 			productType = "Simple",
 			publishProduct = "false");
@@ -922,7 +922,7 @@ definition {
 
 		CommerceProducts.checkProductStatusAfterDuplicationAndConvertionToDraft(
 			entryName = "Simple T-Shirt",
-			productCatalog = "Minium",
+			productCatalog = "Minium Demo",
 			productName = "Simple T-Shirt",
 			status = "Draft");
 
@@ -1044,7 +1044,7 @@ definition {
 		property custom.properties = "jsonws.web.service.paths.excludes=${line.separator}company.security.strangers.verify=false";
 		property portal.acceptance = "false";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceEntry.addAccountEntryUser(
 			accountName = "Commerce Account",
@@ -1056,7 +1056,7 @@ definition {
 			userFirstName = "Category",
 			userLastName = "Manager",
 			userScreenName = "categorymanager",
-			userSiteMembership = "Minium");
+			userSiteMembership = "Minium Demo");
 
 		ApplicationsMenu.gotoPortlet(
 			category = "Users",
@@ -1073,7 +1073,7 @@ definition {
 
 		CommerceLogin.miniumLogin(
 			password = "test",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "categorymanager@liferay.com");
 
 		CommerceNavigator.gotoPortlet(
@@ -1082,7 +1082,7 @@ definition {
 
 		CPCommerceCatalog.newProductsEntry(
 			compileDescription = "false",
-			productCatalog = "Minium",
+			productCatalog = "Minium Demo",
 			productName = "Simple T-Shirt",
 			productType = "Simple",
 			publishProduct = "false");
@@ -1105,7 +1105,7 @@ definition {
 
 		CommerceLogin.miniumLogin(
 			password = "test",
-			urlAppend = "web/minium",
+			urlAppend = "web/minium-demo",
 			userEmailAddress = "categorymanager@liferay.com");
 
 		CommerceNavigator.gotoPortlet(
@@ -1128,7 +1128,7 @@ definition {
 
 		CommerceProducts.checkProductStatusAfterDuplicationAndConvertionToDraft(
 			entryName = "Simple T-Shirt",
-			productCatalog = "Minium",
+			productCatalog = "Minium Demo",
 			productName = "Simple T-Shirt",
 			status = "Pending (Review)");
 
@@ -1190,14 +1190,14 @@ definition {
 	test ConfigureVirtualProduct {
 		property portal.acceptance = "true";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
 			portlet = "Products");
 
 		CPCommerceCatalog.newProductsEntry(
-			productCatalog = "Minium",
+			productCatalog = "Minium Demo",
 			productName = "Virtual T-Shirt",
 			productType = "Virtual");
 
@@ -1533,7 +1533,7 @@ definition {
 		property portal.acceptance = "false";
 
 		task ("Given a minium site") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 		}
 
 		task ("When I duplicate ABS Sensor") {
@@ -1552,7 +1552,7 @@ definition {
 				locator1 = "CommerceFrontStore#FS_PRODUCT_OPTION");
 
 			CommerceEntry.addProductsEntry(
-				productCatalog = "Minium",
+				productCatalog = "Minium Demo",
 				productFullDescription = "",
 				productName = "Copy of ABS Sensor",
 				productShortDescription = "");
@@ -1608,7 +1608,7 @@ definition {
 	test EditAProduct {
 		property portal.acceptance = "true";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -1644,7 +1644,7 @@ definition {
 	test EditSkuAndDelete {
 		property portal.acceptance = "true";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -1683,14 +1683,14 @@ definition {
 		property environment.acceptance = "true";
 		property portal.acceptance = "false";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
 			portlet = "Products");
 
 		CPCommerceCatalog.newProductsEntry(
-			productCatalog = "Minium",
+			productCatalog = "Minium Demo",
 			productName = "Simple T-Shirt",
 			productType = "Simple");
 
@@ -1758,7 +1758,7 @@ definition {
 	test TranslateProductName {
 		property portal.acceptance = "false";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -1794,7 +1794,7 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -1937,7 +1937,7 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -1979,7 +1979,7 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -2007,7 +2007,7 @@ definition {
 	test UseSkuSearchBarAndPagination {
 		property portal.acceptance = "false";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
@@ -2031,7 +2031,7 @@ definition {
 	test UseSortingByNameAndDate {
 		property portal.acceptance = "false";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
