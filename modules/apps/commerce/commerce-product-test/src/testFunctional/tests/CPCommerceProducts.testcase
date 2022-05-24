@@ -1,6 +1,7 @@
 @component-name = "portal-commerce"
 definition {
 
+	property osgi.modules.includes = "commerce-theme-minium-full-site-initializer";
 	property portal.release = "true";
 	property portal.upstream = "true";
 	property release.feature.flags.disable.DISABLE_PRIVATE_LAYOUTS = "true";
@@ -1958,9 +1959,7 @@ definition {
 		var displayDateDay = DateUtil.getCurrentDate();
 		var displayDateMonth = DateUtil.getCurrentMonth();
 		var displayDateYear = DateUtil.getCurrentYear();
-
 		var futureYear = ${displayDateYear} + 1;
-
 		var displayDate = "${displayDateMonth}/${displayDateDay}/${futureYear}";
 
 		Type(

@@ -1,6 +1,7 @@
 @component-name = "portal-commerce"
 definition {
 
+	property osgi.modules.includes = "commerce-theme-minium-full-site-initializer";
 	property portal.release = "true";
 	property portal.upstream = "true";
 	property release.feature.flags.disable.DISABLE_PRIVATE_LAYOUTS = "true";
@@ -583,7 +584,6 @@ definition {
 		CommerceNavigator.gotoEntry(entryName = "Minium Demo");
 
 		var catalog_default_img = "//img[@class='current-image']";
-
 		var catalog_default_img_src = selenium.getAttribute("${catalog_default_img}@src");
 
 		CommerceNavigator.gotoPortlet(
@@ -600,7 +600,6 @@ definition {
 		WaitForPageLoad();
 
 		var minium_catalog_default_img = "//a[contains(@href,'simple-t-shirt')]//img[contains(@class,'card-picture')]";
-
 		var minium_catalog_default_img_src = selenium.getAttribute("${minium_catalog_default_img}@src");
 
 		TestUtils.assertEquals(
