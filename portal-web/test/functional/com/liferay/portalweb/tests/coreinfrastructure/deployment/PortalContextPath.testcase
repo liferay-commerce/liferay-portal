@@ -13,8 +13,6 @@ definition {
 	@priority = "5"
 	test Smoke {
 		property portal.acceptance = "true";
-		property portal.context = "liferay";
-		property skip.clean-app-server-deploy-dir = "true";
 		property test.assert.warning.exceptions = "true";
 		property test.name.skip.portal.instance = "PortalContext#Smoke";
 
