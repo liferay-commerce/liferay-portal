@@ -1024,6 +1024,36 @@ definition {
 	}
 
 	macro setEntryEligibility {
+		if (isSet(paymentMethod)) {
+			CommerceEntry.clickTableEntryEditButton(
+				entryName = "${paymentMethod}",
+				table = "Payment Methods");
+
+			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+			CommerceEntry.gotoMenuTab(menuTab = "Eligibility");
+		}
+
+		if (isSet(shippingMethod)) {
+			CommerceEntry.clickTableEntryEditButton(
+				entryName = "${shippingMethod}",
+				table = "Shipping Methods");
+
+			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+			CommerceEntry.gotoMenuTab(menuTab = "Shipping Options");
+
+			CommerceNavigator.gotoEntry(entryName = "${shippingOption}");
+
+			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+			Click(
+				key_panel = "Details",
+				locator1 = "Panel#PANEL_COLLAPSED");
+
+			CommerceEntry.gotoMenuTab(menuTab = "Eligibility");
+		}
+
 		if (isSet(accountGroupsEligibility)) {
 			var title = "Add Account Groups";
 
@@ -1096,6 +1126,11 @@ definition {
 				Click(
 					key_title = "${title}",
 					locator1 = "CommerceEntry#ADD_RELATION_CLEAN_INPUT_BUTTON");
+
+				WaitForElementPresent(
+					key_entryName = "${paymentTerm}",
+					key_table = "Payment Terms",
+					locator1 = "CommerceEntry#TABLE_ELIGIBILITY_ENTRY");
 			}
 		}
 
@@ -1118,6 +1153,11 @@ definition {
 				Click(
 					key_title = "${title}",
 					locator1 = "CommerceEntry#ADD_RELATION_CLEAN_INPUT_BUTTON");
+
+				WaitForElementPresent(
+					key_entryName = "${deliveryTerm}",
+					key_table = "Delivery Terms",
+					locator1 = "CommerceEntry#TABLE_ELIGIBILITY_ENTRY");
 			}
 		}
 
@@ -1136,6 +1176,11 @@ definition {
 				Click(
 					key_title = "${title}",
 					locator1 = "CommerceEntry#ADD_RELATION_CLEAN_INPUT_BUTTON");
+
+				WaitForElementPresent(
+					key_entryName = "${orderType}",
+					key_table = "Order Types",
+					locator1 = "CommerceEntry#TABLE_ELIGIBILITY_ENTRY");
 			}
 		}
 
