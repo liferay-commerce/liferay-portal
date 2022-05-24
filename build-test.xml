@@ -1751,14 +1751,7 @@ jdbc.counter.connectionProperties=oracle.jdbc.ReadTimeout=0;oracle.net.CONNECT_T
 				</else>
 			</if>
 
-			<get-testcase-property property.name="portal.context" />
-
-			<if>
-				<isset property="portal.context" />
-				<then>
-					<var name="test.url" value="${test.url}/${portal.context}" />
-				</then>
-			</if>
+			<var name="test.url" value="${test.url}/liferay" />
 		</sequential>
 	</macrodef>
 
@@ -7666,23 +7659,16 @@ war.path=${app.server.portal.dir}/</echo>
 			<local name="app.server.waiting.url" />
 
 			<get-operating-system-property property.name="operating.system.docker.image" />
-			<get-testcase-property property.name="portal.context" />
 
 			<if>
-				<isset property="portal.context" />
+				<isset property="operating.system.docker.image" />
 				<then>
-					<property name="app.server.waiting.url" value="http://localhost:${test.app.server.leading.port.number}080/${portal.context}/web/guest" />
-				</then>
-				<elseif>
-					<isset property="operating.system.docker.image" />
-					<then>
-						<get-operating-system-property property.name="operating.system.host" />
+					<get-operating-system-property property.name="operating.system.host" />
 
-						<property name="app.server.waiting.url" value="http://${operating.system.host}:${test.app.server.leading.port.number}080/web/guest" />
-					</then>
-				</elseif>
+					<property name="app.server.waiting.url" value="http://${operating.system.host}:${test.app.server.leading.port.number}080/web/guest" />
+				</then>
 				<else>
-					<property name="app.server.waiting.url" value="http://localhost:${test.app.server.leading.port.number}080/web/guest" />
+					<property name="app.server.waiting.url" value="http://localhost:${test.app.server.leading.port.number}080/liferay/web/guest" />
 				</else>
 			</if>
 
@@ -11837,7 +11823,7 @@ auto.deploy.dest.dir=C:/WINDOWS/system32/config/systemprofile/liferay/websphere-
 			</elseif>
 			<else>
 				<echo append="true" file="${test.ext.properties.file}">
-					default.portal.url=http://localhost:8080
+					default.portal.url=http://localhost:8080/liferay
 					portal.hostname=localhost
 				</echo>
 			</else>
@@ -13930,41 +13916,34 @@ module.framework.properties.blacklist.portal.profile.names=${blacklist.portal.pr
 			</then>
 		</if>
 
-		<get-testcase-property property.name="portal.context" />
-
 		<if>
-			<isset property="portal.context" />
+			<equals arg1="${app.server.type}" arg2="tomcat" />
 			<then>
-				<if>
-					<equals arg1="${app.server.type}" arg2="tomcat" />
-					<then>
-						<move
-							todir="${app.server.dir}/webapps/${portal.context}"
-						>
-							<fileset
-								dir="${app.server.dir}/webapps/ROOT"
-							/>
-						</move>
-						<move
-							file="${app.server.dir}/conf/Catalina/localhost/ROOT.xml"
-							tofile="${app.server.dir}/conf/Catalina/localhost/${portal.context}.xml"
-						/>
-						<replace
-							file="${app.server.dir}/conf/Catalina/localhost/${portal.context}.xml"
-							token="path=&quot;&quot;"
-							value="path=&quot;/${portal.context}&quot;"
-						/>
-						<replace
-							file="${app.server.dir}/conf/catalina.properties"
-							token="common.loader=&quot;${catalina.home}/webapps/ROOT/WEB-INF/lib/support-tomcat.jar&quot;"
-							value="common.loader=&quot;${catalina.home}/webapps/liferay/WEB-INF/lib/support-tomcat.jar&quot;"
-						/>
-					</then>
-					<else>
-						<fail message="Changing the portal context for ${app.server.type} is not supported." />
-					</else>
-				</if>
+				<move
+					todir="${app.server.dir}/webapps/liferay"
+				>
+					<fileset
+						dir="${app.server.dir}/webapps/ROOT"
+					/>
+				</move>
+				<move
+					file="${app.server.dir}/conf/Catalina/localhost/ROOT.xml"
+					tofile="${app.server.dir}/conf/Catalina/localhost/liferay.xml"
+				/>
+				<replace
+					file="${app.server.dir}/conf/Catalina/localhost/liferay.xml"
+					token="path=&quot;&quot;"
+					value="path=&quot;/liferay&quot;"
+				/>
+				<replace
+					file="${app.server.dir}/conf/catalina.properties"
+					token="common.loader=&quot;${catalina.home}/webapps/ROOT/WEB-INF/lib/support-tomcat.jar&quot;"
+					value="common.loader=&quot;${catalina.home}/webapps/liferay/WEB-INF/lib/support-tomcat.jar&quot;"
+				/>
 			</then>
+			<else>
+				<fail message="Changing the portal context for ${app.server.type} is not supported." />
+			</else>
 		</if>
 
 		<get-testcase-property property.name="portal.ssl.enabled" />
@@ -14105,17 +14084,6 @@ module.framework.properties.blacklist.portal.profile.names=${blacklist.portal.pr
 			<else>
 				<antcall inheritAll="false" target="rebuild-database" />
 			</else>
-		</if>
-
-		<get-testcase-property property.name="skip.clean-app-server-deploy-dir" />
-
-		<if>
-			<not>
-				<equals arg1="${skip.clean-app-server-deploy-dir}" arg2="true" />
-			</not>
-			<then>
-				<antcall target="clean-app-server-deploy-dir" />
-			</then>
 		</if>
 
 		<get-testcase-property property.name="apacheds.blank.user.password.enabled" />
