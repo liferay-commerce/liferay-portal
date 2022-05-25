@@ -2653,7 +2653,7 @@ server.detector.server.id=tomcat</echo>
 						<echo file="${liferay.home}/tools/portal-tools-db-upgrade-client/app-server.properties">dir=${app.server.dir}
 extra.lib.dirs=bin
 global.lib.dir=lib
-portal.dir=webapps/ROOT
+portal.dir=webapps/liferay
 server.detector.server.id=tomcat</echo>
 					</then>
 				</elseif>
