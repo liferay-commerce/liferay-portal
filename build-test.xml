@@ -13916,36 +13916,6 @@ module.framework.properties.blacklist.portal.profile.names=${blacklist.portal.pr
 			</then>
 		</if>
 
-		<if>
-			<equals arg1="${app.server.type}" arg2="tomcat" />
-			<then>
-				<move
-					todir="${app.server.dir}/webapps/liferay"
-				>
-					<fileset
-						dir="${app.server.dir}/webapps/ROOT"
-					/>
-				</move>
-				<move
-					file="${app.server.dir}/conf/Catalina/localhost/ROOT.xml"
-					tofile="${app.server.dir}/conf/Catalina/localhost/liferay.xml"
-				/>
-				<replace
-					file="${app.server.dir}/conf/Catalina/localhost/liferay.xml"
-					token="path=&quot;&quot;"
-					value="path=&quot;/liferay&quot;"
-				/>
-				<replace
-					file="${app.server.dir}/conf/catalina.properties"
-					token="common.loader=&quot;${catalina.home}/webapps/ROOT/WEB-INF/lib/support-tomcat.jar&quot;"
-					value="common.loader=&quot;${catalina.home}/webapps/liferay/WEB-INF/lib/support-tomcat.jar&quot;"
-				/>
-			</then>
-			<else>
-				<fail message="Changing the portal context for ${app.server.type} is not supported." />
-			</else>
-		</if>
-
 		<get-testcase-property property.name="portal.ssl.enabled" />
 
 		<if>
@@ -14410,6 +14380,36 @@ module.framework.properties.blacklist.portal.profile.names=${blacklist.portal.pr
 					/>
 				</move>
 			</then>
+		</if>
+
+		<if>
+			<equals arg1="${app.server.type}" arg2="tomcat" />
+			<then>
+				<move
+					todir="${app.server.dir}/webapps/liferay"
+				>
+					<fileset
+						dir="${app.server.dir}/webapps/ROOT"
+					/>
+				</move>
+				<move
+					file="${app.server.dir}/conf/Catalina/localhost/ROOT.xml"
+					tofile="${app.server.dir}/conf/Catalina/localhost/liferay.xml"
+				/>
+				<replace
+					file="${app.server.dir}/conf/Catalina/localhost/liferay.xml"
+					token="path=&quot;&quot;"
+					value="path=&quot;/liferay&quot;"
+				/>
+				<replace
+					file="${app.server.dir}/conf/catalina.properties"
+					token="common.loader=&quot;${catalina.home}/webapps/ROOT/WEB-INF/lib/support-tomcat.jar&quot;"
+					value="common.loader=&quot;${catalina.home}/webapps/liferay/WEB-INF/lib/support-tomcat.jar&quot;"
+				/>
+			</then>
+			<else>
+				<fail message="Changing the portal context for ${app.server.type} is not supported." />
+			</else>
 		</if>
 
 		<get-testcase-property property.name="skip.start.app.server" />
