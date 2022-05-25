@@ -339,8 +339,13 @@ definition {
 	}
 
 	macro openSpecificURL {
-		if (contains("${url}", "080") && !(contains("${url}", "/liferay"))) {
-			var url = StringUtil.replace("${url}", "080", "080/liferay");
+		if (!(contains("${url}", "/liferay"))) {
+			if (contains("${url}", "8443")) {
+				var url = StringUtil.replace("${url}", "8443", "8443/liferay");
+			}
+			else {
+				var url = StringUtil.replace("${url}", "080", "080/liferay");
+			}
 		}
 
 		Open(locator1 = "${url}");
@@ -416,7 +421,12 @@ definition {
 		}
 
 		if (!(contains("${baseURL}", "/liferay"))) {
-			var baseURL = StringUtil.replace("${baseURL}", "080", "080/liferay");
+			if (contains("${baseURL}", "8443")) {
+				var baseURL = StringUtil.replace("${baseURL}", "8443", "8443/liferay");
+			}
+			else {
+				var baseURL = StringUtil.replace("${baseURL}", "080", "080/liferay");
+			}
 		}
 
 		Open(locator1 = "${baseURL}/web/guest/home");
@@ -428,7 +438,12 @@ definition {
 		}
 
 		if (!(contains("${baseURL}", "/liferay"))) {
-			var baseURL = StringUtil.replace("${baseURL}", "080", "080/liferay");
+			if (contains("${baseURL}", "8443")) {
+				var baseURL = StringUtil.replace("${baseURL}", "8443", "8443/liferay");
+			}
+			else {
+				var baseURL = StringUtil.replace("${baseURL}", "080", "080/liferay");
+			}
 		}
 
 		Open(locator1 = "${baseURL}/${urlAppend}");
