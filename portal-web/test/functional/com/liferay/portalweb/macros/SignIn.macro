@@ -56,6 +56,10 @@ definition {
 
 		var portalURL = StringUtil.replace("${portalURL}", ":8080", "");
 
+		if (contains("${portalURL}", "/liferay")) {
+			var portalURL = StringUtil.replace("${portalURL}", "/liferay", "");
+		}
+
 		HeadlessPortalInstanceAPI.addPortalInstance(
 			authenticationMethod = "${authenticationMethod}",
 			domain = "liferay.com",

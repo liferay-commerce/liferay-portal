@@ -76,6 +76,10 @@ definition {
 
 		var portalInstanceName = StringUtil.replace("${portalInstanceName}", ":8080", "");
 
+		if (contains("${portalInstanceName}", "/liferay")) {
+			var portalInstanceName = StringUtil.replace("${portalInstanceName}", "/liferay", "");
+		}
+
 		return "${portalInstanceName}";
 	}
 
