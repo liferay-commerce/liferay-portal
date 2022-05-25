@@ -313,6 +313,10 @@ definition {
 			var portalURL = JSONCompany.getPortalURL();
 		}
 
+		if (!(contains("${portalURL}", "/liferay"))) {
+			var portalURL = StringUtil.replace("${portalURL}", "080", "080/liferay");
+		}
+
 		if (!(isSet(site))) {
 			var site = "true";
 		}
