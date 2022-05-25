@@ -36,7 +36,7 @@ definition {
 				-d branchingPrivate=${branchingPrivate} \
 				-d remoteAddress=localhost \
 				-d remotePort=${remotePort} \
-				-d remotePathContext= \
+				-d remotePathContext=liferay \
 				-d secureConnection=false \
 				-d remoteGroupId=${remoteGroupId} \
 				-d serviceContext=${serviceContext}
