@@ -36,7 +36,7 @@ definition {
 		task ("Assert that audit information is present in the logs") {
 			Navigator.openURL(baseURL = "http://localhost:8080/api/jsonws/user/get-user-by-email-address/company-id/email-address");
 
-			var curl = '''http://localhost:8080/api/jsonws/user/get-user-by-email-address/company-id/email-address''';
+			var curl = '''http://localhost:8080/liferay/api/jsonws/user/get-user-by-email-address/company-id/email-address''';
 
 			var runGet = JSONCurlUtil.get("${curl}");
 
@@ -61,7 +61,7 @@ definition {
 
 			var invalidXRequestId = "invalidXRID";
 
-			var curl = '''http://localhost:8080/api/jsonws/user/get-user-by-email-address/company-id/email-address -H 'X-Request-Id:${invalidXRequestId}' ''';
+			var curl = '''http://localhost:8080/liferay/api/jsonws/user/get-user-by-email-address/company-id/email-address -H 'X-Request-Id:${invalidXRequestId}' ''';
 
 			var userId = JSONCurlUtil.get("${curl}");
 
@@ -87,7 +87,7 @@ definition {
 
 			var validXRequestId = StringUtil.randomString("40");
 
-			var curl = '''http://localhost:8080/api/jsonws/user/get-user-by-email-address/company-id/email-address -H 'X-Request-Id:${validXRequestId}' ''';
+			var curl = '''http://localhost:8080/liferay/api/jsonws/user/get-user-by-email-address/company-id/email-address -H 'X-Request-Id:${validXRequestId}' ''';
 
 			var userId = JSONCurlUtil.get("${curl}");
 
