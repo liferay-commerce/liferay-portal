@@ -8,6 +8,10 @@ definition {
 			var portalURL = JSONCompany.getPortalURL();
 		}
 
+		if (!(contains("${portalURL}", "/liferay"))) {
+			var portalURL = StringUtil.replace("${portalURL}", "080", "080/liferay");
+		}
+
 		var curl = '''
 			${portalURL}/api/jsonws/group/add-group \
 				-u test@liferay.com:test \
@@ -208,6 +212,10 @@ definition {
 
 		if (!(isSet(portalURL))) {
 			var portalURL = JSONCompany.getPortalURL();
+		}
+
+		if (!(contains("${portalURL}", "/liferay"))) {
+			var portalURL = StringUtil.replace("${portalURL}", "080", "080/liferay");
 		}
 
 		var companyId = JSONCompany.getCompanyId(portalURL = "${portalURL}");
