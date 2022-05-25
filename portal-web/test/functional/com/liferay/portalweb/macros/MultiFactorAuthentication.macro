@@ -211,6 +211,10 @@ definition {
 			var baseURL = PropsUtil.get("portal.url");
 		}
 
+		if (!(contains("${baseURL}", "/liferay"))) {
+			var baseURL = StringUtil.replace("${baseURL}", "080", "080/liferay");
+		}
+
 		if (!(isSet(portlet))) {
 			var portlet = "Email OTP";
 		}
