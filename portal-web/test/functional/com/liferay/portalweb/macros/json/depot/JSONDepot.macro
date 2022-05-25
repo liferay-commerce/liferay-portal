@@ -6,6 +6,10 @@ definition {
 			var portalURL = JSONCompany.getPortalURL();
 		}
 
+		if (!(contains("${portalURL}", "/liferay"))) {
+			var portalURL = StringUtil.replace("${portalURL}", "080", "080/liferay");
+		}
+
 		var curl = '''
 			${portalURL}/api/jsonws/depot.depotentry/add-depot-entry \
 			-u test@liferay.com:test \
