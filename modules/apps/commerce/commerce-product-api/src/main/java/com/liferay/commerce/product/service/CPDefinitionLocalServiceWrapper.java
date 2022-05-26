@@ -256,11 +256,12 @@ public class CPDefinitionLocalServiceWrapper
 	}
 
 	@Override
-	public CPDefinition copyCPDefinition(long cpDefinitionId, long groupId)
+	public CPDefinition copyCPDefinition(
+			long cpDefinitionId, long groupId, long userId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _cpDefinitionLocalService.copyCPDefinition(
-			cpDefinitionId, groupId);
+			cpDefinitionId, groupId, userId);
 	}
 
 	/**

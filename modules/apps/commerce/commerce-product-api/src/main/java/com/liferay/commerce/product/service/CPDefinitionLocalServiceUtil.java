@@ -253,10 +253,10 @@ public class CPDefinitionLocalServiceUtil {
 	}
 
 	public static CPDefinition copyCPDefinition(
-			long cpDefinitionId, long groupId)
+			long cpDefinitionId, long groupId, long userId)
 		throws PortalException {
 
-		return getService().copyCPDefinition(cpDefinitionId, groupId);
+		return getService().copyCPDefinition(cpDefinitionId, groupId, userId);
 	}
 
 	/**
