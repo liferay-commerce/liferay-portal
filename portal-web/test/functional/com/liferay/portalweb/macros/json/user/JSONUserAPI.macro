@@ -10,6 +10,10 @@ definition {
 			var portalURL = JSONCompany.getPortalURL();
 		}
 
+		if (!(contains("${portalURL}", "/liferay"))) {
+			var portalURL = StringUtil.replace("${portalURL}", "080", "080/liferay");
+		}
+
 		var companyId = JSONCompany.getCompanyId(
 			creatorEmailAddress = "${creatorEmailAddress}",
 			portalInstanceName = "${portalInstanceName}",
