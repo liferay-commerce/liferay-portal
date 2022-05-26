@@ -40,6 +40,10 @@ definition {
 			echo("## * IdP Metadata XML File Name: ${idPMetadataXML}");
 		}
 		else {
+			if (!(contains("${idpMetadataURL}", "/liferay"))) {
+				var idpMetadataURL = StringUtil.replace("${idpMetadataURL}", "080", "080/liferay");
+			}
+
 			Type(
 				locator1 = "TextInput#SAML_METADATA_URL_FIELD",
 				value1 = "${idpMetadataURL}");
@@ -98,6 +102,10 @@ definition {
 		}
 
 		if (isSet(idpKeepAliveURL)) {
+			if (!(contains("${idpKeepAliveURL}", "/liferay"))) {
+				var idpKeepAliveURL = StringUtil.replace("${idpKeepAliveURL}", "080", "080/liferay");
+			}
+
 			Type(
 				locator1 = "CPSAMLAdmin#SAML_KEEP_ALIVE_URL",
 				value1 = "${idpKeepAliveURL}");
@@ -263,6 +271,10 @@ definition {
 			echo("## * SP Metadata XML File Name: ${spMetadataXML}");
 		}
 		else {
+			if (!(contains("${spMetadataURL}", "/liferay"))) {
+				var spMetadataURL = StringUtil.replace("${spMetadataURL}", "080", "080/liferay");
+			}
+
 			Type(
 				locator1 = "TextInput#SAML_METADATA_URL_FIELD",
 				value1 = "${spMetadataURL}");
@@ -291,6 +303,10 @@ definition {
 		}
 
 		if (isSet(spKeepAliveURL)) {
+			if (!(contains("${spKeepAliveURL}", "/liferay"))) {
+				var spKeepAliveURL = StringUtil.replace("${spKeepAliveURL}", "080", "080/liferay");
+			}
+
 			Type(
 				locator1 = "CPSAMLAdmin#SAML_KEEP_ALIVE_URL",
 				value1 = "${spKeepAliveURL}");
