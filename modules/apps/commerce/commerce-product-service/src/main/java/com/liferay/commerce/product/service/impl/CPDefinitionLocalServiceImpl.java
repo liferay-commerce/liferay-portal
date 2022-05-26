@@ -515,18 +515,20 @@ public class CPDefinitionLocalServiceImpl
 			cpDefinitionId);
 
 		return cpDefinitionLocalService.copyCPDefinition(
-			cpDefinitionId, cpDefinition.getGroupId());
+			cpDefinitionId, cpDefinition.getGroupId(),
+			cpDefinition.getUserId());
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
-	public CPDefinition copyCPDefinition(long cpDefinitionId, long groupId)
+	public CPDefinition copyCPDefinition(
+			long cpDefinitionId, long groupId, long userId)
 		throws PortalException {
 
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		User user = userLocalService.getUser(serviceContext.getUserId());
+		User user = userLocalService.getUser(userId);
 
 		CPDefinition originalCPDefinition =
 			cpDefinitionLocalService.getCPDefinition(cpDefinitionId);
