@@ -1350,14 +1350,16 @@ jdbc.counter.connectionProperties=oracle.jdbc.ReadTimeout=0;oracle.net.CONNECT_T
 		<sequential>
 			<var name="test.app.server.lib.portal.dir" unset="true" />
 
-			<propertycopy from="app.server.${app.server.type}.lib.portal.dir" name="test.app.server.lib.portal.dir" />
+			<propertycopy from="app.server.${app.server.type}.deploy.dir" name="test.app.server.deploy.dir" />
+
+			<var name="test.app.server.lib.portal.dir" value="${test.app.server.deploy.dir}/liferay/WEB-INF/lib" />
 
 			<if>
 				<not>
 					<available file="${test.app.server.lib.portal.dir}/portal-impl.jar" />
 				</not>
 				<then>
-					<propertycopy from="app.server.${app.server.type}.shielded-container-lib.portal.dir" name="test.app.server.lib.portal.dir" override="true" />
+					<var name="test.app.server.lib.portal.dir" value="${test.app.server.deploy.dir}/liferay/WEB-INF/shielded-container-lib" />
 				</then>
 			</if>
 		</sequential>
@@ -5749,7 +5751,7 @@ upgrade.report.enabled=true</echo>
 				<equals arg1="@{app.server.bundle.index}" arg2="0" />
 				<then>
 					<var name="test.app.server.bin.dir" value="@{app.server.bin.dir}" />
-					<var name="test.app.server.classes.portal.dir" value="${app.server.classes.portal.dir}" />
+					<var name="test.app.server.classes.portal.dir" value="${app.server.dir}/webapps/liferay/WEB-INF/classes" />
 					<var name="test.app.server.deploy.dir" value="${app.server.deploy.dir}" />
 					<var name="test.app.server.dir" value="${app.server.dir}" />
 					<var name="test.app.server.liferay.home" value="${liferay.home}" />
@@ -5760,7 +5762,7 @@ upgrade.report.enabled=true</echo>
 						<antelope:replace regex="(${app.server.parent.dir})(.*)" replacement="$1-@{app.server.bundle.index}$2" />
 					</antelope:stringutil>
 
-					<antelope:stringutil property="test.app.server.classes.portal.dir" string="${app.server.classes.portal.dir}">
+					<antelope:stringutil property="test.app.server.classes.portal.dir" string="${app.server.dir}/webapps/liferay/WEB-INF/classes">
 						<antelope:replace regex="(${app.server.parent.dir})(.*)" replacement="$1-@{app.server.bundle.index}$2" />
 					</antelope:stringutil>
 
@@ -14290,6 +14292,36 @@ module.framework.properties.blacklist.portal.profile.names=${blacklist.portal.pr
 
 		<prepare-portal-licenses />
 
+		<if>
+			<equals arg1="${app.server.type}" arg2="tomcat" />
+			<then>
+				<move
+					todir="${app.server.dir}/webapps/liferay"
+				>
+					<fileset
+						dir="${app.server.dir}/webapps/ROOT"
+					/>
+				</move>
+				<move
+					file="${app.server.dir}/conf/Catalina/localhost/ROOT.xml"
+					tofile="${app.server.dir}/conf/Catalina/localhost/liferay.xml"
+				/>
+				<replace
+					file="${app.server.dir}/conf/Catalina/localhost/liferay.xml"
+					token="path=&quot;&quot;"
+					value="path=&quot;/liferay&quot;"
+				/>
+				<replace
+					file="${app.server.dir}/conf/catalina.properties"
+					token="common.loader=&quot;${catalina.home}/webapps/ROOT/WEB-INF/lib/support-tomcat.jar&quot;"
+					value="common.loader=&quot;${catalina.home}/webapps/liferay/WEB-INF/lib/support-tomcat.jar&quot;"
+				/>
+			</then>
+			<else>
+				<fail message="Changing the portal context for ${app.server.type} is not supported." />
+			</else>
+		</if>
+
 		<get-testcase-property property.name="app.server.bundles.size" />
 
 		<if>
@@ -14380,36 +14412,6 @@ module.framework.properties.blacklist.portal.profile.names=${blacklist.portal.pr
 					/>
 				</move>
 			</then>
-		</if>
-
-		<if>
-			<equals arg1="${app.server.type}" arg2="tomcat" />
-			<then>
-				<move
-					todir="${app.server.dir}/webapps/liferay"
-				>
-					<fileset
-						dir="${app.server.dir}/webapps/ROOT"
-					/>
-				</move>
-				<move
-					file="${app.server.dir}/conf/Catalina/localhost/ROOT.xml"
-					tofile="${app.server.dir}/conf/Catalina/localhost/liferay.xml"
-				/>
-				<replace
-					file="${app.server.dir}/conf/Catalina/localhost/liferay.xml"
-					token="path=&quot;&quot;"
-					value="path=&quot;/liferay&quot;"
-				/>
-				<replace
-					file="${app.server.dir}/conf/catalina.properties"
-					token="common.loader=&quot;${catalina.home}/webapps/ROOT/WEB-INF/lib/support-tomcat.jar&quot;"
-					value="common.loader=&quot;${catalina.home}/webapps/liferay/WEB-INF/lib/support-tomcat.jar&quot;"
-				/>
-			</then>
-			<else>
-				<fail message="Changing the portal context for ${app.server.type} is not supported." />
-			</else>
 		</if>
 
 		<get-testcase-property property.name="skip.start.app.server" />
