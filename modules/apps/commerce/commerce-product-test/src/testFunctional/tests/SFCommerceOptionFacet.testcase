@@ -24,6 +24,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		CommerceWidget.updateFacetConfiguration(
 			displayFrequencies = "disable",
 			portletName = "Option Facet");
@@ -45,6 +47,8 @@ definition {
 		var packageQuantityTagNameList = "6,12,24,48,112";
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		CommerceWidget.updateFacetConfiguration(
 			displayTemplate = "Cloud Layout",
@@ -92,6 +96,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		CommerceWidget.updateFacetConfiguration(
 			frequencyThreshold = "2",
 			portletName = "Option Facet");
@@ -114,6 +120,8 @@ definition {
 	test VerifyMaxTermsFieldValue {
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		CommerceWidget.updateFacetConfiguration(
 			maxTerms = "101",
 			portletName = "Option Facet");
@@ -126,6 +134,8 @@ definition {
 	@description = "This is for COMMERCE-8646."
 	test VerifyOptionFacetSetupTab {
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		Portlet.gotoPortletOptions(
 			portletName = "Option Facet",
@@ -156,6 +166,8 @@ definition {
 			optionKey = "package-quantity");
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		CommerceWidget.updateFacetConfiguration(
 			maxTerms = "100",

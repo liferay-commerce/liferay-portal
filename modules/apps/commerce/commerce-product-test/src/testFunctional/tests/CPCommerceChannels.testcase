@@ -1722,6 +1722,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		FrontStore.addInitializerProductToCart(
 			productName = "U-Joint",
 			productQuantity = "1");
@@ -2740,6 +2742,8 @@ definition {
 		Refresh();
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		FrontStore.addInitializerProductToCart(
 			productName = "U-Joint",

@@ -46,6 +46,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		for (var productName : list "U-Joint,Transmission Cooler Line Assembly,Torque Converters") {
 			Check.checkToggleSwitch(
 				key_productName = "${productName}",
@@ -124,6 +126,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		Click.clickAtNotVisible(
 			key_productName = "U-Joint",
 			locator1 = "CommerceEntry#PRODUCT_CARD_COMPARE_CHECKBOX");
@@ -185,6 +189,8 @@ definition {
 		var secondProductFileEntryId = CommerceProductImages.getProductMediaId();
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		Click.clickAtNotVisible(
 			key_productName = "U-Joint",
@@ -261,6 +267,8 @@ definition {
 			userScreenName = "buyeruser");
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
 

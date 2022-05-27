@@ -24,6 +24,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		CommerceWidget.updateFacetConfiguration(
 			displayFrequencies = "disable",
 			portletName = "Specification Facet");
@@ -46,6 +48,8 @@ definition {
 		var materialTagNameList = "Steel,Rubber,Aluminum,Cast Iron,Neoprene,Ceramic,Plastic";
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		CommerceWidget.updateFacetConfiguration(
 			displayTemplate = "Cloud Layout",
@@ -111,6 +115,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		CommerceWidget.updateFacetConfiguration(
 			frequencyThreshold = "30",
 			portletName = "Specification Facet");
@@ -133,6 +139,8 @@ definition {
 	test VerifyMaxTermsFieldValue {
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		CommerceWidget.updateFacetConfiguration(
 			maxTerms = "101",
 			portletName = "Specification Facet");
@@ -145,6 +153,8 @@ definition {
 	@description = "This is for COMMERCE-8384."
 	test VerifySpecificationFacetSetupTab {
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		Portlet.gotoPortletOptions(
 			portletName = "Specification Facet",
@@ -175,6 +185,8 @@ definition {
 			specificationKey = "material");
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		CommerceWidget.updateFacetConfiguration(
 			maxTerms = "100",

@@ -878,6 +878,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
 
 		Click(
@@ -889,6 +891,8 @@ definition {
 			locator1 = "AppBuilder#CHOOSE_APP_SEARCH_FILTER_BY_OPTION");
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo 2");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
 

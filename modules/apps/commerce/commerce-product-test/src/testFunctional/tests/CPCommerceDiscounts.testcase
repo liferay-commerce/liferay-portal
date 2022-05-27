@@ -72,8 +72,8 @@ definition {
 
 		CommerceAcceleratorsInitializer.viewDiscountedProductDetailsPage(
 			discountPercentage = "25",
-			productDiscountedPrice = "18.00",
-			productListPrice = "24.00");
+			productDiscountedPrice = "15.75",
+			productListPrice = "21.00");
 
 		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-2");
 
@@ -87,7 +87,7 @@ definition {
 
 		AssertTextEquals.assertPartialText(
 			locator1 = "CommerceAccelerators#PRODUCT_DETAILS_LIST_PRICE",
-			value1 = "24.00");
+			value1 = "21.00");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Pricing",
@@ -117,8 +117,8 @@ definition {
 
 		CommerceAcceleratorsInitializer.viewDiscountedProductDetailsPage(
 			discountPercentage = "10",
-			productDiscountedPrice = "21.60",
-			productListPrice = "24.00");
+			productDiscountedPrice = "18.90",
+			productListPrice = "21.00");
 
 		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-2");
 
@@ -132,7 +132,7 @@ definition {
 
 		AssertTextEquals.assertPartialText(
 			locator1 = "CommerceAccelerators#PRODUCT_DETAILS_LIST_PRICE",
-			value1 = "24.00");
+			value1 = "21.00");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Pricing",
@@ -210,8 +210,8 @@ definition {
 
 		CommerceAcceleratorsInitializer.viewDiscountedProductDetailsPage(
 			discountPercentage = "25",
-			productDiscountedPrice = "18.00",
-			productListPrice = "24.00");
+			productDiscountedPrice = "15.75",
+			productListPrice = "21.00");
 
 		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-2");
 
@@ -225,7 +225,7 @@ definition {
 
 		AssertTextEquals.assertPartialText(
 			locator1 = "CommerceAccelerators#PRODUCT_DETAILS_LIST_PRICE",
-			value1 = "24.00");
+			value1 = "21.00");
 	}
 
 	test CreateNewDiscount {
@@ -340,6 +340,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		FrontStore.addInitializerProductToCart(
 			productName = "U-Joint",
 			productQuantity = "1");
@@ -411,6 +413,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		Click.clickNoMouseOver(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN");
 
 		Click(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN_BACK_BUTTON");
@@ -476,6 +480,8 @@ definition {
 		Click(locator1 = "Button#CONTINUE");
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		Click.clickNoMouseOver(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN");
 

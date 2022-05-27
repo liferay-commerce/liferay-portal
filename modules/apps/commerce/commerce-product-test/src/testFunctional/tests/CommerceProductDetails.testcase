@@ -1156,11 +1156,17 @@ definition {
 
 		Type(
 			locator1 = "AppBuilder#SEARCH_BAR_INPUT",
-			value1 = "Premium Brake Fluid");
+			value1 = "Brake Fluid");
 
 		Button.clickSubmitButton();
 
-		CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "Premium Brake Fluid");
+		CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "Brake Fluid");
+
+		Click(locator1 = "CommerceFrontStore#PRODUCT_DETAILS_PACKAGE_QUANTITY");
+
+		Click(
+			key_selectValue = "48",
+			locator1 = "CommerceEntry#OPTIONS_SELECT_LIST");
 
 		AssertElementPresent(locator1 = "CommerceAccelerators#PRODUCT_DETAILS_LIST_PRICE_INACTIVE");
 

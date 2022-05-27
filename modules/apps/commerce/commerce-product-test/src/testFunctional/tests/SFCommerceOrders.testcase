@@ -140,6 +140,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		FrontStore.addInitializerProductToCart(
 			productName = "U-Joint",
 			productQuantity = "1");
@@ -506,8 +508,6 @@ definition {
 		CommerceAcceleratorsInitializer.createNewAccountViaFront(accountName = "Test Account");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
-
-		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		FrontStore.addInitializerProductToCart(
 			productName = "U-Joint",

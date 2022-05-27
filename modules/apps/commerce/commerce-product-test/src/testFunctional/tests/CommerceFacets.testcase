@@ -25,6 +25,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		Check.checkToggleSwitch(
 			key_fieldName = "Exhaust System",
 			locator1 = "FormFields#CHECKBOX");
@@ -50,6 +52,8 @@ definition {
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		Check.checkToggleSwitch(
 			key_fieldName = "48",
@@ -77,6 +81,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		Check.checkToggleSwitch(
 			key_fieldName = "$ 500.00 - $ 999.99",
 			locator1 = "FormFields#CHECKBOX");
@@ -92,6 +98,8 @@ definition {
 			locator1 = "CommerceAccelerators#PRODUCT_CARD_NAME");
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		Type(
 			key_name = "Minimum",
@@ -128,6 +136,8 @@ definition {
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		Check.checkToggleSwitch(
 			key_fieldName = "3 Year Unlimited Mileage Warranty",

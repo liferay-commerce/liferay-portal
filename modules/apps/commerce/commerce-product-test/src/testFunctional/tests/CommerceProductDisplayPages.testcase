@@ -39,6 +39,8 @@ definition {
 		task ("When I click on a product in the catalog page") {
 			ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 			CommerceNavigator.gotoProductDetails(productName = "U-Joint");
 		}
 
@@ -48,7 +50,7 @@ definition {
 			AssertLocation.assertPartialLocation(value1 = "group/minium-demo/p/u-joint");
 
 			FrontStore.assertProductDetails(
-				productListPrice = "24.00",
+				productListPrice = "21.00",
 				productName = "U-Joint",
 				productSKU = "MIN55861");
 		}
@@ -781,12 +783,14 @@ definition {
 		task ("When I click on a product in the catalog page") {
 			ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 			CommerceNavigator.gotoProductDetails(productName = "U-Joint");
 		}
 
 		task ("Then I should be redirected to the content page with the Product Details widget showing the product details") {
 			FrontStore.assertProductDetails(
-				productListPrice = "24.00",
+				productListPrice = "21.00",
 				productName = "U-Joint",
 				productSKU = "MIN55861");
 
@@ -825,12 +829,14 @@ definition {
 		task ("When I click on a product in the catalog page") {
 			ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 			CommerceNavigator.gotoProductDetails(productName = "U-Joint");
 		}
 
 		task ("Then I should be redirected to the widget page with the Product Details widget showing the product details") {
 			FrontStore.assertProductDetails(
-				productListPrice = "24.00",
+				productListPrice = "21.00",
 				productName = "U-Joint",
 				productSKU = "MIN55861");
 
@@ -883,12 +889,14 @@ definition {
 		task ("When I click on a product in the catalog page") {
 			ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 			CommerceNavigator.gotoProductDetails(productName = "U-Joint");
 		}
 
 		task ("Then I should be redirected to the content page with the Product Details widget showing the product details") {
 			FrontStore.assertProductDetails(
-				productListPrice = "24.00",
+				productListPrice = "21.00",
 				productName = "U-Joint",
 				productSKU = "MIN55861");
 
@@ -927,12 +935,14 @@ definition {
 		task ("When I click on a product in the catalog page") {
 			ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 			CommerceNavigator.gotoProductDetails(productName = "U-Joint");
 		}
 
 		task ("Then I should be redirected to the widget page with the Product Details widget showing the product details") {
 			FrontStore.assertProductDetails(
-				productListPrice = "24.00",
+				productListPrice = "21.00",
 				productName = "U-Joint",
 				productSKU = "MIN55861");
 

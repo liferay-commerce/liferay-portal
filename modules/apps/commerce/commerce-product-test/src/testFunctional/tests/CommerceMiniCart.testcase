@@ -769,7 +769,7 @@ definition {
 		AssertTextEquals(
 			key_summaryTableItem = "Subtotal",
 			locator1 = "CommerceAccelerators#MINI_CART_SUMMARY_TABLE_ITEM",
-			value1 = "$ 72.00");
+			value1 = "$ 63.00");
 
 		AssertTextEquals(
 			key_summaryTableItem = "Order Discount",
@@ -778,7 +778,7 @@ definition {
 
 		AssertTextEquals(
 			locator1 = "CommerceAccelerators#MINI_CART_SUMMARY_TABLE_TOTAL",
-			value1 = "$ 72.00");
+			value1 = "$ 63.00");
 	}
 
 	@description = "COMMERCE-6330. As a buyer, I want to be able to empty my open cart after clicking on 'Remove All Items'(Yes/No)"
@@ -1454,7 +1454,7 @@ definition {
 		AssertTextEquals(
 			key_summaryTableItem = "Subtotal",
 			locator1 = "CommerceAccelerators#MINI_CART_SUMMARY_TABLE_ITEM",
-			value1 = "$ 50.00");
+			value1 = "$ 36.00");
 
 		Click(locator1 = "Icon#CLOSE");
 
@@ -1518,7 +1518,7 @@ definition {
 
 		CommerceAcceleratorsInitializer.createNewAccountViaFront(accountName = "Commerce Account");
 
-		ApplicationsMenu.gotoSite(site = "Minium Demo");
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
 
@@ -1681,16 +1681,16 @@ definition {
 		AssertTextEquals(
 			key_summaryTableItem = "Subtotal",
 			locator1 = "CommerceAccelerators#MINI_CART_SUMMARY_TABLE_ITEM",
-			value1 = "$ 50.00");
+			value1 = "$ 36.00");
 
 		AssertTextEquals(
 			key_summaryTableItem = "Subtotal Discount",
 			locator1 = "CommerceAccelerators#MINI_CART_SUMMARY_TABLE_ITEM",
-			value1 = "$ 10.00");
+			value1 = "$ 7.20");
 
 		AssertTextEquals(
 			locator1 = "CommerceAccelerators#MINI_CART_SUMMARY_TABLE_TOTAL",
-			value1 = "$ 40.00");
+			value1 = "$ 28.80");
 	}
 
 	@description = "COMMERCE-6341. As a buyer, I want to be able to view order discount and it's total price changed in the mini-cart summary when a discount with target 'Total' is set"
@@ -1743,16 +1743,16 @@ definition {
 		AssertTextEquals(
 			key_summaryTableItem = "Subtotal",
 			locator1 = "CommerceAccelerators#MINI_CART_SUMMARY_TABLE_ITEM",
-			value1 = "$ 50.00");
+			value1 = "$ 36.00");
 
 		AssertTextEquals(
 			key_summaryTableItem = "Order Discount",
 			locator1 = "CommerceAccelerators#MINI_CART_SUMMARY_TABLE_ITEM",
-			value1 = "$ 10.00");
+			value1 = "$ 7.20");
 
 		AssertTextEquals(
 			locator1 = "CommerceAccelerators#MINI_CART_SUMMARY_TABLE_TOTAL",
-			value1 = "$ 40.00");
+			value1 = "$ 28.80");
 	}
 
 	@description = "COMMERCE-6336. As a buyer, I want to see the barred list price and a sale price of an item in the mini-cart, if a promotion is set"
@@ -1772,7 +1772,7 @@ definition {
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
-		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Descending");
+		CommerceNavigator.searchEntry(entryName = "Premium Brake Fluid");
 
 		FrontStore.addInitializerProductToCart(
 			productName = "Premium Brake Fluid",

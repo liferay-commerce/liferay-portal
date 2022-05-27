@@ -81,7 +81,7 @@ definition {
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		AssertElementPresent(
-			key_filterOption = "Commerce Account",
+			key_filterOption = "S Auto Service",
 			locator1 = "AppBuilder#CHOOSE_APP_SEARCH_FILTER_BY_OPTION");
 	}
 
@@ -132,7 +132,7 @@ definition {
 
 		AssertTextEquals(
 			locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN_MENU_SELECTED_ACCOUNT",
-			value1 = "Commerce Account 1");
+			value1 = "S Auto Service");
 
 		Click(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN_BACK_BUTTON");
 
@@ -182,6 +182,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		WaitForElementPresent(locator1 = "CommerceEntry#ACTIVE_ORDER_ID");
 
 		var getFirstId = selenium.getText("CommerceEntry#ACTIVE_ORDER_ID");
@@ -228,7 +230,7 @@ definition {
 
 		CommerceAcceleratorsInitializer.createNewAccountViaFront(accountName = "Commerce Account 1");
 
-		ApplicationsMenu.gotoSite(site = "Minium Demo");
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		FrontStore.addInitializerProductToCart(
 			productName = "U-Joint",

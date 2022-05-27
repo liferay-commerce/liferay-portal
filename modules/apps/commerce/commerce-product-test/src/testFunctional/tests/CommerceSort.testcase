@@ -26,6 +26,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
 
 		AssertTextEquals(
@@ -69,6 +71,8 @@ definition {
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Descending");
 
@@ -123,6 +127,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "New Items");
 
 		AssertTextEquals(
@@ -141,6 +147,8 @@ definition {
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Price High to Low");
 
@@ -181,6 +189,8 @@ definition {
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Price Low to High");
 
@@ -236,6 +246,8 @@ definition {
 		Button.clickPublish();
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Relevance");
 

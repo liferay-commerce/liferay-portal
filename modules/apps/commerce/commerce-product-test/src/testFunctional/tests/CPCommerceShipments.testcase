@@ -172,6 +172,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
 
 		FrontStore.addInitializerProductToCart(
@@ -248,7 +250,7 @@ definition {
 
 		CommerceAcceleratorsInitializer.createNewAccountViaFront(accountName = "Commerce Account");
 
-		ApplicationsMenu.gotoSite(site = "Minium Demo");
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		FrontStore.addInitializerProductToCart(
 			productName = "U-Joint",
@@ -454,7 +456,7 @@ definition {
 
 		CommerceAcceleratorsInitializer.createNewAccountViaFront(accountName = "Commerce Account");
 
-		ApplicationsMenu.gotoSite(site = "Minium Demo");
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		for (var productCard : list "U-Joint,Transmission Cooler Line Assembly,Torque Converters,Wheel Seal - Front,Mount") {
 			FrontStore.addInitializerProductToCart(
@@ -657,7 +659,7 @@ definition {
 
 		CommerceAcceleratorsInitializer.createNewAccountViaFront(accountName = "Commerce Account");
 
-		ApplicationsMenu.gotoSite(site = "Minium Demo");
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		FrontStore.addInitializerProductToCart(
 			productName = "U-Joint",

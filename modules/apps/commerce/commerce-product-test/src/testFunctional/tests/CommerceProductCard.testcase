@@ -24,6 +24,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		Click(
 			key_productName = "U-Joint",
 			locator1 = "CommerceEntry#PRODUCT_CARD_ADD_TO_WISH_LIST_BUTTON");
@@ -243,6 +245,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
 
 		AssertElementNotPresent(
@@ -298,7 +302,7 @@ definition {
 
 		CommerceAcceleratorsInitializer.createNewAccountViaFront(accountName = "Test");
 
-		ApplicationsMenu.gotoSite(site = "Minium Demo");
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		Click(
 			key_productName = "U-Joint",
@@ -452,6 +456,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		AssertNotChecked.assertNotCheckedNotVisible(
 			key_productName = "Simple T-Shirt",
 			locator1 = "CommerceAccelerators#ADD_TO_CART_BUTTON");
@@ -508,6 +514,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		AssertElementPresent(
 			key_productName = "U-Joint",
 			locator1 = "CommerceAccelerators#ADD_TO_CART_BUTTON_DISABLED");
@@ -559,6 +567,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		Click(
 			key_productName = "u-joint",
 			locator1 = "CommerceFrontStore#PRODUCT_CARD_IMAGE");
@@ -596,6 +606,8 @@ definition {
 			productType = "Simple");
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		WaitForPageLoad();
 
@@ -635,6 +647,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		AssertElementPresent(
 			key_fileEntryId = "${fileEntryId}",
 			key_itemName = "Blue T-Shirt",
@@ -649,6 +663,8 @@ definition {
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
 
@@ -667,7 +683,7 @@ definition {
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo/catalog");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
 
@@ -702,6 +718,8 @@ definition {
 		Button.clickPublish();
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		CommerceAcceleratorsInitializer.addPortlet(portletName = "Language Selector");
 
@@ -1049,6 +1067,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
 
 		Click(
@@ -1069,6 +1089,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		Check.checkToggleSwitch(
 			key_productName = "U-Joint",
 			locator1 = "CommerceEntry#PRODUCT_CARD_COMPARE_CHECKBOX");
@@ -1088,6 +1110,8 @@ definition {
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		Check.checkToggleSwitch(
 			key_productName = "U-Joint",
@@ -1116,6 +1140,8 @@ definition {
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		ClickNoError(
 			key_productName = "U-Joint",
@@ -1370,6 +1396,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
 
 		AssertElementPresent(
@@ -1392,6 +1420,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
 
 		AssertElementPresent(
@@ -1412,6 +1442,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		AssertElementPresent(
 			key_productName = "U-Joint",
 			key_productSku = "MIN55861",
@@ -1426,6 +1458,8 @@ definition {
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
 

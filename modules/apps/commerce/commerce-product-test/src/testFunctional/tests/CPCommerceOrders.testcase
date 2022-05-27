@@ -1715,7 +1715,7 @@ definition {
 
 		CommerceAcceleratorsInitializer.createNewAccountViaFront(accountName = "Test");
 
-		ApplicationsMenu.gotoSite(site = "Minium Demo");
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		FrontStore.addInitializerProductToCart(
 			productName = "U-Joint",
@@ -1727,7 +1727,7 @@ definition {
 
 		var orderId = selenium.getText("CommerceOrders#PENDING_ORDERS_ORDER_ID");
 
-		ApplicationsMenu.gotoSite(site = "Minium Demo");
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		FrontStore.addInitializerProductToCart(
 			productName = "Mount",

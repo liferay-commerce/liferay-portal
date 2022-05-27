@@ -2239,6 +2239,8 @@ definition {
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
+		CommerceNavigator.searchEntry(entryName = "U-Joint");
+
 		FrontStore.addInitializerProductToCart(
 			productName = "U-Joint",
 			productQuantity = "1");
@@ -2407,6 +2409,8 @@ definition {
 		}
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		for (var productName : list "U-Joint,ABS Sensor") {
 			if ("${productName}" == "ABS Sensor") {
