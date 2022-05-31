@@ -236,7 +236,7 @@ public class CPDefinitionServiceImpl extends CPDefinitionServiceBaseImpl {
 		_checkCommerceCatalog(groupId, ActionKeys.UPDATE);
 
 		return cpDefinitionLocalService.copyCPDefinition(
-			cpDefinitionId, groupId);
+			getUserId(), cpDefinitionId, groupId);
 	}
 
 	@Override
