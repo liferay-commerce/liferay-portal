@@ -77,6 +77,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		MouseOver(locator1 = "CommerceEntry#PAGINATION_BAR");
 
 		Click.clickNoWaitForVisible(locator1 = "CommerceAccelerators#SEARCH_RESULT_OPTIONS");
@@ -507,6 +509,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		Type(
 			locator1 = "Search#EMBEDDED_SEARCH_BAR",
 			value1 = "ABS Sensor");
@@ -538,6 +542,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		Type(
 			locator1 = "Search#EMBEDDED_SEARCH_BAR",
 			value1 = "${product}");
@@ -568,6 +574,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		Type(
 			locator1 = "Search#EMBEDDED_SEARCH_BAR",
 			value1 = "'ABS Sensor'");
@@ -597,7 +605,7 @@ definition {
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo/catalog");
 
 		Type(
 			locator1 = "Search#EMBEDDED_SEARCH_BAR",
@@ -624,6 +632,8 @@ definition {
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		Type(
 			locator1 = "Search#EMBEDDED_SEARCH_BAR",
@@ -652,6 +662,8 @@ definition {
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		Type(
 			locator1 = "Search#EMBEDDED_SEARCH_BAR",
@@ -683,6 +695,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		Type(
 			locator1 = "Search#EMBEDDED_SEARCH_BAR",
 			value1 = "MIN93015 MIN55861");
@@ -713,6 +727,8 @@ definition {
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		Type(
 			locator1 = "Search#EMBEDDED_SEARCH_BAR",
@@ -759,6 +775,8 @@ definition {
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		Type(
 			locator1 = "Search#EMBEDDED_SEARCH_BAR",
@@ -911,6 +929,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		MouseOver(locator1 = "CommerceEntry#PAGINATION_BAR");
 
 		Click.clickNoWaitForVisible(locator1 = "CommerceAccelerators#SEARCH_RESULT_OPTIONS");
@@ -965,6 +985,8 @@ definition {
 			fieldNameList = "Commerce Product Catalog Entries*");
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		MouseOver(locator1 = "CommerceEntry#PAGINATION_BAR");
 

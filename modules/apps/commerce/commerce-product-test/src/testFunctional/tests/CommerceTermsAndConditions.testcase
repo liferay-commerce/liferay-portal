@@ -45,6 +45,8 @@ definition {
 		var deliveryTermsEligibility = "Delivery Term 1,Delivery Term 2";
 		var paymentTermsEligibility = "Payment Term 1,Payment Term 2";
 
+		CommerceJSONDiscountsAPI._deleteAllCommerceDiscounts();
+
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
@@ -144,6 +146,8 @@ definition {
 
 		var deliveryTermsEligibility = "Delivery Term 1,Delivery Term 2";
 		var paymentTermsEligibility = "Payment Term 1,Payment Term 2";
+
+		CommerceJSONDiscountsAPI._deleteAllCommerceDiscounts();
 
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
@@ -281,6 +285,8 @@ definition {
 		var deliveryTermsEligibility = "Delivery Term 1,Delivery Term 2";
 		var paymentTermsEligibility = "Payment Term 1,Payment Term 2";
 
+		CommerceJSONDiscountsAPI._deleteAllCommerceDiscounts();
+
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
@@ -416,6 +422,8 @@ definition {
 
 		var deliveryTermsEligibility = "Delivery Term 1,Delivery Term 2";
 		var paymentTermsEligibility = "Payment Term 1,Payment Term 2";
+
+		CommerceJSONDiscountsAPI._deleteAllCommerceDiscounts();
 
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
@@ -758,6 +766,8 @@ definition {
 		var deliveryTermsEligibility = "Delivery Term 1,Delivery Term 2";
 		var paymentTermsEligibility = "Payment Term 1,Payment Term 2";
 
+		CommerceJSONDiscountsAPI._deleteAllCommerceDiscounts();
+
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
@@ -1097,6 +1107,8 @@ definition {
 	test ViewDeliveryTermAttachedToOrder {
 		property portal.acceptance = "false";
 
+		CommerceJSONDiscountsAPI._deleteAllCommerceDiscounts();
+
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
@@ -1187,6 +1199,8 @@ definition {
 	@priority = "4"
 	test ViewPaymentTermAttachedToOrder {
 		property portal.acceptance = "false";
+
+		CommerceJSONDiscountsAPI._deleteAllCommerceDiscounts();
 
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",

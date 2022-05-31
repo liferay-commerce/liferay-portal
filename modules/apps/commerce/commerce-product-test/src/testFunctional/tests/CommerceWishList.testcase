@@ -447,6 +447,8 @@ definition {
 		}
 
 		task ("And given some products in wish list") {
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+			
 			CommerceWishList.addProductToWishList(productName = "U-Joint,ABS Sensor,Torque Converters,Power Steering Pump");
 
 			CommerceNavigator.goToWishLists();

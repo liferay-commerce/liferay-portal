@@ -1003,6 +1003,8 @@ definition {
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
+		CommerceJSONDiscountsAPI._deleteAllCommerceDiscounts();
+
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
@@ -1040,7 +1042,7 @@ definition {
 			paymentMethod = "Money Order",
 			productName = "ABS Sensor",
 			productQuantity = "2",
-			productUnitPrice = "50",
+			productUnitPrice = "45",
 			shippingMethod = "Standard");
 
 		CommerceNavigator.gotoPortlet(
@@ -1064,11 +1066,11 @@ definition {
 			addressCity = "Test City",
 			addressZipCode = "Test Zip Code",
 			paymentMethod = "Money Order",
-			productListPrice = "50.00",
+			productListPrice = "45.00",
 			productName = "ABS Sensor",
 			productQuantity = "4.00",
 			productSku = "MIN93015",
-			productTotalPrice = "100.00");
+			productTotalPrice = "90.00");
 	}
 
 	@description = "This is a test for COMMERCE-5980. As an order manager, I want to edit the payment method and payment status of a submitted order"
@@ -1148,7 +1150,7 @@ definition {
 			newAddressZipCode = "Test Zip Code",
 			productName = "U-Joint",
 			productQuantity = "1",
-			productUnitPrice = "24",
+			productUnitPrice = "21",
 			shippingMethod = "Standard");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
@@ -1854,7 +1856,7 @@ definition {
 			newAddressZipCode = "Test Zip Code",
 			productName = "U-Joint",
 			productQuantity = "1",
-			productUnitPrice = "24",
+			productUnitPrice = "21",
 			shippingMethod = "Standard");
 
 		CommerceNavigator.gotoPortlet(

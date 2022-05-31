@@ -62,6 +62,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "U-Joint");
 
 		AssertTextEquals.assertPartialText(
@@ -83,6 +85,8 @@ definition {
 		Refresh();
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "U-Joint");
 
@@ -107,6 +111,8 @@ definition {
 			locator1 = "FormViewBuilder#OBJECT_FIELD_BUTTON_DROPDOWN");
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "U-Joint");
 
@@ -173,7 +179,7 @@ definition {
 
 		Click(locator1 = "Icon#CLOSE");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo/catalog");
 
 		Type(
 			locator1 = "AppBuilder#SEARCH_BAR_INPUT",
@@ -243,7 +249,7 @@ definition {
 
 		Click(locator1 = "Icon#CLOSE");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo/catalog");
 
 		Type(
 			locator1 = "AppBuilder#SEARCH_BAR_INPUT",
@@ -313,7 +319,7 @@ definition {
 
 		Click(locator1 = "Icon#CLOSE");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo/catalog");
 
 		Type(
 			locator1 = "AppBuilder#SEARCH_BAR_INPUT",
@@ -402,7 +408,7 @@ definition {
 
 		Click(locator1 = "Icon#CLOSE");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo/catalog");
 
 		Click(
 			key_productName = "U-Joint",
@@ -434,7 +440,7 @@ definition {
 
 		Click(locator1 = "Icon#CLOSE");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo/catalog");
 
 		var curr_productName = "";
 		var curr_price = "";
@@ -559,7 +565,7 @@ definition {
 
 		Click(locator1 = "Icon#CLOSE");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo/catalog");
 
 		AnnouncementsPortlet.configurePaginationCP(itemsPerPage = "60");
 
@@ -950,6 +956,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Site1");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		Type(
 			locator1 = "AppBuilder#SEARCH_BAR_INPUT",
 			value1 = "U-Joint");
@@ -981,6 +989,8 @@ definition {
 			value1 = "24.00");
 
 		ApplicationsMenu.gotoSite(site = "Site2");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		Type(
 			locator1 = "AppBuilder#SEARCH_BAR_INPUT",
@@ -1042,6 +1052,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Site1");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "U-Joint");
 
 		CommerceAcceleratorsInitializer.selectAccountFromAccountSelector(accountName = "Account1");
@@ -1065,6 +1077,8 @@ definition {
 			value1 = "12.71");
 
 		ApplicationsMenu.gotoSite(site = "Site2");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "U-Joint");
 
@@ -1532,7 +1546,7 @@ definition {
 
 		CommercePriceLists.editPriceListEntryPrice(priceListEntryPrice = "45.00");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo/catalog");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
 
@@ -2055,6 +2069,8 @@ definition {
 		Refresh();
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		AssertTextEquals(
 			key_productName = "U-Joint",

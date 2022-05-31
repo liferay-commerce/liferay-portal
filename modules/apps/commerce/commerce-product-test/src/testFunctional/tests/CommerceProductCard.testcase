@@ -65,12 +65,16 @@ definition {
 
 		CommerceNavigator.gotoEntry(entryName = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		AssertSelectedLabel(
 			key_title = "Currency",
 			locator1 = "CommerceEntry#CATALOGS_FORM",
 			value1 = "${currencyName}");
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		AssertTextEquals.assertPartialText(
 			key_productName = "U-Joint",
@@ -551,6 +555,8 @@ definition {
 			value1 = "${currencyName}");
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		AssertTextEquals.assertPartialText(
 			key_productName = "U-Joint",
@@ -1356,12 +1362,12 @@ definition {
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo/catalog");
 
 		AssertTextEquals.assertPartialText(
 			key_productName = "U-Joint",
 			locator1 = "CommerceEntry#PRODUCT_CARD_LIST_PRICE",
-			value1 = "$ 24.00");
+			value1 = "$ 21.00");
 	}
 
 	@description = "COMMERCE-6158. As a buyer, I want to see the barred list price and a discount price of a product, if set"

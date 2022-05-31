@@ -773,6 +773,8 @@ definition {
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
+		CommerceJSONDiscountsAPI._deleteAllCommerceDiscounts();
+
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
@@ -836,7 +838,7 @@ definition {
 			paymentMethod = "Money Order",
 			productName = "ABS Sensor",
 			productQuantity = "2",
-			productUnitPrice = "45",
+			productUnitPrice = "50",
 			shippingMethod = "Standard");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
@@ -866,7 +868,7 @@ definition {
 			productPrice = "72.00",
 			productQuantity = "2",
 			productSku = "MIN93015",
-			productUnitPrice = "45.00");
+			productUnitPrice = "50.00");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
 
@@ -876,7 +878,7 @@ definition {
 			productPrice = "72.00",
 			productQuantity = "2",
 			productSku = "MIN93015",
-			productUnitPrice = "45.00");
+			productUnitPrice = "50.00");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Order Management",
@@ -885,7 +887,7 @@ definition {
 		CommerceNavigator.gotoOrderEntryViaAdmin(status = "Open");
 
 		CommerceOrders.viewOrdersEntry(
-			productListPrice = "45.00",
+			productListPrice = "50.00",
 			productName = "ABS Sensor",
 			productQuantity = "2",
 			productSku = "MIN93015",
@@ -902,7 +904,7 @@ definition {
 			addressCity = "Test City",
 			addressZipCode = "Test Zip Code",
 			paymentMethod = "Money Order",
-			productListPrice = "45.00",
+			productListPrice = "50.00",
 			productName = "ABS Sensor",
 			productQuantity = "2",
 			productSku = "MIN93015",

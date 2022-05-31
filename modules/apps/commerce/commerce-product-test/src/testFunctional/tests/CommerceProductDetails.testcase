@@ -53,6 +53,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		Click(
 			key_productName = "U-Joint",
 			locator1 = "CommerceAccelerators#PRODUCT_CARD_NAME");
@@ -490,6 +492,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		Click(
 			key_productName = "U-Joint",
 			locator1 = "CommerceAccelerators#PRODUCT_CARD_NAME");
@@ -881,6 +885,8 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 		Type(
 			locator1 = "AppBuilder#SEARCH_BAR_INPUT",
 			value1 = "Hoses");
@@ -1182,7 +1188,7 @@ definition {
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo");
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo/catalog");
 
 		Click(
 			key_productName = "U-Joint",

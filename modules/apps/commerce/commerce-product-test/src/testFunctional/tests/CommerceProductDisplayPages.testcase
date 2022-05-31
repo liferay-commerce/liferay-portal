@@ -305,6 +305,8 @@ definition {
 		task ("When I click on U-Joint in the Catalog page") {
 			ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 			CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "U-Joint");
 		}
 
@@ -321,6 +323,8 @@ definition {
 
 		task ("When I click on Torque Converters in the Catalog page") {
 			ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 			CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "Torque Converters");
 		}
@@ -418,6 +422,8 @@ definition {
 		task ("When accessing the Minium catalog and viewing the selected product") {
 			ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 			CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "Torque Converters");
 		}
 
@@ -434,6 +440,8 @@ definition {
 
 		task ("When accessing the Minium catalog and viewing another product") {
 			ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 			CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "U-Joint");
 		}
@@ -516,6 +524,8 @@ definition {
 		task ("When accessing the Minium catalog and viewing the selected product") {
 			ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 			CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "Torque Converters");
 		}
 
@@ -532,6 +542,8 @@ definition {
 
 		task ("When accessing the Minium catalog and viewing another product") {
 			ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 			CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "U-Joint");
 		}
@@ -614,6 +626,8 @@ definition {
 		task ("When accessing the Minium catalog and viewing the selected product") {
 			ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 			CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "Torque Converters");
 		}
 
@@ -630,6 +644,8 @@ definition {
 
 		task ("When accessing the Minium catalog and viewing another product") {
 			ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 			CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "U-Joint");
 		}
@@ -707,6 +723,8 @@ definition {
 		task ("When accessing the Minium catalog and viewing the selected product") {
 			ApplicationsMenu.gotoSite(site = "Minium Demo");
 
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 			CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "Torque Converters");
 		}
 
@@ -723,6 +741,8 @@ definition {
 
 		task ("When accessing the Minium catalog and viewing another product") {
 			ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 			CommerceAcceleratorsInitializer.gotoMiniumProductDetailsPage(productName = "U-Joint");
 		}

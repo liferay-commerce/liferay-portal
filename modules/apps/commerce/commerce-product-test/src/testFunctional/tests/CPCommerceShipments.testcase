@@ -587,7 +587,7 @@ definition {
 			newAddressZipCode = "Test Zip Code",
 			productName = "U-Joint",
 			productQuantity = "1",
-			productUnitPrice = "24",
+			productUnitPrice = "21",
 			shippingMethod = "Standard");
 
 		CommerceNavigator.gotoPortlet(
@@ -1068,7 +1068,7 @@ definition {
 				newAddressZipCode = "Test Zip Code",
 				productName = "U-Joint",
 				productQuantity = "1",
-				productUnitPrice = "24",
+				productUnitPrice = "21",
 				shippingMethod = "Standard");
 
 			CommerceNavigator.gotoPortlet(
