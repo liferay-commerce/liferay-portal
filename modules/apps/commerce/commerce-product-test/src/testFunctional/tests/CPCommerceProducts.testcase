@@ -1959,7 +1959,9 @@ definition {
 		var displayDateDay = DateUtil.getCurrentDate();
 		var displayDateMonth = DateUtil.getCurrentMonth();
 		var displayDateYear = DateUtil.getCurrentYear();
+
 		var futureYear = ${displayDateYear} + 1;
+
 		var displayDate = "${displayDateMonth}/${displayDateDay}/${futureYear}";
 
 		Type(

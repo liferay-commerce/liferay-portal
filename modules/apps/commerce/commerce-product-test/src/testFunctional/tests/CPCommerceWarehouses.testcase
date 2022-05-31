@@ -278,6 +278,7 @@ definition {
 			WaitForElementPresent(locator1 = "CommerceEntry#WAREHOUSE_INVENTORY_ITEM_QUANTITY");
 
 			var aux = selenium.getElementValue("CommerceEntry#WAREHOUSE_INVENTORY_ITEM_QUANTITY");
+
 			var previousTotal = ${previousTotal} + ${aux};
 		}
 
@@ -400,6 +401,7 @@ definition {
 			WaitForElementPresent(locator1 = "CommerceEntry#WAREHOUSE_INVENTORY_ITEM_QUANTITY");
 
 			var aux = selenium.getElementValue("CommerceEntry#WAREHOUSE_INVENTORY_ITEM_QUANTITY");
+
 			var newTotal = ${newTotal} + ${aux};
 		}
 
@@ -767,6 +769,7 @@ definition {
 		for (var warehouse : list "Italy,United States - Northeast,United States - Southwest") {
 			var key_inventoryName = "${warehouse}";
 			var inventoryValue = selenium.getElementValue("CommerceEntry#INVENTORY_INPUT");
+
 			var quantity = ${quantity} + ${inventoryValue};
 		}
 
@@ -943,6 +946,7 @@ definition {
 
 		while (IsElementPresent(key_value1 = "${count1}", locator1 = "CommerceEntry#WAREHOUSE_INVENTORY_ITEM_QUANTITY")) {
 			var temp1 = selenium.getAttribute("//input[contains(@id,'_com_liferay_commerce_product_definitions_web_internal_portlet_CPDefinitionsPortlet_commerceInventoryWarehouseItemQuantity${count1}')]@value");
+
 			var amount = ${temp1} + ${amount};
 			var count1 = ${count1} + 1;
 		}

@@ -168,11 +168,6 @@ definition {
 	test AddShippingOptionFedEx {
 		property portal.acceptance = "false";
 
-<<<<<<< HEAD
-=======
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
-
->>>>>>> COMMERCE-8657 DO NOT MERGE Adapt test to use Minium Demo in the remaining Commerce Poshi files
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
@@ -237,11 +232,6 @@ definition {
 	test AddShippingOptionFlatRate {
 		property portal.acceptance = "false";
 
-<<<<<<< HEAD
-=======
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
-
->>>>>>> COMMERCE-8657 DO NOT MERGE Adapt test to use Minium Demo in the remaining Commerce Poshi files
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
@@ -306,11 +296,6 @@ definition {
 	test AddShippingOptionSettingVariableRate {
 		property portal.acceptance = "false";
 
-<<<<<<< HEAD
-=======
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
-
->>>>>>> COMMERCE-8657 DO NOT MERGE Adapt test to use Minium Demo in the remaining Commerce Poshi files
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
@@ -368,11 +353,6 @@ definition {
 	test AddShippingOptionVariableRate {
 		property portal.acceptance = "false";
 
-<<<<<<< HEAD
-=======
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
-
->>>>>>> COMMERCE-8657 DO NOT MERGE Adapt test to use Minium Demo in the remaining Commerce Poshi files
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
@@ -419,11 +399,6 @@ definition {
 	test AddTaxRateSettingsByAddressTaxCalculation {
 		property portal.acceptance = "false";
 
-<<<<<<< HEAD
-=======
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
-
->>>>>>> COMMERCE-8657 DO NOT MERGE Adapt test to use Minium Demo in the remaining Commerce Poshi files
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
@@ -500,11 +475,6 @@ definition {
 
 		// TODO Review
 
-<<<<<<< HEAD
-=======
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
-
->>>>>>> COMMERCE-8657 DO NOT MERGE Adapt test to use Minium Demo in the remaining Commerce Poshi files
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
@@ -656,11 +626,6 @@ definition {
 
 		// TODO Review
 
-<<<<<<< HEAD
-=======
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
-
->>>>>>> COMMERCE-8657 DO NOT MERGE Adapt test to use Minium Demo in the remaining Commerce Poshi files
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
@@ -812,11 +777,6 @@ definition {
 
 		// TODO Review
 
-<<<<<<< HEAD
-=======
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
-
->>>>>>> COMMERCE-8657 DO NOT MERGE Adapt test to use Minium Demo in the remaining Commerce Poshi files
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
@@ -887,11 +847,6 @@ definition {
 	test EditAuthorizePaymentMethod {
 		property portal.acceptance = "false";
 
-<<<<<<< HEAD
-=======
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
-
->>>>>>> COMMERCE-8657 DO NOT MERGE Adapt test to use Minium Demo in the remaining Commerce Poshi files
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
@@ -946,11 +901,6 @@ definition {
 
 		// TODO Review
 
-<<<<<<< HEAD
-=======
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
-
->>>>>>> COMMERCE-8657 DO NOT MERGE Adapt test to use Minium Demo in the remaining Commerce Poshi files
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
@@ -1039,11 +989,6 @@ definition {
 	test EditCategoryDisplayPage {
 		property portal.acceptance = "false";
 
-<<<<<<< HEAD
-=======
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
-
->>>>>>> COMMERCE-8657 DO NOT MERGE Adapt test to use Minium Demo in the remaining Commerce Poshi files
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
@@ -1090,11 +1035,6 @@ definition {
 
 		// TODO Review
 
-<<<<<<< HEAD
-=======
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
-
->>>>>>> COMMERCE-8657 DO NOT MERGE Adapt test to use Minium Demo in the remaining Commerce Poshi files
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
@@ -1144,11 +1084,6 @@ definition {
 	test EditMercanetPaymentMethod {
 		property portal.acceptance = "false";
 
-<<<<<<< HEAD
-=======
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
-
->>>>>>> COMMERCE-8657 DO NOT MERGE Adapt test to use Minium Demo in the remaining Commerce Poshi files
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
@@ -1195,11 +1130,6 @@ definition {
 	test EditMoneyOrderPaymentMethod {
 		property portal.acceptance = "false";
 
-<<<<<<< HEAD
-=======
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
-
->>>>>>> COMMERCE-8657 DO NOT MERGE Adapt test to use Minium Demo in the remaining Commerce Poshi files
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
@@ -1234,11 +1164,6 @@ definition {
 
 		// TODO Review
 
-<<<<<<< HEAD
-=======
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
-
->>>>>>> COMMERCE-8657 DO NOT MERGE Adapt test to use Minium Demo in the remaining Commerce Poshi files
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
@@ -1313,11 +1238,6 @@ definition {
 
 		// TODO Review
 
-<<<<<<< HEAD
-=======
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
-
->>>>>>> COMMERCE-8657 DO NOT MERGE Adapt test to use Minium Demo in the remaining Commerce Poshi files
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
@@ -1366,11 +1286,6 @@ definition {
 
 		// TODO Review
 
-<<<<<<< HEAD
-=======
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
-
->>>>>>> COMMERCE-8657 DO NOT MERGE Adapt test to use Minium Demo in the remaining Commerce Poshi files
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
@@ -1592,11 +1507,6 @@ definition {
 
 		// TODO Review
 
-<<<<<<< HEAD
-=======
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
-
->>>>>>> COMMERCE-8657 DO NOT MERGE Adapt test to use Minium Demo in the remaining Commerce Poshi files
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
@@ -1657,13 +1567,7 @@ definition {
 
 		// TODO Review
 
-<<<<<<< HEAD
 		ApplicationsMenu.gotoSite(site = "Minium");
-=======
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
-
-		ApplicationsMenu.gotoSite(site = "Minium Demo");
->>>>>>> COMMERCE-8657 DO NOT MERGE Adapt test to use Minium Demo in the remaining Commerce Poshi files
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
@@ -1765,11 +1669,6 @@ definition {
 
 		// TODO Review
 
-<<<<<<< HEAD
-=======
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
-
->>>>>>> COMMERCE-8657 DO NOT MERGE Adapt test to use Minium Demo in the remaining Commerce Poshi files
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
@@ -1813,11 +1712,6 @@ definition {
 
 		// TODO Review
 
-<<<<<<< HEAD
-=======
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
-
->>>>>>> COMMERCE-8657 DO NOT MERGE Adapt test to use Minium Demo in the remaining Commerce Poshi files
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
@@ -1887,11 +1781,6 @@ definition {
 		// TODO Review
 		// TODO Fix Commerce tests that are skipping portal instances - COMMERCE-6586
 
-<<<<<<< HEAD
-=======
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
-
->>>>>>> COMMERCE-8657 DO NOT MERGE Adapt test to use Minium Demo in the remaining Commerce Poshi files
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
@@ -1975,11 +1864,6 @@ definition {
 
 		// TODO Review
 
-<<<<<<< HEAD
-=======
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
-
->>>>>>> COMMERCE-8657 DO NOT MERGE Adapt test to use Minium Demo in the remaining Commerce Poshi files
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
@@ -2052,11 +1936,6 @@ definition {
 
 		// TODO Review
 
-<<<<<<< HEAD
-=======
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
-
->>>>>>> COMMERCE-8657 DO NOT MERGE Adapt test to use Minium Demo in the remaining Commerce Poshi files
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
@@ -2130,11 +2009,6 @@ definition {
 
 		// TODO Review
 
-<<<<<<< HEAD
-=======
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
-
->>>>>>> COMMERCE-8657 DO NOT MERGE Adapt test to use Minium Demo in the remaining Commerce Poshi files
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
@@ -2206,11 +2080,6 @@ definition {
 	test RemoveTaxRateSettingsFixedTaxRateTaxCalculation {
 		property portal.acceptance = "false";
 
-<<<<<<< HEAD
-=======
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
-
->>>>>>> COMMERCE-8657 DO NOT MERGE Adapt test to use Minium Demo in the remaining Commerce Poshi files
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
@@ -2274,11 +2143,6 @@ definition {
 	test SearchProductDisplayPage {
 		property portal.acceptance = "false";
 
-<<<<<<< HEAD
-=======
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
-
->>>>>>> COMMERCE-8657 DO NOT MERGE Adapt test to use Minium Demo in the remaining Commerce Poshi files
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
 			portlet = "Products");
@@ -2678,13 +2542,7 @@ definition {
 
 		// TODO Review
 
-<<<<<<< HEAD
 		ApplicationsMenu.gotoSite(site = "Minium");
-=======
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
-
-		ApplicationsMenu.gotoSite(site = "Minium Demo");
->>>>>>> COMMERCE-8657 DO NOT MERGE Adapt test to use Minium Demo in the remaining Commerce Poshi files
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
@@ -2783,13 +2641,6 @@ definition {
 	test VerifyPriorityColumnForShippingOption {
 		property portal.acceptance = "false";
 
-<<<<<<< HEAD
-=======
-		task ("Given a Minium site") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
-		}
-
->>>>>>> COMMERCE-8657 DO NOT MERGE Adapt test to use Minium Demo in the remaining Commerce Poshi files
 		task ("When the Sales Manager goes into the Minium channel and opens the Flat Rate shipping method's options tab") {
 			CommerceChannels.openChannelsAdmin();
 
