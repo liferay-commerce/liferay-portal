@@ -210,7 +210,8 @@ public interface CPDefinitionLocalService
 		throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
-	public CPDefinition copyCPDefinition(long cpDefinitionId, long groupId)
+	public CPDefinition copyCPDefinition(
+			long userId, long cpDefinitionId, long groupId)
 		throws PortalException;
 
 	/**
