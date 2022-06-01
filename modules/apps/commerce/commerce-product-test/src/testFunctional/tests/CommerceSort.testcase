@@ -188,9 +188,13 @@ definition {
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
+		CommerceJSONDiscountsAPI._deleteAllCommerceDiscounts();
+
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
+		CommerceAcceleratorsInitializer.selectAccountFromAccountSelector(accountName = "Leo Auto Parts Distributor");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Price Low to High");
 

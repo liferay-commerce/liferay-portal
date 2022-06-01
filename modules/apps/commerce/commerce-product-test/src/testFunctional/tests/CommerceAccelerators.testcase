@@ -865,7 +865,7 @@ definition {
 		CommerceAcceleratorsInitializer.reviewOrder(
 			orderAuthor = "Buyer User",
 			productName = "ABS Sensor",
-			productPrice = "72.00",
+			productPrice = "100.00",
 			productQuantity = "2",
 			productSku = "MIN93015",
 			productUnitPrice = "50.00");
@@ -875,7 +875,7 @@ definition {
 		CommerceAcceleratorsInitializer.reviewOrder(
 			orderAuthor = "Buyer User",
 			productName = "ABS Sensor",
-			productPrice = "72.00",
+			productPrice = "100.00",
 			productQuantity = "2",
 			productSku = "MIN93015",
 			productUnitPrice = "50.00");
@@ -891,7 +891,7 @@ definition {
 			productName = "ABS Sensor",
 			productQuantity = "2",
 			productSku = "MIN93015",
-			productTotalPrice = "72.00");
+			productTotalPrice = "100.00");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Order Management",
@@ -908,7 +908,7 @@ definition {
 			productName = "ABS Sensor",
 			productQuantity = "2",
 			productSku = "MIN93015",
-			productTotalPrice = "72.00");
+			productTotalPrice = "100.00");
 	}
 
 	@description = "COMMERCE-6350. As a buyer, I want to be redirected to Order Details page after clicking 'Review Order' button on mini-cart, if Buyer Order Approval Workflow is active"

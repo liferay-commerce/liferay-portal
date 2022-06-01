@@ -1947,12 +1947,16 @@ definition {
 	@description = "This is a test for COMMERCE-6222. Price Entry expiration management"
 	@priority = "3"
 	test ViewExpiredPriceEntry {
+		property osgi.module.configuration.file.names = "com.liferay.commerce.price.list.configuration.CommercePriceEntryConfiguration.config";
+		property osgi.module.configurations = "checkInterval=&quot;1&quot;";
 		property portal.acceptance = "false";
 		property test.name.skip.portal.instance = "CPCommercePriceLists#ViewExpiredPriceEntry";
 
 		// TODO Review
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
+
+		CommerceJSONDiscountsAPI._deleteAllCommerceDiscounts();
 
 		ApplicationsMenu.gotoPortlet(
 			category = "Configuration",
@@ -2078,6 +2082,8 @@ definition {
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
+		CommerceAcceleratorsInitializer.selectAccountFromAccountSelector(accountName = "Leo Auto Parts Distributor");
 
 		AssertTextEquals(
 			key_productName = "U-Joint",

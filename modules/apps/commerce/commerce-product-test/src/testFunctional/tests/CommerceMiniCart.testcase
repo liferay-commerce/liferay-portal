@@ -1393,6 +1393,8 @@ definition {
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
+		CommerceJSONDiscountsAPI._deleteAllCommerceDiscounts();
+
 		CommerceNavigator.gotoPortlet(
 			category = "Pricing",
 			portlet = "Price Lists");
@@ -1437,11 +1439,9 @@ definition {
 
 		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo");
 
-		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
-
-		CommerceAcceleratorsInitializer.createNewAccountViaFront(accountName = "Commerce Account");
-
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
+		CommerceAcceleratorsInitializer.selectAccountFromAccountSelector(accountName = "Leo Auto Parts Distributor");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
 
@@ -1454,7 +1454,7 @@ definition {
 		AssertTextEquals(
 			key_summaryTableItem = "Subtotal",
 			locator1 = "CommerceAccelerators#MINI_CART_SUMMARY_TABLE_ITEM",
-			value1 = "$ 36.00");
+			value1 = "$ 50.00");
 
 		Click(locator1 = "Icon#CLOSE");
 
