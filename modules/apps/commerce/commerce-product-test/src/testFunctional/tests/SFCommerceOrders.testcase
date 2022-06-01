@@ -56,10 +56,6 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
-		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
-
-		CommerceAcceleratorsInitializer.createNewAccountViaFront(accountName = "Test Account");
-
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		FrontStore.addInitializerProductToCart(
@@ -69,7 +65,7 @@ definition {
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
 
 		Click(
-			key_orderAuthor = "Test Account",
+			key_orderAuthor = "S Auto Service",
 			locator1 = "CommerceAccelerators#ORDERS_ENTRY_VIEW_BUTTON");
 
 		ClickNoError(locator1 = "Icon#BODY_VERTICAL_ELLIPSIS");
@@ -79,7 +75,7 @@ definition {
 		AssertConfirm(value1 = "Are you sure you want to delete this? It will be deleted immediately.");
 
 		AssertElementNotPresent(
-			key_orderAuthor = "Test Account",
+			key_orderAuthor = "S Auto Service",
 			locator1 = "CommerceAccelerators#ORDERS_ENTRY_VIEW_BUTTON");
 	}
 
@@ -89,54 +85,6 @@ definition {
 		property portal.acceptance = "false";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
-
-		ApplicationsMenu.gotoSite(site = "Minium Demo");
-
-		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
-
-		CommerceAcceleratorsInitializer.createNewAccountViaFront(accountName = "Test Test");
-
-		Accounts.openAccountsAdmin();
-
-		CommerceNavigator.gotoEntry(entryName = "Test Test");
-
-		CommerceEntry.gotoMenuTab(menuTab = "Addresses");
-
-		LexiconEntry.gotoAdd();
-
-		PortletEntry.inputName(name = "Test");
-
-		SelectField.select(
-			selectFieldLabel = "Type",
-			selectFieldValue = "Billing and Shipping");
-
-		Type(
-			locator1 = "TextInput#STREET_1",
-			value1 = "Test Street");
-
-		Select(
-			locator1 = "Select#COUNTRY",
-			value1 = "Italy");
-
-		Type(
-			locator1 = "TextInput#CITY",
-			value1 = "Roma");
-
-		Select(
-			locator1 = "Select#REGION",
-			value1 = "Roma");
-
-		Type(
-			locator1 = "TextInput#POSTAL_CODE",
-			value1 = "00100");
-
-		Type(
-			locator1 = "TextInput#NUMBER",
-			value1 = "1234");
-
-		Button.clickSave();
-
-		Alert.viewSuccessMessage();
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
@@ -158,7 +106,7 @@ definition {
 
 		Select(
 			locator1 = "CommerceOrders#PENDING_ORDERS_BILLING_ADDRESS_DROPDOWN",
-			value1 = "Test");
+			value1 = "S Auto Service");
 
 		Click(
 			key_text = "shipping-address-id",
@@ -166,7 +114,7 @@ definition {
 
 		Select(
 			locator1 = "CommerceOrders#PENDING_ORDERS_SHIPPING_ADDRESS_DROPDOWN",
-			value1 = "Test");
+			value1 = "S Auto Service");
 
 		Button.clickSave();
 
@@ -523,7 +471,7 @@ definition {
 			newAddressZipCode = "Test Zip Code",
 			productName = "U-Joint",
 			productQuantity = "1",
-			productUnitPrice = "24",
+			productUnitPrice = "21",
 			shippingMethod = "Standard");
 
 		CommerceNavigator.gotoPortlet(

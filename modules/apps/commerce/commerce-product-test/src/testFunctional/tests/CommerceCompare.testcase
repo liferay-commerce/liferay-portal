@@ -282,6 +282,8 @@ definition {
 			key_productName = "Brake Fluid",
 			locator1 = "CommerceEntry#PRODUCT_CARD_COMPARE_CHECKBOX");
 
+		ScrollBy(value1 = "0, 1000");
+
 		Button.click(button = "Compare");
 
 		AssertElementPresent(

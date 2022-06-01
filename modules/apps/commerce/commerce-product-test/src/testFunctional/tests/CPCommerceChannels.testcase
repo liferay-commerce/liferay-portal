@@ -24,8 +24,6 @@ definition {
 		// TODO Review
 		// TODO Fix Commerce tests that are skipping portal instances - COMMERCE-6586; COMMERCE-6588
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
-
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
@@ -1567,7 +1565,19 @@ definition {
 
 		// TODO Review
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		CommerceJSONDiscountsAPI._deleteAllCommerceDiscounts();
+
+		CommerceNavigator.gotoPortlet(
+			category = "Pricing",
+			portlet = "Price Lists");
+
+		Click(
+			key_value = "Gold Accounts Pricing",
+			locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS");
+
+		MenuItem.click(menuItem = "Delete");
+
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 
@@ -2214,7 +2224,7 @@ definition {
 		task ("And given an active payment method") {
 			CommerceChannels.openChannelsAdmin();
 
-			CommerceNavigator.gotoEntry(entryName = "Minium Portal");
+			CommerceNavigator.gotoEntry(entryName = "Minium Demo Portal");
 
 			CommerceChannels.activatePaymentMethod(paymentMethod = "PayPal");
 		}
@@ -2542,7 +2552,19 @@ definition {
 
 		// TODO Review
 
-		ApplicationsMenu.gotoSite(site = "Minium");
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
+		CommerceJSONDiscountsAPI._deleteAllCommerceDiscounts();
+
+		CommerceNavigator.gotoPortlet(
+			category = "Pricing",
+			portlet = "Price Lists");
+
+		Click(
+			key_value = "Gold Accounts Pricing",
+			locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS");
+
+		MenuItem.click(menuItem = "Delete");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 

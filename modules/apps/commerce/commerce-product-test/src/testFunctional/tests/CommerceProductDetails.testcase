@@ -831,6 +831,18 @@ definition {
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
+		CommerceJSONDiscountsAPI._deleteAllCommerceDiscounts();
+
+		CommerceNavigator.gotoPortlet(
+			category = "Pricing",
+			portlet = "Price Lists");
+
+		Click(
+			key_value = "Gold Accounts Pricing",
+			locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS");
+
+		MenuItem.click(menuItem = "Delete");
+
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",
 			portlet = "Products");
@@ -1188,7 +1200,7 @@ definition {
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo/catalog");
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		Click(
 			key_productName = "U-Joint",

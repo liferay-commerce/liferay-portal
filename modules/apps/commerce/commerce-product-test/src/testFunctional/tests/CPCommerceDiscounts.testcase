@@ -29,6 +29,8 @@ definition {
 			siteName = "Minium 2",
 			siteTemplateName = "Minium Demo");
 
+		CommerceJSONDiscountsAPI._deleteAllCommerceDiscounts();
+
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
 			portlet = "Channels");
@@ -94,7 +96,7 @@ definition {
 			portlet = "Discounts");
 
 		Click(
-			key_value = "",
+			key_value = "Test Discount",
 			locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS");
 
 		MenuItem.click(menuItem = "Edit");
@@ -139,7 +141,7 @@ definition {
 			portlet = "Discounts");
 
 		Click(
-			key_value = "",
+			key_value = "Test Discount",
 			locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS");
 
 		MenuItem.click(menuItem = "Delete");
@@ -289,18 +291,6 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
-		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
-
-		CommerceAcceleratorsInitializer.createNewAccountViaFront(accountName = "account1");
-
-		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
-
-		CommerceAcceleratorsInitializer.createNewAccountViaFront(accountName = "account2");
-
-		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
-
-		CommerceAcceleratorsInitializer.createNewAccountViaFront(accountName = "account3");
-
 		CommerceNavigator.gotoPortlet(
 			category = "Pricing",
 			portlet = "Discounts");
@@ -420,7 +410,7 @@ definition {
 		Click(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN_BACK_BUTTON");
 
 		Click(
-			key_accountName = "account2",
+			key_accountName = "CC West",
 			locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_ACCOUNT_LIST_ITEM");
 
 		FrontStore.addInitializerProductToCart(
@@ -488,7 +478,7 @@ definition {
 		Click(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN_BACK_BUTTON");
 
 		Click(
-			key_accountName = "account3",
+			key_accountName = "Connolly Repairs",
 			locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_ACCOUNT_LIST_ITEM");
 
 		FrontStore.addInitializerProductToCart(
@@ -518,6 +508,18 @@ definition {
 		// TODO Review
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
+
+		CommerceJSONDiscountsAPI._deleteAllCommerceDiscounts();
+
+		CommerceNavigator.gotoPortlet(
+			category = "Pricing",
+			portlet = "Price Lists");
+
+		Click(
+			key_value = "Gold Accounts Pricing",
+			locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS");
+
+		MenuItem.click(menuItem = "Delete");
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 

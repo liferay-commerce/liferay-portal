@@ -24,9 +24,17 @@ definition {
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
+		CommerceJSONDiscountsAPI._deleteAllCommerceDiscounts();
+
 		CommerceNavigator.gotoPortlet(
 			category = "Pricing",
 			portlet = "Price Lists");
+
+		Click(
+			key_value = "Gold Accounts Pricing",
+			locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS");
+
+		MenuItem.click(menuItem = "Delete");
 
 		Click(locator1 = "Button#PLUS");
 
@@ -179,7 +187,7 @@ definition {
 
 		Click(locator1 = "Icon#CLOSE");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo/catalog");
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		Type(
 			locator1 = "AppBuilder#SEARCH_BAR_INPUT",
@@ -249,7 +257,7 @@ definition {
 
 		Click(locator1 = "Icon#CLOSE");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo/catalog");
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		Type(
 			locator1 = "AppBuilder#SEARCH_BAR_INPUT",
@@ -319,7 +327,7 @@ definition {
 
 		Click(locator1 = "Icon#CLOSE");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo/catalog");
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		Type(
 			locator1 = "AppBuilder#SEARCH_BAR_INPUT",
@@ -408,7 +416,7 @@ definition {
 
 		Click(locator1 = "Icon#CLOSE");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo/catalog");
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		Click(
 			key_productName = "U-Joint",
@@ -440,7 +448,7 @@ definition {
 
 		Click(locator1 = "Icon#CLOSE");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo/catalog");
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		var curr_productName = "";
 		var curr_price = "";
@@ -570,7 +578,7 @@ definition {
 
 		Click(locator1 = "Icon#CLOSE");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo/catalog");
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		AnnouncementsPortlet.configurePaginationCP(itemsPerPage = "60");
 
@@ -838,6 +846,18 @@ definition {
 		CommerceAccelerators.initializeNewSiteViaAccelerator(
 			siteName = "Site2",
 			siteTemplateName = "Minium Demo");
+
+		CommerceJSONDiscountsAPI._deleteAllCommerceDiscounts();
+
+		CommerceNavigator.gotoPortlet(
+			category = "Pricing",
+			portlet = "Price Lists");
+
+		Click(
+			key_value = "Gold Accounts Pricing",
+			locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS");
+
+		MenuItem.click(menuItem = "Delete");
 
 		ApplicationsMenu.gotoSite(site = "Site1");
 
@@ -1504,6 +1524,18 @@ definition {
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
+		CommerceJSONDiscountsAPI._deleteAllCommerceDiscounts();
+
+		CommerceNavigator.gotoPortlet(
+			category = "Pricing",
+			portlet = "Price Lists");
+
+		Click(
+			key_value = "Gold Accounts Pricing",
+			locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS");
+
+		MenuItem.click(menuItem = "Delete");
+
 		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
@@ -1551,7 +1583,7 @@ definition {
 
 		CommercePriceLists.editPriceListEntryPrice(priceListEntryPrice = "45.00");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo/catalog");
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
 
@@ -2119,6 +2151,18 @@ definition {
 		// TODO Review
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
+
+		CommerceJSONDiscountsAPI._deleteAllCommerceDiscounts();
+
+		CommerceNavigator.gotoPortlet(
+			category = "Pricing",
+			portlet = "Price Lists");
+
+		Click(
+			key_value = "Gold Accounts Pricing",
+			locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS");
+
+		MenuItem.click(menuItem = "Delete");
 
 		ApplicationsMenu.gotoPortlet(
 			category = "Configuration",

@@ -21,7 +21,9 @@ definition {
 			userLastName = "User",
 			userRole = "Buyer",
 			userScreenName = "buyeruser",
-			userSiteMembership = "Minium");
+			userSiteMembership = "Minium Demo");
+
+		CommerceJSONDiscountsAPI._deleteAllCommerceDiscounts();
 	}
 
 	tearDown {
@@ -94,7 +96,7 @@ definition {
 		task ("And given Paypal and Money Order payment methods are active with priorities 1 and 2") {
 			CommerceChannels.openChannelsAdmin();
 
-			CommerceNavigator.gotoEntry(entryName = "Minium Portal");
+			CommerceNavigator.gotoEntry(entryName = "Minium Demo Portal");
 
 			for (var paymentMethodConfiguration : list "PayPal:1,Money Order:2") {
 				var paymentMethod = StringUtil.extractFirst("${paymentMethodConfiguration}", ":");
@@ -118,7 +120,7 @@ definition {
 
 			CommerceLogin.miniumLogin(
 				password = "test",
-				urlAppend = "web/minium",
+				urlAppend = "web/minium-demo",
 				userEmailAddress = "buyer@liferay.com");
 
 			CommerceAcceleratorsInitializer.createNewOrderFromPendingOrders();
@@ -177,7 +179,7 @@ definition {
 		task ("And given Paypal, Money Order and Mercanet payment methods are active with priorities 0,1, and 2") {
 			CommerceChannels.openChannelsAdmin();
 
-			CommerceNavigator.gotoEntry(entryName = "Minium Portal");
+			CommerceNavigator.gotoEntry(entryName = "Minium Demo Portal");
 
 			for (var paymentMethodConfiguration : list "PayPal:0,Money Order:1,Mercanet:2") {
 				var paymentMethod = StringUtil.extractFirst("${paymentMethodConfiguration}", ":");
@@ -215,7 +217,7 @@ definition {
 
 			CommerceLogin.miniumLogin(
 				password = "test",
-				urlAppend = "web/minium",
+				urlAppend = "web/minium-demo",
 				userEmailAddress = "buyer@liferay.com");
 
 			CommerceAcceleratorsInitializer.createNewOrderFromPendingOrders(orderType = "Order Type 1");
@@ -269,7 +271,7 @@ definition {
 		task ("And given Money Order, Mercanet, and PayPal payment methods are active with priorities 1,2, and 3") {
 			CommerceChannels.openChannelsAdmin();
 
-			CommerceNavigator.gotoEntry(entryName = "Minium Portal");
+			CommerceNavigator.gotoEntry(entryName = "Minium Demo Portal");
 
 			for (var paymentMethodConfiguration : list "Money Order:1,Mercanet:2,PayPal:3") {
 				var paymentMethod = StringUtil.extractFirst("${paymentMethodConfiguration}", ":");
@@ -307,7 +309,7 @@ definition {
 
 			CommerceLogin.miniumLogin(
 				password = "test",
-				urlAppend = "web/minium",
+				urlAppend = "web/minium-demo",
 				userEmailAddress = "buyer@liferay.com");
 
 			CommerceAcceleratorsInitializer.createNewOrderFromPendingOrders();
@@ -360,7 +362,7 @@ definition {
 		task ("And given Money Order, Mercanet, and PayPal payment methods are active with priorities 1,2, and 3") {
 			CommerceChannels.openChannelsAdmin();
 
-			CommerceNavigator.gotoEntry(entryName = "Minium Portal");
+			CommerceNavigator.gotoEntry(entryName = "Minium Demo Portal");
 
 			for (var paymentMethodConfiguration : list "Money Order:1,Mercanet:2,PayPal:3") {
 				var paymentMethod = StringUtil.extractFirst("${paymentMethodConfiguration}", ":");
@@ -404,7 +406,7 @@ definition {
 
 			CommerceLogin.miniumLogin(
 				password = "test",
-				urlAppend = "web/minium",
+				urlAppend = "web/minium-demo",
 				userEmailAddress = "buyer@liferay.com");
 
 			CommerceAcceleratorsInitializer.createNewOrderFromPendingOrders();
@@ -445,7 +447,7 @@ definition {
 		task ("Given all payment methods are activated with varying priorities") {
 			CommerceChannels.openChannelsAdmin();
 
-			CommerceNavigator.gotoEntry(entryName = "Minium Portal");
+			CommerceNavigator.gotoEntry(entryName = "Minium Demo Portal");
 
 			for (var paymentMethodConfiguration : list "PayPal:1,Authorize.Net:2,Mercanet:3,Money Order:4") {
 				var paymentMethod = StringUtil.extractFirst("${paymentMethodConfiguration}", ":");
@@ -469,7 +471,7 @@ definition {
 
 			CommerceLogin.miniumLogin(
 				password = "test",
-				urlAppend = "web/minium",
+				urlAppend = "web/minium-demo",
 				userEmailAddress = "buyer@liferay.com");
 
 			FrontStore.addInitializerProductToCart(
@@ -508,7 +510,7 @@ definition {
 		task ("And given all payment methods are activated") {
 			CommerceChannels.openChannelsAdmin();
 
-			CommerceNavigator.gotoEntry(entryName = "Minium Portal");
+			CommerceNavigator.gotoEntry(entryName = "Minium Demo Portal");
 
 			for (var paymentMethod : list "Money Order,Mercanet,Authorize.Net,PayPal,Test Offline Payment Method") {
 				CommerceChannels.editPaymentMethod(

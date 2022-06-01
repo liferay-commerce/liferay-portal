@@ -1763,10 +1763,6 @@ definition {
 
 		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo");
 
-		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
-
-		CommerceAcceleratorsInitializer.createNewAccountViaFront(accountName = "Commerce Account");
-
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		FrontStore.addInitializerProductToCart(
@@ -1775,13 +1771,13 @@ definition {
 
 		Pause(locator1 = "5000");
 
-		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
+		Click.clickNoMouseOver(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN");
 
-		CommerceAcceleratorsInitializer.createNewAccountViaFront(accountName = "Commerce Account 2");
+		Click(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN_BACK_BUTTON");
 
-		CommerceAcceleratorsInitializer.selectAccountFromAccountSelector(accountName = "Commerce Account 2");
-
-		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+		Click(
+			key_accountName = "CC West",
+			locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_ACCOUNT_LIST_ITEM");
 
 		FrontStore.addInitializerProductToCart(
 			productName = "Transmission Cooler Line Assembly",
@@ -1797,7 +1793,7 @@ definition {
 
 		var index = "1";
 
-		for (var accountName : list "Commerce Account,Commerce Account 2") {
+		for (var accountName : list "S Auto Service,CC West") {
 			AssertTextEquals.assertPartialText(
 				index = "${index}",
 				locator1 = "CommerceAccelerators#ACCOUNT_ORDER_NAME",

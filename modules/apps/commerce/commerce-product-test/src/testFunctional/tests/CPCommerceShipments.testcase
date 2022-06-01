@@ -148,6 +148,8 @@ definition {
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
+		CommerceJSONDiscountsAPI._deleteAllCommerceDiscounts();
+
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
@@ -190,7 +192,7 @@ definition {
 			newAddressZipCode = "Test Zip Code",
 			productName = "ABS Sensor",
 			productQuantity = "1",
-			productUnitPrice = "50");
+			productUnitPrice = "45");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Order Management",
@@ -266,7 +268,7 @@ definition {
 			newAddressZipCode = "Test Zip Code",
 			productName = "U-Joint",
 			productQuantity = "1",
-			productUnitPrice = "24",
+			productUnitPrice = "21",
 			shippingMethod = "Standard");
 
 		CommerceNavigator.gotoPortlet(
@@ -567,10 +569,6 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
-		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
-
-		CommerceAcceleratorsInitializer.createNewAccountViaFront(accountName = "Commerce Account");
-
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		FrontStore.addInitializerProductToCart(
@@ -595,7 +593,7 @@ definition {
 			portlet = "Orders");
 
 		Click(
-			key_value = "Commerce Account",
+			key_value = "S Auto Service",
 			locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS");
 
 		MenuItem.click(menuItem = "View");
@@ -677,7 +675,7 @@ definition {
 			newAddressZipCode = "Test Zip Code",
 			productName = "U-Joint",
 			productQuantity = "1",
-			productUnitPrice = "24",
+			productUnitPrice = "21",
 			shippingMethod = "Standard");
 
 		CommerceNavigator.gotoPortlet(
@@ -1028,12 +1026,6 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
-		for (var i : list "1,2") {
-			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
-
-			CommerceAcceleratorsInitializer.createNewAccountViaFront(accountName = "account${i}");
-		}
-
 		var ship1Id = "";
 		var ship2Id = "";
 
@@ -1044,8 +1036,15 @@ definition {
 
 			Click(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN_BACK_BUTTON");
 
+			if ("${i}" == "1") {
+				var accountName = "S Auto Service";
+			}
+			else {
+				var accountName = "CC West";
+			}
+
 			Click(
-				key_accountName = "account${i}",
+				key_accountName = "${accountName}",
 				locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_ACCOUNT_LIST_ITEM");
 
 			FrontStore.addInitializerProductToCart(
@@ -1076,7 +1075,7 @@ definition {
 				portlet = "Orders");
 
 			Click(
-				key_value = "account${i}",
+				key_value = "${accountName}",
 				locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS");
 
 			MenuItem.click(menuItem = "View");
@@ -1128,10 +1127,10 @@ definition {
 			category = "Order Management",
 			portlet = "Shipments");
 
-		for (var search : list "${ship1Id},${ship2Id},account1,account2") {
+		for (var search : list "${ship1Id},${ship2Id},S Auto Service,CC West") {
 			CommerceNavigator.searchEntry(entryName = "${search}");
 
-			if (("${search}" == "account1") || ("${search}" == "${ship1Id}")) {
+			if (("${search}" == "S Auto Service") || ("${search}" == "${ship1Id}")) {
 				AssertElementPresent(
 					key_entryName = "${ship1Id}",
 					locator1 = "CommerceNavigation#ENTRY_NAME");

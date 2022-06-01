@@ -118,14 +118,6 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
-		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
-
-		CommerceAcceleratorsInitializer.createNewAccountViaFront(accountName = "Commerce Account 1");
-
-		Navigator.gotoBack();
-
-		CommerceAcceleratorsInitializer.createNewAccountViaFront(accountName = "Commerce Account 2");
-
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		Click.clickNoMouseOver(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN");
@@ -137,18 +129,18 @@ definition {
 		Click(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN_BACK_BUTTON");
 
 		Click(
-			key_accountName = "Commerce Account 2",
+			key_accountName = "CC West",
 			locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_ACCOUNT_LIST_ITEM");
 
 		AssertVisible(
-			key_filterOption = "Commerce Account 2",
+			key_filterOption = "CC West",
 			locator1 = "AppBuilder#CHOOSE_APP_SEARCH_FILTER_BY_OPTION");
 
 		Click.clickNoMouseOver(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN");
 
 		AssertTextEquals(
 			locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN_MENU_SELECTED_ACCOUNT",
-			value1 = "Commerce Account 2");
+			value1 = "CC West");
 	}
 
 	@description = "COMMERCE-5929. As a buyer, I want to be able to select an order from the list (which is not the selected one), and have the selected order change to the newly selected order"
@@ -260,14 +252,6 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
-		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
-
-		CommerceAcceleratorsInitializer.createNewAccountViaFront(accountName = "First Account");
-
-		Navigator.gotoBack();
-
-		CommerceAcceleratorsInitializer.createNewAccountViaFront(accountName = "Second Account");
-
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		Click.clickNoMouseOver(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN");
@@ -276,23 +260,23 @@ definition {
 
 		Type(
 			locator1 = "AppBuilder#INPUT_OBJECT_RENAME",
-			value1 = "Second");
+			value1 = "CC West");
 
 		AssertElementPresent(
-			key_accountName = "Second Account",
+			key_accountName = "CC West",
 			locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_ACCOUNT_LIST_ITEM");
 
 		AssertElementNotPresent(
-			key_accountName = "First Account",
+			key_accountName = "S Auto Service",
 			locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_ACCOUNT_LIST_ITEM");
 
 		Click(
-			key_accountName = "Second Account",
+			key_accountName = "CC West",
 			locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_ACCOUNT_LIST_ITEM");
 
 		AssertTextPresent(
 			locator1 = "ContentDashboard#INFO_PANEL_TITLE",
-			value1 = "Second Account");
+			value1 = "CC West");
 	}
 
 	@description = "COMMERCE-5957. As a buyer, I want to search for an order in the orders list, and select it as active order"
@@ -350,18 +334,6 @@ definition {
 
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
-		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
-
-		CommerceAcceleratorsInitializer.createNewAccountViaFront(accountName = "Commerce Account 1");
-
-		Navigator.gotoBack();
-
-		CommerceAcceleratorsInitializer.createNewAccountViaFront(accountName = "Commerce Account 2");
-
-		Navigator.gotoBack();
-
-		CommerceAcceleratorsInitializer.createNewAccountViaFront(accountName = "Commerce Account 3");
-
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		Click.clickNoMouseOver(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN");
@@ -369,15 +341,15 @@ definition {
 		Click(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN_BACK_BUTTON");
 
 		AssertElementPresent(
-			key_accountName = "Commerce Account 1",
+			key_accountName = "S Auto Service",
 			locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_ACCOUNT_LIST_ITEM");
 
 		AssertElementPresent(
-			key_accountName = "Commerce Account 2",
+			key_accountName = "CC West",
 			locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_ACCOUNT_LIST_ITEM");
 
 		AssertElementPresent(
-			key_accountName = "Commerce Account 3",
+			key_accountName = "Connolly Repair",
 			locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_ACCOUNT_LIST_ITEM");
 	}
 

@@ -65,8 +65,6 @@ definition {
 
 		CommerceNavigator.gotoEntry(entryName = "Minium Demo");
 
-		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
-
 		AssertSelectedLabel(
 			key_title = "Currency",
 			locator1 = "CommerceEntry#CATALOGS_FORM",
@@ -691,7 +689,7 @@ definition {
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo/catalog");
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
 
@@ -1364,7 +1362,7 @@ definition {
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo/catalog");
+		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		AssertTextEquals.assertPartialText(
 			key_productName = "U-Joint",
@@ -1426,6 +1424,18 @@ definition {
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
+		CommerceJSONDiscountsAPI._deleteAllCommerceDiscounts();
+
+		CommerceNavigator.gotoPortlet(
+			category = "Pricing",
+			portlet = "Price Lists");
+
+		Click(
+			key_value = "Gold Accounts Pricing",
+			locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS");
+
+		MenuItem.click(menuItem = "Delete");
+
 		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
@@ -1474,7 +1484,7 @@ definition {
 		AssertTextEquals.assertPartialText(
 			key_productName = "Brake Fluid",
 			locator1 = "CommerceEntry#PRODUCT_CARD_LIST_PRICE",
-			value1 = "From $ 80.00");
+			value1 = "From $ 27.00");
 	}
 
 }

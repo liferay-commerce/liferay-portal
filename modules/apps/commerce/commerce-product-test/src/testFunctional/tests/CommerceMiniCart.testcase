@@ -354,7 +354,7 @@ definition {
 		property portal.acceptance = "false";
 
 		task ("Given a Minium site with an account and buyer user") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
 			ApplicationsMenu.gotoSite(site = "Minium");
 
@@ -369,7 +369,7 @@ definition {
 				userLastName = "User",
 				userRole = "Buyer",
 				userScreenName = "buyeruser",
-				userSiteMembership = "Minium");
+				userSiteMembership = "Minium Demo");
 		}
 
 		task ("And given a product with subscription") {
@@ -395,7 +395,7 @@ definition {
 
 			CommerceLogin.miniumLogin(
 				password = "test",
-				urlAppend = "web/minium",
+				urlAppend = "web/minium-demo",
 				userEmailAddress = "buyer@liferay.com");
 
 			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
@@ -1599,11 +1599,15 @@ definition {
 
 		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo");
 
-		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
-
-		CommerceAcceleratorsInitializer.createNewAccountViaFront(accountName = "Commerce Account 1");
-
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
+		Click.clickNoMouseOver(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN");
+
+		Click(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN_BACK_BUTTON");
+
+		Click(
+			key_accountName = "Leo Auto Parts Distributor",
+			locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_ACCOUNT_LIST_ITEM");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
 
@@ -1615,7 +1619,7 @@ definition {
 
 		AssertTextEquals.assertPartialText(
 			locator1 = "CommerceAccelerators#PRODUCT_DETAILS_LIST_PRICE_INACTIVE",
-			value1 = "45.00");
+			value1 = "50.00");
 
 		var i = "1";
 
@@ -1766,11 +1770,19 @@ definition {
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium-demo");
+		CommerceJSONDiscountsAPI._deleteAllCommerceDiscounts();
 
-		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
+		CommerceNavigator.gotoPortlet(
+			category = "Pricing",
+			portlet = "Price Lists");
 
-		CommerceAcceleratorsInitializer.createNewAccountViaFront(accountName = "Commerce Account");
+		Click(
+			key_value = "Gold Accounts Pricing",
+			locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS");
+
+		MenuItem.click(menuItem = "Delete");
+
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
@@ -1800,9 +1812,17 @@ definition {
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
+		CommerceJSONDiscountsAPI._deleteAllCommerceDiscounts();
+
 		CommerceNavigator.gotoPortlet(
 			category = "Pricing",
 			portlet = "Price Lists");
+
+		Click(
+			key_value = "Gold Accounts Pricing",
+			locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS");
+
+		MenuItem.click(menuItem = "Delete");
 
 		CommerceNavigator.gotoEntry(entryName = "Minium Demo Base Price List");
 
@@ -1841,7 +1861,7 @@ definition {
 		CommercePriceLists.createPriceListPriceTiers(
 			key_pricingType = "Tiered Pricing",
 			key_quantity = "2",
-			key_value = "45");
+			key_value = "50");
 
 		Refresh();
 

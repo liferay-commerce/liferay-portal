@@ -271,6 +271,8 @@ definition {
 	@description = "COMMERCE-7885 Verify user can import wish list order in another order and do checkout"
 	@priority = "3"
 	test CanCheckoutAfterImportFromWishList {
+		CommerceJSONDiscountsAPI._deleteAllCommerceDiscounts();
+
 		task ("Given a Minium site with a buyer user") {
 			User.logoutPG();
 
@@ -437,6 +439,8 @@ definition {
 	@description = "COMMERCE-7714 Verify user can import item from wish list"
 	@priority = "3"
 	test CanImportProductsFromWishlist {
+		CommerceJSONDiscountsAPI._deleteAllCommerceDiscounts();
+
 		task ("Given a Minium site with a buyer user") {
 			User.logoutPG();
 
