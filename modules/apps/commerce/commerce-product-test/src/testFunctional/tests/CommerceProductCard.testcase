@@ -689,6 +689,8 @@ definition {
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
@@ -1361,6 +1363,8 @@ definition {
 		property portal.acceptance = "false";
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
+
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 

@@ -1419,7 +1419,7 @@ definition {
 				userLastName = "User",
 				userRole = "Buyer",
 				userScreenName = "buyeruser",
-				userSiteMembership = "Minium");
+				userSiteMembership = "Minium Demo");
 		}
 
 		task ("And given an active payment term") {
@@ -1429,7 +1429,7 @@ definition {
 		task ("And given multiple active payment methods") {
 			CommerceChannels.openChannelsAdmin();
 
-			CommerceNavigator.gotoEntry(entryName = "Minium Portal");
+			CommerceNavigator.gotoEntry(entryName = "Minium Demo Portal");
 
 			CommerceChannels.activatePaymentMethod(paymentMethod = "PayPal");
 
@@ -1447,7 +1447,7 @@ definition {
 
 			CommerceLogin.miniumLogin(
 				password = "test",
-				urlAppend = "web/minium",
+				urlAppend = "web/minium-demo",
 				userEmailAddress = "buyer@liferay.com");
 
 			FrontStore.addInitializerProductToCart(
@@ -2276,7 +2276,7 @@ definition {
 				userLastName = "User",
 				userRole = "Buyer",
 				userScreenName = "buyeruser",
-				userSiteMembership = "Minium");
+				userSiteMembership = "Minium Demo");
 		}
 
 		task ("And given two active order types") {
@@ -2296,7 +2296,7 @@ definition {
 
 			CommerceLogin.miniumLogin(
 				password = "test",
-				urlAppend = "web/minium",
+				urlAppend = "web/minium-demo",
 				userEmailAddress = "buyer@liferay.com");
 
 			CommerceAcceleratorsInitializer.createNewOrderFromPendingOrders(orderType = "Test Order Type 1");
@@ -2393,7 +2393,7 @@ definition {
 				userLastName = "User",
 				userRole = "Buyer",
 				userScreenName = "buyeruser",
-				userSiteMembership = "Minium");
+				userSiteMembership = "Minium Demo");
 		}
 
 		task ("And given two active order types") {
@@ -2411,7 +2411,7 @@ definition {
 		task ("And given an active shipping option's eligibility is set specifically to Test Order Type 1") {
 			CommerceChannels.openChannelsAdmin();
 
-			CommerceNavigator.gotoEntry(entryName = "Minium Portal");
+			CommerceNavigator.gotoEntry(entryName = "Minium Demo Portal");
 
 			CommerceEntry.setEntryEligibility(
 				orderTypesEligibility = "Test Order Type 1",
@@ -2424,7 +2424,7 @@ definition {
 
 			CommerceLogin.miniumLogin(
 				password = "test",
-				urlAppend = "web/minium",
+				urlAppend = "web/minium-demo",
 				userEmailAddress = "buyer@liferay.com");
 
 			CommerceAcceleratorsInitializer.createNewOrderFromPendingOrders(orderType = "Test Order Type 1");
@@ -2552,8 +2552,6 @@ definition {
 
 		// TODO Review
 
-		ApplicationsMenu.gotoSite(site = "Minium Demo");
-
 		CommerceJSONDiscountsAPI._deleteAllCommerceDiscounts();
 
 		CommerceNavigator.gotoPortlet(
@@ -2565,6 +2563,8 @@ definition {
 			locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS");
 
 		MenuItem.click(menuItem = "Delete");
+
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
 

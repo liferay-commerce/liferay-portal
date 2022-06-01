@@ -1861,7 +1861,7 @@ definition {
 		CommercePriceLists.createPriceListPriceTiers(
 			key_pricingType = "Tiered Pricing",
 			key_quantity = "2",
-			key_value = "50");
+			key_value = "45");
 
 		Refresh();
 

@@ -166,7 +166,7 @@ definition {
 
 		Pause(locator1 = "3000");
 
-		var indexProductArray = "1;Cams,2;Timing Belt,3;Oil Filter,4;Drive Shafts,5;Differential Ring and Pinion - Universal,6;Pulley Kit";
+		var indexProductArray = "1;Cams,2;Turbocharger,3;Timing Belt,4;Oil Filter,5;Drive Shafts,6;Differential Ring and Pinion - Universal";
 
 		for (var i : list "${indexProductArray}") {
 			var curr_index = StringUtil.extractFirst("${i}", ";");

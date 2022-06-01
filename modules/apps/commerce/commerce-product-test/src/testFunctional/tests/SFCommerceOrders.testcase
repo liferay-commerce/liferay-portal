@@ -131,8 +131,8 @@ definition {
 
 		CommerceEntry.clickNoError(menuItem = "View");
 
-		var street = "Test Street";
-		var city = "Roma, Roma, 00100";
+		var street = "3200 Front Avenue";
+		var city = "Los Angeles, California, 90023";
 
 		for (var address : list "${street},${city}") {
 			AssertTextEquals.assertPartialText(
@@ -495,7 +495,7 @@ definition {
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Placed Orders");
 
 		Click(
-			key_orderAuthor = "Test Account",
+			key_orderAuthor = "S Auto Service",
 			locator1 = "CommerceAccelerators#ORDERS_ENTRY_VIEW_BUTTON");
 
 		ClickNoError(

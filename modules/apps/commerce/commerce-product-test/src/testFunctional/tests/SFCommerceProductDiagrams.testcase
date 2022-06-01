@@ -227,6 +227,18 @@ definition {
 	test AssertIfTheQuantityFromThePopupAreCorrect {
 		property portal.acceptance = "false";
 
+		CommerceJSONDiscountsAPI._deleteAllCommerceDiscounts();
+
+		CommerceNavigator.gotoPortlet(
+			category = "Pricing",
+			portlet = "Price Lists");
+
+		Click(
+			key_value = "Gold Accounts Pricing",
+			locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS");
+
+		MenuItem.click(menuItem = "Delete");
+
 		task ("Given a Diagram with the "Type" set to "Default", a png image uploaded as "Diagram File" and 1 pin linked to an SKU within the image") {
 			CommerceProducts.openProductsAdmin();
 
@@ -1057,6 +1069,18 @@ definition {
 	@priority = "4"
 	test VerifyTooltipPinInformation {
 		property portal.acceptance = "false";
+
+		CommerceJSONDiscountsAPI._deleteAllCommerceDiscounts();
+
+		CommerceNavigator.gotoPortlet(
+			category = "Pricing",
+			portlet = "Price Lists");
+
+		Click(
+			key_value = "Gold Accounts Pricing",
+			locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS");
+
+		MenuItem.click(menuItem = "Delete");
 
 		task ("Given a Diagram with the "Type" set to "Default", an image (Commerce_Black.jpg) uploaded as "Diagram File" and 1 mapper product (MIN93015)") {
 			CommerceProducts.openProductsAdmin();

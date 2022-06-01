@@ -187,6 +187,8 @@ definition {
 
 		Click(locator1 = "Icon#CLOSE");
 
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		Type(
@@ -257,6 +259,8 @@ definition {
 
 		Click(locator1 = "Icon#CLOSE");
 
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		Type(
@@ -326,6 +330,8 @@ definition {
 			title = "Add Product");
 
 		Click(locator1 = "Icon#CLOSE");
+
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
@@ -416,6 +422,8 @@ definition {
 
 		Click(locator1 = "Icon#CLOSE");
 
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		Click(
@@ -447,6 +455,8 @@ definition {
 		Button.clickSave();
 
 		Click(locator1 = "Icon#CLOSE");
+
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
@@ -577,6 +587,8 @@ definition {
 		Button.clickSave();
 
 		Click(locator1 = "Icon#CLOSE");
+
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
@@ -1990,32 +2002,18 @@ definition {
 
 		CommerceJSONDiscountsAPI._deleteAllCommerceDiscounts();
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Configuration",
-			panel = "Control Panel",
-			portlet = "System Settings");
-
-		Click(
-			key_text = "Pricing",
-			locator1 = "Link#ANY");
-
-		Click(
-			key_text = "Price Entries",
-			locator1 = "Link#ANY");
-
-		Type(
-			key_text = "Check Interval",
-			locator1 = "TextInput#ANY",
-			value1 = "1");
-
-		Button.clickSave();
-
 		Pause(locator1 = "1000");
 
 		ApplicationsMenu.gotoPortlet(
 			category = "Pricing",
 			panel = "Commerce",
 			portlet = "Price Lists");
+
+		Click(
+			key_value = "Gold Accounts Pricing",
+			locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS");
+
+		MenuItem.click(menuItem = "Delete");
 
 		Click(locator1 = "Button#PLUS");
 

@@ -1047,6 +1047,8 @@ definition {
 				key_accountName = "${accountName}",
 				locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_ACCOUNT_LIST_ITEM");
 
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+
 			FrontStore.addInitializerProductToCart(
 				productName = "U-Joint",
 				productQuantity = "1");

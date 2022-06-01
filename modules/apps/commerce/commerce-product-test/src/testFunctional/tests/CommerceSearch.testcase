@@ -605,6 +605,8 @@ definition {
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium Demo");
 
+		ApplicationsMenu.gotoSite(site = "Minium Demo");
+
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
 
 		Type(
