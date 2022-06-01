@@ -206,7 +206,7 @@ public interface CPDefinitionLocalService
 
 	public void checkCPDefinitions() throws PortalException;
 
-	public CPDefinition copyCPDefinition(long cpDefinitionId)
+	public CPDefinition copyCPDefinition(long userId, long cpDefinitionId)
 		throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -230,7 +230,8 @@ public interface CPDefinitionLocalService
 		throws PortalException;
 
 	public void deleteAssetCategoryCPDefinition(
-			long cpDefinitionId, long categoryId, ServiceContext serviceContext)
+			long userId, long cpDefinitionId, long categoryId,
+			ServiceContext serviceContext)
 		throws PortalException;
 
 	/**
@@ -613,7 +614,7 @@ public interface CPDefinitionLocalService
 
 	@Indexable(type = IndexableType.REINDEX)
 	public CPDefinition updateCPDefinition(
-			long cpDefinitionId, Map<Locale, String> nameMap,
+			long userId, long cpDefinitionId, Map<Locale, String> nameMap,
 			Map<Locale, String> shortDescriptionMap,
 			Map<Locale, String> descriptionMap, Map<Locale, String> urlTitleMap,
 			Map<Locale, String> metaTitleMap,
@@ -632,7 +633,7 @@ public interface CPDefinitionLocalService
 		throws PortalException;
 
 	public CPDefinition updateCPDefinition(
-			long cpDefinitionId, Map<Locale, String> nameMap,
+			long userId, long cpDefinitionId, Map<Locale, String> nameMap,
 			Map<Locale, String> shortDescriptionMap,
 			Map<Locale, String> descriptionMap, Map<Locale, String> urlTitleMap,
 			Map<Locale, String> metaTitleMap,
@@ -653,7 +654,7 @@ public interface CPDefinitionLocalService
 
 	@Indexable(type = IndexableType.REINDEX)
 	public CPDefinition updateCPDefinitionCategorization(
-			long cpDefinitionId, ServiceContext serviceContext)
+			long userId, long cpDefinitionId, ServiceContext serviceContext)
 		throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -682,7 +683,8 @@ public interface CPDefinitionLocalService
 			Map<String, String> metaKeywordsMap)
 		throws PortalException;
 
-	public void updateCPDefinitionsByCPTaxCategoryId(long cpTaxCategoryId)
+	public void updateCPDefinitionsByCPTaxCategoryId(
+			long userId, long cpTaxCategoryId)
 		throws PortalException;
 
 	public CPDefinition updateExternalReferenceCode(
@@ -691,10 +693,10 @@ public interface CPDefinitionLocalService
 
 	@Indexable(type = IndexableType.REINDEX)
 	public CPDefinition updateShippingInfo(
-			long cpDefinitionId, boolean shippable, boolean freeShipping,
-			boolean shipSeparately, double shippingExtraPrice, double width,
-			double height, double depth, double weight,
-			ServiceContext serviceContext)
+			long userId, long cpDefinitionId, boolean shippable,
+			boolean freeShipping, boolean shipSeparately,
+			double shippingExtraPrice, double width, double height,
+			double depth, double weight, ServiceContext serviceContext)
 		throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -706,7 +708,7 @@ public interface CPDefinitionLocalService
 
 	@Indexable(type = IndexableType.REINDEX)
 	public CPDefinition updateSubscriptionInfo(
-			long cpDefinitionId, boolean subscriptionEnabled,
+			long userId, long cpDefinitionId, boolean subscriptionEnabled,
 			int subscriptionLength, String subscriptionType,
 			UnicodeProperties subscriptionTypeSettingsUnicodeProperties,
 			long maxSubscriptionCycles, boolean deliverySubscriptionEnabled,
@@ -720,15 +722,15 @@ public interface CPDefinitionLocalService
 	 */
 	@Deprecated
 	public CPDefinition updateSubscriptionInfo(
-			long cpDefinitionId, boolean subscriptionEnabled,
+			long userId, long cpDefinitionId, boolean subscriptionEnabled,
 			int subscriptionLength, String subscriptionType,
 			UnicodeProperties subscriptionTypeSettingsUnicodeProperties,
 			long maxSubscriptionCycles, ServiceContext serviceContext)
 		throws PortalException;
 
 	public CPDefinition updateTaxCategoryInfo(
-			long cpDefinitionId, long cpTaxCategoryId, boolean taxExempt,
-			boolean telcoOrElectronics)
+			long userId, long cpDefinitionId, long cpTaxCategoryId,
+			boolean taxExempt, boolean telcoOrElectronics)
 		throws PortalException;
 
 	@Override

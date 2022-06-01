@@ -157,11 +157,9 @@ public class CPAttachmentFileEntryLocalServiceUtil {
 	 *
 	 * @param cpAttachmentFileEntry the cp attachment file entry
 	 * @return the cp attachment file entry that was removed
-	 * @throws PortalException
 	 */
 	public static CPAttachmentFileEntry deleteCPAttachmentFileEntry(
-			CPAttachmentFileEntry cpAttachmentFileEntry)
-		throws PortalException {
+		CPAttachmentFileEntry cpAttachmentFileEntry) {
 
 		return getService().deleteCPAttachmentFileEntry(cpAttachmentFileEntry);
 	}
@@ -183,6 +181,14 @@ public class CPAttachmentFileEntryLocalServiceUtil {
 
 		return getService().deleteCPAttachmentFileEntry(
 			CPAttachmentFileEntryId);
+	}
+
+	public static CPAttachmentFileEntry deleteCPAttachmentFileEntry(
+			long userId, CPAttachmentFileEntry cpAttachmentFileEntry)
+		throws PortalException {
+
+		return getService().deleteCPAttachmentFileEntry(
+			userId, cpAttachmentFileEntry);
 	}
 
 	/**

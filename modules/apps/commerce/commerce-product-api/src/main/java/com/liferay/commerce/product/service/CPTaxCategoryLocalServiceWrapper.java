@@ -125,12 +125,9 @@ public class CPTaxCategoryLocalServiceWrapper
 	 *
 	 * @param cpTaxCategory the cp tax category
 	 * @return the cp tax category that was removed
-	 * @throws PortalException
 	 */
 	@Override
-	public CPTaxCategory deleteCPTaxCategory(CPTaxCategory cpTaxCategory)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
+	public CPTaxCategory deleteCPTaxCategory(CPTaxCategory cpTaxCategory) {
 		return _cpTaxCategoryLocalService.deleteCPTaxCategory(cpTaxCategory);
 	}
 
@@ -150,6 +147,15 @@ public class CPTaxCategoryLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _cpTaxCategoryLocalService.deleteCPTaxCategory(CPTaxCategoryId);
+	}
+
+	@Override
+	public CPTaxCategory deleteCPTaxCategory(
+			long userId, CPTaxCategory cpTaxCategory)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpTaxCategoryLocalService.deleteCPTaxCategory(
+			userId, cpTaxCategory);
 	}
 
 	/**

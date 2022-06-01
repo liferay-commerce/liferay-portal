@@ -181,7 +181,8 @@ public interface CPDefinitionService extends BaseService {
 		throws PortalException;
 
 	public void deleteAssetCategoryCPDefinition(
-			long cpDefinitionId, long categoryId, ServiceContext serviceContext)
+			long userId, long cpDefinitionId, long categoryId,
+			ServiceContext serviceContext)
 		throws PortalException;
 
 	public void deleteCPDefinition(long cpDefinitionId) throws PortalException;
@@ -260,7 +261,7 @@ public interface CPDefinitionService extends BaseService {
 		throws PortalException;
 
 	public CPDefinition updateCPDefinition(
-			long cpDefinitionId, Map<Locale, String> nameMap,
+			long userId, long cpDefinitionId, Map<Locale, String> nameMap,
 			Map<Locale, String> shortDescriptionMap,
 			Map<Locale, String> descriptionMap, Map<Locale, String> urlTitleMap,
 			Map<Locale, String> metaTitleMap,
@@ -279,7 +280,7 @@ public interface CPDefinitionService extends BaseService {
 		throws PortalException;
 
 	public CPDefinition updateCPDefinitionCategorization(
-			long cpDefinitionId, ServiceContext serviceContext)
+			long userId, long cpDefinitionId, ServiceContext serviceContext)
 		throws PortalException;
 
 	public CPDefinition updateCPDefinitionChannelFilter(
@@ -300,10 +301,10 @@ public interface CPDefinitionService extends BaseService {
 		throws PortalException;
 
 	public CPDefinition updateShippingInfo(
-			long cpDefinitionId, boolean shippable, boolean freeShipping,
-			boolean shipSeparately, double shippingExtraPrice, double width,
-			double height, double depth, double weight,
-			ServiceContext serviceContext)
+			long userId, long cpDefinitionId, boolean shippable,
+			boolean freeShipping, boolean shipSeparately,
+			double shippingExtraPrice, double width, double height,
+			double depth, double weight, ServiceContext serviceContext)
 		throws PortalException;
 
 	public CPDefinition updateStatus(
@@ -312,7 +313,7 @@ public interface CPDefinitionService extends BaseService {
 		throws PortalException;
 
 	public CPDefinition updateSubscriptionInfo(
-			long cpDefinitionId, boolean subscriptionEnabled,
+			long userId, long cpDefinitionId, boolean subscriptionEnabled,
 			int subscriptionLength, String subscriptionType,
 			UnicodeProperties subscriptionTypeSettingsUnicodeProperties,
 			long maxSubscriptionCycles, boolean deliverySubscriptionEnabled,
@@ -326,15 +327,15 @@ public interface CPDefinitionService extends BaseService {
 	 */
 	@Deprecated
 	public CPDefinition updateSubscriptionInfo(
-			long cpDefinitionId, boolean subscriptionEnabled,
+			long userId, long cpDefinitionId, boolean subscriptionEnabled,
 			int subscriptionLength, String subscriptionType,
 			UnicodeProperties subscriptionTypeSettingsUnicodeProperties,
 			long maxSubscriptionCycles, ServiceContext serviceContext)
 		throws PortalException;
 
 	public CPDefinition updateTaxCategoryInfo(
-			long cpDefinitionId, long cpTaxCategoryId, boolean taxExempt,
-			boolean telcoOrElectronics)
+			long userId, long cpDefinitionId, long cpTaxCategoryId,
+			boolean taxExempt, boolean telcoOrElectronics)
 		throws PortalException;
 
 }

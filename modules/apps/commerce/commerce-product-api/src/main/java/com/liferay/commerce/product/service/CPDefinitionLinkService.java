@@ -64,8 +64,8 @@ public interface CPDefinitionLinkService extends BaseService {
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.commerce.product.service.impl.CPDefinitionLinkServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the cp definition link remote service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link CPDefinitionLinkServiceUtil} if injection and service tracking are not available.
 	 */
 	public CPDefinitionLink addCPDefinitionLink(
-			long cpDefinitionId, long cProductId, double priority, String type,
-			ServiceContext serviceContext)
+			long userId, long cpDefinitionId, long cProductId, double priority,
+			String type, ServiceContext serviceContext)
 		throws PortalException;
 
 	public void deleteCPDefinitionLink(long cpDefinitionLinkId)
@@ -120,13 +120,13 @@ public interface CPDefinitionLinkService extends BaseService {
 	public String getOSGiServiceIdentifier();
 
 	public CPDefinitionLink updateCPDefinitionLink(
-			long cpDefinitionLinkId, double priority,
+			long userId, long cpDefinitionLinkId, double priority,
 			ServiceContext serviceContext)
 		throws PortalException;
 
 	public void updateCPDefinitionLinks(
-			long cpDefinitionId, long[] cpDefinitionIds2, String type,
-			ServiceContext serviceContext)
+			long userId, long cpDefinitionId, long[] cpDefinitionIds2,
+			String type, ServiceContext serviceContext)
 		throws PortalException;
 
 }

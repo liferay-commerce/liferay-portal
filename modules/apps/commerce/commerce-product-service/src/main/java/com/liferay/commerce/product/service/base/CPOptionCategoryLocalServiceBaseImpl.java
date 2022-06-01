@@ -170,13 +170,11 @@ public abstract class CPOptionCategoryLocalServiceBaseImpl
 	 *
 	 * @param cpOptionCategory the cp option category
 	 * @return the cp option category that was removed
-	 * @throws PortalException
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@Override
 	public CPOptionCategory deleteCPOptionCategory(
-			CPOptionCategory cpOptionCategory)
-		throws PortalException {
+		CPOptionCategory cpOptionCategory) {
 
 		return cpOptionCategoryPersistence.remove(cpOptionCategory);
 	}

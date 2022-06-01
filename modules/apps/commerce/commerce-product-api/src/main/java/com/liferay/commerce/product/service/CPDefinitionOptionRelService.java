@@ -68,23 +68,24 @@ public interface CPDefinitionOptionRelService extends BaseService {
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.commerce.product.service.impl.CPDefinitionOptionRelServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the cp definition option rel remote service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link CPDefinitionOptionRelServiceUtil} if injection and service tracking are not available.
 	 */
 	public CPDefinitionOptionRel addCPDefinitionOptionRel(
-			long cpDefinitionId, long cpOptionId, Map<Locale, String> nameMap,
-			Map<Locale, String> descriptionMap, String ddmFormFieldTypeName,
-			double priority, boolean facetable, boolean required,
-			boolean skuContributor, boolean importOptionValue,
+			long userId, long cpDefinitionId, long cpOptionId,
+			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
+			String ddmFormFieldTypeName, double priority, boolean facetable,
+			boolean required, boolean skuContributor, boolean importOptionValue,
 			ServiceContext serviceContext)
 		throws PortalException;
 
 	public CPDefinitionOptionRel addCPDefinitionOptionRel(
-			long cpDefinitionId, long cpOptionId, Map<Locale, String> nameMap,
-			Map<Locale, String> descriptionMap, String ddmFormFieldTypeName,
-			double priority, boolean facetable, boolean required,
-			boolean skuContributor, boolean importOptionValue, String priceType,
-			ServiceContext serviceContext)
+			long userId, long cpDefinitionId, long cpOptionId,
+			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
+			String ddmFormFieldTypeName, double priority, boolean facetable,
+			boolean required, boolean skuContributor, boolean importOptionValue,
+			String priceType, ServiceContext serviceContext)
 		throws PortalException;
 
 	public CPDefinitionOptionRel addCPDefinitionOptionRel(
-			long cpDefinitionId, long cpOptionId, ServiceContext serviceContext)
+			long userId, long cpDefinitionId, long cpOptionId,
+			ServiceContext serviceContext)
 		throws PortalException;
 
 	public void deleteCPDefinitionOptionRel(long cpDefinitionOptionRelId)
@@ -184,7 +185,7 @@ public interface CPDefinitionOptionRelService extends BaseService {
 		throws PortalException;
 
 	public CPDefinitionOptionRel updateCPDefinitionOptionRel(
-			long cpDefinitionOptionRelId, long cpOptionId,
+			long userId, long cpDefinitionOptionRelId, long cpOptionId,
 			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
 			String ddmFormFieldTypeName, double priority, boolean facetable,
 			boolean required, boolean skuContributor,
@@ -192,7 +193,7 @@ public interface CPDefinitionOptionRelService extends BaseService {
 		throws PortalException;
 
 	public CPDefinitionOptionRel updateCPDefinitionOptionRel(
-			long cpDefinitionOptionRelId, long cpOptionId,
+			long userId, long cpDefinitionOptionRelId, long cpOptionId,
 			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
 			String ddmFormFieldTypeName, double priority, boolean facetable,
 			boolean required, boolean skuContributor, String priceType,

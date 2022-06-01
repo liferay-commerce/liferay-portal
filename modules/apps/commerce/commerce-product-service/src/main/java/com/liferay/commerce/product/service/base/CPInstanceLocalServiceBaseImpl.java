@@ -177,13 +177,10 @@ public abstract class CPInstanceLocalServiceBaseImpl
 	 *
 	 * @param cpInstance the cp instance
 	 * @return the cp instance that was removed
-	 * @throws PortalException
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@Override
-	public CPInstance deleteCPInstance(CPInstance cpInstance)
-		throws PortalException {
-
+	public CPInstance deleteCPInstance(CPInstance cpInstance) {
 		return cpInstancePersistence.remove(cpInstance);
 	}
 

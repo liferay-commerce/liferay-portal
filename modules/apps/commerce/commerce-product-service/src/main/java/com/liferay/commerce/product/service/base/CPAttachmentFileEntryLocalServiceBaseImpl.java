@@ -182,13 +182,11 @@ public abstract class CPAttachmentFileEntryLocalServiceBaseImpl
 	 *
 	 * @param cpAttachmentFileEntry the cp attachment file entry
 	 * @return the cp attachment file entry that was removed
-	 * @throws PortalException
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@Override
 	public CPAttachmentFileEntry deleteCPAttachmentFileEntry(
-			CPAttachmentFileEntry cpAttachmentFileEntry)
-		throws PortalException {
+		CPAttachmentFileEntry cpAttachmentFileEntry) {
 
 		return cpAttachmentFileEntryPersistence.remove(cpAttachmentFileEntry);
 	}

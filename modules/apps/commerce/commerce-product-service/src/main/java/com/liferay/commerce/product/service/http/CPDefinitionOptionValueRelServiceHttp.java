@@ -52,7 +52,8 @@ public class CPDefinitionOptionValueRelServiceHttp {
 
 	public static com.liferay.commerce.product.model.CPDefinitionOptionValueRel
 			addCPDefinitionOptionValueRel(
-				HttpPrincipal httpPrincipal, long cpDefinitionOptionRelId,
+				HttpPrincipal httpPrincipal, long userId,
+				long cpDefinitionOptionRelId,
 				java.util.Map<java.util.Locale, String> nameMap,
 				double priority, String key,
 				com.liferay.portal.kernel.service.ServiceContext serviceContext)
@@ -65,8 +66,8 @@ public class CPDefinitionOptionValueRelServiceHttp {
 				_addCPDefinitionOptionValueRelParameterTypes0);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, cpDefinitionOptionRelId, nameMap, priority, key,
-				serviceContext);
+				methodKey, userId, cpDefinitionOptionRelId, nameMap, priority,
+				key, serviceContext);
 
 			Object returnObj = null;
 
@@ -637,7 +638,8 @@ public class CPDefinitionOptionValueRelServiceHttp {
 
 	public static com.liferay.commerce.product.model.CPDefinitionOptionValueRel
 			updateCPDefinitionOptionValueRel(
-				HttpPrincipal httpPrincipal, long cpDefinitionOptionValueRelId,
+				HttpPrincipal httpPrincipal, long userId,
+				long cpDefinitionOptionValueRelId,
 				java.util.Map<java.util.Locale, String> nameMap,
 				double priority, String key, long cpInstanceId, int quantity,
 				java.math.BigDecimal price,
@@ -651,8 +653,8 @@ public class CPDefinitionOptionValueRelServiceHttp {
 				_updateCPDefinitionOptionValueRelParameterTypes13);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, cpDefinitionOptionValueRelId, nameMap, priority, key,
-				cpInstanceId, quantity, price, serviceContext);
+				methodKey, userId, cpDefinitionOptionValueRelId, nameMap,
+				priority, key, cpInstanceId, quantity, price, serviceContext);
 
 			Object returnObj = null;
 
@@ -685,7 +687,8 @@ public class CPDefinitionOptionValueRelServiceHttp {
 
 	public static com.liferay.commerce.product.model.CPDefinitionOptionValueRel
 			updateCPDefinitionOptionValueRel(
-				HttpPrincipal httpPrincipal, long cpDefinitionOptionValueRelId,
+				HttpPrincipal httpPrincipal, long userId,
+				long cpDefinitionOptionValueRelId,
 				java.util.Map<java.util.Locale, String> nameMap,
 				double priority, String key, long cpInstanceId, int quantity,
 				boolean preselected, java.math.BigDecimal price,
@@ -699,8 +702,9 @@ public class CPDefinitionOptionValueRelServiceHttp {
 				_updateCPDefinitionOptionValueRelParameterTypes14);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, cpDefinitionOptionValueRelId, nameMap, priority, key,
-				cpInstanceId, quantity, preselected, price, serviceContext);
+				methodKey, userId, cpDefinitionOptionValueRelId, nameMap,
+				priority, key, cpInstanceId, quantity, preselected, price,
+				serviceContext);
 
 			Object returnObj = null;
 
@@ -733,7 +737,8 @@ public class CPDefinitionOptionValueRelServiceHttp {
 
 	public static com.liferay.commerce.product.model.CPDefinitionOptionValueRel
 			updateCPDefinitionOptionValueRel(
-				HttpPrincipal httpPrincipal, long cpDefinitionOptionValueRelId,
+				HttpPrincipal httpPrincipal, long userId,
+				long cpDefinitionOptionValueRelId,
 				java.util.Map<java.util.Locale, String> nameMap,
 				double priority, String key,
 				com.liferay.portal.kernel.service.ServiceContext serviceContext)
@@ -746,8 +751,8 @@ public class CPDefinitionOptionValueRelServiceHttp {
 				_updateCPDefinitionOptionValueRelParameterTypes15);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, cpDefinitionOptionValueRelId, nameMap, priority, key,
-				serviceContext);
+				methodKey, userId, cpDefinitionOptionValueRelId, nameMap,
+				priority, key, serviceContext);
 
 			Object returnObj = null;
 
@@ -827,8 +832,8 @@ public class CPDefinitionOptionValueRelServiceHttp {
 
 	private static final Class<?>[]
 		_addCPDefinitionOptionValueRelParameterTypes0 = new Class[] {
-			long.class, java.util.Map.class, double.class, String.class,
-			com.liferay.portal.kernel.service.ServiceContext.class
+			long.class, long.class, java.util.Map.class, double.class,
+			String.class, com.liferay.portal.kernel.service.ServiceContext.class
 		};
 	private static final Class<?>[]
 		_deleteCPDefinitionOptionValueRelParameterTypes1 = new Class[] {
@@ -882,20 +887,21 @@ public class CPDefinitionOptionValueRelServiceHttp {
 		};
 	private static final Class<?>[]
 		_updateCPDefinitionOptionValueRelParameterTypes13 = new Class[] {
-			long.class, java.util.Map.class, double.class, String.class,
-			long.class, int.class, java.math.BigDecimal.class,
+			long.class, long.class, java.util.Map.class, double.class,
+			String.class, long.class, int.class, java.math.BigDecimal.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
 	private static final Class<?>[]
 		_updateCPDefinitionOptionValueRelParameterTypes14 = new Class[] {
-			long.class, java.util.Map.class, double.class, String.class,
-			long.class, int.class, boolean.class, java.math.BigDecimal.class,
+			long.class, long.class, java.util.Map.class, double.class,
+			String.class, long.class, int.class, boolean.class,
+			java.math.BigDecimal.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
 	private static final Class<?>[]
 		_updateCPDefinitionOptionValueRelParameterTypes15 = new Class[] {
-			long.class, java.util.Map.class, double.class, String.class,
-			com.liferay.portal.kernel.service.ServiceContext.class
+			long.class, long.class, java.util.Map.class, double.class,
+			String.class, com.liferay.portal.kernel.service.ServiceContext.class
 		};
 	private static final Class<?>[]
 		_updateCPDefinitionOptionValueRelPreselectedParameterTypes16 =

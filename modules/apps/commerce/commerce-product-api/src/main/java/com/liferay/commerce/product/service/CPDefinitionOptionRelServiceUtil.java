@@ -41,7 +41,7 @@ public class CPDefinitionOptionRelServiceUtil {
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.commerce.product.service.impl.CPDefinitionOptionRelServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
 	public static CPDefinitionOptionRel addCPDefinitionOptionRel(
-			long cpDefinitionId, long cpOptionId,
+			long userId, long cpDefinitionId, long cpOptionId,
 			Map<java.util.Locale, String> nameMap,
 			Map<java.util.Locale, String> descriptionMap,
 			String ddmFormFieldTypeName, double priority, boolean facetable,
@@ -50,13 +50,13 @@ public class CPDefinitionOptionRelServiceUtil {
 		throws PortalException {
 
 		return getService().addCPDefinitionOptionRel(
-			cpDefinitionId, cpOptionId, nameMap, descriptionMap,
+			userId, cpDefinitionId, cpOptionId, nameMap, descriptionMap,
 			ddmFormFieldTypeName, priority, facetable, required, skuContributor,
 			importOptionValue, serviceContext);
 	}
 
 	public static CPDefinitionOptionRel addCPDefinitionOptionRel(
-			long cpDefinitionId, long cpOptionId,
+			long userId, long cpDefinitionId, long cpOptionId,
 			Map<java.util.Locale, String> nameMap,
 			Map<java.util.Locale, String> descriptionMap,
 			String ddmFormFieldTypeName, double priority, boolean facetable,
@@ -66,18 +66,18 @@ public class CPDefinitionOptionRelServiceUtil {
 		throws PortalException {
 
 		return getService().addCPDefinitionOptionRel(
-			cpDefinitionId, cpOptionId, nameMap, descriptionMap,
+			userId, cpDefinitionId, cpOptionId, nameMap, descriptionMap,
 			ddmFormFieldTypeName, priority, facetable, required, skuContributor,
 			importOptionValue, priceType, serviceContext);
 	}
 
 	public static CPDefinitionOptionRel addCPDefinitionOptionRel(
-			long cpDefinitionId, long cpOptionId,
+			long userId, long cpDefinitionId, long cpOptionId,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws PortalException {
 
 		return getService().addCPDefinitionOptionRel(
-			cpDefinitionId, cpOptionId, serviceContext);
+			userId, cpDefinitionId, cpOptionId, serviceContext);
 	}
 
 	public static void deleteCPDefinitionOptionRel(long cpDefinitionOptionRelId)
@@ -222,7 +222,7 @@ public class CPDefinitionOptionRelServiceUtil {
 	}
 
 	public static CPDefinitionOptionRel updateCPDefinitionOptionRel(
-			long cpDefinitionOptionRelId, long cpOptionId,
+			long userId, long cpDefinitionOptionRelId, long cpOptionId,
 			Map<java.util.Locale, String> nameMap,
 			Map<java.util.Locale, String> descriptionMap,
 			String ddmFormFieldTypeName, double priority, boolean facetable,
@@ -231,13 +231,13 @@ public class CPDefinitionOptionRelServiceUtil {
 		throws PortalException {
 
 		return getService().updateCPDefinitionOptionRel(
-			cpDefinitionOptionRelId, cpOptionId, nameMap, descriptionMap,
-			ddmFormFieldTypeName, priority, facetable, required, skuContributor,
-			serviceContext);
+			userId, cpDefinitionOptionRelId, cpOptionId, nameMap,
+			descriptionMap, ddmFormFieldTypeName, priority, facetable, required,
+			skuContributor, serviceContext);
 	}
 
 	public static CPDefinitionOptionRel updateCPDefinitionOptionRel(
-			long cpDefinitionOptionRelId, long cpOptionId,
+			long userId, long cpDefinitionOptionRelId, long cpOptionId,
 			Map<java.util.Locale, String> nameMap,
 			Map<java.util.Locale, String> descriptionMap,
 			String ddmFormFieldTypeName, double priority, boolean facetable,
@@ -246,9 +246,9 @@ public class CPDefinitionOptionRelServiceUtil {
 		throws PortalException {
 
 		return getService().updateCPDefinitionOptionRel(
-			cpDefinitionOptionRelId, cpOptionId, nameMap, descriptionMap,
-			ddmFormFieldTypeName, priority, facetable, required, skuContributor,
-			priceType, serviceContext);
+			userId, cpDefinitionOptionRelId, cpOptionId, nameMap,
+			descriptionMap, ddmFormFieldTypeName, priority, facetable, required,
+			skuContributor, priceType, serviceContext);
 	}
 
 	public static CPDefinitionOptionRelService getService() {

@@ -414,7 +414,8 @@ public class CPDefinitionServiceHttp {
 	}
 
 	public static void deleteAssetCategoryCPDefinition(
-			HttpPrincipal httpPrincipal, long cpDefinitionId, long categoryId,
+			HttpPrincipal httpPrincipal, long userId, long cpDefinitionId,
+			long categoryId,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -425,7 +426,7 @@ public class CPDefinitionServiceHttp {
 				_deleteAssetCategoryCPDefinitionParameterTypes5);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, cpDefinitionId, categoryId, serviceContext);
+				methodKey, userId, cpDefinitionId, categoryId, serviceContext);
 
 			try {
 				TunnelUtil.invoke(httpPrincipal, methodHandler);
@@ -1039,7 +1040,7 @@ public class CPDefinitionServiceHttp {
 
 	public static com.liferay.commerce.product.model.CPDefinition
 			updateCPDefinition(
-				HttpPrincipal httpPrincipal, long cpDefinitionId,
+				HttpPrincipal httpPrincipal, long userId, long cpDefinitionId,
 				java.util.Map<java.util.Locale, String> nameMap,
 				java.util.Map<java.util.Locale, String> shortDescriptionMap,
 				java.util.Map<java.util.Locale, String> descriptionMap,
@@ -1062,7 +1063,7 @@ public class CPDefinitionServiceHttp {
 				_updateCPDefinitionParameterTypes20);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, cpDefinitionId, nameMap, shortDescriptionMap,
+				methodKey, userId, cpDefinitionId, nameMap, shortDescriptionMap,
 				descriptionMap, urlTitleMap, metaTitleMap, metaDescriptionMap,
 				metaKeywordsMap, ignoreSKUCombinations, ddmStructureKey,
 				published, displayDateMonth, displayDateDay, displayDateYear,
@@ -1143,7 +1144,7 @@ public class CPDefinitionServiceHttp {
 
 	public static com.liferay.commerce.product.model.CPDefinition
 			updateCPDefinitionCategorization(
-				HttpPrincipal httpPrincipal, long cpDefinitionId,
+				HttpPrincipal httpPrincipal, long userId, long cpDefinitionId,
 				com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -1154,7 +1155,7 @@ public class CPDefinitionServiceHttp {
 				_updateCPDefinitionCategorizationParameterTypes22);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, cpDefinitionId, serviceContext);
+				methodKey, userId, cpDefinitionId, serviceContext);
 
 			Object returnObj = null;
 
@@ -1308,7 +1309,7 @@ public class CPDefinitionServiceHttp {
 
 	public static com.liferay.commerce.product.model.CPDefinition
 			updateShippingInfo(
-				HttpPrincipal httpPrincipal, long cpDefinitionId,
+				HttpPrincipal httpPrincipal, long userId, long cpDefinitionId,
 				boolean shippable, boolean freeShipping, boolean shipSeparately,
 				double shippingExtraPrice, double width, double height,
 				double depth, double weight,
@@ -1321,7 +1322,7 @@ public class CPDefinitionServiceHttp {
 				_updateShippingInfoParameterTypes26);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, cpDefinitionId, shippable, freeShipping,
+				methodKey, userId, cpDefinitionId, shippable, freeShipping,
 				shipSeparately, shippingExtraPrice, width, height, depth,
 				weight, serviceContext);
 
@@ -1398,7 +1399,7 @@ public class CPDefinitionServiceHttp {
 
 	public static com.liferay.commerce.product.model.CPDefinition
 			updateSubscriptionInfo(
-				HttpPrincipal httpPrincipal, long cpDefinitionId,
+				HttpPrincipal httpPrincipal, long userId, long cpDefinitionId,
 				boolean subscriptionEnabled, int subscriptionLength,
 				String subscriptionType,
 				com.liferay.portal.kernel.util.UnicodeProperties
@@ -1416,7 +1417,7 @@ public class CPDefinitionServiceHttp {
 				_updateSubscriptionInfoParameterTypes28);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, cpDefinitionId, subscriptionEnabled,
+				methodKey, userId, cpDefinitionId, subscriptionEnabled,
 				subscriptionLength, subscriptionType,
 				subscriptionTypeSettingsUnicodeProperties,
 				maxSubscriptionCycles, deliverySubscriptionEnabled,
@@ -1454,7 +1455,7 @@ public class CPDefinitionServiceHttp {
 
 	public static com.liferay.commerce.product.model.CPDefinition
 			updateSubscriptionInfo(
-				HttpPrincipal httpPrincipal, long cpDefinitionId,
+				HttpPrincipal httpPrincipal, long userId, long cpDefinitionId,
 				boolean subscriptionEnabled, int subscriptionLength,
 				String subscriptionType,
 				com.liferay.portal.kernel.util.UnicodeProperties
@@ -1469,7 +1470,7 @@ public class CPDefinitionServiceHttp {
 				_updateSubscriptionInfoParameterTypes29);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, cpDefinitionId, subscriptionEnabled,
+				methodKey, userId, cpDefinitionId, subscriptionEnabled,
 				subscriptionLength, subscriptionType,
 				subscriptionTypeSettingsUnicodeProperties,
 				maxSubscriptionCycles, serviceContext);
@@ -1504,7 +1505,7 @@ public class CPDefinitionServiceHttp {
 
 	public static com.liferay.commerce.product.model.CPDefinition
 			updateTaxCategoryInfo(
-				HttpPrincipal httpPrincipal, long cpDefinitionId,
+				HttpPrincipal httpPrincipal, long userId, long cpDefinitionId,
 				long cpTaxCategoryId, boolean taxExempt,
 				boolean telcoOrElectronics)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -1515,7 +1516,7 @@ public class CPDefinitionServiceHttp {
 				_updateTaxCategoryInfoParameterTypes30);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, cpDefinitionId, cpTaxCategoryId, taxExempt,
+				methodKey, userId, cpDefinitionId, cpTaxCategoryId, taxExempt,
 				telcoOrElectronics);
 
 			Object returnObj = null;
@@ -1617,7 +1618,7 @@ public class CPDefinitionServiceHttp {
 		new Class[] {long.class, long.class};
 	private static final Class<?>[]
 		_deleteAssetCategoryCPDefinitionParameterTypes5 = new Class[] {
-			long.class, long.class,
+			long.class, long.class, long.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
 	private static final Class<?>[] _deleteCPDefinitionParameterTypes6 =
@@ -1667,7 +1668,7 @@ public class CPDefinitionServiceHttp {
 		};
 	private static final Class<?>[] _updateCPDefinitionParameterTypes20 =
 		new Class[] {
-			long.class, java.util.Map.class, java.util.Map.class,
+			long.class, long.class, java.util.Map.class, java.util.Map.class,
 			java.util.Map.class, java.util.Map.class, java.util.Map.class,
 			java.util.Map.class, java.util.Map.class, boolean.class,
 			String.class, boolean.class, int.class, int.class, int.class,
@@ -1681,7 +1682,8 @@ public class CPDefinitionServiceHttp {
 		};
 	private static final Class<?>[]
 		_updateCPDefinitionCategorizationParameterTypes22 = new Class[] {
-			long.class, com.liferay.portal.kernel.service.ServiceContext.class
+			long.class, long.class,
+			com.liferay.portal.kernel.service.ServiceContext.class
 		};
 	private static final Class<?>[]
 		_updateCPDefinitionChannelFilterParameterTypes23 = new Class[] {
@@ -1698,7 +1700,7 @@ public class CPDefinitionServiceHttp {
 		};
 	private static final Class<?>[] _updateShippingInfoParameterTypes26 =
 		new Class[] {
-			long.class, boolean.class, boolean.class, boolean.class,
+			long.class, long.class, boolean.class, boolean.class, boolean.class,
 			double.class, double.class, double.class, double.class,
 			double.class, com.liferay.portal.kernel.service.ServiceContext.class
 		};
@@ -1710,18 +1712,20 @@ public class CPDefinitionServiceHttp {
 		};
 	private static final Class<?>[] _updateSubscriptionInfoParameterTypes28 =
 		new Class[] {
-			long.class, boolean.class, int.class, String.class,
+			long.class, long.class, boolean.class, int.class, String.class,
 			com.liferay.portal.kernel.util.UnicodeProperties.class, long.class,
 			boolean.class, int.class, String.class,
 			com.liferay.portal.kernel.util.UnicodeProperties.class, long.class
 		};
 	private static final Class<?>[] _updateSubscriptionInfoParameterTypes29 =
 		new Class[] {
-			long.class, boolean.class, int.class, String.class,
+			long.class, long.class, boolean.class, int.class, String.class,
 			com.liferay.portal.kernel.util.UnicodeProperties.class, long.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
 	private static final Class<?>[] _updateTaxCategoryInfoParameterTypes30 =
-		new Class[] {long.class, long.class, boolean.class, boolean.class};
+		new Class[] {
+			long.class, long.class, long.class, boolean.class, boolean.class
+		};
 
 }

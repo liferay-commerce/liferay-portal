@@ -51,9 +51,9 @@ import com.liferay.portal.kernel.util.MethodKey;
 public class CPInstanceServiceHttp {
 
 	public static com.liferay.commerce.product.model.CPInstance addCPInstance(
-			HttpPrincipal httpPrincipal, long cpDefinitionId, long groupId,
-			String sku, String gtin, String manufacturerPartNumber,
-			boolean purchasable,
+			HttpPrincipal httpPrincipal, long userId, long cpDefinitionId,
+			long groupId, String sku, String gtin,
+			String manufacturerPartNumber, boolean purchasable,
 			java.util.Map<Long, java.util.List<Long>>
 				cpDefinitionOptionRelIdCPDefinitionOptionValueRelIds,
 			boolean published, int displayDateMonth, int displayDateDay,
@@ -70,7 +70,7 @@ public class CPInstanceServiceHttp {
 				_addCPInstanceParameterTypes0);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, cpDefinitionId, groupId, sku, gtin,
+				methodKey, userId, cpDefinitionId, groupId, sku, gtin,
 				manufacturerPartNumber, purchasable,
 				cpDefinitionOptionRelIdCPDefinitionOptionValueRelIds, published,
 				displayDateMonth, displayDateDay, displayDateYear,
@@ -107,9 +107,9 @@ public class CPInstanceServiceHttp {
 	}
 
 	public static com.liferay.commerce.product.model.CPInstance addCPInstance(
-			HttpPrincipal httpPrincipal, long cpDefinitionId, long groupId,
-			String sku, String gtin, String manufacturerPartNumber,
-			boolean purchasable,
+			HttpPrincipal httpPrincipal, long userId, long cpDefinitionId,
+			long groupId, String sku, String gtin,
+			String manufacturerPartNumber, boolean purchasable,
 			java.util.Map<Long, java.util.List<Long>>
 				cpDefinitionOptionRelIdCPDefinitionOptionValueRelIds,
 			boolean published, int displayDateMonth, int displayDateDay,
@@ -129,7 +129,7 @@ public class CPInstanceServiceHttp {
 				_addCPInstanceParameterTypes1);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, cpDefinitionId, groupId, sku, gtin,
+				methodKey, userId, cpDefinitionId, groupId, sku, gtin,
 				manufacturerPartNumber, purchasable,
 				cpDefinitionOptionRelIdCPDefinitionOptionValueRelIds, published,
 				displayDateMonth, displayDateDay, displayDateYear,
@@ -169,9 +169,10 @@ public class CPInstanceServiceHttp {
 	}
 
 	public static com.liferay.commerce.product.model.CPInstance addCPInstance(
-			HttpPrincipal httpPrincipal, String externalReferenceCode,
-			long cpDefinitionId, long groupId, String sku, String gtin,
-			String manufacturerPartNumber, boolean purchasable,
+			HttpPrincipal httpPrincipal, long userId,
+			String externalReferenceCode, long cpDefinitionId, long groupId,
+			String sku, String gtin, String manufacturerPartNumber,
+			boolean purchasable,
 			java.util.Map<Long, java.util.List<Long>>
 				cpDefinitionOptionRelIdCPDefinitionOptionValueRelIds,
 			double width, double height, double depth, double weight,
@@ -203,8 +204,8 @@ public class CPInstanceServiceHttp {
 				_addCPInstanceParameterTypes2);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, externalReferenceCode, cpDefinitionId, groupId, sku,
-				gtin, manufacturerPartNumber, purchasable,
+				methodKey, userId, externalReferenceCode, cpDefinitionId,
+				groupId, sku, gtin, manufacturerPartNumber, purchasable,
 				cpDefinitionOptionRelIdCPDefinitionOptionValueRelIds, width,
 				height, depth, weight, price, promoPrice, cost, published,
 				displayDateMonth, displayDateDay, displayDateYear,
@@ -251,14 +252,14 @@ public class CPInstanceServiceHttp {
 
 	public static com.liferay.commerce.product.model.CPInstance
 			addOrUpdateCPInstance(
-				HttpPrincipal httpPrincipal, String externalReferenceCode,
-				long cpDefinitionId, long groupId, String sku, String gtin,
-				String manufacturerPartNumber, boolean purchasable, String json,
-				double width, double height, double depth, double weight,
-				java.math.BigDecimal price, java.math.BigDecimal promoPrice,
-				java.math.BigDecimal cost, boolean published,
-				int displayDateMonth, int displayDateDay, int displayDateYear,
-				int displayDateHour, int displayDateMinute,
+				HttpPrincipal httpPrincipal, long userId,
+				String externalReferenceCode, long cpDefinitionId, long groupId,
+				String sku, String gtin, String manufacturerPartNumber,
+				boolean purchasable, String json, double width, double height,
+				double depth, double weight, java.math.BigDecimal price,
+				java.math.BigDecimal promoPrice, java.math.BigDecimal cost,
+				boolean published, int displayDateMonth, int displayDateDay,
+				int displayDateYear, int displayDateHour, int displayDateMinute,
 				int expirationDateMonth, int expirationDateDay,
 				int expirationDateYear, int expirationDateHour,
 				int expirationDateMinute, boolean neverExpire, String unspsc,
@@ -274,10 +275,10 @@ public class CPInstanceServiceHttp {
 				_addOrUpdateCPInstanceParameterTypes3);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, externalReferenceCode, cpDefinitionId, groupId, sku,
-				gtin, manufacturerPartNumber, purchasable, json, width, height,
-				depth, weight, price, promoPrice, cost, published,
-				displayDateMonth, displayDateDay, displayDateYear,
+				methodKey, userId, externalReferenceCode, cpDefinitionId,
+				groupId, sku, gtin, manufacturerPartNumber, purchasable, json,
+				width, height, depth, weight, price, promoPrice, cost,
+				published, displayDateMonth, displayDateDay, displayDateYear,
 				displayDateHour, displayDateMinute, expirationDateMonth,
 				expirationDateDay, expirationDateYear, expirationDateHour,
 				expirationDateMinute, neverExpire, unspsc, discontinued,
@@ -314,7 +315,7 @@ public class CPInstanceServiceHttp {
 	}
 
 	public static void buildCPInstances(
-			HttpPrincipal httpPrincipal, long cpDefinitionId,
+			HttpPrincipal httpPrincipal, long userId, long cpDefinitionId,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -324,7 +325,7 @@ public class CPInstanceServiceHttp {
 				_buildCPInstancesParameterTypes4);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, cpDefinitionId, serviceContext);
+				methodKey, userId, cpDefinitionId, serviceContext);
 
 			try {
 				TunnelUtil.invoke(httpPrincipal, methodHandler);
@@ -947,13 +948,14 @@ public class CPInstanceServiceHttp {
 
 	public static com.liferay.commerce.product.model.CPInstance
 			updateCPInstance(
-				HttpPrincipal httpPrincipal, long cpInstanceId, String sku,
-				String gtin, String manufacturerPartNumber, boolean purchasable,
-				boolean published, int displayDateMonth, int displayDateDay,
-				int displayDateYear, int displayDateHour, int displayDateMinute,
-				int expirationDateMonth, int expirationDateDay,
-				int expirationDateYear, int expirationDateHour,
-				int expirationDateMinute, boolean neverExpire,
+				HttpPrincipal httpPrincipal, long userId, long cpInstanceId,
+				String sku, String gtin, String manufacturerPartNumber,
+				boolean purchasable, boolean published, int displayDateMonth,
+				int displayDateDay, int displayDateYear, int displayDateHour,
+				int displayDateMinute, int expirationDateMonth,
+				int expirationDateDay, int expirationDateYear,
+				int expirationDateHour, int expirationDateMinute,
+				boolean neverExpire,
 				com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -963,12 +965,12 @@ public class CPInstanceServiceHttp {
 				_updateCPInstanceParameterTypes19);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, cpInstanceId, sku, gtin, manufacturerPartNumber,
-				purchasable, published, displayDateMonth, displayDateDay,
-				displayDateYear, displayDateHour, displayDateMinute,
-				expirationDateMonth, expirationDateDay, expirationDateYear,
-				expirationDateHour, expirationDateMinute, neverExpire,
-				serviceContext);
+				methodKey, userId, cpInstanceId, sku, gtin,
+				manufacturerPartNumber, purchasable, published,
+				displayDateMonth, displayDateDay, displayDateYear,
+				displayDateHour, displayDateMinute, expirationDateMonth,
+				expirationDateDay, expirationDateYear, expirationDateHour,
+				expirationDateMinute, neverExpire, serviceContext);
 
 			Object returnObj = null;
 
@@ -1000,16 +1002,17 @@ public class CPInstanceServiceHttp {
 
 	public static com.liferay.commerce.product.model.CPInstance
 			updateCPInstance(
-				HttpPrincipal httpPrincipal, long cpInstanceId, String sku,
-				String gtin, String manufacturerPartNumber, boolean purchasable,
-				boolean published, int displayDateMonth, int displayDateDay,
-				int displayDateYear, int displayDateHour, int displayDateMinute,
-				int expirationDateMonth, int expirationDateDay,
-				int expirationDateYear, int expirationDateHour,
-				int expirationDateMinute, boolean neverExpire, String unspsc,
-				boolean discontinued, String replacementCPInstanceUuid,
-				long replacementCProductId, int discontinuedDateMonth,
-				int discontinuedDateDay, int discontinuedDateYear,
+				HttpPrincipal httpPrincipal, long userId, long cpInstanceId,
+				String sku, String gtin, String manufacturerPartNumber,
+				boolean purchasable, boolean published, int displayDateMonth,
+				int displayDateDay, int displayDateYear, int displayDateHour,
+				int displayDateMinute, int expirationDateMonth,
+				int expirationDateDay, int expirationDateYear,
+				int expirationDateHour, int expirationDateMinute,
+				boolean neverExpire, String unspsc, boolean discontinued,
+				String replacementCPInstanceUuid, long replacementCProductId,
+				int discontinuedDateMonth, int discontinuedDateDay,
+				int discontinuedDateYear,
 				com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -1019,12 +1022,13 @@ public class CPInstanceServiceHttp {
 				_updateCPInstanceParameterTypes20);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, cpInstanceId, sku, gtin, manufacturerPartNumber,
-				purchasable, published, displayDateMonth, displayDateDay,
-				displayDateYear, displayDateHour, displayDateMinute,
-				expirationDateMonth, expirationDateDay, expirationDateYear,
-				expirationDateHour, expirationDateMinute, neverExpire, unspsc,
-				discontinued, replacementCPInstanceUuid, replacementCProductId,
+				methodKey, userId, cpInstanceId, sku, gtin,
+				manufacturerPartNumber, purchasable, published,
+				displayDateMonth, displayDateDay, displayDateYear,
+				displayDateHour, displayDateMinute, expirationDateMonth,
+				expirationDateDay, expirationDateYear, expirationDateHour,
+				expirationDateMinute, neverExpire, unspsc, discontinued,
+				replacementCPInstanceUuid, replacementCProductId,
 				discontinuedDateMonth, discontinuedDateDay,
 				discontinuedDateYear, serviceContext);
 
@@ -1058,13 +1062,14 @@ public class CPInstanceServiceHttp {
 
 	public static com.liferay.commerce.product.model.CPInstance
 			updateCPInstance(
-				HttpPrincipal httpPrincipal, long cpInstanceId, String sku,
-				String gtin, String manufacturerPartNumber, boolean purchasable,
-				boolean published, int displayDateMonth, int displayDateDay,
-				int displayDateYear, int displayDateHour, int displayDateMinute,
-				int expirationDateMonth, int expirationDateDay,
-				int expirationDateYear, int expirationDateHour,
-				int expirationDateMinute, boolean neverExpire, String unspsc,
+				HttpPrincipal httpPrincipal, long userId, long cpInstanceId,
+				String sku, String gtin, String manufacturerPartNumber,
+				boolean purchasable, boolean published, int displayDateMonth,
+				int displayDateDay, int displayDateYear, int displayDateHour,
+				int displayDateMinute, int expirationDateMonth,
+				int expirationDateDay, int expirationDateYear,
+				int expirationDateHour, int expirationDateMinute,
+				boolean neverExpire, String unspsc,
 				com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -1074,12 +1079,12 @@ public class CPInstanceServiceHttp {
 				_updateCPInstanceParameterTypes21);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, cpInstanceId, sku, gtin, manufacturerPartNumber,
-				purchasable, published, displayDateMonth, displayDateDay,
-				displayDateYear, displayDateHour, displayDateMinute,
-				expirationDateMonth, expirationDateDay, expirationDateYear,
-				expirationDateHour, expirationDateMinute, neverExpire, unspsc,
-				serviceContext);
+				methodKey, userId, cpInstanceId, sku, gtin,
+				manufacturerPartNumber, purchasable, published,
+				displayDateMonth, displayDateDay, displayDateYear,
+				displayDateHour, displayDateMinute, expirationDateMonth,
+				expirationDateDay, expirationDateYear, expirationDateHour,
+				expirationDateMinute, neverExpire, unspsc, serviceContext);
 
 			Object returnObj = null;
 
@@ -1111,13 +1116,13 @@ public class CPInstanceServiceHttp {
 
 	public static com.liferay.commerce.product.model.CPInstance
 			updateCPInstance(
-				HttpPrincipal httpPrincipal, long cpInstanceId, String sku,
-				String gtin, String manufacturerPartNumber, boolean purchasable,
-				double width, double height, double depth, double weight,
-				java.math.BigDecimal price, java.math.BigDecimal promoPrice,
-				java.math.BigDecimal cost, boolean published,
-				int displayDateMonth, int displayDateDay, int displayDateYear,
-				int displayDateHour, int displayDateMinute,
+				HttpPrincipal httpPrincipal, long userId, long cpInstanceId,
+				String sku, String gtin, String manufacturerPartNumber,
+				boolean purchasable, double width, double height, double depth,
+				double weight, java.math.BigDecimal price,
+				java.math.BigDecimal promoPrice, java.math.BigDecimal cost,
+				boolean published, int displayDateMonth, int displayDateDay,
+				int displayDateYear, int displayDateHour, int displayDateMinute,
 				int expirationDateMonth, int expirationDateDay,
 				int expirationDateYear, int expirationDateHour,
 				int expirationDateMinute, boolean neverExpire, String unspsc,
@@ -1133,15 +1138,15 @@ public class CPInstanceServiceHttp {
 				_updateCPInstanceParameterTypes22);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, cpInstanceId, sku, gtin, manufacturerPartNumber,
-				purchasable, width, height, depth, weight, price, promoPrice,
-				cost, published, displayDateMonth, displayDateDay,
-				displayDateYear, displayDateHour, displayDateMinute,
-				expirationDateMonth, expirationDateDay, expirationDateYear,
-				expirationDateHour, expirationDateMinute, neverExpire, unspsc,
-				discontinued, replacementCPInstanceUuid, replacementCProductId,
-				discontinuedDateMonth, discontinuedDateDay,
-				discontinuedDateYear, serviceContext);
+				methodKey, userId, cpInstanceId, sku, gtin,
+				manufacturerPartNumber, purchasable, width, height, depth,
+				weight, price, promoPrice, cost, published, displayDateMonth,
+				displayDateDay, displayDateYear, displayDateHour,
+				displayDateMinute, expirationDateMonth, expirationDateDay,
+				expirationDateYear, expirationDateHour, expirationDateMinute,
+				neverExpire, unspsc, discontinued, replacementCPInstanceUuid,
+				replacementCProductId, discontinuedDateMonth,
+				discontinuedDateDay, discontinuedDateYear, serviceContext);
 
 			Object returnObj = null;
 
@@ -1173,7 +1178,7 @@ public class CPInstanceServiceHttp {
 
 	public static com.liferay.commerce.product.model.CPInstance
 			updatePricingInfo(
-				HttpPrincipal httpPrincipal, long cpInstanceId,
+				HttpPrincipal httpPrincipal, long userId, long cpInstanceId,
 				java.math.BigDecimal price, java.math.BigDecimal promoPrice,
 				java.math.BigDecimal cost,
 				com.liferay.portal.kernel.service.ServiceContext serviceContext)
@@ -1185,7 +1190,7 @@ public class CPInstanceServiceHttp {
 				_updatePricingInfoParameterTypes23);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, cpInstanceId, price, promoPrice, cost,
+				methodKey, userId, cpInstanceId, price, promoPrice, cost,
 				serviceContext);
 
 			Object returnObj = null;
@@ -1218,8 +1223,8 @@ public class CPInstanceServiceHttp {
 
 	public static com.liferay.commerce.product.model.CPInstance
 			updateShippingInfo(
-				HttpPrincipal httpPrincipal, long cpInstanceId, double width,
-				double height, double depth, double weight,
+				HttpPrincipal httpPrincipal, long userId, long cpInstanceId,
+				double width, double height, double depth, double weight,
 				com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -1229,7 +1234,7 @@ public class CPInstanceServiceHttp {
 				_updateShippingInfoParameterTypes24);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, cpInstanceId, width, height, depth, weight,
+				methodKey, userId, cpInstanceId, width, height, depth, weight,
 				serviceContext);
 
 			Object returnObj = null;
@@ -1262,7 +1267,7 @@ public class CPInstanceServiceHttp {
 
 	public static com.liferay.commerce.product.model.CPInstance
 			updateSubscriptionInfo(
-				HttpPrincipal httpPrincipal, long cpInstanceId,
+				HttpPrincipal httpPrincipal, long userId, long cpInstanceId,
 				boolean overrideSubscriptionInfo, boolean subscriptionEnabled,
 				int subscriptionLength, String subscriptionType,
 				com.liferay.portal.kernel.util.UnicodeProperties
@@ -1280,7 +1285,7 @@ public class CPInstanceServiceHttp {
 				_updateSubscriptionInfoParameterTypes25);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, cpInstanceId, overrideSubscriptionInfo,
+				methodKey, userId, cpInstanceId, overrideSubscriptionInfo,
 				subscriptionEnabled, subscriptionLength, subscriptionType,
 				subscriptionTypeSettingsUnicodeProperties,
 				maxSubscriptionCycles, deliverySubscriptionEnabled,
@@ -1321,26 +1326,27 @@ public class CPInstanceServiceHttp {
 
 	private static final Class<?>[] _addCPInstanceParameterTypes0 =
 		new Class[] {
-			long.class, long.class, String.class, String.class, String.class,
-			boolean.class, java.util.Map.class, boolean.class, int.class,
+			long.class, long.class, long.class, String.class, String.class,
+			String.class, boolean.class, java.util.Map.class, boolean.class,
 			int.class, int.class, int.class, int.class, int.class, int.class,
-			int.class, int.class, int.class, boolean.class,
+			int.class, int.class, int.class, int.class, boolean.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
 	private static final Class<?>[] _addCPInstanceParameterTypes1 =
 		new Class[] {
-			long.class, long.class, String.class, String.class, String.class,
-			boolean.class, java.util.Map.class, boolean.class, int.class,
+			long.class, long.class, long.class, String.class, String.class,
+			String.class, boolean.class, java.util.Map.class, boolean.class,
 			int.class, int.class, int.class, int.class, int.class, int.class,
-			int.class, int.class, int.class, boolean.class, String.class,
-			boolean.class, String.class, long.class, int.class, int.class,
-			int.class, com.liferay.portal.kernel.service.ServiceContext.class
+			int.class, int.class, int.class, int.class, boolean.class,
+			String.class, boolean.class, String.class, long.class, int.class,
+			int.class, int.class,
+			com.liferay.portal.kernel.service.ServiceContext.class
 		};
 	private static final Class<?>[] _addCPInstanceParameterTypes2 =
 		new Class[] {
-			String.class, long.class, long.class, String.class, String.class,
-			String.class, boolean.class, java.util.Map.class, double.class,
-			double.class, double.class, double.class,
+			long.class, String.class, long.class, long.class, String.class,
+			String.class, String.class, boolean.class, java.util.Map.class,
+			double.class, double.class, double.class, double.class,
 			java.math.BigDecimal.class, java.math.BigDecimal.class,
 			java.math.BigDecimal.class, boolean.class, int.class, int.class,
 			int.class, int.class, int.class, int.class, int.class, int.class,
@@ -1355,9 +1361,9 @@ public class CPInstanceServiceHttp {
 		};
 	private static final Class<?>[] _addOrUpdateCPInstanceParameterTypes3 =
 		new Class[] {
-			String.class, long.class, long.class, String.class, String.class,
-			String.class, boolean.class, String.class, double.class,
-			double.class, double.class, double.class,
+			long.class, String.class, long.class, long.class, String.class,
+			String.class, String.class, boolean.class, String.class,
+			double.class, double.class, double.class, double.class,
 			java.math.BigDecimal.class, java.math.BigDecimal.class,
 			java.math.BigDecimal.class, boolean.class, int.class, int.class,
 			int.class, int.class, int.class, int.class, int.class, int.class,
@@ -1367,7 +1373,8 @@ public class CPInstanceServiceHttp {
 		};
 	private static final Class<?>[] _buildCPInstancesParameterTypes4 =
 		new Class[] {
-			long.class, com.liferay.portal.kernel.service.ServiceContext.class
+			long.class, long.class,
+			com.liferay.portal.kernel.service.ServiceContext.class
 		};
 	private static final Class<?>[] _deleteCPInstanceParameterTypes5 =
 		new Class[] {long.class};
@@ -1421,54 +1428,56 @@ public class CPInstanceServiceHttp {
 		};
 	private static final Class<?>[] _updateCPInstanceParameterTypes19 =
 		new Class[] {
-			long.class, String.class, String.class, String.class, boolean.class,
-			boolean.class, int.class, int.class, int.class, int.class,
+			long.class, long.class, String.class, String.class, String.class,
+			boolean.class, boolean.class, int.class, int.class, int.class,
 			int.class, int.class, int.class, int.class, int.class, int.class,
-			boolean.class,
+			int.class, boolean.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
 	private static final Class<?>[] _updateCPInstanceParameterTypes20 =
 		new Class[] {
-			long.class, String.class, String.class, String.class, boolean.class,
+			long.class, long.class, String.class, String.class, String.class,
+			boolean.class, boolean.class, int.class, int.class, int.class,
+			int.class, int.class, int.class, int.class, int.class, int.class,
+			int.class, boolean.class, String.class, boolean.class, String.class,
+			long.class, int.class, int.class, int.class,
+			com.liferay.portal.kernel.service.ServiceContext.class
+		};
+	private static final Class<?>[] _updateCPInstanceParameterTypes21 =
+		new Class[] {
+			long.class, long.class, String.class, String.class, String.class,
+			boolean.class, boolean.class, int.class, int.class, int.class,
+			int.class, int.class, int.class, int.class, int.class, int.class,
+			int.class, boolean.class, String.class,
+			com.liferay.portal.kernel.service.ServiceContext.class
+		};
+	private static final Class<?>[] _updateCPInstanceParameterTypes22 =
+		new Class[] {
+			long.class, long.class, String.class, String.class, String.class,
+			boolean.class, double.class, double.class, double.class,
+			double.class, java.math.BigDecimal.class,
+			java.math.BigDecimal.class, java.math.BigDecimal.class,
 			boolean.class, int.class, int.class, int.class, int.class,
 			int.class, int.class, int.class, int.class, int.class, int.class,
 			boolean.class, String.class, boolean.class, String.class,
 			long.class, int.class, int.class, int.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
-	private static final Class<?>[] _updateCPInstanceParameterTypes21 =
-		new Class[] {
-			long.class, String.class, String.class, String.class, boolean.class,
-			boolean.class, int.class, int.class, int.class, int.class,
-			int.class, int.class, int.class, int.class, int.class, int.class,
-			boolean.class, String.class,
-			com.liferay.portal.kernel.service.ServiceContext.class
-		};
-	private static final Class<?>[] _updateCPInstanceParameterTypes22 =
-		new Class[] {
-			long.class, String.class, String.class, String.class, boolean.class,
-			double.class, double.class, double.class, double.class,
-			java.math.BigDecimal.class, java.math.BigDecimal.class,
-			java.math.BigDecimal.class, boolean.class, int.class, int.class,
-			int.class, int.class, int.class, int.class, int.class, int.class,
-			int.class, int.class, boolean.class, String.class, boolean.class,
-			String.class, long.class, int.class, int.class, int.class,
-			com.liferay.portal.kernel.service.ServiceContext.class
-		};
 	private static final Class<?>[] _updatePricingInfoParameterTypes23 =
 		new Class[] {
-			long.class, java.math.BigDecimal.class, java.math.BigDecimal.class,
-			java.math.BigDecimal.class,
+			long.class, long.class, java.math.BigDecimal.class,
+			java.math.BigDecimal.class, java.math.BigDecimal.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
 	private static final Class<?>[] _updateShippingInfoParameterTypes24 =
 		new Class[] {
-			long.class, double.class, double.class, double.class, double.class,
-			com.liferay.portal.kernel.service.ServiceContext.class
+			long.class, long.class, double.class, double.class, double.class,
+			double.class, com.liferay.portal.kernel.service.ServiceContext.class
 		};
 	private static final Class<?>[] _updateSubscriptionInfoParameterTypes25 =
 		new Class[] {
-			long.class, boolean.class, boolean.class, int.class, String.class,
+			long.class, long.class, boolean.class, boolean.class, int.class,
+			String.class,
 			com.liferay.portal.kernel.util.UnicodeProperties.class, long.class,
 			boolean.class, int.class, String.class,
 			com.liferay.portal.kernel.util.UnicodeProperties.class, long.class

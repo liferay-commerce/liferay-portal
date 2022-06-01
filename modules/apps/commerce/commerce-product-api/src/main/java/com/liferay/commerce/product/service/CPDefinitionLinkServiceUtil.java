@@ -40,12 +40,13 @@ public class CPDefinitionLinkServiceUtil {
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.commerce.product.service.impl.CPDefinitionLinkServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
 	public static CPDefinitionLink addCPDefinitionLink(
-			long cpDefinitionId, long cProductId, double priority, String type,
+			long userId, long cpDefinitionId, long cProductId, double priority,
+			String type,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws PortalException {
 
 		return getService().addCPDefinitionLink(
-			cpDefinitionId, cProductId, priority, type, serviceContext);
+			userId, cpDefinitionId, cProductId, priority, type, serviceContext);
 	}
 
 	public static void deleteCPDefinitionLink(long cpDefinitionLinkId)
@@ -128,21 +129,22 @@ public class CPDefinitionLinkServiceUtil {
 	}
 
 	public static CPDefinitionLink updateCPDefinitionLink(
-			long cpDefinitionLinkId, double priority,
+			long userId, long cpDefinitionLinkId, double priority,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws PortalException {
 
 		return getService().updateCPDefinitionLink(
-			cpDefinitionLinkId, priority, serviceContext);
+			userId, cpDefinitionLinkId, priority, serviceContext);
 	}
 
 	public static void updateCPDefinitionLinks(
-			long cpDefinitionId, long[] cpDefinitionIds2, String type,
+			long userId, long cpDefinitionId, long[] cpDefinitionIds2,
+			String type,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws PortalException {
 
 		getService().updateCPDefinitionLinks(
-			cpDefinitionId, cpDefinitionIds2, type, serviceContext);
+			userId, cpDefinitionId, cpDefinitionIds2, type, serviceContext);
 	}
 
 	public static CPDefinitionLinkService getService() {

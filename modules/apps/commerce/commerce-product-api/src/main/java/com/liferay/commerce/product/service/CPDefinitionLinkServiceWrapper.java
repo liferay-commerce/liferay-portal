@@ -40,12 +40,13 @@ public class CPDefinitionLinkServiceWrapper
 
 	@Override
 	public CPDefinitionLink addCPDefinitionLink(
-			long cpDefinitionId, long cProductId, double priority, String type,
+			long userId, long cpDefinitionId, long cProductId, double priority,
+			String type,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _cpDefinitionLinkService.addCPDefinitionLink(
-			cpDefinitionId, cProductId, priority, type, serviceContext);
+			userId, cpDefinitionId, cProductId, priority, type, serviceContext);
 	}
 
 	@Override
@@ -144,22 +145,23 @@ public class CPDefinitionLinkServiceWrapper
 
 	@Override
 	public CPDefinitionLink updateCPDefinitionLink(
-			long cpDefinitionLinkId, double priority,
+			long userId, long cpDefinitionLinkId, double priority,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _cpDefinitionLinkService.updateCPDefinitionLink(
-			cpDefinitionLinkId, priority, serviceContext);
+			userId, cpDefinitionLinkId, priority, serviceContext);
 	}
 
 	@Override
 	public void updateCPDefinitionLinks(
-			long cpDefinitionId, long[] cpDefinitionIds2, String type,
+			long userId, long cpDefinitionId, long[] cpDefinitionIds2,
+			String type,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		_cpDefinitionLinkService.updateCPDefinitionLinks(
-			cpDefinitionId, cpDefinitionIds2, type, serviceContext);
+			userId, cpDefinitionId, cpDefinitionIds2, type, serviceContext);
 	}
 
 	@Override

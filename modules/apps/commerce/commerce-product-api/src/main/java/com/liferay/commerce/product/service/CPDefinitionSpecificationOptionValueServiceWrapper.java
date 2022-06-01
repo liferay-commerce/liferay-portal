@@ -43,7 +43,7 @@ public class CPDefinitionSpecificationOptionValueServiceWrapper
 	@Override
 	public CPDefinitionSpecificationOptionValue
 			addCPDefinitionSpecificationOptionValue(
-				long cpDefinitionId, long cpSpecificationOptionId,
+				long userId, long cpDefinitionId, long cpSpecificationOptionId,
 				long cpOptionCategoryId,
 				java.util.Map<java.util.Locale, String> valueMap,
 				double priority,
@@ -52,8 +52,8 @@ public class CPDefinitionSpecificationOptionValueServiceWrapper
 
 		return _cpDefinitionSpecificationOptionValueService.
 			addCPDefinitionSpecificationOptionValue(
-				cpDefinitionId, cpSpecificationOptionId, cpOptionCategoryId,
-				valueMap, priority, serviceContext);
+				userId, cpDefinitionId, cpSpecificationOptionId,
+				cpOptionCategoryId, valueMap, priority, serviceContext);
 	}
 
 	@Override
@@ -143,7 +143,7 @@ public class CPDefinitionSpecificationOptionValueServiceWrapper
 	@Override
 	public CPDefinitionSpecificationOptionValue
 			updateCPDefinitionSpecificationOptionValue(
-				long cpDefinitionSpecificationOptionValueId,
+				long userId, long cpDefinitionSpecificationOptionValueId,
 				long cpOptionCategoryId,
 				java.util.Map<java.util.Locale, String> valueMap,
 				double priority,
@@ -152,8 +152,8 @@ public class CPDefinitionSpecificationOptionValueServiceWrapper
 
 		return _cpDefinitionSpecificationOptionValueService.
 			updateCPDefinitionSpecificationOptionValue(
-				cpDefinitionSpecificationOptionValueId, cpOptionCategoryId,
-				valueMap, priority, serviceContext);
+				userId, cpDefinitionSpecificationOptionValueId,
+				cpOptionCategoryId, valueMap, priority, serviceContext);
 	}
 
 	@Override

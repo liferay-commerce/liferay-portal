@@ -110,11 +110,9 @@ public class CPOptionCategoryLocalServiceUtil {
 	 *
 	 * @param cpOptionCategory the cp option category
 	 * @return the cp option category that was removed
-	 * @throws PortalException
 	 */
 	public static CPOptionCategory deleteCPOptionCategory(
-			CPOptionCategory cpOptionCategory)
-		throws PortalException {
+		CPOptionCategory cpOptionCategory) {
 
 		return getService().deleteCPOptionCategory(cpOptionCategory);
 	}
@@ -135,6 +133,13 @@ public class CPOptionCategoryLocalServiceUtil {
 		throws PortalException {
 
 		return getService().deleteCPOptionCategory(CPOptionCategoryId);
+	}
+
+	public static CPOptionCategory deleteCPOptionCategory(
+			long userId, CPOptionCategory cpOptionCategory)
+		throws PortalException {
+
+		return getService().deleteCPOptionCategory(userId, cpOptionCategory);
 	}
 
 	/**

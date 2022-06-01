@@ -92,12 +92,6 @@ public class CPDisplayLayoutLocalServiceUtil {
 		return getService().createPersistedModel(primaryKeyObj);
 	}
 
-	public static CPDisplayLayout deleteCPDisplayLayout(
-		Class<?> clazz, long classPK) {
-
-		return getService().deleteCPDisplayLayout(clazz, classPK);
-	}
-
 	/**
 	 * Deletes the cp display layout from the database. Also notifies the appropriate model listeners.
 	 *
@@ -129,6 +123,12 @@ public class CPDisplayLayoutLocalServiceUtil {
 		throws PortalException {
 
 		return getService().deleteCPDisplayLayout(CPDisplayLayoutId);
+	}
+
+	public static CPDisplayLayout deleteCPDisplayLayout(
+		long userId, Class<?> clazz, long classPK) {
+
+		return getService().deleteCPDisplayLayout(userId, clazz, classPK);
 	}
 
 	public static void deleteCPDisplayLayouts(Class<?> clazz, long classPK) {
