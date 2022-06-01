@@ -45,8 +45,9 @@ public class CPDefinitionOptionValueRelServiceImpl
 
 	@Override
 	public CPDefinitionOptionValueRel addCPDefinitionOptionValueRel(
-			long cpDefinitionOptionRelId, Map<Locale, String> nameMap,
-			double priority, String key, ServiceContext serviceContext)
+			long userId, long cpDefinitionOptionRelId,
+			Map<Locale, String> nameMap, double priority, String key,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		CPDefinitionOptionRel cpDefinitionOptionRel =
@@ -58,7 +59,7 @@ public class CPDefinitionOptionValueRelServiceImpl
 
 		return cpDefinitionOptionValueRelLocalService.
 			addCPDefinitionOptionValueRel(
-				cpDefinitionOptionRelId, nameMap, priority, key,
+				userId, cpDefinitionOptionRelId, nameMap, priority, key,
 				serviceContext);
 	}
 
@@ -315,22 +316,23 @@ public class CPDefinitionOptionValueRelServiceImpl
 	@Deprecated
 	@Override
 	public CPDefinitionOptionValueRel updateCPDefinitionOptionValueRel(
-			long cpDefinitionOptionValueRelId, Map<Locale, String> nameMap,
-			double priority, String key, long cpInstanceId, int quantity,
-			BigDecimal price, ServiceContext serviceContext)
+			long userId, long cpDefinitionOptionValueRelId,
+			Map<Locale, String> nameMap, double priority, String key,
+			long cpInstanceId, int quantity, BigDecimal price,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		return updateCPDefinitionOptionValueRel(
-			cpDefinitionOptionValueRelId, nameMap, priority, key, cpInstanceId,
-			quantity, false, price, serviceContext);
+			userId, cpDefinitionOptionValueRelId, nameMap, priority, key,
+			cpInstanceId, quantity, false, price, serviceContext);
 	}
 
 	@Override
 	public CPDefinitionOptionValueRel updateCPDefinitionOptionValueRel(
-			long cpDefinitionOptionValueRelId, Map<Locale, String> nameMap,
-			double priority, String key, long cpInstanceId, int quantity,
-			boolean preselected, BigDecimal price,
-			ServiceContext serviceContext)
+			long userId, long cpDefinitionOptionValueRelId,
+			Map<Locale, String> nameMap, double priority, String key,
+			long cpInstanceId, int quantity, boolean preselected,
+			BigDecimal price, ServiceContext serviceContext)
 		throws PortalException {
 
 		CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
@@ -346,7 +348,7 @@ public class CPDefinitionOptionValueRelServiceImpl
 
 		return cpDefinitionOptionValueRelLocalService.
 			updateCPDefinitionOptionValueRel(
-				cpDefinitionOptionValueRelId, nameMap, priority, key,
+				userId, cpDefinitionOptionValueRelId, nameMap, priority, key,
 				cpInstanceId, quantity, preselected, price, serviceContext);
 	}
 
@@ -366,13 +368,14 @@ public class CPDefinitionOptionValueRelServiceImpl
 	@Deprecated
 	@Override
 	public CPDefinitionOptionValueRel updateCPDefinitionOptionValueRel(
-			long cpDefinitionOptionValueRelId, Map<Locale, String> nameMap,
-			double priority, String key, ServiceContext serviceContext)
+			long userId, long cpDefinitionOptionValueRelId,
+			Map<Locale, String> nameMap, double priority, String key,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		return updateCPDefinitionOptionValueRel(
-			cpDefinitionOptionValueRelId, nameMap, priority, key, 0, 0, false,
-			null, serviceContext);
+			userId, cpDefinitionOptionValueRelId, nameMap, priority, key, 0, 0,
+			false, null, serviceContext);
 	}
 
 	@Override

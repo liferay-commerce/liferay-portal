@@ -71,7 +71,7 @@ public class CPDisplayLayoutLocalServiceImpl
 
 			try {
 				CPDefinition newCPDefinition =
-					cpDefinitionLocalService.copyCPDefinition(classPK);
+					cpDefinitionLocalService.copyCPDefinition(userId, classPK);
 
 				classPK = newCPDefinition.getCPDefinitionId();
 			}
@@ -109,12 +109,14 @@ public class CPDisplayLayoutLocalServiceImpl
 
 	@Indexable(type = IndexableType.DELETE)
 	@Override
-	public CPDisplayLayout deleteCPDisplayLayout(Class<?> clazz, long classPK) {
+	public CPDisplayLayout deleteCPDisplayLayout(
+		long userId, Class<?> clazz, long classPK) {
+
 		try {
 			if ((clazz == CPDefinition.class) &&
 				cpDefinitionLocalService.isVersionable(classPK)) {
 
-				cpDefinitionLocalService.copyCPDefinition(classPK);
+				cpDefinitionLocalService.copyCPDefinition(userId, classPK);
 			}
 		}
 		catch (PortalException portalException) {

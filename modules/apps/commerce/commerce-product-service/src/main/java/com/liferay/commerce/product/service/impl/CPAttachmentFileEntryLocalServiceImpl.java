@@ -159,7 +159,7 @@ public class CPAttachmentFileEntryLocalServiceImpl
 			cpDefinitionLocalService.isVersionable(classPK)) {
 
 			CPDefinition newCPDefinition =
-				cpDefinitionLocalService.copyCPDefinition(classPK);
+				cpDefinitionLocalService.copyCPDefinition(userId, classPK);
 
 			classPK = newCPDefinition.getCPDefinitionId();
 		}
@@ -315,11 +315,24 @@ public class CPAttachmentFileEntryLocalServiceImpl
 		}
 	}
 
+	@Override
+	public CPAttachmentFileEntry deleteCPAttachmentFileEntry(
+			long cpAttachmentFileEntryId)
+		throws PortalException {
+
+		CPAttachmentFileEntry cpAttachmentFileEntry =
+			cpAttachmentFileEntryPersistence.findByPrimaryKey(
+				cpAttachmentFileEntryId);
+
+		return cpAttachmentFileEntryLocalService.deleteCPAttachmentFileEntry(
+			cpAttachmentFileEntry);
+	}
+
 	@Indexable(type = IndexableType.DELETE)
 	@Override
 	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public CPAttachmentFileEntry deleteCPAttachmentFileEntry(
-			CPAttachmentFileEntry cpAttachmentFileEntry)
+			long userId, CPAttachmentFileEntry cpAttachmentFileEntry)
 		throws PortalException {
 
 		long cpDefinitionClassNameId = classNameLocalService.getClassNameId(
@@ -332,7 +345,7 @@ public class CPAttachmentFileEntryLocalServiceImpl
 
 			CPDefinition newCPDefinition =
 				cpDefinitionLocalService.copyCPDefinition(
-					cpAttachmentFileEntry.getClassPK());
+					userId, cpAttachmentFileEntry.getClassPK());
 
 			if (cpAttachmentFileEntry.isCDNEnabled()) {
 				cpAttachmentFileEntry =
@@ -364,19 +377,6 @@ public class CPAttachmentFileEntryLocalServiceImpl
 			cpAttachmentFileEntry.getClassPK());
 
 		return cpAttachmentFileEntry;
-	}
-
-	@Override
-	public CPAttachmentFileEntry deleteCPAttachmentFileEntry(
-			long cpAttachmentFileEntryId)
-		throws PortalException {
-
-		CPAttachmentFileEntry cpAttachmentFileEntry =
-			cpAttachmentFileEntryPersistence.findByPrimaryKey(
-				cpAttachmentFileEntryId);
-
-		return cpAttachmentFileEntryLocalService.deleteCPAttachmentFileEntry(
-			cpAttachmentFileEntry);
 	}
 
 	@Override
@@ -621,7 +621,7 @@ public class CPAttachmentFileEntryLocalServiceImpl
 
 			CPDefinition newCPDefinition =
 				cpDefinitionLocalService.copyCPDefinition(
-					cpAttachmentFileEntry.getClassPK());
+					userId, cpAttachmentFileEntry.getClassPK());
 
 			if (cdnEnabled) {
 				cpAttachmentFileEntry =

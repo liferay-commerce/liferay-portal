@@ -110,11 +110,22 @@ public class CPOptionCategoryLocalServiceImpl
 		}
 	}
 
+	@Override
+	public CPOptionCategory deleteCPOptionCategory(long cpOptionCategoryId)
+		throws PortalException {
+
+		CPOptionCategory cpOptionCategory =
+			cpOptionCategoryPersistence.findByPrimaryKey(cpOptionCategoryId);
+
+		return cpOptionCategoryLocalService.deleteCPOptionCategory(
+			cpOptionCategory);
+	}
+
 	@Indexable(type = IndexableType.DELETE)
 	@Override
 	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public CPOptionCategory deleteCPOptionCategory(
-			CPOptionCategory cpOptionCategory)
+			long userId, CPOptionCategory cpOptionCategory)
 		throws PortalException {
 
 		// Commerce product option category
@@ -154,23 +165,13 @@ public class CPOptionCategoryLocalServiceImpl
 
 			cpDefinitionSpecificationOptionValueLocalService.
 				updateCPOptionCategoryId(
+					userId,
 					cpDefinitionSpecificationOptionValue.
 						getCPDefinitionSpecificationOptionValueId(),
 					CPOptionCategoryConstants.DEFAULT_CP_OPTION_CATEGORY_ID);
 		}
 
 		return cpOptionCategory;
-	}
-
-	@Override
-	public CPOptionCategory deleteCPOptionCategory(long cpOptionCategoryId)
-		throws PortalException {
-
-		CPOptionCategory cpOptionCategory =
-			cpOptionCategoryPersistence.findByPrimaryKey(cpOptionCategoryId);
-
-		return cpOptionCategoryLocalService.deleteCPOptionCategory(
-			cpOptionCategory);
 	}
 
 	@Override
