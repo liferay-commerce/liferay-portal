@@ -16,6 +16,9 @@ package com.liferay.batch.planner.rest.internal.resource.v1_0;
 
 import com.liferay.batch.planner.rest.dto.v1_0.Field;
 import com.liferay.batch.planner.rest.resource.v1_0.FieldResource;
+import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.rest.openapi.v1_0.ObjectEntryOpenAPIResource;
+import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -100,6 +103,22 @@ public class FieldResourceImpl extends BaseFieldResourceImpl {
 			_getDTOEntityFields(String internalClassName)
 		throws Exception {
 
+		if (internalClassName.contains("#")) {
+			String objectDefinitionName = internalClassName.split("#")[1];
+
+			ObjectDefinition objectDefinition =
+				_objectDefinitionLocalService.fetchObjectDefinition(
+					contextCompany.getCompanyId(), objectDefinitionName);
+
+			Map<String, com.liferay.portal.vulcan.batch.engine.Field>
+				objectEntryEntityFields =
+					_objectEntryOpenAPIResource.getObjectEntryEntityFields(
+						objectDefinition.getObjectDefinitionId(),
+						contextUriInfo);
+
+			return new ArrayList<>(objectEntryEntityFields.values());
+		}
+
 		VulcanBatchEngineTaskItemDelegate vulcanBatchEngineTaskItemDelegate =
 			_vulcanBatchEngineTaskItemDelegateRegistry.
 				getVulcanBatchEngineTaskItemDelegate(internalClassName);
@@ -131,6 +150,12 @@ public class FieldResourceImpl extends BaseFieldResourceImpl {
 			}
 		};
 	}
+
+	@Reference
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Reference
+	private ObjectEntryOpenAPIResource _objectEntryOpenAPIResource;
 
 	@Reference
 	private OpenAPIResource _openAPIResource;
