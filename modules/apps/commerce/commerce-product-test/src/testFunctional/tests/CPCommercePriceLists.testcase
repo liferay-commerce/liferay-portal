@@ -912,10 +912,12 @@ definition {
 
 		CommerceEntry.gotoMenuTab(menuTab = "Entries");
 
+		var priceListEntryProduct = '''"U-Joint"''';
+
 		Type(
 			key_title = "Add SKUs",
 			locator1 = "CommerceEntry#ADD_RELATION_FIELD",
-			value1 = "MIN55861");
+			value1 = "${priceListEntryProduct}");
 
 		Pause(locator1 = "2000");
 
@@ -938,7 +940,7 @@ definition {
 		Type(
 			key_title = "Add SKUs",
 			locator1 = "CommerceEntry#ADD_RELATION_FIELD",
-			value1 = "MIN55861");
+			value1 = "${priceListEntryProduct}");
 
 		Pause(locator1 = "2000");
 
