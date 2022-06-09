@@ -68,7 +68,7 @@ public interface CPDefinitionSpecificationOptionValueService
 	 */
 	public CPDefinitionSpecificationOptionValue
 			addCPDefinitionSpecificationOptionValue(
-				long cpDefinitionId, long cpSpecificationOptionId,
+				long userId, long cpDefinitionId, long cpSpecificationOptionId,
 				long cpOptionCategoryId, Map<Locale, String> valueMap,
 				double priority, ServiceContext serviceContext)
 		throws PortalException;
@@ -120,7 +120,7 @@ public interface CPDefinitionSpecificationOptionValueService
 
 	public CPDefinitionSpecificationOptionValue
 			updateCPDefinitionSpecificationOptionValue(
-				long cpDefinitionSpecificationOptionValueId,
+				long userId, long cpDefinitionSpecificationOptionValueId,
 				long cpOptionCategoryId, Map<Locale, String> valueMap,
 				double priority, ServiceContext serviceContext)
 		throws PortalException;

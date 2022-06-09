@@ -152,8 +152,8 @@ public class EditCPDefinitionOptionValueRelMVCActionCommand
 
 			return _cpDefinitionOptionValueRelService.
 				addCPDefinitionOptionValueRel(
-					cpDefinitionOptionRelId, nameMap, priority, key,
-					serviceContext);
+					serviceContext.getUserId(), cpDefinitionOptionRelId,
+					nameMap, priority, key, serviceContext);
 		}
 
 		// Update commerce product definition option value rel
@@ -167,8 +167,9 @@ public class EditCPDefinitionOptionValueRelMVCActionCommand
 
 		return _cpDefinitionOptionValueRelService.
 			updateCPDefinitionOptionValueRel(
-				cpDefinitionOptionValueRelId, nameMap, priority, key,
-				cpInstanceId, quantity, preselected, price, serviceContext);
+				serviceContext.getUserId(), cpDefinitionOptionValueRelId,
+				nameMap, priority, key, cpInstanceId, quantity, preselected,
+				price, serviceContext);
 	}
 
 	private CPDefinitionOptionValueRel _updatePreselected(

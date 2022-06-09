@@ -123,7 +123,8 @@ public class EditCPDefinitionSpecificationOptionValueMVCActionCommand
 
 			_cpDefinitionSpecificationOptionValueService.
 				addCPDefinitionSpecificationOptionValue(
-					cpDefinitionId, cpSpecificationOptionId,
+					serviceContext.getUserId(), cpDefinitionId,
+					cpSpecificationOptionId,
 					cpSpecificationOption.getCPOptionCategoryId(), null, i,
 					serviceContext);
 		}
@@ -180,6 +181,7 @@ public class EditCPDefinitionSpecificationOptionValueMVCActionCommand
 
 		return _cpDefinitionSpecificationOptionValueService.
 			updateCPDefinitionSpecificationOptionValue(
+				serviceContext.getUserId(),
 				cpDefinitionSpecificationOptionValueId, cpOptionCategoryId,
 				valueMap, priority, serviceContext);
 	}

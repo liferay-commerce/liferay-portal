@@ -222,12 +222,16 @@ public class EditCPDefinitionMVCActionCommand extends BaseMVCActionCommand {
 		double weight = ParamUtil.getDouble(actionRequest, "weight");
 
 		_cpDefinitionService.updateShippingInfo(
-			cpDefinitionId, shippable, freeShipping, shipSeparately,
-			shippingExtraPrice, width, height, depth, weight, serviceContext);
+			serviceContext.getUserId(), cpDefinitionId, shippable, freeShipping,
+			shipSeparately, shippingExtraPrice, width, height, depth, weight,
+			serviceContext);
 	}
 
 	protected void updateSubscriptionInfo(ActionRequest actionRequest)
 		throws PortalException {
+
+		ServiceContext serviceContext = ServiceContextFactory.getInstance(
+			CPDefinition.class.getName(), actionRequest);
 
 		long cpDefinitionId = ParamUtil.getLong(
 			actionRequest, "cpDefinitionId");
@@ -256,10 +260,11 @@ public class EditCPDefinitionMVCActionCommand extends BaseMVCActionCommand {
 			actionRequest, "deliveryMaxSubscriptionCycles");
 
 		_cpDefinitionService.updateSubscriptionInfo(
-			cpDefinitionId, subscriptionEnabled, subscriptionLength,
-			subscriptionType, subscriptionTypeSettingsUnicodeProperties,
-			maxSubscriptionCycles, deliverySubscriptionEnabled,
-			deliverySubscriptionLength, deliverySubscriptionType,
+			serviceContext.getUserId(), cpDefinitionId, subscriptionEnabled,
+			subscriptionLength, subscriptionType,
+			subscriptionTypeSettingsUnicodeProperties, maxSubscriptionCycles,
+			deliverySubscriptionEnabled, deliverySubscriptionLength,
+			deliverySubscriptionType,
 			deliverySubscriptionTypeSettingsUnicodeProperties,
 			deliveryMaxSubscriptionCycles);
 	}
@@ -439,8 +444,9 @@ public class EditCPDefinitionMVCActionCommand extends BaseMVCActionCommand {
 				cpDefinitionId);
 
 			cpDefinition = _cpDefinitionService.updateCPDefinition(
-				cpDefinitionId, nameMap, shortDescriptionMap, descriptionMap,
-				urlTitleMap, metaTitleMap, metaDescriptionMap, metaKeywordsMap,
+				serviceContext.getUserId(), cpDefinitionId, nameMap,
+				shortDescriptionMap, descriptionMap, urlTitleMap, metaTitleMap,
+				metaDescriptionMap, metaKeywordsMap,
 				oldCPDefinition.isIgnoreSKUCombinations(), null, published,
 				displayDateMonth, displayDateDay, displayDateYear,
 				displayDateHour, displayDateMinute, expirationDateMonth,
@@ -512,6 +518,9 @@ public class EditCPDefinitionMVCActionCommand extends BaseMVCActionCommand {
 	private void _updateTaxCategoryInfo(ActionRequest actionRequest)
 		throws Exception {
 
+		ServiceContext serviceContext = ServiceContextFactory.getInstance(
+			CPDefinition.class.getName(), actionRequest);
+
 		long cpDefinitionId = ParamUtil.getLong(
 			actionRequest, "cpDefinitionId");
 
@@ -522,7 +531,8 @@ public class EditCPDefinitionMVCActionCommand extends BaseMVCActionCommand {
 			actionRequest, "telcoOrElectronics");
 
 		_cpDefinitionService.updateTaxCategoryInfo(
-			cpDefinitionId, cpTaxCategoryId, taxExempt, telcoOrElectronics);
+			serviceContext.getUserId(), cpDefinitionId, cpTaxCategoryId,
+			taxExempt, telcoOrElectronics);
 	}
 
 	private void _updateVisibility(ActionRequest actionRequest)

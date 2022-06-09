@@ -149,13 +149,10 @@ public interface CPAttachmentFileEntryLocalService
 	 *
 	 * @param cpAttachmentFileEntry the cp attachment file entry
 	 * @return the cp attachment file entry that was removed
-	 * @throws PortalException
 	 */
 	@Indexable(type = IndexableType.DELETE)
-	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public CPAttachmentFileEntry deleteCPAttachmentFileEntry(
-			CPAttachmentFileEntry cpAttachmentFileEntry)
-		throws PortalException;
+		CPAttachmentFileEntry cpAttachmentFileEntry);
 
 	/**
 	 * Deletes the cp attachment file entry with the primary key from the database. Also notifies the appropriate model listeners.
@@ -171,6 +168,12 @@ public interface CPAttachmentFileEntryLocalService
 	@Indexable(type = IndexableType.DELETE)
 	public CPAttachmentFileEntry deleteCPAttachmentFileEntry(
 			long CPAttachmentFileEntryId)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.DELETE)
+	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
+	public CPAttachmentFileEntry deleteCPAttachmentFileEntry(
+			long userId, CPAttachmentFileEntry cpAttachmentFileEntry)
 		throws PortalException;
 
 	/**

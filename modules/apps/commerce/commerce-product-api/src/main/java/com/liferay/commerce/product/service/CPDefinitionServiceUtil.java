@@ -232,12 +232,12 @@ public class CPDefinitionServiceUtil {
 	}
 
 	public static void deleteAssetCategoryCPDefinition(
-			long cpDefinitionId, long categoryId,
+			long userId, long cpDefinitionId, long categoryId,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws PortalException {
 
 		getService().deleteAssetCategoryCPDefinition(
-			cpDefinitionId, categoryId, serviceContext);
+			userId, cpDefinitionId, categoryId, serviceContext);
 	}
 
 	public static void deleteCPDefinition(long cpDefinitionId)
@@ -361,7 +361,8 @@ public class CPDefinitionServiceUtil {
 	}
 
 	public static CPDefinition updateCPDefinition(
-			long cpDefinitionId, Map<java.util.Locale, String> nameMap,
+			long userId, long cpDefinitionId,
+			Map<java.util.Locale, String> nameMap,
 			Map<java.util.Locale, String> shortDescriptionMap,
 			Map<java.util.Locale, String> descriptionMap,
 			Map<java.util.Locale, String> urlTitleMap,
@@ -378,13 +379,13 @@ public class CPDefinitionServiceUtil {
 		throws PortalException {
 
 		return getService().updateCPDefinition(
-			cpDefinitionId, nameMap, shortDescriptionMap, descriptionMap,
-			urlTitleMap, metaTitleMap, metaDescriptionMap, metaKeywordsMap,
-			ignoreSKUCombinations, ddmStructureKey, published, displayDateMonth,
-			displayDateDay, displayDateYear, displayDateHour, displayDateMinute,
-			expirationDateMonth, expirationDateDay, expirationDateYear,
-			expirationDateHour, expirationDateMinute, neverExpire,
-			serviceContext);
+			userId, cpDefinitionId, nameMap, shortDescriptionMap,
+			descriptionMap, urlTitleMap, metaTitleMap, metaDescriptionMap,
+			metaKeywordsMap, ignoreSKUCombinations, ddmStructureKey, published,
+			displayDateMonth, displayDateDay, displayDateYear, displayDateHour,
+			displayDateMinute, expirationDateMonth, expirationDateDay,
+			expirationDateYear, expirationDateHour, expirationDateMinute,
+			neverExpire, serviceContext);
 	}
 
 	public static CPDefinition updateCPDefinitionAccountGroupFilter(
@@ -396,12 +397,12 @@ public class CPDefinitionServiceUtil {
 	}
 
 	public static CPDefinition updateCPDefinitionCategorization(
-			long cpDefinitionId,
+			long userId, long cpDefinitionId,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws PortalException {
 
 		return getService().updateCPDefinitionCategorization(
-			cpDefinitionId, serviceContext);
+			userId, cpDefinitionId, serviceContext);
 	}
 
 	public static CPDefinition updateCPDefinitionChannelFilter(
@@ -434,14 +435,15 @@ public class CPDefinitionServiceUtil {
 	}
 
 	public static CPDefinition updateShippingInfo(
-			long cpDefinitionId, boolean shippable, boolean freeShipping,
-			boolean shipSeparately, double shippingExtraPrice, double width,
-			double height, double depth, double weight,
+			long userId, long cpDefinitionId, boolean shippable,
+			boolean freeShipping, boolean shipSeparately,
+			double shippingExtraPrice, double width, double height,
+			double depth, double weight,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws PortalException {
 
 		return getService().updateShippingInfo(
-			cpDefinitionId, shippable, freeShipping, shipSeparately,
+			userId, cpDefinitionId, shippable, freeShipping, shipSeparately,
 			shippingExtraPrice, width, height, depth, weight, serviceContext);
 	}
 
@@ -456,7 +458,7 @@ public class CPDefinitionServiceUtil {
 	}
 
 	public static CPDefinition updateSubscriptionInfo(
-			long cpDefinitionId, boolean subscriptionEnabled,
+			long userId, long cpDefinitionId, boolean subscriptionEnabled,
 			int subscriptionLength, String subscriptionType,
 			com.liferay.portal.kernel.util.UnicodeProperties
 				subscriptionTypeSettingsUnicodeProperties,
@@ -468,7 +470,7 @@ public class CPDefinitionServiceUtil {
 		throws PortalException {
 
 		return getService().updateSubscriptionInfo(
-			cpDefinitionId, subscriptionEnabled, subscriptionLength,
+			userId, cpDefinitionId, subscriptionEnabled, subscriptionLength,
 			subscriptionType, subscriptionTypeSettingsUnicodeProperties,
 			maxSubscriptionCycles, deliverySubscriptionEnabled,
 			deliverySubscriptionLength, deliverySubscriptionType,
@@ -481,7 +483,7 @@ public class CPDefinitionServiceUtil {
 	 */
 	@Deprecated
 	public static CPDefinition updateSubscriptionInfo(
-			long cpDefinitionId, boolean subscriptionEnabled,
+			long userId, long cpDefinitionId, boolean subscriptionEnabled,
 			int subscriptionLength, String subscriptionType,
 			com.liferay.portal.kernel.util.UnicodeProperties
 				subscriptionTypeSettingsUnicodeProperties,
@@ -490,18 +492,19 @@ public class CPDefinitionServiceUtil {
 		throws PortalException {
 
 		return getService().updateSubscriptionInfo(
-			cpDefinitionId, subscriptionEnabled, subscriptionLength,
+			userId, cpDefinitionId, subscriptionEnabled, subscriptionLength,
 			subscriptionType, subscriptionTypeSettingsUnicodeProperties,
 			maxSubscriptionCycles, serviceContext);
 	}
 
 	public static CPDefinition updateTaxCategoryInfo(
-			long cpDefinitionId, long cpTaxCategoryId, boolean taxExempt,
-			boolean telcoOrElectronics)
+			long userId, long cpDefinitionId, long cpTaxCategoryId,
+			boolean taxExempt, boolean telcoOrElectronics)
 		throws PortalException {
 
 		return getService().updateTaxCategoryInfo(
-			cpDefinitionId, cpTaxCategoryId, taxExempt, telcoOrElectronics);
+			userId, cpDefinitionId, cpTaxCategoryId, taxExempt,
+			telcoOrElectronics);
 	}
 
 	public static CPDefinitionService getService() {

@@ -125,7 +125,8 @@ public class EditCPDefinitionLinkMVCActionCommand extends BaseMVCActionCommand {
 
 			if (!ArrayUtil.contains(cProductIds, cProductId)) {
 				_cpDefinitionLinkService.addCPDefinitionLink(
-					cpDefinitionId, cProductId, 0.0, type, serviceContext);
+					serviceContext.getUserId(), cpDefinitionId, cProductId, 0.0,
+					type, serviceContext);
 
 				successMessage = true;
 			}
@@ -172,7 +173,8 @@ public class EditCPDefinitionLinkMVCActionCommand extends BaseMVCActionCommand {
 		double priority = ParamUtil.getDouble(actionRequest, "priority");
 
 		return _cpDefinitionLinkService.updateCPDefinitionLink(
-			cpDefinitionLinkId, priority, serviceContext);
+			serviceContext.getUserId(), cpDefinitionLinkId, priority,
+			serviceContext);
 	}
 
 	@Reference

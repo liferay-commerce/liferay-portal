@@ -106,9 +106,6 @@ public interface CPDisplayLayoutLocalService
 	public PersistedModel createPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
-	@Indexable(type = IndexableType.DELETE)
-	public CPDisplayLayout deleteCPDisplayLayout(Class<?> clazz, long classPK);
-
 	/**
 	 * Deletes the cp display layout from the database. Also notifies the appropriate model listeners.
 	 *
@@ -137,6 +134,10 @@ public interface CPDisplayLayoutLocalService
 	@Indexable(type = IndexableType.DELETE)
 	public CPDisplayLayout deleteCPDisplayLayout(long CPDisplayLayoutId)
 		throws PortalException;
+
+	@Indexable(type = IndexableType.DELETE)
+	public CPDisplayLayout deleteCPDisplayLayout(
+		long userId, Class<?> clazz, long classPK);
 
 	public void deleteCPDisplayLayouts(Class<?> clazz, long classPK);
 

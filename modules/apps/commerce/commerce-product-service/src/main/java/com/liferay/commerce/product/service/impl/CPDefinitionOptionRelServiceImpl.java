@@ -43,47 +43,48 @@ public class CPDefinitionOptionRelServiceImpl
 
 	@Override
 	public CPDefinitionOptionRel addCPDefinitionOptionRel(
-			long cpDefinitionId, long cpOptionId, Map<Locale, String> nameMap,
-			Map<Locale, String> descriptionMap, String ddmFormFieldTypeName,
-			double priority, boolean facetable, boolean required,
-			boolean skuContributor, boolean importOptionValue,
+			long userId, long cpDefinitionId, long cpOptionId,
+			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
+			String ddmFormFieldTypeName, double priority, boolean facetable,
+			boolean required, boolean skuContributor, boolean importOptionValue,
 			ServiceContext serviceContext)
 		throws PortalException {
 
 		_checkCommerceCatalog(cpDefinitionId, ActionKeys.UPDATE);
 
 		return cpDefinitionOptionRelLocalService.addCPDefinitionOptionRel(
-			cpDefinitionId, cpOptionId, nameMap, descriptionMap,
+			userId, cpDefinitionId, cpOptionId, nameMap, descriptionMap,
 			ddmFormFieldTypeName, priority, facetable, required, skuContributor,
 			importOptionValue, serviceContext);
 	}
 
 	@Override
 	public CPDefinitionOptionRel addCPDefinitionOptionRel(
-			long cpDefinitionId, long cpOptionId, Map<Locale, String> nameMap,
-			Map<Locale, String> descriptionMap, String ddmFormFieldTypeName,
-			double priority, boolean facetable, boolean required,
-			boolean skuContributor, boolean importOptionValue, String priceType,
-			ServiceContext serviceContext)
+			long userId, long cpDefinitionId, long cpOptionId,
+			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
+			String ddmFormFieldTypeName, double priority, boolean facetable,
+			boolean required, boolean skuContributor, boolean importOptionValue,
+			String priceType, ServiceContext serviceContext)
 		throws PortalException {
 
 		_checkCommerceCatalog(cpDefinitionId, ActionKeys.UPDATE);
 
 		return cpDefinitionOptionRelLocalService.addCPDefinitionOptionRel(
-			cpDefinitionId, cpOptionId, nameMap, descriptionMap,
+			userId, cpDefinitionId, cpOptionId, nameMap, descriptionMap,
 			ddmFormFieldTypeName, priority, facetable, required, skuContributor,
 			importOptionValue, priceType, serviceContext);
 	}
 
 	@Override
 	public CPDefinitionOptionRel addCPDefinitionOptionRel(
-			long cpDefinitionId, long cpOptionId, ServiceContext serviceContext)
+			long userId, long cpDefinitionId, long cpOptionId,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		_checkCommerceCatalog(cpDefinitionId, ActionKeys.UPDATE);
 
 		return cpDefinitionOptionRelLocalService.addCPDefinitionOptionRel(
-			cpDefinitionId, cpOptionId, true, serviceContext);
+			userId, cpDefinitionId, cpOptionId, true, serviceContext);
 	}
 
 	@Override
@@ -283,7 +284,7 @@ public class CPDefinitionOptionRelServiceImpl
 
 	@Override
 	public CPDefinitionOptionRel updateCPDefinitionOptionRel(
-			long cpDefinitionOptionRelId, long cpOptionId,
+			long userId, long cpDefinitionOptionRelId, long cpOptionId,
 			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
 			String ddmFormFieldTypeName, double priority, boolean facetable,
 			boolean required, boolean skuContributor,
@@ -298,14 +299,14 @@ public class CPDefinitionOptionRelServiceImpl
 			cpDefinitionOptionRel.getCPDefinitionId(), ActionKeys.UPDATE);
 
 		return cpDefinitionOptionRelLocalService.updateCPDefinitionOptionRel(
-			cpDefinitionOptionRel.getCPDefinitionOptionRelId(), cpOptionId,
-			nameMap, descriptionMap, ddmFormFieldTypeName, priority, facetable,
-			required, skuContributor, serviceContext);
+			userId, cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
+			cpOptionId, nameMap, descriptionMap, ddmFormFieldTypeName, priority,
+			facetable, required, skuContributor, serviceContext);
 	}
 
 	@Override
 	public CPDefinitionOptionRel updateCPDefinitionOptionRel(
-			long cpDefinitionOptionRelId, long cpOptionId,
+			long userId, long cpDefinitionOptionRelId, long cpOptionId,
 			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
 			String ddmFormFieldTypeName, double priority, boolean facetable,
 			boolean required, boolean skuContributor, String priceType,
@@ -320,9 +321,9 @@ public class CPDefinitionOptionRelServiceImpl
 			cpDefinitionOptionRel.getCPDefinitionId(), ActionKeys.UPDATE);
 
 		return cpDefinitionOptionRelLocalService.updateCPDefinitionOptionRel(
-			cpDefinitionOptionRel.getCPDefinitionOptionRelId(), cpOptionId,
-			nameMap, descriptionMap, ddmFormFieldTypeName, priority, facetable,
-			required, skuContributor, priceType, serviceContext);
+			userId, cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
+			cpOptionId, nameMap, descriptionMap, ddmFormFieldTypeName, priority,
+			facetable, required, skuContributor, priceType, serviceContext);
 	}
 
 	private void _checkCommerceCatalog(long cpDefinitionId, String actionId)

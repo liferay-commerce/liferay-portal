@@ -109,7 +109,8 @@ public class EditCPDefinitionOptionRelMVCActionCommand
 
 		for (long addCPOptionId : addCPOptionIds) {
 			_cpDefinitionOptionRelService.addCPDefinitionOptionRel(
-				cpDefinitionId, addCPOptionId, serviceContext);
+				serviceContext.getUserId(), cpDefinitionId, addCPOptionId,
+				serviceContext);
 		}
 	}
 
@@ -161,9 +162,9 @@ public class EditCPDefinitionOptionRelMVCActionCommand
 			CPDefinitionOptionRel.class.getName(), actionRequest);
 
 		return _cpDefinitionOptionRelService.updateCPDefinitionOptionRel(
-			cpDefinitionOptionRelId, cpOptionId, nameMap, descriptionMap,
-			ddmFormFieldTypeName, priority, facetable, required, skuContributor,
-			priceType, serviceContext);
+			serviceContext.getUserId(), cpDefinitionOptionRelId, cpOptionId,
+			nameMap, descriptionMap, ddmFormFieldTypeName, priority, facetable,
+			required, skuContributor, priceType, serviceContext);
 	}
 
 	@Reference

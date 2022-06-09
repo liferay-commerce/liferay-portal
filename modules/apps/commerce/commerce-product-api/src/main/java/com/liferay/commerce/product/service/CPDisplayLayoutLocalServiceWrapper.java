@@ -88,12 +88,6 @@ public class CPDisplayLayoutLocalServiceWrapper
 		return _cpDisplayLayoutLocalService.createPersistedModel(primaryKeyObj);
 	}
 
-	@Override
-	public CPDisplayLayout deleteCPDisplayLayout(Class<?> clazz, long classPK) {
-		return _cpDisplayLayoutLocalService.deleteCPDisplayLayout(
-			clazz, classPK);
-	}
-
 	/**
 	 * Deletes the cp display layout from the database. Also notifies the appropriate model listeners.
 	 *
@@ -129,6 +123,14 @@ public class CPDisplayLayoutLocalServiceWrapper
 
 		return _cpDisplayLayoutLocalService.deleteCPDisplayLayout(
 			CPDisplayLayoutId);
+	}
+
+	@Override
+	public CPDisplayLayout deleteCPDisplayLayout(
+		long userId, Class<?> clazz, long classPK) {
+
+		return _cpDisplayLayoutLocalService.deleteCPDisplayLayout(
+			userId, clazz, classPK);
 	}
 
 	@Override

@@ -167,12 +167,10 @@ public class CPAttachmentFileEntryLocalServiceWrapper
 	 *
 	 * @param cpAttachmentFileEntry the cp attachment file entry
 	 * @return the cp attachment file entry that was removed
-	 * @throws PortalException
 	 */
 	@Override
 	public CPAttachmentFileEntry deleteCPAttachmentFileEntry(
-			CPAttachmentFileEntry cpAttachmentFileEntry)
-		throws com.liferay.portal.kernel.exception.PortalException {
+		CPAttachmentFileEntry cpAttachmentFileEntry) {
 
 		return _cpAttachmentFileEntryLocalService.deleteCPAttachmentFileEntry(
 			cpAttachmentFileEntry);
@@ -196,6 +194,15 @@ public class CPAttachmentFileEntryLocalServiceWrapper
 
 		return _cpAttachmentFileEntryLocalService.deleteCPAttachmentFileEntry(
 			CPAttachmentFileEntryId);
+	}
+
+	@Override
+	public CPAttachmentFileEntry deleteCPAttachmentFileEntry(
+			long userId, CPAttachmentFileEntry cpAttachmentFileEntry)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpAttachmentFileEntryLocalService.deleteCPAttachmentFileEntry(
+			userId, cpAttachmentFileEntry);
 	}
 
 	/**

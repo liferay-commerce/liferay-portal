@@ -173,13 +173,11 @@ public abstract class CPDefinitionOptionRelLocalServiceBaseImpl
 	 *
 	 * @param cpDefinitionOptionRel the cp definition option rel
 	 * @return the cp definition option rel that was removed
-	 * @throws PortalException
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@Override
 	public CPDefinitionOptionRel deleteCPDefinitionOptionRel(
-			CPDefinitionOptionRel cpDefinitionOptionRel)
-		throws PortalException {
+		CPDefinitionOptionRel cpDefinitionOptionRel) {
 
 		return cpDefinitionOptionRelPersistence.remove(cpDefinitionOptionRel);
 	}

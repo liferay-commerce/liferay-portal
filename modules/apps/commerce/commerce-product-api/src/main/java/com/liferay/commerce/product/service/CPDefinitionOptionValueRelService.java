@@ -70,8 +70,9 @@ public interface CPDefinitionOptionValueRelService extends BaseService {
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.commerce.product.service.impl.CPDefinitionOptionValueRelServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the cp definition option value rel remote service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link CPDefinitionOptionValueRelServiceUtil} if injection and service tracking are not available.
 	 */
 	public CPDefinitionOptionValueRel addCPDefinitionOptionValueRel(
-			long cpDefinitionOptionRelId, Map<Locale, String> nameMap,
-			double priority, String key, ServiceContext serviceContext)
+			long userId, long cpDefinitionOptionRelId,
+			Map<Locale, String> nameMap, double priority, String key,
+			ServiceContext serviceContext)
 		throws PortalException;
 
 	public CPDefinitionOptionValueRel deleteCPDefinitionOptionValueRel(
@@ -176,16 +177,17 @@ public interface CPDefinitionOptionValueRelService extends BaseService {
 	 */
 	@Deprecated
 	public CPDefinitionOptionValueRel updateCPDefinitionOptionValueRel(
-			long cpDefinitionOptionValueRelId, Map<Locale, String> nameMap,
-			double priority, String key, long cpInstanceId, int quantity,
-			BigDecimal price, ServiceContext serviceContext)
+			long userId, long cpDefinitionOptionValueRelId,
+			Map<Locale, String> nameMap, double priority, String key,
+			long cpInstanceId, int quantity, BigDecimal price,
+			ServiceContext serviceContext)
 		throws PortalException;
 
 	public CPDefinitionOptionValueRel updateCPDefinitionOptionValueRel(
-			long cpDefinitionOptionValueRelId, Map<Locale, String> nameMap,
-			double priority, String key, long cpInstanceId, int quantity,
-			boolean preselected, BigDecimal price,
-			ServiceContext serviceContext)
+			long userId, long cpDefinitionOptionValueRelId,
+			Map<Locale, String> nameMap, double priority, String key,
+			long cpInstanceId, int quantity, boolean preselected,
+			BigDecimal price, ServiceContext serviceContext)
 		throws PortalException;
 
 	/**
@@ -202,8 +204,9 @@ public interface CPDefinitionOptionValueRelService extends BaseService {
 	 */
 	@Deprecated
 	public CPDefinitionOptionValueRel updateCPDefinitionOptionValueRel(
-			long cpDefinitionOptionValueRelId, Map<Locale, String> nameMap,
-			double priority, String key, ServiceContext serviceContext)
+			long userId, long cpDefinitionOptionValueRelId,
+			Map<Locale, String> nameMap, double priority, String key,
+			ServiceContext serviceContext)
 		throws PortalException;
 
 	public CPDefinitionOptionValueRel

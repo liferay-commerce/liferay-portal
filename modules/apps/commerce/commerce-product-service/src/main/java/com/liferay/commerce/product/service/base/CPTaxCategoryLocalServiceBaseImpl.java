@@ -162,13 +162,10 @@ public abstract class CPTaxCategoryLocalServiceBaseImpl
 	 *
 	 * @param cpTaxCategory the cp tax category
 	 * @return the cp tax category that was removed
-	 * @throws PortalException
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@Override
-	public CPTaxCategory deleteCPTaxCategory(CPTaxCategory cpTaxCategory)
-		throws PortalException {
-
+	public CPTaxCategory deleteCPTaxCategory(CPTaxCategory cpTaxCategory) {
 		return cpTaxCategoryPersistence.remove(cpTaxCategory);
 	}
 

@@ -103,8 +103,19 @@ public class CPTaxCategoryLocalServiceImpl
 	}
 
 	@Override
+	public CPTaxCategory deleteCPTaxCategory(long cpTaxCategoryId)
+		throws PortalException {
+
+		CPTaxCategory cpTaxCategory = cpTaxCategoryPersistence.findByPrimaryKey(
+			cpTaxCategoryId);
+
+		return cpTaxCategoryLocalService.deleteCPTaxCategory(cpTaxCategory);
+	}
+
+	@Override
 	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
-	public CPTaxCategory deleteCPTaxCategory(CPTaxCategory cpTaxCategory)
+	public CPTaxCategory deleteCPTaxCategory(
+			long userId, CPTaxCategory cpTaxCategory)
 		throws PortalException {
 
 		// Commerce product tax category
@@ -114,19 +125,9 @@ public class CPTaxCategoryLocalServiceImpl
 		// Commerce product definitions
 
 		cpDefinitionLocalService.updateCPDefinitionsByCPTaxCategoryId(
-			cpTaxCategory.getCPTaxCategoryId());
+			userId, cpTaxCategory.getCPTaxCategoryId());
 
 		return cpTaxCategory;
-	}
-
-	@Override
-	public CPTaxCategory deleteCPTaxCategory(long cpTaxCategoryId)
-		throws PortalException {
-
-		CPTaxCategory cpTaxCategory = cpTaxCategoryPersistence.findByPrimaryKey(
-			cpTaxCategoryId);
-
-		return cpTaxCategoryLocalService.deleteCPTaxCategory(cpTaxCategory);
 	}
 
 	@Override
