@@ -44,6 +44,7 @@ import org.osgi.service.component.annotations.ServiceScope;
 
 /**
  * @author Matija Petanjek
+ * @author Igor Beslic
  */
 @Component(
 	properties = "OSGI-INF/liferay/rest/v1_0/field.properties",
@@ -103,8 +104,10 @@ public class FieldResourceImpl extends BaseFieldResourceImpl {
 			_getDTOEntityFields(String internalClassName)
 		throws Exception {
 
-		if (internalClassName.contains("#")) {
-			String objectDefinitionName = internalClassName.split("#")[1];
+		int idx = internalClassName.indexOf(StringPool.POUND);
+
+		if (idx > -1) {
+			String objectDefinitionName = internalClassName.substring(idx + 1);
 
 			ObjectDefinition objectDefinition =
 				_objectDefinitionLocalService.fetchObjectDefinition(
