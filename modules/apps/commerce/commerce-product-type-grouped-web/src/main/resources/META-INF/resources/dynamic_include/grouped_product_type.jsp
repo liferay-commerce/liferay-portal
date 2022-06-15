@@ -35,7 +35,7 @@ CPCatalogEntry cpCatalogEntry = cpContentHelper.getCPCatalogEntry(request);
 				CPDefinition cProductCPDefinition = CPDefinitionLocalServiceUtil.getCPDefinition(cProduct.getPublishedCPDefinitionId());
 			%>
 
-				<div class="row">
+				<div class="mt-1 row">
 					<div class="col-md-4">
 						<img class="img-fluid" src="<%= cProductCPDefinition.getDefaultImageThumbnailSrc(CommerceUtil.getCommerceAccountId((CommerceContext)request.getAttribute(CommerceWebKeys.COMMERCE_CONTEXT))) %>" />
 					</div>
@@ -45,9 +45,9 @@ CPCatalogEntry cpCatalogEntry = cpContentHelper.getCPCatalogEntry(request);
 							<%= HtmlUtil.escape(cProductCPDefinition.getName(LocaleUtil.toLanguageId(locale))) %>
 						</h5>
 
-						<h6>
-							<liferay-ui:message arguments="<%= cpDefinitionGroupedEntry.getQuantity() %>" key="quantity-x" />
-						</h6>
+						<p>
+							<%= cProductCPDefinition.getShortDescription(LocaleUtil.toLanguageId(locale)) %>
+						</p>
 					</div>
 				</div>
 
