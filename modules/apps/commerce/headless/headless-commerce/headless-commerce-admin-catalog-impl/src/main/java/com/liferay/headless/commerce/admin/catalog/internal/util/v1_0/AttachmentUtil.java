@@ -19,6 +19,7 @@ import com.liferay.commerce.product.model.CPAttachmentFileEntry;
 import com.liferay.commerce.product.service.CPAttachmentFileEntryService;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppServiceUtil;
+import com.liferay.document.library.opener.constants.DLOpenerMimeTypes;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Attachment;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.AttachmentBase64;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.AttachmentUrl;
@@ -322,6 +323,9 @@ public class AttachmentUtil {
 		if (Validator.isNull(contentType)) {
 			contentType = MimeTypesUtil.getContentType(file);
 		}
+
+		uniqueFileName = uniqueFileName.concat(
+			DLOpenerMimeTypes.getMimeTypeExtension(contentType));
 
 		FileEntry fileEntry = DLAppServiceUtil.addFileEntry(
 			null, serviceContext.getScopeGroupId(),
