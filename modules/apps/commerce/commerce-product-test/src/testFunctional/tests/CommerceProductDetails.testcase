@@ -1199,6 +1199,10 @@ definition {
 
 		AssertElementPresent(locator1 = "CommerceAccelerators#PRODUCT_DETAILS_LIST_PRICE");
 
+		Click(
+			key_text = "Specifications",
+			locator1 = "Button#ANY");
+
 		for (var detail : list "Weight,Dimensions,Material,Quantity,Warranty") {
 			AssertElementPresent(
 				key_specification = "${detail}",
