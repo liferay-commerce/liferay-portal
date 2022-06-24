@@ -52,7 +52,7 @@
 </tr>
 <tr>
 	<td>FS_PRODUCT_DETAIL</td>
-	<td>//span[(normalize-space(text())='${key_detail}')]/following-sibling::span</td>
+	<td>//span[(normalize-space(text())='${key_detail}:')]/following-sibling::span</td>
 	<td></td>
 </tr>
 <tr>
