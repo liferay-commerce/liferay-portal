@@ -14,6 +14,7 @@
 
 package com.liferay.commerce.product.service.impl;
 
+import com.liferay.commerce.discount.model.CommerceDiscount;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.model.CommerceChannelRel;
@@ -147,6 +148,22 @@ public class CommerceChannelRelServiceImpl
 				className, classPK, name, start, end);
 		}
 
+		if (className.equals(CommerceChannel.class.getName())) {
+			_commerceChannelModelResourcePermission.check(
+				getPermissionChecker(), classPK, ActionKeys.VIEW);
+
+			return commerceChannelRelFinder.findByC_C(
+				className, classPK, name, start, end);
+		}
+
+		if (className.equals(CommerceDiscount.class.getName())) {
+			_commerceDiscountModelResourcePermission.check(
+				getPermissionChecker(), classPK, ActionKeys.VIEW);
+
+			return commerceChannelRelFinder.findByC_C(
+				className, classPK, name, start, end);
+		}
+
 		return commerceChannelRelFinder.findByC_C(
 			className, classPK, name, start, end, true);
 	}
@@ -195,6 +212,22 @@ public class CommerceChannelRelServiceImpl
 				className, classPK, name);
 		}
 
+		if (className.equals(CommerceChannel.class.getName())) {
+			_commerceChannelModelResourcePermission.check(
+				getPermissionChecker(), classPK, ActionKeys.VIEW);
+
+			return commerceChannelRelFinder.countByC_C(
+				className, classPK, name);
+		}
+
+		if (className.equals(CommerceDiscount.class.getName())) {
+			_commerceDiscountModelResourcePermission.check(
+				getPermissionChecker(), classPK, ActionKeys.VIEW);
+
+			return commerceChannelRelFinder.countByC_C(
+				className, classPK, name);
+		}
+
 		return commerceChannelRelFinder.countByC_C(
 			className, classPK, name, true);
 	}
@@ -216,6 +249,12 @@ public class CommerceChannelRelServiceImpl
 				CommerceChannelRelServiceImpl.class,
 				"_commerceChannelModelResourcePermission",
 				CommerceChannel.class);
+	private static volatile ModelResourcePermission<CommerceDiscount>
+		_commerceDiscountModelResourcePermission =
+			ModelResourcePermissionFactory.getInstance(
+				CommerceChannelRelServiceImpl.class,
+				"_commerceDiscountModelResourcePermission",
+				CommerceDiscount.class);
 	private static volatile ModelResourcePermission<CPDefinition>
 		_cpDefinitionModelResourcePermission =
 			ModelResourcePermissionFactory.getInstance(
