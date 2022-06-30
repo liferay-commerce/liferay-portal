@@ -33,7 +33,7 @@ request.setAttribute("view.jsp-portletURL", cpDefinitionsDisplayContext.getPortl
 		<aui:input name="deleteCPDefinitionIds" type="hidden" />
 
 		<frontend-data-set:headless-display
-			apiURL="/o/headless-commerce-admin-catalog/v1.0/products?nestedFields=skus,catalog"
+			apiURL="/o/headless-commerce-admin-catalog/v1.0/products?nestedFields=skus"
 			bulkActionDropdownItems="<%= cpDefinitionsDisplayContext.getBulkActionDropdownItems() %>"
 			creationMenu="<%= cpDefinitionsDisplayContext.getCreationMenu() %>"
 			fdsActionDropdownItems="<%= cpDefinitionsDisplayContext.getFDSActionDropdownItems() %>"
