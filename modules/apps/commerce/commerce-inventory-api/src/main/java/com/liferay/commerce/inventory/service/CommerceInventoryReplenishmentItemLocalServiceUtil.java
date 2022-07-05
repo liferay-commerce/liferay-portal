@@ -241,6 +241,16 @@ public class CommerceInventoryReplenishmentItemLocalServiceUtil {
 			commerceInventoryReplenishmentItemId);
 	}
 
+	public static CommerceInventoryReplenishmentItem
+		fetchCommerceInventoryReplenishmentItem(
+			long companyId, String sku,
+			OrderByComparator<CommerceInventoryReplenishmentItem>
+				orderByComparator) {
+
+		return getService().fetchCommerceInventoryReplenishmentItem(
+			companyId, sku, orderByComparator);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 

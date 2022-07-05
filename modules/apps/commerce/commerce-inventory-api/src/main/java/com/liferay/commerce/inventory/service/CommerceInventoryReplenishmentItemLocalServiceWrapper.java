@@ -282,6 +282,20 @@ public class CommerceInventoryReplenishmentItemLocalServiceWrapper
 	}
 
 	@Override
+	public
+		com.liferay.commerce.inventory.model.CommerceInventoryReplenishmentItem
+			fetchCommerceInventoryReplenishmentItem(
+				long companyId, String sku,
+				com.liferay.portal.kernel.util.OrderByComparator
+					<com.liferay.commerce.inventory.model.
+						CommerceInventoryReplenishmentItem> orderByComparator) {
+
+		return _commerceInventoryReplenishmentItemLocalService.
+			fetchCommerceInventoryReplenishmentItem(
+				companyId, sku, orderByComparator);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 

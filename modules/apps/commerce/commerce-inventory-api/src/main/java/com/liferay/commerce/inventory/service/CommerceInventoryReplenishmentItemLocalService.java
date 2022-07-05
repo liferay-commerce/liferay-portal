@@ -220,6 +220,13 @@ public interface CommerceInventoryReplenishmentItemLocalService
 			long commerceInventoryReplenishmentItemId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CommerceInventoryReplenishmentItem
+		fetchCommerceInventoryReplenishmentItem(
+			long companyId, String sku,
+			OrderByComparator<CommerceInventoryReplenishmentItem>
+				orderByComparator);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	/**
