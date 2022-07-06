@@ -20,16 +20,19 @@ import com.liferay.account.model.AccountEntry;
 import com.liferay.account.model.AccountEntryUserRel;
 import com.liferay.account.service.AccountEntryService;
 import com.liferay.account.service.AccountEntryUserRelService;
+import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.UserEmailAddressException;
 import com.liferay.portal.kernel.exception.UserScreenNameException;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -83,6 +86,16 @@ public class AddAccountUserMVCActionCommand extends BaseMVCActionCommand {
 		long suffixId = ParamUtil.getLong(actionRequest, "suffixId");
 		String jobTitle = ParamUtil.getString(actionRequest, "jobTitle");
 
+		byte[] portraitBytes = null;
+
+		long fileEntryId = ParamUtil.getLong(actionRequest, "fileEntryId");
+
+		if (fileEntryId > 0) {
+			FileEntry fileEntry = _dlAppLocalService.getFileEntry(fileEntryId);
+
+			portraitBytes = FileUtil.getBytes(fileEntry.getContentStream());
+		}
+
 		try {
 			AccountEntryUserRel accountEntryUserRel = null;
 
@@ -115,6 +128,11 @@ public class AddAccountUserMVCActionCommand extends BaseMVCActionCommand {
 						ServiceContextFactory.getInstance(
 							AccountEntryUserRel.class.getName(),
 							actionRequest));
+			}
+
+			if (portraitBytes != null) {
+				_userLocalService.updatePortrait(
+					accountEntryUserRel.getAccountUserId(), portraitBytes);
 			}
 
 			String portletId = _portal.getPortletId(actionRequest);
@@ -164,11 +182,18 @@ public class AddAccountUserMVCActionCommand extends BaseMVCActionCommand {
 		}
 	}
 
+	@Reference(unbind = "-")
+	protected void setDLAppLocalService(DLAppLocalService dlAppLocalService) {
+		_dlAppLocalService = dlAppLocalService;
+	}
+
 	@Reference
 	private AccountEntryService _accountEntryService;
 
 	@Reference
 	private AccountEntryUserRelService _accountEntryUserRelService;
+
+	private DLAppLocalService _dlAppLocalService;
 
 	@Reference
 	private Portal _portal;
