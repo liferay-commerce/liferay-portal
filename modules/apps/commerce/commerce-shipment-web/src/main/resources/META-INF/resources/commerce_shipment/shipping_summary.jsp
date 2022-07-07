@@ -21,11 +21,6 @@ CommerceShipmentDisplayContext commerceShipmentDisplayContext = (CommerceShipmen
 
 CommerceShipment commerceShipment = commerceShipmentDisplayContext.getCommerceShipment();
 
-String trackingNumber = commerceShipment.getTrackingNumber();
-String carrier = commerceShipment.getCarrier();
-Date expectedDate = commerceShipment.getExpectedDate();
-Date shippingDate = commerceShipment.getShippingDate();
-
 Format dateFormat = FastDateFormatFactoryUtil.getDate(DateFormat.MEDIUM, locale, user.getTimeZone());
 %>
 
@@ -64,11 +59,11 @@ Format dateFormat = FastDateFormatFactoryUtil.getDate(DateFormat.MEDIUM, locale,
 					</span>
 
 					<c:choose>
-						<c:when test="<%= Validator.isBlank(carrier) %>">
+						<c:when test="<%= Validator.isBlank(commerceShipment.getCarrier()) %>">
 							<span class="text-muted"><liferay-ui:message key="click-edit-to-insert" /></span>
 						</c:when>
 						<c:otherwise>
-							<b><%= HtmlUtil.escape(carrier) %></b>
+							<b><%= HtmlUtil.escape(commerceShipment.getCarrier()) %></b>
 						</c:otherwise>
 					</c:choose>
 				</div>
@@ -79,14 +74,60 @@ Format dateFormat = FastDateFormatFactoryUtil.getDate(DateFormat.MEDIUM, locale,
 					</span>
 
 					<c:choose>
-						<c:when test="<%= Validator.isBlank(trackingNumber) %>">
+						<c:when test="<%= Validator.isBlank(commerceShipment.getTrackingNumber()) %>">
 							<span class="text-muted"><liferay-ui:message key="click-edit-to-insert" /></span>
 						</c:when>
 						<c:otherwise>
-							<b><%= HtmlUtil.escape(trackingNumber) %></b>
+							<b><%= HtmlUtil.escape(commerceShipment.getTrackingNumber()) %></b>
 						</c:otherwise>
 					</c:choose>
 				</div>
+
+				<%
+				String commerceShippingMethodName = commerceShipmentDisplayContext.getCommerceShippingMethodName(locale);
+				%>
+
+				<div class="item">
+					<span class="title">
+						<liferay-ui:message key="shipping-method" />
+					</span>
+
+					<c:choose>
+						<c:when test="<%= Validator.isBlank(commerceShippingMethodName) %>">
+							<span class="text-muted"><liferay-ui:message key="click-edit-to-insert" /></span>
+						</c:when>
+						<c:otherwise>
+							<b><%= HtmlUtil.escape(commerceShippingMethodName) %></b>
+						</c:otherwise>
+					</c:choose>
+				</div>
+
+				<div class="item">
+					<span class="title">
+						<liferay-ui:message key="tracking-url" />
+					</span>
+
+					<c:choose>
+						<c:when test="<%= Validator.isBlank(commerceShipment.getTrackingURL()) %>">
+							<span class="text-muted"><liferay-ui:message key="click-edit-to-insert" /></span>
+						</c:when>
+						<c:otherwise>
+							<b><%= HtmlUtil.escape(commerceShipment.getTrackingURL()) %></b>
+						</c:otherwise>
+					</c:choose>
+				</div>
+
+				<c:if test="<%= commerceShipmentDisplayContext.hasMultipleShippingMethods() %>">
+					<div class="alert alert-dismissible alert-info" role="alert">
+						<clay:icon
+							symbol="info-circle"
+						/>
+
+						<strong class="lead"><liferay-ui:message key="info" /></strong>: <liferay-ui:message key="there-are-shipment-items-from-orders-with-different-shipping-methods-selected" />
+
+						<button aria-label="Close" class="close" data-dismiss="alert" type="button" />
+					</div>
+				</c:if>
 			</commerce-ui:info-box>
 		</div>
 
@@ -142,6 +183,11 @@ Format dateFormat = FastDateFormatFactoryUtil.getDate(DateFormat.MEDIUM, locale,
 				actionUrl=""
 				title='<%= LanguageUtil.get(request, "estimated-shipping-date") %>'
 			>
+
+				<%
+				Date shippingDate = commerceShipment.getShippingDate();
+				%>
+
 				<div class="item">
 					<c:choose>
 						<c:when test="<%= Validator.isNull(shippingDate) %>">
@@ -172,6 +218,11 @@ Format dateFormat = FastDateFormatFactoryUtil.getDate(DateFormat.MEDIUM, locale,
 				actionUrl=""
 				title='<%= LanguageUtil.get(request, "estimated-delivery-date") %>'
 			>
+
+				<%
+				Date expectedDate = commerceShipment.getExpectedDate();
+				%>
+
 				<div class="item">
 					<c:choose>
 						<c:when test="<%= Validator.isNull(expectedDate) %>">

@@ -18,6 +18,10 @@
 
 <%
 CommerceShipmentDisplayContext commerceShipmentDisplayContext = (CommerceShipmentDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
+
+List<CommerceShippingMethod> commerceShippingMethods = commerceShipmentDisplayContext.getCommerceShippingMethods();
+
+CommerceShipment commerceShipment = commerceShipmentDisplayContext.getCommerceShipment();
 %>
 
 <portlet:actionURL name="/commerce_shipment/edit_commerce_shipment" var="editCommerceShipmentURL" />
@@ -36,5 +40,25 @@ CommerceShipmentDisplayContext commerceShipmentDisplayContext = (CommerceShipmen
 		<aui:input name="carrier" wrapperCssClass="form-group-item" />
 
 		<aui:input name="trackingNumber" wrapperCssClass="form-group-item" />
+
+		<aui:select id="shippingMethod-id" name="shippingMethod">
+
+			<%
+			for (CommerceShippingMethod commerceShippingMethod : commerceShippingMethods) {
+			%>
+
+				<aui:option data='<%= HashMapBuilder.<String, Object>put("trackingURL", commerceShippingMethod.getTrackingURL()).build() %>' label="<%= commerceShippingMethod.getName(locale) %>" selected="<%= (commerceShippingMethod.getCommerceShippingMethodId() == commerceShipment.getCommerceShippingMethodId()) ? true : false %>" value="<%= commerceShippingMethod.getCommerceShippingMethodId() %>" />
+
+			<%
+			}
+			%>
+
+		</aui:select>
+
+		<aui:input id="trackingURL-id" name="trackingURL" wrapperCssClass="form-group-item" />
 	</aui:form>
+
+	<liferay-frontend:component
+		module="js/trackingurl"
+	/>
 </commerce-ui:modal-content>
