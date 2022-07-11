@@ -45,6 +45,7 @@ import com.liferay.portal.kernel.util.comparator.UserScreenNameComparator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowException;
 import com.liferay.portal.kernel.workflow.WorkflowTask;
+import com.liferay.portal.kernel.workflow.WorkflowTaskAssignee;
 import com.liferay.portal.kernel.workflow.WorkflowTaskManager;
 import com.liferay.portal.kernel.workflow.search.WorkflowModelSearchResult;
 import com.liferay.portal.workflow.kaleo.KaleoWorkflowModelConverter;
@@ -156,6 +157,18 @@ public class WorkflowTaskManagerImpl implements WorkflowTaskManager {
 			boolean waitForCompletion)
 		throws WorkflowException {
 
+		WorkflowTask workflowTask = getWorkflowTask(companyId, workflowTaskId);
+
+		List<WorkflowTaskAssignee> workflowTaskAssignees =
+			workflowTask.getWorkflowTaskAssignees();
+
+		WorkflowTaskAssignee workflowTaskAssignee = workflowTaskAssignees.get(
+			0);
+
+		if (workflowTaskAssignee.getAssigneeClassPK() != userId) {
+			ReflectionUtil.throwException(new PrincipalException());
+		}
+
 		Lock lock = null;
 
 		try {
@@ -183,7 +196,7 @@ public class WorkflowTaskManagerImpl implements WorkflowTaskManager {
 			serviceContext.setCompanyId(companyId);
 			serviceContext.setUserId(userId);
 
-			WorkflowTask workflowTask = _taskManager.completeWorkflowTask(
+			workflowTask = _taskManager.completeWorkflowTask(
 				workflowTaskId, transitionName, comment, workflowContext,
 				serviceContext);
 
