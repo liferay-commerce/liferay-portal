@@ -100,7 +100,8 @@ definition {
 
 	macro addShippingMethodTrackingURL {
 		Type(
-			locator1 = "CommerceEntry#SHIPPING_METHOD_TRACKING_URL_FIELD",
+			key_fieldLabel = "Tracking URL",
+			locator1 = "TextInput#GENERIC_TEXT_INPUT",
 			value1 = "${trackingURL}");
 	}
 
