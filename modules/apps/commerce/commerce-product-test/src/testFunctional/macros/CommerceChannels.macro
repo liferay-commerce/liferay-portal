@@ -98,6 +98,12 @@ definition {
 		SelectFrame.selectFrameTop();
 	}
 
+	macro addShippingMethodTrackingURL {
+		Type(
+			locator1 = "CommerceEntry#SHIPPING_METHOD_TRACKING_URL_FIELD",
+			value1 = "${trackingURL}");
+	}
+
 	macro addShippingOption {
 		Variables.assertDefined(parameterList = "${name},${key}");
 
