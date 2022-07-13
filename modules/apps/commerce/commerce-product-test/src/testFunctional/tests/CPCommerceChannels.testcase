@@ -527,9 +527,9 @@ definition {
 			locator1 = "CommerceEntry#ENTRY_NAME_BODY_VERTICAL_ELLIPSIS");
 	}
 
-	@description = "This is a test for COMMERCE-9459. CanAddEditAndRemoveTrackingURLToShippingMethod"
+	@description = "This is a test for COMMERCE-9459. CanEditShippingMethodTrackingURL"
 	@priority = "2"
-	test CanAddEditAndRemoveTrackingURLToShippingMethod {
+	test CanEditShippingMethodTrackingURL {
 		property portal.acceptance = "false";
 
 		CommerceNavigator.gotoPortlet(

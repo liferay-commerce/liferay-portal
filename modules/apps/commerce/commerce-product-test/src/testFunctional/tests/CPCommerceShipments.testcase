@@ -8,16 +8,12 @@ definition {
 	property testray.main.component.name = "Order Management";
 
 	setUp {
-		User.firstLoginPG();
-
-		//CommerceConfiguration.commerceSetUp();
+		CommerceConfiguration.commerceSetUp();
 
 	}
 
 	tearDown {
-		User.logoutPG();
-
-		//CommerceConfiguration.commerceTearDown();
+		CommerceConfiguration.commerceTearDown();
 
 	}
 
@@ -642,9 +638,9 @@ definition {
 			locator1 = "WorkflowMetrics#SEARCH_FIELD_MAPPINGS_METRICS_INDEXES");
 	}
 
-	@description = "This is a test for COMMERCE-9459. CanAddCarrierTrackingURLFromShipment"
+	@description = "This is a test for COMMERCE-9459. CanAddShipmentTrackingURL"
 	@priority = "3"
-	test CanAddCarrierTrackingURLFromShipment {
+	test CanAddShipmentTrackingURL {
 		property portal.acceptance = "false";
 
 		task ("Given a Minium site with a buyer user") {
@@ -900,9 +896,9 @@ definition {
 		}
 	}
 
-	@description = "This is a test for COMMERCE-9459. CanEditCarrierTrackingURLFromShipment"
+	@description = "This is a test for COMMERCE-9459. CanEditShipmentTrackingURL"
 	@priority = "3"
-	test CanEditCarrierTrackingURLFromShipment {
+	test CanEditShipmentTrackingURL {
 		property portal.acceptance = "false";
 
 		task ("Given a Minium site with a buyer user") {
@@ -3098,7 +3094,7 @@ definition {
 
 	@description = "This is a test for COMMERCE-9459. ViewShipmentCarrierTrackingURL"
 	@priority = "3"
-	test ViewShipmentCarrierTrackingURL {
+	test CanViewShipmentTrackingURL {
 		property portal.acceptance = "false";
 
 		task ("Given a Minium site with a buyer user") {
