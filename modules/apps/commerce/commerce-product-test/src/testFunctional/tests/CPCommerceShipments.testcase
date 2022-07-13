@@ -9,12 +9,10 @@ definition {
 
 	setUp {
 		CommerceConfiguration.commerceSetUp();
-
 	}
 
 	tearDown {
 		CommerceConfiguration.commerceTearDown();
-
 	}
 
 	@description = "This is a test for COMMERCE-6238. Add shipment items to a shipment"
@@ -896,129 +894,6 @@ definition {
 		}
 	}
 
-	@description = "This is a test for COMMERCE-9459. CanEditShipmentTrackingURL"
-	@priority = "3"
-	test CanEditShipmentTrackingURL {
-		property portal.acceptance = "false";
-
-		task ("Given a Minium site with a buyer user") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
-
-			CommerceEntry.addAccountEntryUser(
-				accountName = "Commerce Account",
-				accountType = "Business",
-				agreeToTermsAndAnswerReminderQuery = "true",
-				createNewAccount = "true",
-				requireReset = "false",
-				userEmailAddress = "buyer@liferay.com",
-				userFirstName = "Buyer",
-				userLastName = "User",
-				userRole = "Buyer",
-				userScreenName = "buyeruser",
-				userSiteMembership = "Minium");
-		}
-
-		task ("And given tracking URL set for Flat Rate shipping method") {
-			CommerceNavigator.gotoPortlet(
-				category = "Store Management",
-				portlet = "Channels");
-
-			CommerceNavigator.gotoEntry(entryName = "Minium Portal");
-
-			Click(
-				key_entryName = "Flat Rate",
-				locator1 = "CommerceEntry#CHANNELS_GENERAL_TAB_EDITS");
-
-			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
-
-			CommerceChannels.addShippingMethodTrackingURL(trackingURL = "www.carriersite.com/");
-
-			Button.clickSave();
-
-			Alert.viewSuccessMessage();
-		}
-
-		task ("And given the buyer places an order") {
-			User.logoutPG();
-
-			CommerceLogin.miniumLogin(
-				password = "test",
-				urlAppend = "web/minium",
-				userEmailAddress = "buyer@liferay.com");
-
-			FrontStore.addInitializerProductToCart(
-				productName = "U-Joint",
-				productQuantity = "1");
-
-			CommerceCheckout.gotoCheckoutViaMiniCart();
-
-			CommerceCheckout.initializersCheckout(
-				newAddressAddress = "Test Address",
-				newAddressCity = "Test City",
-				newAddressCountry = "United States",
-				newAddressName = "Address Name",
-				newAddressZipCode = "Test Zip Code",
-				productName = "U-Joint",
-				productQuantity = "1",
-				productUnitPrice = "24",
-				shippingMethod = "Standard");
-		}
-
-		task ("When admin creates shipment for the order") {
-			User.logoutPG();
-
-			CommerceLogin.miniumLogin(
-				password = "test",
-				urlAppend = "web/minium",
-				userEmailAddress = "test@liferay.com");
-
-			CommerceNavigator.gotoPortlet(
-				category = "Order Management",
-				portlet = "Orders");
-
-			CommerceNavigator.gotoOrderEntryViaAdmin(status = "Pending");
-
-			Click(
-				key_index = "Accept Order",
-				locator1 = "WorkflowMetrics#SEARCH_FIELD_MAPPINGS_METRICS_INDEXES");
-
-			CommerceOrders.createShipment(
-				carrierDetail = "Test Carrier",
-				productSkuList = "MIN55861",
-				trackingNumber = "123456789",
-				warehouseName = "Italy");
-		}
-
-		task ("Then the shipment Carrier Details can be edited") {
-			Navigator.gotoNavTab(navTab = "Shipments");
-
-			Click(
-				key_text = "Shipped",
-				locator1 = "Icon#ANY_VERTICAL_ELLIPSIS");
-
-			MenuItem.clickNoError(menuItem = "Edit");
-
-			Click(
-				key_text = "Carrier Details",
-				locator1 = "CommerceOrders#EDIT_SHIPMENT_DETAILS");
-
-			SelectFrame(locator1 = "IFrame#MODAL_BODY");
-
-			Type(
-				locator1 = "CommerceOrders#CARRIER_DETAILS_URL_TEXTAREA",
-				value1 = "www.carriersite2.com/");
-
-			Button.clickSubmitButton();
-		}
-
-		task ("And the new data are correctly saved") {
-			AssertTextEquals.assertPartialText(
-				key_detail = "Base Tracking URL",
-				locator1 = "CommerceOrders#SHIPMENT_CARRIER_DETAILS",
-				value1 = "www.carriersite2.com/");
-		}
-	}
-
 	@description = "This is a test for COMMERCE-9331 Shipments - Custom fields"
 	@priority = "3"
 	test CanEditShipmentCustomFields {
@@ -1428,6 +1303,129 @@ definition {
 		}
 	}
 
+	@description = "This is a test for COMMERCE-9459. CanEditShipmentTrackingURL"
+	@priority = "3"
+	test CanEditShipmentTrackingURL {
+		property portal.acceptance = "false";
+
+		task ("Given a Minium site with a buyer user") {
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+
+			CommerceEntry.addAccountEntryUser(
+				accountName = "Commerce Account",
+				accountType = "Business",
+				agreeToTermsAndAnswerReminderQuery = "true",
+				createNewAccount = "true",
+				requireReset = "false",
+				userEmailAddress = "buyer@liferay.com",
+				userFirstName = "Buyer",
+				userLastName = "User",
+				userRole = "Buyer",
+				userScreenName = "buyeruser",
+				userSiteMembership = "Minium");
+		}
+
+		task ("And given tracking URL set for Flat Rate shipping method") {
+			CommerceNavigator.gotoPortlet(
+				category = "Store Management",
+				portlet = "Channels");
+
+			CommerceNavigator.gotoEntry(entryName = "Minium Portal");
+
+			Click(
+				key_entryName = "Flat Rate",
+				locator1 = "CommerceEntry#CHANNELS_GENERAL_TAB_EDITS");
+
+			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+			CommerceChannels.addShippingMethodTrackingURL(trackingURL = "www.carriersite.com/");
+
+			Button.clickSave();
+
+			Alert.viewSuccessMessage();
+		}
+
+		task ("And given the buyer places an order") {
+			User.logoutPG();
+
+			CommerceLogin.miniumLogin(
+				password = "test",
+				urlAppend = "web/minium",
+				userEmailAddress = "buyer@liferay.com");
+
+			FrontStore.addInitializerProductToCart(
+				productName = "U-Joint",
+				productQuantity = "1");
+
+			CommerceCheckout.gotoCheckoutViaMiniCart();
+
+			CommerceCheckout.initializersCheckout(
+				newAddressAddress = "Test Address",
+				newAddressCity = "Test City",
+				newAddressCountry = "United States",
+				newAddressName = "Address Name",
+				newAddressZipCode = "Test Zip Code",
+				productName = "U-Joint",
+				productQuantity = "1",
+				productUnitPrice = "24",
+				shippingMethod = "Standard");
+		}
+
+		task ("When admin creates shipment for the order") {
+			User.logoutPG();
+
+			CommerceLogin.miniumLogin(
+				password = "test",
+				urlAppend = "web/minium",
+				userEmailAddress = "test@liferay.com");
+
+			CommerceNavigator.gotoPortlet(
+				category = "Order Management",
+				portlet = "Orders");
+
+			CommerceNavigator.gotoOrderEntryViaAdmin(status = "Pending");
+
+			Click(
+				key_index = "Accept Order",
+				locator1 = "WorkflowMetrics#SEARCH_FIELD_MAPPINGS_METRICS_INDEXES");
+
+			CommerceOrders.createShipment(
+				carrierDetail = "Test Carrier",
+				productSkuList = "MIN55861",
+				trackingNumber = "123456789",
+				warehouseName = "Italy");
+		}
+
+		task ("Then the shipment Carrier Details can be edited") {
+			Navigator.gotoNavTab(navTab = "Shipments");
+
+			Click(
+				key_text = "Shipped",
+				locator1 = "Icon#ANY_VERTICAL_ELLIPSIS");
+
+			MenuItem.clickNoError(menuItem = "Edit");
+
+			Click(
+				key_text = "Carrier Details",
+				locator1 = "CommerceOrders#EDIT_SHIPMENT_DETAILS");
+
+			SelectFrame(locator1 = "IFrame#MODAL_BODY");
+
+			Type(
+				locator1 = "CommerceOrders#CARRIER_DETAILS_URL_TEXTAREA",
+				value1 = "www.carriersite2.com/");
+
+			Button.clickSubmitButton();
+		}
+
+		task ("And the new data are correctly saved") {
+			AssertTextEquals.assertPartialText(
+				key_detail = "Base Tracking URL",
+				locator1 = "CommerceOrders#SHIPMENT_CARRIER_DETAILS",
+				value1 = "www.carriersite2.com/");
+		}
+	}
+
 	@description = "This is a test for COMMERCE-8676 UI to show Shipment Item External Reference"
 	@priority = "3"
 	test CanNotUseTheSameERCForDifferentShipmentItems {
@@ -1744,6 +1742,115 @@ definition {
 			CommerceOrders.editAndCheckOrderAndShipmentERC(
 				keyReferenceCode = "testERC",
 				uniqueERC = "true");
+		}
+	}
+
+	@description = "This is a test for COMMERCE-9459. ViewShipmentCarrierTrackingURL"
+	@priority = "3"
+	test CanViewShipmentTrackingURL {
+		property portal.acceptance = "false";
+
+		task ("Given a Minium site with a buyer user") {
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+
+			CommerceEntry.addAccountEntryUser(
+				accountName = "Commerce Account",
+				accountType = "Business",
+				agreeToTermsAndAnswerReminderQuery = "true",
+				createNewAccount = "true",
+				requireReset = "false",
+				userEmailAddress = "buyer@liferay.com",
+				userFirstName = "Buyer",
+				userLastName = "User",
+				userRole = "Buyer",
+				userScreenName = "buyeruser",
+				userSiteMembership = "Minium");
+		}
+
+		task ("And given tracking URL set for Flat Rate shipping method") {
+			CommerceNavigator.gotoPortlet(
+				category = "Store Management",
+				portlet = "Channels");
+
+			CommerceNavigator.gotoEntry(entryName = "Minium Portal");
+
+			Click(
+				key_entryName = "Flat Rate",
+				locator1 = "CommerceEntry#CHANNELS_GENERAL_TAB_EDITS");
+
+			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+			CommerceChannels.addShippingMethodTrackingURL(trackingURL = "www.carriersite.com/");
+
+			Button.clickSave();
+
+			Alert.viewSuccessMessage();
+		}
+
+		task ("And given the buyer places an order") {
+			User.logoutPG();
+
+			CommerceLogin.miniumLogin(
+				password = "test",
+				urlAppend = "web/minium",
+				userEmailAddress = "buyer@liferay.com");
+
+			FrontStore.addInitializerProductToCart(
+				productName = "U-Joint",
+				productQuantity = "1");
+
+			CommerceCheckout.gotoCheckoutViaMiniCart();
+
+			CommerceCheckout.initializersCheckout(
+				newAddressAddress = "Test Address",
+				newAddressCity = "Test City",
+				newAddressCountry = "United States",
+				newAddressName = "Address Name",
+				newAddressZipCode = "Test Zip Code",
+				productName = "U-Joint",
+				productQuantity = "1",
+				productUnitPrice = "24",
+				shippingMethod = "Standard");
+		}
+
+		task ("When admin creates shipment for the order") {
+			User.logoutPG();
+
+			CommerceLogin.miniumLogin(
+				password = "test",
+				urlAppend = "web/minium",
+				userEmailAddress = "test@liferay.com");
+
+			CommerceNavigator.gotoPortlet(
+				category = "Order Management",
+				portlet = "Orders");
+
+			CommerceNavigator.gotoOrderEntryViaAdmin(status = "Pending");
+
+			Click(
+				key_index = "Accept Order",
+				locator1 = "WorkflowMetrics#SEARCH_FIELD_MAPPINGS_METRICS_INDEXES");
+
+			CommerceOrders.createShipment(
+				carrierDetail = "Test Carrier",
+				productSkuList = "MIN55861",
+				trackingNumber = "123456789",
+				warehouseName = "Italy");
+		}
+
+		task ("Then from the Shipment portlet the tracking URL is present as Base Tracking URL") {
+			Navigator.gotoNavTab(navTab = "Shipments");
+
+			Click(
+				key_text = "Shipped",
+				locator1 = "Icon#ANY_VERTICAL_ELLIPSIS");
+
+			MenuItem.clickNoError(menuItem = "Edit");
+
+			AssertTextEquals.assertPartialText(
+				key_detail = "Base Tracking URL",
+				locator1 = "CommerceOrders#SHIPMENT_CARRIER_DETAILS",
+				value1 = "www.carriersite.com/");
 		}
 	}
 
@@ -3090,115 +3197,6 @@ definition {
 			key_priceName = "Delivery Discount",
 			locator1 = "CommerceOrders#ORDER_PRICES_SEPARETED",
 			value1 = "7.00");
-	}
-
-	@description = "This is a test for COMMERCE-9459. ViewShipmentCarrierTrackingURL"
-	@priority = "3"
-	test CanViewShipmentTrackingURL {
-		property portal.acceptance = "false";
-
-		task ("Given a Minium site with a buyer user") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
-
-			CommerceEntry.addAccountEntryUser(
-				accountName = "Commerce Account",
-				accountType = "Business",
-				agreeToTermsAndAnswerReminderQuery = "true",
-				createNewAccount = "true",
-				requireReset = "false",
-				userEmailAddress = "buyer@liferay.com",
-				userFirstName = "Buyer",
-				userLastName = "User",
-				userRole = "Buyer",
-				userScreenName = "buyeruser",
-				userSiteMembership = "Minium");
-		}
-
-		task ("And given tracking URL set for Flat Rate shipping method") {
-			CommerceNavigator.gotoPortlet(
-				category = "Store Management",
-				portlet = "Channels");
-
-			CommerceNavigator.gotoEntry(entryName = "Minium Portal");
-
-			Click(
-				key_entryName = "Flat Rate",
-				locator1 = "CommerceEntry#CHANNELS_GENERAL_TAB_EDITS");
-
-			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
-
-			CommerceChannels.addShippingMethodTrackingURL(trackingURL = "www.carriersite.com/");
-
-			Button.clickSave();
-
-			Alert.viewSuccessMessage();
-		}
-
-		task ("And given the buyer places an order") {
-			User.logoutPG();
-
-			CommerceLogin.miniumLogin(
-				password = "test",
-				urlAppend = "web/minium",
-				userEmailAddress = "buyer@liferay.com");
-
-			FrontStore.addInitializerProductToCart(
-				productName = "U-Joint",
-				productQuantity = "1");
-
-			CommerceCheckout.gotoCheckoutViaMiniCart();
-
-			CommerceCheckout.initializersCheckout(
-				newAddressAddress = "Test Address",
-				newAddressCity = "Test City",
-				newAddressCountry = "United States",
-				newAddressName = "Address Name",
-				newAddressZipCode = "Test Zip Code",
-				productName = "U-Joint",
-				productQuantity = "1",
-				productUnitPrice = "24",
-				shippingMethod = "Standard");
-		}
-
-		task ("When admin creates shipment for the order") {
-			User.logoutPG();
-
-			CommerceLogin.miniumLogin(
-				password = "test",
-				urlAppend = "web/minium",
-				userEmailAddress = "test@liferay.com");
-
-			CommerceNavigator.gotoPortlet(
-				category = "Order Management",
-				portlet = "Orders");
-
-			CommerceNavigator.gotoOrderEntryViaAdmin(status = "Pending");
-
-			Click(
-				key_index = "Accept Order",
-				locator1 = "WorkflowMetrics#SEARCH_FIELD_MAPPINGS_METRICS_INDEXES");
-
-			CommerceOrders.createShipment(
-				carrierDetail = "Test Carrier",
-				productSkuList = "MIN55861",
-				trackingNumber = "123456789",
-				warehouseName = "Italy");
-		}
-
-		task ("Then from the Shipment portlet the tracking URL is present as Base Tracking URL") {
-			Navigator.gotoNavTab(navTab = "Shipments");
-
-			Click(
-				key_text = "Shipped",
-				locator1 = "Icon#ANY_VERTICAL_ELLIPSIS");
-
-			MenuItem.clickNoError(menuItem = "Edit");
-
-			AssertTextEquals.assertPartialText(
-				key_detail = "Base Tracking URL",
-				locator1 = "CommerceOrders#SHIPMENT_CARRIER_DETAILS",
-				value1 = "www.carriersite.com/");
-		}
 	}
 
 }
