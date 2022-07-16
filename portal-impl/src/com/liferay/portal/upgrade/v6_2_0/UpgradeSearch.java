@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
-import com.liferay.portal.kernel.upgrade.v6_2_0.BaseUpgradePortletPreferences;
 import com.liferay.portal.kernel.util.Validator;
 
 import javax.portlet.PortletPreferences;

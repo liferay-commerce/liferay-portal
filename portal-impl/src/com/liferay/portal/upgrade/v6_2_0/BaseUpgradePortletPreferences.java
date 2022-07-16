@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.portal.kernel.upgrade.v6_2_0;
+package com.liferay.portal.upgrade.v6_2_0;
 
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;

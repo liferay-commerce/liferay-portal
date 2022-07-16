@@ -16,7 +16,6 @@ package com.liferay.portal.upgrade.v6_2_0;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
-import com.liferay.portal.kernel.upgrade.v6_2_0.BaseUpgradePortletPreferences;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 

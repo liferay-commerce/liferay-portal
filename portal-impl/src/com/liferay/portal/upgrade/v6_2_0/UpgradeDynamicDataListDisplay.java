@@ -14,16 +14,18 @@
 
 package com.liferay.portal.upgrade.v6_2_0;
 
-import com.liferay.portal.kernel.upgrade.RenameUpgradePortletPreferences;
+import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.portlet.PortletPreferences;
 
 /**
  * @author Marcellus Tavares
  */
 public class UpgradeDynamicDataListDisplay
-	extends RenameUpgradePortletPreferences {
+	extends BaseUpgradePortletPreferences {
 
 	public UpgradeDynamicDataListDisplay() {
 		_preferenceNamesMap.put("detailDDMTemplateId", "formDDMTemplateId");
@@ -36,8 +38,37 @@ public class UpgradeDynamicDataListDisplay
 	}
 
 	@Override
-	protected Map<String, String> getPreferenceNamesMap() {
-		return _preferenceNamesMap;
+	protected String upgradePreferences(
+			long companyId, long ownerId, int ownerType, long plid,
+			String portletId, String xml)
+		throws Exception {
+
+		PortletPreferences preferences = PortletPreferencesFactoryUtil.fromXML(
+			companyId, ownerId, ownerType, plid, portletId, xml);
+
+		Map<String, String[]> preferencesMap = preferences.getMap();
+
+		for (Map.Entry<String, String> entry : _preferenceNamesMap.entrySet()) {
+			String name = entry.getKey();
+
+			String[] values = preferencesMap.get(name);
+
+			if (values == null) {
+				continue;
+			}
+
+			preferences.reset(name);
+
+			String newName = entry.getValue();
+
+			String[] newValues = preferencesMap.get(newName);
+
+			if (newValues == null) {
+				preferences.setValues(newName, values);
+			}
+		}
+
+		return PortletPreferencesFactoryUtil.toXML(preferences);
 	}
 
 	private final Map<String, String> _preferenceNamesMap = new HashMap<>();
