@@ -671,6 +671,8 @@ definition {
 				key_zip = "0100");
 
 			Alert.viewSuccessMessage();
+
+			Refresh();
 		}
 
 		task ("When admin creates shipment for the order") {
