@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.service.UserService;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.FileUtil;
@@ -86,16 +87,6 @@ public class AddAccountUserMVCActionCommand extends BaseMVCActionCommand {
 		long suffixId = ParamUtil.getLong(actionRequest, "suffixId");
 		String jobTitle = ParamUtil.getString(actionRequest, "jobTitle");
 
-		byte[] portraitBytes = null;
-
-		long fileEntryId = ParamUtil.getLong(actionRequest, "fileEntryId");
-
-		if (fileEntryId > 0) {
-			FileEntry fileEntry = _dlAppLocalService.getFileEntry(fileEntryId);
-
-			portraitBytes = FileUtil.getBytes(fileEntry.getContentStream());
-		}
-
 		try {
 			AccountEntryUserRel accountEntryUserRel = null;
 
@@ -130,8 +121,19 @@ public class AddAccountUserMVCActionCommand extends BaseMVCActionCommand {
 							actionRequest));
 			}
 
+			byte[] portraitBytes = null;
+
+			long fileEntryId = ParamUtil.getLong(actionRequest, "fileEntryId");
+
+			if (fileEntryId > 0) {
+				FileEntry fileEntry = _dlAppLocalService.getFileEntry(
+					fileEntryId);
+
+				portraitBytes = FileUtil.getBytes(fileEntry.getContentStream());
+			}
+
 			if (portraitBytes != null) {
-				_userLocalService.updatePortrait(
+				_userService.updatePortrait(
 					accountEntryUserRel.getAccountUserId(), portraitBytes);
 			}
 
@@ -182,17 +184,13 @@ public class AddAccountUserMVCActionCommand extends BaseMVCActionCommand {
 		}
 	}
 
-	@Reference(unbind = "-")
-	protected void setDLAppLocalService(DLAppLocalService dlAppLocalService) {
-		_dlAppLocalService = dlAppLocalService;
-	}
-
 	@Reference
 	private AccountEntryService _accountEntryService;
 
 	@Reference
 	private AccountEntryUserRelService _accountEntryUserRelService;
 
+	@Reference
 	private DLAppLocalService _dlAppLocalService;
 
 	@Reference
@@ -203,5 +201,8 @@ public class AddAccountUserMVCActionCommand extends BaseMVCActionCommand {
 
 	@Reference
 	private UserLocalService _userLocalService;
+
+	@Reference
+	private UserService _userService;
 
 }
