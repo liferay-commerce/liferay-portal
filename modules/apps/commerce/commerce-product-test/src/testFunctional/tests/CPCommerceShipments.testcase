@@ -694,6 +694,14 @@ definition {
 		}
 
 		task ("And the shipping method and tracking URL are correct") {
+			Navigator.gotoNavTab(navTab = "Shipments");
+
+			Click(
+				key_text = "Shipped",
+				locator1 = "Icon#ANY_VERTICAL_ELLIPSIS");
+
+			MenuItem.clickNoError(menuItem = "Edit");
+
 			AssertTextEquals.assertPartialText(
 				key_detail = "Shipping Method",
 				locator1 = "CommerceOrders#SHIPMENT_CARRIER_DETAILS",
