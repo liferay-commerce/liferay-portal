@@ -153,11 +153,24 @@ public class ObjectStateFlowLocalServiceImpl
 		if (oldObjectField.isState() && !newObjectField.isState()) {
 			deleteObjectFieldObjectStateFlow(oldObjectField.getObjectFieldId());
 
+			newObjectField.setObjectFieldSettings(
+				_objectFieldSettingLocalService.
+					getObjectFieldObjectFieldSettings(
+						newObjectField.getObjectFieldId()));
+
 			return null;
 		}
 
 		if (!oldObjectField.isState() && newObjectField.isState()) {
-			return addDefaultObjectStateFlow(newObjectField);
+			ObjectStateFlow objectStateFlow = addDefaultObjectStateFlow(
+				newObjectField);
+
+			newObjectField.setObjectFieldSettings(
+				_objectFieldSettingLocalService.
+					getObjectFieldObjectFieldSettings(
+						newObjectField.getObjectFieldId()));
+
+			return objectStateFlow;
 		}
 
 		if (oldObjectField.getListTypeDefinitionId() !=
@@ -165,7 +178,15 @@ public class ObjectStateFlowLocalServiceImpl
 
 			deleteObjectFieldObjectStateFlow(oldObjectField.getObjectFieldId());
 
-			addDefaultObjectStateFlow(newObjectField);
+			ObjectStateFlow objectStateFlow = addDefaultObjectStateFlow(
+				newObjectField);
+
+			newObjectField.setObjectFieldSettings(
+				_objectFieldSettingLocalService.
+					getObjectFieldObjectFieldSettings(
+						newObjectField.getObjectFieldId()));
+
+			return objectStateFlow;
 		}
 
 		return null;
