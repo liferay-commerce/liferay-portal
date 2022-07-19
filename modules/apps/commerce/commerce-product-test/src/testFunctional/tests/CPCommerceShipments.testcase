@@ -714,14 +714,6 @@ definition {
 		}
 
 		task ("And the Shipping method is changed") {
-			Navigator.gotoNavTab(navTab = "Shipments");
-
-			Click(
-				key_text = "Shipped",
-				locator1 = "Icon#ANY_VERTICAL_ELLIPSIS");
-
-			MenuItem.clickNoError(menuItem = "Edit");
-
 			Click(
 				key_text = "Carrier Details",
 				locator1 = "CommerceOrders#EDIT_SHIPMENT_DETAILS");
