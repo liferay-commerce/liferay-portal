@@ -92,12 +92,12 @@ public class ObjectStateFlowLocalServiceImpl
 		ObjectFieldSetting objectFieldSetting =
 			_objectFieldSettingLocalService.fetchObjectFieldSetting(
 				objectField.getObjectFieldId(),
-				ObjectFieldSettingConstants.NAME_STATE_FLOW);
+				ObjectFieldSettingConstants.STATE_FLOW);
 
 		if (objectFieldSetting == null) {
 			_objectFieldSettingLocalService.addObjectFieldSetting(
 				objectField.getUserId(), objectField.getObjectFieldId(),
-				ObjectFieldSettingConstants.NAME_STATE_FLOW,
+				ObjectFieldSettingConstants.STATE_FLOW,
 				String.valueOf(objectStateFlowId));
 		}
 		else {
@@ -128,7 +128,7 @@ public class ObjectStateFlowLocalServiceImpl
 
 		ObjectFieldSetting objectFieldSetting =
 			_objectFieldSettingLocalService.fetchObjectFieldSetting(
-				objectFieldId, ObjectFieldSettingConstants.NAME_STATE_FLOW);
+				objectFieldId, ObjectFieldSettingConstants.STATE_FLOW);
 
 		if (objectFieldSetting != null) {
 			_objectFieldSettingLocalService.deleteObjectFieldSetting(

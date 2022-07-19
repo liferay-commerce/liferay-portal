@@ -98,7 +98,10 @@ public class ObjectFieldSettingUtil {
 					ObjectFieldConstants.BUSINESS_TYPE_PICKLIST,
 					businessType)) {
 
-			if (Objects.equals(objectFieldSetting.getName(), "stateFlow")) {
+			if (Objects.equals(
+					objectFieldSetting.getName(),
+					ObjectFieldSettingConstants.STATE_FLOW)) {
+
 				return ObjectStateFlowUtil.toObjectStateFlow(
 					ObjectStateFlowLocalServiceUtil.fetchObjectStateFlow(
 						GetterUtil.getLong(objectFieldSetting.getValue())));

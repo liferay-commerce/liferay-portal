@@ -21,6 +21,6 @@ public class ObjectFieldSettingConstants {
 
 	public static final String FILTERS = "filters";
 
-	public static final String NAME_STATE_FLOW = "stateFlow";
+	public static final String STATE_FLOW = "stateFlow";
 
 }
