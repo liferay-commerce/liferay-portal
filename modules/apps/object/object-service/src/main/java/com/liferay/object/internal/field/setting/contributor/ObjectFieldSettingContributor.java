@@ -22,13 +22,15 @@ import com.liferay.portal.kernel.exception.PortalException;
  */
 public interface ObjectFieldSettingContributor {
 
-	public void addObjectFieldSetting(
+	public default void addObjectFieldSetting(
 			long userId, long objectFieldId,
 			ObjectFieldSetting objectFieldSetting)
-		throws PortalException;
+		throws PortalException {
+	}
 
-	public void updateObjectFieldSetting(
+	public default void updateObjectFieldSetting(
 			long objectFieldSettingId, ObjectFieldSetting objectFieldSetting)
-		throws PortalException;
+		throws PortalException {
+	}
 
 }

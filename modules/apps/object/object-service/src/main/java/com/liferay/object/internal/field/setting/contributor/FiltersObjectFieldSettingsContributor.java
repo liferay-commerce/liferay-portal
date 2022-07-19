@@ -51,12 +51,6 @@ public class FiltersObjectFieldSettingsContributor
 		}
 	}
 
-	@Override
-	public void updateObjectFieldSetting(
-			long objectFieldSettingId, ObjectFieldSetting objectFieldSetting)
-		throws PortalException {
-	}
-
 	@Reference
 	private ObjectFilterLocalService _objectFilterLocalService;
 

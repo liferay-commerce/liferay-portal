@@ -34,13 +34,6 @@ public class StateFlowObjectFieldSettingContributor
 	implements ObjectFieldSettingContributor {
 
 	@Override
-	public void addObjectFieldSetting(
-			long userId, long objectFieldId,
-			ObjectFieldSetting newObjectFieldSetting)
-		throws PortalException {
-	}
-
-	@Override
 	public void updateObjectFieldSetting(
 			long oldObjectFieldSettingId,
 			ObjectFieldSetting newObjectFieldSetting)
