@@ -20,7 +20,8 @@ export function normalizeFieldSettings(
 			| string
 			| number
 			| boolean
-			| ObjectFieldFilterSetting[];
+			| ObjectFieldFilterSetting[]
+			| {id: number; objectStates: ObjectState[]};
 	} = {};
 
 	objectFieldSettings?.forEach(({name, value}) => {

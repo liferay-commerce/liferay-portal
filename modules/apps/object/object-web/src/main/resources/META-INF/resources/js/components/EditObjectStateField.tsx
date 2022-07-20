@@ -43,19 +43,25 @@ export default function EditObjectStateField({objectField, readOnly}: IProps) {
 		currentKey: string;
 		pickListItemKey: string;
 	}) => {
-		const stateSettings = objectField.objectFieldSettings?.find(
+		const stateSettings = objectField.objectFieldSettings!.find(
 			({name}: ObjectFieldSetting) => name === 'stateFlow'
 		);
 
-		const objectStates = JSON.parse(stateSettings?.value as string)
-			.objectStates;
+		const stateSettingsValue = stateSettings!.value as {
+			id: number;
+			objectStates: ObjectState[];
+		};
+
+		const objectStates = stateSettingsValue.objectStates;
 
 		const currentState = objectStates.find(
 			(item: ObjectState) => item.key === currentKey
 		);
 
-		return currentState?.objectStateTransitions.find(
-			({key}: {key: string}) => key === pickListItemKey
+		return (
+			currentState!.objectStateTransitions.find(
+				({key}: {key: string}) => key === pickListItemKey
+			) !== undefined
 		);
 	};
 

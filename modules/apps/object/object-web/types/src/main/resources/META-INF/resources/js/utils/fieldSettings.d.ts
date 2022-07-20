@@ -19,72 +19,120 @@ export declare function normalizeFieldSettings(
 		| string
 		| number
 		| boolean
-		| ObjectFieldFilterSetting[]
-		| undefined;
-	maxLength?:
-		| string
-		| number
-		| boolean
+		| {
+				id: number;
+				objectStates: ObjectState[];
+		  }
 		| ObjectFieldFilterSetting[]
 		| undefined;
 	acceptedFileExtensions?:
 		| string
 		| number
 		| boolean
+		| {
+				id: number;
+				objectStates: ObjectState[];
+		  }
 		| ObjectFieldFilterSetting[]
 		| undefined;
 	fileSource?:
 		| string
 		| number
 		| boolean
+		| {
+				id: number;
+				objectStates: ObjectState[];
+		  }
 		| ObjectFieldFilterSetting[]
 		| undefined;
 	maximumFileSize?:
 		| string
 		| number
 		| boolean
+		| {
+				id: number;
+				objectStates: ObjectState[];
+		  }
+		| ObjectFieldFilterSetting[]
+		| undefined;
+	maxLength?:
+		| string
+		| number
+		| boolean
+		| {
+				id: number;
+				objectStates: ObjectState[];
+		  }
 		| ObjectFieldFilterSetting[]
 		| undefined;
 	showCounter?:
 		| string
 		| number
 		| boolean
+		| {
+				id: number;
+				objectStates: ObjectState[];
+		  }
 		| ObjectFieldFilterSetting[]
 		| undefined;
 	showFilesInDocumentsAndMedia?:
 		| string
 		| number
 		| boolean
+		| {
+				id: number;
+				objectStates: ObjectState[];
+		  }
 		| ObjectFieldFilterSetting[]
 		| undefined;
 	storageDLFolderPath?:
 		| string
 		| number
 		| boolean
+		| {
+				id: number;
+				objectStates: ObjectState[];
+		  }
 		| ObjectFieldFilterSetting[]
 		| undefined;
 	relationship?:
 		| string
 		| number
 		| boolean
+		| {
+				id: number;
+				objectStates: ObjectState[];
+		  }
 		| ObjectFieldFilterSetting[]
 		| undefined;
 	summarizeField?:
 		| string
 		| number
 		| boolean
+		| {
+				id: number;
+				objectStates: ObjectState[];
+		  }
 		| ObjectFieldFilterSetting[]
 		| undefined;
 	filters?:
 		| string
 		| number
 		| boolean
+		| {
+				id: number;
+				objectStates: ObjectState[];
+		  }
 		| ObjectFieldFilterSetting[]
 		| undefined;
 	stateFlow?:
 		| string
 		| number
 		| boolean
+		| {
+				id: number;
+				objectStates: ObjectState[];
+		  }
 		| ObjectFieldFilterSetting[]
 		| undefined;
 };
