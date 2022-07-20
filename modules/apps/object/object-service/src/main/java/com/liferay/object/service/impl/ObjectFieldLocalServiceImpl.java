@@ -134,9 +134,7 @@ public class ObjectFieldLocalServiceImpl
 					dbTableName, objectField.getDBColumnName(), dbType));
 		}
 
-		_addOrUpdateObjectFieldSettings(objectField, objectFieldSettings);
-
-		_objectStateFlowLocalService.addDefaultObjectStateFlow(objectField);
+		_addOrUpdateObjectFieldSettings(objectField, null, objectFieldSettings);
 
 		return objectField;
 	}
@@ -496,7 +494,7 @@ public class ObjectFieldLocalServiceImpl
 			newObjectField = objectFieldPersistence.update(newObjectField);
 
 			_addOrUpdateObjectFieldSettings(
-				newObjectField, objectFieldSettings);
+				newObjectField, oldObjectField, objectFieldSettings);
 
 			return newObjectField;
 		}
@@ -534,10 +532,8 @@ public class ObjectFieldLocalServiceImpl
 
 		newObjectField = objectFieldPersistence.update(newObjectField);
 
-		_addOrUpdateObjectFieldSettings(newObjectField, objectFieldSettings);
-
-		_objectStateFlowLocalService.updateDefaultObjectStateFlow(
-			newObjectField, oldObjectField);
+		_addOrUpdateObjectFieldSettings(
+			newObjectField, oldObjectField, objectFieldSettings);
 
 		return newObjectField;
 	}
@@ -631,20 +627,20 @@ public class ObjectFieldLocalServiceImpl
 	}
 
 	private void _addOrUpdateObjectFieldSettings(
-			ObjectField objectField,
+			ObjectField newObjectField, ObjectField oldObjectField,
 			List<ObjectFieldSetting> objectFieldSettings)
 		throws PortalException {
 
 		ObjectFieldBusinessType objectFieldBusinessType =
 			_objectFieldBusinessTypeTracker.getObjectFieldBusinessType(
-				objectField.getBusinessType());
+				newObjectField.getBusinessType());
 
 		objectFieldBusinessType.validateObjectFieldSettings(
-			objectField.getName(), objectFieldSettings);
+			newObjectField.getName(), objectFieldSettings);
 
 		List<ObjectFieldSetting> oldObjectFieldSettings =
 			_objectFieldSettingPersistence.findByObjectFieldId(
-				objectField.getObjectFieldId());
+				newObjectField.getObjectFieldId());
 
 		for (ObjectFieldSetting oldObjectFieldSetting :
 				oldObjectFieldSettings) {
@@ -664,10 +660,13 @@ public class ObjectFieldLocalServiceImpl
 			}
 		}
 
+		objectFieldBusinessType.predefineObjectFieldSettings(
+			newObjectField, oldObjectField);
+
 		for (ObjectFieldSetting newObjectFieldSetting : objectFieldSettings) {
 			ObjectFieldSetting oldObjectFieldSetting =
 				_objectFieldSettingPersistence.fetchByOFI_N(
-					objectField.getObjectFieldId(),
+					newObjectField.getObjectFieldId(),
 					newObjectFieldSetting.getName());
 
 			ObjectFieldSettingContributor objectFieldSettingContributor =
@@ -677,8 +676,8 @@ public class ObjectFieldLocalServiceImpl
 
 			if (oldObjectFieldSetting == null) {
 				objectFieldSettingContributor.addObjectFieldSetting(
-					objectField.getUserId(), objectField.getObjectFieldId(),
-					newObjectFieldSetting);
+					newObjectField.getUserId(),
+					newObjectField.getObjectFieldId(), newObjectFieldSetting);
 			}
 			else {
 				objectFieldSettingContributor.updateObjectFieldSetting(
@@ -687,9 +686,9 @@ public class ObjectFieldLocalServiceImpl
 			}
 		}
 
-		objectField.setObjectFieldSettings(
+		newObjectField.setObjectFieldSettings(
 			_objectFieldSettingLocalService.getObjectFieldObjectFieldSettings(
-				objectField.getObjectFieldId()));
+				newObjectField.getObjectFieldId()));
 	}
 
 	private void _deleteFileEntries(long objectDefinitionId, String name) {

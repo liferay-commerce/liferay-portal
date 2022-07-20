@@ -111,6 +111,22 @@ public class PicklistObjectFieldBusinessType
 		).build();
 	}
 
+	@Override
+	public void predefineObjectFieldSettings(
+			ObjectField newObjectField, ObjectField oldObjectField)
+		throws PortalException {
+
+		if (oldObjectField == null) {
+			_objectStateFlowLocalService.addDefaultObjectStateFlow(
+				newObjectField);
+
+			return;
+		}
+
+		_objectStateFlowLocalService.updateDefaultObjectStateFlow(
+			newObjectField, oldObjectField);
+	}
+
 	private DDMFormFieldOptions _getDDMFormFieldOptions(
 			ObjectField objectField,
 			ObjectFieldRenderingContext objectFieldRenderingContext)

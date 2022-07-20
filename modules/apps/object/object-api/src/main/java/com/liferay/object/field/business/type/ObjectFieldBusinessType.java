@@ -69,6 +69,11 @@ public interface ObjectFieldBusinessType {
 		return true;
 	}
 
+	public default void predefineObjectFieldSettings(
+			ObjectField newObjectField, ObjectField oldObjectField)
+		throws PortalException {
+	}
+
 	public default void validateObjectFieldSettings(
 			String objectFieldName,
 			List<ObjectFieldSetting> objectFieldSettings)
