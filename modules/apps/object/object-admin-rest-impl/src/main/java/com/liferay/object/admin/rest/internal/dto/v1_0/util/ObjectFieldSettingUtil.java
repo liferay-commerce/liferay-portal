@@ -141,13 +141,11 @@ public class ObjectFieldSettingUtil {
 					ObjectFieldSettingConstants.STATE_FLOW,
 					objectFieldSetting.getName())) {
 
-			ObjectStateFlow objectStateFlow =
+			objectFieldSetting.setValue(
 				ObjectStateFlowUtil.toObjectStateFlow(
 					ObjectStateFlowLocalServiceUtil.fetchObjectStateFlow(
 						GetterUtil.getLong(
-							serviceBuilderObjectFieldSetting.getValue())));
-
-			objectFieldSetting.setValue(objectStateFlow.toString());
+							serviceBuilderObjectFieldSetting.getValue()))));
 		}
 
 		return objectFieldSetting;
