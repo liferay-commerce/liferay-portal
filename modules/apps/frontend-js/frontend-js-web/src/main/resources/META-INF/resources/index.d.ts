@@ -248,6 +248,15 @@ export function sub(
 ): string;
 
 /**
+ * Executes the content of script tags inside a HTMLElement
+ */
+export function runScriptsInElement(
+	element: HTMLElement,
+	defaultFn?: Function,
+	appendFn?: Function
+): void;
+
+/**
  * Looks for the best region for aligning the given element. The best
  * region is defined by clockwise rotation starting from the specified
  * `position`. The element is always aligned in the middle of alignElement
