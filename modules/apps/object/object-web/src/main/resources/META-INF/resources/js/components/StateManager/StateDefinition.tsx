@@ -45,34 +45,37 @@ export default function StateDefinition({
 			stateSettings!
 		);
 
-		const stateSettingsValue = JSON.parse(stateSettings!.value as string);
+		const stateSettingsValue = stateSettings!.value as {
+			id: number;
+			objectStates: ObjectState[];
+		};
 
 		const objectStates = stateSettingsValue.objectStates;
 
 		const currentState = objectStates.find(
 			(item: ObjectState) => item.key === currentKey
-		);
+		)!;
 
-		const currentStateIndex = objectStates.indexOf(currentState);
+		const currentStateIndex = objectStates.indexOf(currentState!);
 
-		const newObjectStateTransitions = items.filter((item) => item.checked);
+		const newObjectStateTransitions = items
+			.filter((item) => item.checked)
+			.map(({value}) => {
+				return {key: value!};
+			});
 
 		const newObjectStates = [...objectStates];
 
 		newObjectStates[currentStateIndex] = {
 			...currentState,
-			objectStateTransitions: newObjectStateTransitions.map(({value}) => {
-				return {key: value};
-			}),
+			objectStateTransitions: newObjectStateTransitions,
 		};
 
 		stateSettingsValue.objectStates = newObjectStates;
 
 		const newObjectFieldSettings = values.objectFieldSettings;
 
-		newObjectFieldSettings![stateSettingsIndex!].value = JSON.stringify(
-			stateSettingsValue
-		);
+		newObjectFieldSettings![stateSettingsIndex!].value = stateSettingsValue;
 
 		setValues({
 			objectFieldSettings: newObjectFieldSettings,
