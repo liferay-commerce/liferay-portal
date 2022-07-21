@@ -42,6 +42,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -62,32 +63,50 @@ public class AuthVerifierPipelineTest {
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
 
+	@Before
+	public void setUp() throws Exception {
+		_setUpAuthVerifier();
+		_setUpAuthVerifierConfiguration();
+		_setUpAuthVerifierRegistry();
+		_setUpUserLocalServiceUtil();
+	}
+
 	@Test
 	public void testVerifyRequest() throws PortalException {
-		ReflectionTestUtil.setFieldValue(
-			UserLocalServiceUtil.class, "_service",
-			new UserLocalServiceImpl() {
+		String contextPath = "";
+		String includeURLs = StringBundler.concat(
+			_BASE_URL, "/regular/*,", _BASE_URL, "/legacy*");
 
-				@Override
-				public User fetchUser(long userId) {
-					User user = new UserImpl();
+		String legacyRequestURI = _BASE_URL + "/legacy/Hello";
+		String regularRequestURI = _BASE_URL + "/regular/Hello";
 
-					user.setStatus(WorkflowConstants.STATUS_APPROVED);
+		AuthVerifierResult.State expectedState =
+			AuthVerifierResult.State.SUCCESS;
 
-					return user;
-				}
+		_assertVerifyRequest(
+			contextPath, includeURLs, legacyRequestURI, expectedState);
+		_assertVerifyRequest(
+			contextPath, includeURLs, regularRequestURI, expectedState);
+	}
 
-			});
+	private void _assertVerifyRequest(
+			String contextPath, String includeURLs, String requestURI,
+			AuthVerifierResult.State expectedState)
+		throws PortalException {
 
+		AuthVerifierResult authVerifierResult = _verifyRequest(
+			contextPath, includeURLs, requestURI);
+
+		Assert.assertSame(expectedState, authVerifierResult.getState());
+	}
+
+	private void _setUpAuthVerifier() {
 		AuthVerifierResult authVerifierResult = new AuthVerifierResult();
 
 		authVerifierResult.setSettings(new HashMap<>());
 		authVerifierResult.setState(AuthVerifierResult.State.SUCCESS);
 
-		AuthVerifierConfiguration authVerifierConfiguration =
-			new AuthVerifierConfiguration();
-
-		AuthVerifier authVerifier = (AuthVerifier)ProxyUtil.newProxyInstance(
+		_authVerifier = (AuthVerifier)ProxyUtil.newProxyInstance(
 			AuthVerifier.class.getClassLoader(),
 			new Class<?>[] {AuthVerifier.class},
 			(proxy, method, args) -> {
@@ -97,29 +116,19 @@ public class AuthVerifierPipelineTest {
 
 				return null;
 			});
+	}
 
+	private void _setUpAuthVerifierConfiguration() {
 		Class<? extends AuthVerifier> authVerifierClass =
-			authVerifier.getClass();
+			_authVerifier.getClass();
 
-		Dictionary<String, Object> propertyMap = MapUtil.singletonDictionary(
-			"urls.includes",
-			StringBundler.concat(
-				_BASE_URL, "/regular/*,", _BASE_URL, "/legacy*"));
+		_authVerifierConfiguration = new AuthVerifierConfiguration();
 
-		Properties properties = new Properties();
-
-		properties.put(
-			"urls.includes",
-			StringBundler.concat(
-				_BASE_URL, "/regular/*,", _BASE_URL, "/legacy*"));
-
-		authVerifierConfiguration.setAuthVerifierClassName(
+		_authVerifierConfiguration.setAuthVerifierClassName(
 			authVerifierClass.getName());
-		authVerifierConfiguration.setProperties(properties);
+	}
 
-		AuthVerifierPipeline authVerifierPipeline = new AuthVerifierPipeline(
-			Collections.singletonList(authVerifierConfiguration), "");
-
+	private void _setUpAuthVerifierRegistry() {
 		ReflectionTestUtil.setFieldValue(
 			AuthVerifierRegistry.class, "_serviceTrackerMap",
 			new ServiceTrackerMap<String, AuthVerifier>() {
@@ -136,10 +145,10 @@ public class AuthVerifierPipelineTest {
 				@Override
 				public AuthVerifier getService(String key) {
 					if (key.equals(
-							authVerifierConfiguration.
+							_authVerifierConfiguration.
 								getAuthVerifierClassName())) {
 
-						return authVerifier;
+						return _authVerifier;
 					}
 
 					return null;
@@ -156,34 +165,61 @@ public class AuthVerifierPipelineTest {
 				}
 
 			});
+	}
+
+	private void _setUpUserLocalServiceUtil() throws Exception {
+		ReflectionTestUtil.setFieldValue(
+			UserLocalServiceUtil.class, "_service",
+			new UserLocalServiceImpl() {
+
+				@Override
+				public User fetchUser(long userId) {
+					User user = new UserImpl();
+
+					user.setStatus(WorkflowConstants.STATUS_APPROVED);
+
+					return user;
+				}
+
+			});
+	}
+
+	private AuthVerifierResult _verifyRequest(
+			String contextPath, String includeURLs, String requestURI)
+		throws PortalException {
 
 		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
 
+		Dictionary<String, Object> propertyMap = MapUtil.singletonDictionary(
+			"urls.includes", includeURLs);
+
 		ServiceRegistration<AuthVerifier> serviceRegistration =
 			bundleContext.registerService(
-				AuthVerifier.class, authVerifier, propertyMap);
-
-		AccessControlContext accessControlContext = new AccessControlContext();
-
-		MockHttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest(new MockServletContext());
+				AuthVerifier.class, _authVerifier, propertyMap);
 
 		try {
-			mockHttpServletRequest.setRequestURI(_BASE_URL + "/legacy/Hello");
+			MockHttpServletRequest mockHttpServletRequest =
+				new MockHttpServletRequest(new MockServletContext());
+
+			mockHttpServletRequest.setRequestURI(requestURI);
+
+			AccessControlContext accessControlContext =
+				new AccessControlContext();
 
 			accessControlContext.setRequest(mockHttpServletRequest);
 
-			Assert.assertSame(
-				authVerifierResult,
-				authVerifierPipeline.verifyRequest(accessControlContext));
+			Properties properties = new Properties();
 
-			mockHttpServletRequest.setRequestURI(_BASE_URL + "/regular/Hello");
+			properties.put("urls.includes", includeURLs);
 
-			accessControlContext.setRequest(mockHttpServletRequest);
+			_authVerifierConfiguration.setProperties(properties);
 
-			Assert.assertSame(
-				authVerifierResult,
-				authVerifierPipeline.verifyRequest(accessControlContext));
+			AuthVerifierPipeline authVerifierPipeline =
+				new AuthVerifierPipeline(
+					Collections.singletonList(_authVerifierConfiguration),
+					contextPath);
+
+			return authVerifierPipeline.verifyRequest(accessControlContext);
 		}
 		finally {
 			serviceRegistration.unregister();
@@ -191,5 +227,8 @@ public class AuthVerifierPipelineTest {
 	}
 
 	private static final String _BASE_URL = "/TestAuthVerifier";
+
+	private AuthVerifier _authVerifier;
+	private AuthVerifierConfiguration _authVerifierConfiguration;
 
 }
