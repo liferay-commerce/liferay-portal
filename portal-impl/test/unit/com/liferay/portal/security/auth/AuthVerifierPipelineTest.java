@@ -14,7 +14,6 @@
 
 package com.liferay.portal.security.auth;
 
-import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -25,7 +24,6 @@ import com.liferay.portal.kernel.security.auth.verifier.AuthVerifier;
 import com.liferay.portal.kernel.security.auth.verifier.AuthVerifierConfiguration;
 import com.liferay.portal.kernel.security.auth.verifier.AuthVerifierResult;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -33,25 +31,26 @@ import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.model.impl.UserImpl;
 import com.liferay.portal.security.auth.registry.AuthVerifierRegistry;
-import com.liferay.portal.service.impl.UserLocalServiceImpl;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.util.PortalImpl;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.Properties;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
+
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -76,6 +75,12 @@ public class AuthVerifierPipelineTest {
 		_setUpAuthVerifierRegistry();
 		_setUpPortalUtil();
 		_setUpUserLocalServiceUtil();
+	}
+
+	@After
+	public void tearDown() {
+		_authVerifierRegistryMockedStatic.close();
+		_userLocalServiceUtilMockedStatic.close();
 	}
 
 	@Test
@@ -216,42 +221,12 @@ public class AuthVerifierPipelineTest {
 	}
 
 	private void _setUpAuthVerifierRegistry() {
-		ReflectionTestUtil.setFieldValue(
-			AuthVerifierRegistry.class, "_serviceTrackerMap",
-			new ServiceTrackerMap<String, AuthVerifier>() {
-
-				@Override
-				public void close() {
-				}
-
-				@Override
-				public boolean containsKey(String key) {
-					return false;
-				}
-
-				@Override
-				public AuthVerifier getService(String key) {
-					if (key.equals(
-							_authVerifierConfiguration.
-								getAuthVerifierClassName())) {
-
-						return _authVerifier;
-					}
-
-					return null;
-				}
-
-				@Override
-				public Set<String> keySet() {
-					return null;
-				}
-
-				@Override
-				public Collection<AuthVerifier> values() {
-					return null;
-				}
-
-			});
+		Mockito.when(
+			AuthVerifierRegistry.getAuthVerifier(
+				_authVerifierConfiguration.getAuthVerifierClassName())
+		).thenReturn(
+			_authVerifier
+		);
 	}
 
 	private void _setUpPortalUtil() {
@@ -275,21 +250,17 @@ public class AuthVerifierPipelineTest {
 
 		user.setStatus(WorkflowConstants.STATUS_APPROVED);
 
-		ReflectionTestUtil.setFieldValue(
-			UserLocalServiceUtil.class, "_service",
-			new UserLocalServiceImpl() {
+		Mockito.when(
+			UserLocalServiceUtil.fetchUser(Mockito.anyLong())
+		).thenReturn(
+			user
+		);
 
-				@Override
-				public User fetchUser(long userId) {
-					return user;
-				}
-
-				@Override
-				public long getDefaultUserId(long companyId) {
-					return user.getUserId();
-				}
-
-			});
+		Mockito.when(
+			UserLocalServiceUtil.getDefaultUserId(Mockito.anyLong())
+		).thenReturn(
+			user.getUserId()
+		);
 	}
 
 	private AuthVerifierResult _verifyRequest(
@@ -338,5 +309,11 @@ public class AuthVerifierPipelineTest {
 
 	private AuthVerifier _authVerifier;
 	private AuthVerifierConfiguration _authVerifierConfiguration;
+	private final MockedStatic<AuthVerifierRegistry>
+		_authVerifierRegistryMockedStatic = Mockito.mockStatic(
+			AuthVerifierRegistry.class);
+	private final MockedStatic<UserLocalServiceUtil>
+		_userLocalServiceUtilMockedStatic = Mockito.mockStatic(
+			UserLocalServiceUtil.class);
 
 }
