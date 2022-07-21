@@ -82,8 +82,8 @@ public class AuthVerifierPipelineTest {
 		String includeURLs = StringBundler.concat(
 			_BASE_URL, "/regular/*,", _BASE_URL, "/legacy*");
 
-		String legacyRequestURI = _BASE_URL + "/legacy/Hello";
-		String regularRequestURI = _BASE_URL + "/regular/Hello";
+		String legacyRequestURI = contextPath + _BASE_URL + "/legacy/Hello";
+		String regularRequestURI = contextPath + _BASE_URL + "/regular/Hello";
 
 		AuthVerifierResult.State expectedState =
 			AuthVerifierResult.State.SUCCESS;
@@ -102,7 +102,7 @@ public class AuthVerifierPipelineTest {
 		String includeURLs = StringBundler.concat(
 			_BASE_URL, "/regular/*,", _BASE_URL, "/legacy*");
 
-		String requestURI = _BASE_URL + "/non/matching";
+		String requestURI = contextPath + _BASE_URL + "/non/matching";
 
 		AuthVerifierResult.State expectedState =
 			AuthVerifierResult.State.UNSUCCESSFUL;
