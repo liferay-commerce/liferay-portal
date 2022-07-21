@@ -15,6 +15,7 @@
 package com.liferay.portal.security.auth;
 
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
@@ -25,6 +26,7 @@ import com.liferay.portal.kernel.security.auth.verifier.AuthVerifierConfiguratio
 import com.liferay.portal.kernel.security.auth.verifier.AuthVerifierResult;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
@@ -92,6 +94,69 @@ public class AuthVerifierPipelineTest {
 			contextPath, includeURLs, legacyRequestURI, expectedState);
 		_assertVerifyRequest(
 			contextPath, includeURLs, regularRequestURI, expectedState);
+	}
+
+	@Test
+	public void testVerifyRequestWithContextPath() throws PortalException {
+		String contextPath = "/abc";
+		String includeURLs = StringBundler.concat(
+			_BASE_URL, "/regular/*,", _BASE_URL, "/legacy*");
+
+		String requestURI = contextPath + _BASE_URL + "/regular/Hello";
+
+		AuthVerifierResult.State expectedState =
+			AuthVerifierResult.State.SUCCESS;
+
+		_assertVerifyRequest(
+			contextPath, includeURLs, requestURI, expectedState);
+	}
+
+	@Test
+	public void testVerifyRequestWithContextPathAndPortalPathContext()
+		throws PortalException {
+
+		String contextPath = "/abc";
+		String includeURLs = StringBundler.concat(
+			_BASE_URL, "/regular/*,", _BASE_URL, "/legacy*");
+
+		String requestURI = contextPath + _BASE_URL + "/regular/Hello";
+
+		AuthVerifierResult.State expectedState =
+			AuthVerifierResult.State.SUCCESS;
+
+		String portalUtilPathContext = PortalUtil.getPathContext(contextPath);
+
+		_assertVerifyRequest(
+			portalUtilPathContext, includeURLs, requestURI, expectedState);
+	}
+
+	@Test
+	public void testVerifyRequestWithContextPathAndPortalPathContextAndPortalProxyPath()
+		throws PortalException {
+
+		String contextPath = "/abc";
+		String includeURLs = StringBundler.concat(
+			_BASE_URL, "/regular/*,", _BASE_URL, "/legacy*");
+
+		String requestURI = contextPath + _BASE_URL + "/regular/Hello";
+
+		AuthVerifierResult.State expectedState =
+			AuthVerifierResult.State.SUCCESS;
+
+		String proxyPath = "/proxy";
+
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"PORTAL_PROXY_PATH", proxyPath)) {
+
+			_setUpPortalUtil();
+
+			String portalUtilPathContext = PortalUtil.getPathContext(
+				contextPath);
+
+			_assertVerifyRequest(
+				portalUtilPathContext, includeURLs, requestURI, expectedState);
+		}
 	}
 
 	@Test
