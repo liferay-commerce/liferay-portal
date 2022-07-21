@@ -21,6 +21,14 @@ interface Region {
 	width: number;
 }
 
+interface DefaultFunction {
+	(): void;
+}
+
+interface AppendFunction {
+	(scriptElement: HTMLScriptElement): void;
+}
+
 /**
  * Aligns the element with the best region around alignElement. The best
  * region is defined by clockwise rotation starting from the specified
@@ -252,8 +260,8 @@ export function sub(
  */
 export function runScriptsInElement(
 	element: HTMLElement,
-	defaultFn?: Function,
-	appendFn?: Function
+	defaultFn?: DefaultFunction,
+	appendFn?: AppendFunction
 ): void;
 
 /**
