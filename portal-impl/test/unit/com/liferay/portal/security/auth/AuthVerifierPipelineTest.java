@@ -26,12 +26,14 @@ import com.liferay.portal.kernel.security.auth.verifier.AuthVerifierResult;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.model.impl.UserImpl;
 import com.liferay.portal.security.auth.registry.AuthVerifierRegistry;
 import com.liferay.portal.service.impl.UserLocalServiceImpl;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
+import com.liferay.portal.util.PortalImpl;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -40,6 +42,8 @@ import java.util.HashMap;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -68,6 +72,7 @@ public class AuthVerifierPipelineTest {
 		_setUpAuthVerifier();
 		_setUpAuthVerifierConfiguration();
 		_setUpAuthVerifierRegistry();
+		_setUpPortalUtil();
 		_setUpUserLocalServiceUtil();
 	}
 
@@ -87,6 +92,23 @@ public class AuthVerifierPipelineTest {
 			contextPath, includeURLs, legacyRequestURI, expectedState);
 		_assertVerifyRequest(
 			contextPath, includeURLs, regularRequestURI, expectedState);
+	}
+
+	@Test
+	public void testVerifyRequestWithNonmatchingRequestURI()
+		throws PortalException {
+
+		String contextPath = "";
+		String includeURLs = StringBundler.concat(
+			_BASE_URL, "/regular/*,", _BASE_URL, "/legacy*");
+
+		String requestURI = _BASE_URL + "/non/matching";
+
+		AuthVerifierResult.State expectedState =
+			AuthVerifierResult.State.UNSUCCESSFUL;
+
+		_assertVerifyRequest(
+			contextPath, includeURLs, requestURI, expectedState);
 	}
 
 	private void _assertVerifyRequest(
@@ -167,18 +189,39 @@ public class AuthVerifierPipelineTest {
 			});
 	}
 
+	private void _setUpPortalUtil() {
+		PortalUtil portalUtil = new PortalUtil();
+
+		portalUtil.setPortal(
+			new PortalImpl() {
+
+				@Override
+				public long getCompanyId(
+					HttpServletRequest httpServletRequest) {
+
+					return 0;
+				}
+
+			});
+	}
+
 	private void _setUpUserLocalServiceUtil() throws Exception {
+		User user = new UserImpl();
+
+		user.setStatus(WorkflowConstants.STATUS_APPROVED);
+
 		ReflectionTestUtil.setFieldValue(
 			UserLocalServiceUtil.class, "_service",
 			new UserLocalServiceImpl() {
 
 				@Override
 				public User fetchUser(long userId) {
-					User user = new UserImpl();
-
-					user.setStatus(WorkflowConstants.STATUS_APPROVED);
-
 					return user;
+				}
+
+				@Override
+				public long getDefaultUserId(long companyId) {
+					return user.getUserId();
 				}
 
 			});
