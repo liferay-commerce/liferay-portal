@@ -171,6 +171,7 @@ public class FragmentEntryInputTemplateNodeContextHelper {
 
 		InfoFieldType infoFieldType = infoField.getInfoFieldType();
 
+		String label = StringPool.BLANK;
 		String value = StringPool.BLANK;
 
 		Map<String, String> formParameterMap =
@@ -178,6 +179,7 @@ public class FragmentEntryInputTemplateNodeContextHelper {
 				httpServletRequest, "infoFormParameterMap");
 
 		if (formParameterMap != null) {
+			label = formParameterMap.get(infoField.getName() + "-label");
 			value = formParameterMap.get(infoField.getName());
 		}
 
@@ -337,6 +339,10 @@ public class FragmentEntryInputTemplateNodeContextHelper {
 			inputTemplateNode.addAttribute(
 				"relationshipValueFieldName",
 				optionsValueFieldNameOptional.orElse(null));
+
+			if (Validator.isNotNull(label)) {
+				inputTemplateNode.addAttribute("selectedOptionLabel", label);
+			}
 		}
 		else if (infoField.getInfoFieldType() instanceof SelectInfoFieldType) {
 			List<InputTemplateNode.Option> options = new ArrayList<>();
