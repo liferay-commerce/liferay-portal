@@ -38,6 +38,8 @@ definition {
 			locator1 = "Button#SUBMIT",
 			value1 = "Submit");
 
+		SelectFrameTop();
+
 		CommerceNavigator.gotoEntry(entryName = "pricelist1");
 
 		CommerceEntry.gotoMenuTab(menuTab = "Entries");
@@ -1742,6 +1744,8 @@ definition {
 		AssertClickNoError(
 			locator1 = "Button#SUBMIT",
 			value1 = "Submit");
+
+		SelectFrameTop();
 
 		CommerceNavigator.gotoPortlet(
 			category = "Pricing",

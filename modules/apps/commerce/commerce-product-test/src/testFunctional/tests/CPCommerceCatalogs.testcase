@@ -34,6 +34,8 @@ definition {
 			locator1 = "Button#SUBMIT",
 			value1 = "Submit");
 
+		SelectFrameTop();
+
 		AssertClick(
 			locator1 = "CommerceEntry#PRODUCT_IMAGE_SELECT_FILE",
 			value1 = "Select File");
@@ -41,6 +43,8 @@ definition {
 		SelectFrameTop();
 
 		CommerceItemSelector.uploadSingleFile(uploadFileName = "Commerce_Black.jpg");
+
+		SelectFrameTop();
 
 		Button.clickSave();
 
@@ -174,6 +178,8 @@ definition {
 			locator1 = "Button#SUBMIT",
 			value1 = "Submit");
 
+		SelectFrameTop();
+
 		Click(locator1 = "Icon#BACK");
 
 		AssertElementPresent(
@@ -203,7 +209,11 @@ definition {
 
 		CommerceItemSelector.uploadSingleFile(uploadFileName = "Commerce_Black.jpg");
 
+		SelectFrameTop();
+
 		Button.clickSave();
+
+		SelectFrameTop();
 
 		Alert.viewSuccessMessage();
 

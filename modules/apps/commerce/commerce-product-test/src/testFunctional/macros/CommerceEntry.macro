@@ -149,6 +149,8 @@ definition {
 
 		WaitForPageLoad();
 
+		SelectFrameTop();
+
 		if (isSet(siteName)) {
 			Click(
 				key_menuTab = "Type",
@@ -269,6 +271,8 @@ definition {
 			value1 = "${discountTarget}");
 
 		Button.click(button = "Submit");
+
+		SelectFrameTop();
 
 		WaitForElementPresent(locator1 = "CommerceEntry#DISCOUNT_AMOUNT");
 
@@ -415,6 +419,8 @@ definition {
 
 		Button.click(button = "Submit");
 
+		SelectFrameTop();
+
 		Type(
 			locator1 = "CommerceEntry#DESCRIPTION_FIELD",
 			value1 = "${optionDescription}");
@@ -475,6 +481,8 @@ definition {
 			label = "Catalog");
 
 		Click(locator1 = "Button#SUBMIT");
+
+		SelectFrameTop();
 
 		WaitForElementPresent(
 			key_title = "${productName}",
