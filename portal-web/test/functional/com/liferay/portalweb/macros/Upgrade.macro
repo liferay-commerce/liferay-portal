@@ -5878,6 +5878,14 @@ definition {
 			portletName = "Blogs");
 	}
 
+	macro viewSynonymsEntry {
+		SearchTuning.openSynonymsAdmin();
+
+		AssertElementPresent(
+			key_synonyms = "apple, banana",
+			locator1 = "SearchTuning#SYNONYMS_ENTRY");
+	}
+
 	macro viewSystemSettings {
 		ApplicationsMenu.gotoPortlet(
 			category = "Configuration",
