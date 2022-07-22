@@ -87,7 +87,6 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.function.UnsafeSupplier;
-import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -625,7 +624,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 					true
 				).put(
 					"cssURLs",
-					StringUtil.replace(
+					_replace(
 						StringUtil.merge(
 							JSONUtil.toStringArray(
 								jsonObject.getJSONArray("cssURLs")),
@@ -642,7 +641,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 					jsonObject.getString("portletCategoryName")
 				).put(
 					"urls",
-					StringUtil.replace(
+					_replace(
 						StringUtil.merge(
 							JSONUtil.toStringArray(
 								jsonObject.getJSONArray("elementURLs")),
@@ -655,7 +654,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 			clientExtensionEntryIdsStringUtilReplaceValues.put(
 				"CLIENT_EXTENSION_ENTRY_ID:" +
 					jsonObject.getString("clientExtensionEntryKey"),
-				StringUtil.replace(
+				_replace(
 					jsonObject.getString("widgetName"),
 					StringBundler.concat(
 						"[$CLIENT_EXTENSION_ENTRY_ID:",
@@ -1110,17 +1109,14 @@ public class BundleSiteInitializer implements SiteInitializer {
 
 				String json = StringUtil.read(url.openStream());
 
-				json = StringUtil.replace(
+				json = _replace(
 					json, "\"[$", "$]\"",
-					HashMapBuilder.putAll(
-						assetListEntryIdsStringUtilReplaceValues
-					).putAll(
-						documentsStringUtilReplaceValues
-					).build());
+					assetListEntryIdsStringUtilReplaceValues,
+					documentsStringUtilReplaceValues);
 
 				Group scopeGroup = serviceContext.getScopeGroup();
 
-				json = StringUtil.replace(
+				json = _replace(
 					json,
 					new String[] {"[$GROUP_FRIENDLY_URL$]", "[$GROUP_ID$]"},
 					new String[] {
@@ -1246,9 +1242,9 @@ public class BundleSiteInitializer implements SiteInitializer {
 					JournalArticleConstants.CLASS_NAME_ID_DEFAULT, 0,
 					jsonObject.getString("articleId"), false, 1, titleMap, null,
 					titleMap,
-					StringUtil.replace(
+					_replace(
 						SiteInitializerUtil.read(
-							StringUtil.replace(resourcePath, ".json", ".xml"),
+							_replace(resourcePath, ".json", ".xml"),
 							_servletContext),
 						"[$", "$]", documentsStringUtilReplaceValues),
 					ddmStructureKey, ddmTemplateKey, null,
@@ -1547,21 +1543,13 @@ public class BundleSiteInitializer implements SiteInitializer {
 			return;
 		}
 
-		json = StringUtil.replace(
-			json, "[$", "$]",
-			HashMapBuilder.putAll(
-				assetListEntryIdsStringUtilReplaceValues
-			).putAll(
-				clientExtensionEntryIdsStringUtilReplaceValues
-			).putAll(
-				documentsStringUtilReplaceValues
-			).putAll(
-				objectDefinitionIdsAndObjectEntryIdsStringUtilReplaceValues
-			).putAll(
-				releaseInfoStringUtilReplaceValues
-			).putAll(
-				taxonomyCategoryIdsStringUtilReplaceValues
-			).build());
+		json = _replace(
+			json, "[$", "$]", assetListEntryIdsStringUtilReplaceValues,
+			clientExtensionEntryIdsStringUtilReplaceValues,
+			documentsStringUtilReplaceValues,
+			objectDefinitionIdsAndObjectEntryIdsStringUtilReplaceValues,
+			releaseInfoStringUtilReplaceValues,
+			taxonomyCategoryIdsStringUtilReplaceValues);
 
 		JSONObject pageDefinitionJSONObject = JSONFactoryUtil.createJSONObject(
 			json);
@@ -1623,7 +1611,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 
 				unicodeProperties.put(
 					key,
-					StringUtil.replace(
+					_replace(
 						value, "[$", "$]",
 						assetListEntryIdsStringUtilReplaceValues));
 			}
@@ -1685,19 +1673,15 @@ public class BundleSiteInitializer implements SiteInitializer {
 			if (StringUtil.endsWith(urlPath, "page-definition.json")) {
 				String json = StringUtil.read(url.openStream());
 
-				json = StringUtil.replace(
+				json = _replace(
 					json, "\"[$", "$]\"",
-					HashMapBuilder.putAll(
-						assetListEntryIdsStringUtilReplaceValues
-					).putAll(
-						documentsStringUtilReplaceValues
-					).putAll(
-						taxonomyCategoryIdsStringUtilReplaceValues
-					).build());
+					assetListEntryIdsStringUtilReplaceValues,
+					documentsStringUtilReplaceValues,
+					taxonomyCategoryIdsStringUtilReplaceValues);
 
 				Group scopeGroup = serviceContext.getScopeGroup();
 
-				json = StringUtil.replace(
+				json = _replace(
 					json,
 					new String[] {
 						"[$GROUP_FRIENDLY_URL$]", "[$GROUP_ID$]",
@@ -1709,7 +1693,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 						scopeGroup.getGroupKey()
 					});
 
-				String css = StringUtil.replace(
+				String css = _replace(
 					SiteInitializerUtil.read(
 						FileUtil.getPath(urlPath) + "/css.css",
 						_servletContext),
@@ -1875,8 +1859,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 				String.valueOf(listTypeDefinition.getId()));
 
 			String listTypeEntriesJSON = SiteInitializerUtil.read(
-				StringUtil.replace(
-					resourcePath, ".json", ".list-type-entries.json"),
+				_replace(resourcePath, ".json", ".list-type-entries.json"),
 				_servletContext);
 
 			if (listTypeEntriesJSON == null) {
@@ -1963,7 +1946,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 			String json = SiteInitializerUtil.read(
 				resourcePath, _servletContext);
 
-			json = StringUtil.replace(
+			json = _replace(
 				json, "[$", "$]", listTypeDefinitionIdsStringUtilReplaceValues);
 
 			ObjectDefinition objectDefinition = ObjectDefinition.toDTO(json);
@@ -2089,7 +2072,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 				continue;
 			}
 
-			json = StringUtil.replace(
+			json = _replace(
 				json, "[$", "$]", objectEntryIdsStringUtilReplaceValues);
 
 			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(json);
@@ -2191,7 +2174,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 			String json = SiteInitializerUtil.read(
 				resourcePath, _servletContext);
 
-			json = StringUtil.replace(
+			json = _replace(
 				json, "[$", "$]", objectDefinitionIdsStringUtilReplaceValues);
 
 			ObjectRelationship objectRelationship = ObjectRelationship.toDTO(
@@ -2349,8 +2332,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 		AssetListEntry assetListEntry = null;
 
 		String assetListEntryKey = StringUtil.toLowerCase(
-			StringUtil.replace(
-				assetListJSONObject.getString("title"), ' ', '-'));
+			_replace(assetListJSONObject.getString("title"), " ", "-"));
 
 		for (AssetListEntry curAssetListEntry :
 				_assetListEntryLocalService.getAssetListEntries(
@@ -2480,7 +2462,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 		}
 
 		JSONArray jsonArray = JSONFactoryUtil.createJSONArray(
-			StringUtil.replace(
+			_replace(
 				json, "[$", "$]",
 				objectDefinitionIdsAndObjectEntryIdsStringUtilReplaceValues));
 
@@ -3510,8 +3492,8 @@ public class BundleSiteInitializer implements SiteInitializer {
 			String.valueOf(ReleaseInfo.getParentBuildNumber())
 		).put(
 			"RELEASE_INFO:RELEASE_INFO",
-			StringUtil.replace(
-				ReleaseInfo.getReleaseInfo(), CharPool.OPEN_PARENTHESIS,
+			_replace(
+				ReleaseInfo.getReleaseInfo(), StringPool.OPEN_PARENTHESIS,
 				"<br>(")
 		).put(
 			"RELEASE_INFO:SERVER_INFO", ReleaseInfo.getServerInfo()
@@ -3579,6 +3561,29 @@ public class BundleSiteInitializer implements SiteInitializer {
 		}
 
 		return t;
+	}
+
+	private String _replace(String s, String oldSub, String newSub) {
+		return StringUtil.replace(s, oldSub, newSub);
+	}
+
+	private String _replace(
+		String s, String begin, String end,
+		Map<String, String>... stringUtilReplaceValuesArray) {
+
+		Map<String, String> aggregatedStringUtilReplaceValues = new HashMap<>();
+
+		for (Map<String, String> stringUtilReplaceValues :
+				stringUtilReplaceValuesArray) {
+
+			aggregatedStringUtilReplaceValues.putAll(stringUtilReplaceValues);
+		}
+
+		return _replace(s, begin, end, aggregatedStringUtilReplaceValues);
+	}
+
+	private String _replace(String s, String[] oldSubs, String[] newSubs) {
+		return StringUtil.replace(s, oldSubs, newSubs);
 	}
 
 	private Layout _updateDraftLayout(
@@ -3663,7 +3668,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 		JSONObject metadataJSONObject = JSONFactoryUtil.createJSONObject(
 			(metadataJSON == null) ? "{}" : metadataJSON);
 
-		String css = StringUtil.replace(
+		String css = _replace(
 			SiteInitializerUtil.read(
 				resourcePath + "/css.css", _servletContext),
 			"[$", "$]", documentsStringUtilReplaceValues);
