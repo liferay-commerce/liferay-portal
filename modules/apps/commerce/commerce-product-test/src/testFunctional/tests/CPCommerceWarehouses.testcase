@@ -65,7 +65,7 @@ definition {
 
 		Click(locator1 = "Button#PLUS");
 
-		SelectFrame(locator1 = "IFrame#MODAL_BODY");
+		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
 
 		Type(
 			key_fieldLabel = "SKU",
@@ -83,6 +83,8 @@ definition {
 			value1 = "50");
 
 		Button.click(button = "Submit");
+
+		SelectFrameTop();
 
 		AppBuilderAdmin.searchByItem(itemName = "TestSKU");
 
