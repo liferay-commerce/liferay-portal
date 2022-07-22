@@ -89,7 +89,7 @@ public class SXPBlueprintUpgradeProcess extends UpgradeProcess {
 		for (ElementInstance elementInstance : elementInstances) {
 			SXPElement sxpElement = elementInstance.getSxpElement();
 
-			if (Validator.isNull(sxpElement.getId())) {
+			if (sxpElement.getId() == null) {
 				continue;
 			}
 
