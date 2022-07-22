@@ -320,6 +320,8 @@ public class BundleSiteInitializer implements SiteInitializer {
 
 		_classLoader = bundleWiring.getClassLoader();
 
+		_classNameIdStringUtilReplaceValues =
+			_getClassNameIdStringUtilReplaceValues();
 		_releaseInfoStringUtilReplaceValues =
 			_getReleaseInfoStringUtilReplaceValues();
 	}
@@ -3473,6 +3475,16 @@ public class BundleSiteInitializer implements SiteInitializer {
 		return ArrayUtil.toLongArray(assetCategoryIds);
 	}
 
+	private Map<String, String> _getClassNameIdStringUtilReplaceValues() {
+		return HashMapBuilder.put(
+			"CLASS_NAME_ID:" + DDMStructure.class.getName(),
+			String.valueOf(_portal.getClassNameId(DDMStructure.class))
+		).put(
+			"CLASS_NAME_ID:" + JournalArticle.class.getName(),
+			String.valueOf(_portal.getClassNameId(JournalArticle.class))
+		).build();
+	}
+
 	private Map<String, String> _getReleaseInfoStringUtilReplaceValues() {
 		return HashMapBuilder.put(
 			"RELEASE_INFO:BUILD_DATE",
@@ -3576,6 +3588,8 @@ public class BundleSiteInitializer implements SiteInitializer {
 			aggregatedStringUtilReplaceValues.putAll(stringUtilReplaceValues);
 		}
 
+		aggregatedStringUtilReplaceValues.putAll(
+			_classNameIdStringUtilReplaceValues);
 		aggregatedStringUtilReplaceValues.putAll(
 			_releaseInfoStringUtilReplaceValues);
 
@@ -3736,6 +3750,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 	private final AssetListEntryLocalService _assetListEntryLocalService;
 	private final Bundle _bundle;
 	private final ClassLoader _classLoader;
+	private final Map<String, String> _classNameIdStringUtilReplaceValues;
 	private final ClientExtensionEntryLocalService
 		_clientExtensionEntryLocalService;
 	private CommerceSiteInitializer _commerceSiteInitializer;
