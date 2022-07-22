@@ -86,12 +86,12 @@ export default function ActionBuilder({
 		);
 
 		const relatedObjects: SelectItem[] = [];
-		const nonRelatedObjects: SelectItem[] = [];
+		const unrelatedObjects: SelectItem[] = [];
 
 		relationships?.forEach((object) => {
 			const {id, label} = object;
 
-			const target = object.related ? relatedObjects : nonRelatedObjects;
+			const target = object.related ? relatedObjects : unrelatedObjects;
 
 			target.push({label, value: id});
 		});
@@ -114,10 +114,7 @@ export default function ActionBuilder({
 
 		fillSelect(Liferay.Language.get('related-objects'), relatedObjects);
 
-		fillSelect(
-			Liferay.Language.get('non-related-objects'),
-			nonRelatedObjects
-		);
+		fillSelect(Liferay.Language.get('unrelated-objects'), unrelatedObjects);
 
 		setObjectOptions(objectsOptionsList);
 		setRelationships(relationships);
