@@ -3476,44 +3476,44 @@ public class BundleSiteInitializer implements SiteInitializer {
 	}
 
 	private Map<String, String> _getClassNameIdStringUtilReplaceValues() {
-		return HashMapBuilder.put(
-			"CLASS_NAME_ID:" + DDMStructure.class.getName(),
-			String.valueOf(_portal.getClassNameId(DDMStructure.class))
-		).put(
-			"CLASS_NAME_ID:" + JournalArticle.class.getName(),
-			String.valueOf(_portal.getClassNameId(JournalArticle.class))
-		).build();
+		Map<String, String> map = new HashMap<>();
+
+		Class<?>[] classes = {DDMStructure.class, JournalArticle.class};
+
+		for (Class<?> clazz : classes) {
+			map.put(
+				"CLASS_NAME_ID:" + clazz.getName(),
+				String.valueOf(_portal.getClassNameId(clazz)));
+		}
+
+		return map;
 	}
 
 	private Map<String, String> _getReleaseInfoStringUtilReplaceValues() {
-		return HashMapBuilder.put(
-			"RELEASE_INFO:BUILD_DATE",
-			String.valueOf(ReleaseInfo.getBuildDate())
-		).put(
-			"RELEASE_INFO:BUILD_NUMBER",
-			String.valueOf(ReleaseInfo.getBuildNumber())
-		).put(
-			"RELEASE_INFO:CODE_NAME", ReleaseInfo.getCodeName()
-		).put(
-			"RELEASE_INFO:NAME", ReleaseInfo.getName()
-		).put(
-			"RELEASE_INFO:PARENT_BUILD_NUMBER",
-			String.valueOf(ReleaseInfo.getParentBuildNumber())
-		).put(
-			"RELEASE_INFO:RELEASE_INFO",
+		Map<String, String> map = new HashMap<>();
+
+		Object[] entries = {
+			"BUILD_DATE", ReleaseInfo.getBuildDate(), "BUILD_NUMBER",
+			ReleaseInfo.getBuildNumber(), "CODE_NAME",
+			ReleaseInfo.getCodeName(), "NAME", ReleaseInfo.getName(),
+			"PARENT_BUILD_NUMBER", ReleaseInfo.getParentBuildNumber(),
+			"RELEASE_INFO",
 			_replace(
 				ReleaseInfo.getReleaseInfo(), StringPool.OPEN_PARENTHESIS,
-				"<br>(")
-		).put(
-			"RELEASE_INFO:SERVER_INFO", ReleaseInfo.getServerInfo()
-		).put(
-			"RELEASE_INFO:VENDOR", ReleaseInfo.getVendor()
-		).put(
-			"RELEASE_INFO:VERSION", ReleaseInfo.getVersion()
-		).put(
-			"RELEASE_INFO:VERSION_DISPLAY_NAME",
-			ReleaseInfo.getVersionDisplayName()
-		).build();
+				"<br>("),
+			"SERVER_INFO", ReleaseInfo.getServerInfo(), "VENDOR",
+			ReleaseInfo.getVendor(), "VERSION", ReleaseInfo.getVersion(),
+			"VERSION_DISPLAY_NAME", ReleaseInfo.getVersionDisplayName()
+		};
+
+		for (int i = 0; i < entries.length; i += 2) {
+			String entryKey = String.valueOf(entries[i]);
+			String entryValue = String.valueOf(entries[i + 1]);
+
+			map.put("RELEASE_INFO:" + entryKey, entryValue);
+		}
+
+		return map;
 	}
 
 	private String _getThemeId(
