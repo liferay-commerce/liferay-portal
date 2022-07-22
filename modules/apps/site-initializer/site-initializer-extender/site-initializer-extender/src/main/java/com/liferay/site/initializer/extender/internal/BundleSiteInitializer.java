@@ -3593,7 +3593,8 @@ public class BundleSiteInitializer implements SiteInitializer {
 		aggregatedStringUtilReplaceValues.putAll(
 			_releaseInfoStringUtilReplaceValues);
 
-		return _replace(s, begin, end, aggregatedStringUtilReplaceValues);
+		return StringUtil.replace(
+			s, begin, end, aggregatedStringUtilReplaceValues);
 	}
 
 	private String _replace(String s, String[] oldSubs, String[] newSubs) {
