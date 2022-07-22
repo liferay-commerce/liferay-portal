@@ -103,12 +103,7 @@ public class FileEntryInfoDisplayContributorTest {
 						_friendlyURLNormalizer.normalizeWithPeriodsAndSlashes(
 							fileEntry.getTitle()));
 
-					ThemeDisplay themeDisplay = new ThemeDisplay();
-
-					themeDisplay.setLocale(locale);
-					themeDisplay.setScopeGroupId(_group.getGroupId());
-					themeDisplay.setServerName("localhost");
-					themeDisplay.setSiteGroupId(_group.getGroupId());
+					ThemeDisplay themeDisplay = _getThemeDisplay(locale);
 
 					Assert.assertEquals(
 						expectedURL,
@@ -143,12 +138,7 @@ public class FileEntryInfoDisplayContributorTest {
 						_friendlyURLNormalizer.normalizeWithPeriodsAndSlashes(
 							fileEntry.getTitle()));
 
-					ThemeDisplay themeDisplay = new ThemeDisplay();
-
-					themeDisplay.setLocale(locale);
-					themeDisplay.setScopeGroupId(_group.getGroupId());
-					themeDisplay.setServerName("localhost");
-					themeDisplay.setSiteGroupId(_group.getGroupId());
+					ThemeDisplay themeDisplay = _getThemeDisplay(locale);
 
 					Assert.assertEquals(
 						expectedURL,
@@ -184,12 +174,7 @@ public class FileEntryInfoDisplayContributorTest {
 						_friendlyURLNormalizer.normalizeWithPeriodsAndSlashes(
 							fileEntry.getTitle()));
 
-					ThemeDisplay themeDisplay = new ThemeDisplay();
-
-					themeDisplay.setLocale(locale);
-					themeDisplay.setScopeGroupId(_group.getGroupId());
-					themeDisplay.setServerName("localhost");
-					themeDisplay.setSiteGroupId(_group.getGroupId());
+					ThemeDisplay themeDisplay = _getThemeDisplay(locale);
 
 					Assert.assertEquals(
 						expectedURL,
@@ -224,12 +209,7 @@ public class FileEntryInfoDisplayContributorTest {
 						_friendlyURLNormalizer.normalizeWithPeriodsAndSlashes(
 							fileEntry.getTitle()));
 
-					ThemeDisplay themeDisplay = new ThemeDisplay();
-
-					themeDisplay.setLocale(locale);
-					themeDisplay.setScopeGroupId(_group.getGroupId());
-					themeDisplay.setServerName("localhost");
-					themeDisplay.setSiteGroupId(_group.getGroupId());
+					ThemeDisplay themeDisplay = _getThemeDisplay(locale);
 
 					Assert.assertEquals(
 						expectedURL,
@@ -257,7 +237,8 @@ public class FileEntryInfoDisplayContributorTest {
 					LocaleUtil.getDefault(), RandomTestUtil.randomString()),
 				ServiceContextTestUtil.getServiceContext());
 
-			DLFolder dlFolder = DLTestUtil.addDLFolder(_depotEntry.getGroupId());
+			DLFolder dlFolder = DLTestUtil.addDLFolder(
+				_depotEntry.getGroupId());
 
 			DLFileEntry dlFileEntry = DLTestUtil.addDLFileEntry(
 				dlFolder.getFolderId());
@@ -272,14 +253,9 @@ public class FileEntryInfoDisplayContributorTest {
 				FriendlyURLResolverConstants.URL_SEPARATOR_FILE_ENTRY,
 				fileEntry.getFileEntryId());
 
-			ThemeDisplay themeDisplay = new ThemeDisplay();
-
 			Locale locale = LocaleUtil.getDefault();
 
-			themeDisplay.setLocale(locale);
-			themeDisplay.setScopeGroupId(_group.getGroupId());
-			themeDisplay.setServerName("localhost");
-			themeDisplay.setSiteGroupId(_group.getGroupId());
+			ThemeDisplay themeDisplay = _getThemeDisplay(locale);
 
 			Assert.assertEquals(
 				expectedURL,
@@ -321,6 +297,17 @@ public class FileEntryInfoDisplayContributorTest {
 			AssetDisplayPageConstants.TYPE_SPECIFIC, serviceContext);
 	}
 
+	private ThemeDisplay _getThemeDisplay(Locale locale) {
+		ThemeDisplay themeDisplay = new ThemeDisplay();
+
+		themeDisplay.setLocale(locale);
+		themeDisplay.setScopeGroupId(_group.getGroupId());
+		themeDisplay.setServerName("localhost");
+		themeDisplay.setSiteGroupId(_group.getGroupId());
+
+		return themeDisplay;
+	}
+
 	private void _withAndWithoutAssetEntry(
 			UnsafeConsumer<FileEntry, Exception> testFunction)
 		throws Exception {
@@ -358,6 +345,9 @@ public class FileEntryInfoDisplayContributorTest {
 	private AssetDisplayPageFriendlyURLProvider
 		_assetDisplayPageFriendlyURLProvider;
 
+	@DeleteAfterTestRun
+	private DepotEntry _depotEntry;
+
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
 
@@ -379,8 +369,5 @@ public class FileEntryInfoDisplayContributorTest {
 
 	@Inject
 	private Portal _portal;
-
-	@DeleteAfterTestRun
-	private DepotEntry _depotEntry;
 
 }
