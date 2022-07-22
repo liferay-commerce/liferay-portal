@@ -679,17 +679,10 @@ public class ObjectEntryLocalServiceImpl
 		DynamicObjectDefinitionTable extensionDynamicObjectDefinitionTable =
 			_getExtensionDynamicObjectDefinitionTable(objectDefinitionId);
 
-		Expression<?>[] objectEntrySelectExpressions = {
-			ObjectEntryTable.INSTANCE.objectEntryId,
-			ObjectEntryTable.INSTANCE.createDate,
-			ObjectEntryTable.INSTANCE.modifiedDate,
-			ObjectEntryTable.INSTANCE.status, ObjectEntryTable.INSTANCE.userName
-		};
-
 		Expression<?>[] selectExpressions = ArrayUtil.append(
 			dynamicObjectDefinitionTable.getSelectExpressions(),
 			extensionDynamicObjectDefinitionTable.getSelectExpressions(),
-			objectEntrySelectExpressions);
+			_EXPRESSIONS);
 
 		List<Object[]> rows = _list(
 			DSLQueryFactoryUtil.selectDistinct(
@@ -2464,6 +2457,13 @@ public class ObjectEntryLocalServiceImpl
 			}
 		}
 	}
+
+	private static final Expression<?>[] _EXPRESSIONS = {
+		ObjectEntryTable.INSTANCE.objectEntryId,
+		ObjectEntryTable.INSTANCE.createDate,
+		ObjectEntryTable.INSTANCE.modifiedDate,
+		ObjectEntryTable.INSTANCE.status, ObjectEntryTable.INSTANCE.userName
+	};
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		ObjectEntryLocalServiceImpl.class);
