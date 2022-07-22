@@ -54,7 +54,7 @@ public class ObjectFieldSettingUtil {
 		serviceBuilderObjectFieldSetting.setName(objectFieldSetting.getName());
 
 		if (Objects.equals(
-				ObjectFieldSettingConstants.STATE_FLOW,
+				ObjectFieldSettingConstants.NAME_STATE_FLOW,
 				objectFieldSetting.getName())) {
 
 			serviceBuilderObjectFieldSetting.setObjectStateFlow(
@@ -73,7 +73,7 @@ public class ObjectFieldSettingUtil {
 				businessType, ObjectFieldConstants.BUSINESS_TYPE_AGGREGATION) &&
 			Objects.equals(
 				objectFieldSetting.getName(),
-				ObjectFieldSettingConstants.FILTERS)) {
+				ObjectFieldSettingConstants.NAME_FILTERS)) {
 
 			List<ObjectFilter> objectFilters = new ArrayList<>();
 
@@ -131,14 +131,14 @@ public class ObjectFieldSettingUtil {
 				businessType, ObjectFieldConstants.BUSINESS_TYPE_AGGREGATION) &&
 			Objects.equals(
 				objectFieldSetting.getName(),
-				ObjectFieldSettingConstants.FILTERS)) {
+				ObjectFieldSettingConstants.NAME_FILTERS)) {
 
 			objectFieldSetting.setValue(
 				ObjectFilterUtil.getObjectFiltersJSONArray(
 					serviceBuilderObjectFieldSetting.getObjectFilters()));
 		}
 		else if (Objects.equals(
-					ObjectFieldSettingConstants.STATE_FLOW,
+					ObjectFieldSettingConstants.NAME_STATE_FLOW,
 					objectFieldSetting.getName())) {
 
 			objectFieldSetting.setValue(

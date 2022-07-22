@@ -115,7 +115,7 @@ public class ObjectFieldSettingLocalServiceImpl
 
 		ObjectFieldSetting objectFieldSetting = new ObjectFieldSettingImpl();
 
-		objectFieldSetting.setName(ObjectFieldSettingConstants.FILTERS);
+		objectFieldSetting.setName(ObjectFieldSettingConstants.NAME_FILTERS);
 		objectFieldSetting.setObjectFilters(
 			_objectFilterLocalService.getObjectFieldObjectFilter(
 				objectFieldId));

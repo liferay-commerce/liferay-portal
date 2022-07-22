@@ -63,7 +63,7 @@ public class ObjectFieldSettingUtil {
 				ObjectFieldConstants.BUSINESS_TYPE_AGGREGATION, businessType) &&
 			Objects.equals(
 				objectFieldSetting.getName(),
-				ObjectFieldSettingConstants.FILTERS)) {
+				ObjectFieldSettingConstants.NAME_FILTERS)) {
 
 			return ObjectFilterUtil.getObjectFiltersJSONArray(
 				objectFieldSetting.getObjectFilters());
@@ -105,7 +105,7 @@ public class ObjectFieldSettingUtil {
 
 			if (Objects.equals(
 					objectFieldSetting.getName(),
-					ObjectFieldSettingConstants.STATE_FLOW)) {
+					ObjectFieldSettingConstants.NAME_STATE_FLOW)) {
 
 				ObjectStateFlow objectStateFlow =
 					ObjectStateFlowUtil.toObjectStateFlow(

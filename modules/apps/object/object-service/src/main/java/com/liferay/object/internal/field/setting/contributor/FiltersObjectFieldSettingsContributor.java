@@ -28,7 +28,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	immediate = true,
-	property = "object.field.setting.type.key=" + ObjectFieldSettingConstants.FILTERS,
+	property = "object.field.setting.type.key=" + ObjectFieldSettingConstants.NAME_FILTERS,
 	service = ObjectFieldSettingContributor.class
 )
 public class FiltersObjectFieldSettingsContributor
