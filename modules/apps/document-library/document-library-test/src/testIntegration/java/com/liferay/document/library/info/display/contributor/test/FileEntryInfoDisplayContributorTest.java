@@ -103,13 +103,12 @@ public class FileEntryInfoDisplayContributorTest {
 						_friendlyURLNormalizer.normalizeWithPeriodsAndSlashes(
 							fileEntry.getTitle()));
 
-					ThemeDisplay themeDisplay = _getThemeDisplay(locale);
-
 					Assert.assertEquals(
 						expectedURL,
 						_assetDisplayPageFriendlyURLProvider.getFriendlyURL(
 							FileEntry.class.getName(),
-							fileEntry.getFileEntryId(), themeDisplay));
+							fileEntry.getFileEntryId(),
+							_getThemeDisplay(locale)));
 				});
 		}
 		finally {
@@ -138,13 +137,12 @@ public class FileEntryInfoDisplayContributorTest {
 						_friendlyURLNormalizer.normalizeWithPeriodsAndSlashes(
 							fileEntry.getTitle()));
 
-					ThemeDisplay themeDisplay = _getThemeDisplay(locale);
-
 					Assert.assertEquals(
 						expectedURL,
 						_assetDisplayPageFriendlyURLProvider.getFriendlyURL(
 							FileEntry.class.getName(),
-							fileEntry.getFileEntryId(), themeDisplay));
+							fileEntry.getFileEntryId(),
+							_getThemeDisplay(locale)));
 				});
 		}
 		finally {
@@ -174,13 +172,12 @@ public class FileEntryInfoDisplayContributorTest {
 						_friendlyURLNormalizer.normalizeWithPeriodsAndSlashes(
 							fileEntry.getTitle()));
 
-					ThemeDisplay themeDisplay = _getThemeDisplay(locale);
-
 					Assert.assertEquals(
 						expectedURL,
 						_assetDisplayPageFriendlyURLProvider.getFriendlyURL(
 							FileEntry.class.getName(),
-							fileEntry.getFileEntryId(), themeDisplay));
+							fileEntry.getFileEntryId(),
+							_getThemeDisplay(locale)));
 				});
 		}
 		finally {
@@ -201,21 +198,18 @@ public class FileEntryInfoDisplayContributorTest {
 				fileEntry -> {
 					_addAssetDisplayPageEntry(fileEntry);
 
-					Locale locale = LocaleUtil.getDefault();
-
 					String expectedURL = StringBundler.concat(
 						"/web/", StringUtil.lowerCase(_group.getGroupKey()),
 						FriendlyURLResolverConstants.URL_SEPARATOR_FILE_ENTRY,
 						_friendlyURLNormalizer.normalizeWithPeriodsAndSlashes(
 							fileEntry.getTitle()));
 
-					ThemeDisplay themeDisplay = _getThemeDisplay(locale);
-
 					Assert.assertEquals(
 						expectedURL,
 						_assetDisplayPageFriendlyURLProvider.getFriendlyURL(
 							FileEntry.class.getName(),
-							fileEntry.getFileEntryId(), themeDisplay));
+							fileEntry.getFileEntryId(),
+							_getThemeDisplay(LocaleUtil.getDefault())));
 				});
 		}
 		finally {
@@ -253,15 +247,11 @@ public class FileEntryInfoDisplayContributorTest {
 				FriendlyURLResolverConstants.URL_SEPARATOR_FILE_ENTRY,
 				fileEntry.getFileEntryId());
 
-			Locale locale = LocaleUtil.getDefault();
-
-			ThemeDisplay themeDisplay = _getThemeDisplay(locale);
-
 			Assert.assertEquals(
 				expectedURL,
 				_assetDisplayPageFriendlyURLProvider.getFriendlyURL(
 					FileEntry.class.getName(), fileEntry.getFileEntryId(),
-					themeDisplay));
+					_getThemeDisplay(LocaleUtil.getDefault())));
 		}
 		finally {
 			ServiceContextThreadLocal.popServiceContext();
