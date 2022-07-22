@@ -249,12 +249,6 @@ export function openWindow(config: object, callback?: Function): void;
  */
 export function register(portletId: string): Promise<void>;
 
-export function sub(
-	string: string,
-	data: string | number | string[] | number[] | Array<string> | Array<number>,
-	...args: string[] | number[]
-): string;
-
 /**
  * Executes the content of script tags inside a HTMLElement
  */
@@ -263,6 +257,12 @@ export function runScriptsInElement(
 	defaultFn?: DefaultFunction,
 	appendFn?: AppendFunction
 ): void;
+
+export function sub(
+	string: string,
+	data: string | number | string[] | number[] | Array<string> | Array<number>,
+	...args: string[] | number[]
+): string;
 
 /**
  * Looks for the best region for aligning the given element. The best
