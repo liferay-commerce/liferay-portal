@@ -2460,9 +2460,10 @@ public class ObjectEntryLocalServiceImpl
 
 	private static final Expression<?>[] _EXPRESSIONS = {
 		ObjectEntryTable.INSTANCE.objectEntryId,
+		ObjectEntryTable.INSTANCE.userName,
 		ObjectEntryTable.INSTANCE.createDate,
 		ObjectEntryTable.INSTANCE.modifiedDate,
-		ObjectEntryTable.INSTANCE.status, ObjectEntryTable.INSTANCE.userName
+		ObjectEntryTable.INSTANCE.status
 	};
 
 	private static final Log _log = LogFactoryUtil.getLog(
