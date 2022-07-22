@@ -387,21 +387,12 @@ public class BundleSiteInitializer implements SiteInitializer {
 					new SiteNavigationMenuItemSettingsBuilder();
 
 			_invoke(() -> _addAccounts(serviceContext));
-
-			Map<String, String> classNameIdsStringUtilReplaceValues =
-				new HashMap<>();
-
-			Map<String, String> ddmStructureEntryIdsStringUtilReplaceValues =
-				_invoke(
-					() -> _addDDMStructures(
-						classNameIdsStringUtilReplaceValues, serviceContext));
-
+			_invoke(() -> _addDDMStructures(serviceContext));
 			_invoke(() -> _addExpandoColumns(serviceContext));
 
 			Map<String, String> assetListEntryIdsStringUtilReplaceValues =
 				_invoke(
 					() -> _addAssetListEntries(
-						classNameIdsStringUtilReplaceValues,
 						_ddmStructureLocalService, serviceContext));
 			Map<String, String> documentsStringUtilReplaceValues = _invoke(
 				() -> _addDocuments(
@@ -431,11 +422,9 @@ public class BundleSiteInitializer implements SiteInitializer {
 
 			_invoke(
 				() -> _addDDMTemplates(
-					classNameIdsStringUtilReplaceValues,
 					_ddmStructureLocalService, serviceContext));
 			_invoke(
 				() -> _addJournalArticles(
-					classNameIdsStringUtilReplaceValues,
 					_ddmStructureLocalService, _ddmTemplateLocalService,
 					documentsStringUtilReplaceValues, serviceContext,
 					siteNavigationMenuItemSettingsBuilder));
@@ -488,9 +477,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 			_invoke(
 				() -> _addLayoutsContent(
 					assetListEntryIdsStringUtilReplaceValues,
-					classNameIdsStringUtilReplaceValues,
 					clientExtensionEntryIdsStringUtilReplaceValues,
-					ddmStructureEntryIdsStringUtilReplaceValues,
 					documentsStringUtilReplaceValues, layouts,
 					objectDefinitionIdsAndObjectEntryIdsStringUtilReplaceValues,
 					serviceContext,
@@ -554,7 +541,6 @@ public class BundleSiteInitializer implements SiteInitializer {
 	}
 
 	private Map<String, String> _addAssetListEntries(
-			Map<String, String> classNameIdsStringUtilReplaceValues,
 			DDMStructureLocalService ddmStructureLocalService,
 			ServiceContext serviceContext)
 		throws Exception {
@@ -576,8 +562,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 				i);
 
 			_addOrUpdateAssetListEntry(
-				assetListJSONObject, classNameIdsStringUtilReplaceValues,
-				ddmStructureLocalService, serviceContext);
+				assetListJSONObject, ddmStructureLocalService, serviceContext);
 		}
 
 		List<AssetListEntry> assetListEntries =
@@ -701,47 +686,25 @@ public class BundleSiteInitializer implements SiteInitializer {
 			serviceContext, _servletContext);
 	}
 
-	private Map<String, String> _addDDMStructures(
-			Map<String, String> classNameIdsStringUtilReplaceValues,
-			ServiceContext serviceContext)
+	private void _addDDMStructures(ServiceContext serviceContext)
 		throws Exception {
 
 		Set<String> resourcePaths = _servletContext.getResourcePaths(
 			"/site-initializer/ddm-structures");
 
-		Map<String, String> ddmStructureEntryIdsStringUtilReplaceValues =
-			new HashMap<>();
-
 		if (SetUtil.isEmpty(resourcePaths)) {
-			return ddmStructureEntryIdsStringUtilReplaceValues;
+			return;
 		}
 
 		for (String resourcePath : resourcePaths) {
 			_defaultDDMStructureHelper.addDDMStructures(
 				serviceContext.getUserId(), serviceContext.getScopeGroupId(),
-				_getClassNameId(
-					JournalArticle.class.getName(),
-					classNameIdsStringUtilReplaceValues),
-				_classLoader, resourcePath, serviceContext);
+				_portal.getClassNameId(JournalArticle.class), _classLoader,
+				resourcePath, serviceContext);
 		}
-
-		List<DDMStructure> ddmStructures =
-			_ddmStructureLocalService.getStructures(
-				serviceContext.getScopeGroupId());
-
-		if (ListUtil.isNotEmpty(ddmStructures)) {
-			for (DDMStructure ddmStructure : ddmStructures) {
-				ddmStructureEntryIdsStringUtilReplaceValues.put(
-					"DDM_STRUCTURE_ENTRY_ID:" + ddmStructure.getStructureKey(),
-					String.valueOf(ddmStructure.getStructureId()));
-			}
-		}
-
-		return ddmStructureEntryIdsStringUtilReplaceValues;
 	}
 
 	private void _addDDMTemplates(
-			Map<String, String> classNameIdsStringUtilReplaceValues,
 			DDMStructureLocalService ddmStructureLocalService,
 			ServiceContext serviceContext)
 		throws Exception {
@@ -759,10 +722,9 @@ public class BundleSiteInitializer implements SiteInitializer {
 			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
 				StringUtil.read(url.openStream()));
 
-			long resourceClassNameId = _getClassNameId(
+			long resourceClassNameId = _portal.getClassNameId(
 				jsonObject.getString(
-					"resourceClassName", JournalArticle.class.getName()),
-				classNameIdsStringUtilReplaceValues);
+					"resourceClassName", JournalArticle.class.getName()));
 
 			long ddmStructureId = 0;
 
@@ -779,10 +741,9 @@ public class BundleSiteInitializer implements SiteInitializer {
 
 			_ddmTemplateLocalService.addTemplate(
 				serviceContext.getUserId(), serviceContext.getScopeGroupId(),
-				_getClassNameId(
+				_portal.getClassNameId(
 					jsonObject.getString(
-						"className", DDMStructure.class.getName()),
-					classNameIdsStringUtilReplaceValues),
+						"className", DDMStructure.class.getName())),
 				ddmStructureId, resourceClassNameId,
 				jsonObject.getString("ddmTemplateKey"),
 				HashMapBuilder.put(
@@ -1201,7 +1162,6 @@ public class BundleSiteInitializer implements SiteInitializer {
 	}
 
 	private void _addJournalArticles(
-			Map<String, String> classNameIdsStringUtilReplaceValues,
 			DDMStructureLocalService ddmStructureLocalService,
 			DDMTemplateLocalService ddmTemplateLocalService,
 			Long documentFolderId,
@@ -1224,7 +1184,6 @@ public class BundleSiteInitializer implements SiteInitializer {
 
 			if (resourcePath.endsWith("/")) {
 				_addJournalArticles(
-					classNameIdsStringUtilReplaceValues,
 					ddmStructureLocalService, ddmTemplateLocalService,
 					_addStructuredContentFolders(
 						documentFolderId, parentResourcePath, serviceContext),
@@ -1260,19 +1219,13 @@ public class BundleSiteInitializer implements SiteInitializer {
 
 			ddmStructureLocalService.getStructure(
 				serviceContext.getScopeGroupId(),
-				_getClassNameId(
-					JournalArticle.class.getName(),
-					classNameIdsStringUtilReplaceValues),
-				ddmStructureKey);
+				_portal.getClassNameId(JournalArticle.class), ddmStructureKey);
 
 			String ddmTemplateKey = jsonObject.getString("ddmTemplateKey");
 
 			ddmTemplateLocalService.getTemplate(
 				serviceContext.getScopeGroupId(),
-				_getClassNameId(
-					DDMStructure.class.getName(),
-					classNameIdsStringUtilReplaceValues),
-				ddmTemplateKey);
+				_portal.getClassNameId(DDMStructure.class), ddmTemplateKey);
 
 			Calendar calendar = CalendarFactoryUtil.getCalendar(
 				serviceContext.getTimeZone());
@@ -1332,7 +1285,6 @@ public class BundleSiteInitializer implements SiteInitializer {
 	}
 
 	private void _addJournalArticles(
-			Map<String, String> classNameIdsStringUtilReplaceValues,
 			DDMStructureLocalService ddmStructureLocalService,
 			DDMTemplateLocalService ddmTemplateLocalService,
 			Map<String, String> documentsStringUtilReplaceValues,
@@ -1342,8 +1294,8 @@ public class BundleSiteInitializer implements SiteInitializer {
 		throws Exception {
 
 		_addJournalArticles(
-			classNameIdsStringUtilReplaceValues, ddmStructureLocalService,
-			ddmTemplateLocalService, null, documentsStringUtilReplaceValues,
+			ddmStructureLocalService, ddmTemplateLocalService, null,
+			documentsStringUtilReplaceValues,
 			"/site-initializer/journal-articles", serviceContext,
 			siteNavigationMenuItemSettingsBuilder);
 	}
@@ -1575,9 +1527,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 
 	private void _addLayoutContent(
 			Map<String, String> assetListEntryIdsStringUtilReplaceValues,
-			Map<String, String> classNameIdsStringUtilReplaceValues,
 			Map<String, String> clientExtensionEntryIdsStringUtilReplaceValues,
-			Map<String, String> ddmStructureEntryIdsStringUtilReplaceValues,
 			Map<String, String> documentsStringUtilReplaceValues,
 			Map<String, String>
 				objectDefinitionIdsAndObjectEntryIdsStringUtilReplaceValues,
@@ -1602,11 +1552,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 			HashMapBuilder.putAll(
 				assetListEntryIdsStringUtilReplaceValues
 			).putAll(
-				classNameIdsStringUtilReplaceValues
-			).putAll(
 				clientExtensionEntryIdsStringUtilReplaceValues
-			).putAll(
-				ddmStructureEntryIdsStringUtilReplaceValues
 			).putAll(
 				documentsStringUtilReplaceValues
 			).putAll(
@@ -1833,9 +1779,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 
 	private void _addLayoutsContent(
 			Map<String, String> assetListEntryIdsStringUtilReplaceValues,
-			Map<String, String> classNameIdsStringUtilReplaceValues,
 			Map<String, String> clientExtensionEntryIdsStringUtilReplaceValues,
-			Map<String, String> ddmStructureEntryIdsStringUtilReplaceValues,
 			Map<String, String> documentsStringUtilReplaceValues,
 			Map<String, Layout> layouts,
 			Map<String, String>
@@ -1852,9 +1796,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 		for (Map.Entry<String, Layout> entry : layouts.entrySet()) {
 			_addLayoutContent(
 				assetListEntryIdsStringUtilReplaceValues,
-				classNameIdsStringUtilReplaceValues,
 				clientExtensionEntryIdsStringUtilReplaceValues,
-				ddmStructureEntryIdsStringUtilReplaceValues,
 				documentsStringUtilReplaceValues,
 				objectDefinitionIdsAndObjectEntryIdsStringUtilReplaceValues,
 				releaseInfoStringUtilReplaceValues, entry.getValue(),
@@ -1862,9 +1804,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 				taxonomyCategoryIdsStringUtilReplaceValues);
 		}
 
-		_addSiteNavigationMenus(
-			classNameIdsStringUtilReplaceValues, serviceContext,
-			siteNavigationMenuItemSettings);
+		_addSiteNavigationMenus(serviceContext, siteNavigationMenuItemSettings);
 	}
 
 	private Map<String, String> _addListTypeDefinitions(
@@ -2402,7 +2342,6 @@ public class BundleSiteInitializer implements SiteInitializer {
 
 	private void _addOrUpdateAssetListEntry(
 			JSONObject assetListJSONObject,
-			Map<String, String> classNameIdsStringUtilReplaceValues,
 			DDMStructureLocalService ddmStructureLocalService,
 			ServiceContext serviceContext)
 		throws Exception {
@@ -2432,17 +2371,15 @@ public class BundleSiteInitializer implements SiteInitializer {
 
 		DDMStructure ddmStructure = ddmStructureLocalService.getStructure(
 			serviceContext.getScopeGroupId(),
-			_getClassNameId(
-				unicodePropertiesJSONObject.getString("classNameIds"),
-				classNameIdsStringUtilReplaceValues),
+			_portal.getClassNameId(
+				unicodePropertiesJSONObject.getString("classNameIds")),
 			assetListJSONObject.getString("ddmStructureKey"));
 
 		Map<String, String> map = HashMapBuilder.put(
 			"anyAssetType",
 			String.valueOf(
-				_getClassNameId(
-					unicodePropertiesJSONObject.getString("classNameIds"),
-					classNameIdsStringUtilReplaceValues))
+				_portal.getClassNameId(
+					unicodePropertiesJSONObject.getString("classNameIds")))
 		).put(
 			unicodePropertiesJSONObject.getString("anyClassType"),
 			String.valueOf(ddmStructure.getStructureId())
@@ -2770,7 +2707,6 @@ public class BundleSiteInitializer implements SiteInitializer {
 	}
 
 	private void _addSiteNavigationMenu(
-			Map<String, String> classNameIdsStringUtilReplaceValues,
 			JSONObject jsonObject, ServiceContext serviceContext,
 			Map<String, SiteNavigationMenuItemSetting>
 				siteNavigationMenuItemSettings)
@@ -2783,12 +2719,11 @@ public class BundleSiteInitializer implements SiteInitializer {
 				serviceContext);
 
 		_addSiteNavigationMenuItems(
-			classNameIdsStringUtilReplaceValues, jsonObject, siteNavigationMenu,
-			0, serviceContext, siteNavigationMenuItemSettings);
+			jsonObject, siteNavigationMenu, 0, serviceContext,
+			siteNavigationMenuItemSettings);
 	}
 
 	private void _addSiteNavigationMenuItems(
-			Map<String, String> classNameIdsStringUtilReplaceValues,
 			JSONObject jsonObject, SiteNavigationMenu siteNavigationMenu,
 			long parentSiteNavigationMenuItemId, ServiceContext serviceContext,
 			Map<String, SiteNavigationMenuItemSetting>
@@ -2864,9 +2799,8 @@ public class BundleSiteInitializer implements SiteInitializer {
 				).put(
 					"classNameId",
 					String.valueOf(
-						_getClassNameId(
-							siteNavigationMenuItemSetting.className,
-							classNameIdsStringUtilReplaceValues))
+						_portal.getClassNameId(
+							siteNavigationMenuItemSetting.className))
 				).put(
 					"classPK",
 					String.valueOf(siteNavigationMenuItemSetting.classPK)
@@ -2888,15 +2822,13 @@ public class BundleSiteInitializer implements SiteInitializer {
 					serviceContext);
 
 			_addSiteNavigationMenuItems(
-				classNameIdsStringUtilReplaceValues, menuItemJSONObject,
-				siteNavigationMenu,
+				menuItemJSONObject, siteNavigationMenu,
 				siteNavigationMenuItem.getSiteNavigationMenuItemId(),
 				serviceContext, siteNavigationMenuItemSettings);
 		}
 	}
 
 	private void _addSiteNavigationMenus(
-			Map<String, String> classNameIdsStringUtilReplaceValues,
 			ServiceContext serviceContext,
 			Map<String, SiteNavigationMenuItemSetting>
 				siteNavigationMenuItemSettings)
@@ -2913,8 +2845,8 @@ public class BundleSiteInitializer implements SiteInitializer {
 
 		for (int i = 0; i < jsonArray.length(); i++) {
 			_addSiteNavigationMenu(
-				classNameIdsStringUtilReplaceValues, jsonArray.getJSONObject(i),
-				serviceContext, siteNavigationMenuItemSettings);
+				jsonArray.getJSONObject(i), serviceContext,
+				siteNavigationMenuItemSettings);
 		}
 	}
 
@@ -3560,18 +3492,6 @@ public class BundleSiteInitializer implements SiteInitializer {
 		}
 
 		return ArrayUtil.toLongArray(assetCategoryIds);
-	}
-
-	private long _getClassNameId(
-		String className,
-		Map<String, String> classNameIdsStringUtilReplaceValues) {
-
-		long classNameId = _portal.getClassNameId(className);
-
-		classNameIdsStringUtilReplaceValues.put(
-			"CLASS_NAME_ID:" + className, String.valueOf(classNameId));
-
-		return classNameId;
 	}
 
 	private Map<String, String> _getReleaseInfoStringUtilReplaceValues() {
