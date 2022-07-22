@@ -19,6 +19,8 @@ import com.liferay.asset.display.page.constants.AssetDisplayPageConstants;
 import com.liferay.asset.display.page.portlet.AssetDisplayPageFriendlyURLProvider;
 import com.liferay.asset.display.page.service.AssetDisplayPageEntryLocalService;
 import com.liferay.asset.kernel.service.AssetEntryLocalServiceUtil;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
@@ -43,7 +45,6 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizer;
-import com.liferay.portal.kernel.util.GroupThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -53,6 +54,7 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.util.PropsValues;
 
+import java.util.Collections;
 import java.util.Locale;
 
 import org.junit.Assert;
@@ -242,6 +244,54 @@ public class FileEntryInfoDisplayContributorTest {
 		}
 	}
 
+	@Test
+	public void testDisplayPageURLFileFromDepotEntry() throws Exception {
+		ServiceContextThreadLocal.pushServiceContext(
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		try {
+			_depotEntry = _depotEntryLocalService.addDepotEntry(
+				Collections.singletonMap(
+					LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+				Collections.singletonMap(
+					LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+				ServiceContextTestUtil.getServiceContext());
+
+			DLFolder dlFolder = DLTestUtil.addDLFolder(_depotEntry.getGroupId());
+
+			DLFileEntry dlFileEntry = DLTestUtil.addDLFileEntry(
+				dlFolder.getFolderId());
+
+			FileEntry fileEntry = _dlAppLocalService.getFileEntry(
+				dlFileEntry.getFileEntryId());
+
+			_addAssetDisplayPageEntry(fileEntry);
+
+			String expectedURL = StringBundler.concat(
+				"/web/", StringUtil.lowerCase(_group.getGroupKey()),
+				FriendlyURLResolverConstants.URL_SEPARATOR_FILE_ENTRY,
+				fileEntry.getFileEntryId());
+
+			ThemeDisplay themeDisplay = new ThemeDisplay();
+
+			Locale locale = LocaleUtil.getDefault();
+
+			themeDisplay.setLocale(locale);
+			themeDisplay.setScopeGroupId(_group.getGroupId());
+			themeDisplay.setServerName("localhost");
+			themeDisplay.setSiteGroupId(_group.getGroupId());
+
+			Assert.assertEquals(
+				expectedURL,
+				_assetDisplayPageFriendlyURLProvider.getFriendlyURL(
+					FileEntry.class.getName(), fileEntry.getFileEntryId(),
+					themeDisplay));
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
+	}
+
 	private void _addAssetDisplayPageEntry(FileEntry dlFileEntry)
 		throws PortalException {
 
@@ -309,6 +359,9 @@ public class FileEntryInfoDisplayContributorTest {
 		_assetDisplayPageFriendlyURLProvider;
 
 	@Inject
+	private DepotEntryLocalService _depotEntryLocalService;
+
+	@Inject
 	private DLAppLocalService _dlAppLocalService;
 
 	@Inject
@@ -326,5 +379,8 @@ public class FileEntryInfoDisplayContributorTest {
 
 	@Inject
 	private Portal _portal;
+
+	@DeleteAfterTestRun
+	private DepotEntry _depotEntry;
 
 }
