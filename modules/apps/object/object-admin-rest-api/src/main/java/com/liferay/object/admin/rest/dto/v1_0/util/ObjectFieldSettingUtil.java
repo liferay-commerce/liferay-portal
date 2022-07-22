@@ -24,7 +24,6 @@ import com.liferay.object.util.ObjectFilterUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -112,17 +111,15 @@ public class ObjectFieldSettingUtil {
 						ObjectStateFlowLocalServiceUtil.fetchObjectStateFlow(
 							GetterUtil.getLong(objectFieldSetting.getValue())));
 
-				JSONObject jsonObject = null;
-
 				try {
-					jsonObject = JSONFactoryUtil.createJSONObject(
+					return JSONFactoryUtil.createJSONObject(
 						objectStateFlow.toString());
 				}
 				catch (JSONException jsonException) {
 					_log.error(jsonException);
-				}
 
-				return jsonObject;
+					return null;
+				}
 			}
 		}
 
