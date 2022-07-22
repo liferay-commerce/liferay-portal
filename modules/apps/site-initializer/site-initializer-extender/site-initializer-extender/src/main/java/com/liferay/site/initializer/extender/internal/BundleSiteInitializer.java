@@ -319,6 +319,9 @@ public class BundleSiteInitializer implements SiteInitializer {
 		BundleWiring bundleWiring = _bundle.adapt(BundleWiring.class);
 
 		_classLoader = bundleWiring.getClassLoader();
+
+		_releaseInfoStringUtilReplaceValues =
+			_getReleaseInfoStringUtilReplaceValues();
 	}
 
 	@Override
@@ -1527,7 +1530,6 @@ public class BundleSiteInitializer implements SiteInitializer {
 			Map<String, String> documentsStringUtilReplaceValues,
 			Map<String, String>
 				objectDefinitionIdsAndObjectEntryIdsStringUtilReplaceValues,
-			Map<String, String> releaseInfoStringUtilReplaceValues,
 			Layout layout, String resourcePath, ServiceContext serviceContext,
 			Map<String, String> taxonomyCategoryIdsStringUtilReplaceValues)
 		throws Exception {
@@ -1548,7 +1550,6 @@ public class BundleSiteInitializer implements SiteInitializer {
 			clientExtensionEntryIdsStringUtilReplaceValues,
 			documentsStringUtilReplaceValues,
 			objectDefinitionIdsAndObjectEntryIdsStringUtilReplaceValues,
-			releaseInfoStringUtilReplaceValues,
 			taxonomyCategoryIdsStringUtilReplaceValues);
 
 		JSONObject pageDefinitionJSONObject = JSONFactoryUtil.createJSONObject(
@@ -1774,17 +1775,13 @@ public class BundleSiteInitializer implements SiteInitializer {
 			Map<String, String> taxonomyCategoryIdsStringUtilReplaceValues)
 		throws Exception {
 
-		Map<String, String> releaseInfoStringUtilReplaceValues =
-			_getReleaseInfoStringUtilReplaceValues();
-
 		for (Map.Entry<String, Layout> entry : layouts.entrySet()) {
 			_addLayoutContent(
 				assetListEntryIdsStringUtilReplaceValues,
 				clientExtensionEntryIdsStringUtilReplaceValues,
 				documentsStringUtilReplaceValues,
 				objectDefinitionIdsAndObjectEntryIdsStringUtilReplaceValues,
-				releaseInfoStringUtilReplaceValues, entry.getValue(),
-				entry.getKey(), serviceContext,
+				entry.getValue(), entry.getKey(), serviceContext,
 				taxonomyCategoryIdsStringUtilReplaceValues);
 		}
 
@@ -3579,6 +3576,9 @@ public class BundleSiteInitializer implements SiteInitializer {
 			aggregatedStringUtilReplaceValues.putAll(stringUtilReplaceValues);
 		}
 
+		aggregatedStringUtilReplaceValues.putAll(
+			_releaseInfoStringUtilReplaceValues);
+
 		return _replace(s, begin, end, aggregatedStringUtilReplaceValues);
 	}
 
@@ -3776,6 +3776,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 	private final OrganizationLocalService _organizationLocalService;
 	private final OrganizationResource.Factory _organizationResourceFactory;
 	private final Portal _portal;
+	private final Map<String, String> _releaseInfoStringUtilReplaceValues;
 	private final ResourceActionLocalService _resourceActionLocalService;
 	private final ResourcePermissionLocalService
 		_resourcePermissionLocalService;
