@@ -35,6 +35,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -274,11 +275,10 @@ public class FileEntryInfoDisplayContributorTest {
 			UnsafeConsumer<FileEntry, Exception> testFunction)
 		throws Exception {
 
-		Long groupId = GroupThreadLocal.getGroupId();
+		ServiceContextThreadLocal.pushServiceContext(
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		try {
-			GroupThreadLocal.setGroupId(_group.getGroupId());
-
 			DLFolder dlFolder = DLTestUtil.addDLFolder(_group.getGroupId());
 
 			DLFileEntry dlFileEntry = DLTestUtil.addDLFileEntry(
@@ -296,7 +296,7 @@ public class FileEntryInfoDisplayContributorTest {
 				_dlAppLocalService.getFileEntry(dlFileEntry.getFileEntryId()));
 		}
 		finally {
-			GroupThreadLocal.setGroupId(groupId);
+			ServiceContextThreadLocal.popServiceContext();
 		}
 	}
 
