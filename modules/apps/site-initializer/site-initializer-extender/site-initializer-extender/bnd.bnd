@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Site Initializer Extender
 Bundle-SymbolicName: com.liferay.site.initializer.extender
-Bundle-Version: 1.0.50
+Bundle-Version: 1.0.51
 Import-Package:\
 	com.liferay.commerce.*;resolution:=optional,\
 	com.liferay.headless.commerce.*;resolution:=optional,\
