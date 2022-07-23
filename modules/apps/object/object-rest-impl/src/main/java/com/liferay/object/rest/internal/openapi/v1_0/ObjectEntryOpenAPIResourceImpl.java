@@ -313,7 +313,6 @@ public class ObjectEntryOpenAPIResourceImpl
 					new DTOProperty(
 						Collections.singletonMap("x-parent-map", "properties"),
 						"name", String.class.getSimpleName())));
-
 			dtoProperty.setRequired(objectField.isRequired());
 
 			return dtoProperty;
