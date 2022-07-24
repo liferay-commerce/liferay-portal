@@ -141,7 +141,6 @@ public class DisplayPortlet extends BaseKBPortlet {
 				WorkflowConstants.STATUS_APPROVED);
 
 			String mvcPath = ParamUtil.getString(renderRequest, "mvcPath");
-
 			String mvcRenderCommandName = ParamUtil.getString(
 				renderRequest, "mvcRenderCommandName");
 
