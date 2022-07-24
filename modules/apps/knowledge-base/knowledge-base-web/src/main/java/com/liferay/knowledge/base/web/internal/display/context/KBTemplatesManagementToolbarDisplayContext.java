@@ -64,13 +64,11 @@ public class KBTemplatesManagementToolbarDisplayContext {
 
 		_httpServletRequest = httpServletRequest;
 		_liferayPortletRequest = liferayPortletRequest;
-
 		_liferayPortletResponse = liferayPortletResponse;
 
 		_currentURLObj = PortletURLUtil.getCurrent(
-			_liferayPortletRequest, _liferayPortletResponse);
-
-		_themeDisplay = (ThemeDisplay)_httpServletRequest.getAttribute(
+			liferayPortletRequest, liferayPortletResponse);
+		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
 		_createSearchContainer();
