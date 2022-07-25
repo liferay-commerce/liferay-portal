@@ -249,6 +249,7 @@ public class DefaultDLViewFileVersionDisplayContext
 		Menu menu = new Menu();
 
 		menu.setDirection("left-side");
+		menu.setMarkupView("lexicon");
 		menu.setMenuItems(_getMenuItems());
 		menu.setMessage(LanguageUtil.get(_resourceBundle, "actions"));
 		menu.setScroll(false);

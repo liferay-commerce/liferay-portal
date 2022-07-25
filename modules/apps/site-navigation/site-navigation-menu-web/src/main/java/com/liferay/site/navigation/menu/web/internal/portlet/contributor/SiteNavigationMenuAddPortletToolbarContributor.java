@@ -88,6 +88,7 @@ public class SiteNavigationMenuAddPortletToolbarContributor
 		menu.setDirection("right");
 		menu.setExtended(false);
 		menu.setIcon("plus");
+		menu.setMarkupView("lexicon");
 		menu.setMenuItems(menuItems);
 		menu.setMessage("add");
 		menu.setScroll(false);

@@ -33,6 +33,7 @@ import com.liferay.taglib.util.PortalIncludeUtil;
 import com.liferay.taglib.util.TagResourceBundleUtil;
 
 import java.util.Map;
+import java.util.Objects;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -201,6 +202,7 @@ public class IconMenuTag extends BaseBodyTagSupport implements BodyTag {
 	}
 
 	public void setMarkupView(String markupView) {
+		_markupView = markupView;
 	}
 
 	public void setMaxDisplayItems(int maxDisplayItems) {
@@ -297,7 +299,8 @@ public class IconMenuTag extends BaseBodyTagSupport implements BodyTag {
 			if (!FileAvailabilityUtil.isAvailable(
 					(ServletContext)httpServletRequest.getAttribute(
 						WebKeys.CTX),
-					getStartPage())) {
+					getStartPage()) ||
+				!Objects.equals(_markupView, "lexicon")) {
 
 				if (_showExpanded) {
 					jspWriter.write("<ul class=\"lfr-menu-expanded ");
@@ -437,7 +440,8 @@ public class IconMenuTag extends BaseBodyTagSupport implements BodyTag {
 			if (!FileAvailabilityUtil.isAvailable(
 					(ServletContext)httpServletRequest.getAttribute(
 						WebKeys.CTX),
-					getEndPage())) {
+					getEndPage()) ||
+				!Objects.equals(_markupView, "lexicon")) {
 
 				jspWriter.write("</ul>");
 
@@ -512,6 +516,7 @@ public class IconMenuTag extends BaseBodyTagSupport implements BodyTag {
 	private String _icon;
 	private String _id;
 	private boolean _localizeMessage = true;
+	private String _markupView;
 	private int _maxDisplayItems = _DEFAULT_MAX_DISPLAY_ITEMS;
 	private String _message = "actions";
 	private boolean _scroll;
