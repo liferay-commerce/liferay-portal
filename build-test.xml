@@ -9465,7 +9465,7 @@ virtualHostname="localhost"
 										<if>
 											<isset property="env.TEST_PORTAL_RELEASE_VERSION" />
 											<then>
-												<fail message="This release test is attempting to build Marketplace application(s) from source instead of deploying the latest released version from Marketplace." />
+												<fail message="This release test is attempting to build Marketplace applications from source instead of deploying the latest released version from Marketplace." />
 											</then>
 										</if>
 
