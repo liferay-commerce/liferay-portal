@@ -29,7 +29,7 @@ public class URLBuilder {
 	}
 
 	public URLBuilder addParameter(String name, String value) {
-		_urlOperations.add(new URLOperation(OperationType.ADD, name, value));
+		_urlOperations.add(new URLOperation(name, OperationType.ADD, value));
 
 		return this;
 	}
@@ -40,8 +40,8 @@ public class URLBuilder {
 		}
 
 		for (URLOperation urlOperation : _urlOperations) {
-			OperationType operationType = urlOperation.getType();
 			String name = urlOperation.getName();
+			OperationType operationType = urlOperation.getOperationType();
 			String value = urlOperation.getValue();
 
 			if (operationType == OperationType.ADD) {
@@ -61,13 +61,13 @@ public class URLBuilder {
 	}
 
 	public URLBuilder removeParameter(String name) {
-		_urlOperations.add(new URLOperation(OperationType.REMOVE, name, null));
+		_urlOperations.add(new URLOperation(name, OperationType.REMOVE, null));
 
 		return this;
 	}
 
 	public URLBuilder setParameter(String name, String value) {
-		_urlOperations.add(new URLOperation(OperationType.SET, name, value));
+		_urlOperations.add(new URLOperation(name, OperationType.SET, value));
 
 		return this;
 	}
@@ -85,7 +85,7 @@ public class URLBuilder {
 			return _name;
 		}
 
-		public OperationType getType() {
+		public OperationType getOperationType() {
 			return _operationType;
 		}
 
@@ -94,10 +94,10 @@ public class URLBuilder {
 		}
 
 		private URLOperation(
-			OperationType operationType, String name, String value) {
+			String name, OperationType operationType, String value) {
 
-			_operationType = operationType;
 			_name = name;
+			_operationType = operationType;
 			_value = value;
 		}
 
