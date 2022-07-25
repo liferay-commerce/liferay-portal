@@ -55,6 +55,6 @@ export const ERRORS: IErrorMessage = {
 		'name-must-only-contain-letters-and-digits'
 	),
 	'ObjectFieldSettingValueException.MustBeLessThan256Characters': Liferay.Language.get(
-		'storage-folder-path-can-not-be-greater-than-255-characters'
+		'storage-folder-path-cannot-be-greater-than-255-characters'
 	),
 };
