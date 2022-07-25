@@ -743,7 +743,7 @@ public class FragmentEntryConfigurationParserImpl
 
 			fieldJSONObject.put(
 				"defaultValue",
-				LanguageUtil.get(resourceBundle, defaultValue, defaultValue));
+				_language.get(resourceBundle, defaultValue, defaultValue));
 		}
 
 		JSONObject typeOptionsJSONObject = fieldJSONObject.getJSONObject(
