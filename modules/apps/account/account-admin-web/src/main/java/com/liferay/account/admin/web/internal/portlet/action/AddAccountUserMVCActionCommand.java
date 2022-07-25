@@ -21,6 +21,7 @@ import com.liferay.account.model.AccountEntryUserRel;
 import com.liferay.account.service.AccountEntryService;
 import com.liferay.account.service.AccountEntryUserRelService;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.UserEmailAddressException;
 import com.liferay.portal.kernel.exception.UserScreenNameException;
@@ -33,6 +34,7 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.UserService;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -47,6 +49,7 @@ import java.util.Objects;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
+import javax.portlet.PortletException;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -62,9 +65,19 @@ import org.osgi.service.component.annotations.Reference;
 		"javax.portlet.name=" + AccountPortletKeys.ACCOUNT_USERS_ADMIN,
 		"mvc.command.name=/account_admin/add_account_user"
 	},
-	service = MVCActionCommand.class
+	service = AopService.class
 )
-public class AddAccountUserMVCActionCommand extends BaseMVCActionCommand {
+public class AddAccountUserMVCActionCommand
+	extends BaseMVCActionCommand implements AopService, MVCActionCommand {
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public boolean processAction(
+			ActionRequest actionRequest, ActionResponse actionResponse)
+		throws PortletException {
+
+		return super.processAction(actionRequest, actionResponse);
+	}
 
 	@Override
 	protected void doProcessAction(
