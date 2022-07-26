@@ -276,7 +276,7 @@ public class EntityExtensionTest {
 			throws Exception {
 
 			if (_fail) {
-				throw new Exception("The request has failed");
+				throw new Exception();
 			}
 		}
 
