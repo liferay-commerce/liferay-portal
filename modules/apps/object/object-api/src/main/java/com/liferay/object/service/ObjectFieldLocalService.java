@@ -331,6 +331,10 @@ public interface ObjectFieldLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<ObjectField> getObjectFields(
+		long objectDefinitionId, boolean system);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<ObjectField> getObjectFields(
 		long objectDefinitionId, String dbTableName);
 
 	/**

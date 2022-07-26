@@ -450,6 +450,14 @@ public class ObjectFieldLocalServiceWrapper
 
 	@Override
 	public java.util.List<com.liferay.object.model.ObjectField> getObjectFields(
+		long objectDefinitionId, boolean system) {
+
+		return _objectFieldLocalService.getObjectFields(
+			objectDefinitionId, system);
+	}
+
+	@Override
+	public java.util.List<com.liferay.object.model.ObjectField> getObjectFields(
 		long objectDefinitionId, String dbTableName) {
 
 		return _objectFieldLocalService.getObjectFields(

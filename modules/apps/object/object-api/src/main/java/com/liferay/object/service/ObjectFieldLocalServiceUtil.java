@@ -389,6 +389,12 @@ public class ObjectFieldLocalServiceUtil {
 	}
 
 	public static List<ObjectField> getObjectFields(
+		long objectDefinitionId, boolean system) {
+
+		return getService().getObjectFields(objectDefinitionId, system);
+	}
+
+	public static List<ObjectField> getObjectFields(
 		long objectDefinitionId, String dbTableName) {
 
 		return getService().getObjectFields(objectDefinitionId, dbTableName);
