@@ -35,7 +35,6 @@ import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.util.PortalImpl;
 
 import java.util.Collections;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.Properties;
@@ -95,9 +94,9 @@ public class AuthVerifierPipelineTest {
 		AuthVerifierResult.State expectedState =
 			AuthVerifierResult.State.SUCCESS;
 
-		_assertVerifyRequest(
+		_assertAuthVerifierResult(
 			contextPath, includeURLs, legacyRequestURI, expectedState);
-		_assertVerifyRequest(
+		_assertAuthVerifierResult(
 			contextPath, includeURLs, regularRequestURI, expectedState);
 	}
 
@@ -112,7 +111,7 @@ public class AuthVerifierPipelineTest {
 		AuthVerifierResult.State expectedState =
 			AuthVerifierResult.State.SUCCESS;
 
-		_assertVerifyRequest(
+		_assertAuthVerifierResult(
 			contextPath, includeURLs, requestURI, expectedState);
 	}
 
@@ -131,7 +130,7 @@ public class AuthVerifierPipelineTest {
 
 		String portalUtilPathContext = PortalUtil.getPathContext(contextPath);
 
-		_assertVerifyRequest(
+		_assertAuthVerifierResult(
 			portalUtilPathContext, includeURLs, requestURI, expectedState);
 	}
 
@@ -159,7 +158,7 @@ public class AuthVerifierPipelineTest {
 			String portalUtilPathContext = PortalUtil.getPathContext(
 				contextPath);
 
-			_assertVerifyRequest(
+			_assertAuthVerifierResult(
 				portalUtilPathContext, includeURLs, requestURI, expectedState);
 		}
 	}
@@ -177,11 +176,11 @@ public class AuthVerifierPipelineTest {
 		AuthVerifierResult.State expectedState =
 			AuthVerifierResult.State.UNSUCCESSFUL;
 
-		_assertVerifyRequest(
+		_assertAuthVerifierResult(
 			contextPath, includeURLs, requestURI, expectedState);
 	}
 
-	private void _assertVerifyRequest(
+	private void _assertAuthVerifierResult(
 			String contextPath, String includeURLs, String requestURI,
 			AuthVerifierResult.State expectedState)
 		throws PortalException {
@@ -211,13 +210,11 @@ public class AuthVerifierPipelineTest {
 	}
 
 	private void _setUpAuthVerifierConfiguration() {
-		Class<? extends AuthVerifier> authVerifierClass =
-			_authVerifier.getClass();
-
 		_authVerifierConfiguration = new AuthVerifierConfiguration();
 
-		_authVerifierConfiguration.setAuthVerifierClassName(
-			authVerifierClass.getName());
+		Class<? extends AuthVerifier> clazz = _authVerifier.getClass();
+
+		_authVerifierConfiguration.setAuthVerifierClassName(clazz.getName());
 	}
 
 	private void _setUpAuthVerifierRegistry() {
@@ -269,24 +266,12 @@ public class AuthVerifierPipelineTest {
 
 		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
 
-		Dictionary<String, Object> propertyMap = MapUtil.singletonDictionary(
-			"urls.includes", includeURLs);
-
 		ServiceRegistration<AuthVerifier> serviceRegistration =
 			bundleContext.registerService(
-				AuthVerifier.class, _authVerifier, propertyMap);
+				AuthVerifier.class, _authVerifier,
+				MapUtil.singletonDictionary("urls.includes", includeURLs));
 
 		try {
-			MockHttpServletRequest mockHttpServletRequest =
-				new MockHttpServletRequest(new MockServletContext());
-
-			mockHttpServletRequest.setRequestURI(requestURI);
-
-			AccessControlContext accessControlContext =
-				new AccessControlContext();
-
-			accessControlContext.setRequest(mockHttpServletRequest);
-
 			Properties properties = new Properties();
 
 			properties.put("urls.includes", includeURLs);
@@ -297,6 +282,16 @@ public class AuthVerifierPipelineTest {
 				new AuthVerifierPipeline(
 					Collections.singletonList(_authVerifierConfiguration),
 					contextPath);
+
+			AccessControlContext accessControlContext =
+				new AccessControlContext();
+
+			MockHttpServletRequest mockHttpServletRequest =
+				new MockHttpServletRequest(new MockServletContext());
+
+			mockHttpServletRequest.setRequestURI(requestURI);
+
+			accessControlContext.setRequest(mockHttpServletRequest);
 
 			return authVerifierPipeline.verifyRequest(accessControlContext);
 		}
