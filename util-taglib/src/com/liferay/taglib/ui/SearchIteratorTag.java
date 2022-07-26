@@ -117,6 +117,8 @@ public class SearchIteratorTag<R> extends SearchPaginatorTag<R> {
 			"liferay-ui:search-iterator:fixedHeader",
 			String.valueOf(_fixedHeader));
 		httpServletRequest.setAttribute(
+			"liferay-ui:search-iterator:markupView", _markupView);
+		httpServletRequest.setAttribute(
 			"liferay-ui:search-iterator:paginate", String.valueOf(_paginate));
 		httpServletRequest.setAttribute(
 			"liferay-ui:search-iterator:resultRowSplitter", _resultRowSplitter);
