@@ -17,6 +17,8 @@ package com.liferay.taglib.ui;
 import com.liferay.portal.kernel.dao.search.ResultRowSplitter;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.Objects;
+
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -90,7 +92,9 @@ public class SearchIteratorTag<R> extends SearchPaginatorTag<R> {
 
 	@Override
 	protected String getPage() {
-		if (Validator.isNull(_markupView)) {
+		if (Validator.isNull(_markupView) ||
+			Objects.equals(_markupView, "deprecated")) {
+
 			return "/html/taglib/ui/search_iterator/deprecated/list.jsp";
 		}
 
