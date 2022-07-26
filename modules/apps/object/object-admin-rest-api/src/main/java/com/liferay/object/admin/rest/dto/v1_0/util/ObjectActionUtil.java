@@ -101,7 +101,7 @@ public class ObjectActionUtil {
 					(List<Object>)JSONFactoryUtil.looseDeserialize(
 						entry.getValue()),
 					item -> JSONFactoryUtil.createJSONObject(
-						new HashMap<>((LinkedHashMap)item)));
+						(LinkedHashMap)item));
 			}
 			else if (Objects.equals(entry.getKey(), "relatedObjectEntries")) {
 				value = GetterUtil.getBoolean(value);
