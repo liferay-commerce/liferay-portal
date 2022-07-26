@@ -26,7 +26,7 @@ public class UpgradeVirtualHost extends UpgradeProcess {
 		if (!hasColumn("VirtualHost", "defaultVirtualHost")) {
 			alterTableAddColumn("VirtualHost", "defaultVirtualHost", "BOOLEAN");
 
-			runSQL("update VirtualHost set defaultVirtualHost = [$TRUE$];");
+			runSQL("update VirtualHost set defaultVirtualHost = [$TRUE$]");
 		}
 
 		alterTableAddColumn("VirtualHost", "languageId", "VARCHAR(75) null");
