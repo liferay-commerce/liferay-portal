@@ -794,6 +794,19 @@ public class ObjectDefinitionLocalServiceImpl
 			dbColumnName = pkObjectFieldName;
 		}
 
+		if (!objectDefinition.isSystem()) {
+			_objectFieldLocalService.addSystemObjectField(
+				userId, objectDefinition.getObjectDefinitionId(),
+				ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+				ObjectEntryTable.INSTANCE.externalReferenceCode.getName(),
+				ObjectEntryTable.INSTANCE.getTableName(),
+				ObjectFieldConstants.DB_TYPE_STRING, null, false, false, null,
+				LocalizedMapUtil.getLocalizedMap(
+					LanguageUtil.get(
+						LocaleUtil.getDefault(), "external-reference-code")),
+				"externalReferenceCode", false, false);
+		}
+
 		_objectFieldLocalService.addSystemObjectField(
 			userId, objectDefinition.getObjectDefinitionId(),
 			ObjectFieldConstants.BUSINESS_TYPE_LONG_INTEGER, dbColumnName,
