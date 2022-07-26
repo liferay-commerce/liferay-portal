@@ -113,6 +113,17 @@ class DynamicInlineScroll extends PortletBase {
 	}
 
 	/**
+	 * Returns the numerical value of the parameter passed in.
+	 *
+	 * @param {string|!Object} val The string or object to be converted to a number.
+	 * @protected
+	 * @return {number} The parameter's numberical value.
+	 */
+	getNumber_(val) {
+		return Number(val ?? 0);
+	}
+
+	/**
 	 * Handles the click event of the dynmaically added list item, preventing
 	 * the default behavior and submitting the search container form.
 	 *
@@ -148,12 +159,13 @@ class DynamicInlineScroll extends PortletBase {
 	onScroll_(event) {
 		const {cur, initialPages, pages} = this;
 		const {target} = event;
-
-		let pageIndex = Number(target.dataset.pageIndex);
-		let pageIndexMax = Number(target.dataset.maxIndex);
+		let pageIndex = this.getNumber_(target.dataset.pageIndex);
+		let pageIndexMax = this.getNumber_(target.dataset.maxIndex);
 
 		if (pageIndex === 0) {
-			const pageIndexCurrent = Number(target.dataset.currentIndex);
+			const pageIndexCurrent = this.getNumber_(
+				target.dataset.currentIndex
+			);
 
 			if (pageIndexCurrent === 0) {
 				pageIndex = initialPages;
