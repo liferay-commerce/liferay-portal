@@ -182,7 +182,7 @@ public class VerifyResourcePermissions extends VerifyProcess {
 
 					int count = atomicInteger.getAndIncrement();
 
-					if (_log.isInfoEnabled() && ((count % 100) == 0)) {
+					if (_log.isInfoEnabled() && ((count % 10000) == 0)) {
 						_log.info(
 							StringBundler.concat(
 								"Processed ", count, " of ", total,
