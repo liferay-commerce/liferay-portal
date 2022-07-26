@@ -103,7 +103,7 @@ public class SearchHitDocumentTranslatorImpl
 	private Field _getField(
 		String fieldName, Map<String, DocumentField> documentFields) {
 
-		if (_invalidFieldName(fieldName)) {
+		if (_isInvalidFieldName(fieldName)) {
 			return null;
 		}
 
@@ -121,7 +121,7 @@ public class SearchHitDocumentTranslatorImpl
 	private Field _getFieldFromSource(
 		String fieldName, Map<String, Object> documentSourceMap) {
 
-		if (_invalidFieldName(fieldName)) {
+		if (_isInvalidFieldName(fieldName)) {
 			return null;
 		}
 
@@ -136,7 +136,7 @@ public class SearchHitDocumentTranslatorImpl
 		return translate(fieldName, value);
 	}
 
-	private boolean _invalidFieldName(String fieldName) {
+	private boolean _isInvalidFieldName(String fieldName) {
 		if (fieldName.endsWith(".geopoint") ||
 			fieldName.equals("_ignored")) {
 
