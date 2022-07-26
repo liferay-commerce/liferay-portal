@@ -685,13 +685,13 @@ public class CommerceSiteInitializer {
 
 	private void _addOrUpdateCommercePriceEntry(
 			CPDefinition cpDefinition, CPInstance cpInstance,
-			ServiceContext serviceContext, String typePrice)
+			ServiceContext serviceContext, String type)
 		throws Exception {
 
 		CommercePriceList commercePriceList =
 			_commercePriceListLocalService.
 				getCatalogBaseCommercePriceListByType(
-					cpInstance.getGroupId(), typePrice);
+					cpInstance.getGroupId(), type);
 
 		CommercePriceEntry commercePriceEntry =
 			_commercePriceEntryLocalService.fetchCommercePriceEntry(
