@@ -84,9 +84,7 @@ public class MultiMatchQueryTest extends BaseIndexingTestCase {
 	@Test
 	public void testMultiMatchQueryBoolPrefix() {
 		_indexUserDocuments("delta", "omega", "userName1");
-
 		_indexUserDocuments("omega", "delta", "userName2");
-
 		_indexUserDocuments("omega", "alpha", "userName3");
 
 		MultiMatchQuery multiMatchQuery = queries.multiMatch(
@@ -102,7 +100,6 @@ public class MultiMatchQueryTest extends BaseIndexingTestCase {
 	@Test
 	public void testMultiMatchQueryCrossField() {
 		_indexUserDocuments("bravo", "alpha", "userName1");
-
 		_indexUserDocuments("omega", "beta", "userName2");
 
 		MultiMatchQuery multiMatchQuery = queries.multiMatch(
@@ -119,11 +116,8 @@ public class MultiMatchQueryTest extends BaseIndexingTestCase {
 	@Test
 	public void testMultiMatchQueryDefault() {
 		_indexUserDocuments("alpha", "omega", "userName1");
-
 		_indexUserDocuments("bravo", "alpha", "userName2");
-
 		_indexUserDocuments("alpha", "zeta", "userName3");
-
 		_indexUserDocuments("omega", "beta", "userName4");
 
 		MultiMatchQuery multiMatchQuery = queries.multiMatch(
@@ -138,7 +132,6 @@ public class MultiMatchQueryTest extends BaseIndexingTestCase {
 	@Test
 	public void testMultiMatchQueryPhrasePrefix() {
 		_indexUserDocuments("bro charlie", "iota", "userName1");
-
 		_indexUserDocuments("omega", "beta", "userName2");
 
 		MultiMatchQuery multiMatchQuery = queries.multiMatch(
@@ -154,9 +147,7 @@ public class MultiMatchQueryTest extends BaseIndexingTestCase {
 	@Test
 	public void testMultiMatchQueryTieBreaker() {
 		_indexUserDocuments("delta", "omega", "userName1");
-
 		_indexUserDocuments("omega", "delta", "userName2");
-
 		_indexUserDocuments("omega", "beta", "userName3");
 
 		MultiMatchQuery multiMatchQuery = queries.multiMatch(
@@ -218,9 +209,9 @@ public class MultiMatchQueryTest extends BaseIndexingTestCase {
 		Document document = DocumentFixture.newDocument(
 			getCompanyId(), getGroupId(), getEntryClassName());
 
+		document.addKeyword(Field.USER_NAME, userName);
 		document.addKeyword("firstName", firstName);
 		document.addKeyword("lastName", lastName);
-		document.addKeyword(Field.USER_NAME, userName);
 
 		return document;
 	}
