@@ -190,7 +190,7 @@ public class EntityExtensionTest {
 		try (PrintWriter printWriter = new PrintWriter(
 				new OutputStreamWriter(outputStream, "UTF-8"), true)) {
 
-			printWriter.append("{ \"groupId\": " + _group.getGroupId() + " }");
+			printWriter.append("{\"groupId\": " + _group.getGroupId() + "}");
 
 			printWriter.flush();
 		}
