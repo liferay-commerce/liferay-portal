@@ -19,7 +19,6 @@ import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.LoggingTimer;
-import com.liferay.portal.kernel.util.StringBundler;
 
 /**
  * @author Raymond Augé
@@ -62,33 +61,36 @@ public class UpgradeSchema extends UpgradeProcess {
 	}
 
 	private void _upgradeSchemaDefault() throws Exception {
-		String sql = StringBundler.concat(
-			"alter table JournalArticle add folderId LONG;",
+		String[] sqls = {
+			"alter table JournalArticle add folderId LONG",
+			"alter table JournalArticle add treePath STRING null",
 			//
-			"update JournalArticle set folderId = 0, treePath = '/';",
+			"update JournalArticle set folderId = 0, treePath = '/'",
 			//
-			"alter table User_ add ldapServerId LONG;",
+			"alter table User_ add ldapServerId LONG",
 			//
-			"update User_ set ldapServerId = -1;");
+			"update User_ set ldapServerId = -1"
+		};
 
-		runSQL(sql);
+		runSQL(sqls);
 	}
 
 	private void _upgradeSchemaPostgreSQL() throws Exception {
-		String sql = StringBundler.concat(
-			"alter table JournalArticle add folderId LONG default 0;",
+		String[] sqls = {
+			"alter table JournalArticle add folderId LONG default 0",
 			//
-			"alter table JournalArticle alter column folderId drop default;",
+			"alter table JournalArticle alter column folderId drop default",
 			//
-			"alter table JournalArticle add treePath STRING default '/';",
+			"alter table JournalArticle add treePath STRING default '/'",
 			//
-			"alter table JournalArticle alter column treePath drop default;",
+			"alter table JournalArticle alter column treePath drop default",
 			//
-			"alter table User_ add ldapServerId LONG default -1;",
+			"alter table User_ add ldapServerId LONG default -1",
 			//
-			"alter table User_ alter column ldapServerId drop default;");
+			"alter table User_ alter column ldapServerId drop default"
+		};
 
-		runSQL(sql);
+		runSQL(sqls);
 	}
 
 }

@@ -27,7 +27,10 @@ public class UpgradeMVCCVersion
 			"ExportImportConfiguration", "LayoutFriendlyURL",
 			"PortalPreferenceValue", "PortletPreferenceValue",
 			"RecentLayoutBranch", "RecentLayoutRevision",
-			"RecentLayoutSetBranch", "RegionLocalization", "SystemEvent",
+			"RecentLayoutSetBranch", "RegionLocalization", "SocialActivity",
+			"SocialActivityAchievement", "SocialActivityCounter",
+			"SocialActivityLimit", "SocialActivitySet", "SocialActivitySetting",
+			"SocialRelation", "SocialRequest", "SystemEvent",
 			"UserNotificationDelivery"
 		};
 	}
