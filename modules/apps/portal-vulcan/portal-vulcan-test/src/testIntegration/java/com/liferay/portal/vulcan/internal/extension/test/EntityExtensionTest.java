@@ -139,9 +139,13 @@ public class EntityExtensionTest {
 		int users = UserLocalServiceUtil.getUsersCount();
 
 		try (LogCapture logCapture1 = LoggerTestUtil.configureLog4JLogger(
-				_CLASS_NAME_EXCEPTION_MAPPER, LoggerTestUtil.ERROR);
+				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
+					"WebApplicationExceptionMapper",
+				LoggerTestUtil.ERROR);
 			LogCapture logCapture2 = LoggerTestUtil.configureLog4JLogger(
-				_CLASS_NAME_RESPONSE_FILTER, LoggerTestUtil.ERROR)) {
+				"com.liferay.portal.vulcan.internal.jaxrs.container.response." +
+					"filter.EntityExtensionContainerResponseFilter",
+				LoggerTestUtil.ERROR)) {
 
 			Assert.assertEquals(
 				500,
@@ -193,14 +197,6 @@ public class EntityExtensionTest {
 
 		return httpURLConnection.getResponseCode();
 	}
-
-	private static final String _CLASS_NAME_EXCEPTION_MAPPER =
-		"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
-			"WebApplicationExceptionMapper";
-
-	private static final String _CLASS_NAME_RESPONSE_FILTER =
-		"com.liferay.portal.vulcan.internal.jaxrs.container.response.filter." +
-			"EntityExtensionContainerResponseFilter";
 
 	private BundleContext _bundleContext;
 
