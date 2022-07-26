@@ -392,6 +392,23 @@ public class ObjectFieldLocalServiceImpl
 
 	@Override
 	public List<ObjectField> getObjectFields(
+		long objectDefinitionId, boolean system) {
+
+		List<ObjectField> objectFields = objectFieldPersistence.findByODI_S(
+			objectDefinitionId, system);
+
+		for (ObjectField objectField : objectFields) {
+			objectField.setObjectFieldSettings(
+				_objectFieldSettingLocalService.
+					getObjectFieldObjectFieldSettings(
+						objectField.getObjectFieldId()));
+		}
+
+		return objectFields;
+	}
+
+	@Override
+	public List<ObjectField> getObjectFields(
 		long objectDefinitionId, String dbTableName) {
 
 		List<ObjectField> objectFields = objectFieldPersistence.findByODI_DTN(
