@@ -109,9 +109,7 @@ public class SearchHitDocumentTranslatorImpl
 
 		DocumentField documentField = documentFields.get(fieldName);
 
-		if (documentFields.containsKey(
-				fieldName.concat(".geopoint"))) {
-
+		if (documentFields.containsKey(fieldName.concat(".geopoint"))) {
 			return _translateGeoPoint(documentField);
 		}
 
@@ -127,9 +125,7 @@ public class SearchHitDocumentTranslatorImpl
 
 		Object value = documentSourceMap.get(fieldName);
 
-		if (documentSourceMap.containsKey(
-				fieldName.concat(".geopoint"))) {
-
+		if (documentSourceMap.containsKey(fieldName.concat(".geopoint"))) {
 			return _translateGeoPoint(fieldName, value);
 		}
 
@@ -137,9 +133,7 @@ public class SearchHitDocumentTranslatorImpl
 	}
 
 	private boolean _isInvalidFieldName(String fieldName) {
-		if (fieldName.endsWith(".geopoint") ||
-			fieldName.equals("_ignored")) {
-
+		if (fieldName.endsWith(".geopoint") || fieldName.equals("_ignored")) {
 			return true;
 		}
 
