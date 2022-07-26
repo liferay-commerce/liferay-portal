@@ -181,8 +181,8 @@ public class UpdateFormItemConfigMVCActionCommand extends BaseMVCActionCommand {
 			return Collections.emptyList();
 		}
 
-		Collection<String> missingInputTypes = new TreeSet<>();
 		List<FragmentEntryLink> addedFragmentEntryLinks = new ArrayList<>();
+		Collection<String> missingInputTypes = new TreeSet<>();
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			httpServletRequest);
 
