@@ -2974,7 +2974,7 @@ definition {
 			locator1 = "Blueprints#BLUEPRINTS_CLAUSE_CONTRIBUTOR_ON_OFF_TOGGLE");
 
 		Uncheck.uncheckToggleSwitch(
-			contributorClass = "AssetEntryModelPreFilterContributor",
+			contributorClass = "AssetCategoryIdsQueryPreFilterContributor",
 			locator1 = "Blueprints#BLUEPRINTS_CLAUSE_CONTRIBUTOR_ON_OFF_TOGGLE");
 
 		Button.click(button = "Filter");
@@ -2990,7 +2990,7 @@ definition {
 			locator1 = "Blueprints#BLUEPRINTS_CLAUSE_CONTRIBUTOR_ITEM");
 
 		AssertElementPresent(
-			contributorClass = "AssetEntryModelPreFilterContributor",
+			contributorClass = "AssetCategoryIdsQueryPreFilterContributor",
 			locator1 = "Blueprints#BLUEPRINTS_CLAUSE_CONTRIBUTOR_ITEM");
 
 		AssertElementNotPresent(locator1 = "Blueprints#BLUEPRINTS_CLAUSE_CONTRIBUTOR_TOGGLE_ENABLED");
@@ -3098,7 +3098,7 @@ definition {
 			locator1 = "Blueprints#BLUEPRINTS_CLAUSE_CONTRIBUTOR_ITEM");
 
 		AssertElementNotPresent(
-			contributorClass = "AssetEntryModelPreFilterContributor",
+			contributorClass = "AssetCategoryIdsQueryPreFilterContributor",
 			locator1 = "Blueprints#BLUEPRINTS_CLAUSE_CONTRIBUTOR_ITEM");
 
 		Button.click(button = "Clear");
