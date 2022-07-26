@@ -58,9 +58,9 @@ public class EntityExtensionContainerResponseFilterTest {
 		EntityExtensionThreadLocal.setExtendedProperties(null);
 
 		ReflectionTestUtil.setFieldValue(
-			_entityExtensionContainerResponseFilter, "_providers", _providers);
-		ReflectionTestUtil.setFieldValue(
 			_entityExtensionContainerResponseFilter, "_company", _company);
+		ReflectionTestUtil.setFieldValue(
+			_entityExtensionContainerResponseFilter, "_providers", _providers);
 	}
 
 	@Test
