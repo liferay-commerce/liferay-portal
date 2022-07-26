@@ -36,12 +36,13 @@ public class KBCommentUpgradeProcess extends UpgradeProcess {
 
 		runSQL(
 			"update KBComment set userRating = " +
-				KBCommentConstants.USER_RATING_LIKE + " where helpful = TRUE");
+				KBCommentConstants.USER_RATING_LIKE +
+					" where helpful = [$TRUE$]");
 
 		runSQL(
 			"update KBComment set userRating = " +
 				KBCommentConstants.USER_RATING_DISLIKE +
-					" where helpful = FALSE");
+					" where helpful = [$FALSE$]");
 
 		alterTableDropColumn("KBComment", "helpful");
 	}

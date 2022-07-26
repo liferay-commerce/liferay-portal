@@ -26,7 +26,7 @@ public class AppUpgradeProcess extends UpgradeProcess {
 		if (!hasColumn("Marketplace_App", "required")) {
 			alterTableAddColumn("Marketplace_App", "required", "BOOLEAN");
 
-			runSQL("update Marketplace_App set required = FALSE");
+			runSQL("update Marketplace_App set required = [$FALSE$]");
 		}
 	}
 

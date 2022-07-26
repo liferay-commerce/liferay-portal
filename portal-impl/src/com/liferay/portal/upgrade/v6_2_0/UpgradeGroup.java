@@ -50,7 +50,7 @@ public class UpgradeGroup extends UpgradeProcess {
 	protected void upgradeSite() throws Exception {
 		try (LoggingTimer loggingTimer = new LoggingTimer()) {
 			runSQL(
-				"update Group_ set site = TRUE where classNameId = " +
+				"update Group_ set site = [$TRUE$] where classNameId = " +
 					_CLASS_NAME_ID);
 		}
 	}
