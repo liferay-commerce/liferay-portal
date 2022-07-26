@@ -121,12 +121,12 @@ public class EntityExtensionTest {
 				ExtensionProvider.class, new TestExtensionProvider(false),
 				null));
 
-		int users = UserLocalServiceUtil.getUsersCount();
+		int usersCount = UserLocalServiceUtil.getUsersCount();
 
 		Assert.assertEquals(
 			200, _getResponseCode("http://localhost:8080/o/test-vulcan/test"));
 
-		Assert.assertEquals(users + 1, UserLocalServiceUtil.getUsersCount());
+		Assert.assertEquals(usersCount + 1, UserLocalServiceUtil.getUsersCount());
 	}
 
 	@Test
@@ -136,7 +136,7 @@ public class EntityExtensionTest {
 				ExtensionProvider.class, new TestExtensionProvider(true),
 				null));
 
-		int users = UserLocalServiceUtil.getUsersCount();
+		int usersCount = UserLocalServiceUtil.getUsersCount();
 
 		try (LogCapture logCapture1 = LoggerTestUtil.configureLog4JLogger(
 				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
@@ -152,7 +152,7 @@ public class EntityExtensionTest {
 				_getResponseCode("http://localhost:8080/o/test-vulcan/test"));
 		}
 
-		Assert.assertEquals(users, UserLocalServiceUtil.getUsersCount());
+		Assert.assertEquals(usersCount, UserLocalServiceUtil.getUsersCount());
 	}
 
 	public static class TestApplication extends Application {
