@@ -174,14 +174,12 @@ public class EntityExtensionTest {
 		HttpURLConnection httpURLConnection =
 			(HttpURLConnection)URLConnectionUtil.createURLConnection(urlString);
 
+		httpURLConnection.setDoOutput(true);
 		httpURLConnection.setRequestMethod(HttpMethod.POST);
-
 		httpURLConnection.setRequestProperty(
 			HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
 		httpURLConnection.setRequestProperty(
 			HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
-
-		httpURLConnection.setDoOutput(true);
 
 		OutputStream outputStream = httpURLConnection.getOutputStream();
 
