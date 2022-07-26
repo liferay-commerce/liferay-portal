@@ -387,6 +387,7 @@ definition {
 
 	@priority = "5"
 	test StagingDemoLocalLive4 {
+		property name.skip.portal.instance = "StagingUsecaseWithRoles#StagingDemoLocalLive4";
 		property testray.component.names = "Training";
 
 		JSONLayout.addPublicLayout(
@@ -590,6 +591,8 @@ definition {
 
 	@priority = "4"
 	test StagingLocalLiveWorkflow {
+		property name.skip.portal.instance = "StagingUsecaseWithRoles#StagingLocalLiveWorkflow";
+
 		JSONStaging.enableLocalStaging(
 			branchingPrivate = "true",
 			branchingPublic = "true",
@@ -845,6 +848,7 @@ definition {
 
 	@priority = "5"
 	test StagingPublishPage {
+		property name.skip.portal.instance = "StagingUsecaseWithRoles#StagingPublishPage";
 		property testray.component.names = "Training";
 
 		JSONLayout.addPublicLayout(
@@ -917,6 +921,8 @@ definition {
 	@description = "This is a use case for LPS-88004."
 	@priority = "3"
 	test UpdateAndDeleteWebContentCommentOnLiveSite {
+		property name.skip.portal.instance = "StagingUsecaseWithRoles#UpdateAndDeleteWebContentCommentOnLiveSite";
+
 		JSONStaging.enableLocalStaging(groupName = "Site Name");
 
 		WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name-staging");
