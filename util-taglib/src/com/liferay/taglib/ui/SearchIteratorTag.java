@@ -32,7 +32,7 @@ public class SearchIteratorTag<R> extends SearchPaginatorTag<R> {
 
 	@Override
 	public String getMarkupView() {
-		return null;
+		return _markupView;
 	}
 
 	public ResultRowSplitter getResultRowSplitter() {
@@ -61,6 +61,7 @@ public class SearchIteratorTag<R> extends SearchPaginatorTag<R> {
 
 	@Override
 	public void setMarkupView(String markupView) {
+		_markupView = markupView;
 	}
 
 	public void setPaginate(boolean paginate) {
@@ -81,6 +82,7 @@ public class SearchIteratorTag<R> extends SearchPaginatorTag<R> {
 
 		_displayStyle = DEFAULT_DISPLAY_STYLE;
 		_fixedHeader = false;
+		_markupView = null;
 		_paginate = true;
 		_resultRowSplitter = null;
 		_searchResultCssClass = null;
@@ -88,6 +90,10 @@ public class SearchIteratorTag<R> extends SearchPaginatorTag<R> {
 
 	@Override
 	protected String getPage() {
+		if (Validator.isNull(_markupView)) {
+			return "/html/taglib/ui/search_iterator/deprecated/list.jsp";
+		}
+
 		String displayStyle = _displayStyle;
 
 		if (Validator.isNull(displayStyle)) {
@@ -117,6 +123,7 @@ public class SearchIteratorTag<R> extends SearchPaginatorTag<R> {
 
 	private String _displayStyle = DEFAULT_DISPLAY_STYLE;
 	private boolean _fixedHeader;
+	private String _markupView;
 	private boolean _paginate = true;
 	private ResultRowSplitter _resultRowSplitter;
 	private String _searchResultCssClass;
