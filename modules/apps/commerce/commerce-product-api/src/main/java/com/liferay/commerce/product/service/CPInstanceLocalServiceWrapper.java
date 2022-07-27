@@ -393,6 +393,13 @@ public class CPInstanceLocalServiceWrapper
 		return _cpInstanceLocalService.deleteCPInstance(cpInstance);
 	}
 
+	@Override
+	public CPInstance deleteCPInstance(CPInstance cpInstance, boolean makeCopy)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpInstanceLocalService.deleteCPInstance(cpInstance, makeCopy);
+	}
+
 	/**
 	 * Deletes the cp instance with the primary key from the database. Also notifies the appropriate model listeners.
 	 *

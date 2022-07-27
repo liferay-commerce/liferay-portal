@@ -212,7 +212,7 @@ public class CPInstanceServiceImpl extends CPInstanceServiceBaseImpl {
 		_checkCommerceCatalogByCPDefinitionId(
 			cpInstance.getCPDefinitionId(), ActionKeys.UPDATE);
 
-		cpInstanceLocalService.deleteCPInstance(cpInstance);
+		cpInstanceLocalService.deleteCPInstance(cpInstance, true);
 	}
 
 	@Override
