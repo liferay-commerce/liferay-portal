@@ -994,7 +994,7 @@ public class ServicePreAction extends Action {
 
 					if (originalPlid == plid) {
 						String message =
-							"User pages cannot be accessed via p_l_id";
+							"User layouts cannot be accessed via p_l_id";
 
 						if (_log.isWarnEnabled()) {
 							_log.warn(message);
