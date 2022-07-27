@@ -961,7 +961,7 @@ public class CPDefinitionLocalServiceImpl
 
 		cpDefinitionSpecificationOptionValueLocalService.
 			deleteCPDefinitionSpecificationOptionValues(
-				cpDefinition.getCPDefinitionId());
+				cpDefinition.getCPDefinitionId(), false);
 
 		// Commerce product instances
 
