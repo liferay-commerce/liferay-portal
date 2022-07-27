@@ -119,13 +119,14 @@ public class OpenAPIResourceImpl implements OpenAPIResource {
 
 		OpenAPI openAPI = openApiContext.read();
 
-		OpenAPISchemaFilter schemaFilter = _getOpenAPISchemaFilter(
-			_getBasePath(uriInfo), _extensionProviderRegistry, resourceClasses);
+		OpenAPISchemaFilter mergedOpenAPISchemaFilter =
+			_mergeOpenAPISchemaFilters(
+				openAPISchemaFilter,
+				_getOpenAPISchemaFilter(
+					_getBasePath(uriInfo), _extensionProviderRegistry,
+					resourceClasses));
 
-		schemaFilter = _mergeOpenAPISchemaFilters(
-			openAPISchemaFilter, schemaFilter);
-
-		if (schemaFilter != null) {
+		if (mergedOpenAPISchemaFilter != null) {
 			SpecFilter specFilter = new SpecFilter();
 
 			Map<String, List<String>> queryParameters = null;
@@ -135,8 +136,8 @@ public class OpenAPIResourceImpl implements OpenAPIResource {
 			}
 
 			openAPI = specFilter.filter(
-				openAPI, _toOpenAPISpecFilter(schemaFilter), queryParameters,
-				null, null);
+				openAPI, _toOpenAPISpecFilter(mergedOpenAPISchemaFilter),
+				queryParameters, null, null);
 		}
 
 		if (openAPI == null) {
@@ -331,7 +332,7 @@ public class OpenAPIResourceImpl implements OpenAPIResource {
 
 		long companyId = CompanyThreadLocal.getCompanyId();
 
-		Map<String, List<PropertyDefinition>> propertyDefinitionMap =
+		Map<String, List<PropertyDefinition>> propertyDefinitionsMap =
 			new HashMap<>();
 
 		for (String className : classNames) {
@@ -340,18 +341,15 @@ public class OpenAPIResourceImpl implements OpenAPIResource {
 					className, companyId, extensionProviderRegistry);
 
 			if (ListUtil.isNotEmpty(propertyDefinitions)) {
-				propertyDefinitionMap.put(className, propertyDefinitions);
+				propertyDefinitionsMap.put(className, propertyDefinitions);
 			}
 		}
 
-		OpenAPISchemaFilter openAPISchemaFilter = null;
-
-		if (MapUtil.isNotEmpty(propertyDefinitionMap)) {
-			openAPISchemaFilter = _getOpenAPISchemaFilter(
-				basePath, propertyDefinitionMap);
+		if (MapUtil.isNotEmpty(propertyDefinitionsMap)) {
+			return _getOpenAPISchemaFilter(basePath, propertyDefinitionsMap);
 		}
 
-		return openAPISchemaFilter;
+		return null;
 	}
 
 	private OpenAPISchemaFilter _getOpenAPISchemaFilter(
@@ -395,21 +393,25 @@ public class OpenAPIResourceImpl implements OpenAPIResource {
 			return openAPISchemaFilter1;
 		}
 
-		return new OpenAPISchemaFilter() {
-			{
-				setApplicationPath(openAPISchemaFilter1.getApplicationPath());
+		OpenAPISchemaFilter mergedOpenAPISchemaFilter =
+			new OpenAPISchemaFilter();
 
-				getDTOProperties().addAll(
-					openAPISchemaFilter1.getDTOProperties());
-				getDTOProperties().addAll(
-					openAPISchemaFilter2.getDTOProperties());
+		mergedOpenAPISchemaFilter.setApplicationPath(
+			openAPISchemaFilter1.getApplicationPath());
 
-				getSchemaMappings().putAll(
-					openAPISchemaFilter1.getSchemaMappings());
-				getSchemaMappings().putAll(
-					openAPISchemaFilter2.getSchemaMappings());
-			}
-		};
+		List<DTOProperty> dtoProperties =
+			mergedOpenAPISchemaFilter.getDTOProperties();
+
+		dtoProperties.addAll(openAPISchemaFilter1.getDTOProperties());
+		dtoProperties.addAll(openAPISchemaFilter2.getDTOProperties());
+
+		Map<String, String> schemaMappings =
+			mergedOpenAPISchemaFilter.getSchemaMappings();
+
+		schemaMappings.putAll(openAPISchemaFilter1.getSchemaMappings());
+		schemaMappings.putAll(openAPISchemaFilter2.getSchemaMappings());
+
+		return mergedOpenAPISchemaFilter;
 	}
 
 	private OpenAPISpecFilter _toOpenAPISpecFilter(
