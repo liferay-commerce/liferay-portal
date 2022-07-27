@@ -21,18 +21,17 @@ import com.liferay.portal.kernel.servlet.ServletContextUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.SetUtil;
-import com.liferay.portal.kernel.util.comparator.PortletNameComparator;
 import com.liferay.portal.model.impl.PortletAppImpl;
 import com.liferay.portal.model.impl.PortletImpl;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.util.PortalImpl;
 import com.liferay.portlet.PortletResourceAccessor;
+import com.liferay.portlet.PortletTreeSet;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 import javax.servlet.ServletContext;
 
@@ -82,12 +81,12 @@ public class ComboServletStaticURLGeneratorTest {
 		setPortletTimestamp("portlet2", 0);
 
 		List<String> urls1 = comboServletStaticURLGenerator.generate(
-			_toTreeSet(portlet1));
+			new PortletTreeSet(portlet1));
 
 		comboServletStaticURLGenerator.setVisitedURLs(new HashSet<String>());
 
 		List<String> urls2 = comboServletStaticURLGenerator.generate(
-			_toTreeSet(portlet2));
+			new PortletTreeSet(portlet2));
 
 		assertURLs(
 			urls1, _URL_PREFIX + "&%2Fcss%2Fmain.css&%2Fcss%2Fmore.css&t=0");
@@ -114,7 +113,7 @@ public class ComboServletStaticURLGeneratorTest {
 		setPortletTimestamp("/portlet", 0);
 
 		List<String> urls = comboServletStaticURLGenerator.generate(
-			_toTreeSet(portlet));
+			new PortletTreeSet(portlet));
 
 		assertURLs(
 			urls, "http://www.test.com/test2.css",
@@ -138,7 +137,7 @@ public class ComboServletStaticURLGeneratorTest {
 		setPortletTimestamp("portlet", 0);
 
 		List<String> urls = comboServletStaticURLGenerator.generate(
-			_toTreeSet(portlet));
+			new PortletTreeSet(portlet));
 
 		assertURLs(urls, _URL_PREFIX + "&%2Fcss%2Fmore.css&t=0");
 	}
@@ -164,12 +163,12 @@ public class ComboServletStaticURLGeneratorTest {
 		setPortletTimestamp("portlet2", 0);
 
 		List<String> urls1 = comboServletStaticURLGenerator.generate(
-			_toTreeSet(portlet1, portlet2));
+			new PortletTreeSet(portlet1, portlet2));
 
 		comboServletStaticURLGenerator.setVisitedURLs(new HashSet<String>());
 
 		List<String> urls2 = comboServletStaticURLGenerator.generate(
-			_toTreeSet(portlet2, portlet1));
+			new PortletTreeSet(portlet2, portlet1));
 
 		Assert.assertEquals(urls1, urls2);
 	}
@@ -192,7 +191,7 @@ public class ComboServletStaticURLGeneratorTest {
 
 		setPortletTimestamp("portlet", 0);
 
-		comboServletStaticURLGenerator.generate(_toTreeSet(portlet));
+		comboServletStaticURLGenerator.generate(new PortletTreeSet(portlet));
 
 		Assert.assertTrue(
 			visitedURLs.toString(), visitedURLs.contains("/css/main.css"));
@@ -213,7 +212,7 @@ public class ComboServletStaticURLGeneratorTest {
 		setPortletTimestamp("portlet", 10000);
 
 		List<String> urls = comboServletStaticURLGenerator.generate(
-			_toTreeSet(portlet));
+			new PortletTreeSet(portlet));
 
 		assertURLs(urls, _URL_PREFIX + "&%2Fcss%2Fmain.css&t=10000");
 	}
@@ -234,7 +233,7 @@ public class ComboServletStaticURLGeneratorTest {
 		setPortletTimestamp("portlet", 2000);
 
 		List<String> urls = comboServletStaticURLGenerator.generate(
-			_toTreeSet(portlet));
+			new PortletTreeSet(portlet));
 
 		assertURLs(urls, _URL_PREFIX + "&%2Fcss%2Fmain.css&t=20000");
 	}
@@ -255,7 +254,7 @@ public class ComboServletStaticURLGeneratorTest {
 		setPortletTimestamp("portlet", 0);
 
 		List<String> urls = comboServletStaticURLGenerator.generate(
-			_toTreeSet(portlet));
+			new PortletTreeSet(portlet));
 
 		assertURLs(
 			urls, "http://www.test.com/test.css",
@@ -278,7 +277,7 @@ public class ComboServletStaticURLGeneratorTest {
 		setPortletTimestamp("portlet", 0);
 
 		List<String> urls = comboServletStaticURLGenerator.generate(
-			_toTreeSet(portlet));
+			new PortletTreeSet(portlet));
 
 		assertURLs(urls, "http://www.test.com/test.css");
 	}
@@ -299,7 +298,7 @@ public class ComboServletStaticURLGeneratorTest {
 		setPortletTimestamp("portlet", 0);
 
 		List<String> urls = comboServletStaticURLGenerator.generate(
-			_toTreeSet(portlet));
+			new PortletTreeSet(portlet));
 
 		Assert.assertTrue(urls.toString(), urls.isEmpty());
 	}
@@ -320,7 +319,7 @@ public class ComboServletStaticURLGeneratorTest {
 		setPortletTimestamp("portlet", 0);
 
 		List<String> urls = comboServletStaticURLGenerator.generate(
-			_toTreeSet(portlet));
+			new PortletTreeSet(portlet));
 
 		assertURLs(
 			urls,
@@ -345,7 +344,7 @@ public class ComboServletStaticURLGeneratorTest {
 		setPortletTimestamp("portlet", 0);
 
 		List<String> urls = comboServletStaticURLGenerator.generate(
-			_toTreeSet(portlet));
+			new PortletTreeSet(portlet));
 
 		assertURLs(
 			urls, _URL_PREFIX + "&%2Fcss%2Fmain.css&%2Fcss%2Fmore.css&t=0");
@@ -395,16 +394,6 @@ public class ComboServletStaticURLGeneratorTest {
 
 		servletContext.setAttribute(
 			ServletContextUtil.class.getName() + "./", timestamp);
-	}
-
-	private TreeSet<Portlet> _toTreeSet(Portlet... portlets) {
-		TreeSet<Portlet> treeSet = new TreeSet<>(new PortletNameComparator());
-
-		for (Portlet portlet : portlets) {
-			treeSet.add(portlet);
-		}
-
-		return treeSet;
 	}
 
 	private static final String _URL_PREFIX = "/combo?minifier=";

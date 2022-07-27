@@ -21,11 +21,11 @@ import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portlet.PortletResourceAccessor;
+import com.liferay.portlet.PortletTreeSet;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.function.Predicate;
 
 /**
@@ -33,14 +33,14 @@ import java.util.function.Predicate;
  */
 public class ComboServletStaticURLGenerator {
 
-	public List<String> generate(TreeSet<Portlet> portlets) {
+	public List<String> generate(PortletTreeSet portletTreeSet) {
 		List<String> urls = new ArrayList<>();
 
 		StringBundler sb = new StringBundler();
 
 		long timestamp = _timestamp;
 
-		for (Portlet portlet : portlets) {
+		for (Portlet portlet : portletTreeSet) {
 			for (PortletResourceAccessor portletResourceAccessor :
 					_portletResourceAccessors) {
 
