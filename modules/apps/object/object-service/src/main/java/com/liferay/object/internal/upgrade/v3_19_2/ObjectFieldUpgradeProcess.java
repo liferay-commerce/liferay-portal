@@ -31,7 +31,7 @@ public class ObjectFieldUpgradeProcess extends UpgradeProcess {
 
 	@Override
 	protected void doUpgrade() throws Exception {
-		Map<String, String> dbTableNamePrimaryKeyMap = HashMapBuilder.put(
+		Map<String, String> map = HashMapBuilder.put(
 			"AccountEntry", "accountEntryId"
 		).put(
 			"Address", "addressId"
@@ -51,9 +51,7 @@ public class ObjectFieldUpgradeProcess extends UpgradeProcess {
 					"update ObjectField set dbColumnName = ? where name = " +
 						"'id' and dbTableName = ?")) {
 
-			for (Map.Entry<String, String> entry :
-					dbTableNamePrimaryKeyMap.entrySet()) {
-
+			for (Map.Entry<String, String> entry : map.entrySet()) {
 				preparedStatement.setString(1, entry.getValue());
 				preparedStatement.setString(2, entry.getKey());
 
