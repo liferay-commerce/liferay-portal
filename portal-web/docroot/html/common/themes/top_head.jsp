@@ -27,10 +27,10 @@
 <link class="lfr-css-file" data-senna-track="temporary" href="<%= HtmlUtil.escapeAttribute(themeDisplay.getClayCSSURL()) %>" id="liferayAUICSS" rel="stylesheet" type="text/css" />
 
 <%
-PortletTreeSet portlets = null;
+PortletTreeSet portletTreeSet = null;
 
 if (layoutTypePortlet != null) {
-	portlets = new PortletTreeSet(layoutTypePortlet.getAllPortlets());
+	portletTreeSet = new PortletTreeSet(layoutTypePortlet.getAllPortlets());
 }
 
 if (layout != null) {
@@ -46,26 +46,26 @@ if (layout != null) {
 				continue;
 			}
 
-			portlets.add(portlet);
+			portletTreeSet.add(portlet);
 		}
 	}
 	else if ((layout.isTypeEmbedded() || layout.isTypePortlet()) && (themeDisplay.isStateMaximized() || themeDisplay.isStatePopUp() || (layout.isSystem() && Objects.equals(layout.getFriendlyURL(), PropsValues.CONTROL_PANEL_LAYOUT_FRIENDLY_URL)))) {
 		if (Validator.isNotNull(ppid)) {
 			Portlet portlet = PortletLocalServiceUtil.getPortletById(company.getCompanyId(), ppid);
 
-			if ((portlet != null) && !portlets.contains(portlet)) {
-				portlets.add(portlet);
+			if ((portlet != null) && !portletTreeSet.contains(portlet)) {
+				portletTreeSet.add(portlet);
 			}
 		}
 	}
 	else if (layout.isTypeControlPanel() || layout.isTypePanel()) {
-		portlets = new PortletTreeSet(layout.getEmbeddedPortlets());
+		portletTreeSet = new PortletTreeSet(layout.getEmbeddedPortlets());
 
 		if (Validator.isNotNull(ppid)) {
 			Portlet portlet = PortletLocalServiceUtil.getPortletById(company.getCompanyId(), ppid);
 
-			if ((portlet != null) && !portlets.contains(portlet)) {
-				portlets.add(portlet);
+			if ((portlet != null) && !portletTreeSet.contains(portlet)) {
+				portletTreeSet.add(portlet);
 			}
 		}
 	}
@@ -75,12 +75,12 @@ if (layout != null) {
 	if (Validator.isNotNull(portletResource)) {
 		Portlet portlet = PortletLocalServiceUtil.getPortletById(company.getCompanyId(), portletResource);
 
-		if ((portlet != null) && !portlets.contains(portlet)) {
-			portlets.add(portlet);
+		if ((portlet != null) && !portletTreeSet.contains(portlet)) {
+			portletTreeSet.add(portlet);
 		}
 	}
 
-	Iterator<Portlet> portletsIterator = portlets.iterator();
+	Iterator<Portlet> portletsIterator = portletTreeSet.iterator();
 
 	LayoutTypeAccessPolicy layoutTypeAccessPolicy = LayoutTypeAccessPolicyTracker.getLayoutTypeAccessPolicy(layout);
 
@@ -95,7 +95,7 @@ if (layout != null) {
 		}
 	}
 
-	request.setAttribute(WebKeys.LAYOUT_PORTLETS, portlets);
+	request.setAttribute(WebKeys.LAYOUT_PORTLETS, portletTreeSet);
 }
 %>
 
@@ -147,7 +147,7 @@ com.liferay.petra.string.StringBundler pageTopSB = OutputTag.getDataSB(request, 
 <%
 boolean portletHubRequired = false;
 
-for (Portlet portlet : portlets) {
+for (Portlet portlet : portletTreeSet) {
 	for (PortletDependency portletDependency : portlet.getPortletDependencies()) {
 		if (Objects.equals(portletDependency.getName(), "PortletHub") && Objects.equals(portletDependency.getScope(), "javax.portlet")) {
 			portletHubRequired = true;
@@ -186,11 +186,11 @@ for (Portlet portlet : portlets) {
 
 <%-- User Inputted Portlet CSS --%>
 
-<c:if test="<%= portlets != null %>">
+<c:if test="<%= portletTreeSet != null %>">
 	<style data-senna-track="temporary" type="text/css">
 
 		<%
-		for (Portlet portlet : portlets) {
+		for (Portlet portlet : portletTreeSet) {
 			PortletPreferences portletSetup = themeDisplay.getStrictLayoutPortletSetup(layout, portlet.getPortletId());
 
 			String portletSetupCss = portletSetup.getValue("portletSetupCss", StringPool.BLANK);

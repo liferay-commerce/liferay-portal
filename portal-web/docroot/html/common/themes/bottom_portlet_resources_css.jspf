@@ -14,7 +14,7 @@
  */
 --%>
 
-<c:if test="<%= (portlets != null) && !portlets.isEmpty() %>">
+<c:if test="<%= (portletTreeSet != null) && !portletTreeSet.isEmpty() %>">
 
 	<%
 	PortletResourceAccessor[] portletResourceAccessors = {PortletResourceAccessor.FOOTER_PORTAL_CSS, PortletResourceAccessor.FOOTER_PORTLET_CSS};

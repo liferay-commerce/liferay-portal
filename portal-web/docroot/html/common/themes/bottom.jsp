@@ -1,4 +1,4 @@
-<%--
+s<%--
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
@@ -19,7 +19,7 @@
 <liferay-util:dynamic-include key="/html/common/themes/bottom.jsp#pre" />
 
 <%
-PortletTreeSet portlets = (PortletTreeSet)request.getAttribute(WebKeys.LAYOUT_PORTLETS);
+PortletTreeSet portletTreeSet = (PortletTreeSet)request.getAttribute(WebKeys.LAYOUT_PORTLETS);
 %>
 
 <%-- Portlet CSS References --%>
