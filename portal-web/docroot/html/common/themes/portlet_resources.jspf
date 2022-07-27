@@ -46,8 +46,8 @@ List<String> urls = new ArrayList<String>();
 		portletResourceStaticURLGenerator.setRequest(request);
 		portletResourceStaticURLGenerator.setVisitedURLs(portletResourceStaticURLs);
 
-		for (Portlet curPortlet : portletTreeSet) {
-			urls.addAll(portletResourceStaticURLGenerator.generate(curPortlet, portletResourceAccessors));
+		for (Portlet portlet : portletTreeSet) {
+			urls.addAll(portletResourceStaticURLGenerator.generate(portlet, portletResourceAccessors));
 		}
 	}
 	%>
