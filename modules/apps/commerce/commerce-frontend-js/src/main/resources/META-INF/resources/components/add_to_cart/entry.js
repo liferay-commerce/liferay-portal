@@ -15,8 +15,6 @@
 import launcher from '../../utilities/launcher';
 import AddToCart from './AddToCart';
 
-import './add_to_cart.scss';
-
 export default function entry(...data) {
 	return launcher(AddToCart, ...data);
 }

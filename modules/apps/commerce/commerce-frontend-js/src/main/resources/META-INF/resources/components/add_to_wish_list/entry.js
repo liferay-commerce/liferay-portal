@@ -15,8 +15,6 @@
 import launcher from '../../utilities/launcher';
 import AddToWishList from './AddToWishList';
 
-import './add_to_wish_list.scss';
-
 export default function entry(...data) {
 	return launcher(AddToWishList, ...data);
 }

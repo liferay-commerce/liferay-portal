@@ -15,8 +15,6 @@
 import launcher from '../../utilities/launcher';
 import AccountSelector from './AccountSelector';
 
-import './account_selector.scss';
-
 export default function entry(...data) {
 	return launcher(AccountSelector, ...data);
 }

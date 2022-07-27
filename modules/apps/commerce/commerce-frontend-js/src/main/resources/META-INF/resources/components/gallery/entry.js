@@ -15,8 +15,6 @@
 import launcher from '../../utilities/launcher';
 import Example from './Gallery';
 
-import './gallery.scss';
-
 export default function entry(...data) {
 	return launcher(Example, ...data);
 }

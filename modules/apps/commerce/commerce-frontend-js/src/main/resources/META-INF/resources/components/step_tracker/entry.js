@@ -15,8 +15,6 @@
 import launcher from '../../utilities/launcher';
 import StepTracker from './StepTracker';
 
-import './step_tracker.scss';
-
 export default function entry(...data) {
 	return launcher(StepTracker, ...data);
 }
