@@ -123,7 +123,12 @@ public class CalendarLocalServiceImpl extends CalendarLocalServiceBaseImpl {
 
 		updateDefaultCalendar(calendar);
 
-		_addCalendarNotificationTemplates(calendar, serviceContext);
+		// Calendar notification templates
+
+		_addCalendarNotificationTemplate(
+			calendar, NotificationTemplateType.INVITE, serviceContext);
+		_addCalendarNotificationTemplate(
+			calendar, NotificationTemplateType.REMINDER, serviceContext);
 
 		return calendar;
 	}
@@ -426,20 +431,7 @@ public class CalendarLocalServiceImpl extends CalendarLocalServiceBaseImpl {
 		Calendar calendar, NotificationTemplateType notificationTemplateType,
 		ServiceContext serviceContext) {
 
-		String fromAddress = PrefsPropsUtil.getString(
-			PropsKeys.ADMIN_EMAIL_FROM_ADDRESS);
-		String fromName = PrefsPropsUtil.getString(
-			PropsKeys.ADMIN_EMAIL_FROM_NAME);
-
 		try {
-			String subject = NotificationUtil.getDefaultTemplate(
-				NotificationType.EMAIL, notificationTemplateType,
-				NotificationField.SUBJECT);
-
-			String body = NotificationUtil.getDefaultTemplate(
-				NotificationType.EMAIL, notificationTemplateType,
-				NotificationField.BODY);
-
 			_calendarNotificationTemplateLocalService.
 				addCalendarNotificationTemplate(
 					calendar.getUserId(), calendar.getCalendarId(),
@@ -449,33 +441,27 @@ public class CalendarLocalServiceImpl extends CalendarLocalServiceBaseImpl {
 					).put(
 						CalendarNotificationTemplateConstants.
 							PROPERTY_FROM_ADDRESS,
-						fromAddress
+						PrefsPropsUtil.getString(
+							PropsKeys.ADMIN_EMAIL_FROM_ADDRESS)
 					).put(
 						CalendarNotificationTemplateConstants.
 							PROPERTY_FROM_NAME,
-						fromName
+						PrefsPropsUtil.getString(
+							PropsKeys.ADMIN_EMAIL_FROM_NAME)
 					).buildString(),
-					notificationTemplateType, subject, body, serviceContext);
+					notificationTemplateType,
+					NotificationUtil.getDefaultTemplate(
+						NotificationType.EMAIL, notificationTemplateType,
+						NotificationField.SUBJECT),
+					NotificationUtil.getDefaultTemplate(
+						NotificationType.EMAIL, notificationTemplateType,
+						NotificationField.BODY),
+					serviceContext);
 		}
 		catch (Exception exception) {
 			if (_log.isWarnEnabled()) {
 				_log.warn(exception);
 			}
-		}
-	}
-
-	private void _addCalendarNotificationTemplates(
-		Calendar calendar, ServiceContext serviceContext) {
-
-		NotificationTemplateType[] notificationTemplateTypes = {
-			NotificationTemplateType.INVITE, NotificationTemplateType.REMINDER
-		};
-
-		for (NotificationTemplateType notificationTemplateType :
-				notificationTemplateTypes) {
-
-			_addCalendarNotificationTemplate(
-				calendar, notificationTemplateType, serviceContext);
 		}
 	}
 
