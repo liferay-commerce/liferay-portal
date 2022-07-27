@@ -27,10 +27,12 @@
 <link class="lfr-css-file" data-senna-track="temporary" href="<%= HtmlUtil.escapeAttribute(themeDisplay.getClayCSSURL()) %>" id="liferayAUICSS" rel="stylesheet" type="text/css" />
 
 <%
-Set<Portlet> portlets = null;
+TreeSet<Portlet> portlets = null;
 
 if (layoutTypePortlet != null) {
-	portlets = new HashSet<>(layoutTypePortlet.getAllPortlets());
+	portlets = new TreeSet<>(new PortletNameComparator());
+
+	portlets.addAll(layoutTypePortlet.getAllPortlets());
 }
 
 if (layout != null) {
@@ -59,7 +61,7 @@ if (layout != null) {
 		}
 	}
 	else if (layout.isTypeControlPanel() || layout.isTypePanel()) {
-		portlets = new HashSet<>();
+		portlets = new TreeSet<>(new PortletNameComparator());
 
 		portlets.addAll(layout.getEmbeddedPortlets());
 

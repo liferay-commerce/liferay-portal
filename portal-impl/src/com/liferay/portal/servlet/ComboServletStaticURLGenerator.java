@@ -19,14 +19,13 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.comparator.PortletNameComparator;
 import com.liferay.portlet.PortletResourceAccessor;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.function.Predicate;
 
 /**
@@ -34,16 +33,12 @@ import java.util.function.Predicate;
  */
 public class ComboServletStaticURLGenerator {
 
-	public List<String> generate(List<Portlet> portlets) {
+	public List<String> generate(TreeSet<Portlet> portlets) {
 		List<String> urls = new ArrayList<>();
 
 		StringBundler sb = new StringBundler();
 
 		long timestamp = _timestamp;
-
-		portlets = ListUtil.copy(portlets);
-
-		portlets = ListUtil.sort(portlets, _portletNameComparator);
 
 		for (Portlet portlet : portlets) {
 			for (PortletResourceAccessor portletResourceAccessor :
@@ -124,9 +119,6 @@ public class ComboServletStaticURLGenerator {
 	public void setVisitedURLs(Set<String> visitedURLs) {
 		_visitedURLs = visitedURLs;
 	}
-
-	private static final PortletNameComparator _portletNameComparator =
-		new PortletNameComparator();
 
 	private PortletResourceAccessor[] _portletResourceAccessors;
 	private Predicate<String> _predicate = s -> true;
