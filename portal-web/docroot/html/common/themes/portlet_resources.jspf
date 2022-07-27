@@ -18,7 +18,7 @@
 List<String> urls = new ArrayList<String>();
 %>
 
-<c:if test="<%= (portletTreeSet != null) && !portletTreeSet.isEmpty() %>">
+<c:if test="<%= !SetUtil.isEmpty(portletTreeSet) %>">
 
 	<%
 	Set<String> portletResourceStaticURLs = (Set<String>)request.getAttribute(WebKeys.PORTLET_RESOURCE_STATIC_URLS);
