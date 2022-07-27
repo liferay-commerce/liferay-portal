@@ -89,9 +89,9 @@ definition {
 		}
 
 		task ("And the Sales Manager edit the fields on the page") {
-			CommercePaymentTerms.gotoEntryMenuItem(
-				menuItem = "Edit",
-				termsAndConditionName = "Terms and Condition Entry");
+			CommerceEntry.clickEntryDropdownMenuItem(
+				entryName = "Terms and Condition Entry",
+				menuItem = "Edit");
 
 			CommercePaymentTerms.editTermsAndCondition(
 				termsAndConditionName = "Edited Terms and Condition Entry",
