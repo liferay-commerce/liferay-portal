@@ -2877,12 +2877,10 @@ public class BundleSiteInitializer implements SiteInitializer {
 			JSONObject propertiesJSONObject = jsonObject.getJSONObject(
 				"properties");
 
-			Map<String, Object> propertiesMap = propertiesJSONObject.toMap();
-
 			_configurationProvider.saveGroupConfiguration(
 				serviceContext.getScopeGroupId(), jsonObject.getString("pid"),
 				HashMapDictionaryBuilder.<String, Object>create(
-					propertiesMap
+					propertiesJSONObject.toMap()
 				).build());
 		}
 	}
