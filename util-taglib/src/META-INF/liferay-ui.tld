@@ -444,8 +444,8 @@
 			<type>boolean</type>
 		</attribute>
 		<attribute>
-			<name>markupView</name>
 			<description>Deprecated as of 7.4.0, with no direct replacement.</description>
+			<name>markupView</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
@@ -690,8 +690,8 @@
 			<type>boolean</type>
 		</attribute>
 		<attribute>
-			<name>markupView</name>
 			<description>Deprecated as of 7.4.0, with no direct replacement.</description>
+			<name>markupView</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
@@ -1562,8 +1562,8 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>markupView</name>
 			<description>Deprecated as of 7.4.0, with no direct replacement.</description>
+			<name>markupView</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
@@ -2034,8 +2034,8 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>markupView</name>
 			<description>Deprecated as of 7.4.0, with no direct replacement.</description>
+			<name>markupView</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
@@ -2121,8 +2121,8 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>markupView</name>
 			<description>Deprecated as of 7.4.0, with no direct replacement.</description>
+			<name>markupView</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
@@ -2184,8 +2184,8 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>markupView</name>
 			<description>Deprecated as of 7.4.0, with no direct replacement.</description>
+			<name>markupView</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
@@ -3071,8 +3071,8 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>markupView</name>
 			<description>Deprecated as of 7.4.0, with no direct replacement.</description>
+			<name>markupView</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
@@ -3119,8 +3119,8 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>markupView</name>
 			<description>Deprecated as of 7.4.0, with no direct replacement.</description>
+			<name>markupView</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
@@ -3168,8 +3168,8 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>markupView</name>
 			<description>Deprecated as of 7.4.0, with no direct replacement.</description>
+			<name>markupView</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
@@ -3398,8 +3398,8 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>markupView</name>
 			<description>Deprecated as of 7.4.0, with no direct replacement.</description>
+			<name>markupView</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
