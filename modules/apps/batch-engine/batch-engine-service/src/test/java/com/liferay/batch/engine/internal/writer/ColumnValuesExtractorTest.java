@@ -54,7 +54,6 @@ public class ColumnValuesExtractorTest {
 			arrayContainer);
 
 		Assert.assertEquals(objects.toString(), 3, objects.size());
-
 		Assert.assertEquals(Integer.valueOf(5), objects.get(1));
 
 		CSVRecord csvRecord = _parseCSV((String)objects.get(0));
