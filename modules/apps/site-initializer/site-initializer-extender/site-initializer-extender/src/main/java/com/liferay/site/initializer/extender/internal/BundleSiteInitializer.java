@@ -697,14 +697,14 @@ public class BundleSiteInitializer implements SiteInitializer {
 	private Map<String, String> _addDDMStructures(ServiceContext serviceContext)
 		throws Exception {
 
-		Map<String, String> ddmStructuresEntryIdsStringUtilReplaceValues =
+		Map<String, String> ddmStructuresIdsStringUtilReplaceValues =
 			new HashMap<>();
 
 		Set<String> resourcePaths = _servletContext.getResourcePaths(
 			"/site-initializer/ddm-structures");
 
 		if (SetUtil.isEmpty(resourcePaths)) {
-			return ddmStructuresEntryIdsStringUtilReplaceValues;
+			return ddmStructuresIdsStringUtilReplaceValues;
 		}
 
 		for (String resourcePath : resourcePaths) {
@@ -719,12 +719,12 @@ public class BundleSiteInitializer implements SiteInitializer {
 				serviceContext.getScopeGroupId());
 
 		for (DDMStructure ddmStructure : ddmStructures) {
-			ddmStructuresEntryIdsStringUtilReplaceValues.put(
+			ddmStructuresIdsStringUtilReplaceValues.put(
 				"DDM_STRUCTURE_ID:" + ddmStructure.getStructureKey(),
 				String.valueOf(ddmStructure.getStructureId()));
 		}
 
-		return ddmStructuresEntryIdsStringUtilReplaceValues;
+		return ddmStructuresIdsStringUtilReplaceValues;
 	}
 
 	private void _addDDMTemplates(
