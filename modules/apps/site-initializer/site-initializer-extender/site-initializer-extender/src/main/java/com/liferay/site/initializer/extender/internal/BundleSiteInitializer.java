@@ -718,12 +718,10 @@ public class BundleSiteInitializer implements SiteInitializer {
 			_ddmStructureLocalService.getStructures(
 				serviceContext.getScopeGroupId());
 
-		if (ListUtil.isNotEmpty(ddmStructures)) {
-			for (DDMStructure ddmStructure : ddmStructures) {
-				ddmStructuresEntryIdsStringUtilReplaceValues.put(
-					"DDM_STRUCTURE_ENTRY_ID:" + ddmStructure.getStructureKey(),
-					String.valueOf(ddmStructure.getStructureId()));
-			}
+		for (DDMStructure ddmStructure : ddmStructures) {
+			ddmStructuresEntryIdsStringUtilReplaceValues.put(
+				"DDM_STRUCTURE_ENTRY_ID:" + ddmStructure.getStructureKey(),
+				String.valueOf(ddmStructure.getStructureId()));
 		}
 
 		return ddmStructuresEntryIdsStringUtilReplaceValues;
