@@ -114,7 +114,6 @@ public class ContainerLayoutStructureItemMapper
 						setHtmlProperties(
 							() -> _toHtmlProperties(
 								containerStyledLayoutStructureItem));
-
 						setName(containerStyledLayoutStructureItem::getName);
 					}
 				};
