@@ -238,6 +238,10 @@ public interface ObjectStateTransitionLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<ObjectStateTransition> getObjectStateFlowObjectStateTransitions(
+		long objectStateFlowId);
+
 	/**
 	 * Returns the object state transition with the primary key.
 	 *

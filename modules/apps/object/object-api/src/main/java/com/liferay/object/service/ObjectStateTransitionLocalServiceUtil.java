@@ -278,6 +278,13 @@ public class ObjectStateTransitionLocalServiceUtil {
 		return getService().getIndexableActionableDynamicQuery();
 	}
 
+	public static List<ObjectStateTransition>
+		getObjectStateFlowObjectStateTransitions(long objectStateFlowId) {
+
+		return getService().getObjectStateFlowObjectStateTransitions(
+			objectStateFlowId);
+	}
+
 	/**
 	 * Returns the object state transition with the primary key.
 	 *
