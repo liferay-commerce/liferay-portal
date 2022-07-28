@@ -84,7 +84,7 @@ public class CountrySearchContainerFactory {
 		String keywords = ParamUtil.getString(
 			liferayPortletRequest, "keywords");
 
-		BaseModelSearchResult<Country> baseModelSearchResult;
+		BaseModelSearchResult<Country> baseModelSearchResult = null;
 
 		if (Validator.isNotNull(keywords)) {
 			baseModelSearchResult = CountryServiceUtil.searchCountries(
