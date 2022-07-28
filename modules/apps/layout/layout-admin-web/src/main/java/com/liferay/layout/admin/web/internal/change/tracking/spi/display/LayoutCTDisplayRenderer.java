@@ -129,19 +129,13 @@ public class LayoutCTDisplayRenderer extends BaseCTDisplayRenderer<Layout> {
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
-		StringBundler sb = new StringBundler(9);
-
-		sb.append("<div style=\"pointer-events: none;\">");
-		sb.append("<iframe frameborder=\"0\" onload=\"this.style.height=");
-		sb.append("(this.contentWindow.document.body.scrollHeight+20)");
-		sb.append("+'px';\" src=\"");
-		sb.append(_portal.getLayoutFullURL(layout, themeDisplay));
-		sb.append("?p_l_mode=preview&previewCTCollectionId=");
-		sb.append(layout.getCtCollectionId());
-		sb.append("\" width=\"100%\"></iframe>");
-		sb.append("</div>");
-
-		return sb.toString();
+		return StringBundler.concat(
+			"<div style=\"pointer-events: none;\"><iframe frameborder=\"0\" ",
+			"onload=\"this.style.height = (this.contentWindow.document.body.",
+			"scrollHeight+20) + 'px';\" src=\"",
+			_portal.getLayoutFullURL(layout, themeDisplay),
+			"?p_l_mode=preview&previewCTCollectionId=",
+			layout.getCtCollectionId(), "\" width=\"100%\"></iframe></div>");
 	}
 
 	@Override
