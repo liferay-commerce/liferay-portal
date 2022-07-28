@@ -697,11 +697,11 @@ public class BundleSiteInitializer implements SiteInitializer {
 	private Map<String, String> _addDDMStructures(ServiceContext serviceContext)
 		throws Exception {
 
-		Set<String> resourcePaths = _servletContext.getResourcePaths(
-			"/site-initializer/ddm-structures");
-
 		Map<String, String> ddmStructuresEntryIdsStringUtilReplaceValues =
 			new HashMap<>();
+
+		Set<String> resourcePaths = _servletContext.getResourcePaths(
+			"/site-initializer/ddm-structures");
 
 		if (SetUtil.isEmpty(resourcePaths)) {
 			return ddmStructuresEntryIdsStringUtilReplaceValues;
@@ -1572,7 +1572,6 @@ public class BundleSiteInitializer implements SiteInitializer {
 		json = _replace(
 			json, "[$", "$]", assetListEntryIdsStringUtilReplaceValues,
 			clientExtensionEntryIdsStringUtilReplaceValues,
-			_classNameIdStringUtilReplaceValues,
 			ddmStructureEntryIdsStringUtilReplaceValues,
 			documentsStringUtilReplaceValues,
 			objectDefinitionIdsAndObjectEntryIdsStringUtilReplaceValues,
@@ -1820,11 +1819,11 @@ public class BundleSiteInitializer implements SiteInitializer {
 			ServiceContext serviceContext)
 		throws Exception {
 
-		Set<String> resourcePaths = _servletContext.getResourcePaths(
-			"/site-initializer/list-type-definitions");
-
 		Map<String, String> listTypeDefinitionIdsStringUtilReplaceValues =
 			new HashMap<>();
+
+		Set<String> resourcePaths = _servletContext.getResourcePaths(
+			"/site-initializer/list-type-definitions");
 
 		if (SetUtil.isEmpty(resourcePaths)) {
 			return listTypeDefinitionIdsStringUtilReplaceValues;
