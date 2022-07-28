@@ -2862,9 +2862,8 @@ public class BundleSiteInitializer implements SiteInitializer {
 	private void _addSiteSettings(ServiceContext serviceContext)
 		throws Exception {
 
-		String resourcePath = "site-initializer/site-settings.json";
-
-		String json = SiteInitializerUtil.read(resourcePath, _servletContext);
+		String json = SiteInitializerUtil.read(
+			"site-initializer/site-settings.json", _servletContext);
 
 		if (json == null) {
 			return;
