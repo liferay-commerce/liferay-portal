@@ -720,7 +720,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 
 		for (DDMStructure ddmStructure : ddmStructures) {
 			ddmStructuresEntryIdsStringUtilReplaceValues.put(
-				"DDM_STRUCTURE_ENTRY_ID:" + ddmStructure.getStructureKey(),
+				"DDM_STRUCTURE_ID:" + ddmStructure.getStructureKey(),
 				String.valueOf(ddmStructure.getStructureId()));
 		}
 
