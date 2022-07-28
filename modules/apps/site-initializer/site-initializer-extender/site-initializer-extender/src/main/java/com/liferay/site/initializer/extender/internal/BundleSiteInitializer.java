@@ -2871,10 +2871,6 @@ public class BundleSiteInitializer implements SiteInitializer {
 
 		JSONArray jsonArray = _jsonFactory.createJSONArray(json);
 
-		if (JSONUtil.isEmpty(jsonArray)) {
-			return;
-		}
-
 		for (int i = 0; i < jsonArray.length(); i++) {
 			JSONObject jsonObject = jsonArray.getJSONObject(i);
 
