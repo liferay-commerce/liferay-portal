@@ -27,11 +27,13 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageListener;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.rule.SynchronousDestinationTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.test.rule.Inject;
@@ -100,20 +102,19 @@ public class TalendDispatchTaskExecutorTest {
 
 	@Test
 	public void testExecuteLiferayOutputBlog() throws Exception {
+		Group group = GroupTestUtil.addGroup();
+
+		User user = UserTestUtil.addGroupAdminUser(group);
+
 		DispatchTrigger dispatchTrigger =
 			_dispatchTriggerLocalService.addDispatchTrigger(
 				null, TestPropsValues.getUserId(), "talend",
 				UnicodePropertiesBuilder.put(
-					"liferayUser", "test@liferay.com"
+					"liferayUser", user.getEmailAddress()
 				).put(
-					"liferayUserPassword", "test"
+					"liferayUserPassword", user.getPasswordUnencrypted()
 				).put(
-					"siteId",
-					() -> {
-						Group testGroup = GroupTestUtil.addGroup();
-
-						return String.valueOf(testGroup.getGroupId());
-					}
+					"siteId", group.getGroupId()
 				).build(),
 				"TalendDispatchTrigger", false);
 
