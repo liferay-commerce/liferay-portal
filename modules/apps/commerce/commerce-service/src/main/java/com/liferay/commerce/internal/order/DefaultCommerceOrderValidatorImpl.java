@@ -95,14 +95,6 @@ public class DefaultCommerceOrderValidatorImpl
 					new Object[] {minOrderQuantity}));
 		}
 
-		if ((maxOrderQuantity > 0) && (quantity > maxOrderQuantity)) {
-			return new CommerceOrderValidatorResult(
-				false,
-				_getLocalizedMessage(
-					locale, "the-maximum-quantity-is-x",
-					new Object[] {maxOrderQuantity}));
-		}
-
 		if ((allowedOrderQuantities.length > 0) &&
 			!ArrayUtil.contains(
 				allowedOrderQuantities, String.valueOf(quantity))) {
@@ -153,16 +145,6 @@ public class DefaultCommerceOrderValidatorImpl
 
 		int maxOrderQuantity = cpDefinitionInventoryEngine.getMaxOrderQuantity(
 			cpInstance);
-
-		if ((maxOrderQuantity > 0) &&
-			(commerceOrderItem.getQuantity() > maxOrderQuantity)) {
-
-			return new CommerceOrderValidatorResult(
-				commerceOrderItem.getCommerceOrderItemId(), false,
-				_getLocalizedMessage(
-					locale, "the-maximum-quantity-is-x",
-					new Object[] {maxOrderQuantity}));
-		}
 
 		String[] allowedOrderQuantities =
 			cpDefinitionInventoryEngine.getAllowedOrderQuantities(cpInstance);

@@ -69,15 +69,6 @@ public class AvailabilityCommerceOrderValidatorImpl
 					locale, "the-product-is-no-longer-available"));
 		}
 
-		if (!_cpAvailabilityChecker.isAvailable(
-				commerceOrder.getGroupId(), cpInstance, quantity)) {
-
-			return new CommerceOrderValidatorResult(
-				false,
-				_getLocalizedMessage(
-					locale, "the-specified-quantity-is-unavailable"));
-		}
-
 		return new CommerceOrderValidatorResult(true);
 	}
 
