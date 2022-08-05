@@ -1,3 +1,15 @@
+create unique index IX_379A7C4E on CChannelAccountEntryRel (accountEntryId, classNameId, classPK, commerceChannelId, ctCollectionId);
+create index IX_71AA3761 on CChannelAccountEntryRel (accountEntryId, classNameId, classPK, ctCollectionId);
+create index IX_4487FBD0 on CChannelAccountEntryRel (accountEntryId, classNameId, classPK, type_, ctCollectionId);
+create index IX_FABA3043 on CChannelAccountEntryRel (accountEntryId, commerceChannelId, ctCollectionId);
+create index IX_14DAA0AE on CChannelAccountEntryRel (accountEntryId, commerceChannelId, type_, ctCollectionId);
+create index IX_48A2C58C on CChannelAccountEntryRel (accountEntryId, ctCollectionId);
+create index IX_80463745 on CChannelAccountEntryRel (accountEntryId, type_, ctCollectionId);
+create index IX_E558B2AD on CChannelAccountEntryRel (classNameId, classPK, ctCollectionId);
+create index IX_F8827304 on CChannelAccountEntryRel (classNameId, classPK, type_, ctCollectionId);
+create index IX_52525877 on CChannelAccountEntryRel (commerceChannelId, ctCollectionId);
+create index IX_CB0295FA on CChannelAccountEntryRel (commerceChannelId, type_, ctCollectionId);
+
 create index IX_8DE7A0B5 on CPAttachmentFileEntry (classNameId, classPK, cdnURL[$COLUMN_LENGTH:4000$], ctCollectionId);
 create index IX_E53AD4BF on CPAttachmentFileEntry (classNameId, classPK, ctCollectionId);
 create index IX_68966943 on CPAttachmentFileEntry (classNameId, classPK, displayDate, status, ctCollectionId);
