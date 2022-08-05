@@ -31,11 +31,15 @@ import com.liferay.commerce.account.internal.upgrade.v4_0_0.CommerceAccountOrgan
 import com.liferay.commerce.account.internal.upgrade.v5_0_0.CommerceAccountUserRelUpgradeProcess;
 import com.liferay.commerce.account.internal.upgrade.v9_3_0.CommerceAccountRoleUpgradeProcess;
 import com.liferay.commerce.account.internal.upgrade.v9_4_0.AccountGroupUpgradeProcess;
+import com.liferay.commerce.account.internal.upgrade.v9_6_0.AccountEntryUpgradeProcess;
+import com.liferay.commerce.product.service.CommerceChannelAccountEntryRelLocalService;
+import com.liferay.commerce.term.service.CommerceTermEntryLocalService;
 import com.liferay.expando.kernel.service.ExpandoTableLocalService;
 import com.liferay.expando.kernel.service.ExpandoValueLocalService;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Release;
+import com.liferay.portal.kernel.service.AddressLocalService;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -167,6 +171,13 @@ public class CommerceAccountServiceUpgradeStepRegistrator
 					_companyLocalService, _resourceActionLocalService,
 					_resourcePermissionLocalService, _roleLocalService));
 
+		registry.register(
+			"9.5.0", "9.6.0",
+			new AccountEntryUpgradeProcess(
+				_addressLocalService,
+				_commerceChannelAccountEntryRelLocalService,
+				_commerceTermEntryLocalService));
+
 		if (_log.isInfoEnabled()) {
 			_log.info("Commerce account upgrade step registrator finished");
 		}
@@ -195,7 +206,17 @@ public class CommerceAccountServiceUpgradeStepRegistrator
 	private AccountRoleLocalService _accountRoleLocalService;
 
 	@Reference
+	private AddressLocalService _addressLocalService;
+
+	@Reference
 	private ClassNameLocalService _classNameLocalService;
+
+	@Reference
+	private CommerceChannelAccountEntryRelLocalService
+		_commerceChannelAccountEntryRelLocalService;
+
+	@Reference
+	private CommerceTermEntryLocalService _commerceTermEntryLocalService;
 
 	@Reference
 	private CompanyLocalService _companyLocalService;

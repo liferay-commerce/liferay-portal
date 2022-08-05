@@ -44,6 +44,7 @@ import com.liferay.commerce.product.internal.upgrade.v2_3_0.CommerceChannelUpgra
 import com.liferay.commerce.product.internal.upgrade.v2_5_0.FriendlyURLEntryUpgradeProcess;
 import com.liferay.commerce.product.internal.upgrade.v3_1_0.CPTaxCategoryUpgradeProcess;
 import com.liferay.commerce.product.internal.upgrade.v3_8_0.CPMeasurementUnitUpgradeProcess;
+import com.liferay.commerce.product.internal.upgrade.v4_0_0.util.CommerceChannelAccountEntryRelTable;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -298,6 +299,9 @@ public class CommerceProductServiceUpgradeStepRegistrator
 				}
 
 			});
+
+		registry.register(
+			"3.9.1", "4.0.0", CommerceChannelAccountEntryRelTable.create());
 
 		if (_log.isInfoEnabled()) {
 			_log.info("Commerce product upgrade step registrator finished");
