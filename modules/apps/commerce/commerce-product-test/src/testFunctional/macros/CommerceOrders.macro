@@ -220,6 +220,7 @@ definition {
 
 			Button.clickSubmitButton();
 		}
+		Refresh();
 
 		Click(locator1 = "Button#PLUS");
 
@@ -231,15 +232,9 @@ definition {
 				locator1 = "Checkbox#ADD_SHIPMENT_ITEMS_CHECKBOX");
 		}
 
-		Button.click(button = "Submit");
-
-		Refresh();
-
-		SelectFrameTop();
+		Button.clickSubmitButton();
 
 		for (var productSku : list "${productSkuList}") {
-			WaitForPageLoad();
-
 			CommerceNavigator.gotoEntry(entryName = "${productSku}");
 
 			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");

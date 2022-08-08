@@ -1324,8 +1324,10 @@ definition {
 
 		WaitForPageLoad();
 
+		var sku = "default";
+
 		CommerceRelations.assignSingleRelationToProductsEntry(
-			entryName = "default",
+			entryName = "${sku}",
 			title = "Add SKUs");
 
 		AssertElementPresent(
@@ -2020,7 +2022,9 @@ definition {
 			locator1 = "TextInput#ANY",
 			value1 = "1");
 
-		Button.clickSave();
+		Click(
+			key_text = "Save",
+			locator1 = "Button#ANY");
 
 		WaitForElementNotPresent(locator1 = "Message#SUCCESS");
 
@@ -2046,12 +2050,12 @@ definition {
 
 		CommerceEntry.gotoMenuTab(menuTab = "Entries");
 
-		var sku = "MIN55861";
+		var sku = '''MIN55861''';
 
 		Type(
 			key_title = "Add SKUs",
 			locator1 = "CommerceEntry#ADD_RELATION_FIELD",
-			value1 = "'MIN55861'");
+			value1 = "${sku}");
 
 		Button.clickSelect();
 
