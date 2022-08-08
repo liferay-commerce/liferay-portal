@@ -435,7 +435,7 @@ public class DefaultCommerceCheckoutStepHttpHelper
 				commercePaymentMethodGroupRel.
 					getCommercePaymentMethodGroupRelId());
 
-		if (paymentCommerceTermEntries.isEmpty() &&
+		if (paymentCommerceTermEntries.isEmpty() ||
 			(commerceOrder.getPaymentCommerceTermEntryId() > 0)) {
 
 			return false;
