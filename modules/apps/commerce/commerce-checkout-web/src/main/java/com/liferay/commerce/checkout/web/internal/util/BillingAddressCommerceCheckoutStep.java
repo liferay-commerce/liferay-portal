@@ -15,6 +15,7 @@
 package com.liferay.commerce.checkout.web.internal.util;
 
 import com.liferay.account.model.AccountEntry;
+import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.service.AccountRoleLocalService;
 import com.liferay.commerce.account.model.CommerceAccount;
 import com.liferay.commerce.account.service.CommerceAccountLocalService;
@@ -34,6 +35,7 @@ import com.liferay.commerce.exception.CommerceOrderDefaultBillingAddressExceptio
 import com.liferay.commerce.exception.CommerceOrderShippingAddressException;
 import com.liferay.commerce.model.CommerceAddress;
 import com.liferay.commerce.model.CommerceOrder;
+import com.liferay.commerce.product.service.CommerceChannelAccountEntryRelLocalService;
 import com.liferay.commerce.service.CommerceAddressService;
 import com.liferay.commerce.service.CommerceOrderService;
 import com.liferay.commerce.util.BaseCommerceCheckoutStep;
@@ -118,7 +120,7 @@ public class BillingAddressCommerceCheckoutStep
 				}
 
 				List<CommerceAddress> accountBillingCommerceAddresses =
-					commerceAddressService.getBillingCommerceAddresses(
+					_commerceAddressService.getBillingCommerceAddresses(
 						commerceAccount.getCompanyId(),
 						AccountEntry.class.getName(),
 						commerceAccount.getCommerceAccountId());
@@ -130,7 +132,7 @@ public class BillingAddressCommerceCheckoutStep
 				CommerceAddress commerceAddress =
 					accountBillingCommerceAddresses.get(0);
 
-				commerceOrderService.updateBillingAddress(
+				_commerceOrderService.updateBillingAddress(
 					commerceOrder.getCommerceOrderId(),
 					commerceAddress.getCommerceAddressId());
 
@@ -141,7 +143,7 @@ public class BillingAddressCommerceCheckoutStep
 				(commerceAccount.getDefaultBillingAddressId() !=
 					commerceOrder.getBillingAddressId())) {
 
-				commerceOrderService.updateBillingAddress(
+				_commerceOrderService.updateBillingAddress(
 					commerceOrder.getCommerceOrderId(),
 					commerceAccount.getDefaultBillingAddressId());
 			}
@@ -166,10 +168,10 @@ public class BillingAddressCommerceCheckoutStep
 		try {
 			AddressCommerceCheckoutStepUtil addressCommerceCheckoutStepUtil =
 				new AddressCommerceCheckoutStepUtil(
-					commerceAccountLocalService,
+					_commerceAccountLocalService,
 					CommerceAddressConstants.ADDRESS_TYPE_BILLING,
-					commerceOrderService, commerceAddressService,
-					commerceOrderModelResourcePermission);
+					_commerceOrderService, _commerceAddressService,
+					_commerceOrderModelResourcePermission);
 
 			addressCommerceCheckoutStepUtil.updateCommerceOrderAddress(
 				actionRequest,
@@ -202,10 +204,11 @@ public class BillingAddressCommerceCheckoutStep
 		BillingAddressCheckoutStepDisplayContext
 			billingAddressCheckoutStepDisplayContext =
 				new BillingAddressCheckoutStepDisplayContext(
-					accountRoleLocalService,
+					_accountEntryLocalService, _accountRoleLocalService,
 					_accountEntryModelResourcePermission,
-					commerceAddressService, httpServletRequest,
-					_portletResourcePermission);
+					_commerceAddressService,
+					_commerceChannelAccountEntryRelLocalService,
+					httpServletRequest, _portletResourcePermission);
 
 		CommerceOrder commerceOrder =
 			billingAddressCheckoutStepDisplayContext.getCommerceOrder();
@@ -213,7 +216,7 @@ public class BillingAddressCommerceCheckoutStep
 		CommerceAccount commerceAccount = commerceOrder.getCommerceAccount();
 
 		List<CommerceAddress> accountBillingCommerceAddresses =
-			commerceAddressService.getBillingCommerceAddresses(
+			_commerceAddressService.getBillingCommerceAddresses(
 				commerceAccount.getCompanyId(), AccountEntry.class.getName(),
 				commerceAccount.getCommerceAccountId());
 
@@ -245,7 +248,7 @@ public class BillingAddressCommerceCheckoutStep
 				_commerceCheckoutStepHttpHelper.getOrderDetailURL(
 					httpServletRequest, commerceOrder));
 
-			jspRenderer.renderJSP(
+			_jspRenderer.renderJSP(
 				httpServletRequest, httpServletResponse, "/error.jsp");
 		}
 		else {
@@ -253,7 +256,7 @@ public class BillingAddressCommerceCheckoutStep
 				CommerceCheckoutWebKeys.COMMERCE_CHECKOUT_STEP_DISPLAY_CONTEXT,
 				billingAddressCheckoutStepDisplayContext);
 
-			jspRenderer.renderJSP(
+			_jspRenderer.renderJSP(
 				httpServletRequest, httpServletResponse,
 				"/checkout_step/address.jsp");
 		}
@@ -273,7 +276,7 @@ public class BillingAddressCommerceCheckoutStep
 				commerceOrder.getCommerceAccount();
 
 			List<CommerceAddress> accountBillingCommerceAddresses =
-				commerceAddressService.getBillingCommerceAddresses(
+				_commerceAddressService.getBillingCommerceAddresses(
 					commerceAccount.getCompanyId(),
 					AccountEntry.class.getName(),
 					commerceAccount.getCommerceAccountId());
@@ -300,27 +303,6 @@ public class BillingAddressCommerceCheckoutStep
 		return super.showControls(httpServletRequest, httpServletResponse);
 	}
 
-	@Reference
-	protected AccountRoleLocalService accountRoleLocalService;
-
-	@Reference
-	protected CommerceAccountLocalService commerceAccountLocalService;
-
-	@Reference
-	protected CommerceAddressService commerceAddressService;
-
-	@Reference(
-		target = "(model.class.name=com.liferay.commerce.model.CommerceOrder)"
-	)
-	protected ModelResourcePermission<CommerceOrder>
-		commerceOrderModelResourcePermission;
-
-	@Reference
-	protected CommerceOrderService commerceOrderService;
-
-	@Reference
-	protected JSPRenderer jspRenderer;
-
 	private PermissionChecker _getPermissionChecker(
 		HttpServletRequest httpServletRequest) {
 
@@ -342,6 +324,9 @@ public class BillingAddressCommerceCheckoutStep
 			CommerceOrderActionKeys.VIEW_BILLING_ADDRESS);
 	}
 
+	@Reference
+	private AccountEntryLocalService _accountEntryLocalService;
+
 	@Reference(
 		target = "(model.class.name=com.liferay.account.model.AccountEntry)"
 	)
@@ -349,7 +334,32 @@ public class BillingAddressCommerceCheckoutStep
 		_accountEntryModelResourcePermission;
 
 	@Reference
+	private AccountRoleLocalService _accountRoleLocalService;
+
+	@Reference
+	private CommerceAccountLocalService _commerceAccountLocalService;
+
+	@Reference
+	private CommerceAddressService _commerceAddressService;
+
+	@Reference
+	private CommerceChannelAccountEntryRelLocalService
+		_commerceChannelAccountEntryRelLocalService;
+
+	@Reference
 	private CommerceCheckoutStepHttpHelper _commerceCheckoutStepHttpHelper;
+
+	@Reference(
+		target = "(model.class.name=com.liferay.commerce.model.CommerceOrder)"
+	)
+	private ModelResourcePermission<CommerceOrder>
+		_commerceOrderModelResourcePermission;
+
+	@Reference
+	private CommerceOrderService _commerceOrderService;
+
+	@Reference
+	private JSPRenderer _jspRenderer;
 
 	@Reference
 	private Portal _portal;

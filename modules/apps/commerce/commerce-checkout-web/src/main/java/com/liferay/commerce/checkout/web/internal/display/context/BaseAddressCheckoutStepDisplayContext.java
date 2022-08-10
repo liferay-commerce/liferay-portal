@@ -15,6 +15,7 @@
 package com.liferay.commerce.checkout.web.internal.display.context;
 
 import com.liferay.account.model.AccountEntry;
+import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.service.AccountRoleLocalService;
 import com.liferay.commerce.account.constants.CommerceAccountConstants;
 import com.liferay.commerce.account.model.CommerceAccount;
@@ -22,6 +23,7 @@ import com.liferay.commerce.constants.CommerceCheckoutWebKeys;
 import com.liferay.commerce.constants.CommerceOrderActionKeys;
 import com.liferay.commerce.model.CommerceAddress;
 import com.liferay.commerce.model.CommerceOrder;
+import com.liferay.commerce.product.service.CommerceChannelAccountEntryRelLocalService;
 import com.liferay.commerce.service.CommerceAddressService;
 import com.liferay.commerce.util.comparator.CommerceAddressNameComparator;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -37,21 +39,28 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @author Andrea Di Giorgi
  * @author Luca Pellizzon
+ * @author Alessio Antonio Rendina
  */
 public abstract class BaseAddressCheckoutStepDisplayContext {
 
 	public BaseAddressCheckoutStepDisplayContext(
-		AccountRoleLocalService accountRoleLocalService,
+		AccountEntryLocalService accountEntryLocalService,
 		ModelResourcePermission<AccountEntry>
 			accountEntryModelResourcePermission,
+		AccountRoleLocalService accountRoleLocalService,
 		CommerceAddressService commerceAddressService,
+		CommerceChannelAccountEntryRelLocalService
+			commerceChannelAccountEntryRelLocalService,
 		HttpServletRequest httpServletRequest,
 		PortletResourcePermission portletResourcePermission) {
 
-		this.accountRoleLocalService = accountRoleLocalService;
+		this.accountEntryLocalService = accountEntryLocalService;
 		this.accountEntryModelResourcePermission =
 			accountEntryModelResourcePermission;
+		this.accountRoleLocalService = accountRoleLocalService;
 		this.commerceAddressService = commerceAddressService;
+		this.commerceChannelAccountEntryRelLocalService =
+			commerceChannelAccountEntryRelLocalService;
 		this.portletResourcePermission = portletResourcePermission;
 
 		_commerceOrder = (CommerceOrder)httpServletRequest.getAttribute(
@@ -79,7 +88,8 @@ public abstract class BaseAddressCheckoutStepDisplayContext {
 		return _commerceOrder;
 	}
 
-	public abstract long getDefaultCommerceAddressId() throws PortalException;
+	public abstract long getDefaultCommerceAddressId(long commerceChannelId)
+		throws PortalException;
 
 	public abstract String getParamName();
 
@@ -140,10 +150,13 @@ public abstract class BaseAddressCheckoutStepDisplayContext {
 		return false;
 	}
 
+	protected final AccountEntryLocalService accountEntryLocalService;
 	protected final ModelResourcePermission<AccountEntry>
 		accountEntryModelResourcePermission;
 	protected final AccountRoleLocalService accountRoleLocalService;
 	protected final CommerceAddressService commerceAddressService;
+	protected final CommerceChannelAccountEntryRelLocalService
+		commerceChannelAccountEntryRelLocalService;
 	protected PortletResourcePermission portletResourcePermission;
 
 	private final CommerceOrder _commerceOrder;
