@@ -950,12 +950,10 @@ public class CPDefinitionLocalServiceImpl
 
 		// Commerce product
 
-		int cpDefinitionsCount = cpDefinitionPersistence.countByC_S(
-			cpDefinition.getCProductId(), WorkflowConstants.STATUS_ANY);
+		int cpDefinitionsCount = cpDefinitionPersistence.countByCProductId(
+			cpDefinition.getCProductId());
 
-		if (!_isVersioningEnabled() ||
-			(_isVersioningEnabled() && (cpDefinitionsCount == 1))) {
-
+		if (cpDefinitionsCount == 1) {
 			cProductLocalService.deleteCProduct(cpDefinition.getCProductId());
 		}
 
@@ -963,7 +961,7 @@ public class CPDefinitionLocalServiceImpl
 
 		cpDefinitionSpecificationOptionValueLocalService.
 			deleteCPDefinitionSpecificationOptionValues(
-				cpDefinition.getCPDefinitionId());
+				cpDefinition.getCPDefinitionId(), false);
 
 		// Commerce product instances
 
