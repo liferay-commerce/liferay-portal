@@ -52,6 +52,7 @@ import org.junit.runner.RunWith;
  * @author Andrea Sbarra
  * @author Crescenzo Rega
  */
+@Ignore
 @RunWith(Arquillian.class)
 public class CartItemResourceTest extends BaseCartItemResourceTestCase {
 
