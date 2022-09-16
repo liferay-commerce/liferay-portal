@@ -1156,6 +1156,9 @@ public class ViewChangesDisplayContext {
 					continue;
 				}
 
+				Map<String, Object> modelAttributes =
+					model.getModelAttributes();
+
 				Date modifiedDate = ctEntry.getModifiedDate();
 
 				modelInfo._ctEntry = true;
@@ -1189,6 +1192,8 @@ public class ViewChangesDisplayContext {
 						model, modelClassNameId, typeNameCacheMap)
 				).put(
 					"userId", ctEntry.getUserId()
+				).put(
+					"workflowStatus", (Integer)modelAttributes.get("status")
 				);
 
 				if (model instanceof GroupedModel) {

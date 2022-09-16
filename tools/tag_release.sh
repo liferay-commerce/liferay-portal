@@ -1,6 +1,8 @@
 #!/bin/bash
 
 function delete_branch {
+	git checkout master
+
 	git br -D ${1}
 
 	git push origin :${1}
@@ -21,15 +23,6 @@ function main {
 	then
 		local hash=$(git rev-parse HEAD)
 		local release_info_version_trivial=$(get_property "release.info.version.trivial")
-
-		if [ ${branch} != "master" ]
-		then
-			release_info_version_trivial=$((${release_info_version_trivial} - 1))
-
-			git fetch -f origin release-7.4.13.${release_info_version_trivial}:release-7.4.13.${release_info_version_trivial}
-
-			hash=$(git rev-parse release-7.4.13.${release_info_version_trivial})
-		fi
 
 		push_tag 7.4.3.${release_info_version_trivial}-ga${release_info_version_trivial} ${hash}
 

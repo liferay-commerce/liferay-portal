@@ -268,8 +268,7 @@ public class CommerceSiteInitializer {
 			return null;
 		}
 
-		channel = channelResource.putChannelByExternalReferenceCode(
-			jsonObject.getString("externalReferenceCode"), channel);
+		channel = channelResource.postChannel(channel);
 
 		_addDefaultCPDisplayLayout(
 			channel,

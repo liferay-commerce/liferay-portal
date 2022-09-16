@@ -62,6 +62,13 @@ public class DXPCloudClientTestrayImporter {
 				_getTestCaseAttachmentsElement(testCaseResultElement));
 			testCaseElement.add(
 				_getTestCasePropertiesElement(testCaseResultElement));
+
+			Element testCaseFailureElement = _getTestCaseFailureElement(
+				testCaseResultElement);
+
+			if (testCaseFailureElement != null) {
+				testCaseElement.add(testCaseFailureElement);
+			}
 		}
 
 		TestrayBuild testrayBuild = _getTestrayBuild();
@@ -358,6 +365,28 @@ public class DXPCloudClientTestrayImporter {
 		return attachmentsElement;
 	}
 
+	private static Element _getTestCaseFailureElement(
+		Element testCaseResultElement) {
+
+		Element failureElement = testCaseResultElement.element("failure");
+
+		if (failureElement == null) {
+			return null;
+		}
+
+		String failureMessage = failureElement.attributeValue("message");
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(failureMessage)) {
+			return null;
+		}
+
+		Element testCaseFailureElement = Dom4JUtil.getNewElement("failure");
+
+		testCaseFailureElement.addAttribute("message", failureMessage);
+
+		return testCaseFailureElement;
+	}
+
 	private static Element _getTestCasePropertiesElement(
 		Element testCaseResultElement) {
 
@@ -444,7 +473,8 @@ public class DXPCloudClientTestrayImporter {
 			testrayProject.createTestrayProductVersion(_testrayProductVersion);
 
 		_testrayBuild = testrayRoutine.createTestrayBuild(
-			testrayProductVersion, _getTestrayBuildName());
+			testrayProductVersion, _getTestrayBuildName(),
+			new Date(_START_TIME), null, _testrayBuildSHA);
 
 		return _testrayBuild;
 	}
@@ -534,6 +564,12 @@ public class DXPCloudClientTestrayImporter {
 
 		if (!JenkinsResultsParserUtil.isNullOrEmpty(testrayBuildName)) {
 			_testrayBuildName = testrayBuildName;
+		}
+
+		String testrayBuildSHA = _getEnvVarValue("testrayBuildSHA");
+
+		if (!JenkinsResultsParserUtil.isNullOrEmpty(testrayBuildSHA)) {
+			_testrayBuildSHA = testrayBuildSHA;
 		}
 
 		String testrayCasePriority = _getEnvVarValue("testrayCasePriority");
@@ -651,6 +687,7 @@ public class DXPCloudClientTestrayImporter {
 	private static TestrayBuild _testrayBuild;
 	private static String _testrayBuildName =
 		"DXP Cloud Client Build - $(start.time)";
+	private static String _testrayBuildSHA;
 	private static Integer _testrayCasePriority = 1;
 	private static String _testrayComponentName = "DXP Cloud Client Component";
 	private static String _testrayProductVersion = "1.x";

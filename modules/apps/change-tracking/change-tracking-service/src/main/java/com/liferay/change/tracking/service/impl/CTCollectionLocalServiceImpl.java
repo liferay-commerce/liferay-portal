@@ -78,6 +78,7 @@ import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.change.tracking.CTService;
+import com.liferay.portal.kernel.service.persistence.change.tracking.CTPersistence;
 import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
@@ -87,6 +88,8 @@ import com.liferay.portal.search.model.uid.UIDFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -101,6 +104,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+
+import javax.sql.DataSource;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -732,6 +737,84 @@ public class CTCollectionLocalServiceImpl
 		}
 
 		return ctEntries;
+	}
+
+	@Override
+	public boolean hasUnapprovedChanges(long ctCollectionId)
+		throws SQLException {
+
+		Map<Long, CTPersistence<?>> ctPersistences = new HashMap<>();
+		Set<Long> modelClassNameIds = new HashSet<>();
+
+		for (CTEntry ctEntry :
+				_ctEntryLocalService.getCTCollectionCTEntries(ctCollectionId)) {
+
+			long modelClassNameId = ctEntry.getModelClassNameId();
+
+			if (ctPersistences.containsKey(modelClassNameId) ||
+				modelClassNameIds.contains(modelClassNameId)) {
+
+				continue;
+			}
+
+			CTService<?> ctService = _ctServiceRegistry.getCTService(
+				modelClassNameId);
+
+			if (ctService == null) {
+				throw new SystemException(
+					StringBundler.concat(
+						"Unable to check for unapproved changes for change ",
+						"tracking collection ", ctCollectionId,
+						" because the service for ", modelClassNameId,
+						" is missing"));
+			}
+
+			CTPersistence<?> ctPersistence = ctService.getCTPersistence();
+
+			Map<String, Integer> tableColumnsMap =
+				ctPersistence.getTableColumnsMap();
+
+			if (tableColumnsMap.containsKey("status") &&
+				tableColumnsMap.containsKey("statusByUserId")) {
+
+				ctPersistences.putIfAbsent(
+					modelClassNameId, ctService.getCTPersistence());
+			}
+			else {
+				modelClassNameIds.add(modelClassNameId);
+			}
+		}
+
+		for (Map.Entry<Long, CTPersistence<?>> entry :
+				ctPersistences.entrySet()) {
+
+			CTPersistence<?> ctPersistence = entry.getValue();
+
+			DataSource dataSource = ctPersistence.getDataSource();
+
+			Connection connection = dataSource.getConnection();
+
+			try (PreparedStatement preparedStatement =
+					connection.prepareStatement(
+						StringBundler.concat(
+							"select count(*) from ",
+							ctPersistence.getTableName(),
+							" where ctCollectionId = ", ctCollectionId,
+							" and status != ",
+							WorkflowConstants.STATUS_APPROVED));
+				ResultSet resultSet = preparedStatement.executeQuery()) {
+
+				if (resultSet.next()) {
+					int count = resultSet.getInt(1);
+
+					if (count > 0) {
+						return true;
+					}
+				}
+			}
+		}
+
+		return false;
 	}
 
 	@Override

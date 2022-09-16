@@ -235,6 +235,17 @@ public class CPDefinitionServiceImpl extends CPDefinitionServiceBaseImpl {
 	}
 
 	@Override
+	public CPDefinition cloneCPDefinition(
+			long cpDefinitionId, long groupId, ServiceContext serviceContext)
+		throws PortalException {
+
+		_checkCommerceCatalog(groupId, ActionKeys.UPDATE);
+
+		return cpDefinitionLocalService.cloneCPDefinition(
+			getUserId(), cpDefinitionId, groupId, serviceContext);
+	}
+
+	@Override
 	public CPDefinition copyCPDefinition(
 			long cpDefinitionId, long groupId, int status)
 		throws PortalException {
@@ -344,14 +355,25 @@ public class CPDefinitionServiceImpl extends CPDefinitionServiceBaseImpl {
 	}
 
 	@Override
+	public CPDefinition getCProductCPDefinition(long cProductId, int version)
+		throws PortalException {
+
+		CProduct cProduct = _cProductLocalService.getCProduct(cProductId);
+
+		_checkCommerceCatalog(cProduct.getGroupId(), ActionKeys.VIEW);
+
+		return cpDefinitionLocalService.getCProductCPDefinition(
+			cProductId, version);
+	}
+
+	@Override
 	public List<CPDefinition> getCProductCPDefinitions(
 			long cProductId, int status, int start, int end)
 		throws PortalException {
 
 		CProduct cProduct = _cProductLocalService.getCProduct(cProductId);
 
-		_checkCommerceCatalogByCPDefinitionId(
-			cProduct.getPublishedCPDefinitionId(), ActionKeys.VIEW);
+		_checkCommerceCatalog(cProduct.getGroupId(), ActionKeys.VIEW);
 
 		return cpDefinitionLocalService.getCProductCPDefinitions(
 			cProduct.getCProductId(), status, start, end);

@@ -21,6 +21,85 @@ definition {
 		}
 	}
 
+	@description = "LPS-145665 - Verify that it's possible to activate and deactivate an Action"
+	@priority = "5"
+	test CanActivateOrDeactivateAction {
+		property portal.acceptance = "true";
+
+		task ("Add an object, field, action, and check if an action is active") {
+			ObjectAdmin.addObjectViaAPI(
+				labelName = "Custom Object",
+				objectName = "CustomObject",
+				pluralLabelName = "Custom Objects");
+
+			ObjectAdmin.addObjectFieldViaAPI(
+				fieldBusinessType = "Text",
+				fieldLabelName = "Custom Field",
+				fieldName = "customObjectField",
+				fieldType = "String",
+				isRequired = "true",
+				objectName = "CustomObject");
+
+			ObjectAdmin.publishObjectViaAPI(objectName = "CustomObject");
+
+			ObjectAdmin.openObjectAdmin();
+
+			ObjectPortlet.selectCustomObject(label = "Custom Object");
+
+			ObjectAdmin.goToActionsTab();
+
+			ObjectAdmin.addObjectActionViaUI(
+				actionName = "Custom Action",
+				active = "true",
+				inputMethod = "true",
+				inputValue = "Action shot on add",
+				objectLabel = "Custom Object",
+				thenAction = "Add an Object Entry",
+				whenAction = "On After Add");
+
+			ObjectAdmin.assertObjectActions(actionActive = "Yes");
+		}
+
+		task ("Add an Entry and check if the action is works") {
+			ObjectAdmin.addObjectSingleFieldEntryViaAPI(
+				fieldName = "customObjectField",
+				objectName = "CustomObject",
+				value = "Entry Test");
+
+			ObjectAdmin.goToCustomObject(objectName = "CustomObject");
+
+			ObjectPortlet.viewEntry(entry = "Entry Test");
+
+			ObjectPortlet.viewEntry(entry = "Action shot on add");
+		}
+
+		task ("Delete an entry, desactivate the action, and try to create a new entry") {
+			ObjectAdmin.deleteObjectEntryViaAPI(
+				fieldName = "customObjectField",
+				objectName = "CustomObject",
+				value = "Action shot on add");
+
+			ObjectAdmin.openObjectAdmin();
+
+			ObjectPortlet.selectCustomObject(label = "Custom Object");
+
+			ObjectAdmin.goToActionsTab();
+
+			ObjectAdmin.activateOrDeactivateAction(
+				active = "false",
+				viewEntry = "Custom Action");
+
+			ObjectAdmin.addObjectSingleFieldEntryViaAPI(
+				fieldName = "customObjectField",
+				objectName = "CustomObject",
+				value = "Entry Test");
+
+			ObjectAdmin.goToCustomObject(objectName = "CustomObject");
+
+			ObjectPortlet.assertEntryNotPresent(entry = "Action shot on add");
+		}
+	}
+
 	@description = "LPS-139008 - Verify it is possible to cancel the creation of an Action"
 	@priority = "4"
 	test CanCancelAction {
@@ -47,8 +126,6 @@ definition {
 	@description = "LPS-139008 - Verify it is possible to cancel the update of an Action"
 	@priority = "4"
 	test CanCancelActionUpdate {
-		property portal.upstream = "quarantine";
-
 		ObjectAdmin.addObjectViaAPI(
 			labelName = "Custom Object 182",
 			objectName = "CustomObject182",
@@ -82,8 +159,6 @@ definition {
 	@description = "LPS-139008 - Verify it is possible to create an Action"
 	@priority = "5"
 	test CanCreateAction {
-		property portal.acceptance = "quarantine";
-
 		ObjectAdmin.addObjectViaAPI(
 			labelName = "Custom Object 183",
 			objectName = "CustomObject183",
@@ -109,8 +184,6 @@ definition {
 	@description = "LPS-139008 - Verify it is possible to delete an Action"
 	@priority = "5"
 	test CanDeleteAction {
-		property portal.acceptance = "quarantine";
-
 		ObjectAdmin.addObjectViaAPI(
 			labelName = "Custom Object 184",
 			objectName = "CustomObject184",
@@ -139,11 +212,191 @@ definition {
 			actionName = "Action Name");
 	}
 
+	@description = "LPS-145665 - Verify that you can edit the Action name"
+	@priority = "4"
+	test CanEditActionName {
+		ObjectAdmin.addObjectViaAPI(
+			labelName = "Custom Object 145",
+			objectName = "CustomObject145",
+			pluralLabelName = "Custom Objects 145");
+
+		ObjectAdmin.openObjectAdmin();
+
+		ObjectPortlet.selectCustomObject(label = "Custom Object 145");
+
+		ObjectAdmin.goToActionsTab();
+
+		ObjectAdmin.addObjectActionViaUI(
+			actionName = "Custom Action",
+			active = "true",
+			thenAction = "Webhook",
+			urlAction = "www.liferay.com",
+			whenAction = "On After Add");
+
+		ObjectAdmin.assertObjectActions(actionActive = "Custom Action");
+
+		ObjectAdmin.assertObjectActions(actionActive = "Yes");
+
+		ObjectAdmin.editObjectAction(
+			actionName = "New Action Update",
+			active = "false",
+			viewEntry = "Custom Action");
+
+		ObjectAdmin.assertObjectActions(actionActive = "No");
+
+		ObjectAdmin.assertObjectActions(actionActive = "New Action Update");
+	}
+
+	@description = "LPS-145665 - Verify that the user can edit a previously saved expression"
+	@priority = "5"
+	test CanEditExpression {
+		property portal.acceptance = "true";
+
+		task ("Add an Object, Field and Action") {
+			ObjectAdmin.addObjectViaAPI(
+				labelName = "Custom Object",
+				objectName = "CustomObject",
+				pluralLabelName = "Custom Objects");
+
+			ObjectAdmin.addObjectFieldViaAPI(
+				fieldBusinessType = "Text",
+				fieldLabelName = "Custom Field",
+				fieldName = "customObjectField",
+				fieldType = "String",
+				isRequired = "true",
+				objectName = "CustomObject");
+
+			ObjectAdmin.publishObjectViaAPI(objectName = "CustomObject");
+
+			ObjectAdmin.openObjectAdmin();
+
+			ObjectPortlet.selectCustomObject(label = "Custom Object");
+
+			ObjectAdmin.goToActionsTab();
+
+			ObjectAdmin.addObjectActionViaUI(
+				actionName = "Custom Action",
+				active = "true",
+				inputExpression = "customObjectField == 'Entry Test'",
+				inputMethod = "true",
+				inputValue = "Action shot on add",
+				objectLabel = "Custom Object",
+				thenAction = "Add an Object Entry",
+				whenAction = "On After Add");
+
+			ObjectAdmin.addObjectSingleFieldEntryViaAPI(
+				fieldName = "customObjectField",
+				objectName = "CustomObject",
+				value = "Entry Test");
+
+			ObjectAdmin.goToCustomObject(objectName = "CustomObject");
+
+			ObjectPortlet.viewEntry(entry = "Entry Test");
+
+			ObjectPortlet.viewEntry(entry = "Action shot on add");
+		}
+
+		task ("Edit the expression and Check if the user can edit a previously saved expression") {
+			ObjectAdmin.openObjectAdmin();
+
+			ObjectPortlet.selectCustomObject(label = "Custom Object");
+
+			ObjectAdmin.goToActionsTab();
+
+			ObjectAdmin.editObjectAction(
+				inputExpression = "customObjectField == 'Entry Test Updated'",
+				viewEntry = "Custom Action");
+
+			ObjectAdmin.addObjectSingleFieldEntryViaAPI(
+				fieldName = "customObjectField",
+				objectName = "CustomObject",
+				value = "Entry Test Updated");
+
+			ObjectAdmin.goToCustomObject(objectName = "CustomObject");
+
+			ObjectPortlet.viewEntry(entry = "Entry Test Updated");
+
+			ObjectPortlet.viewEntry(entry = "Action shot on add");
+		}
+	}
+
+	@description = "LPS-145665 - Verify that the admin user is able to enable and disable Condition"
+	@priority = "5"
+	test CanEnableAndDisableCondition {
+		property portal.acceptance = "true";
+
+		task ("Add object, field, and publish then") {
+			ObjectAdmin.addObjectViaAPI(
+				labelName = "Custom Object",
+				objectName = "CustomObject",
+				pluralLabelName = "Custom Objects");
+
+			ObjectAdmin.addObjectFieldViaAPI(
+				fieldBusinessType = "Text",
+				fieldLabelName = "Custom Field",
+				fieldName = "customObjectField",
+				fieldType = "String",
+				isRequired = "true",
+				objectName = "CustomObject");
+
+			ObjectAdmin.publishObjectViaAPI(objectName = "CustomObject");
+		}
+
+		task ("Add a Action and enable condition") {
+			ObjectAdmin.openObjectAdmin();
+
+			ObjectPortlet.selectCustomObject(label = "Custom Object");
+
+			ObjectAdmin.goToActionsTab();
+
+			ObjectAdmin.addObjectActionViaUI(
+				actionName = "Custom Action",
+				active = "true",
+				inputExpression = "customObjectField == 'Entry with condition'",
+				inputMethod = "true",
+				inputValue = "Condition works",
+				objectLabel = "Custom Object",
+				thenAction = "Add an Object Entry",
+				whenAction = "On After Add");
+
+			ObjectAdmin.assertObjectActions(actionActive = "Custom Action");
+
+			ObjectAdmin.assertObjectActions(actionActive = "Yes");
+		}
+
+		task ("Add entry and assert that condition it's works") {
+			ObjectAdmin.addObjectSingleFieldEntryViaAPI(
+				fieldName = "customObjectField",
+				objectName = "CustomObject",
+				value = "Entry with condition");
+
+			ObjectAdmin.goToCustomObject(objectName = "CustomObject");
+
+			ObjectPortlet.viewEntry(entry = "Entry with condition");
+
+			ObjectPortlet.viewEntry(entry = "Condition works");
+		}
+
+		task ("Assert that condition is disabled") {
+			ObjectAdmin.openObjectAdmin();
+
+			ObjectPortlet.selectCustomObject(label = "Custom Object");
+
+			ObjectAdmin.goToActionsTab();
+
+			ObjectAdmin.goToActionDetails(viewEntry = "Custom Action");
+
+			ObjectAdmin.disableCondition();
+
+			ObjectAdmin.assertObjectActions(actionActive = "Custom Action");
+
+			ObjectAdmin.assertObjectActions(actionActive = "Yes");
+		}
+	}
+
 	@description = "LPS-139008 - Verify that it is possible to inactivate an Action"
 	@priority = "4"
 	test CanInactivateAction {
-		property portal.upstream = "quarantine";
-
 		ObjectAdmin.addObjectViaAPI(
 			labelName = "Custom Object 185",
 			objectName = "CustomObject185",
@@ -173,8 +426,6 @@ definition {
 	@description = "LPS-139008 - Verify it is not possible to leave the Action Name field blank"
 	@priority = "3"
 	test CannotLeaveActionNameBlank {
-		property portal.upstream = "quarantine";
-
 		ObjectAdmin.addObjectViaAPI(
 			labelName = "Custom Object 186",
 			objectName = "CustomObject186",
@@ -230,8 +481,6 @@ definition {
 	@description = "LPS-139008 - Verify it is not possible to leave the Action When field blank"
 	@priority = "3"
 	test CannotLeaveActionWhenBlank {
-		property portal.upstream = "quarantine";
-
 		ObjectAdmin.addObjectViaAPI(
 			labelName = "Custom Object 188",
 			objectName = "CustomObject188",
@@ -258,8 +507,6 @@ definition {
 	@description = "LPS-139008 - Verify it is not possible to leave the URL field blank when Webhook is selected"
 	@priority = "3"
 	test CannotLeaveURLBlank {
-		property portal.upstream = "quarantine";
-
 		ObjectAdmin.addObjectViaAPI(
 			labelName = "Custom Object 189",
 			objectName = "CustomObject189",
@@ -286,8 +533,6 @@ definition {
 	@description = "LPS-139008 - Verify that it is possible to reactivate an Action"
 	@priority = "4"
 	test CanReactivateAction {
-		property portal.upstream = "quarantine";
-
 		ObjectAdmin.addObjectViaAPI(
 			labelName = "Custom Object 190",
 			objectName = "CustomObject190",
@@ -318,8 +563,6 @@ definition {
 	@description = "LPS-139008 - Verify it is possible to search for an Action"
 	@priority = "4"
 	test CanSearchAction {
-		property portal.upstream = "quarantine";
-
 		ObjectAdmin.addObjectViaAPI(
 			labelName = "Custom Object 191",
 			objectName = "CustomObject191",
@@ -353,8 +596,6 @@ definition {
 	@description = "LPS-139008 - Verify it is possible to update an Action"
 	@priority = "4"
 	test CanUpdateAction {
-		property portal.upstream = "quarantine";
-
 		ObjectAdmin.addObjectViaAPI(
 			labelName = "Custom Object 192",
 			objectName = "CustomObject192",
@@ -383,6 +624,27 @@ definition {
 		ObjectAdmin.assertObjectActions(
 			actionActive = "Yes",
 			actionName = "Update Action Name");
+	}
+
+	@description = "LPS-146871 - Verify that the Action name is required"
+	@priority = "4"
+	test VerifyActionNameIsRequired {
+		ObjectAdmin.addObjectViaAPI(
+			labelName = "Custom Object 156562",
+			objectName = "CustomObject1",
+			pluralLabelName = "Custom Objects 156562");
+
+		ObjectAdmin.openObjectAdmin();
+
+		ObjectPortlet.selectCustomObject(label = "Custom Object 156562");
+
+		ObjectAdmin.goToActionsTab();
+
+		ObjectAdmin.gotoAddObjectAction();
+
+		Button.clickSave();
+
+		ObjectAdmin.assertRequiredErrorPresent();
 	}
 
 }

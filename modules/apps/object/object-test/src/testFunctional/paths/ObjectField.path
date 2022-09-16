@@ -157,6 +157,21 @@
 		<td>//input[@name="state"]</td>
 		<td></td>
 	</tr>
+	<tr>
+		<td>SOURCE_FIELD</td>
+		<td>//div[contains(@class, 'dnd-tr') and contains(., '${key_label}') and contains(., '${key_source}')]</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>LABEL_RELATIONSHIP</td>
+		<td>//label[contains(.,'Relationship')]//..//div[contains(@aria-controls,'clay-dropdown-menu')]</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>LABEL_FIELD</td>
+		<td>//label[contains(.,'Field')]//..//div[contains(@aria-controls,'clay-dropdown-menu')]</td>
+		<td></td>
+	</tr>
 </tbody>
 </table>
 </body>

@@ -18,6 +18,7 @@ import com.liferay.oauth.client.persistence.exception.DuplicateOAuthClientEntryE
 import com.liferay.oauth.client.persistence.exception.OAuthClientEntryAuthRequestParametersJSONException;
 import com.liferay.oauth.client.persistence.exception.OAuthClientEntryAuthServerWellKnownURIException;
 import com.liferay.oauth.client.persistence.exception.OAuthClientEntryInfoJSONException;
+import com.liferay.oauth.client.persistence.exception.OAuthClientEntryOIDCUserInfoMapperJSONException;
 import com.liferay.oauth.client.persistence.exception.OAuthClientEntryTokenRequestParametersJSONException;
 import com.liferay.oauth.client.persistence.model.OAuthClientEntry;
 import com.liferay.oauth.client.persistence.model.OAuthClientEntryTable;
@@ -69,7 +70,7 @@ public class OAuthClientEntryLocalServiceImpl
 	public OAuthClientEntry addOAuthClientEntry(
 			long userId, String authRequestParametersJSON,
 			String authServerWellKnownURI, String infoJSON,
-			String tokenRequestParametersJSON)
+			String oidcUserInfoMapperJSON, String tokenRequestParametersJSON)
 		throws PortalException {
 
 		User user = _userLocalService.getUser(userId);
@@ -102,6 +103,13 @@ public class OAuthClientEntryLocalServiceImpl
 			_validateTokenRequestParametersJSON(tokenRequestParametersJSON);
 		}
 
+		if (authServerWellKnownURI.contains("openid-configuration")) {
+			_validateOIDCUserInfoMapperJSON(oidcUserInfoMapperJSON);
+		}
+		else {
+			oidcUserInfoMapperJSON = "{}";
+		}
+
 		JSONObject clientInformationJSONObject =
 			clientInformation.toJSONObject();
 
@@ -116,6 +124,7 @@ public class OAuthClientEntryLocalServiceImpl
 		oAuthClientEntry.setAuthServerWellKnownURI(authServerWellKnownURI);
 		oAuthClientEntry.setClientId(clientId);
 		oAuthClientEntry.setInfoJSON(clientInformationJSONObject.toString());
+		oAuthClientEntry.setOIDCUserInfoMapperJSON(oidcUserInfoMapperJSON);
 		oAuthClientEntry.setTokenRequestParametersJSON(
 			tokenRequestParametersJSON);
 
@@ -218,7 +227,7 @@ public class OAuthClientEntryLocalServiceImpl
 	public OAuthClientEntry updateOAuthClientEntry(
 			long oAuthClientEntryId, String authRequestParametersJSON,
 			String authServerWellKnownURI, String infoJSON,
-			String tokenRequestParametersJSON)
+			String oidcUserInfoMapperJSON, String tokenRequestParametersJSON)
 		throws PortalException {
 
 		OAuthClientEntry oAuthClientEntry =
@@ -254,6 +263,13 @@ public class OAuthClientEntryLocalServiceImpl
 			_validateTokenRequestParametersJSON(tokenRequestParametersJSON);
 		}
 
+		if (authServerWellKnownURI.contains("openid-configuration")) {
+			_validateOIDCUserInfoMapperJSON(oidcUserInfoMapperJSON);
+		}
+		else {
+			oidcUserInfoMapperJSON = "{}";
+		}
+
 		JSONObject clientInformationJSONObject =
 			clientInformation.toJSONObject();
 
@@ -262,6 +278,7 @@ public class OAuthClientEntryLocalServiceImpl
 		oAuthClientEntry.setAuthServerWellKnownURI(authServerWellKnownURI);
 		oAuthClientEntry.setClientId(clientId);
 		oAuthClientEntry.setInfoJSON(clientInformationJSONObject.toString());
+		oAuthClientEntry.setOIDCUserInfoMapperJSON(oidcUserInfoMapperJSON);
 		oAuthClientEntry.setTokenRequestParametersJSON(
 			tokenRequestParametersJSON);
 
@@ -374,6 +391,63 @@ public class OAuthClientEntryLocalServiceImpl
 						throw new ParseException("Value is not a string");
 					}
 				}
+			}
+		}
+	}
+
+	private void _validateOIDCUserInfoMapperJSON(String oidcUserInfoMapperJSON)
+		throws PortalException {
+
+		try {
+			JSONObject oidcUserInfoMapperJSONObject = JSONObjectUtils.parse(
+				oidcUserInfoMapperJSON);
+
+			_validateOIDCUserInfoMapperJSON(
+				"user", oidcUserInfoMapperJSONObject,
+				new String[] {"emailAddress", "firstName", "lastName"});
+
+			if (oidcUserInfoMapperJSONObject.containsKey("address")) {
+				_validateOIDCUserInfoMapperJSON(
+					"address", oidcUserInfoMapperJSONObject,
+					new String[] {"city", "street", "zip"});
+			}
+
+			if (oidcUserInfoMapperJSONObject.containsKey("contact")) {
+				_validateOIDCUserInfoMapperJSON(
+					"contact", oidcUserInfoMapperJSONObject, new String[0]);
+			}
+
+			if (oidcUserInfoMapperJSONObject.containsKey("phone")) {
+				_validateOIDCUserInfoMapperJSON(
+					"phone", oidcUserInfoMapperJSONObject,
+					new String[] {"phone"});
+			}
+		}
+		catch (Exception exception) {
+			throw new OAuthClientEntryOIDCUserInfoMapperJSONException(
+				exception.getMessage(), exception);
+		}
+	}
+
+	private void _validateOIDCUserInfoMapperJSON(
+			String key, JSONObject oidcUserInfoMapperJSONObject,
+			String[] requiredKeys)
+		throws Exception {
+
+		JSONObject jsonObject = JSONObjectUtils.getJSONObject(
+			oidcUserInfoMapperJSONObject, key);
+
+		for (String requiredKey : requiredKeys) {
+			if (Validator.isNull(jsonObject.getAsString(requiredKey))) {
+				throw new OAuthClientEntryOIDCUserInfoMapperJSONException(
+					requiredKey + " is required for " + key);
+			}
+		}
+
+		for (Object object : jsonObject.values()) {
+			if (!(object instanceof String)) {
+				throw new OAuthClientEntryOIDCUserInfoMapperJSONException(
+					"Value is not a string");
 			}
 		}
 	}

@@ -77,7 +77,7 @@
 </tr>
 <tr>
 	<td>MESSAGE_NO_CHANGES</td>
-	<td>//div[contains(@class, 'taglib-empty-result-message')]/div[contains(.,'No changes were found.')] | //div[contains(@class, 'taglib-empty-result-message')]/div[contains(.,'There are no changes to display in this view.')]</td>
+	<td>//div[contains(@class, 'taglib-empty-result-message')]/div[contains(.,'No changes were found.')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -91,13 +91,18 @@
 	<td></td>
 </tr>
 <tr>
+	<td>PUBLICATIONS_CHANGE_STATUS</td>
+	<td>//tr[contains(@class,'table-divider') and contains(.,'${key_changeCategory}')]//following-sibling::tr[${changeOrder}]/td[4][contains(.,'${key_changeStatus}')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>PUBLICATIONS_CHANGE_TITLE</td>
 	<td>//tr[contains(@class,'table-divider') and contains(.,'${key_changeCategory}')]//following-sibling::tr[${changeOrder}]/td[3][contains(.,'${key_changeTitle}')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>PUBLICATIONS_CHANGE_TYPE</td>
-	<td>//tr[contains(@class,'table-divider') and contains(.,'${key_changeCategory}')]//following-sibling::tr[${changeOrder}]/td[4][contains(.,'${key_changeType}')]</td>
+	<td>//tr[contains(@class,'table-divider') and contains(.,'${key_changeCategory}')]//following-sibling::tr[${changeOrder}]/td[5][contains(.,'${key_changeType}')]</td>
 	<td></td>
 </tr>
 <tr>

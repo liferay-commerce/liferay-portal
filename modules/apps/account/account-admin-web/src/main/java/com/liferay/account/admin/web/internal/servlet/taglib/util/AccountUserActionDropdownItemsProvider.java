@@ -14,9 +14,11 @@
 
 package com.liferay.account.admin.web.internal.servlet.taglib.util;
 
+import com.liferay.account.admin.web.internal.display.AccountEntryDisplay;
+import com.liferay.account.admin.web.internal.display.AccountUserDisplay;
 import com.liferay.account.admin.web.internal.security.permission.resource.AccountEntryPermission;
+import com.liferay.account.admin.web.internal.security.permission.resource.AccountUserPermission;
 import com.liferay.account.constants.AccountActionKeys;
-import com.liferay.account.constants.AccountPortletKeys;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
@@ -24,13 +26,11 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
-import com.liferay.portal.kernel.service.permission.UserPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.List;
-import java.util.Objects;
 
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
@@ -43,12 +43,13 @@ import javax.servlet.http.HttpServletRequest;
 public class AccountUserActionDropdownItemsProvider {
 
 	public AccountUserActionDropdownItemsProvider(
-		long accountEntryId, long accountUserId,
+		AccountEntryDisplay accountEntryDisplay,
+		AccountUserDisplay accountUserDisplay,
 		PermissionChecker permissionChecker, RenderRequest renderRequest,
 		RenderResponse renderResponse) {
 
-		_accountEntryId = accountEntryId;
-		_accountUserId = accountUserId;
+		_accountEntryDisplay = accountEntryDisplay;
+		_accountUserDisplay = accountUserDisplay;
 		_permissionChecker = permissionChecker;
 		_renderResponse = renderResponse;
 
@@ -61,12 +62,11 @@ public class AccountUserActionDropdownItemsProvider {
 	public List<DropdownItem> getActionDropdownItems() throws Exception {
 		return DropdownItemListBuilder.add(
 			() -> {
-				if (Objects.equals(
+				if (AccountUserPermission.hasEditUserPermission(
+						_permissionChecker,
 						PortalUtil.getPortletId(_httpServletRequest),
-						AccountPortletKeys.ACCOUNT_ENTRIES_MANAGEMENT) &&
-					UserPermissionUtil.contains(
-						_permissionChecker, _accountUserId,
-						ActionKeys.UPDATE)) {
+						_accountEntryDisplay.getAccountEntry(),
+						_accountUserDisplay.getUser())) {
 
 					return true;
 				}
@@ -74,26 +74,19 @@ public class AccountUserActionDropdownItemsProvider {
 				return false;
 			},
 			dropdownItem -> {
-				dropdownItem.setHref(
-					PortletURLBuilder.createRenderURL(
-						_renderResponse
-					).setMVCPath(
-						"/account_users_admin/edit_account_user.jsp"
-					).setBackURL(
-						_themeDisplay.getURLCurrent()
-					).setParameter(
-						"p_u_i_d", _accountUserId
-					).buildString());
+				dropdownItem.setHref(getEditAccountUserURL());
 				dropdownItem.setLabel(
 					LanguageUtil.get(_httpServletRequest, "edit"));
 			}
 		).add(
 			() ->
 				AccountEntryPermission.contains(
-					_permissionChecker, _accountEntryId,
+					_permissionChecker,
+					_accountEntryDisplay.getAccountEntryId(),
 					ActionKeys.MANAGE_USERS) &&
 				AccountEntryPermission.contains(
-					_permissionChecker, _accountEntryId,
+					_permissionChecker,
+					_accountEntryDisplay.getAccountEntryId(),
 					AccountActionKeys.VIEW_ACCOUNT_ROLES),
 			dropdownItem -> {
 				dropdownItem.putData("action", "assignRoleAccountUsers");
@@ -106,9 +99,10 @@ public class AccountUserActionDropdownItemsProvider {
 					).setRedirect(
 						_themeDisplay.getURLCurrent()
 					).setParameter(
-						"accountEntryId", _accountEntryId
+						"accountEntryId",
+						_accountEntryDisplay.getAccountEntryId()
 					).setParameter(
-						"accountUserIds", _accountUserId
+						"accountUserIds", _accountUserDisplay.getUserId()
 					).setWindowState(
 						LiferayWindowState.POP_UP
 					).buildString());
@@ -121,16 +115,18 @@ public class AccountUserActionDropdownItemsProvider {
 					).setRedirect(
 						_themeDisplay.getURLCurrent()
 					).setParameter(
-						"accountEntryId", _accountEntryId
+						"accountEntryId",
+						_accountEntryDisplay.getAccountEntryId()
 					).setParameter(
-						"accountUserId", _accountUserId
+						"accountUserId", _accountUserDisplay.getUserId()
 					).buildString());
 				dropdownItem.setLabel(
 					LanguageUtil.get(_httpServletRequest, "assign-roles"));
 			}
 		).add(
 			() -> AccountEntryPermission.contains(
-				_permissionChecker, _accountEntryId, ActionKeys.MANAGE_USERS),
+				_permissionChecker, _accountEntryDisplay.getAccountEntryId(),
+				ActionKeys.MANAGE_USERS),
 			dropdownItem -> {
 				dropdownItem.putData("action", "removeAccountUsers");
 				dropdownItem.putData(
@@ -142,9 +138,10 @@ public class AccountUserActionDropdownItemsProvider {
 					).setRedirect(
 						_themeDisplay.getURLCurrent()
 					).setParameter(
-						"accountEntryId", _accountEntryId
+						"accountEntryId",
+						_accountEntryDisplay.getAccountEntryId()
 					).setParameter(
-						"accountUserIds", _accountUserId
+						"accountUserIds", _accountUserDisplay.getUserId()
 					).buildString());
 				dropdownItem.setLabel(
 					LanguageUtil.get(_httpServletRequest, "remove"));
@@ -152,8 +149,22 @@ public class AccountUserActionDropdownItemsProvider {
 		).build();
 	}
 
-	private final long _accountEntryId;
-	private final long _accountUserId;
+	public String getEditAccountUserURL() {
+		return PortletURLBuilder.createRenderURL(
+			_renderResponse
+		).setMVCRenderCommandName(
+			"/account_admin/edit_account_user"
+		).setBackURL(
+			_themeDisplay.getURLCurrent()
+		).setParameter(
+			"accountEntryId", _accountEntryDisplay.getAccountEntryId()
+		).setParameter(
+			"accountUserId", _accountUserDisplay.getUserId()
+		).buildString();
+	}
+
+	private final AccountEntryDisplay _accountEntryDisplay;
+	private final AccountUserDisplay _accountUserDisplay;
 	private final HttpServletRequest _httpServletRequest;
 	private final PermissionChecker _permissionChecker;
 	private final RenderResponse _renderResponse;

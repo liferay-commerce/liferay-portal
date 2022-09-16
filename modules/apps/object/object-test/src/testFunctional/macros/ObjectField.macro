@@ -23,9 +23,9 @@ definition {
 			key_viewHomeFolder = "${viewHomeFolder}",
 			locator1 = "ObjectField#VIEW_HOME_FOLDER");
 
-		AssertTextEquals(
-			locator1 = "Message#EMPTY_INFO",
-			value1 = "${infoText}");
+		AssertElementPresent(
+			key_infoText = "${infoText}",
+			locator1 = "ObjectPortlet#FILE_ENTRY_OBJECT");
 	}
 
 	macro assertDocumentsAndMediaHomeFolderBySite {
@@ -96,6 +96,13 @@ definition {
 		AssertSelectedLabel(
 			locator1 = "ObjectField#SEARCHABLE_LANGUAGE_SELECT",
 			value1 = "${selected}");
+	}
+
+	macro assertSource {
+		AssertElementPresent(
+			key_label = "${fieldLabel}",
+			key_source = "${fieldSource}",
+			locator1 = "ObjectField#SOURCE_FIELD");
 	}
 
 	macro assertType {

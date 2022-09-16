@@ -1298,11 +1298,15 @@ public class ObjectEntryLocalServiceImpl
 			return predicate;
 		}
 
-		Predicate searchPredicate = null;
-
 		List<ObjectField> objectFields =
 			_objectFieldPersistence.findByODI_DBT_I(
 				objectDefinitionId, "String", true);
+
+		if (objectFields.isEmpty()) {
+			return predicate;
+		}
+
+		Predicate searchPredicate = null;
 
 		for (ObjectField objectField : objectFields) {
 			Table<?> table = _objectFieldLocalService.getTable(
@@ -1321,8 +1325,11 @@ public class ObjectEntryLocalServiceImpl
 			}
 		}
 
-		if (searchPredicate == null) {
-			return predicate;
+		long searchLong = GetterUtil.getLong(search);
+
+		if (searchLong != 0L) {
+			searchPredicate = searchPredicate.or(
+				ObjectEntryTable.INSTANCE.objectEntryId.eq(searchLong));
 		}
 
 		if (predicate == null) {

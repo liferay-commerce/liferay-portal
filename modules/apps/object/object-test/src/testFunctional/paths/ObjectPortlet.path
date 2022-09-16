@@ -27,12 +27,12 @@
 	</tr>
 	<tr>
 		<td>COLUMN_ICON_SEARCH</td>
-		<td>//div[contains(@class,'dropdown-menu show')]//input[contains(@class,'form-control input-group-inset input-group-inset-after')]</td>
+		<td>//div[contains(@class,'dropdown-menu')]//span[contains(@class, 'input-group-inset-item')]</td>
 		<td></td>
 	</tr>
 	<tr>
 		<td>COLUMN_SEARCH_FIELD</td>
-		<td>//div[contains(@class,'dropdown-menu show')]//input[contains(@class,'form-control input-group-inset input-group-inset-after')]</td>
+		<td>//div[contains(@class,'dropdown-menu')]//input[contains(@class,'form-control input-group-inset input-group-inset-after')]</td>
 		<td></td>
 	</tr>
 	<tr>
@@ -203,6 +203,16 @@
 	<tr>
 		<td>ENTRY_FIELD_GENERIC</td>
 		<td>//div[contains(@data-field-name,'ObjectDefinitionsPortlet') and contains(label,'${key_customField}')]//input[1]</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>FILE_ENTRY_OBJECT</td>
+		<td>//div[contains(@class, 'dropzone-wrapper')]//div//..//div[contains(text(), '${key_infoText}')]</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>DELETE_RELATIONSHIP_ENTRY</td>
+		<td>//div[contains(text(),'${key_entryName}')]/..//a[@title = 'Delete']</td>
 		<td></td>
 	</tr>
 </tbody>

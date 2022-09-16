@@ -494,7 +494,7 @@ public class BundleSiteInitializerTest {
 
 		Assert.assertNotNull(commerceChannel);
 		Assert.assertEquals(
-			"TESTCOMMERCECHANNEL", commerceChannel.getExternalReferenceCode());
+			"TESTVOC0001", commerceChannel.getExternalReferenceCode());
 		Assert.assertEquals("Test Commerce Channel", commerceChannel.getName());
 		Assert.assertEquals("site", commerceChannel.getType());
 

@@ -198,7 +198,6 @@ exports[`SidebarPanelInfoView renders 1`] = `
                 <div
                   class="panel panel-unstyled"
                   role="tablist"
-                  title="categorization"
                 >
                   <button
                     aria-expanded="true"
@@ -217,7 +216,11 @@ exports[`SidebarPanelInfoView renders 1`] = `
                           <div
                             class="align-self-center panel-title autofit-col autofit-col-expand"
                           >
-                            categorization
+                            <span
+                              aria-label="view categorization"
+                            >
+                              categorization
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -1018,7 +1021,6 @@ exports[`SidebarPanelInfoView renders 1`] = `
                 <div
                   class="panel panel-unstyled"
                   role="tablist"
-                  title="details"
                 >
                   <button
                     aria-expanded="false"
@@ -1037,7 +1039,11 @@ exports[`SidebarPanelInfoView renders 1`] = `
                           <div
                             class="align-self-center panel-title autofit-col autofit-col-expand"
                           >
-                            details
+                            <span
+                              aria-label="view details"
+                            >
+                              details
+                            </span>
                           </div>
                         </div>
                       </div>

@@ -28,6 +28,20 @@ const fetchHeadless = async (url, options) => {
 	return data;
 };
 
+const fetchHeadlessWithToken = async (url, options) => {
+	const token = sessionStorage.getItem('raylife-guest-permission-token');
+
+	const response = await fetch(`${window.location.origin}/${url}`, {
+		...options,
+		headers: {
+			'Authorization': `Bearer ${token}`,
+			'Content-Type': 'application/json',
+		},
+	});
+
+	return await response.json();
+};
+
 const businessEmailDeliveredContainer = fragmentElement.querySelector(
 	'#business-email-delivered'
 );
@@ -45,6 +59,7 @@ const getQuoteForm = fragmentElement.querySelector('#get-quote-form');
 const newQuoteButton = fragmentElement.querySelector('#new-quote-button');
 const newQuoteContainer = fragmentElement.querySelector('#new-quote');
 const newQuoteFormContainer = fragmentElement.querySelector('.new-quote-form');
+const pathContext = Liferay.ThemeDisplay.getPathContext();
 const retrieveQuoteButton = fragmentElement.querySelector(
 	'#retrieve-quote-button'
 );
@@ -95,7 +110,8 @@ continueQuoteButton.onclick = async function () {
 	}
 
 	const raylifeApplicationResponse = await fetchHeadless(
-		`o/c/raylifeapplications/?filter=email eq '${emailInput.value}'`
+		pathContext +
+			`/o/c/raylifeapplications/?filter=email eq '${emailInput.value}'`
 	);
 
 	if (!raylifeApplicationResponse.items.length) {
@@ -123,7 +139,7 @@ continueQuoteButton.onclick = async function () {
 	newQuoteFormContainer.classList.remove('d-flex', 'invisible');
 	newQuoteFormContainer.classList.add('d-none', 'invisible');
 
-	await fetchHeadless(`o/c/quoteretrieves/scopes/${scopeGroupId}`, {
+	await fetchHeadlessWithToken(`o/c/quoteretrieves/scopes/${scopeGroupId}`, {
 		body: JSON.stringify({
 			productName: 'Business Home Cover',
 			quoteRetrieveLink: `${origin}${window.location.pathname}/get-a-quote?applicationId=${raylifeApplication.id}`,

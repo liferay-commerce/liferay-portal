@@ -32,7 +32,6 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.spring.extender.service.ServiceReference;
 
 /**
@@ -71,20 +70,10 @@ public class CProductLocalServiceImpl extends CProductLocalServiceBaseImpl {
 	@Override
 	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public CProduct deleteCProduct(CProduct cProduct) throws PortalException {
-
-		// Commerce product definitions
-
-		_cpDefinitionLocalService.deleteCPDefinitions(
-			cProduct.getCProductId(), WorkflowConstants.STATUS_ANY);
-
-		// Commerce product definition links
+		cProduct = cProductPersistence.remove(cProduct);
 
 		_cpDefinitionLinkLocalService.deleteCPDefinitionLinksByCProductId(
 			cProduct.getCProductId());
-
-		// Commerce product
-
-		cProductPersistence.remove(cProduct);
 
 		return cProduct;
 	}

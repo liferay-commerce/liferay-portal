@@ -267,6 +267,14 @@ public abstract class BaseAssetRenderer<T> implements AssetRenderer<T> {
 	}
 
 	@Override
+	public String getURLViewInContext(
+			ThemeDisplay themeDisplay, String noSuchEntryRedirect)
+		throws Exception {
+
+		throw null;
+	}
+
+	@Override
 	public String getViewInContextMessage() {
 		return "view-in-context";
 	}

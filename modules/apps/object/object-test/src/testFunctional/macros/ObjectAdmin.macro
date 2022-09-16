@@ -1,5 +1,24 @@
 definition {
 
+	macro activateOrDeactivateAction {
+		ObjectAdmin.goToActionDetails(viewEntry = "${viewEntry}");
+
+		SelectFrame.selectFrameNoLoading(locator1 = "ObjectAction#IFRAME_SIDE_PANEL");
+
+		if ("${active}" == "true") {
+			Check.checkToggleSwitch(
+				key_toggleSwitchLabel = "Active",
+				locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
+		}
+		else if ("${active}" == "false") {
+			Uncheck.uncheckToggleSwitch(
+				key_toggleSwitchLabel = "Active",
+				locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
+		}
+
+		Button.clickSave();
+	}
+
 	macro addCategorizationOnLayoutTab {
 		Click(locator1 = "ObjectAdmin#DROPDOWN_CATEGORIZATION_OPTION");
 
@@ -36,6 +55,22 @@ definition {
 		}
 	}
 
+	macro addObjectActionEntryViaUI {
+		ObjectAdmin.gotoAddObjectAction();
+
+		ObjectAdmin.fillObjectAction(
+			actionActive = "${actionActive}",
+			actionName = "${actionName}",
+			active = "${active}",
+			click = "save",
+			inputValue = "${inputValue}",
+			onAction = "${chooseOption}",
+			secretAction = "${secretAction}",
+			thenAction = "${thenAction}",
+			urlAction = "${urlAction}",
+			whenAction = "${whenAction}");
+	}
+
 	macro addObjectActionViaUI {
 		ObjectAdmin.gotoAddObjectAction();
 
@@ -43,6 +78,10 @@ definition {
 			actionName = "${actionName}",
 			active = "${active}",
 			click = "save",
+			inputExpression = "${inputExpression}",
+			inputMethod = "${inputMethod}",
+			inputValue = "${inputValue}",
+			objectLabel = "${objectLabel}",
 			secretAction = "${secretAction}",
 			thenAction = "${thenAction}",
 			urlAction = "${urlAction}",
@@ -124,6 +163,30 @@ definition {
 					Check.checkNotVisible(
 						key_toggleSwitchLabel = "Show Files in Documents and Media",
 						locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
+				}
+			}
+
+			if ("${fieldType}" == "Aggregation") {
+				Click(locator1 = "ObjectField#LABEL_RELATIONSHIP");
+
+				Click(
+					key_dropdownItem = "${relationship}",
+					locator1 = "ObjectAdmin#SELECT_DROPDOWN_ITEM_DEFAULT_VALUE");
+
+				Click(
+					key_filterLabel = "Function",
+					locator1 = "ObjectCustomViews#SELECT_FILTER_GENERIC");
+
+				Click(
+					key_fieldType = "${function}",
+					locator1 = "ObjectField#TYPE_OPTION");
+
+				if (isSet(field)) {
+					Click(locator1 = "ObjectField#LABEL_FIELD");
+
+					Click(
+						key_dropdownItem = "${field}",
+						locator1 = "ObjectAdmin#SELECT_DROPDOWN_ITEM_DEFAULT_VALUE");
 				}
 			}
 		}
@@ -755,6 +818,18 @@ definition {
 		Refresh();
 	}
 
+	macro disableCondition {
+		SelectFrame.selectFrameNoLoading(locator1 = "ObjectAction#IFRAME_SIDE_PANEL");
+
+		Click(
+			key_tabName = "Action Builder",
+			locator1 = "ObjectAction#TAB_GENERIC");
+
+		Uncheck.uncheckToggleSwitch(locator1 = "ObjectAction#ENABLE_DISABLE_CONDITION");
+
+		Button.clickSave();
+	}
+
 	macro editClobEntryName {
 		Type(
 			key_clobType = "",
@@ -799,14 +874,24 @@ definition {
 
 		ObjectAdmin.viewDetails();
 
+		SelectFrame.selectFrameNoLoading(locator1 = "ObjectAction#IFRAME_SIDE_PANEL");
+
 		ObjectAdmin.fillObjectAction(
 			actionName = "${actionName}",
 			active = "${active}",
 			click = "save",
+			inputExpression = "${inputExpression}",
+			inputMethod = "${inputMethod}",
+			inputValue = "${inputValue}",
+			objectLabel = "${objectLabel}",
 			secretAction = "${secretAction}",
 			thenAction = "${thenAction}",
 			urlAction = "${urlAction}",
 			whenAction = "${whenAction}");
+	}
+
+	macro enableCondition {
+		Check.checkToggleSwitch(locator1 = "ObjectAction#ENABLE_DISABLE_CONDITION");
 	}
 
 	macro fillObjectAction {
@@ -843,6 +928,35 @@ definition {
 			Click(
 				key_type = "${thenAction}",
 				locator1 = "ObjectAdmin#SELECT_RELATIONSHIPS_TYPE_OPTION");
+
+			if ("${thenAction}" == "Add an Object Entry") {
+				Click(locator1 = "ObjectAdmin#CHOOSE_AN_OBJECT");
+
+				ClickNoError.clickNoMouseOver(
+					key_objectLabel = "${objectLabel}",
+					locator1 = "ObjectAdmin#CHOOSE_OBJECT_LABEL");
+
+				if ("${inputMethod}" == "true") {
+					Click(locator1 = "ObjectAction#INPUT_METHOD");
+
+					Type(
+						locator1 = "ObjectAction#INPUT_VALUE",
+						value1 = "${inputValue}");
+				}
+				else if ("${inputMethod}" == "false") {
+					Type(
+						locator1 = "ObjectAction#INPUT_NEW_VALUE",
+						value1 = "${inputExpression}");
+				}
+			}
+		}
+
+		if (isSet(inputExpression)) {
+			ObjectAdmin.enableCondition();
+
+			Type(
+				locator1 = "ObjectAction#INPUT_EXPRESSION",
+				value1 = "${inputExpression}");
 		}
 
 		if (isSet(urlAction)) {
@@ -1126,11 +1240,13 @@ definition {
 	}
 
 	macro viewDetails {
-		SelectFrame(locator1 = "IFrame#IFRAME");
+		if (IsElementPresent(locator1 = "IFrame#IFRAME")) {
+			SelectFrame(locator1 = "IFrame#IFRAME");
 
-		AssertElementPresent(locator1 = "ObjectAdmin#SIDE_PANEL");
+			AssertElementPresent(locator1 = "ObjectAdmin#SIDE_PANEL");
 
-		AssertElementPresent(locator1 = "ObjectAdmin#SIDE_PANEL_TITLE");
+			AssertElementPresent(locator1 = "ObjectAdmin#SIDE_PANEL_TITLE");
+		}
 	}
 
 	macro viewFieldValueDisabled {
