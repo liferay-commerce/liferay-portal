@@ -96,6 +96,7 @@ public class CommerceChannelIndexer extends BaseIndexer<CommerceChannel> {
 
 		addSearchTerm(searchQuery, searchContext, Field.ENTRY_CLASS_PK, false);
 		addSearchTerm(searchQuery, searchContext, Field.NAME, false);
+		addSearchTerm(searchQuery, searchContext, "siteGroupId", false);
 	}
 
 	@Override
@@ -122,6 +123,8 @@ public class CommerceChannelIndexer extends BaseIndexer<CommerceChannel> {
 
 		document.addKeyword(
 			CPField.COMMERCE_CHANNEL_GROUP_ID, group.getGroupId());
+
+		document.addKeyword("siteGroupId", commerceChannel.getSiteGroupId());
 
 		if (_log.isDebugEnabled()) {
 			_log.debug("Document " + commerceChannel + " indexed successfully");
