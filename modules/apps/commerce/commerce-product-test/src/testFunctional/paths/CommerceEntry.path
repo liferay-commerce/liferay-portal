@@ -681,6 +681,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>TREEVIEW_NODE_ITEM</td>
+	<td>//li[contains(@class,'treeview-item')]//div[contains(@class,'d-flex')]//span[normalize-space(text())='${key_nodeName}'] | //li[contains(@class,'treeview-item')]//div[contains(@class,'component-text')][normalize-space(text())='${key_nodeName}']</td>
+	<td></td>
+</tr>
+<tr>
 	<td>HEADER_ID</td>
 	<td>//div[@class='header-info']//div//span[contains(.,'ID')]/following-sibling::strong</td>
 	<td></td>
