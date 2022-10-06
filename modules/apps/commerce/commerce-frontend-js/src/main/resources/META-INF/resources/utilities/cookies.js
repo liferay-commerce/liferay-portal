@@ -12,6 +12,8 @@
  * details.
  */
 
+import {COOKIE_TYPES, getCookie, setCookie} from 'frontend-js-web';
+
 class CommerceCookie {
 	constructor(scope = null) {
 		if (!scope) {
@@ -22,25 +24,25 @@ class CommerceCookie {
 	}
 
 	getValue(key) {
-		const [, value] = document.cookie.split(`${this.scope}${key}=`);
-
-		return !value ? null : value.split(';')[0];
+		return getCookie(key, COOKIE_TYPES.FUNCTIONAL);
 	}
 
 	setValue(key, value, expires, path = '/') {
-		const cookieValue = `${this.scope}${key}=${value};`;
-		const cookiePath = `path=${path};`;
-
-		let cookieExp = '';
+		const options = {path};
 
 		if (expires) {
 			const expirationDate =
 				expires instanceof Date ? expires : new Date(expires);
 
-			cookieExp = `expires=${expirationDate.toUTCString()};`;
+			options.expires = expirationDate.toUTCString();
 		}
 
-		document.cookie = `${cookieValue}${cookieExp}${cookiePath}`;
+		return setCookie(
+			`${this.scope}${key}`,
+			value,
+			COOKIE_TYPES.FUNCTIONAL,
+			options
+		);
 	}
 }
 
