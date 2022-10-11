@@ -397,19 +397,11 @@ definition {
 			productName = "Simple T-Shirt",
 			productType = "Simple");
 
-		Click(
-			key_itemName = "",
-			locator1 = "CommerceEntry#SPECIFIC_MENU_ITEM");
-
-		Click(
-			key_optionValue = "Duplicate",
-			locator1 = "CommerceFrontStore#FS_PRODUCT_OPTION");
-
-		CommerceEntry.addProductsEntry(
+		CommerceEntry.duplicateProduct(
+			checkProductFields = "true",
+			compileDescription = "false",
 			productCatalog = "Master",
-			productFullDescription = "",
-			productName = "Copy of Simple T-Shirt",
-			productShortDescription = "",
+			productName = "Simple T-Shirt",
 			publishProduct = "false");
 
 		AssertElementPresent(
