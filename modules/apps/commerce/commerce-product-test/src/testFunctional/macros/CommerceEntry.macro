@@ -978,6 +978,44 @@ definition {
 			locator1 = "CommerceEntry#ENTRY_CONTENT_ROW_BY_NAME");
 	}
 
+	macro duplicateProduct {
+		var productName = "${productName}";
+
+		Click(
+			key_itemName = "",
+			locator1 = "CommerceEntry#SPECIFIC_MENU_ITEM");
+
+		Click(
+			key_optionValue = "Duplicate",
+			locator1 = "CommerceFrontStore#FS_PRODUCT_OPTION");
+
+		WaitForElementPresent(locator1 = "IFrame#MODAL_BODY");
+
+		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
+
+		CommerceEntry.selectAutoCompleteField(
+			entryName = "${productCatalog}",
+			label = "Catalog");
+
+		Button.clickSubmitButton();
+
+		if (!(isSet(checkProductFields)) || ("${checkProductFields}" == "true")) {
+			CommerceEntry.checkProductsEntryFields(
+				productCatalog = "${productCatalog}",
+				productName = "Copy of ${productName}");
+		}
+
+		if (!(isSet(compileDescription)) || ("${compileDescription}" == "true")) {
+			CommerceEntry.addProductDescription(
+				productFullDescription = "${productFullDescription}",
+				productShortDescription = "${productShortDescription}");
+		}
+
+		if (!(isSet(publishProduct)) || ("${publishProduct}" == "true")) {
+			CommerceEntry.publishEntry(status = "Approved");
+		}
+	}
+
 	macro editEntryFullDescription {
 		CommerceEntry.addFullDescriptionViaCKEditor(entryFullDescription = "${newEntryFullDescription}");
 	}
