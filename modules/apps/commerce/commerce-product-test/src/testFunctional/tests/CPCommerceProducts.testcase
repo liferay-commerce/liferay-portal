@@ -1568,21 +1568,12 @@ definition {
 
 			CommerceNavigator.gotoEntry(entryName = "ABS Sensor");
 
-			Click(
-				key_itemName = "",
-				locator1 = "CommerceEntry#SPECIFIC_MENU_ITEM");
-
-			Click(
-				key_optionValue = "Duplicate",
-				locator1 = "CommerceFrontStore#FS_PRODUCT_OPTION");
-
-			CommerceEntry.addProductsEntry(
+			CommerceEntry.duplicateProduct(
+				checkProductFields = "true",
+				compileDescription = "false",
 				productCatalog = "Minium",
-				productFullDescription = "",
-				productName = "Copy of ABS Sensor",
-				productShortDescription = "");
-
-			Button.clickPublish();
+				productName = "ABS Sensor",
+				publishProduct = "true");
 		}
 
 		task ("And if I change the SKU price of the original product") {
