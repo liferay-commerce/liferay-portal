@@ -19,12 +19,13 @@ import com.liferay.commerce.exception.NoSuchOrderException;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.order.CommerceOrderHttpHelper;
 import com.liferay.commerce.order.content.web.internal.display.context.CommerceOrderContentDisplayContext;
+import com.liferay.commerce.order.content.web.internal.portlet.configuration.CommerceOrderContentPortletInstanceConfiguration;
+import com.liferay.commerce.product.display.context.helper.CPRequestHelper;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.servlet.SessionErrors;
-import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import javax.portlet.PortletException;
@@ -77,8 +78,18 @@ public class EditCommerceOrderMVCRenderCommand implements MVCRenderCommand {
 				}
 			}
 
-			if (GetterUtil.getBoolean(
-					PropsUtil.get("feature.flag.COMMERCE-8949"))) {
+			CPRequestHelper cpRequestHelper = new CPRequestHelper(
+				_portal.getHttpServletRequest(renderRequest));
+
+			PortletDisplay portletDisplay = cpRequestHelper.getPortletDisplay();
+
+			CommerceOrderContentPortletInstanceConfiguration
+				commerceOrderContentPortletInstanceConfiguration =
+					portletDisplay.getPortletInstanceConfiguration(
+						CommerceOrderContentPortletInstanceConfiguration.class);
+
+			if (commerceOrderContentPortletInstanceConfiguration.
+					enableUpdatedOrderDetailsPage()) {
 
 				return "/pending_commerce_orders/new_view.jsp";
 			}

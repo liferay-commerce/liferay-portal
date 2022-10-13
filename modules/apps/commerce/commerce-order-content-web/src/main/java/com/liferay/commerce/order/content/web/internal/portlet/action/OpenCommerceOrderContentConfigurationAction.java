@@ -41,9 +41,14 @@ import com.liferay.portal.kernel.portlet.ConfigurationAction;
 import com.liferay.portal.kernel.portlet.DefaultConfigurationAction;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
+import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import javax.portlet.ActionRequest;
+import javax.portlet.ActionResponse;
 import javax.portlet.PortletConfig;
+import javax.portlet.PortletPreferences;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -100,6 +105,25 @@ public class OpenCommerceOrderContentConfigurationAction
 		}
 
 		super.include(portletConfig, httpServletRequest, httpServletResponse);
+	}
+
+	@Override
+	public void processAction(
+			PortletConfig portletConfig, ActionRequest actionRequest,
+			ActionResponse actionResponse)
+		throws Exception {
+
+		String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
+
+		if (cmd.equals(Constants.UPDATE)) {
+			PortletPreferences preferences = actionRequest.getPreferences();
+
+			preferences.setValue(
+				"enableUpdatedOrderDetailsPage",
+				getParameter(actionRequest, "enableUpdatedOrderDetailsPage"));
+
+			preferences.store();
+		}
 	}
 
 	@Override
