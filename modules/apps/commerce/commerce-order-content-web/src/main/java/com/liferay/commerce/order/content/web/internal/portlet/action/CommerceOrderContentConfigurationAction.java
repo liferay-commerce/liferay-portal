@@ -119,6 +119,9 @@ public class CommerceOrderContentConfigurationAction
 			PortletPreferences preferences = actionRequest.getPreferences();
 
 			preferences.setValue(
+				"enableUpdatedOrderDetailsPage",
+				getParameter(actionRequest, "enableUpdatedOrderDetailsPage"));
+			preferences.setValue(
 				"showCommerceOrderCreateTime",
 				getParameter(actionRequest, "showCommerceOrderCreateTime"));
 
