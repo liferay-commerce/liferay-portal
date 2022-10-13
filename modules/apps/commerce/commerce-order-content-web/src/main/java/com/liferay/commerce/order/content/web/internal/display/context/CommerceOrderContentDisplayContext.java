@@ -194,6 +194,27 @@ public class CommerceOrderContentDisplayContext {
 			_httpServletRequest, "commerceOrderNoteId");
 	}
 
+	public boolean enableUpdatedOrderDetailsPage() throws PortalException {
+		if (isOpenOrderContentPortlet()) {
+			OpenCommerceOrderContentPortletInstanceConfiguration
+				openCommerceOrderContentPortletInstanceConfiguration =
+					_portletDisplay.getPortletInstanceConfiguration(
+						OpenCommerceOrderContentPortletInstanceConfiguration.
+							class);
+
+			return openCommerceOrderContentPortletInstanceConfiguration.
+				enableUpdatedOrderDetailsPage();
+		}
+
+		CommerceOrderContentPortletInstanceConfiguration
+			commerceOrderContentPortletInstanceConfiguration =
+				_portletDisplay.getPortletInstanceConfiguration(
+					CommerceOrderContentPortletInstanceConfiguration.class);
+
+		return commerceOrderContentPortletInstanceConfiguration.
+			enableUpdatedOrderDetailsPage();
+	}
+
 	public CommerceChannel fetchCommerceChannel() {
 		return _commerceChannelLocalService.fetchCommerceChannelBySiteGroupId(
 			_cpRequestHelper.getScopeGroupId());

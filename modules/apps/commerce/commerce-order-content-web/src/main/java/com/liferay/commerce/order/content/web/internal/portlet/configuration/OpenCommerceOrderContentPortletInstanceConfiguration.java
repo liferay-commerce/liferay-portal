@@ -38,4 +38,10 @@ public interface OpenCommerceOrderContentPortletInstanceConfiguration {
 	@Meta.AD(deflt = "0", name = "display-style-group-id", required = false)
 	public long displayStyleGroupId();
 
+	@Meta.AD(
+		deflt = "true", name = "enable-updated-order-details-page",
+		required = false
+	)
+	public boolean enableUpdatedOrderDetailsPage();
+
 }
