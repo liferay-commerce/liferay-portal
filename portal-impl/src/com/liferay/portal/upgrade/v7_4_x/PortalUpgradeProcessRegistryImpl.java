@@ -223,6 +223,11 @@ public class PortalUpgradeProcessRegistryImpl
 			new Version(21, 0, 0),
 			UpgradeProcessFactory.alterColumnName(
 				"Website", "typeId", "listTypeId LONG"));
+
+		upgradeVersionTreeMap.put(
+			new Version(21, 0, 1),
+			UpgradeModulesFactory.create(
+				new String[] {"com.liferay.commerce.order.content.web"}, null));
 	}
 
 }
