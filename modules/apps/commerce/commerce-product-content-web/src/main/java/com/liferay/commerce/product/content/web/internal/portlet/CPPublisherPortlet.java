@@ -29,11 +29,14 @@ import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.commerce.product.type.CPTypeServicesTracker;
 import com.liferay.commerce.product.url.CPFriendlyURL;
 import com.liferay.commerce.product.util.CPDefinitionHelper;
+import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 
@@ -89,7 +92,9 @@ public class CPPublisherPortlet extends MVCPortlet {
 					_cpContentListRendererRegistry, _cpDataSourceRegistry,
 					_cpDefinitionHelper, _cpDefinitionLocalService,
 					_cpFriendlyURL, _cpPublisherWebHelper,
-					_cpTypeServicesTracker, _friendlyURLEntryLocalService,
+					_cpTypeServicesTracker, _dlFileEntryLocalService,
+					_dlFileEntryModelResourcePermission,
+					_friendlyURLEntryLocalService,
 					_portal.getHttpServletRequest(renderRequest), _portal);
 
 			renderRequest.setAttribute(
@@ -145,6 +150,15 @@ public class CPPublisherPortlet extends MVCPortlet {
 
 	@Reference
 	private CPTypeServicesTracker _cpTypeServicesTracker;
+
+	@Reference
+	private DLFileEntryLocalService _dlFileEntryLocalService;
+
+	@Reference(
+		target = "(model.class.name=com.liferay.document.library.kernel.model.DLFileEntry)"
+	)
+	private ModelResourcePermission<DLFileEntry>
+		_dlFileEntryModelResourcePermission;
 
 	@Reference
 	private FriendlyURLEntryLocalService _friendlyURLEntryLocalService;
