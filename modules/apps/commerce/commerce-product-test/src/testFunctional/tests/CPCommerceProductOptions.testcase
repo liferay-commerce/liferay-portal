@@ -21,7 +21,9 @@ definition {
 		property portal.acceptance = "false";
 
 		task ("Given a Minium site is created") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 		}
 
 		task ("And an account associated with a buyer user") {
@@ -212,7 +214,9 @@ definition {
 		property portal.acceptance = "false";
 
 		task ("Given a Minium site is created") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 		}
 
 		task ("And an account associated with a buyer user") {
@@ -370,7 +374,9 @@ definition {
 		property portal.acceptance = "false";
 
 		task ("Given a Minium site is created") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 		}
 
 		task ("And an account associated with a buyer user") {
@@ -490,7 +496,9 @@ definition {
 		property portal.acceptance = "false";
 
 		task ("Given a Minium site is created") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 		}
 
 		task ("And an account associated with a buyer user") {
@@ -590,6 +598,8 @@ definition {
 
 		task ("And the buyer asserts the presence of the option values on Pending Orders") {
 			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
+
+			CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
 
 			Click(
 				key_orderAuthor = "Commerce Account",
@@ -750,7 +760,9 @@ definition {
 		property portal.acceptance = "false";
 
 		task ("Given a Minium site is created") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 		}
 
 		task ("And an account associated with a buyer user") {
@@ -873,7 +885,9 @@ definition {
 	test CreateAnOptionForAllTheFieldType {
 		property portal.acceptance = "true";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",

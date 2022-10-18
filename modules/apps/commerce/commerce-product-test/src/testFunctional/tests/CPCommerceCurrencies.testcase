@@ -83,7 +83,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",

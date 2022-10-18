@@ -93,7 +93,9 @@ definition {
 	@priority = "4"
 	test CanDragFunctionWorkAfterDoubleClickOnMappedProduct {
 		task ("Given a Minium site") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 		}
 
 		task ("And a diagram product with an image") {
@@ -611,7 +613,9 @@ definition {
 	@priority = "3"
 	test UseToolTip {
 		task ("Given a Minium site") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 		}
 
 		task ("And given a diagram product with a diagram image") {
@@ -706,7 +710,9 @@ definition {
 	@priority = "3"
 	test VerifyMappedProductsTableSavesAllPins {
 		task ("Given a minium site") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 		}
 
 		task ("And Given two diagram products") {

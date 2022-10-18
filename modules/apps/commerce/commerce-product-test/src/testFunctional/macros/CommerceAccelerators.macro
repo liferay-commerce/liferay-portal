@@ -18,6 +18,16 @@ definition {
 				siteName = "${siteName}",
 				siteTemplateName = "${siteName}");
 		}
+
+		if (isSet(oldOrderDetailsUI) && ("${oldOrderDetailsUI}" == "true")) {
+			Navigator.openWithAppendToBaseURL(urlAppend = "web/minium/pending-orders");
+
+			CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
+
+			Navigator.openWithAppendToBaseURL(urlAppend = "web/minium/placed-orders");
+
+			CommerceWidget.switchToOldOrdersUI(portletName = "Placed Orders");
+		}
 	}
 
 	macro removeSingleItemViaMiniCart {

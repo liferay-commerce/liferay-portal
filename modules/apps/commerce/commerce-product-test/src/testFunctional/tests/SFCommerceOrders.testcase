@@ -622,6 +622,8 @@ definition {
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
 
+		CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
+
 		Click(
 			key_orderAuthor = "Commerce Account",
 			locator1 = "CommerceAccelerators#ORDERS_ENTRY_VIEW_BUTTON");
@@ -691,6 +693,8 @@ definition {
 			productQuantity = "1");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
+
+		CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
 
 		Click(
 			key_orderAuthor = "Commerce Account",
@@ -1306,6 +1310,8 @@ definition {
 		ApplicationsMenu.gotoSite(site = "Minium");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Placed Orders");
+
+		CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
 
 		Click(
 			key_orderAuthor = "Commerce Account",

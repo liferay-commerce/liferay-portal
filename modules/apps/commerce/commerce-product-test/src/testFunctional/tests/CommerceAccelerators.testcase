@@ -20,7 +20,9 @@ definition {
 	test AddToCartButtonAndQuantitySelectorAreDisabledForAdminUser {
 		property portal.acceptance = "false";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
@@ -52,7 +54,9 @@ definition {
 	test AddToCartButtonAndQuantitySelectorAreDisabledForNewUser {
 		property portal.acceptance = "false";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		ApplicationsMenu.gotoPortlet(
 			category = "Users",
@@ -111,7 +115,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
@@ -218,7 +224,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium");
 
@@ -235,6 +243,8 @@ definition {
 			productQuantity = "1");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
+
+		CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
 
 		Click(locator1 = "//a[contains(text(),'View')]");
 
@@ -302,7 +312,9 @@ definition {
 
 		// Quarantined because of COMMERCE-9825
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium");
 
@@ -383,7 +395,9 @@ definition {
 	test DeactivateCommerceAccountAdminLogOut {
 		property portal.acceptance = "true";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium");
 
@@ -463,7 +477,9 @@ definition {
 	@description = "This is for COMMERCE-2658. Can be Drag and Drop fragments on a Minium site page."
 	@priority = "4"
 	test FragmentsCanBeDragAndDroppedToMiniumSitePage {
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
@@ -511,7 +527,9 @@ definition {
 		property environment.acceptance = "true";
 		property portal.acceptance = "true";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
@@ -624,7 +642,9 @@ definition {
 
 		// Quarantined because of COMMERCE-9825
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
@@ -711,6 +731,8 @@ definition {
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Placed Orders");
 
+		CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
+
 		CommerceAcceleratorsInitializer.reviewOrder(
 			orderAuthor = "Buyer User",
 			productName = "ABS Sensor",
@@ -720,6 +742,8 @@ definition {
 			productUnitPrice = "50.00");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
+
+		CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
 
 		CommerceAcceleratorsInitializer.reviewOrder(
 			orderAuthor = "Buyer User",
@@ -764,7 +788,9 @@ definition {
 	test MiniumSiteFullFlowCheckingOutViaOrderDetails {
 		property portal.acceptance = "true";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
@@ -853,6 +879,8 @@ definition {
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Placed Orders");
 
+		CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
+
 		CommerceAcceleratorsInitializer.reviewOrder(
 			orderAuthor = "Buyer User",
 			productName = "ABS Sensor",
@@ -862,6 +890,8 @@ definition {
 			productUnitPrice = "50.00");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
+
+		CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
 
 		CommerceAcceleratorsInitializer.reviewOrder(
 			orderAuthor = "Buyer User",

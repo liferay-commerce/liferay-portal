@@ -18,7 +18,9 @@ definition {
 	@priority = "3"
 	test AssertOldLogicIsAppliedIfDefaultProductDisplayPageIsNotSet {
 		task ("Given a Minium site") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 		}
 
 		task ("And given no default product display page is set") {
@@ -57,7 +59,9 @@ definition {
 	@priority = "5"
 	test CanSelectChangeAndRemoveDefaultProductDisplayPage {
 		task ("Given a Minium site") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 		}
 
 		task ("And given the Minium site has two pages with a Product Details widget") {
@@ -116,7 +120,9 @@ definition {
 	@priority = "5"
 	test CanSelectChangeAndRemoveOverrideDefaultProductDisplayPage {
 		task ("Given a Minium site") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 		}
 
 		task ("And given the Minium site has two pages with a Product Details widget") {
@@ -190,7 +196,9 @@ definition {
 	@priority = "3"
 	test OverrideDefaultProductDisplayPageForDifferentProducts {
 		task ("Given a Minium site") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 		}
 
 		task ("And given the Minium site has a public content page with a Product Details widget") {
@@ -359,7 +367,9 @@ definition {
 		property portal.acceptance = "false";
 
 		task ("Given that both a private content page and a private widget page are created with a product details widget") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 
 			JSONLayout.addPrivateLayout(
 				groupName = "Minium",
@@ -453,7 +463,9 @@ definition {
 		property portal.acceptance = "false";
 
 		task ("Given that both a public content page and a private content page are created with a product details widget") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 
 			JSONLayout.addPublicLayout(
 				groupName = "Minium",
@@ -551,7 +563,9 @@ definition {
 		property portal.acceptance = "false";
 
 		task ("Given that both a public content page and a private content page are created with a product details widget") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 
 			JSONLayout.addPublicLayout(
 				groupName = "Minium",
@@ -649,7 +663,9 @@ definition {
 		property portal.acceptance = "false";
 
 		task ("Given that both a public widget page and a public content page are created with a product details widget") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 
 			JSONLayout.addPublicLayout(
 				groupName = "Minium",
@@ -740,7 +756,9 @@ definition {
 	@priority = "3"
 	test ViewDefaultProductDisplayPageWithPrivateContentAndWidgetPages {
 		task ("Given a Minium site") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 		}
 
 		task ("And given the Minium site has a private content page with a Product Details widget") {
@@ -843,7 +861,9 @@ definition {
 	@priority = "3"
 	test ViewDefaultProductDisplayPageWithPublicContentAndWidgetPages {
 		task ("Given a Minium site") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 		}
 
 		task ("And given the Minium site has a public content page with a Product Details widget") {

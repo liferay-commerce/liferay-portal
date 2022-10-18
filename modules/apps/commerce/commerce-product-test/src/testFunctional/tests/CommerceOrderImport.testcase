@@ -372,6 +372,8 @@ definition {
 
 			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
 
+			CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
+
 			Button.click(button = "View");
 		}
 

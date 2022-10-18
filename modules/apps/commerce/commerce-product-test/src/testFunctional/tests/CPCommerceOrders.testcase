@@ -28,7 +28,9 @@ definition {
 
 		PortalSettings.uncheckStrangersVerifyEmailCheckbox();
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
@@ -92,7 +94,9 @@ definition {
 		property portal.acceptance = "false";
 
 		task ("Given a Minium site with a buyer user") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 
 			CommerceEntry.addAccountEntryUser(
 				accountName = "Commerce Account",
@@ -190,7 +194,9 @@ definition {
 		property custom.properties = "jsonws.web.service.paths.excludes=${line.separator}company.security.strangers.verify=false";
 
 		task ("Given a Minium site with a buyer user") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 
 			CommerceEntry.addAccountEntryUser(
 				accountName = "Commerce Account",
@@ -305,7 +311,9 @@ definition {
 		property custom.properties = "jsonws.web.service.paths.excludes=${line.separator}company.security.strangers.verify=false";
 
 		task ("Given a Minium site with a buyer user") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 
 			CommerceEntry.addAccountEntryUser(
 				accountName = "Commerce Account",
@@ -405,7 +413,9 @@ definition {
 		property custom.properties = "jsonws.web.service.paths.excludes=${line.separator}company.security.strangers.verify=false";
 
 		task ("Given a Minium site with a buyer user") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 
 			CommerceEntry.addAccountEntryUser(
 				accountName = "Commerce Account",
@@ -464,7 +474,9 @@ definition {
 		property custom.properties = "jsonws.web.service.paths.excludes=${line.separator}company.security.strangers.verify=false";
 
 		task ("Given a Minium site with a buyer user") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 
 			CommerceEntry.addAccountEntryUser(
 				accountName = "Commerce Account",
@@ -550,7 +562,9 @@ definition {
 		property custom.properties = "jsonws.web.service.paths.excludes=${line.separator}company.security.strangers.verify=false";
 
 		task ("Given a Minium site with a buyer user") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 
 			CommerceEntry.addAccountEntryUser(
 				accountName = "Commerce Account",
@@ -661,7 +675,9 @@ definition {
 		property custom.properties = "jsonws.web.service.paths.excludes=${line.separator}company.security.strangers.verify=false";
 
 		task ("Given a Minium site with a buyer user") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 
 			CommerceEntry.addAccountEntryUser(
 				accountName = "Commerce Account",
@@ -703,7 +719,9 @@ definition {
 	test BulkDeleteOrders {
 		property portal.acceptance = "false";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		JSONAccountEntry.addAccountEntry(
 			accountEntryName = "Commerce Account",
@@ -739,7 +757,9 @@ definition {
 		property portal.acceptance = "false";
 
 		task ("Given the Admin already created a Minium Site and a buyer account") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 
 			CommerceEntry.addAccountEntryUser(
 				accountName = "Commerce Account",
@@ -813,6 +833,8 @@ definition {
 
 		task ("And goes into the 'Placed Orders' page") {
 			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Placed Orders");
+
+			CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
 		}
 
 		task ("Then the button 'Retry Payment' and 'Reorder' is present because PayPal is active") {
@@ -859,6 +881,8 @@ definition {
 
 		task ("And goes into the 'Placed Orders' page") {
 			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Placed Orders");
+
+			CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
 		}
 
 		task ("Then the button 'Retry Payment' is not present because PayPal is disabled") {
@@ -899,7 +923,9 @@ definition {
 		property portal.acceptance = "true";
 
 		task ("Given the Admin already created a Minium Site and a buyer account") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 
 			CommerceEntry.addAccountEntryUser(
 				accountName = "Commerce Account",
@@ -989,7 +1015,9 @@ definition {
 		property portal.acceptance = "false";
 
 		task ("Given a minium site created") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 		}
 
 		task ("And an account associated with the site") {
@@ -1114,7 +1142,9 @@ definition {
 		property portal.acceptance = "false";
 
 		task ("Given the Admin already created a Minium Site and a buyer account") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 
 			CommerceEntry.addAccountEntryUser(
 				accountName = "Commerce Account",
@@ -1188,6 +1218,8 @@ definition {
 
 		task ("And goes into the 'Placed Orders' page") {
 			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Placed Orders");
+
+			CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
 		}
 
 		task ("Then the 'Retry Payment' is not present because the payment status is 'Failed'") {
@@ -1247,7 +1279,9 @@ definition {
 		property portal.acceptance = "false";
 
 		task ("Given the Admin already created a Minium Site and a buyer account") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 
 			CommerceEntry.addAccountEntryUser(
 				accountName = "Commerce Account",
@@ -1321,6 +1355,8 @@ definition {
 
 		task ("And goes into the 'Placed Orders' page") {
 			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Placed Orders");
+
+			CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
 		}
 
 		task ("Then the Order Status is 'In Progress' and the button 'Retry Payment' is present to continue the checkout Options") {
@@ -1345,7 +1381,9 @@ definition {
 		property portal.acceptance = "false";
 
 		task ("Given the Admin already created a Minium Site and a buyer account") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 
 			CommerceEntry.addAccountEntryUser(
 				accountName = "Commerce Account",
@@ -1417,6 +1455,8 @@ definition {
 
 		task ("And goes into the 'Pending Orders' page") {
 			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
+
+			CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
 		}
 
 		task ("Then the 'Retry Payment' is not present because the order is still on open") {
@@ -1436,7 +1476,9 @@ definition {
 		property portal.acceptance = "false";
 
 		task ("Given a minium site created") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 		}
 
 		task ("And an account associated with the site") {
@@ -1531,7 +1573,9 @@ definition {
 		property portal.acceptance = "false";
 
 		task ("Given a Minium site with an account") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 
 			JSONAccountEntry.addAccountEntry(
 				accountEntryName = "Commerce Account",
@@ -1597,7 +1641,9 @@ definition {
 		var key_buttonAction = "Deactivate";
 		var catalogName = "Master";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
@@ -1661,7 +1707,9 @@ definition {
 	test EditOrder {
 		property portal.acceptance = "false";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
@@ -1731,7 +1779,9 @@ definition {
 	test EditOrderCheckingOutViaOrderDetails {
 		property portal.acceptance = "true";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Store Management",
@@ -1826,7 +1876,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		CommerceAccelerators.initializeNewSiteViaAccelerator(
 			siteName = "Minium2",
@@ -2076,7 +2128,9 @@ definition {
 
 		PortalSettings.uncheckStrangersVerifyEmailCheckbox();
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
@@ -2154,6 +2208,8 @@ definition {
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
 
+		CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
+
 		Click(
 			key_orderAuthor = "Commerce Account",
 			locator1 = "CommerceAccelerators#ORDERS_ENTRY_VIEW_BUTTON");
@@ -2175,6 +2231,8 @@ definition {
 			userEmailAddress = "buyer@liferay.com");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
+
+		CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
 
 		Click(
 			key_orderAuthor = "Commerce Account",
@@ -2209,7 +2267,9 @@ definition {
 
 		PortalSettings.uncheckStrangersVerifyEmailCheckbox();
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
@@ -2320,7 +2380,9 @@ definition {
 		property portal.acceptance = "false";
 
 		task ("Given a Minium site with a buyer user") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 
 			CommerceEntry.addAccountEntryUser(
 				accountName = "Commerce Account",
@@ -2431,7 +2493,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
@@ -2479,7 +2543,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
@@ -2532,7 +2598,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 

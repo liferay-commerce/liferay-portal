@@ -327,6 +327,8 @@ definition {
 		task ("Then a new order is automatically created and the order type field is empty") {
 			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
 
+			CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
+
 			Button.click(button = "View");
 
 			AssertElementPresent(
@@ -392,6 +394,8 @@ definition {
 		task ("Then a new order is automatically created and the order type is set to Test Order Type 2 since it has higher priority") {
 			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
 
+			CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
+
 			Button.click(button = "View");
 
 			AssertElementPresent(
@@ -427,6 +431,8 @@ definition {
 
 		task ("Then a new order is automatically created and the order type is set as the Order Type for the order") {
 			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
+
+			CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
 
 			Button.click(button = "View");
 
