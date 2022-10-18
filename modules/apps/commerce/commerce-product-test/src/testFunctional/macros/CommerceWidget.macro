@@ -200,6 +200,28 @@ definition {
 		Click(locator1 = "Button#EXPAND");
 	}
 
+	macro switchToOldOrdersUI {
+		Portlet.gotoPortletOptions(
+			portletName = "${portletName}",
+			portletOption = "Configuration");
+
+		WaitForLiferayEvent.initializeLiferayEventLog();
+
+		SelectFrameTop();
+
+		SelectFrame(locator1 = "IFrame#CONFIGURATION");
+
+		Uncheck.uncheckToggleSwitch(
+			key_toggleSwitchLabel = "Enable Updated Order Details Page",
+			locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
+
+		Button.clickSave();
+
+		Alert.viewSuccessMessage();
+
+		IFrame.closeFrame();
+	}
+
 	macro updateFacetConfiguration {
 		Portlet.gotoPortletOptions(
 			portletName = "${portletName}",

@@ -17,7 +17,9 @@ definition {
 	@description = "COMMERCE-5937. As a buyer, I want open Account Selector to close if I open the Global Search"
 	@priority = "3"
 	test AssertAccountSelectorIsClosedAfterGlobalSearchIsOpened {
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
@@ -43,7 +45,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
@@ -69,7 +73,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
@@ -91,7 +97,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
@@ -113,7 +121,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
@@ -157,7 +167,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
@@ -219,7 +231,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
@@ -253,7 +267,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
@@ -297,7 +313,9 @@ definition {
 	test SearchForAnOrderAndSelectItAsActive {
 		property portal.acceptance = "false";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium");
 
@@ -343,7 +361,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
@@ -385,7 +405,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 

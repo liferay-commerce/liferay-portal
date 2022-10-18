@@ -209,7 +209,9 @@ definition {
 		property portal.acceptance = "false";
 
 		task ("Given the admin already created a Minium") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 		}
 
 		task ("When the admin opens 'Hoses'") {

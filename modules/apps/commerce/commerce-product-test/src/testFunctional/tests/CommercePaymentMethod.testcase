@@ -128,7 +128,9 @@ definition {
 		property test.name.skip.portal.instance = "CommercePaymentMethod#AnOfflinePaymentMethodCanBeUsedForAnOrder";
 
 		task ("Given a Minium site with a buyer user") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 
 			CommerceEntry.addAccountEntryUser(
 				accountName = "Commerce Account",
@@ -191,7 +193,9 @@ definition {
 		property test.name.skip.portal.instance = "CommercePaymentMethod#AssertAndEditNewPaymentMethodInOrdersPage";
 
 		task ("Given a Minium site with a buyer user") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 
 			CommerceEntry.addAccountEntryUser(
 				accountName = "Commerce Account",
@@ -287,7 +291,9 @@ definition {
 		property test.name.skip.portal.instance = "CommercePaymentMethod#CreateOrderWithMultipleActivePaymentMethods";
 
 		task ("Given a Minium site with a buyer user") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 
 			CommerceEntry.addAccountEntryUser(
 				accountName = "Commerce Account",

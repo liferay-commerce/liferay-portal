@@ -165,7 +165,9 @@ definition {
 		}
 
 		if (isSet(minium)) {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 
 			if (isSet(moneyOrder) && ("${moneyOrder}" == "true")) {
 				CommerceChannels.openChannelsAdmin();

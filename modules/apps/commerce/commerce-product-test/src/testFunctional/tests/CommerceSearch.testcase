@@ -21,7 +21,9 @@ definition {
 		property portal.acceptance = "false";
 
 		task ("Given a Minium site with a buyer user") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 
 			CommerceEntry.addAccountEntryUser(
 				accountName = "Commerce Account",
@@ -72,7 +74,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
@@ -114,7 +118,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
@@ -152,7 +158,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
@@ -196,7 +204,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
@@ -256,7 +266,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
@@ -296,7 +308,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
@@ -346,7 +360,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
@@ -414,7 +430,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
@@ -502,7 +520,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
@@ -533,7 +553,9 @@ definition {
 
 		var product = '''"ABS Sensor"''';
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
@@ -563,7 +585,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
@@ -594,7 +618,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		Navigator.openWithAppendToBaseURL(urlAppend = "web/minium");
 
@@ -620,7 +646,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
@@ -648,7 +676,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
@@ -678,7 +708,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
@@ -709,7 +741,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
@@ -755,7 +789,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
@@ -785,7 +821,9 @@ definition {
 		property portal.acceptance = "false";
 
 		task ("Given a Minium site with a buyer user") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 
 			CommerceEntry.addAccountEntryUser(
 				accountName = "Commerce Account",
@@ -839,7 +877,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
@@ -857,7 +897,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
@@ -906,7 +948,9 @@ definition {
 
 		// TODO Review
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		ApplicationsMenu.gotoSite(site = "Minium");
 
@@ -939,7 +983,9 @@ definition {
 	test UseADTInSearchResultsWidget {
 		property portal.acceptance = "false";
 
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		CommerceAccelerators.initializeNewSiteViaAccelerator(
+			oldOrderDetailsUI = "true",
+			siteName = "Minium");
 
 		CommerceNavigator.gotoPortlet(
 			category = "Product Management",

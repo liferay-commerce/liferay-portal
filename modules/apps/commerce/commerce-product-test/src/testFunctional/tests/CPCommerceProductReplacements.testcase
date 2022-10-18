@@ -21,7 +21,9 @@ definition {
 		property portal.acceptance = "false";
 
 		task ("Given a Minium site with a buyer user") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 
 			CommerceEntry.addAccountEntryUser(
 				accountName = "Commerce Account",
@@ -72,7 +74,9 @@ definition {
 		property portal.acceptance = "false";
 
 		task ("Given a site created using Minium") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 		}
 
 		task ("And a simple product with a SKU") {

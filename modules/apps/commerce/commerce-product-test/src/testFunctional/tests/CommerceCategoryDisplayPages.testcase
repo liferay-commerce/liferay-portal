@@ -18,7 +18,9 @@ definition {
 	@priority = "3"
 	test AssertOldLogicIsAppliedIfDefaultCategoryDisplayPageIsNotSet {
 		task ("Given a Minium site") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 		}
 
 		task ("And given a Private Category Navigation page") {
@@ -68,7 +70,9 @@ definition {
 	@priority = "5"
 	test CanSelectChangeAndRemoveDefaultCategoryDisplayPage {
 		task ("Given a Minium site") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 		}
 
 		task ("And given the Minium site has a Categories Navigation page with a Commerce Categories Navigation widget") {
@@ -150,7 +154,9 @@ definition {
 	@priority = "3"
 	test CanSelectChangeAndRemoveOverrideDefaultCategoryDisplayPage {
 		task ("Given a Minium site") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 		}
 
 		task ("And given the Minium site has a Categories Navigation page with a Commerce Categories Navigation widget") {
@@ -245,7 +251,9 @@ definition {
 	@priority = "4"
 	test OverrideDefaultCategoryDisplayPageForDifferentCategories {
 		task ("Given a Minium site") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 		}
 
 		task ("And given the Minium site has a private Categories Navigation page with a Commerce Categories Navigation widget") {
@@ -444,7 +452,9 @@ definition {
 	@priority = "3"
 	test OverridePrivateDefaultCategoryDisplayPageWithAPrivatePage {
 		task ("Given a Minium site") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 		}
 
 		task ("And given the Minium site has a private Categories Navigation page with a Commerce Categories Navigation widget") {
@@ -565,7 +575,9 @@ definition {
 	@priority = "3"
 	test OverridePrivateDefaultCategoryDisplayPageWithAPublicPage {
 		task ("Given a Minium site") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 		}
 
 		task ("And given the Minium site has a private Categories Navigation page with a Commerce Categories Navigation widget") {
@@ -690,7 +702,9 @@ definition {
 	@priority = "3"
 	test OverridePublicDefaultCategoryDisplayPageWithAPrivatePage {
 		task ("Given a Minium site") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 		}
 
 		task ("And given the Minium site has a private Categories Navigation page with a Commerce Categories Navigation widget") {
@@ -815,7 +829,9 @@ definition {
 	@priority = "3"
 	test OverridePublicDefaultCategoryDisplayPageWithAPublicPage {
 		task ("Given a Minium site") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 		}
 
 		task ("And given the Minium site has a private Categories Navigation page with a Commerce Categories Navigation widget") {
@@ -935,7 +951,9 @@ definition {
 	@priority = "3"
 	test ViewDefaultCategoryDisplayPageWithPrivateWidgetAndContentPages {
 		task ("Given a Minium site") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 		}
 
 		task ("And given the Minium site has a private Categories Navigation page with a Commerce Categories Navigation widget") {
@@ -1059,7 +1077,9 @@ definition {
 	@priority = "3"
 	test ViewDefaultCategoryDisplayPageWithPublicWidgetAndContentPages {
 		task ("Given a Minium site") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 		}
 
 		task ("And given the Minium site has a private Categories Navigation page with a Commerce Categories Navigation widget") {

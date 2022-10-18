@@ -26,7 +26,9 @@ definition {
 		// TODO COMMERCE-9089 Find alternative to having a pause to wait for a timed expiration and publication
 
 		task ("Given a Minium site with a buyer user") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 
 			CommerceEntry.addAccountEntryUser(
 				accountName = "Commerce Account",

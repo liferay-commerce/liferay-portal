@@ -217,7 +217,9 @@ definition {
 		property portal.acceptance = "false";
 
 		task ("Given a Minium site with a buyer users") {
-			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+			CommerceAccelerators.initializeNewSiteViaAccelerator(
+				oldOrderDetailsUI = "true",
+				siteName = "Minium");
 
 			CommerceEntry.addAccountEntryUser(
 				accountName = "Commerce Account",
