@@ -599,8 +599,6 @@ definition {
 		task ("And the buyer asserts the presence of the option values on Pending Orders") {
 			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
 
-			CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
-
 			Click(
 				key_orderAuthor = "Commerce Account",
 				locator1 = "CommerceAccelerators#ORDERS_ENTRY_VIEW_BUTTON");

@@ -494,8 +494,6 @@ definition {
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Placed Orders");
 
-		CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
-
 		CommerceAcceleratorsInitializer.reviewOrder(
 			deliveryTerm = "Delivery Term 1",
 			orderAuthor = "Buyer User",

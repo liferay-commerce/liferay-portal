@@ -244,8 +244,6 @@ definition {
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
 
-		CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
-
 		Click(locator1 = "//a[contains(text(),'View')]");
 
 		AssertTextEquals(
@@ -731,8 +729,6 @@ definition {
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Placed Orders");
 
-		CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
-
 		CommerceAcceleratorsInitializer.reviewOrder(
 			orderAuthor = "Buyer User",
 			productName = "ABS Sensor",
@@ -742,8 +738,6 @@ definition {
 			productUnitPrice = "50.00");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
-
-		CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
 
 		CommerceAcceleratorsInitializer.reviewOrder(
 			orderAuthor = "Buyer User",
@@ -879,8 +873,6 @@ definition {
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Placed Orders");
 
-		CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
-
 		CommerceAcceleratorsInitializer.reviewOrder(
 			orderAuthor = "Buyer User",
 			productName = "ABS Sensor",
@@ -890,8 +882,6 @@ definition {
 			productUnitPrice = "50.00");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
-
-		CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
 
 		CommerceAcceleratorsInitializer.reviewOrder(
 			orderAuthor = "Buyer User",

@@ -359,8 +359,6 @@ definition {
 		task ("And given the buyer navigates to the order details page") {
 			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
 
-			CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
-
 			Button.click(button = "View");
 		}
 
@@ -491,8 +489,6 @@ definition {
 
 		task ("And given the buyer navigates to the order details page") {
 			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
-
-			CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
 
 			Button.click(button = "View");
 		}
@@ -708,8 +704,6 @@ definition {
 		task ("When the buyer select the pending order and import a new order from wish list") {
 			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
 
-			CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
-
 			Button.click(button = "View");
 
 			CommerceOrders.importOrderFromType(orderType = "Wish Lists");
@@ -813,8 +807,6 @@ definition {
 		task ("When the buyer select the pending order and import a new order from wish list") {
 			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
 
-			CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
-
 			Button.click(button = "View");
 
 			CommerceOrders.importOrderFromType(orderType = "Wish Lists");
@@ -882,8 +874,6 @@ definition {
 
 		task ("And when the user go to placed orders and select the completed order") {
 			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Placed Orders");
-
-			CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
 
 			Button.click(button = "View");
 		}
@@ -984,8 +974,6 @@ definition {
 			SelectFrameTop();
 
 			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
-
-			CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
 
 			Click(
 				currentOrderId = "${currentOrderId}",
