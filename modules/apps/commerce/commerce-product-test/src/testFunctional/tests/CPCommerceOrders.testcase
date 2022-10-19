@@ -833,8 +833,6 @@ definition {
 
 		task ("And goes into the 'Placed Orders' page") {
 			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Placed Orders");
-
-			CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
 		}
 
 		task ("Then the button 'Retry Payment' and 'Reorder' is present because PayPal is active") {
@@ -881,8 +879,6 @@ definition {
 
 		task ("And goes into the 'Placed Orders' page") {
 			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Placed Orders");
-
-			CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
 		}
 
 		task ("Then the button 'Retry Payment' is not present because PayPal is disabled") {
@@ -1218,8 +1214,6 @@ definition {
 
 		task ("And goes into the 'Placed Orders' page") {
 			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Placed Orders");
-
-			CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
 		}
 
 		task ("Then the 'Retry Payment' is not present because the payment status is 'Failed'") {
@@ -1355,8 +1349,6 @@ definition {
 
 		task ("And goes into the 'Placed Orders' page") {
 			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Placed Orders");
-
-			CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
 		}
 
 		task ("Then the Order Status is 'In Progress' and the button 'Retry Payment' is present to continue the checkout Options") {
@@ -1455,8 +1447,6 @@ definition {
 
 		task ("And goes into the 'Pending Orders' page") {
 			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
-
-			CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
 		}
 
 		task ("Then the 'Retry Payment' is not present because the order is still on open") {
@@ -2208,8 +2198,6 @@ definition {
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
 
-		CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
-
 		Click(
 			key_orderAuthor = "Commerce Account",
 			locator1 = "CommerceAccelerators#ORDERS_ENTRY_VIEW_BUTTON");
@@ -2231,8 +2219,6 @@ definition {
 			userEmailAddress = "buyer@liferay.com");
 
 		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Pending Orders");
-
-		CommerceWidget.switchToOldOrdersUI(portletName = "Open Carts");
 
 		Click(
 			key_orderAuthor = "Commerce Account",
