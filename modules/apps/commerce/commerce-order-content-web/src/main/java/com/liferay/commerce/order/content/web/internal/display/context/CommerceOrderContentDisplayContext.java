@@ -607,7 +607,8 @@ public class CommerceOrderContentDisplayContext {
 							PortalUtil.getCurrentURL(
 								_cpRequestHelper.getRequest())
 						).setParameter(
-							"commerceOrderId", getCommerceOrderId()
+							"commerceOrderId",
+							commerceOrder.getCommerceOrderId()
 						).setParameter(
 							"commerceOrderImporterTypeKey",
 							commerceOrderImporterType.getKey()
@@ -639,7 +640,7 @@ public class CommerceOrderContentDisplayContext {
 					).setRedirect(
 						PortalUtil.getCurrentURL(_cpRequestHelper.getRequest())
 					).setParameter(
-						"commerceOrderId", getCommerceOrderId()
+						"commerceOrderId", commerceOrder.getCommerceOrderId()
 					).buildString()
 				).setLabel(
 					LanguageUtil.get(_cpRequestHelper.getRequest(), "delete")
@@ -656,7 +657,7 @@ public class CommerceOrderContentDisplayContext {
 					).setRedirect(
 						PortalUtil.getCurrentURL(_cpRequestHelper.getRequest())
 					).setParameter(
-						"commerceOrderId", getCommerceOrderId()
+						"commerceOrderId", commerceOrder.getCommerceOrderId()
 					).buildString()
 				).setLabel(
 					LanguageUtil.get(
@@ -671,7 +672,7 @@ public class CommerceOrderContentDisplayContext {
 						_cpRequestHelper.getLiferayPortletResponse(),
 						CommercePortletKeys.COMMERCE_ORDER_CONTENT
 					).setParameter(
-						"commerceOrderId", getCommerceOrderId()
+						"commerceOrderId", commerceOrder.getCommerceOrderId()
 					).setResourceID(
 						"/commerce_order_content/export_commerce_order_report"
 					).buildString()
@@ -683,12 +684,14 @@ public class CommerceOrderContentDisplayContext {
 		return dropdownItems;
 	}
 
-	public String getExportCommerceOrderReportURL() {
+	public String getExportCommerceOrderReportURL() throws Exception {
+		CommerceOrder commerceOrder = getCommerceOrder();
+
 		return ResourceURLBuilder.createResourceURL(
 			_cpRequestHelper.getLiferayPortletResponse(),
 			CommercePortletKeys.COMMERCE_ORDER_CONTENT
 		).setParameter(
-			"commerceOrderId", getCommerceOrderId()
+			"commerceOrderId", commerceOrder.getCommerceOrderId()
 		).setResourceID(
 			"/commerce_order_content/export_commerce_order_report"
 		).buildString();
@@ -700,23 +703,31 @@ public class CommerceOrderContentDisplayContext {
 		List<HeaderActionModel> headerActionModels = new ArrayList<>();
 
 		CommerceOrder commerceOrder = getCommerceOrder();
+		CommerceOrderContentPortletInstanceConfiguration
+			commerceOrderContentPortletInstanceConfiguration =
+				_portletDisplay.getPortletInstanceConfiguration(
+					CommerceOrderContentPortletInstanceConfiguration.class);
 
-		headerActionModels.add(
-			new HeaderActionModel(
-				"btn-secondary", null,
-				PortletURLBuilder.createActionURL(
-					_cpRequestHelper.getLiferayPortletResponse()
-				).setActionName(
-					"/commerce_open_order_content/edit_commerce_order"
-				).setCMD(
-					Constants.UPDATE
-				).setRedirect(
-					_cpRequestHelper.getCurrentURL()
-				).setParameter(
-					"commerceOrderId", commerceOrder.getCommerceOrderId()
-				).buildPortletURL(
-				).toString(),
-				null, "save"));
+		if (!commerceOrderContentPortletInstanceConfiguration.
+				enableUpdatedOrderDetailsPage()) {
+
+			headerActionModels.add(
+				new HeaderActionModel(
+					"btn-secondary", null,
+					PortletURLBuilder.createActionURL(
+						_cpRequestHelper.getLiferayPortletResponse()
+					).setActionName(
+						"/commerce_open_order_content/edit_commerce_order"
+					).setCMD(
+						Constants.UPDATE
+					).setRedirect(
+						_cpRequestHelper.getCurrentURL()
+					).setParameter(
+						"commerceOrderId", commerceOrder.getCommerceOrderId()
+					).buildPortletURL(
+					).toString(),
+					null, "save"));
+		}
 
 		if (isShowRetryPayment()) {
 			headerActionModels.add(
@@ -813,6 +824,8 @@ public class CommerceOrderContentDisplayContext {
 
 			String transitionOrderPortletURLString = PortletURLBuilder.create(
 				getTransitionOrderPortletURL()
+			).setParameter(
+				"commerceOrderId", commerceOrder.getCommerceOrderId()
 			).setParameter(
 				"transitionName", transitionName
 			).buildString();

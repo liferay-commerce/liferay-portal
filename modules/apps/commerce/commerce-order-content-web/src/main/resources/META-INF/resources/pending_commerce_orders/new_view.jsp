@@ -22,12 +22,12 @@ CommerceOrder commerceOrder = commerceOrderContentDisplayContext.getCommerceOrde
 
 <liferay-portlet:renderURL var="editBillingAddressURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 	<portlet:param name="mvcRenderCommandName" value="/commerce_open_order_content/edit_commerce_order_billing_address" />
-	<portlet:param name="commerceOrderId" value="<%= String.valueOf(commerceOrderContentDisplayContext.getCommerceOrderId()) %>" />
+	<portlet:param name="commerceOrderId" value="<%= String.valueOf(commerceOrder.getCommerceOrderId()) %>" />
 </liferay-portlet:renderURL>
 
 <liferay-portlet:renderURL var="selectBillingAddressURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 	<portlet:param name="mvcRenderCommandName" value="/commerce_open_order_content/select_commerce_order_billing_address" />
-	<portlet:param name="commerceOrderId" value="<%= String.valueOf(commerceOrderContentDisplayContext.getCommerceOrderId()) %>" />
+	<portlet:param name="commerceOrderId" value="<%= String.valueOf(commerceOrder.getCommerceOrderId()) %>" />
 </liferay-portlet:renderURL>
 
 <commerce-ui:modal
@@ -39,12 +39,12 @@ CommerceOrder commerceOrder = commerceOrderContentDisplayContext.getCommerceOrde
 
 <liferay-portlet:renderURL var="editShippingAddressURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 	<portlet:param name="mvcRenderCommandName" value="/commerce_open_order_content/edit_commerce_order_shipping_address" />
-	<portlet:param name="commerceOrderId" value="<%= String.valueOf(commerceOrderContentDisplayContext.getCommerceOrderId()) %>" />
+	<portlet:param name="commerceOrderId" value="<%= String.valueOf(commerceOrder.getCommerceOrderId()) %>" />
 </liferay-portlet:renderURL>
 
 <liferay-portlet:renderURL var="selectShippingAddressURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 	<portlet:param name="mvcRenderCommandName" value="/commerce_open_order_content/select_commerce_order_shipping_address" />
-	<portlet:param name="commerceOrderId" value="<%= String.valueOf(commerceOrderContentDisplayContext.getCommerceOrderId()) %>" />
+	<portlet:param name="commerceOrderId" value="<%= String.valueOf(commerceOrder.getCommerceOrderId()) %>" />
 </liferay-portlet:renderURL>
 
 <commerce-ui:modal
@@ -56,7 +56,7 @@ CommerceOrder commerceOrder = commerceOrderContentDisplayContext.getCommerceOrde
 
 <liferay-portlet:renderURL var="editPurchaseOrderNumberURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 	<portlet:param name="mvcRenderCommandName" value="/commerce_open_order_content/edit_commerce_order_purchase_order_number" />
-	<portlet:param name="commerceOrderId" value="<%= String.valueOf(commerceOrderContentDisplayContext.getCommerceOrderId()) %>" />
+	<portlet:param name="commerceOrderId" value="<%= String.valueOf(commerceOrder.getCommerceOrderId()) %>" />
 </liferay-portlet:renderURL>
 
 <commerce-ui:modal
@@ -69,7 +69,7 @@ CommerceOrder commerceOrder = commerceOrderContentDisplayContext.getCommerceOrde
 
 <liferay-portlet:renderURL var="editRequestedDeliveryDateURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 	<portlet:param name="mvcRenderCommandName" value="/commerce_open_order_content/edit_commerce_order_requested_delivery_date" />
-	<portlet:param name="commerceOrderId" value="<%= String.valueOf(commerceOrderContentDisplayContext.getCommerceOrderId()) %>" />
+	<portlet:param name="commerceOrderId" value="<%= String.valueOf(commerceOrder.getCommerceOrderId()) %>" />
 </liferay-portlet:renderURL>
 
 <commerce-ui:modal
@@ -82,7 +82,7 @@ CommerceOrder commerceOrder = commerceOrderContentDisplayContext.getCommerceOrde
 
 <liferay-portlet:renderURL var="viewPaymentTermsURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 	<portlet:param name="mvcRenderCommandName" value="/commerce_order_content/view_commerce_order_payment_terms" />
-	<portlet:param name="commerceOrderId" value="<%= String.valueOf(commerceOrderContentDisplayContext.getCommerceOrderId()) %>" />
+	<portlet:param name="commerceOrderId" value="<%= String.valueOf(commerceOrder.getCommerceOrderId()) %>" />
 </liferay-portlet:renderURL>
 
 <commerce-ui:modal
@@ -94,7 +94,7 @@ CommerceOrder commerceOrder = commerceOrderContentDisplayContext.getCommerceOrde
 
 <liferay-portlet:renderURL var="viewDeliveryTermsURL" windowState="<%= LiferayWindowState.POP_UP.toString() %>">
 	<portlet:param name="mvcRenderCommandName" value="/commerce_order_content/view_commerce_order_delivery_terms" />
-	<portlet:param name="commerceOrderId" value="<%= String.valueOf(commerceOrderContentDisplayContext.getCommerceOrderId()) %>" />
+	<portlet:param name="commerceOrderId" value="<%= String.valueOf(commerceOrder.getCommerceOrderId()) %>" />
 </liferay-portlet:renderURL>
 
 <commerce-ui:modal
@@ -391,7 +391,7 @@ CommerceOrder commerceOrder = commerceOrderContentDisplayContext.getCommerceOrde
 			<aui:script require="commerce-frontend-js/components/summary/entry as summary">
 				summary.default('summary', 'summary-root', {
 					apiUrl:
-						'/o/headless-commerce-admin-order/v1.0/orders/<%= commerceOrderContentDisplayContext.getCommerceOrderId() %>',
+						'/o/headless-commerce-admin-order/v1.0/orders/<%= commerceOrder.getCommerceOrderId() %>',
 					datasetDisplayId: '<%= CommerceOrderFDSNames.PENDING_ORDER_ITEMS %>',
 					portletId: '<%= portletDisplay.getRootPortletId() %>',
 				});
