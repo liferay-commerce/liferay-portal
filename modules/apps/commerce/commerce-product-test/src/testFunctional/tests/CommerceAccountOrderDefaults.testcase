@@ -566,6 +566,7 @@ definition {
 		task ("Given 2 minium sites, 2 accounts and 2 buyer users are created and associated with the respected accounts and sites") {
 			for (var num : list "1,2") {
 				CommerceAccelerators.initializeNewSiteViaAccelerator(
+					oldOrderDetailsUI = "true",
 					siteName = "Minium ${num}",
 					siteTemplateName = "Minium");
 
