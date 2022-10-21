@@ -1264,21 +1264,7 @@ definition {
 
 		SelectFrameTop();
 
-		SelectFrame(
-			key_frameTitle = "Select File",
-			locator1 = "CommerceEntry#ANY_IFRAME");
-
-		UploadCommonFile.uploadCommonFileHiddenNoMouseOver(
-			locator1 = "TextInput#FILE",
-			value1 = "Commerce_Black.jpg");
-
-		Click(
-			key_filterOption = "Add",
-			locator1 = "AppBuilder#CHOOSE_SEARCH_FILTER_BY_OPTION");
-
-		SelectFrameTop();
-
-		WaitForElementNotPresent(locator1 = "CommerceEntry#ANY_IFRAME");
+		CommerceItemSelector.uploadSingleFile(uploadFileName = "Commerce_Black.jpg");
 
 		if (IsElementPresent(key_contentType = "Base Information", locator1 = "CommerceEntry#NOTIFICATION_DELIVERY_PANEL_CLOSED")) {
 			Click(
@@ -1305,19 +1291,7 @@ definition {
 			key_panel = "Sample",
 			locator1 = "CommerceEntry#VIRTUAL_SELECT_BY_PANEL");
 
-		SelectFrame.selectFrameNoLoading(
-			key_frameTitle = "Select File",
-			locator1 = "CommerceEntry#ANY_IFRAME");
-
-		UploadCommonFile.uploadCommonFileHiddenNoMouseOver(
-			locator1 = "TextInput#FILE",
-			value1 = "Commerce_Black.jpg");
-
-		Click(
-			key_filterOption = "Add",
-			locator1 = "AppBuilder#CHOOSE_SEARCH_FILTER_BY_OPTION");
-
-		SelectFrameTop();
+		CommerceItemSelector.uploadSingleFile(uploadFileName = "Commerce_Black.jpg");
 
 		Click(locator1 = "Button#SAVE");
 
