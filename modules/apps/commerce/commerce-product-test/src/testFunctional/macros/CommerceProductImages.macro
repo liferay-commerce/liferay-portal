@@ -1,5 +1,29 @@
 definition {
 
+	macro addAttachmentAlreadyUploaded {
+		Click(locator1 = "CommerceEntry#ATTACHMENT_PLUS_BUTTON");
+
+		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+		Click(locator1 = "Button#SELECT_FILE");
+
+		SelectFrameTop();
+
+		WaitForElementPresent(locator1 = "ItemSelector#ITEM_SELECTOR_IFRAME");
+
+		SelectFrame.selectFrameNoLoading(locator1 = "ItemSelector#ITEM_SELECTOR_IFRAME");
+
+		Click(
+			key_mgDocumentTitle = "${fileName}",
+			locator1 = "MediaGallery#IMAGE_TITLE");
+
+		SelectFrameTop();
+
+		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+		CommerceEntry.publishProductImage();
+	}
+
 	macro addAttachmentImages {
 		for (var imageTitle : list "${imageTitles}") {
 			echo("imageTitle is equal to ${imageTitle}");
