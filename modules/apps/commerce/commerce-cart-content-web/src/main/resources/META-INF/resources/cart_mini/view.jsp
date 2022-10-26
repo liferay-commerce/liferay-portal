@@ -75,12 +75,11 @@ request.setAttribute("view.jsp-portletURL", portletURL);
 				</h4>
 			</div>
 
-			<div class="autofit-col">
-				<liferay-commerce:order-transitions
-					commerceOrderId="<%= commerceCartContentMiniDisplayContext.getCommerceOrderId() %>"
-					cssClass="btn commerce-btn"
-				/>
-			</div>
+			<c:if test="<%= commerceCartContentMiniDisplayContext.isValidCommerceOrder() %>">
+				<div class="autofit-col">
+					<div><a class="btn commerce-btn" href="<%= commerceCartContentMiniDisplayContext.getCommerceCheckoutPortletURL() %>"><liferay-ui:message key="checkout" /></a></div>
+				</div>
+			</c:if>
 
 			<c:if test="<%= commerceCartContentMiniDisplayContext.hasPermission(ActionKeys.VIEW) %>">
 				<div class="autofit-col">

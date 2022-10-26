@@ -88,6 +88,11 @@ public class CommerceCartContentMiniDisplayContext
 		return portletURL.toString();
 	}
 
+	public PortletURL getCommerceCheckoutPortletURL() throws PortalException {
+		return _commerceOrderHttpHelper.getCommerceCheckoutPortletURL(
+			commerceCartContentRequestHelper.getRequest());
+	}
+
 	public int getCommerceOrderItemsQuantity() throws PortalException {
 		return _commerceOrderHttpHelper.getCommerceOrderItemsQuantity(
 			commerceCartContentRequestHelper.getRequest());
