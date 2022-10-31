@@ -18,6 +18,7 @@ import com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel;
 import com.liferay.commerce.product.constants.CommerceChannelAccountEntryRelConstants;
 import com.liferay.commerce.product.service.CommerceChannelAccountEntryRelLocalService;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.dao.orm.common.SQLTransformer;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 
 import java.sql.PreparedStatement;
@@ -42,17 +43,19 @@ public class AccountEntryUpgradeProcess extends UpgradeProcess {
 	}
 
 	private void _updateDefaultPaymentMethods() throws Exception {
+		String sql = StringBundler.concat(
+			"select AccountEntry.accountEntryId, AccountEntry.userId, ",
+			"CommercePaymentMethodGroupRel.CPaymentMethodGroupRelId, ",
+			"Group_.classPK from AccountEntry join ",
+			"CommercePaymentMethodGroupRel on ",
+			"AccountEntry.defaultCPaymentMethodKey = ",
+			"CommercePaymentMethodGroupRel.engineKey join Group_ on ",
+			"CommercePaymentMethodGroupRel.groupId = Group_.groupId where ",
+			"AccountEntry.defaultCPaymentMethodKey is not null and ",
+			"CommercePaymentMethodGroupRel.active_ = [$TRUE$]");
+
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
-				StringBundler.concat(
-					"select AccountEntry.accountEntryId, AccountEntry.userId, ",
-					"CommercePaymentMethodGroupRel.CPaymentMethodGroupRelId, ",
-					"Group_.classPK from AccountEntry join ",
-					"CommercePaymentMethodGroupRel on ",
-					"AccountEntry.defaultCPaymentMethodKey = ",
-					"CommercePaymentMethodGroupRel.engineKey join Group_ on ",
-					"CommercePaymentMethodGroupRel.groupId = Group_.groupId ",
-					"where AccountEntry.defaultCPaymentMethodKey is not null ",
-					"and CommercePaymentMethodGroupRel.active_ = 1"));
+				SQLTransformer.transform(sql));
 			ResultSet resultSet = preparedStatement.executeQuery()) {
 
 			while (resultSet.next()) {
