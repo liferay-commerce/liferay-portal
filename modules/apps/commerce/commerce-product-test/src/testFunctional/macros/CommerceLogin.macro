@@ -78,6 +78,8 @@ definition {
 			Check(locator1 = "Checkbox#REMEMBER_ME");
 		}
 
+		takeScreenshot();
+
 		User._clickSignInButton(localization = "${localization}");
 
 		if (IsElementPresent(locator1 = "Message#ERROR_FORM_FIELD_REQUIRED")) {
