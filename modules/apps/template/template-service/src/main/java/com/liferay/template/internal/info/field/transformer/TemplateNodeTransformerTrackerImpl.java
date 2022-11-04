@@ -19,7 +19,6 @@ import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.template.info.field.transformer.TemplateNodeTransformer;
-import com.liferay.template.info.field.transformer.TemplateNodeTransformerTracker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +35,9 @@ public class TemplateNodeTransformerTrackerImpl
 	implements TemplateNodeTransformerTracker {
 
 	@Override
-	public TemplateNodeTransformer geTemplateNodeTransformer(String className) {
+	public TemplateNodeTransformer getTemplateNodeTransformer(
+		String className) {
+
 		TemplateNodeTransformer templateNodeTransformer =
 			_templateNodeTransformerServiceTrackerMap.getService(className);
 
@@ -49,7 +50,7 @@ public class TemplateNodeTransformerTrackerImpl
 	}
 
 	@Override
-	public List<TemplateNodeTransformer> geTemplateNodeTransformers() {
+	public List<TemplateNodeTransformer> getTemplateNodeTransformers() {
 		return new ArrayList(
 			_templateNodeTransformerServiceTrackerMap.values());
 	}

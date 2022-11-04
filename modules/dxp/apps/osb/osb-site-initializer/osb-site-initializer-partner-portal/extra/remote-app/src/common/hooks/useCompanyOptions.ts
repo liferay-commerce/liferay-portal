@@ -52,5 +52,8 @@ export default function useCompanyOptions(
 		});
 	};
 
-	return {companyOptions, onCompanySelected};
+	return {
+		companyOptions,
+		onCompanySelected,
+	};
 }

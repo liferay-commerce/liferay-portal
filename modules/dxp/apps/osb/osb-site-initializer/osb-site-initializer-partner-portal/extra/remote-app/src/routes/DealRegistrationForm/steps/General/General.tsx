@@ -19,9 +19,11 @@ import PRMFormikPageProps from '../../../../common/components/PRMFormik/interfac
 import {LiferayPicklistName} from '../../../../common/enums/liferayPicklistName';
 import useCompanyOptions from '../../../../common/hooks/useCompanyOptions';
 import DealRegistration from '../../../../common/interfaces/dealRegistration';
+import useGetMDFActivity from '../../../../common/services/liferay/object/activity/useGetMDFActivity';
 import getPicklistOptions from '../../../../common/utils/getPicklistOptions';
 import {StepType} from '../../enums/stepType';
 import useDynamicFieldEntries from '../../hooks/useDynamicFieldEntries';
+import useMDFActivityOptions from '../../hooks/useMDFActivityOptions';
 import DealRegistrationStepProps from '../../interfaces/dealRegistrationStepProps';
 
 const General = ({
@@ -38,11 +40,23 @@ const General = ({
 
 	const {companiesEntries, fieldEntries} = useDynamicFieldEntries();
 
+	const {data: mdfActivities} = useGetMDFActivity(values.partnerAccount.id);
+
 	const {companyOptions, onCompanySelected} = useCompanyOptions(
 		companiesEntries,
 		useCallback(
 			(country, company) => {
 				setFieldValue('partnerAccount', company);
+			},
+			[setFieldValue]
+		)
+	);
+
+	const {mdfActivitiesOptions, onMDFActivitySelected} = useMDFActivityOptions(
+		mdfActivities?.items,
+		useCallback(
+			(selectedActivity) => {
+				setFieldValue('mdfActivityAssociated', selectedActivity);
 			},
 			[setFieldValue]
 		)
@@ -105,6 +119,8 @@ const General = ({
 						component={PRMForm.Select}
 						label="MDF Activity Associated"
 						name="mdfActivityAssociated"
+						onChange={onMDFActivitySelected}
+						options={mdfActivitiesOptions}
 					/>
 				</PRMForm.Group>
 			</PRMForm.Section>

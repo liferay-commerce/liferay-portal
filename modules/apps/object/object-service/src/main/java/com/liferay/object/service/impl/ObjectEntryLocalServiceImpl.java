@@ -219,6 +219,10 @@ public class ObjectEntryLocalServiceImpl
 			user.isDefaultUser(), objectDefinitionId,
 			objectDefinition.getPortletId(), serviceContext, userId, values);
 
+		_fillBusinessTypePicklistDefaultValue(
+			_objectFieldLocalService.getObjectFields(objectDefinitionId),
+			values);
+
 		long objectEntryId = counterLocalService.increment();
 
 		_insertIntoTable(
@@ -651,6 +655,19 @@ public class ObjectEntryLocalServiceImpl
 	@Override
 	public int getObjectEntriesCount(long groupId, long objectDefinitionId) {
 		return objectEntryPersistence.countByG_ODI(groupId, objectDefinitionId);
+	}
+
+	@Override
+	public ObjectEntry getObjectEntry(
+			String externalReferenceCode, long objectDefinitionId)
+		throws PortalException {
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionPersistence.findByPrimaryKey(objectDefinitionId);
+
+		return objectEntryPersistence.findByERC_C_ODI(
+			externalReferenceCode, objectDefinition.getCompanyId(),
+			objectDefinitionId);
 	}
 
 	@Override
@@ -1497,6 +1514,21 @@ public class ObjectEntryLocalServiceImpl
 			objectField.getDBColumnName());
 
 		return column.in(ArrayUtil.toLongArray(accountEntryIds));
+	}
+
+	private void _fillBusinessTypePicklistDefaultValue(
+		List<ObjectField> objectFields, Map<String, Serializable> values) {
+
+		for (ObjectField objectField : objectFields) {
+			if (Objects.equals(
+					objectField.getBusinessType(),
+					ObjectFieldConstants.BUSINESS_TYPE_PICKLIST) &&
+				!values.containsKey(objectField.getName())) {
+
+				values.put(
+					objectField.getName(), objectField.getDefaultValue());
+			}
+		}
 	}
 
 	private Predicate _fillPredicate(

@@ -122,3 +122,8 @@ af3b1110e3d6c514661fcfd7a3a54ab17bda8fb6^..4784b793aeddf06641e6c2aab8fa1bcc880fe
 # Bundle Version 7.0.2
 #
 4784b793aeddf06641e6c2aab8fa1bcc880fe17b^..2b81cccbb43a4b0c0fbb4ba844913b8e4ffdf08f=LPS-166308 LPS-166311 LPS-166783 LPS-166783-
+
+#
+# Bundle Version 7.1.0
+#
+2b81cccbb43a4b0c0fbb4ba844913b8e4ffdf08f^..c1e6c68a6fceb840efdc0082a9707c426fb24257=LPS-166306

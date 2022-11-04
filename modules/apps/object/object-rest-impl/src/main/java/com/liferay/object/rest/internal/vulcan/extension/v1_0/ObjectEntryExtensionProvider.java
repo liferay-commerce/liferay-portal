@@ -23,8 +23,6 @@ import com.liferay.object.model.ObjectField;
 import com.liferay.object.rest.internal.util.ObjectEntryValuesUtil;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
-import com.liferay.object.service.ObjectRelationshipLocalService;
-import com.liferay.object.system.SystemObjectDefinitionMetadataTracker;
 import com.liferay.object.util.ObjectFieldSettingValueUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -57,10 +55,29 @@ public class ObjectEntryExtensionProvider extends BaseObjectExtensionProvider {
 		long companyId, String className, Object entity) {
 
 		try {
-			return _objectEntryLocalService.
-				getExtensionDynamicObjectDefinitionTableValues(
-					getObjectDefinition(companyId, className),
-					getPrimaryKey(entity));
+			ObjectDefinition objectDefinition = getObjectDefinition(
+				companyId, className);
+
+			Map<String, Serializable> values =
+				_objectEntryLocalService.
+					getExtensionDynamicObjectDefinitionTableValues(
+						objectDefinition, getPrimaryKey(entity));
+
+			for (ObjectField objectField :
+					_objectFieldLocalService.getObjectFields(
+						objectDefinition.getObjectDefinitionId(), false)) {
+
+				if (GetterUtil.getBoolean(
+						PropsUtil.get("feature.flag.LPS-164801")) &&
+					Objects.equals(
+						objectField.getRelationshipType(),
+						ObjectRelationshipConstants.TYPE_ONE_TO_MANY)) {
+
+					values.remove(objectField.getName());
+				}
+			}
+
+			return values;
 		}
 		catch (PortalException portalException) {
 			if (_log.isDebugEnabled()) {
@@ -135,9 +152,8 @@ public class ObjectEntryExtensionProvider extends BaseObjectExtensionProvider {
 
 				Object value = ObjectEntryValuesUtil.getValue(
 					objectDefinitionLocalService, _objectEntryLocalService,
-					objectField, _objectRelationshipLocalService,
-					_systemObjectDefinitionMetadataTracker, userId,
-					extendedProperties);
+					objectField, _objectFieldBusinessTypeTracker, userId,
+					new HashMap<>(extendedProperties));
 
 				if (value == null) {
 					continue;
@@ -176,12 +192,5 @@ public class ObjectEntryExtensionProvider extends BaseObjectExtensionProvider {
 
 	@Reference
 	private ObjectFieldLocalService _objectFieldLocalService;
-
-	@Reference
-	private ObjectRelationshipLocalService _objectRelationshipLocalService;
-
-	@Reference
-	private SystemObjectDefinitionMetadataTracker
-		_systemObjectDefinitionMetadataTracker;
 
 }

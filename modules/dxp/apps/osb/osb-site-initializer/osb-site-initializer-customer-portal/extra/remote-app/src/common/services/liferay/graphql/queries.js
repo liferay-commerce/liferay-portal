@@ -164,7 +164,6 @@ export const addDXPCloudEnvironment = gql`
 				type: "C_DXPCloudEnvironment"
 				path: "/c/dxpcloudenvironments/scopes/{args.scopeKey}"
 			) {
-			accountEntryId
 			accountKey
 			dataCenterRegion
 			disasterDataCenterRegion
@@ -185,7 +184,6 @@ export const addAdminDXPCloud = gql`
 				type: "C_AdminDXPCloud"
 				path: "/c/admindxpclouds/scopes/{args.scopeKey}"
 			) {
-			accountEntryId
 			emailAddress
 			firstName
 			githubUsername
@@ -209,7 +207,6 @@ export const updateDXPCloudEnvironment = gql`
 				type: "C_DXPCloudEnvironment"
 				path: "/c/dxpcloudenvironments/{args.dxpCloudEnvironmentId}"
 			) {
-			accountEntryId
 			dxpCloudEnvironmentId
 		}
 	}
@@ -242,7 +239,6 @@ export const addAnalyticsCloudWorkspace = gql`
 				type: "C_AnalyticsCloudWorkspace"
 				path: "/c/analyticscloudworkspaces/scopes/{args.scopeKey}"
 			) {
-			accountEntryId
 			accountKey
 			dataCenterLocation
 			id
@@ -266,7 +262,6 @@ export const addIncidentReportAnalyticsCloud = gql`
 				type: "C_IncidentReportContactAnalyticsCloud"
 				path: "/c/incidentreportcontactanalyticsclouds/scopes/{args.scopeKey}"
 			) {
-			accountEntryId
 			emailAddress
 			analyticsCloudWorkspaceId
 		}
@@ -565,7 +560,6 @@ export const updateAccountSubscriptionGroups = gql`
 				type: "C_AccountSubscriptionGroup"
 				path: "/c/accountsubscriptiongroups/{args.accountSubscriptionGroupId}"
 			) {
-			accountEntryId
 			accountSubscriptionGroupId
 			accountKey
 			activationStatus
