@@ -109,8 +109,8 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 
 	@Override
 	public Page<Product> getChannelProductsPage(
-			Long channelId, Long accountId, Filter filter,
-			Pagination pagination, Sort[] sorts)
+		Long channelId, Long accountId, String search, Filter filter,
+		Pagination pagination, Sort[] sorts)
 		throws Exception {
 
 		SearchContext searchContext = new SearchContext();
@@ -137,6 +137,9 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 				_getBooleanClause(
 					booleanQuery -> booleanQuery.getPreBooleanFilter(), filter)
 			});
+
+		searchContext.setKeywords(search);
+
 		searchContext.setCompanyId(contextCompany.getCompanyId());
 
 		CPQuery cpQuery = new CPQuery();
