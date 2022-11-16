@@ -34,6 +34,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Crescenzo Rega
  */
+@Ignore
 @RunWith(Arquillian.class)
 public class WarehouseResourceTest extends BaseWarehouseResourceTestCase {
 
