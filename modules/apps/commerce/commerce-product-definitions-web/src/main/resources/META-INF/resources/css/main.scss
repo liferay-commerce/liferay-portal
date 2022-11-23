@@ -94,6 +94,25 @@
 	}
 }
 
+.fixed {
+	.dnd-td,
+	.dnd-th {
+		align-items: center !important;
+		display: flex !important;
+		min-width: fit-content !important;
+	}
+
+	.dnd-tr {
+		display: flex !important;
+		width: fit-content !important;
+	}
+
+	.dnd-thead,
+	.dnd-tbody {
+		display: block !important;
+	}
+}
+
 #termsOfUseContent {
 	.input-localized-content[role='menu'],
 	.text-default {
