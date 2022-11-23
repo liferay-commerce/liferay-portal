@@ -319,7 +319,7 @@ definition {
 				locator1 = "CommerceEntry#TABLE_ASSERT_TWO_COLUMNS_ELLIPSIS");
 		}
 
-		task ("When salesagent logs in -> Minium") {
+		task ("When salesagent logs in to Minium") {
 			User.logoutPG();
 
 			CommerceLogin.miniumLogin(
