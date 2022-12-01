@@ -1,0 +1,312 @@
+/**
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ */
+
+package com.liferay.headless.commerce.admin.account.internal.resource.v1_0;
+
+import com.liferay.account.model.AccountEntry;
+import com.liferay.account.service.AccountEntryService;
+import com.liferay.commerce.account.exception.NoSuchAccountException;
+import com.liferay.commerce.exception.NoSuchShippingMethodException;
+import com.liferay.commerce.model.CommerceShippingMethod;
+import com.liferay.commerce.model.CommerceShippingOptionAccountEntryRel;
+import com.liferay.commerce.product.model.CommerceChannel;
+import com.liferay.commerce.product.service.CommerceChannelService;
+import com.liferay.commerce.service.CommerceShippingMethodService;
+import com.liferay.commerce.service.CommerceShippingOptionAccountEntryRelService;
+import com.liferay.commerce.shipping.engine.fixed.exception.NoSuchShippingFixedOptionException;
+import com.liferay.commerce.shipping.engine.fixed.model.CommerceShippingFixedOption;
+import com.liferay.commerce.shipping.engine.fixed.service.CommerceShippingFixedOptionService;
+import com.liferay.headless.commerce.admin.account.dto.v1_0.AccountChannelShippingOption;
+import com.liferay.headless.commerce.admin.account.internal.dto.v1_0.converter.AccountChannelShippingOptionDTOConverter;
+import com.liferay.headless.commerce.admin.account.resource.v1_0.AccountChannelShippingOptionResource;
+import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
+import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
+import com.liferay.portal.vulcan.pagination.Page;
+import com.liferay.portal.vulcan.pagination.Pagination;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ServiceScope;
+
+/**
+ * @author Danny Situ
+ */
+@Component(
+	properties = "OSGI-INF/liferay/rest/v1_0/account-channel-shipping-option.properties",
+	scope = ServiceScope.PROTOTYPE,
+	service = AccountChannelShippingOptionResource.class
+)
+public class AccountChannelShippingOptionResourceImpl
+	extends BaseAccountChannelShippingOptionResourceImpl {
+
+	@Override
+	public void deleteAccountChannelShippingOption(Long id) throws Exception {
+		_commerceShippingOptionAccountEntryRelService.
+			deleteCommerceShippingOptionAccountEntryRel(id);
+	}
+
+	@Override
+	public Page<AccountChannelShippingOption>
+			getAccountByExternalReferenceCodeChannelAccountChannelShippingOptionPage(
+				Long channelId, String externalReferenceCode,
+				Pagination pagination)
+		throws Exception {
+
+		AccountEntry accountEntry =
+			_accountEntryService.fetchAccountEntryByExternalReferenceCode(
+				contextCompany.getCompanyId(), externalReferenceCode);
+
+		if (accountEntry == null) {
+			throw new NoSuchAccountException();
+		}
+
+		return _getPage(
+			accountEntry.getAccountEntryId(), channelId, pagination);
+	}
+
+	@Override
+	public AccountChannelShippingOption getAccountChannelShippingOption(Long id)
+		throws Exception {
+
+		return _toAccountChannelShippingOption(
+			_commerceShippingOptionAccountEntryRelService.
+				getCommerceShippingOptionAccountEntryRel(id));
+	}
+
+	@Override
+	public Page<AccountChannelShippingOption>
+			getAccountIdChannelAccountChannelShippingOptionPage(
+				Long channelId, Long id, Pagination pagination)
+		throws Exception {
+
+		AccountEntry accountEntry = _accountEntryService.fetchAccountEntry(id);
+
+		if (accountEntry == null) {
+			throw new NoSuchAccountException();
+		}
+
+		return _getPage(
+			accountEntry.getAccountEntryId(), channelId, pagination);
+	}
+
+	@Override
+	public AccountChannelShippingOption patchAccountChannelShippingOption(
+			Long id, AccountChannelShippingOption accountChannelShippingOption)
+		throws Exception {
+
+		CommerceShippingOptionAccountEntryRel
+			commerceShippingOptionAccountEntryRel =
+				_commerceShippingOptionAccountEntryRelService.
+					getCommerceShippingOptionAccountEntryRel(id);
+
+		if (accountChannelShippingOption.getShippingMethodKey() == null) {
+			accountChannelShippingOption.setShippingMethodKey(
+				commerceShippingOptionAccountEntryRel.
+					getCommerceShippingMethodKey());
+		}
+		else {
+			CommerceChannel commerceChannel =
+				_commerceChannelService.getCommerceChannel(
+					commerceShippingOptionAccountEntryRel.
+						getCommerceChannelId());
+
+			CommerceShippingMethod commerceShippingMethod =
+				_commerceShippingMethodService.fetchCommerceShippingMethod(
+					commerceChannel.getGroupId(),
+					accountChannelShippingOption.getShippingMethodKey());
+
+			if ((commerceShippingMethod == null) ||
+				!commerceShippingMethod.isActive()) {
+
+				throw new NoSuchShippingMethodException();
+			}
+		}
+
+		if (accountChannelShippingOption.getShippingOptionKey() == null) {
+			accountChannelShippingOption.setShippingOptionKey(
+				commerceShippingOptionAccountEntryRel.
+					getCommerceShippingOptionKey());
+		}
+		else {
+			CommerceShippingFixedOption commerceShippingFixedOption =
+				_commerceShippingFixedOptionService.
+					fetchCommerceShippingFixedOption(
+						contextCompany.getCompanyId(),
+						accountChannelShippingOption.getShippingOptionKey());
+
+			if (commerceShippingFixedOption == null) {
+				throw new NoSuchShippingFixedOptionException();
+			}
+		}
+
+		return _toAccountChannelShippingOption(
+			_commerceShippingOptionAccountEntryRelService.
+				updateCommerceShippingOptionAccountEntryRel(
+					commerceShippingOptionAccountEntryRel.
+						getCommerceShippingOptionAccountEntryRelId(),
+					accountChannelShippingOption.getShippingMethodKey(),
+					accountChannelShippingOption.getShippingOptionKey()));
+	}
+
+	@Override
+	public AccountChannelShippingOption
+			postAccountByExternalReferenceCodeChannelAccountChannelShippingOption(
+				Long channelId, String externalReferenceCode,
+				AccountChannelShippingOption accountChannelShippingOption)
+		throws Exception {
+
+		AccountEntry accountEntry =
+			_accountEntryService.fetchAccountEntryByExternalReferenceCode(
+				contextCompany.getCompanyId(), externalReferenceCode);
+
+		if (accountEntry == null) {
+			throw new NoSuchAccountException();
+		}
+
+		return postAccountIdChannelAccountChannelShippingOption(
+			(Long)accountEntry.getAccountEntryId(), channelId,
+			accountChannelShippingOption);
+	}
+
+	@Override
+	public AccountChannelShippingOption
+			postAccountIdChannelAccountChannelShippingOption(
+				Long channelId, Long id,
+				AccountChannelShippingOption accountChannelShippingOption)
+		throws Exception {
+
+		AccountEntry accountEntry = _accountEntryService.fetchAccountEntry(id);
+
+		if (accountEntry == null) {
+			throw new NoSuchAccountException();
+		}
+
+		CommerceChannel commerceChannel =
+			_commerceChannelService.getCommerceChannel(channelId);
+
+		CommerceShippingMethod commerceShippingMethod =
+			_commerceShippingMethodService.fetchCommerceShippingMethod(
+				commerceChannel.getGroupId(),
+				accountChannelShippingOption.getShippingMethodKey());
+
+		if ((commerceShippingMethod == null) ||
+			!commerceShippingMethod.isActive()) {
+
+			throw new NoSuchShippingMethodException();
+		}
+
+		CommerceShippingFixedOption commerceShippingFixedOption =
+			_commerceShippingFixedOptionService.
+				fetchCommerceShippingFixedOption(
+					contextCompany.getCompanyId(),
+					accountChannelShippingOption.getShippingOptionKey());
+
+		if (commerceShippingFixedOption == null) {
+			throw new NoSuchShippingFixedOptionException();
+		}
+
+		CommerceShippingOptionAccountEntryRel
+			commerceShippingOptionAccountEntryRel =
+				_commerceShippingOptionAccountEntryRelService.
+					fetchCommerceShippingOptionAccountEntryRel(
+						accountEntry.getAccountEntryId(), channelId);
+
+		if (commerceShippingOptionAccountEntryRel == null) {
+			return _toAccountChannelShippingOption(
+				_commerceShippingOptionAccountEntryRelService.
+					addCommerceShippingOptionAccountEntryRel(
+						accountEntry.getAccountEntryId(), channelId,
+						accountChannelShippingOption.getShippingMethodKey(),
+						accountChannelShippingOption.getShippingOptionKey()));
+		}
+
+		return _toAccountChannelShippingOption(
+			_commerceShippingOptionAccountEntryRelService.
+				updateCommerceShippingOptionAccountEntryRel(
+					commerceShippingOptionAccountEntryRel.
+						getCommerceShippingOptionAccountEntryRelId(),
+					accountChannelShippingOption.getShippingMethodKey(),
+					accountChannelShippingOption.getShippingOptionKey()));
+	}
+
+	private Page<AccountChannelShippingOption> _getPage(
+			Long accountEntryId, Long channelId, Pagination pagination)
+		throws Exception {
+
+		CommerceShippingOptionAccountEntryRel
+			commerceShippingOptionAccountEntryRel =
+				_commerceShippingOptionAccountEntryRelService.
+					fetchCommerceShippingOptionAccountEntryRel(
+						accountEntryId, channelId);
+
+		List<CommerceShippingOptionAccountEntryRel>
+			commerceShippingOptionAccountEntryRels = Collections.emptyList();
+
+		if (commerceShippingOptionAccountEntryRel != null) {
+			commerceShippingOptionAccountEntryRels = Arrays.asList(
+				commerceShippingOptionAccountEntryRel);
+		}
+
+		return Page.of(
+			transform(
+				commerceShippingOptionAccountEntryRels,
+				accountChannelShippingOption -> _toAccountChannelShippingOption(
+					commerceShippingOptionAccountEntryRel)),
+			pagination, (long)1);
+	}
+
+	private AccountChannelShippingOption _toAccountChannelShippingOption(
+			CommerceShippingOptionAccountEntryRel
+				commerceShippingOptionAccountEntryRel)
+		throws Exception {
+
+		return _accountChannelShippingOptionDTOConverter.toDTO(
+			new DefaultDTOConverterContext(
+				contextAcceptLanguage.isAcceptAllLanguages(), null,
+				_dtoConverterRegistry,
+				commerceShippingOptionAccountEntryRel.
+					getCommerceShippingOptionAccountEntryRelId(),
+				contextAcceptLanguage.getPreferredLocale(), contextUriInfo,
+				contextUser));
+	}
+
+	@Reference
+	private AccountChannelShippingOptionDTOConverter
+		_accountChannelShippingOptionDTOConverter;
+
+	@Reference
+	private AccountEntryService _accountEntryService;
+
+	@Reference
+	private CommerceChannelService _commerceChannelService;
+
+	@Reference
+	private CommerceShippingFixedOptionService
+		_commerceShippingFixedOptionService;
+
+	@Reference
+	private CommerceShippingMethodService _commerceShippingMethodService;
+
+	@Reference
+	private CommerceShippingOptionAccountEntryRelService
+		_commerceShippingOptionAccountEntryRelService;
+
+	@Reference
+	private DTOConverterRegistry _dtoConverterRegistry;
+
+}
