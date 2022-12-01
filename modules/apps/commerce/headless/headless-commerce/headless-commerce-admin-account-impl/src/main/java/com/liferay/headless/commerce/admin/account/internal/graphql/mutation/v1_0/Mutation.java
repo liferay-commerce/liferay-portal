@@ -17,12 +17,14 @@ package com.liferay.headless.commerce.admin.account.internal.graphql.mutation.v1
 import com.liferay.headless.commerce.admin.account.dto.v1_0.Account;
 import com.liferay.headless.commerce.admin.account.dto.v1_0.AccountAddress;
 import com.liferay.headless.commerce.admin.account.dto.v1_0.AccountChannelEntry;
+import com.liferay.headless.commerce.admin.account.dto.v1_0.AccountChannelShippingOption;
 import com.liferay.headless.commerce.admin.account.dto.v1_0.AccountGroup;
 import com.liferay.headless.commerce.admin.account.dto.v1_0.AccountMember;
 import com.liferay.headless.commerce.admin.account.dto.v1_0.AccountOrganization;
 import com.liferay.headless.commerce.admin.account.dto.v1_0.User;
 import com.liferay.headless.commerce.admin.account.resource.v1_0.AccountAddressResource;
 import com.liferay.headless.commerce.admin.account.resource.v1_0.AccountChannelEntryResource;
+import com.liferay.headless.commerce.admin.account.resource.v1_0.AccountChannelShippingOptionResource;
 import com.liferay.headless.commerce.admin.account.resource.v1_0.AccountGroupResource;
 import com.liferay.headless.commerce.admin.account.resource.v1_0.AccountMemberResource;
 import com.liferay.headless.commerce.admin.account.resource.v1_0.AccountOrganizationResource;
@@ -80,6 +82,15 @@ public class Mutation {
 
 		_accountChannelEntryResourceComponentServiceObjects =
 			accountChannelEntryResourceComponentServiceObjects;
+	}
+
+	public static void
+		setAccountChannelShippingOptionResourceComponentServiceObjects(
+			ComponentServiceObjects<AccountChannelShippingOptionResource>
+				accountChannelShippingOptionResourceComponentServiceObjects) {
+
+		_accountChannelShippingOptionResourceComponentServiceObjects =
+			accountChannelShippingOptionResourceComponentServiceObjects;
 	}
 
 	public static void setAccountGroupResourceComponentServiceObjects(
@@ -902,6 +913,91 @@ public class Mutation {
 	}
 
 	@GraphQLField
+	public boolean deleteAccountChannelShippingOption(
+			@GraphQLName("id") Long id)
+		throws Exception {
+
+		_applyVoidComponentServiceObjects(
+			_accountChannelShippingOptionResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			accountChannelShippingOptionResource ->
+				accountChannelShippingOptionResource.
+					deleteAccountChannelShippingOption(id));
+
+		return true;
+	}
+
+	@GraphQLField
+	public Response deleteAccountChannelShippingOptionBatch(
+			@GraphQLName("id") Long id,
+			@GraphQLName("callbackURL") String callbackURL,
+			@GraphQLName("object") Object object)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_accountChannelShippingOptionResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			accountChannelShippingOptionResource ->
+				accountChannelShippingOptionResource.
+					deleteAccountChannelShippingOptionBatch(
+						id, callbackURL, object));
+	}
+
+	@GraphQLField
+	public AccountChannelShippingOption patchAccountChannelShippingOption(
+			@GraphQLName("id") Long id,
+			@GraphQLName("accountChannelShippingOption")
+				AccountChannelShippingOption accountChannelShippingOption)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_accountChannelShippingOptionResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			accountChannelShippingOptionResource ->
+				accountChannelShippingOptionResource.
+					patchAccountChannelShippingOption(
+						id, accountChannelShippingOption));
+	}
+
+	@GraphQLField
+	public AccountChannelShippingOption
+			createAccountByExternalReferenceCodeChannelAccountChannelShippingOption(
+				@GraphQLName("channelId") Long channelId,
+				@GraphQLName("externalReferenceCode") String
+					externalReferenceCode,
+				@GraphQLName("accountChannelShippingOption")
+					AccountChannelShippingOption accountChannelShippingOption)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_accountChannelShippingOptionResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			accountChannelShippingOptionResource ->
+				accountChannelShippingOptionResource.
+					postAccountByExternalReferenceCodeChannelAccountChannelShippingOption(
+						channelId, externalReferenceCode,
+						accountChannelShippingOption));
+	}
+
+	@GraphQLField
+	public AccountChannelShippingOption
+			createAccountIdChannelAccountChannelShippingOption(
+				@GraphQLName("channelId") Long channelId,
+				@GraphQLName("id") Long id,
+				@GraphQLName("accountChannelShippingOption")
+					AccountChannelShippingOption accountChannelShippingOption)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_accountChannelShippingOptionResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			accountChannelShippingOptionResource ->
+				accountChannelShippingOptionResource.
+					postAccountIdChannelAccountChannelShippingOption(
+						channelId, id, accountChannelShippingOption));
+	}
+
+	@GraphQLField
 	public AccountGroup createAccountGroup(
 			@GraphQLName("accountGroup") AccountGroup accountGroup)
 		throws Exception {
@@ -1279,6 +1375,30 @@ public class Mutation {
 	}
 
 	private void _populateResourceContext(
+			AccountChannelShippingOptionResource
+				accountChannelShippingOptionResource)
+		throws Exception {
+
+		accountChannelShippingOptionResource.setContextAcceptLanguage(
+			_acceptLanguage);
+		accountChannelShippingOptionResource.setContextCompany(_company);
+		accountChannelShippingOptionResource.setContextHttpServletRequest(
+			_httpServletRequest);
+		accountChannelShippingOptionResource.setContextHttpServletResponse(
+			_httpServletResponse);
+		accountChannelShippingOptionResource.setContextUriInfo(_uriInfo);
+		accountChannelShippingOptionResource.setContextUser(_user);
+		accountChannelShippingOptionResource.setGroupLocalService(
+			_groupLocalService);
+		accountChannelShippingOptionResource.setRoleLocalService(
+			_roleLocalService);
+
+		accountChannelShippingOptionResource.
+			setVulcanBatchEngineImportTaskResource(
+				_vulcanBatchEngineImportTaskResource);
+	}
+
+	private void _populateResourceContext(
 			AccountGroupResource accountGroupResource)
 		throws Exception {
 
@@ -1352,6 +1472,8 @@ public class Mutation {
 		_accountAddressResourceComponentServiceObjects;
 	private static ComponentServiceObjects<AccountChannelEntryResource>
 		_accountChannelEntryResourceComponentServiceObjects;
+	private static ComponentServiceObjects<AccountChannelShippingOptionResource>
+		_accountChannelShippingOptionResourceComponentServiceObjects;
 	private static ComponentServiceObjects<AccountGroupResource>
 		_accountGroupResourceComponentServiceObjects;
 	private static ComponentServiceObjects<AccountMemberResource>

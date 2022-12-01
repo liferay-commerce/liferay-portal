@@ -17,12 +17,14 @@ package com.liferay.headless.commerce.admin.account.internal.graphql.query.v1_0;
 import com.liferay.headless.commerce.admin.account.dto.v1_0.Account;
 import com.liferay.headless.commerce.admin.account.dto.v1_0.AccountAddress;
 import com.liferay.headless.commerce.admin.account.dto.v1_0.AccountChannelEntry;
+import com.liferay.headless.commerce.admin.account.dto.v1_0.AccountChannelShippingOption;
 import com.liferay.headless.commerce.admin.account.dto.v1_0.AccountGroup;
 import com.liferay.headless.commerce.admin.account.dto.v1_0.AccountMember;
 import com.liferay.headless.commerce.admin.account.dto.v1_0.AccountOrganization;
 import com.liferay.headless.commerce.admin.account.dto.v1_0.User;
 import com.liferay.headless.commerce.admin.account.resource.v1_0.AccountAddressResource;
 import com.liferay.headless.commerce.admin.account.resource.v1_0.AccountChannelEntryResource;
+import com.liferay.headless.commerce.admin.account.resource.v1_0.AccountChannelShippingOptionResource;
 import com.liferay.headless.commerce.admin.account.resource.v1_0.AccountGroupResource;
 import com.liferay.headless.commerce.admin.account.resource.v1_0.AccountMemberResource;
 import com.liferay.headless.commerce.admin.account.resource.v1_0.AccountOrganizationResource;
@@ -81,6 +83,15 @@ public class Query {
 
 		_accountChannelEntryResourceComponentServiceObjects =
 			accountChannelEntryResourceComponentServiceObjects;
+	}
+
+	public static void
+		setAccountChannelShippingOptionResourceComponentServiceObjects(
+			ComponentServiceObjects<AccountChannelShippingOptionResource>
+				accountChannelShippingOptionResourceComponentServiceObjects) {
+
+		_accountChannelShippingOptionResourceComponentServiceObjects =
+			accountChannelShippingOptionResourceComponentServiceObjects;
 	}
 
 	public static void setAccountGroupResourceComponentServiceObjects(
@@ -716,6 +727,74 @@ public class Query {
 			accountChannelEntryResource -> new AccountChannelEntryPage(
 				accountChannelEntryResource.getAccountIdAccountChannelUsersPage(
 					id, Pagination.of(page, pageSize))));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {accountChannelShippingOption(id: ___){accountExternalReferenceCode, accountId, channelId, id, shippingMethodKey, shippingOptionKey}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField
+	public AccountChannelShippingOption accountChannelShippingOption(
+			@GraphQLName("id") Long id)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_accountChannelShippingOptionResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			accountChannelShippingOptionResource ->
+				accountChannelShippingOptionResource.
+					getAccountChannelShippingOption(id));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {accountByExternalReferenceCodeChannelAccountChannelShippingOption(channelId: ___, externalReferenceCode: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField
+	public AccountChannelShippingOptionPage
+			accountByExternalReferenceCodeChannelAccountChannelShippingOption(
+				@GraphQLName("channelId") Long channelId,
+				@GraphQLName("externalReferenceCode") String
+					externalReferenceCode,
+				@GraphQLName("pageSize") int pageSize,
+				@GraphQLName("page") int page)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_accountChannelShippingOptionResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			accountChannelShippingOptionResource ->
+				new AccountChannelShippingOptionPage(
+					accountChannelShippingOptionResource.
+						getAccountByExternalReferenceCodeChannelAccountChannelShippingOptionPage(
+							channelId, externalReferenceCode,
+							Pagination.of(page, pageSize))));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {accountIdChannelAccountChannelShippingOption(channelId: ___, id: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField
+	public AccountChannelShippingOptionPage
+			accountIdChannelAccountChannelShippingOption(
+				@GraphQLName("channelId") Long channelId,
+				@GraphQLName("id") Long id,
+				@GraphQLName("pageSize") int pageSize,
+				@GraphQLName("page") int page)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_accountChannelShippingOptionResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			accountChannelShippingOptionResource ->
+				new AccountChannelShippingOptionPage(
+					accountChannelShippingOptionResource.
+						getAccountIdChannelAccountChannelShippingOptionPage(
+							channelId, id, Pagination.of(page, pageSize))));
 	}
 
 	/**
@@ -1572,6 +1651,41 @@ public class Query {
 
 	}
 
+	@GraphQLName("AccountChannelShippingOptionPage")
+	public class AccountChannelShippingOptionPage {
+
+		public AccountChannelShippingOptionPage(
+			Page accountChannelShippingOptionPage) {
+
+			actions = accountChannelShippingOptionPage.getActions();
+
+			items = accountChannelShippingOptionPage.getItems();
+			lastPage = accountChannelShippingOptionPage.getLastPage();
+			page = accountChannelShippingOptionPage.getPage();
+			pageSize = accountChannelShippingOptionPage.getPageSize();
+			totalCount = accountChannelShippingOptionPage.getTotalCount();
+		}
+
+		@GraphQLField
+		protected Map<String, Map> actions;
+
+		@GraphQLField
+		protected java.util.Collection<AccountChannelShippingOption> items;
+
+		@GraphQLField
+		protected long lastPage;
+
+		@GraphQLField
+		protected long page;
+
+		@GraphQLField
+		protected long pageSize;
+
+		@GraphQLField
+		protected long totalCount;
+
+	}
+
 	@GraphQLName("AccountGroupPage")
 	public class AccountGroupPage {
 
@@ -1736,6 +1850,26 @@ public class Query {
 	}
 
 	private void _populateResourceContext(
+			AccountChannelShippingOptionResource
+				accountChannelShippingOptionResource)
+		throws Exception {
+
+		accountChannelShippingOptionResource.setContextAcceptLanguage(
+			_acceptLanguage);
+		accountChannelShippingOptionResource.setContextCompany(_company);
+		accountChannelShippingOptionResource.setContextHttpServletRequest(
+			_httpServletRequest);
+		accountChannelShippingOptionResource.setContextHttpServletResponse(
+			_httpServletResponse);
+		accountChannelShippingOptionResource.setContextUriInfo(_uriInfo);
+		accountChannelShippingOptionResource.setContextUser(_user);
+		accountChannelShippingOptionResource.setGroupLocalService(
+			_groupLocalService);
+		accountChannelShippingOptionResource.setRoleLocalService(
+			_roleLocalService);
+	}
+
+	private void _populateResourceContext(
 			AccountGroupResource accountGroupResource)
 		throws Exception {
 
@@ -1787,6 +1921,8 @@ public class Query {
 		_accountAddressResourceComponentServiceObjects;
 	private static ComponentServiceObjects<AccountChannelEntryResource>
 		_accountChannelEntryResourceComponentServiceObjects;
+	private static ComponentServiceObjects<AccountChannelShippingOptionResource>
+		_accountChannelShippingOptionResourceComponentServiceObjects;
 	private static ComponentServiceObjects<AccountGroupResource>
 		_accountGroupResourceComponentServiceObjects;
 	private static ComponentServiceObjects<AccountMemberResource>
