@@ -74,6 +74,17 @@ public class CommerceShippingOptionAccountEntryRelServiceWrapper
 				accountEntryId, commerceChannelId);
 	}
 
+	@Override
+	public com.liferay.commerce.model.CommerceShippingOptionAccountEntryRel
+			getCommerceShippingOptionAccountEntryRel(
+				long commerceShippingOptionAccountEntryRelId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceShippingOptionAccountEntryRelService.
+			getCommerceShippingOptionAccountEntryRel(
+				commerceShippingOptionAccountEntryRelId);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *

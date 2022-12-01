@@ -67,6 +67,12 @@ public interface CommerceShippingOptionAccountEntryRelService
 				long accountEntryId, long commerceChannelId)
 		throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CommerceShippingOptionAccountEntryRel
+			getCommerceShippingOptionAccountEntryRel(
+				long commerceShippingOptionAccountEntryRelId)
+		throws PortalException;
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *

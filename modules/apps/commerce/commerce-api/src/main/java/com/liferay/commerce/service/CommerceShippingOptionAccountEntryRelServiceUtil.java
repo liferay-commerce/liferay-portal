@@ -65,6 +65,15 @@ public class CommerceShippingOptionAccountEntryRelServiceUtil {
 			accountEntryId, commerceChannelId);
 	}
 
+	public static CommerceShippingOptionAccountEntryRel
+			getCommerceShippingOptionAccountEntryRel(
+				long commerceShippingOptionAccountEntryRelId)
+		throws PortalException {
+
+		return getService().getCommerceShippingOptionAccountEntryRel(
+			commerceShippingOptionAccountEntryRelId);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
