@@ -89,6 +89,25 @@ public class CommerceShippingOptionAccountEntryRelServiceImpl
 
 	@Override
 	public CommerceShippingOptionAccountEntryRel
+			getCommerceShippingOptionAccountEntryRel(
+				long commerceShippingOptionAccountEntryRelId)
+		throws PortalException {
+
+		CommerceShippingOptionAccountEntryRel
+			commerceShippingOptionAccountEntryRel =
+				commerceShippingOptionAccountEntryRelLocalService.
+					getCommerceShippingOptionAccountEntryRel(
+						commerceShippingOptionAccountEntryRelId);
+
+		_checkAccountEntry(
+			commerceShippingOptionAccountEntryRel.getAccountEntryId(),
+			ActionKeys.VIEW);
+
+		return commerceShippingOptionAccountEntryRel;
+	}
+
+	@Override
+	public CommerceShippingOptionAccountEntryRel
 			updateCommerceShippingOptionAccountEntryRel(
 				long commerceShippingOptionAccountEntryRelId,
 				String commerceShippingMethodKey,
