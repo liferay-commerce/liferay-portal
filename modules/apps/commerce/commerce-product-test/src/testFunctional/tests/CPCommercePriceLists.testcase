@@ -1247,7 +1247,7 @@ definition {
 
 		SelectFrameTop();
 
-		Click(locator1 = "Icon#ANGLE_LEFT_BACK");
+		Click(locator1 = "CommerceNavigation#BACK");
 
 		Click(locator1 = "Button#PLUS");
 
@@ -1934,7 +1934,7 @@ definition {
 
 		SelectFrameTop();
 
-		Click(locator1 = "Icon#ANGLE_LEFT_BACK");
+		Click(locator1 = "CommerceNavigation#BACK");
 
 		Click(locator1 = "Button#PLUS");
 
@@ -1980,7 +1980,7 @@ definition {
 			key_menuItem = "Test Price List",
 			locator1 = "MenuItem#DROPDOWN_MENU_ITEM");
 
-		Click(locator1 = "Icon#ANGLE_LEFT_BACK");
+		Click(locator1 = "CommerceNavigation#BACK");
 
 		CommerceNavigator.gotoEntry(entryName = "Test Catalog 2");
 

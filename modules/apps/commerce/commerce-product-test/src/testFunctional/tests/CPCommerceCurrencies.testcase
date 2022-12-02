@@ -111,7 +111,7 @@ definition {
 
 		Button.clickSave();
 
-		WaitForPageLoad();
+		WaitForElementPresent(locator1 = "CommerceNavigation#SEARCH_CONTAINER_WRAPPER");
 
 		AssertElementPresent(
 			key_entryName = "US Dollar",

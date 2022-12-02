@@ -678,6 +678,8 @@ definition {
 
 		task ("When the buyer uses the mapped product search bar and searches by the ABS Sensor full description keyword") {
 			CommerceNavigator.searchEntry(entryName = "Full");
+
+			WaitForElementNotPresent(locator1 = "CommerceNavigation#EMPTY_SEARCH_CONTAINER");
 		}
 
 		task ("Then only the the ABS Sensor entry will be displayed") {
