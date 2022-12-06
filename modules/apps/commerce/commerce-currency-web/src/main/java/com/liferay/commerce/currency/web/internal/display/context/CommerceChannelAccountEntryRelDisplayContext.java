@@ -17,7 +17,7 @@ package com.liferay.commerce.currency.web.internal.display.context;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryService;
 import com.liferay.commerce.currency.model.CommerceCurrency;
-import com.liferay.commerce.currency.service.CommerceCurrencyService;
+import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.currency.web.internal.display.context.helper.CommerceCurrencyRequestHelper;
 import com.liferay.commerce.product.constants.CommerceChannelAccountEntryRelConstants;
 import com.liferay.commerce.product.model.CommerceChannel;
@@ -30,7 +30,9 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -54,7 +56,7 @@ public class CommerceChannelAccountEntryRelDisplayContext {
 			CommerceChannelAccountEntryRelService
 				commerceChannelAccountEntryRelService,
 			CommerceChannelService commerceChannelService,
-			CommerceCurrencyService commerceCurrencyService,
+			CommerceCurrencyLocalService commerceCurrencyLocalService,
 			HttpServletRequest httpServletRequest, Language language)
 		throws PortalException {
 
@@ -64,7 +66,7 @@ public class CommerceChannelAccountEntryRelDisplayContext {
 		_commerceChannelAccountEntryRelService =
 			commerceChannelAccountEntryRelService;
 		_commerceChannelService = commerceChannelService;
-		_commerceCurrencyService = commerceCurrencyService;
+		_commerceCurrencyLocalService = commerceCurrencyLocalService;
 		_language = language;
 
 		long accountEntryId = ParamUtil.getLong(
@@ -125,9 +127,8 @@ public class CommerceChannelAccountEntryRelDisplayContext {
 		throws PortalException {
 
 		if (CommerceChannelAccountEntryRelConstants.TYPE_CURRENCY == _type) {
-			return _commerceCurrencyService.getCommerceCurrencies(
-				_commerceCurrencyRequestHelper.getCompanyId(), true,
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+			return _commerceCurrencyLocalService.getCommerceCurrencies(
+				_commerceCurrencyRequestHelper.getCompanyId(), true);
 		}
 
 		return Collections.emptyList();
@@ -158,7 +159,7 @@ public class CommerceChannelAccountEntryRelDisplayContext {
 		long[] commerceChannelIds = _getFilteredCommerceChannelIds();
 
 		List<CommerceChannel> commerceChannels =
-			_commerceChannelService.getCommerceChannels(
+			_commerceChannelService.getCompanyCommerceChannels(
 				_commerceCurrencyRequestHelper.getCompanyId());
 
 		Stream<CommerceChannel> commerceChannelsStream =
@@ -183,9 +184,20 @@ public class CommerceChannelAccountEntryRelDisplayContext {
 	}
 
 	public boolean hasPermission(String actionId) throws PortalException {
-		return _accountEntryModelResourcePermission.contains(
-			_commerceCurrencyRequestHelper.getPermissionChecker(),
-			_accountEntry.getAccountEntryId(), actionId);
+		PermissionChecker permissionChecker =
+			_commerceCurrencyRequestHelper.getPermissionChecker();
+
+		if (_accountEntryModelResourcePermission.contains(
+				permissionChecker, _accountEntry.getAccountEntryId(),
+				actionId) &&
+			permissionChecker.hasPermission(
+				null, CommerceChannel.class.getName(),
+				CompanyThreadLocal.getCompanyId(), ActionKeys.VIEW)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	public boolean isCommerceChannelSelected(long commerceChannelId)
@@ -266,8 +278,8 @@ public class CommerceChannelAccountEntryRelDisplayContext {
 	private final CommerceChannelAccountEntryRelService
 		_commerceChannelAccountEntryRelService;
 	private final CommerceChannelService _commerceChannelService;
+	private final CommerceCurrencyLocalService _commerceCurrencyLocalService;
 	private final CommerceCurrencyRequestHelper _commerceCurrencyRequestHelper;
-	private final CommerceCurrencyService _commerceCurrencyService;
 	private final Language _language;
 	private final int _type;
 
