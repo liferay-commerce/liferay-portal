@@ -179,7 +179,7 @@ public class AccountChannelShippingOptionResourceImpl
 		}
 
 		return postAccountIdChannelAccountChannelShippingOption(
-			(Long)accountEntry.getAccountEntryId(), channelId,
+			channelId, (Long)accountEntry.getAccountEntryId(),
 			accountChannelShippingOption);
 	}
 
