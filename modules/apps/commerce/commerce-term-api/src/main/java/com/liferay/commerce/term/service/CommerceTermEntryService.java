@@ -78,6 +78,10 @@ public interface CommerceTermEntryService extends BaseService {
 	public CommerceTermEntry fetchCommerceTermEntry(long commerceTermEntryId)
 		throws PortalException;
 
+	public List<CommerceTermEntry> findCommerceTermEntries(
+			long companyId, String type)
+		throws PortalException;
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommerceTermEntry> getCommerceTermEntries(
 			long groupId, long companyId, String type)

@@ -233,6 +233,49 @@ public class CommerceTermEntryServiceHttp {
 
 	public static java.util.List
 		<com.liferay.commerce.term.model.CommerceTermEntry>
+				findCommerceTermEntries(
+					HttpPrincipal httpPrincipal, long companyId, String type)
+			throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				CommerceTermEntryServiceUtil.class, "findCommerceTermEntries",
+				_findCommerceTermEntriesParameterTypes4);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, companyId, type);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (java.util.List
+				<com.liferay.commerce.term.model.CommerceTermEntry>)returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
+	public static java.util.List
+		<com.liferay.commerce.term.model.CommerceTermEntry>
 				getCommerceTermEntries(
 					HttpPrincipal httpPrincipal, long groupId, long companyId,
 					String type)
@@ -241,7 +284,7 @@ public class CommerceTermEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				CommerceTermEntryServiceUtil.class, "getCommerceTermEntries",
-				_getCommerceTermEntriesParameterTypes4);
+				_getCommerceTermEntriesParameterTypes5);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, groupId, companyId, type);
@@ -283,7 +326,7 @@ public class CommerceTermEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				CommerceTermEntryServiceUtil.class, "getCommerceTermEntry",
-				_getCommerceTermEntryParameterTypes5);
+				_getCommerceTermEntryParameterTypes6);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, commerceTermEntryId);
@@ -328,7 +371,7 @@ public class CommerceTermEntryServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CommerceTermEntryServiceUtil.class,
 				"getPaymentCommerceTermEntries",
-				_getPaymentCommerceTermEntriesParameterTypes6);
+				_getPaymentCommerceTermEntriesParameterTypes7);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, groupId, companyId, commerceOrderTypeId,
@@ -381,7 +424,7 @@ public class CommerceTermEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				CommerceTermEntryServiceUtil.class, "updateCommerceTermEntry",
-				_updateCommerceTermEntryParameterTypes7);
+				_updateCommerceTermEntryParameterTypes8);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, commerceTermEntryId, active, descriptionMap,
@@ -429,7 +472,7 @@ public class CommerceTermEntryServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CommerceTermEntryServiceUtil.class,
 				"updateCommerceTermEntryExternalReferenceCode",
-				_updateCommerceTermEntryExternalReferenceCodeParameterTypes8);
+				_updateCommerceTermEntryExternalReferenceCodeParameterTypes9);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, commerceTermEntryId);
@@ -481,15 +524,17 @@ public class CommerceTermEntryServiceHttp {
 		};
 	private static final Class<?>[] _fetchCommerceTermEntryParameterTypes3 =
 		new Class[] {long.class};
-	private static final Class<?>[] _getCommerceTermEntriesParameterTypes4 =
+	private static final Class<?>[] _findCommerceTermEntriesParameterTypes4 =
+		new Class[] {long.class, String.class};
+	private static final Class<?>[] _getCommerceTermEntriesParameterTypes5 =
 		new Class[] {long.class, long.class, String.class};
-	private static final Class<?>[] _getCommerceTermEntryParameterTypes5 =
+	private static final Class<?>[] _getCommerceTermEntryParameterTypes6 =
 		new Class[] {long.class};
 	private static final Class<?>[]
-		_getPaymentCommerceTermEntriesParameterTypes6 = new Class[] {
+		_getPaymentCommerceTermEntriesParameterTypes7 = new Class[] {
 			long.class, long.class, long.class, long.class
 		};
-	private static final Class<?>[] _updateCommerceTermEntryParameterTypes7 =
+	private static final Class<?>[] _updateCommerceTermEntryParameterTypes8 =
 		new Class[] {
 			long.class, boolean.class, java.util.Map.class, int.class,
 			int.class, int.class, int.class, int.class, int.class, int.class,
@@ -498,7 +543,7 @@ public class CommerceTermEntryServiceHttp {
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
 	private static final Class<?>[]
-		_updateCommerceTermEntryExternalReferenceCodeParameterTypes8 =
+		_updateCommerceTermEntryExternalReferenceCodeParameterTypes9 =
 			new Class[] {String.class, long.class};
 
 }

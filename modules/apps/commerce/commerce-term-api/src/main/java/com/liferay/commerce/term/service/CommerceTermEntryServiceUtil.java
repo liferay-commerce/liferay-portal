@@ -81,6 +81,13 @@ public class CommerceTermEntryServiceUtil {
 		return getService().fetchCommerceTermEntry(commerceTermEntryId);
 	}
 
+	public static List<CommerceTermEntry> findCommerceTermEntries(
+			long companyId, String type)
+		throws PortalException {
+
+		return getService().findCommerceTermEntries(companyId, type);
+	}
+
 	public static List<CommerceTermEntry> getCommerceTermEntries(
 			long groupId, long companyId, String type)
 		throws PortalException {

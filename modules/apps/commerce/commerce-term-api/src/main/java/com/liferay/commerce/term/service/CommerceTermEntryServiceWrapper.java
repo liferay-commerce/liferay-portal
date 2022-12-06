@@ -90,6 +90,15 @@ public class CommerceTermEntryServiceWrapper
 
 	@Override
 	public java.util.List<com.liferay.commerce.term.model.CommerceTermEntry>
+			findCommerceTermEntries(long companyId, String type)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceTermEntryService.findCommerceTermEntries(
+			companyId, type);
+	}
+
+	@Override
+	public java.util.List<com.liferay.commerce.term.model.CommerceTermEntry>
 			getCommerceTermEntries(long groupId, long companyId, String type)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
