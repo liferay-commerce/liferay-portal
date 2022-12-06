@@ -65,7 +65,7 @@ public class PaymentMethodGroupRelTermResourceImpl
 
 		CommercePaymentMethodGroupRel commercePaymentMethodGroupRel =
 			_commercePaymentMethodGroupRelService.
-				getCommercePaymentMethodGroupRel(id);
+				getCommerceChannelCommercePaymentMethodGroupRel(id);
 
 		if (commercePaymentMethodGroupRel == null) {
 			throw new NoSuchPaymentMethodGroupRelException(
