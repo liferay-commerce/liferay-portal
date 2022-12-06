@@ -80,6 +80,11 @@ public interface CommerceChannelService extends BaseService {
 	public CommerceChannel fetchCommerceChannel(long commerceChannelId)
 		throws PortalException;
 
+	public List<CommerceChannel> findCommerceChannels(long companyId)
+		throws PortalException;
+
+	public int findCommerceChannelsCount(long companyId);
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CommerceChannel getCommerceChannel(long commerceChannelId)
 		throws PortalException;
@@ -104,6 +109,13 @@ public interface CommerceChannelService extends BaseService {
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceChannelsCount(long companyId, String keywords)
 		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<CommerceChannel> getCompanyCommerceChannels(long companyId)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getCompanyCommerceChannelsCount(long companyId);
 
 	/**
 	 * Returns the OSGi service identifier.
