@@ -15,20 +15,21 @@
 package com.liferay.commerce.payment.web.internal.portlet.action;
 
 import com.liferay.account.constants.AccountPortletKeys;
-import com.liferay.commerce.payment.exception.NoSuchPaymentMethodGroupRelException;
 import com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel;
-import com.liferay.commerce.payment.service.CommercePaymentMethodGroupRelService;
+import com.liferay.commerce.payment.service.CommercePaymentMethodGroupRelLocalService;
 import com.liferay.commerce.product.constants.CommerceChannelAccountEntryRelConstants;
+import com.liferay.commerce.product.exception.DuplicateCommerceChannelAccountEntryRelException;
 import com.liferay.commerce.product.model.CommerceChannelAccountEntryRel;
 import com.liferay.commerce.product.service.CommerceChannelAccountEntryRelService;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -64,27 +65,14 @@ public class EditAccountEntryDefaultCommercePaymentMethodMVCActionCommand
 			}
 		}
 		catch (Exception exception) {
-			if (exception instanceof PrincipalException) {
-				SessionErrors.add(actionRequest, exception.getClass());
-
-				actionResponse.setRenderParameter("mvcPath", "/error.jsp");
-			}
-			else if (exception instanceof
-						NoSuchPaymentMethodGroupRelException) {
+			if (exception instanceof
+					DuplicateCommerceChannelAccountEntryRelException ||
+				exception instanceof PrincipalException) {
 
 				SessionErrors.add(actionRequest, exception.getClass());
-
-				hideDefaultErrorMessage(actionRequest);
 			}
-			else {
-				throw exception;
-			}
-		}
 
-		String redirect = ParamUtil.getString(actionRequest, "redirect");
-
-		if (Validator.isNotNull(redirect)) {
-			sendRedirect(actionRequest, actionResponse, redirect);
+			_log.error(exception);
 		}
 	}
 
@@ -106,7 +94,7 @@ public class EditAccountEntryDefaultCommercePaymentMethodMVCActionCommand
 					CommerceChannelAccountEntryRelConstants.TYPE_PAYMENT);
 
 		CommercePaymentMethodGroupRel commercePaymentMethodGroupRel =
-			_commercePaymentMethodGroupRelService.
+			_commercePaymentMethodGroupRelLocalService.
 				fetchCommercePaymentMethodGroupRel(
 					commercePaymentMethodGroupRelId);
 
@@ -137,12 +125,15 @@ public class EditAccountEntryDefaultCommercePaymentMethodMVCActionCommand
 				commerceChannelId, commercePaymentMethodGroupRelId, false, 0);
 	}
 
+	private static final Log _log = LogFactoryUtil.getLog(
+		EditAccountEntryDefaultCommercePaymentMethodMVCActionCommand.class);
+
 	@Reference
 	private CommerceChannelAccountEntryRelService
 		_commerceChannelAccountEntryRelService;
 
 	@Reference
-	private CommercePaymentMethodGroupRelService
-		_commercePaymentMethodGroupRelService;
+	private CommercePaymentMethodGroupRelLocalService
+		_commercePaymentMethodGroupRelLocalService;
 
 }

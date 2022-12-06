@@ -100,7 +100,7 @@ public class EditCommercePaymentMethodGroupRelAddressRestrictionMVCActionCommand
 
 		List<CommercePaymentMethodGroupRel> commercePaymentMethodGroupRels =
 			_commercePaymentMethodGroupRelService.
-				getCommercePaymentMethodGroupRels(
+				getCommerceChannelCommercePaymentMethodGroupRels(
 					commerceChannel.getGroupId(), true);
 
 		for (CommercePaymentMethodGroupRel commercePaymentMethodGroupRel :
