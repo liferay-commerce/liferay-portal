@@ -16,7 +16,7 @@ package com.liferay.commerce.currency.web.internal.servlet.taglib;
 
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryService;
-import com.liferay.commerce.currency.service.CommerceCurrencyService;
+import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.currency.web.internal.display.context.CommerceChannelAccountEntryRelDisplayContext;
 import com.liferay.commerce.product.service.CommerceChannelAccountEntryRelService;
 import com.liferay.commerce.product.service.CommerceChannelService;
@@ -65,7 +65,7 @@ public class DefaultCommerceCurrenciesJSPDynamicInclude
 						_accountEntryModelResourcePermission,
 						_accountEntryService,
 						_commerceChannelAccountEntryRelService,
-						_commerceChannelService, _commerceCurrencyService,
+						_commerceChannelService, _commerceCurrencyLocalService,
 						httpServletRequest, _language);
 
 			httpServletRequest.setAttribute(
@@ -118,7 +118,7 @@ public class DefaultCommerceCurrenciesJSPDynamicInclude
 	private CommerceChannelService _commerceChannelService;
 
 	@Reference
-	private CommerceCurrencyService _commerceCurrencyService;
+	private CommerceCurrencyLocalService _commerceCurrencyLocalService;
 
 	@Reference
 	private Language _language;
