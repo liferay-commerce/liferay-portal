@@ -373,6 +373,55 @@ public class CommercePriceListServiceHttp {
 		}
 	}
 
+	public static java.util.List
+		<com.liferay.commerce.price.list.model.CommercePriceList>
+				findCommercePriceLists(
+					HttpPrincipal httpPrincipal, long companyId, String type,
+					int status, int start, int end,
+					com.liferay.portal.kernel.util.OrderByComparator
+						<com.liferay.commerce.price.list.model.
+							CommercePriceList> orderByComparator)
+			throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				CommercePriceListServiceUtil.class, "findCommercePriceLists",
+				_findCommercePriceListsParameterTypes7);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, companyId, type, status, start, end,
+				orderByComparator);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (java.util.List
+				<com.liferay.commerce.price.list.model.CommercePriceList>)
+					returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
 	public static com.liferay.commerce.price.list.model.CommercePriceList
 			getCommercePriceList(
 				HttpPrincipal httpPrincipal, long commercePriceListId)
@@ -381,7 +430,7 @@ public class CommercePriceListServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				CommercePriceListServiceUtil.class, "getCommercePriceList",
-				_getCommercePriceListParameterTypes7);
+				_getCommercePriceListParameterTypes8);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, commercePriceListId);
@@ -428,7 +477,7 @@ public class CommercePriceListServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				CommercePriceListServiceUtil.class, "getCommercePriceLists",
-				_getCommercePriceListsParameterTypes8);
+				_getCommercePriceListsParameterTypes9);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, companyId, status, start, end, orderByComparator);
@@ -476,7 +525,7 @@ public class CommercePriceListServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				CommercePriceListServiceUtil.class, "getCommercePriceLists",
-				_getCommercePriceListsParameterTypes9);
+				_getCommercePriceListsParameterTypes10);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, companyId, type, status, start, end,
@@ -520,7 +569,7 @@ public class CommercePriceListServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CommercePriceListServiceUtil.class,
 				"getCommercePriceListsCount",
-				_getCommercePriceListsCountParameterTypes10);
+				_getCommercePriceListsCountParameterTypes11);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, companyId, status);
@@ -562,7 +611,7 @@ public class CommercePriceListServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CommercePriceListServiceUtil.class,
 				"getCommercePriceListsCount",
-				_getCommercePriceListsCountParameterTypes11);
+				_getCommercePriceListsCountParameterTypes12);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, commercePricingClassId, title);
@@ -607,7 +656,7 @@ public class CommercePriceListServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CommercePriceListServiceUtil.class,
 				"searchByCommercePricingClassId",
-				_searchByCommercePricingClassIdParameterTypes12);
+				_searchByCommercePricingClassIdParameterTypes13);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, commercePricingClassId, name, start, end);
@@ -654,7 +703,7 @@ public class CommercePriceListServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				CommercePriceListServiceUtil.class, "searchCommercePriceLists",
-				_searchCommercePriceListsParameterTypes13);
+				_searchCommercePriceListsParameterTypes14);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, companyId, keywords, status, start, end, sort);
@@ -698,7 +747,7 @@ public class CommercePriceListServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CommercePriceListServiceUtil.class,
 				"searchCommercePriceListsCount",
-				_searchCommercePriceListsCountParameterTypes14);
+				_searchCommercePriceListsCountParameterTypes15);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, companyId, keywords, status);
@@ -739,7 +788,7 @@ public class CommercePriceListServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				CommercePriceListServiceUtil.class, "setCatalogBasePriceList",
-				_setCatalogBasePriceListParameterTypes15);
+				_setCatalogBasePriceListParameterTypes16);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, groupId, commercePriceListId, type);
@@ -784,7 +833,7 @@ public class CommercePriceListServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				CommercePriceListServiceUtil.class, "updateCommercePriceList",
-				_updateCommercePriceListParameterTypes16);
+				_updateCommercePriceListParameterTypes17);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, commercePriceListId, commerceCurrencyId, netPrice,
@@ -840,7 +889,7 @@ public class CommercePriceListServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				CommercePriceListServiceUtil.class, "updateCommercePriceList",
-				_updateCommercePriceListParameterTypes17);
+				_updateCommercePriceListParameterTypes18);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, commercePriceListId, commerceCurrencyId, netPrice,
@@ -891,7 +940,7 @@ public class CommercePriceListServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CommercePriceListServiceUtil.class,
 				"updateExternalReferenceCode",
-				_updateExternalReferenceCodeParameterTypes18);
+				_updateExternalReferenceCodeParameterTypes19);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, commercePriceList, externalReferenceCode, companyId);
@@ -960,42 +1009,47 @@ public class CommercePriceListServiceHttp {
 		};
 	private static final Class<?>[] _fetchCommercePriceListParameterTypes6 =
 		new Class[] {long.class};
-	private static final Class<?>[] _getCommercePriceListParameterTypes7 =
+	private static final Class<?>[] _findCommercePriceListsParameterTypes7 =
+		new Class[] {
+			long.class, String.class, int.class, int.class, int.class,
+			com.liferay.portal.kernel.util.OrderByComparator.class
+		};
+	private static final Class<?>[] _getCommercePriceListParameterTypes8 =
 		new Class[] {long.class};
-	private static final Class<?>[] _getCommercePriceListsParameterTypes8 =
+	private static final Class<?>[] _getCommercePriceListsParameterTypes9 =
 		new Class[] {
 			long.class, int.class, int.class, int.class,
 			com.liferay.portal.kernel.util.OrderByComparator.class
 		};
-	private static final Class<?>[] _getCommercePriceListsParameterTypes9 =
+	private static final Class<?>[] _getCommercePriceListsParameterTypes10 =
 		new Class[] {
 			long.class, String.class, int.class, int.class, int.class,
 			com.liferay.portal.kernel.util.OrderByComparator.class
 		};
 	private static final Class<?>[]
-		_getCommercePriceListsCountParameterTypes10 = new Class[] {
+		_getCommercePriceListsCountParameterTypes11 = new Class[] {
 			long.class, int.class
 		};
 	private static final Class<?>[]
-		_getCommercePriceListsCountParameterTypes11 = new Class[] {
+		_getCommercePriceListsCountParameterTypes12 = new Class[] {
 			long.class, String.class
 		};
 	private static final Class<?>[]
-		_searchByCommercePricingClassIdParameterTypes12 = new Class[] {
+		_searchByCommercePricingClassIdParameterTypes13 = new Class[] {
 			long.class, String.class, int.class, int.class
 		};
-	private static final Class<?>[] _searchCommercePriceListsParameterTypes13 =
+	private static final Class<?>[] _searchCommercePriceListsParameterTypes14 =
 		new Class[] {
 			long.class, String.class, int.class, int.class, int.class,
 			com.liferay.portal.kernel.search.Sort.class
 		};
 	private static final Class<?>[]
-		_searchCommercePriceListsCountParameterTypes14 = new Class[] {
+		_searchCommercePriceListsCountParameterTypes15 = new Class[] {
 			long.class, String.class, int.class
 		};
-	private static final Class<?>[] _setCatalogBasePriceListParameterTypes15 =
+	private static final Class<?>[] _setCatalogBasePriceListParameterTypes16 =
 		new Class[] {long.class, long.class, String.class};
-	private static final Class<?>[] _updateCommercePriceListParameterTypes16 =
+	private static final Class<?>[] _updateCommercePriceListParameterTypes17 =
 		new Class[] {
 			long.class, long.class, boolean.class, long.class, String.class,
 			double.class, int.class, int.class, int.class, int.class, int.class,
@@ -1003,7 +1057,7 @@ public class CommercePriceListServiceHttp {
 			boolean.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
-	private static final Class<?>[] _updateCommercePriceListParameterTypes17 =
+	private static final Class<?>[] _updateCommercePriceListParameterTypes18 =
 		new Class[] {
 			long.class, long.class, boolean.class, String.class, long.class,
 			boolean.class, String.class, double.class, int.class, int.class,
@@ -1012,7 +1066,7 @@ public class CommercePriceListServiceHttp {
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
 	private static final Class<?>[]
-		_updateExternalReferenceCodeParameterTypes18 = new Class[] {
+		_updateExternalReferenceCodeParameterTypes19 = new Class[] {
 			com.liferay.commerce.price.list.model.CommercePriceList.class,
 			String.class, long.class
 		};

@@ -136,43 +136,104 @@ public class CommercePaymentMethodGroupRelServiceUtil {
 	}
 
 	public static CommercePaymentMethodGroupRel
+			getCommerceChannelCommercePaymentMethodGroupRel(
+				long commercePaymentMethodGroupRelId)
+		throws PortalException {
+
+		return getService().getCommerceChannelCommercePaymentMethodGroupRel(
+			commercePaymentMethodGroupRelId);
+	}
+
+	public static CommercePaymentMethodGroupRel
+			getCommerceChannelCommercePaymentMethodGroupRel(
+				long groupId, String engineKey)
+		throws PortalException {
+
+		return getService().getCommerceChannelCommercePaymentMethodGroupRel(
+			groupId, engineKey);
+	}
+
+	public static List<CommercePaymentMethodGroupRel>
+			getCommerceChannelCommercePaymentMethodGroupRels(long groupId)
+		throws PortalException {
+
+		return getService().getCommerceChannelCommercePaymentMethodGroupRels(
+			groupId);
+	}
+
+	public static List<CommercePaymentMethodGroupRel>
+			getCommerceChannelCommercePaymentMethodGroupRels(
+				long groupId, boolean active)
+		throws PortalException {
+
+		return getService().getCommerceChannelCommercePaymentMethodGroupRels(
+			groupId, active);
+	}
+
+	public static List<CommercePaymentMethodGroupRel>
+			getCommerceChannelCommercePaymentMethodGroupRels(
+				long groupId, boolean active, int start, int end)
+		throws PortalException {
+
+		return getService().getCommerceChannelCommercePaymentMethodGroupRels(
+			groupId, active, start, end);
+	}
+
+	public static List<CommercePaymentMethodGroupRel>
+			getCommerceChannelCommercePaymentMethodGroupRels(
+				long groupId, boolean active, int start, int end,
+				OrderByComparator<CommercePaymentMethodGroupRel>
+					orderByComparator)
+		throws PortalException {
+
+		return getService().getCommerceChannelCommercePaymentMethodGroupRels(
+			groupId, active, start, end, orderByComparator);
+	}
+
+	public static List<CommercePaymentMethodGroupRel>
+			getCommerceChannelCommercePaymentMethodGroupRels(
+				long groupId, int start, int end,
+				OrderByComparator<CommercePaymentMethodGroupRel>
+					orderByComparator)
+		throws PortalException {
+
+		return getService().getCommerceChannelCommercePaymentMethodGroupRels(
+			groupId, start, end, orderByComparator);
+	}
+
+	public static List<CommercePaymentMethodGroupRel>
+			getCommerceChannelCommercePaymentMethodGroupRels(
+				long groupId, long countryId, boolean active)
+		throws PortalException {
+
+		return getService().getCommerceChannelCommercePaymentMethodGroupRels(
+			groupId, countryId, active);
+	}
+
+	public static int getCommerceChannelCommercePaymentMethodGroupRelsCount(
+			long groupId)
+		throws PortalException {
+
+		return getService().
+			getCommerceChannelCommercePaymentMethodGroupRelsCount(groupId);
+	}
+
+	public static int getCommerceChannelCommercePaymentMethodGroupRelsCount(
+			long groupId, boolean active)
+		throws PortalException {
+
+		return getService().
+			getCommerceChannelCommercePaymentMethodGroupRelsCount(
+				groupId, active);
+	}
+
+	public static CommercePaymentMethodGroupRel
 			getCommercePaymentMethodGroupRel(
 				long commercePaymentMethodGroupRelId)
 		throws PortalException {
 
 		return getService().getCommercePaymentMethodGroupRel(
 			commercePaymentMethodGroupRelId);
-	}
-
-	public static CommercePaymentMethodGroupRel
-			getCommercePaymentMethodGroupRel(long groupId, String engineKey)
-		throws PortalException {
-
-		return getService().getCommercePaymentMethodGroupRel(
-			groupId, engineKey);
-	}
-
-	public static List<CommercePaymentMethodGroupRel>
-			getCommercePaymentMethodGroupRels(long groupId)
-		throws PortalException {
-
-		return getService().getCommercePaymentMethodGroupRels(groupId);
-	}
-
-	public static List<CommercePaymentMethodGroupRel>
-			getCommercePaymentMethodGroupRels(long groupId, boolean active)
-		throws PortalException {
-
-		return getService().getCommercePaymentMethodGroupRels(groupId, active);
-	}
-
-	public static List<CommercePaymentMethodGroupRel>
-			getCommercePaymentMethodGroupRels(
-				long groupId, boolean active, int start, int end)
-		throws PortalException {
-
-		return getService().getCommercePaymentMethodGroupRels(
-			groupId, active, start, end);
 	}
 
 	public static List<CommercePaymentMethodGroupRel>
@@ -184,40 +245,6 @@ public class CommercePaymentMethodGroupRelServiceUtil {
 
 		return getService().getCommercePaymentMethodGroupRels(
 			groupId, active, start, end, orderByComparator);
-	}
-
-	public static List<CommercePaymentMethodGroupRel>
-			getCommercePaymentMethodGroupRels(
-				long groupId, int start, int end,
-				OrderByComparator<CommercePaymentMethodGroupRel>
-					orderByComparator)
-		throws PortalException {
-
-		return getService().getCommercePaymentMethodGroupRels(
-			groupId, start, end, orderByComparator);
-	}
-
-	public static List<CommercePaymentMethodGroupRel>
-			getCommercePaymentMethodGroupRels(
-				long groupId, long countryId, boolean active)
-		throws PortalException {
-
-		return getService().getCommercePaymentMethodGroupRels(
-			groupId, countryId, active);
-	}
-
-	public static int getCommercePaymentMethodGroupRelsCount(long groupId)
-		throws PortalException {
-
-		return getService().getCommercePaymentMethodGroupRelsCount(groupId);
-	}
-
-	public static int getCommercePaymentMethodGroupRelsCount(
-			long groupId, boolean active)
-		throws PortalException {
-
-		return getService().getCommercePaymentMethodGroupRelsCount(
-			groupId, active);
 	}
 
 	/**

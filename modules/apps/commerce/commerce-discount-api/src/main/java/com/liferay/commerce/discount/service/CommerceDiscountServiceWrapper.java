@@ -251,6 +251,16 @@ public class CommerceDiscountServiceWrapper
 	}
 
 	@Override
+	public java.util.List<com.liferay.commerce.discount.model.CommerceDiscount>
+			findCommerceDiscounts(
+				long companyId, String level, boolean active, int status)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceDiscountService.findCommerceDiscounts(
+			companyId, level, active, status);
+	}
+
+	@Override
 	public com.liferay.commerce.discount.model.CommerceDiscount
 			getCommerceDiscount(long commerceDiscountId)
 		throws com.liferay.portal.kernel.exception.PortalException {

@@ -131,6 +131,17 @@ public class CommercePriceListServiceWrapper
 	}
 
 	@Override
+	public java.util.List<CommercePriceList> findCommercePriceLists(
+			long companyId, String type, int status, int start, int end,
+			com.liferay.portal.kernel.util.OrderByComparator<CommercePriceList>
+				orderByComparator)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commercePriceListService.findCommercePriceLists(
+			companyId, type, status, start, end, orderByComparator);
+	}
+
+	@Override
 	public CommercePriceList getCommercePriceList(long commercePriceListId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 

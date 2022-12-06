@@ -230,6 +230,14 @@ public class CommerceDiscountServiceUtil {
 		return getService().fetchCommerceDiscount(commerceDiscountId);
 	}
 
+	public static List<CommerceDiscount> findCommerceDiscounts(
+			long companyId, String level, boolean active, int status)
+		throws PortalException {
+
+		return getService().findCommerceDiscounts(
+			companyId, level, active, status);
+	}
+
 	public static CommerceDiscount getCommerceDiscount(long commerceDiscountId)
 		throws PortalException {
 

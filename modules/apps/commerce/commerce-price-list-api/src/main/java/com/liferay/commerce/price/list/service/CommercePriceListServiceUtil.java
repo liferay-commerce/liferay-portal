@@ -124,6 +124,15 @@ public class CommercePriceListServiceUtil {
 		return getService().fetchCommercePriceList(commercePriceListId);
 	}
 
+	public static List<CommercePriceList> findCommercePriceLists(
+			long companyId, String type, int status, int start, int end,
+			OrderByComparator<CommercePriceList> orderByComparator)
+		throws PortalException {
+
+		return getService().findCommercePriceLists(
+			companyId, type, status, start, end, orderByComparator);
+	}
+
 	public static CommercePriceList getCommercePriceList(
 			long commercePriceListId)
 		throws PortalException {

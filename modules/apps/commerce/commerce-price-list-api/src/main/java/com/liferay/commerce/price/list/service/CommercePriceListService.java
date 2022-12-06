@@ -107,6 +107,11 @@ public interface CommercePriceListService extends BaseService {
 	public CommercePriceList fetchCommercePriceList(long commercePriceListId)
 		throws PortalException;
 
+	public List<CommercePriceList> findCommercePriceLists(
+			long companyId, String type, int status, int start, int end,
+			OrderByComparator<CommercePriceList> orderByComparator)
+		throws PortalException;
+
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CommercePriceList getCommercePriceList(long commercePriceListId)
 		throws PortalException;
