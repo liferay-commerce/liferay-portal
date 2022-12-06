@@ -31,9 +31,12 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 
 import java.util.Collections;
@@ -125,9 +128,11 @@ public class CommerceChannelAccountEntryRelDisplayContext {
 		return "address";
 	}
 
-	public List<CommerceAddress> getCommerceAddresses() throws PortalException {
+	public List<CommerceAddress> getCommerceAddresses(int type)
+		throws PortalException {
+
 		if (CommerceChannelAccountEntryRelConstants.TYPE_BILLING_ADDRESS ==
-				_type) {
+				type) {
 
 			return _commerceAddressService.getBillingCommerceAddresses(
 				_commerceCountryRequestHelper.getCompanyId(),
@@ -136,7 +141,7 @@ public class CommerceChannelAccountEntryRelDisplayContext {
 		}
 
 		if (CommerceChannelAccountEntryRelConstants.TYPE_SHIPPING_ADDRESS ==
-				_type) {
+				type) {
 
 			return _commerceAddressService.getShippingCommerceAddresses(
 				_commerceCountryRequestHelper.getCompanyId(),
@@ -148,6 +153,14 @@ public class CommerceChannelAccountEntryRelDisplayContext {
 	}
 
 	public String getCommerceChannelsEmptyOptionKey() throws PortalException {
+		List<CommerceChannel> commerceChannels =
+			_commerceChannelService.findCommerceChannels(
+				_commerceCountryRequestHelper.getCompanyId());
+
+		if (commerceChannels.isEmpty()) {
+			return "all-channels";
+		}
+
 		int commerceChannelAccountEntryRelsCount =
 			_commerceChannelAccountEntryRelService.
 				getCommerceChannelAccountEntryRelsCount(
@@ -163,7 +176,9 @@ public class CommerceChannelAccountEntryRelDisplayContext {
 	public CreationMenu getCreationMenu(int type) throws Exception {
 		CreationMenu creationMenu = new CreationMenu();
 
-		if (hasPermission(ActionKeys.UPDATE)) {
+		if (hasPermission(ActionKeys.UPDATE) &&
+			ListUtil.isNotEmpty(getCommerceAddresses(type))) {
+
 			creationMenu.addDropdownItem(
 				dropdownItem -> {
 					dropdownItem.setHref(
@@ -185,7 +200,7 @@ public class CommerceChannelAccountEntryRelDisplayContext {
 		long[] commerceChannelIds = _getFilteredCommerceChannelIds();
 
 		List<CommerceChannel> commerceChannels =
-			_commerceChannelService.getCommerceChannels(
+			_commerceChannelService.findCommerceChannels(
 				_commerceCountryRequestHelper.getCompanyId());
 
 		Stream<CommerceChannel> commerceChannelsStream =
@@ -224,9 +239,20 @@ public class CommerceChannelAccountEntryRelDisplayContext {
 	}
 
 	public boolean hasPermission(String actionId) throws PortalException {
-		return _accountEntryModelResourcePermission.contains(
-			_commerceCountryRequestHelper.getPermissionChecker(),
-			_accountEntry.getAccountEntryId(), actionId);
+		PermissionChecker permissionChecker =
+			_commerceCountryRequestHelper.getPermissionChecker();
+
+		if (_accountEntryModelResourcePermission.contains(
+				permissionChecker, _accountEntry.getAccountEntryId(),
+				actionId) &&
+			permissionChecker.hasPermission(
+				null, CommerceChannel.class.getName(),
+				CompanyThreadLocal.getCompanyId(), ActionKeys.VIEW)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	public boolean isCommerceAddressSelected(long commerceAddressId)

@@ -20,7 +20,7 @@ import com.liferay.commerce.model.CommerceAddress;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.model.CommerceChannelAccountEntryRel;
 import com.liferay.commerce.product.service.CommerceChannelAccountEntryRelService;
-import com.liferay.commerce.product.service.CommerceChannelService;
+import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.service.CommerceAddressService;
 import com.liferay.frontend.data.set.provider.FDSDataProvider;
 import com.liferay.frontend.data.set.provider.search.FDSKeywords;
@@ -106,7 +106,8 @@ public class AddressCommerceChannelAccountEntryRelFDSDataProvider
 		throws PortalException {
 
 		CommerceChannel commerceChannel =
-			_commerceChannelService.fetchCommerceChannel(commerceChannelId);
+			_commerceChannelLocalService.fetchCommerceChannel(
+				commerceChannelId);
 
 		if (commerceChannel == null) {
 			List<CommerceChannelAccountEntryRel>
@@ -171,7 +172,7 @@ public class AddressCommerceChannelAccountEntryRelFDSDataProvider
 		_commerceChannelAccountEntryRelService;
 
 	@Reference
-	private CommerceChannelService _commerceChannelService;
+	private CommerceChannelLocalService _commerceChannelLocalService;
 
 	@Reference
 	private Language _language;
