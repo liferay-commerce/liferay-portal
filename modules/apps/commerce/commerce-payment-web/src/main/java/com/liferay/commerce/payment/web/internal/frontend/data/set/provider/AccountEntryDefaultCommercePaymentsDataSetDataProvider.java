@@ -15,13 +15,13 @@
 package com.liferay.commerce.payment.web.internal.frontend.data.set.provider;
 
 import com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel;
-import com.liferay.commerce.payment.service.CommercePaymentMethodGroupRelService;
+import com.liferay.commerce.payment.service.CommercePaymentMethodGroupRelLocalService;
 import com.liferay.commerce.payment.web.internal.constants.CommercePaymentMethodGroupRelFDSNames;
 import com.liferay.commerce.payment.web.internal.model.PaymentMethod;
 import com.liferay.commerce.product.constants.CommerceChannelAccountEntryRelConstants;
 import com.liferay.commerce.product.model.CommerceChannelAccountEntryRel;
 import com.liferay.commerce.product.service.CommerceChannelAccountEntryRelService;
-import com.liferay.commerce.product.service.CommerceChannelService;
+import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.frontend.data.set.provider.FDSDataProvider;
 import com.liferay.frontend.data.set.provider.search.FDSKeywords;
 import com.liferay.frontend.data.set.provider.search.FDSPagination;
@@ -63,10 +63,7 @@ public class AccountEntryDefaultCommercePaymentsDataSetDataProvider
 		Locale locale = _portal.getLocale(httpServletRequest);
 
 		return TransformUtil.transform(
-			_commerceChannelService.search(
-				companyId, fdsKeywords.getKeywords(),
-				fdsPagination.getStartPosition(),
-				fdsPagination.getEndPosition(), sort),
+			_commerceChannelLocalService.getCommerceChannels(companyId),
 			commerceChannel -> {
 				String active = StringPool.BLANK;
 
@@ -84,7 +81,7 @@ public class AccountEntryDefaultCommercePaymentsDataSetDataProvider
 				if (commerceChannelAccountEntryRel != null) {
 					CommercePaymentMethodGroupRel
 						commercePaymentMethodGroupRel =
-							_commercePaymentMethodGroupRelService.
+							_commercePaymentMethodGroupRelLocalService.
 								getCommercePaymentMethodGroupRel(
 									commerceChannelAccountEntryRel.
 										getClassPK());
@@ -127,11 +124,11 @@ public class AccountEntryDefaultCommercePaymentsDataSetDataProvider
 		_commerceChannelAccountEntryRelService;
 
 	@Reference
-	private CommerceChannelService _commerceChannelService;
+	private CommerceChannelLocalService _commerceChannelLocalService;
 
 	@Reference
-	private CommercePaymentMethodGroupRelService
-		_commercePaymentMethodGroupRelService;
+	private CommercePaymentMethodGroupRelLocalService
+		_commercePaymentMethodGroupRelLocalService;
 
 	@Reference
 	private Language _language;

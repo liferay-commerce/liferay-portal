@@ -99,7 +99,7 @@ public class CommercePaymentRestrictionsPageTableFDSView
 
 		List<CommercePaymentMethodGroupRel> commercePaymentMethodGroupRels =
 			_commercePaymentMethodGroupRelService.
-				getCommercePaymentMethodGroupRels(
+				getCommerceChannelCommercePaymentMethodGroupRels(
 					commerceChannel.getGroupId(), true);
 
 		String orderByFieldName = _beanProperties.getString(
