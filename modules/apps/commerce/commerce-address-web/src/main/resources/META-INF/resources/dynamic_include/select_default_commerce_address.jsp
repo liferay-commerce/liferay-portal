@@ -61,7 +61,7 @@ int type = commerceChannelAccountEntryRelDisplayContext.getType();
 		<aui:select label="<%= commerceChannelAccountEntryRelDisplayContext.getAddressSelectLabel(type) %>" name="classPK" required="<%= true %>">
 
 			<%
-			for (CommerceAddress commerceAddress : commerceChannelAccountEntryRelDisplayContext.getCommerceAddresses()) {
+			for (CommerceAddress commerceAddress : commerceChannelAccountEntryRelDisplayContext.getCommerceAddresses(type)) {
 			%>
 
 				<aui:option label="<%= commerceAddress.getName() %>" selected="<%= commerceChannelAccountEntryRelDisplayContext.isCommerceAddressSelected(commerceAddress.getCommerceAddressId()) %>" value="<%= commerceAddress.getCommerceAddressId() %>" />
