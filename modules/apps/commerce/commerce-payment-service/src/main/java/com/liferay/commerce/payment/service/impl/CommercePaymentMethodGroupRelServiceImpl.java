@@ -22,7 +22,9 @@ import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.service.CommerceAddressRestrictionLocalService;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.OrderByComparator;
@@ -217,8 +219,9 @@ public class CommercePaymentMethodGroupRelServiceImpl
 	}
 
 	@Override
-	public CommercePaymentMethodGroupRel getCommercePaymentMethodGroupRel(
-			long commercePaymentMethodGroupRelId)
+	public CommercePaymentMethodGroupRel
+			getCommerceChannelCommercePaymentMethodGroupRel(
+				long commercePaymentMethodGroupRelId)
 		throws PortalException {
 
 		CommercePaymentMethodGroupRel commercePaymentMethodGroupRel =
@@ -232,8 +235,9 @@ public class CommercePaymentMethodGroupRelServiceImpl
 	}
 
 	@Override
-	public CommercePaymentMethodGroupRel getCommercePaymentMethodGroupRel(
-			long groupId, String engineKey)
+	public CommercePaymentMethodGroupRel
+			getCommerceChannelCommercePaymentMethodGroupRel(
+				long groupId, String engineKey)
 		throws PortalException {
 
 		_checkCommerceChannel(groupId);
@@ -244,7 +248,7 @@ public class CommercePaymentMethodGroupRelServiceImpl
 
 	@Override
 	public List<CommercePaymentMethodGroupRel>
-			getCommercePaymentMethodGroupRels(long groupId)
+			getCommerceChannelCommercePaymentMethodGroupRels(long groupId)
 		throws PortalException {
 
 		_checkCommerceChannel(groupId);
@@ -255,7 +259,8 @@ public class CommercePaymentMethodGroupRelServiceImpl
 
 	@Override
 	public List<CommercePaymentMethodGroupRel>
-			getCommercePaymentMethodGroupRels(long groupId, boolean active)
+			getCommerceChannelCommercePaymentMethodGroupRels(
+				long groupId, boolean active)
 		throws PortalException {
 
 		_checkCommerceChannel(groupId);
@@ -266,7 +271,7 @@ public class CommercePaymentMethodGroupRelServiceImpl
 
 	@Override
 	public List<CommercePaymentMethodGroupRel>
-			getCommercePaymentMethodGroupRels(
+			getCommerceChannelCommercePaymentMethodGroupRels(
 				long groupId, boolean active, int start, int end)
 		throws PortalException {
 
@@ -278,7 +283,7 @@ public class CommercePaymentMethodGroupRelServiceImpl
 
 	@Override
 	public List<CommercePaymentMethodGroupRel>
-			getCommercePaymentMethodGroupRels(
+			getCommerceChannelCommercePaymentMethodGroupRels(
 				long groupId, boolean active, int start, int end,
 				OrderByComparator<CommercePaymentMethodGroupRel>
 					orderByComparator)
@@ -293,7 +298,7 @@ public class CommercePaymentMethodGroupRelServiceImpl
 
 	@Override
 	public List<CommercePaymentMethodGroupRel>
-			getCommercePaymentMethodGroupRels(
+			getCommerceChannelCommercePaymentMethodGroupRels(
 				long groupId, int start, int end,
 				OrderByComparator<CommercePaymentMethodGroupRel>
 					orderByComparator)
@@ -308,7 +313,7 @@ public class CommercePaymentMethodGroupRelServiceImpl
 
 	@Override
 	public List<CommercePaymentMethodGroupRel>
-			getCommercePaymentMethodGroupRels(
+			getCommerceChannelCommercePaymentMethodGroupRels(
 				long groupId, long countryId, boolean active)
 		throws PortalException {
 
@@ -319,7 +324,8 @@ public class CommercePaymentMethodGroupRelServiceImpl
 	}
 
 	@Override
-	public int getCommercePaymentMethodGroupRelsCount(long groupId)
+	public int getCommerceChannelCommercePaymentMethodGroupRelsCount(
+			long groupId)
 		throws PortalException {
 
 		_checkCommerceChannel(groupId);
@@ -329,7 +335,7 @@ public class CommercePaymentMethodGroupRelServiceImpl
 	}
 
 	@Override
-	public int getCommercePaymentMethodGroupRelsCount(
+	public int getCommerceChannelCommercePaymentMethodGroupRelsCount(
 			long groupId, boolean active)
 		throws PortalException {
 
@@ -337,6 +343,45 @@ public class CommercePaymentMethodGroupRelServiceImpl
 
 		return commercePaymentMethodGroupRelLocalService.
 			getCommercePaymentMethodGroupRelsCount(groupId, active);
+	}
+
+	@Override
+	public CommercePaymentMethodGroupRel getCommercePaymentMethodGroupRel(
+			long commercePaymentMethodGroupRelId)
+		throws PortalException {
+
+		CommercePaymentMethodGroupRel commercePaymentMethodGroupRel =
+			commercePaymentMethodGroupRelLocalService.
+				getCommercePaymentMethodGroupRel(
+					commercePaymentMethodGroupRelId);
+
+		PermissionChecker permissionChecker = getPermissionChecker();
+
+		if (!permissionChecker.hasPermission(
+				null, CommercePaymentMethodGroupRel.class.getName(),
+				commercePaymentMethodGroupRel.
+					getCommercePaymentMethodGroupRelId(),
+				ActionKeys.VIEW)) {
+
+			throw new PrincipalException.MustHavePermission(
+				permissionChecker,
+				CommercePaymentMethodGroupRel.class.getName(), 0,
+				ActionKeys.VIEW);
+		}
+
+		return commercePaymentMethodGroupRel;
+	}
+
+	@Override
+	public List<CommercePaymentMethodGroupRel>
+			getCommercePaymentMethodGroupRels(
+				long groupId, boolean active, int start, int end,
+				OrderByComparator<CommercePaymentMethodGroupRel>
+					orderByComparator)
+		throws PortalException {
+
+		return commercePaymentMethodGroupRelPersistence.filterFindByG_A(
+			groupId, active, start, end, orderByComparator);
 	}
 
 	@Override
