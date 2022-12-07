@@ -172,6 +172,14 @@ definition {
 		WaitForPageLoad();
 	}
 
+	macro createNewAccountInFlow {
+		SelectFrameTop();
+
+		PortletEntry.inputName(name = "${accountName}");
+
+		Button.click(button = "Create");
+	}
+
 	macro createNewAccountViaFront {
 		Account.addBusinessAccount(accountName = "${accountName}");
 	}
