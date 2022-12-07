@@ -27,10 +27,14 @@ import com.liferay.commerce.product.service.CommerceChannelAccountEntryRelServic
 import com.liferay.commerce.product.service.CommerceChannelService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -107,12 +111,17 @@ public class CommerceChannelAccountEntryRelDisplayContext {
 					CommerceChannelAccountEntryRelConstants.TYPE_PAYMENT);
 
 		if (commerceChannelAccountEntryRel != null) {
-			_commercePaymentMethodGroupRel =
-				_commercePaymentMethodGroupRelService.
-					fetchCommercePaymentMethodGroupRel(
-						commerceChannelAccountEntryRel.getClassPK());
+			try {
+				_commercePaymentMethodGroupRel =
+					_commercePaymentMethodGroupRelService.
+						getCommercePaymentMethodGroupRel(
+							commerceChannelAccountEntryRel.getClassPK());
 
-			return _commercePaymentMethodGroupRel;
+				return _commercePaymentMethodGroupRel;
+			}
+			catch (PrincipalException principalException) {
+				_log.error(principalException);
+			}
 		}
 
 		return null;
@@ -122,12 +131,19 @@ public class CommerceChannelAccountEntryRelDisplayContext {
 			getCommercePaymentMethodGroupRels()
 		throws PortalException {
 
-		return _commercePaymentMethodGroupRelService.
-			getCommercePaymentMethodGroupRels(
-				_commerceChannel.getGroupId(), true, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS,
-				new CommercePaymentMethodGroupRelNameOrderByComparator(
-					_locale));
+		try {
+			return _commercePaymentMethodGroupRelService.
+				getCommercePaymentMethodGroupRels(
+					_commerceChannel.getGroupId(), true, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS,
+					new CommercePaymentMethodGroupRelNameOrderByComparator(
+						_locale));
+		}
+		catch (PrincipalException principalException) {
+			_log.error(principalException);
+		}
+
+		return Collections.emptyList();
 	}
 
 	public boolean isCommercePaymentChecked(String key) {
@@ -148,6 +164,9 @@ public class CommerceChannelAccountEntryRelDisplayContext {
 
 	protected final CommercePaymentMethodRequestHelper
 		commercePaymentMethodRequestHelper;
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		CommerceChannelAccountEntryRelDisplayContext.class);
 
 	private final AccountEntry _accountEntry;
 	private final AccountEntryService _accountEntryService;
