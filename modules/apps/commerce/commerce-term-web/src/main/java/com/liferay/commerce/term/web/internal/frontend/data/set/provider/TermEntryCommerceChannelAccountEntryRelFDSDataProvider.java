@@ -14,12 +14,13 @@
 
 package com.liferay.commerce.term.web.internal.frontend.data.set.provider;
 
+import com.liferay.account.model.AccountEntry;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.model.CommerceChannelAccountEntryRel;
 import com.liferay.commerce.product.service.CommerceChannelAccountEntryRelService;
-import com.liferay.commerce.product.service.CommerceChannelService;
+import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.term.model.CommerceTermEntry;
-import com.liferay.commerce.term.service.CommerceTermEntryService;
+import com.liferay.commerce.term.service.CommerceTermEntryLocalService;
 import com.liferay.commerce.term.web.internal.entry.constants.CommerceTermEntryFDSNames;
 import com.liferay.commerce.term.web.internal.model.TermEntry;
 import com.liferay.frontend.data.set.provider.FDSDataProvider;
@@ -30,14 +31,20 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.util.ParamUtil;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 /**
  * @author Alessio Antonio Rendina
@@ -60,33 +67,39 @@ public class TermEntryCommerceChannelAccountEntryRelFDSDataProvider
 
 		long accountEntryId = ParamUtil.getLong(
 			httpServletRequest, "accountEntryId");
-		int type = ParamUtil.getInteger(httpServletRequest, "type");
 
-		return TransformUtil.transform(
-			_commerceChannelAccountEntryRelService.
-				getCommerceChannelAccountEntryRels(
-					accountEntryId, type, fdsPagination.getStartPosition(),
-					fdsPagination.getEndPosition(), null),
-			commerceChannelAccountEntryRel -> {
-				CommerceTermEntry commerceTermEntry =
-					_commerceTermEntryService.getCommerceTermEntry(
-						commerceChannelAccountEntryRel.getClassPK());
+		if (_hasPermission(accountEntryId)) {
+			int type = ParamUtil.getInteger(httpServletRequest, "type");
 
-				return new TermEntry(
-					commerceChannelAccountEntryRel.getAccountEntryId(),
-					commerceTermEntry.isActive(),
-					_getChannelName(
-						accountEntryId,
-						commerceChannelAccountEntryRel.getCommerceChannelId(),
-						httpServletRequest, type),
-					commerceChannelAccountEntryRel.
-						getCommerceChannelAccountEntryRelId(),
-					commerceTermEntry.getLabel(
-						_language.getLanguageId(httpServletRequest)),
-					commerceChannelAccountEntryRel.isOverrideEligibility(),
-					commerceChannelAccountEntryRel.getPriority(),
-					commerceChannelAccountEntryRel.getType());
-			});
+			return TransformUtil.transform(
+				_commerceChannelAccountEntryRelService.
+					getCommerceChannelAccountEntryRels(
+						accountEntryId, type, fdsPagination.getStartPosition(),
+						fdsPagination.getEndPosition(), null),
+				commerceChannelAccountEntryRel -> {
+					CommerceTermEntry commerceTermEntry =
+						_commerceTermEntryLocalService.getCommerceTermEntry(
+							commerceChannelAccountEntryRel.getClassPK());
+
+					return new TermEntry(
+						commerceChannelAccountEntryRel.getAccountEntryId(),
+						commerceTermEntry.isActive(),
+						_getChannelName(
+							accountEntryId,
+							commerceChannelAccountEntryRel.
+								getCommerceChannelId(),
+							httpServletRequest, type),
+						commerceChannelAccountEntryRel.
+							getCommerceChannelAccountEntryRelId(),
+						commerceTermEntry.getLabel(
+							_language.getLanguageId(httpServletRequest)),
+						commerceChannelAccountEntryRel.isOverrideEligibility(),
+						commerceChannelAccountEntryRel.getPriority(),
+						commerceChannelAccountEntryRel.getType());
+				});
+		}
+
+		return Collections.emptyList();
 	}
 
 	@Override
@@ -106,7 +119,8 @@ public class TermEntryCommerceChannelAccountEntryRelFDSDataProvider
 		throws PortalException {
 
 		CommerceChannel commerceChannel =
-			_commerceChannelService.fetchCommerceChannel(commerceChannelId);
+			_commerceChannelLocalService.fetchCommerceChannel(
+				commerceChannelId);
 
 		if (commerceChannel == null) {
 			List<CommerceChannelAccountEntryRel>
@@ -136,15 +150,35 @@ public class TermEntryCommerceChannelAccountEntryRelFDSDataProvider
 		return commerceChannel.getName();
 	}
 
+	private boolean _hasPermission(long accountEntryId) throws PortalException {
+		return _accountEntryModelResourcePermission.contains(
+			PermissionThreadLocal.getPermissionChecker(), accountEntryId,
+			ActionKeys.UPDATE);
+	}
+
+	@Reference(
+		policy = ReferencePolicy.DYNAMIC,
+		policyOption = ReferencePolicyOption.GREEDY,
+		target = "(model.class.name=com.liferay.account.model.AccountEntry)"
+	)
+	private volatile ModelResourcePermission<AccountEntry>
+		_accountEntryModelResourcePermission;
+
 	@Reference
 	private CommerceChannelAccountEntryRelService
 		_commerceChannelAccountEntryRelService;
 
 	@Reference
-	private CommerceChannelService _commerceChannelService;
+	private CommerceChannelLocalService _commerceChannelLocalService;
+
+	@Reference(
+		target = "(model.class.name=com.liferay.commerce.product.model.CommerceChannel)"
+	)
+	private ModelResourcePermission<CommerceChannel>
+		_commerceChannelModelResourcePermission;
 
 	@Reference
-	private CommerceTermEntryService _commerceTermEntryService;
+	private CommerceTermEntryLocalService _commerceTermEntryLocalService;
 
 	@Reference
 	private Language _language;

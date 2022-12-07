@@ -56,12 +56,12 @@ CommerceChannelAccountEntryRel commerceChannelAccountEntryRel = commerceChannelA
 
 		</aui:select>
 
-		<aui:input checked="<%= (commerceChannelAccountEntryRel == null) ? false : commerceChannelAccountEntryRel.isOverrideEligibility() %>" helpMessage="override-eligibility-help" label="override-eligibility" name="overrideEligibility" type="toggle-switch" />
+		<aui:input checked="<%= (commerceChannelAccountEntryRel == null) ? false : commerceChannelAccountEntryRel.isOverrideEligibility() %>" disabled="<%= !commerceChannelAccountEntryRelDisplayContext.hasOverrideEligibilityPermission() %>" helpMessage="override-eligibility-help" label="override-eligibility" name="overrideEligibility" type="toggle-switch" />
 
 		<aui:select label="term" name="classPK" required="<%= true %>">
 
 			<%
-			for (CommerceTermEntry commerceTermEntry : commerceChannelAccountEntryRelDisplayContext.getCommerceTermEntries()) {
+			for (CommerceTermEntry commerceTermEntry : commerceChannelAccountEntryRelDisplayContext.getCommerceTermEntries(commerceChannelAccountEntryRelDisplayContext.getType())) {
 			%>
 
 				<aui:option label="<%= commerceTermEntry.getLabel(languageId) %>" selected="<%= commerceChannelAccountEntryRelDisplayContext.isCommerceTermEntrySelected(commerceTermEntry.getCommerceTermEntryId()) %>" value="<%= commerceTermEntry.getCommerceTermEntryId() %>" />

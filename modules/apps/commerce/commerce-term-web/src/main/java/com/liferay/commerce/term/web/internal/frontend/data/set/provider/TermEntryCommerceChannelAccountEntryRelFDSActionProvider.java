@@ -16,6 +16,8 @@ package com.liferay.commerce.term.web.internal.frontend.data.set.provider;
 
 import com.liferay.account.constants.AccountPortletKeys;
 import com.liferay.account.model.AccountEntry;
+import com.liferay.commerce.product.model.CommerceChannel;
+import com.liferay.commerce.term.model.CommerceTermEntry;
 import com.liferay.commerce.term.web.internal.entry.constants.CommerceTermEntryFDSNames;
 import com.liferay.commerce.term.web.internal.model.TermEntry;
 import com.liferay.frontend.data.set.provider.FDSActionProvider;
@@ -24,18 +26,24 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuil
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
+import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.theme.PortletDisplay;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.List;
 
 import javax.portlet.PortletRequest;
+import javax.portlet.PortletURL;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -64,13 +72,8 @@ public class TermEntryCommerceChannelAccountEntryRelFDSActionProvider
 
 		TermEntry termEntry = (TermEntry)model;
 
-		PermissionChecker permissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
-
 		return DropdownItemListBuilder.add(
-			() -> _accountEntryModelResourcePermission.contains(
-				permissionChecker, termEntry.getAccountEntryId(),
-				ActionKeys.UPDATE),
+			() -> _hasPermission(termEntry),
 			dropdownItem -> {
 				dropdownItem.setHref(
 					_getCommerceChannelAccountEntryRelEditURL(
@@ -82,9 +85,7 @@ public class TermEntryCommerceChannelAccountEntryRelFDSActionProvider
 				dropdownItem.setTarget("modal-lg");
 			}
 		).add(
-			() -> _accountEntryModelResourcePermission.contains(
-				permissionChecker, termEntry.getAccountEntryId(),
-				ActionKeys.UPDATE),
+			() -> _hasPermission(termEntry),
 			dropdownItem -> {
 				dropdownItem.setHref(
 					_getCommerceChannelAccountEntryRelDeleteURL(
@@ -100,10 +101,32 @@ public class TermEntryCommerceChannelAccountEntryRelFDSActionProvider
 		long commerceChannelAccountEntryRelId,
 		HttpServletRequest httpServletRequest) {
 
-		return PortletURLBuilder.create(
-			_portal.getControlPanelPortletURL(
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
+
+		PortletURL portletURL = null;
+
+		if (AccountPortletKeys.ACCOUNT_ENTRIES_ADMIN.equals(
+				portletDisplay.getId())) {
+
+			portletURL = _portal.getControlPanelPortletURL(
 				httpServletRequest, AccountPortletKeys.ACCOUNT_ENTRIES_ADMIN,
-				PortletRequest.ACTION_PHASE)
+				PortletRequest.ACTION_PHASE);
+		}
+		else if (AccountPortletKeys.ACCOUNT_ENTRIES_MANAGEMENT.equals(
+					portletDisplay.getId())) {
+
+			portletURL = PortletURLFactoryUtil.create(
+				httpServletRequest,
+				AccountPortletKeys.ACCOUNT_ENTRIES_MANAGEMENT,
+				themeDisplay.getPlid(), PortletRequest.ACTION_PHASE);
+		}
+
+		return PortletURLBuilder.create(
+			portletURL
 		).setActionName(
 			"/commerce_term_entry" +
 				"/edit_account_entry_default_commerce_term_entry"
@@ -122,10 +145,32 @@ public class TermEntryCommerceChannelAccountEntryRelFDSActionProvider
 		long accountEntryId, long commerceChannelAccountEntryRelId,
 		HttpServletRequest httpServletRequest, int type) {
 
-		return PortletURLBuilder.create(
-			_portal.getControlPanelPortletURL(
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
+
+		PortletURL portletURL = null;
+
+		if (AccountPortletKeys.ACCOUNT_ENTRIES_ADMIN.equals(
+				portletDisplay.getId())) {
+
+			portletURL = _portal.getControlPanelPortletURL(
 				httpServletRequest, AccountPortletKeys.ACCOUNT_ENTRIES_ADMIN,
-				PortletRequest.RENDER_PHASE)
+				PortletRequest.RENDER_PHASE);
+		}
+		else if (AccountPortletKeys.ACCOUNT_ENTRIES_MANAGEMENT.equals(
+					portletDisplay.getId())) {
+
+			portletURL = PortletURLFactoryUtil.create(
+				httpServletRequest,
+				AccountPortletKeys.ACCOUNT_ENTRIES_MANAGEMENT,
+				themeDisplay.getPlid(), PortletRequest.RENDER_PHASE);
+		}
+
+		return PortletURLBuilder.create(
+			portletURL
 		).setMVCRenderCommandName(
 			"/commerce_term_entry" +
 				"/edit_account_entry_default_commerce_term_entry"
@@ -140,6 +185,26 @@ public class TermEntryCommerceChannelAccountEntryRelFDSActionProvider
 		).buildString();
 	}
 
+	private boolean _hasPermission(TermEntry termEntry) throws PortalException {
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		if (_accountEntryModelResourcePermission.contains(
+				permissionChecker, termEntry.getAccountEntryId(),
+				ActionKeys.UPDATE) &&
+			permissionChecker.hasPermission(
+				null, CommerceChannel.class.getName(),
+				CompanyThreadLocal.getCompanyId(), ActionKeys.VIEW) &&
+			permissionChecker.hasPermission(
+				null, CommerceTermEntry.class.getName(),
+				CompanyThreadLocal.getCompanyId(), ActionKeys.VIEW)) {
+
+			return true;
+		}
+
+		return false;
+	}
+
 	@Reference(
 		policy = ReferencePolicy.DYNAMIC,
 		policyOption = ReferencePolicyOption.GREEDY,
@@ -147,6 +212,12 @@ public class TermEntryCommerceChannelAccountEntryRelFDSActionProvider
 	)
 	private volatile ModelResourcePermission<AccountEntry>
 		_accountEntryModelResourcePermission;
+
+	@Reference(
+		target = "(model.class.name=com.liferay.commerce.product.model.CommerceChannel)"
+	)
+	private ModelResourcePermission<CommerceChannel>
+		_commerceChannelModelResourcePermission;
 
 	@Reference
 	private Language _language;
