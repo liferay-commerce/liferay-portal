@@ -123,6 +123,15 @@ public class CommerceTermEntryServiceImpl
 	}
 
 	@Override
+	public List<CommerceTermEntry> findCommerceTermEntries(
+			long companyId, String type)
+		throws PortalException {
+
+		return commerceTermEntryPersistence.filterFindByC_A_LikeType(
+			companyId, true, type);
+	}
+
+	@Override
 	public List<CommerceTermEntry> getCommerceTermEntries(
 			long groupId, long companyId, String type)
 		throws PortalException {
