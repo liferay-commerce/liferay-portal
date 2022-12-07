@@ -15,13 +15,13 @@
 package com.liferay.commerce.currency.web.internal.frontend.data.set.provider;
 
 import com.liferay.commerce.currency.model.CommerceCurrency;
-import com.liferay.commerce.currency.service.CommerceCurrencyService;
+import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.currency.web.internal.constants.CommerceCurrencyFDSNames;
 import com.liferay.commerce.currency.web.internal.model.Currency;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.model.CommerceChannelAccountEntryRel;
 import com.liferay.commerce.product.service.CommerceChannelAccountEntryRelService;
-import com.liferay.commerce.product.service.CommerceChannelService;
+import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.frontend.data.set.provider.FDSDataProvider;
 import com.liferay.frontend.data.set.provider.search.FDSKeywords;
 import com.liferay.frontend.data.set.provider.search.FDSPagination;
@@ -67,7 +67,7 @@ public class CurrencyCommerceChannelAccountEntryRelFDSDataProvider
 					fdsPagination.getEndPosition(), null),
 			commerceChannelAccountEntryRel -> {
 				CommerceCurrency commerceCurrency =
-					_commerceCurrencyService.getCommerceCurrency(
+					_commerceCurrencyLocalService.getCommerceCurrency(
 						commerceChannelAccountEntryRel.getClassPK());
 
 				return new Currency(
@@ -103,7 +103,8 @@ public class CurrencyCommerceChannelAccountEntryRelFDSDataProvider
 		throws PortalException {
 
 		CommerceChannel commerceChannel =
-			_commerceChannelService.fetchCommerceChannel(commerceChannelId);
+			_commerceChannelLocalService.fetchCommerceChannel(
+				commerceChannelId);
 
 		if (commerceChannel == null) {
 			List<CommerceChannelAccountEntryRel>
@@ -138,10 +139,10 @@ public class CurrencyCommerceChannelAccountEntryRelFDSDataProvider
 		_commerceChannelAccountEntryRelService;
 
 	@Reference
-	private CommerceChannelService _commerceChannelService;
+	private CommerceChannelLocalService _commerceChannelLocalService;
 
 	@Reference
-	private CommerceCurrencyService _commerceCurrencyService;
+	private CommerceCurrencyLocalService _commerceCurrencyLocalService;
 
 	@Reference
 	private Language _language;
