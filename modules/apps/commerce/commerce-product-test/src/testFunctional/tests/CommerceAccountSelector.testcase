@@ -1,6 +1,7 @@
 @component-name = "portal-commerce"
 definition {
 
+	property custom.properties = "jsonws.web.service.paths.excludes=${line.separator}company.security.strangers.verify=false";
 	property portal.release = "true";
 	property portal.upstream = "true";
 	property release.feature.flags.disable.DISABLE_PRIVATE_LAYOUTS = "true";
@@ -104,6 +105,308 @@ definition {
 		Click.clickNoMouseOver(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN");
 
 		AssertElementPresent(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN_MENU_SELECTED_ACCOUNT");
+	}
+
+	@description = "COMMERCE-9022. As a sales agent, I want to be able to cancel the in-flow account creation"
+	@priority = "3"
+	test CanCancelInFlowAccountCreation {
+		task ("GIVEN a Minium site is created and the Catalog page is reached") {
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+
+			ApplicationsMenu.gotoSite(site = "Minium");
+		}
+
+		task ("AND the account selector is opened") {
+			Click.clickNoMouseOver(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN");
+		}
+
+		task ("AND the 'Create New Account' button is clicked") {
+			Button.click(button = "Create New Account");
+
+			SelectFrameTop();
+		}
+
+		task ("AND a modal shows up AND a name is typed") {
+			PortletEntry.inputName(name = "${accountName}");
+		}
+
+		task ("AND the user clicks 'Cancel'") {
+			Click(
+				key_text = "Cancel",
+				locator1 = "Button#ANY_SECONDARY");
+		}
+
+		task ("THEN the modal closes and the account is not created") {
+			AssertTextEquals(
+				locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN_MENU_SELECTED_ACCOUNT",
+				value1 = "Select Account");
+
+			Click.clickNoMouseOver(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN");
+
+			SelectFrameTop();
+
+			CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
+
+			CommerceAcceleratorsInitializer.viewDisabledAddToCartButton(productName = "ABS Sensor");
+		}
+	}
+
+	@description = "COMMERCE-9022. As a Sales Agent, I want to be able to select an account from the list (which is not the selected one), and have the selected account change to the newly selected account"
+	@priority = "3"
+	test CanChangeActiveInFlowAccountFromAccountsList {
+		task ("WHEN a minium site is created and the catalog page is reached") {
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+
+			ApplicationsMenu.gotoSite(site = "Minium");
+		}
+
+		task ("AND two accounts are created via the Account Selector") {
+			for (var accountNumber : list "1,2") {
+				Click.clickNoMouseOver(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN");
+
+				if (IsElementPresent(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN_BACK_BUTTON")) {
+					Click(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN_BACK_BUTTON");
+				}
+
+				Button.click(button = "Create New Account");
+
+				CommerceAcceleratorsInitializer.createNewAccountInFlow(accountName = "Commerce Account ${accountNumber}");
+			}
+		}
+
+		task ("AND the last created account is selected") {
+			Click.clickNoMouseOver(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN");
+
+			AssertTextEquals(
+				locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN_MENU_SELECTED_ACCOUNT",
+				value1 = "Commerce Account 2");
+		}
+
+		task ("WHEN the user changes account") {
+			Click(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN_BACK_BUTTON");
+
+			Click(
+				key_accountName = "Commerce Account 1",
+				locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_ACCOUNT_LIST_ITEM");
+
+			Click.clickNoMouseOver(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN");
+		}
+
+		task ("THEN the newly selected account appears in the Account Selectors bar") {
+			AssertTextEquals(
+				locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN_MENU_SELECTED_ACCOUNT",
+				value1 = "Commerce Account 1");
+		}
+	}
+
+	@description = "COMMERCE-9022. As a Sales Agent, I want to be able to create a new Account from the account selector"
+	@priority = "3"
+	test CanCreateNewAccountInFlow {
+		property portal.acceptance = "true";
+
+		task ("GIVEN a minium site is created and the Catalog page reached") {
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+
+			ApplicationsMenu.gotoSite(site = "Minium");
+		}
+
+		task ("AND the account selector is opened") {
+			Click.clickNoMouseOver(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN");
+		}
+
+		task ("AND the "Create New Account" button is clicked and the modal shows up") {
+			Button.click(button = "Create New Account");
+		}
+
+		task ("AND the user input at least the required field and saves") {
+			CommerceAcceleratorsInitializer.createNewAccountInFlow(accountName = "Commerce Account");
+		}
+
+		task (" THEN the new account is created and the user is able to place an order") {
+			Click.clickNoMouseOver(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN");
+
+			AssertTextEquals(
+				locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN_MENU_SELECTED_ACCOUNT",
+				value1 = "Commerce Account");
+
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
+
+			AssertElementPresent(
+				key_tableEntry = "Commerce Account",
+				locator1 = "LexiconTable#TABLE_ENTRY_TITLE_LINK");
+
+			Click(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN_BACK_BUTTON");
+
+			ApplicationsMenu.gotoSite(site = "Minium");
+
+			CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
+
+			CommerceAcceleratorsInitializer.viewEnabledAddToCartButton(productName = "ABS Sensor");
+		}
+	}
+
+	@description = "COMMERCE-9022. As a Buyer (without manage account permissions), I am not able to create an account"
+	@priority = "3"
+	test CannotCreateAccountInFlowWithoutPermissions {
+		property portal.acceptance = "true";
+
+		task ("GIVEN a Minium site created and the catalog page is reached") {
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+
+			ApplicationsMenu.gotoSite(site = "Minium");
+		}
+
+		task ("WHEN an account is in-flow created") {
+			Click.clickNoMouseOver(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN");
+
+			Button.click(button = "Create New Account");
+
+			CommerceAcceleratorsInitializer.createNewAccountInFlow(accountName = "Commerce Account");
+		}
+
+		task ("AND a buyer user is associated with the account") {
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
+
+			CommerceNavigator.gotoEntry(entryName = "Commerce Account");
+
+			CommerceAcceleratorsInitializer.inviteNewMemberWithRoleToAccount(
+				accountName = "Commerce Account",
+				emailAddress = "buyer@liferay.com",
+				role = "Buyer",
+				userFirstName = "Buyer",
+				userLastName = "User",
+				userScreenName = "buyeruser");
+
+			ApplicationsMenu.gotoPortlet(
+				category = "Users",
+				panel = "Control Panel",
+				portlet = "Users and Organizations");
+
+			CommerceLogin.editPasswordCP(
+				newPassword = "ttest",
+				requirePasswordReset = "true",
+				userScreenName = "buyeruser");
+		}
+
+		task ("AND the buyer user logs in and reaches the catalog page") {
+			User.logoutPG();
+
+			CommerceLogin.miniumLogin(
+				newPassword = "test",
+				password = "ttest",
+				urlAppend = "web/minium",
+				userEmailAddress = "buyer@liferay.com");
+		}
+
+		task ("AND the user opens the account selector") {
+			Click.clickNoMouseOver(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN");
+		}
+
+		task ("THEN the buyer is not able to see the 'Create New Account' button") {
+			AssertElementNotPresent(
+				key_text = "Create New Account",
+				locator1 = "Button#ANY");
+		}
+	}
+
+	@description = "COMMERCE-9022. COMMERCE-9022. As a Sales Agent, I get an advice when I try to create an account without the required fields filled"
+	@priority = "3"
+	test CannotSaveInFlowAccountWithoutRequiredField {
+		task ("GIVEN a minium site is created and the Catalog page reached") {
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+
+			ApplicationsMenu.gotoSite(site = "Minium");
+		}
+
+		task ("AND the account selector is opened") {
+			Click.clickNoMouseOver(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN");
+		}
+
+		task ("AND the 'Create New Account' button is clicked and the modal shows up") {
+			Button.click(button = "Create New Account");
+
+			SelectFrameTop();
+		}
+
+		task ("AND the user clicks 'Create'") {
+			Button.click(button = "Create");
+		}
+
+		task ("THEN a message that asks to fill the required field(s) appear and when the user closes the modal the account has not been created") {
+			AssertElementPresent(locator1 = "//div[@class='modal-content']/div/div[text()='Create New Account']");
+
+			Click(
+				key_text = "Cancel",
+				locator1 = "Button#ANY_SECONDARY");
+		}
+	}
+
+	@description = "COMMERCE-9022. As a Sales Agent, I want to search for an account in the accounts list, and select it as active account"
+	@priority = "3"
+	test CanSearchForAnInFlowAccountAndSelectItAsActive {
+		property portal.acceptance = "true";
+
+		task ("WHEN a minium site is created and the catalog page is reached") {
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+
+			ApplicationsMenu.gotoSite(site = "Minium");
+		}
+
+		task ("AND two accounts are created via the Account Selector") {
+			for (var accountNumber : list "First,Second") {
+				Click.clickNoMouseOver(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN");
+
+				if (IsElementPresent(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN_BACK_BUTTON")) {
+					Click(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN_BACK_BUTTON");
+				}
+
+				Button.click(button = "Create New Account");
+
+				CommerceAcceleratorsInitializer.createNewAccountInFlow(accountName = "${accountNumber} Account");
+			}
+		}
+
+		task ("AND the user opens the Account Selector") {
+			Click.clickNoMouseOver(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN");
+		}
+
+		task ("AND the last created account is selected") {
+			AssertTextEquals(
+				locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN_MENU_SELECTED_ACCOUNT",
+				value1 = "Second Account");
+		}
+
+		task ("AND the user can see the list of the accounts in the Account Selector special section") {
+			Click(locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_DROPDOWN_BACK_BUTTON");
+
+			for (var accountsList : list "First,Second") {
+				AssertElementPresent(
+					key_accountName = "${accountsList} Account",
+					locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_ACCOUNT_LIST_ITEM");
+			}
+		}
+
+		task ("WHEN the user searches for a specific account, the search results shows the right one and it is selectable as current account") {
+			Type(
+				locator1 = "AppBuilder#INPUT_OBJECT_RENAME",
+				value1 = "First");
+
+			AssertElementPresent(
+				key_accountName = "First Account",
+				locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_ACCOUNT_LIST_ITEM");
+
+			AssertElementNotPresent(
+				key_accountName = "Second Account",
+				locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_ACCOUNT_LIST_ITEM");
+
+			Click(
+				key_accountName = "First Account",
+				locator1 = "CommerceAccelerators#ACCOUNT_SELECTOR_ACCOUNT_LIST_ITEM");
+
+			AssertTextPresent(
+				locator1 = "ContentDashboard#INFO_PANEL_TITLE",
+				value1 = "First Account");
+		}
 	}
 
 	@description = "COMMERCE-5927. As a buyer, I want to be able to select an account from the list (which is not the selected one), and have the selected account change to the newly selected account"
@@ -249,7 +552,7 @@ definition {
 	@description = "COMMERCE-5956. As a buyer, I want to search for an account in the accounts list, and select it as active account"
 	@priority = "3"
 	test SearchForAnAccountAndSelectItAsActive {
-		property portal.acceptance = "false";
+		property portal.acceptance = "true";
 
 		// TODO Review
 
