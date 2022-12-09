@@ -335,6 +335,15 @@ public class CommerceDiscountServiceImpl
 	}
 
 	@Override
+	public List<CommerceDiscount> findCommerceDiscounts(
+			long companyId, String level, boolean active, int status)
+		throws PortalException {
+
+		return commerceDiscountPersistence.filterFindByC_L_A_S(
+			companyId, level, active, status);
+	}
+
+	@Override
 	public CommerceDiscount getCommerceDiscount(long commerceDiscountId)
 		throws PortalException {
 
