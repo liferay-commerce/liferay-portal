@@ -22,6 +22,7 @@ import com.liferay.commerce.discount.service.CommerceDiscountService;
 import com.liferay.commerce.price.list.constants.CommercePriceListConstants;
 import com.liferay.commerce.price.list.model.CommercePriceList;
 import com.liferay.commerce.price.list.service.CommercePriceListService;
+import com.liferay.commerce.pricing.constants.CommercePricingActionKeys;
 import com.liferay.commerce.pricing.web.internal.display.context.helper.CommercePricingRequestHelper;
 import com.liferay.commerce.product.constants.CommerceChannelAccountEntryRelConstants;
 import com.liferay.commerce.product.model.CommerceChannel;
@@ -33,11 +34,16 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
@@ -132,6 +138,14 @@ public class CommerceChannelAccountEntryRelDisplayContext {
 	}
 
 	public String getCommerceChannelsEmptyOptionKey() throws PortalException {
+		List<CommerceChannel> commerceChannels =
+			_commerceChannelService.findCommerceChannels(
+				_commercePricingRequestHelper.getCompanyId());
+
+		if (commerceChannels.isEmpty()) {
+			return "all-channels";
+		}
+
 		int commerceChannelAccountEntryRelsCount =
 			_commerceChannelAccountEntryRelService.
 				getCommerceChannelAccountEntryRelsCount(
@@ -144,28 +158,30 @@ public class CommerceChannelAccountEntryRelDisplayContext {
 		return "all-channels";
 	}
 
-	public List<CommerceDiscount> getCommerceDiscounts()
-		throws PortalException {
-
-		if (CommerceChannelAccountEntryRelConstants.TYPE_DISCOUNT == _type) {
-			return _commerceDiscountService.getCommerceDiscounts(
+	public List<CommerceDiscount> getCommerceDiscounts() {
+		try {
+			return _commerceDiscountService.findCommerceDiscounts(
 				_commercePricingRequestHelper.getCompanyId(),
 				CommerceDiscountConstants.LEVEL_L1, true,
 				WorkflowConstants.STATUS_APPROVED);
+		}
+		catch (PortalException portalException) {
+			_log.error(portalException);
 		}
 
 		return Collections.emptyList();
 	}
 
-	public List<CommercePriceList> getCommercePriceLists()
-		throws PortalException {
-
-		if (CommerceChannelAccountEntryRelConstants.TYPE_PRICE_LIST == _type) {
-			return _commercePriceListService.getCommercePriceLists(
+	public List<CommercePriceList> getCommercePriceLists() {
+		try {
+			return _commercePriceListService.findCommercePriceLists(
 				_commercePricingRequestHelper.getCompanyId(),
 				CommercePriceListConstants.TYPE_PRICE_LIST,
 				WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null);
+		}
+		catch (PortalException portalException) {
+			_log.error(portalException);
 		}
 
 		return Collections.emptyList();
@@ -174,7 +190,7 @@ public class CommerceChannelAccountEntryRelDisplayContext {
 	public CreationMenu getCreationMenu(int type) throws Exception {
 		CreationMenu creationMenu = new CreationMenu();
 
-		if (hasPermission(ActionKeys.UPDATE)) {
+		if (hasPermission(ActionKeys.UPDATE) && _hasPricingLists(type)) {
 			creationMenu.addDropdownItem(
 				dropdownItem -> {
 					dropdownItem.setHref(
@@ -193,7 +209,7 @@ public class CommerceChannelAccountEntryRelDisplayContext {
 		long[] commerceChannelIds = _getFilteredCommerceChannelIds();
 
 		List<CommerceChannel> commerceChannels =
-			_commerceChannelService.getCommerceChannels(
+			_commerceChannelService.findCommerceChannels(
 				_commercePricingRequestHelper.getCompanyId());
 
 		Stream<CommerceChannel> commerceChannelsStream =
@@ -228,10 +244,31 @@ public class CommerceChannelAccountEntryRelDisplayContext {
 		return _type;
 	}
 
+	public boolean hasOverrideEligibilityPermission() {
+		PermissionChecker permissionChecker =
+			_commercePricingRequestHelper.getPermissionChecker();
+
+		return permissionChecker.hasPermission(
+			null, CommerceChannel.class.getName(),
+			CompanyThreadLocal.getCompanyId(),
+			CommercePricingActionKeys.MANAGE_OVERRIDE_ELIGIBILITY);
+	}
+
 	public boolean hasPermission(String actionId) throws PortalException {
-		return _accountEntryModelResourcePermission.contains(
-			_commercePricingRequestHelper.getPermissionChecker(),
-			_accountEntry.getAccountEntryId(), actionId);
+		PermissionChecker permissionChecker =
+			_commercePricingRequestHelper.getPermissionChecker();
+
+		if (_accountEntryModelResourcePermission.contains(
+				permissionChecker, _accountEntry.getAccountEntryId(),
+				actionId) &&
+			permissionChecker.hasPermission(
+				null, CommerceChannel.class.getName(),
+				CompanyThreadLocal.getCompanyId(), ActionKeys.VIEW)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	public boolean isCommerceChannelSelected(long commerceChannelId)
@@ -317,6 +354,33 @@ public class CommerceChannelAccountEntryRelDisplayContext {
 			}
 		).toArray();
 	}
+
+	private boolean _hasPricingLists(int type) {
+		if (CommerceChannelAccountEntryRelConstants.TYPE_PRICE_LIST == type) {
+			PermissionChecker permissionChecker =
+				_commercePricingRequestHelper.getPermissionChecker();
+
+			if (permissionChecker.hasPermission(
+					null, CommercePriceList.class.getName(),
+					CompanyThreadLocal.getCompanyId(), ActionKeys.VIEW) &&
+				ListUtil.isNotEmpty(getCommercePriceLists())) {
+
+				return true;
+			}
+
+			return false;
+		}
+		else if (CommerceChannelAccountEntryRelConstants.TYPE_DISCOUNT ==
+					type) {
+
+			return ListUtil.isNotEmpty(getCommerceDiscounts());
+		}
+
+		return false;
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		CommerceChannelAccountEntryRelDisplayContext.class);
 
 	private final AccountEntry _accountEntry;
 	private final ModelResourcePermission<AccountEntry>

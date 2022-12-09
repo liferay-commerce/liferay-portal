@@ -15,13 +15,13 @@
 package com.liferay.commerce.pricing.web.internal.frontend.data.set.provider;
 
 import com.liferay.commerce.price.list.model.CommercePriceList;
-import com.liferay.commerce.price.list.service.CommercePriceListService;
+import com.liferay.commerce.price.list.service.CommercePriceListLocalService;
 import com.liferay.commerce.pricing.web.internal.constants.CommercePricingFDSNames;
 import com.liferay.commerce.pricing.web.internal.model.PricingEntry;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.model.CommerceChannelAccountEntryRel;
 import com.liferay.commerce.product.service.CommerceChannelAccountEntryRelService;
-import com.liferay.commerce.product.service.CommerceChannelService;
+import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.frontend.data.set.provider.FDSDataProvider;
 import com.liferay.frontend.data.set.provider.search.FDSKeywords;
 import com.liferay.frontend.data.set.provider.search.FDSPagination;
@@ -66,7 +66,7 @@ public class PriceListPricingEntryCommerceChannelAccountEntryRelFDSDataProvider
 					fdsPagination.getEndPosition(), null),
 			commerceChannelAccountEntryRel -> {
 				CommercePriceList commercePriceList =
-					_commercePriceListService.getCommercePriceList(
+					_commercePriceListLocalService.getCommercePriceList(
 						commerceChannelAccountEntryRel.getClassPK());
 
 				return new PricingEntry(
@@ -102,7 +102,8 @@ public class PriceListPricingEntryCommerceChannelAccountEntryRelFDSDataProvider
 		throws PortalException {
 
 		CommerceChannel commerceChannel =
-			_commerceChannelService.fetchCommerceChannel(commerceChannelId);
+			_commerceChannelLocalService.fetchCommerceChannel(
+				commerceChannelId);
 
 		if (commerceChannel == null) {
 			List<CommerceChannelAccountEntryRel>
@@ -137,10 +138,10 @@ public class PriceListPricingEntryCommerceChannelAccountEntryRelFDSDataProvider
 		_commerceChannelAccountEntryRelService;
 
 	@Reference
-	private CommerceChannelService _commerceChannelService;
+	private CommerceChannelLocalService _commerceChannelLocalService;
 
 	@Reference
-	private CommercePriceListService _commercePriceListService;
+	private CommercePriceListLocalService _commercePriceListLocalService;
 
 	@Reference
 	private Language _language;

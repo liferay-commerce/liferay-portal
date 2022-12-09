@@ -15,13 +15,13 @@
 package com.liferay.commerce.pricing.web.internal.frontend.data.set.provider;
 
 import com.liferay.commerce.discount.model.CommerceDiscount;
-import com.liferay.commerce.discount.service.CommerceDiscountService;
+import com.liferay.commerce.discount.service.CommerceDiscountLocalService;
 import com.liferay.commerce.pricing.web.internal.constants.CommercePricingFDSNames;
 import com.liferay.commerce.pricing.web.internal.model.PricingEntry;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.model.CommerceChannelAccountEntryRel;
 import com.liferay.commerce.product.service.CommerceChannelAccountEntryRelService;
-import com.liferay.commerce.product.service.CommerceChannelService;
+import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.frontend.data.set.provider.FDSDataProvider;
 import com.liferay.frontend.data.set.provider.search.FDSKeywords;
 import com.liferay.frontend.data.set.provider.search.FDSPagination;
@@ -66,7 +66,7 @@ public class DiscountPricingEntryCommerceChannelAccountEntryRelFDSDataProvider
 					fdsPagination.getEndPosition(), null),
 			commerceChannelAccountEntryRel -> {
 				CommerceDiscount commerceDiscount =
-					_commerceDiscountService.getCommerceDiscount(
+					_commerceDiscountLocalService.getCommerceDiscount(
 						commerceChannelAccountEntryRel.getClassPK());
 
 				return new PricingEntry(
@@ -102,7 +102,8 @@ public class DiscountPricingEntryCommerceChannelAccountEntryRelFDSDataProvider
 		throws PortalException {
 
 		CommerceChannel commerceChannel =
-			_commerceChannelService.fetchCommerceChannel(commerceChannelId);
+			_commerceChannelLocalService.fetchCommerceChannel(
+				commerceChannelId);
 
 		if (commerceChannel == null) {
 			List<CommerceChannelAccountEntryRel>
@@ -137,10 +138,10 @@ public class DiscountPricingEntryCommerceChannelAccountEntryRelFDSDataProvider
 		_commerceChannelAccountEntryRelService;
 
 	@Reference
-	private CommerceChannelService _commerceChannelService;
+	private CommerceChannelLocalService _commerceChannelLocalService;
 
 	@Reference
-	private CommerceDiscountService _commerceDiscountService;
+	private CommerceDiscountLocalService _commerceDiscountLocalService;
 
 	@Reference
 	private Language _language;

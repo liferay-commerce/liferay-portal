@@ -16,16 +16,23 @@ package com.liferay.commerce.pricing.web.internal.portlet.action;
 
 import com.liferay.account.constants.AccountPortletKeys;
 import com.liferay.commerce.discount.model.CommerceDiscount;
+import com.liferay.commerce.pricing.constants.CommercePricingActionKeys;
 import com.liferay.commerce.product.exception.DuplicateCommerceChannelAccountEntryRelException;
+import com.liferay.commerce.product.model.CommerceChannel;
+import com.liferay.commerce.product.model.CommerceChannelAccountEntryRel;
 import com.liferay.commerce.product.service.CommerceChannelAccountEntryRelService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -94,6 +101,21 @@ public class EditAccountEntryDefaultCommerceDiscountMVCActionCommand
 		}
 	}
 
+	private boolean _hasOverrideEligibilityPermission(
+		ActionRequest actionRequest) {
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		PermissionChecker permissionChecker =
+			themeDisplay.getPermissionChecker();
+
+		return permissionChecker.hasPermission(
+			null, CommerceChannel.class.getName(),
+			CompanyThreadLocal.getCompanyId(),
+			CommercePricingActionKeys.MANAGE_OVERRIDE_ELIGIBILITY);
+	}
+
 	private void _updateCommerceChannelAccountEntryRel(
 			ActionRequest actionRequest, long commerceChannelAccountEntryRelId)
 		throws PortalException {
@@ -105,6 +127,16 @@ public class EditAccountEntryDefaultCommerceDiscountMVCActionCommand
 			actionRequest, "overrideEligibility");
 
 		if (commerceChannelAccountEntryRelId > 0) {
+			if (!_hasOverrideEligibilityPermission(actionRequest)) {
+				CommerceChannelAccountEntryRel commerceChannelAccountEntryRel =
+					_commerceChannelAccountEntryRelService.
+						getCommerceChannelAccountEntryRel(
+							commerceChannelAccountEntryRelId);
+
+				overrideEligibility =
+					commerceChannelAccountEntryRel.isOverrideEligibility();
+			}
+
 			_commerceChannelAccountEntryRelService.
 				updateCommerceChannelAccountEntryRel(
 					commerceChannelAccountEntryRelId, commerceChannelId,
@@ -114,6 +146,10 @@ public class EditAccountEntryDefaultCommerceDiscountMVCActionCommand
 			long accountEntryId = ParamUtil.getLong(
 				actionRequest, "accountEntryId");
 			int type = ParamUtil.getInteger(actionRequest, "type");
+
+			if (!_hasOverrideEligibilityPermission(actionRequest)) {
+				overrideEligibility = false;
+			}
 
 			_commerceChannelAccountEntryRelService.
 				addCommerceChannelAccountEntryRel(
