@@ -21,6 +21,7 @@ import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.model.CommerceChannelAccountEntryRel;
 import com.liferay.commerce.product.service.CommerceChannelAccountEntryRelService;
 import com.liferay.commerce.product.service.CommerceChannelService;
+import com.liferay.commerce.term.constants.CommerceTermEntryActionKeys;
 import com.liferay.commerce.term.constants.CommerceTermEntryConstants;
 import com.liferay.commerce.term.model.CommerceTermEntry;
 import com.liferay.commerce.term.service.CommerceTermEntryService;
@@ -32,7 +33,9 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -112,6 +115,14 @@ public class CommerceChannelAccountEntryRelDisplayContext {
 	}
 
 	public String getCommerceChannelsEmptyOptionKey() throws PortalException {
+		List<CommerceChannel> commerceChannels =
+			_commerceChannelService.findCommerceChannels(
+				_commerceTermEntryRequestHelper.getCompanyId());
+
+		if (commerceChannels.isEmpty()) {
+			return "all-channels";
+		}
+
 		int commerceChannelAccountEntryRelsCount =
 			_commerceChannelAccountEntryRelService.
 				getCommerceChannelAccountEntryRelsCount(
@@ -124,21 +135,21 @@ public class CommerceChannelAccountEntryRelDisplayContext {
 		return "all-channels";
 	}
 
-	public List<CommerceTermEntry> getCommerceTermEntries()
+	public List<CommerceTermEntry> getCommerceTermEntries(int type)
 		throws PortalException {
 
 		if (CommerceChannelAccountEntryRelConstants.TYPE_DELIVERY_TERM ==
-				_type) {
+				type) {
 
-			return _commerceTermEntryService.getCommerceTermEntries(
-				0, _commerceTermEntryRequestHelper.getCompanyId(),
+			return _commerceTermEntryService.findCommerceTermEntries(
+				_commerceTermEntryRequestHelper.getCompanyId(),
 				CommerceTermEntryConstants.TYPE_DELIVERY_TERMS);
 		}
 		else if (CommerceChannelAccountEntryRelConstants.TYPE_PAYMENT_TERM ==
-					_type) {
+					type) {
 
-			return _commerceTermEntryService.getCommerceTermEntries(
-				0, _commerceTermEntryRequestHelper.getCompanyId(),
+			return _commerceTermEntryService.findCommerceTermEntries(
+				_commerceTermEntryRequestHelper.getCompanyId(),
 				CommerceTermEntryConstants.TYPE_PAYMENT_TERMS);
 		}
 
@@ -148,7 +159,12 @@ public class CommerceChannelAccountEntryRelDisplayContext {
 	public CreationMenu getCreationMenu(int type) throws Exception {
 		CreationMenu creationMenu = new CreationMenu();
 
-		if (hasPermission(ActionKeys.UPDATE)) {
+		List<CommerceTermEntry> commerceTermEntries = getCommerceTermEntries(
+			type);
+
+		if (hasPermission(ActionKeys.UPDATE) &&
+			!commerceTermEntries.isEmpty()) {
+
 			creationMenu.addDropdownItem(
 				dropdownItem -> {
 					dropdownItem.setHref(
@@ -170,7 +186,7 @@ public class CommerceChannelAccountEntryRelDisplayContext {
 		long[] commerceChannelIds = _getFilteredCommerceChannelIds();
 
 		List<CommerceChannel> commerceChannels =
-			_commerceChannelService.getCommerceChannels(
+			_commerceChannelService.findCommerceChannels(
 				_commerceTermEntryRequestHelper.getCompanyId());
 
 		Stream<CommerceChannel> commerceChannelsStream =
@@ -207,10 +223,31 @@ public class CommerceChannelAccountEntryRelDisplayContext {
 		return _type;
 	}
 
+	public boolean hasOverrideEligibilityPermission() {
+		PermissionChecker permissionChecker =
+			_commerceTermEntryRequestHelper.getPermissionChecker();
+
+		return permissionChecker.hasPermission(
+			null, CommerceChannel.class.getName(),
+			CompanyThreadLocal.getCompanyId(),
+			CommerceTermEntryActionKeys.MANAGE_OVERRIDE_ELIGIBILITY);
+	}
+
 	public boolean hasPermission(String actionId) throws PortalException {
-		return _accountEntryModelResourcePermission.contains(
-			_commerceTermEntryRequestHelper.getPermissionChecker(),
-			_accountEntry.getAccountEntryId(), actionId);
+		PermissionChecker permissionChecker =
+			_commerceTermEntryRequestHelper.getPermissionChecker();
+
+		if (_accountEntryModelResourcePermission.contains(
+				permissionChecker, _accountEntry.getAccountEntryId(),
+				actionId) &&
+			permissionChecker.hasPermission(
+				null, CommerceChannel.class.getName(),
+				CompanyThreadLocal.getCompanyId(), ActionKeys.VIEW)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	public boolean isCommerceChannelSelected(long commerceChannelId)
