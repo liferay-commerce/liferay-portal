@@ -134,6 +134,14 @@ public class PriceListResourceImpl extends BasePriceListResourceImpl {
 
 	@Override
 	public PriceList getPriceList(Long id) throws Exception {
+		CommercePriceList commercePriceList =
+			_commercePriceListService.fetchCommercePriceList(id);
+
+		if (commercePriceList == null) {
+			throw new NoSuchPriceListException(
+				"Unable to find price list with id " + id);
+		}
+
 		return _toPriceList(GetterUtil.getLong(id));
 	}
 
