@@ -180,17 +180,13 @@ public class CommercePriceModifierRelServiceImpl
 
 	@Override
 	public List<CommercePriceModifierRel> getCommercePriceModifierRels(
-			long commercePriceModifierRelId, String className, int start,
-			int end,
+			long commercePriceModifierId, String className, int start, int end,
 			OrderByComparator<CommercePriceModifierRel> orderByComparator)
 		throws PortalException {
 
-		CommercePriceModifierRel commercePriceModifierRel =
-			commercePriceModifierRelLocalService.getCommercePriceModifierRel(
-				commercePriceModifierRelId);
-
 		CommercePriceModifier commercePriceModifier =
-			commercePriceModifierRel.getCommercePriceModifier();
+			_commercePriceModifierLocalService.getCommercePriceModifier(
+				commercePriceModifierId);
 
 		_commercePriceListModelResourcePermission.check(
 			getPermissionChecker(),
@@ -198,21 +194,18 @@ public class CommercePriceModifierRelServiceImpl
 
 		return commercePriceModifierRelLocalService.
 			getCommercePriceModifierRels(
-				commercePriceModifierRelId, className, start, end,
+				commercePriceModifierId, className, start, end,
 				orderByComparator);
 	}
 
 	@Override
 	public int getCommercePriceModifierRelsCount(
-			long commercePriceModifierRelId, String className)
+			long commercePriceModifierId, String className)
 		throws PortalException {
 
-		CommercePriceModifierRel commercePriceModifierRel =
-			commercePriceModifierRelLocalService.getCommercePriceModifierRel(
-				commercePriceModifierRelId);
-
 		CommercePriceModifier commercePriceModifier =
-			commercePriceModifierRel.getCommercePriceModifier();
+			_commercePriceModifierLocalService.getCommercePriceModifier(
+				commercePriceModifierId);
 
 		_commercePriceListModelResourcePermission.check(
 			getPermissionChecker(),
@@ -220,7 +213,7 @@ public class CommercePriceModifierRelServiceImpl
 
 		return commercePriceModifierRelLocalService.
 			getCommercePriceModifierRelsCount(
-				commercePriceModifierRelId, className);
+				commercePriceModifierId, className);
 	}
 
 	@Override

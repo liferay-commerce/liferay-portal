@@ -382,9 +382,8 @@ public class CommercePriceModifierRelServiceHttp {
 	public static java.util.List
 		<com.liferay.commerce.pricing.model.CommercePriceModifierRel>
 				getCommercePriceModifierRels(
-					HttpPrincipal httpPrincipal,
-					long commercePriceModifierRelId, String className,
-					int start, int end,
+					HttpPrincipal httpPrincipal, long commercePriceModifierId,
+					String className, int start, int end,
 					com.liferay.portal.kernel.util.OrderByComparator
 						<com.liferay.commerce.pricing.model.
 							CommercePriceModifierRel> orderByComparator)
@@ -397,7 +396,7 @@ public class CommercePriceModifierRelServiceHttp {
 				_getCommercePriceModifierRelsParameterTypes8);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, commercePriceModifierRelId, className, start, end,
+				methodKey, commercePriceModifierId, className, start, end,
 				orderByComparator);
 
 			Object returnObj = null;
@@ -431,7 +430,7 @@ public class CommercePriceModifierRelServiceHttp {
 	}
 
 	public static int getCommercePriceModifierRelsCount(
-			HttpPrincipal httpPrincipal, long commercePriceModifierRelId,
+			HttpPrincipal httpPrincipal, long commercePriceModifierId,
 			String className)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -442,7 +441,7 @@ public class CommercePriceModifierRelServiceHttp {
 				_getCommercePriceModifierRelsCountParameterTypes9);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, commercePriceModifierRelId, className);
+				methodKey, commercePriceModifierId, className);
 
 			Object returnObj = null;
 

@@ -93,14 +93,13 @@ public interface CommercePriceModifierRelService extends BaseService {
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommercePriceModifierRel> getCommercePriceModifierRels(
-			long commercePriceModifierRelId, String className, int start,
-			int end,
+			long commercePriceModifierId, String className, int start, int end,
 			OrderByComparator<CommercePriceModifierRel> orderByComparator)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommercePriceModifierRelsCount(
-			long commercePriceModifierRelId, String className)
+			long commercePriceModifierId, String className)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
