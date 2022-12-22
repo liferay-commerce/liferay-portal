@@ -16,31 +16,32 @@ package com.liferay.headless.commerce.admin.pricing.resource.v2_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.currency.model.CommerceCurrency;
-import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
+import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.model.CommerceOrderType;
 import com.liferay.commerce.price.list.constants.CommercePriceListConstants;
 import com.liferay.commerce.price.list.model.CommercePriceList;
-import com.liferay.commerce.price.list.model.CommercePriceListOrderTypeRel;
 import com.liferay.commerce.price.list.service.CommercePriceListLocalService;
-import com.liferay.commerce.price.list.service.CommercePriceListOrderTypeRelLocalService;
 import com.liferay.commerce.service.CommerceOrderTypeLocalService;
 import com.liferay.headless.commerce.admin.pricing.client.dto.v2_0.PriceListOrderType;
-import com.liferay.headless.commerce.core.util.DateConfig;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
-import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
-import com.liferay.portal.kernel.util.CalendarFactoryUtil;
-import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.portal.odata.entity.EntityField;
+import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.Inject;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
+import java.math.BigDecimal;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,66 +60,81 @@ public class PriceListOrderTypeResourceTest
 
 		_user = UserTestUtil.addUser(testCompany);
 
+		_commerceCurrency = _commerceCurrencyLocalService.addCommerceCurrency(
+			_user.getUserId(), RandomTestUtil.randomString(),
+			Collections.singletonMap(
+				LocaleUtil.getSiteDefault(), RandomTestUtil.randomString()),
+			RandomTestUtil.randomString(), BigDecimal.ONE, new HashMap<>(), 2,
+			2, "HALF_EVEN", false, 0, true);
+
 		_serviceContext = ServiceContextTestUtil.getServiceContext(
 			testCompany.getCompanyId(), testGroup.getGroupId(),
 			_user.getUserId());
 
-		CommerceCurrency commerceCurrency =
-			CommerceCurrencyTestUtil.addCommerceCurrency(
-				_serviceContext.getCompanyId());
-
-		Calendar calendar = CalendarFactoryUtil.getCalendar(
-			_user.getTimeZone());
-
-		_serviceContext.setWorkflowAction(WorkflowConstants.ACTION_PUBLISH);
-
 		_commercePriceList =
 			_commercePriceListLocalService.addCommercePriceList(
-				RandomTestUtil.randomString(), TestPropsValues.getGroupId(),
-				_user.getUserId(), commerceCurrency.getCommerceCurrencyId(),
-				true, CommercePriceListConstants.TYPE_PRICE_LIST, 0, false,
-				RandomTestUtil.randomString(), 0, calendar.get(Calendar.MONTH),
-				calendar.get(Calendar.DAY_OF_MONTH),
-				calendar.get(Calendar.YEAR), calendar.get(Calendar.HOUR_OF_DAY),
-				calendar.get(Calendar.MINUTE), calendar.get(Calendar.MONTH),
-				calendar.get(Calendar.DAY_OF_MONTH),
-				calendar.get(Calendar.YEAR), calendar.get(Calendar.HOUR_OF_DAY),
-				calendar.get(Calendar.MINUTE), true, _serviceContext);
+				RandomTestUtil.randomString(), testGroup.getGroupId(),
+				_user.getUserId(), _commerceCurrency.getCommerceCurrencyId(),
+				RandomTestUtil.randomBoolean(),
+				CommercePriceListConstants.TYPE_PRICE_LIST, 0, false,
+				RandomTestUtil.randomString(), RandomTestUtil.randomDouble(), 1,
+				1, 2022, 12, 0, 0, 0, 0, 0, 0, true, _serviceContext);
 	}
 
 	@Override
 	@Test
 	public void testDeletePriceListOrderType() throws Exception {
+		PriceListOrderType priceListOrderType =
+			priceListOrderTypeResource.postPriceListIdPriceListOrderType(
+				_commercePriceList.getCommercePriceListId(),
+				randomPriceListOrderType());
+
+		assertHttpResponseStatusCode(
+			204,
+			priceListOrderTypeResource.deletePriceListOrderTypeHttpResponse(
+				priceListOrderType.getPriceListOrderTypeId()));
+
+		assertHttpResponseStatusCode(
+			404,
+			priceListOrderTypeResource.deletePriceListOrderTypeHttpResponse(
+				priceListOrderType.getPriceListOrderTypeId()));
+
+		assertHttpResponseStatusCode(
+			404,
+			priceListOrderTypeResource.deletePriceListOrderTypeHttpResponse(
+				priceListOrderType.getPriceListOrderTypeId()));
 	}
 
 	@Override
 	@Test
 	public void testGraphQLDeletePriceListOrderType() throws Exception {
-	}
+		PriceListOrderType priceListOrderType =
+			priceListOrderTypeResource.postPriceListIdPriceListOrderType(
+				_commercePriceList.getCommercePriceListId(),
+				randomPriceListOrderType());
 
-	@Override
-	protected Collection<EntityField> getEntityFields() throws Exception {
-		return new ArrayList<>();
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deletePriceListOrderType",
+						HashMapBuilder.<String, Object>put(
+							"priceListOrderTypeId",
+							priceListOrderType.getPriceListOrderTypeId()
+						).build())),
+				"JSONObject/data", "Object/deletePriceListOrderType"));
 	}
 
 	@Override
 	protected PriceListOrderType randomPriceListOrderType() throws Exception {
-		DateConfig displayDateConfig = DateConfig.toDisplayDateConfig(
-			RandomTestUtil.nextDate(), _user.getTimeZone());
-		DateConfig expirationDateConfig = DateConfig.toExpirationDateConfig(
-			RandomTestUtil.nextDate(), _user.getTimeZone());
-
 		CommerceOrderType commerceOrderType =
 			_commerceOrderTypeLocalService.addCommerceOrderType(
 				RandomTestUtil.randomString(), _user.getUserId(),
 				RandomTestUtil.randomLocaleStringMap(),
-				RandomTestUtil.randomLocaleStringMap(),
-				RandomTestUtil.randomBoolean(), displayDateConfig.getMonth(),
-				displayDateConfig.getDay(), displayDateConfig.getYear(),
-				displayDateConfig.getHour(), displayDateConfig.getMinute(), 0,
-				expirationDateConfig.getMonth(), expirationDateConfig.getDay(),
-				expirationDateConfig.getYear(), expirationDateConfig.getHour(),
-				expirationDateConfig.getMinute(), true, _serviceContext);
+				RandomTestUtil.randomLocaleStringMap(), true, 1, 1, 2022, 12, 0,
+				RandomTestUtil.nextInt(), 0, 0, 0, 0, 0, true, _serviceContext);
+
+		_commerceOrderTypes.add(commerceOrderType);
 
 		return new PriceListOrderType() {
 			{
@@ -129,7 +145,7 @@ public class PriceListOrderTypeResourceTest
 					_commercePriceList.getExternalReferenceCode();
 				priceListId = _commercePriceList.getCommercePriceListId();
 				priceListOrderTypeId = RandomTestUtil.randomLong();
-				priority = RandomTestUtil.nextInt();
+				priority = RandomTestUtil.randomInt();
 			}
 		};
 	}
@@ -141,7 +157,9 @@ public class PriceListOrderTypeResourceTest
 				PriceListOrderType priceListOrderType)
 		throws Exception {
 
-		return _addPriceListOrderType(priceListOrderType);
+		return priceListOrderTypeResource.
+			postPriceListByExternalReferenceCodePriceListOrderType(
+				externalReferenceCode, priceListOrderType);
 	}
 
 	@Override
@@ -158,7 +176,8 @@ public class PriceListOrderTypeResourceTest
 				Long id, PriceListOrderType priceListOrderType)
 		throws Exception {
 
-		return _addPriceListOrderType(priceListOrderType);
+		return priceListOrderTypeResource.postPriceListIdPriceListOrderType(
+			id, priceListOrderType);
 	}
 
 	@Override
@@ -174,7 +193,10 @@ public class PriceListOrderTypeResourceTest
 				PriceListOrderType priceListOrderType)
 		throws Exception {
 
-		return _addPriceListOrderType(priceListOrderType);
+		return priceListOrderTypeResource.
+			postPriceListByExternalReferenceCodePriceListOrderType(
+				_commercePriceList.getExternalReferenceCode(),
+				priceListOrderType);
 	}
 
 	@Override
@@ -183,62 +205,32 @@ public class PriceListOrderTypeResourceTest
 				PriceListOrderType priceListOrderType)
 		throws Exception {
 
-		return _addPriceListOrderType(priceListOrderType);
-	}
-
-	private PriceListOrderType _addPriceListOrderType(
-			PriceListOrderType priceListOrderType)
-		throws Exception {
-
-		return _toPriceListOrderType(
-			_commercePriceListOrderTypeRelLocalService.
-				addCommercePriceListOrderTypeRel(
-					_serviceContext.getUserId(),
-					_commercePriceList.getCommercePriceListId(),
-					priceListOrderType.getOrderTypeId(),
-					priceListOrderType.getPriority(), _serviceContext));
-	}
-
-	private PriceListOrderType _toPriceListOrderType(
-			CommercePriceListOrderTypeRel commercePriceListOrderTypeRel)
-		throws Exception {
-
-		CommercePriceList commercePriceList =
-			commercePriceListOrderTypeRel.getCommercePriceList();
-
-		CommerceOrderType commerceOrderType =
-			_commerceOrderTypeLocalService.fetchCommerceOrderType(
-				commercePriceListOrderTypeRel.getCommerceOrderTypeId());
-
-		return new PriceListOrderType() {
-			{
-				orderTypeExternalReferenceCode =
-					commerceOrderType.getExternalReferenceCode();
-				orderTypeId = commerceOrderType.getCommerceOrderTypeId();
-				priceListExternalReferenceCode =
-					commercePriceList.getExternalReferenceCode();
-				priceListId = commercePriceList.getCommercePriceListId();
-				priceListOrderTypeId =
-					commercePriceListOrderTypeRel.
-						getCommercePriceListOrderTypeRelId();
-				priority = commercePriceListOrderTypeRel.getPriority();
-			}
-		};
+		return priceListOrderTypeResource.postPriceListIdPriceListOrderType(
+			_commercePriceList.getCommercePriceListId(), priceListOrderType);
 	}
 
 	@Inject
-	private CommerceOrderTypeLocalService _commerceOrderTypeLocalService;
+	private static CommerceCurrencyLocalService _commerceCurrencyLocalService;
 
+	@Inject
+	private static CommerceOrderTypeLocalService _commerceOrderTypeLocalService;
+
+	@Inject
+	private static CommercePriceListLocalService _commercePriceListLocalService;
+
+	@DeleteAfterTestRun
+	private CommerceCurrency _commerceCurrency;
+
+	@DeleteAfterTestRun
+	private final List<CommerceOrderType> _commerceOrderTypes =
+		new ArrayList<>();
+
+	@DeleteAfterTestRun
 	private CommercePriceList _commercePriceList;
 
-	@Inject
-	private CommercePriceListLocalService _commercePriceListLocalService;
-
-	@Inject
-	private CommercePriceListOrderTypeRelLocalService
-		_commercePriceListOrderTypeRelLocalService;
-
 	private ServiceContext _serviceContext;
+
+	@DeleteAfterTestRun
 	private User _user;
 
 }
