@@ -45,6 +45,8 @@ import com.liferay.portal.vulcan.pagination.Pagination;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ws.rs.core.MultivaluedMap;
+
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ServiceScope;
@@ -67,6 +69,18 @@ public class SkuResourceImpl
 			Long channelId, @NestedFieldId("productId") Long productId,
 			Long accountId, Pagination pagination)
 		throws Exception {
+
+		if (accountId == null) {
+			MultivaluedMap<String, String> queryParameters =
+				contextUriInfo.getQueryParameters();
+
+			String queryParameterAccountId = queryParameters.getFirst(
+				"accountId");
+
+			if (queryParameterAccountId != null) {
+				accountId = Long.valueOf(queryParameterAccountId);
+			}
+		}
 
 		CPDefinition cpDefinition =
 			_cpDefinitionLocalService.fetchCPDefinitionByCProductId(productId);

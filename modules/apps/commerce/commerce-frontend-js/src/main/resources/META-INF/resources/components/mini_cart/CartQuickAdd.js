@@ -60,11 +60,12 @@ export default function CartQuickAdd() {
 
 	const {cartItems = [], channel} = cartState;
 
+	const accountId = cartState.accountId;
 	const channelId = channel.channel.id;
 
 	useEffect(() => {
 		const productsApiURL = new URL(
-			`${themeDisplay.getPathContext()}${CHANNEL_RESOURCE_ENDPOINT}/${channelId}/products?nestedFields=skus&pageSize=-1`,
+			`${themeDisplay.getPathContext()}${CHANNEL_RESOURCE_ENDPOINT}/${channelId}/products?accountId=${accountId}&nestedFields=skus&pageSize=-1`,
 			themeDisplay.getPortalURL()
 		);
 
@@ -85,7 +86,7 @@ export default function CartQuickAdd() {
 
 				setProducts(availableProducts.items);
 			});
-	}, [channelId]);
+	}, [accountId, channelId]);
 
 	const handleAddToCartClick = () => {
 		const itemSKUs = selectedProducts.map((item) => item.value);
