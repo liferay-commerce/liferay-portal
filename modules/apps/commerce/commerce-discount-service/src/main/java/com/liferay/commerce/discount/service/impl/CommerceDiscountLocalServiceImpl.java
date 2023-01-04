@@ -1694,6 +1694,9 @@ public class CommerceDiscountLocalServiceImpl
 					commerceChannelAccountEntryRelId
 				).and(
 					CommerceDiscountTable.INSTANCE.active.eq(true)
+				).and(
+					CommerceDiscountTable.INSTANCE.status.eq(
+						WorkflowConstants.STATUS_APPROVED)
 				);
 
 		return joinStep.where(
@@ -1719,6 +1722,9 @@ public class CommerceDiscountLocalServiceImpl
 
 				return null;
 			}
+		).and(
+			CommerceDiscountTable.INSTANCE.status.eq(
+				WorkflowConstants.STATUS_APPROVED)
 		);
 
 		if (commerceAccountId != null) {
