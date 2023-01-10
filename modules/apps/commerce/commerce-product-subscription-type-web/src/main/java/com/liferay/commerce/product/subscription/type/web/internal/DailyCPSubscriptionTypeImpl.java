@@ -42,7 +42,7 @@ public class DailyCPSubscriptionTypeImpl implements CPSubscriptionType {
 
 	@Override
 	public String getLabel(Locale locale) {
-		return _language.get(locale, "day");
+		return _language.get(locale, "day-s");
 	}
 
 	@Override

@@ -44,7 +44,7 @@ public class MonthlyCPSubscriptionTypeImpl implements CPSubscriptionType {
 
 	@Override
 	public String getLabel(Locale locale) {
-		return _language.get(locale, "month");
+		return _language.get(locale, "month-s");
 	}
 
 	@Override

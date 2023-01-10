@@ -43,7 +43,7 @@ public class WeeklyCPSubscriptionTypeImpl implements CPSubscriptionType {
 
 	@Override
 	public String getLabel(Locale locale) {
-		return _language.get(locale, "week");
+		return _language.get(locale, "week-s");
 	}
 
 	@Override

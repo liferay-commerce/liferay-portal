@@ -44,7 +44,7 @@ public class YearlyCPSubscriptionTypeImpl implements CPSubscriptionType {
 
 	@Override
 	public String getLabel(Locale locale) {
-		return _language.get(locale, "year");
+		return _language.get(locale, "year-s");
 	}
 
 	@Override
