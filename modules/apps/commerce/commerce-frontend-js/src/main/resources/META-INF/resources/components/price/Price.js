@@ -17,11 +17,7 @@ import PropTypes from 'prop-types';
 import React, {useEffect, useState} from 'react';
 
 import {CP_INSTANCE_CHANGED} from '../../utilities/eventsDefinitions';
-import {
-	adaptLegacyPriceModel,
-	collectDiscountLevels,
-	isNonnull,
-} from './util/index';
+import {collectDiscountLevels, isNonnull} from './util/index';
 
 function Price({
 	compact,
@@ -31,9 +27,7 @@ function Price({
 	price,
 	standalone,
 }) {
-	const [activePrice, setActivePrice] = useState(
-		adaptLegacyPriceModel(price)
-	);
+	const [activePrice, setActivePrice] = useState(price);
 
 	const discountLevels = displayDiscountLevels
 		? collectDiscountLevels(activePrice)
@@ -48,7 +42,7 @@ function Price({
 	const updatePrice = ({cpInstance}) =>
 		setActivePrice((currentPrice) => ({
 			...currentPrice,
-			...adaptLegacyPriceModel(cpInstance.prices),
+			...cpInstance.prices,
 		}));
 
 	useEffect(() => {
@@ -67,7 +61,7 @@ function Price({
 	}, [namespace]);
 
 	useEffect(() => {
-		setActivePrice(adaptLegacyPriceModel(price));
+		setActivePrice(price);
 	}, [price]);
 
 	const Component = (
