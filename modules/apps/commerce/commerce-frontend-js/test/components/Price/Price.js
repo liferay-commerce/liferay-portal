@@ -599,7 +599,7 @@ describe('Price', () => {
 						discountPercentage: '0',
 						discountPercentages: null,
 						finalPrice: 0,
-						price: '$ 20.00',
+						price: '$ 10.00',
 						promoPrice: null,
 					},
 				},
