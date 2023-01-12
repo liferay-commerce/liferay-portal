@@ -56,20 +56,6 @@ public class CommerceShippingMethodLocalServiceUtil {
 	}
 
 	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	public static com.liferay.commerce.model.CommerceAddressRestriction
-			addCommerceAddressRestriction(
-				long commerceShippingMethodId, long countryId,
-				com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws PortalException {
-
-		return getService().addCommerceAddressRestriction(
-			commerceShippingMethodId, countryId, serviceContext);
-	}
-
-	/**
 	 * Adds the commerce shipping method to the database. Also notifies the appropriate model listeners.
 	 *
 	 * <p>
@@ -349,13 +335,6 @@ public class CommerceShippingMethodLocalServiceUtil {
 
 		return getService().getCommerceShippingMethods(
 			groupId, start, end, orderByComparator);
-	}
-
-	public static List<CommerceShippingMethod> getCommerceShippingMethods(
-		long groupId, long countryId, boolean active) {
-
-		return getService().getCommerceShippingMethods(
-			groupId, countryId, active);
 	}
 
 	/**

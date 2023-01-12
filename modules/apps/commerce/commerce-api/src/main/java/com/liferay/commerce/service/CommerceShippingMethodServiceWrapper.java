@@ -47,21 +47,6 @@ public class CommerceShippingMethodServiceWrapper
 			groupId, commerceShippingMethodId, countryId);
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	@Override
-	public com.liferay.commerce.model.CommerceAddressRestriction
-			addCommerceAddressRestriction(
-				long commerceShippingMethodId, long countryId,
-				com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _commerceShippingMethodService.addCommerceAddressRestriction(
-			commerceShippingMethodId, countryId, serviceContext);
-	}
-
 	@Override
 	public com.liferay.commerce.model.CommerceShippingMethod
 			addCommerceShippingMethod(
@@ -74,15 +59,6 @@ public class CommerceShippingMethodServiceWrapper
 		return _commerceShippingMethodService.addCommerceShippingMethod(
 			groupId, nameMap, descriptionMap, active, engineKey, imageFile,
 			priority, trackingURL);
-	}
-
-	@Override
-	public com.liferay.commerce.model.CommerceShippingMethod
-			createCommerceShippingMethod(long commerceShippingMethodId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _commerceShippingMethodService.createCommerceShippingMethod(
-			commerceShippingMethodId);
 	}
 
 	@Override
@@ -192,6 +168,14 @@ public class CommerceShippingMethodServiceWrapper
 
 		return _commerceShippingMethodService.getCommerceShippingMethodsCount(
 			groupId);
+	}
+
+	@Override
+	public int getCommerceShippingMethodsCount(long groupId, boolean active)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceShippingMethodService.getCommerceShippingMethodsCount(
+			groupId, active);
 	}
 
 	/**

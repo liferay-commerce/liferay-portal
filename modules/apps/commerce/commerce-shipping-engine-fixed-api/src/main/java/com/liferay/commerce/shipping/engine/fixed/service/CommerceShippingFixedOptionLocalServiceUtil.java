@@ -107,9 +107,11 @@ public class CommerceShippingFixedOptionLocalServiceUtil {
 	 *
 	 * @param commerceShippingFixedOption the commerce shipping fixed option
 	 * @return the commerce shipping fixed option that was removed
+	 * @throws PortalException
 	 */
 	public static CommerceShippingFixedOption deleteCommerceShippingFixedOption(
-		CommerceShippingFixedOption commerceShippingFixedOption) {
+			CommerceShippingFixedOption commerceShippingFixedOption)
+		throws PortalException {
 
 		return getService().deleteCommerceShippingFixedOption(
 			commerceShippingFixedOption);
@@ -135,7 +137,8 @@ public class CommerceShippingFixedOptionLocalServiceUtil {
 	}
 
 	public static void deleteCommerceShippingFixedOptions(
-		long commerceShippingMethodId) {
+			long commerceShippingMethodId)
+		throws PortalException {
 
 		getService().deleteCommerceShippingFixedOptions(
 			commerceShippingMethodId);
@@ -298,14 +301,6 @@ public class CommerceShippingFixedOptionLocalServiceUtil {
 
 	public static List<CommerceShippingFixedOption>
 		getCommerceShippingFixedOptions(
-			long commerceShippingMethodId, int start, int end) {
-
-		return getService().getCommerceShippingFixedOptions(
-			commerceShippingMethodId, start, end);
-	}
-
-	public static List<CommerceShippingFixedOption>
-		getCommerceShippingFixedOptions(
 			long commerceShippingMethodId, int start, int end,
 			OrderByComparator<CommerceShippingFixedOption> orderByComparator) {
 
@@ -316,11 +311,14 @@ public class CommerceShippingFixedOptionLocalServiceUtil {
 	public static List<CommerceShippingFixedOption>
 			getCommerceShippingFixedOptions(
 				long companyId, long groupId, long commerceShippingMethodId,
-				String keywords, int start, int end)
+				String keywords, int start, int end,
+				OrderByComparator<CommerceShippingFixedOption>
+					orderByComparator)
 		throws PortalException {
 
 		return getService().getCommerceShippingFixedOptions(
-			companyId, groupId, commerceShippingMethodId, keywords, start, end);
+			companyId, groupId, commerceShippingMethodId, keywords, start, end,
+			orderByComparator);
 	}
 
 	/**
@@ -330,13 +328,6 @@ public class CommerceShippingFixedOptionLocalServiceUtil {
 	 */
 	public static int getCommerceShippingFixedOptionsCount() {
 		return getService().getCommerceShippingFixedOptionsCount();
-	}
-
-	public static int getCommerceShippingFixedOptionsCount(
-		long commerceShippingMethodId) {
-
-		return getService().getCommerceShippingFixedOptionsCount(
-			commerceShippingMethodId);
 	}
 
 	public static long getCommerceShippingFixedOptionsCount(

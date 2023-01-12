@@ -49,20 +49,6 @@ public class CommerceShippingMethodServiceUtil {
 			groupId, commerceShippingMethodId, countryId);
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	public static com.liferay.commerce.model.CommerceAddressRestriction
-			addCommerceAddressRestriction(
-				long commerceShippingMethodId, long countryId,
-				com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws PortalException {
-
-		return getService().addCommerceAddressRestriction(
-			commerceShippingMethodId, countryId, serviceContext);
-	}
-
 	public static CommerceShippingMethod addCommerceShippingMethod(
 			long groupId, Map<java.util.Locale, String> nameMap,
 			Map<java.util.Locale, String> descriptionMap, boolean active,
@@ -73,14 +59,6 @@ public class CommerceShippingMethodServiceUtil {
 		return getService().addCommerceShippingMethod(
 			groupId, nameMap, descriptionMap, active, engineKey, imageFile,
 			priority, trackingURL);
-	}
-
-	public static CommerceShippingMethod createCommerceShippingMethod(
-			long commerceShippingMethodId)
-		throws PortalException {
-
-		return getService().createCommerceShippingMethod(
-			commerceShippingMethodId);
 	}
 
 	public static void deleteCommerceAddressRestriction(
@@ -170,6 +148,13 @@ public class CommerceShippingMethodServiceUtil {
 		throws PortalException {
 
 		return getService().getCommerceShippingMethodsCount(groupId);
+	}
+
+	public static int getCommerceShippingMethodsCount(
+			long groupId, boolean active)
+		throws PortalException {
+
+		return getService().getCommerceShippingMethodsCount(groupId, active);
 	}
 
 	/**

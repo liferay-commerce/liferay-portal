@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.jsonwebservice.JSONWebService;
 import com.liferay.portal.kernel.security.access.control.AccessControlled;
 import com.liferay.portal.kernel.service.BaseService;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -62,24 +61,11 @@ public interface CommerceShippingMethodService extends BaseService {
 			long groupId, long commerceShippingMethodId, long countryId)
 		throws PortalException;
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	public CommerceAddressRestriction addCommerceAddressRestriction(
-			long commerceShippingMethodId, long countryId,
-			ServiceContext serviceContext)
-		throws PortalException;
-
 	public CommerceShippingMethod addCommerceShippingMethod(
 			long groupId, Map<Locale, String> nameMap,
 			Map<Locale, String> descriptionMap, boolean active,
 			String engineKey, File imageFile, double priority,
 			String trackingURL)
-		throws PortalException;
-
-	public CommerceShippingMethod createCommerceShippingMethod(
-			long commerceShippingMethodId)
 		throws PortalException;
 
 	public void deleteCommerceAddressRestriction(
@@ -132,6 +118,10 @@ public interface CommerceShippingMethodService extends BaseService {
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceShippingMethodsCount(long groupId)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getCommerceShippingMethodsCount(long groupId, boolean active)
 		throws PortalException;
 
 	/**

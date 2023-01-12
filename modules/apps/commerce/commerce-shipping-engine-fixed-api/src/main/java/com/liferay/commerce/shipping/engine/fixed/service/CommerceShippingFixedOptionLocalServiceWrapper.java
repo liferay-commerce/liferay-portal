@@ -114,13 +114,15 @@ public class CommerceShippingFixedOptionLocalServiceWrapper
 	 *
 	 * @param commerceShippingFixedOption the commerce shipping fixed option
 	 * @return the commerce shipping fixed option that was removed
+	 * @throws PortalException
 	 */
 	@Override
 	public
 		com.liferay.commerce.shipping.engine.fixed.model.
 			CommerceShippingFixedOption deleteCommerceShippingFixedOption(
-				com.liferay.commerce.shipping.engine.fixed.model.
-					CommerceShippingFixedOption commerceShippingFixedOption) {
+					com.liferay.commerce.shipping.engine.fixed.model.
+						CommerceShippingFixedOption commerceShippingFixedOption)
+				throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _commerceShippingFixedOptionLocalService.
 			deleteCommerceShippingFixedOption(commerceShippingFixedOption);
@@ -150,7 +152,8 @@ public class CommerceShippingFixedOptionLocalServiceWrapper
 
 	@Override
 	public void deleteCommerceShippingFixedOptions(
-		long commerceShippingMethodId) {
+			long commerceShippingMethodId)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		_commerceShippingFixedOptionLocalService.
 			deleteCommerceShippingFixedOptions(commerceShippingMethodId);
@@ -357,17 +360,6 @@ public class CommerceShippingFixedOptionLocalServiceWrapper
 	public java.util.List
 		<com.liferay.commerce.shipping.engine.fixed.model.
 			CommerceShippingFixedOption> getCommerceShippingFixedOptions(
-				long commerceShippingMethodId, int start, int end) {
-
-		return _commerceShippingFixedOptionLocalService.
-			getCommerceShippingFixedOptions(
-				commerceShippingMethodId, start, end);
-	}
-
-	@Override
-	public java.util.List
-		<com.liferay.commerce.shipping.engine.fixed.model.
-			CommerceShippingFixedOption> getCommerceShippingFixedOptions(
 				long commerceShippingMethodId, int start, int end,
 				com.liferay.portal.kernel.util.OrderByComparator
 					<com.liferay.commerce.shipping.engine.fixed.model.
@@ -383,13 +375,16 @@ public class CommerceShippingFixedOptionLocalServiceWrapper
 		<com.liferay.commerce.shipping.engine.fixed.model.
 			CommerceShippingFixedOption> getCommerceShippingFixedOptions(
 					long companyId, long groupId, long commerceShippingMethodId,
-					String keywords, int start, int end)
+					String keywords, int start, int end,
+					com.liferay.portal.kernel.util.OrderByComparator
+						<com.liferay.commerce.shipping.engine.fixed.model.
+							CommerceShippingFixedOption> orderByComparator)
 				throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _commerceShippingFixedOptionLocalService.
 			getCommerceShippingFixedOptions(
 				companyId, groupId, commerceShippingMethodId, keywords, start,
-				end);
+				end, orderByComparator);
 	}
 
 	/**
@@ -401,14 +396,6 @@ public class CommerceShippingFixedOptionLocalServiceWrapper
 	public int getCommerceShippingFixedOptionsCount() {
 		return _commerceShippingFixedOptionLocalService.
 			getCommerceShippingFixedOptionsCount();
-	}
-
-	@Override
-	public int getCommerceShippingFixedOptionsCount(
-		long commerceShippingMethodId) {
-
-		return _commerceShippingFixedOptionLocalService.
-			getCommerceShippingFixedOptionsCount(commerceShippingMethodId);
 	}
 
 	@Override

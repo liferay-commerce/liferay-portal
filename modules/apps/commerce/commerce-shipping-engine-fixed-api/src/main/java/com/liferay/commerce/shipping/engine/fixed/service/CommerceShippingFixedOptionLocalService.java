@@ -116,11 +116,13 @@ public interface CommerceShippingFixedOptionLocalService
 	 *
 	 * @param commerceShippingFixedOption the commerce shipping fixed option
 	 * @return the commerce shipping fixed option that was removed
+	 * @throws PortalException
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public CommerceShippingFixedOption deleteCommerceShippingFixedOption(
-		CommerceShippingFixedOption commerceShippingFixedOption);
+			CommerceShippingFixedOption commerceShippingFixedOption)
+		throws PortalException;
 
 	/**
 	 * Deletes the commerce shipping fixed option with the primary key from the database. Also notifies the appropriate model listeners.
@@ -139,7 +141,8 @@ public interface CommerceShippingFixedOptionLocalService
 		throws PortalException;
 
 	public void deleteCommerceShippingFixedOptions(
-		long commerceShippingMethodId);
+			long commerceShippingMethodId)
+		throws PortalException;
 
 	/**
 	 * @throws PortalException
@@ -266,17 +269,14 @@ public interface CommerceShippingFixedOptionLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommerceShippingFixedOption> getCommerceShippingFixedOptions(
-		long commerceShippingMethodId, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceShippingFixedOption> getCommerceShippingFixedOptions(
 		long commerceShippingMethodId, int start, int end,
 		OrderByComparator<CommerceShippingFixedOption> orderByComparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommerceShippingFixedOption> getCommerceShippingFixedOptions(
 			long companyId, long groupId, long commerceShippingMethodId,
-			String keywords, int start, int end)
+			String keywords, int start, int end,
+			OrderByComparator<CommerceShippingFixedOption> orderByComparator)
 		throws PortalException;
 
 	/**
@@ -286,10 +286,6 @@ public interface CommerceShippingFixedOptionLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceShippingFixedOptionsCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceShippingFixedOptionsCount(
-		long commerceShippingMethodId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public long getCommerceShippingFixedOptionsCount(
@@ -335,6 +331,7 @@ public interface CommerceShippingFixedOptionLocalService
 	public CommerceShippingFixedOption updateCommerceShippingFixedOption(
 		CommerceShippingFixedOption commerceShippingFixedOption);
 
+	@Indexable(type = IndexableType.REINDEX)
 	public CommerceShippingFixedOption updateCommerceShippingFixedOption(
 			long commerceShippingFixedOptionId, BigDecimal amount,
 			Map<Locale, String> descriptionMap, String key,
