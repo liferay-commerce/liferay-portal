@@ -23,7 +23,6 @@ import com.liferay.commerce.internal.upgrade.v2_1_0.CPDAvailabilityEstimateUpgra
 import com.liferay.commerce.internal.upgrade.v2_1_0.CommerceSubscriptionEntryUpgradeProcess;
 import com.liferay.commerce.internal.upgrade.v4_1_0.CommerceAddressUpgradeProcess;
 import com.liferay.commerce.internal.upgrade.v4_3_0.CommerceOrderDateUpgradeProcess;
-import com.liferay.commerce.internal.upgrade.v4_5_1.CommerceShippingMethodUpgradeProcess;
 import com.liferay.commerce.internal.upgrade.v4_8_1.CommerceOrderStatusesUpgradeProcess;
 import com.liferay.commerce.internal.upgrade.v5_0_1.CommercePermissionUpgradeProcess;
 import com.liferay.commerce.internal.upgrade.v7_2_0.util.CommerceOrderTypeRelTable;
@@ -47,6 +46,7 @@ import com.liferay.portal.kernel.service.OrganizationLocalService;
 import com.liferay.portal.kernel.service.PhoneLocalService;
 import com.liferay.portal.kernel.service.RegionLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
+import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -191,8 +191,9 @@ public class CommerceServiceUpgradeStepRegistrator
 
 		registry.register(
 			"4.5.0", "4.5.1",
-			new CommerceShippingMethodUpgradeProcess(
-				_classNameLocalService, _groupLocalService));
+			new com.liferay.commerce.internal.upgrade.v4_5_1.
+				CommerceShippingMethodUpgradeProcess(
+					_classNameLocalService, _groupLocalService));
 
 		registry.register(
 			"4.5.1", "4.6.0", new DummyUpgradeProcess(),
@@ -415,6 +416,12 @@ public class CommerceServiceUpgradeStepRegistrator
 			"8.9.0", "8.9.1",
 			new CommerceChannelAccountEntryRelUpgradeProcess());
 
+		registry.register(
+			"8.9.1", "8.10.0",
+			new com.liferay.commerce.internal.upgrade.v8_10_0.
+				CommerceShippingMethodUpgradeProcess(
+					_resourceActionLocalService, _resourceLocalService));
+
 		if (_log.isInfoEnabled()) {
 			_log.info("Commerce upgrade step registrator finished");
 		}
@@ -468,6 +475,9 @@ public class CommerceServiceUpgradeStepRegistrator
 
 	@Reference
 	private ResourceActionLocalService _resourceActionLocalService;
+
+	@Reference
+	private ResourceLocalService _resourceLocalService;
 
 	@Reference
 	private ResourcePermissionLocalService _resourcePermissionLocalService;
