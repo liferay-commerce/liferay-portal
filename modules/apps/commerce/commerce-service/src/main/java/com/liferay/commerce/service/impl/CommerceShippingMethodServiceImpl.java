@@ -14,6 +14,7 @@
 
 package com.liferay.commerce.service.impl;
 
+import com.liferay.commerce.constants.CommerceActionKeys;
 import com.liferay.commerce.model.CommerceAddressRestriction;
 import com.liferay.commerce.model.CommerceShippingMethod;
 import com.liferay.commerce.product.model.CommerceChannel;
@@ -24,7 +25,8 @@ import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
-import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.io.File;
@@ -55,25 +57,10 @@ public class CommerceShippingMethodServiceImpl
 			long groupId, long commerceShippingMethodId, long countryId)
 		throws PortalException {
 
-		_checkCommerceChannel(groupId);
+		_checkCommerceChannel(groupId, ActionKeys.UPDATE);
 
 		return commerceShippingMethodLocalService.addCommerceAddressRestriction(
 			getUserId(), groupId, commerceShippingMethodId, countryId);
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	@Override
-	public CommerceAddressRestriction addCommerceAddressRestriction(
-			long commerceShippingMethodId, long countryId,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		return commerceShippingMethodService.addCommerceAddressRestriction(
-			serviceContext.getScopeGroupId(), commerceShippingMethodId,
-			countryId);
 	}
 
 	@Override
@@ -84,28 +71,17 @@ public class CommerceShippingMethodServiceImpl
 			String trackingURL)
 		throws PortalException {
 
-		_checkCommerceChannel(groupId);
+		PortletResourcePermission portletResourcePermission =
+			_commerceChannelModelResourcePermission.
+				getPortletResourcePermission();
+
+		portletResourcePermission.check(
+			getPermissionChecker(), groupId,
+			CommerceActionKeys.MANAGE_COMMERCE_SHIPPING_METHOD);
 
 		return commerceShippingMethodLocalService.addCommerceShippingMethod(
 			getUserId(), groupId, nameMap, descriptionMap, active, engineKey,
 			imageFile, priority, trackingURL);
-	}
-
-	@Override
-	public CommerceShippingMethod createCommerceShippingMethod(
-			long commerceShippingMethodId)
-		throws PortalException {
-
-		CommerceShippingMethod commerceShippingMethod =
-			commerceShippingMethodLocalService.fetchCommerceShippingMethod(
-				commerceShippingMethodId);
-
-		if (commerceShippingMethod != null) {
-			_checkCommerceChannel(commerceShippingMethod.getGroupId());
-		}
-
-		return commerceShippingMethodLocalService.createCommerceShippingMethod(
-			commerceShippingMethodId);
 	}
 
 	@Override
@@ -117,7 +93,8 @@ public class CommerceShippingMethodServiceImpl
 			_commerceAddressRestrictionLocalService.
 				getCommerceAddressRestriction(commerceAddressRestrictionId);
 
-		_checkCommerceChannel(commerceAddressRestriction.getGroupId());
+		_checkCommerceChannel(
+			commerceAddressRestriction.getGroupId(), ActionKeys.UPDATE);
 
 		commerceShippingMethodLocalService.deleteCommerceAddressRestriction(
 			commerceAddressRestrictionId);
@@ -131,7 +108,8 @@ public class CommerceShippingMethodServiceImpl
 			commerceShippingMethodLocalService.getCommerceShippingMethod(
 				commerceShippingMethodId);
 
-		_checkCommerceChannel(commerceShippingMethod.getGroupId());
+		_checkCommerceChannel(
+			commerceShippingMethod.getGroupId(), ActionKeys.UPDATE);
 
 		_commerceAddressRestrictionLocalService.
 			deleteCommerceAddressRestrictions(
@@ -143,14 +121,12 @@ public class CommerceShippingMethodServiceImpl
 	public void deleteCommerceShippingMethod(long commerceShippingMethodId)
 		throws PortalException {
 
-		CommerceShippingMethod commerceShippingMethod =
-			commerceShippingMethodLocalService.getCommerceShippingMethod(
-				commerceShippingMethodId);
-
-		_checkCommerceChannel(commerceShippingMethod.getGroupId());
+		_commerceShippingMethodModelResourcePermission.check(
+			getPermissionChecker(), commerceShippingMethodId,
+			ActionKeys.DELETE);
 
 		commerceShippingMethodLocalService.deleteCommerceShippingMethod(
-			commerceShippingMethod);
+			commerceShippingMethodId);
 	}
 
 	@Override
@@ -163,7 +139,9 @@ public class CommerceShippingMethodServiceImpl
 				groupId, engineKey);
 
 		if (commerceShippingMethod != null) {
-			_checkCommerceChannel(commerceShippingMethod.getGroupId());
+			_commerceShippingMethodModelResourcePermission.check(
+				getPermissionChecker(), commerceShippingMethod,
+				ActionKeys.VIEW);
 		}
 
 		return commerceShippingMethod;
@@ -179,7 +157,8 @@ public class CommerceShippingMethodServiceImpl
 			commerceShippingMethodLocalService.getCommerceShippingMethod(
 				commerceShippingMethodId);
 
-		_checkCommerceChannel(commerceShippingMethod.getGroupId());
+		_checkCommerceChannel(
+			commerceShippingMethod.getGroupId(), ActionKeys.UPDATE);
 
 		return commerceShippingMethodLocalService.
 			getCommerceAddressRestrictions(
@@ -195,7 +174,8 @@ public class CommerceShippingMethodServiceImpl
 			commerceShippingMethodLocalService.getCommerceShippingMethod(
 				commerceShippingMethodId);
 
-		_checkCommerceChannel(commerceShippingMethod.getGroupId());
+		_checkCommerceChannel(
+			commerceShippingMethod.getGroupId(), ActionKeys.UPDATE);
 
 		return commerceShippingMethodLocalService.
 			getCommerceAddressRestrictionsCount(commerceShippingMethodId);
@@ -206,13 +186,11 @@ public class CommerceShippingMethodServiceImpl
 			long commerceShippingMethodId)
 		throws PortalException {
 
-		CommerceShippingMethod commerceShippingMethod =
-			commerceShippingMethodLocalService.getCommerceShippingMethod(
-				commerceShippingMethodId);
+		_commerceShippingMethodModelResourcePermission.check(
+			getPermissionChecker(), commerceShippingMethodId, ActionKeys.VIEW);
 
-		_checkCommerceChannel(commerceShippingMethod.getGroupId());
-
-		return commerceShippingMethod;
+		return commerceShippingMethodLocalService.getCommerceShippingMethod(
+			commerceShippingMethodId);
 	}
 
 	@Override
@@ -221,9 +199,7 @@ public class CommerceShippingMethodServiceImpl
 			OrderByComparator<CommerceShippingMethod> orderByComparator)
 		throws PortalException {
 
-		_checkCommerceChannel(groupId);
-
-		return commerceShippingMethodLocalService.getCommerceShippingMethods(
+		return commerceShippingMethodPersistence.filterFindByG_A(
 			groupId, active, start, end, orderByComparator);
 	}
 
@@ -233,9 +209,7 @@ public class CommerceShippingMethodServiceImpl
 			OrderByComparator<CommerceShippingMethod> orderByComparator)
 		throws PortalException {
 
-		_checkCommerceChannel(groupId);
-
-		return commerceShippingMethodLocalService.getCommerceShippingMethods(
+		return commerceShippingMethodPersistence.filterFindByGroupId(
 			groupId, start, end, orderByComparator);
 	}
 
@@ -244,20 +218,29 @@ public class CommerceShippingMethodServiceImpl
 			long groupId, long countryId, boolean active)
 		throws PortalException {
 
-		_checkCommerceChannel(groupId);
-
-		return commerceShippingMethodLocalService.getCommerceShippingMethods(
-			groupId, countryId, active);
+		return ListUtil.filter(
+			commerceShippingMethodPersistence.filterFindByG_A(groupId, active),
+			commerceShippingMethod ->
+				!_commerceAddressRestrictionLocalService.
+					isCommerceAddressRestricted(
+						CommerceShippingMethod.class.getName(),
+						commerceShippingMethod.getCommerceShippingMethodId(),
+						countryId));
 	}
 
 	@Override
 	public int getCommerceShippingMethodsCount(long groupId)
 		throws PortalException {
 
-		_checkCommerceChannel(groupId);
+		return commerceShippingMethodPersistence.filterCountByGroupId(groupId);
+	}
 
-		return commerceShippingMethodLocalService.
-			getCommerceShippingMethodsCount(groupId);
+	@Override
+	public int getCommerceShippingMethodsCount(long groupId, boolean active)
+		throws PortalException {
+
+		return commerceShippingMethodPersistence.filterCountByG_A(
+			groupId, active);
 	}
 
 	@Override
@@ -265,13 +248,9 @@ public class CommerceShippingMethodServiceImpl
 			long commerceShippingMethodId, boolean active)
 		throws PortalException {
 
-		CommerceShippingMethod commerceShippingMethod =
-			commerceShippingMethodLocalService.fetchCommerceShippingMethod(
-				commerceShippingMethodId);
-
-		if (commerceShippingMethod != null) {
-			_checkCommerceChannel(commerceShippingMethod.getGroupId());
-		}
+		_commerceShippingMethodModelResourcePermission.check(
+			getPermissionChecker(), commerceShippingMethodId,
+			ActionKeys.UPDATE);
 
 		return commerceShippingMethodLocalService.setActive(
 			commerceShippingMethodId, active);
@@ -284,23 +263,23 @@ public class CommerceShippingMethodServiceImpl
 			double priority, String trackingURL)
 		throws PortalException {
 
-		CommerceShippingMethod commerceShippingMethod =
-			commerceShippingMethodLocalService.getCommerceShippingMethod(
-				commerceShippingMethodId);
-
-		_checkCommerceChannel(commerceShippingMethod.getGroupId());
+		_commerceShippingMethodModelResourcePermission.check(
+			getPermissionChecker(), commerceShippingMethodId,
+			ActionKeys.UPDATE);
 
 		return commerceShippingMethodLocalService.updateCommerceShippingMethod(
-			commerceShippingMethod.getCommerceShippingMethodId(), nameMap,
-			descriptionMap, active, imageFile, priority, trackingURL);
+			commerceShippingMethodId, nameMap, descriptionMap, active,
+			imageFile, priority, trackingURL);
 	}
 
-	private void _checkCommerceChannel(long groupId) throws PortalException {
+	private void _checkCommerceChannel(long groupId, String actionId)
+		throws PortalException {
+
 		CommerceChannel commerceChannel =
 			_commerceChannelLocalService.getCommerceChannelByGroupId(groupId);
 
 		_commerceChannelModelResourcePermission.check(
-			getPermissionChecker(), commerceChannel, ActionKeys.UPDATE);
+			getPermissionChecker(), commerceChannel, actionId);
 	}
 
 	@Reference
@@ -315,5 +294,11 @@ public class CommerceShippingMethodServiceImpl
 	)
 	private ModelResourcePermission<CommerceChannel>
 		_commerceChannelModelResourcePermission;
+
+	@Reference(
+		target = "(model.class.name=com.liferay.commerce.model.CommerceShippingMethod)"
+	)
+	private ModelResourcePermission<CommerceShippingMethod>
+		_commerceShippingMethodModelResourcePermission;
 
 }
