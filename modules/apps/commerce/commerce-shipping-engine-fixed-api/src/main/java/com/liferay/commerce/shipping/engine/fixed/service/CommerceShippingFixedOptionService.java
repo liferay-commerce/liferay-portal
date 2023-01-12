@@ -78,24 +78,9 @@ public interface CommerceShippingFixedOptionService extends BaseService {
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommerceShippingFixedOption> getCommerceShippingFixedOptions(
-			long commerceShippingMethodId, int start, int end)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceShippingFixedOption> getCommerceShippingFixedOptions(
-			long commerceShippingMethodId, int start, int end,
-			OrderByComparator<CommerceShippingFixedOption> orderByComparator)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceShippingFixedOption> getCommerceShippingFixedOptions(
 			long companyId, long groupId, long commerceShippingMethodId,
-			String keywords, int start, int end)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceShippingFixedOptionsCount(
-			long commerceShippingMethodId)
+			String keywords, int start, int end,
+			OrderByComparator<CommerceShippingFixedOption> orderByComparator)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

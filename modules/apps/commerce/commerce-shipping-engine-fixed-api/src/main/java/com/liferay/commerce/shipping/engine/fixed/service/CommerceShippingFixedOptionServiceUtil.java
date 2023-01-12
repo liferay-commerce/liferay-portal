@@ -77,40 +77,15 @@ public class CommerceShippingFixedOptionServiceUtil {
 
 	public static List<CommerceShippingFixedOption>
 			getCommerceShippingFixedOptions(
-				long commerceShippingMethodId, int start, int end)
-		throws PortalException {
-
-		return getService().getCommerceShippingFixedOptions(
-			commerceShippingMethodId, start, end);
-	}
-
-	public static List<CommerceShippingFixedOption>
-			getCommerceShippingFixedOptions(
-				long commerceShippingMethodId, int start, int end,
+				long companyId, long groupId, long commerceShippingMethodId,
+				String keywords, int start, int end,
 				OrderByComparator<CommerceShippingFixedOption>
 					orderByComparator)
 		throws PortalException {
 
 		return getService().getCommerceShippingFixedOptions(
-			commerceShippingMethodId, start, end, orderByComparator);
-	}
-
-	public static List<CommerceShippingFixedOption>
-			getCommerceShippingFixedOptions(
-				long companyId, long groupId, long commerceShippingMethodId,
-				String keywords, int start, int end)
-		throws PortalException {
-
-		return getService().getCommerceShippingFixedOptions(
-			companyId, groupId, commerceShippingMethodId, keywords, start, end);
-	}
-
-	public static int getCommerceShippingFixedOptionsCount(
-			long commerceShippingMethodId)
-		throws PortalException {
-
-		return getService().getCommerceShippingFixedOptionsCount(
-			commerceShippingMethodId);
+			companyId, groupId, commerceShippingMethodId, keywords, start, end,
+			orderByComparator);
 	}
 
 	public static long getCommerceShippingFixedOptionsCount(

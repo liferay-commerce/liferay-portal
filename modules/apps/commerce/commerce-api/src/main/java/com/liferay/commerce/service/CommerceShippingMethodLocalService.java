@@ -29,7 +29,6 @@ import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
@@ -71,15 +70,6 @@ public interface CommerceShippingMethodLocalService
 	public CommerceAddressRestriction addCommerceAddressRestriction(
 			long userId, long groupId, long commerceShippingMethodId,
 			long countryId)
-		throws PortalException;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	public CommerceAddressRestriction addCommerceAddressRestriction(
-			long commerceShippingMethodId, long countryId,
-			ServiceContext serviceContext)
 		throws PortalException;
 
 	/**
@@ -294,10 +284,6 @@ public interface CommerceShippingMethodLocalService
 	public List<CommerceShippingMethod> getCommerceShippingMethods(
 		long groupId, int start, int end,
 		OrderByComparator<CommerceShippingMethod> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceShippingMethod> getCommerceShippingMethods(
-		long groupId, long countryId, boolean active);
 
 	/**
 	 * Returns the number of commerce shipping methods.
