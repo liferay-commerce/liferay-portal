@@ -49,6 +49,7 @@ import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizerUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
@@ -124,7 +125,8 @@ public class CommerceShippingFixedOptionLocalServiceImpl
 	@Override
 	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public CommerceShippingFixedOption deleteCommerceShippingFixedOption(
-		CommerceShippingFixedOption commerceShippingFixedOption) {
+			CommerceShippingFixedOption commerceShippingFixedOption)
+		throws PortalException {
 
 		// Commerce shipping fixed option
 
@@ -148,7 +150,8 @@ public class CommerceShippingFixedOptionLocalServiceImpl
 
 	@Override
 	public void deleteCommerceShippingFixedOptions(
-		long commerceShippingMethodId) {
+			long commerceShippingMethodId)
+		throws PortalException {
 
 		List<CommerceShippingFixedOption> commerceShippingFixedOptions =
 			commerceShippingFixedOptionPersistence.
@@ -185,15 +188,6 @@ public class CommerceShippingFixedOptionLocalServiceImpl
 
 	@Override
 	public List<CommerceShippingFixedOption> getCommerceShippingFixedOptions(
-		long commerceShippingMethodId, int start, int end) {
-
-		return commerceShippingFixedOptionPersistence.
-			findByCommerceShippingMethodId(
-				commerceShippingMethodId, start, end);
-	}
-
-	@Override
-	public List<CommerceShippingFixedOption> getCommerceShippingFixedOptions(
 		long commerceShippingMethodId, int start, int end,
 		OrderByComparator<CommerceShippingFixedOption> orderByComparator) {
 
@@ -205,11 +199,13 @@ public class CommerceShippingFixedOptionLocalServiceImpl
 	@Override
 	public List<CommerceShippingFixedOption> getCommerceShippingFixedOptions(
 			long companyId, long groupId, long commerceShippingMethodId,
-			String keywords, int start, int end)
+			String keywords, int start, int end,
+			OrderByComparator<CommerceShippingFixedOption> orderByComparator)
 		throws PortalException {
 
 		SearchContext searchContext = _buildSearchContext(
-			companyId, groupId, commerceShippingMethodId, keywords, start, end);
+			companyId, groupId, commerceShippingMethodId, keywords, start, end,
+			orderByComparator);
 
 		BaseModelSearchResult<CommerceShippingFixedOption>
 			baseModelSearchResult = searchCommerceShippingFixedOption(
@@ -219,21 +215,13 @@ public class CommerceShippingFixedOptionLocalServiceImpl
 	}
 
 	@Override
-	public int getCommerceShippingFixedOptionsCount(
-		long commerceShippingMethodId) {
-
-		return commerceShippingFixedOptionPersistence.
-			countByCommerceShippingMethodId(commerceShippingMethodId);
-	}
-
-	@Override
 	public long getCommerceShippingFixedOptionsCount(
 			long companyId, long groupId, long commerceShippingMethodId,
 			String keywords)
 		throws PortalException {
 
 		SearchContext searchContext = _buildSearchContext(
-			companyId, groupId, commerceShippingMethodId, keywords, 0, 0);
+			companyId, groupId, commerceShippingMethodId, keywords, 0, 0, null);
 
 		Indexer<CommerceShippingFixedOption> indexer =
 			IndexerRegistryUtil.nullSafeGetIndexer(
@@ -268,6 +256,7 @@ public class CommerceShippingFixedOptionLocalServiceImpl
 			"Unable to fix the search index after 10 attempts");
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public CommerceShippingFixedOption updateCommerceShippingFixedOption(
 			long commerceShippingFixedOptionId, BigDecimal amount,
@@ -297,7 +286,8 @@ public class CommerceShippingFixedOptionLocalServiceImpl
 
 	private SearchContext _buildSearchContext(
 		long companyId, long groupId, long commerceShippingMethodId,
-		String keywords, int start, int end) {
+		String keywords, int start, int end,
+		OrderByComparator<CommerceShippingFixedOption> orderByComparator) {
 
 		SearchContext searchContext = new SearchContext();
 
@@ -307,10 +297,22 @@ public class CommerceShippingFixedOptionLocalServiceImpl
 		searchContext.setEnd(end);
 		searchContext.setGroupIds(new long[] {groupId});
 		searchContext.setKeywords(keywords);
-		searchContext.setSorts(
-			SortFactoryUtil.getSort(
-				CommerceShippingFixedOption.class, Sort.LONG_TYPE,
-				Field.CREATE_DATE, "DESC"));
+
+		Sort sort = SortFactoryUtil.getSort(
+			CommerceShippingFixedOption.class, Sort.LONG_TYPE,
+			Field.CREATE_DATE, "DESC");
+
+		if (orderByComparator != null) {
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			if (ArrayUtil.isNotEmpty(orderByFields)) {
+				sort = SortFactoryUtil.getSort(
+					CommerceShippingFixedOption.class, orderByFields[0],
+					orderByComparator.isAscending() ? "asc" : "desc");
+			}
+		}
+
+		searchContext.setSorts(sort);
 		searchContext.setStart(start);
 
 		QueryConfig queryConfig = searchContext.getQueryConfig();
