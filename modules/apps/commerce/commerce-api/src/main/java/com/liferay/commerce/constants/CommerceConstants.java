@@ -36,6 +36,9 @@ public class CommerceConstants {
 	public static final String RESOURCE_NAME_COMMERCE_SHIPMENT =
 		"com.liferay.commerce.shipment";
 
+	public static final String RESOURCE_NAME_COMMERCE_SHIPPING_METHOD =
+		"com.liferay.commerce.shipping.method";
+
 	public static final String RESOURCE_NAME_COMMERCE_SUBSCRIPTION =
 		"com.liferay.commerce.subscription";
 
