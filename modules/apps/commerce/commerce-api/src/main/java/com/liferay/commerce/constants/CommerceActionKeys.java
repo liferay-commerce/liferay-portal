@@ -38,6 +38,9 @@ public class CommerceActionKeys {
 	public static final String MANAGE_COMMERCE_SHIPMENTS =
 		"MANAGE_COMMERCE_SHIPMENTS";
 
+	public static final String MANAGE_COMMERCE_SHIPPING_METHOD =
+		"MANAGE_COMMERCE_SHIPPING_METHOD";
+
 	public static final String MANAGE_COMMERCE_SUBSCRIPTIONS =
 		"MANAGE_COMMERCE_SUBSCRIPTIONS";
 
