@@ -14,17 +14,27 @@
 
 package com.liferay.headless.commerce.admin.account.resource.v1_0.test;
 
+import com.liferay.account.constants.AccountConstants;
+import com.liferay.account.model.AccountEntry;
+import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.commerce.account.constants.CommerceAccountConstants;
-import com.liferay.commerce.account.model.CommerceAccount;
-import com.liferay.commerce.account.service.CommerceAccountLocalServiceUtil;
 import com.liferay.headless.commerce.admin.account.client.dto.v1_0.AccountMember;
+import com.liferay.headless.commerce.admin.account.client.serdes.v1_0.AccountMemberSerDes;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.test.rule.Inject;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,16 +53,15 @@ public class AccountMemberResourceTest
 
 		_user = UserTestUtil.addUser(testCompany);
 
-		_serviceContext = ServiceContextTestUtil.getServiceContext(
-			testCompany.getCompanyId(), testGroup.getGroupId(),
-			_user.getUserId());
-
-		_commerceAccount = CommerceAccountLocalServiceUtil.addCommerceAccount(
-			RandomTestUtil.randomString(),
-			CommerceAccountConstants.DEFAULT_PARENT_ACCOUNT_ID,
+		_accountEntry = _accountEntryLocalService.addAccountEntry(
+			_user.getUserId(), AccountConstants.PARENT_ACCOUNT_ENTRY_ID_DEFAULT,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(), null,
 			RandomTestUtil.randomString() + "@liferay.com", null,
-			CommerceAccountConstants.ACCOUNT_TYPE_GUEST, true,
-			RandomTestUtil.randomString(), _serviceContext);
+			RandomTestUtil.randomString(),
+			AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS, 1,
+			ServiceContextTestUtil.getServiceContext(
+				testCompany.getCompanyId(), testGroup.getGroupId(),
+				_user.getUserId()));
 	}
 
 	@Override
@@ -63,20 +72,20 @@ public class AccountMemberResourceTest
 		AccountMember accountMember = randomAccountMember();
 
 		accountMemberResource.postAccountByExternalReferenceCodeAccountMember(
-			_commerceAccount.getExternalReferenceCode(), accountMember);
+			_accountEntry.getExternalReferenceCode(), accountMember);
 
 		assertHttpResponseStatusCode(
 			204,
 			accountMemberResource.
 				deleteAccountByExternalReferenceCodeAccountMemberHttpResponse(
-					_commerceAccount.getExternalReferenceCode(),
+					_accountEntry.getExternalReferenceCode(),
 					accountMember.getUserId()));
 
 		assertHttpResponseStatusCode(
 			404,
 			accountMemberResource.
 				getAccountByExternalReferenceCodeAccountMemberHttpResponse(
-					_commerceAccount.getExternalReferenceCode(),
+					_accountEntry.getExternalReferenceCode(),
 					accountMember.getUserId()));
 	}
 
@@ -86,19 +95,17 @@ public class AccountMemberResourceTest
 		AccountMember accountMember = randomAccountMember();
 
 		accountMemberResource.postAccountIdAccountMember(
-			_commerceAccount.getCommerceAccountId(), accountMember);
+			_accountEntry.getAccountEntryId(), accountMember);
 
 		assertHttpResponseStatusCode(
 			204,
 			accountMemberResource.deleteAccountIdAccountMemberHttpResponse(
-				_commerceAccount.getCommerceAccountId(),
-				accountMember.getUserId()));
+				_accountEntry.getAccountEntryId(), accountMember.getUserId()));
 
 		assertHttpResponseStatusCode(
 			404,
 			accountMemberResource.getAccountIdAccountMemberHttpResponse(
-				_commerceAccount.getCommerceAccountId(),
-				accountMember.getUserId()));
+				_accountEntry.getAccountEntryId(), accountMember.getUserId()));
 	}
 
 	@Override
@@ -109,14 +116,14 @@ public class AccountMemberResourceTest
 		AccountMember accountMember1 = randomAccountMember();
 
 		accountMemberResource.postAccountByExternalReferenceCodeAccountMember(
-			_commerceAccount.getExternalReferenceCode(), accountMember1);
+			_accountEntry.getExternalReferenceCode(), accountMember1);
 
-		accountMember1.setAccountId(_commerceAccount.getCommerceAccountId());
+		accountMember1.setAccountId(_accountEntry.getAccountEntryId());
 
 		AccountMember accountMember2 =
 			accountMemberResource.
 				getAccountByExternalReferenceCodeAccountMember(
-					_commerceAccount.getExternalReferenceCode(),
+					_accountEntry.getExternalReferenceCode(),
 					accountMember1.getUserId());
 
 		assertEquals(accountMember1, accountMember2);
@@ -128,16 +135,169 @@ public class AccountMemberResourceTest
 		AccountMember accountMember1 = randomAccountMember();
 
 		accountMemberResource.postAccountIdAccountMember(
-			_commerceAccount.getCommerceAccountId(), accountMember1);
+			_accountEntry.getAccountEntryId(), accountMember1);
 
-		accountMember1.setAccountId(_commerceAccount.getCommerceAccountId());
+		accountMember1.setAccountId(_accountEntry.getAccountEntryId());
 
 		AccountMember accountMember2 =
 			accountMemberResource.getAccountIdAccountMember(
-				_commerceAccount.getCommerceAccountId(),
-				accountMember1.getUserId());
+				_accountEntry.getAccountEntryId(), accountMember1.getUserId());
 
 		assertEquals(accountMember1, accountMember2);
+	}
+
+	@Override
+	@Test
+	public void testGraphQLGetAccountByExternalReferenceCodeAccountMember()
+		throws Exception {
+
+		GraphQLField graphQLField = new GraphQLField(
+			"accountByExternalReferenceCodeAccountMembers",
+			HashMapBuilder.<String, Object>put(
+				"externalReferenceCode",
+				"\"" + _accountEntry.getExternalReferenceCode() + "\""
+			).put(
+				"page", 1
+			).put(
+				"pageSize", 10
+			).build(),
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
+
+		JSONObject accountMembersJSONObject = JSONUtil.getValueAsJSONObject(
+			invokeGraphQLQuery(graphQLField), "JSONObject/data",
+			"JSONObject/accountByExternalReferenceCodeAccountMembers");
+
+		long totalCount = accountMembersJSONObject.getLong("totalCount");
+
+		AccountMember accountMember1 =
+			accountMemberResource.
+				postAccountByExternalReferenceCodeAccountMember(
+					_accountEntry.getExternalReferenceCode(),
+					randomAccountMember());
+		AccountMember accountMember2 =
+			accountMemberResource.
+				postAccountByExternalReferenceCodeAccountMember(
+					_accountEntry.getExternalReferenceCode(),
+					randomAccountMember());
+
+		accountMembersJSONObject = JSONUtil.getValueAsJSONObject(
+			invokeGraphQLQuery(graphQLField), "JSONObject/data",
+			"JSONObject/accountByExternalReferenceCodeAccountMembers");
+
+		Assert.assertEquals(
+			totalCount + 2, accountMembersJSONObject.getLong("totalCount"));
+
+		assertContains(
+			accountMember1,
+			Arrays.asList(
+				AccountMemberSerDes.toDTOs(
+					accountMembersJSONObject.getString("items"))));
+		assertContains(
+			accountMember2,
+			Arrays.asList(
+				AccountMemberSerDes.toDTOs(
+					accountMembersJSONObject.getString("items"))));
+	}
+
+	@Override
+	@Test
+	public void testGraphQLGetAccountByExternalReferenceCodeAccountMemberNotFound()
+		throws Exception {
+
+		GraphQLField graphQLField = new GraphQLField(
+			"accountByExternalReferenceCodeAccountMembers",
+			HashMapBuilder.<String, Object>put(
+				"externalReferenceCode",
+				"\"" + RandomTestUtil.randomString() + "\""
+			).put(
+				"page", 1
+			).put(
+				"pageSize", 10
+			).build(),
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
+
+		Assert.assertEquals(
+			"Not Found",
+			JSONUtil.getValueAsString(
+				invokeGraphQLQuery(graphQLField), "JSONArray/errors",
+				"Object/0", "JSONObject/extensions", "Object/code"));
+	}
+
+	@Override
+	@Test
+	public void testGraphQLGetAccountIdAccountMember() throws Exception {
+		GraphQLField graphQLField = new GraphQLField(
+			"accountIdAccountMembers",
+			HashMapBuilder.<String, Object>put(
+				"id", _accountEntry.getAccountEntryId()
+			).put(
+				"page", 1
+			).put(
+				"pageSize", 10
+			).build(),
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
+
+		JSONObject accountMembersJSONObject = JSONUtil.getValueAsJSONObject(
+			invokeGraphQLQuery(graphQLField), "JSONObject/data",
+			"JSONObject/accountIdAccountMembers");
+
+		long totalCount = accountMembersJSONObject.getLong("totalCount");
+
+		AccountMember accountMember1 =
+			accountMemberResource.
+				postAccountByExternalReferenceCodeAccountMember(
+					_accountEntry.getExternalReferenceCode(),
+					randomAccountMember());
+		AccountMember accountMember2 =
+			accountMemberResource.
+				postAccountByExternalReferenceCodeAccountMember(
+					_accountEntry.getExternalReferenceCode(),
+					randomAccountMember());
+
+		accountMembersJSONObject = JSONUtil.getValueAsJSONObject(
+			invokeGraphQLQuery(graphQLField), "JSONObject/data",
+			"JSONObject/accountIdAccountMembers");
+
+		Assert.assertEquals(
+			totalCount + 2, accountMembersJSONObject.getLong("totalCount"));
+
+		assertContains(
+			accountMember1,
+			Arrays.asList(
+				AccountMemberSerDes.toDTOs(
+					accountMembersJSONObject.getString("items"))));
+		assertContains(
+			accountMember2,
+			Arrays.asList(
+				AccountMemberSerDes.toDTOs(
+					accountMembersJSONObject.getString("items"))));
+	}
+
+	@Override
+	@Test
+	public void testGraphQLGetAccountIdAccountMemberNotFound()
+		throws Exception {
+
+		GraphQLField graphQLField = new GraphQLField(
+			"accountIdAccountMembers",
+			HashMapBuilder.<String, Object>put(
+				"id", _accountEntry.getAccountEntryId()
+			).put(
+				"page", 1
+			).put(
+				"pageSize", 10
+			).build(),
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
+
+		JSONObject accountMembersJSONObject = JSONUtil.getValueAsJSONObject(
+			invokeGraphQLQuery(graphQLField), "JSONObject/data",
+			"JSONObject/accountIdAccountMembers");
+
+		Assert.assertEquals(0, accountMembersJSONObject.getLong("totalCount"));
 	}
 
 	@Override
@@ -148,18 +308,18 @@ public class AccountMemberResourceTest
 		AccountMember accountMember1 = randomAccountMember();
 
 		accountMemberResource.postAccountByExternalReferenceCodeAccountMember(
-			_commerceAccount.getExternalReferenceCode(), accountMember1);
+			_accountEntry.getExternalReferenceCode(), accountMember1);
 
-		accountMember1.setAccountId(_commerceAccount.getCommerceAccountId());
+		accountMember1.setAccountId(_accountEntry.getAccountEntryId());
 
 		accountMemberResource.patchAccountByExternalReferenceCodeAccountMember(
-			_commerceAccount.getExternalReferenceCode(),
+			_accountEntry.getExternalReferenceCode(),
 			accountMember1.getUserId(), accountMember1);
 
 		AccountMember accountMember2 =
 			accountMemberResource.
 				getAccountByExternalReferenceCodeAccountMember(
-					_commerceAccount.getExternalReferenceCode(),
+					_accountEntry.getExternalReferenceCode(),
 					accountMember1.getUserId());
 
 		assertEquals(accountMember1, accountMember2);
@@ -171,18 +331,17 @@ public class AccountMemberResourceTest
 		AccountMember accountMember1 = randomAccountMember();
 
 		accountMemberResource.postAccountIdAccountMember(
-			_commerceAccount.getCommerceAccountId(), accountMember1);
+			_accountEntry.getAccountEntryId(), accountMember1);
 
-		accountMember1.setAccountId(_commerceAccount.getCommerceAccountId());
+		accountMember1.setAccountId(_accountEntry.getAccountEntryId());
 
 		accountMemberResource.patchAccountIdAccountMember(
-			_commerceAccount.getCommerceAccountId(), accountMember1.getUserId(),
+			_accountEntry.getAccountEntryId(), accountMember1.getUserId(),
 			accountMember1);
 
 		AccountMember accountMember2 =
 			accountMemberResource.getAccountIdAccountMember(
-				_commerceAccount.getCommerceAccountId(),
-				accountMember1.getUserId());
+				_accountEntry.getAccountEntryId(), accountMember1.getUserId());
 
 		assertEquals(accountMember1, accountMember2);
 	}
@@ -199,15 +358,14 @@ public class AccountMemberResourceTest
 		accountMember1 =
 			accountMemberResource.
 				postAccountByExternalReferenceCodeAccountMember(
-					_commerceAccount.getExternalReferenceCode(),
-					accountMember1);
+					_accountEntry.getExternalReferenceCode(), accountMember1);
 
-		accountMember1.setAccountId(_commerceAccount.getCommerceAccountId());
+		accountMember1.setAccountId(_accountEntry.getAccountEntryId());
 
 		AccountMember accountMember2 =
 			accountMemberResource.
 				getAccountByExternalReferenceCodeAccountMember(
-					_commerceAccount.getExternalReferenceCode(),
+					_accountEntry.getExternalReferenceCode(),
 					accountMember1.getUserId());
 
 		assertEquals(accountMember1, accountMember2);
@@ -221,21 +379,20 @@ public class AccountMemberResourceTest
 		AccountMember accountMember1 = _randomAccountMember();
 
 		accountMember1 = accountMemberResource.postAccountIdAccountMember(
-			_commerceAccount.getCommerceAccountId(), accountMember1);
+			_accountEntry.getAccountEntryId(), accountMember1);
 
-		accountMember1.setAccountId(_commerceAccount.getCommerceAccountId());
+		accountMember1.setAccountId(_accountEntry.getAccountEntryId());
 
 		AccountMember accountMember2 =
 			accountMemberResource.getAccountIdAccountMember(
-				_commerceAccount.getCommerceAccountId(),
-				accountMember1.getUserId());
+				_accountEntry.getAccountEntryId(), accountMember1.getUserId());
 
 		assertEquals(accountMember1, accountMember2);
 	}
 
 	@Override
 	protected String[] getAdditionalAssertFieldNames() {
-		return new String[] {"accountId", "userId", "email", "name"};
+		return new String[] {"name", "email"};
 	}
 
 	@Override
@@ -245,6 +402,7 @@ public class AccountMemberResourceTest
 		return new AccountMember() {
 			{
 				email = user.getEmailAddress();
+				externalReferenceCode = user.getExternalReferenceCode();
 				name = user.getFullName();
 				userId = user.getUserId();
 			}
@@ -259,7 +417,7 @@ public class AccountMemberResourceTest
 
 		return accountMemberResource.
 			postAccountByExternalReferenceCodeAccountMember(
-				_commerceAccount.getExternalReferenceCode(), accountMember);
+				_accountEntry.getExternalReferenceCode(), accountMember);
 	}
 
 	@Override
@@ -267,7 +425,7 @@ public class AccountMemberResourceTest
 			testGetAccountByExternalReferenceCodeAccountMembersPage_getExternalReferenceCode()
 		throws Exception {
 
-		return _commerceAccount.getExternalReferenceCode();
+		return _accountEntry.getExternalReferenceCode();
 	}
 
 	@Override
@@ -281,7 +439,7 @@ public class AccountMemberResourceTest
 
 	@Override
 	protected Long testGetAccountIdAccountMembersPage_getId() throws Exception {
-		return _commerceAccount.getCommerceAccountId();
+		return _accountEntry.getAccountEntryId();
 	}
 
 	@Override
@@ -291,13 +449,13 @@ public class AccountMemberResourceTest
 		throws Exception {
 
 		accountMemberResource.postAccountByExternalReferenceCodeAccountMember(
-			_commerceAccount.getExternalReferenceCode(), accountMember);
+			_accountEntry.getExternalReferenceCode(), accountMember);
 
-		accountMember.setAccountId(_commerceAccount.getCommerceAccountId());
+		accountMember.setAccountId(_accountEntry.getAccountEntryId());
 
 		return accountMemberResource.
 			getAccountByExternalReferenceCodeAccountMember(
-				_commerceAccount.getExternalReferenceCode(),
+				_accountEntry.getExternalReferenceCode(),
 				accountMember.getUserId());
 	}
 
@@ -307,16 +465,18 @@ public class AccountMemberResourceTest
 		throws Exception {
 
 		accountMemberResource.postAccountIdAccountMember(
-			_commerceAccount.getCommerceAccountId(), accountMember);
+			_accountEntry.getAccountEntryId(), accountMember);
 
-		accountMember.setAccountId(_commerceAccount.getCommerceAccountId());
+		accountMember.setAccountId(_accountEntry.getAccountEntryId());
 
 		return accountMemberResource.getAccountIdAccountMember(
-			_commerceAccount.getCommerceAccountId(), accountMember.getUserId());
+			_accountEntry.getAccountEntryId(), accountMember.getUserId());
 	}
 
 	private AccountMember _randomAccountMember() throws Exception {
 		User user = UserTestUtil.addUser(testCompany);
+
+		_users.add(user);
 
 		return new AccountMember() {
 			{
@@ -326,8 +486,16 @@ public class AccountMemberResourceTest
 		};
 	}
 
-	private CommerceAccount _commerceAccount;
-	private ServiceContext _serviceContext;
+	@Inject
+	private static AccountEntryLocalService _accountEntryLocalService;
+
+	@DeleteAfterTestRun
+	private AccountEntry _accountEntry;
+
+	@DeleteAfterTestRun
 	private User _user;
+
+	@DeleteAfterTestRun
+	private final List<User> _users = new ArrayList<>();
 
 }

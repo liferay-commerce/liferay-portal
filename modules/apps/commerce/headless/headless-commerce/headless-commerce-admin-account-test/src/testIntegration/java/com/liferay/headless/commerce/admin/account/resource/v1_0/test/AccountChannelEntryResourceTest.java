@@ -16,22 +16,22 @@ package com.liferay.headless.commerce.admin.account.resource.v1_0.test;
 
 import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.model.AccountEntry;
-import com.liferay.account.service.AccountEntryLocalServiceUtil;
+import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.currency.model.CommerceCurrency;
-import com.liferay.commerce.currency.service.CommerceCurrencyLocalServiceUtil;
+import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.discount.constants.CommerceDiscountConstants;
 import com.liferay.commerce.discount.model.CommerceDiscount;
-import com.liferay.commerce.discount.service.CommerceDiscountLocalServiceUtil;
+import com.liferay.commerce.discount.service.CommerceDiscountLocalService;
 import com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel;
 import com.liferay.commerce.price.list.constants.CommercePriceListConstants;
 import com.liferay.commerce.price.list.model.CommercePriceList;
-import com.liferay.commerce.price.list.service.CommercePriceListLocalServiceUtil;
+import com.liferay.commerce.price.list.service.CommercePriceListLocalService;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelLocalServiceUtil;
 import com.liferay.commerce.term.constants.CommerceTermEntryConstants;
 import com.liferay.commerce.term.model.CommerceTermEntry;
-import com.liferay.commerce.term.service.CommerceTermEntryLocalServiceUtil;
+import com.liferay.commerce.term.service.CommerceTermEntryLocalService;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.headless.commerce.admin.account.client.dto.v1_0.AccountChannelEntry;
 import com.liferay.petra.string.StringPool;
@@ -41,18 +41,19 @@ import com.liferay.portal.kernel.model.Region;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
-import com.liferay.portal.kernel.service.AddressLocalServiceUtil;
-import com.liferay.portal.kernel.service.CountryLocalServiceUtil;
-import com.liferay.portal.kernel.service.RegionLocalServiceUtil;
-import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
+import com.liferay.portal.kernel.service.AddressLocalService;
+import com.liferay.portal.kernel.service.CountryLocalService;
+import com.liferay.portal.kernel.service.RegionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.test.rule.Inject;
 
 import java.math.BigDecimal;
 
@@ -83,23 +84,23 @@ public class AccountChannelEntryResourceTest
 				testCompany.getCompanyId(), testGroup.getGroupId(),
 				_user.getUserId());
 
-		_accountEntry = AccountEntryLocalServiceUtil.addOrUpdateAccountEntry(
+		_accountEntry = _accountEntryLocalService.addOrUpdateAccountEntry(
 			RandomTestUtil.randomString(), _user.getUserId(), 0,
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(), null,
 			RandomTestUtil.randomString() + "@liferay.com", null, null,
 			AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS, 10, serviceContext);
 
-		_country = CountryLocalServiceUtil.addCountry(
+		_country = _countryLocalService.addCountry(
 			"XY", "XYZ", true, true, null, RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomDouble(), true,
 			false, false, serviceContext);
 
-		_region = RegionLocalServiceUtil.addRegion(
+		_region = _regionLocalService.addRegion(
 			_country.getCountryId(), true, RandomTestUtil.randomString(),
 			RandomTestUtil.randomDouble(), RandomTestUtil.randomString(),
 			serviceContext);
 
-		_address = AddressLocalServiceUtil.addAddress(
+		_address = _addressLocalService.addAddress(
 			RandomTestUtil.randomString(), _user.getUserId(),
 			User.class.getName(), _user.getUserId(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
@@ -109,15 +110,14 @@ public class AccountChannelEntryResourceTest
 			_country.getCountryId(), 2, false, false,
 			RandomTestUtil.randomString(), serviceContext);
 
-		_commerceCurrency =
-			CommerceCurrencyLocalServiceUtil.addCommerceCurrency(
-				_user.getUserId(), RandomTestUtil.randomString(),
-				Collections.singletonMap(
-					LocaleUtil.getSiteDefault(), RandomTestUtil.randomString()),
-				RandomTestUtil.randomString(), BigDecimal.ONE, new HashMap<>(),
-				2, 2, "HALF_EVEN", false, 0, true);
+		_commerceCurrency = _commerceCurrencyLocalService.addCommerceCurrency(
+			_user.getUserId(), RandomTestUtil.randomString(),
+			Collections.singletonMap(
+				LocaleUtil.getSiteDefault(), RandomTestUtil.randomString()),
+			RandomTestUtil.randomString(), BigDecimal.ONE, new HashMap<>(), 2,
+			2, "HALF_EVEN", false, 0, true);
 		_commerceDeliveryTerm =
-			CommerceTermEntryLocalServiceUtil.addCommerceTermEntry(
+			_commerceTermEntryLocalService.addCommerceTermEntry(
 				RandomTestUtil.randomString(), _user.getUserId(), true,
 				Collections.singletonMap(
 					LocaleUtil.getSiteDefault(), RandomTestUtil.randomString()),
@@ -127,17 +127,16 @@ public class AccountChannelEntryResourceTest
 				RandomTestUtil.randomString(), 1000,
 				CommerceTermEntryConstants.TYPE_DELIVERY_TERMS, null,
 				serviceContext);
-		_commerceDiscount =
-			CommerceDiscountLocalServiceUtil.addCommerceDiscount(
-				RandomTestUtil.randomString(), _user.getUserId(),
-				RandomTestUtil.randomString(),
-				CommerceDiscountConstants.TARGET_CATEGORIES, false, null, true,
-				BigDecimal.ZERO, StringPool.BLANK, BigDecimal.TEN,
-				BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
-				CommerceDiscountConstants.LIMITATION_TYPE_UNLIMITED, 0, true,
-				true, 1, 1, 2022, 12, 0, 0, 0, 0, 0, 0, true, serviceContext);
+		_commerceDiscount = _commerceDiscountLocalService.addCommerceDiscount(
+			RandomTestUtil.randomString(), _user.getUserId(),
+			RandomTestUtil.randomString(),
+			CommerceDiscountConstants.TARGET_CATEGORIES, false, null, true,
+			BigDecimal.ZERO, StringPool.BLANK, BigDecimal.TEN, BigDecimal.ZERO,
+			BigDecimal.ZERO, BigDecimal.ZERO,
+			CommerceDiscountConstants.LIMITATION_TYPE_UNLIMITED, 0, true, true,
+			1, 1, 2022, 12, 0, 0, 0, 0, 0, 0, true, serviceContext);
 		_commercePaymentTerm =
-			CommerceTermEntryLocalServiceUtil.addCommerceTermEntry(
+			_commerceTermEntryLocalService.addCommerceTermEntry(
 				RandomTestUtil.randomString(), _user.getUserId(), true,
 				Collections.singletonMap(
 					LocaleUtil.getSiteDefault(), RandomTestUtil.randomString()),
@@ -148,13 +147,13 @@ public class AccountChannelEntryResourceTest
 				CommerceTermEntryConstants.TYPE_PAYMENT_TERMS, null,
 				serviceContext);
 		_commercePriceList =
-			CommercePriceListLocalServiceUtil.addCommercePriceList(
+			_commercePriceListLocalService.addCommercePriceList(
 				RandomTestUtil.randomString(), testGroup.getGroupId(),
 				_user.getUserId(), _commerceCurrency.getCommerceCurrencyId(),
 				true, CommercePriceListConstants.TYPE_PRICE_LIST, 0, true,
 				RandomTestUtil.randomString(), 1000, 1, 1, 2022, 12, 0, 0, 0, 0,
 				0, 0, true, serviceContext);
-		_commerceUser = UserLocalServiceUtil.addUser(
+		_commerceUser = _userLocalService.addUser(
 			_user.getUserId(), testCompany.getCompanyId(), true,
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(), true,
 			RandomTestUtil.randomString(),
@@ -164,10 +163,10 @@ public class AccountChannelEntryResourceTest
 			true, 1, 1, 2022, RandomTestUtil.randomString(), null, null, null,
 			null, false, serviceContext);
 
-		Role role = RoleLocalServiceUtil.getRole(
+		Role role = _roleLocalService.getRole(
 			testCompany.getCompanyId(), RoleConstants.ADMINISTRATOR);
 
-		UserLocalServiceUtil.addRoleUser(
+		_userLocalService.addRoleUser(
 			role.getRoleId(), _commerceUser.getUserId());
 	}
 
@@ -1245,6 +1244,36 @@ public class AccountChannelEntryResourceTest
 			_accountEntry.getAccountEntryId(), accountChannelEntry);
 	}
 
+	@Inject
+	private static AccountEntryLocalService _accountEntryLocalService;
+
+	@Inject
+	private static AddressLocalService _addressLocalService;
+
+	@Inject
+	private static CommerceCurrencyLocalService _commerceCurrencyLocalService;
+
+	@Inject
+	private static CommerceDiscountLocalService _commerceDiscountLocalService;
+
+	@Inject
+	private static CommercePriceListLocalService _commercePriceListLocalService;
+
+	@Inject
+	private static CommerceTermEntryLocalService _commerceTermEntryLocalService;
+
+	@Inject
+	private static CountryLocalService _countryLocalService;
+
+	@Inject
+	private static RegionLocalService _regionLocalService;
+
+	@Inject
+	private static RoleLocalService _roleLocalService;
+
+	@Inject
+	private static UserLocalService _userLocalService;
+
 	@DeleteAfterTestRun
 	private AccountEntry _accountEntry;
 
@@ -1252,7 +1281,7 @@ public class AccountChannelEntryResourceTest
 	private Address _address;
 
 	@DeleteAfterTestRun
-	private List<CommerceChannel> _commerceChannels = new ArrayList<>();
+	private final List<CommerceChannel> _commerceChannels = new ArrayList<>();
 
 	@DeleteAfterTestRun
 	private CommerceCurrency _commerceCurrency;

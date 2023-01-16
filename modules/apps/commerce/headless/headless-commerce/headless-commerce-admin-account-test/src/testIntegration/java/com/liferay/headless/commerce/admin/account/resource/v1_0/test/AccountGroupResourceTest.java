@@ -14,17 +14,15 @@
 
 package com.liferay.headless.commerce.admin.account.resource.v1_0.test;
 
+import com.liferay.account.constants.AccountConstants;
+import com.liferay.account.model.AccountEntry;
+import com.liferay.account.service.AccountEntryLocalService;
+import com.liferay.account.service.AccountGroupLocalService;
+import com.liferay.account.service.AccountGroupRelLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.commerce.account.model.CommerceAccount;
-import com.liferay.commerce.account.model.CommerceAccountGroup;
-import com.liferay.commerce.account.service.CommerceAccountGroupCommerceAccountRelLocalService;
-import com.liferay.commerce.account.service.CommerceAccountGroupLocalService;
-import com.liferay.commerce.account.service.CommerceAccountLocalService;
 import com.liferay.headless.commerce.admin.account.client.dto.v1_0.AccountGroup;
-import com.liferay.headless.commerce.admin.account.client.pagination.Page;
-import com.liferay.headless.commerce.admin.account.client.pagination.Pagination;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -33,7 +31,6 @@ import com.liferay.portal.test.rule.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -52,15 +49,22 @@ public class AccountGroupResourceTest extends BaseAccountGroupResourceTestCase {
 
 		_user = UserTestUtil.addUser(testCompany);
 
-		_serviceContext = ServiceContextTestUtil.getServiceContext(
-			testCompany.getCompanyId(), testGroup.getGroupId(),
-			_user.getUserId());
+		_accountEntry = _accountEntryLocalService.addAccountEntry(
+			_user.getUserId(), AccountConstants.PARENT_ACCOUNT_ENTRY_ID_DEFAULT,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(), null,
+			RandomTestUtil.randomString() + "@liferay.com", null,
+			RandomTestUtil.randomString(),
+			AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS, 1,
+			ServiceContextTestUtil.getServiceContext(
+				testCompany.getCompanyId(), testGroup.getGroupId(),
+				_user.getUserId()));
 	}
 
 	@Ignore
 	@Override
 	@Test
 	public void testDeleteAccountGroup() throws Exception {
+		super.testDeleteAccountGroup();
 	}
 
 	@Ignore
@@ -68,174 +72,75 @@ public class AccountGroupResourceTest extends BaseAccountGroupResourceTestCase {
 	@Test
 	public void testDeleteAccountGroupByExternalReferenceCode()
 		throws Exception {
-	}
 
-	@Override
-	@Test
-	public void testGetAccountByExternalReferenceCodeAccountGroupsPage()
-		throws Exception {
-
-		CommerceAccount commerceAccount =
-			_commerceAccountLocalService.addCommerceAccount(
-				RandomTestUtil.randomString(), 0,
-				RandomTestUtil.randomString() + "@liferay.com", null, 2, true,
-				RandomTestUtil.randomString(), _serviceContext);
-
-		CommerceAccountGroup commerceAccountGroup1 =
-			_commerceAccountGroupLocalService.addCommerceAccountGroup(
-				_user.getCompanyId(), RandomTestUtil.randomString(), 0, false,
-				RandomTestUtil.randomString(), _serviceContext);
-
-		_commerceAccountGroupCommerceAccountRelLocalService.
-			addCommerceAccountGroupCommerceAccountRel(
-				commerceAccountGroup1.getCommerceAccountGroupId(),
-				commerceAccount.getCommerceAccountId(), _serviceContext);
-
-		CommerceAccountGroup commerceAccountGroup2 =
-			_commerceAccountGroupLocalService.addCommerceAccountGroup(
-				_user.getCompanyId(), RandomTestUtil.randomString(), 0, false,
-				RandomTestUtil.randomString(), _serviceContext);
-
-		_commerceAccountGroupCommerceAccountRelLocalService.
-			addCommerceAccountGroupCommerceAccountRel(
-				commerceAccountGroup2.getCommerceAccountGroupId(),
-				commerceAccount.getCommerceAccountId(), _serviceContext);
-
-		Page<AccountGroup> page =
-			accountGroupResource.
-				getAccountByExternalReferenceCodeAccountGroupsPage(
-					commerceAccount.getExternalReferenceCode(),
-					Pagination.of(1, 20));
-
-		Assert.assertEquals(2, page.getTotalCount());
-
-		List<Long> commerceAccountGroupsIds = new ArrayList<>();
-
-		commerceAccountGroupsIds.add(
-			commerceAccountGroup1.getCommerceAccountGroupId());
-		commerceAccountGroupsIds.add(
-			commerceAccountGroup2.getCommerceAccountGroupId());
-
-		for (AccountGroup accountGroup : page.getItems()) {
-			Assert.assertTrue(
-				commerceAccountGroupsIds.contains(accountGroup.getId()));
-		}
-	}
-
-	@Ignore
-	@Override
-	@Test
-	public void testGetAccountByExternalReferenceCodeAccountGroupsPageWithPagination()
-		throws Exception {
-	}
-
-	@Override
-	@Test
-	public void testGetAccountIdAccountGroupsPage() throws Exception {
-		CommerceAccount commerceAccount =
-			_commerceAccountLocalService.addCommerceAccount(
-				RandomTestUtil.randomString(), 0,
-				RandomTestUtil.randomString() + "@liferay.com", null, 2, true,
-				RandomTestUtil.randomString(), _serviceContext);
-
-		CommerceAccountGroup commerceAccountGroup1 =
-			_commerceAccountGroupLocalService.addCommerceAccountGroup(
-				_user.getCompanyId(), RandomTestUtil.randomString(), 0, false,
-				RandomTestUtil.randomString(), _serviceContext);
-
-		_commerceAccountGroupCommerceAccountRelLocalService.
-			addCommerceAccountGroupCommerceAccountRel(
-				commerceAccountGroup1.getCommerceAccountGroupId(),
-				commerceAccount.getCommerceAccountId(), _serviceContext);
-
-		CommerceAccountGroup commerceAccountGroup2 =
-			_commerceAccountGroupLocalService.addCommerceAccountGroup(
-				_user.getCompanyId(), RandomTestUtil.randomString(), 0, false,
-				RandomTestUtil.randomString(), _serviceContext);
-
-		_commerceAccountGroupCommerceAccountRelLocalService.
-			addCommerceAccountGroupCommerceAccountRel(
-				commerceAccountGroup2.getCommerceAccountGroupId(),
-				commerceAccount.getCommerceAccountId(), _serviceContext);
-
-		Page<AccountGroup> page =
-			accountGroupResource.getAccountIdAccountGroupsPage(
-				commerceAccount.getCommerceAccountId(), Pagination.of(1, 20));
-
-		Assert.assertEquals(2, page.getTotalCount());
-
-		List<Long> commerceAccountGroupsIds = new ArrayList<>();
-
-		commerceAccountGroupsIds.add(
-			commerceAccountGroup1.getCommerceAccountGroupId());
-		commerceAccountGroupsIds.add(
-			commerceAccountGroup2.getCommerceAccountGroupId());
-
-		for (AccountGroup accountGroup : page.getItems()) {
-			Assert.assertTrue(
-				commerceAccountGroupsIds.contains(accountGroup.getId()));
-		}
-	}
-
-	@Ignore
-	@Override
-	@Test
-	public void testGetAccountIdAccountGroupsPageWithPagination()
-		throws Exception {
+		super.testDeleteAccountGroupByExternalReferenceCode();
 	}
 
 	@Ignore
 	@Override
 	@Test
 	public void testGraphQLDeleteAccountGroup() throws Exception {
-	}
-
-	@Ignore
-	@Override
-	@Test
-	public void testGraphQLGetAccountGroup() throws Exception {
-	}
-
-	@Ignore
-	@Override
-	@Test
-	public void testGraphQLGetAccountGroupByExternalReferenceCode()
-		throws Exception {
-	}
-
-	@Ignore
-	@Override
-	@Test
-	public void testGraphQLGetAccountGroupByExternalReferenceCodeNotFound()
-		throws Exception {
+		super.testGraphQLDeleteAccountGroup();
 	}
 
 	@Ignore
 	@Override
 	@Test
 	public void testGraphQLGetAccountGroupNotFound() throws Exception {
+		super.testGraphQLGetAccountGroupNotFound();
 	}
 
-	@Ignore
-	@Override
-	@Test
-	public void testGraphQLGetAccountGroupsPage() throws Exception {
-	}
-
-	@Ignore
 	@Override
 	@Test
 	public void testPatchAccountGroup() throws Exception {
-		Assert.assertTrue(false);
+		AccountGroup postAccountGroup = _postAccountGroup(randomAccountGroup());
+
+		AccountGroup randomPatchAccountGroup = randomPatchAccountGroup();
+
+		accountGroupResource.patchAccountGroup(
+			postAccountGroup.getId(), randomPatchAccountGroup);
+
+		AccountGroup expectedPatchAccountGroup = postAccountGroup.clone();
+
+		BeanTestUtil.copyProperties(
+			randomPatchAccountGroup, expectedPatchAccountGroup);
+
+		AccountGroup getAccountGroup = accountGroupResource.getAccountGroup(
+			postAccountGroup.getId());
+
+		assertEquals(expectedPatchAccountGroup, getAccountGroup);
+		assertValid(getAccountGroup);
 	}
 
-	@Ignore
 	@Override
 	@Test
 	public void testPatchAccountGroupByExternalReferenceCode()
 		throws Exception {
 
-		Assert.assertTrue(false);
+		AccountGroup postAccountGroup = _postAccountGroup(randomAccountGroup());
+
+		AccountGroup randomPatchAccountGroup = randomPatchAccountGroup();
+
+		accountGroupResource.patchAccountGroupByExternalReferenceCode(
+			postAccountGroup.getExternalReferenceCode(),
+			randomPatchAccountGroup);
+
+		AccountGroup expectedPatchAccountGroup = postAccountGroup.clone();
+
+		BeanTestUtil.copyProperties(
+			randomPatchAccountGroup, expectedPatchAccountGroup);
+
+		AccountGroup getAccountGroup =
+			accountGroupResource.getAccountGroupByExternalReferenceCode(
+				postAccountGroup.getExternalReferenceCode());
+
+		assertEquals(expectedPatchAccountGroup, getAccountGroup);
+		assertValid(getAccountGroup);
+	}
+
+	@Override
+	protected String[] getAdditionalAssertFieldNames() {
+		return new String[] {"name"};
 	}
 
 	@Override
@@ -254,13 +159,20 @@ public class AccountGroupResourceTest extends BaseAccountGroupResourceTestCase {
 	}
 
 	@Override
+	protected AccountGroup
+			testGetAccountByExternalReferenceCodeAccountGroupsPage_addAccountGroup(
+				String externalReferenceCode, AccountGroup accountGroup)
+		throws Exception {
+
+		return _postAccountGroup(accountGroup);
+	}
+
+	@Override
 	protected String
 			testGetAccountByExternalReferenceCodeAccountGroupsPage_getExternalReferenceCode()
 		throws Exception {
 
-		AccountGroup accountGroup = _postAccountGroup(randomAccountGroup());
-
-		return accountGroup.getExternalReferenceCode();
+		return _accountEntry.getExternalReferenceCode();
 	}
 
 	@Override
@@ -287,10 +199,15 @@ public class AccountGroupResourceTest extends BaseAccountGroupResourceTestCase {
 	}
 
 	@Override
-	protected Long testGetAccountIdAccountGroupsPage_getId() throws Exception {
-		AccountGroup accountGroup = _postAccountGroup(randomAccountGroup());
+	protected AccountGroup testGetAccountIdAccountGroupsPage_addAccountGroup(
+			Long id, AccountGroup accountGroup)
+		throws Exception {
 
-		return accountGroup.getId();
+		return _postAccountGroup(accountGroup);
+	}
+
+	protected Long testGetAccountIdAccountGroupsPage_getId() throws Exception {
+		return _accountEntry.getAccountEntryId();
 	}
 
 	@Override
@@ -311,20 +228,37 @@ public class AccountGroupResourceTest extends BaseAccountGroupResourceTestCase {
 	private AccountGroup _postAccountGroup(AccountGroup accountGroup)
 		throws Exception {
 
-		return accountGroupResource.postAccountGroup(accountGroup);
+		AccountGroup postAccountGroup = accountGroupResource.postAccountGroup(
+			accountGroup);
+
+		_accountGroups.add(
+			_accountGroupLocalService.getAccountGroup(
+				postAccountGroup.getId()));
+
+		_accountGroupRelLocalService.addAccountGroupRel(
+			postAccountGroup.getId(), AccountEntry.class.getName(),
+			_accountEntry.getAccountEntryId());
+
+		return postAccountGroup;
 	}
 
 	@Inject
-	private CommerceAccountGroupCommerceAccountRelLocalService
-		_commerceAccountGroupCommerceAccountRelLocalService;
+	private static AccountEntryLocalService _accountEntryLocalService;
 
 	@Inject
-	private CommerceAccountGroupLocalService _commerceAccountGroupLocalService;
+	private static AccountGroupLocalService _accountGroupLocalService;
 
 	@Inject
-	private CommerceAccountLocalService _commerceAccountLocalService;
+	private static AccountGroupRelLocalService _accountGroupRelLocalService;
 
-	private ServiceContext _serviceContext;
+	@DeleteAfterTestRun
+	private AccountEntry _accountEntry;
+
+	@DeleteAfterTestRun
+	private final List<com.liferay.account.model.AccountGroup> _accountGroups =
+		new ArrayList<>();
+
+	@DeleteAfterTestRun
 	private User _user;
 
 }
