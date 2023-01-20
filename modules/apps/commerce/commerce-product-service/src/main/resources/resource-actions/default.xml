@@ -35,6 +35,7 @@
 				<action-key>ADD_COMMERCE_CHANNEL</action-key>
 				<action-key>ADD_COMMERCE_NOTIFICATION_TEMPLATE</action-key>
 				<action-key>DELETE_COMMERCE_NOTIFICATION_QUEUE_ENTRY</action-key>
+				<action-key>MANAGE_COMMERCE_SHIPPING_METHOD</action-key>
 				<action-key>PERMISSIONS</action-key>
 				<action-key>RESEND_COMMERCE_NOTIFICATION_QUEUE_ENTRY</action-key>
 				<action-key>VIEW_COMMERCE_CHANNELS</action-key>
@@ -47,6 +48,7 @@
 				<action-key>ADD_COMMERCE_CHANNEL</action-key>
 				<action-key>ADD_COMMERCE_NOTIFICATION_TEMPLATE</action-key>
 				<action-key>DELETE_COMMERCE_NOTIFICATION_QUEUE_ENTRY</action-key>
+				<action-key>MANAGE_COMMERCE_SHIPPING_METHOD</action-key>
 				<action-key>PERMISSIONS</action-key>
 				<action-key>RESEND_COMMERCE_NOTIFICATION_QUEUE_ENTRY</action-key>
 				<action-key>VIEW_COMMERCE_CHANNELS</action-key>
