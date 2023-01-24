@@ -77,11 +77,7 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 			RandomTestUtil.randomString(), null,
 			RandomTestUtil.randomString() + "@liferay.com", null, null,
 			"business", 1, serviceContext);
-		_commerceChannel = _commerceChannelLocalService.addCommerceChannel(
-			RandomTestUtil.randomString(), testGroup.getGroupId(),
-			RandomTestUtil.randomString(),
-			CommerceChannelConstants.CHANNEL_TYPE_SITE, null,
-			RandomTestUtil.randomString(), serviceContext);
+
 		_commerceCurrency = _commerceCurrencyLocalService.addCommerceCurrency(
 			_user.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomLocaleStringMap(),
@@ -89,11 +85,18 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 			RandomTestUtil.randomLocaleStringMap(), 2, 2, "HALF_EVEN", false,
 			RandomTestUtil.nextDouble(), true);
 
+		_commerceChannel = _commerceChannelLocalService.addCommerceChannel(
+			RandomTestUtil.randomString(), testGroup.getGroupId(),
+			RandomTestUtil.randomString(),
+			CommerceChannelConstants.CHANNEL_TYPE_SITE, null,
+			_commerceCurrency.getCode(), serviceContext);
+
 		_commerceOrder = _commerceOrderLocalService.addCommerceOrder(
 			_user.getUserId(), _commerceChannel.getGroupId(),
 			_accountEntry.getAccountEntryId(),
 			_commerceCurrency.getCommerceCurrencyId(),
 			CommerceOrderConstants.TYPE_PK_FULFILLMENT);
+
 		_commerceOrderType =
 			_commerceOrderTypeLocalService.addCommerceOrderType(
 				RandomTestUtil.randomString(), _user.getUserId(),

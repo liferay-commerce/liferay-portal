@@ -74,6 +74,7 @@ public class BillingAddressResourceTest
 			RandomTestUtil.randomString(), null,
 			RandomTestUtil.randomString() + "@liferay.com", null, null,
 			"business", 1, _serviceContext);
+
 		_commerceCurrency =
 			CommerceCurrencyLocalServiceUtil.addCommerceCurrency(
 				_user.getUserId(), RandomTestUtil.randomString(),
@@ -81,6 +82,7 @@ public class BillingAddressResourceTest
 				RandomTestUtil.randomString(), BigDecimal.ONE,
 				RandomTestUtil.randomLocaleStringMap(), 2, 2, "HALF_EVEN",
 				false, RandomTestUtil.nextDouble(), true);
+
 		_country = CountryLocalServiceUtil.addCountry(
 			"XY", "XYZ", true, true, RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
