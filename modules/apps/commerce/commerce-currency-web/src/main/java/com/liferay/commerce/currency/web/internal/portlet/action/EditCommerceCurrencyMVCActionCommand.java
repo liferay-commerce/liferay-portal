@@ -17,6 +17,7 @@ package com.liferay.commerce.currency.web.internal.portlet.action;
 import com.liferay.commerce.currency.configuration.CommerceCurrencyConfiguration;
 import com.liferay.commerce.currency.constants.CommerceCurrencyExchangeRateConstants;
 import com.liferay.commerce.currency.constants.CommerceCurrencyPortletKeys;
+import com.liferay.commerce.currency.exception.CommerceCurrencyCannotDeleteException;
 import com.liferay.commerce.currency.exception.CommerceCurrencyCodeException;
 import com.liferay.commerce.currency.exception.CommerceCurrencyFractionDigitsException;
 import com.liferay.commerce.currency.exception.CommerceCurrencyNameException;
@@ -107,6 +108,11 @@ public class EditCommerceCurrencyMVCActionCommand extends BaseMVCActionCommand {
 				actionResponse.setRenderParameter(
 					"mvcRenderCommandName",
 					"/commerce_currency/edit_commerce_currency");
+			}
+			else if (exception instanceof
+						CommerceCurrencyCannotDeleteException) {
+
+				SessionErrors.add(actionRequest, exception.getClass());
 			}
 			else {
 				throw exception;

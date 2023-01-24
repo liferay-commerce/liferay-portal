@@ -28,6 +28,7 @@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 
 <%@ page import="com.liferay.account.model.AccountEntry" %><%@
 page import="com.liferay.commerce.currency.configuration.CommerceCurrencyConfiguration" %><%@
+page import="com.liferay.commerce.currency.exception.CommerceCurrencyCannotDeleteException" %><%@
 page import="com.liferay.commerce.currency.exception.CommerceCurrencyCodeException" %><%@
 page import="com.liferay.commerce.currency.exception.CommerceCurrencyFractionDigitsException" %><%@
 page import="com.liferay.commerce.currency.exception.CommerceCurrencyNameException" %><%@

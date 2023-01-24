@@ -348,6 +348,9 @@ public interface CommerceChannelLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getCommerceChannelsCount(String commerceCurrencyCode);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		PortletDataContext portletDataContext);
 

@@ -420,6 +420,12 @@ public class CommerceCatalogLocalServiceWrapper
 	}
 
 	@Override
+	public int getCommerceCatalogsCount(String commerceCurrencyCode) {
+		return _commerceCatalogLocalService.getCommerceCatalogsCount(
+			commerceCurrencyCode);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
 		getExportActionableDynamicQuery(
 			com.liferay.exportimport.kernel.lar.PortletDataContext

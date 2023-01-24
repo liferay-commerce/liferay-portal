@@ -63,6 +63,7 @@
 		</finder>
 	</entity>
 	<exceptions>
+		<exception>CommerceCurrencyCannotDelete</exception>
 		<exception>CommerceCurrencyCode</exception>
 		<exception>CommerceCurrencyFractionDigits</exception>
 		<exception>CommerceCurrencyName</exception>

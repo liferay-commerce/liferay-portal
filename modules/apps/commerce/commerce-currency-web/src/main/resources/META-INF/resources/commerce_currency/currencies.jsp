@@ -26,6 +26,8 @@ CommerceCurrenciesDisplayContext commerceCurrenciesDisplayContext = (CommerceCur
 		propsTransformer="js/CommerceCurrenciesManagementToolbarPropsTransformer"
 	/>
 
+	<liferay-ui:error exception="<%= CommerceCurrencyCannotDeleteException.class %>" message="please-enter-a-valid-name" />
+
 	<portlet:actionURL name="/commerce_currency/edit_commerce_currency" var="editCommerceCurrencyActionURL" />
 
 	<aui:form action="<%= editCommerceCurrencyActionURL %>" cssClass="container" method="post" name="fm">

@@ -326,6 +326,9 @@ public interface CommerceCatalogLocalService
 	public int getCommerceCatalogsCount();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getCommerceCatalogsCount(String commerceCurrencyCode);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		PortletDataContext portletDataContext);
 

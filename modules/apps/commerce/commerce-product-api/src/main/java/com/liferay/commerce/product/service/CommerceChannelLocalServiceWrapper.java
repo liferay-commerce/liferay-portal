@@ -465,6 +465,12 @@ public class CommerceChannelLocalServiceWrapper
 	}
 
 	@Override
+	public int getCommerceChannelsCount(String commerceCurrencyCode) {
+		return _commerceChannelLocalService.getCommerceChannelsCount(
+			commerceCurrencyCode);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
 		getExportActionableDynamicQuery(
 			com.liferay.exportimport.kernel.lar.PortletDataContext

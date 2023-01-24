@@ -115,12 +115,14 @@ public class CommerceCurrencyLocalServiceWrapper
 	 *
 	 * @param commerceCurrency the commerce currency
 	 * @return the commerce currency that was removed
+	 * @throws PortalException
 	 */
 	@Override
 	public com.liferay.commerce.currency.model.CommerceCurrency
-		deleteCommerceCurrency(
-			com.liferay.commerce.currency.model.CommerceCurrency
-				commerceCurrency) {
+			deleteCommerceCurrency(
+				com.liferay.commerce.currency.model.CommerceCurrency
+					commerceCurrency)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _commerceCurrencyLocalService.deleteCommerceCurrency(
 			commerceCurrency);

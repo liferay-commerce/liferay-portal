@@ -120,11 +120,13 @@ public interface CommerceCurrencyLocalService
 	 *
 	 * @param commerceCurrency the commerce currency
 	 * @return the commerce currency that was removed
+	 * @throws PortalException
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public CommerceCurrency deleteCommerceCurrency(
-		CommerceCurrency commerceCurrency);
+			CommerceCurrency commerceCurrency)
+		throws PortalException;
 
 	/**
 	 * Deletes the commerce currency with the primary key from the database. Also notifies the appropriate model listeners.

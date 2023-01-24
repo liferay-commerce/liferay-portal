@@ -366,6 +366,19 @@ public class CommerceChannelLocalServiceImpl
 	}
 
 	@Override
+	public int getCommerceChannelsCount(String commerceCurrencyCode) {
+		return dslQueryCount(
+			DSLQueryFactoryUtil.countDistinct(
+				CommerceChannelTable.INSTANCE.commerceChannelId
+			).from(
+				CommerceChannelTable.INSTANCE
+			).where(
+				CommerceChannelTable.INSTANCE.commerceCurrencyCode.eq(
+					commerceCurrencyCode)
+			));
+	}
+
+	@Override
 	public List<CommerceChannel> search(long companyId) throws PortalException {
 		return search(
 			companyId, StringPool.BLANK, QueryUtil.ALL_POS, QueryUtil.ALL_POS,

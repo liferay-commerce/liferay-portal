@@ -25,6 +25,8 @@ import com.liferay.commerce.currency.exception.NoSuchCurrencyException;
 import com.liferay.commerce.currency.internal.model.listener.PortalInstanceLifecycleListenerImpl;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.service.base.CommerceCurrencyLocalServiceBaseImpl;
+import com.liferay.commerce.currency.util.CommerceCurrencyContributor;
+import com.liferay.commerce.currency.util.CommerceCurrencyContributorRegistry;
 import com.liferay.commerce.currency.util.ExchangeRateProvider;
 import com.liferay.commerce.currency.util.ExchangeRateProviderRegistry;
 import com.liferay.commerce.currency.util.comparator.CommerceCurrencyPriorityComparator;
@@ -148,7 +150,18 @@ public class CommerceCurrencyLocalServiceImpl
 	@Override
 	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public CommerceCurrency deleteCommerceCurrency(
-		CommerceCurrency commerceCurrency) {
+			CommerceCurrency commerceCurrency)
+		throws PortalException {
+
+		List<CommerceCurrencyContributor> commerceCurrencyContributors =
+			_commerceCurrencyContributorRegistry.
+				getCommerceCurrencyContributors();
+
+		for (CommerceCurrencyContributor commerceCurrencyContributor :
+				commerceCurrencyContributors) {
+
+			commerceCurrencyContributor.check(commerceCurrency);
+		}
 
 		return commerceCurrencyPersistence.remove(commerceCurrency);
 	}
@@ -514,6 +527,10 @@ public class CommerceCurrencyLocalServiceImpl
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		CommerceCurrencyLocalServiceImpl.class);
+
+	@Reference
+	private CommerceCurrencyContributorRegistry
+		_commerceCurrencyContributorRegistry;
 
 	@Reference
 	private CompanyLocalService _companyLocalService;

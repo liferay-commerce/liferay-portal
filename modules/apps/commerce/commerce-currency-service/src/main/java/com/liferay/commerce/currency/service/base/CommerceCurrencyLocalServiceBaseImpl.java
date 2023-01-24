@@ -145,11 +145,13 @@ public abstract class CommerceCurrencyLocalServiceBaseImpl
 	 *
 	 * @param commerceCurrency the commerce currency
 	 * @return the commerce currency that was removed
+	 * @throws PortalException
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@Override
 	public CommerceCurrency deleteCommerceCurrency(
-		CommerceCurrency commerceCurrency) {
+			CommerceCurrency commerceCurrency)
+		throws PortalException {
 
 		return commerceCurrencyPersistence.remove(commerceCurrency);
 	}

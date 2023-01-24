@@ -414,6 +414,10 @@ public class CommerceChannelLocalServiceUtil {
 		return getService().getCommerceChannelsCount(companyId, keywords);
 	}
 
+	public static int getCommerceChannelsCount(String commerceCurrencyCode) {
+		return getService().getCommerceChannelsCount(commerceCurrencyCode);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
 		getExportActionableDynamicQuery(
 			com.liferay.exportimport.kernel.lar.PortletDataContext

@@ -56,20 +56,6 @@ public class CommercePriceListLocalServiceUtil {
 	}
 
 	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	public static CommercePriceList addCommerceCatalogBasePriceList(
-			long groupId, long userId, long commerceCurrencyId, String type,
-			String name,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws PortalException {
-
-		return getService().addCommerceCatalogBasePriceList(
-			groupId, userId, commerceCurrencyId, type, name, serviceContext);
-	}
-
-	/**
 	 * Adds the commerce price list to the database. Also notifies the appropriate model listeners.
 	 *
 	 * <p>
@@ -136,6 +122,10 @@ public class CommercePriceListLocalServiceUtil {
 
 	public static void cleanPriceListCache() {
 		getService().cleanPriceListCache();
+	}
+
+	public static int CommercePriceListsCount(long commerceCurrencyId) {
+		return getService().getCommercePriceListsCount(commerceCurrencyId);
 	}
 
 	/**
@@ -319,29 +309,6 @@ public class CommercePriceListLocalServiceUtil {
 			groupId, type);
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	public static CommercePriceList fetchCommerceCatalogBasePriceList(
-			long groupId)
-		throws PortalException {
-
-		return getService().fetchCommerceCatalogBasePriceList(groupId);
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	public static CommercePriceList fetchCommerceCatalogBasePriceListByType(
-			long groupId, String type)
-		throws PortalException {
-
-		return getService().fetchCommerceCatalogBasePriceListByType(
-			groupId, type);
-	}
-
 	public static CommercePriceList fetchCommercePriceList(
 		long commercePriceListId) {
 
@@ -399,29 +366,6 @@ public class CommercePriceListLocalServiceUtil {
 	}
 
 	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	public static CommercePriceList getCommerceCatalogBasePriceList(
-			long groupId)
-		throws PortalException {
-
-		return getService().getCommerceCatalogBasePriceList(groupId);
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	public static CommercePriceList getCommerceCatalogBasePriceListByType(
-			long groupId, String type)
-		throws PortalException {
-
-		return getService().getCommerceCatalogBasePriceListByType(
-			groupId, type);
-	}
-
-	/**
 	 * Returns the commerce price list with the primary key.
 	 *
 	 * @param commercePriceListId the primary key of the commerce price list
@@ -444,131 +388,6 @@ public class CommercePriceListLocalServiceUtil {
 			groupId, commerceAccountId, commerceAccountGroupIds);
 	}
 
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x)
-	 */
-	@Deprecated
-	public static CommercePriceList
-		getCommercePriceListByAccountAndChannelAndOrderTypeId(
-			long groupId, long commerceAccountId, long commerceChannelId,
-			long commerceOrderTypeId, String type) {
-
-		return getService().
-			getCommercePriceListByAccountAndChannelAndOrderTypeId(
-				groupId, commerceAccountId, commerceChannelId,
-				commerceOrderTypeId, type);
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x)
-	 */
-	@Deprecated
-	public static CommercePriceList getCommercePriceListByAccountAndChannelId(
-		long groupId, long commerceAccountId, long commerceChannelId,
-		String type) {
-
-		return getService().getCommercePriceListByAccountAndChannelId(
-			groupId, commerceAccountId, commerceChannelId, type);
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x)
-	 */
-	@Deprecated
-	public static CommercePriceList getCommercePriceListByAccountAndOrderTypeId(
-		long groupId, long commerceAccountId, long commerceOrderTypeId,
-		String type) {
-
-		return getService().getCommercePriceListByAccountAndOrderTypeId(
-			groupId, commerceAccountId, commerceOrderTypeId, type);
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x)
-	 */
-	@Deprecated
-	public static CommercePriceList getCommercePriceListByAccountGroupIds(
-		long groupId, long[] commerceAccountGroupIds, String type) {
-
-		return getService().getCommercePriceListByAccountGroupIds(
-			groupId, commerceAccountGroupIds, type);
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x)
-	 */
-	@Deprecated
-	public static CommercePriceList
-		getCommercePriceListByAccountGroupsAndChannelAndOrderTypeId(
-			long groupId, long[] commerceAccountGroupIds,
-			long commerceChannelId, long commerceOrderTypeId, String type) {
-
-		return getService().
-			getCommercePriceListByAccountGroupsAndChannelAndOrderTypeId(
-				groupId, commerceAccountGroupIds, commerceChannelId,
-				commerceOrderTypeId, type);
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x)
-	 */
-	@Deprecated
-	public static CommercePriceList
-		getCommercePriceListByAccountGroupsAndChannelId(
-			long groupId, long[] commerceAccountGroupIds,
-			long commerceChannelId, String type) {
-
-		return getService().getCommercePriceListByAccountGroupsAndChannelId(
-			groupId, commerceAccountGroupIds, commerceChannelId, type);
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x)
-	 */
-	@Deprecated
-	public static CommercePriceList
-		getCommercePriceListByAccountGroupsAndOrderTypeId(
-			long groupId, long[] commerceAccountGroupIds,
-			long commerceOrderTypeId, String type) {
-
-		return getService().getCommercePriceListByAccountGroupsAndOrderTypeId(
-			groupId, commerceAccountGroupIds, commerceOrderTypeId, type);
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x)
-	 */
-	@Deprecated
-	public static CommercePriceList getCommercePriceListByAccountId(
-		long groupId, long commerceAccountId, String type) {
-
-		return getService().getCommercePriceListByAccountId(
-			groupId, commerceAccountId, type);
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x)
-	 */
-	@Deprecated
-	public static CommercePriceList getCommercePriceListByChannelAndOrderTypeId(
-		long groupId, long commerceChannelId, long commerceOrderTypeId,
-		String type) {
-
-		return getService().getCommercePriceListByChannelAndOrderTypeId(
-			groupId, commerceChannelId, commerceOrderTypeId, type);
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x)
-	 */
-	@Deprecated
-	public static CommercePriceList getCommercePriceListByChannelId(
-		long groupId, long commerceChannelId, String type) {
-
-		return getService().getCommercePriceListByChannelId(
-			groupId, commerceChannelId, type);
-	}
-
 	public static CommercePriceList getCommercePriceListByExternalReferenceCode(
 			String externalReferenceCode, long companyId)
 		throws PortalException {
@@ -586,27 +405,6 @@ public class CommercePriceListLocalServiceUtil {
 		return getService().getCommercePriceListByLowestPrice(
 			groupId, commerceAccountId, commerceAccountGroupIds,
 			commerceChannelId, commerceOrderTypeId, cPInstanceUuid, type);
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x)
-	 */
-	@Deprecated
-	public static CommercePriceList getCommercePriceListByOrderTypeId(
-		long groupId, long commerceOrderTypeId, String type) {
-
-		return getService().getCommercePriceListByOrderTypeId(
-			groupId, commerceOrderTypeId, type);
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x)
-	 */
-	@Deprecated
-	public static CommercePriceList getCommercePriceListByUnqualified(
-		long groupId, String type) {
-
-		return getService().getCommercePriceListByUnqualified(groupId, type);
 	}
 
 	/**

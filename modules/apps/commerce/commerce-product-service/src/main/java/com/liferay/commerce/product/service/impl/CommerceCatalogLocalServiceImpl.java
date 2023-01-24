@@ -18,8 +18,10 @@ import com.liferay.commerce.product.constants.CommerceCatalogConstants;
 import com.liferay.commerce.product.exception.CommerceCatalogProductsException;
 import com.liferay.commerce.product.exception.CommerceCatalogSystemException;
 import com.liferay.commerce.product.model.CommerceCatalog;
+import com.liferay.commerce.product.model.CommerceCatalogTable;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.base.CommerceCatalogLocalServiceBaseImpl;
+import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -281,6 +283,19 @@ public class CommerceCatalogLocalServiceImpl
 		long companyId, boolean system) {
 
 		return commerceCatalogPersistence.findByC_S(companyId, system);
+	}
+
+	@Override
+	public int getCommerceCatalogsCount(String commerceCurrencyCode) {
+		return dslQueryCount(
+			DSLQueryFactoryUtil.countDistinct(
+				CommerceCatalogTable.INSTANCE.commerceCatalogId
+			).from(
+				CommerceCatalogTable.INSTANCE
+			).where(
+				CommerceCatalogTable.INSTANCE.commerceCurrencyCode.eq(
+					commerceCurrencyCode)
+			));
 	}
 
 	@Override

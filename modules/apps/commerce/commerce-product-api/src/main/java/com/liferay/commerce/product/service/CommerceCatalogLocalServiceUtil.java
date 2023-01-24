@@ -373,6 +373,10 @@ public class CommerceCatalogLocalServiceUtil {
 		return getService().getCommerceCatalogsCount();
 	}
 
+	public static int getCommerceCatalogsCount(String commerceCurrencyCode) {
+		return getService().getCommerceCatalogsCount(commerceCurrencyCode);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
 		getExportActionableDynamicQuery(
 			com.liferay.exportimport.kernel.lar.PortletDataContext

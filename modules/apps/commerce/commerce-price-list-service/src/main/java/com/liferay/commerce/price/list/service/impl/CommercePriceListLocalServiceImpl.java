@@ -149,20 +149,6 @@ public class CommercePriceListLocalServiceImpl
 			serviceContext);
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	@Override
-	public CommercePriceList addCommerceCatalogBasePriceList(
-			long groupId, long userId, long commerceCurrencyId, String type,
-			String name, ServiceContext serviceContext)
-		throws PortalException {
-
-		return commercePriceListLocalService.addCatalogBaseCommercePriceList(
-			groupId, userId, commerceCurrencyId, type, name, serviceContext);
-	}
-
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public CommercePriceList addCommercePriceList(
@@ -406,31 +392,6 @@ public class CommercePriceListLocalServiceImpl
 		return commercePriceListPersistence.fetchByG_C_T(groupId, true, type);
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	@Override
-	public CommercePriceList fetchCommerceCatalogBasePriceList(long groupId)
-		throws PortalException {
-
-		return commercePriceListLocalService.fetchCatalogBaseCommercePriceList(
-			groupId);
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	@Override
-	public CommercePriceList fetchCommerceCatalogBasePriceListByType(
-			long groupId, String type)
-		throws PortalException {
-
-		return commercePriceListLocalService.
-			fetchCatalogBaseCommercePriceListByType(groupId, type);
-	}
-
 	@Indexable(type = IndexableType.DELETE)
 	@Override
 	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
@@ -516,31 +477,6 @@ public class CommercePriceListLocalServiceImpl
 		return commercePriceList;
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	@Override
-	public CommercePriceList getCommerceCatalogBasePriceList(long groupId)
-		throws PortalException {
-
-		return commercePriceListLocalService.getCatalogBaseCommercePriceList(
-			groupId);
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	@Override
-	public CommercePriceList getCommerceCatalogBasePriceListByType(
-			long groupId, String type)
-		throws PortalException {
-
-		return commercePriceListLocalService.
-			getCatalogBaseCommercePriceListByType(groupId, type);
-	}
-
 	@Override
 	public CommercePriceList getCommercePriceList(
 			long groupId, long commerceAccountId,
@@ -604,216 +540,6 @@ public class CommercePriceListLocalServiceImpl
 		return commercePriceList;
 	}
 
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x)
-	 */
-	@Deprecated
-	@Override
-	public CommercePriceList
-		getCommercePriceListByAccountAndChannelAndOrderTypeId(
-			long groupId, long commerceAccountId, long commerceChannelId,
-			long commerceOrderTypeId, String type) {
-
-		List<CommercePriceList> commercePriceLists =
-			commercePriceListLocalService.
-				getCommercePriceListsByAccountAndChannelAndOrderTypeId(
-					groupId, commerceAccountId, commerceChannelId,
-					commerceOrderTypeId, type);
-
-		if (commercePriceLists.isEmpty()) {
-			return null;
-		}
-
-		return commercePriceLists.get(0);
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x)
-	 */
-	@Deprecated
-	@Override
-	public CommercePriceList getCommercePriceListByAccountAndChannelId(
-		long groupId, long commerceAccountId, long commerceChannelId,
-		String type) {
-
-		List<CommercePriceList> commercePriceLists =
-			commercePriceListLocalService.
-				getCommercePriceListsByAccountAndChannelId(
-					groupId, commerceAccountId, commerceChannelId, type);
-
-		if (commercePriceLists.isEmpty()) {
-			return null;
-		}
-
-		return commercePriceLists.get(0);
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x)
-	 */
-	@Deprecated
-	@Override
-	public CommercePriceList getCommercePriceListByAccountAndOrderTypeId(
-		long groupId, long commerceAccountId, long commerceOrderTypeId,
-		String type) {
-
-		List<CommercePriceList> commercePriceLists =
-			commercePriceListLocalService.
-				getCommercePriceListsByAccountAndOrderTypeId(
-					groupId, commerceAccountId, commerceOrderTypeId, type);
-
-		if (commercePriceLists.isEmpty()) {
-			return null;
-		}
-
-		return commercePriceLists.get(0);
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x)
-	 */
-	@Deprecated
-	@Override
-	public CommercePriceList getCommercePriceListByAccountGroupIds(
-		long groupId, long[] commerceAccountGroupIds, String type) {
-
-		List<CommercePriceList> commercePriceLists =
-			commercePriceListLocalService.
-				getCommercePriceListsByAccountGroupIds(
-					groupId, commerceAccountGroupIds, type);
-
-		if (commercePriceLists.isEmpty()) {
-			return null;
-		}
-
-		return commercePriceLists.get(0);
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x)
-	 */
-	@Deprecated
-	@Override
-	public CommercePriceList
-		getCommercePriceListByAccountGroupsAndChannelAndOrderTypeId(
-			long groupId, long[] commerceAccountGroupIds,
-			long commerceChannelId, long commerceOrderTypeId, String type) {
-
-		List<CommercePriceList> commercePriceLists =
-			commercePriceListLocalService.
-				getCommercePriceListsByAccountGroupsAndChannelAndOrderTypeId(
-					groupId, commerceAccountGroupIds, commerceChannelId,
-					commerceOrderTypeId, type);
-
-		if (commercePriceLists.isEmpty()) {
-			return null;
-		}
-
-		return commercePriceLists.get(0);
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x)
-	 */
-	@Deprecated
-	@Override
-	public CommercePriceList getCommercePriceListByAccountGroupsAndChannelId(
-		long groupId, long[] commerceAccountGroupIds, long commerceChannelId,
-		String type) {
-
-		List<CommercePriceList> commercePriceLists =
-			commercePriceListLocalService.
-				getCommercePriceListsByAccountGroupsAndChannelId(
-					groupId, commerceAccountGroupIds, commerceChannelId, type);
-
-		if (commercePriceLists.isEmpty()) {
-			return null;
-		}
-
-		return commercePriceLists.get(0);
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x)
-	 */
-	@Deprecated
-	@Override
-	public CommercePriceList getCommercePriceListByAccountGroupsAndOrderTypeId(
-		long groupId, long[] commerceAccountGroupIds, long commerceOrderTypeId,
-		String type) {
-
-		List<CommercePriceList> commercePriceLists =
-			commercePriceListLocalService.
-				getCommercePriceListsByAccountGroupsAndOrderTypeId(
-					groupId, commerceAccountGroupIds, commerceOrderTypeId,
-					type);
-
-		if (commercePriceLists.isEmpty()) {
-			return null;
-		}
-
-		return commercePriceLists.get(0);
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x)
-	 */
-	@Deprecated
-	@Override
-	public CommercePriceList getCommercePriceListByAccountId(
-		long groupId, long commerceAccountId, String type) {
-
-		List<CommercePriceList> commercePriceLists =
-			commercePriceListLocalService.getCommercePriceListsByAccountId(
-				groupId, commerceAccountId, type);
-
-		if (commercePriceLists.isEmpty()) {
-			return null;
-		}
-
-		return commercePriceLists.get(0);
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x)
-	 */
-	@Deprecated
-	@Override
-	public CommercePriceList getCommercePriceListByChannelAndOrderTypeId(
-		long groupId, long commerceChannelId, long commerceOrderTypeId,
-		String type) {
-
-		List<CommercePriceList> commercePriceLists =
-			commercePriceListLocalService.
-				getCommercePriceListsByChannelAndOrderTypeId(
-					groupId, commerceChannelId, commerceOrderTypeId, type);
-
-		if (commercePriceLists.isEmpty()) {
-			return null;
-		}
-
-		return commercePriceLists.get(0);
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x)
-	 */
-	@Deprecated
-	@Override
-	public CommercePriceList getCommercePriceListByChannelId(
-		long groupId, long commerceChannelId, String type) {
-
-		List<CommercePriceList> commercePriceLists =
-			commercePriceListLocalService.getCommercePriceListsByChannelId(
-				groupId, commerceChannelId, type);
-
-		if (commercePriceLists.isEmpty()) {
-			return null;
-		}
-
-		return commercePriceLists.get(0);
-	}
-
 	@Override
 	public CommercePriceList getCommercePriceListByLowestPrice(
 			long groupId, long commerceAccountId,
@@ -841,44 +567,6 @@ public class CommercePriceListLocalServiceImpl
 		CommercePriceEntry commercePriceEntry = commercePriceEntries.get(0);
 
 		return commercePriceEntry.getCommercePriceList();
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x)
-	 */
-	@Deprecated
-	@Override
-	public CommercePriceList getCommercePriceListByOrderTypeId(
-		long groupId, long commerceOrderTypeId, String type) {
-
-		List<CommercePriceList> commercePriceLists =
-			commercePriceListLocalService.getCommercePriceListsByOrderTypeId(
-				groupId, commerceOrderTypeId, type);
-
-		if (commercePriceLists.isEmpty()) {
-			return null;
-		}
-
-		return commercePriceLists.get(0);
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x)
-	 */
-	@Deprecated
-	@Override
-	public CommercePriceList getCommercePriceListByUnqualified(
-		long groupId, String type) {
-
-		List<CommercePriceList> commercePriceLists =
-			commercePriceListLocalService.getCommercePriceListsByUnqualified(
-				groupId, type);
-
-		if (commercePriceLists.isEmpty()) {
-			return null;
-		}
-
-		return commercePriceLists.get(0);
 	}
 
 	@Override
@@ -1095,6 +783,19 @@ public class CommercePriceListLocalServiceImpl
 			).orderBy(
 				CommercePriceListTable.INSTANCE.priority.descending(),
 				CommercePriceListTable.INSTANCE.catalogBasePriceList.ascending()
+			));
+	}
+
+	@Override
+	public int getCommercePriceListsCount(long commerceCurrencyId) {
+		return dslQueryCount(
+			DSLQueryFactoryUtil.countDistinct(
+				CommercePriceListTable.INSTANCE.commercePriceListId
+			).from(
+				CommercePriceListTable.INSTANCE
+			).where(
+				CommercePriceListTable.INSTANCE.commerceCurrencyId.eq(
+					commerceCurrencyId)
 			));
 	}
 

@@ -111,9 +111,11 @@ public class CommerceCurrencyLocalServiceUtil {
 	 *
 	 * @param commerceCurrency the commerce currency
 	 * @return the commerce currency that was removed
+	 * @throws PortalException
 	 */
 	public static CommerceCurrency deleteCommerceCurrency(
-		CommerceCurrency commerceCurrency) {
+			CommerceCurrency commerceCurrency)
+		throws PortalException {
 
 		return getService().deleteCommerceCurrency(commerceCurrency);
 	}
