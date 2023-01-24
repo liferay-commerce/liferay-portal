@@ -71,6 +71,7 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 			RandomTestUtil.randomString(), null,
 			RandomTestUtil.randomString() + "@liferay.com", null, null,
 			"business", 1, serviceContext);
+
 		_commerceCurrency = _commerceCurrencyLocalService.addCommerceCurrency(
 			_user.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomLocaleStringMap(),
