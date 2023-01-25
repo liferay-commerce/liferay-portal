@@ -70,14 +70,14 @@ public class EditCommerceShippingMethodMVCActionCommand
 			}
 		}
 		catch (Exception exception) {
-			if (exception instanceof NoSuchShippingMethodException ||
-				exception instanceof PrincipalException) {
-
+			if (exception instanceof NoSuchShippingMethodException) {
 				SessionErrors.add(actionRequest, exception.getClass());
 
 				actionResponse.setRenderParameter("mvcPath", "/error.jsp");
 			}
-			else if (exception instanceof CommerceShippingMethodNameException) {
+			else if (exception instanceof CommerceShippingMethodNameException ||
+					 exception instanceof PrincipalException) {
+
 				hideDefaultErrorMessage(actionRequest);
 				hideDefaultSuccessMessage(actionRequest);
 
