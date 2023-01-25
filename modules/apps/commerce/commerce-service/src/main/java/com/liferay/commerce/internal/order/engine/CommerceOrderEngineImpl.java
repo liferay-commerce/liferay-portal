@@ -33,6 +33,7 @@ import com.liferay.commerce.exception.CommerceOrderShippingAddressException;
 import com.liferay.commerce.exception.CommerceOrderShippingMethodException;
 import com.liferay.commerce.exception.CommerceOrderStatusException;
 import com.liferay.commerce.exception.CommerceOrderValidatorException;
+import com.liferay.commerce.exception.NoSuchShippingMethodException;
 import com.liferay.commerce.internal.order.status.CompletedCommerceOrderStatusImpl;
 import com.liferay.commerce.internal.order.status.ShippedCommerceOrderStatusImpl;
 import com.liferay.commerce.inventory.model.CommerceInventoryBookedQuantity;
@@ -54,7 +55,7 @@ import com.liferay.commerce.service.CommerceAddressLocalService;
 import com.liferay.commerce.service.CommerceOrderItemLocalService;
 import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.service.CommerceShipmentLocalService;
-import com.liferay.commerce.service.CommerceShippingMethodLocalService;
+import com.liferay.commerce.service.CommerceShippingMethodService;
 import com.liferay.commerce.subscription.CommerceSubscriptionEntryHelperUtil;
 import com.liferay.commerce.util.CommerceShippingHelper;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -662,7 +663,7 @@ public class CommerceOrderEngineImpl implements CommerceOrderEngine {
 
 		if (commerceShippingMethodId > 0) {
 			commerceShippingMethod =
-				_commerceShippingMethodLocalService.getCommerceShippingMethod(
+				_commerceShippingMethodService.getCommerceShippingMethod(
 					commerceShippingMethodId);
 
 			if (!commerceShippingMethod.isActive()) {
@@ -674,8 +675,15 @@ public class CommerceOrderEngineImpl implements CommerceOrderEngine {
 		}
 
 		int count =
-			_commerceShippingMethodLocalService.getCommerceShippingMethodsCount(
+			_commerceShippingMethodService.getCommerceShippingMethodsCount(
 				commerceOrder.getGroupId(), true);
+
+		if ((count == 0) &&
+			_commerceShippingHelper.isShippable(commerceOrder) &&
+			!_commerceShippingHelper.isFreeShipping(commerceOrder)) {
+
+			throw new NoSuchShippingMethodException();
+		}
 
 		if ((commerceShippingMethod == null) && (count > 0) &&
 			_commerceShippingHelper.isShippable(commerceOrder) &&
@@ -740,8 +748,7 @@ public class CommerceOrderEngineImpl implements CommerceOrderEngine {
 	private CommerceShippingHelper _commerceShippingHelper;
 
 	@Reference
-	private CommerceShippingMethodLocalService
-		_commerceShippingMethodLocalService;
+	private CommerceShippingMethodService _commerceShippingMethodService;
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;
