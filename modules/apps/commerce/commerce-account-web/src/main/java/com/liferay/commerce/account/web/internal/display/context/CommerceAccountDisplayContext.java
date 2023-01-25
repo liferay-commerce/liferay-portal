@@ -215,8 +215,10 @@ public class CommerceAccountDisplayContext {
 			commerceShippingFixedOptions.addAll(
 				_commerceShippingFixedOptionService.
 					getCommerceShippingFixedOptions(
+						commerceShippingMethod.getCompanyId(),
+						commerceShippingMethod.getGroupId(),
 						commerceShippingMethod.getCommerceShippingMethodId(),
-						QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+						null, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 						new CommerceShippingFixedOptionNameComparator(
 							true, locale)));
 		}
