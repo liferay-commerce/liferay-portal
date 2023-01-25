@@ -15,8 +15,6 @@
 package com.liferay.commerce.shipping.engine.fixed.service.impl;
 
 import com.liferay.commerce.model.CommerceShippingMethod;
-import com.liferay.commerce.product.model.CommerceChannel;
-import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.service.CommerceShippingMethodService;
 import com.liferay.commerce.shipping.engine.fixed.model.CommerceShippingFixedOptionRel;
 import com.liferay.commerce.shipping.engine.fixed.service.base.CommerceShippingFixedOptionRelServiceBaseImpl;
@@ -57,7 +55,7 @@ public class CommerceShippingFixedOptionRelServiceImpl
 			double ratePercentage)
 		throws PortalException {
 
-		_checkCommerceChannel(groupId);
+		_checkCommerceShippingMethod(commerceShippingMethodId);
 
 		return commerceShippingFixedOptionRelLocalService.
 			addCommerceShippingFixedOptionRel(
@@ -98,7 +96,8 @@ public class CommerceShippingFixedOptionRelServiceImpl
 				getCommerceShippingFixedOptionRel(
 					commerceShippingFixedOptionRelId);
 
-		_checkCommerceChannel(commerceShippingFixedOptionRel.getGroupId());
+		_checkCommerceShippingMethod(
+			commerceShippingFixedOptionRel.getCommerceShippingMethodId());
 
 		commerceShippingFixedOptionRelLocalService.
 			deleteCommerceShippingFixedOptionRel(
@@ -116,7 +115,11 @@ public class CommerceShippingFixedOptionRelServiceImpl
 					commerceShippingFixedOptionRelId);
 
 		if (commerceShippingFixedOptionRel != null) {
-			_checkCommerceChannel(commerceShippingFixedOptionRel.getGroupId());
+			CommerceShippingMethod commerceShippingMethod =
+				commerceShippingFixedOptionRel.getCommerceShippingMethod();
+
+			_checkCommerceShippingMethod(
+				commerceShippingMethod.getCommerceShippingMethodId());
 		}
 
 		return commerceShippingFixedOptionRel;
@@ -168,7 +171,8 @@ public class CommerceShippingFixedOptionRelServiceImpl
 				getCommerceShippingFixedOptionRel(
 					commerceShippingFixedOptionRelId);
 
-		_checkCommerceChannel(commerceShippingFixedOptionRel.getGroupId());
+		_checkCommerceShippingMethod(
+			commerceShippingFixedOptionRel.getCommerceShippingMethodId());
 
 		return commerceShippingFixedOptionRelLocalService.
 			updateCommerceShippingFixedOptionRel(
@@ -177,22 +181,19 @@ public class CommerceShippingFixedOptionRelServiceImpl
 				rateUnitWeightPrice, ratePercentage);
 	}
 
-	private void _checkCommerceChannel(long groupId) throws PortalException {
-		CommerceChannel commerceChannel =
-			_commerceChannelLocalService.getCommerceChannelByGroupId(groupId);
+	private void _checkCommerceShippingMethod(long commerceShippingMethodId)
+		throws PortalException {
 
-		_commerceChannelModelResourcePermission.check(
-			getPermissionChecker(), commerceChannel, ActionKeys.UPDATE);
+		_commerceShippingMethodModelResourcePermission.check(
+			getPermissionChecker(), commerceShippingMethodId,
+			ActionKeys.UPDATE);
 	}
 
-	@Reference
-	private CommerceChannelLocalService _commerceChannelLocalService;
-
 	@Reference(
-		target = "(model.class.name=com.liferay.commerce.product.model.CommerceChannel)"
+		target = "(model.class.name=com.liferay.commerce.model.CommerceShippingMethod)"
 	)
-	private ModelResourcePermission<CommerceChannel>
-		_commerceChannelModelResourcePermission;
+	private ModelResourcePermission<CommerceShippingMethod>
+		_commerceShippingMethodModelResourcePermission;
 
 	@Reference
 	private CommerceShippingMethodService _commerceShippingMethodService;

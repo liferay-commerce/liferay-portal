@@ -92,6 +92,7 @@ public class CommerceShippingFixedOptionIndexer
 			searchQuery, searchContext, "commerceShippingMethodId", false);
 		addSearchTerm(searchQuery, searchContext, "description", false);
 		addSearchTerm(searchQuery, searchContext, "key", true);
+		addSearchTerm(searchQuery, searchContext, "priority", false);
 	}
 
 	@Override
@@ -125,6 +126,8 @@ public class CommerceShippingFixedOptionIndexer
 			"commerceShippingMethodId",
 			commerceShippingFixedOption.getCommerceShippingMethodId());
 		document.addKeyword("key", commerceShippingFixedOption.getKey());
+		document.addKeyword(
+			"priority", commerceShippingFixedOption.getPriority());
 
 		if (_log.isDebugEnabled()) {
 			_log.debug(
