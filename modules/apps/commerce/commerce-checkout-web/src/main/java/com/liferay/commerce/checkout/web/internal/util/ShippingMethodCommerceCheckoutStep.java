@@ -21,15 +21,15 @@ import com.liferay.commerce.constants.CommerceWebKeys;
 import com.liferay.commerce.context.CommerceContext;
 import com.liferay.commerce.currency.util.CommercePriceFormatter;
 import com.liferay.commerce.exception.CommerceOrderShippingMethodException;
+import com.liferay.commerce.exception.NoSuchShippingMethodException;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceShippingEngine;
 import com.liferay.commerce.model.CommerceShippingMethod;
 import com.liferay.commerce.model.CommerceShippingOption;
 import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.service.CommerceOrderService;
-import com.liferay.commerce.service.CommerceShippingMethodLocalService;
+import com.liferay.commerce.service.CommerceShippingMethodService;
 import com.liferay.commerce.shipping.engine.fixed.service.CommerceShippingFixedOptionLocalService;
-import com.liferay.commerce.shipping.engine.fixed.service.CommerceShippingFixedOptionQualifierLocalService;
 import com.liferay.commerce.util.BaseCommerceCheckoutStep;
 import com.liferay.commerce.util.CommerceCheckoutStep;
 import com.liferay.commerce.util.CommerceShippingEngineRegistry;
@@ -39,6 +39,7 @@ import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
@@ -98,16 +99,27 @@ public class ShippingMethodCommerceCheckoutStep
 			HttpServletResponse httpServletResponse)
 		throws Exception {
 
-		CommerceOrder commerceOrder =
-			(CommerceOrder)httpServletRequest.getAttribute(
-				CommerceCheckoutWebKeys.COMMERCE_ORDER);
+		try {
+			CommerceOrder commerceOrder =
+				(CommerceOrder)httpServletRequest.getAttribute(
+					CommerceCheckoutWebKeys.COMMERCE_ORDER);
 
-		if (_commerceCheckoutStepHttpHelper.
-				isActiveShippingMethodCommerceCheckoutStep(
-					httpServletRequest) &&
-			_commerceShippingHelper.isShippable(commerceOrder)) {
+			if (_commerceCheckoutStepHttpHelper.
+					isActiveShippingMethodCommerceCheckoutStep(
+						httpServletRequest) &&
+				_commerceShippingHelper.isShippable(commerceOrder)) {
 
-			return true;
+				return true;
+			}
+		}
+		catch (Exception exception) {
+			if (exception instanceof PrincipalException.MustHavePermission) {
+				SessionErrors.add(
+					httpServletRequest,
+					NoSuchShippingMethodException.class.getClass());
+			}
+
+			throw exception;
 		}
 
 		return false;
@@ -142,7 +154,7 @@ public class ShippingMethodCommerceCheckoutStep
 			shippingMethodCheckoutStepDisplayContext =
 				new ShippingMethodCheckoutStepDisplayContext(
 					_commercePriceFormatter, _commerceShippingEngineRegistry,
-					_commerceShippingMethodLocalService,
+					_commerceShippingMethodService,
 					_commerceShippingFixedOptionLocalService,
 					_configurationProvider, httpServletRequest);
 
@@ -192,7 +204,7 @@ public class ShippingMethodCommerceCheckoutStep
 		throws PortalException {
 
 		CommerceShippingMethod commerceShippingMethod =
-			_commerceShippingMethodLocalService.getCommerceShippingMethod(
+			_commerceShippingMethodService.getCommerceShippingMethod(
 				commerceShippingMethodId);
 
 		if (!commerceShippingMethod.isActive()) {
@@ -323,15 +335,10 @@ public class ShippingMethodCommerceCheckoutStep
 		_commerceShippingFixedOptionLocalService;
 
 	@Reference
-	private CommerceShippingFixedOptionQualifierLocalService
-		_commerceShippingFixedOptionQualifierLocalService;
-
-	@Reference
 	private CommerceShippingHelper _commerceShippingHelper;
 
 	@Reference
-	private CommerceShippingMethodLocalService
-		_commerceShippingMethodLocalService;
+	private CommerceShippingMethodService _commerceShippingMethodService;
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;

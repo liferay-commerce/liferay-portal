@@ -45,7 +45,7 @@ import com.liferay.commerce.product.service.CommerceChannelAccountEntryRelServic
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.service.CommerceAddressService;
 import com.liferay.commerce.service.CommerceOrderLocalService;
-import com.liferay.commerce.service.CommerceShippingMethodLocalService;
+import com.liferay.commerce.service.CommerceShippingMethodService;
 import com.liferay.commerce.service.CommerceShippingOptionAccountEntryRelService;
 import com.liferay.commerce.shipping.engine.fixed.model.CommerceShippingFixedOption;
 import com.liferay.commerce.shipping.engine.fixed.service.CommerceShippingFixedOptionLocalService;
@@ -243,7 +243,7 @@ public class DefaultCommerceCheckoutStepHttpHelper
 		}
 
 		CommerceShippingMethod commerceShippingMethod =
-			_commerceShippingMethodLocalService.getCommerceShippingMethod(
+			_commerceShippingMethodService.getCommerceShippingMethod(
 				commerceOrder.getCommerceShippingMethodId());
 
 		CommerceShippingEngine commerceShippingEngine =
@@ -614,7 +614,7 @@ public class DefaultCommerceCheckoutStepHttpHelper
 				CommerceWebKeys.COMMERCE_CONTEXT);
 
 		List<CommerceShippingMethod> commerceShippingMethods =
-			_commerceShippingMethodLocalService.getCommerceShippingMethods(
+			_commerceShippingMethodService.getCommerceShippingMethods(
 				commerceOrder.getGroupId(), true, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS,
 				new CommerceShippingMethodPriorityComparator());
@@ -635,7 +635,7 @@ public class DefaultCommerceCheckoutStepHttpHelper
 
 		if (commerceOrder.getCommerceShippingMethodId() > 0) {
 			CommerceShippingMethod commerceShippingMethod =
-				_commerceShippingMethodLocalService.getCommerceShippingMethod(
+				_commerceShippingMethodService.getCommerceShippingMethod(
 					commerceOrder.getCommerceShippingMethodId());
 
 			if (commerceShippingMethod.isActive()) {
@@ -749,7 +749,7 @@ public class DefaultCommerceCheckoutStepHttpHelper
 					long commerceShippingMethodId = 0;
 
 					CommerceShippingMethod commerceShippingMethod =
-						_commerceShippingMethodLocalService.
+						_commerceShippingMethodService.
 							fetchCommerceShippingMethod(
 								commerceContext.getCommerceChannelGroupId(),
 								commerceShippingMethodKey);
@@ -951,8 +951,7 @@ public class DefaultCommerceCheckoutStepHttpHelper
 	private CommerceShippingHelper _commerceShippingHelper;
 
 	@Reference
-	private CommerceShippingMethodLocalService
-		_commerceShippingMethodLocalService;
+	private CommerceShippingMethodService _commerceShippingMethodService;
 
 	@Reference
 	private CommerceShippingOptionAccountEntryRelService

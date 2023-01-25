@@ -23,7 +23,7 @@ import com.liferay.commerce.model.CommerceShippingMethod;
 import com.liferay.commerce.model.CommerceShippingOption;
 import com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel;
 import com.liferay.commerce.payment.service.CommercePaymentMethodGroupRelLocalService;
-import com.liferay.commerce.service.CommerceShippingMethodLocalService;
+import com.liferay.commerce.service.CommerceShippingMethodService;
 import com.liferay.commerce.shipping.engine.fixed.model.CommerceShippingFixedOption;
 import com.liferay.commerce.shipping.engine.fixed.service.CommerceShippingFixedOptionLocalService;
 import com.liferay.commerce.term.model.CommerceTermEntry;
@@ -49,7 +49,7 @@ public class TermCommerceCheckoutStepDisplayContext {
 		CommerceShippingEngineRegistry commerceShippingEngineRegistry,
 		CommerceShippingFixedOptionLocalService
 			commerceShippingFixedOptionLocalService,
-		CommerceShippingMethodLocalService commerceShippingMethodLocalService,
+		CommerceShippingMethodService commerceShippingMethodService,
 		CommerceTermEntryLocalService commerceTermEntryLocalService,
 		HttpServletRequest httpServletRequest) {
 
@@ -58,8 +58,7 @@ public class TermCommerceCheckoutStepDisplayContext {
 		_commerceShippingEngineRegistry = commerceShippingEngineRegistry;
 		_commerceShippingFixedOptionLocalService =
 			commerceShippingFixedOptionLocalService;
-		_commerceShippingMethodLocalService =
-			commerceShippingMethodLocalService;
+		_commerceShippingMethodService = commerceShippingMethodService;
 		_commerceTermEntryLocalService = commerceTermEntryLocalService;
 		_httpServletRequest = httpServletRequest;
 
@@ -80,7 +79,7 @@ public class TermCommerceCheckoutStepDisplayContext {
 		throws PortalException {
 
 		CommerceShippingMethod commerceShippingMethod =
-			_commerceShippingMethodLocalService.getCommerceShippingMethod(
+			_commerceShippingMethodService.getCommerceShippingMethod(
 				_commerceOrder.getCommerceShippingMethodId());
 
 		ThemeDisplay themeDisplay =
@@ -147,8 +146,7 @@ public class TermCommerceCheckoutStepDisplayContext {
 		_commerceShippingEngineRegistry;
 	private final CommerceShippingFixedOptionLocalService
 		_commerceShippingFixedOptionLocalService;
-	private final CommerceShippingMethodLocalService
-		_commerceShippingMethodLocalService;
+	private final CommerceShippingMethodService _commerceShippingMethodService;
 	private final CommerceTermEntryLocalService _commerceTermEntryLocalService;
 	private final HttpServletRequest _httpServletRequest;
 

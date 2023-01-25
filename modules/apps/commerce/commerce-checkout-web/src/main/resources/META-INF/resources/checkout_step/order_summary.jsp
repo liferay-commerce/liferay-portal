@@ -57,6 +57,7 @@ Map<Long, List<CommerceOrderValidatorResult>> commerceOrderValidatorResultsMap =
 	<liferay-ui:error exception="<%= CommerceOrderShippingAddressException.class %>" message="please-select-a-valid-shipping-address" />
 	<liferay-ui:error exception="<%= CommerceOrderShippingMethodException.class %>" message="please-select-a-valid-shipping-method" />
 	<liferay-ui:error exception="<%= NoSuchDiscountException.class %>" message="the-inserted-coupon-is-no-longer-valid" />
+	<liferay-ui:error exception="<%= NoSuchShippingMethodException.class %>" message="no-shipping-option-eligible" />
 
 	<clay:row>
 		<clay:col
