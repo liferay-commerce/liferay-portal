@@ -27,6 +27,7 @@ import com.liferay.commerce.exception.CommerceOrderGuestCheckoutException;
 import com.liferay.commerce.exception.CommerceOrderPaymentMethodException;
 import com.liferay.commerce.exception.CommerceOrderShippingAddressException;
 import com.liferay.commerce.exception.CommerceOrderShippingMethodException;
+import com.liferay.commerce.exception.NoSuchShippingMethodException;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.order.CommerceOrderHttpHelper;
 import com.liferay.commerce.order.CommerceOrderValidatorRegistry;
@@ -128,7 +129,8 @@ public class OrderSummaryCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 				throwable instanceof CommerceOrderPaymentMethodException ||
 				throwable instanceof CommerceOrderShippingAddressException ||
 				throwable instanceof CommerceOrderShippingMethodException ||
-				throwable instanceof NoSuchDiscountException) {
+				throwable instanceof NoSuchDiscountException ||
+				throwable instanceof NoSuchShippingMethodException) {
 
 				SessionErrors.add(actionRequest, throwable.getClass());
 

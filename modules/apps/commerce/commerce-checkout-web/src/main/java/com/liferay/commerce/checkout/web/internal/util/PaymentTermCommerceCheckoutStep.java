@@ -23,7 +23,7 @@ import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.payment.service.CommercePaymentMethodGroupRelLocalService;
 import com.liferay.commerce.service.CommerceOrderLocalService;
-import com.liferay.commerce.service.CommerceShippingMethodLocalService;
+import com.liferay.commerce.service.CommerceShippingMethodService;
 import com.liferay.commerce.shipping.engine.fixed.service.CommerceShippingFixedOptionLocalService;
 import com.liferay.commerce.term.service.CommerceTermEntryLocalService;
 import com.liferay.commerce.util.BaseCommerceCheckoutStep;
@@ -143,7 +143,7 @@ public class PaymentTermCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 					_commercePaymentMethodGroupRelLocalService,
 					_commerceShippingEngineRegistry,
 					_commerceShippingFixedOptionLocalService,
-					_commerceShippingMethodLocalService,
+					_commerceShippingMethodService,
 					_commerceTermEntryLocalService, httpServletRequest);
 
 		httpServletRequest.setAttribute(
@@ -173,8 +173,7 @@ public class PaymentTermCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 		_commerceShippingFixedOptionLocalService;
 
 	@Reference
-	private CommerceShippingMethodLocalService
-		_commerceShippingMethodLocalService;
+	private CommerceShippingMethodService _commerceShippingMethodService;
 
 	@Reference
 	private CommerceTermEntryLocalService _commerceTermEntryLocalService;

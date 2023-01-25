@@ -27,7 +27,7 @@ import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceShippingEngine;
 import com.liferay.commerce.model.CommerceShippingMethod;
 import com.liferay.commerce.model.CommerceShippingOption;
-import com.liferay.commerce.service.CommerceShippingMethodLocalService;
+import com.liferay.commerce.service.CommerceShippingMethodService;
 import com.liferay.commerce.shipping.engine.fixed.model.CommerceShippingFixedOption;
 import com.liferay.commerce.shipping.engine.fixed.service.CommerceShippingFixedOptionLocalService;
 import com.liferay.commerce.util.CommerceBigDecimalUtil;
@@ -57,7 +57,7 @@ public class ShippingMethodCheckoutStepDisplayContext {
 	public ShippingMethodCheckoutStepDisplayContext(
 		CommercePriceFormatter commercePriceFormatter,
 		CommerceShippingEngineRegistry commerceShippingEngineRegistry,
-		CommerceShippingMethodLocalService commerceShippingMethodLocalService,
+		CommerceShippingMethodService commerceShippingMethodService,
 		CommerceShippingFixedOptionLocalService
 			commerceShippingFixedOptionLocalService,
 		ConfigurationProvider configurationProvider,
@@ -65,8 +65,7 @@ public class ShippingMethodCheckoutStepDisplayContext {
 
 		_commercePriceFormatter = commercePriceFormatter;
 		_commerceShippingEngineRegistry = commerceShippingEngineRegistry;
-		_commerceShippingMethodLocalService =
-			commerceShippingMethodLocalService;
+		_commerceShippingMethodService = commerceShippingMethodService;
 		_commerceShippingFixedOptionLocalService =
 			commerceShippingFixedOptionLocalService;
 		_configurationProvider = configurationProvider;
@@ -85,7 +84,7 @@ public class ShippingMethodCheckoutStepDisplayContext {
 
 		CommerceAddress shippingAddress = _commerceOrder.getShippingAddress();
 
-		return _commerceShippingMethodLocalService.getCommerceShippingMethods(
+		return _commerceShippingMethodService.getCommerceShippingMethods(
 			_commerceOrder.getGroupId(), shippingAddress.getCountryId(), true);
 	}
 
@@ -175,15 +174,24 @@ public class ShippingMethodCheckoutStepDisplayContext {
 		List<CommerceShippingOption> commerceShippingOptions =
 			getCommerceShippingOptions(commerceShippingMethod);
 
+		List<CommerceShippingFixedOption> filteredCommerceShippingFixedOptions =
+			getFilteredCommerceShippingFixedOptions();
+
 		for (CommerceShippingFixedOption commerceShippingFixedOption :
-				getFilteredCommerceShippingFixedOptions()) {
+				filteredCommerceShippingFixedOptions) {
 
 			for (CommerceShippingOption commerceShippingOption :
 					commerceShippingOptions) {
 
-				String key = commerceShippingFixedOption.getKey();
+				String commerceShippingFixedOptionKey =
+					commerceShippingFixedOption.getKey();
 
-				if (key.equals(commerceShippingOption.getKey())) {
+				String commerceShippingOptionKey =
+					commerceShippingOption.getKey();
+
+				if (commerceShippingFixedOptionKey.equals(
+						commerceShippingOptionKey)) {
+
 					filteredCommerceShippingOptions.add(commerceShippingOption);
 				}
 			}
@@ -216,8 +224,7 @@ public class ShippingMethodCheckoutStepDisplayContext {
 		_commerceShippingEngineRegistry;
 	private final CommerceShippingFixedOptionLocalService
 		_commerceShippingFixedOptionLocalService;
-	private final CommerceShippingMethodLocalService
-		_commerceShippingMethodLocalService;
+	private final CommerceShippingMethodService _commerceShippingMethodService;
 	private final ConfigurationProvider _configurationProvider;
 	private final HttpServletRequest _httpServletRequest;
 
