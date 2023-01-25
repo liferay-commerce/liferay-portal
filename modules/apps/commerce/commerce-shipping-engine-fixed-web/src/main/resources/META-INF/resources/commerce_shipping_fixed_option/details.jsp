@@ -39,6 +39,7 @@ if (commerceShippingFixedOption != null) {
 	<aui:input name="commerceShippingMethodId" type="hidden" value="<%= commerceShippingMethodId %>" />
 
 	<liferay-ui:error exception="<%= CommerceShippingFixedOptionKeyException.class %>" message="please-enter-a-valid-key" />
+	<liferay-ui:error exception="<%= PrincipalException.MustHavePermission.class %>" message="you-do-not-have-the-required-permissions" />
 
 	<commerce-ui:panel>
 		<aui:input autoFocus="<%= true %>" bean="<%= commerceShippingFixedOption %>" model="<%= CommerceShippingFixedOption.class %>" name="name" />

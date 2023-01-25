@@ -15,6 +15,7 @@
 package com.liferay.commerce.shipping.engine.fixed.web.internal.frontend.taglib.servlet.taglib;
 
 import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
+import com.liferay.commerce.permission.CommerceShippingMethodPermission;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.service.CommerceShippingMethodService;
 import com.liferay.commerce.shipping.engine.fixed.model.CommerceShippingFixedOption;
@@ -106,6 +107,7 @@ public class CommerceShippingFixedOptionDetailsScreenNavigationCategory
 				new CommerceShippingFixedOptionsDisplayContext(
 					_commerceChannelLocalService, _commerceCurrencyLocalService,
 					_commerceShippingFixedOptionService,
+					_commerceShippingMethodPermission,
 					_commerceShippingMethodService, _portal, renderRequest,
 					renderResponse);
 
@@ -127,6 +129,9 @@ public class CommerceShippingFixedOptionDetailsScreenNavigationCategory
 	@Reference
 	private CommerceShippingFixedOptionService
 		_commerceShippingFixedOptionService;
+
+	@Reference
+	private CommerceShippingMethodPermission _commerceShippingMethodPermission;
 
 	@Reference
 	private CommerceShippingMethodService _commerceShippingMethodService;

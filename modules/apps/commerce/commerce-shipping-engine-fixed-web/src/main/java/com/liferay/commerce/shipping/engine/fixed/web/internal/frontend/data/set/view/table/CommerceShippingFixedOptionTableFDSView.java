@@ -16,6 +16,7 @@ package com.liferay.commerce.shipping.engine.fixed.web.internal.frontend.data.se
 
 import com.liferay.commerce.constants.CommercePortletKeys;
 import com.liferay.commerce.model.CommerceShippingMethod;
+import com.liferay.commerce.permission.CommerceShippingMethodPermission;
 import com.liferay.commerce.service.CommerceShippingMethodLocalService;
 import com.liferay.commerce.shipping.engine.fixed.model.CommerceShippingFixedOption;
 import com.liferay.commerce.shipping.engine.fixed.service.CommerceShippingFixedOptionService;
@@ -33,7 +34,6 @@ import com.liferay.frontend.data.set.view.table.FDSTableSchemaBuilder;
 import com.liferay.frontend.data.set.view.table.FDSTableSchemaBuilderFactory;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
@@ -41,10 +41,11 @@ import com.liferay.portal.kernel.portlet.PortletProvider;
 import com.liferay.portal.kernel.portlet.PortletProviderUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.HtmlUtil;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -82,6 +83,9 @@ public class CommerceShippingFixedOptionTableFDSView
 
 		ShippingFixedOption shippingFixedOption = (ShippingFixedOption)model;
 
+		long commerceShippingMethodId = ParamUtil.getLong(
+			httpServletRequest, "commerceShippingMethodId");
+
 		return DropdownItemListBuilder.add(
 			dropdownItem -> {
 				dropdownItem.setHref(
@@ -93,6 +97,9 @@ public class CommerceShippingFixedOptionTableFDSView
 				dropdownItem.setTarget("sidePanel");
 			}
 		).add(
+			() -> _commerceShippingMethodPermission.contains(
+				PermissionThreadLocal.getPermissionChecker(),
+				commerceShippingMethodId, ActionKeys.DELETE),
 			dropdownItem -> {
 				dropdownItem.setHref(
 					_getShippingFixedOptionDeleteURL(
@@ -143,14 +150,11 @@ public class CommerceShippingFixedOptionTableFDSView
 				themeDisplay.getCompanyId(),
 				commerceShippingMethod.getGroupId(), commerceShippingMethodId,
 				fdsKeywords.getKeywords(), fdsPagination.getStartPosition(),
-				fdsPagination.getEndPosition());
+				fdsPagination.getEndPosition(),
+				new CommerceShippingFixedOptionPriorityComparator(
+					sort.isReverse()));
 
 		List<ShippingFixedOption> shippingFixedOptions = new ArrayList<>();
-
-		commerceShippingFixedOptions = ListUtil.sort(
-			commerceShippingFixedOptions,
-			new CommerceShippingFixedOptionPriorityComparator(
-				sort.isReverse()));
 
 		for (CommerceShippingFixedOption commerceShippingFixedOption :
 				commerceShippingFixedOptions) {
@@ -183,13 +187,12 @@ public class CommerceShippingFixedOptionTableFDSView
 			_commerceShippingMethodLocalService.getCommerceShippingMethod(
 				commerceShippingMethodId);
 
-		List<CommerceShippingFixedOption> commerceShippingFixedOptions =
-			_commerceShippingFixedOptionService.getCommerceShippingFixedOptions(
-				commerceShippingMethod.getCompanyId(),
-				commerceShippingMethod.getGroupId(), commerceShippingMethodId,
-				null, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-
-		return commerceShippingFixedOptions.size();
+		return (int)
+			_commerceShippingFixedOptionService.
+				getCommerceShippingFixedOptionsCount(
+					commerceShippingMethod.getCompanyId(),
+					commerceShippingMethod.getGroupId(),
+					commerceShippingMethodId, null);
 	}
 
 	private String _getShippingFixedOptionDeleteURL(
@@ -246,6 +249,9 @@ public class CommerceShippingFixedOptionTableFDSView
 	@Reference
 	private CommerceShippingMethodLocalService
 		_commerceShippingMethodLocalService;
+
+	@Reference
+	private CommerceShippingMethodPermission _commerceShippingMethodPermission;
 
 	@Reference
 	private FDSTableSchemaBuilderFactory _fdsTableSchemaBuilderFactory;

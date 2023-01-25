@@ -21,6 +21,7 @@ import com.liferay.commerce.shipping.engine.fixed.service.CommerceShippingFixedO
 import com.liferay.commerce.term.model.CommerceTermEntry;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseTransactionalMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.util.Constants;
@@ -61,7 +62,8 @@ public class EditCommerceShippingFixedOptionQualifiersMVCActionCommand
 		}
 		catch (Exception exception) {
 			if (exception instanceof
-					DuplicateCommerceShippingFixedOptionQualifierException) {
+					DuplicateCommerceShippingFixedOptionQualifierException ||
+				exception instanceof PrincipalException) {
 
 				SessionErrors.add(actionRequest, exception.getClass());
 
