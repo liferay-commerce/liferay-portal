@@ -122,7 +122,7 @@ public class CommerceShippingMethodsDisplayContext {
 		return commerceShippingEngine.getName(locale);
 	}
 
-	public int getCommerceShippingOptionsCount() throws PortalException {
+	public long getCommerceShippingOptionsCount() throws PortalException {
 		CommerceShippingMethod commerceShippingMethod =
 			getCommerceShippingMethod();
 
@@ -132,7 +132,9 @@ public class CommerceShippingMethodsDisplayContext {
 
 		return _commerceShippingFixedOptionService.
 			getCommerceShippingFixedOptionsCount(
-				commerceShippingMethod.getCommerceShippingMethodId());
+				commerceShippingMethod.getCompanyId(),
+				commerceShippingMethod.getGroupId(),
+				commerceShippingMethod.getCommerceShippingMethodId(), null);
 	}
 
 	public int getCountriesCount() throws PortalException {

@@ -38,6 +38,7 @@ if (commerceShippingMethod != null) {
 	<aui:input name="commerceShippingMethodEngineKey" type="hidden" value="<%= commerceShippingMethodsDisplayContext.getCommerceShippingMethodEngineKey() %>" />
 
 	<liferay-ui:error exception="<%= CommerceShippingMethodNameException.class %>" message="please-enter-a-valid-name" />
+	<liferay-ui:error exception="<%= PrincipalException.MustHavePermission.class %>" message="you-do-not-have-the-required-permissions" />
 
 	<c:if test="<%= commerceShippingMethodsDisplayContext.getCommerceShippingOptionsCount() <= 0 %>">
 		<div class="alert alert-warning">
