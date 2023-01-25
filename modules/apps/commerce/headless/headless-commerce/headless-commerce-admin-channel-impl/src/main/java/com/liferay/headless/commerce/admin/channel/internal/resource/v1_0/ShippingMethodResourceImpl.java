@@ -69,12 +69,14 @@ public class ShippingMethodResourceImpl extends BaseShippingMethodResourceImpl {
 				commerceChannel.getGroupId()));
 	}
 
-	private ShippingOption[] _getShippingOptions(long shippingMethodId)
+	private ShippingOption[] _getShippingOptions(
+			long companyId, long groupId, long shippingMethodId)
 		throws PortalException {
 
 		return transformToArray(
 			_commerceShippingFixedOptionService.getCommerceShippingFixedOptions(
-				shippingMethodId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+				companyId, groupId, shippingMethodId, null, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS,
 				new CommerceShippingFixedOptionPriorityComparator()),
 			commerceShippingFixedOption -> new ShippingOption() {
 				{
@@ -105,6 +107,8 @@ public class ShippingMethodResourceImpl extends BaseShippingMethodResourceImpl {
 				id = commerceShippingMethod.getCommerceShippingMethodId();
 				priority = commerceShippingMethod.getPriority();
 				shippingOptions = _getShippingOptions(
+					commerceShippingMethod.getCompanyId(),
+					commerceShippingMethod.getGroupId(),
 					commerceShippingMethod.getCommerceShippingMethodId());
 
 				setDescription(
