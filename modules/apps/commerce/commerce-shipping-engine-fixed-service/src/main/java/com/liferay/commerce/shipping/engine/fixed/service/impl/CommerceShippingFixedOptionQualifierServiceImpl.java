@@ -14,8 +14,7 @@
 
 package com.liferay.commerce.shipping.engine.fixed.service.impl;
 
-import com.liferay.commerce.product.model.CommerceChannel;
-import com.liferay.commerce.product.service.CommerceChannelLocalService;
+import com.liferay.commerce.model.CommerceShippingMethod;
 import com.liferay.commerce.shipping.engine.fixed.model.CommerceShippingFixedOption;
 import com.liferay.commerce.shipping.engine.fixed.model.CommerceShippingFixedOptionQualifier;
 import com.liferay.commerce.shipping.engine.fixed.service.CommerceShippingFixedOptionLocalService;
@@ -51,7 +50,7 @@ public class CommerceShippingFixedOptionQualifierServiceImpl
 				long commerceShippingFixedOptionId)
 		throws PortalException {
 
-		_checkCommerceChannel(commerceShippingFixedOptionId);
+		_checkCommerceShippingMethod(commerceShippingFixedOptionId);
 
 		return commerceShippingFixedOptionQualifierLocalService.
 			addCommerceShippingFixedOptionQualifier(
@@ -69,7 +68,7 @@ public class CommerceShippingFixedOptionQualifierServiceImpl
 					getCommerceShippingFixedOptionQualifier(
 						commerceShippingFixedOptionQualifierId);
 
-		_checkCommerceChannel(
+		_checkCommerceShippingMethod(
 			commerceShippingFixedOptionQualifier.
 				getCommerceShippingFixedOptionId());
 
@@ -83,7 +82,7 @@ public class CommerceShippingFixedOptionQualifierServiceImpl
 			long commerceShippingFixedOptionId)
 		throws PortalException {
 
-		_checkCommerceChannel(commerceShippingFixedOptionId);
+		_checkCommerceShippingMethod(commerceShippingFixedOptionId);
 
 		commerceShippingFixedOptionQualifierLocalService.
 			deleteCommerceShippingFixedOptionQualifiers(
@@ -95,7 +94,7 @@ public class CommerceShippingFixedOptionQualifierServiceImpl
 			String className, long commerceShippingFixedOptionId)
 		throws PortalException {
 
-		_checkCommerceChannel(commerceShippingFixedOptionId);
+		_checkCommerceShippingMethod(commerceShippingFixedOptionId);
 
 		commerceShippingFixedOptionQualifierLocalService.
 			deleteCommerceShippingFixedOptionQualifiers(
@@ -109,7 +108,7 @@ public class CommerceShippingFixedOptionQualifierServiceImpl
 				long commerceShippingFixedOptionId)
 		throws PortalException {
 
-		_checkCommerceChannel(commerceShippingFixedOptionId);
+		_checkCommerceShippingMethod(commerceShippingFixedOptionId);
 
 		return commerceShippingFixedOptionQualifierLocalService.
 			fetchCommerceShippingFixedOptionQualifier(
@@ -123,7 +122,7 @@ public class CommerceShippingFixedOptionQualifierServiceImpl
 				int end)
 		throws PortalException {
 
-		_checkCommerceChannel(commerceShippingFixedOptionId);
+		_checkCommerceShippingMethod(commerceShippingFixedOptionId);
 
 		return commerceShippingFixedOptionQualifierLocalService.
 			getCommerceOrderTypeCommerceShippingFixedOptionQualifiers(
@@ -135,7 +134,7 @@ public class CommerceShippingFixedOptionQualifierServiceImpl
 			long commerceShippingFixedOptionId, String keywords)
 		throws PortalException {
 
-		_checkCommerceChannel(commerceShippingFixedOptionId);
+		_checkCommerceShippingMethod(commerceShippingFixedOptionId);
 
 		return commerceShippingFixedOptionQualifierLocalService.
 			getCommerceOrderTypeCommerceShippingFixedOptionQualifiersCount(
@@ -154,7 +153,7 @@ public class CommerceShippingFixedOptionQualifierServiceImpl
 					getCommerceShippingFixedOptionQualifier(
 						commerceShippingFixedOptionQualifierId);
 
-		_checkCommerceChannel(
+		_checkCommerceShippingMethod(
 			commerceShippingFixedOptionQualifier.
 				getCommerceShippingFixedOptionId());
 
@@ -167,7 +166,7 @@ public class CommerceShippingFixedOptionQualifierServiceImpl
 				long commerceShippingFixedOptionId)
 		throws PortalException {
 
-		_checkCommerceChannel(commerceShippingFixedOptionId);
+		_checkCommerceShippingMethod(commerceShippingFixedOptionId);
 
 		return commerceShippingFixedOptionQualifierLocalService.
 			getCommerceShippingFixedOptionQualifiers(
@@ -182,7 +181,7 @@ public class CommerceShippingFixedOptionQualifierServiceImpl
 					orderByComparator)
 		throws PortalException {
 
-		_checkCommerceChannel(commerceShippingFixedOptionId);
+		_checkCommerceShippingMethod(commerceShippingFixedOptionId);
 
 		return commerceShippingFixedOptionQualifierLocalService.
 			getCommerceShippingFixedOptionQualifiers(
@@ -194,7 +193,7 @@ public class CommerceShippingFixedOptionQualifierServiceImpl
 			long commerceShippingFixedOptionId)
 		throws PortalException {
 
-		_checkCommerceChannel(commerceShippingFixedOptionId);
+		_checkCommerceShippingMethod(commerceShippingFixedOptionId);
 
 		return commerceShippingFixedOptionQualifierLocalService.
 			getCommerceShippingFixedOptionQualifiersCount(
@@ -208,7 +207,7 @@ public class CommerceShippingFixedOptionQualifierServiceImpl
 				int end)
 		throws PortalException {
 
-		_checkCommerceChannel(commerceShippingFixedOptionId);
+		_checkCommerceShippingMethod(commerceShippingFixedOptionId);
 
 		return commerceShippingFixedOptionQualifierLocalService.
 			getCommerceTermEntryCommerceShippingFixedOptionQualifiers(
@@ -220,39 +219,35 @@ public class CommerceShippingFixedOptionQualifierServiceImpl
 			long commerceShippingFixedOptionId, String keywords)
 		throws PortalException {
 
-		_checkCommerceChannel(commerceShippingFixedOptionId);
+		_checkCommerceShippingMethod(commerceShippingFixedOptionId);
 
 		return commerceShippingFixedOptionQualifierLocalService.
 			getCommerceTermEntryCommerceShippingFixedOptionQualifiersCount(
 				commerceShippingFixedOptionId, keywords);
 	}
 
-	private void _checkCommerceChannel(long commerceShippingFixedOptionId)
+	private void _checkCommerceShippingMethod(
+			long commerceShippingFixedOptionId)
 		throws PortalException {
 
 		CommerceShippingFixedOption commerceShippingFixedOption =
 			_commerceShippingFixedOptionLocalService.
 				getCommerceShippingFixedOption(commerceShippingFixedOptionId);
 
-		CommerceChannel commerceChannel =
-			_commerceChannelLocalService.getCommerceChannelByGroupId(
-				commerceShippingFixedOption.getGroupId());
-
-		_commerceChannelModelResourcePermission.check(
-			getPermissionChecker(), commerceChannel, ActionKeys.UPDATE);
+		_commerceShippingMethodModelResourcePermission.check(
+			getPermissionChecker(),
+			commerceShippingFixedOption.getCommerceShippingMethodId(),
+			ActionKeys.UPDATE);
 	}
-
-	@Reference
-	private CommerceChannelLocalService _commerceChannelLocalService;
-
-	@Reference(
-		target = "(model.class.name=com.liferay.commerce.product.model.CommerceChannel)"
-	)
-	private ModelResourcePermission<CommerceChannel>
-		_commerceChannelModelResourcePermission;
 
 	@Reference
 	private CommerceShippingFixedOptionLocalService
 		_commerceShippingFixedOptionLocalService;
+
+	@Reference(
+		target = "(model.class.name=com.liferay.commerce.model.CommerceShippingMethod)"
+	)
+	private ModelResourcePermission<CommerceShippingMethod>
+		_commerceShippingMethodModelResourcePermission;
 
 }
