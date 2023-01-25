@@ -15,6 +15,7 @@
 package com.liferay.commerce.shipping.engine.fixed.web.internal.frontend.taglib.servlet.taglib;
 
 import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
+import com.liferay.commerce.model.CommerceShippingMethod;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.service.CommerceShippingMethodService;
@@ -136,11 +137,10 @@ public class CommerceShippingFixedOptionQualifiersScreenNavigationCategory
 		CommerceShippingFixedOptionQualifiersDisplayContext
 			commerceShippingFixedOptionQualifiersDisplayContext =
 				new CommerceShippingFixedOptionQualifiersDisplayContext(
-					_commerceChannelLocalService,
-					_commerceChannelModelResourcePermission,
-					_commerceCurrencyLocalService,
+					_commerceChannelLocalService, _commerceCurrencyLocalService,
 					_commerceShippingFixedOptionQualifierService,
 					_commerceShippingFixedOptionService,
+					_commerceShippingMethodModelResourcePermission,
 					_commerceShippingMethodService, httpServletRequest,
 					renderRequest, renderResponse);
 
@@ -175,6 +175,12 @@ public class CommerceShippingFixedOptionQualifiersScreenNavigationCategory
 	@Reference
 	private CommerceShippingFixedOptionService
 		_commerceShippingFixedOptionService;
+
+	@Reference(
+		target = "(model.class.name=com.liferay.commerce.model.CommerceShippingMethod)"
+	)
+	private ModelResourcePermission<CommerceShippingMethod>
+		_commerceShippingMethodModelResourcePermission;
 
 	@Reference
 	private CommerceShippingMethodService _commerceShippingMethodService;

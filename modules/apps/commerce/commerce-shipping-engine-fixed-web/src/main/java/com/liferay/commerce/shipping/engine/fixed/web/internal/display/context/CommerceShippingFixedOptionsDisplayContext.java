@@ -17,6 +17,7 @@ package com.liferay.commerce.shipping.engine.fixed.web.internal.display.context;
 import com.liferay.commerce.constants.CommercePortletKeys;
 import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.model.CommerceShippingMethod;
+import com.liferay.commerce.permission.CommerceShippingMethodPermission;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.service.CommerceShippingMethodService;
 import com.liferay.commerce.shipping.engine.fixed.constants.CommerceShippingEngineFixedWebKeys;
@@ -33,6 +34,8 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -54,6 +57,7 @@ public class CommerceShippingFixedOptionsDisplayContext
 		CommerceChannelLocalService commerceChannelLocalService,
 		CommerceCurrencyLocalService commerceCurrencyLocalService,
 		CommerceShippingFixedOptionService commerceShippingFixedOptionService,
+		CommerceShippingMethodPermission commerceShippingMethodPermission,
 		CommerceShippingMethodService commerceShippingMethodService,
 		Portal portal, RenderRequest renderRequest,
 		RenderResponse renderResponse) {
@@ -64,6 +68,7 @@ public class CommerceShippingFixedOptionsDisplayContext
 
 		_commerceShippingFixedOptionService =
 			commerceShippingFixedOptionService;
+		_commerceShippingMethodPermission = commerceShippingMethodPermission;
 		_portal = portal;
 	}
 
@@ -126,6 +131,9 @@ public class CommerceShippingFixedOptionsDisplayContext
 			WebKeys.THEME_DISPLAY);
 
 		return CreationMenuBuilder.addDropdownItem(
+			() -> _commerceShippingMethodPermission.contains(
+				PermissionThreadLocal.getPermissionChecker(),
+				getCommerceShippingMethodId(), ActionKeys.UPDATE),
 			dropdownItem -> {
 				dropdownItem.setHref(getAddShippingFixedOptionURL());
 				dropdownItem.setLabel(
@@ -176,6 +184,8 @@ public class CommerceShippingFixedOptionsDisplayContext
 
 	private final CommerceShippingFixedOptionService
 		_commerceShippingFixedOptionService;
+	private final CommerceShippingMethodPermission
+		_commerceShippingMethodPermission;
 	private final Portal _portal;
 
 }

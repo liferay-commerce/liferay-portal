@@ -27,7 +27,7 @@ import com.liferay.commerce.model.CommerceShippingOption;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.service.CommerceAddressRestrictionLocalService;
-import com.liferay.commerce.service.CommerceShippingMethodLocalService;
+import com.liferay.commerce.service.CommerceShippingMethodService;
 import com.liferay.commerce.shipping.engine.fixed.model.CommerceShippingFixedOption;
 import com.liferay.commerce.shipping.engine.fixed.model.CommerceShippingFixedOptionRel;
 import com.liferay.commerce.shipping.engine.fixed.service.CommerceShippingFixedOptionLocalService;
@@ -130,10 +130,11 @@ public class ByWeightCommerceShippingEngine implements CommerceShippingEngine {
 	}
 
 	private List<CommerceShippingFixedOption> _getCommerceShippingFixedOptions(
-		long groupId) {
+			long groupId)
+		throws PortalException {
 
 		CommerceShippingMethod commerceShippingMethod =
-			_commerceShippingMethodLocalService.fetchCommerceShippingMethod(
+			_commerceShippingMethodService.fetchCommerceShippingMethod(
 				groupId, KEY);
 
 		if (commerceShippingMethod == null) {
@@ -328,8 +329,7 @@ public class ByWeightCommerceShippingEngine implements CommerceShippingEngine {
 	private CommerceShippingHelper _commerceShippingHelper;
 
 	@Reference
-	private CommerceShippingMethodLocalService
-		_commerceShippingMethodLocalService;
+	private CommerceShippingMethodService _commerceShippingMethodService;
 
 	@Reference
 	private Language _language;

@@ -81,7 +81,9 @@ public class EditCommerceShippingFixedOptionMVCActionCommand
 			}
 		}
 		catch (Exception exception) {
-			if (exception instanceof CommerceShippingFixedOptionKeyException) {
+			if (exception instanceof CommerceShippingFixedOptionKeyException ||
+				exception instanceof PrincipalException) {
+
 				SessionErrors.add(actionRequest, exception.getClass());
 
 				hideDefaultErrorMessage(actionRequest);
@@ -91,9 +93,7 @@ public class EditCommerceShippingFixedOptionMVCActionCommand
 
 				sendRedirect(actionRequest, actionResponse, redirect);
 			}
-			else if (exception instanceof NoSuchShippingFixedOptionException ||
-					 exception instanceof PrincipalException) {
-
+			else if (exception instanceof NoSuchShippingFixedOptionException) {
 				SessionErrors.add(actionRequest, exception.getClass());
 			}
 			else {

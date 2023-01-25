@@ -147,10 +147,15 @@ public class CommerceShippingFixedOptionRelsDisplayContext
 	public List<CommerceShippingFixedOption> getCommerceShippingFixedOptions()
 		throws PortalException {
 
+		CommerceShippingMethod commerceShippingMethod =
+			getCommerceShippingMethod();
+
 		return _commerceShippingFixedOptionService.
 			getCommerceShippingFixedOptions(
-				getCommerceShippingMethodId(), QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS);
+				commerceShippingMethod.getCompanyId(),
+				commerceShippingMethod.getGroupId(),
+				getCommerceShippingMethodId(), null, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null);
 	}
 
 	public List<Country> getCountries() {
