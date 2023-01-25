@@ -53,7 +53,9 @@ public class CommerceChannelRelLocalServiceImpl
 				classNameId, classPK, commerceChannelId);
 
 		if (existingCommerceChannelRel != null) {
-			throw new DuplicateCommerceChannelRelException();
+			throw new DuplicateCommerceChannelRelException(
+				"There is another commerce channel with commerceChannelId " +
+					commerceChannelId);
 		}
 
 		User user = _userLocalService.getUser(serviceContext.getUserId());
