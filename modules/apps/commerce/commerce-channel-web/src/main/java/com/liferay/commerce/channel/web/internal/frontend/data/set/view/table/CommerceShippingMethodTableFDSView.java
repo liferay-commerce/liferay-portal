@@ -17,8 +17,11 @@ package com.liferay.commerce.channel.web.internal.frontend.data.set.view.table;
 import com.liferay.commerce.channel.web.internal.constants.CommerceChannelFDSNames;
 import com.liferay.commerce.channel.web.internal.frontend.util.CommerceChannelClayTableUtil;
 import com.liferay.commerce.channel.web.internal.model.ShippingMethod;
+import com.liferay.commerce.constants.CommerceActionKeys;
 import com.liferay.commerce.model.CommerceShippingEngine;
 import com.liferay.commerce.model.CommerceShippingMethod;
+import com.liferay.commerce.permission.CommerceShippingMethodPermission;
+import com.liferay.commerce.product.constants.CPConstants;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelService;
 import com.liferay.commerce.service.CommerceShippingMethodService;
@@ -36,19 +39,29 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletProvider;
 import com.liferay.portal.kernel.portlet.PortletProviderUtil;
+import com.liferay.portal.kernel.portlet.PortletQName;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import javax.portlet.ActionRequest;
+import javax.portlet.PortletURL;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -74,7 +87,22 @@ public class CommerceShippingMethodTableFDSView
 			long groupId, HttpServletRequest httpServletRequest, Object model)
 		throws PortalException {
 
+		long commerceChannelId = ParamUtil.getLong(
+			httpServletRequest, "commerceChannelId");
+		ShippingMethod shippingMethod = (ShippingMethod)model;
+
+		CommerceChannel commerceChannel =
+			_commerceChannelService.getCommerceChannel(commerceChannelId);
+
+		CommerceShippingMethod commerceShippingMethod =
+			_commerceShippingMethodService.fetchCommerceShippingMethod(
+				commerceChannel.getGroupId(), shippingMethod.getKey());
+
 		return DropdownItemListBuilder.add(
+			() -> _portletResourcePermission.contains(
+				PermissionThreadLocal.getPermissionChecker(),
+				commerceChannel.getGroupId(),
+				CommerceActionKeys.MANAGE_COMMERCE_SHIPPING_METHOD),
 			dropdownItem -> {
 				dropdownItem.setHref(
 					PortletURLBuilder.create(
@@ -83,23 +111,32 @@ public class CommerceShippingMethodTableFDSView
 							CommerceShippingMethod.class.getName(),
 							PortletProvider.Action.EDIT)
 					).setParameter(
-						"commerceChannelId",
-						ParamUtil.getLong(
-							httpServletRequest, "commerceChannelId")
+						"commerceChannelId", commerceChannelId
 					).setParameter(
 						"commerceShippingMethodEngineKey",
-						() -> {
-							ShippingMethod shippingMethod =
-								(ShippingMethod)model;
-
-							return shippingMethod.getKey();
-						}
+						shippingMethod.getKey()
 					).setWindowState(
 						LiferayWindowState.POP_UP
 					).buildString());
 				dropdownItem.setLabel(
 					_language.get(httpServletRequest, "edit"));
 				dropdownItem.setTarget("sidePanel");
+			}
+		).add(
+			() ->
+				(commerceShippingMethod != null) &&
+				commerceShippingMethod.isActive() &&
+				_commerceShippingMethodPermission.contains(
+					PermissionThreadLocal.getPermissionChecker(),
+					commerceShippingMethod.getCommerceShippingMethodId(),
+					ActionKeys.PERMISSIONS),
+			dropdownItem -> {
+				dropdownItem.setHref(
+					_getShippingMethodPermissionURL(
+						commerceShippingMethod, httpServletRequest));
+				dropdownItem.setLabel(
+					_language.get(httpServletRequest, "permissions"));
+				dropdownItem.setTarget("modal-permissions");
 			}
 		).build();
 	}
@@ -150,31 +187,38 @@ public class CommerceShippingMethodTableFDSView
 
 			CommerceShippingEngine commerceShippingEngine = entry.getValue();
 
-			CommerceShippingMethod commerceShippingMethod =
-				_commerceShippingMethodService.fetchCommerceShippingMethod(
-					commerceChannel.getGroupId(), entry.getKey());
+			try {
+				CommerceShippingMethod commerceShippingMethod =
+					_commerceShippingMethodService.fetchCommerceShippingMethod(
+						commerceChannel.getGroupId(), entry.getKey());
 
-			String commerceShippingDescription =
-				commerceShippingEngine.getDescription(themeDisplay.getLocale());
-			String commerceShippingName = commerceShippingEngine.getName(
-				themeDisplay.getLocale());
-
-			if (commerceShippingMethod != null) {
-				commerceShippingDescription =
-					commerceShippingMethod.getDescription(
+				String commerceShippingDescription =
+					commerceShippingEngine.getDescription(
 						themeDisplay.getLocale());
-				commerceShippingName = commerceShippingMethod.getName(
+				String commerceShippingName = commerceShippingEngine.getName(
 					themeDisplay.getLocale());
-			}
 
-			shippingMethods.add(
-				new ShippingMethod(
-					commerceShippingDescription, entry.getKey(),
-					commerceShippingName,
-					commerceShippingEngine.getName(themeDisplay.getLocale()),
-					CommerceChannelClayTableUtil.getLabelField(
-						_isActive(commerceShippingMethod),
-						themeDisplay.getLocale())));
+				if (commerceShippingMethod != null) {
+					commerceShippingDescription =
+						commerceShippingMethod.getDescription(
+							themeDisplay.getLocale());
+					commerceShippingName = commerceShippingMethod.getName(
+						themeDisplay.getLocale());
+				}
+
+				shippingMethods.add(
+					new ShippingMethod(
+						commerceShippingDescription, entry.getKey(),
+						commerceShippingName,
+						commerceShippingEngine.getName(
+							themeDisplay.getLocale()),
+						CommerceChannelClayTableUtil.getLabelField(
+							_isActive(commerceShippingMethod),
+							themeDisplay.getLocale())));
+			}
+			catch (PortalException portalException) {
+				_log.error(portalException);
+			}
 		}
 
 		return shippingMethods;
@@ -191,6 +235,36 @@ public class CommerceShippingMethodTableFDSView
 		return commerceShippingEngines.size();
 	}
 
+	private PortletURL _getShippingMethodPermissionURL(
+			CommerceShippingMethod commerceShippingMethod,
+			HttpServletRequest httpServletRequest)
+		throws PortalException {
+
+		return PortletURLBuilder.create(
+			_portal.getControlPanelPortletURL(
+				httpServletRequest,
+				"com_liferay_portlet_configuration_web_portlet_" +
+					"PortletConfigurationPortlet",
+				ActionRequest.RENDER_PHASE)
+		).setMVCPath(
+			"/edit_permissions.jsp"
+		).setParameter(
+			PortletQName.PUBLIC_RENDER_PARAMETER_NAMESPACE + "backURL",
+			ParamUtil.getString(
+				httpServletRequest, "currentUrl",
+				_portal.getCurrentURL(httpServletRequest))
+		).setParameter(
+			"modelResource", CommerceShippingMethod.class.getName()
+		).setParameter(
+			"modelResourceDescription", commerceShippingMethod.getDescription()
+		).setParameter(
+			"resourcePrimKey",
+			commerceShippingMethod.getCommerceShippingMethodId()
+		).setWindowState(
+			LiferayWindowState.POP_UP
+		).buildPortletURL();
+	}
+
 	private boolean _isActive(CommerceShippingMethod commerceShippingMethod) {
 		if (commerceShippingMethod == null) {
 			return false;
@@ -199,11 +273,17 @@ public class CommerceShippingMethodTableFDSView
 		return commerceShippingMethod.isActive();
 	}
 
+	private static final Log _log = LogFactoryUtil.getLog(
+		CommerceShippingMethodTableFDSView.class);
+
 	@Reference
 	private CommerceChannelService _commerceChannelService;
 
 	@Reference
 	private CommerceShippingEngineRegistry _commerceShippingEngineRegistry;
+
+	@Reference
+	private CommerceShippingMethodPermission _commerceShippingMethodPermission;
 
 	@Reference
 	private CommerceShippingMethodService _commerceShippingMethodService;
@@ -213,5 +293,13 @@ public class CommerceShippingMethodTableFDSView
 
 	@Reference
 	private Language _language;
+
+	@Reference
+	private Portal _portal;
+
+	@Reference(
+		target = "(resource.name=" + CPConstants.RESOURCE_NAME_CHANNEL + ")"
+	)
+	private PortletResourcePermission _portletResourcePermission;
 
 }
