@@ -77,12 +77,13 @@ public class CommerceDiscountsImporter {
 		boolean active = jsonObject.getBoolean("active");
 
 		return _commerceDiscountLocalService.addCommerceDiscount(
-			serviceContext.getUserId(), title,
-			CommerceDiscountConstants.TARGET_CATEGORIES, useCouponCode,
-			couponCode, usePercentage, maximumDiscountAmount, level1,
-			BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
-			CommerceDiscountConstants.LIMITATION_TYPE_UNLIMITED, 0, active, 1,
-			1, 2019, -1, -1, 0, 0, 0, 0, 0, true, serviceContext);
+			null, serviceContext.getUserId(), active, null, couponCode, 1, 1,
+			2019, -1, -1, 0, 0, 0, 0, 0, null, level1, BigDecimal.ZERO,
+			BigDecimal.ZERO, BigDecimal.ZERO, 0, 0,
+			CommerceDiscountConstants.LIMITATION_TYPE_UNLIMITED,
+			maximumDiscountAmount, true, true,
+			CommerceDiscountConstants.TARGET_CATEGORIES, title, useCouponCode,
+			usePercentage, serviceContext);
 	}
 
 	private void _importCommerceDiscount(
