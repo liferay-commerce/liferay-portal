@@ -623,7 +623,7 @@ public class CommerceOrderEngineImpl implements CommerceOrderEngine {
 		if (!Validator.isBlank(couponCode)) {
 			CommerceDiscount commerceDiscount =
 				_commerceDiscountLocalService.getActiveCommerceDiscount(
-					companyId, couponCode, true);
+					companyId, true, couponCode);
 
 			if (!_commerceDiscountUsageEntryLocalService.
 					validateDiscountLimitationUsage(
