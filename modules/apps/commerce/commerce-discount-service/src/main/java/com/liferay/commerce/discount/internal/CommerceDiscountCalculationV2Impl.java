@@ -18,6 +18,7 @@ import com.liferay.commerce.context.CommerceContext;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.model.CommerceMoney;
 import com.liferay.commerce.currency.model.CommerceMoneyFactory;
+import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.discount.CommerceDiscountCalculation;
 import com.liferay.commerce.discount.CommerceDiscountValue;
 import com.liferay.commerce.discount.application.strategy.CommerceDiscountApplicationStrategy;
@@ -203,7 +204,8 @@ public class CommerceDiscountCalculationV2Impl
 
 	private BigDecimal _getCommerceDiscountLevel(
 			BigDecimal currentDiscountLevel, BigDecimal commercePrice,
-			CommerceCurrency commerceCurrency, long commerceDiscountId,
+			CommerceCurrency commerceCurrency,
+			CommerceCurrency commerceDiscountCurrency, long commerceDiscountId,
 			BigDecimal commerceDiscountValue, boolean usePercentage)
 		throws PortalException {
 
@@ -244,6 +246,19 @@ public class CommerceDiscountCalculationV2Impl
 			}
 		}
 
+		if (!Objects.equals(
+				commerceCurrency.getCode(),
+				commerceDiscountCurrency.getCode())) {
+
+			discountAmount = discountAmount.divide(
+				commerceDiscountCurrency.getRate(),
+				RoundingMode.valueOf(
+					commerceDiscountCurrency.getRoundingMode()));
+
+			discountAmount = discountAmount.multiply(
+				commerceCurrency.getRate());
+		}
+
 		RoundingMode roundingMode = RoundingMode.valueOf(
 			commerceCurrency.getRoundingMode());
 
@@ -268,16 +283,15 @@ public class CommerceDiscountCalculationV2Impl
 			List<CommerceDiscount> commerceDiscounts)
 		throws PortalException {
 
-		if (couponCode.isEmpty()) {
-			CommerceOrder commerceOrder = commerceContext.getCommerceOrder();
+		CommerceOrder commerceOrder = commerceContext.getCommerceOrder();
 
-			if (commerceOrder != null) {
-				couponCode = commerceOrder.getCouponCode();
-			}
+		if (couponCode.isEmpty() && (commerceOrder != null)) {
+			couponCode = commerceOrder.getCouponCode();
 		}
 
 		CommerceCurrency commerceCurrency =
 			commerceContext.getCommerceCurrency();
+		CommerceCurrency commerceDiscountCurrency = null;
 
 		BigDecimal[] levels = {
 			BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO
@@ -296,11 +310,17 @@ public class CommerceDiscountCalculationV2Impl
 			if (_isValidDiscount(commerceContext, commerceDiscount)) {
 				String discountLevel = commerceDiscount.getLevel();
 
+				commerceDiscountCurrency =
+					_commerceCurrencyLocalService.getCommerceCurrency(
+						commerceDiscount.getCompanyId(),
+						commerceDiscount.getCommerceCurrencyCode());
+
 				if (discountLevel.isEmpty() ||
 					discountLevel.equals(CommerceDiscountConstants.LEVEL_L1)) {
 
 					levels[0] = _getCommerceDiscountLevel(
 						levels[0], commercePrice, commerceCurrency,
+						commerceDiscountCurrency,
 						commerceDiscount.getCommerceDiscountId(),
 						commerceDiscount.getLevel1(),
 						commerceDiscount.isUsePercentage());
@@ -313,6 +333,7 @@ public class CommerceDiscountCalculationV2Impl
 
 						levels[1] = _getCommerceDiscountLevel(
 							levels[1], commercePrice, commerceCurrency,
+							commerceDiscountCurrency,
 							commerceDiscount.getCommerceDiscountId(),
 							commerceDiscount.getLevel2(),
 							commerceDiscount.isUsePercentage());
@@ -324,6 +345,7 @@ public class CommerceDiscountCalculationV2Impl
 
 						levels[2] = _getCommerceDiscountLevel(
 							levels[2], commercePrice, commerceCurrency,
+							commerceDiscountCurrency,
 							commerceDiscount.getCommerceDiscountId(),
 							commerceDiscount.getLevel3(),
 							commerceDiscount.isUsePercentage());
@@ -335,6 +357,7 @@ public class CommerceDiscountCalculationV2Impl
 
 						levels[3] = _getCommerceDiscountLevel(
 							levels[3], commercePrice, commerceCurrency,
+							commerceDiscountCurrency,
 							commerceDiscount.getCommerceDiscountId(),
 							commerceDiscount.getLevel4(),
 							commerceDiscount.isUsePercentage());
@@ -497,6 +520,9 @@ public class CommerceDiscountCalculationV2Impl
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		CommerceDiscountCalculationV2Impl.class);
+
+	@Reference
+	private CommerceCurrencyLocalService _commerceCurrencyLocalService;
 
 	@Reference
 	private CommerceDiscountApplicationStrategyRegistry
