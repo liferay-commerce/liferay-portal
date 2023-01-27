@@ -11,27 +11,28 @@
 		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="title" type="String">
-			<validator name="required" />
-		</field>
-		<field name="target" type="String" />
-		<field name="useCouponCode" type="boolean" />
+		<field name="active" type="boolean" />
+		<field name="commerceCurrencyCode" type="String" />
 		<field name="couponCode" type="String" />
-		<field name="usePercentage" type="boolean" />
-		<field name="maximumDiscountAmount" type="BigDecimal" />
+		<field name="displayDate" type="Date" />
+		<field name="expirationDate" type="Date" />
 		<field name="level" type="String" />
 		<field name="level1" type="BigDecimal" />
 		<field name="level2" type="BigDecimal" />
 		<field name="level3" type="BigDecimal" />
 		<field name="level4" type="BigDecimal" />
-		<field name="limitationType" type="String" />
 		<field name="limitationTimes" type="int" />
 		<field name="limitationTimesPerAccount" type="int" />
+		<field name="limitationType" type="String" />
+		<field name="maximumDiscountAmount" type="BigDecimal" />
 		<field name="numberOfUse" type="int" />
 		<field name="rulesConjunction" type="boolean" />
-		<field name="active" type="boolean" />
-		<field name="displayDate" type="Date" />
-		<field name="expirationDate" type="Date" />
+		<field name="target" type="String" />
+		<field name="title" type="String">
+			<validator name="required" />
+		</field>
+		<field name="useCouponCode" type="boolean" />
+		<field name="usePercentage" type="boolean" />
 		<field name="lastPublishDate" type="Date" />
 		<field name="status" type="int" />
 		<field name="statusByUserId" type="long" />

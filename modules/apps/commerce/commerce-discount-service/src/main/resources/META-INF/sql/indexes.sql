@@ -1,6 +1,8 @@
 create index IX_F7FFBCCA on CDiscountCAccountGroupRel (commerceAccountGroupId);
 create unique index IX_9D768AF5 on CDiscountCAccountGroupRel (commerceDiscountId, commerceAccountGroupId);
 
+create index IX_3CAC096A on CommerceDiscount (companyId, active_, couponCode[$COLUMN_LENGTH:75$]);
+create index IX_35678C11 on CommerceDiscount (companyId, active_, levelType[$COLUMN_LENGTH:75$], status);
 create index IX_A7A710FC on CommerceDiscount (companyId, couponCode[$COLUMN_LENGTH:75$], active_);
 create unique index IX_D294CDB7 on CommerceDiscount (companyId, externalReferenceCode[$COLUMN_LENGTH:75$]);
 create index IX_90F8C967 on CommerceDiscount (companyId, levelType[$COLUMN_LENGTH:75$], active_, status);

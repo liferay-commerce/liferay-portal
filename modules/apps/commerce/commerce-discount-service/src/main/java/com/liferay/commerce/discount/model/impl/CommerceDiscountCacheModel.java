@@ -80,7 +80,7 @@ public class CommerceDiscountCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(67);
+		StringBundler sb = new StringBundler(69);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -100,18 +100,16 @@ public class CommerceDiscountCacheModel
 		sb.append(createDate);
 		sb.append(", modifiedDate=");
 		sb.append(modifiedDate);
-		sb.append(", title=");
-		sb.append(title);
-		sb.append(", target=");
-		sb.append(target);
-		sb.append(", useCouponCode=");
-		sb.append(useCouponCode);
+		sb.append(", active=");
+		sb.append(active);
+		sb.append(", commerceCurrencyCode=");
+		sb.append(commerceCurrencyCode);
 		sb.append(", couponCode=");
 		sb.append(couponCode);
-		sb.append(", usePercentage=");
-		sb.append(usePercentage);
-		sb.append(", maximumDiscountAmount=");
-		sb.append(maximumDiscountAmount);
+		sb.append(", displayDate=");
+		sb.append(displayDate);
+		sb.append(", expirationDate=");
+		sb.append(expirationDate);
 		sb.append(", level=");
 		sb.append(level);
 		sb.append(", level1=");
@@ -122,22 +120,26 @@ public class CommerceDiscountCacheModel
 		sb.append(level3);
 		sb.append(", level4=");
 		sb.append(level4);
-		sb.append(", limitationType=");
-		sb.append(limitationType);
 		sb.append(", limitationTimes=");
 		sb.append(limitationTimes);
 		sb.append(", limitationTimesPerAccount=");
 		sb.append(limitationTimesPerAccount);
+		sb.append(", limitationType=");
+		sb.append(limitationType);
+		sb.append(", maximumDiscountAmount=");
+		sb.append(maximumDiscountAmount);
 		sb.append(", numberOfUse=");
 		sb.append(numberOfUse);
 		sb.append(", rulesConjunction=");
 		sb.append(rulesConjunction);
-		sb.append(", active=");
-		sb.append(active);
-		sb.append(", displayDate=");
-		sb.append(displayDate);
-		sb.append(", expirationDate=");
-		sb.append(expirationDate);
+		sb.append(", target=");
+		sb.append(target);
+		sb.append(", title=");
+		sb.append(title);
+		sb.append(", useCouponCode=");
+		sb.append(useCouponCode);
+		sb.append(", usePercentage=");
+		sb.append(usePercentage);
 		sb.append(", lastPublishDate=");
 		sb.append(lastPublishDate);
 		sb.append(", status=");
@@ -199,21 +201,14 @@ public class CommerceDiscountCacheModel
 			commerceDiscountImpl.setModifiedDate(new Date(modifiedDate));
 		}
 
-		if (title == null) {
-			commerceDiscountImpl.setTitle("");
+		commerceDiscountImpl.setActive(active);
+
+		if (commerceCurrencyCode == null) {
+			commerceDiscountImpl.setCommerceCurrencyCode("");
 		}
 		else {
-			commerceDiscountImpl.setTitle(title);
+			commerceDiscountImpl.setCommerceCurrencyCode(commerceCurrencyCode);
 		}
-
-		if (target == null) {
-			commerceDiscountImpl.setTarget("");
-		}
-		else {
-			commerceDiscountImpl.setTarget(target);
-		}
-
-		commerceDiscountImpl.setUseCouponCode(useCouponCode);
 
 		if (couponCode == null) {
 			commerceDiscountImpl.setCouponCode("");
@@ -221,35 +216,6 @@ public class CommerceDiscountCacheModel
 		else {
 			commerceDiscountImpl.setCouponCode(couponCode);
 		}
-
-		commerceDiscountImpl.setUsePercentage(usePercentage);
-		commerceDiscountImpl.setMaximumDiscountAmount(maximumDiscountAmount);
-
-		if (level == null) {
-			commerceDiscountImpl.setLevel("");
-		}
-		else {
-			commerceDiscountImpl.setLevel(level);
-		}
-
-		commerceDiscountImpl.setLevel1(level1);
-		commerceDiscountImpl.setLevel2(level2);
-		commerceDiscountImpl.setLevel3(level3);
-		commerceDiscountImpl.setLevel4(level4);
-
-		if (limitationType == null) {
-			commerceDiscountImpl.setLimitationType("");
-		}
-		else {
-			commerceDiscountImpl.setLimitationType(limitationType);
-		}
-
-		commerceDiscountImpl.setLimitationTimes(limitationTimes);
-		commerceDiscountImpl.setLimitationTimesPerAccount(
-			limitationTimesPerAccount);
-		commerceDiscountImpl.setNumberOfUse(numberOfUse);
-		commerceDiscountImpl.setRulesConjunction(rulesConjunction);
-		commerceDiscountImpl.setActive(active);
 
 		if (displayDate == Long.MIN_VALUE) {
 			commerceDiscountImpl.setDisplayDate(null);
@@ -264,6 +230,49 @@ public class CommerceDiscountCacheModel
 		else {
 			commerceDiscountImpl.setExpirationDate(new Date(expirationDate));
 		}
+
+		if (level == null) {
+			commerceDiscountImpl.setLevel("");
+		}
+		else {
+			commerceDiscountImpl.setLevel(level);
+		}
+
+		commerceDiscountImpl.setLevel1(level1);
+		commerceDiscountImpl.setLevel2(level2);
+		commerceDiscountImpl.setLevel3(level3);
+		commerceDiscountImpl.setLevel4(level4);
+		commerceDiscountImpl.setLimitationTimes(limitationTimes);
+		commerceDiscountImpl.setLimitationTimesPerAccount(
+			limitationTimesPerAccount);
+
+		if (limitationType == null) {
+			commerceDiscountImpl.setLimitationType("");
+		}
+		else {
+			commerceDiscountImpl.setLimitationType(limitationType);
+		}
+
+		commerceDiscountImpl.setMaximumDiscountAmount(maximumDiscountAmount);
+		commerceDiscountImpl.setNumberOfUse(numberOfUse);
+		commerceDiscountImpl.setRulesConjunction(rulesConjunction);
+
+		if (target == null) {
+			commerceDiscountImpl.setTarget("");
+		}
+		else {
+			commerceDiscountImpl.setTarget(target);
+		}
+
+		if (title == null) {
+			commerceDiscountImpl.setTitle("");
+		}
+		else {
+			commerceDiscountImpl.setTitle(title);
+		}
+
+		commerceDiscountImpl.setUseCouponCode(useCouponCode);
+		commerceDiscountImpl.setUsePercentage(usePercentage);
 
 		if (lastPublishDate == Long.MIN_VALUE) {
 			commerceDiscountImpl.setLastPublishDate(null);
@@ -310,32 +319,33 @@ public class CommerceDiscountCacheModel
 		userName = objectInput.readUTF();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
-		title = objectInput.readUTF();
-		target = objectInput.readUTF();
 
-		useCouponCode = objectInput.readBoolean();
+		active = objectInput.readBoolean();
+		commerceCurrencyCode = objectInput.readUTF();
 		couponCode = objectInput.readUTF();
-
-		usePercentage = objectInput.readBoolean();
-		maximumDiscountAmount = (BigDecimal)objectInput.readObject();
+		displayDate = objectInput.readLong();
+		expirationDate = objectInput.readLong();
 		level = objectInput.readUTF();
 		level1 = (BigDecimal)objectInput.readObject();
 		level2 = (BigDecimal)objectInput.readObject();
 		level3 = (BigDecimal)objectInput.readObject();
 		level4 = (BigDecimal)objectInput.readObject();
-		limitationType = objectInput.readUTF();
 
 		limitationTimes = objectInput.readInt();
 
 		limitationTimesPerAccount = objectInput.readInt();
+		limitationType = objectInput.readUTF();
+		maximumDiscountAmount = (BigDecimal)objectInput.readObject();
 
 		numberOfUse = objectInput.readInt();
 
 		rulesConjunction = objectInput.readBoolean();
+		target = objectInput.readUTF();
+		title = objectInput.readUTF();
 
-		active = objectInput.readBoolean();
-		displayDate = objectInput.readLong();
-		expirationDate = objectInput.readLong();
+		useCouponCode = objectInput.readBoolean();
+
+		usePercentage = objectInput.readBoolean();
 		lastPublishDate = objectInput.readLong();
 
 		status = objectInput.readInt();
@@ -379,21 +389,14 @@ public class CommerceDiscountCacheModel
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 
-		if (title == null) {
+		objectOutput.writeBoolean(active);
+
+		if (commerceCurrencyCode == null) {
 			objectOutput.writeUTF("");
 		}
 		else {
-			objectOutput.writeUTF(title);
+			objectOutput.writeUTF(commerceCurrencyCode);
 		}
-
-		if (target == null) {
-			objectOutput.writeUTF("");
-		}
-		else {
-			objectOutput.writeUTF(target);
-		}
-
-		objectOutput.writeBoolean(useCouponCode);
 
 		if (couponCode == null) {
 			objectOutput.writeUTF("");
@@ -402,8 +405,8 @@ public class CommerceDiscountCacheModel
 			objectOutput.writeUTF(couponCode);
 		}
 
-		objectOutput.writeBoolean(usePercentage);
-		objectOutput.writeObject(maximumDiscountAmount);
+		objectOutput.writeLong(displayDate);
+		objectOutput.writeLong(expirationDate);
 
 		if (level == null) {
 			objectOutput.writeUTF("");
@@ -417,6 +420,10 @@ public class CommerceDiscountCacheModel
 		objectOutput.writeObject(level3);
 		objectOutput.writeObject(level4);
 
+		objectOutput.writeInt(limitationTimes);
+
+		objectOutput.writeInt(limitationTimesPerAccount);
+
 		if (limitationType == null) {
 			objectOutput.writeUTF("");
 		}
@@ -424,17 +431,29 @@ public class CommerceDiscountCacheModel
 			objectOutput.writeUTF(limitationType);
 		}
 
-		objectOutput.writeInt(limitationTimes);
-
-		objectOutput.writeInt(limitationTimesPerAccount);
+		objectOutput.writeObject(maximumDiscountAmount);
 
 		objectOutput.writeInt(numberOfUse);
 
 		objectOutput.writeBoolean(rulesConjunction);
 
-		objectOutput.writeBoolean(active);
-		objectOutput.writeLong(displayDate);
-		objectOutput.writeLong(expirationDate);
+		if (target == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(target);
+		}
+
+		if (title == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(title);
+		}
+
+		objectOutput.writeBoolean(useCouponCode);
+
+		objectOutput.writeBoolean(usePercentage);
 		objectOutput.writeLong(lastPublishDate);
 
 		objectOutput.writeInt(status);
@@ -460,25 +479,26 @@ public class CommerceDiscountCacheModel
 	public String userName;
 	public long createDate;
 	public long modifiedDate;
-	public String title;
-	public String target;
-	public boolean useCouponCode;
+	public boolean active;
+	public String commerceCurrencyCode;
 	public String couponCode;
-	public boolean usePercentage;
-	public BigDecimal maximumDiscountAmount;
+	public long displayDate;
+	public long expirationDate;
 	public String level;
 	public BigDecimal level1;
 	public BigDecimal level2;
 	public BigDecimal level3;
 	public BigDecimal level4;
-	public String limitationType;
 	public int limitationTimes;
 	public int limitationTimesPerAccount;
+	public String limitationType;
+	public BigDecimal maximumDiscountAmount;
 	public int numberOfUse;
 	public boolean rulesConjunction;
-	public boolean active;
-	public long displayDate;
-	public long expirationDate;
+	public String target;
+	public String title;
+	public boolean useCouponCode;
+	public boolean usePercentage;
 	public long lastPublishDate;
 	public int status;
 	public long statusByUserId;

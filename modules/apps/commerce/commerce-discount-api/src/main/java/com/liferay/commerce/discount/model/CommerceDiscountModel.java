@@ -223,55 +223,40 @@ public interface CommerceDiscountModel
 	public void setModifiedDate(Date modifiedDate);
 
 	/**
-	 * Returns the title of this commerce discount.
+	 * Returns the active of this commerce discount.
 	 *
-	 * @return the title of this commerce discount
+	 * @return the active of this commerce discount
+	 */
+	public boolean getActive();
+
+	/**
+	 * Returns <code>true</code> if this commerce discount is active.
+	 *
+	 * @return <code>true</code> if this commerce discount is active; <code>false</code> otherwise
+	 */
+	public boolean isActive();
+
+	/**
+	 * Sets whether this commerce discount is active.
+	 *
+	 * @param active the active of this commerce discount
+	 */
+	public void setActive(boolean active);
+
+	/**
+	 * Returns the commerce currency code of this commerce discount.
+	 *
+	 * @return the commerce currency code of this commerce discount
 	 */
 	@AutoEscape
-	public String getTitle();
+	public String getCommerceCurrencyCode();
 
 	/**
-	 * Sets the title of this commerce discount.
+	 * Sets the commerce currency code of this commerce discount.
 	 *
-	 * @param title the title of this commerce discount
+	 * @param commerceCurrencyCode the commerce currency code of this commerce discount
 	 */
-	public void setTitle(String title);
-
-	/**
-	 * Returns the target of this commerce discount.
-	 *
-	 * @return the target of this commerce discount
-	 */
-	@AutoEscape
-	public String getTarget();
-
-	/**
-	 * Sets the target of this commerce discount.
-	 *
-	 * @param target the target of this commerce discount
-	 */
-	public void setTarget(String target);
-
-	/**
-	 * Returns the use coupon code of this commerce discount.
-	 *
-	 * @return the use coupon code of this commerce discount
-	 */
-	public boolean getUseCouponCode();
-
-	/**
-	 * Returns <code>true</code> if this commerce discount is use coupon code.
-	 *
-	 * @return <code>true</code> if this commerce discount is use coupon code; <code>false</code> otherwise
-	 */
-	public boolean isUseCouponCode();
-
-	/**
-	 * Sets whether this commerce discount is use coupon code.
-	 *
-	 * @param useCouponCode the use coupon code of this commerce discount
-	 */
-	public void setUseCouponCode(boolean useCouponCode);
+	public void setCommerceCurrencyCode(String commerceCurrencyCode);
 
 	/**
 	 * Returns the coupon code of this commerce discount.
@@ -289,39 +274,32 @@ public interface CommerceDiscountModel
 	public void setCouponCode(String couponCode);
 
 	/**
-	 * Returns the use percentage of this commerce discount.
+	 * Returns the display date of this commerce discount.
 	 *
-	 * @return the use percentage of this commerce discount
+	 * @return the display date of this commerce discount
 	 */
-	public boolean getUsePercentage();
+	public Date getDisplayDate();
 
 	/**
-	 * Returns <code>true</code> if this commerce discount is use percentage.
+	 * Sets the display date of this commerce discount.
 	 *
-	 * @return <code>true</code> if this commerce discount is use percentage; <code>false</code> otherwise
+	 * @param displayDate the display date of this commerce discount
 	 */
-	public boolean isUsePercentage();
+	public void setDisplayDate(Date displayDate);
 
 	/**
-	 * Sets whether this commerce discount is use percentage.
+	 * Returns the expiration date of this commerce discount.
 	 *
-	 * @param usePercentage the use percentage of this commerce discount
+	 * @return the expiration date of this commerce discount
 	 */
-	public void setUsePercentage(boolean usePercentage);
+	public Date getExpirationDate();
 
 	/**
-	 * Returns the maximum discount amount of this commerce discount.
+	 * Sets the expiration date of this commerce discount.
 	 *
-	 * @return the maximum discount amount of this commerce discount
+	 * @param expirationDate the expiration date of this commerce discount
 	 */
-	public BigDecimal getMaximumDiscountAmount();
-
-	/**
-	 * Sets the maximum discount amount of this commerce discount.
-	 *
-	 * @param maximumDiscountAmount the maximum discount amount of this commerce discount
-	 */
-	public void setMaximumDiscountAmount(BigDecimal maximumDiscountAmount);
+	public void setExpirationDate(Date expirationDate);
 
 	/**
 	 * Returns the level of this commerce discount.
@@ -395,21 +373,6 @@ public interface CommerceDiscountModel
 	public void setLevel4(BigDecimal level4);
 
 	/**
-	 * Returns the limitation type of this commerce discount.
-	 *
-	 * @return the limitation type of this commerce discount
-	 */
-	@AutoEscape
-	public String getLimitationType();
-
-	/**
-	 * Sets the limitation type of this commerce discount.
-	 *
-	 * @param limitationType the limitation type of this commerce discount
-	 */
-	public void setLimitationType(String limitationType);
-
-	/**
 	 * Returns the limitation times of this commerce discount.
 	 *
 	 * @return the limitation times of this commerce discount
@@ -436,6 +399,35 @@ public interface CommerceDiscountModel
 	 * @param limitationTimesPerAccount the limitation times per account of this commerce discount
 	 */
 	public void setLimitationTimesPerAccount(int limitationTimesPerAccount);
+
+	/**
+	 * Returns the limitation type of this commerce discount.
+	 *
+	 * @return the limitation type of this commerce discount
+	 */
+	@AutoEscape
+	public String getLimitationType();
+
+	/**
+	 * Sets the limitation type of this commerce discount.
+	 *
+	 * @param limitationType the limitation type of this commerce discount
+	 */
+	public void setLimitationType(String limitationType);
+
+	/**
+	 * Returns the maximum discount amount of this commerce discount.
+	 *
+	 * @return the maximum discount amount of this commerce discount
+	 */
+	public BigDecimal getMaximumDiscountAmount();
+
+	/**
+	 * Sets the maximum discount amount of this commerce discount.
+	 *
+	 * @param maximumDiscountAmount the maximum discount amount of this commerce discount
+	 */
+	public void setMaximumDiscountAmount(BigDecimal maximumDiscountAmount);
 
 	/**
 	 * Returns the number of use of this commerce discount.
@@ -473,53 +465,76 @@ public interface CommerceDiscountModel
 	public void setRulesConjunction(boolean rulesConjunction);
 
 	/**
-	 * Returns the active of this commerce discount.
+	 * Returns the target of this commerce discount.
 	 *
-	 * @return the active of this commerce discount
+	 * @return the target of this commerce discount
 	 */
-	public boolean getActive();
+	@AutoEscape
+	public String getTarget();
 
 	/**
-	 * Returns <code>true</code> if this commerce discount is active.
+	 * Sets the target of this commerce discount.
 	 *
-	 * @return <code>true</code> if this commerce discount is active; <code>false</code> otherwise
+	 * @param target the target of this commerce discount
 	 */
-	public boolean isActive();
+	public void setTarget(String target);
 
 	/**
-	 * Sets whether this commerce discount is active.
+	 * Returns the title of this commerce discount.
 	 *
-	 * @param active the active of this commerce discount
+	 * @return the title of this commerce discount
 	 */
-	public void setActive(boolean active);
+	@AutoEscape
+	public String getTitle();
 
 	/**
-	 * Returns the display date of this commerce discount.
+	 * Sets the title of this commerce discount.
 	 *
-	 * @return the display date of this commerce discount
+	 * @param title the title of this commerce discount
 	 */
-	public Date getDisplayDate();
+	public void setTitle(String title);
 
 	/**
-	 * Sets the display date of this commerce discount.
+	 * Returns the use coupon code of this commerce discount.
 	 *
-	 * @param displayDate the display date of this commerce discount
+	 * @return the use coupon code of this commerce discount
 	 */
-	public void setDisplayDate(Date displayDate);
+	public boolean getUseCouponCode();
 
 	/**
-	 * Returns the expiration date of this commerce discount.
+	 * Returns <code>true</code> if this commerce discount is use coupon code.
 	 *
-	 * @return the expiration date of this commerce discount
+	 * @return <code>true</code> if this commerce discount is use coupon code; <code>false</code> otherwise
 	 */
-	public Date getExpirationDate();
+	public boolean isUseCouponCode();
 
 	/**
-	 * Sets the expiration date of this commerce discount.
+	 * Sets whether this commerce discount is use coupon code.
 	 *
-	 * @param expirationDate the expiration date of this commerce discount
+	 * @param useCouponCode the use coupon code of this commerce discount
 	 */
-	public void setExpirationDate(Date expirationDate);
+	public void setUseCouponCode(boolean useCouponCode);
+
+	/**
+	 * Returns the use percentage of this commerce discount.
+	 *
+	 * @return the use percentage of this commerce discount
+	 */
+	public boolean getUsePercentage();
+
+	/**
+	 * Returns <code>true</code> if this commerce discount is use percentage.
+	 *
+	 * @return <code>true</code> if this commerce discount is use percentage; <code>false</code> otherwise
+	 */
+	public boolean isUsePercentage();
+
+	/**
+	 * Sets whether this commerce discount is use percentage.
+	 *
+	 * @param usePercentage the use percentage of this commerce discount
+	 */
+	public void setUsePercentage(boolean usePercentage);
 
 	/**
 	 * Returns the last publish date of this commerce discount.

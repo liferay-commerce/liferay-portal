@@ -144,18 +144,16 @@ public class CommerceDiscountPersistenceTest {
 
 		newCommerceDiscount.setModifiedDate(RandomTestUtil.nextDate());
 
-		newCommerceDiscount.setTitle(RandomTestUtil.randomString());
+		newCommerceDiscount.setActive(RandomTestUtil.randomBoolean());
 
-		newCommerceDiscount.setTarget(RandomTestUtil.randomString());
-
-		newCommerceDiscount.setUseCouponCode(RandomTestUtil.randomBoolean());
+		newCommerceDiscount.setCommerceCurrencyCode(
+			RandomTestUtil.randomString());
 
 		newCommerceDiscount.setCouponCode(RandomTestUtil.randomString());
 
-		newCommerceDiscount.setUsePercentage(RandomTestUtil.randomBoolean());
+		newCommerceDiscount.setDisplayDate(RandomTestUtil.nextDate());
 
-		newCommerceDiscount.setMaximumDiscountAmount(
-			new BigDecimal(RandomTestUtil.nextDouble()));
+		newCommerceDiscount.setExpirationDate(RandomTestUtil.nextDate());
 
 		newCommerceDiscount.setLevel(RandomTestUtil.randomString());
 
@@ -171,22 +169,27 @@ public class CommerceDiscountPersistenceTest {
 		newCommerceDiscount.setLevel4(
 			new BigDecimal(RandomTestUtil.nextDouble()));
 
-		newCommerceDiscount.setLimitationType(RandomTestUtil.randomString());
-
 		newCommerceDiscount.setLimitationTimes(RandomTestUtil.nextInt());
 
 		newCommerceDiscount.setLimitationTimesPerAccount(
 			RandomTestUtil.nextInt());
 
+		newCommerceDiscount.setLimitationType(RandomTestUtil.randomString());
+
+		newCommerceDiscount.setMaximumDiscountAmount(
+			new BigDecimal(RandomTestUtil.nextDouble()));
+
 		newCommerceDiscount.setNumberOfUse(RandomTestUtil.nextInt());
 
 		newCommerceDiscount.setRulesConjunction(RandomTestUtil.randomBoolean());
 
-		newCommerceDiscount.setActive(RandomTestUtil.randomBoolean());
+		newCommerceDiscount.setTarget(RandomTestUtil.randomString());
 
-		newCommerceDiscount.setDisplayDate(RandomTestUtil.nextDate());
+		newCommerceDiscount.setTitle(RandomTestUtil.randomString());
 
-		newCommerceDiscount.setExpirationDate(RandomTestUtil.nextDate());
+		newCommerceDiscount.setUseCouponCode(RandomTestUtil.randomBoolean());
+
+		newCommerceDiscount.setUsePercentage(RandomTestUtil.randomBoolean());
 
 		newCommerceDiscount.setLastPublishDate(RandomTestUtil.nextDate());
 
@@ -230,23 +233,21 @@ public class CommerceDiscountPersistenceTest {
 			Time.getShortTimestamp(existingCommerceDiscount.getModifiedDate()),
 			Time.getShortTimestamp(newCommerceDiscount.getModifiedDate()));
 		Assert.assertEquals(
-			existingCommerceDiscount.getTitle(),
-			newCommerceDiscount.getTitle());
+			existingCommerceDiscount.isActive(),
+			newCommerceDiscount.isActive());
 		Assert.assertEquals(
-			existingCommerceDiscount.getTarget(),
-			newCommerceDiscount.getTarget());
-		Assert.assertEquals(
-			existingCommerceDiscount.isUseCouponCode(),
-			newCommerceDiscount.isUseCouponCode());
+			existingCommerceDiscount.getCommerceCurrencyCode(),
+			newCommerceDiscount.getCommerceCurrencyCode());
 		Assert.assertEquals(
 			existingCommerceDiscount.getCouponCode(),
 			newCommerceDiscount.getCouponCode());
 		Assert.assertEquals(
-			existingCommerceDiscount.isUsePercentage(),
-			newCommerceDiscount.isUsePercentage());
+			Time.getShortTimestamp(existingCommerceDiscount.getDisplayDate()),
+			Time.getShortTimestamp(newCommerceDiscount.getDisplayDate()));
 		Assert.assertEquals(
-			existingCommerceDiscount.getMaximumDiscountAmount(),
-			newCommerceDiscount.getMaximumDiscountAmount());
+			Time.getShortTimestamp(
+				existingCommerceDiscount.getExpirationDate()),
+			Time.getShortTimestamp(newCommerceDiscount.getExpirationDate()));
 		Assert.assertEquals(
 			existingCommerceDiscount.getLevel(),
 			newCommerceDiscount.getLevel());
@@ -263,14 +264,17 @@ public class CommerceDiscountPersistenceTest {
 			existingCommerceDiscount.getLevel4(),
 			newCommerceDiscount.getLevel4());
 		Assert.assertEquals(
-			existingCommerceDiscount.getLimitationType(),
-			newCommerceDiscount.getLimitationType());
-		Assert.assertEquals(
 			existingCommerceDiscount.getLimitationTimes(),
 			newCommerceDiscount.getLimitationTimes());
 		Assert.assertEquals(
 			existingCommerceDiscount.getLimitationTimesPerAccount(),
 			newCommerceDiscount.getLimitationTimesPerAccount());
+		Assert.assertEquals(
+			existingCommerceDiscount.getLimitationType(),
+			newCommerceDiscount.getLimitationType());
+		Assert.assertEquals(
+			existingCommerceDiscount.getMaximumDiscountAmount(),
+			newCommerceDiscount.getMaximumDiscountAmount());
 		Assert.assertEquals(
 			existingCommerceDiscount.getNumberOfUse(),
 			newCommerceDiscount.getNumberOfUse());
@@ -278,15 +282,17 @@ public class CommerceDiscountPersistenceTest {
 			existingCommerceDiscount.isRulesConjunction(),
 			newCommerceDiscount.isRulesConjunction());
 		Assert.assertEquals(
-			existingCommerceDiscount.isActive(),
-			newCommerceDiscount.isActive());
+			existingCommerceDiscount.getTarget(),
+			newCommerceDiscount.getTarget());
 		Assert.assertEquals(
-			Time.getShortTimestamp(existingCommerceDiscount.getDisplayDate()),
-			Time.getShortTimestamp(newCommerceDiscount.getDisplayDate()));
+			existingCommerceDiscount.getTitle(),
+			newCommerceDiscount.getTitle());
 		Assert.assertEquals(
-			Time.getShortTimestamp(
-				existingCommerceDiscount.getExpirationDate()),
-			Time.getShortTimestamp(newCommerceDiscount.getExpirationDate()));
+			existingCommerceDiscount.isUseCouponCode(),
+			newCommerceDiscount.isUseCouponCode());
+		Assert.assertEquals(
+			existingCommerceDiscount.isUsePercentage(),
+			newCommerceDiscount.isUsePercentage());
 		Assert.assertEquals(
 			Time.getShortTimestamp(
 				existingCommerceDiscount.getLastPublishDate()),
@@ -378,27 +384,27 @@ public class CommerceDiscountPersistenceTest {
 	}
 
 	@Test
-	public void testCountByC_C_A() throws Exception {
-		_persistence.countByC_C_A(
-			RandomTestUtil.nextLong(), "", RandomTestUtil.randomBoolean());
+	public void testCountByC_A_C() throws Exception {
+		_persistence.countByC_A_C(
+			RandomTestUtil.nextLong(), RandomTestUtil.randomBoolean(), "");
 
-		_persistence.countByC_C_A(0L, "null", RandomTestUtil.randomBoolean());
+		_persistence.countByC_A_C(0L, RandomTestUtil.randomBoolean(), "null");
 
-		_persistence.countByC_C_A(
-			0L, (String)null, RandomTestUtil.randomBoolean());
+		_persistence.countByC_A_C(
+			0L, RandomTestUtil.randomBoolean(), (String)null);
 	}
 
 	@Test
-	public void testCountByC_L_A_S() throws Exception {
-		_persistence.countByC_L_A_S(
-			RandomTestUtil.nextLong(), "", RandomTestUtil.randomBoolean(),
+	public void testCountByC_A_L_S() throws Exception {
+		_persistence.countByC_A_L_S(
+			RandomTestUtil.nextLong(), RandomTestUtil.randomBoolean(), "",
 			RandomTestUtil.nextInt());
 
-		_persistence.countByC_L_A_S(
-			0L, "null", RandomTestUtil.randomBoolean(), 0);
+		_persistence.countByC_A_L_S(
+			0L, RandomTestUtil.randomBoolean(), "null", 0);
 
-		_persistence.countByC_L_A_S(
-			0L, (String)null, RandomTestUtil.randomBoolean(), 0);
+		_persistence.countByC_A_L_S(
+			0L, RandomTestUtil.randomBoolean(), (String)null, 0);
 	}
 
 	@Test
@@ -438,13 +444,14 @@ public class CommerceDiscountPersistenceTest {
 			"CommerceDiscount", "mvccVersion", true, "uuid", true,
 			"externalReferenceCode", true, "commerceDiscountId", true,
 			"companyId", true, "userId", true, "userName", true, "createDate",
-			true, "modifiedDate", true, "title", true, "target", true,
-			"useCouponCode", true, "couponCode", true, "usePercentage", true,
-			"maximumDiscountAmount", true, "level", true, "level1", true,
-			"level2", true, "level3", true, "level4", true, "limitationType",
-			true, "limitationTimes", true, "limitationTimesPerAccount", true,
-			"numberOfUse", true, "rulesConjunction", true, "active", true,
-			"displayDate", true, "expirationDate", true, "lastPublishDate",
+			true, "modifiedDate", true, "active", true, "commerceCurrencyCode",
+			true, "couponCode", true, "displayDate", true, "expirationDate",
+			true, "level", true, "level1", true, "level2", true, "level3", true,
+			"level4", true, "limitationTimes", true,
+			"limitationTimesPerAccount", true, "limitationType", true,
+			"maximumDiscountAmount", true, "numberOfUse", true,
+			"rulesConjunction", true, "target", true, "title", true,
+			"useCouponCode", true, "usePercentage", true, "lastPublishDate",
 			true, "status", true, "statusByUserId", true, "statusByUserName",
 			true, "statusDate", true);
 	}
@@ -724,15 +731,15 @@ public class CommerceDiscountPersistenceTest {
 				commerceDiscount, "getColumnOriginalValue",
 				new Class<?>[] {String.class}, "companyId"));
 		Assert.assertEquals(
-			commerceDiscount.getCouponCode(),
-			ReflectionTestUtil.invoke(
-				commerceDiscount, "getColumnOriginalValue",
-				new Class<?>[] {String.class}, "couponCode"));
-		Assert.assertEquals(
 			Boolean.valueOf(commerceDiscount.getActive()),
 			ReflectionTestUtil.<Boolean>invoke(
 				commerceDiscount, "getColumnOriginalValue",
 				new Class<?>[] {String.class}, "active_"));
+		Assert.assertEquals(
+			commerceDiscount.getCouponCode(),
+			ReflectionTestUtil.invoke(
+				commerceDiscount, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "couponCode"));
 
 		Assert.assertEquals(
 			commerceDiscount.getExternalReferenceCode(),
@@ -768,18 +775,15 @@ public class CommerceDiscountPersistenceTest {
 
 		commerceDiscount.setModifiedDate(RandomTestUtil.nextDate());
 
-		commerceDiscount.setTitle(RandomTestUtil.randomString());
+		commerceDiscount.setActive(RandomTestUtil.randomBoolean());
 
-		commerceDiscount.setTarget(RandomTestUtil.randomString());
-
-		commerceDiscount.setUseCouponCode(RandomTestUtil.randomBoolean());
+		commerceDiscount.setCommerceCurrencyCode(RandomTestUtil.randomString());
 
 		commerceDiscount.setCouponCode(RandomTestUtil.randomString());
 
-		commerceDiscount.setUsePercentage(RandomTestUtil.randomBoolean());
+		commerceDiscount.setDisplayDate(RandomTestUtil.nextDate());
 
-		commerceDiscount.setMaximumDiscountAmount(
-			new BigDecimal(RandomTestUtil.nextDouble()));
+		commerceDiscount.setExpirationDate(RandomTestUtil.nextDate());
 
 		commerceDiscount.setLevel(RandomTestUtil.randomString());
 
@@ -791,21 +795,26 @@ public class CommerceDiscountPersistenceTest {
 
 		commerceDiscount.setLevel4(new BigDecimal(RandomTestUtil.nextDouble()));
 
-		commerceDiscount.setLimitationType(RandomTestUtil.randomString());
-
 		commerceDiscount.setLimitationTimes(RandomTestUtil.nextInt());
 
 		commerceDiscount.setLimitationTimesPerAccount(RandomTestUtil.nextInt());
+
+		commerceDiscount.setLimitationType(RandomTestUtil.randomString());
+
+		commerceDiscount.setMaximumDiscountAmount(
+			new BigDecimal(RandomTestUtil.nextDouble()));
 
 		commerceDiscount.setNumberOfUse(RandomTestUtil.nextInt());
 
 		commerceDiscount.setRulesConjunction(RandomTestUtil.randomBoolean());
 
-		commerceDiscount.setActive(RandomTestUtil.randomBoolean());
+		commerceDiscount.setTarget(RandomTestUtil.randomString());
 
-		commerceDiscount.setDisplayDate(RandomTestUtil.nextDate());
+		commerceDiscount.setTitle(RandomTestUtil.randomString());
 
-		commerceDiscount.setExpirationDate(RandomTestUtil.nextDate());
+		commerceDiscount.setUseCouponCode(RandomTestUtil.randomBoolean());
+
+		commerceDiscount.setUsePercentage(RandomTestUtil.randomBoolean());
 
 		commerceDiscount.setLastPublishDate(RandomTestUtil.nextDate());
 

@@ -82,17 +82,18 @@ public class CommerceDiscountModelImpl
 		{"commerceDiscountId", Types.BIGINT}, {"companyId", Types.BIGINT},
 		{"userId", Types.BIGINT}, {"userName", Types.VARCHAR},
 		{"createDate", Types.TIMESTAMP}, {"modifiedDate", Types.TIMESTAMP},
-		{"title", Types.VARCHAR}, {"target", Types.VARCHAR},
-		{"useCouponCode", Types.BOOLEAN}, {"couponCode", Types.VARCHAR},
-		{"usePercentage", Types.BOOLEAN},
-		{"maximumDiscountAmount", Types.DECIMAL}, {"levelType", Types.VARCHAR},
+		{"active_", Types.BOOLEAN}, {"commerceCurrencyCode", Types.VARCHAR},
+		{"couponCode", Types.VARCHAR}, {"displayDate", Types.TIMESTAMP},
+		{"expirationDate", Types.TIMESTAMP}, {"levelType", Types.VARCHAR},
 		{"level1", Types.DECIMAL}, {"level2", Types.DECIMAL},
 		{"level3", Types.DECIMAL}, {"level4", Types.DECIMAL},
-		{"limitationType", Types.VARCHAR}, {"limitationTimes", Types.INTEGER},
+		{"limitationTimes", Types.INTEGER},
 		{"limitationTimesPerAccount", Types.INTEGER},
+		{"limitationType", Types.VARCHAR},
+		{"maximumDiscountAmount", Types.DECIMAL},
 		{"numberOfUse", Types.INTEGER}, {"rulesConjunction", Types.BOOLEAN},
-		{"active_", Types.BOOLEAN}, {"displayDate", Types.TIMESTAMP},
-		{"expirationDate", Types.TIMESTAMP},
+		{"target", Types.VARCHAR}, {"title", Types.VARCHAR},
+		{"useCouponCode", Types.BOOLEAN}, {"usePercentage", Types.BOOLEAN},
 		{"lastPublishDate", Types.TIMESTAMP}, {"status", Types.INTEGER},
 		{"statusByUserId", Types.BIGINT}, {"statusByUserName", Types.VARCHAR},
 		{"statusDate", Types.TIMESTAMP}
@@ -111,25 +112,26 @@ public class CommerceDiscountModelImpl
 		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
-		TABLE_COLUMNS_MAP.put("title", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("target", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("useCouponCode", Types.BOOLEAN);
+		TABLE_COLUMNS_MAP.put("active_", Types.BOOLEAN);
+		TABLE_COLUMNS_MAP.put("commerceCurrencyCode", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("couponCode", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("usePercentage", Types.BOOLEAN);
-		TABLE_COLUMNS_MAP.put("maximumDiscountAmount", Types.DECIMAL);
+		TABLE_COLUMNS_MAP.put("displayDate", Types.TIMESTAMP);
+		TABLE_COLUMNS_MAP.put("expirationDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("levelType", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("level1", Types.DECIMAL);
 		TABLE_COLUMNS_MAP.put("level2", Types.DECIMAL);
 		TABLE_COLUMNS_MAP.put("level3", Types.DECIMAL);
 		TABLE_COLUMNS_MAP.put("level4", Types.DECIMAL);
-		TABLE_COLUMNS_MAP.put("limitationType", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("limitationTimes", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("limitationTimesPerAccount", Types.INTEGER);
+		TABLE_COLUMNS_MAP.put("limitationType", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("maximumDiscountAmount", Types.DECIMAL);
 		TABLE_COLUMNS_MAP.put("numberOfUse", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("rulesConjunction", Types.BOOLEAN);
-		TABLE_COLUMNS_MAP.put("active_", Types.BOOLEAN);
-		TABLE_COLUMNS_MAP.put("displayDate", Types.TIMESTAMP);
-		TABLE_COLUMNS_MAP.put("expirationDate", Types.TIMESTAMP);
+		TABLE_COLUMNS_MAP.put("target", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("title", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("useCouponCode", Types.BOOLEAN);
+		TABLE_COLUMNS_MAP.put("usePercentage", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("lastPublishDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("status", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("statusByUserId", Types.BIGINT);
@@ -138,7 +140,7 @@ public class CommerceDiscountModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table CommerceDiscount (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,commerceDiscountId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,title VARCHAR(75) null,target VARCHAR(75) null,useCouponCode BOOLEAN,couponCode VARCHAR(75) null,usePercentage BOOLEAN,maximumDiscountAmount DECIMAL(30, 16) null,levelType VARCHAR(75) null,level1 DECIMAL(30, 16) null,level2 DECIMAL(30, 16) null,level3 DECIMAL(30, 16) null,level4 DECIMAL(30, 16) null,limitationType VARCHAR(75) null,limitationTimes INTEGER,limitationTimesPerAccount INTEGER,numberOfUse INTEGER,rulesConjunction BOOLEAN,active_ BOOLEAN,displayDate DATE null,expirationDate DATE null,lastPublishDate DATE null,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null)";
+		"create table CommerceDiscount (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,commerceDiscountId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,active_ BOOLEAN,commerceCurrencyCode VARCHAR(75) null,couponCode VARCHAR(75) null,displayDate DATE null,expirationDate DATE null,levelType VARCHAR(75) null,level1 DECIMAL(30, 16) null,level2 DECIMAL(30, 16) null,level3 DECIMAL(30, 16) null,level4 DECIMAL(30, 16) null,limitationTimes INTEGER,limitationTimesPerAccount INTEGER,limitationType VARCHAR(75) null,maximumDiscountAmount DECIMAL(30, 16) null,numberOfUse INTEGER,rulesConjunction BOOLEAN,target VARCHAR(75) null,title VARCHAR(75) null,useCouponCode BOOLEAN,usePercentage BOOLEAN,lastPublishDate DATE null,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null)";
 
 	public static final String TABLE_SQL_DROP = "drop table CommerceDiscount";
 
@@ -376,20 +378,16 @@ public class CommerceDiscountModelImpl
 			"modifiedDate",
 			(BiConsumer<CommerceDiscount, Date>)
 				CommerceDiscount::setModifiedDate);
-		attributeGetterFunctions.put("title", CommerceDiscount::getTitle);
+		attributeGetterFunctions.put("active", CommerceDiscount::getActive);
 		attributeSetterBiConsumers.put(
-			"title",
-			(BiConsumer<CommerceDiscount, String>)CommerceDiscount::setTitle);
-		attributeGetterFunctions.put("target", CommerceDiscount::getTarget);
-		attributeSetterBiConsumers.put(
-			"target",
-			(BiConsumer<CommerceDiscount, String>)CommerceDiscount::setTarget);
+			"active",
+			(BiConsumer<CommerceDiscount, Boolean>)CommerceDiscount::setActive);
 		attributeGetterFunctions.put(
-			"useCouponCode", CommerceDiscount::getUseCouponCode);
+			"commerceCurrencyCode", CommerceDiscount::getCommerceCurrencyCode);
 		attributeSetterBiConsumers.put(
-			"useCouponCode",
-			(BiConsumer<CommerceDiscount, Boolean>)
-				CommerceDiscount::setUseCouponCode);
+			"commerceCurrencyCode",
+			(BiConsumer<CommerceDiscount, String>)
+				CommerceDiscount::setCommerceCurrencyCode);
 		attributeGetterFunctions.put(
 			"couponCode", CommerceDiscount::getCouponCode);
 		attributeSetterBiConsumers.put(
@@ -397,18 +395,17 @@ public class CommerceDiscountModelImpl
 			(BiConsumer<CommerceDiscount, String>)
 				CommerceDiscount::setCouponCode);
 		attributeGetterFunctions.put(
-			"usePercentage", CommerceDiscount::getUsePercentage);
+			"displayDate", CommerceDiscount::getDisplayDate);
 		attributeSetterBiConsumers.put(
-			"usePercentage",
-			(BiConsumer<CommerceDiscount, Boolean>)
-				CommerceDiscount::setUsePercentage);
+			"displayDate",
+			(BiConsumer<CommerceDiscount, Date>)
+				CommerceDiscount::setDisplayDate);
 		attributeGetterFunctions.put(
-			"maximumDiscountAmount",
-			CommerceDiscount::getMaximumDiscountAmount);
+			"expirationDate", CommerceDiscount::getExpirationDate);
 		attributeSetterBiConsumers.put(
-			"maximumDiscountAmount",
-			(BiConsumer<CommerceDiscount, BigDecimal>)
-				CommerceDiscount::setMaximumDiscountAmount);
+			"expirationDate",
+			(BiConsumer<CommerceDiscount, Date>)
+				CommerceDiscount::setExpirationDate);
 		attributeGetterFunctions.put("level", CommerceDiscount::getLevel);
 		attributeSetterBiConsumers.put(
 			"level",
@@ -434,12 +431,6 @@ public class CommerceDiscountModelImpl
 			(BiConsumer<CommerceDiscount, BigDecimal>)
 				CommerceDiscount::setLevel4);
 		attributeGetterFunctions.put(
-			"limitationType", CommerceDiscount::getLimitationType);
-		attributeSetterBiConsumers.put(
-			"limitationType",
-			(BiConsumer<CommerceDiscount, String>)
-				CommerceDiscount::setLimitationType);
-		attributeGetterFunctions.put(
 			"limitationTimes", CommerceDiscount::getLimitationTimes);
 		attributeSetterBiConsumers.put(
 			"limitationTimes",
@@ -453,6 +444,19 @@ public class CommerceDiscountModelImpl
 			(BiConsumer<CommerceDiscount, Integer>)
 				CommerceDiscount::setLimitationTimesPerAccount);
 		attributeGetterFunctions.put(
+			"limitationType", CommerceDiscount::getLimitationType);
+		attributeSetterBiConsumers.put(
+			"limitationType",
+			(BiConsumer<CommerceDiscount, String>)
+				CommerceDiscount::setLimitationType);
+		attributeGetterFunctions.put(
+			"maximumDiscountAmount",
+			CommerceDiscount::getMaximumDiscountAmount);
+		attributeSetterBiConsumers.put(
+			"maximumDiscountAmount",
+			(BiConsumer<CommerceDiscount, BigDecimal>)
+				CommerceDiscount::setMaximumDiscountAmount);
+		attributeGetterFunctions.put(
 			"numberOfUse", CommerceDiscount::getNumberOfUse);
 		attributeSetterBiConsumers.put(
 			"numberOfUse",
@@ -464,22 +468,26 @@ public class CommerceDiscountModelImpl
 			"rulesConjunction",
 			(BiConsumer<CommerceDiscount, Boolean>)
 				CommerceDiscount::setRulesConjunction);
-		attributeGetterFunctions.put("active", CommerceDiscount::getActive);
+		attributeGetterFunctions.put("target", CommerceDiscount::getTarget);
 		attributeSetterBiConsumers.put(
-			"active",
-			(BiConsumer<CommerceDiscount, Boolean>)CommerceDiscount::setActive);
+			"target",
+			(BiConsumer<CommerceDiscount, String>)CommerceDiscount::setTarget);
+		attributeGetterFunctions.put("title", CommerceDiscount::getTitle);
+		attributeSetterBiConsumers.put(
+			"title",
+			(BiConsumer<CommerceDiscount, String>)CommerceDiscount::setTitle);
 		attributeGetterFunctions.put(
-			"displayDate", CommerceDiscount::getDisplayDate);
+			"useCouponCode", CommerceDiscount::getUseCouponCode);
 		attributeSetterBiConsumers.put(
-			"displayDate",
-			(BiConsumer<CommerceDiscount, Date>)
-				CommerceDiscount::setDisplayDate);
+			"useCouponCode",
+			(BiConsumer<CommerceDiscount, Boolean>)
+				CommerceDiscount::setUseCouponCode);
 		attributeGetterFunctions.put(
-			"expirationDate", CommerceDiscount::getExpirationDate);
+			"usePercentage", CommerceDiscount::getUsePercentage);
 		attributeSetterBiConsumers.put(
-			"expirationDate",
-			(BiConsumer<CommerceDiscount, Date>)
-				CommerceDiscount::setExpirationDate);
+			"usePercentage",
+			(BiConsumer<CommerceDiscount, Boolean>)
+				CommerceDiscount::setUsePercentage);
 		attributeGetterFunctions.put(
 			"lastPublishDate", CommerceDiscount::getLastPublishDate);
 		attributeSetterBiConsumers.put(
@@ -717,63 +725,53 @@ public class CommerceDiscountModelImpl
 
 	@JSON
 	@Override
-	public String getTitle() {
-		if (_title == null) {
+	public boolean getActive() {
+		return _active;
+	}
+
+	@JSON
+	@Override
+	public boolean isActive() {
+		return _active;
+	}
+
+	@Override
+	public void setActive(boolean active) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_active = active;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public boolean getOriginalActive() {
+		return GetterUtil.getBoolean(
+			this.<Boolean>getColumnOriginalValue("active_"));
+	}
+
+	@JSON
+	@Override
+	public String getCommerceCurrencyCode() {
+		if (_commerceCurrencyCode == null) {
 			return "";
 		}
 		else {
-			return _title;
+			return _commerceCurrencyCode;
 		}
 	}
 
 	@Override
-	public void setTitle(String title) {
+	public void setCommerceCurrencyCode(String commerceCurrencyCode) {
 		if (_columnOriginalValues == Collections.EMPTY_MAP) {
 			_setColumnOriginalValues();
 		}
 
-		_title = title;
-	}
-
-	@JSON
-	@Override
-	public String getTarget() {
-		if (_target == null) {
-			return "";
-		}
-		else {
-			return _target;
-		}
-	}
-
-	@Override
-	public void setTarget(String target) {
-		if (_columnOriginalValues == Collections.EMPTY_MAP) {
-			_setColumnOriginalValues();
-		}
-
-		_target = target;
-	}
-
-	@JSON
-	@Override
-	public boolean getUseCouponCode() {
-		return _useCouponCode;
-	}
-
-	@JSON
-	@Override
-	public boolean isUseCouponCode() {
-		return _useCouponCode;
-	}
-
-	@Override
-	public void setUseCouponCode(boolean useCouponCode) {
-		if (_columnOriginalValues == Collections.EMPTY_MAP) {
-			_setColumnOriginalValues();
-		}
-
-		_useCouponCode = useCouponCode;
+		_commerceCurrencyCode = commerceCurrencyCode;
 	}
 
 	@JSON
@@ -807,38 +805,50 @@ public class CommerceDiscountModelImpl
 
 	@JSON
 	@Override
-	public boolean getUsePercentage() {
-		return _usePercentage;
-	}
-
-	@JSON
-	@Override
-	public boolean isUsePercentage() {
-		return _usePercentage;
+	public Date getDisplayDate() {
+		return _displayDate;
 	}
 
 	@Override
-	public void setUsePercentage(boolean usePercentage) {
+	public void setDisplayDate(Date displayDate) {
 		if (_columnOriginalValues == Collections.EMPTY_MAP) {
 			_setColumnOriginalValues();
 		}
 
-		_usePercentage = usePercentage;
+		_displayDate = displayDate;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public Date getOriginalDisplayDate() {
+		return getColumnOriginalValue("displayDate");
 	}
 
 	@JSON
 	@Override
-	public BigDecimal getMaximumDiscountAmount() {
-		return _maximumDiscountAmount;
+	public Date getExpirationDate() {
+		return _expirationDate;
 	}
 
 	@Override
-	public void setMaximumDiscountAmount(BigDecimal maximumDiscountAmount) {
+	public void setExpirationDate(Date expirationDate) {
 		if (_columnOriginalValues == Collections.EMPTY_MAP) {
 			_setColumnOriginalValues();
 		}
 
-		_maximumDiscountAmount = maximumDiscountAmount;
+		_expirationDate = expirationDate;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public Date getOriginalExpirationDate() {
+		return getColumnOriginalValue("expirationDate");
 	}
 
 	@JSON
@@ -932,26 +942,6 @@ public class CommerceDiscountModelImpl
 
 	@JSON
 	@Override
-	public String getLimitationType() {
-		if (_limitationType == null) {
-			return "";
-		}
-		else {
-			return _limitationType;
-		}
-	}
-
-	@Override
-	public void setLimitationType(String limitationType) {
-		if (_columnOriginalValues == Collections.EMPTY_MAP) {
-			_setColumnOriginalValues();
-		}
-
-		_limitationType = limitationType;
-	}
-
-	@JSON
-	@Override
 	public int getLimitationTimes() {
 		return _limitationTimes;
 	}
@@ -978,6 +968,41 @@ public class CommerceDiscountModelImpl
 		}
 
 		_limitationTimesPerAccount = limitationTimesPerAccount;
+	}
+
+	@JSON
+	@Override
+	public String getLimitationType() {
+		if (_limitationType == null) {
+			return "";
+		}
+		else {
+			return _limitationType;
+		}
+	}
+
+	@Override
+	public void setLimitationType(String limitationType) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_limitationType = limitationType;
+	}
+
+	@JSON
+	@Override
+	public BigDecimal getMaximumDiscountAmount() {
+		return _maximumDiscountAmount;
+	}
+
+	@Override
+	public void setMaximumDiscountAmount(BigDecimal maximumDiscountAmount) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_maximumDiscountAmount = maximumDiscountAmount;
 	}
 
 	@JSON
@@ -1018,81 +1043,84 @@ public class CommerceDiscountModelImpl
 
 	@JSON
 	@Override
-	public boolean getActive() {
-		return _active;
+	public String getTarget() {
+		if (_target == null) {
+			return "";
+		}
+		else {
+			return _target;
+		}
 	}
 
-	@JSON
 	@Override
-	public boolean isActive() {
-		return _active;
-	}
-
-	@Override
-	public void setActive(boolean active) {
+	public void setTarget(String target) {
 		if (_columnOriginalValues == Collections.EMPTY_MAP) {
 			_setColumnOriginalValues();
 		}
 
-		_active = active;
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public boolean getOriginalActive() {
-		return GetterUtil.getBoolean(
-			this.<Boolean>getColumnOriginalValue("active_"));
+		_target = target;
 	}
 
 	@JSON
 	@Override
-	public Date getDisplayDate() {
-		return _displayDate;
+	public String getTitle() {
+		if (_title == null) {
+			return "";
+		}
+		else {
+			return _title;
+		}
 	}
 
 	@Override
-	public void setDisplayDate(Date displayDate) {
+	public void setTitle(String title) {
 		if (_columnOriginalValues == Collections.EMPTY_MAP) {
 			_setColumnOriginalValues();
 		}
 
-		_displayDate = displayDate;
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public Date getOriginalDisplayDate() {
-		return getColumnOriginalValue("displayDate");
+		_title = title;
 	}
 
 	@JSON
 	@Override
-	public Date getExpirationDate() {
-		return _expirationDate;
+	public boolean getUseCouponCode() {
+		return _useCouponCode;
+	}
+
+	@JSON
+	@Override
+	public boolean isUseCouponCode() {
+		return _useCouponCode;
 	}
 
 	@Override
-	public void setExpirationDate(Date expirationDate) {
+	public void setUseCouponCode(boolean useCouponCode) {
 		if (_columnOriginalValues == Collections.EMPTY_MAP) {
 			_setColumnOriginalValues();
 		}
 
-		_expirationDate = expirationDate;
+		_useCouponCode = useCouponCode;
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public Date getOriginalExpirationDate() {
-		return getColumnOriginalValue("expirationDate");
+	@JSON
+	@Override
+	public boolean getUsePercentage() {
+		return _usePercentage;
+	}
+
+	@JSON
+	@Override
+	public boolean isUsePercentage() {
+		return _usePercentage;
+	}
+
+	@Override
+	public void setUsePercentage(boolean usePercentage) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_usePercentage = usePercentage;
 	}
 
 	@JSON
@@ -1353,27 +1381,28 @@ public class CommerceDiscountModelImpl
 		commerceDiscountImpl.setUserName(getUserName());
 		commerceDiscountImpl.setCreateDate(getCreateDate());
 		commerceDiscountImpl.setModifiedDate(getModifiedDate());
-		commerceDiscountImpl.setTitle(getTitle());
-		commerceDiscountImpl.setTarget(getTarget());
-		commerceDiscountImpl.setUseCouponCode(isUseCouponCode());
+		commerceDiscountImpl.setActive(isActive());
+		commerceDiscountImpl.setCommerceCurrencyCode(getCommerceCurrencyCode());
 		commerceDiscountImpl.setCouponCode(getCouponCode());
-		commerceDiscountImpl.setUsePercentage(isUsePercentage());
-		commerceDiscountImpl.setMaximumDiscountAmount(
-			getMaximumDiscountAmount());
+		commerceDiscountImpl.setDisplayDate(getDisplayDate());
+		commerceDiscountImpl.setExpirationDate(getExpirationDate());
 		commerceDiscountImpl.setLevel(getLevel());
 		commerceDiscountImpl.setLevel1(getLevel1());
 		commerceDiscountImpl.setLevel2(getLevel2());
 		commerceDiscountImpl.setLevel3(getLevel3());
 		commerceDiscountImpl.setLevel4(getLevel4());
-		commerceDiscountImpl.setLimitationType(getLimitationType());
 		commerceDiscountImpl.setLimitationTimes(getLimitationTimes());
 		commerceDiscountImpl.setLimitationTimesPerAccount(
 			getLimitationTimesPerAccount());
+		commerceDiscountImpl.setLimitationType(getLimitationType());
+		commerceDiscountImpl.setMaximumDiscountAmount(
+			getMaximumDiscountAmount());
 		commerceDiscountImpl.setNumberOfUse(getNumberOfUse());
 		commerceDiscountImpl.setRulesConjunction(isRulesConjunction());
-		commerceDiscountImpl.setActive(isActive());
-		commerceDiscountImpl.setDisplayDate(getDisplayDate());
-		commerceDiscountImpl.setExpirationDate(getExpirationDate());
+		commerceDiscountImpl.setTarget(getTarget());
+		commerceDiscountImpl.setTitle(getTitle());
+		commerceDiscountImpl.setUseCouponCode(isUseCouponCode());
+		commerceDiscountImpl.setUsePercentage(isUsePercentage());
 		commerceDiscountImpl.setLastPublishDate(getLastPublishDate());
 		commerceDiscountImpl.setStatus(getStatus());
 		commerceDiscountImpl.setStatusByUserId(getStatusByUserId());
@@ -1407,18 +1436,16 @@ public class CommerceDiscountModelImpl
 			this.<Date>getColumnOriginalValue("createDate"));
 		commerceDiscountImpl.setModifiedDate(
 			this.<Date>getColumnOriginalValue("modifiedDate"));
-		commerceDiscountImpl.setTitle(
-			this.<String>getColumnOriginalValue("title"));
-		commerceDiscountImpl.setTarget(
-			this.<String>getColumnOriginalValue("target"));
-		commerceDiscountImpl.setUseCouponCode(
-			this.<Boolean>getColumnOriginalValue("useCouponCode"));
+		commerceDiscountImpl.setActive(
+			this.<Boolean>getColumnOriginalValue("active_"));
+		commerceDiscountImpl.setCommerceCurrencyCode(
+			this.<String>getColumnOriginalValue("commerceCurrencyCode"));
 		commerceDiscountImpl.setCouponCode(
 			this.<String>getColumnOriginalValue("couponCode"));
-		commerceDiscountImpl.setUsePercentage(
-			this.<Boolean>getColumnOriginalValue("usePercentage"));
-		commerceDiscountImpl.setMaximumDiscountAmount(
-			this.<BigDecimal>getColumnOriginalValue("maximumDiscountAmount"));
+		commerceDiscountImpl.setDisplayDate(
+			this.<Date>getColumnOriginalValue("displayDate"));
+		commerceDiscountImpl.setExpirationDate(
+			this.<Date>getColumnOriginalValue("expirationDate"));
 		commerceDiscountImpl.setLevel(
 			this.<String>getColumnOriginalValue("levelType"));
 		commerceDiscountImpl.setLevel1(
@@ -1429,22 +1456,26 @@ public class CommerceDiscountModelImpl
 			this.<BigDecimal>getColumnOriginalValue("level3"));
 		commerceDiscountImpl.setLevel4(
 			this.<BigDecimal>getColumnOriginalValue("level4"));
-		commerceDiscountImpl.setLimitationType(
-			this.<String>getColumnOriginalValue("limitationType"));
 		commerceDiscountImpl.setLimitationTimes(
 			this.<Integer>getColumnOriginalValue("limitationTimes"));
 		commerceDiscountImpl.setLimitationTimesPerAccount(
 			this.<Integer>getColumnOriginalValue("limitationTimesPerAccount"));
+		commerceDiscountImpl.setLimitationType(
+			this.<String>getColumnOriginalValue("limitationType"));
+		commerceDiscountImpl.setMaximumDiscountAmount(
+			this.<BigDecimal>getColumnOriginalValue("maximumDiscountAmount"));
 		commerceDiscountImpl.setNumberOfUse(
 			this.<Integer>getColumnOriginalValue("numberOfUse"));
 		commerceDiscountImpl.setRulesConjunction(
 			this.<Boolean>getColumnOriginalValue("rulesConjunction"));
-		commerceDiscountImpl.setActive(
-			this.<Boolean>getColumnOriginalValue("active_"));
-		commerceDiscountImpl.setDisplayDate(
-			this.<Date>getColumnOriginalValue("displayDate"));
-		commerceDiscountImpl.setExpirationDate(
-			this.<Date>getColumnOriginalValue("expirationDate"));
+		commerceDiscountImpl.setTarget(
+			this.<String>getColumnOriginalValue("target"));
+		commerceDiscountImpl.setTitle(
+			this.<String>getColumnOriginalValue("title"));
+		commerceDiscountImpl.setUseCouponCode(
+			this.<Boolean>getColumnOriginalValue("useCouponCode"));
+		commerceDiscountImpl.setUsePercentage(
+			this.<Boolean>getColumnOriginalValue("usePercentage"));
 		commerceDiscountImpl.setLastPublishDate(
 			this.<Date>getColumnOriginalValue("lastPublishDate"));
 		commerceDiscountImpl.setStatus(
@@ -1588,23 +1619,19 @@ public class CommerceDiscountModelImpl
 			commerceDiscountCacheModel.modifiedDate = Long.MIN_VALUE;
 		}
 
-		commerceDiscountCacheModel.title = getTitle();
+		commerceDiscountCacheModel.active = isActive();
 
-		String title = commerceDiscountCacheModel.title;
+		commerceDiscountCacheModel.commerceCurrencyCode =
+			getCommerceCurrencyCode();
 
-		if ((title != null) && (title.length() == 0)) {
-			commerceDiscountCacheModel.title = null;
+		String commerceCurrencyCode =
+			commerceDiscountCacheModel.commerceCurrencyCode;
+
+		if ((commerceCurrencyCode != null) &&
+			(commerceCurrencyCode.length() == 0)) {
+
+			commerceDiscountCacheModel.commerceCurrencyCode = null;
 		}
-
-		commerceDiscountCacheModel.target = getTarget();
-
-		String target = commerceDiscountCacheModel.target;
-
-		if ((target != null) && (target.length() == 0)) {
-			commerceDiscountCacheModel.target = null;
-		}
-
-		commerceDiscountCacheModel.useCouponCode = isUseCouponCode();
 
 		commerceDiscountCacheModel.couponCode = getCouponCode();
 
@@ -1613,46 +1640,6 @@ public class CommerceDiscountModelImpl
 		if ((couponCode != null) && (couponCode.length() == 0)) {
 			commerceDiscountCacheModel.couponCode = null;
 		}
-
-		commerceDiscountCacheModel.usePercentage = isUsePercentage();
-
-		commerceDiscountCacheModel.maximumDiscountAmount =
-			getMaximumDiscountAmount();
-
-		commerceDiscountCacheModel.level = getLevel();
-
-		String level = commerceDiscountCacheModel.level;
-
-		if ((level != null) && (level.length() == 0)) {
-			commerceDiscountCacheModel.level = null;
-		}
-
-		commerceDiscountCacheModel.level1 = getLevel1();
-
-		commerceDiscountCacheModel.level2 = getLevel2();
-
-		commerceDiscountCacheModel.level3 = getLevel3();
-
-		commerceDiscountCacheModel.level4 = getLevel4();
-
-		commerceDiscountCacheModel.limitationType = getLimitationType();
-
-		String limitationType = commerceDiscountCacheModel.limitationType;
-
-		if ((limitationType != null) && (limitationType.length() == 0)) {
-			commerceDiscountCacheModel.limitationType = null;
-		}
-
-		commerceDiscountCacheModel.limitationTimes = getLimitationTimes();
-
-		commerceDiscountCacheModel.limitationTimesPerAccount =
-			getLimitationTimesPerAccount();
-
-		commerceDiscountCacheModel.numberOfUse = getNumberOfUse();
-
-		commerceDiscountCacheModel.rulesConjunction = isRulesConjunction();
-
-		commerceDiscountCacheModel.active = isActive();
 
 		Date displayDate = getDisplayDate();
 
@@ -1672,6 +1659,62 @@ public class CommerceDiscountModelImpl
 		else {
 			commerceDiscountCacheModel.expirationDate = Long.MIN_VALUE;
 		}
+
+		commerceDiscountCacheModel.level = getLevel();
+
+		String level = commerceDiscountCacheModel.level;
+
+		if ((level != null) && (level.length() == 0)) {
+			commerceDiscountCacheModel.level = null;
+		}
+
+		commerceDiscountCacheModel.level1 = getLevel1();
+
+		commerceDiscountCacheModel.level2 = getLevel2();
+
+		commerceDiscountCacheModel.level3 = getLevel3();
+
+		commerceDiscountCacheModel.level4 = getLevel4();
+
+		commerceDiscountCacheModel.limitationTimes = getLimitationTimes();
+
+		commerceDiscountCacheModel.limitationTimesPerAccount =
+			getLimitationTimesPerAccount();
+
+		commerceDiscountCacheModel.limitationType = getLimitationType();
+
+		String limitationType = commerceDiscountCacheModel.limitationType;
+
+		if ((limitationType != null) && (limitationType.length() == 0)) {
+			commerceDiscountCacheModel.limitationType = null;
+		}
+
+		commerceDiscountCacheModel.maximumDiscountAmount =
+			getMaximumDiscountAmount();
+
+		commerceDiscountCacheModel.numberOfUse = getNumberOfUse();
+
+		commerceDiscountCacheModel.rulesConjunction = isRulesConjunction();
+
+		commerceDiscountCacheModel.target = getTarget();
+
+		String target = commerceDiscountCacheModel.target;
+
+		if ((target != null) && (target.length() == 0)) {
+			commerceDiscountCacheModel.target = null;
+		}
+
+		commerceDiscountCacheModel.title = getTitle();
+
+		String title = commerceDiscountCacheModel.title;
+
+		if ((title != null) && (title.length() == 0)) {
+			commerceDiscountCacheModel.title = null;
+		}
+
+		commerceDiscountCacheModel.useCouponCode = isUseCouponCode();
+
+		commerceDiscountCacheModel.usePercentage = isUsePercentage();
 
 		Date lastPublishDate = getLastPublishDate();
 
@@ -1776,25 +1819,26 @@ public class CommerceDiscountModelImpl
 	private Date _createDate;
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
-	private String _title;
-	private String _target;
-	private boolean _useCouponCode;
+	private boolean _active;
+	private String _commerceCurrencyCode;
 	private String _couponCode;
-	private boolean _usePercentage;
-	private BigDecimal _maximumDiscountAmount;
+	private Date _displayDate;
+	private Date _expirationDate;
 	private String _level;
 	private BigDecimal _level1;
 	private BigDecimal _level2;
 	private BigDecimal _level3;
 	private BigDecimal _level4;
-	private String _limitationType;
 	private int _limitationTimes;
 	private int _limitationTimesPerAccount;
+	private String _limitationType;
+	private BigDecimal _maximumDiscountAmount;
 	private int _numberOfUse;
 	private boolean _rulesConjunction;
-	private boolean _active;
-	private Date _displayDate;
-	private Date _expirationDate;
+	private String _target;
+	private String _title;
+	private boolean _useCouponCode;
+	private boolean _usePercentage;
 	private Date _lastPublishDate;
 	private int _status;
 	private long _statusByUserId;
@@ -1840,27 +1884,29 @@ public class CommerceDiscountModelImpl
 		_columnOriginalValues.put("userName", _userName);
 		_columnOriginalValues.put("createDate", _createDate);
 		_columnOriginalValues.put("modifiedDate", _modifiedDate);
-		_columnOriginalValues.put("title", _title);
-		_columnOriginalValues.put("target", _target);
-		_columnOriginalValues.put("useCouponCode", _useCouponCode);
-		_columnOriginalValues.put("couponCode", _couponCode);
-		_columnOriginalValues.put("usePercentage", _usePercentage);
+		_columnOriginalValues.put("active_", _active);
 		_columnOriginalValues.put(
-			"maximumDiscountAmount", _maximumDiscountAmount);
+			"commerceCurrencyCode", _commerceCurrencyCode);
+		_columnOriginalValues.put("couponCode", _couponCode);
+		_columnOriginalValues.put("displayDate", _displayDate);
+		_columnOriginalValues.put("expirationDate", _expirationDate);
 		_columnOriginalValues.put("levelType", _level);
 		_columnOriginalValues.put("level1", _level1);
 		_columnOriginalValues.put("level2", _level2);
 		_columnOriginalValues.put("level3", _level3);
 		_columnOriginalValues.put("level4", _level4);
-		_columnOriginalValues.put("limitationType", _limitationType);
 		_columnOriginalValues.put("limitationTimes", _limitationTimes);
 		_columnOriginalValues.put(
 			"limitationTimesPerAccount", _limitationTimesPerAccount);
+		_columnOriginalValues.put("limitationType", _limitationType);
+		_columnOriginalValues.put(
+			"maximumDiscountAmount", _maximumDiscountAmount);
 		_columnOriginalValues.put("numberOfUse", _numberOfUse);
 		_columnOriginalValues.put("rulesConjunction", _rulesConjunction);
-		_columnOriginalValues.put("active_", _active);
-		_columnOriginalValues.put("displayDate", _displayDate);
-		_columnOriginalValues.put("expirationDate", _expirationDate);
+		_columnOriginalValues.put("target", _target);
+		_columnOriginalValues.put("title", _title);
+		_columnOriginalValues.put("useCouponCode", _useCouponCode);
+		_columnOriginalValues.put("usePercentage", _usePercentage);
 		_columnOriginalValues.put("lastPublishDate", _lastPublishDate);
 		_columnOriginalValues.put("status", _status);
 		_columnOriginalValues.put("statusByUserId", _statusByUserId);
@@ -1874,8 +1920,8 @@ public class CommerceDiscountModelImpl
 		Map<String, String> attributeNames = new HashMap<>();
 
 		attributeNames.put("uuid_", "uuid");
-		attributeNames.put("levelType", "level");
 		attributeNames.put("active_", "active");
+		attributeNames.put("levelType", "level");
 
 		_attributeNames = Collections.unmodifiableMap(attributeNames);
 	}
@@ -1909,53 +1955,55 @@ public class CommerceDiscountModelImpl
 
 		columnBitmasks.put("modifiedDate", 256L);
 
-		columnBitmasks.put("title", 512L);
+		columnBitmasks.put("active_", 512L);
 
-		columnBitmasks.put("target", 1024L);
+		columnBitmasks.put("commerceCurrencyCode", 1024L);
 
-		columnBitmasks.put("useCouponCode", 2048L);
+		columnBitmasks.put("couponCode", 2048L);
 
-		columnBitmasks.put("couponCode", 4096L);
+		columnBitmasks.put("displayDate", 4096L);
 
-		columnBitmasks.put("usePercentage", 8192L);
+		columnBitmasks.put("expirationDate", 8192L);
 
-		columnBitmasks.put("maximumDiscountAmount", 16384L);
+		columnBitmasks.put("levelType", 16384L);
 
-		columnBitmasks.put("levelType", 32768L);
+		columnBitmasks.put("level1", 32768L);
 
-		columnBitmasks.put("level1", 65536L);
+		columnBitmasks.put("level2", 65536L);
 
-		columnBitmasks.put("level2", 131072L);
+		columnBitmasks.put("level3", 131072L);
 
-		columnBitmasks.put("level3", 262144L);
+		columnBitmasks.put("level4", 262144L);
 
-		columnBitmasks.put("level4", 524288L);
+		columnBitmasks.put("limitationTimes", 524288L);
 
-		columnBitmasks.put("limitationType", 1048576L);
+		columnBitmasks.put("limitationTimesPerAccount", 1048576L);
 
-		columnBitmasks.put("limitationTimes", 2097152L);
+		columnBitmasks.put("limitationType", 2097152L);
 
-		columnBitmasks.put("limitationTimesPerAccount", 4194304L);
+		columnBitmasks.put("maximumDiscountAmount", 4194304L);
 
 		columnBitmasks.put("numberOfUse", 8388608L);
 
 		columnBitmasks.put("rulesConjunction", 16777216L);
 
-		columnBitmasks.put("active_", 33554432L);
+		columnBitmasks.put("target", 33554432L);
 
-		columnBitmasks.put("displayDate", 67108864L);
+		columnBitmasks.put("title", 67108864L);
 
-		columnBitmasks.put("expirationDate", 134217728L);
+		columnBitmasks.put("useCouponCode", 134217728L);
 
-		columnBitmasks.put("lastPublishDate", 268435456L);
+		columnBitmasks.put("usePercentage", 268435456L);
 
-		columnBitmasks.put("status", 536870912L);
+		columnBitmasks.put("lastPublishDate", 536870912L);
 
-		columnBitmasks.put("statusByUserId", 1073741824L);
+		columnBitmasks.put("status", 1073741824L);
 
-		columnBitmasks.put("statusByUserName", 2147483648L);
+		columnBitmasks.put("statusByUserId", 2147483648L);
 
-		columnBitmasks.put("statusDate", 4294967296L);
+		columnBitmasks.put("statusByUserName", 4294967296L);
+
+		columnBitmasks.put("statusDate", 8589934592L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}

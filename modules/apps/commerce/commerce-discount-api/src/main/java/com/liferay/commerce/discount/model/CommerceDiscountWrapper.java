@@ -54,26 +54,27 @@ public class CommerceDiscountWrapper
 		attributes.put("userName", getUserName());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
-		attributes.put("title", getTitle());
-		attributes.put("target", getTarget());
-		attributes.put("useCouponCode", isUseCouponCode());
+		attributes.put("active", isActive());
+		attributes.put("commerceCurrencyCode", getCommerceCurrencyCode());
 		attributes.put("couponCode", getCouponCode());
-		attributes.put("usePercentage", isUsePercentage());
-		attributes.put("maximumDiscountAmount", getMaximumDiscountAmount());
+		attributes.put("displayDate", getDisplayDate());
+		attributes.put("expirationDate", getExpirationDate());
 		attributes.put("level", getLevel());
 		attributes.put("level1", getLevel1());
 		attributes.put("level2", getLevel2());
 		attributes.put("level3", getLevel3());
 		attributes.put("level4", getLevel4());
-		attributes.put("limitationType", getLimitationType());
 		attributes.put("limitationTimes", getLimitationTimes());
 		attributes.put(
 			"limitationTimesPerAccount", getLimitationTimesPerAccount());
+		attributes.put("limitationType", getLimitationType());
+		attributes.put("maximumDiscountAmount", getMaximumDiscountAmount());
 		attributes.put("numberOfUse", getNumberOfUse());
 		attributes.put("rulesConjunction", isRulesConjunction());
-		attributes.put("active", isActive());
-		attributes.put("displayDate", getDisplayDate());
-		attributes.put("expirationDate", getExpirationDate());
+		attributes.put("target", getTarget());
+		attributes.put("title", getTitle());
+		attributes.put("useCouponCode", isUseCouponCode());
+		attributes.put("usePercentage", isUsePercentage());
 		attributes.put("lastPublishDate", getLastPublishDate());
 		attributes.put("status", getStatus());
 		attributes.put("statusByUserId", getStatusByUserId());
@@ -140,22 +141,17 @@ public class CommerceDiscountWrapper
 			setModifiedDate(modifiedDate);
 		}
 
-		String title = (String)attributes.get("title");
+		Boolean active = (Boolean)attributes.get("active");
 
-		if (title != null) {
-			setTitle(title);
+		if (active != null) {
+			setActive(active);
 		}
 
-		String target = (String)attributes.get("target");
+		String commerceCurrencyCode = (String)attributes.get(
+			"commerceCurrencyCode");
 
-		if (target != null) {
-			setTarget(target);
-		}
-
-		Boolean useCouponCode = (Boolean)attributes.get("useCouponCode");
-
-		if (useCouponCode != null) {
-			setUseCouponCode(useCouponCode);
+		if (commerceCurrencyCode != null) {
+			setCommerceCurrencyCode(commerceCurrencyCode);
 		}
 
 		String couponCode = (String)attributes.get("couponCode");
@@ -164,17 +160,16 @@ public class CommerceDiscountWrapper
 			setCouponCode(couponCode);
 		}
 
-		Boolean usePercentage = (Boolean)attributes.get("usePercentage");
+		Date displayDate = (Date)attributes.get("displayDate");
 
-		if (usePercentage != null) {
-			setUsePercentage(usePercentage);
+		if (displayDate != null) {
+			setDisplayDate(displayDate);
 		}
 
-		BigDecimal maximumDiscountAmount = (BigDecimal)attributes.get(
-			"maximumDiscountAmount");
+		Date expirationDate = (Date)attributes.get("expirationDate");
 
-		if (maximumDiscountAmount != null) {
-			setMaximumDiscountAmount(maximumDiscountAmount);
+		if (expirationDate != null) {
+			setExpirationDate(expirationDate);
 		}
 
 		String level = (String)attributes.get("level");
@@ -207,12 +202,6 @@ public class CommerceDiscountWrapper
 			setLevel4(level4);
 		}
 
-		String limitationType = (String)attributes.get("limitationType");
-
-		if (limitationType != null) {
-			setLimitationType(limitationType);
-		}
-
 		Integer limitationTimes = (Integer)attributes.get("limitationTimes");
 
 		if (limitationTimes != null) {
@@ -224,6 +213,19 @@ public class CommerceDiscountWrapper
 
 		if (limitationTimesPerAccount != null) {
 			setLimitationTimesPerAccount(limitationTimesPerAccount);
+		}
+
+		String limitationType = (String)attributes.get("limitationType");
+
+		if (limitationType != null) {
+			setLimitationType(limitationType);
+		}
+
+		BigDecimal maximumDiscountAmount = (BigDecimal)attributes.get(
+			"maximumDiscountAmount");
+
+		if (maximumDiscountAmount != null) {
+			setMaximumDiscountAmount(maximumDiscountAmount);
 		}
 
 		Integer numberOfUse = (Integer)attributes.get("numberOfUse");
@@ -238,22 +240,28 @@ public class CommerceDiscountWrapper
 			setRulesConjunction(rulesConjunction);
 		}
 
-		Boolean active = (Boolean)attributes.get("active");
+		String target = (String)attributes.get("target");
 
-		if (active != null) {
-			setActive(active);
+		if (target != null) {
+			setTarget(target);
 		}
 
-		Date displayDate = (Date)attributes.get("displayDate");
+		String title = (String)attributes.get("title");
 
-		if (displayDate != null) {
-			setDisplayDate(displayDate);
+		if (title != null) {
+			setTitle(title);
 		}
 
-		Date expirationDate = (Date)attributes.get("expirationDate");
+		Boolean useCouponCode = (Boolean)attributes.get("useCouponCode");
 
-		if (expirationDate != null) {
-			setExpirationDate(expirationDate);
+		if (useCouponCode != null) {
+			setUseCouponCode(useCouponCode);
+		}
+
+		Boolean usePercentage = (Boolean)attributes.get("usePercentage");
+
+		if (usePercentage != null) {
+			setUsePercentage(usePercentage);
 		}
 
 		Date lastPublishDate = (Date)attributes.get("lastPublishDate");
@@ -300,6 +308,16 @@ public class CommerceDiscountWrapper
 	@Override
 	public boolean getActive() {
 		return model.getActive();
+	}
+
+	/**
+	 * Returns the commerce currency code of this commerce discount.
+	 *
+	 * @return the commerce currency code of this commerce discount
+	 */
+	@Override
+	public String getCommerceCurrencyCode() {
+		return model.getCommerceCurrencyCode();
 	}
 
 	@Override
@@ -792,6 +810,16 @@ public class CommerceDiscountWrapper
 	@Override
 	public void setActive(boolean active) {
 		model.setActive(active);
+	}
+
+	/**
+	 * Sets the commerce currency code of this commerce discount.
+	 *
+	 * @param commerceCurrencyCode the commerce currency code of this commerce discount
+	 */
+	@Override
+	public void setCommerceCurrencyCode(String commerceCurrencyCode) {
+		model.setCommerceCurrencyCode(commerceCurrencyCode);
 	}
 
 	/**

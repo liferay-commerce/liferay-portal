@@ -58,23 +58,20 @@ public class CommerceDiscountTable extends BaseTable<CommerceDiscountTable> {
 	public final Column<CommerceDiscountTable, Date> modifiedDate =
 		createColumn(
 			"modifiedDate", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);
-	public final Column<CommerceDiscountTable, String> title = createColumn(
-		"title", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
-	public final Column<CommerceDiscountTable, String> target = createColumn(
-		"target", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
-	public final Column<CommerceDiscountTable, Boolean> useCouponCode =
+	public final Column<CommerceDiscountTable, Boolean> active = createColumn(
+		"active_", Boolean.class, Types.BOOLEAN, Column.FLAG_DEFAULT);
+	public final Column<CommerceDiscountTable, String> commerceCurrencyCode =
 		createColumn(
-			"useCouponCode", Boolean.class, Types.BOOLEAN, Column.FLAG_DEFAULT);
+			"commerceCurrencyCode", String.class, Types.VARCHAR,
+			Column.FLAG_DEFAULT);
 	public final Column<CommerceDiscountTable, String> couponCode =
 		createColumn(
 			"couponCode", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
-	public final Column<CommerceDiscountTable, Boolean> usePercentage =
+	public final Column<CommerceDiscountTable, Date> displayDate = createColumn(
+		"displayDate", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);
+	public final Column<CommerceDiscountTable, Date> expirationDate =
 		createColumn(
-			"usePercentage", Boolean.class, Types.BOOLEAN, Column.FLAG_DEFAULT);
-	public final Column<CommerceDiscountTable, BigDecimal>
-		maximumDiscountAmount = createColumn(
-			"maximumDiscountAmount", BigDecimal.class, Types.DECIMAL,
-			Column.FLAG_DEFAULT);
+			"expirationDate", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);
 	public final Column<CommerceDiscountTable, String> level = createColumn(
 		"levelType", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<CommerceDiscountTable, BigDecimal> level1 =
@@ -89,9 +86,6 @@ public class CommerceDiscountTable extends BaseTable<CommerceDiscountTable> {
 	public final Column<CommerceDiscountTable, BigDecimal> level4 =
 		createColumn(
 			"level4", BigDecimal.class, Types.DECIMAL, Column.FLAG_DEFAULT);
-	public final Column<CommerceDiscountTable, String> limitationType =
-		createColumn(
-			"limitationType", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<CommerceDiscountTable, Integer> limitationTimes =
 		createColumn(
 			"limitationTimes", Integer.class, Types.INTEGER,
@@ -100,6 +94,13 @@ public class CommerceDiscountTable extends BaseTable<CommerceDiscountTable> {
 		limitationTimesPerAccount = createColumn(
 			"limitationTimesPerAccount", Integer.class, Types.INTEGER,
 			Column.FLAG_DEFAULT);
+	public final Column<CommerceDiscountTable, String> limitationType =
+		createColumn(
+			"limitationType", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<CommerceDiscountTable, BigDecimal>
+		maximumDiscountAmount = createColumn(
+			"maximumDiscountAmount", BigDecimal.class, Types.DECIMAL,
+			Column.FLAG_DEFAULT);
 	public final Column<CommerceDiscountTable, Integer> numberOfUse =
 		createColumn(
 			"numberOfUse", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
@@ -107,13 +108,16 @@ public class CommerceDiscountTable extends BaseTable<CommerceDiscountTable> {
 		createColumn(
 			"rulesConjunction", Boolean.class, Types.BOOLEAN,
 			Column.FLAG_DEFAULT);
-	public final Column<CommerceDiscountTable, Boolean> active = createColumn(
-		"active_", Boolean.class, Types.BOOLEAN, Column.FLAG_DEFAULT);
-	public final Column<CommerceDiscountTable, Date> displayDate = createColumn(
-		"displayDate", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);
-	public final Column<CommerceDiscountTable, Date> expirationDate =
+	public final Column<CommerceDiscountTable, String> target = createColumn(
+		"target", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<CommerceDiscountTable, String> title = createColumn(
+		"title", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<CommerceDiscountTable, Boolean> useCouponCode =
 		createColumn(
-			"expirationDate", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);
+			"useCouponCode", Boolean.class, Types.BOOLEAN, Column.FLAG_DEFAULT);
+	public final Column<CommerceDiscountTable, Boolean> usePercentage =
+		createColumn(
+			"usePercentage", Boolean.class, Types.BOOLEAN, Column.FLAG_DEFAULT);
 	public final Column<CommerceDiscountTable, Date> lastPublishDate =
 		createColumn(
 			"lastPublishDate", Date.class, Types.TIMESTAMP,
