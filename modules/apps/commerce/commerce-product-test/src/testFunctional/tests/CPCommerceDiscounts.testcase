@@ -1103,4 +1103,67 @@ definition {
 			locator1 = "CommerceEntry#WORKFLOW_STATUS");
 	}
 
+	@description = "This is a test for COMMERCE-10663. When a single approver is set workflow is triggered once the user clicks on 'Submit for Publication"
+	@priority = "3"
+	test ViewWorkFlowIsCorrectAppliedWhenSingleApproverIsSet {
+		property portal.acceptance = "false";
+
+		task ("Given Single Approver is set") {
+			ApplicationsMenu.gotoPortlet(
+				category = "Workflow",
+				panel = "Applications",
+				portlet = "Process Builder");
+
+			Navigator.gotoNavItem(navItem = "Configuration");
+
+			Workflow.configureWorkflow(
+				workflowDefinition = "Single Approver",
+				workflowResourceValue = "Commerce Discount");
+		}
+
+		task ("And new discount is added and discount is submitted for publication") {
+			CommerceNavigator.gotoPortlet(
+				category = "Pricing",
+				portlet = "Discounts");
+
+			Click(locator1 = "Button#PLUS");
+
+			SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_IFRAME");
+
+			Type(
+				locator1 = "TextInput#NAME",
+				value1 = "Test DIscount");
+
+			Select(
+				key_fieldLabel = "Type",
+				locator1 = "Select#GENERIC_SELECT_FIELD",
+				value1 = "Percentage");
+
+			Select(
+				key_fieldLabel = "Apply To",
+				locator1 = "Select#GENERIC_SELECT_FIELD",
+				value1 = "Products");
+
+			Button.click(button = "Submit");
+
+			WaitForElementPresent(
+				key_status = "Draft",
+				locator1 = "CommerceEntry#WORKFLOW_STATUS");
+
+			AssertElementPresent(
+				key_status = "Draft",
+				locator1 = "CommerceEntry#WORKFLOW_STATUS");
+
+			Click(
+				key_text = "Submit for Publication",
+				locator1 = "Button#ANY");
+		}
+
+		task ("Then status for the discount is changed to PENDING (CREATED)") {
+			AssertElementPresent(
+				key_status = "Pending (Created)",
+				locator1 = "CommerceEntry#WORKFLOW_STATUS");
+		}
+	}
+
 }
