@@ -210,24 +210,24 @@ public class DiscountResourceImpl extends BaseDiscountResourceImpl {
 		CommerceDiscount commerceDiscount =
 			_commerceDiscountService.addOrUpdateCommerceDiscount(
 				discount.getExternalReferenceCode(),
-				GetterUtil.getLong(discount.getId()), discount.getTitle(),
-				discount.getTarget(),
-				GetterUtil.getBoolean(discount.getUseCouponCode()),
-				discount.getCouponCode(),
-				GetterUtil.getBoolean(discount.getUsePercentage()),
-				discount.getMaximumDiscountAmount(),
-				discount.getPercentageLevel1(), discount.getPercentageLevel2(),
-				discount.getPercentageLevel3(), discount.getPercentageLevel4(),
-				discount.getLimitationType(),
-				GetterUtil.getInteger(discount.getLimitationTimes()),
 				GetterUtil.getBoolean(discount.getActive()),
+				discount.getCurrencyCode(),
+				GetterUtil.getLong(discount.getId()), discount.getCouponCode(),
 				displayDateConfig.getMonth(), displayDateConfig.getDay(),
 				displayDateConfig.getYear(), displayDateConfig.getHour(),
 				displayDateConfig.getMinute(), expirationDateConfig.getMonth(),
 				expirationDateConfig.getDay(), expirationDateConfig.getYear(),
 				expirationDateConfig.getHour(),
-				expirationDateConfig.getMinute(),
-				GetterUtil.getBoolean(discount.getNeverExpire(), true),
+				expirationDateConfig.getMinute(), null,
+				discount.getPercentageLevel1(), discount.getPercentageLevel2(),
+				discount.getPercentageLevel3(), discount.getPercentageLevel4(),
+				GetterUtil.getInteger(discount.getLimitationTimes()), 0,
+				discount.getLimitationType(),
+				discount.getMaximumDiscountAmount(),
+				GetterUtil.getBoolean(discount.getNeverExpire(), true), true,
+				discount.getTarget(), discount.getTitle(),
+				GetterUtil.getBoolean(discount.getUseCouponCode()),
+				GetterUtil.getBoolean(discount.getUsePercentage()),
 				serviceContext);
 
 		// Expando
@@ -287,19 +287,19 @@ public class DiscountResourceImpl extends BaseDiscountResourceImpl {
 		DateConfig expirationDateConfig = new DateConfig(expirationCalendar);
 
 		commerceDiscount = _commerceDiscountService.updateCommerceDiscount(
-			commerceDiscount.getCommerceDiscountId(), discount.getTitle(),
-			discount.getTarget(),
+			GetterUtil.get(discount.getActive(), commerceDiscount.isActive()),
 			GetterUtil.get(
-				discount.getUseCouponCode(),
-				commerceDiscount.isUseCouponCode()),
+				discount.getCurrencyCode(),
+				commerceDiscount.getCommerceCurrencyCode()),
+			commerceDiscount.getCommerceDiscountId(),
 			GetterUtil.get(
 				discount.getCouponCode(), commerceDiscount.getCouponCode()),
-			GetterUtil.get(
-				discount.getUsePercentage(),
-				commerceDiscount.isUsePercentage()),
-			(BigDecimal)GetterUtil.get(
-				discount.getMaximumDiscountAmount(),
-				commerceDiscount.getMaximumDiscountAmount()),
+			displayDateConfig.getMonth(), displayDateConfig.getDay(),
+			displayDateConfig.getYear(), displayDateConfig.getHour(),
+			displayDateConfig.getMinute(), expirationDateConfig.getMonth(),
+			expirationDateConfig.getDay(), expirationDateConfig.getYear(),
+			expirationDateConfig.getHour(), expirationDateConfig.getMinute(),
+			null,
 			(BigDecimal)GetterUtil.get(
 				discount.getPercentageLevel1(), commerceDiscount.getLevel1()),
 			(BigDecimal)GetterUtil.get(
@@ -308,17 +308,21 @@ public class DiscountResourceImpl extends BaseDiscountResourceImpl {
 				discount.getPercentageLevel3(), commerceDiscount.getLevel3()),
 			(BigDecimal)GetterUtil.get(
 				discount.getPercentageLevel4(), commerceDiscount.getLevel4()),
-			discount.getLimitationType(),
 			GetterUtil.get(
 				discount.getLimitationTimes(),
 				commerceDiscount.getLimitationTimes()),
-			GetterUtil.get(discount.getActive(), commerceDiscount.isActive()),
-			displayDateConfig.getMonth(), displayDateConfig.getDay(),
-			displayDateConfig.getYear(), displayDateConfig.getHour(),
-			displayDateConfig.getMinute(), expirationDateConfig.getMonth(),
-			expirationDateConfig.getDay(), expirationDateConfig.getYear(),
-			expirationDateConfig.getHour(), expirationDateConfig.getMinute(),
-			GetterUtil.getBoolean(discount.getNeverExpire(), true),
+			0, discount.getLimitationType(),
+			(BigDecimal)GetterUtil.get(
+				discount.getMaximumDiscountAmount(),
+				commerceDiscount.getMaximumDiscountAmount()),
+			GetterUtil.getBoolean(discount.getNeverExpire(), true), true,
+			discount.getTarget(), discount.getTitle(),
+			GetterUtil.get(
+				discount.getUseCouponCode(),
+				commerceDiscount.isUseCouponCode()),
+			GetterUtil.get(
+				discount.getUsePercentage(),
+				commerceDiscount.isUsePercentage()),
 			serviceContext);
 
 		// Expando

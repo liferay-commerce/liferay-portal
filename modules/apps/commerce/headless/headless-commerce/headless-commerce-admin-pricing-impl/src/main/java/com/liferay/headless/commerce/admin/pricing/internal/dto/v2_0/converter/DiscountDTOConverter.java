@@ -144,8 +144,9 @@ public class DiscountDTOConverter
 		}
 
 		CommerceCurrency commerceCurrency =
-			_commerceCurrencyService.fetchPrimaryCommerceCurrency(
-				commerceDiscount.getCompanyId());
+			_commerceCurrencyService.getCommerceCurrency(
+				commerceDiscount.getCompanyId(),
+				commerceDiscount.getCommerceCurrencyCode());
 
 		if (commerceDiscount.isUsePercentage()) {
 			return _percentageFormatter.getLocalizedPercentage(
