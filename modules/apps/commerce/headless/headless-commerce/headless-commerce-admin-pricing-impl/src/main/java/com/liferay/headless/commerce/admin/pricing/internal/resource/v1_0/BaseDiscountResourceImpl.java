@@ -123,7 +123,7 @@ public abstract class BaseDiscountResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-pricing/v1.0/discounts' -d $'{"active": ___, "couponCode": ___, "customFields": ___, "discountAccountGroups": ___, "discountCategories": ___, "discountProducts": ___, "discountRules": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "id": ___, "limitationTimes": ___, "limitationType": ___, "maximumDiscountAmount": ___, "neverExpire": ___, "numberOfUse": ___, "percentageLevel1": ___, "percentageLevel2": ___, "percentageLevel3": ___, "percentageLevel4": ___, "target": ___, "title": ___, "useCouponCode": ___, "usePercentage": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-pricing/v1.0/discounts' -d $'{"active": ___, "couponCode": ___, "currencyCode": ___, "customFields": ___, "discountAccountGroups": ___, "discountCategories": ___, "discountProducts": ___, "discountRules": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "id": ___, "limitationTimes": ___, "limitationType": ___, "maximumDiscountAmount": ___, "neverExpire": ___, "numberOfUse": ___, "percentageLevel1": ___, "percentageLevel2": ___, "percentageLevel3": ___, "percentageLevel4": ___, "target": ___, "title": ___, "useCouponCode": ___, "usePercentage": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Discount")}
@@ -250,7 +250,7 @@ public abstract class BaseDiscountResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-pricing/v1.0/discounts/by-externalReferenceCode/{externalReferenceCode}' -d $'{"active": ___, "couponCode": ___, "customFields": ___, "discountAccountGroups": ___, "discountCategories": ___, "discountProducts": ___, "discountRules": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "id": ___, "limitationTimes": ___, "limitationType": ___, "maximumDiscountAmount": ___, "neverExpire": ___, "numberOfUse": ___, "percentageLevel1": ___, "percentageLevel2": ___, "percentageLevel3": ___, "percentageLevel4": ___, "target": ___, "title": ___, "useCouponCode": ___, "usePercentage": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-pricing/v1.0/discounts/by-externalReferenceCode/{externalReferenceCode}' -d $'{"active": ___, "couponCode": ___, "currencyCode": ___, "customFields": ___, "discountAccountGroups": ___, "discountCategories": ___, "discountProducts": ___, "discountRules": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "id": ___, "limitationTimes": ___, "limitationType": ___, "maximumDiscountAmount": ___, "neverExpire": ___, "numberOfUse": ___, "percentageLevel1": ___, "percentageLevel2": ___, "percentageLevel3": ___, "percentageLevel4": ___, "target": ___, "title": ___, "useCouponCode": ___, "usePercentage": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -397,7 +397,7 @@ public abstract class BaseDiscountResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-pricing/v1.0/discounts/{id}' -d $'{"active": ___, "couponCode": ___, "customFields": ___, "discountAccountGroups": ___, "discountCategories": ___, "discountProducts": ___, "discountRules": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "id": ___, "limitationTimes": ___, "limitationType": ___, "maximumDiscountAmount": ___, "neverExpire": ___, "numberOfUse": ___, "percentageLevel1": ___, "percentageLevel2": ___, "percentageLevel3": ___, "percentageLevel4": ___, "target": ___, "title": ___, "useCouponCode": ___, "usePercentage": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-pricing/v1.0/discounts/{id}' -d $'{"active": ___, "couponCode": ___, "currencyCode": ___, "customFields": ___, "discountAccountGroups": ___, "discountCategories": ___, "discountProducts": ___, "discountRules": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "id": ___, "limitationTimes": ___, "limitationType": ___, "maximumDiscountAmount": ___, "neverExpire": ___, "numberOfUse": ___, "percentageLevel1": ___, "percentageLevel2": ___, "percentageLevel3": ___, "percentageLevel4": ___, "target": ___, "title": ___, "useCouponCode": ___, "usePercentage": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {

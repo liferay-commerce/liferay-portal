@@ -80,6 +80,27 @@ public class Discount implements Cloneable, Serializable {
 
 	protected String couponCode;
 
+	public String getCurrencyCode() {
+		return currencyCode;
+	}
+
+	public void setCurrencyCode(String currencyCode) {
+		this.currencyCode = currencyCode;
+	}
+
+	public void setCurrencyCode(
+		UnsafeSupplier<String, Exception> currencyCodeUnsafeSupplier) {
+
+		try {
+			currencyCode = currencyCodeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String currencyCode;
+
 	public Map<String, ?> getCustomFields() {
 		return customFields;
 	}

@@ -90,6 +90,20 @@ public class DiscountSerDes {
 			sb.append("\"");
 		}
 
+		if (discount.getCurrencyCode() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"currencyCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(discount.getCurrencyCode()));
+
+			sb.append("\"");
+		}
+
 		if (discount.getCustomFields() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -414,6 +428,13 @@ public class DiscountSerDes {
 			map.put("couponCode", String.valueOf(discount.getCouponCode()));
 		}
 
+		if (discount.getCurrencyCode() == null) {
+			map.put("currencyCode", null);
+		}
+		else {
+			map.put("currencyCode", String.valueOf(discount.getCurrencyCode()));
+		}
+
 		if (discount.getCustomFields() == null) {
 			map.put("customFields", null);
 		}
@@ -624,6 +645,11 @@ public class DiscountSerDes {
 			else if (Objects.equals(jsonParserFieldName, "couponCode")) {
 				if (jsonParserFieldValue != null) {
 					discount.setCouponCode((String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "currencyCode")) {
+				if (jsonParserFieldValue != null) {
+					discount.setCurrencyCode((String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "customFields")) {

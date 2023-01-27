@@ -123,6 +123,34 @@ public class Discount implements Serializable {
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String couponCode;
 
+	@Schema(example = "USD")
+	public String getCurrencyCode() {
+		return currencyCode;
+	}
+
+	public void setCurrencyCode(String currencyCode) {
+		this.currencyCode = currencyCode;
+	}
+
+	@JsonIgnore
+	public void setCurrencyCode(
+		UnsafeSupplier<String, Exception> currencyCodeUnsafeSupplier) {
+
+		try {
+			currencyCode = currencyCodeUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String currencyCode;
+
 	@Schema
 	@Valid
 	public Map<String, ?> getCustomFields() {
@@ -814,6 +842,20 @@ public class Discount implements Serializable {
 			sb.append("\"");
 
 			sb.append(_escape(couponCode));
+
+			sb.append("\"");
+		}
+
+		if (currencyCode != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"currencyCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(currencyCode));
 
 			sb.append("\"");
 		}
