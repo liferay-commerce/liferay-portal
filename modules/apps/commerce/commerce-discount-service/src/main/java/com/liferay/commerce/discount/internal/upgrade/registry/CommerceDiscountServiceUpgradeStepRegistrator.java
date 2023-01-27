@@ -124,6 +124,11 @@ public class CommerceDiscountServiceUpgradeStepRegistrator
 
 		registry.register("2.8.0", "2.8.1", new DummyUpgradeStep());
 
+		registry.register(
+			"2.8.1", "2.9.0",
+			new com.liferay.commerce.discount.internal.upgrade.v2_9_0.
+				CommerceDiscountUpgradeProcess());
+
 		if (_log.isInfoEnabled()) {
 			_log.info("Commerce discount upgrade step registrator finished");
 		}
