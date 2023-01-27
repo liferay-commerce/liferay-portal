@@ -20,25 +20,26 @@
 
 		<!-- Other fields -->
 
-		<column name="title" type="String" />
-		<column name="target" type="String" />
-		<column name="useCouponCode" type="boolean" />
+		<column name="active" type="boolean" />
+		<column name="commerceCurrencyCode" type="String" />
 		<column name="couponCode" type="String" />
-		<column name="usePercentage" type="boolean" />
-		<column name="maximumDiscountAmount" type="BigDecimal" />
+		<column name="displayDate" type="Date" />
+		<column name="expirationDate" type="Date" />
 		<column db-name="levelType" name="level" type="String" />
 		<column name="level1" type="BigDecimal" />
 		<column name="level2" type="BigDecimal" />
 		<column name="level3" type="BigDecimal" />
 		<column name="level4" type="BigDecimal" />
-		<column name="limitationType" type="String" />
 		<column name="limitationTimes" type="int" />
 		<column name="limitationTimesPerAccount" type="int" />
+		<column name="limitationType" type="String" />
+		<column name="maximumDiscountAmount" type="BigDecimal" />
 		<column name="numberOfUse" type="int" />
 		<column name="rulesConjunction" type="boolean" />
-		<column name="active" type="boolean" />
-		<column name="displayDate" type="Date" />
-		<column name="expirationDate" type="Date" />
+		<column name="target" type="String" />
+		<column name="title" type="String" />
+		<column name="useCouponCode" type="boolean" />
+		<column name="usePercentage" type="boolean" />
 		<column name="lastPublishDate" type="Date" />
 		<column name="status" type="int" />
 		<column name="statusByUserId" type="long" />
@@ -68,15 +69,15 @@
 			<finder-column comparator="&lt;" name="expirationDate" />
 			<finder-column name="status" />
 		</finder>
-		<finder name="C_C_A" return-type="CommerceDiscount">
+		<finder name="C_A_C" return-type="CommerceDiscount">
 			<finder-column name="companyId" />
+			<finder-column name="active" />
 			<finder-column name="couponCode" />
-			<finder-column name="active" />
 		</finder>
-		<finder name="C_L_A_S" return-type="Collection">
+		<finder name="C_A_L_S" return-type="Collection">
 			<finder-column name="companyId" />
-			<finder-column name="level" />
 			<finder-column name="active" />
+			<finder-column name="level" />
 			<finder-column name="status" />
 		</finder>
 	</entity>
