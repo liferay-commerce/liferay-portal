@@ -15,7 +15,7 @@
 package com.liferay.commerce.pricing.web.internal.display.context;
 
 import com.liferay.account.constants.AccountPortletKeys;
-import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
+import com.liferay.commerce.currency.service.CommerceCurrencyService;
 import com.liferay.commerce.discount.model.CommerceDiscount;
 import com.liferay.commerce.discount.rule.type.CommerceDiscountRuleTypeRegistry;
 import com.liferay.commerce.discount.service.CommerceDiscountAccountRelService;
@@ -53,7 +53,7 @@ public class CommerceDiscountQualifiersDisplayContext
 
 	public CommerceDiscountQualifiersDisplayContext(
 		CommerceChannelRelService commerceChannelRelService,
-		CommerceCurrencyLocalService commerceCurrencyLocalService,
+		CommerceCurrencyService commerceCurrencyService,
 		ModelResourcePermission<CommerceDiscount>
 			commerceDiscountModelResourcePermission,
 		CommerceDiscountAccountRelService commerceDiscountAccountRelService,
@@ -68,11 +68,10 @@ public class CommerceDiscountQualifiersDisplayContext
 		HttpServletRequest httpServletRequest, Portal portal) {
 
 		super(
-			commerceCurrencyLocalService,
-			commerceDiscountModelResourcePermission, commerceDiscountService,
-			commerceDiscountRuleService, commerceDiscountRuleTypeRegistry,
-			commerceDiscountTargetRegistry, percentageFormatter,
-			httpServletRequest, portal);
+			commerceCurrencyService, commerceDiscountModelResourcePermission,
+			commerceDiscountService, commerceDiscountRuleService,
+			commerceDiscountRuleTypeRegistry, commerceDiscountTargetRegistry,
+			percentageFormatter, httpServletRequest, portal);
 
 		_commerceChannelRelService = commerceChannelRelService;
 		_commerceDiscountAccountRelService = commerceDiscountAccountRelService;

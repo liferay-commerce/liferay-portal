@@ -44,6 +44,20 @@ PortletURL editDiscountPortletURL = commerceDiscountDisplayContext.getEditCommer
 
 		</aui:select>
 
+		<aui:select label="currency" name="commerceCurrencyCode" required="<%= true %>">
+
+			<%
+			for (CommerceCurrency commerceCurrency : commerceDiscountDisplayContext.getCommerceCurrencies()) {
+			%>
+
+				<aui:option label="<%= commerceCurrency.getName(locale) %>" selected="<%= commerceCurrency.isPrimary() %>" value="<%= commerceCurrency.getCode() %>" />
+
+			<%
+			}
+			%>
+
+		</aui:select>
+
 		<aui:select label="apply-to" name="commerceDiscountTarget" required="<%= true %>">
 
 			<%
@@ -75,7 +89,11 @@ PortletURL editDiscountPortletURL = commerceDiscountDisplayContext.getEditCommer
 				var commerceDiscountType = form.querySelector('#commerceDiscountType')
 					.value;
 
+				var commerceCurrencyCode = form.querySelector('#commerceCurrencyCode')
+					.value;
+
 				var discountData = {
+					currencyCode: commerceCurrencyCode,
 					level: '<%= CommerceDiscountConstants.LEVEL_L1 %>',
 					limitationType:
 						'<%= CommerceDiscountConstants.LIMITATION_TYPE_UNLIMITED %>',

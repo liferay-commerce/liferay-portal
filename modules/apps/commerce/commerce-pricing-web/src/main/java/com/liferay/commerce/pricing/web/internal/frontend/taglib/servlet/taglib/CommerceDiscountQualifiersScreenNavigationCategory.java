@@ -14,7 +14,7 @@
 
 package com.liferay.commerce.pricing.web.internal.frontend.taglib.servlet.taglib;
 
-import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
+import com.liferay.commerce.currency.service.CommerceCurrencyService;
 import com.liferay.commerce.discount.model.CommerceDiscount;
 import com.liferay.commerce.discount.rule.type.CommerceDiscountRuleTypeRegistry;
 import com.liferay.commerce.discount.service.CommerceDiscountAccountRelService;
@@ -123,7 +123,7 @@ public class CommerceDiscountQualifiersScreenNavigationCategory
 		CommerceDiscountQualifiersDisplayContext
 			commerceDiscountQualifiersDisplayContext =
 				new CommerceDiscountQualifiersDisplayContext(
-					_commerceChannelRelService, _commerceCurrencyLocalService,
+					_commerceChannelRelService, _commerceCurrencyService,
 					_commerceDiscountModelResourcePermission,
 					_commerceDiscountAccountRelService,
 					_commerceDiscountCommerceAccountGroupRelService,
@@ -149,7 +149,7 @@ public class CommerceDiscountQualifiersScreenNavigationCategory
 	private CommerceChannelRelService _commerceChannelRelService;
 
 	@Reference
-	private CommerceCurrencyLocalService _commerceCurrencyLocalService;
+	private CommerceCurrencyService _commerceCurrencyService;
 
 	@Reference
 	private CommerceDiscountAccountRelService

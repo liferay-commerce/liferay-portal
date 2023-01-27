@@ -15,7 +15,9 @@
 package com.liferay.commerce.pricing.web.internal.display.context;
 
 import com.liferay.commerce.currency.model.CommerceCurrency;
-import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
+import com.liferay.commerce.currency.service.CommerceCurrencyLocalServiceUtil;
+import com.liferay.commerce.currency.service.CommerceCurrencyService;
+import com.liferay.commerce.currency.util.comparator.CommerceCurrencyPriorityComparator;
 import com.liferay.commerce.discount.constants.CommerceDiscountActionKeys;
 import com.liferay.commerce.discount.constants.CommerceDiscountConstants;
 import com.liferay.commerce.discount.model.CommerceDiscount;
@@ -35,6 +37,7 @@ import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -47,12 +50,14 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalServiceUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.taglib.util.CustomAttributesUtil;
 
 import java.math.BigDecimal;
@@ -75,7 +80,7 @@ import javax.servlet.http.HttpServletRequest;
 public class CommerceDiscountDisplayContext extends BasePricingDisplayContext {
 
 	public CommerceDiscountDisplayContext(
-		CommerceCurrencyLocalService commerceCurrencyLocalService,
+		CommerceCurrencyService commerceCurrencyService,
 		ModelResourcePermission<CommerceDiscount>
 			commerceDiscountModelResourcePermission,
 		CommerceDiscountService commerceDiscountService,
@@ -87,7 +92,7 @@ public class CommerceDiscountDisplayContext extends BasePricingDisplayContext {
 
 		super(httpServletRequest);
 
-		_commerceCurrencyLocalService = commerceCurrencyLocalService;
+		_commerceCurrencyService = commerceCurrencyService;
 		_commerceDiscountModelResourcePermission =
 			commerceDiscountModelResourcePermission;
 		_commerceDiscountService = commerceDiscountService;
@@ -118,6 +123,18 @@ public class CommerceDiscountDisplayContext extends BasePricingDisplayContext {
 		).setWindowState(
 			LiferayWindowState.POP_UP
 		).buildString();
+	}
+
+	public List<CommerceCurrency> getCommerceCurrencies()
+		throws PortalException {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		return _commerceCurrencyService.getCommerceCurrencies(
+			themeDisplay.getCompanyId(), true, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, new CommerceCurrencyPriorityComparator(true));
 	}
 
 	public CommerceDiscount getCommerceDiscount() throws PortalException {
@@ -216,7 +233,7 @@ public class CommerceDiscountDisplayContext extends BasePricingDisplayContext {
 
 	public String getDefaultCommerceCurrencyCode() {
 		CommerceCurrency commerceCurrency =
-			_commerceCurrencyLocalService.fetchPrimaryCommerceCurrency(
+			CommerceCurrencyLocalServiceUtil.fetchPrimaryCommerceCurrency(
 				commercePricingRequestHelper.getCompanyId());
 
 		if (commerceCurrency == null) {
@@ -530,7 +547,7 @@ public class CommerceDiscountDisplayContext extends BasePricingDisplayContext {
 		throws PortalException {
 
 		CommerceCurrency commerceCurrency =
-			_commerceCurrencyLocalService.fetchPrimaryCommerceCurrency(
+			CommerceCurrencyLocalServiceUtil.fetchPrimaryCommerceCurrency(
 				commercePricingRequestHelper.getCompanyId());
 
 		return StringUtil.removeSubstring(
@@ -620,7 +637,7 @@ public class CommerceDiscountDisplayContext extends BasePricingDisplayContext {
 		}
 
 		CommerceCurrency commerceCurrency =
-			_commerceCurrencyLocalService.fetchPrimaryCommerceCurrency(
+			CommerceCurrencyLocalServiceUtil.fetchPrimaryCommerceCurrency(
 				commercePricingRequestHelper.getCompanyId());
 
 		if (commerceCurrency == null) {
@@ -698,7 +715,7 @@ public class CommerceDiscountDisplayContext extends BasePricingDisplayContext {
 	private static final Log _log = LogFactoryUtil.getLog(
 		CommerceDiscountDisplayContext.class);
 
-	private final CommerceCurrencyLocalService _commerceCurrencyLocalService;
+	private final CommerceCurrencyService _commerceCurrencyService;
 	private CommerceDiscount _commerceDiscount;
 	private final ModelResourcePermission<CommerceDiscount>
 		_commerceDiscountModelResourcePermission;
