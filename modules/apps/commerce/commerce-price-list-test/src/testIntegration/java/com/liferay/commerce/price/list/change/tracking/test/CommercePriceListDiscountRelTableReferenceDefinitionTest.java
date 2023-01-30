@@ -72,17 +72,19 @@ public class CommercePriceListDiscountRelTableReferenceDefinitionTest
 			_user.getTimeZone());
 
 		_commerceDiscount = _commerceDiscountLocalService.addCommerceDiscount(
-			_user.getUserId(), RandomTestUtil.randomString(),
-			CommerceDiscountConstants.TARGET_PRODUCTS, false, null, false,
-			BigDecimal.ZERO, BigDecimal.valueOf(RandomTestUtil.randomDouble()),
-			BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
-			CommerceDiscountConstants.LIMITATION_TYPE_UNLIMITED, 0, true,
+			null, _user.getUserId(), true, "USD", RandomTestUtil.randomString(),
 			calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
 			calendar.get(Calendar.YEAR), calendar.get(Calendar.HOUR_OF_DAY),
 			calendar.get(Calendar.MINUTE), calendar.get(Calendar.MONTH),
 			calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.YEAR),
 			calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),
-			true, ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+			null, BigDecimal.valueOf(RandomTestUtil.randomDouble()),
+			BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, 0, 0,
+			CommerceDiscountConstants.LIMITATION_TYPE_UNLIMITED,
+			BigDecimal.valueOf(RandomTestUtil.randomDouble()), true, true,
+			CommerceDiscountConstants.TARGET_PRODUCTS,
+			RandomTestUtil.randomString(), true, true,
+			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
 	}
 
 	@Override
