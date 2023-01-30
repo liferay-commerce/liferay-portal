@@ -295,20 +295,22 @@ public class CommerceDiscountTestUtil {
 		Calendar calendar = CalendarFactoryUtil.getCalendar(user.getTimeZone());
 
 		return CommerceDiscountLocalServiceUtil.updateCommerceDiscount(
-			commerceDiscount.getCommerceDiscountId(),
-			commerceDiscount.getTitle(), commerceDiscount.getTarget(), true,
-			couponCode, commerceDiscount.isUsePercentage(),
-			commerceDiscount.getMaximumDiscountAmount(),
-			commerceDiscount.getLevel(), commerceDiscount.getLevel1(),
-			commerceDiscount.getLevel2(), commerceDiscount.getLevel3(),
-			commerceDiscount.getLevel4(), limitationType, limitationTimes,
-			limitationTimesPerAccount, commerceDiscount.isRulesConjunction(),
-			commerceDiscount.isActive(), calendar.get(Calendar.MONTH),
-			calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.YEAR),
-			calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),
+			commerceDiscount.isActive(),
+			commerceDiscount.getCommerceCurrencyCode(),
+			commerceDiscount.getCommerceDiscountId(), couponCode,
 			calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
 			calendar.get(Calendar.YEAR), calendar.get(Calendar.HOUR_OF_DAY),
-			calendar.get(Calendar.MINUTE), true, serviceContext);
+			calendar.get(Calendar.MINUTE), calendar.get(Calendar.MONTH),
+			calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.YEAR),
+			calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),
+			commerceDiscount.getLevel(), commerceDiscount.getLevel1(),
+			commerceDiscount.getLevel2(), commerceDiscount.getLevel3(),
+			commerceDiscount.getLevel4(), limitationTimes,
+			limitationTimesPerAccount, limitationType,
+			commerceDiscount.getMaximumDiscountAmount(), true,
+			commerceDiscount.isRulesConjunction(), commerceDiscount.getTarget(),
+			commerceDiscount.getTitle(), true,
+			commerceDiscount.isUsePercentage(), serviceContext);
 	}
 
 	public static CommerceDiscount addCouponDiscount(
@@ -355,17 +357,18 @@ public class CommerceDiscountTestUtil {
 
 		CommerceDiscount commerceDiscount =
 			CommerceDiscountLocalServiceUtil.addCommerceDiscount(
-				user.getUserId(), RandomTestUtil.randomString(), target, false,
-				null, false, BigDecimal.ZERO, discount, BigDecimal.ZERO,
-				BigDecimal.ZERO, BigDecimal.ZERO,
-				CommerceDiscountConstants.LIMITATION_TYPE_UNLIMITED, 0, true,
+				null, user.getUserId(), true, "USD", null,
 				calendar.get(Calendar.MONTH),
 				calendar.get(Calendar.DAY_OF_MONTH),
 				calendar.get(Calendar.YEAR), calendar.get(Calendar.HOUR_OF_DAY),
 				calendar.get(Calendar.MINUTE), calendar.get(Calendar.MONTH),
 				calendar.get(Calendar.DAY_OF_MONTH),
 				calendar.get(Calendar.YEAR), calendar.get(Calendar.HOUR_OF_DAY),
-				calendar.get(Calendar.MINUTE), true, serviceContext);
+				calendar.get(Calendar.MINUTE), null, discount, BigDecimal.ZERO,
+				BigDecimal.ZERO, BigDecimal.ZERO, 0, 0,
+				CommerceDiscountConstants.LIMITATION_TYPE_UNLIMITED,
+				BigDecimal.valueOf(10000), true, true, target,
+				RandomTestUtil.randomString(), false, false, serviceContext);
 
 		_addTargetDetails(groupId, commerceDiscount, target, targetIds);
 
@@ -387,17 +390,18 @@ public class CommerceDiscountTestUtil {
 
 		CommerceDiscount commerceDiscount =
 			CommerceDiscountLocalServiceUtil.addCommerceDiscount(
-				user.getUserId(), RandomTestUtil.randomString(), target, false,
-				null, true, BigDecimal.valueOf(10000), level, percentage,
-				BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
-				CommerceDiscountConstants.LIMITATION_TYPE_UNLIMITED, 0, true,
-				true, calendar.get(Calendar.MONTH),
+				null, user.getUserId(), true, "USD", null,
+				calendar.get(Calendar.MONTH),
 				calendar.get(Calendar.DAY_OF_MONTH),
 				calendar.get(Calendar.YEAR), calendar.get(Calendar.HOUR_OF_DAY),
 				calendar.get(Calendar.MINUTE), calendar.get(Calendar.MONTH),
 				calendar.get(Calendar.DAY_OF_MONTH),
 				calendar.get(Calendar.YEAR), calendar.get(Calendar.HOUR_OF_DAY),
-				calendar.get(Calendar.MINUTE), true, serviceContext);
+				calendar.get(Calendar.MINUTE), level, percentage,
+				BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, 0, 0,
+				CommerceDiscountConstants.LIMITATION_TYPE_UNLIMITED,
+				BigDecimal.valueOf(10000), true, true, target,
+				RandomTestUtil.randomString(), false, true, serviceContext);
 
 		_addTargetDetails(groupId, commerceDiscount, target, targetIds);
 
@@ -425,16 +429,18 @@ public class CommerceDiscountTestUtil {
 
 		CommerceDiscount commerceDiscount =
 			CommerceDiscountLocalServiceUtil.addCommerceDiscount(
-				user.getUserId(), RandomTestUtil.randomString(), target, false,
-				null, true, BigDecimal.valueOf(10000), level1, level2, level3,
-				level4, CommerceDiscountConstants.LIMITATION_TYPE_UNLIMITED, 0,
-				true, calendar.get(Calendar.MONTH),
+				null, user.getUserId(), true, "USD",
+				RandomTestUtil.randomString(), calendar.get(Calendar.MONTH),
 				calendar.get(Calendar.DAY_OF_MONTH),
 				calendar.get(Calendar.YEAR), calendar.get(Calendar.HOUR_OF_DAY),
 				calendar.get(Calendar.MINUTE), calendar.get(Calendar.MONTH),
 				calendar.get(Calendar.DAY_OF_MONTH),
 				calendar.get(Calendar.YEAR), calendar.get(Calendar.HOUR_OF_DAY),
-				calendar.get(Calendar.MINUTE), true, serviceContext);
+				calendar.get(Calendar.MINUTE), null, level1, level2, level3,
+				level4, 0, 0,
+				CommerceDiscountConstants.LIMITATION_TYPE_UNLIMITED,
+				BigDecimal.valueOf(10000), true, true, target,
+				RandomTestUtil.randomString(), true, true, serviceContext);
 
 		_addTargetDetails(groupId, commerceDiscount, target, targetIds);
 
