@@ -34,7 +34,6 @@ import com.liferay.commerce.term.model.CommerceTermEntry;
 import com.liferay.commerce.term.service.CommerceTermEntryLocalServiceUtil;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.headless.commerce.admin.account.client.dto.v1_0.AccountChannelEntry;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Address;
 import com.liferay.portal.kernel.model.Country;
 import com.liferay.portal.kernel.model.Region;
@@ -127,15 +126,17 @@ public class AccountChannelEntryResourceTest
 				RandomTestUtil.randomString(), 1000,
 				CommerceTermEntryConstants.TYPE_DELIVERY_TERMS, null,
 				serviceContext);
+
 		_commerceDiscount =
 			CommerceDiscountLocalServiceUtil.addCommerceDiscount(
-				RandomTestUtil.randomString(), _user.getUserId(),
-				RandomTestUtil.randomString(),
-				CommerceDiscountConstants.TARGET_CATEGORIES, false, null, true,
-				BigDecimal.ZERO, StringPool.BLANK, BigDecimal.TEN,
-				BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
-				CommerceDiscountConstants.LIMITATION_TYPE_UNLIMITED, 0, true,
-				true, 1, 1, 2022, 12, 0, 0, 0, 0, 0, 0, true, serviceContext);
+				null, _user.getUserId(), true, "USD",
+				RandomTestUtil.randomString(), 1, 1, 2022, 12, 0, 0, 0, 0, 0, 0,
+				null, BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.ZERO,
+				BigDecimal.ZERO, 0, 0,
+				CommerceDiscountConstants.LIMITATION_TYPE_UNLIMITED,
+				BigDecimal.valueOf(10000), true, true,
+				CommerceDiscountConstants.TARGET_CATEGORIES,
+				RandomTestUtil.randomString(), true, true, serviceContext);
 		_commercePaymentTerm =
 			CommerceTermEntryLocalServiceUtil.addCommerceTermEntry(
 				RandomTestUtil.randomString(), _user.getUserId(), true,
