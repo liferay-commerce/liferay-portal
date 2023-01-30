@@ -25,7 +25,7 @@ import com.liferay.commerce.model.CommerceShippingOption;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.service.CommerceOrderService;
-import com.liferay.commerce.service.CommerceShippingMethodLocalService;
+import com.liferay.commerce.service.CommerceShippingMethodService;
 import com.liferay.commerce.util.CommerceShippingEngineRegistry;
 import com.liferay.commerce.util.comparator.CommerceShippingOptionPriorityComparator;
 import com.liferay.headless.commerce.delivery.cart.dto.v1_0.ShippingMethod;
@@ -67,10 +67,9 @@ public class ShippingMethodResourceImpl extends BaseShippingMethodResourceImpl {
 
 			return Page.of(
 				transform(
-					_commerceShippingMethodLocalService.
-						getCommerceShippingMethods(
-							commerceChannel.getGroupId(),
-							shippingCommerceAddress.getCountryId(), true),
+					_commerceShippingMethodService.getCommerceShippingMethods(
+						commerceChannel.getGroupId(),
+						shippingCommerceAddress.getCountryId(), true),
 					shippingMethod -> _toShippingMethod(
 						shippingMethod, commerceChannel, commerceOrder)));
 		}
@@ -158,7 +157,6 @@ public class ShippingMethodResourceImpl extends BaseShippingMethodResourceImpl {
 	private CommerceShippingEngineRegistry _commerceShippingEngineRegistry;
 
 	@Reference
-	private CommerceShippingMethodLocalService
-		_commerceShippingMethodLocalService;
+	private CommerceShippingMethodService _commerceShippingMethodService;
 
 }
