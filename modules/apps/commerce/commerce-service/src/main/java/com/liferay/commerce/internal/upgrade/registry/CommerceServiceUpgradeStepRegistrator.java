@@ -415,6 +415,13 @@ public class CommerceServiceUpgradeStepRegistrator
 			"8.9.0", "8.9.1",
 			new CommerceChannelAccountEntryRelUpgradeProcess());
 
+		registry.register(
+			"8.9.1", "8.9.2",
+			new com.liferay.commerce.internal.upgrade.v8_9_2.
+				CommercePermissionUpgradeProcess(
+					_resourceActionLocalService,
+					_resourcePermissionLocalService, _roleLocalService));
+
 		if (_log.isInfoEnabled()) {
 			_log.info("Commerce upgrade step registrator finished");
 		}
