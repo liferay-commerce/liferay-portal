@@ -171,9 +171,9 @@ definition {
 
 		CommerceNavigator.gotoEntry(entryName = "Minium Portal");
 
-		Click(
-			key_entryName = "FedEx",
-			locator1 = "CommerceEntry#CHANNELS_GENERAL_TAB_EDITS");
+		CommerceEntry.clickTableEntryEditButton(
+			entryName = "FedEx",
+			table = "Shipping Methods");
 
 		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
 
@@ -212,9 +212,9 @@ definition {
 
 		Refresh();
 
-		Click(
-			key_entryName = "FedEx",
-			locator1 = "CommerceEntry#CHANNELS_GENERAL_TAB_EDITS");
+		CommerceEntry.clickTableEntryEditButton(
+			entryName = "FedEx",
+			table = "Shipping Methods");
 
 		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
 
@@ -239,9 +239,9 @@ definition {
 
 		CommerceNavigator.gotoEntry(entryName = "Minium Portal");
 
-		Click(
-			key_entryName = "Flat Rate",
-			locator1 = "CommerceEntry#CHANNELS_GENERAL_TAB_EDITS");
+		CommerceEntry.clickTableEntryEditButton(
+			entryName = "Flat Rate",
+			table = "Shipping Methods");
 
 		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
 
@@ -585,9 +585,9 @@ definition {
 
 		CommerceNavigator.gotoEntry(entryName = "Minium Portal");
 
-		Click(
-			key_entryName = "Flat Rate",
-			locator1 = "CommerceEntry#CHANNELS_GENERAL_TAB_EDITS");
+		CommerceEntry.clickTableEntryEditButton(
+			entryName = "Flat Rate",
+			table = "Shipping Methods");
 
 		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
 
@@ -601,9 +601,9 @@ definition {
 
 		Refresh();
 
-		Click(
-			key_entryName = "Flat Rate",
-			locator1 = "CommerceEntry#CHANNELS_GENERAL_TAB_EDITS");
+		CommerceEntry.clickTableEntryEditButton(
+			entryName = "Flat Rate",
+			table = "Shipping Methods");
 
 		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
 
@@ -622,9 +622,9 @@ definition {
 
 		Refresh();
 
-		Click(
-			key_entryName = "Flat Rate",
-			locator1 = "CommerceEntry#CHANNELS_GENERAL_TAB_EDITS");
+		CommerceEntry.clickTableEntryEditButton(
+			entryName = "Flat Rate",
+			table = "Shipping Methods");
 
 		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
 
@@ -650,9 +650,9 @@ definition {
 
 		Refresh();
 
-		Click(
-			key_entryName = "Flat Rate",
-			locator1 = "CommerceEntry#CHANNELS_GENERAL_TAB_EDITS");
+		CommerceEntry.clickTableEntryEditButton(
+			entryName = "Flat Rate",
+			table = "Shipping Methods");
 
 		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
 
@@ -1781,9 +1781,9 @@ definition {
 
 		CommerceNavigator.gotoEntry(entryName = "Minium Portal");
 
-		Click(
-			key_entryName = "Flat Rate",
-			locator1 = "CommerceEntry#CHANNELS_GENERAL_TAB_EDITS");
+		CommerceEntry.clickTableEntryEditButton(
+			entryName = "Flat Rate",
+			table = "Shipping Methods");
 
 		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
 
