@@ -31,6 +31,7 @@ import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.model.CommerceChannel;
+import com.liferay.commerce.product.service.CPDefinitionLocalServiceUtil;
 import com.liferay.commerce.product.service.CommerceCatalogLocalServiceUtil;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.service.CommerceOrderLocalService;
@@ -163,6 +164,11 @@ public class CommercePaymentEngineTest {
 
 		CPDefinition cpDefinition = cpInstance.getCPDefinition();
 
+		cpDefinition.setShippable(false);
+		cpDefinition.setFreeShipping(true);
+
+		CPDefinitionLocalServiceUtil.updateCPDefinition(cpDefinition);
+
 		_commercePriceEntryLocalService.addCommercePriceEntry(
 			cpDefinition.getCProductId(), cpInstance.getCPInstanceUuid(),
 			commercePriceList.getCommercePriceListId(), BigDecimal.ZERO,
@@ -254,6 +260,11 @@ public class CommercePaymentEngineTest {
 				commerceCatalog.getGroupId());
 
 		CPDefinition cpDefinition = cpInstance.getCPDefinition();
+
+		cpDefinition.setShippable(false);
+		cpDefinition.setFreeShipping(true);
+
+		CPDefinitionLocalServiceUtil.updateCPDefinition(cpDefinition);
 
 		_commercePriceEntryLocalService.addCommercePriceEntry(
 			cpDefinition.getCProductId(), cpInstance.getCPInstanceUuid(),
