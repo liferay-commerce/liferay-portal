@@ -41,6 +41,7 @@ import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.model.CommerceChannel;
+import com.liferay.commerce.product.service.CPDefinitionLocalServiceUtil;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.service.CommerceOrderLocalService;
@@ -170,6 +171,11 @@ public class CommerceDiscountUsageTest {
 			catalog.getGroupId());
 
 		CPDefinition cpDefinition = cpInstance.getCPDefinition();
+
+		cpDefinition.setShippable(false);
+		cpDefinition.setFreeShipping(true);
+
+		CPDefinitionLocalServiceUtil.updateCPDefinition(cpDefinition);
 
 		CommercePriceList commercePriceList =
 			_commercePriceListLocalService.fetchCatalogBaseCommercePriceList(
@@ -530,6 +536,11 @@ public class CommerceDiscountUsageTest {
 			catalog.getGroupId());
 
 		CPDefinition cpDefinition = cpInstance.getCPDefinition();
+
+		cpDefinition.setShippable(false);
+		cpDefinition.setFreeShipping(true);
+
+		CPDefinitionLocalServiceUtil.updateCPDefinition(cpDefinition);
 
 		CommercePriceList commercePriceList =
 			_commercePriceListLocalService.fetchCatalogBaseCommercePriceList(
