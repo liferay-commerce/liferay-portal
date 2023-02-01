@@ -94,7 +94,7 @@ public abstract class BaseShippingMethodResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-cart/v1.0/carts/{cartId}/shipping-methods'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrive payment methods available for the Cart."
+		description = "Retrive shipping methods available for the Cart."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {

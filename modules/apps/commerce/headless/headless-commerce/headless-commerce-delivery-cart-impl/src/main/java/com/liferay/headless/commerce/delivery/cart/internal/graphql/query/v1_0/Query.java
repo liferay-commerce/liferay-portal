@@ -288,7 +288,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {cartShippingMethods(cartId: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Retrive payment methods available for the Cart."
+		description = "Retrive shipping methods available for the Cart."
 	)
 	public ShippingMethodPage cartShippingMethods(
 			@GraphQLName("cartId") Long cartId)
@@ -377,7 +377,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Retrive payment methods available for the Cart."
+			description = "Retrive shipping methods available for the Cart."
 		)
 		public ShippingMethodPage shippingMethods() throws Exception {
 			return _applyComponentServiceObjects(
