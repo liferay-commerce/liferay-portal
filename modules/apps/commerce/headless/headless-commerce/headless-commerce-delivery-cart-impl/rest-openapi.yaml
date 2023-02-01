@@ -1743,7 +1743,7 @@ paths:
     /carts/{cartId}/shipping-methods:
         get:
             description:
-                Retrive payment methods available for the Cart.
+                Retrive shipping methods available for the Cart.
             operationId: getCartShippingMethodsPage
             parameters:
                 - in: path
