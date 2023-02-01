@@ -18,12 +18,14 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
 import com.liferay.commerce.model.CommerceOrderType;
+import com.liferay.commerce.model.CommerceShippingMethod;
 import com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel;
 import com.liferay.commerce.payment.model.CommercePaymentMethodGroupRelQualifier;
 import com.liferay.commerce.payment.service.CommercePaymentMethodGroupRelLocalService;
 import com.liferay.commerce.payment.service.CommercePaymentMethodGroupRelQualifierLocalService;
 import com.liferay.commerce.payment.test.util.TestCommercePaymentMethod;
 import com.liferay.commerce.product.model.CommerceChannel;
+import com.liferay.commerce.service.CommerceShippingMethodLocalServiceUtil;
 import com.liferay.commerce.shipping.engine.fixed.model.CommerceShippingFixedOption;
 import com.liferay.commerce.shipping.engine.fixed.model.CommerceShippingFixedOptionQualifier;
 import com.liferay.commerce.shipping.engine.fixed.service.CommerceShippingFixedOptionLocalService;
@@ -33,6 +35,7 @@ import com.liferay.commerce.term.service.CommerceTermEntryLocalService;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.headless.commerce.admin.channel.client.dto.v1_0.Term;
 import com.liferay.headless.commerce.core.util.DateConfig;
+import com.liferay.headless.commerce.core.util.LanguageUtils;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -40,9 +43,12 @@ import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.Inject;
 
 import java.math.BigDecimal;
+
+import java.util.Collections;
 
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -181,11 +187,29 @@ public class TermResourceTest extends BaseTermResourceTestCase {
 
 	private long _getShippingFixedOptionTermId() throws Exception {
 		if (_commerceShippingFixedOption == null) {
+			if (_commerceShippingMethod == null) {
+				_commerceShippingMethod =
+					CommerceShippingMethodLocalServiceUtil.
+						addCommerceShippingMethod(
+							_user.getUserId(), _commerceChannel.getGroupId(),
+							LanguageUtils.getLocalizedMap(
+								LanguageUtils.getLanguageIdMap(
+									Collections.singletonMap(
+										LocaleUtil.US, "flat-rate"))),
+							LanguageUtils.getLocalizedMap(
+								LanguageUtils.getLanguageIdMap(
+									Collections.singletonMap(
+										LocaleUtil.US,
+										"fixed-shipping-description"))),
+							Boolean.TRUE, "fixed", null, 1,
+							RandomTestUtil.randomString());
+			}
+
 			_commerceShippingFixedOption =
 				_commerceShippingFixedOptionLocalService.
 					addCommerceShippingFixedOption(
 						_user.getUserId(), _commerceChannel.getGroupId(),
-						RandomTestUtil.nextLong(),
+						_commerceShippingMethod.getCommerceShippingMethodId(),
 						BigDecimal.valueOf(RandomTestUtil.nextDouble()),
 						RandomTestUtil.randomLocaleStringMap(),
 						RandomTestUtil.randomString(),
@@ -248,6 +272,9 @@ public class TermResourceTest extends BaseTermResourceTestCase {
 	@Inject
 	private CommerceShippingFixedOptionQualifierLocalService
 		_commerceShippingFixedOptionQualifierLocalService;
+
+	@DeleteAfterTestRun
+	private CommerceShippingMethod _commerceShippingMethod;
 
 	@DeleteAfterTestRun
 	private CommerceTermEntry _commerceTermEntry;
