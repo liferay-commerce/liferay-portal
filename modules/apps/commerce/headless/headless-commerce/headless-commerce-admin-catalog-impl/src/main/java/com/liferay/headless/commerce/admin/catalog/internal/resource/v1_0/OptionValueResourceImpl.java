@@ -45,6 +45,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -287,6 +288,10 @@ public class OptionValueResourceImpl
 
 	private Map<String, Map<String, String>> _getActions(long cpOptionValueId)
 		throws Exception {
+
+		if (contextUriInfo == null) {
+			return Collections.emptyMap();
+		}
 
 		return HashMapBuilder.<String, Map<String, String>>put(
 			"delete",
