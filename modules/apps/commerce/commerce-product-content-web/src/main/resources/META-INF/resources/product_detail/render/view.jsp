@@ -152,25 +152,23 @@ long cpDefinitionId = cpCatalogEntry.getCPDefinitionId();
 			</h4>
 
 			<div class="product-detail-options">
-				<form data-senna-off="true" name="fm">
-					<%= cpContentHelper.renderOptions(renderRequest, renderResponse) %>
-				</form>
-
 				<liferay-portlet:actionURL name="/cp_content_web/check_cp_instance" portletName="com_liferay_commerce_product_content_web_internal_portlet_CPContentPortlet" var="checkCPInstanceURL">
 					<portlet:param name="cpDefinitionId" value="<%= String.valueOf(cpDefinitionId) %>" />
 				</liferay-portlet:actionURL>
 
-				<liferay-frontend:component
-					context='<%=
+				<react:component
+					module="product_detail/render/js/ProductOptionsHandler"
+					props='<%=
 						HashMapBuilder.<String, Object>put(
 							"actionURL", checkCPInstanceURL
 						).put(
-							"cpDefinitionId", cpDefinitionId
+							"commerceContext", commerceContext
 						).put(
 							"namespace", liferayPortletResponse.getNamespace()
+						).put(
+							"product", cpCatalogEntry
 						).build()
 					%>'
-					module="product_detail/render/js/ProductOptionsHandler"
 				/>
 			</div>
 
