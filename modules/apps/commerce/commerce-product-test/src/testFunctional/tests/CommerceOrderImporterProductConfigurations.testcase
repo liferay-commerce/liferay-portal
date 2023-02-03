@@ -34,7 +34,7 @@ definition {
 	}
 
 	@description = "COMMERCE-10075 | Can import existing orders based on the product's Maximum and Multiple Order Quantity set(maximum > multiple)"
-	@priority = "4"
+	@priority = "5"
 	test CanAssertInvalidQuantityNotImportedWhenMaximumIsHigherThanMultiple {
 		property portal.acceptance = "true";
 
@@ -128,8 +128,10 @@ definition {
 	}
 
 	@description = "COMMERCE-10240 | Can import existing orders based on the product's Maximum and Multiple Order Quantity set(maximum < multiple)"
-	@priority = "4"
+	@priority = "5"
 	test CanAssertInvalidQuantityNotImportedWhenMaximumIsLowerThanMultiple {
+		property portal.acceptance = "true";
+
 		var maxOrderQuantity = "4";
 		var multipleOrderQuantity = "5";
 		var orderIds = ListUtil.newList();
@@ -201,8 +203,10 @@ definition {
 	}
 
 	@description = "COMMERCE-10073 | Can import existing orders based on the product's Minimum and Multiple Order Quantity set(minimum > multiple)"
-	@priority = "4"
+	@priority = "5"
 	test CanAssertInvalidQuantityNotImportedWhenMinimumIsHigherThanMultiple {
+		property portal.acceptance = "true";
+
 		var minOrderQuantity = "5";
 		var multipleOrderQuantity = "2";
 		var orderIds = ListUtil.newList();
@@ -293,8 +297,10 @@ definition {
 	}
 
 	@description = "COMMERCE-10074 | Can import existing orders based on the product's Minimum and Multiple Order Quantity set(minimum < multiple)"
-	@priority = "4"
+	@priority = "5"
 	test CanAssertInvalidQuantityNotImportedWhenMinimumIsLowerThanMultiple {
+		property portal.acceptance = "true";
+
 		var minOrderQuantity = "3";
 		var multipleOrderQuantity = "4";
 		var orderIds = ListUtil.newList();
@@ -387,6 +393,8 @@ definition {
 	@description = "COMMERCE-10072 | Can import existing orders based on the product's Allowed Order Quantity set"
 	@priority = "4"
 	test CanImportValidAllowedQuantity {
+		property portal.acceptance = "false";
+
 		var allowedOrderQuantities = "1,3,6";
 		var orderIds = ListUtil.newList();
 
@@ -460,6 +468,8 @@ definition {
 	@description = "COMMERCE-10070 | Can import existing orders based on the product's Maximum Order Quantity set"
 	@priority = "4"
 	test CanImportValidMaximumQuantity {
+		property portal.acceptance = "false";
+
 		var maxOrderQuantity = "5";
 		var orderIds = ListUtil.newList();
 
@@ -533,6 +543,8 @@ definition {
 	@description = "COMMERCE-10069 | Can import existing orders based on the product's Minimum Order Quantity set"
 	@priority = "4"
 	test CanImportValidMinimumQuantity {
+		property portal.acceptance = "false";
+
 		var minOrderQuantity = "5";
 		var orderIds = ListUtil.newList();
 
@@ -606,6 +618,8 @@ definition {
 	@description = "COMMERCE-10071 | Can import existing orders based on the product's Multiple Order Quantity set"
 	@priority = "4"
 	test CanImportValidMultipleQuantity {
+		property portal.acceptance = "false";
+
 		var multipleOrderQuantity = "3";
 		var orderIds = ListUtil.newList();
 
