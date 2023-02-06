@@ -327,8 +327,6 @@ public class CPDefinitionIndexer extends BaseIndexer<CPDefinition> {
 		addSearchLocalizedTerm(
 			searchQuery, searchContext, Field.CONTENT, false);
 		addSearchLocalizedTerm(
-			searchQuery, searchContext, Field.DESCRIPTION, false);
-		addSearchLocalizedTerm(
 			searchQuery, searchContext, CPField.SHORT_DESCRIPTION, false);
 		addSearchTerm(searchQuery, searchContext, Field.ENTRY_CLASS_PK, false);
 		addSearchTerm(searchQuery, searchContext, Field.NAME, false);
