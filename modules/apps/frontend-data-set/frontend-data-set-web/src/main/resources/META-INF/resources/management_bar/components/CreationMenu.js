@@ -37,6 +37,7 @@ function CreationMenu({primaryItems}) {
 								<ClayButtonWithIcon
 									className="nav-btn nav-btn-monospaced"
 									symbol="plus"
+									title="add-product"
 								/>
 							}
 						>
