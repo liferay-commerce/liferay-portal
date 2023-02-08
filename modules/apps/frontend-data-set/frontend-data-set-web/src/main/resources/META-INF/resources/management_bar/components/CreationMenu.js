@@ -38,7 +38,7 @@ function CreationMenu({primaryItems}) {
 									aria-label={Liferay.Language.get('new')}
 									className="nav-btn nav-btn-monospaced"
 									symbol="plus"
-									title={Liferay.Language.get('new')}
+									title={Liferay.Language.get('add-product')}
 								/>
 							}
 						>
