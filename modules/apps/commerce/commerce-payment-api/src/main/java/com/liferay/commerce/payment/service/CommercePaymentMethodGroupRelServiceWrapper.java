@@ -49,21 +49,6 @@ public class CommercePaymentMethodGroupRelServiceWrapper
 			addCommerceAddressRestriction(groupId, classPK, countryId);
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	@Override
-	public com.liferay.commerce.model.CommerceAddressRestriction
-			addCommerceAddressRestriction(
-				long classPK, long countryId,
-				com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _commercePaymentMethodGroupRelService.
-			addCommerceAddressRestriction(classPK, countryId, serviceContext);
-	}
-
 	@Override
 	public com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel
 			addCommercePaymentMethodGroupRel(
@@ -170,8 +155,7 @@ public class CommercePaymentMethodGroupRelServiceWrapper
 	@Override
 	public java.util.List
 		<com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel>
-				getCommercePaymentMethodGroupRels(long groupId)
-			throws com.liferay.portal.kernel.exception.PortalException {
+			getCommercePaymentMethodGroupRels(long groupId) {
 
 		return _commercePaymentMethodGroupRelService.
 			getCommercePaymentMethodGroupRels(groupId);
@@ -180,8 +164,7 @@ public class CommercePaymentMethodGroupRelServiceWrapper
 	@Override
 	public java.util.List
 		<com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel>
-				getCommercePaymentMethodGroupRels(long groupId, boolean active)
-			throws com.liferay.portal.kernel.exception.PortalException {
+			getCommercePaymentMethodGroupRels(long groupId, boolean active) {
 
 		return _commercePaymentMethodGroupRelService.
 			getCommercePaymentMethodGroupRels(groupId, active);
@@ -190,9 +173,8 @@ public class CommercePaymentMethodGroupRelServiceWrapper
 	@Override
 	public java.util.List
 		<com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel>
-				getCommercePaymentMethodGroupRels(
-					long groupId, boolean active, int start, int end)
-			throws com.liferay.portal.kernel.exception.PortalException {
+			getCommercePaymentMethodGroupRels(
+				long groupId, boolean active, int start, int end) {
 
 		return _commercePaymentMethodGroupRelService.
 			getCommercePaymentMethodGroupRels(groupId, active, start, end);
@@ -201,12 +183,11 @@ public class CommercePaymentMethodGroupRelServiceWrapper
 	@Override
 	public java.util.List
 		<com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel>
-				getCommercePaymentMethodGroupRels(
-					long groupId, boolean active, int start, int end,
-					com.liferay.portal.kernel.util.OrderByComparator
-						<com.liferay.commerce.payment.model.
-							CommercePaymentMethodGroupRel> orderByComparator)
-			throws com.liferay.portal.kernel.exception.PortalException {
+			getCommercePaymentMethodGroupRels(
+				long groupId, boolean active, int start, int end,
+				com.liferay.portal.kernel.util.OrderByComparator
+					<com.liferay.commerce.payment.model.
+						CommercePaymentMethodGroupRel> orderByComparator) {
 
 		return _commercePaymentMethodGroupRelService.
 			getCommercePaymentMethodGroupRels(
@@ -216,12 +197,11 @@ public class CommercePaymentMethodGroupRelServiceWrapper
 	@Override
 	public java.util.List
 		<com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel>
-				getCommercePaymentMethodGroupRels(
-					long groupId, int start, int end,
-					com.liferay.portal.kernel.util.OrderByComparator
-						<com.liferay.commerce.payment.model.
-							CommercePaymentMethodGroupRel> orderByComparator)
-			throws com.liferay.portal.kernel.exception.PortalException {
+			getCommercePaymentMethodGroupRels(
+				long groupId, int start, int end,
+				com.liferay.portal.kernel.util.OrderByComparator
+					<com.liferay.commerce.payment.model.
+						CommercePaymentMethodGroupRel> orderByComparator) {
 
 		return _commercePaymentMethodGroupRelService.
 			getCommercePaymentMethodGroupRels(
@@ -231,26 +211,22 @@ public class CommercePaymentMethodGroupRelServiceWrapper
 	@Override
 	public java.util.List
 		<com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel>
-				getCommercePaymentMethodGroupRels(
-					long groupId, long countryId, boolean active)
-			throws com.liferay.portal.kernel.exception.PortalException {
+			getCommercePaymentMethodGroupRels(
+				long groupId, long countryId, boolean active) {
 
 		return _commercePaymentMethodGroupRelService.
 			getCommercePaymentMethodGroupRels(groupId, countryId, active);
 	}
 
 	@Override
-	public int getCommercePaymentMethodGroupRelsCount(long groupId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
+	public int getCommercePaymentMethodGroupRelsCount(long groupId) {
 		return _commercePaymentMethodGroupRelService.
 			getCommercePaymentMethodGroupRelsCount(groupId);
 	}
 
 	@Override
 	public int getCommercePaymentMethodGroupRelsCount(
-			long groupId, boolean active)
-		throws com.liferay.portal.kernel.exception.PortalException {
+		long groupId, boolean active) {
 
 		return _commercePaymentMethodGroupRelService.
 			getCommercePaymentMethodGroupRelsCount(groupId, active);

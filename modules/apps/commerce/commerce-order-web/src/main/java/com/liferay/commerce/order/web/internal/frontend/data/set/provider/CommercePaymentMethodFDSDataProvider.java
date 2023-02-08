@@ -21,7 +21,7 @@ import com.liferay.commerce.order.web.internal.model.PaymentMethod;
 import com.liferay.commerce.payment.engine.CommercePaymentEngine;
 import com.liferay.commerce.payment.method.CommercePaymentMethod;
 import com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel;
-import com.liferay.commerce.payment.service.CommercePaymentMethodGroupRelLocalService;
+import com.liferay.commerce.payment.service.CommercePaymentMethodGroupRelService;
 import com.liferay.commerce.service.CommerceOrderService;
 import com.liferay.frontend.data.set.provider.FDSDataProvider;
 import com.liferay.frontend.data.set.provider.search.FDSKeywords;
@@ -77,7 +77,7 @@ public class CommercePaymentMethodFDSDataProvider
 				commercePaymentMethods) {
 
 			CommercePaymentMethodGroupRel commercePaymentMethodGroupRel =
-				_commercePaymentMethodGroupRelLocalService.
+				_commercePaymentMethodGroupRelService.
 					getCommercePaymentMethodGroupRel(
 						commerceOrder.getGroupId(),
 						commercePaymentMethod.getKey());
@@ -133,7 +133,7 @@ public class CommercePaymentMethodFDSDataProvider
 	private CommercePaymentEngine _commercePaymentEngine;
 
 	@Reference
-	private CommercePaymentMethodGroupRelLocalService
-		_commercePaymentMethodGroupRelLocalService;
+	private CommercePaymentMethodGroupRelService
+		_commercePaymentMethodGroupRelService;
 
 }

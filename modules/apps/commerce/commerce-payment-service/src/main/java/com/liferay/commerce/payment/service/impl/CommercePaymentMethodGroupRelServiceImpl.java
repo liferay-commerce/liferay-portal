@@ -15,6 +15,7 @@
 package com.liferay.commerce.payment.service.impl;
 
 import com.liferay.commerce.model.CommerceAddressRestriction;
+import com.liferay.commerce.payment.constants.CPActionKeys;
 import com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel;
 import com.liferay.commerce.payment.service.base.CommercePaymentMethodGroupRelServiceBaseImpl;
 import com.liferay.commerce.product.model.CommerceChannel;
@@ -24,7 +25,8 @@ import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
-import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.io.File;
@@ -63,20 +65,6 @@ public class CommercePaymentMethodGroupRelServiceImpl
 				getUserId(), groupId, classPK, countryId);
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	@Override
-	public CommerceAddressRestriction addCommerceAddressRestriction(
-			long classPK, long countryId, ServiceContext serviceContext)
-		throws PortalException {
-
-		return commercePaymentMethodGroupRelService.
-			addCommerceAddressRestriction(
-				serviceContext.getScopeGroupId(), classPK, countryId);
-	}
-
 	@Override
 	public CommercePaymentMethodGroupRel addCommercePaymentMethodGroupRel(
 			long groupId, Map<Locale, String> nameMap,
@@ -85,6 +73,14 @@ public class CommercePaymentMethodGroupRelServiceImpl
 		throws PortalException {
 
 		_checkCommerceChannel(groupId);
+
+		PortletResourcePermission portletResourcePermission =
+			_commercePaymentMethodGroupRelModelResourcePermission.
+				getPortletResourcePermission();
+
+		portletResourcePermission.check(
+			getPermissionChecker(), groupId,
+			CPActionKeys.MANAGE_COMMERCE_PAYMENT_METHOD_GROUP_REL);
 
 		return commercePaymentMethodGroupRelLocalService.
 			addCommercePaymentMethodGroupRel(
@@ -138,7 +134,9 @@ public class CommercePaymentMethodGroupRelServiceImpl
 				getCommercePaymentMethodGroupRel(
 					commercePaymentMethodGroupRelId);
 
-		_checkCommerceChannel(commercePaymentMethodGroupRel.getGroupId());
+		_commercePaymentMethodGroupRelModelResourcePermission.check(
+			getPermissionChecker(), commercePaymentMethodGroupRel,
+			ActionKeys.DELETE);
 
 		commercePaymentMethodGroupRelLocalService.
 			deleteCommercePaymentMethodGroupRel(commercePaymentMethodGroupRel);
@@ -156,6 +154,9 @@ public class CommercePaymentMethodGroupRelServiceImpl
 
 		if (commercePaymentMethodGroupRel != null) {
 			_checkCommerceChannel(commercePaymentMethodGroupRel.getGroupId());
+			_commercePaymentMethodGroupRelModelResourcePermission.check(
+				getPermissionChecker(), commercePaymentMethodGroupRel,
+				ActionKeys.VIEW);
 		}
 
 		return commercePaymentMethodGroupRel;
@@ -171,7 +172,9 @@ public class CommercePaymentMethodGroupRelServiceImpl
 				fetchCommercePaymentMethodGroupRel(groupId, engineKey);
 
 		if (commercePaymentMethodGroupRel != null) {
-			_checkCommerceChannel(commercePaymentMethodGroupRel.getGroupId());
+			_commercePaymentMethodGroupRelModelResourcePermission.check(
+				getPermissionChecker(), commercePaymentMethodGroupRel,
+				ActionKeys.VIEW);
 		}
 
 		return commercePaymentMethodGroupRel;
@@ -226,7 +229,9 @@ public class CommercePaymentMethodGroupRelServiceImpl
 				getCommercePaymentMethodGroupRel(
 					commercePaymentMethodGroupRelId);
 
-		_checkCommerceChannel(commercePaymentMethodGroupRel.getGroupId());
+		_commercePaymentMethodGroupRelModelResourcePermission.check(
+			getPermissionChecker(), commercePaymentMethodGroupRel,
+			ActionKeys.VIEW);
 
 		return commercePaymentMethodGroupRel;
 	}
@@ -236,107 +241,93 @@ public class CommercePaymentMethodGroupRelServiceImpl
 			long groupId, String engineKey)
 		throws PortalException {
 
-		_checkCommerceChannel(groupId);
+		CommercePaymentMethodGroupRel commercePaymentMethodGroupRel =
+			commercePaymentMethodGroupRelLocalService.
+				getCommercePaymentMethodGroupRel(groupId, engineKey);
 
-		return commercePaymentMethodGroupRelLocalService.
-			getCommercePaymentMethodGroupRel(groupId, engineKey);
+		_commercePaymentMethodGroupRelModelResourcePermission.check(
+			getPermissionChecker(), commercePaymentMethodGroupRel,
+			ActionKeys.VIEW);
+
+		return commercePaymentMethodGroupRel;
 	}
 
 	@Override
 	public List<CommercePaymentMethodGroupRel>
-			getCommercePaymentMethodGroupRels(long groupId)
-		throws PortalException {
+		getCommercePaymentMethodGroupRels(long groupId) {
 
-		_checkCommerceChannel(groupId);
-
-		return commercePaymentMethodGroupRelLocalService.
-			getCommercePaymentMethodGroupRels(groupId);
+		return commercePaymentMethodGroupRelPersistence.filterFindByGroupId(
+			groupId);
 	}
 
 	@Override
 	public List<CommercePaymentMethodGroupRel>
-			getCommercePaymentMethodGroupRels(long groupId, boolean active)
-		throws PortalException {
+		getCommercePaymentMethodGroupRels(long groupId, boolean active) {
 
-		_checkCommerceChannel(groupId);
-
-		return commercePaymentMethodGroupRelLocalService.
-			getCommercePaymentMethodGroupRels(groupId, active);
+		return commercePaymentMethodGroupRelPersistence.filterFindByG_A(
+			groupId, active);
 	}
 
 	@Override
 	public List<CommercePaymentMethodGroupRel>
-			getCommercePaymentMethodGroupRels(
-				long groupId, boolean active, int start, int end)
-		throws PortalException {
+		getCommercePaymentMethodGroupRels(
+			long groupId, boolean active, int start, int end) {
 
-		_checkCommerceChannel(groupId);
-
-		return commercePaymentMethodGroupRelLocalService.
-			getCommercePaymentMethodGroupRels(groupId, active, start, end);
+		return commercePaymentMethodGroupRelPersistence.filterFindByG_A(
+			groupId, active, start, end);
 	}
 
 	@Override
 	public List<CommercePaymentMethodGroupRel>
-			getCommercePaymentMethodGroupRels(
-				long groupId, boolean active, int start, int end,
-				OrderByComparator<CommercePaymentMethodGroupRel>
-					orderByComparator)
-		throws PortalException {
+		getCommercePaymentMethodGroupRels(
+			long groupId, boolean active, int start, int end,
+			OrderByComparator<CommercePaymentMethodGroupRel>
+				orderByComparator) {
 
-		_checkCommerceChannel(groupId);
-
-		return commercePaymentMethodGroupRelLocalService.
-			getCommercePaymentMethodGroupRels(
-				groupId, active, start, end, orderByComparator);
+		return commercePaymentMethodGroupRelPersistence.filterFindByG_A(
+			groupId, active, start, end, orderByComparator);
 	}
 
 	@Override
 	public List<CommercePaymentMethodGroupRel>
-			getCommercePaymentMethodGroupRels(
-				long groupId, int start, int end,
-				OrderByComparator<CommercePaymentMethodGroupRel>
-					orderByComparator)
-		throws PortalException {
+		getCommercePaymentMethodGroupRels(
+			long groupId, int start, int end,
+			OrderByComparator<CommercePaymentMethodGroupRel>
+				orderByComparator) {
 
-		_checkCommerceChannel(groupId);
-
-		return commercePaymentMethodGroupRelLocalService.
-			getCommercePaymentMethodGroupRels(
-				groupId, start, end, orderByComparator);
+		return commercePaymentMethodGroupRelPersistence.filterFindByGroupId(
+			groupId, start, end, orderByComparator);
 	}
 
 	@Override
 	public List<CommercePaymentMethodGroupRel>
-			getCommercePaymentMethodGroupRels(
-				long groupId, long countryId, boolean active)
-		throws PortalException {
+		getCommercePaymentMethodGroupRels(
+			long groupId, long countryId, boolean active) {
 
-		_checkCommerceChannel(groupId);
-
-		return commercePaymentMethodGroupRelLocalService.
-			getCommercePaymentMethodGroupRels(groupId, countryId, active);
+		return ListUtil.filter(
+			commercePaymentMethodGroupRelPersistence.filterFindByG_A(
+				groupId, active),
+			commercePaymentMethodGroupRel ->
+				!_commerceAddressRestrictionLocalService.
+					isCommerceAddressRestricted(
+						CommercePaymentMethodGroupRel.class.getName(),
+						commercePaymentMethodGroupRel.
+							getCommercePaymentMethodGroupRelId(),
+						countryId));
 	}
 
 	@Override
-	public int getCommercePaymentMethodGroupRelsCount(long groupId)
-		throws PortalException {
-
-		_checkCommerceChannel(groupId);
-
-		return commercePaymentMethodGroupRelLocalService.
-			getCommercePaymentMethodGroupRelsCount(groupId);
+	public int getCommercePaymentMethodGroupRelsCount(long groupId) {
+		return commercePaymentMethodGroupRelPersistence.filterCountByGroupId(
+			groupId);
 	}
 
 	@Override
 	public int getCommercePaymentMethodGroupRelsCount(
-			long groupId, boolean active)
-		throws PortalException {
+		long groupId, boolean active) {
 
-		_checkCommerceChannel(groupId);
-
-		return commercePaymentMethodGroupRelLocalService.
-			getCommercePaymentMethodGroupRelsCount(groupId, active);
+		return commercePaymentMethodGroupRelPersistence.filterCountByG_A(
+			groupId, active);
 	}
 
 	@Override
@@ -350,7 +341,9 @@ public class CommercePaymentMethodGroupRelServiceImpl
 					commercePaymentMethodGroupRelId);
 
 		if (commercePaymentMethodGroupRel != null) {
-			_checkCommerceChannel(commercePaymentMethodGroupRel.getGroupId());
+			_commercePaymentMethodGroupRelModelResourcePermission.check(
+				getPermissionChecker(), commercePaymentMethodGroupRel,
+				ActionKeys.UPDATE);
 		}
 
 		return commercePaymentMethodGroupRelLocalService.setActive(
@@ -369,7 +362,9 @@ public class CommercePaymentMethodGroupRelServiceImpl
 				getCommercePaymentMethodGroupRel(
 					commercePaymentMethodGroupRelId);
 
-		_checkCommerceChannel(commercePaymentMethodGroupRel.getGroupId());
+		_commercePaymentMethodGroupRelModelResourcePermission.check(
+			getPermissionChecker(), commercePaymentMethodGroupRel,
+			ActionKeys.UPDATE);
 
 		return commercePaymentMethodGroupRelLocalService.
 			updateCommercePaymentMethodGroupRel(
@@ -398,5 +393,11 @@ public class CommercePaymentMethodGroupRelServiceImpl
 	)
 	private ModelResourcePermission<CommerceChannel>
 		_commerceChannelModelResourcePermission;
+
+	@Reference(
+		target = "(model.class.name=com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel)"
+	)
+	private ModelResourcePermission<CommercePaymentMethodGroupRel>
+		_commercePaymentMethodGroupRelModelResourcePermission;
 
 }

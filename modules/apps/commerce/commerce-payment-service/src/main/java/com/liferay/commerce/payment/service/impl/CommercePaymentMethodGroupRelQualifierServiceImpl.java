@@ -16,10 +16,7 @@ package com.liferay.commerce.payment.service.impl;
 
 import com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel;
 import com.liferay.commerce.payment.model.CommercePaymentMethodGroupRelQualifier;
-import com.liferay.commerce.payment.service.CommercePaymentMethodGroupRelLocalService;
 import com.liferay.commerce.payment.service.base.CommercePaymentMethodGroupRelQualifierServiceBaseImpl;
-import com.liferay.commerce.product.model.CommerceChannel;
-import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -51,7 +48,8 @@ public class CommercePaymentMethodGroupRelQualifierServiceImpl
 				long commercePaymentMethodGroupRelId)
 		throws PortalException {
 
-		_checkCommerceChannel(commercePaymentMethodGroupRelId);
+		_checkCommercePaymentMethodGroupRel(
+			commercePaymentMethodGroupRelId, ActionKeys.UPDATE);
 
 		return commercePaymentMethodGroupRelQualifierLocalService.
 			addCommercePaymentMethodGroupRelQualifier(
@@ -70,9 +68,10 @@ public class CommercePaymentMethodGroupRelQualifierServiceImpl
 					getCommercePaymentMethodGroupRelQualifier(
 						commercePaymentMethodGroupRelQualifierId);
 
-		_checkCommerceChannel(
+		_checkCommercePaymentMethodGroupRel(
 			commercePaymentMethodGroupRelQualifier.
-				getCommercePaymentMethodGroupRelId());
+				getCommercePaymentMethodGroupRelId(),
+			ActionKeys.DELETE);
 
 		commercePaymentMethodGroupRelQualifierLocalService.
 			deleteCommercePaymentMethodGroupRelQualifier(
@@ -84,7 +83,8 @@ public class CommercePaymentMethodGroupRelQualifierServiceImpl
 			String className, long commercePaymentMethodGroupRelId)
 		throws PortalException {
 
-		_checkCommerceChannel(commercePaymentMethodGroupRelId);
+		_checkCommercePaymentMethodGroupRel(
+			commercePaymentMethodGroupRelId, ActionKeys.DELETE);
 
 		commercePaymentMethodGroupRelQualifierLocalService.
 			deleteCommercePaymentMethodGroupRelQualifiers(
@@ -97,7 +97,8 @@ public class CommercePaymentMethodGroupRelQualifierServiceImpl
 				long commercePaymentMethodGroupRelId)
 		throws PortalException {
 
-		_checkCommerceChannel(commercePaymentMethodGroupRelId);
+		_checkCommercePaymentMethodGroupRel(
+			commercePaymentMethodGroupRelId, ActionKeys.DELETE);
 
 		commercePaymentMethodGroupRelQualifierLocalService.
 			deleteCommercePaymentMethodGroupRelQualifiers(
@@ -111,7 +112,8 @@ public class CommercePaymentMethodGroupRelQualifierServiceImpl
 				long commercePaymentMethodGroupRelId)
 		throws PortalException {
 
-		_checkCommerceChannel(commercePaymentMethodGroupRelId);
+		_checkCommercePaymentMethodGroupRel(
+			commercePaymentMethodGroupRelId, ActionKeys.VIEW);
 
 		return commercePaymentMethodGroupRelQualifierLocalService.
 			fetchCommercePaymentMethodGroupRelQualifier(
@@ -125,7 +127,8 @@ public class CommercePaymentMethodGroupRelQualifierServiceImpl
 				int start, int end)
 		throws PortalException {
 
-		_checkCommerceChannel(commercePaymentMethodGroupRelId);
+		_checkCommercePaymentMethodGroupRel(
+			commercePaymentMethodGroupRelId, ActionKeys.VIEW);
 
 		return commercePaymentMethodGroupRelQualifierLocalService.
 			getCommerceOrderTypeCommercePaymentMethodGroupRelQualifiers(
@@ -137,7 +140,8 @@ public class CommercePaymentMethodGroupRelQualifierServiceImpl
 			long commercePaymentMethodGroupRelId, String keywords)
 		throws PortalException {
 
-		_checkCommerceChannel(commercePaymentMethodGroupRelId);
+		_checkCommercePaymentMethodGroupRel(
+			commercePaymentMethodGroupRelId, ActionKeys.VIEW);
 
 		return commercePaymentMethodGroupRelQualifierLocalService.
 			getCommerceOrderTypeCommercePaymentMethodGroupRelQualifiersCount(
@@ -156,9 +160,10 @@ public class CommercePaymentMethodGroupRelQualifierServiceImpl
 					getCommercePaymentMethodGroupRelQualifier(
 						commercePaymentMethodGroupRelQualifierId);
 
-		_checkCommerceChannel(
+		_checkCommercePaymentMethodGroupRel(
 			commercePaymentMethodGroupRelQualifier.
-				getCommercePaymentMethodGroupRelId());
+				getCommercePaymentMethodGroupRelId(),
+			ActionKeys.VIEW);
 
 		return commercePaymentMethodGroupRelQualifier;
 	}
@@ -171,7 +176,8 @@ public class CommercePaymentMethodGroupRelQualifierServiceImpl
 					orderByComparator)
 		throws PortalException {
 
-		_checkCommerceChannel(commercePaymentMethodGroupRelId);
+		_checkCommercePaymentMethodGroupRel(
+			commercePaymentMethodGroupRelId, ActionKeys.VIEW);
 
 		return commercePaymentMethodGroupRelQualifierLocalService.
 			getCommercePaymentMethodGroupRelQualifiers(
@@ -184,7 +190,8 @@ public class CommercePaymentMethodGroupRelQualifierServiceImpl
 				String className, long commercePaymentMethodGroupRelId)
 		throws PortalException {
 
-		_checkCommerceChannel(commercePaymentMethodGroupRelId);
+		_checkCommercePaymentMethodGroupRel(
+			commercePaymentMethodGroupRelId, ActionKeys.VIEW);
 
 		return commercePaymentMethodGroupRelQualifierLocalService.
 			getCommercePaymentMethodGroupRelQualifiers(
@@ -196,7 +203,8 @@ public class CommercePaymentMethodGroupRelQualifierServiceImpl
 			long commercePaymentMethodGroupRelId)
 		throws PortalException {
 
-		_checkCommerceChannel(commercePaymentMethodGroupRelId);
+		_checkCommercePaymentMethodGroupRel(
+			commercePaymentMethodGroupRelId, ActionKeys.VIEW);
 
 		return commercePaymentMethodGroupRelQualifierLocalService.
 			getCommercePaymentMethodGroupRelQualifiersCount(
@@ -210,7 +218,8 @@ public class CommercePaymentMethodGroupRelQualifierServiceImpl
 				int start, int end)
 		throws PortalException {
 
-		_checkCommerceChannel(commercePaymentMethodGroupRelId);
+		_checkCommercePaymentMethodGroupRel(
+			commercePaymentMethodGroupRelId, ActionKeys.VIEW);
 
 		return commercePaymentMethodGroupRelQualifierLocalService.
 			getCommerceTermEntryCommercePaymentMethodGroupRelQualifiers(
@@ -222,40 +231,26 @@ public class CommercePaymentMethodGroupRelQualifierServiceImpl
 			long commercePaymentMethodGroupRelId, String keywords)
 		throws PortalException {
 
-		_checkCommerceChannel(commercePaymentMethodGroupRelId);
+		_checkCommercePaymentMethodGroupRel(
+			commercePaymentMethodGroupRelId, ActionKeys.VIEW);
 
 		return commercePaymentMethodGroupRelQualifierLocalService.
 			getCommerceTermEntryCommercePaymentMethodGroupRelQualifiersCount(
 				commercePaymentMethodGroupRelId, keywords);
 	}
 
-	private void _checkCommerceChannel(long commercePaymentMethodGroupRelId)
+	private void _checkCommercePaymentMethodGroupRel(
+			long commercePaymentMethodGroupRelId, String actionId)
 		throws PortalException {
 
-		CommercePaymentMethodGroupRel commercePaymentMethodGroupRel =
-			_commercePaymentMethodGroupRelLocalService.
-				getCommercePaymentMethodGroupRel(
-					commercePaymentMethodGroupRelId);
-
-		CommerceChannel commerceChannel =
-			_commerceChannelLocalService.getCommerceChannelByGroupId(
-				commercePaymentMethodGroupRel.getGroupId());
-
-		_commerceChannelModelResourcePermission.check(
-			getPermissionChecker(), commerceChannel, ActionKeys.UPDATE);
+		_commercePaymentMethodGroupRelModelResourcePermission.check(
+			getPermissionChecker(), commercePaymentMethodGroupRelId, actionId);
 	}
 
-	@Reference
-	private CommerceChannelLocalService _commerceChannelLocalService;
-
 	@Reference(
-		target = "(model.class.name=com.liferay.commerce.product.model.CommerceChannel)"
+		target = "(model.class.name=com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel)"
 	)
-	private ModelResourcePermission<CommerceChannel>
-		_commerceChannelModelResourcePermission;
-
-	@Reference
-	private CommercePaymentMethodGroupRelLocalService
-		_commercePaymentMethodGroupRelLocalService;
+	private ModelResourcePermission<CommercePaymentMethodGroupRel>
+		_commercePaymentMethodGroupRelModelResourcePermission;
 
 }

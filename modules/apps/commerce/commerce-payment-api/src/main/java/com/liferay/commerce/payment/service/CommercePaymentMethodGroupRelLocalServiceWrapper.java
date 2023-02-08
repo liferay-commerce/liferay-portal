@@ -52,22 +52,6 @@ public class CommercePaymentMethodGroupRelLocalServiceWrapper
 	}
 
 	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	@Override
-	public com.liferay.commerce.model.CommerceAddressRestriction
-			addCommerceAddressRestriction(
-				long commercePaymentMethodGroupRelId, long countryId,
-				com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _commercePaymentMethodGroupRelLocalService.
-			addCommerceAddressRestriction(
-				commercePaymentMethodGroupRelId, countryId, serviceContext);
-	}
-
-	/**
 	 * Adds the commerce payment method group rel to the database. Also notifies the appropriate model listeners.
 	 *
 	 * <p>
@@ -458,16 +442,6 @@ public class CommercePaymentMethodGroupRelLocalServiceWrapper
 		return _commercePaymentMethodGroupRelLocalService.
 			getCommercePaymentMethodGroupRels(
 				groupId, start, end, orderByComparator);
-	}
-
-	@Override
-	public java.util.List
-		<com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel>
-			getCommercePaymentMethodGroupRels(
-				long groupId, long countryId, boolean active) {
-
-		return _commercePaymentMethodGroupRelLocalService.
-			getCommercePaymentMethodGroupRels(groupId, countryId, active);
 	}
 
 	/**

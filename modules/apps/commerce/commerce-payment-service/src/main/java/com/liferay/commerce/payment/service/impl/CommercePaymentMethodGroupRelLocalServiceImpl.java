@@ -28,7 +28,6 @@ import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ImageLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -37,7 +36,6 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -66,22 +64,6 @@ public class CommercePaymentMethodGroupRelLocalServiceImpl
 		return _commerceAddressRestrictionLocalService.
 			addCommerceAddressRestriction(
 				userId, groupId, CommercePaymentMethodGroupRel.class.getName(),
-				commercePaymentMethodGroupRelId, countryId);
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	@Override
-	public CommerceAddressRestriction addCommerceAddressRestriction(
-			long commercePaymentMethodGroupRelId, long countryId,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		return commercePaymentMethodGroupRelLocalService.
-			addCommerceAddressRestriction(
-				serviceContext.getUserId(), serviceContext.getScopeGroupId(),
 				commercePaymentMethodGroupRelId, countryId);
 	}
 
@@ -295,37 +277,6 @@ public class CommercePaymentMethodGroupRelLocalServiceImpl
 
 		return commercePaymentMethodGroupRelPersistence.findByGroupId(
 			groupId, start, end, orderByComparator);
-	}
-
-	@Override
-	public List<CommercePaymentMethodGroupRel>
-		getCommercePaymentMethodGroupRels(
-			long groupId, long countryId, boolean active) {
-
-		List<CommercePaymentMethodGroupRel>
-			filteredCommercePaymentMethodGroupRels = new ArrayList<>();
-
-		List<CommercePaymentMethodGroupRel> commercePaymentMethodGroupRels =
-			commercePaymentMethodGroupRelPersistence.findByG_A(groupId, active);
-
-		for (CommercePaymentMethodGroupRel commercePaymentMethodGroupRel :
-				commercePaymentMethodGroupRels) {
-
-			boolean restricted =
-				_commerceAddressRestrictionLocalService.
-					isCommerceAddressRestricted(
-						CommercePaymentMethodGroupRel.class.getName(),
-						commercePaymentMethodGroupRel.
-							getCommercePaymentMethodGroupRelId(),
-						countryId);
-
-			if (!restricted) {
-				filteredCommercePaymentMethodGroupRels.add(
-					commercePaymentMethodGroupRel);
-			}
-		}
-
-		return filteredCommercePaymentMethodGroupRels;
 	}
 
 	@Override

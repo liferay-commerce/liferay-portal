@@ -27,8 +27,8 @@ import com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel;
 import com.liferay.commerce.payment.model.CommercePaymentMethodGroupRelQualifier;
 import com.liferay.commerce.payment.request.CommercePaymentRequest;
 import com.liferay.commerce.payment.result.CommercePaymentResult;
-import com.liferay.commerce.payment.service.CommercePaymentMethodGroupRelLocalService;
 import com.liferay.commerce.payment.service.CommercePaymentMethodGroupRelQualifierLocalService;
+import com.liferay.commerce.payment.service.CommercePaymentMethodGroupRelService;
 import com.liferay.commerce.payment.util.CommercePaymentUtils;
 import com.liferay.commerce.payment.util.comparator.CommercePaymentMethodPriorityComparator;
 import com.liferay.commerce.service.CommerceOrderLocalService;
@@ -204,7 +204,7 @@ public class CommercePaymentEngineImpl implements CommercePaymentEngine {
 		}
 
 		CommercePaymentMethodGroupRel commercePaymentMethod =
-			_commercePaymentMethodGroupRelLocalService.
+			_commercePaymentMethodGroupRelService.
 				getCommercePaymentMethodGroupRel(
 					commerceOrder.getGroupId(), commercePaymentMethodKey);
 
@@ -225,7 +225,7 @@ public class CommercePaymentEngineImpl implements CommercePaymentEngine {
 
 	@Override
 	public int getCommercePaymentMethodGroupRelsCount(long groupId) {
-		return _commercePaymentMethodGroupRelLocalService.
+		return _commercePaymentMethodGroupRelService.
 			getCommercePaymentMethodGroupRelsCount(groupId, true);
 	}
 
@@ -268,14 +268,14 @@ public class CommercePaymentEngineImpl implements CommercePaymentEngine {
 
 		if (commerceAddress != null) {
 			return _getCommercePaymentMethodsList(
-				_commercePaymentMethodGroupRelLocalService.
+				_commercePaymentMethodGroupRelService.
 					getCommercePaymentMethodGroupRels(
 						groupId, commerceAddress.getCountryId(), true),
 				commerceOrder.getCommerceOrderTypeId(), subscriptionOrder);
 		}
 
 		return _getCommercePaymentMethodsList(
-			_commercePaymentMethodGroupRelLocalService.
+			_commercePaymentMethodGroupRelService.
 				getCommercePaymentMethodGroupRels(groupId, true),
 			commerceOrder.getCommerceOrderTypeId(), subscriptionOrder);
 	}
@@ -286,7 +286,7 @@ public class CommercePaymentEngineImpl implements CommercePaymentEngine {
 		throws PortalException {
 
 		CommercePaymentMethodGroupRel commercePaymentMethodGroupRel =
-			_commercePaymentMethodGroupRelLocalService.
+			_commercePaymentMethodGroupRelService.
 				getCommercePaymentMethodGroupRel(groupId, paymentMethodKey);
 
 		return commercePaymentMethodGroupRel.getImageURL(themeDisplay);
@@ -571,12 +571,12 @@ public class CommercePaymentEngineImpl implements CommercePaymentEngine {
 	private CommerceOrderPaymentLocalService _commerceOrderPaymentLocalService;
 
 	@Reference
-	private CommercePaymentMethodGroupRelLocalService
-		_commercePaymentMethodGroupRelLocalService;
-
-	@Reference
 	private CommercePaymentMethodGroupRelQualifierLocalService
 		_commercePaymentMethodGroupRelQualifierLocalService;
+
+	@Reference
+	private CommercePaymentMethodGroupRelService
+		_commercePaymentMethodGroupRelService;
 
 	@Reference
 	private CommercePaymentMethodRegistry _commercePaymentMethodRegistry;

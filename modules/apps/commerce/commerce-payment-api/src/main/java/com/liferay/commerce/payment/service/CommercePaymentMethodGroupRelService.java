@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.jsonwebservice.JSONWebService;
 import com.liferay.portal.kernel.security.access.control.AccessControlled;
 import com.liferay.portal.kernel.service.BaseService;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -60,14 +59,6 @@ public interface CommercePaymentMethodGroupRelService extends BaseService {
 	 */
 	public CommerceAddressRestriction addCommerceAddressRestriction(
 			long groupId, long classPK, long countryId)
-		throws PortalException;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	public CommerceAddressRestriction addCommerceAddressRestriction(
-			long classPK, long countryId, ServiceContext serviceContext)
 		throws PortalException;
 
 	public CommercePaymentMethodGroupRel addCommercePaymentMethodGroupRel(
@@ -120,50 +111,40 @@ public interface CommercePaymentMethodGroupRelService extends BaseService {
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommercePaymentMethodGroupRel>
-			getCommercePaymentMethodGroupRels(long groupId)
-		throws PortalException;
+		getCommercePaymentMethodGroupRels(long groupId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommercePaymentMethodGroupRel>
-			getCommercePaymentMethodGroupRels(long groupId, boolean active)
-		throws PortalException;
+		getCommercePaymentMethodGroupRels(long groupId, boolean active);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommercePaymentMethodGroupRel>
-			getCommercePaymentMethodGroupRels(
-				long groupId, boolean active, int start, int end)
-		throws PortalException;
+		getCommercePaymentMethodGroupRels(
+			long groupId, boolean active, int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommercePaymentMethodGroupRel>
-			getCommercePaymentMethodGroupRels(
-				long groupId, boolean active, int start, int end,
-				OrderByComparator<CommercePaymentMethodGroupRel>
-					orderByComparator)
-		throws PortalException;
+		getCommercePaymentMethodGroupRels(
+			long groupId, boolean active, int start, int end,
+			OrderByComparator<CommercePaymentMethodGroupRel> orderByComparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommercePaymentMethodGroupRel>
-			getCommercePaymentMethodGroupRels(
-				long groupId, int start, int end,
-				OrderByComparator<CommercePaymentMethodGroupRel>
-					orderByComparator)
-		throws PortalException;
+		getCommercePaymentMethodGroupRels(
+			long groupId, int start, int end,
+			OrderByComparator<CommercePaymentMethodGroupRel> orderByComparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommercePaymentMethodGroupRel>
-			getCommercePaymentMethodGroupRels(
-				long groupId, long countryId, boolean active)
-		throws PortalException;
+		getCommercePaymentMethodGroupRels(
+			long groupId, long countryId, boolean active);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommercePaymentMethodGroupRelsCount(long groupId)
-		throws PortalException;
+	public int getCommercePaymentMethodGroupRelsCount(long groupId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommercePaymentMethodGroupRelsCount(
-			long groupId, boolean active)
-		throws PortalException;
+		long groupId, boolean active);
 
 	/**
 	 * Returns the OSGi service identifier.
