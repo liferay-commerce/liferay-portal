@@ -27,9 +27,11 @@ import com.liferay.commerce.product.service.CommerceChannelAccountEntryRelLocalS
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.service.CommerceAddressService;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.CountryModel;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -66,9 +68,22 @@ public class ShippingAddressCheckoutStepDisplayContext
 	public List<CommerceAddress> getCommerceAddresses() throws PortalException {
 		CommerceOrder commerceOrder = getCommerceOrder();
 
-		return commerceAddressService.getShippingCommerceAddresses(
-			commerceOrder.getCompanyId(), AccountEntry.class.getName(),
-			commerceOrder.getCommerceAccountId());
+		List<CommerceAddress> addresses =
+			commerceAddressService.getShippingCommerceAddresses(
+				commerceOrder.getCompanyId(), AccountEntry.class.getName(),
+				commerceOrder.getCommerceAccountId());
+
+		List<CommerceAddress> availableAddresses = new ArrayList<>();
+
+		for (CommerceAddress address : addresses) {
+			CountryModel country = address.getCountry();
+
+			if (country.isShippingAllowed()) {
+				availableAddresses.add(address);
+			}
+		}
+
+		return availableAddresses;
 	}
 
 	@Override
