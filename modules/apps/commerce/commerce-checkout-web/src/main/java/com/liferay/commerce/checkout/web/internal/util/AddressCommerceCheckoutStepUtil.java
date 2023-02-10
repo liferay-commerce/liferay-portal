@@ -25,10 +25,12 @@ import com.liferay.commerce.constants.CommerceWebKeys;
 import com.liferay.commerce.context.CommerceContext;
 import com.liferay.commerce.exception.CommerceOrderBillingAddressException;
 import com.liferay.commerce.exception.CommerceOrderShippingAddressException;
+import com.liferay.commerce.exception.CommerceOrderShippingAndBillingException;
 import com.liferay.commerce.model.CommerceAddress;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.service.CommerceAddressService;
 import com.liferay.commerce.service.CommerceOrderService;
+import com.liferay.portal.kernel.model.CountryModel;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
@@ -112,6 +114,12 @@ public class AddressCommerceCheckoutStepUtil {
 
 			CommerceAddress commerceAddress =
 				_commerceAddressService.getCommerceAddress(commerceAddressId);
+
+			CountryModel addressCountry = commerceAddress.getCountry();
+
+			if (!addressCountry.isBillingAllowed()) {
+				throw new CommerceOrderShippingAndBillingException();
+			}
 
 			_commerceAddressService.updateCommerceAddress(
 				commerceAddressId, commerceAddress.getName(),
