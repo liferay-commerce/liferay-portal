@@ -55,7 +55,7 @@ export function updateProductFields(data) {
 	].forEach(fillField);
 
 	stockQuantityContainer.innerHTML = cpInstance.stockQuantity
-		? cpInstance.stockQuantity + Liferay.Language.get('in-stock')
+		? cpInstance.stockQuantity + ' ' + Liferay.Language.get('in-stock')
 		: '';
 
 	document.querySelector(
