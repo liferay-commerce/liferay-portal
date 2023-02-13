@@ -406,8 +406,19 @@ boolean hasManageAddressesPermission = baseAddressCheckoutStepDisplayContext.has
 								},
 							];
 
+							var isShippingStep = <%= baseAddressCheckoutStepDisplayContext.getTitle() == "shipping-address" %>;
+
 							list.forEach((listElement) => {
-								callbackList.push(listElement);
+								if (isShippingStep) {
+									if (listElement.shippingAllowed) {
+										callbackList.push(listElement);
+									}
+								}
+								else {
+									if (listElement.billingAllowed) {
+										callbackList.push(listElement);
+									}
+								}
 							});
 
 							callback(callbackList);
