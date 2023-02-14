@@ -136,7 +136,7 @@ definition {
 		var payload = "";
 		var isLessThanSize = MathUtil.isLessThan(${count}, ${listSize});
 
-		while (("" == "true")) {
+		while (("${isLessThanSize}" == "true")) {
 			var field = ListUtil.get(${list}, ${count});
 
 			var isAllowedOrderQuantities = StringUtil.matches(${field}, "(.*)allowedOrderQuantities(.*)");
