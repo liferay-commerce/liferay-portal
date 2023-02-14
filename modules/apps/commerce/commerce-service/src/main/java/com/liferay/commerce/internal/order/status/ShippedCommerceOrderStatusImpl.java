@@ -53,7 +53,10 @@ public class ShippedCommerceOrderStatusImpl implements CommerceOrderStatus {
 
 		commerceOrder.setOrderStatus(KEY);
 
-		if (!_commerceShippingHelper.isShippable(commerceOrder)) {
+		if (!_commerceShippingHelper.isShippable(commerceOrder) ||
+			(commerceOrder.getOrderStatus() ==
+				CommerceOrderConstants.ORDER_STATUS_SHIPPED)) {
+
 			commerceOrder = _commerceOrderEngine.transitionCommerceOrder(
 				commerceOrder, CommerceOrderConstants.ORDER_STATUS_COMPLETED,
 				userId);
