@@ -14,6 +14,42 @@ definition {
 		CommerceConfiguration.commerceTearDown();
 	}
 
+	@description = "This is a test for COMMERCE-10454. When the user changes the selected product selection method, the 'Product Publisher’ model must be updated accordingly"
+	@priority = 3
+	test CanAssertProductSourceUpdated {
+		task ("Given the Product Publisher is added") {
+			Navigator.openWithAppendToBaseURL(urlAppend = "web/minium");
+
+			CommerceAcceleratorsInitializer.addPortlet(portletName = "Product Publisher");
+
+			Portlet.gotoPortletOptions(
+				portletName = "Product Publisher",
+				portletOption = "Configuration");
+		}
+
+		task ("And the 'Product Entries' is not shown") {
+			SelectFrameTop();
+
+			SelectFrame.selectFrameNoLoading(locator1 = "IFrame#CONFIGURATION");
+
+			AssertElementNotPresent(
+				key_panel = "Product Entries",
+				locator1 = "CommerceEntry#CONFIGURATION_PANEL_EXPANDED");
+		}
+
+		task ("When the Manual option is selected") {
+			Click(
+				locator1 = "Radio#ANY",
+				radioLabel = "Manual");
+		}
+
+		task ("Then the 'Product Entries' is automatically shown") {
+			AssertElementPresent(
+				key_panel = "Product Entries",
+				locator1 = "CommerceEntry#CONFIGURATION_PANEL_EXPANDED");
+		}
+	}
+
 	@description = "This is a test for COMMERCE-8646"
 	@priority = 4
 	test VerifyDisplayFrequencies {
