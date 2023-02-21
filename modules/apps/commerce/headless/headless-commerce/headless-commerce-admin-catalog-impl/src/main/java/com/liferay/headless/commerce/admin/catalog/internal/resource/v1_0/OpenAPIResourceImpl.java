@@ -146,6 +146,8 @@ public class OpenAPIResourceImpl {
 
 			add(SkuResourceImpl.class);
 
+			add(SkuSubscriptionConfigurationResourceImpl.class);
+
 			add(SpecificationResourceImpl.class);
 
 			add(OpenAPIResourceImpl.class);

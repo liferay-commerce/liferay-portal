@@ -522,6 +522,31 @@ public class Sku implements Cloneable, Serializable {
 
 	protected SkuOption[] skuOptions;
 
+	public SkuSubscriptionConfiguration getSubscriptionConfiguration() {
+		return subscriptionConfiguration;
+	}
+
+	public void setSubscriptionConfiguration(
+		SkuSubscriptionConfiguration subscriptionConfiguration) {
+
+		this.subscriptionConfiguration = subscriptionConfiguration;
+	}
+
+	public void setSubscriptionConfiguration(
+		UnsafeSupplier<SkuSubscriptionConfiguration, Exception>
+			subscriptionConfigurationUnsafeSupplier) {
+
+		try {
+			subscriptionConfiguration =
+				subscriptionConfigurationUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected SkuSubscriptionConfiguration subscriptionConfiguration;
+
 	public String getUnspsc() {
 		return unspsc;
 	}

@@ -726,6 +726,39 @@ public class Sku implements Serializable {
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected SkuOption[] skuOptions;
 
+	@Schema
+	@Valid
+	public SkuSubscriptionConfiguration getSubscriptionConfiguration() {
+		return subscriptionConfiguration;
+	}
+
+	public void setSubscriptionConfiguration(
+		SkuSubscriptionConfiguration subscriptionConfiguration) {
+
+		this.subscriptionConfiguration = subscriptionConfiguration;
+	}
+
+	@JsonIgnore
+	public void setSubscriptionConfiguration(
+		UnsafeSupplier<SkuSubscriptionConfiguration, Exception>
+			subscriptionConfigurationUnsafeSupplier) {
+
+		try {
+			subscriptionConfiguration =
+				subscriptionConfigurationUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected SkuSubscriptionConfiguration subscriptionConfiguration;
+
 	@Schema(example = "1234567890")
 	public String getUnspsc() {
 		return unspsc;
@@ -1112,6 +1145,16 @@ public class Sku implements Serializable {
 			}
 
 			sb.append("]");
+		}
+
+		if (subscriptionConfiguration != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"subscriptionConfiguration\": ");
+
+			sb.append(String.valueOf(subscriptionConfiguration));
 		}
 
 		if (unspsc != null) {

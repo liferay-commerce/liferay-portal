@@ -38,6 +38,7 @@ import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductSubscriptionC
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductTaxConfiguration;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.RelatedProduct;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Sku;
+import com.liferay.headless.commerce.admin.catalog.dto.v1_0.SkuSubscriptionConfiguration;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Specification;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.AttachmentResource;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.CatalogResource;
@@ -63,6 +64,7 @@ import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductSubscrip
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductTaxConfigurationResource;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.RelatedProductResource;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.SkuResource;
+import com.liferay.headless.commerce.admin.catalog.resource.v1_0.SkuSubscriptionConfigurationResource;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.SpecificationResource;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
@@ -287,6 +289,15 @@ public class Mutation {
 
 		_skuResourceComponentServiceObjects =
 			skuResourceComponentServiceObjects;
+	}
+
+	public static void
+		setSkuSubscriptionConfigurationResourceComponentServiceObjects(
+			ComponentServiceObjects<SkuSubscriptionConfigurationResource>
+				skuSubscriptionConfigurationResourceComponentServiceObjects) {
+
+		_skuSubscriptionConfigurationResourceComponentServiceObjects =
+			skuSubscriptionConfigurationResourceComponentServiceObjects;
 	}
 
 	public static void setSpecificationResourceComponentServiceObjects(
@@ -1905,6 +1916,40 @@ public class Mutation {
 	}
 
 	@GraphQLField
+	public SkuSubscriptionConfiguration
+			patchSkuByExternalReferenceCodeSubscriptionConfiguration(
+				@GraphQLName("externalReferenceCode") String
+					externalReferenceCode,
+				@GraphQLName("skuSubscriptionConfiguration")
+					SkuSubscriptionConfiguration skuSubscriptionConfiguration)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_skuSubscriptionConfigurationResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			skuSubscriptionConfigurationResource ->
+				skuSubscriptionConfigurationResource.
+					patchSkuByExternalReferenceCodeSubscriptionConfiguration(
+						externalReferenceCode, skuSubscriptionConfiguration));
+	}
+
+	@GraphQLField
+	public SkuSubscriptionConfiguration patchSkuIdSubscriptionConfiguration(
+			@GraphQLName("id") Long id,
+			@GraphQLName("skuSubscriptionConfiguration")
+				SkuSubscriptionConfiguration skuSubscriptionConfiguration)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_skuSubscriptionConfigurationResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			skuSubscriptionConfigurationResource ->
+				skuSubscriptionConfigurationResource.
+					patchSkuIdSubscriptionConfiguration(
+						id, skuSubscriptionConfiguration));
+	}
+
+	@GraphQLField
 	public Specification createSpecification(
 			@GraphQLName("specification") Specification specification)
 		throws Exception {
@@ -2429,6 +2474,26 @@ public class Mutation {
 	}
 
 	private void _populateResourceContext(
+			SkuSubscriptionConfigurationResource
+				skuSubscriptionConfigurationResource)
+		throws Exception {
+
+		skuSubscriptionConfigurationResource.setContextAcceptLanguage(
+			_acceptLanguage);
+		skuSubscriptionConfigurationResource.setContextCompany(_company);
+		skuSubscriptionConfigurationResource.setContextHttpServletRequest(
+			_httpServletRequest);
+		skuSubscriptionConfigurationResource.setContextHttpServletResponse(
+			_httpServletResponse);
+		skuSubscriptionConfigurationResource.setContextUriInfo(_uriInfo);
+		skuSubscriptionConfigurationResource.setContextUser(_user);
+		skuSubscriptionConfigurationResource.setGroupLocalService(
+			_groupLocalService);
+		skuSubscriptionConfigurationResource.setRoleLocalService(
+			_roleLocalService);
+	}
+
+	private void _populateResourceContext(
 			SpecificationResource specificationResource)
 		throws Exception {
 
@@ -2495,6 +2560,8 @@ public class Mutation {
 		_relatedProductResourceComponentServiceObjects;
 	private static ComponentServiceObjects<SkuResource>
 		_skuResourceComponentServiceObjects;
+	private static ComponentServiceObjects<SkuSubscriptionConfigurationResource>
+		_skuSubscriptionConfigurationResourceComponentServiceObjects;
 	private static ComponentServiceObjects<SpecificationResource>
 		_specificationResourceComponentServiceObjects;
 
