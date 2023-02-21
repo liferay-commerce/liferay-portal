@@ -24,6 +24,7 @@ import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.commerce.product.service.CPInstanceService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Product;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Sku;
+import com.liferay.headless.commerce.admin.catalog.dto.v1_0.SkuSubscriptionConfiguration;
 import com.liferay.headless.commerce.admin.catalog.internal.dto.v1_0.converter.SkuDTOConverter;
 import com.liferay.headless.commerce.admin.catalog.internal.helper.v1_0.SkuHelper;
 import com.liferay.headless.commerce.admin.catalog.internal.odata.entity.v1_0.SkuEntityModel;
@@ -40,6 +41,7 @@ import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.odata.entity.EntityModel;
@@ -269,6 +271,51 @@ public class SkuResourceImpl
 				cpInstanceId, contextAcceptLanguage.getPreferredLocale()));
 	}
 
+	private Sku _updateNestedResources(Sku sku, CPInstance cpInstance)
+		throws Exception {
+
+		SkuSubscriptionConfiguration skuSubscriptionConfiguration =
+			sku.getSubscriptionConfiguration();
+
+		if (skuSubscriptionConfiguration != null) {
+			String subscriptionTypeValue = null;
+
+			SkuSubscriptionConfiguration.SubscriptionType subscriptionType =
+				skuSubscriptionConfiguration.getSubscriptionType();
+
+			if (subscriptionType != null) {
+				subscriptionTypeValue = subscriptionType.getValue();
+			}
+
+			_cpInstanceService.updateSubscriptionInfo(
+				cpInstance.getCPInstanceId(),
+				GetterUtil.get(
+					skuSubscriptionConfiguration.getOverrideSubscriptionInfo(),
+					cpInstance.isOverrideSubscriptionInfo()),
+				GetterUtil.get(
+					skuSubscriptionConfiguration.getEnable(),
+					cpInstance.isSubscriptionEnabled()),
+				GetterUtil.get(
+					skuSubscriptionConfiguration.getLength(),
+					cpInstance.getSubscriptionLength()),
+				subscriptionTypeValue,
+				UnicodePropertiesBuilder.create(
+					skuSubscriptionConfiguration.getSubscriptionTypeSettings(),
+					true
+				).build(),
+				GetterUtil.get(
+					skuSubscriptionConfiguration.getNumberOfLength(),
+					cpInstance.getMaxSubscriptionCycles()),
+				cpInstance.isDeliverySubscriptionEnabled(),
+				cpInstance.getDeliverySubscriptionLength(),
+				cpInstance.getDeliverySubscriptionType(),
+				cpInstance.getDeliverySubscriptionTypeSettingsProperties(),
+				cpInstance.getDeliveryMaxSubscriptionCycles());
+		}
+
+		return null;
+	}
+
 	private Sku _updateSKU(CPInstance cpInstance, Sku sku) throws Exception {
 		ServiceContext serviceContext = _serviceContextHelper.getServiceContext(
 			cpInstance.getGroupId());
@@ -373,7 +420,8 @@ public class SkuResourceImpl
 				sku.getPromoPrice(), cpInstance.getPromoPrice()),
 			serviceContext);
 
-		return _toSku(cpInstance.getCPInstanceId());
+		return _updateNestedResources(
+			_toSku(cpInstance.getCPInstanceId()), cpInstance);
 	}
 
 	private static final EntityModel _entityModel = new SkuEntityModel();
