@@ -776,6 +776,17 @@ definition {
 				key_productSku = "MIN",
 				locator1 = "CommerceAccelerators#QUICK_ADD_TO_CART_SEARCH_RESULT");
 		}
+
+		task ("And the search bar color is changed to red") {
+			KeyPress(
+				locator1 = "Publications#KEYWORD_TEXTFIELD",
+				value1 = "\ENTER");
+
+			/*There's the bug COMMERCE-10474 when pressing the enter keyboard button on the searchbar
+			but I'm using it in this test anyway because in this particular case the bug doesn't affect it*/
+
+			AssertElementPresent(locator1 = "TextInput#ALERT");
+		}
 	}
 
 	@description = "This is a test for COMMERCE-10474. Buyer user can press enter on quick add to cart search bar and the text doesn't disappear"
