@@ -22,6 +22,7 @@ import React, {useContext, useEffect, useState} from 'react';
 
 import {addToCart} from '../add_to_cart/data';
 import MiniCartContext from './MiniCartContext';
+import {getCorrectedQuantity} from './util/index';
 
 const CHANNEL_RESOURCE_ENDPOINT =
 	'/o/headless-commerce-delivery-catalog/v1.0/channels';
@@ -54,6 +55,7 @@ export default function CartQuickAdd() {
 
 	const [formattedProducts, setFormattedProducts] = useState([]);
 	const [productsQuery, setProductsQuery] = useState('');
+	const [quantityError, setQuantityError] = useState(false);
 	const [quickAddToCartError, setQuickAddToCartError] = useState(false);
 	const [selectedProducts, setSelectedProducts] = useState([]);
 	const [productsWithOptions, setProductsWithOptions] = useState([]);
@@ -113,14 +115,22 @@ export default function CartQuickAdd() {
 					item.skus.find((childSku) => childSku.sku === product.sku)
 				);
 
+				const {name, productConfiguration, urls} = parentProduct;
+
+				const adjustedQuantity = getCorrectedQuantity(
+					product,
+					product.sku,
+					cartItems,
+					parentProduct
+				);
+
 				return {
 					...product,
-					name: parentProduct.name,
+					name,
 					price: product.price,
-					productURLs: parentProduct.urls,
-					quantity:
-						parentProduct.productConfiguration.minOrderQuantity,
-					settings: parentProduct.productConfiguration,
+					productURLs: urls,
+					quantity: adjustedQuantity,
+					settings: productConfiguration,
 					sku: product.sku,
 					skuId: product.id,
 				};
@@ -128,11 +138,18 @@ export default function CartQuickAdd() {
 			else {
 				const {productConfiguration, skus, urls} = product;
 
+				const adjustedQuantity = getCorrectedQuantity(
+					product,
+					skus[0].sku,
+					cartItems,
+					false
+				);
+
 				return {
 					...product,
 					price: skus[0].price,
 					productURLs: urls,
-					quantity: productConfiguration.minOrderQuantity,
+					quantity: adjustedQuantity,
 					settings: productConfiguration,
 					sku: skus[0].sku,
 					skuId: skus[0].id,
@@ -140,19 +157,30 @@ export default function CartQuickAdd() {
 			}
 		});
 
-		setCartState((cartState) => ({
-			...cartState,
-			cartItems: cartItems.concat(readyProducts),
-		}));
-
-		addToCart(
-			readyProducts,
-			cartState.id,
-			channel.channel.id,
-			cartState.accountId
+		const productWithoutQuantity = readyProducts.find(
+			(product) => product.quantity === 0
 		);
 
-		setSelectedProducts([]);
+		if (!productWithoutQuantity) {
+			setCartState((cartState) => ({
+				...cartState,
+				cartItems: cartItems.concat(readyProducts),
+			}));
+
+			addToCart(
+				readyProducts,
+				cartState.id,
+				channel.channel.id,
+				cartState.accountId
+			);
+
+			setSelectedProducts([]);
+		}
+		else {
+			setQuickAddToCartError(true);
+
+			setQuantityError(true);
+		}
 	};
 
 	return (
@@ -174,6 +202,8 @@ export default function CartQuickAdd() {
 						onChange={setProductsQuery}
 						onItemsChange={(newItems) => {
 							setQuickAddToCartError(false);
+
+							setQuantityError(false);
 
 							newItems = newItems.filter((item) => {
 								if (item.id) {
@@ -215,7 +245,13 @@ export default function CartQuickAdd() {
 							<ClayForm.FeedbackItem>
 								<ClayForm.FeedbackIndicator symbol="info-circle" />
 
-								{Liferay.Language.get('select-from-list')}
+								{`${Liferay.Language.get('error-colon')} `}
+
+								{quantityError
+									? Liferay.Language.get(
+											'please-enter-a-valid-quantity'
+									  )
+									: Liferay.Language.get('select-from-list')}
 							</ClayForm.FeedbackItem>
 						</ClayForm.FeedbackGroup>
 					)}
@@ -223,7 +259,9 @@ export default function CartQuickAdd() {
 
 				<ClayInput.GroupItem shrink>
 					<ClayButtonWithIcon
-						disabled={!selectedProducts.length}
+						disabled={
+							!selectedProducts.length || quickAddToCartError
+						}
 						onClick={handleAddToCartClick}
 						symbol="shopping-cart"
 					/>
