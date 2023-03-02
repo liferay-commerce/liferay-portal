@@ -16,14 +16,19 @@ package com.liferay.commerce.product.util;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.commerce.account.model.CommerceAccount;
+import com.liferay.commerce.account.util.CommerceAccountHelper;
 import com.liferay.commerce.product.catalog.CPCatalogEntry;
 import com.liferay.commerce.product.catalog.CPQuery;
 import com.liferay.commerce.product.data.source.CPDataSourceResult;
+import com.liferay.commerce.product.model.CPDefinition;
+import com.liferay.info.pagination.Pagination;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -33,6 +38,11 @@ import java.util.Locale;
  */
 @ProviderType
 public interface CPDefinitionHelper {
+
+	public SearchContext createCPDefinitionLinkSearchContext(
+		CommerceAccount commerceAccount,
+		CommerceAccountHelper commerceAccountHelper, long companyId,
+		long cpDefinitionId, String definitionLinkType);
 
 	public CPCatalogEntry getCPCatalogEntry(Document document, Locale locale);
 
@@ -51,6 +61,11 @@ public interface CPDefinitionHelper {
 	public CPDataSourceResult search(
 			long groupId, SearchContext searchContext, CPQuery cpQuery,
 			int start, int end)
+		throws PortalException;
+
+	public List<CPDefinition> search(
+			long groupId, SearchContext searchContext, CPQuery cpQuery,
+			Pagination pagination)
 		throws PortalException;
 
 	public long searchCount(

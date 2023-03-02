@@ -14,6 +14,8 @@
 
 package com.liferay.commerce.product.internal.util;
 
+import com.liferay.commerce.account.model.CommerceAccount;
+import com.liferay.commerce.account.util.CommerceAccountHelper;
 import com.liferay.commerce.media.CommerceMediaResolverUtil;
 import com.liferay.commerce.product.catalog.CPCatalogEntry;
 import com.liferay.commerce.product.catalog.CPQuery;
@@ -38,6 +40,7 @@ import com.liferay.commerce.product.url.CPFriendlyURL;
 import com.liferay.commerce.product.util.CPDefinitionHelper;
 import com.liferay.friendly.url.model.FriendlyURLEntry;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
+import com.liferay.info.pagination.Pagination;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -57,8 +60,12 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
+
+import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,6 +81,39 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(service = CPDefinitionHelper.class)
 public class CPDefinitionHelperImpl implements CPDefinitionHelper {
+
+	@Override
+	public SearchContext createCPDefinitionLinkSearchContext(
+		CommerceAccount commerceAccount,
+		CommerceAccountHelper commerceAccountHelper, long companyId,
+		long cpDefinitionId, String definitionLinkType) {
+
+		SearchContext searchContext = new SearchContext();
+
+		searchContext.setAttributes(
+			HashMapBuilder.<String, Serializable>put(
+				Field.STATUS, WorkflowConstants.STATUS_APPROVED
+			).put(
+				"commerceAccountGroupIds",
+				() -> {
+					if (commerceAccount == null) {
+						return null;
+					}
+
+					return commerceAccountHelper.getCommerceAccountGroupIds(
+						commerceAccount.getCommerceAccountId());
+				}
+			).put(
+				"definitionLinkCPDefinitionId", cpDefinitionId
+			).put(
+				"definitionLinkType", definitionLinkType
+			).put(
+				"excludedCPDefinitionId", cpDefinitionId
+			).build());
+		searchContext.setCompanyId(companyId);
+
+		return searchContext;
+	}
 
 	@Override
 	public CPCatalogEntry getCPCatalogEntry(Document document, Locale locale) {
@@ -156,6 +196,38 @@ public class CPDefinitionHelperImpl implements CPDefinitionHelper {
 		}
 
 		return new CPDataSourceResult(cpCatalogEntries, hits.getLength());
+	}
+
+	@Override
+	public List<CPDefinition> search(
+			long groupId, SearchContext searchContext, CPQuery cpQuery,
+			Pagination pagination)
+		throws PortalException {
+
+		List<CPDefinition> cpDefinitions = new ArrayList<>();
+
+		CPDefinitionSearcher cpDefinitionSearcher = _getCPDefinitionSearcher(
+			groupId, searchContext, cpQuery, pagination.getStart(),
+			pagination.getEnd());
+
+		Hits hits = cpDefinitionSearcher.search(searchContext);
+
+		Document[] documents = hits.getDocs();
+
+		for (Document document : documents) {
+			CPCatalogEntry cpCatalogEntry = getCPCatalogEntry(
+				document, searchContext.getLocale());
+
+			CPDefinition cpDefinition =
+				_cpDefinitionLocalService.fetchCPDefinition(
+					cpCatalogEntry.getCPDefinitionId());
+
+			if (cpDefinition != null) {
+				cpDefinitions.add(cpDefinition);
+			}
+		}
+
+		return cpDefinitions;
 	}
 
 	@Override
