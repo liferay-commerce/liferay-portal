@@ -36,7 +36,7 @@ public class CommerceCountryUpgradeProcess extends UpgradeProcess {
 	protected void doUpgrade() throws Exception {
 		try (Statement selectStatement = connection.createStatement()) {
 			ResultSet resultSet = selectStatement.executeQuery(
-				"select * from Country where groupFilterEnabled = " + 0);
+				"select * from Country where groupFilterEnabled = [$FALSE$]");
 
 			while (resultSet.next()) {
 				long countryId = resultSet.getLong("countryId");
