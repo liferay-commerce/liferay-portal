@@ -65,9 +65,8 @@ public class BillingAddressCheckoutStepDisplayContext
 
 	@Override
 	public List<CommerceAddress> getCommerceAddresses() throws PortalException {
-		CommerceOrder commerceOrder = getCommerceOrder();
-
 		CommerceContext commerceContext = getCommerceContext();
+		CommerceOrder commerceOrder = getCommerceOrder();
 
 		return commerceAddressService.getBillingCommerceAddresses(
 			commerceContext.getCommerceChannelId(),
