@@ -432,8 +432,8 @@ public class CommerceServiceUpgradeStepRegistrator
 				CommerceCountryUpgradeProcess(_commerceChannelRelLocalService));
 
 		registry.register(
-			"8.9.3", "9.0.0",
-			new com.liferay.commerce.internal.upgrade.v9_0_0.
+			"8.9.3", "8.9.4",
+			new com.liferay.commerce.internal.upgrade.v8_9_4.
 				CommerceOrderUpgradeProcess(
 					_commerceOrderLocalService, _commerceShipmentLocalService,
 					_commerceOrderStatusRegistry));

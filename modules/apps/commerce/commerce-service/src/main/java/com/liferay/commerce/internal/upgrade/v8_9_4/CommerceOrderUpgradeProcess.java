@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.commerce.internal.upgrade.v9_0_0;
+package com.liferay.commerce.internal.upgrade.v8_9_4;
 
 import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.constants.CommerceShipmentConstants;
