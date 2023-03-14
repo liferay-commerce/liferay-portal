@@ -184,6 +184,7 @@ public abstract class BaseSkuResourceTestCase {
 
 		sku.setGtin(regex);
 		sku.setManufacturerPartNumber(regex);
+		sku.setReplacementSkuExternalReferenceCode(regex);
 		sku.setSku(regex);
 
 		String json = SkuSerDes.toJSON(sku);
@@ -194,6 +195,8 @@ public abstract class BaseSkuResourceTestCase {
 
 		Assert.assertEquals(regex, sku.getGtin());
 		Assert.assertEquals(regex, sku.getManufacturerPartNumber());
+		Assert.assertEquals(
+			regex, sku.getReplacementSkuExternalReferenceCode());
 		Assert.assertEquals(regex, sku.getSku());
 	}
 
@@ -516,6 +519,25 @@ public abstract class BaseSkuResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals(
+					"replacementSkuExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (sku.getReplacementSkuExternalReferenceCode() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("replacementSkuId", additionalAssertFieldName)) {
+				if (sku.getReplacementSkuId() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("sku", additionalAssertFieldName)) {
 				if (sku.getSku() == null) {
 					valid = false;
@@ -807,6 +829,31 @@ public abstract class BaseSkuResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals(
+					"replacementSkuExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						sku1.getReplacementSkuExternalReferenceCode(),
+						sku2.getReplacementSkuExternalReferenceCode())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("replacementSkuId", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						sku1.getReplacementSkuId(),
+						sku2.getReplacementSkuId())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("sku", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(sku1.getSku(), sku2.getSku())) {
 					return false;
@@ -1079,6 +1126,20 @@ public abstract class BaseSkuResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("replacementSkuExternalReferenceCode")) {
+			sb.append("'");
+			sb.append(
+				String.valueOf(sku.getReplacementSkuExternalReferenceCode()));
+			sb.append("'");
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("replacementSkuId")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("sku")) {
 			sb.append("'");
 			sb.append(String.valueOf(sku.getSku()));
@@ -1161,6 +1222,9 @@ public abstract class BaseSkuResourceTestCase {
 				neverExpire = RandomTestUtil.randomBoolean();
 				published = RandomTestUtil.randomBoolean();
 				purchasable = RandomTestUtil.randomBoolean();
+				replacementSkuExternalReferenceCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				replacementSkuId = RandomTestUtil.randomLong();
 				sku = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				weight = RandomTestUtil.randomDouble();
 				width = RandomTestUtil.randomDouble();

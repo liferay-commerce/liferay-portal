@@ -484,6 +484,68 @@ public class Sku implements Serializable {
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Boolean purchasable;
 
+	@Schema(example = "SKU0111")
+	public String getReplacementSkuExternalReferenceCode() {
+		return replacementSkuExternalReferenceCode;
+	}
+
+	public void setReplacementSkuExternalReferenceCode(
+		String replacementSkuExternalReferenceCode) {
+
+		this.replacementSkuExternalReferenceCode =
+			replacementSkuExternalReferenceCode;
+	}
+
+	@JsonIgnore
+	public void setReplacementSkuExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			replacementSkuExternalReferenceCodeUnsafeSupplier) {
+
+		try {
+			replacementSkuExternalReferenceCode =
+				replacementSkuExternalReferenceCodeUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String replacementSkuExternalReferenceCode;
+
+	@DecimalMin("0")
+	@Schema(example = "33135")
+	public Long getReplacementSkuId() {
+		return replacementSkuId;
+	}
+
+	public void setReplacementSkuId(Long replacementSkuId) {
+		this.replacementSkuId = replacementSkuId;
+	}
+
+	@JsonIgnore
+	public void setReplacementSkuId(
+		UnsafeSupplier<Long, Exception> replacementSkuIdUnsafeSupplier) {
+
+		try {
+			replacementSkuId = replacementSkuIdUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Long replacementSkuId;
+
 	@Schema
 	public String getSku() {
 		return sku;
@@ -805,6 +867,30 @@ public class Sku implements Serializable {
 			sb.append("\"purchasable\": ");
 
 			sb.append(purchasable);
+		}
+
+		if (replacementSkuExternalReferenceCode != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"replacementSkuExternalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(replacementSkuExternalReferenceCode));
+
+			sb.append("\"");
+		}
+
+		if (replacementSkuId != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"replacementSkuId\": ");
+
+			sb.append(replacementSkuId);
 		}
 
 		if (sku != null) {
