@@ -74,6 +74,11 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 		CPInstance cpInstance = _cpInstanceLocalService.getCPInstance(
 			(Long)cpSkuDTOConverterConvertContext.getId());
 
+		CPInstance replacementCPInstance =
+			_cpInstanceLocalService.fetchCProductInstance(
+				cpInstance.getReplacementCProductId(),
+				cpInstance.getReplacementCPInstanceUuid());
+
 		CommerceContext commerceContext =
 			cpSkuDTOConverterConvertContext.getCommerceContext();
 
@@ -102,6 +107,24 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 				skuOptions = _getSkuOptions(cpInstance);
 				weight = cpInstance.getWeight();
 				width = cpInstance.getWidth();
+
+				setReplacementSkuExternalReferenceCode(
+					() -> {
+						if (replacementCPInstance != null) {
+							return replacementCPInstance.
+								getExternalReferenceCode();
+						}
+
+						return null;
+					});
+				setReplacementSkuId(
+					() -> {
+						if (replacementCPInstance != null) {
+							return replacementCPInstance.getCPInstanceId();
+						}
+
+						return null;
+					});
 			}
 		};
 	}
