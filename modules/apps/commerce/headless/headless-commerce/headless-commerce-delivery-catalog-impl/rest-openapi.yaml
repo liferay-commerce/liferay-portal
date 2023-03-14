@@ -636,6 +636,14 @@ components:
                 purchasable:
                     example: true
                     type: boolean
+                replacementSkuExternalReferenceCode:
+                    example: SKU0111
+                    type: string
+                replacementSkuId:
+                    example: 33135
+                    format: int64
+                    minimum: 0
+                    type: integer
                 sku:
                     type: string
                 skuOptions:
