@@ -289,6 +289,16 @@ public class PriceEntrySerDes {
 			sb.append(priceEntry.getPriceListId());
 		}
 
+		if (priceEntry.getPriceOnApplication() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"priceOnApplication\": ");
+
+			sb.append(priceEntry.getPriceOnApplication());
+		}
+
 		if (priceEntry.getProduct() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -539,6 +549,15 @@ public class PriceEntrySerDes {
 			map.put("priceListId", String.valueOf(priceEntry.getPriceListId()));
 		}
 
+		if (priceEntry.getPriceOnApplication() == null) {
+			map.put("priceOnApplication", null);
+		}
+		else {
+			map.put(
+				"priceOnApplication",
+				String.valueOf(priceEntry.getPriceOnApplication()));
+		}
+
 		if (priceEntry.getProduct() == null) {
 			map.put("product", null);
 		}
@@ -719,6 +738,14 @@ public class PriceEntrySerDes {
 				if (jsonParserFieldValue != null) {
 					priceEntry.setPriceListId(
 						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "priceOnApplication")) {
+
+				if (jsonParserFieldValue != null) {
+					priceEntry.setPriceOnApplication(
+						(Boolean)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "product")) {
