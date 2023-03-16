@@ -6419,6 +6419,7 @@ public class CommercePriceEntryPersistenceImpl
 		ctStrictColumnNames.add("discountLevel4");
 		ctStrictColumnNames.add("hasTierPrice");
 		ctStrictColumnNames.add("bulkPricing");
+		ctStrictColumnNames.add("priceOnApplication");
 		ctStrictColumnNames.add("displayDate");
 		ctStrictColumnNames.add("expirationDate");
 		ctStrictColumnNames.add("lastPublishDate");

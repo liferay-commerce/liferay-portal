@@ -69,6 +69,7 @@ public class CommercePriceEntryWrapper
 		attributes.put("discountLevel4", getDiscountLevel4());
 		attributes.put("hasTierPrice", isHasTierPrice());
 		attributes.put("bulkPricing", isBulkPricing());
+		attributes.put("priceOnApplication", isPriceOnApplication());
 		attributes.put("displayDate", getDisplayDate());
 		attributes.put("expirationDate", getExpirationDate());
 		attributes.put("lastPublishDate", getLastPublishDate());
@@ -219,6 +220,13 @@ public class CommercePriceEntryWrapper
 
 		if (bulkPricing != null) {
 			setBulkPricing(bulkPricing);
+		}
+
+		Boolean priceOnApplication = (Boolean)attributes.get(
+			"priceOnApplication");
+
+		if (priceOnApplication != null) {
+			setPriceOnApplication(priceOnApplication);
 		}
 
 		Date displayDate = (Date)attributes.get("displayDate");
@@ -502,6 +510,16 @@ public class CommercePriceEntryWrapper
 	}
 
 	/**
+	 * Returns the price on application of this commerce price entry.
+	 *
+	 * @return the price on application of this commerce price entry
+	 */
+	@Override
+	public boolean getPriceOnApplication() {
+		return model.getPriceOnApplication();
+	}
+
+	/**
 	 * Returns the primary key of this commerce price entry.
 	 *
 	 * @return the primary key of this commerce price entry
@@ -717,6 +735,16 @@ public class CommercePriceEntryWrapper
 	@Override
 	public boolean isPending() {
 		return model.isPending();
+	}
+
+	/**
+	 * Returns <code>true</code> if this commerce price entry is price on application.
+	 *
+	 * @return <code>true</code> if this commerce price entry is price on application; <code>false</code> otherwise
+	 */
+	@Override
+	public boolean isPriceOnApplication() {
+		return model.isPriceOnApplication();
 	}
 
 	/**
@@ -942,6 +970,16 @@ public class CommercePriceEntryWrapper
 	@Override
 	public void setPrice(BigDecimal price) {
 		model.setPrice(price);
+	}
+
+	/**
+	 * Sets whether this commerce price entry is price on application.
+	 *
+	 * @param priceOnApplication the price on application of this commerce price entry
+	 */
+	@Override
+	public void setPriceOnApplication(boolean priceOnApplication) {
+		model.setPriceOnApplication(priceOnApplication);
 	}
 
 	/**

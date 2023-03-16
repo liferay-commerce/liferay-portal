@@ -38,6 +38,7 @@ create table CommercePriceEntry (
 	discountLevel4 DECIMAL(30, 16) null,
 	hasTierPrice BOOLEAN,
 	bulkPricing BOOLEAN,
+	priceOnApplication BOOLEAN,
 	displayDate DATE null,
 	expirationDate DATE null,
 	lastPublishDate DATE null,

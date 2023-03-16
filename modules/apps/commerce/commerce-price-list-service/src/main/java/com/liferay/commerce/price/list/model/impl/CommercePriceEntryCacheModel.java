@@ -80,7 +80,7 @@ public class CommercePriceEntryCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(59);
+		StringBundler sb = new StringBundler(61);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -126,6 +126,8 @@ public class CommercePriceEntryCacheModel
 		sb.append(hasTierPrice);
 		sb.append(", bulkPricing=");
 		sb.append(bulkPricing);
+		sb.append(", priceOnApplication=");
+		sb.append(priceOnApplication);
 		sb.append(", displayDate=");
 		sb.append(displayDate);
 		sb.append(", expirationDate=");
@@ -212,6 +214,7 @@ public class CommercePriceEntryCacheModel
 		commercePriceEntryImpl.setDiscountLevel4(discountLevel4);
 		commercePriceEntryImpl.setHasTierPrice(hasTierPrice);
 		commercePriceEntryImpl.setBulkPricing(bulkPricing);
+		commercePriceEntryImpl.setPriceOnApplication(priceOnApplication);
 
 		if (displayDate == Long.MIN_VALUE) {
 			commercePriceEntryImpl.setDisplayDate(null);
@@ -292,6 +295,8 @@ public class CommercePriceEntryCacheModel
 		hasTierPrice = objectInput.readBoolean();
 
 		bulkPricing = objectInput.readBoolean();
+
+		priceOnApplication = objectInput.readBoolean();
 		displayDate = objectInput.readLong();
 		expirationDate = objectInput.readLong();
 		lastPublishDate = objectInput.readLong();
@@ -361,6 +366,8 @@ public class CommercePriceEntryCacheModel
 		objectOutput.writeBoolean(hasTierPrice);
 
 		objectOutput.writeBoolean(bulkPricing);
+
+		objectOutput.writeBoolean(priceOnApplication);
 		objectOutput.writeLong(displayDate);
 		objectOutput.writeLong(expirationDate);
 		objectOutput.writeLong(lastPublishDate);
@@ -401,6 +408,7 @@ public class CommercePriceEntryCacheModel
 	public BigDecimal discountLevel4;
 	public boolean hasTierPrice;
 	public boolean bulkPricing;
+	public boolean priceOnApplication;
 	public long displayDate;
 	public long expirationDate;
 	public long lastPublishDate;

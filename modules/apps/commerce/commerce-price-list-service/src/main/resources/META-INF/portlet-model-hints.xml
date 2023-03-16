@@ -24,6 +24,7 @@
 		<field name="discountLevel4" type="BigDecimal" />
 		<field name="hasTierPrice" type="boolean" />
 		<field name="bulkPricing" type="boolean" />
+		<field name="priceOnApplication" type="boolean" />
 		<field name="displayDate" type="Date" />
 		<field name="expirationDate" type="Date" />
 		<field name="lastPublishDate" type="Date" />

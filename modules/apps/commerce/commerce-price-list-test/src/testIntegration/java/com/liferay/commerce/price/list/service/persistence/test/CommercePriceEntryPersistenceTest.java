@@ -180,6 +180,9 @@ public class CommercePriceEntryPersistenceTest {
 
 		newCommercePriceEntry.setBulkPricing(RandomTestUtil.randomBoolean());
 
+		newCommercePriceEntry.setPriceOnApplication(
+			RandomTestUtil.randomBoolean());
+
 		newCommercePriceEntry.setDisplayDate(RandomTestUtil.nextDate());
 
 		newCommercePriceEntry.setExpirationDate(RandomTestUtil.nextDate());
@@ -268,6 +271,9 @@ public class CommercePriceEntryPersistenceTest {
 		Assert.assertEquals(
 			existingCommercePriceEntry.isBulkPricing(),
 			newCommercePriceEntry.isBulkPricing());
+		Assert.assertEquals(
+			existingCommercePriceEntry.isPriceOnApplication(),
+			newCommercePriceEntry.isPriceOnApplication());
 		Assert.assertEquals(
 			Time.getShortTimestamp(existingCommercePriceEntry.getDisplayDate()),
 			Time.getShortTimestamp(newCommercePriceEntry.getDisplayDate()));
@@ -434,9 +440,9 @@ public class CommercePriceEntryPersistenceTest {
 			"promoPrice", true, "discountDiscovery", true, "discountLevel1",
 			true, "discountLevel2", true, "discountLevel3", true,
 			"discountLevel4", true, "hasTierPrice", true, "bulkPricing", true,
-			"displayDate", true, "expirationDate", true, "lastPublishDate",
-			true, "status", true, "statusByUserId", true, "statusByUserName",
-			true, "statusDate", true);
+			"priceOnApplication", true, "displayDate", true, "expirationDate",
+			true, "lastPublishDate", true, "status", true, "statusByUserId",
+			true, "statusByUserName", true, "statusDate", true);
 	}
 
 	@Test
@@ -780,6 +786,9 @@ public class CommercePriceEntryPersistenceTest {
 		commercePriceEntry.setHasTierPrice(RandomTestUtil.randomBoolean());
 
 		commercePriceEntry.setBulkPricing(RandomTestUtil.randomBoolean());
+
+		commercePriceEntry.setPriceOnApplication(
+			RandomTestUtil.randomBoolean());
 
 		commercePriceEntry.setDisplayDate(RandomTestUtil.nextDate());
 

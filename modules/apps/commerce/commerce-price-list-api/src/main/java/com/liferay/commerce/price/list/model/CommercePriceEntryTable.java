@@ -107,6 +107,10 @@ public class CommercePriceEntryTable
 	public final Column<CommercePriceEntryTable, Boolean> bulkPricing =
 		createColumn(
 			"bulkPricing", Boolean.class, Types.BOOLEAN, Column.FLAG_DEFAULT);
+	public final Column<CommercePriceEntryTable, Boolean> priceOnApplication =
+		createColumn(
+			"priceOnApplication", Boolean.class, Types.BOOLEAN,
+			Column.FLAG_DEFAULT);
 	public final Column<CommercePriceEntryTable, Date> displayDate =
 		createColumn(
 			"displayDate", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);

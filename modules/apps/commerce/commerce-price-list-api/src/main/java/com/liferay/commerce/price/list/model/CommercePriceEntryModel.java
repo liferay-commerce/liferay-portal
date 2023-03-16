@@ -432,6 +432,27 @@ public interface CommercePriceEntryModel
 	public void setBulkPricing(boolean bulkPricing);
 
 	/**
+	 * Returns the price on application of this commerce price entry.
+	 *
+	 * @return the price on application of this commerce price entry
+	 */
+	public boolean getPriceOnApplication();
+
+	/**
+	 * Returns <code>true</code> if this commerce price entry is price on application.
+	 *
+	 * @return <code>true</code> if this commerce price entry is price on application; <code>false</code> otherwise
+	 */
+	public boolean isPriceOnApplication();
+
+	/**
+	 * Sets whether this commerce price entry is price on application.
+	 *
+	 * @param priceOnApplication the price on application of this commerce price entry
+	 */
+	public void setPriceOnApplication(boolean priceOnApplication);
+
+	/**
 	 * Returns the display date of this commerce price entry.
 	 *
 	 * @return the display date of this commerce price entry
