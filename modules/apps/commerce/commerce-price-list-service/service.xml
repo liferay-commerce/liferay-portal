@@ -32,6 +32,7 @@
 		<column name="discountLevel4" type="BigDecimal" />
 		<column name="hasTierPrice" type="boolean" />
 		<column name="bulkPricing" type="boolean" />
+		<column name="priceOnApplication" type="boolean" />
 		<column name="displayDate" type="Date" />
 		<column name="expirationDate" type="Date" />
 		<column name="lastPublishDate" type="Date" />
