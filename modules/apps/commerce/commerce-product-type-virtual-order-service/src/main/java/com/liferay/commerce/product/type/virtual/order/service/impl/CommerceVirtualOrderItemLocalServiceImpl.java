@@ -193,7 +193,7 @@ public class CommerceVirtualOrderItemLocalServiceImpl
 			long commerceOrderItemId) {
 
 		return commerceVirtualOrderItemPersistence.fetchByCommerceOrderItemId(
-			commerceOrderItemId);
+			commerceOrderItemId, false);
 	}
 
 	@Override
