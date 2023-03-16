@@ -520,6 +520,7 @@ public class PriceListResourceImpl extends BasePriceListResourceImpl {
 						GetterUtil.getLong(priceEntry.getSkuId()), null,
 						commercePriceList.getCommercePriceListId(),
 						BigDecimal.valueOf(priceEntry.getPrice()),
+						GetterUtil.getBoolean(priceEntry.getNeverExpire()),
 						priceEntry.getDiscountDiscovery(),
 						priceEntry.getDiscountLevel1(),
 						priceEntry.getDiscountLevel2(),

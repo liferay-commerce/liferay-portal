@@ -37,8 +37,6 @@ import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
-import java.math.BigDecimal;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -271,9 +269,7 @@ public class PriceEntryResourceImpl extends BasePriceEntryResourceImpl {
 				priceEntry.getExternalReferenceCode(),
 				GetterUtil.getLong(priceEntry.getId()), cProductId,
 				cpInstanceUuid, commercePriceList.getCommercePriceListId(),
-				priceEntry.getPrice(),
-				(BigDecimal)GetterUtil.get(
-					priceEntry.getPromoPrice(), BigDecimal.ZERO),
+				priceEntry.getPrice(), false,
 				priceEntry.getSkuExternalReferenceCode(), serviceContext);
 
 		// Update nested resources
@@ -331,7 +327,7 @@ public class PriceEntryResourceImpl extends BasePriceEntryResourceImpl {
 		commercePriceEntry =
 			_commercePriceEntryService.updateCommercePriceEntry(
 				commercePriceEntry.getCommercePriceEntryId(),
-				priceEntry.getPrice(), priceEntry.getPromoPrice(),
+				priceEntry.getPrice(), false,
 				_serviceContextHelper.getServiceContext());
 
 		// Update nested resources

@@ -228,13 +228,14 @@ public class SkuUtil {
 			CPDefinition cpDefinition = cpInstance.getCPDefinition();
 
 			commercePriceEntryLocalService.addCommercePriceEntry(
-				cpDefinition.getCProductId(), cpInstance.getCPInstanceUuid(),
-				commercePriceList.getCommercePriceListId(), price, null,
+				null, cpDefinition.getCProductId(),
+				cpInstance.getCPInstanceUuid(),
+				commercePriceList.getCommercePriceListId(), price, false,
 				serviceContext);
 		}
 		else {
 			commercePriceEntryLocalService.updateCommercePriceEntry(
-				commercePriceEntry.getCommercePriceEntryId(), price, null,
+				commercePriceEntry.getCommercePriceEntryId(), price, false,
 				serviceContext);
 		}
 	}

@@ -278,6 +278,7 @@ public class PriceEntryResourceImpl extends BasePriceEntryResourceImpl {
 				GetterUtil.getLong(priceEntry.getPriceEntryId()), cProductId,
 				cpInstanceUuid, commercePriceList.getCommercePriceListId(),
 				BigDecimal.valueOf(priceEntry.getPrice()),
+				GetterUtil.getBoolean(priceEntry.getPriceOnApplication()),
 				GetterUtil.getBoolean(priceEntry.getDiscountDiscovery(), true),
 				priceEntry.getDiscountLevel1(), priceEntry.getDiscountLevel2(),
 				priceEntry.getDiscountLevel3(), priceEntry.getDiscountLevel4(),
@@ -374,6 +375,7 @@ public class PriceEntryResourceImpl extends BasePriceEntryResourceImpl {
 			_commercePriceEntryService.updateCommercePriceEntry(
 				commercePriceEntry.getCommercePriceEntryId(),
 				BigDecimal.valueOf(priceEntry.getPrice()),
+				GetterUtil.getBoolean(priceEntry.getPriceOnApplication()),
 				priceEntry.getDiscountDiscovery(),
 				priceEntry.getDiscountLevel1(), priceEntry.getDiscountLevel2(),
 				priceEntry.getDiscountLevel3(), priceEntry.getDiscountLevel4(),
