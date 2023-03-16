@@ -21,7 +21,6 @@ import com.liferay.commerce.price.list.model.CommercePriceEntry;
 import com.liferay.commerce.price.list.service.CommercePriceEntryService;
 import com.liferay.commerce.product.constants.CPPortletKeys;
 import com.liferay.commerce.product.exception.NoSuchCPInstanceException;
-import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.service.CPInstanceService;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
@@ -53,36 +52,6 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class EditCPInstanceCommercePriceEntryMVCActionCommand
 	extends BaseMVCActionCommand {
-
-	protected void addCommercePriceEntries(ActionRequest actionRequest)
-		throws Exception {
-
-		long[] addCommercePriceListIds = null;
-
-		long commercePriceListId = ParamUtil.getLong(
-			actionRequest, "commercePriceListId");
-
-		long cpInstanceId = ParamUtil.getLong(actionRequest, "cpInstanceId");
-
-		CPInstance cpInstance = _cpInstanceService.getCPInstance(cpInstanceId);
-
-		if (commercePriceListId > 0) {
-			addCommercePriceListIds = new long[] {commercePriceListId};
-		}
-		else {
-			addCommercePriceListIds = StringUtil.split(
-				ParamUtil.getString(actionRequest, "commercePriceListIds"), 0L);
-		}
-
-		ServiceContext serviceContext = ServiceContextFactory.getInstance(
-			CommercePriceEntry.class.getName(), actionRequest);
-
-		for (long addCommercePriceListId : addCommercePriceListIds) {
-			_commercePriceEntryService.addCommercePriceEntry(
-				cpInstanceId, addCommercePriceListId, cpInstance.getPrice(),
-				cpInstance.getPromoPrice(), serviceContext);
-		}
-	}
 
 	protected void deleteCommercePriceEntries(ActionRequest actionRequest)
 		throws Exception {
@@ -116,12 +85,7 @@ public class EditCPInstanceCommercePriceEntryMVCActionCommand
 		String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
 
 		try {
-			if (cmd.equals(Constants.ADD) ||
-				cmd.equals(Constants.ADD_MULTIPLE)) {
-
-				addCommercePriceEntries(actionRequest);
-			}
-			else if (cmd.equals(Constants.DELETE)) {
+			if (cmd.equals(Constants.DELETE)) {
 				deleteCommercePriceEntries(actionRequest);
 			}
 			else if (cmd.equals(Constants.UPDATE)) {
@@ -166,14 +130,12 @@ public class EditCPInstanceCommercePriceEntryMVCActionCommand
 
 		BigDecimal price = (BigDecimal)ParamUtil.getNumber(
 			actionRequest, "price", BigDecimal.ZERO);
-		BigDecimal promoPrice = (BigDecimal)ParamUtil.getNumber(
-			actionRequest, "promoPrice", BigDecimal.ZERO);
 
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			CommercePriceEntry.class.getName(), actionRequest);
 
 		return _commercePriceEntryService.updateCommercePriceEntry(
-			commercePriceEntryId, price, promoPrice, serviceContext);
+			commercePriceEntryId, price, false, serviceContext);
 	}
 
 	@Reference

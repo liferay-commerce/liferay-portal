@@ -185,9 +185,10 @@ public class PricingCommerceHealthHttpStatus
 			}
 
 			_commercePriceEntryLocalService.addCommercePriceEntry(
-				cpDefinition.getCProductId(), cpInstance.getCPInstanceUuid(),
-				commercePriceList.getCommercePriceListId(), price,
-				BigDecimal.ZERO, serviceContext);
+				null, cpDefinition.getCProductId(),
+				cpInstance.getCPInstanceUuid(),
+				commercePriceList.getCommercePriceListId(), price, false,
+				serviceContext);
 		}
 	}
 

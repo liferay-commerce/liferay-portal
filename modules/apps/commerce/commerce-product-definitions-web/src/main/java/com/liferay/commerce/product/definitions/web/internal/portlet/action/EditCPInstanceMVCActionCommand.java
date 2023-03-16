@@ -370,14 +370,9 @@ public class EditCPInstanceMVCActionCommand extends BaseMVCActionCommand {
 			cpInstance.getCPInstanceId(), price, promoPrice, cost,
 			serviceContext);
 
-		if (Objects.equals(
-				_getCommercePricingConfigurationKey(),
-				CommercePricingConstants.VERSION_2_0)) {
-
-			_updateCommercePriceEntries(
-				cpInstance, price, promoPrice,
-				ServiceContextFactory.getInstance(actionRequest));
-		}
+		_updateCommercePriceEntries(
+			cpInstance, price, promoPrice,
+			ServiceContextFactory.getInstance(actionRequest));
 
 		return cpInstance;
 	}
@@ -476,13 +471,14 @@ public class EditCPInstanceMVCActionCommand extends BaseMVCActionCommand {
 			CPDefinition cpDefinition = cpInstance.getCPDefinition();
 
 			_commercePriceEntryLocalService.addCommercePriceEntry(
-				cpDefinition.getCProductId(), cpInstance.getCPInstanceUuid(),
-				commercePriceList.getCommercePriceListId(), price, null,
+				null, cpDefinition.getCProductId(),
+				cpInstance.getCPInstanceUuid(),
+				commercePriceList.getCommercePriceListId(), price, false,
 				serviceContext);
 		}
 		else {
 			_commercePriceEntryLocalService.updateCommercePriceEntry(
-				commercePriceEntry.getCommercePriceEntryId(), price, null,
+				commercePriceEntry.getCommercePriceEntryId(), price, false,
 				serviceContext);
 		}
 	}

@@ -144,9 +144,10 @@ public class CommercePriceEntriesImporter {
 			}
 
 			_commercePriceEntryLocalService.addCommercePriceEntry(
-				cpDefinition.getCProductId(), cpInstance.getCPInstanceUuid(),
-				commercePriceList.getCommercePriceListId(), price,
-				BigDecimal.ZERO, serviceContext);
+				null, cpDefinition.getCProductId(),
+				cpInstance.getCPInstanceUuid(),
+				commercePriceList.getCommercePriceListId(), price, false,
+				serviceContext);
 		}
 	}
 
@@ -194,13 +195,11 @@ public class CommercePriceEntriesImporter {
 			cpInstance.getCPDefinitionId());
 
 		double price = jsonObject.getDouble("price", 0);
-		double promoPrice = jsonObject.getDouble("promoPrice", 0);
 
 		_commercePriceEntryLocalService.addCommercePriceEntry(
-			cpDefinition.getCProductId(), cpInstance.getCPInstanceUuid(),
+			null, cpDefinition.getCProductId(), cpInstance.getCPInstanceUuid(),
 			commercePriceList.getCommercePriceListId(),
-			BigDecimal.valueOf(price), BigDecimal.valueOf(promoPrice),
-			serviceContext);
+			BigDecimal.valueOf(price), false, serviceContext);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
