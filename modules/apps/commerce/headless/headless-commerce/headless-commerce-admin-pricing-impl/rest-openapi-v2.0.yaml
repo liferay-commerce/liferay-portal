@@ -748,6 +748,9 @@ components:
                     format: int64
                     minimum: 0
                     type: integer
+                priceOnApplication:
+                    example: true
+                    type: boolean
                 product:
                     $ref: "#/components/schemas/Product"
                     readOnly: true
@@ -1467,7 +1470,7 @@ info:
         name: Commerce Team
     description:
         "Liferay Commerce Admin Pricing API. A Java client JAR is available for use with the group ID 'com.liferay',
-        artifact ID 'com.liferay.headless.commerce.admin.pricing.client', and version '4.0.20'."
+        artifact ID 'com.liferay.headless.commerce.admin.pricing.client', and version '4.0.21'."
     license:
         name: "Apache 2.0"
         url: "http://www.apache.org/licenses/LICENSE-2.0.html"
