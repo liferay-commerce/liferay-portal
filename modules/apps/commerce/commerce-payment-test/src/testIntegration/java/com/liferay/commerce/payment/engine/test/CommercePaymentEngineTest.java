@@ -173,9 +173,8 @@ public class CommercePaymentEngineTest {
 		CPDefinition cpDefinition = cpInstance.getCPDefinition();
 
 		_commercePriceEntryLocalService.addCommercePriceEntry(
-			cpDefinition.getCProductId(), cpInstance.getCPInstanceUuid(),
-			commercePriceList.getCommercePriceListId(), BigDecimal.ZERO,
-			BigDecimal.ZERO,
+			null, cpDefinition.getCProductId(), cpInstance.getCPInstanceUuid(),
+			commercePriceList.getCommercePriceListId(), BigDecimal.ZERO, false,
 			ServiceContextTestUtil.getServiceContext(_user.getGroupId()));
 
 		CommerceInventoryWarehouse commerceInventoryWarehouse =
@@ -265,9 +264,8 @@ public class CommercePaymentEngineTest {
 		CPDefinition cpDefinition = cpInstance.getCPDefinition();
 
 		_commercePriceEntryLocalService.addCommercePriceEntry(
-			cpDefinition.getCProductId(), cpInstance.getCPInstanceUuid(),
-			commercePriceList.getCommercePriceListId(), BigDecimal.ZERO,
-			BigDecimal.ZERO,
+			null, cpDefinition.getCProductId(), cpInstance.getCPInstanceUuid(),
+			commercePriceList.getCommercePriceListId(), BigDecimal.ZERO, false,
 			ServiceContextTestUtil.getServiceContext(_user.getGroupId()));
 
 		CommerceInventoryWarehouse commerceInventoryWarehouse =

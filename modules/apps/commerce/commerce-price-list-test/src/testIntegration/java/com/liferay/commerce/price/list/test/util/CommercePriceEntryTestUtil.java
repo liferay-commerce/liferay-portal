@@ -18,8 +18,10 @@ import com.liferay.commerce.price.list.model.CommercePriceEntry;
 import com.liferay.commerce.price.list.model.CommercePriceList;
 import com.liferay.commerce.price.list.service.CommercePriceEntryLocalServiceUtil;
 import com.liferay.commerce.price.list.service.CommercePriceListLocalServiceUtil;
+import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CommerceCatalog;
+import com.liferay.commerce.product.service.CPInstanceLocalServiceUtil;
 import com.liferay.commerce.product.service.CommerceCatalogLocalServiceUtil;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -78,9 +80,15 @@ public class CommercePriceEntryTestUtil {
 			CommercePriceListLocalServiceUtil.getCommercePriceList(
 				commercePriceListId);
 
+		CPInstance cpInstance = CPInstanceLocalServiceUtil.fetchCPInstance(
+			skuId);
+
+		CPDefinition cpDefinition = cpInstance.getCPDefinition();
+
 		return CommercePriceEntryLocalServiceUtil.addCommercePriceEntry(
-			externalReferenceCode, skuId, commercePriceListId,
-			BigDecimal.valueOf(price), BigDecimal.valueOf(promoPrice),
+			externalReferenceCode, cpDefinition.getCProductId(),
+			cpInstance.getCPInstanceUuid(), commercePriceListId,
+			BigDecimal.valueOf(price), false,
 			ServiceContextTestUtil.getServiceContext(
 				commercePriceList.getGroupId()));
 	}
@@ -96,7 +104,7 @@ public class CommercePriceEntryTestUtil {
 
 		return CommercePriceEntryLocalServiceUtil.addCommercePriceEntry(
 			externalReferenceCode, cpProductId, cpInstanceUuid,
-			commercePriceListId, price, BigDecimal.ZERO,
+			commercePriceListId, price, false,
 			ServiceContextTestUtil.getServiceContext(
 				commercePriceList.getGroupId()));
 	}
@@ -111,10 +119,16 @@ public class CommercePriceEntryTestUtil {
 			CommercePriceListLocalServiceUtil.getCommercePriceList(
 				commercePriceListId);
 
-		return CommercePriceEntryLocalServiceUtil.upsertCommercePriceEntry(
-			commercePriceEntryId, skuId, commercePriceListId,
-			externalReferenceCode, BigDecimal.valueOf(price),
-			BigDecimal.valueOf(promoPrice), skuExternalReferenceCode,
+		CPInstance cpInstance = CPInstanceLocalServiceUtil.fetchCPInstance(
+			skuId);
+
+		CPDefinition cpDefinition = cpInstance.getCPDefinition();
+
+		return CommercePriceEntryLocalServiceUtil.addOrUpdateCommercePriceEntry(
+			externalReferenceCode, commercePriceEntryId,
+			cpDefinition.getCProductId(), cpInstance.getCPInstanceUuid(),
+			commercePriceListId, BigDecimal.valueOf(price), false,
+			skuExternalReferenceCode,
 			ServiceContextTestUtil.getServiceContext(
 				commercePriceList.getGroupId()));
 	}

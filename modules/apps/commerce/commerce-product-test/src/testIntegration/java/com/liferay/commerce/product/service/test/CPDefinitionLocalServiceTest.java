@@ -432,8 +432,6 @@ public class CPDefinitionLocalServiceTest {
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_APPROVED, cpInstance.getStatus());
 
-		BigDecimal promoPrice = new BigDecimal(0);
-
 		CPDefinition duplicateCPDefinition =
 			_cpDefinitionLocalService.copyCPDefinition(
 				cpInstance.getCPDefinitionId());
@@ -454,8 +452,8 @@ public class CPDefinitionLocalServiceTest {
 
 		commercePriceEntry =
 			_commercePriceEntryLocalService.updateCommercePriceEntry(
-				commercePriceEntry.getCommercePriceEntryId(), newPrice,
-				promoPrice, _serviceContext);
+				commercePriceEntry.getCommercePriceEntryId(), newPrice, false,
+				_serviceContext);
 
 		CommercePriceList parentPriceList =
 			_commercePriceListLocalService.fetchCatalogBaseCommercePriceList(
