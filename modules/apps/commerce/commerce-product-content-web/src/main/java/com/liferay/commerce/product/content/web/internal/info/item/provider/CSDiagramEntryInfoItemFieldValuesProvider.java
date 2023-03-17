@@ -14,7 +14,7 @@
 
 package com.liferay.commerce.product.content.web.internal.info.item.provider;
 
-import com.liferay.commerce.product.content.web.internal.info.item.CSDiagramEntryInfoItemFields;
+import com.liferay.commerce.product.content.web.internal.info.CSDiagramEntryInfoItemFields;
 import com.liferay.commerce.shop.by.diagram.model.CSDiagramEntry;
 import com.liferay.expando.info.item.provider.ExpandoInfoItemFieldSetProvider;
 import com.liferay.info.field.InfoFieldValue;

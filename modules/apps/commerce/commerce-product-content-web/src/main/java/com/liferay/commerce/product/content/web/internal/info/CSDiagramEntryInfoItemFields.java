@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.commerce.product.content.web.internal.info.item;
+package com.liferay.commerce.product.content.web.internal.info;
 
 import com.liferay.commerce.shop.by.diagram.model.CSDiagramEntry;
 import com.liferay.info.field.InfoField;
