@@ -223,17 +223,17 @@ public class CPDefinitionInventoryLocalServiceImpl
 
 		if (minOrderQuantity < 1) {
 			throw new CommerceOrderQuantityException(
-				"Minimum Order Quantity must be greater than  or equal to 1");
+				"Minimum Order Quantity must be greater than or equal to 1");
 		}
 
 		if (maxOrderQuantity < 1) {
 			throw new CommerceOrderQuantityException(
-				"Maximum Order Quantity must be greater than  or equal to 1");
+				"Maximum Order Quantity must be greater than or equal to 1");
 		}
 
 		if (multipleOrderQuantity < 1) {
 			throw new CommerceOrderQuantityException(
-				"Multiple Order Quantity must be greater than  or equal to 1");
+				"Multiple Order Quantity must be greater than or equal to 1");
 		}
 	}
 
