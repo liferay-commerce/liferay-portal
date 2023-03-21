@@ -1878,6 +1878,23 @@ public class Mutation {
 	}
 
 	@GraphQLField
+	public Sku
+			updateSkuByExternalReferenceCodeChangeExternalReferenceCodeNewExternalReferenceCode(
+				@GraphQLName("externalReferenceCode") String
+					externalReferenceCode,
+				@GraphQLName("newExternalReferenceCode") String
+					newExternalReferenceCode)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_skuResourceComponentServiceObjects, this::_populateResourceContext,
+			skuResource ->
+				skuResource.
+					putSkuByExternalReferenceCodeChangeExternalReferenceCodeNewExternalReferenceCode(
+						externalReferenceCode, newExternalReferenceCode));
+	}
+
+	@GraphQLField
 	public Response deleteSku(@GraphQLName("id") Long id) throws Exception {
 		return _applyComponentServiceObjects(
 			_skuResourceComponentServiceObjects, this::_populateResourceContext,
