@@ -198,13 +198,17 @@ public class CommerceProductInstanceOptionsValuesDataProvider
 					selectedCPDefinitionOptionValueRel.
 						getCPDefinitionOptionRel();
 
+				List<CPDefinitionOptionValueRel>
+					allowedCPDefinitionOptionValueRels =
+						_filterBySelectedCPDefinitionOptionValueRelIds(
+							cpDefinitionOptionRel,
+							selectedCPDefinitionOptionValueRels);
+
 				outputs.add(
 					new Output(
 						cpDefinitionOptionRel.getKey(), "list",
 						_toSelectedCPDefinitionOptionValueRelKeyValuePairs(
-							cpDefinitionId,
-							cpDefinitionOptionRel.
-								getCPDefinitionOptionValueRels(),
+							cpDefinitionId, allowedCPDefinitionOptionValueRels,
 							selectedCPDefinitionOptionValueRel,
 							selectedCPDefinitionOptionValuesJSONArray,
 							selectedCPInstance, locale, commerceContext)));
@@ -218,25 +222,6 @@ public class CommerceProductInstanceOptionsValuesDataProvider
 						_filterBySelectedCPDefinitionOptionValueRelIds(
 							cpDefinitionOptionRel,
 							selectedCPDefinitionOptionValueRels);
-
-				if (cpDefinitionOptionRel.isPriceContributor()) {
-					allowedCPDefinitionOptionValueRels =
-						_commerceInventoryChecker.filterByAvailability(
-							allowedCPDefinitionOptionValueRels);
-				}
-
-				if (cpDefinitionOptionRel.isSkuContributor()) {
-					allowedCPDefinitionOptionValueRels =
-						_cpDefinitionOptionValueRelLocalService.
-							filterByCPInstanceOptionValueRels(
-								allowedCPDefinitionOptionValueRels,
-								_cpInstanceOptionValueRelCommerceInventoryChecker.
-									filterByAvailability(
-										_cpInstanceOptionValueRelLocalService.
-											getCPDefinitionOptionRelCPInstanceOptionValueRels(
-												cpDefinitionOptionRel.
-													getCPDefinitionOptionRelId())));
-				}
 
 				String optionKey = cpDefinitionOptionRel.getKey();
 
@@ -374,18 +359,44 @@ public class CommerceProductInstanceOptionsValuesDataProvider
 					skuCombinationCPDefinitionOptionValueRels)
 		throws PortalException {
 
+		List<CPDefinitionOptionValueRel> allowedCPDefinitionOptionValueRels;
+
 		if (skuCombinationCPDefinitionOptionValueRels.isEmpty()) {
-			return _cpInstanceHelper.getCPInstanceCPDefinitionOptionValueRels(
-				cpDefinitionOptionRel.getCPDefinitionId(),
-				cpDefinitionOptionRel.getCPDefinitionOptionRelId());
+			allowedCPDefinitionOptionValueRels =
+				_cpInstanceHelper.getCPInstanceCPDefinitionOptionValueRels(
+					cpDefinitionOptionRel.getCPDefinitionId(),
+					cpDefinitionOptionRel.getCPDefinitionOptionRelId());
+		}
+		else {
+			allowedCPDefinitionOptionValueRels =
+				_cpInstanceHelper.filterCPDefinitionOptionValueRels(
+					cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
+					ListUtil.toList(
+						skuCombinationCPDefinitionOptionValueRels,
+						CPDefinitionOptionValueRel.
+							CP_DEFINITION_OPTION_VALUE_REL_ID_ACCESSOR));
 		}
 
-		return _cpInstanceHelper.filterCPDefinitionOptionValueRels(
-			cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
-			ListUtil.toList(
-				skuCombinationCPDefinitionOptionValueRels,
-				CPDefinitionOptionValueRel.
-					CP_DEFINITION_OPTION_VALUE_REL_ID_ACCESSOR));
+		if (cpDefinitionOptionRel.isPriceContributor()) {
+			allowedCPDefinitionOptionValueRels =
+				_commerceInventoryChecker.filterByAvailability(
+					allowedCPDefinitionOptionValueRels);
+		}
+
+		if (cpDefinitionOptionRel.isSkuContributor()) {
+			allowedCPDefinitionOptionValueRels =
+				_cpDefinitionOptionValueRelLocalService.
+					filterByCPInstanceOptionValueRels(
+						allowedCPDefinitionOptionValueRels,
+						_cpInstanceOptionValueRelCommerceInventoryChecker.
+							filterByAvailability(
+								_cpInstanceOptionValueRelLocalService.
+									getCPDefinitionOptionRelCPInstanceOptionValueRels(
+										cpDefinitionOptionRel.
+											getCPDefinitionOptionRelId())));
+		}
+
+		return allowedCPDefinitionOptionValueRels;
 	}
 
 	private CommerceContext _getCommerceContext(
