@@ -733,6 +733,13 @@ public class CommerceOrderWrapper
 		return wrap(model.cloneWithOriginalValues());
 	}
 
+	@Override
+	public com.liferay.account.model.AccountEntry getAccountEntry()
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return model.getAccountEntry();
+	}
+
 	/**
 	 * Returns the advance status of this commerce order.
 	 *
@@ -760,6 +767,10 @@ public class CommerceOrderWrapper
 		return model.getBillingAddressId();
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #getAccountEntry()}
+	 */
+	@Deprecated
 	@Override
 	public com.liferay.commerce.account.model.CommerceAccount
 			getCommerceAccount()

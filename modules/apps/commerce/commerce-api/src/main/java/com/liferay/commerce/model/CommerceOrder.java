@@ -56,9 +56,16 @@ public interface CommerceOrder extends CommerceOrderModel, PersistedModel {
 
 		};
 
+	public com.liferay.account.model.AccountEntry getAccountEntry()
+		throws com.liferay.portal.kernel.exception.PortalException;
+
 	public CommerceAddress getBillingAddress()
 		throws com.liferay.portal.kernel.exception.PortalException;
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #getAccountEntry()}
+	 */
+	@Deprecated
 	public com.liferay.commerce.account.model.CommerceAccount
 			getCommerceAccount()
 		throws com.liferay.portal.kernel.exception.PortalException;
