@@ -14,7 +14,7 @@
 
 package com.liferay.commerce.internal.order.engine;
 
-import com.liferay.commerce.account.model.CommerceAccount;
+import com.liferay.account.model.AccountEntry;
 import com.liferay.commerce.configuration.CommerceOrderCheckoutConfiguration;
 import com.liferay.commerce.constants.CommerceConstants;
 import com.liferay.commerce.constants.CommerceOrderActionKeys;
@@ -277,7 +277,7 @@ public class CommerceOrderEngineImpl implements CommerceOrderEngine {
 		List<CommerceOrderItem> commerceOrderItems =
 			commerceOrder.getCommerceOrderItems();
 
-		CommerceAccount commerceAccount = commerceOrder.getCommerceAccount();
+		AccountEntry accountEntry = commerceOrder.getAccountEntry();
 
 		for (CommerceOrderItem commerceOrderItem : commerceOrderItems) {
 			CommerceInventoryBookedQuantity commerceInventoryBookedQuantity =
@@ -288,7 +288,7 @@ public class CommerceOrderEngineImpl implements CommerceOrderEngine {
 						commerceOrderItem.getQuantity(), null,
 						HashMapBuilder.put(
 							CommerceInventoryAuditTypeConstants.ACCOUNT_NAME,
-							commerceAccount.getName()
+							accountEntry.getName()
 						).put(
 							CommerceInventoryAuditTypeConstants.ORDER_ID,
 							String.valueOf(

@@ -14,8 +14,8 @@
 
 package com.liferay.commerce.internal.order.term.contributor;
 
-import com.liferay.commerce.account.constants.CommerceAccountConstants;
-import com.liferay.commerce.account.model.CommerceAccount;
+import com.liferay.account.constants.AccountConstants;
+import com.liferay.account.model.AccountEntry;
 import com.liferay.commerce.constants.CommerceDefinitionTermConstants;
 import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.constants.CommercePortletKeys;
@@ -313,17 +313,19 @@ public class CommerceOrderCommerceDefinitionTermContributor
 	private String _getOrderCreatorTerm(CommerceOrder commerceOrder)
 		throws PortalException {
 
-		CommerceAccount commerceAccount = commerceOrder.getCommerceAccount();
+		AccountEntry accountEntry = commerceOrder.getAccountEntry();
 
-		if (commerceAccount.getType() ==
-				CommerceAccountConstants.ACCOUNT_TYPE_PERSONAL) {
+		String accountEntryType = accountEntry.getType();
 
-			User user = _userLocalService.getUser(commerceAccount.getUserId());
+		if (accountEntryType.equals(
+				AccountConstants.ACCOUNT_ENTRY_TYPE_PERSON)) {
+
+			User user = _userLocalService.getUser(accountEntry.getUserId());
 
 			return user.getFullName(true, true);
 		}
 
-		return commerceAccount.getName();
+		return accountEntry.getName();
 	}
 
 	private String _getOrderCreatorUserTitleTerm(
