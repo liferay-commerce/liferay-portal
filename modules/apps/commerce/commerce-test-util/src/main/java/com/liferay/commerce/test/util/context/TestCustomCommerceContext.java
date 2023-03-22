@@ -14,6 +14,7 @@
 
 package com.liferay.commerce.test.util.context;
 
+import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.commerce.account.service.CommerceAccountLocalService;
 import com.liferay.commerce.account.util.CommerceAccountHelper;
 import com.liferay.commerce.context.BaseCommerceContext;
@@ -33,7 +34,9 @@ public class TestCustomCommerceContext extends BaseCommerceContext {
 
 	public TestCustomCommerceContext(
 		long companyId, long commerceChannelGroupId, long orderId,
-		long commerceAccountId, CommerceAccountHelper commerceAccountHelper,
+		long commerceAccountId,
+		AccountEntryLocalService accountEntryLocalService,
+		CommerceAccountHelper commerceAccountHelper,
 		CommerceAccountLocalService commerceAccountLocalService,
 		CommerceChannelAccountEntryRelLocalService
 			commerceChannelAccountEntryRelLocalService,
@@ -44,7 +47,8 @@ public class TestCustomCommerceContext extends BaseCommerceContext {
 
 		super(
 			companyId, commerceChannelGroupId, orderId, commerceAccountId,
-			commerceAccountHelper, commerceAccountLocalService,
+			accountEntryLocalService, commerceAccountHelper,
+			commerceAccountLocalService,
 			commerceChannelAccountEntryRelLocalService,
 			commerceChannelLocalService, commerceCurrencyLocalService,
 			commerceOrderService, configurationProvider);

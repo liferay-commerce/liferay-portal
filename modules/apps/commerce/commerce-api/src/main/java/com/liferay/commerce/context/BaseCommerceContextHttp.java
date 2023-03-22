@@ -14,6 +14,7 @@
 
 package com.liferay.commerce.context;
 
+import com.liferay.account.model.AccountEntry;
 import com.liferay.commerce.account.configuration.CommerceAccountGroupServiceConfiguration;
 import com.liferay.commerce.account.constants.CommerceAccountConstants;
 import com.liferay.commerce.account.model.CommerceAccount;
@@ -85,6 +86,20 @@ public class BaseCommerceContextHttp implements CommerceContext {
 	}
 
 	@Override
+	public AccountEntry getAccountEntry() throws PortalException {
+		CommerceChannel commerceChannel = _fetchCommerceChannel();
+
+		if (commerceChannel == null) {
+			return _accountEntry;
+		}
+
+		_accountEntry = _commerceAccountHelper.getCurrentAccountEntry(
+			commerceChannel.getGroupId(), _httpServletRequest);
+
+		return _accountEntry;
+	}
+
+	@Override
 	public String[] getAccountEntryAllowedTypes() throws PortalException {
 		if (_accountEntryAllowedTypes != null) {
 			return _accountEntryAllowedTypes;
@@ -96,6 +111,10 @@ public class BaseCommerceContextHttp implements CommerceContext {
 		return _accountEntryAllowedTypes;
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #getAccountEntry()}
+	 */
+	@Deprecated
 	@Override
 	public CommerceAccount getCommerceAccount() throws PortalException {
 		CommerceChannel commerceChannel = _fetchCommerceChannel();
@@ -116,15 +135,15 @@ public class BaseCommerceContextHttp implements CommerceContext {
 			return _commerceAccountGroupIds.clone();
 		}
 
-		CommerceAccount commerceAccount = getCommerceAccount();
+		AccountEntry accountEntry = getAccountEntry();
 
-		if (commerceAccount == null) {
+		if (accountEntry == null) {
 			return new long[0];
 		}
 
 		_commerceAccountGroupIds =
 			_commerceAccountHelper.getCommerceAccountGroupIds(
-				commerceAccount.getCommerceAccountId());
+				accountEntry.getAccountEntryId());
 
 		return _commerceAccountGroupIds.clone();
 	}
@@ -274,6 +293,7 @@ public class BaseCommerceContextHttp implements CommerceContext {
 	private static final Log _log = LogFactoryUtil.getLog(
 		BaseCommerceContextHttp.class);
 
+	private AccountEntry _accountEntry;
 	private String[] _accountEntryAllowedTypes;
 	private CommerceAccount _commerceAccount;
 	private long[] _commerceAccountGroupIds;

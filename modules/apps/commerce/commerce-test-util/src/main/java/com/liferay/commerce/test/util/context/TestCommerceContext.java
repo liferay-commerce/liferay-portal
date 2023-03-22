@@ -14,6 +14,7 @@
 
 package com.liferay.commerce.test.util.context;
 
+import com.liferay.account.model.AccountEntry;
 import com.liferay.commerce.account.model.CommerceAccount;
 import com.liferay.commerce.context.CommerceContext;
 import com.liferay.commerce.currency.model.CommerceCurrency;
@@ -43,10 +44,19 @@ public class TestCommerceContext implements CommerceContext {
 	}
 
 	@Override
+	public AccountEntry getAccountEntry() {
+		return null;
+	}
+
+	@Override
 	public String[] getAccountEntryAllowedTypes() throws PortalException {
 		return new String[0];
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #getAccountEntry()}
+	 */
+	@Deprecated
 	@Override
 	public CommerceAccount getCommerceAccount() {
 		return _commerceAccount;

@@ -14,6 +14,7 @@
 
 package com.liferay.commerce.account.util;
 
+import com.liferay.account.model.AccountEntry;
 import com.liferay.commerce.account.model.CommerceAccount;
 import com.liferay.portal.kernel.exception.PortalException;
 
@@ -34,6 +35,10 @@ public interface CommerceAccountHelper {
 		throws PortalException;
 
 	public long[] getCommerceAccountGroupIds(long commerceAccountId);
+
+	public AccountEntry getCurrentAccountEntry(
+			long groupId, HttpServletRequest httpServletRequest)
+		throws PortalException;
 
 	public CommerceAccount getCurrentCommerceAccount(
 			HttpServletRequest httpServletRequest)

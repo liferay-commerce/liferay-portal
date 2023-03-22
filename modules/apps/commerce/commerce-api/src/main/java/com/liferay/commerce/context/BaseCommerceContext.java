@@ -14,6 +14,8 @@
 
 package com.liferay.commerce.context;
 
+import com.liferay.account.model.AccountEntry;
+import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.commerce.account.configuration.CommerceAccountGroupServiceConfiguration;
 import com.liferay.commerce.account.constants.CommerceAccountConstants;
 import com.liferay.commerce.account.model.CommerceAccount;
@@ -48,7 +50,9 @@ public class BaseCommerceContext implements CommerceContext {
 
 	public BaseCommerceContext(
 		long companyId, long commerceChannelGroupId, long orderId,
-		long commerceAccountId, CommerceAccountHelper commerceAccountHelper,
+		long commerceAccountId,
+		AccountEntryLocalService accountEntryLocalService,
+		CommerceAccountHelper commerceAccountHelper,
 		CommerceAccountLocalService commerceAccountLocalService,
 		CommerceChannelAccountEntryRelLocalService
 			commerceChannelAccountEntryRelLocalService,
@@ -61,6 +65,7 @@ public class BaseCommerceContext implements CommerceContext {
 		_commerceChannelGroupId = commerceChannelGroupId;
 		_orderId = orderId;
 		_commerceAccountId = commerceAccountId;
+		_accountEntryLocalService = accountEntryLocalService;
 		_commerceAccountHelper = commerceAccountHelper;
 		_commerceAccountLocalService = commerceAccountLocalService;
 		_commerceChannelAccountEntryRelLocalService =
@@ -85,6 +90,22 @@ public class BaseCommerceContext implements CommerceContext {
 	}
 
 	@Override
+	public AccountEntry getAccountEntry() throws PortalException {
+		if (_accountEntry != null) {
+			return _accountEntry;
+		}
+
+		if (_commerceAccountId <= 0) {
+			return _accountEntryLocalService.getGuestAccountEntry(_companyId);
+		}
+
+		_accountEntry = _accountEntryLocalService.getAccountEntry(
+			_commerceAccountId);
+
+		return _accountEntry;
+	}
+
+	@Override
 	public String[] getAccountEntryAllowedTypes() throws PortalException {
 		if (_accountEntryAllowedTypes != null) {
 			return _accountEntryAllowedTypes;
@@ -96,6 +117,10 @@ public class BaseCommerceContext implements CommerceContext {
 		return _accountEntryAllowedTypes;
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #getAccountEntry()}
+	 */
+	@Deprecated
 	@Override
 	public CommerceAccount getCommerceAccount() throws PortalException {
 		if (_commerceAccount != null) {
@@ -119,15 +144,15 @@ public class BaseCommerceContext implements CommerceContext {
 			return _commerceAccountGroupIds.clone();
 		}
 
-		CommerceAccount commerceAccount = getCommerceAccount();
+		AccountEntry accountEntry = getAccountEntry();
 
-		if (commerceAccount == null) {
+		if (accountEntry == null) {
 			return new long[0];
 		}
 
 		_commerceAccountGroupIds =
 			_commerceAccountHelper.getCommerceAccountGroupIds(
-				commerceAccount.getCommerceAccountId());
+				accountEntry.getAccountEntryId());
 
 		return _commerceAccountGroupIds.clone();
 	}
@@ -257,7 +282,9 @@ public class BaseCommerceContext implements CommerceContext {
 	private static final Log _log = LogFactoryUtil.getLog(
 		BaseCommerceContext.class);
 
+	private AccountEntry _accountEntry;
 	private String[] _accountEntryAllowedTypes;
+	private final AccountEntryLocalService _accountEntryLocalService;
 	private CommerceAccount _commerceAccount;
 	private long[] _commerceAccountGroupIds;
 	private CommerceAccountGroupServiceConfiguration

@@ -112,23 +112,8 @@ public class CommerceAccountHelperImpl implements CommerceAccountHelper {
 				accountGroupRels, AccountGroupRel::getAccountGroupId));
 	}
 
-	/**
-	 * @deprecated As of Mueller (7.2.x), you must pass commerceChannelGroupId
-	 */
-	@Deprecated
 	@Override
-	public CommerceAccount getCurrentCommerceAccount(
-			HttpServletRequest httpServletRequest)
-		throws PortalException {
-
-		return getCurrentCommerceAccount(
-			_commerceChannelLocalService.getCommerceChannelGroupIdBySiteGroupId(
-				_portal.getScopeGroupId(httpServletRequest)),
-			httpServletRequest);
-	}
-
-	@Override
-	public CommerceAccount getCurrentCommerceAccount(
+	public AccountEntry getCurrentAccountEntry(
 			long commerceChannelGroupId, HttpServletRequest httpServletRequest)
 		throws PortalException {
 
@@ -137,17 +122,19 @@ public class CommerceAccountHelperImpl implements CommerceAccountHelper {
 				commerceChannelGroupId);
 		long userId = _portal.getUserId(httpServletRequest);
 
-		CommerceAccount commerceAccount = CommerceAccountImpl.fromAccountEntry(
+		AccountEntry accountEntry =
 			_currentAccountEntryManager.getCurrentAccountEntry(
-				commerceChannel.getSiteGroupId(), userId));
+				commerceChannel.getSiteGroupId(), userId);
 
-		if ((commerceAccount == null) || !commerceAccount.isActive()) {
+		if ((accountEntry == null) ||
+			(accountEntry.getStatus() != WorkflowConstants.STATUS_APPROVED)) {
+
 			int commerceSiteType = _getCommerceSiteType(commerceChannelGroupId);
 
 			if ((commerceSiteType == CommerceAccountConstants.SITE_TYPE_B2C) ||
 				(commerceSiteType == CommerceAccountConstants.SITE_TYPE_B2X)) {
 
-				AccountEntry accountEntry =
+				accountEntry =
 					_accountEntryLocalService.fetchPersonAccountEntry(userId);
 
 				if (accountEntry == null) {
@@ -170,29 +157,54 @@ public class CommerceAccountHelperImpl implements CommerceAccountHelper {
 							accountEntry.getAccountEntryId(), userId,
 							serviceContext);
 				}
-
-				commerceAccount = CommerceAccountImpl.fromAccountEntry(
-					accountEntry);
 			}
 
-			if (commerceAccount == null) {
+			if (accountEntry == null) {
 				setCurrentCommerceAccount(
 					httpServletRequest, commerceChannelGroupId,
-					CommerceAccountConstants.ACCOUNT_ID_GUEST);
+					AccountConstants.ACCOUNT_ENTRY_ID_GUEST);
 			}
 			else {
 				setCurrentCommerceAccount(
 					httpServletRequest, commerceChannelGroupId,
-					commerceAccount.getCommerceAccountId());
+					accountEntry.getAccountEntryId());
 			}
 		}
 		else {
 			setCurrentCommerceAccount(
 				httpServletRequest, commerceChannelGroupId,
-				commerceAccount.getCommerceAccountId());
+				accountEntry.getAccountEntryId());
 		}
 
-		return commerceAccount;
+		return accountEntry;
+	}
+
+	/**
+	 * @deprecated As of Mueller (7.2.x), you must pass commerceChannelGroupId
+	 */
+	@Deprecated
+	@Override
+	public CommerceAccount getCurrentCommerceAccount(
+			HttpServletRequest httpServletRequest)
+		throws PortalException {
+
+		return getCurrentCommerceAccount(
+			_commerceChannelLocalService.getCommerceChannelGroupIdBySiteGroupId(
+				_portal.getScopeGroupId(httpServletRequest)),
+			httpServletRequest);
+	}
+
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #getCurrentAccountEntry(long, HttpServletRequest)} ()}
+	 */
+	@Deprecated
+	@Override
+	public CommerceAccount getCurrentCommerceAccount(
+			long commerceChannelGroupId, HttpServletRequest httpServletRequest)
+		throws PortalException {
+
+		return CommerceAccountImpl.fromAccountEntry(
+			getCurrentAccountEntry(commerceChannelGroupId, httpServletRequest));
 	}
 
 	@Override
