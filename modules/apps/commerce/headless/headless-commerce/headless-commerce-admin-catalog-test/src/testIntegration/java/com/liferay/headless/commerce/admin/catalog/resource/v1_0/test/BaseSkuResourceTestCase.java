@@ -926,7 +926,7 @@ public abstract class BaseSkuResourceTestCase {
 
 		Sku getSku =
 			skuResource.
-				getSkuByExternalReferenceCodeChangeExternalReferenceCodeNewExternalReferenceCode(
+				putSkuByExternalReferenceCodeChangeExternalReferenceCodeNewExternalReferenceCode(
 					putSku.getExternalReferenceCode(),
 					testPutSkuByExternalReferenceCodeChangeExternalReferenceCodeNewExternalReferenceCode_getNewExternalReferenceCode());
 
