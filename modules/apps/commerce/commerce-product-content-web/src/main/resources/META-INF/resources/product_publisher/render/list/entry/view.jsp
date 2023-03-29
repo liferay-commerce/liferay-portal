@@ -54,6 +54,9 @@ CPCatalogEntry cpCatalogEntry = cpContentHelper.getCPCatalogEntry(request);
 					<commerce-ui:availability-label
 						CPCatalogEntry="<%= cpCatalogEntry %>"
 					/>
+					<commerce-ui:discontinued-label
+						CPCatalogEntry="<%= cpCatalogEntry %>"
+					/>
 				</div>
 			</a>
 		</div>
@@ -124,14 +127,6 @@ CPCatalogEntry cpCatalogEntry = cpContentHelper.getCPCatalogEntry(request);
 									/>
 								</div>
 							</div>
-						</div>
-					</div>
-
-					<div class="autofit-col">
-						<div class="autofit-section">
-							<commerce-ui:discontinued-label
-								CPCatalogEntry="<%= cpCatalogEntry %>"
-							/>
 						</div>
 					</div>
 
