@@ -196,6 +196,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>PRODUCT_CARD_PRICE_FIELD</td>
+	<td>//p[@title='${key_productName}']/..//span[@class='price-value${key_element}'][normalize-space(text())='$ ${key_price}']</td>
+	<td></td>
+</tr>
+<tr>
 	<td>PRODUCT_CARD_PRICE_VALUE</td>
 	<td>//p[@title='${key_productName}']/..//span[@class='price-value'][normalize-space(text())='$ ${key_productPrice}']</td>
 	<td></td>
