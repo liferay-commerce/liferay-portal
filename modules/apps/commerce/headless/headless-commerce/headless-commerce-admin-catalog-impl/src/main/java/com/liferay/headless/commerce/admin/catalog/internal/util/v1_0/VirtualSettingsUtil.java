@@ -15,7 +15,7 @@
 package com.liferay.headless.commerce.admin.catalog.internal.util.v1_0;
 
 import com.liferay.commerce.constants.CommerceOrderConstants;
-import com.liferay.commerce.product.model.CPDefinition;
+import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.type.virtual.constants.VirtualCPTypeConstants;
 import com.liferay.commerce.product.type.virtual.model.CPDefinitionVirtualSetting;
 import com.liferay.commerce.product.type.virtual.service.CPDefinitionVirtualSettingService;
@@ -56,7 +56,7 @@ import java.util.concurrent.TimeUnit;
 public class VirtualSettingsUtil {
 
 	public static CPDefinitionVirtualSetting addOrUpdateVirtualSettings(
-			CPDefinition cpDefinition,
+			String className, long classPK,
 			ProductVirtualSettings productVirtualSettings,
 			CPDefinitionVirtualSettingService cpDefinitionVirtualSettingService,
 			UniqueFileNameProvider uniqueFileNameProvider,
@@ -65,19 +65,19 @@ public class VirtualSettingsUtil {
 
 		CPDefinitionVirtualSetting cpDefinitionVirtualSetting =
 			cpDefinitionVirtualSettingService.fetchCPDefinitionVirtualSetting(
-				CPDefinition.class.getName(), cpDefinition.getCPDefinitionId());
+				className, classPK);
 
 		if (cpDefinitionVirtualSetting == null) {
 			return _addVirtualSettings(
-				cpDefinition, productVirtualSettings,
+				className, classPK, productVirtualSettings,
 				cpDefinitionVirtualSettingService, uniqueFileNameProvider,
 				serviceContext);
 		}
 
 		return _updateVirtualSettings(
-			cpDefinitionVirtualSetting, productVirtualSettings,
-			cpDefinitionVirtualSettingService, uniqueFileNameProvider,
-			serviceContext);
+			className, classPK, cpDefinitionVirtualSetting,
+			productVirtualSettings, cpDefinitionVirtualSettingService,
+			uniqueFileNameProvider, serviceContext);
 	}
 
 	private static FileEntry _addFileEntry(
@@ -110,12 +110,23 @@ public class VirtualSettingsUtil {
 	}
 
 	private static CPDefinitionVirtualSetting _addVirtualSettings(
-			CPDefinition cpDefinition,
+			String className, long classPK,
 			ProductVirtualSettings productVirtualSettings,
 			CPDefinitionVirtualSettingService cpDefinitionVirtualSettingService,
 			UniqueFileNameProvider uniqueFileNameProvider,
 			ServiceContext serviceContext)
 		throws Exception {
+
+		boolean override = false;
+
+		if (className.equals(CPInstance.class.getName())) {
+			override = GetterUtil.getBoolean(
+				productVirtualSettings.getOverride());
+
+			if (!override) {
+				return null;
+			}
+		}
 
 		String attachmentUrl = _validateUrl(productVirtualSettings.getUrl());
 
@@ -152,8 +163,7 @@ public class VirtualSettingsUtil {
 		}
 
 		return cpDefinitionVirtualSettingService.addCPDefinitionVirtualSetting(
-			CPDefinition.class.getName(), cpDefinition.getCPDefinitionId(),
-			attachmentFileEntryId, attachmentUrl,
+			className, classPK, attachmentFileEntryId, attachmentUrl,
 			_getActivationStatus(
 				GetterUtil.getInteger(
 					productVirtualSettings.getActivationStatus(),
@@ -163,7 +173,7 @@ public class VirtualSettingsUtil {
 			GetterUtil.getInteger(productVirtualSettings.getMaxUsages()),
 			useSample, sampleFileEntryId, sampleAttachmentUrl,
 			termsOfUseRequired, termsOfUseContentMap,
-			termsOfUseJournalArticleId, serviceContext);
+			termsOfUseJournalArticleId, override, serviceContext);
 	}
 
 	private static String _appendExtension(
@@ -236,12 +246,26 @@ public class VirtualSettingsUtil {
 	}
 
 	private static CPDefinitionVirtualSetting _updateVirtualSettings(
+			String className, long classPK,
 			CPDefinitionVirtualSetting cpDefinitionVirtualSetting,
 			ProductVirtualSettings productVirtualSettings,
 			CPDefinitionVirtualSettingService cpDefinitionVirtualSettingService,
 			UniqueFileNameProvider uniqueFileNameProvider,
 			ServiceContext serviceContext)
 		throws Exception {
+
+		boolean override = false;
+
+		if (className.equals(CPInstance.class.getName())) {
+			override = GetterUtil.getBoolean(
+				productVirtualSettings.getOverride(),
+				cpDefinitionVirtualSetting.isOverride());
+
+			if (!override) {
+				return cpDefinitionVirtualSettingService.
+					deleteCPDefinitionVirtualSetting(className, classPK);
+			}
+		}
 
 		long attachmentFileEntryId = 0;
 		String attachmentUrl = _validateUrl(productVirtualSettings.getUrl());
@@ -345,7 +369,7 @@ public class VirtualSettingsUtil {
 					cpDefinitionVirtualSetting.getMaxUsages()),
 				useSample, sampleFileEntryId, sampleAttachmentUrl,
 				termsOfUseRequired, termsOfUseContentMap,
-				termsOfUseJournalArticleId, serviceContext);
+				termsOfUseJournalArticleId, override, serviceContext);
 	}
 
 	private static String _validateUrl(String value) throws Exception {

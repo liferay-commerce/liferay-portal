@@ -18,7 +18,9 @@ import com.liferay.commerce.account.constants.CommerceAccountConstants;
 import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.media.CommerceMediaResolver;
 import com.liferay.commerce.product.model.CPDefinition;
+import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.service.CPDefinitionService;
+import com.liferay.commerce.product.service.CPInstanceService;
 import com.liferay.commerce.product.type.virtual.constants.VirtualCPTypeConstants;
 import com.liferay.commerce.product.type.virtual.model.CPDefinitionVirtualSetting;
 import com.liferay.commerce.product.type.virtual.service.CPDefinitionVirtualSettingService;
@@ -55,106 +57,139 @@ public class ProductVirtualSettingsDTOConverter
 	public ProductVirtualSettings toDTO(DTOConverterContext dtoConverterContext)
 		throws Exception {
 
-		CPDefinition cpDefinition = _cpDefinitionService.getCPDefinition(
-			(Long)dtoConverterContext.getId());
+		ProductVirtualSettingsDTOConverterContext
+			productVirtualSettingsDTOConverterContext =
+				(ProductVirtualSettingsDTOConverterContext)dtoConverterContext;
 
-		String cpTypeName = cpDefinition.getProductTypeName();
+		String className =
+			productVirtualSettingsDTOConverterContext.getClassName();
 
-		if (VirtualCPTypeConstants.NAME.equals(cpTypeName)) {
-			CPDefinitionVirtualSetting cpDefinitionVirtualSetting =
-				_cpDefinitionVirtualSettingService.
-					fetchCPDefinitionVirtualSetting(
-						CPDefinition.class.getName(),
-						cpDefinition.getCPDefinitionId());
+		long classPK = (Long)dtoConverterContext.getId();
 
-			if (cpDefinitionVirtualSetting != null) {
-				return new ProductVirtualSettings() {
-					{
-						activationStatus =
-							cpDefinitionVirtualSetting.getActivationStatus();
-						duration = TimeUnit.MILLISECONDS.toDays(
-							cpDefinitionVirtualSetting.getDuration());
-						maxUsages = cpDefinitionVirtualSetting.getMaxUsages();
-						sampleUrl = cpDefinitionVirtualSetting.getSampleUrl();
-						termsOfUseContent = LanguageUtils.getLanguageIdMap(
-							cpDefinitionVirtualSetting.
-								getTermsOfUseContentMap());
-						termsOfUseRequired =
-							cpDefinitionVirtualSetting.isTermsOfUseRequired();
-						url = cpDefinitionVirtualSetting.getUrl();
-						useSample = cpDefinitionVirtualSetting.isUseSample();
+		if (className.equals(CPDefinition.class.getName())) {
+			CPDefinition cpDefinition = _cpDefinitionService.getCPDefinition(
+				classPK);
 
-						setActivationStatusInfo(
-							() -> {
-								String activationStatusLabel =
-									CommerceOrderConstants.getOrderStatusLabel(
-										cpDefinitionVirtualSetting.
-											getActivationStatus());
+			String cpTypeName = cpDefinition.getProductTypeName();
 
-								return new Status() {
-									{
-										code =
-											cpDefinitionVirtualSetting.
-												getActivationStatus();
-										label = activationStatusLabel;
-										label_i18n = _language.get(
-											dtoConverterContext.getLocale(),
-											activationStatusLabel);
-									}
-								};
-							});
-
-						setSampleSrc(
-							() -> {
-								FileEntry fileEntry =
-									cpDefinitionVirtualSetting.
-										getSampleFileEntry();
-
-								if (fileEntry != null) {
-									return _commerceMediaResolver.
-										getDownloadVirtualProductSampleURL(
-											CommerceAccountConstants.
-												ACCOUNT_ID_ADMIN,
-											cpDefinition.getCPDefinitionId(),
-											fileEntry.getFileEntryId());
-								}
-
-								return null;
-							});
-
-						setSrc(
-							() -> {
-								FileEntry fileEntry =
-									cpDefinitionVirtualSetting.getFileEntry();
-
-								if (fileEntry != null) {
-									return _commerceMediaResolver.
-										getDownloadVirtualProductURL(
-											CommerceAccountConstants.
-												ACCOUNT_ID_ADMIN,
-											cpDefinition.getCPDefinitionId(),
-											fileEntry.getFileEntryId());
-								}
-
-								return null;
-							});
-
-						setTermsOfUseJournalArticleId(
-							() -> {
-								JournalArticle termsOfUseJournalArticle =
-									cpDefinitionVirtualSetting.
-										getTermsOfUseJournalArticle();
-
-								if (termsOfUseJournalArticle != null) {
-									return termsOfUseJournalArticle.
-										getResourcePrimKey();
-								}
-
-								return null;
-							});
-					}
-				};
+			if (VirtualCPTypeConstants.NAME.equals(cpTypeName)) {
+				return _toProductVirtualSettings(
+					className, classPK,
+					_cpDefinitionVirtualSettingService.
+						fetchCPDefinitionVirtualSetting(className, classPK),
+					dtoConverterContext);
 			}
+		}
+		else if (className.equals(CPInstance.class.getName())) {
+			CPInstance cpInstance = _cpInstanceService.getCPInstance(classPK);
+
+			CPDefinition cpDefinition = cpInstance.getCPDefinition();
+
+			String cpTypeName = cpDefinition.getProductTypeName();
+
+			if (VirtualCPTypeConstants.NAME.equals(cpTypeName)) {
+				return _toProductVirtualSettings(
+					className, classPK,
+					_cpDefinitionVirtualSettingService.
+						fetchCPDefinitionVirtualSetting(className, classPK),
+					dtoConverterContext);
+			}
+		}
+
+		return null;
+	}
+
+	private ProductVirtualSettings _toProductVirtualSettings(
+		String className, long classPK,
+		CPDefinitionVirtualSetting cpDefinitionVirtualSetting,
+		DTOConverterContext dtoConverterContext) {
+
+		if (cpDefinitionVirtualSetting != null) {
+			return new ProductVirtualSettings() {
+				{
+					activationStatus =
+						cpDefinitionVirtualSetting.getActivationStatus();
+					duration = TimeUnit.MILLISECONDS.toDays(
+						cpDefinitionVirtualSetting.getDuration());
+					maxUsages = cpDefinitionVirtualSetting.getMaxUsages();
+					override = cpDefinitionVirtualSetting.isOverride();
+					sampleUrl = cpDefinitionVirtualSetting.getSampleUrl();
+					termsOfUseContent = LanguageUtils.getLanguageIdMap(
+						cpDefinitionVirtualSetting.getTermsOfUseContentMap());
+					termsOfUseRequired =
+						cpDefinitionVirtualSetting.isTermsOfUseRequired();
+					url = cpDefinitionVirtualSetting.getUrl();
+					useSample = cpDefinitionVirtualSetting.isUseSample();
+
+					setActivationStatusInfo(
+						() -> {
+							String activationStatusLabel =
+								CommerceOrderConstants.getOrderStatusLabel(
+									cpDefinitionVirtualSetting.
+										getActivationStatus());
+
+							return new Status() {
+								{
+									code =
+										cpDefinitionVirtualSetting.
+											getActivationStatus();
+									label = activationStatusLabel;
+									label_i18n = _language.get(
+										dtoConverterContext.getLocale(),
+										activationStatusLabel);
+								}
+							};
+						});
+
+					setSampleSrc(
+						() -> {
+							FileEntry fileEntry =
+								cpDefinitionVirtualSetting.getSampleFileEntry();
+
+							if (fileEntry != null) {
+								return _commerceMediaResolver.
+									getDownloadVirtualProductSampleURL(
+										className, classPK,
+										CommerceAccountConstants.
+											ACCOUNT_ID_ADMIN,
+										fileEntry.getFileEntryId());
+							}
+
+							return null;
+						});
+
+					setSrc(
+						() -> {
+							FileEntry fileEntry =
+								cpDefinitionVirtualSetting.getFileEntry();
+
+							if (fileEntry != null) {
+								return _commerceMediaResolver.
+									getDownloadVirtualProductURL(
+										className, classPK,
+										CommerceAccountConstants.
+											ACCOUNT_ID_ADMIN,
+										fileEntry.getFileEntryId());
+							}
+
+							return null;
+						});
+
+					setTermsOfUseJournalArticleId(
+						() -> {
+							JournalArticle termsOfUseJournalArticle =
+								cpDefinitionVirtualSetting.
+									getTermsOfUseJournalArticle();
+
+							if (termsOfUseJournalArticle != null) {
+								return termsOfUseJournalArticle.
+									getResourcePrimKey();
+							}
+
+							return null;
+						});
+				}
+			};
 		}
 
 		return null;
@@ -169,6 +204,9 @@ public class ProductVirtualSettingsDTOConverter
 	@Reference
 	private CPDefinitionVirtualSettingService
 		_cpDefinitionVirtualSettingService;
+
+	@Reference
+	private CPInstanceService _cpInstanceService;
 
 	@Reference
 	private Language _language;

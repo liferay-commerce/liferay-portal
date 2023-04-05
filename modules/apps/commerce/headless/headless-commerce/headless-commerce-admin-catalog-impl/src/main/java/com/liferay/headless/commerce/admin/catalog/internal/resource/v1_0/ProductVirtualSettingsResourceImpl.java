@@ -15,13 +15,18 @@
 package com.liferay.headless.commerce.admin.catalog.internal.resource.v1_0;
 
 import com.liferay.commerce.product.exception.NoSuchCPDefinitionException;
+import com.liferay.commerce.product.exception.NoSuchCPInstanceException;
 import com.liferay.commerce.product.model.CPDefinition;
+import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.service.CPDefinitionService;
+import com.liferay.commerce.product.service.CPInstanceService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Product;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductVirtualSettings;
+import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Sku;
 import com.liferay.headless.commerce.admin.catalog.internal.dto.v1_0.converter.ProductVirtualSettingsDTOConverter;
+import com.liferay.headless.commerce.admin.catalog.internal.dto.v1_0.converter.ProductVirtualSettingsDTOConverterContext;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductVirtualSettingsResource;
-import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
+import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.fields.NestedField;
 import com.liferay.portal.vulcan.fields.NestedFieldId;
 import com.liferay.portal.vulcan.fields.NestedFieldSupport;
@@ -59,7 +64,7 @@ public class ProductVirtualSettingsResourceImpl
 					externalReferenceCode);
 		}
 
-		return _toProductVirtualSettings(cpDefinition.getCPDefinitionId());
+		return _toProductVirtualSettings(cpDefinition);
 	}
 
 	@NestedField(parentClass = Product.class, value = "virtualSettings")
@@ -76,20 +81,74 @@ public class ProductVirtualSettingsResourceImpl
 				"Unable to find Product with ID: " + id);
 		}
 
-		return _toProductVirtualSettings(cpDefinition.getCPDefinitionId());
+		return _toProductVirtualSettings(cpDefinition);
+	}
+
+	@Override
+	public ProductVirtualSettings getSkuByExternalReferenceCodeVirtualSettings(
+			String externalReferenceCode)
+		throws Exception {
+
+		CPInstance cpInstance = _cpInstanceService.fetchByExternalReferenceCode(
+			externalReferenceCode, contextCompany.getCompanyId());
+
+		if (cpInstance == null) {
+			throw new NoSuchCPInstanceException(
+				"Unable to find cpInstance with external reference code " +
+					externalReferenceCode);
+		}
+
+		return _toProductVirtualSettings(cpInstance);
+	}
+
+	@NestedField(parentClass = Sku.class, value = "virtualSettings")
+	@Override
+	public ProductVirtualSettings getSkuIdVirtualSettings(
+			@NestedFieldId(value = "id") Long id)
+		throws Exception {
+
+		CPInstance cpInstance = _cpInstanceService.fetchCPInstance(id);
+
+		if (cpInstance == null) {
+			throw new NoSuchCPInstanceException(
+				"Unable to find cpInstance with ID: " + id);
+		}
+
+		return _toProductVirtualSettings(cpInstance);
 	}
 
 	private ProductVirtualSettings _toProductVirtualSettings(
-			Long cpDefinitionId)
+			CPDefinition cpDefinition)
 		throws Exception {
 
 		return _productVirtualSettingsDTOConverter.toDTO(
-			new DefaultDTOConverterContext(
-				cpDefinitionId, contextAcceptLanguage.getPreferredLocale()));
+			new ProductVirtualSettingsDTOConverterContext(
+				contextAcceptLanguage.isAcceptAllLanguages(), null,
+				_dtoConverterRegistry, cpDefinition.getCPDefinitionId(),
+				contextAcceptLanguage.getPreferredLocale(),
+				CPDefinition.class.getName(), contextUriInfo, contextUser));
+	}
+
+	private ProductVirtualSettings _toProductVirtualSettings(
+			CPInstance cpInstance)
+		throws Exception {
+
+		return _productVirtualSettingsDTOConverter.toDTO(
+			new ProductVirtualSettingsDTOConverterContext(
+				contextAcceptLanguage.isAcceptAllLanguages(), null,
+				_dtoConverterRegistry, cpInstance.getCPInstanceId(),
+				contextAcceptLanguage.getPreferredLocale(),
+				CPInstance.class.getName(), contextUriInfo, contextUser));
 	}
 
 	@Reference
 	private CPDefinitionService _cpDefinitionService;
+
+	@Reference
+	private CPInstanceService _cpInstanceService;
+
+	@Reference
+	private DTOConverterRegistry _dtoConverterRegistry;
 
 	@Reference
 	private ProductVirtualSettingsDTOConverter

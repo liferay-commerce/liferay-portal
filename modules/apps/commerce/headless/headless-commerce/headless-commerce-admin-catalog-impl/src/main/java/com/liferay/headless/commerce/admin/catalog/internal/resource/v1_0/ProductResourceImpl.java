@@ -1134,7 +1134,9 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 			if (productVirtualSettings != null) {
 				if (VirtualCPTypeConstants.NAME.equals(cpType.getName())) {
 					VirtualSettingsUtil.addOrUpdateVirtualSettings(
-						cpDefinition, productVirtualSettings,
+						CPDefinition.class.getName(),
+						cpDefinition.getCPDefinitionId(),
+						productVirtualSettings,
 						_cpDefinitionVirtualSettingService,
 						_uniqueFileNameProvider, serviceContext);
 				}
