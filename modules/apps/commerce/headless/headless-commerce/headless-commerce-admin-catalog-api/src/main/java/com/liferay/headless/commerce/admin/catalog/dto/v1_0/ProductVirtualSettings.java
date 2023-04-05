@@ -202,6 +202,34 @@ public class ProductVirtualSettings implements Serializable {
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Integer maxUsages;
 
+	@Schema(description = "Override product virtual settings")
+	public Boolean getOverride() {
+		return override;
+	}
+
+	public void setOverride(Boolean override) {
+		this.override = override;
+	}
+
+	@JsonIgnore
+	public void setOverride(
+		UnsafeSupplier<Boolean, Exception> overrideUnsafeSupplier) {
+
+		try {
+			override = overrideUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField(description = "Override product virtual settings")
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Boolean override;
+
 	@Schema(description = "Base64 encoded sample file")
 	public String getSampleAttachment() {
 		return sampleAttachment;
@@ -537,6 +565,16 @@ public class ProductVirtualSettings implements Serializable {
 			sb.append("\"maxUsages\": ");
 
 			sb.append(maxUsages);
+		}
+
+		if (override != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"override\": ");
+
+			sb.append(override);
 		}
 
 		if (sampleAttachment != null) {

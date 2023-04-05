@@ -140,6 +140,27 @@ public class ProductVirtualSettings implements Cloneable, Serializable {
 
 	protected Integer maxUsages;
 
+	public Boolean getOverride() {
+		return override;
+	}
+
+	public void setOverride(Boolean override) {
+		this.override = override;
+	}
+
+	public void setOverride(
+		UnsafeSupplier<Boolean, Exception> overrideUnsafeSupplier) {
+
+		try {
+			override = overrideUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Boolean override;
+
 	public String getSampleAttachment() {
 		return sampleAttachment;
 	}

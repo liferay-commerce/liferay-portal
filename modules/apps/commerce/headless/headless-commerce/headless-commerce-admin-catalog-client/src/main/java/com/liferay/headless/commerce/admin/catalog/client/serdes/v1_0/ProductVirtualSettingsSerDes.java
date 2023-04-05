@@ -111,6 +111,16 @@ public class ProductVirtualSettingsSerDes {
 			sb.append(productVirtualSettings.getMaxUsages());
 		}
 
+		if (productVirtualSettings.getOverride() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"override\": ");
+
+			sb.append(productVirtualSettings.getOverride());
+		}
+
 		if (productVirtualSettings.getSampleAttachment() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -288,6 +298,15 @@ public class ProductVirtualSettingsSerDes {
 				String.valueOf(productVirtualSettings.getMaxUsages()));
 		}
 
+		if (productVirtualSettings.getOverride() == null) {
+			map.put("override", null);
+		}
+		else {
+			map.put(
+				"override",
+				String.valueOf(productVirtualSettings.getOverride()));
+		}
+
 		if (productVirtualSettings.getSampleAttachment() == null) {
 			map.put("sampleAttachment", null);
 		}
@@ -417,6 +436,12 @@ public class ProductVirtualSettingsSerDes {
 				if (jsonParserFieldValue != null) {
 					productVirtualSettings.setMaxUsages(
 						Integer.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "override")) {
+				if (jsonParserFieldValue != null) {
+					productVirtualSettings.setOverride(
+						(Boolean)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "sampleAttachment")) {

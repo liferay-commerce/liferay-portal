@@ -1189,6 +1189,16 @@ public class ServletDataImpl implements ServletData {
 							ProductVirtualSettingsResourceImpl.class,
 							"getProductIdVirtualSettings"));
 					put(
+						"query#skuByExternalReferenceCodeVirtualSettings",
+						new ObjectValuePair<>(
+							ProductVirtualSettingsResourceImpl.class,
+							"getSkuByExternalReferenceCodeVirtualSettings"));
+					put(
+						"query#skuIdVirtualSettings",
+						new ObjectValuePair<>(
+							ProductVirtualSettingsResourceImpl.class,
+							"getSkuIdVirtualSettings"));
+					put(
 						"query#productByExternalReferenceCodeRelatedProducts",
 						new ObjectValuePair<>(
 							RelatedProductResourceImpl.class,

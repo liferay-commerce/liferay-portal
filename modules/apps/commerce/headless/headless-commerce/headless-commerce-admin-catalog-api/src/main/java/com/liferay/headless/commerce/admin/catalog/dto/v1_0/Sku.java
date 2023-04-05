@@ -816,6 +816,36 @@ public class Sku implements Serializable {
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String unspsc;
 
+	@Schema
+	@Valid
+	public ProductVirtualSettings getVirtualSettings() {
+		return virtualSettings;
+	}
+
+	public void setVirtualSettings(ProductVirtualSettings virtualSettings) {
+		this.virtualSettings = virtualSettings;
+	}
+
+	@JsonIgnore
+	public void setVirtualSettings(
+		UnsafeSupplier<ProductVirtualSettings, Exception>
+			virtualSettingsUnsafeSupplier) {
+
+		try {
+			virtualSettings = virtualSettingsUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected ProductVirtualSettings virtualSettings;
+
 	@DecimalMin("0")
 	@Schema(example = "1.1")
 	public Double getWeight() {
@@ -1218,6 +1248,16 @@ public class Sku implements Serializable {
 			sb.append(_escape(unspsc));
 
 			sb.append("\"");
+		}
+
+		if (virtualSettings != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"virtualSettings\": ");
+
+			sb.append(String.valueOf(virtualSettings));
 		}
 
 		if (weight != null) {

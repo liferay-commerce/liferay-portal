@@ -60,6 +60,13 @@ public interface ProductVirtualSettingsResource {
 	public ProductVirtualSettings getProductIdVirtualSettings(Long id)
 		throws Exception;
 
+	public ProductVirtualSettings getSkuByExternalReferenceCodeVirtualSettings(
+			String externalReferenceCode)
+		throws Exception;
+
+	public ProductVirtualSettings getSkuIdVirtualSettings(Long id)
+		throws Exception;
+
 	public default void setContextAcceptLanguage(
 		AcceptLanguage contextAcceptLanguage) {
 	}

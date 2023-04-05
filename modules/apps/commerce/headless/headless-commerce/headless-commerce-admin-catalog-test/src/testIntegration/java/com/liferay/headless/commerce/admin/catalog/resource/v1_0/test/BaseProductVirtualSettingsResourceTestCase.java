@@ -246,6 +246,42 @@ public abstract class BaseProductVirtualSettingsResourceTestCase {
 		Assert.assertTrue(true);
 	}
 
+	@Test
+	public void testGetSkuByExternalReferenceCodeVirtualSettings()
+		throws Exception {
+
+		Assert.assertTrue(false);
+	}
+
+	@Test
+	public void testGraphQLGetSkuByExternalReferenceCodeVirtualSettings()
+		throws Exception {
+
+		Assert.assertTrue(true);
+	}
+
+	@Test
+	public void testGraphQLGetSkuByExternalReferenceCodeVirtualSettingsNotFound()
+		throws Exception {
+
+		Assert.assertTrue(true);
+	}
+
+	@Test
+	public void testGetSkuIdVirtualSettings() throws Exception {
+		Assert.assertTrue(false);
+	}
+
+	@Test
+	public void testGraphQLGetSkuIdVirtualSettings() throws Exception {
+		Assert.assertTrue(true);
+	}
+
+	@Test
+	public void testGraphQLGetSkuIdVirtualSettingsNotFound() throws Exception {
+		Assert.assertTrue(true);
+	}
+
 	protected void assertContains(
 		ProductVirtualSettings productVirtualSettings,
 		List<ProductVirtualSettings> productVirtualSettingses) {
@@ -374,6 +410,14 @@ public abstract class BaseProductVirtualSettingsResourceTestCase {
 
 			if (Objects.equals("maxUsages", additionalAssertFieldName)) {
 				if (productVirtualSettings.getMaxUsages() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("override", additionalAssertFieldName)) {
+				if (productVirtualSettings.getOverride() == null) {
 					valid = false;
 				}
 
@@ -633,6 +677,17 @@ public abstract class BaseProductVirtualSettingsResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("override", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						productVirtualSettings1.getOverride(),
+						productVirtualSettings2.getOverride())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("sampleAttachment", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						productVirtualSettings1.getSampleAttachment(),
@@ -874,6 +929,11 @@ public abstract class BaseProductVirtualSettingsResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("override")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("sampleAttachment")) {
 			sb.append("'");
 			sb.append(
@@ -986,6 +1046,7 @@ public abstract class BaseProductVirtualSettingsResourceTestCase {
 					RandomTestUtil.randomString());
 				duration = RandomTestUtil.randomLong();
 				maxUsages = RandomTestUtil.randomInt();
+				override = RandomTestUtil.randomBoolean();
 				sampleAttachment = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				sampleSrc = StringUtil.toLowerCase(

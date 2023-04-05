@@ -1562,7 +1562,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productByExternalReferenceCodeVirtualSettings(externalReferenceCode: ___){activationStatus, activationStatusInfo, attachment, duration, maxUsages, sampleAttachment, sampleSrc, sampleUrl, src, termsOfUseContent, termsOfUseJournalArticleId, termsOfUseRequired, url, useSample}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productByExternalReferenceCodeVirtualSettings(externalReferenceCode: ___){activationStatus, activationStatusInfo, attachment, duration, maxUsages, override, sampleAttachment, sampleSrc, sampleUrl, src, termsOfUseContent, termsOfUseJournalArticleId, termsOfUseRequired, url, useSample}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField
 	public ProductVirtualSettings productByExternalReferenceCodeVirtualSettings(
@@ -1581,7 +1581,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productIdVirtualSettings(id: ___){activationStatus, activationStatusInfo, attachment, duration, maxUsages, sampleAttachment, sampleSrc, sampleUrl, src, termsOfUseContent, termsOfUseJournalArticleId, termsOfUseRequired, url, useSample}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productIdVirtualSettings(id: ___){activationStatus, activationStatusInfo, attachment, duration, maxUsages, override, sampleAttachment, sampleSrc, sampleUrl, src, termsOfUseContent, termsOfUseJournalArticleId, termsOfUseRequired, url, useSample}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField
 	public ProductVirtualSettings productIdVirtualSettings(
@@ -1593,6 +1593,42 @@ public class Query {
 			this::_populateResourceContext,
 			productVirtualSettingsResource ->
 				productVirtualSettingsResource.getProductIdVirtualSettings(id));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {skuByExternalReferenceCodeVirtualSettings(externalReferenceCode: ___){activationStatus, activationStatusInfo, attachment, duration, maxUsages, override, sampleAttachment, sampleSrc, sampleUrl, src, termsOfUseContent, termsOfUseJournalArticleId, termsOfUseRequired, url, useSample}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField
+	public ProductVirtualSettings skuByExternalReferenceCodeVirtualSettings(
+			@GraphQLName("externalReferenceCode") String externalReferenceCode)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_productVirtualSettingsResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			productVirtualSettingsResource ->
+				productVirtualSettingsResource.
+					getSkuByExternalReferenceCodeVirtualSettings(
+						externalReferenceCode));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {skuIdVirtualSettings(id: ___){activationStatus, activationStatusInfo, attachment, duration, maxUsages, override, sampleAttachment, sampleSrc, sampleUrl, src, termsOfUseContent, termsOfUseJournalArticleId, termsOfUseRequired, url, useSample}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField
+	public ProductVirtualSettings skuIdVirtualSettings(
+			@GraphQLName("id") Long id)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_productVirtualSettingsResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			productVirtualSettingsResource ->
+				productVirtualSettingsResource.getSkuIdVirtualSettings(id));
 	}
 
 	/**
@@ -1717,7 +1753,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {skuByExternalReferenceCode(externalReferenceCode: ___){cost, customFields, depth, discontinued, discontinuedDate, displayDate, expirationDate, externalReferenceCode, gtin, height, id, inventoryLevel, manufacturerPartNumber, neverExpire, price, productId, productName, promoPrice, published, purchasable, replacementSkuExternalReferenceCode, replacementSkuId, sku, skuOptions, skuSubscriptionConfiguration, unspsc, weight, width}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {skuByExternalReferenceCode(externalReferenceCode: ___){cost, customFields, depth, discontinued, discontinuedDate, displayDate, expirationDate, externalReferenceCode, gtin, height, id, inventoryLevel, manufacturerPartNumber, neverExpire, price, productId, productName, promoPrice, published, purchasable, replacementSkuExternalReferenceCode, replacementSkuId, sku, skuOptions, skuSubscriptionConfiguration, unspsc, virtualSettings, weight, width}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField
 	public Sku skuByExternalReferenceCode(
@@ -1733,7 +1769,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {sku(id: ___){cost, customFields, depth, discontinued, discontinuedDate, displayDate, expirationDate, externalReferenceCode, gtin, height, id, inventoryLevel, manufacturerPartNumber, neverExpire, price, productId, productName, promoPrice, published, purchasable, replacementSkuExternalReferenceCode, replacementSkuId, sku, skuOptions, skuSubscriptionConfiguration, unspsc, weight, width}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {sku(id: ___){cost, customFields, depth, discontinued, discontinuedDate, displayDate, expirationDate, externalReferenceCode, gtin, height, id, inventoryLevel, manufacturerPartNumber, neverExpire, price, productId, productName, promoPrice, published, purchasable, replacementSkuExternalReferenceCode, replacementSkuId, sku, skuOptions, skuSubscriptionConfiguration, unspsc, virtualSettings, weight, width}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField
 	public Sku sku(@GraphQLName("id") Long id) throws Exception {
@@ -2733,6 +2769,33 @@ public class Query {
 				productSubscriptionConfigurationResource ->
 					productSubscriptionConfigurationResource.
 						getProductByExternalReferenceCodeSubscriptionConfiguration(
+							_catalog.getExternalReferenceCode()));
+		}
+
+		private Catalog _catalog;
+
+	}
+
+	@GraphQLTypeExtension(Catalog.class)
+	public class GetSkuByExternalReferenceCodeVirtualSettingsTypeExtension {
+
+		public GetSkuByExternalReferenceCodeVirtualSettingsTypeExtension(
+			Catalog catalog) {
+
+			_catalog = catalog;
+		}
+
+		@GraphQLField
+		public ProductVirtualSettings
+				skuByExternalReferenceCodeVirtualSettings()
+			throws Exception {
+
+			return _applyComponentServiceObjects(
+				_productVirtualSettingsResourceComponentServiceObjects,
+				Query.this::_populateResourceContext,
+				productVirtualSettingsResource ->
+					productVirtualSettingsResource.
+						getSkuByExternalReferenceCodeVirtualSettings(
 							_catalog.getExternalReferenceCode()));
 		}
 

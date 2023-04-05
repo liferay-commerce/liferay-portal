@@ -380,6 +380,16 @@ public class SkuSerDes {
 			sb.append("\"");
 		}
 
+		if (sku.getVirtualSettings() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"virtualSettings\": ");
+
+			sb.append(String.valueOf(sku.getVirtualSettings()));
+		}
+
 		if (sku.getWeight() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -618,6 +628,14 @@ public class SkuSerDes {
 			map.put("unspsc", String.valueOf(sku.getUnspsc()));
 		}
 
+		if (sku.getVirtualSettings() == null) {
+			map.put("virtualSettings", null);
+		}
+		else {
+			map.put(
+				"virtualSettings", String.valueOf(sku.getVirtualSettings()));
+		}
+
 		if (sku.getWeight() == null) {
 			map.put("weight", null);
 		}
@@ -819,6 +837,13 @@ public class SkuSerDes {
 			else if (Objects.equals(jsonParserFieldName, "unspsc")) {
 				if (jsonParserFieldValue != null) {
 					sku.setUnspsc((String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "virtualSettings")) {
+				if (jsonParserFieldValue != null) {
+					sku.setVirtualSettings(
+						ProductVirtualSettingsSerDes.toDTO(
+							(String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "weight")) {
