@@ -18,6 +18,7 @@ import com.liferay.commerce.account.model.CommerceAccount;
 import com.liferay.commerce.account.util.CommerceAccountHelper;
 import com.liferay.commerce.product.constants.CPWebKeys;
 import com.liferay.commerce.product.content.constants.CPContentWebKeys;
+import com.liferay.commerce.product.content.info.item.renderer.CPContentInfoItemRendererRegistry;
 import com.liferay.commerce.product.content.util.CPContentHelper;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
@@ -83,6 +84,11 @@ public class ProductCardInfoItemRenderer
 				CPContentWebKeys.CP_CONTENT_HELPER, _cpContentHelper);
 
 			httpServletRequest.setAttribute(
+				CPContentWebKeys.CP_CONTENT_INFO_ITEM_RENDERER,
+				_cpContentInfoItemRendererRegistry.getCPContentInfoItemRenderer(
+					cpDefinition.getProductTypeName()));
+
+			httpServletRequest.setAttribute(
 				"liferay-commerce:product-card:showAddToCartButton",
 				Boolean.TRUE);
 			httpServletRequest.setAttribute(
@@ -102,7 +108,8 @@ public class ProductCardInfoItemRenderer
 			httpServletRequest.setAttribute(
 				"liferay-commerce:product-card:showName", Boolean.TRUE);
 			httpServletRequest.setAttribute(
-				"liferay-commerce:product-card:showPrice", Boolean.TRUE);
+				"liferay-commerce:product-card:showPriceOrDescription",
+				Boolean.TRUE);
 			httpServletRequest.setAttribute(
 				"liferay-commerce:product-card:showSku", Boolean.TRUE);
 
@@ -140,6 +147,10 @@ public class ProductCardInfoItemRenderer
 
 	@Reference
 	private CPContentHelper _cpContentHelper;
+
+	@Reference
+	private CPContentInfoItemRendererRegistry
+		_cpContentInfoItemRendererRegistry;
 
 	@Reference
 	private CPDefinitionHelper _cpDefinitionHelper;

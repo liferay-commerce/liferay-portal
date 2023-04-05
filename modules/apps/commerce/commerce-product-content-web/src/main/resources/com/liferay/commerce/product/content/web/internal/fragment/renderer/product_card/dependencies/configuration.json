@@ -67,8 +67,8 @@
 				},
 				{
 					"defaultValue": true,
-					"label": "show-price",
-					"name": "showPrice",
+					"label": "show-price-or-description",
+					"name": "showPriceOrDescription",
 					"type": "checkbox",
 					"typeOptions": {
 						"displayType": "toggle"
