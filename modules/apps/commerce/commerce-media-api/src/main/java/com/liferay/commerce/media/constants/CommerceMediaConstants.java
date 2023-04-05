@@ -42,4 +42,10 @@ public class CommerceMediaConstants {
 	public static final String URL_SEPARATOR_VIRTUAL_PRODUCT_SAMPLE =
 		"/virtual-product-sample/";
 
+	public static final String URL_SEPARATOR_VIRTUAL_PRODUCT_SKU =
+		"/virtual-product-sku/";
+
+	public static final String URL_SEPARATOR_VIRTUAL_PRODUCT_SKU_SAMPLE =
+		"/virtual-product-sku-sample/";
+
 }
