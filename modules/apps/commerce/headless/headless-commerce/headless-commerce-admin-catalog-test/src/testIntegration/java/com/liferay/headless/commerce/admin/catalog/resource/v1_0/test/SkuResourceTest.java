@@ -18,7 +18,6 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
-import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CPOption;
 import com.liferay.commerce.product.model.CPOptionValue;
 import com.liferay.commerce.product.model.CProduct;
@@ -28,21 +27,19 @@ import com.liferay.commerce.product.service.CPInstanceLocalService;
 import com.liferay.commerce.product.service.CPOptionLocalService;
 import com.liferay.commerce.product.service.CPOptionValueLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
+import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductVirtualSettings;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Sku;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.SkuOption;
 import com.liferay.headless.commerce.admin.catalog.client.resource.v1_0.SkuResource;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
-
-import java.math.BigDecimal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +53,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Stefano Motta
  */
+@DataGuard(scope = DataGuard.Scope.METHOD)
 @RunWith(Arquillian.class)
 public class SkuResourceTest extends BaseSkuResourceTestCase {
 
@@ -64,22 +62,20 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 	public void setUp() throws Exception {
 		super.setUp();
 
-		_cpInstance = CPTestUtil.addCPInstanceWithRandomSku(
-			testGroup.getGroupId(), BigDecimal.TEN);
-
-		_cpDefinition = _cpInstance.getCPDefinition();
+		_cpDefinition = CPTestUtil.addCPDefinition(
+			testGroup.getGroupId(), "virtual", true, false);
 
 		_cProduct = _cpDefinition.getCProduct();
 
-		_user = UserTestUtil.addUser(testCompany);
+		User user = UserTestUtil.addUser(testCompany);
 
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
 				testCompany.getCompanyId(), testGroup.getGroupId(),
-				_user.getUserId());
+				user.getUserId());
 
 		_cpOption = _cpOptionLocalService.addCPOption(
-			RandomTestUtil.randomString(), _user.getUserId(),
+			RandomTestUtil.randomString(), user.getUserId(),
 			RandomTestUtil.randomLocaleStringMap(),
 			RandomTestUtil.randomLocaleStringMap(), "select", false, false,
 			false, RandomTestUtil.randomString(), serviceContext);
@@ -96,8 +92,6 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 
 		_cpDefinitionOptionValueRels =
 			_cpDefinitionOptionRel.getCPDefinitionOptionValueRels();
-
-		_deleteAllCPInstances();
 	}
 
 	@Ignore
@@ -217,6 +211,70 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 			(long)skuOption.getOptionValueId(),
 			cpDefinitionOptionValueRel.getCPDefinitionOptionValueRelId());
 		Assert.assertEquals(skuOption.getValue(), _cpOptionValue.getKey());
+	}
+
+	@Test
+	public void testPostProductIdSkuWithVirtualSettings() throws Exception {
+		super.testPostProductIdSku();
+
+		SkuResource skuResource = SkuResource.builder(
+		).authentication(
+			"test@liferay.com", "test"
+		).locale(
+			LocaleUtil.getDefault()
+		).parameters(
+			"nestedFields", "virtualSettings"
+		).build();
+
+		ProductVirtualSettings randomProductVirtualSettings =
+			new ProductVirtualSettings() {
+				{
+					activationStatus = 0;
+					duration = RandomTestUtil.nextLong();
+					maxUsages = RandomTestUtil.nextInt();
+					override = true;
+					sampleUrl = "https://liferay.com";
+					termsOfUseRequired = false;
+					url = "https://liferay.com";
+					useSample = true;
+				}
+			};
+
+		Sku randomSku = randomSku();
+
+		randomSku.setVirtualSettings(randomProductVirtualSettings);
+
+		Sku postSku = skuResource.postProductIdSku(
+			_cpDefinition.getCProductId(), randomSku);
+
+		ProductVirtualSettings postProductVirtualSettings =
+			postSku.getVirtualSettings();
+
+		Assert.assertNotNull(postProductVirtualSettings);
+		Assert.assertEquals(
+			postProductVirtualSettings.getActivationStatus(),
+			randomProductVirtualSettings.getActivationStatus());
+		Assert.assertEquals(
+			postProductVirtualSettings.getDuration(),
+			randomProductVirtualSettings.getDuration());
+		Assert.assertEquals(
+			postProductVirtualSettings.getMaxUsages(),
+			randomProductVirtualSettings.getMaxUsages());
+		Assert.assertEquals(
+			postProductVirtualSettings.getOverride(),
+			randomProductVirtualSettings.getOverride());
+		Assert.assertEquals(
+			postProductVirtualSettings.getSampleUrl(),
+			randomProductVirtualSettings.getSampleUrl());
+		Assert.assertEquals(
+			postProductVirtualSettings.getTermsOfUseRequired(),
+			randomProductVirtualSettings.getTermsOfUseRequired());
+		Assert.assertEquals(
+			postProductVirtualSettings.getUrl(),
+			randomProductVirtualSettings.getUrl());
+		Assert.assertEquals(
+			postProductVirtualSettings.getUseSample(),
+			randomProductVirtualSettings.getUseSample());
 	}
 
 	@Override
@@ -352,17 +410,6 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 		return skuResource.postProductIdSku(_cProduct.getCProductId(), sku);
 	}
 
-	private void _deleteAllCPInstances() throws Exception {
-		List<CPDefinition> cpDefinitions =
-			_cpDefinitionLocalService.getCPDefinitions(
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-
-		for (CPDefinition cpDefinition : cpDefinitions) {
-			_cpInstanceLocalService.deleteCPInstances(
-				cpDefinition.getCPDefinitionId());
-		}
-	}
-
 	private Sku _randomSkuWithSkuOptions(
 			String optionKey, Long optionKeyId, Long optionValueKeyId,
 			String optionValue)
@@ -385,45 +432,33 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 		return sku;
 	}
 
-	@DeleteAfterTestRun
 	private CPDefinition _cpDefinition;
 
 	@Inject
 	private CPDefinitionLocalService _cpDefinitionLocalService;
 
-	@DeleteAfterTestRun
 	private CPDefinitionOptionRel _cpDefinitionOptionRel;
 
 	@Inject
 	private CPDefinitionOptionRelLocalService
 		_cpDefinitionOptionRelLocalService;
 
-	@DeleteAfterTestRun
 	private List<CPDefinitionOptionValueRel> _cpDefinitionOptionValueRels =
 		new ArrayList<>();
-
-	@DeleteAfterTestRun
-	private CPInstance _cpInstance;
 
 	@Inject
 	private CPInstanceLocalService _cpInstanceLocalService;
 
-	@DeleteAfterTestRun
 	private CPOption _cpOption;
 
 	@Inject
 	private CPOptionLocalService _cpOptionLocalService;
 
-	@DeleteAfterTestRun
 	private CPOptionValue _cpOptionValue;
 
 	@Inject
 	private CPOptionValueLocalService _cpOptionValueLocalService;
 
-	@DeleteAfterTestRun
 	private CProduct _cProduct;
-
-	@DeleteAfterTestRun
-	private User _user;
 
 }
