@@ -14,6 +14,78 @@ definition {
 		CommerceConfiguration.commerceTearDown();
 	}
 
+	@description = "This is a test for COMMERCE-10173. Assert that a product cannot be saved with the wrong quantity under configuration tab and the corresponding alert is shown"
+	@priority = 3
+	test AssertCannotSaveWrongQuantityProduct {
+		property portal.acceptance = "false";
+
+		task ("Given a Minium site is created") {
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+		}
+
+		task ("When clearing all three order quality values in a product configuration tab") {
+			CommerceProducts.openProductsAdmin();
+
+			Click(
+				key_entryName = "ABS Sensor",
+				locator1 = "CommerceEntry#TABLE_LIST_TITLE");
+
+			CommerceEntry.gotoMenuTab(menuTab = "Configuration");
+
+			for (var valueName : list "Minimum,Maximum,Multiple") {
+				Type(
+					key_fieldLabel = "${valueName} Order Quantity",
+					locator1 = "TextInput#GENERIC_TEXT_INPUT",
+					value1 = "");
+
+				SelectFrameTop();
+			}
+		}
+
+		task ("Then assert the product cannot be saved and required field alert errors are thrown under order quantity fields") {
+			Button.clickPublish();
+
+			AssertElementNotPresent(locator1 = "Message#SUCCESS_DISMISSIBLE");
+
+			for (var valueName : list "Minimum,Maximum,Multiple") {
+				Alert.viewSpecificRequiredField(fieldFieldLabel = "${valueName} Order Quantity");
+			}
+		}
+
+		task ("When typing all three order quality values less than 1 in a product configuration tab") {
+			CommerceProducts.openProductsAdmin();
+
+			Click(
+				key_entryName = "ABS Sensor",
+				locator1 = "CommerceEntry#TABLE_LIST_TITLE");
+
+			CommerceEntry.gotoMenuTab(menuTab = "Configuration");
+
+			for (var valueName : list "Minimum,Maximum,Multiple") {
+				Type(
+					key_fieldLabel = "${valueName} Order Quantity",
+					locator1 = "TextInput#GENERIC_TEXT_INPUT",
+					value1 = 0);
+
+				SelectFrameTop();
+			}
+		}
+
+		task ("Then assert the product cannot be saved and enter value alert errors are thrown under order quantity fields") {
+			Button.clickPublish();
+
+			AssertElementNotPresent(locator1 = "Message#SUCCESS_DISMISSIBLE");
+
+			for (var valueName : list "Minimum,Maximum,Multiple") {
+				AssertTextEquals.assertPartialText(
+					key_alertMessage = "Please enter a value greater than or equal to 1.",
+					key_fieldLabel = ${valueName},
+					locator1 = "Message#ERROR_WITH_SPECIFIC_ENTRY",
+					value1 = "Please enter a value greater than or equal to 1.");
+			}
+		}
+	}
+
 	@description = "This is a test for COMMERCE-9633. CanAddToCartGeneratedProductSkus"
 	@priority = 5
 	test CanAddToCartGeneratedProductSkus {
