@@ -81,6 +81,7 @@ public interface CommercePaymentEntryLocalService
 	public CommercePaymentEntry addCommercePaymentEntry(
 		CommercePaymentEntry commercePaymentEntry);
 
+	@Indexable(type = IndexableType.REINDEX)
 	public CommercePaymentEntry addCommercePaymentEntry(
 			long userId, long classNameId, long classPK, BigDecimal amount,
 			String currencyCode, String paymentMethodName,

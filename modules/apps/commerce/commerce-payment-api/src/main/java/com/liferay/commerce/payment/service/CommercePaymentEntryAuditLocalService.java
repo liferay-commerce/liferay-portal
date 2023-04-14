@@ -81,6 +81,7 @@ public interface CommercePaymentEntryAuditLocalService
 	public CommercePaymentEntryAudit addCommercePaymentEntryAudit(
 		CommercePaymentEntryAudit commercePaymentEntryAudit);
 
+	@Indexable(type = IndexableType.REINDEX)
 	public CommercePaymentEntryAudit addCommercePaymentEntryAudit(
 			long userId, long commercePaymentEntryId, BigDecimal amount,
 			String currencyCode, String logType, String logTypeSettings,
