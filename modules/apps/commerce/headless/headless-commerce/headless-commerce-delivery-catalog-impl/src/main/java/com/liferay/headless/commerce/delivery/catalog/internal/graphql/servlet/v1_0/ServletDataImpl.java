@@ -160,10 +160,9 @@ public class ServletDataImpl implements ServletData {
 						new ObjectValuePair<>(
 							WishListResourceImpl.class, "deleteWishListBatch"));
 					put(
-						"mutation#patchChannelWishList",
+						"mutation#patchWishList",
 						new ObjectValuePair<>(
-							WishListResourceImpl.class,
-							"patchChannelWishList"));
+							WishListResourceImpl.class, "patchWishList"));
 					put(
 						"mutation#deleteWishListItem",
 						new ObjectValuePair<>(
@@ -175,10 +174,10 @@ public class ServletDataImpl implements ServletData {
 							WishListItemResourceImpl.class,
 							"deleteWishListItemBatch"));
 					put(
-						"mutation#createChannelWishListItem",
+						"mutation#createWishlistWishListWishListItem",
 						new ObjectValuePair<>(
 							WishListItemResourceImpl.class,
-							"postChannelWishListItem"));
+							"postWishlistWishListWishListItem"));
 
 					put(
 						"query#channelProductAttachments",
@@ -224,10 +223,10 @@ public class ServletDataImpl implements ServletData {
 						new ObjectValuePair<>(
 							ProductResourceImpl.class, "getChannelProduct"));
 					put(
-						"query#channelProductOptions",
+						"query#channelProductProductOptions",
 						new ObjectValuePair<>(
 							ProductOptionResourceImpl.class,
-							"getChannelProductOptionsPage"));
+							"getChannelProductProductOptionsPage"));
 					put(
 						"query#channelProductProductSpecifications",
 						new ObjectValuePair<>(
@@ -257,10 +256,10 @@ public class ServletDataImpl implements ServletData {
 						new ObjectValuePair<>(
 							WishListItemResourceImpl.class, "getWishListItem"));
 					put(
-						"query#wishListItems",
+						"query#wishlistWishListWishListItems",
 						new ObjectValuePair<>(
 							WishListItemResourceImpl.class,
-							"getWishListItemsPage"));
+							"getWishlistWishListWishListItemsPage"));
 				}
 			};
 

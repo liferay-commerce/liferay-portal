@@ -14,8 +14,8 @@
 
 package com.liferay.headless.commerce.delivery.catalog.client.resource.v1_0;
 
-import com.liferay.headless.commerce.delivery.catalog.client.dto.v1_0.DDMOption;
 import com.liferay.headless.commerce.delivery.catalog.client.dto.v1_0.Sku;
+import com.liferay.headless.commerce.delivery.catalog.client.dto.v1_0.SkuOption;
 import com.liferay.headless.commerce.delivery.catalog.client.http.HttpInvoker;
 import com.liferay.headless.commerce.delivery.catalog.client.pagination.Page;
 import com.liferay.headless.commerce.delivery.catalog.client.pagination.Pagination;
@@ -56,12 +56,12 @@ public interface SkuResource {
 
 	public Sku postChannelProductSku(
 			Long channelId, Long productId, Long accountId, Integer quantity,
-			DDMOption[] ddmOptions)
+			SkuOption[] skuOptions)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse postChannelProductSkuHttpResponse(
 			Long channelId, Long productId, Long accountId, Integer quantity,
-			DDMOption[] ddmOptions)
+			SkuOption[] skuOptions)
 		throws Exception;
 
 	public static class Builder {
@@ -289,12 +289,12 @@ public interface SkuResource {
 
 		public Sku postChannelProductSku(
 				Long channelId, Long productId, Long accountId,
-				Integer quantity, DDMOption[] ddmOptions)
+				Integer quantity, SkuOption[] skuOptions)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				postChannelProductSkuHttpResponse(
-					channelId, productId, accountId, quantity, ddmOptions);
+					channelId, productId, accountId, quantity, skuOptions);
 
 			String content = httpResponse.getContent();
 
@@ -357,15 +357,15 @@ public interface SkuResource {
 
 		public HttpInvoker.HttpResponse postChannelProductSkuHttpResponse(
 				Long channelId, Long productId, Long accountId,
-				Integer quantity, DDMOption[] ddmOptions)
+				Integer quantity, SkuOption[] skuOptions)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
 
 			List<String> values = new ArrayList<>();
 
-			for (DDMOption ddmOptionValue : ddmOptions) {
-				values.add(String.valueOf(ddmOptionValue));
+			for (SkuOption skuOptionValue : skuOptions) {
+				values.add(String.valueOf(skuOptionValue));
 			}
 
 			httpInvoker.body(values.toString(), "application/json");

@@ -34,15 +34,34 @@ public class SkuOption implements Cloneable, Serializable {
 		return SkuOptionSerDes.toDTO(json);
 	}
 
-	public Long getKey() {
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setId(UnsafeSupplier<Long, Exception> idUnsafeSupplier) {
+		try {
+			id = idUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Long id;
+
+	public String getKey() {
 		return key;
 	}
 
-	public void setKey(Long key) {
+	public void setKey(String key) {
 		this.key = key;
 	}
 
-	public void setKey(UnsafeSupplier<Long, Exception> keyUnsafeSupplier) {
+	public void setKey(UnsafeSupplier<String, Exception> keyUnsafeSupplier) {
 		try {
 			key = keyUnsafeSupplier.get();
 		}
@@ -51,17 +70,123 @@ public class SkuOption implements Cloneable, Serializable {
 		}
 	}
 
-	protected Long key;
+	protected String key;
 
-	public Long getValue() {
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setName(UnsafeSupplier<String, Exception> nameUnsafeSupplier) {
+		try {
+			name = nameUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String name;
+
+	public Boolean getPriceContributor() {
+		return priceContributor;
+	}
+
+	public void setPriceContributor(Boolean priceContributor) {
+		this.priceContributor = priceContributor;
+	}
+
+	public void setPriceContributor(
+		UnsafeSupplier<Boolean, Exception> priceContributorUnsafeSupplier) {
+
+		try {
+			priceContributor = priceContributorUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Boolean priceContributor;
+
+	public Boolean getRequired() {
+		return required;
+	}
+
+	public void setRequired(Boolean required) {
+		this.required = required;
+	}
+
+	public void setRequired(
+		UnsafeSupplier<Boolean, Exception> requiredUnsafeSupplier) {
+
+		try {
+			required = requiredUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Boolean required;
+
+	public Boolean getSkuContributor() {
+		return skuContributor;
+	}
+
+	public void setSkuContributor(Boolean skuContributor) {
+		this.skuContributor = skuContributor;
+	}
+
+	public void setSkuContributor(
+		UnsafeSupplier<Boolean, Exception> skuContributorUnsafeSupplier) {
+
+		try {
+			skuContributor = skuContributorUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Boolean skuContributor;
+
+	public SkuOptionValue[] getSkuOptionValues() {
+		return skuOptionValues;
+	}
+
+	public void setSkuOptionValues(SkuOptionValue[] skuOptionValues) {
+		this.skuOptionValues = skuOptionValues;
+	}
+
+	public void setSkuOptionValues(
+		UnsafeSupplier<SkuOptionValue[], Exception>
+			skuOptionValuesUnsafeSupplier) {
+
+		try {
+			skuOptionValues = skuOptionValuesUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected SkuOptionValue[] skuOptionValues;
+
+	public String getValue() {
 		return value;
 	}
 
-	public void setValue(Long value) {
+	public void setValue(String value) {
 		this.value = value;
 	}
 
-	public void setValue(UnsafeSupplier<Long, Exception> valueUnsafeSupplier) {
+	public void setValue(
+		UnsafeSupplier<String, Exception> valueUnsafeSupplier) {
+
 		try {
 			value = valueUnsafeSupplier.get();
 		}
@@ -70,7 +195,7 @@ public class SkuOption implements Cloneable, Serializable {
 		}
 	}
 
-	protected Long value;
+	protected String value;
 
 	@Override
 	public SkuOption clone() throws CloneNotSupportedException {
