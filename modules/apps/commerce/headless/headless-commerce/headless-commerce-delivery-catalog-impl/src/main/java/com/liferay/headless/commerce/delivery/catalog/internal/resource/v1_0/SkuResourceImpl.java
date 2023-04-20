@@ -30,9 +30,9 @@ import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CPInstanceLocalService;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.product.util.CPInstanceHelper;
-import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.DDMOption;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Product;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Sku;
+import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.SkuOption;
 import com.liferay.headless.commerce.delivery.catalog.internal.dto.v1_0.converter.SkuDTOConverterContext;
 import com.liferay.headless.commerce.delivery.catalog.resource.v1_0.SkuResource;
 import com.liferay.portal.kernel.change.tracking.CTAware;
@@ -137,7 +137,7 @@ public class SkuResourceImpl
 	@Override
 	public Sku postChannelProductSku(
 			Long channelId, Long productId, Long accountId, Integer quantity,
-			DDMOption[] ddmOptions)
+			SkuOption[] skuOptions)
 		throws Exception {
 
 		CPDefinition cpDefinition =
@@ -160,12 +160,12 @@ public class SkuResourceImpl
 			commerceAccount.getCommerceAccountId(),
 			commerceChannel.getGroupId(), cpDefinition.getCPDefinitionId());
 
-		JSONArray jsonArray = JSONUtil.toJSONArray(
-			ddmOptions,
-			ddmOption -> _jsonFactory.createJSONObject(ddmOption.toString()));
+		JSONArray skuOptionJSONArray = JSONUtil.toJSONArray(
+			skuOptions,
+			skuOption -> _jsonFactory.createJSONObject(skuOption.toString()));
 
 		CPInstance cpInstance = _cpInstanceHelper.fetchCPInstance(
-			cpDefinition.getCPDefinitionId(), JSONUtil.toString(jsonArray));
+			cpDefinition.getCPDefinitionId(), skuOptionJSONArray);
 
 		if (cpInstance == null) {
 			throw new NoSuchCPInstanceException();
