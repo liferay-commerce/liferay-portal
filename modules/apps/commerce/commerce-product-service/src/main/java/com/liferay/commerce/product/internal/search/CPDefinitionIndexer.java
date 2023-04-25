@@ -825,6 +825,10 @@ public class CPDefinitionIndexer extends BaseIndexer<CPDefinition> {
 			}
 
 			for (CPInstance cpInstance : cpInstances) {
+				if (cpInstance.isExpired()) {
+					continue;
+				}
+
 				commercePriceEntry =
 					_commercePriceEntryLocalService.
 						getInstanceBaseCommercePriceEntry(
