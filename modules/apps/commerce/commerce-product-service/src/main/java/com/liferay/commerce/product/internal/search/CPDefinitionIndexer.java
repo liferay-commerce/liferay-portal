@@ -810,21 +810,15 @@ public class CPDefinitionIndexer extends BaseIndexer<CPDefinition> {
 			}
 		}
 		else if (!cpInstances.isEmpty()) {
-			CPInstance firstCPInstance = cpInstances.get(0);
-
-			CommercePriceEntry commercePriceEntry =
-				_commercePriceEntryLocalService.
-					getInstanceBaseCommercePriceEntry(
-						firstCPInstance.getCPInstanceUuid(),
-						CommercePriceListConstants.TYPE_PRICE_LIST);
-
 			BigDecimal lowestPrice = BigDecimal.ZERO;
 
-			if (commercePriceEntry != null) {
-				lowestPrice = commercePriceEntry.getPrice();
-			}
+			CommercePriceEntry commercePriceEntry = null;
 
 			for (CPInstance cpInstance : cpInstances) {
+				if (!cpInstance.isApproved()) {
+					continue;
+				}
+
 				commercePriceEntry =
 					_commercePriceEntryLocalService.
 						getInstanceBaseCommercePriceEntry(
@@ -836,6 +830,10 @@ public class CPDefinitionIndexer extends BaseIndexer<CPDefinition> {
 				}
 
 				BigDecimal price = commercePriceEntry.getPrice();
+
+				if (lowestPrice.compareTo(BigDecimal.ZERO) == 0) {
+					lowestPrice = price;
+				}
 
 				BigDecimal promoPrice = cpInstance.getPromoPrice();
 
