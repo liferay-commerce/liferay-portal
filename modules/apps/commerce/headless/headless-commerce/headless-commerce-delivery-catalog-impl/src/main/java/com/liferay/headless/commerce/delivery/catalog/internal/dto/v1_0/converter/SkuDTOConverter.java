@@ -43,6 +43,7 @@ import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Price;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Product;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Sku;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.SkuOption;
+import com.liferay.headless.commerce.delivery.catalog.internal.util.v1_0.SkuOptionUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -100,6 +101,11 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 
 		DDMOption[] ddmOptions = _getDDMOptions(cpDefinitionOptionRelsMap);
 
+		SkuOption[] skuOptionArray = SkuOptionUtil.getSkuOptions(
+			cpDefinitionOptionRelsMap,
+			_language.getLanguageId(
+				cpSkuDTOConverterConvertContext.getLocale()));
+
 		CPInstance replacementCPInstance =
 			_cpInstanceLocalService.fetchCProductInstance(
 				cpInstance.getReplacementCProductId(),
@@ -132,13 +138,13 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 				price = _getPrice(
 					cpSkuDTOConverterConvertContext.getCommerceContext(),
 					cpInstance,
-					ArrayUtil.toString(ddmOptions, StringPool.BLANK),
+					ArrayUtil.toString(skuOptionArray, StringPool.BLANK),
 					cpSkuDTOConverterConvertContext.getLocale(),
 					cpSkuDTOConverterConvertContext.getQuantity());
 				published = cpInstance.isPublished();
 				purchasable = cpInstance.isPurchasable();
 				sku = cpInstance.getSku();
-				skuOptions = _getSkuOptions(cpDefinitionOptionRelsMap);
+				skuOptions = skuOptionArray;
 				weight = cpInstance.getWeight();
 				width = cpInstance.getWidth();
 
@@ -274,7 +280,7 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 
 	private Price _getPrice(
 			CommerceContext commerceContext, CPInstance cpInstance,
-			String ddmFormValues, Locale locale, int quantity)
+			String skuOptions, Locale locale, int quantity)
 		throws Exception {
 
 		CommerceProductPrice commerceProductPrice =
@@ -283,7 +289,7 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 					commerceContext,
 					_commerceOptionValueHelper.
 						getCPDefinitionCommerceOptionValues(
-							cpInstance.getCPDefinitionId(), ddmFormValues),
+							cpInstance.getCPDefinitionId(), skuOptions),
 					cpInstance.getCPInstanceId(), quantity));
 
 		if (commerceProductPrice == null) {
@@ -341,41 +347,6 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 		}
 
 		return price;
-	}
-
-	private SkuOption[] _getSkuOptions(
-			Map<CPDefinitionOptionRel, List<CPDefinitionOptionValueRel>>
-				cpDefinitionOptionRelsMap)
-		throws Exception {
-
-		List<SkuOption> skuOptions = new ArrayList<>();
-
-		for (Map.Entry<CPDefinitionOptionRel, List<CPDefinitionOptionValueRel>>
-				entry : cpDefinitionOptionRelsMap.entrySet()) {
-
-			CPDefinitionOptionRel cpDefinitionOptionRel = entry.getKey();
-
-			List<CPDefinitionOptionValueRel> cpDefinitionOptionValueRels =
-				entry.getValue();
-
-			for (CPDefinitionOptionValueRel cpDefinitionOptionValueRel :
-					cpDefinitionOptionValueRels) {
-
-				SkuOption skuOption = new SkuOption() {
-					{
-						key =
-							cpDefinitionOptionRel.getCPDefinitionOptionRelId();
-						value =
-							cpDefinitionOptionValueRel.
-								getCPDefinitionOptionValueRelId();
-					}
-				};
-
-				skuOptions.add(skuOption);
-			}
-		}
-
-		return skuOptions.toArray(new SkuOption[0]);
 	}
 
 	@Reference
