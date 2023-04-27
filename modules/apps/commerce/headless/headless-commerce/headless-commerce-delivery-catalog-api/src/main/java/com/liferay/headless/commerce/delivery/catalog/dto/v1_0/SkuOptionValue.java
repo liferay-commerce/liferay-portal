@@ -36,7 +36,6 @@ import java.util.Set;
 
 import javax.annotation.Generated;
 
-import javax.validation.Valid;
 import javax.validation.constraints.DecimalMin;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -46,17 +45,17 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @generated
  */
 @Generated("")
-@GraphQLName("SkuOption")
+@GraphQLName("SkuOptionValue")
 @JsonFilter("Liferay.Vulcan")
-@XmlRootElement(name = "SkuOption")
-public class SkuOption implements Serializable {
+@XmlRootElement(name = "SkuOptionValue")
+public class SkuOptionValue implements Serializable {
 
-	public static SkuOption toDTO(String json) {
-		return ObjectMapperUtil.readValue(SkuOption.class, json);
+	public static SkuOptionValue toDTO(String json) {
+		return ObjectMapperUtil.readValue(SkuOptionValue.class, json);
 	}
 
-	public static SkuOption unsafeToDTO(String json) {
-		return ObjectMapperUtil.unsafeReadValue(SkuOption.class, json);
+	public static SkuOptionValue unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(SkuOptionValue.class, json);
 	}
 
 	@DecimalMin("0")
@@ -86,7 +85,7 @@ public class SkuOption implements Serializable {
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long id;
 
-	@Schema
+	@Schema(example = "color")
 	public String getKey() {
 		return key;
 	}
@@ -139,20 +138,20 @@ public class SkuOption implements Serializable {
 	protected String name;
 
 	@Schema(example = "true")
-	public Boolean getPriceContributor() {
-		return priceContributor;
+	public Boolean getPreselected() {
+		return preselected;
 	}
 
-	public void setPriceContributor(Boolean priceContributor) {
-		this.priceContributor = priceContributor;
+	public void setPreselected(Boolean preselected) {
+		this.preselected = preselected;
 	}
 
 	@JsonIgnore
-	public void setPriceContributor(
-		UnsafeSupplier<Boolean, Exception> priceContributorUnsafeSupplier) {
+	public void setPreselected(
+		UnsafeSupplier<Boolean, Exception> preselectedUnsafeSupplier) {
 
 		try {
-			priceContributor = priceContributorUnsafeSupplier.get();
+			preselected = preselectedUnsafeSupplier.get();
 		}
 		catch (RuntimeException re) {
 			throw re;
@@ -164,121 +163,7 @@ public class SkuOption implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Boolean priceContributor;
-
-	@Schema(example = "true")
-	public Boolean getRequired() {
-		return required;
-	}
-
-	public void setRequired(Boolean required) {
-		this.required = required;
-	}
-
-	@JsonIgnore
-	public void setRequired(
-		UnsafeSupplier<Boolean, Exception> requiredUnsafeSupplier) {
-
-		try {
-			required = requiredUnsafeSupplier.get();
-		}
-		catch (RuntimeException re) {
-			throw re;
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Boolean required;
-
-	@Schema(example = "true")
-	public Boolean getSkuContributor() {
-		return skuContributor;
-	}
-
-	public void setSkuContributor(Boolean skuContributor) {
-		this.skuContributor = skuContributor;
-	}
-
-	@JsonIgnore
-	public void setSkuContributor(
-		UnsafeSupplier<Boolean, Exception> skuContributorUnsafeSupplier) {
-
-		try {
-			skuContributor = skuContributorUnsafeSupplier.get();
-		}
-		catch (RuntimeException re) {
-			throw re;
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Boolean skuContributor;
-
-	@Schema
-	@Valid
-	public SkuOptionValue[] getSkuOptionValues() {
-		return skuOptionValues;
-	}
-
-	public void setSkuOptionValues(SkuOptionValue[] skuOptionValues) {
-		this.skuOptionValues = skuOptionValues;
-	}
-
-	@JsonIgnore
-	public void setSkuOptionValues(
-		UnsafeSupplier<SkuOptionValue[], Exception>
-			skuOptionValuesUnsafeSupplier) {
-
-		try {
-			skuOptionValues = skuOptionValuesUnsafeSupplier.get();
-		}
-		catch (RuntimeException re) {
-			throw re;
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected SkuOptionValue[] skuOptionValues;
-
-	@Schema
-	public String getValue() {
-		return value;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
-	}
-
-	@JsonIgnore
-	public void setValue(
-		UnsafeSupplier<String, Exception> valueUnsafeSupplier) {
-
-		try {
-			value = valueUnsafeSupplier.get();
-		}
-		catch (RuntimeException re) {
-			throw re;
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected String value;
+	protected Boolean preselected;
 
 	@Override
 	public boolean equals(Object object) {
@@ -286,13 +171,13 @@ public class SkuOption implements Serializable {
 			return true;
 		}
 
-		if (!(object instanceof SkuOption)) {
+		if (!(object instanceof SkuOptionValue)) {
 			return false;
 		}
 
-		SkuOption skuOption = (SkuOption)object;
+		SkuOptionValue skuOptionValue = (SkuOptionValue)object;
 
-		return Objects.equals(toString(), skuOption.toString());
+		return Objects.equals(toString(), skuOptionValue.toString());
 	}
 
 	@Override
@@ -345,68 +230,14 @@ public class SkuOption implements Serializable {
 			sb.append("\"");
 		}
 
-		if (priceContributor != null) {
+		if (preselected != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"priceContributor\": ");
+			sb.append("\"preselected\": ");
 
-			sb.append(priceContributor);
-		}
-
-		if (required != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"required\": ");
-
-			sb.append(required);
-		}
-
-		if (skuContributor != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"skuContributor\": ");
-
-			sb.append(skuContributor);
-		}
-
-		if (skuOptionValues != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"skuOptionValues\": ");
-
-			sb.append("[");
-
-			for (int i = 0; i < skuOptionValues.length; i++) {
-				sb.append(String.valueOf(skuOptionValues[i]));
-
-				if ((i + 1) < skuOptionValues.length) {
-					sb.append(", ");
-				}
-			}
-
-			sb.append("]");
-		}
-
-		if (value != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"value\": ");
-
-			sb.append("\"");
-
-			sb.append(_escape(value));
-
-			sb.append("\"");
+			sb.append(preselected);
 		}
 
 		sb.append("}");
@@ -416,7 +247,7 @@ public class SkuOption implements Serializable {
 
 	@Schema(
 		accessMode = Schema.AccessMode.READ_ONLY,
-		defaultValue = "com.liferay.headless.commerce.delivery.catalog.dto.v1_0.SkuOption",
+		defaultValue = "com.liferay.headless.commerce.delivery.catalog.dto.v1_0.SkuOptionValue",
 		name = "x-class-name"
 	)
 	public String xClassName;
