@@ -129,7 +129,8 @@ public class OrderSummaryCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 				throwable instanceof CommerceOrderPaymentMethodException ||
 				throwable instanceof CommerceOrderShippingAddressException ||
 				throwable instanceof CommerceOrderShippingMethodException ||
-				throwable instanceof NoSuchDiscountException) {
+				throwable instanceof NoSuchDiscountException ||
+				throwable instanceof RequiredCommerceChannelRelException) {
 
 				SessionErrors.add(actionRequest, throwable.getClass());
 
