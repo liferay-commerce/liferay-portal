@@ -14,6 +14,7 @@
 
 package com.liferay.headless.commerce.admin.catalog.internal.resource.v1_0;
 
+import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetTagService;
@@ -498,7 +499,22 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 		if (categories != null) {
 			serviceContext.setAssetCategoryIds(
 				transformToLongArray(
-					Arrays.asList(categories), Category::getId));
+					Arrays.asList(categories),
+					category -> {
+						if (Validator.isNotNull(
+								category.getExternalReferenceCode())) {
+
+							AssetCategory assetCategory =
+								_assetCategoryLocalService.
+									fetchAssetCategoryByExternalReferenceCode(
+										category.getExternalReferenceCode(),
+										contextCompany.getGroupId());
+
+							return assetCategory.getCategoryId();
+						}
+
+						return category.getId();
+					}));
 		}
 		else if (cpDefinition != null) {
 			serviceContext.setAssetCategoryIds(
@@ -1199,7 +1215,22 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 		else {
 			serviceContext.setAssetCategoryIds(
 				transformToLongArray(
-					Arrays.asList(categories), Category::getId));
+					Arrays.asList(categories),
+					category -> {
+						if (Validator.isNotNull(
+								category.getExternalReferenceCode())) {
+
+							AssetCategory assetCategory =
+								_assetCategoryLocalService.
+									fetchAssetCategoryByExternalReferenceCode(
+										category.getExternalReferenceCode(),
+										contextCompany.getGroupId());
+
+							return assetCategory.getCategoryId();
+						}
+
+						return category.getId();
+					}));
 		}
 
 		Map<String, String> nameMap = product.getName();
