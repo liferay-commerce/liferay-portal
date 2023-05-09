@@ -1091,7 +1091,8 @@ public class WorkflowTaskManagerImpl implements WorkflowTaskManager {
 
 		if ((role.getType() == RoleConstants.TYPE_DEPOT) ||
 			(role.getType() == RoleConstants.TYPE_ORGANIZATION) ||
-			(role.getType() == RoleConstants.TYPE_SITE)) {
+			(role.getType() == RoleConstants.TYPE_SITE) ||
+			(role.getType() == RoleConstants.TYPE_ACCOUNT)) {
 
 			if (Objects.equals(
 					role.getName(), DepotRolesConstants.ASSET_LIBRARY_MEMBER) ||
