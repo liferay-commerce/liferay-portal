@@ -14,6 +14,7 @@
 
 package com.liferay.commerce.internal.order.status;
 
+import com.liferay.commerce.constants.CommerceOrderActionKeys;
 import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.order.status.CommerceOrderStatus;
@@ -21,6 +22,8 @@ import com.liferay.commerce.order.status.CommerceOrderStatusRegistry;
 import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 
 import java.util.Locale;
 
@@ -97,10 +100,13 @@ public class QuoteProcessedCommerceOrderStatusImpl
 	public boolean isTransitionCriteriaMet(CommerceOrder commerceOrder)
 		throws PortalException {
 
-		if ((commerceOrder.getOrderStatus() ==
+		if (((commerceOrder.getOrderStatus() ==
 				CommerceOrderConstants.ORDER_STATUS_QUOTE_REQUESTED) ||
-			(commerceOrder.getOrderStatus() ==
-				CommerceOrderConstants.ORDER_STATUS_ON_HOLD)) {
+			 (commerceOrder.getOrderStatus() ==
+				 CommerceOrderConstants.ORDER_STATUS_ON_HOLD)) &&
+			_commerceOrderModelResourcePermission.contains(
+				PermissionThreadLocal.getPermissionChecker(), commerceOrder,
+				CommerceOrderActionKeys.MANAGE_COMMERCE_ORDERS)) {
 
 			return true;
 		}
@@ -113,6 +119,12 @@ public class QuoteProcessedCommerceOrderStatusImpl
 		policyOption = ReferencePolicyOption.GREEDY
 	)
 	private volatile CommerceOrderLocalService _commerceOrderLocalService;
+
+	@Reference(
+		target = "(model.class.name=com.liferay.commerce.model.CommerceOrder)"
+	)
+	private ModelResourcePermission<CommerceOrder>
+		_commerceOrderModelResourcePermission;
 
 	@Reference
 	private CommerceOrderStatusRegistry _commerceOrderStatusRegistry;
