@@ -1891,10 +1891,19 @@ public class CommerceOrderItemLocalServiceImpl
 		CommerceOrderItem commerceOrderItem,
 		CommerceProductPrice commerceProductPrice) {
 
+		commerceOrderItem.setPriceOnApplication(
+			commerceProductPrice.isPriceOnApplication());
+
 		CommerceMoney unitPriceCommerceMoney =
 			commerceProductPrice.getUnitPrice();
 
-		commerceOrderItem.setUnitPrice(unitPriceCommerceMoney.getPrice());
+		BigDecimal unitPrice = BigDecimal.ZERO;
+
+		if (!unitPriceCommerceMoney.isEmpty()) {
+			unitPrice = unitPriceCommerceMoney.getPrice();
+		}
+
+		commerceOrderItem.setUnitPrice(unitPrice);
 
 		BigDecimal promoPrice = BigDecimal.ZERO;
 		BigDecimal promoPriceWithTaxAmount = BigDecimal.ZERO;
@@ -1926,16 +1935,29 @@ public class CommerceOrderItemLocalServiceImpl
 			commerceProductPrice.getUnitPriceWithTaxAmount();
 
 		if (unitPriceWithTaxAmountCommerceMoney != null) {
-			commerceOrderItem.setUnitPriceWithTaxAmount(
-				unitPriceWithTaxAmountCommerceMoney.getPrice());
+			BigDecimal unitPriceWithTaxAmount = BigDecimal.ZERO;
+
+			if (!unitPriceWithTaxAmountCommerceMoney.isEmpty()) {
+				unitPriceWithTaxAmount =
+					unitPriceWithTaxAmountCommerceMoney.getPrice();
+			}
+
+			commerceOrderItem.setUnitPriceWithTaxAmount(unitPriceWithTaxAmount);
 		}
 
 		CommerceMoney finalPriceWithTaxAmountCommerceMoney =
 			commerceProductPrice.getFinalPriceWithTaxAmount();
 
 		if (finalPriceWithTaxAmountCommerceMoney != null) {
+			BigDecimal finalPriceWithTaxAmount = BigDecimal.ZERO;
+
+			if (!finalPriceWithTaxAmountCommerceMoney.isEmpty()) {
+				finalPriceWithTaxAmount =
+					finalPriceWithTaxAmountCommerceMoney.getPrice();
+			}
+
 			commerceOrderItem.setFinalPriceWithTaxAmount(
-				finalPriceWithTaxAmountCommerceMoney.getPrice());
+				finalPriceWithTaxAmount);
 		}
 
 		commerceOrderItem.setCommercePriceListId(
