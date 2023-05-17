@@ -360,6 +360,11 @@ public class CommerceProductServiceUpgradeStepRegistrator
 			UpgradeProcessFactory.addColumns(
 				"CommerceCatalog", "AccountEntryId LONG"));
 
+		registry.register(
+			"5.1.0", "5.2.0",
+			UpgradeProcessFactory.addColumns(
+				"CommerceChannel", "AccountEntryId LONG"));
+
 		if (_log.isInfoEnabled()) {
 			_log.info("Commerce product upgrade step registrator finished");
 		}
