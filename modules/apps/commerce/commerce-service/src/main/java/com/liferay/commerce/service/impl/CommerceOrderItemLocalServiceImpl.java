@@ -22,6 +22,7 @@ import com.liferay.commerce.currency.model.CommerceMoney;
 import com.liferay.commerce.currency.model.CommerceMoneyFactory;
 import com.liferay.commerce.discount.CommerceDiscountValue;
 import com.liferay.commerce.exception.CommerceOrderValidatorException;
+import com.liferay.commerce.exception.CommerceWorkflowException;
 import com.liferay.commerce.exception.GuestCartItemMaxAllowedException;
 import com.liferay.commerce.exception.NoSuchOrderItemException;
 import com.liferay.commerce.exception.ProductBundleException;
@@ -62,6 +63,7 @@ import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -96,6 +98,8 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ServiceProxyFactory;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.kernel.workflow.WorkflowTask;
+import com.liferay.portal.kernel.workflow.WorkflowTaskManager;
 
 import java.math.BigDecimal;
 
@@ -237,6 +241,21 @@ public class CommerceOrderItemLocalServiceImpl
 			int quantity, long replacedCPInstanceId, int shippedQuantity,
 			CommerceContext commerceContext, ServiceContext serviceContext)
 		throws PortalException {
+
+		List<WorkflowTask> workflowTasks = _workflowTaskManager.search(
+			serviceContext.getCompanyId(), userId, null, null,
+			new String[] {CommerceOrder.class.getName()},
+			new Long[] {commerceOrderId}, null, null, null, null, false, null,
+			null, null, true, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+
+		for (WorkflowTask workflowTask : workflowTasks) {
+			String workflowTaskName = workflowTask.getName();
+
+			if (StringUtil.equalsIgnoreCase(workflowTaskName, "review")) {
+				throw new CommerceWorkflowException(
+					"Order is already assigned");
+			}
+		}
 
 		List<CommerceOrderItem> commerceOrderItems = getCommerceOrderItems(
 			commerceOrderId, cpInstanceId, QueryUtil.ALL_POS,
@@ -2390,5 +2409,8 @@ public class CommerceOrderItemLocalServiceImpl
 	@Reference
 	private WorkflowDefinitionLinkLocalService
 		_workflowDefinitionLinkLocalService;
+
+	@Reference
+	private WorkflowTaskManager _workflowTaskManager;
 
 }
