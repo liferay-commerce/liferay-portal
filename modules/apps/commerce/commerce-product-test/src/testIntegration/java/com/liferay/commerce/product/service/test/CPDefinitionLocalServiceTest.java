@@ -451,7 +451,8 @@ public class CPDefinitionLocalServiceTest {
 		commercePriceEntry =
 			_commercePriceEntryLocalService.updateCommercePriceEntry(
 				commercePriceEntry.getCommercePriceEntryId(), newPrice,
-				promoPrice, _serviceContext);
+				commercePriceEntry.isPriceOnApplication(), promoPrice,
+				_serviceContext);
 
 		CommercePriceEntry parentPriceEntry =
 			_commercePriceEntryLocalService.fetchCommercePriceEntry(
