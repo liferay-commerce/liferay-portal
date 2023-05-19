@@ -90,6 +90,9 @@ function AddToCartButton({
 						else if (error.detail) {
 							errorMessage = error.detail;
 						}
+						else if (error.title) {
+							errorMessage = error.title;
+						}
 						else {
 							errorMessage =
 								cpInstances.length > 1
