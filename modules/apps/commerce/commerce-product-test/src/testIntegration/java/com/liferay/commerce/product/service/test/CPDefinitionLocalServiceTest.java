@@ -407,32 +407,29 @@ public class CPDefinitionLocalServiceTest {
 	}
 
 	@Test
-	public void testDuplicateDefinitionPriceChangeDoesNotAffectParent()
+	public void testClonedProductPriceChangeDoesNotAffectParent()
 		throws PortalException {
 
 		frutillaRule.scenario(
-			"Change Price of a duplicate product sku"
+			"Change Price of a cloned product sku"
 		).given(
-			"A product definition and its duplicate"
+			"A product definition and its clone"
 		).when(
-			"changing the price of the duplicate"
+			"changing the price of the cloned"
 		).then(
-			"first product price is different from duplicated product price"
+			"the product price of the parent product is different from cloned product"
 		);
 
-		BigDecimal basePrice = new BigDecimal(5);
-
 		CPInstance cpInstance = CPTestUtil.addCPInstanceWithRandomSku(
-			_commerceCatalog.getGroupId(), basePrice);
+			_commerceCatalog.getGroupId(), new BigDecimal(5));
 
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_APPROVED, cpInstance.getStatus());
 
-		BigDecimal promoPrice = new BigDecimal(0);
-
 		CPDefinition duplicateCPDefinition =
-			_cpDefinitionLocalService.copyCPDefinition(
-				cpInstance.getCPDefinitionId());
+			_cpDefinitionLocalService.cloneCPDefinition(
+				_user.getUserId(), cpInstance.getCPDefinitionId(),
+				cpInstance.getGroupId(), _serviceContext);
 
 		CPInstance duplicateCPInstance = _cpInstanceLocalService.getCPInstance(
 			duplicateCPDefinition.getCPDefinitionId(), cpInstance.getSku());
@@ -441,29 +438,30 @@ public class CPDefinitionLocalServiceTest {
 			_commercePriceListLocalService.fetchCatalogBaseCommercePriceList(
 				duplicateCPInstance.getGroupId());
 
-		CommercePriceEntry commercePriceEntry =
+		CommercePriceEntry duplicateCommercePriceEntry =
 			_commercePriceEntryLocalService.fetchCommercePriceEntry(
 				commercePriceList.getCommercePriceListId(),
 				duplicateCPInstance.getCPInstanceUuid());
 
-		BigDecimal newPrice = new BigDecimal(10);
-
-		commercePriceEntry =
+		duplicateCommercePriceEntry =
 			_commercePriceEntryLocalService.updateCommercePriceEntry(
-				commercePriceEntry.getCommercePriceEntryId(), newPrice,
-				promoPrice, _serviceContext);
+				duplicateCommercePriceEntry.getCommercePriceEntryId(), new BigDecimal(10),
+				new BigDecimal(0), _serviceContext);
 
-		CommercePriceEntry parentPriceEntry =
+		duplicateCommercePriceEntry =
+				_commercePriceEntryLocalService.fetchCommercePriceEntry(
+						commercePriceList.getCommercePriceListId(),
+						duplicateCPInstance.getCPInstanceUuid());
+
+		CommercePriceEntry commercePriceEntry =
 			_commercePriceEntryLocalService.fetchCommercePriceEntry(
 				commercePriceList.getCommercePriceListId(),
 				cpInstance.getCPInstanceUuid());
 
-		BigDecimal priceEntry = commercePriceEntry.getPrice();
-
-		Assert.assertEquals(newPrice.intValue(), priceEntry.intValue());
+		Assert.assertEquals(new BigDecimal(10), duplicateCommercePriceEntry.getPrice());
 
 		Assert.assertNotEquals(
-			parentPriceEntry.getPrice(), commercePriceEntry.getPrice());
+			commercePriceEntry.getPrice(), duplicateCommercePriceEntry.getPrice());
 	}
 
 	@Test
