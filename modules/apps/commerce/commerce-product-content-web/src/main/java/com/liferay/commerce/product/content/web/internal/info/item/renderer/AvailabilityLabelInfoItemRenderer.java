@@ -119,6 +119,11 @@ public class AvailabilityLabelInfoItemRenderer
 				_cpContentHelper.hasChildCPDefinitions(
 					cpCatalogEntry.getCPDefinitionId());
 
+			httpServletRequest.setAttribute(
+				"liferay-commerce:availability-label:label", StringPool.BLANK);
+			httpServletRequest.setAttribute(
+				"liferay-commerce:availability-label:labelType", "default");
+
 			if ((cpSku != null) && !hasChildCPDefinitions) {
 				ProductSettingsModel productSettingsModel =
 					_productHelper.getProductSettingsModel(
