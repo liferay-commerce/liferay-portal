@@ -17,6 +17,7 @@ package com.liferay.headless.admin.user.internal.resource.v1_0;
 import com.liferay.account.constants.AccountActionKeys;
 import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.model.AccountEntry;
+import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.service.AccountEntryOrganizationRelLocalService;
 import com.liferay.account.service.AccountEntryService;
 import com.liferay.headless.admin.user.dto.v1_0.Account;
@@ -27,6 +28,7 @@ import com.liferay.headless.admin.user.internal.odata.entity.v1_0.AccountEntityM
 import com.liferay.headless.admin.user.resource.v1_0.AccountResource;
 import com.liferay.headless.common.spi.service.context.ServiceContextRequestUtil;
 import com.liferay.petra.function.UnsafeConsumer;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
@@ -41,6 +43,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -49,14 +52,19 @@ import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.fields.NestedField;
 import com.liferay.portal.vulcan.fields.NestedFieldSupport;
+import com.liferay.portal.vulcan.multipart.MultipartBody;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.util.SearchUtil;
+import com.liferay.users.admin.kernel.file.uploads.UserFileUploadsSettings;
+
+import java.io.IOException;
 
 import java.util.Collections;
 import java.util.Map;
 
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -251,6 +259,35 @@ public class AccountResourceImpl
 	}
 
 	@Override
+	public Response postAccountByExternalReferenceCodeLogo(
+			String accountExternalReferenceCode, MultipartBody multipartBody)
+		throws Exception {
+
+		AccountEntry accountEntry =
+			_accountEntryLocalService.fetchAccountEntryByExternalReferenceCode(
+				accountExternalReferenceCode, contextCompany.getCompanyId());
+
+		updateAccountLogo(accountEntry, multipartBody);
+
+		Response.ResponseBuilder responseBuilder = Response.noContent();
+
+		return responseBuilder.build();
+	}
+
+	@Override
+	public Response postAccountLogo(Long accountId, MultipartBody multipartBody)
+		throws Exception {
+
+		updateAccountLogo(
+			_accountEntryLocalService.getAccountEntry(accountId),
+			multipartBody);
+
+		Response.ResponseBuilder responseBuilder = Response.noContent();
+
+		return responseBuilder.build();
+	}
+
+	@Override
 	public void postOrganizationAccounts(Long organizationId, Long[] accountIds)
 		throws Exception {
 
@@ -304,6 +341,19 @@ public class AccountResourceImpl
 				account.getDescription(), _getDomains(account), null, null,
 				null, _getType(account), _getStatus(account),
 				_getServiceContext(account)));
+	}
+
+	public void updateAccountLogo(
+			AccountEntry accountEntry, MultipartBody multipartBody)
+		throws IOException, PortalException {
+
+		_portal.updateImageId(
+			accountEntry, false, multipartBody.getBinaryFileAsBytes("logo"),
+			"logoId", _userFileUploadsSettings.getImageMaxSize(),
+			_userFileUploadsSettings.getImageMaxHeight(),
+			_userFileUploadsSettings.getImageMaxWidth());
+
+		_accountEntryService.updateAccountEntry(accountEntry);
 	}
 
 	private String[] _getDomains(Account account) {
@@ -486,6 +536,9 @@ public class AccountResourceImpl
 			_getDTOConverterContext(accountEntry.getAccountEntryId()));
 	}
 
+	@Reference
+	private AccountEntryLocalService _accountEntryLocalService;
+
 	@Reference(
 		policy = ReferencePolicy.DYNAMIC,
 		policyOption = ReferencePolicyOption.GREEDY,
@@ -508,5 +561,11 @@ public class AccountResourceImpl
 
 	@Reference
 	private OrganizationResourceDTOConverter _organizationResourceDTOConverter;
+
+	@Reference
+	private Portal _portal;
+
+	@Reference
+	private UserFileUploadsSettings _userFileUploadsSettings;
 
 }
