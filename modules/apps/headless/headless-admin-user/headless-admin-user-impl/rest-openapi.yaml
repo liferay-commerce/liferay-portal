@@ -419,6 +419,10 @@ components:
                                 type: string
                         type: object
                     type: array
+                treePath:
+                    description:
+                        The tree path of the organization.
+                    type: string
                 userAccounts:
                     items:
                         $ref: "#/components/schemas/UserAccount"
@@ -1100,6 +1104,18 @@ components:
                         The URL's type.
                     type: string
             type: object
+        body:
+            properties:
+                logo:
+                    format: binary
+                    type: string
+            type: object
+        body_1:
+            properties:
+                logo:
+                    format: binary
+                    type: string
+            type: object
 info:
     description:
         "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID
@@ -1251,6 +1267,63 @@ paths:
                   required: true
                   schema:
                       type: string
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["UserAccount"]
+        get:
+            # @review
+            description:
+                Gets a user by their external reference code to an account by external reference code
+            operationId: getAccountByExternalReferenceCodeUserAccountByExternalReferenceCode
+            parameters:
+                - in: path
+                  name: accountExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+                - in: path
+                  name: externalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/UserAccount"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/UserAccount"
+            tags: ["UserAccount"]
+        patch:
+            # @review
+            description:
+                Updates a user by their external reference code to an account by external reference code
+            operationId: patchAccountByExternalReferenceCodeUserAccountByExternalReferenceCode
+            parameters:
+                - in: path
+                  name: accountExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+                - in: path
+                  name: externalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/UserAccount"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/UserAccount"
+                required: true
             responses:
                 204:
                     content:
@@ -1608,6 +1681,28 @@ paths:
                         application/json: {}
                         application/xml: {}
             tags: ["Organization"]
+        get:
+            parameters:
+                - in: path
+                  name: externalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+                - in: path
+                  name: organizationId
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Organization"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Organization"
+            tags: ["Organization"]
         post:
             parameters:
                 - in: path
@@ -1848,6 +1943,32 @@ paths:
                                     $ref: "#/components/schemas/AccountRole"
                                 type: array
             tags: ["AccountRole"]
+    "/accounts/by-externalReferenceCode/{accountExternalReferenceCode}/logo":
+        post:
+            operationId: postAccountByExternalReferenceCodeLogo
+            parameters:
+                - in: path
+                  name: accountExternalReferenceCode
+                  required: true
+                  schema:
+                      type: string
+            requestBody:
+                content:
+                    multipart/form-data:
+                        schema:
+                            $ref: "#/components/schemas/body_1"
+                required: true
+            responses:
+                201:
+                    description:
+                        Created
+                204:
+                    description:
+                        Updated
+                400:
+                    description:
+                        Invalid input
+            tags: ["Account"]
     "/accounts/{accountId}":
         delete:
             # @review
@@ -2093,6 +2214,33 @@ paths:
                         application/json: {}
                         application/xml: {}
             tags: ["AccountRole"]
+    "/accounts/{accountId}/logo":
+        post:
+            operationId: postAccountLogo
+            parameters:
+                - in: path
+                  name: accountId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            requestBody:
+                content:
+                    multipart/form-data:
+                        schema:
+                            $ref: "#/components/schemas/body"
+                required: true
+            responses:
+                201:
+                    description:
+                        Created
+                204:
+                    description:
+                        Updated
+                400:
+                    description:
+                        Invalid input
+            tags: ["Account"]
     "/accounts/{accountId}/organizations":
         get:
             description:
@@ -2157,6 +2305,29 @@ paths:
                     content:
                         application/json: {}
                         application/xml: {}
+            tags: ["Organization"]
+        get:
+            parameters:
+                - in: path
+                  name: accountId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+                - in: path
+                  name: organizationId
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Organization"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Organization"
             tags: ["Organization"]
         post:
             parameters:
@@ -2416,6 +2587,92 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/UserAccount"
+            tags: ["UserAccount"]
+    "/accounts/{accountId}/user-accounts/{userAccountId}":
+        delete:
+            # @review
+            description:
+                Removes a user assigned to an account
+            operationId: deleteAccountUserAccount
+            parameters:
+                - in: path
+                  name: accountId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+                - in: path
+                  name: userAccountId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["UserAccount"]
+        get:
+            # @review
+            description:
+                Gets a user assigned to an account
+            operationId: getAccountUserAccount
+            parameters:
+                - in: path
+                  name: accountId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+                - in: path
+                  name: userAccountId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/UserAccount"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/UserAccount"
+            tags: ["UserAccount"]
+        patch:
+            # @review
+            description:
+                Updates a user assigned to an account
+            operationId: patchAccountUserAccount
+            parameters:
+                - in: path
+                  name: accountId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+                - in: path
+                  name: userAccountId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/UserAccount"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/UserAccount"
+                required: true
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
             tags: ["UserAccount"]
     "/email-addresses/{emailAddressId}":
         get:
