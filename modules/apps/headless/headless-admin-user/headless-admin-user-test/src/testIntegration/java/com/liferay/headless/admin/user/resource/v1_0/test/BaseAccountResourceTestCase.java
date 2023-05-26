@@ -727,6 +727,11 @@ public abstract class BaseAccountResourceTestCase {
 	}
 
 	@Test
+	public void testPostAccountByExternalReferenceCodeLogo() throws Exception {
+		Assert.assertTrue(false);
+	}
+
+	@Test
 	public void testDeleteAccount() throws Exception {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		Account account = testDeleteAccount_addAccount();
@@ -886,6 +891,11 @@ public abstract class BaseAccountResourceTestCase {
 	protected Account testPutAccount_addAccount() throws Exception {
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testPostAccountLogo() throws Exception {
+		Assert.assertTrue(false);
 	}
 
 	@Test

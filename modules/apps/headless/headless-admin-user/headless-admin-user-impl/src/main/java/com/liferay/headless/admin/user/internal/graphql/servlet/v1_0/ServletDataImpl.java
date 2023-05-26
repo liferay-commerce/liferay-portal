@@ -191,6 +191,11 @@ public class ServletDataImpl implements ServletData {
 							AccountResourceImpl.class,
 							"putAccountByExternalReferenceCode"));
 					put(
+						"mutation#createAccountByExternalReferenceCodeLogo",
+						new ObjectValuePair<>(
+							AccountResourceImpl.class,
+							"postAccountByExternalReferenceCodeLogo"));
+					put(
 						"mutation#deleteAccount",
 						new ObjectValuePair<>(
 							AccountResourceImpl.class, "deleteAccount"));
@@ -210,6 +215,10 @@ public class ServletDataImpl implements ServletData {
 						"mutation#updateAccountBatch",
 						new ObjectValuePair<>(
 							AccountResourceImpl.class, "putAccountBatch"));
+					put(
+						"mutation#createAccountLogo",
+						new ObjectValuePair<>(
+							AccountResourceImpl.class, "postAccountLogo"));
 					put(
 						"mutation#patchOrganizationMoveAccounts",
 						new ObjectValuePair<>(
@@ -480,6 +489,11 @@ public class ServletDataImpl implements ServletData {
 							UserAccountResourceImpl.class,
 							"deleteAccountByExternalReferenceCodeUserAccountByExternalReferenceCode"));
 					put(
+						"mutation#patchAccountByExternalReferenceCodeUserAccountByExternalReferenceCode",
+						new ObjectValuePair<>(
+							UserAccountResourceImpl.class,
+							"patchAccountByExternalReferenceCodeUserAccountByExternalReferenceCode"));
+					put(
 						"mutation#createAccountByExternalReferenceCodeUserAccountByExternalReferenceCode",
 						new ObjectValuePair<>(
 							UserAccountResourceImpl.class,
@@ -544,6 +558,16 @@ public class ServletDataImpl implements ServletData {
 						new ObjectValuePair<>(
 							UserAccountResourceImpl.class,
 							"postAccountUserAccountByEmailAddress"));
+					put(
+						"mutation#deleteAccountUserAccount",
+						new ObjectValuePair<>(
+							UserAccountResourceImpl.class,
+							"deleteAccountUserAccount"));
+					put(
+						"mutation#patchAccountUserAccount",
+						new ObjectValuePair<>(
+							UserAccountResourceImpl.class,
+							"patchAccountUserAccount"));
 					put(
 						"mutation#createOrganizationUserAccountsPageExportBatch",
 						new ObjectValuePair<>(
@@ -733,10 +757,20 @@ public class ServletDataImpl implements ServletData {
 							OrganizationResourceImpl.class,
 							"getAccountByExternalReferenceCodeOrganizationsPage"));
 					put(
+						"query#accountByExternalReferenceCodeOrganization",
+						new ObjectValuePair<>(
+							OrganizationResourceImpl.class,
+							"getAccountByExternalReferenceCodeOrganization"));
+					put(
 						"query#accountOrganizations",
 						new ObjectValuePair<>(
 							OrganizationResourceImpl.class,
 							"getAccountOrganizationsPage"));
+					put(
+						"query#accountOrganization",
+						new ObjectValuePair<>(
+							OrganizationResourceImpl.class,
+							"getAccountOrganization"));
 					put(
 						"query#organizations",
 						new ObjectValuePair<>(
@@ -852,6 +886,11 @@ public class ServletDataImpl implements ServletData {
 							TicketResourceImpl.class,
 							"getUserAccountPasswordResetTicket"));
 					put(
+						"query#accountByExternalReferenceCodeUserAccountByExternalReferenceCode",
+						new ObjectValuePair<>(
+							UserAccountResourceImpl.class,
+							"getAccountByExternalReferenceCodeUserAccountByExternalReferenceCode"));
+					put(
 						"query#accountUserAccountsByExternalReferenceCode",
 						new ObjectValuePair<>(
 							UserAccountResourceImpl.class,
@@ -861,6 +900,11 @@ public class ServletDataImpl implements ServletData {
 						new ObjectValuePair<>(
 							UserAccountResourceImpl.class,
 							"getAccountUserAccountsPage"));
+					put(
+						"query#accountUserAccount",
+						new ObjectValuePair<>(
+							UserAccountResourceImpl.class,
+							"getAccountUserAccount"));
 					put(
 						"query#myUserAccount",
 						new ObjectValuePair<>(
@@ -982,6 +1026,11 @@ public class ServletDataImpl implements ServletData {
 							OrganizationResourceImpl.class,
 							"getAccountByExternalReferenceCodeOrganizationsPage"));
 					put(
+						"query#Account.organization",
+						new ObjectValuePair<>(
+							OrganizationResourceImpl.class,
+							"getAccountOrganization"));
+					put(
 						"query#AccountRole.account",
 						new ObjectValuePair<>(
 							AccountResourceImpl.class, "getAccount"));
@@ -1019,6 +1068,16 @@ public class ServletDataImpl implements ServletData {
 						new ObjectValuePair<>(
 							OrganizationResourceImpl.class,
 							"getAccountOrganizationsPage"));
+					put(
+						"query#Account.byExternalReferenceCodeOrganization",
+						new ObjectValuePair<>(
+							OrganizationResourceImpl.class,
+							"getAccountByExternalReferenceCodeOrganization"));
+					put(
+						"query#AccountRole.accountUserAccount",
+						new ObjectValuePair<>(
+							UserAccountResourceImpl.class,
+							"getAccountUserAccount"));
 					put(
 						"query#Account.byExternalReferenceCodeUserAccountByEmailAddressAccountRoles",
 						new ObjectValuePair<>(
