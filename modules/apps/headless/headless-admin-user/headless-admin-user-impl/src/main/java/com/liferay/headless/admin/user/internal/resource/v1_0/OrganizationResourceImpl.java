@@ -14,6 +14,9 @@
 
 package com.liferay.headless.admin.user.internal.resource.v1_0;
 
+import com.liferay.account.model.AccountEntry;
+import com.liferay.account.model.AccountEntryOrganizationRel;
+import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.service.AccountEntryOrganizationRelLocalService;
 import com.liferay.headless.admin.user.dto.v1_0.CustomField;
 import com.liferay.headless.admin.user.dto.v1_0.EmailAddress;
@@ -167,6 +170,25 @@ public class OrganizationResourceImpl
 	}
 
 	@Override
+	public Organization getAccountByExternalReferenceCodeOrganization(
+			String accountExternalReferenceCode, String organizationId)
+		throws Exception {
+
+		AccountEntry accountEntry =
+			_accountEntryLocalService.fetchAccountEntryByExternalReferenceCode(
+				accountExternalReferenceCode, contextCompany.getCompanyId());
+
+		AccountEntryOrganizationRel accountEntryOrganizationRel =
+			_accountEntryOrganizationRelLocalService.
+				getAccountEntryOrganizationRel(
+					accountEntry.getAccountEntryId(),
+					Long.valueOf(organizationId));
+
+		return _toOrganization(
+			String.valueOf(accountEntryOrganizationRel.getOrganizationId()));
+	}
+
+	@Override
 	public Page<Organization>
 			getAccountByExternalReferenceCodeOrganizationsPage(
 				String externalReferenceCode, String search, Filter filter,
@@ -177,6 +199,20 @@ public class OrganizationResourceImpl
 			_accountResourceDTOConverter.getAccountEntryId(
 				externalReferenceCode),
 			search, filter, pagination, sorts);
+	}
+
+	@Override
+	public Organization getAccountOrganization(
+			Long accountId, String organizationId)
+		throws Exception {
+
+		AccountEntryOrganizationRel accountEntryOrganizationRel =
+			_accountEntryOrganizationRelLocalService.
+				getAccountEntryOrganizationRel(
+					accountId, Long.valueOf(organizationId));
+
+		return _toOrganization(
+			String.valueOf(accountEntryOrganizationRel.getOrganizationId()));
 	}
 
 	@Override
@@ -944,6 +980,9 @@ public class OrganizationResourceImpl
 
 	private static final EntityModel _entityModel =
 		new OrganizationEntityModel();
+
+	@Reference
+	private AccountEntryLocalService _accountEntryLocalService;
 
 	@Reference
 	private AccountEntryOrganizationRelLocalService
