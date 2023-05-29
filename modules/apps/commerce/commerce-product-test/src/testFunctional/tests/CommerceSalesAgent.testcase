@@ -594,7 +594,7 @@ definition {
 					key_orderId = ${orderId},
 					locator1 = "CommerceOrders#PENDING_ORDERS_VIEW_BUTTON_BY_ID");
 
-				Click.clickAt(
+				Click(
 					key_orderId = ${orderId},
 					locator1 = "CommerceOrders#PENDING_ORDERS_VIEW_BUTTON_BY_ID");
 
