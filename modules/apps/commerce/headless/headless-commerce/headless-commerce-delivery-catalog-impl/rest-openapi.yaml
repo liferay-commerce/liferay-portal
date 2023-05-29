@@ -599,6 +599,21 @@ components:
                     example: cross-sell
                     type: string
             type: object
+        ReplacementSku:
+            properties:
+                productConfiguration:
+                    $ref: "#/components/schemas/ProductConfiguration"
+                    readOnly: true
+                skuId:
+                    example: 33135
+                    format: int64
+                    minimum: 0
+                    type: integer
+                skuOptions:
+                    items:
+                        $ref: "#/components/schemas/SkuOption"
+                    type: array
+            type: object
         Sku:
             properties:
                 DDMOptions:
@@ -676,6 +691,9 @@ components:
                 purchasable:
                     example: true
                     type: boolean
+                replacementSku:
+                    $ref: "#/components/schemas/ReplacementSku"
+                    readOnly: true
                 replacementSkuExternalReferenceCode:
                     example: SKU0111
                     type: string
@@ -766,7 +784,7 @@ components:
 info:
     description:
         "Headless Commerce Delivery Catalog API. A Java client JAR is available for use with the group ID 'com.liferay',
-        artifact ID 'com.liferay.headless.commerce.delivery.catalog.client', and version '4.0.33'."
+        artifact ID 'com.liferay.headless.commerce.delivery.catalog.client', and version '4.0.34'."
     license:
         name: Apache 2.0
         url: http://www.apache.org/licenses/LICENSE-2.0.html
