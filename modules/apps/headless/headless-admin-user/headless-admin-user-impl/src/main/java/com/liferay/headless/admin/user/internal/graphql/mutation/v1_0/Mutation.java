@@ -15,10 +15,12 @@
 package com.liferay.headless.admin.user.internal.graphql.mutation.v1_0;
 
 import com.liferay.headless.admin.user.dto.v1_0.Account;
+import com.liferay.headless.admin.user.dto.v1_0.AccountGroup;
 import com.liferay.headless.admin.user.dto.v1_0.AccountRole;
 import com.liferay.headless.admin.user.dto.v1_0.Organization;
 import com.liferay.headless.admin.user.dto.v1_0.UserAccount;
 import com.liferay.headless.admin.user.dto.v1_0.UserGroup;
+import com.liferay.headless.admin.user.resource.v1_0.AccountGroupResource;
 import com.liferay.headless.admin.user.resource.v1_0.AccountResource;
 import com.liferay.headless.admin.user.resource.v1_0.AccountRoleResource;
 import com.liferay.headless.admin.user.resource.v1_0.EmailAddressResource;
@@ -72,6 +74,14 @@ public class Mutation {
 
 		_accountResourceComponentServiceObjects =
 			accountResourceComponentServiceObjects;
+	}
+
+	public static void setAccountGroupResourceComponentServiceObjects(
+		ComponentServiceObjects<AccountGroupResource>
+			accountGroupResourceComponentServiceObjects) {
+
+		_accountGroupResourceComponentServiceObjects =
+			accountGroupResourceComponentServiceObjects;
 	}
 
 	public static void setAccountRoleResourceComponentServiceObjects(
@@ -470,6 +480,117 @@ public class Mutation {
 					organizationId, strings));
 
 		return true;
+	}
+
+	@GraphQLField
+	public Response createAccountGroupsPageExportBatch(
+			@GraphQLName("filter") String filterString,
+			@GraphQLName("sort") String sortsString,
+			@GraphQLName("callbackURL") String callbackURL,
+			@GraphQLName("contentType") String contentType,
+			@GraphQLName("fieldNames") String fieldNames)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_accountGroupResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			accountGroupResource ->
+				accountGroupResource.postAccountGroupsPageExportBatch(
+					_filterBiFunction.apply(accountGroupResource, filterString),
+					_sortsBiFunction.apply(accountGroupResource, sortsString),
+					callbackURL, contentType, fieldNames));
+	}
+
+	@GraphQLField
+	public AccountGroup createAccountGroup(
+			@GraphQLName("accountGroup") AccountGroup accountGroup)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_accountGroupResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			accountGroupResource -> accountGroupResource.postAccountGroup(
+				accountGroup));
+	}
+
+	@GraphQLField
+	public Response createAccountGroupBatch(
+			@GraphQLName("callbackURL") String callbackURL,
+			@GraphQLName("object") Object object)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_accountGroupResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			accountGroupResource -> accountGroupResource.postAccountGroupBatch(
+				callbackURL, object));
+	}
+
+	@GraphQLField
+	public Response deleteAccountGroupByExternalReferenceCode(
+			@GraphQLName("externalReferenceCode") String externalReferenceCode)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_accountGroupResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			accountGroupResource ->
+				accountGroupResource.deleteAccountGroupByExternalReferenceCode(
+					externalReferenceCode));
+	}
+
+	@GraphQLField
+	public boolean patchAccountGroupByExternalReferenceCode(
+			@GraphQLName("externalReferenceCode") String externalReferenceCode,
+			@GraphQLName("accountGroup") AccountGroup accountGroup)
+		throws Exception {
+
+		_applyVoidComponentServiceObjects(
+			_accountGroupResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			accountGroupResource ->
+				accountGroupResource.patchAccountGroupByExternalReferenceCode(
+					externalReferenceCode, accountGroup));
+
+		return true;
+	}
+
+	@GraphQLField
+	public Response deleteAccountGroup(@GraphQLName("id") Long id)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_accountGroupResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			accountGroupResource -> accountGroupResource.deleteAccountGroup(
+				id));
+	}
+
+	@GraphQLField
+	public Response deleteAccountGroupBatch(
+			@GraphQLName("callbackURL") String callbackURL,
+			@GraphQLName("object") Object object)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_accountGroupResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			accountGroupResource ->
+				accountGroupResource.deleteAccountGroupBatch(
+					callbackURL, object));
+	}
+
+	@GraphQLField
+	public Response patchAccountGroup(
+			@GraphQLName("id") Long id,
+			@GraphQLName("accountGroup") AccountGroup accountGroup)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_accountGroupResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			accountGroupResource -> accountGroupResource.patchAccountGroup(
+				id, accountGroup));
 	}
 
 	@GraphQLField(
@@ -2056,6 +2177,27 @@ public class Mutation {
 	}
 
 	private void _populateResourceContext(
+			AccountGroupResource accountGroupResource)
+		throws Exception {
+
+		accountGroupResource.setContextAcceptLanguage(_acceptLanguage);
+		accountGroupResource.setContextCompany(_company);
+		accountGroupResource.setContextHttpServletRequest(_httpServletRequest);
+		accountGroupResource.setContextHttpServletResponse(
+			_httpServletResponse);
+		accountGroupResource.setContextUriInfo(_uriInfo);
+		accountGroupResource.setContextUser(_user);
+		accountGroupResource.setGroupLocalService(_groupLocalService);
+		accountGroupResource.setRoleLocalService(_roleLocalService);
+
+		accountGroupResource.setVulcanBatchEngineExportTaskResource(
+			_vulcanBatchEngineExportTaskResource);
+
+		accountGroupResource.setVulcanBatchEngineImportTaskResource(
+			_vulcanBatchEngineImportTaskResource);
+	}
+
+	private void _populateResourceContext(
 			AccountRoleResource accountRoleResource)
 		throws Exception {
 
@@ -2276,6 +2418,8 @@ public class Mutation {
 
 	private static ComponentServiceObjects<AccountResource>
 		_accountResourceComponentServiceObjects;
+	private static ComponentServiceObjects<AccountGroupResource>
+		_accountGroupResourceComponentServiceObjects;
 	private static ComponentServiceObjects<AccountRoleResource>
 		_accountRoleResourceComponentServiceObjects;
 	private static ComponentServiceObjects<EmailAddressResource>
