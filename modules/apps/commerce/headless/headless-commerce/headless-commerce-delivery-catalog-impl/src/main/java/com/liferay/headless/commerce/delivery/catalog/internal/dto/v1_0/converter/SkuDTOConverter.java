@@ -24,23 +24,29 @@ import com.liferay.commerce.discount.CommerceDiscountValue;
 import com.liferay.commerce.inventory.CPDefinitionInventoryEngine;
 import com.liferay.commerce.inventory.constants.CommerceInventoryAvailabilityConstants;
 import com.liferay.commerce.inventory.engine.CommerceInventoryEngine;
+import com.liferay.commerce.model.CPDefinitionInventory;
 import com.liferay.commerce.price.CommerceProductPrice;
 import com.liferay.commerce.price.CommerceProductPriceCalculation;
 import com.liferay.commerce.price.CommerceProductPriceRequest;
 import com.liferay.commerce.product.content.util.CPContentHelper;
+import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.option.CommerceOptionValue;
 import com.liferay.commerce.product.option.CommerceOptionValueHelper;
+import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CPDefinitionOptionRelLocalService;
 import com.liferay.commerce.product.service.CPInstanceLocalService;
 import com.liferay.commerce.product.util.CPInstanceHelper;
 import com.liferay.commerce.product.util.CPJSONUtil;
+import com.liferay.headless.commerce.core.util.LanguageUtils;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Availability;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.DDMOption;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Price;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Product;
+import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.ProductConfiguration;
+import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.ReplacementSku;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Sku;
 import com.liferay.headless.commerce.delivery.catalog.internal.util.v1_0.SkuOptionUtil;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -53,6 +59,8 @@ import com.liferay.portal.kernel.settings.SystemSettingsLocator;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
+import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
+import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 
 import java.math.BigDecimal;
 
@@ -156,6 +164,82 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 
 						return commercePriceConfiguration.
 							displayDiscountLevels();
+					});
+				setReplacementSku(
+					() -> {
+						if (replacementCPInstance == null) {
+							return null;
+						}
+
+						CPDefinition replacementCPDefinition =
+							replacementCPInstance.getCPDefinition();
+
+						JSONArray jsonArray = CPJSONUtil.toJSONArray(
+							_cpDefinitionOptionRelLocalService.
+								getCPDefinitionOptionRelKeysCPDefinitionOptionValueRelKeys(
+									replacementCPInstance.getCPInstanceId()));
+
+						Map
+							<CPDefinitionOptionRel,
+							 List<CPDefinitionOptionValueRel>>
+								cpDefinitionOptionValueRelsMap =
+									_cpInstanceHelper.
+										getCPDefinitionOptionValueRelsMap(
+											replacementCPInstance.
+												getCPDefinitionId(),
+											jsonArray.toString());
+
+						DDMOption[] ddmOptions = _getDDMOptions(
+							cpDefinitionOptionValueRelsMap);
+
+						return new ReplacementSku() {
+							{
+								sku = replacementCPInstance.getSku();
+								skuId = replacementCPInstance.getCPInstanceId();
+								setProductConfiguration(
+									() -> {
+										if (replacementCPDefinition == null) {
+											return null;
+										}
+
+										return _productConfigurationDTOConverter.
+											toDTO(
+												new DefaultDTOConverterContext(
+													_dtoConverterRegistry,
+													replacementCPDefinition.
+														getCPDefinitionId(),
+													cpSkuDTOConverterConvertContext.
+														getLocale(),
+													null, null));
+									});
+								setSkuOptions(
+									() -> SkuOptionUtil.getSkuOptions(
+										_cpInstanceHelper.
+											getCPInstanceCPDefinitionOptionRelsMap(
+												replacementCPInstance.
+													getCPInstanceId()),
+										_language.getLanguageId(
+											cpSkuDTOConverterConvertContext.
+												getLocale())));
+								price = _getPrice(
+									cpSkuDTOConverterConvertContext.
+										getCommerceContext(),
+									replacementCPInstance,
+									JSONUtil.toString(
+										JSONUtil.toJSONArray(
+											ddmOptions,
+											ddmOption ->
+												_jsonFactory.createJSONObject(
+													ddmOption.toString()))),
+									cpSkuDTOConverterConvertContext.getLocale(),
+									cpSkuDTOConverterConvertContext.
+										getQuantity());
+								urls = LanguageUtils.getLanguageIdMap(
+									_cpDefinitionLocalService.getUrlTitleMap(
+										replacementCPInstance.
+											getCPDefinitionId()));
+							}
+						};
 					});
 				setReplacementSkuExternalReferenceCode(
 					() -> {
@@ -385,6 +469,9 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 	private CPDefinitionInventoryEngine _cpDefinitionInventoryEngine;
 
 	@Reference
+	private CPDefinitionLocalService _cpDefinitionLocalService;
+
+	@Reference
 	private CPDefinitionOptionRelLocalService
 		_cpDefinitionOptionRelLocalService;
 
@@ -395,9 +482,18 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 	private CPInstanceLocalService _cpInstanceLocalService;
 
 	@Reference
+	private DTOConverterRegistry _dtoConverterRegistry;
+
+	@Reference
 	private JSONFactory _jsonFactory;
 
 	@Reference
 	private Language _language;
+
+	@Reference(
+		target = "(component.name=com.liferay.headless.commerce.delivery.catalog.internal.dto.v1_0.converter.ProductConfigurationDTOConverter)"
+	)
+	private DTOConverter<CPDefinitionInventory, ProductConfiguration>
+		_productConfigurationDTOConverter;
 
 }
