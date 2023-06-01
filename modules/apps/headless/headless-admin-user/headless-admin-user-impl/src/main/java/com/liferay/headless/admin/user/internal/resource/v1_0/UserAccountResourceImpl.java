@@ -227,7 +227,7 @@ public class UserAccountResourceImpl
 		throws Exception {
 
 		AccountEntryUserRel accountEntryUserRel =
-			_accountEntryUserRelLocalService.fetchAccountEntryUserRel(
+			_accountEntryUserRelLocalService.getAccountEntryUserRel(
 				_accountResourceDTOConverter.getAccountEntryId(
 					accountExternalReferenceCode),
 				_userResourceDTOConverter.getUserId(externalReferenceCode));
@@ -446,7 +446,7 @@ public class UserAccountResourceImpl
 		throws Exception {
 
 		_updateAccountEntryUserRel(
-			_accountEntryLocalService.fetchAccountEntry(accountId),
+			_accountEntryLocalService.getAccountEntry(accountId),
 			_userLocalService.getUserById(userAccountId), userAccount);
 	}
 
