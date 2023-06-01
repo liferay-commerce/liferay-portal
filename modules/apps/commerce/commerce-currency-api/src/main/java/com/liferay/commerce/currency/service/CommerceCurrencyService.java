@@ -18,6 +18,8 @@ import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.jsonwebservice.JSONWebService;
+import com.liferay.portal.kernel.search.BaseModelSearchResult;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.access.control.AccessControlled;
 import com.liferay.portal.kernel.service.BaseService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -105,6 +107,17 @@ public interface CommerceCurrencyService extends BaseService {
 	 * @return the OSGi service identifier
 	 */
 	public String getOSGiServiceIdentifier();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public BaseModelSearchResult<CommerceCurrency> searchCommerceCurrencies(
+			long companyId, String keywords, boolean navigationActive,
+			int start, int end, Sort sort)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public BaseModelSearchResult<CommerceCurrency> searchCommerceCurrencies(
+			long companyId, String keywords, int start, int end, Sort sort)
+		throws PortalException;
 
 	public CommerceCurrency setActive(long commerceCurrencyId, boolean active)
 		throws PortalException;

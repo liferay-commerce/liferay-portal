@@ -41,6 +41,18 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.search.BaseModelSearchResult;
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.Indexable;
+import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.search.QueryConfig;
+import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.SearchException;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -48,15 +60,20 @@ import com.liferay.portal.kernel.settings.CompanyServiceSettingsLocator;
 import com.liferay.portal.kernel.settings.SystemSettingsLocator;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.io.Serializable;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -81,6 +98,7 @@ import org.osgi.service.component.annotations.Reference;
 public class CommerceCurrencyLocalServiceImpl
 	extends CommerceCurrencyLocalServiceBaseImpl {
 
+	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public CommerceCurrency addCommerceCurrency(
 			long userId, String code, Map<Locale, String> nameMap,
@@ -145,6 +163,7 @@ public class CommerceCurrencyLocalServiceImpl
 		commerceCurrencyPersistence.removeByCompanyId(companyId);
 	}
 
+	@Indexable(type = IndexableType.DELETE)
 	@Override
 	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public CommerceCurrency deleteCommerceCurrency(
@@ -286,6 +305,29 @@ public class CommerceCurrencyLocalServiceImpl
 	}
 
 	@Override
+	public BaseModelSearchResult<CommerceCurrency> searchCommerceCurrencies(
+			long companyId, String keywords, boolean navigationActive,
+			int start, int end, Sort sort)
+		throws PortalException {
+
+		SearchContext searchContext = _buildSearchContext(
+			companyId, keywords, start, end, sort);
+
+		return _searchCommerceCurrencies(searchContext, navigationActive);
+	}
+
+	@Override
+	public BaseModelSearchResult<CommerceCurrency> searchCommerceCurrencies(
+			long companyId, String keywords, int start, int end, Sort sort)
+		throws PortalException {
+
+		SearchContext searchContext = _buildSearchContext(
+			companyId, keywords, start, end, sort);
+
+		return _searchCommerceCurrencies(searchContext);
+	}
+
+	@Override
 	public CommerceCurrency setActive(long commerceCurrencyId, boolean active)
 		throws PortalException {
 
@@ -328,6 +370,7 @@ public class CommerceCurrencyLocalServiceImpl
 		return commerceCurrencyPersistence.update(commerceCurrency);
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public CommerceCurrency updateCommerceCurrency(
 			long commerceCurrencyId, Map<Locale, String> nameMap, String symbol,
@@ -472,6 +515,149 @@ public class CommerceCurrencyLocalServiceImpl
 		}
 	}
 
+	private SearchContext _buildSearchContext(
+		long companyId, String keywords, int start, int end, Sort sort) {
+
+		SearchContext searchContext = new SearchContext();
+
+		searchContext.setAttributes(
+			HashMapBuilder.<String, Serializable>put(
+				Field.CODE, keywords
+			).put(
+				Field.ENTRY_CLASS_PK, keywords
+			).put(
+				Field.NAME, keywords
+			).put(
+				"params",
+				LinkedHashMapBuilder.<String, Object>put(
+					"keywords", keywords
+				).build()
+			).build());
+		searchContext.setCompanyId(companyId);
+		searchContext.setEnd(end);
+
+		if (Validator.isNotNull(keywords)) {
+			searchContext.setKeywords(keywords);
+		}
+
+		if (sort != null) {
+			searchContext.setSorts(sort);
+		}
+
+		searchContext.setStart(start);
+
+		QueryConfig queryConfig = searchContext.getQueryConfig();
+
+		queryConfig.setHighlightEnabled(false);
+		queryConfig.setScoreEnabled(false);
+
+		return searchContext;
+	}
+
+	private List<CommerceCurrency> _getCommerceCurrencies(Hits hits)
+		throws PortalException {
+
+		List<Document> documents = hits.toList();
+
+		List<CommerceCurrency> commerceCurrencies = new ArrayList<>(
+			documents.size());
+
+		for (Document document : documents) {
+			long commerceCurrencyId = GetterUtil.getLong(
+				document.get(Field.ENTRY_CLASS_PK));
+
+			CommerceCurrency commerceCurrency = fetchCommerceCurrency(
+				commerceCurrencyId);
+
+			if (commerceCurrency == null) {
+				Indexer<CommerceCurrency> indexer =
+					IndexerRegistryUtil.getIndexer(CommerceCurrency.class);
+
+				long companyId = GetterUtil.getLong(
+					document.get(Field.COMPANY_ID));
+
+				indexer.delete(companyId, document.getUID());
+			}
+			else if (commerceCurrency != null) {
+				commerceCurrencies.add(commerceCurrency);
+			}
+		}
+
+		return commerceCurrencies;
+	}
+
+	private List<CommerceCurrency> _getCommerceCurrencies(
+			Hits hits, boolean navigationActive)
+		throws PortalException {
+
+		List<Document> documents = hits.toList();
+
+		List<CommerceCurrency> commerceCurrencies = new ArrayList<>(
+			documents.size());
+
+		for (Document document : documents) {
+			long commerceCurrencyId = GetterUtil.getLong(
+				document.get(Field.ENTRY_CLASS_PK));
+
+			CommerceCurrency commerceCurrency = fetchCommerceCurrency(
+				commerceCurrencyId);
+
+			if (commerceCurrency == null) {
+				Indexer<CommerceCurrency> indexer =
+					IndexerRegistryUtil.getIndexer(CommerceCurrency.class);
+
+				long companyId = GetterUtil.getLong(
+					document.get(Field.COMPANY_ID));
+
+				indexer.delete(companyId, document.getUID());
+			}
+			else if ((commerceCurrency != null) &&
+					 (commerceCurrency.isActive() == navigationActive)) {
+
+				commerceCurrencies.add(commerceCurrency);
+			}
+		}
+
+		return commerceCurrencies;
+	}
+
+	private BaseModelSearchResult<CommerceCurrency> _searchCommerceCurrencies(
+			SearchContext searchContext)
+		throws PortalException {
+
+		Indexer<CommerceCurrency> indexer =
+			IndexerRegistryUtil.nullSafeGetIndexer(CommerceCurrency.class);
+
+		for (int i = 0; i < 10; i++) {
+			Hits hits = indexer.search(searchContext, _SELECTED_FIELD_NAMES);
+
+			return new BaseModelSearchResult<>(
+				_getCommerceCurrencies(hits), hits.getLength());
+		}
+
+		throw new SearchException(
+			"Unable to fix the search index after 10 attempts");
+	}
+
+	private BaseModelSearchResult<CommerceCurrency> _searchCommerceCurrencies(
+			SearchContext searchContext, boolean navigationActive)
+		throws PortalException {
+
+		Indexer<CommerceCurrency> indexer =
+			IndexerRegistryUtil.nullSafeGetIndexer(CommerceCurrency.class);
+
+		for (int i = 0; i < 10; i++) {
+			Hits hits = indexer.search(searchContext, _SELECTED_FIELD_NAMES);
+
+			return new BaseModelSearchResult<>(
+				_getCommerceCurrencies(hits, navigationActive),
+				hits.getLength());
+		}
+
+		throw new SearchException(
+			"Unable to fix the search index after 10 attempts");
+	}
+
 	private void _updateExchangeRates(
 			long companyId, String exchangeRateProviderKey)
 		throws PortalException {
@@ -516,6 +702,10 @@ public class CommerceCurrencyLocalServiceImpl
 			}
 		}
 	}
+
+	private static final String[] _SELECTED_FIELD_NAMES = {
+		Field.ENTRY_CLASS_PK, Field.COMPANY_ID, Field.UID
+	};
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		CommerceCurrencyLocalServiceImpl.class);

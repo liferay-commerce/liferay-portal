@@ -16,6 +16,9 @@ package com.liferay.commerce.currency.web.internal.util;
 
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.util.comparator.CommerceCurrencyPriorityComparator;
+import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
 /**
@@ -41,6 +44,29 @@ public class CommerceCurrencyUtil {
 		}
 
 		return orderByComparator;
+	}
+
+	public static Sort getCommerceCurrencySort(
+		String orderByCol, String orderByType) {
+
+		boolean reverse = true;
+
+		if (orderByType.equals("asc")) {
+			reverse = false;
+		}
+
+		Sort sort = null;
+
+		if (orderByCol.equals("title")) {
+			sort = SortFactoryUtil.create(
+				Field.TITLE, Sort.STRING_TYPE, reverse);
+		}
+		else if (orderByCol.equals("modified-date")) {
+			sort = SortFactoryUtil.create(
+				Field.MODIFIED_DATE + "_sortable", reverse);
+		}
+
+		return sort;
 	}
 
 }

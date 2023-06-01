@@ -136,6 +136,31 @@ public class CommerceCurrencyServiceWrapper
 	}
 
 	@Override
+	public com.liferay.portal.kernel.search.BaseModelSearchResult
+		<com.liferay.commerce.currency.model.CommerceCurrency>
+				searchCommerceCurrencies(
+					long companyId, String keywords, boolean navigationActive,
+					int start, int end,
+					com.liferay.portal.kernel.search.Sort sort)
+			throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceCurrencyService.searchCommerceCurrencies(
+			companyId, keywords, navigationActive, start, end, sort);
+	}
+
+	@Override
+	public com.liferay.portal.kernel.search.BaseModelSearchResult
+		<com.liferay.commerce.currency.model.CommerceCurrency>
+				searchCommerceCurrencies(
+					long companyId, String keywords, int start, int end,
+					com.liferay.portal.kernel.search.Sort sort)
+			throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceCurrencyService.searchCommerceCurrencies(
+			companyId, keywords, start, end, sort);
+	}
+
+	@Override
 	public com.liferay.commerce.currency.model.CommerceCurrency setActive(
 			long commerceCurrencyId, boolean active)
 		throws com.liferay.portal.kernel.exception.PortalException {

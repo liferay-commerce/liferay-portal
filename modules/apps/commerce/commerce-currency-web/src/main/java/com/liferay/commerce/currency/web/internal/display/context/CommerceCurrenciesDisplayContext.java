@@ -236,25 +236,48 @@ public class CommerceCurrenciesDisplayContext {
 				getOrderByCol(), getOrderByType()));
 		_searchContainer.setOrderByType(getOrderByType());
 
-		if (active != null) {
-			boolean navigationActive = active;
+		if (!StringUtil.equals(getKeywords(), "")) {
+			if (active != null) {
+				boolean navigationActive = active;
 
-			_searchContainer.setResultsAndTotal(
-				() -> _commerceCurrencyService.getCommerceCurrencies(
-					themeDisplay.getCompanyId(), navigationActive,
-					_searchContainer.getStart(), _searchContainer.getEnd(),
-					_searchContainer.getOrderByComparator()),
-				_commerceCurrencyService.getCommerceCurrenciesCount(
-					themeDisplay.getCompanyId(), navigationActive));
+				_searchContainer.setResultsAndTotal(
+					_commerceCurrencyService.searchCommerceCurrencies(
+						themeDisplay.getCompanyId(), getKeywords(),
+						navigationActive, _searchContainer.getStart(),
+						_searchContainer.getEnd(),
+						CommerceCurrencyUtil.getCommerceCurrencySort(
+							getOrderByCol(), getOrderByType())));
+			}
+			else {
+				_searchContainer.setResultsAndTotal(
+					_commerceCurrencyService.searchCommerceCurrencies(
+						themeDisplay.getCompanyId(), getKeywords(),
+						_searchContainer.getStart(), _searchContainer.getEnd(),
+						CommerceCurrencyUtil.getCommerceCurrencySort(
+							getOrderByCol(), getOrderByType())));
+			}
 		}
 		else {
-			_searchContainer.setResultsAndTotal(
-				() -> _commerceCurrencyService.getCommerceCurrencies(
-					themeDisplay.getCompanyId(), _searchContainer.getStart(),
-					_searchContainer.getEnd(),
-					_searchContainer.getOrderByComparator()),
-				_commerceCurrencyService.getCommerceCurrenciesCount(
-					themeDisplay.getCompanyId()));
+			if (active != null) {
+				boolean navigationActive = active;
+
+				_searchContainer.setResultsAndTotal(
+					() -> _commerceCurrencyService.getCommerceCurrencies(
+						themeDisplay.getCompanyId(), navigationActive,
+						_searchContainer.getStart(), _searchContainer.getEnd(),
+						_searchContainer.getOrderByComparator()),
+					_commerceCurrencyService.getCommerceCurrenciesCount(
+						themeDisplay.getCompanyId(), navigationActive));
+			}
+			else {
+				_searchContainer.setResultsAndTotal(
+					() -> _commerceCurrencyService.getCommerceCurrencies(
+						themeDisplay.getCompanyId(),
+						_searchContainer.getStart(), _searchContainer.getEnd(),
+						_searchContainer.getOrderByComparator()),
+					_commerceCurrencyService.getCommerceCurrenciesCount(
+						themeDisplay.getCompanyId()));
+			}
 		}
 
 		_searchContainer.setRowChecker(_getRowChecker());
@@ -269,6 +292,10 @@ public class CommerceCurrenciesDisplayContext {
 		return _portletResourcePermission.contains(
 			themeDisplay.getPermissionChecker(), null,
 			CommerceCurrencyActionKeys.MANAGE_COMMERCE_CURRENCIES);
+	}
+
+	protected String getKeywords() {
+		return ParamUtil.getString(_renderRequest, "keywords");
 	}
 
 	private String _getNavigation() {

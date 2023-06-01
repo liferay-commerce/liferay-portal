@@ -117,6 +117,26 @@ public class CommerceCurrencyServiceUtil {
 		return getService().getOSGiServiceIdentifier();
 	}
 
+	public static com.liferay.portal.kernel.search.BaseModelSearchResult
+		<CommerceCurrency> searchCommerceCurrencies(
+				long companyId, String keywords, boolean navigationActive,
+				int start, int end, com.liferay.portal.kernel.search.Sort sort)
+			throws PortalException {
+
+		return getService().searchCommerceCurrencies(
+			companyId, keywords, navigationActive, start, end, sort);
+	}
+
+	public static com.liferay.portal.kernel.search.BaseModelSearchResult
+		<CommerceCurrency> searchCommerceCurrencies(
+				long companyId, String keywords, int start, int end,
+				com.liferay.portal.kernel.search.Sort sort)
+			throws PortalException {
+
+		return getService().searchCommerceCurrencies(
+			companyId, keywords, start, end, sort);
+	}
+
 	public static CommerceCurrency setActive(
 			long commerceCurrencyId, boolean active)
 		throws PortalException {
