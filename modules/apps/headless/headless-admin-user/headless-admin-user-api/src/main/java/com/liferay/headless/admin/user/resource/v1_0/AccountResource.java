@@ -27,6 +27,7 @@ import com.liferay.portal.odata.sort.SortParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineExportTaskResource;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResource;
+import com.liferay.portal.vulcan.multipart.MultipartBody;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
@@ -87,6 +88,10 @@ public interface AccountResource {
 			String externalReferenceCode, Account account)
 		throws Exception;
 
+	public Response postAccountByExternalReferenceCodeLogo(
+			String externalReferenceCode, MultipartBody multipartBody)
+		throws Exception;
+
 	public void deleteAccount(Long accountId) throws Exception;
 
 	public Response deleteAccountBatch(String callbackURL, Object object)
@@ -100,6 +105,9 @@ public interface AccountResource {
 	public Account putAccount(Long accountId, Account account) throws Exception;
 
 	public Response putAccountBatch(String callbackURL, Object object)
+		throws Exception;
+
+	public Response postAccountLogo(Long accountId, MultipartBody multipartBody)
 		throws Exception;
 
 	public void patchOrganizationMoveAccounts(
