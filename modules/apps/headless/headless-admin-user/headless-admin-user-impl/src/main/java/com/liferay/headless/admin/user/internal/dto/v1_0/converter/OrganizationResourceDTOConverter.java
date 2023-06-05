@@ -229,6 +229,7 @@ public class OrganizationResourceDTOConverter
 						organization.getOrganizationId()),
 					OrganizationResourceDTOConverter.this::_toService,
 					Service.class);
+				treePath = organization.getTreePath();
 
 				setImage(
 					() -> {
