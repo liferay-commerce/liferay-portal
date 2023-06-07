@@ -480,13 +480,6 @@ public class UserAccountResourceImpl
 			Long accountId, UserAccount userAccount)
 		throws Exception {
 
-		User user = _userResourceDTOConverter.getObject(
-			userAccount.getExternalReferenceCode());
-
-		if (user == null) {
-			userAccount = postUserAccount(userAccount);
-		}
-
 		AccountEntryUserRel accountEntryUserRel =
 			_accountEntryUserRelService.addAccountEntryUserRel(
 				accountId, contextUser.getUserId(),
@@ -497,7 +490,7 @@ public class UserAccountResourceImpl
 				_getSuffixId(userAccount), userAccount.getJobTitle(),
 				ServiceContextFactory.getInstance(contextHttpServletRequest));
 
-		user = accountEntryUserRel.getUser();
+		User user = accountEntryUserRel.getUser();
 
 		_usersAdmin.updateAddresses(
 			Contact.class.getName(), user.getContactId(),

@@ -14,6 +14,7 @@
 
 package com.liferay.headless.admin.user.resource.v1_0.test;
 
+import com.liferay.account.constants.AccountActionKeys;
 import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.exception.DuplicateAccountEntryExternalReferenceCodeException;
 import com.liferay.account.model.AccountEntry;
@@ -24,15 +25,30 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.headless.admin.user.client.dto.v1_0.Account;
 import com.liferay.headless.admin.user.client.pagination.Page;
 import com.liferay.headless.admin.user.client.problem.Problem;
+import com.liferay.headless.admin.user.client.resource.v1_0.AccountResource;
+import com.liferay.headless.admin.user.client.resource.v1_0.UserAccountResource;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.Organization;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.OrganizationTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
@@ -43,6 +59,7 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -305,6 +322,44 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 
 	@Override
 	@Test
+	public void testPostAccountByExternalReferenceCodeLogo() throws Exception {
+		Account account = _postAccount();
+
+		Assert.assertNull(account.getLogoId());
+
+		accountResource.postAccountByExternalReferenceCodeLogo(
+			account.getExternalReferenceCode(), account,
+			Collections.singletonMap(
+				"image",
+				FileUtil.createTempFile(
+					FileUtil.getBytes(getClass(), "/images/liferay.png"))));
+
+		account = accountResource.getAccount(account.getId());
+
+		Assert.assertNotNull(account.getLogoId());
+	}
+
+	@Override
+	@Test
+	public void testPostAccountLogo() throws Exception {
+		Account account = _postAccount();
+
+		Assert.assertNull(account.getLogoId());
+
+		accountResource.postAccountLogo(
+			account.getId(), account,
+			Collections.singletonMap(
+				"image",
+				FileUtil.createTempFile(
+					FileUtil.getBytes(getClass(), "/images/liferay.png"))));
+
+		account = accountResource.getAccount(account.getId());
+
+		Assert.assertNotNull(account.getLogoId());
+	}
+
+	@Override
+	@Test
 	public void testPostOrganizationAccounts() throws Exception {
 		Organization organization = OrganizationTestUtil.addOrganization();
 
@@ -537,6 +592,12 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 
 	@Inject
 	private AccountEntryLocalService _accountEntryLocalService;
+
+	@Inject
+	private UserLocalService _userLocalService;
+
+	@Inject
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
 
 	@Inject
 	private AccountEntryOrganizationRelLocalService
