@@ -42,6 +42,9 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -91,6 +94,13 @@ public class CommerceShippableOrderItemsFDSDataProvider
 			}
 
 			CommerceOrder commerceOrder = commerceOrderItem.getCommerceOrder();
+
+			if (!_commerceOrderModelResourcePermission.contains(
+					PermissionThreadLocal.getPermissionChecker(),
+					commerceOrder.getCommerceOrderId(), ActionKeys.VIEW)) {
+
+				continue;
+			}
 
 			String iconName = _getAddressMatchIcon(
 				commerceShipment, commerceOrder);
@@ -234,6 +244,12 @@ public class CommerceShippableOrderItemsFDSDataProvider
 
 	@Reference
 	private CommerceOrderItemService _commerceOrderItemService;
+
+	@Reference(
+		target = "(model.class.name=com.liferay.commerce.model.CommerceOrder)"
+	)
+	private ModelResourcePermission<CommerceOrder>
+		_commerceOrderModelResourcePermission;
 
 	@Reference
 	private CommerceShipmentItemService _commerceShipmentItemService;
