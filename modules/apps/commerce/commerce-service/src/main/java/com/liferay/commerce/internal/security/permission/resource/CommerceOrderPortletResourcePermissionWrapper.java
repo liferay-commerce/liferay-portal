@@ -14,12 +14,16 @@
 
 package com.liferay.commerce.internal.security.permission.resource;
 
+import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.commerce.constants.CommerceOrderConstants;
+import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.portal.kernel.security.permission.resource.BasePortletResourcePermissionWrapper;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermissionFactory;
+import com.liferay.portal.kernel.service.RoleLocalService;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Andrea Di Giorgi
@@ -35,7 +39,18 @@ public class CommerceOrderPortletResourcePermissionWrapper
 	protected PortletResourcePermission doGetPortletResourcePermission() {
 		return PortletResourcePermissionFactory.create(
 			CommerceOrderConstants.RESOURCE_NAME,
-			new CommerceOrderPortletResourcePermissionLogic());
+			new CommerceOrderPortletResourcePermissionLogic(
+				_accountEntryLocalService, _commerceChannelLocalService,
+				_roleLocalService));
 	}
+
+	@Reference
+	private AccountEntryLocalService _accountEntryLocalService;
+
+	@Reference
+	private CommerceChannelLocalService _commerceChannelLocalService;
+
+	@Reference
+	private RoleLocalService _roleLocalService;
 
 }
