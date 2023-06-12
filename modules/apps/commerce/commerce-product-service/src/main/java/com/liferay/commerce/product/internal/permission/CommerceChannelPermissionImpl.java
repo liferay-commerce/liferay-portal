@@ -14,14 +14,24 @@
 
 package com.liferay.commerce.product.internal.permission;
 
+import com.liferay.account.constants.AccountConstants;
+import com.liferay.account.constants.AccountRoleConstants;
+import com.liferay.account.model.AccountEntry;
+import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.permission.CommerceChannelPermission;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
+
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -125,6 +135,10 @@ public class CommerceChannelPermissionImpl
 			return true;
 		}
 
+		if (actionId.equals(ActionKeys.VIEW)) {
+			return _hasSupplierPermission(permissionChecker, commerceChannel);
+		}
+
 		Group group = _commerceChannelLocalService.getCommerceChannelGroup(
 			commerceChannel.getCommerceChannelId());
 
@@ -133,7 +147,61 @@ public class CommerceChannelPermissionImpl
 			commerceChannel.getCommerceChannelId(), actionId);
 	}
 
+	private boolean _hasSupplierAccount(
+			PermissionChecker permissionChecker,
+			CommerceChannel commerceChannel)
+		throws PortalException {
+
+		List<AccountEntry> accountEntries =
+			_accountEntryLocalService.getUserAccountEntries(
+				permissionChecker.getUserId(), 0L, StringPool.BLANK,
+				new String[] {AccountConstants.ACCOUNT_ENTRY_TYPE_SUPPLIER},
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+		for (AccountEntry accountEntry : accountEntries) {
+			if (commerceChannel.getAccountEntryId() ==
+					accountEntry.getAccountEntryId()) {
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private boolean _hasSupplierPermission(
+			PermissionChecker permissionChecker,
+			CommerceChannel commerceChannel)
+		throws PortalException {
+
+		if (!_hasSupplierRole(permissionChecker)) {
+			return false;
+		}
+
+		if ((commerceChannel.getAccountEntryId() > 0) &&
+			_hasSupplierAccount(permissionChecker, commerceChannel)) {
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private boolean _hasSupplierRole(PermissionChecker permissionChecker)
+		throws PortalException {
+
+		return _roleLocalService.hasUserRole(
+			permissionChecker.getUserId(), permissionChecker.getCompanyId(),
+			AccountRoleConstants.ROLE_NAME_SUPPLIER, true);
+	}
+
+	@Reference
+	private AccountEntryLocalService _accountEntryLocalService;
+
 	@Reference
 	private CommerceChannelLocalService _commerceChannelLocalService;
+
+	@Reference
+	private RoleLocalService _roleLocalService;
 
 }
