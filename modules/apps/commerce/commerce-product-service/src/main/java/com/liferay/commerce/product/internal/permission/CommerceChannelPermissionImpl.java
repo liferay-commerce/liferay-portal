@@ -135,8 +135,11 @@ public class CommerceChannelPermissionImpl
 			return true;
 		}
 
-		if (actionId.equals(ActionKeys.VIEW)) {
-			return _hasSupplierPermission(permissionChecker, commerceChannel);
+		if ((actionId.equals(ActionKeys.UPDATE) ||
+			 actionId.equals(ActionKeys.VIEW)) &&
+			_hasSupplierPermission(permissionChecker, commerceChannel)) {
+
+			return true;
 		}
 
 		Group group = _commerceChannelLocalService.getCommerceChannelGroup(
