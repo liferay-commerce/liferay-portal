@@ -119,6 +119,7 @@ describe('Add to Cart', () => {
 		expect(addProductToCartFn).toHaveBeenCalledWith({
 			options: '[]',
 			quantity: 3,
+			replacedSkuId: 0,
 			skuId: 42633,
 		});
 	});
