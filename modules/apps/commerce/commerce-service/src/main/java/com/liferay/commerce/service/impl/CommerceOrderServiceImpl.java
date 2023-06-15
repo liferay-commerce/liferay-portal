@@ -20,6 +20,7 @@ import com.liferay.commerce.constants.CommerceActionKeys;
 import com.liferay.commerce.constants.CommerceOrderActionKeys;
 import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.context.CommerceContext;
+import com.liferay.commerce.context.CommerceGroupThreadLocal;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.service.base.CommerceOrderServiceBaseImpl;
 import com.liferay.commerce.util.CommerceAccountHelper;
@@ -67,6 +68,8 @@ public class CommerceOrderServiceImpl extends CommerceOrderServiceBaseImpl {
 		AccountEntry accountEntry = _getAccountEntry(commerceAccountId);
 
 		if (accountEntry.isBusinessAccount()) {
+			CommerceGroupThreadLocal.setWithSafeCloseable(groupId);
+
 			_portletResourcePermission.check(
 				getPermissionChecker(), accountEntry.getAccountEntryGroupId(),
 				CommerceOrderActionKeys.ADD_COMMERCE_ORDER);
@@ -102,6 +105,8 @@ public class CommerceOrderServiceImpl extends CommerceOrderServiceBaseImpl {
 			AccountEntry accountEntry = _getAccountEntry(commerceAccountId);
 
 			if (accountEntry.isBusinessAccount()) {
+				CommerceGroupThreadLocal.setWithSafeCloseable(groupId);
+
 				_portletResourcePermission.check(
 					getPermissionChecker(),
 					accountEntry.getAccountEntryGroupId(),
@@ -1028,6 +1033,8 @@ public class CommerceOrderServiceImpl extends CommerceOrderServiceBaseImpl {
 				getPermissionChecker(), groupId, action);
 		}
 		else if (accountEntry.isBusinessAccount()) {
+			CommerceGroupThreadLocal.setWithSafeCloseable(groupId);
+
 			_portletResourcePermission.check(
 				getPermissionChecker(), accountEntry.getAccountEntryGroup(),
 				action);

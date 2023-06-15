@@ -18,6 +18,7 @@ import com.liferay.account.model.AccountEntry;
 import com.liferay.commerce.configuration.CommerceOrderItemDecimalQuantityConfiguration;
 import com.liferay.commerce.constants.CommerceOrderActionKeys;
 import com.liferay.commerce.constants.CommerceOrderConstants;
+import com.liferay.commerce.context.CommerceGroupThreadLocal;
 import com.liferay.commerce.frontend.model.HeaderActionModel;
 import com.liferay.commerce.frontend.model.StepModel;
 import com.liferay.commerce.model.CommerceAddress;
@@ -136,6 +137,9 @@ public class CommerceOrderEditDisplayContext {
 		if (commerceOrderId > 0) {
 			_commerceOrder = commerceOrderService.getCommerceOrder(
 				commerceOrderId);
+
+			CommerceGroupThreadLocal.setWithSafeCloseable(
+				_commerceOrder.getGroupId());
 		}
 		else {
 			_commerceOrder = null;

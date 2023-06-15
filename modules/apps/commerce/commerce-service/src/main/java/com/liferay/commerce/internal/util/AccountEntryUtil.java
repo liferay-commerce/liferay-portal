@@ -30,7 +30,11 @@ public class AccountEntryUtil {
 		throws PortalException {
 
 		if (commerceContext != null) {
-			return commerceContext.getCommerceChannelId();
+			long commerceChannelId = commerceContext.getCommerceChannelId();
+
+			if (commerceChannelId > 0) {
+				return commerceChannelId;
+			}
 		}
 
 		if (group != null) {

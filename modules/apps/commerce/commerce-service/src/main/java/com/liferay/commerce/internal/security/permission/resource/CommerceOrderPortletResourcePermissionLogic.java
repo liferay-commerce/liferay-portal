@@ -61,7 +61,7 @@ public class CommerceOrderPortletResourcePermissionLogic
 		}
 
 		try {
-			return _hasSupplierPermission(permissionChecker);
+			return _hasSupplierPermission(permissionChecker, group);
 		}
 		catch (PortalException portalException) {
 			if (_log.isDebugEnabled()) {
@@ -94,18 +94,29 @@ public class CommerceOrderPortletResourcePermissionLogic
 		return false;
 	}
 
-	private boolean _hasSupplierPermission(PermissionChecker permissionChecker)
+	private boolean _hasSupplierPermission(
+			PermissionChecker permissionChecker, Group group)
 		throws PortalException {
 
 		if (!_hasSupplierRole(permissionChecker)) {
 			return false;
 		}
 
+		if (group != null) {
+			String className = group.getClassName();
+
+			if (!className.equals(CommerceChannel.class.getName())) {
+				group = CommerceGroupThreadLocal.get();
+			}
+		}
+		else {
+			group = CommerceGroupThreadLocal.get();
+		}
+
 		CommerceChannel commerceChannel =
 			_commerceChannelLocalService.fetchCommerceChannel(
 				AccountEntryUtil.getCommerceChannelId(
-					CommerceContextThreadLocal.get(),
-					CommerceGroupThreadLocal.get()));
+					CommerceContextThreadLocal.get(), group));
 
 		if ((commerceChannel != null) &&
 			(commerceChannel.getAccountEntryId() > 0) &&

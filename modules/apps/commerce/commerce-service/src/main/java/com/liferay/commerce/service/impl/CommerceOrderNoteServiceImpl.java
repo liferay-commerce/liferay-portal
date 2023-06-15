@@ -16,8 +16,10 @@ package com.liferay.commerce.service.impl;
 
 import com.liferay.commerce.constants.CommerceOrderActionKeys;
 import com.liferay.commerce.constants.CommerceOrderConstants;
+import com.liferay.commerce.context.CommerceGroupThreadLocal;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderNote;
+import com.liferay.commerce.service.CommerceOrderService;
 import com.liferay.commerce.service.base.CommerceOrderNoteServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -51,15 +53,9 @@ public class CommerceOrderNoteServiceImpl
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		String actionId = CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_NOTES;
-
-		if (restricted) {
-			actionId =
-				CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_RESTRICTED_NOTES;
-		}
-
-		_portletResourcePermission.check(
-			getPermissionChecker(), commerceOrderId, actionId);
+		_checkPortletResourcePermission(
+			commerceOrderId,
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_NOTES, restricted);
 
 		return commerceOrderNoteLocalService.addCommerceOrderNote(
 			commerceOrderId, content, restricted, serviceContext);
@@ -72,15 +68,9 @@ public class CommerceOrderNoteServiceImpl
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		String actionId = CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_NOTES;
-
-		if (restricted) {
-			actionId =
-				CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_RESTRICTED_NOTES;
-		}
-
-		_portletResourcePermission.check(
-			getPermissionChecker(), commerceOrderId, actionId);
+		_checkPortletResourcePermission(
+			commerceOrderId,
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_NOTES, restricted);
 
 		return commerceOrderNoteLocalService.addOrUpdateCommerceOrderNote(
 			externalReferenceCode, commerceOrderNoteId, commerceOrderId,
@@ -95,16 +85,10 @@ public class CommerceOrderNoteServiceImpl
 			commerceOrderNoteLocalService.getCommerceOrderNote(
 				commerceOrderNoteId);
 
-		String actionId = CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_NOTES;
-
-		if (commerceOrderNote.isRestricted()) {
-			actionId =
-				CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_RESTRICTED_NOTES;
-		}
-
-		_portletResourcePermission.check(
-			getPermissionChecker(), commerceOrderNote.getCommerceOrderId(),
-			actionId);
+		_checkPortletResourcePermission(
+			commerceOrderNote.getCommerceOrderId(),
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_NOTES,
+			commerceOrderNote.isRestricted());
 
 		commerceOrderNoteLocalService.deleteCommerceOrderNote(
 			commerceOrderNote);
@@ -120,9 +104,10 @@ public class CommerceOrderNoteServiceImpl
 				externalReferenceCode, companyId);
 
 		if (commerceOrderNote != null) {
-			_portletResourcePermission.check(
-				getPermissionChecker(), commerceOrderNote.getCommerceOrderId(),
-				CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_RESTRICTED_NOTES);
+			_checkPortletResourcePermission(
+				commerceOrderNote.getCommerceOrderId(),
+				CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_NOTES,
+				commerceOrderNote.isRestricted());
 		}
 
 		return commerceOrderNote;
@@ -136,7 +121,11 @@ public class CommerceOrderNoteServiceImpl
 			commerceOrderNoteLocalService.fetchCommerceOrderNote(
 				commerceOrderNoteId);
 
-		_checkCommerceOrderNotePermissions(commerceOrderNote);
+		if (commerceOrderNote != null) {
+			_checkCommerceOrderNoteViewPermission(
+				commerceOrderNote.getCommerceOrderId(), ActionKeys.VIEW,
+				commerceOrderNote.isRestricted());
+		}
 
 		return commerceOrderNote;
 	}
@@ -149,7 +138,11 @@ public class CommerceOrderNoteServiceImpl
 			commerceOrderNoteLocalService.getCommerceOrderNote(
 				commerceOrderNoteId);
 
-		_checkCommerceOrderNotePermissions(commerceOrderNote);
+		if (commerceOrderNote != null) {
+			_checkCommerceOrderNoteViewPermission(
+				commerceOrderNote.getCommerceOrderId(), ActionKeys.VIEW,
+				commerceOrderNote.isRestricted());
+		}
 
 		return commerceOrderNote;
 	}
@@ -159,19 +152,8 @@ public class CommerceOrderNoteServiceImpl
 			long commerceOrderId, boolean restricted)
 		throws PortalException {
 
-		String actionId = ActionKeys.VIEW;
-
-		if (restricted) {
-			actionId =
-				CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_RESTRICTED_NOTES;
-
-			_portletResourcePermission.check(
-				getPermissionChecker(), commerceOrderId, actionId);
-		}
-		else {
-			_commerceOrderModelResourcePermission.check(
-				getPermissionChecker(), commerceOrderId, actionId);
-		}
+		_checkCommerceOrderNoteViewPermission(
+			commerceOrderId, ActionKeys.VIEW, restricted);
 
 		return commerceOrderNoteLocalService.getCommerceOrderNotes(
 			commerceOrderId, restricted);
@@ -182,19 +164,8 @@ public class CommerceOrderNoteServiceImpl
 			long commerceOrderId, boolean restricted, int start, int end)
 		throws PortalException {
 
-		String actionId = ActionKeys.VIEW;
-
-		if (restricted) {
-			actionId =
-				CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_RESTRICTED_NOTES;
-
-			_portletResourcePermission.check(
-				getPermissionChecker(), commerceOrderId, actionId);
-		}
-		else {
-			_commerceOrderModelResourcePermission.check(
-				getPermissionChecker(), commerceOrderId, actionId);
-		}
+		_checkCommerceOrderNoteViewPermission(
+			commerceOrderId, ActionKeys.VIEW, restricted);
 
 		return commerceOrderNoteLocalService.getCommerceOrderNotes(
 			commerceOrderId, restricted, start, end);
@@ -205,9 +176,9 @@ public class CommerceOrderNoteServiceImpl
 			long commerceOrderId, int start, int end)
 		throws PortalException {
 
-		_portletResourcePermission.check(
-			getPermissionChecker(), commerceOrderId,
-			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_RESTRICTED_NOTES);
+		_checkPortletResourcePermission(
+			commerceOrderId,
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_NOTES, true);
 
 		return commerceOrderNoteLocalService.getCommerceOrderNotes(
 			commerceOrderId, start, end);
@@ -217,9 +188,9 @@ public class CommerceOrderNoteServiceImpl
 	public int getCommerceOrderNotesCount(long commerceOrderId)
 		throws PortalException {
 
-		_portletResourcePermission.check(
-			getPermissionChecker(), commerceOrderId,
-			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_RESTRICTED_NOTES);
+		_checkPortletResourcePermission(
+			commerceOrderId,
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_NOTES, true);
 
 		return commerceOrderNoteLocalService.getCommerceOrderNotesCount(
 			commerceOrderId);
@@ -230,19 +201,8 @@ public class CommerceOrderNoteServiceImpl
 			long commerceOrderId, boolean restricted)
 		throws PortalException {
 
-		String actionId = ActionKeys.VIEW;
-
-		if (restricted) {
-			actionId =
-				CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_RESTRICTED_NOTES;
-
-			_portletResourcePermission.check(
-				getPermissionChecker(), commerceOrderId, actionId);
-		}
-		else {
-			_commerceOrderModelResourcePermission.check(
-				getPermissionChecker(), commerceOrderId, actionId);
-		}
+		_checkCommerceOrderNoteViewPermission(
+			commerceOrderId, ActionKeys.VIEW, restricted);
 
 		return commerceOrderNoteLocalService.getCommerceOrderNotesCount(
 			commerceOrderId, restricted);
@@ -257,7 +217,50 @@ public class CommerceOrderNoteServiceImpl
 			commerceOrderNoteLocalService.getCommerceOrderNote(
 				commerceOrderNoteId);
 
-		String actionId = CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_NOTES;
+		_checkPortletResourcePermission(
+			commerceOrderNote.getCommerceOrderId(),
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_NOTES, restricted);
+
+		return commerceOrderNoteLocalService.updateCommerceOrderNote(
+			commerceOrderNote.getCommerceOrderNoteId(), content, restricted);
+	}
+
+	private void _checkCommerceOrderNoteViewPermission(
+			long commerceOrderId, String actionId, boolean restricted)
+		throws PortalException {
+
+		CommerceOrder commerceOrder = _commerceOrderService.fetchCommerceOrder(
+			commerceOrderId);
+
+		if (commerceOrder != null) {
+			CommerceGroupThreadLocal.setWithSafeCloseable(
+				commerceOrder.getGroupId());
+		}
+
+		if (restricted) {
+			actionId =
+				CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_RESTRICTED_NOTES;
+
+			_portletResourcePermission.check(
+				getPermissionChecker(), commerceOrderId, actionId);
+		}
+		else {
+			_commerceOrderModelResourcePermission.check(
+				getPermissionChecker(), commerceOrderId, actionId);
+		}
+	}
+
+	private void _checkPortletResourcePermission(
+			long commerceOrderId, String actionId, boolean restricted)
+		throws PortalException {
+
+		CommerceOrder commerceOrder = _commerceOrderService.fetchCommerceOrder(
+			commerceOrderId);
+
+		if (commerceOrder != null) {
+			CommerceGroupThreadLocal.setWithSafeCloseable(
+				commerceOrder.getGroupId());
+		}
 
 		if (restricted) {
 			actionId =
@@ -265,36 +268,7 @@ public class CommerceOrderNoteServiceImpl
 		}
 
 		_portletResourcePermission.check(
-			getPermissionChecker(), commerceOrderNote.getCommerceOrderId(),
-			actionId);
-
-		return commerceOrderNoteLocalService.updateCommerceOrderNote(
-			commerceOrderNote.getCommerceOrderNoteId(), content, restricted);
-	}
-
-	private void _checkCommerceOrderNotePermissions(
-			CommerceOrderNote commerceOrderNote)
-		throws PortalException {
-
-		if (commerceOrderNote == null) {
-			return;
-		}
-
-		String actionId = ActionKeys.VIEW;
-
-		if (commerceOrderNote.isRestricted()) {
-			actionId =
-				CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_RESTRICTED_NOTES;
-
-			_portletResourcePermission.check(
-				getPermissionChecker(), commerceOrderNote.getCommerceOrderId(),
-				actionId);
-		}
-		else {
-			_commerceOrderModelResourcePermission.check(
-				getPermissionChecker(), commerceOrderNote.getCommerceOrderId(),
-				actionId);
-		}
+			getPermissionChecker(), commerceOrderId, actionId);
 	}
 
 	@Reference(
@@ -302,6 +276,9 @@ public class CommerceOrderNoteServiceImpl
 	)
 	private ModelResourcePermission<CommerceOrder>
 		_commerceOrderModelResourcePermission;
+
+	@Reference
+	private CommerceOrderService _commerceOrderService;
 
 	@Reference(
 		target = "(resource.name=" + CommerceOrderConstants.RESOURCE_NAME + ")"
