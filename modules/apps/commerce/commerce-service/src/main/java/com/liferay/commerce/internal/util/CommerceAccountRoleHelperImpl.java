@@ -91,6 +91,9 @@ public class CommerceAccountRoleHelperImpl
 
 			_setRolePermissions(role, serviceContext);
 		}
+		else {
+			_setRolePermissions(role, serviceContext);
+		}
 
 		if (AccountRoleConstants.REQUIRED_ROLE_NAME_ACCOUNT_ADMINISTRATOR.
 				equals(name)) {
