@@ -615,7 +615,6 @@ definition {
 	@description = "COMMERCE-11277. As a Guest User, I can create a Quote Request in the Cart Summary by entering a personal message."
 	@priority = 5
 	test CanGuestUserCreateQuoteRequestOnSpeedwell {
-		property custom.properties = "feature.flag.COMMERCE-11028=true";
 		property portal.acceptance = "true";
 
 		task ("Given a Speedwell site is created") {
