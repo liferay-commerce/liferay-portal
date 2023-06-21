@@ -139,13 +139,11 @@ boolean discontinued = BeanParamUtil.getBoolean(cpInstance, request, "discontinu
 		boolean priceOnApplication = (commercePriceEntry != null) && commercePriceEntry.isPriceOnApplication();
 		%>
 
-		<c:if test='<%= FeatureFlagManagerUtil.isEnabled("COMMERCE-11028") %>'>
-			<div class="row">
-				<div class="col-8">
-					<aui:input checked="<%= priceOnApplication %>" helpMessage="do-not-set-a-base-price-for-this-product" inlineLabel="right" label="price-on-application" name="priceOnApplication" type="toggle-switch" />
-				</div>
+		<div class="row">
+			<div class="col-8">
+				<aui:input checked="<%= priceOnApplication %>" helpMessage="do-not-set-a-base-price-for-this-product" inlineLabel="right" label="price-on-application" name="priceOnApplication" type="toggle-switch" />
 			</div>
-		</c:if>
+		</div>
 
 		<div class="row">
 			<div class="col-4">
