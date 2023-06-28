@@ -1654,6 +1654,119 @@ definition {
 		}
 	}
 
+	@description = "This is a test for COMMERCE-11607. As a supplier account user, I want to be able to manage the channel the account is linked to"
+	@priority = 5
+	test CanSupplierUserManageChannel {
+		property portal.acceptance = "true";
+
+		task ("Given a Supplier account with a supplier user") {
+			JSONAccountEntry.addAccountEntry(
+				accountEntryName = "Commerce Supplier",
+				accountEntryType = "Supplier");
+
+			JSONAccountEntryUser.addAccountEntryUser(
+				accountEntryName = "Commerce Supplier",
+				userEmailAddress = "supplieruser@liferay.com",
+				userFirstName = "Supplier",
+				userLastName = "User",
+				userScreenName = "supplieruser");
+
+			JSONUser.setFirstPassword(
+				agreeToTermsAndAnswerReminderQuery = "true",
+				requireReset = "false",
+				userEmailAddress = "supplieruser@liferay.com");
+
+			JSONAccountRole.associateUser(
+				accountEntryName = "Commerce Supplier",
+				accountRole = "Account Supplier",
+				userEmailAddress = "supplieruser@liferay.com");
+		}
+
+		task ("And two channels are created and the supplier account is linked to Supplier Channel 1") {
+			var accountEntryId = JSONAccountEntryAPI._getAccountEntryId(accountEntryName = "Commerce Supplier");
+
+			CommerceJSONChannelsAPI._addChannel(
+				accountId = ${accountEntryId},
+				channelName = "Supplier Channel 1",
+				channelType = "site",
+				currencyCode = "USD");
+
+			CommerceJSONChannelsAPI._addChannel(
+				channelName = "Supplier Channel 2",
+				channelType = "site",
+				currencyCode = "USD");
+		}
+
+		task ("When admin links the Supplier account for Supplier Channel 2") {
+			CommerceChannels.openChannelsAdmin();
+
+			CommerceNavigator.gotoEntry(entryName = "Supplier Channel 2");
+
+			Select(
+				key_fieldLabel = "Link Channel to a Supplier",
+				locator1 = "Select#GENERIC_SELECT_FIELD",
+				value1 = "Commerce Supplier");
+
+			Button.clickSave();
+		}
+
+		task ("Then an error alert 'A supplier account can be linked only to one channel' is shown") {
+			Alert.viewErrorMessage(errorMessage = "Error:A supplier account can be linked only to one channel.");
+		}
+
+		task ("When the supplier user logs in") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "supplieruser@liferay.com",
+				userLoginFullName = "Supplier User");
+		}
+
+		task ("Then the supplier user can view only the Supplier Channel 1 that the account is linked to") {
+			CommerceChannels.openChannelsAdmin();
+
+			AssertElementPresent(
+				key_entryName = "Supplier Channel 1",
+				locator1 = "CommerceNavigation#ENTRY_NAME");
+
+			for (var channelName : list "Supplier Channel 2,Minium Portal") {
+				AssertElementNotPresent(
+					key_entryName = ${channelName},
+					locator1 = "CommerceNavigation#ENTRY_NAME");
+			}
+		}
+
+		task ("And cannot add/delete channels, only can edit the channel") {
+			AssertElementNotPresent(locator1 = "Button#PLUS");
+
+			AssertElementNotPresent(
+				key_value = "Supplier Channel 1",
+				locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS");
+
+			AssertElementPresent(
+				key_firstColumnValue = "Supplier Channel 1",
+				key_secondColumnValue = "Site",
+				key_table = "",
+				locator1 = "CommerceEntry#TABLE_ASSERT_TWO_COLUMNS_EDIT_BUTTON");
+		}
+
+		task ("When the supplier user navigates to the channel details") {
+			Click(
+				key_firstColumnValue = "Supplier Channel 1",
+				key_secondColumnValue = "Site",
+				key_table = "",
+				locator1 = "CommerceEntry#TABLE_ASSERT_TWO_COLUMNS_EDIT_BUTTON");
+		}
+
+		task ("Then the user is able to edit the channel fields") {
+			CommerceChannels.activatePaymentMethod(paymentMethod = "Money Order");
+
+			AssertElementPresent(
+				key_entryName = "Money Order",
+				key_entryStatus = "Active",
+				key_table = "Payment Methods",
+				locator1 = "CommerceEntry#TABLE_ENTRY_STATUS");
+		}
+	}
+
 	@description = "COMMERCE-11772. This a test to verify that the Supplier User can setup a Price Modifier for Price List"
 	@priority = 4
 	test CanSupplierUserSetupPriceModifierPriceList {
@@ -1935,119 +2048,6 @@ definition {
 			AssertElementNotPresent(
 				key_entryName = "Minium Base Promotion List",
 				locator1 = "CommerceNavigation#ENTRY_NAME");
-		}
-	}
-
-	@description = "This is a test for COMMERCE-11607. As a supplier account user, I want to be able to manage the channel the account is linked to"
-	@priority = 5
-	test CanSupplierUserManageChannel {
-		property portal.acceptance = "true";
-
-		task ("Given a Supplier account with a supplier user") {
-			JSONAccountEntry.addAccountEntry(
-				accountEntryName = "Commerce Supplier",
-				accountEntryType = "Supplier");
-
-			JSONAccountEntryUser.addAccountEntryUser(
-				accountEntryName = "Commerce Supplier",
-				userEmailAddress = "supplieruser@liferay.com",
-				userFirstName = "Supplier",
-				userLastName = "User",
-				userScreenName = "supplieruser");
-
-			JSONUser.setFirstPassword(
-				agreeToTermsAndAnswerReminderQuery = "true",
-				requireReset = "false",
-				userEmailAddress = "supplieruser@liferay.com");
-
-			JSONAccountRole.associateUser(
-				accountEntryName = "Commerce Supplier",
-				accountRole = "Account Supplier",
-				userEmailAddress = "supplieruser@liferay.com");
-		}
-
-		task ("And two channels are created and the supplier account is linked to Supplier Channel 1") {
-			var accountEntryId = JSONAccountEntryAPI._getAccountEntryId(accountEntryName = "Commerce Supplier");
-
-			CommerceJSONChannelsAPI._addChannel(
-				accountId = ${accountEntryId},
-				channelName = "Supplier Channel 1",
-				channelType = "site",
-				currencyCode = "USD");
-
-			CommerceJSONChannelsAPI._addChannel(
-				channelName = "Supplier Channel 2",
-				channelType = "site",
-				currencyCode = "USD");
-		}
-
-		task ("When admin links the Supplier account for Supplier Channel 2") {
-			CommerceChannels.openChannelsAdmin();
-
-			CommerceNavigator.gotoEntry(entryName = "Supplier Channel 2");
-
-			Select(
-				key_fieldLabel = "Link Channel to a Supplier",
-				locator1 = "Select#GENERIC_SELECT_FIELD",
-				value1 = "Commerce Supplier");
-
-			Button.clickSave();
-		}
-
-		task ("Then an error alert 'A supplier account can be linked only to one channel' is shown") {
-			Alert.viewErrorMessage(errorMessage = "Error:A supplier account can be linked only to one channel.");
-		}
-
-		task ("When the supplier user logs in") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "supplieruser@liferay.com",
-				userLoginFullName = "Supplier User");
-		}
-
-		task ("Then the supplier user can view only the Supplier Channel 1 that the account is linked to") {
-			CommerceChannels.openChannelsAdmin();
-
-			AssertElementPresent(
-				key_entryName = "Supplier Channel 1",
-				locator1 = "CommerceNavigation#ENTRY_NAME");
-
-			for (var channelName : list "Supplier Channel 2,Minium Portal") {
-				AssertElementNotPresent(
-					key_entryName = ${channelName},
-					locator1 = "CommerceNavigation#ENTRY_NAME");
-			}
-		}
-
-		task ("And cannot add/delete channels, only can edit the channel") {
-			AssertElementNotPresent(locator1 = "Button#PLUS");
-
-			AssertElementNotPresent(
-				key_value = "Supplier Channel 1",
-				locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS");
-
-			AssertElementPresent(
-				key_firstColumnValue = "Supplier Channel 1",
-				key_secondColumnValue = "Site",
-				key_table = "",
-				locator1 = "CommerceEntry#TABLE_ASSERT_TWO_COLUMNS_EDIT_BUTTON");
-		}
-
-		task ("When the supplier user navigates to the channel details") {
-			Click(
-				key_firstColumnValue = "Supplier Channel 1",
-				key_secondColumnValue = "Site",
-				key_table = "",
-				locator1 = "CommerceEntry#TABLE_ASSERT_TWO_COLUMNS_EDIT_BUTTON");
-		}
-
-		task ("Then the user is able to edit the channel fields") {
-			CommerceChannels.activatePaymentMethod(paymentMethod = "Money Order");
-
-			AssertElementPresent(
-				key_entryName = "Money Order",
-				key_entryStatus = "Active",
-				key_table = "Payment Methods",
-				locator1 = "CommerceEntry#TABLE_ENTRY_STATUS");
 		}
 	}
 
