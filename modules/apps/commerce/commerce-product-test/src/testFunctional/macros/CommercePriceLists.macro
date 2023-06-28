@@ -33,6 +33,70 @@ definition {
 			locator1 = "MenuItem#ANY_MENU_ITEM");
 	}
 
+	macro checkPriceListDetailsPage {
+		if (isSet(name)) {
+			var getAttributeNameValue = selenium.getAttribute("//div[label[contains(.,'Name')]]//input[not(contains(@type,'checkbox'))]@value");
+
+			if (${getAttributeNameValue} != ${name}) {
+				echo("The Name taken from the path is: ${getAttributeNameValue}");
+
+				fail("The Name is different");
+			}
+
+			echo("Name is OK");
+		}
+
+		if (isSet(currency)) {
+			var key_label = "Currency";
+			var getTextCurrency = selenium.getText("CommerceEntry#CHECK_ANY_SELECTED_VALUE");
+
+			if (${getTextCurrency} != ${currency}) {
+				echo("The Currency taken from the path is: ${getTextCurrency}");
+
+				fail("The Currency is different");
+			}
+
+			echo("Currency is OK");
+		}
+
+		if (isSet(priority)) {
+			var getAttributePriorityValue = selenium.getAttribute("//div[label[contains(.,'Priority')]]//input[not(contains(@type,'checkbox'))]@value");
+
+			if (${getAttributePriorityValue} != ${priority}) {
+				echo("The Priority taken from the path is: ${getAttributePriorityValue}");
+
+				fail("The Priority is different");
+			}
+
+			echo("Priority is OK");
+		}
+
+		if (isSet(parentPriceList)) {
+			var getAttributeParentPriceList = selenium.getAttribute("//label[text()='Parent Price List']/following::div[@id='autocomplete-root']//input[@type='text']@value");
+
+			if (${getAttributeParentPriceList} != ${parentPriceList}) {
+				echo("The Parent Price List taken from the path is: ${getAttributeParentPriceList}");
+
+				fail("The Parent Price List is different");
+			}
+
+			echo("Parent Price List is OK");
+		}
+
+		if (isSet(priceType)) {
+			var key_label = "Price Type";
+			var getTextPriceType = selenium.getText("CommerceEntry#CHECK_ANY_SELECTED_VALUE");
+
+			if (${getTextPriceType} != ${priceType}) {
+				echo("The Price Type taken from the path is: ${getTextPriceType}");
+
+				fail("The Price Type is different");
+			}
+
+			echo("Price Type is OK");
+		}
+	}
+
 	macro createPriceListPriceTiers {
 		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
 
@@ -79,6 +143,49 @@ definition {
 		MenuItem.click(key_menuItem = "Delete");
 
 		Alert.viewSuccessMessage();
+	}
+
+	macro editPriceListDetailsPage {
+		if (isSet(name)) {
+			Type(
+				key_text = "Name",
+				locator1 = "TextInput#ANY",
+				value1 = ${name});
+		}
+
+		if (isSet(currency)) {
+			Select(
+				key_fieldLabel = "Currency",
+				locator1 = "Select#GENERIC_SELECT_FIELD",
+				value1 = ${currency});
+		}
+
+		if (isSet(priority)) {
+			Type(
+				key_text = "Priority",
+				locator1 = "TextInput#ANY",
+				value1 = ${priority});
+		}
+
+		if (isSet(parentPriceList)) {
+			Type(
+				key_label = "Parent Price List",
+				locator1 = "CommerceEntry#ANY_AUTOCOMPLETE_TEXT_FIELD",
+				value1 = ${parentPriceList});
+
+			Click(
+				key_fieldName = ${parentPriceList},
+				locator1 = "FormViewBuilder#OBJECT_FIELD_BUTTON_DROPDOWN");
+		}
+
+		if (isSet(priceType)) {
+			Select(
+				key_fieldLabel = "Price Type",
+				locator1 = "Select#GENERIC_SELECT_FIELD",
+				value1 = ${priceType});
+		}
+
+		Button.clickPublish();
 	}
 
 	macro editPriceListEntryPrice {
