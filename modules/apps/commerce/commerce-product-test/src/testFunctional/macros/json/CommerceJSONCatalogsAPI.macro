@@ -146,6 +146,26 @@ definition {
 		return ${catalogIds};
 	}
 
+	macro _patchCatalog {
+		var baseURL = ${baseURL};
+
+		if (!(isSet(baseURL))) {
+			var baseURL = PropsUtil.get("portal.url");
+		}
+
+		var userLoginInfo = JSONUtil2.formatJSONUser();
+
+		var curl = '''
+			${baseURL}/o/headless-commerce-admin-catalog/v1.0/catalog/${catalogId} \
+				-u ${userLoginInfo} \
+				-H 'accept: application/json' \
+				-H 'Content-Type: application/json' \
+				-d '${payload}'
+		''';
+
+		JSONCurlUtil.patch(${curl});
+	}
+
 	macro _patchCommerceCatalog {
 		Variables.assertDefined(parameterList = ${catalogName});
 
@@ -200,6 +220,32 @@ definition {
 		''';
 
 		JSONCurlUtil.patch(${curl});
+	}
+
+	macro assignAccountToCatalog {
+		var baseURL = ${baseURL};
+
+		if (!(isSet(baseURL))) {
+			var baseURL = PropsUtil.get("portal.url");
+		}
+
+		for (var accountAndCatalog : list ${accountAndCatalogNames}) {
+			var catalogName = StringUtil.extractFirst(${accountAndCatalog}, ":");
+			var accountName = StringUtil.extractLast(${accountAndCatalog}, ":");
+			var catalogId = CommerceJSONCatalogsAPI._getCommerceCatalogIdByName(catalogName = ${catalogName});
+			var accountId = JSONAccountEntryAPI._getAccountEntryId(accountEntryName = ${accountName});
+
+			var payload = '''	
+			{
+				"accountId": ${accountId},
+				"name": "${catalogName}"
+			}
+			''';
+
+			CommerceJSONCatalogsAPI._patchCatalog(
+				catalogId = ${catalogId},
+				payload = ${payload});
+		}
 	}
 
 }
