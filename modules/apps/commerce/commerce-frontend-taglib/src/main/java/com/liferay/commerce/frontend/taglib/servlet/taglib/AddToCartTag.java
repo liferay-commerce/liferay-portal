@@ -47,6 +47,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.taglib.util.IncludeTag;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.portlet.PortletRequest;
@@ -129,9 +130,21 @@ public class AddToCartTag extends IncludeTag {
 					commerceContext.getCommerceChannelGroupId(), sku);
 
 				if (!_disabled) {
+					int[] allowedQuantities =
+						_productSettingsModel.getAllowedQuantities();
+
+					int minAllowedQuantity = 0;
+
+					if (allowedQuantities != null) {
+						Arrays.sort(allowedQuantities);
+						minAllowedQuantity = allowedQuantities[0];
+					}
+
 					_disabled =
 						(!_productSettingsModel.isBackOrders() &&
-						 (_stockQuantity <= 0)) ||
+						 (_stockQuantity <= Math.max(
+							 _productSettingsModel.getMinQuantity(),
+							 minAllowedQuantity))) ||
 						!cpSku.isPublished() || !cpSku.isPurchasable();
 				}
 			}
