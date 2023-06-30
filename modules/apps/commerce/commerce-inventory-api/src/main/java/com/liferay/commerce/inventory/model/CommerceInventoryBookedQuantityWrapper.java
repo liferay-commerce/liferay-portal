@@ -17,6 +17,8 @@ package com.liferay.commerce.inventory.model;
 import com.liferay.portal.kernel.model.ModelWrapper;
 import com.liferay.portal.kernel.model.wrapper.BaseModelWrapper;
 
+import java.math.BigDecimal;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,9 +57,10 @@ public class CommerceInventoryBookedQuantityWrapper
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put("sku", getSku());
-		attributes.put("quantity", getQuantity());
-		attributes.put("expirationDate", getExpirationDate());
+		attributes.put("unitOfMeasureKey", getUnitOfMeasureKey());
 		attributes.put("bookedNote", getBookedNote());
+		attributes.put("expirationDate", getExpirationDate());
+		attributes.put("quantity", getQuantity());
 
 		return attributes;
 	}
@@ -114,10 +117,16 @@ public class CommerceInventoryBookedQuantityWrapper
 			setSku(sku);
 		}
 
-		Integer quantity = (Integer)attributes.get("quantity");
+		String unitOfMeasureKey = (String)attributes.get("unitOfMeasureKey");
 
-		if (quantity != null) {
-			setQuantity(quantity);
+		if (unitOfMeasureKey != null) {
+			setUnitOfMeasureKey(unitOfMeasureKey);
+		}
+
+		String bookedNote = (String)attributes.get("bookedNote");
+
+		if (bookedNote != null) {
+			setBookedNote(bookedNote);
 		}
 
 		Date expirationDate = (Date)attributes.get("expirationDate");
@@ -126,10 +135,10 @@ public class CommerceInventoryBookedQuantityWrapper
 			setExpirationDate(expirationDate);
 		}
 
-		String bookedNote = (String)attributes.get("bookedNote");
+		BigDecimal quantity = (BigDecimal)attributes.get("quantity");
 
-		if (bookedNote != null) {
-			setBookedNote(bookedNote);
+		if (quantity != null) {
+			setQuantity(quantity);
 		}
 	}
 
@@ -224,7 +233,7 @@ public class CommerceInventoryBookedQuantityWrapper
 	 * @return the quantity of this commerce inventory booked quantity
 	 */
 	@Override
-	public int getQuantity() {
+	public BigDecimal getQuantity() {
 		return model.getQuantity();
 	}
 
@@ -236,6 +245,16 @@ public class CommerceInventoryBookedQuantityWrapper
 	@Override
 	public String getSku() {
 		return model.getSku();
+	}
+
+	/**
+	 * Returns the unit of measure key of this commerce inventory booked quantity.
+	 *
+	 * @return the unit of measure key of this commerce inventory booked quantity
+	 */
+	@Override
+	public String getUnitOfMeasureKey() {
+		return model.getUnitOfMeasureKey();
 	}
 
 	/**
@@ -362,7 +381,7 @@ public class CommerceInventoryBookedQuantityWrapper
 	 * @param quantity the quantity of this commerce inventory booked quantity
 	 */
 	@Override
-	public void setQuantity(int quantity) {
+	public void setQuantity(BigDecimal quantity) {
 		model.setQuantity(quantity);
 	}
 
@@ -374,6 +393,16 @@ public class CommerceInventoryBookedQuantityWrapper
 	@Override
 	public void setSku(String sku) {
 		model.setSku(sku);
+	}
+
+	/**
+	 * Sets the unit of measure key of this commerce inventory booked quantity.
+	 *
+	 * @param unitOfMeasureKey the unit of measure key of this commerce inventory booked quantity
+	 */
+	@Override
+	public void setUnitOfMeasureKey(String unitOfMeasureKey) {
+		model.setUnitOfMeasureKey(unitOfMeasureKey);
 	}
 
 	/**

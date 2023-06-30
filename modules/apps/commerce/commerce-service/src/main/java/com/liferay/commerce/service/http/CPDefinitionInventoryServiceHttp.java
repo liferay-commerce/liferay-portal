@@ -55,9 +55,11 @@ public class CPDefinitionInventoryServiceHttp {
 				HttpPrincipal httpPrincipal, long cpDefinitionId,
 				String cpDefinitionInventoryEngine, String lowStockActivity,
 				boolean displayAvailability, boolean displayStockQuantity,
-				int minStockQuantity, boolean backOrders, int minOrderQuantity,
-				int maxOrderQuantity, String allowedOrderQuantities,
-				int multipleOrderQuantity)
+				java.math.BigDecimal minStockQuantity, boolean backOrders,
+				java.math.BigDecimal minOrderQuantity,
+				java.math.BigDecimal maxOrderQuantity,
+				String allowedOrderQuantities,
+				java.math.BigDecimal multipleOrderQuantity)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
@@ -186,9 +188,11 @@ public class CPDefinitionInventoryServiceHttp {
 				long cpDefinitionInventoryId,
 				String cpDefinitionInventoryEngine, String lowStockActivity,
 				boolean displayAvailability, boolean displayStockQuantity,
-				int minStockQuantity, boolean backOrders, int minOrderQuantity,
-				int maxOrderQuantity, String allowedOrderQuantities,
-				int multipleOrderQuantity)
+				java.math.BigDecimal minStockQuantity, boolean backOrders,
+				java.math.BigDecimal minOrderQuantity,
+				java.math.BigDecimal maxOrderQuantity,
+				String allowedOrderQuantities,
+				java.math.BigDecimal multipleOrderQuantity)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
@@ -237,9 +241,11 @@ public class CPDefinitionInventoryServiceHttp {
 				HttpPrincipal httpPrincipal, long cpDefinitionInventoryId,
 				String cpDefinitionInventoryEngine, String lowStockActivity,
 				boolean displayAvailability, boolean displayStockQuantity,
-				int minStockQuantity, boolean backOrders, int minOrderQuantity,
-				int maxOrderQuantity, String allowedOrderQuantities,
-				int multipleOrderQuantity)
+				java.math.BigDecimal minStockQuantity, boolean backOrders,
+				java.math.BigDecimal minOrderQuantity,
+				java.math.BigDecimal maxOrderQuantity,
+				String allowedOrderQuantities,
+				java.math.BigDecimal multipleOrderQuantity)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
@@ -289,8 +295,9 @@ public class CPDefinitionInventoryServiceHttp {
 	private static final Class<?>[] _addCPDefinitionInventoryParameterTypes0 =
 		new Class[] {
 			long.class, String.class, String.class, boolean.class,
-			boolean.class, int.class, boolean.class, int.class, int.class,
-			String.class, int.class
+			boolean.class, java.math.BigDecimal.class, boolean.class,
+			java.math.BigDecimal.class, java.math.BigDecimal.class,
+			String.class, java.math.BigDecimal.class
 		};
 	private static final Class<?>[]
 		_deleteCPDefinitionInventoryParameterTypes1 = new Class[] {long.class};
@@ -300,14 +307,16 @@ public class CPDefinitionInventoryServiceHttp {
 	private static final Class<?>[]
 		_updateCPDefinitionInventoryParameterTypes3 = new Class[] {
 			long.class, long.class, String.class, String.class, boolean.class,
-			boolean.class, int.class, boolean.class, int.class, int.class,
-			String.class, int.class
+			boolean.class, java.math.BigDecimal.class, boolean.class,
+			java.math.BigDecimal.class, java.math.BigDecimal.class,
+			String.class, java.math.BigDecimal.class
 		};
 	private static final Class<?>[]
 		_updateCPDefinitionInventoryParameterTypes4 = new Class[] {
 			long.class, String.class, String.class, boolean.class,
-			boolean.class, int.class, boolean.class, int.class, int.class,
-			String.class, int.class
+			boolean.class, java.math.BigDecimal.class, boolean.class,
+			java.math.BigDecimal.class, java.math.BigDecimal.class,
+			String.class, java.math.BigDecimal.class
 		};
 
 }

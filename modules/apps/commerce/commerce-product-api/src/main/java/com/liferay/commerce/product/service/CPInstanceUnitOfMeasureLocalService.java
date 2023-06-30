@@ -293,6 +293,14 @@ public interface CPInstanceUnitOfMeasureLocalService
 		long cpInstanceId, int start, int end,
 		OrderByComparator<CPInstanceUnitOfMeasure> orderByComparator);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<CPInstanceUnitOfMeasure> getCPInstanceUnitOfMeasuresByKeySku(
+		long companyId, String key, String sku);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<CPInstanceUnitOfMeasure>
+		getCPInstanceUnitOfMeasuresByPrimarySku(long companyId, String sku);
+
 	/**
 	 * Returns the number of cp instance unit of measures.
 	 *

@@ -20,6 +20,8 @@ import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.MVCCModel;
 import com.liferay.portal.kernel.model.ShardedModel;
 
+import java.math.BigDecimal;
+
 import java.util.Date;
 
 import org.osgi.annotation.versioning.ProviderType;
@@ -203,6 +205,21 @@ public interface CommerceInventoryAuditModel
 	public void setSku(String sku);
 
 	/**
+	 * Returns the unit of measure key of this commerce inventory audit.
+	 *
+	 * @return the unit of measure key of this commerce inventory audit
+	 */
+	@AutoEscape
+	public String getUnitOfMeasureKey();
+
+	/**
+	 * Sets the unit of measure key of this commerce inventory audit.
+	 *
+	 * @param unitOfMeasureKey the unit of measure key of this commerce inventory audit
+	 */
+	public void setUnitOfMeasureKey(String unitOfMeasureKey);
+
+	/**
 	 * Returns the log type of this commerce inventory audit.
 	 *
 	 * @return the log type of this commerce inventory audit
@@ -237,14 +254,14 @@ public interface CommerceInventoryAuditModel
 	 *
 	 * @return the quantity of this commerce inventory audit
 	 */
-	public int getQuantity();
+	public BigDecimal getQuantity();
 
 	/**
 	 * Sets the quantity of this commerce inventory audit.
 	 *
 	 * @param quantity the quantity of this commerce inventory audit
 	 */
-	public void setQuantity(int quantity);
+	public void setQuantity(BigDecimal quantity);
 
 	@Override
 	public CommerceInventoryAudit cloneWithOriginalValues();

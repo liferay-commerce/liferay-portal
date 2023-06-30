@@ -392,9 +392,11 @@ public class CommerceInventoryWarehouseLocalServiceUtil {
 	}
 
 	public static List<CommerceInventoryWarehouse>
-		getCommerceInventoryWarehouses(long groupId, String sku) {
+		getCommerceInventoryWarehouses(
+			long groupId, String sku, String unitOfMeasureKey) {
 
-		return getService().getCommerceInventoryWarehouses(groupId, sku);
+		return getService().getCommerceInventoryWarehouses(
+			groupId, sku, unitOfMeasureKey);
 	}
 
 	/**

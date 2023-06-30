@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import java.math.BigDecimal;
+
 import java.util.Date;
 
 /**
@@ -82,7 +84,7 @@ public class CommerceInventoryBookedQuantityCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(23);
+		StringBundler sb = new StringBundler(25);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -100,12 +102,14 @@ public class CommerceInventoryBookedQuantityCacheModel
 		sb.append(modifiedDate);
 		sb.append(", sku=");
 		sb.append(sku);
-		sb.append(", quantity=");
-		sb.append(quantity);
-		sb.append(", expirationDate=");
-		sb.append(expirationDate);
+		sb.append(", unitOfMeasureKey=");
+		sb.append(unitOfMeasureKey);
 		sb.append(", bookedNote=");
 		sb.append(bookedNote);
+		sb.append(", expirationDate=");
+		sb.append(expirationDate);
+		sb.append(", quantity=");
+		sb.append(quantity);
 		sb.append("}");
 
 		return sb.toString();
@@ -154,14 +158,12 @@ public class CommerceInventoryBookedQuantityCacheModel
 			commerceInventoryBookedQuantityImpl.setSku(sku);
 		}
 
-		commerceInventoryBookedQuantityImpl.setQuantity(quantity);
-
-		if (expirationDate == Long.MIN_VALUE) {
-			commerceInventoryBookedQuantityImpl.setExpirationDate(null);
+		if (unitOfMeasureKey == null) {
+			commerceInventoryBookedQuantityImpl.setUnitOfMeasureKey("");
 		}
 		else {
-			commerceInventoryBookedQuantityImpl.setExpirationDate(
-				new Date(expirationDate));
+			commerceInventoryBookedQuantityImpl.setUnitOfMeasureKey(
+				unitOfMeasureKey);
 		}
 
 		if (bookedNote == null) {
@@ -171,13 +173,25 @@ public class CommerceInventoryBookedQuantityCacheModel
 			commerceInventoryBookedQuantityImpl.setBookedNote(bookedNote);
 		}
 
+		if (expirationDate == Long.MIN_VALUE) {
+			commerceInventoryBookedQuantityImpl.setExpirationDate(null);
+		}
+		else {
+			commerceInventoryBookedQuantityImpl.setExpirationDate(
+				new Date(expirationDate));
+		}
+
+		commerceInventoryBookedQuantityImpl.setQuantity(quantity);
+
 		commerceInventoryBookedQuantityImpl.resetOriginalValues();
 
 		return commerceInventoryBookedQuantityImpl;
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		commerceInventoryBookedQuantityId = objectInput.readLong();
@@ -189,10 +203,10 @@ public class CommerceInventoryBookedQuantityCacheModel
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 		sku = objectInput.readUTF();
-
-		quantity = objectInput.readInt();
-		expirationDate = objectInput.readLong();
+		unitOfMeasureKey = objectInput.readUTF();
 		bookedNote = objectInput.readUTF();
+		expirationDate = objectInput.readLong();
+		quantity = (BigDecimal)objectInput.readObject();
 	}
 
 	@Override
@@ -222,8 +236,12 @@ public class CommerceInventoryBookedQuantityCacheModel
 			objectOutput.writeUTF(sku);
 		}
 
-		objectOutput.writeInt(quantity);
-		objectOutput.writeLong(expirationDate);
+		if (unitOfMeasureKey == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(unitOfMeasureKey);
+		}
 
 		if (bookedNote == null) {
 			objectOutput.writeUTF("");
@@ -231,6 +249,9 @@ public class CommerceInventoryBookedQuantityCacheModel
 		else {
 			objectOutput.writeUTF(bookedNote);
 		}
+
+		objectOutput.writeLong(expirationDate);
+		objectOutput.writeObject(quantity);
 	}
 
 	public long mvccVersion;
@@ -241,8 +262,9 @@ public class CommerceInventoryBookedQuantityCacheModel
 	public long createDate;
 	public long modifiedDate;
 	public String sku;
-	public int quantity;
-	public long expirationDate;
+	public String unitOfMeasureKey;
 	public String bookedNote;
+	public long expirationDate;
+	public BigDecimal quantity;
 
 }

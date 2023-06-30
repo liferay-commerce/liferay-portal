@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import java.math.BigDecimal;
+
 import java.util.Date;
 
 /**
@@ -210,7 +212,9 @@ public class CPDefinitionInventoryCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		ctCollectionId = objectInput.readLong();
@@ -234,17 +238,13 @@ public class CPDefinitionInventoryCacheModel
 		displayAvailability = objectInput.readBoolean();
 
 		displayStockQuantity = objectInput.readBoolean();
-
-		minStockQuantity = objectInput.readInt();
+		minStockQuantity = (BigDecimal)objectInput.readObject();
 
 		backOrders = objectInput.readBoolean();
-
-		minOrderQuantity = objectInput.readInt();
-
-		maxOrderQuantity = objectInput.readInt();
+		minOrderQuantity = (BigDecimal)objectInput.readObject();
+		maxOrderQuantity = (BigDecimal)objectInput.readObject();
 		allowedOrderQuantities = objectInput.readUTF();
-
-		multipleOrderQuantity = objectInput.readInt();
+		multipleOrderQuantity = (BigDecimal)objectInput.readObject();
 	}
 
 	@Override
@@ -297,14 +297,11 @@ public class CPDefinitionInventoryCacheModel
 		objectOutput.writeBoolean(displayAvailability);
 
 		objectOutput.writeBoolean(displayStockQuantity);
-
-		objectOutput.writeInt(minStockQuantity);
+		objectOutput.writeObject(minStockQuantity);
 
 		objectOutput.writeBoolean(backOrders);
-
-		objectOutput.writeInt(minOrderQuantity);
-
-		objectOutput.writeInt(maxOrderQuantity);
+		objectOutput.writeObject(minOrderQuantity);
+		objectOutput.writeObject(maxOrderQuantity);
 
 		if (allowedOrderQuantities == null) {
 			objectOutput.writeUTF("");
@@ -313,7 +310,7 @@ public class CPDefinitionInventoryCacheModel
 			objectOutput.writeUTF(allowedOrderQuantities);
 		}
 
-		objectOutput.writeInt(multipleOrderQuantity);
+		objectOutput.writeObject(multipleOrderQuantity);
 	}
 
 	public long mvccVersion;
@@ -331,11 +328,11 @@ public class CPDefinitionInventoryCacheModel
 	public String lowStockActivity;
 	public boolean displayAvailability;
 	public boolean displayStockQuantity;
-	public int minStockQuantity;
+	public BigDecimal minStockQuantity;
 	public boolean backOrders;
-	public int minOrderQuantity;
-	public int maxOrderQuantity;
+	public BigDecimal minOrderQuantity;
+	public BigDecimal maxOrderQuantity;
 	public String allowedOrderQuantities;
-	public int multipleOrderQuantity;
+	public BigDecimal multipleOrderQuantity;
 
 }

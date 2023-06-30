@@ -54,7 +54,7 @@ public class CommerceInventoryBookedQuantityServiceHttp {
 		<com.liferay.commerce.inventory.model.CommerceInventoryBookedQuantity>
 				getCommerceInventoryBookedQuantities(
 					HttpPrincipal httpPrincipal, long companyId, String sku,
-					int start, int end)
+					String unitOfMeasureKey, int start, int end)
 			throws com.liferay.portal.kernel.security.auth.PrincipalException {
 
 		try {
@@ -64,7 +64,7 @@ public class CommerceInventoryBookedQuantityServiceHttp {
 				_getCommerceInventoryBookedQuantitiesParameterTypes0);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, companyId, sku, start, end);
+				methodKey, companyId, sku, unitOfMeasureKey, start, end);
 
 			Object returnObj = null;
 
@@ -101,7 +101,8 @@ public class CommerceInventoryBookedQuantityServiceHttp {
 		<com.liferay.commerce.inventory.model.CommerceInventoryBookedQuantity>
 				getCommerceInventoryBookedQuantities(
 					HttpPrincipal httpPrincipal, long companyId,
-					String keywords, String sku, int start, int end)
+					String keywords, String sku, String unitOfMeasureKey,
+					int start, int end)
 			throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
@@ -111,7 +112,8 @@ public class CommerceInventoryBookedQuantityServiceHttp {
 				_getCommerceInventoryBookedQuantitiesParameterTypes1);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, companyId, keywords, sku, start, end);
+				methodKey, companyId, keywords, sku, unitOfMeasureKey, start,
+				end);
 
 			Object returnObj = null;
 
@@ -144,7 +146,8 @@ public class CommerceInventoryBookedQuantityServiceHttp {
 	}
 
 	public static int getCommerceInventoryBookedQuantitiesCount(
-			HttpPrincipal httpPrincipal, long companyId, String sku)
+			HttpPrincipal httpPrincipal, long companyId, String sku,
+			String unitOfMeasureKey)
 		throws com.liferay.portal.kernel.security.auth.PrincipalException {
 
 		try {
@@ -154,7 +157,7 @@ public class CommerceInventoryBookedQuantityServiceHttp {
 				_getCommerceInventoryBookedQuantitiesCountParameterTypes2);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, companyId, sku);
+				methodKey, companyId, sku, unitOfMeasureKey);
 
 			Object returnObj = null;
 
@@ -187,7 +190,7 @@ public class CommerceInventoryBookedQuantityServiceHttp {
 
 	public static int getCommerceInventoryBookedQuantitiesCount(
 			HttpPrincipal httpPrincipal, long companyId, String keywords,
-			String sku)
+			String sku, String unitOfMeasureKey)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
@@ -197,7 +200,7 @@ public class CommerceInventoryBookedQuantityServiceHttp {
 				_getCommerceInventoryBookedQuantitiesCountParameterTypes3);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, companyId, keywords, sku);
+				methodKey, companyId, keywords, sku, unitOfMeasureKey);
 
 			Object returnObj = null;
 
@@ -232,17 +235,18 @@ public class CommerceInventoryBookedQuantityServiceHttp {
 
 	private static final Class<?>[]
 		_getCommerceInventoryBookedQuantitiesParameterTypes0 = new Class[] {
-			long.class, String.class, int.class, int.class
-		};
-	private static final Class<?>[]
-		_getCommerceInventoryBookedQuantitiesParameterTypes1 = new Class[] {
 			long.class, String.class, String.class, int.class, int.class
 		};
 	private static final Class<?>[]
+		_getCommerceInventoryBookedQuantitiesParameterTypes1 = new Class[] {
+			long.class, String.class, String.class, String.class, int.class,
+			int.class
+		};
+	private static final Class<?>[]
 		_getCommerceInventoryBookedQuantitiesCountParameterTypes2 =
-			new Class[] {long.class, String.class};
+			new Class[] {long.class, String.class, String.class};
 	private static final Class<?>[]
 		_getCommerceInventoryBookedQuantitiesCountParameterTypes3 =
-			new Class[] {long.class, String.class, String.class};
+			new Class[] {long.class, String.class, String.class, String.class};
 
 }

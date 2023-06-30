@@ -18,6 +18,8 @@ import com.liferay.exportimport.kernel.lar.StagedModelType;
 import com.liferay.portal.kernel.model.ModelWrapper;
 import com.liferay.portal.kernel.model.wrapper.BaseModelWrapper;
 
+import java.math.BigDecimal;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -169,7 +171,8 @@ public class CPDefinitionInventoryWrapper
 			setDisplayStockQuantity(displayStockQuantity);
 		}
 
-		Integer minStockQuantity = (Integer)attributes.get("minStockQuantity");
+		BigDecimal minStockQuantity = (BigDecimal)attributes.get(
+			"minStockQuantity");
 
 		if (minStockQuantity != null) {
 			setMinStockQuantity(minStockQuantity);
@@ -181,13 +184,15 @@ public class CPDefinitionInventoryWrapper
 			setBackOrders(backOrders);
 		}
 
-		Integer minOrderQuantity = (Integer)attributes.get("minOrderQuantity");
+		BigDecimal minOrderQuantity = (BigDecimal)attributes.get(
+			"minOrderQuantity");
 
 		if (minOrderQuantity != null) {
 			setMinOrderQuantity(minOrderQuantity);
 		}
 
-		Integer maxOrderQuantity = (Integer)attributes.get("maxOrderQuantity");
+		BigDecimal maxOrderQuantity = (BigDecimal)attributes.get(
+			"maxOrderQuantity");
 
 		if (maxOrderQuantity != null) {
 			setMaxOrderQuantity(maxOrderQuantity);
@@ -200,7 +205,7 @@ public class CPDefinitionInventoryWrapper
 			setAllowedOrderQuantities(allowedOrderQuantities);
 		}
 
-		Integer multipleOrderQuantity = (Integer)attributes.get(
+		BigDecimal multipleOrderQuantity = (BigDecimal)attributes.get(
 			"multipleOrderQuantity");
 
 		if (multipleOrderQuantity != null) {
@@ -344,7 +349,7 @@ public class CPDefinitionInventoryWrapper
 	 * @return the max order quantity of this cp definition inventory
 	 */
 	@Override
-	public int getMaxOrderQuantity() {
+	public BigDecimal getMaxOrderQuantity() {
 		return model.getMaxOrderQuantity();
 	}
 
@@ -354,7 +359,7 @@ public class CPDefinitionInventoryWrapper
 	 * @return the min order quantity of this cp definition inventory
 	 */
 	@Override
-	public int getMinOrderQuantity() {
+	public BigDecimal getMinOrderQuantity() {
 		return model.getMinOrderQuantity();
 	}
 
@@ -364,7 +369,7 @@ public class CPDefinitionInventoryWrapper
 	 * @return the min stock quantity of this cp definition inventory
 	 */
 	@Override
-	public int getMinStockQuantity() {
+	public BigDecimal getMinStockQuantity() {
 		return model.getMinStockQuantity();
 	}
 
@@ -384,7 +389,7 @@ public class CPDefinitionInventoryWrapper
 	 * @return the multiple order quantity of this cp definition inventory
 	 */
 	@Override
-	public int getMultipleOrderQuantity() {
+	public BigDecimal getMultipleOrderQuantity() {
 		return model.getMultipleOrderQuantity();
 	}
 
@@ -611,7 +616,7 @@ public class CPDefinitionInventoryWrapper
 	 * @param maxOrderQuantity the max order quantity of this cp definition inventory
 	 */
 	@Override
-	public void setMaxOrderQuantity(int maxOrderQuantity) {
+	public void setMaxOrderQuantity(BigDecimal maxOrderQuantity) {
 		model.setMaxOrderQuantity(maxOrderQuantity);
 	}
 
@@ -621,7 +626,7 @@ public class CPDefinitionInventoryWrapper
 	 * @param minOrderQuantity the min order quantity of this cp definition inventory
 	 */
 	@Override
-	public void setMinOrderQuantity(int minOrderQuantity) {
+	public void setMinOrderQuantity(BigDecimal minOrderQuantity) {
 		model.setMinOrderQuantity(minOrderQuantity);
 	}
 
@@ -631,7 +636,7 @@ public class CPDefinitionInventoryWrapper
 	 * @param minStockQuantity the min stock quantity of this cp definition inventory
 	 */
 	@Override
-	public void setMinStockQuantity(int minStockQuantity) {
+	public void setMinStockQuantity(BigDecimal minStockQuantity) {
 		model.setMinStockQuantity(minStockQuantity);
 	}
 
@@ -651,7 +656,7 @@ public class CPDefinitionInventoryWrapper
 	 * @param multipleOrderQuantity the multiple order quantity of this cp definition inventory
 	 */
 	@Override
-	public void setMultipleOrderQuantity(int multipleOrderQuantity) {
+	public void setMultipleOrderQuantity(BigDecimal multipleOrderQuantity) {
 		model.setMultipleOrderQuantity(multipleOrderQuantity);
 	}
 

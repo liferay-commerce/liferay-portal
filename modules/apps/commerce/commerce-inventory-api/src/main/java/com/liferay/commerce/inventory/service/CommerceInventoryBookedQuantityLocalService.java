@@ -37,6 +37,8 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.io.Serializable;
 
+import java.math.BigDecimal;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -68,7 +70,8 @@ public interface CommerceInventoryBookedQuantityLocalService
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	public CommerceInventoryBookedQuantity addCommerceBookedQuantity(
-			long userId, String sku, int quantity, Date expirationDate,
+			long userId, String sku, String unitOfMeasureKey,
+			BigDecimal quantity, Date expirationDate,
 			Map<String, String> context)
 		throws PortalException;
 
@@ -89,7 +92,7 @@ public interface CommerceInventoryBookedQuantityLocalService
 	public void checkCommerceInventoryBookedQuantities();
 
 	public CommerceInventoryBookedQuantity consumeCommerceBookedQuantity(
-			long commerceBookedQuantityId, int quantity)
+			long commerceBookedQuantityId, BigDecimal quantity)
 		throws NoSuchInventoryBookedQuantityException;
 
 	/**
@@ -228,11 +231,13 @@ public interface CommerceInventoryBookedQuantityLocalService
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceBookedQuantity(
-		long companyId, long commerceChannelGroupId, String sku);
+	public BigDecimal getCommerceBookedQuantity(
+		long companyId, long commerceChannelGroupId, String sku,
+		String unitOfMeasureKey);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceBookedQuantity(long companyId, String sku);
+	public BigDecimal getCommerceBookedQuantity(
+		long companyId, String sku, String unitOfMeasureKey);
 
 	/**
 	 * Returns a range of all the commerce inventory booked quantities.
@@ -252,12 +257,14 @@ public interface CommerceInventoryBookedQuantityLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommerceInventoryBookedQuantity>
 		getCommerceInventoryBookedQuantities(
-			long companyId, String sku, int start, int end);
+			long companyId, String sku, String unitOfMeasureKey, int start,
+			int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommerceInventoryBookedQuantity>
 			getCommerceInventoryBookedQuantities(
-				long companyId, String keywords, String sku, int start, int end)
+				long companyId, String keywords, String sku,
+				String unitOfMeasureKey, int start, int end)
 		throws PortalException;
 
 	/**
@@ -270,11 +277,12 @@ public interface CommerceInventoryBookedQuantityLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceInventoryBookedQuantitiesCount(
-		long companyId, String sku);
+		long companyId, String sku, String unitOfMeasureKey);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceInventoryBookedQuantitiesCount(
-			long companyId, String keywords, String sku)
+			long companyId, String keywords, String sku,
+			String unitOfMeasureKey)
 		throws PortalException;
 
 	/**
@@ -309,7 +317,8 @@ public interface CommerceInventoryBookedQuantityLocalService
 
 	public CommerceInventoryBookedQuantity resetCommerceBookedQuantity(
 			long commerceBookedQuantityId, long userId, String sku,
-			int quantity, Date expirationDate, Map<String, String> context)
+			String unitOfMeasureKey, Date expirationDate, BigDecimal quantity,
+			Map<String, String> context)
 		throws PortalException;
 
 	public CommerceInventoryBookedQuantity
@@ -347,7 +356,8 @@ public interface CommerceInventoryBookedQuantityLocalService
 	public CommerceInventoryBookedQuantity
 			updateCommerceInventoryBookedQuantity(
 				long userId, long commerceInventoryBookedQuantityId,
-				int quantity, Map<String, String> context, long mvccVersion)
+				BigDecimal quantity, Map<String, String> context,
+				long mvccVersion)
 		throws PortalException;
 
 }

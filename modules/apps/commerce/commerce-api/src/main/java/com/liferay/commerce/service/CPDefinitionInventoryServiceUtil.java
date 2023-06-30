@@ -39,9 +39,11 @@ public class CPDefinitionInventoryServiceUtil {
 	public static CPDefinitionInventory addCPDefinitionInventory(
 			long cpDefinitionId, String cpDefinitionInventoryEngine,
 			String lowStockActivity, boolean displayAvailability,
-			boolean displayStockQuantity, int minStockQuantity,
-			boolean backOrders, int minOrderQuantity, int maxOrderQuantity,
-			String allowedOrderQuantities, int multipleOrderQuantity)
+			boolean displayStockQuantity, java.math.BigDecimal minStockQuantity,
+			boolean backOrders, java.math.BigDecimal minOrderQuantity,
+			java.math.BigDecimal maxOrderQuantity,
+			String allowedOrderQuantities,
+			java.math.BigDecimal multipleOrderQuantity)
 		throws PortalException {
 
 		return getService().addCPDefinitionInventory(
@@ -82,9 +84,11 @@ public class CPDefinitionInventoryServiceUtil {
 			long groupId, long cpDefinitionInventoryId,
 			String cpDefinitionInventoryEngine, String lowStockActivity,
 			boolean displayAvailability, boolean displayStockQuantity,
-			int minStockQuantity, boolean backOrders, int minOrderQuantity,
-			int maxOrderQuantity, String allowedOrderQuantities,
-			int multipleOrderQuantity)
+			java.math.BigDecimal minStockQuantity, boolean backOrders,
+			java.math.BigDecimal minOrderQuantity,
+			java.math.BigDecimal maxOrderQuantity,
+			String allowedOrderQuantities,
+			java.math.BigDecimal multipleOrderQuantity)
 		throws PortalException {
 
 		return getService().updateCPDefinitionInventory(
@@ -97,9 +101,11 @@ public class CPDefinitionInventoryServiceUtil {
 	public static CPDefinitionInventory updateCPDefinitionInventory(
 			long cpDefinitionInventoryId, String cpDefinitionInventoryEngine,
 			String lowStockActivity, boolean displayAvailability,
-			boolean displayStockQuantity, int minStockQuantity,
-			boolean backOrders, int minOrderQuantity, int maxOrderQuantity,
-			String allowedOrderQuantities, int multipleOrderQuantity)
+			boolean displayStockQuantity, java.math.BigDecimal minStockQuantity,
+			boolean backOrders, java.math.BigDecimal minOrderQuantity,
+			java.math.BigDecimal maxOrderQuantity,
+			String allowedOrderQuantities,
+			java.math.BigDecimal multipleOrderQuantity)
 		throws PortalException {
 
 		return getService().updateCPDefinitionInventory(

@@ -39,6 +39,8 @@ import com.liferay.portal.test.rule.TransactionalTestRule;
 
 import java.io.Serializable;
 
+import java.math.BigDecimal;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -141,12 +143,16 @@ public class CommerceInventoryAuditPersistenceTest {
 
 		newCommerceInventoryAudit.setSku(RandomTestUtil.randomString());
 
+		newCommerceInventoryAudit.setUnitOfMeasureKey(
+			RandomTestUtil.randomString());
+
 		newCommerceInventoryAudit.setLogType(RandomTestUtil.randomString());
 
 		newCommerceInventoryAudit.setLogTypeSettings(
 			RandomTestUtil.randomString());
 
-		newCommerceInventoryAudit.setQuantity(RandomTestUtil.nextInt());
+		newCommerceInventoryAudit.setQuantity(
+			new BigDecimal(RandomTestUtil.nextDouble()));
 
 		_commerceInventoryAudits.add(
 			_persistence.update(newCommerceInventoryAudit));
@@ -183,6 +189,9 @@ public class CommerceInventoryAuditPersistenceTest {
 			existingCommerceInventoryAudit.getSku(),
 			newCommerceInventoryAudit.getSku());
 		Assert.assertEquals(
+			existingCommerceInventoryAudit.getUnitOfMeasureKey(),
+			newCommerceInventoryAudit.getUnitOfMeasureKey());
+		Assert.assertEquals(
 			existingCommerceInventoryAudit.getLogType(),
 			newCommerceInventoryAudit.getLogType());
 		Assert.assertEquals(
@@ -201,12 +210,12 @@ public class CommerceInventoryAuditPersistenceTest {
 	}
 
 	@Test
-	public void testCountByC_S() throws Exception {
-		_persistence.countByC_S(RandomTestUtil.nextLong(), "");
+	public void testCountByC_S_U() throws Exception {
+		_persistence.countByC_S_U(RandomTestUtil.nextLong(), "", "");
 
-		_persistence.countByC_S(0L, "null");
+		_persistence.countByC_S_U(0L, "null", "null");
 
-		_persistence.countByC_S(0L, (String)null);
+		_persistence.countByC_S_U(0L, (String)null, (String)null);
 	}
 
 	@Test
@@ -239,8 +248,8 @@ public class CommerceInventoryAuditPersistenceTest {
 		return OrderByComparatorFactoryUtil.create(
 			"CIAudit", "mvccVersion", true, "commerceInventoryAuditId", true,
 			"companyId", true, "userId", true, "userName", true, "createDate",
-			true, "modifiedDate", true, "sku", true, "logType", true,
-			"quantity", true);
+			true, "modifiedDate", true, "sku", true, "unitOfMeasureKey", true,
+			"logType", true, "quantity", true);
 	}
 
 	@Test
@@ -500,12 +509,16 @@ public class CommerceInventoryAuditPersistenceTest {
 
 		commerceInventoryAudit.setSku(RandomTestUtil.randomString());
 
+		commerceInventoryAudit.setUnitOfMeasureKey(
+			RandomTestUtil.randomString());
+
 		commerceInventoryAudit.setLogType(RandomTestUtil.randomString());
 
 		commerceInventoryAudit.setLogTypeSettings(
 			RandomTestUtil.randomString());
 
-		commerceInventoryAudit.setQuantity(RandomTestUtil.nextInt());
+		commerceInventoryAudit.setQuantity(
+			new BigDecimal(RandomTestUtil.nextDouble()));
 
 		_commerceInventoryAudits.add(
 			_persistence.update(commerceInventoryAudit));

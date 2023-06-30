@@ -292,6 +292,26 @@ public class CPInstanceUnitOfMeasurePersistenceTest {
 	}
 
 	@Test
+	public void testCountByC_K_SKU() throws Exception {
+		_persistence.countByC_K_SKU(RandomTestUtil.nextLong(), "", "");
+
+		_persistence.countByC_K_SKU(0L, "null", "null");
+
+		_persistence.countByC_K_SKU(0L, (String)null, (String)null);
+	}
+
+	@Test
+	public void testCountByC_P_SKU() throws Exception {
+		_persistence.countByC_P_SKU(
+			RandomTestUtil.nextLong(), RandomTestUtil.randomBoolean(), "");
+
+		_persistence.countByC_P_SKU(0L, RandomTestUtil.randomBoolean(), "null");
+
+		_persistence.countByC_P_SKU(
+			0L, RandomTestUtil.randomBoolean(), (String)null);
+	}
+
+	@Test
 	public void testFindByPrimaryKeyExisting() throws Exception {
 		CPInstanceUnitOfMeasure newCPInstanceUnitOfMeasure =
 			addCPInstanceUnitOfMeasure();

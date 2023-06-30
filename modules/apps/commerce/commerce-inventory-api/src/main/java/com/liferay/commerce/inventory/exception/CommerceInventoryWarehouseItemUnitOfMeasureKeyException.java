@@ -12,23 +12,33 @@
  * details.
  */
 
-package com.liferay.commerce.inventory.service.persistence;
+package com.liferay.commerce.inventory.exception;
 
-import org.osgi.annotation.versioning.ProviderType;
+import com.liferay.portal.kernel.exception.PortalException;
 
 /**
  * @author Luca Pellizzon
- * @generated
  */
-@ProviderType
-public interface CommerceInventoryWarehouseFinder {
+public class CommerceInventoryWarehouseItemUnitOfMeasureKeyException
+	extends PortalException {
 
-	public java.util.List
-		<com.liferay.commerce.inventory.model.CommerceInventoryWarehouse>
-			findByG_S(long groupId, String sku);
+	public CommerceInventoryWarehouseItemUnitOfMeasureKeyException() {
+	}
 
-	public java.util.List
-		<com.liferay.commerce.inventory.model.CommerceInventoryWarehouse>
-			findByC_G_A(long companyId, long groupId, boolean active);
+	public CommerceInventoryWarehouseItemUnitOfMeasureKeyException(String msg) {
+		super(msg);
+	}
+
+	public CommerceInventoryWarehouseItemUnitOfMeasureKeyException(
+		String msg, Throwable throwable) {
+
+		super(msg, throwable);
+	}
+
+	public CommerceInventoryWarehouseItemUnitOfMeasureKeyException(
+		Throwable throwable) {
+
+		super(throwable);
+	}
 
 }

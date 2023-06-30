@@ -17,6 +17,8 @@ package com.liferay.commerce.inventory.model;
 import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.sql.dsl.base.BaseTable;
 
+import java.math.BigDecimal;
+
 import java.sql.Types;
 
 import java.util.Date;
@@ -66,12 +68,16 @@ public class CommerceInventoryWarehouseItemTable
 			Column.FLAG_DEFAULT);
 	public final Column<CommerceInventoryWarehouseItemTable, String> sku =
 		createColumn("sku", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
-	public final Column<CommerceInventoryWarehouseItemTable, Integer> quantity =
-		createColumn(
-			"quantity", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
-	public final Column<CommerceInventoryWarehouseItemTable, Integer>
+	public final Column<CommerceInventoryWarehouseItemTable, String>
+		unitOfMeasureKey = createColumn(
+			"unitOfMeasureKey", String.class, Types.VARCHAR,
+			Column.FLAG_DEFAULT);
+	public final Column<CommerceInventoryWarehouseItemTable, BigDecimal>
+		quantity = createColumn(
+			"quantity", BigDecimal.class, Types.DECIMAL, Column.FLAG_DEFAULT);
+	public final Column<CommerceInventoryWarehouseItemTable, BigDecimal>
 		reservedQuantity = createColumn(
-			"reservedQuantity", Integer.class, Types.INTEGER,
+			"reservedQuantity", BigDecimal.class, Types.DECIMAL,
 			Column.FLAG_DEFAULT);
 
 	private CommerceInventoryWarehouseItemTable() {

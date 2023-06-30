@@ -18,6 +18,8 @@ import com.liferay.exportimport.kernel.lar.StagedModelType;
 import com.liferay.portal.kernel.model.ModelWrapper;
 import com.liferay.portal.kernel.model.wrapper.BaseModelWrapper;
 
+import java.math.BigDecimal;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -60,6 +62,7 @@ public class CommerceInventoryReplenishmentItemWrapper
 		attributes.put(
 			"commerceInventoryWarehouseId", getCommerceInventoryWarehouseId());
 		attributes.put("sku", getSku());
+		attributes.put("unitOfMeasureKey", getUnitOfMeasureKey());
 		attributes.put("availabilityDate", getAvailabilityDate());
 		attributes.put("quantity", getQuantity());
 
@@ -138,13 +141,19 @@ public class CommerceInventoryReplenishmentItemWrapper
 			setSku(sku);
 		}
 
+		String unitOfMeasureKey = (String)attributes.get("unitOfMeasureKey");
+
+		if (unitOfMeasureKey != null) {
+			setUnitOfMeasureKey(unitOfMeasureKey);
+		}
+
 		Date availabilityDate = (Date)attributes.get("availabilityDate");
 
 		if (availabilityDate != null) {
 			setAvailabilityDate(availabilityDate);
 		}
 
-		Integer quantity = (Integer)attributes.get("quantity");
+		BigDecimal quantity = (BigDecimal)attributes.get("quantity");
 
 		if (quantity != null) {
 			setQuantity(quantity);
@@ -259,7 +268,7 @@ public class CommerceInventoryReplenishmentItemWrapper
 	 * @return the quantity of this commerce inventory replenishment item
 	 */
 	@Override
-	public int getQuantity() {
+	public BigDecimal getQuantity() {
 		return model.getQuantity();
 	}
 
@@ -271,6 +280,16 @@ public class CommerceInventoryReplenishmentItemWrapper
 	@Override
 	public String getSku() {
 		return model.getSku();
+	}
+
+	/**
+	 * Returns the unit of measure key of this commerce inventory replenishment item.
+	 *
+	 * @return the unit of measure key of this commerce inventory replenishment item
+	 */
+	@Override
+	public String getUnitOfMeasureKey() {
+		return model.getUnitOfMeasureKey();
 	}
 
 	/**
@@ -419,7 +438,7 @@ public class CommerceInventoryReplenishmentItemWrapper
 	 * @param quantity the quantity of this commerce inventory replenishment item
 	 */
 	@Override
-	public void setQuantity(int quantity) {
+	public void setQuantity(BigDecimal quantity) {
 		model.setQuantity(quantity);
 	}
 
@@ -431,6 +450,16 @@ public class CommerceInventoryReplenishmentItemWrapper
 	@Override
 	public void setSku(String sku) {
 		model.setSku(sku);
+	}
+
+	/**
+	 * Sets the unit of measure key of this commerce inventory replenishment item.
+	 *
+	 * @param unitOfMeasureKey the unit of measure key of this commerce inventory replenishment item
+	 */
+	@Override
+	public void setUnitOfMeasureKey(String unitOfMeasureKey) {
+		model.setUnitOfMeasureKey(unitOfMeasureKey);
 	}
 
 	/**

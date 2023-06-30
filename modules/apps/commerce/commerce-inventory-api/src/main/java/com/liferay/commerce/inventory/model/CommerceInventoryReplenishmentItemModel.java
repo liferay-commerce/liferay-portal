@@ -20,6 +20,8 @@ import com.liferay.portal.kernel.model.MVCCModel;
 import com.liferay.portal.kernel.model.ShardedModel;
 import com.liferay.portal.kernel.model.StagedAuditedModel;
 
+import java.math.BigDecimal;
+
 import java.util.Date;
 
 import org.osgi.annotation.versioning.ProviderType;
@@ -251,6 +253,21 @@ public interface CommerceInventoryReplenishmentItemModel
 	public void setSku(String sku);
 
 	/**
+	 * Returns the unit of measure key of this commerce inventory replenishment item.
+	 *
+	 * @return the unit of measure key of this commerce inventory replenishment item
+	 */
+	@AutoEscape
+	public String getUnitOfMeasureKey();
+
+	/**
+	 * Sets the unit of measure key of this commerce inventory replenishment item.
+	 *
+	 * @param unitOfMeasureKey the unit of measure key of this commerce inventory replenishment item
+	 */
+	public void setUnitOfMeasureKey(String unitOfMeasureKey);
+
+	/**
 	 * Returns the availability date of this commerce inventory replenishment item.
 	 *
 	 * @return the availability date of this commerce inventory replenishment item
@@ -269,14 +286,14 @@ public interface CommerceInventoryReplenishmentItemModel
 	 *
 	 * @return the quantity of this commerce inventory replenishment item
 	 */
-	public int getQuantity();
+	public BigDecimal getQuantity();
 
 	/**
 	 * Sets the quantity of this commerce inventory replenishment item.
 	 *
 	 * @param quantity the quantity of this commerce inventory replenishment item
 	 */
-	public void setQuantity(int quantity);
+	public void setQuantity(BigDecimal quantity);
 
 	@Override
 	public CommerceInventoryReplenishmentItem cloneWithOriginalValues();

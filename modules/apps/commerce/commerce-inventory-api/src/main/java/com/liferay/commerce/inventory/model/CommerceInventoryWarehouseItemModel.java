@@ -20,6 +20,8 @@ import com.liferay.portal.kernel.model.MVCCModel;
 import com.liferay.portal.kernel.model.ShardedModel;
 import com.liferay.portal.kernel.model.StagedAuditedModel;
 
+import java.math.BigDecimal;
+
 import java.util.Date;
 
 import org.osgi.annotation.versioning.ProviderType;
@@ -251,32 +253,47 @@ public interface CommerceInventoryWarehouseItemModel
 	public void setSku(String sku);
 
 	/**
+	 * Returns the unit of measure key of this commerce inventory warehouse item.
+	 *
+	 * @return the unit of measure key of this commerce inventory warehouse item
+	 */
+	@AutoEscape
+	public String getUnitOfMeasureKey();
+
+	/**
+	 * Sets the unit of measure key of this commerce inventory warehouse item.
+	 *
+	 * @param unitOfMeasureKey the unit of measure key of this commerce inventory warehouse item
+	 */
+	public void setUnitOfMeasureKey(String unitOfMeasureKey);
+
+	/**
 	 * Returns the quantity of this commerce inventory warehouse item.
 	 *
 	 * @return the quantity of this commerce inventory warehouse item
 	 */
-	public int getQuantity();
+	public BigDecimal getQuantity();
 
 	/**
 	 * Sets the quantity of this commerce inventory warehouse item.
 	 *
 	 * @param quantity the quantity of this commerce inventory warehouse item
 	 */
-	public void setQuantity(int quantity);
+	public void setQuantity(BigDecimal quantity);
 
 	/**
 	 * Returns the reserved quantity of this commerce inventory warehouse item.
 	 *
 	 * @return the reserved quantity of this commerce inventory warehouse item
 	 */
-	public int getReservedQuantity();
+	public BigDecimal getReservedQuantity();
 
 	/**
 	 * Sets the reserved quantity of this commerce inventory warehouse item.
 	 *
 	 * @param reservedQuantity the reserved quantity of this commerce inventory warehouse item
 	 */
-	public void setReservedQuantity(int reservedQuantity);
+	public void setReservedQuantity(BigDecimal reservedQuantity);
 
 	@Override
 	public CommerceInventoryWarehouseItem cloneWithOriginalValues();

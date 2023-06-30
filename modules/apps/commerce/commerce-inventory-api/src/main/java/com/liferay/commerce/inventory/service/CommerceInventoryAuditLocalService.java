@@ -34,6 +34,8 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.io.Serializable;
 
+import java.math.BigDecimal;
+
 import java.util.Date;
 import java.util.List;
 
@@ -78,8 +80,8 @@ public interface CommerceInventoryAuditLocalService
 		CommerceInventoryAudit commerceInventoryAudit);
 
 	public CommerceInventoryAudit addCommerceInventoryAudit(
-			long userId, String sku, String logType, String logTypeSettings,
-			int quantity)
+			long userId, String sku, String unitOfMeasureKey, String logType,
+			String logTypeSettings, BigDecimal quantity)
 		throws PortalException;
 
 	public void checkCommerceInventoryAudit(Date date);
@@ -245,7 +247,8 @@ public interface CommerceInventoryAuditLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommerceInventoryAudit> getCommerceInventoryAudits(
-		long companyId, String sku, int start, int end);
+		long companyId, String sku, String unitOfMeasureKey, int start,
+		int end);
 
 	/**
 	 * Returns the number of commerce inventory audits.
@@ -256,7 +259,8 @@ public interface CommerceInventoryAuditLocalService
 	public int getCommerceInventoryAuditsCount();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceInventoryAuditsCount(long companyId, String sku);
+	public int getCommerceInventoryAuditsCount(
+		long companyId, String sku, String unitOfMeasureKey);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();

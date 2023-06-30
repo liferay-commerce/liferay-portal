@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import java.math.BigDecimal;
+
 import java.util.Date;
 
 /**
@@ -82,7 +84,7 @@ public class CommerceInventoryReplenishmentItemCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(27);
+		StringBundler sb = new StringBundler(29);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -106,6 +108,8 @@ public class CommerceInventoryReplenishmentItemCacheModel
 		sb.append(commerceInventoryWarehouseId);
 		sb.append(", sku=");
 		sb.append(sku);
+		sb.append(", unitOfMeasureKey=");
+		sb.append(unitOfMeasureKey);
 		sb.append(", availabilityDate=");
 		sb.append(availabilityDate);
 		sb.append(", quantity=");
@@ -177,6 +181,14 @@ public class CommerceInventoryReplenishmentItemCacheModel
 			commerceInventoryReplenishmentItemImpl.setSku(sku);
 		}
 
+		if (unitOfMeasureKey == null) {
+			commerceInventoryReplenishmentItemImpl.setUnitOfMeasureKey("");
+		}
+		else {
+			commerceInventoryReplenishmentItemImpl.setUnitOfMeasureKey(
+				unitOfMeasureKey);
+		}
+
 		if (availabilityDate == Long.MIN_VALUE) {
 			commerceInventoryReplenishmentItemImpl.setAvailabilityDate(null);
 		}
@@ -193,7 +205,9 @@ public class CommerceInventoryReplenishmentItemCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 		uuid = objectInput.readUTF();
 		externalReferenceCode = objectInput.readUTF();
@@ -209,9 +223,9 @@ public class CommerceInventoryReplenishmentItemCacheModel
 
 		commerceInventoryWarehouseId = objectInput.readLong();
 		sku = objectInput.readUTF();
+		unitOfMeasureKey = objectInput.readUTF();
 		availabilityDate = objectInput.readLong();
-
-		quantity = objectInput.readInt();
+		quantity = (BigDecimal)objectInput.readObject();
 	}
 
 	@Override
@@ -257,9 +271,15 @@ public class CommerceInventoryReplenishmentItemCacheModel
 			objectOutput.writeUTF(sku);
 		}
 
-		objectOutput.writeLong(availabilityDate);
+		if (unitOfMeasureKey == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(unitOfMeasureKey);
+		}
 
-		objectOutput.writeInt(quantity);
+		objectOutput.writeLong(availabilityDate);
+		objectOutput.writeObject(quantity);
 	}
 
 	public long mvccVersion;
@@ -273,7 +293,8 @@ public class CommerceInventoryReplenishmentItemCacheModel
 	public long modifiedDate;
 	public long commerceInventoryWarehouseId;
 	public String sku;
+	public String unitOfMeasureKey;
 	public long availabilityDate;
-	public int quantity;
+	public BigDecimal quantity;
 
 }

@@ -28,12 +28,12 @@ create table CPDefinitionInventory (
 	lowStockActivity VARCHAR(75) null,
 	displayAvailability BOOLEAN,
 	displayStockQuantity BOOLEAN,
-	minStockQuantity INTEGER,
+	minStockQuantity DECIMAL(30, 16) null,
 	backOrders BOOLEAN,
-	minOrderQuantity INTEGER,
-	maxOrderQuantity INTEGER,
+	minOrderQuantity DECIMAL(30, 16) null,
+	maxOrderQuantity DECIMAL(30, 16) null,
 	allowedOrderQuantities VARCHAR(75) null,
-	multipleOrderQuantity INTEGER,
+	multipleOrderQuantity DECIMAL(30, 16) null,
 	primary key (CPDefinitionInventoryId, ctCollectionId)
 );
 

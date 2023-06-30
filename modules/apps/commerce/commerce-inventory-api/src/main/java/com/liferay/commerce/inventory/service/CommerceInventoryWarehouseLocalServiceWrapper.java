@@ -459,10 +459,11 @@ public class CommerceInventoryWarehouseLocalServiceWrapper
 	@Override
 	public java.util.List
 		<com.liferay.commerce.inventory.model.CommerceInventoryWarehouse>
-			getCommerceInventoryWarehouses(long groupId, String sku) {
+			getCommerceInventoryWarehouses(
+				long groupId, String sku, String unitOfMeasureKey) {
 
 		return _commerceInventoryWarehouseLocalService.
-			getCommerceInventoryWarehouses(groupId, sku);
+			getCommerceInventoryWarehouses(groupId, sku, unitOfMeasureKey);
 	}
 
 	/**

@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import java.math.BigDecimal;
+
 import java.util.Date;
 
 /**
@@ -82,7 +84,7 @@ public class CommerceInventoryWarehouseItemCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(27);
+		StringBundler sb = new StringBundler(29);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -106,6 +108,8 @@ public class CommerceInventoryWarehouseItemCacheModel
 		sb.append(commerceInventoryWarehouseId);
 		sb.append(", sku=");
 		sb.append(sku);
+		sb.append(", unitOfMeasureKey=");
+		sb.append(unitOfMeasureKey);
 		sb.append(", quantity=");
 		sb.append(quantity);
 		sb.append(", reservedQuantity=");
@@ -175,6 +179,14 @@ public class CommerceInventoryWarehouseItemCacheModel
 			commerceInventoryWarehouseItemImpl.setSku(sku);
 		}
 
+		if (unitOfMeasureKey == null) {
+			commerceInventoryWarehouseItemImpl.setUnitOfMeasureKey("");
+		}
+		else {
+			commerceInventoryWarehouseItemImpl.setUnitOfMeasureKey(
+				unitOfMeasureKey);
+		}
+
 		commerceInventoryWarehouseItemImpl.setQuantity(quantity);
 		commerceInventoryWarehouseItemImpl.setReservedQuantity(
 			reservedQuantity);
@@ -185,7 +197,9 @@ public class CommerceInventoryWarehouseItemCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 		uuid = objectInput.readUTF();
 		externalReferenceCode = objectInput.readUTF();
@@ -201,10 +215,9 @@ public class CommerceInventoryWarehouseItemCacheModel
 
 		commerceInventoryWarehouseId = objectInput.readLong();
 		sku = objectInput.readUTF();
-
-		quantity = objectInput.readInt();
-
-		reservedQuantity = objectInput.readInt();
+		unitOfMeasureKey = objectInput.readUTF();
+		quantity = (BigDecimal)objectInput.readObject();
+		reservedQuantity = (BigDecimal)objectInput.readObject();
 	}
 
 	@Override
@@ -250,9 +263,15 @@ public class CommerceInventoryWarehouseItemCacheModel
 			objectOutput.writeUTF(sku);
 		}
 
-		objectOutput.writeInt(quantity);
+		if (unitOfMeasureKey == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(unitOfMeasureKey);
+		}
 
-		objectOutput.writeInt(reservedQuantity);
+		objectOutput.writeObject(quantity);
+		objectOutput.writeObject(reservedQuantity);
 	}
 
 	public long mvccVersion;
@@ -266,7 +285,8 @@ public class CommerceInventoryWarehouseItemCacheModel
 	public long modifiedDate;
 	public long commerceInventoryWarehouseId;
 	public String sku;
-	public int quantity;
-	public int reservedQuantity;
+	public String unitOfMeasureKey;
+	public BigDecimal quantity;
+	public BigDecimal reservedQuantity;
 
 }

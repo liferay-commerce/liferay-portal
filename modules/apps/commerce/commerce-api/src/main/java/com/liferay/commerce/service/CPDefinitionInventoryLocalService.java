@@ -42,6 +42,8 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.io.Serializable;
 
+import java.math.BigDecimal;
+
 import java.util.List;
 
 import org.osgi.annotation.versioning.ProviderType;
@@ -90,9 +92,9 @@ public interface CPDefinitionInventoryLocalService
 			long userId, long cpDefinitionId,
 			String cpDefinitionInventoryEngine, String lowStockActivity,
 			boolean displayAvailability, boolean displayStockQuantity,
-			int minStockQuantity, boolean backOrders, int minOrderQuantity,
-			int maxOrderQuantity, String allowedOrderQuantities,
-			int multipleOrderQuantity)
+			BigDecimal minStockQuantity, boolean backOrders,
+			BigDecimal minOrderQuantity, BigDecimal maxOrderQuantity,
+			String allowedOrderQuantities, BigDecimal multipleOrderQuantity)
 		throws PortalException;
 
 	public void cloneCPDefinitionInventory(
@@ -364,9 +366,10 @@ public interface CPDefinitionInventoryLocalService
 	public CPDefinitionInventory updateCPDefinitionInventory(
 			long cpDefinitionInventoryId, String cpDefinitionInventoryEngine,
 			String lowStockActivity, boolean displayAvailability,
-			boolean displayStockQuantity, int minStockQuantity,
-			boolean backOrders, int minOrderQuantity, int maxOrderQuantity,
-			String allowedOrderQuantities, int multipleOrderQuantity)
+			boolean displayStockQuantity, BigDecimal minStockQuantity,
+			boolean backOrders, BigDecimal minOrderQuantity,
+			BigDecimal maxOrderQuantity, String allowedOrderQuantities,
+			BigDecimal multipleOrderQuantity)
 		throws PortalException;
 
 	@Override

@@ -38,6 +38,8 @@ import java.io.Serializable;
 
 import java.lang.reflect.InvocationHandler;
 
+import java.math.BigDecimal;
+
 import java.sql.Blob;
 import java.sql.Types;
 
@@ -80,7 +82,8 @@ public class CommerceInventoryReplenishmentItemModelImpl
 		{"userId", Types.BIGINT}, {"userName", Types.VARCHAR},
 		{"createDate", Types.TIMESTAMP}, {"modifiedDate", Types.TIMESTAMP},
 		{"commerceInventoryWarehouseId", Types.BIGINT}, {"sku", Types.VARCHAR},
-		{"availabilityDate", Types.TIMESTAMP}, {"quantity", Types.INTEGER}
+		{"unitOfMeasureKey", Types.VARCHAR},
+		{"availabilityDate", Types.TIMESTAMP}, {"quantity", Types.DECIMAL}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -98,12 +101,13 @@ public class CommerceInventoryReplenishmentItemModelImpl
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("commerceInventoryWarehouseId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("sku", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("unitOfMeasureKey", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("availabilityDate", Types.TIMESTAMP);
-		TABLE_COLUMNS_MAP.put("quantity", Types.INTEGER);
+		TABLE_COLUMNS_MAP.put("quantity", Types.DECIMAL);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table CIReplenishmentItem (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,CIReplenishmentItemId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,commerceInventoryWarehouseId LONG,sku VARCHAR(75) null,availabilityDate DATE null,quantity INTEGER)";
+		"create table CIReplenishmentItem (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,CIReplenishmentItemId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,commerceInventoryWarehouseId LONG,sku VARCHAR(75) null,unitOfMeasureKey VARCHAR(75) null,availabilityDate DATE null,quantity DECIMAL(30, 16) null)";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table CIReplenishmentItem";
@@ -154,7 +158,13 @@ public class CommerceInventoryReplenishmentItemModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long UUID_COLUMN_BITMASK = 32L;
+	public static final long UNITOFMEASUREKEY_COLUMN_BITMASK = 32L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long UUID_COLUMN_BITMASK = 64L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
@@ -162,7 +172,7 @@ public class CommerceInventoryReplenishmentItemModelImpl
 	 */
 	@Deprecated
 	public static final long
-		COMMERCEINVENTORYREPLENISHMENTITEMID_COLUMN_BITMASK = 64L;
+		COMMERCEINVENTORYREPLENISHMENTITEMID_COLUMN_BITMASK = 128L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -311,6 +321,9 @@ public class CommerceInventoryReplenishmentItemModelImpl
 			attributeGetterFunctions.put(
 				"sku", CommerceInventoryReplenishmentItem::getSku);
 			attributeGetterFunctions.put(
+				"unitOfMeasureKey",
+				CommerceInventoryReplenishmentItem::getUnitOfMeasureKey);
+			attributeGetterFunctions.put(
 				"availabilityDate",
 				CommerceInventoryReplenishmentItem::getAvailabilityDate);
 			attributeGetterFunctions.put(
@@ -383,12 +396,16 @@ public class CommerceInventoryReplenishmentItemModelImpl
 				(BiConsumer<CommerceInventoryReplenishmentItem, String>)
 					CommerceInventoryReplenishmentItem::setSku);
 			attributeSetterBiConsumers.put(
+				"unitOfMeasureKey",
+				(BiConsumer<CommerceInventoryReplenishmentItem, String>)
+					CommerceInventoryReplenishmentItem::setUnitOfMeasureKey);
+			attributeSetterBiConsumers.put(
 				"availabilityDate",
 				(BiConsumer<CommerceInventoryReplenishmentItem, Date>)
 					CommerceInventoryReplenishmentItem::setAvailabilityDate);
 			attributeSetterBiConsumers.put(
 				"quantity",
-				(BiConsumer<CommerceInventoryReplenishmentItem, Integer>)
+				(BiConsumer<CommerceInventoryReplenishmentItem, BigDecimal>)
 					CommerceInventoryReplenishmentItem::setQuantity);
 
 			_attributeSetterBiConsumers = Collections.unmodifiableMap(
@@ -658,6 +675,35 @@ public class CommerceInventoryReplenishmentItemModelImpl
 
 	@JSON
 	@Override
+	public String getUnitOfMeasureKey() {
+		if (_unitOfMeasureKey == null) {
+			return "";
+		}
+		else {
+			return _unitOfMeasureKey;
+		}
+	}
+
+	@Override
+	public void setUnitOfMeasureKey(String unitOfMeasureKey) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_unitOfMeasureKey = unitOfMeasureKey;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public String getOriginalUnitOfMeasureKey() {
+		return getColumnOriginalValue("unitOfMeasureKey");
+	}
+
+	@JSON
+	@Override
 	public Date getAvailabilityDate() {
 		return _availabilityDate;
 	}
@@ -682,12 +728,12 @@ public class CommerceInventoryReplenishmentItemModelImpl
 
 	@JSON
 	@Override
-	public int getQuantity() {
+	public BigDecimal getQuantity() {
 		return _quantity;
 	}
 
 	@Override
-	public void setQuantity(int quantity) {
+	public void setQuantity(BigDecimal quantity) {
 		if (_columnOriginalValues == Collections.EMPTY_MAP) {
 			_setColumnOriginalValues();
 		}
@@ -777,6 +823,8 @@ public class CommerceInventoryReplenishmentItemModelImpl
 		commerceInventoryReplenishmentItemImpl.setCommerceInventoryWarehouseId(
 			getCommerceInventoryWarehouseId());
 		commerceInventoryReplenishmentItemImpl.setSku(getSku());
+		commerceInventoryReplenishmentItemImpl.setUnitOfMeasureKey(
+			getUnitOfMeasureKey());
 		commerceInventoryReplenishmentItemImpl.setAvailabilityDate(
 			getAvailabilityDate());
 		commerceInventoryReplenishmentItemImpl.setQuantity(getQuantity());
@@ -815,10 +863,12 @@ public class CommerceInventoryReplenishmentItemModelImpl
 			this.<Long>getColumnOriginalValue("commerceInventoryWarehouseId"));
 		commerceInventoryReplenishmentItemImpl.setSku(
 			this.<String>getColumnOriginalValue("sku"));
+		commerceInventoryReplenishmentItemImpl.setUnitOfMeasureKey(
+			this.<String>getColumnOriginalValue("unitOfMeasureKey"));
 		commerceInventoryReplenishmentItemImpl.setAvailabilityDate(
 			this.<Date>getColumnOriginalValue("availabilityDate"));
 		commerceInventoryReplenishmentItemImpl.setQuantity(
-			this.<Integer>getColumnOriginalValue("quantity"));
+			this.<BigDecimal>getColumnOriginalValue("quantity"));
 
 		return commerceInventoryReplenishmentItemImpl;
 	}
@@ -974,6 +1024,17 @@ public class CommerceInventoryReplenishmentItemModelImpl
 			commerceInventoryReplenishmentItemCacheModel.sku = null;
 		}
 
+		commerceInventoryReplenishmentItemCacheModel.unitOfMeasureKey =
+			getUnitOfMeasureKey();
+
+		String unitOfMeasureKey =
+			commerceInventoryReplenishmentItemCacheModel.unitOfMeasureKey;
+
+		if ((unitOfMeasureKey != null) && (unitOfMeasureKey.length() == 0)) {
+			commerceInventoryReplenishmentItemCacheModel.unitOfMeasureKey =
+				null;
+		}
+
 		Date availabilityDate = getAvailabilityDate();
 
 		if (availabilityDate != null) {
@@ -1064,8 +1125,9 @@ public class CommerceInventoryReplenishmentItemModelImpl
 	private boolean _setModifiedDate;
 	private long _commerceInventoryWarehouseId;
 	private String _sku;
+	private String _unitOfMeasureKey;
 	private Date _availabilityDate;
-	private int _quantity;
+	private BigDecimal _quantity;
 
 	public <T> T getColumnValue(String columnName) {
 		columnName = _attributeNames.getOrDefault(columnName, columnName);
@@ -1111,6 +1173,7 @@ public class CommerceInventoryReplenishmentItemModelImpl
 		_columnOriginalValues.put(
 			"commerceInventoryWarehouseId", _commerceInventoryWarehouseId);
 		_columnOriginalValues.put("sku", _sku);
+		_columnOriginalValues.put("unitOfMeasureKey", _unitOfMeasureKey);
 		_columnOriginalValues.put("availabilityDate", _availabilityDate);
 		_columnOriginalValues.put("quantity", _quantity);
 	}
@@ -1160,9 +1223,11 @@ public class CommerceInventoryReplenishmentItemModelImpl
 
 		columnBitmasks.put("sku", 1024L);
 
-		columnBitmasks.put("availabilityDate", 2048L);
+		columnBitmasks.put("unitOfMeasureKey", 2048L);
 
-		columnBitmasks.put("quantity", 4096L);
+		columnBitmasks.put("availabilityDate", 4096L);
+
+		columnBitmasks.put("quantity", 8192L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}

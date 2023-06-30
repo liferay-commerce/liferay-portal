@@ -69,13 +69,14 @@ public class CommerceInventoryReplenishmentItemLocalServiceWrapper
 				addCommerceInventoryReplenishmentItem(
 					String externalReferenceCode, long userId,
 					long commerceInventoryWarehouseId, String sku,
-					java.util.Date availabilityDate, int quantity)
+					String unitOfMeasureKey, java.util.Date availabilityDate,
+					java.math.BigDecimal quantity)
 			throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _commerceInventoryReplenishmentItemLocalService.
 			addCommerceInventoryReplenishmentItem(
 				externalReferenceCode, userId, commerceInventoryWarehouseId,
-				sku, availabilityDate, quantity);
+				sku, unitOfMeasureKey, availabilityDate, quantity);
 	}
 
 	/**
@@ -164,10 +165,11 @@ public class CommerceInventoryReplenishmentItemLocalServiceWrapper
 
 	@Override
 	public void deleteCommerceInventoryReplenishmentItems(
-		long companyId, String sku) {
+		long companyId, String sku, String unitOfMeasureKey) {
 
 		_commerceInventoryReplenishmentItemLocalService.
-			deleteCommerceInventoryReplenishmentItems(companyId, sku);
+			deleteCommerceInventoryReplenishmentItems(
+				companyId, sku, unitOfMeasureKey);
 	}
 
 	/**
@@ -304,14 +306,14 @@ public class CommerceInventoryReplenishmentItemLocalServiceWrapper
 	public
 		com.liferay.commerce.inventory.model.CommerceInventoryReplenishmentItem
 			fetchCommerceInventoryReplenishmentItem(
-				long companyId, String sku,
+				long companyId, String sku, String unitOfMeasureKey,
 				com.liferay.portal.kernel.util.OrderByComparator
 					<com.liferay.commerce.inventory.model.
 						CommerceInventoryReplenishmentItem> orderByComparator) {
 
 		return _commerceInventoryReplenishmentItemLocalService.
 			fetchCommerceInventoryReplenishmentItem(
-				companyId, sku, orderByComparator);
+				companyId, sku, unitOfMeasureKey, orderByComparator);
 	}
 
 	@Override
@@ -440,11 +442,12 @@ public class CommerceInventoryReplenishmentItemLocalServiceWrapper
 		<com.liferay.commerce.inventory.model.
 			CommerceInventoryReplenishmentItem>
 				getCommerceInventoryReplenishmentItemsByCompanyIdAndSku(
-					long companyId, String sku, int start, int end) {
+					long companyId, String sku, String unitOfMeasureKey,
+					int start, int end) {
 
 		return _commerceInventoryReplenishmentItemLocalService.
 			getCommerceInventoryReplenishmentItemsByCompanyIdAndSku(
-				companyId, sku, start, end);
+				companyId, sku, unitOfMeasureKey, start, end);
 	}
 
 	/**
@@ -460,11 +463,12 @@ public class CommerceInventoryReplenishmentItemLocalServiceWrapper
 
 	@Override
 	public long getCommerceInventoryReplenishmentItemsCount(
-		long commerceInventoryWarehouseId, String sku) {
+		long commerceInventoryWarehouseId, String sku,
+		String unitOfMeasureKey) {
 
 		return _commerceInventoryReplenishmentItemLocalService.
 			getCommerceInventoryReplenishmentItemsCount(
-				commerceInventoryWarehouseId, sku);
+				commerceInventoryWarehouseId, sku, unitOfMeasureKey);
 	}
 
 	@Override
@@ -479,11 +483,11 @@ public class CommerceInventoryReplenishmentItemLocalServiceWrapper
 
 	@Override
 	public int getCommerceInventoryReplenishmentItemsCountByCompanyIdAndSku(
-		long companyId, String sku) {
+		long companyId, String sku, String unitOfMeasureKey) {
 
 		return _commerceInventoryReplenishmentItemLocalService.
 			getCommerceInventoryReplenishmentItemsCountByCompanyIdAndSku(
-				companyId, sku);
+				companyId, sku, unitOfMeasureKey);
 	}
 
 	@Override
@@ -556,8 +560,8 @@ public class CommerceInventoryReplenishmentItemLocalServiceWrapper
 				updateCommerceInventoryReplenishmentItem(
 					String externalReferenceCode,
 					long commerceInventoryReplenishmentItemId,
-					java.util.Date availabilityDate, int quantity,
-					long mvccVersion)
+					java.util.Date availabilityDate,
+					java.math.BigDecimal quantity, long mvccVersion)
 			throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _commerceInventoryReplenishmentItemLocalService.

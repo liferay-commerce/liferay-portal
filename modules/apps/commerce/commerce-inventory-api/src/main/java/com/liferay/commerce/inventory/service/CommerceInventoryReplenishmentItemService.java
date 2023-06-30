@@ -24,6 +24,8 @@ import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 
+import java.math.BigDecimal;
+
 import java.util.Date;
 import java.util.List;
 
@@ -55,7 +57,8 @@ public interface CommerceInventoryReplenishmentItemService extends BaseService {
 	public CommerceInventoryReplenishmentItem
 			addCommerceInventoryReplenishmentItem(
 				String externalReferenceCode, long commerceInventoryWarehouseId,
-				String sku, Date availabilityDate, int quantity)
+				String sku, String unitOfMeasureKey, Date availabilityDate,
+				BigDecimal quantity)
 		throws PortalException;
 
 	public void deleteCommerceInventoryReplenishmentItem(
@@ -63,7 +66,7 @@ public interface CommerceInventoryReplenishmentItemService extends BaseService {
 		throws PortalException;
 
 	public void deleteCommerceInventoryReplenishmentItems(
-			long companyId, String sku)
+			long companyId, String sku, String unitOfMeasureKey)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -87,12 +90,14 @@ public interface CommerceInventoryReplenishmentItemService extends BaseService {
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommerceInventoryReplenishmentItem>
 			getCommerceInventoryReplenishmentItemsByCompanyIdAndSku(
-				long companyId, String sku, int start, int end)
+				long companyId, String sku, String unitOfMeasureKey, int start,
+				int end)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public long getCommerceInventoryReplenishmentItemsCount(
-			long commerceInventoryWarehouseId, String sku)
+			long commerceInventoryWarehouseId, String sku,
+			String unitOfMeasureKey)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -103,7 +108,7 @@ public interface CommerceInventoryReplenishmentItemService extends BaseService {
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceInventoryReplenishmentItemsCountByCompanyIdAndSku(
-			long companyId, String sku)
+			long companyId, String sku, String unitOfMeasureKey)
 		throws PortalException;
 
 	/**
@@ -117,7 +122,7 @@ public interface CommerceInventoryReplenishmentItemService extends BaseService {
 			updateCommerceInventoryReplenishmentItem(
 				String externalReferenceCode,
 				long commerceInventoryReplenishmentItemId,
-				Date availabilityDate, int quantity, long mvccVersion)
+				Date availabilityDate, BigDecimal quantity, long mvccVersion)
 		throws PortalException;
 
 }

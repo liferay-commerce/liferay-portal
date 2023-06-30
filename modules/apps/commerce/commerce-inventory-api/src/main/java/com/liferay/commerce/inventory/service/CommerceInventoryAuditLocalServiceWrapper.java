@@ -62,12 +62,13 @@ public class CommerceInventoryAuditLocalServiceWrapper
 	@Override
 	public com.liferay.commerce.inventory.model.CommerceInventoryAudit
 			addCommerceInventoryAudit(
-				long userId, String sku, String logType, String logTypeSettings,
-				int quantity)
+				long userId, String sku, String unitOfMeasureKey,
+				String logType, String logTypeSettings,
+				java.math.BigDecimal quantity)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _commerceInventoryAuditLocalService.addCommerceInventoryAudit(
-			userId, sku, logType, logTypeSettings, quantity);
+			userId, sku, unitOfMeasureKey, logType, logTypeSettings, quantity);
 	}
 
 	@Override
@@ -312,10 +313,11 @@ public class CommerceInventoryAuditLocalServiceWrapper
 	public java.util.List
 		<com.liferay.commerce.inventory.model.CommerceInventoryAudit>
 			getCommerceInventoryAudits(
-				long companyId, String sku, int start, int end) {
+				long companyId, String sku, String unitOfMeasureKey, int start,
+				int end) {
 
 		return _commerceInventoryAuditLocalService.getCommerceInventoryAudits(
-			companyId, sku, start, end);
+			companyId, sku, unitOfMeasureKey, start, end);
 	}
 
 	/**
@@ -330,9 +332,11 @@ public class CommerceInventoryAuditLocalServiceWrapper
 	}
 
 	@Override
-	public int getCommerceInventoryAuditsCount(long companyId, String sku) {
+	public int getCommerceInventoryAuditsCount(
+		long companyId, String sku, String unitOfMeasureKey) {
+
 		return _commerceInventoryAuditLocalService.
-			getCommerceInventoryAuditsCount(companyId, sku);
+			getCommerceInventoryAuditsCount(companyId, sku, unitOfMeasureKey);
 	}
 
 	@Override

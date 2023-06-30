@@ -327,6 +327,21 @@ public class CPInstanceUnitOfMeasureLocalServiceUtil {
 			cpInstanceId, start, end, orderByComparator);
 	}
 
+	public static List<CPInstanceUnitOfMeasure>
+		getCPInstanceUnitOfMeasuresByKeySku(
+			long companyId, String key, String sku) {
+
+		return getService().getCPInstanceUnitOfMeasuresByKeySku(
+			companyId, key, sku);
+	}
+
+	public static List<CPInstanceUnitOfMeasure>
+		getCPInstanceUnitOfMeasuresByPrimarySku(long companyId, String sku) {
+
+		return getService().getCPInstanceUnitOfMeasuresByPrimarySku(
+			companyId, sku);
+	}
+
 	/**
 	 * Returns the number of cp instance unit of measures.
 	 *

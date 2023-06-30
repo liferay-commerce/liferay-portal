@@ -846,6 +846,340 @@ public interface CPInstanceUnitOfMeasurePersistence
 	public int countByK_SKU(String key, String sku);
 
 	/**
+	 * Returns all the cp instance unit of measures where companyId = &#63; and key = &#63; and sku = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param key the key
+	 * @param sku the sku
+	 * @return the matching cp instance unit of measures
+	 */
+	public java.util.List<CPInstanceUnitOfMeasure> findByC_K_SKU(
+		long companyId, String key, String sku);
+
+	/**
+	 * Returns a range of all the cp instance unit of measures where companyId = &#63; and key = &#63; and sku = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CPInstanceUnitOfMeasureModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param key the key
+	 * @param sku the sku
+	 * @param start the lower bound of the range of cp instance unit of measures
+	 * @param end the upper bound of the range of cp instance unit of measures (not inclusive)
+	 * @return the range of matching cp instance unit of measures
+	 */
+	public java.util.List<CPInstanceUnitOfMeasure> findByC_K_SKU(
+		long companyId, String key, String sku, int start, int end);
+
+	/**
+	 * Returns an ordered range of all the cp instance unit of measures where companyId = &#63; and key = &#63; and sku = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CPInstanceUnitOfMeasureModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param key the key
+	 * @param sku the sku
+	 * @param start the lower bound of the range of cp instance unit of measures
+	 * @param end the upper bound of the range of cp instance unit of measures (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching cp instance unit of measures
+	 */
+	public java.util.List<CPInstanceUnitOfMeasure> findByC_K_SKU(
+		long companyId, String key, String sku, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator
+			<CPInstanceUnitOfMeasure> orderByComparator);
+
+	/**
+	 * Returns an ordered range of all the cp instance unit of measures where companyId = &#63; and key = &#63; and sku = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CPInstanceUnitOfMeasureModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param key the key
+	 * @param sku the sku
+	 * @param start the lower bound of the range of cp instance unit of measures
+	 * @param end the upper bound of the range of cp instance unit of measures (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching cp instance unit of measures
+	 */
+	public java.util.List<CPInstanceUnitOfMeasure> findByC_K_SKU(
+		long companyId, String key, String sku, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator
+			<CPInstanceUnitOfMeasure> orderByComparator,
+		boolean useFinderCache);
+
+	/**
+	 * Returns the first cp instance unit of measure in the ordered set where companyId = &#63; and key = &#63; and sku = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param key the key
+	 * @param sku the sku
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching cp instance unit of measure
+	 * @throws NoSuchCPInstanceUnitOfMeasureException if a matching cp instance unit of measure could not be found
+	 */
+	public CPInstanceUnitOfMeasure findByC_K_SKU_First(
+			long companyId, String key, String sku,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<CPInstanceUnitOfMeasure> orderByComparator)
+		throws NoSuchCPInstanceUnitOfMeasureException;
+
+	/**
+	 * Returns the first cp instance unit of measure in the ordered set where companyId = &#63; and key = &#63; and sku = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param key the key
+	 * @param sku the sku
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching cp instance unit of measure, or <code>null</code> if a matching cp instance unit of measure could not be found
+	 */
+	public CPInstanceUnitOfMeasure fetchByC_K_SKU_First(
+		long companyId, String key, String sku,
+		com.liferay.portal.kernel.util.OrderByComparator
+			<CPInstanceUnitOfMeasure> orderByComparator);
+
+	/**
+	 * Returns the last cp instance unit of measure in the ordered set where companyId = &#63; and key = &#63; and sku = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param key the key
+	 * @param sku the sku
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching cp instance unit of measure
+	 * @throws NoSuchCPInstanceUnitOfMeasureException if a matching cp instance unit of measure could not be found
+	 */
+	public CPInstanceUnitOfMeasure findByC_K_SKU_Last(
+			long companyId, String key, String sku,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<CPInstanceUnitOfMeasure> orderByComparator)
+		throws NoSuchCPInstanceUnitOfMeasureException;
+
+	/**
+	 * Returns the last cp instance unit of measure in the ordered set where companyId = &#63; and key = &#63; and sku = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param key the key
+	 * @param sku the sku
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching cp instance unit of measure, or <code>null</code> if a matching cp instance unit of measure could not be found
+	 */
+	public CPInstanceUnitOfMeasure fetchByC_K_SKU_Last(
+		long companyId, String key, String sku,
+		com.liferay.portal.kernel.util.OrderByComparator
+			<CPInstanceUnitOfMeasure> orderByComparator);
+
+	/**
+	 * Returns the cp instance unit of measures before and after the current cp instance unit of measure in the ordered set where companyId = &#63; and key = &#63; and sku = &#63;.
+	 *
+	 * @param CPInstanceUnitOfMeasureId the primary key of the current cp instance unit of measure
+	 * @param companyId the company ID
+	 * @param key the key
+	 * @param sku the sku
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next cp instance unit of measure
+	 * @throws NoSuchCPInstanceUnitOfMeasureException if a cp instance unit of measure with the primary key could not be found
+	 */
+	public CPInstanceUnitOfMeasure[] findByC_K_SKU_PrevAndNext(
+			long CPInstanceUnitOfMeasureId, long companyId, String key,
+			String sku,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<CPInstanceUnitOfMeasure> orderByComparator)
+		throws NoSuchCPInstanceUnitOfMeasureException;
+
+	/**
+	 * Removes all the cp instance unit of measures where companyId = &#63; and key = &#63; and sku = &#63; from the database.
+	 *
+	 * @param companyId the company ID
+	 * @param key the key
+	 * @param sku the sku
+	 */
+	public void removeByC_K_SKU(long companyId, String key, String sku);
+
+	/**
+	 * Returns the number of cp instance unit of measures where companyId = &#63; and key = &#63; and sku = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param key the key
+	 * @param sku the sku
+	 * @return the number of matching cp instance unit of measures
+	 */
+	public int countByC_K_SKU(long companyId, String key, String sku);
+
+	/**
+	 * Returns all the cp instance unit of measures where companyId = &#63; and primary = &#63; and sku = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param primary the primary
+	 * @param sku the sku
+	 * @return the matching cp instance unit of measures
+	 */
+	public java.util.List<CPInstanceUnitOfMeasure> findByC_P_SKU(
+		long companyId, boolean primary, String sku);
+
+	/**
+	 * Returns a range of all the cp instance unit of measures where companyId = &#63; and primary = &#63; and sku = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CPInstanceUnitOfMeasureModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param primary the primary
+	 * @param sku the sku
+	 * @param start the lower bound of the range of cp instance unit of measures
+	 * @param end the upper bound of the range of cp instance unit of measures (not inclusive)
+	 * @return the range of matching cp instance unit of measures
+	 */
+	public java.util.List<CPInstanceUnitOfMeasure> findByC_P_SKU(
+		long companyId, boolean primary, String sku, int start, int end);
+
+	/**
+	 * Returns an ordered range of all the cp instance unit of measures where companyId = &#63; and primary = &#63; and sku = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CPInstanceUnitOfMeasureModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param primary the primary
+	 * @param sku the sku
+	 * @param start the lower bound of the range of cp instance unit of measures
+	 * @param end the upper bound of the range of cp instance unit of measures (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching cp instance unit of measures
+	 */
+	public java.util.List<CPInstanceUnitOfMeasure> findByC_P_SKU(
+		long companyId, boolean primary, String sku, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator
+			<CPInstanceUnitOfMeasure> orderByComparator);
+
+	/**
+	 * Returns an ordered range of all the cp instance unit of measures where companyId = &#63; and primary = &#63; and sku = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CPInstanceUnitOfMeasureModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param primary the primary
+	 * @param sku the sku
+	 * @param start the lower bound of the range of cp instance unit of measures
+	 * @param end the upper bound of the range of cp instance unit of measures (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching cp instance unit of measures
+	 */
+	public java.util.List<CPInstanceUnitOfMeasure> findByC_P_SKU(
+		long companyId, boolean primary, String sku, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator
+			<CPInstanceUnitOfMeasure> orderByComparator,
+		boolean useFinderCache);
+
+	/**
+	 * Returns the first cp instance unit of measure in the ordered set where companyId = &#63; and primary = &#63; and sku = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param primary the primary
+	 * @param sku the sku
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching cp instance unit of measure
+	 * @throws NoSuchCPInstanceUnitOfMeasureException if a matching cp instance unit of measure could not be found
+	 */
+	public CPInstanceUnitOfMeasure findByC_P_SKU_First(
+			long companyId, boolean primary, String sku,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<CPInstanceUnitOfMeasure> orderByComparator)
+		throws NoSuchCPInstanceUnitOfMeasureException;
+
+	/**
+	 * Returns the first cp instance unit of measure in the ordered set where companyId = &#63; and primary = &#63; and sku = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param primary the primary
+	 * @param sku the sku
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching cp instance unit of measure, or <code>null</code> if a matching cp instance unit of measure could not be found
+	 */
+	public CPInstanceUnitOfMeasure fetchByC_P_SKU_First(
+		long companyId, boolean primary, String sku,
+		com.liferay.portal.kernel.util.OrderByComparator
+			<CPInstanceUnitOfMeasure> orderByComparator);
+
+	/**
+	 * Returns the last cp instance unit of measure in the ordered set where companyId = &#63; and primary = &#63; and sku = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param primary the primary
+	 * @param sku the sku
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching cp instance unit of measure
+	 * @throws NoSuchCPInstanceUnitOfMeasureException if a matching cp instance unit of measure could not be found
+	 */
+	public CPInstanceUnitOfMeasure findByC_P_SKU_Last(
+			long companyId, boolean primary, String sku,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<CPInstanceUnitOfMeasure> orderByComparator)
+		throws NoSuchCPInstanceUnitOfMeasureException;
+
+	/**
+	 * Returns the last cp instance unit of measure in the ordered set where companyId = &#63; and primary = &#63; and sku = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param primary the primary
+	 * @param sku the sku
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching cp instance unit of measure, or <code>null</code> if a matching cp instance unit of measure could not be found
+	 */
+	public CPInstanceUnitOfMeasure fetchByC_P_SKU_Last(
+		long companyId, boolean primary, String sku,
+		com.liferay.portal.kernel.util.OrderByComparator
+			<CPInstanceUnitOfMeasure> orderByComparator);
+
+	/**
+	 * Returns the cp instance unit of measures before and after the current cp instance unit of measure in the ordered set where companyId = &#63; and primary = &#63; and sku = &#63;.
+	 *
+	 * @param CPInstanceUnitOfMeasureId the primary key of the current cp instance unit of measure
+	 * @param companyId the company ID
+	 * @param primary the primary
+	 * @param sku the sku
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next cp instance unit of measure
+	 * @throws NoSuchCPInstanceUnitOfMeasureException if a cp instance unit of measure with the primary key could not be found
+	 */
+	public CPInstanceUnitOfMeasure[] findByC_P_SKU_PrevAndNext(
+			long CPInstanceUnitOfMeasureId, long companyId, boolean primary,
+			String sku,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<CPInstanceUnitOfMeasure> orderByComparator)
+		throws NoSuchCPInstanceUnitOfMeasureException;
+
+	/**
+	 * Removes all the cp instance unit of measures where companyId = &#63; and primary = &#63; and sku = &#63; from the database.
+	 *
+	 * @param companyId the company ID
+	 * @param primary the primary
+	 * @param sku the sku
+	 */
+	public void removeByC_P_SKU(long companyId, boolean primary, String sku);
+
+	/**
+	 * Returns the number of cp instance unit of measures where companyId = &#63; and primary = &#63; and sku = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param primary the primary
+	 * @param sku the sku
+	 * @return the number of matching cp instance unit of measures
+	 */
+	public int countByC_P_SKU(long companyId, boolean primary, String sku);
+
+	/**
 	 * Caches the cp instance unit of measure in the entity cache if it is enabled.
 	 *
 	 * @param cpInstanceUnitOfMeasure the cp instance unit of measure

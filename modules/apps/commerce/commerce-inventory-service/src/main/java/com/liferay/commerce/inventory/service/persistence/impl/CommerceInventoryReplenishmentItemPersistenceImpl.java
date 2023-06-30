@@ -1825,567 +1825,6 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 		_FINDER_COLUMN_COMMERCEINVENTORYWAREHOUSEID_COMMERCEINVENTORYWAREHOUSEID_2 =
 			"commerceInventoryReplenishmentItem.commerceInventoryWarehouseId = ?";
 
-	private FinderPath _finderPathWithPaginationFindBySku;
-	private FinderPath _finderPathWithoutPaginationFindBySku;
-	private FinderPath _finderPathCountBySku;
-
-	/**
-	 * Returns all the commerce inventory replenishment items where sku = &#63;.
-	 *
-	 * @param sku the sku
-	 * @return the matching commerce inventory replenishment items
-	 */
-	@Override
-	public List<CommerceInventoryReplenishmentItem> findBySku(String sku) {
-		return findBySku(sku, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
-	}
-
-	/**
-	 * Returns a range of all the commerce inventory replenishment items where sku = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CommerceInventoryReplenishmentItemModelImpl</code>.
-	 * </p>
-	 *
-	 * @param sku the sku
-	 * @param start the lower bound of the range of commerce inventory replenishment items
-	 * @param end the upper bound of the range of commerce inventory replenishment items (not inclusive)
-	 * @return the range of matching commerce inventory replenishment items
-	 */
-	@Override
-	public List<CommerceInventoryReplenishmentItem> findBySku(
-		String sku, int start, int end) {
-
-		return findBySku(sku, start, end, null);
-	}
-
-	/**
-	 * Returns an ordered range of all the commerce inventory replenishment items where sku = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CommerceInventoryReplenishmentItemModelImpl</code>.
-	 * </p>
-	 *
-	 * @param sku the sku
-	 * @param start the lower bound of the range of commerce inventory replenishment items
-	 * @param end the upper bound of the range of commerce inventory replenishment items (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching commerce inventory replenishment items
-	 */
-	@Override
-	public List<CommerceInventoryReplenishmentItem> findBySku(
-		String sku, int start, int end,
-		OrderByComparator<CommerceInventoryReplenishmentItem>
-			orderByComparator) {
-
-		return findBySku(sku, start, end, orderByComparator, true);
-	}
-
-	/**
-	 * Returns an ordered range of all the commerce inventory replenishment items where sku = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CommerceInventoryReplenishmentItemModelImpl</code>.
-	 * </p>
-	 *
-	 * @param sku the sku
-	 * @param start the lower bound of the range of commerce inventory replenishment items
-	 * @param end the upper bound of the range of commerce inventory replenishment items (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching commerce inventory replenishment items
-	 */
-	@Override
-	public List<CommerceInventoryReplenishmentItem> findBySku(
-		String sku, int start, int end,
-		OrderByComparator<CommerceInventoryReplenishmentItem> orderByComparator,
-		boolean useFinderCache) {
-
-		sku = Objects.toString(sku, "");
-
-		FinderPath finderPath = null;
-		Object[] finderArgs = null;
-
-		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
-			(orderByComparator == null)) {
-
-			if (useFinderCache) {
-				finderPath = _finderPathWithoutPaginationFindBySku;
-				finderArgs = new Object[] {sku};
-			}
-		}
-		else if (useFinderCache) {
-			finderPath = _finderPathWithPaginationFindBySku;
-			finderArgs = new Object[] {sku, start, end, orderByComparator};
-		}
-
-		List<CommerceInventoryReplenishmentItem> list = null;
-
-		if (useFinderCache) {
-			list =
-				(List<CommerceInventoryReplenishmentItem>)finderCache.getResult(
-					finderPath, finderArgs, this);
-
-			if ((list != null) && !list.isEmpty()) {
-				for (CommerceInventoryReplenishmentItem
-						commerceInventoryReplenishmentItem : list) {
-
-					if (!sku.equals(
-							commerceInventoryReplenishmentItem.getSku())) {
-
-						list = null;
-
-						break;
-					}
-				}
-			}
-		}
-
-		if (list == null) {
-			StringBundler sb = null;
-
-			if (orderByComparator != null) {
-				sb = new StringBundler(
-					3 + (orderByComparator.getOrderByFields().length * 2));
-			}
-			else {
-				sb = new StringBundler(3);
-			}
-
-			sb.append(_SQL_SELECT_COMMERCEINVENTORYREPLENISHMENTITEM_WHERE);
-
-			boolean bindSku = false;
-
-			if (sku.isEmpty()) {
-				sb.append(_FINDER_COLUMN_SKU_SKU_3);
-			}
-			else {
-				bindSku = true;
-
-				sb.append(_FINDER_COLUMN_SKU_SKU_2);
-			}
-
-			if (orderByComparator != null) {
-				appendOrderByComparator(
-					sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
-			}
-			else {
-				sb.append(
-					CommerceInventoryReplenishmentItemModelImpl.ORDER_BY_JPQL);
-			}
-
-			String sql = sb.toString();
-
-			Session session = null;
-
-			try {
-				session = openSession();
-
-				Query query = session.createQuery(sql);
-
-				QueryPos queryPos = QueryPos.getInstance(query);
-
-				if (bindSku) {
-					queryPos.add(sku);
-				}
-
-				list = (List<CommerceInventoryReplenishmentItem>)QueryUtil.list(
-					query, getDialect(), start, end);
-
-				cacheResult(list);
-
-				if (useFinderCache) {
-					finderCache.putResult(finderPath, finderArgs, list);
-				}
-			}
-			catch (Exception exception) {
-				throw processException(exception);
-			}
-			finally {
-				closeSession(session);
-			}
-		}
-
-		return list;
-	}
-
-	/**
-	 * Returns the first commerce inventory replenishment item in the ordered set where sku = &#63;.
-	 *
-	 * @param sku the sku
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching commerce inventory replenishment item
-	 * @throws NoSuchInventoryReplenishmentItemException if a matching commerce inventory replenishment item could not be found
-	 */
-	@Override
-	public CommerceInventoryReplenishmentItem findBySku_First(
-			String sku,
-			OrderByComparator<CommerceInventoryReplenishmentItem>
-				orderByComparator)
-		throws NoSuchInventoryReplenishmentItemException {
-
-		CommerceInventoryReplenishmentItem commerceInventoryReplenishmentItem =
-			fetchBySku_First(sku, orderByComparator);
-
-		if (commerceInventoryReplenishmentItem != null) {
-			return commerceInventoryReplenishmentItem;
-		}
-
-		StringBundler sb = new StringBundler(4);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("sku=");
-		sb.append(sku);
-
-		sb.append("}");
-
-		throw new NoSuchInventoryReplenishmentItemException(sb.toString());
-	}
-
-	/**
-	 * Returns the first commerce inventory replenishment item in the ordered set where sku = &#63;.
-	 *
-	 * @param sku the sku
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching commerce inventory replenishment item, or <code>null</code> if a matching commerce inventory replenishment item could not be found
-	 */
-	@Override
-	public CommerceInventoryReplenishmentItem fetchBySku_First(
-		String sku,
-		OrderByComparator<CommerceInventoryReplenishmentItem>
-			orderByComparator) {
-
-		List<CommerceInventoryReplenishmentItem> list = findBySku(
-			sku, 0, 1, orderByComparator);
-
-		if (!list.isEmpty()) {
-			return list.get(0);
-		}
-
-		return null;
-	}
-
-	/**
-	 * Returns the last commerce inventory replenishment item in the ordered set where sku = &#63;.
-	 *
-	 * @param sku the sku
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the last matching commerce inventory replenishment item
-	 * @throws NoSuchInventoryReplenishmentItemException if a matching commerce inventory replenishment item could not be found
-	 */
-	@Override
-	public CommerceInventoryReplenishmentItem findBySku_Last(
-			String sku,
-			OrderByComparator<CommerceInventoryReplenishmentItem>
-				orderByComparator)
-		throws NoSuchInventoryReplenishmentItemException {
-
-		CommerceInventoryReplenishmentItem commerceInventoryReplenishmentItem =
-			fetchBySku_Last(sku, orderByComparator);
-
-		if (commerceInventoryReplenishmentItem != null) {
-			return commerceInventoryReplenishmentItem;
-		}
-
-		StringBundler sb = new StringBundler(4);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("sku=");
-		sb.append(sku);
-
-		sb.append("}");
-
-		throw new NoSuchInventoryReplenishmentItemException(sb.toString());
-	}
-
-	/**
-	 * Returns the last commerce inventory replenishment item in the ordered set where sku = &#63;.
-	 *
-	 * @param sku the sku
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the last matching commerce inventory replenishment item, or <code>null</code> if a matching commerce inventory replenishment item could not be found
-	 */
-	@Override
-	public CommerceInventoryReplenishmentItem fetchBySku_Last(
-		String sku,
-		OrderByComparator<CommerceInventoryReplenishmentItem>
-			orderByComparator) {
-
-		int count = countBySku(sku);
-
-		if (count == 0) {
-			return null;
-		}
-
-		List<CommerceInventoryReplenishmentItem> list = findBySku(
-			sku, count - 1, count, orderByComparator);
-
-		if (!list.isEmpty()) {
-			return list.get(0);
-		}
-
-		return null;
-	}
-
-	/**
-	 * Returns the commerce inventory replenishment items before and after the current commerce inventory replenishment item in the ordered set where sku = &#63;.
-	 *
-	 * @param commerceInventoryReplenishmentItemId the primary key of the current commerce inventory replenishment item
-	 * @param sku the sku
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the previous, current, and next commerce inventory replenishment item
-	 * @throws NoSuchInventoryReplenishmentItemException if a commerce inventory replenishment item with the primary key could not be found
-	 */
-	@Override
-	public CommerceInventoryReplenishmentItem[] findBySku_PrevAndNext(
-			long commerceInventoryReplenishmentItemId, String sku,
-			OrderByComparator<CommerceInventoryReplenishmentItem>
-				orderByComparator)
-		throws NoSuchInventoryReplenishmentItemException {
-
-		sku = Objects.toString(sku, "");
-
-		CommerceInventoryReplenishmentItem commerceInventoryReplenishmentItem =
-			findByPrimaryKey(commerceInventoryReplenishmentItemId);
-
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			CommerceInventoryReplenishmentItem[] array =
-				new CommerceInventoryReplenishmentItemImpl[3];
-
-			array[0] = getBySku_PrevAndNext(
-				session, commerceInventoryReplenishmentItem, sku,
-				orderByComparator, true);
-
-			array[1] = commerceInventoryReplenishmentItem;
-
-			array[2] = getBySku_PrevAndNext(
-				session, commerceInventoryReplenishmentItem, sku,
-				orderByComparator, false);
-
-			return array;
-		}
-		catch (Exception exception) {
-			throw processException(exception);
-		}
-		finally {
-			closeSession(session);
-		}
-	}
-
-	protected CommerceInventoryReplenishmentItem getBySku_PrevAndNext(
-		Session session,
-		CommerceInventoryReplenishmentItem commerceInventoryReplenishmentItem,
-		String sku,
-		OrderByComparator<CommerceInventoryReplenishmentItem> orderByComparator,
-		boolean previous) {
-
-		StringBundler sb = null;
-
-		if (orderByComparator != null) {
-			sb = new StringBundler(
-				4 + (orderByComparator.getOrderByConditionFields().length * 3) +
-					(orderByComparator.getOrderByFields().length * 3));
-		}
-		else {
-			sb = new StringBundler(3);
-		}
-
-		sb.append(_SQL_SELECT_COMMERCEINVENTORYREPLENISHMENTITEM_WHERE);
-
-		boolean bindSku = false;
-
-		if (sku.isEmpty()) {
-			sb.append(_FINDER_COLUMN_SKU_SKU_3);
-		}
-		else {
-			bindSku = true;
-
-			sb.append(_FINDER_COLUMN_SKU_SKU_2);
-		}
-
-		if (orderByComparator != null) {
-			String[] orderByConditionFields =
-				orderByComparator.getOrderByConditionFields();
-
-			if (orderByConditionFields.length > 0) {
-				sb.append(WHERE_AND);
-			}
-
-			for (int i = 0; i < orderByConditionFields.length; i++) {
-				sb.append(_ORDER_BY_ENTITY_ALIAS);
-				sb.append(orderByConditionFields[i]);
-
-				if ((i + 1) < orderByConditionFields.length) {
-					if (orderByComparator.isAscending() ^ previous) {
-						sb.append(WHERE_GREATER_THAN_HAS_NEXT);
-					}
-					else {
-						sb.append(WHERE_LESSER_THAN_HAS_NEXT);
-					}
-				}
-				else {
-					if (orderByComparator.isAscending() ^ previous) {
-						sb.append(WHERE_GREATER_THAN);
-					}
-					else {
-						sb.append(WHERE_LESSER_THAN);
-					}
-				}
-			}
-
-			sb.append(ORDER_BY_CLAUSE);
-
-			String[] orderByFields = orderByComparator.getOrderByFields();
-
-			for (int i = 0; i < orderByFields.length; i++) {
-				sb.append(_ORDER_BY_ENTITY_ALIAS);
-				sb.append(orderByFields[i]);
-
-				if ((i + 1) < orderByFields.length) {
-					if (orderByComparator.isAscending() ^ previous) {
-						sb.append(ORDER_BY_ASC_HAS_NEXT);
-					}
-					else {
-						sb.append(ORDER_BY_DESC_HAS_NEXT);
-					}
-				}
-				else {
-					if (orderByComparator.isAscending() ^ previous) {
-						sb.append(ORDER_BY_ASC);
-					}
-					else {
-						sb.append(ORDER_BY_DESC);
-					}
-				}
-			}
-		}
-		else {
-			sb.append(
-				CommerceInventoryReplenishmentItemModelImpl.ORDER_BY_JPQL);
-		}
-
-		String sql = sb.toString();
-
-		Query query = session.createQuery(sql);
-
-		query.setFirstResult(0);
-		query.setMaxResults(2);
-
-		QueryPos queryPos = QueryPos.getInstance(query);
-
-		if (bindSku) {
-			queryPos.add(sku);
-		}
-
-		if (orderByComparator != null) {
-			for (Object orderByConditionValue :
-					orderByComparator.getOrderByConditionValues(
-						commerceInventoryReplenishmentItem)) {
-
-				queryPos.add(orderByConditionValue);
-			}
-		}
-
-		List<CommerceInventoryReplenishmentItem> list = query.list();
-
-		if (list.size() == 2) {
-			return list.get(1);
-		}
-		else {
-			return null;
-		}
-	}
-
-	/**
-	 * Removes all the commerce inventory replenishment items where sku = &#63; from the database.
-	 *
-	 * @param sku the sku
-	 */
-	@Override
-	public void removeBySku(String sku) {
-		for (CommerceInventoryReplenishmentItem
-				commerceInventoryReplenishmentItem :
-					findBySku(
-						sku, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
-
-			remove(commerceInventoryReplenishmentItem);
-		}
-	}
-
-	/**
-	 * Returns the number of commerce inventory replenishment items where sku = &#63;.
-	 *
-	 * @param sku the sku
-	 * @return the number of matching commerce inventory replenishment items
-	 */
-	@Override
-	public int countBySku(String sku) {
-		sku = Objects.toString(sku, "");
-
-		FinderPath finderPath = _finderPathCountBySku;
-
-		Object[] finderArgs = new Object[] {sku};
-
-		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
-
-		if (count == null) {
-			StringBundler sb = new StringBundler(2);
-
-			sb.append(_SQL_COUNT_COMMERCEINVENTORYREPLENISHMENTITEM_WHERE);
-
-			boolean bindSku = false;
-
-			if (sku.isEmpty()) {
-				sb.append(_FINDER_COLUMN_SKU_SKU_3);
-			}
-			else {
-				bindSku = true;
-
-				sb.append(_FINDER_COLUMN_SKU_SKU_2);
-			}
-
-			String sql = sb.toString();
-
-			Session session = null;
-
-			try {
-				session = openSession();
-
-				Query query = session.createQuery(sql);
-
-				QueryPos queryPos = QueryPos.getInstance(query);
-
-				if (bindSku) {
-					queryPos.add(sku);
-				}
-
-				count = (Long)query.uniqueResult();
-
-				finderCache.putResult(finderPath, finderArgs, count);
-			}
-			catch (Exception exception) {
-				throw processException(exception);
-			}
-			finally {
-				closeSession(session);
-			}
-		}
-
-		return count.intValue();
-	}
-
-	private static final String _FINDER_COLUMN_SKU_SKU_2 =
-		"commerceInventoryReplenishmentItem.sku = ?";
-
-	private static final String _FINDER_COLUMN_SKU_SKU_3 =
-		"(commerceInventoryReplenishmentItem.sku IS NULL OR commerceInventoryReplenishmentItem.sku = '')";
-
 	private FinderPath _finderPathWithPaginationFindByAvailabilityDate;
 	private FinderPath _finderPathWithoutPaginationFindByAvailabilityDate;
 	private FinderPath _finderPathCountByAvailabilityDate;
@@ -2957,27 +2396,29 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 		_FINDER_COLUMN_AVAILABILITYDATE_AVAILABILITYDATE_2 =
 			"commerceInventoryReplenishmentItem.availabilityDate = ?";
 
-	private FinderPath _finderPathWithPaginationFindByC_S;
-	private FinderPath _finderPathWithoutPaginationFindByC_S;
-	private FinderPath _finderPathCountByC_S;
+	private FinderPath _finderPathWithPaginationFindByC_S_U;
+	private FinderPath _finderPathWithoutPaginationFindByC_S_U;
+	private FinderPath _finderPathCountByC_S_U;
 
 	/**
-	 * Returns all the commerce inventory replenishment items where companyId = &#63; and sku = &#63;.
+	 * Returns all the commerce inventory replenishment items where companyId = &#63; and sku = &#63; and unitOfMeasureKey = &#63;.
 	 *
 	 * @param companyId the company ID
 	 * @param sku the sku
+	 * @param unitOfMeasureKey the unit of measure key
 	 * @return the matching commerce inventory replenishment items
 	 */
 	@Override
-	public List<CommerceInventoryReplenishmentItem> findByC_S(
-		long companyId, String sku) {
+	public List<CommerceInventoryReplenishmentItem> findByC_S_U(
+		long companyId, String sku, String unitOfMeasureKey) {
 
-		return findByC_S(
-			companyId, sku, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+		return findByC_S_U(
+			companyId, sku, unitOfMeasureKey, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
 	}
 
 	/**
-	 * Returns a range of all the commerce inventory replenishment items where companyId = &#63; and sku = &#63;.
+	 * Returns a range of all the commerce inventory replenishment items where companyId = &#63; and sku = &#63; and unitOfMeasureKey = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CommerceInventoryReplenishmentItemModelImpl</code>.
@@ -2985,19 +2426,21 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 	 *
 	 * @param companyId the company ID
 	 * @param sku the sku
+	 * @param unitOfMeasureKey the unit of measure key
 	 * @param start the lower bound of the range of commerce inventory replenishment items
 	 * @param end the upper bound of the range of commerce inventory replenishment items (not inclusive)
 	 * @return the range of matching commerce inventory replenishment items
 	 */
 	@Override
-	public List<CommerceInventoryReplenishmentItem> findByC_S(
-		long companyId, String sku, int start, int end) {
+	public List<CommerceInventoryReplenishmentItem> findByC_S_U(
+		long companyId, String sku, String unitOfMeasureKey, int start,
+		int end) {
 
-		return findByC_S(companyId, sku, start, end, null);
+		return findByC_S_U(companyId, sku, unitOfMeasureKey, start, end, null);
 	}
 
 	/**
-	 * Returns an ordered range of all the commerce inventory replenishment items where companyId = &#63; and sku = &#63;.
+	 * Returns an ordered range of all the commerce inventory replenishment items where companyId = &#63; and sku = &#63; and unitOfMeasureKey = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CommerceInventoryReplenishmentItemModelImpl</code>.
@@ -3005,22 +2448,25 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 	 *
 	 * @param companyId the company ID
 	 * @param sku the sku
+	 * @param unitOfMeasureKey the unit of measure key
 	 * @param start the lower bound of the range of commerce inventory replenishment items
 	 * @param end the upper bound of the range of commerce inventory replenishment items (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @return the ordered range of matching commerce inventory replenishment items
 	 */
 	@Override
-	public List<CommerceInventoryReplenishmentItem> findByC_S(
-		long companyId, String sku, int start, int end,
+	public List<CommerceInventoryReplenishmentItem> findByC_S_U(
+		long companyId, String sku, String unitOfMeasureKey, int start, int end,
 		OrderByComparator<CommerceInventoryReplenishmentItem>
 			orderByComparator) {
 
-		return findByC_S(companyId, sku, start, end, orderByComparator, true);
+		return findByC_S_U(
+			companyId, sku, unitOfMeasureKey, start, end, orderByComparator,
+			true);
 	}
 
 	/**
-	 * Returns an ordered range of all the commerce inventory replenishment items where companyId = &#63; and sku = &#63;.
+	 * Returns an ordered range of all the commerce inventory replenishment items where companyId = &#63; and sku = &#63; and unitOfMeasureKey = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CommerceInventoryReplenishmentItemModelImpl</code>.
@@ -3028,6 +2474,7 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 	 *
 	 * @param companyId the company ID
 	 * @param sku the sku
+	 * @param unitOfMeasureKey the unit of measure key
 	 * @param start the lower bound of the range of commerce inventory replenishment items
 	 * @param end the upper bound of the range of commerce inventory replenishment items (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
@@ -3035,12 +2482,13 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 	 * @return the ordered range of matching commerce inventory replenishment items
 	 */
 	@Override
-	public List<CommerceInventoryReplenishmentItem> findByC_S(
-		long companyId, String sku, int start, int end,
+	public List<CommerceInventoryReplenishmentItem> findByC_S_U(
+		long companyId, String sku, String unitOfMeasureKey, int start, int end,
 		OrderByComparator<CommerceInventoryReplenishmentItem> orderByComparator,
 		boolean useFinderCache) {
 
 		sku = Objects.toString(sku, "");
+		unitOfMeasureKey = Objects.toString(unitOfMeasureKey, "");
 
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
@@ -3049,14 +2497,14 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 			(orderByComparator == null)) {
 
 			if (useFinderCache) {
-				finderPath = _finderPathWithoutPaginationFindByC_S;
-				finderArgs = new Object[] {companyId, sku};
+				finderPath = _finderPathWithoutPaginationFindByC_S_U;
+				finderArgs = new Object[] {companyId, sku, unitOfMeasureKey};
 			}
 		}
 		else if (useFinderCache) {
-			finderPath = _finderPathWithPaginationFindByC_S;
+			finderPath = _finderPathWithPaginationFindByC_S_U;
 			finderArgs = new Object[] {
-				companyId, sku, start, end, orderByComparator
+				companyId, sku, unitOfMeasureKey, start, end, orderByComparator
 			};
 		}
 
@@ -3075,7 +2523,10 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 							commerceInventoryReplenishmentItem.
 								getCompanyId()) ||
 						!sku.equals(
-							commerceInventoryReplenishmentItem.getSku())) {
+							commerceInventoryReplenishmentItem.getSku()) ||
+						!unitOfMeasureKey.equals(
+							commerceInventoryReplenishmentItem.
+								getUnitOfMeasureKey())) {
 
 						list = null;
 
@@ -3090,25 +2541,36 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 
 			if (orderByComparator != null) {
 				sb = new StringBundler(
-					4 + (orderByComparator.getOrderByFields().length * 2));
+					5 + (orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
-				sb = new StringBundler(4);
+				sb = new StringBundler(5);
 			}
 
 			sb.append(_SQL_SELECT_COMMERCEINVENTORYREPLENISHMENTITEM_WHERE);
 
-			sb.append(_FINDER_COLUMN_C_S_COMPANYID_2);
+			sb.append(_FINDER_COLUMN_C_S_U_COMPANYID_2);
 
 			boolean bindSku = false;
 
 			if (sku.isEmpty()) {
-				sb.append(_FINDER_COLUMN_C_S_SKU_3);
+				sb.append(_FINDER_COLUMN_C_S_U_SKU_3);
 			}
 			else {
 				bindSku = true;
 
-				sb.append(_FINDER_COLUMN_C_S_SKU_2);
+				sb.append(_FINDER_COLUMN_C_S_U_SKU_2);
+			}
+
+			boolean bindUnitOfMeasureKey = false;
+
+			if (unitOfMeasureKey.isEmpty()) {
+				sb.append(_FINDER_COLUMN_C_S_U_UNITOFMEASUREKEY_3);
+			}
+			else {
+				bindUnitOfMeasureKey = true;
+
+				sb.append(_FINDER_COLUMN_C_S_U_UNITOFMEASUREKEY_2);
 			}
 
 			if (orderByComparator != null) {
@@ -3137,6 +2599,10 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 					queryPos.add(sku);
 				}
 
+				if (bindUnitOfMeasureKey) {
+					queryPos.add(unitOfMeasureKey);
+				}
+
 				list = (List<CommerceInventoryReplenishmentItem>)QueryUtil.list(
 					query, getDialect(), start, end);
 
@@ -3158,29 +2624,31 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 	}
 
 	/**
-	 * Returns the first commerce inventory replenishment item in the ordered set where companyId = &#63; and sku = &#63;.
+	 * Returns the first commerce inventory replenishment item in the ordered set where companyId = &#63; and sku = &#63; and unitOfMeasureKey = &#63;.
 	 *
 	 * @param companyId the company ID
 	 * @param sku the sku
+	 * @param unitOfMeasureKey the unit of measure key
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching commerce inventory replenishment item
 	 * @throws NoSuchInventoryReplenishmentItemException if a matching commerce inventory replenishment item could not be found
 	 */
 	@Override
-	public CommerceInventoryReplenishmentItem findByC_S_First(
-			long companyId, String sku,
+	public CommerceInventoryReplenishmentItem findByC_S_U_First(
+			long companyId, String sku, String unitOfMeasureKey,
 			OrderByComparator<CommerceInventoryReplenishmentItem>
 				orderByComparator)
 		throws NoSuchInventoryReplenishmentItemException {
 
 		CommerceInventoryReplenishmentItem commerceInventoryReplenishmentItem =
-			fetchByC_S_First(companyId, sku, orderByComparator);
+			fetchByC_S_U_First(
+				companyId, sku, unitOfMeasureKey, orderByComparator);
 
 		if (commerceInventoryReplenishmentItem != null) {
 			return commerceInventoryReplenishmentItem;
 		}
 
-		StringBundler sb = new StringBundler(6);
+		StringBundler sb = new StringBundler(8);
 
 		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
 
@@ -3190,27 +2658,31 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 		sb.append(", sku=");
 		sb.append(sku);
 
+		sb.append(", unitOfMeasureKey=");
+		sb.append(unitOfMeasureKey);
+
 		sb.append("}");
 
 		throw new NoSuchInventoryReplenishmentItemException(sb.toString());
 	}
 
 	/**
-	 * Returns the first commerce inventory replenishment item in the ordered set where companyId = &#63; and sku = &#63;.
+	 * Returns the first commerce inventory replenishment item in the ordered set where companyId = &#63; and sku = &#63; and unitOfMeasureKey = &#63;.
 	 *
 	 * @param companyId the company ID
 	 * @param sku the sku
+	 * @param unitOfMeasureKey the unit of measure key
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching commerce inventory replenishment item, or <code>null</code> if a matching commerce inventory replenishment item could not be found
 	 */
 	@Override
-	public CommerceInventoryReplenishmentItem fetchByC_S_First(
-		long companyId, String sku,
+	public CommerceInventoryReplenishmentItem fetchByC_S_U_First(
+		long companyId, String sku, String unitOfMeasureKey,
 		OrderByComparator<CommerceInventoryReplenishmentItem>
 			orderByComparator) {
 
-		List<CommerceInventoryReplenishmentItem> list = findByC_S(
-			companyId, sku, 0, 1, orderByComparator);
+		List<CommerceInventoryReplenishmentItem> list = findByC_S_U(
+			companyId, sku, unitOfMeasureKey, 0, 1, orderByComparator);
 
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -3220,29 +2692,31 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 	}
 
 	/**
-	 * Returns the last commerce inventory replenishment item in the ordered set where companyId = &#63; and sku = &#63;.
+	 * Returns the last commerce inventory replenishment item in the ordered set where companyId = &#63; and sku = &#63; and unitOfMeasureKey = &#63;.
 	 *
 	 * @param companyId the company ID
 	 * @param sku the sku
+	 * @param unitOfMeasureKey the unit of measure key
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching commerce inventory replenishment item
 	 * @throws NoSuchInventoryReplenishmentItemException if a matching commerce inventory replenishment item could not be found
 	 */
 	@Override
-	public CommerceInventoryReplenishmentItem findByC_S_Last(
-			long companyId, String sku,
+	public CommerceInventoryReplenishmentItem findByC_S_U_Last(
+			long companyId, String sku, String unitOfMeasureKey,
 			OrderByComparator<CommerceInventoryReplenishmentItem>
 				orderByComparator)
 		throws NoSuchInventoryReplenishmentItemException {
 
 		CommerceInventoryReplenishmentItem commerceInventoryReplenishmentItem =
-			fetchByC_S_Last(companyId, sku, orderByComparator);
+			fetchByC_S_U_Last(
+				companyId, sku, unitOfMeasureKey, orderByComparator);
 
 		if (commerceInventoryReplenishmentItem != null) {
 			return commerceInventoryReplenishmentItem;
 		}
 
-		StringBundler sb = new StringBundler(6);
+		StringBundler sb = new StringBundler(8);
 
 		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
 
@@ -3252,33 +2726,38 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 		sb.append(", sku=");
 		sb.append(sku);
 
+		sb.append(", unitOfMeasureKey=");
+		sb.append(unitOfMeasureKey);
+
 		sb.append("}");
 
 		throw new NoSuchInventoryReplenishmentItemException(sb.toString());
 	}
 
 	/**
-	 * Returns the last commerce inventory replenishment item in the ordered set where companyId = &#63; and sku = &#63;.
+	 * Returns the last commerce inventory replenishment item in the ordered set where companyId = &#63; and sku = &#63; and unitOfMeasureKey = &#63;.
 	 *
 	 * @param companyId the company ID
 	 * @param sku the sku
+	 * @param unitOfMeasureKey the unit of measure key
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching commerce inventory replenishment item, or <code>null</code> if a matching commerce inventory replenishment item could not be found
 	 */
 	@Override
-	public CommerceInventoryReplenishmentItem fetchByC_S_Last(
-		long companyId, String sku,
+	public CommerceInventoryReplenishmentItem fetchByC_S_U_Last(
+		long companyId, String sku, String unitOfMeasureKey,
 		OrderByComparator<CommerceInventoryReplenishmentItem>
 			orderByComparator) {
 
-		int count = countByC_S(companyId, sku);
+		int count = countByC_S_U(companyId, sku, unitOfMeasureKey);
 
 		if (count == 0) {
 			return null;
 		}
 
-		List<CommerceInventoryReplenishmentItem> list = findByC_S(
-			companyId, sku, count - 1, count, orderByComparator);
+		List<CommerceInventoryReplenishmentItem> list = findByC_S_U(
+			companyId, sku, unitOfMeasureKey, count - 1, count,
+			orderByComparator);
 
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -3288,24 +2767,26 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 	}
 
 	/**
-	 * Returns the commerce inventory replenishment items before and after the current commerce inventory replenishment item in the ordered set where companyId = &#63; and sku = &#63;.
+	 * Returns the commerce inventory replenishment items before and after the current commerce inventory replenishment item in the ordered set where companyId = &#63; and sku = &#63; and unitOfMeasureKey = &#63;.
 	 *
 	 * @param commerceInventoryReplenishmentItemId the primary key of the current commerce inventory replenishment item
 	 * @param companyId the company ID
 	 * @param sku the sku
+	 * @param unitOfMeasureKey the unit of measure key
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next commerce inventory replenishment item
 	 * @throws NoSuchInventoryReplenishmentItemException if a commerce inventory replenishment item with the primary key could not be found
 	 */
 	@Override
-	public CommerceInventoryReplenishmentItem[] findByC_S_PrevAndNext(
+	public CommerceInventoryReplenishmentItem[] findByC_S_U_PrevAndNext(
 			long commerceInventoryReplenishmentItemId, long companyId,
-			String sku,
+			String sku, String unitOfMeasureKey,
 			OrderByComparator<CommerceInventoryReplenishmentItem>
 				orderByComparator)
 		throws NoSuchInventoryReplenishmentItemException {
 
 		sku = Objects.toString(sku, "");
+		unitOfMeasureKey = Objects.toString(unitOfMeasureKey, "");
 
 		CommerceInventoryReplenishmentItem commerceInventoryReplenishmentItem =
 			findByPrimaryKey(commerceInventoryReplenishmentItemId);
@@ -3318,15 +2799,15 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 			CommerceInventoryReplenishmentItem[] array =
 				new CommerceInventoryReplenishmentItemImpl[3];
 
-			array[0] = getByC_S_PrevAndNext(
+			array[0] = getByC_S_U_PrevAndNext(
 				session, commerceInventoryReplenishmentItem, companyId, sku,
-				orderByComparator, true);
+				unitOfMeasureKey, orderByComparator, true);
 
 			array[1] = commerceInventoryReplenishmentItem;
 
-			array[2] = getByC_S_PrevAndNext(
+			array[2] = getByC_S_U_PrevAndNext(
 				session, commerceInventoryReplenishmentItem, companyId, sku,
-				orderByComparator, false);
+				unitOfMeasureKey, orderByComparator, false);
 
 			return array;
 		}
@@ -3338,10 +2819,10 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 		}
 	}
 
-	protected CommerceInventoryReplenishmentItem getByC_S_PrevAndNext(
+	protected CommerceInventoryReplenishmentItem getByC_S_U_PrevAndNext(
 		Session session,
 		CommerceInventoryReplenishmentItem commerceInventoryReplenishmentItem,
-		long companyId, String sku,
+		long companyId, String sku, String unitOfMeasureKey,
 		OrderByComparator<CommerceInventoryReplenishmentItem> orderByComparator,
 		boolean previous) {
 
@@ -3349,26 +2830,37 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 
 		if (orderByComparator != null) {
 			sb = new StringBundler(
-				5 + (orderByComparator.getOrderByConditionFields().length * 3) +
+				6 + (orderByComparator.getOrderByConditionFields().length * 3) +
 					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
-			sb = new StringBundler(4);
+			sb = new StringBundler(5);
 		}
 
 		sb.append(_SQL_SELECT_COMMERCEINVENTORYREPLENISHMENTITEM_WHERE);
 
-		sb.append(_FINDER_COLUMN_C_S_COMPANYID_2);
+		sb.append(_FINDER_COLUMN_C_S_U_COMPANYID_2);
 
 		boolean bindSku = false;
 
 		if (sku.isEmpty()) {
-			sb.append(_FINDER_COLUMN_C_S_SKU_3);
+			sb.append(_FINDER_COLUMN_C_S_U_SKU_3);
 		}
 		else {
 			bindSku = true;
 
-			sb.append(_FINDER_COLUMN_C_S_SKU_2);
+			sb.append(_FINDER_COLUMN_C_S_U_SKU_2);
+		}
+
+		boolean bindUnitOfMeasureKey = false;
+
+		if (unitOfMeasureKey.isEmpty()) {
+			sb.append(_FINDER_COLUMN_C_S_U_UNITOFMEASUREKEY_3);
+		}
+		else {
+			bindUnitOfMeasureKey = true;
+
+			sb.append(_FINDER_COLUMN_C_S_U_UNITOFMEASUREKEY_2);
 		}
 
 		if (orderByComparator != null) {
@@ -3447,6 +2939,10 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 			queryPos.add(sku);
 		}
 
+		if (bindUnitOfMeasureKey) {
+			queryPos.add(unitOfMeasureKey);
+		}
+
 		if (orderByComparator != null) {
 			for (Object orderByConditionValue :
 					orderByComparator.getOrderByConditionValues(
@@ -3467,56 +2963,74 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 	}
 
 	/**
-	 * Removes all the commerce inventory replenishment items where companyId = &#63; and sku = &#63; from the database.
+	 * Removes all the commerce inventory replenishment items where companyId = &#63; and sku = &#63; and unitOfMeasureKey = &#63; from the database.
 	 *
 	 * @param companyId the company ID
 	 * @param sku the sku
+	 * @param unitOfMeasureKey the unit of measure key
 	 */
 	@Override
-	public void removeByC_S(long companyId, String sku) {
+	public void removeByC_S_U(
+		long companyId, String sku, String unitOfMeasureKey) {
+
 		for (CommerceInventoryReplenishmentItem
 				commerceInventoryReplenishmentItem :
-					findByC_S(
-						companyId, sku, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-						null)) {
+					findByC_S_U(
+						companyId, sku, unitOfMeasureKey, QueryUtil.ALL_POS,
+						QueryUtil.ALL_POS, null)) {
 
 			remove(commerceInventoryReplenishmentItem);
 		}
 	}
 
 	/**
-	 * Returns the number of commerce inventory replenishment items where companyId = &#63; and sku = &#63;.
+	 * Returns the number of commerce inventory replenishment items where companyId = &#63; and sku = &#63; and unitOfMeasureKey = &#63;.
 	 *
 	 * @param companyId the company ID
 	 * @param sku the sku
+	 * @param unitOfMeasureKey the unit of measure key
 	 * @return the number of matching commerce inventory replenishment items
 	 */
 	@Override
-	public int countByC_S(long companyId, String sku) {
+	public int countByC_S_U(
+		long companyId, String sku, String unitOfMeasureKey) {
+
 		sku = Objects.toString(sku, "");
+		unitOfMeasureKey = Objects.toString(unitOfMeasureKey, "");
 
-		FinderPath finderPath = _finderPathCountByC_S;
+		FinderPath finderPath = _finderPathCountByC_S_U;
 
-		Object[] finderArgs = new Object[] {companyId, sku};
+		Object[] finderArgs = new Object[] {companyId, sku, unitOfMeasureKey};
 
 		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
 		if (count == null) {
-			StringBundler sb = new StringBundler(3);
+			StringBundler sb = new StringBundler(4);
 
 			sb.append(_SQL_COUNT_COMMERCEINVENTORYREPLENISHMENTITEM_WHERE);
 
-			sb.append(_FINDER_COLUMN_C_S_COMPANYID_2);
+			sb.append(_FINDER_COLUMN_C_S_U_COMPANYID_2);
 
 			boolean bindSku = false;
 
 			if (sku.isEmpty()) {
-				sb.append(_FINDER_COLUMN_C_S_SKU_3);
+				sb.append(_FINDER_COLUMN_C_S_U_SKU_3);
 			}
 			else {
 				bindSku = true;
 
-				sb.append(_FINDER_COLUMN_C_S_SKU_2);
+				sb.append(_FINDER_COLUMN_C_S_U_SKU_2);
+			}
+
+			boolean bindUnitOfMeasureKey = false;
+
+			if (unitOfMeasureKey.isEmpty()) {
+				sb.append(_FINDER_COLUMN_C_S_U_UNITOFMEASUREKEY_3);
+			}
+			else {
+				bindUnitOfMeasureKey = true;
+
+				sb.append(_FINDER_COLUMN_C_S_U_UNITOFMEASUREKEY_2);
 			}
 
 			String sql = sb.toString();
@@ -3536,6 +3050,10 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 					queryPos.add(sku);
 				}
 
+				if (bindUnitOfMeasureKey) {
+					queryPos.add(unitOfMeasureKey);
+				}
+
 				count = (Long)query.uniqueResult();
 
 				finderCache.putResult(finderPath, finderArgs, count);
@@ -3551,62 +3069,74 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 		return count.intValue();
 	}
 
-	private static final String _FINDER_COLUMN_C_S_COMPANYID_2 =
+	private static final String _FINDER_COLUMN_C_S_U_COMPANYID_2 =
 		"commerceInventoryReplenishmentItem.companyId = ? AND ";
 
-	private static final String _FINDER_COLUMN_C_S_SKU_2 =
-		"commerceInventoryReplenishmentItem.sku = ?";
+	private static final String _FINDER_COLUMN_C_S_U_SKU_2 =
+		"commerceInventoryReplenishmentItem.sku = ? AND ";
 
-	private static final String _FINDER_COLUMN_C_S_SKU_3 =
-		"(commerceInventoryReplenishmentItem.sku IS NULL OR commerceInventoryReplenishmentItem.sku = '')";
+	private static final String _FINDER_COLUMN_C_S_U_SKU_3 =
+		"(commerceInventoryReplenishmentItem.sku IS NULL OR commerceInventoryReplenishmentItem.sku = '') AND ";
 
-	private FinderPath _finderPathWithPaginationFindByS_AD;
-	private FinderPath _finderPathWithoutPaginationFindByS_AD;
-	private FinderPath _finderPathCountByS_AD;
+	private static final String _FINDER_COLUMN_C_S_U_UNITOFMEASUREKEY_2 =
+		"commerceInventoryReplenishmentItem.unitOfMeasureKey = ?";
+
+	private static final String _FINDER_COLUMN_C_S_U_UNITOFMEASUREKEY_3 =
+		"(commerceInventoryReplenishmentItem.unitOfMeasureKey IS NULL OR commerceInventoryReplenishmentItem.unitOfMeasureKey = '')";
+
+	private FinderPath _finderPathWithPaginationFindByS_U_AD;
+	private FinderPath _finderPathWithoutPaginationFindByS_U_AD;
+	private FinderPath _finderPathCountByS_U_AD;
 
 	/**
-	 * Returns all the commerce inventory replenishment items where sku = &#63; and availabilityDate = &#63;.
+	 * Returns all the commerce inventory replenishment items where sku = &#63; and unitOfMeasureKey = &#63; and availabilityDate = &#63;.
 	 *
 	 * @param sku the sku
+	 * @param unitOfMeasureKey the unit of measure key
 	 * @param availabilityDate the availability date
 	 * @return the matching commerce inventory replenishment items
 	 */
 	@Override
-	public List<CommerceInventoryReplenishmentItem> findByS_AD(
-		String sku, Date availabilityDate) {
+	public List<CommerceInventoryReplenishmentItem> findByS_U_AD(
+		String sku, String unitOfMeasureKey, Date availabilityDate) {
 
-		return findByS_AD(
-			sku, availabilityDate, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+		return findByS_U_AD(
+			sku, unitOfMeasureKey, availabilityDate, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
 	}
 
 	/**
-	 * Returns a range of all the commerce inventory replenishment items where sku = &#63; and availabilityDate = &#63;.
+	 * Returns a range of all the commerce inventory replenishment items where sku = &#63; and unitOfMeasureKey = &#63; and availabilityDate = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CommerceInventoryReplenishmentItemModelImpl</code>.
 	 * </p>
 	 *
 	 * @param sku the sku
+	 * @param unitOfMeasureKey the unit of measure key
 	 * @param availabilityDate the availability date
 	 * @param start the lower bound of the range of commerce inventory replenishment items
 	 * @param end the upper bound of the range of commerce inventory replenishment items (not inclusive)
 	 * @return the range of matching commerce inventory replenishment items
 	 */
 	@Override
-	public List<CommerceInventoryReplenishmentItem> findByS_AD(
-		String sku, Date availabilityDate, int start, int end) {
+	public List<CommerceInventoryReplenishmentItem> findByS_U_AD(
+		String sku, String unitOfMeasureKey, Date availabilityDate, int start,
+		int end) {
 
-		return findByS_AD(sku, availabilityDate, start, end, null);
+		return findByS_U_AD(
+			sku, unitOfMeasureKey, availabilityDate, start, end, null);
 	}
 
 	/**
-	 * Returns an ordered range of all the commerce inventory replenishment items where sku = &#63; and availabilityDate = &#63;.
+	 * Returns an ordered range of all the commerce inventory replenishment items where sku = &#63; and unitOfMeasureKey = &#63; and availabilityDate = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CommerceInventoryReplenishmentItemModelImpl</code>.
 	 * </p>
 	 *
 	 * @param sku the sku
+	 * @param unitOfMeasureKey the unit of measure key
 	 * @param availabilityDate the availability date
 	 * @param start the lower bound of the range of commerce inventory replenishment items
 	 * @param end the upper bound of the range of commerce inventory replenishment items (not inclusive)
@@ -3614,23 +3144,26 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 	 * @return the ordered range of matching commerce inventory replenishment items
 	 */
 	@Override
-	public List<CommerceInventoryReplenishmentItem> findByS_AD(
-		String sku, Date availabilityDate, int start, int end,
+	public List<CommerceInventoryReplenishmentItem> findByS_U_AD(
+		String sku, String unitOfMeasureKey, Date availabilityDate, int start,
+		int end,
 		OrderByComparator<CommerceInventoryReplenishmentItem>
 			orderByComparator) {
 
-		return findByS_AD(
-			sku, availabilityDate, start, end, orderByComparator, true);
+		return findByS_U_AD(
+			sku, unitOfMeasureKey, availabilityDate, start, end,
+			orderByComparator, true);
 	}
 
 	/**
-	 * Returns an ordered range of all the commerce inventory replenishment items where sku = &#63; and availabilityDate = &#63;.
+	 * Returns an ordered range of all the commerce inventory replenishment items where sku = &#63; and unitOfMeasureKey = &#63; and availabilityDate = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CommerceInventoryReplenishmentItemModelImpl</code>.
 	 * </p>
 	 *
 	 * @param sku the sku
+	 * @param unitOfMeasureKey the unit of measure key
 	 * @param availabilityDate the availability date
 	 * @param start the lower bound of the range of commerce inventory replenishment items
 	 * @param end the upper bound of the range of commerce inventory replenishment items (not inclusive)
@@ -3639,12 +3172,14 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 	 * @return the ordered range of matching commerce inventory replenishment items
 	 */
 	@Override
-	public List<CommerceInventoryReplenishmentItem> findByS_AD(
-		String sku, Date availabilityDate, int start, int end,
+	public List<CommerceInventoryReplenishmentItem> findByS_U_AD(
+		String sku, String unitOfMeasureKey, Date availabilityDate, int start,
+		int end,
 		OrderByComparator<CommerceInventoryReplenishmentItem> orderByComparator,
 		boolean useFinderCache) {
 
 		sku = Objects.toString(sku, "");
+		unitOfMeasureKey = Objects.toString(unitOfMeasureKey, "");
 
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
@@ -3653,14 +3188,17 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 			(orderByComparator == null)) {
 
 			if (useFinderCache) {
-				finderPath = _finderPathWithoutPaginationFindByS_AD;
-				finderArgs = new Object[] {sku, _getTime(availabilityDate)};
+				finderPath = _finderPathWithoutPaginationFindByS_U_AD;
+				finderArgs = new Object[] {
+					sku, unitOfMeasureKey, _getTime(availabilityDate)
+				};
 			}
 		}
 		else if (useFinderCache) {
-			finderPath = _finderPathWithPaginationFindByS_AD;
+			finderPath = _finderPathWithPaginationFindByS_U_AD;
 			finderArgs = new Object[] {
-				sku, _getTime(availabilityDate), start, end, orderByComparator
+				sku, unitOfMeasureKey, _getTime(availabilityDate), start, end,
+				orderByComparator
 			};
 		}
 
@@ -3677,6 +3215,9 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 
 					if (!sku.equals(
 							commerceInventoryReplenishmentItem.getSku()) ||
+						!unitOfMeasureKey.equals(
+							commerceInventoryReplenishmentItem.
+								getUnitOfMeasureKey()) ||
 						!Objects.equals(
 							availabilityDate,
 							commerceInventoryReplenishmentItem.
@@ -3695,10 +3236,10 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 
 			if (orderByComparator != null) {
 				sb = new StringBundler(
-					4 + (orderByComparator.getOrderByFields().length * 2));
+					5 + (orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
-				sb = new StringBundler(4);
+				sb = new StringBundler(5);
 			}
 
 			sb.append(_SQL_SELECT_COMMERCEINVENTORYREPLENISHMENTITEM_WHERE);
@@ -3706,23 +3247,34 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 			boolean bindSku = false;
 
 			if (sku.isEmpty()) {
-				sb.append(_FINDER_COLUMN_S_AD_SKU_3);
+				sb.append(_FINDER_COLUMN_S_U_AD_SKU_3);
 			}
 			else {
 				bindSku = true;
 
-				sb.append(_FINDER_COLUMN_S_AD_SKU_2);
+				sb.append(_FINDER_COLUMN_S_U_AD_SKU_2);
+			}
+
+			boolean bindUnitOfMeasureKey = false;
+
+			if (unitOfMeasureKey.isEmpty()) {
+				sb.append(_FINDER_COLUMN_S_U_AD_UNITOFMEASUREKEY_3);
+			}
+			else {
+				bindUnitOfMeasureKey = true;
+
+				sb.append(_FINDER_COLUMN_S_U_AD_UNITOFMEASUREKEY_2);
 			}
 
 			boolean bindAvailabilityDate = false;
 
 			if (availabilityDate == null) {
-				sb.append(_FINDER_COLUMN_S_AD_AVAILABILITYDATE_1);
+				sb.append(_FINDER_COLUMN_S_U_AD_AVAILABILITYDATE_1);
 			}
 			else {
 				bindAvailabilityDate = true;
 
-				sb.append(_FINDER_COLUMN_S_AD_AVAILABILITYDATE_2);
+				sb.append(_FINDER_COLUMN_S_U_AD_AVAILABILITYDATE_2);
 			}
 
 			if (orderByComparator != null) {
@@ -3747,6 +3299,10 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 
 				if (bindSku) {
 					queryPos.add(sku);
+				}
+
+				if (bindUnitOfMeasureKey) {
+					queryPos.add(unitOfMeasureKey);
 				}
 
 				if (bindAvailabilityDate) {
@@ -3774,34 +3330,39 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 	}
 
 	/**
-	 * Returns the first commerce inventory replenishment item in the ordered set where sku = &#63; and availabilityDate = &#63;.
+	 * Returns the first commerce inventory replenishment item in the ordered set where sku = &#63; and unitOfMeasureKey = &#63; and availabilityDate = &#63;.
 	 *
 	 * @param sku the sku
+	 * @param unitOfMeasureKey the unit of measure key
 	 * @param availabilityDate the availability date
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching commerce inventory replenishment item
 	 * @throws NoSuchInventoryReplenishmentItemException if a matching commerce inventory replenishment item could not be found
 	 */
 	@Override
-	public CommerceInventoryReplenishmentItem findByS_AD_First(
-			String sku, Date availabilityDate,
+	public CommerceInventoryReplenishmentItem findByS_U_AD_First(
+			String sku, String unitOfMeasureKey, Date availabilityDate,
 			OrderByComparator<CommerceInventoryReplenishmentItem>
 				orderByComparator)
 		throws NoSuchInventoryReplenishmentItemException {
 
 		CommerceInventoryReplenishmentItem commerceInventoryReplenishmentItem =
-			fetchByS_AD_First(sku, availabilityDate, orderByComparator);
+			fetchByS_U_AD_First(
+				sku, unitOfMeasureKey, availabilityDate, orderByComparator);
 
 		if (commerceInventoryReplenishmentItem != null) {
 			return commerceInventoryReplenishmentItem;
 		}
 
-		StringBundler sb = new StringBundler(6);
+		StringBundler sb = new StringBundler(8);
 
 		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
 
 		sb.append("sku=");
 		sb.append(sku);
+
+		sb.append(", unitOfMeasureKey=");
+		sb.append(unitOfMeasureKey);
 
 		sb.append(", availabilityDate=");
 		sb.append(availabilityDate);
@@ -3812,21 +3373,22 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 	}
 
 	/**
-	 * Returns the first commerce inventory replenishment item in the ordered set where sku = &#63; and availabilityDate = &#63;.
+	 * Returns the first commerce inventory replenishment item in the ordered set where sku = &#63; and unitOfMeasureKey = &#63; and availabilityDate = &#63;.
 	 *
 	 * @param sku the sku
+	 * @param unitOfMeasureKey the unit of measure key
 	 * @param availabilityDate the availability date
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching commerce inventory replenishment item, or <code>null</code> if a matching commerce inventory replenishment item could not be found
 	 */
 	@Override
-	public CommerceInventoryReplenishmentItem fetchByS_AD_First(
-		String sku, Date availabilityDate,
+	public CommerceInventoryReplenishmentItem fetchByS_U_AD_First(
+		String sku, String unitOfMeasureKey, Date availabilityDate,
 		OrderByComparator<CommerceInventoryReplenishmentItem>
 			orderByComparator) {
 
-		List<CommerceInventoryReplenishmentItem> list = findByS_AD(
-			sku, availabilityDate, 0, 1, orderByComparator);
+		List<CommerceInventoryReplenishmentItem> list = findByS_U_AD(
+			sku, unitOfMeasureKey, availabilityDate, 0, 1, orderByComparator);
 
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -3836,34 +3398,39 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 	}
 
 	/**
-	 * Returns the last commerce inventory replenishment item in the ordered set where sku = &#63; and availabilityDate = &#63;.
+	 * Returns the last commerce inventory replenishment item in the ordered set where sku = &#63; and unitOfMeasureKey = &#63; and availabilityDate = &#63;.
 	 *
 	 * @param sku the sku
+	 * @param unitOfMeasureKey the unit of measure key
 	 * @param availabilityDate the availability date
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching commerce inventory replenishment item
 	 * @throws NoSuchInventoryReplenishmentItemException if a matching commerce inventory replenishment item could not be found
 	 */
 	@Override
-	public CommerceInventoryReplenishmentItem findByS_AD_Last(
-			String sku, Date availabilityDate,
+	public CommerceInventoryReplenishmentItem findByS_U_AD_Last(
+			String sku, String unitOfMeasureKey, Date availabilityDate,
 			OrderByComparator<CommerceInventoryReplenishmentItem>
 				orderByComparator)
 		throws NoSuchInventoryReplenishmentItemException {
 
 		CommerceInventoryReplenishmentItem commerceInventoryReplenishmentItem =
-			fetchByS_AD_Last(sku, availabilityDate, orderByComparator);
+			fetchByS_U_AD_Last(
+				sku, unitOfMeasureKey, availabilityDate, orderByComparator);
 
 		if (commerceInventoryReplenishmentItem != null) {
 			return commerceInventoryReplenishmentItem;
 		}
 
-		StringBundler sb = new StringBundler(6);
+		StringBundler sb = new StringBundler(8);
 
 		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
 
 		sb.append("sku=");
 		sb.append(sku);
+
+		sb.append(", unitOfMeasureKey=");
+		sb.append(unitOfMeasureKey);
 
 		sb.append(", availabilityDate=");
 		sb.append(availabilityDate);
@@ -3874,27 +3441,29 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 	}
 
 	/**
-	 * Returns the last commerce inventory replenishment item in the ordered set where sku = &#63; and availabilityDate = &#63;.
+	 * Returns the last commerce inventory replenishment item in the ordered set where sku = &#63; and unitOfMeasureKey = &#63; and availabilityDate = &#63;.
 	 *
 	 * @param sku the sku
+	 * @param unitOfMeasureKey the unit of measure key
 	 * @param availabilityDate the availability date
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching commerce inventory replenishment item, or <code>null</code> if a matching commerce inventory replenishment item could not be found
 	 */
 	@Override
-	public CommerceInventoryReplenishmentItem fetchByS_AD_Last(
-		String sku, Date availabilityDate,
+	public CommerceInventoryReplenishmentItem fetchByS_U_AD_Last(
+		String sku, String unitOfMeasureKey, Date availabilityDate,
 		OrderByComparator<CommerceInventoryReplenishmentItem>
 			orderByComparator) {
 
-		int count = countByS_AD(sku, availabilityDate);
+		int count = countByS_U_AD(sku, unitOfMeasureKey, availabilityDate);
 
 		if (count == 0) {
 			return null;
 		}
 
-		List<CommerceInventoryReplenishmentItem> list = findByS_AD(
-			sku, availabilityDate, count - 1, count, orderByComparator);
+		List<CommerceInventoryReplenishmentItem> list = findByS_U_AD(
+			sku, unitOfMeasureKey, availabilityDate, count - 1, count,
+			orderByComparator);
 
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -3904,24 +3473,26 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 	}
 
 	/**
-	 * Returns the commerce inventory replenishment items before and after the current commerce inventory replenishment item in the ordered set where sku = &#63; and availabilityDate = &#63;.
+	 * Returns the commerce inventory replenishment items before and after the current commerce inventory replenishment item in the ordered set where sku = &#63; and unitOfMeasureKey = &#63; and availabilityDate = &#63;.
 	 *
 	 * @param commerceInventoryReplenishmentItemId the primary key of the current commerce inventory replenishment item
 	 * @param sku the sku
+	 * @param unitOfMeasureKey the unit of measure key
 	 * @param availabilityDate the availability date
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next commerce inventory replenishment item
 	 * @throws NoSuchInventoryReplenishmentItemException if a commerce inventory replenishment item with the primary key could not be found
 	 */
 	@Override
-	public CommerceInventoryReplenishmentItem[] findByS_AD_PrevAndNext(
+	public CommerceInventoryReplenishmentItem[] findByS_U_AD_PrevAndNext(
 			long commerceInventoryReplenishmentItemId, String sku,
-			Date availabilityDate,
+			String unitOfMeasureKey, Date availabilityDate,
 			OrderByComparator<CommerceInventoryReplenishmentItem>
 				orderByComparator)
 		throws NoSuchInventoryReplenishmentItemException {
 
 		sku = Objects.toString(sku, "");
+		unitOfMeasureKey = Objects.toString(unitOfMeasureKey, "");
 
 		CommerceInventoryReplenishmentItem commerceInventoryReplenishmentItem =
 			findByPrimaryKey(commerceInventoryReplenishmentItemId);
@@ -3934,15 +3505,15 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 			CommerceInventoryReplenishmentItem[] array =
 				new CommerceInventoryReplenishmentItemImpl[3];
 
-			array[0] = getByS_AD_PrevAndNext(
+			array[0] = getByS_U_AD_PrevAndNext(
 				session, commerceInventoryReplenishmentItem, sku,
-				availabilityDate, orderByComparator, true);
+				unitOfMeasureKey, availabilityDate, orderByComparator, true);
 
 			array[1] = commerceInventoryReplenishmentItem;
 
-			array[2] = getByS_AD_PrevAndNext(
+			array[2] = getByS_U_AD_PrevAndNext(
 				session, commerceInventoryReplenishmentItem, sku,
-				availabilityDate, orderByComparator, false);
+				unitOfMeasureKey, availabilityDate, orderByComparator, false);
 
 			return array;
 		}
@@ -3954,10 +3525,10 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 		}
 	}
 
-	protected CommerceInventoryReplenishmentItem getByS_AD_PrevAndNext(
+	protected CommerceInventoryReplenishmentItem getByS_U_AD_PrevAndNext(
 		Session session,
 		CommerceInventoryReplenishmentItem commerceInventoryReplenishmentItem,
-		String sku, Date availabilityDate,
+		String sku, String unitOfMeasureKey, Date availabilityDate,
 		OrderByComparator<CommerceInventoryReplenishmentItem> orderByComparator,
 		boolean previous) {
 
@@ -3965,11 +3536,11 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 
 		if (orderByComparator != null) {
 			sb = new StringBundler(
-				5 + (orderByComparator.getOrderByConditionFields().length * 3) +
+				6 + (orderByComparator.getOrderByConditionFields().length * 3) +
 					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
-			sb = new StringBundler(4);
+			sb = new StringBundler(5);
 		}
 
 		sb.append(_SQL_SELECT_COMMERCEINVENTORYREPLENISHMENTITEM_WHERE);
@@ -3977,23 +3548,34 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 		boolean bindSku = false;
 
 		if (sku.isEmpty()) {
-			sb.append(_FINDER_COLUMN_S_AD_SKU_3);
+			sb.append(_FINDER_COLUMN_S_U_AD_SKU_3);
 		}
 		else {
 			bindSku = true;
 
-			sb.append(_FINDER_COLUMN_S_AD_SKU_2);
+			sb.append(_FINDER_COLUMN_S_U_AD_SKU_2);
+		}
+
+		boolean bindUnitOfMeasureKey = false;
+
+		if (unitOfMeasureKey.isEmpty()) {
+			sb.append(_FINDER_COLUMN_S_U_AD_UNITOFMEASUREKEY_3);
+		}
+		else {
+			bindUnitOfMeasureKey = true;
+
+			sb.append(_FINDER_COLUMN_S_U_AD_UNITOFMEASUREKEY_2);
 		}
 
 		boolean bindAvailabilityDate = false;
 
 		if (availabilityDate == null) {
-			sb.append(_FINDER_COLUMN_S_AD_AVAILABILITYDATE_1);
+			sb.append(_FINDER_COLUMN_S_U_AD_AVAILABILITYDATE_1);
 		}
 		else {
 			bindAvailabilityDate = true;
 
-			sb.append(_FINDER_COLUMN_S_AD_AVAILABILITYDATE_2);
+			sb.append(_FINDER_COLUMN_S_U_AD_AVAILABILITYDATE_2);
 		}
 
 		if (orderByComparator != null) {
@@ -4070,6 +3652,10 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 			queryPos.add(sku);
 		}
 
+		if (bindUnitOfMeasureKey) {
+			queryPos.add(unitOfMeasureKey);
+		}
+
 		if (bindAvailabilityDate) {
 			queryPos.add(new Timestamp(availabilityDate.getTime()));
 		}
@@ -4094,65 +3680,85 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 	}
 
 	/**
-	 * Removes all the commerce inventory replenishment items where sku = &#63; and availabilityDate = &#63; from the database.
+	 * Removes all the commerce inventory replenishment items where sku = &#63; and unitOfMeasureKey = &#63; and availabilityDate = &#63; from the database.
 	 *
 	 * @param sku the sku
+	 * @param unitOfMeasureKey the unit of measure key
 	 * @param availabilityDate the availability date
 	 */
 	@Override
-	public void removeByS_AD(String sku, Date availabilityDate) {
+	public void removeByS_U_AD(
+		String sku, String unitOfMeasureKey, Date availabilityDate) {
+
 		for (CommerceInventoryReplenishmentItem
 				commerceInventoryReplenishmentItem :
-					findByS_AD(
-						sku, availabilityDate, QueryUtil.ALL_POS,
-						QueryUtil.ALL_POS, null)) {
+					findByS_U_AD(
+						sku, unitOfMeasureKey, availabilityDate,
+						QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 
 			remove(commerceInventoryReplenishmentItem);
 		}
 	}
 
 	/**
-	 * Returns the number of commerce inventory replenishment items where sku = &#63; and availabilityDate = &#63;.
+	 * Returns the number of commerce inventory replenishment items where sku = &#63; and unitOfMeasureKey = &#63; and availabilityDate = &#63;.
 	 *
 	 * @param sku the sku
+	 * @param unitOfMeasureKey the unit of measure key
 	 * @param availabilityDate the availability date
 	 * @return the number of matching commerce inventory replenishment items
 	 */
 	@Override
-	public int countByS_AD(String sku, Date availabilityDate) {
+	public int countByS_U_AD(
+		String sku, String unitOfMeasureKey, Date availabilityDate) {
+
 		sku = Objects.toString(sku, "");
+		unitOfMeasureKey = Objects.toString(unitOfMeasureKey, "");
 
-		FinderPath finderPath = _finderPathCountByS_AD;
+		FinderPath finderPath = _finderPathCountByS_U_AD;
 
-		Object[] finderArgs = new Object[] {sku, _getTime(availabilityDate)};
+		Object[] finderArgs = new Object[] {
+			sku, unitOfMeasureKey, _getTime(availabilityDate)
+		};
 
 		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
 		if (count == null) {
-			StringBundler sb = new StringBundler(3);
+			StringBundler sb = new StringBundler(4);
 
 			sb.append(_SQL_COUNT_COMMERCEINVENTORYREPLENISHMENTITEM_WHERE);
 
 			boolean bindSku = false;
 
 			if (sku.isEmpty()) {
-				sb.append(_FINDER_COLUMN_S_AD_SKU_3);
+				sb.append(_FINDER_COLUMN_S_U_AD_SKU_3);
 			}
 			else {
 				bindSku = true;
 
-				sb.append(_FINDER_COLUMN_S_AD_SKU_2);
+				sb.append(_FINDER_COLUMN_S_U_AD_SKU_2);
+			}
+
+			boolean bindUnitOfMeasureKey = false;
+
+			if (unitOfMeasureKey.isEmpty()) {
+				sb.append(_FINDER_COLUMN_S_U_AD_UNITOFMEASUREKEY_3);
+			}
+			else {
+				bindUnitOfMeasureKey = true;
+
+				sb.append(_FINDER_COLUMN_S_U_AD_UNITOFMEASUREKEY_2);
 			}
 
 			boolean bindAvailabilityDate = false;
 
 			if (availabilityDate == null) {
-				sb.append(_FINDER_COLUMN_S_AD_AVAILABILITYDATE_1);
+				sb.append(_FINDER_COLUMN_S_U_AD_AVAILABILITYDATE_1);
 			}
 			else {
 				bindAvailabilityDate = true;
 
-				sb.append(_FINDER_COLUMN_S_AD_AVAILABILITYDATE_2);
+				sb.append(_FINDER_COLUMN_S_U_AD_AVAILABILITYDATE_2);
 			}
 
 			String sql = sb.toString();
@@ -4168,6 +3774,10 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 
 				if (bindSku) {
 					queryPos.add(sku);
+				}
+
+				if (bindUnitOfMeasureKey) {
+					queryPos.add(unitOfMeasureKey);
 				}
 
 				if (bindAvailabilityDate) {
@@ -4189,16 +3799,22 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 		return count.intValue();
 	}
 
-	private static final String _FINDER_COLUMN_S_AD_SKU_2 =
+	private static final String _FINDER_COLUMN_S_U_AD_SKU_2 =
 		"commerceInventoryReplenishmentItem.sku = ? AND ";
 
-	private static final String _FINDER_COLUMN_S_AD_SKU_3 =
+	private static final String _FINDER_COLUMN_S_U_AD_SKU_3 =
 		"(commerceInventoryReplenishmentItem.sku IS NULL OR commerceInventoryReplenishmentItem.sku = '') AND ";
 
-	private static final String _FINDER_COLUMN_S_AD_AVAILABILITYDATE_1 =
+	private static final String _FINDER_COLUMN_S_U_AD_UNITOFMEASUREKEY_2 =
+		"commerceInventoryReplenishmentItem.unitOfMeasureKey = ? AND ";
+
+	private static final String _FINDER_COLUMN_S_U_AD_UNITOFMEASUREKEY_3 =
+		"(commerceInventoryReplenishmentItem.unitOfMeasureKey IS NULL OR commerceInventoryReplenishmentItem.unitOfMeasureKey = '') AND ";
+
+	private static final String _FINDER_COLUMN_S_U_AD_AVAILABILITYDATE_1 =
 		"commerceInventoryReplenishmentItem.availabilityDate IS NULL";
 
-	private static final String _FINDER_COLUMN_S_AD_AVAILABILITYDATE_2 =
+	private static final String _FINDER_COLUMN_S_U_AD_AVAILABILITYDATE_2 =
 		"commerceInventoryReplenishmentItem.availabilityDate = ?";
 
 	private FinderPath _finderPathFetchByERC_C;
@@ -5222,22 +4838,6 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 			new String[] {Long.class.getName()},
 			new String[] {"commerceInventoryWarehouseId"}, false);
 
-		_finderPathWithPaginationFindBySku = new FinderPath(
-			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findBySku",
-			new String[] {
-				String.class.getName(), Integer.class.getName(),
-				Integer.class.getName(), OrderByComparator.class.getName()
-			},
-			new String[] {"sku"}, true);
-
-		_finderPathWithoutPaginationFindBySku = new FinderPath(
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findBySku",
-			new String[] {String.class.getName()}, new String[] {"sku"}, true);
-
-		_finderPathCountBySku = new FinderPath(
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countBySku",
-			new String[] {String.class.getName()}, new String[] {"sku"}, false);
-
 		_finderPathWithPaginationFindByAvailabilityDate = new FinderPath(
 			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByAvailabilityDate",
 			new String[] {
@@ -5256,43 +4856,56 @@ public class CommerceInventoryReplenishmentItemPersistenceImpl
 			"countByAvailabilityDate", new String[] {Date.class.getName()},
 			new String[] {"availabilityDate"}, false);
 
-		_finderPathWithPaginationFindByC_S = new FinderPath(
-			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_S",
+		_finderPathWithPaginationFindByC_S_U = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_S_U",
 			new String[] {
 				Long.class.getName(), String.class.getName(),
-				Integer.class.getName(), Integer.class.getName(),
-				OrderByComparator.class.getName()
+				String.class.getName(), Integer.class.getName(),
+				Integer.class.getName(), OrderByComparator.class.getName()
 			},
-			new String[] {"companyId", "sku"}, true);
+			new String[] {"companyId", "sku", "unitOfMeasureKey"}, true);
 
-		_finderPathWithoutPaginationFindByC_S = new FinderPath(
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_S",
-			new String[] {Long.class.getName(), String.class.getName()},
-			new String[] {"companyId", "sku"}, true);
-
-		_finderPathCountByC_S = new FinderPath(
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_S",
-			new String[] {Long.class.getName(), String.class.getName()},
-			new String[] {"companyId", "sku"}, false);
-
-		_finderPathWithPaginationFindByS_AD = new FinderPath(
-			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByS_AD",
+		_finderPathWithoutPaginationFindByC_S_U = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_S_U",
 			new String[] {
-				String.class.getName(), Date.class.getName(),
-				Integer.class.getName(), Integer.class.getName(),
-				OrderByComparator.class.getName()
+				Long.class.getName(), String.class.getName(),
+				String.class.getName()
 			},
-			new String[] {"sku", "availabilityDate"}, true);
+			new String[] {"companyId", "sku", "unitOfMeasureKey"}, true);
 
-		_finderPathWithoutPaginationFindByS_AD = new FinderPath(
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByS_AD",
-			new String[] {String.class.getName(), Date.class.getName()},
-			new String[] {"sku", "availabilityDate"}, true);
+		_finderPathCountByC_S_U = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_S_U",
+			new String[] {
+				Long.class.getName(), String.class.getName(),
+				String.class.getName()
+			},
+			new String[] {"companyId", "sku", "unitOfMeasureKey"}, false);
 
-		_finderPathCountByS_AD = new FinderPath(
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByS_AD",
-			new String[] {String.class.getName(), Date.class.getName()},
-			new String[] {"sku", "availabilityDate"}, false);
+		_finderPathWithPaginationFindByS_U_AD = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByS_U_AD",
+			new String[] {
+				String.class.getName(), String.class.getName(),
+				Date.class.getName(), Integer.class.getName(),
+				Integer.class.getName(), OrderByComparator.class.getName()
+			},
+			new String[] {"sku", "unitOfMeasureKey", "availabilityDate"}, true);
+
+		_finderPathWithoutPaginationFindByS_U_AD = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByS_U_AD",
+			new String[] {
+				String.class.getName(), String.class.getName(),
+				Date.class.getName()
+			},
+			new String[] {"sku", "unitOfMeasureKey", "availabilityDate"}, true);
+
+		_finderPathCountByS_U_AD = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByS_U_AD",
+			new String[] {
+				String.class.getName(), String.class.getName(),
+				Date.class.getName()
+			},
+			new String[] {"sku", "unitOfMeasureKey", "availabilityDate"},
+			false);
 
 		_finderPathFetchByERC_C = new FinderPath(
 			FINDER_CLASS_NAME_ENTITY, "fetchByERC_C",

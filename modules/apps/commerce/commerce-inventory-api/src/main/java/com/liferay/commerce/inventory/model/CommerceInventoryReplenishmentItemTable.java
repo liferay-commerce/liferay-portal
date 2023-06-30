@@ -17,6 +17,8 @@ package com.liferay.commerce.inventory.model;
 import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.sql.dsl.base.BaseTable;
 
+import java.math.BigDecimal;
+
 import java.sql.Types;
 
 import java.util.Date;
@@ -67,13 +69,17 @@ public class CommerceInventoryReplenishmentItemTable
 			Column.FLAG_DEFAULT);
 	public final Column<CommerceInventoryReplenishmentItemTable, String> sku =
 		createColumn("sku", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<CommerceInventoryReplenishmentItemTable, String>
+		unitOfMeasureKey = createColumn(
+			"unitOfMeasureKey", String.class, Types.VARCHAR,
+			Column.FLAG_DEFAULT);
 	public final Column<CommerceInventoryReplenishmentItemTable, Date>
 		availabilityDate = createColumn(
 			"availabilityDate", Date.class, Types.TIMESTAMP,
 			Column.FLAG_DEFAULT);
-	public final Column<CommerceInventoryReplenishmentItemTable, Integer>
+	public final Column<CommerceInventoryReplenishmentItemTable, BigDecimal>
 		quantity = createColumn(
-			"quantity", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
+			"quantity", BigDecimal.class, Types.DECIMAL, Column.FLAG_DEFAULT);
 
 	private CommerceInventoryReplenishmentItemTable() {
 		super(

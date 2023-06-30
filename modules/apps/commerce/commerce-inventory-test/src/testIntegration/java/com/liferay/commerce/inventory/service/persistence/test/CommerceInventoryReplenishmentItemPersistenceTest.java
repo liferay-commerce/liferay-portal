@@ -42,6 +42,8 @@ import com.liferay.portal.test.rule.TransactionalTestRule;
 
 import java.io.Serializable;
 
+import java.math.BigDecimal;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -164,11 +166,14 @@ public class CommerceInventoryReplenishmentItemPersistenceTest {
 		newCommerceInventoryReplenishmentItem.setSku(
 			RandomTestUtil.randomString());
 
+		newCommerceInventoryReplenishmentItem.setUnitOfMeasureKey(
+			RandomTestUtil.randomString());
+
 		newCommerceInventoryReplenishmentItem.setAvailabilityDate(
 			RandomTestUtil.nextDate());
 
 		newCommerceInventoryReplenishmentItem.setQuantity(
-			RandomTestUtil.nextInt());
+			new BigDecimal(RandomTestUtil.nextDouble()));
 
 		_commerceInventoryReplenishmentItems.add(
 			_persistence.update(newCommerceInventoryReplenishmentItem));
@@ -220,6 +225,9 @@ public class CommerceInventoryReplenishmentItemPersistenceTest {
 		Assert.assertEquals(
 			existingCommerceInventoryReplenishmentItem.getSku(),
 			newCommerceInventoryReplenishmentItem.getSku());
+		Assert.assertEquals(
+			existingCommerceInventoryReplenishmentItem.getUnitOfMeasureKey(),
+			newCommerceInventoryReplenishmentItem.getUnitOfMeasureKey());
 		Assert.assertEquals(
 			Time.getShortTimestamp(
 				existingCommerceInventoryReplenishmentItem.
@@ -285,15 +293,6 @@ public class CommerceInventoryReplenishmentItemPersistenceTest {
 	}
 
 	@Test
-	public void testCountBySku() throws Exception {
-		_persistence.countBySku("");
-
-		_persistence.countBySku("null");
-
-		_persistence.countBySku((String)null);
-	}
-
-	@Test
 	public void testCountByAvailabilityDate() throws Exception {
 		_persistence.countByAvailabilityDate(RandomTestUtil.nextDate());
 
@@ -301,21 +300,22 @@ public class CommerceInventoryReplenishmentItemPersistenceTest {
 	}
 
 	@Test
-	public void testCountByC_S() throws Exception {
-		_persistence.countByC_S(RandomTestUtil.nextLong(), "");
+	public void testCountByC_S_U() throws Exception {
+		_persistence.countByC_S_U(RandomTestUtil.nextLong(), "", "");
 
-		_persistence.countByC_S(0L, "null");
+		_persistence.countByC_S_U(0L, "null", "null");
 
-		_persistence.countByC_S(0L, (String)null);
+		_persistence.countByC_S_U(0L, (String)null, (String)null);
 	}
 
 	@Test
-	public void testCountByS_AD() throws Exception {
-		_persistence.countByS_AD("", RandomTestUtil.nextDate());
+	public void testCountByS_U_AD() throws Exception {
+		_persistence.countByS_U_AD("", "", RandomTestUtil.nextDate());
 
-		_persistence.countByS_AD("null", RandomTestUtil.nextDate());
+		_persistence.countByS_U_AD("null", "null", RandomTestUtil.nextDate());
 
-		_persistence.countByS_AD((String)null, RandomTestUtil.nextDate());
+		_persistence.countByS_U_AD(
+			(String)null, (String)null, RandomTestUtil.nextDate());
 	}
 
 	@Test
@@ -365,7 +365,8 @@ public class CommerceInventoryReplenishmentItemPersistenceTest {
 			"commerceInventoryReplenishmentItemId", true, "companyId", true,
 			"userId", true, "userName", true, "createDate", true,
 			"modifiedDate", true, "commerceInventoryWarehouseId", true, "sku",
-			true, "availabilityDate", true, "quantity", true);
+			true, "unitOfMeasureKey", true, "availabilityDate", true,
+			"quantity", true);
 	}
 
 	@Test
@@ -739,11 +740,14 @@ public class CommerceInventoryReplenishmentItemPersistenceTest {
 		commerceInventoryReplenishmentItem.setSku(
 			RandomTestUtil.randomString());
 
+		commerceInventoryReplenishmentItem.setUnitOfMeasureKey(
+			RandomTestUtil.randomString());
+
 		commerceInventoryReplenishmentItem.setAvailabilityDate(
 			RandomTestUtil.nextDate());
 
 		commerceInventoryReplenishmentItem.setQuantity(
-			RandomTestUtil.nextInt());
+			new BigDecimal(RandomTestUtil.nextDouble()));
 
 		_commerceInventoryReplenishmentItems.add(
 			_persistence.update(commerceInventoryReplenishmentItem));

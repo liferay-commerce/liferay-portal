@@ -7,9 +7,10 @@ create table CIAudit (
 	createDate DATE null,
 	modifiedDate DATE null,
 	sku VARCHAR(75) null,
+	unitOfMeasureKey VARCHAR(75) null,
 	logType VARCHAR(75) null,
 	logTypeSettings TEXT null,
-	quantity INTEGER
+	quantity DECIMAL(30, 16) null
 );
 
 create table CIBookedQuantity (
@@ -21,9 +22,10 @@ create table CIBookedQuantity (
 	createDate DATE null,
 	modifiedDate DATE null,
 	sku VARCHAR(75) null,
-	quantity INTEGER,
+	unitOfMeasureKey VARCHAR(75) null,
+	bookedNote VARCHAR(75) null,
 	expirationDate DATE null,
-	bookedNote VARCHAR(75) null
+	quantity DECIMAL(30, 16) null
 );
 
 create table CIReplenishmentItem (
@@ -38,8 +40,9 @@ create table CIReplenishmentItem (
 	modifiedDate DATE null,
 	commerceInventoryWarehouseId LONG,
 	sku VARCHAR(75) null,
+	unitOfMeasureKey VARCHAR(75) null,
 	availabilityDate DATE null,
-	quantity INTEGER
+	quantity DECIMAL(30, 16) null
 );
 
 create table CIWarehouse (
@@ -91,8 +94,9 @@ create table CIWarehouseItem (
 	modifiedDate DATE null,
 	commerceInventoryWarehouseId LONG,
 	sku VARCHAR(75) null,
-	quantity INTEGER,
-	reservedQuantity INTEGER
+	unitOfMeasureKey VARCHAR(75) null,
+	quantity DECIMAL(30, 16) null,
+	reservedQuantity DECIMAL(30, 16) null
 );
 
 create table CIWarehouseRel (

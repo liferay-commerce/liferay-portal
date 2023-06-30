@@ -119,6 +119,9 @@ create unique index IX_BF0C9D99 on CPInstanceOptionValueRel (uuid_[$COLUMN_LENGT
 
 create index IX_B21822C6 on CPInstanceUOM (CPInstanceId, ctCollectionId);
 create unique index IX_C6BA8E9A on CPInstanceUOM (CPInstanceId, key_[$COLUMN_LENGTH:75$], ctCollectionId);
+create index IX_613A3BF3 on CPInstanceUOM (companyId, active_, sku[$COLUMN_LENGTH:75$], ctCollectionId);
+create index IX_547C85C6 on CPInstanceUOM (companyId, key_[$COLUMN_LENGTH:75$], sku[$COLUMN_LENGTH:75$], ctCollectionId);
+create index IX_929F9DE9 on CPInstanceUOM (companyId, primary_, sku[$COLUMN_LENGTH:75$], ctCollectionId);
 create index IX_B3B4A5A on CPInstanceUOM (companyId, sku[$COLUMN_LENGTH:75$], ctCollectionId);
 create index IX_49013BA0 on CPInstanceUOM (key_[$COLUMN_LENGTH:75$], sku[$COLUMN_LENGTH:75$], ctCollectionId);
 create index IX_58C2C7A9 on CPInstanceUOM (uuid_[$COLUMN_LENGTH:75$], companyId, ctCollectionId);

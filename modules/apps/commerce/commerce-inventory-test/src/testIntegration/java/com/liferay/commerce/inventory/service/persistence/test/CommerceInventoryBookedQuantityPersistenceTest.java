@@ -39,6 +39,8 @@ import com.liferay.portal.test.rule.TransactionalTestRule;
 
 import java.io.Serializable;
 
+import java.math.BigDecimal;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -150,14 +152,17 @@ public class CommerceInventoryBookedQuantityPersistenceTest {
 		newCommerceInventoryBookedQuantity.setSku(
 			RandomTestUtil.randomString());
 
-		newCommerceInventoryBookedQuantity.setQuantity(
-			RandomTestUtil.nextInt());
+		newCommerceInventoryBookedQuantity.setUnitOfMeasureKey(
+			RandomTestUtil.randomString());
+
+		newCommerceInventoryBookedQuantity.setBookedNote(
+			RandomTestUtil.randomString());
 
 		newCommerceInventoryBookedQuantity.setExpirationDate(
 			RandomTestUtil.nextDate());
 
-		newCommerceInventoryBookedQuantity.setBookedNote(
-			RandomTestUtil.randomString());
+		newCommerceInventoryBookedQuantity.setQuantity(
+			new BigDecimal(RandomTestUtil.nextDouble()));
 
 		_commerceInventoryBookedQuantities.add(
 			_persistence.update(newCommerceInventoryBookedQuantity));
@@ -198,25 +203,19 @@ public class CommerceInventoryBookedQuantityPersistenceTest {
 			existingCommerceInventoryBookedQuantity.getSku(),
 			newCommerceInventoryBookedQuantity.getSku());
 		Assert.assertEquals(
-			existingCommerceInventoryBookedQuantity.getQuantity(),
-			newCommerceInventoryBookedQuantity.getQuantity());
+			existingCommerceInventoryBookedQuantity.getUnitOfMeasureKey(),
+			newCommerceInventoryBookedQuantity.getUnitOfMeasureKey());
+		Assert.assertEquals(
+			existingCommerceInventoryBookedQuantity.getBookedNote(),
+			newCommerceInventoryBookedQuantity.getBookedNote());
 		Assert.assertEquals(
 			Time.getShortTimestamp(
 				existingCommerceInventoryBookedQuantity.getExpirationDate()),
 			Time.getShortTimestamp(
 				newCommerceInventoryBookedQuantity.getExpirationDate()));
 		Assert.assertEquals(
-			existingCommerceInventoryBookedQuantity.getBookedNote(),
-			newCommerceInventoryBookedQuantity.getBookedNote());
-	}
-
-	@Test
-	public void testCountBySku() throws Exception {
-		_persistence.countBySku("");
-
-		_persistence.countBySku("null");
-
-		_persistence.countBySku((String)null);
+			existingCommerceInventoryBookedQuantity.getQuantity(),
+			newCommerceInventoryBookedQuantity.getQuantity());
 	}
 
 	@Test
@@ -227,12 +226,12 @@ public class CommerceInventoryBookedQuantityPersistenceTest {
 	}
 
 	@Test
-	public void testCountByC_S() throws Exception {
-		_persistence.countByC_S(RandomTestUtil.nextLong(), "");
+	public void testCountByC_S_U() throws Exception {
+		_persistence.countByC_S_U(RandomTestUtil.nextLong(), "", "");
 
-		_persistence.countByC_S(0L, "null");
+		_persistence.countByC_S_U(0L, "null", "null");
 
-		_persistence.countByC_S(0L, (String)null);
+		_persistence.countByC_S_U(0L, (String)null, (String)null);
 	}
 
 	@Test
@@ -270,8 +269,8 @@ public class CommerceInventoryBookedQuantityPersistenceTest {
 			"CIBookedQuantity", "mvccVersion", true,
 			"commerceInventoryBookedQuantityId", true, "companyId", true,
 			"userId", true, "userName", true, "createDate", true,
-			"modifiedDate", true, "sku", true, "quantity", true,
-			"expirationDate", true, "bookedNote", true);
+			"modifiedDate", true, "sku", true, "unitOfMeasureKey", true,
+			"bookedNote", true, "expirationDate", true, "quantity", true);
 	}
 
 	@Test
@@ -554,13 +553,17 @@ public class CommerceInventoryBookedQuantityPersistenceTest {
 
 		commerceInventoryBookedQuantity.setSku(RandomTestUtil.randomString());
 
-		commerceInventoryBookedQuantity.setQuantity(RandomTestUtil.nextInt());
+		commerceInventoryBookedQuantity.setUnitOfMeasureKey(
+			RandomTestUtil.randomString());
+
+		commerceInventoryBookedQuantity.setBookedNote(
+			RandomTestUtil.randomString());
 
 		commerceInventoryBookedQuantity.setExpirationDate(
 			RandomTestUtil.nextDate());
 
-		commerceInventoryBookedQuantity.setBookedNote(
-			RandomTestUtil.randomString());
+		commerceInventoryBookedQuantity.setQuantity(
+			new BigDecimal(RandomTestUtil.nextDouble()));
 
 		_commerceInventoryBookedQuantities.add(
 			_persistence.update(commerceInventoryBookedQuantity));
