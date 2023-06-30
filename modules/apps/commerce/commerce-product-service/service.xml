@@ -929,6 +929,16 @@
 			<finder-column name="key" />
 			<finder-column name="sku" />
 		</finder>
+		<finder name="C_K_SKU" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="key" />
+			<finder-column name="sku" />
+		</finder>
+		<finder name="C_P_SKU" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="primary" />
+			<finder-column name="sku" />
+		</finder>
 	</entity>
 	<entity external-reference-code="company" local-service="true" name="CPMeasurementUnit" remote-service="true" uuid="true">
 
