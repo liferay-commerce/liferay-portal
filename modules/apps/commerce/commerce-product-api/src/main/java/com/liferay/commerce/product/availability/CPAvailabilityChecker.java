@@ -17,17 +17,21 @@ package com.liferay.commerce.product.availability;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.portal.kernel.exception.PortalException;
 
+import java.math.BigDecimal;
+
 /**
  * @author Alessio Antonio Rendina
  */
 public interface CPAvailabilityChecker {
 
 	public boolean check(
-			long commerceChannelGroupId, CPInstance cpInstance, int quantity)
+			long commerceChannelGroupId, CPInstance cpInstance,
+			BigDecimal quantity)
 		throws PortalException;
 
 	public boolean isAvailable(
-			long commerceChannelGroupId, CPInstance cpInstance, int quantity)
+			long commerceChannelGroupId, CPInstance cpInstance,
+			BigDecimal quantity)
 		throws PortalException;
 
 	public boolean isPurchasable(CPInstance cpInstance) throws PortalException;

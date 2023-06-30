@@ -42,6 +42,8 @@ import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermi
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 
+import java.math.BigDecimal;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,7 +106,7 @@ public class CommerceInventoryWarehouseItemFDSDataProvider
 				_commerceInventoryWarehouseItemService.
 					fetchCommerceInventoryWarehouseItem(
 						commerceInventoryWarehouseId,
-						commerceOrderItem.getSku());
+						commerceOrderItem.getSku(), StringPool.BLANK);
 
 			String portletNamespace = _portal.getPortletNamespace(
 				CommercePortletKeys.COMMERCE_SHIPMENT);
@@ -136,11 +138,13 @@ public class CommerceInventoryWarehouseItemFDSDataProvider
 			}
 
 			if (commerceInventoryWarehouseItem != null) {
-				if (maxShippableQuantity >
-						commerceInventoryWarehouseItem.getQuantity()) {
+				BigDecimal warehouseItemQuantity =
+					commerceInventoryWarehouseItem.getQuantity();
 
-					maxShippableQuantity =
-						commerceInventoryWarehouseItem.getQuantity();
+				int itemQuantity = warehouseItemQuantity.intValue();
+
+				if (maxShippableQuantity > itemQuantity) {
+					maxShippableQuantity = itemQuantity;
 				}
 
 				warehouses.add(
@@ -149,8 +153,7 @@ public class CommerceInventoryWarehouseItemFDSDataProvider
 						new WarehouseItem(
 							inputName, maxShippableQuantity, 0,
 							shipmentItemWarehouseItemQuantity),
-						commerceInventoryWarehouseItem.getQuantity(),
-						StringPool.BLANK,
+						itemQuantity, StringPool.BLANK,
 						commerceInventoryWarehouse.getName(
 							_portal.getLocale(httpServletRequest))));
 			}
@@ -197,7 +200,8 @@ public class CommerceInventoryWarehouseItemFDSDataProvider
 		return _commerceInventoryWarehouseItemLocalService.
 			getCommerceInventoryWarehouseItemsCount(
 				_portal.getCompanyId(httpServletRequest),
-				commerceOrderItem.getGroupId(), commerceOrderItem.getSku());
+				commerceOrderItem.getGroupId(), commerceOrderItem.getSku(),
+				StringPool.BLANK);
 	}
 
 	@Reference

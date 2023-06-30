@@ -37,7 +37,7 @@ CommerceInventoryWarehouseItem commerceInventoryWarehouseItem = commerceInventor
 
 		<aui:model-context bean="<%= commerceInventoryWarehouseItem %>" model="<%= CommerceInventoryWarehouseItem.class %>" />
 
-		<aui:input name="quantity" required="<%= true %>">
+		<aui:input name="quantity" required="<%= true %>" type="text">
 			<aui:validator name="min">1</aui:validator>
 		</aui:input>
 

@@ -19,6 +19,8 @@ import com.liferay.commerce.product.model.CPInstanceOptionValueRel;
 import com.liferay.commerce.product.service.CPInstanceLocalService;
 import com.liferay.portal.kernel.model.BaseModel;
 
+import java.math.BigDecimal;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,7 +62,7 @@ public class CPInstanceOptionValueRelCommerceInventoryCheckerImpl
 		return isAvailable(
 			_cpInstanceLocalService.fetchCPInstance(
 				cpInstanceOptionValueRel.getCPInstanceId()),
-			1);
+			BigDecimal.ONE);
 	}
 
 	@Reference

@@ -25,6 +25,7 @@ import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.product.util.CPContentContributor;
 import com.liferay.commerce.service.CPDefinitionInventoryLocalService;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -93,7 +94,7 @@ public class AvailabilityCPContentContributor implements CPContentContributor {
 					cpInstance.getCompanyId(), cpInstance.getGroupId(),
 					commerceChannel.getGroupId(),
 					cpDefinitionInventoryEngine.getMinStockQuantity(cpInstance),
-					cpInstance.getSku());
+					cpInstance.getSku(), StringPool.BLANK);
 
 			ThemeDisplay themeDisplay =
 				(ThemeDisplay)httpServletRequest.getAttribute(

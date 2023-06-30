@@ -409,7 +409,7 @@ public class MappedProductDTOConverter
 						commerceChannelGroupId,
 						_cpDefinitionInventoryEngine.getMinStockQuantity(
 							cpInstance),
-						cpInstance.getSku()),
+						cpInstance.getSku(), StringPool.BLANK),
 					CommerceInventoryAvailabilityConstants.AVAILABLE)) {
 
 				availability.setLabel_i18n(_language.get(locale, "available"));
@@ -423,10 +423,12 @@ public class MappedProductDTOConverter
 		}
 
 		if (_cpDefinitionInventoryEngine.isDisplayStockQuantity(cpInstance)) {
-			availability.setStockQuantity(
+			BigDecimal stockQuantity =
 				_commerceInventoryEngine.getStockQuantity(
 					companyId, cpInstance.getGroupId(), commerceChannelGroupId,
-					sku));
+					sku, StringPool.BLANK);
+
+			availability.setStockQuantity(stockQuantity.intValue());
 		}
 
 		return availability;

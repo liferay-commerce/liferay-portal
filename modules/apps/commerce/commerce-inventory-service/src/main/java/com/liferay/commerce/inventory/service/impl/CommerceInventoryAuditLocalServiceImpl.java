@@ -21,6 +21,8 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalService;
 
+import java.math.BigDecimal;
+
 import java.util.Date;
 import java.util.List;
 
@@ -40,8 +42,8 @@ public class CommerceInventoryAuditLocalServiceImpl
 
 	@Override
 	public CommerceInventoryAudit addCommerceInventoryAudit(
-			long userId, String sku, String logType, String logTypeSettings,
-			int quantity)
+			long userId, String sku, String unitOfMeasureKey, String logType,
+			String logTypeSettings, BigDecimal quantity)
 		throws PortalException {
 
 		User user = _userLocalService.getUser(userId);
@@ -55,6 +57,7 @@ public class CommerceInventoryAuditLocalServiceImpl
 		commerceInventoryAudit.setUserId(user.getUserId());
 		commerceInventoryAudit.setUserName(user.getFullName());
 		commerceInventoryAudit.setSku(sku);
+		commerceInventoryAudit.setUnitOfMeasureKey(unitOfMeasureKey);
 		commerceInventoryAudit.setLogType(logType);
 		commerceInventoryAudit.setLogTypeSettings(logTypeSettings);
 		commerceInventoryAudit.setQuantity(quantity);
@@ -69,15 +72,19 @@ public class CommerceInventoryAuditLocalServiceImpl
 
 	@Override
 	public List<CommerceInventoryAudit> getCommerceInventoryAudits(
-		long companyId, String sku, int start, int end) {
+		long companyId, String sku, String unitOfMeasureKey, int start,
+		int end) {
 
-		return commerceInventoryAuditPersistence.findByC_S(
-			companyId, sku, start, end);
+		return commerceInventoryAuditPersistence.findByC_S_U(
+			companyId, sku, unitOfMeasureKey, start, end);
 	}
 
 	@Override
-	public int getCommerceInventoryAuditsCount(long companyId, String sku) {
-		return commerceInventoryAuditPersistence.countByC_S(companyId, sku);
+	public int getCommerceInventoryAuditsCount(
+		long companyId, String sku, String unitOfMeasureKey) {
+
+		return commerceInventoryAuditPersistence.countByC_S_U(
+			companyId, sku, unitOfMeasureKey);
 	}
 
 	@Reference

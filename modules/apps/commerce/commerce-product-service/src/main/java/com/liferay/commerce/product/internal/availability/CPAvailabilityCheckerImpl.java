@@ -22,7 +22,10 @@ import com.liferay.commerce.product.availability.CPAvailabilityChecker;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.service.CPDefinitionInventoryLocalService;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+
+import java.math.BigDecimal;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -35,7 +38,8 @@ public class CPAvailabilityCheckerImpl implements CPAvailabilityChecker {
 
 	@Override
 	public boolean check(
-			long commerceChannelGroupId, CPInstance cpInstance, int quantity)
+			long commerceChannelGroupId, CPInstance cpInstance,
+			BigDecimal quantity)
 		throws PortalException {
 
 		if (isAvailable(commerceChannelGroupId, cpInstance, quantity) &&
@@ -49,7 +53,8 @@ public class CPAvailabilityCheckerImpl implements CPAvailabilityChecker {
 
 	@Override
 	public boolean isAvailable(
-			long commerceChannelGroupId, CPInstance cpInstance, int quantity)
+			long commerceChannelGroupId, CPInstance cpInstance,
+			BigDecimal quantity)
 		throws PortalException {
 
 		if (cpInstance == null) {
@@ -71,20 +76,20 @@ public class CPAvailabilityCheckerImpl implements CPAvailabilityChecker {
 			return true;
 		}
 
-		int stockQuantity;
+		BigDecimal stockQuantity;
 
 		if (commerceChannelGroupId > 0) {
 			stockQuantity = _commerceInventoryEngine.getStockQuantity(
 				cpInstance.getCompanyId(), cpInstance.getGroupId(),
-				commerceChannelGroupId, cpInstance.getSku());
+				commerceChannelGroupId, cpInstance.getSku(), StringPool.BLANK);
 		}
 		else {
 			stockQuantity = _commerceInventoryEngine.getStockQuantity(
 				cpInstance.getCompanyId(), cpDefinition.getGroupId(),
-				cpInstance.getSku());
+				cpInstance.getSku(), StringPool.BLANK);
 		}
 
-		if (quantity > stockQuantity) {
+		if (quantity.compareTo(stockQuantity) > 0) {
 			return false;
 		}
 

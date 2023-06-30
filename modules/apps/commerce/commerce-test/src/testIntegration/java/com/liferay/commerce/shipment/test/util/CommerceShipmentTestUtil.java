@@ -33,9 +33,12 @@ import com.liferay.commerce.service.CommerceShipmentItemLocalServiceUtil;
 import com.liferay.commerce.service.CommerceShipmentLocalServiceUtil;
 import com.liferay.commerce.test.util.CommerceInventoryTestUtil;
 import com.liferay.commerce.test.util.CommerceTestUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+
+import java.math.BigDecimal;
 
 /**
  * @author Luca Pellizzon
@@ -77,7 +80,7 @@ public class CommerceShipmentTestUtil {
 
 		CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
 			userId, commerceInventoryWarehouse, cpInstance.getSku(),
-			createQuantity);
+			StringPool.BLANK, BigDecimal.valueOf(createQuantity));
 
 		CommerceOrderItem commerceOrderItem =
 			CommerceTestUtil.addCommerceOrderItem(

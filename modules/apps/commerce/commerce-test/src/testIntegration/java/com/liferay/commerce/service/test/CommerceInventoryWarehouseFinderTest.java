@@ -19,6 +19,7 @@ import com.liferay.commerce.inventory.model.CommerceInventoryWarehouse;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.test.util.CommerceInventoryTestUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -27,6 +28,8 @@ import com.liferay.portal.kernel.test.rule.SynchronousDestinationTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+
+import java.math.BigDecimal;
 
 import java.util.Locale;
 import java.util.Map;
@@ -79,9 +82,9 @@ public class CommerceInventoryWarehouseFinderTest {
 			CommerceInventoryTestUtil.addCommerceInventoryWarehouse(nameMap);
 
 		for (int i = 0; i < quantities.length; i++) {
-			int quantity = quantities[i];
+			BigDecimal quantity = BigDecimal.valueOf(quantities[i]);
 
-			if (quantity <= 0) {
+			if (quantity.compareTo(BigDecimal.ZERO) <= 0) {
 				continue;
 			}
 
@@ -89,7 +92,8 @@ public class CommerceInventoryWarehouseFinderTest {
 
 			CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
 				commerceInventoryWarehouse.getUserId(),
-				commerceInventoryWarehouse, cpInstance.getSku(), quantity);
+				commerceInventoryWarehouse, cpInstance.getSku(),
+				StringPool.BLANK, quantity);
 		}
 
 		return commerceInventoryWarehouse;

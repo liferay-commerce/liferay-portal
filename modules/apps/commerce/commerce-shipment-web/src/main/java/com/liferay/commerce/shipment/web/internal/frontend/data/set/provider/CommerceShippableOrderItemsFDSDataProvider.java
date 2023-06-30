@@ -46,6 +46,8 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import java.math.BigDecimal;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -115,14 +117,16 @@ public class CommerceShippableOrderItemsFDSDataProvider
 			}
 
 			if (commerceShipmentItem == null) {
+				BigDecimal stockQuantity =
+					_commerceInventoryEngine.getStockQuantity(
+						commerceOrderItem.getCompanyId(),
+						commerceCatalogGroupId, commerceOrderItem.getGroupId(),
+						commerceOrderItem.getSku(), StringPool.BLANK);
+
 				orderItems.add(
 					new OrderItem(
-						_commerceInventoryEngine.getStockQuantity(
-							commerceOrderItem.getCompanyId(),
-							commerceCatalogGroupId,
-							commerceOrderItem.getGroupId(),
-							commerceOrderItem.getSku()),
-						icon, commerceOrderItem.getCommerceOrderId(),
+						stockQuantity.intValue(), icon,
+						commerceOrderItem.getCommerceOrderId(),
 						commerceOrderItem.getCommerceOrderItemId(),
 						commerceOrderItem.getQuantity() -
 							commerceOrderItem.getShippedQuantity(),

@@ -52,6 +52,8 @@ import com.liferay.portal.kernel.util.WebKeys;
 
 import java.io.IOException;
 
+import java.math.BigDecimal;
+
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -235,10 +237,13 @@ public class DynamicFieldFragmentRenderer implements FragmentRenderer {
 				CommerceCatalog commerceCatalog =
 					cpDefinition.getCommerceCatalog();
 
-				return String.valueOf(
+				BigDecimal stockQuantity =
 					_commerceInventoryEngine.getStockQuantity(
 						cpInstance.getCompanyId(), commerceCatalog.getGroupId(),
-						commerceChannel.getGroupId(), cpInstance.getSku()));
+						commerceChannel.getGroupId(), cpInstance.getSku(),
+						StringPool.BLANK);
+
+				return String.valueOf(stockQuantity.intValue());
 			}
 			else if (field.equals("gtin")) {
 				return cpInstance.getGtin();

@@ -51,6 +51,7 @@ import com.liferay.commerce.service.CommerceShippingMethodLocalService;
 import com.liferay.commerce.util.CommerceAccountHelper;
 import com.liferay.commerce.util.CommerceShippingEngineRegistry;
 import com.liferay.commerce.util.comparator.CommerceShippingMethodPriorityComparator;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -80,6 +81,8 @@ import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.io.Serializable;
+
+import java.math.BigDecimal;
 
 import java.util.List;
 import java.util.Random;
@@ -275,9 +278,11 @@ public class CommerceOrderGenerator {
 			// Add commerce order item
 
 			try {
+				BigDecimal minOrderQuantity =
+					cpDefinitionInventoryEngine.getMinOrderQuantity(cpInstance);
+
 				int quantity = _randomInt(
-					cpDefinitionInventoryEngine.getMinOrderQuantity(cpInstance),
-					maxOrderQuantity);
+					minOrderQuantity.intValue(), maxOrderQuantity);
 
 				_commerceOrderItemLocalService.addCommerceOrderItem(
 					commerceOrder.getUserId(),
@@ -434,18 +439,18 @@ public class CommerceOrderGenerator {
 			CPDefinitionInventoryEngine cpDefinitionInventoryEngine)
 		throws PortalException {
 
-		int stockQuantity = _commerceInventoryEngine.getStockQuantity(
+		BigDecimal stockQuantity = _commerceInventoryEngine.getStockQuantity(
 			cpInstance.getCompanyId(), cpInstance.getGroupId(),
-			cpInstance.getSku());
+			cpInstance.getSku(), StringPool.BLANK);
 
-		int maxOrderQuantity = cpDefinitionInventoryEngine.getMaxOrderQuantity(
-			cpInstance);
+		BigDecimal maxOrderQuantity =
+			cpDefinitionInventoryEngine.getMaxOrderQuantity(cpInstance);
 
-		if (stockQuantity < maxOrderQuantity) {
-			return stockQuantity;
+		if (stockQuantity.compareTo(maxOrderQuantity) < 0) {
+			return stockQuantity.intValue();
 		}
 
-		return maxOrderQuantity;
+		return maxOrderQuantity.intValue();
 	}
 
 	private SearchContext _getSearchContext(long groupId) throws Exception {

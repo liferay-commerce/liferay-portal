@@ -50,6 +50,8 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.io.IOException;
 
+import java.math.BigDecimal;
+
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -243,8 +245,11 @@ public class CommerceWishListsCommerceOrderImporterTypeImpl
 				cpDefinition.getCPDefinitionId());
 			commerceOrderImporterItemImpl.setNameMap(cpDefinition.getNameMap());
 
+			BigDecimal minOrderQuantity =
+				_cpDefinitionInventoryEngine.getMinOrderQuantity(cpInstance);
+
 			commerceOrderImporterItemImpl.setQuantity(
-				_cpDefinitionInventoryEngine.getMinOrderQuantity(cpInstance));
+				minOrderQuantity.intValue());
 		}
 
 		String json = commerceWishListItem.getJson();

@@ -24,6 +24,7 @@ import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseItemLoca
 import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseLocalService;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.test.util.CommerceInventoryTestUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -36,6 +37,8 @@ import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+
+import java.math.BigDecimal;
 
 import java.util.Date;
 
@@ -84,14 +87,16 @@ public class CommerceInventoryMVCCTest {
 					null, _user.getUserId(),
 					commerceInventoryWarehouse.
 						getCommerceInventoryWarehouseId(),
-					cpInstance.getSku(), new Date(), 10);
+					cpInstance.getSku(), StringPool.BLANK, new Date(),
+					BigDecimal.TEN);
 
 		_commerceInventoryReplenishmentItemLocalService.
 			updateCommerceInventoryReplenishmentItem(
 				null,
 				commerceInventoryReplenishmentItem.
 					getCommerceInventoryReplenishmentItemId(),
-				commerceInventoryReplenishmentItem.getAvailabilityDate(), 15,
+				commerceInventoryReplenishmentItem.getAvailabilityDate(),
+				BigDecimal.valueOf(15),
 				commerceInventoryReplenishmentItem.getMvccVersion());
 
 		_commerceInventoryReplenishmentItemLocalService.
@@ -99,7 +104,8 @@ public class CommerceInventoryMVCCTest {
 				null,
 				commerceInventoryReplenishmentItem.
 					getCommerceInventoryReplenishmentItemId(),
-				commerceInventoryReplenishmentItem.getAvailabilityDate(), 20,
+				commerceInventoryReplenishmentItem.getAvailabilityDate(),
+				BigDecimal.valueOf(20),
 				commerceInventoryReplenishmentItem.getMvccVersion());
 	}
 
@@ -116,24 +122,24 @@ public class CommerceInventoryMVCCTest {
 		CommerceInventoryWarehouseItem commerceInventoryWarehouseItem =
 			_commerceInventoryWarehouseItemLocalService.
 				addCommerceInventoryWarehouseItem(
-					_user.getUserId(),
+					StringPool.BLANK, _user.getUserId(),
 					commerceInventoryWarehouse.
 						getCommerceInventoryWarehouseId(),
-					cpInstance.getSku(), 1);
+					cpInstance.getSku(), StringPool.BLANK, BigDecimal.ONE);
 
 		_commerceInventoryWarehouseItemLocalService.
 			updateCommerceInventoryWarehouseItem(
 				commerceInventoryWarehouseItem.getUserId(),
 				commerceInventoryWarehouseItem.
 					getCommerceInventoryWarehouseItemId(),
-				1, commerceInventoryWarehouse.getMvccVersion());
+				BigDecimal.ONE, commerceInventoryWarehouse.getMvccVersion());
 
 		_commerceInventoryWarehouseItemLocalService.
 			updateCommerceInventoryWarehouseItem(
 				commerceInventoryWarehouseItem.getUserId(),
 				commerceInventoryWarehouseItem.
 					getCommerceInventoryWarehouseItemId(),
-				1, commerceInventoryWarehouse.getMvccVersion());
+				BigDecimal.ONE, commerceInventoryWarehouse.getMvccVersion());
 	}
 
 	@Test(expected = MVCCException.class)

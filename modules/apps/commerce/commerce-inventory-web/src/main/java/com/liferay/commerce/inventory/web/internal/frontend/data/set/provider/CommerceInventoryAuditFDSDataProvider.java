@@ -24,6 +24,7 @@ import com.liferay.frontend.data.set.provider.FDSDataProvider;
 import com.liferay.frontend.data.set.provider.search.FDSKeywords;
 import com.liferay.frontend.data.set.provider.search.FDSPagination;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -75,7 +76,7 @@ public class CommerceInventoryAuditFDSDataProvider
 
 		List<CommerceInventoryAudit> commerceInventoryAudits =
 			_commerceInventoryAuditService.getCommerceInventoryAudits(
-				_portal.getCompanyId(httpServletRequest), sku,
+				_portal.getCompanyId(httpServletRequest), sku, StringPool.BLANK,
 				fdsPagination.getStartPosition(),
 				fdsPagination.getEndPosition());
 
@@ -122,7 +123,7 @@ public class CommerceInventoryAuditFDSDataProvider
 		String sku = ParamUtil.getString(httpServletRequest, "sku");
 
 		return _commerceInventoryAuditService.getCommerceInventoryAuditsCount(
-			_portal.getCompanyId(httpServletRequest), sku);
+			_portal.getCompanyId(httpServletRequest), sku, StringPool.BLANK);
 	}
 
 	@Reference

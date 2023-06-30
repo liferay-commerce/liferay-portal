@@ -259,11 +259,11 @@ public class PlacedOrderItemDTOConverter
 	private Settings _getSettings(long cpInstanceId) {
 		Settings settings = new Settings();
 
-		int minOrderQuantity =
+		BigDecimal minOrderQuantity =
 			CPDefinitionInventoryConstants.DEFAULT_MIN_ORDER_QUANTITY;
-		int maxOrderQuantity =
+		BigDecimal maxOrderQuantity =
 			CPDefinitionInventoryConstants.DEFAULT_MAX_ORDER_QUANTITY;
-		int multipleQuantity =
+		BigDecimal multipleQuantity =
 			CPDefinitionInventoryConstants.DEFAULT_MULTIPLE_ORDER_QUANTITY;
 
 		CPDefinitionInventory cpDefinitionInventory = null;
@@ -294,9 +294,9 @@ public class PlacedOrderItemDTOConverter
 			}
 		}
 
-		settings.setMinQuantity(minOrderQuantity);
-		settings.setMaxQuantity(maxOrderQuantity);
-		settings.setMultipleQuantity(multipleQuantity);
+		settings.setMinQuantity(minOrderQuantity.intValue());
+		settings.setMaxQuantity(maxOrderQuantity.intValue());
+		settings.setMultipleQuantity(multipleQuantity.intValue());
 
 		return settings;
 	}

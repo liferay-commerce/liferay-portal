@@ -41,6 +41,7 @@ import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.service.CommerceShipmentItemLocalService;
 import com.liferay.commerce.service.CommerceShipmentLocalService;
 import com.liferay.commerce.test.util.CommerceTestUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
@@ -208,7 +209,7 @@ public class CommerceOrderStatusNotificationTest {
 				_commerceInventoryWarehouseLocalService.
 					getCommerceInventoryWarehouses(
 						_commerceChannel.getGroupId(),
-						commerceOrderItem.getSku());
+						commerceOrderItem.getSku(), StringPool.BLANK);
 
 			CommerceInventoryWarehouse commerceInventoryWarehouse =
 				commerceInventoryWarehouses.get(0);

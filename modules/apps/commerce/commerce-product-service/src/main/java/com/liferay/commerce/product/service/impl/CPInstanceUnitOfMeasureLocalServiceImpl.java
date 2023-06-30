@@ -127,6 +127,22 @@ public class CPInstanceUnitOfMeasureLocalServiceImpl
 	}
 
 	@Override
+	public List<CPInstanceUnitOfMeasure> getCPInstanceUnitOfMeasuresByKeySku(
+		long companyId, String key, String sku) {
+
+		return cpInstanceUnitOfMeasurePersistence.findByC_K_SKU(
+			companyId, key, sku);
+	}
+
+	@Override
+	public List<CPInstanceUnitOfMeasure>
+		getCPInstanceUnitOfMeasuresByPrimarySku(long companyId, String sku) {
+
+		return cpInstanceUnitOfMeasurePersistence.findByC_P_SKU(
+			companyId, true, sku);
+	}
+
+	@Override
 	public CPInstanceUnitOfMeasure updateCPInstanceUnitOfMeasure(
 			long cpInstanceUnitOfMeasureId, long cpInstanceId, boolean active,
 			BigDecimal incrementalOrderQuantity, String key,

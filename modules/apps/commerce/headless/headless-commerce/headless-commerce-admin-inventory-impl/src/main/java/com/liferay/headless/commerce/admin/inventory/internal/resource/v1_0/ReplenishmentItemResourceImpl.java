@@ -21,6 +21,7 @@ import com.liferay.commerce.inventory.service.CommerceInventoryReplenishmentItem
 import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseItemService;
 import com.liferay.headless.commerce.admin.inventory.dto.v1_0.ReplenishmentItem;
 import com.liferay.headless.commerce.admin.inventory.resource.v1_0.ReplenishmentItemResource;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
@@ -28,6 +29,8 @@ import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
+
+import java.math.BigDecimal;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -101,14 +104,14 @@ public class ReplenishmentItemResourceImpl
 			transform(
 				_commerceInventoryReplenishmentItemService.
 					getCommerceInventoryReplenishmentItemsByCompanyIdAndSku(
-						contextCompany.getCompanyId(), sku,
+						contextCompany.getCompanyId(), sku, StringPool.BLANK,
 						pagination.getStartPosition(),
 						pagination.getEndPosition()),
 				this::_toReplenishmentItem),
 			pagination,
 			_commerceInventoryReplenishmentItemService.
 				getCommerceInventoryReplenishmentItemsCountByCompanyIdAndSku(
-					contextCompany.getCompanyId(), sku));
+					contextCompany.getCompanyId(), sku, StringPool.BLANK));
 	}
 
 	@Override
@@ -161,7 +164,8 @@ public class ReplenishmentItemResourceImpl
 
 		CommerceInventoryWarehouseItem commerceInventoryWarehouseItem =
 			_commerceInventoryWarehouseItemService.
-				getCommerceInventoryWarehouseItem(warehouseId, sku);
+				getCommerceInventoryWarehouseItem(
+					warehouseId, sku, StringPool.BLANK);
 
 		return _toReplenishmentItem(
 			_commerceInventoryReplenishmentItemService.
@@ -169,13 +173,14 @@ public class ReplenishmentItemResourceImpl
 					replenishmentItem.getExternalReferenceCode(),
 					commerceInventoryWarehouseItem.
 						getCommerceInventoryWarehouseId(),
-					commerceInventoryWarehouseItem.getSku(),
+					commerceInventoryWarehouseItem.getSku(), StringPool.BLANK,
 					GetterUtil.getDate(
 						replenishmentItem.getAvailabilityDate(),
 						DateFormatFactoryUtil.getDate(
 							contextAcceptLanguage.getPreferredLocale(),
 							contextUser.getTimeZone())),
-					GetterUtil.getInteger(replenishmentItem.getQuantity())));
+					(BigDecimal)GetterUtil.getNumber(
+						replenishmentItem.getQuantity())));
 	}
 
 	private CommerceInventoryReplenishmentItem
@@ -195,6 +200,16 @@ public class ReplenishmentItemResourceImpl
 		}
 
 		return commerceInventoryReplenishmentItem;
+	}
+
+	private BigDecimal _getBigDecimal(
+		Integer quantity, BigDecimal defaultValue) {
+
+		if (quantity == null) {
+			return defaultValue;
+		}
+
+		return BigDecimal.valueOf(quantity);
 	}
 
 	private ReplenishmentItem _toReplenishmentItem(
@@ -230,7 +245,7 @@ public class ReplenishmentItemResourceImpl
 						contextAcceptLanguage.getPreferredLocale(),
 						contextUser.getTimeZone()),
 					commerceInventoryReplenishmentItem.getAvailabilityDate()),
-				GetterUtil.getInteger(
+				_getBigDecimal(
 					replenishmentItem.getQuantity(),
 					commerceInventoryReplenishmentItem.getQuantity()),
 				commerceInventoryReplenishmentItem.getMvccVersion());

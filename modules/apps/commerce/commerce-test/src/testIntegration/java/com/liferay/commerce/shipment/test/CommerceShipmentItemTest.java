@@ -37,6 +37,7 @@ import com.liferay.commerce.service.CommerceShipmentLocalService;
 import com.liferay.commerce.shipment.test.util.CommerceShipmentTestUtil;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.commerce.test.util.context.TestCommerceContext;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
@@ -49,6 +50,8 @@ import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+
+import java.math.BigDecimal;
 
 import java.util.List;
 
@@ -225,12 +228,12 @@ public class CommerceShipmentItemTest {
 		_commerceShipmentItemLocalService.deleteCommerceShipmentItem(
 			commerceShipmentItem, false);
 
-		int actualCPInstanceStockQuantity =
+		BigDecimal actualCPInstanceStockQuantity =
 			_commerceInventoryEngine.getStockQuantity(
 				_user.getCompanyId(), cpInstance.getGroupId(),
-				cpInstance.getSku());
+				cpInstance.getSku(), StringPool.BLANK);
 
-		Assert.assertNotEquals(1, actualCPInstanceStockQuantity);
+		Assert.assertNotEquals(1, actualCPInstanceStockQuantity.intValue());
 
 		_resetCommerceShipment();
 	}
@@ -275,12 +278,13 @@ public class CommerceShipmentItemTest {
 		_commerceShipmentItemLocalService.deleteCommerceShipmentItem(
 			commerceShipmentItem, true);
 
-		int actualCPInstanceStockQuantity =
+		BigDecimal actualCPInstanceStockQuantity =
 			_commerceInventoryEngine.getStockQuantity(
 				_user.getCompanyId(), cpInstance.getGroupId(),
-				_commerceChannel.getGroupId(), cpInstance.getSku());
+				_commerceChannel.getGroupId(), cpInstance.getSku(),
+				StringPool.BLANK);
 
-		Assert.assertEquals(1, actualCPInstanceStockQuantity);
+		Assert.assertEquals(1, actualCPInstanceStockQuantity.intValue());
 
 		_resetCommerceShipment();
 	}

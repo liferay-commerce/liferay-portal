@@ -17,6 +17,7 @@ package com.liferay.commerce.inventory.web.internal.portlet.action;
 import com.liferay.commerce.inventory.exception.MVCCException;
 import com.liferay.commerce.inventory.service.CommerceInventoryReplenishmentItemService;
 import com.liferay.commerce.product.constants.CPPortletKeys;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -25,6 +26,8 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ParamUtil;
+
+import java.math.BigDecimal;
 
 import java.util.Calendar;
 
@@ -90,7 +93,8 @@ public class EditCommerceInventoryReplenishmentItemMVCActionCommand
 		long commerceInventoryWarehouseId = ParamUtil.getLong(
 			actionRequest, "commerceInventoryWarehouseId");
 
-		int quantity = ParamUtil.getInteger(actionRequest, "quantity");
+		BigDecimal quantity = (BigDecimal)ParamUtil.getNumber(
+			actionRequest, "quantity");
 
 		int day = ParamUtil.getInteger(actionRequest, "dateDay");
 		int month = ParamUtil.getInteger(actionRequest, "dateMonth");
@@ -102,8 +106,8 @@ public class EditCommerceInventoryReplenishmentItemMVCActionCommand
 
 		_commerceInventoryReplenishmentItemService.
 			addCommerceInventoryReplenishmentItem(
-				null, commerceInventoryWarehouseId, sku, calendar.getTime(),
-				quantity);
+				null, commerceInventoryWarehouseId, sku, StringPool.BLANK,
+				calendar.getTime(), quantity);
 	}
 
 	private void _deleteCommerceInventoryReplenishmentItem(
@@ -125,7 +129,8 @@ public class EditCommerceInventoryReplenishmentItemMVCActionCommand
 		long commerceInventoryReplenishmentItemId = ParamUtil.getLong(
 			actionRequest, "commerceInventoryReplenishmentItemId");
 
-		int quantity = ParamUtil.getInteger(actionRequest, "quantity");
+		BigDecimal quantity = (BigDecimal)ParamUtil.getNumber(
+			actionRequest, "quantity");
 
 		int day = ParamUtil.getInteger(actionRequest, "dateDay");
 		int month = ParamUtil.getInteger(actionRequest, "dateMonth");

@@ -26,6 +26,8 @@ import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ParamUtil;
 
+import java.math.BigDecimal;
+
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 
@@ -95,8 +97,9 @@ public class EditCommerceInventoryWarehouseItemMVCActionCommand
 		long commerceInventoryWarehouseItemId = ParamUtil.getLong(
 			actionRequest, "commerceInventoryWarehouseItemId");
 
-		int quantity = ParamUtil.getInteger(actionRequest, "quantity");
-		int reservedQuantity = ParamUtil.getInteger(
+		BigDecimal quantity = (BigDecimal)ParamUtil.getNumber(
+			actionRequest, "quantity");
+		BigDecimal reservedQuantity = (BigDecimal)ParamUtil.getNumber(
 			actionRequest, "reservedQuantity");
 
 		_commerceInventoryWarehouseItemService.

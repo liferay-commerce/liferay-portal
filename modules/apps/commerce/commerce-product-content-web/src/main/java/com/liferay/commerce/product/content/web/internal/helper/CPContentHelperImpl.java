@@ -93,6 +93,8 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
+import java.math.BigDecimal;
+
 import java.text.Format;
 
 import java.util.List;
@@ -470,7 +472,7 @@ public class CPContentHelperImpl implements CPContentHelper {
 		CommerceInventoryReplenishmentItem commerceInventoryReplenishmentItem =
 			_commerceInventoryReplenishmentItemLocalService.
 				fetchCommerceInventoryReplenishmentItem(
-					companyId, sku,
+					companyId, sku, StringPool.BLANK,
 					new CommerceInventoryReplenishmentItemAvailabilityDateComparator());
 
 		if (commerceInventoryReplenishmentItem == null) {
@@ -494,11 +496,14 @@ public class CPContentHelperImpl implements CPContentHelper {
 			_cpDefinitionInventoryLocalService.
 				fetchCPDefinitionInventoryByCPDefinitionId(cpDefinitionId);
 
-		if (cpDefinitionInventory == null) {
-			return CPDefinitionInventoryConstants.DEFAULT_MIN_ORDER_QUANTITY;
+		BigDecimal minOrderQuantity =
+			CPDefinitionInventoryConstants.DEFAULT_MIN_ORDER_QUANTITY;
+
+		if (cpDefinitionInventory != null) {
+			minOrderQuantity = cpDefinitionInventory.getMinOrderQuantity();
 		}
 
-		return cpDefinitionInventory.getMinOrderQuantity();
+		return minOrderQuantity.intValue();
 	}
 
 	@Override

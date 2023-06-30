@@ -44,6 +44,8 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
+import java.math.BigDecimal;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -102,9 +104,10 @@ public class CommerceProductInstanceFDSDataProvider
 			JSONArray jsonArray = CPJSONUtil.toJSONArray(
 				cpDefinitionOptionRelKeysCPDefinitionOptionValueRelKeys);
 
-			int stockQuantity = _commerceInventoryEngine.getStockQuantity(
-				cpInstance.getCompanyId(), cpDefinition.getGroupId(),
-				cpInstance.getSku());
+			BigDecimal stockQuantity =
+				_commerceInventoryEngine.getStockQuantity(
+					cpInstance.getCompanyId(), cpDefinition.getGroupId(),
+					cpInstance.getSku(), StringPool.BLANK);
 
 			String statusDisplayStyle = StringPool.BLANK;
 
@@ -126,7 +129,7 @@ public class CommerceProductInstanceFDSDataProvider
 							cpInstance.getCPDefinitionId(),
 							jsonArray.toString(), locale)),
 					HtmlUtil.escape(_formatPrice(cpInstance, locale)),
-					cpDefinitionName, stockQuantity,
+					cpDefinitionName, stockQuantity.intValue(),
 					new LabelField(
 						statusDisplayStyle,
 						_language.get(

@@ -25,6 +25,7 @@ import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseService;
 import com.liferay.headless.commerce.admin.inventory.dto.v1_0.Warehouse;
 import com.liferay.headless.commerce.admin.inventory.dto.v1_0.WarehouseItem;
 import com.liferay.headless.commerce.admin.inventory.resource.v1_0.WarehouseItemResource;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
@@ -32,6 +33,8 @@ import com.liferay.portal.vulcan.fields.NestedField;
 import com.liferay.portal.vulcan.fields.NestedFieldSupport;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
+
+import java.math.BigDecimal;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -221,7 +224,8 @@ public class WarehouseItemResourceImpl
 
 		_commerceInventoryWarehouseItemService.
 			updateCommerceInventoryWarehouseItem(
-				id, GetterUtil.getInteger(warehouseItem.getQuantity()),
+				id,
+				(BigDecimal)GetterUtil.getNumber(warehouseItem.getQuantity()),
 				commerceInventoryWarehouse.getMvccVersion());
 
 		Response.ResponseBuilder responseBuilder = Response.ok();
@@ -249,7 +253,7 @@ public class WarehouseItemResourceImpl
 			updateCommerceInventoryWarehouseItem(
 				commerceInventoryWarehouseItem.
 					getCommerceInventoryWarehouseItemId(),
-				GetterUtil.getInteger(warehouseItem.getQuantity()),
+				(BigDecimal)GetterUtil.getNumber(warehouseItem.getQuantity()),
 				commerceInventoryWarehouseItem.getMvccVersion());
 
 		Response.ResponseBuilder responseBuilder = Response.noContent();
@@ -277,7 +281,8 @@ public class WarehouseItemResourceImpl
 				addCommerceInventoryWarehouseItem(
 					commerceInventoryWarehouse.
 						getCommerceInventoryWarehouseId(),
-					warehouseItem.getSku(), warehouseItem.getQuantity());
+					warehouseItem.getSku(), StringPool.BLANK,
+					BigDecimal.valueOf(warehouseItem.getQuantity()));
 
 		return _warehouseItemDTOConverter.toDTO(
 			new DefaultDTOConverterContext(
@@ -301,7 +306,8 @@ public class WarehouseItemResourceImpl
 					warehouseItem.getExternalReferenceCode(),
 					commerceInventoryWarehouse.
 						getCommerceInventoryWarehouseId(),
-					warehouseItem.getSku(), warehouseItem.getQuantity());
+					warehouseItem.getSku(), StringPool.BLANK,
+					BigDecimal.valueOf(warehouseItem.getQuantity()));
 
 		return _warehouseItemDTOConverter.toDTO(
 			new DefaultDTOConverterContext(
@@ -352,7 +358,8 @@ public class WarehouseItemResourceImpl
 					externalReferenceCode,
 					commerceInventoryWarehouse.
 						getCommerceInventoryWarehouseId(),
-					warehouseItem.getSku(), warehouseItem.getQuantity());
+					warehouseItem.getSku(), StringPool.BLANK,
+					BigDecimal.valueOf(warehouseItem.getQuantity()));
 
 		return _warehouseItemDTOConverter.toDTO(
 			new DefaultDTOConverterContext(

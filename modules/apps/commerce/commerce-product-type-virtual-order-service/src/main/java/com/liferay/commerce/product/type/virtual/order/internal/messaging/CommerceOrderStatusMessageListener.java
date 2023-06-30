@@ -29,11 +29,14 @@ import com.liferay.commerce.service.CPDefinitionInventoryLocalService;
 import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.stock.activity.CommerceLowStockActivity;
 import com.liferay.commerce.stock.activity.CommerceLowStockActivityRegistry;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.messaging.BaseMessageListener;
 import com.liferay.portal.kernel.messaging.DestinationNames;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageListener;
+
+import java.math.BigDecimal;
 
 import java.util.List;
 
@@ -109,17 +112,18 @@ public class CommerceOrderStatusMessageListener extends BaseMessageListener {
 			return;
 		}
 
-		int stockQuantity = _commerceInventoryEngine.getStockQuantity(
+		BigDecimal stockQuantity = _commerceInventoryEngine.getStockQuantity(
 			commerceOrderItem.getCompanyId(), cpInstance.getGroupId(),
-			commerceOrderItem.getSku());
+			commerceOrderItem.getSku(), StringPool.BLANK);
 
 		CPDefinitionInventoryEngine cpDefinitionInventoryEngine =
 			_cpDefinitionInventoryEngineRegistry.getCPDefinitionInventoryEngine(
 				cpDefinitionInventory);
 
-		if (stockQuantity <= cpDefinitionInventoryEngine.getMinStockQuantity(
-				cpInstance)) {
+		int compareTo = stockQuantity.compareTo(
+			cpDefinitionInventoryEngine.getMinStockQuantity(cpInstance));
 
+		if (compareTo <= 0) {
 			commerceLowStockActivity.execute(cpInstance);
 		}
 	}

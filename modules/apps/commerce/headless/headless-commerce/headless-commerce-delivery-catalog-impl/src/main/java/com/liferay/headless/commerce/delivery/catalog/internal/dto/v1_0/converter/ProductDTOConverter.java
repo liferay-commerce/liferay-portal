@@ -36,6 +36,8 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 
+import java.math.BigDecimal;
+
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -135,12 +137,29 @@ public class ProductDTOConverter
 						inventoryEngine =
 							cpDefinitionInventory.
 								getCPDefinitionInventoryEngine();
-						maxOrderQuantity =
-							cpDefinitionInventory.getMaxOrderQuantity();
-						minOrderQuantity =
-							cpDefinitionInventory.getMinOrderQuantity();
-						multipleOrderQuantity =
-							cpDefinitionInventory.getMultipleOrderQuantity();
+
+						setMaxOrderQuantity(
+							() -> {
+								BigDecimal maxOrderQuantity =
+									cpDefinitionInventory.getMaxOrderQuantity();
+
+								return maxOrderQuantity.intValue();
+							});
+						setMinOrderQuantity(
+							() -> {
+								BigDecimal minOrderQuantity =
+									cpDefinitionInventory.getMinOrderQuantity();
+
+								return minOrderQuantity.intValue();
+							});
+						setMultipleOrderQuantity(
+							() -> {
+								BigDecimal multipleOrderQuantity =
+									cpDefinitionInventory.
+										getMultipleOrderQuantity();
+
+								return multipleOrderQuantity.intValue();
+							});
 					}
 				};
 

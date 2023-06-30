@@ -27,6 +27,8 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.util.ArrayUtil;
 
+import java.math.BigDecimal;
+
 import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
@@ -98,7 +100,7 @@ public class CPDefinitionInventoryEngineImpl
 	}
 
 	@Override
-	public int getMaxOrderQuantity(CPInstance cpInstance)
+	public BigDecimal getMaxOrderQuantity(CPInstance cpInstance)
 		throws PortalException {
 
 		CPDefinitionInventory cpDefinitionInventory =
@@ -114,7 +116,7 @@ public class CPDefinitionInventoryEngineImpl
 	}
 
 	@Override
-	public int getMinOrderQuantity(CPInstance cpInstance)
+	public BigDecimal getMinOrderQuantity(CPInstance cpInstance)
 		throws PortalException {
 
 		CPDefinitionInventory cpDefinitionInventory =
@@ -130,7 +132,7 @@ public class CPDefinitionInventoryEngineImpl
 	}
 
 	@Override
-	public int getMinStockQuantity(CPInstance cpInstance)
+	public BigDecimal getMinStockQuantity(CPInstance cpInstance)
 		throws PortalException {
 
 		CPDefinitionInventory cpDefinitionInventory =
@@ -139,14 +141,14 @@ public class CPDefinitionInventoryEngineImpl
 					cpInstance.getCPDefinitionId());
 
 		if (cpDefinitionInventory == null) {
-			return 0;
+			return BigDecimal.ZERO;
 		}
 
 		return cpDefinitionInventory.getMinStockQuantity();
 	}
 
 	@Override
-	public int getMultipleOrderQuantity(CPInstance cpInstance)
+	public BigDecimal getMultipleOrderQuantity(CPInstance cpInstance)
 		throws PortalException {
 
 		CPDefinitionInventory cpDefinitionInventory =

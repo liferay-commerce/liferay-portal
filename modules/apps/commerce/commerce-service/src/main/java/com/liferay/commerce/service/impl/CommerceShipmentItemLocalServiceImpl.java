@@ -33,6 +33,7 @@ import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.service.CommerceOrderItemLocalService;
 import com.liferay.commerce.service.base.CommerceShipmentItemLocalServiceBaseImpl;
 import com.liferay.commerce.service.persistence.CommerceShipmentPersistence;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -47,6 +48,8 @@ import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.math.BigDecimal;
 
 import java.util.List;
 import java.util.Objects;
@@ -436,7 +439,8 @@ public class CommerceShipmentItemLocalServiceImpl
 
 		return _commerceInventoryWarehouseItemLocalService.
 			fetchCommerceInventoryWarehouseItem(
-				commerceShipmentItem.getCommerceInventoryWarehouseId(), sku);
+				commerceShipmentItem.getCommerceInventoryWarehouseId(), sku,
+				StringPool.BLANK);
 	}
 
 	private void _restoreStockQuantity(
@@ -455,13 +459,14 @@ public class CommerceShipmentItemLocalServiceImpl
 		_commerceInventoryEngine.increaseStockQuantity(
 			commerceShipmentItem.getUserId(), commerceCatalogGroupId,
 			commerceShipmentItem.getCommerceInventoryWarehouseId(),
-			commerceOrderItem.getSku(), quantity);
+			commerceOrderItem.getSku(), StringPool.BLANK,
+			BigDecimal.valueOf(quantity));
 
 		_commerceInventoryBookedQuantityLocalService.
 			resetCommerceBookedQuantity(
 				commerceOrderItem.getBookedQuantityId(),
 				commerceOrderItem.getUserId(), commerceOrderItem.getSku(),
-				quantity, null,
+				StringPool.BLANK, null, BigDecimal.valueOf(quantity),
 				HashMapBuilder.put(
 					CommerceInventoryAuditTypeConstants.ORDER_ID,
 					String.valueOf(commerceOrderItem.getCommerceOrderId())
@@ -506,7 +511,8 @@ public class CommerceShipmentItemLocalServiceImpl
 		_commerceInventoryEngine.consumeQuantity(
 			commerceShipmentItem.getUserId(), commerceCatalogGroupId,
 			commerceShipmentItem.getCommerceInventoryWarehouseId(),
-			commerceOrderItem.getSku(), quantity,
+			commerceOrderItem.getSku(), StringPool.BLANK,
+			BigDecimal.valueOf(quantity),
 			commerceOrderItem.getBookedQuantityId(),
 			HashMapBuilder.put(
 				CommerceInventoryAuditTypeConstants.ORDER_ID,

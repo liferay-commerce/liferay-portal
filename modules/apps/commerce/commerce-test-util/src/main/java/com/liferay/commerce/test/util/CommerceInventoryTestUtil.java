@@ -22,6 +22,7 @@ import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.service.CPInstanceLocalServiceUtil;
 import com.liferay.commerce.product.service.CommerceChannelRelLocalServiceUtil;
 import com.liferay.commerce.product.test.util.CPTestUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Country;
 import com.liferay.portal.kernel.model.Region;
@@ -32,6 +33,8 @@ import com.liferay.portal.kernel.test.randomizerbumpers.NumericStringRandomizerB
 import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBumper;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+
+import java.math.BigDecimal;
 
 import java.util.Locale;
 import java.util.Map;
@@ -130,20 +133,20 @@ public class CommerceInventoryTestUtil {
 			addCommerceInventoryWarehouseItem(
 				long userId,
 				CommerceInventoryWarehouse commerceInventoryWarehouse,
-				String sku, int quantity)
+				String sku, String unitOfMeasureKey, BigDecimal quantity)
 		throws Exception {
 
 		return CommerceInventoryWarehouseItemLocalServiceUtil.
 			addCommerceInventoryWarehouseItem(
-				userId,
+				StringPool.BLANK, userId,
 				commerceInventoryWarehouse.getCommerceInventoryWarehouseId(),
-				sku, quantity);
+				sku, unitOfMeasureKey, quantity);
 	}
 
 	public static CommerceInventoryWarehouseItem
 			addCommerceInventoryWarehouseItem(
-				long commerceChannelId, String sku, int quantity,
-				ServiceContext serviceContext)
+				long commerceChannelId, String sku, String unitOfMeasureKey,
+				BigDecimal quantity, ServiceContext serviceContext)
 		throws Exception {
 
 		CommerceInventoryWarehouse commerceInventoryWarehouse =
@@ -156,9 +159,9 @@ public class CommerceInventoryTestUtil {
 
 		return CommerceInventoryWarehouseItemLocalServiceUtil.
 			addCommerceInventoryWarehouseItem(
-				serviceContext.getUserId(),
+				StringPool.BLANK, serviceContext.getUserId(),
 				commerceInventoryWarehouse.getCommerceInventoryWarehouseId(),
-				sku, quantity);
+				sku, unitOfMeasureKey, quantity);
 	}
 
 	public static CommerceInventoryWarehouse

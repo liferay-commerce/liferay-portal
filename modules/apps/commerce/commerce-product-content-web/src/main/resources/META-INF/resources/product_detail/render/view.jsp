@@ -189,7 +189,7 @@ long cpDefinitionId = cpCatalogEntry.getCPDefinitionId();
 			int minOrderQuantity = cpContentHelper.getMinOrderQuantity(cpDefinitionId);
 			%>
 
-			<c:if test="<%= minOrderQuantity > CPDefinitionInventoryConstants.DEFAULT_MIN_ORDER_QUANTITY %>">
+			<c:if test="<%= minOrderQuantity > CPDefinitionInventoryConstants.DEFAULT_MIN_ORDER_QUANTITY.intValue() %>">
 				<span class="min-quantity-per-order">
 					<liferay-ui:message arguments="<%= minOrderQuantity %>" key="minimum-quantity-per-order-x" />
 				</span>

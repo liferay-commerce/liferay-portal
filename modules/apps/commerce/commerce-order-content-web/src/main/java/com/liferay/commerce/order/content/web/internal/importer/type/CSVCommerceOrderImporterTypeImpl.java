@@ -58,6 +58,8 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.io.IOException;
 
+import java.math.BigDecimal;
+
 import java.nio.charset.Charset;
 
 import java.util.Arrays;
@@ -316,7 +318,8 @@ public class CSVCommerceOrderImporterTypeImpl
 
 			if ((firstAvailableReplacementCPInstance != null) &&
 				!_cpAvailabilityChecker.check(
-					commerceChannelGroupId, cpInstance, quantity)) {
+					commerceChannelGroupId, cpInstance,
+					BigDecimal.valueOf(quantity))) {
 
 				commerceOrderImporterItemImpl.setReplacingSKU(
 					cpInstance.getSku());

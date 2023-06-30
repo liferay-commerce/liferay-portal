@@ -21,6 +21,8 @@ import com.liferay.headless.commerce.admin.inventory.dto.v1_0.WarehouseItem;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 
+import java.math.BigDecimal;
+
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -58,15 +60,28 @@ public class WarehouseItemDTOConverter
 				id =
 					commerceInventoryWarehouseItem.
 						getCommerceInventoryWarehouseItemId();
-				quantity = commerceInventoryWarehouseItem.getQuantity();
-				reservedQuantity =
-					commerceInventoryWarehouseItem.getReservedQuantity();
 				sku = commerceInventoryWarehouseItem.getSku();
 				warehouseExternalReferenceCode =
 					commerceInventoryWarehouse.getExternalReferenceCode();
 				warehouseId =
 					commerceInventoryWarehouse.
 						getCommerceInventoryWarehouseId();
+
+				setQuantity(
+					() -> {
+						BigDecimal quantity =
+							commerceInventoryWarehouseItem.getQuantity();
+
+						return quantity.intValue();
+					});
+				setReservedQuantity(
+					() -> {
+						BigDecimal reservedQuantity =
+							commerceInventoryWarehouseItem.
+								getReservedQuantity();
+
+						return reservedQuantity.intValue();
+					});
 			}
 		};
 	}

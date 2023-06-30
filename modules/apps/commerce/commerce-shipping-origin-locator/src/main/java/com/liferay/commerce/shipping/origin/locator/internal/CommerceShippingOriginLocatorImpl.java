@@ -23,6 +23,7 @@ import com.liferay.commerce.model.CommerceOrderItem;
 import com.liferay.commerce.service.CommerceAddressLocalService;
 import com.liferay.commerce.shipping.origin.locator.CommerceShippingOriginLocator;
 import com.liferay.commerce.shipping.origin.locator.internal.util.DistanceCalculator;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Country;
 import com.liferay.portal.kernel.model.Region;
 import com.liferay.portal.kernel.service.CountryLocalService;
@@ -109,7 +110,7 @@ public class CommerceShippingOriginLocatorImpl
 
 		List<CommerceInventoryWarehouse> commerceInventoryWarehouses =
 			_commerceInventoryWarehouseLocalService.
-				getCommerceInventoryWarehouses(groupId, sku);
+				getCommerceInventoryWarehouses(groupId, sku, StringPool.BLANK);
 
 		CommerceInventoryWarehouse closestCommerceInventoryWarehouse = null;
 		double closestDistance = Double.MAX_VALUE;

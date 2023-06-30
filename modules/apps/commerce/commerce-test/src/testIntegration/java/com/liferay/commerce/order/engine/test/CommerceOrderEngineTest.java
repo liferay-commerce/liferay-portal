@@ -53,6 +53,7 @@ import com.liferay.commerce.test.util.order.status.Test1CommerceOrderStatusImpl;
 import com.liferay.commerce.test.util.order.status.Test2CommerceOrderStatusImpl;
 import com.liferay.commerce.test.util.order.status.Test3CommerceOrderStatusImpl;
 import com.liferay.petra.lang.CentralizedThreadLocal;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
@@ -196,7 +197,8 @@ public class CommerceOrderEngineTest {
 		List<CommerceInventoryWarehouse> commerceInventoryWarehouses =
 			_commerceInventoryWarehouseLocalService.
 				getCommerceInventoryWarehouses(
-					_commerceChannel.getGroupId(), commerceOrderItem.getSku());
+					_commerceChannel.getGroupId(), commerceOrderItem.getSku(),
+					StringPool.BLANK);
 
 		Assert.assertFalse(commerceInventoryWarehouses.isEmpty());
 
@@ -275,7 +277,8 @@ public class CommerceOrderEngineTest {
 		List<CommerceInventoryWarehouse> commerceInventoryWarehouses =
 			_commerceInventoryWarehouseLocalService.
 				getCommerceInventoryWarehouses(
-					_commerceChannel.getGroupId(), commerceOrderItem.getSku());
+					_commerceChannel.getGroupId(), commerceOrderItem.getSku(),
+					StringPool.BLANK);
 
 		Assert.assertFalse(commerceInventoryWarehouses.isEmpty());
 
@@ -340,7 +343,8 @@ public class CommerceOrderEngineTest {
 		List<CommerceInventoryWarehouse> commerceInventoryWarehouses =
 			_commerceInventoryWarehouseLocalService.
 				getCommerceInventoryWarehouses(
-					_commerceChannel.getGroupId(), commerceOrderItem.getSku());
+					_commerceChannel.getGroupId(), commerceOrderItem.getSku(),
+					StringPool.BLANK);
 
 		Assert.assertFalse(commerceInventoryWarehouses.isEmpty());
 
@@ -792,7 +796,8 @@ public class CommerceOrderEngineTest {
 		List<CommerceInventoryWarehouse> commerceInventoryWarehouses =
 			_commerceInventoryWarehouseLocalService.
 				getCommerceInventoryWarehouses(
-					_commerceChannel.getGroupId(), commerceOrderItem.getSku());
+					_commerceChannel.getGroupId(), commerceOrderItem.getSku(),
+					StringPool.BLANK);
 
 		Assert.assertFalse(commerceInventoryWarehouses.isEmpty());
 
@@ -904,7 +909,8 @@ public class CommerceOrderEngineTest {
 		List<CommerceInventoryWarehouse> commerceInventoryWarehouses =
 			_commerceInventoryWarehouseLocalService.
 				getCommerceInventoryWarehouses(
-					_commerceChannel.getGroupId(), commerceOrderItem.getSku());
+					_commerceChannel.getGroupId(), commerceOrderItem.getSku(),
+					StringPool.BLANK);
 
 		Assert.assertFalse(commerceInventoryWarehouses.isEmpty());
 

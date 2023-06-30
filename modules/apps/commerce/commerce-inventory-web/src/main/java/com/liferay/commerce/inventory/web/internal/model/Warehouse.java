@@ -14,6 +14,8 @@
 
 package com.liferay.commerce.inventory.web.internal.model;
 
+import java.math.BigDecimal;
+
 /**
  * @author Luca Pellizzon
  * @author Alessio Antonio Rendina
@@ -21,25 +23,27 @@ package com.liferay.commerce.inventory.web.internal.model;
 public class Warehouse {
 
 	public Warehouse(
-		long commerceInventoryWarehouseItemId, String warehouse, int quantity,
-		int reserved, long incoming) {
+		long commerceInventoryWarehouseItemId, String warehouse,
+		BigDecimal quantity, BigDecimal reserved, long incoming) {
 
 		_commerceInventoryWarehouseItemId = commerceInventoryWarehouseItemId;
 		_warehouse = warehouse;
 		_quantity = quantity;
 		_reserved = reserved;
 
-		if ((quantity > 0) && (reserved >= 0)) {
-			_available = quantity - reserved;
+		if ((quantity.compareTo(BigDecimal.ZERO) > 0) &&
+			(reserved.compareTo(BigDecimal.ZERO) >= 0)) {
+
+			_available = quantity.subtract(reserved);
 		}
 		else {
-			_available = 0;
+			_available = BigDecimal.ZERO;
 		}
 
 		_incoming = incoming;
 	}
 
-	public int getAvailable() {
+	public BigDecimal getAvailable() {
 		return _available;
 	}
 
@@ -51,11 +55,11 @@ public class Warehouse {
 		return _incoming;
 	}
 
-	public int getQuantity() {
+	public BigDecimal getQuantity() {
 		return _quantity;
 	}
 
-	public int getReserved() {
+	public BigDecimal getReserved() {
 		return _reserved;
 	}
 
@@ -63,11 +67,11 @@ public class Warehouse {
 		return _warehouse;
 	}
 
-	private final int _available;
+	private final BigDecimal _available;
 	private final long _commerceInventoryWarehouseItemId;
 	private final long _incoming;
-	private final int _quantity;
-	private final int _reserved;
+	private final BigDecimal _quantity;
+	private final BigDecimal _reserved;
 	private final String _warehouse;
 
 }

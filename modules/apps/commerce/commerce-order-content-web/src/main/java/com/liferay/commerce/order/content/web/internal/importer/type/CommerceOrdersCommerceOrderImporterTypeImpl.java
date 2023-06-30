@@ -47,6 +47,8 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.io.IOException;
 
+import java.math.BigDecimal;
+
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -222,7 +224,7 @@ public class CommerceOrdersCommerceOrderImporterTypeImpl
 			if ((firstAvailableReplacementCPInstance != null) &&
 				!_cpAvailabilityChecker.check(
 					commerceChannelGroupId, cpInstance,
-					commerceOrderItem.getQuantity())) {
+					BigDecimal.valueOf(commerceOrderItem.getQuantity()))) {
 
 				commerceOrderImporterItemImpl.setReplacingSKU(
 					cpInstance.getSku());

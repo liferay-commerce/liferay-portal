@@ -21,6 +21,8 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
+import java.math.BigDecimal;
+
 /**
  * @author Alessio Antonio Rendina
  * @author Igor Beslic
@@ -48,21 +50,21 @@ public class ProductConfigurationUtil {
 			GetterUtil.get(
 				productConfiguration.getDisplayStockQuantity(),
 				cpDefinitionInventory.isDisplayStockQuantity()),
-			GetterUtil.get(
+			_getBigDecimal(
 				productConfiguration.getMinStockQuantity(),
 				cpDefinitionInventory.getMinStockQuantity()),
 			GetterUtil.get(
 				productConfiguration.getAllowBackOrder(),
 				cpDefinitionInventory.isBackOrders()),
-			GetterUtil.get(
+			_getBigDecimal(
 				productConfiguration.getMinOrderQuantity(),
 				cpDefinitionInventory.getMinOrderQuantity()),
-			GetterUtil.get(
+			_getBigDecimal(
 				productConfiguration.getMaxOrderQuantity(),
 				cpDefinitionInventory.getMaxOrderQuantity()),
 			_getAllowedOrderQuantities(
 				cpDefinitionInventory, productConfiguration),
-			GetterUtil.get(
+			_getBigDecimal(
 				productConfiguration.getMultipleOrderQuantity(),
 				cpDefinitionInventory.getMultipleOrderQuantity()));
 	}
@@ -81,6 +83,16 @@ public class ProductConfigurationUtil {
 		}
 
 		return cpDefinitionInventory.getAllowedOrderQuantities();
+	}
+
+	private static BigDecimal _getBigDecimal(
+		Integer quantity, BigDecimal defaultValue) {
+
+		if (quantity == null) {
+			return defaultValue;
+		}
+
+		return BigDecimal.valueOf(quantity);
 	}
 
 }

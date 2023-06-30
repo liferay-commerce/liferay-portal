@@ -20,6 +20,7 @@ import com.liferay.commerce.inventory.model.CommerceInventoryWarehouseItem;
 import com.liferay.commerce.inventory.service.CommerceInventoryReplenishmentItemService;
 import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseItemService;
 import com.liferay.commerce.product.constants.CPPortletKeys;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -29,6 +30,8 @@ import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+
+import java.math.BigDecimal;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -97,7 +100,8 @@ public class EditCommerceInventoryWarehouseMVCActionCommand
 
 		_commerceInventoryWarehouseItemService.
 			addCommerceInventoryWarehouseItem(
-				commerceInventoryWarehouseId, sku, quantity);
+				commerceInventoryWarehouseId, sku, StringPool.BLANK,
+				BigDecimal.valueOf(quantity));
 	}
 
 	private void _deleteCommerceInventoryWarehouse(ActionRequest actionRequest)
@@ -108,10 +112,12 @@ public class EditCommerceInventoryWarehouseMVCActionCommand
 		String sku = ParamUtil.getString(actionRequest, "sku");
 
 		_commerceInventoryWarehouseItemService.
-			deleteCommerceInventoryWarehouseItems(companyId, sku);
+			deleteCommerceInventoryWarehouseItems(
+				companyId, sku, StringPool.BLANK);
 
 		_commerceInventoryReplenishmentItemService.
-			deleteCommerceInventoryReplenishmentItems(companyId, sku);
+			deleteCommerceInventoryReplenishmentItems(
+				companyId, sku, StringPool.BLANK);
 	}
 
 	private void _updateCommerceInventoryWarehouse(ActionRequest actionRequest)
@@ -122,17 +128,19 @@ public class EditCommerceInventoryWarehouseMVCActionCommand
 
 		String sku = ParamUtil.getString(actionRequest, "sku");
 
-		int quantity = ParamUtil.getInteger(actionRequest, "quantity");
+		BigDecimal quantity = (BigDecimal)ParamUtil.getNumber(
+			actionRequest, "quantity");
 
 		CommerceInventoryWarehouseItem commerceInventoryWarehouseItem =
 			_commerceInventoryWarehouseItemService.
 				fetchCommerceInventoryWarehouseItem(
-					commerceInventoryWarehouseId, sku);
+					commerceInventoryWarehouseId, sku, StringPool.BLANK);
 
 		if (commerceInventoryWarehouseItem == null) {
 			_commerceInventoryWarehouseItemService.
 				addCommerceInventoryWarehouseItem(
-					commerceInventoryWarehouseId, sku, quantity);
+					commerceInventoryWarehouseId, sku, StringPool.BLANK,
+					quantity);
 		}
 		else {
 			_commerceInventoryWarehouseItemService.
