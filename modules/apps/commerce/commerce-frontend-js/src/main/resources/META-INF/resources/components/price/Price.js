@@ -47,7 +47,7 @@ function Price({
 	const isPriceOnApplication = activePrice.priceOnApplication;
 
 	const isUnitPricePriceOnApplication = () => {
-		return activePrice.price === 0 && hasPromo;
+		return activePrice.price == 0 && hasPromo;
 	};
 
 	const updatePrice = ({cpInstance}) =>

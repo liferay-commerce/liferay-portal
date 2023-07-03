@@ -27,6 +27,8 @@ public class PriceModel {
 
 		_priceCommerceMoney = priceCommerceMoney;
 		_price = price;
+
+		_priceOnApplication = false;
 	}
 
 	public String getDiscount() {
@@ -70,19 +72,7 @@ public class PriceModel {
 	}
 
 	public boolean isPriceOnApplication() {
-		boolean priceOnApplication = false;
-
-		if ((_priceCommerceMoney != null) &&
-			_priceCommerceMoney.isPriceOnApplication()) {
-
-			priceOnApplication = true;
-		}
-
-		if (_promoCommerceMoney != null) {
-			priceOnApplication = false;
-		}
-
-		return priceOnApplication;
+		return _priceOnApplication;
 	}
 
 	public void setDiscount(
@@ -115,6 +105,10 @@ public class PriceModel {
 		_price = price;
 	}
 
+	public void setPriceOnApplication(boolean priceOnApplication) {
+		_priceOnApplication = priceOnApplication;
+	}
+
 	public void setPromoPrice(
 			CommerceMoney promoCommerceMoney, String promoPrice)
 		throws PortalException {
@@ -131,6 +125,7 @@ public class PriceModel {
 	private String _finalPrice;
 	private String _price;
 	private CommerceMoney _priceCommerceMoney;
+	private boolean _priceOnApplication;
 	private CommerceMoney _promoCommerceMoney;
 	private String _promoPrice;
 

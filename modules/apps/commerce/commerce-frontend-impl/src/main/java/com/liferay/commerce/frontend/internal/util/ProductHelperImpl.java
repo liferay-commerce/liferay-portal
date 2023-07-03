@@ -212,6 +212,9 @@ public class ProductHelperImpl implements ProductHelper {
 		PriceModel priceModel = new PriceModel(
 			unitPriceCommerceMoney, unitPriceCommerceMoney.format(locale));
 
+		priceModel.setPriceOnApplication(
+			unitPriceCommerceMoney.isPriceOnApplication());
+
 		if (!unitPromoPriceCommerceMoney.isEmpty()) {
 			BigDecimal unitPrice = unitPriceCommerceMoney.getPrice();
 			BigDecimal unitPromoPrice = unitPromoPriceCommerceMoney.getPrice();
@@ -220,6 +223,7 @@ public class ProductHelperImpl implements ProductHelper {
 				((unitPromoPrice.compareTo(unitPrice) < 0) ||
 				 unitPriceCommerceMoney.isPriceOnApplication())) {
 
+				priceModel.setPriceOnApplication(false);
 				priceModel.setPromoPrice(
 					unitPromoPriceCommerceMoney,
 					unitPromoPriceCommerceMoney.format(locale));
