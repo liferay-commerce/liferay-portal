@@ -655,4 +655,491 @@ definition {
 		}
 	}
 
+	@description = "Verify that the Supplier is able only to manage the inventory related to the channel linked to him"
+	@priority = 5
+	test CanSupplierUserManageInventory {
+		property portal.acceptance = "true";
+
+		task ("Give a Supplier account with a user that has the role 'Supplier'") {
+			CommerceEntry.addAccountEntryUser(
+				accountName = "Commerce Account",
+				accountType = "Supplier",
+				agreeToTermsAndAnswerReminderQuery = "true",
+				createNewAccount = "true",
+				requireReset = "false",
+				userEmailAddress = "supplier@liferay.com",
+				userFirstName = "Supplier",
+				userLastName = "User",
+				userRole = "Account Supplier",
+				userScreenName = "supplieruser");
+		}
+
+		task ("And the Accound Id is linked to Minium Catalog and Channel") {
+			CommerceJSONCatalogsAPI._patchCommerceCatalog(
+				accountIdByName = "Commerce Account",
+				catalogName = "Minium");
+
+			CommerceJSONChannelsAPI._patchCommerceChannel(
+				accountIdByName = "Commerce Account",
+				channelName = "Minium Portal");
+		}
+
+		task ("When the user logs in") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "supplier@liferay.com",
+				userLoginFullName = "Supplier User");
+		}
+
+		task ("And open the a product detail page") {
+			CommerceProducts.openProductsAdmin();
+
+			CommerceNavigator.searchEntry(entryName = "ABS Sensor");
+
+			CommerceNavigator.gotoEntry(entryName = "ABS Sensor");
+		}
+
+		task ("And open the invetory tab for that product") {
+			CommerceEntry.gotoMenuTab(menuTab = "SKUs");
+
+			CommerceNavigator.gotoEntry(entryName = "MIN93015");
+
+			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+			CommerceEntry.gotoMenuTab(menuTab = "Inventory");
+		}
+
+		task ("Then the user can see all the warehouses") {
+			for (var warehouse : list "Italy,United States - Northeast,United States - Southwest") {
+				AssertElementPresent(
+					key_kfProcessFieldData = ${warehouse},
+					locator1 = "KaleoFormsAdminViewProcessRecords#RECORD_TABLE_RECORD");
+			}
+		}
+
+		task ("And if the user change the quantity for Italy warehouse") {
+			Type(
+				key_inventoryName = "Italy",
+				locator1 = "CommerceEntry#INVENTORY_INPUT",
+				value1 = 10);
+
+			Button.clickSave();
+		}
+
+		task ("Then the new quantity is saved") {
+			Refresh();
+
+			CommerceNavigator.gotoEntry(entryName = "MIN93015");
+
+			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+			CommerceEntry.gotoMenuTab(menuTab = "Inventory");
+
+			AssertElementPresent(
+				key_inventoryName = "Italy",
+				locator1 = "CommerceEntry#INVENTORY_INPUT",
+				value1 = 10);
+		}
+
+		task ("And the Supplier goes back to the product page") {
+			CommerceProducts.openProductsAdmin();
+		}
+
+		task ("And select an entry into the the SKU tab") {
+			CommerceEntry.gotoMenuTab(menuTab = "SKUs");
+
+			CommerceNavigator.searchEntry(entryName = "MIN93015");
+
+			CommerceNavigator.gotoEntry(entryName = "MIN93015");
+		}
+
+		task ("When the Supplier edit the warehouses again") {
+			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+			CommerceEntry.gotoMenuTab(menuTab = "Inventory");
+
+			for (var warehouse : list "Italy,United States - Northeast,United States - Southwest") {
+				AssertElementPresent(
+					key_kfProcessFieldData = ${warehouse},
+					locator1 = "KaleoFormsAdminViewProcessRecords#RECORD_TABLE_RECORD");
+			}
+
+			Type(
+				key_inventoryName = "Italy",
+				locator1 = "CommerceEntry#INVENTORY_INPUT",
+				value1 = 20);
+
+			Button.clickSave();
+		}
+
+		task ("Then the new inventory is saved") {
+			Refresh();
+
+			CommerceNavigator.searchEntry(entryName = "MIN93015");
+
+			CommerceNavigator.gotoEntry(entryName = "MIN93015");
+
+			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+			CommerceEntry.gotoMenuTab(menuTab = "Inventory");
+
+			AssertElementPresent(
+				key_inventoryName = "Italy",
+				locator1 = "CommerceEntry#INVENTORY_INPUT",
+				value1 = 20);
+		}
+	}
+
+	@description = "Verify that the Supplier User respect the eligibility"
+	@priority = 5
+	test CanSupplierUserManageOnlyEligibleInventory {
+		property portal.acceptance = "true";
+
+		task ("Give a Supplier account with a user that has the role 'Supplier'") {
+			CommerceEntry.addAccountEntryUser(
+				accountName = "Commerce Account",
+				accountType = "Supplier",
+				agreeToTermsAndAnswerReminderQuery = "true",
+				createNewAccount = "true",
+				requireReset = "false",
+				userEmailAddress = "supplier@liferay.com",
+				userFirstName = "Supplier",
+				userLastName = "User",
+				userRole = "Account Supplier",
+				userScreenName = "supplieruser");
+		}
+
+		task ("And the Accound Id is linked to Minium Catalog and Channel") {
+			CommerceJSONCatalogsAPI._patchCommerceCatalog(
+				accountIdByName = "Commerce Account",
+				catalogName = "Minium");
+
+			CommerceJSONChannelsAPI._patchCommerceChannel(
+				accountIdByName = "Commerce Account",
+				channelName = "Minium Portal");
+		}
+
+		task ("And a new channel is created") {
+			CommerceJSONChannelsAPI._addChannel(
+				channelName = "Test Channel 1",
+				channelType = "site",
+				currencyCode = "USD",
+				externalReferenceCode = 101);
+		}
+
+		task ("And the admin change the eligibility for Italy warehouse") {
+			CommerceNavigator.goToWarehousesAdmin();
+
+			CommerceEntry.removeEntryEligibility(
+				channelEligibility = "Minium Portal",
+				entryName = "Italy");
+
+			CommerceEntry.setEntryEligibility(channelsEligibility = "Test Channel 1");
+		}
+
+		task ("When the user logs in") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "supplier@liferay.com",
+				userLoginFullName = "Supplier User");
+		}
+
+		task ("And open the a product detail page") {
+			CommerceProducts.openProductsAdmin();
+
+			CommerceNavigator.searchEntry(entryName = "ABS Sensor");
+
+			CommerceNavigator.gotoEntry(entryName = "ABS Sensor");
+		}
+
+		task ("And open the invetory tab for that product") {
+			CommerceEntry.gotoMenuTab(menuTab = "SKUs");
+
+			CommerceNavigator.gotoEntry(entryName = "MIN93015");
+
+			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+			CommerceEntry.gotoMenuTab(menuTab = "Inventory");
+		}
+
+		task ("Then the user can see all the warehouses except Italy") {
+			for (var warehouse : list "United States - Northeast,United States - Southwest") {
+				AssertElementPresent(
+					key_kfProcessFieldData = ${warehouse},
+					locator1 = "KaleoFormsAdminViewProcessRecords#RECORD_TABLE_RECORD");
+			}
+
+			AssertElementNotPresent(
+				key_kfProcessFieldData = "Italy",
+				locator1 = "KaleoFormsAdminViewProcessRecords#RECORD_TABLE_RECORD");
+		}
+
+		task ("And the Supplier goes back to the product page") {
+			CommerceProducts.openProductsAdmin();
+		}
+
+		task ("And select an entry into the the SKU tab") {
+			CommerceEntry.gotoMenuTab(menuTab = "SKUs");
+
+			CommerceNavigator.searchEntry(entryName = "MIN93015");
+
+			CommerceNavigator.gotoEntry(entryName = "MIN93015");
+		}
+
+		task ("Then the user can see all the warehouses except Italy") {
+			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+			CommerceEntry.gotoMenuTab(menuTab = "Inventory");
+
+			for (var warehouse : list "United States - Northeast,United States - Southwest") {
+				AssertElementPresent(
+					key_kfProcessFieldData = ${warehouse},
+					locator1 = "KaleoFormsAdminViewProcessRecords#RECORD_TABLE_RECORD");
+			}
+
+			AssertElementNotPresent(
+				key_kfProcessFieldData = "Italy",
+				locator1 = "KaleoFormsAdminViewProcessRecords#RECORD_TABLE_RECORD");
+		}
+	}
+
+	@description = "Verify that the Supplier is not able to see the 'Inventory' and 'Warehouses' inside the Application Menu"
+	@priority = 4
+	test CanSupplierUserNotAccessToInventoryAndWarehousesViaCP {
+		property portal.acceptance = "false";
+
+		task ("Give a Supplier account with a user that has the role 'Supplier'") {
+			CommerceEntry.addAccountEntryUser(
+				accountName = "Commerce Account",
+				accountType = "Supplier",
+				agreeToTermsAndAnswerReminderQuery = "true",
+				createNewAccount = "true",
+				requireReset = "false",
+				userEmailAddress = "supplier@liferay.com",
+				userFirstName = "Supplier",
+				userLastName = "User",
+				userRole = "Account Supplier",
+				userScreenName = "supplieruser");
+		}
+
+		task ("And the Accound Id is linked to Minium Catalog and Channel") {
+			CommerceJSONCatalogsAPI._patchCommerceCatalog(
+				accountIdByName = "Commerce Account",
+				catalogName = "Minium");
+
+			CommerceJSONChannelsAPI._patchCommerceChannel(
+				accountIdByName = "Commerce Account",
+				channelName = "Minium Portal");
+		}
+
+		task ("When the user logs in") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "supplier@liferay.com",
+				userLoginFullName = "Supplier User");
+		}
+
+		task ("And open the Application Menu") {
+			ApplicationsMenuHelper.openApplicationsMenu();
+
+			ApplicationsMenu.gotoPanel(panel = "Commerce");
+
+			for (var portlet : list "Inventory,Warehouses") {
+				AssertElementNotPresent(
+					key_category = "Inventory Management",
+					key_portlet = ${portlet},
+					locator1 = "ApplicationsMenu#PORTLET");
+			}
+		}
+	}
+
+	@description = "Verify that the Supplier User cannot manage the invetory for the channel not related to him"
+	@priority = 5
+	test CanSupplierUserNotManageInventoryForNotRelatedCatalogs {
+		property portal.acceptance = "true";
+
+		task ("Give a Supplier account with a user that has the role 'Supplier'") {
+			CommerceEntry.addAccountEntryUser(
+				accountName = "Commerce Account",
+				accountType = "Supplier",
+				agreeToTermsAndAnswerReminderQuery = "true",
+				createNewAccount = "true",
+				requireReset = "false",
+				userEmailAddress = "supplier@liferay.com",
+				userFirstName = "Supplier",
+				userLastName = "User",
+				userRole = "Account Supplier",
+				userScreenName = "supplieruser");
+		}
+
+		task ("And the Accound Id is linked to Minium Catalog and Channel") {
+			CommerceJSONCatalogsAPI._patchCommerceCatalog(
+				accountIdByName = "Commerce Account",
+				catalogName = "Minium");
+		}
+
+		task ("When the user logs in") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "supplier@liferay.com",
+				userLoginFullName = "Supplier User");
+		}
+
+		task ("And open the a product detail page") {
+			CommerceProducts.openProductsAdmin();
+
+			CommerceNavigator.searchEntry(entryName = "ABS Sensor");
+
+			CommerceNavigator.gotoEntry(entryName = "ABS Sensor");
+		}
+
+		task ("And open the invetory tab for that product") {
+			CommerceEntry.gotoMenuTab(menuTab = "SKUs");
+
+			CommerceNavigator.gotoEntry(entryName = "MIN93015");
+
+			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+			CommerceEntry.gotoMenuTab(menuTab = "Inventory");
+		}
+
+		task ("Then no warehouses are available") {
+			for (var warehouse : list "Italy,United States - Northeast,United States - Southwest") {
+				AssertElementNotPresent(
+					key_kfProcessFieldData = ${warehouse},
+					locator1 = "KaleoFormsAdminViewProcessRecords#RECORD_TABLE_RECORD");
+			}
+		}
+
+		task ("And the Supplier goes back to the product page") {
+			CommerceProducts.openProductsAdmin();
+		}
+
+		task ("And select an entry into the the SKU tab") {
+			CommerceEntry.gotoMenuTab(menuTab = "SKUs");
+
+			CommerceNavigator.searchEntry(entryName = "MIN93015");
+
+			CommerceNavigator.gotoEntry(entryName = "MIN93015");
+		}
+
+		task ("Then no warehouses are available") {
+			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+			CommerceEntry.gotoMenuTab(menuTab = "Inventory");
+
+			for (var warehouse : list "Italy,United States - Northeast,United States - Southwest") {
+				AssertElementNotPresent(
+					key_kfProcessFieldData = ${warehouse},
+					locator1 = "KaleoFormsAdminViewProcessRecords#RECORD_TABLE_RECORD");
+			}
+		}
+	}
+
+	@description = "Verify that the Supplier is not able to see invetory realted to warehouse with the 'No Channel' eligibility"
+	@priority = 5
+	test CanSupplierUserNotSeeNoChannelEligibility {
+		property portal.acceptance = "true";
+
+		task ("Give a Supplier account with a user that has the role 'Supplier'") {
+			CommerceEntry.addAccountEntryUser(
+				accountName = "Commerce Account",
+				accountType = "Supplier",
+				agreeToTermsAndAnswerReminderQuery = "true",
+				createNewAccount = "true",
+				requireReset = "false",
+				userEmailAddress = "supplier@liferay.com",
+				userFirstName = "Supplier",
+				userLastName = "User",
+				userRole = "Account Supplier",
+				userScreenName = "supplieruser");
+		}
+
+		task ("And the Accound Id is linked to Minium Catalog and Channel") {
+			CommerceJSONCatalogsAPI._patchCommerceCatalog(
+				accountIdByName = "Commerce Account",
+				catalogName = "Minium");
+
+			CommerceJSONChannelsAPI._patchCommerceChannel(
+				accountIdByName = "Commerce Account",
+				channelName = "Minium Portal");
+		}
+
+		task ("And the admin change the eligibility for Italy warehouse") {
+			CommerceNavigator.goToWarehousesAdmin();
+
+			CommerceNavigator.gotoEntry(entryName = "Italy");
+
+			CommerceEntry.gotoMenuTab(menuTab = "Eligibility");
+
+			Click(
+				locator1 = "Radio#ANY",
+				radioLabel = "No Channel");
+
+			Button.clickSave();
+		}
+
+		task ("When the user logs in") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "supplier@liferay.com",
+				userLoginFullName = "Supplier User");
+		}
+
+		task ("And open the a product detail page") {
+			CommerceProducts.openProductsAdmin();
+
+			CommerceNavigator.searchEntry(entryName = "ABS Sensor");
+
+			CommerceNavigator.gotoEntry(entryName = "ABS Sensor");
+		}
+
+		task ("And open the invetory tab for that product") {
+			CommerceEntry.gotoMenuTab(menuTab = "SKUs");
+
+			CommerceNavigator.gotoEntry(entryName = "MIN93015");
+
+			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+			CommerceEntry.gotoMenuTab(menuTab = "Inventory");
+		}
+
+		task ("Then the user can see all the warehouses except Italy") {
+			for (var warehouse : list "United States - Northeast,United States - Southwest") {
+				AssertElementPresent(
+					key_kfProcessFieldData = ${warehouse},
+					locator1 = "KaleoFormsAdminViewProcessRecords#RECORD_TABLE_RECORD");
+			}
+
+			AssertElementNotPresent(
+				key_kfProcessFieldData = "Italy",
+				locator1 = "KaleoFormsAdminViewProcessRecords#RECORD_TABLE_RECORD");
+		}
+
+		task ("And the Supplier goes back to the product page") {
+			CommerceProducts.openProductsAdmin();
+		}
+
+		task ("And select an entry into the the SKU tab") {
+			CommerceEntry.gotoMenuTab(menuTab = "SKUs");
+
+			CommerceNavigator.searchEntry(entryName = "MIN93015");
+
+			CommerceNavigator.gotoEntry(entryName = "MIN93015");
+		}
+
+		task ("When the Supplier edit the warehouses again") {
+			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+			CommerceEntry.gotoMenuTab(menuTab = "Inventory");
+		}
+
+		task ("Then the user can see all the warehouses except Italy") {
+			for (var warehouse : list "United States - Northeast,United States - Southwest") {
+				AssertElementPresent(
+					key_kfProcessFieldData = ${warehouse},
+					locator1 = "KaleoFormsAdminViewProcessRecords#RECORD_TABLE_RECORD");
+			}
+
+			AssertElementNotPresent(
+				key_kfProcessFieldData = "Italy",
+				locator1 = "KaleoFormsAdminViewProcessRecords#RECORD_TABLE_RECORD");
+		}
+	}
+
 }
