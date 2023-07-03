@@ -16,6 +16,7 @@ package com.liferay.commerce.product.content.web.internal.frontend.data.set.prov
 
 import com.liferay.commerce.context.CommerceContext;
 import com.liferay.commerce.context.CommerceContextFactory;
+import com.liferay.commerce.currency.model.CommerceMoney;
 import com.liferay.commerce.frontend.model.PriceModel;
 import com.liferay.commerce.frontend.util.ProductHelper;
 import com.liferay.commerce.product.catalog.CPSku;
@@ -115,12 +116,15 @@ public class ReplacementCPInstanceFDSDataProvider
 		throws PortalException {
 
 		if (cpInstanceId > 0) {
-			return _productHelper.getPriceModel(
-				cpInstanceId, 1, commerceContext, StringPool.BLANK, locale);
+			return _parsePriceModel(
+				_productHelper.getPriceModel(
+					cpInstanceId, 1, commerceContext, StringPool.BLANK,
+					locale));
 		}
 
-		return _productHelper.getMinPriceModel(
-			cpDefinitionId, commerceContext, locale);
+		return _parsePriceModel(
+			_productHelper.getMinPriceModel(
+				cpDefinitionId, commerceContext, locale));
 	}
 
 	private List<CPSku> _getReplacementCPSkus(
@@ -146,6 +150,35 @@ public class ReplacementCPInstanceFDSDataProvider
 		}
 
 		return cpSkus;
+	}
+
+	private PriceModel _parsePriceModel(PriceModel originalPriceModel)
+		throws PortalException {
+
+		PriceModel priceModel = new PriceModel(
+			null, originalPriceModel.getPrice());
+
+		priceModel.setDiscount(null, originalPriceModel.getDiscount());
+		priceModel.setDiscountPercentage(
+			originalPriceModel.getDiscountPercentage());
+		priceModel.setDiscountPercentages(
+			originalPriceModel.getDiscountPercentages());
+		priceModel.setFinalPrice(null, originalPriceModel.getFinalPrice());
+
+		CommerceMoney priceCommerceMoney =
+			originalPriceModel.getPriceCommerceMoney();
+
+		if (priceCommerceMoney.isPriceOnApplication()) {
+			priceModel.setPrice(null, "0");
+			priceModel.setPriceOnApplication(true);
+		}
+
+		if (originalPriceModel.getPromoCommerceMoney() != null) {
+			priceModel.setPriceOnApplication(false);
+			priceModel.setPromoPrice(null, originalPriceModel.getPromoPrice());
+		}
+
+		return priceModel;
 	}
 
 	@Reference

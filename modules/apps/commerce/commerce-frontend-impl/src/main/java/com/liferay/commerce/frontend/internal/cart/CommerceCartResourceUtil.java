@@ -143,7 +143,11 @@ public class CommerceCartResourceUtil {
 		PriceModel priceModel = new PriceModel(
 			unitPriceCommerceMoney, unitPriceCommerceMoney.format(locale));
 
+		priceModel.setPriceOnApplication(
+			unitPriceCommerceMoney.isPriceOnApplication());
+
 		if (promoPriceCommerceMoney != null) {
+			priceModel.setPriceOnApplication(false);
 			priceModel.setPromoPrice(
 				promoPriceCommerceMoney,
 				promoPriceCommerceMoney.format(locale));
