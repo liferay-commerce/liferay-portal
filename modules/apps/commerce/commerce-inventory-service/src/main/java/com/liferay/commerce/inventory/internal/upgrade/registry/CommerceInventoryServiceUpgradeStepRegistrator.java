@@ -17,6 +17,10 @@ package com.liferay.commerce.inventory.internal.upgrade.registry;
 import com.liferay.commerce.inventory.internal.upgrade.v2_0_0.CommerceInventoryAuditUpgradeProcess;
 import com.liferay.commerce.inventory.internal.upgrade.v2_1_0.MVCCUpgradeProcess;
 import com.liferay.commerce.inventory.internal.upgrade.v2_6_0.util.CommerceInventoryWarehouseRelTable;
+import com.liferay.commerce.inventory.model.impl.CommerceInventoryAuditModelImpl;
+import com.liferay.commerce.inventory.model.impl.CommerceInventoryBookedQuantityModelImpl;
+import com.liferay.commerce.inventory.model.impl.CommerceInventoryReplenishmentItemModelImpl;
+import com.liferay.commerce.inventory.model.impl.CommerceInventoryWarehouseItemModelImpl;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
@@ -149,6 +153,36 @@ public class CommerceInventoryServiceUpgradeStepRegistrator
 			new com.liferay.commerce.inventory.internal.upgrade.v2_6_1.
 				CommercePermissionUpgradeProcess(
 					_resourcePermissionLocalService, _roleLocalService));
+
+		registry.register(
+			"2.6.1", "3.0.0",
+			UpgradeProcessFactory.addColumns(
+				CommerceInventoryAuditModelImpl.TABLE_NAME,
+				"unitOfMeasureKey VARCHAR(75) null"),
+			UpgradeProcessFactory.alterColumnType(
+				CommerceInventoryAuditModelImpl.TABLE_NAME, "quantity",
+				"DECIMAL(30,16)"),
+			UpgradeProcessFactory.addColumns(
+				CommerceInventoryBookedQuantityModelImpl.TABLE_NAME,
+				"unitOfMeasureKey VARCHAR(75) null"),
+			UpgradeProcessFactory.alterColumnType(
+				CommerceInventoryBookedQuantityModelImpl.TABLE_NAME, "quantity",
+				"DECIMAL(30,16)"),
+			UpgradeProcessFactory.addColumns(
+				CommerceInventoryReplenishmentItemModelImpl.TABLE_NAME,
+				"unitOfMeasureKey VARCHAR(75) null"),
+			UpgradeProcessFactory.alterColumnType(
+				CommerceInventoryReplenishmentItemModelImpl.TABLE_NAME,
+				"quantity", "DECIMAL(30,16)"),
+			UpgradeProcessFactory.addColumns(
+				CommerceInventoryWarehouseItemModelImpl.TABLE_NAME,
+				"unitOfMeasureKey VARCHAR(75) null"),
+			UpgradeProcessFactory.alterColumnType(
+				CommerceInventoryWarehouseItemModelImpl.TABLE_NAME, "quantity",
+				"DECIMAL(30,16)"),
+			UpgradeProcessFactory.alterColumnType(
+				CommerceInventoryWarehouseItemModelImpl.TABLE_NAME,
+				"reservedQuantity", "DECIMAL(30,16)"));
 
 		if (_log.isInfoEnabled()) {
 			_log.info("Commerce inventory upgrade step registrator finished");
