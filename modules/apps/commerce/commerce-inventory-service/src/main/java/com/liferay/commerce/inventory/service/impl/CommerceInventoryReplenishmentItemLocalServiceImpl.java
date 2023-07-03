@@ -31,6 +31,8 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.math.BigDecimal;
+
 import java.util.Date;
 import java.util.List;
 
@@ -53,7 +55,8 @@ public class CommerceInventoryReplenishmentItemLocalServiceImpl
 			addCommerceInventoryReplenishmentItem(
 				String externalReferenceCode, long userId,
 				long commerceInventoryWarehouseId, String sku,
-				Date availabilityDate, int quantity)
+				String unitOfMeasureKey, Date availabilityDate,
+				BigDecimal quantity)
 		throws PortalException {
 
 		User user = _userLocalService.getUser(userId);
@@ -79,6 +82,8 @@ public class CommerceInventoryReplenishmentItemLocalServiceImpl
 		commerceInventoryReplenishmentItem.setCommerceInventoryWarehouseId(
 			commerceInventoryWarehouseId);
 		commerceInventoryReplenishmentItem.setSku(sku);
+		commerceInventoryReplenishmentItem.setUnitOfMeasureKey(
+			unitOfMeasureKey);
 		commerceInventoryReplenishmentItem.setAvailabilityDate(
 			availabilityDate);
 		commerceInventoryReplenishmentItem.setQuantity(quantity);
@@ -97,20 +102,20 @@ public class CommerceInventoryReplenishmentItemLocalServiceImpl
 
 	@Override
 	public void deleteCommerceInventoryReplenishmentItems(
-		long companyId, String sku) {
+		long companyId, String sku, String unitOfMeasureKey) {
 
-		commerceInventoryReplenishmentItemPersistence.removeByC_S(
-			companyId, sku);
+		commerceInventoryReplenishmentItemPersistence.removeByC_S_U(
+			companyId, sku, unitOfMeasureKey);
 	}
 
 	public CommerceInventoryReplenishmentItem
 		fetchCommerceInventoryReplenishmentItem(
-			long companyId, String sku,
+			long companyId, String sku, String unitOfMeasureKey,
 			OrderByComparator<CommerceInventoryReplenishmentItem>
 				orderByComparator) {
 
-		return commerceInventoryReplenishmentItemPersistence.fetchByC_S_First(
-			companyId, sku, orderByComparator);
+		return commerceInventoryReplenishmentItemPersistence.fetchByC_S_U_First(
+			companyId, sku, unitOfMeasureKey, orderByComparator);
 	}
 
 	@Override
@@ -126,15 +131,17 @@ public class CommerceInventoryReplenishmentItemLocalServiceImpl
 	@Override
 	public List<CommerceInventoryReplenishmentItem>
 		getCommerceInventoryReplenishmentItemsByCompanyIdAndSku(
-			long companyId, String sku, int start, int end) {
+			long companyId, String sku, String unitOfMeasureKey, int start,
+			int end) {
 
-		return commerceInventoryReplenishmentItemPersistence.findByC_S(
-			companyId, sku, start, end);
+		return commerceInventoryReplenishmentItemPersistence.findByC_S_U(
+			companyId, sku, unitOfMeasureKey, start, end);
 	}
 
 	@Override
 	public long getCommerceInventoryReplenishmentItemsCount(
-		long commerceInventoryWarehouseId, String sku) {
+		long commerceInventoryWarehouseId, String sku,
+		String unitOfMeasureKey) {
 
 		DynamicQuery dynamicQuery =
 			commerceInventoryReplenishmentItemLocalService.dynamicQuery();
@@ -152,7 +159,14 @@ public class CommerceInventoryReplenishmentItemLocalServiceImpl
 
 		dynamicQuery.add(skuProperty.eq(sku));
 
-		List<Long> results =
+		if (Validator.isNotNull(unitOfMeasureKey)) {
+			Property unitOfMeasureKeyProperty = PropertyFactoryUtil.forName(
+				"unitOfMeasureKey");
+
+			dynamicQuery.add(unitOfMeasureKeyProperty.eq(unitOfMeasureKey));
+		}
+
+		List<BigDecimal> results =
 			commerceInventoryReplenishmentItemLocalService.dynamicQuery(
 				dynamicQuery);
 
@@ -160,7 +174,9 @@ public class CommerceInventoryReplenishmentItemLocalServiceImpl
 			return 0;
 		}
 
-		return results.get(0);
+		BigDecimal result = results.get(0);
+
+		return result.longValue();
 	}
 
 	@Override
@@ -174,10 +190,10 @@ public class CommerceInventoryReplenishmentItemLocalServiceImpl
 
 	@Override
 	public int getCommerceInventoryReplenishmentItemsCountByCompanyIdAndSku(
-		long companyId, String sku) {
+		long companyId, String sku, String unitOfMeasureKey) {
 
-		return commerceInventoryReplenishmentItemPersistence.countByC_S(
-			companyId, sku);
+		return commerceInventoryReplenishmentItemPersistence.countByC_S_U(
+			companyId, sku, unitOfMeasureKey);
 	}
 
 	@Override
@@ -185,7 +201,7 @@ public class CommerceInventoryReplenishmentItemLocalServiceImpl
 			updateCommerceInventoryReplenishmentItem(
 				String externalReferenceCode,
 				long commerceInventoryReplenishmentItemId,
-				Date availabilityDate, int quantity, long mvccVersion)
+				Date availabilityDate, BigDecimal quantity, long mvccVersion)
 		throws PortalException {
 
 		CommerceInventoryReplenishmentItem commerceInventoryReplenishmentItem =
@@ -245,8 +261,8 @@ public class CommerceInventoryReplenishmentItemLocalServiceImpl
 		}
 	}
 
-	private void _validateQuantity(int quantity) throws PortalException {
-		if (quantity <= 0) {
+	private void _validateQuantity(BigDecimal quantity) throws PortalException {
+		if (quantity.compareTo(BigDecimal.ZERO) <= 0) {
 			throw new CommerceInventoryReplenishmentQuantityException(
 				"Enter a quantity greater than or equal to 1");
 		}
