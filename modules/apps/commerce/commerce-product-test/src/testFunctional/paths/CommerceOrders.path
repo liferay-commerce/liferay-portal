@@ -86,6 +86,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>ORDER_DETAILS_ORDER_TYPE</td>
+	<td>//h5[contains(.,'Order Type')]/../../div[contains(.,'${key_orderType}')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>ORDER_DETAILS_DELIVERY_TERMS</td>
 	<td>//h5[contains(.,'Delivery Terms')]/../../div[contains(.,'${key_deliveryTerm}')] | //div[contains(@class,'title') and contains(.,'Delivery Terms')]/../../div[contains(.,'${key_deliveryTerm}')]</td>
 	<td></td>
@@ -296,6 +301,16 @@
 <tr>
 	<td>ORDER_EDIT_SUMMARY_FIELDS</td>
 	<td>//div[contains(@class,'form-group-item')]//label[contains(.,'${key_label}')]/..//input[contains(@value,'${key_value}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ORDER_VIEW_SUMMARY_FIELDS</td>
+	<td>//div[contains(@class,'summary-table')]//*[contains(text(),'${key_label}')]/..//following-sibling::div[1]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ORDER_VIEW_SUMMARY_FIELDS_TOTAL</td>
+	<td>//div[contains(@class,'summary-table')]//*[contains(text(),'${key_label}')]/..//following-sibling::div[1]//h4</td>
 	<td></td>
 </tr>
 </tbody>
