@@ -566,11 +566,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>CHECK_ANY_SELECTED_VALUE</td>
-	<td>//div[label[normalize-space(text())='${key_label}']]/select/option[@selected]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>COST_FIELD</td>
 	<td>//div/input[contains(@id,'cost')]</td>
 	<td></td>
