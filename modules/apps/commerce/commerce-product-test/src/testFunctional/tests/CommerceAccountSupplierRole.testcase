@@ -435,14 +435,14 @@ definition {
 		}
 	}
 
-	@description = "COMMERCE-11844. This a test to verify that the Supplier User can change the parent price list only with the ones related to him"
-	@priority = 5
-	test CanOnlyChangeParentPriceListWithTheRelatedCatalogOnes {
-		property portal.acceptance = "true";
+	@description = "COMMERCE-11844. This a test to verify that the Supplier User can set the parent price list only between the linked catalog price lists"
+	@priority = 4
+	test CanSetOnlyLinkedCatalogPriceListsAsParentPriceList {
+		property portal.acceptance = "false";
 
-		task ("Give a Supplier account with a user that has the role 'Supplier'") {
+		task ("Given a Supplier account with a user that has the role 'Supplier'") {
 			CommerceEntry.addAccountEntryUser(
-				accountName = "Commerce Account",
+				accountName = "Supplier Account",
 				accountType = "Supplier",
 				agreeToTermsAndAnswerReminderQuery = "true",
 				createNewAccount = "true",
@@ -462,29 +462,29 @@ definition {
 				priority = 0);
 		}
 
-		task ("Given a new Catalog has been created") {
+		task ("And a new Catalog is created") {
 			CommerceJSONCatalogsAPI._addCatalog(catalogName = "Test Catalog");
 		}
 
-		task ("And the Accound Id is linked to Minium Catalog") {
-			CommerceJSONCatalogsAPI.assignAccountToCatalog(accountAndCatalogNames = "Minium:Commerce Account");
+		task ("And the Account Id is linked to Minium Catalog") {
+			CommerceJSONCatalogsAPI._patchCommerceCatalog(
+				accountIdByName = "Supplier Account",
+				catalogName = "Minium");
 		}
 
-		task ("When the user logs in") {
+		task ("And the supplier logs in") {
 			User.logoutAndLoginPG(
 				userLoginEmailAddress = "supplier@liferay.com",
 				userLoginFullName = "Supplier User");
 		}
 
-		task ("And reach the Price List section") {
+		task ("When the supplier navigates to a Price List details page") {
 			CommercePriceLists.openPriceListsAdmin();
-		}
-
-		task ("And open the Price List") {
+			
 			CommerceNavigator.gotoEntry(entryName = "Test New Price List");
 		}
 
-		task ("Then is possible to see only the Price List that are related to the catalog linked to the account") {
+		task ("Then the supplier can only select Price Lists from catalogs that are linked to the supplier account as Parent Price List") {
 			Click(
 				key_label = "Parent Price List",
 				locator1 = "CommerceEntry#ANY_AUTOCOMPLETE_TEXT_FIELD");
@@ -493,24 +493,22 @@ definition {
 				key_fieldName = "Minium Base Price List",
 				locator1 = "FormViewBuilder#OBJECT_FIELD_BUTTON_DROPDOWN");
 
-			AssertElementNotPresent(
-				key_fieldName = "Test Catalog Base Price List",
-				locator1 = "FormViewBuilder#OBJECT_FIELD_BUTTON_DROPDOWN");
-
-			AssertElementNotPresent(
-				key_fieldName = "Master Base Price List",
-				locator1 = "FormViewBuilder#OBJECT_FIELD_BUTTON_DROPDOWN");
+			for (var fieldName : list "Test Catalog Base Price List,Master Base Price List") {
+				AssertElementNotPresent(
+					key_fieldName = "${fieldName}",
+					locator1 = "FormViewBuilder#OBJECT_FIELD_BUTTON_DROPDOWN");
+			}
 		}
 	}
 
-	@description = "COMMERCE-11843. This a test to verify that the Supplier User can change the parent promotion only with the ones related to him (COMMERCE-11844)"
-	@priority = 5
-	test CanOnlyChangeParentPromotionWithTheRelatedCatalogOnes {
-		property portal.acceptance = "true";
+	@description = "COMMERCE-11843. This a test to verify that the Supplier User can set the parent promotion list only between the linked catalog promotion (COMMERCE-11844)"
+	@priority = 4
+	test CanSetOnlyLinkedCatalogPromotionAsParentPromotionList {
+		property portal.acceptance = "false";
 
-		task ("Give a Supplier account with a user that has the role 'Supplier'") {
+		task ("Given a Supplier account with a user that has the role 'Supplier'") {
 			CommerceEntry.addAccountEntryUser(
-				accountName = "Commerce Account",
+				accountName = "Supplier Account",
 				accountType = "Supplier",
 				agreeToTermsAndAnswerReminderQuery = "true",
 				createNewAccount = "true",
@@ -530,29 +528,29 @@ definition {
 				promotionName = "Test New Promotion");
 		}
 
-		task ("Given a new Catalog has been created") {
+		task ("And a new Catalog is created") {
 			CommerceJSONCatalogsAPI._addCatalog(catalogName = "Test Catalog");
 		}
 
-		task ("And the Accound Id is linked to Minium Catalog") {
-			CommerceJSONCatalogsAPI.assignAccountToCatalog(accountAndCatalogNames = "Minium:Commerce Account");
+		task ("And the Account Id is linked to Minium Catalog") {
+			CommerceJSONCatalogsAPI._patchCommerceCatalog(
+				accountIdByName = "Supplier Account",
+				catalogName = "Minium");
 		}
 
-		task ("When the user logs in") {
+		task ("And the supplier logs in") {
 			User.logoutAndLoginPG(
 				userLoginEmailAddress = "supplier@liferay.com",
 				userLoginFullName = "Supplier User");
 		}
 
-		task ("And reach the Promotion section") {
+		task ("When the supplier navigates to a Promotion details page") {
 			CommercePromotions.openPromotionsAdmin();
-		}
 
-		task ("And open the Promotion") {
 			CommerceNavigator.gotoEntry(entryName = "Test New Promotion");
 		}
 
-		task ("Then is possible to see only the Price List that are related to the catalog linked to the account") {
+		task ("hen the supplier can only select Promotions from catalogs that are linked to the supplier account as Parent Promotion List") {
 			Click(
 				key_label = "Parent Price List",
 				locator1 = "CommerceEntry#ANY_AUTOCOMPLETE_TEXT_FIELD");
@@ -561,24 +559,22 @@ definition {
 				key_fieldName = "Minium Base Promotion",
 				locator1 = "FormViewBuilder#OBJECT_FIELD_BUTTON_DROPDOWN");
 
-			AssertElementNotPresent(
-				key_fieldName = "Test Catalog Base Promotion",
-				locator1 = "FormViewBuilder#OBJECT_FIELD_BUTTON_DROPDOWN");
-
-			AssertElementNotPresent(
-				key_fieldName = "Master Base Promotion",
-				locator1 = "FormViewBuilder#OBJECT_FIELD_BUTTON_DROPDOWN");
+			for (var fieldName : list "Test Catalog Base Promotion,Master Base Promotion") {
+				AssertElementNotPresent(
+					key_fieldName = "${fieldName}",
+					locator1 = "FormViewBuilder#OBJECT_FIELD_BUTTON_DROPDOWN");
+			}
 		}
 	}
 
-	@description = "COMMERCE-11840. This a test to verify that the Supplier User can setup a Bulk Pricing for Price List"
-	@priority = 4
-	test CanSupplierCreateABulkPricingPriceList {
-		property portal.acceptance = "false";
+	@description = "COMMERCE-11840. This a test to verify that the Supplier User can add a Bulk Pricing entry for a Price List"
+	@priority = 5
+	test CanSupplierAddPriceListBulkPricingEntry {
+		property portal.acceptance = "true";
 
-		task ("Give an account with a buyer user") {
+		task ("Given an account with a buyer user") {
 			CommerceEntry.addAccountEntryUser(
-				accountName = "Commerce Account 2",
+				accountName = "Commerce Account",
 				accountType = "Business",
 				agreeToTermsAndAnswerReminderQuery = "true",
 				createNewAccount = "true",
@@ -591,9 +587,9 @@ definition {
 				userSiteMembership = "Minium");
 		}
 
-		task ("Give a Supplier account with a user that has the role 'Supplier'") {
+		task ("Given a Supplier account with a user that has the role 'Supplier'") {
 			CommerceEntry.addAccountEntryUser(
-				accountName = "Commerce Account",
+				accountName = "Supplier Account",
 				accountType = "Supplier",
 				agreeToTermsAndAnswerReminderQuery = "true",
 				createNewAccount = "true",
@@ -605,7 +601,7 @@ definition {
 				userScreenName = "supplieruser");
 		}
 
-		task ("And a Price List is created for the new catalog") {
+		task ("And a Price List is created for the Minium catalog") {
 			CommerceJSONPriceListsAndPromotionsAPI._addPriceList(
 				catalogName = "Minium",
 				currencyCode = "USD",
@@ -613,21 +609,21 @@ definition {
 				priority = 0);
 		}
 
-		task ("And the Accound Id is linked to the Catalog") {
-			CommerceJSONCatalogsAPI.assignAccountToCatalog(accountAndCatalogNames = "Minium:Commerce Account");
+		task ("And the Account Id is linked to the Catalog") {
+			CommerceJSONCatalogsAPI._patchCommerceCatalog(
+				accountIdByName = "Supplier Account",
+				catalogName = "Minium");
 		}
 
-		task ("When the user logs in") {
+		task ("And the supplier logs in") {
 			User.logoutAndLoginPG(
 				userLoginEmailAddress = "supplier@liferay.com",
 				userLoginFullName = "Supplier User");
 		}
 
-		task ("And reach the Price List section") {
+		task ("When the supplier adds a Price List Bulk Pricing entry") {
 			CommercePriceLists.openPriceListsAdmin();
-		}
-
-		task ("And setup a Bulk Pricing") {
+		
 			CommerceNavigator.gotoEntry(entryName = "Test New Price List");
 
 			CommerceEntry.gotoMenuTab(menuTab = "Entries");
@@ -654,24 +650,20 @@ definition {
 				key_value = 1000);
 		}
 
-		task ("And Buyer User logged in") {
+		task ("Then buyers can see the bulk price applied in the storefront") {
 			User.logoutPG();
 
 			CommerceLogin.miniumLogin(
 				password = "test",
 				urlAppend = "web/minium",
 				userEmailAddress = "buyer@liferay.com");
-		}
 
-		task ("And buyer user add a product to the cart") {
 			CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
 
 			FrontStore.addInitializerProductToCart(
 				productName = "ABS Sensor",
 				productQuantity = 2);
-		}
 
-		task ("Then the user can see that the bulk pricing is applied") {
 			CommerceNavigator.gotoMiniCart();
 
 			FrontStore.viewMiniCartItem(
@@ -682,14 +674,14 @@ definition {
 		}
 	}
 
-	@description = "COMMERCE-11843. This a test to verify that the Supplier User can setup a Bulk Pricing for Promotion (COMMERCE-11840)"
-	@priority = 4
-	test CanSupplierCreateABulkPricingPromotion {
-		property portal.acceptance = "false";
+	@description = "COMMERCE-11843. This a test to verify that the Supplier User can add a Bulk Pricing entry for a Promotion (COMMERCE-11840)"
+	@priority = 5
+	test CanSupplierAddPromotionBulkPricingEntry {
+		property portal.acceptance = "true";
 
-		task ("Give an account with a buyer user") {
+		task ("Given an account with a buyer user") {
 			CommerceEntry.addAccountEntryUser(
-				accountName = "Commerce Account 2",
+				accountName = "Commerce Account",
 				accountType = "Business",
 				agreeToTermsAndAnswerReminderQuery = "true",
 				createNewAccount = "true",
@@ -702,9 +694,9 @@ definition {
 				userSiteMembership = "Minium");
 		}
 
-		task ("Give a Supplier account with a user that has the role 'Supplier'") {
+		task ("Given a Supplier account with a user that has the role 'Supplier'") {
 			CommerceEntry.addAccountEntryUser(
-				accountName = "Commerce Account",
+				accountName = "Supplier Account",
 				accountType = "Supplier",
 				agreeToTermsAndAnswerReminderQuery = "true",
 				createNewAccount = "true",
@@ -716,7 +708,7 @@ definition {
 				userScreenName = "supplieruser");
 		}
 
-		task ("And a Promotion is created for the new catalog") {
+		task ("And a Promotion is created for the Minium catalog") {
 			CommerceJSONPriceListsAndPromotionsAPI._addPromotion(
 				catalogName = "Minium",
 				currencyCode = "USD",
@@ -724,21 +716,21 @@ definition {
 				promotionName = "Test New Promotion");
 		}
 
-		task ("And the Accound Id is linked to the Catalog") {
-			CommerceJSONCatalogsAPI.assignAccountToCatalog(accountAndCatalogNames = "Minium:Commerce Account");
+		task ("And the Account Id is linked to the Catalog") {
+			CommerceJSONCatalogsAPI._patchCommerceCatalog(
+				accountIdByName = "Supplier Account",
+				catalogName = "Minium");
 		}
 
-		task ("When the user logs in") {
+		task ("And the supplier logs in") {
 			User.logoutAndLoginPG(
 				userLoginEmailAddress = "supplier@liferay.com",
 				userLoginFullName = "Supplier User");
 		}
 
-		task ("And reach the Promotion section") {
+		task ("When the supplier adds a Promotion Bulk Pricing entry") {
 			CommercePromotions.openPromotionsAdmin();
-		}
 
-		task ("And setup a Bulk Pricing") {
 			CommerceNavigator.gotoEntry(entryName = "Test New Promotion");
 
 			CommerceEntry.gotoMenuTab(menuTab = "Entries");
@@ -769,24 +761,20 @@ definition {
 				key_value = 10);
 		}
 
-		task ("And Buyer User logged in") {
+		task ("Then buyers can see the bulk price applied in the storefront") {
 			User.logoutPG();
 
 			CommerceLogin.miniumLogin(
 				password = "test",
 				urlAppend = "web/minium",
 				userEmailAddress = "buyer@liferay.com");
-		}
-
-		task ("And buyer user add a product to the cart") {
+		
 			CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
 
 			FrontStore.addInitializerProductToCart(
 				productName = "ABS Sensor",
 				productQuantity = 2);
-		}
 
-		task ("Then the user can see that the bulk pricing is applied") {
 			CommerceNavigator.gotoMiniCart();
 
 			AssertTextEquals.assertPartialText(
@@ -804,14 +792,14 @@ definition {
 		}
 	}
 
-	@description = "COMMERCE-11841. This a test to verify that the Supplier User can setup a Tiered Pricing for Price List"
-	@priority = 4
-	test CanSupplierCreateATieredPricingPriceList {
-		property portal.acceptance = "false";
+	@description = "COMMERCE-11841. This a test to verify that the Supplier User can add a Tiered Pricing entry for a Price List"
+	@priority = 5
+	test CanSupplierAddPriceListTieredPricingEntry {
+		property portal.acceptance = "true";
 
-		task ("Give an account with a buyer user") {
+		task ("Given an account with a buyer user") {
 			CommerceEntry.addAccountEntryUser(
-				accountName = "Commerce Account 2",
+				accountName = "Commerce Account",
 				accountType = "Business",
 				agreeToTermsAndAnswerReminderQuery = "true",
 				createNewAccount = "true",
@@ -824,9 +812,9 @@ definition {
 				userSiteMembership = "Minium");
 		}
 
-		task ("Give a Supplier account with a user that has the role 'Supplier'") {
+		task ("Given a Supplier account with a user that has the role 'Supplier'") {
 			CommerceEntry.addAccountEntryUser(
-				accountName = "Commerce Account",
+				accountName = "Supplier Account",
 				accountType = "Supplier",
 				agreeToTermsAndAnswerReminderQuery = "true",
 				createNewAccount = "true",
@@ -838,7 +826,7 @@ definition {
 				userScreenName = "supplieruser");
 		}
 
-		task ("And a Price List is created for the new catalog") {
+		task ("And a Price List is created for the Minium catalog") {
 			CommerceJSONPriceListsAndPromotionsAPI._addPriceList(
 				catalogName = "Minium",
 				currencyCode = "USD",
@@ -846,21 +834,21 @@ definition {
 				priority = 0);
 		}
 
-		task ("And the Accound Id is linked to the Catalog") {
-			CommerceJSONCatalogsAPI.assignAccountToCatalog(accountAndCatalogNames = "Minium:Commerce Account");
+		task ("And the Account Id is linked to the Catalog") {
+			CommerceJSONCatalogsAPI._patchCommerceCatalog(
+				accountIdByName = "Supplier Account",
+				catalogName = "Minium");
 		}
 
-		task ("When the user logs in") {
+		task ("And the supplier logs in") {
 			User.logoutAndLoginPG(
 				userLoginEmailAddress = "supplier@liferay.com",
 				userLoginFullName = "Supplier User");
 		}
 
-		task ("And reach the Price List section") {
+		task ("When the supplier adds a Price List Tiered Pricing entry") {
 			CommercePriceLists.openPriceListsAdmin();
-		}
-
-		task ("And setup a Tiered Pricing") {
+	
 			CommerceNavigator.gotoEntry(entryName = "Test New Price List");
 
 			CommerceEntry.gotoMenuTab(menuTab = "Entries");
@@ -887,24 +875,20 @@ definition {
 				key_value = 1000);
 		}
 
-		task ("And Buyer User logged in") {
+		task ("Then buyers can see the tiered price applied in the storefront") {
 			User.logoutPG();
 
 			CommerceLogin.miniumLogin(
 				password = "test",
 				urlAppend = "web/minium",
 				userEmailAddress = "buyer@liferay.com");
-		}
 
-		task ("And buyer user add a product to the cart") {
 			CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
 
 			FrontStore.addInitializerProductToCart(
 				productName = "ABS Sensor",
 				productQuantity = 2);
-		}
 
-		task ("Then the user can see that the tiered pricing is applied") {
 			CommerceNavigator.gotoMiniCart();
 
 			FrontStore.viewMiniCartItem(
@@ -915,14 +899,14 @@ definition {
 		}
 	}
 
-	@description = "COMMERCE-11843. This a test to verify that the Supplier User can setup a Tiered Pricing for Promotion (COMMERCE-11841)"
-	@priority = 4
-	test CanSupplierCreateATieredPricingPromotion {
-		property portal.acceptance = "false";
+	@description = "COMMERCE-11843. This a test to verify that the Supplier User can add a Tiered Pricing entry for a Promotion (COMMERCE-11841)"
+	@priority = 5
+	test CanSupplierAddPromotionTieredPricingEntry {
+		property portal.acceptance = "true";
 
-		task ("Give an account with a buyer user") {
+		task ("Given an account with a buyer user") {
 			CommerceEntry.addAccountEntryUser(
-				accountName = "Commerce Account 2",
+				accountName = "Commerce Account",
 				accountType = "Business",
 				agreeToTermsAndAnswerReminderQuery = "true",
 				createNewAccount = "true",
@@ -935,9 +919,9 @@ definition {
 				userSiteMembership = "Minium");
 		}
 
-		task ("Give a Supplier account with a user that has the role 'Supplier'") {
+		task ("Given a Supplier account with a user that has the role 'Supplier'") {
 			CommerceEntry.addAccountEntryUser(
-				accountName = "Commerce Account",
+				accountName = "Supplier Account",
 				accountType = "Supplier",
 				agreeToTermsAndAnswerReminderQuery = "true",
 				createNewAccount = "true",
@@ -949,7 +933,7 @@ definition {
 				userScreenName = "supplieruser");
 		}
 
-		task ("And a Promotion is created for the new catalog") {
+		task ("And a Promotion is created for the Minium catalog") {
 			CommerceJSONPriceListsAndPromotionsAPI._addPromotion(
 				catalogName = "Minium",
 				currencyCode = "USD",
@@ -957,21 +941,21 @@ definition {
 				promotionName = "Test New Promotion");
 		}
 
-		task ("And the Accound Id is linked to the Catalog") {
-			CommerceJSONCatalogsAPI.assignAccountToCatalog(accountAndCatalogNames = "Minium:Commerce Account");
+		task ("And the Account Id is linked to the Catalog") {
+			CommerceJSONCatalogsAPI._patchCommerceCatalog(
+				accountIdByName = "Supplier Account",
+				catalogName = "Minium");
 		}
 
-		task ("When the user logs in") {
+		task ("And the supplier logs in") {
 			User.logoutAndLoginPG(
 				userLoginEmailAddress = "supplier@liferay.com",
 				userLoginFullName = "Supplier User");
 		}
 
-		task ("And reach the Promotion section") {
+		task ("When the supplier adds a Promotion Tiered Pricing entry") {
 			CommercePromotions.openPromotionsAdmin();
-		}
-
-		task ("And setup a Tiered Pricing") {
+		
 			CommerceNavigator.gotoEntry(entryName = "Test New Promotion");
 
 			CommerceEntry.gotoMenuTab(menuTab = "Entries");
@@ -1002,24 +986,20 @@ definition {
 				key_value = 10);
 		}
 
-		task ("And Buyer User logged in") {
+		task ("Then buyers can see the tiered price applied in the storefront") {
 			User.logoutPG();
 
 			CommerceLogin.miniumLogin(
 				password = "test",
 				urlAppend = "web/minium",
 				userEmailAddress = "buyer@liferay.com");
-		}
 
-		task ("And buyer user add a product to the cart") {
 			CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
 
 			FrontStore.addInitializerProductToCart(
 				productName = "ABS Sensor",
 				productQuantity = 2);
-		}
-
-		task ("Then the user can see that the tiered pricing is applied") {
+		
 			CommerceNavigator.gotoMiniCart();
 
 			AssertTextEquals.assertPartialText(
@@ -1037,14 +1017,14 @@ definition {
 		}
 	}
 
-	@description = "COMMERCE-11842. This a test to verify that the Supplier User can edit the Price List price for Price List"
+	@description = "COMMERCE-11842. This a test to verify that the Supplier User can edit a Price List's entry price"
 	@priority = 5
-	test CanSupplierEditPriceForAnEntryPriceList {
+	test CanSupplierEditPriceListEntryPrice {
 		property portal.acceptance = "true";
 
-		task ("Give an account with a buyer user") {
+		task ("Given an account with a buyer user") {
 			CommerceEntry.addAccountEntryUser(
-				accountName = "Commerce Account 2",
+				accountName = "Commerce Account",
 				accountType = "Business",
 				agreeToTermsAndAnswerReminderQuery = "true",
 				createNewAccount = "true",
@@ -1057,9 +1037,9 @@ definition {
 				userSiteMembership = "Minium");
 		}
 
-		task ("Give a Supplier account with a user that has the role 'Supplier'") {
+		task ("Given a Supplier account with a user that has the role 'Supplier'") {
 			CommerceEntry.addAccountEntryUser(
-				accountName = "Commerce Account",
+				accountName = "Supplier Account",
 				accountType = "Supplier",
 				agreeToTermsAndAnswerReminderQuery = "true",
 				createNewAccount = "true",
@@ -1071,7 +1051,7 @@ definition {
 				userScreenName = "supplieruser");
 		}
 
-		task ("And a Price List is created for the new catalog") {
+		task ("And a Price List is created for the Minium catalog") {
 			CommerceJSONPriceListsAndPromotionsAPI._addPriceList(
 				catalogName = "Minium",
 				currencyCode = "USD",
@@ -1079,21 +1059,21 @@ definition {
 				priority = 0);
 		}
 
-		task ("And the Accound Id is linked to the Catalog") {
-			CommerceJSONCatalogsAPI.assignAccountToCatalog(accountAndCatalogNames = "Minium:Commerce Account");
+		task ("And the Account Id is linked to the Catalog") {
+			CommerceJSONCatalogsAPI._patchCommerceCatalog(
+				accountIdByName = "Supplier Account",
+				catalogName = "Minium");
 		}
 
-		task ("When the user logs in") {
+		task ("And the supplier logs in") {
 			User.logoutAndLoginPG(
 				userLoginEmailAddress = "supplier@liferay.com",
 				userLoginFullName = "Supplier User");
 		}
 
-		task ("And reach the Price List section") {
+		task ("When the supplier edits a price list entry price") {
 			CommercePriceLists.openPriceListsAdmin();
-		}
-
-		task ("And edit the Price List Price") {
+		
 			CommerceNavigator.gotoEntry(entryName = "Test New Price List");
 
 			CommerceEntry.gotoMenuTab(menuTab = "Entries");
@@ -1109,16 +1089,14 @@ definition {
 			CommercePriceLists.editPriceListEntryPrice(priceListEntryPrice = 100);
 		}
 
-		task ("And Buyer User logged in") {
+		task ("Then buyers can see the price list entry price applied in the storefront") {
 			User.logoutPG();
 
 			CommerceLogin.miniumLogin(
 				password = "test",
 				urlAppend = "web/minium",
 				userEmailAddress = "buyer@liferay.com");
-		}
 
-		task ("Then the user can see that the price list price is applied") {
 			CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
 
 			AssertTextEquals.assertPartialText(
@@ -1128,14 +1106,14 @@ definition {
 		}
 	}
 
-	@description = "COMMERCE-11843. This a test to verify that the Supplier User can edit the Promo price for Promotion (COMMERCE-11842)"
+	@description = "COMMERCE-11843. This a test to verify that the Supplier User can edit a Promotion's entry price (COMMERCE-11842)"
 	@priority = 5
-	test CanSupplierEditPriceForAnEntryPromotion {
+	test CanSupplierEditPromotionEntryPrice {
 		property portal.acceptance = "true";
 
-		task ("Give an account with a buyer user") {
+		task ("Given an account with a buyer user") {
 			CommerceEntry.addAccountEntryUser(
-				accountName = "Commerce Account 2",
+				accountName = "Commerce Account",
 				accountType = "Business",
 				agreeToTermsAndAnswerReminderQuery = "true",
 				createNewAccount = "true",
@@ -1148,9 +1126,9 @@ definition {
 				userSiteMembership = "Minium");
 		}
 
-		task ("Give a Supplier account with a user that has the role 'Supplier'") {
+		task ("Given a Supplier account with a user that has the role 'Supplier'") {
 			CommerceEntry.addAccountEntryUser(
-				accountName = "Commerce Account",
+				accountName = "Supplier Account",
 				accountType = "Supplier",
 				agreeToTermsAndAnswerReminderQuery = "true",
 				createNewAccount = "true",
@@ -1162,7 +1140,7 @@ definition {
 				userScreenName = "supplieruser");
 		}
 
-		task ("And a Promotion is created for the new catalog") {
+		task ("And a Promotion is created for the Minium catalog") {
 			CommerceJSONPriceListsAndPromotionsAPI._addPromotion(
 				catalogName = "Minium",
 				currencyCode = "USD",
@@ -1170,21 +1148,21 @@ definition {
 				promotionName = "Test New Promotion");
 		}
 
-		task ("And the Accound Id is linked to the Catalog") {
-			CommerceJSONCatalogsAPI.assignAccountToCatalog(accountAndCatalogNames = "Minium:Commerce Account");
+		task ("And the Account Id is linked to the Catalog") {
+			CommerceJSONCatalogsAPI._patchCommerceCatalog(
+				accountIdByName = "Supplier Account",
+				catalogName = "Minium");
 		}
 
-		task ("When the user logs in") {
+		task ("And the supplier logs in") {
 			User.logoutAndLoginPG(
 				userLoginEmailAddress = "supplier@liferay.com",
 				userLoginFullName = "Supplier User");
 		}
 
-		task ("And reach the Promotion section") {
+		task ("When the supplier edits a promotion entry price") {
 			CommercePromotions.openPromotionsAdmin();
-		}
 
-		task ("And edit the Promo price") {
 			CommerceNavigator.gotoEntry(entryName = "Test New Promotion");
 
 			CommerceEntry.gotoMenuTab(menuTab = "Entries");
@@ -1204,16 +1182,14 @@ definition {
 			Button.clickSave();
 		}
 
-		task ("And Buyer User logged in") {
+		task ("Then buyers can see the promotion entry price applied in the storefront") {
 			User.logoutPG();
 
 			CommerceLogin.miniumLogin(
 				password = "test",
 				urlAppend = "web/minium",
 				userEmailAddress = "buyer@liferay.com");
-		}
 
-		task ("Then the user can see that the promo price is applied") {
 			CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
 
 			FrontStore.assertPromoPrice(
@@ -1223,14 +1199,14 @@ definition {
 		}
 	}
 
-	@description = "COMMERCE-11845. This a test to verify that the Supplier User can change all the field into the Price List detail tab"
-	@priority = 4
-	test CanSupplierEditTheDetailsTabPriceList {
-		property portal.acceptance = "false";
+	@description = "COMMERCE-11845. This a test to verify that the Supplier User can edit a price list details"
+	@priority = 5
+	test CanSupplierEditPriceListDetails {
+		property portal.acceptance = "true";
 
-		task ("Give a Supplier account with a user that has the role 'Supplier'") {
+		task ("Given a Supplier account with a user that has the role 'Supplier'") {
 			CommerceEntry.addAccountEntryUser(
-				accountName = "Commerce Account",
+				accountName = "Supplier Account",
 				accountType = "Supplier",
 				agreeToTermsAndAnswerReminderQuery = "true",
 				createNewAccount = "true",
@@ -1250,30 +1226,28 @@ definition {
 				priority = 0);
 		}
 
-		task ("Given a new Catalog has been created") {
+		task ("And a new Catalog is created") {
 			CommerceJSONCatalogsAPI._addCatalog(catalogName = "Test Catalog");
 		}
 
-		task ("And the Accound Id is linked to Minium Catalog") {
-			CommerceJSONCatalogsAPI.assignAccountToCatalog(accountAndCatalogNames = "Minium:Commerce Account");
+		task ("And the Account Id is linked to Minium Catalog") {
+			CommerceJSONCatalogsAPI._patchCommerceCatalog(
+				accountIdByName = "Supplier Account",
+				catalogName = "Minium");
 		}
 
-		task ("When the user logs in") {
+		task ("And the supplier logs in") {
 			User.logoutAndLoginPG(
 				userLoginEmailAddress = "supplier@liferay.com",
 				userLoginFullName = "Supplier User");
 		}
 
-		task ("And reach the Price List section") {
+		task ("When the supplier edits a price list details") {
 			CommercePriceLists.openPriceListsAdmin();
-		}
 
-		task ("And open the Price List entry") {
 			CommerceNavigator.gotoEntry(entryName = "Test New Price List");
-		}
 
-		task ("Then the Supplier can edit all the fields present in the “Details” tab") {
-			CommercePriceLists.editPriceListDetailsPage(
+			CommercePriceLists.editPriceListDetails(
 				currency = "EUR",
 				name = "Test New Price List Edited",
 				parentPriceList = "Minium Base Price List",
@@ -1281,28 +1255,28 @@ definition {
 				priority = 1);
 		}
 
-		task ("And after the save, the changes remain saved") {
+		task ("Then the changes are successfully saved") {
 			CommercePriceLists.openPriceListsAdmin();
 
 			CommerceNavigator.gotoEntry(entryName = "Test New Price List Edited");
 
-			CommercePriceLists.checkPriceListDetailsPage(
-				currency = "EUR",
-				name = "Test New Price List Edited",
-				parentPriceList = "Minium Base Price List",
-				priceType = "Gross Price",
-				priority = "1.0");
+			CommercePriceLists.viewPriceListEntry(
+				priceListCurrency = "EUR",
+				priceListName = "Test New Price List Edited",
+				priceListParent = "Minium Base Price List",
+				priceListType = "Gross Price",
+				priceListPriority = "1.0");
 		}
 	}
 
-	@description = "COMMERCE-11843. This a test to verify that the Supplier User can change all the field into the Promotion detail tab (COMMERCE-11845)"
-	@priority = 4
-	test CanSupplierEditTheDetailsTabPromotion {
-		property portal.acceptance = "false";
+	@description = "COMMERCE-11843. This a test to verify that the Supplier User can edit a promotion details (COMMERCE-11845)"
+	@priority = 5
+	test CanSupplierEditPromotionDetails {
+		property portal.acceptance = "true";
 
-		task ("Give a Supplier account with a user that has the role 'Supplier'") {
+		task ("Given a Supplier account with a user that has the role 'Supplier'") {
 			CommerceEntry.addAccountEntryUser(
-				accountName = "Commerce Account",
+				accountName = "Supplier Account",
 				accountType = "Supplier",
 				agreeToTermsAndAnswerReminderQuery = "true",
 				createNewAccount = "true",
@@ -1322,30 +1296,26 @@ definition {
 				promotionName = "Test New Promotion");
 		}
 
-		task ("Given a new Catalog has been created") {
+		task ("And a new Catalog is created") {
 			CommerceJSONCatalogsAPI._addCatalog(catalogName = "Test Catalog");
 		}
 
-		task ("And the Accound Id is linked to Minium Catalog") {
-			CommerceJSONCatalogsAPI.assignAccountToCatalog(accountAndCatalogNames = "Minium:Commerce Account");
+		task ("And the Account Id is linked to Minium Catalog") {
+			CommerceJSONCatalogsAPI._patchCommerceCatalog(
+				accountIdByName = "Supplier Account",
+				catalogName = "Minium");
 		}
 
-		task ("When the user logs in") {
+		task ("When the supplier edits a promotion details") {
 			User.logoutAndLoginPG(
 				userLoginEmailAddress = "supplier@liferay.com",
 				userLoginFullName = "Supplier User");
-		}
 
-		task ("And reach the Promotion section") {
 			CommercePromotions.openPromotionsAdmin();
-		}
 
-		task ("And open the Promotion entry") {
 			CommerceNavigator.gotoEntry(entryName = "Test New Promotion");
-		}
 
-		task ("Then the Supplier can edit all the fields present in the “Details” tab") {
-			CommercePriceLists.editPriceListDetailsPage(
+			CommercePriceLists.editPriceListDetails(
 				currency = "EUR",
 				name = "Test New Promotion Edited",
 				parentPriceList = "Minium Base Promotion",
@@ -1353,28 +1323,28 @@ definition {
 				priority = 1);
 		}
 
-		task ("And after the save, the changes remain saved") {
+		task ("Then the changes are successfully saved") {
 			CommercePromotions.openPromotionsAdmin();
 
 			CommerceNavigator.gotoEntry(entryName = "Test New Promotion Edited");
 
-			CommercePriceLists.checkPriceListDetailsPage(
-				currency = "EUR",
-				name = "Test New Promotion Edited",
-				parentPriceList = "Minium Base Promotion",
-				priceType = "Gross Price",
-				priority = "1.0");
+			CommercePriceLists.viewPriceListEntry(
+				priceListCurrency = "EUR",
+				priceListName = "Test New Promotion Edited",
+				priceListParent = "Minium Base Promotion",
+				priceListType = "Gross Price",
+				priceListPriority = "1.0");
 		}
 	}
 
-	@description = "COMMERCE-11758. This a test to verify that the Supplier User can only create and delete Price List that are related to him"
+	@description = "COMMERCE-11758. This a test to verify that the Supplier User can delete Price lists and can create Price Lists only for catalogs the supplier account is linked to"
 	@priority = 5
-	test CanSupplierUserAddAndRemoveRelatedCatalogPriceList {
+	test CanSupplierAddAndRemovePriceLists {
 		property portal.acceptance = "true";
 
-		task ("Give a Supplier account with a user that has the role 'Supplier'") {
+		task ("Given a Supplier account with a user that has the role 'Supplier'") {
 			CommerceEntry.addAccountEntryUser(
-				accountName = "Commerce Account",
+				accountName = "Supplier Account",
 				accountType = "Supplier",
 				agreeToTermsAndAnswerReminderQuery = "true",
 				createNewAccount = "true",
@@ -1386,25 +1356,25 @@ definition {
 				userScreenName = "supplieruser");
 		}
 
-		task ("Given a new Catalog has been created") {
+		task ("And a new Catalog is created") {
 			CommerceJSONCatalogsAPI._addCatalog(catalogName = "Test Catalog");
 		}
 
-		task ("And the Accound Id is linked to the new Catalog") {
-			CommerceJSONCatalogsAPI.assignAccountToCatalog(accountAndCatalogNames = "Test Catalog:Commerce Account");
+		task ("And the Account Id is linked to the new Catalog") {
+			CommerceJSONCatalogsAPI._patchCommerceCatalog(
+				accountIdByName = "Supplier Account",
+				catalogName = "Test Catalog");
 		}
 
-		task ("When the user logs in") {
+		task ("And the supplier logs in") {
 			User.logoutAndLoginPG(
 				userLoginEmailAddress = "supplier@liferay.com",
 				userLoginFullName = "Supplier User");
 		}
 
-		task ("And reach the Price List section") {
+		task ("When the supplier adds a new price list") {
 			CommercePriceLists.openPriceListsAdmin();
-		}
-
-		task ("Then the user will be able to create and see (into the select) the catalogs that are related to him") {
+		
 			Click(locator1 = "CommerceEntry#ADD_BUTTON");
 
 			WaitForElementPresent(locator1 = "IFrame#MODAL_BODY");
@@ -1436,7 +1406,9 @@ definition {
 			AssertClickNoError(
 				locator1 = "Button#SUBMIT",
 				value1 = "Submit");
+		}
 
+		task ("Then the entry is successfully created") {
 			CommercePriceLists.openPriceListsAdmin();
 
 			AssertElementPresent(
@@ -1444,27 +1416,29 @@ definition {
 				locator1 = "CommerceNavigation#ENTRY_NAME");
 		}
 
-		task ("And the user can remove the newly created Price List") {
+		task ("When the supplier tries to delete the price list") {
 			Click(
 				key_value = "Test Catalog New Price List",
 				locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS");
 
 			CommerceEntry.clickNoError(menuItem = "Delete");
+		}
 
+		task ("Then the entry is successfully deleted") {
 			AssertElementNotPresent(
 				key_entryName = "Test Catalog New Price List",
 				locator1 = "CommerceNavigation#ENTRY_NAME");
 		}
 	}
 
-	@description = "COMMERCE-11843. This a test to verify that the Supplier User can only create and delete Promotion that are related to him (COMMERCE-11758)"
+	@description = "COMMERCE-11843. This a test to verify that the Supplier User can delete Promotion and can create Promotion only for catalogs the supplier account is linked to (COMMERCE-11758)"
 	@priority = 5
-	test CanSupplierUserAddAndRemoveRelatedCatalogPromotion {
+	test CanSupplierAddAndRemovePromotion {
 		property portal.acceptance = "true";
 
-		task ("Give a Supplier account with a user that has the role 'Supplier'") {
+		task ("Given a Supplier account with a user that has the role 'Supplier'") {
 			CommerceEntry.addAccountEntryUser(
-				accountName = "Commerce Account",
+				accountName = "Supplier Account",
 				accountType = "Supplier",
 				agreeToTermsAndAnswerReminderQuery = "true",
 				createNewAccount = "true",
@@ -1476,25 +1450,25 @@ definition {
 				userScreenName = "supplieruser");
 		}
 
-		task ("Given a new Catalog has been created") {
+		task ("And a new Catalog is created") {
 			CommerceJSONCatalogsAPI._addCatalog(catalogName = "Test Catalog");
 		}
 
-		task ("And the Accound Id is linked to the new Catalog") {
-			CommerceJSONCatalogsAPI.assignAccountToCatalog(accountAndCatalogNames = "Test Catalog:Commerce Account");
+		task ("And the Account Id is linked to the new Catalog") {
+			CommerceJSONCatalogsAPI._patchCommerceCatalog(
+				accountIdByName = "Supplier Account",
+				catalogName = "Test Catalog");
 		}
 
-		task ("When the user logs in") {
+		task ("And the supplier logs in") {
 			User.logoutAndLoginPG(
 				userLoginEmailAddress = "supplier@liferay.com",
 				userLoginFullName = "Supplier User");
 		}
 
-		task ("And reach the Promotion section") {
+		task ("When the supplier adds a new promotion") {
 			CommercePromotions.openPromotionsAdmin();
-		}
 
-		task ("Then the user will be able to create and see (into the select) the catalogs that are related to him") {
 			Click(locator1 = "CommerceEntry#ADD_BUTTON");
 
 			WaitForElementPresent(locator1 = "IFrame#MODAL_BODY");
@@ -1526,7 +1500,9 @@ definition {
 			AssertClickNoError(
 				locator1 = "Button#SUBMIT",
 				value1 = "Submit");
+		}
 
+		task ("Then the entry is successfully created") {
 			CommercePromotions.openPromotionsAdmin();
 
 			AssertElementPresent(
@@ -1534,13 +1510,15 @@ definition {
 				locator1 = "CommerceNavigation#ENTRY_NAME");
 		}
 
-		task ("And the user can remove the newly created Promotion") {
+		task ("When the supplier tries to delete the promotion") {
 			Click(
 				key_value = "Test Catalog New Promotion",
 				locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS");
 
 			CommerceEntry.clickNoError(menuItem = "Delete");
+		}
 
+		task ("Then the entry is successfully deleted") {
 			AssertElementNotPresent(
 				key_entryName = "Test Catalog New Promotion",
 				locator1 = "CommerceNavigation#ENTRY_NAME");
@@ -1767,14 +1745,14 @@ definition {
 		}
 	}
 
-	@description = "COMMERCE-11772. This a test to verify that the Supplier User can setup a Price Modifier for Price List"
+	@description = "COMMERCE-11772. This a test to verify that the Supplier User can add a Price Modifier in a Price List"
 	@priority = 4
 	test CanSupplierUserSetupPriceModifierPriceList {
 		property portal.acceptance = "false";
 
-		task ("Give an account with a buyer user") {
+		task ("Given an account with a buyer user") {
 			CommerceEntry.addAccountEntryUser(
-				accountName = "Commerce Account 2",
+				accountName = "Commerce Account",
 				accountType = "Business",
 				agreeToTermsAndAnswerReminderQuery = "true",
 				createNewAccount = "true",
@@ -1787,9 +1765,9 @@ definition {
 				userSiteMembership = "Minium");
 		}
 
-		task ("Give a Supplier account with a user that has the role 'Supplier'") {
+		task ("Given a Supplier account with a user that has the role 'Supplier'") {
 			CommerceEntry.addAccountEntryUser(
-				accountName = "Commerce Account",
+				accountName = "Supplier Account",
 				accountType = "Supplier",
 				agreeToTermsAndAnswerReminderQuery = "true",
 				createNewAccount = "true",
@@ -1801,7 +1779,7 @@ definition {
 				userScreenName = "supplieruser");
 		}
 
-		task ("And a Price List is created for the new catalog") {
+		task ("And a Price List is created for the MInium catalog") {
 			CommerceJSONPriceListsAndPromotionsAPI._addPriceList(
 				catalogName = "Minium",
 				currencyCode = "USD",
@@ -1809,21 +1787,21 @@ definition {
 				priority = 0);
 		}
 
-		task ("And the Accound Id is linked to the Catalog") {
-			CommerceJSONCatalogsAPI.assignAccountToCatalog(accountAndCatalogNames = "Minium:Commerce Account");
+		task ("And the Account Id is linked to the Catalog") {
+			CommerceJSONCatalogsAPI._patchCommerceCatalog(
+				accountIdByName = "Supplier Account",
+				catalogName = "Minium");
 		}
 
-		task ("When the user logs in") {
+		task ("And the supplier logs in") {
 			User.logoutAndLoginPG(
 				userLoginEmailAddress = "supplier@liferay.com",
 				userLoginFullName = "Supplier User");
 		}
 
-		task ("And reach the Price List section") {
+		task ("When the supplier user adds a Price Modifier in a price list") {
 			CommercePriceLists.openPriceListsAdmin();
-		}
-
-		task ("And setup a price modifier") {
+		
 			CommerceNavigator.gotoEntry(entryName = "Test New Price List");
 
 			CommerceEntry.gotoMenuTab(menuTab = "Price Modifiers");
@@ -1842,16 +1820,14 @@ definition {
 				target = "Products");
 		}
 
-		task ("When the buyer logs in") {
+		task ("Then the buyer can see the price modifier is applied") {
 			User.logoutPG();
 
 			CommerceLogin.miniumLogin(
 				password = "test",
 				urlAppend = "web/minium",
 				userEmailAddress = "buyer@liferay.com");
-		}
 
-		task ("Then the buyer can see the new price is applied") {
 			AssertTextEquals.assertPartialText(
 				key_productName = "U-Joint",
 				locator1 = "CommerceAccelerators#PRODUCT_CARD_PRICE",
@@ -1859,14 +1835,14 @@ definition {
 		}
 	}
 
-	@description = "COMMERCE-11843. This a test to verify that the Supplier User can setup a Price Modifier for Promotion (COMMERCE-11772)"
+	@description = "COMMERCE-11843. This a test to verify that the Supplier User can add a Price Modifier in a Promotion (COMMERCE-11772)"
 	@priority = 4
 	test CanSupplierUserSetupPriceModifierPromotion {
 		property portal.acceptance = "false";
 
-		task ("Give an account with a buyer user") {
+		task ("Given an account with a buyer user") {
 			CommerceEntry.addAccountEntryUser(
-				accountName = "Commerce Account 2",
+				accountName = "Commerce Account",
 				accountType = "Business",
 				agreeToTermsAndAnswerReminderQuery = "true",
 				createNewAccount = "true",
@@ -1879,9 +1855,9 @@ definition {
 				userSiteMembership = "Minium");
 		}
 
-		task ("Give a Supplier account with a user that has the role 'Supplier'") {
+		task ("Given a Supplier account with a user that has the role 'Supplier'") {
 			CommerceEntry.addAccountEntryUser(
-				accountName = "Commerce Account",
+				accountName = "Supplier Account",
 				accountType = "Supplier",
 				agreeToTermsAndAnswerReminderQuery = "true",
 				createNewAccount = "true",
@@ -1893,7 +1869,7 @@ definition {
 				userScreenName = "supplieruser");
 		}
 
-		task ("And a Promotion is created for the new catalog") {
+		task ("And a Promotion is created for the MInium catalog") {
 			CommerceJSONPriceListsAndPromotionsAPI._addPromotion(
 				catalogName = "Minium",
 				currencyCode = "USD",
@@ -1901,21 +1877,21 @@ definition {
 				promotionName = "Test New Promotion");
 		}
 
-		task ("And the Accound Id is linked to the Catalog") {
-			CommerceJSONCatalogsAPI.assignAccountToCatalog(accountAndCatalogNames = "Minium:Commerce Account");
+		task ("And the Account Id is linked to the Catalog") {
+			CommerceJSONCatalogsAPI._patchCommerceCatalog(
+				accountIdByName = "Supplier Account",
+				catalogName = "Minium");
 		}
 
-		task ("When the user logs in") {
+		task ("And the supplier logs in") {
 			User.logoutAndLoginPG(
 				userLoginEmailAddress = "supplier@liferay.com",
 				userLoginFullName = "Supplier User");
 		}
 
-		task ("And reach the Promotion section") {
+		task ("When the supplier user adds a Price Modifier in a promotion") {
 			CommercePromotions.openPromotionsAdmin();
-		}
 
-		task ("And setup a price modifier") {
 			CommerceNavigator.gotoEntry(entryName = "Test New Promotion");
 
 			CommerceEntry.gotoMenuTab(menuTab = "Price Modifiers");
@@ -1934,16 +1910,14 @@ definition {
 				target = "Products");
 		}
 
-		task ("When the buyer logs in") {
+		task ("Then the buyer can see the price modifier is applied") {
 			User.logoutPG();
 
 			CommerceLogin.miniumLogin(
 				password = "test",
 				urlAppend = "web/minium",
 				userEmailAddress = "buyer@liferay.com");
-		}
 
-		task ("Then the buyer can see the new price is applied") {
 			FrontStore.assertPromoPrice(
 				basePrice = "24.00",
 				productName = "U-Joint",
@@ -1951,14 +1925,14 @@ definition {
 		}
 	}
 
-	@description = "COMMERCE-11757. This a test to verify that the Supplier User can only see the Price List that are related to him"
+	@description = "COMMERCE-11757. This a test to verify that the Supplier User can only see the Price List which catalog is linked to the supplier account"
 	@priority = 5
 	test CanSupplierUserViewOnlyRelatedCatalogPriceList {
 		property portal.acceptance = "true";
 
-		task ("Give a Supplier account with a user that has the role 'Supplier'") {
+		task ("Given a Supplier account with a user that has the role 'Supplier'") {
 			CommerceEntry.addAccountEntryUser(
-				accountName = "Commerce Account",
+				accountName = "Supplier Account",
 				accountType = "Supplier",
 				agreeToTermsAndAnswerReminderQuery = "true",
 				createNewAccount = "true",
@@ -1970,45 +1944,43 @@ definition {
 				userScreenName = "supplieruser");
 		}
 
-		task ("Given a new Catalog has been created") {
+		task ("And a new Catalog is created") {
 			CommerceJSONCatalogsAPI._addCatalog(catalogName = "Test Catalog");
 		}
 
-		task ("And the Accound Id is linked to the new Catalog") {
-			CommerceJSONCatalogsAPI.assignAccountToCatalog(accountAndCatalogNames = "Test Catalog:Commerce Account");
+		task ("And the Account Id is linked to the new Catalog") {
+			CommerceJSONCatalogsAPI._patchCommerceCatalog(
+				accountIdByName = "Supplier Account",
+				catalogName = "Test Catalog");
 		}
 
-		task ("When the user logs in") {
+		task ("And the supplier logs in") {
 			User.logoutAndLoginPG(
 				userLoginEmailAddress = "supplier@liferay.com",
 				userLoginFullName = "Supplier User");
 		}
 
-		task ("And reach the Price List section") {
+		task ("Then the supplier can see only the Price List related to the new Catalog") {
 			CommercePriceLists.openPriceListsAdmin();
-		}
 
-		task ("Then the user can see only the Price List related to the new Catalog") {
 			AssertElementPresent(
 				key_entryName = "Test Catalog Base Price List",
 				locator1 = "CommerceNavigation#ENTRY_NAME");
-		}
 
-		task ("And the user can't see the Price Lists related to Minium") {
 			AssertElementNotPresent(
 				key_entryName = "Minium Base Price List",
 				locator1 = "CommerceNavigation#ENTRY_NAME");
 		}
 	}
 
-	@description = "COMMERCE-11843. This a test to verify that the Supplier User can only see the Promotion that are related to him (COMMERCE-11757)"
+	@description = "COMMERCE-11843. This a test to verify that the Supplier User can only see the Promotion which catalog is linked to the supplier account (COMMERCE-11757)"
 	@priority = 5
 	test CanSupplierUserViewOnlyRelatedCatalogPromotion {
 		property portal.acceptance = "true";
 
-		task ("Give a Supplier account with a user that has the role 'Supplier'") {
+		task ("Given a Supplier account with a user that has the role 'Supplier'") {
 			CommerceEntry.addAccountEntryUser(
-				accountName = "Commerce Account",
+				accountName = "Supplier Account",
 				accountType = "Supplier",
 				agreeToTermsAndAnswerReminderQuery = "true",
 				createNewAccount = "true",
@@ -2020,31 +1992,29 @@ definition {
 				userScreenName = "supplieruser");
 		}
 
-		task ("Given a new Catalog has been created") {
+		task ("And a new Catalog is created") {
 			CommerceJSONCatalogsAPI._addCatalog(catalogName = "Test Catalog");
 		}
 
-		task ("And the Accound Id is linked to the new Catalog") {
-			CommerceJSONCatalogsAPI.assignAccountToCatalog(accountAndCatalogNames = "Test Catalog:Commerce Account");
+		task ("And the Account Id is linked to the new Catalog") {
+			CommerceJSONCatalogsAPI._patchCommerceCatalog(
+				accountIdByName = "Supplier Account",
+				catalogName = "Test Catalog");
 		}
 
-		task ("When the user logs in") {
+		task ("And the supplier logs in") {
 			User.logoutAndLoginPG(
 				userLoginEmailAddress = "supplier@liferay.com",
 				userLoginFullName = "Supplier User");
 		}
 
-		task ("And reach the Promotion section") {
+		task ("Then the supplier can see only the Promotion related to the new Catalog") {
 			CommercePromotions.openPromotionsAdmin();
-		}
 
-		task ("Then the user can see only the Promotion related to the new Catalog") {
 			AssertElementPresent(
 				key_entryName = "Test Catalog Base Promotion",
 				locator1 = "CommerceNavigation#ENTRY_NAME");
-		}
 
-		task ("And the user can't see the Promotion related to Minium") {
 			AssertElementNotPresent(
 				key_entryName = "Minium Base Promotion List",
 				locator1 = "CommerceNavigation#ENTRY_NAME");
