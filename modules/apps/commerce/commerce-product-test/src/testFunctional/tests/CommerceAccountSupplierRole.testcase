@@ -480,7 +480,7 @@ definition {
 
 		task ("When the supplier navigates to a Price List details page") {
 			CommercePriceLists.openPriceListsAdmin();
-			
+
 			CommerceNavigator.gotoEntry(entryName = "Test New Price List");
 		}
 
@@ -495,7 +495,7 @@ definition {
 
 			for (var fieldName : list "Test Catalog Base Price List,Master Base Price List") {
 				AssertElementNotPresent(
-					key_fieldName = "${fieldName}",
+					key_fieldName = ${fieldName},
 					locator1 = "FormViewBuilder#OBJECT_FIELD_BUTTON_DROPDOWN");
 			}
 		}
@@ -561,779 +561,9 @@ definition {
 
 			for (var fieldName : list "Test Catalog Base Promotion,Master Base Promotion") {
 				AssertElementNotPresent(
-					key_fieldName = "${fieldName}",
+					key_fieldName = ${fieldName},
 					locator1 = "FormViewBuilder#OBJECT_FIELD_BUTTON_DROPDOWN");
 			}
-		}
-	}
-
-	@description = "COMMERCE-11840. This a test to verify that the Supplier User can add a Bulk Pricing entry for a Price List"
-	@priority = 5
-	test CanSupplierAddPriceListBulkPricingEntry {
-		property portal.acceptance = "true";
-
-		task ("Given an account with a buyer user") {
-			CommerceEntry.addAccountEntryUser(
-				accountName = "Commerce Account",
-				accountType = "Business",
-				agreeToTermsAndAnswerReminderQuery = "true",
-				createNewAccount = "true",
-				requireReset = "false",
-				userEmailAddress = "buyer@liferay.com",
-				userFirstName = "Buyer",
-				userLastName = "User",
-				userRole = "Buyer",
-				userScreenName = "buyeruser",
-				userSiteMembership = "Minium");
-		}
-
-		task ("Given a Supplier account with a user that has the role 'Supplier'") {
-			CommerceEntry.addAccountEntryUser(
-				accountName = "Supplier Account",
-				accountType = "Supplier",
-				agreeToTermsAndAnswerReminderQuery = "true",
-				createNewAccount = "true",
-				requireReset = "false",
-				userEmailAddress = "supplier@liferay.com",
-				userFirstName = "Supplier",
-				userLastName = "User",
-				userRole = "Account Supplier",
-				userScreenName = "supplieruser");
-		}
-
-		task ("And a Price List is created for the Minium catalog") {
-			CommerceJSONPriceListsAndPromotionsAPI._addPriceList(
-				catalogName = "Minium",
-				currencyCode = "USD",
-				priceListName = "Test New Price List",
-				priority = 0);
-		}
-
-		task ("And the Account Id is linked to the Catalog") {
-			CommerceJSONCatalogsAPI._patchCommerceCatalog(
-				accountIdByName = "Supplier Account",
-				catalogName = "Minium");
-		}
-
-		task ("And the supplier logs in") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "supplier@liferay.com",
-				userLoginFullName = "Supplier User");
-		}
-
-		task ("When the supplier adds a Price List Bulk Pricing entry") {
-			CommercePriceLists.openPriceListsAdmin();
-		
-			CommerceNavigator.gotoEntry(entryName = "Test New Price List");
-
-			CommerceEntry.gotoMenuTab(menuTab = "Entries");
-
-			CommerceRelations.assignSingleRelationToProductsEntry(
-				entryName = "MIN93015",
-				title = "Add SKUs");
-
-			Refresh();
-
-			CommerceNavigator.gotoEntry(entryName = "MIN93015");
-
-			CommercePriceLists.editPriceListEntryPrice(priceListEntryPrice = 50);
-
-			Click(locator1 = "Icon#CLOSE");
-
-			SelectFrameTop();
-
-			CommerceNavigator.gotoEntry(entryName = "MIN93015");
-
-			CommercePriceLists.createPriceListPriceTiers(
-				key_pricingType = "Bulk Pricing",
-				key_quantity = 2,
-				key_value = 1000);
-		}
-
-		task ("Then buyers can see the bulk price applied in the storefront") {
-			User.logoutPG();
-
-			CommerceLogin.miniumLogin(
-				password = "test",
-				urlAppend = "web/minium",
-				userEmailAddress = "buyer@liferay.com");
-
-			CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
-
-			FrontStore.addInitializerProductToCart(
-				productName = "ABS Sensor",
-				productQuantity = 2);
-
-			CommerceNavigator.gotoMiniCart();
-
-			FrontStore.viewMiniCartItem(
-				cartItemName = "ABS Sensor",
-				cartItemPriceValue = "1,000.00",
-				cartItemQuantity = 2,
-				cartItemSku = "MIN93015");
-		}
-	}
-
-	@description = "COMMERCE-11843. This a test to verify that the Supplier User can add a Bulk Pricing entry for a Promotion (COMMERCE-11840)"
-	@priority = 5
-	test CanSupplierAddPromotionBulkPricingEntry {
-		property portal.acceptance = "true";
-
-		task ("Given an account with a buyer user") {
-			CommerceEntry.addAccountEntryUser(
-				accountName = "Commerce Account",
-				accountType = "Business",
-				agreeToTermsAndAnswerReminderQuery = "true",
-				createNewAccount = "true",
-				requireReset = "false",
-				userEmailAddress = "buyer@liferay.com",
-				userFirstName = "Buyer",
-				userLastName = "User",
-				userRole = "Buyer",
-				userScreenName = "buyeruser",
-				userSiteMembership = "Minium");
-		}
-
-		task ("Given a Supplier account with a user that has the role 'Supplier'") {
-			CommerceEntry.addAccountEntryUser(
-				accountName = "Supplier Account",
-				accountType = "Supplier",
-				agreeToTermsAndAnswerReminderQuery = "true",
-				createNewAccount = "true",
-				requireReset = "false",
-				userEmailAddress = "supplier@liferay.com",
-				userFirstName = "Supplier",
-				userLastName = "User",
-				userRole = "Account Supplier",
-				userScreenName = "supplieruser");
-		}
-
-		task ("And a Promotion is created for the Minium catalog") {
-			CommerceJSONPriceListsAndPromotionsAPI._addPromotion(
-				catalogName = "Minium",
-				currencyCode = "USD",
-				priority = 0,
-				promotionName = "Test New Promotion");
-		}
-
-		task ("And the Account Id is linked to the Catalog") {
-			CommerceJSONCatalogsAPI._patchCommerceCatalog(
-				accountIdByName = "Supplier Account",
-				catalogName = "Minium");
-		}
-
-		task ("And the supplier logs in") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "supplier@liferay.com",
-				userLoginFullName = "Supplier User");
-		}
-
-		task ("When the supplier adds a Promotion Bulk Pricing entry") {
-			CommercePromotions.openPromotionsAdmin();
-
-			CommerceNavigator.gotoEntry(entryName = "Test New Promotion");
-
-			CommerceEntry.gotoMenuTab(menuTab = "Entries");
-
-			CommerceRelations.assignSingleRelationToProductsEntry(
-				entryName = "MIN93015",
-				title = "Add SKUs");
-
-			Refresh();
-
-			CommerceNavigator.gotoEntry(entryName = "MIN93015");
-
-			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
-
-			CommerceSKUs.setSkuPricing(promoPrice = 20);
-
-			Button.clickSave();
-
-			Click(locator1 = "Icon#CLOSE");
-
-			SelectFrameTop();
-
-			CommerceNavigator.gotoEntry(entryName = "MIN93015");
-
-			CommercePriceLists.createPriceListPriceTiers(
-				key_pricingType = "Bulk Pricing",
-				key_quantity = 2,
-				key_value = 10);
-		}
-
-		task ("Then buyers can see the bulk price applied in the storefront") {
-			User.logoutPG();
-
-			CommerceLogin.miniumLogin(
-				password = "test",
-				urlAppend = "web/minium",
-				userEmailAddress = "buyer@liferay.com");
-		
-			CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
-
-			FrontStore.addInitializerProductToCart(
-				productName = "ABS Sensor",
-				productQuantity = 2);
-
-			CommerceNavigator.gotoMiniCart();
-
-			AssertTextEquals.assertPartialText(
-				locator1 = "CommerceAccelerators#PRODUCT_DETAILS_LIST_PRICE_INACTIVE",
-				value1 = 50);
-
-			AssertTextEquals.assertPartialText(
-				locator1 = "CommerceAccelerators#PRODUCT_DETAILS_LIST_PRICE_PROMO",
-				value1 = 10);
-
-			FrontStore.viewMiniCartItem(
-				cartItemName = "ABS Sensor",
-				cartItemQuantity = 2,
-				cartItemSku = "MIN93015");
-		}
-	}
-
-	@description = "COMMERCE-11841. This a test to verify that the Supplier User can add a Tiered Pricing entry for a Price List"
-	@priority = 5
-	test CanSupplierAddPriceListTieredPricingEntry {
-		property portal.acceptance = "true";
-
-		task ("Given an account with a buyer user") {
-			CommerceEntry.addAccountEntryUser(
-				accountName = "Commerce Account",
-				accountType = "Business",
-				agreeToTermsAndAnswerReminderQuery = "true",
-				createNewAccount = "true",
-				requireReset = "false",
-				userEmailAddress = "buyer@liferay.com",
-				userFirstName = "Buyer",
-				userLastName = "User",
-				userRole = "Buyer",
-				userScreenName = "buyeruser",
-				userSiteMembership = "Minium");
-		}
-
-		task ("Given a Supplier account with a user that has the role 'Supplier'") {
-			CommerceEntry.addAccountEntryUser(
-				accountName = "Supplier Account",
-				accountType = "Supplier",
-				agreeToTermsAndAnswerReminderQuery = "true",
-				createNewAccount = "true",
-				requireReset = "false",
-				userEmailAddress = "supplier@liferay.com",
-				userFirstName = "Supplier",
-				userLastName = "User",
-				userRole = "Account Supplier",
-				userScreenName = "supplieruser");
-		}
-
-		task ("And a Price List is created for the Minium catalog") {
-			CommerceJSONPriceListsAndPromotionsAPI._addPriceList(
-				catalogName = "Minium",
-				currencyCode = "USD",
-				priceListName = "Test New Price List",
-				priority = 0);
-		}
-
-		task ("And the Account Id is linked to the Catalog") {
-			CommerceJSONCatalogsAPI._patchCommerceCatalog(
-				accountIdByName = "Supplier Account",
-				catalogName = "Minium");
-		}
-
-		task ("And the supplier logs in") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "supplier@liferay.com",
-				userLoginFullName = "Supplier User");
-		}
-
-		task ("When the supplier adds a Price List Tiered Pricing entry") {
-			CommercePriceLists.openPriceListsAdmin();
-	
-			CommerceNavigator.gotoEntry(entryName = "Test New Price List");
-
-			CommerceEntry.gotoMenuTab(menuTab = "Entries");
-
-			CommerceRelations.assignSingleRelationToProductsEntry(
-				entryName = "MIN93015",
-				title = "Add SKUs");
-
-			Refresh();
-
-			CommerceNavigator.gotoEntry(entryName = "MIN93015");
-
-			CommercePriceLists.editPriceListEntryPrice(priceListEntryPrice = 50);
-
-			Click(locator1 = "Icon#CLOSE");
-
-			SelectFrameTop();
-
-			CommerceNavigator.gotoEntry(entryName = "MIN93015");
-
-			CommercePriceLists.createPriceListPriceTiers(
-				key_pricingType = "Tiered Pricing",
-				key_quantity = 2,
-				key_value = 1000);
-		}
-
-		task ("Then buyers can see the tiered price applied in the storefront") {
-			User.logoutPG();
-
-			CommerceLogin.miniumLogin(
-				password = "test",
-				urlAppend = "web/minium",
-				userEmailAddress = "buyer@liferay.com");
-
-			CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
-
-			FrontStore.addInitializerProductToCart(
-				productName = "ABS Sensor",
-				productQuantity = 2);
-
-			CommerceNavigator.gotoMiniCart();
-
-			FrontStore.viewMiniCartItem(
-				cartItemName = "ABS Sensor",
-				cartItemPriceValue = "525.00",
-				cartItemQuantity = 2,
-				cartItemSku = "MIN93015");
-		}
-	}
-
-	@description = "COMMERCE-11843. This a test to verify that the Supplier User can add a Tiered Pricing entry for a Promotion (COMMERCE-11841)"
-	@priority = 5
-	test CanSupplierAddPromotionTieredPricingEntry {
-		property portal.acceptance = "true";
-
-		task ("Given an account with a buyer user") {
-			CommerceEntry.addAccountEntryUser(
-				accountName = "Commerce Account",
-				accountType = "Business",
-				agreeToTermsAndAnswerReminderQuery = "true",
-				createNewAccount = "true",
-				requireReset = "false",
-				userEmailAddress = "buyer@liferay.com",
-				userFirstName = "Buyer",
-				userLastName = "User",
-				userRole = "Buyer",
-				userScreenName = "buyeruser",
-				userSiteMembership = "Minium");
-		}
-
-		task ("Given a Supplier account with a user that has the role 'Supplier'") {
-			CommerceEntry.addAccountEntryUser(
-				accountName = "Supplier Account",
-				accountType = "Supplier",
-				agreeToTermsAndAnswerReminderQuery = "true",
-				createNewAccount = "true",
-				requireReset = "false",
-				userEmailAddress = "supplier@liferay.com",
-				userFirstName = "Supplier",
-				userLastName = "User",
-				userRole = "Account Supplier",
-				userScreenName = "supplieruser");
-		}
-
-		task ("And a Promotion is created for the Minium catalog") {
-			CommerceJSONPriceListsAndPromotionsAPI._addPromotion(
-				catalogName = "Minium",
-				currencyCode = "USD",
-				priority = 0,
-				promotionName = "Test New Promotion");
-		}
-
-		task ("And the Account Id is linked to the Catalog") {
-			CommerceJSONCatalogsAPI._patchCommerceCatalog(
-				accountIdByName = "Supplier Account",
-				catalogName = "Minium");
-		}
-
-		task ("And the supplier logs in") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "supplier@liferay.com",
-				userLoginFullName = "Supplier User");
-		}
-
-		task ("When the supplier adds a Promotion Tiered Pricing entry") {
-			CommercePromotions.openPromotionsAdmin();
-		
-			CommerceNavigator.gotoEntry(entryName = "Test New Promotion");
-
-			CommerceEntry.gotoMenuTab(menuTab = "Entries");
-
-			CommerceRelations.assignSingleRelationToProductsEntry(
-				entryName = "MIN93015",
-				title = "Add SKUs");
-
-			Refresh();
-
-			CommerceNavigator.gotoEntry(entryName = "MIN93015");
-
-			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
-
-			CommerceSKUs.setSkuPricing(promoPrice = 20);
-
-			Button.clickSave();
-
-			Click(locator1 = "Icon#CLOSE");
-
-			SelectFrameTop();
-
-			CommerceNavigator.gotoEntry(entryName = "MIN93015");
-
-			CommercePriceLists.createPriceListPriceTiers(
-				key_pricingType = "Tiered Pricing",
-				key_quantity = 2,
-				key_value = 10);
-		}
-
-		task ("Then buyers can see the tiered price applied in the storefront") {
-			User.logoutPG();
-
-			CommerceLogin.miniumLogin(
-				password = "test",
-				urlAppend = "web/minium",
-				userEmailAddress = "buyer@liferay.com");
-
-			CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
-
-			FrontStore.addInitializerProductToCart(
-				productName = "ABS Sensor",
-				productQuantity = 2);
-		
-			CommerceNavigator.gotoMiniCart();
-
-			AssertTextEquals.assertPartialText(
-				locator1 = "CommerceAccelerators#PRODUCT_DETAILS_LIST_PRICE_INACTIVE",
-				value1 = 50);
-
-			AssertTextEquals.assertPartialText(
-				locator1 = "CommerceAccelerators#PRODUCT_DETAILS_LIST_PRICE_PROMO",
-				value1 = 15);
-
-			FrontStore.viewMiniCartItem(
-				cartItemName = "ABS Sensor",
-				cartItemQuantity = 2,
-				cartItemSku = "MIN93015");
-		}
-	}
-
-	@description = "COMMERCE-11842. This a test to verify that the Supplier User can edit a Price List's entry price"
-	@priority = 5
-	test CanSupplierEditPriceListEntryPrice {
-		property portal.acceptance = "true";
-
-		task ("Given an account with a buyer user") {
-			CommerceEntry.addAccountEntryUser(
-				accountName = "Commerce Account",
-				accountType = "Business",
-				agreeToTermsAndAnswerReminderQuery = "true",
-				createNewAccount = "true",
-				requireReset = "false",
-				userEmailAddress = "buyer@liferay.com",
-				userFirstName = "Buyer",
-				userLastName = "User",
-				userRole = "Buyer",
-				userScreenName = "buyeruser",
-				userSiteMembership = "Minium");
-		}
-
-		task ("Given a Supplier account with a user that has the role 'Supplier'") {
-			CommerceEntry.addAccountEntryUser(
-				accountName = "Supplier Account",
-				accountType = "Supplier",
-				agreeToTermsAndAnswerReminderQuery = "true",
-				createNewAccount = "true",
-				requireReset = "false",
-				userEmailAddress = "supplier@liferay.com",
-				userFirstName = "Supplier",
-				userLastName = "User",
-				userRole = "Account Supplier",
-				userScreenName = "supplieruser");
-		}
-
-		task ("And a Price List is created for the Minium catalog") {
-			CommerceJSONPriceListsAndPromotionsAPI._addPriceList(
-				catalogName = "Minium",
-				currencyCode = "USD",
-				priceListName = "Test New Price List",
-				priority = 0);
-		}
-
-		task ("And the Account Id is linked to the Catalog") {
-			CommerceJSONCatalogsAPI._patchCommerceCatalog(
-				accountIdByName = "Supplier Account",
-				catalogName = "Minium");
-		}
-
-		task ("And the supplier logs in") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "supplier@liferay.com",
-				userLoginFullName = "Supplier User");
-		}
-
-		task ("When the supplier edits a price list entry price") {
-			CommercePriceLists.openPriceListsAdmin();
-		
-			CommerceNavigator.gotoEntry(entryName = "Test New Price List");
-
-			CommerceEntry.gotoMenuTab(menuTab = "Entries");
-
-			CommerceRelations.assignSingleRelationToProductsEntry(
-				entryName = "MIN93015",
-				title = "Add SKUs");
-
-			Refresh();
-
-			CommerceNavigator.gotoEntry(entryName = "MIN93015");
-
-			CommercePriceLists.editPriceListEntryPrice(priceListEntryPrice = 100);
-		}
-
-		task ("Then buyers can see the price list entry price applied in the storefront") {
-			User.logoutPG();
-
-			CommerceLogin.miniumLogin(
-				password = "test",
-				urlAppend = "web/minium",
-				userEmailAddress = "buyer@liferay.com");
-
-			CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
-
-			AssertTextEquals.assertPartialText(
-				key_productName = "ABS Sensor",
-				locator1 = "CommerceEntry#PRODUCT_CARD_LIST_PRICE",
-				value1 = "100.00");
-		}
-	}
-
-	@description = "COMMERCE-11843. This a test to verify that the Supplier User can edit a Promotion's entry price (COMMERCE-11842)"
-	@priority = 5
-	test CanSupplierEditPromotionEntryPrice {
-		property portal.acceptance = "true";
-
-		task ("Given an account with a buyer user") {
-			CommerceEntry.addAccountEntryUser(
-				accountName = "Commerce Account",
-				accountType = "Business",
-				agreeToTermsAndAnswerReminderQuery = "true",
-				createNewAccount = "true",
-				requireReset = "false",
-				userEmailAddress = "buyer@liferay.com",
-				userFirstName = "Buyer",
-				userLastName = "User",
-				userRole = "Buyer",
-				userScreenName = "buyeruser",
-				userSiteMembership = "Minium");
-		}
-
-		task ("Given a Supplier account with a user that has the role 'Supplier'") {
-			CommerceEntry.addAccountEntryUser(
-				accountName = "Supplier Account",
-				accountType = "Supplier",
-				agreeToTermsAndAnswerReminderQuery = "true",
-				createNewAccount = "true",
-				requireReset = "false",
-				userEmailAddress = "supplier@liferay.com",
-				userFirstName = "Supplier",
-				userLastName = "User",
-				userRole = "Account Supplier",
-				userScreenName = "supplieruser");
-		}
-
-		task ("And a Promotion is created for the Minium catalog") {
-			CommerceJSONPriceListsAndPromotionsAPI._addPromotion(
-				catalogName = "Minium",
-				currencyCode = "USD",
-				priority = 0,
-				promotionName = "Test New Promotion");
-		}
-
-		task ("And the Account Id is linked to the Catalog") {
-			CommerceJSONCatalogsAPI._patchCommerceCatalog(
-				accountIdByName = "Supplier Account",
-				catalogName = "Minium");
-		}
-
-		task ("And the supplier logs in") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "supplier@liferay.com",
-				userLoginFullName = "Supplier User");
-		}
-
-		task ("When the supplier edits a promotion entry price") {
-			CommercePromotions.openPromotionsAdmin();
-
-			CommerceNavigator.gotoEntry(entryName = "Test New Promotion");
-
-			CommerceEntry.gotoMenuTab(menuTab = "Entries");
-
-			CommerceRelations.assignSingleRelationToProductsEntry(
-				entryName = "MIN93015",
-				title = "Add SKUs");
-
-			Refresh();
-
-			CommerceNavigator.gotoEntry(entryName = "MIN93015");
-
-			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
-
-			CommerceSKUs.setSkuPricing(promoPrice = 10);
-
-			Button.clickSave();
-		}
-
-		task ("Then buyers can see the promotion entry price applied in the storefront") {
-			User.logoutPG();
-
-			CommerceLogin.miniumLogin(
-				password = "test",
-				urlAppend = "web/minium",
-				userEmailAddress = "buyer@liferay.com");
-
-			CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
-
-			FrontStore.assertPromoPrice(
-				basePrice = "50.00",
-				productName = "ABS Sensor",
-				promoPrice = "10.00");
-		}
-	}
-
-	@description = "COMMERCE-11845. This a test to verify that the Supplier User can edit a price list details"
-	@priority = 5
-	test CanSupplierEditPriceListDetails {
-		property portal.acceptance = "true";
-
-		task ("Given a Supplier account with a user that has the role 'Supplier'") {
-			CommerceEntry.addAccountEntryUser(
-				accountName = "Supplier Account",
-				accountType = "Supplier",
-				agreeToTermsAndAnswerReminderQuery = "true",
-				createNewAccount = "true",
-				requireReset = "false",
-				userEmailAddress = "supplier@liferay.com",
-				userFirstName = "Supplier",
-				userLastName = "User",
-				userRole = "Account Supplier",
-				userScreenName = "supplieruser");
-		}
-
-		task ("And a Price List is created") {
-			CommerceJSONPriceListsAndPromotionsAPI._addPriceList(
-				catalogName = "Minium",
-				currencyCode = "USD",
-				priceListName = "Test New Price List",
-				priority = 0);
-		}
-
-		task ("And a new Catalog is created") {
-			CommerceJSONCatalogsAPI._addCatalog(catalogName = "Test Catalog");
-		}
-
-		task ("And the Account Id is linked to Minium Catalog") {
-			CommerceJSONCatalogsAPI._patchCommerceCatalog(
-				accountIdByName = "Supplier Account",
-				catalogName = "Minium");
-		}
-
-		task ("And the supplier logs in") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "supplier@liferay.com",
-				userLoginFullName = "Supplier User");
-		}
-
-		task ("When the supplier edits a price list details") {
-			CommercePriceLists.openPriceListsAdmin();
-
-			CommerceNavigator.gotoEntry(entryName = "Test New Price List");
-
-			CommercePriceLists.editPriceListDetails(
-				currency = "EUR",
-				name = "Test New Price List Edited",
-				parentPriceList = "Minium Base Price List",
-				priceType = "Gross Price",
-				priority = 1);
-		}
-
-		task ("Then the changes are successfully saved") {
-			CommercePriceLists.openPriceListsAdmin();
-
-			CommerceNavigator.gotoEntry(entryName = "Test New Price List Edited");
-
-			CommercePriceLists.viewPriceListEntry(
-				priceListCurrency = "EUR",
-				priceListName = "Test New Price List Edited",
-				priceListParent = "Minium Base Price List",
-				priceListType = "Gross Price",
-				priceListPriority = "1.0");
-		}
-	}
-
-	@description = "COMMERCE-11843. This a test to verify that the Supplier User can edit a promotion details (COMMERCE-11845)"
-	@priority = 5
-	test CanSupplierEditPromotionDetails {
-		property portal.acceptance = "true";
-
-		task ("Given a Supplier account with a user that has the role 'Supplier'") {
-			CommerceEntry.addAccountEntryUser(
-				accountName = "Supplier Account",
-				accountType = "Supplier",
-				agreeToTermsAndAnswerReminderQuery = "true",
-				createNewAccount = "true",
-				requireReset = "false",
-				userEmailAddress = "supplier@liferay.com",
-				userFirstName = "Supplier",
-				userLastName = "User",
-				userRole = "Account Supplier",
-				userScreenName = "supplieruser");
-		}
-
-		task ("And a Promotion is created") {
-			CommerceJSONPriceListsAndPromotionsAPI._addPromotion(
-				catalogName = "Minium",
-				currencyCode = "USD",
-				priority = 0,
-				promotionName = "Test New Promotion");
-		}
-
-		task ("And a new Catalog is created") {
-			CommerceJSONCatalogsAPI._addCatalog(catalogName = "Test Catalog");
-		}
-
-		task ("And the Account Id is linked to Minium Catalog") {
-			CommerceJSONCatalogsAPI._patchCommerceCatalog(
-				accountIdByName = "Supplier Account",
-				catalogName = "Minium");
-		}
-
-		task ("When the supplier edits a promotion details") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "supplier@liferay.com",
-				userLoginFullName = "Supplier User");
-
-			CommercePromotions.openPromotionsAdmin();
-
-			CommerceNavigator.gotoEntry(entryName = "Test New Promotion");
-
-			CommercePriceLists.editPriceListDetails(
-				currency = "EUR",
-				name = "Test New Promotion Edited",
-				parentPriceList = "Minium Base Promotion",
-				priceType = "Gross Price",
-				priority = 1);
-		}
-
-		task ("Then the changes are successfully saved") {
-			CommercePromotions.openPromotionsAdmin();
-
-			CommerceNavigator.gotoEntry(entryName = "Test New Promotion Edited");
-
-			CommercePriceLists.viewPriceListEntry(
-				priceListCurrency = "EUR",
-				priceListName = "Test New Promotion Edited",
-				priceListParent = "Minium Base Promotion",
-				priceListType = "Gross Price",
-				priceListPriority = "1.0");
 		}
 	}
 
@@ -1374,7 +604,7 @@ definition {
 
 		task ("When the supplier adds a new price list") {
 			CommercePriceLists.openPriceListsAdmin();
-		
+
 			Click(locator1 = "CommerceEntry#ADD_BUTTON");
 
 			WaitForElementPresent(locator1 = "IFrame#MODAL_BODY");
@@ -1522,6 +752,776 @@ definition {
 			AssertElementNotPresent(
 				key_entryName = "Test Catalog New Promotion",
 				locator1 = "CommerceNavigation#ENTRY_NAME");
+		}
+	}
+
+	@description = "COMMERCE-11840. This a test to verify that the Supplier User can add a Bulk Pricing entry for a Price List"
+	@priority = 5
+	test CanSupplierAddPriceListBulkPricingEntry {
+		property portal.acceptance = "true";
+
+		task ("Given an account with a buyer user") {
+			CommerceEntry.addAccountEntryUser(
+				accountName = "Commerce Account",
+				accountType = "Business",
+				agreeToTermsAndAnswerReminderQuery = "true",
+				createNewAccount = "true",
+				requireReset = "false",
+				userEmailAddress = "buyer@liferay.com",
+				userFirstName = "Buyer",
+				userLastName = "User",
+				userRole = "Buyer",
+				userScreenName = "buyeruser",
+				userSiteMembership = "Minium");
+		}
+
+		task ("Given a Supplier account with a user that has the role 'Supplier'") {
+			CommerceEntry.addAccountEntryUser(
+				accountName = "Supplier Account",
+				accountType = "Supplier",
+				agreeToTermsAndAnswerReminderQuery = "true",
+				createNewAccount = "true",
+				requireReset = "false",
+				userEmailAddress = "supplier@liferay.com",
+				userFirstName = "Supplier",
+				userLastName = "User",
+				userRole = "Account Supplier",
+				userScreenName = "supplieruser");
+		}
+
+		task ("And a Price List is created for the Minium catalog") {
+			CommerceJSONPriceListsAndPromotionsAPI._addPriceList(
+				catalogName = "Minium",
+				currencyCode = "USD",
+				priceListName = "Test New Price List",
+				priority = 0);
+		}
+
+		task ("And the Account Id is linked to the Catalog") {
+			CommerceJSONCatalogsAPI._patchCommerceCatalog(
+				accountIdByName = "Supplier Account",
+				catalogName = "Minium");
+		}
+
+		task ("And the supplier logs in") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "supplier@liferay.com",
+				userLoginFullName = "Supplier User");
+		}
+
+		task ("When the supplier adds a Price List Bulk Pricing entry") {
+			CommercePriceLists.openPriceListsAdmin();
+
+			CommerceNavigator.gotoEntry(entryName = "Test New Price List");
+
+			CommerceEntry.gotoMenuTab(menuTab = "Entries");
+
+			CommerceRelations.assignSingleRelationToProductsEntry(
+				entryName = "MIN93015",
+				title = "Add SKUs");
+
+			Refresh();
+
+			CommerceNavigator.gotoEntry(entryName = "MIN93015");
+
+			CommercePriceLists.editPriceListEntryPrice(priceListEntryPrice = 50);
+
+			Click(locator1 = "Icon#CLOSE");
+
+			SelectFrameTop();
+
+			CommerceNavigator.gotoEntry(entryName = "MIN93015");
+
+			CommercePriceLists.createPriceListPriceTiers(
+				key_pricingType = "Bulk Pricing",
+				key_quantity = 2,
+				key_value = 1000);
+		}
+
+		task ("Then buyers can see the bulk price applied in the storefront") {
+			User.logoutPG();
+
+			CommerceLogin.miniumLogin(
+				password = "test",
+				urlAppend = "web/minium",
+				userEmailAddress = "buyer@liferay.com");
+
+			CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
+
+			FrontStore.addInitializerProductToCart(
+				productName = "ABS Sensor",
+				productQuantity = 2);
+
+			CommerceNavigator.gotoMiniCart();
+
+			FrontStore.viewMiniCartItem(
+				cartItemName = "ABS Sensor",
+				cartItemPriceValue = "1,000.00",
+				cartItemQuantity = 2,
+				cartItemSku = "MIN93015");
+		}
+	}
+
+	@description = "COMMERCE-11841. This a test to verify that the Supplier User can add a Tiered Pricing entry for a Price List"
+	@priority = 5
+	test CanSupplierAddPriceListTieredPricingEntry {
+		property portal.acceptance = "true";
+
+		task ("Given an account with a buyer user") {
+			CommerceEntry.addAccountEntryUser(
+				accountName = "Commerce Account",
+				accountType = "Business",
+				agreeToTermsAndAnswerReminderQuery = "true",
+				createNewAccount = "true",
+				requireReset = "false",
+				userEmailAddress = "buyer@liferay.com",
+				userFirstName = "Buyer",
+				userLastName = "User",
+				userRole = "Buyer",
+				userScreenName = "buyeruser",
+				userSiteMembership = "Minium");
+		}
+
+		task ("Given a Supplier account with a user that has the role 'Supplier'") {
+			CommerceEntry.addAccountEntryUser(
+				accountName = "Supplier Account",
+				accountType = "Supplier",
+				agreeToTermsAndAnswerReminderQuery = "true",
+				createNewAccount = "true",
+				requireReset = "false",
+				userEmailAddress = "supplier@liferay.com",
+				userFirstName = "Supplier",
+				userLastName = "User",
+				userRole = "Account Supplier",
+				userScreenName = "supplieruser");
+		}
+
+		task ("And a Price List is created for the Minium catalog") {
+			CommerceJSONPriceListsAndPromotionsAPI._addPriceList(
+				catalogName = "Minium",
+				currencyCode = "USD",
+				priceListName = "Test New Price List",
+				priority = 0);
+		}
+
+		task ("And the Account Id is linked to the Catalog") {
+			CommerceJSONCatalogsAPI._patchCommerceCatalog(
+				accountIdByName = "Supplier Account",
+				catalogName = "Minium");
+		}
+
+		task ("And the supplier logs in") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "supplier@liferay.com",
+				userLoginFullName = "Supplier User");
+		}
+
+		task ("When the supplier adds a Price List Tiered Pricing entry") {
+			CommercePriceLists.openPriceListsAdmin();
+
+			CommerceNavigator.gotoEntry(entryName = "Test New Price List");
+
+			CommerceEntry.gotoMenuTab(menuTab = "Entries");
+
+			CommerceRelations.assignSingleRelationToProductsEntry(
+				entryName = "MIN93015",
+				title = "Add SKUs");
+
+			Refresh();
+
+			CommerceNavigator.gotoEntry(entryName = "MIN93015");
+
+			CommercePriceLists.editPriceListEntryPrice(priceListEntryPrice = 50);
+
+			Click(locator1 = "Icon#CLOSE");
+
+			SelectFrameTop();
+
+			CommerceNavigator.gotoEntry(entryName = "MIN93015");
+
+			CommercePriceLists.createPriceListPriceTiers(
+				key_pricingType = "Tiered Pricing",
+				key_quantity = 2,
+				key_value = 1000);
+		}
+
+		task ("Then buyers can see the tiered price applied in the storefront") {
+			User.logoutPG();
+
+			CommerceLogin.miniumLogin(
+				password = "test",
+				urlAppend = "web/minium",
+				userEmailAddress = "buyer@liferay.com");
+
+			CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
+
+			FrontStore.addInitializerProductToCart(
+				productName = "ABS Sensor",
+				productQuantity = 2);
+
+			CommerceNavigator.gotoMiniCart();
+
+			FrontStore.viewMiniCartItem(
+				cartItemName = "ABS Sensor",
+				cartItemPriceValue = "525.00",
+				cartItemQuantity = 2,
+				cartItemSku = "MIN93015");
+		}
+	}
+
+	@description = "COMMERCE-11843. This a test to verify that the Supplier User can add a Bulk Pricing entry for a Promotion (COMMERCE-11840)"
+	@priority = 5
+	test CanSupplierAddPromotionBulkPricingEntry {
+		property portal.acceptance = "true";
+
+		task ("Given an account with a buyer user") {
+			CommerceEntry.addAccountEntryUser(
+				accountName = "Commerce Account",
+				accountType = "Business",
+				agreeToTermsAndAnswerReminderQuery = "true",
+				createNewAccount = "true",
+				requireReset = "false",
+				userEmailAddress = "buyer@liferay.com",
+				userFirstName = "Buyer",
+				userLastName = "User",
+				userRole = "Buyer",
+				userScreenName = "buyeruser",
+				userSiteMembership = "Minium");
+		}
+
+		task ("Given a Supplier account with a user that has the role 'Supplier'") {
+			CommerceEntry.addAccountEntryUser(
+				accountName = "Supplier Account",
+				accountType = "Supplier",
+				agreeToTermsAndAnswerReminderQuery = "true",
+				createNewAccount = "true",
+				requireReset = "false",
+				userEmailAddress = "supplier@liferay.com",
+				userFirstName = "Supplier",
+				userLastName = "User",
+				userRole = "Account Supplier",
+				userScreenName = "supplieruser");
+		}
+
+		task ("And a Promotion is created for the Minium catalog") {
+			CommerceJSONPriceListsAndPromotionsAPI._addPromotion(
+				catalogName = "Minium",
+				currencyCode = "USD",
+				priority = 0,
+				promotionName = "Test New Promotion");
+		}
+
+		task ("And the Account Id is linked to the Catalog") {
+			CommerceJSONCatalogsAPI._patchCommerceCatalog(
+				accountIdByName = "Supplier Account",
+				catalogName = "Minium");
+		}
+
+		task ("And the supplier logs in") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "supplier@liferay.com",
+				userLoginFullName = "Supplier User");
+		}
+
+		task ("When the supplier adds a Promotion Bulk Pricing entry") {
+			CommercePromotions.openPromotionsAdmin();
+
+			CommerceNavigator.gotoEntry(entryName = "Test New Promotion");
+
+			CommerceEntry.gotoMenuTab(menuTab = "Entries");
+
+			CommerceRelations.assignSingleRelationToProductsEntry(
+				entryName = "MIN93015",
+				title = "Add SKUs");
+
+			Refresh();
+
+			CommerceNavigator.gotoEntry(entryName = "MIN93015");
+
+			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+			CommerceSKUs.setSkuPricing(promoPrice = 20);
+
+			Button.clickSave();
+
+			Click(locator1 = "Icon#CLOSE");
+
+			SelectFrameTop();
+
+			CommerceNavigator.gotoEntry(entryName = "MIN93015");
+
+			CommercePriceLists.createPriceListPriceTiers(
+				key_pricingType = "Bulk Pricing",
+				key_quantity = 2,
+				key_value = 10);
+		}
+
+		task ("Then buyers can see the bulk price applied in the storefront") {
+			User.logoutPG();
+
+			CommerceLogin.miniumLogin(
+				password = "test",
+				urlAppend = "web/minium",
+				userEmailAddress = "buyer@liferay.com");
+
+			CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
+
+			FrontStore.addInitializerProductToCart(
+				productName = "ABS Sensor",
+				productQuantity = 2);
+
+			CommerceNavigator.gotoMiniCart();
+
+			AssertTextEquals.assertPartialText(
+				locator1 = "CommerceAccelerators#PRODUCT_DETAILS_LIST_PRICE_INACTIVE",
+				value1 = 50);
+
+			AssertTextEquals.assertPartialText(
+				locator1 = "CommerceAccelerators#PRODUCT_DETAILS_LIST_PRICE_PROMO",
+				value1 = 10);
+
+			FrontStore.viewMiniCartItem(
+				cartItemName = "ABS Sensor",
+				cartItemQuantity = 2,
+				cartItemSku = "MIN93015");
+		}
+	}
+
+	@description = "COMMERCE-11843. This a test to verify that the Supplier User can add a Tiered Pricing entry for a Promotion (COMMERCE-11841)"
+	@priority = 5
+	test CanSupplierAddPromotionTieredPricingEntry {
+		property portal.acceptance = "true";
+
+		task ("Given an account with a buyer user") {
+			CommerceEntry.addAccountEntryUser(
+				accountName = "Commerce Account",
+				accountType = "Business",
+				agreeToTermsAndAnswerReminderQuery = "true",
+				createNewAccount = "true",
+				requireReset = "false",
+				userEmailAddress = "buyer@liferay.com",
+				userFirstName = "Buyer",
+				userLastName = "User",
+				userRole = "Buyer",
+				userScreenName = "buyeruser",
+				userSiteMembership = "Minium");
+		}
+
+		task ("Given a Supplier account with a user that has the role 'Supplier'") {
+			CommerceEntry.addAccountEntryUser(
+				accountName = "Supplier Account",
+				accountType = "Supplier",
+				agreeToTermsAndAnswerReminderQuery = "true",
+				createNewAccount = "true",
+				requireReset = "false",
+				userEmailAddress = "supplier@liferay.com",
+				userFirstName = "Supplier",
+				userLastName = "User",
+				userRole = "Account Supplier",
+				userScreenName = "supplieruser");
+		}
+
+		task ("And a Promotion is created for the Minium catalog") {
+			CommerceJSONPriceListsAndPromotionsAPI._addPromotion(
+				catalogName = "Minium",
+				currencyCode = "USD",
+				priority = 0,
+				promotionName = "Test New Promotion");
+		}
+
+		task ("And the Account Id is linked to the Catalog") {
+			CommerceJSONCatalogsAPI._patchCommerceCatalog(
+				accountIdByName = "Supplier Account",
+				catalogName = "Minium");
+		}
+
+		task ("And the supplier logs in") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "supplier@liferay.com",
+				userLoginFullName = "Supplier User");
+		}
+
+		task ("When the supplier adds a Promotion Tiered Pricing entry") {
+			CommercePromotions.openPromotionsAdmin();
+
+			CommerceNavigator.gotoEntry(entryName = "Test New Promotion");
+
+			CommerceEntry.gotoMenuTab(menuTab = "Entries");
+
+			CommerceRelations.assignSingleRelationToProductsEntry(
+				entryName = "MIN93015",
+				title = "Add SKUs");
+
+			Refresh();
+
+			CommerceNavigator.gotoEntry(entryName = "MIN93015");
+
+			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+			CommerceSKUs.setSkuPricing(promoPrice = 20);
+
+			Button.clickSave();
+
+			Click(locator1 = "Icon#CLOSE");
+
+			SelectFrameTop();
+
+			CommerceNavigator.gotoEntry(entryName = "MIN93015");
+
+			CommercePriceLists.createPriceListPriceTiers(
+				key_pricingType = "Tiered Pricing",
+				key_quantity = 2,
+				key_value = 10);
+		}
+
+		task ("Then buyers can see the tiered price applied in the storefront") {
+			User.logoutPG();
+
+			CommerceLogin.miniumLogin(
+				password = "test",
+				urlAppend = "web/minium",
+				userEmailAddress = "buyer@liferay.com");
+
+			CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
+
+			FrontStore.addInitializerProductToCart(
+				productName = "ABS Sensor",
+				productQuantity = 2);
+
+			CommerceNavigator.gotoMiniCart();
+
+			AssertTextEquals.assertPartialText(
+				locator1 = "CommerceAccelerators#PRODUCT_DETAILS_LIST_PRICE_INACTIVE",
+				value1 = 50);
+
+			AssertTextEquals.assertPartialText(
+				locator1 = "CommerceAccelerators#PRODUCT_DETAILS_LIST_PRICE_PROMO",
+				value1 = 15);
+
+			FrontStore.viewMiniCartItem(
+				cartItemName = "ABS Sensor",
+				cartItemQuantity = 2,
+				cartItemSku = "MIN93015");
+		}
+	}
+
+	@description = "COMMERCE-11845. This a test to verify that the Supplier User can edit a price list details"
+	@priority = 5
+	test CanSupplierEditPriceListDetails {
+		property portal.acceptance = "true";
+
+		task ("Given a Supplier account with a user that has the role 'Supplier'") {
+			CommerceEntry.addAccountEntryUser(
+				accountName = "Supplier Account",
+				accountType = "Supplier",
+				agreeToTermsAndAnswerReminderQuery = "true",
+				createNewAccount = "true",
+				requireReset = "false",
+				userEmailAddress = "supplier@liferay.com",
+				userFirstName = "Supplier",
+				userLastName = "User",
+				userRole = "Account Supplier",
+				userScreenName = "supplieruser");
+		}
+
+		task ("And a Price List is created") {
+			CommerceJSONPriceListsAndPromotionsAPI._addPriceList(
+				catalogName = "Minium",
+				currencyCode = "USD",
+				priceListName = "Test New Price List",
+				priority = 0);
+		}
+
+		task ("And a new Catalog is created") {
+			CommerceJSONCatalogsAPI._addCatalog(catalogName = "Test Catalog");
+		}
+
+		task ("And the Account Id is linked to Minium Catalog") {
+			CommerceJSONCatalogsAPI._patchCommerceCatalog(
+				accountIdByName = "Supplier Account",
+				catalogName = "Minium");
+		}
+
+		task ("And the supplier logs in") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "supplier@liferay.com",
+				userLoginFullName = "Supplier User");
+		}
+
+		task ("When the supplier edits a price list details") {
+			CommercePriceLists.openPriceListsAdmin();
+
+			CommerceNavigator.gotoEntry(entryName = "Test New Price List");
+
+			CommercePriceLists.editPriceListDetails(
+				currency = "EUR",
+				name = "Test New Price List Edited",
+				parentPriceList = "Minium Base Price List",
+				priceType = "Gross Price",
+				priority = 1);
+		}
+
+		task ("Then the changes are successfully saved") {
+			CommercePriceLists.openPriceListsAdmin();
+
+			CommerceNavigator.gotoEntry(entryName = "Test New Price List Edited");
+
+			CommercePriceLists.viewPriceListEntry(
+				priceListCurrency = "EUR",
+				priceListName = "Test New Price List Edited",
+				priceListParent = "Minium Base Price List",
+				priceListPriority = "1.0",
+				priceListType = "Gross Price");
+		}
+	}
+
+	@description = "COMMERCE-11842. This a test to verify that the Supplier User can edit a Price List's entry price"
+	@priority = 5
+	test CanSupplierEditPriceListEntryPrice {
+		property portal.acceptance = "true";
+
+		task ("Given an account with a buyer user") {
+			CommerceEntry.addAccountEntryUser(
+				accountName = "Commerce Account",
+				accountType = "Business",
+				agreeToTermsAndAnswerReminderQuery = "true",
+				createNewAccount = "true",
+				requireReset = "false",
+				userEmailAddress = "buyer@liferay.com",
+				userFirstName = "Buyer",
+				userLastName = "User",
+				userRole = "Buyer",
+				userScreenName = "buyeruser",
+				userSiteMembership = "Minium");
+		}
+
+		task ("Given a Supplier account with a user that has the role 'Supplier'") {
+			CommerceEntry.addAccountEntryUser(
+				accountName = "Supplier Account",
+				accountType = "Supplier",
+				agreeToTermsAndAnswerReminderQuery = "true",
+				createNewAccount = "true",
+				requireReset = "false",
+				userEmailAddress = "supplier@liferay.com",
+				userFirstName = "Supplier",
+				userLastName = "User",
+				userRole = "Account Supplier",
+				userScreenName = "supplieruser");
+		}
+
+		task ("And a Price List is created for the Minium catalog") {
+			CommerceJSONPriceListsAndPromotionsAPI._addPriceList(
+				catalogName = "Minium",
+				currencyCode = "USD",
+				priceListName = "Test New Price List",
+				priority = 0);
+		}
+
+		task ("And the Account Id is linked to the Catalog") {
+			CommerceJSONCatalogsAPI._patchCommerceCatalog(
+				accountIdByName = "Supplier Account",
+				catalogName = "Minium");
+		}
+
+		task ("And the supplier logs in") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "supplier@liferay.com",
+				userLoginFullName = "Supplier User");
+		}
+
+		task ("When the supplier edits a price list entry price") {
+			CommercePriceLists.openPriceListsAdmin();
+
+			CommerceNavigator.gotoEntry(entryName = "Test New Price List");
+
+			CommerceEntry.gotoMenuTab(menuTab = "Entries");
+
+			CommerceRelations.assignSingleRelationToProductsEntry(
+				entryName = "MIN93015",
+				title = "Add SKUs");
+
+			Refresh();
+
+			CommerceNavigator.gotoEntry(entryName = "MIN93015");
+
+			CommercePriceLists.editPriceListEntryPrice(priceListEntryPrice = 100);
+		}
+
+		task ("Then buyers can see the price list entry price applied in the storefront") {
+			User.logoutPG();
+
+			CommerceLogin.miniumLogin(
+				password = "test",
+				urlAppend = "web/minium",
+				userEmailAddress = "buyer@liferay.com");
+
+			CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
+
+			AssertTextEquals.assertPartialText(
+				key_productName = "ABS Sensor",
+				locator1 = "CommerceEntry#PRODUCT_CARD_LIST_PRICE",
+				value1 = "100.00");
+		}
+	}
+
+	@description = "COMMERCE-11843. This a test to verify that the Supplier User can edit a promotion details (COMMERCE-11845)"
+	@priority = 5
+	test CanSupplierEditPromotionDetails {
+		property portal.acceptance = "true";
+
+		task ("Given a Supplier account with a user that has the role 'Supplier'") {
+			CommerceEntry.addAccountEntryUser(
+				accountName = "Supplier Account",
+				accountType = "Supplier",
+				agreeToTermsAndAnswerReminderQuery = "true",
+				createNewAccount = "true",
+				requireReset = "false",
+				userEmailAddress = "supplier@liferay.com",
+				userFirstName = "Supplier",
+				userLastName = "User",
+				userRole = "Account Supplier",
+				userScreenName = "supplieruser");
+		}
+
+		task ("And a Promotion is created") {
+			CommerceJSONPriceListsAndPromotionsAPI._addPromotion(
+				catalogName = "Minium",
+				currencyCode = "USD",
+				priority = 0,
+				promotionName = "Test New Promotion");
+		}
+
+		task ("And a new Catalog is created") {
+			CommerceJSONCatalogsAPI._addCatalog(catalogName = "Test Catalog");
+		}
+
+		task ("And the Account Id is linked to Minium Catalog") {
+			CommerceJSONCatalogsAPI._patchCommerceCatalog(
+				accountIdByName = "Supplier Account",
+				catalogName = "Minium");
+		}
+
+		task ("When the supplier edits a promotion details") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "supplier@liferay.com",
+				userLoginFullName = "Supplier User");
+
+			CommercePromotions.openPromotionsAdmin();
+
+			CommerceNavigator.gotoEntry(entryName = "Test New Promotion");
+
+			CommercePriceLists.editPriceListDetails(
+				currency = "EUR",
+				name = "Test New Promotion Edited",
+				parentPriceList = "Minium Base Promotion",
+				priceType = "Gross Price",
+				priority = 1);
+		}
+
+		task ("Then the changes are successfully saved") {
+			CommercePromotions.openPromotionsAdmin();
+
+			CommerceNavigator.gotoEntry(entryName = "Test New Promotion Edited");
+
+			CommercePriceLists.viewPriceListEntry(
+				priceListCurrency = "EUR",
+				priceListName = "Test New Promotion Edited",
+				priceListParent = "Minium Base Promotion",
+				priceListPriority = "1.0",
+				priceListType = "Gross Price");
+		}
+	}
+
+	@description = "COMMERCE-11843. This a test to verify that the Supplier User can edit a Promotion's entry price (COMMERCE-11842)"
+	@priority = 5
+	test CanSupplierEditPromotionEntryPrice {
+		property portal.acceptance = "true";
+
+		task ("Given an account with a buyer user") {
+			CommerceEntry.addAccountEntryUser(
+				accountName = "Commerce Account",
+				accountType = "Business",
+				agreeToTermsAndAnswerReminderQuery = "true",
+				createNewAccount = "true",
+				requireReset = "false",
+				userEmailAddress = "buyer@liferay.com",
+				userFirstName = "Buyer",
+				userLastName = "User",
+				userRole = "Buyer",
+				userScreenName = "buyeruser",
+				userSiteMembership = "Minium");
+		}
+
+		task ("Given a Supplier account with a user that has the role 'Supplier'") {
+			CommerceEntry.addAccountEntryUser(
+				accountName = "Supplier Account",
+				accountType = "Supplier",
+				agreeToTermsAndAnswerReminderQuery = "true",
+				createNewAccount = "true",
+				requireReset = "false",
+				userEmailAddress = "supplier@liferay.com",
+				userFirstName = "Supplier",
+				userLastName = "User",
+				userRole = "Account Supplier",
+				userScreenName = "supplieruser");
+		}
+
+		task ("And a Promotion is created for the Minium catalog") {
+			CommerceJSONPriceListsAndPromotionsAPI._addPromotion(
+				catalogName = "Minium",
+				currencyCode = "USD",
+				priority = 0,
+				promotionName = "Test New Promotion");
+		}
+
+		task ("And the Account Id is linked to the Catalog") {
+			CommerceJSONCatalogsAPI._patchCommerceCatalog(
+				accountIdByName = "Supplier Account",
+				catalogName = "Minium");
+		}
+
+		task ("And the supplier logs in") {
+			User.logoutAndLoginPG(
+				userLoginEmailAddress = "supplier@liferay.com",
+				userLoginFullName = "Supplier User");
+		}
+
+		task ("When the supplier edits a promotion entry price") {
+			CommercePromotions.openPromotionsAdmin();
+
+			CommerceNavigator.gotoEntry(entryName = "Test New Promotion");
+
+			CommerceEntry.gotoMenuTab(menuTab = "Entries");
+
+			CommerceRelations.assignSingleRelationToProductsEntry(
+				entryName = "MIN93015",
+				title = "Add SKUs");
+
+			Refresh();
+
+			CommerceNavigator.gotoEntry(entryName = "MIN93015");
+
+			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+			CommerceSKUs.setSkuPricing(promoPrice = 10);
+
+			Button.clickSave();
+		}
+
+		task ("Then buyers can see the promotion entry price applied in the storefront") {
+			User.logoutPG();
+
+			CommerceLogin.miniumLogin(
+				password = "test",
+				urlAppend = "web/minium",
+				userEmailAddress = "buyer@liferay.com");
+
+			CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
+
+			FrontStore.assertPromoPrice(
+				basePrice = "50.00",
+				productName = "ABS Sensor",
+				promoPrice = "10.00");
 		}
 	}
 
@@ -1801,7 +1801,7 @@ definition {
 
 		task ("When the supplier user adds a Price Modifier in a price list") {
 			CommercePriceLists.openPriceListsAdmin();
-		
+
 			CommerceNavigator.gotoEntry(entryName = "Test New Price List");
 
 			CommerceEntry.gotoMenuTab(menuTab = "Price Modifiers");
