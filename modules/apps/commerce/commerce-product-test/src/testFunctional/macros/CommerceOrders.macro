@@ -248,6 +248,10 @@ definition {
 	}
 
 	macro checkoutFullWorkflow {
+		if (!(isSet(orderItemQuantity))) {
+			var orderItemQuantity = 1;
+		}
+
 		Click(
 			key_index = "Create Shipment",
 			locator1 = "WorkflowMetrics#SEARCH_FIELD_MAPPINGS_METRICS_INDEXES");
@@ -306,7 +310,7 @@ definition {
 		Type(
 			key_warehouseName = ${warehouse},
 			locator1 = "CommerceOrders#ORDER_QUANTITY_IN_SHIPMENT_BY_WAREHOUSE",
-			value1 = 1);
+			value1 = ${orderItemQuantity});
 
 		Button.clickSave();
 
@@ -463,7 +467,9 @@ definition {
 	macro editOrderAddressCP {
 		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
 
-		Click(locator1 = "Button#PLUS");
+		if (IsElementPresent(locator1 = "Button#PLUS")) {
+			Click(locator1 = "Button#PLUS");
+		}
 
 		if (isSet(editedName)) {
 			Type(
@@ -606,6 +612,68 @@ definition {
 				locator1 = "Button#SUBMIT",
 				value1 = "Submit");
 		}
+	}
+
+	macro editOrderSummary {
+		Click(locator1 = "CommerceOrders#ORDER_EDIT_SUMMARY_BUTTON");
+
+		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
+
+		if (isSet(deliveryDiscountNewValue)) {
+			Type(
+				key_fieldLabel = "Delivery Discount",
+				locator1 = "TextInput#GENERIC_TEXT_INPUT",
+				value1 = ${deliveryDiscountNewValue});
+		}
+
+		if (isSet(deliveryNewValue)) {
+			Type(
+				key_fieldLabel = "Delivery",
+				locator1 = "TextInput#GENERIC_TEXT_INPUT",
+				value1 = ${deliveryNewValue});
+		}
+
+		if (isSet(subtotalDiscountNewValue)) {
+			Type(
+				key_fieldLabel = "Subtotal Discount",
+				locator1 = "TextInput#GENERIC_TEXT_INPUT",
+				value1 = ${subtotalDiscountNewValue});
+		}
+
+		if (isSet(subtotalNewValue)) {
+			Type(
+				key_fieldLabel = "Subtotal",
+				locator1 = "TextInput#GENERIC_TEXT_INPUT",
+				value1 = ${subtotalNewValue});
+		}
+
+		if (isSet(taxNewValue)) {
+			Type(
+				key_fieldLabel = "Tax",
+				locator1 = "TextInput#GENERIC_TEXT_INPUT",
+				value1 = ${taxNewValue});
+		}
+
+		if (isSet(totalDiscountNewValue)) {
+			Type(
+				key_fieldLabel = "Total Discount",
+				locator1 = "TextInput#GENERIC_TEXT_INPUT",
+				value1 = ${totalDiscountNewValue});
+		}
+
+		if (isSet(totalNewValue)) {
+			Type(
+				key_fieldLabel = "Total",
+				key_indexNumber = 2,
+				locator1 = "TextInput#GENERIC_TEXT_INPUT_N",
+				value1 = ${totalNewValue});
+		}
+
+		Button.click(button = "Submit");
+
+		Alert.viewSuccessMessage();
+
+		SelectFrameTop();
 	}
 
 	macro editOrderType {
@@ -985,6 +1053,13 @@ definition {
 					value1 = ${deliveryTerm});
 			}
 
+			if (isSet(orderType)) {
+				AssertTextEquals.assertPartialText(
+					key_orderType = ${orderType},
+					locator1 = "CommerceOrders#ORDER_DETAILS_ORDER_TYPE",
+					value1 = ${orderType});
+			}
+
 			if (isSet(paymentTerm)) {
 				AssertTextEquals.assertPartialText(
 					key_paymentTerm = ${paymentTerm},
@@ -1009,8 +1084,8 @@ definition {
 			value1 = ${productListPrice});
 
 		if (isSet(productDiscount)) {
-			AssertTextEquals(
-				key_productDiscount = "$ ${productDiscount}",
+			AssertTextEquals.assertPartialText(
+				key_productDiscount = ${productDiscount},
 				locator1 = "CommerceOrders#ORDER_DETAILS_PRODUCT_DISCOUNT",
 				value1 = ${productDiscount});
 		}
@@ -1033,6 +1108,57 @@ definition {
 			AssertTextEquals.assertPartialText(
 				locator1 = "CommerceOrders#ORDER_DETAILS_PAYMENT_METHOD_NAME",
 				value1 = ${paymentMethod});
+		}
+	}
+
+	macro viewOrderSummary {
+		if (isSet(deliveryDiscountValue)) {
+			AssertTextEquals(
+				key_label = "Delivery Discount",
+				locator1 = "CommerceOrders#ORDER_VIEW_SUMMARY_FIELDS",
+				value1 = ${deliveryDiscountValue});
+		}
+
+		if (isSet(deliveryValue)) {
+			AssertTextEquals(
+				key_label = "Delivery",
+				locator1 = "CommerceOrders#ORDER_VIEW_SUMMARY_FIELDS",
+				value1 = ${deliveryValue});
+		}
+
+		if (isSet(subtotalDiscountValue)) {
+			AssertTextEquals(
+				key_label = "Subtotal Discount",
+				locator1 = "CommerceOrders#ORDER_VIEW_SUMMARY_FIELDS",
+				value1 = ${subtotalDiscountValue});
+		}
+
+		if (isSet(subtotalValue)) {
+			AssertTextEquals(
+				key_label = "Subtotal",
+				locator1 = "CommerceOrders#ORDER_VIEW_SUMMARY_FIELDS",
+				value1 = ${subtotalValue});
+		}
+
+		if (isSet(taxValue)) {
+			AssertTextEquals(
+				key_label = "Tax",
+				locator1 = "CommerceOrders#ORDER_VIEW_SUMMARY_FIELDS",
+				value1 = ${taxValue});
+		}
+
+		if (isSet(totalDiscountValue)) {
+			AssertTextEquals(
+				key_label = "Total Discount",
+				locator1 = "CommerceOrders#ORDER_VIEW_SUMMARY_FIELDS",
+				value1 = ${totalDiscountValue});
+		}
+
+		if (isSet(totalValue)) {
+			AssertTextEquals(
+				key_label = "Total",
+				locator1 = "CommerceOrders#ORDER_VIEW_SUMMARY_FIELDS_TOTAL",
+				value1 = ${totalValue});
 		}
 	}
 

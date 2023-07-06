@@ -68,11 +68,17 @@ definition {
 			var shipmentItems = "";
 		}
 
-		var userLoginInfo = JSONUtil2.formatJSONUser();
+		if (!(isSet(userEmailAddress))) {
+			var userEmailAddress = "test@liferay.com";
+		}
+
+		if (!(isSet(userPassword))) {
+			var userPassword = "test";
+		}
 
 		var curl = '''
 			${baseURL}/o/headless-commerce-admin-shipment/v1.0/shipments \
-				-u ${userLoginInfo} \
+				-u ${userEmailAddress}:${userPassword} \
 				-H 'accept: application/json' \
 				-H 'Content-Type: application/json' \
 				-d '{
@@ -178,11 +184,17 @@ definition {
 			var baseURL = PropsUtil.get("portal.url");
 		}
 
-		var userLoginInfo = JSONUtil2.formatJSONUser();
+		if (!(isSet(userEmailAddress))) {
+			var userEmailAddress = "test@liferay.com";
+		}
+
+		if (!(isSet(userPassword))) {
+			var userPassword = "test";
+		}
 
 		var curl = '''
 			${baseURL}/o/headless-commerce-admin-shipment/v1.0/shipments/${shipmentId}/status-${shipmentStatus} \
-				-u ${userLoginInfo} \
+				-u ${userEmailAddress}:${userPassword} \
 				-H 'accept: application/json' \
 				-d '{ }'
 		''';

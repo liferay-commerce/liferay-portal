@@ -173,4 +173,56 @@ definition {
 		return ${channelsCount};
 	}
 
+	macro _patchCommerceChannel {
+		Variables.assertDefined(parameterList = ${channelName});
+
+		var accountEntryId = JSONAccountEntryAPI._getAccountEntryId(accountEntryName = ${accountEntryName});
+		var baseURL = ${baseURL};
+		var fieldsList = ListUtil.newList();
+		var channelId = CommerceJSONChannelsAPI._getCommerceChannelIdByName(channelName = ${channelName});
+
+		if (!(isSet(baseURL))) {
+			var baseURL = PropsUtil.get("portal.url");
+		}
+
+		if (isSet(accountEntryName)) {
+			var accountEntryId = '''"accountId": ${accountEntryId}''';
+
+			ListUtil.add(${fieldsList}, ${accountEntryId});
+		}
+
+		if (isSet(channelName)) {
+			var channelName = '''"name": "${channelName}"''';
+
+			ListUtil.add(${fieldsList}, ${channelName});
+		}
+
+		if (isSet(currencyCode)) {
+			var currencyCode = '''"currencyCode": "${currencyCode}"''';
+
+			ListUtil.add(${fieldsList}, ${currencyCode});
+		}
+
+		if (isSet(externalReferenceCode)) {
+			var externalReferenceCode = '''"externalReferenceCode": "${externalReferenceCode}"''';
+
+			ListUtil.add(${fieldsList}, ${externalReferenceCode});
+		}
+
+		var fieldsList = ListUtil.toString(${fieldsList});
+
+		var payload = CommerceUtilities.getPayloadFromFieldsList(fieldsList = ${fieldsList});
+		var userLoginInfo = JSONUtil2.formatJSONUser();
+
+		var curl = '''
+			${baseURL}/o/headless-commerce-admin-channel/v1.0/channels/${channelId} \
+				-u ${userLoginInfo} \
+				-H 'accept: application/json' \
+				-H 'Content-Type: application/json' \
+				-d '{${payload}}'
+		''';
+
+		JSONCurlUtil.patch(${curl});
+	}
+
 }
