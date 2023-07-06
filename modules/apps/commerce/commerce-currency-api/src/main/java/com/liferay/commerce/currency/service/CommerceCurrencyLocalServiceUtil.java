@@ -287,7 +287,7 @@ public class CommerceCurrencyLocalServiceUtil {
 	}
 
 	public static List<CommerceCurrency> getCommerceCurrencies(
-		long companyId, boolean active, int start, int end,
+		long companyId, Boolean active, int start, int end,
 		OrderByComparator<CommerceCurrency> orderByComparator) {
 
 		return getService().getCommerceCurrencies(
@@ -316,7 +316,7 @@ public class CommerceCurrencyLocalServiceUtil {
 	}
 
 	public static int getCommerceCurrenciesCount(
-		long companyId, boolean active) {
+		long companyId, Boolean active) {
 
 		return getService().getCommerceCurrenciesCount(companyId, active);
 	}
@@ -396,6 +396,16 @@ public class CommerceCurrencyLocalServiceUtil {
 		throws Exception {
 
 		getService().importDefaultValues(updateExchangeRate, serviceContext);
+	}
+
+	public static com.liferay.portal.kernel.search.BaseModelSearchResult
+		<CommerceCurrency> searchCommerceCurrencies(
+				long companyId, String keywords, Boolean navigationActive,
+				int start, int end, com.liferay.portal.kernel.search.Sort sort)
+			throws PortalException {
+
+		return getService().searchCommerceCurrencies(
+			companyId, keywords, navigationActive, start, end, sort);
 	}
 
 	public static CommerceCurrency setActive(

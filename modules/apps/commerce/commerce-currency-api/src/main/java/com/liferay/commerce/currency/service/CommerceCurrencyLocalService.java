@@ -27,8 +27,10 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.model.SystemEventConstants;
+import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -86,6 +88,7 @@ public interface CommerceCurrencyLocalService
 	public CommerceCurrency addCommerceCurrency(
 		CommerceCurrency commerceCurrency);
 
+	@Indexable(type = IndexableType.REINDEX)
 	public CommerceCurrency addCommerceCurrency(
 			long userId, String code, Map<Locale, String> nameMap,
 			String symbol, BigDecimal rate,
@@ -260,7 +263,7 @@ public interface CommerceCurrencyLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommerceCurrency> getCommerceCurrencies(
-		long companyId, boolean active, int start, int end,
+		long companyId, Boolean active, int start, int end,
 		OrderByComparator<CommerceCurrency> orderByComparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -280,7 +283,7 @@ public interface CommerceCurrencyLocalService
 	public int getCommerceCurrenciesCount(long companyId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceCurrenciesCount(long companyId, boolean active);
+	public int getCommerceCurrenciesCount(long companyId, Boolean active);
 
 	/**
 	 * Returns the commerce currency with the primary key.
@@ -336,6 +339,12 @@ public interface CommerceCurrencyLocalService
 			boolean updateExchangeRate, ServiceContext serviceContext)
 		throws Exception;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public BaseModelSearchResult<CommerceCurrency> searchCommerceCurrencies(
+			long companyId, String keywords, Boolean navigationActive,
+			int start, int end, Sort sort)
+		throws PortalException;
+
 	public CommerceCurrency setActive(long commerceCurrencyId, boolean active)
 		throws PortalException;
 
@@ -356,6 +365,7 @@ public interface CommerceCurrencyLocalService
 	public CommerceCurrency updateCommerceCurrency(
 		CommerceCurrency commerceCurrency);
 
+	@Indexable(type = IndexableType.REINDEX)
 	public CommerceCurrency updateCommerceCurrency(
 			long commerceCurrencyId, Map<Locale, String> nameMap, String symbol,
 			BigDecimal rate, Map<Locale, String> formatPatternMap,

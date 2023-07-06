@@ -66,7 +66,7 @@ public class CommerceCurrencyServiceUtil {
 	}
 
 	public static List<CommerceCurrency> getCommerceCurrencies(
-			long companyId, boolean active, int start, int end,
+			long companyId, Boolean active, int start, int end,
 			OrderByComparator<CommerceCurrency> orderByComparator)
 		throws PortalException {
 
@@ -89,7 +89,7 @@ public class CommerceCurrencyServiceUtil {
 		return getService().getCommerceCurrenciesCount(companyId);
 	}
 
-	public static int getCommerceCurrenciesCount(long companyId, boolean active)
+	public static int getCommerceCurrenciesCount(long companyId, Boolean active)
 		throws PortalException {
 
 		return getService().getCommerceCurrenciesCount(companyId, active);
@@ -115,6 +115,16 @@ public class CommerceCurrencyServiceUtil {
 	 */
 	public static String getOSGiServiceIdentifier() {
 		return getService().getOSGiServiceIdentifier();
+	}
+
+	public static com.liferay.portal.kernel.search.BaseModelSearchResult
+		<CommerceCurrency> searchCommerceCurrencies(
+				long companyId, String keywords, Boolean navigationActive,
+				int start, int end, com.liferay.portal.kernel.search.Sort sort)
+			throws PortalException {
+
+		return getService().searchCommerceCurrencies(
+			companyId, keywords, navigationActive, start, end, sort);
 	}
 
 	public static CommerceCurrency setActive(

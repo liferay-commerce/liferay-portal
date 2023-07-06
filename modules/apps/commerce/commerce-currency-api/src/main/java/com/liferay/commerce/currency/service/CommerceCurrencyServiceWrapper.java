@@ -71,7 +71,7 @@ public class CommerceCurrencyServiceWrapper
 	@Override
 	public java.util.List<com.liferay.commerce.currency.model.CommerceCurrency>
 			getCommerceCurrencies(
-				long companyId, boolean active, int start, int end,
+				long companyId, Boolean active, int start, int end,
 				com.liferay.portal.kernel.util.OrderByComparator
 					<com.liferay.commerce.currency.model.CommerceCurrency>
 						orderByComparator)
@@ -102,7 +102,7 @@ public class CommerceCurrencyServiceWrapper
 	}
 
 	@Override
-	public int getCommerceCurrenciesCount(long companyId, boolean active)
+	public int getCommerceCurrenciesCount(long companyId, Boolean active)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _commerceCurrencyService.getCommerceCurrenciesCount(
@@ -133,6 +133,19 @@ public class CommerceCurrencyServiceWrapper
 	@Override
 	public String getOSGiServiceIdentifier() {
 		return _commerceCurrencyService.getOSGiServiceIdentifier();
+	}
+
+	@Override
+	public com.liferay.portal.kernel.search.BaseModelSearchResult
+		<com.liferay.commerce.currency.model.CommerceCurrency>
+				searchCommerceCurrencies(
+					long companyId, String keywords, Boolean navigationActive,
+					int start, int end,
+					com.liferay.portal.kernel.search.Sort sort)
+			throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceCurrencyService.searchCommerceCurrencies(
+			companyId, keywords, navigationActive, start, end, sort);
 	}
 
 	@Override
