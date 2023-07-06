@@ -22,6 +22,8 @@ public class CPField {
 	public static final String ACCOUNT_GROUP_FILTER_ENABLED =
 		"accountGroupFilterEnabled";
 
+	public static final String ACTIVE = "active";
+
 	public static final String BASE_PRICE = "basePrice";
 
 	public static final String CATALOG_DEFAULT_LANGUAGE_ID =
@@ -36,6 +38,8 @@ public class CPField {
 	public static final String CHANNEL_IDS = "channelIds";
 
 	public static final String CHANNEL_NAMES = "channelNames";
+
+	public static final String CODE = "code";
 
 	public static final String COMMERCE_CATALOG_GROUP_ID =
 		"commerceCatalogGroupId";
