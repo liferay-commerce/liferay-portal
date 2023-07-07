@@ -76,6 +76,8 @@ function MiniCart({
 	const closeCart = () => setIsOpen(false);
 	const openCart = () => setIsOpen(true);
 
+	const [replacementSKUList, setReplacementSKUList] = useState([]);
+
 	const resetCartState = useCallback(
 		({accountId = 0}) =>
 			setCartState({
@@ -127,6 +129,22 @@ function MiniCart({
 		[onAddToCart]
 	);
 
+	const updateReplacedSKUList = useCallback(
+		() =>
+			cartState.cartItems
+				? setReplacementSKUList(
+						cartState.cartItems.filter(
+							({replacedSku: replacedSKU}) => Boolean(replacedSKU)
+						)
+				  )
+				: null,
+		[cartState.cartItems]
+	);
+
+	useEffect(() => {
+		updateReplacedSKUList();
+	}, [updateReplacedSKUList]);
+
 	useEffect(() => {
 		resolveCartViews(cartViews).then((views) => setCartViews(views));
 	}, [cartViews]);
@@ -167,9 +185,11 @@ function MiniCart({
 				labels: {...DEFAULT_LABELS, ...labels},
 				openCart,
 				productURLSeparator,
+				replacementSKUList,
 				requestQuoteEnabled,
 				setCartState,
 				setIsUpdating,
+				setReplacementSKUList,
 				summaryDataMapper,
 				toggleable,
 				updateCartModel,

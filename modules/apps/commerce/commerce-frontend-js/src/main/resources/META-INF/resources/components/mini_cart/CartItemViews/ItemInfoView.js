@@ -12,6 +12,10 @@
  * details.
  */
 
+import ClayIcon from '@clayui/icon';
+import ClayLabel from '@clayui/label';
+import {ClayTooltipProvider} from '@clayui/tooltip';
+import {sub} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -41,6 +45,28 @@ function ItemInfoViewBundle({childItems}) {
 	);
 }
 
+function ItemInfoViewReplacement({replacedSku}) {
+	return (
+		<div className="item-info-replacement">
+			<ClayLabel displayType="info">
+				{Liferay.Language.get('replacement')}
+			</ClayLabel>
+
+			<ClayTooltipProvider>
+				<span
+					data-tooltip-align="left"
+					title={sub(
+						Liferay.Language.get('replacement-product-for-x'),
+						replacedSku
+					)}
+				>
+					<ClayIcon aria-label="Info" symbol="info-circle" />
+				</span>
+			</ClayTooltipProvider>
+		</div>
+	);
+}
+
 function ItemInfoViewBase({name, sku}) {
 	return (
 		<div className="item-info-base">
@@ -51,13 +77,18 @@ function ItemInfoViewBase({name, sku}) {
 	);
 }
 
-function ItemInfoView({childItems = [], name, options = '', sku}) {
+function ItemInfoView({childItems = [], name, options = '', replacedSku, sku}) {
+	const hasReplacement = !!replacedSku;
 	const isBundle = !!childItems.length;
 	const hasOptions = !!options;
 
 	return (
 		<>
 			<ItemInfoViewBase name={name} sku={sku} />
+
+			{hasReplacement && (
+				<ItemInfoViewReplacement replacedSku={replacedSku} />
+			)}
 
 			{isBundle && <ItemInfoViewBundle childItems={childItems} />}
 
