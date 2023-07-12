@@ -219,7 +219,8 @@ public class PendingCommerceOrderItemFDSDataProvider
 
 		if (commerceOrderItemPrice.isPriceOnApplication()) {
 			return _language.get(
-				locale, CommercePriceConstants.PRICE_ON_APPLICATION);
+				locale,
+				CommercePriceConstants.PRICE_VALUE_PRICE_ON_APPLICATION);
 		}
 
 		CommerceMoney unitPriceCommerceMoney =
@@ -239,7 +240,8 @@ public class PendingCommerceOrderItemFDSDataProvider
 				promoPriceCommerceMoney.getPrice(), BigDecimal.ZERO)) {
 
 			return _language.get(
-				locale, CommercePriceConstants.PRICE_ON_APPLICATION);
+				locale,
+				CommercePriceConstants.PRICE_VALUE_PRICE_ON_APPLICATION);
 		}
 
 		return unitPriceCommerceMoney.format(locale);
