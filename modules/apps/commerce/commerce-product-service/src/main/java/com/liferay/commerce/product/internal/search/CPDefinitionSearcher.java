@@ -51,14 +51,23 @@ public class CPDefinitionSearcher extends BaseSearcher {
 			CPField.DEFAULT_IMAGE_FILE_URL, CPField.DEFAULT_IMAGE_FILE_URL,
 			CPField.DEPTH, CPField.HEIGHT, CPField.IS_IGNORE_SKU_COMBINATIONS,
 			CPField.PRODUCT_TYPE_NAME, CPField.SHORT_DESCRIPTION,
-			Field.DESCRIPTION, Field.ENTRY_CLASS_NAME, Field.ENTRY_CLASS_PK,
-			Field.GROUP_ID, Field.NAME, Field.UID, Field.URL);
+			Field.COMPANY_ID, Field.DESCRIPTION, Field.ENTRY_CLASS_NAME,
+			Field.ENTRY_CLASS_PK, Field.GROUP_ID, Field.MODIFIED_DATE,
+			Field.NAME, Field.SCOPE_GROUP_ID, Field.UID, Field.URL);
+
 		setDefaultSelectedLocalizedFieldNames(Field.NAME);
+		setFilterSearch(true);
+		setPermissionAware(true);
+	}
+
+	@Override
+	public String getClassName() {
+		return _CLASS_NAME;
 	}
 
 	@Override
 	public String[] getSearchClassNames() {
-		return new String[] {CPDefinition.class.getName()};
+		return new String[] {_CLASS_NAME};
 	}
 
 	@Override
@@ -413,6 +422,8 @@ public class CPDefinitionSearcher extends BaseSearcher {
 
 		queryBooleanFilter.add(tagIgsTermsFilter, BooleanClauseOccur.MUST_NOT);
 	}
+
+	private static final String _CLASS_NAME = CPDefinition.class.getName();
 
 	private final CPQuery _cpQuery;
 
