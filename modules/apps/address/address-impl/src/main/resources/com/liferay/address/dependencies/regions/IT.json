@@ -64,7 +64,7 @@
 		"regionCode": "BO"
 	},
 	{
-		"name": "Bolzano",
+		"name": "Bozen",
 		"regionCode": "BZ"
 	},
 	{
@@ -158,6 +158,10 @@
 	{
 		"name": "Forlì-Cesena",
 		"regionCode": "FC"
+	},
+	{
+		"name": "Friuli Venezia Giulia",
+		"regionCode": "36"
 	},
 	{
 		"name": "Frosinone",
@@ -380,12 +384,20 @@
 		"regionCode": "SA"
 	},
 	{
+		"name": "Sardegna",
+		"regionCode": "88"
+	},
+	{
 		"name": "Sassari",
 		"regionCode": "SS"
 	},
 	{
 		"name": "Savona",
 		"regionCode": "SV"
+	},
+	{
+		"name": "Sicilia",
+		"regionCode": "82"
 	},
 	{
 		"name": "Siena",
@@ -428,6 +440,10 @@
 		"regionCode": "TP"
 	},
 	{
+		"name": "Trentino-Südtirol",
+		"regionCode": "32"
+	},
+	{
 		"name": "Trento",
 		"regionCode": "TN"
 	},
@@ -446,6 +462,10 @@
 	{
 		"name": "Umbria",
 		"regionCode": "55"
+	},
+	{
+		"name": "Val d'Aoste",
+		"regionCode": "23"
 	},
 	{
 		"name": "Varese",

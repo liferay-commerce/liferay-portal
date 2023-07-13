@@ -1,26 +1,26 @@
 [
 	{
-		"name": "HaDarom",
-		"regionCode": "D"
-	},
-	{
-		"name": "HaMerkaz",
+		"name": "Al Awsaţ",
 		"regionCode": "M"
 	},
 	{
-		"name": "HaTsafon",
+		"name": "Al Janūbī",
+		"regionCode": "D"
+	},
+	{
+		"name": "Al Quds",
+		"regionCode": "JM"
+	},
+	{
+		"name": "Ash Shamālī",
 		"regionCode": "Z"
 	},
 	{
-		"name": "H̱efa",
+		"name": "Ḩayfā",
 		"regionCode": "HA"
 	},
 	{
-		"name": "Tel-Aviv",
+		"name": "Tall Abīb",
 		"regionCode": "TA"
-	},
-	{
-		"name": "Yerushalayim",
-		"regionCode": "JM"
 	}
 ]

@@ -1,0 +1,106 @@
+[
+	{
+		"name": "Amasunu",
+		"regionCode": "AMA"
+	},
+	{
+		"name": "Ankashu",
+		"regionCode": "ANC"
+	},
+	{
+		"name": "Apurimaq",
+		"regionCode": "APU"
+	},
+	{
+		"name": "Arikipa",
+		"regionCode": "ARE"
+	},
+	{
+		"name": "Ayaquchu",
+		"regionCode": "AYA"
+	},
+	{
+		"name": "Ika",
+		"regionCode": "ICA"
+	},
+	{
+		"name": "Junin",
+		"regionCode": "JUN"
+	},
+	{
+		"name": "Kallao",
+		"regionCode": "CAL"
+	},
+	{
+		"name": "Kusku",
+		"regionCode": "CUS"
+	},
+	{
+		"name": "La Libertad",
+		"regionCode": "LAL"
+	},
+	{
+		"name": "Lambayeque",
+		"regionCode": "LAM"
+	},
+	{
+		"name": "Lima",
+		"regionCode": "LIM"
+	},
+	{
+		"name": "Lima hatun llaqta",
+		"regionCode": "LMA"
+	},
+	{
+		"name": "Luritu",
+		"regionCode": "LOR"
+	},
+	{
+		"name": "Madre de Dios",
+		"regionCode": "MDD"
+	},
+	{
+		"name": "Moqwegwa",
+		"regionCode": "MOQ"
+	},
+	{
+		"name": "Pasqu",
+		"regionCode": "PAS"
+	},
+	{
+		"name": "Piura",
+		"regionCode": "PIU"
+	},
+	{
+		"name": "Puno",
+		"regionCode": "PUN"
+	},
+	{
+		"name": "Qajamarka",
+		"regionCode": "CAJ"
+	},
+	{
+		"name": "San Martín",
+		"regionCode": "SAM"
+	},
+	{
+		"name": "Takna",
+		"regionCode": "TAC"
+	},
+	{
+		"name": "Tumbes",
+		"regionCode": "TUM"
+	},
+	{
+		"name": "Ukayali",
+		"regionCode": "UCA"
+	},
+	{
+		"name": "Wankawelika",
+		"regionCode": "HUV"
+	},
+	{
+		"name": "Wanuku",
+		"regionCode": "HUC"
+	}
+]

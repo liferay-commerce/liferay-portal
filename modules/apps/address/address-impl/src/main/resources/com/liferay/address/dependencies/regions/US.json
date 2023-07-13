@@ -8,6 +8,10 @@
 		"regionCode": "AK"
 	},
 	{
+		"name": "American Samoa (see also separate country code entry under AS)",
+		"regionCode": "AS"
+	},
+	{
 		"name": "Arizona",
 		"regionCode": "AZ"
 	},
@@ -28,12 +32,12 @@
 		"regionCode": "CT"
 	},
 	{
-		"name": "District of Columbia",
-		"regionCode": "DC"
-	},
-	{
 		"name": "Delaware",
 		"regionCode": "DE"
+	},
+	{
+		"name": "District of Columbia",
+		"regionCode": "DC"
 	},
 	{
 		"name": "Florida",
@@ -42,6 +46,10 @@
 	{
 		"name": "Georgia",
 		"regionCode": "GA"
+	},
+	{
+		"name": "Guam (see also separate country code entry under GU)",
+		"regionCode": "GU"
 	},
 	{
 		"name": "Hawaii",
@@ -140,6 +148,10 @@
 		"regionCode": "ND"
 	},
 	{
+		"name": "Northern Mariana Islands (see also separate country code entry under MP)",
+		"regionCode": "MP"
+	},
+	{
 		"name": "Ohio",
 		"regionCode": "OH"
 	},
@@ -156,7 +168,7 @@
 		"regionCode": "PA"
 	},
 	{
-		"name": "Puerto Rico",
+		"name": "Puerto Rico (see also separate country code entry under PR)",
 		"regionCode": "PR"
 	},
 	{
@@ -180,12 +192,20 @@
 		"regionCode": "TX"
 	},
 	{
+		"name": "United States Minor Outlying Islands (see also separate country code entry under UM)",
+		"regionCode": "UM"
+	},
+	{
 		"name": "Utah",
 		"regionCode": "UT"
 	},
 	{
 		"name": "Vermont",
 		"regionCode": "VT"
+	},
+	{
+		"name": "Virgin Islands, U.S. (see also separate country code entry under VI)",
+		"regionCode": "VI"
 	},
 	{
 		"name": "Virginia",

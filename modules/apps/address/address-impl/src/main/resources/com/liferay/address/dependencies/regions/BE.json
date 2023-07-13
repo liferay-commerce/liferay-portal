@@ -8,7 +8,7 @@
 		"regionCode": "WBR"
 	},
 	{
-		"name": "Brussels-Capital Region",
+		"name": "Bruxelles-Capitale, Région de",
 		"regionCode": "BRU"
 	},
 	{
@@ -16,12 +16,12 @@
 		"regionCode": "WHT"
 	},
 	{
-		"name": "Limburg",
-		"regionCode": "VLI"
-	},
-	{
 		"name": "Liège",
 		"regionCode": "WLG"
+	},
+	{
+		"name": "Limburg",
+		"regionCode": "VLI"
 	},
 	{
 		"name": "Luxembourg",
@@ -44,7 +44,7 @@
 		"regionCode": "VBR"
 	},
 	{
-		"name": "Walloon Region",
+		"name": "wallonne, Région",
 		"regionCode": "WAL"
 	},
 	{

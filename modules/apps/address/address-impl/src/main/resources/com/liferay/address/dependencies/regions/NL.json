@@ -1,10 +1,14 @@
 [
 	{
-		"name": "Bonaire",
+		"name": "Aruba (see also separate country code entry under AW)",
+		"regionCode": "AW"
+	},
+	{
+		"name": "Bonaire (see also separate country code entry under BQ)",
 		"regionCode": "BQ1"
 	},
 	{
-		"name": "Curacao",
+		"name": "Curaçao (see also separate country code entry under CW)",
 		"regionCode": "CW"
 	},
 	{
@@ -16,7 +20,7 @@
 		"regionCode": "FL"
 	},
 	{
-		"name": "Fryslan",
+		"name": "Fryslân",
 		"regionCode": "FR"
 	},
 	{
@@ -44,12 +48,16 @@
 		"regionCode": "OV"
 	},
 	{
-		"name": "Saba",
+		"name": "Saba (see also separate country code entry under BQ)",
 		"regionCode": "BQ2"
 	},
 	{
-		"name": "Sint Eustatuis",
+		"name": "Sint Eustatius (see also separate country code entry under BQ)",
 		"regionCode": "BQ3"
+	},
+	{
+		"name": "Sint Maarten (see also separate country code entry under SX)",
+		"regionCode": "SX"
 	},
 	{
 		"name": "Utrecht",

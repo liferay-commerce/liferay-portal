@@ -1,15 +1,15 @@
 [
 	{
-		"name": "A Coruña",
+		"name": "A Coruña [La Coruña]",
 		"regionCode": "C"
+	},
+	{
+		"name": "Alacant*",
+		"regionCode": "A"
 	},
 	{
 		"name": "Albacete",
 		"regionCode": "AB"
-	},
-	{
-		"name": "Alicante",
-		"regionCode": "A"
 	},
 	{
 		"name": "Almería",
@@ -20,16 +20,12 @@
 		"regionCode": "AN"
 	},
 	{
-		"name": "Araba/Álava",
+		"name": "Araba*",
 		"regionCode": "VI"
 	},
 	{
 		"name": "Aragón",
 		"regionCode": "AR"
-	},
-	{
-		"name": "Asturias",
-		"regionCode": "O"
 	},
 	{
 		"name": "Asturias, Principado de",
@@ -44,11 +40,7 @@
 		"regionCode": "BA"
 	},
 	{
-		"name": "Balears",
-		"regionCode": "PM"
-	},
-	{
-		"name": "Barcelona",
+		"name": "Barcelona [Barcelona]",
 		"regionCode": "B"
 	},
 	{
@@ -76,11 +68,7 @@
 		"regionCode": "CB"
 	},
 	{
-		"name": "Cantabria (autonomous)",
-		"regionCode": "S"
-	},
-	{
-		"name": "Castelló",
+		"name": "Castelló*",
 		"regionCode": "CS"
 	},
 	{
@@ -92,7 +80,7 @@
 		"regionCode": "CM"
 	},
 	{
-		"name": "Catalunya",
+		"name": "Catalunya [Cataluña]",
 		"regionCode": "CT"
 	},
 	{
@@ -112,11 +100,15 @@
 		"regionCode": "CU"
 	},
 	{
+		"name": "Euskal Herria",
+		"regionCode": "PV"
+	},
+	{
 		"name": "Extremadura",
 		"regionCode": "EX"
 	},
 	{
-		"name": "Galicia",
+		"name": "Galicia [Galicia]",
 		"regionCode": "GA"
 	},
 	{
@@ -124,7 +116,7 @@
 		"regionCode": "SS"
 	},
 	{
-		"name": "Girona",
+		"name": "Girona [Gerona]",
 		"regionCode": "GI"
 	},
 	{
@@ -144,7 +136,7 @@
 		"regionCode": "HU"
 	},
 	{
-		"name": "Illes Balears",
+		"name": "Illes Balears [Islas Baleares]",
 		"regionCode": "IB"
 	},
 	{
@@ -153,11 +145,11 @@
 	},
 	{
 		"name": "La Rioja",
-		"regionCode": "LO"
+		"regionCode": "RI"
 	},
 	{
-		"name": "La Rioja (autonomous)",
-		"regionCode": "RI"
+		"name": "La Rioja",
+		"regionCode": "LO"
 	},
 	{
 		"name": "Las Palmas",
@@ -168,16 +160,12 @@
 		"regionCode": "LE"
 	},
 	{
-		"name": "Lleida",
+		"name": "Lleida [Lérida]",
 		"regionCode": "L"
 	},
 	{
-		"name": "Lugo",
+		"name": "Lugo [Lugo]",
 		"regionCode": "LU"
-	},
-	{
-		"name": "Madrid",
-		"regionCode": "M"
 	},
 	{
 		"name": "Madrid, Comunidad de",
@@ -200,27 +188,23 @@
 		"regionCode": "MC"
 	},
 	{
-		"name": "Navarra",
-		"regionCode": "NA"
-	},
-	{
-		"name": "Navarra, Comunidad Foral de",
+		"name": "Nafarroako Foru Komunitatea*",
 		"regionCode": "NC"
 	},
 	{
-		"name": "Ourense",
+		"name": "Ourense [Orense]",
 		"regionCode": "OR"
-	},
-	{
-		"name": "Pais Vasco",
-		"regionCode": "PV"
 	},
 	{
 		"name": "Palencia",
 		"regionCode": "P"
 	},
 	{
-		"name": "Pontevedra",
+		"name": "País Vasco",
+		"regionCode": "PV"
+	},
+	{
+		"name": "Pontevedra [Pontevedra]",
 		"regionCode": "PO"
 	},
 	{
@@ -244,7 +228,7 @@
 		"regionCode": "SO"
 	},
 	{
-		"name": "Tarragona",
+		"name": "Tarragona [Tarragona]",
 		"regionCode": "T"
 	},
 	{
@@ -256,11 +240,11 @@
 		"regionCode": "TO"
 	},
 	{
-		"name": "Valencia",
+		"name": "València*",
 		"regionCode": "V"
 	},
 	{
-		"name": "Valenciana, Comunidad",
+		"name": "Valenciana, Comunitat*",
 		"regionCode": "VC"
 	},
 	{

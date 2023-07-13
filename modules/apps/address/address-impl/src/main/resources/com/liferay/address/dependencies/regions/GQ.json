@@ -1,0 +1,42 @@
+[
+	{
+		"name": "Annobon",
+		"regionCode": "AN"
+	},
+	{
+		"name": "Bioko Nord",
+		"regionCode": "BN"
+	},
+	{
+		"name": "Bioko Sud",
+		"regionCode": "BS"
+	},
+	{
+		"name": "Centro Sud",
+		"regionCode": "CS"
+	},
+	{
+		"name": "Djibloho",
+		"regionCode": "DJ"
+	},
+	{
+		"name": "Kié-Ntem",
+		"regionCode": "KN"
+	},
+	{
+		"name": "Littoral",
+		"regionCode": "LI"
+	},
+	{
+		"name": "Région Continentale",
+		"regionCode": "C"
+	},
+	{
+		"name": "Région Insulaire",
+		"regionCode": "I"
+	},
+	{
+		"name": "Wele-Nzas",
+		"regionCode": "WN"
+	}
+]
