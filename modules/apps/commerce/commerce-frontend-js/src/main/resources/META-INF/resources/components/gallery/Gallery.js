@@ -59,10 +59,10 @@ export default class Gallery extends React.Component {
 		);
 	}
 
-	_handleImagesUpdate({formFields}) {
+	_handleImagesUpdate({cpInstance}) {
 		const {namespace, viewCPAttachmentURL} = this.props;
 
-		updateGallery(formFields, namespace, viewCPAttachmentURL).then(
+		updateGallery(cpInstance.skuOptions, namespace, viewCPAttachmentURL).then(
 			(selectedImage) => {
 				const selectedImageIndex =
 					this.state.images.length > 1
