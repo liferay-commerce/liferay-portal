@@ -14,6 +14,8 @@
 
 package com.liferay.commerce.product.option;
 
+import com.liferay.commerce.product.model.CPDefinitionOptionRel;
+
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,14 +30,9 @@ public interface CommerceOptionType {
 
 	public String getLabel(Locale locale);
 
-	public boolean isPriceContributor(long cpDefinitionOptionRelId);
-
-	public boolean isRequired(long cpDefinitionOptionRelId);
-
-	public boolean isSKUContributor(long cpDefinitionOptionRelId);
-
 	public void render(
-			long cpDefinitionOptionRelId, long cpDefinitionOptionValueRelId,
+			CPDefinitionOptionRel cpDefinitionOptionRel,
+			long defaultCPInstanceId, boolean forceRequired, String json,
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse)
 		throws Exception;
