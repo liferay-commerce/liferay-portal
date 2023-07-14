@@ -66,8 +66,7 @@ public class ViewCPAttachmentsMVCResourceCommand
 		int type = ParamUtil.getInteger(
 			resourceRequest, "type", CPAttachmentFileEntryConstants.TYPE_IMAGE);
 
-		String ddmFormValues = ParamUtil.getString(
-			resourceRequest, "ddmFormValues");
+		String skuOptions = ParamUtil.getString(resourceRequest, "skuOptions");
 
 		long cpDefinitionId = ParamUtil.getLong(
 			resourceRequest, "cpDefinitionId");
@@ -84,7 +83,7 @@ public class ViewCPAttachmentsMVCResourceCommand
 				_cpInstanceHelper.getCPAttachmentFileEntries(
 					commerceAccountId,
 					commerceContext.getCommerceChannelGroupId(), cpDefinitionId,
-					ddmFormValues, type);
+					skuOptions, type);
 
 			for (CPAttachmentFileEntry cpAttachmentFileEntry :
 					cpAttachmentFileEntries) {
