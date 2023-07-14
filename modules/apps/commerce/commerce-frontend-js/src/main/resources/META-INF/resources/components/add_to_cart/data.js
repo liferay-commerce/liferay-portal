@@ -17,9 +17,19 @@ import {CURRENT_ORDER_UPDATED} from '../../utilities/eventsDefinitions';
 
 const CartResource = ServiceProvider.DeliveryCartAPI('v1');
 
-function formatCartItem(cpInstance) {
+function formatCartItem(
+	cpInstance, namespace, skuOptions, skuOptionsNamespace) {
+
+	let optionsJSON = cpInstance.skuOptions || [];
+
+	if (namespace && skuOptionsNamespace &&
+		(namespace === skuOptionsNamespace)) {
+
+		optionsJSON = skuOptions;
+	}
+
 	return {
-		options: JSON.stringify(cpInstance.skuOptions || []),
+		options: JSON.stringify(optionsJSON),
 		quantity: cpInstance.quantity,
 		skuId: cpInstance.skuId,
 	};
@@ -30,12 +40,15 @@ export async function addToCart(
 	cartId,
 	channel,
 	accountId,
-	orderTypeId
+	orderTypeId,
+	namespace,
+	skuOptions,
+	skuOptionsNamespace
 ) {
 	if (!cartId) {
 		const newCart = await CartResource.createCartByChannelId(channel.id, {
 			accountId,
-			cartItems: cpInstances.map(formatCartItem),
+			cartItems: cpInstances.map(cpInstance => formatCartItem(cpInstance, namespace, skuOptions, skuOptionsNamespace)),
 			currencyCode: channel.currencyCode,
 			orderTypeId,
 		});
@@ -48,7 +61,7 @@ export async function addToCart(
 	if (cpInstances.length === 1) {
 		await CartResource.createItemByCartId(
 			cartId,
-			formatCartItem(cpInstances[0])
+			formatCartItem(cpInstances[0], namespace, skuOptions, skuOptionsNamespace)
 		);
 
 		const updatedCart = await CartResource.getCartByIdWithItems(cartId);
@@ -74,7 +87,7 @@ export async function addToCart(
 			includedCartItem.quantity += cpInstance.quantity;
 		}
 		else {
-			updatedCartItems.push(formatCartItem(cpInstance));
+			updatedCartItems.push(formatCartItem(cpInstance, namespace, skuOptions, skuOptionsNamespace));
 		}
 	});
 
