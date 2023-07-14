@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.impl.BaseModelImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.LocalizationUtil;
@@ -128,10 +129,10 @@ public class CPDefinitionOptionValueRelModelImpl
 		"drop table CPDefinitionOptionValueRel";
 
 	public static final String ORDER_BY_JPQL =
-		" ORDER BY cpDefinitionOptionValueRel.priority ASC";
+		" ORDER BY cpDefinitionOptionValueRel.priority ASC, cpDefinitionOptionValueRel.createDate ASC";
 
 	public static final String ORDER_BY_SQL =
-		" ORDER BY CPDefinitionOptionValueRel.priority ASC";
+		" ORDER BY CPDefinitionOptionValueRel.priority ASC, CPDefinitionOptionValueRel.createDate ASC";
 
 	public static final String DATA_SOURCE = "liferayDataSource";
 
@@ -187,6 +188,13 @@ public class CPDefinitionOptionValueRelModelImpl
 	 */
 	@Deprecated
 	public static final long PRIORITY_COLUMN_BITMASK = 128L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *		#getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long CREATEDATE_COLUMN_BITMASK = 256L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -1160,6 +1168,13 @@ public class CPDefinitionOptionValueRelModelImpl
 		else {
 			value = 0;
 		}
+
+		if (value != 0) {
+			return value;
+		}
+
+		value = DateUtil.compareTo(
+			getCreateDate(), cpDefinitionOptionValueRel.getCreateDate());
 
 		if (value != 0) {
 			return value;

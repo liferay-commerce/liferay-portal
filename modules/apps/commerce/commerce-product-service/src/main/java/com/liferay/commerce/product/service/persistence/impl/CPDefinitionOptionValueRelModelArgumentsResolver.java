@@ -145,6 +145,8 @@ public class CPDefinitionOptionValueRelModelArgumentsResolver
 
 		orderByColumnsBitmask |=
 			CPDefinitionOptionValueRelModelImpl.getColumnBitmask("priority");
+		orderByColumnsBitmask |=
+			CPDefinitionOptionValueRelModelImpl.getColumnBitmask("createDate");
 
 		_ORDER_BY_COLUMNS_BITMASK = orderByColumnsBitmask;
 	}
