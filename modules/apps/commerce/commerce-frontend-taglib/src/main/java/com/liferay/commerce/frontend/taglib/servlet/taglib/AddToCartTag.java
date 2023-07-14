@@ -96,18 +96,12 @@ public class AddToCartTag extends IncludeTag {
 			}
 
 			CPSku cpSku = null;
-			boolean hasChildCPDefinitions = false;
 
 			if (_cpCatalogEntry != null) {
 				cpSku = _cpContentHelper.getDefaultCPSku(_cpCatalogEntry);
 
-				long cpDefinitionId = _cpCatalogEntry.getCPDefinitionId();
-
-				hasChildCPDefinitions = _cpContentHelper.hasChildCPDefinitions(
-					cpDefinitionId);
-
 				_productSettingsModel = _productHelper.getProductSettingsModel(
-					cpDefinitionId);
+					_cpCatalogEntry.getCPDefinitionId());
 
 				int multipleQuantity =
 					_productSettingsModel.getMultipleQuantity();
@@ -124,7 +118,7 @@ public class AddToCartTag extends IncludeTag {
 
 			String sku = null;
 
-			if ((cpSku != null) && !hasChildCPDefinitions) {
+			if (cpSku != null) {
 				_cpInstanceId = cpSku.getCPInstanceId();
 				_disabled = !cpSku.isPurchasable() || (_commerceAccountId == 0);
 				sku = cpSku.getSku();
