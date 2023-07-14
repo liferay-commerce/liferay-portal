@@ -22,6 +22,8 @@ CPCompareContentHelper cpCompareContentHelper = (CPCompareContentHelper)request.
 CPContentHelper cpContentHelper = (CPContentHelper)request.getAttribute(CPContentWebKeys.CP_CONTENT_HELPER);
 
 CPCatalogEntry cpCatalogEntry = cpContentHelper.getCPCatalogEntry(request);
+
+boolean hasMultipleCPSkus = cpContentHelper.hasMultipleCPSkus(cpCatalogEntry);
 %>
 
 <div class="cp-renderer">
@@ -53,13 +55,15 @@ CPCatalogEntry cpCatalogEntry = cpContentHelper.getCPCatalogEntry(request);
 				</c:choose>
 
 				<div class="aspect-ratio-item-bottom-left">
-					<commerce-ui:availability-label
-						CPCatalogEntry="<%= cpCatalogEntry %>"
-					/>
+					<c:if test="<%= !hasMultipleCPSkus %>">
+						<commerce-ui:availability-label
+							CPCatalogEntry="<%= cpCatalogEntry %>"
+						/>
 
-					<commerce-ui:discontinued-label
-						CPCatalogEntry="<%= cpCatalogEntry %>"
-					/>
+						<commerce-ui:discontinued-label
+							CPCatalogEntry="<%= cpCatalogEntry %>"
+						/>
+					</c:if>
 				</div>
 			</a>
 		</div>
@@ -68,12 +72,18 @@ CPCatalogEntry cpCatalogEntry = cpContentHelper.getCPCatalogEntry(request);
 			<div class="cp-information">
 
 				<%
+				String sku = StringPool.BLANK;
+
 				CPSku cpSku = cpContentHelper.getDefaultCPSku(cpCatalogEntry);
+
+				if (!hasMultipleCPSkus && (cpSku != null)) {
+					sku = cpSku.getSku();
+				}
 				%>
 
-				<p class="card-subtitle" title="<%= (cpSku == null) ? StringPool.BLANK : cpSku.getSku() %>">
+				<p class="card-subtitle" title="<%= sku %>">
 					<span class="text-truncate-inline">
-						<span class="text-truncate"><%= (cpSku == null) ? StringPool.BLANK : cpSku.getSku() %></span>
+						<span class="text-truncate"><%= sku %></span>
 					</span>
 				</p>
 
