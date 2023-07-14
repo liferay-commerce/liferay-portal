@@ -184,8 +184,8 @@ public class EditCPAttachmentFileEntryMVCActionCommand
 
 		boolean neverExpire = ParamUtil.getBoolean(
 			actionRequest, "neverExpire");
-		String ddmFormValues = ParamUtil.getString(
-			actionRequest, "ddmFormValues");
+		String cpInstanceOptions = ParamUtil.getString(
+			actionRequest, "cpInstanceOptions");
 		Map<Locale, String> titleMap = _localization.getLocalizationMap(
 			actionRequest, "title");
 		double priority = ParamUtil.getDouble(actionRequest, "priority");
@@ -205,7 +205,7 @@ public class EditCPAttachmentFileEntryMVCActionCommand
 				displayDateMonth, displayDateDay, displayDateYear,
 				displayDateHour, displayDateMinute, expirationDateMonth,
 				expirationDateDay, expirationDateYear, expirationDateHour,
-				expirationDateMinute, neverExpire, titleMap, ddmFormValues,
+				expirationDateMinute, neverExpire, titleMap, cpInstanceOptions,
 				priority, type, serviceContext);
 		}
 		else {
@@ -216,7 +216,7 @@ public class EditCPAttachmentFileEntryMVCActionCommand
 				displayDateDay, displayDateYear, displayDateHour,
 				displayDateMinute, expirationDateMonth, expirationDateDay,
 				expirationDateYear, expirationDateHour, expirationDateMinute,
-				neverExpire, titleMap, ddmFormValues, priority, type,
+				neverExpire, titleMap, cpInstanceOptions, priority, type,
 				serviceContext);
 		}
 	}
