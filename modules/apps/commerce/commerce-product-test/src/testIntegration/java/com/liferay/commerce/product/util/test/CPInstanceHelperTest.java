@@ -15,7 +15,6 @@
 package com.liferay.commerce.product.util.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.commerce.product.exception.CPDefinitionIgnoreSKUCombinationsException;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
@@ -307,7 +306,7 @@ public class CPInstanceHelperTest {
 			defaultCPInstance.getCPInstanceId());
 	}
 
-	@Test(expected = CPDefinitionIgnoreSKUCombinationsException.class)
+	@Test
 	public void testGetDefaultCPInstanceIfSKUContributorOptionPresent()
 		throws Exception {
 
@@ -367,8 +366,10 @@ public class CPInstanceHelperTest {
 			"Product approved instances count", 1,
 			approvedCPDefinitionInstances.size());
 
-		_cpInstanceHelper.getDefaultCPInstance(
-			cpDefinition.getCPDefinitionId());
+		Assert.assertEquals(
+			_cpInstanceHelper.getDefaultCPInstance(
+				cpDefinition.getCPDefinitionId()),
+			approvedCPDefinitionInstances.get(0));
 	}
 
 	@Test
