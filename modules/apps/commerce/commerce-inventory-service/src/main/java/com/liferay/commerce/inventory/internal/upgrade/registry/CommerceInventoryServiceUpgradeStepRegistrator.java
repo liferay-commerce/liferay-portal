@@ -183,6 +183,10 @@ public class CommerceInventoryServiceUpgradeStepRegistrator
 			"2.8.0", "2.9.0",
 			new CommerceInventoryWarehouseItemUpgradeProcess());
 
+		registry.register(
+			"2.9.0", "2.10.0",
+			new CommerceInventoryReplenishmentItemUpgradeProcess());
+
 		if (_log.isInfoEnabled()) {
 			_log.info("Commerce inventory upgrade step registrator finished");
 		}
