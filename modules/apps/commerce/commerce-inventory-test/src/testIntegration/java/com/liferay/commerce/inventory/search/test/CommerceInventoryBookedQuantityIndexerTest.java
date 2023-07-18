@@ -53,6 +53,8 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
+import java.math.BigDecimal;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -177,7 +179,7 @@ public class CommerceInventoryBookedQuantityIndexerTest {
 
 		CommerceInventoryBookedQuantity commerceInventoryBookedQuantity =
 			_commerceBookedQuantityLocalService.addCommerceBookedQuantity(
-				_user.getUserId(), null, 2, cpInstance.getSku(),
+				_user.getUserId(), null, new BigDecimal(2), cpInstance.getSku(),
 				StringPool.BLANK, Collections.emptyMap());
 
 		commerceOrderItem =
@@ -233,7 +235,7 @@ public class CommerceInventoryBookedQuantityIndexerTest {
 
 		CommerceInventoryBookedQuantity commerceInventoryBookedQuantity =
 			_commerceBookedQuantityLocalService.addCommerceBookedQuantity(
-				_user.getUserId(), null, 2, cpInstance.getSku(),
+				_user.getUserId(), null, new BigDecimal(2), cpInstance.getSku(),
 				StringPool.BLANK, Collections.emptyMap());
 
 		commerceOrderItem =

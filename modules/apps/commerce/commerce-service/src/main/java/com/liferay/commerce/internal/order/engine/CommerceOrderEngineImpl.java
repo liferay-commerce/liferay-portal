@@ -284,7 +284,7 @@ public class CommerceOrderEngineImpl implements CommerceOrderEngine {
 				_commerceInventoryBookedQuantityLocalService.
 					addCommerceBookedQuantity(
 						commerceOrderItem.getUserId(), null,
-						commerceOrderItem.getQuantity(),
+						BigDecimal.valueOf(commerceOrderItem.getQuantity()),
 						commerceOrderItem.getSku(), StringPool.BLANK,
 						HashMapBuilder.put(
 							CommerceInventoryAuditTypeConstants.ACCOUNT_NAME,

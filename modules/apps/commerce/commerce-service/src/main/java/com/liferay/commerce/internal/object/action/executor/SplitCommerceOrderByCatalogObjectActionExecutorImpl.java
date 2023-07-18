@@ -131,7 +131,8 @@ public class SplitCommerceOrderByCatalogObjectActionExecutorImpl
 						_commerceInventoryBookedQuantityLocalService.
 							addCommerceBookedQuantity(
 								commerceOrderItem.getUserId(), null,
-								commerceOrderItem.getQuantity(),
+								BigDecimal.valueOf(
+									commerceOrderItem.getQuantity()),
 								commerceOrderItem.getSku(), StringPool.BLANK,
 								HashMapBuilder.put(
 									CommerceInventoryAuditTypeConstants.
