@@ -45,7 +45,11 @@ public class AddToWishListTag extends IncludeTag {
 				(CommerceContext)httpServletRequest.getAttribute(
 					CommerceWebKeys.COMMERCE_CONTEXT));
 
-			CPSku cpSku = _cpContentHelper.getDefaultCPSku(_cpCatalogEntry);
+			CPSku cpSku = null;
+
+			if (!_cpContentHelper.hasMultipleCPSkus(_cpCatalogEntry)) {
+				cpSku = _cpContentHelper.getDefaultCPSku(_cpCatalogEntry);
+			}
 
 			ThemeDisplay themeDisplay =
 				(ThemeDisplay)httpServletRequest.getAttribute(
