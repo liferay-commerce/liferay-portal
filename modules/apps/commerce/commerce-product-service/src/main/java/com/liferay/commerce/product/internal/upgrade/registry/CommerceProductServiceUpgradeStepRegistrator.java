@@ -384,6 +384,12 @@ public class CommerceProductServiceUpgradeStepRegistrator
 			UpgradeProcessFactory.alterColumnType(
 				"CPDefinitionOptionValueRel", "quantity", "BIGDECIMAL null"));
 
+		registry.register(
+			"5.6.0", "5.7.0",
+			UpgradeProcessFactory.addColumns(
+				"CPDefinitionOptionRel", "infoItemServiceKey VARCHAR(255)",
+				"definedExternally BOOLEAN", "typeSettings TEXT null"));
+
 		if (_log.isInfoEnabled()) {
 			_log.info("Commerce product upgrade step registrator finished");
 		}
