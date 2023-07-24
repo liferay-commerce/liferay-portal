@@ -203,8 +203,12 @@ public class CPDefinitionIndexer extends BaseIndexer<CPDefinition> {
 		}
 
 		if (GetterUtil.getBoolean(attributes.get("secure"))) {
-			long commerceChannelId = GetterUtil.getLong(
+			long commerceChannelGroupId = GetterUtil.getLong(
 				attributes.get("commerceChannelGroupId"));
+
+			long[] commerceChannelGroupIds = GetterUtil.getLongValues(
+				attributes.get("commerceChannelGroupIds"),
+				new long[] {commerceChannelGroupId});
 
 			BooleanFilter commerceChannelBooleanFilter = new BooleanFilter();
 
@@ -215,15 +219,17 @@ public class CPDefinitionIndexer extends BaseIndexer<CPDefinition> {
 				CPField.CHANNEL_FILTER_ENABLED, Boolean.TRUE.toString(),
 				BooleanClauseOccur.MUST);
 
-			if (commerceChannelId > 0) {
-				commerceChannelFilterEnableBooleanFilter.addTerm(
-					CPField.COMMERCE_CHANNEL_GROUP_IDS,
-					String.valueOf(commerceChannelId), BooleanClauseOccur.MUST);
-			}
-			else {
-				commerceChannelFilterEnableBooleanFilter.addTerm(
-					CPField.COMMERCE_CHANNEL_GROUP_IDS, "-1",
-					BooleanClauseOccur.MUST);
+			for (long groupId : commerceChannelGroupIds) {
+				if (groupId > 0) {
+					commerceChannelFilterEnableBooleanFilter.addTerm(
+						CPField.COMMERCE_CHANNEL_GROUP_IDS,
+						String.valueOf(groupId), BooleanClauseOccur.MUST);
+				}
+				else {
+					commerceChannelFilterEnableBooleanFilter.addTerm(
+						CPField.COMMERCE_CHANNEL_GROUP_IDS, "-1",
+						BooleanClauseOccur.MUST);
+				}
 			}
 
 			commerceChannelBooleanFilter.add(
