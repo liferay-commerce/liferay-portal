@@ -289,6 +289,16 @@ if (deliveryMaxSubscriptionCycles > 0) {
 			var A = AUI();
 
 			var subscriptionType = A.one(element).val();
+			var subscriptionTypeLabel = A.one(element)
+				.get('children')
+				.filter((item) => {
+					return item.get('selected');
+				})
+				.first();
+
+			if (subscriptionTypeLabel) {
+				subscriptionTypeLabel = subscriptionTypeLabel.getData('label');
+			}
 
 			A.one('#<portlet:namespace />subscriptionTypeContributors')
 				.get('children')
@@ -302,6 +312,10 @@ if (deliveryMaxSubscriptionCycles > 0) {
 			if (subscriptionTypeContributor) {
 				subscriptionTypeContributor.show();
 			}
+
+			A.one(
+				'#<portlet:namespace />cycleLengthContainer .input-group-text'
+			).html(subscriptionTypeLabel);
 		},
 		['liferay-portlet-url']
 	);
@@ -317,6 +331,16 @@ if (deliveryMaxSubscriptionCycles > 0) {
 			var A = AUI();
 
 			var subscriptionType = A.one(element).val();
+			var subscriptionTypeLabel = A.one(element)
+				.get('children')
+				.filter((item) => {
+					return item.get('selected');
+				})
+				.first();
+
+			if (subscriptionTypeLabel) {
+				subscriptionTypeLabel = subscriptionTypeLabel.getData('label');
+			}
 
 			A.one('#<portlet:namespace />deliverySubscriptionTypeContributors')
 				.get('children')
@@ -330,6 +354,10 @@ if (deliveryMaxSubscriptionCycles > 0) {
 			if (deliverySubscriptionTypeContributor) {
 				deliverySubscriptionTypeContributor.show();
 			}
+
+			A.one(
+				'#<portlet:namespace />deliveryCycleLengthContainer .input-group-text'
+			).html(subscriptionTypeLabel);
 		},
 		['liferay-portlet-url']
 	);

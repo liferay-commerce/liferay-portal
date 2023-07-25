@@ -28,6 +28,7 @@ import com.liferay.commerce.product.exception.CPDefinitionMetaDescriptionExcepti
 import com.liferay.commerce.product.exception.CPDefinitionMetaKeywordsException;
 import com.liferay.commerce.product.exception.CPDefinitionMetaTitleException;
 import com.liferay.commerce.product.exception.CPDefinitionNameDefaultLanguageException;
+import com.liferay.commerce.product.exception.CPDefinitionSubscriptionLengthException;
 import com.liferay.commerce.product.exception.NoSuchCPDefinitionException;
 import com.liferay.commerce.product.exception.NoSuchCatalogException;
 import com.liferay.commerce.product.model.CPDefinition;
@@ -218,6 +219,8 @@ public class EditCPDefinitionMVCActionCommand extends BaseMVCActionCommand {
 					 throwable instanceof CPDefinitionMetaTitleException ||
 					 throwable instanceof
 						 CPDefinitionNameDefaultLanguageException ||
+					 throwable instanceof
+						 CPDefinitionSubscriptionLengthException ||
 					 throwable instanceof FriendlyURLLengthException ||
 					 throwable instanceof NoSuchCatalogException ||
 					 throwable instanceof
