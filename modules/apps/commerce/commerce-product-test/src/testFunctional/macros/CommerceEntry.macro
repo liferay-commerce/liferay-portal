@@ -1533,6 +1533,7 @@ definition {
 
 	macro setExpirationTime {
 		var timeString = selenium.getElementValue("TextInput#DISPLAY_DATE_TIME");
+		var timeString = DateUtil.format(${timeString}, "HH:mm", "hh:mm a");
 		var timeAMPM = selenium.getElementValue("TextInput#DISPLAY_DATE_MERIDIAN");
 		var hours = RegexUtil.replace(${timeString}, "([0-9]*):([0-9]*)", 1);
 		var minutes = RegexUtil.replace(${timeString}, "([0-9]*):([0-9]*)", 2);
@@ -1581,6 +1582,7 @@ definition {
 
 	macro setPublishTime {
 		var timeString = selenium.getElementValue("TextInput#DISPLAY_DATE_TIME");
+		var timeString = DateUtil.format(${timeString}, "HH:mm", "hh:mm a");
 		var timeAMPM = selenium.getElementValue("TextInput#DISPLAY_DATE_MERIDIAN");
 		var hours = RegexUtil.replace(${timeString}, "([0-9]*):([0-9]*)", 1);
 		var minutes = RegexUtil.replace(${timeString}, "([0-9]*):([0-9]*)", 2);
