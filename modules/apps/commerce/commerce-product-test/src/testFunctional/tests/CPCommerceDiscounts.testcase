@@ -831,7 +831,7 @@ definition {
 	@description = "COMMERCE-11893 | Admin verifies that the search displays only account groups based on the keyword entered."
 	@priority = 4
 	test CanSearchAccountGroupsBasedOnKeywords {
-		property portal.acceptance = "false";
+		property portal.acceptance = "jayda";
 
 		task ("Given the admin creates 3 account groups") {
 			AccountGroups.openAccountGroupsAdmin();
