@@ -8,7 +8,6 @@ package com.liferay.headless.commerce.delivery.catalog.internal.dto.v1_0.convert
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
 import com.liferay.commerce.product.service.CPDefinitionOptionRelLocalService;
-import com.liferay.commerce.product.service.CPDefinitionOptionValueRelLocalService;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.ProductOption;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.ProductOptionValue;
 import com.liferay.portal.kernel.language.Language;
@@ -83,21 +82,10 @@ public class ProductOptionDTOConverter
 	private ProductOptionValue[] _toProductOptionValues(
 		CPDefinitionOptionRel cpDefinitionOptionRel, String languageId) {
 
-		int total =
-			_cpDefinitionOptionValueRelLocalService.
-				getCPDefinitionOptionValueRelsCount(
-					cpDefinitionOptionRel.getCPDefinitionOptionRelId());
-
-		List<CPDefinitionOptionValueRel> cpDefinitionOptionValueRels =
-			_cpDefinitionOptionValueRelLocalService.
-				getCPDefinitionOptionValueRels(
-					cpDefinitionOptionRel.getCPDefinitionOptionRelId(), 0,
-					total);
-
 		List<ProductOptionValue> productOptionValues = new ArrayList<>();
 
 		for (CPDefinitionOptionValueRel cpDefinitionOptionValueRel :
-				cpDefinitionOptionValueRels) {
+				cpDefinitionOptionRel.getCPDefinitionOptionValueRels()) {
 
 			productOptionValues.add(
 				_toProductOptionValue(cpDefinitionOptionValueRel, languageId));
@@ -109,10 +97,6 @@ public class ProductOptionDTOConverter
 	@Reference
 	private CPDefinitionOptionRelLocalService
 		_cpDefinitionOptionRelLocalService;
-
-	@Reference
-	private CPDefinitionOptionValueRelLocalService
-		_cpDefinitionOptionValueRelLocalService;
 
 	@Reference
 	private Language _language;
