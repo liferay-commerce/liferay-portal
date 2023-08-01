@@ -101,18 +101,18 @@ public class ProductOptionValueResourceImpl
 				_serviceContextHelper.getServiceContext(
 					cpDefinitionOptionRel.getGroupId()));
 
-		return _toProductOptionValue(
-			cpDefinitionOptionValueRel.getCPDefinitionOptionValueRelId());
+		return _toProductOptionValue(cpDefinitionOptionValueRel);
 	}
 
 	private ProductOptionValue _toProductOptionValue(
-			Long cpDefinitionOptionValueRelId)
+			CPDefinitionOptionValueRel cpDefinitionOptionValueRel)
 		throws Exception {
 
 		return _productOptionValueDTOConverter.toDTO(
 			new DefaultDTOConverterContext(
-				cpDefinitionOptionValueRelId,
-				contextAcceptLanguage.getPreferredLocale()));
+				cpDefinitionOptionValueRel.getCPDefinitionOptionValueRelId(),
+				contextAcceptLanguage.getPreferredLocale()),
+			cpDefinitionOptionValueRel);
 	}
 
 	private List<ProductOptionValue> _toProductOptionValues(
@@ -125,9 +125,7 @@ public class ProductOptionValueResourceImpl
 				cpDefinitionOptionValueRels) {
 
 			productOptionValues.add(
-				_toProductOptionValue(
-					cpDefinitionOptionValueRel.
-						getCPDefinitionOptionValueRelId()));
+				_toProductOptionValue(cpDefinitionOptionValueRel));
 		}
 
 		return productOptionValues;
