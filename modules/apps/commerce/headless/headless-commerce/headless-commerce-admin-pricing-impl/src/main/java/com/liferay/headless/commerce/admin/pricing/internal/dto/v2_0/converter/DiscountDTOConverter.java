@@ -77,6 +77,7 @@ public class DiscountDTOConverter
 				limitationType = commerceDiscount.getLimitationType();
 				maximumDiscountAmount =
 					commerceDiscount.getMaximumDiscountAmount();
+				modifiedDate = commerceDiscount.getModifiedDate();
 				numberOfUse = commerceDiscount.getNumberOfUse();
 				percentageLevel1 = commerceDiscount.getLevel1();
 				percentageLevel2 = commerceDiscount.getLevel2();
