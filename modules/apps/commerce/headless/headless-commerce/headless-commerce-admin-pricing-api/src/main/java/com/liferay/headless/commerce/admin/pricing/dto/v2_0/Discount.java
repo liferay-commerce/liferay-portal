@@ -711,6 +711,34 @@ public class Discount implements Serializable {
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected BigDecimal maximumDiscountAmount;
 
+	@Schema(example = "2017-07-21")
+	public Date getModifiedDate() {
+		return modifiedDate;
+	}
+
+	public void setModifiedDate(Date modifiedDate) {
+		this.modifiedDate = modifiedDate;
+	}
+
+	@JsonIgnore
+	public void setModifiedDate(
+		UnsafeSupplier<Date, Exception> modifiedDateUnsafeSupplier) {
+
+		try {
+			modifiedDate = modifiedDateUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Date modifiedDate;
+
 	@Schema(example = "true")
 	public Boolean getNeverExpire() {
 		return neverExpire;
@@ -1387,6 +1415,20 @@ public class Discount implements Serializable {
 			sb.append("\"maximumDiscountAmount\": ");
 
 			sb.append(maximumDiscountAmount);
+		}
+
+		if (modifiedDate != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"modifiedDate\": ");
+
+			sb.append("\"");
+
+			sb.append(liferayToJSONDateFormat.format(modifiedDate));
+
+			sb.append("\"");
 		}
 
 		if (neverExpire != null) {

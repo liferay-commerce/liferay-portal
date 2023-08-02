@@ -396,6 +396,21 @@ public class DiscountSerDes {
 			sb.append(discount.getMaximumDiscountAmount());
 		}
 
+		if (discount.getModifiedDate() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"modifiedDate\": ");
+
+			sb.append("\"");
+
+			sb.append(
+				liferayToJSONDateFormat.format(discount.getModifiedDate()));
+
+			sb.append("\"");
+		}
+
 		if (discount.getNeverExpire() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -717,6 +732,15 @@ public class DiscountSerDes {
 			map.put(
 				"maximumDiscountAmount",
 				String.valueOf(discount.getMaximumDiscountAmount()));
+		}
+
+		if (discount.getModifiedDate() == null) {
+			map.put("modifiedDate", null);
+		}
+		else {
+			map.put(
+				"modifiedDate",
+				liferayToJSONDateFormat.format(discount.getModifiedDate()));
 		}
 
 		if (discount.getNeverExpire() == null) {
@@ -1058,6 +1082,12 @@ public class DiscountSerDes {
 				if (jsonParserFieldValue != null) {
 					discount.setMaximumDiscountAmount(
 						new BigDecimal((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "modifiedDate")) {
+				if (jsonParserFieldValue != null) {
+					discount.setModifiedDate(
+						toDate((String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "neverExpire")) {

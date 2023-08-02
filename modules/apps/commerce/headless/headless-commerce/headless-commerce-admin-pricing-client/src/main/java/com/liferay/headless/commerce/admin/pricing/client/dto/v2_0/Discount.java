@@ -506,6 +506,27 @@ public class Discount implements Cloneable, Serializable {
 
 	protected BigDecimal maximumDiscountAmount;
 
+	public Date getModifiedDate() {
+		return modifiedDate;
+	}
+
+	public void setModifiedDate(Date modifiedDate) {
+		this.modifiedDate = modifiedDate;
+	}
+
+	public void setModifiedDate(
+		UnsafeSupplier<Date, Exception> modifiedDateUnsafeSupplier) {
+
+		try {
+			modifiedDate = modifiedDateUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Date modifiedDate;
+
 	public Boolean getNeverExpire() {
 		return neverExpire;
 	}
