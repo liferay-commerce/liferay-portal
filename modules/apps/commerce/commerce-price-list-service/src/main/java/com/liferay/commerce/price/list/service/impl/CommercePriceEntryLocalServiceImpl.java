@@ -140,7 +140,11 @@ public class CommercePriceEntryLocalServiceImpl
 		CPInstance cpInstance = _cpInstanceLocalService.fetchCPInstance(
 			cProductId, cpInstanceUuid);
 
-		long cpInstanceId = cpInstance.getCPInstanceId();
+		long cpInstanceId = 0;
+
+		if (cpInstance != null) {
+			cpInstanceId = cpInstance.getCPInstanceId();
+		}
 
 		_validateUnitOfMeasureKey(cpInstanceId, unitOfMeasureKey);
 
@@ -202,6 +206,10 @@ public class CommercePriceEntryLocalServiceImpl
 
 		commercePriceEntry = _startWorkflowInstance(
 			user.getUserId(), commercePriceEntry, serviceContext);
+
+		if (cpInstance != null) {
+			_reindexCPDefinition(cpInstance.getCPDefinitionId());
+		}
 
 		return commercePriceEntry;
 	}
@@ -367,6 +375,14 @@ public class CommercePriceEntryLocalServiceImpl
 
 		_expandoRowLocalService.deleteRows(
 			commercePriceEntry.getCommercePriceEntryId());
+
+		CPInstance cpInstance = _cpInstanceLocalService.fetchCPInstance(
+			commercePriceEntry.getCProductId(),
+			commercePriceEntry.getCPInstanceUuid());
+
+		if (cpInstance != null) {
+			_reindexCPDefinition(cpInstance.getCPDefinitionId());
+		}
 
 		return commercePriceEntry;
 	}
@@ -651,7 +667,11 @@ public class CommercePriceEntryLocalServiceImpl
 			commercePriceEntry.getCProductId(),
 			commercePriceEntry.getCPInstanceUuid());
 
-		long cpInstanceId = cpInstance.getCPInstanceId();
+		long cpInstanceId = 0;
+
+		if (cpInstance != null) {
+			cpInstanceId = cpInstance.getCPInstanceId();
+		}
 
 		_validateUnitOfMeasureKey(cpInstanceId, unitOfMeasureKey);
 
@@ -694,6 +714,10 @@ public class CommercePriceEntryLocalServiceImpl
 
 		commercePriceEntry = _startWorkflowInstance(
 			user.getUserId(), commercePriceEntry, serviceContext);
+
+		if (cpInstance != null) {
+			_reindexCPDefinition(cpInstance.getCPDefinitionId());
+		}
 
 		return commercePriceEntry;
 	}
@@ -965,6 +989,15 @@ public class CommercePriceEntryLocalServiceImpl
 		}
 
 		return null;
+	}
+
+	private void _reindexCPDefinition(long cpDefinitionId)
+		throws PortalException {
+
+		Indexer<CPDefinition> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
+			CPDefinition.class);
+
+		indexer.reindex(CPDefinition.class.getName(), cpDefinitionId);
 	}
 
 	private BaseModelSearchResult<CommercePriceEntry>
