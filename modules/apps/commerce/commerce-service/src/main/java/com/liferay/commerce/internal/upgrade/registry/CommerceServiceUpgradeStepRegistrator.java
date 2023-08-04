@@ -606,6 +606,7 @@ public class CommerceServiceUpgradeStepRegistrator
 			new com.liferay.commerce.internal.upgrade.v10_0_0.
 				CommerceOrderItemUpgradeProcess());
 
+
 		if (_log.isInfoEnabled()) {
 			_log.info("Commerce upgrade step registrator finished");
 		}
