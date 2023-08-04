@@ -199,6 +199,13 @@ public class CommerceDiscountRuleLocalServiceImpl
 		UnicodeProperties unicodeProperties =
 			commerceDiscountRule.getSettingsProperties();
 
+		if (type.equals(CommerceDiscountRuleConstants.TYPE_CART_TOTAL)) {
+			BigDecimal typeSettingsValue = (BigDecimal)GetterUtil.getNumber(
+				typeSettings, BigDecimal.ZERO);
+
+			typeSettings = String.valueOf(typeSettingsValue);
+		}
+
 		unicodeProperties.put(type, typeSettings);
 
 		commerceDiscountRule.setSettingsProperties(unicodeProperties);
@@ -232,6 +239,13 @@ public class CommerceDiscountRuleLocalServiceImpl
 
 		UnicodeProperties unicodeProperties =
 			commerceDiscountRule.getSettingsProperties();
+
+		if (type.equals(CommerceDiscountRuleConstants.TYPE_CART_TOTAL)) {
+			BigDecimal typeSettingsValue = (BigDecimal)GetterUtil.getNumber(
+				typeSettings, BigDecimal.ZERO);
+
+			typeSettings = String.valueOf(typeSettingsValue);
+		}
 
 		unicodeProperties.put(type, typeSettings);
 
