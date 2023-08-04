@@ -68,6 +68,7 @@ import com.liferay.portal.kernel.workflow.WorkflowHandlerRegistryUtil;
 import java.io.Serializable;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -966,7 +967,13 @@ public class CommercePriceEntryLocalServiceImpl
 				cpInstanceId, unitOfMeasureKey);
 
 		if (cpInstanceUnitOfMeasure != null) {
-			return cpInstanceUnitOfMeasure.getIncrementalOrderQuantity();
+			int unitOfMeasurePrecision = cpInstanceUnitOfMeasure.getPrecision();
+
+			BigDecimal incrementalOrderQuantity =
+				cpInstanceUnitOfMeasure.getIncrementalOrderQuantity();
+
+			return incrementalOrderQuantity.setScale(
+				unitOfMeasurePrecision, RoundingMode.HALF_UP);
 		}
 
 		return null;

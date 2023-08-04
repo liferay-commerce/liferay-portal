@@ -483,16 +483,14 @@ public class CommercePriceEntryLocalServiceTest {
 
 		CPInstance cpInstance = CPTestUtil.addCPInstance(_group.getGroupId());
 
-		BigDecimal quantity = BigDecimal.valueOf(
-			RandomTestUtil.randomDouble()
-		).setScale(
-			2, RoundingMode.HALF_UP
-		);
+		BigDecimal incrementalOrderQuantity = BigDecimal.TEN.setScale(
+			2, RoundingMode.HALF_UP);
 
 		CPInstanceUnitOfMeasure cpInstanceUnitOfMeasure =
 			CPTestUtil.addCPInstanceUnitOfMeasure(
 				_group.getGroupId(), cpInstance.getCPInstanceId(),
-				RandomTestUtil.randomString(), quantity, cpInstance.getSku());
+				RandomTestUtil.randomString(), incrementalOrderQuantity,
+				cpInstance.getSku());
 
 		CommercePriceList commercePriceList =
 			CommercePriceListTestUtil.addCommercePriceList(
@@ -511,7 +509,8 @@ public class CommercePriceEntryLocalServiceTest {
 
 		Assert.assertEquals(
 			unitOfMeasureKey, commercePriceEntry.getUnitOfMeasureKey());
-		Assert.assertEquals(quantity, commercePriceEntry.getQuantity());
+		Assert.assertEquals(
+			incrementalOrderQuantity, commercePriceEntry.getQuantity());
 	}
 
 	@Test
@@ -548,22 +547,17 @@ public class CommercePriceEntryLocalServiceTest {
 
 		CPInstance cpInstance = CPTestUtil.addCPInstance(_group.getGroupId());
 
-		BigDecimal incrementalOrderQuantity1 = BigDecimal.valueOf(
-			RandomTestUtil.randomDouble()
-		).setScale(
-			2, RoundingMode.HALF_UP
-		);
+		BigDecimal incrementalOrderQuantity1 = BigDecimal.ONE.setScale(
+			2, RoundingMode.HALF_UP);
+
 		String unitOfMeasureKey1 = RandomTestUtil.randomString();
 
 		CPTestUtil.addCPInstanceUnitOfMeasure(
 			_group.getGroupId(), cpInstance.getCPInstanceId(),
 			unitOfMeasureKey1, incrementalOrderQuantity1, cpInstance.getSku());
 
-		BigDecimal incrementalOrderQuantity2 = BigDecimal.valueOf(
-			RandomTestUtil.randomDouble()
-		).setScale(
-			2, RoundingMode.HALF_UP
-		);
+		BigDecimal incrementalOrderQuantity2 = BigDecimal.TEN.setScale(
+			2, RoundingMode.HALF_UP);
 		String unitOfMeasureKey2 = RandomTestUtil.randomString();
 
 		CPTestUtil.addCPInstanceUnitOfMeasure(
@@ -586,12 +580,8 @@ public class CommercePriceEntryLocalServiceTest {
 		Assert.assertEquals(
 			unitOfMeasureKey1, commercePriceEntry.getUnitOfMeasureKey());
 
-		BigDecimal quantity = commercePriceEntry.getQuantity(
-		).setScale(
-			2, RoundingMode.HALF_UP
-		);
-
-		Assert.assertEquals(incrementalOrderQuantity1, quantity);
+		Assert.assertEquals(
+			incrementalOrderQuantity1, commercePriceEntry.getQuantity());
 
 		commercePriceEntry =
 			CommercePriceEntryTestUtil.addOrUpdateCommercePriceEntry(
@@ -604,12 +594,8 @@ public class CommercePriceEntryLocalServiceTest {
 		Assert.assertEquals(
 			unitOfMeasureKey2, commercePriceEntry.getUnitOfMeasureKey());
 
-		quantity = commercePriceEntry.getQuantity(
-		).setScale(
-			2, RoundingMode.HALF_UP
-		);
-
-		Assert.assertEquals(incrementalOrderQuantity2, quantity);
+		Assert.assertEquals(
+			incrementalOrderQuantity2, commercePriceEntry.getQuantity());
 	}
 
 	@Test(expected = CommercePriceEntryUnitOfMeasureKeyException.class)
