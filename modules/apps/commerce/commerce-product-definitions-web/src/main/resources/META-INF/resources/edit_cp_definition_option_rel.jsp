@@ -12,7 +12,7 @@ CPDefinitionOptionRelDisplayContext cpDefinitionOptionRelDisplayContext = (CPDef
 
 CPDefinitionOptionRel cpDefinitionOptionRel = cpDefinitionOptionRelDisplayContext.getCPDefinitionOptionRel();
 long cpDefinitionOptionRelId = cpDefinitionOptionRelDisplayContext.getCPDefinitionOptionRelId();
-List<DDMFormFieldType> ddmFormFieldTypes = cpDefinitionOptionRelDisplayContext.getDDMFormFieldTypes();
+List<CommerceOptionType> commerceOptionTypes = cpDefinitionOptionRelDisplayContext.getCommerceOptionTypes();
 String defaultLanguageId = cpDefinitionOptionRelDisplayContext.getCatalogDefaultLanguageId();
 %>
 
@@ -65,13 +65,13 @@ String defaultLanguageId = cpDefinitionOptionRelDisplayContext.getCatalogDefault
 				</div>
 
 				<div class="col-12">
-					<aui:select label="field-type" name="DDMFormFieldTypeName" showEmptyOption="<%= true %>">
+					<aui:select label="field-type" name="commerceOptionTypeKey" showEmptyOption="<%= true %>">
 
 						<%
-						for (DDMFormFieldType ddmFormFieldType : ddmFormFieldTypes) {
+						for (CommerceOptionType commerceOptionType : commerceOptionTypes) {
 						%>
 
-							<aui:option label="<%= cpDefinitionOptionRelDisplayContext.getDDMFormFieldTypeLabel(ddmFormFieldType, locale) %>" selected="<%= (cpDefinitionOptionRel != null) && cpDefinitionOptionRel.getDDMFormFieldTypeName().equals(ddmFormFieldType.getName()) %>" value="<%= ddmFormFieldType.getName() %>" />
+							<aui:option label="<%= commerceOptionType.getLabel(locale) %>" selected="<%= (cpDefinitionOptionRel != null) && cpDefinitionOptionRel.getCommerceOptionTypeKey().equals(commerceOptionType.getKey()) %>" value="<%= commerceOptionType.getKey() %>" />
 
 						<%
 						}
@@ -143,7 +143,7 @@ String defaultLanguageId = cpDefinitionOptionRelDisplayContext.getCatalogDefault
 				'<%= StringPool.COMMA %>'
 			);
 			var availableTypeNames =
-				'<%= cpDefinitionOptionRelDisplayContext.getDDMFormFieldTypeNames() %>';
+				'<%= cpDefinitionOptionRelDisplayContext.getCommerceOptionTypeKeys() %>';
 			var availableFieldTypeSelectOptions = availableTypeNames.split(
 				'<%= StringPool.COMMA %>'
 			);
@@ -154,7 +154,7 @@ String defaultLanguageId = cpDefinitionOptionRelDisplayContext.getCatalogDefault
 			);
 
 			var formFieldTypeSelect = document.getElementById(
-				'<portlet:namespace />DDMFormFieldTypeName'
+				'<portlet:namespace />commerceOptionTypeKey'
 			);
 			var priceTypeSelect = document.getElementById('<portlet:namespace />priceType');
 			var skuContributorInput = document.getElementById(

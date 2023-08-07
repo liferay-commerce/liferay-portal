@@ -8,10 +8,10 @@ package com.liferay.commerce.product.definitions.web.internal.frontend.taglib.se
 import com.liferay.commerce.product.definitions.web.internal.display.context.CPDefinitionOptionRelDisplayContext;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CommerceCatalog;
+import com.liferay.commerce.product.option.CommerceOptionTypeRegistry;
 import com.liferay.commerce.product.portlet.action.ActionHelper;
 import com.liferay.commerce.product.type.CPType;
 import com.liferay.commerce.product.type.CPTypeRegistry;
-import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTypeServicesRegistry;
 import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationEntry;
 import com.liferay.frontend.taglib.servlet.taglib.util.JSPRenderer;
 import com.liferay.item.selector.ItemSelector;
@@ -88,8 +88,9 @@ public class CPDefinitionOptionsScreenNavigationEntry
 		CPDefinitionOptionRelDisplayContext
 			cpDefinitionOptionRelDisplayContext =
 				new CPDefinitionOptionRelDisplayContext(
-					_actionHelper, httpServletRequest, _configurationProvider,
-					_ddmFormFieldTypeServicesRegistry, _itemSelector);
+					_actionHelper, httpServletRequest,
+					_commerceOptionTypeRegistry, _configurationProvider,
+					_itemSelector);
 
 		httpServletRequest.setAttribute(
 			WebKeys.PORTLET_DISPLAY_CONTEXT,
@@ -113,13 +114,13 @@ public class CPDefinitionOptionsScreenNavigationEntry
 		_commerceCatalogModelResourcePermission;
 
 	@Reference
+	private CommerceOptionTypeRegistry _commerceOptionTypeRegistry;
+
+	@Reference
 	private ConfigurationProvider _configurationProvider;
 
 	@Reference
 	private CPTypeRegistry _cpTypeRegistry;
-
-	@Reference
-	private DDMFormFieldTypeServicesRegistry _ddmFormFieldTypeServicesRegistry;
 
 	@Reference
 	private ItemSelector _itemSelector;
