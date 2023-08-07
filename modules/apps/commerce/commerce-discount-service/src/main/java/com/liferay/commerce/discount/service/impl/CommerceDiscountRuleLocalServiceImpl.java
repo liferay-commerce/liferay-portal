@@ -5,6 +5,7 @@
 
 package com.liferay.commerce.discount.service.impl;
 
+import com.liferay.commerce.discount.constants.CommerceDiscountRuleConstants;
 import com.liferay.commerce.discount.exception.CommerceDiscountRuleTypeException;
 import com.liferay.commerce.discount.model.CommerceDiscount;
 import com.liferay.commerce.discount.model.CommerceDiscountRule;
@@ -21,8 +22,11 @@ import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.UnicodeProperties;
+
+import java.math.BigDecimal;
 
 import java.util.List;
 
@@ -73,6 +77,13 @@ public class CommerceDiscountRuleLocalServiceImpl
 		commerceDiscountRule.setName(name);
 		commerceDiscountRule.setCommerceDiscountId(commerceDiscountId);
 		commerceDiscountRule.setType(type);
+
+		if (type.equals(CommerceDiscountRuleConstants.TYPE_CART_TOTAL)) {
+			BigDecimal typeSettingsValue = (BigDecimal)GetterUtil.getNumber(
+				typeSettings, BigDecimal.ZERO);
+
+			typeSettings = String.valueOf(typeSettingsValue);
+		}
 
 		UnicodeProperties settingsUnicodeProperties =
 			commerceDiscountRule.getSettingsProperties();
