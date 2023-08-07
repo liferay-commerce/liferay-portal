@@ -32,8 +32,6 @@ import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 
-import java.math.BigDecimal;
-
 import java.util.List;
 
 import javax.portlet.ActionRequest;
@@ -72,8 +70,8 @@ public class AddCommerceOrderItemMVCActionCommand extends BaseMVCActionCommand {
 			_portal.getHttpServletResponse(actionResponse);
 
 		int quantity = ParamUtil.getInteger(actionRequest, "quantity");
-		String ddmFormValues = ParamUtil.getString(
-			actionRequest, "ddmFormValues");
+		String formFieldValues = ParamUtil.getString(
+			actionRequest, "formFieldValues");
 
 		long cpInstanceId = ParamUtil.getLong(actionRequest, "cpInstanceId");
 
@@ -82,7 +80,7 @@ public class AddCommerceOrderItemMVCActionCommand extends BaseMVCActionCommand {
 				actionRequest, "cpDefinitionId");
 
 			CPInstance cpInstance = _cpInstanceHelper.fetchCPInstance(
-				cpDefinitionId, ddmFormValues);
+				cpDefinitionId, formFieldValues);
 
 			if (cpInstance != null) {
 				cpInstanceId = cpInstance.getCPInstanceId();
@@ -109,7 +107,7 @@ public class AddCommerceOrderItemMVCActionCommand extends BaseMVCActionCommand {
 			CommerceOrderItem commerceOrderItem =
 				_commerceOrderItemService.addOrUpdateCommerceOrderItem(
 					commerceOrder.getCommerceOrderId(), cpInstanceId,
-					ddmFormValues, BigDecimal.valueOf(quantity), 0, 0,
+					formFieldValues, BigDecimal.valueOf(quantity), 0, 0,
 					StringPool.BLANK, commerceContext, serviceContext);
 
 			jsonObject.put(
