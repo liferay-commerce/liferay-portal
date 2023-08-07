@@ -389,6 +389,15 @@ public class CommerceProductServiceUpgradeStepRegistrator
 			new com.liferay.commerce.product.internal.upgrade.v5_7_0.
 				CPDefinitionLinkUpgradeProcess(_assetEntryLocalService));
 
+		registry.register(
+			"5.7.0", "5.8.0",
+			UpgradeProcessFactory.alterColumnName(
+				"CPDefinitionOptionValueRel", "DDMFormFieldTypeName",
+				"commerceOptionTypeKey VARCHAR(75) null"),
+			UpgradeProcessFactory.alterColumnName(
+				"CPOption", "DDMFormFieldTypeName",
+				"commerceOptionTypeKey VARCHAR(75) null"));
+
 		if (_log.isInfoEnabled()) {
 			_log.info("Commerce product upgrade step registrator finished");
 		}
