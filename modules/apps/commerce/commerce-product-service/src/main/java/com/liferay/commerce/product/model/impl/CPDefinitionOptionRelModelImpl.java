@@ -79,7 +79,7 @@ public class CPDefinitionOptionRelModelImpl
 		{"createDate", Types.TIMESTAMP}, {"modifiedDate", Types.TIMESTAMP},
 		{"CPDefinitionId", Types.BIGINT}, {"CPOptionId", Types.BIGINT},
 		{"name", Types.VARCHAR}, {"description", Types.VARCHAR},
-		{"DDMFormFieldTypeName", Types.VARCHAR}, {"priority", Types.DOUBLE},
+		{"commerceOptionTypeKey", Types.VARCHAR}, {"priority", Types.DOUBLE},
 		{"facetable", Types.BOOLEAN}, {"required", Types.BOOLEAN},
 		{"skuContributor", Types.BOOLEAN}, {"key_", Types.VARCHAR},
 		{"priceType", Types.VARCHAR}
@@ -103,7 +103,7 @@ public class CPDefinitionOptionRelModelImpl
 		TABLE_COLUMNS_MAP.put("CPOptionId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("name", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("description", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("DDMFormFieldTypeName", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("commerceOptionTypeKey", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("priority", Types.DOUBLE);
 		TABLE_COLUMNS_MAP.put("facetable", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("required", Types.BOOLEAN);
@@ -113,7 +113,7 @@ public class CPDefinitionOptionRelModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table CPDefinitionOptionRel (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,CPDefinitionOptionRelId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,CPDefinitionId LONG,CPOptionId LONG,name STRING null,description STRING null,DDMFormFieldTypeName VARCHAR(75) null,priority DOUBLE,facetable BOOLEAN,required BOOLEAN,skuContributor BOOLEAN,key_ VARCHAR(75) null,priceType VARCHAR(75) null,primary key (CPDefinitionOptionRelId, ctCollectionId))";
+		"create table CPDefinitionOptionRel (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,CPDefinitionOptionRelId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,CPDefinitionId LONG,CPOptionId LONG,name STRING null,description STRING null,commerceOptionTypeKey VARCHAR(75) null,priority DOUBLE,facetable BOOLEAN,required BOOLEAN,skuContributor BOOLEAN,key_ VARCHAR(75) null,priceType VARCHAR(75) null,primary key (CPDefinitionOptionRelId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table CPDefinitionOptionRel";
@@ -327,8 +327,8 @@ public class CPDefinitionOptionRelModelImpl
 			attributeGetterFunctions.put(
 				"description", CPDefinitionOptionRel::getDescription);
 			attributeGetterFunctions.put(
-				"DDMFormFieldTypeName",
-				CPDefinitionOptionRel::getDDMFormFieldTypeName);
+				"commerceOptionTypeKey",
+				CPDefinitionOptionRel::getCommerceOptionTypeKey);
 			attributeGetterFunctions.put(
 				"priority", CPDefinitionOptionRel::getPriority);
 			attributeGetterFunctions.put(
@@ -416,9 +416,9 @@ public class CPDefinitionOptionRelModelImpl
 				(BiConsumer<CPDefinitionOptionRel, String>)
 					CPDefinitionOptionRel::setDescription);
 			attributeSetterBiConsumers.put(
-				"DDMFormFieldTypeName",
+				"commerceOptionTypeKey",
 				(BiConsumer<CPDefinitionOptionRel, String>)
-					CPDefinitionOptionRel::setDDMFormFieldTypeName);
+					CPDefinitionOptionRel::setCommerceOptionTypeKey);
 			attributeSetterBiConsumers.put(
 				"priority",
 				(BiConsumer<CPDefinitionOptionRel, Double>)
@@ -931,22 +931,22 @@ public class CPDefinitionOptionRelModelImpl
 
 	@JSON
 	@Override
-	public String getDDMFormFieldTypeName() {
-		if (_DDMFormFieldTypeName == null) {
+	public String getCommerceOptionTypeKey() {
+		if (_commerceOptionTypeKey == null) {
 			return "";
 		}
 		else {
-			return _DDMFormFieldTypeName;
+			return _commerceOptionTypeKey;
 		}
 	}
 
 	@Override
-	public void setDDMFormFieldTypeName(String DDMFormFieldTypeName) {
+	public void setCommerceOptionTypeKey(String commerceOptionTypeKey) {
 		if (_columnOriginalValues == Collections.EMPTY_MAP) {
 			_setColumnOriginalValues();
 		}
 
-		_DDMFormFieldTypeName = DDMFormFieldTypeName;
+		_commerceOptionTypeKey = commerceOptionTypeKey;
 	}
 
 	@JSON
@@ -1263,8 +1263,8 @@ public class CPDefinitionOptionRelModelImpl
 		cpDefinitionOptionRelImpl.setCPOptionId(getCPOptionId());
 		cpDefinitionOptionRelImpl.setName(getName());
 		cpDefinitionOptionRelImpl.setDescription(getDescription());
-		cpDefinitionOptionRelImpl.setDDMFormFieldTypeName(
-			getDDMFormFieldTypeName());
+		cpDefinitionOptionRelImpl.setCommerceOptionTypeKey(
+			getCommerceOptionTypeKey());
 		cpDefinitionOptionRelImpl.setPriority(getPriority());
 		cpDefinitionOptionRelImpl.setFacetable(isFacetable());
 		cpDefinitionOptionRelImpl.setRequired(isRequired());
@@ -1310,8 +1310,8 @@ public class CPDefinitionOptionRelModelImpl
 			this.<String>getColumnOriginalValue("name"));
 		cpDefinitionOptionRelImpl.setDescription(
 			this.<String>getColumnOriginalValue("description"));
-		cpDefinitionOptionRelImpl.setDDMFormFieldTypeName(
-			this.<String>getColumnOriginalValue("DDMFormFieldTypeName"));
+		cpDefinitionOptionRelImpl.setCommerceOptionTypeKey(
+			this.<String>getColumnOriginalValue("commerceOptionTypeKey"));
 		cpDefinitionOptionRelImpl.setPriority(
 			this.<Double>getColumnOriginalValue("priority"));
 		cpDefinitionOptionRelImpl.setFacetable(
@@ -1477,16 +1477,16 @@ public class CPDefinitionOptionRelModelImpl
 			cpDefinitionOptionRelCacheModel.description = null;
 		}
 
-		cpDefinitionOptionRelCacheModel.DDMFormFieldTypeName =
-			getDDMFormFieldTypeName();
+		cpDefinitionOptionRelCacheModel.commerceOptionTypeKey =
+			getCommerceOptionTypeKey();
 
-		String DDMFormFieldTypeName =
-			cpDefinitionOptionRelCacheModel.DDMFormFieldTypeName;
+		String commerceOptionTypeKey =
+			cpDefinitionOptionRelCacheModel.commerceOptionTypeKey;
 
-		if ((DDMFormFieldTypeName != null) &&
-			(DDMFormFieldTypeName.length() == 0)) {
+		if ((commerceOptionTypeKey != null) &&
+			(commerceOptionTypeKey.length() == 0)) {
 
-			cpDefinitionOptionRelCacheModel.DDMFormFieldTypeName = null;
+			cpDefinitionOptionRelCacheModel.commerceOptionTypeKey = null;
 		}
 
 		cpDefinitionOptionRelCacheModel.priority = getPriority();
@@ -1592,7 +1592,7 @@ public class CPDefinitionOptionRelModelImpl
 	private String _nameCurrentLanguageId;
 	private String _description;
 	private String _descriptionCurrentLanguageId;
-	private String _DDMFormFieldTypeName;
+	private String _commerceOptionTypeKey;
 	private double _priority;
 	private boolean _facetable;
 	private boolean _required;
@@ -1646,7 +1646,7 @@ public class CPDefinitionOptionRelModelImpl
 		_columnOriginalValues.put("name", _name);
 		_columnOriginalValues.put("description", _description);
 		_columnOriginalValues.put(
-			"DDMFormFieldTypeName", _DDMFormFieldTypeName);
+			"commerceOptionTypeKey", _commerceOptionTypeKey);
 		_columnOriginalValues.put("priority", _priority);
 		_columnOriginalValues.put("facetable", _facetable);
 		_columnOriginalValues.put("required", _required);
@@ -1705,7 +1705,7 @@ public class CPDefinitionOptionRelModelImpl
 
 		columnBitmasks.put("description", 8192L);
 
-		columnBitmasks.put("DDMFormFieldTypeName", 16384L);
+		columnBitmasks.put("commerceOptionTypeKey", 16384L);
 
 		columnBitmasks.put("priority", 32768L);
 
