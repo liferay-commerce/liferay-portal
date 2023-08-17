@@ -613,6 +613,18 @@ public class CommerceServiceUpgradeStepRegistrator
 				CommercePermissionUpgradeProcess(
 					_resourceActionLocalService,
 					_resourcePermissionLocalService, _roleLocalService));
+		
+		registry.register(
+			"10.0.1", "10.1.0",
+			UpgradeProcessFactory.alterColumnType(
+				CommerceOrderItemModelImpl.TABLE_NAME, "shippedQuantity",
+				"BIGDECIMAL null"));
+
+		registry.register(
+			"10.1.0", "10.2.0",
+			UpgradeProcessFactory.alterColumnType(
+				CommerceShipmentItemModelImpl.TABLE_NAME, "quantity",
+				"BIGDECIMAL null"));
 
 		registry.register(
 			"10.0.1", "10.1.0",
