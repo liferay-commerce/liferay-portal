@@ -34,6 +34,8 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.taglib.util.IncludeTag;
 
+import java.math.BigDecimal;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -81,7 +83,9 @@ public class PriceTag extends IncludeTag {
 					_productHelper.getProductSettingsModel(
 						_cpCatalogEntry.getCPDefinitionId());
 
-				_quantity = productSettingsModel.getMinQuantity();
+				BigDecimal minQuantity = productSettingsModel.getMinQuantity();
+
+				_quantity = minQuantity.intValue();
 			}
 
 			_displayDiscountLevels = _isDisplayDiscountLevels();

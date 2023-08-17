@@ -411,7 +411,8 @@ public class CommerceOrderItemLocalServiceImpl
 		CommerceInventoryWarehouseItem commerceInventoryWarehouseItem =
 			_commerceInventoryWarehouseItemLocalService.
 				fetchCommerceInventoryWarehouseItem(
-					commerceInventoryWarehouseId, commerceOrderItem.getSku());
+					commerceInventoryWarehouseId, commerceOrderItem.getSku(),
+					commerceOrderItem.getUnitOfMeasureKey());
 
 		if (commerceInventoryWarehouseItem == null) {
 			return 0;

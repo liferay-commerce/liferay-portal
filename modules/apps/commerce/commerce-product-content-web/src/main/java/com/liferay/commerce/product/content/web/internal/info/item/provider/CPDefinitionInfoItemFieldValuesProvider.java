@@ -44,6 +44,8 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.template.info.item.provider.TemplateInfoItemFieldSetProvider;
 
+import java.math.BigDecimal;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -134,7 +136,7 @@ public class CPDefinitionInfoItemFieldValuesProvider
 				cpInstance.getCompanyId(), cpInstance.getGroupId(),
 				commerceChannel.getGroupId(),
 				cpDefinitionInventoryEngine.getMinStockQuantity(cpInstance),
-				cpInstance.getSku());
+				cpInstance.getSku(), StringPool.BLANK);
 		}
 
 		return StringPool.BLANK;
@@ -566,9 +568,13 @@ public class CPDefinitionInfoItemFieldValuesProvider
 					getCommerceChannelGroupIdBySiteGroupId(
 						themeDisplay.getScopeGroupId());
 
-			return _commerceInventoryEngine.getStockQuantity(
-				cpInstance.getCompanyId(), cpInstance.getGroupId(),
-				commerceChannelGroupId, cpInstance.getSku());
+			BigDecimal stockQuantity =
+				_commerceInventoryEngine.getStockQuantity(
+					cpInstance.getCompanyId(), cpInstance.getGroupId(),
+					commerceChannelGroupId, cpInstance.getSku(),
+					StringPool.BLANK);
+
+			return stockQuantity.intValue();
 		}
 
 		return null;

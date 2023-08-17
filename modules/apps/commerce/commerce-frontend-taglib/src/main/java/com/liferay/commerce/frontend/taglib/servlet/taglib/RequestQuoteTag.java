@@ -39,6 +39,8 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.taglib.util.IncludeTag;
 
+import java.math.BigDecimal;
+
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
 
@@ -297,9 +299,11 @@ public class RequestQuoteTag extends IncludeTag {
 			_productHelper.getProductSettingsModel(
 				_cpCatalogEntry.getCPDefinitionId());
 
+		BigDecimal minQuantity = productSettingsModel.getMinQuantity();
+
 		return _productHelper.getPriceModel(
-			cpInstanceId, productSettingsModel.getMinQuantity(),
-			commerceContext, StringPool.BLANK, themeDisplay.getLocale());
+			cpInstanceId, minQuantity.intValue(), commerceContext,
+			StringPool.BLANK, themeDisplay.getLocale());
 	}
 
 	private static final String _PAGE = "/request_quote/page.jsp";

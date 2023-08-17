@@ -41,6 +41,8 @@ import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.KeyValuePair;
 
+import java.math.BigDecimal;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -443,7 +445,10 @@ public class CommerceProductInstanceOptionsValuesDataProvider
 			_cpDefinitionInventoryEngineRegistry.getCPDefinitionInventoryEngine(
 				cpDefinitionInventory);
 
-		return cpDefinitionInventoryEngine.getMinOrderQuantity(cpInstance);
+		BigDecimal minOrderQuantity =
+			cpDefinitionInventoryEngine.getMinOrderQuantity(cpInstance);
+
+		return minOrderQuantity.intValue();
 	}
 
 	private long _getParameter(

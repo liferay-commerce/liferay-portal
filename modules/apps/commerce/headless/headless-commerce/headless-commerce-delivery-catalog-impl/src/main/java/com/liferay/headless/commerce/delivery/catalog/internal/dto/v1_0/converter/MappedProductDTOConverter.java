@@ -143,7 +143,7 @@ public class MappedProductDTOConverter
 							mappedProductDTOConverterContext.getCompanyId(),
 							cpInstance,
 							mappedProductDTOConverterContext.getLocale(),
-							cpInstance.getSku());
+							cpInstance.getSku(), StringPool.BLANK);
 					});
 				setFirstAvailableReplacementMappedProduct(
 					() -> {
@@ -387,7 +387,7 @@ public class MappedProductDTOConverter
 
 	private Availability _getAvailability(
 			long commerceChannelGroupId, long companyId, CPInstance cpInstance,
-			Locale locale, String sku)
+			Locale locale, String sku, String unitOfMeasureKey)
 		throws Exception {
 
 		Availability availability = new Availability();
@@ -399,7 +399,7 @@ public class MappedProductDTOConverter
 						commerceChannelGroupId,
 						_cpDefinitionInventoryEngine.getMinStockQuantity(
 							cpInstance),
-						cpInstance.getSku()),
+						cpInstance.getSku(), unitOfMeasureKey),
 					CommerceInventoryAvailabilityConstants.AVAILABLE)) {
 
 				availability.setLabel_i18n(_language.get(locale, "available"));
@@ -413,10 +413,12 @@ public class MappedProductDTOConverter
 		}
 
 		if (_cpDefinitionInventoryEngine.isDisplayStockQuantity(cpInstance)) {
-			availability.setStockQuantity(
+			BigDecimal stockQuantity =
 				_commerceInventoryEngine.getStockQuantity(
 					companyId, cpInstance.getGroupId(), commerceChannelGroupId,
-					sku));
+					sku, unitOfMeasureKey);
+
+			availability.setStockQuantity(stockQuantity.intValue());
 		}
 
 		return availability;
