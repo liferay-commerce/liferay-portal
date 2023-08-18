@@ -48,7 +48,7 @@
 		"regionCode": "HA"
 	},
 	{
-		"name": "Hong Kong SAR (see also separate country code entry under HK)",
+		"name": "Hong Kong SAR",
 		"regionCode": "HK"
 	},
 	{
@@ -76,7 +76,7 @@
 		"regionCode": "LN"
 	},
 	{
-		"name": "Macao SAR (see also separate country code entry under MO)",
+		"name": "Macao SAR",
 		"regionCode": "MO"
 	},
 	{
@@ -112,7 +112,7 @@
 		"regionCode": "SC"
 	},
 	{
-		"name": "Taiwan Sheng (see also separate country code entry under TW)",
+		"name": "Taiwan Sheng",
 		"regionCode": "TW"
 	},
 	{

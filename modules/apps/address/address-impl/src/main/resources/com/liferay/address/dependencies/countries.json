@@ -219,7 +219,7 @@
 		"a2": "BQ",
 		"a3": "BES",
 		"idd": 599,
-		"name": "bonaire-sint-eustatius-saba",
+		"name": "bonaire-st-eustatius-saba",
 		"number": 535,
 		"zipRequired": false
 	},
@@ -275,7 +275,7 @@
 		"a2": "BN",
 		"a3": "BRN",
 		"idd": 673,
-		"name": "brunei-darussalam",
+		"name": "brunei",
 		"number": 96,
 		"zipRequired": true
 	},
@@ -296,20 +296,20 @@
 		"zipRequired": false
 	},
 	{
+		"a2": "MM",
+		"a3": "MMR",
+		"idd": 95,
+		"name": "burma-myanmar",
+		"number": 104,
+		"zipRequired": true
+	},
+	{
 		"a2": "BI",
 		"a3": "BDI",
 		"idd": 257,
 		"name": "burundi",
 		"number": 108,
 		"zipRequired": false
-	},
-	{
-		"a2": "CV",
-		"a3": "CPV",
-		"idd": 238,
-		"name": "cabo-verde",
-		"number": 132,
-		"zipRequired": true
 	},
 	{
 		"a2": "KH",
@@ -408,14 +408,6 @@
 		"zipRequired": false
 	},
 	{
-		"a2": "CG",
-		"a3": "COG",
-		"idd": 242,
-		"name": "republic-of-congo",
-		"number": 178,
-		"zipRequired": false
-	},
-	{
 		"a2": "CK",
 		"a3": "COK",
 		"idd": 682,
@@ -430,14 +422,6 @@
 		"name": "costa-rica",
 		"number": 188,
 		"zipRequired": true
-	},
-	{
-		"a2": "CI",
-		"a3": "CIV",
-		"idd": 225,
-		"name": "cote-divoire",
-		"number": 384,
-		"zipRequired": false
 	},
 	{
 		"a2": "HR",
@@ -475,7 +459,7 @@
 		"a2": "CZ",
 		"a3": "CZE",
 		"idd": 420,
-		"name": "czechia",
+		"name": "czech-republic",
 		"number": 203,
 		"zipRequired": true
 	},
@@ -603,7 +587,7 @@
 		"a2": "FJ",
 		"a3": "FJI",
 		"idd": 679,
-		"name": "fiji",
+		"name": "fiji-islands",
 		"number": 242,
 		"zipRequired": false
 	},
@@ -621,14 +605,6 @@
 		"idd": 33,
 		"name": "france",
 		"number": 250,
-		"zipRequired": true
-	},
-	{
-		"a2": "AI",
-		"a3": "AFI",
-		"idd": 1264,
-		"name": "french-afars-issas",
-		"number": 0,
 		"zipRequired": true
 	},
 	{
@@ -800,14 +776,6 @@
 		"zipRequired": true
 	},
 	{
-		"a2": "HK",
-		"a3": "HKG",
-		"idd": 852,
-		"name": "hong-kong",
-		"number": 344,
-		"zipRequired": false
-	},
-	{
 		"a2": "HU",
 		"a3": "HUN",
 		"idd": 36,
@@ -866,7 +834,7 @@
 	{
 		"a2": "IM",
 		"a3": "IMN",
-		"idd": "44-1624",
+		"idd": "44",
 		"name": "isle-of-man",
 		"number": 833,
 		"zipRequired": true
@@ -888,6 +856,14 @@
 		"zipRequired": true
 	},
 	{
+		"a2": "CI",
+		"a3": "CIV",
+		"idd": 225,
+		"name": "ivory-coast",
+		"number": 384,
+		"zipRequired": false
+	},
+	{
 		"a2": "JM",
 		"a3": "JAM",
 		"idd": 1,
@@ -906,7 +882,7 @@
 	{
 		"a2": "JE",
 		"a3": "JEY",
-		"idd": "44-1534",
+		"idd": "44",
 		"name": "jersey",
 		"number": 832,
 		"zipRequired": true
@@ -963,7 +939,7 @@
 		"a2": "LA",
 		"a3": "LAO",
 		"idd": 856,
-		"name": "lao",
+		"name": "laos",
 		"number": 418,
 		"zipRequired": true
 	},
@@ -1032,12 +1008,12 @@
 		"zipRequired": true
 	},
 	{
-		"a2": "MO",
-		"a3": "MAC",
-		"idd": 853,
-		"name": "macao",
-		"number": 446,
-		"zipRequired": false
+		"a2": "MK",
+		"a3": "MKD",
+		"idd": 389,
+		"name": "macedonia",
+		"number": 807,
+		"zipRequired": true
 	},
 	{
 		"a2": "MG",
@@ -1123,7 +1099,7 @@
 		"a2": "YT",
 		"a3": "MYT",
 		"idd": 262,
-		"name": "mayotte",
+		"name": "mayotte-island",
 		"number": 175,
 		"zipRequired": true
 	},
@@ -1197,14 +1173,6 @@
 		"idd": 258,
 		"name": "mozambique",
 		"number": 508,
-		"zipRequired": true
-	},
-	{
-		"a2": "MM",
-		"a3": "MMR",
-		"idd": 95,
-		"name": "myanmar",
-		"number": 104,
 		"zipRequired": true
 	},
 	{
@@ -1302,14 +1270,6 @@
 		"name": "north-korea",
 		"number": 408,
 		"zipRequired": false
-	},
-	{
-		"a2": "MK",
-		"a3": "MKD",
-		"idd": 389,
-		"name": "north-macedonia",
-		"number": 807,
-		"zipRequired": true
 	},
 	{
 		"a2": "MP",
@@ -1440,10 +1400,26 @@
 		"zipRequired": false
 	},
 	{
+		"a2": "CG",
+		"a3": "COG",
+		"idd": 242,
+		"name": "republic-of-congo",
+		"number": 178,
+		"zipRequired": false
+	},
+	{
+		"a2": "CV",
+		"a3": "CPV",
+		"idd": 238,
+		"name": "republic-of-cabo-verde",
+		"number": 132,
+		"zipRequired": true
+	},
+	{
 		"a2": "RE",
 		"a3": "REU",
 		"idd": 262,
-		"name": "reunion",
+		"name": "reunion-island",
 		"number": 638,
 		"zipRequired": true
 	},
@@ -1459,7 +1435,7 @@
 		"a2": "RU",
 		"a3": "RUS",
 		"idd": 7,
-		"name": "russian-federation",
+		"name": "russia",
 		"number": 643,
 		"zipRequired": true
 	},
@@ -1469,70 +1445,6 @@
 		"idd": 250,
 		"name": "rwanda",
 		"number": 646,
-		"zipRequired": false
-	},
-	{
-		"a2": "BL",
-		"a3": "BLM",
-		"idd": 590,
-		"name": "saint-barthelemy",
-		"number": 652,
-		"zipRequired": true
-	},
-	{
-		"a2": "SH",
-		"a3": "SHN",
-		"idd": 290,
-		"name": "saint-helena",
-		"number": 654,
-		"zipRequired": true
-	},
-	{
-		"a2": "KN",
-		"a3": "KNA",
-		"idd": 1,
-		"name": "saint-kitts-nevis",
-		"number": 659,
-		"zipRequired": false
-	},
-	{
-		"a2": "LC",
-		"a3": "LCA",
-		"idd": 1,
-		"name": "saint-lucia",
-		"number": 662,
-		"zipRequired": false
-	},
-	{
-		"a2": "MF",
-		"a3": "MAF",
-		"idd": 590,
-		"name": "saint-martin",
-		"number": 663,
-		"zipRequired": true
-	},
-	{
-		"a2": "PM",
-		"a3": "SPM",
-		"idd": 508,
-		"name": "saint-pierre-miquelon",
-		"number": 666,
-		"zipRequired": true
-	},
-	{
-		"a2": "VC",
-		"a3": "VCT",
-		"idd": 1,
-		"name": "saint-vincent-the-grenadines",
-		"number": 670,
-		"zipRequired": true
-	},
-	{
-		"a2": "WS",
-		"a3": "WSM",
-		"idd": 685,
-		"name": "samoa",
-		"number": 882,
 		"zipRequired": false
 	},
 	{
@@ -1590,14 +1502,6 @@
 		"name": "sierra-leone",
 		"number": 694,
 		"zipRequired": false
-	},
-	{
-		"a2": "SK",
-		"a3": "SKM",
-		"idd": 421,
-		"name": "sikkim",
-		"number": 0,
-		"zipRequired": true
 	},
 	{
 		"a2": "SG",
@@ -1659,7 +1563,7 @@
 		"a2": "GS",
 		"a3": "SGS",
 		"idd": 500,
-		"name": "south-georgia-the-south-sandwich-islands",
+		"name": "south-georgia-south-sandwich-islands",
 		"number": 239,
 		"zipRequired": true
 	},
@@ -1693,6 +1597,62 @@
 		"idd": 94,
 		"name": "sri-lanka",
 		"number": 144,
+		"zipRequired": true
+	},
+	{
+		"a2": "BL",
+		"a3": "BLM",
+		"idd": 590,
+		"name": "st-barthelemy",
+		"number": 652,
+		"zipRequired": true
+	},
+	{
+		"a2": "SH",
+		"a3": "SHN",
+		"idd": 290,
+		"name": "st-helena",
+		"number": 654,
+		"zipRequired": true
+	},
+	{
+		"a2": "KN",
+		"a3": "KNA",
+		"idd": 1,
+		"name": "st-kitts",
+		"number": 659,
+		"zipRequired": false
+	},
+	{
+		"a2": "LC",
+		"a3": "LCA",
+		"idd": 1,
+		"name": "st-lucia",
+		"number": 662,
+		"zipRequired": false
+	},
+	{
+		"a2": "MF",
+		"a3": "MAF",
+		"idd": 590,
+		"name": "st-martin",
+		"number": 663,
+		"zipRequired": true
+	},
+	{
+		"a2": "PM",
+		"a3": "SPM",
+		"idd": 508,
+		"name": "st-pierre-miquelon",
+		"number": 666,
+		"zipRequired": true
+	},
+	{
+		"a2": "VC",
+		"a3": "VCT",
+		"idd": 1,
+		"name": "st-vincent",
+		"number": 670,
 		"zipRequired": true
 	},
 	{
@@ -1739,7 +1699,7 @@
 		"a2": "SY",
 		"a3": "SYR",
 		"idd": 963,
-		"name": "syrian-arab-republic",
+		"name": "syria",
 		"number": 760,
 		"zipRequired": false
 	},
@@ -1827,7 +1787,7 @@
 		"a2": "TR",
 		"a3": "TUR",
 		"idd": 90,
-		"name": "turki̇ye",
+		"name": "turkey",
 		"number": 792,
 		"zipRequired": true
 	},
@@ -1843,7 +1803,7 @@
 		"a2": "TC",
 		"a3": "TCA",
 		"idd": 1,
-		"name": "turks-caicos-islands",
+		"name": "turks-caicos",
 		"number": 796,
 		"zipRequired": true
 	},
@@ -1938,6 +1898,7 @@
 	{
 		"a2": "VA",
 		"a3": "VAT",
+		"idd": 39,
 		"name": "vatican-city",
 		"number": 336,
 		"zipRequired": true
@@ -1954,7 +1915,7 @@
 		"a2": "VN",
 		"a3": "VNM",
 		"idd": 84,
-		"name": "viet-nam",
+		"name": "vietnam",
 		"number": 704,
 		"zipRequired": true
 	},
@@ -1973,6 +1934,14 @@
 		"name": "western-sahara",
 		"number": 732,
 		"zipRequired": true
+	},
+	{
+		"a2": "WS",
+		"a3": "WSM",
+		"idd": 685,
+		"name": "western-samoa",
+		"number": 882,
+		"zipRequired": false
 	},
 	{
 		"a2": "YE",
