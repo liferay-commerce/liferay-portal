@@ -352,17 +352,6 @@
 				</licenses>
 			</library>
 			<library>
-				<file-name>com.liferay.commerce.report.impl.jar!com.lowagie.itext.jar</file-name>
-				<version>2.1.7.js10.LIFERAY-PATCHED-1</version>
-				<project-name>com.lowagie.itext</project-name>
-				<licenses>
-					<license>
-						<license-name>LGPL 2.1</license-name>
-						<license-url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
 				<file-name>com.liferay.commerce.report.impl.jar!commons-dbcp2.jar</file-name>
 				<version>2.0</version>
 				<project-name>Apache Commons DBCP</project-name>
@@ -545,6 +534,17 @@
 					<license>
 						<license-name>Apache License, Version 2.0</license-name>
 						<license-url>https://www.apache.org/licenses/LICENSE-2.0</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
+				<file-name>com.liferay.commerce.report.impl.jar!openpdf.jar</file-name>
+				<version>1.3.11</version>
+				<project-name>openpdf</project-name>
+				<licenses>
+					<license>
+						<license-name>Mozilla Public License Version 2.0</license-name>
+						<license-url>http://www.mozilla.org/MPL/2.0/</license-url>
 					</license>
 				</licenses>
 			</library>
