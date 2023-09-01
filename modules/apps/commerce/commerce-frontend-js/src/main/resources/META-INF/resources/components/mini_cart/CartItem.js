@@ -168,30 +168,69 @@ function CartItem({
 				'is-removed': isRemoved,
 			})}
 		>
-			<a className="mini-cart-item-anchor" href={productPageUrl}>
-				{!!adaptiveMediaImageHTMLTag && (
-					<div
-						className="mini-cart-item-thumbnail"
-						dangerouslySetInnerHTML={{
-							__html: adaptiveMediaImageHTMLTag,
-						}}
-					/>
-				)}
+			{Liferay.FeatureFlags['COMMERCE-8715'] ? (
+				<div className="mini-cart-item-details position-relative">
+					<a
+						className="h-100 mini-cart-item-anchor position-absolute w-100"
+						href={productPageUrl}
+					>
+						<span className="sr-only">
+							{Liferay.Language.get('go-to-x')}
+						</span>
+					</a>
 
-				<div
-					className={classnames('mini-cart-item-info ml-3', {
-						options: Boolean(options),
-					})}
-				>
-					<ItemInfoView
-						childItems={childItems}
-						name={name}
-						options={options}
-						replacedSku={replacedSku}
-						sku={sku}
-					/>
+					{!!adaptiveMediaImageHTMLTag && (
+						<div
+							className="mini-cart-item-thumbnail"
+							dangerouslySetInnerHTML={{
+								__html: adaptiveMediaImageHTMLTag,
+							}}
+						/>
+					)}
+
+					<div
+						className={classnames(
+							'mini-cart-item-info ml-3 w-100',
+							{
+								options: Boolean(options),
+							}
+						)}
+					>
+						<ItemInfoView
+							childItems={childItems}
+							name={name}
+							options={options}
+							replacedSku={replacedSku}
+							sku={sku}
+						/>
+					</div>
 				</div>
-			</a>
+			) : (
+				<a className="mini-cart-item-details" href={productPageUrl}>
+					{!!adaptiveMediaImageHTMLTag && (
+						<div
+							className="mini-cart-item-thumbnail"
+							dangerouslySetInnerHTML={{
+								__html: adaptiveMediaImageHTMLTag,
+							}}
+						/>
+					)}
+
+					<div
+						className={classnames('mini-cart-item-info ml-3', {
+							options: Boolean(options),
+						})}
+					>
+						<ItemInfoView
+							childItems={childItems}
+							name={name}
+							options={options}
+							replacedSku={replacedSku}
+							sku={sku}
+						/>
+					</div>
+				</a>
+			)}
 
 			<div className="mini-cart-item-quantity">
 				<QuantitySelector
