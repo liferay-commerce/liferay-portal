@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayButton from '@clayui/button';
+import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
 import ClayIcon from '@clayui/icon';
 import {useIsMounted} from '@liferay/frontend-js-react-web';
 import classnames from 'classnames';
+import {sub} from 'frontend-js-web';
 import React, {useContext, useEffect, useState} from 'react';
 
 import ServiceProvider from '../../ServiceProvider/index';
@@ -73,6 +74,7 @@ function CartItem({
 }) {
 	const [itemState, setItemState] = useState(INITIAL_ITEM_STATE);
 	const [selectorQuantity, setSelectorQuantity] = useState(cartItemQuantity);
+	const hasChildItems = !!childItems?.length;
 	const isMounted = useIsMounted();
 	const options = parseOptions(rawOptions);
 
@@ -162,9 +164,17 @@ function CartItem({
 
 	const {isGettingRemoved, isRemovalCanceled, isRemoved} = itemState;
 
+	const getClassName = (className) => {
+		return classnames(className, {
+			'mini-cart-item-alignment': Liferay.FeatureFlags['COMMERCE-8715'],
+		});
+	};
+
 	return (
 		<div
 			className={classnames('mini-cart-item', {
+				'align-items-start':
+					Liferay.FeatureFlags['COMMERCE-8715'] && hasChildItems,
 				'is-removed': isRemoved,
 			})}
 		>
@@ -232,7 +242,7 @@ function CartItem({
 				</a>
 			)}
 
-			<div className="mini-cart-item-quantity">
+			<div className={getClassName('mini-cart-item-quantity')}>
 				<QuantitySelector
 					alignment={index > 0 ? 'top' : 'bottom'}
 					allowedQuantities={settings.allowedQuantities}
@@ -278,7 +288,7 @@ function CartItem({
 				/>
 			</div>
 
-			<div className="mini-cart-item-price">
+			<div className={getClassName('mini-cart-item-price')}>
 				<Price
 					compact={true}
 					displayDiscountLevels={displayDiscountLevels}
@@ -286,14 +296,15 @@ function CartItem({
 				/>
 			</div>
 
-			<div className="mini-cart-item-delete">
-				<button
-					className="btn btn-unstyled"
+			<div className={getClassName('mini-cart-item-actions')}>
+				<ClayButtonWithIcon
+					aria-label={sub(Liferay.Language.get('delete-x'), name)}
+					className="d-inline-flex"
+					displayType="unstyled"
 					onClick={removeItem}
-					type="button"
-				>
-					<ClayIcon symbol="times-circle-full" />
-				</button>
+					symbol="times-circle-full"
+					title={sub(Liferay.Language.get('delete-x'), name)}
+				/>
 			</div>
 
 			{!!errorMessages.length && (
