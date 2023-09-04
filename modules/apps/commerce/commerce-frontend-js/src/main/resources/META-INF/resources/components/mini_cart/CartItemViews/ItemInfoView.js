@@ -5,10 +5,11 @@
 
 import ClayIcon from '@clayui/icon';
 import ClayLabel from '@clayui/label';
+import ClayPanel from '@clayui/panel';
 import {ClayTooltipProvider} from '@clayui/tooltip';
 import {sub} from 'frontend-js-web';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, {useState} from 'react';
 
 function ItemInfoViewOptions({options}) {
 	return (
@@ -19,16 +20,49 @@ function ItemInfoViewOptions({options}) {
 }
 
 function ItemInfoViewBundle({childItems}) {
-	return (
+	const [expanded, setExpanded] = useState(false);
+
+	return Liferay.FeatureFlags['COMMERCE-8715'] ? (
+		<ClayPanel
+			className="item-info-collapse mb-0"
+			collapsable
+			displayTitle={sub(
+				Liferay.Language.get('x-product-options'),
+				expanded
+					? Liferay.Language.get('hide')
+					: Liferay.Language.get('show')
+			)}
+			displayType="secondary"
+			expanded={expanded}
+			onExpandedChange={(expanded) => {
+				setExpanded(expanded);
+			}}
+			showCollapseIcon
+		>
+			<ClayPanel.Body>
+				<div className="child-items">
+					{childItems.map((item, index) => {
+						const {name, quantity} = item;
+
+						return (
+							<div className="child-item" key={index}>
+								<span>
+									{quantity} &times; {name}
+								</span>
+							</div>
+						);
+					})}
+				</div>
+			</ClayPanel.Body>
+		</ClayPanel>
+	) : (
 		<div className="child-items">
-			{childItems.map((item, index) => {
-				const {name, quantity} = item;
+			{childItems.map((item) => {
+				const {id, name, quantity} = item;
 
 				return (
-					<div className="child-item" key={index}>
-						<span>
-							{quantity} &times; {name}
-						</span>
+					<div className="child-item" key={id}>
+						<span>{`${quantity} x ${name}`}</span>
 					</div>
 				);
 			})}
