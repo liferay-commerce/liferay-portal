@@ -647,7 +647,8 @@ public class CommerceProductPriceCalculationV2Impl
 
 		if (commercePriceEntry == null) {
 			return _commerceDiscountCalculation.getProductCommerceDiscountValue(
-				cpInstanceId, quantity, finalPrice, commerceContext);
+				cpInstanceId, quantity, finalPrice, unitOfMeasureKey,
+				commerceContext);
 		}
 
 		BigDecimal[] values = new BigDecimal[4];
@@ -666,7 +667,8 @@ public class CommerceProductPriceCalculationV2Impl
 
 		if (!commercePriceEntry.isBulkPricing()) {
 			return _commerceDiscountCalculation.getProductCommerceDiscountValue(
-				cpInstanceId, quantity, finalPrice, commerceContext);
+				cpInstanceId, quantity, finalPrice, unitOfMeasureKey,
+				commerceContext);
 		}
 
 		CommerceTierPriceEntry commerceTierPriceEntry =
@@ -678,7 +680,8 @@ public class CommerceProductPriceCalculationV2Impl
 			commerceTierPriceEntry.isDiscountDiscovery()) {
 
 			return _commerceDiscountCalculation.getProductCommerceDiscountValue(
-				cpInstanceId, quantity, finalPrice, commerceContext);
+				cpInstanceId, quantity, finalPrice, unitOfMeasureKey,
+				commerceContext);
 		}
 
 		values[0] = commerceTierPriceEntry.getDiscountLevel1();
