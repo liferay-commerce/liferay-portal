@@ -15,14 +15,12 @@ import com.liferay.commerce.inventory.service.base.CommerceInventoryBookedQuanti
 import com.liferay.commerce.inventory.type.CommerceInventoryAuditType;
 import com.liferay.commerce.inventory.type.CommerceInventoryAuditTypeRegistry;
 import com.liferay.commerce.model.CommerceOrderItemTable;
-import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.model.GroupTable;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.search.Document;
@@ -207,14 +205,6 @@ public class CommerceInventoryBookedQuantityLocalServiceImpl
 					commerceInventoryBookedQuantityId.eq(
 						CommerceOrderItemTable.INSTANCE.
 							commerceInventoryBookedQuantityId)
-			).innerJoinON(
-				GroupTable.INSTANCE,
-				CommerceOrderItemTable.INSTANCE.groupId.eq(
-					GroupTable.INSTANCE.groupId
-				).and(
-					GroupTable.INSTANCE.classNameId.eq(
-						_portal.getClassNameId(CommerceChannel.class.getName()))
-				)
 			).where(
 				CommerceInventoryBookedQuantityTable.INSTANCE.companyId.eq(
 					companyId
@@ -230,7 +220,8 @@ public class CommerceInventoryBookedQuantityLocalServiceImpl
 							unitOfMeasureKey.eq(unitOfMeasureKey);
 					}
 				).and(
-					GroupTable.INSTANCE.groupId.eq(commerceChannelGroupId)
+					CommerceOrderItemTable.INSTANCE.groupId.eq(
+						commerceChannelGroupId)
 				)
 			));
 
