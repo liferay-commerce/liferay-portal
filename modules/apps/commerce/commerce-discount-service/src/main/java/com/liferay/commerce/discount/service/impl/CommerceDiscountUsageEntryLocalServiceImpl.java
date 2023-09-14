@@ -8,11 +8,14 @@ package com.liferay.commerce.discount.service.impl;
 import com.liferay.commerce.discount.constants.CommerceDiscountConstants;
 import com.liferay.commerce.discount.model.CommerceDiscount;
 import com.liferay.commerce.discount.model.CommerceDiscountUsageEntry;
+import com.liferay.commerce.discount.model.CommerceDiscountUsageEntryTable;
 import com.liferay.commerce.discount.service.base.CommerceDiscountUsageEntryLocalServiceBaseImpl;
 import com.liferay.commerce.discount.service.persistence.CommerceDiscountPersistence;
+import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 
@@ -84,8 +87,20 @@ public class CommerceDiscountUsageEntryLocalServiceImpl
 
 	@Override
 	public int getCommerceDiscountUsageEntriesCount(long commerceDiscountId) {
-		return commerceDiscountUsageEntryPersistence.countByCommerceDiscountId(
-			commerceDiscountId);
+		return commerceDiscountUsageEntryPersistence.dslQueryCount(
+			DSLQueryFactoryUtil.countDistinct(
+				CommerceDiscountUsageEntryTable.INSTANCE.
+					commerceDiscountUsageEntryId
+			).from(
+				CommerceDiscountUsageEntryTable.INSTANCE
+			).where(
+				CommerceDiscountUsageEntryTable.INSTANCE.companyId.eq(
+					CompanyThreadLocal.getCompanyId()
+				).and(
+					CommerceDiscountUsageEntryTable.INSTANCE.commerceDiscountId.
+						eq(commerceDiscountId)
+				)
+			));
 	}
 
 	@Override
