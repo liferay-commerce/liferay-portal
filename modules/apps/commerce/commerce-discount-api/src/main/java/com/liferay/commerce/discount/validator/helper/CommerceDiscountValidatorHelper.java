@@ -22,6 +22,14 @@ public interface CommerceDiscountValidatorHelper {
 			String... types)
 		throws PortalException;
 
+	public void clearUsage(long commerceDiscountId);
+
+	public void decrementUsage(long commerceDiscountId);
+
+	public int getUsage(long commerceDiscountId);
+
+	public void incrementUsage(long commerceDiscountId);
+
 	public boolean isValid(
 			CommerceContext commerceContext, CommerceDiscount commerceDiscount,
 			String... types)

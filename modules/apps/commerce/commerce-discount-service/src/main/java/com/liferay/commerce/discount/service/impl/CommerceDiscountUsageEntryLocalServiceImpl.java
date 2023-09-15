@@ -6,13 +6,14 @@
 package com.liferay.commerce.discount.service.impl;
 
 import com.liferay.commerce.discount.constants.CommerceDiscountConstants;
+import com.liferay.commerce.discount.internal.validator.helper.PortalInstanceLifecycleListenerImpl;
 import com.liferay.commerce.discount.model.CommerceDiscount;
 import com.liferay.commerce.discount.model.CommerceDiscountUsageEntry;
-import com.liferay.commerce.discount.model.CommerceDiscountUsageEntryTable;
 import com.liferay.commerce.discount.service.base.CommerceDiscountUsageEntryLocalServiceBaseImpl;
 import com.liferay.commerce.discount.service.persistence.CommerceDiscountPersistence;
-import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
+import com.liferay.commerce.discount.validator.helper.CommerceDiscountValidatorHelper;
 import com.liferay.portal.aop.AopService;
+import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -20,6 +21,10 @@ import com.liferay.portal.kernel.service.UserLocalService;
 
 import java.util.Objects;
 
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -60,8 +65,13 @@ public class CommerceDiscountUsageEntryLocalServiceImpl
 		commerceDiscountUsageEntry.setCommerceOrderId(commerceOrderId);
 		commerceDiscountUsageEntry.setCommerceDiscountId(commerceDiscountId);
 
-		return commerceDiscountUsageEntryPersistence.update(
-			commerceDiscountUsageEntry);
+		commerceDiscountUsageEntry =
+			commerceDiscountUsageEntryPersistence.update(
+				commerceDiscountUsageEntry);
+
+		_commerceDiscountValidatorHelper.incrementUsage(commerceDiscountId);
+
+		return commerceDiscountUsageEntry;
 	}
 
 	@Override
@@ -75,6 +85,8 @@ public class CommerceDiscountUsageEntryLocalServiceImpl
 		if (commerceDiscountUsageEntry != null) {
 			commerceDiscountUsageEntryPersistence.remove(
 				commerceDiscountUsageEntry);
+
+			_commerceDiscountValidatorHelper.decrementUsage(commerceDiscountId);
 		}
 	}
 
@@ -82,20 +94,13 @@ public class CommerceDiscountUsageEntryLocalServiceImpl
 	public void deleteCommerceUsageEntryByDiscountId(long commerceDiscountId) {
 		commerceDiscountUsageEntryPersistence.removeByCommerceDiscountId(
 			commerceDiscountId);
+
+		_commerceDiscountValidatorHelper.clearUsage(commerceDiscountId);
 	}
 
 	@Override
 	public int getCommerceDiscountUsageEntriesCount(long commerceDiscountId) {
-		return dslQueryCount(
-			DSLQueryFactoryUtil.count(
-			).from(
-				CommerceDiscountUsageEntryTable.INSTANCE
-			).groupBy(
-				CommerceDiscountUsageEntryTable.INSTANCE.commerceDiscountId
-			).having(
-				CommerceDiscountUsageEntryTable.INSTANCE.commerceDiscountId.eq(
-					commerceDiscountId)
-			));
+		return _commerceDiscountValidatorHelper.getUsage(commerceDiscountId);
 	}
 
 	@Override
@@ -120,6 +125,22 @@ public class CommerceDiscountUsageEntryLocalServiceImpl
 
 		return commerceDiscountUsageEntryPersistence.countByCOI_CDI(
 			commerceOrderId, commerceDiscountId);
+	}
+
+	@Override
+	public void setAopProxy(Object aopProxy) {
+		super.setAopProxy(aopProxy);
+
+		Bundle bundle = FrameworkUtil.getBundle(getClass());
+
+		BundleContext bundleContext = bundle.getBundleContext();
+
+		_serviceRegistration = bundleContext.registerService(
+			PortalInstanceLifecycleListener.class,
+			new PortalInstanceLifecycleListenerImpl(
+				commerceDiscountUsageEntryLocalService,
+				_commerceDiscountValidatorHelper),
+			null);
 	}
 
 	@Override
@@ -194,6 +215,11 @@ public class CommerceDiscountUsageEntryLocalServiceImpl
 
 	@Reference
 	private CommerceDiscountPersistence _commerceDiscountPersistence;
+
+	@Reference
+	private CommerceDiscountValidatorHelper _commerceDiscountValidatorHelper;
+
+	private ServiceRegistration<?> _serviceRegistration;
 
 	@Reference
 	private UserLocalService _userLocalService;

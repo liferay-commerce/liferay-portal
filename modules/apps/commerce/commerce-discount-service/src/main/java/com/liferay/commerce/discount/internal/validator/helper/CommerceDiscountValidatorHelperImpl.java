@@ -16,6 +16,8 @@ import com.liferay.portal.kernel.exception.PortalException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -49,6 +51,35 @@ public class CommerceDiscountValidatorHelperImpl
 					commerceDiscountValidatorResult.getMessage());
 			}
 		}
+	}
+
+	@Override
+	public void clearUsage(long commerceDiscountId) {
+		_commerceDiscountUsageCounter.remove(commerceDiscountId);
+	}
+
+	@Override
+	public void decrementUsage(long commerceDiscountId) {
+		AtomicInteger usage = _commerceDiscountUsageCounter.get(
+			commerceDiscountId);
+
+		usage.getAndDecrement();
+	}
+
+	@Override
+	public int getUsage(long commerceDiscountId) {
+		AtomicInteger usage = _commerceDiscountUsageCounter.computeIfAbsent(
+			commerceDiscountId, k -> new AtomicInteger(0));
+
+		return usage.get();
+	}
+
+	@Override
+	public void incrementUsage(long commerceDiscountId) {
+		AtomicInteger usage = _commerceDiscountUsageCounter.computeIfAbsent(
+			commerceDiscountId, k -> new AtomicInteger(0));
+
+		usage.getAndIncrement();
 	}
 
 	@Override
@@ -91,6 +122,9 @@ public class CommerceDiscountValidatorHelperImpl
 
 		return commerceDiscountValidatorResults;
 	}
+
+	private final ConcurrentHashMap<Long, AtomicInteger>
+		_commerceDiscountUsageCounter = new ConcurrentHashMap<>();
 
 	@Reference
 	private CommerceDiscountValidatorRegistry
