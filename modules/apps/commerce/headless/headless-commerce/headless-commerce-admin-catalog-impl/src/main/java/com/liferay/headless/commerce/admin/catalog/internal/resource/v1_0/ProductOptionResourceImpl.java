@@ -13,6 +13,7 @@ import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.commerce.product.service.CPOptionService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Product;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductOption;
+import com.liferay.headless.commerce.admin.catalog.internal.dto.v1_0.util.CustomFieldsUtil;
 import com.liferay.headless.commerce.admin.catalog.internal.util.v1_0.ProductOptionUtil;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductOptionResource;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
@@ -20,6 +21,7 @@ import com.liferay.headless.commerce.core.util.ServiceContextHelper;
 import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
@@ -28,8 +30,11 @@ import com.liferay.portal.vulcan.fields.NestedFieldId;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
+import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.core.Response;
 
@@ -191,12 +196,16 @@ public class ProductOptionResourceImpl extends BaseProductOptionResourceImpl {
 			CPDefinition cpDefinition, ProductOption[] productOptions)
 		throws Exception {
 
+		ServiceContext serviceContext = _serviceContextHelper.getServiceContext(
+			cpDefinition.getGroupId());
+
 		for (ProductOption productOption : productOptions) {
+			serviceContext.setExpandoBridgeAttributes(
+				_getExpandoBridgeAttributes(productOption));
+
 			ProductOptionUtil.addOrUpdateCPDefinitionOptionRel(
 				_cpDefinitionOptionRelService, _cpOptionService, productOption,
-				cpDefinition.getCPDefinitionId(),
-				_serviceContextHelper.getServiceContext(
-					cpDefinition.getGroupId()));
+				cpDefinition.getCPDefinitionId(), serviceContext);
 		}
 
 		List<ProductOption> productOptionList = new ArrayList<>();
@@ -213,6 +222,15 @@ public class ProductOptionResourceImpl extends BaseProductOptionResourceImpl {
 		}
 
 		return productOptionList;
+	}
+
+	private Map<String, Serializable> _getExpandoBridgeAttributes(
+		ProductOption productOption) {
+
+		return CustomFieldsUtil.toMap(
+			CPDefinitionOptionRel.class.getName(),
+			contextCompany.getCompanyId(), productOption.getCustomFields(),
+			contextAcceptLanguage.getPreferredLocale());
 	}
 
 	private ProductOption _toProductOption(Long cpDefinitionOptionRelId)
@@ -248,6 +266,12 @@ public class ProductOptionResourceImpl extends BaseProductOptionResourceImpl {
 		CPDefinitionOptionRel cpDefinitionOptionRel =
 			_cpDefinitionOptionRelService.getCPDefinitionOptionRel(id);
 
+		ServiceContext serviceContext = _serviceContextHelper.getServiceContext(
+			cpDefinitionOptionRel.getGroupId());
+
+		serviceContext.setExpandoBridgeAttributes(
+			_getExpandoBridgeAttributes(productOption));
+
 		cpDefinitionOptionRel =
 			_cpDefinitionOptionRelService.updateCPDefinitionOptionRel(
 				cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
@@ -257,9 +281,13 @@ public class ProductOptionResourceImpl extends BaseProductOptionResourceImpl {
 				GetterUtil.get(
 					productOption.getFieldType(),
 					cpDefinitionOptionRel.getCommerceOptionTypeKey()),
+				cpDefinitionOptionRel.getInfoItemServiceKey(),
 				GetterUtil.get(
 					productOption.getPriority(),
 					cpDefinitionOptionRel.getPriority()),
+				GetterUtil.get(
+					productOption.getDefinedExternally(),
+					cpDefinitionOptionRel.isDefinedExternally()),
 				GetterUtil.get(
 					productOption.getFacetable(),
 					cpDefinitionOptionRel.isFacetable()),
@@ -269,8 +297,10 @@ public class ProductOptionResourceImpl extends BaseProductOptionResourceImpl {
 				GetterUtil.get(
 					productOption.getSkuContributor(),
 					cpDefinitionOptionRel.isSkuContributor()),
-				_serviceContextHelper.getServiceContext(
-					cpDefinitionOptionRel.getGroupId()));
+				GetterUtil.get(
+					productOption.getPriceType(),
+					cpDefinitionOptionRel.getPriceType()),
+				cpDefinitionOptionRel.getTypeSettings(), serviceContext);
 
 		return _toProductOption(
 			cpDefinitionOptionRel.getCPDefinitionOptionRelId());
