@@ -51,7 +51,7 @@ public class ProductOptionUtil {
 					GetterUtil.get(
 						productOption.getSkuContributor(),
 						cpOption.isSkuContributor()),
-					true, serviceContext);
+					true, productOption.getPriceType(), serviceContext);
 		}
 		else {
 			cpDefinitionOptionRel =
@@ -64,9 +64,13 @@ public class ProductOptionUtil {
 					GetterUtil.get(
 						productOption.getFieldType(),
 						cpDefinitionOptionRel.getCommerceOptionTypeKey()),
+					cpDefinitionOptionRel.getInfoItemServiceKey(),
 					GetterUtil.get(
 						productOption.getPriority(),
 						cpDefinitionOptionRel.getPriority()),
+					GetterUtil.get(
+						productOption.getDefinedExternally(),
+						cpDefinitionOptionRel.isDefinedExternally()),
 					GetterUtil.get(
 						productOption.getFacetable(),
 						cpDefinitionOptionRel.isFacetable()),
@@ -76,7 +80,10 @@ public class ProductOptionUtil {
 					GetterUtil.get(
 						productOption.getSkuContributor(),
 						cpDefinitionOptionRel.isSkuContributor()),
-					serviceContext);
+					GetterUtil.get(
+						productOption.getPriceType(),
+						cpDefinitionOptionRel.getPriceType()),
+					cpDefinitionOptionRel.getTypeSettings(), serviceContext);
 		}
 
 		return cpDefinitionOptionRel;
