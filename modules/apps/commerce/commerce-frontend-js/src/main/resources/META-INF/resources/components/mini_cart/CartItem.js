@@ -78,6 +78,7 @@ function CartItem({
 	const [itemState, setItemState] = useState(INITIAL_ITEM_STATE);
 	const [selectorQuantity, setSelectorQuantity] = useState(cartItemQuantity);
 	const hasChildItems = !!childItems?.length;
+	const hasSkuUnitOfMeasure = !!skuUnitOfMeasure?.key;
 	const isMounted = useIsMounted();
 	const options = parseOptions(rawOptions);
 
@@ -170,7 +171,9 @@ function CartItem({
 
 	const getClassName = (className) => {
 		return classnames(className, {
-			'mini-cart-item-alignment': Liferay.FeatureFlags['COMMERCE-8715'],
+			'mini-cart-item-alignment':
+				Liferay.FeatureFlags['COMMERCE-8715'] ||
+				Liferay.FeatureFlags['COMMERCE-11287'],
 		});
 	};
 
@@ -182,7 +185,8 @@ function CartItem({
 				'is-removed': isRemoved,
 			})}
 		>
-			{Liferay.FeatureFlags['COMMERCE-8715'] ? (
+			{Liferay.FeatureFlags['COMMERCE-8715'] ||
+			Liferay.FeatureFlags['COMMERCE-11287'] ? (
 				<div className="mini-cart-item-details position-relative">
 					<a
 						className="h-100 mini-cart-item-anchor position-absolute w-100"
@@ -312,7 +316,9 @@ function CartItem({
 			</div>
 
 			<div className={getClassName('mini-cart-item-actions')}>
-				{Liferay.FeatureFlags['COMMERCE-8715'] && hasChildItems ? (
+				{(Liferay.FeatureFlags['COMMERCE-8715'] && hasChildItems) ||
+				(Liferay.FeatureFlags['COMMERCE-11287'] &&
+					hasSkuUnitOfMeasure) ? (
 					<ClayDropDown
 						closeOnClick
 						trigger={
@@ -334,7 +340,14 @@ function CartItem({
 						<ClayDropDown.ItemList>
 							<ClayDropDown.Item
 								onClick={() =>
-									setEditedItem({cartItemId, name, productId})
+									setEditedItem({
+										cartItemId,
+										name,
+										productId,
+										type: hasSkuUnitOfMeasure
+											? 'uom'
+											: 'options',
+									})
 								}
 							>
 								{Liferay.Language.get('edit')}
