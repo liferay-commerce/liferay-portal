@@ -20,6 +20,7 @@ import com.liferay.headless.commerce.core.util.ServiceContextHelper;
 import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
@@ -104,9 +105,8 @@ public class ProductOptionValueResourceImpl
 
 		long cpInstanceId = 0;
 
-		CPInstance cpInstance = _cpInstanceService.fetchCProductInstance(
-			cpDefinitionOptionValueRel.getCProductId(),
-			cpDefinitionOptionValueRel.getCPInstanceUuid());
+		CPInstance cpInstance = _cpInstanceService.fetchCPInstance(
+			productOptionValue.getCpInstanceId());
 
 		if (cpInstance != null) {
 			cpInstanceId = cpInstance.getCPInstanceId();
@@ -127,11 +127,15 @@ public class ProductOptionValueResourceImpl
 					cpDefinitionOptionValueRel.getKey()),
 				LanguageUtils.getLocalizedMap(nameMap),
 				cpDefinitionOptionValueRel.isPreselected(),
-				cpDefinitionOptionValueRel.getPrice(),
+				BigDecimalUtil.get(
+					productOptionValue.getDeltaPrice(),
+					cpDefinitionOptionValueRel.getPrice()),
 				GetterUtil.getDouble(
 					productOptionValue.getPriority(),
 					cpDefinitionOptionValueRel.getPriority()),
-				cpDefinitionOptionValueRel.getQuantity(),
+				BigDecimalUtil.get(
+					productOptionValue.getQuantity(),
+					cpDefinitionOptionValueRel.getQuantity()),
 				cpDefinitionOptionValueRel.getUnitOfMeasureKey(),
 				_serviceContextHelper.getServiceContext(
 					cpDefinitionOptionValueRel.getGroupId())));

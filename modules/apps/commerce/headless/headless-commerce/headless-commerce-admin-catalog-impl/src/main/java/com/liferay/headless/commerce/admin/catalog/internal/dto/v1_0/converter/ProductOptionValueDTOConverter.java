@@ -6,6 +6,7 @@
 package com.liferay.headless.commerce.admin.catalog.internal.dto.v1_0.converter;
 
 import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
+import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.service.CPDefinitionOptionValueRelService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductOptionValue;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
@@ -38,6 +39,8 @@ public class ProductOptionValueDTOConverter
 
 		return new ProductOptionValue() {
 			{
+				cpInstanceId = _getCpInstanceId(cpDefinitionOptionValueRel);
+				deltaPrice = cpDefinitionOptionValueRel.getPrice();
 				id =
 					cpDefinitionOptionValueRel.
 						getCPDefinitionOptionValueRelId();
@@ -45,8 +48,21 @@ public class ProductOptionValueDTOConverter
 				name = LanguageUtils.getLanguageIdMap(
 					cpDefinitionOptionValueRel.getNameMap());
 				priority = cpDefinitionOptionValueRel.getPriority();
+				quantity = cpDefinitionOptionValueRel.getQuantity();
 			}
 		};
+	}
+
+	private long _getCpInstanceId(
+		CPDefinitionOptionValueRel cpDefinitionOptionValueRel) {
+
+		CPInstance cpInstance = cpDefinitionOptionValueRel.fetchCPInstance();
+
+		if (cpInstance == null) {
+			return 0;
+		}
+
+		return cpInstance.getCPInstanceId();
 	}
 
 	@Reference
