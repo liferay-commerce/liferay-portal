@@ -440,6 +440,776 @@ definition {
 		}
 	}
 
+	@description = "This is a test for COMMERCE-12399 | Verify that the maximum order quantity is working"
+	@priority = 5
+	test CanAssertDecimalIncrementWithMaximumOrderQuantitySet {
+		property portal.acceptance = "true";
+
+		task ("Given a Minium site with a buyer user") {
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+
+			CommerceEntry.addAccountEntryUser(
+				accountName = "Commerce Account",
+				accountType = "Business",
+				agreeToTermsAndAnswerReminderQuery = "true",
+				createNewAccount = "true",
+				requireReset = "false",
+				userEmailAddress = "buyer@liferay.com",
+				userFirstName = "Buyer",
+				userLastName = "User",
+				userRole = "Buyer",
+				userScreenName = "buyeruser",
+				userSiteMembership = "Minium");
+		}
+
+		task ("And a UOM for MIN93015 and MIN55861 are created(increment: 0.6)") {
+			for (var productsList : list "MIN55861:UOM1,MIN93015:UOM2") {
+				var productSKU = StringUtil.extractFirst(${productsList}, ":");
+				var uom = StringUtil.extractLast(${productsList}, ":");
+
+				CommerceJSONSKUsAPI._addCommerceUOM(
+					basePrice = 10,
+					incrementalOrderQuantity = "0.6",
+					precision = 1,
+					productSKU = ${productSKU},
+					uomKey = "${uom}KEY",
+					uomName = ${uom});
+			}
+		}
+
+		task ("And U-Joint and ABS Sensor Minimum Order Quantity are set to 0.5 and Multiple Order Quantity are set to 0.0001") {
+			for (var productsList : list "U-Joint:1.5,ABS Sensor:0.5") {
+				var product = StringUtil.extractFirst(${productsList}, ":");
+				var maxOrder = StringUtil.extractLast(${productsList}, ":");
+
+				CommerceJSONProductsAPI._patchCommerceProductConfiguration(
+					maxOrderQuantity = ${maxOrder},
+					minOrderQuantity = "0.0001",
+					multipleOrderQuantity = "0.0001",
+					productName = ${product});
+			}
+		}
+
+		task ("When the buyer navigates to Catalog page, on U-Joint product card") {
+			User.logoutPG();
+
+			CommerceLogin.miniumLogin(
+				password = "test",
+				urlAppend = "web/minium",
+				userEmailAddress = "buyer@liferay.com");
+		}
+
+		task ("Then assert that the maximum valid quantity is 1.5") {
+			var uJointMaximumQuantity = "1.5";
+			var uJointMultipleQuantity = "0.6";
+			var absSensorMaximumQuantity = "0.5";
+			var absSensorMultipleQuantity = "0.6";
+
+			for (var productName : list "U-Joint,ABS Sensor") {
+				if (${productName} == "U-Joint") {
+					var productSKU = "MIN55861";
+					var quantityList = "1.8,1.5";
+				}
+				else {
+					var productSKU = "MIN93015";
+					var quantityList = "0.5,0.6,0.7";
+
+					CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
+				}
+
+				if (${productName} == "ABS Sensor") {
+					for (var quantity : list ${quantityList}) {
+						Type(
+							key_productName = ${productName},
+							locator1 = "CommerceAccelerators#PRODUCT_CARD_QUANTITY_SELECTOR_INPUT_FIELD",
+							value1 = ${quantity});
+
+						if (${quantity} == "0.5") {
+							FrontStore.viewQuantitySelectorPopoverListItem(
+								conditionNotSatisfied = "true",
+								quantity = ${absSensorMultipleQuantity},
+								quantityConfiguration = "multiple");
+
+							AssertElementPresent(
+								key_productName = ${productName},
+								locator1 = "CommerceAccelerators#ADD_TO_CART_BUTTON_INVALID");
+						}
+						else {
+							if (${quantity} == "0.6") {
+								FrontStore.viewQuantitySelectorPopoverListItem(
+									conditionNotSatisfied = "true",
+									quantity = ${absSensorMaximumQuantity},
+									quantityConfiguration = "max");
+
+								AssertElementPresent(
+									key_productName = ${productName},
+									locator1 = "CommerceAccelerators#ADD_TO_CART_BUTTON_INVALID");
+							}
+							else {
+								FrontStore.viewQuantitySelectorPopoverListItem(
+									conditionNotSatisfied = "true",
+									quantity = ${absSensorMaximumQuantity},
+									quantityConfiguration = "max");
+
+								FrontStore.viewQuantitySelectorPopoverListItem(
+									conditionNotSatisfied = "true",
+									quantity = ${absSensorMultipleQuantity},
+									quantityConfiguration = "multiple");
+
+								AssertElementPresent(
+									key_productName = ${productName},
+									locator1 = "CommerceAccelerators#ADD_TO_CART_BUTTON_INVALID");
+							}
+						}
+					}
+				}
+				else {
+					for (var quantity : list ${quantityList}) {
+						Type(
+							key_productName = ${productName},
+							locator1 = "CommerceAccelerators#PRODUCT_CARD_QUANTITY_SELECTOR_INPUT_FIELD",
+							value1 = ${quantity});
+
+						if (${quantity} == "1.8") {
+							FrontStore.viewQuantitySelectorPopoverListItem(
+								conditionNotSatisfied = "true",
+								quantity = ${uJointMaximumQuantity},
+								quantityConfiguration = "max");
+						}
+						else {
+							FrontStore.viewQuantitySelectorPopoverListItem(
+								conditionNotSatisfied = "true",
+								quantity = ${uJointMultipleQuantity},
+								quantityConfiguration = "multiple");
+						}
+
+						AssertElementPresent(
+							key_productName = ${productName},
+							locator1 = "CommerceAccelerators#ADD_TO_CART_BUTTON_INVALID");
+					}
+				}
+
+				if (${productName} == "U-Joint") {
+					Navigator.openWithAppendToBaseURL(urlAppend = "web/minium/p/u-joint");
+				}
+				else {
+					Navigator.openWithAppendToBaseURL(urlAppend = "web/minium/p/abs-sensor");
+				}
+
+				if (${productName} == "ABS Sensor") {
+					for (var quantity : list ${quantityList}) {
+						Type(
+							locator1 = "CommerceAccelerators#PRODUCT_DETAILS_QUANTITY_SELECTOR_INPUT_FIELD",
+							value1 = ${quantity});
+
+						if (${quantity} == "0.5") {
+							FrontStore.viewQuantitySelectorPopoverListItem(
+								conditionNotSatisfied = "true",
+								quantity = ${absSensorMultipleQuantity},
+								quantityConfiguration = "multiple");
+
+							AssertElementPresent(locator1 = "CommerceAccelerators#ADD_TO_CART_BUTTON_PRODUCT_DETAILS_PAGE_INVALID");
+						}
+						else {
+							if (${quantity} == "0.6") {
+								FrontStore.viewQuantitySelectorPopoverListItem(
+									conditionNotSatisfied = "true",
+									quantity = ${absSensorMaximumQuantity},
+									quantityConfiguration = "max");
+
+								AssertElementPresent(locator1 = "CommerceAccelerators#ADD_TO_CART_BUTTON_PRODUCT_DETAILS_PAGE_INVALID");
+							}
+							else {
+								FrontStore.viewQuantitySelectorPopoverListItem(
+									conditionNotSatisfied = "true",
+									quantity = ${absSensorMaximumQuantity},
+									quantityConfiguration = "max");
+
+								FrontStore.viewQuantitySelectorPopoverListItem(
+									conditionNotSatisfied = "true",
+									quantity = ${absSensorMultipleQuantity},
+									quantityConfiguration = "multiple");
+
+								AssertElementPresent(locator1 = "CommerceAccelerators#ADD_TO_CART_BUTTON_PRODUCT_DETAILS_PAGE_INVALID");
+							}
+						}
+					}
+				}
+				else {
+					for (var quantity : list ${quantityList}) {
+						Type(
+							locator1 = "CommerceAccelerators#PRODUCT_DETAILS_QUANTITY_SELECTOR_INPUT_FIELD",
+							value1 = ${quantity});
+
+						if (${quantity} == "1.8") {
+							FrontStore.viewQuantitySelectorPopoverListItem(
+								conditionNotSatisfied = "true",
+								quantity = ${uJointMaximumQuantity},
+								quantityConfiguration = "max");
+						}
+						else {
+							FrontStore.viewQuantitySelectorPopoverListItem(
+								conditionNotSatisfied = "true",
+								quantity = ${uJointMultipleQuantity},
+								quantityConfiguration = "multiple");
+						}
+
+						AssertElementPresent(locator1 = "CommerceAccelerators#ADD_TO_CART_BUTTON_PRODUCT_DETAILS_PAGE_INVALID");
+					}
+
+					Type(
+						locator1 = "CommerceAccelerators#PRODUCT_DETAILS_QUANTITY_SELECTOR_INPUT_FIELD",
+						value1 = "1.2");
+
+					Click(locator1 = "CommerceAccelerators#ADD_TO_CART_BUTTON_PRODUCT_DETAILS_PAGE");
+
+					CommerceNavigator.gotoMiniCart();
+				}
+
+				if (${productName} == "ABS Sensor") {
+					for (var quantity : list ${quantityList}) {
+						Type(
+							key_cartItemSku = ${productSKU},
+							locator1 = "CommerceAccelerators#MINI_CART_ITEM_QUANTITY",
+							value1 = ${quantity});
+
+						if (${quantity} == "0.5") {
+							FrontStore.viewQuantitySelectorPopoverListItem(
+								conditionNotSatisfied = "true",
+								quantity = ${absSensorMultipleQuantity},
+								quantityConfiguration = "multiple");
+
+							AssertElementPresent(
+								key_text = "Review Order",
+								locator1 = "Button#ANY");
+
+							AssertElementNotPresent(
+								key_text = "Submit",
+								locator1 = "Button#ANY");
+						}
+						else {
+							if (${quantity} == "0.6") {
+								FrontStore.viewQuantitySelectorPopoverListItem(
+									conditionNotSatisfied = "true",
+									quantity = ${absSensorMaximumQuantity},
+									quantityConfiguration = "max");
+
+								AssertElementPresent(
+									key_text = "Review Order",
+									locator1 = "Button#ANY");
+
+								AssertElementNotPresent(
+									key_text = "Submit",
+									locator1 = "Button#ANY");
+							}
+							else {
+								FrontStore.viewQuantitySelectorPopoverListItem(
+									conditionNotSatisfied = "true",
+									quantity = ${absSensorMaximumQuantity},
+									quantityConfiguration = "max");
+
+								FrontStore.viewQuantitySelectorPopoverListItem(
+									conditionNotSatisfied = "true",
+									quantity = ${absSensorMultipleQuantity},
+									quantityConfiguration = "multiple");
+
+								AssertElementPresent(
+									key_text = "Review Order",
+									locator1 = "Button#ANY");
+
+								AssertElementNotPresent(
+									key_text = "Submit",
+									locator1 = "Button#ANY");
+							}
+						}
+					}
+				}
+				else {
+					for (var quantity : list ${quantityList}) {
+						Type(
+							key_cartItemSku = ${productSKU},
+							locator1 = "CommerceAccelerators#MINI_CART_ITEM_QUANTITY",
+							value1 = ${quantity});
+
+						if (${quantity} == "1.8") {
+							FrontStore.viewQuantitySelectorPopoverListItem(
+								conditionNotSatisfied = "true",
+								quantity = ${uJointMaximumQuantity},
+								quantityConfiguration = "max");
+						}
+						else {
+							FrontStore.viewQuantitySelectorPopoverListItem(
+								conditionNotSatisfied = "true",
+								quantity = ${uJointMultipleQuantity},
+								quantityConfiguration = "multiple");
+						}
+					}
+
+					AssertElementPresent(
+						key_text = "Review Order",
+						locator1 = "Button#ANY");
+
+					AssertElementNotPresent(
+						key_text = "Submit",
+						locator1 = "Button#ANY");
+
+					Button.click(button = "Remove All Items");
+
+					Button.click(button = "Yes");
+
+					Click(locator1 = "CommerceAccelerators#MINI_CART_CLOSE");
+
+					CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+				}
+			}
+		}
+	}
+
+	@description = "This is a test for COMMERCE-12397 | Verify that the minimum order quantity set is working"
+	@priority = 5
+	test CanAssertDecimalIncrementWithMinimumOrderQuantitySet {
+		property portal.acceptance = "true";
+
+		task ("Given a Minium site with a buyer user") {
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+
+			CommerceEntry.addAccountEntryUser(
+				accountName = "Commerce Account",
+				accountType = "Business",
+				agreeToTermsAndAnswerReminderQuery = "true",
+				createNewAccount = "true",
+				requireReset = "false",
+				userEmailAddress = "buyer@liferay.com",
+				userFirstName = "Buyer",
+				userLastName = "User",
+				userRole = "Buyer",
+				userScreenName = "buyeruser",
+				userSiteMembership = "Minium");
+		}
+
+		task ("And a SKU (e.g. MIN55861) is assigned a UOM") {
+			task ("And a UOM for MIN55861 is created(increment: 0.4)") {
+				CommerceJSONSKUsAPI._addCommerceUOM(
+					basePrice = 10,
+					incrementalOrderQuantity = "0.4",
+					precision = 1,
+					productSKU = "MIN55861",
+					uomKey = "UOM1KEY",
+					uomName = "UOM1");
+			}
+
+			task ("And a UOM for MIN93015 is created(increment: 0.6)") {
+				CommerceJSONSKUsAPI._addCommerceUOM(
+					basePrice = 10,
+					incrementalOrderQuantity = "0.6",
+					precision = 1,
+					productSKU = "MIN93015",
+					uomKey = "UOM2KEY",
+					uomName = "UOM2");
+			}
+
+			task ("And U-Joint and ABS Sensor Minimum Order Quantity are set to 0.5 and Multiple Order Quantity are set to 0.0001") {
+				CommerceJSONProductsAPI._patchCommerceProductConfiguration(
+					minOrderQuantity = "0.5",
+					multipleOrderQuantity = "0.0001",
+					productName = "U-Joint");
+
+				CommerceJSONProductsAPI._patchCommerceProductConfiguration(
+					minOrderQuantity = "0.5",
+					multipleOrderQuantity = "0.0001",
+					productName = "ABS Sensor");
+			}
+		}
+
+		task ("And the buyer navigates to the product ABS Sensor's details page") {
+			User.logoutPG();
+
+			CommerceLogin.miniumLogin(
+				password = "test",
+				urlAppend = "web/minium",
+				userEmailAddress = "buyer@liferay.com");
+		}
+
+		task ("Then assert that the minimum valid value is 0.8 for U-Joint and 0.6 for ABS Sensor") {
+			for (var productName : list "U-Joint,ABS Sensor") {
+				if (${productName} == "U-Joint") {
+					var productSKU = "MIN55861";
+					var quantityList = "0.4,0.6,0.8";
+					var min = "0.5";
+					var mul = "0.4";
+					var wrongQuantities = ListUtil.newListFromString(${quantityList});
+				}
+				else {
+					var productSKU = "MIN93015";
+					var quantityList = "0.3,0.8,0.6";
+					var min = "0.5";
+					var mul = "0.6";
+					var wrongQuantities = ListUtil.newListFromString(${quantityList});
+
+					CommerceAcceleratorsInitializer.changeProductsSorting(sortingType = "Name Ascending");
+				}
+
+				var wrongQuantity1 = ListUtil.get(${wrongQuantities}, 0);
+				var wrongQuantity2 = ListUtil.get(${wrongQuantities}, 1);
+
+				task ("Then assert that the minimum valid value is 0.8 for U-Joint and 0.6 for ABS Sensor into the product card") {
+					for (var quantity : list ${quantityList}) {
+						Type(
+							key_productName = ${productName},
+							locator1 = "CommerceAccelerators#PRODUCT_CARD_QUANTITY_SELECTOR_INPUT_FIELD",
+							value1 = ${quantity});
+
+						AssertTextEquals(
+							key_productName = ${productName},
+							locator1 = "CommerceAccelerators#PRODUCT_CARD_QUANTITY_SELECTOR_INPUT_FIELD",
+							value1 = ${quantity});
+
+						if ((${quantity} == ${wrongQuantity1}) || (${quantity} == ${wrongQuantity2})) {
+							if (${quantity} == ${wrongQuantity2}) {
+								var minimumConditionNotSatisfied = "false";
+								var multipleConditionNotSatisfied = "true";
+							}
+							else {
+								var minimumConditionNotSatisfied = "true";
+								var multipleConditionNotSatisfied = "false";
+							}
+
+							AssertElementPresent(
+								key_productName = ${productName},
+								locator1 = "CommerceAccelerators#PRODUCT_CARD_QUANTITY_SELECTOR_INPUT_FIELD_HAS_ERROR");
+						}
+						else {
+							var minimumConditionNotSatisfied = "false";
+							var multipleConditionNotSatisfied = "false";
+
+							AssertElementNotPresent(
+								key_productName = ${productName},
+								locator1 = "CommerceAccelerators#PRODUCT_CARD_QUANTITY_SELECTOR_INPUT_FIELD_HAS_ERROR");
+						}
+
+						FrontStore.viewQuantitySelectorPopoverListItem(
+							conditionNotSatisfied = ${minimumConditionNotSatisfied},
+							quantity = ${min},
+							quantityConfiguration = "min");
+
+						FrontStore.viewQuantitySelectorPopoverListItem(
+							conditionNotSatisfied = ${multipleConditionNotSatisfied},
+							quantity = ${mul},
+							quantityConfiguration = "multiple");
+					}
+				}
+
+				task ("Then assert that the minimum valid value is 0.8 for U-Joint and 0.6 for ABS Sensor into product details") {
+					if (${productName} == "U-Joint") {
+						Navigator.openWithAppendToBaseURL(urlAppend = "web/minium/p/u-joint");
+					}
+					else {
+						Navigator.openWithAppendToBaseURL(urlAppend = "web/minium/p/abs-sensor");
+					}
+
+					for (var quantity : list ${quantityList}) {
+						Type(
+							locator1 = "CommerceAccelerators#PRODUCT_DETAILS_QUANTITY_SELECTOR_INPUT_FIELD",
+							value1 = ${quantity});
+
+						AssertTextEquals(
+							locator1 = "CommerceAccelerators#PRODUCT_DETAILS_QUANTITY_SELECTOR_INPUT_FIELD",
+							value1 = ${quantity});
+
+						if ((${quantity} == ${wrongQuantity1}) || (${quantity} == ${wrongQuantity2})) {
+							if (${quantity} == ${wrongQuantity2}) {
+								var minimumConditionNotSatisfied = "false";
+								var multipleConditionNotSatisfied = "true";
+							}
+							else {
+								var minimumConditionNotSatisfied = "true";
+								var multipleConditionNotSatisfied = "false";
+							}
+
+							AssertElementPresent(locator1 = "CommerceAccelerators#GENERAL_QUANTITY_SELECTOR_INPUT_FIELD_HAS_ERROR");
+						}
+						else {
+							var minimumConditionNotSatisfied = "false";
+							var multipleConditionNotSatisfied = "false";
+
+							AssertElementNotPresent(locator1 = "CommerceAccelerators#GENERAL_QUANTITY_SELECTOR_INPUT_FIELD_HAS_ERROR");
+						}
+
+						FrontStore.viewQuantitySelectorPopoverListItem(
+							conditionNotSatisfied = ${minimumConditionNotSatisfied},
+							quantity = ${min},
+							quantityConfiguration = "min");
+
+						FrontStore.viewQuantitySelectorPopoverListItem(
+							conditionNotSatisfied = ${multipleConditionNotSatisfied},
+							quantity = ${mul},
+							quantityConfiguration = "multiple");
+					}
+				}
+
+				task ("When the buyer adds the SKU/UOM to the cart") {
+					Click(locator1 = "CommerceAccelerators#ADD_TO_CART_BUTTON_PRODUCT_DETAILS_PAGE");
+
+					CommerceNavigator.gotoMiniCart();
+				}
+
+				task ("Then on the mini-cart, assert that the minimum valid value is 0.8 for U-Joint and 0.6 for ABS Sensor") {
+					for (var quantity : list ${quantityList}) {
+						Type(
+							key_cartItemSku = ${productSKU},
+							locator1 = "CommerceAccelerators#MINI_CART_ITEM_QUANTITY",
+							value1 = ${quantity});
+
+						AssertTextEquals(
+							key_cartItemSku = ${productSKU},
+							locator1 = "CommerceAccelerators#MINI_CART_ITEM_QUANTITY",
+							value1 = ${quantity});
+
+						if ((${quantity} == ${wrongQuantity1}) || (${quantity} == ${wrongQuantity2})) {
+							if (${quantity} == ${wrongQuantity2}) {
+								var minimumConditionNotSatisfied = "false";
+								var multipleConditionNotSatisfied = "true";
+							}
+							else {
+								var minimumConditionNotSatisfied = "true";
+								var multipleConditionNotSatisfied = "false";
+							}
+
+							AssertElementPresent(
+								key_cartItemSku = ${productSKU},
+								locator1 = "CommerceAccelerators#MINI_CART_ITEM_QUANTITY_SELECTOR_HAS_ERROR");
+						}
+						else {
+							var minimumConditionNotSatisfied = "false";
+							var multipleConditionNotSatisfied = "false";
+
+							AssertElementNotPresent(
+								key_cartItemSku = ${productSKU},
+								locator1 = "CommerceAccelerators#MINI_CART_ITEM_QUANTITY_SELECTOR_HAS_ERROR");
+						}
+
+						FrontStore.viewQuantitySelectorPopoverListItem(
+							conditionNotSatisfied = ${minimumConditionNotSatisfied},
+							quantity = ${min},
+							quantityConfiguration = "min");
+
+						FrontStore.viewQuantitySelectorPopoverListItem(
+							conditionNotSatisfied = ${multipleConditionNotSatisfied},
+							quantity = ${mul},
+							quantityConfiguration = "multiple");
+					}
+
+					Button.click(button = "Remove All Items");
+
+					Button.click(button = "Yes");
+
+					Click(locator1 = "CommerceAccelerators#MINI_CART_CLOSE");
+
+					CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
+				}
+			}
+		}
+	}
+
+	@description = "This is a test for COMMERCE-12398 | Verify that the multiple order quantity is working"
+	@priority = 5
+	test CanAssertDecimalIncrementWithMultipleOrderQuantitySet {
+		property portal.acceptance = "true";
+
+		task ("Given a Minium site with a buyer user") {
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+
+			CommerceEntry.addAccountEntryUser(
+				accountName = "Commerce Account",
+				accountType = "Business",
+				agreeToTermsAndAnswerReminderQuery = "true",
+				createNewAccount = "true",
+				requireReset = "false",
+				userEmailAddress = "buyer@liferay.com",
+				userFirstName = "Buyer",
+				userLastName = "User",
+				userRole = "Buyer",
+				userScreenName = "buyeruser",
+				userSiteMembership = "Minium");
+		}
+
+		task ("And U-Joint Minimum Order Quantity is set to 0.0001 and Multiple Order Quantity is set to 0.5") {
+			CommerceJSONProductsAPI._patchCommerceProductConfiguration(
+				minOrderQuantity = "0.0001",
+				multipleOrderQuantity = "0.5",
+				productName = "U-Joint");
+		}
+
+		task ("And a UOM for MIN55861 is created(increment: 0.3)") {
+			CommerceJSONSKUsAPI._addCommerceUOM(
+				basePrice = 10,
+				incrementalOrderQuantity = "0.3",
+				productSKU = "MIN55861",
+				uomKey = "UOM1KEY",
+				uomName = "UOM1");
+		}
+
+		task ("When the buyer navigates to Catalog page, on U-Joint product card") {
+			User.logoutPG();
+
+			CommerceLogin.miniumLogin(
+				password = "test",
+				urlAppend = "web/minium",
+				userEmailAddress = "buyer@liferay.com");
+		}
+
+		task ("Then assert that the first valid value is 0.3") {
+			AssertElementPresent(
+				key_optionValue = "0.3",
+				key_productName = "U-Joint",
+				locator1 = "CommerceAccelerators#PRODUCT_CARD_QUANTITY_SELECTOR_INPUT_FIELD_OPTION_VALUE");
+		}
+
+		task ("But cannot add to the cart unless it's a multiple of 0.5(e.g. 1.5)") {
+			Type(
+				key_productName = "U-Joint",
+				locator1 = "CommerceAccelerators#PRODUCT_CARD_QUANTITY_SELECTOR_INPUT_FIELD",
+				value1 = "0.6");
+
+			FrontStore.viewQuantitySelectorPopoverListItem(
+				quantity = "0.3",
+				quantityConfiguration = "multiple");
+
+			Click(
+				key_productName = "U-Joint",
+				locator1 = "CommerceAccelerators#ADD_TO_CART_BUTTON");
+
+			AssertTextEquals.assertPartialText(
+				locator1 = "Message#ERROR_DISMISSIBLE",
+				value1 = "The specified quantity is not a multiple of 0.5");
+
+			Type(
+				key_productName = "U-Joint",
+				locator1 = "CommerceAccelerators#PRODUCT_CARD_QUANTITY_SELECTOR_INPUT_FIELD",
+				value1 = "1.1");
+
+			FrontStore.viewQuantitySelectorPopoverListItem(
+				multipleConditionNotSatisfied = "true",
+				quantity = "0.3",
+				quantityConfiguration = "multiple");
+
+			AssertElementPresent(
+				key_productName = "U-Joint",
+				locator1 = "CommerceAccelerators#ADD_TO_CART_BUTTON_INVALID");
+
+			Type(
+				key_productName = "U-Joint",
+				locator1 = "CommerceAccelerators#PRODUCT_CARD_QUANTITY_SELECTOR_INPUT_FIELD",
+				value1 = "1.5");
+
+			AssertElementNotPresent(
+				key_productName = "U-Joint",
+				locator1 = "CommerceAccelerators#ADD_TO_CART_BUTTON_INVALID");
+		}
+
+		task ("When the buyer navigates to the U-Joint Product Detail page") {
+			Navigator.openWithAppendToBaseURL(urlAppend = "web/minium/p/u-joint");
+		}
+
+		task ("Then assert that the first valid value is 0.3") {
+			AssertElementPresent(
+				key_optionValue = "0.3",
+				locator1 = "CommerceAccelerators#GENERAL_QUANTITY_SELECTOR_INPUT_FIELD_OPTION_VALUE");
+		}
+
+		task ("But cannot add to the cart unless it's a multiple of 0.5(e.g. 1.5)") {
+			Type(
+				locator1 = "CommerceAccelerators#PRODUCT_DETAILS_QUANTITY_SELECTOR_INPUT_FIELD",
+				value1 = "0.6");
+
+			FrontStore.viewQuantitySelectorPopoverListItem(
+				quantity = "0.3",
+				quantityConfiguration = "multiple");
+
+			Click(locator1 = "CommerceAccelerators#ADD_TO_CART_BUTTON_PRODUCT_DETAILS_PAGE");
+
+			AssertTextEquals.assertPartialText(
+				locator1 = "Message#ERROR_DISMISSIBLE",
+				value1 = "The specified quantity is not a multiple of 0.5");
+
+			Type(
+				locator1 = "CommerceAccelerators#PRODUCT_DETAILS_QUANTITY_SELECTOR_INPUT_FIELD",
+				value1 = "1.1");
+
+			FrontStore.viewQuantitySelectorPopoverListItem(
+				multipleConditionNotSatisfied = "true",
+				quantity = "0.3",
+				quantityConfiguration = "multiple");
+
+			AssertElementPresent(locator1 = "CommerceAccelerators#ADD_TO_CART_BUTTON_PRODUCT_DETAILS_PAGE_INVALID");
+
+			Type(
+				locator1 = "CommerceAccelerators#PRODUCT_DETAILS_QUANTITY_SELECTOR_INPUT_FIELD",
+				value1 = "1.5");
+
+			AssertElementNotPresent(locator1 = "CommerceAccelerators#ADD_TO_CART_BUTTON_PRODUCT_DETAILS_PAGE_INVALID");
+		}
+
+		task ("When the buyer adds the SKU/UOM to the cart") {
+			Click(locator1 = "CommerceAccelerators#ADD_TO_CART_BUTTON_PRODUCT_DETAILS_PAGE");
+
+			CommerceNavigator.gotoMiniCart();
+		}
+
+		task ("Then on the mini-cart, assert that the first valid value is 0.5") {
+			Type(
+				key_cartItemSku = "MIN55861",
+				locator1 = "CommerceAccelerators#MINI_CART_ITEM_QUANTITY",
+				value1 = "0.3");
+
+			FrontStore.viewQuantitySelectorPopoverListItem(
+				quantity = "0.3",
+				quantityConfiguration = "multiple");
+
+			AssertElementPresent(
+				key_cartItemSku = "MIN55861",
+				key_messageError = "The specified quantity is not a multiple of 0.5000000000000000.",
+				locator1 = "CommerceAccelerators#MINI_CART_ITEM_GENERIC_ERROR");
+
+			AssertElementPresent(
+				key_text = "Review Order",
+				locator1 = "Button#ANY");
+		}
+
+		task ("But cannot add to the cart unless it's a multiple of 0.5(e.g. 1.5)") {
+			Type(
+				key_cartItemSku = "MIN55861",
+				locator1 = "CommerceAccelerators#MINI_CART_ITEM_QUANTITY",
+				value1 = "1.1");
+
+			FrontStore.viewQuantitySelectorPopoverListItem(
+				multipleConditionNotSatisfied = "true",
+				quantity = "0.3",
+				quantityConfiguration = "multiple");
+
+			AssertElementPresent(
+				key_cartItemSku = "MIN55861",
+				locator1 = "CommerceAccelerators#MINI_CART_ITEM_ERROR_THE_PRODUCT_QUANTITY_IS_NOT_VALID");
+
+			AssertElementPresent(
+				key_text = "Review Order",
+				locator1 = "Button#ANY");
+
+			Type(
+				key_cartItemSku = "MIN55861",
+				locator1 = "CommerceAccelerators#MINI_CART_ITEM_QUANTITY",
+				value1 = "1.5");
+
+			AssertElementNotPresent(
+				key_text = "Review Order",
+				locator1 = "Button#ANY");
+
+			AssertElementPresent(
+				key_text = "Submit",
+				locator1 = "Button#ANY");
+		}
+	}
+
 	@description = "COMMERCE-12393. As a buyer I can view the UOMs sorted by priority on the UOM selector from the product details page."
 	@priority = 4
 	test CanAssertUOMsAreSortedByPriority {
@@ -638,6 +1408,341 @@ definition {
 				key_firstRowValue = "UOM",
 				key_secondRowValue = "Liter",
 				locator1 = "CommerceEntry#GENERIC_TABLE_ROW_VALUE");
+		}
+	}
+
+	@description = "This is a test for COMMERCE-12395 | Verify that the order decimal quantity for UOM is working"
+	@priority = 4
+	test CanIncreaseAndDecreaseUOMDecimalQuantity {
+		property portal.acceptance = "false";
+
+		task ("Given a Minium site with a buyer user") {
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+
+			CommerceEntry.addAccountEntryUser(
+				accountName = "Commerce Account",
+				accountType = "Business",
+				agreeToTermsAndAnswerReminderQuery = "true",
+				createNewAccount = "true",
+				requireReset = "false",
+				userEmailAddress = "buyer@liferay.com",
+				userFirstName = "Buyer",
+				userLastName = "User",
+				userRole = "Buyer",
+				userScreenName = "buyeruser",
+				userSiteMembership = "Minium");
+		}
+
+		task ("And a SKU (e.g. MIN55861) is assigned a UOM") {
+			CommerceJSONSKUsAPI._addCommerceUOM(
+				basePrice = 10,
+				incrementalOrderQuantity = "0.5",
+				precision = 1,
+				productSKU = "MIN55861",
+				uomKey = "UOM1KEY",
+				uomName = "UOM1");
+
+			CommerceJSONProductsAPI._patchCommerceProductConfiguration(
+				minOrderQuantity = "0.01",
+				multipleOrderQuantity = "0.01",
+				productName = "U-Joint");
+		}
+
+		task ("And the buyer navigates to the product ABS Sensor's details page") {
+			User.logoutPG();
+
+			CommerceLogin.miniumLogin(
+				password = "test",
+				urlAppend = "web/minium",
+				userEmailAddress = "buyer@liferay.com");
+		}
+
+		task ("And uses up/down keys to increase/decrease the quantity") {
+			var count = 0;
+
+			for (var quantity : list "0.5,1,0.5") {
+				var count = ${count} + 1;
+
+				task ("Then the quantity is increased/decreased correctly") {
+					AssertElementPresent(
+						key_optionValue = ${quantity},
+						key_productName = "U-Joint",
+						locator1 = "CommerceAccelerators#PRODUCT_CARD_QUANTITY_SELECTOR_INPUT_FIELD_OPTION_VALUE");
+
+					echo("The quantity ${quantity} is present");
+				}
+
+				if (${quantity} == 1) {
+					FrontStore.changeQuantityByUsingKeyArrows(
+						arrowAction = "DOWN",
+						productName = "U-Joint",
+						quantitySelectorType = "Product Card");
+				}
+				else {
+					if (${count} != 3) {
+						FrontStore.changeQuantityByUsingKeyArrows(
+							arrowAction = "UP",
+							productName = "U-Joint",
+							quantitySelectorType = "Product Card");
+					}
+				}
+			}
+
+			FrontStore.changeQuantityByUsingKeyArrows(
+				arrowAction = "DOWN",
+				productName = "U-Joint",
+				quantitySelectorType = "Product Card");
+
+			AssertElementPresent(
+				key_optionValue = "0.5",
+				key_productName = "U-Joint",
+				locator1 = "CommerceAccelerators#PRODUCT_CARD_QUANTITY_SELECTOR_INPUT_FIELD_OPTION_VALUE");
+		}
+
+		task ("When the buyer navigates to U-Joint Product Detail page") {
+			Navigator.openWithAppendToBaseURL(urlAppend = "web/minium/p/u-joint");
+		}
+
+		task ("And uses up/down keys to increase/decrease the quantity") {
+			var count = 0;
+
+			for (var quantity : list "0.5,1,0.5") {
+				var count = ${count} + 1;
+
+				task ("Then the quantity is increased/decreased correctly") {
+					AssertElementPresent(
+						key_optionValue = ${quantity},
+						locator1 = "CommerceAccelerators#GENERAL_QUANTITY_SELECTOR_INPUT_FIELD_OPTION_VALUE");
+
+					echo("The quantity ${quantity} is present");
+				}
+
+				if (${quantity} == 1) {
+					FrontStore.changeQuantityByUsingKeyArrows(
+						arrowAction = "DOWN",
+						productName = "U-Joint",
+						quantitySelectorType = "Product Details");
+				}
+				else {
+					if (${count} != 3) {
+						FrontStore.changeQuantityByUsingKeyArrows(
+							arrowAction = "UP",
+							productName = "U-Joint",
+							quantitySelectorType = "Product Details");
+					}
+				}
+			}
+
+			FrontStore.changeQuantityByUsingKeyArrows(
+				arrowAction = "DOWN",
+				productName = "U-Joint",
+				quantitySelectorType = "Product Details");
+
+			AssertElementPresent(
+				key_optionValue = "0.5",
+				key_productName = "U-Joint",
+				locator1 = "CommerceAccelerators#GENERAL_QUANTITY_SELECTOR_INPUT_FIELD_OPTION_VALUE");
+		}
+
+		task ("When the buyer adds the SKU/UOM to the cart") {
+			Click(locator1 = "CommerceAccelerators#ADD_TO_CART_BUTTON_PRODUCT_DETAILS_PAGE");
+		}
+
+		task ("And opens the mini-cart") {
+			CommerceNavigator.gotoMiniCart();
+		}
+
+		task ("And uses up/down keys to increase/decrease the quantity") {
+			var count = 0;
+
+			for (var quantity : list "0.5,1,0.5") {
+				var count = ${count} + 1;
+
+				task ("Then the quantity is increased/decreased correctly") {
+					AssertElementPresent(
+						key_cartItemSku = "MIN55861",
+						key_optionValue = ${quantity},
+						locator1 = "CommerceAccelerators#MINI_CART_ITEM_QUANTITY_SELECTOR_INPUT_FIELD_OPTION_VALUE");
+
+					echo("The quantity ${quantity} is present");
+				}
+
+				if (${quantity} == 1) {
+					FrontStore.changeQuantityByUsingKeyArrows(
+						arrowAction = "DOWN",
+						productSKU = "MIN55861",
+						quantitySelectorType = "Mini-cart");
+				}
+				else {
+					if (${count} != 3) {
+						FrontStore.changeQuantityByUsingKeyArrows(
+							arrowAction = "UP",
+							productSKU = "MIN55861",
+							quantitySelectorType = "Mini-cart");
+					}
+				}
+			}
+
+			FrontStore.changeQuantityByUsingKeyArrows(
+				arrowAction = "DOWN",
+				productSKU = "MIN55861",
+				quantitySelectorType = "Mini-cart");
+
+			AssertElementPresent(
+				key_cartItemSku = "MIN55861",
+				key_optionValue = "0.5",
+				locator1 = "CommerceAccelerators#MINI_CART_ITEM_QUANTITY_SELECTOR_INPUT_FIELD_OPTION_VALUE");
+		}
+	}
+
+	@description = "This is a test for COMMERCE-12381 | Verify that Price On Application works correctly on the minicart with UOM"
+	@priority = 5
+	test CanPriceOnApplicationConfigurationWorkCorrectlyOnMinicart {
+		property custom.properties = "company.security.strangers.verify=false${line.separator}feature.flag.COMMERCE-11287=true${line.separator}feature.flag.COMMERCE-11028=true${line.separator}jsonws.web.service.paths.excludes=";
+		property portal.acceptance = "true";
+
+		task ("Given a Minium site with a buyer user") {
+			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+
+			CommerceEntry.addAccountEntryUser(
+				accountName = "Commerce Account",
+				accountType = "Business",
+				agreeToTermsAndAnswerReminderQuery = "true",
+				createNewAccount = "true",
+				requireReset = "false",
+				userEmailAddress = "buyer@liferay.com",
+				userFirstName = "Buyer",
+				userLastName = "User",
+				userRole = "Buyer",
+				userScreenName = "buyeruser",
+				userSiteMembership = "Minium");
+		}
+
+		task ("And a SKU (e.g. MIN93015) is assigned a UOM") {
+			CommerceJSONSKUsAPI._addCommerceUOM(
+				basePrice = 10,
+				productSKU = "MIN93015",
+				uomKey = "UOM1KEY",
+				uomName = "UOM1");
+		}
+
+		task ("And the SKU is marked as price on application") {
+			CommerceProducts.openProductsAdmin();
+
+			CommerceNavigator.gotoEntry(entryName = "ABS Sensor");
+
+			CommerceEntry.gotoMenuTab(menuTab = "SKUs");
+
+			CommerceNavigator.gotoEntry(entryName = "MIN93015");
+
+			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+			CommerceEntry.gotoMenuTab(menuTab = "Price");
+
+			Click(
+				key_pricing = "Minium Base Price List",
+				key_uomkey = "UOM1KEY",
+				locator1 = "CommerceEntry#ASSERT_PRICING_USING_UOM_KEY");
+
+			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+			CommerceSKUs.setSkuPricing(priceOnApplication = "true");
+
+			Button.clickSave();
+		}
+
+		task ("And the buyer navigates to the product ABS Sensor's details page") {
+			User.logoutPG();
+
+			CommerceLogin.miniumLogin(
+				password = "test",
+				urlAppend = "web/minium",
+				userEmailAddress = "buyer@liferay.com");
+
+			Navigator.openWithAppendToBaseURL(urlAppend = "web/minium/p/abs-sensor");
+		}
+
+		task ("And asserts request a quote button is present") {
+			AssertElementPresent(
+				key_text = "Request a Quote",
+				locator1 = "Button#ANY_SECONDARY");
+		}
+
+		task ("And adds the SKU/UOM to the cart") {
+			Click(locator1 = "CommerceAccelerators#ADD_TO_CART_BUTTON_PRODUCT_DETAILS_PAGE");
+		}
+
+		task ("Then the minicart shows correctly the request a quote button, the info message and the price on application label") {
+			CommerceNavigator.gotoMiniCart();
+
+			AssertElementPresent(
+				key_text = "Request a Quote",
+				locator1 = "Button#ANY");
+
+			AssertElementPresent(
+				key_infoMessage = "Your cart has products that require a quote to complete the checkout.",
+				locator1 = "Message#INFO_SPECIFIC");
+
+			AssertElementPresent(
+				key_text = "Request a Quote",
+				locator1 = "CommerceAccelerators#MINI_CART_PRICE_ON_APPLICATION_BUTTON");
+		}
+
+		task ("When the buyer clicks on request a quote button from the minicart") {
+			CommerceOrders.createQuoteRequest(
+				quoteRequestValue = "I kindly request a quote for this product.",
+				requestAQuoteInMiniCart = "true",
+				requestAQuoteInOpenOrdersPage = "true");
+		}
+
+		task ("Then the order details are correct") {
+			CommerceAcceleratorsInitializer.reviewOrder(
+				orderAuthor = "Buyer User",
+				priceOnApplication = "true",
+				productName = "ABS Sensor",
+				productQuantity = "1.0",
+				productSku = "MIN93015",
+				uomKey = "UOM1KEY");
+		}
+
+		task ("When the admin logs in") {
+			User.logoutPG();
+
+			CommerceLogin.miniumLogin(
+				password = "test",
+				urlAppend = "web/minium",
+				userEmailAddress = "test@liferay.com");
+		}
+
+		task ("And navigates to the orders page") {
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Placed Orders");
+
+			Button.click(button = "View");
+		}
+
+		task ("And processes the quote") {
+			Click(
+				key_text = "Process Quote",
+				locator1 = "Button#ANY_WITH_SPAN");
+		}
+
+		task ("And the buyer logs in") {
+			User.logoutPG();
+
+			CommerceLogin.miniumLogin(
+				password = "test",
+				urlAppend = "web/minium",
+				userEmailAddress = "buyer@liferay.com");
+		}
+
+		task ("Then the buyer can see the “Quote Processed” status on the order") {
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Placed Orders");
+
+			Button.click(button = "View");
+
+			AssertElementPresent(
+				errorMessage = "Quote Processed",
+				locator1 = "PageAudit#ERROR_WARNING_MESSAGE");
 		}
 	}
 
