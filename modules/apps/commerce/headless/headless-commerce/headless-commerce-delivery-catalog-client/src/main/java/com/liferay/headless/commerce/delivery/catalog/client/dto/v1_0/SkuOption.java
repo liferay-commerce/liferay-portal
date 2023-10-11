@@ -168,6 +168,27 @@ public class SkuOption implements Cloneable, Serializable {
 
 	protected String skuOptionKey;
 
+	public String getSkuOptionName() {
+		return skuOptionName;
+	}
+
+	public void setSkuOptionName(String skuOptionName) {
+		this.skuOptionName = skuOptionName;
+	}
+
+	public void setSkuOptionName(
+		UnsafeSupplier<String, Exception> skuOptionNameUnsafeSupplier) {
+
+		try {
+			skuOptionName = skuOptionNameUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String skuOptionName;
+
 	public Long getSkuOptionValueId() {
 		return skuOptionValueId;
 	}
@@ -209,6 +230,27 @@ public class SkuOption implements Cloneable, Serializable {
 	}
 
 	protected String skuOptionValueKey;
+
+	public String getSkuOptionValueName() {
+		return skuOptionValueName;
+	}
+
+	public void setSkuOptionValueName(String skuOptionValueName) {
+		this.skuOptionValueName = skuOptionValueName;
+	}
+
+	public void setSkuOptionValueName(
+		UnsafeSupplier<String, Exception> skuOptionValueNameUnsafeSupplier) {
+
+		try {
+			skuOptionValueName = skuOptionValueNameUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String skuOptionValueName;
 
 	public Long getValue() {
 		return value;

@@ -242,6 +242,34 @@ public class SkuOption implements Serializable {
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String skuOptionKey;
 
+	@Schema(example = "Sku Option Name")
+	public String getSkuOptionName() {
+		return skuOptionName;
+	}
+
+	public void setSkuOptionName(String skuOptionName) {
+		this.skuOptionName = skuOptionName;
+	}
+
+	@JsonIgnore
+	public void setSkuOptionName(
+		UnsafeSupplier<String, Exception> skuOptionNameUnsafeSupplier) {
+
+		try {
+			skuOptionName = skuOptionNameUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String skuOptionName;
+
 	@Schema(example = "30130")
 	public Long getSkuOptionValueId() {
 		return skuOptionValueId;
@@ -297,6 +325,34 @@ public class SkuOption implements Serializable {
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String skuOptionValueKey;
+
+	@Schema(example = "Sku Option Value Name")
+	public String getSkuOptionValueName() {
+		return skuOptionValueName;
+	}
+
+	public void setSkuOptionValueName(String skuOptionValueName) {
+		this.skuOptionValueName = skuOptionValueName;
+	}
+
+	@JsonIgnore
+	public void setSkuOptionValueName(
+		UnsafeSupplier<String, Exception> skuOptionValueNameUnsafeSupplier) {
+
+		try {
+			skuOptionValueName = skuOptionValueNameUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String skuOptionValueName;
 
 	@DecimalMin("0")
 	@Schema(example = "31130")
@@ -438,6 +494,20 @@ public class SkuOption implements Serializable {
 			sb.append("\"");
 		}
 
+		if (skuOptionName != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"skuOptionName\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(skuOptionName));
+
+			sb.append("\"");
+		}
+
 		if (skuOptionValueId != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -458,6 +528,20 @@ public class SkuOption implements Serializable {
 			sb.append("\"");
 
 			sb.append(_escape(skuOptionValueKey));
+
+			sb.append("\"");
+		}
+
+		if (skuOptionValueName != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"skuOptionValueName\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(skuOptionValueName));
 
 			sb.append("\"");
 		}
