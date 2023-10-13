@@ -926,10 +926,11 @@ public class CPDefinitionOptionValueRelLocalServiceTest {
 		CPDefinitionOptionValueRel newCPDefinitionOptionValueRel =
 			_cpDefinitionOptionValueRelLocalService.
 				addCPDefinitionOptionValueRel(
-					cpDefinitionOptionValueRel.getCPDefinitionOptionRelId(),
+					cpDefinitionOptionValueRel.getCPDefinitionOptionRelId(), 0,
 					RandomTestUtil.randomString(),
-					RandomTestUtil.randomLocaleStringMap(),
-					RandomTestUtil.nextDouble(), _serviceContext);
+					RandomTestUtil.randomLocaleStringMap(), null,
+					RandomTestUtil.nextDouble(), BigDecimal.ONE,
+					_serviceContext);
 
 		CPInstance cpInstance = cpDefinitionOptionValueRel.fetchCPInstance();
 
@@ -1049,8 +1050,9 @@ public class CPDefinitionOptionValueRelLocalServiceTest {
 
 		return _cpDefinitionOptionValueRelLocalService.
 			addCPDefinitionOptionValueRel(
-				cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
-				"cpInstance-option-value", null, 0, _serviceContext);
+				cpDefinitionOptionRel.getCPDefinitionOptionRelId(), 0,
+				"cpInstance-option-value", null, null, 0, BigDecimal.ONE,
+				_serviceContext);
 	}
 
 	private void _assertValidateCPDefinitionOptionValueRelCPInstanceLinkFail(
@@ -1076,10 +1078,11 @@ public class CPDefinitionOptionValueRelLocalServiceTest {
 		CPDefinitionOptionValueRel newCPDefinitionOptionValueRel =
 			_cpDefinitionOptionValueRelLocalService.
 				addCPDefinitionOptionValueRel(
-					cpDefinitionOptionValueRel.getCPDefinitionOptionRelId(),
+					cpDefinitionOptionValueRel.getCPDefinitionOptionRelId(), 0,
 					RandomTestUtil.randomString(),
-					RandomTestUtil.randomLocaleStringMap(),
-					RandomTestUtil.nextDouble(), _serviceContext);
+					RandomTestUtil.randomLocaleStringMap(), null,
+					RandomTestUtil.nextDouble(), BigDecimal.ONE,
+					_serviceContext);
 
 		CPInstance cpInstance = cpDefinitionOptionValueRel.fetchCPInstance();
 

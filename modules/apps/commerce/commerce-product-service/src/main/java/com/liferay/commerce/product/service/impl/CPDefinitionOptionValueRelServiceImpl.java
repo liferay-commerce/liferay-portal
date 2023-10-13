@@ -63,8 +63,8 @@ public class CPDefinitionOptionValueRelServiceImpl
 
 		return cpDefinitionOptionValueRelLocalService.
 			addCPDefinitionOptionValueRel(
-				cpDefinitionOptionRelId, key, nameMap, priority,
-				serviceContext);
+				cpDefinitionOptionRelId, cpInstanceId, key, nameMap, deltaPrice,
+				priority, quantity, serviceContext);
 	}
 
 	@Override

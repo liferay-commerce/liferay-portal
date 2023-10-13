@@ -28,6 +28,8 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
+import java.math.BigDecimal;
+
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -72,11 +74,11 @@ public class CPInstanceOptionValueRelTableReferenceDefinitionTest
 		_cpDefinitionOptionValueRel =
 			_cpDefinitionOptionValueRelLocalService.
 				addCPDefinitionOptionValueRel(
-					_cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
+					_cpDefinitionOptionRel.getCPDefinitionOptionRelId(), 0,
 					CPInstanceOptionValueRelTableReferenceDefinitionTest.class.
 						getSimpleName(),
-					RandomTestUtil.randomLocaleStringMap(),
-					RandomTestUtil.nextDouble(),
+					RandomTestUtil.randomLocaleStringMap(), null,
+					RandomTestUtil.nextDouble(), BigDecimal.ONE,
 					ServiceContextTestUtil.getServiceContext(
 						group.getGroupId()));
 
