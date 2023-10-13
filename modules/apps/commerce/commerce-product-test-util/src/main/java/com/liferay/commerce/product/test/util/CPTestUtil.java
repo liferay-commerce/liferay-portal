@@ -327,9 +327,9 @@ public class CPTestUtil {
 			CPDefinitionOptionValueRelLocalServiceUtil.
 				addCPDefinitionOptionValueRel(
 					cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
-					RandomTestUtil.randomString(),
-					RandomTestUtil.randomLocaleStringMap(),
-					RandomTestUtil.randomDouble(), serviceContext);
+					cpInstanceId, RandomTestUtil.randomString(),
+					RandomTestUtil.randomLocaleStringMap(), price,
+					RandomTestUtil.randomDouble(), quantity, serviceContext);
 
 		if ((cpInstanceId == 0) && (priceType != null)) {
 			CPInstance cpInstance = addCPInstanceFromCatalog(
@@ -1230,9 +1230,11 @@ public class CPTestUtil {
 				CPDefinitionOptionValueRelLocalServiceUtil.
 					addCPDefinitionOptionValueRel(
 						cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
+						cpInstance.getCPInstanceId(),
 						RandomTestUtil.randomString(),
-						RandomTestUtil.randomLocaleStringMap(),
-						RandomTestUtil.nextDouble(), serviceContext);
+						RandomTestUtil.randomLocaleStringMap(), null,
+						RandomTestUtil.nextDouble(), BigDecimal.ZERO,
+						serviceContext);
 
 			BigDecimal price = null;
 
