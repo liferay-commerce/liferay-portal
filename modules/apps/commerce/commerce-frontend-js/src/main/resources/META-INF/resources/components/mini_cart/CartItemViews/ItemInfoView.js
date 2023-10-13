@@ -11,23 +11,66 @@ import {sub} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useState} from 'react';
 
-function ItemInfoViewOptions({options}) {
-	return (
-		<div className="item-info-extra mt-3">
-			<h6 className="options">{options}</h6>
-		</div>
-	);
-}
+import {parseValue} from '../util/index';
 
-function ItemInfoViewBundle({childItems}) {
+function ItemInfoViewOptions({childItems, options}) {
 	const [expanded, setExpanded] = useState(false);
 
-	return Liferay.FeatureFlags['COMMERCE-9599'] ? (
+	const OptionsRenderer = (
+		<div className="child-items">
+			{options.map((option, index) => {
+				const {
+					skuId,
+					skuOptionName,
+					skuOptionValueName,
+					value,
+				} = option;
+
+				const childItem = (childItems || []).find(
+					(childItem) => childItem.skuId === parseInt(skuId, 10)
+				);
+
+				const {name, quantity, skuUnitOfMeasure} = childItem || {};
+
+				return name ? (
+					<div className="item-info-extra pt-2" key={index}>
+						<h6 className="item-name">{skuOptionName}</h6>
+
+						<p className="item-sku">
+							<span>
+								<span>
+									{parseValue(skuOptionValueName) ||
+										parseValue(value)}
+								</span>
+
+								<span className="pl-2">
+									({quantity} &times; {name}{' '}
+
+									{skuUnitOfMeasure?.key || ''})
+								</span>
+							</span>
+						</p>
+					</div>
+				) : (
+					<div className="item-info-extra pt-2">
+						<h6 className="item-name">{skuOptionName}</h6>
+
+						<p className="item-sku">
+							{parseValue(skuOptionValueName) ||
+								parseValue(value)}
+						</p>
+					</div>
+				);
+			})}
+		</div>
+	);
+
+	return options.length > 1 ? (
 		<ClayPanel
 			className="item-info-collapse mb-0"
 			collapsable
 			displayTitle={sub(
-				Liferay.Language.get('x-product-options'),
+				Liferay.Language.get('x-options'),
 				expanded
 					? Liferay.Language.get('hide')
 					: Liferay.Language.get('show')
@@ -39,42 +82,10 @@ function ItemInfoViewBundle({childItems}) {
 			}}
 			showCollapseIcon
 		>
-			<ClayPanel.Body>
-				<div className="child-items">
-					{childItems.map((item, index) => {
-						const {name, quantity, skuUnitOfMeasure} = item;
-
-						return (
-							<div className="child-item" key={index}>
-								<span>
-									<>
-										{quantity} &times; {name}
-									</>
-									<> {skuUnitOfMeasure?.key || ''}</>
-								</span>
-							</div>
-						);
-					})}
-				</div>
-			</ClayPanel.Body>
+			<ClayPanel.Body>{OptionsRenderer}</ClayPanel.Body>
 		</ClayPanel>
 	) : (
-		<div className="child-items">
-			{childItems.map((item, index) => {
-				const {name, quantity, skuUnitOfMeasure} = item;
-
-				return (
-					<div className="child-item" key={index}>
-						<span>
-							<>
-								{quantity} &times; {name}
-							</>
-							<> {skuUnitOfMeasure?.key || ''}</>
-						</span>
-					</div>
-				);
-			})}
-		</div>
+		OptionsRenderer
 	);
 }
 
@@ -112,8 +123,6 @@ function ItemInfoViewBase({name, sku}) {
 
 function ItemInfoView({childItems = [], name, options = '', replacedSku, sku}) {
 	const hasReplacement = !!replacedSku;
-	const isBundle = !!childItems.length;
-	const hasOptions = !!options;
 
 	return (
 		<>
@@ -123,9 +132,7 @@ function ItemInfoView({childItems = [], name, options = '', replacedSku, sku}) {
 				<ItemInfoViewReplacement replacedSku={replacedSku} />
 			)}
 
-			{isBundle && <ItemInfoViewBundle childItems={childItems} />}
-
-			{hasOptions && <ItemInfoViewOptions options={options} />}
+			<ItemInfoViewOptions childItems={childItems} options={options} />
 		</>
 	);
 }

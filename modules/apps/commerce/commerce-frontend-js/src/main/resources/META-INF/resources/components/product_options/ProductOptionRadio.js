@@ -90,7 +90,7 @@ const ProductOptionRadio = ({
 							skuOptionName: productOption.name,
 							skuOptionValueKey: defaultProductOptionValue?.key,
 							skuOptionValueName: defaultProductOptionValue?.name,
-							value: [defaultProductOptionValue?.key],
+							value: defaultProductOptionValue?.key,
 						},
 				  ],
 		});
@@ -176,7 +176,7 @@ const ProductOptionRadio = ({
 						skuOptionName: productOption.name,
 						skuOptionValueKey: valueArray[1],
 						skuOptionValueName: currentProductOptionValue.name,
-						value: [valueArray[1]],
+						value: valueArray[1],
 					};
 				}
 
@@ -196,7 +196,7 @@ const ProductOptionRadio = ({
 					skuOptionName: productOption.name,
 					skuOptionValueKey: valueArray[1],
 					skuOptionValueName: currentProductOptionValue.name,
-					value: [valueArray[1]],
+					value: valueArray[1],
 				},
 			];
 		}

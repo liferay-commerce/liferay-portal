@@ -224,8 +224,12 @@ export function parseOptions(jsonString) {
 	}
 
 	return Array.isArray(options)
-		? options.map(({value}) => `${value}`).join(', ')
+		? options.filter((option) => !!option.value.length)
 		: options;
+}
+
+export function parseValue(value) {
+	return Array.isArray(value) ? value.join(', ') : value;
 }
 
 export function regenerateOrderDetailURL(orderUUID, siteDefaultURL) {

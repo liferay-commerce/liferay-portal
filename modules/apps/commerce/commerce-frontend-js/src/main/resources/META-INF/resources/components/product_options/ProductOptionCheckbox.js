@@ -60,7 +60,7 @@ const ProductOptionCheckbox = ({
 
 			if (option) {
 				checked = option.value.includes(option.key);
-				[value] = option.value;
+				value = option.value;
 
 				setIsChecked(checked);
 			}
@@ -86,7 +86,8 @@ const ProductOptionCheckbox = ({
 						{
 							key: productOption.key,
 							skuOptionKey: productOption.key,
-							value: checked ? [value] : [],
+							skuOptionName: productOption.name,
+							value: checked ? value : '',
 						},
 				  ],
 		});
@@ -123,7 +124,8 @@ const ProductOptionCheckbox = ({
 					return {
 						key: productOption.key,
 						skuOptionKey: productOption.key,
-						value: checked ? [value] : [],
+						skuOptionName: productOption.name,
+						value: checked ? value : '',
 					};
 				}
 
@@ -136,7 +138,8 @@ const ProductOptionCheckbox = ({
 				{
 					key: productOption.key,
 					skuOptionKey: productOption.key,
-					value: checked ? [value] : [],
+					skuOptionName: productOption.name,
+					value: checked ? value : '',
 				},
 			];
 		}

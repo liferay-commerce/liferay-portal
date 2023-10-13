@@ -58,7 +58,7 @@ const ProductOptionNumeric = ({
 			);
 
 			if (option) {
-				[value] = option.value;
+				value = option.value;
 			}
 
 			setNumber(value);
@@ -85,7 +85,7 @@ const ProductOptionNumeric = ({
 							key: productOption.key,
 							skuOptionKey: productOption.key,
 							skuOptionName: productOption.name,
-							value: [value],
+							value,
 						},
 				  ],
 		});
@@ -122,7 +122,7 @@ const ProductOptionNumeric = ({
 						key: productOption.key,
 						skuOptionKey: productOption.key,
 						skuOptionName: productOption.name,
-						value: [value],
+						value,
 					};
 				}
 
@@ -136,7 +136,7 @@ const ProductOptionNumeric = ({
 					key: productOption.key,
 					skuOptionKey: productOption.key,
 					skuOptionName: productOption.name,
-					value: [value],
+					value,
 				},
 			];
 		}

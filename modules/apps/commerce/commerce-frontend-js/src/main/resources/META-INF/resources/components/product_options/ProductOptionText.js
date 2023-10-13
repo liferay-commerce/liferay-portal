@@ -58,7 +58,7 @@ const ProductOptionText = ({
 			);
 
 			if (option) {
-				[value] = option.value;
+				value = option.value;
 			}
 
 			setText(value);
@@ -85,7 +85,7 @@ const ProductOptionText = ({
 							key: productOption.key,
 							skuOptionKey: productOption.key,
 							skuOptionName: productOption.name,
-							value: [value],
+							value,
 						},
 				  ],
 		});
@@ -123,7 +123,7 @@ const ProductOptionText = ({
 						key: productOption.key,
 						skuOptionKey: productOption.key,
 						skuOptionName: productOption.name,
-						value: [value],
+						value,
 					};
 				}
 
@@ -137,7 +137,7 @@ const ProductOptionText = ({
 					key: productOption.key,
 					skuOptionKey: productOption.key,
 					skuOptionName: productOption.name,
-					value: [value],
+					value,
 				},
 			];
 		}
