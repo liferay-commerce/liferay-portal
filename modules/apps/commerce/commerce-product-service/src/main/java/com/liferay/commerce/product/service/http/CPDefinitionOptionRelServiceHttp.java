@@ -100,8 +100,9 @@ public class CPDefinitionOptionRelServiceHttp {
 				java.util.Map<java.util.Locale, String> nameMap,
 				java.util.Map<java.util.Locale, String> descriptionMap,
 				String commerceOptionTypeKey, double priority,
-				boolean facetable, boolean required, boolean skuContributor,
-				boolean importOptionValue, String priceType,
+				boolean definedExternally, boolean facetable, boolean required,
+				boolean skuContributor, boolean importOptionValue,
+				String priceType,
 				com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -113,8 +114,9 @@ public class CPDefinitionOptionRelServiceHttp {
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, cpDefinitionId, cpOptionId, nameMap, descriptionMap,
-				commerceOptionTypeKey, priority, facetable, required,
-				skuContributor, importOptionValue, priceType, serviceContext);
+				commerceOptionTypeKey, priority, definedExternally, facetable,
+				required, skuContributor, importOptionValue, priceType,
+				serviceContext);
 
 			Object returnObj = null;
 
@@ -874,7 +876,7 @@ public class CPDefinitionOptionRelServiceHttp {
 		new Class[] {
 			long.class, long.class, java.util.Map.class, java.util.Map.class,
 			String.class, double.class, boolean.class, boolean.class,
-			boolean.class, boolean.class, String.class,
+			boolean.class, boolean.class, boolean.class, String.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
 	private static final Class<?>[] _addCPDefinitionOptionRelParameterTypes2 =
