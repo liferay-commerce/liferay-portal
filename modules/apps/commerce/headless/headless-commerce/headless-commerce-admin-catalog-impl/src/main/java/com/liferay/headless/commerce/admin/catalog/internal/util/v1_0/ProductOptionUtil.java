@@ -13,6 +13,7 @@ import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductOption;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 
 /**
@@ -34,6 +35,9 @@ public class ProductOptionUtil {
 				cpDefinitionId, cpOption.getCPOptionId());
 
 		if (cpDefinitionOptionRel == null) {
+			boolean importOptionValue = ArrayUtil.isEmpty(
+				productOption.getProductOptionValues());
+
 			cpDefinitionOptionRel =
 				cpDefinitionOptionRelService.addCPDefinitionOptionRel(
 					cpDefinitionId, cpOption.getCPOptionId(),
@@ -52,7 +56,8 @@ public class ProductOptionUtil {
 					GetterUtil.get(
 						productOption.getSkuContributor(),
 						cpOption.isSkuContributor()),
-					true, productOption.getPriceType(), serviceContext);
+					importOptionValue, productOption.getPriceType(),
+					serviceContext);
 		}
 		else {
 			cpDefinitionOptionRel =

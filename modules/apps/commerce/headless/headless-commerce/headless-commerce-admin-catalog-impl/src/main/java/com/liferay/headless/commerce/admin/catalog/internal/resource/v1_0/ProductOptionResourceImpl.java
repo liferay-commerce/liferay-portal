@@ -13,15 +13,18 @@ import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.commerce.product.service.CPOptionService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Product;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductOption;
+import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductOptionValue;
 import com.liferay.headless.commerce.admin.catalog.internal.dto.v1_0.util.CustomFieldsUtil;
 import com.liferay.headless.commerce.admin.catalog.internal.util.v1_0.ProductOptionUtil;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductOptionResource;
+import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductOptionValueResource;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
 import com.liferay.headless.commerce.core.util.ServiceContextHelper;
 import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
@@ -203,9 +206,14 @@ public class ProductOptionResourceImpl extends BaseProductOptionResourceImpl {
 			serviceContext.setExpandoBridgeAttributes(
 				_getExpandoBridgeAttributes(productOption));
 
-			ProductOptionUtil.addOrUpdateCPDefinitionOptionRel(
-				_cpDefinitionOptionRelService, _cpOptionService, productOption,
-				cpDefinition.getCPDefinitionId(), serviceContext);
+			CPDefinitionOptionRel cpDefinitionOptionRel =
+				ProductOptionUtil.addOrUpdateCPDefinitionOptionRel(
+					_cpDefinitionOptionRelService, _cpOptionService,
+					productOption, cpDefinition.getCPDefinitionId(),
+					serviceContext);
+
+			_addOrUpdateProductOptionValues(
+				cpDefinitionOptionRel, productOption.getProductOptionValues());
 		}
 
 		List<ProductOption> productOptionList = new ArrayList<>();
@@ -222,6 +230,25 @@ public class ProductOptionResourceImpl extends BaseProductOptionResourceImpl {
 		}
 
 		return productOptionList;
+	}
+
+	private void _addOrUpdateProductOptionValues(
+			CPDefinitionOptionRel cpDefinitionOptionRel,
+			ProductOptionValue[] productOptionValues)
+		throws Exception {
+
+		if (ArrayUtil.isEmpty(productOptionValues)) {
+			return;
+		}
+
+		_productOptionValueResource.setContextAcceptLanguage(
+			contextAcceptLanguage);
+
+		for (ProductOptionValue productOptionValue : productOptionValues) {
+			_productOptionValueResource.postProductOptionIdProductOptionValue(
+				cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
+				productOptionValue);
+		}
 	}
 
 	private Map<String, Serializable> _getExpandoBridgeAttributes(
@@ -320,6 +347,9 @@ public class ProductOptionResourceImpl extends BaseProductOptionResourceImpl {
 	)
 	private DTOConverter<CPDefinitionOptionRel, ProductOption>
 		_productOptionDTOConverter;
+
+	@Reference
+	private ProductOptionValueResource _productOptionValueResource;
 
 	@Reference
 	private ServiceContextHelper _serviceContextHelper;
