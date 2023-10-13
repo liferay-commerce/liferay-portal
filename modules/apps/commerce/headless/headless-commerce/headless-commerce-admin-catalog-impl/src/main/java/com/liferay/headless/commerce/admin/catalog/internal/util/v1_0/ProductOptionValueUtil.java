@@ -15,6 +15,8 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 
+import java.math.BigDecimal;
+
 /**
  * @author Alessio Antonio Rendina
  */
@@ -35,9 +37,15 @@ public class ProductOptionValueUtil {
 		if (cpDefinitionOptionValueRel == null) {
 			cpDefinitionOptionValueRel =
 				cpDefinitionOptionValueRelService.addCPDefinitionOptionValueRel(
-					cpDefinitionOptionRelId, productOptionValue.getKey(),
+					cpDefinitionOptionRelId,
+					GetterUtil.get(productOptionValue.getCpInstanceId(), 0),
+					productOptionValue.getKey(),
 					LanguageUtils.getLocalizedMap(productOptionValue.getName()),
+					BigDecimalUtil.get(
+						productOptionValue.getDeltaPrice(), null),
 					GetterUtil.get(productOptionValue.getPriority(), 0D),
+					BigDecimalUtil.get(
+						productOptionValue.getQuantity(), BigDecimal.ZERO),
 					serviceContext);
 		}
 		else {
@@ -46,7 +54,8 @@ public class ProductOptionValueUtil {
 					updateCPDefinitionOptionValueRel(
 						cpDefinitionOptionValueRel.
 							getCPDefinitionOptionValueRelId(),
-						0, productOptionValue.getKey(),
+						GetterUtil.get(productOptionValue.getCpInstanceId(), 0),
+						productOptionValue.getKey(),
 						LanguageUtils.getLocalizedMap(
 							productOptionValue.getName()),
 						false,

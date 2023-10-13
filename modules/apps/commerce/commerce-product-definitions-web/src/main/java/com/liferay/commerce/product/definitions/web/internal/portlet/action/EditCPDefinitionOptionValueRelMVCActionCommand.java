@@ -146,8 +146,8 @@ public class EditCPDefinitionOptionValueRelMVCActionCommand
 
 			return _cpDefinitionOptionValueRelService.
 				addCPDefinitionOptionValueRel(
-					cpDefinitionOptionRelId, key, nameMap, priority,
-					serviceContext);
+					cpDefinitionOptionRelId, 0, key, nameMap, null, priority,
+					BigDecimal.ZERO, serviceContext);
 		}
 
 		// Update commerce product definition option value rel

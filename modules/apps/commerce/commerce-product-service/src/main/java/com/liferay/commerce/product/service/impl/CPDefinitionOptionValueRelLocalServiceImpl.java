@@ -109,9 +109,9 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 
 		return cpDefinitionOptionValueRelLocalService.
 			addCPDefinitionOptionValueRel(
-				cpDefinitionOptionRelId, cpOptionValue.getKey(),
-				cpOptionValue.getNameMap(), cpOptionValue.getPriority(),
-				serviceContext);
+				cpDefinitionOptionRelId, 0, cpOptionValue.getKey(),
+				cpOptionValue.getNameMap(), null, cpOptionValue.getPriority(),
+				BigDecimal.ZERO, serviceContext);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
