@@ -10,6 +10,8 @@ import com.liferay.headless.commerce.admin.catalog.client.serdes.v1_0.ProductOpt
 
 import java.io.Serializable;
 
+import java.math.BigDecimal;
+
 import java.util.Map;
 import java.util.Objects;
 
@@ -25,6 +27,48 @@ public class ProductOptionValue implements Cloneable, Serializable {
 	public static ProductOptionValue toDTO(String json) {
 		return ProductOptionValueSerDes.toDTO(json);
 	}
+
+	public Long getCpInstanceId() {
+		return cpInstanceId;
+	}
+
+	public void setCpInstanceId(Long cpInstanceId) {
+		this.cpInstanceId = cpInstanceId;
+	}
+
+	public void setCpInstanceId(
+		UnsafeSupplier<Long, Exception> cpInstanceIdUnsafeSupplier) {
+
+		try {
+			cpInstanceId = cpInstanceIdUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Long cpInstanceId;
+
+	public BigDecimal getDeltaPrice() {
+		return deltaPrice;
+	}
+
+	public void setDeltaPrice(BigDecimal deltaPrice) {
+		this.deltaPrice = deltaPrice;
+	}
+
+	public void setDeltaPrice(
+		UnsafeSupplier<BigDecimal, Exception> deltaPriceUnsafeSupplier) {
+
+		try {
+			deltaPrice = deltaPriceUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected BigDecimal deltaPrice;
 
 	public Long getId() {
 		return id;
@@ -105,6 +149,27 @@ public class ProductOptionValue implements Cloneable, Serializable {
 	}
 
 	protected Double priority;
+
+	public BigDecimal getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(BigDecimal quantity) {
+		this.quantity = quantity;
+	}
+
+	public void setQuantity(
+		UnsafeSupplier<BigDecimal, Exception> quantityUnsafeSupplier) {
+
+		try {
+			quantity = quantityUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected BigDecimal quantity;
 
 	@Override
 	public ProductOptionValue clone() throws CloneNotSupportedException {

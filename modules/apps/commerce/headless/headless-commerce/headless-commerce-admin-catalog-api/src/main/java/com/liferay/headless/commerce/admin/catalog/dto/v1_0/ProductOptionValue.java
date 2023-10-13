@@ -20,6 +20,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serializable;
 
+import java.math.BigDecimal;
+
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -52,6 +54,65 @@ public class ProductOptionValue implements Serializable {
 	public static ProductOptionValue unsafeToDTO(String json) {
 		return ObjectMapperUtil.unsafeReadValue(ProductOptionValue.class, json);
 	}
+
+	@DecimalMin("0")
+	@Schema(example = "30129")
+	public Long getCpInstanceId() {
+		return cpInstanceId;
+	}
+
+	public void setCpInstanceId(Long cpInstanceId) {
+		this.cpInstanceId = cpInstanceId;
+	}
+
+	@JsonIgnore
+	public void setCpInstanceId(
+		UnsafeSupplier<Long, Exception> cpInstanceIdUnsafeSupplier) {
+
+		try {
+			cpInstanceId = cpInstanceIdUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Long cpInstanceId;
+
+	@DecimalMin("0")
+	@Schema(example = "10")
+	@Valid
+	public BigDecimal getDeltaPrice() {
+		return deltaPrice;
+	}
+
+	public void setDeltaPrice(BigDecimal deltaPrice) {
+		this.deltaPrice = deltaPrice;
+	}
+
+	@JsonIgnore
+	public void setDeltaPrice(
+		UnsafeSupplier<BigDecimal, Exception> deltaPriceUnsafeSupplier) {
+
+		try {
+			deltaPrice = deltaPriceUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected BigDecimal deltaPrice;
 
 	@DecimalMin("0")
 	@Schema(example = "30130")
@@ -165,6 +226,35 @@ public class ProductOptionValue implements Serializable {
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Double priority;
 
+	@Schema(example = "10")
+	@Valid
+	public BigDecimal getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(BigDecimal quantity) {
+		this.quantity = quantity;
+	}
+
+	@JsonIgnore
+	public void setQuantity(
+		UnsafeSupplier<BigDecimal, Exception> quantityUnsafeSupplier) {
+
+		try {
+			quantity = quantityUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected BigDecimal quantity;
+
 	@Override
 	public boolean equals(Object object) {
 		if (this == object) {
@@ -191,6 +281,26 @@ public class ProductOptionValue implements Serializable {
 		StringBundler sb = new StringBundler();
 
 		sb.append("{");
+
+		if (cpInstanceId != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"cpInstanceId\": ");
+
+			sb.append(cpInstanceId);
+		}
+
+		if (deltaPrice != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"deltaPrice\": ");
+
+			sb.append(deltaPrice);
+		}
 
 		if (id != null) {
 			if (sb.length() > 1) {
@@ -234,6 +344,16 @@ public class ProductOptionValue implements Serializable {
 			sb.append("\"priority\": ");
 
 			sb.append(priority);
+		}
+
+		if (quantity != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"quantity\": ");
+
+			sb.append(quantity);
 		}
 
 		sb.append("}");
