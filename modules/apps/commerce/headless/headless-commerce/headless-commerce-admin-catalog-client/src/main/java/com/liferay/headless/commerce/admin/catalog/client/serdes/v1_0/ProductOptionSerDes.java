@@ -5,6 +5,7 @@
 
 package com.liferay.headless.commerce.admin.catalog.client.serdes.v1_0;
 
+import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.CustomField;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductOption;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductOptionValue;
 import com.liferay.headless.commerce.admin.catalog.client.json.BaseJSONParser;
@@ -55,6 +56,36 @@ public class ProductOptionSerDes {
 			sb.append("\"catalogId\": ");
 
 			sb.append(productOption.getCatalogId());
+		}
+
+		if (productOption.getCustomFields() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"customFields\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < productOption.getCustomFields().length; i++) {
+				sb.append(String.valueOf(productOption.getCustomFields()[i]));
+
+				if ((i + 1) < productOption.getCustomFields().length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
+		if (productOption.getDefinedExternally() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"definedExternally\": ");
+
+			sb.append(productOption.getDefinedExternally());
 		}
 
 		if (productOption.getDescription() != null) {
@@ -133,6 +164,20 @@ public class ProductOptionSerDes {
 			sb.append("\"optionId\": ");
 
 			sb.append(productOption.getOptionId());
+		}
+
+		if (productOption.getPriceType() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"priceType\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(productOption.getPriceType()));
+
+			sb.append("\"");
 		}
 
 		if (productOption.getPriority() != null) {
@@ -214,6 +259,24 @@ public class ProductOptionSerDes {
 			map.put("catalogId", String.valueOf(productOption.getCatalogId()));
 		}
 
+		if (productOption.getCustomFields() == null) {
+			map.put("customFields", null);
+		}
+		else {
+			map.put(
+				"customFields",
+				String.valueOf(productOption.getCustomFields()));
+		}
+
+		if (productOption.getDefinedExternally() == null) {
+			map.put("definedExternally", null);
+		}
+		else {
+			map.put(
+				"definedExternally",
+				String.valueOf(productOption.getDefinedExternally()));
+		}
+
 		if (productOption.getDescription() == null) {
 			map.put("description", null);
 		}
@@ -262,6 +325,13 @@ public class ProductOptionSerDes {
 		}
 		else {
 			map.put("optionId", String.valueOf(productOption.getOptionId()));
+		}
+
+		if (productOption.getPriceType() == null) {
+			map.put("priceType", null);
+		}
+		else {
+			map.put("priceType", String.valueOf(productOption.getPriceType()));
 		}
 
 		if (productOption.getPriority() == null) {
@@ -323,6 +393,28 @@ public class ProductOptionSerDes {
 						Long.valueOf((String)jsonParserFieldValue));
 				}
 			}
+			else if (Objects.equals(jsonParserFieldName, "customFields")) {
+				if (jsonParserFieldValue != null) {
+					Object[] jsonParserFieldValues =
+						(Object[])jsonParserFieldValue;
+
+					CustomField[] customFieldsArray =
+						new CustomField[jsonParserFieldValues.length];
+
+					for (int i = 0; i < customFieldsArray.length; i++) {
+						customFieldsArray[i] = CustomFieldSerDes.toDTO(
+							(String)jsonParserFieldValues[i]);
+					}
+
+					productOption.setCustomFields(customFieldsArray);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "definedExternally")) {
+				if (jsonParserFieldValue != null) {
+					productOption.setDefinedExternally(
+						(Boolean)jsonParserFieldValue);
+				}
+			}
 			else if (Objects.equals(jsonParserFieldName, "description")) {
 				if (jsonParserFieldValue != null) {
 					productOption.setDescription(
@@ -362,6 +454,11 @@ public class ProductOptionSerDes {
 				if (jsonParserFieldValue != null) {
 					productOption.setOptionId(
 						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "priceType")) {
+				if (jsonParserFieldValue != null) {
+					productOption.setPriceType((String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "priority")) {
