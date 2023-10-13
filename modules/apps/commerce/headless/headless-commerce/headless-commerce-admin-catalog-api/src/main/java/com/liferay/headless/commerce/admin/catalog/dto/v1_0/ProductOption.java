@@ -81,6 +81,63 @@ public class ProductOption implements Serializable {
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long catalogId;
 
+	@Schema
+	@Valid
+	public CustomField[] getCustomFields() {
+		return customFields;
+	}
+
+	public void setCustomFields(CustomField[] customFields) {
+		this.customFields = customFields;
+	}
+
+	@JsonIgnore
+	public void setCustomFields(
+		UnsafeSupplier<CustomField[], Exception> customFieldsUnsafeSupplier) {
+
+		try {
+			customFields = customFieldsUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected CustomField[] customFields;
+
+	@Schema(example = "true")
+	public Boolean getDefinedExternally() {
+		return definedExternally;
+	}
+
+	public void setDefinedExternally(Boolean definedExternally) {
+		this.definedExternally = definedExternally;
+	}
+
+	@JsonIgnore
+	public void setDefinedExternally(
+		UnsafeSupplier<Boolean, Exception> definedExternallyUnsafeSupplier) {
+
+		try {
+			definedExternally = definedExternallyUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Boolean definedExternally;
+
 	@Schema(
 		example = "{hu_HU=Description HU, hr_HR=Description HR, en_US=Description}"
 	)
@@ -286,6 +343,34 @@ public class ProductOption implements Serializable {
 	@NotNull
 	protected Long optionId;
 
+	@Schema(example = "dynamic, static")
+	public String getPriceType() {
+		return priceType;
+	}
+
+	public void setPriceType(String priceType) {
+		this.priceType = priceType;
+	}
+
+	@JsonIgnore
+	public void setPriceType(
+		UnsafeSupplier<String, Exception> priceTypeUnsafeSupplier) {
+
+		try {
+			priceType = priceTypeUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String priceType;
+
 	@Schema(example = "1.2")
 	public Double getPriority() {
 		return priority;
@@ -439,6 +524,36 @@ public class ProductOption implements Serializable {
 			sb.append(catalogId);
 		}
 
+		if (customFields != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"customFields\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < customFields.length; i++) {
+				sb.append(String.valueOf(customFields[i]));
+
+				if ((i + 1) < customFields.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
+		if (definedExternally != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"definedExternally\": ");
+
+			sb.append(definedExternally);
+		}
+
 		if (description != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -515,6 +630,20 @@ public class ProductOption implements Serializable {
 			sb.append("\"optionId\": ");
 
 			sb.append(optionId);
+		}
+
+		if (priceType != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"priceType\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(priceType));
+
+			sb.append("\"");
 		}
 
 		if (priority != null) {
