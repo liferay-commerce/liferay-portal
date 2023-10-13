@@ -65,15 +65,17 @@ public class CPDefinitionOptionRelLocalServiceWrapper
 			long cpDefinitionId, long cpOptionId,
 			java.util.Map<java.util.Locale, String> nameMap,
 			java.util.Map<java.util.Locale, String> descriptionMap,
-			String commerceOptionTypeKey, double priority, boolean facetable,
-			boolean required, boolean skuContributor, boolean importOptionValue,
+			String commerceOptionTypeKey, double priority,
+			boolean definedExternally, boolean facetable, boolean required,
+			boolean skuContributor, boolean importOptionValue, String priceType,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _cpDefinitionOptionRelLocalService.addCPDefinitionOptionRel(
 			cpDefinitionId, cpOptionId, nameMap, descriptionMap,
-			commerceOptionTypeKey, priority, facetable, required,
-			skuContributor, importOptionValue, serviceContext);
+			commerceOptionTypeKey, priority, definedExternally, facetable,
+			required, skuContributor, importOptionValue, priceType,
+			serviceContext);
 	}
 
 	@Override
@@ -83,14 +85,13 @@ public class CPDefinitionOptionRelLocalServiceWrapper
 			java.util.Map<java.util.Locale, String> descriptionMap,
 			String commerceOptionTypeKey, double priority, boolean facetable,
 			boolean required, boolean skuContributor, boolean importOptionValue,
-			String priceType,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _cpDefinitionOptionRelLocalService.addCPDefinitionOptionRel(
 			cpDefinitionId, cpOptionId, nameMap, descriptionMap,
 			commerceOptionTypeKey, priority, facetable, required,
-			skuContributor, importOptionValue, priceType, serviceContext);
+			skuContributor, importOptionValue, serviceContext);
 	}
 
 	@Override
