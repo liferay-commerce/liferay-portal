@@ -8,9 +8,9 @@ definition {
 	property testray.main.component.name = "Order Management";
 
 	setUp {
-		CommerceConfiguration.commerceSetUp(minium = "true");
+		CommerceConfiguration.commerceSetUp();
 
-		task ("Setup: Add a Minium page with an Organization Management widget") {
+		/*task ("Setup: Add a Minium page with an Organization Management widget") {
 			JSONLayout.addPublicLayout(
 				groupName = "Minium",
 				layoutName = "Organization Management Widget Page");
@@ -40,12 +40,12 @@ definition {
 				userRole = "Buyer",
 				userScreenName = "buyeruser",
 				userSiteMembership = "Minium");
-		}
+		}*/
 	}
 
-	tearDown {
+	/*tearDown {
 		CommerceConfiguration.commerceTearDown();
-	}
+	}*/
 
 	@description = "COMMERCE-9403. Verify new users can be added using the Organization Management widget."
 	@priority = 5
@@ -249,6 +249,342 @@ definition {
 
 		task ("Then the organization is shown within the widget") {
 			CommerceWidget.assertOrganizationManagementWigetTitlePresent(key_nodeName = "Organization 1");
+		}
+	}
+
+	@description = ""
+    @priority = 3
+    test CanUseOrganizationManagementWithoutAnyEntity { 
+		property portal.acceptance = "false";
+
+		task ("Given a Minium site") {
+            CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+        }
+
+        task ("And an account with a buyer user is created") {    
+            CommerceEntry.addAccountEntryUser(
+                accountName = "Commerce Account",
+                accountType = "Business",
+                agreeToTermsAndAnswerReminderQuery = "true",
+                createNewAccount = "true",
+                requireReset = "false",
+                userEmailAddress = "buyer@liferay.com",
+                userFirstName = "Buyer",
+                userLastName = "User",
+                userRole = "Buyer",
+                userScreenName = "buyeruser",
+                userSiteMembership = "Minium");
+        }
+
+		task ("And a widget page with the Organization Management deployed") {
+			JSONLayout.addPublicLayout(
+				groupName = "Minium",
+				layoutName = "Organization Management Widget Page");
+
+			JSONLayout.addWidgetToPublicLayout(
+				groupName = "Minium",
+				layoutName = "Organization Management Widget Page",
+				widgetName = "Organization Management");
+		}
+
+		task ("And the buyer navigates to the product ABS Sensor's details page") {
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Organization Management Widget Page");
+		}
+
+		task ("Then even without any entity, the widget is still usable") {
+			AssertElementPresent(
+				key_text = "Collapse All",
+				locator1 = "Button#ANY");
+
+			AssertElementPresent(locator1 = "CommerceOrganizationManagementWidget#REDUCE_ZOOM_BUTTON");
+
+			AssertElementPresent(locator1 = "CommerceOrganizationManagementWidget#INCREASE_ZOOM_BUTTON");
+
+			AssertElementPresent(locator1 = "CommerceOrganizationManagementWidget#EXPAND_BUTTON");
+		}
+	}
+
+	@description = ""
+    @priority = 4
+    test CanSearchOneEntityIntoOrganizationManagement { 
+		property portal.acceptance = "false";
+
+		task ("Given a Minium site") {
+            CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+        }
+
+		task ("And a widget page with the Organization Management deployed") {
+			JSONLayout.addPublicLayout(
+				groupName = "Minium",
+				layoutName = "Organization Management Widget Page");
+
+			JSONLayout.addWidgetToPublicLayout(
+				groupName = "Minium",
+				layoutName = "Organization Management Widget Page",
+				widgetName = "Organization Management");
+		}
+
+		task ("And an organization is created and configured") {
+			JSONOrganization.addOrganization(
+				organizationName = "Org 1",
+				organizationSite = "false");
+
+			JSONAccountEntry.addAccountEntry(
+				accountEntryName = "Account A",
+				accountEntryType = "Business");
+
+			JSONAccountEntryUser.addAccountEntryUser(
+				accountEntryName = "Account A",
+				userEmailAddress = "admin@liferay.com",
+				userFirstName = "admin",
+				userLastName = "admin",
+				userScreenName = "admin");
+
+			JSONAccountEntry.addAccountEntryOrganization(
+				accountEntryName = "Account A",
+				organizationName = "Org 1");
+
+			JSONOrganization.assignUserToOrganization(
+				organizationName = "Organization 1",
+				userEmailAddress = ${userEmailAddress});
+		}
+
+		task ("And the admin goes to the widget page") {
+			Navigator.openWithAppendToBaseURL(urlAppend = "web/minium");
+
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Organization Management Widget Page");
+		}
+
+		task ("When the buyer search 'admin'") {
+			Type(
+				locator1 = "CommerceOrganizationManagementWidget#SEARCH_FIELD",
+				value1 = "admin");
+		}
+
+		task ("Then the Organization widget expands and opens the graph to show the entry highlighted with the black color") {
+			var first_position = selenium.getAttribute("//div[contains(@class,'org-chart-container')]//*[name()='svg']//*[name()='g']@transform");
+
+			Click(
+				key_columnOption = "admin",
+				locator1 = "ObjectCustomViews#SELECT_AUTO_COMPLETE_OPTION");
+
+			var second_position = selenium.getAttribute("//div[contains(@class,'org-chart-container')]//*[name()='svg']//*[name()='g']@transform");
+
+			if (${first_position} != ${second_position}) {
+				echo("The position is changed");
+			}
+			else {
+				fail("The position is not changed the expected position it must be different from ${first_position}");
+			}
+
+			AssertElementPresent(
+				key_entry = "admin admin",
+				locator1 = "CommerceOrganizationManagementWidget#CHART_DISCOVERED_ENTRY");
+		}
+	}
+
+	@description = "COMMERCE-12370. As a buyer I can add to cart a SKU with single UOM."
+    @priority = 5
+    test CanSearchTwoTimesInRowTheSameEntityIntoOrganizationManagement { 
+		property portal.acceptance = "true";
+
+		task ("Given a Minium site") {
+            CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
+        }
+
+		task ("And a widget page with the Organization Management deployed") {
+			JSONLayout.addPublicLayout(
+				groupName = "Minium",
+				layoutName = "Organization Management Widget Page");
+
+			JSONLayout.addWidgetToPublicLayout(
+				groupName = "Minium",
+				layoutName = "Organization Management Widget Page",
+				widgetName = "Organization Management");
+		}
+
+		task ("And an organization is created and configured") {
+			for (var organizationAccountEntries : list "Org 1:Account A,Org 2:Account B") { 
+				var organization = StringUtil.extractFirst(${organizationAccountEntries}, ":");
+				var account = StringUtil.extractLast(${organizationAccountEntries}, ":");
+
+				JSONOrganization.addOrganization(
+					organizationName = "${organization}",
+					organizationSite = "false");
+
+				JSONAccountEntry.addAccountEntry(
+					accountEntryName = "${account}",
+					accountEntryType = "Business");
+
+				JSONAccountEntry.addAccountEntryOrganization(
+					accountEntryName = "${account}",
+					organizationName = "${organization}");
+			}			
+		}
+
+		task ("And the admin goes to the widget page") {
+			Navigator.openWithAppendToBaseURL(urlAppend = "web/minium");
+
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Organization Management Widget Page");
+		}
+
+		task ("When the admin search 'Org 1'") {
+			Type(
+				locator1 = "CommerceOrganizationManagementWidget#SEARCH_FIELD",
+				value1 = "Org 1");
+		}
+
+		task ("And the Organization widget shows the entry highlighted with the black color") {
+			Click(
+				key_columnOption = "Org 1",
+				locator1 = "ObjectCustomViews#SELECT_AUTO_COMPLETE_OPTION");
+
+			AssertElementPresent(
+				key_entry = "Org 1",
+				locator1 = "CommerceOrganizationManagementWidget#CHART_DISCOVERED_ENTRY");
+		}
+
+		task ("When the admin searches again 'Org 1' without clears the field") {
+			Click(
+				key_entry = "Org 2",
+				locator1 = "CommerceOrganizationManagementWidget#CHART_ENTRY");
+
+			Click(
+				locator1 = "CommerceOrganizationManagementWidget#SEARCH_FIELD");
+
+			Click(
+				key_columnOption = "Org 1",
+				locator1 = "ObjectCustomViews#SELECT_AUTO_COMPLETE_OPTION");
+		}
+
+		task ("Then the Organization widget shows the entry highlighted with the black color") {
+			AssertElementPresent(
+				key_entry = "Org 1",
+				locator1 = "CommerceOrganizationManagementWidget#CHART_DISCOVERED_ENTRY");
+		}
+
+		task ("When the admin search 'Account B'") {
+			Type(
+				locator1 = "CommerceOrganizationManagementWidget#SEARCH_FIELD",
+				value1 = "Account B");
+
+			Click(
+				key_columnOption = "Account B",
+				locator1 = "ObjectCustomViews#SELECT_AUTO_COMPLETE_OPTION");
+		}
+
+		task ("Then the Organization widget shows the entry highlighted with the black color") {
+			AssertElementPresent(
+				key_entry = "Account B",
+				locator1 = "CommerceOrganizationManagementWidget#CHART_DISCOVERED_ENTRY");
+		}
+
+		task ("But if the admin remove the focus on the highlighted entry") {
+			Click(
+				key_text = "Collapse All",
+				locator1 = "Button#ANY");
+		}
+
+		task ("And clears search field again") {
+			Type(
+				locator1 = "CommerceOrganizationManagementWidget#SEARCH_FIELD",
+				value1 = "Account B");
+
+			Click(
+				key_columnOption = "Account B",
+				locator1 = "ObjectCustomViews#SELECT_AUTO_COMPLETE_OPTION");
+		}
+
+		task ("Then the Organization widget shows the entry highlighted with the black color") {
+			AssertElementPresent(
+				key_entry = "Account B",
+				locator1 = "CommerceOrganizationManagementWidget#CHART_DISCOVERED_ENTRY");
+		}
+	}
+
+	@description = ""
+    @priority = 5
+    test CanSelectDropdownIsWorkingIntoOrganizationManagement { 
+		property portal.acceptance = "true";
+
+		task ("And an organization is created and configured") {
+			for (var organizationEntries : list "Org 1,Org 2") { 
+				
+				JSONOrganization.addOrganization(
+					organizationName = "${organizationEntries}",
+					organizationSite = "false");
+			}
+			
+			Navigator.openWithAppendToBaseURL(urlAppend = "web/minium");
+
+			CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Organization Management Widget Page");
+
+			for (var organizationEntries : list "Org 1:SubOrg 1,Org 2:SubOrg 2") { 
+				var organization = StringUtil.extractFirst(${organizationEntries}, ":");
+				var subOrganization = StringUtil.extractLast(${organizationEntries}, ":");
+
+				Click(
+					key_entry = "${organization}",
+					locator1 = "CommerceOrganizationManagementWidget#CHART_ENTRY");
+
+				Click(locator1 = "CommerceOrganizationManagementWidget#CHART_PLUS");
+				//For some reason POSHI thinks he has clicked the "+" but in reality he hasn't, for this reason he stops at the next line
+
+				Click(locator1 = "CommerceOrganizationManagementWidget#CHART_ADD_ORGANIZATION");
+
+				Type(
+					key_text = "Name",
+					locator1 = "TextInput#ANY",
+					value1 = "${subOrganization}");			
+			}		
+		}
+
+		task ("And the admin searches 'Org 1'") {
+			Type(
+				locator1 = "CommerceOrganizationManagementWidget#SEARCH_FIELD",
+				value1 = "Org 1");
+
+			Click(
+				key_columnOption = "Org 1",
+				locator1 = "ObjectCustomViews#SELECT_AUTO_COMPLETE_OPTION");
+		}
+
+		task ("And the Organization widget show the entry highlighted with the black color") {
+			AssertElementPresent(
+				key_entry = "Org 1",
+				locator1 = "CommerceOrganizationManagementWidget#CHART_DISCOVERED_ENTRY");
+		}
+
+		task ("And the admin clicks on the highlighted entry (the graph should open after the click and the entry is not highlighted anymore)") {
+			Click(
+				key_entry = "Org 1",
+				locator1 = "CommerceOrganizationManagementWidget#CHART_ENTRY");
+
+			AssertElementNotPresent(
+				key_entry = "Org 1",
+				locator1 = "CommerceOrganizationManagementWidget#CHART_DISCOVERED_ENTRY");
+		}
+
+		task ("And the admin searches again for 'Org 1'") {
+			Type(
+				locator1 = "CommerceOrganizationManagementWidget#SEARCH_FIELD",
+				value1 = "Org 1");
+		}
+
+		task ("When the admin searches for 'Org 2'") {
+			Click(
+				key_columnOption = "Org 2",
+				locator1 = "ObjectCustomViews#SELECT_AUTO_COMPLETE_OPTION");
+		}
+
+		task ("Then the select should take the “Org 2“ as a parameter for the search") {
+			Pause(locator1 = 5000); //This pause is necessary to be able to test a timing issue that was present into the story
+
+			task ("And highlight 'Org 2' with the black color") {
+				AssertElementPresent(
+					key_entry = "Org 2",
+					locator1 = "CommerceOrganizationManagementWidget#CHART_DISCOVERED_ENTRY");
+			}
 		}
 	}
 
