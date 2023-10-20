@@ -921,7 +921,7 @@ public class CommerceOrderItemLocalServiceTest {
 					cpDefinition.getCPDefinitionId(), cpOption.getCPOptionId(),
 					cpOption.getNameMap(), cpOption.getDescriptionMap(),
 					cpOption.getCommerceOptionTypeKey(), 0.0, false, false,
-					cpOption.isSkuContributor(), true,
+					false, cpOption.isSkuContributor(), true,
 					commerceOptionValue.getPriceType(), _serviceContext);
 
 			_cpDefinitionOptionRels.add(cpDefinitionOptionRel);

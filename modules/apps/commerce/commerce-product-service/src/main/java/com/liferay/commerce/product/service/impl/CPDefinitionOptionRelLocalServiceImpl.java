@@ -106,29 +106,14 @@ public class CPDefinitionOptionRelLocalServiceImpl
 			cpOption.isSkuContributor(), importOptionValue, serviceContext);
 	}
 
-	@Override
-	public CPDefinitionOptionRel addCPDefinitionOptionRel(
-			long cpDefinitionId, long cpOptionId, Map<Locale, String> nameMap,
-			Map<Locale, String> descriptionMap, String commerceOptionTypeKey,
-			double priority, boolean facetable, boolean required,
-			boolean skuContributor, boolean importOptionValue,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		return cpDefinitionOptionRelLocalService.addCPDefinitionOptionRel(
-			cpDefinitionId, cpOptionId, nameMap, descriptionMap,
-			commerceOptionTypeKey, priority, facetable, required,
-			skuContributor, importOptionValue, null, serviceContext);
-	}
-
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public CPDefinitionOptionRel addCPDefinitionOptionRel(
 			long cpDefinitionId, long cpOptionId, Map<Locale, String> nameMap,
 			Map<Locale, String> descriptionMap, String commerceOptionTypeKey,
-			double priority, boolean definedExternally, boolean facetable, boolean required,
-			boolean skuContributor, boolean importOptionValue, String priceType,
-			ServiceContext serviceContext)
+			double priority, boolean definedExternally, boolean facetable,
+			boolean required, boolean skuContributor, boolean importOptionValue,
+			String priceType, ServiceContext serviceContext)
 		throws PortalException {
 
 		// Commerce product definition option rel
@@ -206,6 +191,21 @@ public class CPDefinitionOptionRelLocalServiceImpl
 		_reindexCPDefinition(cpDefinitionId);
 
 		return cpDefinitionOptionRel;
+	}
+
+	@Override
+	public CPDefinitionOptionRel addCPDefinitionOptionRel(
+			long cpDefinitionId, long cpOptionId, Map<Locale, String> nameMap,
+			Map<Locale, String> descriptionMap, String commerceOptionTypeKey,
+			double priority, boolean facetable, boolean required,
+			boolean skuContributor, boolean importOptionValue,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		return cpDefinitionOptionRelLocalService.addCPDefinitionOptionRel(
+			cpDefinitionId, cpOptionId, nameMap, descriptionMap,
+			commerceOptionTypeKey, priority, false, facetable, required,
+			skuContributor, importOptionValue, null, serviceContext);
 	}
 
 	@Override
