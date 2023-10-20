@@ -8,8 +8,10 @@ package com.liferay.commerce.product.content.web.internal.info.item.renderer;
 import com.liferay.commerce.product.constants.CPPortletKeys;
 import com.liferay.commerce.product.content.helper.CPContentHelper;
 import com.liferay.commerce.product.content.util.CPMedia;
+import com.liferay.commerce.product.content.web.internal.util.AdaptiveMediaCPMediaImpl;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.info.item.renderer.InfoItemRenderer;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -85,7 +87,15 @@ public class ImageGalleryInfoItemRenderer
 
 						for (CPMedia cpMedia : images) {
 							jsonArray.put(
-								JSONUtil.put(
+								JSONUtil.put("adaptiveMediaImageHTMLTag",
+									() -> {
+										if (cpMedia instanceof AdaptiveMediaCPMediaImpl) {
+											return ((AdaptiveMediaCPMediaImpl) cpMedia).getAdaptiveMediaImageHTMLTag();
+										}
+
+										return StringPool.BLANK;
+									}
+								).put(
 									"thumbnailURL", cpMedia.getThumbnailURL()
 								).put(
 									"title", cpMedia.getTitle()
