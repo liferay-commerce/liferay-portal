@@ -44,6 +44,7 @@ public class ProductOptionUtil {
 						productOption.getFieldType(),
 						cpOption.getCommerceOptionTypeKey()),
 					GetterUtil.get(productOption.getPriority(), 0D),
+					GetterUtil.get(productOption.getDefinedExternally(), false),
 					GetterUtil.get(
 						productOption.getFacetable(), cpOption.isFacetable()),
 					GetterUtil.get(
