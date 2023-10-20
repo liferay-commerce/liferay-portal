@@ -319,7 +319,7 @@ public class CPTestUtil {
 					RandomTestUtil.randomLocaleStringMap(),
 					RandomTestUtil.randomLocaleStringMap(),
 					getDefaultCommerceOptionTypeKey(true),
-					RandomTestUtil.randomDouble(), false, required,
+					RandomTestUtil.randomDouble(), false, false, required,
 					skuContributor, false, priceType, serviceContext);
 		}
 
@@ -1222,7 +1222,7 @@ public class CPTestUtil {
 				RandomTestUtil.randomLocaleStringMap(),
 				RandomTestUtil.randomLocaleStringMap(),
 				getDefaultCommerceOptionTypeKey(true),
-				RandomTestUtil.nextDouble(), false, false, false, false,
+				RandomTestUtil.nextDouble(), false, false, false, false, false,
 				priceType, serviceContext);
 
 		for (CPInstance cpInstance : childCPInstances) {
