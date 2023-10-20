@@ -126,7 +126,7 @@ public class CPDefinitionOptionRelLocalServiceImpl
 	public CPDefinitionOptionRel addCPDefinitionOptionRel(
 			long cpDefinitionId, long cpOptionId, Map<Locale, String> nameMap,
 			Map<Locale, String> descriptionMap, String commerceOptionTypeKey,
-			double priority, boolean facetable, boolean required,
+			double priority, boolean definedExternally, boolean facetable, boolean required,
 			boolean skuContributor, boolean importOptionValue, String priceType,
 			ServiceContext serviceContext)
 		throws PortalException {
@@ -147,7 +147,7 @@ public class CPDefinitionOptionRelLocalServiceImpl
 		CPDefinitionOptionRel cpDefinitionOptionRel =
 			cpDefinitionOptionRelPersistence.create(cpDefinitionOptionRelId);
 
-		_validatePriceType(cpDefinitionOptionRel, false, priceType);
+		_validatePriceType(cpDefinitionOptionRel, definedExternally, priceType);
 
 		if (CPDefinitionLocalServiceCircularDependencyUtil.isVersionable(
 				cpDefinitionId, serviceContext.getRequest())) {
@@ -174,6 +174,7 @@ public class CPDefinitionOptionRelLocalServiceImpl
 		cpDefinitionOptionRel.setDescriptionMap(descriptionMap);
 		cpDefinitionOptionRel.setCommerceOptionTypeKey(commerceOptionTypeKey);
 		cpDefinitionOptionRel.setPriority(priority);
+		cpDefinitionOptionRel.setDefinedExternally(definedExternally);
 		cpDefinitionOptionRel.setFacetable(facetable);
 		cpDefinitionOptionRel.setRequired(required);
 		cpDefinitionOptionRel.setSkuContributor(skuContributor);
@@ -1033,6 +1034,13 @@ public class CPDefinitionOptionRelLocalServiceImpl
 			CPDefinitionOptionRel cpDefinitionOptionRel,
 			boolean definedExternally, String priceType)
 		throws PortalException {
+
+		if (!(Validator.isNull(priceType) ||
+			  priceType.equals(CPConstants.PRODUCT_OPTION_PRICE_TYPE_DYNAMIC) ||
+			  priceType.equals(CPConstants.PRODUCT_OPTION_PRICE_TYPE_STATIC))) {
+
+			throw new CPDefinitionOptionRelPriceTypeException();
+		}
 
 		if (definedExternally &&
 			!priceType.equals(CPConstants.PRODUCT_OPTION_PRICE_TYPE_DYNAMIC)) {
