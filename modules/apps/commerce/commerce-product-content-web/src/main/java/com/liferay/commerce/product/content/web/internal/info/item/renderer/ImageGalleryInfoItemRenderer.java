@@ -87,10 +87,15 @@ public class ImageGalleryInfoItemRenderer
 
 						for (CPMedia cpMedia : images) {
 							jsonArray.put(
-								JSONUtil.put("adaptiveMediaImageHTMLTag",
+								JSONUtil.put(
+									"adaptiveMediaImageHTMLTag",
 									() -> {
-										if (cpMedia instanceof AdaptiveMediaCPMediaImpl) {
-											return ((AdaptiveMediaCPMediaImpl) cpMedia).getAdaptiveMediaImageHTMLTag();
+										if (cpMedia instanceof
+												AdaptiveMediaCPMediaImpl) {
+
+											return ((AdaptiveMediaCPMediaImpl)
+												cpMedia).
+													getAdaptiveMediaImageHTMLTag();
 										}
 
 										return StringPool.BLANK;
