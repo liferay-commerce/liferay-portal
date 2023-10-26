@@ -17,7 +17,10 @@ export function formatCartItem(
 	let optionsJSON = cpInstance.skuOptions || [];
 
 	if (namespace && skuOptionsNamespace && namespace === skuOptionsNamespace) {
-		optionsJSON = skuOptions;
+		optionsJSON = skuOptions.map((skuOption) => ({
+			...skuOption,
+			skuId: String(skuOption.skuId),
+		}));
 	}
 	else if (optionsJSON.length) {
 		optionsJSON = optionsJSON.map((optionJSON) => ({
