@@ -22,8 +22,8 @@ import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.order.CommerceOrderHttpHelper;
 import com.liferay.commerce.order.CommerceOrderValidatorRegistry;
 import com.liferay.commerce.order.engine.CommerceOrderEngine;
-import com.liferay.commerce.payment.engine.CommercePaymentEngine;
 import com.liferay.commerce.payment.method.CommercePaymentMethod;
+import com.liferay.commerce.payment.service.CommercePaymentMethodGroupRelLocalService;
 import com.liferay.commerce.payment.util.CommercePaymentHelper;
 import com.liferay.commerce.percentage.PercentageFormatter;
 import com.liferay.commerce.price.CommerceOrderPriceCalculation;
@@ -141,7 +141,8 @@ public class OrderSummaryCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 					_commerceOrderItemQuantityFormatter,
 					_commerceOrderPriceCalculation,
 					_commerceOrderValidatorRegistry, _commerceOptionValueHelper,
-					_commercePaymentEngine, _commerceProductPriceCalculation,
+					_commercePaymentMethodGroupRelLocalService,
+					_commerceProductPriceCalculation,
 					_commerceShippingEngineRegistry,
 					_commerceTermEntryLocalService, _cpInstanceHelper,
 					_cpInstanceUnitOfMeasureLocalService, httpServletRequest,
@@ -402,10 +403,11 @@ public class OrderSummaryCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 	private CommerceOrderValidatorRegistry _commerceOrderValidatorRegistry;
 
 	@Reference
-	private CommercePaymentEngine _commercePaymentEngine;
+	private CommercePaymentHelper _commercePaymentHelper;
 
 	@Reference
-	private CommercePaymentHelper _commercePaymentHelper;
+	private CommercePaymentMethodGroupRelLocalService
+		_commercePaymentMethodGroupRelLocalService;
 
 	@Reference
 	private CommerceProductPriceCalculation _commerceProductPriceCalculation;
