@@ -578,16 +578,22 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro setAssociatedFSOptionsValue(date = null, boolean = null, multipleSelectionValuesChecked = null, multipleSelectionValuesNotChecked = null, numeric = null, text = null, singleSelectionValueChecked = null,) {
-		if (${boolean} == "enabled") {
-			Check.checkNotVisible(
-				checkboxName = "",
-				locator1 = "Checkbox#ANY_CHECKBOX");
-		}
-		else if (${boolean} == "disabled") {
-			Uncheck.uncheckNotVisible(
-				checkboxName = "",
-				locator1 = "Checkbox#ANY_CHECKBOX");
+	macro setAssociatedFSOptionsValue {
+		if(isSet(boolean)) {
+			var booleanStatus = StringUtil.extractFirst(${boolean}, ":");
+			var booleanCheckboxName = StringUtil.extractLast(${boolean}, ":");
+
+			if (${booleanStatus} == "enabled") {
+				Check.checkNotVisible(
+					checkboxName = "${booleanCheckboxName}",
+					locator1 = "CommerceFrontStore#BOOLEAN_CHECKBOX");
+
+			}
+			else if (${booleanStatus} == "disabled") {
+				Uncheck.uncheckNotVisible(
+					checkboxName = "${booleanCheckboxName}",
+					locator1 = "CommerceFrontStore#BOOLEAN_CHECKBOX");
+			}
 		}
 
 		if (isSet(date)) {
