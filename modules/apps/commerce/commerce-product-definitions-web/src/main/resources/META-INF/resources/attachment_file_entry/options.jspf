@@ -22,3 +22,5 @@
 		</div>
 	</c:otherwise>
 </c:choose>
+
+<aui:input label="use-in-shopping-experience-image-gallery" name="galleryEnabled" type="toggle-switch" value="<%= (cpAttachmentFileEntry == null) ? true : cpAttachmentFileEntry.isGalleryEnabled() %>" />
