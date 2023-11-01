@@ -8,7 +8,7 @@
 		"regionCode": "AK"
 	},
 	{
-		"name": "American Samoa (see also separate country code entry under AS)",
+		"name": "American Samoa",
 		"regionCode": "AS"
 	},
 	{
@@ -48,7 +48,7 @@
 		"regionCode": "GA"
 	},
 	{
-		"name": "Guam (see also separate country code entry under GU)",
+		"name": "Guam",
 		"regionCode": "GU"
 	},
 	{
@@ -148,7 +148,7 @@
 		"regionCode": "ND"
 	},
 	{
-		"name": "Northern Mariana Islands (see also separate country code entry under MP)",
+		"name": "Northern Mariana Islands",
 		"regionCode": "MP"
 	},
 	{
@@ -168,7 +168,7 @@
 		"regionCode": "PA"
 	},
 	{
-		"name": "Puerto Rico (see also separate country code entry under PR)",
+		"name": "Puerto Rico",
 		"regionCode": "PR"
 	},
 	{
@@ -192,7 +192,7 @@
 		"regionCode": "TX"
 	},
 	{
-		"name": "United States Minor Outlying Islands (see also separate country code entry under UM)",
+		"name": "United States Minor Outlying Islands",
 		"regionCode": "UM"
 	},
 	{
@@ -204,7 +204,7 @@
 		"regionCode": "VT"
 	},
 	{
-		"name": "Virgin Islands, U.S. (see also separate country code entry under VI)",
+		"name": "Virgin Islands, U.S.",
 		"regionCode": "VI"
 	},
 	{

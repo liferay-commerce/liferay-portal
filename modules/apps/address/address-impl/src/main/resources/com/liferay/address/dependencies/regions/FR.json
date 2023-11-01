@@ -164,11 +164,11 @@
 		"regionCode": "GES"
 	},
 	{
-		"name": "Guadeloupe (see also separate country code entry under GP)",
+		"name": "Guadeloupe",
 		"regionCode": "971.0"
 	},
 	{
-		"name": "Guyane (française) (see also separate country code entry under GF)",
+		"name": "Guyane (française)",
 		"regionCode": "973.0"
 	},
 	{
@@ -244,7 +244,7 @@
 		"regionCode": "39.0"
 	},
 	{
-		"name": "La Réunion (see also separate country code entry under RE)",
+		"name": "La Réunion",
 		"regionCode": "974.0"
 	},
 	{
@@ -292,7 +292,7 @@
 		"regionCode": "51.0"
 	},
 	{
-		"name": "Martinique (see also separate country code entry under MQ)",
+		"name": "Martinique",
 		"regionCode": "972.0"
 	},
 	{
@@ -300,7 +300,7 @@
 		"regionCode": "53.0"
 	},
 	{
-		"name": "Mayotte (see also separate country code entry under YT)",
+		"name": "Mayotte",
 		"regionCode": "976.0"
 	},
 	{
@@ -340,7 +340,7 @@
 		"regionCode": "NAQ"
 	},
 	{
-		"name": "Nouvelle-Calédonie (see also separate country code entry under NC)",
+		"name": "Nouvelle-Calédonie",
 		"regionCode": "NC"
 	},
 	{
@@ -368,7 +368,7 @@
 		"regionCode": "PDL"
 	},
 	{
-		"name": "Polynésie française (see also separate country code entry under PF)",
+		"name": "Polynésie française",
 		"regionCode": "PF"
 	},
 	{
@@ -392,15 +392,15 @@
 		"regionCode": "69.0"
 	},
 	{
-		"name": "Saint-Barthélemy (see also separate country code entry under BL)",
+		"name": "Saint-Barthélemy",
 		"regionCode": "BL"
 	},
 	{
-		"name": "Saint-Martin (see also separate country code entry under MF)",
+		"name": "Saint-Martin",
 		"regionCode": "MF"
 	},
 	{
-		"name": "Saint-Pierre-et-Miquelon (see also separate country code entry under PM)",
+		"name": "Saint-Pierre-et-Miquelon",
 		"regionCode": "PM"
 	},
 	{
@@ -440,7 +440,7 @@
 		"regionCode": "82.0"
 	},
 	{
-		"name": "Terres australes françaises (see also separate country code entry under TF)",
+		"name": "Terres australes françaises",
 		"regionCode": "TF"
 	},
 	{
@@ -476,7 +476,7 @@
 		"regionCode": "88.0"
 	},
 	{
-		"name": "Wallis-et-Futuna (see also separate country code entry under WF)",
+		"name": "Wallis-et-Futuna",
 		"regionCode": "WF"
 	},
 	{
