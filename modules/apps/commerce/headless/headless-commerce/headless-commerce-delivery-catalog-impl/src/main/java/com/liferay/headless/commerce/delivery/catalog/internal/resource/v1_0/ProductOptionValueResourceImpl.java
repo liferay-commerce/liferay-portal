@@ -20,6 +20,7 @@ import com.liferay.commerce.product.service.CPDefinitionOptionValueRelLocalServi
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.util.CommerceAccountHelper;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.ProductOptionValue;
+import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.SkuOption;
 import com.liferay.headless.commerce.delivery.catalog.internal.dto.v1_0.converter.constants.DTOConverterConstants;
 import com.liferay.headless.commerce.delivery.catalog.resource.v1_0.ProductOptionValueResource;
 import com.liferay.portal.kernel.change.tracking.CTAware;
@@ -55,38 +56,22 @@ public class ProductOptionValueResourceImpl
 				Pagination pagination)
 		throws Exception {
 
-		CPDefinition cpDefinition =
-			_cpDefinitionLocalService.fetchCPDefinitionByCProductId(productId);
+		return _getProductOptionValuePage(
+			channelId, productId, productOptionId, accountId,
+			productOptionValueId, skuId, pagination, null);
+	}
 
-		if (cpDefinition == null) {
-			throw new NoSuchCProductException();
-		}
+	@Override
+	public Page<ProductOptionValue>
+			postChannelProductProductOptionProductOptionValuesPage(
+				Long channelId, Long productId, Long productOptionId,
+				Long accountId, Long productOptionValueId, Long skuId,
+				Pagination pagination, SkuOption[] skuOptions)
+		throws Exception {
 
-		CommerceChannel commerceChannel =
-			_commerceChannelLocalService.getCommerceChannel(channelId);
-
-		_commerceProductViewPermission.check(
-			PermissionThreadLocal.getPermissionChecker(),
-			_getAccountEntryId(accountId, commerceChannel),
-			commerceChannel.getGroupId(), cpDefinition.getCPDefinitionId());
-
-		List<CPDefinitionOptionValueRel> cpDefinitionOptionValueRels =
-			_cpDefinitionOptionValueRelLocalService.
-				getCPDefinitionOptionValueRels(
-					productOptionId, pagination.getStartPosition(),
-					pagination.getEndPosition());
-
-		int totalItems =
-			_cpDefinitionOptionValueRelLocalService.
-				getCPDefinitionOptionValueRelsCount(productOptionId);
-
-		return Page.of(
-			_toProductOptionValues(
-				_commerceContextFactory.create(
-					contextCompany.getCompanyId(), commerceChannel.getGroupId(),
-					contextUser.getUserId(), 0, accountId),
-				cpDefinitionOptionValueRels, productOptionValueId, skuId),
-			pagination, totalItems);
+		return _getProductOptionValuePage(
+			channelId, productId, productOptionId, accountId,
+			productOptionValueId, skuId, pagination, skuOptions);
 	}
 
 	private Long _getAccountEntryId(
@@ -121,10 +106,51 @@ public class ProductOptionValueResourceImpl
 		return accountId;
 	}
 
+	private Page<ProductOptionValue> _getProductOptionValuePage(
+			Long channelId, Long productId, Long productOptionId,
+			Long accountId, Long productOptionValueId, Long skuId,
+			Pagination pagination, SkuOption[] skuOptions)
+		throws Exception {
+
+		CPDefinition cpDefinition =
+			_cpDefinitionLocalService.fetchCPDefinitionByCProductId(productId);
+
+		if (cpDefinition == null) {
+			throw new NoSuchCProductException();
+		}
+
+		CommerceChannel commerceChannel =
+			_commerceChannelLocalService.getCommerceChannel(channelId);
+
+		_commerceProductViewPermission.check(
+			PermissionThreadLocal.getPermissionChecker(),
+			_getAccountEntryId(accountId, commerceChannel),
+			commerceChannel.getGroupId(), cpDefinition.getCPDefinitionId());
+
+		List<CPDefinitionOptionValueRel> cpDefinitionOptionValueRels =
+			_cpDefinitionOptionValueRelLocalService.
+				getCPDefinitionOptionValueRels(
+					productOptionId, pagination.getStartPosition(),
+					pagination.getEndPosition());
+
+		int totalItems =
+			_cpDefinitionOptionValueRelLocalService.
+				getCPDefinitionOptionValueRelsCount(productOptionId);
+
+		return Page.of(
+			_toProductOptionValues(
+				_commerceContextFactory.create(
+					contextCompany.getCompanyId(), commerceChannel.getGroupId(),
+					contextUser.getUserId(), 0, accountId),
+				cpDefinitionOptionValueRels, productOptionValueId, skuId,
+				skuOptions),
+			pagination, totalItems);
+	}
+
 	private List<ProductOptionValue> _toProductOptionValues(
 			CommerceContext commerceContext,
 			List<CPDefinitionOptionValueRel> cpDefinitionOptionValueRels,
-			Long productOptionValueId, Long skuId)
+			Long productOptionValueId, Long skuId, SkuOption[] skuOptions)
 		throws Exception {
 
 		List<ProductOptionValue> productOptionValues = new ArrayList<>();
@@ -143,6 +169,7 @@ public class ProductOptionValueResourceImpl
 			defaultDTOConverterContext.setAttribute(
 				"productOptionValueId", productOptionValueId);
 			defaultDTOConverterContext.setAttribute("skuId", skuId);
+			defaultDTOConverterContext.setAttribute("skuOptions", skuOptions);
 
 			productOptionValues.add(
 				_productOptionValueDTOConverter.toDTO(
