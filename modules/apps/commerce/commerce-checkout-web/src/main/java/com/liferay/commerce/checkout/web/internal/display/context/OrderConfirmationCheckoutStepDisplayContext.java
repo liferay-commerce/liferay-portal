@@ -49,10 +49,6 @@ public class OrderConfirmationCheckoutStepDisplayContext {
 	}
 
 	public CommerceOrder getCommerceOrder() throws PortalException {
-		if (_commerceOrder != null) {
-			return _commerceOrder;
-		}
-
 		_commerceOrder = (CommerceOrder)_httpServletRequest.getAttribute(
 			CommerceCheckoutWebKeys.COMMERCE_ORDER);
 
