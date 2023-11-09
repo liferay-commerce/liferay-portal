@@ -999,6 +999,13 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 				serviceContext.setExpandoBridgeAttributes(
 					_getExpandoBridgeAttributes(attachment));
 
+				String[] assetTagNames = new String[0];
+
+				if (attachment.getTags() != null) {
+					assetTagNames = attachment.getTags();
+					serviceContext.setAssetTagNames(assetTagNames);
+				}
+
 				AttachmentUtil.addOrUpdateCPAttachmentFileEntry(
 					cpDefinition.getGroupId(), _cpAttachmentFileEntryService,
 					_cpDefinitionOptionRelService,
@@ -1020,6 +1027,13 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 			for (Attachment attachment : attachments) {
 				serviceContext.setExpandoBridgeAttributes(
 					_getExpandoBridgeAttributes(attachment));
+
+				String[] assetTagNames = new String[0];
+
+				if (attachment.getTags() != null) {
+					assetTagNames = attachment.getTags();
+					serviceContext.setAssetTagNames(assetTagNames);
+				}
 
 				AttachmentUtil.addOrUpdateCPAttachmentFileEntry(
 					cpDefinition.getGroupId(), _cpAttachmentFileEntryService,
