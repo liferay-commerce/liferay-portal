@@ -219,7 +219,7 @@ public class CommercePaymentServlet extends HttpServlet {
 
 			commercePaymentEntry =
 				_commercePaymentEntryLocalService.updateCommercePaymentEntry(
-					commercePaymentIntegration.setUpPayment(
+					_commercePaymentGateway.setUpPayment(
 						httpServletRequest, commercePaymentEntry));
 		}
 		else {
