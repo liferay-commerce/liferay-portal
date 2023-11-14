@@ -1049,7 +1049,7 @@ definition {
 			key_orderAuthor = "Commerce Account",
 			locator1 = "CommerceAccelerators#ORDERS_ENTRY_VIEW_BUTTON");
 
-		ClickNoError(locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS_ORDER");
+		ClickNoError(locator1 = "CommerceFrontStore#SF_ORDER_BODY_VERTICAL_ELLIPSIS");
 
 		MenuItem.clickNoError(menuItem = "Delete");
 
