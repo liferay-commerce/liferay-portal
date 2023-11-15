@@ -1,0 +1,126 @@
+[
+	{
+		"name": "Alborz",
+		"regionCode": "30"
+	},
+	{
+		"name": "Ardabīl",
+		"regionCode": "24"
+	},
+	{
+		"name": "Āz̄ārbāyjān-e Ghārbī",
+		"regionCode": "4"
+	},
+	{
+		"name": "Āz̄ārbāyjān-e Shārqī",
+		"regionCode": "3"
+	},
+	{
+		"name": "Būshehr",
+		"regionCode": "18"
+	},
+	{
+		"name": "Chahār Maḩāl va Bakhtīārī",
+		"regionCode": "14"
+	},
+	{
+		"name": "Eşfahān",
+		"regionCode": "10"
+	},
+	{
+		"name": "Fārs",
+		"regionCode": "7"
+	},
+	{
+		"name": "Gīlān",
+		"regionCode": "1"
+	},
+	{
+		"name": "Golestān",
+		"regionCode": "27"
+	},
+	{
+		"name": "Hamadān",
+		"regionCode": "13"
+	},
+	{
+		"name": "Hormozgān",
+		"regionCode": "22"
+	},
+	{
+		"name": "Īlām",
+		"regionCode": "16"
+	},
+	{
+		"name": "Kermān",
+		"regionCode": "8"
+	},
+	{
+		"name": "Kermānshāh",
+		"regionCode": "5"
+	},
+	{
+		"name": "Khorāsān-e Jonūbī",
+		"regionCode": "29"
+	},
+	{
+		"name": "Khorāsān-e Raẕavī",
+		"regionCode": "9"
+	},
+	{
+		"name": "Khorāsān-e Shomālī",
+		"regionCode": "28"
+	},
+	{
+		"name": "Khūzestān",
+		"regionCode": "6"
+	},
+	{
+		"name": "Kohgīlūyeh va Bowyer Aḩmad",
+		"regionCode": "17"
+	},
+	{
+		"name": "Kordestān",
+		"regionCode": "12"
+	},
+	{
+		"name": "Lorestān",
+		"regionCode": "15"
+	},
+	{
+		"name": "Markazī",
+		"regionCode": "00"
+	},
+	{
+		"name": "Māzandarān",
+		"regionCode": "2"
+	},
+	{
+		"name": "Qazvīn",
+		"regionCode": "26"
+	},
+	{
+		"name": "Qom",
+		"regionCode": "25"
+	},
+	{
+		"name": "Semnān",
+		"regionCode": "20"
+	},
+	{
+		"name": "Sīstān va Balūchestān",
+		"regionCode": "11"
+	},
+	{
+		"name": "Tehrān",
+		"regionCode": "23"
+	},
+	{
+		"name": "Yazd",
+		"regionCode": "21"
+	},
+	{
+		"name": "Zanjān",
+		"regionCode": "19"
+	}
+]

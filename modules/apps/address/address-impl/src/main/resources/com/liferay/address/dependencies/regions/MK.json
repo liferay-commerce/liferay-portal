@@ -1,0 +1,322 @@
+[
+	{
+		"name": "Aerodrom †",
+		"regionCode": "801"
+	},
+	{
+		"name": "Aračinovo",
+		"regionCode": "802"
+	},
+	{
+		"name": "Berovo",
+		"regionCode": "201"
+	},
+	{
+		"name": "Bitola",
+		"regionCode": "501"
+	},
+	{
+		"name": "Bogdanci",
+		"regionCode": "401"
+	},
+	{
+		"name": "Bogovinje",
+		"regionCode": "601"
+	},
+	{
+		"name": "Bosilovo",
+		"regionCode": "402"
+	},
+	{
+		"name": "Brvenica",
+		"regionCode": "602"
+	},
+	{
+		"name": "Butel †",
+		"regionCode": "803"
+	},
+	{
+		"name": "Čair †",
+		"regionCode": "815"
+	},
+	{
+		"name": "Čaška",
+		"regionCode": "109"
+	},
+	{
+		"name": "Centar †",
+		"regionCode": "814"
+	},
+	{
+		"name": "Centar Župa",
+		"regionCode": "313"
+	},
+	{
+		"name": "Češinovo-Obleševo",
+		"regionCode": "210"
+	},
+	{
+		"name": "Čučer-Sandevo",
+		"regionCode": "816"
+	},
+	{
+		"name": "Debar",
+		"regionCode": "303"
+	},
+	{
+		"name": "Debrca",
+		"regionCode": "304"
+	},
+	{
+		"name": "Delčevo",
+		"regionCode": "203"
+	},
+	{
+		"name": "Demir Hisar",
+		"regionCode": "502"
+	},
+	{
+		"name": "Demir Kapija",
+		"regionCode": "103"
+	},
+	{
+		"name": "Dojran",
+		"regionCode": "406"
+	},
+	{
+		"name": "Dolneni",
+		"regionCode": "503"
+	},
+	{
+		"name": "Gazi Baba †",
+		"regionCode": "804"
+	},
+	{
+		"name": "Gevgelija",
+		"regionCode": "405"
+	},
+	{
+		"name": "Gjorče Petrov †",
+		"regionCode": "805"
+	},
+	{
+		"name": "Gostivar",
+		"regionCode": "604"
+	},
+	{
+		"name": "Gradsko",
+		"regionCode": "102"
+	},
+	{
+		"name": "Ilinden",
+		"regionCode": "807"
+	},
+	{
+		"name": "Jegunovce",
+		"regionCode": "606"
+	},
+	{
+		"name": "Karbinci",
+		"regionCode": "205"
+	},
+	{
+		"name": "Karpoš †",
+		"regionCode": "808"
+	},
+	{
+		"name": "Kavadarci",
+		"regionCode": "104"
+	},
+	{
+		"name": "Kičevo",
+		"regionCode": "307"
+	},
+	{
+		"name": "Kisela Voda †",
+		"regionCode": "809"
+	},
+	{
+		"name": "Kočani",
+		"regionCode": "206"
+	},
+	{
+		"name": "Konče",
+		"regionCode": "407"
+	},
+	{
+		"name": "Kratovo",
+		"regionCode": "701"
+	},
+	{
+		"name": "Kriva Palanka",
+		"regionCode": "702"
+	},
+	{
+		"name": "Krivogaštani",
+		"regionCode": "504"
+	},
+	{
+		"name": "Kruševo",
+		"regionCode": "505"
+	},
+	{
+		"name": "Kumanovo",
+		"regionCode": "703"
+	},
+	{
+		"name": "Lipkovo",
+		"regionCode": "704"
+	},
+	{
+		"name": "Lozovo",
+		"regionCode": "105"
+	},
+	{
+		"name": "Makedonska Kamenica",
+		"regionCode": "207"
+	},
+	{
+		"name": "Makedonski Brod",
+		"regionCode": "308"
+	},
+	{
+		"name": "Mavrovo i Rostuše",
+		"regionCode": "607"
+	},
+	{
+		"name": "Mogila",
+		"regionCode": "506"
+	},
+	{
+		"name": "Negotino",
+		"regionCode": "106"
+	},
+	{
+		"name": "Novaci",
+		"regionCode": "507"
+	},
+	{
+		"name": "Novo Selo",
+		"regionCode": "408"
+	},
+	{
+		"name": "Ohrid",
+		"regionCode": "310"
+	},
+	{
+		"name": "Pehčevo",
+		"regionCode": "208"
+	},
+	{
+		"name": "Petrovec",
+		"regionCode": "810"
+	},
+	{
+		"name": "Plasnica",
+		"regionCode": "311"
+	},
+	{
+		"name": "Prilep",
+		"regionCode": "508"
+	},
+	{
+		"name": "Probištip",
+		"regionCode": "209"
+	},
+	{
+		"name": "Radoviš",
+		"regionCode": "409"
+	},
+	{
+		"name": "Rankovce",
+		"regionCode": "705"
+	},
+	{
+		"name": "Resen",
+		"regionCode": "509"
+	},
+	{
+		"name": "Rosoman",
+		"regionCode": "107"
+	},
+	{
+		"name": "Saraj †",
+		"regionCode": "811"
+	},
+	{
+		"name": "Sopište",
+		"regionCode": "812"
+	},
+	{
+		"name": "Staro Nagoričane",
+		"regionCode": "706"
+	},
+	{
+		"name": "Štip",
+		"regionCode": "211"
+	},
+	{
+		"name": "Struga",
+		"regionCode": "312"
+	},
+	{
+		"name": "Strumica",
+		"regionCode": "410"
+	},
+	{
+		"name": "Studeničani",
+		"regionCode": "813"
+	},
+	{
+		"name": "Šuto Orizari †",
+		"regionCode": "817"
+	},
+	{
+		"name": "Sveti Nikole",
+		"regionCode": "108"
+	},
+	{
+		"name": "Tearce",
+		"regionCode": "608"
+	},
+	{
+		"name": "Tetovo",
+		"regionCode": "609"
+	},
+	{
+		"name": "Valandovo",
+		"regionCode": "403"
+	},
+	{
+		"name": "Vasilevo",
+		"regionCode": "404"
+	},
+	{
+		"name": "Veles",
+		"regionCode": "101"
+	},
+	{
+		"name": "Vevčani",
+		"regionCode": "301"
+	},
+	{
+		"name": "Vinica",
+		"regionCode": "202"
+	},
+	{
+		"name": "Vrapčište",
+		"regionCode": "603"
+	},
+	{
+		"name": "Zelenikovo",
+		"regionCode": "806"
+	},
+	{
+		"name": "Želino",
+		"regionCode": "605"
+	},
+	{
+		"name": "Zrnovci",
+		"regionCode": "204"
+	}
+]

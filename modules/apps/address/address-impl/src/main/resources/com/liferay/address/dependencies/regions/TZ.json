@@ -1,0 +1,126 @@
+[
+	{
+		"name": "Arusha",
+		"regionCode": "1"
+	},
+	{
+		"name": "Coast",
+		"regionCode": "19"
+	},
+	{
+		"name": "Dar es Salaam",
+		"regionCode": "2"
+	},
+	{
+		"name": "Dodoma",
+		"regionCode": "3"
+	},
+	{
+		"name": "Geita",
+		"regionCode": "27"
+	},
+	{
+		"name": "Iringa",
+		"regionCode": "4"
+	},
+	{
+		"name": "Kagera",
+		"regionCode": "5"
+	},
+	{
+		"name": "Katavi",
+		"regionCode": "28"
+	},
+	{
+		"name": "Kigoma",
+		"regionCode": "8"
+	},
+	{
+		"name": "Kilimanjaro",
+		"regionCode": "9"
+	},
+	{
+		"name": "Lindi",
+		"regionCode": "12"
+	},
+	{
+		"name": "Manyara",
+		"regionCode": "26"
+	},
+	{
+		"name": "Mara",
+		"regionCode": "13"
+	},
+	{
+		"name": "Mbeya",
+		"regionCode": "14"
+	},
+	{
+		"name": "Morogoro",
+		"regionCode": "16"
+	},
+	{
+		"name": "Mtwara",
+		"regionCode": "17"
+	},
+	{
+		"name": "Mwanza",
+		"regionCode": "18"
+	},
+	{
+		"name": "Njombe",
+		"regionCode": "29"
+	},
+	{
+		"name": "Pemba North",
+		"regionCode": "6"
+	},
+	{
+		"name": "Pemba South",
+		"regionCode": "10"
+	},
+	{
+		"name": "Rukwa",
+		"regionCode": "20"
+	},
+	{
+		"name": "Ruvuma",
+		"regionCode": "21"
+	},
+	{
+		"name": "Shinyanga",
+		"regionCode": "22"
+	},
+	{
+		"name": "Simiyu",
+		"regionCode": "30"
+	},
+	{
+		"name": "Singida",
+		"regionCode": "23"
+	},
+	{
+		"name": "Songwe",
+		"regionCode": "31"
+	},
+	{
+		"name": "Tabora",
+		"regionCode": "24"
+	},
+	{
+		"name": "Tanga",
+		"regionCode": "25"
+	},
+	{
+		"name": "Zanzibar North",
+		"regionCode": "7"
+	},
+	{
+		"name": "Zanzibar South",
+		"regionCode": "11"
+	},
+	{
+		"name": "Zanzibar West",
+		"regionCode": "15"
+	}
+]

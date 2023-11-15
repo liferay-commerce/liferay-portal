@@ -1,0 +1,290 @@
+[
+	{
+		"name": "Bagerhat",
+		"regionCode": "5"
+	},
+	{
+		"name": "Bandarban",
+		"regionCode": "1"
+	},
+	{
+		"name": "Barguna",
+		"regionCode": "2"
+	},
+	{
+		"name": "Barishal",
+		"regionCode": "6"
+	},
+	{
+		"name": "Barishal",
+		"regionCode": "A"
+	},
+	{
+		"name": "Bhola",
+		"regionCode": "7"
+	},
+	{
+		"name": "Bogura",
+		"regionCode": "3"
+	},
+	{
+		"name": "Brahmanbaria",
+		"regionCode": "4"
+	},
+	{
+		"name": "Chandpur",
+		"regionCode": "9"
+	},
+	{
+		"name": "Chapai Nawabganj",
+		"regionCode": "45"
+	},
+	{
+		"name": "Chattogram",
+		"regionCode": "10"
+	},
+	{
+		"name": "Chattogram",
+		"regionCode": "B"
+	},
+	{
+		"name": "Chuadanga",
+		"regionCode": "12"
+	},
+	{
+		"name": "Cox's Bazar",
+		"regionCode": "11"
+	},
+	{
+		"name": "Cumilla",
+		"regionCode": "8"
+	},
+	{
+		"name": "Dhaka",
+		"regionCode": "13"
+	},
+	{
+		"name": "Dhaka",
+		"regionCode": "C"
+	},
+	{
+		"name": "Dinajpur",
+		"regionCode": "14"
+	},
+	{
+		"name": "Faridpur",
+		"regionCode": "15"
+	},
+	{
+		"name": "Feni",
+		"regionCode": "16"
+	},
+	{
+		"name": "Gaibandha",
+		"regionCode": "19"
+	},
+	{
+		"name": "Gazipur",
+		"regionCode": "18"
+	},
+	{
+		"name": "Gopalganj",
+		"regionCode": "17"
+	},
+	{
+		"name": "Habiganj",
+		"regionCode": "20"
+	},
+	{
+		"name": "Jamalpur",
+		"regionCode": "21"
+	},
+	{
+		"name": "Jashore",
+		"regionCode": "22"
+	},
+	{
+		"name": "Jhalakathi",
+		"regionCode": "25"
+	},
+	{
+		"name": "Jhenaidah",
+		"regionCode": "23"
+	},
+	{
+		"name": "Joypurhat",
+		"regionCode": "24"
+	},
+	{
+		"name": "Khagrachhari",
+		"regionCode": "29"
+	},
+	{
+		"name": "Khulna",
+		"regionCode": "27"
+	},
+	{
+		"name": "Khulna",
+		"regionCode": "D"
+	},
+	{
+		"name": "Kishoreganj",
+		"regionCode": "26"
+	},
+	{
+		"name": "Kurigram",
+		"regionCode": "28"
+	},
+	{
+		"name": "Kushtia",
+		"regionCode": "30"
+	},
+	{
+		"name": "Lakshmipur",
+		"regionCode": "31"
+	},
+	{
+		"name": "Lalmonirhat",
+		"regionCode": "32"
+	},
+	{
+		"name": "Madaripur",
+		"regionCode": "36"
+	},
+	{
+		"name": "Magura",
+		"regionCode": "37"
+	},
+	{
+		"name": "Manikganj",
+		"regionCode": "33"
+	},
+	{
+		"name": "Meherpur",
+		"regionCode": "39"
+	},
+	{
+		"name": "Moulvibazar",
+		"regionCode": "38"
+	},
+	{
+		"name": "Munshiganj",
+		"regionCode": "35"
+	},
+	{
+		"name": "Mymensingh",
+		"regionCode": "34"
+	},
+	{
+		"name": "Mymensingh",
+		"regionCode": "H"
+	},
+	{
+		"name": "Naogaon",
+		"regionCode": "48"
+	},
+	{
+		"name": "Narail",
+		"regionCode": "43"
+	},
+	{
+		"name": "Narayanganj",
+		"regionCode": "40"
+	},
+	{
+		"name": "Narsingdi",
+		"regionCode": "42"
+	},
+	{
+		"name": "Natore",
+		"regionCode": "44"
+	},
+	{
+		"name": "Netrakona",
+		"regionCode": "41"
+	},
+	{
+		"name": "Nilphamari",
+		"regionCode": "46"
+	},
+	{
+		"name": "Noakhali",
+		"regionCode": "47"
+	},
+	{
+		"name": "Pabna",
+		"regionCode": "49"
+	},
+	{
+		"name": "Panchagarh",
+		"regionCode": "52"
+	},
+	{
+		"name": "Patuakhali",
+		"regionCode": "51"
+	},
+	{
+		"name": "Pirojpur",
+		"regionCode": "50"
+	},
+	{
+		"name": "Rajbari",
+		"regionCode": "53"
+	},
+	{
+		"name": "Rajshahi",
+		"regionCode": "54"
+	},
+	{
+		"name": "Rajshahi",
+		"regionCode": "E"
+	},
+	{
+		"name": "Rangamati",
+		"regionCode": "56"
+	},
+	{
+		"name": "Rangpur",
+		"regionCode": "55"
+	},
+	{
+		"name": "Rangpur",
+		"regionCode": "F"
+	},
+	{
+		"name": "Satkhira",
+		"regionCode": "58"
+	},
+	{
+		"name": "Shariatpur",
+		"regionCode": "62"
+	},
+	{
+		"name": "Sherpur",
+		"regionCode": "57"
+	},
+	{
+		"name": "Sirajganj",
+		"regionCode": "59"
+	},
+	{
+		"name": "Sunamganj",
+		"regionCode": "61"
+	},
+	{
+		"name": "Sylhet",
+		"regionCode": "60"
+	},
+	{
+		"name": "Sylhet",
+		"regionCode": "G"
+	},
+	{
+		"name": "Tangail",
+		"regionCode": "63"
+	},
+	{
+		"name": "Thakurgaon",
+		"regionCode": "64"
+	}
+]

@@ -1,0 +1,74 @@
+[
+	{
+		"name": "Alto Paraguay",
+		"regionCode": "16"
+	},
+	{
+		"name": "Alto Paraná",
+		"regionCode": "10"
+	},
+	{
+		"name": "Amambay",
+		"regionCode": "13"
+	},
+	{
+		"name": "Asunción",
+		"regionCode": "ASU"
+	},
+	{
+		"name": "Boquerón",
+		"regionCode": "19"
+	},
+	{
+		"name": "Caaguazú",
+		"regionCode": "5"
+	},
+	{
+		"name": "Caazapá",
+		"regionCode": "6"
+	},
+	{
+		"name": "Canindeyú",
+		"regionCode": "14"
+	},
+	{
+		"name": "Central",
+		"regionCode": "11"
+	},
+	{
+		"name": "Concepción",
+		"regionCode": "1"
+	},
+	{
+		"name": "Cordillera",
+		"regionCode": "3"
+	},
+	{
+		"name": "Guairá",
+		"regionCode": "4"
+	},
+	{
+		"name": "Itapúa",
+		"regionCode": "7"
+	},
+	{
+		"name": "Misiones",
+		"regionCode": "8"
+	},
+	{
+		"name": "Ñeembucú",
+		"regionCode": "12"
+	},
+	{
+		"name": "Paraguarí",
+		"regionCode": "9"
+	},
+	{
+		"name": "Presidente Hayes",
+		"regionCode": "15"
+	},
+	{
+		"name": "San Pedro",
+		"regionCode": "2"
+	}
+]

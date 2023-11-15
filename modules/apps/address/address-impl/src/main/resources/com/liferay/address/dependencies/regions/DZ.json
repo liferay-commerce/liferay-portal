@@ -1,0 +1,234 @@
+[
+	{
+		"name": "Adrar",
+		"regionCode": "1"
+	},
+	{
+		"name": "Aïn Defla",
+		"regionCode": "44"
+	},
+	{
+		"name": "Aïn Témouchent",
+		"regionCode": "46"
+	},
+	{
+		"name": "Alger",
+		"regionCode": "16"
+	},
+	{
+		"name": "Annaba",
+		"regionCode": "23"
+	},
+	{
+		"name": "Batna",
+		"regionCode": "5"
+	},
+	{
+		"name": "Béchar",
+		"regionCode": "8"
+	},
+	{
+		"name": "Béjaïa",
+		"regionCode": "6"
+	},
+	{
+		"name": "Béni Abbès",
+		"regionCode": "52"
+	},
+	{
+		"name": "Biskra",
+		"regionCode": "7"
+	},
+	{
+		"name": "Blida",
+		"regionCode": "9"
+	},
+	{
+		"name": "Bordj Badji Mokhtar",
+		"regionCode": "50"
+	},
+	{
+		"name": "Bordj Bou Arréridj",
+		"regionCode": "34"
+	},
+	{
+		"name": "Bouira",
+		"regionCode": "10"
+	},
+	{
+		"name": "Boumerdès",
+		"regionCode": "35"
+	},
+	{
+		"name": "Chlef",
+		"regionCode": "2"
+	},
+	{
+		"name": "Constantine",
+		"regionCode": "25"
+	},
+	{
+		"name": "Djanet",
+		"regionCode": "56"
+	},
+	{
+		"name": "Djelfa",
+		"regionCode": "17"
+	},
+	{
+		"name": "El Bayadh",
+		"regionCode": "32"
+	},
+	{
+		"name": "El Meghaier",
+		"regionCode": "57"
+	},
+	{
+		"name": "El Meniaa",
+		"regionCode": "58"
+	},
+	{
+		"name": "El Oued",
+		"regionCode": "39"
+	},
+	{
+		"name": "El Tarf",
+		"regionCode": "36"
+	},
+	{
+		"name": "Ghardaïa",
+		"regionCode": "47"
+	},
+	{
+		"name": "Guelma",
+		"regionCode": "24"
+	},
+	{
+		"name": "Illizi",
+		"regionCode": "33"
+	},
+	{
+		"name": "In Guezzam",
+		"regionCode": "54"
+	},
+	{
+		"name": "In Salah",
+		"regionCode": "53"
+	},
+	{
+		"name": "Jijel",
+		"regionCode": "18"
+	},
+	{
+		"name": "Khenchela",
+		"regionCode": "40"
+	},
+	{
+		"name": "Laghouat",
+		"regionCode": "3"
+	},
+	{
+		"name": "M'sila",
+		"regionCode": "28"
+	},
+	{
+		"name": "Mascara",
+		"regionCode": "29"
+	},
+	{
+		"name": "Médéa",
+		"regionCode": "26"
+	},
+	{
+		"name": "Mila",
+		"regionCode": "43"
+	},
+	{
+		"name": "Mostaganem",
+		"regionCode": "27"
+	},
+	{
+		"name": "Naama",
+		"regionCode": "45"
+	},
+	{
+		"name": "Oran",
+		"regionCode": "31"
+	},
+	{
+		"name": "Ouargla",
+		"regionCode": "30"
+	},
+	{
+		"name": "Ouled Djellal",
+		"regionCode": "51"
+	},
+	{
+		"name": "Oum el Bouaghi",
+		"regionCode": "4"
+	},
+	{
+		"name": "Relizane",
+		"regionCode": "48"
+	},
+	{
+		"name": "Saïda",
+		"regionCode": "20"
+	},
+	{
+		"name": "Sétif",
+		"regionCode": "19"
+	},
+	{
+		"name": "Sidi Bel Abbès",
+		"regionCode": "22"
+	},
+	{
+		"name": "Skikda",
+		"regionCode": "21"
+	},
+	{
+		"name": "Souk Ahras",
+		"regionCode": "41"
+	},
+	{
+		"name": "Tamanrasset",
+		"regionCode": "11"
+	},
+	{
+		"name": "Tébessa",
+		"regionCode": "12"
+	},
+	{
+		"name": "Tiaret",
+		"regionCode": "14"
+	},
+	{
+		"name": "Timimoun",
+		"regionCode": "49"
+	},
+	{
+		"name": "Tindouf",
+		"regionCode": "37"
+	},
+	{
+		"name": "Tipaza",
+		"regionCode": "42"
+	},
+	{
+		"name": "Tissemsilt",
+		"regionCode": "38"
+	},
+	{
+		"name": "Tizi Ouzou",
+		"regionCode": "15"
+	},
+	{
+		"name": "Tlemcen",
+		"regionCode": "13"
+	},
+	{
+		"name": "Touggourt",
+		"regionCode": "55"
+	}
+]

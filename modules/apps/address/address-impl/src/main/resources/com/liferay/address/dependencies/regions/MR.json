@@ -1,0 +1,62 @@
+[
+	{
+		"name": "Adrar",
+		"regionCode": "7"
+	},
+	{
+		"name": "Assaba",
+		"regionCode": "3"
+	},
+	{
+		"name": "Brakna",
+		"regionCode": "5"
+	},
+	{
+		"name": "Dakhlet Nouâdhibou",
+		"regionCode": "8"
+	},
+	{
+		"name": "Gorgol",
+		"regionCode": "4"
+	},
+	{
+		"name": "Guidimaka",
+		"regionCode": "10"
+	},
+	{
+		"name": "Hodh ech Chargui",
+		"regionCode": "1"
+	},
+	{
+		"name": "Hodh el Gharbi",
+		"regionCode": "2"
+	},
+	{
+		"name": "Inchiri",
+		"regionCode": "12"
+	},
+	{
+		"name": "Nuwākshūţ al Gharbīyah",
+		"regionCode": "13"
+	},
+	{
+		"name": "Nuwākshūţ al Janūbīyah",
+		"regionCode": "15"
+	},
+	{
+		"name": "Nuwākshūţ ash Shamālīyah",
+		"regionCode": "14"
+	},
+	{
+		"name": "Tagant",
+		"regionCode": "9"
+	},
+	{
+		"name": "Tiris Zemmour",
+		"regionCode": "11"
+	},
+	{
+		"name": "Trarza",
+		"regionCode": "6"
+	}
+]

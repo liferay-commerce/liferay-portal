@@ -1,0 +1,46 @@
+[
+	{
+		"name": "Bamako",
+		"regionCode": "BKO"
+	},
+	{
+		"name": "Gao",
+		"regionCode": "7"
+	},
+	{
+		"name": "Kayes",
+		"regionCode": "1"
+	},
+	{
+		"name": "Kidal",
+		"regionCode": "8"
+	},
+	{
+		"name": "Koulikoro",
+		"regionCode": "2"
+	},
+	{
+		"name": "Ménaka",
+		"regionCode": "9"
+	},
+	{
+		"name": "Mopti",
+		"regionCode": "5"
+	},
+	{
+		"name": "Ségou",
+		"regionCode": "4"
+	},
+	{
+		"name": "Sikasso",
+		"regionCode": "3"
+	},
+	{
+		"name": "Taoudénit",
+		"regionCode": "10"
+	},
+	{
+		"name": "Tombouctou",
+		"regionCode": "6"
+	}
+]

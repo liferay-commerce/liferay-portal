@@ -1,0 +1,82 @@
+[
+	{
+		"name": "Abay oblysy",
+		"regionCode": "10"
+	},
+	{
+		"name": "Almaty",
+		"regionCode": "75"
+	},
+	{
+		"name": "Almaty oblysy",
+		"regionCode": "19"
+	},
+	{
+		"name": "Aqmola oblysy",
+		"regionCode": "11"
+	},
+	{
+		"name": "Aqtöbe oblysy",
+		"regionCode": "15"
+	},
+	{
+		"name": "Astana",
+		"regionCode": "71"
+	},
+	{
+		"name": "Atyraū oblysy",
+		"regionCode": "23"
+	},
+	{
+		"name": "Batys Qazaqstan oblysy",
+		"regionCode": "27"
+	},
+	{
+		"name": "Mangghystaū oblysy",
+		"regionCode": "47"
+	},
+	{
+		"name": "Pavlodar oblysy",
+		"regionCode": "55"
+	},
+	{
+		"name": "Qaraghandy oblysy",
+		"regionCode": "35"
+	},
+	{
+		"name": "Qostanay oblysy",
+		"regionCode": "39"
+	},
+	{
+		"name": "Qyzylorda oblysy",
+		"regionCode": "43"
+	},
+	{
+		"name": "Shyghys Qazaqstan oblysy",
+		"regionCode": "63"
+	},
+	{
+		"name": "Shymkent",
+		"regionCode": "79"
+	},
+	{
+		"name": "Soltüstik Qazaqstan oblysy",
+		"regionCode": "59"
+	},
+	{
+		"name": "Türkistan oblysy",
+		"regionCode": "61"
+	},
+	{
+		"name": "Ulytaū oblysy",
+		"regionCode": "62"
+	},
+	{
+		"name": "Zhambyl oblysy",
+		"regionCode": "31"
+	},
+	{
+		"name": "Zhetisū oblysy",
+		"regionCode": "33"
+	}
+]

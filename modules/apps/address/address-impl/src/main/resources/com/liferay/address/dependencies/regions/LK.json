@@ -1,0 +1,138 @@
+[
+	{
+		"name": "Ampara",
+		"regionCode": "52"
+	},
+	{
+		"name": "Anuradhapura",
+		"regionCode": "71"
+	},
+	{
+		"name": "Badulla",
+		"regionCode": "81"
+	},
+	{
+		"name": "Batticaloa",
+		"regionCode": "51"
+	},
+	{
+		"name": "Central Province",
+		"regionCode": "2"
+	},
+	{
+		"name": "Colombo",
+		"regionCode": "11"
+	},
+	{
+		"name": "Eastern Province",
+		"regionCode": "5"
+	},
+	{
+		"name": "Galle",
+		"regionCode": "31"
+	},
+	{
+		"name": "Gampaha",
+		"regionCode": "12"
+	},
+	{
+		"name": "Hambantota",
+		"regionCode": "33"
+	},
+	{
+		"name": "Jaffna",
+		"regionCode": "41"
+	},
+	{
+		"name": "Kalutara",
+		"regionCode": "13"
+	},
+	{
+		"name": "Kandy",
+		"regionCode": "21"
+	},
+	{
+		"name": "Kegalla",
+		"regionCode": "92"
+	},
+	{
+		"name": "Kilinochchi",
+		"regionCode": "42"
+	},
+	{
+		"name": "Kurunegala",
+		"regionCode": "61"
+	},
+	{
+		"name": "Mannar",
+		"regionCode": "43"
+	},
+	{
+		"name": "Matale",
+		"regionCode": "22"
+	},
+	{
+		"name": "Matara",
+		"regionCode": "32"
+	},
+	{
+		"name": "Monaragala",
+		"regionCode": "82"
+	},
+	{
+		"name": "Mullaittivu",
+		"regionCode": "45"
+	},
+	{
+		"name": "North Central Province",
+		"regionCode": "7"
+	},
+	{
+		"name": "North Western Province",
+		"regionCode": "6"
+	},
+	{
+		"name": "Northern Province",
+		"regionCode": "4"
+	},
+	{
+		"name": "Nuwara Eliya",
+		"regionCode": "23"
+	},
+	{
+		"name": "Polonnaruwa",
+		"regionCode": "72"
+	},
+	{
+		"name": "Puttalam",
+		"regionCode": "62"
+	},
+	{
+		"name": "Ratnapura",
+		"regionCode": "91"
+	},
+	{
+		"name": "Sabaragamuwa Province",
+		"regionCode": "9"
+	},
+	{
+		"name": "Southern Province",
+		"regionCode": "3"
+	},
+	{
+		"name": "Trincomalee",
+		"regionCode": "53"
+	},
+	{
+		"name": "Uva Province",
+		"regionCode": "8"
+	},
+	{
+		"name": "Vavuniya",
+		"regionCode": "44"
+	},
+	{
+		"name": "Western Province",
+		"regionCode": "1"
+	}
+]

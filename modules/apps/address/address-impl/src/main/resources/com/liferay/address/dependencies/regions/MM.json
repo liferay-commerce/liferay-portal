@@ -1,0 +1,62 @@
+[
+	{
+		"name": "Ayeyarwady",
+		"regionCode": "7"
+	},
+	{
+		"name": "Bago",
+		"regionCode": "2"
+	},
+	{
+		"name": "Chin",
+		"regionCode": "14"
+	},
+	{
+		"name": "Kachin",
+		"regionCode": "11"
+	},
+	{
+		"name": "Kayah",
+		"regionCode": "12"
+	},
+	{
+		"name": "Kayin",
+		"regionCode": "13"
+	},
+	{
+		"name": "Magway",
+		"regionCode": "3"
+	},
+	{
+		"name": "Mandalay",
+		"regionCode": "4"
+	},
+	{
+		"name": "Mon",
+		"regionCode": "15"
+	},
+	{
+		"name": "Nay Pyi Taw",
+		"regionCode": "18"
+	},
+	{
+		"name": "Rakhine",
+		"regionCode": "16"
+	},
+	{
+		"name": "Sagaing",
+		"regionCode": "1"
+	},
+	{
+		"name": "Shan",
+		"regionCode": "17"
+	},
+	{
+		"name": "Tanintharyi",
+		"regionCode": "5"
+	},
+	{
+		"name": "Yangon",
+		"regionCode": "6"
+	}
+]

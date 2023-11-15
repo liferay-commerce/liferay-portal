@@ -1,0 +1,30 @@
+[
+	{
+		"name": "Saint Andrew",
+		"regionCode": "1"
+	},
+	{
+		"name": "Saint David",
+		"regionCode": "2"
+	},
+	{
+		"name": "Saint George",
+		"regionCode": "3"
+	},
+	{
+		"name": "Saint John",
+		"regionCode": "4"
+	},
+	{
+		"name": "Saint Mark",
+		"regionCode": "5"
+	},
+	{
+		"name": "Saint Patrick",
+		"regionCode": "6"
+	},
+	{
+		"name": "Southern Grenadine Islands",
+		"regionCode": "10"
+	}
+]

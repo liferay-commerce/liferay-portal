@@ -1,0 +1,98 @@
+[
+	{
+		"name": "Béja",
+		"regionCode": "31"
+	},
+	{
+		"name": "Ben Arous",
+		"regionCode": "13"
+	},
+	{
+		"name": "Bizerte",
+		"regionCode": "23"
+	},
+	{
+		"name": "Gabès",
+		"regionCode": "81"
+	},
+	{
+		"name": "Gafsa",
+		"regionCode": "71"
+	},
+	{
+		"name": "Jendouba",
+		"regionCode": "32"
+	},
+	{
+		"name": "Kairouan",
+		"regionCode": "41"
+	},
+	{
+		"name": "Kasserine",
+		"regionCode": "42"
+	},
+	{
+		"name": "Kébili",
+		"regionCode": "73"
+	},
+	{
+		"name": "L'Ariana",
+		"regionCode": "12"
+	},
+	{
+		"name": "La Manouba",
+		"regionCode": "14"
+	},
+	{
+		"name": "Le Kef",
+		"regionCode": "33"
+	},
+	{
+		"name": "Mahdia",
+		"regionCode": "53"
+	},
+	{
+		"name": "Médenine",
+		"regionCode": "82"
+	},
+	{
+		"name": "Monastir",
+		"regionCode": "52"
+	},
+	{
+		"name": "Nabeul",
+		"regionCode": "21"
+	},
+	{
+		"name": "Sfax",
+		"regionCode": "61"
+	},
+	{
+		"name": "Sidi Bouzid",
+		"regionCode": "43"
+	},
+	{
+		"name": "Siliana",
+		"regionCode": "34"
+	},
+	{
+		"name": "Sousse",
+		"regionCode": "51"
+	},
+	{
+		"name": "Tataouine",
+		"regionCode": "83"
+	},
+	{
+		"name": "Tozeur",
+		"regionCode": "72"
+	},
+	{
+		"name": "Tunis",
+		"regionCode": "11"
+	},
+	{
+		"name": "Zaghouan",
+		"regionCode": "22"
+	}
+]

@@ -1,0 +1,86 @@
+[
+	{
+		"name": "Blekinge län [SE-10]",
+		"regionCode": "K"
+	},
+	{
+		"name": "Dalarnas län [SE-20]",
+		"regionCode": "W"
+	},
+	{
+		"name": "Gävleborgs län [SE-21]",
+		"regionCode": "X"
+	},
+	{
+		"name": "Gotlands län [SE-09]",
+		"regionCode": "I"
+	},
+	{
+		"name": "Hallands län [SE-13]",
+		"regionCode": "N"
+	},
+	{
+		"name": "Jämtlands län [SE-23]",
+		"regionCode": "Z"
+	},
+	{
+		"name": "Jönköpings län [SE-06]",
+		"regionCode": "F"
+	},
+	{
+		"name": "Kalmar län [SE-08]",
+		"regionCode": "H"
+	},
+	{
+		"name": "Kronobergs län [SE-07]",
+		"regionCode": "G"
+	},
+	{
+		"name": "Norrbottens län [SE-25]",
+		"regionCode": "BD"
+	},
+	{
+		"name": "Örebro län [SE-18]",
+		"regionCode": "T"
+	},
+	{
+		"name": "Östergötlands län [SE-05]",
+		"regionCode": "E"
+	},
+	{
+		"name": "Skåne län [SE-12]",
+		"regionCode": "M"
+	},
+	{
+		"name": "Södermanlands län [SE-04]",
+		"regionCode": "D"
+	},
+	{
+		"name": "Stockholms län [SE-01]",
+		"regionCode": "AB"
+	},
+	{
+		"name": "Uppsala län [SE-03]",
+		"regionCode": "C"
+	},
+	{
+		"name": "Värmlands län [SE-17]",
+		"regionCode": "S"
+	},
+	{
+		"name": "Västerbottens län [SE-24]",
+		"regionCode": "AC"
+	},
+	{
+		"name": "Västernorrlands län [SE-22]",
+		"regionCode": "Y"
+	},
+	{
+		"name": "Västmanlands län [SE-19]",
+		"regionCode": "U"
+	},
+	{
+		"name": "Västra Götalands län [SE-14]",
+		"regionCode": "O"
+	}
+]

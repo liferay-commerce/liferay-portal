@@ -1,0 +1,362 @@
+[
+	{
+		"name": "Benešov",
+		"regionCode": "201"
+	},
+	{
+		"name": "Beroun",
+		"regionCode": "202"
+	},
+	{
+		"name": "Blansko",
+		"regionCode": "641"
+	},
+	{
+		"name": "Břeclav",
+		"regionCode": "644"
+	},
+	{
+		"name": "Brno-město",
+		"regionCode": "642"
+	},
+	{
+		"name": "Brno-venkov",
+		"regionCode": "643"
+	},
+	{
+		"name": "Bruntál",
+		"regionCode": "801"
+	},
+	{
+		"name": "Česká Lípa",
+		"regionCode": "511"
+	},
+	{
+		"name": "České Budějovice",
+		"regionCode": "311"
+	},
+	{
+		"name": "Český Krumlov",
+		"regionCode": "312"
+	},
+	{
+		"name": "Cheb",
+		"regionCode": "411"
+	},
+	{
+		"name": "Chomutov",
+		"regionCode": "422"
+	},
+	{
+		"name": "Chrudim",
+		"regionCode": "531"
+	},
+	{
+		"name": "Děčín",
+		"regionCode": "421"
+	},
+	{
+		"name": "Domažlice",
+		"regionCode": "321"
+	},
+	{
+		"name": "Frýdek-Místek",
+		"regionCode": "802"
+	},
+	{
+		"name": "Havlíčkův Brod",
+		"regionCode": "631"
+	},
+	{
+		"name": "Hodonín",
+		"regionCode": "645"
+	},
+	{
+		"name": "Hradec Králové",
+		"regionCode": "521"
+	},
+	{
+		"name": "Jablonec nad Nisou",
+		"regionCode": "512"
+	},
+	{
+		"name": "Jeseník",
+		"regionCode": "711"
+	},
+	{
+		"name": "Jičín",
+		"regionCode": "522"
+	},
+	{
+		"name": "Jihlava",
+		"regionCode": "632"
+	},
+	{
+		"name": "Jihočeský kraj",
+		"regionCode": "31"
+	},
+	{
+		"name": "Jihomoravský kraj",
+		"regionCode": "64"
+	},
+	{
+		"name": "Jindřichův Hradec",
+		"regionCode": "313"
+	},
+	{
+		"name": "Karlovarský kraj",
+		"regionCode": "41"
+	},
+	{
+		"name": "Karlovy Vary",
+		"regionCode": "412"
+	},
+	{
+		"name": "Karviná",
+		"regionCode": "803"
+	},
+	{
+		"name": "Kladno",
+		"regionCode": "203"
+	},
+	{
+		"name": "Klatovy",
+		"regionCode": "322"
+	},
+	{
+		"name": "Kolín",
+		"regionCode": "204"
+	},
+	{
+		"name": "Kraj Vysočina",
+		"regionCode": "63"
+	},
+	{
+		"name": "Královéhradecký kraj",
+		"regionCode": "52"
+	},
+	{
+		"name": "Kroměříž",
+		"regionCode": "721"
+	},
+	{
+		"name": "Kutná Hora",
+		"regionCode": "205"
+	},
+	{
+		"name": "Liberec",
+		"regionCode": "513"
+	},
+	{
+		"name": "Liberecký kraj",
+		"regionCode": "51"
+	},
+	{
+		"name": "Litoměřice",
+		"regionCode": "423"
+	},
+	{
+		"name": "Louny",
+		"regionCode": "424"
+	},
+	{
+		"name": "Mělník",
+		"regionCode": "206"
+	},
+	{
+		"name": "Mladá Boleslav",
+		"regionCode": "207"
+	},
+	{
+		"name": "Moravskoslezský kraj",
+		"regionCode": "80"
+	},
+	{
+		"name": "Most",
+		"regionCode": "425"
+	},
+	{
+		"name": "Náchod",
+		"regionCode": "523"
+	},
+	{
+		"name": "Nový Jičín",
+		"regionCode": "804"
+	},
+	{
+		"name": "Nymburk",
+		"regionCode": "208"
+	},
+	{
+		"name": "Olomouc",
+		"regionCode": "712"
+	},
+	{
+		"name": "Olomoucký kraj",
+		"regionCode": "71"
+	},
+	{
+		"name": "Opava",
+		"regionCode": "805"
+	},
+	{
+		"name": "Ostrava-město",
+		"regionCode": "806"
+	},
+	{
+		"name": "Pardubice",
+		"regionCode": "532"
+	},
+	{
+		"name": "Pardubický kraj",
+		"regionCode": "53"
+	},
+	{
+		"name": "Pelhřimov",
+		"regionCode": "633"
+	},
+	{
+		"name": "Písek",
+		"regionCode": "314"
+	},
+	{
+		"name": "Plzeň-jih",
+		"regionCode": "324"
+	},
+	{
+		"name": "Plzeň-město",
+		"regionCode": "323"
+	},
+	{
+		"name": "Plzeň-sever",
+		"regionCode": "325"
+	},
+	{
+		"name": "Plzeňský kraj",
+		"regionCode": "32"
+	},
+	{
+		"name": "Prachatice",
+		"regionCode": "315"
+	},
+	{
+		"name": "Praha-východ",
+		"regionCode": "209"
+	},
+	{
+		"name": "Praha-západ",
+		"regionCode": "20A"
+	},
+	{
+		"name": "Praha, Hlavní město",
+		"regionCode": "10"
+	},
+	{
+		"name": "Přerov",
+		"regionCode": "714"
+	},
+	{
+		"name": "Příbram",
+		"regionCode": "20B"
+	},
+	{
+		"name": "Prostějov",
+		"regionCode": "713"
+	},
+	{
+		"name": "Rakovník",
+		"regionCode": "20C"
+	},
+	{
+		"name": "Rokycany",
+		"regionCode": "326"
+	},
+	{
+		"name": "Rychnov nad Kněžnou",
+		"regionCode": "524"
+	},
+	{
+		"name": "Semily",
+		"regionCode": "514"
+	},
+	{
+		"name": "Sokolov",
+		"regionCode": "413"
+	},
+	{
+		"name": "Strakonice",
+		"regionCode": "316"
+	},
+	{
+		"name": "Středočeský kraj",
+		"regionCode": "20"
+	},
+	{
+		"name": "Šumperk",
+		"regionCode": "715"
+	},
+	{
+		"name": "Svitavy",
+		"regionCode": "533"
+	},
+	{
+		"name": "Tábor",
+		"regionCode": "317"
+	},
+	{
+		"name": "Tachov",
+		"regionCode": "327"
+	},
+	{
+		"name": "Teplice",
+		"regionCode": "426"
+	},
+	{
+		"name": "Třebíč",
+		"regionCode": "634"
+	},
+	{
+		"name": "Trutnov",
+		"regionCode": "525"
+	},
+	{
+		"name": "Uherské Hradiště",
+		"regionCode": "722"
+	},
+	{
+		"name": "Ústecký kraj",
+		"regionCode": "42"
+	},
+	{
+		"name": "Ústí nad Labem",
+		"regionCode": "427"
+	},
+	{
+		"name": "Ústí nad Orlicí",
+		"regionCode": "534"
+	},
+	{
+		"name": "Vsetín",
+		"regionCode": "723"
+	},
+	{
+		"name": "Vyškov",
+		"regionCode": "646"
+	},
+	{
+		"name": "Žďár nad Sázavou",
+		"regionCode": "635"
+	},
+	{
+		"name": "Zlín",
+		"regionCode": "724"
+	},
+	{
+		"name": "Zlínský kraj",
+		"regionCode": "72"
+	},
+	{
+		"name": "Znojmo",
+		"regionCode": "647"
+	}
+]

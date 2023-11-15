@@ -1,0 +1,190 @@
+[
+	{
+		"name": "Baringo",
+		"regionCode": "1"
+	},
+	{
+		"name": "Bomet",
+		"regionCode": "2"
+	},
+	{
+		"name": "Bungoma",
+		"regionCode": "3"
+	},
+	{
+		"name": "Busia",
+		"regionCode": "4"
+	},
+	{
+		"name": "Elgeyo/Marakwet",
+		"regionCode": "5"
+	},
+	{
+		"name": "Embu",
+		"regionCode": "6"
+	},
+	{
+		"name": "Garissa",
+		"regionCode": "7"
+	},
+	{
+		"name": "Homa Bay",
+		"regionCode": "8"
+	},
+	{
+		"name": "Isiolo",
+		"regionCode": "9"
+	},
+	{
+		"name": "Kajiado",
+		"regionCode": "10"
+	},
+	{
+		"name": "Kakamega",
+		"regionCode": "11"
+	},
+	{
+		"name": "Kericho",
+		"regionCode": "12"
+	},
+	{
+		"name": "Kiambu",
+		"regionCode": "13"
+	},
+	{
+		"name": "Kilifi",
+		"regionCode": "14"
+	},
+	{
+		"name": "Kirinyaga",
+		"regionCode": "15"
+	},
+	{
+		"name": "Kisii",
+		"regionCode": "16"
+	},
+	{
+		"name": "Kisumu",
+		"regionCode": "17"
+	},
+	{
+		"name": "Kitui",
+		"regionCode": "18"
+	},
+	{
+		"name": "Kwale",
+		"regionCode": "19"
+	},
+	{
+		"name": "Laikipia",
+		"regionCode": "20"
+	},
+	{
+		"name": "Lamu",
+		"regionCode": "21"
+	},
+	{
+		"name": "Machakos",
+		"regionCode": "22"
+	},
+	{
+		"name": "Makueni",
+		"regionCode": "23"
+	},
+	{
+		"name": "Mandera",
+		"regionCode": "24"
+	},
+	{
+		"name": "Marsabit",
+		"regionCode": "25"
+	},
+	{
+		"name": "Meru",
+		"regionCode": "26"
+	},
+	{
+		"name": "Migori",
+		"regionCode": "27"
+	},
+	{
+		"name": "Mombasa",
+		"regionCode": "28"
+	},
+	{
+		"name": "Murang'a",
+		"regionCode": "29"
+	},
+	{
+		"name": "Nairobi City",
+		"regionCode": "30"
+	},
+	{
+		"name": "Nakuru",
+		"regionCode": "31"
+	},
+	{
+		"name": "Nandi",
+		"regionCode": "32"
+	},
+	{
+		"name": "Narok",
+		"regionCode": "33"
+	},
+	{
+		"name": "Nyamira",
+		"regionCode": "34"
+	},
+	{
+		"name": "Nyandarua",
+		"regionCode": "35"
+	},
+	{
+		"name": "Nyeri",
+		"regionCode": "36"
+	},
+	{
+		"name": "Samburu",
+		"regionCode": "37"
+	},
+	{
+		"name": "Siaya",
+		"regionCode": "38"
+	},
+	{
+		"name": "Taita/Taveta",
+		"regionCode": "39"
+	},
+	{
+		"name": "Tana River",
+		"regionCode": "40"
+	},
+	{
+		"name": "Tharaka-Nithi",
+		"regionCode": "41"
+	},
+	{
+		"name": "Trans Nzoia",
+		"regionCode": "42"
+	},
+	{
+		"name": "Turkana",
+		"regionCode": "43"
+	},
+	{
+		"name": "Uasin Gishu",
+		"regionCode": "44"
+	},
+	{
+		"name": "Vihiga",
+		"regionCode": "45"
+	},
+	{
+		"name": "Wajir",
+		"regionCode": "46"
+	},
+	{
+		"name": "West Pokot",
+		"regionCode": "47"
+	}
+]

@@ -1,0 +1,22 @@
+[
+	{
+		"name": "City of Kigali",
+		"regionCode": "1"
+	},
+	{
+		"name": "Eastern",
+		"regionCode": "2"
+	},
+	{
+		"name": "Northern",
+		"regionCode": "3"
+	},
+	{
+		"name": "Southern",
+		"regionCode": "5"
+	},
+	{
+		"name": "Western",
+		"regionCode": "4"
+	}
+]

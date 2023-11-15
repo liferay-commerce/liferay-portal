@@ -1,0 +1,66 @@
+[
+	{
+		"name": "Aimeliik",
+		"regionCode": "2"
+	},
+	{
+		"name": "Airai",
+		"regionCode": "4"
+	},
+	{
+		"name": "Angaur",
+		"regionCode": "10"
+	},
+	{
+		"name": "Hatohobei",
+		"regionCode": "50"
+	},
+	{
+		"name": "Kayangel",
+		"regionCode": "100"
+	},
+	{
+		"name": "Koror",
+		"regionCode": "150"
+	},
+	{
+		"name": "Melekeok",
+		"regionCode": "212"
+	},
+	{
+		"name": "Ngaraard",
+		"regionCode": "214"
+	},
+	{
+		"name": "Ngarchelong",
+		"regionCode": "218"
+	},
+	{
+		"name": "Ngardmau",
+		"regionCode": "222"
+	},
+	{
+		"name": "Ngatpang",
+		"regionCode": "224"
+	},
+	{
+		"name": "Ngchesar",
+		"regionCode": "226"
+	},
+	{
+		"name": "Ngeremlengui",
+		"regionCode": "227"
+	},
+	{
+		"name": "Ngiwal",
+		"regionCode": "228"
+	},
+	{
+		"name": "Peleliu",
+		"regionCode": "350"
+	},
+	{
+		"name": "Sonsorol",
+		"regionCode": "370"
+	}
+]

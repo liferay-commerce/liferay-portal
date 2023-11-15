@@ -1,0 +1,34 @@
+[
+	{
+		"name": "Agadez",
+		"regionCode": "1"
+	},
+	{
+		"name": "Diffa",
+		"regionCode": "2"
+	},
+	{
+		"name": "Dosso",
+		"regionCode": "3"
+	},
+	{
+		"name": "Maradi",
+		"regionCode": "4"
+	},
+	{
+		"name": "Niamey",
+		"regionCode": "8"
+	},
+	{
+		"name": "Tahoua",
+		"regionCode": "5"
+	},
+	{
+		"name": "Tillabéri",
+		"regionCode": "6"
+	},
+	{
+		"name": "Zinder",
+		"regionCode": "7"
+	}
+]

@@ -1,0 +1,26 @@
+[
+	{
+		"name": "Ammochostos",
+		"regionCode": "4"
+	},
+	{
+		"name": "Keryneia",
+		"regionCode": "6"
+	},
+	{
+		"name": "Larnaka",
+		"regionCode": "3"
+	},
+	{
+		"name": "Lefkosia",
+		"regionCode": "1"
+	},
+	{
+		"name": "Lemesos",
+		"regionCode": "2"
+	},
+	{
+		"name": "Pafos",
+		"regionCode": "5"
+	}
+]

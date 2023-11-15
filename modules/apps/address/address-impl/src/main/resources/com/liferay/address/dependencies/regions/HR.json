@@ -1,0 +1,86 @@
+[
+	{
+		"name": "Bjelovarsko-bilogorska županija",
+		"regionCode": "7"
+	},
+	{
+		"name": "Brodsko-posavska županija",
+		"regionCode": "12"
+	},
+	{
+		"name": "Dubrovačko-neretvanska županija",
+		"regionCode": "19"
+	},
+	{
+		"name": "Grad Zagreb",
+		"regionCode": "21"
+	},
+	{
+		"name": "Istarska županija",
+		"regionCode": "18"
+	},
+	{
+		"name": "Karlovačka županija",
+		"regionCode": "4"
+	},
+	{
+		"name": "Koprivničko-križevačka županija",
+		"regionCode": "6"
+	},
+	{
+		"name": "Krapinsko-zagorska županija",
+		"regionCode": "2"
+	},
+	{
+		"name": "Ličko-senjska županija",
+		"regionCode": "9"
+	},
+	{
+		"name": "Međimurska županija",
+		"regionCode": "20"
+	},
+	{
+		"name": "Osječko-baranjska županija",
+		"regionCode": "14"
+	},
+	{
+		"name": "Požeško-slavonska županija",
+		"regionCode": "11"
+	},
+	{
+		"name": "Primorsko-goranska županija",
+		"regionCode": "8"
+	},
+	{
+		"name": "Šibensko-kninska županija",
+		"regionCode": "15"
+	},
+	{
+		"name": "Sisačko-moslavačka županija",
+		"regionCode": "3"
+	},
+	{
+		"name": "Splitsko-dalmatinska županija",
+		"regionCode": "17"
+	},
+	{
+		"name": "Varaždinska županija",
+		"regionCode": "5"
+	},
+	{
+		"name": "Virovitičko-podravska županija",
+		"regionCode": "10"
+	},
+	{
+		"name": "Vukovarsko-srijemska županija",
+		"regionCode": "16"
+	},
+	{
+		"name": "Zadarska županija",
+		"regionCode": "13"
+	},
+	{
+		"name": "Zagrebačka županija",
+		"regionCode": "1"
+	}
+]

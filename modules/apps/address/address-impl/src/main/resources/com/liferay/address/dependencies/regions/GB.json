@@ -24,7 +24,7 @@
 		"regionCode": "AGB"
 	},
 	{
-		"name": "Armagh, Banbridge and Craigavon",
+		"name": "Armagh City, Banbridge and Craigavon",
 		"regionCode": "ABC"
 	},
 	{
@@ -48,7 +48,7 @@
 		"regionCode": "BDF"
 	},
 	{
-		"name": "Belfast",
+		"name": "Belfast City",
 		"regionCode": "BFS"
 	},
 	{
@@ -76,7 +76,7 @@
 		"regionCode": "BOL"
 	},
 	{
-		"name": "Bournemouth",
+		"name": "Bournemouth, Christchurch and Poole",
 		"regionCode": "BCP"
 	},
 	{
@@ -92,7 +92,7 @@
 		"regionCode": "BEN"
 	},
 	{
-		"name": "Bridgend",
+		"name": "Bridgend [Pen-y-bont ar Ogwr GB-POG]",
 		"regionCode": "BGE"
 	},
 	{
@@ -116,7 +116,7 @@
 		"regionCode": "BUR"
 	},
 	{
-		"name": "Caerphilly",
+		"name": "Caerphilly [Caerffili GB-CAF]",
 		"regionCode": "CAY"
 	},
 	{
@@ -132,11 +132,11 @@
 		"regionCode": "CMD"
 	},
 	{
-		"name": "Cardiff",
+		"name": "Cardiff [Caerdydd GB-CRD]",
 		"regionCode": "CRF"
 	},
 	{
-		"name": "Carmarthenshire",
+		"name": "Carmarthenshire [Sir Gaerfyrddin GB-GFY]",
 		"regionCode": "CMN"
 	},
 	{
@@ -148,7 +148,7 @@
 		"regionCode": "CBF"
 	},
 	{
-		"name": "Ceredigion",
+		"name": "Ceredigion [Sir Ceredigion]",
 		"regionCode": "CGN"
 	},
 	{
@@ -188,7 +188,7 @@
 		"regionCode": "DAL"
 	},
 	{
-		"name": "Denbighshire",
+		"name": "Denbighshire [Sir Ddinbych GB-DDB]",
 		"regionCode": "DEN"
 	},
 	{
@@ -228,7 +228,7 @@
 		"regionCode": "DND"
 	},
 	{
-		"name": "Durham County",
+		"name": "Durham, County",
 		"regionCode": "DUR"
 	},
 	{
@@ -272,6 +272,10 @@
 		"regionCode": "ENF"
 	},
 	{
+		"name": "England",
+		"regionCode": "ENG"
+	},
+	{
 		"name": "Essex",
 		"regionCode": "ESS"
 	},
@@ -288,7 +292,7 @@
 		"regionCode": "FIF"
 	},
 	{
-		"name": "Flintshire",
+		"name": "Flintshire [Sir y Fflint GB-FFL]",
 		"regionCode": "FLN"
 	},
 	{
@@ -368,7 +372,7 @@
 		"regionCode": "IVC"
 	},
 	{
-		"name": "Isle of Anglesey",
+		"name": "Isle of Anglesey [Sir Ynys Môn GB-YNM]",
 		"regionCode": "AGY"
 	},
 	{
@@ -460,7 +464,7 @@
 		"regionCode": "MDW"
 	},
 	{
-		"name": "Merthyr Tydfil",
+		"name": "Merthyr Tydfil [Merthyr Tudful GB-MTU]",
 		"regionCode": "MTY"
 	},
 	{
@@ -472,7 +476,7 @@
 		"regionCode": "MEA"
 	},
 	{
-		"name": "Mid Ulster",
+		"name": "Mid-Ulster",
 		"regionCode": "MUL"
 	},
 	{
@@ -488,7 +492,7 @@
 		"regionCode": "MIK"
 	},
 	{
-		"name": "Monmouthshire",
+		"name": "Monmouthshire [Sir Fynwy GB-FYN]",
 		"regionCode": "MON"
 	},
 	{
@@ -496,7 +500,7 @@
 		"regionCode": "MRY"
 	},
 	{
-		"name": "Neath Port Talbot",
+		"name": "Neath Port Talbot [Castell-nedd Port Talbot GB-CTL]",
 		"regionCode": "NTL"
 	},
 	{
@@ -508,7 +512,7 @@
 		"regionCode": "NWM"
 	},
 	{
-		"name": "Newport",
+		"name": "Newport [Casnewydd GB-CNW]",
 		"regionCode": "NWP"
 	},
 	{
@@ -536,6 +540,10 @@
 		"regionCode": "NLN"
 	},
 	{
+		"name": "North Northamptonshire",
+		"regionCode": "NNH"
+	},
+	{
 		"name": "North Somerset",
 		"regionCode": "NSM"
 	},
@@ -548,8 +556,8 @@
 		"regionCode": "NYK"
 	},
 	{
-		"name": "Northamptonshire",
-		"regionCode": "NTH"
+		"name": "Northern Ireland",
+		"regionCode": "NIR"
 	},
 	{
 		"name": "Northumberland",
@@ -576,7 +584,7 @@
 		"regionCode": "OXF"
 	},
 	{
-		"name": "Pembrokeshire",
+		"name": "Pembrokeshire [Sir Benfro GB-BNF]",
 		"regionCode": "PEM"
 	},
 	{
@@ -590,10 +598,6 @@
 	{
 		"name": "Plymouth",
 		"regionCode": "PLY"
-	},
-	{
-		"name": "Poole",
-		"regionCode": "POL"
 	},
 	{
 		"name": "Portsmouth",
@@ -620,7 +624,7 @@
 		"regionCode": "RFW"
 	},
 	{
-		"name": "Rhondda, Cynon, Taff",
+		"name": "Rhondda Cynon Taff [Rhondda CynonTaf]",
 		"regionCode": "RCT"
 	},
 	{
@@ -648,7 +652,11 @@
 		"regionCode": "SAW"
 	},
 	{
-		"name": "Scottish Borders, The",
+		"name": "Scotland",
+		"regionCode": "SCT"
+	},
+	{
+		"name": "Scottish Borders",
 		"regionCode": "SCB"
 	},
 	{
@@ -748,7 +756,7 @@
 		"regionCode": "STN"
 	},
 	{
-		"name": "Swansea",
+		"name": "Swansea [Abertawe GB-ATA]",
 		"regionCode": "SWA"
 	},
 	{
@@ -784,12 +792,16 @@
 		"regionCode": "TRF"
 	},
 	{
-		"name": "Vale of Glamorgan, The",
+		"name": "Vale of Glamorgan, The [Bro Morgannwg GB-BMG]",
 		"regionCode": "VGL"
 	},
 	{
 		"name": "Wakefield",
 		"regionCode": "WKF"
+	},
+	{
+		"name": "Wales [Cymru GB-CYM]",
+		"regionCode": "WLS"
 	},
 	{
 		"name": "Walsall",
@@ -822,6 +834,10 @@
 	{
 		"name": "West Lothian",
 		"regionCode": "WLN"
+	},
+	{
+		"name": "West Northamptonshire",
+		"regionCode": "WNH"
 	},
 	{
 		"name": "West Sussex",
@@ -860,7 +876,7 @@
 		"regionCode": "WOR"
 	},
 	{
-		"name": "Wrexham",
+		"name": "Wrexham [Wrecsam GB-WRC]",
 		"regionCode": "WRX"
 	},
 	{

@@ -1,0 +1,82 @@
+[
+	{
+		"name": "Bumthang",
+		"regionCode": "33"
+	},
+	{
+		"name": "Chhukha",
+		"regionCode": "12"
+	},
+	{
+		"name": "Dagana",
+		"regionCode": "22"
+	},
+	{
+		"name": "Gasa",
+		"regionCode": "GA"
+	},
+	{
+		"name": "Haa",
+		"regionCode": "13"
+	},
+	{
+		"name": "Lhuentse",
+		"regionCode": "44"
+	},
+	{
+		"name": "Monggar",
+		"regionCode": "42"
+	},
+	{
+		"name": "Paro",
+		"regionCode": "11"
+	},
+	{
+		"name": "Pema Gatshel",
+		"regionCode": "43"
+	},
+	{
+		"name": "Punakha",
+		"regionCode": "23"
+	},
+	{
+		"name": "Samdrup Jongkhar",
+		"regionCode": "45"
+	},
+	{
+		"name": "Samtse",
+		"regionCode": "14"
+	},
+	{
+		"name": "Sarpang",
+		"regionCode": "31"
+	},
+	{
+		"name": "Thimphu",
+		"regionCode": "15"
+	},
+	{
+		"name": "Trashi Yangtse",
+		"regionCode": "TY"
+	},
+	{
+		"name": "Trashigang",
+		"regionCode": "41"
+	},
+	{
+		"name": "Trongsa",
+		"regionCode": "32"
+	},
+	{
+		"name": "Tsirang",
+		"regionCode": "21"
+	},
+	{
+		"name": "Wangdue Phodrang",
+		"regionCode": "24"
+	},
+	{
+		"name": "Zhemgang",
+		"regionCode": "34"
+	}
+]

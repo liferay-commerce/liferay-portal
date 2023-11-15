@@ -1,0 +1,58 @@
+[
+	{
+		"name": "Clarendon",
+		"regionCode": "13"
+	},
+	{
+		"name": "Hanover",
+		"regionCode": "9"
+	},
+	{
+		"name": "Kingston",
+		"regionCode": "1"
+	},
+	{
+		"name": "Manchester",
+		"regionCode": "12"
+	},
+	{
+		"name": "Portland",
+		"regionCode": "4"
+	},
+	{
+		"name": "Saint Andrew",
+		"regionCode": "2"
+	},
+	{
+		"name": "Saint Ann",
+		"regionCode": "6"
+	},
+	{
+		"name": "Saint Catherine",
+		"regionCode": "14"
+	},
+	{
+		"name": "Saint Elizabeth",
+		"regionCode": "11"
+	},
+	{
+		"name": "Saint James",
+		"regionCode": "8"
+	},
+	{
+		"name": "Saint Mary",
+		"regionCode": "5"
+	},
+	{
+		"name": "Saint Thomas",
+		"regionCode": "3"
+	},
+	{
+		"name": "Trelawny",
+		"regionCode": "7"
+	},
+	{
+		"name": "Westmoreland",
+		"regionCode": "10"
+	}
+]

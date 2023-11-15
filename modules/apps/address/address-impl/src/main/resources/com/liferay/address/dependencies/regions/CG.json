@@ -1,0 +1,50 @@
+[
+	{
+		"name": "Bouenza",
+		"regionCode": "11"
+	},
+	{
+		"name": "Brazzaville",
+		"regionCode": "BZV"
+	},
+	{
+		"name": "Cuvette",
+		"regionCode": "8"
+	},
+	{
+		"name": "Cuvette-Ouest",
+		"regionCode": "15"
+	},
+	{
+		"name": "Kouilou",
+		"regionCode": "5"
+	},
+	{
+		"name": "Lékoumou",
+		"regionCode": "2"
+	},
+	{
+		"name": "Likouala",
+		"regionCode": "7"
+	},
+	{
+		"name": "Niari",
+		"regionCode": "9"
+	},
+	{
+		"name": "Plateaux",
+		"regionCode": "14"
+	},
+	{
+		"name": "Pointe-Noire",
+		"regionCode": "16"
+	},
+	{
+		"name": "Pool",
+		"regionCode": "12"
+	},
+	{
+		"name": "Sangha",
+		"regionCode": "13"
+	}
+]

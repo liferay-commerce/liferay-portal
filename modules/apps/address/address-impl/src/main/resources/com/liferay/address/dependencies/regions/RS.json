@@ -1,0 +1,130 @@
+[
+	{
+		"name": "Beograd",
+		"regionCode": "00"
+	},
+	{
+		"name": "Borski okrug",
+		"regionCode": "14"
+	},
+	{
+		"name": "Braničevski okrug",
+		"regionCode": "11"
+	},
+	{
+		"name": "Jablanički okrug",
+		"regionCode": "23"
+	},
+	{
+		"name": "Južnobački okrug",
+		"regionCode": "6"
+	},
+	{
+		"name": "Južnobanatski okrug",
+		"regionCode": "4"
+	},
+	{
+		"name": "Kolubarski okrug",
+		"regionCode": "9"
+	},
+	{
+		"name": "Kosovo-Metohija",
+		"regionCode": "KM"
+	},
+	{
+		"name": "Kosovski okrug",
+		"regionCode": "25"
+	},
+	{
+		"name": "Kosovsko-Mitrovački okrug",
+		"regionCode": "28"
+	},
+	{
+		"name": "Kosovsko-Pomoravski okrug",
+		"regionCode": "29"
+	},
+	{
+		"name": "Mačvanski okrug",
+		"regionCode": "8"
+	},
+	{
+		"name": "Moravički okrug",
+		"regionCode": "17"
+	},
+	{
+		"name": "Nišavski okrug",
+		"regionCode": "20"
+	},
+	{
+		"name": "Pčinjski okrug",
+		"regionCode": "24"
+	},
+	{
+		"name": "Pećki okrug",
+		"regionCode": "26"
+	},
+	{
+		"name": "Pirotski okrug",
+		"regionCode": "22"
+	},
+	{
+		"name": "Podunavski okrug",
+		"regionCode": "10"
+	},
+	{
+		"name": "Pomoravski okrug",
+		"regionCode": "13"
+	},
+	{
+		"name": "Prizrenski okrug",
+		"regionCode": "27"
+	},
+	{
+		"name": "Rasinski okrug",
+		"regionCode": "19"
+	},
+	{
+		"name": "Raški okrug",
+		"regionCode": "18"
+	},
+	{
+		"name": "Severnobački okrug",
+		"regionCode": "1"
+	},
+	{
+		"name": "Severnobanatski okrug",
+		"regionCode": "3"
+	},
+	{
+		"name": "Srednjebanatski okrug",
+		"regionCode": "2"
+	},
+	{
+		"name": "Sremski okrug",
+		"regionCode": "7"
+	},
+	{
+		"name": "Šumadijski okrug",
+		"regionCode": "12"
+	},
+	{
+		"name": "Toplički okrug",
+		"regionCode": "21"
+	},
+	{
+		"name": "Vojvodina",
+		"regionCode": "VO"
+	},
+	{
+		"name": "Zaječarski okrug",
+		"regionCode": "15"
+	},
+	{
+		"name": "Zapadnobački okrug",
+		"regionCode": "5"
+	},
+	{
+		"name": "Zlatiborski okrug",
+		"regionCode": "16"
+	}
+]

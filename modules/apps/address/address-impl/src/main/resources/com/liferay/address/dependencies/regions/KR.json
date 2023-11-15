@@ -1,70 +1,70 @@
 [
 	{
 		"name": "Busan-gwangyeoksi",
-		"regionCode": 26.0
+		"regionCode": "26"
 	},
 	{
 		"name": "Chungcheongbuk-do",
-		"regionCode": 43.0
+		"regionCode": "43"
 	},
 	{
 		"name": "Chungcheongnam-do",
-		"regionCode": 44.0
+		"regionCode": "44"
 	},
 	{
 		"name": "Daegu-gwangyeoksi",
-		"regionCode": 27.0
+		"regionCode": "27"
 	},
 	{
 		"name": "Daejeon-gwangyeoksi",
-		"regionCode": 30.0
+		"regionCode": "30"
 	},
 	{
 		"name": "Gangwon-do",
-		"regionCode": 42.0
+		"regionCode": "42"
 	},
 	{
 		"name": "Gwangju-gwangyeoksi",
-		"regionCode": 29.0
+		"regionCode": "29"
 	},
 	{
 		"name": "Gyeonggi-do",
-		"regionCode": 41.0
+		"regionCode": "41"
 	},
 	{
 		"name": "Gyeongsangbuk-do",
-		"regionCode": 47.0
+		"regionCode": "47"
 	},
 	{
 		"name": "Gyeongsangnam-do",
-		"regionCode": 48.0
+		"regionCode": "48"
 	},
 	{
 		"name": "Incheon-gwangyeoksi",
-		"regionCode": 28.0
+		"regionCode": "28"
 	},
 	{
 		"name": "Jeju-teukbyeoljachido",
-		"regionCode": 49.0
+		"regionCode": "49"
 	},
 	{
 		"name": "Jeollabuk-do",
-		"regionCode": 45.0
+		"regionCode": "45"
 	},
 	{
 		"name": "Jeollanam-do",
-		"regionCode": 46.0
+		"regionCode": "46"
 	},
 	{
 		"name": "Sejong",
-		"regionCode": 50.0
+		"regionCode": "50"
 	},
 	{
 		"name": "Seoul-teukbyeolsi",
-		"regionCode": 11.0
+		"regionCode": "11"
 	},
 	{
 		"name": "Ulsan-gwangyeoksi",
-		"regionCode": 31.0
+		"regionCode": "31"
 	}
 ]

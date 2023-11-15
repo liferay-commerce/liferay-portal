@@ -1,0 +1,114 @@
+[
+	{
+		"name": "Blagoevgrad",
+		"regionCode": "1"
+	},
+	{
+		"name": "Burgas",
+		"regionCode": "2"
+	},
+	{
+		"name": "Dobrich",
+		"regionCode": "8"
+	},
+	{
+		"name": "Gabrovo",
+		"regionCode": "7"
+	},
+	{
+		"name": "Haskovo",
+		"regionCode": "26"
+	},
+	{
+		"name": "Kardzhali",
+		"regionCode": "9"
+	},
+	{
+		"name": "Kyustendil",
+		"regionCode": "10"
+	},
+	{
+		"name": "Lovech",
+		"regionCode": "11"
+	},
+	{
+		"name": "Montana",
+		"regionCode": "12"
+	},
+	{
+		"name": "Pazardzhik",
+		"regionCode": "13"
+	},
+	{
+		"name": "Pernik",
+		"regionCode": "14"
+	},
+	{
+		"name": "Pleven",
+		"regionCode": "15"
+	},
+	{
+		"name": "Plovdiv",
+		"regionCode": "16"
+	},
+	{
+		"name": "Razgrad",
+		"regionCode": "17"
+	},
+	{
+		"name": "Ruse",
+		"regionCode": "18"
+	},
+	{
+		"name": "Shumen",
+		"regionCode": "27"
+	},
+	{
+		"name": "Silistra",
+		"regionCode": "19"
+	},
+	{
+		"name": "Sliven",
+		"regionCode": "20"
+	},
+	{
+		"name": "Smolyan",
+		"regionCode": "21"
+	},
+	{
+		"name": "Sofia",
+		"regionCode": "23"
+	},
+	{
+		"name": "Sofia (stolitsa)",
+		"regionCode": "22"
+	},
+	{
+		"name": "Stara Zagora",
+		"regionCode": "24"
+	},
+	{
+		"name": "Targovishte",
+		"regionCode": "25"
+	},
+	{
+		"name": "Varna",
+		"regionCode": "3"
+	},
+	{
+		"name": "Veliko Tarnovo",
+		"regionCode": "4"
+	},
+	{
+		"name": "Vidin",
+		"regionCode": "5"
+	},
+	{
+		"name": "Vratsa",
+		"regionCode": "6"
+	},
+	{
+		"name": "Yambol",
+		"regionCode": "28"
+	}
+]

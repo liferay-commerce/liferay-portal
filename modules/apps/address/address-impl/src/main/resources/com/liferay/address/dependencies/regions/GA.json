@@ -1,0 +1,38 @@
+[
+	{
+		"name": "Estuaire",
+		"regionCode": "1"
+	},
+	{
+		"name": "Haut-Ogooué",
+		"regionCode": "2"
+	},
+	{
+		"name": "Moyen-Ogooué",
+		"regionCode": "3"
+	},
+	{
+		"name": "Ngounié",
+		"regionCode": "4"
+	},
+	{
+		"name": "Nyanga",
+		"regionCode": "5"
+	},
+	{
+		"name": "Ogooué-Ivindo",
+		"regionCode": "6"
+	},
+	{
+		"name": "Ogooué-Lolo",
+		"regionCode": "7"
+	},
+	{
+		"name": "Ogooué-Maritime",
+		"regionCode": "8"
+	},
+	{
+		"name": "Woleu-Ntem",
+		"regionCode": "9"
+	}
+]

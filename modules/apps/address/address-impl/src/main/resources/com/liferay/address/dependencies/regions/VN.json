@@ -1,0 +1,254 @@
+[
+	{
+		"name": "An Giang",
+		"regionCode": "44"
+	},
+	{
+		"name": "Bà Rịa - Vũng Tàu",
+		"regionCode": "43"
+	},
+	{
+		"name": "Bắc Giang",
+		"regionCode": "54"
+	},
+	{
+		"name": "Bắc Kạn",
+		"regionCode": "53"
+	},
+	{
+		"name": "Bạc Liêu",
+		"regionCode": "55"
+	},
+	{
+		"name": "Bắc Ninh",
+		"regionCode": "56"
+	},
+	{
+		"name": "Bến Tre",
+		"regionCode": "50"
+	},
+	{
+		"name": "Bình Định",
+		"regionCode": "31"
+	},
+	{
+		"name": "Bình Dương",
+		"regionCode": "57"
+	},
+	{
+		"name": "Bình Phước",
+		"regionCode": "58"
+	},
+	{
+		"name": "Bình Thuận",
+		"regionCode": "40"
+	},
+	{
+		"name": "Cà Mau",
+		"regionCode": "59"
+	},
+	{
+		"name": "Cần Thơ",
+		"regionCode": "CT"
+	},
+	{
+		"name": "Cao Bằng",
+		"regionCode": "4"
+	},
+	{
+		"name": "Đà Nẵng",
+		"regionCode": "DN"
+	},
+	{
+		"name": "Đắk Lắk",
+		"regionCode": "33"
+	},
+	{
+		"name": "Đắk Nông",
+		"regionCode": "72"
+	},
+	{
+		"name": "Điện Biên",
+		"regionCode": "71"
+	},
+	{
+		"name": "Đồng Nai",
+		"regionCode": "39"
+	},
+	{
+		"name": "Đồng Tháp",
+		"regionCode": "45"
+	},
+	{
+		"name": "Gia Lai",
+		"regionCode": "30"
+	},
+	{
+		"name": "Hà Giang",
+		"regionCode": "3"
+	},
+	{
+		"name": "Hà Nam",
+		"regionCode": "63"
+	},
+	{
+		"name": "Hà Nội",
+		"regionCode": "HN"
+	},
+	{
+		"name": "Hà Tĩnh",
+		"regionCode": "23"
+	},
+	{
+		"name": "Hải Dương",
+		"regionCode": "61"
+	},
+	{
+		"name": "Hải Phòng",
+		"regionCode": "HP"
+	},
+	{
+		"name": "Hậu Giang",
+		"regionCode": "73"
+	},
+	{
+		"name": "Hồ Chí Minh",
+		"regionCode": "SG"
+	},
+	{
+		"name": "Hòa Bình",
+		"regionCode": "14"
+	},
+	{
+		"name": "Hưng Yên",
+		"regionCode": "66"
+	},
+	{
+		"name": "Khánh Hòa",
+		"regionCode": "34"
+	},
+	{
+		"name": "Kiến Giang",
+		"regionCode": "47"
+	},
+	{
+		"name": "Kon Tum",
+		"regionCode": "28"
+	},
+	{
+		"name": "Lai Châu",
+		"regionCode": "1"
+	},
+	{
+		"name": "Lâm Đồng",
+		"regionCode": "35"
+	},
+	{
+		"name": "Lạng Sơn",
+		"regionCode": "9"
+	},
+	{
+		"name": "Lào Cai",
+		"regionCode": "2"
+	},
+	{
+		"name": "Long An",
+		"regionCode": "41"
+	},
+	{
+		"name": "Nam Định",
+		"regionCode": "67"
+	},
+	{
+		"name": "Nghệ An",
+		"regionCode": "22"
+	},
+	{
+		"name": "Ninh Bình",
+		"regionCode": "18"
+	},
+	{
+		"name": "Ninh Thuận",
+		"regionCode": "36"
+	},
+	{
+		"name": "Phú Thọ",
+		"regionCode": "68"
+	},
+	{
+		"name": "Phú Yên",
+		"regionCode": "32"
+	},
+	{
+		"name": "Quảng Bình",
+		"regionCode": "24"
+	},
+	{
+		"name": "Quảng Nam",
+		"regionCode": "27"
+	},
+	{
+		"name": "Quảng Ngãi",
+		"regionCode": "29"
+	},
+	{
+		"name": "Quảng Ninh",
+		"regionCode": "13"
+	},
+	{
+		"name": "Quảng Trị",
+		"regionCode": "25"
+	},
+	{
+		"name": "Sóc Trăng",
+		"regionCode": "52"
+	},
+	{
+		"name": "Sơn La",
+		"regionCode": "5"
+	},
+	{
+		"name": "Tây Ninh",
+		"regionCode": "37"
+	},
+	{
+		"name": "Thái Bình",
+		"regionCode": "20"
+	},
+	{
+		"name": "Thái Nguyên",
+		"regionCode": "69"
+	},
+	{
+		"name": "Thanh Hóa",
+		"regionCode": "21"
+	},
+	{
+		"name": "Thừa Thiên-Huế",
+		"regionCode": "26"
+	},
+	{
+		"name": "Tiền Giang",
+		"regionCode": "46"
+	},
+	{
+		"name": "Trà Vinh",
+		"regionCode": "51"
+	},
+	{
+		"name": "Tuyên Quang",
+		"regionCode": "7"
+	},
+	{
+		"name": "Vĩnh Long",
+		"regionCode": "49"
+	},
+	{
+		"name": "Vĩnh Phúc",
+		"regionCode": "70"
+	},
+	{
+		"name": "Yên Bái",
+		"regionCode": "6"
+	}
+]

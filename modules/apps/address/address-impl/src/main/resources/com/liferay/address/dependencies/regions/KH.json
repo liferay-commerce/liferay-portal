@@ -1,0 +1,102 @@
+[
+	{
+		"name": "Baat Dambang",
+		"regionCode": "2"
+	},
+	{
+		"name": "Banteay Mean Choăy",
+		"regionCode": "1"
+	},
+	{
+		"name": "Kaeb",
+		"regionCode": "23"
+	},
+	{
+		"name": "Kampong Chaam",
+		"regionCode": "3"
+	},
+	{
+		"name": "Kampong Chhnang",
+		"regionCode": "4"
+	},
+	{
+		"name": "Kampong Spueu",
+		"regionCode": "5"
+	},
+	{
+		"name": "Kâmpóng Thum",
+		"regionCode": "6"
+	},
+	{
+		"name": "Kampot",
+		"regionCode": "7"
+	},
+	{
+		"name": "Kandaal",
+		"regionCode": "8"
+	},
+	{
+		"name": "Kaoh Kong",
+		"regionCode": "9"
+	},
+	{
+		"name": "Krâchéh",
+		"regionCode": "10"
+	},
+	{
+		"name": "Môndól Kiri",
+		"regionCode": "11"
+	},
+	{
+		"name": "Ŏtdâr Méan Choăy",
+		"regionCode": "22"
+	},
+	{
+		"name": "Pailĭn",
+		"regionCode": "24"
+	},
+	{
+		"name": "Phnum Pénh",
+		"regionCode": "12"
+	},
+	{
+		"name": "Poŭthĭsăt",
+		"regionCode": "15"
+	},
+	{
+		"name": "Preăh Seihânŭ",
+		"regionCode": "18"
+	},
+	{
+		"name": "Preăh Vihéar",
+		"regionCode": "13"
+	},
+	{
+		"name": "Prey Vêng",
+		"regionCode": "14"
+	},
+	{
+		"name": "Rotanak Kiri",
+		"regionCode": "16"
+	},
+	{
+		"name": "Siem Reab",
+		"regionCode": "17"
+	},
+	{
+		"name": "Stoĕng Trêng",
+		"regionCode": "19"
+	},
+	{
+		"name": "Svay Riĕng",
+		"regionCode": "20"
+	},
+	{
+		"name": "Taakaev",
+		"regionCode": "21"
+	},
+	{
+		"name": "Tbong Khmum",
+		"regionCode": "25"
+	}
+]

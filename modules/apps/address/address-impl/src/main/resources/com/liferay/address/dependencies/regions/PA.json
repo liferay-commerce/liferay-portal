@@ -1,0 +1,58 @@
+[
+	{
+		"name": "Bocas del Toro",
+		"regionCode": "1"
+	},
+	{
+		"name": "Chiriquí",
+		"regionCode": "4"
+	},
+	{
+		"name": "Coclé",
+		"regionCode": "2"
+	},
+	{
+		"name": "Colón",
+		"regionCode": "3"
+	},
+	{
+		"name": "Darién",
+		"regionCode": "5"
+	},
+	{
+		"name": "Emberá",
+		"regionCode": "EM"
+	},
+	{
+		"name": "Guna Yala",
+		"regionCode": "KY"
+	},
+	{
+		"name": "Herrera",
+		"regionCode": "6"
+	},
+	{
+		"name": "Los Santos",
+		"regionCode": "7"
+	},
+	{
+		"name": "Naso Tjër Di",
+		"regionCode": "NT"
+	},
+	{
+		"name": "Ngäbe-Buglé",
+		"regionCode": "NB"
+	},
+	{
+		"name": "Panamá",
+		"regionCode": "8"
+	},
+	{
+		"name": "Panamá Oeste",
+		"regionCode": "10"
+	},
+	{
+		"name": "Veraguas",
+		"regionCode": "9"
+	}
+]
