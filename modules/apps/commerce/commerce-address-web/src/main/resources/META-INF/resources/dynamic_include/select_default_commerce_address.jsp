@@ -92,6 +92,7 @@ int type = commerceChannelAccountEntryRelDisplayContext.getType();
 			},
 			selectDesc: 'name',
 			selectId: 'commerceAddressId',
+			selectNullable: <%= false %>,
 			selectVal:
 				'<%= (commerceChannelAccountEntryRel == null) ? '0' : commerceChannelAccountEntryRel.getClassPK() %>',
 		},

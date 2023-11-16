@@ -18,8 +18,26 @@ String paramName = baseAddressCheckoutStepDisplayContext.getParamName();
 
 long commerceAddressId = BeanParamUtil.getLong(baseAddressCheckoutStepDisplayContext.getCommerceOrder(), request, paramName);
 
-if (commerceAddressId == 0) {
+boolean validAddressId = false;
+
+for (CommerceAddress validAddress : commerceAddresses) {
+	if (commerceAddressId == validAddress.getCommerceAddressId()) {
+		validAddressId = true;
+	}
+}
+
+if (!validAddressId) {
 	commerceAddressId = baseAddressCheckoutStepDisplayContext.getDefaultCommerceAddressId(commerceContext.getCommerceChannelId());
+
+	for (CommerceAddress validAddress : commerceAddresses) {
+		if (commerceAddressId == validAddress.getCommerceAddressId()) {
+			validAddressId = true;
+		}
+	}
+}
+
+if (!validAddressId) {
+	commerceAddressId = 0;
 }
 
 String selectLabel = "choose-" + baseAddressCheckoutStepDisplayContext.getTitle();
