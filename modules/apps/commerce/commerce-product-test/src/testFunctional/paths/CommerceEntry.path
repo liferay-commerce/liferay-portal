@@ -826,6 +826,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>CHECK_ELIGIBILITY_CHECKBOX</td>
+	<td>//label[contains(.,'${key_entry}')]/input[(@checked='')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>ELIGIBILITY_RELATION_FIELD_CLEAR_BUTTON</td>
 	<td>//div[h4[contains(.,'${key_eligibilityCardTitle}')]]//input[@type='text']/..//span[contains(@class,'input-group-inset-item')]//button[contains(@class,'btn')]</td>
 	<td></td>
