@@ -28,8 +28,9 @@ public interface AccountEntryGroupConfiguration {
 	@ExtendedAttributeDefinition(requiredInput = true)
 	@Meta.AD(
 		deflt = "business,person", description = "allowed-account-types-help",
-		name = "allowed-account-types", optionLabels = {"%business", "%person"},
-		optionValues = {"business", "person"}, required = false
+		name = "allowed-account-types",
+		optionLabels = {"%business", "%person", "%supplier"},
+		optionValues = {"business", "person", "supplier"}, required = false
 	)
 	public String[] allowedTypes();
 
