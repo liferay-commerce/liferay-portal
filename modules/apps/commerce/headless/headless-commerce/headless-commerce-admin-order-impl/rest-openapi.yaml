@@ -807,6 +807,10 @@ components:
                         type: string
                     readOnly: true
                     type: array
+                virtualItems:
+                    items:
+                        $ref: "#/components/schemas/VirtualItem"
+                    type: array
             type: object
         OrderNote:
             properties:
@@ -1351,6 +1355,15 @@ components:
                 - orderTypeId
                 - termId
             type: object
+        VirtualItem:
+            properties:
+                url:
+                    example: http://www.liferay.com
+                    type: string
+                version:
+                    example: v1.0.0
+                    type: string
+            type: object
     securitySchemes:
         BasicAuth:
             scheme: basic
@@ -1374,7 +1387,7 @@ info:
         name: Commerce Team
     description:
         "Liferay Commerce Admin Order API. A Java client JAR is available for use with the group ID 'com.liferay',
-        artifact ID 'com.liferay.headless.commerce.admin.order.client', and version '4.0.34'."
+        artifact ID 'com.liferay.headless.commerce.admin.order.client', and version '4.0.35'."
     license:
         name: "Apache 2.0"
         url: "http://www.apache.org/licenses/LICENSE-2.0.html"
