@@ -193,6 +193,43 @@ public class ProductVirtualSettings implements Serializable {
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Integer maxUsages;
 
+	@Schema
+	@Valid
+	public ProductVirtualSettingsFileEntry[]
+		getProductVirtualSettingsFileEntries() {
+
+		return productVirtualSettingsFileEntries;
+	}
+
+	public void setProductVirtualSettingsFileEntries(
+		ProductVirtualSettingsFileEntry[] productVirtualSettingsFileEntries) {
+
+		this.productVirtualSettingsFileEntries =
+			productVirtualSettingsFileEntries;
+	}
+
+	@JsonIgnore
+	public void setProductVirtualSettingsFileEntries(
+		UnsafeSupplier<ProductVirtualSettingsFileEntry[], Exception>
+			productVirtualSettingsFileEntriesUnsafeSupplier) {
+
+		try {
+			productVirtualSettingsFileEntries =
+				productVirtualSettingsFileEntriesUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected ProductVirtualSettingsFileEntry[]
+		productVirtualSettingsFileEntries;
+
 	@Schema(description = "Base64 encoded sample file")
 	public String getSampleAttachment() {
 		return sampleAttachment;
@@ -528,6 +565,26 @@ public class ProductVirtualSettings implements Serializable {
 			sb.append("\"maxUsages\": ");
 
 			sb.append(maxUsages);
+		}
+
+		if (productVirtualSettingsFileEntries != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"productVirtualSettingsFileEntries\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < productVirtualSettingsFileEntries.length; i++) {
+				sb.append(String.valueOf(productVirtualSettingsFileEntries[i]));
+
+				if ((i + 1) < productVirtualSettingsFileEntries.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
 		}
 
 		if (sampleAttachment != null) {

@@ -304,6 +304,39 @@ public class SkuVirtualSettings implements Serializable {
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String sampleURL;
 
+	@Schema
+	@Valid
+	public SkuVirtualSettingsFileEntry[] getSkuVirtualSettingsFileEntries() {
+		return skuVirtualSettingsFileEntries;
+	}
+
+	public void setSkuVirtualSettingsFileEntries(
+		SkuVirtualSettingsFileEntry[] skuVirtualSettingsFileEntries) {
+
+		this.skuVirtualSettingsFileEntries = skuVirtualSettingsFileEntries;
+	}
+
+	@JsonIgnore
+	public void setSkuVirtualSettingsFileEntries(
+		UnsafeSupplier<SkuVirtualSettingsFileEntry[], Exception>
+			skuVirtualSettingsFileEntriesUnsafeSupplier) {
+
+		try {
+			skuVirtualSettingsFileEntries =
+				skuVirtualSettingsFileEntriesUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected SkuVirtualSettingsFileEntry[] skuVirtualSettingsFileEntries;
+
 	@Schema(description = "URL to download the file")
 	public String getSrc() {
 		return src;
@@ -606,6 +639,26 @@ public class SkuVirtualSettings implements Serializable {
 			sb.append(_escape(sampleURL));
 
 			sb.append("\"");
+		}
+
+		if (skuVirtualSettingsFileEntries != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"skuVirtualSettingsFileEntries\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < skuVirtualSettingsFileEntries.length; i++) {
+				sb.append(String.valueOf(skuVirtualSettingsFileEntries[i]));
+
+				if ((i + 1) < skuVirtualSettingsFileEntries.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
 		}
 
 		if (src != null) {

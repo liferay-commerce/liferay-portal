@@ -392,6 +392,19 @@ public abstract class BaseSkuVirtualSettingsResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals(
+					"skuVirtualSettingsFileEntries",
+					additionalAssertFieldName)) {
+
+				if (skuVirtualSettings.getSkuVirtualSettingsFileEntries() ==
+						null) {
+
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("src", additionalAssertFieldName)) {
 				if (skuVirtualSettings.getSrc() == null) {
 					valid = false;
@@ -663,6 +676,21 @@ public abstract class BaseSkuVirtualSettingsResourceTestCase {
 				if (!Objects.deepEquals(
 						skuVirtualSettings1.getSampleURL(),
 						skuVirtualSettings2.getSampleURL())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"skuVirtualSettingsFileEntries",
+					additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						skuVirtualSettings1.getSkuVirtualSettingsFileEntries(),
+						skuVirtualSettings2.
+							getSkuVirtualSettingsFileEntries())) {
 
 					return false;
 				}
@@ -1055,6 +1083,11 @@ public abstract class BaseSkuVirtualSettingsResourceTestCase {
 			}
 
 			return sb.toString();
+		}
+
+		if (entityFieldName.equals("skuVirtualSettingsFileEntries")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
 		}
 
 		if (entityFieldName.equals("src")) {
