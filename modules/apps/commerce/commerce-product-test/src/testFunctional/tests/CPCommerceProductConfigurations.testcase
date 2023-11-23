@@ -1060,7 +1060,7 @@ definition {
 	@priority = 5
 	test CanLocaleBePrependedForProductOnSiteMapPageWhenVirtualHostIsEnabled {
 		property custom.properties = "virtual.hosts.valid.hosts=localhost,127.0.0.1,www.able.com";
-		property portal.acceptance = "true";
+		property portal.acceptance = "FIX";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -1138,10 +1138,10 @@ definition {
 		task ("And the virtual host signs in to the page") {
 			User.logoutPG();
 
-			User.firstLoginUI(
+			User.firstLoginPG(
 				password = "test",
-				specificURL = "http://www.able.com:8080",
-				userEmailAddress = "test@liferay.com");
+				userEmailAddress = "test@www.able.com",
+				virtualHostsURL = "http://www.able.com:8080");
 		}
 
 		task ("And Uuid of the product is acquired") {
