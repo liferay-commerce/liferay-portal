@@ -71,11 +71,11 @@ public class CommerceVirtualOrderItemModelImpl
 		{"companyId", Types.BIGINT}, {"userId", Types.BIGINT},
 		{"userName", Types.VARCHAR}, {"createDate", Types.TIMESTAMP},
 		{"modifiedDate", Types.TIMESTAMP},
-		{"commerceOrderItemId", Types.BIGINT}, {"fileEntryId", Types.BIGINT},
-		{"url", Types.VARCHAR}, {"activationStatus", Types.INTEGER},
-		{"duration", Types.BIGINT}, {"usages", Types.INTEGER},
-		{"maxUsages", Types.INTEGER}, {"active_", Types.BOOLEAN},
-		{"startDate", Types.TIMESTAMP}, {"endDate", Types.TIMESTAMP}
+		{"commerceOrderItemId", Types.BIGINT},
+		{"activationStatus", Types.INTEGER}, {"duration", Types.BIGINT},
+		{"usages", Types.INTEGER}, {"maxUsages", Types.INTEGER},
+		{"active_", Types.BOOLEAN}, {"startDate", Types.TIMESTAMP},
+		{"endDate", Types.TIMESTAMP}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -92,8 +92,6 @@ public class CommerceVirtualOrderItemModelImpl
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("commerceOrderItemId", Types.BIGINT);
-		TABLE_COLUMNS_MAP.put("fileEntryId", Types.BIGINT);
-		TABLE_COLUMNS_MAP.put("url", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("activationStatus", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("duration", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("usages", Types.INTEGER);
@@ -104,7 +102,7 @@ public class CommerceVirtualOrderItemModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table CommerceVirtualOrderItem (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,commerceVirtualOrderItemId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,commerceOrderItemId LONG,fileEntryId LONG,url VARCHAR(75) null,activationStatus INTEGER,duration LONG,usages INTEGER,maxUsages INTEGER,active_ BOOLEAN,startDate DATE null,endDate DATE null)";
+		"create table CommerceVirtualOrderItem (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,commerceVirtualOrderItemId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,commerceOrderItemId LONG,activationStatus INTEGER,duration LONG,usages INTEGER,maxUsages INTEGER,active_ BOOLEAN,startDate DATE null,endDate DATE null)";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table CommerceVirtualOrderItem";
@@ -287,10 +285,6 @@ public class CommerceVirtualOrderItemModelImpl
 				"commerceOrderItemId",
 				CommerceVirtualOrderItem::getCommerceOrderItemId);
 			attributeGetterFunctions.put(
-				"fileEntryId", CommerceVirtualOrderItem::getFileEntryId);
-			attributeGetterFunctions.put(
-				"url", CommerceVirtualOrderItem::getUrl);
-			attributeGetterFunctions.put(
 				"activationStatus",
 				CommerceVirtualOrderItem::getActivationStatus);
 			attributeGetterFunctions.put(
@@ -364,14 +358,6 @@ public class CommerceVirtualOrderItemModelImpl
 				"commerceOrderItemId",
 				(BiConsumer<CommerceVirtualOrderItem, Long>)
 					CommerceVirtualOrderItem::setCommerceOrderItemId);
-			attributeSetterBiConsumers.put(
-				"fileEntryId",
-				(BiConsumer<CommerceVirtualOrderItem, Long>)
-					CommerceVirtualOrderItem::setFileEntryId);
-			attributeSetterBiConsumers.put(
-				"url",
-				(BiConsumer<CommerceVirtualOrderItem, String>)
-					CommerceVirtualOrderItem::setUrl);
 			attributeSetterBiConsumers.put(
 				"activationStatus",
 				(BiConsumer<CommerceVirtualOrderItem, Integer>)
@@ -629,41 +615,6 @@ public class CommerceVirtualOrderItemModelImpl
 
 	@JSON
 	@Override
-	public long getFileEntryId() {
-		return _fileEntryId;
-	}
-
-	@Override
-	public void setFileEntryId(long fileEntryId) {
-		if (_columnOriginalValues == Collections.EMPTY_MAP) {
-			_setColumnOriginalValues();
-		}
-
-		_fileEntryId = fileEntryId;
-	}
-
-	@JSON
-	@Override
-	public String getUrl() {
-		if (_url == null) {
-			return "";
-		}
-		else {
-			return _url;
-		}
-	}
-
-	@Override
-	public void setUrl(String url) {
-		if (_columnOriginalValues == Collections.EMPTY_MAP) {
-			_setColumnOriginalValues();
-		}
-
-		_url = url;
-	}
-
-	@JSON
-	@Override
 	public int getActivationStatus() {
 		return _activationStatus;
 	}
@@ -850,8 +801,6 @@ public class CommerceVirtualOrderItemModelImpl
 		commerceVirtualOrderItemImpl.setModifiedDate(getModifiedDate());
 		commerceVirtualOrderItemImpl.setCommerceOrderItemId(
 			getCommerceOrderItemId());
-		commerceVirtualOrderItemImpl.setFileEntryId(getFileEntryId());
-		commerceVirtualOrderItemImpl.setUrl(getUrl());
 		commerceVirtualOrderItemImpl.setActivationStatus(getActivationStatus());
 		commerceVirtualOrderItemImpl.setDuration(getDuration());
 		commerceVirtualOrderItemImpl.setUsages(getUsages());
@@ -890,10 +839,6 @@ public class CommerceVirtualOrderItemModelImpl
 			this.<Date>getColumnOriginalValue("modifiedDate"));
 		commerceVirtualOrderItemImpl.setCommerceOrderItemId(
 			this.<Long>getColumnOriginalValue("commerceOrderItemId"));
-		commerceVirtualOrderItemImpl.setFileEntryId(
-			this.<Long>getColumnOriginalValue("fileEntryId"));
-		commerceVirtualOrderItemImpl.setUrl(
-			this.<String>getColumnOriginalValue("url"));
 		commerceVirtualOrderItemImpl.setActivationStatus(
 			this.<Integer>getColumnOriginalValue("activationStatus"));
 		commerceVirtualOrderItemImpl.setDuration(
@@ -1038,16 +983,6 @@ public class CommerceVirtualOrderItemModelImpl
 		commerceVirtualOrderItemCacheModel.commerceOrderItemId =
 			getCommerceOrderItemId();
 
-		commerceVirtualOrderItemCacheModel.fileEntryId = getFileEntryId();
-
-		commerceVirtualOrderItemCacheModel.url = getUrl();
-
-		String url = commerceVirtualOrderItemCacheModel.url;
-
-		if ((url != null) && (url.length() == 0)) {
-			commerceVirtualOrderItemCacheModel.url = null;
-		}
-
 		commerceVirtualOrderItemCacheModel.activationStatus =
 			getActivationStatus();
 
@@ -1151,8 +1086,6 @@ public class CommerceVirtualOrderItemModelImpl
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
 	private long _commerceOrderItemId;
-	private long _fileEntryId;
-	private String _url;
 	private int _activationStatus;
 	private long _duration;
 	private int _usages;
@@ -1202,8 +1135,6 @@ public class CommerceVirtualOrderItemModelImpl
 		_columnOriginalValues.put("createDate", _createDate);
 		_columnOriginalValues.put("modifiedDate", _modifiedDate);
 		_columnOriginalValues.put("commerceOrderItemId", _commerceOrderItemId);
-		_columnOriginalValues.put("fileEntryId", _fileEntryId);
-		_columnOriginalValues.put("url", _url);
 		_columnOriginalValues.put("activationStatus", _activationStatus);
 		_columnOriginalValues.put("duration", _duration);
 		_columnOriginalValues.put("usages", _usages);
@@ -1255,23 +1186,19 @@ public class CommerceVirtualOrderItemModelImpl
 
 		columnBitmasks.put("commerceOrderItemId", 512L);
 
-		columnBitmasks.put("fileEntryId", 1024L);
+		columnBitmasks.put("activationStatus", 1024L);
 
-		columnBitmasks.put("url", 2048L);
+		columnBitmasks.put("duration", 2048L);
 
-		columnBitmasks.put("activationStatus", 4096L);
+		columnBitmasks.put("usages", 4096L);
 
-		columnBitmasks.put("duration", 8192L);
+		columnBitmasks.put("maxUsages", 8192L);
 
-		columnBitmasks.put("usages", 16384L);
+		columnBitmasks.put("active_", 16384L);
 
-		columnBitmasks.put("maxUsages", 32768L);
+		columnBitmasks.put("startDate", 32768L);
 
-		columnBitmasks.put("active_", 65536L);
-
-		columnBitmasks.put("startDate", 131072L);
-
-		columnBitmasks.put("endDate", 262144L);
+		columnBitmasks.put("endDate", 65536L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}

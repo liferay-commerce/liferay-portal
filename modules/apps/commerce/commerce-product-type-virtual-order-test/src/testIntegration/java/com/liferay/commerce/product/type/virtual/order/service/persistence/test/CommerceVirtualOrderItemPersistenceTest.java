@@ -140,10 +140,6 @@ public class CommerceVirtualOrderItemPersistenceTest {
 		newCommerceVirtualOrderItem.setCommerceOrderItemId(
 			RandomTestUtil.nextLong());
 
-		newCommerceVirtualOrderItem.setFileEntryId(RandomTestUtil.nextLong());
-
-		newCommerceVirtualOrderItem.setUrl(RandomTestUtil.randomString());
-
 		newCommerceVirtualOrderItem.setActivationStatus(
 			RandomTestUtil.nextInt());
 
@@ -200,12 +196,6 @@ public class CommerceVirtualOrderItemPersistenceTest {
 		Assert.assertEquals(
 			existingCommerceVirtualOrderItem.getCommerceOrderItemId(),
 			newCommerceVirtualOrderItem.getCommerceOrderItemId());
-		Assert.assertEquals(
-			existingCommerceVirtualOrderItem.getFileEntryId(),
-			newCommerceVirtualOrderItem.getFileEntryId());
-		Assert.assertEquals(
-			existingCommerceVirtualOrderItem.getUrl(),
-			newCommerceVirtualOrderItem.getUrl());
 		Assert.assertEquals(
 			existingCommerceVirtualOrderItem.getActivationStatus(),
 			newCommerceVirtualOrderItem.getActivationStatus());
@@ -298,10 +288,10 @@ public class CommerceVirtualOrderItemPersistenceTest {
 			"CommerceVirtualOrderItem", "mvccVersion", true, "uuid", true,
 			"commerceVirtualOrderItemId", true, "groupId", true, "companyId",
 			true, "userId", true, "userName", true, "createDate", true,
-			"modifiedDate", true, "commerceOrderItemId", true, "fileEntryId",
-			true, "url", true, "activationStatus", true, "duration", true,
-			"usages", true, "maxUsages", true, "active", true, "startDate",
-			true, "endDate", true);
+			"modifiedDate", true, "commerceOrderItemId", true,
+			"activationStatus", true, "duration", true, "usages", true,
+			"maxUsages", true, "active", true, "startDate", true, "endDate",
+			true);
 	}
 
 	@Test
@@ -643,10 +633,6 @@ public class CommerceVirtualOrderItemPersistenceTest {
 
 		commerceVirtualOrderItem.setCommerceOrderItemId(
 			RandomTestUtil.nextLong());
-
-		commerceVirtualOrderItem.setFileEntryId(RandomTestUtil.nextLong());
-
-		commerceVirtualOrderItem.setUrl(RandomTestUtil.randomString());
 
 		commerceVirtualOrderItem.setActivationStatus(RandomTestUtil.nextInt());
 

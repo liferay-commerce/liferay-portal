@@ -70,7 +70,7 @@ public class CommerceVirtualOrderItemCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(39);
+		StringBundler sb = new StringBundler(35);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -92,10 +92,6 @@ public class CommerceVirtualOrderItemCacheModel
 		sb.append(modifiedDate);
 		sb.append(", commerceOrderItemId=");
 		sb.append(commerceOrderItemId);
-		sb.append(", fileEntryId=");
-		sb.append(fileEntryId);
-		sb.append(", url=");
-		sb.append(url);
 		sb.append(", activationStatus=");
 		sb.append(activationStatus);
 		sb.append(", duration=");
@@ -159,15 +155,6 @@ public class CommerceVirtualOrderItemCacheModel
 
 		commerceVirtualOrderItemImpl.setCommerceOrderItemId(
 			commerceOrderItemId);
-		commerceVirtualOrderItemImpl.setFileEntryId(fileEntryId);
-
-		if (url == null) {
-			commerceVirtualOrderItemImpl.setUrl("");
-		}
-		else {
-			commerceVirtualOrderItemImpl.setUrl(url);
-		}
-
 		commerceVirtualOrderItemImpl.setActivationStatus(activationStatus);
 		commerceVirtualOrderItemImpl.setDuration(duration);
 		commerceVirtualOrderItemImpl.setUsages(usages);
@@ -210,9 +197,6 @@ public class CommerceVirtualOrderItemCacheModel
 		modifiedDate = objectInput.readLong();
 
 		commerceOrderItemId = objectInput.readLong();
-
-		fileEntryId = objectInput.readLong();
-		url = objectInput.readUTF();
 
 		activationStatus = objectInput.readInt();
 
@@ -258,15 +242,6 @@ public class CommerceVirtualOrderItemCacheModel
 
 		objectOutput.writeLong(commerceOrderItemId);
 
-		objectOutput.writeLong(fileEntryId);
-
-		if (url == null) {
-			objectOutput.writeUTF("");
-		}
-		else {
-			objectOutput.writeUTF(url);
-		}
-
 		objectOutput.writeInt(activationStatus);
 
 		objectOutput.writeLong(duration);
@@ -290,8 +265,6 @@ public class CommerceVirtualOrderItemCacheModel
 	public long createDate;
 	public long modifiedDate;
 	public long commerceOrderItemId;
-	public long fileEntryId;
-	public String url;
 	public int activationStatus;
 	public long duration;
 	public int usages;

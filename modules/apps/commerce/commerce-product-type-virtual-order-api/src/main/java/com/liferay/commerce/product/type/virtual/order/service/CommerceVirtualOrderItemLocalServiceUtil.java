@@ -54,14 +54,17 @@ public class CommerceVirtualOrderItemLocalServiceUtil {
 	}
 
 	public static CommerceVirtualOrderItem addCommerceVirtualOrderItem(
-			long commerceOrderItemId, long fileEntryId, String url,
+			long commerceOrderItemId,
+			List
+				<com.liferay.commerce.product.type.virtual.model.
+					CPDVirtualSettingFileEntry> cpdVirtualSettingFileEntries,
 			int activationStatus, long duration, int usages, int maxUsages,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws PortalException {
 
 		return getService().addCommerceVirtualOrderItem(
-			commerceOrderItemId, fileEntryId, url, activationStatus, duration,
-			usages, maxUsages, serviceContext);
+			commerceOrderItemId, cpdVirtualSettingFileEntries, activationStatus,
+			duration, usages, maxUsages, serviceContext);
 	}
 
 	public static CommerceVirtualOrderItem addCommerceVirtualOrderItem(
@@ -397,10 +400,13 @@ public class CommerceVirtualOrderItemLocalServiceUtil {
 		return getService().getExportActionableDynamicQuery(portletDataContext);
 	}
 
-	public static java.io.File getFile(long commerceVirtualOrderItemId)
+	public static java.io.File getFile(
+			long commerceVirtualOrderItemId,
+			long commerceVirtualOrderItemFileEntryId)
 		throws Exception {
 
-		return getService().getFile(commerceVirtualOrderItemId);
+		return getService().getFile(
+			commerceVirtualOrderItemId, commerceVirtualOrderItemFileEntryId);
 	}
 
 	public static
@@ -462,14 +468,13 @@ public class CommerceVirtualOrderItemLocalServiceUtil {
 	}
 
 	public static CommerceVirtualOrderItem updateCommerceVirtualOrderItem(
-			long commerceVirtualOrderItemId, long fileEntryId, String url,
-			int activationStatus, long duration, int usages, int maxUsages,
-			boolean active)
+			long commerceVirtualOrderItemId, int activationStatus,
+			long duration, int usages, int maxUsages, boolean active)
 		throws PortalException {
 
 		return getService().updateCommerceVirtualOrderItem(
-			commerceVirtualOrderItemId, fileEntryId, url, activationStatus,
-			duration, usages, maxUsages, active);
+			commerceVirtualOrderItemId, activationStatus, duration, usages,
+			maxUsages, active);
 	}
 
 	public static CommerceVirtualOrderItem updateCommerceVirtualOrderItemDates(

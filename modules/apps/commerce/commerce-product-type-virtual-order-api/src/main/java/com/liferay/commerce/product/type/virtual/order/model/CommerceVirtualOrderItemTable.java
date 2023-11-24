@@ -54,11 +54,6 @@ public class CommerceVirtualOrderItemTable
 		commerceOrderItemId = createColumn(
 			"commerceOrderItemId", Long.class, Types.BIGINT,
 			Column.FLAG_DEFAULT);
-	public final Column<CommerceVirtualOrderItemTable, Long> fileEntryId =
-		createColumn(
-			"fileEntryId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
-	public final Column<CommerceVirtualOrderItemTable, String> url =
-		createColumn("url", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<CommerceVirtualOrderItemTable, Integer>
 		activationStatus = createColumn(
 			"activationStatus", Integer.class, Types.INTEGER,
