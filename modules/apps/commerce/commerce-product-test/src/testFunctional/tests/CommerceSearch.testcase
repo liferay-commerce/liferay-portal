@@ -112,9 +112,7 @@ definition {
 		task ("And searches like a product 'U-Joint' in the global search tab") {
 			Click(locator1 = "AppBuilder#SEARCH_BUTTON");
 
-			Type(
-				locator1 = "Search#GLOBAL_SEARCH_BAR",
-				value1 = "U-Joint");
+			FrontStore.searchWithGlobalSearch(searchTerm = "U-Joint");
 		}
 
 		task ("Then the search suggestions are translated into the correct language Japanese format set by the admin before") {
@@ -184,10 +182,7 @@ definition {
 
 			Click(locator1 = "AppBuilder#SEARCH_BUTTON");
 
-			Type(
-				key_text = "Search",
-				locator1 = "TextInput#CUSTOM_CANONICAL_URL_ENABLED",
-				value1 = "buyer@liferay.com");
+			FrontStore.searchWithGlobalSearch(searchTerm = "buyer@liferay.com");
 		}
 
 		task ("Then the buyer can see the active order in Pending Orders page") {
@@ -209,10 +204,7 @@ definition {
 
 			Click(locator1 = "AppBuilder#SEARCH_BUTTON");
 
-			Type(
-				key_text = "Search",
-				locator1 = "TextInput#CUSTOM_CANONICAL_URL_ENABLED",
-				value1 = "buyer@liferay.com");
+			FrontStore.searchWithGlobalSearch(searchTerm = "buyer@liferay.com");
 		}
 
 		task ("Then the buyer can see the other order in Placed Orders page with status Pending") {
@@ -301,11 +293,7 @@ definition {
 
 			Click(locator1 = "AppBuilder#SEARCH_BUTTON");
 
-			SelectFrameTop();
-
-			Type.sendKeys(
-				locator1 = "Search#GLOBAL_SEARCH_BAR",
-				value1 = "Sensor ABS");
+			FrontStore.searchWithGlobalSearch(searchTerm = "Sensor ABS");
 		}
 
 		task ("Then the short description is shown in pt-BR") {
@@ -370,11 +358,7 @@ definition {
 
 		Click(locator1 = "AppBuilder#SEARCH_BUTTON");
 
-		SelectFrameTop();
-
-		Type(
-			locator1 = "Search#GLOBAL_SEARCH_BAR",
-			value1 = "U-Joint");
+		FrontStore.searchWithGlobalSearch(searchTerm = "U-Joint");
 
 		Click(
 			key_entryName = "Search U-Joint in All Content",
@@ -408,9 +392,7 @@ definition {
 
 		Click(locator1 = "AppBuilder#SEARCH_BUTTON");
 
-		Type(
-			locator1 = "Search#GLOBAL_SEARCH_BAR",
-			value1 = "U-Joint");
+		FrontStore.searchWithGlobalSearch(searchTerm = "U-Joint");
 
 		Click(
 			key_entryName = "Search U-Joint in Catalog",
@@ -451,11 +433,7 @@ definition {
 
 		Click(locator1 = "AppBuilder#SEARCH_BUTTON");
 
-		SelectFrameTop();
-
-		Type.sendKeys(
-			locator1 = "Search#GLOBAL_SEARCH_BAR",
-			value1 = "Exhaust System");
+		FrontStore.searchWithGlobalSearch(searchTerm = "Exhaust System");
 
 		for (var productName : list "Lift Support,Muffler/Resonators,Exhaust Clamps,Catalytic Converters") {
 			AssertElementPresent(
@@ -463,11 +441,7 @@ definition {
 				locator1 = "Search#GLOBAL_SEARCH_SUGGESTION");
 		}
 
-		Click(locator1 = "Search#GLOBAL_SEARCH_CLEAN_BUTTON");
-
-		Type.sendKeys(
-			locator1 = "Search#GLOBAL_SEARCH_BAR",
-			value1 = "Exhaust System, Engine");
+		FrontStore.searchWithGlobalSearch(searchTerm = "Exhaust System, Engine");
 
 		for (var productName : list "Lift Support,Muffler/Resonators,Exhaust Clamps,Catalytic Converters,Engine Mount") {
 			AssertElementPresent(
@@ -489,21 +463,13 @@ definition {
 
 		Click(locator1 = "AppBuilder#SEARCH_BUTTON");
 
-		SelectFrameTop();
-
-		Type(
-			locator1 = "Search#GLOBAL_SEARCH_BAR",
-			value1 = "MIN93015");
+		FrontStore.searchWithGlobalSearch(searchTerm = "MIN93015");
 
 		AssertElementPresent(
 			key_suggestionName = "ABS Sensor",
 			locator1 = "Search#GLOBAL_SEARCH_SUGGESTION");
 
-		Click(locator1 = "Search#GLOBAL_SEARCH_CLEAN_BUTTON");
-
-		Type.sendKeys(
-			locator1 = "Search#GLOBAL_SEARCH_BAR",
-			value1 = "MIN93015 MIN55861");
+		FrontStore.searchWithGlobalSearch(searchTerm = "MIN93015 MIN55861");
 
 		for (var productName : list "ABS Sensor,U-Joint") {
 			AssertElementPresent(
@@ -525,21 +491,13 @@ definition {
 
 		Click(locator1 = "AppBuilder#SEARCH_BUTTON");
 
-		SelectFrameTop();
-
-		Type.sendKeys(
-			locator1 = "Search#GLOBAL_SEARCH_BAR",
-			value1 = "Plastic");
+		FrontStore.searchWithGlobalSearch(searchTerm = "Plastic");
 
 		AssertElementPresent(
 			key_suggestionName = "Timing Chain Tensioner",
 			locator1 = "Search#GLOBAL_SEARCH_SUGGESTION");
 
-		Click(locator1 = "Search#GLOBAL_SEARCH_CLEAN_BUTTON");
-
-		Type.sendKeys(
-			locator1 = "Search#GLOBAL_SEARCH_BAR",
-			value1 = "Plastic, Ceramic");
+		FrontStore.searchWithGlobalSearch(searchTerm = "Plastic, Ceramic");
 
 		for (var productName : list "Timing Chain Tensioner,Premium Brake Pads") {
 			AssertElementPresent(
@@ -571,11 +529,7 @@ definition {
 
 		Click(locator1 = "AppBuilder#SEARCH_BUTTON");
 
-		SelectFrameTop();
-
-		Type.sendKeys(
-			locator1 = "Search#GLOBAL_SEARCH_BAR",
-			value1 = "ABS Sensor");
+		FrontStore.searchWithGlobalSearch(searchTerm = "ABS Sensor");
 
 		for (var productName : list "ABS Sensor,Wear Sensors") {
 			AssertElementPresent(
@@ -583,25 +537,17 @@ definition {
 				locator1 = "Search#GLOBAL_SEARCH_SUGGESTION");
 		}
 
-		Click(locator1 = "Search#GLOBAL_SEARCH_CLEAN_BUTTON");
-
-		Type.sendKeys(
-			locator1 = "Search#GLOBAL_SEARCH_BAR",
-			value1 = "'ABS Sensor'");
+		FrontStore.searchWithGlobalSearch(searchTerm = "'ABS Sensor'");
 
 		for (var productName : list "ABS Sensor,Wear Sensors") {
 			AssertElementPresent(
 				key_suggestionName = ${productName},
 				locator1 = "Search#GLOBAL_SEARCH_SUGGESTION");
 		}
-
-		Click(locator1 = "Search#GLOBAL_SEARCH_CLEAN_BUTTON");
 
 		var searchTerm = '''"ABS Sensor"''';
 
-		Type.sendKeys(
-			locator1 = "Search#GLOBAL_SEARCH_BAR",
-			value1 = ${searchTerm});
+		FrontStore.searchWithGlobalSearch(searchTerm = ${searchTerm});
 
 		AssertElementPresent(
 			key_suggestionName = "ABS Sensor",
@@ -678,19 +624,13 @@ definition {
 
 		Click(locator1 = "AppBuilder#SEARCH_BUTTON");
 
-		Type(
-			locator1 = "Search#GLOBAL_SEARCH_BAR",
-			value1 = ${orderId});
+		FrontStore.searchWithGlobalSearch(searchTerm = ${orderId});
 
 		AssertElementPresent(
 			key_value = ${orderId},
 			locator1 = "CommerceEntry#SUGGESTION_ACTIVE_ORDER_KEY");
 
-		Click(locator1 = "Button#SEARCH_CLOSE");
-
-		Type(
-			locator1 = "Search#GLOBAL_SEARCH_BAR",
-			value1 = "buyer@liferay.com");
+		FrontStore.searchWithGlobalSearch(searchTerm = "buyer@liferay.com");
 
 		AssertElementPresent(
 			key_value = ${orderId},
