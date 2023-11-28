@@ -569,6 +569,19 @@ definition {
 			locator1 = "CommerceAccelerators#QUICK_ADD_TO_CART_SEARCH_RESULT");
 	}
 
+	@summary = "In the store-front, search using the Global Search"
+	macro searchWithGlobalSearch(searchTerm = null) {
+		if (IsElementPresent(locator1 = "Search#GLOBAL_SEARCH_CLEAN_BUTTON")) {
+			Click(locator1 = "Search#GLOBAL_SEARCH_CLEAN_BUTTON");
+		}
+
+		Type(
+			locator1 = "Search#GLOBAL_SEARCH_BAR",
+			value1 = ${searchTerm});
+
+		WaitForElementNotPresent(locator1 = "Search#GLOBAL_SEARCH_SUGGESTIONS_LOADING");
+	}
+
 	@summary = "Default summary"
 	macro selectAssociatedFSOptionsValue(fsOptionValue = null, fsOptionName = null) {
 		Select(
