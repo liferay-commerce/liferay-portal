@@ -67,7 +67,7 @@
 </tr>
 <tr>
 	<td>GLOBAL_SEARCH_CLEAN_BUTTON</td>
-	<td>//button[contains(@class, 'commerce-search__button')]</td>
+	<td>//button[@aria-label='Clear Search' and not(contains(@class,'is-ninja'))]</td>
 	<td></td>
 </tr>
 <tr>
@@ -83,6 +83,11 @@
 <tr>
 	<td>GLOBAL_SEARCH_SUGGESTION_PRODUCT_DESCRIPTION</td>
 	<td>//a[contains(@class,'commerce-suggestions__item')]//p[text()='${key_suggestionName}']/following-sibling::p[text()='${key_suggestionDescription}']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>GLOBAL_SEARCH_SUGGESTIONS_LOADING</td>
+	<td>//div[@class='commerce-suggestions is-loading']</td>
 	<td></td>
 </tr>
 <tr>
