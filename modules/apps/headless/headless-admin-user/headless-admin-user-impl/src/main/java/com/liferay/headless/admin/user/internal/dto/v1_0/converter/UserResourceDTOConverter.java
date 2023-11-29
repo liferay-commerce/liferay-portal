@@ -225,6 +225,11 @@ public class UserResourceDTOConverter
 						Locale locale = LocaleUtil.fromLanguageId(
 							user.getLanguageId());
 
+						if (dtoConverterContext.getLocale() == null) {
+							return locale.getDisplayName(
+								LocaleUtil.getDefault());
+						}
+
 						return locale.getDisplayName(
 							dtoConverterContext.getLocale());
 					});
