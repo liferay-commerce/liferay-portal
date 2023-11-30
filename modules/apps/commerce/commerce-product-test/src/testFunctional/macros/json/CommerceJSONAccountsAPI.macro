@@ -694,25 +694,14 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro getAccountFieldByAccountName(field = null, accountName = null) {
-		Variables.assertDefined(parameterList = ${accountName});
-
-		var responseBody = CommerceJSONAccountsAPI._getAccounts();
-
-		var fieldValue = JSONUtil.getWithJSONPath(${responseBody}, "$..[?(@['name'] == '${accountName}')]['${field}']");
-
-		return ${fieldValue};
-	}
-
-	@summary = "Default summary"
-	macro _importRoles() {
+	macro _importRoles(contentJSON = null) {
 		var baseURL = ${baseURL};
 
 		if (!(isSet(baseURL))) {
 			var baseURL = JSONCompany.getPortalURL();
 		}
 
-		var payload = "${contentJSON}";
+		var payload = ${contentJSON};
 
 		var curl = '''
 			${baseURL}/o/headless-batch-engine/v1.0/import-task/com.liferay.headless.admin.user.dto.v1_0.Role \
@@ -723,6 +712,17 @@ definition {
 		''';
 
 		JSONCurlUtil.post(${curl});
+	}
+
+	@summary = "Default summary"
+	macro getAccountFieldByAccountName(field = null, accountName = null) {
+		Variables.assertDefined(parameterList = ${accountName});
+
+		var responseBody = CommerceJSONAccountsAPI._getAccounts();
+
+		var fieldValue = JSONUtil.getWithJSONPath(${responseBody}, "$..[?(@['name'] == '${accountName}')]['${field}']");
+
+		return ${fieldValue};
 	}
 
 }
