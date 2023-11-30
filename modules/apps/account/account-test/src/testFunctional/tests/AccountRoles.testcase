@@ -1532,4 +1532,47 @@ definition {
 		}
 	}
 
+	@description = "COMMERCE-13000. As an admin verify that is possible to import the roles from a JSON file"
+	@priority = 5
+	test CanImportRolesViaAPI {
+		property portal.acceptance = "true";
+
+		task ("Given the admin already has the JSON file with the role") {
+			var projectDir = PropsUtil.get("project.dir");
+			var fileDir = "modules/apps/commerce/commerce-product-test/src/testFunctional/tests/dependencies";
+
+			var contentJSON = FileUtil.read("${projectDir}/${fileDir}/commerce_test_role.txt");
+		}
+
+		task ("And the admin calls the API for the import") {
+			CommerceJSONAccountsAPI._importRoles(contentJSON = "${contentJSON}");
+		}
+
+		task ("Then the role is imported") {
+			Role.openRolesAdmin();
+			
+			RoleNavigator.gotoRoleType();
+
+			LexiconEntry.gotoEntry(rowEntry = "New Regular Test Role");
+
+			Navigator.gotoNavItem(navItem = "Define Permissions");
+
+			Role.viewPermissionCP(
+				permissionDefinitionValue = "Add Account Entry",
+				permissionNavigationValue = "Portal");
+
+			Role.viewPermissionCP(
+				permissionDefinitionValue = "Add Account Group",
+				permissionNavigationValue = "Portal");
+
+			Role.viewPermissionCP(
+				permissionDefinitionValue = "Add General Announcements",
+				permissionNavigationValue = "Portal");
+
+			Role.viewPermissionCP(
+				permissionDefinitionValue = "Add License",
+				permissionNavigationValue = "Portal");
+		}
+	}
+
 }
