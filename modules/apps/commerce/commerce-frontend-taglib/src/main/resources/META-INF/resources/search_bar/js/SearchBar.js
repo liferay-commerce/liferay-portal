@@ -35,18 +35,21 @@ export default function SearchBar() {
 	}, [active]);
 
 	useEffect(() => {
-		Liferay.fire('search-term-update', {
-			term: query,
-		});
+		if (query) {
+			Liferay.fire('search-term-update', {
+				term: query,
+			});
+		}
 	}, [query]);
 
 	const onSubmit = useCallback(
 		(event) => {
 			event.preventDefault();
-
-			Liferay.fire('search-term-submit', {
-				term: query,
-			});
+			if (query) {
+				Liferay.fire('search-term-submit', {
+					term: query,
+				});
+			}
 		},
 		[query]
 	);
