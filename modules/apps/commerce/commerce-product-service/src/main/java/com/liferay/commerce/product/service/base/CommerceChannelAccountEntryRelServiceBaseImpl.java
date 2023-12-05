@@ -8,6 +8,7 @@ package com.liferay.commerce.product.service.base;
 import com.liferay.commerce.product.model.CommerceChannelAccountEntryRel;
 import com.liferay.commerce.product.service.CommerceChannelAccountEntryRelService;
 import com.liferay.commerce.product.service.CommerceChannelAccountEntryRelServiceUtil;
+import com.liferay.commerce.product.service.persistence.CommerceChannelAccountEntryRelFinder;
 import com.liferay.commerce.product.service.persistence.CommerceChannelAccountEntryRelPersistence;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.db.DB;
@@ -123,6 +124,10 @@ public abstract class CommerceChannelAccountEntryRelServiceBaseImpl
 	@Reference
 	protected CommerceChannelAccountEntryRelPersistence
 		commerceChannelAccountEntryRelPersistence;
+
+	@Reference
+	protected CommerceChannelAccountEntryRelFinder
+		commerceChannelAccountEntryRelFinder;
 
 	@Reference
 	protected com.liferay.counter.kernel.service.CounterLocalService

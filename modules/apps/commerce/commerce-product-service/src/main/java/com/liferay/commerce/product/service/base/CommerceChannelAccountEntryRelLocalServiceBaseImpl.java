@@ -8,6 +8,7 @@ package com.liferay.commerce.product.service.base;
 import com.liferay.commerce.product.model.CommerceChannelAccountEntryRel;
 import com.liferay.commerce.product.service.CommerceChannelAccountEntryRelLocalService;
 import com.liferay.commerce.product.service.CommerceChannelAccountEntryRelLocalServiceUtil;
+import com.liferay.commerce.product.service.persistence.CommerceChannelAccountEntryRelFinder;
 import com.liferay.commerce.product.service.persistence.CommerceChannelAccountEntryRelPersistence;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.sql.dsl.query.DSLQuery;
@@ -503,6 +504,10 @@ public abstract class CommerceChannelAccountEntryRelLocalServiceBaseImpl
 	@Reference
 	protected CommerceChannelAccountEntryRelPersistence
 		commerceChannelAccountEntryRelPersistence;
+
+	@Reference
+	protected CommerceChannelAccountEntryRelFinder
+		commerceChannelAccountEntryRelFinder;
 
 	@Reference
 	protected com.liferay.counter.kernel.service.CounterLocalService
