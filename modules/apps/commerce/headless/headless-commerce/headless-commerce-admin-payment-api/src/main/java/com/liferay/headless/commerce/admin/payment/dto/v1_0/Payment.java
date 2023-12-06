@@ -684,6 +684,34 @@ public class Payment implements Serializable {
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String relatedItemName;
 
+	@Schema(example = "Order")
+	public String getRelatedItemNameLabel() {
+		return relatedItemNameLabel;
+	}
+
+	public void setRelatedItemNameLabel(String relatedItemNameLabel) {
+		this.relatedItemNameLabel = relatedItemNameLabel;
+	}
+
+	@JsonIgnore
+	public void setRelatedItemNameLabel(
+		UnsafeSupplier<String, Exception> relatedItemNameLabelUnsafeSupplier) {
+
+		try {
+			relatedItemNameLabel = relatedItemNameLabelUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String relatedItemNameLabel;
+
 	@Schema
 	public String getTransactionCode() {
 		return transactionCode;
@@ -1064,6 +1092,20 @@ public class Payment implements Serializable {
 			sb.append("\"");
 
 			sb.append(_escape(relatedItemName));
+
+			sb.append("\"");
+		}
+
+		if (relatedItemNameLabel != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"relatedItemNameLabel\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(relatedItemNameLabel));
 
 			sb.append("\"");
 		}

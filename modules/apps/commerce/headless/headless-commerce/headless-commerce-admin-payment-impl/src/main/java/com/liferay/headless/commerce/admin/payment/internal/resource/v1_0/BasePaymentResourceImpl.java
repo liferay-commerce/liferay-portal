@@ -201,7 +201,7 @@ public abstract class BasePaymentResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-payment/v1.0/payments' -d $'{"amount": ___, "amountFormatted": ___, "callbackURL": ___, "cancelURL": ___, "channelId": ___, "comment": ___, "createDate": ___, "currencyCode": ___, "errorMessages": ___, "externalReferenceCode": ___, "languageId": ___, "paymentIntegrationKey": ___, "paymentIntegrationType": ___, "paymentStatus": ___, "reasonKey": ___, "redirectURL": ___, "relatedItemId": ___, "relatedItemName": ___, "transactionCode": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-payment/v1.0/payments' -d $'{"amount": ___, "amountFormatted": ___, "callbackURL": ___, "cancelURL": ___, "channelId": ___, "comment": ___, "createDate": ___, "currencyCode": ___, "errorMessages": ___, "externalReferenceCode": ___, "languageId": ___, "paymentIntegrationKey": ___, "paymentIntegrationType": ___, "paymentStatus": ___, "reasonKey": ___, "redirectURL": ___, "relatedItemId": ___, "relatedItemName": ___, "relatedItemNameLabel": ___, "transactionCode": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Payment")}
@@ -328,7 +328,7 @@ public abstract class BasePaymentResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-payment/v1.0/payments/by-externalReferenceCode/{externalReferenceCode}' -d $'{"amount": ___, "amountFormatted": ___, "callbackURL": ___, "cancelURL": ___, "channelId": ___, "comment": ___, "createDate": ___, "currencyCode": ___, "errorMessages": ___, "externalReferenceCode": ___, "languageId": ___, "paymentIntegrationKey": ___, "paymentIntegrationType": ___, "paymentStatus": ___, "reasonKey": ___, "redirectURL": ___, "relatedItemId": ___, "relatedItemName": ___, "transactionCode": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-payment/v1.0/payments/by-externalReferenceCode/{externalReferenceCode}' -d $'{"amount": ___, "amountFormatted": ___, "callbackURL": ___, "cancelURL": ___, "channelId": ___, "comment": ___, "createDate": ___, "currencyCode": ___, "errorMessages": ___, "externalReferenceCode": ___, "languageId": ___, "paymentIntegrationKey": ___, "paymentIntegrationType": ___, "paymentStatus": ___, "reasonKey": ___, "redirectURL": ___, "relatedItemId": ___, "relatedItemName": ___, "relatedItemNameLabel": ___, "transactionCode": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -466,7 +466,7 @@ public abstract class BasePaymentResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-payment/v1.0/payments/{id}' -d $'{"amount": ___, "amountFormatted": ___, "callbackURL": ___, "cancelURL": ___, "channelId": ___, "comment": ___, "createDate": ___, "currencyCode": ___, "errorMessages": ___, "externalReferenceCode": ___, "languageId": ___, "paymentIntegrationKey": ___, "paymentIntegrationType": ___, "paymentStatus": ___, "reasonKey": ___, "redirectURL": ___, "relatedItemId": ___, "relatedItemName": ___, "transactionCode": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-payment/v1.0/payments/{id}' -d $'{"amount": ___, "amountFormatted": ___, "callbackURL": ___, "cancelURL": ___, "channelId": ___, "comment": ___, "createDate": ___, "currencyCode": ___, "errorMessages": ___, "externalReferenceCode": ___, "languageId": ___, "paymentIntegrationKey": ___, "paymentIntegrationType": ___, "paymentStatus": ___, "reasonKey": ___, "redirectURL": ___, "relatedItemId": ___, "relatedItemName": ___, "relatedItemNameLabel": ___, "transactionCode": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {

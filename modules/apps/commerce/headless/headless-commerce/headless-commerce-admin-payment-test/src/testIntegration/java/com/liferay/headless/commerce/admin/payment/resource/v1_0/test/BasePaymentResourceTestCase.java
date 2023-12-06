@@ -188,6 +188,7 @@ public abstract class BasePaymentResourceTestCase {
 		payment.setReasonKey(regex);
 		payment.setRedirectURL(regex);
 		payment.setRelatedItemName(regex);
+		payment.setRelatedItemNameLabel(regex);
 		payment.setTransactionCode(regex);
 		payment.setTypeLabel(regex);
 
@@ -209,6 +210,7 @@ public abstract class BasePaymentResourceTestCase {
 		Assert.assertEquals(regex, payment.getReasonKey());
 		Assert.assertEquals(regex, payment.getRedirectURL());
 		Assert.assertEquals(regex, payment.getRelatedItemName());
+		Assert.assertEquals(regex, payment.getRelatedItemNameLabel());
 		Assert.assertEquals(regex, payment.getTransactionCode());
 		Assert.assertEquals(regex, payment.getTypeLabel());
 	}
@@ -1082,6 +1084,16 @@ public abstract class BasePaymentResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals(
+					"relatedItemNameLabel", additionalAssertFieldName)) {
+
+				if (payment.getRelatedItemNameLabel() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("transactionCode", additionalAssertFieldName)) {
 				if (payment.getTransactionCode() == null) {
 					valid = false;
@@ -1453,6 +1465,19 @@ public abstract class BasePaymentResourceTestCase {
 				if (!Objects.deepEquals(
 						payment1.getRelatedItemName(),
 						payment2.getRelatedItemName())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"relatedItemNameLabel", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						payment1.getRelatedItemNameLabel(),
+						payment2.getRelatedItemNameLabel())) {
 
 					return false;
 				}
@@ -2224,6 +2249,52 @@ public abstract class BasePaymentResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("relatedItemNameLabel")) {
+			Object object = payment.getRelatedItemNameLabel();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("transactionCode")) {
 			Object object = payment.getTransactionCode();
 
@@ -2394,6 +2465,8 @@ public abstract class BasePaymentResourceTestCase {
 					RandomTestUtil.randomString());
 				relatedItemId = RandomTestUtil.randomLong();
 				relatedItemName = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				relatedItemNameLabel = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				transactionCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());

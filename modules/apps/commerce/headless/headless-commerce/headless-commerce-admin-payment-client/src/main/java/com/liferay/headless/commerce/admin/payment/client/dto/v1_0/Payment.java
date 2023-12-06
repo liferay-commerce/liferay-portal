@@ -492,6 +492,27 @@ public class Payment implements Cloneable, Serializable {
 
 	protected String relatedItemName;
 
+	public String getRelatedItemNameLabel() {
+		return relatedItemNameLabel;
+	}
+
+	public void setRelatedItemNameLabel(String relatedItemNameLabel) {
+		this.relatedItemNameLabel = relatedItemNameLabel;
+	}
+
+	public void setRelatedItemNameLabel(
+		UnsafeSupplier<String, Exception> relatedItemNameLabelUnsafeSupplier) {
+
+		try {
+			relatedItemNameLabel = relatedItemNameLabelUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String relatedItemNameLabel;
+
 	public String getTransactionCode() {
 		return transactionCode;
 	}

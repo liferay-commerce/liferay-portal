@@ -324,6 +324,20 @@ public class PaymentSerDes {
 			sb.append("\"");
 		}
 
+		if (payment.getRelatedItemNameLabel() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"relatedItemNameLabel\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(payment.getRelatedItemNameLabel()));
+
+			sb.append("\"");
+		}
+
 		if (payment.getTransactionCode() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -554,6 +568,15 @@ public class PaymentSerDes {
 				String.valueOf(payment.getRelatedItemName()));
 		}
 
+		if (payment.getRelatedItemNameLabel() == null) {
+			map.put("relatedItemNameLabel", null);
+		}
+		else {
+			map.put(
+				"relatedItemNameLabel",
+				String.valueOf(payment.getRelatedItemNameLabel()));
+		}
+
 		if (payment.getTransactionCode() == null) {
 			map.put("transactionCode", null);
 		}
@@ -721,6 +744,14 @@ public class PaymentSerDes {
 			else if (Objects.equals(jsonParserFieldName, "relatedItemName")) {
 				if (jsonParserFieldValue != null) {
 					payment.setRelatedItemName((String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "relatedItemNameLabel")) {
+
+				if (jsonParserFieldValue != null) {
+					payment.setRelatedItemNameLabel(
+						(String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "transactionCode")) {
