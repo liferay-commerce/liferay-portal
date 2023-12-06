@@ -116,6 +116,9 @@ components:
                 relatedItemName:
                     example: com.liferay.commerce.model.CommerceOrder
                     type: string
+                relatedItemNameLabel:
+                    example: Order
+                    type: string
                 transactionCode:
                     type: string
                 type:
