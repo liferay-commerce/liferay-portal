@@ -5,7 +5,7 @@
 	<model-resource>
 		<model-name>com.liferay.commerce.payment</model-name>
 		<portlet-ref>
-			<portlet-name>com_liferay_commerce_payment_web_internal_portlet_CommercePaymentPortlet</portlet-name>
+			<portlet-name>com_liferay_commerce_payment_web_internal_portlet_CommercePaymentsPortlet</portlet-name>
 		</portlet-ref>
 		<root>true</root>
 		<weight>1</weight>
@@ -25,7 +25,7 @@
 	<model-resource>
 		<model-name>com.liferay.commerce.payment.model.CommercePaymentEntry</model-name>
 		<portlet-ref>
-			<portlet-name>com_liferay_commerce_payment_web_internal_portlet_CommercePaymentPortlet</portlet-name>
+			<portlet-name>com_liferay_commerce_payment_web_internal_portlet_CommercePaymentsPortlet</portlet-name>
 		</portlet-ref>
 		<weight>2</weight>
 		<permissions>
@@ -52,7 +52,7 @@
 	<model-resource>
 		<model-name>com.liferay.commerce.payment.model.CommercePaymentEntryAudit</model-name>
 		<portlet-ref>
-			<portlet-name>com_liferay_commerce_payment_web_internal_portlet_CommercePaymentPortlet</portlet-name>
+			<portlet-name>com_liferay_commerce_payment_web_internal_portlet_CommercePaymentsPortlet</portlet-name>
 		</portlet-ref>
 		<weight>1</weight>
 		<permissions>
