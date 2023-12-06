@@ -101,6 +101,9 @@ public class PaymentDTOConverter
 				redirectURL = commercePaymentEntry.getRedirectURL();
 				relatedItemId = commercePaymentEntry.getClassPK();
 				relatedItemName = commercePaymentEntry.getClassName();
+				relatedItemNameLabel = _language.get(
+					resourceBundle,
+					"model.resource." + commercePaymentEntry.getClassName());
 				transactionCode = commercePaymentEntry.getTransactionCode();
 				type = commercePaymentEntry.getType();
 				typeLabel = _language.get(
