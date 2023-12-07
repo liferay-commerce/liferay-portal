@@ -1,10 +1,14 @@
 [
 	{
+		"name": "Aruba",
+		"regionCode": "AW"
+	},
+	{
 		"name": "Bonaire",
 		"regionCode": "BQ1"
 	},
 	{
-		"name": "Curacao",
+		"name": "Curaçao",
 		"regionCode": "CW"
 	},
 	{
@@ -16,7 +20,7 @@
 		"regionCode": "FL"
 	},
 	{
-		"name": "Fryslan",
+		"name": "Fryslân",
 		"regionCode": "FR"
 	},
 	{
