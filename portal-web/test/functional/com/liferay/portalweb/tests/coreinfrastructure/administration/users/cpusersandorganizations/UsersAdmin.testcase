@@ -1978,7 +1978,7 @@ definition {
 
 		Close.closeWindow(locator1 = "title=Welcome - ${siteName}");
 
-		SelectWindow(value1 = "title=Users and Organizations - ${siteName}");
+		SelectWindow(value1 = "title=Users - Users - Users and Organizations - ${siteName}");
 
 		User.openUsersAdmin();
 
@@ -2014,7 +2014,7 @@ definition {
 
 		Close.closeWindow(locator1 = "title=Welcome - ${siteName}");
 
-		SelectWindow(value1 = "title=Users and Organizations - ${siteName}");
+		SelectWindow(value1 = "title=Users - Users - Users and Organizations - ${siteName}");
 
 		User.openUsersAdmin();
 
@@ -2024,7 +2024,7 @@ definition {
 
 		Close.closeWindow(locator1 = "title=Welcome - ${siteName}");
 
-		SelectWindow(value1 = "title=Users and Organizations - ${siteName}");
+		SelectWindow(value1 = "title=Users - Users - Users and Organizations - ${siteName}");
 
 		User.openUsersAdmin();
 
@@ -2034,7 +2034,7 @@ definition {
 
 		Close.closeWindow(locator1 = "title=Welcome - ${siteName}");
 
-		SelectWindow(value1 = "title=Users and Organizations - ${siteName}");
+		SelectWindow(value1 = "title=Users - Users - Users and Organizations - ${siteName}");
 	}
 
 	@description = "This is a use case for LPS-145025. No redirect and language is changed when change the language in password reset page."
