@@ -6,7 +6,10 @@
 package com.liferay.address.internal.upgrade.registry;
 
 import com.liferay.address.internal.upgrade.v1_0_0.CountryUpgradeProcess;
+import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.CountryLocalService;
+import com.liferay.portal.kernel.service.RegionLocalService;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 
 import org.osgi.service.component.annotations.Component;
@@ -24,9 +27,25 @@ public class AddressUpgradeStepRegistrator implements UpgradeStepRegistrator {
 
 		registry.register(
 			"0.0.1", "1.0.0", new CountryUpgradeProcess(_companyLocalService));
+
+		registry.register(
+			"1.0.0", "1.0.1",
+			new com.liferay.address.internal.upgrade.v1_0_1.
+				CountryUpgradeProcess(
+					_companyLocalService, _countryLocalService, _jsonFactory,
+					_regionLocalService));
 	}
 
 	@Reference
 	private CompanyLocalService _companyLocalService;
+
+	@Reference
+	private CountryLocalService _countryLocalService;
+
+	@Reference
+	private JSONFactory _jsonFactory;
+
+	@Reference
+	private RegionLocalService _regionLocalService;
 
 }

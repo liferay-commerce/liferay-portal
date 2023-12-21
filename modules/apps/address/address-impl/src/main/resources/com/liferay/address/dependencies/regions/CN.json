@@ -4,10 +4,6 @@
 		"regionCode": "AH"
 	},
 	{
-		"name": "Aomen",
-		"regionCode": "MO"
-	},
-	{
 		"name": "Beijing Shi",
 		"regionCode": "BJ"
 	},
@@ -114,10 +110,6 @@
 	{
 		"name": "Tianjin Shi",
 		"regionCode": "TJ"
-	},
-	{
-		"name": "Xianggang",
-		"regionCode": "HK"
 	},
 	{
 		"name": "Xinjiang Uygur Zizhiqu",
