@@ -471,9 +471,11 @@ definition {
 
 	@summary = "Default summary"
 	macro configureVirtualProduct(assertUploaded = null, attachment = null, activationStatus = null, maxDownloads = null) {
-		Click(locator1 = "FormFields#SELECT_UPLOAD_FIELD");
+		Click(locator1 = "Button#PLUS");
 
-		SelectFrameTop();
+		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+		Click(locator1 = "FormFields#SELECT_UPLOAD_FIELD");
 
 		SelectFrame(
 			key_frameTitle = "Select File",
@@ -489,16 +491,22 @@ definition {
 
 		SelectFrameTop();
 
+		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
 		Click(locator1 = "Button#SAVE");
 
 		Alert.viewSuccessMessage();
+
+		Click(locator1 = "Icon#CLOSE");
+
+		SelectFrameTop();
 
 		if (isSet(assertUploaded) && (${assertUploaded} == "true")) {
 			Refresh();
 
 			AssertElementPresent(
-				key_index = ${attachment},
-				locator1 = "WorkflowMetrics#SEARCH_FIELD_MAPPINGS_METRICS_INDEXES");
+				columnName = "${attachment}",
+				locator1 = "FrontendDataSet#COLUMN_NAME");
 		}
 
 		if (isSet(activationStatus) || isSet(maxDownloads)) {
@@ -832,7 +840,21 @@ definition {
 		}
 
 		if (isSet(virtualProductFile)) {
-			CommerceUtilities.uploadSingleFile(uploadFileName = ${virtualProductFile});
+			Click(locator1 = "Button#PLUS");
+
+			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+			CommerceUtilities.uploadSingleFileWithoutFrameTop(uploadFileName = ${virtualProductFile});
+
+			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+			Click(locator1 = "Button#SAVE");
+
+			Alert.viewSuccessMessage();
+
+			Click(locator1 = "Icon#CLOSE");
+
+			SelectFrameTop();
 		}
 
 		if (isSet(enableSample) && isSet(sampleFileName)) {
