@@ -1264,6 +1264,12 @@ definition {
 
 			CommerceEntry.gotoMenuTab(menuTab = "Virtual");
 
+			CommerceEntry.gotoMenuTab(menuTab = "Options");
+
+			CommerceEntry.gotoMenuTab(menuTab = "Virtual");
+
+			Button.clickSave();
+
 			CommerceProducts.configureVirtualProduct(
 				activationStatus = "Pending",
 				assertUploaded = "true",
@@ -1415,6 +1421,12 @@ definition {
 				productType = "Virtual");
 
 			CommerceEntry.gotoMenuTab(menuTab = "Virtual");
+
+			CommerceEntry.gotoMenuTab(menuTab = "Options");
+
+			CommerceEntry.gotoMenuTab(menuTab = "Virtual");
+
+			Button.clickSave();
 
 			CommerceProducts.configureVirtualProduct(
 				activationStatus = "Pending",
@@ -2340,9 +2352,17 @@ definition {
 
 		CommerceEntry.gotoMenuTab(menuTab = "Virtual");
 
-		Click(locator1 = "FormFields#SELECT_UPLOAD_FIELD");
+		CommerceEntry.gotoMenuTab(menuTab = "Options");
 
-		SelectFrameTop();
+		CommerceEntry.gotoMenuTab(menuTab = "Virtual");
+
+		Button.clickSave();
+
+		Click(locator1 = "Button#PLUS");
+
+		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+		Click(locator1 = "FormFields#SELECT_UPLOAD_FIELD");
 
 		SelectFrame(
 			key_frameTitle = "Select File",
@@ -2355,6 +2375,14 @@ definition {
 		Click(
 			key_filterOption = "Add",
 			locator1 = "AppBuilder#CHOOSE_SEARCH_FILTER_BY_OPTION");
+
+		SelectFrameTop();
+
+		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+		Button.clickSave();
+
+		Click(locator1 = "Icon#CLOSE");
 
 		SelectFrameTop();
 
@@ -2406,8 +2434,8 @@ definition {
 		Refresh();
 
 		AssertElementPresent(
-			key_index = "Commerce_Black.jpg",
-			locator1 = "WorkflowMetrics#SEARCH_FIELD_MAPPINGS_METRICS_INDEXES");
+			columnName = "Commerce_Black.jpg",
+			locator1 = "FrontendDataSet#COLUMN_NAME");
 
 		AssertElementPresent(
 			key_index = "Commerce_Black (1).jpg",
