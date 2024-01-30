@@ -430,6 +430,14 @@ public class CommerceProductServiceUpgradeStepRegistrator
 				CommerceChannelUpgradeProcess(
 					_accountEntryGroupSettings, _configurationProvider));
 
+		registry.register(
+			"5.12.1", "5.13.0",
+			UpgradeProcessFactory.addColumns(
+				"CPDefinitionOptionRel", "dateTime BOOLEAN"),
+			UpgradeProcessFactory.addColumns(
+				"CPDefinitionOptionValueRel", "optionValueDate DATE null",
+				"duration INTEGER", "durationType VARCHAR(75) null"));
+
 		if (_log.isInfoEnabled()) {
 			_log.info("Commerce product upgrade step registrator finished");
 		}
