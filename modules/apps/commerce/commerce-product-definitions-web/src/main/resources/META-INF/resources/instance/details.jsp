@@ -94,11 +94,30 @@ boolean discontinued = BeanParamUtil.getBoolean(cpInstance, request, "discontinu
 								<h6 class="text-default">
 									<strong><%= HtmlUtil.escape(cpDefinitionOptionRel.getName(languageId)) %></strong>
 
-									<%
-									for (CPDefinitionOptionValueRel cpDefinitionOptionValueRel : cpDefinitionOptionValueRels) {
-										stringJoiner.add(HtmlUtil.escape(cpDefinitionOptionValueRel.getName(languageId)));
-									}
-									%>
+									<c:choose>
+										<c:when test="<%= cpDefinitionOptionRel.isDateTime() %>">
+
+											<%
+											Format dateFormat = FastDateFormatFactoryUtil.getDate(DateFormat.MEDIUM, locale, timeZone);
+
+											Format timeFormat = FastDateFormatFactoryUtil.getTime(DateFormat.SHORT, locale, timeZone);
+
+											for (CPDefinitionOptionValueRel cpDefinitionOptionValueRel : cpDefinitionOptionValueRels) {
+												stringJoiner.add(HtmlUtil.escape(dateFormat.format(cpDefinitionOptionValueRel.getOptionValueDate()) + StringPool.SPACE + timeFormat.format(cpDefinitionOptionValueRel.getOptionValueDate()) + StringPool.SPACE + cpDefinitionOptionValueRel.getDuration() + StringPool.SPACE + cpDefinitionOptionValueRel.getDurationType()));
+											}
+											%>
+
+										</c:when>
+										<c:otherwise>
+
+											<%
+											for (CPDefinitionOptionValueRel cpDefinitionOptionValueRel : cpDefinitionOptionValueRels) {
+												stringJoiner.add(HtmlUtil.escape(cpDefinitionOptionValueRel.getName(languageId)));
+											}
+											%>
+
+										</c:otherwise>
+									</c:choose>
 
 									<%= HtmlUtil.escape(stringJoiner.toString()) %>
 								</h6>

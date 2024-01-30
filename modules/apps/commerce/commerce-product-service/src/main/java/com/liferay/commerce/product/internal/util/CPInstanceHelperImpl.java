@@ -43,8 +43,12 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.KeyValuePair;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.text.DateFormat;
+import java.text.Format;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,6 +56,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.TreeMap;
 
 import org.osgi.service.component.annotations.Component;
@@ -592,7 +597,7 @@ public class CPInstanceHelperImpl implements CPInstanceHelper {
 
 	@Override
 	public List<KeyValuePair> getKeyValuePairs(
-			long cpDefinitionId, String json, Locale locale)
+			long cpDefinitionId, String json, Locale locale, TimeZone timeZone)
 		throws PortalException {
 
 		List<KeyValuePair> values = new ArrayList<>();
@@ -629,7 +634,35 @@ public class CPInstanceHelperImpl implements CPInstanceHelper {
 							value);
 
 				if (cpDefinitionOptionValueRel != null) {
-					value = cpDefinitionOptionValueRel.getName(locale);
+					if (cpDefinitionOptionRel.isDateTime()) {
+						Format dateFormat = FastDateFormatFactoryUtil.getDate(
+							DateFormat.MEDIUM, locale, timeZone);
+
+						Format timeFormat = FastDateFormatFactoryUtil.getTime(
+							DateFormat.SHORT, locale, timeZone);
+
+						String formattedDate = dateFormat.format(
+							cpDefinitionOptionValueRel.getOptionValueDate());
+
+						String formattedTime = timeFormat.format(
+							cpDefinitionOptionValueRel.getOptionValueDate());
+
+						if (cpDefinitionOptionValueRel.getDuration() <= 0) {
+							value = StringBundler.concat(
+								formattedDate, StringPool.SPACE, formattedTime,
+								StringPool.SPACE,
+								cpDefinitionOptionValueRel.getDuration(),
+								StringPool.SPACE,
+								cpDefinitionOptionValueRel.getDurationType());
+						}
+						else {
+							value = formattedDate + StringPool.SPACE +
+								formattedTime;
+						}
+					}
+					else {
+						value = cpDefinitionOptionValueRel.getName(locale);
+					}
 				}
 				else {
 					value = valueJSONArray.getString(j);

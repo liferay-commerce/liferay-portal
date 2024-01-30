@@ -1765,14 +1765,26 @@ public class CPInstanceLocalServiceImpl extends CPInstanceLocalServiceBaseImpl {
 	}
 
 	private String _getSKU(
-		CPDefinitionOptionValueRel[] cpDefinitionOptionValueRels,
-		String languageId) {
+			CPDefinitionOptionValueRel[] cpDefinitionOptionValueRels,
+			String languageId)
+		throws PortalException {
 
 		StringBundler skuSB = new StringBundler(
 			cpDefinitionOptionValueRels.length + 1);
 
 		for (CPDefinitionOptionValueRel cpDefinitionOptionValueRel :
 				cpDefinitionOptionValueRels) {
+
+			CPDefinitionOptionRel cpDefinitionOptionRel =
+				cpDefinitionOptionValueRel.getCPDefinitionOptionRel();
+
+			if (cpDefinitionOptionRel.isDateTime()) {
+				skuSB.append(
+					StringUtil.toUpperCase(
+						cpDefinitionOptionValueRel.getKey()));
+
+				continue;
+			}
 
 			skuSB.append(
 				StringUtil.toUpperCase(
