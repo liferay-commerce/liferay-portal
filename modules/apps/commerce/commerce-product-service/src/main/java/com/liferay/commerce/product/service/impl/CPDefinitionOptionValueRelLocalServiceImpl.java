@@ -82,6 +82,7 @@ import java.math.BigDecimal;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -110,8 +111,8 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 		return cpDefinitionOptionValueRelLocalService.
 			addCPDefinitionOptionValueRel(
 				cpDefinitionOptionRelId, cpOptionValue.getKey(),
-				cpOptionValue.getNameMap(), cpOptionValue.getPriority(),
-				serviceContext);
+				cpOptionValue.getNameMap(), 0, null, null,
+				cpOptionValue.getPriority(), serviceContext);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -212,7 +213,8 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 	@Override
 	public CPDefinitionOptionValueRel addCPDefinitionOptionValueRel(
 			long cpDefinitionOptionRelId, String key,
-			Map<Locale, String> nameMap, double priority,
+			Map<Locale, String> nameMap, int duration, String durationType,
+			Date optionValueDate, double priority,
 			ServiceContext serviceContext)
 		throws PortalException {
 
@@ -260,6 +262,9 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 		cpDefinitionOptionValueRel.setExpandoBridgeAttributes(serviceContext);
 		cpDefinitionOptionValueRel.setKey(key);
 		cpDefinitionOptionValueRel.setNameMap(nameMap);
+		cpDefinitionOptionValueRel.setDuration(duration);
+		cpDefinitionOptionValueRel.setDurationType(durationType);
+		cpDefinitionOptionValueRel.setOptionValueDate(optionValueDate);
 
 		if (cpDefinitionOptionRel.isPriceTypeStatic()) {
 			cpDefinitionOptionValueRel.setPrice(BigDecimal.ZERO);
@@ -757,7 +762,8 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 	@Override
 	public CPDefinitionOptionValueRel updateCPDefinitionOptionValueRel(
 			long cpDefinitionOptionValueRelId, long cpInstanceId, String key,
-			Map<Locale, String> nameMap, boolean preselected, BigDecimal price,
+			Map<Locale, String> nameMap, int duration, String durationType,
+			Date optionValueDate, boolean preselected, BigDecimal price,
 			double priority, BigDecimal quantity, String unitOfMeasureKey,
 			ServiceContext serviceContext)
 		throws PortalException {
@@ -803,6 +809,9 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 		cpDefinitionOptionValueRel.setExpandoBridgeAttributes(serviceContext);
 		cpDefinitionOptionValueRel.setKey(key);
 		cpDefinitionOptionValueRel.setNameMap(nameMap);
+		cpDefinitionOptionValueRel.setDuration(duration);
+		cpDefinitionOptionValueRel.setDurationType(durationType);
+		cpDefinitionOptionValueRel.setOptionValueDate(optionValueDate);
 		cpDefinitionOptionValueRel.setPriority(priority);
 
 		if (cpDefinitionOptionRel.isPriceTypeStatic()) {

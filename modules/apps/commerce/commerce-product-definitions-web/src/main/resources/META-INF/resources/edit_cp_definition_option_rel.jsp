@@ -75,20 +75,24 @@ String defaultLanguageId = cpDefinitionOptionRelDisplayContext.getCatalogDefault
 					</aui:input>
 				</div>
 
-				<div class="col-3">
+				<div class="col-2">
 					<aui:input checked="<%= (cpDefinitionOptionRel == null) ? false : facetable %>" inlineField="<%= true %>" label="use-in-faceted-navigation" name="facetable" type="toggle-switch" />
 				</div>
 
-				<div class="col-3">
+				<div class="col-2">
 					<aui:input checked="<%= (cpDefinitionOptionRel == null) ? false : required %>" inlineField="<%= true %>" name="required" type="toggle-switch" />
 				</div>
 
-				<div class="col-3">
+				<div class="col-2">
 					<aui:input checked="<%= (cpDefinitionOptionRel == null) ? false : skuContributor %>" inlineField="<%= true %>" name="skuContributor" type="toggle-switch" />
 				</div>
 
-				<div class="col-3">
+				<div class="col-2">
 					<aui:input checked="<%= (cpDefinitionOptionRel == null) ? false : cpDefinitionOptionRel.isDefinedExternally() %>" inlineField="<%= true %>" label="define-externally" name="definedExternally" type="toggle-switch" />
+				</div>
+
+				<div class="col-2">
+					<aui:input checked="<%= (cpDefinitionOptionRel == null) ? false : cpDefinitionOptionRel.isDateTime() %>" inlineField="<%= true %>" label="date-time" name="dateTime" type="toggle-switch" />
 				</div>
 
 				<div class="col-12">
@@ -165,7 +169,15 @@ String defaultLanguageId = cpDefinitionOptionRelDisplayContext.getCatalogDefault
 				String dataSetDisplayId = CommerceProductFDSNames.PRODUCT_OPTION_VALUES;
 
 				if (cpDefinitionOptionRel.isPriceTypeStatic()) {
-					dataSetDisplayId = CommerceProductFDSNames.PRODUCT_OPTION_VALUES_STATIC;
+					if (cpDefinitionOptionRel.isDateTime()) {
+						dataSetDisplayId = CommerceProductFDSNames.PRODUCT_OPTION_VALUES_DATE_STATIC;
+					}
+					else {
+						dataSetDisplayId = CommerceProductFDSNames.PRODUCT_OPTION_VALUES_STATIC;
+					}
+				}
+				else if (cpDefinitionOptionRel.isDateTime()) {
+					dataSetDisplayId = CommerceProductFDSNames.PRODUCT_OPTION_VALUES_DATE;
 				}
 				%>
 

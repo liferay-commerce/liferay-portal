@@ -120,7 +120,9 @@ page import="com.liferay.portal.kernel.portlet.LiferayWindowState" %><%@
 page import="com.liferay.portal.kernel.security.permission.ActionKeys" %><%@
 page import="com.liferay.portal.kernel.service.PortletLocalServiceUtil" %><%@
 page import="com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalServiceUtil" %><%@
+page import="com.liferay.portal.kernel.util.CalendarFactoryUtil" %><%@
 page import="com.liferay.portal.kernel.util.Constants" %><%@
+page import="com.liferay.portal.kernel.util.FastDateFormatFactoryUtil" %><%@
 page import="com.liferay.portal.kernel.util.HashMapBuilder" %><%@
 page import="com.liferay.portal.kernel.util.HtmlUtil" %><%@
 page import="com.liferay.portal.kernel.util.HttpComponentsUtil" %><%@
@@ -134,11 +136,14 @@ page import="com.liferay.taglib.servlet.PipingServletResponseFactory" %>
 
 <%@ page import="java.math.BigDecimal" %>
 
-<%@ page import="java.text.NumberFormat" %>
+<%@ page import="java.text.DateFormat" %><%@
+page import="java.text.Format" %><%@
+page import="java.text.NumberFormat" %>
 
 <%@ page import="java.util.ArrayList" %><%@
 page import="java.util.Arrays" %><%@
 page import="java.util.Calendar" %><%@
+page import="java.util.Date" %><%@
 page import="java.util.List" %><%@
 page import="java.util.Map" %><%@
 page import="java.util.StringJoiner" %>

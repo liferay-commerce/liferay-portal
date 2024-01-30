@@ -13,6 +13,10 @@ public class CPConstants {
 
 	public static final String DAILY_SUBSCRIPTION_TYPE = "daily";
 
+	public static final String DAYS_DURATION_TYPE = "days";
+
+	public static final String HOURS_DURATION_TYPE = "hours";
+
 	public static final String MONTHLY_SUBSCRIPTION_TYPE = "monthly";
 
 	public static final String[] PRODUCT_OPTION_MULTIPLE_VALUES_FIELD_TYPES = {

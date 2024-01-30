@@ -28,12 +28,18 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
+import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import java.math.BigDecimal;
+
+import java.text.DateFormat;
+import java.text.Format;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +54,12 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	property = "fds.data.provider.key=" + CommerceProductFDSNames.PRODUCT_OPTION_VALUES,
+	property = {
+		"fds.data.provider.key=" + CommerceProductFDSNames.PRODUCT_OPTION_VALUES,
+		"fds.data.provider.key=" + CommerceProductFDSNames.PRODUCT_OPTION_VALUES_DATE,
+		"fds.data.provider.key=" + CommerceProductFDSNames.PRODUCT_OPTION_VALUES_DATE_STATIC,
+		"fds.data.provider.key=" + CommerceProductFDSNames.PRODUCT_OPTION_VALUES_STATIC
+	},
 	service = FDSDataProvider.class
 )
 public class CommerceProductOptionValueFDSDataProvider
@@ -59,6 +70,10 @@ public class CommerceProductOptionValueFDSDataProvider
 			FDSKeywords fdsKeywords, FDSPagination fdsPagination,
 			HttpServletRequest httpServletRequest, Sort sort)
 		throws PortalException {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
 
 		List<ProductOptionValue> productOptionValues = new ArrayList<>();
 
@@ -103,6 +118,24 @@ public class CommerceProductOptionValueFDSDataProvider
 		for (CPDefinitionOptionValueRel cpDefinitionOptionValueRel :
 				cpDefinitionOptionValueRels) {
 
+			String date = StringPool.BLANK;
+
+			if (cpDefinitionOptionValueRel.getOptionValueDate() != null) {
+				Format dateFormat = FastDateFormatFactoryUtil.getDate(
+					DateFormat.MEDIUM, locale, themeDisplay.getTimeZone());
+
+				Format timeFormat = FastDateFormatFactoryUtil.getTime(
+					DateFormat.SHORT, locale, themeDisplay.getTimeZone());
+
+				String formattedDate = dateFormat.format(
+					cpDefinitionOptionValueRel.getOptionValueDate());
+
+				String formattedTime = timeFormat.format(
+					cpDefinitionOptionValueRel.getOptionValueDate());
+
+				date = formattedDate + StringPool.SPACE + formattedTime;
+			}
+
 			productOptionValues.add(
 				new ProductOptionValue(
 					cpDefinitionOptionValueRel.
@@ -113,10 +146,12 @@ public class CommerceProductOptionValueFDSDataProvider
 							cpDefinitionOptionValueRel,
 							cpDefinitionOptionRelId),
 						locale),
+					cpDefinitionOptionValueRel.getDuration(),
+					cpDefinitionOptionValueRel.getDurationType(),
 					cpDefinitionOptionValueRel.getKey(),
 					cpDefinitionOptionValueRel.getName(
 						_language.getLanguageId(locale)),
-					cpDefinitionOptionValueRel.getPriority(),
+					date, cpDefinitionOptionValueRel.getPriority(),
 					_language.get(
 						locale,
 						cpDefinitionOptionValueRel.isPreselected() ? "yes" :

@@ -527,6 +527,7 @@
 		<column name="commerceOptionTypeKey" type="String" />
 		<column name="infoItemServiceKey" type="String" />
 		<column name="priority" type="double" />
+		<column name="dateTime" type="boolean" />
 		<column name="definedExternally" type="boolean" />
 		<column name="facetable" type="boolean" />
 		<column name="required" type="boolean" />
@@ -594,6 +595,9 @@
 		<column name="CProductId" type="long" />
 		<column name="key" type="String" />
 		<column localized="true" name="name" type="String" />
+		<column name="duration" type="int" />
+		<column name="durationType" type="String" />
+		<column name="optionValueDate" type="Date" />
 		<column name="preselected" type="boolean" />
 		<column name="price" type="BigDecimal" />
 		<column name="priority" type="double" />
@@ -1276,6 +1280,7 @@
 		<exception>CPDefinitionOptionRelPriceType</exception>
 		<exception>CPDefinitionOptionSKUContributor</exception>
 		<exception>CPDefinitionOptionValueRelCPInstance</exception>
+		<exception>CPDefinitionOptionValueRelDate</exception>
 		<exception>CPDefinitionOptionValueRelKey</exception>
 		<exception>CPDefinitionOptionValueRelPrice</exception>
 		<exception>CPDefinitionOptionValueRelQuantity</exception>

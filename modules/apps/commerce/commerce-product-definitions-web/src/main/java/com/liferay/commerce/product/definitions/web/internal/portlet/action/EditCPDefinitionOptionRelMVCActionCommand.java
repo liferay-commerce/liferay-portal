@@ -144,6 +144,7 @@ public class EditCPDefinitionOptionRelMVCActionCommand
 		String infoItemServiceKey = ParamUtil.getString(
 			actionRequest, "infoItemServiceKey");
 		double priority = ParamUtil.getDouble(actionRequest, "priority");
+		boolean dateTime = ParamUtil.getBoolean(actionRequest, "dateTime");
 		boolean definedExternally = ParamUtil.getBoolean(
 			actionRequest, "definedExternally");
 		boolean facetable = ParamUtil.getBoolean(actionRequest, "facetable");
@@ -170,7 +171,7 @@ public class EditCPDefinitionOptionRelMVCActionCommand
 
 		return _cpDefinitionOptionRelService.updateCPDefinitionOptionRel(
 			cpDefinitionOptionRelId, cpOptionId, nameMap, descriptionMap,
-			commerceOptionTypeKey, infoItemServiceKey, priority,
+			commerceOptionTypeKey, infoItemServiceKey, priority, dateTime,
 			definedExternally, facetable, required, skuContributor, priceType,
 			typeSettingsUnicodeProperties.toString(), serviceContext);
 	}

@@ -849,6 +849,7 @@ public class CPDefinitionOptionRelLocalServiceImpl
 			cpDefinitionOptionRelId, cpOptionId, nameMap, descriptionMap,
 			commerceOptionTypeKey,
 			cpDefinitionOptionRel.getInfoItemServiceKey(), priority,
+			cpDefinitionOptionRel.isDateTime(),
 			cpDefinitionOptionRel.isDefinedExternally(), facetable, required,
 			skuContributor, cpDefinitionOptionRel.getPriceType(),
 			cpDefinitionOptionRel.getTypeSettings(), serviceContext);
@@ -860,9 +861,10 @@ public class CPDefinitionOptionRelLocalServiceImpl
 			long cpDefinitionOptionRelId, long cpOptionId,
 			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
 			String commerceOptionTypeKey, String infoItemServiceKey,
-			double priority, boolean definedExternally, boolean facetable,
-			boolean required, boolean skuContributor, String priceType,
-			String typeSettings, ServiceContext serviceContext)
+			double priority, boolean dateTime, boolean definedExternally,
+			boolean facetable, boolean required, boolean skuContributor,
+			String priceType, String typeSettings,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		_validateCommerceOptionTypeKey(commerceOptionTypeKey, skuContributor);
@@ -892,6 +894,7 @@ public class CPDefinitionOptionRelLocalServiceImpl
 		cpDefinitionOptionRel.setCommerceOptionTypeKey(commerceOptionTypeKey);
 		cpDefinitionOptionRel.setInfoItemServiceKey(infoItemServiceKey);
 		cpDefinitionOptionRel.setPriority(priority);
+		cpDefinitionOptionRel.setDateTime(dateTime);
 		cpDefinitionOptionRel.setDefinedExternally(definedExternally);
 		cpDefinitionOptionRel.setFacetable(facetable);
 		cpDefinitionOptionRel.setRequired(required);

@@ -10,6 +10,14 @@ long cpDefinitionId = cpDefinitionOptionValueRelDisplayContext.getCPDefinitionId
 CPDefinitionOptionRel cpDefinitionOptionRel = cpDefinitionOptionValueRelDisplayContext.getCPDefinitionOptionRel();
 long cpDefinitionOptionRelId = cpDefinitionOptionValueRelDisplayContext.getCPDefinitionOptionRelId();
 long cpDefinitionOptionValueRelId = cpDefinitionOptionValueRelDisplayContext.getCPDefinitionOptionValueRelId();
+
+Date optionValueDate = null;
+String durationType = StringPool.BLANK;
+
+if (cpDefinitionOptionValueRel != null) {
+	optionValueDate = cpDefinitionOptionValueRel.getOptionValueDate();
+	durationType = cpDefinitionOptionValueRel.getDurationType();
+}
 %>
 
 <aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= (cpDefinitionOptionValueRel == null) ? Constants.ADD : Constants.UPDATE %>" />
@@ -25,11 +33,75 @@ long cpDefinitionOptionValueRelId = cpDefinitionOptionValueRelDisplayContext.get
 <liferay-ui:error exception="<%= CPDefinitionOptionValueRelPriceException.class %>" message="please-enter-a-valid-price" />
 <liferay-ui:error exception="<%= CPDefinitionOptionValueRelQuantityException.class %>" message="please-enter-a-valid-quantity" />
 
-<aui:input defaultLanguageId="<%= cpDefinitionOptionValueRelDisplayContext.getCatalogDefaultLanguageId() %>" id="optionValueName" name="name" />
-
-<aui:input label="position" name="priority" />
-
 <aui:input helpMessage="key-help" name="key" />
+
+<c:choose>
+	<c:when test="<%= cpDefinitionOptionRel.isDateTime() %>">
+
+		<%
+		Calendar calendar = CalendarFactoryUtil.getCalendar(timeZone);
+
+		if (optionValueDate != null) {
+			calendar = CalendarFactoryUtil.getCalendar(optionValueDate.getTime(), timeZone);
+		}
+		%>
+
+		<div class="row">
+		<div class="col-6">
+		<div class="form-group input-date-wrapper">
+			<label for="date"><liferay-ui:message key="date" /></label>
+
+			<liferay-ui:input-date
+				dayParam="day"
+				dayValue="<%= calendar.get(Calendar.DAY_OF_MONTH) %>"
+				disabled="<%= false %>"
+				monthParam="month"
+				monthValue="<%= calendar.get(Calendar.MONTH) %>"
+				name="date"
+				required="<%= true %>"
+				yearParam="year"
+				yearValue="<%= calendar.get(Calendar.YEAR) %>"
+			/>
+		</div>
+		</div>
+
+		<div class="col-6">
+		<div class="form-group input-date-wrapper">
+			<label for="date"><liferay-ui:message key="time" /></label>
+
+			<liferay-ui:input-time
+				amPmParam="amPm"
+				amPmValue="<%= calendar.get(Calendar.AM_PM) %>"
+				disabled="<%= false %>"
+				hourParam="hour"
+				hourValue="<%= calendar.get(Calendar.HOUR) %>"
+				minuteParam="minute"
+				minuteValue="<%= calendar.get(Calendar.MINUTE) %>"
+				name="time"
+			/>
+		</div>
+		</div>
+
+		<div class="col-6">
+		<aui:input name="duration" type="text">
+			<aui:validator name="min">0</aui:validator>
+			<aui:validator name="number" />
+		</aui:input>
+		</div>
+
+		<div class="col-6">
+		<aui:select label="duration-type" name="durationType" showEmptyOption="<%= true %>">
+			<aui:option label="hours" selected="<%= (cpDefinitionOptionValueRel != null) && durationType.equals(CPConstants.HOURS_DURATION_TYPE) %>" value="<%= CPConstants.HOURS_DURATION_TYPE %>" />
+			<aui:option label="days" selected="<%= (cpDefinitionOptionValueRel != null) && durationType.equals(CPConstants.DAYS_DURATION_TYPE) %>" value="<%= CPConstants.DAYS_DURATION_TYPE %>" />
+		</aui:select>
+		</div>
+		</div>
+	</c:when>
+	<c:otherwise>
+		<aui:input defaultLanguageId="<%= cpDefinitionOptionValueRelDisplayContext.getCatalogDefaultLanguageId() %>" id="optionValueName" name="name" />
+	</c:otherwise>
+</c:choose>
+	<aui:input label="position" name="priority" />
 
 <c:if test="<%= cpDefinitionOptionValueRel != null %>">
 	<aui:input checked="<%= cpDefinitionOptionValueRel.isPreselected() %>" inlineField="<%= true %>" label="default" name="preselected" type="toggle-switch" />
@@ -157,10 +229,57 @@ long cpDefinitionOptionValueRelId = cpDefinitionOptionValueRelDisplayContext.get
 		var keyInput = form.querySelector('#<portlet:namespace />key');
 		var nameInput = form.querySelector('#<portlet:namespace />optionValueName');
 
-		var handleOnNameInput = function () {
-			keyInput.value = slugify.default(nameInput.value);
-		};
+		if (nameInput) {
+			var handleOnNameInput = function () {
+				keyInput.value = slugify.default(nameInput.value);
+			};
 
-		nameInput.addEventListener('input', debounce(handleOnNameInput, 200));
+			nameInput.addEventListener('input', debounce(handleOnNameInput, 200));
+		}
+		else {
+			var dateInput = form.querySelector('#<portlet:namespace />date');
+			var timeInput = form.querySelector('#<portlet:namespace />time');
+			var durationInput = form.querySelector('#<portlet:namespace />duration');
+			var durationTypeInput = form.querySelector(
+				'#<portlet:namespace />durationType'
+			);
+
+			var handleOnNameInput = function () {
+				var durationValue = durationInput.value;
+
+				if (durationValue) {
+					durationValue = '-' + durationInput.value;
+				}
+
+				var durationTypeValue = durationTypeInput.value;
+
+				if (durationTypeInput.value) {
+					durationTypeValue = '-' + durationTypeInput.value;
+				}
+
+				if (durationValue <= 0) {
+					keyInput.value = slugify.default(
+						dateInput.value + '-' + timeInput.value
+					);
+				}
+				else {
+					keyInput.value = slugify.default(
+						dateInput.value +
+							'-' +
+							timeInput.value +
+							durationValue +
+							durationTypeValue
+					);
+				}
+			};
+
+			dateInput.addEventListener('focus', debounce(handleOnNameInput, 200));
+			timeInput.addEventListener('change', debounce(handleOnNameInput, 200));
+			durationInput.addEventListener('input', debounce(handleOnNameInput, 200));
+			durationTypeInput.addEventListener(
+				'input',
+				debounce(handleOnNameInput, 200)
+			);
+		}
 	</aui:script>
 </c:if>

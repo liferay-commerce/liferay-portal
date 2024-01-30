@@ -45,6 +45,12 @@ public class CommerceProductFDSNames {
 	public static final String PRODUCT_OPTION_VALUES =
 		CPPortletKeys.CP_DEFINITIONS + "-productOptionValues";
 
+	public static final String PRODUCT_OPTION_VALUES_DATE =
+		CPPortletKeys.CP_DEFINITIONS + "-productOptionValuesDate";
+
+	public static final String PRODUCT_OPTION_VALUES_DATE_STATIC =
+		CPPortletKeys.CP_DEFINITIONS + "-productOptionValuesDateStatic";
+
 	public static final String PRODUCT_OPTION_VALUES_STATIC =
 		CPPortletKeys.CP_DEFINITIONS + "-productOptionValuesStatic";
 

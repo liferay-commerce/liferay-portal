@@ -7,11 +7,14 @@ package com.liferay.commerce.product.definitions.web.internal.portlet.action;
 
 import com.liferay.commerce.product.constants.CPPortletKeys;
 import com.liferay.commerce.product.exception.CPDefinitionOptionValueRelCPInstanceException;
+import com.liferay.commerce.product.exception.CPDefinitionOptionValueRelDateException;
 import com.liferay.commerce.product.exception.CPDefinitionOptionValueRelKeyException;
 import com.liferay.commerce.product.exception.CPDefinitionOptionValueRelPriceException;
 import com.liferay.commerce.product.exception.CPDefinitionOptionValueRelQuantityException;
+import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
 import com.liferay.commerce.product.model.CPInstanceUnitOfMeasure;
+import com.liferay.commerce.product.service.CPDefinitionOptionRelLocalService;
 import com.liferay.commerce.product.service.CPDefinitionOptionValueRelService;
 import com.liferay.commerce.product.service.CPInstanceUnitOfMeasureLocalService;
 import com.liferay.petra.string.StringPool;
@@ -23,13 +26,18 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Localization;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import java.math.BigDecimal;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 
@@ -129,10 +137,45 @@ public class EditCPDefinitionOptionValueRelMVCActionCommand
 		long cpDefinitionOptionValueRelId = ParamUtil.getLong(
 			actionRequest, "cpDefinitionOptionValueRelId");
 
+		long cpDefinitionOptionRelId = ParamUtil.getLong(
+			actionRequest, "cpDefinitionOptionRelId");
+
+		CPDefinitionOptionRel cpDefinitionOptionRel =
+			_cpDefinitionOptionRelLocalService.getCPDefinitionOptionRel(
+				cpDefinitionOptionRelId);
+
 		String key = ParamUtil.getString(actionRequest, "key");
 		Map<Locale, String> nameMap = _localization.getLocalizationMap(
 			actionRequest, "name");
 		double priority = ParamUtil.getDouble(actionRequest, "priority");
+
+		Date date = null;
+
+		if (cpDefinitionOptionRel.isDateTime()) {
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
+
+			int month = ParamUtil.getInteger(actionRequest, "month");
+			int day = ParamUtil.getInteger(actionRequest, "day");
+			int year = ParamUtil.getInteger(actionRequest, "year");
+			int hour = ParamUtil.getInteger(actionRequest, "hour");
+			int minute = ParamUtil.getInteger(actionRequest, "minute");
+
+			int amPm = ParamUtil.getInteger(actionRequest, "amPm");
+
+			if (amPm == Calendar.PM) {
+				hour += 12;
+			}
+
+			date = _portal.getDate(
+				month, day, year, hour, minute, themeDisplay.getTimeZone(),
+				CPDefinitionOptionValueRelDateException.class);
+		}
+
+		int duration = ParamUtil.getInteger(actionRequest, "duration");
+
+		String durationType = ParamUtil.getString(
+			actionRequest, "durationType");
 
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			CPDefinitionOptionValueRel.class.getName(), actionRequest);
@@ -141,13 +184,10 @@ public class EditCPDefinitionOptionValueRelMVCActionCommand
 
 			// Add commerce product definition option value rel
 
-			long cpDefinitionOptionRelId = ParamUtil.getLong(
-				actionRequest, "cpDefinitionOptionRelId");
-
 			return _cpDefinitionOptionValueRelService.
 				addCPDefinitionOptionValueRel(
-					cpDefinitionOptionRelId, key, nameMap, priority,
-					serviceContext);
+					cpDefinitionOptionRelId, key, nameMap, duration,
+					durationType, date, priority, serviceContext);
 		}
 
 		// Update commerce product definition option value rel
@@ -186,8 +226,8 @@ public class EditCPDefinitionOptionValueRelMVCActionCommand
 		return _cpDefinitionOptionValueRelService.
 			updateCPDefinitionOptionValueRel(
 				cpDefinitionOptionValueRelId, cpInstanceId, key, nameMap,
-				preselected, price, priority, quantity, unitOfMeasureKey,
-				serviceContext);
+				duration, durationType, date, preselected, price, priority,
+				quantity, unitOfMeasureKey, serviceContext);
 	}
 
 	private CPDefinitionOptionValueRel _updatePreselected(
@@ -216,6 +256,10 @@ public class EditCPDefinitionOptionValueRelMVCActionCommand
 		EditCPDefinitionOptionValueRelMVCActionCommand.class);
 
 	@Reference
+	private CPDefinitionOptionRelLocalService
+		_cpDefinitionOptionRelLocalService;
+
+	@Reference
 	private CPDefinitionOptionValueRelService
 		_cpDefinitionOptionValueRelService;
 
@@ -225,5 +269,8 @@ public class EditCPDefinitionOptionValueRelMVCActionCommand
 
 	@Reference
 	private Localization _localization;
+
+	@Reference
+	private Portal _portal;
 
 }

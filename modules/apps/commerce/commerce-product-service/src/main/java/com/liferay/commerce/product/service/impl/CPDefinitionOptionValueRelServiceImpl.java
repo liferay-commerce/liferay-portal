@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.math.BigDecimal;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -72,7 +73,8 @@ public class CPDefinitionOptionValueRelServiceImpl
 	@Override
 	public CPDefinitionOptionValueRel addCPDefinitionOptionValueRel(
 			long cpDefinitionOptionRelId, String key,
-			Map<Locale, String> nameMap, double priority,
+			Map<Locale, String> nameMap, int duration, String durationType,
+			Date optionValueDate, double priority,
 			ServiceContext serviceContext)
 		throws PortalException {
 
@@ -85,8 +87,8 @@ public class CPDefinitionOptionValueRelServiceImpl
 
 		return cpDefinitionOptionValueRelLocalService.
 			addCPDefinitionOptionValueRel(
-				cpDefinitionOptionRelId, key, nameMap, priority,
-				serviceContext);
+				cpDefinitionOptionRelId, key, nameMap, duration, durationType,
+				optionValueDate, priority, serviceContext);
 	}
 
 	@Override
@@ -297,7 +299,8 @@ public class CPDefinitionOptionValueRelServiceImpl
 	@Override
 	public CPDefinitionOptionValueRel updateCPDefinitionOptionValueRel(
 			long cpDefinitionOptionValueRelId, long cpInstanceId, String key,
-			Map<Locale, String> nameMap, boolean preselected, BigDecimal price,
+			Map<Locale, String> nameMap, int duration, String durationType,
+			Date optionValueDate, boolean preselected, BigDecimal price,
 			double priority, BigDecimal quantity, String unitOfMeasureKey,
 			ServiceContext serviceContext)
 		throws PortalException {
@@ -316,8 +319,8 @@ public class CPDefinitionOptionValueRelServiceImpl
 		return cpDefinitionOptionValueRelLocalService.
 			updateCPDefinitionOptionValueRel(
 				cpDefinitionOptionValueRelId, cpInstanceId, key, nameMap,
-				preselected, price, priority, quantity, unitOfMeasureKey,
-				serviceContext);
+				duration, durationType, optionValueDate, preselected, price,
+				priority, quantity, unitOfMeasureKey, serviceContext);
 	}
 
 	@Override

@@ -48,6 +48,8 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	property = {
 		"fds.data.provider.key=" + CommerceProductFDSNames.PRODUCT_OPTION_VALUES,
+		"fds.data.provider.key=" + CommerceProductFDSNames.PRODUCT_OPTION_VALUES_DATE,
+		"fds.data.provider.key=" + CommerceProductFDSNames.PRODUCT_OPTION_VALUES_DATE_STATIC,
 		"fds.data.provider.key=" + CommerceProductFDSNames.PRODUCT_OPTION_VALUES_STATIC
 	},
 	service = FDSActionProvider.class

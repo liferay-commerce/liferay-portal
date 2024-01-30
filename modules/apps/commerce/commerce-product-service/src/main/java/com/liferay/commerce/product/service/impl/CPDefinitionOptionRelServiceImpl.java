@@ -286,9 +286,10 @@ public class CPDefinitionOptionRelServiceImpl
 			long cpDefinitionOptionRelId, long cpOptionId,
 			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
 			String commerceOptionTypeKey, String infoItemServiceKey,
-			double priority, boolean definedExternally, boolean facetable,
-			boolean required, boolean skuContributor, String priceType,
-			String typeSettings, ServiceContext serviceContext)
+			double priority, boolean dateTime, boolean definedExternally,
+			boolean facetable, boolean required, boolean skuContributor,
+			String priceType, String typeSettings,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		CPDefinitionOptionRel cpDefinitionOptionRel =
@@ -301,8 +302,8 @@ public class CPDefinitionOptionRelServiceImpl
 		return cpDefinitionOptionRelLocalService.updateCPDefinitionOptionRel(
 			cpDefinitionOptionRel.getCPDefinitionOptionRelId(), cpOptionId,
 			nameMap, descriptionMap, commerceOptionTypeKey, infoItemServiceKey,
-			priority, definedExternally, facetable, required, skuContributor,
-			priceType, typeSettings, serviceContext);
+			priority, dateTime, definedExternally, facetable, required,
+			skuContributor, priceType, typeSettings, serviceContext);
 	}
 
 	private void _checkCommerceCatalog(long cpDefinitionId, String actionId)

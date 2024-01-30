@@ -11,13 +11,17 @@ package com.liferay.commerce.product.definitions.web.internal.model;
 public class ProductOptionValue {
 
 	public ProductOptionValue(
-		long cpDefinitionOptionValueRelId, String deltaPrice, String key,
-		String name, double position, String preselected, String sku) {
+		long cpDefinitionOptionValueRelId, String deltaPrice, int duration,
+		String durationType, String key, String name, String optionValueDate,
+		double position, String preselected, String sku) {
 
 		_cpDefinitionOptionValueRelId = cpDefinitionOptionValueRelId;
 		_deltaPrice = deltaPrice;
+		_duration = duration;
+		_durationType = durationType;
 		_key = key;
 		_name = name;
+		_optionValueDate = optionValueDate;
 		_position = position;
 		_preselected = preselected;
 		_sku = sku;
@@ -31,12 +35,24 @@ public class ProductOptionValue {
 		return _deltaPrice;
 	}
 
+	public int getDuration() {
+		return _duration;
+	}
+
+	public String getDurationType() {
+		return _durationType;
+	}
+
 	public String getKey() {
 		return _key;
 	}
 
 	public String getName() {
 		return _name;
+	}
+
+	public String getOptionValueDate() {
+		return _optionValueDate;
 	}
 
 	public double getPosition() {
@@ -53,8 +69,11 @@ public class ProductOptionValue {
 
 	private final long _cpDefinitionOptionValueRelId;
 	private final String _deltaPrice;
+	private final int _duration;
+	private final String _durationType;
 	private final String _key;
 	private final String _name;
+	private final String _optionValueDate;
 	private final double _position;
 	private final String _preselected;
 	private final String _sku;
