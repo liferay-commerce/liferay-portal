@@ -75,7 +75,7 @@ public class CPInstanceOptionValueRelTableReferenceDefinitionTest
 					_cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
 					CPInstanceOptionValueRelTableReferenceDefinitionTest.class.
 						getSimpleName(),
-					RandomTestUtil.randomLocaleStringMap(),
+					RandomTestUtil.randomLocaleStringMap(), 0, null, null,
 					RandomTestUtil.nextDouble(),
 					ServiceContextTestUtil.getServiceContext(
 						group.getGroupId()));

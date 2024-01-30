@@ -194,7 +194,8 @@ public class CommerceOrderItemFDSDataProvider
 			List<KeyValuePair> keyValuePairs =
 				_cpInstanceHelper.getKeyValuePairs(
 					commerceOrderItem.getCPDefinitionId(),
-					commerceOrderItem.getJson(), locale);
+					commerceOrderItem.getJson(), locale,
+					themeDisplay.getTimeZone());
 
 			for (KeyValuePair keyValuePair : keyValuePairs) {
 				stringJoiner.add(keyValuePair.getValue());

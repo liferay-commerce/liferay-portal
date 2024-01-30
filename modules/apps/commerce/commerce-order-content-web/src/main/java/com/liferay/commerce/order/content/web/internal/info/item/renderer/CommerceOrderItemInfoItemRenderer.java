@@ -103,7 +103,8 @@ public class CommerceOrderItemInfoItemRenderer
 		).put(
 			"options",
 			CommerceOrderItemUtil.getOptions(
-				commerceOrderItem, _cpInstanceHelper, locale)
+				commerceOrderItem, _cpInstanceHelper, locale,
+				themeDisplay.getTimeZone())
 		).put(
 			"promoPrice",
 			CommerceOrderItemUtil.formatPromoPrice(

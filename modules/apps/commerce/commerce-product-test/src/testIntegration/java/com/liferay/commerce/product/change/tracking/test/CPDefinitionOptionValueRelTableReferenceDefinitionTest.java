@@ -73,7 +73,7 @@ public class CPDefinitionOptionValueRelTableReferenceDefinitionTest
 				_cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
 				CPDefinitionOptionValueRelTableReferenceDefinitionTest.class.
 					getSimpleName(),
-				RandomTestUtil.randomLocaleStringMap(),
+				RandomTestUtil.randomLocaleStringMap(), 0, null, null,
 				RandomTestUtil.nextDouble(),
 				ServiceContextTestUtil.getServiceContext(group.getGroupId()));
 	}

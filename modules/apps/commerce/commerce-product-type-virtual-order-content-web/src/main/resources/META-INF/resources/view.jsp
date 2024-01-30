@@ -54,7 +54,7 @@ CommerceVirtualOrderItemContentDisplayContext commerceVirtualOrderItemContentDis
 
 							StringJoiner stringJoiner = new StringJoiner(StringPool.COMMA);
 
-							for (KeyValuePair keyValuePair : commerceVirtualOrderItemContentDisplayContext.getKeyValuePairs(commerceOrderItem.getCPDefinitionId(), commerceOrderItem.getJson(), locale)) {
+							for (KeyValuePair keyValuePair : commerceVirtualOrderItemContentDisplayContext.getKeyValuePairs(commerceOrderItem.getCPDefinitionId(), commerceOrderItem.getJson(), locale, timeZone)) {
 								stringJoiner.add(keyValuePair.getValue());
 							}
 							%>

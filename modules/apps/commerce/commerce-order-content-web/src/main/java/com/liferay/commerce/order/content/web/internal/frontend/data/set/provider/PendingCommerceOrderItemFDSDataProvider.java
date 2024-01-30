@@ -38,6 +38,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -54,6 +55,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.liferay.portal.kernel.util.WebKeys;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -218,6 +220,10 @@ public class PendingCommerceOrderItemFDSDataProvider
 			return Collections.emptyList();
 		}
 
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
 		Locale locale = _portal.getLocale(httpServletRequest);
 
 		Map<Long, List<CommerceOrderValidatorResult>>
@@ -251,7 +257,8 @@ public class PendingCommerceOrderItemFDSDataProvider
 					_formatSubscriptionPeriod(commerceOrderItem, locale),
 					commerceOrderItem.getName(locale),
 					CommerceOrderItemUtil.getOptions(
-						commerceOrderItem, _cpInstanceHelper, locale),
+						commerceOrderItem, _cpInstanceHelper, locale,
+						themeDisplay.getTimeZone()),
 					commerceOrderItem.getCommerceOrderId(),
 					commerceOrderItem.getCommerceOrderItemId(),
 					_getChildOrderItems(commerceOrderItem, httpServletRequest),

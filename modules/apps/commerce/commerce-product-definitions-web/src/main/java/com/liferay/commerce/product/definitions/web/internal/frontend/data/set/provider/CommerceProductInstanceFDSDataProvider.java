@@ -30,11 +30,13 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.KeyValuePair;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.util.ArrayList;
@@ -42,6 +44,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.StringJoiner;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -71,6 +74,10 @@ public class CommerceProductInstanceFDSDataProvider
 
 		long cpDefinitionId = ParamUtil.getLong(
 			httpServletRequest, "cpDefinitionId");
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
 
 		Locale locale = _portal.getLocale(httpServletRequest);
 
@@ -122,7 +129,8 @@ public class CommerceProductInstanceFDSDataProvider
 					HtmlUtil.escape(
 						_getOptions(
 							cpInstance.getCPDefinitionId(),
-							jsonArray.toString(), locale)),
+							jsonArray.toString(), locale,
+							themeDisplay.getTimeZone())),
 					HtmlUtil.escape(_formatPrice(cpInstance, locale)),
 					cpDefinitionName, availableQuantity,
 					new LabelField(
@@ -212,11 +220,12 @@ public class CommerceProductInstanceFDSDataProvider
 			cpDefinitionId, WorkflowConstants.STATUS_ANY, start, end, null);
 	}
 
-	private String _getOptions(long cpDefinitionId, String json, Locale locale)
+	private String _getOptions(
+			long cpDefinitionId, String json, Locale locale, TimeZone timeZone)
 		throws PortalException {
 
 		List<KeyValuePair> keyValuePairs = _cpInstanceHelper.getKeyValuePairs(
-			cpDefinitionId, json, locale);
+			cpDefinitionId, json, locale, timeZone);
 
 		StringJoiner stringJoiner = new StringJoiner(
 			StringPool.COMMA + StringPool.SPACE);

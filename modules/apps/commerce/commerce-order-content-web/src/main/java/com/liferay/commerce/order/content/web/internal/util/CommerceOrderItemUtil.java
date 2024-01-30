@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
 import java.util.StringJoiner;
+import java.util.TimeZone;
 
 /**
  * @author Alessio Antonio Rendina
@@ -126,7 +127,7 @@ public class CommerceOrderItemUtil {
 
 	public static String getOptions(
 			CommerceOrderItem commerceOrderItem,
-			CPInstanceHelper cpInstanceHelper, Locale locale)
+			CPInstanceHelper cpInstanceHelper, Locale locale, TimeZone timeZone)
 		throws Exception {
 
 		StringJoiner stringJoiner = new StringJoiner(
@@ -135,7 +136,7 @@ public class CommerceOrderItemUtil {
 		List<KeyValuePair> commerceOptionValueKeyValuePairs =
 			cpInstanceHelper.getKeyValuePairs(
 				_getCommerceOrderItemCPDefinitionId(commerceOrderItem),
-				commerceOrderItem.getJson(), locale);
+				commerceOrderItem.getJson(), locale, timeZone);
 
 		for (KeyValuePair keyValuePair : commerceOptionValueKeyValuePairs) {
 			stringJoiner.add(keyValuePair.getValue());

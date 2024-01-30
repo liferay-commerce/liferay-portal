@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.util.KeyValuePair;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 /**
  * @author Marco Leo
@@ -104,7 +105,7 @@ public interface CPInstanceHelper {
 		throws Exception;
 
 	public List<KeyValuePair> getKeyValuePairs(
-			long cpDefinitionId, String json, Locale locale)
+			long cpDefinitionId, String json, Locale locale, TimeZone timeZone)
 		throws PortalException;
 
 	public CPSku toCPSku(CPInstance cpInstance);

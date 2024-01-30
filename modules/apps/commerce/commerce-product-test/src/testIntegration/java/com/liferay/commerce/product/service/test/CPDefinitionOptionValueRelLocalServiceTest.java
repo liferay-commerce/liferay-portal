@@ -127,6 +127,7 @@ public class CPDefinitionOptionValueRelLocalServiceTest {
 			cpDefinitionOptionRel1.getCommerceOptionTypeKey(),
 			cpDefinitionOptionRel1.getInfoItemServiceKey(),
 			cpDefinitionOptionRel1.getPriority(),
+			cpDefinitionOptionRel1.isDateTime(),
 			cpDefinitionOptionRel1.isDefinedExternally(),
 			cpDefinitionOptionRel1.isFacetable(), false, false,
 			CPConstants.PRODUCT_OPTION_PRICE_TYPE_STATIC,
@@ -146,6 +147,7 @@ public class CPDefinitionOptionValueRelLocalServiceTest {
 			cpDefinitionOptionRel2.getCommerceOptionTypeKey(),
 			cpDefinitionOptionRel2.getInfoItemServiceKey(),
 			cpDefinitionOptionRel2.getPriority(),
+			cpDefinitionOptionRel2.isDateTime(),
 			cpDefinitionOptionRel2.isDefinedExternally(),
 			cpDefinitionOptionRel2.isFacetable(), false, false,
 			CPConstants.PRODUCT_OPTION_PRICE_TYPE_STATIC,
@@ -212,6 +214,7 @@ public class CPDefinitionOptionValueRelLocalServiceTest {
 			cpDefinitionOptionRel.getCommerceOptionTypeKey(),
 			cpDefinitionOptionRel.getInfoItemServiceKey(),
 			cpDefinitionOptionRel.getPriority(),
+			cpDefinitionOptionRel.isDateTime(),
 			cpDefinitionOptionRel.isDefinedExternally(),
 			cpDefinitionOptionRel.isFacetable(),
 			cpDefinitionOptionRel.isRequired(),
@@ -299,6 +302,7 @@ public class CPDefinitionOptionValueRelLocalServiceTest {
 			cpDefinitionOptionRel.getCommerceOptionTypeKey(),
 			cpDefinitionOptionRel.getInfoItemServiceKey(),
 			cpDefinitionOptionRel.getPriority(),
+			cpDefinitionOptionRel.isDateTime(),
 			cpDefinitionOptionRel.isDefinedExternally(),
 			cpDefinitionOptionRel.isFacetable(),
 			cpDefinitionOptionRel.isRequired(),
@@ -457,6 +461,7 @@ public class CPDefinitionOptionValueRelLocalServiceTest {
 			cpDefinitionOptionRel.getCommerceOptionTypeKey(),
 			cpDefinitionOptionRel.getInfoItemServiceKey(),
 			cpDefinitionOptionRel.getPriority(),
+			cpDefinitionOptionRel.isDateTime(),
 			cpDefinitionOptionRel.isDefinedExternally(),
 			cpDefinitionOptionRel.isFacetable(),
 			cpDefinitionOptionRel.isRequired(),
@@ -662,6 +667,7 @@ public class CPDefinitionOptionValueRelLocalServiceTest {
 			cpDefinitionOptionRel.getCommerceOptionTypeKey(),
 			cpDefinitionOptionRel.getInfoItemServiceKey(),
 			cpDefinitionOptionRel.getPriority(),
+			cpDefinitionOptionRel.isDateTime(),
 			cpDefinitionOptionRel.isDefinedExternally(),
 			cpDefinitionOptionRel.isFacetable(),
 			cpDefinitionOptionRel.isRequired(),
@@ -705,6 +711,7 @@ public class CPDefinitionOptionValueRelLocalServiceTest {
 			cpDefinitionOptionRel.getCommerceOptionTypeKey(),
 			cpDefinitionOptionRel.getInfoItemServiceKey(),
 			cpDefinitionOptionRel.getPriority(),
+			cpDefinitionOptionRel.isDateTime(),
 			cpDefinitionOptionRel.isDefinedExternally(),
 			cpDefinitionOptionRel.isFacetable(),
 			cpDefinitionOptionRel.isRequired(),
@@ -772,8 +779,8 @@ public class CPDefinitionOptionValueRelLocalServiceTest {
 					cpDefinitionOptionValueRel.
 						getCPDefinitionOptionValueRelId(),
 					cpInstance.getCPInstanceId(), RandomTestUtil.randomString(),
-					RandomTestUtil.randomLocaleStringMap(), false,
-					BigDecimal.TEN, 1, BigDecimal.TEN,
+					RandomTestUtil.randomLocaleStringMap(), 0, null, null,
+					false, BigDecimal.TEN, 1, BigDecimal.TEN,
 					RandomTestUtil.randomString(), _serviceContext);
 
 		Assert.assertNull(cpDefinitionOptionValueRel);
@@ -820,8 +827,8 @@ public class CPDefinitionOptionValueRelLocalServiceTest {
 					cpDefinitionOptionValueRel.
 						getCPDefinitionOptionValueRelId(),
 					cpInstance.getCPInstanceId(), RandomTestUtil.randomString(),
-					RandomTestUtil.randomLocaleStringMap(), false,
-					BigDecimal.TEN, 1, BigDecimal.TEN, StringPool.BLANK,
+					RandomTestUtil.randomLocaleStringMap(), 0, null, null,
+					false, BigDecimal.TEN, 1, BigDecimal.TEN, StringPool.BLANK,
 					_serviceContext);
 
 		Assert.assertNull(cpDefinitionOptionValueRel);
@@ -884,8 +891,8 @@ public class CPDefinitionOptionValueRelLocalServiceTest {
 					cpDefinitionOptionValueRel.
 						getCPDefinitionOptionValueRelId(),
 					cpInstance.getCPInstanceId(), RandomTestUtil.randomString(),
-					RandomTestUtil.randomLocaleStringMap(), false,
-					BigDecimal.TEN, 1, BigDecimal.TEN,
+					RandomTestUtil.randomLocaleStringMap(), 0, null, null,
+					false, BigDecimal.TEN, 1, BigDecimal.TEN,
 					cpInstanceUnitOfMeasureKey, _serviceContext);
 
 		Assert.assertNotNull(cpDefinitionOptionValueRel);
@@ -926,7 +933,7 @@ public class CPDefinitionOptionValueRelLocalServiceTest {
 				addCPDefinitionOptionValueRel(
 					cpDefinitionOptionValueRel.getCPDefinitionOptionRelId(),
 					RandomTestUtil.randomString(),
-					RandomTestUtil.randomLocaleStringMap(),
+					RandomTestUtil.randomLocaleStringMap(), 0, null, null,
 					RandomTestUtil.nextDouble(), _serviceContext);
 
 		CPInstance cpInstance = cpDefinitionOptionValueRel.fetchCPInstance();
@@ -980,6 +987,7 @@ public class CPDefinitionOptionValueRelLocalServiceTest {
 			cpDefinitionOptionRel.getCommerceOptionTypeKey(),
 			cpDefinitionOptionRel.getInfoItemServiceKey(),
 			cpDefinitionOptionRel.getPriority(),
+			cpDefinitionOptionRel.isDateTime(),
 			cpDefinitionOptionRel.isDefinedExternally(),
 			cpDefinitionOptionRel.isFacetable(),
 			cpDefinitionOptionRel.isRequired(),
@@ -1048,7 +1056,8 @@ public class CPDefinitionOptionValueRelLocalServiceTest {
 		return _cpDefinitionOptionValueRelLocalService.
 			addCPDefinitionOptionValueRel(
 				cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
-				"cpInstance-option-value", null, 0, _serviceContext);
+				"cpInstance-option-value", null, 0, null, null, 0,
+				_serviceContext);
 	}
 
 	private void _assertValidateCPDefinitionOptionValueRelCPInstanceLinkFail(
@@ -1076,7 +1085,7 @@ public class CPDefinitionOptionValueRelLocalServiceTest {
 				addCPDefinitionOptionValueRel(
 					cpDefinitionOptionValueRel.getCPDefinitionOptionRelId(),
 					RandomTestUtil.randomString(),
-					RandomTestUtil.randomLocaleStringMap(),
+					RandomTestUtil.randomLocaleStringMap(), 0, null, null,
 					RandomTestUtil.nextDouble(), _serviceContext);
 
 		CPInstance cpInstance = cpDefinitionOptionValueRel.fetchCPInstance();
@@ -1119,9 +1128,9 @@ public class CPDefinitionOptionValueRelLocalServiceTest {
 			updateCPDefinitionOptionValueRel(
 				cpDefinitionOptionValueRel.getCPDefinitionOptionValueRelId(),
 				cpInstanceId, cpDefinitionOptionValueRel.getKey(),
-				cpDefinitionOptionValueRel.getNameMap(), preselected, price,
-				cpDefinitionOptionValueRel.getPriority(), quantity,
-				cpDefinitionOptionValueRel.getUnitOfMeasureKey(),
+				cpDefinitionOptionValueRel.getNameMap(), 0, null, null,
+				preselected, price, cpDefinitionOptionValueRel.getPriority(),
+				quantity, cpDefinitionOptionValueRel.getUnitOfMeasureKey(),
 				_serviceContext);
 	}
 

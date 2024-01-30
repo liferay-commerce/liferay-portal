@@ -205,7 +205,8 @@ public class PlacedCommerceOrderItemFDSDataProvider
 					_formatSubscriptionPeriod(commerceOrderItem, locale),
 					commerceOrderItem.getName(locale),
 					CommerceOrderItemUtil.getOptions(
-						commerceOrderItem, _cpInstanceHelper, locale),
+						commerceOrderItem, _cpInstanceHelper, locale,
+						themeDisplay.getTimeZone()),
 					commerceOrderItem.getCommerceOrderId(),
 					commerceOrderItem.getCommerceOrderItemId(),
 					_getChildOrderItems(commerceOrderItem, httpServletRequest),

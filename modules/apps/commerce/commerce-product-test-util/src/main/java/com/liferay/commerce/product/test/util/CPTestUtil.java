@@ -328,7 +328,7 @@ public class CPTestUtil {
 				addCPDefinitionOptionValueRel(
 					cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
 					RandomTestUtil.randomString(),
-					RandomTestUtil.randomLocaleStringMap(),
+					RandomTestUtil.randomLocaleStringMap(), 0, null, null,
 					RandomTestUtil.randomDouble(), serviceContext);
 
 		if ((cpInstanceId == 0) && (priceType != null)) {
@@ -342,8 +342,8 @@ public class CPTestUtil {
 			updateCPDefinitionOptionValueRel(
 				cpDefinitionOptionValueRel.getCPDefinitionOptionValueRelId(),
 				cpInstanceId, cpDefinitionOptionValueRel.getKey(),
-				cpDefinitionOptionValueRel.getNameMap(), false, price,
-				cpDefinitionOptionValueRel.getPriority(), quantity,
+				cpDefinitionOptionValueRel.getNameMap(), 0, null, null, false,
+				price, cpDefinitionOptionValueRel.getPriority(), quantity,
 				cpDefinitionOptionValueRel.getUnitOfMeasureKey(),
 				serviceContext);
 	}
@@ -1231,7 +1231,7 @@ public class CPTestUtil {
 					addCPDefinitionOptionValueRel(
 						cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
 						RandomTestUtil.randomString(),
-						RandomTestUtil.randomLocaleStringMap(),
+						RandomTestUtil.randomLocaleStringMap(), 0, null, null,
 						RandomTestUtil.nextDouble(), serviceContext);
 
 			BigDecimal price = null;
@@ -1249,8 +1249,8 @@ public class CPTestUtil {
 							getCPDefinitionOptionValueRelId(),
 						cpInstance.getCPInstanceId(),
 						cpInstanceOptionValueRel.getKey(),
-						cpInstanceOptionValueRel.getNameMap(), false, price,
-						cpInstanceOptionValueRel.getPriority(),
+						cpInstanceOptionValueRel.getNameMap(), 0, null, null,
+						false, price, cpInstanceOptionValueRel.getPriority(),
 						BigDecimal.valueOf(2),
 						cpInstanceOptionValueRel.getUnitOfMeasureKey(),
 						serviceContext));

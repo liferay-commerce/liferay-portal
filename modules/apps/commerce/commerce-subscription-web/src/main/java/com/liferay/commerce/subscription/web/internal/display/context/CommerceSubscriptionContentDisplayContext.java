@@ -114,9 +114,11 @@ public class CommerceSubscriptionContentDisplayContext {
 			return Collections.emptyList();
 		}
 
+		ThemeDisplay themeDisplay = _cpRequestHelper.getThemeDisplay();
+
 		return _cpInstanceHelper.getKeyValuePairs(
 			cpInstance.getCPDefinitionId(), commerceOrderItem.getJson(),
-			_cpRequestHelper.getLocale());
+			_cpRequestHelper.getLocale(), themeDisplay.getTimeZone());
 	}
 
 	public PortletURL getPortletURL() throws PortalException {

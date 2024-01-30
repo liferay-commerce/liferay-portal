@@ -160,7 +160,8 @@ public class CommerceOrderItemInfoItemFieldValuesProvider
 		try {
 			if (commerceOrderItem.getParentCommerceOrderItemId() == 0) {
 				options = CommerceOrderItemUtil.getOptions(
-					commerceOrderItem, _cpInstanceHelper, locale);
+					commerceOrderItem, _cpInstanceHelper, locale,
+					themeDisplay.getTimeZone());
 			}
 
 			commerceOrderItemInfoFieldValues.add(

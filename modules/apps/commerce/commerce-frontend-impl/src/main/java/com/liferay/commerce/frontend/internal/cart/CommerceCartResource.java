@@ -46,12 +46,15 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.math.BigDecimal;
@@ -61,6 +64,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 import javax.portlet.PortletURL;
 
@@ -222,10 +226,15 @@ public class CommerceCartResource {
 					new BigDecimal(quantity), 0, BigDecimal.ZERO,
 					unitOfMeasureKey, commerceContext, serviceContext);
 
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)httpServletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY);
+
 			cart = _getCart(
 				commerceOrderItem.getCommerceOrderId(),
 				_getDetailsURL(commerceOrder, groupId, httpServletRequest),
-				LocaleUtil.fromLanguageId(languageId), commerceContext, true);
+				LocaleUtil.fromLanguageId(languageId),
+				themeDisplay.getTimeZone(), commerceContext, true);
 		}
 		catch (Exception exception) {
 			if (exception instanceof CommerceOrderValidatorException) {
@@ -244,14 +253,14 @@ public class CommerceCartResource {
 
 	private Cart _getCart(
 			long commerceOrderId, String detailsUrl, Locale locale,
-			CommerceContext commerceContext, boolean valid)
+			TimeZone timeZone, CommerceContext commerceContext, boolean valid)
 		throws Exception {
 
 		CommerceOrder commerceOrder = _commerceOrderService.getCommerceOrder(
 			commerceOrderId);
 
 		List<Product> product = _getProducts(
-			commerceOrder, commerceContext, locale);
+			commerceOrder, commerceContext, locale, timeZone);
 
 		if (valid && product.isEmpty()) {
 			valid = false;
@@ -431,7 +440,7 @@ public class CommerceCartResource {
 
 	private List<Product> _getProducts(
 			CommerceOrder commerceOrder, CommerceContext commerceContext,
-			Locale locale)
+			Locale locale, TimeZone timeZone)
 		throws Exception {
 
 		List<Product> products = new ArrayList<>();
@@ -474,7 +483,7 @@ public class CommerceCartResource {
 			product.setOptions(
 				_cpInstanceHelper.getKeyValuePairs(
 					commerceOptionValueCPDefinitionId,
-					commerceOrderItem.getJson(), locale));
+					commerceOrderItem.getJson(), locale, timeZone));
 
 			products.add(product);
 		}

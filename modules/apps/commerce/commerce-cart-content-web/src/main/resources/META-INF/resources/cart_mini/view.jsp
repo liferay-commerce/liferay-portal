@@ -134,7 +134,7 @@ request.setAttribute("view.jsp-portletURL", portletURL);
 						<%
 						StringJoiner stringJoiner = new StringJoiner(StringPool.COMMA);
 
-						for (KeyValuePair keyValuePair : commerceCartContentMiniDisplayContext.getKeyValuePairs(commerceOrderItem.getCPDefinitionId(), commerceOrderItem.getJson(), locale)) {
+						for (KeyValuePair keyValuePair : commerceCartContentMiniDisplayContext.getKeyValuePairs(commerceOrderItem.getCPDefinitionId(), commerceOrderItem.getJson(), locale, timeZone)) {
 							stringJoiner.add(keyValuePair.getValue());
 						}
 						%>

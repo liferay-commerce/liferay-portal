@@ -69,6 +69,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -240,10 +241,11 @@ public class OrderSummaryCheckoutStepDisplayContext {
 	}
 
 	public List<KeyValuePair> getKeyValuePairs(
-			long cpDefinitionId, String json, Locale locale)
+			long cpDefinitionId, String json, Locale locale, TimeZone timeZone)
 		throws PortalException {
 
-		return _cpInstanceHelper.getKeyValuePairs(cpDefinitionId, json, locale);
+		return _cpInstanceHelper.getKeyValuePairs(
+			cpDefinitionId, json, locale, timeZone);
 	}
 
 	public String getLocalizedPercentage(BigDecimal percentage, Locale locale)

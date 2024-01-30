@@ -53,6 +53,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.StringJoiner;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -135,7 +136,9 @@ public class PreviewCommerceOrderItemFDSDataProvider
 				return new PreviewOrderItem(
 					externalReferenceCode,
 					_getImportStatus(commerceOrderImporterItem, locale),
-					_getCommerceOrderOptions(commerceOrderImporterItem, locale),
+					_getCommerceOrderOptions(
+						commerceOrderImporterItem, locale,
+						themeDisplay.getTimeZone()),
 					commerceOrderImporterItem.getName(locale), quantity,
 					commerceOrderImporterItem.getReplacingSKU(),
 					_formatImportDate(
@@ -317,7 +320,8 @@ public class PreviewCommerceOrderItemFDSDataProvider
 	}
 
 	private String _getCommerceOrderOptions(
-			CommerceOrderImporterItem commerceOrderImporterItem, Locale locale)
+			CommerceOrderImporterItem commerceOrderImporterItem, Locale locale,
+			TimeZone timeZone)
 		throws PortalException {
 
 		StringJoiner stringJoiner = new StringJoiner(
@@ -327,7 +331,7 @@ public class PreviewCommerceOrderItemFDSDataProvider
 			_cpInstanceHelper.getKeyValuePairs(
 				_getCommerceOptionValueCPDefinitionId(
 					commerceOrderImporterItem),
-				commerceOrderImporterItem.getJSON(), locale);
+				commerceOrderImporterItem.getJSON(), locale, timeZone);
 
 		for (KeyValuePair keyValuePair : commerceOptionValueKeyValuePairs) {
 			stringJoiner.add(keyValuePair.getValue());

@@ -169,9 +169,13 @@ public class CommerceWishListDisplayContext {
 
 		CPDefinition cpDefinition = commerceWishListItem.getCPDefinition();
 
+		ThemeDisplay themeDisplay =
+			_commerceWishListRequestHelper.getThemeDisplay();
+
 		List<KeyValuePair> keyValuePairs = _cpInstanceHelper.getKeyValuePairs(
 			cpDefinition.getCPDefinitionId(), commerceWishListItem.getJson(),
-			_commerceWishListRequestHelper.getLocale());
+			_commerceWishListRequestHelper.getLocale(),
+			themeDisplay.getTimeZone());
 
 		StringBundler sb = new StringBundler((keyValuePairs.size() * 2) - 1);
 

@@ -49,6 +49,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TimeZone;
 
 import javax.portlet.PortletURL;
 
@@ -235,10 +236,11 @@ public class CommerceCartContentDisplayContext {
 	}
 
 	public List<KeyValuePair> getKeyValuePairs(
-			long cpDefinitionId, String json, Locale locale)
+			long cpDefinitionId, String json, Locale locale, TimeZone timeZone)
 		throws PortalException {
 
-		return cpInstanceHelper.getKeyValuePairs(cpDefinitionId, json, locale);
+		return cpInstanceHelper.getKeyValuePairs(
+			cpDefinitionId, json, locale, timeZone);
 	}
 
 	public PortletURL getPortletURL() {

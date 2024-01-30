@@ -41,6 +41,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import javax.portlet.PortletURL;
 import javax.portlet.ResourceURL;
@@ -265,10 +266,11 @@ public class CommerceVirtualOrderItemContentDisplayContext {
 	}
 
 	public List<KeyValuePair> getKeyValuePairs(
-			long cpDefinitionId, String json, Locale locale)
+			long cpDefinitionId, String json, Locale locale, TimeZone timeZone)
 		throws PortalException {
 
-		return _cpInstanceHelper.getKeyValuePairs(cpDefinitionId, json, locale);
+		return _cpInstanceHelper.getKeyValuePairs(
+			cpDefinitionId, json, locale, timeZone);
 	}
 
 	public PortletURL getPortletURL() throws PortalException {
