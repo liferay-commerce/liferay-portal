@@ -91,12 +91,16 @@ public class ProductOptionValueDTOConverter
 										cpDefinitionOptionValueRel.
 											getOptionValueDate());
 
-									if (cpDefinitionOptionValueRel.getDuration() <= 0) {
-										return formattedDate + StringPool.SPACE +
-											formattedTime;
+									int duration =
+										cpDefinitionOptionValueRel.
+											getDuration();
+
+									if (duration > 0) {
+										return formattedDate +
+											StringPool.SPACE + formattedTime;
 									}
-									else {
-										return StringBundler.concat(
+
+									return StringBundler.concat(
 										formattedDate, StringPool.SPACE,
 										formattedTime, StringPool.SPACE,
 										cpDefinitionOptionValueRel.
@@ -104,7 +108,6 @@ public class ProductOptionValueDTOConverter
 										StringPool.SPACE,
 										cpDefinitionOptionValueRel.
 											getDurationType());
-									}
 								}
 							).build();
 						}

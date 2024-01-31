@@ -228,17 +228,20 @@ public class ProductOptionValueDTOConverter
 							String formattedTime = timeFormat.format(
 								cpDefinitionOptionValueRel.
 									getOptionValueDate());
-							
+
 							if (cpDefinitionOptionValueRel.getDuration() <= 0) {
-								name = formattedDate + StringPool.SPACE + formattedTime;
+								name =
+									formattedDate + StringPool.SPACE +
+										formattedTime;
 							}
 							else {
 								name = StringBundler.concat(
-									formattedDate, StringPool.SPACE, formattedTime,
-									StringPool.SPACE,
+									formattedDate, StringPool.SPACE,
+									formattedTime, StringPool.SPACE,
 									cpDefinitionOptionValueRel.getDuration(),
 									StringPool.SPACE,
-									cpDefinitionOptionValueRel.getDurationType());
+									cpDefinitionOptionValueRel.
+										getDurationType());
 							}
 						}
 

@@ -656,8 +656,9 @@ public class CPInstanceHelperImpl implements CPInstanceHelper {
 								cpDefinitionOptionValueRel.getDurationType());
 						}
 						else {
-							value = formattedDate + StringPool.SPACE +
-								formattedTime;
+							value =
+								formattedDate + StringPool.SPACE +
+									formattedTime;
 						}
 					}
 					else {
