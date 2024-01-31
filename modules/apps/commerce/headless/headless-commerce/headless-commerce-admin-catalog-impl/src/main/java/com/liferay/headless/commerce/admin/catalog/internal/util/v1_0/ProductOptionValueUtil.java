@@ -87,6 +87,15 @@ public class ProductOptionValueUtil {
 							cpDefinitionOptionValueRel.getKey()),
 						LanguageUtils.getLocalizedMap(nameMap),
 						GetterUtil.get(
+							productOptionValue.getDuration(),
+							cpDefinitionOptionValueRel.getDuration()),
+						GetterUtil.get(
+							productOptionValue.getDurationType(),
+							cpDefinitionOptionValueRel.getDurationType()),
+						GetterUtil.get(
+							productOPtionValue.getOptionValueDate(),
+							cpDefinitionOptionRel.getOptionValueDate()),
+						GetterUtil.get(
 							productOptionValue.getPreselected(),
 							cpDefinitionOptionValueRel.isPreselected()),
 						BigDecimalUtil.get(

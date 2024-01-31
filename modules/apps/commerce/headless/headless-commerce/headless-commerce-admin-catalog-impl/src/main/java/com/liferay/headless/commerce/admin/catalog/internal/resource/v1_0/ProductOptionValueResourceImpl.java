@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
+import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
@@ -126,6 +127,18 @@ public class ProductOptionValueResourceImpl
 					productOptionValue.getKey(),
 					cpDefinitionOptionValueRel.getKey()),
 				LanguageUtils.getLocalizedMap(nameMap),
+				GetterUtil.get(
+					productOptionValue.getDuration(),
+					cpDefinitionOptionValueRel.getDuration()),
+				GetterUtil.get(
+					String.valueOf(productOptionValue.getDurationType()),
+					String.valueOf(cpDefinitionOptionValueRel.getDuration())),
+				GetterUtil.getDate(
+					productOptionValue.getOptionValueDate(),
+					DateFormatFactoryUtil.getDate(
+						contextAcceptLanguage.getPreferredLocale(),
+						contextUser.getTimeZone()),
+					cpDefinitionOptionValueRel.getOptionValueDate()),
 				GetterUtil.get(
 					productOptionValue.getPreselected(),
 					cpDefinitionOptionValueRel.isPreselected()),

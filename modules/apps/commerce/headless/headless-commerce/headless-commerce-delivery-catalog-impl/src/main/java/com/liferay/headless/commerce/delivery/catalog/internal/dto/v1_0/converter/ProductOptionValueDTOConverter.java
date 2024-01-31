@@ -40,6 +40,8 @@ import com.liferay.commerce.service.CPDefinitionInventoryLocalService;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.ProductOptionValue;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.SkuOption;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -49,6 +51,8 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
@@ -58,6 +62,9 @@ import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 
 import java.math.BigDecimal;
+
+import java.text.DateFormat;
+import java.text.Format;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,6 +110,8 @@ public class ProductOptionValueDTOConverter
 
 		return new ProductOptionValue() {
 			{
+				setDuration(cpDefinitionOptionValueRel::getDuration);
+				setDurationType(cpDefinitionOptionValueRel::getDurationType);
 				setId(
 					cpDefinitionOptionValueRel::
 						getCPDefinitionOptionValueRelId);
@@ -189,9 +198,52 @@ public class ProductOptionValueDTOConverter
 					});
 				setKey(cpDefinitionOptionValueRel::getKey);
 				setName(
-					() -> cpDefinitionOptionValueRel.getName(
-						_language.getLanguageId(
-							dtoConverterContext.getLocale())));
+					() -> {
+						name = cpDefinitionOptionValueRel.getName(
+							_language.getLanguageId(
+								dtoConverterContext.getLocale()));
+
+						if (cpDefinitionOptionRel.isDateTime() &&
+							(cpDefinitionOptionValueRel.getOptionValueDate() !=
+								null)) {
+
+							User user = dtoConverterContext.getUser();
+
+							Format dateFormat =
+								FastDateFormatFactoryUtil.getDate(
+									DateFormat.MEDIUM,
+									dtoConverterContext.getLocale(),
+									user.getTimeZone());
+
+							Format timeFormat =
+								FastDateFormatFactoryUtil.getTime(
+									DateFormat.SHORT,
+									dtoConverterContext.getLocale(),
+									user.getTimeZone());
+
+							String formattedDate = dateFormat.format(
+								cpDefinitionOptionValueRel.
+									getOptionValueDate());
+
+							String formattedTime = timeFormat.format(
+								cpDefinitionOptionValueRel.
+									getOptionValueDate());
+							
+							if (cpDefinitionOptionValueRel.getDuration() <= 0) {
+								name = formattedDate + StringPool.SPACE + formattedTime;
+							}
+							else {
+								name = StringBundler.concat(
+									formattedDate, StringPool.SPACE, formattedTime,
+									StringPool.SPACE,
+									cpDefinitionOptionValueRel.getDuration(),
+									StringPool.SPACE,
+									cpDefinitionOptionValueRel.getDurationType());
+							}
+						}
+
+						return name;
+					});
 				setPreselected(cpDefinitionOptionValueRel::isPreselected);
 				setPrice(
 					() ->

@@ -103,6 +103,9 @@ public class ProductOptionUtil {
 						productOption.getPriority(),
 						cpDefinitionOptionRel.getPriority()),
 					GetterUtil.get(
+						productOption.getDateTime(),
+						cpDefinitionOptionRel.isDateTime()),
+					GetterUtil.get(
 						productOption.getDefinedExternally(),
 						cpDefinitionOptionRel.isDefinedExternally()),
 					GetterUtil.get(

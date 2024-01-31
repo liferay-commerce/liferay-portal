@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
+import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
@@ -166,9 +167,11 @@ public class ProductOptionValueResourceImpl
 
 			DefaultDTOConverterContext defaultDTOConverterContext =
 				new DefaultDTOConverterContext(
+					_dtoConverterRegistry,
 					cpDefinitionOptionValueRel.
 						getCPDefinitionOptionValueRelId(),
-					contextAcceptLanguage.getPreferredLocale());
+					contextAcceptLanguage.getPreferredLocale(), null,
+					contextUser);
 
 			defaultDTOConverterContext.setAttribute(
 				"commerceContext", commerceContext);
@@ -206,6 +209,9 @@ public class ProductOptionValueResourceImpl
 	@Reference
 	private CPDefinitionOptionValueRelLocalService
 		_cpDefinitionOptionValueRelLocalService;
+
+	@Reference
+	private DTOConverterRegistry _dtoConverterRegistry;
 
 	@Reference(
 		target = DTOConverterConstants.PRODUCT_OPTION_VALUE_DTO_CONVERTER

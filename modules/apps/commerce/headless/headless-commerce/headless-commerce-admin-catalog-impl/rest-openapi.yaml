@@ -1321,6 +1321,9 @@ components:
                     items:
                         $ref: "#/components/schemas/CustomField"
                     type: array
+                dateTime:
+                    example: true
+                    type: boolean
                 definedExternally:
                     example: true
                     type: boolean
@@ -1396,6 +1399,12 @@ components:
                     format: bigdecimal
                     minimum: 0
                     type: number
+                duration:
+                    format: int32
+                    type: integer
+                durationType:
+                    example: hour
+                    type: string
                 id:
                     example: 30130
                     format: int64
@@ -1413,6 +1422,9 @@ components:
                         hr_HR: Black HR
                         hu_HU: Black HU
                     type: object
+                optionValueDate:
+                    format: date-time
+                    type: string
                 preselected:
                     example: true
                     type: boolean

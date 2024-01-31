@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
+import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 
 import java.util.ArrayList;
@@ -60,6 +61,7 @@ public class ProductOptionDTOConverter
 						cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
 						cpDefinitionOptionRel.getCompanyId(),
 						dtoConverterContext.getLocale()));
+				setDateTime(cpDefinitionOptionRel::isDateTime);
 				setDescription(
 					() -> LanguageUtils.getLanguageIdMap(
 						cpDefinitionOptionRel.getDescriptionMap()));
@@ -119,9 +121,11 @@ public class ProductOptionDTOConverter
 			productOptionValues.add(
 				_productOptionValueDTOConverter.toDTO(
 					new DefaultDTOConverterContext(
+						_dtoConverterRegistry,
 						cpDefinitionOptionValueRel.
 							getCPDefinitionOptionValueRelId(),
-						dtoConverterContext.getLocale()),
+						dtoConverterContext.getLocale(), null,
+						dtoConverterContext.getUser()),
 					cpDefinitionOptionValueRel));
 		}
 
@@ -137,6 +141,9 @@ public class ProductOptionDTOConverter
 
 	@Reference
 	private CPOptionLocalService _cpOptionLocalService;
+
+	@Reference
+	private DTOConverterRegistry _dtoConverterRegistry;
 
 	@Reference(
 		target = DTOConverterConstants.PRODUCT_OPTION_VALUE_DTO_CONVERTER

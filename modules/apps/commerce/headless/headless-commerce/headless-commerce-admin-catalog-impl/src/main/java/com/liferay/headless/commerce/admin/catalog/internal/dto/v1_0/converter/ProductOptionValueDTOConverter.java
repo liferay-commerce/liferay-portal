@@ -5,12 +5,21 @@
 
 package com.liferay.headless.commerce.admin.catalog.internal.dto.v1_0.converter;
 
+import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductOptionValue;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
+
+import java.text.DateFormat;
+import java.text.Format;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -38,13 +47,70 @@ public class ProductOptionValueDTOConverter
 		return new ProductOptionValue() {
 			{
 				setDeltaPrice(cpDefinitionOptionValueRel::getPrice);
+				setDuration(cpDefinitionOptionValueRel::getDuration);
+				setDurationType(cpDefinitionOptionValueRel::getDurationType);
 				setId(
 					cpDefinitionOptionValueRel::
 						getCPDefinitionOptionValueRelId);
 				setKey(cpDefinitionOptionValueRel::getKey);
 				setName(
-					() -> LanguageUtils.getLanguageIdMap(
-						cpDefinitionOptionValueRel.getNameMap()));
+					() -> {
+						name = LanguageUtils.getLanguageIdMap(
+							cpDefinitionOptionValueRel.getNameMap());
+
+						CPDefinitionOptionRel cpDefinitionOptionRel =
+							cpDefinitionOptionValueRel.
+								getCPDefinitionOptionRel();
+
+						if (cpDefinitionOptionRel.isDateTime() &&
+							(cpDefinitionOptionValueRel.getOptionValueDate() !=
+								null)) {
+
+							User user = dtoConverterContext.getUser();
+
+							name = HashMapBuilder.put(
+								user.getLanguageId(),
+								() -> {
+									Format dateFormat =
+										FastDateFormatFactoryUtil.getDate(
+											DateFormat.MEDIUM,
+											dtoConverterContext.getLocale(),
+											user.getTimeZone());
+
+									Format timeFormat =
+										FastDateFormatFactoryUtil.getTime(
+											DateFormat.SHORT,
+											dtoConverterContext.getLocale(),
+											user.getTimeZone());
+
+									String formattedDate = dateFormat.format(
+										cpDefinitionOptionValueRel.
+											getOptionValueDate());
+
+									String formattedTime = timeFormat.format(
+										cpDefinitionOptionValueRel.
+											getOptionValueDate());
+
+									if (cpDefinitionOptionValueRel.getDuration() <= 0) {
+										return formattedDate + StringPool.SPACE +
+											formattedTime;
+									}
+									else {
+										return StringBundler.concat(
+										formattedDate, StringPool.SPACE,
+										formattedTime, StringPool.SPACE,
+										cpDefinitionOptionValueRel.
+											getDuration(),
+										StringPool.SPACE,
+										cpDefinitionOptionValueRel.
+											getDurationType());
+									}
+								}
+							).build();
+						}
+
+						return name;
+					});
 				setPreselected(cpDefinitionOptionValueRel::isPreselected);
 				setPriority(cpDefinitionOptionValueRel::getPriority);
 				setQuantity(cpDefinitionOptionValueRel::getQuantity);
