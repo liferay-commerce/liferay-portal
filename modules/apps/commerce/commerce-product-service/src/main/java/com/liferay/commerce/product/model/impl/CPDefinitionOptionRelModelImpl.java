@@ -81,10 +81,10 @@ public class CPDefinitionOptionRelModelImpl
 		{"name", Types.VARCHAR}, {"description", Types.VARCHAR},
 		{"commerceOptionTypeKey", Types.VARCHAR},
 		{"infoItemServiceKey", Types.VARCHAR}, {"priority", Types.DOUBLE},
-		{"definedExternally", Types.BOOLEAN}, {"facetable", Types.BOOLEAN},
-		{"required", Types.BOOLEAN}, {"skuContributor", Types.BOOLEAN},
-		{"key_", Types.VARCHAR}, {"priceType", Types.VARCHAR},
-		{"typeSettings", Types.CLOB}
+		{"dateTime", Types.BOOLEAN}, {"definedExternally", Types.BOOLEAN},
+		{"facetable", Types.BOOLEAN}, {"required", Types.BOOLEAN},
+		{"skuContributor", Types.BOOLEAN}, {"key_", Types.VARCHAR},
+		{"priceType", Types.VARCHAR}, {"typeSettings", Types.CLOB}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -108,6 +108,7 @@ public class CPDefinitionOptionRelModelImpl
 		TABLE_COLUMNS_MAP.put("commerceOptionTypeKey", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("infoItemServiceKey", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("priority", Types.DOUBLE);
+		TABLE_COLUMNS_MAP.put("dateTime", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("definedExternally", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("facetable", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("required", Types.BOOLEAN);
@@ -118,7 +119,7 @@ public class CPDefinitionOptionRelModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table CPDefinitionOptionRel (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,CPDefinitionOptionRelId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,CPDefinitionId LONG,CPOptionId LONG,name STRING null,description STRING null,commerceOptionTypeKey VARCHAR(75) null,infoItemServiceKey VARCHAR(255) null,priority DOUBLE,definedExternally BOOLEAN,facetable BOOLEAN,required BOOLEAN,skuContributor BOOLEAN,key_ VARCHAR(75) null,priceType VARCHAR(75) null,typeSettings TEXT null,primary key (CPDefinitionOptionRelId, ctCollectionId))";
+		"create table CPDefinitionOptionRel (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,CPDefinitionOptionRelId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,CPDefinitionId LONG,CPOptionId LONG,name STRING null,description STRING null,commerceOptionTypeKey VARCHAR(75) null,infoItemServiceKey VARCHAR(255) null,priority DOUBLE,dateTime BOOLEAN,definedExternally BOOLEAN,facetable BOOLEAN,required BOOLEAN,skuContributor BOOLEAN,key_ VARCHAR(75) null,priceType VARCHAR(75) null,typeSettings TEXT null,primary key (CPDefinitionOptionRelId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table CPDefinitionOptionRel";
@@ -340,6 +341,8 @@ public class CPDefinitionOptionRelModelImpl
 			attributeGetterFunctions.put(
 				"priority", CPDefinitionOptionRel::getPriority);
 			attributeGetterFunctions.put(
+				"dateTime", CPDefinitionOptionRel::getDateTime);
+			attributeGetterFunctions.put(
 				"definedExternally",
 				CPDefinitionOptionRel::getDefinedExternally);
 			attributeGetterFunctions.put(
@@ -440,6 +443,10 @@ public class CPDefinitionOptionRelModelImpl
 				"priority",
 				(BiConsumer<CPDefinitionOptionRel, Double>)
 					CPDefinitionOptionRel::setPriority);
+			attributeSetterBiConsumers.put(
+				"dateTime",
+				(BiConsumer<CPDefinitionOptionRel, Boolean>)
+					CPDefinitionOptionRel::setDateTime);
 			attributeSetterBiConsumers.put(
 				"definedExternally",
 				(BiConsumer<CPDefinitionOptionRel, Boolean>)
@@ -1011,6 +1018,27 @@ public class CPDefinitionOptionRelModelImpl
 
 	@JSON
 	@Override
+	public boolean getDateTime() {
+		return _dateTime;
+	}
+
+	@JSON
+	@Override
+	public boolean isDateTime() {
+		return _dateTime;
+	}
+
+	@Override
+	public void setDateTime(boolean dateTime) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_dateTime = dateTime;
+	}
+
+	@JSON
+	@Override
 	public boolean getDefinedExternally() {
 		return _definedExternally;
 	}
@@ -1354,6 +1382,7 @@ public class CPDefinitionOptionRelModelImpl
 		cpDefinitionOptionRelImpl.setInfoItemServiceKey(
 			getInfoItemServiceKey());
 		cpDefinitionOptionRelImpl.setPriority(getPriority());
+		cpDefinitionOptionRelImpl.setDateTime(isDateTime());
 		cpDefinitionOptionRelImpl.setDefinedExternally(isDefinedExternally());
 		cpDefinitionOptionRelImpl.setFacetable(isFacetable());
 		cpDefinitionOptionRelImpl.setRequired(isRequired());
@@ -1406,6 +1435,8 @@ public class CPDefinitionOptionRelModelImpl
 			this.<String>getColumnOriginalValue("infoItemServiceKey"));
 		cpDefinitionOptionRelImpl.setPriority(
 			this.<Double>getColumnOriginalValue("priority"));
+		cpDefinitionOptionRelImpl.setDateTime(
+			this.<Boolean>getColumnOriginalValue("dateTime"));
 		cpDefinitionOptionRelImpl.setDefinedExternally(
 			this.<Boolean>getColumnOriginalValue("definedExternally"));
 		cpDefinitionOptionRelImpl.setFacetable(
@@ -1599,6 +1630,8 @@ public class CPDefinitionOptionRelModelImpl
 
 		cpDefinitionOptionRelCacheModel.priority = getPriority();
 
+		cpDefinitionOptionRelCacheModel.dateTime = isDateTime();
+
 		cpDefinitionOptionRelCacheModel.definedExternally =
 			isDefinedExternally();
 
@@ -1714,6 +1747,7 @@ public class CPDefinitionOptionRelModelImpl
 	private String _commerceOptionTypeKey;
 	private String _infoItemServiceKey;
 	private double _priority;
+	private boolean _dateTime;
 	private boolean _definedExternally;
 	private boolean _facetable;
 	private boolean _required;
@@ -1771,6 +1805,7 @@ public class CPDefinitionOptionRelModelImpl
 			"commerceOptionTypeKey", _commerceOptionTypeKey);
 		_columnOriginalValues.put("infoItemServiceKey", _infoItemServiceKey);
 		_columnOriginalValues.put("priority", _priority);
+		_columnOriginalValues.put("dateTime", _dateTime);
 		_columnOriginalValues.put("definedExternally", _definedExternally);
 		_columnOriginalValues.put("facetable", _facetable);
 		_columnOriginalValues.put("required", _required);
@@ -1836,19 +1871,21 @@ public class CPDefinitionOptionRelModelImpl
 
 		columnBitmasks.put("priority", 65536L);
 
-		columnBitmasks.put("definedExternally", 131072L);
+		columnBitmasks.put("dateTime", 131072L);
 
-		columnBitmasks.put("facetable", 262144L);
+		columnBitmasks.put("definedExternally", 262144L);
 
-		columnBitmasks.put("required", 524288L);
+		columnBitmasks.put("facetable", 524288L);
 
-		columnBitmasks.put("skuContributor", 1048576L);
+		columnBitmasks.put("required", 1048576L);
 
-		columnBitmasks.put("key_", 2097152L);
+		columnBitmasks.put("skuContributor", 2097152L);
 
-		columnBitmasks.put("priceType", 4194304L);
+		columnBitmasks.put("key_", 4194304L);
 
-		columnBitmasks.put("typeSettings", 8388608L);
+		columnBitmasks.put("priceType", 8388608L);
+
+		columnBitmasks.put("typeSettings", 16777216L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}

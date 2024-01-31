@@ -76,6 +76,9 @@ public class CPDefinitionOptionRelTable
 	public final Column<CPDefinitionOptionRelTable, Double> priority =
 		createColumn(
 			"priority", Double.class, Types.DOUBLE, Column.FLAG_DEFAULT);
+	public final Column<CPDefinitionOptionRelTable, Boolean> dateTime =
+		createColumn(
+			"dateTime", Boolean.class, Types.BOOLEAN, Column.FLAG_DEFAULT);
 	public final Column<CPDefinitionOptionRelTable, Boolean> definedExternally =
 		createColumn(
 			"definedExternally", Boolean.class, Types.BOOLEAN,

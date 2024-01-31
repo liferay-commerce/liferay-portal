@@ -69,7 +69,7 @@ public class CPDefinitionOptionRelCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(49);
+		StringBundler sb = new StringBundler(51);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -105,6 +105,8 @@ public class CPDefinitionOptionRelCacheModel
 		sb.append(infoItemServiceKey);
 		sb.append(", priority=");
 		sb.append(priority);
+		sb.append(", dateTime=");
+		sb.append(dateTime);
 		sb.append(", definedExternally=");
 		sb.append(definedExternally);
 		sb.append(", facetable=");
@@ -199,6 +201,7 @@ public class CPDefinitionOptionRelCacheModel
 		}
 
 		cpDefinitionOptionRelImpl.setPriority(priority);
+		cpDefinitionOptionRelImpl.setDateTime(dateTime);
 		cpDefinitionOptionRelImpl.setDefinedExternally(definedExternally);
 		cpDefinitionOptionRelImpl.setFacetable(facetable);
 		cpDefinitionOptionRelImpl.setRequired(required);
@@ -259,6 +262,8 @@ public class CPDefinitionOptionRelCacheModel
 		infoItemServiceKey = objectInput.readUTF();
 
 		priority = objectInput.readDouble();
+
+		dateTime = objectInput.readBoolean();
 
 		definedExternally = objectInput.readBoolean();
 
@@ -337,6 +342,8 @@ public class CPDefinitionOptionRelCacheModel
 
 		objectOutput.writeDouble(priority);
 
+		objectOutput.writeBoolean(dateTime);
+
 		objectOutput.writeBoolean(definedExternally);
 
 		objectOutput.writeBoolean(facetable);
@@ -384,6 +391,7 @@ public class CPDefinitionOptionRelCacheModel
 	public String commerceOptionTypeKey;
 	public String infoItemServiceKey;
 	public double priority;
+	public boolean dateTime;
 	public boolean definedExternally;
 	public boolean facetable;
 	public boolean required;

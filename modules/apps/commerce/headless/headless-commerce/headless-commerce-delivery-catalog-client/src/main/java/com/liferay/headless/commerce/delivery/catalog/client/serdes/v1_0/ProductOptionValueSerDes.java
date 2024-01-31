@@ -8,6 +8,9 @@ package com.liferay.headless.commerce.delivery.catalog.client.serdes.v1_0;
 import com.liferay.headless.commerce.delivery.catalog.client.dto.v1_0.ProductOptionValue;
 import com.liferay.headless.commerce.delivery.catalog.client.json.BaseJSONParser;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -45,6 +48,33 @@ public class ProductOptionValueSerDes {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("{");
+
+		DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
+			"yyyy-MM-dd'T'HH:mm:ssXX");
+
+		if (productOptionValue.getDuration() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"duration\": ");
+
+			sb.append(productOptionValue.getDuration());
+		}
+
+		if (productOptionValue.getDurationType() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"durationType\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(productOptionValue.getDurationType()));
+
+			sb.append("\"");
+		}
 
 		if (productOptionValue.getId() != null) {
 			if (sb.length() > 1) {
@@ -94,6 +124,22 @@ public class ProductOptionValueSerDes {
 			sb.append("\"");
 
 			sb.append(_escape(productOptionValue.getName()));
+
+			sb.append("\"");
+		}
+
+		if (productOptionValue.getOptionValueDate() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"optionValueDate\": ");
+
+			sb.append("\"");
+
+			sb.append(
+				liferayToJSONDateFormat.format(
+					productOptionValue.getOptionValueDate()));
 
 			sb.append("\"");
 		}
@@ -263,6 +309,26 @@ public class ProductOptionValueSerDes {
 
 		Map<String, String> map = new TreeMap<>();
 
+		DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
+			"yyyy-MM-dd'T'HH:mm:ssXX");
+
+		if (productOptionValue.getDuration() == null) {
+			map.put("duration", null);
+		}
+		else {
+			map.put(
+				"duration", String.valueOf(productOptionValue.getDuration()));
+		}
+
+		if (productOptionValue.getDurationType() == null) {
+			map.put("durationType", null);
+		}
+		else {
+			map.put(
+				"durationType",
+				String.valueOf(productOptionValue.getDurationType()));
+		}
+
 		if (productOptionValue.getId() == null) {
 			map.put("id", null);
 		}
@@ -291,6 +357,16 @@ public class ProductOptionValueSerDes {
 		}
 		else {
 			map.put("name", String.valueOf(productOptionValue.getName()));
+		}
+
+		if (productOptionValue.getOptionValueDate() == null) {
+			map.put("optionValueDate", null);
+		}
+		else {
+			map.put(
+				"optionValueDate",
+				liferayToJSONDateFormat.format(
+					productOptionValue.getOptionValueDate()));
 		}
 
 		if (productOptionValue.getPreselected() == null) {
@@ -413,7 +489,19 @@ public class ProductOptionValueSerDes {
 			ProductOptionValue productOptionValue, String jsonParserFieldName,
 			Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "id")) {
+			if (Objects.equals(jsonParserFieldName, "duration")) {
+				if (jsonParserFieldValue != null) {
+					productOptionValue.setDuration(
+						Integer.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "durationType")) {
+				if (jsonParserFieldValue != null) {
+					productOptionValue.setDurationType(
+						(String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "id")) {
 				if (jsonParserFieldValue != null) {
 					productOptionValue.setId(
 						Long.valueOf((String)jsonParserFieldValue));
@@ -433,6 +521,12 @@ public class ProductOptionValueSerDes {
 			else if (Objects.equals(jsonParserFieldName, "name")) {
 				if (jsonParserFieldValue != null) {
 					productOptionValue.setName((String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "optionValueDate")) {
+				if (jsonParserFieldValue != null) {
+					productOptionValue.setOptionValueDate(
+						toDate((String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "preselected")) {

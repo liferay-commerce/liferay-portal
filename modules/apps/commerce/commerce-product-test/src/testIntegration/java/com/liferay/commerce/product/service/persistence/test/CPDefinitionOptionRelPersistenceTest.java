@@ -154,6 +154,8 @@ public class CPDefinitionOptionRelPersistenceTest {
 
 		newCPDefinitionOptionRel.setPriority(RandomTestUtil.nextDouble());
 
+		newCPDefinitionOptionRel.setDateTime(RandomTestUtil.randomBoolean());
+
 		newCPDefinitionOptionRel.setDefinedExternally(
 			RandomTestUtil.randomBoolean());
 
@@ -230,6 +232,9 @@ public class CPDefinitionOptionRelPersistenceTest {
 		AssertUtils.assertEquals(
 			existingCPDefinitionOptionRel.getPriority(),
 			newCPDefinitionOptionRel.getPriority());
+		Assert.assertEquals(
+			existingCPDefinitionOptionRel.isDateTime(),
+			newCPDefinitionOptionRel.isDateTime());
 		Assert.assertEquals(
 			existingCPDefinitionOptionRel.isDefinedExternally(),
 			newCPDefinitionOptionRel.isDefinedExternally());
@@ -368,9 +373,9 @@ public class CPDefinitionOptionRelPersistenceTest {
 			"createDate", true, "modifiedDate", true, "CPDefinitionId", true,
 			"CPOptionId", true, "name", true, "description", true,
 			"commerceOptionTypeKey", true, "infoItemServiceKey", true,
-			"priority", true, "definedExternally", true, "facetable", true,
-			"required", true, "skuContributor", true, "key", true, "priceType",
-			true);
+			"priority", true, "dateTime", true, "definedExternally", true,
+			"facetable", true, "required", true, "skuContributor", true, "key",
+			true, "priceType", true);
 	}
 
 	@Test
@@ -740,6 +745,8 @@ public class CPDefinitionOptionRelPersistenceTest {
 			RandomTestUtil.randomString());
 
 		cpDefinitionOptionRel.setPriority(RandomTestUtil.nextDouble());
+
+		cpDefinitionOptionRel.setDateTime(RandomTestUtil.randomBoolean());
 
 		cpDefinitionOptionRel.setDefinedExternally(
 			RandomTestUtil.randomBoolean());

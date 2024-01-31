@@ -78,6 +78,16 @@ public class ProductOptionSerDes {
 			sb.append("]");
 		}
 
+		if (productOption.getDateTime() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"dateTime\": ");
+
+			sb.append(productOption.getDateTime());
+		}
+
 		if (productOption.getDefinedExternally() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -296,6 +306,13 @@ public class ProductOptionSerDes {
 				String.valueOf(productOption.getCustomFields()));
 		}
 
+		if (productOption.getDateTime() == null) {
+			map.put("dateTime", null);
+		}
+		else {
+			map.put("dateTime", String.valueOf(productOption.getDateTime()));
+		}
+
 		if (productOption.getDefinedExternally() == null) {
 			map.put("definedExternally", null);
 		}
@@ -453,6 +470,11 @@ public class ProductOptionSerDes {
 					}
 
 					productOption.setCustomFields(customFieldsArray);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "dateTime")) {
+				if (jsonParserFieldValue != null) {
+					productOption.setDateTime((Boolean)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "definedExternally")) {

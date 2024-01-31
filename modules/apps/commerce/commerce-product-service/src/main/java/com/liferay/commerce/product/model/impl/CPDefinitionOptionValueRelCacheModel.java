@@ -74,7 +74,7 @@ public class CPDefinitionOptionValueRelCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(41);
+		StringBundler sb = new StringBundler(47);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -106,6 +106,12 @@ public class CPDefinitionOptionValueRelCacheModel
 		sb.append(key);
 		sb.append(", name=");
 		sb.append(name);
+		sb.append(", duration=");
+		sb.append(duration);
+		sb.append(", durationType=");
+		sb.append(durationType);
+		sb.append(", optionValueDate=");
+		sb.append(optionValueDate);
 		sb.append(", preselected=");
 		sb.append(preselected);
 		sb.append(", price=");
@@ -190,6 +196,23 @@ public class CPDefinitionOptionValueRelCacheModel
 			cpDefinitionOptionValueRelImpl.setName(name);
 		}
 
+		cpDefinitionOptionValueRelImpl.setDuration(duration);
+
+		if (durationType == null) {
+			cpDefinitionOptionValueRelImpl.setDurationType("");
+		}
+		else {
+			cpDefinitionOptionValueRelImpl.setDurationType(durationType);
+		}
+
+		if (optionValueDate == Long.MIN_VALUE) {
+			cpDefinitionOptionValueRelImpl.setOptionValueDate(null);
+		}
+		else {
+			cpDefinitionOptionValueRelImpl.setOptionValueDate(
+				new Date(optionValueDate));
+		}
+
 		cpDefinitionOptionValueRelImpl.setPreselected(preselected);
 		cpDefinitionOptionValueRelImpl.setPrice(price);
 		cpDefinitionOptionValueRelImpl.setPriority(priority);
@@ -234,6 +257,10 @@ public class CPDefinitionOptionValueRelCacheModel
 		CProductId = objectInput.readLong();
 		key = objectInput.readUTF();
 		name = objectInput.readUTF();
+
+		duration = objectInput.readInt();
+		durationType = objectInput.readUTF();
+		optionValueDate = objectInput.readLong();
 
 		preselected = objectInput.readBoolean();
 		price = (BigDecimal)objectInput.readObject();
@@ -299,6 +326,17 @@ public class CPDefinitionOptionValueRelCacheModel
 			objectOutput.writeUTF(name);
 		}
 
+		objectOutput.writeInt(duration);
+
+		if (durationType == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(durationType);
+		}
+
+		objectOutput.writeLong(optionValueDate);
+
 		objectOutput.writeBoolean(preselected);
 		objectOutput.writeObject(price);
 
@@ -328,6 +366,9 @@ public class CPDefinitionOptionValueRelCacheModel
 	public long CProductId;
 	public String key;
 	public String name;
+	public int duration;
+	public String durationType;
+	public long optionValueDate;
 	public boolean preselected;
 	public BigDecimal price;
 	public double priority;

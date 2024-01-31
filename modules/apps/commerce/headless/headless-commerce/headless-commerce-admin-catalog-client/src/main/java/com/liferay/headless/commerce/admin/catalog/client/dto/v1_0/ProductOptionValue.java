@@ -12,6 +12,7 @@ import java.io.Serializable;
 
 import java.math.BigDecimal;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 
@@ -48,6 +49,48 @@ public class ProductOptionValue implements Cloneable, Serializable {
 	}
 
 	protected BigDecimal deltaPrice;
+
+	public Integer getDuration() {
+		return duration;
+	}
+
+	public void setDuration(Integer duration) {
+		this.duration = duration;
+	}
+
+	public void setDuration(
+		UnsafeSupplier<Integer, Exception> durationUnsafeSupplier) {
+
+		try {
+			duration = durationUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Integer duration;
+
+	public String getDurationType() {
+		return durationType;
+	}
+
+	public void setDurationType(String durationType) {
+		this.durationType = durationType;
+	}
+
+	public void setDurationType(
+		UnsafeSupplier<String, Exception> durationTypeUnsafeSupplier) {
+
+		try {
+			durationType = durationTypeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String durationType;
 
 	public Long getId() {
 		return id;
@@ -107,6 +150,27 @@ public class ProductOptionValue implements Cloneable, Serializable {
 	}
 
 	protected Map<String, String> name;
+
+	public Date getOptionValueDate() {
+		return optionValueDate;
+	}
+
+	public void setOptionValueDate(Date optionValueDate) {
+		this.optionValueDate = optionValueDate;
+	}
+
+	public void setOptionValueDate(
+		UnsafeSupplier<Date, Exception> optionValueDateUnsafeSupplier) {
+
+		try {
+			optionValueDate = optionValueDateUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Date optionValueDate;
 
 	public Boolean getPreselected() {
 		return preselected;

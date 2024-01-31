@@ -46,6 +46,27 @@ public class ProductOption implements Cloneable, Serializable {
 
 	protected Long catalogId;
 
+	public Boolean getDateTime() {
+		return dateTime;
+	}
+
+	public void setDateTime(Boolean dateTime) {
+		this.dateTime = dateTime;
+	}
+
+	public void setDateTime(
+		UnsafeSupplier<Boolean, Exception> dateTimeUnsafeSupplier) {
+
+		try {
+			dateTime = dateTimeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Boolean dateTime;
+
 	public String getDescription() {
 		return description;
 	}

@@ -441,6 +441,14 @@ public abstract class BaseProductOptionResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("dateTime", additionalAssertFieldName)) {
+				if (productOption.getDateTime() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("description", additionalAssertFieldName)) {
 				if (productOption.getDescription() == null) {
 					valid = false;
@@ -638,6 +646,17 @@ public abstract class BaseProductOptionResourceTestCase {
 				if (!Objects.deepEquals(
 						productOption1.getCatalogId(),
 						productOption2.getCatalogId())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("dateTime", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						productOption1.getDateTime(),
+						productOption2.getDateTime())) {
 
 					return false;
 				}
@@ -862,6 +881,11 @@ public abstract class BaseProductOptionResourceTestCase {
 		sb.append(" ");
 
 		if (entityFieldName.equals("catalogId")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("dateTime")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
 		}
@@ -1126,6 +1150,7 @@ public abstract class BaseProductOptionResourceTestCase {
 		return new ProductOption() {
 			{
 				catalogId = RandomTestUtil.randomLong();
+				dateTime = RandomTestUtil.randomBoolean();
 				description = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				fieldType = StringUtil.toLowerCase(

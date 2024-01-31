@@ -55,6 +55,7 @@ public class CPDefinitionOptionRelWrapper
 		attributes.put("commerceOptionTypeKey", getCommerceOptionTypeKey());
 		attributes.put("infoItemServiceKey", getInfoItemServiceKey());
 		attributes.put("priority", getPriority());
+		attributes.put("dateTime", isDateTime());
 		attributes.put("definedExternally", isDefinedExternally());
 		attributes.put("facetable", isFacetable());
 		attributes.put("required", isRequired());
@@ -171,6 +172,12 @@ public class CPDefinitionOptionRelWrapper
 
 		if (priority != null) {
 			setPriority(priority);
+		}
+
+		Boolean dateTime = (Boolean)attributes.get("dateTime");
+
+		if (dateTime != null) {
+			setDateTime(dateTime);
 		}
 
 		Boolean definedExternally = (Boolean)attributes.get(
@@ -328,6 +335,16 @@ public class CPDefinitionOptionRelWrapper
 	@Override
 	public long getCtCollectionId() {
 		return model.getCtCollectionId();
+	}
+
+	/**
+	 * Returns the date time of this cp definition option rel.
+	 *
+	 * @return the date time of this cp definition option rel
+	 */
+	@Override
+	public boolean getDateTime() {
+		return model.getDateTime();
 	}
 
 	@Override
@@ -665,6 +682,16 @@ public class CPDefinitionOptionRelWrapper
 	}
 
 	/**
+	 * Returns <code>true</code> if this cp definition option rel is date time.
+	 *
+	 * @return <code>true</code> if this cp definition option rel is date time; <code>false</code> otherwise
+	 */
+	@Override
+	public boolean isDateTime() {
+		return model.isDateTime();
+	}
+
+	/**
 	 * Returns <code>true</code> if this cp definition option rel is defined externally.
 	 *
 	 * @return <code>true</code> if this cp definition option rel is defined externally; <code>false</code> otherwise
@@ -807,6 +834,16 @@ public class CPDefinitionOptionRelWrapper
 	@Override
 	public void setCtCollectionId(long ctCollectionId) {
 		model.setCtCollectionId(ctCollectionId);
+	}
+
+	/**
+	 * Sets whether this cp definition option rel is date time.
+	 *
+	 * @param dateTime the date time of this cp definition option rel
+	 */
+	@Override
+	public void setDateTime(boolean dateTime) {
+		model.setDateTime(dateTime);
 	}
 
 	/**

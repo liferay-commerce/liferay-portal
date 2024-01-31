@@ -59,6 +59,8 @@ import javax.annotation.Generated;
 
 import javax.ws.rs.core.MultivaluedHashMap;
 
+import org.apache.commons.lang.time.DateUtils;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -171,6 +173,7 @@ public abstract class BaseProductOptionValueResourceTestCase {
 
 		ProductOptionValue productOptionValue = randomProductOptionValue();
 
+		productOptionValue.setDurationType(regex);
 		productOptionValue.setInfoMessage(regex);
 		productOptionValue.setKey(regex);
 		productOptionValue.setName(regex);
@@ -187,6 +190,7 @@ public abstract class BaseProductOptionValueResourceTestCase {
 
 		productOptionValue = ProductOptionValueSerDes.toDTO(json);
 
+		Assert.assertEquals(regex, productOptionValue.getDurationType());
 		Assert.assertEquals(regex, productOptionValue.getInfoMessage());
 		Assert.assertEquals(regex, productOptionValue.getKey());
 		Assert.assertEquals(regex, productOptionValue.getName());
@@ -528,6 +532,22 @@ public abstract class BaseProductOptionValueResourceTestCase {
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
 
+			if (Objects.equals("duration", additionalAssertFieldName)) {
+				if (productOptionValue.getDuration() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("durationType", additionalAssertFieldName)) {
+				if (productOptionValue.getDurationType() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("infoMessage", additionalAssertFieldName)) {
 				if (productOptionValue.getInfoMessage() == null) {
 					valid = false;
@@ -546,6 +566,14 @@ public abstract class BaseProductOptionValueResourceTestCase {
 
 			if (Objects.equals("name", additionalAssertFieldName)) {
 				if (productOptionValue.getName() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("optionValueDate", additionalAssertFieldName)) {
+				if (productOptionValue.getOptionValueDate() == null) {
 					valid = false;
 				}
 
@@ -771,6 +799,28 @@ public abstract class BaseProductOptionValueResourceTestCase {
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
 
+			if (Objects.equals("duration", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						productOptionValue1.getDuration(),
+						productOptionValue2.getDuration())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("durationType", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						productOptionValue1.getDurationType(),
+						productOptionValue2.getDurationType())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("id", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						productOptionValue1.getId(),
@@ -808,6 +858,17 @@ public abstract class BaseProductOptionValueResourceTestCase {
 				if (!Objects.deepEquals(
 						productOptionValue1.getName(),
 						productOptionValue2.getName())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("optionValueDate", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						productOptionValue1.getOptionValueDate(),
+						productOptionValue2.getOptionValueDate())) {
 
 					return false;
 				}
@@ -1057,6 +1118,58 @@ public abstract class BaseProductOptionValueResourceTestCase {
 		sb.append(operator);
 		sb.append(" ");
 
+		if (entityFieldName.equals("duration")) {
+			sb.append(String.valueOf(productOptionValue.getDuration()));
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("durationType")) {
+			Object object = productOptionValue.getDurationType();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("id")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -1195,6 +1308,41 @@ public abstract class BaseProductOptionValueResourceTestCase {
 				sb.append("'");
 				sb.append(value);
 				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("optionValueDate")) {
+			if (operator.equals("between")) {
+				sb = new StringBundler();
+
+				sb.append("(");
+				sb.append(entityFieldName);
+				sb.append(" gt ");
+				sb.append(
+					_dateFormat.format(
+						DateUtils.addSeconds(
+							productOptionValue.getOptionValueDate(), -2)));
+				sb.append(" and ");
+				sb.append(entityFieldName);
+				sb.append(" lt ");
+				sb.append(
+					_dateFormat.format(
+						DateUtils.addSeconds(
+							productOptionValue.getOptionValueDate(), 2)));
+				sb.append(")");
+			}
+			else {
+				sb.append(entityFieldName);
+
+				sb.append(" ");
+				sb.append(operator);
+				sb.append(" ");
+
+				sb.append(
+					_dateFormat.format(
+						productOptionValue.getOptionValueDate()));
 			}
 
 			return sb.toString();
@@ -1551,11 +1699,15 @@ public abstract class BaseProductOptionValueResourceTestCase {
 	protected ProductOptionValue randomProductOptionValue() throws Exception {
 		return new ProductOptionValue() {
 			{
+				duration = RandomTestUtil.randomInt();
+				durationType = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
 				id = RandomTestUtil.randomLong();
 				infoMessage = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				key = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
+				optionValueDate = RandomTestUtil.nextDate();
 				preselected = RandomTestUtil.randomBoolean();
 				price = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				priceType = StringUtil.toLowerCase(

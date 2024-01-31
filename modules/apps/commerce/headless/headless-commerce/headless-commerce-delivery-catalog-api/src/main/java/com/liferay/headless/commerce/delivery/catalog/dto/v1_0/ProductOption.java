@@ -92,6 +92,47 @@ public class ProductOption implements Serializable {
 	@JsonIgnore
 	private Supplier<Long> _catalogIdSupplier;
 
+	@Schema(example = "true")
+	public Boolean getDateTime() {
+		if (_dateTimeSupplier != null) {
+			dateTime = _dateTimeSupplier.get();
+
+			_dateTimeSupplier = null;
+		}
+
+		return dateTime;
+	}
+
+	public void setDateTime(Boolean dateTime) {
+		this.dateTime = dateTime;
+
+		_dateTimeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setDateTime(
+		UnsafeSupplier<Boolean, Exception> dateTimeUnsafeSupplier) {
+
+		_dateTimeSupplier = () -> {
+			try {
+				return dateTimeUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Boolean dateTime;
+
+	@JsonIgnore
+	private Supplier<Boolean> _dateTimeSupplier;
+
 	@Schema
 	public String getDescription() {
 		if (_descriptionSupplier != null) {
@@ -539,6 +580,18 @@ public class ProductOption implements Serializable {
 			sb.append("\"catalogId\": ");
 
 			sb.append(catalogId);
+		}
+
+		Boolean dateTime = getDateTime();
+
+		if (dateTime != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"dateTime\": ");
+
+			sb.append(dateTime);
 		}
 
 		String description = getDescription();

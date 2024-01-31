@@ -47,8 +47,9 @@ public class CPDefinitionOptionValueRelServiceHttp {
 				long cpInstanceId, String key,
 				java.util.Map<java.util.Locale, String> nameMap,
 				boolean preselected, java.math.BigDecimal deltaPrice,
-				double priority, java.math.BigDecimal quantity,
-				String unitOfMeasureKey,
+				int duration, String durationType,
+				java.util.Date optionValueDate, double priority,
+				java.math.BigDecimal quantity, String unitOfMeasureKey,
 				com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -60,7 +61,8 @@ public class CPDefinitionOptionValueRelServiceHttp {
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, cpDefinitionOptionRelId, cpInstanceId, key, nameMap,
-				preselected, deltaPrice, priority, quantity, unitOfMeasureKey,
+				preselected, deltaPrice, duration, durationType,
+				optionValueDate, priority, quantity, unitOfMeasureKey,
 				serviceContext);
 
 			Object returnObj = null;
@@ -96,7 +98,8 @@ public class CPDefinitionOptionValueRelServiceHttp {
 			addCPDefinitionOptionValueRel(
 				HttpPrincipal httpPrincipal, long cpDefinitionOptionRelId,
 				String key, java.util.Map<java.util.Locale, String> nameMap,
-				double priority,
+				int duration, String durationType,
+				java.util.Date optionValueDate, double priority,
 				com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -107,8 +110,8 @@ public class CPDefinitionOptionValueRelServiceHttp {
 				_addCPDefinitionOptionValueRelParameterTypes1);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, cpDefinitionOptionRelId, key, nameMap, priority,
-				serviceContext);
+				methodKey, cpDefinitionOptionRelId, key, nameMap, duration,
+				durationType, optionValueDate, priority, serviceContext);
 
 			Object returnObj = null;
 
@@ -633,7 +636,8 @@ public class CPDefinitionOptionValueRelServiceHttp {
 			updateCPDefinitionOptionValueRel(
 				HttpPrincipal httpPrincipal, long cpDefinitionOptionValueRelId,
 				long cpInstanceId, String key,
-				java.util.Map<java.util.Locale, String> nameMap,
+				java.util.Map<java.util.Locale, String> nameMap, int duration,
+				String durationType, java.util.Date optionValueDate,
 				boolean preselected, java.math.BigDecimal price,
 				double priority, java.math.BigDecimal quantity,
 				String unitOfMeasureKey,
@@ -648,8 +652,8 @@ public class CPDefinitionOptionValueRelServiceHttp {
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, cpDefinitionOptionValueRelId, cpInstanceId, key,
-				nameMap, preselected, price, priority, quantity,
-				unitOfMeasureKey, serviceContext);
+				nameMap, duration, durationType, optionValueDate, preselected,
+				price, priority, quantity, unitOfMeasureKey, serviceContext);
 
 			Object returnObj = null;
 
@@ -730,13 +734,14 @@ public class CPDefinitionOptionValueRelServiceHttp {
 	private static final Class<?>[]
 		_addCPDefinitionOptionValueRelParameterTypes0 = new Class[] {
 			long.class, long.class, String.class, java.util.Map.class,
-			boolean.class, java.math.BigDecimal.class, double.class,
-			java.math.BigDecimal.class, String.class,
-			com.liferay.portal.kernel.service.ServiceContext.class
+			boolean.class, java.math.BigDecimal.class, int.class, String.class,
+			java.util.Date.class, double.class, java.math.BigDecimal.class,
+			String.class, com.liferay.portal.kernel.service.ServiceContext.class
 		};
 	private static final Class<?>[]
 		_addCPDefinitionOptionValueRelParameterTypes1 = new Class[] {
-			long.class, String.class, java.util.Map.class, double.class,
+			long.class, String.class, java.util.Map.class, int.class,
+			String.class, java.util.Date.class, double.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
 	private static final Class<?>[]
@@ -787,7 +792,8 @@ public class CPDefinitionOptionValueRelServiceHttp {
 	private static final Class<?>[]
 		_updateCPDefinitionOptionValueRelParameterTypes13 = new Class[] {
 			long.class, long.class, String.class, java.util.Map.class,
-			boolean.class, java.math.BigDecimal.class, double.class,
+			int.class, String.class, java.util.Date.class, boolean.class,
+			java.math.BigDecimal.class, double.class,
 			java.math.BigDecimal.class, String.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};

@@ -10,6 +10,7 @@ import com.liferay.headless.commerce.delivery.catalog.client.serdes.v1_0.Product
 
 import java.io.Serializable;
 
+import java.util.Date;
 import java.util.Objects;
 
 import javax.annotation.Generated;
@@ -24,6 +25,48 @@ public class ProductOptionValue implements Cloneable, Serializable {
 	public static ProductOptionValue toDTO(String json) {
 		return ProductOptionValueSerDes.toDTO(json);
 	}
+
+	public Integer getDuration() {
+		return duration;
+	}
+
+	public void setDuration(Integer duration) {
+		this.duration = duration;
+	}
+
+	public void setDuration(
+		UnsafeSupplier<Integer, Exception> durationUnsafeSupplier) {
+
+		try {
+			duration = durationUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Integer duration;
+
+	public String getDurationType() {
+		return durationType;
+	}
+
+	public void setDurationType(String durationType) {
+		this.durationType = durationType;
+	}
+
+	public void setDurationType(
+		UnsafeSupplier<String, Exception> durationTypeUnsafeSupplier) {
+
+		try {
+			durationType = durationTypeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String durationType;
 
 	public Long getId() {
 		return id;
@@ -102,6 +145,27 @@ public class ProductOptionValue implements Cloneable, Serializable {
 	}
 
 	protected String name;
+
+	public Date getOptionValueDate() {
+		return optionValueDate;
+	}
+
+	public void setOptionValueDate(Date optionValueDate) {
+		this.optionValueDate = optionValueDate;
+	}
+
+	public void setOptionValueDate(
+		UnsafeSupplier<Date, Exception> optionValueDateUnsafeSupplier) {
+
+		try {
+			optionValueDate = optionValueDateUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Date optionValueDate;
 
 	public Boolean getPreselected() {
 		return preselected;

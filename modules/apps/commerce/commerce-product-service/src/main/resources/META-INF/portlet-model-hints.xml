@@ -257,6 +257,7 @@
 		<field name="priority" type="double">
 			<validator name="number" />
 		</field>
+		<field name="dateTime" type="boolean" />
 		<field name="definedExternally" type="boolean" />
 		<field name="facetable" type="boolean" />
 		<field name="required" type="boolean" />
@@ -289,6 +290,9 @@
 		<field localized="true" name="name" type="String">
 			<validator name="required" />
 		</field>
+		<field name="duration" type="int" />
+		<field name="durationType" type="String" />
+		<field name="optionValueDate" type="Date" />
 		<field name="preselected" type="boolean" />
 		<field name="price" type="BigDecimal" />
 		<field name="priority" type="double">

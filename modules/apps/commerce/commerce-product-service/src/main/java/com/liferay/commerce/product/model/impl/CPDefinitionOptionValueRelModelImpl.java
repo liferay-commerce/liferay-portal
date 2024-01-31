@@ -84,9 +84,10 @@ public class CPDefinitionOptionValueRelModelImpl
 		{"CPDefinitionOptionRelId", Types.BIGINT},
 		{"CPInstanceUuid", Types.VARCHAR}, {"CProductId", Types.BIGINT},
 		{"key_", Types.VARCHAR}, {"name", Types.VARCHAR},
-		{"preselected", Types.BOOLEAN}, {"price", Types.DECIMAL},
-		{"priority", Types.DOUBLE}, {"quantity", Types.DECIMAL},
-		{"unitOfMeasureKey", Types.VARCHAR}
+		{"duration", Types.INTEGER}, {"durationType", Types.VARCHAR},
+		{"optionValueDate", Types.TIMESTAMP}, {"preselected", Types.BOOLEAN},
+		{"price", Types.DECIMAL}, {"priority", Types.DOUBLE},
+		{"quantity", Types.DECIMAL}, {"unitOfMeasureKey", Types.VARCHAR}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -108,6 +109,9 @@ public class CPDefinitionOptionValueRelModelImpl
 		TABLE_COLUMNS_MAP.put("CProductId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("key_", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("name", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("duration", Types.INTEGER);
+		TABLE_COLUMNS_MAP.put("durationType", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("optionValueDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("preselected", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("price", Types.DECIMAL);
 		TABLE_COLUMNS_MAP.put("priority", Types.DOUBLE);
@@ -116,7 +120,7 @@ public class CPDefinitionOptionValueRelModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table CPDefinitionOptionValueRel (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,CPDefinitionOptionValueRelId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,CPDefinitionOptionRelId LONG,CPInstanceUuid VARCHAR(75) null,CProductId LONG,key_ VARCHAR(75) null,name STRING null,preselected BOOLEAN,price BIGDECIMAL null,priority DOUBLE,quantity BIGDECIMAL null,unitOfMeasureKey VARCHAR(75) null,primary key (CPDefinitionOptionValueRelId, ctCollectionId))";
+		"create table CPDefinitionOptionValueRel (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,CPDefinitionOptionValueRelId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,CPDefinitionOptionRelId LONG,CPInstanceUuid VARCHAR(75) null,CProductId LONG,key_ VARCHAR(75) null,name STRING null,duration INTEGER,durationType VARCHAR(75) null,optionValueDate DATE null,preselected BOOLEAN,price BIGDECIMAL null,priority DOUBLE,quantity BIGDECIMAL null,unitOfMeasureKey VARCHAR(75) null,primary key (CPDefinitionOptionValueRelId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table CPDefinitionOptionValueRel";
@@ -338,6 +342,13 @@ public class CPDefinitionOptionValueRelModelImpl
 			attributeGetterFunctions.put(
 				"name", CPDefinitionOptionValueRel::getName);
 			attributeGetterFunctions.put(
+				"duration", CPDefinitionOptionValueRel::getDuration);
+			attributeGetterFunctions.put(
+				"durationType", CPDefinitionOptionValueRel::getDurationType);
+			attributeGetterFunctions.put(
+				"optionValueDate",
+				CPDefinitionOptionValueRel::getOptionValueDate);
+			attributeGetterFunctions.put(
 				"preselected", CPDefinitionOptionValueRel::getPreselected);
 			attributeGetterFunctions.put(
 				"price", CPDefinitionOptionValueRel::getPrice);
@@ -428,6 +439,18 @@ public class CPDefinitionOptionValueRelModelImpl
 				"name",
 				(BiConsumer<CPDefinitionOptionValueRel, String>)
 					CPDefinitionOptionValueRel::setName);
+			attributeSetterBiConsumers.put(
+				"duration",
+				(BiConsumer<CPDefinitionOptionValueRel, Integer>)
+					CPDefinitionOptionValueRel::setDuration);
+			attributeSetterBiConsumers.put(
+				"durationType",
+				(BiConsumer<CPDefinitionOptionValueRel, String>)
+					CPDefinitionOptionValueRel::setDurationType);
+			attributeSetterBiConsumers.put(
+				"optionValueDate",
+				(BiConsumer<CPDefinitionOptionValueRel, Date>)
+					CPDefinitionOptionValueRel::setOptionValueDate);
 			attributeSetterBiConsumers.put(
 				"preselected",
 				(BiConsumer<CPDefinitionOptionValueRel, Boolean>)
@@ -874,6 +897,56 @@ public class CPDefinitionOptionValueRelModelImpl
 
 	@JSON
 	@Override
+	public int getDuration() {
+		return _duration;
+	}
+
+	@Override
+	public void setDuration(int duration) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_duration = duration;
+	}
+
+	@JSON
+	@Override
+	public String getDurationType() {
+		if (_durationType == null) {
+			return "";
+		}
+		else {
+			return _durationType;
+		}
+	}
+
+	@Override
+	public void setDurationType(String durationType) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_durationType = durationType;
+	}
+
+	@JSON
+	@Override
+	public Date getOptionValueDate() {
+		return _optionValueDate;
+	}
+
+	@Override
+	public void setOptionValueDate(Date optionValueDate) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_optionValueDate = optionValueDate;
+	}
+
+	@JSON
+	@Override
 	public boolean getPreselected() {
 		return _preselected;
 	}
@@ -1116,6 +1189,9 @@ public class CPDefinitionOptionValueRelModelImpl
 		cpDefinitionOptionValueRelImpl.setCProductId(getCProductId());
 		cpDefinitionOptionValueRelImpl.setKey(getKey());
 		cpDefinitionOptionValueRelImpl.setName(getName());
+		cpDefinitionOptionValueRelImpl.setDuration(getDuration());
+		cpDefinitionOptionValueRelImpl.setDurationType(getDurationType());
+		cpDefinitionOptionValueRelImpl.setOptionValueDate(getOptionValueDate());
 		cpDefinitionOptionValueRelImpl.setPreselected(isPreselected());
 		cpDefinitionOptionValueRelImpl.setPrice(getPrice());
 		cpDefinitionOptionValueRelImpl.setPriority(getPriority());
@@ -1163,6 +1239,12 @@ public class CPDefinitionOptionValueRelModelImpl
 			this.<String>getColumnOriginalValue("key_"));
 		cpDefinitionOptionValueRelImpl.setName(
 			this.<String>getColumnOriginalValue("name"));
+		cpDefinitionOptionValueRelImpl.setDuration(
+			this.<Integer>getColumnOriginalValue("duration"));
+		cpDefinitionOptionValueRelImpl.setDurationType(
+			this.<String>getColumnOriginalValue("durationType"));
+		cpDefinitionOptionValueRelImpl.setOptionValueDate(
+			this.<Date>getColumnOriginalValue("optionValueDate"));
 		cpDefinitionOptionValueRelImpl.setPreselected(
 			this.<Boolean>getColumnOriginalValue("preselected"));
 		cpDefinitionOptionValueRelImpl.setPrice(
@@ -1349,6 +1431,27 @@ public class CPDefinitionOptionValueRelModelImpl
 			cpDefinitionOptionValueRelCacheModel.name = null;
 		}
 
+		cpDefinitionOptionValueRelCacheModel.duration = getDuration();
+
+		cpDefinitionOptionValueRelCacheModel.durationType = getDurationType();
+
+		String durationType = cpDefinitionOptionValueRelCacheModel.durationType;
+
+		if ((durationType != null) && (durationType.length() == 0)) {
+			cpDefinitionOptionValueRelCacheModel.durationType = null;
+		}
+
+		Date optionValueDate = getOptionValueDate();
+
+		if (optionValueDate != null) {
+			cpDefinitionOptionValueRelCacheModel.optionValueDate =
+				optionValueDate.getTime();
+		}
+		else {
+			cpDefinitionOptionValueRelCacheModel.optionValueDate =
+				Long.MIN_VALUE;
+		}
+
 		cpDefinitionOptionValueRelCacheModel.preselected = isPreselected();
 
 		cpDefinitionOptionValueRelCacheModel.price = getPrice();
@@ -1447,6 +1550,9 @@ public class CPDefinitionOptionValueRelModelImpl
 	private String _key;
 	private String _name;
 	private String _nameCurrentLanguageId;
+	private int _duration;
+	private String _durationType;
+	private Date _optionValueDate;
 	private boolean _preselected;
 	private BigDecimal _price;
 	private double _priority;
@@ -1500,6 +1606,9 @@ public class CPDefinitionOptionValueRelModelImpl
 		_columnOriginalValues.put("CProductId", _CProductId);
 		_columnOriginalValues.put("key_", _key);
 		_columnOriginalValues.put("name", _name);
+		_columnOriginalValues.put("duration", _duration);
+		_columnOriginalValues.put("durationType", _durationType);
+		_columnOriginalValues.put("optionValueDate", _optionValueDate);
 		_columnOriginalValues.put("preselected", _preselected);
 		_columnOriginalValues.put("price", _price);
 		_columnOriginalValues.put("priority", _priority);
@@ -1559,15 +1668,21 @@ public class CPDefinitionOptionValueRelModelImpl
 
 		columnBitmasks.put("name", 16384L);
 
-		columnBitmasks.put("preselected", 32768L);
+		columnBitmasks.put("duration", 32768L);
 
-		columnBitmasks.put("price", 65536L);
+		columnBitmasks.put("durationType", 65536L);
 
-		columnBitmasks.put("priority", 131072L);
+		columnBitmasks.put("optionValueDate", 131072L);
 
-		columnBitmasks.put("quantity", 262144L);
+		columnBitmasks.put("preselected", 262144L);
 
-		columnBitmasks.put("unitOfMeasureKey", 524288L);
+		columnBitmasks.put("price", 524288L);
+
+		columnBitmasks.put("priority", 1048576L);
+
+		columnBitmasks.put("quantity", 2097152L);
+
+		columnBitmasks.put("unitOfMeasureKey", 4194304L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}

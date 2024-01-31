@@ -51,15 +51,15 @@ public class CPDefinitionOptionRelServiceWrapper
 			java.util.Map<java.util.Locale, String> nameMap,
 			java.util.Map<java.util.Locale, String> descriptionMap,
 			String commerceOptionTypeKey, String infoItemServiceKey,
-			double priority, boolean definedExternally, boolean facetable,
-			boolean required, boolean skuContributor, boolean importOptionValue,
-			String priceType, String typeSettings,
+			double priority, boolean dateTime, boolean definedExternally,
+			boolean facetable, boolean required, boolean skuContributor,
+			boolean importOptionValue, String priceType, String typeSettings,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _cpDefinitionOptionRelService.addCPDefinitionOptionRel(
 			cpDefinitionId, cpOptionId, nameMap, descriptionMap,
-			commerceOptionTypeKey, infoItemServiceKey, priority,
+			commerceOptionTypeKey, infoItemServiceKey, priority, dateTime,
 			definedExternally, facetable, required, skuContributor,
 			importOptionValue, priceType, typeSettings, serviceContext);
 	}
@@ -230,15 +230,15 @@ public class CPDefinitionOptionRelServiceWrapper
 			java.util.Map<java.util.Locale, String> nameMap,
 			java.util.Map<java.util.Locale, String> descriptionMap,
 			String commerceOptionTypeKey, String infoItemServiceKey,
-			double priority, boolean definedExternally, boolean facetable,
-			boolean required, boolean skuContributor, String priceType,
-			String typeSettings,
+			double priority, boolean dateTime, boolean definedExternally,
+			boolean facetable, boolean required, boolean skuContributor,
+			String priceType, String typeSettings,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _cpDefinitionOptionRelService.updateCPDefinitionOptionRel(
 			cpDefinitionOptionRelId, cpOptionId, nameMap, descriptionMap,
-			commerceOptionTypeKey, infoItemServiceKey, priority,
+			commerceOptionTypeKey, infoItemServiceKey, priority, dateTime,
 			definedExternally, facetable, required, skuContributor, priceType,
 			typeSettings, serviceContext);
 	}

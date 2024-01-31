@@ -14,6 +14,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
+import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 
 import java.math.BigDecimal;
@@ -97,9 +98,12 @@ public class ProductOptionValueUtil {
 						GetterUtil.get(
 							productOptionValue.getDurationType(),
 							cpDefinitionOptionValueRel.getDurationType()),
-						GetterUtil.get(
-							productOPtionValue.getOptionValueDate(),
-							cpDefinitionOptionRel.getOptionValueDate()),
+						GetterUtil.getDate(
+							productOptionValue.getOptionValueDate(),
+							DateFormatFactoryUtil.getDate(
+								serviceContext.getLocale(),
+								serviceContext.getTimeZone()),
+							cpDefinitionOptionValueRel.getOptionValueDate()),
 						GetterUtil.get(
 							productOptionValue.getPreselected(),
 							cpDefinitionOptionValueRel.isPreselected()),

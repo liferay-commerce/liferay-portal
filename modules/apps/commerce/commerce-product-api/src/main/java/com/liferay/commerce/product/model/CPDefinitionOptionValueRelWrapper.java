@@ -57,6 +57,9 @@ public class CPDefinitionOptionValueRelWrapper
 		attributes.put("CProductId", getCProductId());
 		attributes.put("key", getKey());
 		attributes.put("name", getName());
+		attributes.put("duration", getDuration());
+		attributes.put("durationType", getDurationType());
+		attributes.put("optionValueDate", getOptionValueDate());
 		attributes.put("preselected", isPreselected());
 		attributes.put("price", getPrice());
 		attributes.put("priority", getPriority());
@@ -158,6 +161,24 @@ public class CPDefinitionOptionValueRelWrapper
 
 		if (name != null) {
 			setName(name);
+		}
+
+		Integer duration = (Integer)attributes.get("duration");
+
+		if (duration != null) {
+			setDuration(duration);
+		}
+
+		String durationType = (String)attributes.get("durationType");
+
+		if (durationType != null) {
+			setDurationType(durationType);
+		}
+
+		Date optionValueDate = (Date)attributes.get("optionValueDate");
+
+		if (optionValueDate != null) {
+			setOptionValueDate(optionValueDate);
 		}
 
 		Boolean preselected = (Boolean)attributes.get("preselected");
@@ -289,6 +310,26 @@ public class CPDefinitionOptionValueRelWrapper
 	}
 
 	/**
+	 * Returns the duration of this cp definition option value rel.
+	 *
+	 * @return the duration of this cp definition option value rel
+	 */
+	@Override
+	public int getDuration() {
+		return model.getDuration();
+	}
+
+	/**
+	 * Returns the duration type of this cp definition option value rel.
+	 *
+	 * @return the duration type of this cp definition option value rel
+	 */
+	@Override
+	public String getDurationType() {
+		return model.getDurationType();
+	}
+
+	/**
 	 * Returns the group ID of this cp definition option value rel.
 	 *
 	 * @return the group ID of this cp definition option value rel
@@ -402,6 +443,16 @@ public class CPDefinitionOptionValueRelWrapper
 	@Override
 	public Map<java.util.Locale, String> getNameMap() {
 		return model.getNameMap();
+	}
+
+	/**
+	 * Returns the option value date of this cp definition option value rel.
+	 *
+	 * @return the option value date of this cp definition option value rel
+	 */
+	@Override
+	public Date getOptionValueDate() {
+		return model.getOptionValueDate();
 	}
 
 	/**
@@ -607,6 +658,26 @@ public class CPDefinitionOptionValueRelWrapper
 	}
 
 	/**
+	 * Sets the duration of this cp definition option value rel.
+	 *
+	 * @param duration the duration of this cp definition option value rel
+	 */
+	@Override
+	public void setDuration(int duration) {
+		model.setDuration(duration);
+	}
+
+	/**
+	 * Sets the duration type of this cp definition option value rel.
+	 *
+	 * @param durationType the duration type of this cp definition option value rel
+	 */
+	@Override
+	public void setDurationType(String durationType) {
+		model.setDurationType(durationType);
+	}
+
+	/**
 	 * Sets the group ID of this cp definition option value rel.
 	 *
 	 * @param groupId the group ID of this cp definition option value rel
@@ -707,6 +778,16 @@ public class CPDefinitionOptionValueRelWrapper
 		Map<java.util.Locale, String> nameMap, java.util.Locale defaultLocale) {
 
 		model.setNameMap(nameMap, defaultLocale);
+	}
+
+	/**
+	 * Sets the option value date of this cp definition option value rel.
+	 *
+	 * @param optionValueDate the option value date of this cp definition option value rel
+	 */
+	@Override
+	public void setOptionValueDate(Date optionValueDate) {
+		model.setOptionValueDate(optionValueDate);
 	}
 
 	/**

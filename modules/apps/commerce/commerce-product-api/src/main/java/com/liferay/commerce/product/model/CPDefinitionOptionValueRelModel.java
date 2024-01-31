@@ -397,6 +397,49 @@ public interface CPDefinitionOptionValueRelModel
 	public void setNameMap(Map<Locale, String> nameMap, Locale defaultLocale);
 
 	/**
+	 * Returns the duration of this cp definition option value rel.
+	 *
+	 * @return the duration of this cp definition option value rel
+	 */
+	public int getDuration();
+
+	/**
+	 * Sets the duration of this cp definition option value rel.
+	 *
+	 * @param duration the duration of this cp definition option value rel
+	 */
+	public void setDuration(int duration);
+
+	/**
+	 * Returns the duration type of this cp definition option value rel.
+	 *
+	 * @return the duration type of this cp definition option value rel
+	 */
+	@AutoEscape
+	public String getDurationType();
+
+	/**
+	 * Sets the duration type of this cp definition option value rel.
+	 *
+	 * @param durationType the duration type of this cp definition option value rel
+	 */
+	public void setDurationType(String durationType);
+
+	/**
+	 * Returns the option value date of this cp definition option value rel.
+	 *
+	 * @return the option value date of this cp definition option value rel
+	 */
+	public Date getOptionValueDate();
+
+	/**
+	 * Sets the option value date of this cp definition option value rel.
+	 *
+	 * @param optionValueDate the option value date of this cp definition option value rel
+	 */
+	public void setOptionValueDate(Date optionValueDate);
+
+	/**
 	 * Returns the preselected of this cp definition option value rel.
 	 *
 	 * @return the preselected of this cp definition option value rel

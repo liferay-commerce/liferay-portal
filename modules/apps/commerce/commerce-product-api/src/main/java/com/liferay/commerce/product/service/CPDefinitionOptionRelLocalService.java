@@ -111,7 +111,7 @@ public interface CPDefinitionOptionRelLocalService
 	public CPDefinitionOptionRel addCPDefinitionOptionRel(
 			long cpDefinitionId, long cpOptionId, Map<Locale, String> nameMap,
 			Map<Locale, String> descriptionMap, String commerceOptionTypeKey,
-			String infoItemServiceKey, double priority,
+			String infoItemServiceKey, double priority, boolean dateTime,
 			boolean definedExternally, boolean facetable, boolean required,
 			boolean skuContributor, boolean importOptionValue, String priceType,
 			String typeSettings, ServiceContext serviceContext)
@@ -479,9 +479,10 @@ public interface CPDefinitionOptionRelLocalService
 			long cpDefinitionOptionRelId, long cpOptionId,
 			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
 			String commerceOptionTypeKey, String infoItemServiceKey,
-			double priority, boolean definedExternally, boolean facetable,
-			boolean required, boolean skuContributor, String priceType,
-			String typeSettings, ServiceContext serviceContext)
+			double priority, boolean dateTime, boolean definedExternally,
+			boolean facetable, boolean required, boolean skuContributor,
+			String priceType, String typeSettings,
+			ServiceContext serviceContext)
 		throws PortalException;
 
 	@Override

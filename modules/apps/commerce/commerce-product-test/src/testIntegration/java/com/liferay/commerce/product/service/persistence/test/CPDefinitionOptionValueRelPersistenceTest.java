@@ -156,6 +156,14 @@ public class CPDefinitionOptionValueRelPersistenceTest {
 
 		newCPDefinitionOptionValueRel.setName(RandomTestUtil.randomString());
 
+		newCPDefinitionOptionValueRel.setDuration(RandomTestUtil.nextInt());
+
+		newCPDefinitionOptionValueRel.setDurationType(
+			RandomTestUtil.randomString());
+
+		newCPDefinitionOptionValueRel.setOptionValueDate(
+			RandomTestUtil.nextDate());
+
 		newCPDefinitionOptionValueRel.setPreselected(
 			RandomTestUtil.randomBoolean());
 
@@ -227,6 +235,17 @@ public class CPDefinitionOptionValueRelPersistenceTest {
 		Assert.assertEquals(
 			existingCPDefinitionOptionValueRel.getName(),
 			newCPDefinitionOptionValueRel.getName());
+		Assert.assertEquals(
+			existingCPDefinitionOptionValueRel.getDuration(),
+			newCPDefinitionOptionValueRel.getDuration());
+		Assert.assertEquals(
+			existingCPDefinitionOptionValueRel.getDurationType(),
+			newCPDefinitionOptionValueRel.getDurationType());
+		Assert.assertEquals(
+			Time.getShortTimestamp(
+				existingCPDefinitionOptionValueRel.getOptionValueDate()),
+			Time.getShortTimestamp(
+				newCPDefinitionOptionValueRel.getOptionValueDate()));
 		Assert.assertEquals(
 			existingCPDefinitionOptionValueRel.isPreselected(),
 			newCPDefinitionOptionValueRel.isPreselected());
@@ -362,8 +381,9 @@ public class CPDefinitionOptionValueRelPersistenceTest {
 			true, "companyId", true, "userId", true, "userName", true,
 			"createDate", true, "modifiedDate", true, "CPDefinitionOptionRelId",
 			true, "CPInstanceUuid", true, "CProductId", true, "key", true,
-			"name", true, "preselected", true, "price", true, "priority", true,
-			"quantity", true, "unitOfMeasureKey", true);
+			"name", true, "duration", true, "durationType", true,
+			"optionValueDate", true, "preselected", true, "price", true,
+			"priority", true, "quantity", true, "unitOfMeasureKey", true);
 	}
 
 	@Test
@@ -730,6 +750,14 @@ public class CPDefinitionOptionValueRelPersistenceTest {
 		cpDefinitionOptionValueRel.setKey(RandomTestUtil.randomString());
 
 		cpDefinitionOptionValueRel.setName(RandomTestUtil.randomString());
+
+		cpDefinitionOptionValueRel.setDuration(RandomTestUtil.nextInt());
+
+		cpDefinitionOptionValueRel.setDurationType(
+			RandomTestUtil.randomString());
+
+		cpDefinitionOptionValueRel.setOptionValueDate(
+			RandomTestUtil.nextDate());
 
 		cpDefinitionOptionValueRel.setPreselected(
 			RandomTestUtil.randomBoolean());

@@ -10,6 +10,9 @@ import com.liferay.headless.commerce.admin.catalog.client.json.BaseJSONParser;
 
 import java.math.BigDecimal;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -48,6 +51,9 @@ public class ProductOptionValueSerDes {
 
 		sb.append("{");
 
+		DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
+			"yyyy-MM-dd'T'HH:mm:ssXX");
+
 		if (productOptionValue.getDeltaPrice() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -56,6 +62,30 @@ public class ProductOptionValueSerDes {
 			sb.append("\"deltaPrice\": ");
 
 			sb.append(productOptionValue.getDeltaPrice());
+		}
+
+		if (productOptionValue.getDuration() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"duration\": ");
+
+			sb.append(productOptionValue.getDuration());
+		}
+
+		if (productOptionValue.getDurationType() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"durationType\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(productOptionValue.getDurationType()));
+
+			sb.append("\"");
 		}
 
 		if (productOptionValue.getId() != null) {
@@ -90,6 +120,22 @@ public class ProductOptionValueSerDes {
 			sb.append("\"name\": ");
 
 			sb.append(_toJSON(productOptionValue.getName()));
+		}
+
+		if (productOptionValue.getOptionValueDate() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"optionValueDate\": ");
+
+			sb.append("\"");
+
+			sb.append(
+				liferayToJSONDateFormat.format(
+					productOptionValue.getOptionValueDate()));
+
+			sb.append("\"");
 		}
 
 		if (productOptionValue.getPreselected() != null) {
@@ -167,6 +213,9 @@ public class ProductOptionValueSerDes {
 
 		Map<String, String> map = new TreeMap<>();
 
+		DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
+			"yyyy-MM-dd'T'HH:mm:ssXX");
+
 		if (productOptionValue.getDeltaPrice() == null) {
 			map.put("deltaPrice", null);
 		}
@@ -174,6 +223,23 @@ public class ProductOptionValueSerDes {
 			map.put(
 				"deltaPrice",
 				String.valueOf(productOptionValue.getDeltaPrice()));
+		}
+
+		if (productOptionValue.getDuration() == null) {
+			map.put("duration", null);
+		}
+		else {
+			map.put(
+				"duration", String.valueOf(productOptionValue.getDuration()));
+		}
+
+		if (productOptionValue.getDurationType() == null) {
+			map.put("durationType", null);
+		}
+		else {
+			map.put(
+				"durationType",
+				String.valueOf(productOptionValue.getDurationType()));
 		}
 
 		if (productOptionValue.getId() == null) {
@@ -195,6 +261,16 @@ public class ProductOptionValueSerDes {
 		}
 		else {
 			map.put("name", String.valueOf(productOptionValue.getName()));
+		}
+
+		if (productOptionValue.getOptionValueDate() == null) {
+			map.put("optionValueDate", null);
+		}
+		else {
+			map.put(
+				"optionValueDate",
+				liferayToJSONDateFormat.format(
+					productOptionValue.getOptionValueDate()));
 		}
 
 		if (productOptionValue.getPreselected() == null) {
@@ -265,6 +341,18 @@ public class ProductOptionValueSerDes {
 						new BigDecimal((String)jsonParserFieldValue));
 				}
 			}
+			else if (Objects.equals(jsonParserFieldName, "duration")) {
+				if (jsonParserFieldValue != null) {
+					productOptionValue.setDuration(
+						Integer.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "durationType")) {
+				if (jsonParserFieldValue != null) {
+					productOptionValue.setDurationType(
+						(String)jsonParserFieldValue);
+				}
+			}
 			else if (Objects.equals(jsonParserFieldName, "id")) {
 				if (jsonParserFieldValue != null) {
 					productOptionValue.setId(
@@ -281,6 +369,12 @@ public class ProductOptionValueSerDes {
 					productOptionValue.setName(
 						(Map)ProductOptionValueSerDes.toMap(
 							(String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "optionValueDate")) {
+				if (jsonParserFieldValue != null) {
+					productOptionValue.setOptionValueDate(
+						toDate((String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "preselected")) {

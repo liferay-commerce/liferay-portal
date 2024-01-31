@@ -22,6 +22,10 @@ import java.io.Serializable;
 
 import java.math.BigDecimal;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -98,6 +102,88 @@ public class ProductOptionValue implements Serializable {
 
 	@JsonIgnore
 	private Supplier<BigDecimal> _deltaPriceSupplier;
+
+	@Schema
+	public Integer getDuration() {
+		if (_durationSupplier != null) {
+			duration = _durationSupplier.get();
+
+			_durationSupplier = null;
+		}
+
+		return duration;
+	}
+
+	public void setDuration(Integer duration) {
+		this.duration = duration;
+
+		_durationSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setDuration(
+		UnsafeSupplier<Integer, Exception> durationUnsafeSupplier) {
+
+		_durationSupplier = () -> {
+			try {
+				return durationUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Integer duration;
+
+	@JsonIgnore
+	private Supplier<Integer> _durationSupplier;
+
+	@Schema(example = "hour")
+	public String getDurationType() {
+		if (_durationTypeSupplier != null) {
+			durationType = _durationTypeSupplier.get();
+
+			_durationTypeSupplier = null;
+		}
+
+		return durationType;
+	}
+
+	public void setDurationType(String durationType) {
+		this.durationType = durationType;
+
+		_durationTypeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setDurationType(
+		UnsafeSupplier<String, Exception> durationTypeUnsafeSupplier) {
+
+		_durationTypeSupplier = () -> {
+			try {
+				return durationTypeUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String durationType;
+
+	@JsonIgnore
+	private Supplier<String> _durationTypeSupplier;
 
 	@DecimalMin("0")
 	@Schema(example = "30130")
@@ -221,6 +307,47 @@ public class ProductOptionValue implements Serializable {
 
 	@JsonIgnore
 	private Supplier<Map<String, String>> _nameSupplier;
+
+	@Schema
+	public Date getOptionValueDate() {
+		if (_optionValueDateSupplier != null) {
+			optionValueDate = _optionValueDateSupplier.get();
+
+			_optionValueDateSupplier = null;
+		}
+
+		return optionValueDate;
+	}
+
+	public void setOptionValueDate(Date optionValueDate) {
+		this.optionValueDate = optionValueDate;
+
+		_optionValueDateSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setOptionValueDate(
+		UnsafeSupplier<Date, Exception> optionValueDateUnsafeSupplier) {
+
+		_optionValueDateSupplier = () -> {
+			try {
+				return optionValueDateUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Date optionValueDate;
+
+	@JsonIgnore
+	private Supplier<Date> _optionValueDateSupplier;
 
 	@Schema(example = "true")
 	public Boolean getPreselected() {
@@ -455,6 +582,9 @@ public class ProductOptionValue implements Serializable {
 
 		sb.append("{");
 
+		DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
+			"yyyy-MM-dd'T'HH:mm:ss'Z'");
+
 		BigDecimal deltaPrice = getDeltaPrice();
 
 		if (deltaPrice != null) {
@@ -465,6 +595,34 @@ public class ProductOptionValue implements Serializable {
 			sb.append("\"deltaPrice\": ");
 
 			sb.append(deltaPrice);
+		}
+
+		Integer duration = getDuration();
+
+		if (duration != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"duration\": ");
+
+			sb.append(duration);
+		}
+
+		String durationType = getDurationType();
+
+		if (durationType != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"durationType\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(durationType));
+
+			sb.append("\"");
 		}
 
 		Long id = getId();
@@ -505,6 +663,22 @@ public class ProductOptionValue implements Serializable {
 			sb.append("\"name\": ");
 
 			sb.append(_toJSON(name));
+		}
+
+		Date optionValueDate = getOptionValueDate();
+
+		if (optionValueDate != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"optionValueDate\": ");
+
+			sb.append("\"");
+
+			sb.append(liferayToJSONDateFormat.format(optionValueDate));
+
+			sb.append("\"");
 		}
 
 		Boolean preselected = getPreselected();

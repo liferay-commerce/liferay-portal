@@ -42,6 +42,7 @@ import java.io.Serializable;
 
 import java.math.BigDecimal;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -97,14 +98,16 @@ public interface CPDefinitionOptionValueRelLocalService
 	public CPDefinitionOptionValueRel addCPDefinitionOptionValueRel(
 			long cpDefinitionOptionRelId, long cpInstanceId, String key,
 			Map<Locale, String> nameMap, boolean preselected,
-			BigDecimal deltaPrice, double priority, BigDecimal quantity,
+			BigDecimal deltaPrice, int duration, String durationType,
+			Date optionValueDate, double priority, BigDecimal quantity,
 			String unitOfMeasureKey, ServiceContext serviceContext)
 		throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
 	public CPDefinitionOptionValueRel addCPDefinitionOptionValueRel(
 			long cpDefinitionOptionRelId, String key,
-			Map<Locale, String> nameMap, double priority,
+			Map<Locale, String> nameMap, int duration, String durationType,
+			Date optionValueDate, double priority,
 			ServiceContext serviceContext)
 		throws PortalException;
 
@@ -457,7 +460,8 @@ public interface CPDefinitionOptionValueRelLocalService
 	@Indexable(type = IndexableType.REINDEX)
 	public CPDefinitionOptionValueRel updateCPDefinitionOptionValueRel(
 			long cpDefinitionOptionValueRelId, long cpInstanceId, String key,
-			Map<Locale, String> nameMap, boolean preselected, BigDecimal price,
+			Map<Locale, String> nameMap, int duration, String durationType,
+			Date optionValueDate, boolean preselected, BigDecimal price,
 			double priority, BigDecimal quantity, String unitOfMeasureKey,
 			ServiceContext serviceContext)
 		throws PortalException;

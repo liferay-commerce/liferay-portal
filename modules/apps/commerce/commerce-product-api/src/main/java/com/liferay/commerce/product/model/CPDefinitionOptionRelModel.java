@@ -509,6 +509,27 @@ public interface CPDefinitionOptionRelModel
 	public void setPriority(double priority);
 
 	/**
+	 * Returns the date time of this cp definition option rel.
+	 *
+	 * @return the date time of this cp definition option rel
+	 */
+	public boolean getDateTime();
+
+	/**
+	 * Returns <code>true</code> if this cp definition option rel is date time.
+	 *
+	 * @return <code>true</code> if this cp definition option rel is date time; <code>false</code> otherwise
+	 */
+	public boolean isDateTime();
+
+	/**
+	 * Sets whether this cp definition option rel is date time.
+	 *
+	 * @param dateTime the date time of this cp definition option rel
+	 */
+	public void setDateTime(boolean dateTime);
+
+	/**
 	 * Returns the defined externally of this cp definition option rel.
 	 *
 	 * @return the defined externally of this cp definition option rel

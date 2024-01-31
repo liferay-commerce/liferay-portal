@@ -69,6 +69,16 @@ public class CPDefinitionOptionValueRelTable
 		createColumn("key_", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<CPDefinitionOptionValueRelTable, String> name =
 		createColumn("name", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<CPDefinitionOptionValueRelTable, Integer> duration =
+		createColumn(
+			"duration", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
+	public final Column<CPDefinitionOptionValueRelTable, String> durationType =
+		createColumn(
+			"durationType", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<CPDefinitionOptionValueRelTable, Date> optionValueDate =
+		createColumn(
+			"optionValueDate", Date.class, Types.TIMESTAMP,
+			Column.FLAG_DEFAULT);
 	public final Column<CPDefinitionOptionValueRelTable, Boolean> preselected =
 		createColumn(
 			"preselected", Boolean.class, Types.BOOLEAN, Column.FLAG_DEFAULT);

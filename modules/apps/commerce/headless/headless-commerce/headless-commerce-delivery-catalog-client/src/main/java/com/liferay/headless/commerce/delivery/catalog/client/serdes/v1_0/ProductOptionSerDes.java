@@ -57,6 +57,16 @@ public class ProductOptionSerDes {
 			sb.append(productOption.getCatalogId());
 		}
 
+		if (productOption.getDateTime() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"dateTime\": ");
+
+			sb.append(productOption.getDateTime());
+		}
+
 		if (productOption.getDescription() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -212,6 +222,13 @@ public class ProductOptionSerDes {
 			map.put("catalogId", String.valueOf(productOption.getCatalogId()));
 		}
 
+		if (productOption.getDateTime() == null) {
+			map.put("dateTime", null);
+		}
+		else {
+			map.put("dateTime", String.valueOf(productOption.getDateTime()));
+		}
+
 		if (productOption.getDescription() == null) {
 			map.put("description", null);
 		}
@@ -312,6 +329,11 @@ public class ProductOptionSerDes {
 				if (jsonParserFieldValue != null) {
 					productOption.setCatalogId(
 						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "dateTime")) {
+				if (jsonParserFieldValue != null) {
+					productOption.setDateTime((Boolean)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "description")) {

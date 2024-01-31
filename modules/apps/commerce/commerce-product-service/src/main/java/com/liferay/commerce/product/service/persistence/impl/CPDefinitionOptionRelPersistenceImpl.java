@@ -5581,6 +5581,7 @@ public class CPDefinitionOptionRelPersistenceImpl
 		ctStrictColumnNames.add("commerceOptionTypeKey");
 		ctStrictColumnNames.add("infoItemServiceKey");
 		ctStrictColumnNames.add("priority");
+		ctStrictColumnNames.add("dateTime");
 		ctStrictColumnNames.add("definedExternally");
 		ctStrictColumnNames.add("facetable");
 		ctStrictColumnNames.add("required");

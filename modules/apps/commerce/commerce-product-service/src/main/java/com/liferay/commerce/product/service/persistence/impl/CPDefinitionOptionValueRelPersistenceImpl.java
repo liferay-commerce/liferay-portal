@@ -5992,6 +5992,9 @@ public class CPDefinitionOptionValueRelPersistenceImpl
 		ctStrictColumnNames.add("CProductId");
 		ctStrictColumnNames.add("key_");
 		ctStrictColumnNames.add("name");
+		ctStrictColumnNames.add("duration");
+		ctStrictColumnNames.add("durationType");
+		ctStrictColumnNames.add("optionValueDate");
 		ctStrictColumnNames.add("preselected");
 		ctStrictColumnNames.add("price");
 		ctStrictColumnNames.add("priority");
