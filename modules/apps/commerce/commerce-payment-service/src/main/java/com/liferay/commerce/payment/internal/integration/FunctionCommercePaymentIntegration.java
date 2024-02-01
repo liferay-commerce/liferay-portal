@@ -6,6 +6,7 @@
 package com.liferay.commerce.payment.internal.integration;
 
 import com.liferay.commerce.constants.CommercePaymentEntryConstants;
+import com.liferay.commerce.constants.CommercePaymentMethodConstants;
 import com.liferay.commerce.payment.integration.CommercePaymentIntegration;
 import com.liferay.commerce.payment.internal.configuration.FunctionCommercePaymentIntegrationConfiguration;
 import com.liferay.commerce.payment.model.CommercePaymentEntry;
@@ -13,6 +14,8 @@ import com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel;
 import com.liferay.commerce.payment.service.CommercePaymentMethodGroupRelLocalService;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
+import com.liferay.petra.string.CharPool;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.catapult.PortalCatapult;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -23,8 +26,11 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.util.ObjectMapperUtil;
 
 import java.math.BigDecimal;
@@ -60,7 +66,8 @@ public class FunctionCommercePaymentIntegration
 			CommercePaymentEntry commercePaymentEntry)
 		throws PortalException {
 
-		return _setCommercePaymentEntry(commercePaymentEntry, "/authorize");
+		return _setCommercePaymentEntry(
+			httpServletRequest, commercePaymentEntry, "/authorize");
 	}
 
 	@Override
@@ -69,7 +76,8 @@ public class FunctionCommercePaymentIntegration
 			CommercePaymentEntry commercePaymentEntry)
 		throws PortalException {
 
-		return _setCommercePaymentEntry(commercePaymentEntry, "/cancel");
+		return _setCommercePaymentEntry(
+			httpServletRequest, commercePaymentEntry, "/cancel");
 	}
 
 	@Override
@@ -78,7 +86,8 @@ public class FunctionCommercePaymentIntegration
 			CommercePaymentEntry commercePaymentEntry)
 		throws PortalException {
 
-		return _setCommercePaymentEntry(commercePaymentEntry, "/capture");
+		return _setCommercePaymentEntry(
+			httpServletRequest, commercePaymentEntry, "/capture");
 	}
 
 	@Override
@@ -120,7 +129,8 @@ public class FunctionCommercePaymentIntegration
 			CommercePaymentEntry commercePaymentEntry)
 		throws PortalException {
 
-		return _setCommercePaymentEntry(commercePaymentEntry, "/refund");
+		return _setCommercePaymentEntry(
+			httpServletRequest, commercePaymentEntry, "/refund");
 	}
 
 	@Override
@@ -130,7 +140,7 @@ public class FunctionCommercePaymentIntegration
 		throws PortalException {
 
 		return _setCommercePaymentEntry(
-			commercePaymentEntry, "/set-up-payment");
+			httpServletRequest, commercePaymentEntry, "/set-up-payment");
 	}
 
 	@Activate
@@ -198,7 +208,36 @@ public class FunctionCommercePaymentIntegration
 		}
 	}
 
+	private String _getApplicationContextURL(
+		CommercePaymentEntry commercePaymentEntry,
+		HttpServletRequest httpServletRequest, String queryString,
+		String redirect) {
+
+		StringBundler sb = new StringBundler(13);
+
+		sb.append(_portal.getPortalURL(httpServletRequest));
+		sb.append(_portal.getPathModule());
+		sb.append(CharPool.SLASH);
+		sb.append(CommercePaymentMethodConstants.SERVLET_PATH);
+		sb.append(CharPool.QUESTION);
+
+		if (Validator.isNotNull(redirect)) {
+			sb.append("redirect=");
+			sb.append(URLCodec.encodeURL(redirect));
+			sb.append(CharPool.AMPERSAND);
+		}
+
+		sb.append("entryId=");
+		sb.append(commercePaymentEntry.getCommercePaymentEntryId());
+		sb.append("&entryKey=");
+		sb.append(getKey());
+		sb.append(queryString);
+
+		return sb.toString();
+	}
+
 	private JSONObject _getPayloadJSONObject(
+			HttpServletRequest httpServletRequest,
 			CommercePaymentEntry commercePaymentEntry)
 		throws Exception {
 
@@ -219,15 +258,26 @@ public class FunctionCommercePaymentIntegration
 		typeSettingsUnicodeProperties.forEach(
 			(key, value) -> typeSettingsJSONObject.put(key, value));
 
+		commercePaymentEntry.setCallbackURL(
+			_getApplicationContextURL(
+				commercePaymentEntry, httpServletRequest, "&orderType=normal",
+				commercePaymentEntry.getCallbackURL()));
+		commercePaymentEntry.setCancelURL(
+			_getApplicationContextURL(
+				commercePaymentEntry, httpServletRequest, "&cancel=true",
+				commercePaymentEntry.getCancelURL()));
+
 		return JSONUtil.put(
 			"commercePaymentEntry",
-			_jsonFactory.looseSerializeDeep(commercePaymentEntry)
+			_jsonFactory.createJSONObject(
+				_jsonFactory.looseSerializeDeep(commercePaymentEntry))
 		).put(
 			"typeSettings", typeSettingsJSONObject
 		);
 	}
 
 	private CommercePaymentEntry _setCommercePaymentEntry(
+		HttpServletRequest httpServletRequest,
 		CommercePaymentEntry commercePaymentEntry, String resourcePath) {
 
 		try {
@@ -240,7 +290,8 @@ public class FunctionCommercePaymentIntegration
 						commercePaymentEntry.getCompanyId(), Http.Method.POST,
 						_functionCommercePaymentIntegrationConfiguration.
 							oAuth2ApplicationExternalReferenceCode(),
-						_getPayloadJSONObject(commercePaymentEntry),
+						_getPayloadJSONObject(
+							httpServletRequest, commercePaymentEntry),
 						resourcePath, commercePaymentEntry.getUserId()
 					).get()));
 
@@ -309,6 +360,9 @@ public class FunctionCommercePaymentIntegration
 
 	@Reference
 	private JSONFactory _jsonFactory;
+
+	@Reference
+	private Portal _portal;
 
 	@Reference
 	private PortalCatapult _portalCatapult;

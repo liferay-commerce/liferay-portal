@@ -249,7 +249,9 @@ public class CommercePaymentServlet extends HttpServlet {
 
 			String token = ParamUtil.getString(httpServletRequest, "token");
 
-			commercePaymentEntry.setTransactionCode(token);
+			if (!Validator.isBlank(token)) {
+				commercePaymentEntry.setTransactionCode(token);
+			}
 
 			if (commercePaymentEntry.getPaymentStatus() ==
 					CommercePaymentEntryConstants.STATUS_CREATED) {
@@ -325,7 +327,7 @@ public class CommercePaymentServlet extends HttpServlet {
 				CommercePaymentIntegrationConstants.TYPE_FUNCTION_OFFLINE) ||
 			(commercePaymentIntegration.getPaymentIntegrationType() ==
 				CommercePaymentIntegrationConstants.
-					TYPE_FUNCTION_ONLINE_STANDARD) ||
+					TYPE_INTERNAL_ONLINE_STANDARD) ||
 			(commercePaymentIntegration.getPaymentIntegrationType() ==
 				CommercePaymentIntegrationConstants.
 					TYPE_FUNCTION_ONLINE_STANDARD)) {
