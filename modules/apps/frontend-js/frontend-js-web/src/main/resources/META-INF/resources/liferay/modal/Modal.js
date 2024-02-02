@@ -286,6 +286,7 @@ const Modal = ({
 											{buttons.map(
 												(
 													{
+														dataqaid,
 														displayType,
 														formId,
 														id,
@@ -297,6 +298,7 @@ const Modal = ({
 													index
 												) => (
 													<ClayButton
+														data-qa-id={dataqaid}
 														displayType={
 															displayType
 														}
@@ -513,11 +515,13 @@ const openSelectionModal = ({
 		buttons: multiple
 			? [
 					{
+						dataqaid: 'modalCancelButton',
 						displayType: 'secondary',
 						label: buttonCancelLabel,
 						type: 'cancel',
 					},
 					{
+						dataqaid: 'modalAddButton',
 						label: buttonAddLabel,
 						onClick: select,
 					},

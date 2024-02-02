@@ -7,31 +7,93 @@ import {Locator, Page} from '@playwright/test';
 
 import {ApplicationsMenuPage} from '../product-navigation-applications-menu/ApplicationsMenuPage';
 
-export class CommerceAdminProductPage {
+export class CommerceProductAdminPage {
+	readonly addProductRelationHeading: (
+		productName: string
+	) => Promise<Locator>;
 	readonly applicationsMenuPage: ApplicationsMenuPage;
 	readonly creationMenuNewButton: Locator;
+	readonly deleteMenuItem: Locator;
 	readonly generateSkusMenuItem: Locator;
+	readonly itemOptionMenu: Locator;
 	readonly managementToolbarSearchInput: Locator;
+	readonly modalAddButton: Locator;
+	readonly modalCancelButton: Locator;
 	readonly page: Page;
+	readonly productRelationsLink: Locator;
 	readonly productSkusLink: Locator;
 	readonly productsTableRowLink: (productName: string) => Locator;
+	readonly spareProductMenuButton: Locator;
+	readonly specificProductMenuLink: (productName: string) => Promise<Locator>;
+	readonly validProductCheckbox: (productName: string) => Promise<Locator>;
 
 	constructor(page: Page) {
+		this.addProductRelationHeading = async (productName: string) => {
+			return page.getByRole('heading', {
+				name: 'Add New Product to ' + productName,
+			});
+		};
 		this.applicationsMenuPage = new ApplicationsMenuPage(page);
-		this.creationMenuNewButton = page.getByLabel('New', {exact: true});
+		this.creationMenuNewButton = page
+			.getByTestId('creationMenuNewButton')
+			.nth(0);
+		this.deleteMenuItem = page.getByRole('menuitem', {name: 'Delete'});
 		this.generateSkusMenuItem = page.getByRole('menuitem', {
 			exact: true,
 			name: 'Generate All SKU Combinations',
 		});
+		this.itemOptionMenu = page.getByTestId('itemActionDropdown');
 		this.managementToolbarSearchInput = page
 			.getByTestId('management-toolbar')
 			.getByPlaceholder('Search', {exact: true});
+		this.modalAddButton = page.getByTestId('modalAddButton');
+		this.modalCancelButton = page.getByTestId('modalCancelButton');
+		this.page = page;
+		this.productRelationsLink = page.getByRole('link', {
+			exact: true,
+			name: 'Product Relations',
+		});
 		this.productSkusLink = page.getByRole('link', {
 			exact: true,
 			name: 'SKUs',
 		});
 		this.productsTableRowLink = (productName: string) =>
 			page.getByRole('link', {exact: true, name: productName});
+		this.spareProductMenuButton = page.getByRole('menuitem', {
+			exact: true,
+			name: 'Add Spare Product',
+		});
+		this.specificProductMenuLink = async (productName: string) => {
+			return page.getByRole('link', {name: productName});
+		};
+		this.validProductCheckbox = async (productName: string) => {
+			return page
+				.frameLocator('#modalIframe')
+				.getByTestId('row')
+				.filter({hasText: productName})
+				.getByRole('checkbox', {disabled: false});
+		};
+	}
+
+	async addSpareProductRelation() {
+		await Promise.all([
+			this.goToProductRelations(),
+			this.page.waitForResponse(
+				(resp) =>
+					resp.status() === 200 &&
+					resp
+						.url()
+						.includes(
+							'screenNavigationCategoryKey=product-relations'
+						)
+			),
+		]);
+
+		await this.creationMenuNewButton.click();
+
+		if (await this.spareProductMenuButton.isVisible()) {
+			await this.spareProductMenuButton.click();
+		}
 	}
 
 	async generateSkus() {
@@ -54,5 +116,13 @@ export class CommerceAdminProductPage {
 		await this.managementToolbarSearchInput.fill(productName);
 		await this.managementToolbarSearchInput.press('Enter');
 		await this.productsTableRowLink(productName).click();
+	}
+		
+	async goToProductRelations() {
+		await this.productRelationsLink.click();
+	}
+
+	async goToSpecificProductMenu(productName: string) {
+		await (await this.specificProductMenuLink(productName)).click();
 	}
 }

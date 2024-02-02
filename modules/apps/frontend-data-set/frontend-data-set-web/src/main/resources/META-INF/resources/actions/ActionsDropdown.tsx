@@ -227,6 +227,7 @@ function ActionsDropdown({
 								'ml-1': !Liferay.FeatureFlags['LPS-193005'],
 							}
 						)}
+						data-qa-id="itemActionDropdown"
 						disabled={loading}
 						displayType="unstyled"
 					>
