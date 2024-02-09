@@ -66,7 +66,7 @@ public class CPDefinitionOptionRelServiceImpl
 	public CPDefinitionOptionRel addCPDefinitionOptionRel(
 			long cpDefinitionId, long cpOptionId, Map<Locale, String> nameMap,
 			Map<Locale, String> descriptionMap, String commerceOptionTypeKey,
-			String infoItemServiceKey, double priority,
+			String infoItemServiceKey, double priority, boolean dateTime,
 			boolean definedExternally, boolean facetable, boolean required,
 			boolean skuContributor, boolean importOptionValue, String priceType,
 			String typeSettings, ServiceContext serviceContext)
@@ -76,7 +76,7 @@ public class CPDefinitionOptionRelServiceImpl
 
 		return cpDefinitionOptionRelLocalService.addCPDefinitionOptionRel(
 			cpDefinitionId, cpOptionId, nameMap, descriptionMap,
-			commerceOptionTypeKey, infoItemServiceKey, priority,
+			commerceOptionTypeKey, infoItemServiceKey, priority, dateTime,
 			definedExternally, facetable, required, skuContributor,
 			importOptionValue, priceType, typeSettings, serviceContext);
 	}

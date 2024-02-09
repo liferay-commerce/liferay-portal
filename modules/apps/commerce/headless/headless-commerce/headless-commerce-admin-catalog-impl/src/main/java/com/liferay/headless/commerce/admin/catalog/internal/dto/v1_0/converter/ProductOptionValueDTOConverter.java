@@ -95,7 +95,7 @@ public class ProductOptionValueDTOConverter
 										cpDefinitionOptionValueRel.
 											getDuration();
 
-									if (duration > 0) {
+									if (duration < 0) {
 										return formattedDate +
 											StringPool.SPACE + formattedTime;
 									}
@@ -114,6 +114,8 @@ public class ProductOptionValueDTOConverter
 
 						return name;
 					});
+				setOptionValueDate(
+					cpDefinitionOptionValueRel::getOptionValueDate);
 				setPreselected(cpDefinitionOptionValueRel::isPreselected);
 				setPriority(cpDefinitionOptionValueRel::getPriority);
 				setQuantity(cpDefinitionOptionValueRel::getQuantity);

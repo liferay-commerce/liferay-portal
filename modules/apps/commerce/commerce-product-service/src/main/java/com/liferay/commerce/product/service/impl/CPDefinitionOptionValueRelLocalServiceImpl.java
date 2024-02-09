@@ -120,7 +120,8 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 	public CPDefinitionOptionValueRel addCPDefinitionOptionValueRel(
 			long cpDefinitionOptionRelId, long cpInstanceId, String key,
 			Map<Locale, String> nameMap, boolean preselected,
-			BigDecimal deltaPrice, double priority, BigDecimal quantity,
+			BigDecimal deltaPrice, int duration, String durationType,
+			Date optionValueDate, double priority, BigDecimal quantity,
 			String unitOfMeasureKey, ServiceContext serviceContext)
 		throws PortalException {
 
@@ -179,6 +180,9 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 				BigDecimalUtil.get(deltaPrice, BigDecimal.ZERO));
 		}
 
+		cpDefinitionOptionValueRel.setDuration(duration);
+		cpDefinitionOptionValueRel.setDurationType(durationType);
+		cpDefinitionOptionValueRel.setOptionValueDate(optionValueDate);
 		cpDefinitionOptionValueRel.setPriority(priority);
 		cpDefinitionOptionValueRel.setQuantity(
 			BigDecimalUtil.get(quantity, BigDecimal.ONE));

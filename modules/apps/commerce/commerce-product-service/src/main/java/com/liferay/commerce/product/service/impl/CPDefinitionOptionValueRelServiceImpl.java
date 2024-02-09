@@ -52,7 +52,8 @@ public class CPDefinitionOptionValueRelServiceImpl
 	public CPDefinitionOptionValueRel addCPDefinitionOptionValueRel(
 			long cpDefinitionOptionRelId, long cpInstanceId, String key,
 			Map<Locale, String> nameMap, boolean preselected,
-			BigDecimal deltaPrice, double priority, BigDecimal quantity,
+			BigDecimal deltaPrice, int duration, String durationType,
+			Date optionValueDate, double priority, BigDecimal quantity,
 			String unitOfMeasureKey, ServiceContext serviceContext)
 		throws PortalException {
 
@@ -66,7 +67,8 @@ public class CPDefinitionOptionValueRelServiceImpl
 		return cpDefinitionOptionValueRelLocalService.
 			addCPDefinitionOptionValueRel(
 				cpDefinitionOptionRelId, cpInstanceId, key, nameMap,
-				preselected, deltaPrice, priority, quantity, unitOfMeasureKey,
+				preselected, deltaPrice, duration, durationType,
+				optionValueDate, priority, quantity, unitOfMeasureKey,
 				serviceContext);
 	}
 

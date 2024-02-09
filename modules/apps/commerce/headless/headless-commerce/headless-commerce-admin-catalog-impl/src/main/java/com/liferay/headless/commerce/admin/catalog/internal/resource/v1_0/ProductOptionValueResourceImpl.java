@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
+import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.fields.NestedField;
 import com.liferay.portal.vulcan.pagination.Page;
@@ -188,8 +189,9 @@ public class ProductOptionValueResourceImpl
 
 		return _productOptionValueDTOConverter.toDTO(
 			new DefaultDTOConverterContext(
+				_dtoConverterRegistry,
 				cpDefinitionOptionValueRel.getCPDefinitionOptionValueRelId(),
-				contextAcceptLanguage.getPreferredLocale()),
+				contextAcceptLanguage.getPreferredLocale(), null, contextUser),
 			cpDefinitionOptionValueRel);
 	}
 
@@ -202,6 +204,9 @@ public class ProductOptionValueResourceImpl
 
 	@Reference
 	private CPInstanceService _cpInstanceService;
+
+	@Reference
+	private DTOConverterRegistry _dtoConverterRegistry;
 
 	@Reference(
 		target = "(component.name=com.liferay.headless.commerce.admin.catalog.internal.dto.v1_0.converter.ProductOptionValueDTOConverter)"

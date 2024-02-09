@@ -66,6 +66,11 @@ public class ProductOptionValueUtil {
 					GetterUtil.get(productOptionValue.getPreselected(), false),
 					BigDecimalUtil.get(
 						productOptionValue.getDeltaPrice(), null),
+					GetterUtil.get(productOptionValue.getDuration(), 0),
+					GetterUtil.get(
+						productOptionValue.getDurationType(), StringPool.BLANK),
+					GetterUtil.getDate(
+						productOptionValue.getOptionValueDate(), null),
 					GetterUtil.get(productOptionValue.getPriority(), 0D),
 					BigDecimalUtil.get(
 						productOptionValue.getQuantity(), BigDecimal.ONE),

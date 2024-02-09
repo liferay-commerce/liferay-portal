@@ -247,6 +247,8 @@ public class ProductOptionValueDTOConverter
 
 						return name;
 					});
+				setOptionValueDate(
+					cpDefinitionOptionValueRel::getOptionValueDate);
 				setPreselected(cpDefinitionOptionValueRel::isPreselected);
 				setPrice(
 					() ->

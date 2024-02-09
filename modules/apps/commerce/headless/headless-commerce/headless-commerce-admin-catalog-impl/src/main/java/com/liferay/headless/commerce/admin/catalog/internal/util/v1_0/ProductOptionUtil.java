@@ -71,6 +71,7 @@ public class ProductOptionUtil {
 						productOption.getInfoItemServiceKey(),
 						StringPool.BLANK),
 					GetterUtil.get(productOption.getPriority(), 0D),
+					GetterUtil.get(productOption.getDateTime(), false),
 					GetterUtil.get(productOption.getDefinedExternally(), false),
 					GetterUtil.get(
 						productOption.getFacetable(), cpOption.isFacetable()),
