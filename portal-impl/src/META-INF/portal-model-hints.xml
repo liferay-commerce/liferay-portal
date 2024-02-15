@@ -1477,7 +1477,9 @@
 		<field name="createDate" type="Date" />
 		<field name="classNameId" type="long" />
 		<field name="classPK" type="long" />
-		<field name="key" type="String" />
+		<field name="key" type="String">
+			<hint name="max-length">255</hint>
+		</field>
 		<field name="type" type="int" />
 		<field name="extraInfo" type="String">
 			<hint-collection name="CLOB" />
