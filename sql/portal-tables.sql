@@ -1407,7 +1407,7 @@ create table Ticket (
 	createDate DATE null,
 	classNameId LONG,
 	classPK LONG,
-	key_ VARCHAR(75) null,
+	key_ VARCHAR(255) null,
 	type_ INTEGER,
 	extraInfo TEXT null,
 	expirationDate DATE null
