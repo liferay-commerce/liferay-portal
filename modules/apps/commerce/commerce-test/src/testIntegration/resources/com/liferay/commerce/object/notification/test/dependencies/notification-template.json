@@ -1,0 +1,24 @@
+{
+	"description": "",
+	"editorType": "richText",
+	"externalReferenceCode": "SALES-AGENT-EMAIL-TEMPLATE",
+	"name": "Sales Agent Notification",
+	"recipientType": "email",
+	"recipients": [
+		{
+			"bcc": "",
+			"cc": "",
+			"from": "do-not-reply@liferay.com",
+			"fromName": {
+				"en-US": "Liferay Notification"
+			},
+			"to": {
+				"en-US": "[%SALES_AGENT%]"
+			}
+		}
+	],
+	"subject": {
+		"en_US": "Liferay Notification - Order Status Change"
+	},
+	"type": "email"
+}
