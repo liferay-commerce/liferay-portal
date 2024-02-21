@@ -8,9 +8,6 @@ import {Locator, Page} from '@playwright/test';
 import {ApplicationsMenuPage} from '../product-navigation-applications-menu/ApplicationsMenuPage';
 
 export class CommerceProductAdminPage {
-	readonly addProductRelationHeading: (
-		productName: string
-	) => Promise<Locator>;
 	readonly applicationsMenuPage: ApplicationsMenuPage;
 	readonly creationMenuNewButton: Locator;
 	readonly deleteMenuItem: Locator;
@@ -28,11 +25,6 @@ export class CommerceProductAdminPage {
 	readonly validProductCheckbox: (productName: string) => Promise<Locator>;
 
 	constructor(page: Page) {
-		this.addProductRelationHeading = async (productName: string) => {
-			return page.getByRole('heading', {
-				name: 'Add New Product to ' + productName,
-			});
-		};
 		this.applicationsMenuPage = new ApplicationsMenuPage(page);
 		this.creationMenuNewButton = page
 			.getByTestId('creationMenuNewButton')
@@ -49,10 +41,6 @@ export class CommerceProductAdminPage {
 		this.modalAddButton = page.getByTestId('modalAddButton');
 		this.modalCancelButton = page.getByTestId('modalCancelButton');
 		this.page = page;
-		this.productRelationsLink = page.getByRole('link', {
-			exact: true,
-			name: 'Product Relations',
-		});
 		this.productSkusLink = page.getByRole('link', {
 			exact: true,
 			name: 'SKUs',
@@ -73,27 +61,6 @@ export class CommerceProductAdminPage {
 				.filter({hasText: productName})
 				.getByRole('checkbox', {disabled: false});
 		};
-	}
-
-	async addSpareProductRelation() {
-		await Promise.all([
-			this.goToProductRelations(),
-			this.page.waitForResponse(
-				(resp) =>
-					resp.status() === 200 &&
-					resp
-						.url()
-						.includes(
-							'screenNavigationCategoryKey=product-relations'
-						)
-			),
-		]);
-
-		await this.creationMenuNewButton.click();
-
-		if (await this.spareProductMenuButton.isVisible()) {
-			await this.spareProductMenuButton.click();
-		}
 	}
 
 	async generateSkus() {

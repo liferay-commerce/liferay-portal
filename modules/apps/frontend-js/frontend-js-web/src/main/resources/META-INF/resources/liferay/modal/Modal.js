@@ -286,7 +286,7 @@ const Modal = ({
 											{buttons.map(
 												(
 													{
-														dataqaid,
+														dataQaId,
 														displayType,
 														formId,
 														id,
@@ -298,7 +298,7 @@ const Modal = ({
 													index
 												) => (
 													<ClayButton
-														data-qa-id={dataqaid}
+														data-qa-id={dataQaId}
 														displayType={
 															displayType
 														}

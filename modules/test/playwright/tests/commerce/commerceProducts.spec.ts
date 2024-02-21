@@ -17,6 +17,7 @@ export const test = mergeTests(apiHelpersTest, commercePagesTest, loginTest);
 test('LPD-5780 modal title and product name appear properly in product menu', async ({
 	apiHelpers,
 	commerceProductAdminPage,
+	commerceProductAdminProductRelationsPage,
 }) => {
 	const catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
 		name: 'Product Catalog',
@@ -37,10 +38,10 @@ test('LPD-5780 modal title and product name appear properly in product menu', as
 
 	await commerceProductAdminPage.goToSpecificProductMenu(product1.name.en_US);
 
-	await commerceProductAdminPage.addSpareProductRelation();
+	await commerceProductAdminProductRelationsPage.addSpareProductRelation();
 
 	await expect(
-		await commerceProductAdminPage.addProductRelationHeading(
+		await commerceProductAdminProductRelationsPage.addProductRelationHeading(
 			product1.name.en_US
 		)
 	).toBeVisible();
@@ -51,7 +52,7 @@ test('LPD-5780 modal title and product name appear properly in product menu', as
 
 	await commerceProductAdminPage.goToSpecificProductMenu(product2.name.en_US);
 
-	await commerceProductAdminPage.addSpareProductRelation();
+	await commerceProductAdminProductRelationsPage.addSpareProductRelation();
 
 	await (
 		await commerceProductAdminPage.validProductCheckbox(product1.name.en_US)
@@ -69,12 +70,14 @@ test('LPD-5780 modal title and product name appear properly in product menu', as
 
 	await commerceProductAdminPage.deleteMenuItem.click();
 
-	await apiHelpers.headlessCommerceAdminCatalog.deleteProduct(
-		product1.productId
-	);
-	await apiHelpers.headlessCommerceAdminCatalog.deleteProduct(
-		product2.productId
-	);
+	await Promise.all([
+		apiHelpers.headlessCommerceAdminCatalog.deleteProduct(
+			product1.productId
+		),
+		apiHelpers.headlessCommerceAdminCatalog.deleteProduct(
+			product2.productId
+		),
+	]);
 
 	await apiHelpers.headlessCommerceAdminCatalog.deleteCatalog(catalog.id);
 });
