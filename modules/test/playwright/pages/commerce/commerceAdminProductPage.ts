@@ -10,9 +10,7 @@ import {ApplicationsMenuPage} from '../product-navigation-applications-menu/Appl
 export class CommerceProductAdminPage {
 	readonly applicationsMenuPage: ApplicationsMenuPage;
 	readonly creationMenuNewButton: Locator;
-	readonly deleteMenuItem: Locator;
 	readonly generateSkusMenuItem: Locator;
-	readonly itemOptionMenu: Locator;
 	readonly managementToolbarSearchInput: Locator;
 	readonly modalAddButton: Locator;
 	readonly modalCancelButton: Locator;
@@ -29,12 +27,10 @@ export class CommerceProductAdminPage {
 		this.creationMenuNewButton = page
 			.getByTestId('creationMenuNewButton')
 			.nth(0);
-		this.deleteMenuItem = page.getByRole('menuitem', {name: 'Delete'});
 		this.generateSkusMenuItem = page.getByRole('menuitem', {
 			exact: true,
 			name: 'Generate All SKU Combinations',
 		});
-		this.itemOptionMenu = page.getByTestId('itemActionDropdown');
 		this.managementToolbarSearchInput = page
 			.getByTestId('management-toolbar')
 			.getByPlaceholder('Search', {exact: true});

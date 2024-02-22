@@ -45,9 +45,8 @@ export class CommerceProductAdminProductRelationsPage {
 	}
 
 	async goto() {
-		await this.productRelationsLink.click();
-
 		await Promise.all([
+			this.productRelationsLink.click(),
 			this.page.waitForResponse(
 				(resp) =>
 					resp.status() === 200 &&

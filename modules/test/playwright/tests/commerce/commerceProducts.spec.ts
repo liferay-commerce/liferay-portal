@@ -66,10 +66,6 @@ test('LPD-5780 modal title and product name appear properly in product menu', as
 		)
 	).toBeVisible();
 
-	await commerceProductAdminPage.itemOptionMenu.click();
-
-	await commerceProductAdminPage.deleteMenuItem.click();
-
 	await Promise.all([
 		apiHelpers.headlessCommerceAdminCatalog.deleteProduct(
 			product1.productId

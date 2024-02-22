@@ -515,13 +515,13 @@ const openSelectionModal = ({
 		buttons: multiple
 			? [
 					{
-						dataqaid: 'modalCancelButton',
+						dataQaId: 'modalCancelButton',
 						displayType: 'secondary',
 						label: buttonCancelLabel,
 						type: 'cancel',
 					},
 					{
-						dataqaid: 'modalAddButton',
+						dataQaId: 'modalAddButton',
 						label: buttonAddLabel,
 						onClick: select,
 					},
