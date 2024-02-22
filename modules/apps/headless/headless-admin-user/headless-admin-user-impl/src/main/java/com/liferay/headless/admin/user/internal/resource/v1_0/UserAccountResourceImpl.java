@@ -944,23 +944,8 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 				"Unable to put pending user account " + user.getUserId());
 		}
 
-		String status = userAccount.getStatusAsString();
-
-		Integer workflowStatus = null;
-
-		if (StringUtil.equalsIgnoreCase(
-				UserAccount.Status.ACTIVE.getValue(), status)) {
-
-			workflowStatus = WorkflowConstants.STATUS_APPROVED;
-		}
-		else if (StringUtil.equalsIgnoreCase(
-					UserAccount.Status.INACTIVE.getValue(), status)) {
-
-			workflowStatus = WorkflowConstants.STATUS_INACTIVE;
-		}
-		else {
-			throw new BadRequestException("Status is invalid");
-		}
+		Integer workflowStatus = _getWorkflowStatus(
+			userAccount.getStatusAsString());
 
 		AccountBrief[] accountBriefs = userAccount.getAccountBriefs();
 
@@ -1062,6 +1047,10 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 				userAccount.getCurrentPassword());
 		}
 
+		ServiceContext serviceContext = _createServiceContext(userAccount);
+		Integer workflowStatus = _getWorkflowStatus(
+			userAccount.getStatusAsString());
+
 		User user = _userService.addOrUpdateUser(
 			externalReferenceCode, contextUser.getUserId(),
 			contextCompany.getCompanyId(), autoPassword, password, password,
@@ -1077,8 +1066,10 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 			_getAddresses(null, userAccount),
 			_getServiceBuilderEmailAddresses(null, userAccount),
 			_getServiceBuilderPhones(null, userAccount),
-			_getWebsites(null, userAccount), false,
-			_createServiceContext(userAccount));
+			_getWebsites(null, userAccount), false, serviceContext);
+
+		_userService.updateStatus(
+			user.getUserId(), workflowStatus, serviceContext);
 
 		UserAccountContactInformation userAccountContactInformation =
 			userAccount.getUserAccountContactInformation();
@@ -1553,6 +1544,26 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 					contextCompany.getCompanyId(),
 					ListTypeConstants.CONTACT_WEBSITE, webUrl)),
 			Objects::nonNull);
+	}
+
+	private Integer _getWorkflowStatus(String status) {
+		Integer workflowStatus = null;
+
+		if (StringUtil.equalsIgnoreCase(
+				UserAccount.Status.ACTIVE.getValue(), status)) {
+
+			workflowStatus = WorkflowConstants.STATUS_APPROVED;
+		}
+		else if (StringUtil.equalsIgnoreCase(
+					UserAccount.Status.INACTIVE.getValue(), status)) {
+
+			workflowStatus = WorkflowConstants.STATUS_INACTIVE;
+		}
+		else {
+			throw new BadRequestException("Status is invalid");
+		}
+
+		return workflowStatus;
 	}
 
 	private boolean _hasPortrait(User user, UserAccount userAccount) {
