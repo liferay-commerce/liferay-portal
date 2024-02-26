@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.PasswordPolicy;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.Ticket;
+import com.liferay.portal.kernel.model.TicketConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserConstants;
 import com.liferay.portal.kernel.model.UserGroup;
@@ -76,6 +77,7 @@ import com.liferay.portal.security.audit.event.generators.constants.EventTypes;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.portal.util.DigesterImpl;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -597,6 +599,35 @@ public class UserLocalServiceTest {
 		}
 		finally {
 			ServiceContextThreadLocal.popServiceContext();
+		}
+	}
+
+	@Test
+	public void testRecoverPasswordWithChangedAlgorithm() throws Exception {
+		try (AutoCloseable autoCloseable1 =
+				ReflectionTestUtil.setFieldValueWithAutoCloseable(
+					PasswordEncryptorUtil.class,
+					"_PASSWORDS_ENCRYPTION_ALGORITHM", "SHA-384");
+			AutoCloseable autoCloseable2 =
+				ReflectionTestUtil.setFieldValueWithAutoCloseable(
+					DigesterImpl.class, "_BASE_64", false)) {
+
+			Ticket ticket = _ticketLocalService.addDistinctTicket(
+				RandomTestUtil.randomLong(), null, RandomTestUtil.randomLong(),
+				TicketConstants.TYPE_PASSWORD, null, RandomTestUtil.nextDate(),
+				null);
+
+			String key = PasswordEncryptorUtil.encrypt(ticket.getKey());
+
+			ticket.setKey(key);
+
+			ticket = _ticketLocalService.updateTicket(ticket);
+
+			Ticket savedTicket = _ticketLocalService.getTicket(
+				ticket.getTicketId());
+
+			Assert.assertEquals(
+				savedTicket.toString(), key, savedTicket.getKey());
 		}
 	}
 
