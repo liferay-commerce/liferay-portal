@@ -10,9 +10,9 @@ import {expect, mergeTests} from '@playwright/test';
 import {apiHelpersTest} from '../../fixtures/apiHelpersTest';
 import {commercePagesTest} from '../../fixtures/commercePagesTest';
 import {loginTest} from '../../fixtures/loginTest';
-import {getRandomInt} from '../../utils/util';
+import {getRandomInt} from '../../utils/getRandomInt';
 
-export const test = mergeTests(apiHelpersTest, commercePagesTest, loginTest);
+export const test = mergeTests(apiHelpersTest, commercePagesTest, loginTest());
 
 test('LPD-5780 modal title and product name appear properly in product menu', async ({
 	apiHelpers,
