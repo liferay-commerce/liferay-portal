@@ -131,12 +131,16 @@ definition {
 		}
 
 		task ("Then the order date is shown without the time") {
-			var currentDate = DateUtil.getFormattedCurrentDate("MMM d, yyyy", "UTC");
+			var result = CommerceUtilities.checkCurrentDateFormat(
+				date = selenium.getText("CommerceOrders#PLACED_ORDERS_LIST_DATE"),
+				format1 = "MMM d, yy",
+				format2 = "MMM d, yyyy",
+				timeZone1 = "UTC",
+				timeZone2 = "UTC");
 
-			AssertTextEquals(
-				key_orderId = "",
-				locator1 = "CommerceOrders#PLACED_ORDERS_LIST_DATE",
-				value1 = ${currentDate});
+			TestUtils.assertEquals(
+				actual = ${result},
+				expected = "True");
 		}
 
 		task ("When the user views the order from the placed orders details page") {

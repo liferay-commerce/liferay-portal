@@ -31,6 +31,26 @@ definition {
 		return ${fileExists};
 	}
 
+	@description = "Compare the param date with current date in 2 possible formats and timezone"
+	@summary = "Default summary"
+	macro checkCurrentDateFormat(date = null, format1 = null, timezone1 = null, format2 = null, timezone2 = null) {
+		var currentDate1 = DateUtil.getFormattedCurrentDate(${format1}, ${timezone1});
+
+		if (${date} == ${currentDate1}) {
+			return "True";
+		}
+
+		if (isSet(format2)) {
+			var currentDate2 = DateUtil.getFormattedCurrentDate(${format2}, ${timezone2});
+
+			if (${date} == ${currentDate2}) {
+				return "True";
+			}
+		}
+
+		return "False";
+	}
+
 	@summary = "Default summary"
 	macro checkSuccessAlertAppearsAndDisappears() {
 		WaitForElementPresent(locator1 = "Message#SUCCESS");
