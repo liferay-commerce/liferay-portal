@@ -63,9 +63,6 @@ const commercePagesTest = test.extend<{
 	commerceAdminProductDetailsPage: async ({page}, use) => {
 		await use(new CommerceAdminProductDetailsPage(page));
 	},
-	commerceProductAdminProductRelationsPage: async ({page}, use) => {
-		await use(new CommerceProductAdminProductRelationsPage(page));
-	},
 	commerceAdminProductDetailsProductRelationsPage: async ({page}, use) => {
 		await use(new CommerceAdminProductDetailsProductRelationsPage(page));
 	},
