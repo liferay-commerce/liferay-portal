@@ -5,13 +5,13 @@
 
 import {Locator, Page} from '@playwright/test';
 
-import {CommerceProductAdminPage} from './commerceProductAdminPage';
+import {CommerceAdminProductPage} from './commerceAdminProductPage';
 
 export class CommerceProductAdminProductRelationsPage {
 	readonly addProductRelationHeading: (
 		productName: string
 	) => Promise<Locator>;
-	readonly commerceProductAdminPage: CommerceProductAdminPage;
+	readonly CommerceAdminProductPage: CommerceAdminProductPage;
 	readonly creationMenuNewButton: Locator;
 	readonly page: Page;
 	readonly productRelationsLink: Locator;
@@ -23,7 +23,7 @@ export class CommerceProductAdminProductRelationsPage {
 				name: 'Add New Product to ' + productName,
 			});
 		};
-		this.commerceProductAdminPage = new CommerceProductAdminPage(page);
+		this.CommerceAdminProductPage = new CommerceAdminProductPage(page);
 		this.creationMenuNewButton = page
 			.getByTestId('creationMenuNewButton')
 			.nth(0);

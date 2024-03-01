@@ -22,6 +22,7 @@ import {CommerceLayoutsPage} from '../pages/commerce/commerceLayoutsPage';
 import {CommerceMiniCartPage} from '../pages/commerce/commerceMiniCartPage';
 import {CommercePaymentsPage} from '../pages/commerce/commercePaymentsPage';
 import {CommerceAdminProductRelationsPage} from '../pages/commerce/CommerceAdminProductRelationsPage';
+import {CommerceProductAdminProductRelationsPage} from '../pages/commerce/commerceProductAdminProductRelationsPage';
 
 const commercePagesTest = test.extend<{
 	attachmentsPage: AttachmentsPage;
@@ -37,6 +38,7 @@ const commercePagesTest = test.extend<{
 	commerceMiniCartPage: CommerceMiniCartPage;
 	commercePaymentsPage: CommercePaymentsPage;
 	commerceAdminProductRelationsPage: CommerceAdminProductRelationsPage;
+	commerceProductAdminProductRelationsPage: CommerceProductAdminProductRelationsPage;
 	pendingOrdersPage: PendingOrdersPage;
 	specificationFacetsPage: SpecificationFacetsPage;
 }>({
@@ -61,6 +63,9 @@ const commercePagesTest = test.extend<{
 	commerceAdminProductDetailsPage: async ({page}, use) => {
 		await use(new CommerceAdminProductDetailsPage(page));
 	},
+	commerceProductAdminProductRelationsPage: async ({page}, use) => {
+		await use(new CommerceProductAdminProductRelationsPage(page));
+	},
 	commerceAdminProductDetailsProductRelationsPage: async ({page}, use) => {
 		await use(new CommerceAdminProductDetailsProductRelationsPage(page));
 	},
@@ -78,9 +83,6 @@ const commercePagesTest = test.extend<{
 	},
 	pendingOrdersPage: async ({page}, use) => {
 		await use(new PendingOrdersPage(page));
-	},
-	commerceAdminProductRelationsPage: async ({page}, use) => {
-		await use(new CommerceAdminProductRelationsPage(page));
 	},
 	specificationFacetsPage: async ({page}, use) => {
 		await use(new SpecificationFacetsPage(page));
