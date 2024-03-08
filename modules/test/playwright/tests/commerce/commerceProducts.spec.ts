@@ -16,8 +16,8 @@ export const test = mergeTests(apiHelpersTest, commercePagesTest, loginTest());
 
 test('LPD-5780 modal title and product name appear properly in product menu', async ({
 	apiHelpers,
+	commerceAdminProductDetailsProductRelationsPage,
 	commerceAdminProductPage,
-	commerceProductAdminProductRelationsPage,
 }) => {
 	const catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
 		name: 'Product Catalog',
@@ -34,25 +34,21 @@ test('LPD-5780 modal title and product name appear properly in product menu', as
 		catalogId: catalog.id,
 	});
 
-	await commerceAdminProductPage.goto();
+	await commerceAdminProductPage.gotoProduct(product1.name.en_US);
 
-	await commerceAdminProductPage.goToSpecificProductMenu(product1.name.en_US);
-
-	await commerceProductAdminProductRelationsPage.addSpareProductRelation();
+	await commerceAdminProductDetailsProductRelationsPage.addSpareProductRelation();
 
 	await expect(
-		await commerceProductAdminProductRelationsPage.addProductRelationHeading(
+		await commerceAdminProductDetailsProductRelationsPage.addProductRelationHeading(
 			product1.name.en_US
 		)
 	).toBeVisible();
 
 	await commerceAdminProductPage.modalCancelButton.click();
 
-	await commerceAdminProductPage.goto();
+	await commerceAdminProductPage.gotoProduct(product2.name.en_US);
 
-	await commerceAdminProductPage.goToSpecificProductMenu(product2.name.en_US);
-
-	await commerceProductAdminProductRelationsPage.addSpareProductRelation();
+	await commerceAdminProductDetailsProductRelationsPage.addSpareProductRelation();
 
 	await (
 		await commerceAdminProductPage.validProductCheckbox(product1.name.en_US)

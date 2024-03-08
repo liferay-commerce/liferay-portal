@@ -21,8 +21,6 @@ import {CommerceAdminProductPage} from '../pages/commerce/commerceAdminProductPa
 import {CommerceLayoutsPage} from '../pages/commerce/commerceLayoutsPage';
 import {CommerceMiniCartPage} from '../pages/commerce/commerceMiniCartPage';
 import {CommercePaymentsPage} from '../pages/commerce/commercePaymentsPage';
-import {CommerceAdminProductRelationsPage} from '../pages/commerce/CommerceAdminProductRelationsPage';
-import {CommerceProductAdminProductRelationsPage} from '../pages/commerce/commerceProductAdminProductRelationsPage';
 
 const commercePagesTest = test.extend<{
 	attachmentsPage: AttachmentsPage;
@@ -37,8 +35,6 @@ const commercePagesTest = test.extend<{
 	commerceLayoutsPage: CommerceLayoutsPage;
 	commerceMiniCartPage: CommerceMiniCartPage;
 	commercePaymentsPage: CommercePaymentsPage;
-	commerceAdminProductRelationsPage: CommerceAdminProductRelationsPage;
-	commerceProductAdminProductRelationsPage: CommerceProductAdminProductRelationsPage;
 	pendingOrdersPage: PendingOrdersPage;
 	specificationFacetsPage: SpecificationFacetsPage;
 }>({

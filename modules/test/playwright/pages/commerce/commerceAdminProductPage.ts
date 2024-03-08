@@ -80,12 +80,4 @@ export class CommerceAdminProductPage {
 		await this.managementToolbarSearchInput.press('Enter');
 		await this.productsTableRowLink(productName).click();
 	}
-
-	async goToProductRelations() {
-		await this.productRelationsLink.click();
-	}
-
-	async goToSpecificProductMenu(productName: string) {
-		await (await this.specificProductMenuLink(productName)).click();
-	}
 }
