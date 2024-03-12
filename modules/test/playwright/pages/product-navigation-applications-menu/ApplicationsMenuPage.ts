@@ -13,6 +13,7 @@ export class ApplicationsMenuPage {
 	private readonly apiBuilderMenuItem: Locator;
 	private readonly applicationsMenuTabButton: Locator;
 	private readonly clientExtensionsLink: Locator;
+	private readonly commerceCatalogsMenuItem: Locator;
 	private readonly commerceChannelsMenuItem: Locator;
 	private readonly commerceOrdersMenuItem: Locator;
 	private readonly commercePanelButton: Locator;
@@ -46,6 +47,9 @@ export class ApplicationsMenuPage {
 		});
 		this.clientExtensionsLink = page.getByRole('menuitem', {
 			name: 'Client Extensions',
+		});
+		this.commerceCatalogsMenuItem = page.getByRole('menuitem', {
+			name: 'Catalogs',
 		});
 		this.commerceChannelsMenuItem = page.getByRole('menuitem', {
 			exact: true,
@@ -182,6 +186,11 @@ export class ApplicationsMenuPage {
 	async goToCommerceChannels() {
 		await this.goToCommercePanel();
 		await this.commerceChannelsMenuItem.click();
+	}
+
+	async goToCommerceCatalogs() {
+		await this.goToCommercePanel();
+		await this.commerceCatalogsMenuItem.click();
 	}
 
 	async goToCommercePanel() {
