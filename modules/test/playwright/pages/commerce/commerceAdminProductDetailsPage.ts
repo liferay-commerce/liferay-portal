@@ -26,7 +26,7 @@ export class CommerceAdminProductDetailsPage {
 		await this.productRelationsTab.click();
 	}
 
-	async goToProductDiagramTab() {
+	async goToProductDiagram() {
 		await this.productDiagramTab.click();
 	}
 }

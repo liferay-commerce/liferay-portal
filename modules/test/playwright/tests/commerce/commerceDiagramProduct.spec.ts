@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {mergeTests} from '@playwright/test';
+import {expect, mergeTests} from '@playwright/test';
 
 import {apiHelpersTest} from '../../fixtures/apiHelpersTest';
 import {commercePagesTest} from '../../fixtures/commercePagesTest';
@@ -29,6 +29,11 @@ test('COMMERCE-11835 Account Supplier role user cannot upload diagram file/image
 		accountId: account.id,
 	});
 
+	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
+		account.id,
+		['test@liferay.com']
+	);
+
 	const product = await apiHelpers.headlessCommerceAdminCatalog.postProduct({
 		catalogId: catalog.id,
 		name: {
@@ -40,23 +45,29 @@ test('COMMERCE-11835 Account Supplier role user cannot upload diagram file/image
 	try {
 		await commerceAdminProductPage.gotoProduct(product.name['en_US']);
 
-		await commerceAdminProductDetailsPage.goToProductDiagramTab();
+		await commerceAdminProductDetailsPage.goToProductDiagram();
+
+		await expect(
+			commerceAdminProductDetailsDiagramPage.selectFileButton
+		).toBeVisible();
 
 		await commerceAdminProductDetailsDiagramPage.goToSelectFileButton();
 
-		// await commerceAdminProductDetailsProductRelationsPage.selectItemsInput.check();
+		await expect(
+			commerceAdminProductDetailsDiagramPage.selectFileModal
+		).toBeVisible();
 
-		// await expect(
-		// 	commerceAdminProductDetailsProductRelationsPage.deleteBulkButton
-		// ).toBeVisible();
-
-		// await commerceAdminProductDetailsProductRelationsPage.deleteBulkButton.click();
-
-		// await expect(
-		// 	commerceAdminProductDetailsProductRelationsPage.emptyTableMessage
-		// ).toBeVisible();
+		await expect(
+			commerceAdminProductDetailsDiagramPage.dragAndDropImages
+		).toBeVisible({
+			timeout: 1000,
+		});
 	} finally {
 		await apiHelpers.headlessAdminUser.deleteAccount(account.id);
+
+		await apiHelpers.headlessCommerceAdminCatalog.deleteProduct(
+			product.productId
+		);
 
 		await apiHelpers.headlessCommerceAdminCatalog.deleteCatalog(catalog.id);
 	}

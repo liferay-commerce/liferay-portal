@@ -10,18 +10,30 @@ import {CommerceDNDTablePage} from './commerceDNDTablePage';
 export class CommerceAdminProductDetailsDiagramPage extends CommerceDNDTablePage {
 	readonly selectFileButton: Locator;
 	readonly page: Page;
+	readonly selectFileModal: Locator;
+	readonly dragAndDropImages: Locator;
 
 	constructor(page: Page) {
 		super(
 			page,
 			'#_com_liferay_commerce_product_definitions_web_internal_portlet_CPDefinitionsPortlet_fm .dnd-table'
 		);
-		this.selectFileButton = page.getByLabel('Select File', {exact: true});
+		this.selectFileButton = page.getByRole('button', {name: 'Select File'});
+		this.selectFileModal = page.locator('.modal-content');
+		this.dragAndDropImages = page
+			.frameLocator('iframe[title="Select File"]')
+			.getByText('Drag & Drop Your Images or Browse to Upload');
+
+		// .getByText('Drag & Drop Your Images or Browse to Upload');
 
 		this.page = page;
 	}
 
 	async goToSelectFileButton() {
 		await this.selectFileButton.click();
+	}
+
+	async goToSelectFileModal() {
+		await this.selectFileModal.isVisible();
 	}
 }
