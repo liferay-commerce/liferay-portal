@@ -24,16 +24,10 @@ export class CommerceAdminProductDetailsDiagramPage extends CommerceDNDTablePage
 			.frameLocator('iframe[title="Select File"]')
 			.getByText('Drag & Drop Your Images or Browse to Upload');
 
-		// .getByText('Drag & Drop Your Images or Browse to Upload');
-
 		this.page = page;
 	}
 
 	async goToSelectFileButton() {
 		await this.selectFileButton.click();
-	}
-
-	async goToSelectFileModal() {
-		await this.selectFileModal.isVisible();
 	}
 }

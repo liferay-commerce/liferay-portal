@@ -11,8 +11,10 @@ export class AccountDetailsPage {
 	readonly usersTab: Locator;
 	readonly addressesTab: Locator;
 	readonly accountEntryLink: Locator;
-
+	readonly assignRolesModal: Locator;
+	readonly doneButton: Locator;
 	readonly page: Page;
+	readonly accountsUserRolesTableRow: (accountName: string) => Locator;
 
 	constructor(page: Page) {
 		this.usersTab = page.getByRole('link', {
@@ -23,6 +25,15 @@ export class AccountDetailsPage {
 			name: 'Addresses',
 		});
 		this.accountEntryLink = page.getByLabel('Show Actions');
+
+		this.assignRolesModal = page.locator('.modal-content');
+
+		this.doneButton = page.getByRole('button', {name: 'Done'});
+
+		this.accountsUserRolesTableRow = (roleName: string) =>
+			page
+				.frameLocator('iframe[title="Assign Roles"]')
+				.getByLabel(roleName);
 
 		this.page = page;
 	}
@@ -35,11 +46,16 @@ export class AccountDetailsPage {
 		await this.usersTab.click();
 	}
 
-	async editUserEntry() {
+	async goToAssignRoles(roleName) {
 		clickAndExpectToBeVisible({
 			autoClick: true,
 			target: this.page.getByRole('menuitem', {name: 'Assign Roles'}),
+			timeout: 200,
 			trigger: this.accountEntryLink,
 		});
+
+		await this.assignRolesModal.isVisible();
+		await this.accountsUserRolesTableRow(roleName).check();
+		await this.doneButton.click();
 	}
 }

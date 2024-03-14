@@ -23,6 +23,7 @@ test('COMMERCE-11835 Account Supplier role user cannot upload diagram file/image
 	apiHelpers,
 	commerceAdminProductDetailsDiagramPage,
 	commerceAdminProductDetailsPage,
+	commerceAdminProductPage,
 	page,
 }) => {
 	await page.goto('/');
@@ -31,9 +32,6 @@ test('COMMERCE-11835 Account Supplier role user cannot upload diagram file/image
 		name: 'Supplier account',
 		type: 'supplier',
 	});
-
-	// eslint-disable-next-line no-console
-	console.log('a', account);
 
 	const catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
 		accountId: account.id,
@@ -57,9 +55,9 @@ test('COMMERCE-11835 Account Supplier role user cannot upload diagram file/image
 
 		await accountDetailsPage.goToUsersTab();
 
-		await expect(accountDetailsPage.accountEntryLink).toBeVisible();
+		await accountDetailsPage.goToAssignRoles('Account Supplier');
 
-		await accountDetailsPage.editUserEntry();
+		await commerceAdminProductPage.gotoProduct(product.name['en_US']);
 
 		await commerceAdminProductDetailsPage.goToProductDiagram();
 
