@@ -76,7 +76,8 @@ test('COMMERCE-11835 Account Supplier role user cannot upload diagram file/image
 		).toBeVisible({
 			timeout: 1000,
 		});
-	} finally {
+	}
+	finally {
 		await apiHelpers.headlessAdminUser.deleteAccount(account.id);
 
 		await apiHelpers.headlessCommerceAdminCatalog.deleteProduct(

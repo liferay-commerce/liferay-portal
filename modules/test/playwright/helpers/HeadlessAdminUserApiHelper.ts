@@ -30,18 +30,6 @@ type TServices = {
 	serviceType: string;
 };
 
-type TUser = {
-	additionalName: string;
-	alternateName: string;
-	birthDate: string;
-	currentPassword: string;
-	emailAddress: string;
-	externalReferenceCode?: string;
-	familyName: string;
-	givenName: string;
-	password: string;
-};
-
 export class HeadlessAdminUserApiHelper {
 	readonly apiHelpers: ApiHelpers;
 	readonly basePath: string;
@@ -92,17 +80,6 @@ export class HeadlessAdminUserApiHelper {
 		return this.apiHelpers.post(
 			`${this.apiHelpers.baseUrl}${this.basePath}/organizations`,
 			{name: 'Organization' + getRandomInt(), ...(organization || {})}
-		);
-	}
-
-	async patchUserAccount(accountId: number, user?: TUser): Promise<TUser> {
-		return this.apiHelpers.patch(
-			`${this.apiHelpers.baseUrl}${this.basePath}/accounts/${accountId}/user-accounts`,
-			{
-				alternateName: 'User' + getRandomInt(),
-				emailAddress: '',
-				...(user || {}),
-			}
 		);
 	}
 }
