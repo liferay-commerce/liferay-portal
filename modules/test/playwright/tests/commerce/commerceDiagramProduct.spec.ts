@@ -5,17 +5,24 @@
 
 import {expect, mergeTests} from '@playwright/test';
 
+import {accountsPagesTest} from '../../fixtures/accountsPagesTest';
 import {apiHelpersTest} from '../../fixtures/apiHelpersTest';
 import {commercePagesTest} from '../../fixtures/commercePagesTest';
 import {loginTest} from '../../fixtures/loginTest';
 
-export const test = mergeTests(apiHelpersTest, commercePagesTest, loginTest());
+export const test = mergeTests(
+	apiHelpersTest,
+	accountsPagesTest,
+	commercePagesTest,
+	loginTest()
+);
 
 test('COMMERCE-11835 Account Supplier role user cannot upload diagram file/image', async ({
+	accountDetailsPage,
+	accountsPage,
 	apiHelpers,
 	commerceAdminProductDetailsDiagramPage,
 	commerceAdminProductDetailsPage,
-	commerceAdminProductPage,
 	page,
 }) => {
 	await page.goto('/');
@@ -24,6 +31,9 @@ test('COMMERCE-11835 Account Supplier role user cannot upload diagram file/image
 		name: 'Supplier account',
 		type: 'supplier',
 	});
+
+	// eslint-disable-next-line no-console
+	console.log('a', account);
 
 	const catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
 		accountId: account.id,
@@ -43,7 +53,13 @@ test('COMMERCE-11835 Account Supplier role user cannot upload diagram file/image
 	});
 
 	try {
-		await commerceAdminProductPage.gotoProduct(product.name['en_US']);
+		await accountsPage.gotoAccount(account.name);
+
+		await accountDetailsPage.goToUsersTab();
+
+		await expect(accountDetailsPage.accountEntryLink).toBeVisible();
+
+		await accountDetailsPage.editUserEntry();
 
 		await commerceAdminProductDetailsPage.goToProductDiagram();
 

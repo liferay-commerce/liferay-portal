@@ -8,12 +8,12 @@ import {Locator, Page, expect} from '@playwright/test';
 import {HomePage} from '../portal-web/HomePage';
 
 export class ApplicationsMenuPage {
+	private readonly accountsItem: Locator;
 	private readonly aiCreatorLink: Locator;
 	private readonly announcementsItem: Locator;
 	private readonly apiBuilderMenuItem: Locator;
 	private readonly applicationsMenuTabButton: Locator;
 	private readonly clientExtensionsLink: Locator;
-	private readonly commerceCatalogsMenuItem: Locator;
 	private readonly commerceChannelsMenuItem: Locator;
 	private readonly commerceOrdersMenuItem: Locator;
 	private readonly commercePanelButton: Locator;
@@ -34,6 +34,10 @@ export class ApplicationsMenuPage {
 	private readonly usersAndOrganizationsItem: Locator;
 
 	constructor(page: Page) {
+		this.accountsItem = page.getByRole('menuitem', {
+			exact: true,
+			name: 'Accounts',
+		});
 		this.announcementsItem = page.getByRole('menuitem', {
 			exact: true,
 			name: 'Announcements and Alerts',
@@ -47,9 +51,6 @@ export class ApplicationsMenuPage {
 		});
 		this.clientExtensionsLink = page.getByRole('menuitem', {
 			name: 'Client Extensions',
-		});
-		this.commerceCatalogsMenuItem = page.getByRole('menuitem', {
-			name: 'Catalogs',
 		});
 		this.commerceChannelsMenuItem = page.getByRole('menuitem', {
 			exact: true,
@@ -128,6 +129,11 @@ export class ApplicationsMenuPage {
 		await expect(this.applicationsMenuTabButton).toBeVisible();
 	}
 
+	async goToAccounts() {
+		await this.goToControlPanel();
+		await this.accountsItem.click();
+	}
+
 	async goToAnnouncements() {
 		await this.goToApplicationsMenu();
 		await this.announcementsItem.click();
@@ -186,11 +192,6 @@ export class ApplicationsMenuPage {
 	async goToCommerceChannels() {
 		await this.goToCommercePanel();
 		await this.commerceChannelsMenuItem.click();
-	}
-
-	async goToCommerceCatalogs() {
-		await this.goToCommercePanel();
-		await this.commerceCatalogsMenuItem.click();
 	}
 
 	async goToCommercePanel() {

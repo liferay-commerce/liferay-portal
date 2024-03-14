@@ -23,9 +23,9 @@ export class CommerceAdminProductPage {
 			exact: true,
 			name: 'Generate All SKU Combinations',
 		});
-		this.managementToolbarSearchInput = page
-			.getByTestId('management-toolbar')
-			.getByPlaceholder('Search', {exact: true});
+		this.managementToolbarSearchInput = page.getByPlaceholder('Search', {
+			exact: true,
+		});
 		this.productSkusLink = page.getByRole('link', {
 			exact: true,
 			name: 'SKUs',
