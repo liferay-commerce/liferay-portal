@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {expect, mergeTests} from '@playwright/test';
+import {mergeTests} from '@playwright/test';
 
 import {accountsPagesTest} from '../../fixtures/accountsPagesTest';
 import {apiHelpersTest} from '../../fixtures/apiHelpersTest';
@@ -17,7 +17,7 @@ export const test = mergeTests(
 	loginTest()
 );
 
-test('COMMERCE-11835 Account Supplier role user cannot upload diagram file/image', async ({
+test('COMMERCE-11835 Account Supplier role user can upload diagram file/image', async ({
 	accountDetailsPage,
 	accountsPage,
 	apiHelpers,
@@ -61,21 +61,7 @@ test('COMMERCE-11835 Account Supplier role user cannot upload diagram file/image
 
 		await commerceAdminProductDetailsPage.goToProductDiagram();
 
-		await expect(
-			commerceAdminProductDetailsDiagramPage.selectFileButton
-		).toBeVisible();
-
-		await commerceAdminProductDetailsDiagramPage.goToSelectFileButton();
-
-		await expect(
-			commerceAdminProductDetailsDiagramPage.selectFileModal
-		).toBeVisible();
-
-		await expect(
-			commerceAdminProductDetailsDiagramPage.dragAndDropImages
-		).toBeVisible({
-			timeout: 1000,
-		});
+		await commerceAdminProductDetailsDiagramPage.goToDragAndDropImages();
 	}
 	finally {
 		await apiHelpers.headlessAdminUser.deleteAccount(account.id);
