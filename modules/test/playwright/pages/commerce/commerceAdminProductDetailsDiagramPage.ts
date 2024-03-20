@@ -29,8 +29,5 @@ export class CommerceAdminProductDetailsDiagramPage extends CommerceDNDTablePage
 	async goToDragAndDropImages() {
 		await this.selectFileButton.click();
 		await this.selectFileModal.isVisible();
-		await this.dragAndDropImages.waitFor({
-			state: 'visible',
-		});
 	}
 }

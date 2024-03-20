@@ -90,13 +90,13 @@ export class HeadlessAdminUserApiHelper {
 	}
 
 	async assignAccountRoles(
-		roleId: number,
 		accountERC: string,
+		roleId: number,
 		userEmail: string
 	) {
 		return this.apiHelpers.post(
-			`${this.apiHelpers.baseUrl}${this.basePath}/accounts/by-external-reference-code/${accountERC}/account-roles/${roleId}}/user-accounts/by-email-address`,
-			userEmail || ''
+			`${this.apiHelpers.baseUrl}${this.basePath}/accounts/by-external-reference-code/${accountERC}/account-roles/${roleId}/user-accounts/by-email-address/${userEmail}`,
+			{}
 		);
 	}
 }

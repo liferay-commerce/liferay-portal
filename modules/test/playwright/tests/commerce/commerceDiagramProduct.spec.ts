@@ -3,22 +3,15 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {mergeTests} from '@playwright/test';
+import {expect, mergeTests} from '@playwright/test';
 
-import {accountsPagesTest} from '../../fixtures/accountsPagesTest';
 import {apiHelpersTest} from '../../fixtures/apiHelpersTest';
 import {commercePagesTest} from '../../fixtures/commercePagesTest';
 import {loginTest} from '../../fixtures/loginTest';
 
-export const test = mergeTests(
-	apiHelpersTest,
-	accountsPagesTest,
-	commercePagesTest,
-	loginTest()
-);
+export const test = mergeTests(apiHelpersTest, commercePagesTest, loginTest());
 
 test('COMMERCE-11835 Account Supplier role user can upload diagram file/image', async ({
-	accountsPage,
 	apiHelpers,
 	commerceAdminProductDetailsDiagramPage,
 	commerceAdminProductDetailsPage,
@@ -57,31 +50,29 @@ test('COMMERCE-11835 Account Supplier role user can upload diagram file/image', 
 		return role.name === 'Account Supplier';
 	});
 
-	const blabla = await apiHelpers.headlessAdminUser.assignAccountRoles(
-		accountSupplierRole.id,
+	await apiHelpers.headlessAdminUser.assignAccountRoles(
 		account.externalReferenceCode,
+		accountSupplierRole[0].id,
 		'test@liferay.com'
 	);
 
-	console.log('48441', blabla);
-
-	console.log('account', account);
-	console.log('roles', rolesResponse);
-	console.log('accountSupplierRole', accountSupplierRole);
-
 	try {
-		await accountsPage.gotoAccount(account.name);
-
 		await commerceAdminProductPage.gotoProduct(product.name['en_US']);
 
 		await commerceAdminProductDetailsPage.goToProductDiagram();
 
 		await commerceAdminProductDetailsDiagramPage.goToDragAndDropImages();
+
+		await expect(
+			commerceAdminProductDetailsDiagramPage.dragAndDropImages
+		).toBeVisible({
+			timeout: 2000,
+		});
 	} finally {
-		// await apiHelpers.headlessAdminUser.deleteAccount(account.id);
-		// await apiHelpers.headlessCommerceAdminCatalog.deleteProduct(
-		// 	product.productId
-		// );
-		// await apiHelpers.headlessCommerceAdminCatalog.deleteCatalog(catalog.id);
+		await apiHelpers.headlessAdminUser.deleteAccount(account.id);
+		await apiHelpers.headlessCommerceAdminCatalog.deleteProduct(
+			product.productId
+		);
+		await apiHelpers.headlessCommerceAdminCatalog.deleteCatalog(catalog.id);
 	}
 });
