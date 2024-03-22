@@ -39,6 +39,426 @@
 				"en-US": "Commerce Return Statuses"
 			},
 			"system": false
+		},
+		{
+			"externalReferenceCode": "L_DIMENSIONS_DIMENSIONS",
+			"listTypeEntries": [
+				{
+					"externalReferenceCode": "Dimensions1",
+					"key": "Dimensions1",
+					"name": "Dimensions1",
+					"name_i18n": {
+						"en-US": "Dimensions1"
+					}
+				},
+				{
+					"externalReferenceCode": "Dimensions2",
+					"key": "Dimensions2",
+					"name": "Dimensions2",
+					"name_i18n": {
+						"en-US": "Dimensions2"
+					}
+				},
+				{
+					"externalReferenceCode": "Dimensions3",
+					"key": "Dimensions3",
+					"name": "Dimensions3",
+					"name_i18n": {
+						"en-US": "Dimensions3"
+					}
+				},
+				{
+					"externalReferenceCode": "Dimensions4",
+					"key": "Dimensions4",
+					"name": "Dimensions4",
+					"name_i18n": {
+						"en-US": "Dimensions4"
+					}
+				}
+			],
+			"name": "Dimensions > Dimensions",
+			"name_i18n": {
+				"en-US": "Dimensions > Dimensions"
+			},
+			"system": false
+		},
+		{
+			"externalReferenceCode": "L_DIMENSIONS_HEIGHT",
+			"listTypeEntries": [
+				{
+					"externalReferenceCode": "Height1",
+					"key": "Height1",
+					"name": "Height1",
+					"name_i18n": {
+						"en-US": "Height1"
+					}
+				},
+				{
+					"externalReferenceCode": "Height2",
+					"key": "Height2",
+					"name": "Height2",
+					"name_i18n": {
+						"en-US": "Height2"
+					}
+				},
+				{
+					"externalReferenceCode": "Height3",
+					"key": "Height3",
+					"name": "Height3",
+					"name_i18n": {
+						"en-US": "Height3"
+					}
+				},
+				{
+					"externalReferenceCode": "Height4",
+					"key": "Height4",
+					"name": "Height4",
+					"name_i18n": {
+						"en-US": "Height4"
+					}
+				}
+			],
+			"name": "Dimensions > Height",
+			"name_i18n": {
+				"en-US": "Dimensions > Height"
+			},
+			"system": false
+		},
+		{
+			"externalReferenceCode": "L_DIMENSIONS_LENGTH",
+			"listTypeEntries": [
+				{
+					"externalReferenceCode": "Length1",
+					"key": "Length1",
+					"name": "Length1",
+					"name_i18n": {
+						"en-US": "Length1"
+					}
+				},
+				{
+					"externalReferenceCode": "Length2",
+					"key": "Length2",
+					"name": "Length2",
+					"name_i18n": {
+						"en-US": "Length2"
+					}
+				},
+				{
+					"externalReferenceCode": "Length3",
+					"key": "Length3",
+					"name": "Length3",
+					"name_i18n": {
+						"en-US": "Length3"
+					}
+				},
+				{
+					"externalReferenceCode": "Length4",
+					"key": "Length4",
+					"name": "Length4",
+					"name_i18n": {
+						"en-US": "Length4"
+					}
+				}
+			],
+			"name": "Dimensions > Length",
+			"name_i18n": {
+				"en-US": "Dimensions > Length"
+			},
+			"system": false
+		},
+		{
+			"externalReferenceCode": "L_DIMENSIONS_MATERIAL",
+			"listTypeEntries": [
+				{
+					"externalReferenceCode": "Material1",
+					"key": "Material1",
+					"name": "Material1",
+					"name_i18n": {
+						"en-US": "Material1"
+					}
+				},
+				{
+					"externalReferenceCode": "Material2",
+					"key": "Material2",
+					"name": "Material2",
+					"name_i18n": {
+						"en-US": "Material2"
+					}
+				},
+				{
+					"externalReferenceCode": "Material3",
+					"key": "Material3",
+					"name": "Material3",
+					"name_i18n": {
+						"en-US": "Material3"
+					}
+				},
+				{
+					"externalReferenceCode": "Material4",
+					"key": "Material4",
+					"name": "Material4",
+					"name_i18n": {
+						"en-US": "Material4"
+					}
+				}
+			],
+			"name": "Dimensions > Material",
+			"name_i18n": {
+				"en-US": "Dimensions > Material"
+			},
+			"system": false
+		},
+		{
+			"externalReferenceCode": "L_DIMENSIONS_WEIGHT",
+			"listTypeEntries": [
+				{
+					"externalReferenceCode": "Weight1",
+					"key": "Weight1",
+					"name": "Weight1",
+					"name_i18n": {
+						"en-US": "Weight1"
+					}
+				},
+				{
+					"externalReferenceCode": "Weight2",
+					"key": "Weight2",
+					"name": "Weight2",
+					"name_i18n": {
+						"en-US": "Weight2"
+					}
+				},
+				{
+					"externalReferenceCode": "Weight3",
+					"key": "Weight3",
+					"name": "Weight3",
+					"name_i18n": {
+						"en-US": "Weight3"
+					}
+				},
+				{
+					"externalReferenceCode": "Weight4",
+					"key": "Weight4",
+					"name": "Weight4",
+					"name_i18n": {
+						"en-US": "Weight4"
+					}
+				}
+			],
+			"name": "Dimensions > Weight",
+			"name_i18n": {
+				"en-US": "Dimensions > Weight"
+			},
+			"system": false
+		},
+		{
+			"externalReferenceCode": "L_DIMENSIONS_WIDTH",
+			"listTypeEntries": [
+				{
+					"externalReferenceCode": "Width1",
+					"key": "Width1",
+					"name": "Width1",
+					"name_i18n": {
+						"en-US": "Width1"
+					}
+				},
+				{
+					"externalReferenceCode": "Width2",
+					"key": "Width2",
+					"name": "Width2",
+					"name_i18n": {
+						"en-US": "Width2"
+					}
+				},
+				{
+					"externalReferenceCode": "Width3",
+					"key": "Width3",
+					"name": "Width3",
+					"name_i18n": {
+						"en-US": "Width3"
+					}
+				},
+				{
+					"externalReferenceCode": "Width4",
+					"key": "Width4",
+					"name": "Width4",
+					"name_i18n": {
+						"en-US": "Width4"
+					}
+				}
+			],
+			"name": "Dimensions > Width",
+			"name_i18n": {
+				"en-US": "Dimensions > Width"
+			},
+			"system": false
+		},
+		{
+			"externalReferenceCode": "L_FIT_FIT",
+			"listTypeEntries": [
+				{
+					"externalReferenceCode": "Fit1",
+					"key": "Fit1",
+					"name": "Fit1",
+					"name_i18n": {
+						"en-US": "Fit1"
+					}
+				},
+				{
+					"externalReferenceCode": "Fit2",
+					"key": "Fit2",
+					"name": "Fit2",
+					"name_i18n": {
+						"en-US": "Fit2"
+					}
+				},
+				{
+					"externalReferenceCode": "Fit3",
+					"key": "Fit3",
+					"name": "Fit3",
+					"name_i18n": {
+						"en-US": "Fit3"
+					}
+				},
+				{
+					"externalReferenceCode": "Fit4",
+					"key": "Fit4",
+					"name": "Fit4",
+					"name_i18n": {
+						"en-US": "Fit4"
+					}
+				}
+			],
+			"name": "Fit > Fit",
+			"name_i18n": {
+				"en-US": "Fit > Fit"
+			},
+			"system": false
+		},
+		{
+			"externalReferenceCode": "L_MATERIAL_MATERIAL",
+			"listTypeEntries": [
+				{
+					"externalReferenceCode": "Material1",
+					"key": "Material1",
+					"name": "Material1",
+					"name_i18n": {
+						"en-US": "Material1"
+					}
+				},
+				{
+					"externalReferenceCode": "Material2",
+					"key": "Material2",
+					"name": "Material2",
+					"name_i18n": {
+						"en-US": "Material2"
+					}
+				},
+				{
+					"externalReferenceCode": "Material3",
+					"key": "Material3",
+					"name": "Material3",
+					"name_i18n": {
+						"en-US": "Material3"
+					}
+				},
+				{
+					"externalReferenceCode": "Material4",
+					"key": "Material4",
+					"name": "Material4",
+					"name_i18n": {
+						"en-US": "Material4"
+					}
+				}
+			],
+			"name": "Material > Material",
+			"name_i18n": {
+				"en-US": "Material > Material"
+			},
+			"system": false
+		},
+		{
+			"externalReferenceCode": "L_QUANTITY_QUANTITY",
+			"listTypeEntries": [
+				{
+					"externalReferenceCode": "Quantity1",
+					"key": "Quantity1",
+					"name": "Quantity1",
+					"name_i18n": {
+						"en-US": "Quantity1"
+					}
+				},
+				{
+					"externalReferenceCode": "Quantity2",
+					"key": "Quantity2",
+					"name": "Quantity2",
+					"name_i18n": {
+						"en-US": "Quantity2"
+					}
+				},
+				{
+					"externalReferenceCode": "Quantity3",
+					"key": "Quantity3",
+					"name": "Quantity3",
+					"name_i18n": {
+						"en-US": "Quantity3"
+					}
+				},
+				{
+					"externalReferenceCode": "Quantity4",
+					"key": "Quantity4",
+					"name": "Quantity4",
+					"name_i18n": {
+						"en-US": "Quantity4"
+					}
+				}
+			],
+			"name": "Quantity > Quantity",
+			"name_i18n": {
+				"en-US": "Quantity > Quantity"
+			},
+			"system": false
+		},
+		{
+			"externalReferenceCode": "L_WARRANTY_WARRANTY",
+			"listTypeEntries": [
+				{
+					"externalReferenceCode": "Warranty1",
+					"key": "Warranty1",
+					"name": "Warranty1",
+					"name_i18n": {
+						"en-US": "Warranty1"
+					}
+				},
+				{
+					"externalReferenceCode": "Warranty2",
+					"key": "Warranty2",
+					"name": "Warranty2",
+					"name_i18n": {
+						"en-US": "Warranty2"
+					}
+				},
+				{
+					"externalReferenceCode": "Warranty3",
+					"key": "Warranty3",
+					"name": "Warranty3",
+					"name_i18n": {
+						"en-US": "Warranty3"
+					}
+				},
+				{
+					"externalReferenceCode": "Warranty4",
+					"key": "Warranty4",
+					"name": "Warranty4",
+					"name_i18n": {
+						"en-US": "Warranty4"
+					}
+				}
+			],
+			"name": "Warranty > Warranty",
+			"name_i18n": {
+				"en-US": "Warranty > Warranty"
+			},
+			"system": false
 		}
 	]
 }

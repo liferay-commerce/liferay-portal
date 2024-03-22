@@ -10,11 +10,13 @@ import com.liferay.commerce.product.display.context.BaseCPDefinitionsDisplayCont
 import com.liferay.commerce.product.item.selector.criterion.CPSpecificationOptionItemSelectorCriterion;
 import com.liferay.commerce.product.model.CPDefinitionSpecificationOptionValue;
 import com.liferay.commerce.product.model.CPOptionCategory;
+import com.liferay.commerce.product.model.CPSpecificationOption;
 import com.liferay.commerce.product.portlet.action.ActionHelper;
 import com.liferay.commerce.product.service.CPOptionCategoryService;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.ItemSelectorReturnType;
 import com.liferay.item.selector.criteria.UUIDItemSelectorReturnType;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -52,6 +54,35 @@ public class CPDefinitionSpecificationOptionValueDisplayContext
 
 		_cpOptionCategoryService = cpOptionCategoryService;
 		_itemSelector = itemSelector;
+	}
+
+	public String getListTypeEntriesByExternalReferenceCodeURL() throws PortalException {
+		CPSpecificationOption cpSpecificationOption =
+			_cpDefinitionSpecificationOptionValue.getCPSpecificationOption();
+
+		CPOptionCategory cpOptionCategory = null;
+
+		for (CPOptionCategory category : getCPOptionCategories()) {
+			if (category.getCPOptionCategoryId() ==
+					_cpDefinitionSpecificationOptionValue.
+						getCPOptionCategoryId()) {
+
+				cpOptionCategory = category;
+
+				break;
+			}
+		}
+
+		return StringBundler.concat(
+			"/o/headless-admin-list-type/v1.0/list-type-definitions",
+			"/by-external-reference-code/L_",
+			cpOptionCategory.getKey(
+			).toUpperCase(),
+			"_",
+			cpSpecificationOption.getKey(
+			).toUpperCase()
+			,
+			"/list-type-entries");
 	}
 
 	public CPDefinitionSpecificationOptionValue

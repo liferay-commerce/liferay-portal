@@ -34,10 +34,7 @@ long cpOptionCategoryId = BeanParamUtil.getLong(cpDefinitionSpecificationOptionV
 			<liferay-ui:error exception="<%= CPDefinitionSpecificationOptionValueKeyException.class %>" message="please-enter-a-valid-key" />
 
 			<aui:field-wrapper label='<%= LanguageUtil.get(resourceBundle, "value") %>' name="valueFieldWrapper">
-				<liferay-ui:input-localized
-					name="value"
-					xml="<%= (cpDefinitionSpecificationOptionValue == null) ? StringPool.BLANK : cpDefinitionSpecificationOptionValue.getValue() %>"
-				/>
+				<div id="autocomplete-root"></div>
 			</aui:field-wrapper>
 
 			<aui:select label="group" name="CPOptionCategoryId" showEmptyOption="<%= true %>">
@@ -84,3 +81,18 @@ long cpOptionCategoryId = BeanParamUtil.getLong(cpDefinitionSpecificationOptionV
 		</aui:form>
 	</commerce-ui:panel>
 </liferay-frontend:side-panel-content>
+
+<aui:script require="commerce-frontend-js/components/autocomplete/entry as autocomplete">
+	autocomplete.default('autocomplete', 'autocomplete-root', {
+		apiUrl:
+			'<%= cpDefinitionSpecificationOptionValueDisplayContext.getListTypeEntriesByExternalReferenceCodeURL() %>',
+		initialLabel:
+			'<%= cpDefinitionSpecificationOptionValue.getValue(locale) %>',
+		initialValue:
+			'<%= cpDefinitionSpecificationOptionValue.getValue(locale) %>',
+		inputId: 'value',
+		inputName: '<%= liferayPortletResponse.getNamespace() %>value',
+		itemsKey: 'name',
+		itemsLabel: 'name',
+	});
+</aui:script>
