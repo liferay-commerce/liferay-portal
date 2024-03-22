@@ -69,21 +69,16 @@ export class ApiHelpers {
 		this.dataEngine = new DataEngineApiHelper(this);
 		this.headlessAdminContent = new HeadlessAdminContentApiHelper(this);
 		this.headlessAdminUser = new HeadlessAdminUserApiHelper(this);
-		this.headlessCommerceAdminCatalog = new HeadlessCommerceAdminCatalogApiHelper(
-			this
-		);
-		this.headlessCommerceAdminChannel = new HeadlessCommerceAdminChannelApiHelper(
-			this
-		);
-		this.headlessCommerceAdminPaymentApiHelper = new HeadlessCommerceAdminPaymentApiHelper(
-			this
-		);
-		this.headlessCommerceDeliveryCatalog = new HeadlessCommerceDeliveryCatalogApiHelper(
-			this
-		);
-		this.headlessCommerceDeliveryCart = new HeadlessCommerceDeliveryCartApiHelper(
-			this
-		);
+		this.headlessCommerceAdminCatalog =
+			new HeadlessCommerceAdminCatalogApiHelper(this);
+		this.headlessCommerceAdminChannel =
+			new HeadlessCommerceAdminChannelApiHelper(this);
+		this.headlessCommerceAdminPaymentApiHelper =
+			new HeadlessCommerceAdminPaymentApiHelper(this);
+		this.headlessCommerceDeliveryCatalog =
+			new HeadlessCommerceDeliveryCatalogApiHelper(this);
+		this.headlessCommerceDeliveryCart =
+			new HeadlessCommerceDeliveryCartApiHelper(this);
 		this.headlessDelivery = new HeadlessDeliveryApiHelper(this);
 		this.headlessSite = new HeadlessSiteApiHelper(this);
 		this.jsonWebServicesClassName = new JSONWebServicesClassNameApiHelper(
