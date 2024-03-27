@@ -31,10 +31,11 @@ export class CommerceAdminProductDetailsProductRelationsPage extends CommerceDND
 				name: 'Add New Product to ' + productName,
 			});
 		};
-		this.CommerceAdminProductDetailsPage = new CommerceAdminProductDetailsPage(page);
+		this.CommerceAdminProductDetailsPage =
+			new CommerceAdminProductDetailsPage(page);
 		this.creationMenuNewButton = page
 			.getByTestId('creationMenuNewButton')
-			.nth(0);		
+			.nth(0);
 		this.deleteBulkButton = page
 			.locator('nav')
 			.locator('.bulk-actions')
