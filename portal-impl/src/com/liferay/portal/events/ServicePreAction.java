@@ -1059,23 +1059,24 @@ public class ServicePreAction extends Action {
 						throw new NoSuchLayoutException(message);
 					}
 				}
-			}
 
-			if ((layout.isPrivateLayout() &&
-				 !PrefsPropsUtil.getBoolean(
-					 PortalUtil.getCompanyId(httpServletRequest),
-					 PropsKeys.LAYOUT_USER_PRIVATE_LAYOUTS_ENABLED)) ||
-				(layout.isPublicLayout() &&
-				 !PrefsPropsUtil.getBoolean(
-					 user.getCompanyId(),
-					 PropsKeys.LAYOUT_USER_PUBLIC_LAYOUTS_ENABLED))) {
+				if ((layout.isPrivateLayout() &&
+					 !PrefsPropsUtil.getBoolean(
+						 PortalUtil.getCompanyId(httpServletRequest),
+						 PropsKeys.LAYOUT_USER_PRIVATE_LAYOUTS_ENABLED)) ||
+					(layout.isPublicLayout() &&
+					 !PrefsPropsUtil.getBoolean(
+						 user.getCompanyId(),
+						 PropsKeys.LAYOUT_USER_PUBLIC_LAYOUTS_ENABLED))) {
 
-				User layoutUser = UserLocalServiceUtil.getUserById(
-					company.getCompanyId(), layoutGroup.getClassPK());
+					User layoutUser = UserLocalServiceUtil.getUserById(
+						company.getCompanyId(), layoutGroup.getClassPK());
 
-				_updateUserLayouts(layoutUser);
+					_updateUserLayouts(layoutUser);
 
-				layout = LayoutLocalServiceUtil.fetchLayout(layout.getPlid());
+					layout = LayoutLocalServiceUtil.fetchLayout(
+						layout.getPlid());
+				}
 			}
 		}
 
