@@ -111,7 +111,9 @@ export class FDSFragmentPage {
 	}
 
 	async createSite(name: string): Promise<Site> {
-		const site = await this.apiHelpers.headlessSite.createSite(name);
+		const site = await this.apiHelpers.headlessSite.createSite({
+			name,
+		});
 
 		return site;
 	}
