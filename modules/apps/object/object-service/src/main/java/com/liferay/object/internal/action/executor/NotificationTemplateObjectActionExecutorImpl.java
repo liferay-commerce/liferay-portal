@@ -126,8 +126,8 @@ public class NotificationTemplateObjectActionExecutorImpl
 				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
 					"yyyy-MM-dd");
 
-				Timestamp timestamp = (Timestamp)termValues.get(
-					objectField.getName());
+				Timestamp timestamp = new Timestamp(
+					(Long)termValues.get(objectField.getName()));
 
 				termValues.put(
 					objectField.getName(),
