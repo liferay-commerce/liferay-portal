@@ -572,11 +572,7 @@ const PriceRows = ({price}) => {
 						priceName={Liferay.Language.get('price-as-configured')}
 					>
 						<span className="text-7">
-							{hasDiscountPercentage
-								? price.finalPriceFormatted
-								: hasPromoPrice
-								? price.promoPriceFormatted
-								: price.priceFormatted}
+							{price.finalPriceFormatted}
 						</span>
 					</PriceRow>
 				</div>
