@@ -29,6 +29,7 @@ type TProduct = {
 	productStatus?: number;
 	productType?: string;
 	skus?: TSku[];
+	version?: number;
 };
 
 type TRelatedProduct = {
@@ -100,6 +101,12 @@ export class HeadlessCommerceAdminCatalogApiHelper {
 		);
 	}
 
+	async deleteProductByVersion(productId: number, version: number) {
+		return this.apiHelpers.delete(
+			`${this.apiHelpers.baseUrl}${this.basePath}/products/${productId}/by-version/${version}`
+		);
+	}
+
 	async deleteSkuUnitOfMeasure(skuUnitOfMeasureId: string) {
 		return this.apiHelpers.delete(
 			`${this.apiHelpers.baseUrl}${this.basePath}/sku-unit-of-measures/${skuUnitOfMeasureId}`
@@ -136,6 +143,12 @@ export class HeadlessCommerceAdminCatalogApiHelper {
 		);
 	}
 
+	async getProductByVersion(productId: number, version: number) {
+		return this.apiHelpers.get(
+			`${this.apiHelpers.baseUrl}${this.basePath}/products/${productId}/by-version/${version}`
+		);
+	}
+
 	async getProductsPage(pageSize: number, search: string) {
 		return this.apiHelpers.get(
 			`${this.apiHelpers.baseUrl}${this.basePath}/products?pageSize=${pageSize}&search=${search}`
@@ -157,6 +170,13 @@ export class HeadlessCommerceAdminCatalogApiHelper {
 				},
 				...(product || {}),
 			}
+		);
+	}
+
+	async patchSku(cpInstanceId: string, sku?: TSku) {
+		return this.apiHelpers.patch(
+			`${this.apiHelpers.baseUrl}${this.basePath}/skus/${cpInstanceId}`,
+			{sku: 'Sku' + getRandomInt(), ...(sku || {})}
 		);
 	}
 
