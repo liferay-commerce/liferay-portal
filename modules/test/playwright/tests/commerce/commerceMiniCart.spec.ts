@@ -258,6 +258,8 @@ test('mini cart bundle with UOM', async ({
 	await expect(commerceMiniCartPage.unitOfMeasureTableLabel).toBeVisible();
 	await expect(commerceMiniCartPage.miniCartSaveButton).toBeEnabled();
 
+	await expect(page.getByText('Price as Configured$ 60.00')).toBeVisible();
+
 	await expect(
 		page.getByRole('cell', {exact: true, name: 'Box'})
 	).toBeVisible();
@@ -266,9 +268,16 @@ test('mini cart bundle with UOM', async ({
 	).toBeVisible();
 
 	await page.getByLabel('Size').selectOption({label: 'XS'});
+
+	await expect(page.getByText('List Price$ 50.00')).toBeVisible();
+
+	await expect(page.getByText('Price as Configured$ 150.00')).toBeVisible();
+
 	await page.getByLabel('Color').selectOption({label: 'Black - $ 10.00'});
 
-	await expect(page.getByText('Price as Configured$ 40.00')).toBeVisible();
+	await expect(page.getByText('List Price$ 40.00')).toBeVisible();
+
+	await expect(page.getByText('Price as Configured$ 120.00')).toBeVisible();
 
 	await expect(commerceMiniCartPage.editUnitOfMeasureLabel).toBeHidden();
 	await expect(commerceMiniCartPage.unitOfMeasureTableLabel).toBeHidden();
@@ -276,7 +285,10 @@ test('mini cart bundle with UOM', async ({
 
 	await page.getByLabel('Size').selectOption({label: 'XL + $ 10.00'});
 
+	await expect(page.getByText('List Price$ 50.00')).toBeVisible();
+
 	await expect(page.getByText('Price as Configured$ 50.00')).toBeVisible();
+
 	await expect(
 		page.getByRole('cell', {exact: true, name: 'Package'})
 	).toBeVisible();
@@ -288,6 +300,8 @@ test('mini cart bundle with UOM', async ({
 	await expect(commerceMiniCartPage.miniCartSaveButton).toBeDisabled();
 
 	await commerceMiniCartPage.editQuantitySelector.fill('4');
+
+	await expect(page.getByText('Price as Configured$ 100.00')).toBeVisible();
 
 	await expect(commerceMiniCartPage.miniCartSaveButton).toBeEnabled();
 
