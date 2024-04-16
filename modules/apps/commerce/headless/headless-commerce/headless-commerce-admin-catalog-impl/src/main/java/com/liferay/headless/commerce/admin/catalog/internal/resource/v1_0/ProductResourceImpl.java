@@ -1312,20 +1312,22 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 
 		// Virtual
 
-		ProductVirtualSettings productVirtualSettings =
-			product.getProductVirtualSettings();
+		if (VirtualCPTypeConstants.NAME.equals(cpType.getName())) {
+			ProductVirtualSettings productVirtualSettings =
+				product.getProductVirtualSettings();
 
-		if (productVirtualSettings != null) {
-			if (VirtualCPTypeConstants.NAME.equals(cpType.getName())) {
-				ProductVirtualSettingsUtil.addOrUpdateProductVirtualSettings(
-					cpDefinition, productVirtualSettings,
-					_cpDefinitionVirtualSettingService,
-					_cpdVirtualSettingFileEntryService, _uniqueFileNameProvider,
-					serviceContext);
+			if (productVirtualSettings == null) {
+				productVirtualSettings = new ProductVirtualSettings();
 			}
-			else {
-				throw new CPDefinitionProductTypeNameException();
-			}
+
+			ProductVirtualSettingsUtil.addOrUpdateProductVirtualSettings(
+				cpDefinition, productVirtualSettings,
+				_cpDefinitionVirtualSettingService,
+				_cpdVirtualSettingFileEntryService, _uniqueFileNameProvider,
+				serviceContext);
+		}
+		else {
+			throw new CPDefinitionProductTypeNameException();
 		}
 
 		return cpDefinition;

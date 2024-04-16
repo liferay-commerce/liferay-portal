@@ -15,6 +15,8 @@ import com.liferay.commerce.product.type.virtual.service.CPDVirtualSettingFileEn
 import com.liferay.commerce.product.type.virtual.service.CPDefinitionVirtualSettingService;
 import com.liferay.commerce.product.type.virtual.web.internal.constants.CPDefinitionVirtualSettingWebKeys;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.util.ParamUtil;
 
 import javax.portlet.RenderRequest;
@@ -78,6 +80,18 @@ public class CPDefinitionVirtualSettingActionHelper {
 				_cpDefinitionVirtualSettingService.
 					fetchCPDefinitionVirtualSetting(
 						CPDefinition.class.getName(), cpDefinitionId);
+		}
+
+		if (cpDefinitionVirtualSetting == null) {
+			ServiceContext serviceContext = ServiceContextFactory.getInstance(
+				CPDefinitionVirtualSetting.class.getName(), renderRequest);
+
+			cpDefinitionVirtualSetting =
+				_cpDefinitionVirtualSettingService.
+					addCPDefinitionVirtualSetting(
+						CPDefinition.class.getName(), cpDefinitionId, 0, "", 0,
+						0, 0, false, 0, "", false, null, 0, false,
+						serviceContext);
 		}
 
 		if (cpDefinitionVirtualSetting != null) {
