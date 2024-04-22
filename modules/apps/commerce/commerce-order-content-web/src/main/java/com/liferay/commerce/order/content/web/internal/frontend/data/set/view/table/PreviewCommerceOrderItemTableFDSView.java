@@ -32,7 +32,7 @@ public class PreviewCommerceOrderItemTableFDSView extends BaseTableFDSView {
 			_fdsTableSchemaBuilderFactory.create();
 
 		return fdsTableSchemaBuilder.add(
-			"rowNumber"
+			"rowNumber", "row"
 		).add(
 			"productName", "product-name"
 		).add(
