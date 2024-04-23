@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
+import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.JavaConstants;
@@ -39,10 +40,10 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @author Stefano Motta
  */
-public class PortalDefaultPermissionsCompanyConfigurationDisplayContext
+public class PortalDefaultPermissionsGroupConfigurationDisplayContext
 	implements PortalDefaultPermissionsConfigurationDisplayContext {
 
-	public PortalDefaultPermissionsCompanyConfigurationDisplayContext(
+	public PortalDefaultPermissionsGroupConfigurationDisplayContext(
 		HttpServletRequest httpServletRequest, Language language,
 		PortalDefaultPermissionsModelResourceRegistry
 			portalDefaultPermissionsModelResourceRegistry) {
@@ -79,9 +80,25 @@ public class PortalDefaultPermissionsCompanyConfigurationDisplayContext
 					"editDefaultPermissionsURL",
 					getEditURL(
 						portalDefaultPermissionsSearchEntry.getClassName()));
+				dropdownItem.putData(
+					"qa-id",
+					"edit-" + portalDefaultPermissionsSearchEntry.getLabel());
 				dropdownItem.setLabel(
 					LanguageUtil.get(_httpServletRequest, "edit"));
 				dropdownItem.setTarget("modal-permissions");
+			}
+		).add(
+			dropdownItem -> {
+				dropdownItem.putData("action", "resetDefaultPermissions");
+				dropdownItem.putData(
+					"qa-id",
+					"reset-" + portalDefaultPermissionsSearchEntry.getLabel());
+				dropdownItem.putData(
+					"resetDefaultPermissionsURL",
+					getResetURL(
+						portalDefaultPermissionsSearchEntry.getClassName()));
+				dropdownItem.setLabel(
+					LanguageUtil.get(_httpServletRequest, "reset"));
 			}
 		).build();
 	}
@@ -98,7 +115,7 @@ public class PortalDefaultPermissionsCompanyConfigurationDisplayContext
 		).setParameter(
 			"modelResource", className
 		).setParameter(
-			"scope", ExtendedObjectClassDefinition.Scope.COMPANY
+			"scope", ExtendedObjectClassDefinition.Scope.GROUP
 		).setWindowState(
 			LiferayWindowState.POP_UP
 		).buildString();
@@ -131,6 +148,24 @@ public class PortalDefaultPermissionsCompanyConfigurationDisplayContext
 				return null;
 			}
 		).buildPortletURL();
+	}
+
+	public String getResetURL(String className) {
+		return PortletURLBuilder.create(
+			PortletURLFactoryUtil.create(
+				_httpServletRequest,
+				"com_liferay_portlet_configuration_web_portlet_" +
+					"PortletConfigurationPortlet",
+				PortletRequest.ACTION_PHASE)
+		).setActionName(
+			"/configuration/edit_portal_default_permissions_configuration"
+		).setCMD(
+			"reset"
+		).setParameter(
+			"modelResource", className
+		).setParameter(
+			"scope", ExtendedObjectClassDefinition.Scope.GROUP
+		).buildString();
 	}
 
 	public PortalDefaultPermissionsSearch getSearchContainer() {
@@ -166,12 +201,20 @@ public class PortalDefaultPermissionsCompanyConfigurationDisplayContext
 		return TransformUtil.transform(
 			_portalDefaultPermissionsModelResourceRegistry.
 				getPortalDefaultPermissionsModelResources(),
-			portalDefaultPermissionsModelResource ->
-				new PortalDefaultPermissionsSearchEntry(
+			portalDefaultPermissionsModelResource -> {
+				ExtendedObjectClassDefinition.Scope scope =
+					portalDefaultPermissionsModelResource.getScope();
+
+				if (!scope.equals(ExtendedObjectClassDefinition.Scope.GROUP)) {
+					return null;
+				}
+
+				return new PortalDefaultPermissionsSearchEntry(
 					portalDefaultPermissionsModelResource.getClassName(),
 					_language.get(
 						themeDisplay.getLocale(),
-						portalDefaultPermissionsModelResource.getLabel())));
+						portalDefaultPermissionsModelResource.getLabel()));
+			});
 	}
 
 	private final HttpServletRequest _httpServletRequest;

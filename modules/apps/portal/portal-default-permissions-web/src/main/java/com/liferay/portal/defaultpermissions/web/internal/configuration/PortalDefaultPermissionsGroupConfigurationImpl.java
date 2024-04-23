@@ -10,8 +10,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
-import com.liferay.portal.defaultpermissions.configuration.PortalDefaultPermissionsCompanyConfiguration;
 import com.liferay.portal.defaultpermissions.configuration.PortalDefaultPermissionsConfiguration;
+import com.liferay.portal.defaultpermissions.configuration.PortalDefaultPermissionsGroupConfiguration;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -27,10 +27,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Stefano Motta
  */
 @Component(
-	property = "portal.default.permissions.scope=company",
+	property = "portal.default.permissions.scope=group",
 	service = PortalDefaultPermissionsConfiguration.class
 )
-public class PortalDefaultPermissionsCompanyConfigurationImpl
+public class PortalDefaultPermissionsGroupConfigurationImpl
 	implements PortalDefaultPermissionsConfiguration {
 
 	@Override
@@ -38,15 +38,14 @@ public class PortalDefaultPermissionsCompanyConfigurationImpl
 		long companyId, long groupId) {
 
 		try {
-			PortalDefaultPermissionsCompanyConfiguration
-				portalDefaultPermissionsCompanyConfiguration =
-					_configurationProvider.getCompanyConfiguration(
-						PortalDefaultPermissionsCompanyConfiguration.class,
-						companyId);
+			PortalDefaultPermissionsGroupConfiguration
+				portalDefaultPermissionsGroupConfiguration =
+					_configurationProvider.getGroupConfiguration(
+						PortalDefaultPermissionsGroupConfiguration.class,
+						groupId);
 
 			String defaultPermissions =
-				portalDefaultPermissionsCompanyConfiguration.
-					defaultPermissions();
+				portalDefaultPermissionsGroupConfiguration.defaultPermissions();
 
 			if (Validator.isNull(defaultPermissions)) {
 				return new HashMap<>();
@@ -68,25 +67,28 @@ public class PortalDefaultPermissionsCompanyConfigurationImpl
 		Map<String, Map<String, String[]>> defaultPermissions =
 			getDefaultPermissions(companyId, groupId);
 
-		if (defaultPermissions == null) {
-			return null;
+		if ((defaultPermissions != null) &&
+			(defaultPermissions.get(className) != null)) {
+
+			return defaultPermissions.get(className);
 		}
 
-		return defaultPermissions.get(className);
+		return _companyPortalDefaultPermissionsConfiguration.
+			getDefaultPermissions(companyId, groupId, className);
 	}
 
 	@Override
 	public ExtendedObjectClassDefinition.Scope getScope() {
-		return ExtendedObjectClassDefinition.Scope.COMPANY;
+		return ExtendedObjectClassDefinition.Scope.GROUP;
 	}
 
 	@Override
 	public void setDefaultPermissions(
-		long companyId, Map<String, Map<String, String[]>> defaultPermissions) {
+		long groupId, Map<String, Map<String, String[]>> defaultPermissions) {
 
 		try {
-			_configurationProvider.saveCompanyConfiguration(
-				PortalDefaultPermissionsCompanyConfiguration.class, companyId,
+			_configurationProvider.saveGroupConfiguration(
+				PortalDefaultPermissionsGroupConfiguration.class, groupId,
 				HashMapDictionaryBuilder.<String, Object>put(
 					"defaultPermissions",
 					_objectMapper.writeValueAsString(defaultPermissions)
@@ -98,7 +100,11 @@ public class PortalDefaultPermissionsCompanyConfigurationImpl
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		PortalDefaultPermissionsCompanyConfigurationImpl.class);
+		PortalDefaultPermissionsGroupConfigurationImpl.class);
+
+	@Reference(target = "(portal.default.permissions.scope=company)")
+	private PortalDefaultPermissionsConfiguration
+		_companyPortalDefaultPermissionsConfiguration;
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;

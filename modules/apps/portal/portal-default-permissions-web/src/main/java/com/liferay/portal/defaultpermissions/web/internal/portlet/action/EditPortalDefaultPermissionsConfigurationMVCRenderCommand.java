@@ -5,6 +5,7 @@
 
 package com.liferay.portal.defaultpermissions.web.internal.portlet.action;
 
+import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.defaultpermissions.configuration.PortalDefaultPermissionsConfiguration;
 import com.liferay.portal.defaultpermissions.web.internal.constants.PortalDefaultPermissionsWebKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
@@ -54,10 +55,22 @@ public class EditPortalDefaultPermissionsConfigurationMVCRenderCommand
 			HttpServletResponse httpServletResponse =
 				_portal.getHttpServletResponse(renderResponse);
 
-			renderRequest.setAttribute(
-				PortalDefaultPermissionsWebKeys.
-					PORTAL_DEFAULT_PERMISSIONS_CONFIGURATION,
-				_portalDefaultPermissionsConfiguration);
+			String scope = httpServletRequest.getParameter("scope");
+
+			if (scope.equals(
+					ExtendedObjectClassDefinition.Scope.GROUP.toString())) {
+
+				renderRequest.setAttribute(
+					PortalDefaultPermissionsWebKeys.
+						PORTAL_DEFAULT_PERMISSIONS_CONFIGURATION,
+					_groupPortalDefaultPermissionsConfiguration);
+			}
+			else {
+				renderRequest.setAttribute(
+					PortalDefaultPermissionsWebKeys.
+						PORTAL_DEFAULT_PERMISSIONS_CONFIGURATION,
+					_companyPortalDefaultPermissionsConfiguration);
+			}
 
 			renderRequest.setAttribute(
 				RolesAdminWebKeys.ROLE_TYPE_CONTRIBUTOR_PROVIDER,
@@ -72,12 +85,16 @@ public class EditPortalDefaultPermissionsConfigurationMVCRenderCommand
 		return MVCRenderConstants.MVC_PATH_VALUE_SKIP_DISPATCH;
 	}
 
-	@Reference
-	private Portal _portal;
+	@Reference(target = "(portal.default.permissions.scope=company)")
+	private PortalDefaultPermissionsConfiguration
+		_companyPortalDefaultPermissionsConfiguration;
+
+	@Reference(target = "(portal.default.permissions.scope=group)")
+	private PortalDefaultPermissionsConfiguration
+		_groupPortalDefaultPermissionsConfiguration;
 
 	@Reference
-	private PortalDefaultPermissionsConfiguration
-		_portalDefaultPermissionsConfiguration;
+	private Portal _portal;
 
 	@Reference
 	private RoleTypeContributorProvider _roleTypeContributorProvider;

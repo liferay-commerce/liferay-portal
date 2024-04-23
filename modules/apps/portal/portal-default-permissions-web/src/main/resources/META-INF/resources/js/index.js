@@ -4,4 +4,5 @@
  */
 
 export {default as editPortalDefaultPermissionsConfiguration} from './editPortalDefaultPermissionsConfiguration';
-export {default as portalDefaultPermissionsCompanyConfiguration} from './portalDefaultPermissionsCompanyConfiguration';
+export {default as portalDefaultPermissionsComponentPropsTransformer} from './portalDefaultPermissionsDropdownPropsTransformer';
+export {default as portalDefaultPermissionsButtonPropsTransformer} from './portalDefaultPermissionsButtonPropsTransformer';
