@@ -60,7 +60,9 @@ public class EditCPDefinitionLinkMVCActionCommand extends BaseMVCActionCommand {
 			if (cmd.equals(Constants.ADD)) {
 				_addCPDefinitionLinks(actionRequest);
 			}
-			else if (cmd.equals(Constants.DELETE)) {
+			else if (cmd.equals(Constants.DELETE) ||
+					 cmd.equals("updateDefinitionLinks")) {
+
 				_deleteCPDefinitionLinks(actionRequest);
 			}
 			else if (cmd.equals(Constants.UPDATE)) {
