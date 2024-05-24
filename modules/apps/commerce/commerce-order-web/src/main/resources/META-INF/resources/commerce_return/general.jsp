@@ -170,6 +170,7 @@ CommerceOrder commerceOrder = commerceReturnEditDisplayContext.getCommerceReturn
 					).build()
 				%>'
 				apiURL='<%= "/o/commerce-return-items?filter=r_commerceReturnToCommerceReturnItems_c_commerceReturnId eq '" + commerceReturn.getId() + "'&nestedFields=commerceOrderItem" %>'
+				fdsActionDropdownItems="<%= commerceReturnEditDisplayContext.getCommerceReturnItemFDSActionDropdownItems() %>"
 				id="<%= CommerceReturnFDSNames.RETURN_ITEMS %>"
 				propsTransformer="{commerceReturnItemsPropsTransformer} from commerce-order-web"
 				style="fluid"
