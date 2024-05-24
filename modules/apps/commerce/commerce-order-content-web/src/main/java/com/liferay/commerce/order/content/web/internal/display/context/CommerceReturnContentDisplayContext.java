@@ -62,6 +62,7 @@ import java.text.DateFormat;
 import java.text.Format;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -277,6 +278,12 @@ public class CommerceReturnContentDisplayContext {
 	public List<FDSActionDropdownItem>
 			getCommerceReturnItemFDSActionDropdownItems()
 		throws PortalException {
+
+		CommerceReturn commerceReturn = getCommerceReturn();
+
+		if (!StringUtil.equals(commerceReturn.getReturnStatus(), "draft")) {
+			return Collections.emptyList();
+		}
 
 		HttpServletRequest httpServletRequest = _cpRequestHelper.getRequest();
 

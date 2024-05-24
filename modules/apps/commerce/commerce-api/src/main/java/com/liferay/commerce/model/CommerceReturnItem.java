@@ -24,8 +24,16 @@ public class CommerceReturnItem {
 
 		_objectEntry = objectEntry;
 
+		_accepted = new BigDecimal(
+			String.valueOf(objectEntryValues.get("accepted")));
 		_amount = new BigDecimal(
 			String.valueOf(objectEntryValues.get("amount")));
+		_authorized = new BigDecimal(
+			String.valueOf(objectEntryValues.get("authorized")));
+		_authorizeReturnWithoutReturningProducts = Boolean.valueOf(
+			String.valueOf(
+				objectEntryValues.get(
+					"authorizeReturnWithoutReturningProducts")));
 		_commerceOrderItemId = (long)objectEntryValues.get(
 			"r_commerceOrderItemToCommerceReturnItems_commerceOrderItemId");
 		_createDate = objectEntry.getCreateDate();
@@ -33,12 +41,26 @@ public class CommerceReturnItem {
 		_id = objectEntry.getPrimaryKey();
 		_quantity = new BigDecimal(
 			String.valueOf(objectEntryValues.get("quantity")));
+		_returnResolutionMethod = (String)objectEntryValues.get(
+			"returnResolutionMethod");
 		_returnReason = (String)objectEntryValues.get("returnReason");
 		_status = objectEntry.getStatus();
 	}
 
+	public BigDecimal getAccepted() {
+		return _accepted;
+	}
+
 	public BigDecimal getAmount() {
 		return _amount;
+	}
+
+	public BigDecimal getAuthorized() {
+		return _authorized;
+	}
+
+	public Boolean getAuthorizeReturnWithoutReturningProducts() {
+		return _authorizeReturnWithoutReturningProducts;
 	}
 
 	public long getCommerceOrderItemId() {
@@ -69,11 +91,18 @@ public class CommerceReturnItem {
 		return _returnReason;
 	}
 
+	public String getReturnResolutionMethod() {
+		return _returnResolutionMethod;
+	}
+
 	public int getStatus() {
 		return _status;
 	}
 
+	private final BigDecimal _accepted;
 	private final BigDecimal _amount;
+	private final BigDecimal _authorized;
+	private final Boolean _authorizeReturnWithoutReturningProducts;
 	private final long _commerceOrderItemId;
 	private final Date _createDate;
 	private final String _externalReferenceCode;
@@ -81,6 +110,7 @@ public class CommerceReturnItem {
 	private final ObjectEntry _objectEntry;
 	private final BigDecimal _quantity;
 	private final String _returnReason;
+	private final String _returnResolutionMethod;
 	private final int _status;
 
 }

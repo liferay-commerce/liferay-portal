@@ -33,9 +33,12 @@ public class CommerceReturnItemTableFDSView extends BaseTableFDSView {
 
 		return fdsTableSchemaBuilder.add(
 			"r_commerceOrderItemToCommerceReturnItems_commerceOrderItem.sku",
-			"sku"
+			"sku",
+			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
+				"actionLink")
 		).add(
-			"r_commerceOrderItemToCommerceReturnItems_commerceOrderItem.name",
+			"r_commerceOrderItemToCommerceReturnItems_commerceOrderItem.name." +
+				"LANG",
 			"name"
 		).add(
 			"r_commerceOrderItemToCommerceReturnItems_commerceOrderItem." +

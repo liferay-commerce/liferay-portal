@@ -237,7 +237,7 @@ portletDisplay.setURLBack(String.valueOf(renderResponse.createRenderURL()));
 		).put(
 			"redirectURL", currentURL
 		).put(
-			"returnStatus", "completed"
+			"returnStatus", "pending"
 		).build()
 	%>'
 	module="{editCommerceReturn} from commerce-order-content-web"

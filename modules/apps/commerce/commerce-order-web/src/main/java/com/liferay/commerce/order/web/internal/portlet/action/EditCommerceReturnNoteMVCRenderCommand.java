@@ -9,12 +9,17 @@ import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.commerce.constants.CommercePortletKeys;
 import com.liferay.commerce.currency.util.CommercePriceFormatter;
 import com.liferay.commerce.order.web.internal.display.context.CommerceReturnEditDisplayContext;
+import com.liferay.commerce.service.CommerceOrderItemLocalService;
 import com.liferay.commerce.service.CommerceOrderLocalService;
+import com.liferay.list.type.service.ListTypeDefinitionService;
+import com.liferay.list.type.service.ListTypeEntryService;
 import com.liferay.object.exception.NoSuchObjectEntryException;
-import com.liferay.object.service.ObjectEntryService;
+import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import javax.portlet.PortletException;
@@ -46,7 +51,10 @@ public class EditCommerceReturnNoteMVCRenderCommand
 			CommerceReturnEditDisplayContext commerceReturnEditDisplayContext =
 				new CommerceReturnEditDisplayContext(
 					_accountEntryLocalService, _commerceOrderLocalService,
-					_commercePriceFormatter, _objectEntryService,
+					_commerceOrderItemLocalService, _commercePriceFormatter,
+					_language, _listTypeDefinitionService,
+					_listTypeEntryService, _objectEntryLocalService,
+					_portal.getHttpServletRequest(renderRequest),
 					renderRequest);
 
 			renderRequest.setAttribute(
@@ -72,12 +80,27 @@ public class EditCommerceReturnNoteMVCRenderCommand
 	private AccountEntryLocalService _accountEntryLocalService;
 
 	@Reference
+	private CommerceOrderItemLocalService _commerceOrderItemLocalService;
+
+	@Reference
 	private CommerceOrderLocalService _commerceOrderLocalService;
 
 	@Reference
 	private CommercePriceFormatter _commercePriceFormatter;
 
 	@Reference
-	private ObjectEntryService _objectEntryService;
+	private Language _language;
+
+	@Reference
+	private ListTypeDefinitionService _listTypeDefinitionService;
+
+	@Reference
+	private ListTypeEntryService _listTypeEntryService;
+
+	@Reference
+	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Reference
+	private Portal _portal;
 
 }
