@@ -8,6 +8,7 @@ import {Locator, Page} from '@playwright/test';
 import {ApplicationsMenuPage} from '../product-navigation-applications-menu/ApplicationsMenuPage';
 export class CommerceAdminChannelDetailsPage {
 	readonly applicationsMenuPage: ApplicationsMenuPage;
+	readonly categoryDisplayTab: Locator;
 	readonly countryTab: Locator;
 	readonly page: Page;
 	readonly saveButton: Locator;
@@ -15,6 +16,9 @@ export class CommerceAdminChannelDetailsPage {
 
 	constructor(page: Page) {
 		this.applicationsMenuPage = new ApplicationsMenuPage(page);
+		this.categoryDisplayTab = page.getByRole('link', {
+			name: 'Category Display Pages',
+		});
 		this.countryTab = page.getByRole('link', {name: 'Countries'});
 		this.saveButton = page.getByRole('link', {name: 'Save'});
 		this.showSeparateOrderItemsToggle = page.getByLabel(
@@ -29,5 +33,9 @@ export class CommerceAdminChannelDetailsPage {
 
 	async goToCountries() {
 		await this.countryTab.click();
+	}
+
+	async goToCategoryDisplayPages() {
+		await this.categoryDisplayTab.click();
 	}
 }

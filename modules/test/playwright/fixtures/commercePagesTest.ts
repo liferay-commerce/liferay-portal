@@ -15,6 +15,7 @@ import {ProductDetailsPage} from '../pages/commerce/commerce-product-content-web
 import {AttachmentsPage} from '../pages/commerce/commerce-product-definitions-web/attachmentsPage';
 import {CommerceThemeMiniumPage} from '../pages/commerce/commerce-theme-minium/commerceThemeMiniumPage';
 import {CommerceAccountManagementPage} from '../pages/commerce/commerceAccountManagementPage';
+import {CommerceAdminChannelDetailsCategoryDisplayPagesPage} from '../pages/commerce/commerceAdminChannelDetailsCategoryDisplayPagesPage';
 import {CommerceAdminChannelDetailsCountriesPage} from '../pages/commerce/commerceAdminChannelDetailsCountriesPage';
 import {CommerceAdminChannelDetailsPage} from '../pages/commerce/commerceAdminChannelDetailsPage';
 import {CommerceAdminChannelsPage} from '../pages/commerce/commerceAdminChannelsPage';
@@ -37,6 +38,7 @@ const commercePagesTest = test.extend<{
 	attachmentsPage: AttachmentsPage;
 	checkoutPage: CheckoutPage;
 	commerceAccountManagementPage: CommerceAccountManagementPage;
+	commerceAdminChannelDetailsCategoryDisplayPagesPage: CommerceAdminChannelDetailsCategoryDisplayPagesPage;
 	commerceAdminChannelDetailsCountriesPage: CommerceAdminChannelDetailsCountriesPage;
 	commerceAdminChannelDetailsPage: CommerceAdminChannelDetailsPage;
 	commerceAdminChannelsPage: CommerceAdminChannelsPage;
@@ -70,6 +72,14 @@ const commercePagesTest = test.extend<{
 	},
 	commerceAccountManagementPage: async ({page}, use) => {
 		await use(new CommerceAccountManagementPage(page));
+	},
+	commerceAdminChannelDetailsCategoryDisplayPagesPage: async (
+		{page},
+		use
+	) => {
+		await use(
+			new CommerceAdminChannelDetailsCategoryDisplayPagesPage(page)
+		);
 	},
 	commerceAdminChannelDetailsCountriesPage: async ({page}, use) => {
 		await use(new CommerceAdminChannelDetailsCountriesPage(page));
