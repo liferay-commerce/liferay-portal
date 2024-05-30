@@ -16,6 +16,7 @@ import {addToCart} from '../add_to_cart/data';
 import InfiniteScroller from '../infinite_scroller/InfiniteScroller';
 import MiniCartContext from './MiniCartContext';
 import {getCorrectedQuantity} from './util/index';
+import {CURRENT_ORDER_UPDATED} from "../../utilities/eventsDefinitions";
 
 const CART_QUICK_ADD_NAMESPACE = 'cartQuickAdd_';
 
@@ -206,7 +207,9 @@ export default function CartQuickAdd() {
 				null,
 				CART_QUICK_ADD_NAMESPACE
 			)
-				.then(() => {})
+				.then((cart) => {
+					Liferay.fire(CURRENT_ORDER_UPDATED, {order: cart});
+				})
 				.catch((error) => {
 					Liferay.Util.openToast({
 						message:

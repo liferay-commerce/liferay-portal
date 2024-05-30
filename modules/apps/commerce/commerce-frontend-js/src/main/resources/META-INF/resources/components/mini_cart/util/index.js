@@ -35,7 +35,7 @@ export function getCorrectedQuantity(
 		quantity = minOrderQuantity;
 	}
 
-	const existingItem = cartItems.find((item) => item.sku === sku);
+	const existingItem = false && cartItems.find((item) => item.sku === sku);
 
 	const lastAllowedQuantity =
 		allowedOrderQuantities[allowedOrderQuantities.length - 1];

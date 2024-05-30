@@ -82,71 +82,18 @@ export async function addToCart(
 		return newCart;
 	}
 
+	for (const cpInstance of cpInstances) {
+		await CartResource.createItemByCartId(cartId, formatCartItem(
+			cpInstance,
+			namespace,
+			skuOptions,
+			skuOptionsNamespace
+		));
+	}
+
 	const fetchedCart = await CartResource.getCartByIdWithItems(cartId);
 
-	const updatedCartItems = fetchedCart.cartItems;
+	Liferay.fire(CURRENT_ORDER_UPDATED, {order: fetchedCart});
 
-	cpInstances.forEach((cpInstance) => {
-		const includedCartItem = updatedCartItems.find((cartItem) => {
-			const optionsJSON = JSON.parse(cartItem.options);
-
-			let includedCartItem =
-				cartItem.skuId === cpInstance.skuId &&
-				cartItem.skuUnitOfMeasure?.key ===
-					cpInstance.skuUnitOfMeasure?.key;
-
-			if (includedCartItem) {
-				optionsJSON.forEach((option) => {
-					if (!includedCartItem) {
-						return;
-					}
-
-					const currentSkuOption = cpInstance.skuOptions?.find(
-						(skuOption) =>
-							option.skuOptionKey === skuOption.skuOptionKey
-					);
-
-					// eslint-disable-next-line no-unused-expressions
-					currentSkuOption
-						? (includedCartItem = Array.isArray(option.value)
-								? option.value === []
-								: option.value === currentSkuOption.value ||
-								  option.skuOptionValueKey ===
-										currentSkuOption.skuOptionValueKey)
-						: (includedCartItem = false);
-				});
-			}
-
-			return includedCartItem;
-		});
-
-		if (
-			includedCartItem &&
-			!Liferay.CommerceContext.showSeparateOrderItems
-		) {
-			includedCartItem.quantity = Number(
-				Number(includedCartItem.quantity + cpInstance.quantity).toFixed(
-					cpInstance.skuUnitOfMeasure?.precision || 0
-				)
-			);
-		}
-		else {
-			updatedCartItems.push(
-				formatCartItem(
-					cpInstance,
-					namespace,
-					skuOptions,
-					skuOptionsNamespace
-				)
-			);
-		}
-	});
-
-	const updatedCart = await CartResource.updateCartById(cartId, {
-		cartItems: updatedCartItems,
-	});
-
-	Liferay.fire(CURRENT_ORDER_UPDATED, {order: updatedCart});
-
-	return updatedCart;
+	return fetchedCart;
 }
