@@ -11,6 +11,7 @@ import {PendingOrdersPage} from '../pages/commerce/commerce-order-content-web/pe
 import {PlacedOrdersPage} from '../pages/commerce/commerce-order-content-web/placedOrdersPage';
 import {SpecificationFacetsPage} from '../pages/commerce/commerce-product-content-search-web/specificationFacetsPage';
 import {AttachmentsPage} from '../pages/commerce/commerce-product-definitions-web/attachmentsPage';
+import {CommerceThemeMiniumPage} from '../pages/commerce/commerce-theme-minium/commerceThemeMiniumPage';
 import {CommerceAccountManagementPage} from '../pages/commerce/commerceAccountManagementPage';
 import {CommerceAdminChannelDetailsCountriesPage} from '../pages/commerce/commerceAdminChannelDetailsCountriesPage';
 import {CommerceAdminChannelDetailsPage} from '../pages/commerce/commerceAdminChannelDetailsPage';
@@ -46,6 +47,7 @@ const commercePagesTest = test.extend<{
 	commerceLayoutsPage: CommerceLayoutsPage;
 	commerceMiniCartPage: CommerceMiniCartPage;
 	commercePaymentsPage: CommercePaymentsPage;
+	commerceThemeMiniumPage: CommerceThemeMiniumPage;
 	pendingOrdersPage: PendingOrdersPage;
 	placedOrdersPage: PlacedOrdersPage;
 	specificationFacetsPage: SpecificationFacetsPage;
@@ -103,6 +105,9 @@ const commercePagesTest = test.extend<{
 	},
 	commercePaymentsPage: async ({page}, use) => {
 		await use(new CommercePaymentsPage(page));
+	},
+	commerceThemeMiniumPage: async ({page}, use) => {
+		await use(new CommerceThemeMiniumPage(page));
 	},
 	pendingOrdersPage: async ({page}, use) => {
 		await use(new PendingOrdersPage(page));
