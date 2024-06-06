@@ -24,6 +24,7 @@ import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.test.util.CommerceInventoryTestUtil;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Address;
 import com.liferay.portal.kernel.model.Country;
 import com.liferay.portal.kernel.model.Group;
@@ -155,7 +156,7 @@ public class CommerceOrderGeneratorTest {
 				accountEntry.getAccountEntryId()));
 	}
 
-	@Test
+	@Test(expected = PortalException.class)
 	public void testUnsuccessfulCommerceOrderGenerator() throws Exception {
 		AccountEntry accountEntry =
 			CommerceAccountTestUtil.addBusinessAccountEntry(
