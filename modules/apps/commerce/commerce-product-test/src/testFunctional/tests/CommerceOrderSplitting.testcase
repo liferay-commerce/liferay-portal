@@ -13,13 +13,13 @@ definition {
 	tearDown {
 		ObjectAdmin.openObjectAdmin();
 
-		ObjectPortlet.selectCustomObject(label = "Commerce Order");
+		ObjectPortlet.selectObject(label = "Commerce Order");
 
 		ObjectAdmin.goToActionsTab();
 
 		while (IsElementNotPresent(locator1 = "CommerceNavigation#EMPTY_SEARCH_CONTAINER")) {
 			Click(
-				key_value = "",
+				key_value = "Split order by catalog",
 				locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS");
 
 			MenuItem.click(menuItem = "Delete");
@@ -1726,7 +1726,7 @@ definition {
 		task ("Then a new Commerce Order action rule with default settings is created") {
 			ObjectAdmin.openObjectAdmin();
 
-			ObjectPortlet.selectCustomObject(label = "Commerce Order");
+			ObjectPortlet.selectObject(label = "Commerce Order");
 
 			ObjectAdmin.goToActionsTab();
 
