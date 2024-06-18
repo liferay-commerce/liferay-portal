@@ -1,0 +1,45 @@
+{
+	"configuration": {
+		"className": "com.liferay.object.admin.rest.dto.v1_0.ObjectDefinition",
+		"multiCompany": true,
+		"parameters": {
+			"containsHeaders": "true",
+			"createStrategy": "UPSERT",
+			"featureFlag": "LPD-24498",
+			"importStrategy": "ON_ERROR_FAIL",
+			"updateStrategy": "UPDATE"
+		},
+		"taskItemDelegateName": "DEFAULT",
+		"userId": 0,
+		"version": "v1.0"
+	},
+	"items": [
+		{
+			"externalReferenceCode": "L_COMMERCE_ORDER",
+			"objectActions": [
+				{
+					"active": false,
+					"conditionExpression": "orderStatus == 1",
+					"errorMessage": {
+					},
+					"externalReferenceCode": "L_COMMERCE_ORDER_NOTIFICATION",
+					"label": {
+						"en_US": "Commerce Order Notification"
+					},
+					"name": "commerceOrderNotification",
+					"objectActionExecutorKey": "notification",
+					"objectActionTriggerKey": "liferay/commerce_order_status",
+					"parameters": {
+						"notificationTemplateExternalReferenceCode": "L_COMMERCE_ORDER_TEMPLATE",
+						"type": "email"
+					},
+					"system": false
+				}
+			],
+			"status": {
+				"code": 0
+			},
+			"titleObjectFieldName": "id"
+		}
+	]
+}
