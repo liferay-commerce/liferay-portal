@@ -72,20 +72,14 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 				_bundleContext.registerService(
 					NotificationTermEvaluator.class,
 					new CommerceOrderAccountNotificationTermEvaluator(
-						_accountEntryModelResourcePermission,
-						_commerceOrderLocalService, objectDefinition,
-						_permissionCheckerFactory, _roleLocalService,
-						_userLocalService),
+						_commerceOrderLocalService, objectDefinition),
 					HashMapDictionaryBuilder.<String, Object>put(
 						"class.name", objectDefinition.getClassName()
 					).build()),
 				_bundleContext.registerService(
 					NotificationTermEvaluator.class,
 					new CommerceOrderAddressNotificationTermEvaluator(
-						_accountEntryModelResourcePermission,
-						_commerceOrderLocalService, objectDefinition,
-						_permissionCheckerFactory, _roleLocalService,
-						_userLocalService),
+						_commerceOrderLocalService, objectDefinition),
 					HashMapDictionaryBuilder.<String, Object>put(
 						"class.name", objectDefinition.getClassName()
 					).build()),
