@@ -1,5 +1,6 @@
 dependencies {
 	testIntegrationImplementation project(":apps:account:account-api")
+	testIntegrationImplementation project(":apps:batch-engine:batch-engine-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-account-test-util")
 	testIntegrationImplementation project(":apps:commerce:commerce-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-currency-api")
@@ -10,5 +11,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:commerce:commerce-payment-test-util")
 	testIntegrationImplementation project(":apps:commerce:commerce-product-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-test-util")
+	testIntegrationImplementation project(":apps:notification:notification-api")
+	testIntegrationImplementation project(":apps:object:object-api")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }
