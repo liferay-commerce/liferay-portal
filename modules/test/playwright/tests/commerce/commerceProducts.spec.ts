@@ -68,6 +68,272 @@ test('LPD-5780 Modal title and product name appear properly in product menu', as
 	).toBeVisible();
 });
 
+test('COMMERCE-12805 As a buyer, I want to be able to verify the included and excluded option values are disabled with reason messages', async ({
+	apiHelpers,
+	applicationsMenuPage,
+	commerceAdminProductDetailsProductRelationsPage,
+	commerceAdminProductPage,
+	commerceLayoutsPage,
+	page,
+	productDetailsPage,
+}) => {
+	await applicationsMenuPage.goToInstanceSettings();
+
+	await page.getByRole('link', {name: 'Catalog'}).click();
+	await page.getByText('Show Unselectable Options').click();
+	await page.getByTestId('submitConfiguration').click();
+
+	const site = await apiHelpers.headlessSite.createSite({
+		name: 'ProductDetailsSite',
+	});
+
+	apiHelpers.data.push({id: site.id, type: 'site'});
+
+	await apiHelpers.headlessCommerceAdminChannel.postChannel({
+		name: 'ProductDetailsSite',
+		siteGroupId: site.id,
+	});
+
+	const catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
+		name: 'ProductDetailsSite',
+	});
+
+	const product1 = await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+		catalogId: catalog.id,
+		name: {en_US: 'Product1'},
+	});
+
+	const product2 = await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+		catalogId: catalog.id,
+		name: {en_US: 'Product2'},
+	});
+
+	const product3 = await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+		catalogId: catalog.id,
+		name: {en_US: 'Product3'},
+	});
+
+	const product4 = await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+		catalogId: catalog.id,
+		name: {en_US: 'Product4'},
+	});
+
+	await commerceAdminProductPage.gotoProduct(product1.name.en_US);
+
+	await commerceAdminProductDetailsProductRelationsPage.addRequiresInBundleProductRelation();
+
+	await (
+		await commerceAdminProductPage.validProductCheckbox(product3.name.en_US)
+	).check();
+
+	await commerceAdminProductPage.modalAddButton.click();
+
+	await commerceAdminProductPage.gotoProduct(product2.name.en_US);
+
+	await commerceAdminProductDetailsProductRelationsPage.addIncompatibleInBundleProductRelation();
+
+	await (
+		await commerceAdminProductPage.validProductCheckbox(product4.name.en_US)
+	).check();
+
+	await commerceAdminProductPage.modalAddButton.click();
+
+	const option1 = await apiHelpers.headlessCommerceAdminCatalog.postOption(
+		'select',
+		'option1',
+		'Option1',
+		1
+	);
+
+	const option2 = await apiHelpers.headlessCommerceAdminCatalog.postOption(
+		'select',
+		'option2',
+		'Option2',
+		1
+	);
+
+	await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+		catalogId: catalog.id,
+		name: {en_US: 'ProductBundle'},
+		productOptions: [
+			{
+				fieldType: 'select',
+				key: 'option1',
+				name: {
+					en_US: 'Option1',
+				},
+				optionId: option1.id,
+				priceType: 'static',
+				priority: 1,
+				productOptionValues: [
+					{
+						deltaPrice: 0.0,
+						key: 'value1',
+						name: {
+							en_US: 'Value1',
+						},
+						priority: 1,
+						quantity: 1,
+						skuId: product1.skus[0].id,
+					},
+					{
+						deltaPrice: 0.0,
+						key: 'value2',
+						name: {
+							en_US: 'Value2',
+						},
+						preselected: true,
+						priority: 2,
+						quantity: 1,
+						skuId: product2.skus[0].id,
+					},
+				],
+				skuContributor: true,
+			},
+			{
+				fieldType: 'select',
+				key: 'option2',
+				name: {
+					en_US: 'Option2',
+				},
+				optionId: option2.id,
+				priceType: 'static',
+				priority: 2,
+				productOptionValues: [
+					{
+						deltaPrice: 0.0,
+						key: 'value3',
+						name: {
+							en_US: 'Value3',
+						},
+						priority: 1,
+						quantity: 1,
+						skuId: product3.skus[0].id,
+					},
+					{
+						deltaPrice: 0.0,
+						key: 'value4',
+						name: {
+							en_US: 'Value4',
+						},
+						preselected: true,
+						priority: 2,
+						quantity: 1,
+						skuId: product4.skus[0].id,
+					},
+				],
+				skuContributor: true,
+			},
+		],
+	});
+
+	await applicationsMenuPage.goToProducts();
+
+	await commerceAdminProductPage.managementToolbarSearchInput.fill(
+		'ProductBundle'
+	);
+	await commerceAdminProductPage.managementToolbarSearchInput.press('Enter');
+
+	await page.getByRole('link', {exact: true, name: 'ProductBundle'}).click();
+
+	await commerceAdminProductPage.generateSkus();
+
+	const account = await apiHelpers.headlessAdminUser.postAccount({
+		name: getRandomString(),
+		type: 'person',
+	});
+
+	apiHelpers.data.push({id: account.id, type: 'account'});
+
+	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
+		account.id,
+		['test@liferay.com']
+	);
+
+	await applicationsMenuPage.goToSite('ProductDetailsSite');
+
+	await commerceLayoutsPage.goToPages(false);
+
+	await commerceLayoutsPage.createWidgetPage('ProductDetailsSite');
+
+	await page.goto(`/web/${site.name}`);
+
+	await productDetailsPage.addProductDetailsWidget();
+
+	await page.goto(`/web/${site.name}/p/productbundle`);
+
+	await expect(page.getByText('Value2', {exact: true})).toBeVisible();
+
+	await expect(page.getByText('Value4', {exact: true})).toBeVisible();
+
+	await page.getByRole('button', {name: 'Add to Cart'}).click();
+
+	await expect(
+		page.getByText('Danger:Product4 cannot be combined with Product2.', {
+			exact: true,
+		})
+	).toBeVisible();
+
+	await page.goto(`/web/${site.name}/p/productbundle`);
+
+	await page.getByLabel('Option1').click();
+
+	await expect(
+		page.getByRole('option', {
+			name: 'Value1 Product1 requires Product3 to be purchased also.',
+		})
+	).toBeVisible();
+
+	await expect(
+		page.getByRole('option', {
+			name: 'Value2 Product2 cannot be combined with Product4.',
+		})
+	).toBeVisible();
+
+	await page.getByLabel('Option1').click();
+
+	await page.getByLabel('Option2').click();
+
+	await expect(
+		page.getByRole('option', {
+			name: 'Value3',
+		})
+	).toBeVisible();
+
+	await expect(
+		page.getByRole('option', {
+			name: 'Value4 Product4 cannot be combined with Product2.',
+		})
+	).toBeVisible();
+
+	await commerceAdminProductPage.gotoProduct(product2.name.en_US);
+
+	await commerceAdminProductDetailsProductRelationsPage.productRelationsLink.click();
+	await expect(
+		(
+			await commerceAdminProductDetailsProductRelationsPage.tableRow(
+				2,
+				product4.name.en_US,
+				true
+			)
+		).row
+	).toBeVisible();
+
+	await commerceAdminProductDetailsProductRelationsPage.selectItemsInput.check();
+
+	await expect(
+		commerceAdminProductDetailsProductRelationsPage.deleteBulkButton
+	).toBeVisible();
+
+	await commerceAdminProductDetailsProductRelationsPage.deleteBulkButton.click();
+
+	await applicationsMenuPage.goToInstanceSettings();
+
+	await page.getByRole('link', {name: 'Catalog'}).click();
+	await page.getByText('Show Unselectable Options').click();
+	await page.getByTestId('submitConfiguration').click();
+});
+
 test('COMMERCE-12809 As a buyer, I want to be able to verify the included and excluded option values by combining the Products Limit rule', async ({
 	apiHelpers,
 	applicationsMenuPage,
