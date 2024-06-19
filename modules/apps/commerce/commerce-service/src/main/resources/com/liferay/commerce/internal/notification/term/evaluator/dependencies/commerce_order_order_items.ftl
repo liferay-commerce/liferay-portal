@@ -1,80 +1,62 @@
-<html>
-	<style type="text/css">
-		.order-item-discount-price {
-			color:#FF0000;
-		}
+<style type="text/css">
+	.order-item-discount-price {
+		color:#FF0000;
+	}
 
-		.order-item-img {
-			height: 100px;
-			padding-right: 12px;
-			width: 100px;
+	.order-item-info {
+		padding-right: 16px;
+		vertical-align: top;
+	}
 
-			img {
-				border-radius: 8px;
-				height: 100%;
-				object-fit: cover;
-				width: 100%;
-			}
-		}
+	.order-item-info td {
+		font-size: 12px;
+	}
 
-		.order-item-info {
-			padding-right: 16px;
-			vertical-align: top;
+	.order-item-info-label {
+		display: block;
+	}
 
-			td {
-				font-size: 12px;
-			}
-		}
+	.order-item-info-label td:first-child {
+		font-weight: bold;
+		padding: 0;
+	}
 
-		.order-item-info-label {
-			display: block;
+	.order-item-original-price {
+		text-decoration: line-through;
+	}
 
-			td:first-child {
-				font-weight: bold;
-				padding: 0px;
-			}
-		}
+	.order-item-price {
+		font-size: 16px;
+		font-weight: bold;
+		vertical-align: top;
+	}
 
-		.order-item-original-price {
-			text-decoration: line-through;
-		}
+	.order-item-title {
+		font-size: 16px;
+		padding: 0px;
+		text-align: left;
+	}
 
-		.order-item-price {
-			font-size: 16px;
-			font-weight: bold;
-			vertical-align: top;
-		}
+	.order-items {
+		border-collapse: inherit;
+		border-spacing: 0 16px;
+		font-family: 'Roboto', sans-serif;
+		text-align: left;
+	}
+</style>
 
-		.order-item-title {
-			font-size: 16px;
-			padding: 0px;
-			text-align: left;
-		}
-
-		.order-items {
-			border-collapse: inherit;
-			border-spacing: 0 16px;
-			font-family: 'Roboto', sans-serif;
-			text-align: left;
-		}
-	</style>
+<div>
+	<h4>
+		${tableLabel}
+	</h4>
 
 	<table class="order-items">
-		<tr>
-			<th>
-				${tableLabel}
-			</th>
-		</tr>
-
 		<#foreach orderItem in orderItems>
 			<tr>
-				<td class="order-item-img">
-					<img src="${orderItem.imageURL}">
-				</td>
 				<td class="order-item-info">
 					<table>
 						<tr>
-							<th>
+							<th class="order-item-title">
 								${orderItem.name}
 							</th>
 						</tr>
@@ -145,4 +127,4 @@
 			</tr>
 		</#foreach>
 	</table>
-</html>
+</div>
