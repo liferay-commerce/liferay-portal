@@ -3,6 +3,22 @@
 		color:#FF0000;
 	}
 
+	.order-item-img {
+		height: 100px;
+		padding-right: 12px;
+		vertical-align: top;
+		width: 100px;
+	}
+
+	.order-item-img img {
+		border-radius: 8px;
+		max-height: 100px;
+		height: 100%;
+		object-fit: cover;
+		max-width: 100px;
+		width: 100%;
+	}
+
 	.order-item-info {
 		padding-right: 16px;
 		vertical-align: top;
@@ -53,6 +69,9 @@
 	<table class="order-items">
 		<#foreach orderItem in orderItems>
 			<tr>
+				<td class="order-item-img">
+					<img src="${orderItem.imageURL}">
+				</td>
 				<td class="order-item-info">
 					<table>
 						<tr>
