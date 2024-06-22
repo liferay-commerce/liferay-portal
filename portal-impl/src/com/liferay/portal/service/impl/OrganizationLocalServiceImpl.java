@@ -484,21 +484,21 @@ public class OrganizationLocalServiceImpl
 	 */
 	@Override
 	public void addPasswordPolicyOrganizations(
-		long passwordPolicyId, long[] organizationIds) throws PortalException {
+			long passwordPolicyId, long[] organizationIds)
+		throws PortalException {
 
 		_passwordPolicyRelLocalService.addPasswordPolicyRels(
 			passwordPolicyId, Organization.class.getName(), organizationIds);
 
 		PasswordPolicy passwordPolicy =
-			_passwordPolicyLocalService.fetchPasswordPolicy(
-				passwordPolicyId);
+			_passwordPolicyLocalService.fetchPasswordPolicy(passwordPolicyId);
 
 		if (!passwordPolicy.isChangeable()) {
 			for (long organizationId : organizationIds) {
 				List<User> orgUsers = _userLocalService.getOrganizationUsers(
 					organizationId);
 
-				for(User user : orgUsers) {
+				for (User user : orgUsers) {
 					_userLocalService.updatePasswordReset(
 						user.getUserId(), false);
 				}
