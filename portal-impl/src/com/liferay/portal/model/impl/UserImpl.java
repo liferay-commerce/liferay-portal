@@ -923,7 +923,7 @@ public class UserImpl extends UserBaseImpl {
 
 	@Override
 	public boolean isPasswordResetRequired() {
-		if (isGuestUser() || !isPasswordReset() || isServiceAccountUser()) {
+		if (isGuestUser() || !_isRequirePasswordReset() || isServiceAccountUser()) {
 			return false;
 		}
 
@@ -1118,6 +1118,14 @@ public class UserImpl extends UserBaseImpl {
 	}
 
 	private boolean _isRequirePasswordReset() {
+		try {
+			if (_passwordPolicy == null) {
+				_passwordPolicy = getPasswordPolicy();
+			}
+		} catch (PortalException portalException) {
+			_log.error(portalException);
+		}
+
 		if (!isPasswordReset() ||
 			((_passwordPolicy != null) && !_passwordPolicy.isChangeable())) {
 
