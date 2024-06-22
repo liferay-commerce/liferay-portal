@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.model.ListType;
 import com.liferay.portal.kernel.model.ListTypeConstants;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.OrganizationConstants;
+import com.liferay.portal.kernel.model.PasswordPolicy;
 import com.liferay.portal.kernel.model.Region;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
@@ -51,6 +52,7 @@ import com.liferay.portal.kernel.service.AddressLocalService;
 import com.liferay.portal.kernel.service.EmailAddressLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ListTypeLocalService;
+import com.liferay.portal.kernel.service.PasswordPolicyLocalService;
 import com.liferay.portal.kernel.service.PasswordPolicyRelLocalService;
 import com.liferay.portal.kernel.service.PhoneLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
@@ -482,10 +484,26 @@ public class OrganizationLocalServiceImpl
 	 */
 	@Override
 	public void addPasswordPolicyOrganizations(
-		long passwordPolicyId, long[] organizationIds) {
+		long passwordPolicyId, long[] organizationIds) throws PortalException {
 
 		_passwordPolicyRelLocalService.addPasswordPolicyRels(
 			passwordPolicyId, Organization.class.getName(), organizationIds);
+
+		PasswordPolicy passwordPolicy =
+			_passwordPolicyLocalService.fetchPasswordPolicy(
+				passwordPolicyId);
+
+		if (!passwordPolicy.isChangeable()) {
+			for (long organizationId : organizationIds) {
+				List<User> orgUsers = _userLocalService.getOrganizationUsers(
+					organizationId);
+
+				for(User user : orgUsers) {
+					_userLocalService.updatePasswordReset(
+						user.getUserId(), false);
+				}
+			}
+		}
 	}
 
 	@Override
@@ -2712,6 +2730,9 @@ public class OrganizationLocalServiceImpl
 
 	@BeanReference(type = ListTypeLocalService.class)
 	private ListTypeLocalService _listTypeLocalService;
+
+	@BeanReference(type = PasswordPolicyLocalService.class)
+	private PasswordPolicyLocalService _passwordPolicyLocalService;
 
 	@BeanReference(type = PasswordPolicyRelLocalService.class)
 	private PasswordPolicyRelLocalService _passwordPolicyRelLocalService;
