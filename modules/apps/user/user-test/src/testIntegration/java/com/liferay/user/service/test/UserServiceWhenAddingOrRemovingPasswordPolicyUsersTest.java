@@ -6,13 +6,16 @@
 package com.liferay.user.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.PasswordPolicy;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.OrganizationLocalService;
 import com.liferay.portal.kernel.service.PasswordPolicyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.OrganizationTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.test.rule.Inject;
@@ -76,6 +79,30 @@ public class UserServiceWhenAddingOrRemovingPasswordPolicyUsersTest {
 	}
 
 	@Test
+	public void testPasswordResetForOrganizationIfPolicyDoesNotAllowChanging()
+		throws Exception {
+
+		_user = UserTestUtil.addUser();
+
+		Assert.assertEquals(_defaultPasswordPolicy, _user.getPasswordPolicy());
+
+		Assert.assertTrue(_user.isPasswordReset());
+
+		_organization = OrganizationTestUtil.addOrganization();
+
+		_organizationLocalService.addUserOrganization(
+			_user.getUserId(), _organization);
+
+		_organizationLocalService.addPasswordPolicyOrganizations(
+			_testPasswordPolicy.getPasswordPolicyId(),
+			new long[] {_organization.getOrganizationId()});
+
+		_user = _userLocalService.getUser(_user.getUserId());
+
+		Assert.assertFalse(_user.isPasswordReset());
+	}
+
+	@Test
 	public void testShouldRemovePasswordResetIfPolicyDoesNotAllowChanging()
 		throws Exception {
 
@@ -96,6 +123,12 @@ public class UserServiceWhenAddingOrRemovingPasswordPolicyUsersTest {
 
 	@DeleteAfterTestRun
 	private PasswordPolicy _defaultPasswordPolicy;
+
+	@DeleteAfterTestRun
+	private Organization _organization;
+
+	@Inject
+	private OrganizationLocalService _organizationLocalService;
 
 	@Inject
 	private PasswordPolicyLocalService _passwordPolicyLocalService;
