@@ -184,7 +184,8 @@ public class OrganizationLocalServiceUtil {
 	 * @param organizationIds the primary keys of the organizations
 	 */
 	public static void addPasswordPolicyOrganizations(
-		long passwordPolicyId, long[] organizationIds) {
+			long passwordPolicyId, long[] organizationIds)
+		throws PortalException {
 
 		getService().addPasswordPolicyOrganizations(
 			passwordPolicyId, organizationIds);

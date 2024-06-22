@@ -191,7 +191,8 @@ public class OrganizationLocalServiceWrapper
 	 */
 	@Override
 	public void addPasswordPolicyOrganizations(
-		long passwordPolicyId, long[] organizationIds) {
+			long passwordPolicyId, long[] organizationIds)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		_organizationLocalService.addPasswordPolicyOrganizations(
 			passwordPolicyId, organizationIds);

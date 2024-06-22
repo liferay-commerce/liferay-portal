@@ -178,7 +178,8 @@ public interface OrganizationLocalService
 	 * @param organizationIds the primary keys of the organizations
 	 */
 	public void addPasswordPolicyOrganizations(
-		long passwordPolicyId, long[] organizationIds);
+			long passwordPolicyId, long[] organizationIds)
+		throws PortalException;
 
 	public boolean addUserOrganization(long userId, long organizationId);
 
