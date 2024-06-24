@@ -5,6 +5,7 @@
 
 package com.liferay.commerce.order.web.internal.frontend.data.set.view.table;
 
+import com.liferay.commerce.constants.CommerceReturnConstants;
 import com.liferay.commerce.order.web.internal.constants.CommerceReturnFDSNames;
 import com.liferay.frontend.data.set.view.FDSView;
 import com.liferay.frontend.data.set.view.table.BaseTableFDSView;
@@ -33,32 +34,41 @@ public class CommerceReturnItemTableFDSView extends BaseTableFDSView {
 
 		return fdsTableSchemaBuilder.add(
 			"r_commerceOrderItemToCommerceReturnItems_commerceOrderItem.sku",
-			"sku"
+			"sku",
+			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
+				"actionLink")
 		).add(
-			"r_commerceOrderItemToCommerceReturnItems_commerceOrderItem.name",
+			"r_commerceOrderItemToCommerceReturnItems_commerceOrderItem.name." +
+				"LANG",
 			"name"
 		).add(
 			"r_commerceOrderItemToCommerceReturnItems_commerceOrderItem." +
 				"unitOfMeasureKey",
 			"uom"
 		).add(
-			"quantity", "requested-quantity"
+			CommerceReturnConstants.RETURN_ITEM_FIELD_QUANTITY,
+			"requested-quantity"
 		).add(
-			"returnReason", "return-reason",
+			CommerceReturnConstants.RETURN_ITEM_FIELD_RETURN_REASON,
+			"return-reason",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
 				"commerceReturnItemPicklistDataRenderer")
 		).add(
-			"authorized", "authorized"
+			CommerceReturnConstants.RETURN_ITEM_FIELD_AUTHORIZED, "authorized"
 		).add(
-			"accepted", "accepted"
+			CommerceReturnConstants.RETURN_ITEM_FIELD_RECEIVED, "received",
+			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
+				"commerceReturnItemReceivedDataRenderer")
 		).add(
-			"returnResolutionMethod", "resolution",
+			CommerceReturnConstants.RETURN_ITEM_FIELD_RETURN_RESOLUTION_METHOD,
+			"resolution",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
 				"commerceReturnItemPicklistDataRenderer")
 		).add(
-			"status", "status",
+			CommerceReturnConstants.RETURN_ITEM_FIELD_RETURN_ITEM_STATUS,
+			"status",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
-				"commerceStatusDataRenderer")
+				"commerceReturnItemStatusDataRenderer")
 		).build();
 	}
 

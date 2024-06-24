@@ -5,6 +5,7 @@
 
 package com.liferay.commerce.order.web.internal.frontend.data.set.view.table;
 
+import com.liferay.commerce.constants.CommerceReturnConstants;
 import com.liferay.commerce.order.web.internal.constants.CommerceReturnFDSNames;
 import com.liferay.frontend.data.set.view.FDSView;
 import com.liferay.frontend.data.set.view.table.BaseTableFDSView;
@@ -40,11 +41,12 @@ public class CommerceReturnTableFDSView extends BaseTableFDSView {
 		).add(
 			"r_accountToCommerceReturns_accountEntry.name", "account"
 		).add(
-			"channelName", "channel"
+			CommerceReturnConstants.RETURN_FIELD_CHANNEL_NAME, "channel"
 		).add(
-			"totalAmount", "amount"
+			CommerceReturnConstants.RETURN_FIELD_TOTAL_AMOUNT, "amount"
 		).add(
-			"requestedItems", "number-of-items"
+			CommerceReturnConstants.RETURN_FIELD_REQUESTED_ITEMS,
+			"number-of-items"
 		).add(
 			"dateCreated", "return-date",
 			fdsTableSchemaField -> {
@@ -52,14 +54,14 @@ public class CommerceReturnTableFDSView extends BaseTableFDSView {
 				fdsTableSchemaField.setSortable(true);
 			}
 		).add(
-			"r_commerceOrderToCommerceReturns_commerceOrderId", "order-id",
+			CommerceReturnConstants.RETURN_FIELD_COMMERCE_ORDER_ID, "order-id",
 			fdsTableSchemaField -> fdsTableSchemaField.setSortable(true)
 		).add(
 			"status", "acceptance-workflow-status",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
 				"commerceStatusDataRenderer")
 		).add(
-			"returnStatus", "return-status",
+			CommerceReturnConstants.RETURN_FIELD_RETURN_STATUS, "return-status",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
 				"commerceReturnStatusDataRenderer")
 		).build();
