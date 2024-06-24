@@ -17,5 +17,5 @@
 		"checkFormat": "node-scripts format --check",
 		"format": "liferay-npm-scripts format"
 	},
-	"version": "23.1.2"
+	"version": "23.2.0"
 }
