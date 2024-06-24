@@ -5,6 +5,7 @@
 
 package com.liferay.commerce.model;
 
+import com.liferay.commerce.constants.CommerceReturnConstants;
 import com.liferay.object.model.ObjectEntry;
 
 import java.io.Serializable;
@@ -24,21 +25,52 @@ public class CommerceReturnItem {
 
 		_objectEntry = objectEntry;
 
+		_received = new BigDecimal(
+			String.valueOf(
+				objectEntryValues.get(
+					CommerceReturnConstants.RETURN_ITEM_FIELD_RECEIVED)));
 		_amount = new BigDecimal(
-			String.valueOf(objectEntryValues.get("amount")));
+			String.valueOf(
+				objectEntryValues.get(
+					CommerceReturnConstants.RETURN_ITEM_FIELD_AMOUNT)));
+		_authorized = new BigDecimal(
+			String.valueOf(
+				objectEntryValues.get(
+					CommerceReturnConstants.RETURN_ITEM_FIELD_AUTHORIZED)));
+		_authorizeReturnWithoutReturningProducts = Boolean.parseBoolean(
+			String.valueOf(
+				objectEntryValues.get(
+					CommerceReturnConstants.
+						RETURN_ITEM_FIELD_AUTHORIZE_RETURN_WITHOUT_RETURNING_PRODUCTS)));
 		_commerceOrderItemId = (long)objectEntryValues.get(
-			"r_commerceOrderItemToCommerceReturnItems_commerceOrderItemId");
+			CommerceReturnConstants.RETURN_ITEM_FIELD_COMMERCE_ORDER_ITEM_ID);
 		_createDate = objectEntry.getCreateDate();
 		_externalReferenceCode = objectEntry.getExternalReferenceCode();
 		_id = objectEntry.getPrimaryKey();
 		_quantity = new BigDecimal(
-			String.valueOf(objectEntryValues.get("quantity")));
-		_returnReason = (String)objectEntryValues.get("returnReason");
+			String.valueOf(
+				objectEntryValues.get(
+					CommerceReturnConstants.RETURN_ITEM_FIELD_QUANTITY)));
+		_returnResolutionMethod = (String)objectEntryValues.get(
+			CommerceReturnConstants.RETURN_ITEM_FIELD_RETURN_RESOLUTION_METHOD);
+		_returnReason = (String)objectEntryValues.get(
+			CommerceReturnConstants.RETURN_ITEM_FIELD_RETURN_REASON);
+		_returnItemStatus = (String)objectEntryValues.get(
+			CommerceReturnConstants.RETURN_ITEM_FIELD_RETURN_ITEM_STATUS);
+
 		_status = objectEntry.getStatus();
 	}
 
 	public BigDecimal getAmount() {
 		return _amount;
+	}
+
+	public BigDecimal getAuthorized() {
+		return _authorized;
+	}
+
+	public Boolean getAuthorizeReturnWithoutReturningProducts() {
+		return _authorizeReturnWithoutReturningProducts;
 	}
 
 	public long getCommerceOrderItemId() {
@@ -65,8 +97,20 @@ public class CommerceReturnItem {
 		return _quantity;
 	}
 
+	public BigDecimal getReceived() {
+		return _received;
+	}
+
+	public String getReturnItemStatus() {
+		return _returnItemStatus;
+	}
+
 	public String getReturnReason() {
 		return _returnReason;
+	}
+
+	public String getReturnResolutionMethod() {
+		return _returnResolutionMethod;
 	}
 
 	public int getStatus() {
@@ -74,13 +118,18 @@ public class CommerceReturnItem {
 	}
 
 	private final BigDecimal _amount;
+	private final BigDecimal _authorized;
+	private final Boolean _authorizeReturnWithoutReturningProducts;
 	private final long _commerceOrderItemId;
 	private final Date _createDate;
 	private final String _externalReferenceCode;
 	private final long _id;
 	private final ObjectEntry _objectEntry;
 	private final BigDecimal _quantity;
+	private final BigDecimal _received;
+	private final String _returnItemStatus;
 	private final String _returnReason;
+	private final String _returnResolutionMethod;
 	private final int _status;
 
 }

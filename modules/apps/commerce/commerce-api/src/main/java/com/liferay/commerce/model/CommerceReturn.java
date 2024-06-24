@@ -5,6 +5,7 @@
 
 package com.liferay.commerce.model;
 
+import com.liferay.commerce.constants.CommerceReturnConstants;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.portal.kernel.util.GetterUtil;
 
@@ -27,22 +28,31 @@ public class CommerceReturn {
 		_objectEntry = objectEntry;
 
 		_accountId = (long)objectEntryValues.get(
-			"r_accountToCommerceReturns_accountEntryId");
+			CommerceReturnConstants.RETURN_FIELD_ACCOUNT_ENTRY_ID);
 		_createDate = objectEntry.getCreateDate();
-		_channelGroupId = (long)objectEntryValues.get("channelGroupId");
-		_channelId = (long)objectEntryValues.get("channelId");
-		_channelName = (String)objectEntryValues.get("channelName");
+		_channelGroupId = (long)objectEntryValues.get(
+			CommerceReturnConstants.RETURN_FIELD_CHANNEL_GROUP_ID);
+		_channelId = (long)objectEntryValues.get(
+			CommerceReturnConstants.RETURN_FIELD_CHANNEL_ID);
+		_channelName = (String)objectEntryValues.get(
+			CommerceReturnConstants.RETURN_FIELD_CHANNEL_NAME);
 		_externalReferenceCode = objectEntry.getExternalReferenceCode();
 		_id = objectEntry.getPrimaryKey();
-		_note = (String)objectEntryValues.get("note");
+		_note = (String)objectEntryValues.get(
+			CommerceReturnConstants.RETURN_FIELD_NOTE);
 		_orderId = (long)objectEntryValues.get(
-			"r_commerceOrderToCommerceReturns_commerceOrderId");
+			CommerceReturnConstants.RETURN_FIELD_COMMERCE_ORDER_ID);
 		_requestedItems = GetterUtil.getInteger(
-			String.valueOf(objectEntryValues.get("requestedItems")));
-		_returnStatus = (String)objectEntryValues.get("returnStatus");
+			String.valueOf(
+				objectEntryValues.get(
+					CommerceReturnConstants.RETURN_FIELD_REQUESTED_ITEMS)));
+		_returnStatus = (String)objectEntryValues.get(
+			CommerceReturnConstants.RETURN_FIELD_RETURN_STATUS);
 		_status = objectEntry.getStatus();
 		_totalAmount = new BigDecimal(
-			String.valueOf(objectEntryValues.get("totalAmount")));
+			String.valueOf(
+				objectEntryValues.get(
+					CommerceReturnConstants.RETURN_FIELD_TOTAL_AMOUNT)));
 	}
 
 	public long getAccountId() {
