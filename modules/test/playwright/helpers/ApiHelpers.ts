@@ -40,6 +40,7 @@ import {JSONWebServicesLayoutSetPrototypeApiHelper} from './json-web-services/JS
 import {JSONWebServicesMBApiHelper} from './json-web-services/JSONWebServicesMBApiHelper';
 import {JSONWebServicesOSBAsahApiHelper} from './json-web-services/JSONWebServicesOSBAsahApiHelper';
 import {JSONWebServicesOSBFaroApiHelper} from './json-web-services/JSONWebServicesOSBFaroApiHelper';
+import {HeadlessBatchEngineApiHelper} from "./HeadlessBatchEngineApiHelper";
 
 type TDataApiHelpersData = {
 	id: any;
@@ -62,6 +63,7 @@ export class ApiHelpers {
 	readonly headlessAdminTaxonomy: HeadlessAdminTaxonomyApiHelper;
 	readonly headlessAdminUser: HeadlessAdminUserApiHelper;
 	readonly headlessAdminWorkflow: HeadlessAdminWorkflowApiHelper;
+	readonly headlessBatchEngine: HeadlessBatchEngineApiHelper;
 	readonly headlessChangeTracking: HeadlessChangeTrackingApiHelper;
 	readonly headlessCommerceAdminAccount: HeadlessCommerceAdminAccountApiHelper;
 	readonly headlessCommerceAdminCatalog: HeadlessCommerceAdminCatalogApiHelper;
@@ -104,6 +106,7 @@ export class ApiHelpers {
 		this.headlessAdminTaxonomy = new HeadlessAdminTaxonomyApiHelper(this);
 		this.headlessAdminUser = new HeadlessAdminUserApiHelper(this);
 		this.headlessAdminWorkflow = new HeadlessAdminWorkflowApiHelper(this);
+		this.headlessBatchEngine = new HeadlessBatchEngineApiHelper(this);
 		this.headlessChangeTracking = new HeadlessChangeTrackingApiHelper(this);
 		this.headlessCommerceAdminAccount =
 			new HeadlessCommerceAdminAccountApiHelper(this);
