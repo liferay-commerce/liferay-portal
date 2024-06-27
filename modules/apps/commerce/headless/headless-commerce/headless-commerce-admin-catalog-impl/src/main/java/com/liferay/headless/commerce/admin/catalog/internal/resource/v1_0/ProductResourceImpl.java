@@ -13,7 +13,9 @@ import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetTagService;
+import com.liferay.commerce.price.list.constants.CommercePriceListConstants;
 import com.liferay.commerce.price.list.service.CommercePriceEntryLocalService;
+import com.liferay.commerce.price.list.service.CommercePriceEntryService;
 import com.liferay.commerce.price.list.service.CommercePriceListLocalService;
 import com.liferay.commerce.product.configuration.CProductVersionConfiguration;
 import com.liferay.commerce.product.constants.CPAttachmentFileEntryConstants;
@@ -1102,20 +1104,26 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 							SkuUnitOfMeasureUtil.
 								addOrUpdateCPInstanceUnitOfMeasure(
 									_cpInstanceUnitOfMeasureService,
-									cpInstance, skuUnitOfMeasure,
-									serviceContext);
+									_commercePriceEntryService, cpInstance,
+									skuUnitOfMeasure, serviceContext);
 
-						SkuUtil.updateCommercePriceEntries(
-							_commercePriceEntryLocalService,
-							_commercePriceListLocalService,
-							_configurationProvider, cpInstance,
-							(BigDecimal)GetterUtil.get(
+						if (skuUnitOfMeasure.getBasePrice() != null) {
+							SkuUnitOfMeasureUtil.updateCommercePriceEntry(
+								_commercePriceEntryService, cpInstance,
+								cpInstanceUnitOfMeasure,
 								skuUnitOfMeasure.getBasePrice(),
-								BigDecimal.ZERO),
-							(BigDecimal)GetterUtil.get(
+								CommercePriceListConstants.TYPE_PRICE_LIST,
+								serviceContext);
+						}
+
+						if (skuUnitOfMeasure.getPromoPrice() != null) {
+							SkuUnitOfMeasureUtil.updateCommercePriceEntry(
+								_commercePriceEntryService, cpInstance,
+								cpInstanceUnitOfMeasure,
 								skuUnitOfMeasure.getPromoPrice(),
-								BigDecimal.ZERO),
-							cpInstanceUnitOfMeasure.getKey(), serviceContext);
+								CommercePriceListConstants.TYPE_PROMOTION,
+								serviceContext);
+						}
 					}
 				}
 			}
@@ -1554,6 +1562,9 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 	private CommercePriceEntryLocalService _commercePriceEntryLocalService;
 
 	@Reference
+	private CommercePriceEntryService _commercePriceEntryService;
+
+	@Reference
 	private CommercePriceListLocalService _commercePriceListLocalService;
 
 	@Reference
@@ -1603,8 +1614,7 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 	private CPInstanceService _cpInstanceService;
 
 	@Reference
-	private CPInstanceUnitOfMeasureService
-		_cpInstanceUnitOfMeasureService;
+	private CPInstanceUnitOfMeasureService _cpInstanceUnitOfMeasureService;
 
 	@Reference
 	private CPOptionService _cpOptionService;
