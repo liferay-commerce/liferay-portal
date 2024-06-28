@@ -351,6 +351,16 @@ export class DataApiHelpers extends ApiHelpers {
 					);
 
 					break;
+				case 'roleUserAccountAssociation': {
+					const [roleId, userId] = item.id.split('_');
+
+					await this.headlessAdminUser.deleteRoleUserAccountAssociation(
+						roleId,
+						userId
+					);
+
+					break;
+				}
 				case 'site':
 					await this.headlessSite.deleteSite(item.id);
 
