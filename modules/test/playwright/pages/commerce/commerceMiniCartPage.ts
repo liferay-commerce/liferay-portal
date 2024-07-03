@@ -75,4 +75,10 @@ export class CommerceMiniCartPage {
 		await this.quickAddToCartButton.click();
 		await this.miniCartButtonClose.click();
 	}
+
+	async submitCart() {
+		this.miniCartButton.waitFor();
+		this.miniCartButton.click();
+		this.submitButton.click();
+	}
 }

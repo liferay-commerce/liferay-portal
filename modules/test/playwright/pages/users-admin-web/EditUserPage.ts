@@ -10,6 +10,7 @@ import {searchTableRowByValue} from './UsersAndOrganizationsPage';
 export class EditUserPage {
 	readonly confirmButton: Locator;
 	readonly emailAddressInput: Locator;
+	readonly selectSiteLink: (siteName: string) => Promise<Locator>;
 	readonly generateWebDAVPasswordButton: Locator;
 	readonly membershipsAccountsTableRow: (
 		colPosition: number,
@@ -31,6 +32,7 @@ export class EditUserPage {
 		value: string,
 		strictEqual?: boolean
 	) => Promise<{column: Locator; row: Locator}>;
+	readonly selectSiteForMembership: Locator;
 	readonly webDAVPasswordLabel: Locator;
 	readonly yourPasswordInput: Locator;
 
@@ -95,6 +97,11 @@ export class EditUserPage {
 				strictEqual
 			);
 		};
+		this.selectSiteLink = async (siteName: string) => {
+			return page
+				.frameLocator('iframe[title="Select Site"]')
+				.getByRole('link', {exact: true, name: siteName});
+		};
 		this.webDAVPasswordLabel = page.locator(
 			'#_com_liferay_users_admin_web_portlet_UsersAdminPortlet_webDAVPassword'
 		);
@@ -102,7 +109,16 @@ export class EditUserPage {
 			'button',
 			{name: 'Confirm'}
 		);
+		this.selectSiteForMembership = page.getByLabel('Select Sites');
 		this.yourPasswordInput =
 			this.passwordConfirmationFrame.getByLabel('Your Password');
+	}
+
+	async selectUserMembershipSite(site: string) {
+		await this.membershipsLink.click();
+		await this.selectSiteForMembership.click();
+		(await this.selectSiteLink(site)).click();
+		await this.saveButton.waitFor();
+		await this.saveButton.click();
 	}
 }
