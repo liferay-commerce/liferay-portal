@@ -21,7 +21,7 @@ List<CPContentListRenderer> cpContentListRenderers = cpPublisherConfigurationDis
 			String key = cpContentListRenderer.getKey();
 		%>
 
-			<aui:option label="<%= HtmlUtil.escape(cpContentListRenderer.getLabel(locale)) %>" selected="<%= key.equals(cpPublisherConfigurationDisplayContext.getCPContentListRendererKey()) %>" value="<%= key %>" />
+			<aui:option label="<%= cpContentListRenderer.getLabel(locale) %>" selected="<%= key.equals(cpPublisherConfigurationDisplayContext.getCPContentListRendererKey()) %>" value="<%= key %>" />
 
 		<%
 		}

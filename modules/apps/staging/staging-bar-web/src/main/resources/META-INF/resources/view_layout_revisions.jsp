@@ -42,7 +42,7 @@ List<LayoutRevision> rootLayoutRevisions = LayoutRevisionLocalServiceUtil.getChi
 					LayoutBranch layoutBranch = rootLayoutRevision.getLayoutBranch();
 				%>
 
-					<aui:option label="<%= HtmlUtil.escape(layoutBranchDisplayContext.getLayoutBranchDisplayName(layoutBranch)) %>" localizeLabel="<%= false %>" selected="<%= recentLayoutRevision.getLayoutBranchId() == rootLayoutRevision.getLayoutBranchId() %>" value="<%= rootLayoutRevision.getLayoutRevisionId() %>" />
+					<aui:option label="<%= layoutBranchDisplayContext.getLayoutBranchDisplayName(layoutBranch) %>" localizeLabel="<%= false %>" selected="<%= recentLayoutRevision.getLayoutBranchId() == rootLayoutRevision.getLayoutBranchId() %>" value="<%= rootLayoutRevision.getLayoutRevisionId() %>" />
 
 				<%
 				}

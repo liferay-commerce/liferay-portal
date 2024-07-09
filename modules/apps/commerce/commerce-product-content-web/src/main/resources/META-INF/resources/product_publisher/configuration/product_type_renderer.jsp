@@ -43,7 +43,7 @@ CPPublisherConfigurationDisplayContext cpPublisherConfigurationDisplayContext = 
 							String key = cpContentListEntryRenderer.getKey();
 						%>
 
-							<aui:option label="<%= HtmlUtil.escape(cpContentListEntryRenderer.getLabel(locale)) %>" selected="<%= key.equals(cpPublisherConfigurationDisplayContext.getCPTypeListEntryRendererKey(cpType.getName())) %>" value="<%= key %>" />
+							<aui:option label="<%= cpContentListEntryRenderer.getLabel(locale) %>" selected="<%= key.equals(cpPublisherConfigurationDisplayContext.getCPTypeListEntryRendererKey(cpType.getName())) %>" value="<%= key %>" />
 
 						<%
 						}

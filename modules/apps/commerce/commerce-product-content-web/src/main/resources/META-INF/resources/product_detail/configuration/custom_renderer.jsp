@@ -43,7 +43,7 @@ CPContentHelper cpContentHelper = (CPContentHelper)request.getAttribute(CPConten
 							String key = cpContentRenderer.getKey();
 						%>
 
-							<aui:option label="<%= HtmlUtil.escape(cpContentRenderer.getLabel(locale)) %>" selected="<%= key.equals(cpContentHelper.getCPContentRendererKey(cpType.getName(), renderRequest)) %>" value="<%= key %>" />
+							<aui:option label="<%= cpContentRenderer.getLabel(locale) %>" selected="<%= key.equals(cpContentHelper.getCPContentRendererKey(cpType.getName(), renderRequest)) %>" value="<%= key %>" />
 
 						<%
 						}

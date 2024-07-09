@@ -19,7 +19,7 @@ CPPublisherConfigurationDisplayContext cpPublisherConfigurationDisplayContext = 
 			String selectedDataSource = cpPublisherConfigurationDisplayContext.getDataSource();
 		%>
 
-			<aui:option label="<%= HtmlUtil.escape(cpDataSource.getLabel(locale)) %>" selected="<%= selectedDataSource.equals(cpDataSource.getName()) %>" value="<%= cpDataSource.getName() %>" />
+			<aui:option label="<%= cpDataSource.getLabel(locale) %>" selected="<%= selectedDataSource.equals(cpDataSource.getName()) %>" value="<%= cpDataSource.getName() %>" />
 
 		<%
 		}
