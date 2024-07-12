@@ -78,7 +78,8 @@ const InputQuantitySelector = forwardRef(
 			step: unitOfMeasure
 				? getMultiple(
 						unitOfMeasure.incrementalOrderQuantity,
-						step
+						step,
+						unitOfMeasure.precision
 					)
 				: Math.ceil(step),
 		});
@@ -154,7 +155,8 @@ const InputQuantitySelector = forwardRef(
 						unitOfMeasure.incrementalOrderQuantity :
 						getMultiple(
 							unitOfMeasure.incrementalOrderQuantity,
-							step
+							step,
+							unitOfMeasure.precision
 						),
 					unitOfMeasure,
 				});
