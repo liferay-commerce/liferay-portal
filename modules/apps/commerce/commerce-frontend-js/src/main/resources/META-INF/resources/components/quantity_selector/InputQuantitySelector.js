@@ -89,9 +89,7 @@ const InputQuantitySelector = forwardRef(
 				quantity,
 				unitOfMeasure ? min : Math.ceil(min),
 				unitOfMeasure ? max : Math.ceil(max),
-				unitOfMeasure
-					? step
-					: Math.ceil(step)
+				unitOfMeasure ? step : Math.ceil(step)
 			)
 		);
 		const isMounted = useIsMounted();
@@ -151,13 +149,14 @@ const InputQuantitySelector = forwardRef(
 					min,
 					precision: unitOfMeasure.precision,
 					quantity,
-					step: unitOfMeasure.incrementalOrderQuantity === step ?
-						unitOfMeasure.incrementalOrderQuantity :
-						getMultiple(
-							unitOfMeasure.incrementalOrderQuantity,
-							step,
-							unitOfMeasure.precision
-						),
+					step:
+						unitOfMeasure.incrementalOrderQuantity === step
+							? unitOfMeasure.incrementalOrderQuantity
+							: getMultiple(
+									unitOfMeasure.incrementalOrderQuantity,
+									step,
+									unitOfMeasure.precision
+								),
 					unitOfMeasure,
 				});
 			}
