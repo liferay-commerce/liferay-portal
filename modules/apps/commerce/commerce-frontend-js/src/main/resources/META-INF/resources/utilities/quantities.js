@@ -23,6 +23,23 @@ export function getMinQuantity(
 	);
 }
 
+export function getMultiple(
+	incrementalOrderQuantity= 1,
+	multipleQuantity = 1
+) {
+	if (incrementalOrderQuantity === multipleQuantity) {
+		return incrementalOrderQuantity;
+	}
+
+	//this solves for least common multiple
+	let multiple = incrementalOrderQuantity;
+	while (multiple % multipleQuantity !== 0) {
+		multiple += incrementalOrderQuantity;
+	}
+
+	return multiple;
+}
+
 export function getProductMaxQuantity(
 	maxQuantity,
 	multipleQuantity = 1,
