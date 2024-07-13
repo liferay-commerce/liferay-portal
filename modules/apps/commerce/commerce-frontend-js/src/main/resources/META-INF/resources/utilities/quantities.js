@@ -61,7 +61,7 @@ export function getMultiple(
 	let multiple = 0;
 
 	for (multiple = large; multiple < small * large; multiple += large) {
-		if (multiple % small == 0) {
+		if (multiple % small === 0) {
 			return Number(multiple / Math.pow(10, precisionAdjustment)).toFixed(
 				precision
 			);
