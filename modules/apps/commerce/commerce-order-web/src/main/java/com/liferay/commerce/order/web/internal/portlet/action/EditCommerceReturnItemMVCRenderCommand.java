@@ -32,16 +32,17 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * @author Stefano Motta
+ * @author Crescenzo Rega
  */
 @Component(
 	property = {
 		"javax.portlet.name=" + CommercePortletKeys.COMMERCE_RETURN,
-		"mvc.command.name=/commerce_return/edit_commerce_return"
+		"mvc.command.name=/commerce_return/edit_commerce_return_item"
 	},
 	service = MVCRenderCommand.class
 )
-public class EditCommerceReturnMVCRenderCommand implements MVCRenderCommand {
+public class EditCommerceReturnItemMVCRenderCommand
+	implements MVCRenderCommand {
 
 	@Override
 	public String render(
@@ -74,7 +75,7 @@ public class EditCommerceReturnMVCRenderCommand implements MVCRenderCommand {
 			throw new PortletException(exception);
 		}
 
-		return "/edit_commerce_return.jsp";
+		return "/edit_commerce_return_item.jsp";
 	}
 
 	@Reference
