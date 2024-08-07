@@ -81,16 +81,16 @@ public class RenderRestController extends BaseRestController {
 			sb.append(jsonObject.getString("fundingSource"));
 		}
 
+		if (jsonObject.has("redirect")) {
+			sb.append("&redirect=");
+			sb.append(jsonObject.getBoolean("redirect"));
+		}
+
 		if (jsonObject.has("transactionCode")) {
 			sb.append("&entryId=");
 			sb.append(
 				_getPaymentEntryId(
 					jwt, orderId, jsonObject.getString("transactionCode")));
-		}
-
-		if (jsonObject.has("redirect")) {
-			sb.append("&redirect=");
-			sb.append(jsonObject.getBoolean("redirect"));
 		}
 
 		return new ResponseEntity<>(

@@ -60,11 +60,6 @@ public class NotificationsRestController extends BaseRestController {
 					paymentStatus = "4";
 					errorMessages = payPalJSONObject.getString("summary");
 				}
-				else if (StringUtils.equals(
-							eventType, "PAYMENT.CAPTURE.REFUNDED")) {
-
-					paymentStatus = "17";
-				}
 				else {
 					return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 				}
