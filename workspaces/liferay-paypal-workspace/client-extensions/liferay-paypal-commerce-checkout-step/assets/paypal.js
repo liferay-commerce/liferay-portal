@@ -10,6 +10,8 @@ export async function onPaypalLoaded() {
 
 	const orderId = document.getElementById('payment-order-id').value;
 
+	const paypal = window.paypal;
+
 	const payPalButton = paypal.Buttons({
 		async createOrder(data) {
 			try {
@@ -39,7 +41,6 @@ export async function onPaypalLoaded() {
 				}
 			}
 			catch (error) {
-				console.error(error);
 				resultMessage(
 					`Could not initiate PayPal Checkout...<br><br>${error}`
 				);
@@ -65,7 +66,6 @@ export async function onPaypalLoaded() {
 				}
 			}
 			catch (error) {
-				console.error(error);
 				resultMessage(
 					`Sorry, your transaction could not be processed...<br><br>${error}`
 				);
@@ -86,8 +86,10 @@ export async function onPaypalLoaded() {
 			const cartPaymentURL = cartPaymentResourceJSON.url;
 			const response = await fetch(cartPaymentURL);
 		},
-		async onError(err) {
-			console.log(err);
+		async onError(error) {
+			resultMessage(
+				`Could not initiate PayPal Checkout...<br><br>${error}`
+			);
 		},
 	});
 

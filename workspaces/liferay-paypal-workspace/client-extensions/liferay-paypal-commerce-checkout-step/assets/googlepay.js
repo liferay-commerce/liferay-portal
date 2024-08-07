@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+let google = null;
+let paypal = null;
+
 function addGooglePayButton() {
 	const paymentsClient = getGooglePaymentsClient();
 	const button = paymentsClient.createButton({
@@ -74,6 +77,9 @@ async function onGooglePaymentButtonClicked() {
 }
 
 export async function onGooglePayLoaded() {
+	google = window.google;
+	paypal = window.paypal;
+
 	const paymentsClient = getGooglePaymentsClient();
 	const {allowedPaymentMethods, apiVersion, apiVersionMinor} =
 		await getGooglePayConfig();
@@ -90,7 +96,7 @@ export async function onGooglePayLoaded() {
 }
 
 function onPaymentAuthorized(paymentData) {
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve) => {
 		processPayment(paymentData)
 			.then(() => {
 				resolve({transactionState: 'SUCCESS'});
@@ -111,8 +117,8 @@ async function processPayment(paymentData) {
 
 		const setUpPaymentResource = await payPalOAuth.fetch('/render', {
 			body: JSON.stringify({
-				orderId,
 				fundingSource: 'google_pay',
+				orderId,
 				redirect: false,
 			}),
 			method: 'POST',
@@ -167,6 +173,9 @@ async function processPayment(paymentData) {
 							if (response.ok) {
 								window.location.href = response.url;
 							}
+						})
+						.catch((error) => {
+							console.error(error);
 						});
 				}
 				else {
@@ -195,12 +204,12 @@ async function processPayment(paymentData) {
 			}
 		}
 	}
-	catch (err) {
+	catch (error) {
 		return {
-			transactionState: 'ERROR',
 			error: {
-				message: err.message,
+				message: error.message,
 			},
+			transactionState: 'ERROR',
 		};
 	}
 }
