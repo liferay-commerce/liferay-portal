@@ -46,7 +46,7 @@ export async function onPaypalLoaded() {
 				);
 			}
 		},
-		async onApprove(data, actions) {
+		async onApprove(data) {
 			try {
 				const cartPaymentResource = await payPalOAuth.fetch('/render', {
 					body: JSON.stringify({
