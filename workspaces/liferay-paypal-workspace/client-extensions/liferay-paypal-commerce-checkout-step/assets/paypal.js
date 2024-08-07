@@ -76,8 +76,8 @@ export async function onPaypalLoaded() {
 				body: JSON.stringify({
 					cancel: true,
 					orderId,
-					transactionCode: data.orderID,
 					redirect: false,
+					transactionCode: data.orderID,
 				}),
 				method: 'POST',
 			});

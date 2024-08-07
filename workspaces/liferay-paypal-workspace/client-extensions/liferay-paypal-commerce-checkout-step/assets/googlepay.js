@@ -148,7 +148,7 @@ async function processPayment(paymentData) {
 						.Googlepay()
 						.initiatePayerAction({orderId: id})
 						.then(async () => {
-							const orderResponse = await fetch(
+							await fetch(
 								`/api/orders/${id}`,
 								{
 									method: 'GET',
