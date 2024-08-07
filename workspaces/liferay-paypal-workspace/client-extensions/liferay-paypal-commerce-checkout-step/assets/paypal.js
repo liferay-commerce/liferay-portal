@@ -84,7 +84,7 @@ export async function onPaypalLoaded() {
 
 			const cartPaymentResourceJSON = await cartPaymentResource.json();
 			const cartPaymentURL = cartPaymentResourceJSON.url;
-			const response = await fetch(cartPaymentURL);
+			await fetch(cartPaymentURL);
 		},
 		async onError(error) {
 			resultMessage(

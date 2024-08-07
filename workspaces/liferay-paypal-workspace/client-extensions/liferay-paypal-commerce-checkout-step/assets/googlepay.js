@@ -90,8 +90,8 @@ export async function onGooglePayLoaded() {
 				addGooglePayButton();
 			}
 		})
-		.catch((err) => {
-			console.error(err);
+		.catch((error) => {
+			console.error(error);
 		});
 }
 
