@@ -7,6 +7,7 @@ package com.liferay.paypal;
 
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.math.BigDecimal;
 
@@ -40,21 +41,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 @RestController
 public class SetUpPaymentRestController extends BaseRestController {
 
-	@GetMapping("get/{orderId}")
-	public ResponseEntity<String> get(
-		@AuthenticationPrincipal Jwt jwt,
-		@PathVariable("orderId") long orderId) {
-
-		return new ResponseEntity<>(
-			new JSONObject(
-			).put(
-				"id", _getTransactionCode(jwt, orderId)
-			).toString(),
-			HttpStatus.OK);
-	}
-
 	@GetMapping("get-order/{orderId}/{countryCode}")
-	public ResponseEntity<String> getOrder(
+	public ResponseEntity<String> getGoogleOrderInfo(
 		@AuthenticationPrincipal Jwt jwt, @PathVariable("orderId") long orderId,
 		@PathVariable("countryCode") String countryCode) {
 
@@ -127,6 +115,19 @@ public class SetUpPaymentRestController extends BaseRestController {
 		);
 
 		return new ResponseEntity<>(googleJSONObject.toString(), HttpStatus.OK);
+	}
+
+	@GetMapping("get/{orderId}")
+	public ResponseEntity<String> getPayPalOrderInfo(
+		@AuthenticationPrincipal Jwt jwt,
+		@PathVariable("orderId") long orderId) {
+
+		return new ResponseEntity<>(
+			new JSONObject(
+			).put(
+				"id", _getTransactionCode(jwt, orderId)
+			).toString(),
+			HttpStatus.OK);
 	}
 
 	@PostMapping
@@ -245,9 +246,11 @@ public class SetUpPaymentRestController extends BaseRestController {
 				"/o/c/paypalwebhooks");
 		}
 		catch (Exception exception) {
-			errorMessages = ExceptionUtils.getStackTrace(exception);
+			if (_log.isDebugEnabled()) {
+				errorMessages = ExceptionUtils.getStackTrace(exception);
 
-			_log.error(errorMessages);
+				_log.debug(errorMessages);
+			}
 		}
 
 		return new ResponseEntity<>(
@@ -564,16 +567,31 @@ public class SetUpPaymentRestController extends BaseRestController {
 		@AuthenticationPrincipal Jwt jwt,
 		@PathVariable("orderId") long orderId) {
 
-		JSONObject orderPaymentJSONObject = get(
-			"Bearer " + jwt.getTokenValue(),
-			"/o/c/paypaltransactions/by-external-reference-code/" + orderId);
+		String transactionCode = null;
 
-		String transactionCode = orderPaymentJSONObject.getString(
-			"transactionCode");
+		for (int i = 0; i < 10; i++) {
+			try {
+				JSONObject orderPaymentJSONObject = get(
+					"Bearer " + jwt.getTokenValue(),
+					"/o/c/paypaltransactions/by-external-reference-code/" +
+						orderId);
 
-		delete(
-			"Bearer " + jwt.getTokenValue(),
-			"/o/c/paypaltransactions/by-external-reference-code/" + orderId);
+				transactionCode = orderPaymentJSONObject.getString(
+					"transactionCode");
+			}
+			catch (Exception exception) {
+				if (_log.isInfoEnabled()) {
+					_log.info(ExceptionUtils.getMessage(exception));
+				}
+			}
+		}
+
+		if (Validator.isNotNull(transactionCode)) {
+			delete(
+				"Bearer " + jwt.getTokenValue(),
+				"/o/c/paypaltransactions/by-external-reference-code/" +
+					orderId);
+		}
 
 		return transactionCode;
 	}

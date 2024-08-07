@@ -108,7 +108,7 @@ public class RenderRestController extends BaseRestController {
 			"Bearer " + jwt.getTokenValue(),
 			StringBundler.concat(
 				"/o/headless-commerce-admin-payment/v1.0/payments/?filter=",
-				"classPK eq ", orderId));
+				"relatedItemId eq ", orderId));
 
 		JSONArray itemsJSONArray = paymentsJSONObject.getJSONArray("items");
 

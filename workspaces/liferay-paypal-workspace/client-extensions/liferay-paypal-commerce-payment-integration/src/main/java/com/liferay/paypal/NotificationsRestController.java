@@ -90,7 +90,9 @@ public class NotificationsRestController extends BaseRestController {
 			}
 		}
 		catch (Exception exception) {
-			_log.error(ExceptionUtils.getStackTrace(exception));
+			if (_log.isDebugEnabled()) {
+				_log.debug(ExceptionUtils.getMessage(exception));
+			}
 
 			return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
 		}

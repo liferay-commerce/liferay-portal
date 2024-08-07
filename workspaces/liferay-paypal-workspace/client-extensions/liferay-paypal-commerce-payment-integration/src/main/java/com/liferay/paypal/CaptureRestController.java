@@ -78,9 +78,16 @@ public class CaptureRestController extends BaseRestController {
 					"commercePaymentEntryId")
 			).header(
 				"Prefer", "return=representation"
-			).retrieve(
-			).bodyToMono(
-				String.class
+			).exchangeToMono(
+				clientResponse -> {
+					HttpStatus httpStatus = clientResponse.statusCode();
+
+					if (!httpStatus.is2xxSuccessful()) {
+						throw new RuntimeException(httpStatus.toString());
+					}
+
+					return clientResponse.bodyToMono(String.class);
+				}
 			).block();
 
 			JSONObject captureOrderResponseJSONObject = new JSONObject(
@@ -134,9 +141,11 @@ public class CaptureRestController extends BaseRestController {
 			}
 		}
 		catch (Exception exception) {
-			errorMessages = ExceptionUtils.getStackTrace(exception);
+			if (_log.isDebugEnabled()) {
+				errorMessages = ExceptionUtils.getMessage(exception);
 
-			_log.error(errorMessages);
+				_log.debug(errorMessages);
+			}
 		}
 
 		return new ResponseEntity<>(

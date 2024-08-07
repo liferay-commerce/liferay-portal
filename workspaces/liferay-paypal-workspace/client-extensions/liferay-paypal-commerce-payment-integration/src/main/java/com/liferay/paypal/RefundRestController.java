@@ -122,9 +122,11 @@ public class RefundRestController extends BaseRestController {
 			}
 		}
 		catch (Exception exception) {
-			errorMessages = ExceptionUtils.getStackTrace(exception);
+			if (_log.isDebugEnabled()) {
+				errorMessages = ExceptionUtils.getStackTrace(exception);
 
-			_log.error(errorMessages);
+				_log.debug(errorMessages);
+			}
 		}
 
 		return new ResponseEntity<>(
