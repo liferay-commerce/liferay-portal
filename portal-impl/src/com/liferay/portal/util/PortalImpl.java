@@ -7867,6 +7867,10 @@ public class PortalImpl implements Portal {
 				resourceBundle, JavaConstants.JAVAX_PORTLET_TITLE);
 		}
 
+		if (Validator.isNull(portletTitle)) {
+			portletTitle = rootPortletId;
+		}
+
 		return portletTitle;
 	}
 
