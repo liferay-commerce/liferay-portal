@@ -587,8 +587,8 @@ public class CPTestUtil {
 				HashMapBuilder.put(
 					LocaleUtil.getDefault(), "NOME"
 				).build(),
-				incrementalOrderQuantity.scale(), true, 0.0, BigDecimal.ONE,
-				sku);
+				incrementalOrderQuantity.scale(), BigDecimal.ONE, true, 0.0,
+				BigDecimal.ONE, sku);
 	}
 
 	public static CPInstance addCPInstanceWithRandomSku(long groupId)
