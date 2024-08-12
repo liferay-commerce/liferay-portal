@@ -89,6 +89,12 @@ CPInstanceUnitOfMeasure cpInstanceUnitOfMeasure = cpInstanceUnitOfMeasureDisplay
 										<aui:validator name="number" />
 									</aui:input>
 								</div>
+
+								<div class="col-6">
+									<aui:input helpMessage="pricing-quantity-help" label="pricing-quantity" name="pricingQuantity" type="text">
+										<aui:validator name="number" />
+									</aui:input>
+								</div>
 							</div>
 						</c:when>
 						<c:otherwise>
