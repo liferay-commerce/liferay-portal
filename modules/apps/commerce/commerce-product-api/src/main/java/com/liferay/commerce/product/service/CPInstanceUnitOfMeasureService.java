@@ -52,8 +52,24 @@ public interface CPInstanceUnitOfMeasureService extends BaseService {
 	public CPInstanceUnitOfMeasure addCPInstanceUnitOfMeasure(
 			long cpInstanceId, boolean active,
 			BigDecimal incrementalOrderQuantity, String key,
+			Map<Locale, String> nameMap, int precision,
+			BigDecimal pricingQuantity, boolean primary, double priority,
+			BigDecimal rate, String sku)
+		throws PortalException;
+
+	public CPInstanceUnitOfMeasure addCPInstanceUnitOfMeasure(
+			long cpInstanceId, boolean active,
+			BigDecimal incrementalOrderQuantity, String key,
 			Map<Locale, String> nameMap, int precision, boolean primary,
 			double priority, BigDecimal rate, String sku)
+		throws PortalException;
+
+	public CPInstanceUnitOfMeasure addOrUpdateCPInstanceUnitOfMeasure(
+			long cpInstanceId, boolean active,
+			BigDecimal incrementalOrderQuantity, String key,
+			Map<Locale, String> nameMap, int precision,
+			BigDecimal pricingQuantity, boolean primary, double priority,
+			BigDecimal rate, String sku)
 		throws PortalException;
 
 	public CPInstanceUnitOfMeasure addOrUpdateCPInstanceUnitOfMeasure(
@@ -117,6 +133,14 @@ public interface CPInstanceUnitOfMeasureService extends BaseService {
 	 * @return the OSGi service identifier
 	 */
 	public String getOSGiServiceIdentifier();
+
+	public CPInstanceUnitOfMeasure updateCPInstanceUnitOfMeasure(
+			long cpInstanceUnitOfMeasureId, long cpInstanceId, boolean active,
+			BigDecimal incrementalOrderQuantity, String key,
+			Map<Locale, String> nameMap, int precision,
+			BigDecimal pricingQuantity, boolean primary, double priority,
+			BigDecimal rate, String sku)
+		throws PortalException;
 
 	public CPInstanceUnitOfMeasure updateCPInstanceUnitOfMeasure(
 			long cpInstanceUnitOfMeasureId, long cpInstanceId, boolean active,

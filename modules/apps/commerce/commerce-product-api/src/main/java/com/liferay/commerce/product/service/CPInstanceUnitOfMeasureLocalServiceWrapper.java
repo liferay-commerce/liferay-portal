@@ -57,6 +57,20 @@ public class CPInstanceUnitOfMeasureLocalServiceWrapper
 			long userId, long cpInstanceId, boolean active,
 			java.math.BigDecimal incrementalOrderQuantity, String key,
 			java.util.Map<java.util.Locale, String> nameMap, int precision,
+			java.math.BigDecimal pricingQuantity, boolean primary,
+			double priority, java.math.BigDecimal rate, String sku)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpInstanceUnitOfMeasureLocalService.addCPInstanceUnitOfMeasure(
+			userId, cpInstanceId, active, incrementalOrderQuantity, key,
+			nameMap, precision, pricingQuantity, primary, priority, rate, sku);
+	}
+
+	@Override
+	public CPInstanceUnitOfMeasure addCPInstanceUnitOfMeasure(
+			long userId, long cpInstanceId, boolean active,
+			java.math.BigDecimal incrementalOrderQuantity, String key,
+			java.util.Map<java.util.Locale, String> nameMap, int precision,
 			boolean primary, double priority, java.math.BigDecimal rate,
 			String sku)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -64,6 +78,22 @@ public class CPInstanceUnitOfMeasureLocalServiceWrapper
 		return _cpInstanceUnitOfMeasureLocalService.addCPInstanceUnitOfMeasure(
 			userId, cpInstanceId, active, incrementalOrderQuantity, key,
 			nameMap, precision, primary, priority, rate, sku);
+	}
+
+	@Override
+	public CPInstanceUnitOfMeasure addOrUpdateCPInstanceUnitOfMeasure(
+			long userId, long cpInstanceId, boolean active,
+			java.math.BigDecimal incrementalOrderQuantity, String key,
+			java.util.Map<java.util.Locale, String> nameMap, int precision,
+			java.math.BigDecimal pricingQuantity, boolean primary,
+			double priority, java.math.BigDecimal rate, String sku)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpInstanceUnitOfMeasureLocalService.
+			addOrUpdateCPInstanceUnitOfMeasure(
+				userId, cpInstanceId, active, incrementalOrderQuantity, key,
+				nameMap, precision, pricingQuantity, primary, priority, rate,
+				sku);
 	}
 
 	@Override
@@ -488,6 +518,22 @@ public class CPInstanceUnitOfMeasureLocalServiceWrapper
 
 		return _cpInstanceUnitOfMeasureLocalService.
 			updateCPInstanceUnitOfMeasure(cpInstanceUnitOfMeasure);
+	}
+
+	@Override
+	public CPInstanceUnitOfMeasure updateCPInstanceUnitOfMeasure(
+			long cpInstanceUnitOfMeasureId, long cpInstanceId, boolean active,
+			java.math.BigDecimal incrementalOrderQuantity, String key,
+			java.util.Map<java.util.Locale, String> nameMap, int precision,
+			java.math.BigDecimal pricingQuantity, boolean primary,
+			double priority, java.math.BigDecimal rate, String sku)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpInstanceUnitOfMeasureLocalService.
+			updateCPInstanceUnitOfMeasure(
+				cpInstanceUnitOfMeasureId, cpInstanceId, active,
+				incrementalOrderQuantity, key, nameMap, precision,
+				pricingQuantity, primary, priority, rate, sku);
 	}
 
 	@Override

@@ -34,6 +34,20 @@ public class CPInstanceUnitOfMeasureServiceWrapper
 			long cpInstanceId, boolean active,
 			java.math.BigDecimal incrementalOrderQuantity, String key,
 			java.util.Map<java.util.Locale, String> nameMap, int precision,
+			java.math.BigDecimal pricingQuantity, boolean primary,
+			double priority, java.math.BigDecimal rate, String sku)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpInstanceUnitOfMeasureService.addCPInstanceUnitOfMeasure(
+			cpInstanceId, active, incrementalOrderQuantity, key, nameMap,
+			precision, pricingQuantity, primary, priority, rate, sku);
+	}
+
+	@Override
+	public CPInstanceUnitOfMeasure addCPInstanceUnitOfMeasure(
+			long cpInstanceId, boolean active,
+			java.math.BigDecimal incrementalOrderQuantity, String key,
+			java.util.Map<java.util.Locale, String> nameMap, int precision,
 			boolean primary, double priority, java.math.BigDecimal rate,
 			String sku)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -41,6 +55,21 @@ public class CPInstanceUnitOfMeasureServiceWrapper
 		return _cpInstanceUnitOfMeasureService.addCPInstanceUnitOfMeasure(
 			cpInstanceId, active, incrementalOrderQuantity, key, nameMap,
 			precision, primary, priority, rate, sku);
+	}
+
+	@Override
+	public CPInstanceUnitOfMeasure addOrUpdateCPInstanceUnitOfMeasure(
+			long cpInstanceId, boolean active,
+			java.math.BigDecimal incrementalOrderQuantity, String key,
+			java.util.Map<java.util.Locale, String> nameMap, int precision,
+			java.math.BigDecimal pricingQuantity, boolean primary,
+			double priority, java.math.BigDecimal rate, String sku)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpInstanceUnitOfMeasureService.
+			addOrUpdateCPInstanceUnitOfMeasure(
+				cpInstanceId, active, incrementalOrderQuantity, key, nameMap,
+				precision, pricingQuantity, primary, priority, rate, sku);
 	}
 
 	@Override
@@ -156,6 +185,21 @@ public class CPInstanceUnitOfMeasureServiceWrapper
 	@Override
 	public String getOSGiServiceIdentifier() {
 		return _cpInstanceUnitOfMeasureService.getOSGiServiceIdentifier();
+	}
+
+	@Override
+	public CPInstanceUnitOfMeasure updateCPInstanceUnitOfMeasure(
+			long cpInstanceUnitOfMeasureId, long cpInstanceId, boolean active,
+			java.math.BigDecimal incrementalOrderQuantity, String key,
+			java.util.Map<java.util.Locale, String> nameMap, int precision,
+			java.math.BigDecimal pricingQuantity, boolean primary,
+			double priority, java.math.BigDecimal rate, String sku)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpInstanceUnitOfMeasureService.updateCPInstanceUnitOfMeasure(
+			cpInstanceUnitOfMeasureId, cpInstanceId, active,
+			incrementalOrderQuantity, key, nameMap, precision, pricingQuantity,
+			primary, priority, rate, sku);
 	}
 
 	@Override
