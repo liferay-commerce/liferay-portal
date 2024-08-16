@@ -130,6 +130,7 @@ public class SkuUnitOfMeasureResourceImpl
 				GetterUtil.get(
 					skuUnitOfMeasure.getPrecision(),
 					cpInstanceUnitOfMeasure.getPrecision()),
+				cpInstanceUnitOfMeasure.getPricingQuantity(),
 				GetterUtil.get(
 					skuUnitOfMeasure.getPrimary(),
 					cpInstanceUnitOfMeasure.isPrimary()),
