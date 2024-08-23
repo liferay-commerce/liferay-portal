@@ -23,12 +23,15 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.test.rule.Inject;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
@@ -55,6 +58,32 @@ public class CategoryDisplayPageResourceTest
 	}
 
 	@Override
+	@Test
+	public void testPatchCategoryDisplayPage() throws Exception {
+		super.testPatchCategoryDisplayPage();
+
+		_testPatchCategoryDisplayPageWithMoreExternalReferenceCodes();
+	}
+
+	@Override
+	@Test
+	public void testPostChannelByExternalReferenceCodeCategoryDisplayPage()
+		throws Exception {
+
+		super.testPostChannelByExternalReferenceCodeCategoryDisplayPage();
+
+		_testPostChannelByExternalReferenceCodeCategoryDisplayPageWithMoreExternalReferenceCodes();
+	}
+
+	@Override
+	@Test
+	public void testPostChannelIdCategoryDisplayPage() throws Exception {
+		super.testPostChannelIdCategoryDisplayPage();
+
+		_testPostChannelIdCategoryDisplayPageWithMoreExternalReferenceCodes();
+	}
+
+	@Override
 	protected String[] getAdditionalAssertFieldNames() {
 		return new String[] {"pageUuid"};
 	}
@@ -62,7 +91,8 @@ public class CategoryDisplayPageResourceTest
 	@Override
 	protected CategoryDisplayPage randomCategoryDisplayPage() throws Exception {
 		AssetCategory assetCategory = AssetTestUtil.addCategory(
-			_user.getGroupId(), _assetVocabulary.getVocabularyId());
+			_commerceChannel.getSiteGroupId(),
+			_assetVocabulary.getVocabularyId());
 
 		_assetCategories.add(assetCategory);
 
@@ -73,7 +103,11 @@ public class CategoryDisplayPageResourceTest
 
 		return new CategoryDisplayPage() {
 			{
+				categoryExternalReferenceCode =
+					assetCategory.getExternalReferenceCode();
 				categoryId = assetCategory.getCategoryId();
+				groupExternalReferenceCode =
+					testGroup.getExternalReferenceCode();
 				id = RandomTestUtil.randomLong();
 				pageUuid = layout.getUuid();
 			}
@@ -220,6 +254,86 @@ public class CategoryDisplayPageResourceTest
 
 		return _addChannelCategoryDisplayPage(
 			commerceChannel, categoryDisplayPage);
+	}
+
+	private void _testPatchCategoryDisplayPageWithMoreExternalReferenceCodes()
+		throws Exception {
+
+		CategoryDisplayPage postCategoryDisplayPage =
+			testPatchCategoryDisplayPage_addCategoryDisplayPage();
+
+		CategoryDisplayPage randomPatchCategoryDisplayPage =
+			randomPatchCategoryDisplayPage();
+
+		long randomPatchCategoryDisplayPageId = GetterUtil.getLong(
+			randomPatchCategoryDisplayPage.getCategoryId());
+
+		randomPatchCategoryDisplayPage.setCategoryId(0L);
+
+		CategoryDisplayPage patchCategoryDisplayPage =
+			categoryDisplayPageResource.patchCategoryDisplayPage(
+				postCategoryDisplayPage.getId(),
+				randomPatchCategoryDisplayPage);
+
+		CategoryDisplayPage expectedPatchCategoryDisplayPage =
+			postCategoryDisplayPage.clone();
+
+		randomPatchCategoryDisplayPage.setCategoryId(
+			randomPatchCategoryDisplayPageId);
+
+		BeanTestUtil.copyProperties(
+			randomPatchCategoryDisplayPage, expectedPatchCategoryDisplayPage);
+
+		CategoryDisplayPage getCategoryDisplayPage =
+			categoryDisplayPageResource.getCategoryDisplayPage(
+				patchCategoryDisplayPage.getId());
+
+		assertEquals(expectedPatchCategoryDisplayPage, getCategoryDisplayPage);
+		assertValid(getCategoryDisplayPage);
+		Assert.assertEquals(
+			randomPatchCategoryDisplayPage.getCategoryExternalReferenceCode(),
+			getCategoryDisplayPage.getCategoryExternalReferenceCode());
+	}
+
+	private void _testPostChannelByExternalReferenceCodeCategoryDisplayPageWithMoreExternalReferenceCodes()
+		throws Exception {
+
+		CategoryDisplayPage randomCategoryDisplayPage =
+			randomCategoryDisplayPage();
+
+		randomCategoryDisplayPage.setCategoryId(0L);
+
+		CategoryDisplayPage postCategoryDisplayPage =
+			categoryDisplayPageResource.
+				postChannelByExternalReferenceCodeCategoryDisplayPage(
+					_commerceChannel.getExternalReferenceCode(),
+					randomCategoryDisplayPage);
+
+		assertEquals(randomCategoryDisplayPage, postCategoryDisplayPage);
+		assertValid(postCategoryDisplayPage);
+		Assert.assertEquals(
+			randomCategoryDisplayPage.getCategoryExternalReferenceCode(),
+			postCategoryDisplayPage.getCategoryExternalReferenceCode());
+	}
+
+	private void _testPostChannelIdCategoryDisplayPageWithMoreExternalReferenceCodes()
+		throws Exception {
+
+		CategoryDisplayPage randomCategoryDisplayPage =
+			randomCategoryDisplayPage();
+
+		randomCategoryDisplayPage.setCategoryId(0L);
+
+		CategoryDisplayPage postCategoryDisplayPage =
+			categoryDisplayPageResource.postChannelIdCategoryDisplayPage(
+				_commerceChannel.getCommerceChannelId(),
+				randomCategoryDisplayPage);
+
+		assertEquals(randomCategoryDisplayPage, postCategoryDisplayPage);
+		assertValid(postCategoryDisplayPage);
+		Assert.assertEquals(
+			randomCategoryDisplayPage.getCategoryExternalReferenceCode(),
+			postCategoryDisplayPage.getCategoryExternalReferenceCode());
 	}
 
 	@DeleteAfterTestRun

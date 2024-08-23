@@ -5,6 +5,8 @@
 
 package com.liferay.headless.commerce.admin.channel.internal.dto.v1_0.converter;
 
+import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.commerce.product.model.CPDisplayLayout;
 import com.liferay.commerce.product.service.CPDisplayLayoutLocalService;
 import com.liferay.headless.commerce.admin.channel.dto.v1_0.CategoryDisplayPage;
@@ -40,12 +42,27 @@ public class CategoryDisplayPageDTOConverter
 		return new CategoryDisplayPage() {
 			{
 				setActions(dtoConverterContext::getActions);
+				setCategoryExternalReferenceCode(
+					() -> {
+						AssetCategory assetCategory =
+							_assetCategoryLocalService.fetchAssetCategory(
+								cpDisplayLayout.getClassPK());
+
+						if (assetCategory == null) {
+							return null;
+						}
+
+						return assetCategory.getExternalReferenceCode();
+					});
 				setCategoryId(cpDisplayLayout::getClassPK);
 				setId(cpDisplayLayout::getCPDisplayLayoutId);
 				setPageUuid(cpDisplayLayout::getLayoutUuid);
 			}
 		};
 	}
+
+	@Reference
+	private AssetCategoryLocalService _assetCategoryLocalService;
 
 	@Reference
 	private CPDisplayLayoutLocalService _cpDisplayLayoutLocalService;
