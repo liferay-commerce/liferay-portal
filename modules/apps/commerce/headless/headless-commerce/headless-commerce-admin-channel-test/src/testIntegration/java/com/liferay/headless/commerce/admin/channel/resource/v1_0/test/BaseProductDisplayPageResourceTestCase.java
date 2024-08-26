@@ -178,6 +178,7 @@ public abstract class BaseProductDisplayPageResourceTestCase {
 
 		productDisplayPage.setPageTemplateUuid(regex);
 		productDisplayPage.setPageUuid(regex);
+		productDisplayPage.setProductExternalReferenceCode(regex);
 
 		String json = ProductDisplayPageSerDes.toJSON(productDisplayPage);
 
@@ -187,6 +188,8 @@ public abstract class BaseProductDisplayPageResourceTestCase {
 
 		Assert.assertEquals(regex, productDisplayPage.getPageTemplateUuid());
 		Assert.assertEquals(regex, productDisplayPage.getPageUuid());
+		Assert.assertEquals(
+			regex, productDisplayPage.getProductExternalReferenceCode());
 	}
 
 	@Test
@@ -1577,6 +1580,19 @@ public abstract class BaseProductDisplayPageResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals(
+					"productExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (productDisplayPage.getProductExternalReferenceCode() ==
+						null) {
+
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("productId", additionalAssertFieldName)) {
 				if (productDisplayPage.getProductId() == null) {
 					valid = false;
@@ -1743,6 +1759,21 @@ public abstract class BaseProductDisplayPageResourceTestCase {
 				if (!Objects.deepEquals(
 						productDisplayPage1.getPageUuid(),
 						productDisplayPage2.getPageUuid())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"productExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						productDisplayPage1.getProductExternalReferenceCode(),
+						productDisplayPage2.
+							getProductExternalReferenceCode())) {
 
 					return false;
 				}
@@ -1971,6 +2002,53 @@ public abstract class BaseProductDisplayPageResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("productExternalReferenceCode")) {
+			Object object =
+				productDisplayPage.getProductExternalReferenceCode();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("productId")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -2025,6 +2103,8 @@ public abstract class BaseProductDisplayPageResourceTestCase {
 				pageTemplateUuid = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				pageUuid = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				productExternalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				productId = RandomTestUtil.randomLong();
 			}
