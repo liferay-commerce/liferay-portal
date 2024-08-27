@@ -79,6 +79,12 @@ public interface CommerceWishListItemService extends BaseService {
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<CommerceWishListItem> getCommerceWishListItems(
+			long accountId, long commerceWishListId, int start, int end,
+			OrderByComparator<CommerceWishListItem> orderByComparator)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceWishListItemsCount(long commerceWishListId)
 		throws PortalException;
 

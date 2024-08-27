@@ -103,6 +103,20 @@ public class CommerceWishListItemServiceWrapper
 	}
 
 	@Override
+	public java.util.List
+		<com.liferay.commerce.wish.list.model.CommerceWishListItem>
+				getCommerceWishListItems(
+					long accountId, long commerceWishListId, int start, int end,
+					com.liferay.portal.kernel.util.OrderByComparator
+						<com.liferay.commerce.wish.list.model.
+							CommerceWishListItem> orderByComparator)
+			throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceWishListItemService.getCommerceWishListItems(
+			accountId, commerceWishListId, start, end, orderByComparator);
+	}
+
+	@Override
 	public int getCommerceWishListItemsCount(long commerceWishListId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 

@@ -88,6 +88,15 @@ public class CommerceWishListItemServiceUtil {
 			commerceWishListId, start, end, orderByComparator);
 	}
 
+	public static List<CommerceWishListItem> getCommerceWishListItems(
+			long accountId, long commerceWishListId, int start, int end,
+			OrderByComparator<CommerceWishListItem> orderByComparator)
+		throws PortalException {
+
+		return getService().getCommerceWishListItems(
+			accountId, commerceWishListId, start, end, orderByComparator);
+	}
+
 	public static int getCommerceWishListItemsCount(long commerceWishListId)
 		throws PortalException {
 
