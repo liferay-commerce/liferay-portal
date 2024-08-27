@@ -240,6 +240,8 @@ public class CommerceWishListDisplayContext {
 
 		_commerceWishListItemsSearchContainer.setResultsAndTotal(
 			() -> _commerceWishListItemService.getCommerceWishListItems(
+				CommerceUtil.getCommerceAccountId(
+					_commerceWishListRequestHelper.getCommerceContext()),
 				commerceWishList.getCommerceWishListId(),
 				_commerceWishListItemsSearchContainer.getStart(),
 				_commerceWishListItemsSearchContainer.getEnd(),

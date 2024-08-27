@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermi
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
@@ -135,6 +136,38 @@ public class CommerceWishListItemServiceImpl
 
 		return commerceWishListItemLocalService.getCommerceWishListItems(
 			commerceWishListId, start, end, orderByComparator);
+	}
+
+	@Override
+	public List<CommerceWishListItem> getCommerceWishListItems(
+			long accountId, long commerceWishListId, int start, int end,
+			OrderByComparator<CommerceWishListItem> orderByComparator)
+		throws PortalException {
+
+		_commerceWishListModelResourcePermission.check(
+			getPermissionChecker(), commerceWishListId, ActionKeys.VIEW);
+
+		List<CommerceWishListItem> commerceWishListItems =
+			commerceWishListItemLocalService.getCommerceWishListItems(
+				commerceWishListId, start, end, orderByComparator);
+
+		Iterator<CommerceWishListItem> iterator =
+			commerceWishListItems.iterator();
+
+		while (iterator.hasNext()) {
+			CommerceWishListItem commerceWishListItem = iterator.next();
+
+			CProduct cProduct = commerceWishListItem.getCProduct();
+
+			if (!commerceProductViewPermission.contains(
+					getPermissionChecker(), accountId,
+					cProduct.getPublishedCPDefinitionId())) {
+
+				iterator.remove();
+			}
+		}
+
+		return commerceWishListItems;
 	}
 
 	@Override
