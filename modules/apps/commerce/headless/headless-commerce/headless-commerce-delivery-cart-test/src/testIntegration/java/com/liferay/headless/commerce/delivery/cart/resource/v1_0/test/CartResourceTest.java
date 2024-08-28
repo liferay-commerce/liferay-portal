@@ -18,13 +18,20 @@ import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.headless.commerce.delivery.cart.client.dto.v1_0.Cart;
 import com.liferay.headless.commerce.delivery.cart.client.dto.v1_0.CouponCode;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.model.Address;
+import com.liferay.portal.kernel.model.Country;
+import com.liferay.portal.kernel.model.Region;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.AddressLocalService;
+import com.liferay.portal.kernel.service.CountryLocalService;
+import com.liferay.portal.kernel.service.RegionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -74,6 +81,26 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 
 		_commerceChannel = CommerceTestUtil.addCommerceChannel(
 			testGroup.getGroupId(), _commerceCurrency.getCode());
+
+		_country = _countryLocalService.addCountry(
+			"XY", "XYZ", true, true, RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.nextDouble(), true, true, false, _serviceContext);
+
+		_region = _regionLocalService.addRegion(
+			_country.getCountryId(), true, RandomTestUtil.randomString(),
+			RandomTestUtil.nextDouble(), RandomTestUtil.randomString(),
+			_serviceContext);
+
+		_orderAddress = _addressLocalService.addAddress(
+			RandomTestUtil.randomString(), _user.getUserId(),
+			AccountEntry.class.getName(), _accountEntry.getAccountEntryId(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), _region.getRegionId(),
+			_country.getCountryId(), 0, false, true,
+			RandomTestUtil.randomString(), _serviceContext);
 	}
 
 	@After
@@ -110,7 +137,9 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 	public void testGetCartByExternalReferenceCodePaymentUrl()
 		throws Exception {
 
-		Cart cart = randomCart();
+		Cart cart = cartResource.postChannelCart(
+			_commerceChannel.getCommerceChannelId(),
+			randomCart());
 
 		String callbackURL = RandomTestUtil.randomString();
 
@@ -126,7 +155,8 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 	@Override
 	@Test
 	public void testGetCartPaymentURL() throws Exception {
-		Cart cart = randomCart();
+		Cart cart = cartResource.postChannelCart(_commerceChannel.getCommerceChannelId(),
+			randomCart());
 
 		String callbackURL = RandomTestUtil.randomString();
 
@@ -154,25 +184,25 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 
 	@Override
 	protected Cart randomCart() throws Exception {
-		CommerceOrder commerceOrder = _getCommerceOrder();
+//		CommerceOrder commerceOrder = _getCommerceOrder();
 
 		return new Cart() {
 			{
-				account = commerceOrder.getCommerceAccountName();
-				accountId = commerceOrder.getCommerceAccountId();
-				billingAddressId = commerceOrder.getBillingAddressId();
-				couponCode = commerceOrder.getCouponCode();
+				account = _accountEntry.getName();
+				accountId = _accountEntry.getAccountEntryId();
+				billingAddressId = _orderAddress.getAddressId();
+				couponCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
 				currencyCode = _commerceCurrency.getCode();
 				externalReferenceCode =
-					commerceOrder.getExternalReferenceCode();
-				id = commerceOrder.getCommerceOrderId();
-				name = commerceOrder.getName();
-				orderTypeId = commerceOrder.getCommerceOrderTypeId();
-				orderUUID = commerceOrder.getUuid();
-				paymentStatus = commerceOrder.getPaymentStatus();
-				shippingAddressId = commerceOrder.getShippingAddressId();
-				status = WorkflowConstants.getStatusLabel(
-					commerceOrder.getStatus());
+					StringUtil.toLowerCase(
+						RandomTestUtil.randomString());
+				name = RandomTestUtil.randomString();
+				orderUUID = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				paymentStatus = RandomTestUtil.randomInt();;
+				shippingAddressId = _orderAddress.getAddressId();
+				status = WorkflowConstants.LABEL_DRAFT;
 			}
 		};
 	}
@@ -181,7 +211,8 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 	protected Cart testDeleteCart_addCart() throws Exception {
 		Cart cart = randomCart();
 
-		return cartResource.postCartCheckout(cart.getId());
+		return cartResource.postChannelCart(_commerceChannel.getCommerceChannelId(),
+			cart);
 	}
 
 	@Override
@@ -190,15 +221,16 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 
 		Cart cart = randomCart();
 
-		return cartResource.postCartByExternalReferenceCodeCheckout(
-			cart.getExternalReferenceCode());
+		return cartResource.postChannelCart(_commerceChannel.getCommerceChannelId(),
+			cart);
 	}
 
 	@Override
 	protected Cart testGetCart_addCart() throws Exception {
 		Cart cart = randomCart();
 
-		return cartResource.postCartCheckout(cart.getId());
+		return cartResource.postChannelCart(_commerceChannel.getCommerceChannelId(),
+			cart);
 	}
 
 	@Override
@@ -207,8 +239,8 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 
 		Cart cart = randomCart();
 
-		return cartResource.postCartByExternalReferenceCodeCheckout(
-			cart.getExternalReferenceCode());
+		return cartResource.postChannelCart(_commerceChannel.getCommerceChannelId(),
+			cart);
 	}
 
 	@Override
@@ -218,8 +250,8 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 				String channelExternalReferenceCode, Cart cart)
 		throws Exception {
 
-		return cartResource.postCartByExternalReferenceCodeCheckout(
-			cart.getExternalReferenceCode());
+		return cartResource.postChannelCart(_commerceChannel.getCommerceChannelId(),
+			cart);
 	}
 
 	@Override
@@ -239,16 +271,23 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 	}
 
 	@Override
-	protected Cart testGetChannelCartsPage_addCart(
+	protected Cart testGetChannelAccountCartsPage_addCart(
 			Long accountId, Long channelId, Cart cart)
 		throws Exception {
 
-		return cartResource.postCartCheckout(cart.getId());
+		return cartResource.postChannelCart(channelId, cart);
 	}
 
 	@Override
-	protected Long testGetChannelCartsPage_getAccountId() throws Exception {
+	protected Long testGetChannelAccountCartsPage_getAccountId() throws Exception {
 		return _accountEntry.getAccountEntryId();
+	}
+
+	@Override
+	protected Long testGetChannelAccountCartsPage_getChannelId()
+		throws Exception {
+
+		return _commerceChannel.getCommerceChannelId();
 	}
 
 	@Override
@@ -260,19 +299,26 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 	protected Cart testGraphQLCart_addCart() throws Exception {
 		Cart cart = randomCart();
 
-		return cartResource.postCartCheckout(cart.getId());
+		return cartResource.postChannelCart(_commerceChannel.getCommerceChannelId(),
+			cart);
 	}
 
 	@Override
 	protected Cart testPatchCart_addCart() throws Exception {
-		return randomCart();
+		Cart cart = randomCart();
+
+		return cartResource.postChannelCart(_commerceChannel.getCommerceChannelId(),
+			cart);
 	}
 
 	@Override
 	protected Cart testPatchCartByExternalReferenceCode_addCart()
 		throws Exception {
 
-		return randomCart();
+		Cart cart = randomCart();
+
+		return cartResource.postChannelCart(_commerceChannel.getCommerceChannelId(),
+			cart);
 	}
 
 	@Override
@@ -319,15 +365,16 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 	protected Cart testPostChannelCartByExternalReferenceCode_addCart(Cart cart)
 		throws Exception {
 
-		return cartResource.postCartByExternalReferenceCodeCheckout(
-			cart.getExternalReferenceCode());
+		return cartResource.postChannelCart(_commerceChannel.getCommerceChannelId(),
+			cart);
 	}
 
 	@Override
 	protected Cart testPutCart_addCart() throws Exception {
 		Cart cart = randomCart();
 
-		return cartResource.postCartCheckout(cart.getId());
+		return cartResource.postChannelCart(_commerceChannel.getCommerceChannelId(),
+			cart);
 	}
 
 	@Override
@@ -336,8 +383,8 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 
 		Cart cart = randomCart();
 
-		return cartResource.postCartByExternalReferenceCodeCheckout(
-			cart.getExternalReferenceCode());
+		return cartResource.postChannelCart(_commerceChannel.getCommerceChannelId(),
+			cart);
 	}
 
 	private CommerceOrder _getCommerceOrder() throws Exception {
@@ -369,5 +416,24 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 
 	@DeleteAfterTestRun
 	private User _user;
+
+	@DeleteAfterTestRun
+	private Address _orderAddress;
+	@DeleteAfterTestRun
+	private Region _region;
+
+	@DeleteAfterTestRun
+	private Country _country;
+
+	@Inject
+	private CountryLocalService _countryLocalService;
+
+	@Inject
+	private RegionLocalService _regionLocalService;
+
+	@Inject
+	private AddressLocalService _addressLocalService;
+
+
 
 }

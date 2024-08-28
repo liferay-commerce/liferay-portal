@@ -208,13 +208,13 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 					channelExternalReferenceCode,
 					contextCompany.getCompanyId());
 
-		return getChannelCartsPage(
+		return getChannelAccountCartsPage(
 			accountEntry.getAccountEntryId(),
 			commerceChannel.getCommerceChannelId(), search, pagination);
 	}
 
 	@Override
-	public Page<Cart> getChannelCartsPage(
+	public Page<Cart> getChannelAccountCartsPage(
 			Long accountId, Long channelId, String search,
 			Pagination pagination)
 		throws Exception {
@@ -231,6 +231,27 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 			pagination,
 			_commerceOrderService.getPendingCommerceOrdersCount(
 				commerceChannel.getGroupId(), accountId, search));
+	}
+
+	@Override
+	public Page<Cart> getChannelCartsPage(
+		Long channelId,
+		String search,
+		Pagination pagination)
+		throws Exception {
+
+		CommerceChannel commerceChannel =
+			_commerceChannelLocalService.getCommerceChannel(channelId);
+
+		return Page.of(
+			transform(
+				_commerceOrderService.getUserPendingCommerceOrders(
+					contextCompany.getCompanyId(), commerceChannel.getGroupId(), search,
+					pagination.getStartPosition(), pagination.getEndPosition()),
+				this::_toCart),
+			pagination,
+			_commerceOrderService.getUserPendingCommerceOrdersCount(
+				contextCompany.getCompanyId(), commerceChannel.getGroupId(), search));
 	}
 
 	@Override
