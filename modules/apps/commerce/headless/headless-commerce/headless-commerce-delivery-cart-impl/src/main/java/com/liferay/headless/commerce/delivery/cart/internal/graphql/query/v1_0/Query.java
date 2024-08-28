@@ -265,12 +265,12 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {channelCarts(accountId: ___, channelId: ___, page: ___, pageSize: ___, search: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {channelAccountCarts(accountId: ___, channelId: ___, page: ___, pageSize: ___, search: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
 		description = "Retrieves carts for specific account in the given channel."
 	)
-	public CartPage channelCarts(
+	public CartPage channelAccountCarts(
 			@GraphQLName("accountId") Long accountId,
 			@GraphQLName("channelId") Long channelId,
 			@GraphQLName("search") String search,
@@ -282,9 +282,32 @@ public class Query {
 			_cartResourceComponentServiceObjects,
 			this::_populateResourceContext,
 			cartResource -> new CartPage(
-				cartResource.getChannelCartsPage(
+				cartResource.getChannelAccountCartsPage(
 					accountId, channelId, search,
 					Pagination.of(page, pageSize))));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {channelCarts(channelId: ___, page: ___, pageSize: ___, search: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField(
+		description = "Retrieves carts for specific account in the given channel."
+	)
+	public CartPage channelCarts(
+			@GraphQLName("channelId") Long channelId,
+			@GraphQLName("search") String search,
+			@GraphQLName("pageSize") int pageSize,
+			@GraphQLName("page") int page)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_cartResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			cartResource -> new CartPage(
+				cartResource.getChannelCartsPage(
+					channelId, search, Pagination.of(page, pageSize))));
 	}
 
 	/**
