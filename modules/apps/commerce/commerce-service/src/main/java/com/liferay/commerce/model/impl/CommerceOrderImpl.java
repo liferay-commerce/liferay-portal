@@ -17,11 +17,18 @@ import com.liferay.commerce.discount.CommerceDiscountValue;
 import com.liferay.commerce.model.CommerceAddress;
 import com.liferay.commerce.model.CommerceOrderItem;
 import com.liferay.commerce.model.CommerceShippingMethod;
+import com.liferay.commerce.product.constants.CPConstants;
 import com.liferay.commerce.service.CommerceAddressLocalServiceUtil;
 import com.liferay.commerce.service.CommerceOrderItemLocalServiceUtil;
 import com.liferay.commerce.service.CommerceShippingMethodLocalServiceUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.Repository;
+import com.liferay.portal.kernel.repository.LocalRepository;
+import com.liferay.portal.kernel.repository.RepositoryProviderUtil;
+import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.repository.model.Folder;
+import com.liferay.portal.kernel.service.RepositoryLocalServiceUtil;
 
 import java.math.BigDecimal;
 
@@ -44,6 +51,22 @@ public class CommerceOrderImpl extends CommerceOrderBaseImpl {
 
 		return AccountEntryLocalServiceUtil.getAccountEntry(
 			getCommerceAccountId());
+	}
+
+	@Override
+	public List<FileEntry> getAttachmentFileEntries() throws PortalException {
+		Repository repository = RepositoryLocalServiceUtil.fetchRepository(
+			getGroupId(), CPConstants.SERVICE_NAME_PRODUCT);
+
+		LocalRepository localRepository =
+			RepositoryProviderUtil.getLocalRepository(
+				repository.getRepositoryId());
+
+		Folder folder = localRepository.fetchFolderByExternalReferenceCode(
+			String.valueOf(getCommerceOrderId()));
+
+		return localRepository.getFileEntries(
+			folder.getFolderId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
 
 	@Override

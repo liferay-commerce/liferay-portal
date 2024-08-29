@@ -29,6 +29,17 @@ public class CommerceOrderLocalServiceWrapper
 		_commerceOrderLocalService = commerceOrderLocalService;
 	}
 
+	@Override
+	public com.liferay.portal.kernel.repository.model.FileEntry addAttachment(
+			String externalReferenceCode, long userId, long commerceOrderId,
+			String fileName, java.io.InputStream inputStream)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceOrderLocalService.addAttachment(
+			externalReferenceCode, userId, commerceOrderId, fileName,
+			inputStream);
+	}
+
 	/**
 	 * Adds the commerce order to the database. Also notifies the appropriate model listeners.
 	 *
