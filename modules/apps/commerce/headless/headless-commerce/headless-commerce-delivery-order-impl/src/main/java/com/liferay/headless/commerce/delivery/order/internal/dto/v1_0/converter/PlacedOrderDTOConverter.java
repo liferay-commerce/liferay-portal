@@ -21,12 +21,18 @@ import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.service.CommerceOrderItemService;
 import com.liferay.commerce.service.CommerceOrderService;
 import com.liferay.commerce.service.CommerceOrderTypeLocalService;
+import com.liferay.document.library.util.DLURLHelperUtil;
 import com.liferay.expando.kernel.model.ExpandoBridge;
+import com.liferay.headless.commerce.delivery.order.dto.v1_0.AttachmentBase64;
 import com.liferay.headless.commerce.delivery.order.dto.v1_0.PlacedOrder;
 import com.liferay.headless.commerce.delivery.order.dto.v1_0.Status;
 import com.liferay.headless.commerce.delivery.order.dto.v1_0.Summary;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
+import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.language.LanguageResources;
@@ -75,6 +81,7 @@ public class PlacedOrderDTOConverter
 			{
 				setAccount(commerceOrder::getCommerceAccountName);
 				setAccountId(commerceOrder::getCommerceAccountId);
+				setAttachments(_getAttachments(commerceOrder));
 				setAuthor(commerceOrder::getUserName);
 				setCouponCode(commerceOrder::getCouponCode);
 				setCreateDate(commerceOrder::getCreateDate);
@@ -200,6 +207,31 @@ public class PlacedOrderDTOConverter
 		}
 
 		return _commercePriceFormatter.format(commerceCurrency, price, locale);
+	}
+
+	private AttachmentBase64[] _getAttachments(CommerceOrder commerceOrder)
+		throws Exception {
+
+		List<FileEntry> attachmentFileEntries =
+			commerceOrder.getAttachmentFileEntries();
+
+		AttachmentBase64[] attachmentBase64s =
+			new AttachmentBase64[attachmentFileEntries.size()];
+
+		for (int i = 0; i < attachmentFileEntries.size(); i++) {
+			FileEntry fileEntry = attachmentFileEntries.get(i);
+
+			attachmentBase64s[i] = new AttachmentBase64();
+			attachmentBase64s[i].setAttachment(
+				Base64.encode(FileUtil.getBytes(fileEntry.getContentStream())));
+			attachmentBase64s[i].setTitle(fileEntry.getTitle());
+			attachmentBase64s[i].setUrl(
+				DLURLHelperUtil.getDownloadURL(
+					fileEntry, fileEntry.getLatestFileVersion(), null,
+					StringPool.BLANK, true, true));
+		}
+
+		return attachmentBase64s;
 	}
 
 	private String[] _getFormattedDiscountPercentages(
