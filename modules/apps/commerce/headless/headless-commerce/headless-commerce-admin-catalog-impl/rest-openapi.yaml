@@ -1185,6 +1185,9 @@ components:
             type: object
         ProductAccountGroup:
             properties:
+                accountGroupExternalReferenceCode:
+                    example: AB-34098-789-N
+                    type: string
                 accountGroupId:
                     example: 31130
                     format: int64
@@ -1201,11 +1204,12 @@ components:
                 name:
                     example: Alessio Antonio Rendina
                     type: string
-            required:
-                - id
             type: object
         ProductChannel:
             properties:
+                channelExternalReferenceCode:
+                    example: AB-34098-789-N
+                    type: string
                 channelId:
                     example: 31130
                     format: int64
@@ -1227,8 +1231,6 @@ components:
                     type: string
                 type:
                     type: string
-            required:
-                - id
             type: object
         ProductConfiguration:
             properties:
