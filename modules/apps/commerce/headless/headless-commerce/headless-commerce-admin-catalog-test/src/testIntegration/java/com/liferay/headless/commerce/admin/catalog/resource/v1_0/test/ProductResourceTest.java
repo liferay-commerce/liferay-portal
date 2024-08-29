@@ -5,17 +5,25 @@
 
 package com.liferay.headless.commerce.admin.catalog.resource.v1_0.test;
 
+import com.liferay.account.constants.AccountConstants;
+import com.liferay.account.model.AccountGroup;
+import com.liferay.account.service.AccountGroupLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.price.list.service.CommercePriceListLocalService;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CommerceCatalog;
+import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalServiceUtil;
+import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.product.type.simple.constants.SimpleCPTypeConstants;
 import com.liferay.commerce.product.type.virtual.constants.VirtualCPTypeConstants;
+import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Product;
+import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductAccountGroup;
+import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductChannel;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductVirtualSettings;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductVirtualSettingsFileEntry;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Sku;
@@ -78,6 +86,15 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 				RandomTestUtil.randomLocaleStringMap(), 2, 2, "HALF_EVEN",
 				false, RandomTestUtil.nextDouble(), true);
 
+		_commerceChannel = CommerceTestUtil.addCommerceChannel(
+			testGroup.getGroupId(), commerceCurrency.getCode());
+
+		_commerceChannel.setExternalReferenceCode(
+			StringUtil.toLowerCase(RandomTestUtil.randomString()));
+
+		_commerceChannel = _commerceChannelLocalService.updateCommerceChannel(
+			_commerceChannel);
+
 		_commercePriceListLocalService.addCatalogBaseCommercePriceList(
 			_commerceCatalog.getGroupId(), user.getUserId(),
 			commerceCurrency.getCommerceCurrencyId(), "price-list",
@@ -87,6 +104,19 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 			_commerceCatalog.getGroupId(), user.getUserId(),
 			commerceCurrency.getCommerceCurrencyId(), "promotion",
 			RandomTestUtil.randomString(), serviceContext);
+
+		_accountGroup = _accountGroupLocalService.addAccountGroup(
+			user.getUserId(), null, RandomTestUtil.randomString(),
+			serviceContext);
+
+		_accountGroup.setExternalReferenceCode(
+			StringUtil.toLowerCase(RandomTestUtil.randomString()));
+		_accountGroup.setDefaultAccountGroup(false);
+		_accountGroup.setType(AccountConstants.ACCOUNT_GROUP_TYPE_STATIC);
+		_accountGroup.setExpandoBridgeAttributes(serviceContext);
+
+		_accountGroup = _accountGroupLocalService.updateAccountGroup(
+			_accountGroup);
 	}
 
 	@After
@@ -305,6 +335,9 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		assertValid(getProduct);
 
 		_testPostProductVirtual();
+
+		_testPostProductWithCommerceChannelExternalReferenceCode();
+		_testPostProductWithAccountGroupExternalReferenceCode();
 	}
 
 	@Override
@@ -395,6 +428,50 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		throws Exception {
 
 		return productResource.postProduct(product);
+	}
+
+	private Product _randomProductWithAccountGroup() {
+		return new Product() {
+			{
+				active = true;
+				catalogId = _commerceCatalog.getCommerceCatalogId();
+				name = LanguageUtils.getLanguageIdMap(
+					RandomTestUtil.randomLocaleStringMap());
+				productAccountGroupFilter = true;
+				productAccountGroups = new ProductAccountGroup[] {
+					new ProductAccountGroup() {
+						{
+							accountGroupExternalReferenceCode =
+								_accountGroup.getExternalReferenceCode();
+							accountGroupId = _accountGroup.getAccountGroupId();
+						}
+					}
+				};
+				productType = SimpleCPTypeConstants.NAME;
+			}
+		};
+	}
+
+	private Product _randomProductWithChannel() {
+		return new Product() {
+			{
+				active = true;
+				catalogId = _commerceCatalog.getCommerceCatalogId();
+				name = LanguageUtils.getLanguageIdMap(
+					RandomTestUtil.randomLocaleStringMap());
+				productChannelFilter = true;
+				productChannels = new ProductChannel[] {
+					new ProductChannel() {
+						{
+							channelExternalReferenceCode =
+								_commerceChannel.getExternalReferenceCode();
+							channelId = _commerceChannel.getCommerceChannelId();
+						}
+					}
+				};
+				productType = SimpleCPTypeConstants.NAME;
+			}
+		};
 	}
 
 	private Product _randomProductWithSku() throws Exception {
@@ -557,8 +634,95 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		Assert.assertNotNull(productVirtualSettingsFileEntry.getSrc());
 	}
 
+	private void _testPostProductWithAccountGroupExternalReferenceCode()
+		throws Exception {
+
+		Product postProduct = productResource.postProduct(
+			_randomProductWithAccountGroup());
+
+		Product randomPatchProduct = _randomProductWithAccountGroup();
+
+		ProductAccountGroup productAccountGroup =
+			randomPatchProduct.getProductAccountGroups()[0];
+
+		long productAccountGroupId = productAccountGroup.getAccountGroupId();
+
+		productAccountGroup.setAccountGroupId(0L);
+
+		randomPatchProduct.setProductAccountGroups(
+			new ProductAccountGroup[] {productAccountGroup});
+
+		productResource.patchProduct(
+			postProduct.getProductId(), randomPatchProduct);
+
+		productAccountGroup.setAccountGroupId(productAccountGroupId);
+
+		Product expectedProduct = postProduct.clone();
+
+		BeanTestUtil.copyProperties(randomPatchProduct, expectedProduct);
+
+		ProductAccountGroup getProductAccountGroup =
+			expectedProduct.getProductAccountGroups()[0];
+
+		Assert.assertEquals(
+			productAccountGroup.getAccountGroupId(),
+			getProductAccountGroup.getAccountGroupId());
+		Assert.assertEquals(
+			productAccountGroup.getAccountGroupExternalReferenceCode(),
+			getProductAccountGroup.getAccountGroupExternalReferenceCode());
+	}
+
+	private void _testPostProductWithCommerceChannelExternalReferenceCode()
+		throws Exception {
+
+		Product postProduct = productResource.postProduct(
+			_randomProductWithChannel());
+
+		Product randomPatchProduct = _randomProductWithChannel();
+
+		ProductChannel productChannel =
+			randomPatchProduct.getProductChannels()[0];
+
+		long productChannelId = productChannel.getChannelId();
+
+		productChannel.setChannelId(0L);
+
+		randomPatchProduct.setProductChannels(
+			new ProductChannel[] {productChannel});
+
+		productResource.patchProduct(
+			postProduct.getProductId(), randomPatchProduct);
+
+		productChannel.setChannelId(productChannelId);
+
+		Product expectedProduct = postProduct.clone();
+
+		BeanTestUtil.copyProperties(randomPatchProduct, expectedProduct);
+
+		ProductChannel getProductChannel =
+			expectedProduct.getProductChannels()[0];
+
+		Assert.assertEquals(
+			productChannel.getChannelId(), getProductChannel.getChannelId());
+		Assert.assertEquals(
+			productChannel.getChannelExternalReferenceCode(),
+			getProductChannel.getChannelExternalReferenceCode());
+	}
+
+	@DeleteAfterTestRun
+	private AccountGroup _accountGroup;
+
+	@Inject
+	private AccountGroupLocalService _accountGroupLocalService;
+
 	@DeleteAfterTestRun
 	private CommerceCatalog _commerceCatalog;
+
+	@DeleteAfterTestRun
+	private CommerceChannel _commerceChannel;
+
+	@Inject
+	private CommerceChannelLocalService _commerceChannelLocalService;
 
 	@Inject
 	private CommerceCurrencyLocalService _commerceCurrencyLocalService;
