@@ -18,6 +18,7 @@ import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.service.CommerceOrderService;
 import com.liferay.commerce.util.CommerceCheckoutStep;
 import com.liferay.commerce.util.CommerceCheckoutStepRegistry;
+import com.liferay.headless.commerce.delivery.order.dto.v1_0.AttachmentBase64;
 import com.liferay.headless.commerce.delivery.order.dto.v1_0.PlacedOrder;
 import com.liferay.headless.commerce.delivery.order.resource.v1_0.PlacedOrderResource;
 import com.liferay.petra.string.CharPool;
@@ -29,6 +30,7 @@ import com.liferay.portal.kernel.encryptor.Encryptor;
 import com.liferay.portal.kernel.portlet.PortletProvider;
 import com.liferay.portal.kernel.portlet.PortletProviderUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.servlet.DummyHttpServletResponse;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Portal;
@@ -41,7 +43,11 @@ import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
+import java.io.ByteArrayInputStream;
+
 import java.security.Key;
+import java.util.Collections;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -212,6 +218,29 @@ public class PlacedOrderResourceImpl extends BasePlacedOrderResourceImpl {
 		sb.append(commerceOrder.getUuid());
 
 		return sb.toString();
+	}
+
+	@Override
+	public PlacedOrder postPlacedOrderAttachmentByBase64(
+			Long placedOrderId, AttachmentBase64 attachmentBase64)
+		throws Exception {
+
+		CommerceOrder commerceOrder = _commerceOrderService.fetchCommerceOrder(
+			placedOrderId);
+
+		if (commerceOrder == null) {
+			throw new NoSuchOrderException(
+				"Unable to find order with ID " + placedOrderId);
+		}
+
+		String attachment = attachmentBase64.getAttachment();
+
+		FileEntry fileEntry = _commerceOrderService.addAttachment(
+			StringPool.BLANK, contextUser.getUserId(),
+			commerceOrder.getCommerceOrderId(), attachmentBase64.getTitle(),
+			new ByteArrayInputStream(attachment.getBytes()));
+
+		return _toPlacedOrder(commerceOrder.getCommerceOrderId());
 	}
 
 	private String _getPlacedOrderConfirmationCheckoutStepURL(
