@@ -5,6 +5,7 @@
 
 package com.liferay.headless.commerce.admin.catalog.internal.resource.v1_0;
 
+import com.liferay.account.exception.NoSuchGroupException;
 import com.liferay.account.model.AccountGroup;
 import com.liferay.account.service.AccountGroupRelLocalService;
 import com.liferay.account.service.AccountGroupRelService;
@@ -21,6 +22,7 @@ import com.liferay.commerce.product.constants.CPAttachmentFileEntryConstants;
 import com.liferay.commerce.product.exception.CPDefinitionProductTypeNameException;
 import com.liferay.commerce.product.exception.NoSuchCPDefinitionException;
 import com.liferay.commerce.product.exception.NoSuchCatalogException;
+import com.liferay.commerce.product.exception.NoSuchChannelException;
 import com.liferay.commerce.product.model.CPAttachmentFileEntry;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
@@ -1177,40 +1179,65 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 
 			for (ProductChannel productChannel : productChannels) {
 				if (productChannel.getExternalReferenceCode() == null) {
-					Long commerceChannelId = productChannel.getChannelId();
+					long commerceChannelId = GetterUtil.getLong(
+						productChannel.getChannelId());
 
-					if (commerceChannelId != null) {
+					if (commerceChannelId > 0) {
 						_commerceChannelRelService.addCommerceChannelRel(
 							CPDefinition.class.getName(),
 							cpDefinition.getCPDefinitionId(), commerceChannelId,
 							serviceContext);
 					}
+					else {
+						String commerceChannelExternalReferenceCode =
+							productChannel.getChannelExternalReferenceCode();
 
-					continue;
-				}
+						if (commerceChannelExternalReferenceCode != null) {
+							CommerceChannel commerceChannel =
+								_commerceChannelService.
+									fetchByExternalReferenceCode(
+										commerceChannelExternalReferenceCode,
+										contextCompany.getCompanyId());
 
-				CommerceChannel commerceChannel = null;
-
-				try {
-					commerceChannel =
-						_commerceChannelService.fetchByExternalReferenceCode(
-							productChannel.getExternalReferenceCode(),
-							contextCompany.getCompanyId());
-				}
-				catch (PortalException portalException) {
-					if (_log.isDebugEnabled()) {
-						_log.debug(portalException);
+							if (commerceChannel != null) {
+								_commerceChannelRelService.
+									addCommerceChannelRel(
+										CPDefinition.class.getName(),
+										cpDefinition.getCPDefinitionId(),
+										commerceChannel.getCommerceChannelId(),
+										serviceContext);
+							}
+							else {
+								throw new NoSuchChannelException();
+							}
+						}
 					}
 				}
+				else {
+					CommerceChannel commerceChannel = null;
 
-				if (commerceChannel == null) {
-					continue;
+					try {
+						commerceChannel =
+							_commerceChannelService.
+								fetchByExternalReferenceCode(
+									productChannel.getExternalReferenceCode(),
+									contextCompany.getCompanyId());
+					}
+					catch (PortalException portalException) {
+						if (_log.isDebugEnabled()) {
+							_log.debug(portalException);
+						}
+					}
+
+					if (commerceChannel == null) {
+						continue;
+					}
+
+					_commerceChannelRelService.addCommerceChannelRel(
+						CPDefinition.class.getName(),
+						cpDefinition.getCPDefinitionId(),
+						commerceChannel.getCommerceChannelId(), serviceContext);
 				}
-
-				_commerceChannelRelService.addCommerceChannelRel(
-					CPDefinition.class.getName(),
-					cpDefinition.getCPDefinitionId(),
-					commerceChannel.getCommerceChannelId(), serviceContext);
 			}
 		}
 
@@ -1237,41 +1264,64 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 					productAccountGroup.getExternalReferenceCode();
 
 				if (externalReferenceCode == null) {
-					Long accountGroupId =
-						productAccountGroup.getAccountGroupId();
+					long accountGroupId = GetterUtil.getLong(
+						productAccountGroup.getAccountGroupId());
 
-					if (accountGroupId != null) {
+					if (accountGroupId > 0) {
 						_accountGroupRelService.addAccountGroupRel(
 							accountGroupId, CPDefinition.class.getName(),
 							cpDefinition.getCPDefinitionId());
 					}
+					else {
+						String accountGroupExternalReferenceCode =
+							productAccountGroup.
+								getAccountGroupExternalReferenceCode();
 
-					continue;
-				}
+						if (accountGroupExternalReferenceCode != null) {
+							AccountGroup accountGroup =
+								_accountGroupService.
+									fetchAccountGroupByExternalReferenceCode(
+										accountGroupExternalReferenceCode,
+										contextCompany.getCompanyId());
 
-				AccountGroup accountGroup = null;
-
-				try {
-					accountGroup =
-						_accountGroupService.
-							fetchAccountGroupByExternalReferenceCode(
-								productAccountGroup.getExternalReferenceCode(),
-								contextCompany.getCompanyId());
-				}
-				catch (PortalException portalException) {
-					if (_log.isDebugEnabled()) {
-						_log.debug(portalException);
+							if (accountGroup != null) {
+								_accountGroupRelService.addAccountGroupRel(
+									accountGroup.getAccountGroupId(),
+									CPDefinition.class.getName(),
+									cpDefinition.getCPDefinitionId());
+							}
+							else {
+								throw new NoSuchGroupException();
+							}
+						}
 					}
 				}
+				else {
+					AccountGroup accountGroup = null;
 
-				if (accountGroup == null) {
-					continue;
+					try {
+						accountGroup =
+							_accountGroupService.
+								fetchAccountGroupByExternalReferenceCode(
+									productAccountGroup.
+										getExternalReferenceCode(),
+									contextCompany.getCompanyId());
+					}
+					catch (PortalException portalException) {
+						if (_log.isDebugEnabled()) {
+							_log.debug(portalException);
+						}
+					}
+
+					if (accountGroup == null) {
+						continue;
+					}
+
+					_accountGroupRelService.addAccountGroupRel(
+						accountGroup.getAccountGroupId(),
+						CPDefinition.class.getName(),
+						cpDefinition.getCPDefinitionId());
 				}
-
-				_accountGroupRelService.addAccountGroupRel(
-					accountGroup.getAccountGroupId(),
-					CPDefinition.class.getName(),
-					cpDefinition.getCPDefinitionId());
 			}
 		}
 
