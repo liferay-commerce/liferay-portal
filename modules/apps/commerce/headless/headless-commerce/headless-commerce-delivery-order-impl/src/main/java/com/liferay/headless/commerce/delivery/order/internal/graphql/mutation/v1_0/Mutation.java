@@ -5,9 +5,12 @@
 
 package com.liferay.headless.commerce.delivery.order.internal.graphql.mutation.v1_0;
 
+import com.liferay.headless.commerce.delivery.order.dto.v1_0.AttachmentBase64;
+import com.liferay.headless.commerce.delivery.order.dto.v1_0.PlacedOrder;
 import com.liferay.headless.commerce.delivery.order.resource.v1_0.PlacedOrderCommentResource;
 import com.liferay.headless.commerce.delivery.order.resource.v1_0.PlacedOrderItemResource;
 import com.liferay.headless.commerce.delivery.order.resource.v1_0.PlacedOrderItemShipmentResource;
+import com.liferay.headless.commerce.delivery.order.resource.v1_0.PlacedOrderResource;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.search.Sort;
@@ -38,6 +41,14 @@ import org.osgi.service.component.ComponentServiceObjects;
 @Generated("")
 public class Mutation {
 
+	public static void setPlacedOrderResourceComponentServiceObjects(
+		ComponentServiceObjects<PlacedOrderResource>
+			placedOrderResourceComponentServiceObjects) {
+
+		_placedOrderResourceComponentServiceObjects =
+			placedOrderResourceComponentServiceObjects;
+	}
+
 	public static void setPlacedOrderCommentResourceComponentServiceObjects(
 		ComponentServiceObjects<PlacedOrderCommentResource>
 			placedOrderCommentResourceComponentServiceObjects) {
@@ -61,6 +72,20 @@ public class Mutation {
 
 		_placedOrderItemShipmentResourceComponentServiceObjects =
 			placedOrderItemShipmentResourceComponentServiceObjects;
+	}
+
+	@GraphQLField
+	public PlacedOrder createPlacedOrderAttachmentByBase64(
+			@GraphQLName("placedOrderId") Long placedOrderId,
+			@GraphQLName("attachmentBase64") AttachmentBase64 attachmentBase64)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_placedOrderResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			placedOrderResource ->
+				placedOrderResource.postPlacedOrderAttachmentByBase64(
+					placedOrderId, attachmentBase64));
 	}
 
 	@GraphQLField
@@ -161,6 +186,26 @@ public class Mutation {
 	}
 
 	private void _populateResourceContext(
+			PlacedOrderResource placedOrderResource)
+		throws Exception {
+
+		placedOrderResource.setContextAcceptLanguage(_acceptLanguage);
+		placedOrderResource.setContextCompany(_company);
+		placedOrderResource.setContextHttpServletRequest(_httpServletRequest);
+		placedOrderResource.setContextHttpServletResponse(_httpServletResponse);
+		placedOrderResource.setContextUriInfo(_uriInfo);
+		placedOrderResource.setContextUser(_user);
+		placedOrderResource.setGroupLocalService(_groupLocalService);
+		placedOrderResource.setRoleLocalService(_roleLocalService);
+
+		placedOrderResource.setVulcanBatchEngineExportTaskResource(
+			_vulcanBatchEngineExportTaskResource);
+
+		placedOrderResource.setVulcanBatchEngineImportTaskResource(
+			_vulcanBatchEngineImportTaskResource);
+	}
+
+	private void _populateResourceContext(
 			PlacedOrderCommentResource placedOrderCommentResource)
 		throws Exception {
 
@@ -228,6 +273,8 @@ public class Mutation {
 			_vulcanBatchEngineImportTaskResource);
 	}
 
+	private static ComponentServiceObjects<PlacedOrderResource>
+		_placedOrderResourceComponentServiceObjects;
 	private static ComponentServiceObjects<PlacedOrderCommentResource>
 		_placedOrderCommentResourceComponentServiceObjects;
 	private static ComponentServiceObjects<PlacedOrderItemResource>

@@ -42,6 +42,8 @@ public class ServletDataImpl implements ServletData {
 
 	@Activate
 	public void activate(BundleContext bundleContext) {
+		Mutation.setPlacedOrderResourceComponentServiceObjects(
+			_placedOrderResourceComponentServiceObjects);
 		Mutation.setPlacedOrderCommentResourceComponentServiceObjects(
 			_placedOrderCommentResourceComponentServiceObjects);
 		Mutation.setPlacedOrderItemResourceComponentServiceObjects(
@@ -96,6 +98,11 @@ public class ServletDataImpl implements ServletData {
 			new HashMap<String, ObjectValuePair<Class<?>, String>>() {
 				{
 					put(
+						"mutation#createPlacedOrderAttachmentByBase64",
+						new ObjectValuePair<>(
+							PlacedOrderResourceImpl.class,
+							"postPlacedOrderAttachmentByBase64"));
+					put(
 						"mutation#createPlacedOrderPlacedOrderCommentsPageExportBatch",
 						new ObjectValuePair<>(
 							PlacedOrderCommentResourceImpl.class,
@@ -111,6 +118,11 @@ public class ServletDataImpl implements ServletData {
 							PlacedOrderItemShipmentResourceImpl.class,
 							"postPlacedOrderItemPlacedOrderItemShipmentsPageExportBatch"));
 
+					put(
+						"query#placedOrderAttachmentByBase64",
+						new ObjectValuePair<>(
+							PlacedOrderResourceImpl.class,
+							"getPlacedOrderAttachmentByBase64Page"));
 					put(
 						"query#channelByExternalReferenceCodeChannelExternalReferenceCodeAccountByExternalReferenceCodeAccountExternalReferenceCodePlacedOrders",
 						new ObjectValuePair<>(
@@ -212,11 +224,6 @@ public class ServletDataImpl implements ServletData {
 							"getPlacedOrderItemPlacedOrderItemShipmentsPage"));
 
 					put(
-						"query#PlacedOrder.commentByExternalReferenceCode",
-						new ObjectValuePair<>(
-							PlacedOrderCommentResourceImpl.class,
-							"getPlacedOrderCommentByExternalReferenceCode"));
-					put(
 						"query#PlacedOrder.byExternalReferenceCodePlacedOrderBillingAddress",
 						new ObjectValuePair<>(
 							PlacedOrderAddressResourceImpl.class,
@@ -226,6 +233,31 @@ public class ServletDataImpl implements ServletData {
 						new ObjectValuePair<>(
 							PlacedOrderResourceImpl.class,
 							"getPlacedOrderPaymentURL"));
+					put(
+						"query#PlacedOrder.attachmentByBase64",
+						new ObjectValuePair<>(
+							PlacedOrderResourceImpl.class,
+							"getPlacedOrderAttachmentByBase64Page"));
+					put(
+						"query#PlacedOrder.placedOrderShippingAddres",
+						new ObjectValuePair<>(
+							PlacedOrderAddressResourceImpl.class,
+							"getPlacedOrderPlacedOrderShippingAddres"));
+					put(
+						"query#PlacedOrder.byExternalReferenceCodePlacedOrderItems",
+						new ObjectValuePair<>(
+							PlacedOrderItemResourceImpl.class,
+							"getPlacedOrderByExternalReferenceCodePlacedOrderItemsPage"));
+					put(
+						"query#PlacedOrder.byExternalReferenceCodePlacedOrderComments",
+						new ObjectValuePair<>(
+							PlacedOrderCommentResourceImpl.class,
+							"getPlacedOrderByExternalReferenceCodePlacedOrderCommentsPage"));
+					put(
+						"query#PlacedOrder.commentByExternalReferenceCode",
+						new ObjectValuePair<>(
+							PlacedOrderCommentResourceImpl.class,
+							"getPlacedOrderCommentByExternalReferenceCode"));
 					put(
 						"query#PlacedOrder.byExternalReferenceCodePaymentURL",
 						new ObjectValuePair<>(
@@ -252,27 +284,16 @@ public class ServletDataImpl implements ServletData {
 							PlacedOrderResourceImpl.class,
 							"getPlacedOrderByExternalReferenceCode"));
 					put(
-						"query#PlacedOrder.placedOrderShippingAddres",
-						new ObjectValuePair<>(
-							PlacedOrderAddressResourceImpl.class,
-							"getPlacedOrderPlacedOrderShippingAddres"));
-					put(
 						"query#PlacedOrder.byExternalReferenceCodePlacedOrderShippingAddress",
 						new ObjectValuePair<>(
 							PlacedOrderAddressResourceImpl.class,
 							"getPlacedOrderByExternalReferenceCodePlacedOrderShippingAddress"));
-					put(
-						"query#PlacedOrder.byExternalReferenceCodePlacedOrderItems",
-						new ObjectValuePair<>(
-							PlacedOrderItemResourceImpl.class,
-							"getPlacedOrderByExternalReferenceCodePlacedOrderItemsPage"));
-					put(
-						"query#PlacedOrder.byExternalReferenceCodePlacedOrderComments",
-						new ObjectValuePair<>(
-							PlacedOrderCommentResourceImpl.class,
-							"getPlacedOrderByExternalReferenceCodePlacedOrderCommentsPage"));
 				}
 			};
+
+	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
+	private ComponentServiceObjects<PlacedOrderResource>
+		_placedOrderResourceComponentServiceObjects;
 
 	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
 	private ComponentServiceObjects<PlacedOrderCommentResource>
@@ -285,10 +306,6 @@ public class ServletDataImpl implements ServletData {
 	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
 	private ComponentServiceObjects<PlacedOrderItemShipmentResource>
 		_placedOrderItemShipmentResourceComponentServiceObjects;
-
-	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
-	private ComponentServiceObjects<PlacedOrderResource>
-		_placedOrderResourceComponentServiceObjects;
 
 	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
 	private ComponentServiceObjects<PlacedOrderAddressResource>

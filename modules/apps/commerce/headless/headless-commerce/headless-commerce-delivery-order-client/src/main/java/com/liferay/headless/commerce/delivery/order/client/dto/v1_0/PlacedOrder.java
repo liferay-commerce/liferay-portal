@@ -69,6 +69,28 @@ public class PlacedOrder implements Cloneable, Serializable {
 
 	protected Long accountId;
 
+	public AttachmentBase64[] getAttachments() {
+		return attachments;
+	}
+
+	public void setAttachments(AttachmentBase64[] attachments) {
+		this.attachments = attachments;
+	}
+
+	public void setAttachments(
+		UnsafeSupplier<AttachmentBase64[], Exception>
+			attachmentsUnsafeSupplier) {
+
+		try {
+			attachments = attachmentsUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected AttachmentBase64[] attachments;
+
 	public String getAuthor() {
 		return author;
 	}

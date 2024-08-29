@@ -205,6 +205,203 @@ public abstract class BasePlacedOrderResourceTestCase {
 	}
 
 	@Test
+	public void testGetPlacedOrderAttachmentByBase64Page() throws Exception {
+		Long placedOrderId =
+			testGetPlacedOrderAttachmentByBase64Page_getPlacedOrderId();
+		Long irrelevantPlacedOrderId =
+			testGetPlacedOrderAttachmentByBase64Page_getIrrelevantPlacedOrderId();
+
+		Page<PlacedOrder> page =
+			placedOrderResource.getPlacedOrderAttachmentByBase64Page(
+				placedOrderId, Pagination.of(1, 10));
+
+		long totalCount = page.getTotalCount();
+
+		if (irrelevantPlacedOrderId != null) {
+			PlacedOrder irrelevantPlacedOrder =
+				testGetPlacedOrderAttachmentByBase64Page_addPlacedOrder(
+					irrelevantPlacedOrderId, randomIrrelevantPlacedOrder());
+
+			page = placedOrderResource.getPlacedOrderAttachmentByBase64Page(
+				irrelevantPlacedOrderId, Pagination.of(1, (int)totalCount + 1));
+
+			Assert.assertEquals(totalCount + 1, page.getTotalCount());
+
+			assertContains(
+				irrelevantPlacedOrder, (List<PlacedOrder>)page.getItems());
+			assertValid(
+				page,
+				testGetPlacedOrderAttachmentByBase64Page_getExpectedActions(
+					irrelevantPlacedOrderId));
+		}
+
+		PlacedOrder placedOrder1 =
+			testGetPlacedOrderAttachmentByBase64Page_addPlacedOrder(
+				placedOrderId, randomPlacedOrder());
+
+		PlacedOrder placedOrder2 =
+			testGetPlacedOrderAttachmentByBase64Page_addPlacedOrder(
+				placedOrderId, randomPlacedOrder());
+
+		page = placedOrderResource.getPlacedOrderAttachmentByBase64Page(
+			placedOrderId, Pagination.of(1, 10));
+
+		Assert.assertEquals(totalCount + 2, page.getTotalCount());
+
+		assertContains(placedOrder1, (List<PlacedOrder>)page.getItems());
+		assertContains(placedOrder2, (List<PlacedOrder>)page.getItems());
+		assertValid(
+			page,
+			testGetPlacedOrderAttachmentByBase64Page_getExpectedActions(
+				placedOrderId));
+	}
+
+	protected Map<String, Map<String, String>>
+			testGetPlacedOrderAttachmentByBase64Page_getExpectedActions(
+				Long placedOrderId)
+		throws Exception {
+
+		Map<String, Map<String, String>> expectedActions = new HashMap<>();
+
+		return expectedActions;
+	}
+
+	@Test
+	public void testGetPlacedOrderAttachmentByBase64PageWithPagination()
+		throws Exception {
+
+		Long placedOrderId =
+			testGetPlacedOrderAttachmentByBase64Page_getPlacedOrderId();
+
+		Page<PlacedOrder> placedOrderPage =
+			placedOrderResource.getPlacedOrderAttachmentByBase64Page(
+				placedOrderId, null);
+
+		int totalCount = GetterUtil.getInteger(placedOrderPage.getTotalCount());
+
+		PlacedOrder placedOrder1 =
+			testGetPlacedOrderAttachmentByBase64Page_addPlacedOrder(
+				placedOrderId, randomPlacedOrder());
+
+		PlacedOrder placedOrder2 =
+			testGetPlacedOrderAttachmentByBase64Page_addPlacedOrder(
+				placedOrderId, randomPlacedOrder());
+
+		PlacedOrder placedOrder3 =
+			testGetPlacedOrderAttachmentByBase64Page_addPlacedOrder(
+				placedOrderId, randomPlacedOrder());
+
+		// See com.liferay.portal.vulcan.internal.configuration.HeadlessAPICompanyConfiguration#pageSizeLimit
+
+		int pageSizeLimit = 500;
+
+		if (totalCount >= (pageSizeLimit - 2)) {
+			Page<PlacedOrder> page1 =
+				placedOrderResource.getPlacedOrderAttachmentByBase64Page(
+					placedOrderId,
+					Pagination.of(
+						(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
+						pageSizeLimit));
+
+			Assert.assertEquals(totalCount + 3, page1.getTotalCount());
+
+			assertContains(placedOrder1, (List<PlacedOrder>)page1.getItems());
+
+			Page<PlacedOrder> page2 =
+				placedOrderResource.getPlacedOrderAttachmentByBase64Page(
+					placedOrderId,
+					Pagination.of(
+						(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
+						pageSizeLimit));
+
+			assertContains(placedOrder2, (List<PlacedOrder>)page2.getItems());
+
+			Page<PlacedOrder> page3 =
+				placedOrderResource.getPlacedOrderAttachmentByBase64Page(
+					placedOrderId,
+					Pagination.of(
+						(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
+						pageSizeLimit));
+
+			assertContains(placedOrder3, (List<PlacedOrder>)page3.getItems());
+		}
+		else {
+			Page<PlacedOrder> page1 =
+				placedOrderResource.getPlacedOrderAttachmentByBase64Page(
+					placedOrderId, Pagination.of(1, totalCount + 2));
+
+			List<PlacedOrder> placedOrders1 =
+				(List<PlacedOrder>)page1.getItems();
+
+			Assert.assertEquals(
+				placedOrders1.toString(), totalCount + 2, placedOrders1.size());
+
+			Page<PlacedOrder> page2 =
+				placedOrderResource.getPlacedOrderAttachmentByBase64Page(
+					placedOrderId, Pagination.of(2, totalCount + 2));
+
+			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
+
+			List<PlacedOrder> placedOrders2 =
+				(List<PlacedOrder>)page2.getItems();
+
+			Assert.assertEquals(
+				placedOrders2.toString(), 1, placedOrders2.size());
+
+			Page<PlacedOrder> page3 =
+				placedOrderResource.getPlacedOrderAttachmentByBase64Page(
+					placedOrderId, Pagination.of(1, (int)totalCount + 3));
+
+			assertContains(placedOrder1, (List<PlacedOrder>)page3.getItems());
+			assertContains(placedOrder2, (List<PlacedOrder>)page3.getItems());
+			assertContains(placedOrder3, (List<PlacedOrder>)page3.getItems());
+		}
+	}
+
+	protected PlacedOrder
+			testGetPlacedOrderAttachmentByBase64Page_addPlacedOrder(
+				Long placedOrderId, PlacedOrder placedOrder)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Long testGetPlacedOrderAttachmentByBase64Page_getPlacedOrderId()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Long
+			testGetPlacedOrderAttachmentByBase64Page_getIrrelevantPlacedOrderId()
+		throws Exception {
+
+		return null;
+	}
+
+	@Test
+	public void testPostPlacedOrderAttachmentByBase64() throws Exception {
+		PlacedOrder randomPlacedOrder = randomPlacedOrder();
+
+		PlacedOrder postPlacedOrder =
+			testPostPlacedOrderAttachmentByBase64_addPlacedOrder(
+				randomPlacedOrder);
+
+		assertEquals(randomPlacedOrder, postPlacedOrder);
+		assertValid(postPlacedOrder);
+	}
+
+	protected PlacedOrder testPostPlacedOrderAttachmentByBase64_addPlacedOrder(
+			PlacedOrder placedOrder)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
 	public void testGetChannelByExternalReferenceCodeChannelExternalReferenceCodeAccountByExternalReferenceCodeAccountExternalReferenceCodePlacedOrdersPage()
 		throws Exception {
 
@@ -999,6 +1196,14 @@ public abstract class BasePlacedOrderResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("attachments", additionalAssertFieldName)) {
+				if (placedOrder.getAttachments() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("author", additionalAssertFieldName)) {
 				if (placedOrder.getAuthor() == null) {
 					valid = false;
@@ -1440,6 +1645,17 @@ public abstract class BasePlacedOrderResourceTestCase {
 				if (!Objects.deepEquals(
 						placedOrder1.getAccountId(),
 						placedOrder2.getAccountId())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("attachments", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						placedOrder1.getAttachments(),
+						placedOrder2.getAttachments())) {
 
 					return false;
 				}
@@ -2019,6 +2235,11 @@ public abstract class BasePlacedOrderResourceTestCase {
 		}
 
 		if (entityFieldName.equals("accountId")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("attachments")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
 		}

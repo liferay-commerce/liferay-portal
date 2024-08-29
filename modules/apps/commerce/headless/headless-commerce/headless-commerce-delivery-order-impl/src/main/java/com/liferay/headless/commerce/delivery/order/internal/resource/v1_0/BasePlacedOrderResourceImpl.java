@@ -5,6 +5,7 @@
 
 package com.liferay.headless.commerce.delivery.order.internal.resource.v1_0;
 
+import com.liferay.headless.commerce.delivery.order.dto.v1_0.AttachmentBase64;
 import com.liferay.headless.commerce.delivery.order.dto.v1_0.PlacedOrder;
 import com.liferay.headless.commerce.delivery.order.resource.v1_0.PlacedOrderResource;
 import com.liferay.petra.function.UnsafeBiConsumer;
@@ -66,6 +67,77 @@ import javax.ws.rs.core.UriInfo;
 public abstract class BasePlacedOrderResourceImpl
 	implements EntityModelResource, PlacedOrderResource,
 			   VulcanBatchEngineTaskItemDelegate<PlacedOrder> {
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/{placedOrderId}/attachments/by-base64'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "placedOrderId"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "page"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "pageSize"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "PlacedOrder")}
+	)
+	@javax.ws.rs.GET
+	@javax.ws.rs.Path("/placed-orders/{placedOrderId}/attachments/by-base64")
+	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public Page<PlacedOrder> getPlacedOrderAttachmentByBase64Page(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@javax.validation.constraints.NotNull
+			@javax.ws.rs.PathParam("placedOrderId")
+			Long placedOrderId,
+			@javax.ws.rs.core.Context Pagination pagination)
+		throws Exception {
+
+		return Page.of(Collections.emptyList());
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-delivery-order/v1.0/placed-orders/{placedOrderId}/attachments/by-base64' -d $'{"attachment": ___, "title": ___, "url": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "placedOrderId"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "PlacedOrder")}
+	)
+	@javax.ws.rs.Consumes({"application/json", "application/xml"})
+	@javax.ws.rs.Path("/placed-orders/{placedOrderId}/attachments/by-base64")
+	@javax.ws.rs.POST
+	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public PlacedOrder postPlacedOrderAttachmentByBase64(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@javax.validation.constraints.NotNull
+			@javax.ws.rs.PathParam("placedOrderId")
+			Long placedOrderId,
+			AttachmentBase64 attachmentBase64)
+		throws Exception {
+
+		return new PlacedOrder();
+	}
 
 	/**
 	 * Invoke this method with the command line:

@@ -5,6 +5,7 @@
 
 package com.liferay.headless.commerce.delivery.order.resource.v1_0;
 
+import com.liferay.headless.commerce.delivery.order.dto.v1_0.AttachmentBase64;
 import com.liferay.headless.commerce.delivery.order.dto.v1_0.PlacedOrder;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
@@ -46,6 +47,14 @@ import org.osgi.annotation.versioning.ProviderType;
 @Generated("")
 @ProviderType
 public interface PlacedOrderResource {
+
+	public Page<PlacedOrder> getPlacedOrderAttachmentByBase64Page(
+			Long placedOrderId, Pagination pagination)
+		throws Exception;
+
+	public PlacedOrder postPlacedOrderAttachmentByBase64(
+			Long placedOrderId, AttachmentBase64 attachmentBase64)
+		throws Exception;
 
 	public Page<PlacedOrder>
 			getChannelByExternalReferenceCodeChannelExternalReferenceCodeAccountByExternalReferenceCodeAccountExternalReferenceCodePlacedOrdersPage(
