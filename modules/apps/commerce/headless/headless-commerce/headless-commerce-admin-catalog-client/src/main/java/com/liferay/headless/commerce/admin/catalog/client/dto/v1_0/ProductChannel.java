@@ -25,6 +25,31 @@ public class ProductChannel implements Cloneable, Serializable {
 		return ProductChannelSerDes.toDTO(json);
 	}
 
+	public String getChannelExternalReferenceCode() {
+		return channelExternalReferenceCode;
+	}
+
+	public void setChannelExternalReferenceCode(
+		String channelExternalReferenceCode) {
+
+		this.channelExternalReferenceCode = channelExternalReferenceCode;
+	}
+
+	public void setChannelExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			channelExternalReferenceCodeUnsafeSupplier) {
+
+		try {
+			channelExternalReferenceCode =
+				channelExternalReferenceCodeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String channelExternalReferenceCode;
+
 	public Long getChannelId() {
 		return channelId;
 	}

@@ -25,6 +25,32 @@ public class ProductAccountGroup implements Cloneable, Serializable {
 		return ProductAccountGroupSerDes.toDTO(json);
 	}
 
+	public String getAccountGroupExternalReferenceCode() {
+		return accountGroupExternalReferenceCode;
+	}
+
+	public void setAccountGroupExternalReferenceCode(
+		String accountGroupExternalReferenceCode) {
+
+		this.accountGroupExternalReferenceCode =
+			accountGroupExternalReferenceCode;
+	}
+
+	public void setAccountGroupExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			accountGroupExternalReferenceCodeUnsafeSupplier) {
+
+		try {
+			accountGroupExternalReferenceCode =
+				accountGroupExternalReferenceCodeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String accountGroupExternalReferenceCode;
+
 	public Long getAccountGroupId() {
 		return accountGroupId;
 	}

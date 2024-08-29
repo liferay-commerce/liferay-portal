@@ -46,6 +46,21 @@ public class ProductChannelSerDes {
 
 		sb.append("{");
 
+		if (productChannel.getChannelExternalReferenceCode() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"channelExternalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(
+				_escape(productChannel.getChannelExternalReferenceCode()));
+
+			sb.append("\"");
+		}
+
 		if (productChannel.getChannelId() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -141,6 +156,16 @@ public class ProductChannelSerDes {
 
 		Map<String, String> map = new TreeMap<>();
 
+		if (productChannel.getChannelExternalReferenceCode() == null) {
+			map.put("channelExternalReferenceCode", null);
+		}
+		else {
+			map.put(
+				"channelExternalReferenceCode",
+				String.valueOf(
+					productChannel.getChannelExternalReferenceCode()));
+		}
+
 		if (productChannel.getChannelId() == null) {
 			map.put("channelId", null);
 		}
@@ -205,7 +230,12 @@ public class ProductChannelSerDes {
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
-			if (Objects.equals(jsonParserFieldName, "channelId")) {
+			if (Objects.equals(
+					jsonParserFieldName, "channelExternalReferenceCode")) {
+
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "channelId")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "currencyCode")) {
@@ -234,7 +264,15 @@ public class ProductChannelSerDes {
 			ProductChannel productChannel, String jsonParserFieldName,
 			Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "channelId")) {
+			if (Objects.equals(
+					jsonParserFieldName, "channelExternalReferenceCode")) {
+
+				if (jsonParserFieldValue != null) {
+					productChannel.setChannelExternalReferenceCode(
+						(String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "channelId")) {
 				if (jsonParserFieldValue != null) {
 					productChannel.setChannelId(
 						Long.valueOf((String)jsonParserFieldValue));

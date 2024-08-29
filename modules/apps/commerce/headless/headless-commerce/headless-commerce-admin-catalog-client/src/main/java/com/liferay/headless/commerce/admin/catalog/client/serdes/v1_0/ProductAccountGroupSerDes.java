@@ -46,6 +46,25 @@ public class ProductAccountGroupSerDes {
 
 		sb.append("{");
 
+		if (productAccountGroup.getAccountGroupExternalReferenceCode() !=
+				null) {
+
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"accountGroupExternalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(
+				_escape(
+					productAccountGroup.
+						getAccountGroupExternalReferenceCode()));
+
+			sb.append("\"");
+		}
+
 		if (productAccountGroup.getAccountGroupId() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -115,6 +134,19 @@ public class ProductAccountGroupSerDes {
 
 		Map<String, String> map = new TreeMap<>();
 
+		if (productAccountGroup.getAccountGroupExternalReferenceCode() ==
+				null) {
+
+			map.put("accountGroupExternalReferenceCode", null);
+		}
+		else {
+			map.put(
+				"accountGroupExternalReferenceCode",
+				String.valueOf(
+					productAccountGroup.
+						getAccountGroupExternalReferenceCode()));
+		}
+
 		if (productAccountGroup.getAccountGroupId() == null) {
 			map.put("accountGroupId", null);
 		}
@@ -165,7 +197,12 @@ public class ProductAccountGroupSerDes {
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
-			if (Objects.equals(jsonParserFieldName, "accountGroupId")) {
+			if (Objects.equals(
+					jsonParserFieldName, "accountGroupExternalReferenceCode")) {
+
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "accountGroupId")) {
 				return false;
 			}
 			else if (Objects.equals(
@@ -188,7 +225,15 @@ public class ProductAccountGroupSerDes {
 			ProductAccountGroup productAccountGroup, String jsonParserFieldName,
 			Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "accountGroupId")) {
+			if (Objects.equals(
+					jsonParserFieldName, "accountGroupExternalReferenceCode")) {
+
+				if (jsonParserFieldValue != null) {
+					productAccountGroup.setAccountGroupExternalReferenceCode(
+						(String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "accountGroupId")) {
 				if (jsonParserFieldValue != null) {
 					productAccountGroup.setAccountGroupId(
 						Long.valueOf((String)jsonParserFieldValue));

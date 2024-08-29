@@ -163,6 +163,7 @@ public abstract class BaseProductChannelResourceTestCase {
 
 		ProductChannel productChannel = randomProductChannel();
 
+		productChannel.setChannelExternalReferenceCode(regex);
 		productChannel.setCurrencyCode(regex);
 		productChannel.setExternalReferenceCode(regex);
 		productChannel.setName(regex);
@@ -174,6 +175,8 @@ public abstract class BaseProductChannelResourceTestCase {
 
 		productChannel = ProductChannelSerDes.toDTO(json);
 
+		Assert.assertEquals(
+			regex, productChannel.getChannelExternalReferenceCode());
 		Assert.assertEquals(regex, productChannel.getCurrencyCode());
 		Assert.assertEquals(regex, productChannel.getExternalReferenceCode());
 		Assert.assertEquals(regex, productChannel.getName());
@@ -880,6 +883,17 @@ public abstract class BaseProductChannelResourceTestCase {
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
 
+			if (Objects.equals(
+					"channelExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (productChannel.getChannelExternalReferenceCode() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("channelId", additionalAssertFieldName)) {
 				if (productChannel.getChannelId() == null) {
 					valid = false;
@@ -1040,6 +1054,20 @@ public abstract class BaseProductChannelResourceTestCase {
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
+
+			if (Objects.equals(
+					"channelExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						productChannel1.getChannelExternalReferenceCode(),
+						productChannel2.getChannelExternalReferenceCode())) {
+
+					return false;
+				}
+
+				continue;
+			}
 
 			if (Objects.equals("channelId", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
@@ -1213,6 +1241,52 @@ public abstract class BaseProductChannelResourceTestCase {
 		sb.append(" ");
 		sb.append(operator);
 		sb.append(" ");
+
+		if (entityFieldName.equals("channelExternalReferenceCode")) {
+			Object object = productChannel.getChannelExternalReferenceCode();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
 
 		if (entityFieldName.equals("channelId")) {
 			throw new IllegalArgumentException(
@@ -1453,6 +1527,8 @@ public abstract class BaseProductChannelResourceTestCase {
 	protected ProductChannel randomProductChannel() throws Exception {
 		return new ProductChannel() {
 			{
+				channelExternalReferenceCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
 				channelId = RandomTestUtil.randomLong();
 				currencyCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());

@@ -29,7 +29,6 @@ import java.util.function.Supplier;
 import javax.annotation.Generated;
 
 import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotNull;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -40,7 +39,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Generated("")
 @GraphQLName("ProductAccountGroup")
 @JsonFilter("Liferay.Vulcan")
-@Schema(requiredProperties = {"id"})
 @XmlRootElement(name = "ProductAccountGroup")
 public class ProductAccountGroup implements Serializable {
 
@@ -52,6 +50,52 @@ public class ProductAccountGroup implements Serializable {
 		return ObjectMapperUtil.unsafeReadValue(
 			ProductAccountGroup.class, json);
 	}
+
+	@Schema(example = "AB-34098-789-N")
+	public String getAccountGroupExternalReferenceCode() {
+		if (_accountGroupExternalReferenceCodeSupplier != null) {
+			accountGroupExternalReferenceCode =
+				_accountGroupExternalReferenceCodeSupplier.get();
+
+			_accountGroupExternalReferenceCodeSupplier = null;
+		}
+
+		return accountGroupExternalReferenceCode;
+	}
+
+	public void setAccountGroupExternalReferenceCode(
+		String accountGroupExternalReferenceCode) {
+
+		this.accountGroupExternalReferenceCode =
+			accountGroupExternalReferenceCode;
+
+		_accountGroupExternalReferenceCodeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setAccountGroupExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			accountGroupExternalReferenceCodeUnsafeSupplier) {
+
+		_accountGroupExternalReferenceCodeSupplier = () -> {
+			try {
+				return accountGroupExternalReferenceCodeUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String accountGroupExternalReferenceCode;
+
+	@JsonIgnore
+	private Supplier<String> _accountGroupExternalReferenceCodeSupplier;
 
 	@DecimalMin("0")
 	@Schema(example = "31130")
@@ -171,7 +215,6 @@ public class ProductAccountGroup implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	@NotNull
 	protected Long id;
 
 	@JsonIgnore
@@ -242,6 +285,23 @@ public class ProductAccountGroup implements Serializable {
 		StringBundler sb = new StringBundler();
 
 		sb.append("{");
+
+		String accountGroupExternalReferenceCode =
+			getAccountGroupExternalReferenceCode();
+
+		if (accountGroupExternalReferenceCode != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"accountGroupExternalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(accountGroupExternalReferenceCode));
+
+			sb.append("\"");
+		}
 
 		Long accountGroupId = getAccountGroupId();
 

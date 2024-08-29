@@ -29,7 +29,6 @@ import java.util.function.Supplier;
 import javax.annotation.Generated;
 
 import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotNull;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -40,7 +39,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Generated("")
 @GraphQLName("ProductChannel")
 @JsonFilter("Liferay.Vulcan")
-@Schema(requiredProperties = {"id"})
 @XmlRootElement(name = "ProductChannel")
 public class ProductChannel implements Serializable {
 
@@ -51,6 +49,51 @@ public class ProductChannel implements Serializable {
 	public static ProductChannel unsafeToDTO(String json) {
 		return ObjectMapperUtil.unsafeReadValue(ProductChannel.class, json);
 	}
+
+	@Schema(example = "AB-34098-789-N")
+	public String getChannelExternalReferenceCode() {
+		if (_channelExternalReferenceCodeSupplier != null) {
+			channelExternalReferenceCode =
+				_channelExternalReferenceCodeSupplier.get();
+
+			_channelExternalReferenceCodeSupplier = null;
+		}
+
+		return channelExternalReferenceCode;
+	}
+
+	public void setChannelExternalReferenceCode(
+		String channelExternalReferenceCode) {
+
+		this.channelExternalReferenceCode = channelExternalReferenceCode;
+
+		_channelExternalReferenceCodeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setChannelExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			channelExternalReferenceCodeUnsafeSupplier) {
+
+		_channelExternalReferenceCodeSupplier = () -> {
+			try {
+				return channelExternalReferenceCodeUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String channelExternalReferenceCode;
+
+	@JsonIgnore
+	private Supplier<String> _channelExternalReferenceCodeSupplier;
 
 	@DecimalMin("0")
 	@Schema(example = "31130")
@@ -211,7 +254,6 @@ public class ProductChannel implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	@NotNull
 	protected Long id;
 
 	@JsonIgnore
@@ -321,6 +363,22 @@ public class ProductChannel implements Serializable {
 		StringBundler sb = new StringBundler();
 
 		sb.append("{");
+
+		String channelExternalReferenceCode = getChannelExternalReferenceCode();
+
+		if (channelExternalReferenceCode != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"channelExternalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(channelExternalReferenceCode));
+
+			sb.append("\"");
+		}
 
 		Long channelId = getChannelId();
 
