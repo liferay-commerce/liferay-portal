@@ -1,5 +1,20 @@
 components:
     schemas:
+        AttachmentBase64:
+            properties:
+                attachment:
+                    description:
+                        Base64 encoded file
+                    type: string
+                title:
+                    type: string
+                type:
+                    format: int32
+                    readOnly: true
+                    type: integer
+                url:
+                    type: string
+            type: object
         Error:
             properties:
                 errorCode:
@@ -34,6 +49,10 @@ components:
                     format: int64
                     readOnly: true
                     type: integer
+                attachments:
+                    items:
+                        $ref: "#/components/schemas/AttachmentBase64"
+                    type: array
                 author:
                     readOnly: true
                     type: string
@@ -679,6 +698,167 @@ info:
     version: v1.0
 openapi: 3.0.1
 paths:
+    "/placed-orders/{placedOrderId}/attachments/by-base64":
+        get:
+            parameters:
+                - in: path
+                  explode: false
+                  name: placedOrderId
+                  required: true
+                  schema:
+                      description:
+                          The resource Id
+                      example: 30130
+                      format: int64
+                      minimum: 0
+                      type: integer
+                  style: simple
+                - in: query
+                  explode: true
+                  name: page
+                  required: false
+                  schema:
+                      type: integer
+                  style: form
+                - in: query
+                  explode: true
+                  name: pageSize
+                  required: false
+                  schema:
+                      type: integer
+                  style: form
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/PlacedOrder"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/PlacedOrder"
+                                type: array
+                    description:
+                        Successful operation
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                404:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The specified resource was not found
+                500:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Unexpected error
+            security:
+                - BasicAuth: []
+                - BearerAuth: []
+                - OAuth2:
+                      - HeadlessCommerceDeliveryOrder.read
+            summary: Gets a list of attachments related to an order.
+            tags: ["PlacedOrder"]
+        post:
+            parameters:
+                - in: path
+                  explode: false
+                  name: placedOrderId
+                  required: true
+                  schema:
+                      description:
+                          The resource Id
+                      example: 30130
+                      format: int64
+                      minimum: 0
+                      type: integer
+                  style: simple
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/AttachmentBase64"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/AttachmentBase64"
+                required: true
+            responses:
+                201:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/PlacedOrder"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/PlacedOrder"
+                    description:
+                        Created
+                202:
+                    description:
+                        Accepted - Async
+                204:
+                    description:
+                        Updated
+                400:
+                    description:
+                        Invalid input
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                404:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The specified resource was not found
+                500:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Unexpected error
+            security:
+                - BasicAuth: []
+                - BearerAuth: []
+                - OAuth2:
+                      - HeadlessCommerceDeliveryOrder.write
+            summary: Creates or updates a image related to an order.
+            tags: ["PlacedOrder"]
     /channels/by-externalReferenceCode/{channelExternalReferenceCode}/accounts/by-externalReferenceCode/{accountExternalReferenceCode}/placed-orders:
         get:
             description:
