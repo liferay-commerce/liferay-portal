@@ -64,11 +64,6 @@ public class ShipmentDTOConverter
 					commerceShipment::getExternalReferenceCode);
 				setId(commerceShipment::getCommerceShipmentId);
 				setModifiedDate(commerceShipment::getModifiedDate);
-				setShippingAddress(
-					() -> _shippingAddressDTOConverter.toDTO(
-						new DefaultDTOConverterContext(
-							commerceShipment.getCommerceAddressId(),
-							dtoConverterContext.getLocale())));
 				setShippingAddressId(commerceShipment::getCommerceAddressId);
 				setShippingDate(commerceShipment::getShippingDate);
 				setShippingMethodId(
