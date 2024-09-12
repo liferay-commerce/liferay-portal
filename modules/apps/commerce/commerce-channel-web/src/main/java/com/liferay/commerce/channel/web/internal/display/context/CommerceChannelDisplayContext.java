@@ -129,7 +129,7 @@ public class CommerceChannelDisplayContext
 
 	public FileEntry fetchFileEntry() throws PortalException {
 		return _dlAppLocalService.fetchFileEntryByExternalReferenceCode(
-			getCommerceChannel().getGroupId(), "ORDER_PRINT_TEMPLATE");
+			"ORDER_PRINT_TEMPLATE", getCommerceChannel().getGroupId());
 	}
 
 	public int getAccountCartMaxAllowed() throws PortalException {

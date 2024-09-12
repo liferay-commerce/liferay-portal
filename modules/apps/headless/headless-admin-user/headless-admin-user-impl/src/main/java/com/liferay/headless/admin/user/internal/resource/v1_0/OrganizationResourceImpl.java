@@ -867,8 +867,8 @@ public class OrganizationResourceImpl extends BaseOrganizationResourceImpl {
 		if (imageId == 0) {
 			FileEntry fileEntry =
 				_dlAppLocalService.fetchFileEntryByExternalReferenceCode(
-					contextCompany.getGroupId(),
-					organization.getImageExternalReferenceCode());
+					organization.getImageExternalReferenceCode(),
+					contextCompany.getGroupId());
 
 			if (fileEntry != null) {
 				imageId = fileEntry.getFileEntryId();
@@ -1065,8 +1065,8 @@ public class OrganizationResourceImpl extends BaseOrganizationResourceImpl {
 		if (imageId == 0) {
 			FileEntry fileEntry =
 				_dlAppLocalService.fetchFileEntryByExternalReferenceCode(
-					contextCompany.getGroupId(),
-					organization.getImageExternalReferenceCode());
+					organization.getImageExternalReferenceCode(),
+					contextCompany.getGroupId());
 
 			if (fileEntry != null) {
 				imageId = fileEntry.getFileEntryId();

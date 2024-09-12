@@ -411,7 +411,7 @@ public class ExportCommerceOrderReportMVCResourceCommand
 
 		FileEntry fileEntry =
 			_dlAppLocalService.fetchFileEntryByExternalReferenceCode(
-				commerceOrder.getGroupId(), "ORDER_PRINT_TEMPLATE");
+				"ORDER_PRINT_TEMPLATE", commerceOrder.getGroupId());
 
 		PortletResponseUtil.write(
 			resourceResponse,

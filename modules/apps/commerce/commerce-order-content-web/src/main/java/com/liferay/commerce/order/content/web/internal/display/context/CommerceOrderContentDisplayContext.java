@@ -474,7 +474,7 @@ public class CommerceOrderContentDisplayContext {
 	public String getCSVTemplateDownloadURL() throws Exception {
 		FileEntry fileEntry =
 			_dlAppLocalService.fetchFileEntryByExternalReferenceCode(
-				_cpRequestHelper.getScopeGroupId(), "CSV_TEMPLATE_ERC");
+				"CSV_TEMPLATE_ERC", _cpRequestHelper.getScopeGroupId());
 
 		if (fileEntry == null) {
 			Class<?> clazz = getClass();

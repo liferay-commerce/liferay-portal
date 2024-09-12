@@ -54,7 +54,7 @@ public class CommerceMediaProviderImpl implements CommerceMediaProvider {
 
 			fileEntry =
 				_dlAppLocalService.fetchFileEntryByExternalReferenceCode(
-					company.getGroupId(), PropsKeys.IMAGE_DEFAULT_COMPANY_LOGO);
+					PropsKeys.IMAGE_DEFAULT_COMPANY_LOGO, company.getGroupId());
 		}
 
 		return fileEntry;

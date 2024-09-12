@@ -1010,8 +1010,8 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 		if (logoId == 0) {
 			FileEntry fileEntry =
 				_dlAppLocalService.fetchFileEntryByExternalReferenceCode(
-					contextCompany.getGroupId(),
-					account.getLogoExternalReferenceCode());
+					account.getLogoExternalReferenceCode(),
+					contextCompany.getGroupId());
 
 			if (fileEntry != null) {
 				logoId = fileEntry.getFileEntryId();
@@ -1188,8 +1188,8 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 		if (logoId == 0) {
 			FileEntry fileEntry =
 				_dlAppLocalService.fetchFileEntryByExternalReferenceCode(
-					contextCompany.getGroupId(),
-					account.getLogoExternalReferenceCode());
+					account.getLogoExternalReferenceCode(),
+					contextCompany.getGroupId());
 
 			if (fileEntry != null) {
 				logoId = fileEntry.getFileEntryId();

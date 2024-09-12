@@ -321,8 +321,8 @@ public class AttachmentUtil {
 
 				FileEntry fileEntry =
 					dlAppLocalService.fetchFileEntryByExternalReferenceCode(
-						group.getGroupId(),
-						attachment.getFileEntryExternalReferenceCode());
+						attachment.getFileEntryExternalReferenceCode(),
+						group.getGroupId());
 
 				if (fileEntry != null) {
 					fileEntryId = fileEntry.getFileEntryId();
@@ -436,9 +436,9 @@ public class AttachmentUtil {
 
 				FileEntry fileEntry =
 					dlAppLocalService.fetchFileEntryByExternalReferenceCode(
-						group.getGroupId(),
 						GetterUtil.getString(
-							attachment.getFileEntryExternalReferenceCode()));
+							attachment.getFileEntryExternalReferenceCode()),
+						group.getGroupId());
 
 				if (fileEntry != null) {
 					fileEntryId = fileEntry.getFileEntryId();

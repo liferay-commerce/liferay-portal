@@ -378,7 +378,7 @@ public class EditCommerceChannelMVCActionCommand
 
 		FileEntry existingFileEntry =
 			_dlAppLocalService.fetchFileEntryByExternalReferenceCode(
-				commerceChannel.getGroupId(), "ORDER_PRINT_TEMPLATE");
+				"ORDER_PRINT_TEMPLATE", commerceChannel.getGroupId());
 
 		long fileEntryId = ParamUtil.getLong(actionRequest, "fileEntryId");
 

@@ -476,7 +476,7 @@ public class DocumentResourceImpl extends BaseDocumentResourceImpl {
 
 		FileEntry fileEntry =
 			_dlAppLocalService.fetchFileEntryByExternalReferenceCode(
-				assetLibraryId, externalReferenceCode);
+				externalReferenceCode, assetLibraryId);
 
 		if (fileEntry != null) {
 			return _updateDocument(fileEntry, multipartBody);
@@ -513,7 +513,7 @@ public class DocumentResourceImpl extends BaseDocumentResourceImpl {
 
 		FileEntry fileEntry =
 			_dlAppLocalService.fetchFileEntryByExternalReferenceCode(
-				siteId, externalReferenceCode);
+				externalReferenceCode, siteId);
 
 		if (fileEntry != null) {
 			return _updateDocument(fileEntry, multipartBody);

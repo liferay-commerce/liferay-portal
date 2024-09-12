@@ -1412,8 +1412,8 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 		if (imageId == 0) {
 			FileEntry fileEntry =
 				_dlAppLocalService.fetchFileEntryByExternalReferenceCode(
-					contextCompany.getGroupId(),
-					userAccount.getImageExternalReferenceCode());
+					userAccount.getImageExternalReferenceCode(),
+					contextCompany.getGroupId());
 
 			if (fileEntry != null) {
 				imageId = fileEntry.getFileEntryId();
@@ -1605,8 +1605,8 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 		if (imageId == 0) {
 			FileEntry fileEntry =
 				_dlAppLocalService.fetchFileEntryByExternalReferenceCode(
-					contextCompany.getGroupId(),
-					userAccount.getImageExternalReferenceCode());
+					userAccount.getImageExternalReferenceCode(),
+					contextCompany.getGroupId());
 
 			if (fileEntry != null) {
 				imageId = fileEntry.getFileEntryId();

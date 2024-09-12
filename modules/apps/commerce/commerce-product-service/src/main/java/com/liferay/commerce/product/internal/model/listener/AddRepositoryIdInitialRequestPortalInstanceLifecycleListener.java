@@ -92,7 +92,7 @@ public class AddRepositoryIdInitialRequestPortalInstanceLifecycleListener
 
 			FileEntry fileEntry =
 				_dlAppLocalService.fetchFileEntryByExternalReferenceCode(
-					company.getGroupId(), PropsKeys.IMAGE_DEFAULT_COMPANY_LOGO);
+					PropsKeys.IMAGE_DEFAULT_COMPANY_LOGO, company.getGroupId());
 
 			if (fileEntry == null) {
 				ServiceContext serviceContext = new ServiceContext();
