@@ -581,18 +581,9 @@ public class DLAppLocalServiceImpl extends DLAppLocalServiceBaseImpl {
 		_dlAppHelperLocalService.deleteFolder(folder);
 	}
 
-	/**
-	 * Returns the document library file entry with the matching external
-	 * reference code and group.
-	 *
-	 * @param  groupId the primary key of the file entry's group
-	 * @param  externalReferenceCode the file entry's external reference code
-	 * @return the matching document library file entry, or <code>null</code> if
-	 *         a matching document library file entry could not be found
-	 */
 	@Override
 	public FileEntry fetchFileEntryByExternalReferenceCode(
-			long groupId, String externalReferenceCode)
+			String externalReferenceCode, long groupId)
 		throws PortalException {
 
 		LocalRepository localRepository = getLocalRepository(groupId);
