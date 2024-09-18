@@ -337,7 +337,7 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 
 		long[] organizationIds = _getOrganizationIds(account);
 
-		if (!ArrayUtil.isEmpty(organizationIds)) {
+		if (organizationIds != null) {
 			_accountEntryOrganizationRelLocalService.
 				setAccountEntryOrganizationRels(accountId, organizationIds);
 		}
@@ -467,7 +467,7 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 
 		long[] organizationIds = _getOrganizationIds(account);
 
-		if (!ArrayUtil.isEmpty(organizationIds)) {
+		if (organizationIds != null) {
 			_accountEntryOrganizationRelLocalService.
 				setAccountEntryOrganizationRels(
 					accountEntry.getAccountEntryId(), organizationIds);
@@ -555,7 +555,7 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 
 		long[] organizationIds = _getOrganizationIds(account);
 
-		if (!ArrayUtil.isEmpty(organizationIds)) {
+		if (organizationIds != null) {
 			_accountEntryOrganizationRelLocalService.
 				setAccountEntryOrganizationRels(accountId, organizationIds);
 		}
@@ -658,7 +658,7 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 
 		long[] organizationIds = _getOrganizationIds(account);
 
-		if (!ArrayUtil.isEmpty(organizationIds)) {
+		if (organizationIds != null) {
 			_accountEntryOrganizationRelLocalService.
 				setAccountEntryOrganizationRels(
 					accountEntry.getAccountEntryId(), organizationIds);
@@ -1056,15 +1056,15 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 	private long[] _getOrganizationIds(Account account) {
 		Long[] organizationIds = account.getOrganizationIds();
 
-		if (!ArrayUtil.isEmpty(organizationIds)) {
+		if (organizationIds != null) {
 			return ArrayUtil.toArray(organizationIds);
 		}
 
 		String[] organizationExternalReferenceCodes =
 			account.getOrganizationExternalReferenceCodes();
 
-		if (ArrayUtil.isEmpty(organizationExternalReferenceCodes)) {
-			return new long[0];
+		if (organizationExternalReferenceCodes == null) {
+			return null;
 		}
 
 		organizationIds = transformToArray(
