@@ -5,6 +5,7 @@
 
 import AJAX from '../../../utilities/AJAX/index';
 
+const CART_COMMENTS_PATH = '/cart-comments';
 const CARTS_PATH = '/carts';
 const CHANNELS_PATH = '/channels';
 
@@ -41,6 +42,10 @@ function resolveCartsByAccountIdAndChannelIdPath(
 	return url.pathname + url.search;
 }
 
+function resolveCartCommentsPath(basePath = '', cartCommentId) {
+	return `${basePath}${VERSION}${CART_COMMENTS_PATH}/${cartCommentId}`;
+}
+
 export default function Cart(basePath) {
 	return {
 		cartsByAccountIdAndChannelIdURL: (accountId, channelId) =>
@@ -59,6 +64,9 @@ export default function Cart(basePath) {
 				json
 			),
 
+		createCommentsByCartId: (cartId, json) =>
+			AJAX.POST(resolveCartsPath(basePath, cartId) + '/comments', json),
+
 		createCouponCodeByCartId: (cartId, json) =>
 			AJAX.POST(
 				`${resolveCartsPath(basePath, cartId)}/coupon-code`,
@@ -67,6 +75,9 @@ export default function Cart(basePath) {
 
 		deleteCartById: (cartId) =>
 			AJAX.DELETE(resolveCartsPath(basePath, cartId)),
+
+		deleteCommentsByCartId: (cartCommentId) =>
+			AJAX.DELETE(resolveCartCommentsPath(basePath, cartCommentId)),
 
 		executeCartTransitionsById: (cartId, json) =>
 			AJAX.POST(
@@ -99,6 +110,12 @@ export default function Cart(basePath) {
 					searchParams
 				)
 			),
+
+		getCommentsByCartId: (cartId) =>
+			AJAX.GET(resolveCartsPath(basePath, cartId) + '/comments'),
+
+		patchCommentsByCartId: (cartId) =>
+			AJAX.PATCH(resolveCartsPath(basePath, cartId) + '/comments'),
 
 		replaceCartById: (cartId, json) =>
 			AJAX.PUT(resolveCartsPath(basePath, cartId), json),

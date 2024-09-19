@@ -6,9 +6,13 @@
 import React from 'react';
 
 import DefaultView from './info_box/DefaultView';
+import OrderNotesView from './info_box/OrderNotesView';
 import OrderSummaryView from './info_box/OrderSummaryView';
 
 const InfoBox = (props) => {
+	if (props.field === 'notes') {
+		return <OrderNotesView {...props} />;
+	}
 	if (props.field === 'orderSummary') {
 		return <OrderSummaryView {...props} />;
 	}
