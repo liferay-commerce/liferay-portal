@@ -607,10 +607,28 @@ components:
                 totalFormatted:
                     type: string
             type: object
+        Term:
+            properties:
+                description:
+                    example: description
+                    readOnly: true
+                    type: string
+                externalReferenceCode:
+                    example: AAB-34098-789-N
+                    type: string
+                id:
+                    example: 30130
+                    format: int64
+                    minimum: 0
+                    type: integer
+                name:
+                    example: name
+                    readOnly: true
+                    type: string
 info:
     description:
         "Headless Delivery Commerce Cart API. A Java client JAR is available for use with the group ID 'com.liferay',
-        artifact ID 'com.liferay.headless.commerce.delivery.cart.client', and version '4.0.42'."
+        artifact ID 'com.liferay.headless.commerce.delivery.cart.client', and version '4.0.43'."
     license:
         name: Apache 2.0
         url: http://www.apache.org/licenses/LICENSE-2.0.html
@@ -2934,6 +2952,68 @@ paths:
                     description:
                         Unexpected error
             tags: ["Cart"]
+    /carts/{cartId}/delivery-terms:
+        get:
+            description:
+                Retrieve delivery terms available for the Cart.
+            operationId: getCartDeliveryTermsPage
+            parameters:
+                - in: path
+                  explode: false
+                  name: cartId
+                  required: true
+                  schema:
+                      description:
+                          Cart Id
+                      format: int64
+                      type: integer
+                  style: simple
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/Term"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/Term"
+                                type: array
+                    description:
+                        Retrieve the available delivery terms for the order
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                404:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The specified resource was not found
+                500:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Unexpected error
+            tags: ["Term"]
     /carts/{cartId}/items:
         get:
             description:
@@ -3138,6 +3218,68 @@ paths:
                     description:
                         Unexpected error
             tags: ["PaymentMethod"]
+    /carts/{cartId}/payment-terms:
+        get:
+            description:
+                Retrieve payment terms available for the Cart.
+            operationId: getCartPaymentTermsPage
+            parameters:
+                - in: path
+                  explode: false
+                  name: cartId
+                  required: true
+                  schema:
+                      description:
+                          Cart Id
+                      format: int64
+                      type: integer
+                  style: simple
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/Term"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/Term"
+                                type: array
+                    description:
+                        Retrieve the available delivery terms for the order
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                404:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The specified resource was not found
+                500:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Unexpected error
+            tags: ["Term"]
     /carts/{cartId}/payment-url:
         get:
             operationId: getCartPaymentURL

@@ -670,6 +670,25 @@ components:
                     readOnly: true
                     type: string
             type: object
+        Term:
+            properties:
+                description:
+                    example: description
+                    readOnly: true
+                    type: string
+                externalReferenceCode:
+                    example: AAB-34098-789-N
+                    type: string
+                id:
+                    example: 30130
+                    format: int64
+                    minimum: 0
+                    type: integer
+                name:
+                    example: name
+                    readOnly: true
+                    type: string
+            type: object
         VirtualItem:
             properties:
                 url:
@@ -688,7 +707,7 @@ components:
 info:
     description:
         "Headless Delivery Commerce Order API. A Java client JAR is available for use with the group ID 'com.liferay',
-        artifact ID 'com.liferay.headless.commerce.delivery.order.client', and version '1.0.24'."
+        artifact ID 'com.liferay.headless.commerce.delivery.order.client', and version '1.0.25'."
     license:
         name: Apache 2.0
         url: http://www.apache.org/licenses/LICENSE-2.0.html
@@ -1695,6 +1714,62 @@ paths:
                         Unexpected error
             summary: Updates a Placed Order.
             tags: ["PlacedOrder"]
+    /placed-orders/{placedOrderId}/delivery-term:
+        get:
+            description:
+                Retrieve delivery term of the given Placed Order.
+            operationId: getPlacedOrderDeliveryTerm
+            parameters:
+                - in: path
+                  explode: false
+                  name: placedOrderId
+                  required: true
+                  schema:
+                      description:
+                          Placed Order Id
+                      format: int64
+                      type: integer
+                  style: simple
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Term"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Term"
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                404:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The specified resource was not found
+                500:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Unexpected error
+            tags: ["Term"]
     /placed-orders/{placedOrderId}/order-transitions:
         get:
             description:
@@ -1783,6 +1858,62 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/OrderTransition"
             tags: ["OrderTransition"]
+    /placed-orders/{placedOrderId}/payment-term:
+        get:
+            description:
+                Retrieve delivery term of the given Placed Order.
+            operationId: getPlacedOrderPaymentTerm
+            parameters:
+                - in: path
+                  explode: false
+                  name: placedOrderId
+                  required: true
+                  schema:
+                      description:
+                          Placed Order Id
+                      format: int64
+                      type: integer
+                  style: simple
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Term"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Term"
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                404:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The specified resource was not found
+                500:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Unexpected error
+            tags: ["Term"]
     /placed-orders/{placedOrderId}/payment-url:
         get:
             operationId: getPlacedOrderPaymentURL
