@@ -12,8 +12,10 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.portlet.BaseControlPanelEntry;
 import com.liferay.portal.kernel.portlet.ControlPanelEntry;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
+import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -32,12 +34,18 @@ public class CommerceChannelControlPanelEntry extends BaseControlPanelEntry {
 			PermissionChecker permissionChecker, Group group, Portlet portlet)
 		throws Exception {
 
-		if (super.hasAccessPermission(permissionChecker, group, portlet)) {
+		if (PortletPermissionUtil.contains(
+				permissionChecker, portlet.getPortletId(),
+				ActionKeys.ACCESS_IN_CONTROL_PANEL) &&
+			_portletResourcePermission.contains(
+				permissionChecker, group,
+				CPActionKeys.VIEW_COMMERCE_CHANNELS) &&
+			super.hasAccessPermission(permissionChecker, group, portlet)) {
+
 			return true;
 		}
 
-		return _portletResourcePermission.contains(
-			permissionChecker, group, CPActionKeys.VIEW_COMMERCE_CHANNELS);
+		return false;
 	}
 
 	@Reference(
