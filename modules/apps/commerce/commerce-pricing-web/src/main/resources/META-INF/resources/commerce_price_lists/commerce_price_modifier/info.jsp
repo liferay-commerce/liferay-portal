@@ -60,7 +60,7 @@ if (modifierType.equals(CommercePriceModifierConstants.MODIFIER_TYPE_PERCENTAGE)
 
 		</aui:select>
 
-		<aui:select label='<%= LanguageUtil.get(request, "modifier") %>' name="modifierType" onChange='<%= liferayPortletResponse.getNamespace() + "selectType();" %>' showEmptyOption="<%= true %>">
+		<aui:select label='<%= LanguageUtil.get(request, "modifier") %>' name="modifierType" onchange='<%= liferayPortletResponse.getNamespace() + "selectType();" %>' showEmptyOption="<%= true %>">
 
 			<%
 			for (CommercePriceModifierType commercePriceModifierType : commercePriceListDisplayContext.getCommercePriceModifierTypes()) {

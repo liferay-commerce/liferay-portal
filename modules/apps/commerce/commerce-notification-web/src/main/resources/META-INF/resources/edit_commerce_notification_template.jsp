@@ -64,7 +64,7 @@ if (commerceNotificationTemplate != null) {
 				</div>
 
 				<div class="col-6">
-					<aui:select name="type" onChange='<%= liferayPortletResponse.getNamespace() + "selectType();" %>' showEmptyOption="<%= true %>">
+					<aui:select name="type" onchange='<%= liferayPortletResponse.getNamespace() + "selectType();" %>' showEmptyOption="<%= true %>">
 
 						<%
 						for (CommerceNotificationType curCommerceNotificationType : commerceNotificationTemplatesDisplayContext.getCommerceNotificationTypes()) {

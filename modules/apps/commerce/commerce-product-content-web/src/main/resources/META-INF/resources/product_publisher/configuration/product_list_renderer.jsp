@@ -14,7 +14,7 @@ List<CPContentListRenderer> cpContentListRenderers = cpPublisherConfigurationDis
 %>
 
 <aui:fieldset markupView="lexicon">
-	<aui:select label="product-list-renderer" name="preferences--cpContentListRendererKey--" onChange='<%= liferayPortletResponse.getNamespace() + "chooseCPContentListRendererKey();" %>'>
+	<aui:select label="product-list-renderer" name="preferences--cpContentListRendererKey--" onchange='<%= liferayPortletResponse.getNamespace() + "chooseCPContentListRendererKey();" %>'>
 
 		<%
 		for (CPContentListRenderer cpContentListRenderer : cpContentListRenderers) {

@@ -16,7 +16,7 @@ int selectedYearlyMode = yearlyCPSubscriptionTypeDisplayContext.getSelectedYearl
 
 <c:choose>
 	<c:when test="<%= yearlyCPSubscriptionTypeDisplayContext.isPayment() %>">
-		<aui:select label="mode" name="subscriptionTypeSettings--yearly--yearlyMode--" onChange="event.preventDefault(); changeYearlyCPSubscriptionTypeSettingsMode();">
+		<aui:select label="mode" name="subscriptionTypeSettings--yearly--yearlyMode--" onchange="event.preventDefault(); changeYearlyCPSubscriptionTypeSettingsMode();">
 
 			<%
 			for (int mode : CPSubscriptionTypeConstants.YEARLY_MODES) {
@@ -73,7 +73,7 @@ int selectedYearlyMode = yearlyCPSubscriptionTypeDisplayContext.getSelectedYearl
 		</aui:script>
 	</c:when>
 	<c:otherwise>
-		<aui:select label="mode" name="deliverySubscriptionTypeSettings--yearly--deliveryYearlyMode--" onChange="event.preventDefault(); changeYearlyDeliveryCPSubscriptionTypeSettingsMode();">
+		<aui:select label="mode" name="deliverySubscriptionTypeSettings--yearly--deliveryYearlyMode--" onchange="event.preventDefault(); changeYearlyDeliveryCPSubscriptionTypeSettingsMode();">
 
 			<%
 			for (int mode : CPSubscriptionTypeConstants.YEARLY_MODES) {

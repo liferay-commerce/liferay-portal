@@ -115,7 +115,7 @@ String defaultLanguageId = cpDefinitionOptionRelDisplayContext.getCatalogDefault
 				</div>
 
 				<div class="<%= cpDefinitionOptionRel.isDefinedExternally() ? "col-12" : "col-12 hide" %>">
-					<aui:select label="collection-provider" name="infoItemServiceKey" onChange='<%= liferayPortletResponse.getNamespace() + "selectCollectionProvider();" %>' showEmptyOption="<%= true %>">
+					<aui:select label="collection-provider" name="infoItemServiceKey" onchange='<%= liferayPortletResponse.getNamespace() + "selectCollectionProvider();" %>' showEmptyOption="<%= true %>">
 
 						<%
 						for (RelatedInfoItemCollectionProvider relatedInfoItemCollectionProvider : cpDefinitionOptionRelDisplayContext.getRelatedInfoItemCollectionProviders()) {

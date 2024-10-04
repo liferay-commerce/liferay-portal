@@ -43,9 +43,9 @@ boolean hasPermission = commerceDiscountQualifiersDisplayContext.hasPermission(A
 			>
 				<div class="row">
 					<aui:fieldset markupView="lexicon">
-						<aui:input checked='<%= Objects.equals(accountQualifiers, "all") %>' label="all-accounts" name="qualifiers--accountQualifiersSelection--" onChange='<%= liferayPortletResponse.getNamespace() + "chooseAccountQualifiers('all');" %>' type="radio" />
-						<aui:input checked='<%= Objects.equals(accountQualifiers, "accountGroups") %>' label="specific-account-groups" name="qualifiers--accountQualifiersSelection--" onChange='<%= liferayPortletResponse.getNamespace() + "chooseAccountQualifiers('accountGroups');" %>' type="radio" />
-						<aui:input checked='<%= Objects.equals(accountQualifiers, "accounts") %>' label="specific-accounts" name="qualifiers--accountQualifiersSelection--" onChange='<%= liferayPortletResponse.getNamespace() + "chooseAccountQualifiers('accounts');" %>' type="radio" />
+						<aui:input checked='<%= Objects.equals(accountQualifiers, "all") %>' label="all-accounts" name="qualifiers--accountQualifiersSelection--" onchange='<%= liferayPortletResponse.getNamespace() + "chooseAccountQualifiers('all');" %>' type="radio" />
+						<aui:input checked='<%= Objects.equals(accountQualifiers, "accountGroups") %>' label="specific-account-groups" name="qualifiers--accountQualifiersSelection--" onchange='<%= liferayPortletResponse.getNamespace() + "chooseAccountQualifiers('accountGroups');" %>' type="radio" />
+						<aui:input checked='<%= Objects.equals(accountQualifiers, "accounts") %>' label="specific-accounts" name="qualifiers--accountQualifiersSelection--" onchange='<%= liferayPortletResponse.getNamespace() + "chooseAccountQualifiers('accounts');" %>' type="radio" />
 					</aui:fieldset>
 				</div>
 			</commerce-ui:panel>
@@ -70,8 +70,8 @@ boolean hasPermission = commerceDiscountQualifiersDisplayContext.hasPermission(A
 			>
 				<div class="row">
 					<aui:fieldset markupView="lexicon">
-						<aui:input checked='<%= Objects.equals(channelQualifiers, "all") %>' label="all-channels" name="qualifiers--channel--" onChange='<%= liferayPortletResponse.getNamespace() + "chooseChannelQualifiers('all');" %>' type="radio" />
-						<aui:input checked='<%= Objects.equals(channelQualifiers, "channels") %>' label="specific-channels" name="qualifiers--channel--" onChange='<%= liferayPortletResponse.getNamespace() + "chooseChannelQualifiers('channels');" %>' type="radio" />
+						<aui:input checked='<%= Objects.equals(channelQualifiers, "all") %>' label="all-channels" name="qualifiers--channel--" onchange='<%= liferayPortletResponse.getNamespace() + "chooseChannelQualifiers('all');" %>' type="radio" />
+						<aui:input checked='<%= Objects.equals(channelQualifiers, "channels") %>' label="specific-channels" name="qualifiers--channel--" onchange='<%= liferayPortletResponse.getNamespace() + "chooseChannelQualifiers('channels');" %>' type="radio" />
 					</aui:fieldset>
 				</div>
 			</commerce-ui:panel>
@@ -92,8 +92,8 @@ boolean hasPermission = commerceDiscountQualifiersDisplayContext.hasPermission(A
 			>
 				<div class="row">
 					<aui:fieldset markupView="lexicon">
-						<aui:input checked='<%= Objects.equals(orderTypeQualifiers, "all") %>' label="all-order-types" name="qualifiers--orderType--" onChange='<%= liferayPortletResponse.getNamespace() + "chooseOrderTypeQualifiers('all');" %>' type="radio" />
-						<aui:input checked='<%= Objects.equals(orderTypeQualifiers, "orderTypes") %>' label="specific-order-types" name="qualifiers--orderType--" onChange='<%= liferayPortletResponse.getNamespace() + "chooseOrderTypeQualifiers('orderTypes');" %>' type="radio" />
+						<aui:input checked='<%= Objects.equals(orderTypeQualifiers, "all") %>' label="all-order-types" name="qualifiers--orderType--" onchange='<%= liferayPortletResponse.getNamespace() + "chooseOrderTypeQualifiers('all');" %>' type="radio" />
+						<aui:input checked='<%= Objects.equals(orderTypeQualifiers, "orderTypes") %>' label="specific-order-types" name="qualifiers--orderType--" onchange='<%= liferayPortletResponse.getNamespace() + "chooseOrderTypeQualifiers('orderTypes');" %>' type="radio" />
 					</aui:fieldset>
 				</div>
 			</commerce-ui:panel>

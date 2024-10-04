@@ -209,7 +209,7 @@ if (deliveryMaxSubscriptionCycles > 0) {
 		>
 			<div class="row">
 				<div class="col-6">
-					<aui:select name="subscriptionType" onChange='<%= liferayPortletResponse.getNamespace() + "selectSubscriptionType();" %>' showEmptyOption="<%= true %>">
+					<aui:select name="subscriptionType" onchange='<%= liferayPortletResponse.getNamespace() + "selectSubscriptionType();" %>' showEmptyOption="<%= true %>">
 
 						<%
 						for (CPSubscriptionType curCPSubscriptionType : cpSubscriptionTypes) {
@@ -334,7 +334,7 @@ if (deliveryMaxSubscriptionCycles > 0) {
 		>
 			<div class="row">
 				<div class="col-6">
-					<aui:select label="subscription-type" name="deliverySubscriptionType" onChange='<%= liferayPortletResponse.getNamespace() + "selectDeliverySubscriptionType();" %>' showEmptyOption="<%= true %>">
+					<aui:select label="subscription-type" name="deliverySubscriptionType" onchange='<%= liferayPortletResponse.getNamespace() + "selectDeliverySubscriptionType();" %>' showEmptyOption="<%= true %>">
 
 						<%
 						for (CPSubscriptionType curCPSubscriptionType : cpSubscriptionTypes) {

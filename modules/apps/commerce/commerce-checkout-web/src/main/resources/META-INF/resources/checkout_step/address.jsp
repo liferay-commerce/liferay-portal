@@ -31,7 +31,7 @@ String paramName = baseAddressCheckoutStepDisplayContext.getParamName();
 	<div class="form-group-autofit">
 		<c:if test="<%= !commerceOrder.isGuestOrder() %>">
 			<c:if test="<%= baseAddressCheckoutStepDisplayContext.hasPermission(permissionChecker, accountEntry, AccountActionKeys.VIEW_ADDRESSES) %>">
-				<aui:select label='<%= "choose-" + baseAddressCheckoutStepDisplayContext.getTitle() %>' name="commerceAddress" onChange='<%= liferayPortletResponse.getNamespace() + "selectAddress();" %>' wrapperCssClass="commerce-form-group-item-row form-group-item">
+				<aui:select label='<%= "choose-" + baseAddressCheckoutStepDisplayContext.getTitle() %>' name="commerceAddress" onchange='<%= liferayPortletResponse.getNamespace() + "selectAddress();" %>' wrapperCssClass="commerce-form-group-item-row form-group-item">
 					<c:choose>
 						<c:when test="<%= hasManageAddressesPermission %>">
 							<aui:option label="add-new-address" value="0" />
