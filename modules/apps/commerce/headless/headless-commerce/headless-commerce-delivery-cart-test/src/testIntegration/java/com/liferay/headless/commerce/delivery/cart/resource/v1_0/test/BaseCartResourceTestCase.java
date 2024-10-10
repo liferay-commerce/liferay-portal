@@ -1887,6 +1887,16 @@ public abstract class BaseCartResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals(
+					"paymentMethodType", additionalAssertFieldName)) {
+
+				if (cart.getPaymentMethodType() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("paymentStatus", additionalAssertFieldName)) {
 				if (cart.getPaymentStatus() == null) {
 					valid = false;
@@ -2424,6 +2434,19 @@ public abstract class BaseCartResourceTestCase {
 				if (!Objects.deepEquals(
 						cart1.getPaymentMethodLabel(),
 						cart2.getPaymentMethodLabel())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"paymentMethodType", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						cart1.getPaymentMethodType(),
+						cart2.getPaymentMethodType())) {
 
 					return false;
 				}
@@ -3463,6 +3486,12 @@ public abstract class BaseCartResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("paymentMethodType")) {
+			sb.append(String.valueOf(cart.getPaymentMethodType()));
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("paymentStatus")) {
 			sb.append(String.valueOf(cart.getPaymentStatus()));
 
@@ -3933,6 +3962,7 @@ public abstract class BaseCartResourceTestCase {
 					RandomTestUtil.randomString());
 				paymentMethodLabel = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
+				paymentMethodType = RandomTestUtil.randomInt();
 				paymentStatus = RandomTestUtil.randomInt();
 				paymentStatusLabel = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
