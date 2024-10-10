@@ -1044,3 +1044,97 @@ test('LPD-3440 As a order manager with buyer approval workflow, I can approve or
 
 	await expect(pendingOrdersPage.checkoutButton).toBeVisible();
 });
+
+test('LPD-35323 Multishipping tab is visible on pending order details page when Allow Multishipping toggle is enabled', async ({
+	apiHelpers,
+	applicationsMenuPage,
+	commerceAdminChannelDetailsPage,
+	commerceAdminChannelsPage,
+	commerceLayoutsPage,
+	page,
+	pendingOrdersPage,
+}) => {
+	const site = await apiHelpers.headlessSite.createSite({
+		name: 'Pending order',
+	});
+
+	apiHelpers.data.push({id: site.id, type: 'site'});
+
+	const channel = await apiHelpers.headlessCommerceAdminChannel.postChannel({
+		name: 'Pending order Channel',
+		siteGroupId: site.id,
+	});
+
+	await commerceAdminChannelsPage.goto();
+
+	await (
+		await commerceAdminChannelsPage.channelsTableRowLink(channel.name)
+	).click();
+
+	await page.getByLabel('Commerce Site Type').selectOption({label: 'B2B'});
+
+	const headerActions = page.locator('.header-actions');
+
+	await headerActions.getByText('Save').click();
+
+	await expect(
+		page.getByText('Success:Your request completed successfully.')
+	).toBeVisible();
+
+	const account = await apiHelpers.headlessAdminUser.postAccount({
+		name: getRandomString(),
+		type: 'business',
+	});
+
+	apiHelpers.data.push({id: account.id, type: 'account'});
+
+	await apiHelpers.headlessCommerceAdminOrder.postOrder({
+		accountId: account.id,
+		channelId: channel.id,
+		name: 'order1',
+		orderStatus: '2',
+	});
+
+	await applicationsMenuPage.goToSite('Pending order');
+
+	await commerceLayoutsPage.goToPages(false);
+	await commerceLayoutsPage.createWidgetPage('Pending Orders Page');
+
+	await page.goto(`/web/${site.name}`);
+
+	await pendingOrdersPage.addPendingOrdersWidget();
+
+	await expect(pendingOrdersPage.orderItemsTable).toBeVisible();
+
+	await pendingOrdersPage.viewButton.click();
+
+	await expect(pendingOrdersPage.multishippingTab).toBeHidden();
+
+	await commerceAdminChannelsPage.goto();
+
+	await (
+		await commerceAdminChannelsPage.channelsTableRowLink(channel.name)
+	).click();
+
+	await (
+		await commerceAdminChannelDetailsPage.allowMultishippingToggle
+	).check();
+
+	await expect(
+		await commerceAdminChannelDetailsPage.allowMultishippingToggle
+	).toBeChecked();
+
+	await (await commerceAdminChannelDetailsPage.saveButton).click();
+
+	await expect(
+		await commerceAdminChannelDetailsPage.allowMultishippingToggle
+	).toBeChecked();
+
+	await page.goto(`/web/${site.name}`);
+
+	await expect(pendingOrdersPage.orderItemsTable).toBeVisible();
+
+	await pendingOrdersPage.viewButton.click();
+
+	await expect(pendingOrdersPage.multishippingTab).toBeVisible();
+});

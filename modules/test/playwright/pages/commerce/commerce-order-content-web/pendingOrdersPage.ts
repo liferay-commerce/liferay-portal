@@ -18,6 +18,7 @@ export class PendingOrdersPage extends CommerceDNDTablePage {
 	readonly editMenuItem: Locator;
 	readonly errorMessageCloseButton: Locator;
 	readonly layoutsPage: CommerceLayoutsPage;
+	readonly multishippingTab: Locator;
 	readonly orderItemActionsButton: Locator;
 	readonly orderItemActionsButtonEdit: Locator;
 	readonly orderItemsTable: Locator;
@@ -93,6 +94,7 @@ export class PendingOrdersPage extends CommerceDNDTablePage {
 				`Cannot locate order item row with productName ${productName}`
 			);
 		};
+		this.multishippingTab = page.getByText('Multishipping');
 		this.page = page;
 		this.pageLabel = page
 			.getByTestId('layoutHref')
