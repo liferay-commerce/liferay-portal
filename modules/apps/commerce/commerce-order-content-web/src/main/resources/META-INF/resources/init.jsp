@@ -50,6 +50,7 @@ page import="com.liferay.commerce.model.CommerceOrderNote" %><%@
 page import="com.liferay.commerce.model.CommerceOrderType" %><%@
 page import="com.liferay.commerce.order.CommerceOrderValidatorResult" %><%@
 page import="com.liferay.commerce.order.content.web.internal.constants.CommerceOrderFDSNames" %><%@
+page import="com.liferay.commerce.order.content.web.internal.constants.CommerceOrderScreenNavigationConstants" %><%@
 page import="com.liferay.commerce.order.content.web.internal.display.context.CommerceOrderContentDisplayContext" %><%@
 page import="com.liferay.commerce.order.content.web.internal.importer.type.CSVCommerceOrderImporterTypeImpl" %><%@
 page import="com.liferay.commerce.order.content.web.internal.portlet.CommerceOpenOrderContentPortlet" %><%@

@@ -393,17 +393,10 @@ CommerceOrder commerceOrder = commerceOrderContentDisplayContext.getCommerceOrde
 			bodyClasses="p-0"
 			title='<%= LanguageUtil.get(request, "items") %>'
 		>
-			<frontend-data-set:classic-display
-				contextParams='<%=
-					HashMapBuilder.<String, String>put(
-						"commerceOrderId", String.valueOf(commerceOrder.getCommerceOrderId())
-					).build()
-				%>'
-				dataProviderKey="<%= CommerceOrderFDSNames.PENDING_ORDER_ITEMS %>"
-				id="<%= CommerceOrderFDSNames.PENDING_ORDER_ITEMS %>"
-				itemsPerPage="<%= 10 %>"
-				nestedItemsKey="orderItemId"
-				nestedItemsReferenceKey="orderItems"
+			<liferay-frontend:screen-navigation
+				key="<%= CommerceOrderScreenNavigationConstants.SCREEN_NAVIGATION_KEY_COMMERCE_ORDER_ITEMS %>"
+				modelBean="<%= commerceOrder %>"
+				portletURL="<%= currentURLObj %>"
 			/>
 		</commerce-ui:panel>
 	</div>

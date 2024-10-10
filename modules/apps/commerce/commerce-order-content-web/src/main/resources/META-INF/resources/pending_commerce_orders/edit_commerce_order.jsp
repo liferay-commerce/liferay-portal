@@ -487,22 +487,10 @@ List<String> errorMessages = (List<String>)request.getAttribute(CommerceWebKeys.
 
 <div class="row">
 	<div class="col-md-9">
-
-		<%
-		java.util.Map<String, String> contextParams = new java.util.HashMap<>();
-
-		contextParams.put("commerceOrderId", String.valueOf(commerceOrder.getCommerceOrderId()));
-		%>
-
-		<frontend-data-set:classic-display
-			contextParams="<%= contextParams %>"
-			dataProviderKey="<%= CommerceOrderFDSNames.PENDING_ORDER_ITEMS %>"
-			id="<%= CommerceOrderFDSNames.PENDING_ORDER_ITEMS %>"
-			itemsPerPage="<%= 10 %>"
-			nestedItemsKey="orderItemId"
-			nestedItemsReferenceKey="orderItems"
-			propsTransformer="{PendingOrderItemActionDropdownPropsTransformer} from commerce-order-content-web"
-			style="stacked"
+		<liferay-frontend:screen-navigation
+			key="<%= CommerceOrderScreenNavigationConstants.SCREEN_NAVIGATION_KEY_COMMERCE_ORDER_ITEMS %>"
+			modelBean="<%= commerceOrder %>"
+			portletURL="<%= currentURLObj %>"
 		/>
 	</div>
 
