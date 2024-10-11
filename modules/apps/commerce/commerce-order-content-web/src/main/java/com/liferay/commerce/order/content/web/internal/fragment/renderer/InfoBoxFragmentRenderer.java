@@ -22,6 +22,8 @@ import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.service.CommerceOrderService;
 import com.liferay.commerce.service.CommerceOrderTypeService;
+import com.liferay.commerce.term.model.CommerceTermEntry;
+import com.liferay.commerce.term.service.CommerceTermEntryLocalService;
 import com.liferay.commerce.util.CommerceShippingEngineRegistry;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.renderer.FragmentRenderer;
@@ -68,6 +70,7 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.FormatStyle;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -191,7 +194,7 @@ public class InfoBoxFragmentRenderer implements FragmentRenderer {
 				"liferay-commerce:info-box:additionalProps",
 				_getAdditionalProps(
 					commerceOrder, field, httpServletRequest,
-					permissionChecker));
+					fragmentRendererContext.getLocale(), permissionChecker));
 
 			httpServletRequest.setAttribute(
 				"liferay-commerce:info-box:commerceOrderId",
@@ -250,7 +253,7 @@ public class InfoBoxFragmentRenderer implements FragmentRenderer {
 
 	private Map<String, Object> _getAdditionalProps(
 			CommerceOrder commerceOrder, String field,
-			HttpServletRequest httpServletRequest,
+			HttpServletRequest httpServletRequest, Locale locale,
 			PermissionChecker permissionChecker)
 		throws PortalException {
 
@@ -269,6 +272,32 @@ public class InfoBoxFragmentRenderer implements FragmentRenderer {
 			).put(
 				"value", commerceOrder.getBillingAddressId()
 			).build();
+		}
+		else if (field.equals("deliveryTermId")) {
+			long deliveryCommerceTermEntryId =
+				commerceOrder.getDeliveryCommerceTermEntryId();
+
+			if (deliveryCommerceTermEntryId == 0) {
+				return Collections.emptyMap();
+			}
+
+			HashMap<String, Object> additionalProps =
+				HashMapBuilder.<String, Object>put(
+					"value", deliveryCommerceTermEntryId
+				).build();
+
+			if (!commerceOrder.isOpen()) {
+				CommerceTermEntry commerceTermEntry =
+					_commerceTermEntryLocalService.getCommerceTermEntry(
+						deliveryCommerceTermEntryId);
+
+				additionalProps.put(
+					"termDescription",
+					commerceTermEntry.getDescription(
+						_language.getLanguageId(locale)));
+			}
+
+			return additionalProps;
 		}
 		else if (field.equals("paymentMethod")) {
 			CommercePaymentMethod commercePaymentMethod =
@@ -293,6 +322,32 @@ public class InfoBoxFragmentRenderer implements FragmentRenderer {
 			}
 
 			return Collections.emptyMap();
+		}
+		else if (field.equals("paymentTermId")) {
+			long paymentCommerceTermEntryId =
+				commerceOrder.getPaymentCommerceTermEntryId();
+
+			if (paymentCommerceTermEntryId == 0) {
+				return Collections.emptyMap();
+			}
+
+			HashMap<String, Object> additionalProps =
+				HashMapBuilder.<String, Object>put(
+					"value", paymentCommerceTermEntryId
+				).build();
+
+			if (!commerceOrder.isOpen()) {
+				CommerceTermEntry commerceTermEntry =
+					_commerceTermEntryLocalService.getCommerceTermEntry(
+						paymentCommerceTermEntryId);
+
+				additionalProps.put(
+					"termDescription",
+					commerceTermEntry.getDescription(
+						_language.getLanguageId(locale)));
+			}
+
+			return additionalProps;
 		}
 		else if (field.equals("shippingAddress")) {
 			return HashMapBuilder.<String, Object>put(
@@ -458,6 +513,9 @@ public class InfoBoxFragmentRenderer implements FragmentRenderer {
 
 			return commerceChannel.getName();
 		}
+		else if (field.equals("deliveryTermId")) {
+			return commerceOrder.getDeliveryCommerceTermEntryName();
+		}
 		else if (field.equals("orderDate")) {
 			DateFormat dateFormat = DateFormatFactoryUtil.getSimpleDateFormat(
 				DateTimeFormatterBuilder.getLocalizedDateTimePattern(
@@ -496,6 +554,9 @@ public class InfoBoxFragmentRenderer implements FragmentRenderer {
 			if (commercePaymentIntegration != null) {
 				return commercePaymentIntegration.getName(locale);
 			}
+		}
+		else if (field.equals("paymentTermId")) {
+			return commerceOrder.getPaymentCommerceTermEntryName();
 		}
 		else if (field.equals("purchaseOrderNumber")) {
 			return commerceOrder.getPurchaseOrderNumber();
@@ -617,6 +678,9 @@ public class InfoBoxFragmentRenderer implements FragmentRenderer {
 
 	@Reference
 	private CommerceShippingEngineRegistry _commerceShippingEngineRegistry;
+
+	@Reference
+	private CommerceTermEntryLocalService _commerceTermEntryLocalService;
 
 	@Reference
 	private FragmentEntryConfigurationParser _fragmentEntryConfigurationParser;

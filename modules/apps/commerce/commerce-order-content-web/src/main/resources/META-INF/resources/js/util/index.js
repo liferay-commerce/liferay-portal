@@ -9,7 +9,9 @@ import React from 'react';
 
 const EDITABLE_FIELDS = [
 	'billingAddress',
+	'deliveryTerm',
 	'paymentMethod',
+	'paymentTerm',
 	'requestedDeliveryDate',
 	'shippingAddress',
 	'shippingMethod',
