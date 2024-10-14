@@ -49,6 +49,7 @@ export class CommerceLayoutsPage {
 	readonly page: Page;
 	readonly pagesMenuItem: Locator;
 	readonly pageTemplatesMenuItem: Locator;
+	readonly paymentTermsSelect: Locator;
 	readonly pendingOrdersLink: Locator;
 	readonly previewItemSelectorButton: Locator;
 	readonly publishButton: Locator;
@@ -149,8 +150,8 @@ export class CommerceLayoutsPage {
 			exact: true,
 			name: 'Cancel',
 		});
-		this.infoBoxFieldSelect = page.getByLabel('Field');
-		this.infoBoxLabelInput = page.getByLabel('Label');
+		this.infoBoxFieldSelect = page.getByLabel('Field', {exact: true});
+		this.infoBoxLabelInput = page.getByLabel('Label', {exact: true});
 		this.infoBoxShippingMethodAlert = page.getByText('are no available');
 		this.infoBoxShippingMethodSelect = page.getByLabel('Choose Courier');
 		this.infoBoxReadOnlyToggle = page.getByLabel('Read Only');
@@ -175,6 +176,9 @@ export class CommerceLayoutsPage {
 		this.pageTemplatesMenuItem = page
 			.getByTestId('app')
 			.filter({hasText: 'Page Templates'});
+		this.paymentTermsSelect = page.locator(
+			'#paymentTermId_infoBoxModalTermInput'
+		);
 		this.pendingOrdersLink = page.getByRole('link', {
 			exact: true,
 			name: 'Pending Orders',
