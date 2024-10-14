@@ -26,6 +26,7 @@ export class CommerceLayoutsPage {
 	readonly defaultDisplayPageTemplateIcon: Locator;
 	readonly defineCustomThemeCheckbox: Locator;
 	readonly deleteLayoutModal: Locator;
+	readonly deleteMenuItemModal: Locator;
 	readonly deletePageButton: Locator;
 	readonly designMenuItem: Locator;
 	readonly designLink: Locator;
@@ -33,6 +34,7 @@ export class CommerceLayoutsPage {
 	readonly displayPageTemplatesLink: Locator;
 	readonly editMenuItem: Locator;
 	readonly firstFragment: Locator;
+	readonly iconLock: Locator;
 	readonly infoBoxButton: (label: string) => Locator;
 	readonly infoBoxCancelButton: Locator;
 	readonly infoBoxFieldSelect: Locator;
@@ -41,6 +43,7 @@ export class CommerceLayoutsPage {
 	readonly infoBoxShippingMethodSelect: Locator;
 	readonly infoBoxReadOnlyToggle: Locator;
 	readonly infoBoxValue: (name: string) => Locator;
+	readonly inputTextArea: Locator;
 	readonly inputTextbox: (name: string) => Locator;
 	readonly markAsDefaultMenuItem: Locator;
 	readonly moreActionsButton: Locator;
@@ -59,6 +62,7 @@ export class CommerceLayoutsPage {
 	readonly siteBuilderMenuItem: Locator;
 	readonly siteHomePageLink: Locator;
 	readonly stepTrackerItem: (name: string) => Locator;
+	readonly submitButton: Locator;
 	readonly widgetPageTemplateButton: Locator;
 
 	constructor(page: Page) {
@@ -122,6 +126,10 @@ export class CommerceLayoutsPage {
 			'Define a custom theme for this page.'
 		);
 		this.deleteLayoutModal = page.locator('#deleteLayoutModalDeleteButton');
+		this.deleteMenuItemModal = page.getByRole('menuitem', {
+			exact: true,
+			name: 'Delete',
+		});
 		this.deletePageButton = page
 			.getByTestId('actionDropdownItem')
 			.getByRole('button', {
@@ -149,12 +157,14 @@ export class CommerceLayoutsPage {
 			exact: true,
 			name: 'Cancel',
 		});
+		this.iconLock = page.locator('.lexicon-icon-lock');
 		this.infoBoxFieldSelect = page.getByLabel('Field');
 		this.infoBoxLabelInput = page.getByLabel('Label');
 		this.infoBoxShippingMethodAlert = page.getByText('are no available');
 		this.infoBoxShippingMethodSelect = page.getByLabel('Choose Courier');
 		this.infoBoxReadOnlyToggle = page.getByLabel('Read Only');
 		this.infoBoxValue = (name: string) => page.getByText(name);
+		this.inputTextArea = page.getByRole('textbox');
 		this.inputTextbox = (name: string) =>
 			page.getByRole('textbox', {exact: true, name});
 		this.markAsDefaultMenuItem = page.getByRole('menuitem', {
@@ -204,6 +214,10 @@ export class CommerceLayoutsPage {
 		});
 		this.stepTrackerItem = (name: string) =>
 			page.locator('li').filter({hasText: name});
+		this.submitButton = page.getByRole('button', {
+			exact: true,
+			name: 'Submit',
+		});
 		this.widgetPageTemplateButton = page
 			.getByTestId('cardPageItemDirectory')
 			.getByRole('button', {
