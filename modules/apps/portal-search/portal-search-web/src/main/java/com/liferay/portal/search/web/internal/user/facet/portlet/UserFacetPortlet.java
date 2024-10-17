@@ -113,8 +113,10 @@ public class UserFacetPortlet extends MVCPortlet {
 			userFacetPortletPreferences.isFrequenciesVisible());
 		userSearchFacetDisplayContextBuilder.setFrequencyThreshold(
 			userFacetPortletPreferences.getFrequencyThreshold());
+
 		userSearchFacetDisplayContextBuilder.setLocale(
 			_getLocale(portletSharedSearchResponse, renderRequest));
+
 		userSearchFacetDisplayContextBuilder.setMaxTerms(
 			userFacetPortletPreferences.getMaxTerms());
 		userSearchFacetDisplayContextBuilder.setOrder(

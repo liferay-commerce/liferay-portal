@@ -115,8 +115,10 @@ public class FolderFacetPortlet extends MVCPortlet {
 			folderFacetPortletPreferences.isFrequenciesVisible());
 		folderSearchFacetDisplayContextBuilder.setFrequencyThreshold(
 			folderFacetPortletPreferences.getFrequencyThreshold());
+
 		folderSearchFacetDisplayContextBuilder.setLocale(
 			_getLocale(portletSharedSearchResponse, renderRequest));
+
 		folderSearchFacetDisplayContextBuilder.setMaxTerms(
 			folderFacetPortletPreferences.getMaxTerms());
 		folderSearchFacetDisplayContextBuilder.setOrder(
