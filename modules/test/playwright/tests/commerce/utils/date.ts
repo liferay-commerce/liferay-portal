@@ -9,10 +9,52 @@ interface IOption {
 
 export const customFormatDate: IOption = {
 	DATE_AND_TIME: {
+		day: '2-digit',
+		hour: 'numeric',
+		minute: 'numeric',
+		month: '2-digit',
+		timeZone: 'UTC',
+		year: 'numeric',
+	},
+};
+
+export const customFormatDateYY: IOption = {
+	DATE_AND_TIME: {
+		day: 'numeric',
+		month: 'short',
+		timeZone: 'UTC',
+		year: '2-digit',
+	},
+};
+
+export const customFormatDateYYYY: IOption = {
+	DATE_AND_TIME: {
+		day: 'numeric',
+		month: 'short',
+		timeZone: 'UTC',
+		year: 'numeric',
+	},
+};
+
+export const customFormatDateTimeYY: IOption = {
+	DATE_AND_TIME: {
 		day: 'numeric',
 		hour: 'numeric',
 		minute: 'numeric',
-		month: 'numeric',
+		month: 'short',
+		second: 'numeric',
+		timeZone: 'UTC',
+		year: '2-digit',
+	},
+};
+
+export const customFormatDateTimeYYYY: IOption = {
+	DATE_AND_TIME: {
+		day: 'numeric',
+		hour: 'numeric',
+		minute: 'numeric',
+		month: 'short',
+		second: 'numeric',
 		timeZone: 'UTC',
 		year: 'numeric',
 	},
@@ -20,23 +62,22 @@ export const customFormatDate: IOption = {
 
 export function getDateCustomFormat(
 	rawDate: string,
+	locale: string,
 	format: Intl.DateTimeFormatOptions
 ) {
 	const date = new Date(rawDate);
 
-	return date?.toLocaleDateString('en-US', format);
+	return date?.toLocaleDateString(locale, format);
 }
 
 export function getUTCHourAndDateFormat(date: string, locale: string) {
-	return new Date(date)
-		.toLocaleDateString(locale, {
-			day: 'numeric',
-			hour: 'numeric',
-			hour12: true,
-			minute: '2-digit',
-			month: 'numeric',
-			timeZone: 'UTC',
-			year: '2-digit',
-		})
-		.replace(',', '');
+	return new Date(date).toLocaleDateString(locale, {
+		day: 'numeric',
+		hour: 'numeric',
+		hour12: true,
+		minute: '2-digit',
+		month: 'numeric',
+		timeZone: 'UTC',
+		year: '2-digit',
+	});
 }

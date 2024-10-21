@@ -10,6 +10,7 @@ import {commercePagesTest} from '../../../fixtures/commercePagesTest';
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {systemSettingsPageTest} from '../../../fixtures/systemSettingsPageTest';
 import {usersAndOrganizationsPagesTest} from '../../../fixtures/usersAndOrganizationsPagesTest';
 import getRandomString from '../../../utils/getRandomString';
 import performLogin, {
@@ -18,6 +19,13 @@ import performLogin, {
 } from '../../../utils/performLogin';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import {miniumSetUp} from '../utils/commerce';
+import {
+	customFormatDateTimeYY,
+	customFormatDateTimeYYYY,
+	customFormatDateYY,
+	customFormatDateYYYY,
+	getDateCustomFormat,
+} from '../utils/date';
 
 export const test = mergeTests(
 	applicationsMenuPageTest,
@@ -27,7 +35,8 @@ export const test = mergeTests(
 		'LPS-178052': true,
 	}),
 	loginTest(),
-	usersAndOrganizationsPagesTest
+	usersAndOrganizationsPagesTest,
+	systemSettingsPageTest
 );
 
 test('LPD-25831 Placed orders widget configuration to display full addresses and phone number', async ({
@@ -498,4 +507,317 @@ test('LPD-33783 Placed orders table displays correct fields', async ({
 	await expect(await placedOrdersPage.tableHeaders.innerText()).toEqual(
 		tableHeaderLabels.join('\n')
 	);
+});
+
+test('LPD-33658 Assert date and time are displayed as order date', async ({
+	apiHelpers,
+	commerceAdminChannelsPage,
+	commerceLayoutsPage,
+	page,
+	placedOrdersPage,
+}) => {
+	const site = await apiHelpers.headlessSite.createSite({
+		name: getRandomString(),
+	});
+
+	apiHelpers.data.push({id: site.id, type: 'site'});
+
+	const channel = await apiHelpers.headlessCommerceAdminChannel.postChannel({
+		name: getRandomString(),
+		siteGroupId: site.id,
+	});
+
+	await commerceAdminChannelsPage.changeCommerceChannelSiteType(
+		channel.name,
+		'B2B'
+	);
+
+	const account = await apiHelpers.headlessAdminUser.postAccount({
+		name: getRandomString(),
+		type: 'business',
+	});
+
+	apiHelpers.data.push({id: account.id, type: 'account'});
+
+	await commerceLayoutsPage.goToPages(true, site.name);
+	await commerceLayoutsPage.createWidgetPage('Placed Orders Page');
+
+	await page.goto(`/web/${site.name}`);
+
+	await placedOrdersPage.addPlacedOrdersWidget();
+
+	const catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+	const product = await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+		catalogId: catalog.id,
+	});
+
+	const productSkus = await apiHelpers.headlessCommerceAdminCatalog
+		.getProduct(product.productId)
+		.then((product) => {
+			return product.skus;
+		});
+
+	const sku = productSkus[0];
+
+	const address = await apiHelpers.headlessCommerceAdminAccount.postAddress(
+		account.id,
+		{phoneNumber: '12345', regionISOCode: 'AL'}
+	);
+
+	const order = await apiHelpers.headlessCommerceAdminOrder.postOrder({
+		accountId: account.id,
+		billingAddressId: address.id,
+		channelId: channel.id,
+		orderItems: [
+			{
+				decimalQuantity: 10,
+				quantity: 2,
+				skuId: sku.id,
+			},
+		],
+		orderStatus: '0',
+		paymentMethod: 'paypal',
+		paymentStatus: '0',
+		shippingAddressId: address.id,
+	});
+
+	await page.reload();
+
+	const locale = await page.evaluate(() => {
+		return Liferay.ThemeDisplay.getBCP47LanguageId();
+	});
+
+	await expect(
+		page
+			.getByText(
+				getDateCustomFormat(
+					order.createDate,
+					locale,
+					customFormatDateTimeYY.DATE_AND_TIME
+				).replace(/,(?=[^,]*$)/, '')
+			)
+			.or(
+				page.getByText(
+					getDateCustomFormat(
+						order.createDate,
+						locale,
+						customFormatDateTimeYYYY.DATE_AND_TIME
+					).replace(/,(?=[^,]*$)/, '')
+				)
+			)
+	).toBeVisible();
+
+	await placedOrdersPage.placedOrderTableViewButton.click();
+
+	await expect(
+		page
+			.getByText(
+				getDateCustomFormat(
+					order.createDate,
+					locale,
+					customFormatDateTimeYY.DATE_AND_TIME
+				).replace(/,(?=[^,]*$)/, '')
+			)
+			.or(
+				page.getByText(
+					getDateCustomFormat(
+						order.createDate,
+						locale,
+						customFormatDateTimeYYYY.DATE_AND_TIME
+					).replace(/,(?=[^,]*$)/, '')
+				)
+			)
+	).toBeVisible();
+
+	await page.goto(`/web/${site.name}`);
+});
+
+test('LPD-33658 Global Settings for order date configuration', async ({
+	apiHelpers,
+	applicationsMenuPage,
+	commerceAdminChannelsPage,
+	commerceLayoutsPage,
+	page,
+	placedOrdersPage,
+	systemSettingsPage,
+}) => {
+	await systemSettingsPage.goToSystemSetting('Orders', 'Placed Orders');
+
+	try {
+		if (!(await page.getByLabel('Show Order Create Time').isChecked())) {
+			await page.getByLabel('Show Order Create Time').check();
+			await page.getByTestId('submitConfiguration').click();
+		}
+
+		const site = await apiHelpers.headlessSite.createSite({
+			name: getRandomString(),
+		});
+
+		apiHelpers.data.push({id: site.id, type: 'site'});
+
+		const channel =
+			await apiHelpers.headlessCommerceAdminChannel.postChannel({
+				name: getRandomString(),
+				siteGroupId: site.id,
+			});
+
+		await commerceAdminChannelsPage.changeCommerceChannelSiteType(
+			channel.name,
+			'B2B'
+		);
+
+		const account = await apiHelpers.headlessAdminUser.postAccount({
+			name: getRandomString(),
+			type: 'business',
+		});
+
+		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
+			account.id,
+			['demo.unprivileged@liferay.com']
+		);
+		const user =
+			await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
+				'demo.unprivileged@liferay.com'
+			);
+		const rolesResponse =
+			await apiHelpers.headlessAdminUser.getAccountRoles(account.id);
+
+		const buyerAccountRole = rolesResponse?.items?.filter((role) => {
+			return role.name === 'Buyer';
+		});
+
+		await apiHelpers.headlessAdminUser.assignAccountRoles(
+			account.externalReferenceCode,
+			buyerAccountRole[0].id,
+			user.emailAddress
+		);
+
+		await commerceLayoutsPage.goToPages(true, site.name);
+		await commerceLayoutsPage.createWidgetPage('Placed Orders Page');
+
+		await applicationsMenuPage.goToSite(site.name);
+
+		await placedOrdersPage.addPlacedOrdersWidget();
+
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+			});
+
+		const productSkus = await apiHelpers.headlessCommerceAdminCatalog
+			.getProduct(product.productId)
+			.then((product) => {
+				return product.skus;
+			});
+
+		const sku = productSkus[0];
+
+		const address =
+			await apiHelpers.headlessCommerceAdminAccount.postAddress(
+				account.id,
+				{phoneNumber: '12345', regionISOCode: 'AL'}
+			);
+
+		const order = await apiHelpers.headlessCommerceAdminOrder.postOrder({
+			accountId: account.id,
+			billingAddressId: address.id,
+			channelId: channel.id,
+			orderItems: [
+				{
+					decimalQuantity: 10,
+					quantity: 2,
+					skuId: sku.id,
+				},
+			],
+			orderStatus: '0',
+			paymentMethod: 'paypal',
+			paymentStatus: '0',
+			shippingAddressId: address.id,
+		});
+
+		await performLogout(page);
+
+		await performLogin(page, user.alternateName);
+
+		await page.goto(`/web/${site.name}`);
+
+		await placedOrdersPage.placedOrderTableViewButton.click();
+
+		const locale = await page.evaluate(() => {
+			return Liferay.ThemeDisplay.getBCP47LanguageId();
+		});
+
+		await expect(
+			page
+				.getByText(
+					getDateCustomFormat(
+						order.createDate,
+						locale,
+						customFormatDateTimeYYYY.DATE_AND_TIME
+					).replace(/,(?=[^,]*$)/, '')
+				)
+				.or(
+					page.getByText(
+						getDateCustomFormat(
+							order.createDate,
+							locale,
+							customFormatDateTimeYY.DATE_AND_TIME
+						).replace(/,(?=[^,]*$)/, '')
+					)
+				)
+		).toBeVisible();
+
+		await performLogout(page);
+
+		await performLogin(page, 'test');
+
+		await systemSettingsPage.goToSystemSetting('Orders', 'Placed Orders');
+
+		await page.getByLabel('Show Order Create Time').uncheck();
+
+		await page.getByTestId('submitConfiguration').click();
+
+		await performLogout(page);
+
+		await performLogin(page, user.alternateName);
+
+		await page.goto(`/web/${site.name}`);
+
+		await placedOrdersPage.placedOrderTableViewButton.click();
+
+		await expect(
+			page
+				.getByText(
+					getDateCustomFormat(
+						order.createDate,
+						locale,
+						customFormatDateYY.DATE_AND_TIME
+					)
+				)
+				.or(
+					page.getByText(
+						getDateCustomFormat(
+							order.createDate,
+							locale,
+							customFormatDateYYYY.DATE_AND_TIME
+						)
+					)
+				)
+		).toBeVisible();
+	}
+	finally {
+		await performLogout(page);
+
+		await performLogin(page, 'test');
+
+		await systemSettingsPage.goToSystemSetting('Orders', 'Placed Orders');
+
+		await page.getByLabel('Show Order Create Time').check();
+
+		await page.getByTestId('submitConfiguration').click();
+	}
 });

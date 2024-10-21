@@ -24,6 +24,9 @@ export class PlacedOrdersPage extends CommerceDNDTablePage {
 	readonly pageLabel: Locator;
 	readonly pageTitle: Locator;
 	readonly panelList: Locator;
+	readonly placedOrdersTable: Locator;
+	readonly placedOrderTableOrderDate: (orderDate: string) => Locator;
+	readonly placedOrderTableViewButton: Locator;
 	readonly searchButton: Locator;
 	readonly searchInput: Locator;
 	readonly commerceShippingAddress: Locator;
@@ -78,6 +81,13 @@ export class PlacedOrdersPage extends CommerceDNDTablePage {
 		this.panelList = page
 			.getByTestId('specificationFacetPanel')
 			.getByRole('button');
+		this.placedOrdersTable = page.locator(
+			'#portlet_com_liferay_commerce_order_content_web_internal_portlet_CommerceOrderContentPortlet .dnd-table'
+		);
+		this.placedOrderTableOrderDate = (orderDate) =>
+			this.placedOrdersTable.getByText(orderDate);
+		this.placedOrderTableViewButton =
+			this.placedOrdersTable.getByLabel('View');
 		this.searchButton = page.getByRole('button', {name: 'Search'});
 		this.searchInput = page.getByPlaceholder('Search');
 		this.commerceShippingAddress = page.getByTestId(
@@ -94,3 +104,5 @@ export class PlacedOrdersPage extends CommerceDNDTablePage {
 		await this.layoutsPage.goto();
 	}
 }
+
+// locator('#portlet_com_liferay_commerce_order_content_web_internal_portlet_CommerceOrderContentPortlet .dnd-table').getByText('Oct 18, 24 9:17:33 AM')

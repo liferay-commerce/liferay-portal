@@ -11,6 +11,7 @@ type TOrder = {
 	accountId?: number;
 	billingAddressId?: string;
 	channelId?: number;
+	createDate?: string;
 	currencyCode?: string;
 	id?: number;
 	name?: string;
