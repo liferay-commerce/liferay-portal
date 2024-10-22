@@ -18,7 +18,6 @@ import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
-import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
@@ -29,12 +28,12 @@ import com.liferay.portal.kernel.portlet.PortletProviderUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.WebKeys;
 
@@ -75,18 +74,18 @@ public class OrderReturnsDataSetFragmentRenderer implements FragmentRenderer {
 
 		try {
 			JSONObject jsonObject = _jsonFactory.createJSONObject(
-				StringUtil.read(
-					getClass(),
-					"/com/liferay/commerce/order/content/web/internal" +
-						"/fragment/renderer/order_returns_data_set" +
-							"/dependencies/configuration.json"));
+				new String(
+					FileUtil.getBytes(
+						getClass(),
+						"fragment/renderer/order_returns_data_set" +
+							"/dependencies/configuration.json")));
 
 			return _fragmentEntryConfigurationParser.translateConfiguration(
 				jsonObject, resourceBundle);
 		}
-		catch (JSONException jsonException) {
+		catch (Exception exception) {
 			if (_log.isDebugEnabled()) {
-				_log.debug(jsonException);
+				_log.debug(exception);
 			}
 
 			return StringPool.BLANK;
