@@ -38,7 +38,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Luca Pellizzon
  */
 @Component(
-	property = "fds.data.provider.key=" + CommerceCheckoutFDSNames.DELIVERY_GROUP,
+	property = "fds.data.provider.key=" + CommerceCheckoutFDSNames.DELIVERY_GROUPS,
 	service = FDSDataProvider.class
 )
 public class CommerceCheckoutDeliveryGroupFDSDataProvider
@@ -61,27 +61,28 @@ public class CommerceCheckoutDeliveryGroupFDSDataProvider
 		for (CommerceOrderItem commerceOrderItem :
 				commerceOrder.getCommerceOrderItems()) {
 
-			if (!deliveryGroupMap.containsKey(
+			if (deliveryGroupMap.containsKey(
 					commerceOrderItem.getDeliveryGroup())) {
 
-				CommerceAddress commerceAddress =
-					_commerceAddressLocalService.getCommerceAddress(
-						commerceOrderItem.getShippingAddressId());
-
-				Country country = commerceAddress.getCountry();
-
-				DeliveryGroup deliveryGroup = new DeliveryGroup(
-					StringBundler.concat(
-						commerceAddress.getStreet1(),
-						StringPool.COMMA_AND_SPACE, commerceAddress.getCity(),
-						StringPool.COMMA_AND_SPACE,
-						country.getName(_portal.getLocale(httpServletRequest))),
-					commerceAddress.getCommerceAddressId(),
-					commerceOrderItem.getRequestedDeliveryDate(),
-					commerceOrderItem.getDeliveryGroup());
-
-				deliveryGroupMap.put(deliveryGroup.getName(), deliveryGroup);
+				continue;
 			}
+
+			CommerceAddress commerceAddress =
+				_commerceAddressLocalService.getCommerceAddress(
+					commerceOrderItem.getShippingAddressId());
+
+			Country country = commerceAddress.getCountry();
+
+			DeliveryGroup deliveryGroup = new DeliveryGroup(
+				commerceAddress.getCommerceAddressId(),
+				StringBundler.concat(
+					commerceAddress.getStreet1(), StringPool.COMMA_AND_SPACE,
+					commerceAddress.getCity(), StringPool.COMMA_AND_SPACE,
+					country.getName(_portal.getLocale(httpServletRequest))),
+				commerceOrderItem.getRequestedDeliveryDate(),
+				commerceOrderItem.getDeliveryGroup());
+
+			deliveryGroupMap.put(deliveryGroup.getName(), deliveryGroup);
 		}
 
 		return new ArrayList<>(deliveryGroupMap.values());
@@ -95,7 +96,7 @@ public class CommerceCheckoutDeliveryGroupFDSDataProvider
 		long commerceOrderId = ParamUtil.getLong(
 			httpServletRequest, "commerceOrderId");
 
-		return CommerceOrderUtil.getCommerceOrderDeliveryGroupQuantity(
+		return CommerceOrderUtil.getCommerceOrderDeliveryGroupCount(
 			_commerceOrderLocalService.getCommerceOrder(commerceOrderId));
 	}
 
