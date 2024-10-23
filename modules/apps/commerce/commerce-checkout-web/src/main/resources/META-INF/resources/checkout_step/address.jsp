@@ -148,6 +148,7 @@ String paramName = baseAddressCheckoutStepDisplayContext.getParamName();
 				dataProviderKey="<%= CommerceCheckoutFDSNames.DELIVERY_GROUP %>"
 				id="<%= CommerceCheckoutFDSNames.DELIVERY_GROUP %>"
 				itemsPerPage="<%= 10 %>"
+				propsTransformer="{DeliveryGroupFDSPropsTransformer} from commerce-checkout-web"
 				selectedItemsKey="name"
 				showManagementBar="<%= false %>"
 				showSearch="<%= false %>"
