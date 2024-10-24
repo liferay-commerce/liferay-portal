@@ -214,7 +214,7 @@ definition {
 
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		Navigator.gotoNavItem(navItem = "Performance");
+		WorkflowMetrics.goToPerformanceTab();
 
 		Refresh();
 
@@ -230,7 +230,7 @@ definition {
 
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		Navigator.gotoNavItem(navItem = "Performance");
+		WorkflowMetrics.goToPerformanceTab();
 
 		WorkflowMetrics.checkCompletedWorkflowValues(
 			key_completed = 1,
@@ -1279,7 +1279,7 @@ definition {
 
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		Navigator.gotoNavItem(navItem = "Performance");
+		WorkflowMetrics.goToPerformanceTab();
 
 		WorkflowMetrics.checkCompletedWorkflowValues(
 			key_completed = 1,
@@ -1301,7 +1301,7 @@ definition {
 
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		Navigator.gotoNavItem(navItem = "Performance");
+		WorkflowMetrics.goToPerformanceTab();
 
 		WorkflowMetrics.checkCompletedWorkflowValues(
 			key_completed = 1,

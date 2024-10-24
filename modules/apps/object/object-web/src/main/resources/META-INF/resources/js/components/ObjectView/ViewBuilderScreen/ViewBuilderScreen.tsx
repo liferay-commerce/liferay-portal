@@ -14,7 +14,9 @@ import React, {useState} from 'react';
 import {ModalEditViewColumn} from '../ModalEditViewColumn/ModalEditViewColumn';
 import {TYPES, useViewContext} from '../objectViewContext';
 
-const ViewBuilderScreen: React.FC<{}> = () => {
+const ViewBuilderScreen: React.FC<
+	{children?: React.ReactNode | undefined} & {}
+> = () => {
 	const [visibleEditModal, setVisibleEditModal] = useState(false);
 	const [editingObjectFieldName, setEditingObjectFieldName] = useState('');
 

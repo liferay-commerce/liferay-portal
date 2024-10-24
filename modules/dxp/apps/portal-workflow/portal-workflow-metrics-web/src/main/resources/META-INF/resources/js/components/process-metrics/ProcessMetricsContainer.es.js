@@ -5,9 +5,11 @@
 
 import ClayLayout from '@clayui/layout';
 import {usePrevious} from '@liferay/frontend-js-react-web';
-import React, {useContext, useMemo} from 'react';
+import {fetch} from 'frontend-js-web';
+import React, {useContext, useEffect, useMemo} from 'react';
 import {Route, Switch} from 'react-router-dom';
 
+import {replaceHistory} from '../../shared/components/filter/util/filterUtil.es';
 import HeaderKebab from '../../shared/components/header/HeaderKebab.es';
 import MetricsCalculatedInfo from '../../shared/components/last-updated-info/MetricsCalculatedInfo.es';
 import NavbarTabs from '../../shared/components/navbar-tabs/NavbarTabs.es';
@@ -19,6 +21,8 @@ import {
 } from '../../shared/components/router/routerUtil.es';
 import {useDateModified} from '../../shared/hooks/useDateModified.es';
 import {useProcessTitle} from '../../shared/hooks/useProcessTitle.es';
+import {useRouter} from '../../shared/hooks/useRouter.es';
+import {headers, metricsBaseURL} from '../../shared/rest/fetch.es';
 import {AppContext} from '../AppContext.es';
 import {useTimeRangeFetch} from '../filter/hooks/useTimeRangeFetch.es';
 import CompletedItemsCard from '../process-metrics/process-items/CompletedItemsCard.es';
@@ -79,6 +83,7 @@ const DashboardTab = ({processId, routeParams}) => {
 
 function PerformanceTab({processId, routeParams}) {
 	const {fetchDateModified} = useContext(AppContext);
+	const routerProps = useRouter();
 
 	const {dateModified, fetchData} = useDateModified({
 		processId,
@@ -97,6 +102,68 @@ function PerformanceTab({processId, routeParams}) {
 	}, [fetchDateModified, routeParams]);
 
 	useTimeRangeFetch();
+
+	const addDefaultFiltersToQuery = (defaultTimeRange, query) => {
+		const prefixes = ['completion', 'step', 'assignee', 'completed'];
+
+		for (const prefix of prefixes) {
+			query.filters = {
+				...query.filters,
+				[prefix + 'DateEnd']: defaultTimeRange['dateEnd'],
+				[prefix + 'DateStart']: defaultTimeRange['dateStart'],
+				[prefix + 'TimeRange']: [defaultTimeRange['id']],
+			};
+		}
+
+		query.filters['completionVelocityUnit[0]'] = 'Days';
+		query.filters['stepProcessVersion[0]'] = 'allVersions';
+		query.filters['assigneeTaskNames[0]'] = 'allSteps';
+
+		return stringify(query);
+	};
+
+	const fetchTimeRanges = async () => {
+		let fetchURL = `${metricsBaseURL}${'/time-ranges'}`;
+
+		fetchURL = new URL(fetchURL, Liferay.ThemeDisplay.getPortalURL());
+
+		const response = await fetch(fetchURL, {
+			headers,
+			method: 'GET',
+		});
+
+		return await response.json();
+	};
+
+	useEffect(() => {
+		const replaceHistoryWithDefaultFilters = async () => {
+			const fetchedTimeRanges = await fetchTimeRanges();
+
+			const query = parse(routerProps.location.search);
+
+			if (
+				fetchedTimeRanges?.items?.length &&
+				!query?.filters?.assigneeDateEnd
+			) {
+				const {items: timeRanges} = fetchedTimeRanges;
+
+				const defaultTimeRange = timeRanges.find(
+					(timeRange) => timeRange.defaultTimeRange
+				);
+
+				const queryWithDefaultFilters = addDefaultFiltersToQuery(
+					defaultTimeRange,
+					query
+				);
+
+				replaceHistory(queryWithDefaultFilters, routerProps);
+			}
+		};
+
+		replaceHistoryWithDefaultFilters();
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	return (
 		<PromisesResolver promises={promises}>

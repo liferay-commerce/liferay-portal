@@ -202,55 +202,67 @@ export function MultipleSelect({
 					)}
 
 					<ClayDropDown.ItemList items={filteredOptions}>
-						{(itemGroup: MultiSelectItem) => (
-							<ClayDropDown.Group
-								header={itemGroup.label}
-								items={itemGroup.children}
-								key={itemGroup.value}
-							>
-								{(item) => (
-									<ClayDropDown.Item key={item.value}>
-										<ClayCheckbox
-											checked={item.checked as boolean}
-											label={item.label as string}
-											onChange={({target: {checked}}) => {
-												const newOptions = options.map(
-													(option) => {
-														return {
-															children:
-																option.children.map(
-																	(child) => {
-																		if (
-																			child.value ===
-																			item.value
-																		) {
-																			return {
-																				...child,
-																				checked,
-																			};
-																		}
+						{
 
-																		return child;
-																	}
-																),
-															label: option.label,
-															value: option.value,
-														};
-													}
-												);
-												setOptions(newOptions);
+							// @ts-ignore
 
-												if (!checked) {
-													setSelectAllChecked(
-														checked
-													);
+							(itemGroup: MultiSelectItem) => (
+								<ClayDropDown.Group
+									header={itemGroup.label}
+									items={itemGroup.children}
+									key={itemGroup.value}
+								>
+									{(item) => (
+										<ClayDropDown.Item key={item.value}>
+											<ClayCheckbox
+												checked={
+													item.checked as boolean
 												}
-											}}
-										/>
-									</ClayDropDown.Item>
-								)}
-							</ClayDropDown.Group>
-						)}
+												label={item.label as string}
+												onChange={({
+													target: {checked},
+												}) => {
+													const newOptions =
+														options.map(
+															(option) => {
+																return {
+																	children:
+																		option.children.map(
+																			(
+																				child
+																			) => {
+																				if (
+																					child.value ===
+																					item.value
+																				) {
+																					return {
+																						...child,
+																						checked,
+																					};
+																				}
+
+																				return child;
+																			}
+																		),
+																	label: option.label,
+																	value: option.value,
+																};
+															}
+														);
+													setOptions(newOptions);
+
+													if (!checked) {
+														setSelectAllChecked(
+															checked
+														);
+													}
+												}}
+											/>
+										</ClayDropDown.Item>
+									)}
+								</ClayDropDown.Group>
+							)
+						}
 					</ClayDropDown.ItemList>
 				</ClayAutocomplete.DropDown>
 			</ClayAutocomplete>

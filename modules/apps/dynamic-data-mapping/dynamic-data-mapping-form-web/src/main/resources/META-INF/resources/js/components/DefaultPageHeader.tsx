@@ -10,13 +10,9 @@ import React, {MouseEventHandler} from 'react';
 
 import './DefaultPageHeader.scss';
 
-const DefaultPageHeader: React.FC<IProps> = ({
-	description,
-	hideBackButton,
-	onClickBack,
-	portletNamespace,
-	title,
-}) => {
+const DefaultPageHeader: React.FC<
+	{children?: React.ReactNode | undefined} & IProps
+> = ({description, hideBackButton, onClickBack, portletNamespace, title}) => {
 	return (
 		<>
 			{(onClickBack || hideBackButton) && (

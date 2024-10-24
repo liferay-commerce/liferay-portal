@@ -75,27 +75,37 @@ export function ModalImportWarning({
 									striped={false}
 								>
 									<Head items={tableHeaderItems}>
-										{(column) => (
-											<Cell expanded key={column.id}>
-												{column.name}
-											</Cell>
-										)}
+										{
+
+											// @ts-ignore
+
+											(column) => (
+												<Cell expanded key={column.id}>
+													{column.name}
+												</Cell>
+											)
+										}
 									</Head>
 
 									<Body
 										defaultItems={existingObjectDefinitions}
 									>
-										{(objectDefinition) => (
-											<Row>
-												<Cell>
-													{stringUtils.getLocalizableLabel(
-														objectDefinition.defaultLanguageId,
-														objectDefinition.label,
-														objectDefinition.name
-													)}
-												</Cell>
-											</Row>
-										)}
+										{
+
+											// @ts-ignore
+
+											(objectDefinition) => (
+												<Row>
+													<Cell>
+														{stringUtils.getLocalizableLabel(
+															objectDefinition.defaultLanguageId,
+															objectDefinition.label,
+															objectDefinition.name
+														)}
+													</Cell>
+												</Row>
+											)
+										}
 									</Body>
 								</Table>
 

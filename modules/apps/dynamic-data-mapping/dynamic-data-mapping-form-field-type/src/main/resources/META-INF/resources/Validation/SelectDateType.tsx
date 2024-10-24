@@ -8,7 +8,9 @@ import ClayIcon from '@clayui/icon';
 import {ClayTooltipProvider} from '@clayui/tooltip';
 import React, {useMemo} from 'react';
 
-const SelectDateType: React.FC<IProps> = ({
+const SelectDateType: React.FC<
+	{children?: React.ReactNode | undefined} & IProps
+> = ({
 	dateFieldName,
 	dateFieldOptions,
 	label,

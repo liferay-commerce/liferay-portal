@@ -10,7 +10,9 @@ import React, {useEffect, useState} from 'react';
 import './DefaultPage.scss';
 import DefaultPageHeader from './DefaultPageHeader';
 
-const DefaultPage: React.FC<IProps> = ({
+const DefaultPage: React.FC<
+	{children?: React.ReactNode | undefined} & IProps
+> = ({
 	dataEngineModule,
 	displayChartAsTable,
 	formDescription,

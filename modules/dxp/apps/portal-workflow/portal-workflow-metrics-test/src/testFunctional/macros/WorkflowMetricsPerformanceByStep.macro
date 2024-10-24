@@ -27,11 +27,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro goToPerformanceTab() {
-		Click(locator1 = "WorkflowMetrics#METRICS_PERFORMANCE_TAB");
-	}
-
-	@summary = "Default summary"
 	macro searchForStep(stepName = null) {
 		var key_stepName = ${stepName};
 
@@ -68,7 +63,7 @@ definition {
 
 	@summary = "Default summary"
 	macro viewPerformanceByStepTooltip() {
-		Click(locator1 = "WorkflowMetrics#METRICS_PERFORMANCE_TAB");
+		WorkflowMetrics.goToPerformanceTab();
 
 		AssertElementPresent(locator1 = "WorkflowMetrics#METRICS_PERFORMANCE_BY_STEP_TOOLTIP");
 	}

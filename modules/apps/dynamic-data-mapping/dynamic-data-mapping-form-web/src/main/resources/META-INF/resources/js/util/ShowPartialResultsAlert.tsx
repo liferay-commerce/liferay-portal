@@ -10,10 +10,9 @@ import React, {useState} from 'react';
 
 import './ShowPartialResultsAlert.scss';
 
-const ShowPartialResultsAlert: React.FC<IProps> = ({
-	dismissible,
-	showPartialResultsToRespondents,
-}) => {
+const ShowPartialResultsAlert: React.FC<
+	{children?: React.ReactNode | undefined} & IProps
+> = ({dismissible, showPartialResultsToRespondents}) => {
 	const [isDismissed, setDismissed] = useState(
 		!showPartialResultsToRespondents
 	);

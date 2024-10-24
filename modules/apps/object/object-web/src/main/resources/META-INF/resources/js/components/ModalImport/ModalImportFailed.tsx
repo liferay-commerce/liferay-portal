@@ -120,60 +120,71 @@ export function ModalImportFailed({
 						striped={false}
 					>
 						<Head items={tableHeaderItems}>
-							{(column) => (
-								<Cell expanded key={column.id}>
-									{column.name}
-								</Cell>
-							)}
+							{
+
+								// @ts-ignore
+
+								(column) => (
+									<Cell expanded key={column.id}>
+										{column.name}
+									</Cell>
+								)
+							}
 						</Head>
 
 						<Body items={importedObjectDefinitionsStatus}>
-							{({errorType, label, success}) => (
-								<Row>
-									<Cell>
-										<div className="lfr-object__modal-import-failed-table-body">
-											<Text>{label}</Text>
-										</div>
-									</Cell>
+							{
 
-									<Cell truncate wrap>
-										<div className="lfr-object__modal-import-failed-table-body-status">
-											<ClayIcon
-												color={
-													success
-														? '#287D3C'
-														: '#DA1414'
-												}
-												symbol={
-													success
-														? 'check'
-														: 'exclamation-full'
-												}
-											/>
+								// @ts-ignore
 
-											<Text
-												color={
-													success
-														? 'success'
-														: 'danger'
-												}
-											>
-												{success
-													? Liferay.Language.get(
-															'import-succeeded'
-														)
-													: errorType
-														? errorsUtils.ERRORS[
-																errorType
-															]
-														: Liferay.Language.get(
-																'failed-to-import'
-															)}
-											</Text>
-										</div>
-									</Cell>
-								</Row>
-							)}
+								({errorType, label, success}) => (
+									<Row>
+										<Cell>
+											<div className="lfr-object__modal-import-failed-table-body">
+												<Text>{label}</Text>
+											</div>
+										</Cell>
+
+										<Cell truncate wrap>
+											<div className="lfr-object__modal-import-failed-table-body-status">
+												<ClayIcon
+													color={
+														success
+															? '#287D3C'
+															: '#DA1414'
+													}
+													symbol={
+														success
+															? 'check'
+															: 'exclamation-full'
+													}
+												/>
+
+												<Text
+													color={
+														success
+															? 'success'
+															: 'danger'
+													}
+												>
+													{success
+														? Liferay.Language.get(
+																'import-succeeded'
+															)
+														: errorType
+															? errorsUtils
+																	.ERRORS[
+																	errorType
+																]
+															: Liferay.Language.get(
+																	'failed-to-import'
+																)}
+												</Text>
+											</div>
+										</Cell>
+									</Row>
+								)
+							}
 						</Body>
 					</Table>
 				)}

@@ -107,7 +107,7 @@ definition {
 	test CanFilterTopStepsByWorkflowVersion {
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		WorkflowMetricsPerformanceByStep.goToPerformanceTab();
+		WorkflowMetrics.goToPerformanceTab();
 
 		AssertElementPresent(
 			key_title = "All Versions",
@@ -119,7 +119,7 @@ definition {
 	test CannotInsertFutureDate {
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		Navigator.gotoNavItem(navItem = "Performance");
+		WorkflowMetrics.goToPerformanceTab();
 
 		var displayDateYear = DateUtil.getCurrentYear();
 
@@ -157,7 +157,7 @@ definition {
 
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		Click(locator1 = "WorkflowMetrics#METRICS_PERFORMANCE_TAB");
+		WorkflowMetrics.goToPerformanceTab();
 
 		WorkflowMetricsPerformanceByStep.clickViewAllSteps(
 			stepsNumber = 1,
@@ -216,7 +216,7 @@ definition {
 
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		WorkflowMetricsPerformanceByStep.goToPerformanceTab();
+		WorkflowMetrics.goToPerformanceTab();
 
 		WorkflowMetricsPerformanceByStep.viewPerformanceByStepValues(
 			avgCompletionTimeValue = "1min",
@@ -278,7 +278,7 @@ definition {
 
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		WorkflowMetricsPerformanceByStep.goToPerformanceTab();
+		WorkflowMetrics.goToPerformanceTab();
 
 		WorkflowMetricsPerformanceByStep.viewPerformanceByStepValues(
 			avgCompletionTimeValue = "1min",
@@ -304,7 +304,7 @@ definition {
 	test CanSeeAllVersionsTogetherOnPage {
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		WorkflowMetricsPerformanceByStep.goToPerformanceTab();
+		WorkflowMetrics.goToPerformanceTab();
 
 		Click(
 			key_stepsNumber = 2,
@@ -324,7 +324,7 @@ definition {
 	test CardConsidersClosedInstancesInChosenVersion {
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		WorkflowMetricsPerformanceByStep.goToPerformanceTab();
+		WorkflowMetrics.goToPerformanceTab();
 
 		WorkflowMetricsPerformanceByStep.viewPerformanceByStepValues(
 			avgCompletionTimeValue = "0min",
@@ -367,7 +367,7 @@ definition {
 
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "11 Transitions Definition");
 
-		Click(locator1 = "WorkflowMetrics#METRICS_PERFORMANCE_TAB");
+		WorkflowMetrics.goToPerformanceTab();
 
 		AssertElementNotPresent(
 			key_rowNumber = 11,
@@ -379,7 +379,7 @@ definition {
 	test CardWorksAsDesignedWhenPortalIsSetToNonEnUsLocale {
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		Click(locator1 = "WorkflowMetrics#METRICS_PERFORMANCE_TAB");
+		WorkflowMetrics.goToPerformanceTab();
 
 		WorkflowMetrics.assertChartTotalValuePerformanceByStep(
 			avgCompletionTime = "0min",
@@ -427,7 +427,7 @@ definition {
 	test DefalutFilterValueIsAllVersions {
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		WorkflowMetricsPerformanceByStep.goToPerformanceTab();
+		WorkflowMetrics.goToPerformanceTab();
 
 		AssertElementPresent(
 			key_title = "All Versions",
@@ -439,7 +439,7 @@ definition {
 	test DefaultDateFormatIsMMDDYYYY {
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		Navigator.gotoNavItem(navItem = "Performance");
+		WorkflowMetrics.goToPerformanceTab();
 
 		Click(
 			key_dateRange = "Last 30 Days",
@@ -496,7 +496,7 @@ definition {
 
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		WorkflowMetricsPerformanceByStep.goToPerformanceTab();
+		WorkflowMetrics.goToPerformanceTab();
 
 		WorkflowMetricsPerformanceByStep.viewPerformanceByStepValues(
 			avgCompletionTimeValue = "1min",
@@ -536,7 +536,7 @@ definition {
 
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		WorkflowMetricsPerformanceByStep.goToPerformanceTab();
+		WorkflowMetrics.goToPerformanceTab();
 
 		AssertElementNotPresent(
 			key_stepName = "Update",
@@ -637,7 +637,7 @@ definition {
 		task ("Assert that the step Update is not displayed on Performance by Step page") {
 			WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-			WorkflowMetricsPerformanceByStep.goToPerformanceTab();
+			WorkflowMetrics.goToPerformanceTab();
 
 			Click(
 				key_stepsNumber = 3,
@@ -655,7 +655,7 @@ definition {
 		task ("Go to Performance by Step Page") {
 			WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-			WorkflowMetricsPerformanceByStep.goToPerformanceTab();
+			WorkflowMetrics.goToPerformanceTab();
 
 			Click(
 				key_stepsNumber = 2,
@@ -672,7 +672,7 @@ definition {
 	test FilterItemsFromLast7Days {
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		Navigator.gotoNavItem(navItem = "Performance");
+		WorkflowMetrics.goToPerformanceTab();
 
 		var key_dateRange = "Last 7 Days";
 
@@ -686,7 +686,7 @@ definition {
 	test FilterItemsFromLast90Days {
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		Navigator.gotoNavItem(navItem = "Performance");
+		WorkflowMetrics.goToPerformanceTab();
 
 		var key_dateRange = "Last 90 Days";
 
@@ -700,7 +700,7 @@ definition {
 	test FilterItemsFromLast180Days {
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		Navigator.gotoNavItem(navItem = "Performance");
+		WorkflowMetrics.goToPerformanceTab();
 
 		var key_dateRange = "Last 180 Days";
 
@@ -714,7 +714,7 @@ definition {
 	test FilterItemsFromLastYear {
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		Navigator.gotoNavItem(navItem = "Performance");
+		WorkflowMetrics.goToPerformanceTab();
 
 		var key_dateRange = "Last Year";
 
@@ -728,7 +728,7 @@ definition {
 	test FilterItemsFromToday {
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		Navigator.gotoNavItem(navItem = "Performance");
+		WorkflowMetrics.goToPerformanceTab();
 
 		var key_dateRange = "Today";
 
@@ -742,7 +742,7 @@ definition {
 	test FilterPerformanceByStepPagePerTimeRange {
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		Click(locator1 = "WorkflowMetrics#METRICS_PERFORMANCE_TAB");
+		WorkflowMetrics.goToPerformanceTab();
 
 		Click(
 			key_stepsNumber = 2,
@@ -818,7 +818,7 @@ definition {
 	test InfoIconDisplaysMessageOnHover {
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		Navigator.gotoNavItem(navItem = "Performance");
+		WorkflowMetrics.goToPerformanceTab();
 
 		WorkflowMetricsProcessListView.assertTooltipMessage(
 			sectionName = "Performance by Step",
@@ -830,7 +830,7 @@ definition {
 	test OldestDataAcceptedIs1970 {
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		Navigator.gotoNavItem(navItem = "Performance");
+		WorkflowMetrics.goToPerformanceTab();
 
 		WorkflowMetrics.selectDateRange(
 			completionVelocityDateRange = "Custom Range",
@@ -946,7 +946,7 @@ definition {
 
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		Navigator.gotoNavItem(navItem = "Performance");
+		WorkflowMetrics.goToPerformanceTab();
 
 		Click(
 			key_stepsNumber = 3,
@@ -1011,7 +1011,7 @@ definition {
 
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		Click(locator1 = "WorkflowMetrics#METRICS_PERFORMANCE_TAB");
+		WorkflowMetrics.goToPerformanceTab();
 
 		Click(
 			key_stepsNumber = 3,
@@ -1059,7 +1059,7 @@ definition {
 	test SearchIsAnApproximateMatch {
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		Click(locator1 = "WorkflowMetrics#METRICS_PERFORMANCE_TAB");
+		WorkflowMetrics.goToPerformanceTab();
 
 		Click(
 			key_stepsNumber = 2,
@@ -1126,7 +1126,7 @@ definition {
 		task ("Assert that the steps displayed on Performance by Step card are Review and Update") {
 			WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-			WorkflowMetricsPerformanceByStep.goToPerformanceTab();
+			WorkflowMetrics.goToPerformanceTab();
 
 			WorkflowMetricsPerformanceByStep.viewPerformanceByStepValues(
 				avgCompletionTimeValue = "1min",
@@ -1164,7 +1164,7 @@ definition {
 		task ("On Performance by Step card, select Version 1.0") {
 			WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-			WorkflowMetricsPerformanceByStep.goToPerformanceTab();
+			WorkflowMetrics.goToPerformanceTab();
 
 			Click(
 				key_dateRange = "All Version",
@@ -1254,7 +1254,7 @@ definition {
 
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		Click(locator1 = "WorkflowMetrics#METRICS_PERFORMANCE_TAB");
+		WorkflowMetrics.goToPerformanceTab();
 
 		AssertElementPresent(
 			key_stepName = "Review",
@@ -1267,7 +1267,7 @@ definition {
 	test ToDateMustBeGreaterThanFromDate {
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		Navigator.gotoNavItem(navItem = "Performance");
+		WorkflowMetrics.goToPerformanceTab();
 
 		WorkflowMetrics.selectDateRange(
 			completionVelocityDateRange = "Custom Range",
@@ -1302,7 +1302,7 @@ definition {
 
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "11 Transitions Update");
 
-		Click(locator1 = "WorkflowMetrics#METRICS_PERFORMANCE_TAB");
+		WorkflowMetrics.goToPerformanceTab();
 
 		Click(
 			key_stepsNumber = 11,
@@ -1358,7 +1358,7 @@ definition {
 
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		Navigator.gotoNavItem(navItem = "Performance");
+		WorkflowMetrics.goToPerformanceTab();
 
 		WorkflowMetrics.assertChartTotalValuePerformanceByStep(
 			avgCompletionTime = "1min",
@@ -1371,7 +1371,7 @@ definition {
 
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		Navigator.gotoNavItem(navItem = "Performance");
+		WorkflowMetrics.goToPerformanceTab();
 
 		WorkflowMetrics.assertChartTotalValuePerformanceByStep(
 			avgCompletionTime = "1min",

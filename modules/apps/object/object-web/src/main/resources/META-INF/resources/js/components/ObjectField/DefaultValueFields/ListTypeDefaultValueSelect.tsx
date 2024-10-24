@@ -10,7 +10,9 @@ import {getUpdatedDefaultValueFieldSettings} from '../../../utils/defaultValues'
 import {fixLocaleKeys} from '../../ListTypeDefinition/utils';
 import {InputAsValueFieldComponentProps} from '../Tabs/Advanced/DefaultValueContainer';
 
-const ListTypeDefaultValueSelect: React.FC<InputAsValueFieldComponentProps> = ({
+const ListTypeDefaultValueSelect: React.FC<
+	{children?: React.ReactNode | undefined} & InputAsValueFieldComponentProps
+> = ({
 	creationLanguageId,
 	defaultValue,
 	error,

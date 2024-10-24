@@ -8,11 +8,9 @@ import React, {useEffect, useState} from 'react';
 
 import ExportFormModal from './ExportFormModal';
 
-const ExportForm: React.FC<IProps> = ({
-	csvExport,
-	fileExtensions,
-	portletNamespace,
-}) => {
+const ExportForm: React.FC<
+	{children?: React.ReactNode | undefined} & IProps
+> = ({csvExport, fileExtensions, portletNamespace}) => {
 	const [exportFormURL, setExportFormURL] = useState<string>('');
 	const [visibleModal, setVisibleModal] = useState<boolean>(false);
 

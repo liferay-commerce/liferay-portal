@@ -13,11 +13,9 @@ import FormReport from '../../form-report/index';
 
 import './PartialResults.scss';
 
-const PartialResults: React.FC<IProps> = ({
-	dataEngineModule,
-	displayChartAsTable,
-	reportDataURL,
-}) => {
+const PartialResults: React.FC<
+	{children?: React.ReactNode | undefined} & IProps
+> = ({dataEngineModule, displayChartAsTable, reportDataURL}) => {
 	const [resourceState, setResourceState] = useState(() => 'loading');
 	const {resource} = useResource({
 		fetch,

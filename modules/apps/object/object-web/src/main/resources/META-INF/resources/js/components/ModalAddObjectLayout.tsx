@@ -14,7 +14,9 @@ interface IProps extends React.HTMLAttributes<HTMLElement> {
 	onClose: () => void;
 }
 
-const ModalWithProvider: React.FC<IProps> = ({apiURL}) => {
+const ModalWithProvider: React.FC<
+	{children?: React.ReactNode | undefined} & IProps
+> = ({apiURL}) => {
 	const [visibleModal, setVisibleModal] = useState<boolean>(false);
 	const {observer, onClose} = useModal({
 		onClose: () => setVisibleModal(false),

@@ -9,7 +9,7 @@ import ClayIcon from '@clayui/icon';
 import ClayLabel from '@clayui/label';
 import ClayLayout from '@clayui/layout';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
-import React, {ReactNode, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {SidebarCategory} from './Sidebar';
 import CodeEditor from './index';
@@ -17,7 +17,7 @@ import CodeEditor from './index';
 import './CodeEditorLocalized.scss';
 
 interface CodeEditorLocalizedProps {
-	CustomSidebarContent?: ReactNode;
+	CustomSidebarContent?: React.ReactNode;
 	ariaLabels?: {
 		default: string;
 		openLocalizations: string;

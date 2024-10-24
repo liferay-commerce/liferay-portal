@@ -4,14 +4,14 @@
  */
 
 import classNames from 'classnames';
-import React, {ReactNode} from 'react';
+import React from 'react';
 
 import {PanelContextProvider} from './objectPanelContext';
 
 import './Panel.scss';
 
 interface PanelProps extends React.HTMLAttributes<HTMLElement> {
-	children: ReactNode;
+	children: React.ReactNode;
 }
 
 export function Panel({children, className, ...otherProps}: PanelProps) {

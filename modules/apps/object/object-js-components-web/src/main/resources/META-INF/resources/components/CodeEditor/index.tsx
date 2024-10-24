@@ -6,7 +6,7 @@
 import {CodeMirror} from '@liferay/frontend-js-codemirror-web';
 import classNames from 'classnames';
 import {FieldBase} from 'frontend-js-components-web';
-import React, {ReactNode, useRef} from 'react';
+import React, {useRef} from 'react';
 
 import CodeMirrorEditor, {ICodeMirrorEditor} from './CodeMirrorEditor';
 import {Sidebar, SidebarCategory} from './Sidebar';
@@ -19,7 +19,7 @@ export {Element} from './Element';
 export {SidebarCategory} from './Sidebar';
 
 interface CodeEditorProps extends ICodeMirrorEditor {
-	CustomSidebarContent?: ReactNode;
+	CustomSidebarContent?: React.ReactNode;
 	className?: string;
 	error?: string;
 	readOnly?: boolean;

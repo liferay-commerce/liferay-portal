@@ -12,8 +12,6 @@ import classNames from 'classnames';
 import {loadModule, sub} from 'frontend-js-web';
 import React, {useEffect, useRef, useState} from 'react';
 
-import useLoad from '../../hooks/useLoad.es';
-
 import './MultiPanelSidebar.scss';
 
 export default function MultiPanelSidebar({
@@ -27,7 +25,6 @@ export default function MultiPanelSidebar({
 }) {
 	const [hasError, setHasError] = useStateSafe(false);
 	const isMounted = useIsMounted();
-	const load = useLoad();
 	const sidebarPanelsRef = useRef(sidebarPanels);
 	const tabListRef = useRef();
 
@@ -67,7 +64,7 @@ export default function MultiPanelSidebar({
 		});
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [isMounted, load]);
+	}, [isMounted]);
 
 	useEffect(() => {
 		const productMenu = Liferay.SideNavigation.instance(

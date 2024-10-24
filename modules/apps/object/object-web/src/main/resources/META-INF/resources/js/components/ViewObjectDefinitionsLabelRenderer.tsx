@@ -19,7 +19,7 @@ export default function ViewObjectDefinitionsLabelRenderer({
 		<div className="table-list-title">
 			<a href={url}>
 				{Object.keys(value).length !== 0 ? (
-					value
+					(value as string)
 				) : (
 					<ClayIcon symbol="view" />
 				)}

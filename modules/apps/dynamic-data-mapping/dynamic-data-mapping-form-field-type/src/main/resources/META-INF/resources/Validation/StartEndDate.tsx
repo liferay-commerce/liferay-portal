@@ -10,7 +10,9 @@ import SelectDateType from './SelectDateType';
 
 import './StartEndDate.scss';
 
-const StartEndDate: React.FC<IProps> = ({
+const StartEndDate: React.FC<
+	{children?: React.ReactNode | undefined} & IProps
+> = ({
 	dateFieldOptions,
 	eventType,
 	label,

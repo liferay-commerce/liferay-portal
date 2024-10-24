@@ -66,7 +66,9 @@ interface ISelectProps<T> {
 	value: T;
 }
 
-const NumericInputMask: React.FC<IProps> = ({
+const NumericInputMask: React.FC<
+	{children?: React.ReactNode | undefined} & IProps
+> = ({
 	append: appendInitial,
 	appendType: appendTypeInitial,
 	decimalPlaces: decimalPlacesInitial,

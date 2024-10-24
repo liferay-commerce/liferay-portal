@@ -9,7 +9,6 @@ import ClayModal, {useModal} from '@clayui/modal';
 import {render} from '@liferay/frontend-js-react-web';
 import {sub} from 'frontend-js-web';
 import React, {useRef} from 'react';
-import {unmountComponentAtNode} from 'react-dom';
 
 import {submitEmailContent} from '../../util/submitEmailContent.es';
 import {ShareFormModalBody} from './ShareFormModalBody.es';
@@ -88,17 +87,27 @@ export function Modal({
 }
 
 let container;
+let root;
 
 export function openShareFormModal({spritemap, ...data}) {
-	if (container) {
-		cleanUp();
+	const cleanUp = () => {
+		if (container && root) {
+			root.unmount();
+
+			document.body.removeChild(container);
+
+			root = null;
+			container = null;
+		}
+	};
+
+	if (!container) {
+		container = document.createElement('div');
+
+		document.body.appendChild(container);
 	}
 
-	container = document.createElement('div');
-
-	document.body.appendChild(container);
-
-	render(
+	root = render(
 		<ClayIconSpriteContext.Provider value={spritemap}>
 			<Modal onClose={cleanUp} {...data} />
 		</ClayIconSpriteContext.Provider>,
@@ -107,13 +116,4 @@ export function openShareFormModal({spritemap, ...data}) {
 	);
 
 	Liferay.once('destroyPortlet', cleanUp);
-}
-
-function cleanUp() {
-	if (container) {
-		unmountComponentAtNode(container);
-		document.body.removeChild(container);
-
-		container = null;
-	}
 }

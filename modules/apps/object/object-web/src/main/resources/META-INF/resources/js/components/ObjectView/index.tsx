@@ -40,7 +40,9 @@ const TABS = [
 	},
 ];
 
-const CustomView: React.FC<React.HTMLAttributes<HTMLElement>> = () => {
+const CustomView: React.FC<
+	{children?: React.ReactNode | undefined} & React.HTMLAttributes<HTMLElement>
+> = () => {
 	const [
 		{
 			isViewOnly,
@@ -230,7 +232,9 @@ interface ICustomViewWrapperProps extends React.HTMLAttributes<HTMLElement> {
 	workflowStatuses: TWorkflowStatus[];
 }
 
-const CustomViewWrapper: React.FC<ICustomViewWrapperProps> = ({
+const CustomViewWrapper: React.FC<
+	{children?: React.ReactNode | undefined} & ICustomViewWrapperProps
+> = ({
 	filterOperators,
 	isViewOnly,
 	objectDefinitionExternalReferenceCode,

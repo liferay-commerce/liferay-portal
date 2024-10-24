@@ -19,13 +19,9 @@ import {limitValue} from '../util/numericalOperations';
 const MAX_QUANTITY = 999;
 const MIN_QUANTITY = 1;
 
-const DDMQuantity: React.FC<IProps> = ({
-	label,
-	name,
-	onQuantityChange,
-	readOnly,
-	value: initialValue,
-}) => {
+const DDMQuantity: React.FC<
+	{children?: React.ReactNode | undefined} & IProps
+> = ({label, name, onQuantityChange, readOnly, value: initialValue}) => {
 	const [value, setValue] = useState<string>(initialValue.toString());
 
 	useEffect(() => {

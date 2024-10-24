@@ -16,7 +16,7 @@ export default function LabelRenderer({onClick, value}: IProps) {
 		<div className="table-list-title">
 			<a href="#" onClick={onClick}>
 				{Object.keys(value).length !== 0 ? (
-					value
+					(value as string)
 				) : (
 					<ClayIcon symbol="view" />
 				)}

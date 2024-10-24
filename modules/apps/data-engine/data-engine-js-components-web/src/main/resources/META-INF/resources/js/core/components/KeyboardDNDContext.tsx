@@ -6,7 +6,6 @@
 import {sub} from 'frontend-js-web';
 import React, {
 	Dispatch,
-	ReactNode,
 	SetStateAction,
 	useCallback,
 	useContext,
@@ -66,7 +65,11 @@ const KeyboardDNDContext = React.createContext<{
 	text: string | null;
 }>(INITIAL_STATE);
 
-export function KeyboardDNDContextProvider({children}: {children: ReactNode}) {
+export function KeyboardDNDContextProvider({
+	children,
+}: {
+	children: React.ReactNode;
+}) {
 	const dispatch = useForm();
 	const formState = useFormState();
 	const formStateRef = useRef(formState);

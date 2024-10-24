@@ -40,7 +40,9 @@ const UNIT_OPTIONS = [
 	},
 ];
 
-const CustomDate: React.FC<IProps> = ({
+const CustomDate: React.FC<
+	{children?: React.ReactNode | undefined} & IProps
+> = ({
 	dateFieldOptions,
 	eventType,
 	onChange,

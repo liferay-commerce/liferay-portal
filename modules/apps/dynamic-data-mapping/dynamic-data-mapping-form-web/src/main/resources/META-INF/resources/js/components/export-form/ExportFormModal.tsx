@@ -9,7 +9,9 @@ import React from 'react';
 
 import ExportFormModalBody from './ExportFormModalBody';
 
-const ExportFormModal: React.FC<IProps> = ({
+const ExportFormModal: React.FC<
+	{children?: React.ReactNode | undefined} & IProps
+> = ({
 	csvExport,
 	exportFormURL,
 	fileExtensions,

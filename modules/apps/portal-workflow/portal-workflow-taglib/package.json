@@ -5,7 +5,7 @@
 		"@clayui/modal": "3.119.0",
 		"@clayui/tooltip": "3.119.0",
 		"@liferay/portal-workflow-instance-tracker-web": "*",
-		"react": "16.12.0"
+		"react": "18.2.0"
 	},
 	"jest": {
 		"collectCoverageFrom": [

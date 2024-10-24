@@ -43,7 +43,9 @@ type TDraggedOffset = {
 	y: number;
 } | null;
 
-const BuilderListItem: React.FC<IProps> = ({
+const BuilderListItem: React.FC<
+	{children?: React.ReactNode | undefined} & IProps
+> = ({
 	disableEdit,
 	hasDragAndDrop,
 	index,

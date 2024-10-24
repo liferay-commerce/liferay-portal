@@ -19,11 +19,9 @@ import React, {useEffect, useState} from 'react';
 
 import {defaultLanguageId} from '../utils/constants';
 
-const ModalAddListTypeDefinition: React.FC<IProps> = ({
-	apiURL,
-	observer,
-	onClose,
-}) => {
+const ModalAddListTypeDefinition: React.FC<
+	{children?: React.ReactNode | undefined} & IProps
+> = ({apiURL, observer, onClose}) => {
 	const initialValues: TInitialValues = {
 		name_i18n: {[defaultLanguageId]: ''},
 	};
@@ -117,7 +115,9 @@ type TInitialValues = {
 	name_i18n: LocalizedValue<string>;
 };
 
-const ModalWithProvider: React.FC<IProps> = ({apiURL}) => {
+const ModalWithProvider: React.FC<
+	{children?: React.ReactNode | undefined} & IProps
+> = ({apiURL}) => {
 	const [visibleModal, setVisibleModal] = useState<boolean>(false);
 	const {observer, onClose} = useModal({
 		onClose: () => setVisibleModal(false),

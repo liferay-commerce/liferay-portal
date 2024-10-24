@@ -121,50 +121,59 @@ export function BuilderScreen({
 									</ClayList.Item>
 								)}
 
-								<DndProvider backend={HTML5Backend}>
-									<BuilderListItem
-										disableEdit={
-											disableEdit ||
-											(filter && viewColumn?.disableEdit)
-										}
-										hasDragAndDrop={hasDragAndDrop}
-										index={index}
-										label={viewColumn?.fieldLabel}
-										objectFieldName={
-											viewColumn.objectFieldName
-										}
-										onChangeColumnOrder={
-											onChangeColumnOrder
-										}
-										onDeleteColumn={onDeleteColumn}
-										onEditing={onEditing}
-										onEditingObjectFieldName={
-											onEditingObjectFieldName
-										}
-										onVisibleEditModal={onVisibleEditModal}
-										secondColumnValue={
-											defaultSort
-												? viewColumn.sortOrder === 'asc'
-													? Liferay.Language.get(
-															'ascending'
-														)
-													: Liferay.Language.get(
-															'descending'
-														)
-												: filter
-													? viewColumn?.objectFieldBusinessType
-													: getLocalizableLabel(
-															creationLanguageId as Liferay.Language.Locale,
-															viewColumn?.label,
-															viewColumn.objectFieldName
-														)
-										}
-										thirdColumnValues={
-											viewColumn?.valueList ??
-											viewColumn?.value
-										}
-									/>
-								</DndProvider>
+								{
+
+									// @ts-ignore
+
+									<DndProvider backend={HTML5Backend}>
+										<BuilderListItem
+											disableEdit={
+												disableEdit ||
+												(filter &&
+													viewColumn?.disableEdit)
+											}
+											hasDragAndDrop={hasDragAndDrop}
+											index={index}
+											label={viewColumn?.fieldLabel}
+											objectFieldName={
+												viewColumn.objectFieldName
+											}
+											onChangeColumnOrder={
+												onChangeColumnOrder
+											}
+											onDeleteColumn={onDeleteColumn}
+											onEditing={onEditing}
+											onEditingObjectFieldName={
+												onEditingObjectFieldName
+											}
+											onVisibleEditModal={
+												onVisibleEditModal
+											}
+											secondColumnValue={
+												defaultSort
+													? viewColumn.sortOrder ===
+														'asc'
+														? Liferay.Language.get(
+																'ascending'
+															)
+														: Liferay.Language.get(
+																'descending'
+															)
+													: filter
+														? viewColumn?.objectFieldBusinessType
+														: getLocalizableLabel(
+																creationLanguageId as Liferay.Language.Locale,
+																viewColumn?.label,
+																viewColumn.objectFieldName
+															)
+											}
+											thirdColumnValues={
+												viewColumn?.valueList ??
+												viewColumn?.value
+											}
+										/>
+									</DndProvider>
+								}
 							</React.Fragment>
 						))}
 					</div>

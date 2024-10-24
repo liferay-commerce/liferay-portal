@@ -26,7 +26,9 @@ import FieldsSidebarSettingsBody from './FieldsSidebarSettingsBody';
 
 import './SidebarFieldSettings.scss';
 
-const FieldsSidebarSettingsHeader: React.FC<IProps> = ({field}) => {
+const FieldsSidebarSettingsHeader: React.FC<
+	{children?: React.ReactNode | undefined} & IProps
+> = ({field}) => {
 	const dispatch = useForm();
 	const {fieldTypes} = useConfig();
 	const {label} = fieldTypes.find(
@@ -50,7 +52,9 @@ const FieldsSidebarSettingsHeader: React.FC<IProps> = ({field}) => {
 	);
 };
 
-const SidebarFieldSettings: React.FC<IProps> = ({field}) => {
+const SidebarFieldSettings: React.FC<
+	{children?: React.ReactNode | undefined} & IProps
+> = ({field}) => {
 	return (
 		<Sidebar className="display-settings">
 			<Sidebar.Header>

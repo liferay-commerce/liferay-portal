@@ -31,7 +31,7 @@ definition {
 	test CanNotSelectMoreThanOneFilter {
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		Click(locator1 = "WorkflowMetrics#METRICS_PERFORMANCE_TAB");
+		WorkflowMetrics.goToPerformanceTab();
 
 		Click(
 			locator1 = "WorkflowMetrics#METRICS_COMPLETED_ITEMS_DATE_RANGE_DROPDOWN",
@@ -51,7 +51,7 @@ definition {
 	test ClickOnMetricCardsAndBeDirectedToAllItemsPage {
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		Navigator.gotoNavItem(navItem = "Performance");
+		WorkflowMetrics.goToPerformanceTab();
 
 		Click(
 			key_index = 1,
@@ -141,7 +141,7 @@ definition {
 	test DefaultDateFormatIsMMDDYYYY {
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		Click(locator1 = "WorkflowMetrics#METRICS_PERFORMANCE_TAB");
+		WorkflowMetrics.goToPerformanceTab();
 
 		Click(locator1 = "WorkflowMetrics#METRICS_COMPLETED_ITEMS_DATE_RANGE_DROPDOWN");
 
@@ -159,7 +159,7 @@ definition {
 	test FromAndToAreRequiredFields {
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		Navigator.gotoNavItem(navItem = "Performance");
+		WorkflowMetrics.goToPerformanceTab();
 
 		WorkflowMetrics.selectDateRange(
 			completionVelocityDateRange = "Custom Range",
@@ -187,7 +187,7 @@ definition {
 	test FutureDatesAreNotAllowed {
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		Navigator.gotoNavItem(navItem = "Performance");
+		WorkflowMetrics.goToPerformanceTab();
 
 		var displayDateYear = DateUtil.getCurrentYear();
 
@@ -208,7 +208,7 @@ definition {
 	test InfoIconDisplaysMessageOnHover {
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		Navigator.gotoNavItem(navItem = "Performance");
+		WorkflowMetrics.goToPerformanceTab();
 
 		WorkflowMetricsProcessListView.assertTooltipMessage(
 			sectionName = "Completed Items",
@@ -244,7 +244,7 @@ definition {
 
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		Click(locator1 = "WorkflowMetrics#METRICS_PERFORMANCE_TAB");
+		WorkflowMetrics.goToPerformanceTab();
 
 		WorkflowMetrics.checkCompletedWorkflowValues(
 			key_completed = 1,
@@ -267,7 +267,7 @@ definition {
 	test LabelFromYesterdayFilter {
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		Click(locator1 = "WorkflowMetrics#METRICS_PERFORMANCE_TAB");
+		WorkflowMetrics.goToPerformanceTab();
 
 		Click(locator1 = "WorkflowMetricsCompletedItems#DATE_RANGE_DROPDOWN_COMPLETED_ITEMS");
 
@@ -287,7 +287,7 @@ definition {
 	test OldestDataAcceptedIs1970 {
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		Navigator.gotoNavItem(navItem = "Performance");
+		WorkflowMetrics.goToPerformanceTab();
 
 		WorkflowMetrics.selectDateRange(
 			completionVelocityDateRange = "Custom Range",
@@ -317,7 +317,7 @@ definition {
 	test PercentageIsDisplayedInCards {
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		Navigator.gotoNavItem(navItem = "Performance");
+		WorkflowMetrics.goToPerformanceTab();
 
 		AssertElementPresent(
 			key_cardName = "Overdue",
@@ -338,7 +338,7 @@ definition {
 		task ("Given a workflow") {
 			WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-			Navigator.gotoNavItem(navItem = "Performance");
+			WorkflowMetrics.goToPerformanceTab();
 		}
 
 		task ("When there is no results for a filter section") {
@@ -363,7 +363,7 @@ definition {
 	test ToDateMustBeGreaterThanFromDate {
 		WorkflowMetrics.goToWorkflowProcessMetrics(workflowProcessName = "Single Approver");
 
-		Navigator.gotoNavItem(navItem = "Performance");
+		WorkflowMetrics.goToPerformanceTab();
 
 		WorkflowMetrics.selectDateRange(
 			completionVelocityDateRange = "Custom Range",

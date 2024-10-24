@@ -11,7 +11,9 @@ import FieldBase from '../FieldBase/ReactFieldBase.es';
 
 import type {FieldChangeEventHandler} from '../types';
 
-const Switcher: React.FC<ISwitcherProps> = ({
+const Switcher: React.FC<
+	{children?: React.ReactNode | undefined} & ISwitcherProps
+> = ({
 	checked,
 	disabled,
 	label,
@@ -66,15 +68,9 @@ const Switcher: React.FC<ISwitcherProps> = ({
 	);
 };
 
-const Checkbox: React.FC<ICheckboxProps> = ({
-	checked,
-	disabled,
-	label,
-	name,
-	onChange,
-	required,
-	showLabel,
-}) => {
+const Checkbox: React.FC<
+	{children?: React.ReactNode | undefined} & ICheckboxProps
+> = ({checked, disabled, label, name, onChange, required, showLabel}) => {
 	return (
 		<ClayCheckbox
 			aria-required={required}
@@ -95,7 +91,7 @@ const Checkbox: React.FC<ICheckboxProps> = ({
 	);
 };
 
-const Main: React.FC<IProps> = ({
+const Main: React.FC<{children?: React.ReactNode | undefined} & IProps> = ({
 	label,
 	name,
 	onChange,

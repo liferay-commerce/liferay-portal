@@ -38,7 +38,7 @@ interface TreeEdgeOption {
 }
 
 const SingleSelectTrigger = React.forwardRef<HTMLDivElement>(
-	({children, ...otherProps}, ref) => (
+	({children, ...otherProps}: React.HTMLAttributes<HTMLDivElement>, ref) => (
 		<div
 			ref={ref}
 			style={{

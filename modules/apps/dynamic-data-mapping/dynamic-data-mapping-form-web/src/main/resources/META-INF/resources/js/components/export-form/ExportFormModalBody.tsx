@@ -7,7 +7,9 @@ import ClayAlert from '@clayui/alert';
 import ClayForm, {ClaySelect} from '@clayui/form';
 import React, {useState} from 'react';
 
-const ExportFormModalBody: React.FC<IProps> = ({
+const ExportFormModalBody: React.FC<
+	{children?: React.ReactNode | undefined} & IProps
+> = ({
 	csvExport = 'enabled-with-warning',
 	fileExtensions,
 	portletNamespace,

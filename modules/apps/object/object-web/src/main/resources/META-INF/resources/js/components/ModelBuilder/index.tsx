@@ -28,6 +28,10 @@ interface CustomObjectFolderWrapperProps {
 	workflowStatuses: LabelValueObject[];
 }
 
+const ReactFlowProviderWrapper = ReactFlowProvider as React.FC<{
+	children?: React.ReactNode;
+}>;
+
 export default function CustomObjectFolderWrapper({
 	baseResourceURL,
 	companies,
@@ -45,7 +49,7 @@ export default function CustomObjectFolderWrapper({
 	workflowStatuses,
 }: CustomObjectFolderWrapperProps) {
 	return (
-		<ReactFlowProvider>
+		<ReactFlowProviderWrapper>
 			<ObjectFolderContextProvider
 				value={{
 					baseResourceURL,
@@ -69,6 +73,6 @@ export default function CustomObjectFolderWrapper({
 					viewObjectDefinitionsURL={viewObjectDefinitionsURL}
 				/>
 			</ObjectFolderContextProvider>
-		</ReactFlowProvider>
+		</ReactFlowProviderWrapper>
 	);
 }
