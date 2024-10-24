@@ -101,7 +101,7 @@ export default function ContentTypeModal({
 	const formRef = useRef<HTMLFormElement>(null);
 
 	const validateForm = useCallback(
-		(form) => {
+		(form: any) => {
 			const {elements} = form;
 			const error: ValidationError = {};
 
@@ -131,7 +131,7 @@ export default function ContentTypeModal({
 	);
 
 	const handleSubmit = useCallback(
-		(event) => {
+		(event: any) => {
 			event.preventDefault();
 
 			const form = formRef.current;

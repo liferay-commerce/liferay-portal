@@ -652,7 +652,7 @@ export class PageEditorPage {
 
 		// Enable editor
 
-		await editable.dblclick();
+		await editable.click();
 
 		// Set the content using codemirror API and save
 

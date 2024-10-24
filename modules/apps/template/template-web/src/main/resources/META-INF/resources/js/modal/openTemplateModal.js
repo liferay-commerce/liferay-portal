@@ -5,41 +5,45 @@
 
 import {render} from '@liferay/frontend-js-react-web';
 import React from 'react';
-import ReactDOM from 'react-dom';
 
 import TemplateModal from './TemplateModal';
 
 const DEFAULT_MODAL_CONTAINER_ID = 'templateModal';
+
+let container;
+let root;
 
 export default function openTemplateModal({
 	addTemplateEntryURL,
 	itemTypes,
 	namespace,
 }) {
-	dispose();
+	const cleanUp = () => {
+		if (container && root) {
+			root.unmount();
 
-	const container = document.createElement('div');
-	container.id = DEFAULT_MODAL_CONTAINER_ID;
-	document.body.appendChild(container);
+			document.body.removeChild(container);
 
-	render(
+			root = null;
+			container = null;
+		}
+	};
+
+	if (!container) {
+		container = document.createElement('div');
+		container.id = DEFAULT_MODAL_CONTAINER_ID;
+
+		document.body.appendChild(container);
+	}
+
+	root = render(
 		<TemplateModal
 			addTemplateEntryURL={addTemplateEntryURL}
 			itemTypes={itemTypes}
 			namespace={namespace}
-			onModalClose={dispose}
+			onModalClose={cleanUp}
 		/>,
 		{},
 		container
 	);
-}
-
-function dispose() {
-	const container = document.getElementById(DEFAULT_MODAL_CONTAINER_ID);
-
-	if (container) {
-		ReactDOM.unmountComponentAtNode(container);
-
-		document.body.removeChild(container);
-	}
 }

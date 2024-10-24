@@ -101,7 +101,7 @@ export function StoreAPIContextProvider({
 	const state = getState();
 
 	const subscribe = useCallback(
-		(subscriber) => emitter.addListener(subscriber),
+		(subscriber: any) => emitter.addListener(subscriber),
 		[emitter]
 	);
 

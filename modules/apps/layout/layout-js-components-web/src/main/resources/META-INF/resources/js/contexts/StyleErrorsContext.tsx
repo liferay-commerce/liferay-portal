@@ -5,7 +5,6 @@
 
 import React, {
 	Dispatch,
-	ReactNode,
 	SetStateAction,
 	useCallback,
 	useContext,
@@ -30,7 +29,7 @@ const StyleErrorsStateContext = React.createContext<{
 });
 
 interface Props {
-	children: ReactNode;
+	children: React.ReactNode;
 	initialState?: State;
 }
 
@@ -86,7 +85,7 @@ export function useSetStyleError() {
 	const {setState, state} = useContext(StyleErrorsStateContext);
 
 	return useCallback(
-		(fieldName, value, itemId = DEFAULT_ID) => {
+		(fieldName: any, value: any, itemId = DEFAULT_ID) => {
 			setState({
 				...state,
 				[itemId]: {

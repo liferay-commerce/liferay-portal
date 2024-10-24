@@ -11,7 +11,6 @@ import {EDITABLE_FRAGMENT_ENTRY_PROCESSOR} from '../../config/constants/editable
 import {ITEM_ACTIVATION_ORIGINS} from '../../config/constants/itemActivationOrigins';
 import {ITEM_TYPES} from '../../config/constants/itemTypes';
 import {TEXT_EDITABLE_TYPES} from '../../config/constants/textEditableTypes';
-import {VIEWPORT_SIZES} from '../../config/constants/viewportSizes';
 import {config} from '../../config/index';
 import {useToControlsId} from '../../contexts/CollectionItemContext';
 import {
@@ -216,101 +215,27 @@ function FragmentContentInteractionsFilter({
 	]);
 
 	useEffect(() => {
-		let activeEditable;
-
-		const enableProcessor = (event) => {
-			const editableElement = getEditableElement(event.target);
-
-			const editable = editables.find(
-				(editable) => editable.element === editableElement
-			);
-
-			if (editable) {
-				const editableValue = editableValues[editable.editableId] || {};
-
-				if (isMapped(editableValue)) {
-					return;
-				}
-
-				const editableClickPosition = {
-					clientX: event.clientX,
-					clientY: event.clientY,
-				};
-
-				if (isActive(editable.itemId)) {
-					setEditableProcessorUniqueId(
-						toControlsId(editable.itemId),
-						editableClickPosition
-					);
-				}
-			}
-		};
-
-		const onKeyDown = (event) => {
-			if (event.key === 'Enter') {
-				enableProcessor(event);
-			}
-		};
-
-		if (activeItemType === ITEM_TYPES.editable) {
-			activeEditable = editables.find((editable) =>
-				isActive(editable.itemId)
-			);
-
-			if (activeEditable) {
-				if (
-					canUpdateEditables &&
-					selectedViewportSize === VIEWPORT_SIZES.desktop
-				) {
-					requestAnimationFrame(() => {
-						activeEditable.element.addEventListener(
-							'click',
-							enableProcessor
-						);
-
-						activeEditable.element.addEventListener(
-							'keydown',
-							onKeyDown
-						);
-					});
-				}
-
-				if (activationOrigin === ITEM_ACTIVATION_ORIGINS.sidebar) {
-					activeEditable.element.scrollIntoView({
-						behavior: 'smooth',
-						block: 'center',
-						inline: 'nearest',
-					});
-				}
-			}
+		if (
+			activeItemType !== ITEM_TYPES.editable ||
+			activationOrigin !== ITEM_ACTIVATION_ORIGINS.sidebar
+		) {
+			return;
 		}
 
-		return () => {
-			if (activeEditable) {
-				activeEditable.element.removeEventListener(
-					'click',
-					enableProcessor
-				);
+		const activeEditable = editables.find((editable) =>
+			isActive(editable.itemId)
+		);
 
-				activeEditable.element.removeEventListener(
-					'keydown',
-					onKeyDown
-				);
-			}
-		};
-	}, [
-		activationOrigin,
-		activeItemType,
-		canUpdateEditables,
-		editables,
-		editableValues,
-		fragmentEntryLinkId,
-		isActive,
-		itemId,
-		setEditableProcessorUniqueId,
-		selectedViewportSize,
-		toControlsId,
-	]);
+		if (!activeEditable) {
+			return;
+		}
+
+		activeEditable.element.scrollIntoView({
+			behavior: 'smooth',
+			block: 'center',
+			inline: 'nearest',
+		});
+	}, [activationOrigin, activeItemType, editables, isActive]);
 
 	const hoverEditable = (event) => {
 		const editableElement = getEditableElement(event.target);
@@ -329,7 +254,11 @@ function FragmentContentInteractionsFilter({
 		}
 	};
 
-	const selectEditable = (event) => {
+	const onClickCapture = (event) => {
+		if (!canUpdateEditables) {
+			return;
+		}
+
 		const editableElement = getEditableElement(event.target);
 
 		const editable = editables.find(
@@ -337,27 +266,44 @@ function FragmentContentInteractionsFilter({
 		);
 
 		if (
-			editable &&
-			canUpdateEditables &&
-			canActivateEditable(selectedViewportSize, editable.type)
+			!editable ||
+			!canActivateEditable(selectedViewportSize, editable.type)
 		) {
-			event.stopPropagation();
-
-			if (isActive(editable.itemId)) {
-				event.stopPropagation();
-			}
-			else {
-				selectItem(editable.itemId, {
-					itemType: ITEM_TYPES.editable,
-				});
-			}
+			return;
 		}
+
+		event.preventDefault();
+		event.stopPropagation();
+
+		if (!isActive(editable.itemId)) {
+			selectItem(editable.itemId, {
+				itemType: ITEM_TYPES.editable,
+			});
+
+			return;
+		}
+
+		const editableValue = editableValues[editable.editableId] || {};
+
+		if (isMapped(editableValue)) {
+			return;
+		}
+
+		const editableClickPosition = {
+			clientX: event.clientX,
+			clientY: event.clientY,
+		};
+
+		setEditableProcessorUniqueId(
+			toControlsId(editable.itemId),
+			editableClickPosition
+		);
 	};
 
 	const props = {};
 
 	if (siblingIds.some(isActive) || !canUpdatePageStructure) {
-		props.onClickCapture = selectEditable;
+		props.onClickCapture = onClickCapture;
 		props.onFocus = hoverEditable;
 		props.onMouseLeave = () => hoverItem(null);
 		props.onMouseOverCapture = hoverEditable;

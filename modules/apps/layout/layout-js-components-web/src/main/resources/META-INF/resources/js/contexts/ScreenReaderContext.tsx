@@ -23,7 +23,7 @@ function ScreenReaderAnnouncerContextProvider({
 }) {
 	const screenReaderAnnouncerRef = useRef<ScreenReaderAnnouncerContextType>();
 
-	const sendMessage = useCallback((message) => {
+	const sendMessage = useCallback((message: any) => {
 		const ref = screenReaderAnnouncerRef;
 
 		if (ref.current) {

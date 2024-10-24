@@ -170,7 +170,7 @@ export default function PageTemplateModal({
 	);
 
 	const handleSubmit = useCallback(
-		(event) => {
+		(event: any) => {
 			event.preventDefault();
 
 			const errors = validateForm();

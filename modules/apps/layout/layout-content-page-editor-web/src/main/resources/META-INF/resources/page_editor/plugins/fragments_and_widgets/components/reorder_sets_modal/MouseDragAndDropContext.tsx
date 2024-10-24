@@ -99,7 +99,7 @@ export function useMouseDropTarget(
 	});
 
 	const setTargetRef = useCallback(
-		(targetElement) => {
+		(targetElement: any) => {
 			internalSetTargetRef(targetElement);
 			targetRef.current = targetElement;
 		},

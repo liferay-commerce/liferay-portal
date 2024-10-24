@@ -18,6 +18,7 @@ jest.mock('frontend-js-web', () => {
 	return {
 		...actual,
 		fetch: jest.fn(() => Promise.resolve({json: () => {}})),
+		openToast: jest.fn(),
 		sub: jest.fn((langKey, arg) => langKey.replace('x', arg)),
 	};
 });

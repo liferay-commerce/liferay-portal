@@ -9,7 +9,7 @@ export default function ({namespace}) {
 	);
 
 	function showHiddenFields(option) {
-		const displayStyle = option || displayStyleValue.value;
+		const displayStyle = option || displayStyleValue?.value;
 
 		const hiddenFields = document.querySelectorAll('.hidden-field');
 

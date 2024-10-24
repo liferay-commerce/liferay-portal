@@ -5,7 +5,7 @@
 
 import ClayIcon from '@clayui/icon';
 import ClayPopover from '@clayui/popover';
-import React, {ReactNode, useState} from 'react';
+import React, {useState} from 'react';
 
 export function GlobalCETOrderHelpIcon({buttonId, children, title}: IProps) {
 	const [show, setShow] = useState(false);
@@ -48,6 +48,6 @@ export function GlobalCETOrderHelpIcon({buttonId, children, title}: IProps) {
 
 interface IProps {
 	buttonId: string;
-	children: ReactNode;
-	title: ReactNode;
+	children: React.ReactNode;
+	title: React.ReactNode;
 }

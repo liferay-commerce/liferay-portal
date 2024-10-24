@@ -236,17 +236,27 @@ test('Checks Content Flags, Content Ratings and Content Display are compatible w
 
 	// Check that the Content Flags is shown in each item and the Field input has the corresponding name
 
-	const reportItem = page.locator('.taglib-flags');
+	const reportItem = page.locator('[data-name="Content Flags"]');
 
 	await expect(reportItem).toHaveCount(2);
 
-	await reportItem.first().click();
+	const firstReportItem = reportItem.first();
+
+	await firstReportItem.click();
+	await firstReportItem.press('Tab');
+	await firstReportItem.press('Enter');
+
+	await page.getByPlaceholder('No Item Selected').waitFor();
 
 	await expect(page.getByPlaceholder('No Item Selected')).toHaveValue(
 		'Animal 01 - Dogs and Cats categories'
 	);
 
-	await reportItem.nth(1).click();
+	const secondReportItem = reportItem.nth(1);
+
+	await secondReportItem.click();
+	await secondReportItem.press('Tab');
+	await secondReportItem.press('Enter');
 
 	await expect(page.getByPlaceholder('No Item Selected')).toHaveValue(
 		'Animal 02 - Dogs category'

@@ -4,7 +4,7 @@
  */
 
 import {render} from '@liferay/frontend-js-react-web';
-import {unmountComponentAtNode} from 'react-dom';
+import React from 'react';
 
 import CreationModal from './CreationModal';
 
@@ -18,6 +18,7 @@ interface Props {
 	nameInputValue: string;
 	portletNamespace: string;
 }
+let root: any;
 
 function getDefaultModalContainer() {
 	let container = document.getElementById(DEFAULT_MODAL_CONTAINER_ID);
@@ -31,16 +32,18 @@ function getDefaultModalContainer() {
 	return container;
 }
 
-function dispose() {
-	unmountComponentAtNode(getDefaultModalContainer());
-}
-
 export default function openCreationModal(props: Props) {
-	dispose();
+	const cleanUp = () => {
+		if (root) {
+			root.unmount();
 
-	render(
-		CreationModal,
-		{...props, onCloseModal: dispose},
+			root = null;
+		}
+	};
+
+	root = render(
+		<CreationModal {...props} onCloseModal={cleanUp} />,
+		props as any,
 		getDefaultModalContainer()
 	);
 }

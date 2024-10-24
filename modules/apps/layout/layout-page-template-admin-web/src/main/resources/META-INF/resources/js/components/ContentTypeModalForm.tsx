@@ -125,7 +125,7 @@ function MappingTypeSelector({
 	});
 
 	const onChange = useCallback(
-		(event) => {
+		(event: any) => {
 			setError({...error, classNameId: '', classTypeId: ''});
 
 			const select = event.target;
