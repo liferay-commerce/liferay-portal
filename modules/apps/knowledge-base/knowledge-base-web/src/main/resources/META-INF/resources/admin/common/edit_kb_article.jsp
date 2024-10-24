@@ -86,6 +86,7 @@ if (editKBArticleDisplayContext.isPortletTitleBasedNavigation()) {
 											name="publishDropdown"
 											small="<%= true %>"
 											swapIconSide="<%= true %>"
+											__reactDOMFlushSync="<%= true %>"
 										/>
 									</c:otherwise>
 								</c:choose>

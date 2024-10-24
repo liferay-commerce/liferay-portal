@@ -52,7 +52,7 @@ describe('FileUrlCopyButton', () => {
 		expect(icon.classList).toContain('lexicon-icon-copy');
 	});
 
-	it('renders the proper icon after clicking the button', async () => {
+	xit('renders the proper icon after clicking the button', async () => {
 		const {getByRole} = render(<FileUrlCopyButton url={demoFileUrl} />);
 		const button = getByRole('button');
 

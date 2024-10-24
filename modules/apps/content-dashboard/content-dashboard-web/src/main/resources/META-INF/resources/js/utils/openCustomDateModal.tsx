@@ -40,7 +40,7 @@ type Props = {
 };
 
 export default function openCustomDateModal(props: Props) {
-	render(CustomDateModal, {...props}, document.createElement('div'));
+	render(CustomDateModal as any, {...props}, document.createElement('div'));
 }
 
 export function CustomDateModal({

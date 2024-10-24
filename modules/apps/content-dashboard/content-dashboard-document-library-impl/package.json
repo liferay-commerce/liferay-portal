@@ -1,7 +1,7 @@
 {
 	"dependencies": {
 		"@liferay/content-dashboard-web": "*",
-		"react": "16.12.0"
+		"react": "18.2.0"
 	},
 	"main": "js/components/SelectFileExtensionWrapper.js",
 	"name": "@liferay/content-dashboard-document-library-impl",

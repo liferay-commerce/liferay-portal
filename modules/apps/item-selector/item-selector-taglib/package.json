@@ -15,8 +15,8 @@
 		"cropperjs": "1.5.11",
 		"frontend-js-web": "*",
 		"prop-types": "15.7.2",
-		"react": "16.12.0",
-		"react-dom": "16.12.0",
+		"react": "18.2.0",
+		"react-dom": "18.2.0",
 		"react-dropzone": "11.4.2"
 	},
 	"main": "js/index.js",

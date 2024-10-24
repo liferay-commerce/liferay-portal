@@ -16,7 +16,7 @@ const META_FIELD_NAMES = {
 };
 
 const Trigger = React.forwardRef(
-	({children, ...otherProps}, ref: LegacyRef<HTMLButtonElement>) => (
+	({children, ...otherProps}: any, ref: LegacyRef<HTMLButtonElement>) => (
 		<button
 			{...otherProps}
 			aria-label={Liferay.Language.get('select-a-filter')}
