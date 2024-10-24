@@ -56,7 +56,9 @@ const STEPS: IStepProps<IGenericStepProps, ESteps>[] = [
 	},
 ];
 
-const WizardPage: React.FC<React.HTMLAttributes<HTMLElement>> = () => {
+const WizardPage: React.FC<
+	{children?: React.ReactNode | undefined} & React.HTMLAttributes<HTMLElement>
+> = () => {
 	const [step, setStep] = useState<ESteps>(ESteps.ConnectAC);
 	const [steps, setSteps] = useState(STEPS);
 
