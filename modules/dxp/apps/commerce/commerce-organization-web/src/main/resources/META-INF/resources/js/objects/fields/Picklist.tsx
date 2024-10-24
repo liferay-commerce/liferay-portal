@@ -63,7 +63,7 @@ const Picklist = ({
 	}, [listTypeDefinitionId]);
 
 	const onSelection = useCallback(
-		({target}) => {
+		({target}: any) => {
 			const option = options.find(({label}) => target?.value === label);
 
 			if (option) {

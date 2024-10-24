@@ -33,8 +33,8 @@
 		"frontend-js-web": "*",
 		"lodash": "4.17.21",
 		"prop-types": "15.7.2",
-		"react": "16.12.0",
-		"react-dom": "16.12.0"
+		"react": "18.2.0",
+		"react-dom": "18.2.0"
 	},
 	"devDependencies": {
 		"faker": "^5.1.0",
@@ -67,7 +67,7 @@
 		"checkFormat": "node-scripts format --check",
 		"coverage": "node-scripts test --coverage --silent --verbose",
 		"format": "node-scripts format",
-		"test": "node-scripts test"
+		"test": "USE_REACT_16=true node-scripts test"
 	},
 	"version": "4.0.123"
 }

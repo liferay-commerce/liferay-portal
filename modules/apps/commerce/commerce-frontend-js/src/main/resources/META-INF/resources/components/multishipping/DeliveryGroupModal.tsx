@@ -106,7 +106,7 @@ const DeliveryGroupModal = ({
 	);
 
 	const handleFormSubmit = useCallback(
-		async (event) => {
+		async (event: any) => {
 			event.preventDefault();
 
 			if (isAddressFormValid && !!deliveryGroupState.name?.length) {

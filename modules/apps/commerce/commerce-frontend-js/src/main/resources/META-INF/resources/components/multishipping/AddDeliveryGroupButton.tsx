@@ -29,7 +29,7 @@ const AddDeliveryGroupButton = ({
 	const {observer, onOpenChange, open} = useModal();
 
 	const handleSubmitWrapper = useCallback(
-		(params) => {
+		(params: any) => {
 			onOpenChange(false);
 
 			handleSubmit(params);

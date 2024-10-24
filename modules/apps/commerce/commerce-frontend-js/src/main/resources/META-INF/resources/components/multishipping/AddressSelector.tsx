@@ -88,7 +88,7 @@ function AddressSelector({
 	);
 
 	const handleAddressIdChange = useCallback(
-		({target: {value}}) => {
+		({target: {value}}: any) => {
 			const address = addresses.find(
 				(address) => address.id === Number(value)
 			);
