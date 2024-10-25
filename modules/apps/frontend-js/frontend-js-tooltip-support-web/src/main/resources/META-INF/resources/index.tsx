@@ -44,7 +44,7 @@ const getDefaultTooltipContainer = () => {
 
 export function main() {
 	render(
-		ClayTooltipProvider,
+		ClayTooltipProvider as any,
 		{
 			containerProps: {
 				className: 'cadmin',

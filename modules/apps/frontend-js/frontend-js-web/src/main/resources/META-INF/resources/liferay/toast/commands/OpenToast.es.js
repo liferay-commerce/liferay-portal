@@ -7,7 +7,6 @@ import ClayAlert from '@clayui/alert';
 import {render} from '@liferay/frontend-js-react-web';
 import classNames from 'classnames';
 import React from 'react';
-import {unmountComponentAtNode} from 'react-dom';
 
 import buildFragment from '../../util/build_fragment';
 
@@ -87,6 +86,8 @@ const getRootElement = ({container, containerId}) => {
  * @review
  */
 
+let root;
+
 function openToast({
 	autoClose = TOAST_AUTO_CLOSE_INTERVAL,
 	container,
@@ -102,7 +103,15 @@ function openToast({
 }) {
 	const rootElement = getRootElement({container, containerId});
 
-	unmountComponentAtNode(rootElement);
+	const cleanUp = () => {
+		if (root) {
+			root.unmount();
+
+			root = null;
+		}
+	};
+
+	cleanUp();
 
 	const onCloseFn = (event) => {
 		if (onClose) {
@@ -114,7 +123,7 @@ function openToast({
 				rootElement.parentNode.removeChild(rootElement);
 			}
 
-			unmountComponentAtNode(rootElement);
+			cleanUp();
 		}
 	};
 
@@ -129,7 +138,7 @@ function openToast({
 		titleHTML = '';
 	}
 
-	render(
+	root = render(
 		<ClayAlert
 			autoClose={autoClose}
 			displayType={type}

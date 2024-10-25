@@ -269,13 +269,13 @@ function SelectionFilter({
 		searchOptions,
 	]);
 
-	const setScrollingArea = useCallback((node) => {
+	const setScrollingArea = useCallback((node: any) => {
 		scrollingAreaRef.current = node;
 
 		setScrollingAreaRendered(true);
 	}, []);
 
-	const setInfiniteLoader = useCallback((node) => {
+	const setInfiniteLoader = useCallback((node: any) => {
 		infiniteLoaderRef.current = node;
 
 		setInfiniteLoaderRendered(true);

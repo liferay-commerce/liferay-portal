@@ -5,7 +5,6 @@
 
 import {render} from '@liferay/frontend-js-react-web';
 import React from 'react';
-import {unmountComponentAtNode} from 'react-dom';
 
 import SimpleInputModal from '../components/SimpleInputModal.es';
 
@@ -15,21 +14,8 @@ const DEFAULT_RENDER_DATA = {
 	portletId: 'UNKNOWN_PORTLET_ID',
 };
 
-function getDefaultModalContainer() {
-	let container = document.getElementById(DEFAULT_MODAL_CONTAINER_ID);
-
-	if (!container) {
-		container = document.createElement('div');
-		container.id = DEFAULT_MODAL_CONTAINER_ID;
-		document.body.appendChild(container);
-	}
-
-	return container;
-}
-
-function dispose() {
-	unmountComponentAtNode(getDefaultModalContainer());
-}
+let container;
+let root;
 
 function openSimpleInputModalImplementation({
 	alert,
@@ -53,9 +39,25 @@ function openSimpleInputModalImplementation({
 	required,
 	size,
 }) {
-	dispose();
+	const cleanUp = () => {
+		if (container && root) {
+			root.unmount();
 
-	render(
+			document.body.removeChild(container);
+
+			root = null;
+			container = null;
+		}
+	};
+
+	if (!container) {
+		container = document.createElement('div');
+		container.id = DEFAULT_MODAL_CONTAINER_ID;
+
+		document.body.appendChild(container);
+	}
+
+	root = render(
 		<SimpleInputModal
 			alert={alert}
 			buttonSubmitLabel={buttonSubmitLabel}
@@ -63,7 +65,7 @@ function openSimpleInputModalImplementation({
 			checkboxFieldLabel={checkboxFieldLabel}
 			checkboxFieldName={checkboxFieldName}
 			checkboxFieldValue={checkboxFieldValue}
-			closeModal={dispose}
+			closeModal={cleanUp}
 			dialogTitle={dialogTitle}
 			formSubmitURL={formSubmitURL}
 			idFieldName={idFieldName}
@@ -81,7 +83,7 @@ function openSimpleInputModalImplementation({
 			size={size}
 		/>,
 		DEFAULT_RENDER_DATA,
-		getDefaultModalContainer()
+		container
 	);
 }
 

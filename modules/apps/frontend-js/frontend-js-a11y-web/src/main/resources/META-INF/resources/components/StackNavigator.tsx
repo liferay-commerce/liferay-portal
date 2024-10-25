@@ -22,7 +22,10 @@ export function StackNavigator<T>({
 }: StackNavigatorProps<T>) {
 	const childrenArray = React.Children.toArray(children);
 
-	const child = childrenArray[activePage];
+	const child = childrenArray[activePage] as React.DetailedReactHTMLElement<
+		any,
+		any
+	>;
 
 	return React.cloneElement(child, {
 		...child.props,

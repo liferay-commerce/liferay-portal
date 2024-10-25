@@ -171,68 +171,79 @@ export function ClayTable({
 			<Head
 				items={selectable ? [{fieldName: 'select'}, ...fields] : fields}
 			>
-				{(field) => {
-					if (field.fieldName === 'select') {
-						if (!!items.length && selectionType !== 'multiple') {
+				{
+
+					// @ts-ignore
+
+					(field) => {
+						if (field.fieldName === 'select') {
+							if (
+								!!items.length &&
+								selectionType !== 'multiple'
+							) {
+								return (
+									<Cell key="select" scope="col" width="51px">
+										{null}
+									</Cell>
+								);
+							}
+
+							const title =
+								items.length !== selectedItemsValue.length
+									? Liferay.Language.get('select-items')
+									: Liferay.Language.get('clear-selection');
+
 							return (
-								<Cell key="select" scope="col" width="51px">
-									{null}
+								<Cell
+									className="cell-select-item"
+									key="select"
+									scope="col"
+									textValue={title}
+									width="51px"
+								>
+									<ClayCheckbox
+										checked={!!selectedItemsValue.length}
+										indeterminate={
+											!!selectedItemsValue.length &&
+											items.length !==
+												selectedItemsValue.length
+										}
+										name="table-head-selector"
+										onChange={() => {
+											if (
+												selectedItemsValue.length ===
+												items.length
+											) {
+												return selectItems([]);
+											}
+
+											return selectItems(
+												items.map(
+													(item) =>
+														item[selectedItemsKey]
+												)
+											);
+										}}
+										title={title}
+									/>
 								</Cell>
 							);
 						}
 
-						const title =
-							items.length !== selectedItemsValue.length
-								? Liferay.Language.get('select-items')
-								: Liferay.Language.get('clear-selection');
-
 						return (
-							<Cell
-								className="cell-select-item"
-								key="select"
-								scope="col"
-								textValue={title}
-								width="51px"
+							<HeadCellResizer
+								className={getCellColumnClassName(
+									field.fieldName
+								)}
+								columnName={field.fieldName}
+								key={field.fieldName}
+								sortable={(field as any).sortable}
 							>
-								<ClayCheckbox
-									checked={!!selectedItemsValue.length}
-									indeterminate={
-										!!selectedItemsValue.length &&
-										items.length !==
-											selectedItemsValue.length
-									}
-									name="table-head-selector"
-									onChange={() => {
-										if (
-											selectedItemsValue.length ===
-											items.length
-										) {
-											return selectItems([]);
-										}
-
-										return selectItems(
-											items.map(
-												(item) => item[selectedItemsKey]
-											)
-										);
-									}}
-									title={title}
-								/>
-							</Cell>
+								{(field as any).label}
+							</HeadCellResizer>
 						);
 					}
-
-					return (
-						<HeadCellResizer
-							className={getCellColumnClassName(field.fieldName)}
-							columnName={field.fieldName}
-							key={field.fieldName}
-							sortable={(field as any).sortable}
-						>
-							{(field as any).label}
-						</HeadCellResizer>
-					);
-				}}
+				}
 			</Head>
 
 			<Body
@@ -242,197 +253,230 @@ export function ClayTable({
 						: items
 				}
 			>
-				{(item) => {
-					const id = item[selectedItemsKey ?? 'id'];
+				{
 
-					const items = [...fields, {fieldName: 'actions'}];
+					// @ts-ignore
 
-					return (
-						<Row
-							items={
-								selectable
-									? [{fieldName: 'select'}, ...items]
-									: items
-							}
-							key={id}
-						>
-							{(cell) => {
-								const cellColumnName = getCellColumnClassName(
-									cell.fieldName
-								);
+					(item) => {
+						const id = item[selectedItemsKey ?? 'id'];
 
-								switch (cell.fieldName) {
-									case 'actions': {
-										return (
-											<Cell
-												className="cell-select-item"
-												key={`${id}:actions`}
-												textValue={Liferay.Language.get(
-													'select-item'
-												)}
-											>
-												{item.editable ? (
-													<AddActions />
-												) : (
-													(itemsActions?.length > 0 ||
-														item.actionDropdownItems
-															?.length > 0) && (
-														<Actions
+						const items = [...fields, {fieldName: 'actions'}];
+
+						return (
+							<Row
+								items={
+									selectable
+										? [{fieldName: 'select'}, ...items]
+										: items
+								}
+								key={id}
+							>
+								{
+
+									// @ts-ignore
+
+									(cell) => {
+										const cellColumnName =
+											getCellColumnClassName(
+												cell.fieldName
+											);
+
+										switch (cell.fieldName) {
+											case 'actions': {
+												return (
+													<Cell
+														className="cell-select-item"
+														key={`${id}:actions`}
+														textValue={Liferay.Language.get(
+															'select-item'
+														)}
+													>
+														{item.editable ? (
+															<AddActions />
+														) : (
+															(itemsActions?.length >
+																0 ||
+																item
+																	.actionDropdownItems
+																	?.length >
+																	0) && (
+																<Actions
+																	actions={
+																		itemsActions ||
+																		item.actionDropdownItems
+																	}
+																	itemData={
+																		item
+																	}
+																	itemId={id}
+																/>
+															)
+														)}
+													</Cell>
+												);
+											}
+											case 'select':
+												return (
+													<Cell
+														className="cell-select-item"
+														key={`${id}:select`}
+														textValue={Liferay.Language.get(
+															'select-item'
+														)}
+													>
+														{!item.editable && (
+															<SelectionComponent
+																checked={
+																	!!selectedItemsValue.find(
+																		(
+																			element: any
+																		) =>
+																			String(
+																				element
+																			) ===
+																			String(
+																				id
+																			)
+																	)
+																}
+																onChange={() =>
+																	selectItems(
+																		id
+																	)
+																}
+																title={Liferay.Language.get(
+																	'select-item'
+																)}
+																value={id}
+															/>
+														)}
+													</Cell>
+												);
+											default: {
+												if (item.editable) {
+													const field = cell as any;
+													let InputRenderer: any =
+														null;
+
+													if (
+														field.inlineEditSettings
+															?.type
+													) {
+														InputRenderer =
+															getInputRendererById(
+																field
+																	.inlineEditSettings
+																	.type
+															);
+													}
+
+													const valuePath =
+														Array.isArray(
+															field.fieldName
+														)
+															? field.fieldName.map(
+																	(
+																		property: string
+																	) =>
+																		property ===
+																		'LANG'
+																			? Liferay.ThemeDisplay.getDefaultLanguageId()
+																			: property
+																)
+															: [field.fieldName];
+
+													const rootPropertyName =
+														valuePath[0];
+
+													const newItem =
+														itemsChanges![0] || {};
+
+													return (
+														<Cell
+															className={
+																cellColumnName
+															}
+															key={`${id}:${cell.fieldName}`}
+														>
+															{InputRenderer ? (
+																<InputRenderer
+																	updateItem={(
+																		value: string
+																	) => {
+																		updateItem(
+																			0,
+																			rootPropertyName,
+																			valuePath,
+																			value
+																		);
+																	}}
+																	value={
+																		newItem[
+																			rootPropertyName
+																		] &&
+																		newItem[
+																			rootPropertyName
+																		].value
+																	}
+																	valuePath={
+																		rootPropertyName
+																	}
+																/>
+															) : null}
+														</Cell>
+													);
+												}
+
+												const localizedValue: ILocalizedItemDetails | null =
+													getLocalizedValue(
+														item,
+														cell.fieldName
+													);
+
+												const valuePath =
+													localizedValue?.valuePath ??
+													undefined;
+
+												return (
+													<Cell
+														className={
+															cellColumnName
+														}
+														key={`${id}:${cell.fieldName}`}
+													>
+														<CellRenderer
 															actions={
 																itemsActions ||
 																item.actionDropdownItems
 															}
+															field={cell}
 															itemData={item}
 															itemId={id}
-														/>
-													)
-												)}
-											</Cell>
-										);
-									}
-									case 'select':
-										return (
-											<Cell
-												className="cell-select-item"
-												key={`${id}:select`}
-												textValue={Liferay.Language.get(
-													'select-item'
-												)}
-											>
-												{!item.editable && (
-													<SelectionComponent
-														checked={
-															!!selectedItemsValue.find(
-																(
-																	element: any
-																) =>
-																	String(
-																		element
-																	) ===
-																	String(id)
-															)
-														}
-														onChange={() =>
-															selectItems(id)
-														}
-														title={Liferay.Language.get(
-															'select-item'
-														)}
-														value={id}
-													/>
-												)}
-											</Cell>
-										);
-									default: {
-										if (item.editable) {
-											const field = cell as any;
-											let InputRenderer: any = null;
-
-											if (
-												field.inlineEditSettings?.type
-											) {
-												InputRenderer =
-													getInputRendererById(
-														field.inlineEditSettings
-															.type
-													);
-											}
-
-											const valuePath = Array.isArray(
-												field.fieldName
-											)
-												? field.fieldName.map(
-														(property: string) =>
-															property === 'LANG'
-																? Liferay.ThemeDisplay.getDefaultLanguageId()
-																: property
-													)
-												: [field.fieldName];
-
-											const rootPropertyName =
-												valuePath[0];
-
-											const newItem =
-												itemsChanges![0] || {};
-
-											return (
-												<Cell
-													className={cellColumnName}
-													key={`${id}:${cell.fieldName}`}
-												>
-													{InputRenderer ? (
-														<InputRenderer
-															updateItem={(
-																value: string
-															) => {
-																updateItem(
-																	0,
-																	rootPropertyName,
-																	valuePath,
-																	value
-																);
-															}}
+															itemInlineChanges={
+																itemInlineChanges
+															}
+															rootPropertyName={
+																localizedValue?.rootPropertyName ??
+																undefined
+															}
 															value={
-																newItem[
-																	rootPropertyName
-																] &&
-																newItem[
-																	rootPropertyName
-																].value
+																localizedValue?.value ??
+																undefined
 															}
 															valuePath={
-																rootPropertyName
+																valuePath
 															}
 														/>
-													) : null}
-												</Cell>
-											);
+													</Cell>
+												);
+											}
 										}
-
-										const localizedValue: ILocalizedItemDetails | null =
-											getLocalizedValue(
-												item,
-												cell.fieldName
-											);
-
-										const valuePath =
-											localizedValue?.valuePath ??
-											undefined;
-
-										return (
-											<Cell
-												className={cellColumnName}
-												key={`${id}:${cell.fieldName}`}
-											>
-												<CellRenderer
-													actions={
-														itemsActions ||
-														item.actionDropdownItems
-													}
-													field={cell}
-													itemData={item}
-													itemId={id}
-													itemInlineChanges={
-														itemInlineChanges
-													}
-													rootPropertyName={
-														localizedValue?.rootPropertyName ??
-														undefined
-													}
-													value={
-														localizedValue?.value ??
-														undefined
-													}
-													valuePath={valuePath}
-												/>
-											</Cell>
-										);
 									}
 								}
-							}}
-						</Row>
-					);
-				}}
+							</Row>
+						);
+					}
+				}
 			</Body>
 		</Table>
 	);

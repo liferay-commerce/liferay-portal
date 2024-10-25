@@ -6,7 +6,7 @@
 import {act, cleanup, fireEvent, render} from '@testing-library/react';
 import React from 'react';
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 import TranslationAdminSelector from '../../src/main/resources/META-INF/resources/translation_manager/TranslationAdminSelector';
 
@@ -375,7 +375,7 @@ describe('TranslationAdminSelector', () => {
 			'.form-control-select'
 		);
 
-		expect(horizontalSelector).toBeInTheDocument();
+		expect(horizontalSelector).toBeTruthy();
 	});
 
 	it('calls onSelectorActiveChange when the trigger is clicked', () => {

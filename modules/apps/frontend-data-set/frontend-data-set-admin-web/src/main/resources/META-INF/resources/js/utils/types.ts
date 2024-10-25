@@ -38,7 +38,6 @@ export interface IBaseVisualizationMode<Mode extends string> {
 	thumbnail: string;
 	visualizationModeId: string;
 }
-
 export interface ICards extends IBaseVisualizationMode<'cards'> {}
 export interface IList extends IBaseVisualizationMode<'list'> {}
 export interface ITable extends IBaseVisualizationMode<'table'> {}

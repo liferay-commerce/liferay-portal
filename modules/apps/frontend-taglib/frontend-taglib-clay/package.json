@@ -47,11 +47,10 @@
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
 		"prop-types": "15.7.2",
-		"react": "16.12.0"
+		"react": "18.2.0"
 	},
 	"main": "index.js",
 	"name": "frontend-taglib-clay",
-	"private": true,
 	"scripts": {
 		"build": "node-scripts build",
 		"checkFormat": "node-scripts format --check",

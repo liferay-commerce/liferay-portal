@@ -46,18 +46,23 @@ export default function RESTApplicationDropdownMenu({
 			/>
 
 			<ClayDropDown.ItemList items={restApplications} role="listbox">
-				{(item: string) => (
-					<ClayDropDown.Item
-						key={item}
-						onClick={() => onItemClick(item)}
-						roleItem="option"
-					>
-						<RESTApplicationDropdownItem
-							query={query}
-							restApplication={item}
-						/>
-					</ClayDropDown.Item>
-				)}
+				{
+
+					// @ts-ignore
+
+					(item: string) => (
+						<ClayDropDown.Item
+							key={item}
+							onClick={() => onItemClick(item)}
+							roleItem="option"
+						>
+							<RESTApplicationDropdownItem
+								query={query}
+								restApplication={item}
+							/>
+						</ClayDropDown.Item>
+					)
+				}
 			</ClayDropDown.ItemList>
 		</>
 	);

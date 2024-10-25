@@ -463,31 +463,36 @@ function ApiRestApplication({
 				/>
 
 				<ClayDropDown.ItemList items={itemKeys} role="listbox">
-					{(item: string) => {
-						const fuzzymatch = fuzzy.match(
-							query,
-							item,
-							FUZZY_OPTIONS
-						);
+					{
 
-						return (
-							<ClayDropDown.Item
-								key={item}
-								onClick={() => onItemClick(item)}
-								roleItem="option"
-							>
-								{fuzzymatch ? (
-									<span
-										dangerouslySetInnerHTML={{
-											__html: fuzzymatch.rendered,
-										}}
-									/>
-								) : (
-									item
-								)}
-							</ClayDropDown.Item>
-						);
-					}}
+						// @ts-ignore
+
+						(item: string) => {
+							const fuzzymatch = fuzzy.match(
+								query,
+								item,
+								FUZZY_OPTIONS
+							);
+
+							return (
+								<ClayDropDown.Item
+									key={item}
+									onClick={() => onItemClick(item)}
+									roleItem="option"
+								>
+									{fuzzymatch ? (
+										<span
+											dangerouslySetInnerHTML={{
+												__html: fuzzymatch.rendered,
+											}}
+										/>
+									) : (
+										item
+									)}
+								</ClayDropDown.Item>
+							);
+						}
+					}
 				</ClayDropDown.ItemList>
 			</>
 		);
@@ -526,31 +531,36 @@ function ApiRestApplication({
 				/>
 
 				<ClayDropDown.ItemList items={itemLabels} role="listbox">
-					{(item: string) => {
-						const fuzzymatch = fuzzy.match(
-							query,
-							item,
-							FUZZY_OPTIONS
-						);
+					{
 
-						return (
-							<ClayDropDown.Item
-								key={item}
-								onClick={() => onItemClick(item)}
-								roleItem="option"
-							>
-								{fuzzymatch ? (
-									<span
-										dangerouslySetInnerHTML={{
-											__html: fuzzymatch.rendered,
-										}}
-									/>
-								) : (
-									item
-								)}
-							</ClayDropDown.Item>
-						);
-					}}
+						// @ts-ignore
+
+						(item: string) => {
+							const fuzzymatch = fuzzy.match(
+								query,
+								item,
+								FUZZY_OPTIONS
+							);
+
+							return (
+								<ClayDropDown.Item
+									key={item}
+									onClick={() => onItemClick(item)}
+									roleItem="option"
+								>
+									{fuzzymatch ? (
+										<span
+											dangerouslySetInnerHTML={{
+												__html: fuzzymatch.rendered,
+											}}
+										/>
+									) : (
+										item
+									)}
+								</ClayDropDown.Item>
+							);
+						}
+					}
 				</ClayDropDown.ItemList>
 			</>
 		);

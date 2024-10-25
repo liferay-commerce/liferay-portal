@@ -50,10 +50,12 @@ const Wrapper = ({
 	);
 };
 
-const DefaultRenderer: React.FC<{
-	options: DefaultRendererOptions;
-	value: DefaultRendererValue;
-}> = ({options, value}) => {
+const DefaultRenderer: React.FC<
+	{children?: React.ReactNode | undefined} & {
+		options: DefaultRendererOptions;
+		value: DefaultRendererValue;
+	}
+> = ({options, value}) => {
 	if (
 		typeof value === 'number' ||
 		typeof value === 'string' ||

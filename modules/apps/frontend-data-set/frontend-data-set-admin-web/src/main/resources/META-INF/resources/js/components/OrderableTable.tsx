@@ -35,7 +35,9 @@ interface IContentRendererProps {
 }
 
 interface IContentRenderer {
-	component: React.FC<IContentRendererProps>;
+	component: React.FC<
+		{children?: React.ReactNode | undefined} & IContentRendererProps
+	>;
 	textMatch?: Function;
 }
 
@@ -207,7 +209,11 @@ const Row = ({
 			{fields.map((field) => {
 				if (field.contentRenderer) {
 					const Component = field.contentRenderer
-						.component as React.FC<IContentRendererProps>;
+						.component as React.FC<
+						{
+							children?: React.ReactNode | undefined;
+						} & IContentRendererProps
+					>;
 
 					return (
 						<ClayTable.Cell key={field.name}>
@@ -452,6 +458,9 @@ const OrderableTable = ({
 				</ManagementToolbar.Container>
 
 				{items.length ? (
+
+					// @ts-ignore
+
 					<DndProvider backend={HTML5Backend}>
 						<Table
 							actions={actions}
