@@ -69,7 +69,9 @@ test('Create, edit and delete editor config contributor client extension @LPS-18
 
 	// Synchronize test to avoid flakiness
 
-	expect(editEditorConfigContributorPage.descriptionCKEditor).toBeVisible();
+	await expect(
+		editEditorConfigContributorPage.descriptionCKEditor
+	).toBeVisible();
 
 	const sampleName2 = getRandomString();
 

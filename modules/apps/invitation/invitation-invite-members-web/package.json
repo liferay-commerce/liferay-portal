@@ -9,7 +9,7 @@
 		"@clayui/table": "3.111.0",
 		"@clayui/tooltip": "3.119.0",
 		"frontend-js-web": "*",
-		"react": "16.12.0"
+		"react": "18.2.0"
 	},
 	"main": "invite_members/js/InviteMembers.js",
 	"name": "invitation-invite-members-web",

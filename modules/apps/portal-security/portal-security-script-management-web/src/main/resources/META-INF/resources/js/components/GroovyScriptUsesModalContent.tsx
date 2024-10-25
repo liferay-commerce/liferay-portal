@@ -54,47 +54,57 @@ export function GroovyScriptUsesModalContent({
 					striped={false}
 				>
 					<Head items={tableHeaderItems}>
-						{(column) => (
-							<Cell expanded key={column.id}>
-								{column.name}
-							</Cell>
-						)}
+						{
+
+							// @ts-ignore
+
+							(column) => (
+								<Cell expanded key={column.id}>
+									{column.name}
+								</Cell>
+							)
+						}
 					</Head>
 
 					<Body defaultItems={groovyScriptUses}>
-						{(row) => (
-							<Row>
-								<Cell>
-									<ClayLink
-										displayType="tertiary"
-										href={row.sourceURL}
-										target="_blank"
-										weight="semi-bold"
-									>
-										{row.sourceName}
-									</ClayLink>
-								</Cell>
+						{
 
-								<Cell>
-									<div className="lfr__script-management-groovy-script-uses-modal-company-web-id-cell">
-										{row.companyWebId}
+							// @ts-ignore
 
+							(row) => (
+								<Row>
+									<Cell>
 										<ClayLink
-											displayType="secondary"
+											displayType="tertiary"
 											href={row.sourceURL}
-											role="button"
 											target="_blank"
 											weight="semi-bold"
 										>
-											<ClayIcon
-												aria-label="shortcut"
-												symbol="shortcut"
-											/>
+											{row.sourceName}
 										</ClayLink>
-									</div>
-								</Cell>
-							</Row>
-						)}
+									</Cell>
+
+									<Cell>
+										<div className="lfr__script-management-groovy-script-uses-modal-company-web-id-cell">
+											{row.companyWebId}
+
+											<ClayLink
+												displayType="secondary"
+												href={row.sourceURL}
+												role="button"
+												target="_blank"
+												weight="semi-bold"
+											>
+												<ClayIcon
+													aria-label="shortcut"
+													symbol="shortcut"
+												/>
+											</ClayLink>
+										</div>
+									</Cell>
+								</Row>
+							)
+						}
 					</Body>
 				</Table>
 			</ClayModal.Body>
