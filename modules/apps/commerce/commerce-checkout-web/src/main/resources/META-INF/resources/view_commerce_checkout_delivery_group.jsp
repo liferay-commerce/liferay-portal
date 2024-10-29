@@ -68,7 +68,7 @@ DeliveryGroupDisplayContext deliveryGroupDisplayContext = (DeliveryGroupDisplayC
 		</div>
 
 		<%
-		Format dateFormat = FastDateFormatFactoryUtil.getDate(DateFormat.MEDIUM, locale, timeZone);
+		Format dateFormat = FastDateFormatFactoryUtil.getSimpleDateFormat("MMM d, yyyy", locale, timeZone);
 		%>
 
 		<div class="commerce-value"><%= dateFormat.format(deliveryGroupDisplayContext.getDeliveryGroupDate(request)) %></div>
