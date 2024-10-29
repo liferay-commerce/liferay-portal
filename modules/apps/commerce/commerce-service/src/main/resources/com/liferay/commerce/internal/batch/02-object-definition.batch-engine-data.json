@@ -16,7 +16,7 @@
 			"externalReferenceCode": "L_ACCOUNT",
 			"objectRelationships": [
 				{
-					"deletionType": "prevent",
+					"deletionType": "cascade",
 					"externalReferenceCode": "L_ACCOUNT_TO_L_COMMERCE_RETURN",
 					"label": {
 						"en_US": "Account To Commerce Returns"
@@ -64,7 +64,7 @@
 					"type": "oneToMany"
 				},
 				{
-					"deletionType": "prevent",
+					"deletionType": "cascade",
 					"externalReferenceCode": "L_ACCOUNT_TO_L_COMMERCE_RETURN_ITEM",
 					"label": {
 						"en_US": "Account To Commerce Return Items"
@@ -121,7 +121,7 @@
 			"externalReferenceCode": "L_COMMERCE_ORDER",
 			"objectRelationships": [
 				{
-					"deletionType": "prevent",
+					"deletionType": "cascade",
 					"externalReferenceCode": "L_COMMERCE_ORDER_TO_L_COMMERCE_RETURNS",
 					"label": {
 						"en_US": "Commerce Order to Commerce Returns"
@@ -179,7 +179,7 @@
 			"externalReferenceCode": "L_COMMERCE_ORDER_ITEM",
 			"objectRelationships": [
 				{
-					"deletionType": "prevent",
+					"deletionType": "cascade",
 					"externalReferenceCode": "L_COMMERCE_ORDER_ITEM_TO_L_COMMERCE_RETURN_ITEMS",
 					"label": {
 						"en_US": "Commerce Order Item to Commerce Return Items"
