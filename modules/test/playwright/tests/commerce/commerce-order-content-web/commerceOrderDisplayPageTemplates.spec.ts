@@ -8,8 +8,8 @@ import {expect, mergeTests} from '@playwright/test';
 import {applicationsMenuPageTest} from '../../../fixtures/applicationsMenuPageTest';
 import {commercePagesTest} from '../../../fixtures/commercePagesTest';
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
+import {instanceSettingsPagesTest} from '../../../fixtures/instanceSettingsPagesTest';
 import {loginTest} from '../../../fixtures/loginTest';
-import {systemSettingsPageTest} from '../../../fixtures/systemSettingsPageTest';
 import getRandomString from '../../../utils/getRandomString';
 import {getUTCHourAndDateFormat} from '../utils/date';
 
@@ -17,8 +17,8 @@ export const test = mergeTests(
 	applicationsMenuPageTest,
 	commercePagesTest,
 	dataApiHelpersTest,
-	loginTest(),
-	systemSettingsPageTest
+	instanceSettingsPagesTest,
+	loginTest()
 );
 
 test('LPD-30855 Can map order item detailed information', async ({
@@ -26,17 +26,18 @@ test('LPD-30855 Can map order item detailed information', async ({
 	applicationsMenuPage,
 	commerceAdminChannelsPage,
 	commerceLayoutsPage,
+	instanceSettingsPage,
 	page,
-	systemSettingsPage,
 }) => {
 	try {
-		await systemSettingsPage.goToSystemSetting(
-			'Feature Flags',
-			'Developer'
-		);
+		await instanceSettingsPage.goToInstanceSetting('Feature Flags', 'Beta');
 
-		if (!(await page.getByLabel('COMMERCE-9410').isChecked())) {
-			await page.getByLabel('COMMERCE-9410').click();
+		if (
+			!(await page
+				.getByLabel('Commerce Classic Site Initializer')
+				.isChecked())
+		) {
+			await page.getByLabel('Commerce Classic Site Initializer').click();
 		}
 
 		const site = await apiHelpers.headlessSite.createSite({
@@ -173,13 +174,14 @@ test('LPD-30855 Can map order item detailed information', async ({
 		await page.getByText('Success:You successfully').click();
 	}
 	finally {
-		await systemSettingsPage.goToSystemSetting(
-			'Feature Flags',
-			'Developer'
-		);
+		await instanceSettingsPage.goToInstanceSetting('Feature Flags', 'Beta');
 
-		if (await page.getByLabel('COMMERCE-9410').isChecked()) {
-			await page.getByLabel('COMMERCE-9410').click();
+		if (
+			await page
+				.getByLabel('Commerce Classic Site Initializer')
+				.isChecked()
+		) {
+			await page.getByLabel('Commerce Classic Site Initializer').click();
 		}
 	}
 });

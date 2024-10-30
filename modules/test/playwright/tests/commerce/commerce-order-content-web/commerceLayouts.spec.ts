@@ -1526,10 +1526,15 @@ test('LPD-33503 Order Details - Questions & Answers', async ({
 		cart.id
 	);
 
+	const locale = await page.evaluate(() => {
+		return Liferay.ThemeDisplay.getBCP47LanguageId();
+	});
+
 	await expect(
 		page.getByText(
 			getDateCustomFormat(
 				comment.items[0].modifiedDate,
+				locale,
 				customFormatDate.DATE_AND_TIME
 			).replace(',', '')
 		)
@@ -1588,6 +1593,7 @@ test('LPD-33503 Order Details - Questions & Answers', async ({
 		page.getByText(
 			getDateCustomFormat(
 				comment.items[0].modifiedDate,
+				locale,
 				customFormatDate.DATE_AND_TIME
 			).replace(',', '')
 		)
