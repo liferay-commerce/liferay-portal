@@ -434,7 +434,9 @@ public class CartItemResourceImpl extends BaseCartItemResourceImpl {
 
 		CommerceOrderItem commerceOrderItem;
 
-		if (commerceOrderCheckoutConfiguration.showSeparateOrderItems()) {
+		if (commerceOrderCheckoutConfiguration.showSeparateOrderItems() ||
+			commerceOrderCheckoutConfiguration.multishippingEnabled()) {
+
 			commerceOrderItem = _commerceOrderItemService.addCommerceOrderItem(
 				commerceOrder.getCommerceOrderId(), cartItem.getSkuId(),
 				cartItem.getOptions(),
