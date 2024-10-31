@@ -6,6 +6,7 @@
 import {FrameLocator, Locator, Page, expect} from '@playwright/test';
 
 import {CommerceLayoutsPage} from '../commerce-order-content-web/commerceLayoutsPage';
+import {CommerceDNDTablePage} from '../commerceDNDTablePage';
 
 type TAddress = {
 	city: string;
@@ -18,8 +19,9 @@ type TAddress = {
 	zip: string;
 };
 
-export class CheckoutPage {
+export class CheckoutPage extends CommerceDNDTablePage {
 	readonly activeCheckoutStep: Locator;
+	readonly assertDataDeliveryGroupModal: (data: string) => Locator;
 	readonly addressInput: Locator;
 	readonly cityInput: Locator;
 	readonly commerceBillingAddress: Locator;
@@ -32,9 +34,15 @@ export class CheckoutPage {
 	readonly continueButton: Locator;
 	readonly countryInput: Locator;
 	readonly goToOrderDetailsButton: Locator;
+	readonly headingDeliveryGroupModal: (name: string) => Locator;
+	readonly iframeOkButton: Locator;
 	readonly layoutsPage: CommerceLayoutsPage;
+	readonly multishippingTabLink: Locator;
+	readonly multishippingTableLocator: Locator;
 	readonly nameInput: Locator;
 	readonly optionsButton: Locator;
+	readonly orderItemsTabLink: Locator;
+	readonly orderItemsTableLocator: Locator;
 	readonly orderSuccessMessage: Locator;
 	readonly page: Page;
 	readonly phoneNumberInput: Locator;
@@ -42,10 +50,16 @@ export class CheckoutPage {
 	readonly regionInput: Locator;
 	readonly shippingAddressSelect: Locator;
 	readonly shippingCost: Locator;
+	readonly orderSummaryShippingMethod: Locator;
 	readonly useAsBillingCheckbox: Locator;
+	readonly viewDeliveryGroupTableButton: Locator;
 	readonly zipInput: Locator;
 
 	constructor(page: Page) {
+		super(
+			page,
+			'#_com_liferay_commerce_checkout_web_internal_portlet_CommerceCheckoutPortlet_fm .dnd-table'
+		);
 		this.activeCheckoutStep = page.locator(
 			'.multi-step-item.active .multi-step-indicator-label'
 		);
@@ -62,6 +76,11 @@ export class CheckoutPage {
 			'button',
 			{name: 'Save'}
 		);
+		this.assertDataDeliveryGroupModal = (data: string) => {
+			return this.configurationIFrame
+				.locator('p')
+				.filter({hasText: data});
+		};
 		this.configurationIFrameShowFullAddressToggle =
 			this.configurationIFrame.getByLabel(
 				'Order Summary Show Full Address'
@@ -75,16 +94,34 @@ export class CheckoutPage {
 			name: 'Configuration',
 		});
 		this.countryInput = page.getByTitle('Country');
+		this.headingDeliveryGroupModal = (name: string) => {
+			return page.getByRole('heading', {exact: true, name});
+		};
+		this.iframeOkButton = page.getByLabel('close', {exact: true});
 		this.goToOrderDetailsButton = page.getByRole('button', {
 			name: 'Go to Order Details',
 		});
 		this.layoutsPage = new CommerceLayoutsPage(page);
+		this.multishippingTabLink = page.getByRole('link', {
+			exact: true,
+			name: 'Multishipping',
+		});
+		this.multishippingTableLocator = page.locator(
+			'div.multishipping-container'
+		);
 		this.nameInput = page.getByPlaceholder('Name', {exact: true});
 		this.optionsButton = page
 			.locator(
 				'#portlet_com_liferay_commerce_checkout_web_internal_portlet_CommerceCheckoutPortlet'
 			)
 			.getByLabel('Options');
+		this.orderItemsTabLink = page.getByRole('link', {
+			exact: true,
+			name: 'Order Items',
+		});
+		this.orderItemsTableLocator = page.locator(
+			'#_com_liferay_commerce_checkout_web_internal_portlet_CommerceCheckoutPortlet_commerceOrderItems'
+		);
 		this.orderSuccessMessage = page.getByText(
 			'Success! Your order has been processed.'
 		);
@@ -99,9 +136,11 @@ export class CheckoutPage {
 		);
 		this.shippingAddressSelect = page.getByText('Choose Shipping Address');
 		this.shippingCost = page.locator('.shipping-cost');
+		this.orderSummaryShippingMethod = page.locator('div.shipping-method');
 		this.useAsBillingCheckbox = page.getByLabel(
 			'Use shipping address as billing address'
 		);
+		this.viewDeliveryGroupTableButton = page.getByLabel('view');
 		this.zipInput = page.getByPlaceholder('Zip', {exact: true});
 	}
 

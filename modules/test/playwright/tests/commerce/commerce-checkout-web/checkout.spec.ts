@@ -13,6 +13,7 @@ import {loginTest} from '../../../fixtures/loginTest';
 import {notificationPagesTest} from '../../../fixtures/notificationPagesTest';
 import getRandomString from '../../../utils/getRandomString';
 import {waitForAlert} from '../../../utils/waitForAlert';
+import {setFutureDate} from '../utils/date';
 
 export const test = mergeTests(
 	applicationsMenuPageTest,
@@ -352,4 +353,123 @@ test('LPP-55128 Payment Term is reset correctly', async ({
 	await checkoutPage.continueButton.click();
 	await page.waitForURL((url) => url.href.includes('payment-terms'));
 	expect(page.getByLabel('MoneyB')).toBeChecked();
+});
+
+test('LPD-35329 Delivery group multishipping checkout summary', async ({
+	apiHelpers,
+	checkoutPage,
+	commerceAdminChannelDetailsPage,
+	commerceAdminChannelsPage,
+	commerceCartSummaryPage,
+	commerceLayoutsPage,
+	page,
+}) => {
+	const site = await apiHelpers.headlessSite.createSite({
+		name: getRandomString(),
+	});
+
+	apiHelpers.data.push({id: site.id, type: 'site'});
+
+	const channel = await apiHelpers.headlessCommerceAdminChannel.postChannel({
+		name: getRandomString(),
+		siteGroupId: site.id,
+	});
+
+	await commerceAdminChannelsPage.changeCommerceChannelSiteType(
+		channel.name,
+		'B2B'
+	);
+
+	await (
+		await commerceAdminChannelDetailsPage.generalCommerceAdminChannelTableLink(
+			'Flat Rate'
+		)
+	).click();
+	await commerceAdminChannelDetailsPage.activateChannelConfiguration(
+		'Flat Rate',
+		'Shipping Methods'
+	);
+	await commerceAdminChannelDetailsPage.addFlatRateShippingOption(
+		getRandomString()
+	);
+	await commerceAdminChannelDetailsPage.addFlatRateShippingOption(
+		getRandomString()
+	);
+
+	const account = await apiHelpers.headlessAdminUser.postAccount({
+		name: getRandomString(),
+		type: 'business',
+	});
+
+	apiHelpers.data.push({id: account.id, type: 'account'});
+
+	const catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
+		name: getRandomString(),
+	});
+
+	const product = await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+		catalogId: catalog.id,
+		name: {en_US: getRandomString()},
+		shippingConfiguration: {
+			freeShipping: false,
+			shippable: true,
+			shippingSeparately: false,
+		},
+	});
+
+	const productSkus = await apiHelpers.headlessCommerceAdminCatalog
+		.getProduct(product.productId)
+		.then((product) => {
+			return product.skus;
+		});
+
+	const sku = productSkus[0];
+
+	const address = await apiHelpers.headlessCommerceAdminAccount.postAddress(
+		account.id,
+		{phoneNumber: '1234567890', regionISOCode: 'AL'}
+	);
+
+	await apiHelpers.headlessCommerceDeliveryCart.postCart(
+		{
+			accountId: account.id,
+			cartItems: [
+				{
+					deliveryGroup: getRandomString(),
+					quantity: 1,
+					requestedDeliveryDate: setFutureDate(7),
+					shippingAddressId: address.id,
+					skuId: sku.id,
+				},
+			],
+		},
+		channel.id
+	);
+
+	await commerceLayoutsPage.goToPages(true, site.name);
+	await commerceLayoutsPage.createWidgetPage(getRandomString());
+
+	await page.goto(`/web/${site.name}`);
+
+	await commerceCartSummaryPage.addCartSummaryWidget();
+	await commerceCartSummaryPage.checkoutButton.click();
+
+	await expect(page.getByText('Widget Selection Panel Add')).toBeHidden();
+
+	await commerceLayoutsPage.addWidgetButton.click();
+	await commerceLayoutsPage.searchFormInput.fill('Checkout');
+	await commerceLayoutsPage.addWidgetLabel('Checkout').click();
+
+	await checkoutPage.continueButton.click();
+	await checkoutPage.continueButton.click();
+
+	await expect(checkoutPage.orderItemsTabLink).toBeVisible();
+	await expect(checkoutPage.multishippingTabLink).toBeVisible();
+	await checkoutPage.orderItemsTabLink.click();
+	await expect(checkoutPage.orderItemsTableLocator).toBeVisible();
+	await checkoutPage.multishippingTabLink.click();
+	await expect(checkoutPage.multishippingTableLocator).toBeVisible();
+	await expect(page.getByText('Shipping Address & Date')).toBeVisible();
+	await expect(page.getByText('Billing Address')).toBeVisible();
+	await expect(checkoutPage.orderSummaryShippingMethod).toBeVisible();
 });

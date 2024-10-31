@@ -26,3 +26,11 @@ export function getDateCustomFormat(
 
 	return date?.toLocaleDateString('en-US', format);
 }
+
+export function setFutureDate(day: number) {
+	const now = new Date().getTime();
+
+	const fiveDaysFromNow = now + 1000 * 60 * 60 * 24 * day;
+
+	return new Date(fiveDaysFromNow).toISOString();
+}
