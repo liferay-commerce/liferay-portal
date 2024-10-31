@@ -361,7 +361,7 @@ test('LPP-55128 Payment Term is reset correctly', async ({
 	expect(page.getByLabel('MoneyB')).toBeChecked();
 });
 
-test('LPD-35329 Delivery group multishipping checkout', async ({
+test('LPD-35329 Delivery group multishipping checkout summary', async ({
 	apiHelpers,
 	checkoutPage,
 	commerceAdminChannelDetailsPage,
@@ -415,7 +415,7 @@ test('LPD-35329 Delivery group multishipping checkout', async ({
 
 	const product = await apiHelpers.headlessCommerceAdminCatalog.postProduct({
 		catalogId: catalog.id,
-		name: {en_US: 'Product'},
+		name: {en_US: getRandomString()},
 		shippingConfiguration: {
 			freeShipping: false,
 			shippable: true,
@@ -544,6 +544,19 @@ test('LPD-35329 Delivery group multishipping checkout', async ({
 			'multiple addresses, the actual cost will be finalized after checkout.',
 		{autoClose: false, type: 'warning'}
 	);
+
+	await checkoutPage.continueButton.click();
+	await checkoutPage.continueButton.click();
+
+	await expect(checkoutPage.orderItemsTabLink).toBeVisible();
+	await expect(checkoutPage.multishippingTabLink).toBeVisible();
+	await checkoutPage.orderItemsTabLink.click();
+	await expect(checkoutPage.orderItemsTableLocator).toBeVisible();
+	await checkoutPage.multishippingTabLink.click();
+	await expect(checkoutPage.multishippingTableLocator).toBeVisible();
+	await expect(page.getByText('Shipping Address & Date')).toBeVisible();
+	await expect(page.getByText('Billing Address')).toBeVisible();
+	await expect(checkoutPage.orderSummaryShippingMethod).toBeVisible();
 });
 
 test('LPD-40425 Checkout order detail redirect works correctly when order DPT is enabled', async ({
