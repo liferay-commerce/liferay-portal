@@ -34,6 +34,7 @@ import {
 } from './Types';
 
 interface IAddressSelectorProps {
+	setHandleNameChange(name: string): void;
 	setHandleSubmit(
 		callback: SetStateAction<(event: Event) => Promise<IPostalAddress>>
 	): void;
@@ -62,6 +63,7 @@ function AddressSelector({
 	hasManageAddressesPermission = true,
 	label = Liferay.Language.get('delivery-group'),
 	namespace = 'AddressSelector',
+	setHandleNameChange,
 	setHandleSubmit,
 	setIsFormValid,
 }: IAddressSelectorProps) {
@@ -103,6 +105,8 @@ function AddressSelector({
 			}
 			else {
 				setErrors({});
+
+				setHandleNameChange(value as string);
 			}
 		},
 		[addresses]

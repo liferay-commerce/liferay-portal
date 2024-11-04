@@ -215,19 +215,16 @@ const OrderItemRow = ({
 	const [isChecked, setIsChecked] = useState(checked);
 	const [orderItem, setOrderItem] = useState<IOrderItem>(orderItemProp);
 
-	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const finalizeSave = useCallback(
-		debounce(
-			async (
-				currentDeliveryGroup: IDeliveryGroup,
-				deliveryGroupId: number,
-				orderId: number,
-				orderItem: IOrderItem,
-				orderItemDeliveryGroups: {
-					[key: string]: IOrderItemDeliveryGroup;
-				},
-				quantity: number
-			) => {
+		(
+			currentDeliveryGroup,
+			deliveryGroupId,
+			orderId,
+			orderItem,
+			orderItemDeliveryGroups,
+			quantity
+		) => {
+			const callback = async () => {
 				const existingOrderItemDeliveryGroup =
 					orderItemDeliveryGroups[deliveryGroupId];
 
@@ -331,9 +328,10 @@ const OrderItemRow = ({
 				setOrderItem(internalOrderItem);
 
 				handleSubmit(internalOrderItem);
-			},
-			500
-		),
+			};
+
+			return debounce(callback, 500);
+		},
 		[handleSubmit]
 	);
 

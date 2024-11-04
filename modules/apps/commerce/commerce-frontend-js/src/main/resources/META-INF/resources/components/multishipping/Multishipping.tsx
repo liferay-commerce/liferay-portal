@@ -305,8 +305,6 @@ const Multishipping = ({
 					item1.id - item2.id
 			)
 		);
-
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	const loadOrderItemData = useCallback(
@@ -708,7 +706,8 @@ const Multishipping = ({
 											readonly ||
 											saving ||
 											deliveryGroups.length >=
-												MAX_DELIVERY_GROUPS
+												MAX_DELIVERY_GROUPS ||
+											formattedOrderItems.length < 1
 										}
 										handleSubmit={handleSubmitDeliveryGroup}
 										hasManageAddressesPermission={true}

@@ -176,24 +176,6 @@ const DeliveryGroupModal = ({
 
 					<div>
 						<div className="h4 sheet-subtitle">
-							{Liferay.Language.get('shipping-address')}
-						</div>
-
-						<AddressSelector
-							accountId={accountId}
-							addressId={deliveryGroupState.addressId || 0}
-							addressType="shipping"
-							hasManageAddressesPermission={
-								hasManageAddressesPermission
-							}
-							label={Liferay.Language.get('shipping-address')}
-							setHandleSubmit={setHandleAddressSubmit}
-							setIsFormValid={setIsAddressFormValid}
-						/>
-					</div>
-
-					<div>
-						<div className="h4 sheet-subtitle">
 							{Liferay.Language.get('delivery-date')}
 						</div>
 
@@ -218,6 +200,25 @@ const DeliveryGroupModal = ({
 								}
 							/>
 						</ClayForm.Group>
+					</div>
+
+					<div>
+						<div className="h4 sheet-subtitle">
+							{Liferay.Language.get('shipping-address')}
+						</div>
+
+						<AddressSelector
+							accountId={accountId}
+							addressId={deliveryGroupState.addressId || 0}
+							addressType="shipping"
+							hasManageAddressesPermission={
+								hasManageAddressesPermission
+							}
+							label={Liferay.Language.get('shipping-address')}
+							setHandleNameChange={(name: string) => {}}
+							setHandleSubmit={setHandleAddressSubmit}
+							setIsFormValid={setIsAddressFormValid}
+						/>
 					</div>
 				</ClayForm>
 			</ClayModal.Body>
