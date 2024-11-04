@@ -159,6 +159,10 @@ export default function propsTransformer({items, portletNamespace, ...props}) {
 					onClick(event) {
 						const action = child.data?.action;
 
+						if (child.href) {
+							event.stopPropagation();
+						}
+
 						if (action) {
 							event.preventDefault();
 							event.stopPropagation();
