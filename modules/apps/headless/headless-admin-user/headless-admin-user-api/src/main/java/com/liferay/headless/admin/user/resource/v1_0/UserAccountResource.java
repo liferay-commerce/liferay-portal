@@ -137,6 +137,12 @@ public interface UserAccountResource {
 
 	public UserAccount getMyUserAccount() throws Exception;
 
+	public Page<UserAccount>
+			getOrganizationByExternalReferenceCodeUserAccountsPage(
+				String externalReferenceCode, String search, Filter filter,
+				Pagination pagination, Sort[] sorts)
+		throws Exception;
+
 	public Page<UserAccount> getOrganizationUserAccountsPage(
 			String organizationId, String search, Filter filter,
 			Pagination pagination, Sort[] sorts)
