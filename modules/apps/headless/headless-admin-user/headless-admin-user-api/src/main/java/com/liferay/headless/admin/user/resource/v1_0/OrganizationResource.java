@@ -119,6 +119,33 @@ public interface OrganizationResource {
 			String externalReferenceCode, Organization organization)
 		throws Exception;
 
+	public Page<Organization>
+			getOrganizationByExternalReferenceCodeChildOrganizationsPage(
+				String externalReferenceCode, Boolean flatten, String search,
+				Filter filter, Pagination pagination, Sort[] sorts)
+		throws Exception;
+
+	public void
+			deleteOrganizationByExternalReferenceCodeUserAccountsByEmailAddress(
+				String externalReferenceCode, String[] strings)
+		throws Exception;
+
+	public Page<UserAccount>
+			postOrganizationByExternalReferenceCodeUserAccountsByEmailAddress(
+				String externalReferenceCode, String organizationRoleIds,
+				String[] strings)
+		throws Exception;
+
+	public void
+			deleteOrganizationByExternalReferenceCodeUserAccountByEmailAddress(
+				String externalReferenceCode, String emailAddress)
+		throws Exception;
+
+	public UserAccount
+			postOrganizationByExternalReferenceCodeUserAccountByEmailAddress(
+				String externalReferenceCode, String emailAddress)
+		throws Exception;
+
 	public void deleteOrganization(String organizationId) throws Exception;
 
 	public Response deleteOrganizationBatch(String callbackURL, Object object)

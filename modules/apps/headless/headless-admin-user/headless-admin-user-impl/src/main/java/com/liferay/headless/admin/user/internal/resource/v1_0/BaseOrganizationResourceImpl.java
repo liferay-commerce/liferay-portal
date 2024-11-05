@@ -882,6 +882,242 @@ public abstract class BaseOrganizationResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
+	 * curl -X 'GET' 'http://localhost:8080/o/headless-admin-user/v1.0/organizations/by-external-reference-code/{externalReferenceCode}/child-organizations'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Retrieves the parent organization's child organizations. Results can be paginated, filtered, searched, and sorted."
+	)
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "externalReferenceCode"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "filter"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "flatten"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "page"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "pageSize"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "search"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "sort"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Organization")}
+	)
+	@javax.ws.rs.GET
+	@javax.ws.rs.Path(
+		"/organizations/by-external-reference-code/{externalReferenceCode}/child-organizations"
+	)
+	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public Page<Organization>
+			getOrganizationByExternalReferenceCodeChildOrganizationsPage(
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@javax.validation.constraints.NotNull
+				@javax.ws.rs.PathParam("externalReferenceCode")
+				String externalReferenceCode,
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@javax.ws.rs.QueryParam("flatten")
+				Boolean flatten,
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@javax.ws.rs.QueryParam("search")
+				String search,
+				@javax.ws.rs.core.Context Filter filter,
+				@javax.ws.rs.core.Context Pagination pagination,
+				@javax.ws.rs.core.Context Sort[] sorts)
+		throws Exception {
+
+		return Page.of(Collections.emptyList());
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-admin-user/v1.0/organizations/by-external-reference-code/{externalReferenceCode}/user-accounts/by-email-address'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Removes users from an organization by their email addresses"
+	)
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "externalReferenceCode"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Organization")}
+	)
+	@javax.ws.rs.Consumes({"application/json", "application/xml"})
+	@javax.ws.rs.DELETE
+	@javax.ws.rs.Path(
+		"/organizations/by-external-reference-code/{externalReferenceCode}/user-accounts/by-email-address"
+	)
+	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public void
+			deleteOrganizationByExternalReferenceCodeUserAccountsByEmailAddress(
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@javax.validation.constraints.NotNull
+				@javax.ws.rs.PathParam("externalReferenceCode")
+				String externalReferenceCode,
+				String[] strings)
+		throws Exception {
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-admin-user/v1.0/organizations/by-external-reference-code/{externalReferenceCode}/user-accounts/by-email-address'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Assigns users to an organization by their email addresses"
+	)
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "externalReferenceCode"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "organizationRoleIds"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Organization")}
+	)
+	@javax.ws.rs.Consumes({"application/json", "application/xml"})
+	@javax.ws.rs.Path(
+		"/organizations/by-external-reference-code/{externalReferenceCode}/user-accounts/by-email-address"
+	)
+	@javax.ws.rs.POST
+	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public Page<UserAccount>
+			postOrganizationByExternalReferenceCodeUserAccountsByEmailAddress(
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@javax.validation.constraints.NotNull
+				@javax.ws.rs.PathParam("externalReferenceCode")
+				String externalReferenceCode,
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@javax.ws.rs.QueryParam("organizationRoleIds")
+				String organizationRoleIds,
+				String[] strings)
+		throws Exception {
+
+		return Page.of(Collections.emptyList());
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-admin-user/v1.0/organizations/by-external-reference-code/{externalReferenceCode}/user-accounts/by-email-address/{emailAddress}'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Removes a user from an organization by their email address"
+	)
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "externalReferenceCode"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "emailAddress"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Organization")}
+	)
+	@javax.ws.rs.DELETE
+	@javax.ws.rs.Path(
+		"/organizations/by-external-reference-code/{externalReferenceCode}/user-accounts/by-email-address/{emailAddress}"
+	)
+	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public void
+			deleteOrganizationByExternalReferenceCodeUserAccountByEmailAddress(
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@javax.validation.constraints.NotNull
+				@javax.ws.rs.PathParam("externalReferenceCode")
+				String externalReferenceCode,
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@javax.validation.constraints.NotNull
+				@javax.ws.rs.PathParam("emailAddress")
+				String emailAddress)
+		throws Exception {
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-admin-user/v1.0/organizations/by-external-reference-code/{externalReferenceCode}/user-accounts/by-email-address/{emailAddress}'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Assigns a user to an organization by their email address"
+	)
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "externalReferenceCode"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "emailAddress"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Organization")}
+	)
+	@javax.ws.rs.Path(
+		"/organizations/by-external-reference-code/{externalReferenceCode}/user-accounts/by-email-address/{emailAddress}"
+	)
+	@javax.ws.rs.POST
+	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public UserAccount
+			postOrganizationByExternalReferenceCodeUserAccountByEmailAddress(
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@javax.validation.constraints.NotNull
+				@javax.ws.rs.PathParam("externalReferenceCode")
+				String externalReferenceCode,
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@javax.validation.constraints.NotNull
+				@javax.ws.rs.PathParam("emailAddress")
+				String emailAddress)
+		throws Exception {
+
+		return new UserAccount();
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-admin-user/v1.0/organizations/{organizationId}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(

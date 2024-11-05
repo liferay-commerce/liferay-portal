@@ -347,6 +347,39 @@ public class Mutation {
 	}
 
 	@GraphQLField
+	public boolean deleteOrganizationByExternalReferenceCodeAccounts(
+			@GraphQLName("externalReferenceCode") String externalReferenceCode,
+			@GraphQLName("longs") Long[] longs)
+		throws Exception {
+
+		_applyVoidComponentServiceObjects(
+			_accountResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			accountResource ->
+				accountResource.
+					deleteOrganizationByExternalReferenceCodeAccounts(
+						externalReferenceCode, longs));
+
+		return true;
+	}
+
+	@GraphQLField
+	public boolean createOrganizationByExternalReferenceCodeAccounts(
+			@GraphQLName("externalReferenceCode") String externalReferenceCode,
+			@GraphQLName("longs") Long[] longs)
+		throws Exception {
+
+		_applyVoidComponentServiceObjects(
+			_accountResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			accountResource ->
+				accountResource.postOrganizationByExternalReferenceCodeAccounts(
+					externalReferenceCode, longs));
+
+		return true;
+	}
+
+	@GraphQLField
 	public boolean
 			deleteOrganizationByExternalReferenceCodeOrganizationExternalReferenceCodeAccountByExternalReferenceCode(
 				@GraphQLName("organizationExternalReferenceCode") String
@@ -1323,6 +1356,92 @@ public class Mutation {
 			organizationResource ->
 				organizationResource.putOrganizationByExternalReferenceCode(
 					externalReferenceCode, organization));
+	}
+
+	@GraphQLField(
+		description = "Removes users from an organization by their email addresses"
+	)
+	public boolean
+			deleteOrganizationByExternalReferenceCodeUserAccountsByEmailAddress(
+				@GraphQLName("externalReferenceCode") String
+					externalReferenceCode,
+				@GraphQLName("strings") String[] strings)
+		throws Exception {
+
+		_applyVoidComponentServiceObjects(
+			_organizationResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			organizationResource ->
+				organizationResource.
+					deleteOrganizationByExternalReferenceCodeUserAccountsByEmailAddress(
+						externalReferenceCode, strings));
+
+		return true;
+	}
+
+	@GraphQLField(
+		description = "Assigns users to an organization by their email addresses"
+	)
+	public java.util.Collection<UserAccount>
+			createOrganizationByExternalReferenceCodeUserAccountsByEmailAddress(
+				@GraphQLName("externalReferenceCode") String
+					externalReferenceCode,
+				@GraphQLName("organizationRoleIds") String organizationRoleIds,
+				@GraphQLName("strings") String[] strings)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_organizationResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			organizationResource -> {
+				Page paginationPage =
+					organizationResource.
+						postOrganizationByExternalReferenceCodeUserAccountsByEmailAddress(
+							externalReferenceCode, organizationRoleIds,
+							strings);
+
+				return paginationPage.getItems();
+			});
+	}
+
+	@GraphQLField(
+		description = "Removes a user from an organization by their email address"
+	)
+	public boolean
+			deleteOrganizationByExternalReferenceCodeUserAccountByEmailAddress(
+				@GraphQLName("externalReferenceCode") String
+					externalReferenceCode,
+				@GraphQLName("emailAddress") String emailAddress)
+		throws Exception {
+
+		_applyVoidComponentServiceObjects(
+			_organizationResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			organizationResource ->
+				organizationResource.
+					deleteOrganizationByExternalReferenceCodeUserAccountByEmailAddress(
+						externalReferenceCode, emailAddress));
+
+		return true;
+	}
+
+	@GraphQLField(
+		description = "Assigns a user to an organization by their email address"
+	)
+	public UserAccount
+			createOrganizationByExternalReferenceCodeUserAccountByEmailAddress(
+				@GraphQLName("externalReferenceCode") String
+					externalReferenceCode,
+				@GraphQLName("emailAddress") String emailAddress)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_organizationResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			organizationResource ->
+				organizationResource.
+					postOrganizationByExternalReferenceCodeUserAccountByEmailAddress(
+						externalReferenceCode, emailAddress));
 	}
 
 	@GraphQLField(description = "Deletes an organization.")
