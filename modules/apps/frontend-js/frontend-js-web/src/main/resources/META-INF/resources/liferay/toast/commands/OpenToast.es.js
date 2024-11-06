@@ -111,8 +111,6 @@ function openToast({
 		}
 	};
 
-	cleanUp();
-
 	const onCloseFn = (event) => {
 		if (onClose) {
 			onClose({event});
