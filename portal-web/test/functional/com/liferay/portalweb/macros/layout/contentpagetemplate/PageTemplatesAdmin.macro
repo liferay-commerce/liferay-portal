@@ -21,7 +21,7 @@ definition {
 
 				LexiconCard.clickCard(card = ${masterLayoutName});
 			}
-			else {
+			else if (${siteTemplate} != "true") {
 				WaitForPageLoad();
 
 				LexiconCard.clickCard(card = "Blank");
