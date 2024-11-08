@@ -6,6 +6,7 @@
 import {ClaySelect} from '@clayui/form';
 import {Col} from '@clayui/layout';
 import React, {useEffect, useReducer, useRef, useState} from 'react';
+import {flushSync} from 'react-dom';
 
 import {
 	CSV_FORMAT,
@@ -54,20 +55,28 @@ function ExportSettings({
 	useEffect(() => {
 		const handleTemplateSelectedEvent = ({template}) => {
 			templateRef.current = true;
+			if (template.entityType !== selectedExternalTypeOption) {
+				templateRef.current = true;
+				flushSync(() => {
+					setSelectedExternalTypeOption(template.entityType);
+				});
+			}
+
 			if (
 				template.internalClassNameKey !==
 				selectedInternalClassNameKeyName
 			) {
 				templateRef.current = true;
-				setSelectedInternalClassNameKeyName(
-					template.internalClassNameKey
-				);
+				flushSync(() => {
+					setSelectedInternalClassNameKeyName(
+						template.internalClassNameKey
+					);
+				});
 			}
-			dispatchInternalClassNameKeyOptions('update');
-			if (template.entityType !== selectedExternalTypeOption) {
-				templateRef.current = true;
-				setSelectedExternalTypeOption(template.entityType);
-			}
+
+			flushSync(() => {
+				dispatchInternalClassNameKeyOptions('update');
+			});
 		};
 
 		Liferay.on(TEMPLATE_SELECTED_EVENT, handleTemplateSelectedEvent);
