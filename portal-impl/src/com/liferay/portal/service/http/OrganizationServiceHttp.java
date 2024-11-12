@@ -624,8 +624,8 @@ public class OrganizationServiceHttp {
 
 	public static com.liferay.portal.kernel.model.Organization
 			getOrganizationByExternalReferenceCode(
-				HttpPrincipal httpPrincipal, long companyId,
-				String externalReferenceCode)
+				HttpPrincipal httpPrincipal, String externalReferenceCode,
+				long companyId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
@@ -635,7 +635,7 @@ public class OrganizationServiceHttp {
 				_getOrganizationByExternalReferenceCodeParameterTypes14);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, companyId, externalReferenceCode);
+				methodKey, externalReferenceCode, companyId);
 
 			Object returnObj = null;
 
@@ -1317,7 +1317,7 @@ public class OrganizationServiceHttp {
 		new Class[] {long.class};
 	private static final Class<?>[]
 		_getOrganizationByExternalReferenceCodeParameterTypes14 = new Class[] {
-			long.class, String.class
+			String.class, long.class
 		};
 	private static final Class<?>[] _getOrganizationIdParameterTypes15 =
 		new Class[] {long.class, String.class};
