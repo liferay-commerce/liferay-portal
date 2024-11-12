@@ -345,7 +345,7 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 
 		Organization organization =
 			_organizationService.getOrganizationByExternalReferenceCode(
-				contextCompany.getCompanyId(), externalReferenceCode);
+				externalReferenceCode, contextCompany.getCompanyId());
 
 		return getOrganizationUserAccountsPage(
 			String.valueOf(organization.getOrganizationId()), search, filter,
