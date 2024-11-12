@@ -78,7 +78,7 @@ public class FeatureFlagTestRule
 
 			PropsUtil.addProperties(
 				UnicodePropertiesBuilder.setProperty(
-					featureFlagKey, "true"
+					featureFlagKey, String.valueOf(featureFlags.enable())
 				).build());
 		}
 
