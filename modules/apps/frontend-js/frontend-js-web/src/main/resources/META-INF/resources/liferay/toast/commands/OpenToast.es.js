@@ -7,6 +7,7 @@ import ClayAlert from '@clayui/alert';
 import {render} from '@liferay/frontend-js-react-web';
 import classNames from 'classnames';
 import React from 'react';
+import {v4 as uuidv4} from 'uuid';
 
 import buildFragment from '../../util/build_fragment';
 
@@ -86,7 +87,7 @@ const getRootElement = ({container, containerId}) => {
  * @review
  */
 
-let root;
+const rootsMap = new Map();
 
 function openToast({
 	autoClose = TOAST_AUTO_CLOSE_INTERVAL,
@@ -101,13 +102,17 @@ function openToast({
 	type = 'success',
 	variant,
 }) {
+	const id = uuidv4();
+
 	const rootElement = getRootElement({container, containerId});
 
 	const cleanUp = () => {
-		if (root) {
+		if (rootsMap.has(id)) {
+			const root = rootsMap.get(id);
+
 			root.unmount();
 
-			root = null;
+			rootsMap.delete(id);
 		}
 	};
 
@@ -136,7 +141,7 @@ function openToast({
 		titleHTML = '';
 	}
 
-	root = render(
+	const root = render(
 		<ClayAlert
 			autoClose={autoClose}
 			displayType={type}
@@ -155,6 +160,8 @@ function openToast({
 		renderData,
 		rootElement
 	);
+
+	rootsMap.set(id, root);
 }
 
 export {openToast};
