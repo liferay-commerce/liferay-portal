@@ -151,7 +151,7 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 
 		com.liferay.portal.kernel.model.Organization organization =
 			_organizationService.getOrganizationByExternalReferenceCode(
-				contextCompany.getCompanyId(), externalReferenceCode);
+				externalReferenceCode, contextCompany.getCompanyId());
 
 		deleteOrganizationAccounts(
 			organization.getOrganizationId(), accountIds);
@@ -166,8 +166,8 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 
 		com.liferay.portal.kernel.model.Organization organization =
 			_organizationService.getOrganizationByExternalReferenceCode(
-				contextCompany.getCompanyId(),
-				organizationExternalReferenceCode);
+				organizationExternalReferenceCode,
+				contextCompany.getCompanyId());
 
 		deleteOrganizationAccountsByExternalReferenceCode(
 			organization.getOrganizationId(), externalReferenceCodes);
@@ -332,7 +332,7 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 
 		com.liferay.portal.kernel.model.Organization organization =
 			_organizationService.getOrganizationByExternalReferenceCode(
-				contextCompany.getCompanyId(), externalReferenceCode);
+				externalReferenceCode, contextCompany.getCompanyId());
 
 		return getOrganizationAccountsPage(
 			String.valueOf(organization.getOrganizationId()), search, filter,
@@ -348,8 +348,8 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 
 		com.liferay.portal.kernel.model.Organization organization =
 			_organizationService.getOrganizationByExternalReferenceCode(
-				contextCompany.getCompanyId(),
-				organizationExternalReferenceCode);
+				organizationExternalReferenceCode,
+				contextCompany.getCompanyId());
 
 		return getOrganizationAccountsPage(
 			String.valueOf(organization.getOrganizationId()), search, filter,
@@ -539,7 +539,7 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 
 		com.liferay.portal.kernel.model.Organization organization =
 			_organizationService.getOrganizationByExternalReferenceCode(
-				contextCompany.getCompanyId(), externalReferenceCode);
+				externalReferenceCode, contextCompany.getCompanyId());
 
 		postOrganizationAccounts(organization.getOrganizationId(), accountIds);
 	}
@@ -553,8 +553,8 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 
 		com.liferay.portal.kernel.model.Organization organization =
 			_organizationService.getOrganizationByExternalReferenceCode(
-				contextCompany.getCompanyId(),
-				organizationExternalReferenceCode);
+				organizationExternalReferenceCode,
+				contextCompany.getCompanyId());
 
 		postOrganizationAccountsByExternalReferenceCode(
 			organization.getOrganizationId(), externalReferenceCodes);

@@ -155,7 +155,7 @@ public class OrganizationResourceImpl extends BaseOrganizationResourceImpl {
 
 		com.liferay.portal.kernel.model.Organization organization =
 			_organizationService.getOrganizationByExternalReferenceCode(
-				contextCompany.getCompanyId(), externalReferenceCode);
+				externalReferenceCode, contextCompany.getCompanyId());
 
 		deleteUserAccountByEmailAddress(
 			String.valueOf(organization.getOrganizationId()), emailAddress);
@@ -169,7 +169,7 @@ public class OrganizationResourceImpl extends BaseOrganizationResourceImpl {
 
 		com.liferay.portal.kernel.model.Organization organization =
 			_organizationService.getOrganizationByExternalReferenceCode(
-				contextCompany.getCompanyId(), externalReferenceCode);
+				externalReferenceCode, contextCompany.getCompanyId());
 
 		deleteUserAccountsByEmailAddress(
 			String.valueOf(organization.getOrganizationId()), emailAddresses);
@@ -286,7 +286,7 @@ public class OrganizationResourceImpl extends BaseOrganizationResourceImpl {
 		com.liferay.portal.kernel.model.Organization
 			serviceBuilderOrganization =
 				_organizationService.getOrganizationByExternalReferenceCode(
-					contextCompany.getCompanyId(), externalReferenceCode);
+					externalReferenceCode, contextCompany.getCompanyId());
 
 		return _organizationResourceDTOConverter.toDTO(
 			_getDTOConverterContext(
@@ -303,7 +303,7 @@ public class OrganizationResourceImpl extends BaseOrganizationResourceImpl {
 
 		com.liferay.portal.kernel.model.Organization organization =
 			_organizationService.getOrganizationByExternalReferenceCode(
-				contextCompany.getCompanyId(), externalReferenceCode);
+				externalReferenceCode, contextCompany.getCompanyId());
 
 		return getOrganizationChildOrganizationsPage(
 			String.valueOf(organization.getOrganizationId()), flatten, search,
@@ -425,7 +425,7 @@ public class OrganizationResourceImpl extends BaseOrganizationResourceImpl {
 		com.liferay.portal.kernel.model.Organization
 			serviceBuilderOrganization =
 				_organizationService.getOrganizationByExternalReferenceCode(
-					contextCompany.getCompanyId(), externalReferenceCode);
+					externalReferenceCode, contextCompany.getCompanyId());
 
 		return patchOrganization(
 			String.valueOf(serviceBuilderOrganization.getOrganizationId()),
@@ -498,7 +498,7 @@ public class OrganizationResourceImpl extends BaseOrganizationResourceImpl {
 
 		com.liferay.portal.kernel.model.Organization organization =
 			_organizationService.getOrganizationByExternalReferenceCode(
-				contextCompany.getCompanyId(), externalReferenceCode);
+				externalReferenceCode, contextCompany.getCompanyId());
 
 		return postUserAccountByEmailAddress(
 			String.valueOf(organization.getOrganizationId()), emailAddress);
@@ -513,7 +513,7 @@ public class OrganizationResourceImpl extends BaseOrganizationResourceImpl {
 
 		com.liferay.portal.kernel.model.Organization organization =
 			_organizationService.getOrganizationByExternalReferenceCode(
-				contextCompany.getCompanyId(), externalReferenceCode);
+				externalReferenceCode, contextCompany.getCompanyId());
 
 		return postUserAccountsByEmailAddress(
 			String.valueOf(organization.getOrganizationId()),
