@@ -63,4 +63,20 @@ export class HeadlessAdminWorkflowApiHelper {
 			}
 		);
 	}
+
+	async postWorkflowDefinitionWorkflowDefinitionLink(
+		className: string,
+		groupId: number,
+		workflowDefinitionId: number
+	) {
+		return await this.apiHelpers.post(
+			`${this.apiHelpers.baseUrl}${this.basePath}/workflow-definitions/${workflowDefinitionId}/workflow-definition-links`,
+			{
+				data: {
+					className,
+					groupId,
+				},
+			}
+		);
+	}
 }

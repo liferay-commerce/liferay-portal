@@ -11,6 +11,7 @@ import {applicationsMenuPageTest} from '../../../fixtures/applicationsMenuPageTe
 import {commercePagesTest} from '../../../fixtures/commercePagesTest';
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {workflowPagesTest} from '../../../fixtures/workflowPagesTest';
 import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
 import performLogin, {
@@ -24,6 +25,7 @@ export const test = mergeTests(
 	applicationsMenuPageTest,
 	commercePagesTest,
 	dataApiHelpersTest,
+	workflowPagesTest,
 	loginTest()
 );
 
@@ -989,4 +991,73 @@ test('LPD-39598 Can view SKU UOM discount is applied on product details page', a
 			productDetailsPage.priceContainer
 		)
 	).not.toBeVisible();
+});
+
+test('LPP-56451 Product detail page is available after posting a product with single approver workflow enabled', async ({
+	apiHelpers,
+	applicationsMenuPage,
+	commerceLayoutsPage,
+	page,
+	productDetailsPage,
+}) => {
+	const site = await apiHelpers.headlessSite.createSite({
+		name: 'View product details',
+	});
+
+	apiHelpers.data.push({id: site.id, type: 'site'});
+
+	const singleApproverWorkflowDefinition =
+		await apiHelpers.headlessAdminWorkflow.getWorkflowDefinitionByName(
+			'Single Approver'
+		);
+
+	await apiHelpers.headlessAdminWorkflow.postWorkflowDefinitionWorkflowDefinitionLink(
+		'com.liferay.commerce.product.model.CPDefinition',
+		0,
+		singleApproverWorkflowDefinition.id
+	);
+
+	await apiHelpers.headlessCommerceAdminChannel.postChannel({
+		name: 'View product details',
+		siteGroupId: site.id,
+	});
+
+	const catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
+		name: 'View product details',
+	});
+
+	await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+		catalogId: catalog.id,
+		description: {en_US: 'Full description'},
+		name: {en_US: 'product'},
+		productType: 'simple',
+		shortDescription: {en_US: 'Short description'},
+		skus: [
+			{
+				cost: 0,
+				gtin: 'GTIN1',
+				manufacturerPartNumber: 'mpn',
+				price: 0,
+				published: true,
+				purchasable: true,
+				sku: 'Sku',
+			},
+		],
+	});
+
+	await applicationsMenuPage.goToSite('View product details');
+
+	await commerceLayoutsPage.goToPages(false);
+
+	await commerceLayoutsPage.createWidgetPage('View product details');
+
+	await page.goto(`/web/${site.name}`);
+
+	await productDetailsPage.addProductDetailsWidget();
+
+	await page.goto(`/web/${site.name}/p/product`);
+
+	await expect(
+		await productDetailsPage.fullDescriptionField('Full description')
+	).toBeVisible();
 });
