@@ -134,6 +134,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowHandlerRegistryUtil;
+import com.liferay.portal.kernel.workflow.WorkflowThreadLocal;
 
 import java.io.Serializable;
 
@@ -360,16 +361,30 @@ public class CPDefinitionLocalServiceImpl
 
 		// Workflow
 
-		if (_workflowDefinitionLinkLocalService.hasWorkflowDefinitionLink(
-				serviceContext.getCompanyId(), serviceContext.getScopeGroupId(),
-				CPDefinition.class.getName(), 0)) {
+		boolean workflowEnabled = WorkflowThreadLocal.isEnabled();
 
-			serviceContext.setWorkflowAction(
-				WorkflowConstants.ACTION_SAVE_DRAFT);
+		try {
+			if (_workflowDefinitionLinkLocalService.hasWorkflowDefinitionLink(
+					serviceContext.getCompanyId(),
+					serviceContext.getScopeGroupId(),
+					CPDefinition.class.getName(), 0)) {
+
+				serviceContext.setWorkflowAction(
+					WorkflowConstants.ACTION_SAVE_DRAFT);
+
+				if (status == WorkflowConstants.STATUS_APPROVED) {
+					WorkflowThreadLocal.setEnabled(false);
+					serviceContext.setWorkflowAction(
+						WorkflowConstants.ACTION_PUBLISH);
+				}
+			}
+
+			return _startWorkflowInstance(
+				user.getUserId(), cpDefinition, serviceContext);
 		}
-
-		return _startWorkflowInstance(
-			user.getUserId(), cpDefinition, serviceContext);
+		finally {
+			WorkflowThreadLocal.setEnabled(workflowEnabled);
+		}
 	}
 
 	@Override
