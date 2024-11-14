@@ -887,6 +887,7 @@ public class UserLocalServiceTest {
 		Assert.assertEquals(user3, users.get(1));
 	}
 
+	
 	@Test
 	public void testUnlockoutUserWithStaleLastFailedLoginDate()
 		throws Exception {
