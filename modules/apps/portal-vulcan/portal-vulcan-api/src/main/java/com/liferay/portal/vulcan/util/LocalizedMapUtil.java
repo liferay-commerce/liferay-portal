@@ -7,6 +7,7 @@ package com.liferay.portal.vulcan.util;
 
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -45,9 +46,36 @@ public class LocalizedMapUtil {
 	}
 
 	public static Map<String, String> getI18nMap(
+		boolean acceptAllLanguages, Map<String, String> localizedMap,
+		Set<Locale> availableLocales) {
+
+		if (!acceptAllLanguages) {
+			return null;
+		}
+
+		Map<String, String> i18nMap = new HashMap<>();
+
+		for (Locale locale : availableLocales) {
+			String languageId = LanguageUtil.getLanguageId(locale);
+
+			if (localizedMap.containsKey(languageId)) {
+				i18nMap.put(languageId, localizedMap.get(languageId));
+			}
+		}
+
+		return i18nMap;
+	}
+
+	public static Map<String, String> getI18nMap(
 		Map<Locale, String> localizedMap) {
 
 		return getI18nMap(true, localizedMap);
+	}
+
+	public static Map<String, String> getI18nMap(
+		Map<String, String> localizedMap, Set<Locale> availableLocales) {
+
+		return getI18nMap(true, localizedMap, availableLocales);
 	}
 
 	public static Map<String, String> getLanguageIdMap(
