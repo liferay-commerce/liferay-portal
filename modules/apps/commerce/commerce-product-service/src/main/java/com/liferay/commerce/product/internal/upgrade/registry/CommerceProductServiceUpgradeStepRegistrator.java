@@ -42,11 +42,15 @@ import com.liferay.commerce.product.internal.upgrade.v5_21_0.util.CPConfiguratio
 import com.liferay.commerce.product.internal.upgrade.v5_21_0.util.CPConfigurationListTable;
 import com.liferay.commerce.product.internal.upgrade.v5_22_0.CPSpecificationOptionUpgradeProcess;
 import com.liferay.commerce.product.internal.upgrade.v5_25_0.util.CPConfigurationListRelTable;
+import com.liferay.commerce.product.internal.upgrade.v5_26_0.CPConfigurationUpgradeProcess;
 import com.liferay.commerce.product.internal.upgrade.v5_4_0.CommercePermissionUpgradeProcess;
 import com.liferay.commerce.product.internal.upgrade.v5_5_0.util.CPInstanceUnitOfMeasureTable;
+import com.liferay.commerce.product.service.CPConfigurationEntryLocalService;
+import com.liferay.commerce.product.service.CPConfigurationListLocalService;
 import com.liferay.counter.kernel.service.CounterLocalService;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
@@ -616,6 +620,12 @@ public class CommerceProductServiceUpgradeStepRegistrator
 		registry.register(
 			"5.24.0", "5.25.0", CPConfigurationListRelTable.create());
 
+		registry.register(
+			"5.25.0", "5.26.0",
+			new CPConfigurationUpgradeProcess(
+				_classNameLocalService, _cpConfigurationEntryLocalService,
+				_cpConfigurationListLocalService, _language));
+
 		if (_log.isInfoEnabled()) {
 			_log.info("Commerce product upgrade step registrator finished");
 		}
@@ -652,10 +662,19 @@ public class CommerceProductServiceUpgradeStepRegistrator
 	private CounterLocalService _counterLocalService;
 
 	@Reference
+	private CPConfigurationEntryLocalService _cpConfigurationEntryLocalService;
+
+	@Reference
+	private CPConfigurationListLocalService _cpConfigurationListLocalService;
+
+	@Reference
 	private GroupLocalService _groupLocalService;
 
 	@Reference
 	private JSONFactory _jsonFactory;
+
+	@Reference
+	private Language _language;
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;
