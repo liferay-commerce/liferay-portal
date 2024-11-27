@@ -490,3 +490,51 @@ test('LPD-41022 Check toolbar select is not visible at all', async ({
 		usersAndOrganizationsPage.selectAllUsersCheckBox
 	).not.toBeVisible();
 });
+
+test('LPD-42940 Can Bulk Activate Users', async ({
+	apiHelpers,
+	page,
+	usersAndOrganizationsPage,
+}) => {
+	const user1 = await apiHelpers.headlessAdminUser.postUserAccount();
+	const user2 = await apiHelpers.headlessAdminUser.postUserAccount();
+	const user3 = await apiHelpers.headlessAdminUser.postUserAccount();
+	const user4 = await apiHelpers.headlessAdminUser.postUserAccount();
+	const user5 = await apiHelpers.headlessAdminUser.postUserAccount();
+
+	await usersAndOrganizationsPage.goToUsers();
+
+	const userNames: string[] = [user1.name, user2.name, user3.name];
+
+	await usersAndOrganizationsPage.deActivateUsers(userNames);
+
+	await usersAndOrganizationsPage.filterUsers('inactive');
+
+	for (const userName of userNames) {
+		await expect(
+			(await usersAndOrganizationsPage.usersTableRow(1, userName, true))
+				.row
+		).toBeVisible();
+	}
+
+	await usersAndOrganizationsPage.activateUsers(userNames);
+
+	for (const userName of userNames) {
+		await usersAndOrganizationsPage.usersSearchBar.fill(userName);
+		await usersAndOrganizationsPage.usersSearchBarButton.click();
+		await page.waitForLoadState('domcontentloaded');
+		await expect(usersAndOrganizationsPage.noUsersMessage).toBeVisible();
+	}
+
+	await usersAndOrganizationsPage.clearButton.click();
+	await expect(usersAndOrganizationsPage.clearButton).not.toBeVisible();
+
+	userNames.push(user4.name, user5.name);
+
+	for (const userName of userNames) {
+		await expect(
+			(await usersAndOrganizationsPage.usersTableRow(1, userName, true))
+				.row
+		).toBeVisible();
+	}
+});

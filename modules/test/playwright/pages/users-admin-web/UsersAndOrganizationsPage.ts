@@ -6,6 +6,7 @@
 import {FrameLocator, Locator, Page} from '@playwright/test';
 
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
+import {waitForAlert} from '../../utils/waitForAlert';
 import {ApplicationsMenuPage} from '../product-navigation-applications-menu/ApplicationsMenuPage';
 
 export const searchTableRowByValue = async function (
@@ -36,6 +37,7 @@ export const searchTableRowByValue = async function (
 };
 
 export class UsersAndOrganizationsPage {
+	readonly activateButton: Locator;
 	readonly applicationsMenuPage: ApplicationsMenuPage;
 	readonly assignUsersIFrame: FrameLocator;
 	readonly assignUsersMenuItem: Locator;
@@ -47,6 +49,8 @@ export class UsersAndOrganizationsPage {
 	) => Promise<{column: Locator; row: Locator}>;
 	readonly assignUsersCheckbox: (userName: string) => Promise<Locator>;
 	readonly assignUsersDoneButton: Locator;
+	readonly clearButton: Locator;
+	readonly deactivateButton: Locator;
 	readonly deletePersonalDataMenuItem: Locator;
 	readonly exportImportOptionsMenuItem: Locator;
 	readonly exportPersonalDataItem: Locator;
@@ -75,6 +79,7 @@ export class UsersAndOrganizationsPage {
 	readonly myOrganizationsUserAndOrgsTableRowLink: (
 		organizationName: string
 	) => Promise<Locator>;
+	readonly noUsersMessage: Locator;
 	readonly organizationActionsMenu: (
 		organizationName: string
 	) => Promise<Locator>;
@@ -106,6 +111,9 @@ export class UsersAndOrganizationsPage {
 	readonly tableFilterMenuItem: (option: string) => Locator;
 	readonly tableOrderMenu: Locator;
 	readonly tableOrderLastLoginDateItem: Locator;
+	readonly usersCheckbox: (userName: string) => Promise<Locator>;
+	readonly usersSearchBar: Locator;
+	readonly usersSearchBarButton: Locator;
 	readonly usersTableRow: (
 		colPosition: number,
 		value: string,
@@ -118,6 +126,7 @@ export class UsersAndOrganizationsPage {
 	readonly usersTable: Locator;
 
 	constructor(page: Page) {
+		this.activateButton = page.getByRole('button', {name: 'Activate'});
 		this.applicationsMenuPage = new ApplicationsMenuPage(page);
 		this.assignUsersIFrame = page.frameLocator('iframe[id="modalIframe"]');
 		this.assignUsersMenuItem = page.getByRole('menuitem', {
@@ -141,6 +150,8 @@ export class UsersAndOrganizationsPage {
 		this.assignUsersMenuItem = page.getByRole('menuitem', {
 			name: 'Assign Users',
 		});
+		this.clearButton = page.getByRole('button', {name: 'Clear'});
+		this.deactivateButton = page.getByRole('button', {name: 'Deactivate'});
 		this.deletePersonalDataMenuItem = page.getByRole('menuitem', {
 			name: 'Delete Personal Data',
 		});
@@ -234,6 +245,7 @@ export class UsersAndOrganizationsPage {
 				`Cannot locate organization row with name ${organizationName}`
 			);
 		};
+		this.noUsersMessage = page.getByText('No users were found');
 		this.optionsMenu = page
 			.getByTestId('headerOptions')
 			.getByLabel('Options');
@@ -341,6 +353,17 @@ export class UsersAndOrganizationsPage {
 		};
 		this.page = page;
 		this.pageTitle = page.getByTestId('headerTitle');
+		this.usersCheckbox = async (userName: string) => {
+			const usersTableRow = await this.usersTableRow(1, userName);
+
+			if (usersTableRow && usersTableRow.row) {
+				return usersTableRow.row.getByRole('checkbox');
+			}
+		};
+		this.usersSearchBar = page.getByPlaceholder('Search for');
+		this.usersSearchBarButton = page.getByRole('button', {
+			name: 'Search for',
+		});
 		this.usersTableRow = async (
 			colPosition: number,
 			value: string,
@@ -367,9 +390,9 @@ export class UsersAndOrganizationsPage {
 					.first();
 			}
 
-			return page
-				.locator('.dropdown-menu')
-				.getByRole('menuitem', {name: option});
+			return page.locator('.dropdown-menu').getByRole('menuitem', {
+				name: option,
+			});
 		};
 		this.tableOrderMenu = page
 			.locator('.management-bar')
@@ -406,6 +429,25 @@ export class UsersAndOrganizationsPage {
 		this.usersTable = page.locator(
 			'#_com_liferay_users_admin_web_portlet_UsersAdminPortlet_usersSearchContainer'
 		);
+	}
+
+	async activateUsers(userNames: string[]) {
+		for (const user of userNames) {
+			await (await this.usersCheckbox(user)).check();
+		}
+		await this.activateButton.click();
+		await waitForAlert(this.page);
+	}
+
+	async deActivateUsers(userNames: string[]) {
+		for (const user of userNames) {
+			await (await this.usersCheckbox(user)).check();
+		}
+		this.page.on('dialog', async (dialog) => await dialog.accept());
+
+		await this.deactivateButton.click();
+
+		await waitForAlert(this.page);
 	}
 
 	async goto(forceReload?: boolean) {
