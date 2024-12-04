@@ -7,7 +7,6 @@ package com.liferay.commerce.product.internal.search.spi.model.query.contributor
 
 import com.liferay.commerce.product.constants.CPField;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
-import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.search.filter.TermFilter;

@@ -86,7 +86,7 @@ public class ProductConfigurationDTOConverter
 						cpConfigurationEntry.getClassName())) {
 
 					cpDefinition = _cpDefinitionService.getCPDefinition(
-						cpConfigurationEntry.getCPConfigurationEntryId());
+						cpConfigurationEntry.getClassPK());
 
 					entityName = cpDefinition.getName(
 						LocaleUtil.toLanguageId(
