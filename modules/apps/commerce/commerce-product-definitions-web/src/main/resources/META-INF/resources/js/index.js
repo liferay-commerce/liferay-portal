@@ -17,6 +17,7 @@ export {default as debounceEditCpDefinitionOptionValue} from './debounceEditCpDe
 export {default as definitionOptionRels} from './definitionOptionRels';
 export {default as detailsItemFinder} from './detailsItemFinder';
 export {default as duplicateCpDefinitionAutocomplete} from './duplicateCpDefinitionAutocomplete';
+export {default as editCpConfigurationEntry} from './edit_cp_configuration_entry';
 export {default as editCpDefinitionOptionValueAutocomplete} from './editCpDefinitionOptionValueAutocomplete';
 export {default as editCpDefinitionOptionValueRel} from './editCpDefinitionOptionValueRel';
 export {default as editCpDefinition} from './edit_cp_definition';
