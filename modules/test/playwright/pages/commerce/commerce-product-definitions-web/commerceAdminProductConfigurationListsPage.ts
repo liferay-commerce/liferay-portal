@@ -15,6 +15,7 @@ export class CommerceAdminProductConfigurationListsPage extends CommerceDNDTable
 	readonly addConfigurationListParentList: Locator;
 	readonly addConfigurationListPriority: Locator;
 	readonly addConfigurationListSaveButton: Locator;
+	readonly eligibilitiesTab: Locator;
 	readonly newConfigurationListName: Locator;
 	readonly frame: FrameLocator;
 	readonly page: Page;
@@ -45,6 +46,9 @@ export class CommerceAdminProductConfigurationListsPage extends CommerceDNDTable
 
 		this.addConfigurationListSaveButton = page.getByRole('button', {
 			name: 'Submit',
+		});
+		this.eligibilitiesTab = page.getByRole('link', {
+			name: 'Eligibility',
 		});
 		this.newConfigurationListName = page.getByTestId('headerDetailsTitle');
 		this.page = page;
