@@ -326,9 +326,11 @@ public class OrderResourceImpl extends BaseOrderResourceImpl {
 			throw new NoSuchEntryException();
 		}
 
-		CommerceCurrency commerceCurrency = CommerceCurrencyUtil.getCommerceCurrency(
-			commerceChannel.getCompanyId(), order.getCurrencyCode(),
-			order.getCurrencyExternalReferenceCode(), order.getCurrencyId());
+		CommerceCurrency commerceCurrency =
+			CommerceCurrencyUtil.getCommerceCurrency(
+				commerceChannel.getCompanyId(), order.getCurrencyCode(),
+				order.getCurrencyExternalReferenceCode(),
+				GetterUtil.get(order.getCurrencyId(), 0));
 
 		long commerceShippingMethodId = 0;
 

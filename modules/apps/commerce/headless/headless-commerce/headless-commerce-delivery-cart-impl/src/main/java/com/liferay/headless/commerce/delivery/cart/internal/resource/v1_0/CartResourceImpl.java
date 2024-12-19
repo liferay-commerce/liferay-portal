@@ -501,9 +501,11 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 			Cart cart, long commerceChannelGroupId)
 		throws Exception {
 
-		CommerceCurrency commerceCurrency = CommerceCurrencyUtil.getCommerceCurrency(
-			contextCompany.getCompanyId(), cart.getCurrencyCode(),
-			cart.getCurrencyExternalReferenceCode(), cart.getCurrencyId());
+		CommerceCurrency commerceCurrency =
+			CommerceCurrencyUtil.getCommerceCurrency(
+				contextCompany.getCompanyId(), cart.getCurrencyCode(),
+				cart.getCurrencyExternalReferenceCode(),
+				GetterUtil.get(cart.getCurrencyId(), 0));
 
 		AccountEntry accountEntry = null;
 
