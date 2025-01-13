@@ -50,9 +50,13 @@ test('LPD-21633 Returns widget to show return and refunds', async ({
 	await commerceLayoutsPage.goToPages(false);
 	await commerceLayoutsPage.createWidgetPage('Returns Page');
 
+	await page.reload();
+
 	await page.goto(`/web/${site.name}`);
 
 	await returnsPage.addReturnsWidget();
+
+	await page.reload();
 
 	await (
 		await returnsPage.tableRowLink({
@@ -92,9 +96,13 @@ test('LPD-32515 Returns widget displays amount fields with correct currency patt
 	await commerceLayoutsPage.goToPages(false);
 	await commerceLayoutsPage.createWidgetPage('Returns Page');
 
+	await page.reload();
+
 	await page.goto(`/web/${site.name}`);
 
 	await returnsPage.addReturnsWidget();
+
+	await page.reload();
 
 	await expect(
 		(await returnsPage.tableRow(1, '$ 0.00', true)).row
@@ -140,9 +148,13 @@ test('LPD-32522 Returns widget displays status field on return items table when 
 	await commerceLayoutsPage.goToPages(false);
 	await commerceLayoutsPage.createWidgetPage('Returns Page');
 
+	await page.reload();
+
 	await page.goto(`/web/${site.name}`);
 
 	await returnsPage.addReturnsWidget();
+
+	await page.reload();
 
 	await (
 		await returnsPage.tableRowLink({
@@ -186,9 +198,13 @@ test('LPD-32519 Warning message before submitting a return should not be shown o
 	await commerceLayoutsPage.goToPages(false);
 	await commerceLayoutsPage.createWidgetPage('Returns Page');
 
+	await page.reload();
+
 	await page.goto(`/web/${site.name}`);
 
 	await returnsPage.addReturnsWidget();
+
+	await page.reload();
 
 	await (
 		await returnsPage.tableRowLink({
@@ -229,9 +245,13 @@ test('LPD-32514 Return external reference code can not be edited in returns widg
 	await commerceLayoutsPage.goToPages(false);
 	await commerceLayoutsPage.createWidgetPage('Returns Page');
 
+	await page.reload();
+
 	await page.goto(`/web/${site.name}`);
 
 	await returnsPage.addReturnsWidget();
+
+	await page.reload();
 
 	await (
 		await returnsPage.tableRowLink({
@@ -260,9 +280,13 @@ test('LPD-32521 Returns widget details page will only show returns status', asyn
 	await commerceLayoutsPage.goToPages(false);
 	await commerceLayoutsPage.createWidgetPage('Returns Page');
 
+	await page.reload();
+
 	await page.goto(`/web/${site.name}`);
 
 	await returnsPage.addReturnsWidget();
+
+	await page.reload();
 
 	await (
 		await returnsPage.tableRowLink({
@@ -297,9 +321,13 @@ test('LPD-32524 Returns widget to show comments for return items', async ({
 	await commerceLayoutsPage.goToPages(false);
 	await commerceLayoutsPage.createWidgetPage('Returns Page');
 
+	await page.reload();
+
 	await page.goto(`/web/${site.name}`);
 
 	await returnsPage.addReturnsWidget();
+
+	await page.reload();
 
 	await (
 		await returnsPage.tableRowLink({
@@ -342,9 +370,13 @@ test('LPD-32523 Returns widget to show received quantity label localized', async
 	await commerceLayoutsPage.goToPages(false);
 	await commerceLayoutsPage.createWidgetPage('Returns Page');
 
+	await page.reload();
+
 	await page.goto(`/web/${site.name}`);
 
 	await returnsPage.addReturnsWidget();
+
+	await page.reload();
 
 	await (
 		await returnsPage.tableRowLink({
