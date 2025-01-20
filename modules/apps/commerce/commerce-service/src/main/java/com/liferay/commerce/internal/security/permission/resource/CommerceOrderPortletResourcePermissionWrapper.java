@@ -9,8 +9,10 @@ import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.portal.kernel.security.permission.resource.BasePortletResourcePermissionWrapper;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermissionFactory;
+import com.liferay.portal.kernel.service.OrganizationLocalService;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Andrea Di Giorgi
@@ -26,7 +28,11 @@ public class CommerceOrderPortletResourcePermissionWrapper
 	protected PortletResourcePermission doGetPortletResourcePermission() {
 		return PortletResourcePermissionFactory.create(
 			CommerceOrderConstants.RESOURCE_NAME,
-			new CommerceOrderPortletResourcePermissionLogic());
+			new CommerceOrderPortletResourcePermissionLogic(
+				_organizationLocalService));
 	}
+
+	@Reference
+	private OrganizationLocalService _organizationLocalService;
 
 }
