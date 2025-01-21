@@ -338,7 +338,7 @@ public class UserGroupResourceTest extends BaseUserGroupResourceTestCase {
 			null, "dateCreated ge " + dateFormat.format(date.getTime()),
 			Pagination.of(1, 2), null);
 
-		Assert.assertEquals(totalCount + 2, page.getTotalCount());
+		Assert.assertEquals(2, page.getTotalCount());
 
 		userGroup1.setDescription(
 			StringUtil.toLowerCase(RandomTestUtil.randomString()));
@@ -352,7 +352,7 @@ public class UserGroupResourceTest extends BaseUserGroupResourceTestCase {
 			null, "dateModified ge " + dateFormat.format(date.getTime()),
 			Pagination.of(1, 2), null);
 
-		Assert.assertEquals(totalCount + 1, page.getTotalCount());
+		Assert.assertEquals(1, page.getTotalCount());
 
 		assertContains(userGroup1, (List<UserGroup>)page.getItems());
 
