@@ -244,12 +244,12 @@ test('LPD-47225 Can search organizations during assignment', async ({
 	await accountOrganizationsPage.newButton.click();
 
 	await expect(
-		accountOrganizationSelectorPage.organizationsTableCell(
+		accountOrganizationSelectorPage.organizationTableCell(
 			organization1.name
 		)
 	).toBeVisible();
 	await expect(
-		accountOrganizationSelectorPage.organizationsTableCell(
+		accountOrganizationSelectorPage.organizationTableCell(
 			organization2.name
 		)
 	).toBeVisible();
@@ -258,12 +258,12 @@ test('LPD-47225 Can search organizations during assignment', async ({
 	await accountOrganizationSelectorPage.searchButton.click();
 
 	await expect(
-		accountOrganizationSelectorPage.organizationsTableCell(
+		accountOrganizationSelectorPage.organizationTableCell(
 			organization1.name
 		)
 	).toHaveCount(0);
 	await expect(
-		accountOrganizationSelectorPage.organizationsTableCell(
+		accountOrganizationSelectorPage.organizationTableCell(
 			organization2.name
 		)
 	).toHaveCount(0);
@@ -272,12 +272,12 @@ test('LPD-47225 Can search organizations during assignment', async ({
 	await accountOrganizationSelectorPage.searchButton.click();
 
 	await expect(
-		accountOrganizationSelectorPage.organizationsTableCell(
+		accountOrganizationSelectorPage.organizationTableCell(
 			organization1.name
 		)
 	).toBeVisible();
 	await expect(
-		accountOrganizationSelectorPage.organizationsTableCell(
+		accountOrganizationSelectorPage.organizationTableCell(
 			organization2.name
 		)
 	).toHaveCount(0);
@@ -286,12 +286,12 @@ test('LPD-47225 Can search organizations during assignment', async ({
 	await accountOrganizationSelectorPage.searchButton.click();
 
 	await expect(
-		accountOrganizationSelectorPage.organizationsTableCell(
+		accountOrganizationSelectorPage.organizationTableCell(
 			organization1.name
 		)
 	).toHaveCount(0);
 	await expect(
-		accountOrganizationSelectorPage.organizationsTableCell(
+		accountOrganizationSelectorPage.organizationTableCell(
 			organization2.name
 		)
 	).toBeVisible();
@@ -300,12 +300,12 @@ test('LPD-47225 Can search organizations during assignment', async ({
 	await accountOrganizationSelectorPage.searchButton.click();
 
 	await expect(
-		accountOrganizationSelectorPage.organizationsTableCell(
+		accountOrganizationSelectorPage.organizationTableCell(
 			organization1.name
 		)
 	).toBeVisible();
 	await expect(
-		accountOrganizationSelectorPage.organizationsTableCell(
+		accountOrganizationSelectorPage.organizationTableCell(
 			organization2.name
 		)
 	).toBeVisible();
@@ -326,7 +326,7 @@ test('LPD-47225 Can paginate organizations during assignment', async ({
 	for (let i = 1; i <= 5; i++) {
 		organizations.push(
 			await apiHelpers.headlessAdminUser.postOrganization({
-				name: `Organization ${i}`,
+				name: `A Organization ${i}`,
 			})
 		);
 	}
@@ -343,14 +343,14 @@ test('LPD-47225 Can paginate organizations during assignment', async ({
 	for (const [index, organization] of organizations.entries()) {
 		if (index < 4) {
 			await expect(
-				accountOrganizationSelectorPage.organizationsTableCell(
+				accountOrganizationSelectorPage.organizationTableCell(
 					organization.name
 				)
 			).toBeVisible();
 		}
 		else {
 			await expect(
-				accountOrganizationSelectorPage.organizationsTableCell(
+				accountOrganizationSelectorPage.organizationTableCell(
 					organization.name
 				)
 			).toHaveCount(0);
@@ -362,14 +362,14 @@ test('LPD-47225 Can paginate organizations during assignment', async ({
 	for (const [index, organization] of organizations.entries()) {
 		if (index < 4) {
 			await expect(
-				accountOrganizationSelectorPage.organizationsTableCell(
+				accountOrganizationSelectorPage.organizationTableCell(
 					organization.name
 				)
 			).toHaveCount(0);
 		}
 		else {
 			await expect(
-				accountOrganizationSelectorPage.organizationsTableCell(
+				accountOrganizationSelectorPage.organizationTableCell(
 					organization.name
 				)
 			).toBeVisible();

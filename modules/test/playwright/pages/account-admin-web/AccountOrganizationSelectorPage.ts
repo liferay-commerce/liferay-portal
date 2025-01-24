@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {FrameLocator, Locator, Page} from '@playwright/test';
+import {FrameLocator, Locator, Page, expect} from '@playwright/test';
 
 import {waitForAlert} from '../../utils/waitForAlert';
 import {searchTableRowByValue} from './AccountsPage';
@@ -15,7 +15,7 @@ export class AccountOrganizationSelectorPage {
 	) => Promise<Locator>;
 	readonly organizationFrame: FrameLocator;
 	readonly organizationTable: Locator;
-	readonly organizationsTableCell: (organizationName: string) => Locator;
+	readonly organizationTableCell: (organizationName: string) => Locator;
 	readonly organizationTableRow: (
 		colPosition: number,
 		value: string,
@@ -44,7 +44,7 @@ export class AccountOrganizationSelectorPage {
 		this.organizationTable = this.organizationFrame.locator(
 			'#_com_liferay_account_admin_web_internal_portlet_AccountEntriesAdminPortlet_organizationsSearchContainer'
 		);
-		this.organizationsTableCell = (organizationName: string) => {
+		this.organizationTableCell = (organizationName: string) => {
 			return this.organizationFrame
 				.getByRole('cell', {
 					exact: true,
@@ -77,6 +77,8 @@ export class AccountOrganizationSelectorPage {
 	}
 
 	async assignOrganizations(organizationNames: string[]) {
+		await expect(this.searchInput).toBeEditable();
+
 		for (const organizationName of organizationNames) {
 			await (await this.organizationCheckBox(organizationName)).check();
 		}

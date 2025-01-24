@@ -14,6 +14,7 @@ import {AccountManagementWidgetPage} from '../pages/account-admin-web/AccountMan
 import {AccountOrganizationSelectorPage} from '../pages/account-admin-web/AccountOrganizationSelectorPage';
 import {AccountOrganizationsPage} from '../pages/account-admin-web/AccountOrganizationsPage';
 import {AccountRolesPage} from '../pages/account-admin-web/AccountRolesPage';
+import {AccountUserSelectorPage} from '../pages/account-admin-web/AccountUserSelectorPage';
 import {AccountUsersPage} from '../pages/account-admin-web/AccountUsersPage';
 import {AccountsPage} from '../pages/account-admin-web/AccountsPage';
 import {EditAccountAddressPage} from '../pages/account-admin-web/EditAccountAddressPage';
@@ -37,6 +38,7 @@ const accountsPagesTest = test.extend<{
 	accountOrganizationSelectorPage: AccountOrganizationSelectorPage;
 	accountOrganizationsPage: AccountOrganizationsPage;
 	accountRolesPage: AccountRolesPage;
+	accountUserSelectorPage: AccountUserSelectorPage;
 	accountUsersPage: AccountUsersPage;
 	accountsPage: AccountsPage;
 	editAccountAddressPage: EditAccountAddressPage;
@@ -76,6 +78,9 @@ const accountsPagesTest = test.extend<{
 	},
 	accountRolesPage: async ({page}, use) => {
 		await use(new AccountRolesPage(page));
+	},
+	accountUserSelectorPage: async ({page}, use) => {
+		await use(new AccountUserSelectorPage(page));
 	},
 	accountUsersPage: async ({page}, use) => {
 		await use(new AccountUsersPage(page));

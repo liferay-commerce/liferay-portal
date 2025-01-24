@@ -69,6 +69,7 @@ export class AccountsPage {
 	readonly pageTitle: Locator;
 	readonly searchInput: Locator;
 	readonly searchButton: Locator;
+	readonly usersTab: Locator;
 
 	constructor(page: Page) {
 		this.accountNameLink = (accountName) => {
@@ -171,6 +172,9 @@ export class AccountsPage {
 		this.pageTitle = page.getByTestId('headerTitle');
 		this.searchInput = page.getByPlaceholder('Search for', {exact: true});
 		this.searchButton = page.getByLabel('Search for', {exact: true});
+		this.usersTab = page.getByRole('link', {
+			name: 'Users',
+		});
 	}
 
 	async changeFilter(option: string) {
