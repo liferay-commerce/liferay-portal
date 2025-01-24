@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {FrameLocator, Locator, Page, expect} from '@playwright/test';
+import {Locator, Page, expect} from '@playwright/test';
 
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import {PORTLET_URLS} from '../../utils/portletUrls';
@@ -39,18 +39,6 @@ export const searchTableRowByValue = async function (
 export class AccountsPage {
 	readonly accountGroupsTab: Locator;
 	readonly accountNameLink: (accountName: string) => Locator;
-	readonly accountOrganizationsCheckbox: (
-		organizationName: string
-	) => Promise<Locator>;
-	readonly accountOrganizationsTable: Locator;
-	readonly accountOrganizationsTableCell: (
-		organizationName: string
-	) => Locator;
-	readonly accountOrganizationsTableRow: (
-		colPosition: number,
-		value: string,
-		strictEqual?: boolean
-	) => Promise<{column: Locator; row: Locator}>;
 	readonly accountRolesTab: Locator;
 	readonly accountsTable: Locator;
 	readonly accountsTableCell: (organizationName: string) => Locator;
@@ -76,21 +64,9 @@ export class AccountsPage {
 	readonly filterStatus: (status: string) => Locator;
 	readonly newButton: Locator;
 	readonly noAccountsMessage: Locator;
-	readonly organizationAssignButton: Locator;
-	readonly organizationAssignmentCheckBox: (
-		organizationName: string
-	) => Promise<Locator>;
-	readonly organizationAssignmentFrame: FrameLocator;
-	readonly organizationAssignmentTable: Locator;
-	readonly organizationAssignmentTableRow: (
-		colPosition: number,
-		value: string,
-		strictEqual?: boolean
-	) => Promise<{column: Locator; row: Locator}>;
 	readonly organizationsTab: Locator;
 	readonly page: Page;
 	readonly pageTitle: Locator;
-	readonly removeAccountOrganizationButton: Locator;
 	readonly searchInput: Locator;
 	readonly searchButton: Locator;
 
@@ -101,40 +77,6 @@ export class AccountsPage {
 		this.accountGroupsTab = page.getByRole('link', {
 			name: 'Account Groups',
 		});
-		this.accountOrganizationsCheckbox = async (
-			organizationName: string
-		) => {
-			const accountOrganizationsTableRow =
-				await this.accountOrganizationsTableRow(1, organizationName);
-
-			if (
-				accountOrganizationsTableRow &&
-				accountOrganizationsTableRow.row
-			) {
-				return accountOrganizationsTableRow.row.getByRole('checkbox');
-			}
-		};
-		this.accountOrganizationsTable = page.locator(
-			'#_com_liferay_account_admin_web_internal_portlet_AccountEntriesAdminPortlet_accountOrganizationsSearchContainer'
-		);
-		this.accountOrganizationsTableCell = (organizationName: string) => {
-			return this.page.getByRole('cell', {
-				exact: true,
-				name: `${organizationName}`,
-			});
-		};
-		this.accountOrganizationsTableRow = async (
-			colPosition: number,
-			value: string,
-			strictEqual: boolean = false
-		) => {
-			return await searchTableRowByValue(
-				this.accountOrganizationsTable,
-				colPosition,
-				value,
-				strictEqual
-			);
-		};
 		this.accountRolesTab = page.getByRole('link', {
 			name: 'Roles',
 		});
@@ -222,50 +164,11 @@ export class AccountsPage {
 			.getByTestId('creationMenuNewButton')
 			.getByText('New');
 		this.noAccountsMessage = page.getByText('No accounts were found.');
-		this.organizationAssignButton = page.getByRole('button', {
-			exact: true,
-			name: 'Assign',
-		});
-		this.organizationAssignmentCheckBox = async (
-			organizationName: string
-		) => {
-			const organizationAssignmentTableRow =
-				await this.organizationAssignmentTableRow(1, organizationName);
-
-			if (
-				organizationAssignmentTableRow &&
-				organizationAssignmentTableRow.row
-			) {
-				return organizationAssignmentTableRow.row.getByRole('checkbox');
-			}
-		};
-		this.organizationAssignmentFrame = page.frameLocator(
-			'iframe[id="modalIframe"]'
-		);
-		this.organizationAssignmentTable =
-			this.organizationAssignmentFrame.locator(
-				'#_com_liferay_account_admin_web_internal_portlet_AccountEntriesAdminPortlet_organizationsSearchContainer'
-			);
-		this.organizationAssignmentTableRow = async (
-			colPosition: number,
-			value: string,
-			strictEqual: boolean = false
-		) => {
-			return await searchTableRowByValue(
-				this.organizationAssignmentTable,
-				colPosition,
-				value,
-				strictEqual
-			);
-		};
 		this.organizationsTab = page.getByRole('link', {
 			name: 'Organizations',
 		});
 		this.page = page;
 		this.pageTitle = page.getByTestId('headerTitle');
-		this.removeAccountOrganizationButton = page.getByRole('button', {
-			name: 'Remove',
-		});
 		this.searchInput = page.getByPlaceholder('Search for', {exact: true});
 		this.searchButton = page.getByLabel('Search for', {exact: true});
 	}

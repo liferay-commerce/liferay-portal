@@ -1,0 +1,378 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+import {expect, mergeTests} from '@playwright/test';
+
+import {accountsPagesTest} from '../../fixtures/accountsPagesTest';
+import {apiHelpersTest} from '../../fixtures/apiHelpersTest';
+import {applicationsMenuPageTest} from '../../fixtures/applicationsMenuPageTest';
+import {dataApiHelpersTest} from '../../fixtures/dataApiHelpersTest';
+import {loginTest} from '../../fixtures/loginTest';
+import {serverAdministrationPageTest} from '../../fixtures/serverAdministrationPageTest';
+import {usersAndOrganizationsPagesTest} from '../../fixtures/usersAndOrganizationsPagesTest';
+import getRandomString from '../../utils/getRandomString';
+import {nextPage, setItemsPerPage} from '../../utils/pagination';
+import {waitForAlert} from '../../utils/waitForAlert';
+
+export const test = mergeTests(
+	accountsPagesTest,
+	apiHelpersTest,
+	applicationsMenuPageTest,
+	dataApiHelpersTest,
+	loginTest(),
+	usersAndOrganizationsPagesTest,
+	serverAdministrationPageTest
+);
+
+test('LPD-47225 Can add and remove an organizations to an account', async ({
+	accountOrganizationSelectorPage,
+	accountOrganizationsPage,
+	accountsPage,
+	apiHelpers,
+	page,
+}) => {
+	page.on('dialog', (dialog) => dialog.accept());
+
+	const account = await apiHelpers.headlessAdminUser.postAccount();
+
+	apiHelpers.data.push({id: account.id, type: 'account'});
+
+	const organization1 = await apiHelpers.headlessAdminUser.postOrganization();
+	const organization2 = await apiHelpers.headlessAdminUser.postOrganization();
+
+	await accountsPage.goto();
+
+	await (await accountsPage.accountsTableRowLink(account.name)).click();
+
+	await accountsPage.organizationsTab.click();
+	await accountOrganizationsPage.newButton.click();
+
+	await accountOrganizationSelectorPage.assignOrganizations([
+		organization1.name,
+	]);
+
+	await accountOrganizationsPage.newButton.click();
+
+	await accountOrganizationSelectorPage.assignOrganizations([
+		organization2.name,
+	]);
+
+	await expect(
+		accountOrganizationsPage.organizationsTableCell(organization1.name)
+	).toBeVisible();
+	await expect(
+		accountOrganizationsPage.organizationsTableCell(organization2.name)
+	).toBeVisible();
+
+	await (
+		await accountOrganizationsPage.organizationRemoveButton(
+			organization1.name
+		)
+	).click();
+
+	await expect(
+		accountOrganizationsPage.organizationsTableCell(organization1.name)
+	).toHaveCount(0);
+	await expect(
+		accountOrganizationsPage.organizationsTableCell(organization2.name)
+	).toBeVisible();
+});
+
+test('LPD-47225 Can add and remove organizations to an account in bulk', async ({
+	accountOrganizationSelectorPage,
+	accountOrganizationsPage,
+	accountsPage,
+	apiHelpers,
+	page,
+}) => {
+	page.on('dialog', (dialog) => dialog.accept());
+
+	const account = await apiHelpers.headlessAdminUser.postAccount();
+
+	apiHelpers.data.push({id: account.id, type: 'account'});
+
+	const organizations = [];
+
+	for (let i = 1; i < 5; i++) {
+		organizations.push(
+			await apiHelpers.headlessAdminUser.postOrganization({
+				name: `Organization ${i}`,
+			})
+		);
+	}
+
+	await accountsPage.goto();
+
+	await (await accountsPage.accountsTableRowLink(account.name)).click();
+
+	await accountsPage.organizationsTab.click();
+	await accountOrganizationsPage.newButton.click();
+
+	await accountOrganizationSelectorPage.assignOrganizations(
+		organizations.map((organization) => organization.name)
+	);
+
+	for (const organization of organizations) {
+		await expect(
+			accountOrganizationsPage.organizationsTableCell(organization.name)
+		).toBeVisible();
+	}
+
+	for (const index of [1, 3]) {
+		await (
+			await accountOrganizationsPage.organizationCheckBox(
+				`Organization ${index}`
+			)
+		).check();
+	}
+
+	await accountOrganizationsPage.removeButton.click();
+
+	await waitForAlert(page);
+
+	for (let i = 1; i < 5; i++) {
+		if (i % 2 === 0) {
+			await expect(
+				accountOrganizationsPage.organizationsTableCell(
+					`Organization ${i}`
+				)
+			).toBeVisible();
+		}
+		else {
+			await expect(
+				accountOrganizationsPage.organizationsTableCell(
+					`Organization ${i}`
+				)
+			).not.toBeVisible();
+		}
+	}
+});
+
+test('LPD-47225 Can search assigned organizations', async ({
+	accountOrganizationSelectorPage,
+	accountOrganizationsPage,
+	accountsPage,
+	apiHelpers,
+}) => {
+	const account = await apiHelpers.headlessAdminUser.postAccount();
+
+	apiHelpers.data.push({id: account.id, type: 'account'});
+
+	const organization1 = await apiHelpers.headlessAdminUser.postOrganization();
+	const organization2 = await apiHelpers.headlessAdminUser.postOrganization();
+
+	await accountsPage.goto();
+
+	await (await accountsPage.accountsTableRowLink(account.name)).click();
+
+	await accountsPage.organizationsTab.click();
+	await accountOrganizationsPage.newButton.click();
+
+	await accountOrganizationSelectorPage.assignOrganizations([
+		organization1.name,
+		organization2.name,
+	]);
+
+	await expect(
+		accountOrganizationsPage.organizationsTableCell(organization1.name)
+	).toBeVisible();
+	await expect(
+		accountOrganizationsPage.organizationsTableCell(organization2.name)
+	).toBeVisible();
+
+	await accountOrganizationsPage.searchInput.fill(getRandomString());
+	await accountOrganizationsPage.searchButton.click();
+
+	await expect(
+		accountOrganizationsPage.organizationsTableCell(organization1.name)
+	).toHaveCount(0);
+	await expect(
+		accountOrganizationsPage.organizationsTableCell(organization2.name)
+	).toHaveCount(0);
+
+	await accountOrganizationsPage.searchInput.fill(organization1.name);
+	await accountOrganizationsPage.searchButton.click();
+
+	await expect(
+		accountOrganizationsPage.organizationsTableCell(organization1.name)
+	).toBeVisible();
+	await expect(
+		accountOrganizationsPage.organizationsTableCell(organization2.name)
+	).toHaveCount(0);
+
+	await accountOrganizationsPage.searchInput.fill(organization2.name);
+	await accountOrganizationsPage.searchButton.click();
+
+	await expect(
+		accountOrganizationsPage.organizationsTableCell(organization1.name)
+	).toHaveCount(0);
+	await expect(
+		accountOrganizationsPage.organizationsTableCell(organization2.name)
+	).toBeVisible();
+
+	await accountOrganizationsPage.searchInput.fill('');
+	await accountOrganizationsPage.searchButton.click();
+
+	await expect(
+		accountOrganizationsPage.organizationsTableCell(organization1.name)
+	).toBeVisible();
+	await expect(
+		accountOrganizationsPage.organizationsTableCell(organization2.name)
+	).toBeVisible();
+});
+
+test('LPD-47225 Can search organizations during assignment', async ({
+	accountOrganizationSelectorPage,
+	accountOrganizationsPage,
+	accountsPage,
+	apiHelpers,
+}) => {
+	const account = await apiHelpers.headlessAdminUser.postAccount();
+
+	apiHelpers.data.push({id: account.id, type: 'account'});
+
+	const organization1 = await apiHelpers.headlessAdminUser.postOrganization();
+	const organization2 = await apiHelpers.headlessAdminUser.postOrganization();
+
+	await accountsPage.goto();
+
+	await (await accountsPage.accountsTableRowLink(account.name)).click();
+
+	await accountsPage.organizationsTab.click();
+	await accountOrganizationsPage.newButton.click();
+
+	await expect(
+		accountOrganizationSelectorPage.organizationsTableCell(
+			organization1.name
+		)
+	).toBeVisible();
+	await expect(
+		accountOrganizationSelectorPage.organizationsTableCell(
+			organization2.name
+		)
+	).toBeVisible();
+
+	await accountOrganizationSelectorPage.searchInput.fill(getRandomString());
+	await accountOrganizationSelectorPage.searchButton.click();
+
+	await expect(
+		accountOrganizationSelectorPage.organizationsTableCell(
+			organization1.name
+		)
+	).toHaveCount(0);
+	await expect(
+		accountOrganizationSelectorPage.organizationsTableCell(
+			organization2.name
+		)
+	).toHaveCount(0);
+
+	await accountOrganizationSelectorPage.searchInput.fill(organization1.name);
+	await accountOrganizationSelectorPage.searchButton.click();
+
+	await expect(
+		accountOrganizationSelectorPage.organizationsTableCell(
+			organization1.name
+		)
+	).toBeVisible();
+	await expect(
+		accountOrganizationSelectorPage.organizationsTableCell(
+			organization2.name
+		)
+	).toHaveCount(0);
+
+	await accountOrganizationSelectorPage.searchInput.fill(organization2.name);
+	await accountOrganizationSelectorPage.searchButton.click();
+
+	await expect(
+		accountOrganizationSelectorPage.organizationsTableCell(
+			organization1.name
+		)
+	).toHaveCount(0);
+	await expect(
+		accountOrganizationSelectorPage.organizationsTableCell(
+			organization2.name
+		)
+	).toBeVisible();
+
+	await accountOrganizationSelectorPage.searchInput.fill('');
+	await accountOrganizationSelectorPage.searchButton.click();
+
+	await expect(
+		accountOrganizationSelectorPage.organizationsTableCell(
+			organization1.name
+		)
+	).toBeVisible();
+	await expect(
+		accountOrganizationSelectorPage.organizationsTableCell(
+			organization2.name
+		)
+	).toBeVisible();
+});
+
+test('LPD-47225 Can paginate organizations during assignment', async ({
+	accountOrganizationSelectorPage,
+	accountOrganizationsPage,
+	accountsPage,
+	apiHelpers,
+}) => {
+	const account = await apiHelpers.headlessAdminUser.postAccount();
+
+	apiHelpers.data.push({id: account.id, type: 'account'});
+
+	const organizations = [];
+
+	for (let i = 1; i <= 5; i++) {
+		organizations.push(
+			await apiHelpers.headlessAdminUser.postOrganization({
+				name: `Organization ${i}`,
+			})
+		);
+	}
+
+	await accountsPage.goto();
+
+	await (await accountsPage.accountsTableRowLink(account.name)).click();
+
+	await accountsPage.organizationsTab.click();
+	await accountOrganizationsPage.newButton.click();
+
+	await setItemsPerPage(accountOrganizationSelectorPage.organizationFrame, 4);
+
+	for (const [index, organization] of organizations.entries()) {
+		if (index < 4) {
+			await expect(
+				accountOrganizationSelectorPage.organizationsTableCell(
+					organization.name
+				)
+			).toBeVisible();
+		}
+		else {
+			await expect(
+				accountOrganizationSelectorPage.organizationsTableCell(
+					organization.name
+				)
+			).toHaveCount(0);
+		}
+	}
+
+	await nextPage(accountOrganizationSelectorPage.organizationFrame);
+
+	for (const [index, organization] of organizations.entries()) {
+		if (index < 4) {
+			await expect(
+				accountOrganizationSelectorPage.organizationsTableCell(
+					organization.name
+				)
+			).toHaveCount(0);
+		}
+		else {
+			await expect(
+				accountOrganizationSelectorPage.organizationsTableCell(
+					organization.name
+				)
+			).toBeVisible();
+		}
+	}
+});
