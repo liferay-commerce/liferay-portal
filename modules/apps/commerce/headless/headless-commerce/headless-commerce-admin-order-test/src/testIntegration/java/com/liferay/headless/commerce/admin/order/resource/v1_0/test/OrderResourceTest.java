@@ -9,6 +9,7 @@ import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.commerce.account.test.util.CommerceAccountTestUtil;
 import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
@@ -33,18 +34,23 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Address;
 import com.liferay.portal.kernel.model.Country;
+import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.Region;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.service.AddressLocalService;
 import com.liferay.portal.kernel.service.CountryLocalService;
+import com.liferay.portal.kernel.service.OrganizationLocalService;
 import com.liferay.portal.kernel.service.RegionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.DataGuard;
+import com.liferay.portal.kernel.test.util.OrganizationTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -142,6 +148,85 @@ public class OrderResourceTest extends BaseOrderResourceTestCase {
 				RandomTestUtil.randomString(), RandomTestUtil.nextDouble(),
 				RandomTestUtil.randomString(), StringPool.BLANK,
 				_serviceContext);
+	}
+
+	@Test
+	public void testGetOrderFromAccountAsUserWithOrganizationRole()
+		throws Exception {
+
+		User user = UserTestUtil.addUser(testCompany);
+
+		String password = RandomTestUtil.randomString();
+
+		_userLocalService.updatePassword(
+			user.getUserId(), password, password, false, true);
+
+		Organization organization = OrganizationTestUtil.addOrganization();
+
+		Role organizationRole = RoleTestUtil.addRole(
+			RoleConstants.TYPE_ORGANIZATION);
+
+		RoleTestUtil.addResourcePermission(
+			organizationRole, "com.liferay.account.model.AccountEntry", 1,
+			String.valueOf(organization.getCompanyId()), "VIEW");
+		RoleTestUtil.addResourcePermission(
+			organizationRole, "com.liferay.account.model.AccountEntry", 1, "0",
+			"VIEW");
+		RoleTestUtil.addResourcePermission(
+			organizationRole, "com.liferay.account.model.AccountEntry", 1, "0",
+			"VIEW_USERS");
+		RoleTestUtil.addResourcePermission(
+			organizationRole, "com.liferay.commerce.order", 1, "0",
+			"VIEW_COMMERCE_ORDERS");
+		RoleTestUtil.addResourcePermission(
+			organizationRole, "com.liferay.commerce.order", 1, "0",
+			"VIEW_OPEN_COMMERCE_ORDERS");
+		RoleTestUtil.addResourcePermission(
+			organizationRole, "com.liferay.account.model.AccountEntry", 3, "0",
+			"VIEW");
+		RoleTestUtil.addResourcePermission(
+			organizationRole, "com.liferay.account.model.AccountEntry", 3, "0",
+			"VIEW_USERS");
+		RoleTestUtil.addResourcePermission(
+			organizationRole, "com.liferay.commerce.order", 3, "0",
+			"VIEW_COMMERCE_ORDERS");
+		RoleTestUtil.addResourcePermission(
+			organizationRole, "com.liferay.commerce.order", 3, "0",
+			"VIEW_OPEN_COMMERCE_ORDERS");
+
+		_organizationLocalService.addUserOrganization(
+			user.getUserId(), organization.getOrganizationId());
+
+		_userGroupRoleLocalService.addUserGroupRole(
+			user.getUserId(), organization.getGroupId(),
+			organizationRole.getRoleId());
+
+		CommerceAccountTestUtil.addBusinessAccountEntry(
+			user.getUserId(), "Account1", null, null,
+			new long[] {user.getUserId()},
+			new long[] {organization.getOrganizationId()}, _serviceContext);
+
+		AccountEntry accountEntry =
+			CommerceAccountTestUtil.addBusinessAccountEntry(
+				_user.getUserId(), "Account2", null, null, null,
+				new long[] {organization.getOrganizationId()}, _serviceContext);
+
+		Order order = randomOrder();
+
+		order.setAccountExternalReferenceCode(
+			accountEntry.getExternalReferenceCode());
+		order.setAccountId(accountEntry.getAccountEntryId());
+
+		Order expectedOrder = orderResource.postOrder(order);
+
+		OrderResource orderResource = OrderResource.builder(
+		).authentication(
+			user.getEmailAddress(), password
+		).build();
+
+		Order actualOrder = orderResource.getOrder(expectedOrder.getId());
+
+		assertEquals(expectedOrder, actualOrder);
 	}
 
 	@Ignore
@@ -750,6 +835,10 @@ public class OrderResourceTest extends BaseOrderResourceTestCase {
 	private CountryLocalService _countryLocalService;
 
 	private Address _orderAddress;
+
+	@Inject
+	private OrganizationLocalService _organizationLocalService;
+
 	private Region _region;
 
 	@Inject
@@ -760,6 +849,9 @@ public class OrderResourceTest extends BaseOrderResourceTestCase {
 
 	private ServiceContext _serviceContext;
 	private User _user;
+
+	@Inject
+	private UserGroupRoleLocalService _userGroupRoleLocalService;
 
 	@Inject
 	private UserLocalService _userLocalService;
