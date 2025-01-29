@@ -34,8 +34,10 @@ import com.liferay.portal.kernel.service.EmailAddressService;
 import com.liferay.portal.kernel.service.OrgLaborService;
 import com.liferay.portal.kernel.service.OrganizationLocalService;
 import com.liferay.portal.kernel.service.OrganizationService;
+import com.liferay.portal.kernel.service.PermissionService;
 import com.liferay.portal.kernel.service.PhoneService;
 import com.liferay.portal.kernel.service.RegionService;
+import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.UserService;
 import com.liferay.portal.kernel.service.WebsiteService;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -43,10 +45,15 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
+import com.liferay.portal.vulcan.fields.NestedFieldsSupplier;
+import com.liferay.portal.vulcan.permission.Permission;
+import com.liferay.portal.vulcan.permission.PermissionUtil;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+
+import java.util.Collection;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -240,6 +247,30 @@ public class OrganizationResourceDTOConverter
 					() -> organizationResourceDTOConverter.toDTO(
 						dtoConverterContext,
 						organization.getParentOrganization()));
+				setPermissions(
+					() -> NestedFieldsSupplier.supply(
+						"permissions",
+						nestedFieldNames -> {
+							_permissionService.checkPermission(
+								organization.getGroupId(),
+								com.liferay.portal.kernel.model.Organization.
+									class.getName(),
+								organization.getOrganizationId());
+
+							Collection<Permission> permissions =
+								PermissionUtil.getPermissions(
+									organization.getCompanyId(),
+									_resourceActionLocalService.
+										getResourceActions(
+											com.liferay.portal.kernel.model.
+												Organization.class.getName()),
+									organization.getOrganizationId(),
+									com.liferay.portal.kernel.model.
+										Organization.class.getName(),
+									null);
+
+							return permissions.toArray(new Permission[0]);
+						}));
 				setServices(
 					() -> TransformUtil.transformToArray(
 						_orgLaborService.getOrgLabors(
@@ -343,10 +374,16 @@ public class OrganizationResourceDTOConverter
 	private OrgLaborService _orgLaborService;
 
 	@Reference
+	private PermissionService _permissionService;
+
+	@Reference
 	private PhoneService _phoneService;
 
 	@Reference
 	private RegionService _regionService;
+
+	@Reference
+	private ResourceActionLocalService _resourceActionLocalService;
 
 	@Reference
 	private UserService _userService;
