@@ -559,6 +559,10 @@ components:
                     $ref: "#/components/schemas/Organization"
                     description:
                         The organization's parent organization.
+                permissions:
+                    items:
+                        type: permission
+                    type: array
                 services:
                     description:
                         A list of services the organization provides. This follows the
