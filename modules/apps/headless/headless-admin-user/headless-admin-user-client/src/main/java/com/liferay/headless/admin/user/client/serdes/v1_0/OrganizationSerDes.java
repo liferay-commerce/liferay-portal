@@ -338,6 +338,26 @@ public class OrganizationSerDes {
 			sb.append(String.valueOf(organization.getParentOrganization()));
 		}
 
+		if (organization.getPermissions() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"permissions\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < organization.getPermissions().length; i++) {
+				sb.append(organization.getPermissions()[i]);
+
+				if ((i + 1) < organization.getPermissions().length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
 		if (organization.getServices() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -578,6 +598,14 @@ public class OrganizationSerDes {
 				String.valueOf(organization.getParentOrganization()));
 		}
 
+		if (organization.getPermissions() == null) {
+			map.put("permissions", null);
+		}
+		else {
+			map.put(
+				"permissions", String.valueOf(organization.getPermissions()));
+		}
+
 		if (organization.getServices() == null) {
 			map.put("services", null);
 		}
@@ -691,6 +719,9 @@ public class OrganizationSerDes {
 			else if (Objects.equals(
 						jsonParserFieldName, "parentOrganization")) {
 
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "permissions")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "services")) {
@@ -872,6 +903,26 @@ public class OrganizationSerDes {
 				if (jsonParserFieldValue != null) {
 					organization.setParentOrganization(
 						OrganizationSerDes.toDTO((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "permissions")) {
+				if (jsonParserFieldValue != null) {
+					Object[] jsonParserFieldValues =
+						(Object[])jsonParserFieldValue;
+
+					com.liferay.headless.admin.user.client.permission.
+						Permission[] permissionsArray = new
+						com.liferay.headless.admin.user.client.permission.
+							Permission[jsonParserFieldValues.length];
+
+					for (int i = 0; i < permissionsArray.length; i++) {
+						permissionsArray[i] =
+							com.liferay.headless.admin.user.client.permission.
+								Permission.toDTO(
+									(String)jsonParserFieldValues[i]);
+					}
+
+					organization.setPermissions(permissionsArray);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "services")) {
