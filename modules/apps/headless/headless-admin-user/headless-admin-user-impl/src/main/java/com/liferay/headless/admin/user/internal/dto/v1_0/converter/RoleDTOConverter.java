@@ -7,11 +7,14 @@ package com.liferay.headless.admin.user.internal.dto.v1_0.converter;
 
 import com.liferay.headless.admin.user.dto.v1_0.Role;
 import com.liferay.headless.admin.user.dto.v1_0.RolePermission;
+import com.liferay.headless.admin.user.dto.v1_0.UserAccountBrief;
 import com.liferay.headless.admin.user.internal.dto.v1_0.util.CreatorUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.ResourceAction;
 import com.liferay.portal.kernel.model.ResourcePermission;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.OrganizationLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -21,6 +24,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
+import com.liferay.portal.vulcan.fields.NestedFieldsSupplier;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import java.util.HashSet;
@@ -79,6 +83,13 @@ public class RoleDTOConverter
 				setName(role::getName);
 				setName_i18n(
 					() -> LocalizedMapUtil.getI18nMap(role.getTitleMap()));
+//				setOrganizationBriefs(
+//					() -> NestedFieldsSupplier.supply(
+//						"organizationBriefs",
+//						fieldName -> TransformUtil.transformToArray(
+//							_organizationLocalService.getRoleOrganizations,  //Not sure how to get role organizations
+//							user -> _toUserAccountBrief(user),
+//							UserAccountBrief.class)));
 				setRolePermissions(
 					() -> {
 						UriInfo uriInfo = dtoConverterContext.getUriInfo();
@@ -103,6 +114,25 @@ public class RoleDTOConverter
 							RolePermission.class);
 					});
 				setRoleType(role::getTypeLabel);
+				setUserAccountBriefs(
+					() -> NestedFieldsSupplier.supply(
+						"userAccountBriefs",
+						fieldName -> TransformUtil.transformToArray(
+							_userLocalService.getRoleUsers(role.getRoleId()),
+							user -> _toUserAccountBrief(user),
+							UserAccountBrief.class)));
+			}
+		};
+	}
+
+	private UserAccountBrief _toUserAccountBrief(User user) {
+		return new UserAccountBrief() {
+			{
+				setAlternateName(user::getScreenName);
+				setEmailAddress(user::getEmailAddress);
+				setExternalReferenceCode(user::getExternalReferenceCode);
+				setId(user::getUserId);
+				setName(user::getFullName);
 			}
 		};
 	}
@@ -181,5 +211,8 @@ public class RoleDTOConverter
 
 	@Reference
 	private UserLocalService _userLocalService;
+
+	@Reference
+	private OrganizationLocalService _organizationLocalService;
 
 }
