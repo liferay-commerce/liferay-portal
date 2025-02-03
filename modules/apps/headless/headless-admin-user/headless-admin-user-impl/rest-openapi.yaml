@@ -810,6 +810,13 @@ components:
                     additionalProperties:
                         type: string
                     type: object
+                organizationBriefs:
+                    description:
+                        The list of organizations associated with this role.
+                    items:
+                        $ref: "#/components/schemas/OrganizationBrief"
+                    readOnly: true
+                    type: array
                 rolePermissions:
                     items:
                         $ref: "#/components/schemas/RolePermission"
@@ -818,6 +825,27 @@ components:
                     description:
                         The role's type.
                     type: string
+                siteBriefs:
+                    description:
+                        The list of sites associated with this role.
+                    items:
+                        $ref: "#/components/schemas/SiteBrief"
+                    readOnly: true
+                    type: array
+                userAccountBriefs:
+                    description:
+                        The list of users associated with this role.
+                    items:
+                        $ref: "#/components/schemas/UserAccountBrief"
+                    readOnly: true
+                    type: array
+                userGroupBriefs:
+                    description:
+                        The list of user groups associated with this role.
+                    items:
+                        $ref: "#/components/schemas/UserGroupBrief"
+                    readOnly: true
+                    type: array
             type: object
         RoleBrief:
             description:
