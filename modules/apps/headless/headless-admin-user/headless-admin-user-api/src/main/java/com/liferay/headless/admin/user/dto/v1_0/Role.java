@@ -523,6 +523,53 @@ public class Role implements Serializable {
 	@JsonIgnore
 	private Supplier<Map<String, String>> _name_i18nSupplier;
 
+	@Schema(
+		description = "The list of organizations associated with this role."
+	)
+	@Valid
+	public OrganizationBrief[] getOrganizationBriefs() {
+		if (_organizationBriefsSupplier != null) {
+			organizationBriefs = _organizationBriefsSupplier.get();
+
+			_organizationBriefsSupplier = null;
+		}
+
+		return organizationBriefs;
+	}
+
+	public void setOrganizationBriefs(OrganizationBrief[] organizationBriefs) {
+		this.organizationBriefs = organizationBriefs;
+
+		_organizationBriefsSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setOrganizationBriefs(
+		UnsafeSupplier<OrganizationBrief[], Exception>
+			organizationBriefsUnsafeSupplier) {
+
+		_organizationBriefsSupplier = () -> {
+			try {
+				return organizationBriefsUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "The list of organizations associated with this role."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected OrganizationBrief[] organizationBriefs;
+
+	@JsonIgnore
+	private Supplier<OrganizationBrief[]> _organizationBriefsSupplier;
+
 	@Schema
 	@Valid
 	public RolePermission[] getRolePermissions() {
@@ -606,6 +653,136 @@ public class Role implements Serializable {
 
 	@JsonIgnore
 	private Supplier<String> _roleTypeSupplier;
+
+	@Schema(description = "The list of sites associated with this role.")
+	@Valid
+	public SiteBrief[] getSiteBriefs() {
+		if (_siteBriefsSupplier != null) {
+			siteBriefs = _siteBriefsSupplier.get();
+
+			_siteBriefsSupplier = null;
+		}
+
+		return siteBriefs;
+	}
+
+	public void setSiteBriefs(SiteBrief[] siteBriefs) {
+		this.siteBriefs = siteBriefs;
+
+		_siteBriefsSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setSiteBriefs(
+		UnsafeSupplier<SiteBrief[], Exception> siteBriefsUnsafeSupplier) {
+
+		_siteBriefsSupplier = () -> {
+			try {
+				return siteBriefsUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(description = "The list of sites associated with this role.")
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected SiteBrief[] siteBriefs;
+
+	@JsonIgnore
+	private Supplier<SiteBrief[]> _siteBriefsSupplier;
+
+	@Schema(description = "The list of users associated with this role.")
+	@Valid
+	public UserAccountBrief[] getUserAccountBriefs() {
+		if (_userAccountBriefsSupplier != null) {
+			userAccountBriefs = _userAccountBriefsSupplier.get();
+
+			_userAccountBriefsSupplier = null;
+		}
+
+		return userAccountBriefs;
+	}
+
+	public void setUserAccountBriefs(UserAccountBrief[] userAccountBriefs) {
+		this.userAccountBriefs = userAccountBriefs;
+
+		_userAccountBriefsSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setUserAccountBriefs(
+		UnsafeSupplier<UserAccountBrief[], Exception>
+			userAccountBriefsUnsafeSupplier) {
+
+		_userAccountBriefsSupplier = () -> {
+			try {
+				return userAccountBriefsUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(description = "The list of users associated with this role.")
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected UserAccountBrief[] userAccountBriefs;
+
+	@JsonIgnore
+	private Supplier<UserAccountBrief[]> _userAccountBriefsSupplier;
+
+	@Schema(description = "The list of user groups associated with this role.")
+	@Valid
+	public UserGroupBrief[] getUserGroupBriefs() {
+		if (_userGroupBriefsSupplier != null) {
+			userGroupBriefs = _userGroupBriefsSupplier.get();
+
+			_userGroupBriefsSupplier = null;
+		}
+
+		return userGroupBriefs;
+	}
+
+	public void setUserGroupBriefs(UserGroupBrief[] userGroupBriefs) {
+		this.userGroupBriefs = userGroupBriefs;
+
+		_userGroupBriefsSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setUserGroupBriefs(
+		UnsafeSupplier<UserGroupBrief[], Exception>
+			userGroupBriefsUnsafeSupplier) {
+
+		_userGroupBriefsSupplier = () -> {
+			try {
+				return userGroupBriefsUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "The list of user groups associated with this role."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected UserGroupBrief[] userGroupBriefs;
+
+	@JsonIgnore
+	private Supplier<UserGroupBrief[]> _userGroupBriefsSupplier;
 
 	@Override
 	public boolean equals(Object object) {
@@ -803,6 +980,28 @@ public class Role implements Serializable {
 			sb.append(_toJSON(name_i18n));
 		}
 
+		OrganizationBrief[] organizationBriefs = getOrganizationBriefs();
+
+		if (organizationBriefs != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"organizationBriefs\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < organizationBriefs.length; i++) {
+				sb.append(String.valueOf(organizationBriefs[i]));
+
+				if ((i + 1) < organizationBriefs.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
 		RolePermission[] rolePermissions = getRolePermissions();
 
 		if (rolePermissions != null) {
@@ -839,6 +1038,72 @@ public class Role implements Serializable {
 			sb.append(_escape(roleType));
 
 			sb.append("\"");
+		}
+
+		SiteBrief[] siteBriefs = getSiteBriefs();
+
+		if (siteBriefs != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"siteBriefs\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < siteBriefs.length; i++) {
+				sb.append(String.valueOf(siteBriefs[i]));
+
+				if ((i + 1) < siteBriefs.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
+		UserAccountBrief[] userAccountBriefs = getUserAccountBriefs();
+
+		if (userAccountBriefs != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"userAccountBriefs\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < userAccountBriefs.length; i++) {
+				sb.append(String.valueOf(userAccountBriefs[i]));
+
+				if ((i + 1) < userAccountBriefs.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
+		UserGroupBrief[] userGroupBriefs = getUserGroupBriefs();
+
+		if (userGroupBriefs != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"userGroupBriefs\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < userGroupBriefs.length; i++) {
+				sb.append(String.valueOf(userGroupBriefs[i]));
+
+				if ((i + 1) < userGroupBriefs.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
 		}
 
 		sb.append("}");

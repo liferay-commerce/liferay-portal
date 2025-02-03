@@ -1371,6 +1371,16 @@ public abstract class BaseRoleResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals(
+					"organizationBriefs", additionalAssertFieldName)) {
+
+				if (role.getOrganizationBriefs() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("rolePermissions", additionalAssertFieldName)) {
 				if (role.getRolePermissions() == null) {
 					valid = false;
@@ -1381,6 +1391,32 @@ public abstract class BaseRoleResourceTestCase {
 
 			if (Objects.equals("roleType", additionalAssertFieldName)) {
 				if (role.getRoleType() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("siteBriefs", additionalAssertFieldName)) {
+				if (role.getSiteBriefs() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"userAccountBriefs", additionalAssertFieldName)) {
+
+				if (role.getUserAccountBriefs() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("userGroupBriefs", additionalAssertFieldName)) {
+				if (role.getUserGroupBriefs() == null) {
 					valid = false;
 				}
 
@@ -1613,6 +1649,19 @@ public abstract class BaseRoleResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals(
+					"organizationBriefs", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						role1.getOrganizationBriefs(),
+						role2.getOrganizationBriefs())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("rolePermissions", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						role1.getRolePermissions(),
@@ -1627,6 +1676,40 @@ public abstract class BaseRoleResourceTestCase {
 			if (Objects.equals("roleType", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						role1.getRoleType(), role2.getRoleType())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("siteBriefs", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						role1.getSiteBriefs(), role2.getSiteBriefs())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"userAccountBriefs", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						role1.getUserAccountBriefs(),
+						role2.getUserAccountBriefs())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("userGroupBriefs", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						role1.getUserGroupBriefs(),
+						role2.getUserGroupBriefs())) {
 
 					return false;
 				}
@@ -1971,6 +2054,11 @@ public abstract class BaseRoleResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("organizationBriefs")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("rolePermissions")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -2020,6 +2108,21 @@ public abstract class BaseRoleResourceTestCase {
 			}
 
 			return sb.toString();
+		}
+
+		if (entityFieldName.equals("siteBriefs")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("userAccountBriefs")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("userGroupBriefs")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
 		}
 
 		throw new IllegalArgumentException(

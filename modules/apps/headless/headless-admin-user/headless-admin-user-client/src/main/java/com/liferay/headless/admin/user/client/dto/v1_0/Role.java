@@ -257,6 +257,28 @@ public class Role implements Cloneable, Serializable {
 
 	protected Map<String, String> name_i18n;
 
+	public OrganizationBrief[] getOrganizationBriefs() {
+		return organizationBriefs;
+	}
+
+	public void setOrganizationBriefs(OrganizationBrief[] organizationBriefs) {
+		this.organizationBriefs = organizationBriefs;
+	}
+
+	public void setOrganizationBriefs(
+		UnsafeSupplier<OrganizationBrief[], Exception>
+			organizationBriefsUnsafeSupplier) {
+
+		try {
+			organizationBriefs = organizationBriefsUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected OrganizationBrief[] organizationBriefs;
+
 	public RolePermission[] getRolePermissions() {
 		return rolePermissions;
 	}
@@ -299,6 +321,71 @@ public class Role implements Cloneable, Serializable {
 	}
 
 	protected String roleType;
+
+	public SiteBrief[] getSiteBriefs() {
+		return siteBriefs;
+	}
+
+	public void setSiteBriefs(SiteBrief[] siteBriefs) {
+		this.siteBriefs = siteBriefs;
+	}
+
+	public void setSiteBriefs(
+		UnsafeSupplier<SiteBrief[], Exception> siteBriefsUnsafeSupplier) {
+
+		try {
+			siteBriefs = siteBriefsUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected SiteBrief[] siteBriefs;
+
+	public UserAccountBrief[] getUserAccountBriefs() {
+		return userAccountBriefs;
+	}
+
+	public void setUserAccountBriefs(UserAccountBrief[] userAccountBriefs) {
+		this.userAccountBriefs = userAccountBriefs;
+	}
+
+	public void setUserAccountBriefs(
+		UnsafeSupplier<UserAccountBrief[], Exception>
+			userAccountBriefsUnsafeSupplier) {
+
+		try {
+			userAccountBriefs = userAccountBriefsUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected UserAccountBrief[] userAccountBriefs;
+
+	public UserGroupBrief[] getUserGroupBriefs() {
+		return userGroupBriefs;
+	}
+
+	public void setUserGroupBriefs(UserGroupBrief[] userGroupBriefs) {
+		this.userGroupBriefs = userGroupBriefs;
+	}
+
+	public void setUserGroupBriefs(
+		UnsafeSupplier<UserGroupBrief[], Exception>
+			userGroupBriefsUnsafeSupplier) {
+
+		try {
+			userGroupBriefs = userGroupBriefsUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected UserGroupBrief[] userGroupBriefs;
 
 	@Override
 	public Role clone() throws CloneNotSupportedException {

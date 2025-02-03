@@ -5,8 +5,12 @@
 
 package com.liferay.headless.admin.user.client.serdes.v1_0;
 
+import com.liferay.headless.admin.user.client.dto.v1_0.OrganizationBrief;
 import com.liferay.headless.admin.user.client.dto.v1_0.Role;
 import com.liferay.headless.admin.user.client.dto.v1_0.RolePermission;
+import com.liferay.headless.admin.user.client.dto.v1_0.SiteBrief;
+import com.liferay.headless.admin.user.client.dto.v1_0.UserAccountBrief;
+import com.liferay.headless.admin.user.client.dto.v1_0.UserGroupBrief;
 import com.liferay.headless.admin.user.client.json.BaseJSONParser;
 
 import java.text.DateFormat;
@@ -191,6 +195,26 @@ public class RoleSerDes {
 			sb.append(_toJSON(role.getName_i18n()));
 		}
 
+		if (role.getOrganizationBriefs() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"organizationBriefs\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < role.getOrganizationBriefs().length; i++) {
+				sb.append(String.valueOf(role.getOrganizationBriefs()[i]));
+
+				if ((i + 1) < role.getOrganizationBriefs().length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
 		if (role.getRolePermissions() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -223,6 +247,66 @@ public class RoleSerDes {
 			sb.append(_escape(role.getRoleType()));
 
 			sb.append("\"");
+		}
+
+		if (role.getSiteBriefs() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"siteBriefs\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < role.getSiteBriefs().length; i++) {
+				sb.append(String.valueOf(role.getSiteBriefs()[i]));
+
+				if ((i + 1) < role.getSiteBriefs().length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
+		if (role.getUserAccountBriefs() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"userAccountBriefs\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < role.getUserAccountBriefs().length; i++) {
+				sb.append(String.valueOf(role.getUserAccountBriefs()[i]));
+
+				if ((i + 1) < role.getUserAccountBriefs().length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
+		if (role.getUserGroupBriefs() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"userGroupBriefs\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < role.getUserGroupBriefs().length; i++) {
+				sb.append(String.valueOf(role.getUserGroupBriefs()[i]));
+
+				if ((i + 1) < role.getUserGroupBriefs().length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
 		}
 
 		sb.append("}");
@@ -332,6 +416,15 @@ public class RoleSerDes {
 			map.put("name_i18n", String.valueOf(role.getName_i18n()));
 		}
 
+		if (role.getOrganizationBriefs() == null) {
+			map.put("organizationBriefs", null);
+		}
+		else {
+			map.put(
+				"organizationBriefs",
+				String.valueOf(role.getOrganizationBriefs()));
+		}
+
 		if (role.getRolePermissions() == null) {
 			map.put("rolePermissions", null);
 		}
@@ -345,6 +438,30 @@ public class RoleSerDes {
 		}
 		else {
 			map.put("roleType", String.valueOf(role.getRoleType()));
+		}
+
+		if (role.getSiteBriefs() == null) {
+			map.put("siteBriefs", null);
+		}
+		else {
+			map.put("siteBriefs", String.valueOf(role.getSiteBriefs()));
+		}
+
+		if (role.getUserAccountBriefs() == null) {
+			map.put("userAccountBriefs", null);
+		}
+		else {
+			map.put(
+				"userAccountBriefs",
+				String.valueOf(role.getUserAccountBriefs()));
+		}
+
+		if (role.getUserGroupBriefs() == null) {
+			map.put("userGroupBriefs", null);
+		}
+		else {
+			map.put(
+				"userGroupBriefs", String.valueOf(role.getUserGroupBriefs()));
 		}
 
 		return map;
@@ -401,10 +518,24 @@ public class RoleSerDes {
 			else if (Objects.equals(jsonParserFieldName, "name_i18n")) {
 				return true;
 			}
+			else if (Objects.equals(
+						jsonParserFieldName, "organizationBriefs")) {
+
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "rolePermissions")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "roleType")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "siteBriefs")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "userAccountBriefs")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "userGroupBriefs")) {
 				return false;
 			}
 
@@ -480,6 +611,25 @@ public class RoleSerDes {
 						(Map<String, String>)jsonParserFieldValue);
 				}
 			}
+			else if (Objects.equals(
+						jsonParserFieldName, "organizationBriefs")) {
+
+				if (jsonParserFieldValue != null) {
+					Object[] jsonParserFieldValues =
+						(Object[])jsonParserFieldValue;
+
+					OrganizationBrief[] organizationBriefsArray =
+						new OrganizationBrief[jsonParserFieldValues.length];
+
+					for (int i = 0; i < organizationBriefsArray.length; i++) {
+						organizationBriefsArray[i] =
+							OrganizationBriefSerDes.toDTO(
+								(String)jsonParserFieldValues[i]);
+					}
+
+					role.setOrganizationBriefs(organizationBriefsArray);
+				}
+			}
 			else if (Objects.equals(jsonParserFieldName, "rolePermissions")) {
 				if (jsonParserFieldValue != null) {
 					Object[] jsonParserFieldValues =
@@ -499,6 +649,55 @@ public class RoleSerDes {
 			else if (Objects.equals(jsonParserFieldName, "roleType")) {
 				if (jsonParserFieldValue != null) {
 					role.setRoleType((String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "siteBriefs")) {
+				if (jsonParserFieldValue != null) {
+					Object[] jsonParserFieldValues =
+						(Object[])jsonParserFieldValue;
+
+					SiteBrief[] siteBriefsArray =
+						new SiteBrief[jsonParserFieldValues.length];
+
+					for (int i = 0; i < siteBriefsArray.length; i++) {
+						siteBriefsArray[i] = SiteBriefSerDes.toDTO(
+							(String)jsonParserFieldValues[i]);
+					}
+
+					role.setSiteBriefs(siteBriefsArray);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "userAccountBriefs")) {
+				if (jsonParserFieldValue != null) {
+					Object[] jsonParserFieldValues =
+						(Object[])jsonParserFieldValue;
+
+					UserAccountBrief[] userAccountBriefsArray =
+						new UserAccountBrief[jsonParserFieldValues.length];
+
+					for (int i = 0; i < userAccountBriefsArray.length; i++) {
+						userAccountBriefsArray[i] =
+							UserAccountBriefSerDes.toDTO(
+								(String)jsonParserFieldValues[i]);
+					}
+
+					role.setUserAccountBriefs(userAccountBriefsArray);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "userGroupBriefs")) {
+				if (jsonParserFieldValue != null) {
+					Object[] jsonParserFieldValues =
+						(Object[])jsonParserFieldValue;
+
+					UserGroupBrief[] userGroupBriefsArray =
+						new UserGroupBrief[jsonParserFieldValues.length];
+
+					for (int i = 0; i < userGroupBriefsArray.length; i++) {
+						userGroupBriefsArray[i] = UserGroupBriefSerDes.toDTO(
+							(String)jsonParserFieldValues[i]);
+					}
+
+					role.setUserGroupBriefs(userGroupBriefsArray);
 				}
 			}
 		}
