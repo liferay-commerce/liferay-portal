@@ -161,10 +161,6 @@ const BusinessEvents = () => {
 							}
 							items={userOptions}
 							label="Options"
-							menuElementAttrs={{
-								className: 'p-0 text-neutral-10',
-							}}
-							menuWidth="shrink"
 						/>
 					</div>
 				),

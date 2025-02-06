@@ -5,12 +5,25 @@
 
 import Nav from '@clayui/nav';
 import {memo, useState} from 'react';
-import Skeleton from '../Skeleton';
 import i18n from '~/utils/I18n';
+
+import Skeleton from '../Skeleton';
 
 import './NavSegment.css';
 
-const NavSegment = ({
+interface IProps {
+	disabled?: boolean;
+	items?: {
+		key: string;
+		label: string;
+	}[];
+	loading?: boolean;
+	maxItemsLoading?: number;
+	onSelect: (index: number | {key: string; label: string}) => void;
+	selectedIndex?: number;
+}
+
+const NavSegment: React.FC<IProps> = ({
 	disabled,
 	items,
 	loading,
@@ -20,7 +33,7 @@ const NavSegment = ({
 }) => {
 	const [currentIndex, setCurrentIndex] = useState(selectedIndex || 0);
 
-	const handleOnClick = (index) => {
+	const handleOnClick = (index: number) => {
 		if (index !== currentIndex) {
 			setCurrentIndex(index);
 
@@ -30,7 +43,7 @@ const NavSegment = ({
 				return;
 			}
 
-			onSelect(items[index]);
+			items && onSelect(items[index]);
 		}
 	};
 
@@ -38,7 +51,7 @@ const NavSegment = ({
 		[...new Array(maxItemsLoading)].map((_, index) => (
 			<Nav.Item key={index}>
 				<Nav.Link>
-					<Skeleton height={20} width={100} />
+					<Skeleton align="left" height={20} width={100} />
 				</Nav.Link>
 			</Nav.Item>
 		));

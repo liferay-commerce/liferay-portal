@@ -6,11 +6,20 @@
 import ClayForm, {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import classNames from 'classnames';
-import {useField} from 'formik';
-import {Badge} from '../..';
+import {FieldHookConfig, useField} from 'formik';
 import {required, validate} from '~/utils/validations.form';
 
+import {Badge} from '../..';
+
 import './Input.css';
+
+interface IProps extends React.ComponentPropsWithoutRef<typeof ClayInput> {
+	disableError?: boolean;
+	groupStyle?: string;
+	helper?: any;
+	label: string;
+	validations?: Function[];
+}
 
 const Input = ({
 	disableError,
@@ -19,17 +28,19 @@ const Input = ({
 	label,
 	validations,
 	...props
-}) => {
+}: IProps) => {
 	if (props.required) {
 		validations = validations
-			? [...validations, (value) => required(value)]
-			: [(value) => required(value)];
+			? [...validations, (value: string) => required(value)]
+			: [(value: string) => required(value)];
 	}
 
 	const [field, meta] = useField({
 		...props,
-		validate: (value) => validate(validations, value),
-	});
+		validate: validations
+			? (value: string) => validate(validations, value)
+			: undefined,
+	} as FieldHookConfig<string>);
 
 	return (
 		<ClayForm.Group
@@ -51,9 +62,7 @@ const Input = ({
 				<ClayInput {...field} {...props} />
 			</label>
 
-			{(typeof meta.error === 'string' || meta.error instanceof String) &&
-			meta.touched &&
-			!disableError ? (
+			{typeof meta.error === 'string' && meta.touched && !disableError ? (
 				<Badge>
 					<span className="pl-1">{meta.error}</span>
 				</Badge>

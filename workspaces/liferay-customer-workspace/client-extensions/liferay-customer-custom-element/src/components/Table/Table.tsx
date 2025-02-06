@@ -6,15 +6,69 @@
 import ClayTable from '@clayui/table';
 import classNames from 'classnames';
 import {useEffect, useState} from 'react';
+import i18n from '~/utils/I18n';
+
 import {FilterIcon} from '../../assets/filter_icon';
 import TablePagination from './Pagination';
 import TableSkeleton from './TableSkeleton';
-import i18n from '~/utils/I18n';
 
 import './Table.css';
 
-const Table = ({
-	checkboxConfig = {checkboxesChecked: [], setCheckboxesChecked: () => {}},
+interface IColumn {
+	accessor: string;
+	align?: 'center' | 'left' | 'right' | undefined;
+	bodyClass?: string;
+	disableCustomClickOnRow?: boolean;
+	expanded?: boolean;
+	filterIdentifier?: string;
+	header: {
+		description?: string;
+		name: string;
+		noWrap?: boolean;
+		styles?: string;
+	};
+	noWrap?: boolean;
+	truncate?: boolean;
+}
+
+interface IRow {
+	customClickOnRow?: () => void;
+	id: string | number;
+	[key: string]: any;
+}
+
+interface ICheckboxConfig {
+	checkboxesChecked: (string | number)[];
+	setCheckboxesChecked: React.Dispatch<
+		React.SetStateAction<(string | number)[]>
+	>;
+}
+
+interface IPaginationConfig {
+	activePage?: number;
+	itemsPerPage?: number;
+	labels?: any;
+	listItemsPerPage?: number[];
+	setActivePage: (page: number) => void;
+	setItemsPerPage: (itemsPerPage: number) => void;
+	showDeltasDropDown?: boolean;
+	totalCount?: number;
+}
+
+interface IProps {
+	checkboxConfig: ICheckboxConfig;
+	columns: IColumn[];
+	handleSortChange: Function;
+	hasCheckbox: boolean;
+	hasPagination: boolean;
+	hasSorting?: boolean;
+	isLoading?: boolean;
+	paginationConfig: IPaginationConfig;
+	rows: IRow[];
+}
+
+const Table: React.FC<IProps> = ({
+	checkboxConfig,
 	columns,
 	handleSortChange,
 	hasCheckbox,
@@ -38,14 +92,14 @@ const Table = ({
 	const {checkboxesChecked, setCheckboxesChecked} = checkboxConfig;
 
 	const {
-		activePage,
-		itemsPerPage,
+		activePage = 1,
+		itemsPerPage = 5,
 		labels,
-		listItemsPerPage,
-		setActivePage,
-		setItemsPerPage,
-		showDeltasDropDown,
-		totalCount,
+		listItemsPerPage = [],
+		setActivePage = () => {},
+		setItemsPerPage = () => {},
+		showDeltasDropDown = false,
+		totalCount = 1,
 	} = paginationConfig;
 
 	useEffect(() => {
@@ -60,7 +114,10 @@ const Table = ({
 		return setIsAllCheckboxsSelected(false);
 	}, [checkboxesChecked, hasCheckbox, rows]);
 
-	const handleCheckboxClick = (event, id) => {
+	const handleCheckboxClick = (
+		event: React.ChangeEvent<HTMLInputElement>,
+		id: string | number
+	) => {
 		const {checked} = event.target;
 
 		if (checked) {
@@ -87,7 +144,7 @@ const Table = ({
 
 			return;
 		}
-		setCheckboxesChecked(rows.map((row) => row.id));
+		setCheckboxesChecked(rows.map((row) => row.id as string | number));
 	};
 
 	return (
@@ -134,7 +191,9 @@ const Table = ({
 										{hasSorting &&
 											column.filterIdentifier && (
 												<FilterIcon
-													aria-label={i18n.translate('filter-items')}
+													aria-label={i18n.translate(
+														'filter-items'
+													)}
 													columnName={
 														column.filterIdentifier
 													}
@@ -170,7 +229,9 @@ const Table = ({
 										key={`checkbox-${rowIndex}`}
 									>
 										<input
-											aria-label={i18n.translate('select-key')}
+											aria-label={i18n.translate(
+												'select-key'
+											)}
 											checked={checkboxesChecked.includes(
 												row.id
 											)}
@@ -189,7 +250,9 @@ const Table = ({
 									<ClayTable.Cell
 										align={column.align}
 										className={column.bodyClass}
-										columnTextAlignment={column.align}
+										columnTextAlignment={
+											column.align as any
+										}
 										expanded={column.expanded}
 										key={`${rowIndex}-${columnIndex}`}
 										noWrap={column.noWrap}

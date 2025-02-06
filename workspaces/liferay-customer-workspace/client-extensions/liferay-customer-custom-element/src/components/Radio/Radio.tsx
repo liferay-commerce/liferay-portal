@@ -6,11 +6,24 @@
 import ClayCard from '@clayui/card';
 import {ClayRadio} from '@clayui/form';
 import classNames from 'classnames';
-import {forwardRef} from 'react';
+import {ReactNode, forwardRef} from 'react';
 
 import './Radio.css';
 
-const RadioBase = forwardRef(
+interface IProps extends React.InputHTMLAttributes<HTMLInputElement> {
+	description?: string;
+	hasCustomAlert?: ReactNode;
+	isActivationKeyAvailable?: boolean;
+	label: string;
+	onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+	renderActions?: ReactNode;
+	selected?: boolean;
+	sideLabel?: string;
+	subtitle?: string;
+	value: string;
+}
+
+const Radio = forwardRef<HTMLInputElement, IProps>(
 	(
 		{
 			description,
@@ -34,21 +47,19 @@ const RadioBase = forwardRef(
 					className={classNames(
 						'align-items-baseline cp-radio-card d-flex flex-row mb-3 py-3 px-3 rounded user-select-auto',
 						{
-							'bg-brand-primary-lighten-5 border-primary text-brand-primary': selected,
+							'bg-brand-primary-lighten-5 border-primary text-brand-primary':
+								selected,
 							'card-outlined': !selected,
 						}
 					)}
-					disabled={!isActivationKeyAvailable}
+					{...(isActivationKeyAvailable ? {} : {disabled: true})}
 					onClick={() => {
 						if (isActivationKeyAvailable) {
 							onChange({
-								target: {
-									value,
-								},
-							});
+								target: {value},
+							} as React.ChangeEvent<HTMLInputElement>);
 						}
 					}}
-					selected={selected}
 				>
 					<ClayRadio
 						{...props}
@@ -56,12 +67,12 @@ const RadioBase = forwardRef(
 						disabled={!isActivationKeyAvailable}
 						inline={true}
 						name={name}
-						onChange={() =>
+						onChange={(
+							event: React.ChangeEvent<HTMLInputElement>
+						) =>
 							onChange({
-								target: {
-									value,
-								},
-							})
+								target: {value: event.target.value},
+							} as React.ChangeEvent<HTMLInputElement>)
 						}
 						ref={ref}
 						value={value}
@@ -73,7 +84,8 @@ const RadioBase = forwardRef(
 								className={classNames(
 									'd-flex cp-radio-card-label flex-wrap flex-lg-nowrap font-weight-bolder text-paragraph-lg p-0',
 									{
-										'cp-clay-card-disabled': !isActivationKeyAvailable,
+										'cp-clay-card-disabled':
+											!isActivationKeyAvailable,
 										'text-brand-primary': selected,
 									}
 								)}
@@ -95,7 +107,8 @@ const RadioBase = forwardRef(
 							className={classNames(
 								'col-12 mb-0 p-0 text-success text-paragraph-sm',
 								{
-									'cp-clay-card-disabled': !isActivationKeyAvailable,
+									'cp-clay-card-disabled':
+										!isActivationKeyAvailable,
 									'text-danger': !isActivationKeyAvailable,
 								}
 							)}
@@ -107,7 +120,8 @@ const RadioBase = forwardRef(
 							className={classNames(
 								'col-12 p-0 text-neutral-8 text-paragraph-sm',
 								{
-									'cp-clay-card-disabled': !isActivationKeyAvailable,
+									'cp-clay-card-disabled':
+										!isActivationKeyAvailable,
 								}
 							)}
 						>
@@ -120,7 +134,5 @@ const RadioBase = forwardRef(
 		);
 	}
 );
-
-const Radio = forwardRef(RadioBase);
 
 export default Radio;

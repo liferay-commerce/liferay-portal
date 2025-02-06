@@ -7,13 +7,33 @@ import classNames from 'classnames';
 
 import './Skeleton.css';
 
-const Skeleton = ({align, count = 1, height, width, ...props}) => {
+interface IProps {
+	align?: 'left' | 'right' | 'center';
+	className?: string;
+	count?: number;
+	height?: number;
+	shape?: 'rounded' | 'square';
+	width?: number;
+}
+
+const Skeleton: React.FC<IProps> = ({
+	align = 'left',
+	className = '',
+	count = 1,
+	height = undefined,
+	shape = 'rounded',
+	width = undefined,
+	...props
+}) => {
 	return (
-		<div {...props}>
+		<div {...props} className={className}>
 			{[...new Array(count)].map((_, index) => (
 				<div
 					className={classNames(
-						'skeleton rounded',
+						'skeleton',
+						{
+							'rounded-sm': shape === 'rounded',
+						},
 						{
 							'ml-auto': align === 'right',
 							'mr-auto': align === 'left',
@@ -25,29 +45,13 @@ const Skeleton = ({align, count = 1, height, width, ...props}) => {
 					)}
 					key={index}
 					style={{
-						height: `${height}px`,
-						width: `${width - index * 100}px`,
+						height: height ? `${height}px` : undefined,
+						width: width ? `${width - index * 100}px` : undefined,
 					}}
 				/>
 			))}
 		</div>
 	);
 };
-
-Skeleton.Rounded = ({height, width}) => {
-	return (
-		<div
-			className="rounded-sm skeleton"
-			style={{height: `${height}px`, width: `${width}px`}}
-		/>
-	);
-};
-
-Skeleton.Square = ({height, width}) => (
-	<div
-		className="skeleton"
-		style={{height: `${height}px`, width: `${width}px`}}
-	/>
-);
 
 export default Skeleton;

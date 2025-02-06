@@ -8,7 +8,23 @@ import classNames from 'classnames';
 import {useState} from 'react';
 import i18n from '~/utils/I18n';
 
-const RoundedGroupButtons = ({groupButtons, handleOnChange, id, ...props}) => {
+interface GroupButton {
+	label: string;
+	value: string;
+}
+
+interface RoundedGroupButtonsProps {
+	groupButtons: GroupButton[];
+	handleOnChange: (value: string) => void;
+	id?: string;
+}
+
+const RoundedGroupButtons: React.FC<RoundedGroupButtonsProps> = ({
+	groupButtons,
+	handleOnChange,
+	id,
+	...props
+}) => {
 	const [selectedButton, setSelectedButton] = useState(
 		groupButtons[0]?.value
 	);
@@ -29,9 +45,9 @@ const RoundedGroupButtons = ({groupButtons, handleOnChange, id, ...props}) => {
 							selectedButton === value,
 					})}
 					key={`${index}-${value}`}
-					onClick={(event) => {
-						setSelectedButton(event.target.value);
-						handleOnChange(event.target.value);
+					onClick={() => {
+						setSelectedButton(value);
+						handleOnChange(value);
 					}}
 					value={value}
 					{...props}
