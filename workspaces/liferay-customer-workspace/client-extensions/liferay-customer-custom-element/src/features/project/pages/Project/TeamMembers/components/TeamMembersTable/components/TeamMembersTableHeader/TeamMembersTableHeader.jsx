@@ -11,7 +11,7 @@ import {useState} from 'react';
 import PopoverIconButton from '~/features/project/components/PopoverIconButton';
 import i18n from '~/utils/I18n';
 import {Skeleton} from '~/components';
-import InviteTeamMembersForm from '~/components/setup-forms/InviteTeamMembersForm';
+import InviteTeamMembersForm from '~/features/project/containers/InviteTeamMembersForm';
 import SearchBar from '~/features/project/components/SearchBar';
 
 const TeamMembersTableHeader = ({

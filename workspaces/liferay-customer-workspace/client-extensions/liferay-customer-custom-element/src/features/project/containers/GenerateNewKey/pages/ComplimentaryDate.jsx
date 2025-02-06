@@ -13,7 +13,7 @@ import useProvisioningLicenseKeys from '~/hooks/useProvisioningLicenseKeys';
 import {putSubscriptionInKey} from '~/services/liferay/rest/raysource/LicenseKeys';
 import i18n from '~/utils/I18n';
 import {Button} from '~/components';
-import Layout from '~/components/setup-forms/Layout';
+import Layout from '~/components/FormLayout';
 import useGetPurposeComplimentaryKeyList from './hooks/useGetPurposeComplimentaryKeyList';
 import {getRenewKeySubtitle} from '../utils/renewKeySubtitle';
 

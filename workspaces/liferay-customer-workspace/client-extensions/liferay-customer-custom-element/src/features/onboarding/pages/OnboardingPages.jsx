@@ -6,9 +6,9 @@
 import {useEffect, useState} from 'react';
 import useUserAccountsByAccountExternalReferenceCode from '~/features/project/pages/Project/TeamMembers/components/TeamMembersTable/hooks/useUserAccountsByAccountExternalReferenceCode';
 import i18n from '~/utils/I18n';
-import InviteTeamMembersForm from '~/components/setup-forms/InviteTeamMembersForm';
-import SetupAnalyticsCloudForm from '~/components/setup-forms/SetupAnalyticsCloudForm';
-import SetupDXPCloudForm from '~/components/setup-forms/SetupDXPCloudForm';
+import InviteTeamMembersForm from '~/features/project/containers/InviteTeamMembersForm';
+import SetupAnalyticsCloudForm from '~/features/project/containers/SetupAnalyticsCloudForm';
+import SetupDXPCloudForm from '~/features/project/containers/SetupDXPCloudForm';
 import {useAppPropertiesContext} from '~/contexts/AppPropertiesContext';
 import {getOrRequestToken} from '~/services/liferay/security/auth/getOrRequestToken';
 import {PAGE_ROUTER_TYPES} from '~/utils/constants';

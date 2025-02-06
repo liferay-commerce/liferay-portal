@@ -38,13 +38,13 @@ import {
 } from '~/features/project/utils/constants';
 import i18n from '~/utils/I18n';
 import {Button, Input, Select} from '~/components';
-import SetupHighPriorityContactForm from '~/components/HighPriorityContacts/SetupHighPriorityContact';
+import SetupHighPriorityContactForm from '~/features/project/components/HighPriorityContacts/SetupHighPriorityContact';
 import useBannedDomains from '~/hooks/useBannedDomains';
 import NotificationQueueService from '~/services/actions/notificationAction';
 import {getOrRequestToken} from '~/services/liferay/security/auth/getOrRequestToken';
 import getInitialAnalyticsInvite from '~/utils/getInitialAnalyticsInvite';
 import getKebabCase from '~/utils/getKebabCase';
-import Layout from '../Layout';
+import Layout from '../../../../components/FormLayout';
 import IncidentReportInput from './IncidentReportInput';
 
 const BLANK_TEXT = '< none >';

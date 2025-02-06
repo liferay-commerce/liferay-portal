@@ -5,7 +5,7 @@
 
 import i18n from '~/utils/I18n';
 import {Button} from '~/components';
-import Layout from '~/components/setup-forms/Layout';
+import Layout from '~/components/FormLayout';
 import {IntroOnboarding} from '~/assets';
 import {useOnboarding} from '../../context';
 import {actionTypes} from '../../context/reducer';

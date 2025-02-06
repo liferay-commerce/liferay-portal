@@ -5,7 +5,7 @@
 
 import i18n from '~/utils/I18n';
 import {Button} from '~/components';
-import Layout from '~/components/setup-forms/Layout';
+import Layout from '~/components/FormLayout';
 import {PRODUCT_TYPES} from '~/features/project/utils/constants/productTypes';
 
 const successTexts = {

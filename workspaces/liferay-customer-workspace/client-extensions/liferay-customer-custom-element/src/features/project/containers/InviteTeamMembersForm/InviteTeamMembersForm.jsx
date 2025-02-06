@@ -26,7 +26,7 @@ import {addContactRoleNameByEmailByProject} from '~/services/liferay/rest/raysou
 import {ROLE_TYPES, SLA_TYPES} from '~/utils/constants';
 import getInitialInvite from '~/utils/getInitialInvite';
 import getProjectRoles from '~/utils/getProjectRoles';
-import Layout from '../Layout';
+import Layout from '../../../../components/FormLayout';
 import TeamMemberInputs from './TeamMemberInputs';
 
 import './InviteTeamMembersForm.css';

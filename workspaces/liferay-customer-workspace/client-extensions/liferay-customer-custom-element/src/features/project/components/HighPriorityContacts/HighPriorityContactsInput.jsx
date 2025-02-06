@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {MultiSelect, Skeleton} from '..';
+import {MultiSelect, Skeleton} from '~/components';
 import ClayForm from '@clayui/form';
 import {useEffect, useState} from 'react';
 import useUserAccountsByAccountExternalReferenceCode from '~/features/project/pages/Project/TeamMembers/components/TeamMembersTable/hooks/useUserAccountsByAccountExternalReferenceCode';

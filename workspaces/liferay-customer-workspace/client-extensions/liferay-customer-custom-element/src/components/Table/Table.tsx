@@ -9,7 +9,7 @@ import {useEffect, useState} from 'react';
 import i18n from '~/utils/I18n';
 
 import {FilterIcon} from '../../assets/filter_icon';
-import TablePagination from './Pagination';
+import TablePagination from './TablePagination';
 import TableSkeleton from './TableSkeleton';
 
 import './Table.css';

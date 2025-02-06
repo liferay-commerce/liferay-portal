@@ -14,8 +14,8 @@ import {
 	Input,
 	Select,
 } from '~/components';
-import SetupHighPriorityContactForm from '~/components/HighPriorityContacts/SetupHighPriorityContact';
-import Layout from '~/components/setup-forms/Layout';
+import SetupHighPriorityContactForm from '~/features/project/components/HighPriorityContacts/SetupHighPriorityContact';
+import Layout from '~/components/FormLayout';
 import useBannedDomains from '~/hooks/useBannedDomains';
 import {isValidEmail} from '~/utils/validations.form';
 import getInitialLxcAdmins from '../../utils/getInitialLxcAdmins';

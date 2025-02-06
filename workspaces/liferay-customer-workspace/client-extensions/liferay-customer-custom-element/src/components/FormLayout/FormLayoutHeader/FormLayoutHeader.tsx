@@ -4,10 +4,21 @@
  */
 
 import classNames from 'classnames';
+import React from 'react';
 
-import './Header.css';
+interface IProps {
+	greetings?: string;
+	headerClass?: string;
+	helper?: string;
+	title: string;
+}
 
-const Header = ({greetings, headerClass, helper, title}) => {
+const FormLayoutHeader: React.FC<IProps> = ({
+	greetings,
+	headerClass,
+	helper,
+	title,
+}) => {
 	return (
 		<header className={classNames('p-4', headerClass)}>
 			{greetings && (
@@ -34,4 +45,4 @@ const Header = ({greetings, headerClass, helper, title}) => {
 	);
 };
 
-export default Header;
+export default FormLayoutHeader;

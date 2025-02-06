@@ -12,7 +12,7 @@ import {useEffect, useState} from 'react';
 import i18n from '~/utils/I18n';
 
 import {Button, ButtonDropDown} from '~/components';
-import SetupDXPCloudForm from '~/components/setup-forms/SetupDXPCloudForm';
+import SetupDXPCloudForm from '~/features/project/containers/SetupDXPCloudForm';
 import {useAppPropertiesContext} from '~/contexts/AppPropertiesContext';
 import {DXPIcon} from '~/assets/navigation-menu';
 import {

@@ -4,7 +4,7 @@
  */
 
 import {Skeleton} from '~/components';
-import Layout from '~/components/setup-forms/Layout';
+import Layout from '~/components/FormLayout';
 
 const WelcomeSkeleton = () => {
 	return (

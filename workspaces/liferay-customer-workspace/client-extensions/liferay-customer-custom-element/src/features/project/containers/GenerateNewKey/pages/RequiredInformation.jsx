@@ -14,7 +14,7 @@ import useProvisioningLicenseKeys from '~/hooks/useProvisioningLicenseKeys';
 import {Liferay} from '~/services/liferay';
 import i18n from '~/utils/I18n';
 import {Badge, Button, Input} from '~/components';
-import Layout from '~/components/setup-forms/Layout';
+import Layout from '~/components/FormLayout';
 import {useAppPropertiesContext} from '~/contexts/AppPropertiesContext';
 import {patchOrderItemByExternalReferenceCode} from '~/services/liferay/graphql/queries';
 import {putSubscriptionInKey} from '~/services/liferay/rest/raysource/LicenseKeys';

@@ -14,7 +14,7 @@ import {
 } from '~/features/project/utils/getHighPriorityContacts';
 import {useOnboarding} from '~/features/onboarding/context';
 import {useCustomerPortal} from '~/features/project/context';
-import useCurrentKoroneikiAccount from '../../hooks/useCurrentKoroneikiAccount';
+import useCurrentKoroneikiAccount from '~/hooks/useCurrentKoroneikiAccount';
 import HighPriorityContactsInput from './HighPriorityContactsInput';
 import {useHighPriorityContacts} from './hooks/useHighPriorityContacts';
 

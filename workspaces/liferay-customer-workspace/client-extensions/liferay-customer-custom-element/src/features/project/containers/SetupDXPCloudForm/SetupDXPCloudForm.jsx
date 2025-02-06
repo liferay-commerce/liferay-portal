@@ -27,7 +27,7 @@ import {
 } from '~/features/project/utils/constants';
 import i18n from '~/utils/I18n';
 import {Button, Input, Select} from '~/components';
-import SetupHighPriorityContactForm from '~/components/HighPriorityContacts/SetupHighPriorityContact';
+import SetupHighPriorityContactForm from '~/features/project/components/HighPriorityContacts/SetupHighPriorityContact';
 import {
 	addAdminDXPCloud,
 	addDXPCloudEnvironment,
@@ -40,7 +40,7 @@ import {getOrRequestToken} from '~/services/liferay/security/auth/getOrRequestTo
 import getInitialDXPAdmin from '~/utils/getInitialDXPAdmin';
 import getKebabCase from '~/utils/getKebabCase';
 import {isLowercaseAndNumbers} from '~/utils/validations.form';
-import Layout from '../Layout';
+import Layout from '../../../../components/FormLayout';
 import AdminInputs from './AdminInputs';
 
 import './SetupDXPCloudForm.css';

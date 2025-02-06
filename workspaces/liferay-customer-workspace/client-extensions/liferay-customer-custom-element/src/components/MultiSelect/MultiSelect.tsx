@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {Badge} from '..';
 import ClayForm from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayMultiSelect from '@clayui/multi-select';
@@ -13,8 +14,6 @@ import {FieldHookConfig, useField, useFormikContext} from 'formik';
 import {useEffect} from 'react';
 import i18n from '~/utils/I18n';
 import {validateEmailsArray} from '~/utils/validations.form';
-
-import {Badge} from '../..';
 
 import './MultiSelect.css';
 

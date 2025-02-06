@@ -5,8 +5,8 @@
 import ClayModal from '@clayui/modal';
 import {useMemo, useState} from 'react';
 import i18n from '~/utils/I18n';
-import SetupAnalyticsCloudForm from '~/components/setup-forms/SetupAnalyticsCloudForm';
-import ConfirmationMessageModal from '~/components/setup-forms/SetupAnalyticsCloudForm/ConfirmationMessageModal';
+import SetupAnalyticsCloudForm from '~/features/project/containers/SetupAnalyticsCloudForm';
+import ConfirmationMessageModal from '~/features/project/containers/SetupAnalyticsCloudForm/ConfirmationMessageModal';
 import {useAppPropertiesContext} from '~/contexts/AppPropertiesContext';
 import {ANALYTICS_STEPS_TYPES} from '~/features/project/utils/constants';
 import AlreadySubmittedModal from '../ActivationStatus/AlreadySubmittedModal';
