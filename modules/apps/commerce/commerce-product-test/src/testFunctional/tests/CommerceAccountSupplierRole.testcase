@@ -1197,18 +1197,14 @@ definition {
 
 			CommerceNavigator.gotoEntry(entryName = "MIN93015");
 
-			CommercePriceLists.editPriceListEntryPrice(priceListEntryPrice = 50);
-
-			Click(locator1 = "Icon#CLOSE");
-
-			SelectFrameTop();
-
-			CommerceNavigator.gotoEntry(entryName = "MIN93015");
-
 			CommercePriceLists.createPriceListPriceTiers(
 				key_pricingType = "Bulk Pricing",
 				key_quantity = 2,
 				key_value = 1000);
+
+			CommercePriceLists.editPriceListEntryPrice(priceListEntryPrice = 50);
+
+			Click(locator1 = "Icon#CLOSE");
 		}
 
 		task ("Then buyers can see the bulk price applied in the storefront") {
@@ -1411,22 +1407,16 @@ definition {
 
 			CommerceNavigator.gotoEntry(entryName = "MIN93015");
 
+			CommercePriceLists.createPriceListPriceTiers(
+				key_pricingType = "Bulk Pricing",
+				key_quantity = 2,
+				key_value = 10);
+
 			SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
 
 			CommerceSKUs.setSkuPricing(promoPrice = 20);
 
 			Button.clickSave();
-
-			Click(locator1 = "Icon#CLOSE");
-
-			SelectFrameTop();
-
-			CommerceNavigator.gotoEntry(entryName = "MIN93015");
-
-			CommercePriceLists.createPriceListPriceTiers(
-				key_pricingType = "Bulk Pricing",
-				key_quantity = 2,
-				key_value = 10);
 		}
 
 		task ("Then buyers can see the bulk price applied in the storefront") {
