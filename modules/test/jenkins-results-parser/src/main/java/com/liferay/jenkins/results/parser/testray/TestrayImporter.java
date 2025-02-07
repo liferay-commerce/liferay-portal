@@ -736,10 +736,9 @@ public class TestrayImporter {
 				}
 			}
 
-			Properties buildProperties;
-
 			try {
-				buildProperties = JenkinsResultsParserUtil.getBuildProperties();
+				Properties buildProperties =
+					JenkinsResultsParserUtil.getBuildProperties();
 
 				String testrayOverrideProjectName = buildProperties.getProperty(
 					"testray.override.project.name");
@@ -857,10 +856,9 @@ public class TestrayImporter {
 				}
 			}
 
-			Properties buildProperties = null;
-
 			try {
-				buildProperties = JenkinsResultsParserUtil.getBuildProperties();
+				Properties buildProperties =
+					JenkinsResultsParserUtil.getBuildProperties();
 
 				String testrayOverrideRoutineName = buildProperties.getProperty(
 					"testray.override.routine.name");
@@ -1465,7 +1463,7 @@ public class TestrayImporter {
 			return;
 		}
 
-		Properties buildProperties;
+		Properties buildProperties = null;
 
 		try {
 			buildProperties = JenkinsResultsParserUtil.getBuildProperties();
@@ -1564,7 +1562,7 @@ public class TestrayImporter {
 			return;
 		}
 
-		Properties buildProperties;
+		Properties buildProperties = null;
 
 		try {
 			buildProperties = JenkinsResultsParserUtil.getBuildProperties();
@@ -1681,7 +1679,7 @@ public class TestrayImporter {
 	}
 
 	private GitWorkingDirectory _getJenkinsGitWorkingDirectory() {
-		Properties buildProperties;
+		Properties buildProperties = null;
 
 		try {
 			buildProperties = JenkinsResultsParserUtil.getBuildProperties();
