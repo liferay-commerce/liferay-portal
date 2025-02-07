@@ -142,8 +142,7 @@ public class UpgradeKernelPackageTest extends UpgradeKernelPackage {
 
 			_insertData(10, _PREFIX_POSTFIX_CLASS_NAME_OLD, "");
 			_insertData(11, _PREFIX_POSTFIX_CLASS_NAME_NEW, "");
-			_insertData(
-				12, _PREFIX_POSTFIX_CLASS_NAME_NEW, "uniqueTextData");
+			_insertData(12, _PREFIX_POSTFIX_CLASS_NAME_NEW, "uniqueTextData");
 
 			_db.runSQL(
 				"create unique index IX_TEMP on UpgradeKernelPackageTest " +
