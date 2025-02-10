@@ -26,8 +26,9 @@ export class ProductDetailsPage {
 	) => Promise<Locator>;
 	readonly dropdownProductSpecification: (
 		chooseAddOrCreate: string
-	) => Promise<Locator>;
-	readonly editFrameSpecificationProduct: (
+	) => Locator;
+	readonly editFrameSpecificationProductValue: Locator;
+	readonly editFrameSelectSpecificationProduct: (
 		specificationValue: string
 	) => Promise<string[]>;
 	readonly ellipsisProductSpecification: Locator;
@@ -121,7 +122,11 @@ export class ProductDetailsPage {
 		});
 		this.ellipsisFrameProductSpecification =
 			page.frameLocator('iframe >> nth=1');
-		this.editFrameSpecificationProduct = async (
+		this.editFrameSpecificationProductValue =
+			this.ellipsisFrameProductSpecification.locator(
+				'[id="_com_liferay_commerce_product_definitions_web_internal_portlet_CPDefinitionsPortlet_value"]'
+			);
+		this.editFrameSelectSpecificationProduct = async (
 			specificationValue: string
 		) => {
 			return this.ellipsisFrameProductSpecification
@@ -149,9 +154,7 @@ export class ProductDetailsPage {
 		this.downloadSampleField = async (downloadSampleText: string) => {
 			return page.getByRole('link', {name: downloadSampleText});
 		};
-		this.dropdownProductSpecification = async (
-			chooseEditOrDelete: string
-		) => {
+		this.dropdownProductSpecification = (chooseEditOrDelete: string) => {
 			return page.getByRole('menuitem', {name: chooseEditOrDelete});
 		};
 		this.fullDescriptionField = async (fullDescription: string) => {
@@ -248,10 +251,8 @@ export class ProductDetailsPage {
 		specificationValue: string
 	) {
 		await this.ellipsisProductSpecification.click();
-		await (
-			await this.dropdownProductSpecification(chooseAddOrCreate)
-		).click();
-		await this.editFrameSpecificationProduct(specificationValue);
+		await this.dropdownProductSpecification(chooseAddOrCreate).click();
+		await this.editFrameSelectSpecificationProduct(specificationValue);
 		await this.saveButtonEditFrame.click();
 	}
 
