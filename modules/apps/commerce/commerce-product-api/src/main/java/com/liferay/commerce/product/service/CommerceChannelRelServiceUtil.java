@@ -130,6 +130,23 @@ public class CommerceChannelRelServiceUtil {
 			className, classPK, name);
 	}
 
+	public static List<CommerceChannelRel>
+			getCommerceCurrencyCommerceChannelRels(
+				long commerceChannelId, String name, int start, int end)
+		throws PortalException {
+
+		return getService().getCommerceCurrencyCommerceChannelRels(
+			commerceChannelId, name, start, end);
+	}
+
+	public static int getCommerceCurrencyCommerceChannelRelsCount(
+			long commerceChannelId, String name)
+		throws PortalException {
+
+		return getService().getCommerceCurrencyCommerceChannelRelsCount(
+			commerceChannelId, name);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *

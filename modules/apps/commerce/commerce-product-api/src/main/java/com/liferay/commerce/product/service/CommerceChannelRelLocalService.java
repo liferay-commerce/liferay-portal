@@ -289,6 +289,14 @@ public interface CommerceChannelRelLocalService
 		String className, long classPK, String name);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<CommerceChannelRel> getCommerceCurrencyCommerceChannelRels(
+		long commerceChannelId, String name, int start, int end);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getCommerceCurrencyCommerceChannelRelsCount(
+		long commerceChannelId, String name);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
 	/**

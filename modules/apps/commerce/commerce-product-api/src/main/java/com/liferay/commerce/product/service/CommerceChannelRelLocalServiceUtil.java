@@ -344,6 +344,21 @@ public class CommerceChannelRelLocalServiceUtil {
 			className, classPK, name);
 	}
 
+	public static List<CommerceChannelRel>
+		getCommerceCurrencyCommerceChannelRels(
+			long commerceChannelId, String name, int start, int end) {
+
+		return getService().getCommerceCurrencyCommerceChannelRels(
+			commerceChannelId, name, start, end);
+	}
+
+	public static int getCommerceCurrencyCommerceChannelRelsCount(
+		long commerceChannelId, String name) {
+
+		return getService().getCommerceCurrencyCommerceChannelRelsCount(
+			commerceChannelId, name);
+	}
+
 	public static
 		com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 			getIndexableActionableDynamicQuery() {
