@@ -392,6 +392,25 @@ public class CommerceChannelRelLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<CommerceChannelRel>
+		getCommerceCurrencyCommerceChannelRels(
+			long commerceChannelId, String name, int start, int end) {
+
+		return _commerceChannelRelLocalService.
+			getCommerceCurrencyCommerceChannelRels(
+				commerceChannelId, name, start, end);
+	}
+
+	@Override
+	public int getCommerceCurrencyCommerceChannelRelsCount(
+		long commerceChannelId, String name) {
+
+		return _commerceChannelRelLocalService.
+			getCommerceCurrencyCommerceChannelRelsCount(
+				commerceChannelId, name);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 		getIndexableActionableDynamicQuery() {
 

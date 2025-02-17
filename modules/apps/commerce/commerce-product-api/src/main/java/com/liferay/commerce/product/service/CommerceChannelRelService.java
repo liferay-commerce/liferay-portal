@@ -105,6 +105,16 @@ public interface CommerceChannelRelService extends BaseService {
 			String className, long classPK, String name)
 		throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<CommerceChannelRel> getCommerceCurrencyCommerceChannelRels(
+			long commerceChannelId, String name, int start, int end)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getCommerceCurrencyCommerceChannelRelsCount(
+			long commerceChannelId, String name)
+		throws PortalException;
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
