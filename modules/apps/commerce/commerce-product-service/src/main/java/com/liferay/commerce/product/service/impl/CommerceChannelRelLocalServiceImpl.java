@@ -7,6 +7,7 @@ package com.liferay.commerce.product.service.impl;
 
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.model.CommerceCurrencyTable;
+import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.product.exception.DuplicateCommerceChannelRelException;
 import com.liferay.commerce.product.model.CommerceChannelRel;
 import com.liferay.commerce.product.model.CommerceChannelRelTable;
@@ -17,9 +18,14 @@ import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.Country;
 import com.liferay.portal.kernel.model.CountryTable;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Indexable;
+import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.CountryLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -59,6 +65,10 @@ public class CommerceChannelRelLocalServiceImpl
 			throw new DuplicateCommerceChannelRelException();
 		}
 
+		if (className.equals(CommerceCurrency.class.getName())) {
+			_reindexCommerceChannelRels(classPK);
+		}
+
 		User user = _userLocalService.getUser(serviceContext.getUserId());
 
 		long commerceChannelRelId = counterLocalService.increment();
@@ -85,6 +95,28 @@ public class CommerceChannelRelLocalServiceImpl
 			classPKs,
 			classPK -> addCommerceChannelRel(
 				className, classPK, commerceChannelId, serviceContext));
+	}
+
+	@Indexable(type = IndexableType.DELETE)
+	@Override
+	public CommerceChannelRel deleteCommerceChannelRel(
+			long commerceChannelRelId)
+		throws PortalException {
+
+		CommerceChannelRel commerceChannelRel =
+			commerceChannelRelPersistence.remove(commerceChannelRelId);
+
+		long commerceCurrencyClassNameId =
+			_classNameLocalService.getClassNameId(
+				CommerceCurrency.class.getName());
+
+		if (commerceChannelRel.getClassNameId() ==
+				commerceCurrencyClassNameId) {
+
+			_reindexCommerceChannelRels(commerceChannelRel.getClassPK());
+		}
+
+		return commerceChannelRel;
 	}
 
 	@Override
@@ -304,8 +336,24 @@ public class CommerceChannelRelLocalServiceImpl
 		return commerceChannelRelFinder.countByC_C(className, classPK, name);
 	}
 
+	private void _reindexCommerceChannelRels(long commerceCurrencyId) {
+		Indexer<CommerceCurrency> indexer =
+			IndexerRegistryUtil.nullSafeGetIndexer(CommerceCurrency.class);
+
+		try {
+			indexer.reindex(
+				CommerceCurrency.class.getName(), commerceCurrencyId);
+		}
+		catch (PortalException portalException) {
+			throw new SystemException(portalException);
+		}
+	}
+
 	@Reference
 	private ClassNameLocalService _classNameLocalService;
+
+	@Reference
+	private CommerceCurrencyLocalService _commerceCurrencyLocalService;
 
 	@Reference
 	private CountryLocalService _countryLocalService;
