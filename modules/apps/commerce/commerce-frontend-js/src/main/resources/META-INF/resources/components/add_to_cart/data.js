@@ -79,6 +79,8 @@ export async function addToCart(
 			orderTypeId,
 		});
 
+		newCart.currencyCode = channel.currencyCode;
+
 		Liferay.fire(CURRENT_ORDER_UPDATED, {order: newCart});
 
 		return newCart;
@@ -96,6 +98,8 @@ export async function addToCart(
 		);
 
 		const fetchedCart = await CartResource.getCartByIdWithItems(cartId);
+
+		fetchedCart.currencyCode = channel.currencyCode;
 
 		Liferay.fire(CURRENT_ORDER_UPDATED, {order: fetchedCart});
 
