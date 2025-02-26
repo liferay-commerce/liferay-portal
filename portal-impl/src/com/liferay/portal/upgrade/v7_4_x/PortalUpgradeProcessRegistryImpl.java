@@ -575,6 +575,13 @@ public class PortalUpgradeProcessRegistryImpl
 			new Version(31, 15, 1),
 			new DBColumnSizeUpgradeProcess(
 				DBType.ORACLE, "number", 30, 20, "DOUBLE"));
+
+		upgradeVersionTreeMap.put(
+			new Version(31, 16, 0),
+			UpgradeProcessFactory.addColumns(
+				"Role_", "status INTEGER", "statusByUserId LONG",
+				"statusByUserName VARCHAR(75)", "statusDate DATE"),
+			UpgradeProcessFactory.runSQL("update Role_ set status = 0"));
 	}
 
 }
