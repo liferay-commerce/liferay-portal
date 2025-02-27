@@ -52,12 +52,17 @@ public class CurrencySelectorFragmentRenderer implements FragmentRenderer {
 
 	@Override
 	public String getCollectionKey() {
-		return "commerce-currency";
+		return "commerce-order";
 	}
 
 	@Override
 	public String getLabel(Locale locale) {
 		return _language.get(locale, "currency-selector");
+	}
+
+	@Override
+	public String getIcon() {
+		return "catalog";
 	}
 
 	@Override
@@ -69,10 +74,8 @@ public class CurrencySelectorFragmentRenderer implements FragmentRenderer {
 	public void render(
 			FragmentRendererContext fragmentRendererContext,
 			HttpServletRequest httpServletRequest,
-			HttpServletResponse httpServletResponse)
-		throws IOException {
+			HttpServletResponse httpServletResponse) {
 
-		try {
 			CommerceContext commerceContext =
 				(CommerceContext)httpServletRequest.getAttribute(
 					CommerceWebKeys.COMMERCE_CONTEXT);
@@ -87,6 +90,8 @@ public class CurrencySelectorFragmentRenderer implements FragmentRenderer {
 				return;
 			}
 
+
+		try {
 			RequestDispatcher requestDispatcher =
 				_servletContext.getRequestDispatcher(
 					"/fragment/renderer/currency_selector/page.jsp");
@@ -124,6 +129,8 @@ public class CurrencySelectorFragmentRenderer implements FragmentRenderer {
 			requestDispatcher.include(httpServletRequest, httpServletResponse);
 		}
 		catch (Exception exception) {
+			_log.error(exception);
+
 			throw new RuntimeException(exception);
 		}
 	}
