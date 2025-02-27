@@ -283,22 +283,6 @@ public class CommerceChannelRelLocalServiceWrapper
 		return _commerceChannelRelLocalService.getActionableDynamicQuery();
 	}
 
-	@Override
-	public java.util.List<CommerceChannelRel> getCommerceChannelCountries(
-		long commerceChannelId, String name, int start, int end) {
-
-		return _commerceChannelRelLocalService.getCommerceChannelCountries(
-			commerceChannelId, name, start, end);
-	}
-
-	@Override
-	public int getCommerceChannelCountriesCount(
-		long commerceChannelId, String name) {
-
-		return _commerceChannelRelLocalService.getCommerceChannelCountriesCount(
-			commerceChannelId, name);
-	}
-
 	/**
 	 * Returns the commerce channel rel with the primary key.
 	 *
@@ -408,6 +392,22 @@ public class CommerceChannelRelLocalServiceWrapper
 		return _commerceChannelRelLocalService.
 			getCommerceCurrencyCommerceChannelRelsCount(
 				commerceChannelId, name);
+	}
+
+	@Override
+	public java.util.List<CommerceChannelRel> getCountryCommerceChannelRels(
+		long commerceChannelId, String name, int start, int end) {
+
+		return _commerceChannelRelLocalService.getCountryCommerceChannelRels(
+			commerceChannelId, name, start, end);
+	}
+
+	@Override
+	public int getCountryCommerceChannelRelsCount(
+		long commerceChannelId, String name) {
+
+		return _commerceChannelRelLocalService.
+			getCountryCommerceChannelRelsCount(commerceChannelId, name);
 	}
 
 	@Override

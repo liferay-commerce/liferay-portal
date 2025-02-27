@@ -69,22 +69,6 @@ public class CommerceChannelRelServiceUtil {
 			className, classPK, commerceChannelId);
 	}
 
-	public static List<CommerceChannelRel> getCommerceChannelCountries(
-			long commerceChannelId, String name, int start, int end)
-		throws PortalException {
-
-		return getService().getCommerceChannelCountries(
-			commerceChannelId, name, start, end);
-	}
-
-	public static int getCommerceChannelCountriesCount(
-			long commerceChannelId, String name)
-		throws PortalException {
-
-		return getService().getCommerceChannelCountriesCount(
-			commerceChannelId, name);
-	}
-
 	public static CommerceChannelRel getCommerceChannelRel(
 			long commerceChannelRelId)
 		throws PortalException {
@@ -144,6 +128,22 @@ public class CommerceChannelRelServiceUtil {
 		throws PortalException {
 
 		return getService().getCommerceCurrencyCommerceChannelRelsCount(
+			commerceChannelId, name);
+	}
+
+	public static List<CommerceChannelRel> getCountryCommerceChannelRels(
+			long commerceChannelId, String name, int start, int end)
+		throws PortalException {
+
+		return getService().getCountryCommerceChannelRels(
+			commerceChannelId, name, start, end);
+	}
+
+	public static int getCountryCommerceChannelRelsCount(
+			long commerceChannelId, String name)
+		throws PortalException {
+
+		return getService().getCountryCommerceChannelRelsCount(
 			commerceChannelId, name);
 	}
 
