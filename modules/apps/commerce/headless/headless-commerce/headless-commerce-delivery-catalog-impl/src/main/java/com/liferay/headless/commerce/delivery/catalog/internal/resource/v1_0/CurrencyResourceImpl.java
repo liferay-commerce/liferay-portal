@@ -79,7 +79,7 @@ public class CurrencyResourceImpl extends BaseCurrencyResourceImpl {
 			searchContext -> {
 				int count =
 					_commerceChannelRelService.
-						getCommerceChannelCommerceCurrenciesCount(
+						getCommerceCurrencyCommerceChannelRelsCount(
 							commerceChannel.getCommerceChannelId(), null);
 
 				if (count > 0) {
