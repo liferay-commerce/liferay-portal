@@ -15,6 +15,8 @@ CPContentHelper cpContentHelper = (CPContentHelper)request.getAttribute(CPConten
 CPCatalogEntry cpCatalogEntry = cpContentHelper.getCPCatalogEntry(request);
 
 boolean hasMultipleCPSkus = cpContentHelper.hasMultipleCPSkus(cpCatalogEntry);
+
+boolean hasOptions = cpContentHelper.hasCPDefinitionOptionRels(cpCatalogEntry.getCPDefinitionId());
 %>
 
 <div class="cp-renderer">
@@ -101,7 +103,7 @@ boolean hasMultipleCPSkus = cpContentHelper.hasMultipleCPSkus(cpCatalogEntry);
 
 			<div>
 				<c:choose>
-					<c:when test="<%= !hasMultipleCPSkus && (cpSku != null) %>">
+					<c:when test="<%= !hasMultipleCPSkus && (cpSku != null) && !hasOptions %>">
 						<div class="mt-2">
 							<commerce-ui:add-to-cart
 								alignment="full-width"
