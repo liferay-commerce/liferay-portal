@@ -14,6 +14,7 @@ import com.liferay.commerce.product.service.CPDefinitionOptionRelLocalService;
 import com.liferay.commerce.product.service.CPDefinitionOptionValueRelLocalService;
 import com.liferay.commerce.product.util.CPCollectionProviderHelper;
 import com.liferay.commerce.product.util.CPJSONUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
@@ -142,6 +143,15 @@ public class CommerceOptionValueHelperImpl
 	@Override
 	public CommerceOptionValue toCommerceOptionValue(String json)
 		throws JSONException {
+
+		if (CPJSONUtil.isEmpty(json)) {
+			return _toCommerceOptionValue(
+				_jsonFactory.createJSONObject(StringPool.BLANK));
+		}
+
+		if (JSONUtil.isJSONArray(json)) {
+			json = json.substring(1, json.length() - 1);
+		}
 
 		return _toCommerceOptionValue(_jsonFactory.createJSONObject(json));
 	}
