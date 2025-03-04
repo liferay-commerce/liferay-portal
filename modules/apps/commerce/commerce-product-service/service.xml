@@ -1544,6 +1544,7 @@
 		<exception>CPDefinitionMetaKeywords</exception>
 		<exception>CPDefinitionMetaTitle</exception>
 		<exception>CPDefinitionNameDefaultLanguage</exception>
+		<exception>CPDefinitionOptionRel</exception>
 		<exception>CPDefinitionOptionRelPriceType</exception>
 		<exception>CPDefinitionOptionSKUContributor</exception>
 		<exception>CPDefinitionOptionValueRelCPInstance</exception>
@@ -1565,6 +1566,7 @@
 		<exception>CPInstanceJson</exception>
 		<exception>CPInstanceMaxPriceValue</exception>
 		<exception>CPInstanceMinPriceValue</exception>
+		<exception>CPInstanceOptionValueRel</exception>
 		<exception>CPInstancePrice</exception>
 		<exception>CPInstancePromoPrice</exception>
 		<exception>CPInstanceReplacementCPInstanceUuid</exception>
