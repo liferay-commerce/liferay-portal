@@ -200,7 +200,7 @@ test('LPD-30589 Add Organization Team', async ({
 	await waitForAlert(page);
 
 	await expect(
-		(await teamsPage.teamsTableRow(1, newTeamName, true)).row
+		(await teamsPage.teamsTable.row(1, newTeamName, true)).row
 	).toBeVisible();
 });
 
@@ -1073,5 +1073,81 @@ test(
 		await expect(
 			usersAndOrganizationsPage.impersonateUserMenuItem
 		).toBeVisible();
+	}
+);
+
+test(
+	'Can edit organization site team',
+	{tag: '@LPD-50685'},
+	async ({
+		apiHelpers,
+		editOrganizationPage,
+		page,
+		siteConfigurationDetailsPage,
+		siteSettingsPage,
+		teamsPage,
+		usersAndOrganizationsPage,
+	}) => {
+		const organization =
+			await apiHelpers.headlessAdminUser.postOrganization();
+
+		await usersAndOrganizationsPage.goToOrganizations();
+
+		await (
+			await usersAndOrganizationsPage.organizationActionsMenu(
+				organization.name
+			)
+		).click();
+		await editOrganizationPage.organizationEditMenuItem.click();
+		await editOrganizationPage.organizationSiteLink.click();
+		await editOrganizationPage.createSiteToggle.check();
+		await editOrganizationPage.organizationSiteSaveButton.click();
+
+		const siteUrl = `/${organization.name}`;
+
+		await siteSettingsPage.goToSiteSetting(
+			'Site Configuration',
+			null,
+			siteUrl
+		);
+
+		await siteConfigurationDetailsPage.allowManualMembershipManagementToggle.check();
+		await siteConfigurationDetailsPage.saveButton.click();
+
+		await waitForAlert(page);
+
+		await teamsPage.goTo(siteUrl);
+
+		const newTeamName = getRandomString();
+
+		await teamsPage.newTeamButton.click();
+		await teamsPage.nameInput.fill(newTeamName);
+		await teamsPage.descriptionInput.fill(getRandomString());
+		await teamsPage.saveButton.click();
+
+		await waitForAlert(page);
+
+		await (
+			await teamsPage.teamsTable.rowActions(newTeamName, 1, true)
+		).click();
+
+		await teamsPage.editButton.click();
+
+		const editedName = getRandomString();
+		const editedDescription = getRandomString();
+
+		await teamsPage.nameInput.fill(editedName);
+		await teamsPage.descriptionInput.fill(editedDescription);
+		await teamsPage.saveButton.click();
+
+		await waitForAlert(page);
+
+		await expect(teamsPage.teamsTable.cell(editedName, true)).toBeVisible();
+		await expect(
+			teamsPage.teamsTable.cell(editedDescription, true)
+		).toBeVisible();
+		await expect(
+			teamsPage.teamsTable.cell(newTeamName, true)
+		).not.toBeVisible();
 	}
 );
