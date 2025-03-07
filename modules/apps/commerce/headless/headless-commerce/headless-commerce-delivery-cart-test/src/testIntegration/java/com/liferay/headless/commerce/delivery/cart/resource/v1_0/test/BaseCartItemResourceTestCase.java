@@ -712,7 +712,7 @@ public abstract class BaseCartItemResourceTestCase {
 
 		Page<CartItem> page =
 			cartItemResource.getCartByExternalReferenceCodeItemsPage(
-				externalReferenceCode, null, Pagination.of(1, 10));
+				externalReferenceCode, null, null, Pagination.of(1, 10));
 
 		long totalCount = page.getTotalCount();
 
@@ -723,7 +723,7 @@ public abstract class BaseCartItemResourceTestCase {
 					randomIrrelevantCartItem());
 
 			page = cartItemResource.getCartByExternalReferenceCodeItemsPage(
-				irrelevantExternalReferenceCode, null,
+				irrelevantExternalReferenceCode, null, null,
 				Pagination.of(1, (int)totalCount + 1));
 
 			Assert.assertEquals(totalCount + 1, page.getTotalCount());
@@ -744,7 +744,7 @@ public abstract class BaseCartItemResourceTestCase {
 				externalReferenceCode, randomCartItem());
 
 		page = cartItemResource.getCartByExternalReferenceCodeItemsPage(
-			externalReferenceCode, null, Pagination.of(1, 10));
+			externalReferenceCode, null, null, Pagination.of(1, 10));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -779,7 +779,7 @@ public abstract class BaseCartItemResourceTestCase {
 
 		Page<CartItem> cartItemPage =
 			cartItemResource.getCartByExternalReferenceCodeItemsPage(
-				externalReferenceCode, null, null);
+				externalReferenceCode, null, null, null);
 
 		int totalCount = GetterUtil.getInteger(cartItemPage.getTotalCount());
 
@@ -802,7 +802,7 @@ public abstract class BaseCartItemResourceTestCase {
 		if (totalCount >= (pageSizeLimit - 2)) {
 			Page<CartItem> page1 =
 				cartItemResource.getCartByExternalReferenceCodeItemsPage(
-					externalReferenceCode, null,
+					externalReferenceCode, null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
 						pageSizeLimit));
@@ -813,7 +813,7 @@ public abstract class BaseCartItemResourceTestCase {
 
 			Page<CartItem> page2 =
 				cartItemResource.getCartByExternalReferenceCodeItemsPage(
-					externalReferenceCode, null,
+					externalReferenceCode, null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
 						pageSizeLimit));
@@ -822,7 +822,7 @@ public abstract class BaseCartItemResourceTestCase {
 
 			Page<CartItem> page3 =
 				cartItemResource.getCartByExternalReferenceCodeItemsPage(
-					externalReferenceCode, null,
+					externalReferenceCode, null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
 						pageSizeLimit));
@@ -832,7 +832,7 @@ public abstract class BaseCartItemResourceTestCase {
 		else {
 			Page<CartItem> page1 =
 				cartItemResource.getCartByExternalReferenceCodeItemsPage(
-					externalReferenceCode, null,
+					externalReferenceCode, null, null,
 					Pagination.of(1, totalCount + 2));
 
 			List<CartItem> cartItems1 = (List<CartItem>)page1.getItems();
@@ -842,7 +842,7 @@ public abstract class BaseCartItemResourceTestCase {
 
 			Page<CartItem> page2 =
 				cartItemResource.getCartByExternalReferenceCodeItemsPage(
-					externalReferenceCode, null,
+					externalReferenceCode, null, null,
 					Pagination.of(2, totalCount + 2));
 
 			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
@@ -853,7 +853,7 @@ public abstract class BaseCartItemResourceTestCase {
 
 			Page<CartItem> page3 =
 				cartItemResource.getCartByExternalReferenceCodeItemsPage(
-					externalReferenceCode, null,
+					externalReferenceCode, null, null,
 					Pagination.of(1, (int)totalCount + 3));
 
 			assertContains(cartItem1, (List<CartItem>)page3.getItems());
@@ -910,7 +910,7 @@ public abstract class BaseCartItemResourceTestCase {
 		Long irrelevantCartId = testGetCartItemsPage_getIrrelevantCartId();
 
 		Page<CartItem> page = cartItemResource.getCartItemsPage(
-			cartId, null, Pagination.of(1, 10));
+			cartId, null, null, Pagination.of(1, 10));
 
 		long totalCount = page.getTotalCount();
 
@@ -919,7 +919,8 @@ public abstract class BaseCartItemResourceTestCase {
 				irrelevantCartId, randomIrrelevantCartItem());
 
 			page = cartItemResource.getCartItemsPage(
-				irrelevantCartId, null, Pagination.of(1, (int)totalCount + 1));
+				irrelevantCartId, null, null,
+				Pagination.of(1, (int)totalCount + 1));
 
 			Assert.assertEquals(totalCount + 1, page.getTotalCount());
 
@@ -936,7 +937,7 @@ public abstract class BaseCartItemResourceTestCase {
 			cartId, randomCartItem());
 
 		page = cartItemResource.getCartItemsPage(
-			cartId, null, Pagination.of(1, 10));
+			cartId, null, null, Pagination.of(1, 10));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -963,7 +964,7 @@ public abstract class BaseCartItemResourceTestCase {
 		Long cartId = testGetCartItemsPage_getCartId();
 
 		Page<CartItem> cartItemPage = cartItemResource.getCartItemsPage(
-			cartId, null, null);
+			cartId, null, null, null);
 
 		int totalCount = GetterUtil.getInteger(cartItemPage.getTotalCount());
 
@@ -982,7 +983,7 @@ public abstract class BaseCartItemResourceTestCase {
 
 		if (totalCount >= (pageSizeLimit - 2)) {
 			Page<CartItem> page1 = cartItemResource.getCartItemsPage(
-				cartId, null,
+				cartId, null, null,
 				Pagination.of(
 					(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
 					pageSizeLimit));
@@ -992,7 +993,7 @@ public abstract class BaseCartItemResourceTestCase {
 			assertContains(cartItem1, (List<CartItem>)page1.getItems());
 
 			Page<CartItem> page2 = cartItemResource.getCartItemsPage(
-				cartId, null,
+				cartId, null, null,
 				Pagination.of(
 					(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
 					pageSizeLimit));
@@ -1000,7 +1001,7 @@ public abstract class BaseCartItemResourceTestCase {
 			assertContains(cartItem2, (List<CartItem>)page2.getItems());
 
 			Page<CartItem> page3 = cartItemResource.getCartItemsPage(
-				cartId, null,
+				cartId, null, null,
 				Pagination.of(
 					(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
 					pageSizeLimit));
@@ -1009,7 +1010,7 @@ public abstract class BaseCartItemResourceTestCase {
 		}
 		else {
 			Page<CartItem> page1 = cartItemResource.getCartItemsPage(
-				cartId, null, Pagination.of(1, totalCount + 2));
+				cartId, null, null, Pagination.of(1, totalCount + 2));
 
 			List<CartItem> cartItems1 = (List<CartItem>)page1.getItems();
 
@@ -1017,7 +1018,7 @@ public abstract class BaseCartItemResourceTestCase {
 				cartItems1.toString(), totalCount + 2, cartItems1.size());
 
 			Page<CartItem> page2 = cartItemResource.getCartItemsPage(
-				cartId, null, Pagination.of(2, totalCount + 2));
+				cartId, null, null, Pagination.of(2, totalCount + 2));
 
 			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
 
@@ -1026,7 +1027,7 @@ public abstract class BaseCartItemResourceTestCase {
 			Assert.assertEquals(cartItems2.toString(), 1, cartItems2.size());
 
 			Page<CartItem> page3 = cartItemResource.getCartItemsPage(
-				cartId, null, Pagination.of(1, (int)totalCount + 3));
+				cartId, null, null, Pagination.of(1, (int)totalCount + 3));
 
 			assertContains(cartItem1, (List<CartItem>)page3.getItems());
 			assertContains(cartItem2, (List<CartItem>)page3.getItems());
