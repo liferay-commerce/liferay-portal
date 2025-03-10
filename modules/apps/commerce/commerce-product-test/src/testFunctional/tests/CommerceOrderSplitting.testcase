@@ -1688,6 +1688,10 @@ definition {
 
 			CommerceNavigator.gotoOrderEntryViaAdmin(status = "$ 132.00");
 
+			Click(
+				key_cellContent = "VALUE1VALUE2",
+				locator1 = "CommerceEntry#BUNDLE_PRODUCT_EXPAND_BUTTON");
+
 			CommerceOrders.viewOrdersEntry(
 				productListPrice = "20.00",
 				productName = "ABS Sensor",
