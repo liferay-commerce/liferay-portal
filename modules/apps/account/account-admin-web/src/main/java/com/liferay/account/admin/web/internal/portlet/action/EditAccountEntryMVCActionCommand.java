@@ -137,15 +137,12 @@ public class EditAccountEntryMVCActionCommand
 		String taxIdNumber = ParamUtil.getString(actionRequest, "taxIdNumber");
 
 		accountEntry = _accountEntryService.updateAccountEntry(
+			ParamUtil.getString(actionRequest, "externalReferenceCode"),
 			accountEntryId, accountEntry.getParentAccountEntryId(), name,
 			description, deleteLogo, domains, emailAddress,
 			_getLogoBytes(actionRequest), taxIdNumber, accountEntry.getStatus(),
 			ServiceContextFactory.getInstance(
 				AccountEntry.class.getName(), actionRequest));
-
-		accountEntry = _accountEntryService.updateExternalReferenceCode(
-			accountEntry.getAccountEntryId(),
-			ParamUtil.getString(actionRequest, "externalReferenceCode"));
 
 		if (Objects.equals(
 				AccountConstants.ACCOUNT_ENTRY_TYPE_PERSON,
@@ -189,17 +186,14 @@ public class EditAccountEntryMVCActionCommand
 			domains = ParamUtil.getStringValues(actionRequest, "domains");
 		}
 
-		AccountEntry accountEntry = _accountEntryService.addAccountEntry(
+		return _accountEntryService.addAccountEntry(
+			ParamUtil.getString(actionRequest, "externalReferenceCode"),
 			themeDisplay.getUserId(), AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT,
 			name, description, domains, emailAddress,
 			_getLogoBytes(actionRequest), taxIdNumber, type,
 			WorkflowConstants.STATUS_APPROVED,
 			ServiceContextFactory.getInstance(
 				AccountEntry.class.getName(), actionRequest));
-
-		return _accountEntryService.updateExternalReferenceCode(
-			accountEntry.getAccountEntryId(),
-			ParamUtil.getString(actionRequest, "externalReferenceCode"));
 	}
 
 	private byte[] _getLogoBytes(ActionRequest actionRequest) throws Exception {
