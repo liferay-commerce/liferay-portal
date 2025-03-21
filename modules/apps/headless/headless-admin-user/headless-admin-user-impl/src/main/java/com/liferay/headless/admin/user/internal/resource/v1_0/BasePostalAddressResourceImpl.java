@@ -218,7 +218,7 @@ public abstract class BasePostalAddressResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-admin-user/v1.0/accounts/{accountId}/postal-addresses' -d $'{"addressCountry": ___, "addressCountry_i18n": ___, "addressLocality": ___, "addressRegion": ___, "addressType": ___, "externalReferenceCode": ___, "name": ___, "phoneNumber": ___, "postalCode": ___, "primary": ___, "streetAddressLine1": ___, "streetAddressLine2": ___, "streetAddressLine3": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-admin-user/v1.0/accounts/{accountId}/postal-addresses' -d $'{"addressCountry": ___, "addressCountry_i18n": ___, "addressLocality": ___, "addressRegion": ___, "addressType": ___, "externalReferenceCode": ___, "name": ___, "phoneNumber": ___, "postalCode": ___, "primary": ___, "streetAddressLine1": ___, "streetAddressLine2": ___, "streetAddressLine3": ___, "subtype": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -524,7 +524,7 @@ public abstract class BasePostalAddressResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-admin-user/v1.0/postal-addresses/by-external-reference-code/{externalReferenceCode}' -d $'{"addressCountry": ___, "addressCountry_i18n": ___, "addressLocality": ___, "addressRegion": ___, "addressType": ___, "externalReferenceCode": ___, "name": ___, "phoneNumber": ___, "postalCode": ___, "primary": ___, "streetAddressLine1": ___, "streetAddressLine2": ___, "streetAddressLine3": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-admin-user/v1.0/postal-addresses/by-external-reference-code/{externalReferenceCode}' -d $'{"addressCountry": ___, "addressCountry_i18n": ___, "addressLocality": ___, "addressRegion": ___, "addressType": ___, "externalReferenceCode": ___, "name": ___, "phoneNumber": ___, "postalCode": ___, "primary": ___, "streetAddressLine1": ___, "streetAddressLine2": ___, "streetAddressLine3": ___, "subtype": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Updates the postal address using external reference code."
@@ -622,6 +622,10 @@ public abstract class BasePostalAddressResourceImpl
 				postalAddress.getStreetAddressLine3());
 		}
 
+		if (postalAddress.getSubtype() != null) {
+			existingPostalAddress.setSubtype(postalAddress.getSubtype());
+		}
+
 		preparePatch(postalAddress, existingPostalAddress);
 
 		return putPostalAddressByExternalReferenceCode(
@@ -631,7 +635,7 @@ public abstract class BasePostalAddressResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PUT' 'http://localhost:8080/o/headless-admin-user/v1.0/postal-addresses/by-external-reference-code/{externalReferenceCode}' -d $'{"addressCountry": ___, "addressCountry_i18n": ___, "addressLocality": ___, "addressRegion": ___, "addressType": ___, "externalReferenceCode": ___, "name": ___, "phoneNumber": ___, "postalCode": ___, "primary": ___, "streetAddressLine1": ___, "streetAddressLine2": ___, "streetAddressLine3": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PUT' 'http://localhost:8080/o/headless-admin-user/v1.0/postal-addresses/by-external-reference-code/{externalReferenceCode}' -d $'{"addressCountry": ___, "addressCountry_i18n": ___, "addressLocality": ___, "addressRegion": ___, "addressType": ___, "externalReferenceCode": ___, "name": ___, "phoneNumber": ___, "postalCode": ___, "primary": ___, "streetAddressLine1": ___, "streetAddressLine2": ___, "streetAddressLine3": ___, "subtype": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Updates the postal address using external reference code."
@@ -784,7 +788,7 @@ public abstract class BasePostalAddressResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-admin-user/v1.0/postal-addresses/{postalAddressId}' -d $'{"addressCountry": ___, "addressCountry_i18n": ___, "addressLocality": ___, "addressRegion": ___, "addressType": ___, "externalReferenceCode": ___, "name": ___, "phoneNumber": ___, "postalCode": ___, "primary": ___, "streetAddressLine1": ___, "streetAddressLine2": ___, "streetAddressLine3": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-admin-user/v1.0/postal-addresses/{postalAddressId}' -d $'{"addressCountry": ___, "addressCountry_i18n": ___, "addressLocality": ___, "addressRegion": ___, "addressType": ___, "externalReferenceCode": ___, "name": ___, "phoneNumber": ___, "postalCode": ___, "primary": ___, "streetAddressLine1": ___, "streetAddressLine2": ___, "streetAddressLine3": ___, "subtype": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -876,6 +880,10 @@ public abstract class BasePostalAddressResourceImpl
 				postalAddress.getStreetAddressLine3());
 		}
 
+		if (postalAddress.getSubtype() != null) {
+			existingPostalAddress.setSubtype(postalAddress.getSubtype());
+		}
+
 		preparePatch(postalAddress, existingPostalAddress);
 
 		return putPostalAddress(postalAddressId, existingPostalAddress);
@@ -884,7 +892,7 @@ public abstract class BasePostalAddressResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PUT' 'http://localhost:8080/o/headless-admin-user/v1.0/postal-addresses/{postalAddressId}' -d $'{"addressCountry": ___, "addressCountry_i18n": ___, "addressLocality": ___, "addressRegion": ___, "addressType": ___, "externalReferenceCode": ___, "name": ___, "phoneNumber": ___, "postalCode": ___, "primary": ___, "streetAddressLine1": ___, "streetAddressLine2": ___, "streetAddressLine3": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PUT' 'http://localhost:8080/o/headless-admin-user/v1.0/postal-addresses/{postalAddressId}' -d $'{"addressCountry": ___, "addressCountry_i18n": ___, "addressLocality": ___, "addressRegion": ___, "addressType": ___, "externalReferenceCode": ___, "name": ___, "phoneNumber": ___, "postalCode": ___, "primary": ___, "streetAddressLine1": ___, "streetAddressLine2": ___, "streetAddressLine3": ___, "subtype": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {

@@ -655,6 +655,49 @@ public class PostalAddress implements Serializable {
 	@JsonIgnore
 	private Supplier<String> _streetAddressLine3Supplier;
 
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The key of the address subtype."
+	)
+	public String getSubtype() {
+		if (_subtypeSupplier != null) {
+			subtype = _subtypeSupplier.get();
+
+			_subtypeSupplier = null;
+		}
+
+		return subtype;
+	}
+
+	public void setSubtype(String subtype) {
+		this.subtype = subtype;
+
+		_subtypeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setSubtype(
+		UnsafeSupplier<String, Exception> subtypeUnsafeSupplier) {
+
+		_subtypeSupplier = () -> {
+			try {
+				return subtypeUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(description = "The key of the address subtype.")
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String subtype;
+
+	@JsonIgnore
+	private Supplier<String> _subtypeSupplier;
+
 	@Override
 	public boolean equals(Object object) {
 		if (this == object) {
@@ -890,6 +933,22 @@ public class PostalAddress implements Serializable {
 			sb.append("\"");
 
 			sb.append(_escape(streetAddressLine3));
+
+			sb.append("\"");
+		}
+
+		String subtype = getSubtype();
+
+		if (subtype != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"subtype\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(subtype));
 
 			sb.append("\"");
 		}

@@ -230,6 +230,20 @@ public class PostalAddressSerDes {
 			sb.append("\"");
 		}
 
+		if (postalAddress.getSubtype() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"subtype\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(postalAddress.getSubtype()));
+
+			sb.append("\"");
+		}
+
 		sb.append("}");
 
 		return sb.toString();
@@ -366,6 +380,13 @@ public class PostalAddressSerDes {
 				String.valueOf(postalAddress.getStreetAddressLine3()));
 		}
 
+		if (postalAddress.getSubtype() == null) {
+			map.put("subtype", null);
+		}
+		else {
+			map.put("subtype", String.valueOf(postalAddress.getSubtype()));
+		}
+
 		return map;
 	}
 
@@ -434,6 +455,9 @@ public class PostalAddressSerDes {
 			else if (Objects.equals(
 						jsonParserFieldName, "streetAddressLine3")) {
 
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "subtype")) {
 				return false;
 			}
 
@@ -532,6 +556,11 @@ public class PostalAddressSerDes {
 				if (jsonParserFieldValue != null) {
 					postalAddress.setStreetAddressLine3(
 						(String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "subtype")) {
+				if (jsonParserFieldValue != null) {
+					postalAddress.setSubtype((String)jsonParserFieldValue);
 				}
 			}
 		}

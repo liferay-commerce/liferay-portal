@@ -202,6 +202,7 @@ public abstract class BasePostalAddressResourceTestCase {
 		postalAddress.setStreetAddressLine1(regex);
 		postalAddress.setStreetAddressLine2(regex);
 		postalAddress.setStreetAddressLine3(regex);
+		postalAddress.setSubtype(regex);
 
 		String json = PostalAddressSerDes.toJSON(postalAddress);
 
@@ -220,6 +221,7 @@ public abstract class BasePostalAddressResourceTestCase {
 		Assert.assertEquals(regex, postalAddress.getStreetAddressLine1());
 		Assert.assertEquals(regex, postalAddress.getStreetAddressLine2());
 		Assert.assertEquals(regex, postalAddress.getStreetAddressLine3());
+		Assert.assertEquals(regex, postalAddress.getSubtype());
 	}
 
 	@Test
@@ -1741,6 +1743,14 @@ public abstract class BasePostalAddressResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("subtype", additionalAssertFieldName)) {
+				if (postalAddress.getSubtype() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			throw new IllegalArgumentException(
 				"Invalid additional assert field name " +
 					additionalAssertFieldName);
@@ -2015,6 +2025,17 @@ public abstract class BasePostalAddressResourceTestCase {
 				if (!Objects.deepEquals(
 						postalAddress1.getStreetAddressLine3(),
 						postalAddress2.getStreetAddressLine3())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("subtype", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						postalAddress1.getSubtype(),
+						postalAddress2.getSubtype())) {
 
 					return false;
 				}
@@ -2650,6 +2671,52 @@ public abstract class BasePostalAddressResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("subtype")) {
+			Object object = postalAddress.getSubtype();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
 		throw new IllegalArgumentException(
 			"Invalid entity field " + entityFieldName);
 	}
@@ -2718,6 +2785,7 @@ public abstract class BasePostalAddressResourceTestCase {
 					RandomTestUtil.randomString());
 				streetAddressLine3 = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
+				subtype = StringUtil.toLowerCase(RandomTestUtil.randomString());
 			}
 		};
 	}
