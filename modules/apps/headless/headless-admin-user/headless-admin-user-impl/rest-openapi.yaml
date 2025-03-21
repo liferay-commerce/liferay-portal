@@ -851,6 +851,10 @@ components:
                     description:
                         The street address's third line.
                     type: string
+                subtype:
+                    description:
+                        The key of the address subtype.
+                    type: string
             type: object
         Role:
             description:
