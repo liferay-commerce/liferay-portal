@@ -14,6 +14,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:document-library:document-library-api")
 	testIntegrationImplementation project(":apps:headless:headless-admin-user:headless-admin-user-api")
 	testIntegrationImplementation project(":apps:headless:headless-admin-user:headless-admin-user-client")
+	testIntegrationImplementation project(":apps:list-type:list-type-api")
 	testIntegrationImplementation project(":apps:oauth-client:oauth-client-api")
 	testIntegrationImplementation project(":apps:oauth2-provider:oauth2-provider-api")
 	testIntegrationImplementation project(":apps:oauth2-provider:oauth2-provider-rest-spi")

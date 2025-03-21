@@ -12,6 +12,10 @@ import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.headless.admin.user.client.dto.v1_0.PostalAddress;
 import com.liferay.headless.admin.user.client.pagination.Page;
+import com.liferay.list.type.model.ListTypeDefinition;
+import com.liferay.list.type.model.ListTypeEntry;
+import com.liferay.list.type.service.ListTypeDefinitionLocalService;
+import com.liferay.list.type.service.ListTypeEntryLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Address;
 import com.liferay.portal.kernel.model.Contact;
@@ -28,14 +32,17 @@ import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.OrganizationTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.SynchronousMailTestRule;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +58,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Javier Gamarra
  */
+@FeatureFlags("@LPD-43000")
 @RunWith(Arquillian.class)
 public class PostalAddressResourceTest
 	extends BasePostalAddressResourceTestCase {
@@ -83,6 +91,26 @@ public class PostalAddressResourceTest
 			false, false, serviceContext);
 
 		_organization = OrganizationTestUtil.addOrganization();
+
+		ListTypeDefinition subtypeDefinition =
+			_listTypeDefinitionLocalService.
+				getListTypeDefinitionByExternalReferenceCode(
+					"L_ACCOUNT_SHIPPING_ADDRESS_SUBTYPES",
+					_user.getCompanyId());
+
+		_subtype1 = _listTypeEntryLocalService.addListTypeEntry(
+			null, TestPropsValues.getUserId(),
+			subtypeDefinition.getListTypeDefinitionId(),
+			RandomTestUtil.randomString(),
+			Collections.singletonMap(
+				LocaleUtil.US, RandomTestUtil.randomString()));
+
+		_subtype2 = _listTypeEntryLocalService.addListTypeEntry(
+			null, TestPropsValues.getUserId(),
+			subtypeDefinition.getListTypeDefinitionId(),
+			RandomTestUtil.randomString(),
+			Collections.singletonMap(
+				LocaleUtil.US, RandomTestUtil.randomString()));
 	}
 
 	@Override
@@ -96,16 +124,66 @@ public class PostalAddressResourceTest
 	@Override
 	@Test
 	public void testPatchPostalAddress() throws Exception {
-		super.testPatchPostalAddress();
+		PostalAddress postPostalAddress =
+			testPatchPostalAddress_addPostalAddress();
+
+		PostalAddress randomPatchPostalAddress = randomPatchPostalAddress();
+
+		randomPatchPostalAddress.setSubtype(_subtype2.getKey());
+
+		PostalAddress patchPostalAddress =
+			postalAddressResource.patchPostalAddress(
+				postPostalAddress.getId(), randomPatchPostalAddress);
+
+		PostalAddress expectedPatchPostalAddress = postPostalAddress.clone();
+
+		BeanTestUtil.copyProperties(
+			randomPatchPostalAddress, expectedPatchPostalAddress);
+
+		PostalAddress getPostalAddress = postalAddressResource.getPostalAddress(
+			patchPostalAddress.getId());
+
+		assertEquals(expectedPatchPostalAddress, getPostalAddress);
+		assertValid(getPostalAddress);
 
 		_testPatchPostalAddressNotPrimary();
 		_testPatchPostalAddressWithoutListType();
 	}
 
 	@Override
+	@Test
+	public void testPatchPostalAddressByExternalReferenceCode()
+		throws Exception {
+
+		PostalAddress postPostalAddress =
+			testPatchPostalAddressByExternalReferenceCode_addPostalAddress();
+
+		PostalAddress randomPatchPostalAddress = randomPatchPostalAddress();
+
+		randomPatchPostalAddress.setSubtype(_subtype2.getKey());
+
+		PostalAddress patchPostalAddress =
+			postalAddressResource.patchPostalAddressByExternalReferenceCode(
+				postPostalAddress.getExternalReferenceCode(),
+				randomPatchPostalAddress);
+
+		PostalAddress expectedPatchPostalAddress = postPostalAddress.clone();
+
+		BeanTestUtil.copyProperties(
+			randomPatchPostalAddress, expectedPatchPostalAddress);
+
+		PostalAddress getPostalAddress =
+			postalAddressResource.getPostalAddressByExternalReferenceCode(
+				patchPostalAddress.getExternalReferenceCode());
+
+		assertEquals(expectedPatchPostalAddress, getPostalAddress);
+		assertValid(getPostalAddress);
+	}
+
+	@Override
 	protected String[] getAdditionalAssertFieldNames() {
 		return new String[] {
-			"name", "postalCode", "primary", "streetAddressLine1"
+			"name", "postalCode", "primary", "streetAddressLine1", "subtype"
 		};
 	}
 
@@ -121,6 +199,7 @@ public class PostalAddressResourceTest
 				postalCode = RandomTestUtil.randomString();
 				primary = false;
 				streetAddressLine1 = RandomTestUtil.randomString();
+				subtype = _subtype1.getKey();
 			}
 		};
 	}
@@ -346,8 +425,9 @@ public class PostalAddressResourceTest
 				postalAddress.getName(), postalAddress.getPrimary(),
 				postalAddress.getStreetAddressLine1(),
 				postalAddress.getStreetAddressLine2(),
-				postalAddress.getStreetAddressLine3(), null,
-				postalAddress.getPostalCode(), null, new ServiceContext()));
+				postalAddress.getStreetAddressLine3(),
+				postalAddress.getSubtype(), postalAddress.getPostalCode(), null,
+				new ServiceContext()));
 	}
 
 	private long _getListTypeId(String listTypeId) {
@@ -447,6 +527,7 @@ public class PostalAddressResourceTest
 				postalCode = address.getZip();
 				primary = address.isPrimary();
 				streetAddressLine1 = address.getStreet1();
+				subtype = address.getSubtype();
 			}
 		};
 	}
@@ -463,8 +544,17 @@ public class PostalAddressResourceTest
 	@Inject
 	private CountryLocalService _countryLocalService;
 
+	@Inject
+	private ListTypeDefinitionLocalService _listTypeDefinitionLocalService;
+
+	@Inject
+	private ListTypeEntryLocalService _listTypeEntryLocalService;
+
 	@DeleteAfterTestRun
 	private Organization _organization;
+
+	private ListTypeEntry _subtype1;
+	private ListTypeEntry _subtype2;
 
 	@DeleteAfterTestRun
 	private User _user;
