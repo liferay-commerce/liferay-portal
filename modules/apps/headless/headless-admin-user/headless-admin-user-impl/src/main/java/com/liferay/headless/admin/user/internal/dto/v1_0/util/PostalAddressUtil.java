@@ -91,6 +91,7 @@ public class PostalAddressUtil {
 				setStreetAddressLine1(address::getStreet1);
 				setStreetAddressLine2(address::getStreet2);
 				setStreetAddressLine3(address::getStreet3);
+				setSubtype(address::getSubtype);
 			}
 		};
 	}

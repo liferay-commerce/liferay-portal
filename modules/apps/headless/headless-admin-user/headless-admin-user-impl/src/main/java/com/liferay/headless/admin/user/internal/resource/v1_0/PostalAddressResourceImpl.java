@@ -256,7 +256,8 @@ public class PostalAddressResourceImpl extends BasePostalAddressResourceImpl {
 				postalAddress.getStreetAddressLine2(), address.getStreet2()),
 			GetterUtil.getString(
 				postalAddress.getStreetAddressLine3(), address.getStreet3()),
-			null,
+			GetterUtil.getString(
+				postalAddress.getSubtype(), address.getSubtype()),
 			GetterUtil.getString(
 				postalAddress.getPostalCode(), address.getZip()),
 			GetterUtil.getString(
@@ -330,7 +331,7 @@ public class PostalAddressResourceImpl extends BasePostalAddressResourceImpl {
 			postalAddress.getName(), postalAddress.getPrimary(),
 			postalAddress.getStreetAddressLine1(),
 			postalAddress.getStreetAddressLine2(),
-			postalAddress.getStreetAddressLine3(), null,
+			postalAddress.getStreetAddressLine3(), postalAddress.getSubtype(),
 			postalAddress.getPostalCode(), postalAddress.getPhoneNumber(),
 			ServiceContextFactory.getInstance(contextHttpServletRequest));
 
@@ -361,7 +362,7 @@ public class PostalAddressResourceImpl extends BasePostalAddressResourceImpl {
 			address.isMailing(), postalAddress.getName(),
 			postalAddress.getPrimary(), postalAddress.getStreetAddressLine1(),
 			postalAddress.getStreetAddressLine2(),
-			postalAddress.getStreetAddressLine3(), null,
+			postalAddress.getStreetAddressLine3(), postalAddress.getSubtype(),
 			postalAddress.getPostalCode(), postalAddress.getPhoneNumber());
 
 		return PostalAddressUtil.toPostalAddress(
