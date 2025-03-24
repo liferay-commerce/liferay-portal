@@ -60,11 +60,9 @@ String paramName = baseAddressCheckoutStepDisplayContext.getParamName();
 		<aui:input name="newAddress" type="hidden" value='<%= ((commerceAddressId > 0) || !hasManageAddressesPermission) ? "0" : "1" %>' />
 	</div>
 
-	<liferay-ui:error exception="<%= CommerceAddressCityException.class %>" message="please-enter-a-valid-city" />
-	<liferay-ui:error exception="<%= CommerceAddressCountryException.class %>" message="please-enter-a-valid-country" />
-	<liferay-ui:error exception="<%= CommerceAddressNameException.class %>" message="please-enter-a-valid-name" />
-	<liferay-ui:error exception="<%= CommerceAddressStreetException.class %>" message="please-enter-a-valid-street" />
-	<liferay-ui:error exception="<%= CommerceAddressZipException.class %>" message="please-enter-a-valid-zip" />
+	<liferay-ui:error exception="<%= AddressCityException.class %>" message="please-enter-a-valid-city" />
+	<liferay-ui:error exception="<%= AddressStreetException.class %>" message="please-enter-a-valid-street" />
+	<liferay-ui:error exception="<%= AddressZipException.class %>" message="please-enter-a-valid-zip" />
 	<liferay-ui:error exception="<%= CommerceOrderBillingAddressException.class %>" message="please-enter-a-valid-address" />
 	<liferay-ui:error exception="<%= CommerceOrderShippingAddressException.class %>" message="please-enter-a-valid-address" />
 	<liferay-ui:error exception="<%= CommerceOrderShippingAndBillingException.class %>" message="please-enter-a-valid-country-for-the-billing-address" />

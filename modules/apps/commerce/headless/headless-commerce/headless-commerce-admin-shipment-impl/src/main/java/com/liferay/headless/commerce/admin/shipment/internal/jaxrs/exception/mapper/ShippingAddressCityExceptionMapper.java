@@ -5,8 +5,8 @@
 
 package com.liferay.headless.commerce.admin.shipment.internal.jaxrs.exception.mapper;
 
-import com.liferay.commerce.exception.CommerceAddressCityException;
 import com.liferay.headless.commerce.core.exception.mapper.BaseExceptionMapper;
+import com.liferay.portal.kernel.exception.AddressCityException;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
@@ -25,7 +25,7 @@ import org.osgi.service.component.annotations.Component;
 	service = ExceptionMapper.class
 )
 public class ShippingAddressCityExceptionMapper
-	extends BaseExceptionMapper<CommerceAddressCityException> {
+	extends BaseExceptionMapper<AddressCityException> {
 
 	@Override
 	public String getErrorDescription() {

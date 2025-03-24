@@ -5,20 +5,15 @@
 
 package com.liferay.commerce.checkout.web.internal.util;
 
+import com.liferay.account.constants.AccountListTypeConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.service.AccountRoleLocalService;
 import com.liferay.commerce.checkout.helper.CommerceCheckoutStepHttpHelper;
 import com.liferay.commerce.checkout.web.internal.display.context.AddressCommerceCheckoutStepDisplayContext;
 import com.liferay.commerce.checkout.web.internal.display.context.ShippingAddressCheckoutStepDisplayContext;
-import com.liferay.commerce.constants.CommerceAddressConstants;
 import com.liferay.commerce.constants.CommerceCheckoutWebKeys;
 import com.liferay.commerce.constants.CommerceOrderConstants;
-import com.liferay.commerce.exception.CommerceAddressCityException;
-import com.liferay.commerce.exception.CommerceAddressCountryException;
-import com.liferay.commerce.exception.CommerceAddressNameException;
-import com.liferay.commerce.exception.CommerceAddressStreetException;
-import com.liferay.commerce.exception.CommerceAddressZipException;
 import com.liferay.commerce.exception.CommerceOrderBillingAddressException;
 import com.liferay.commerce.exception.CommerceOrderShippingAddressException;
 import com.liferay.commerce.model.CommerceOrder;
@@ -29,9 +24,14 @@ import com.liferay.commerce.service.CommerceOrderService;
 import com.liferay.commerce.util.BaseCommerceCheckoutStep;
 import com.liferay.commerce.util.CommerceCheckoutStep;
 import com.liferay.frontend.taglib.servlet.taglib.util.JSPRenderer;
+import com.liferay.portal.kernel.exception.AddressCityException;
+import com.liferay.portal.kernel.exception.AddressStreetException;
+import com.liferay.portal.kernel.exception.AddressZipException;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
+import com.liferay.portal.kernel.service.AddressService;
 import com.liferay.portal.kernel.service.CountryLocalService;
+import com.liferay.portal.kernel.service.ListTypeLocalService;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 
 import javax.portlet.ActionRequest;
@@ -89,11 +89,12 @@ public class ShippingAddressCommerceCheckoutStep
 			AddressCommerceCheckoutStepDisplayContext
 				addressCommerceCheckoutStepDisplayContext =
 					new AddressCommerceCheckoutStepDisplayContext(
-						_accountEntryLocalService,
-						CommerceAddressConstants.ADDRESS_TYPE_SHIPPING,
-						_commerceOrderService, _commerceAddressService,
-						_countryLocalService,
-						_commerceOrderModelResourcePermission);
+						_accountEntryLocalService, _addressService,
+						AccountListTypeConstants.
+							ACCOUNT_ENTRY_ADDRESS_TYPE_SHIPPING,
+						_commerceOrderService, _countryLocalService,
+						_commerceOrderModelResourcePermission,
+						_listTypeLocalService);
 
 			CommerceOrder commerceOrder =
 				addressCommerceCheckoutStepDisplayContext.
@@ -105,11 +106,9 @@ public class ShippingAddressCommerceCheckoutStep
 				CommerceCheckoutWebKeys.COMMERCE_ORDER, commerceOrder);
 		}
 		catch (Exception exception) {
-			if (exception instanceof CommerceAddressCityException ||
-				exception instanceof CommerceAddressCountryException ||
-				exception instanceof CommerceAddressNameException ||
-				exception instanceof CommerceAddressStreetException ||
-				exception instanceof CommerceAddressZipException ||
+			if (exception instanceof AddressCityException ||
+				exception instanceof AddressStreetException ||
+				exception instanceof AddressZipException ||
 				exception instanceof CommerceOrderBillingAddressException ||
 				exception instanceof CommerceOrderShippingAddressException) {
 
@@ -192,6 +191,9 @@ public class ShippingAddressCommerceCheckoutStep
 	private AccountRoleLocalService _accountRoleLocalService;
 
 	@Reference
+	private AddressService _addressService;
+
+	@Reference
 	private CommerceAddressService _commerceAddressService;
 
 	@Reference
@@ -218,6 +220,9 @@ public class ShippingAddressCommerceCheckoutStep
 
 	@Reference
 	private JSPRenderer _jspRenderer;
+
+	@Reference
+	private ListTypeLocalService _listTypeLocalService;
 
 	@Reference(
 		target = "(resource.name=" + CommerceOrderConstants.RESOURCE_NAME + ")"

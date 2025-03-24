@@ -15,7 +15,9 @@ import com.liferay.headless.commerce.admin.order.dto.v1_0.Order;
 import com.liferay.headless.commerce.admin.order.internal.util.v1_0.BillingAddressUtil;
 import com.liferay.headless.commerce.admin.order.resource.v1_0.BillingAddressResource;
 import com.liferay.headless.commerce.core.util.ServiceContextHelper;
+import com.liferay.portal.kernel.service.AddressService;
 import com.liferay.portal.kernel.service.CountryService;
+import com.liferay.portal.kernel.service.ListTypeLocalService;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.fields.NestedField;
@@ -97,8 +99,8 @@ public class BillingAddressResourceImpl extends BaseBillingAddressResourceImpl {
 		}
 
 		BillingAddressUtil.addOrUpdateBillingAddress(
-			billingAddress, _commerceAddressService, commerceOrder,
-			_commerceOrderService, _countryService,
+			_addressService, billingAddress, commerceOrder,
+			_commerceOrderService, _countryService, _listTypeLocalService,
 			_serviceContextHelper.getServiceContext());
 
 		Response.ResponseBuilder responseBuilder = Response.noContent();
@@ -112,14 +114,18 @@ public class BillingAddressResourceImpl extends BaseBillingAddressResourceImpl {
 		throws Exception {
 
 		BillingAddressUtil.addOrUpdateBillingAddress(
-			billingAddress, _commerceAddressService,
+			_addressService, billingAddress,
 			_commerceOrderService.getCommerceOrder(id), _commerceOrderService,
-			_countryService, _serviceContextHelper.getServiceContext());
+			_countryService, _listTypeLocalService,
+			_serviceContextHelper.getServiceContext());
 
 		Response.ResponseBuilder responseBuilder = Response.noContent();
 
 		return responseBuilder.build();
 	}
+
+	@Reference
+	private AddressService _addressService;
 
 	@Reference(
 		target = "(component.name=com.liferay.headless.commerce.admin.order.internal.dto.v1_0.converter.BillingAddressDTOConverter)"
@@ -135,6 +141,9 @@ public class BillingAddressResourceImpl extends BaseBillingAddressResourceImpl {
 
 	@Reference
 	private CountryService _countryService;
+
+	@Reference
+	private ListTypeLocalService _listTypeLocalService;
 
 	@Reference
 	private ServiceContextHelper _serviceContextHelper;

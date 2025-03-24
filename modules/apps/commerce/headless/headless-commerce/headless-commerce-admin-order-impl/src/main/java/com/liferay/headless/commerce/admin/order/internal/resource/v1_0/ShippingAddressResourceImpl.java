@@ -18,7 +18,9 @@ import com.liferay.headless.commerce.admin.order.dto.v1_0.ShippingAddress;
 import com.liferay.headless.commerce.admin.order.internal.util.v1_0.ShippingAddressUtil;
 import com.liferay.headless.commerce.admin.order.resource.v1_0.ShippingAddressResource;
 import com.liferay.headless.commerce.core.util.ServiceContextHelper;
+import com.liferay.portal.kernel.service.AddressService;
 import com.liferay.portal.kernel.service.CountryService;
+import com.liferay.portal.kernel.service.ListTypeLocalService;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.fields.NestedField;
@@ -119,8 +121,8 @@ public class ShippingAddressResourceImpl
 		}
 
 		ShippingAddressUtil.addOrUpdateShippingAddress(
-			_commerceAddressService, commerceOrder, _commerceOrderService,
-			_countryService, shippingAddress,
+			_addressService, commerceOrder, _commerceOrderService,
+			_countryService, _listTypeLocalService, shippingAddress,
 			_serviceContextHelper.getServiceContext());
 
 		Response.ResponseBuilder responseBuilder = Response.noContent();
@@ -134,14 +136,17 @@ public class ShippingAddressResourceImpl
 		throws Exception {
 
 		ShippingAddressUtil.addOrUpdateShippingAddress(
-			_commerceAddressService, _commerceOrderService.getCommerceOrder(id),
-			_commerceOrderService, _countryService, shippingAddress,
-			_serviceContextHelper.getServiceContext());
+			_addressService, _commerceOrderService.getCommerceOrder(id),
+			_commerceOrderService, _countryService, _listTypeLocalService,
+			shippingAddress, _serviceContextHelper.getServiceContext());
 
 		Response.ResponseBuilder responseBuilder = Response.noContent();
 
 		return responseBuilder.build();
 	}
+
+	@Reference
+	private AddressService _addressService;
 
 	@Reference
 	private CommerceAddressService _commerceAddressService;
@@ -154,6 +159,9 @@ public class ShippingAddressResourceImpl
 
 	@Reference
 	private CountryService _countryService;
+
+	@Reference
+	private ListTypeLocalService _listTypeLocalService;
 
 	@Reference
 	private ServiceContextHelper _serviceContextHelper;

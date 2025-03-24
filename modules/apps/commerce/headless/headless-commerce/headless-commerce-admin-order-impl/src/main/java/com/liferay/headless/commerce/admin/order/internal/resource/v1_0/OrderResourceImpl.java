@@ -57,7 +57,9 @@ import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.service.AddressService;
 import com.liferay.portal.kernel.service.CountryService;
+import com.liferay.portal.kernel.service.ListTypeLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -671,8 +673,9 @@ public class OrderResourceImpl extends BaseOrderResourceImpl {
 
 		if (billingAddress != null) {
 			commerceOrder = BillingAddressUtil.addOrUpdateBillingAddress(
-				billingAddress, _commerceAddressService, commerceOrder,
-				_commerceOrderService, _countryService, serviceContext);
+				_addressService, billingAddress, commerceOrder,
+				_commerceOrderService, _countryService, _listTypeLocalService,
+				serviceContext);
 		}
 
 		// Shipping Address
@@ -681,8 +684,9 @@ public class OrderResourceImpl extends BaseOrderResourceImpl {
 
 		if (shippingAddress != null) {
 			commerceOrder = ShippingAddressUtil.addOrUpdateShippingAddress(
-				_commerceAddressService, commerceOrder, _commerceOrderService,
-				_countryService, shippingAddress, serviceContext);
+				_addressService, commerceOrder, _commerceOrderService,
+				_countryService, _listTypeLocalService, shippingAddress,
+				serviceContext);
 		}
 
 		return commerceOrder;
@@ -1005,6 +1009,9 @@ public class OrderResourceImpl extends BaseOrderResourceImpl {
 	private AccountEntryService _accountEntryService;
 
 	@Reference
+	private AddressService _addressService;
+
+	@Reference
 	private CommerceAddressService _commerceAddressService;
 
 	@Reference
@@ -1051,6 +1058,9 @@ public class OrderResourceImpl extends BaseOrderResourceImpl {
 
 	@Reference
 	private DTOConverterRegistry _dtoConverterRegistry;
+
+	@Reference
+	private ListTypeLocalService _listTypeLocalService;
 
 	@Reference(
 		target = "(component.name=com.liferay.headless.commerce.admin.order.internal.dto.v1_0.converter.OrderDTOConverter)"
