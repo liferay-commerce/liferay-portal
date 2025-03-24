@@ -6,9 +6,9 @@
 package com.liferay.commerce.checkout.web.internal.display.context;
 
 import com.liferay.account.constants.AccountConstants;
+import com.liferay.account.constants.AccountListTypeConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
-import com.liferay.commerce.constants.CommerceAddressConstants;
 import com.liferay.commerce.constants.CommerceCheckoutWebKeys;
 import com.liferay.commerce.constants.CommerceOrderActionKeys;
 import com.liferay.commerce.constants.CommerceWebKeys;
@@ -18,11 +18,16 @@ import com.liferay.commerce.exception.CommerceOrderShippingAddressException;
 import com.liferay.commerce.exception.CommerceOrderShippingAndBillingException;
 import com.liferay.commerce.model.CommerceAddress;
 import com.liferay.commerce.model.CommerceOrder;
-import com.liferay.commerce.service.CommerceAddressService;
 import com.liferay.commerce.service.CommerceOrderService;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.model.Address;
 import com.liferay.portal.kernel.model.Country;
+import com.liferay.portal.kernel.model.ListType;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.service.AddressService;
 import com.liferay.portal.kernel.service.CountryLocalService;
+import com.liferay.portal.kernel.service.ListTypeLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -41,19 +46,21 @@ public class AddressCommerceCheckoutStepDisplayContext {
 
 	public AddressCommerceCheckoutStepDisplayContext(
 		AccountEntryLocalService accountEntryLocalService,
-		int commerceAddressType, CommerceOrderService commerceOrderService,
-		CommerceAddressService commerceAddressService,
+		AddressService addressService, String commerceAddressType,
+		CommerceOrderService commerceOrderService,
 		CountryLocalService countryLocalService,
 		ModelResourcePermission<CommerceOrder>
-			commerceOrderModelResourcePermission) {
+			commerceOrderModelResourcePermission,
+		ListTypeLocalService listTypeLocalService) {
 
 		_accountEntryLocalService = accountEntryLocalService;
+		_addressService = addressService;
 		_commerceAddressType = commerceAddressType;
 		_commerceOrderService = commerceOrderService;
-		_commerceAddressService = commerceAddressService;
 		_countryLocalService = countryLocalService;
 		_commerceOrderModelResourcePermission =
 			commerceOrderModelResourcePermission;
+		_listTypeLocalService = listTypeLocalService;
 	}
 
 	public CommerceOrder updateCommerceOrderAddress(
@@ -75,10 +82,9 @@ public class AddressCommerceCheckoutStepDisplayContext {
 		long commerceAddressId = ParamUtil.getLong(actionRequest, paramName);
 
 		if (newAddress) {
-			CommerceAddress commerceAddress = _addCommerceAddress(
-				commerceOrder, actionRequest);
+			Address address = _addAddress(commerceOrder, actionRequest);
 
-			commerceAddressId = commerceAddress.getCommerceAddressId();
+			commerceAddressId = address.getAddressId();
 		}
 
 		_commerceOrderModelResourcePermission.check(
@@ -88,18 +94,18 @@ public class AddressCommerceCheckoutStepDisplayContext {
 		boolean useAsBilling = ParamUtil.getBoolean(
 			actionRequest, "use-as-billing");
 
-		CommerceAddress commerceAddress =
-			_commerceAddressService.getCommerceAddress(commerceAddressId);
+		Address address = _addressService.getAddress(commerceAddressId);
 
 		if (useAsBilling) {
-			Country country = commerceAddress.getCountry();
+			Country country = address.getCountry();
 
 			if (!country.isBillingAllowed()) {
 				throw new CommerceOrderShippingAndBillingException();
 			}
 
 			_commerceAddressType =
-				CommerceAddressConstants.ADDRESS_TYPE_BILLING_AND_SHIPPING;
+				AccountListTypeConstants.
+					ACCOUNT_ENTRY_ADDRESS_TYPE_BILLING_AND_SHIPPING;
 		}
 
 		if (Objects.equals(
@@ -111,15 +117,15 @@ public class AddressCommerceCheckoutStepDisplayContext {
 			}
 
 			if (useAsBilling) {
-				_commerceAddressService.updateCommerceAddress(
-					commerceAddressId, commerceAddress.getName(),
-					commerceAddress.getDescription(),
-					commerceAddress.getStreet1(), commerceAddress.getStreet2(),
-					commerceAddress.getStreet3(), commerceAddress.getCity(),
-					commerceAddress.getZip(), commerceAddress.getRegionId(),
-					commerceAddress.getCountryId(),
-					commerceAddress.getPhoneNumber(), _commerceAddressType,
-					null);
+				_addressService.updateAddress(
+					address.getExternalReferenceCode(), commerceAddressId,
+					address.getCountryId(),
+					_getListTypeId(_commerceAddressType), address.getRegionId(),
+					address.getCity(), address.getDescription(),
+					address.isMailing(), address.getName(), address.isPrimary(),
+					address.getStreet1(), address.getStreet2(),
+					address.getStreet3(), address.getSubtype(),
+					address.getZip(), address.getPhoneNumber());
 
 				commerceOrder.setBillingAddressId(commerceAddressId);
 
@@ -181,7 +187,7 @@ public class AddressCommerceCheckoutStepDisplayContext {
 			commerceOrder.getTotal());
 	}
 
-	private CommerceAddress _addCommerceAddress(
+	private Address _addAddress(
 			CommerceOrder commerceOrder, ActionRequest actionRequest)
 		throws Exception {
 
@@ -198,18 +204,11 @@ public class AddressCommerceCheckoutStepDisplayContext {
 			}
 
 			_commerceAddressType =
-				CommerceAddressConstants.ADDRESS_TYPE_BILLING_AND_SHIPPING;
+				AccountListTypeConstants.
+					ACCOUNT_ENTRY_ADDRESS_TYPE_BILLING_AND_SHIPPING;
 		}
 
 		String name = ParamUtil.getString(actionRequest, "name");
-		String description = ParamUtil.getString(actionRequest, "description");
-		String street1 = ParamUtil.getString(actionRequest, "street1");
-		String street2 = ParamUtil.getString(actionRequest, "street2");
-		String street3 = ParamUtil.getString(actionRequest, "street3");
-		String city = ParamUtil.getString(actionRequest, "city");
-		String zip = ParamUtil.getString(actionRequest, "zip");
-		long regionId = ParamUtil.getLong(actionRequest, "regionId");
-		String phoneNumber = ParamUtil.getString(actionRequest, "phoneNumber");
 
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			CommerceAddress.class.getName(), actionRequest);
@@ -234,10 +233,18 @@ public class AddressCommerceCheckoutStepDisplayContext {
 				commerceOrder);
 		}
 
-		return _commerceAddressService.addCommerceAddress(
-			AccountEntry.class.getName(), commerceOrder.getCommerceAccountId(),
-			name, description, street1, street2, street3, city, zip, regionId,
-			countryId, phoneNumber, _commerceAddressType, serviceContext);
+		return _addressService.addAddress(
+			StringPool.BLANK, AccountEntry.class.getName(),
+			commerceOrder.getCommerceAccountId(), countryId,
+			_getListTypeId(_commerceAddressType),
+			ParamUtil.getLong(actionRequest, "regionId"),
+			ParamUtil.getString(actionRequest, "city"),
+			ParamUtil.getString(actionRequest, "description"), false, name,
+			false, ParamUtil.getString(actionRequest, "street1"),
+			ParamUtil.getString(actionRequest, "street2"),
+			ParamUtil.getString(actionRequest, "street3"), StringPool.BLANK,
+			ParamUtil.getString(actionRequest, "zip"),
+			ParamUtil.getString(actionRequest, "phoneNumber"), serviceContext);
 	}
 
 	private CommerceOrder _getCommerceOrder(
@@ -260,12 +267,21 @@ public class AddressCommerceCheckoutStepDisplayContext {
 		return commerceOrder;
 	}
 
+	private long _getListTypeId(String name) {
+		ListType listType = _listTypeLocalService.getListType(
+			CompanyThreadLocal.getCompanyId(), name,
+			AccountListTypeConstants.ACCOUNT_ENTRY_ADDRESS);
+
+		return listType.getListTypeId();
+	}
+
 	private final AccountEntryLocalService _accountEntryLocalService;
-	private final CommerceAddressService _commerceAddressService;
-	private int _commerceAddressType;
+	private final AddressService _addressService;
+	private String _commerceAddressType;
 	private final ModelResourcePermission<CommerceOrder>
 		_commerceOrderModelResourcePermission;
 	private final CommerceOrderService _commerceOrderService;
 	private final CountryLocalService _countryLocalService;
+	private final ListTypeLocalService _listTypeLocalService;
 
 }

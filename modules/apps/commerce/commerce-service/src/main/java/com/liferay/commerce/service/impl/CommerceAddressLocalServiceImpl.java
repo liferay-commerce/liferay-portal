@@ -25,6 +25,7 @@ import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.sql.dsl.query.FromStep;
 import com.liferay.petra.sql.dsl.query.GroupByStep;
 import com.liferay.petra.sql.dsl.query.JoinStep;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -141,25 +142,19 @@ public class CommerceAddressLocalServiceImpl
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		CommerceAddress sourceCommerceAddress = getCommerceAddress(
+		Address address = _addressLocalService.getAddress(
 			sourceCommerceAddressId);
 
-		CommerceAddress targetCommerceAddress =
-			commerceAddressLocalService.addCommerceAddress(
-				className, classPK, sourceCommerceAddress.getName(),
-				sourceCommerceAddress.getDescription(),
-				sourceCommerceAddress.getStreet1(),
-				sourceCommerceAddress.getStreet2(),
-				sourceCommerceAddress.getStreet3(),
-				sourceCommerceAddress.getCity(), sourceCommerceAddress.getZip(),
-				sourceCommerceAddress.getRegionId(),
-				sourceCommerceAddress.getCountryId(),
-				sourceCommerceAddress.getPhoneNumber(), false, false,
-				serviceContext);
-
 		return CommerceAddressImpl.fromAddress(
-			_addressLocalService.getAddress(
-				targetCommerceAddress.getCommerceAddressId()));
+			_addressLocalService.addAddress(
+				StringPool.BLANK, serviceContext.getUserId(), className,
+				classPK, address.getCountryId(), address.getListTypeId(),
+				address.getRegionId(), address.getCity(),
+				address.getDescription(), address.isMailing(),
+				address.getName(), false, address.getStreet1(),
+				address.getStreet2(), address.getStreet3(),
+				address.getSubtype(), address.getZip(),
+				address.getPhoneNumber(), serviceContext));
 	}
 
 	@Override

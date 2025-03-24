@@ -5,18 +5,24 @@
 
 package com.liferay.commerce.address.content.web.internal.portlet.action;
 
+import com.liferay.account.constants.AccountListTypeConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.commerce.constants.CommercePortletKeys;
-import com.liferay.commerce.exception.CommerceAddressCityException;
-import com.liferay.commerce.exception.CommerceAddressCountryException;
-import com.liferay.commerce.exception.CommerceAddressStreetException;
 import com.liferay.commerce.exception.NoSuchAddressException;
 import com.liferay.commerce.model.CommerceAddress;
 import com.liferay.commerce.service.CommerceAddressService;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.AddressCityException;
+import com.liferay.portal.kernel.exception.AddressStreetException;
+import com.liferay.portal.kernel.exception.AddressZipException;
+import com.liferay.portal.kernel.model.Address;
+import com.liferay.portal.kernel.model.ListType;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
-import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.AddressService;
+import com.liferay.portal.kernel.service.ListTypeLocalService;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.util.Constants;
@@ -66,9 +72,9 @@ public class EditCommerceAddressMVCActionCommand extends BaseMVCActionCommand {
 
 				actionResponse.setRenderParameter("mvcPath", "/error.jsp");
 			}
-			else if (exception instanceof CommerceAddressCityException ||
-					 exception instanceof CommerceAddressCountryException ||
-					 exception instanceof CommerceAddressStreetException) {
+			else if (exception instanceof AddressCityException ||
+					 exception instanceof AddressStreetException ||
+					 exception instanceof AddressZipException) {
 
 				hideDefaultErrorMessage(actionRequest);
 
@@ -97,50 +103,85 @@ public class EditCommerceAddressMVCActionCommand extends BaseMVCActionCommand {
 		}
 	}
 
+	private long _getListTypeId(
+		boolean defaultBilling, boolean defaultShipping) {
+
+		String name =
+			AccountListTypeConstants.
+				ACCOUNT_ENTRY_ADDRESS_TYPE_BILLING_AND_SHIPPING;
+
+		if (defaultBilling && !defaultShipping) {
+			name =
+				AccountListTypeConstants.ACCOUNT_ENTRY_ADDRESS_TYPE_BILLING;
+		}
+		else if (!defaultBilling && defaultShipping) {
+			name =
+				AccountListTypeConstants.ACCOUNT_ENTRY_ADDRESS_TYPE_SHIPPING;
+		}
+
+		ListType listType = _listTypeLocalService.getListType(
+			CompanyThreadLocal.getCompanyId(), name,
+			AccountListTypeConstants.ACCOUNT_ENTRY_ADDRESS);
+
+		return listType.getListTypeId();
+	}
+
 	private void _updateCommerceAddress(ActionRequest actionRequest)
 		throws Exception {
 
 		long commerceAddressId = ParamUtil.getLong(
 			actionRequest, "commerceAddressId");
 
-		String name = ParamUtil.getString(actionRequest, "name");
-		String description = ParamUtil.getString(actionRequest, "description");
-		String street1 = ParamUtil.getString(actionRequest, "street1");
-		String street2 = ParamUtil.getString(actionRequest, "street2");
-		String street3 = ParamUtil.getString(actionRequest, "street3");
-		String city = ParamUtil.getString(actionRequest, "city");
-		String zip = ParamUtil.getString(actionRequest, "zip");
-		long regionId = ParamUtil.getLong(actionRequest, "regionId");
-		long countryId = ParamUtil.getLong(actionRequest, "countryId");
-		String phoneNumber = ParamUtil.getString(actionRequest, "phoneNumber");
-		boolean defaultBilling = ParamUtil.getBoolean(
-			actionRequest, "defaultBilling");
-		boolean defaultShipping = ParamUtil.getBoolean(
-			actionRequest, "defaultShipping");
-
-		ServiceContext serviceContext = ServiceContextFactory.getInstance(
-			CommerceAddress.class.getName(), actionRequest);
-
 		if (commerceAddressId <= 0) {
-			long commerceAccountId = ParamUtil.getLong(
-				actionRequest, "commerceAccountId");
-
-			_commerceAddressService.addCommerceAddress(
-				AccountEntry.class.getName(), commerceAccountId, name,
-				description, street1, street2, street3, city, zip, regionId,
-				countryId, phoneNumber, defaultBilling, defaultShipping,
-				serviceContext);
+			_addressService.addAddress(
+				StringPool.BLANK, AccountEntry.class.getName(),
+				ParamUtil.getLong(actionRequest, "commerceAccountId"),
+				ParamUtil.getLong(actionRequest, "countryId"),
+				_getListTypeId(
+					ParamUtil.getBoolean(actionRequest, "defaultBilling"),
+					ParamUtil.getBoolean(actionRequest, "defaultShipping")),
+				ParamUtil.getLong(actionRequest, "regionId"),
+				ParamUtil.getString(actionRequest, "city"),
+				ParamUtil.getString(actionRequest, "description"), false,
+				ParamUtil.getString(actionRequest, "name"), false,
+				ParamUtil.getString(actionRequest, "street1"),
+				ParamUtil.getString(actionRequest, "street2"),
+				ParamUtil.getString(actionRequest, "street3"), StringPool.BLANK,
+				ParamUtil.getString(actionRequest, "zip"),
+				ParamUtil.getString(actionRequest, "phoneNumber"),
+				ServiceContextFactory.getInstance(
+					CommerceAddress.class.getName(), actionRequest));
 		}
 		else {
-			_commerceAddressService.updateCommerceAddress(
-				commerceAddressId, name, description, street1, street2, street3,
-				city, zip, regionId, countryId, phoneNumber, defaultBilling,
-				defaultShipping, serviceContext);
+			Address address = _addressService.getAddress(commerceAddressId);
+
+			_addressService.updateAddress(
+				address.getExternalReferenceCode(), commerceAddressId,
+				ParamUtil.getLong(actionRequest, "countryId"),
+				_getListTypeId(
+					ParamUtil.getBoolean(actionRequest, "defaultBilling"),
+					ParamUtil.getBoolean(actionRequest, "defaultShipping")),
+				ParamUtil.getLong(actionRequest, "regionId"),
+				ParamUtil.getString(actionRequest, "city"),
+				ParamUtil.getString(actionRequest, "description"),
+				address.isMailing(), ParamUtil.getString(actionRequest, "name"),
+				address.isPrimary(),
+				ParamUtil.getString(actionRequest, "street1"),
+				ParamUtil.getString(actionRequest, "street2"),
+				ParamUtil.getString(actionRequest, "street3"),
+				address.getSubtype(), ParamUtil.getString(actionRequest, "zip"),
+				ParamUtil.getString(actionRequest, "phoneNumber"));
 		}
 	}
 
 	@Reference
+	private AddressService _addressService;
+
+	@Reference
 	private CommerceAddressService _commerceAddressService;
+
+	@Reference
+	private ListTypeLocalService _listTypeLocalService;
 
 	@Reference
 	private Portal _portal;

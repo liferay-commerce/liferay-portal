@@ -18,13 +18,14 @@ import com.liferay.commerce.model.CommerceShipment;
 import com.liferay.commerce.model.CommerceShipmentItem;
 import com.liferay.commerce.model.CommerceShippingMethod;
 import com.liferay.commerce.model.attributes.provider.CommerceModelAttributesProvider;
-import com.liferay.commerce.service.CommerceAddressLocalService;
+import com.liferay.commerce.model.impl.CommerceAddressImpl;
 import com.liferay.commerce.service.CommerceOrderItemLocalService;
 import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.service.CommerceShipmentItemLocalService;
 import com.liferay.commerce.service.CommerceShippingMethodLocalService;
 import com.liferay.commerce.service.base.CommerceShipmentLocalServiceBaseImpl;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -46,6 +47,7 @@ import com.liferay.portal.kernel.search.IndexerRegistry;
 import com.liferay.portal.kernel.search.QueryConfig;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
+import com.liferay.portal.kernel.service.AddressLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
@@ -850,13 +852,16 @@ public class CommerceShipmentLocalServiceImpl
 			return commerceAddress;
 		}
 
-		return _commerceAddressLocalService.addCommerceAddress(
-			externalReferenceCode, commerceShipment.getModelClassName(),
-			commerceShipment.getCommerceShipmentId(), name, description,
-			street1, street2, street3, city, zip, regionId, countryId,
-			phoneNumber,
-			CommerceAddressConstants.ADDRESS_TYPE_BILLING_AND_SHIPPING,
-			serviceContext);
+		return CommerceAddressImpl.fromAddress(
+			_addressLocalService.addAddress(
+				externalReferenceCode, serviceContext.getUserId(),
+				commerceShipment.getModelClassName(),
+				commerceShipment.getCommerceShipmentId(), countryId,
+				CommerceAddressImpl.toAddressTypeId(
+					CommerceAddressConstants.ADDRESS_TYPE_BILLING_AND_SHIPPING),
+				regionId, city, description, false, name, false, street1,
+				street2, street3, StringPool.BLANK, zip, phoneNumber,
+				serviceContext));
 	}
 
 	private void _validateStatus(int status, int oldStatus)
@@ -868,7 +873,7 @@ public class CommerceShipmentLocalServiceImpl
 	}
 
 	@Reference
-	private CommerceAddressLocalService _commerceAddressLocalService;
+	private AddressLocalService _addressLocalService;
 
 	@Reference
 	private CommerceModelAttributesProvider _commerceModelAttributesProvider;

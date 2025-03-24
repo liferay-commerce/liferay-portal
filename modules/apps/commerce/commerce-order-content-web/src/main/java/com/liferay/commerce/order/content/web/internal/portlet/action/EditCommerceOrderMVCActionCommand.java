@@ -6,10 +6,10 @@
 package com.liferay.commerce.order.content.web.internal.portlet.action;
 
 import com.liferay.account.constants.AccountConstants;
+import com.liferay.account.constants.AccountListTypeConstants;
 import com.liferay.account.exception.NoSuchEntryException;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
-import com.liferay.commerce.constants.CommerceAddressConstants;
 import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.constants.CommerceOrderWebKeys;
 import com.liferay.commerce.constants.CommercePortletKeys;
@@ -28,20 +28,25 @@ import com.liferay.commerce.order.CommerceOrderHttpHelper;
 import com.liferay.commerce.order.engine.CommerceOrderEngine;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
-import com.liferay.commerce.service.CommerceAddressService;
 import com.liferay.commerce.service.CommerceOrderNoteLocalService;
 import com.liferay.commerce.service.CommerceOrderService;
 import com.liferay.commerce.service.CommerceOrderTypeService;
 import com.liferay.commerce.util.CommerceAccountHelper;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.Address;
+import com.liferay.portal.kernel.model.ListType;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.PortletProvider;
 import com.liferay.portal.kernel.portlet.PortletProviderUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.service.AddressService;
+import com.liferay.portal.kernel.service.ListTypeLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.servlet.SessionErrors;
@@ -260,37 +265,29 @@ public class EditCommerceOrderMVCActionCommand extends BaseMVCActionCommand {
 	private void _addBillingAddress(ActionRequest actionRequest)
 		throws PortalException {
 
-		long commerceOrderId = ParamUtil.getLong(
-			actionRequest, "commerceOrderId");
-
 		CommerceOrder commerceOrder = _commerceOrderService.getCommerceOrder(
-			commerceOrderId);
+			ParamUtil.getLong(actionRequest, "commerceOrderId"));
 
-		String name = ParamUtil.getString(actionRequest, "name");
-		String description = ParamUtil.getString(actionRequest, "description");
-		String street1 = ParamUtil.getString(actionRequest, "street1");
-		String street2 = ParamUtil.getString(actionRequest, "street2");
-		String street3 = ParamUtil.getString(actionRequest, "street3");
-		String city = ParamUtil.getString(actionRequest, "city");
-		String zip = ParamUtil.getString(actionRequest, "zip");
-		long regionId = ParamUtil.getLong(actionRequest, "regionId");
-		long countryId = ParamUtil.getLong(actionRequest, "countryId");
-		String phoneNumber = ParamUtil.getString(actionRequest, "phoneNumber");
-
-		ServiceContext serviceContext = ServiceContextFactory.getInstance(
-			CommerceAddress.class.getName(), actionRequest);
-
-		CommerceAddress commerceAddress =
-			_commerceAddressService.addCommerceAddress(
-				AccountEntry.class.getName(),
-				commerceOrder.getCommerceAccountId(), name, description,
-				street1, street2, street3, city, zip, regionId, countryId,
-				phoneNumber, CommerceAddressConstants.ADDRESS_TYPE_BILLING,
-				serviceContext);
+		Address address = _addressService.addAddress(
+			StringPool.BLANK, AccountEntry.class.getName(),
+			commerceOrder.getCommerceAccountId(),
+			ParamUtil.getLong(actionRequest, "countryId"),
+			_getListTypeId(
+				AccountListTypeConstants.ACCOUNT_ENTRY_ADDRESS_TYPE_BILLING),
+			ParamUtil.getLong(actionRequest, "regionId"),
+			ParamUtil.getString(actionRequest, "city"),
+			ParamUtil.getString(actionRequest, "description"), false,
+			ParamUtil.getString(actionRequest, "name"), false,
+			ParamUtil.getString(actionRequest, "street1"),
+			ParamUtil.getString(actionRequest, "street2"),
+			ParamUtil.getString(actionRequest, "street3"), StringPool.BLANK,
+			ParamUtil.getString(actionRequest, "zip"),
+			ParamUtil.getString(actionRequest, "phoneNumber"),
+			ServiceContextFactory.getInstance(
+				CommerceAddress.class.getName(), actionRequest));
 
 		_commerceOrderService.updateBillingAddress(
-			commerceOrder.getCommerceOrderId(),
-			commerceAddress.getCommerceAddressId());
+			commerceOrder.getCommerceOrderId(), address.getAddressId());
 	}
 
 	private CommerceOrder _addCommerceOrder(ActionRequest actionRequest)
@@ -365,37 +362,29 @@ public class EditCommerceOrderMVCActionCommand extends BaseMVCActionCommand {
 	private void _addShippingAddress(ActionRequest actionRequest)
 		throws PortalException {
 
-		long commerceOrderId = ParamUtil.getLong(
-			actionRequest, "commerceOrderId");
-
 		CommerceOrder commerceOrder = _commerceOrderService.getCommerceOrder(
-			commerceOrderId);
+			ParamUtil.getLong(actionRequest, "commerceOrderId"));
 
-		String name = ParamUtil.getString(actionRequest, "name");
-		String description = ParamUtil.getString(actionRequest, "description");
-		String street1 = ParamUtil.getString(actionRequest, "street1");
-		String street2 = ParamUtil.getString(actionRequest, "street2");
-		String street3 = ParamUtil.getString(actionRequest, "street3");
-		String city = ParamUtil.getString(actionRequest, "city");
-		String zip = ParamUtil.getString(actionRequest, "zip");
-		long regionId = ParamUtil.getLong(actionRequest, "regionId");
-		long countryId = ParamUtil.getLong(actionRequest, "countryId");
-		String phoneNumber = ParamUtil.getString(actionRequest, "phoneNumber");
-
-		ServiceContext serviceContext = ServiceContextFactory.getInstance(
-			CommerceAddress.class.getName(), actionRequest);
-
-		CommerceAddress commerceAddress =
-			_commerceAddressService.addCommerceAddress(
-				AccountEntry.class.getName(),
-				commerceOrder.getCommerceAccountId(), name, description,
-				street1, street2, street3, city, zip, regionId, countryId,
-				phoneNumber, CommerceAddressConstants.ADDRESS_TYPE_SHIPPING,
-				serviceContext);
+		Address address = _addressService.addAddress(
+			StringPool.BLANK, AccountEntry.class.getName(),
+			commerceOrder.getCommerceAccountId(),
+			ParamUtil.getLong(actionRequest, "countryId"),
+			_getListTypeId(
+				AccountListTypeConstants.ACCOUNT_ENTRY_ADDRESS_TYPE_SHIPPING),
+			ParamUtil.getLong(actionRequest, "regionId"),
+			ParamUtil.getString(actionRequest, "city"),
+			ParamUtil.getString(actionRequest, "description"), false,
+			ParamUtil.getString(actionRequest, "name"), false,
+			ParamUtil.getString(actionRequest, "street1"),
+			ParamUtil.getString(actionRequest, "street2"),
+			ParamUtil.getString(actionRequest, "street3"), StringPool.BLANK,
+			ParamUtil.getString(actionRequest, "zip"),
+			ParamUtil.getString(actionRequest, "phoneNumber"),
+			ServiceContextFactory.getInstance(
+				CommerceAddress.class.getName(), actionRequest));
 
 		_commerceOrderService.updateShippingAddress(
-			commerceOrder.getCommerceOrderId(),
-			commerceAddress.getCommerceAddressId());
+			commerceOrder.getCommerceOrderId(), address.getAddressId());
 	}
 
 	private void _checkoutCommerceOrder(
@@ -503,6 +492,14 @@ public class EditCommerceOrderMVCActionCommand extends BaseMVCActionCommand {
 
 		_commerceOrderService.executeWorkflowTransition(
 			commerceOrderId, workflowTaskId, transitionName, comment);
+	}
+
+	private long _getListTypeId(String name) {
+		ListType listType = _listTypeLocalService.getListType(
+			CompanyThreadLocal.getCompanyId(), name,
+			AccountListTypeConstants.ACCOUNT_ENTRY_ADDRESS);
+
+		return listType.getListTypeId();
 	}
 
 	private String _getOrderDetailRedirect(
@@ -818,10 +815,10 @@ public class EditCommerceOrderMVCActionCommand extends BaseMVCActionCommand {
 	private AccountEntryLocalService _accountEntryLocalService;
 
 	@Reference
-	private CommerceAccountHelper _commerceAccountHelper;
+	private AddressService _addressService;
 
 	@Reference
-	private CommerceAddressService _commerceAddressService;
+	private CommerceAccountHelper _commerceAccountHelper;
 
 	@Reference
 	private CommerceChannelLocalService _commerceChannelLocalService;
@@ -840,6 +837,9 @@ public class EditCommerceOrderMVCActionCommand extends BaseMVCActionCommand {
 
 	@Reference
 	private CommerceOrderTypeService _commerceOrderTypeService;
+
+	@Reference
+	private ListTypeLocalService _listTypeLocalService;
 
 	@Reference
 	private Portal _portal;

@@ -6,6 +6,7 @@
 package com.liferay.headless.commerce.delivery.cart.internal.resource.v1_0;
 
 import com.liferay.account.constants.AccountConstants;
+import com.liferay.account.constants.AccountListTypeConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.commerce.configuration.CommerceOrderCheckoutConfiguration;
@@ -76,6 +77,7 @@ import com.liferay.portal.events.ThemeServicePreAction;
 import com.liferay.portal.kernel.encryptor.Encryptor;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Country;
+import com.liferay.portal.kernel.model.ListType;
 import com.liferay.portal.kernel.model.Region;
 import com.liferay.portal.kernel.portlet.PortletProvider;
 import com.liferay.portal.kernel.portlet.PortletProviderUtil;
@@ -83,10 +85,13 @@ import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
+import com.liferay.portal.kernel.service.AddressService;
 import com.liferay.portal.kernel.service.CountryService;
+import com.liferay.portal.kernel.service.ListTypeLocalService;
 import com.liferay.portal.kernel.service.RegionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.servlet.DummyHttpServletResponse;
@@ -481,22 +486,22 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 		return _toCart(commerceOrder);
 	}
 
-	private CommerceAddress _addCommerceAddress(
-			CommerceOrder commerceOrder, Address address, int type,
+	private com.liferay.portal.kernel.model.Address _addAddress(
+			Address address, CommerceOrder commerceOrder, int type,
 			ServiceContext serviceContext)
 		throws Exception {
 
 		Country country = _countryService.getCountryByA2(
 			commerceOrder.getCompanyId(), address.getCountryISOCode());
 
-		return _commerceAddressService.addCommerceAddress(
-			commerceOrder.getModelClassName(),
-			commerceOrder.getCommerceOrderId(), address.getName(),
-			address.getDescription(), address.getStreet1(),
-			address.getStreet2(), address.getStreet3(), address.getCity(),
-			address.getZip(), _getRegionId(null, country, address),
-			country.getCountryId(), address.getPhoneNumber(), type,
-			serviceContext);
+		return _addressService.addAddress(
+			StringPool.BLANK, commerceOrder.getModelClassName(),
+			commerceOrder.getCommerceOrderId(), country.getCountryId(),
+			_getListTypeId(type), _getRegionId(address, country, null),
+			address.getCity(), address.getDescription(), false,
+			address.getName(), false, address.getStreet1(),
+			address.getStreet2(), address.getStreet3(), StringPool.BLANK,
+			address.getZip(), address.getPhoneNumber(), serviceContext);
 	}
 
 	private CommerceOrder _addCommerceOrder(
@@ -526,20 +531,19 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 	}
 
 	private void _addOrUpdateBillingAddress(
-			CommerceOrder commerceOrder, Address address, int type,
+			Address address, CommerceOrder commerceOrder, int type,
 			CommerceContext commerceContext, ServiceContext serviceContext)
 		throws Exception {
 
 		if (commerceOrder.getBillingAddressId() > 0) {
-			_updateCommerceOrderAddress(
-				commerceOrder, address, type, serviceContext);
+			_updateAddress(address, commerceOrder, type);
 		}
 		else {
-			CommerceAddress commerceAddress = _addCommerceAddress(
-				commerceOrder, address, type, serviceContext);
+			com.liferay.portal.kernel.model.Address serviceBuilderAddress =
+				_addAddress(address, commerceOrder, type, serviceContext);
 
 			commerceOrder.setBillingAddressId(
-				commerceAddress.getCommerceAddressId());
+				serviceBuilderAddress.getAddressId());
 		}
 
 		_commerceOrderEngine.updateCommerceOrder(
@@ -704,7 +708,7 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 
 		if (shippingAddress != null) {
 			commerceOrder = _addOrUpdateShippingAddress(
-				commerceOrder, shippingAddress, type, commerceContext,
+				shippingAddress, commerceOrder, type, commerceContext,
 				serviceContext);
 		}
 
@@ -735,7 +739,7 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 
 			if (billingAddress != null) {
 				_addOrUpdateBillingAddress(
-					commerceOrder, billingAddress,
+					billingAddress, commerceOrder,
 					CommerceAddressConstants.ADDRESS_TYPE_BILLING,
 					commerceContext, serviceContext);
 			}
@@ -743,20 +747,19 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 	}
 
 	private CommerceOrder _addOrUpdateShippingAddress(
-			CommerceOrder commerceOrder, Address address, int type,
+			Address address, CommerceOrder commerceOrder, int type,
 			CommerceContext commerceContext, ServiceContext serviceContext)
 		throws Exception {
 
 		if (commerceOrder.getShippingAddressId() > 0) {
-			_updateCommerceOrderAddress(
-				commerceOrder, address, type, serviceContext);
+			_updateAddress(address, commerceOrder, type);
 		}
 		else {
-			CommerceAddress commerceAddress = _addCommerceAddress(
-				commerceOrder, address, type, serviceContext);
+			com.liferay.portal.kernel.model.Address serviceBuilderAddress =
+				_addAddress(address, commerceOrder, type, serviceContext);
 
 			commerceOrder.setShippingAddressId(
-				commerceAddress.getCommerceAddressId());
+				serviceBuilderAddress.getAddressId());
 		}
 
 		return _commerceOrderEngine.updateCommerceOrder(
@@ -905,6 +908,25 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 		return null;
 	}
 
+	private long _getListTypeId(int type) {
+		String name =
+			AccountListTypeConstants.
+				ACCOUNT_ENTRY_ADDRESS_TYPE_BILLING_AND_SHIPPING;
+
+		if (type == CommerceAddressConstants.ADDRESS_TYPE_BILLING) {
+			name = AccountListTypeConstants.ACCOUNT_ENTRY_ADDRESS_TYPE_BILLING;
+		}
+		else if (type == CommerceAddressConstants.ADDRESS_TYPE_SHIPPING) {
+			name = AccountListTypeConstants.ACCOUNT_ENTRY_ADDRESS_TYPE_SHIPPING;
+		}
+
+		ListType listType = _listTypeLocalService.getListType(
+			CompanyThreadLocal.getCompanyId(), name,
+			AccountListTypeConstants.ACCOUNT_ENTRY_ADDRESS);
+
+		return listType.getListTypeId();
+	}
+
 	private String _getOrderConfirmationCheckoutStepURL(
 			CommerceOrder commerceOrder)
 		throws Exception {
@@ -974,13 +996,14 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 	}
 
 	private long _getRegionId(
-			CommerceAddress commerceAddress, Country country, Address address)
+			Address address, Country country,
+			com.liferay.portal.kernel.model.Address serviceBuilderAddress)
 		throws Exception {
 
 		if (Validator.isNull(address.getRegionISOCode()) &&
-			(commerceAddress != null)) {
+			(serviceBuilderAddress != null)) {
 
-			return commerceAddress.getRegionId();
+			return serviceBuilderAddress.getRegionId();
 		}
 
 		if (Validator.isNull(address.getRegionISOCode()) || (country == null)) {
@@ -1160,31 +1183,34 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 				contextAcceptLanguage.getPreferredLocale()));
 	}
 
-	private void _updateCommerceOrderAddress(
-			CommerceOrder commerceOrder, Address address, int type,
-			ServiceContext serviceContext)
+	private void _updateAddress(
+			Address address, CommerceOrder commerceOrder, int type)
 		throws Exception {
 
-		CommerceAddress commerceAddress =
-			_commerceAddressService.getCommerceAddress(
-				commerceOrder.getShippingAddressId());
+		com.liferay.portal.kernel.model.Address serviceBuilderAddress =
+			_addressService.getAddress(commerceOrder.getShippingAddressId());
 
-		Country country = commerceAddress.getCountry();
+		Country country = serviceBuilderAddress.getCountry();
 
-		_commerceAddressService.updateCommerceAddress(
-			commerceAddress.getCommerceAddressId(), address.getName(),
-			GetterUtil.get(
-				address.getDescription(), commerceAddress.getDescription()),
-			address.getStreet1(),
-			GetterUtil.get(address.getStreet2(), commerceAddress.getStreet2()),
-			GetterUtil.get(address.getStreet3(), commerceAddress.getStreet3()),
+		_addressService.updateAddress(
+			serviceBuilderAddress.getExternalReferenceCode(),
+			serviceBuilderAddress.getAddressId(), country.getCountryId(), type,
+			_getRegionId(address, country, serviceBuilderAddress),
 			address.getCity(),
-			GetterUtil.get(address.getZip(), commerceAddress.getZip()),
-			_getRegionId(commerceAddress, country, address),
-			country.getCountryId(),
 			GetterUtil.get(
-				address.getPhoneNumber(), commerceAddress.getPhoneNumber()),
-			type, serviceContext);
+				address.getDescription(),
+				serviceBuilderAddress.getDescription()),
+			serviceBuilderAddress.isMailing(), address.getName(),
+			serviceBuilderAddress.isPrimary(), address.getStreet1(),
+			GetterUtil.get(
+				address.getStreet2(), serviceBuilderAddress.getStreet2()),
+			GetterUtil.get(
+				address.getStreet3(), serviceBuilderAddress.getStreet3()),
+			serviceBuilderAddress.getSubtype(),
+			GetterUtil.get(address.getZip(), serviceBuilderAddress.getZip()),
+			GetterUtil.get(
+				address.getPhoneNumber(),
+				serviceBuilderAddress.getPhoneNumber()));
 	}
 
 	private void _updateOrder(CommerceOrder commerceOrder, Cart cart)
@@ -1332,6 +1358,9 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 	@Reference
 	private AccountEntryLocalService _accountEntryLocalService;
 
+	@Reference
+	private AddressService _addressService;
+
 	@Reference(
 		target = "(component.name=com.liferay.headless.commerce.delivery.cart.internal.dto.v1_0.converter.CartDTOConverter)"
 	)
@@ -1405,6 +1434,9 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 
 	@Reference
 	private Encryptor _encryptor;
+
+	@Reference
+	private ListTypeLocalService _listTypeLocalService;
 
 	@Reference
 	private Portal _portal;

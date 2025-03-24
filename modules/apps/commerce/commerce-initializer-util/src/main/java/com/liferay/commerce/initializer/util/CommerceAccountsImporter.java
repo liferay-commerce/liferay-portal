@@ -6,6 +6,7 @@
 package com.liferay.commerce.initializer.util;
 
 import com.liferay.account.constants.AccountConstants;
+import com.liferay.account.constants.AccountListTypeConstants;
 import com.liferay.account.exception.NoSuchGroupException;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.model.AccountEntryOrganizationRel;
@@ -20,7 +21,6 @@ import com.liferay.commerce.price.list.exception.NoSuchPriceListException;
 import com.liferay.commerce.price.list.model.CommercePriceList;
 import com.liferay.commerce.price.list.service.CommercePriceListAccountRelLocalService;
 import com.liferay.commerce.price.list.service.CommercePriceListLocalService;
-import com.liferay.commerce.service.CommerceAddressLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Property;
@@ -31,11 +31,14 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Country;
+import com.liferay.portal.kernel.model.ListType;
 import com.liferay.portal.kernel.model.ListTypeConstants;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.OrganizationConstants;
 import com.liferay.portal.kernel.model.Region;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.service.AddressLocalService;
 import com.liferay.portal.kernel.service.CountryLocalService;
 import com.liferay.portal.kernel.service.ListTypeLocalService;
 import com.liferay.portal.kernel.service.OrganizationLocalService;
@@ -153,17 +156,22 @@ public class CommerceAccountsImporter {
 			}
 		}
 
-		String street1 = jsonObject.getString("street1");
-		String city = jsonObject.getString("city");
-		String zip = jsonObject.getString("zip");
+		// Add Address
 
-		// Add Commerce Address
+		ListType listType = _listTypeLocalService.getListType(
+			CompanyThreadLocal.getCompanyId(),
+			AccountListTypeConstants.
+				ACCOUNT_ENTRY_ADDRESS_TYPE_BILLING_AND_SHIPPING,
+			AccountListTypeConstants.ACCOUNT_ENTRY_ADDRESS);
 
-		_commerceAddressLocalService.addCommerceAddress(
+		_addressLocalService.addAddress(
+			StringPool.BLANK, serviceContext.getUserId(),
 			AccountEntry.class.getName(), accountEntry.getAccountEntryId(),
-			accountEntry.getName(), StringPool.BLANK, street1, StringPool.BLANK,
-			StringPool.BLANK, city, zip, regionId, country.getCountryId(),
-			StringPool.BLANK, true, true, serviceContext);
+			country.getCountryId(), listType.getListTypeId(), regionId,
+			jsonObject.getString("city"), StringPool.BLANK, false,
+			accountEntry.getName(), false, jsonObject.getString("street1"),
+			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+			jsonObject.getString("zip"), StringPool.BLANK, serviceContext);
 
 		// Add Company Logo
 
@@ -332,7 +340,7 @@ public class CommerceAccountsImporter {
 	private AccountGroupRelLocalService _accountGroupRelLocalService;
 
 	@Reference
-	private CommerceAddressLocalService _commerceAddressLocalService;
+	private AddressLocalService _addressLocalService;
 
 	@Reference
 	private CommercePriceListAccountRelLocalService

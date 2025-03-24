@@ -8,6 +8,7 @@ package com.liferay.commerce.service.impl;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.commerce.configuration.CommerceOrderConfiguration;
 import com.liferay.commerce.configuration.CommerceOrderFieldsConfiguration;
+import com.liferay.commerce.constants.CommerceAddressConstants;
 import com.liferay.commerce.constants.CommerceConstants;
 import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.constants.CommerceOrderPaymentConstants;
@@ -36,6 +37,7 @@ import com.liferay.commerce.model.CommerceShippingEngine;
 import com.liferay.commerce.model.CommerceShippingMethod;
 import com.liferay.commerce.model.CommerceShippingOption;
 import com.liferay.commerce.model.attributes.provider.CommerceModelAttributesProvider;
+import com.liferay.commerce.model.impl.CommerceAddressImpl;
 import com.liferay.commerce.order.CommerceOrderThreadLocal;
 import com.liferay.commerce.price.CommerceOrderPrice;
 import com.liferay.commerce.price.CommerceOrderPriceCalculation;
@@ -75,6 +77,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.DestinationNames;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBusUtil;
+import com.liferay.portal.kernel.model.Address;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
@@ -95,6 +98,7 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
+import com.liferay.portal.kernel.service.AddressLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -2720,27 +2724,32 @@ public class CommerceOrderLocalServiceImpl
 		CommerceOrder commerceOrder = commerceOrderPersistence.findByPrimaryKey(
 			commerceOrderId);
 
-		CommerceAddress commerceAddress = null;
+		Address address = null;
 
 		long commerceAddressId = commerceAddressIdGetter.apply(commerceOrder);
 
 		if (commerceAddressId > 0) {
-			commerceAddress =
-				_commerceAddressLocalService.updateCommerceAddress(
-					commerceAddressId, name, description, street1, street2,
-					street3, city, zip, regionId, countryId, phoneNumber, false,
-					false, serviceContext);
+			address = _addressLocalService.getAddress(commerceAddressId);
+
+			address = _addressLocalService.updateAddress(
+				address.getExternalReferenceCode(), commerceAddressId,
+				countryId, address.getListTypeId(), regionId, city, description,
+				address.isMailing(), name, address.isPrimary(), street1,
+				street2, street3, address.getSubtype(), zip, phoneNumber);
 		}
 		else {
-			commerceAddress = _commerceAddressLocalService.addCommerceAddress(
+			address = _addressLocalService.addAddress(
+				StringPool.BLANK, serviceContext.getUserId(),
 				commerceOrder.getModelClassName(),
-				commerceOrder.getCommerceOrderId(), name, description, street1,
-				street2, street3, city, zip, regionId, countryId, phoneNumber,
-				false, false, serviceContext);
+				commerceOrder.getCommerceOrderId(), countryId,
+				CommerceAddressImpl.toAddressTypeId(
+					CommerceAddressConstants.ADDRESS_TYPE_BILLING_AND_SHIPPING),
+				regionId, city, description, false, name, false, street1,
+				street2, street3, StringPool.BLANK, zip, phoneNumber,
+				serviceContext);
 		}
 
-		commerceAddressIdSetter.accept(
-			commerceOrder, commerceAddress.getCommerceAddressId());
+		commerceAddressIdSetter.accept(commerceOrder, address.getAddressId());
 
 		return commerceOrderPersistence.update(commerceOrder);
 	}
@@ -2859,6 +2868,9 @@ public class CommerceOrderLocalServiceImpl
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		CommerceOrderLocalServiceImpl.class);
+
+	@Reference
+	private AddressLocalService _addressLocalService;
 
 	@Reference
 	private CommerceAddressLocalService _commerceAddressLocalService;
