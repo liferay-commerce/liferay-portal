@@ -48,6 +48,13 @@ public class AddressServiceWrapper
 	}
 
 	@Override
+	public Address fetchAddress(long addressId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _addressService.fetchAddress(addressId);
+	}
+
+	@Override
 	public Address getAddress(long addressId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
