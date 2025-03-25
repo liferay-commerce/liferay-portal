@@ -1,0 +1,56 @@
+{
+	"fieldSets": [
+		{
+			"fields": [
+				{
+					"defaultValue": "subtotalFormatted",
+					"label": "field",
+					"name": "field",
+					"type": "select",
+					"typeOptions": {
+						"validValues": [
+							{
+								"label": "subtotal",
+								"value": "subtotalFormatted"
+							},
+							{
+								"label": "subtotal-discount",
+								"value": "subtotalDiscountValueFormatted"
+							},
+							{
+								"label": "total-discount",
+								"value": "totalDiscountValueFormatted"
+							},
+							{
+								"label": "promotion-code",
+								"value": "couponCode"
+							},
+							{
+								"label": "tax",
+								"value": "taxValueFormatted"
+							},
+							{
+								"label": "delivery",
+								"value": "shippingValueFormatted"
+							},
+							{
+								"label": "delivery-discount",
+								"value": "shippingDiscountValueFormatted"
+							},
+							{
+								"label": "total",
+								"value": "totalFormatted"
+							}
+						]
+					}
+				},
+				{
+					"defaultValue": "",
+					"label": "label",
+					"name": "label",
+					"type": "text"
+				}
+			]
+		}
+	]
+}
