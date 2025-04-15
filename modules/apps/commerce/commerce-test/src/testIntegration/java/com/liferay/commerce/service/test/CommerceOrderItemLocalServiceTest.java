@@ -29,6 +29,8 @@ import com.liferay.commerce.price.list.service.CommercePriceListLocalService;
 import com.liferay.commerce.price.list.test.util.CommercePriceEntryTestUtil;
 import com.liferay.commerce.product.constants.CPConstants;
 import com.liferay.commerce.product.constants.CPInstanceConstants;
+import com.liferay.commerce.product.exception.CPDefinitionOptionRelException;
+import com.liferay.commerce.product.exception.CPInstanceOptionValueRelException;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
@@ -57,6 +59,7 @@ import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.commerce.test.util.context.TestCommerceContext;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
@@ -80,6 +83,7 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import java.math.BigDecimal;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -837,6 +841,210 @@ public class CommerceOrderItemLocalServiceTest {
 		);
 
 		_addProductBundleWithUnavailableChildSKU(false);
+	}
+
+	@Test
+	public void testAddProductWithBundledOptionAndIncompleteJSON()
+		throws Exception {
+
+		CPDefinition cpDefinition =
+			CPTestUtil.addCPDefinitionWithChildCPDefinitions(
+				_commerceCatalog.getGroupId(), 1);
+
+		List<CPInstance> cpInstances = cpDefinition.getCPInstances();
+
+		CPInstance cpInstance = cpInstances.get(0);
+
+		_cpInstances.add(cpInstance);
+
+		_commerceInventoryWarehouse =
+			CommerceInventoryTestUtil.addCommerceInventoryWarehouse(
+				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		_commerceInventoryWarehouseItems.add(
+			CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
+				_user.getUserId(), _commerceInventoryWarehouse,
+				BigDecimal.valueOf(100), cpInstance.getSku(),
+				StringPool.BLANK));
+
+		_commerceChannelRel = CommerceTestUtil.addWarehouseCommerceChannelRel(
+			_commerceInventoryWarehouse.getCommerceInventoryWarehouseId(),
+			_commerceChannel.getCommerceChannelId());
+
+		CommerceOrder commerceOrder =
+			_commerceOrderLocalService.addCommerceOrder(
+				_user.getUserId(), _commerceChannel.getGroupId(),
+				_accountEntry.getAccountEntryId(), _commerceCurrency.getCode(),
+				0);
+
+		_commerceOrders.add(commerceOrder);
+
+		List<CPDefinitionOptionRel> cpDefinitionOptionRels =
+			cpDefinition.getCPDefinitionOptionRels();
+
+		CPDefinitionOptionRel cpDefinitionOptionRel =
+			cpDefinitionOptionRels.get(0);
+
+		CPOption cpOption = cpDefinitionOptionRel.getCPOption();
+
+		List<CPDefinitionOptionValueRel> cpDefinitionOptionValueRels =
+			cpDefinitionOptionRel.getCPDefinitionOptionValueRels();
+
+		CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
+			cpDefinitionOptionValueRels.get(0);
+
+		CommerceOrderItem commerceOrderItem =
+			_commerceOrderItemLocalService.addCommerceOrderItem(
+				_user.getUserId(), commerceOrder.getCommerceOrderId(),
+				cpInstance.getCPInstanceId(),
+				JSONUtil.put(
+					"key", cpOption.getKey()
+				).put(
+					"price", cpDefinitionOptionValueRel.getPrice()
+				).put(
+					"priceType", cpDefinitionOptionRel.getPriceType()
+				).put(
+					"quantity", cpDefinitionOptionValueRel.getQuantity()
+				).put(
+					"skuOptionKey", cpOption.getKey()
+				).put(
+					"skuOptionName", cpOption.getName()
+				).put(
+					"skuOptionValueKey", cpDefinitionOptionValueRel.getKey()
+				).put(
+					"skuOptionValueNames",
+					JSONFactoryUtil.createJSONArray(
+						Collections.singletonList(
+							cpDefinitionOptionValueRel.getName()))
+				).put(
+					"value", cpDefinitionOptionValueRel.getKey()
+				).toString(),
+				cpDefinitionOptionValueRel.getQuantity(), 0, BigDecimal.ZERO,
+				StringPool.BLANK, _commerceContext, _serviceContext);
+
+		_commerceOrderItems.add(commerceOrderItem);
+
+		List<CommerceOrderItem> commerceOrderItems =
+			commerceOrder.getCommerceOrderItems();
+
+		Assert.assertEquals(
+			commerceOrderItems.toString(), 2, commerceOrderItems.size());
+
+		CommerceOrderItem bundleOrderItem = _getOrderItemByCPInstanceId(
+			cpInstance.getCPInstanceId(), false, commerceOrderItems);
+
+		Assert.assertEquals(
+			commerceOrderItem.getCommerceOrderItemId(),
+			bundleOrderItem.getCommerceOrderItemId());
+
+		Assert.assertEquals(
+			commerceOrderItem.getSku(), bundleOrderItem.getSku());
+	}
+
+	@Test(expected = CPInstanceOptionValueRelException.class)
+	public void testAddProductWithInvalidOption() throws Exception {
+		CPInstance cpInstance = CPTestUtil.addCPInstanceWithRandomSku(
+			_commerceCatalog.getGroupId());
+
+		CPOption cpOption = _cpOptionLocalService.addCPOption(
+			null, _user.getUserId(), RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(),
+			CPConstants.PRODUCT_OPTION_NUMERIC_KEY,
+			RandomTestUtil.randomBoolean(), true, false,
+			RandomTestUtil.randomString(), _serviceContext);
+
+		CPTestUtil.addCPDefinitionOptionRel(
+			_commerceCatalog.getGroupId(), cpInstance.getCPDefinitionId(),
+			cpOption.getCPOptionId());
+
+		CPTestUtil.addCPDefinitionOptionValueRel(
+			cpInstance.getCPDefinitionId(), cpOption.getCPOptionId(), "9", "9",
+			CPConstants.PRODUCT_OPTION_PRICE_TYPE_STATIC, cpOption.isRequired(),
+			cpOption.isSkuContributor(), _serviceContext);
+
+		_commerceInventoryWarehouse =
+			CommerceInventoryTestUtil.addCommerceInventoryWarehouse(
+				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		_commerceInventoryWarehouseItems.add(
+			CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
+				_user.getUserId(), _commerceInventoryWarehouse,
+				BigDecimal.valueOf(100), cpInstance.getSku(),
+				StringPool.BLANK));
+
+		_commerceChannelRel = CommerceTestUtil.addWarehouseCommerceChannelRel(
+			_commerceInventoryWarehouse.getCommerceInventoryWarehouseId(),
+			_commerceChannel.getCommerceChannelId());
+
+		CommerceOrder commerceOrder =
+			_commerceOrderLocalService.addCommerceOrder(
+				_user.getUserId(), _commerceChannel.getGroupId(),
+				_accountEntry.getAccountEntryId(), _commerceCurrency.getCode(),
+				0);
+
+		_commerceOrders.add(commerceOrder);
+
+		_commerceOrderItemLocalService.addCommerceOrderItem(
+			_user.getUserId(), commerceOrder.getCommerceOrderId(),
+			cpInstance.getCPInstanceId(),
+			JSONUtil.put(
+				"key", cpOption.getKey()
+			).put(
+				"value", RandomTestUtil.randomString()
+			).toString(),
+			BigDecimal.ONE, 0, BigDecimal.ZERO, StringPool.BLANK,
+			_commerceContext, _serviceContext);
+	}
+
+	@Test(expected = CPDefinitionOptionRelException.class)
+	public void testAddProductWithMissingRequiredOption() throws Exception {
+		CPInstance cpInstance = CPTestUtil.addCPInstanceWithRandomSku(
+			_commerceCatalog.getGroupId());
+
+		CPOption cpOption = _cpOptionLocalService.addCPOption(
+			null, _user.getUserId(), RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(),
+			CPConstants.PRODUCT_OPTION_SELECT_KEY,
+			RandomTestUtil.randomBoolean(), true, false,
+			RandomTestUtil.randomString(), _serviceContext);
+
+		CPTestUtil.addCPDefinitionOptionRel(
+			_commerceCatalog.getGroupId(), cpInstance.getCPDefinitionId(),
+			cpOption.getCPOptionId());
+
+		CPTestUtil.addCPDefinitionOptionValueRel(
+			cpInstance.getCPDefinitionId(), cpOption.getCPOptionId(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			CPConstants.PRODUCT_OPTION_PRICE_TYPE_STATIC, cpOption.isRequired(),
+			cpOption.isSkuContributor(), _serviceContext);
+
+		_commerceInventoryWarehouse =
+			CommerceInventoryTestUtil.addCommerceInventoryWarehouse(
+				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		_commerceInventoryWarehouseItems.add(
+			CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
+				_user.getUserId(), _commerceInventoryWarehouse,
+				BigDecimal.valueOf(100), cpInstance.getSku(),
+				StringPool.BLANK));
+
+		_commerceChannelRel = CommerceTestUtil.addWarehouseCommerceChannelRel(
+			_commerceInventoryWarehouse.getCommerceInventoryWarehouseId(),
+			_commerceChannel.getCommerceChannelId());
+
+		CommerceOrder commerceOrder =
+			_commerceOrderLocalService.addCommerceOrder(
+				_user.getUserId(), _commerceChannel.getGroupId(),
+				_accountEntry.getAccountEntryId(), _commerceCurrency.getCode(),
+				0);
+
+		_commerceOrders.add(commerceOrder);
+
+		_commerceOrderItemLocalService.addCommerceOrderItem(
+			_user.getUserId(), commerceOrder.getCommerceOrderId(),
+			cpInstance.getCPInstanceId(), StringPool.BLANK, BigDecimal.ONE, 0,
+			BigDecimal.ZERO, StringPool.BLANK, _commerceContext,
+			_serviceContext);
 	}
 
 	@Test
