@@ -1227,3 +1227,46 @@ testWithAddressSubtypeEnabled(
 		}
 	}
 );
+
+test(
+	'Region is a required field when adding an address to an account',
+	{
+		tag: '@LPD-53469',
+	},
+	async ({
+		accountAddressesPage,
+		accountsPage,
+		apiHelpers,
+		editAccountAddressPage,
+		editAccountPage,
+	}) => {
+		const account = await apiHelpers.headlessAdminUser.postAccount({
+			description: getRandomString(),
+			type: 'business',
+		});
+
+		apiHelpers.data.push({id: account.id, type: 'account'});
+
+		await accountsPage.goto();
+
+		await accountsPage.accountsTable.valueLink(account.name).click();
+		await editAccountPage.addressesTab.click();
+		await accountAddressesPage.addressesTable.newButton.click();
+
+		await editAccountAddressPage.countryInput.selectOption({
+			label: 'Afghanistan',
+		});
+
+		await expect(
+			await editAccountAddressPage.regionRequiredWrapper
+		).toBeVisible();
+
+		await editAccountAddressPage.countryInput.selectOption({
+			label: 'Anguilla',
+		});
+
+		await expect(
+			await editAccountAddressPage.regionRequiredWrapper
+		).not.toBeVisible();
+	}
+);

@@ -19,6 +19,7 @@ export class EditAccountAddressPage {
 	readonly phoneNumberInput: Locator;
 	readonly postalCodeInput: Locator;
 	readonly regionInput: Locator;
+	readonly regionRequiredWrapper: Locator;
 	readonly saveButton: Locator;
 	readonly street1Input: Locator;
 	readonly subtypeInput: Locator;
@@ -35,6 +36,9 @@ export class EditAccountAddressPage {
 		this.phoneNumberInput = page.getByLabel('Phone Number');
 		this.postalCodeInput = page.getByLabel('Postal Code');
 		this.regionInput = page.getByLabel('Region');
+		this.regionRequiredWrapper = page.locator(
+			'[id="_com_liferay_account_admin_web_internal_portlet_AccountEntriesAdminPortlet_regionRequiredWrapper"]'
+		);
 		this.saveButton = page.getByRole('button', {name: 'Save'});
 		this.street1Input = page.getByLabel('Street 1');
 		this.subtypeInput = page.getByPlaceholder('Subtype');
