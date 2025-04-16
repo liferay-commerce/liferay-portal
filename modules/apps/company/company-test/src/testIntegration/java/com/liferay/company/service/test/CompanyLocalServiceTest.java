@@ -240,6 +240,8 @@ public class CompanyLocalServiceTest {
 	public void testAddAndDeleteCompany() throws Exception {
 		Company company = addCompany();
 
+		// fake comment
+
 		_companyLocalService.deleteCompany(company.getCompanyId());
 
 		for (String webId : PortalInstancePool.getWebIds()) {

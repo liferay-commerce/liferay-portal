@@ -27,7 +27,7 @@ import org.osgi.service.component.annotations.Reference;
 public class CompanyModelListener extends BaseModelListener<Company> {
 
 	@Override
-	public void onBeforeRemove(Company company) {
+	public void onAfterRemove(Company company) {
 		try {
 			long companyId = company.getCompanyId();
 
