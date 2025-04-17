@@ -1167,6 +1167,10 @@ test(
 			discount.couponCode
 		);
 
+		await expect(
+			page.getByText(`Promotion Code ${discount.couponCode}`)
+		).toBeVisible();
+
 		await displayPageTemplatesPage.goto(site.friendlyUrlPath);
 		await displayPageTemplatesPage.editTemplate('Order');
 
