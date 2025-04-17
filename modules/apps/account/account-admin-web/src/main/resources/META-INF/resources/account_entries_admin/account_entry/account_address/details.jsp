@@ -179,6 +179,8 @@ renderResponse.setTitle((addressDisplay.getAddressId() == 0) ? LanguageUtil.get(
 			"regionSelect", portletDisplay.getNamespace() + "addressRegionId"
 		).put(
 			"regionSelectVal", (address == null) ? 0L : address.getRegionId()
+		).put(
+			"required", true
 		).build()
 		%>'
 	module="{CountryRegionDynamicSelect} from account-admin-web"

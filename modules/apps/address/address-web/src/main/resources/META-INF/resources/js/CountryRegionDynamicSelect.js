@@ -12,6 +12,7 @@ function CountryRegionDynamicSelect({
 	namespace,
 	regionSelect,
 	regionSelectVal = 0,
+	required = false,
 }) {
 	let japanCountryId;
 
@@ -40,7 +41,9 @@ function CountryRegionDynamicSelect({
 			select: regionSelect,
 			selectData(callback, selectKey) {
 				getRegions((regions) => {
-					updateRegionRequired(regions, namespace);
+					if (required) {
+						updateRegionRequired(regions, namespace);
+					}
 
 					if (
 						selectKey === japanCountryId &&
