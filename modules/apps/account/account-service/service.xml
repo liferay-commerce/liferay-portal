@@ -80,7 +80,7 @@
 		<finder name="OrganizationId" return-type="Collection">
 			<finder-column name="organizationId" />
 		</finder>
-		<finder name="A_O" return-type="AccountEntryOrganizationRel">
+		<finder name="A_O" return-type="AccountEntryOrganizationRel" unique="true">
 			<finder-column name="accountEntryId" />
 			<finder-column name="organizationId" />
 		</finder>

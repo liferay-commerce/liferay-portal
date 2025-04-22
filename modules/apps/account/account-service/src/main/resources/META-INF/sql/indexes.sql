@@ -3,7 +3,7 @@ create index IX_48CB043 on AccountEntry (companyId, status);
 create index IX_908C3410 on AccountEntry (userId, type_[$COLUMN_LENGTH:75$]);
 create index IX_6901A669 on AccountEntry (uuid_[$COLUMN_LENGTH:75$]);
 
-create index IX_EC6CC41D on AccountEntryOrganizationRel (accountEntryId, organizationId);
+create unique index IX_EC6CC41D on AccountEntryOrganizationRel (accountEntryId, organizationId);
 create index IX_2FA4FA69 on AccountEntryOrganizationRel (organizationId);
 
 create index IX_ED720A80 on AccountEntryUserRel (accountEntryId, accountUserId);
