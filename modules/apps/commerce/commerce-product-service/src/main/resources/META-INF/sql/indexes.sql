@@ -152,8 +152,8 @@ create index IX_65864AFC on CommerceCatalog (companyId, system_);
 create index IX_37D36450 on CommerceCatalog (uuid_[$COLUMN_LENGTH:75$]);
 
 create index IX_C2C38B02 on CommerceChannel (accountEntryId);
-create unique index IX_D8DAE041 on CommerceChannel (companyId, externalReferenceCode[$COLUMN_LENGTH:75$], ctCollectionId);
-create index IX_E1ECD95 on CommerceChannel (siteGroupId);
+create unique index IX_27C703C5 on CommerceChannel (companyId, ctCollectionId, externalReferenceCode[$COLUMN_LENGTH:75$]);
+create unique index IX_31A69BF7 on CommerceChannel (ctCollectionId, siteGroupId);
 create index IX_9E82EA6 on CommerceChannel (uuid_[$COLUMN_LENGTH:75$]);
 
 create unique index IX_4469A625 on CommerceChannelRel (classNameId, classPK, commerceChannelId, ctCollectionId);

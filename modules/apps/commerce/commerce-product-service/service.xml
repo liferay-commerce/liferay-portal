@@ -84,7 +84,7 @@
 		<finder name="AccountEntryId" return-type="Collection">
 			<finder-column name="accountEntryId" />
 		</finder>
-		<finder name="SiteGroupId" return-type="CommerceChannel">
+		<finder name="SiteGroupId" return-type="CommerceChannel" unique="true">
 			<finder-column name="siteGroupId" />
 		</finder>
 	</entity>
