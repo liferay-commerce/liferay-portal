@@ -2096,23 +2096,6 @@ public class CPConfigurationListPersistenceImpl
 						}
 					}
 					else {
-						if (list.size() > 1) {
-							Collections.sort(list, Collections.reverseOrder());
-
-							if (_log.isWarnEnabled()) {
-								if (!useFinderCache) {
-									finderArgs = new Object[] {
-										parentCPConfigurationListId
-									};
-								}
-
-								_log.warn(
-									"CPConfigurationListPersistenceImpl.fetchByParentCPConfigurationListId(long, boolean) with parameters (" +
-										StringUtil.merge(finderArgs) +
-											") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
-							}
-						}
-
 						CPConfigurationList cpConfigurationList = list.get(0);
 
 						result = cpConfigurationList;
@@ -3147,21 +3130,6 @@ public class CPConfigurationListPersistenceImpl
 						}
 					}
 					else {
-						if (list.size() > 1) {
-							Collections.sort(list, Collections.reverseOrder());
-
-							if (_log.isWarnEnabled()) {
-								if (!useFinderCache) {
-									finderArgs = new Object[] {groupId, master};
-								}
-
-								_log.warn(
-									"CPConfigurationListPersistenceImpl.fetchByG_M(long, boolean, boolean) with parameters (" +
-										StringUtil.merge(finderArgs) +
-											") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
-							}
-						}
-
 						CPConfigurationList cpConfigurationList = list.get(0);
 
 						result = cpConfigurationList;
@@ -6777,6 +6745,11 @@ public class CPConfigurationListPersistenceImpl
 			CTColumnResolutionType.STRICT, ctStrictColumnNames);
 
 		_uniqueIndexColumnNames.add(new String[] {"uuid_", "groupId"});
+
+		_uniqueIndexColumnNames.add(
+			new String[] {"parentCPConfigurationListId"});
+
+		_uniqueIndexColumnNames.add(new String[] {"groupId", "master"});
 
 		_uniqueIndexColumnNames.add(
 			new String[] {"externalReferenceCode", "companyId"});
