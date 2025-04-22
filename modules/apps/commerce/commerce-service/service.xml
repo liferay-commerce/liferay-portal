@@ -395,7 +395,7 @@
 
 		<!-- Finder methods -->
 
-		<finder name="CommerceInventoryBookedQuantityId" return-type="CommerceOrderItem">
+		<finder name="CommerceInventoryBookedQuantityId" return-type="CommerceOrderItem" unique="true">
 			<finder-column name="commerceInventoryBookedQuantityId" />
 		</finder>
 		<finder name="CommerceOrderId" return-type="Collection">
