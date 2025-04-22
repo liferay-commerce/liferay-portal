@@ -15,7 +15,7 @@ create index IX_8EE6A92F on AccountGroup (companyId, name[$COLUMN_LENGTH:75$]);
 create index IX_B4733E65 on AccountGroup (companyId, type_[$COLUMN_LENGTH:75$]);
 create index IX_E86A36FC on AccountGroup (uuid_[$COLUMN_LENGTH:75$]);
 
-create index IX_448835E3 on AccountGroupRel (accountGroupId, classNameId, classPK);
+create unique index IX_448835E3 on AccountGroupRel (accountGroupId, classNameId, classPK);
 create index IX_E31F0762 on AccountGroupRel (classNameId, classPK);
 
 create index IX_3A47CDD on AccountRole (accountEntryId);

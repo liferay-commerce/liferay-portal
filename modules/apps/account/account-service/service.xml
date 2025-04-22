@@ -188,7 +188,7 @@
 			<finder-column name="classNameId" />
 			<finder-column name="classPK" />
 		</finder>
-		<finder name="A_C_C" return-type="AccountGroupRel">
+		<finder name="A_C_C" return-type="AccountGroupRel" unique="true">
 			<finder-column name="accountGroupId" />
 			<finder-column name="classNameId" />
 			<finder-column name="classPK" />
