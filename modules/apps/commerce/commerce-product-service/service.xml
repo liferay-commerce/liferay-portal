@@ -1140,7 +1140,7 @@
 			<finder-column name="CPDefinitionOptionRelId" />
 			<finder-column name="CPInstanceId" />
 		</finder>
-		<finder name="CDOVRI_CII" return-type="CPInstanceOptionValueRel">
+		<finder name="CDOVRI_CII" return-type="CPInstanceOptionValueRel" unique="true">
 			<finder-column name="CPDefinitionOptionValueRelId" />
 			<finder-column name="CPInstanceId" />
 		</finder>

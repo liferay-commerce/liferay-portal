@@ -103,8 +103,7 @@ create index IX_1140BD8 on CPInstance (status, replacementCPInstanceUuid[$COLUMN
 create index IX_4654BD4C on CPInstance (uuid_[$COLUMN_LENGTH:75$]);
 
 create index IX_E551D3AA on CPInstanceOptionValueRel (CPDefinitionOptionRelId);
-create unique index IX_C7B0D143 on CPInstanceOptionValueRel (CPInstanceId, CPDefinitionOptionRelId, CPDefinitionOptionValueRelId, ctCollectionId);
-create index IX_D3B702C2 on CPInstanceOptionValueRel (CPInstanceId, CPDefinitionOptionValueRelId);
+create unique index IX_CE1DF4A0 on CPInstanceOptionValueRel (CPInstanceId, ctCollectionId, CPDefinitionOptionValueRelId);
 create unique index IX_4399CE9D on CPInstanceOptionValueRel (uuid_[$COLUMN_LENGTH:75$], ctCollectionId, groupId);
 
 create index IX_4351C7A1 on CPInstanceUOM (CPInstanceId, active_);
