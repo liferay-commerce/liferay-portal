@@ -6,7 +6,7 @@ create index IX_6901A669 on AccountEntry (uuid_[$COLUMN_LENGTH:75$]);
 create unique index IX_EC6CC41D on AccountEntryOrganizationRel (accountEntryId, organizationId);
 create index IX_2FA4FA69 on AccountEntryOrganizationRel (organizationId);
 
-create index IX_ED720A80 on AccountEntryUserRel (accountEntryId, accountUserId);
+create unique index IX_ED720A80 on AccountEntryUserRel (accountEntryId, accountUserId);
 create index IX_4EA60AB4 on AccountEntryUserRel (accountUserId);
 
 create index IX_38BDB33 on AccountGroup (companyId, defaultAccountGroup);
