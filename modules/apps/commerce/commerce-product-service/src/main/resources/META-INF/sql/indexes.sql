@@ -130,7 +130,7 @@ create unique index IX_DA77C838 on CPOptionValue (CPOptionId, ctCollectionId, ke
 create unique index IX_DC509C0C on CPOptionValue (companyId, ctCollectionId, externalReferenceCode[$COLUMN_LENGTH:75$]);
 create index IX_D7C1A0BF on CPOptionValue (uuid_[$COLUMN_LENGTH:75$]);
 
-create index IX_8A69C0A5 on CPSOListTypeDefinitionRel (CPSpecificationOptionId, listTypeDefinitionId);
+create unique index IX_91D0AD03 on CPSOListTypeDefinitionRel (CPSpecificationOptionId, listTypeDefinitionId, ctCollectionId);
 create index IX_BB2AB5C5 on CPSOListTypeDefinitionRel (listTypeDefinitionId);
 
 create index IX_421ED80 on CPSpecificationOption (CPOptionCategoryId);

@@ -1482,7 +1482,7 @@
 		<finder name="ListTypeDefinitionId" return-type="Collection">
 			<finder-column name="listTypeDefinitionId" />
 		</finder>
-		<finder name="C_L" return-type="CPSpecificationOptionListTypeDefinitionRel">
+		<finder name="C_L" return-type="CPSpecificationOptionListTypeDefinitionRel" unique="true">
 			<finder-column name="CPSpecificationOptionId" />
 			<finder-column name="listTypeDefinitionId" />
 		</finder>
