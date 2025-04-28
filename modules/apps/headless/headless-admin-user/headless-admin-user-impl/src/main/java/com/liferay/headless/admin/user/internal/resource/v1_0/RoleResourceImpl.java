@@ -8,6 +8,7 @@ package com.liferay.headless.admin.user.internal.resource.v1_0;
 import com.liferay.headless.admin.user.dto.v1_0.Role;
 import com.liferay.headless.admin.user.dto.v1_0.RolePermission;
 import com.liferay.headless.admin.user.internal.odata.entity.v1_0.RoleEntityModel;
+import com.liferay.headless.admin.user.internal.util.v1_0.ResourcePermissionUtil;
 import com.liferay.headless.admin.user.resource.v1_0.RoleResource;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.NoSuchRoleException;
@@ -20,7 +21,9 @@ import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.OrganizationService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.RoleService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
@@ -492,6 +495,12 @@ public class RoleResourceImpl extends BaseRoleResourceImpl {
 				}
 			}
 		}
+
+		ResourcePermissionUtil.setResourcePermissions(
+			serviceBuilderRole, serviceBuilderRole.getCompanyId(),
+			role.getPermissions(), _resourcePermissionLocalService,
+			_roleLocalService, _roleTypeContributorProvider,
+			contextUser.getUserId());
 	}
 
 	private void _checkRoleType(long roleId, int type) throws Exception {
@@ -581,6 +590,9 @@ public class RoleResourceImpl extends BaseRoleResourceImpl {
 	private OrganizationService _organizationService;
 
 	@Reference
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Reference
 	private ResourcePermissionService _resourcePermissionService;
 
 	@Reference(
@@ -588,6 +600,9 @@ public class RoleResourceImpl extends BaseRoleResourceImpl {
 	)
 	private DTOConverter<com.liferay.portal.kernel.model.Role, Role>
 		_roleDTOConverter;
+
+	@Reference
+	private RoleLocalService _roleLocalService;
 
 	@Reference(
 		target = "(model.class.name=com.liferay.portal.kernel.model.Role)"
