@@ -8,15 +8,23 @@ import {expect, mergeTests} from '@playwright/test';
 import {apiHelpersTest} from '../../../../fixtures/apiHelpersTest';
 import {commercePagesTest} from '../../../../fixtures/commercePagesTest';
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
+import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../../fixtures/loginTest';
+import {pageViewModePagesTest} from '../../../../fixtures/pageViewModePagesTest';
+import getRandomString from '../../../../utils/getRandomString';
+import {waitForAlert} from '../../../../utils/waitForAlert';
 
 export const test = mergeTests(
 	apiHelpersTest,
 	commercePagesTest,
 	dataApiHelpersTest,
+	featureFlagsTest({
+		'LPS-178052': {enabled: true},
+	}),
 	isolatedSiteTest,
-	loginTest()
+	loginTest(),
+	pageViewModePagesTest
 );
 
 test(
@@ -56,6 +64,83 @@ test(
 		await expect(
 			commerceAdminProductPage.productsTableRowLink(product.name['en_US'])
 		).toHaveCount(0);
+	}
+);
+
+test(
+	'Add Product to Cart with Backorders Enabled',
+	{tag: '@LPD-55441'},
+	async ({
+		apiHelpers,
+		commerceAdminProductDetailsConfigurationPage,
+		commerceAdminProductDetailsPage,
+		commerceAdminProductPage,
+		page,
+		productDetailsPage,
+		site,
+		widgetPagePage,
+	}) => {
+		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: site.id,
+			title: getRandomString(),
+		});
+
+		await apiHelpers.headlessCommerceAdminChannel.postChannel({
+			name: 'View product details',
+			siteGroupId: site.id,
+		});
+
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
+				name: 'View product details',
+			});
+
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				name: {en_US: 'product'},
+			});
+
+		await commerceAdminProductPage.gotoProduct(product.name['en_US']);
+
+		await commerceAdminProductDetailsPage.goToProductConfiguration();
+
+		await commerceAdminProductDetailsConfigurationPage.allowBackOrder.check();
+
+		await commerceAdminProductDetailsConfigurationPage.lowStockThreshold.fill(
+			'5.0'
+		);
+
+		await commerceAdminProductDetailsPage.publishLink.click();
+
+		await waitForAlert(page);
+
+		await apiHelpers.headlessAdminUser.postAccount({
+			name: 'admin',
+			type: 'business',
+		});
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+
+		await widgetPagePage.addPortlet('Product Details');
+
+		await page.goto(`/web/${site.name}/p/product`);
+
+		await expect(productDetailsPage.addToCartButton).toBeEnabled();
+
+		await commerceAdminProductPage.gotoProduct(product.name['en_US']);
+
+		await commerceAdminProductDetailsPage.goToProductConfiguration();
+
+		await commerceAdminProductDetailsConfigurationPage.allowBackOrder.click();
+
+		await commerceAdminProductDetailsPage.publishLink.click();
+
+		await waitForAlert(page);
+
+		await page.goto(`/web/${site.name}/p/product`);
+
+		await expect(productDetailsPage.addToCartButton).toBeDisabled();
 	}
 );
 

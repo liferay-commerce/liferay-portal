@@ -6,11 +6,15 @@
 import {Locator, Page} from '@playwright/test';
 
 export class CommerceAdminProductDetailsConfigurationPage {
+	readonly allowBackOrder: Locator;
+	readonly lowStockThreshold: Locator;
 	readonly page: Page;
 	readonly publishLink: Locator;
 	readonly purchasableInput: Locator;
 
 	constructor(page: Page) {
+		this.allowBackOrder = page.getByLabel('Allow Back Orders');
+		this.lowStockThreshold = page.getByLabel('Low Stock Threshold');
 		this.page = page;
 		this.publishLink = page.getByRole('link', {name: 'Publish'});
 		this.purchasableInput = page.getByTestId('purchasableInput');
