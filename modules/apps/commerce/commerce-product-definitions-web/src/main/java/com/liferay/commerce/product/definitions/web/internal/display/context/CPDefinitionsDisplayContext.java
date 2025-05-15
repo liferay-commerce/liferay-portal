@@ -40,6 +40,7 @@ import com.liferay.portal.configuration.module.configuration.ConfigurationProvid
 import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletProvider;
@@ -392,6 +393,14 @@ public class CPDefinitionsDisplayContext
 		dropdownItems.add(duplicateDropdownItem);
 
 		return dropdownItems;
+	}
+
+	public String getEditorName() {
+		if (FeatureFlagManagerUtil.isEnabled("LPD-11235")) {
+			return "ckeditor5_classic";
+		}
+
+		return "ckeditor_classic";
 	}
 
 	public List<FDSActionDropdownItem> getFDSActionDropdownItems()
