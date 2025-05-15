@@ -35,6 +35,7 @@ import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.service.JournalArticleService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -235,6 +236,14 @@ public class CPDefinitionVirtualSettingDisplayContext
 		return DLURLHelperUtil.getDownloadURL(
 			fileEntry, fileEntry.getLatestFileVersion(), themeDisplay,
 			StringPool.BLANK, true, true);
+	}
+
+	public String getEditorName() {
+		if (FeatureFlagManagerUtil.isEnabled("LPD-11235")) {
+			return "ckeditor5_classic";
+		}
+
+		return "ckeditor_classic";
 	}
 
 	public FileEntry getFileEntry(long fileEntryId) throws PortalException {

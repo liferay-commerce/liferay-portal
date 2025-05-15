@@ -58,6 +58,7 @@
 					<liferay-ui:input-localized
 						cssClass="form-control"
 						disabled="<%= useTermsOfUseJournal %>"
+						editorName="<%= cpDefinitionVirtualSettingDisplayContext.getEditorName() %>"
 						name="termsOfUseContent"
 						type="editor"
 						xml='<%= BeanPropertiesUtil.getString(cpDefinitionVirtualSetting, "termsOfUseContent") %>'
