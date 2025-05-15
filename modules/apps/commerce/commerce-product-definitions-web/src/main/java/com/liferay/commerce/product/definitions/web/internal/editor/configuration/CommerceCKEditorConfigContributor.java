@@ -7,6 +7,7 @@ package com.liferay.commerce.product.definitions.web.internal.editor.configurati
 
 import com.liferay.ai.creator.openai.configuration.manager.AICreatorOpenAIConfigurationManager;
 import com.liferay.commerce.product.constants.CPPortletKeys;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.editor.configuration.BaseEditorConfigContributor;
 import com.liferay.portal.kernel.editor.configuration.EditorConfigContributor;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -34,7 +35,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Andrea Sbarra
  */
 @Component(
-	property = "javax.portlet.name=" + CPPortletKeys.CP_DEFINITIONS,
+	property = {
+		"editor.name=ckeditor", "editor.name=ckeditor_classic",
+		"javax.portlet.name=" + CPPortletKeys.CP_DEFINITIONS
+	},
 	service = EditorConfigContributor.class
 )
 public class CommerceCKEditorConfigContributor
@@ -84,7 +88,11 @@ public class CommerceCKEditorConfigContributor
 			() -> {
 				String extraPlugins = (String)jsonObject.get("extraPlugins");
 
-				return extraPlugins.concat(",aicreator");
+				if (Validator.isNotNull(extraPlugins)) {
+					return extraPlugins.concat(",aicreator");
+				}
+
+				return StringPool.BLANK;
 			}
 		).put(
 			"isAICreatorOpenAIAPIKey",
@@ -137,7 +145,9 @@ public class CommerceCKEditorConfigContributor
 		for (String key : keys) {
 			JSONArray jsonArray = (JSONArray)jsonObject.get(key);
 
-			jsonArray.put(JSONUtil.put("AICreator"));
+			if (jsonArray != null) {
+				jsonArray.put(JSONUtil.put("AICreator"));
+			}
 		}
 	}
 
