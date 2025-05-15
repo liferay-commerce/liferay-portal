@@ -89,6 +89,7 @@ if ((commerceTermEntry != null) && (commerceTermEntry.getExpirationDate() != nul
 							<div class="entry-content form-group">
 								<liferay-ui:input-localized
 									defaultLanguageId="<%= themeDisplay.getLanguageId() %>"
+									editorName="<%= commerceTermEntryDisplayContext.getEditorName() %>"
 									name="descriptionMapAsXML"
 									type="editor"
 									xml="<%= descriptionMapAsXML %>"

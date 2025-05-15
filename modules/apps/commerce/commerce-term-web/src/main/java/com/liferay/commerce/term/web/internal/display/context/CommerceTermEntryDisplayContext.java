@@ -16,6 +16,7 @@ import com.liferay.commerce.term.web.internal.display.context.helper.CommerceTer
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
@@ -154,6 +155,14 @@ public class CommerceTermEntryDisplayContext {
 		).setMVCRenderCommandName(
 			"/commerce_term_entry/edit_commerce_term_entry"
 		).buildPortletURL();
+	}
+
+	public String getEditorName() {
+		if (FeatureFlagManagerUtil.isEnabled("LPD-11235")) {
+			return "ckeditor5_classic";
+		}
+
+		return "ckeditor_classic";
 	}
 
 	public List<HeaderActionModel> getHeaderActionModels() throws Exception {
