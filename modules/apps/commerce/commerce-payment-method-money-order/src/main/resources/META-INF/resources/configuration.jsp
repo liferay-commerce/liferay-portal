@@ -26,6 +26,7 @@ String messageAsLocalizedXML = moneyOrderGroupServiceConfiguration.messageAsLoca
 		<div id="<portlet:namespace />message">
 			<aui:field-wrapper label="message">
 				<liferay-ui:input-localized
+					editorName='<%= FeatureFlagManagerUtil.isEnabled("LPD-11235") ? "ckeditor5_classic" : "ckeditor_classic" %>'
 					fieldPrefix="settings"
 					fieldPrefixSeparator="--"
 					name="messageAsLocalizedXML"
