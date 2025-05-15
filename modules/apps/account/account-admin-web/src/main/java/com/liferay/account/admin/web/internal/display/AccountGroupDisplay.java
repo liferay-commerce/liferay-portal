@@ -82,7 +82,9 @@ public class AccountGroupDisplay {
 	}
 
 	private long _getAccountEntriesCount(AccountGroup accountGroup) {
-		List<AccountGroupRel> accountGroupRelList = AccountGroupRelLocalServiceUtil.getAccountGroupRels(accountGroup.getAccountGroupId(), AccountEntry.class.getName());
+		List<AccountGroupRel> accountGroupRelList =
+			AccountGroupRelLocalServiceUtil.getAccountGroupRels(
+				accountGroup.getAccountGroupId(), AccountEntry.class.getName());
 
 		return accountGroupRelList.size();
 	}
