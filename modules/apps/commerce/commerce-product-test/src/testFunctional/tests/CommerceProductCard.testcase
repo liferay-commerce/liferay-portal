@@ -1862,7 +1862,7 @@ definition {
 
 			CommerceEntry.gotoMenuTab(menuTab = "Entries");
 
-			var promoPrice = TestUtils.getElementTextContent(element = "//td[contains(.,'MIN93018')]/following-sibling::td[3]");
+			var promoPrice = TestUtils.getElementTextContent(element = "//td[contains(.,'MIN93018')]/following-sibling::td[4]");
 
 			CommerceProducts.openProductsAdmin();
 
