@@ -769,6 +769,8 @@ test('LPD-3259 As a buyer with approval workflow, when I click review order in m
 		channels.items[0].name
 	);
 
+	await page.waitForLoadState('load');
+
 	await (
 		await commerceAdminChannelDetailsPage.commerceChannelHealthChecksTableRowAction(
 			'Fix Issue',
