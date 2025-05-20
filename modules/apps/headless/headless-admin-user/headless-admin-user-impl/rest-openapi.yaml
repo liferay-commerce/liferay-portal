@@ -528,7 +528,6 @@ components:
                         A list of keywords describing the organization.
                     items:
                         type: string
-                    readOnly: true
                     type: array
                 location:
                     description:
@@ -919,12 +918,10 @@ components:
                 name:
                     description:
                         The role's name.
-                    readOnly: true
                     type: string
                 name_i18n:
                     additionalProperties:
                         type: string
-                    readOnly: true
                     type: object
                 roleType:
                     description:
@@ -1242,7 +1239,6 @@ components:
                 embeddedTaxonomyCategory:
                     description:
                         Optional field with the embedded taxonomy category, can be embedded with nestedFields
-                    readOnly: true
                     type: object
                 taxonomyCategoryId:
                     description:
@@ -1253,14 +1249,12 @@ components:
                 taxonomyCategoryName:
                     description:
                         The category's name.
-                    readOnly: true
                     type: string
                 taxonomyCategoryName_i18n:
                     additionalProperties:
                         type: string
                     description:
                         The localized category's names.
-                    readOnly: true
                     type: object
                 taxonomyCategoryReference:
                     description:
