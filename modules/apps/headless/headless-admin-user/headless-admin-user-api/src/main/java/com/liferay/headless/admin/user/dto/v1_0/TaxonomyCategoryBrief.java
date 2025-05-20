@@ -91,7 +91,7 @@ public class TaxonomyCategoryBrief implements Serializable {
 	@GraphQLField(
 		description = "Optional field with the embedded taxonomy category, can be embedded with nestedFields"
 	)
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Object embeddedTaxonomyCategory;
 
 	@JsonIgnore
@@ -177,7 +177,7 @@ public class TaxonomyCategoryBrief implements Serializable {
 	}
 
 	@GraphQLField(description = "The category's name.")
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String taxonomyCategoryName;
 
 	@JsonIgnore
@@ -225,7 +225,7 @@ public class TaxonomyCategoryBrief implements Serializable {
 	}
 
 	@GraphQLField(description = "The localized category's names.")
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Map<String, String> taxonomyCategoryName_i18n;
 
 	@JsonIgnore

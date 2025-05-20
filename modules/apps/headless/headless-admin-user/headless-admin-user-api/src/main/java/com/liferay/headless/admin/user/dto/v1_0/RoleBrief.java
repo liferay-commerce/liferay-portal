@@ -208,7 +208,7 @@ public class RoleBrief implements Serializable {
 	}
 
 	@GraphQLField(description = "The role's name.")
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String name;
 
 	@JsonIgnore
@@ -251,7 +251,7 @@ public class RoleBrief implements Serializable {
 	}
 
 	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Map<String, String> name_i18n;
 
 	@JsonIgnore
