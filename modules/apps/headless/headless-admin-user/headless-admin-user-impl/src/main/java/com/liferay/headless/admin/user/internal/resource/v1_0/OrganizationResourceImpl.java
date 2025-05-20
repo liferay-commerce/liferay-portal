@@ -12,6 +12,8 @@ import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.service.AccountEntryOrganizationRelLocalService;
 import com.liferay.account.service.AccountEntryOrganizationRelService;
 import com.liferay.account.service.AccountEntryService;
+import com.liferay.asset.kernel.exception.DuplicateAssetCategoryExternalReferenceCodeException;
+import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.headless.admin.user.dto.v1_0.Account;
 import com.liferay.headless.admin.user.dto.v1_0.AccountBrief;
@@ -22,7 +24,10 @@ import com.liferay.headless.admin.user.dto.v1_0.Organization;
 import com.liferay.headless.admin.user.dto.v1_0.OrganizationContactInformation;
 import com.liferay.headless.admin.user.dto.v1_0.Phone;
 import com.liferay.headless.admin.user.dto.v1_0.PostalAddress;
+import com.liferay.headless.admin.user.dto.v1_0.RoleBrief;
 import com.liferay.headless.admin.user.dto.v1_0.Service;
+import com.liferay.headless.admin.user.dto.v1_0.TaxonomyCategoryBrief;
+import com.liferay.headless.admin.user.dto.v1_0.TaxonomyCategoryReference;
 import com.liferay.headless.admin.user.dto.v1_0.UserAccount;
 import com.liferay.headless.admin.user.dto.v1_0.WebUrl;
 import com.liferay.headless.admin.user.internal.dto.v1_0.converter.constants.DTOConverterConstants;
@@ -39,6 +44,7 @@ import com.liferay.headless.admin.user.resource.v1_0.OrganizationResource;
 import com.liferay.headless.admin.user.resource.v1_0.RoleResource;
 import com.liferay.petra.string.CharPool;
 import com.liferay.portal.kernel.exception.DuplicateOrganizationException;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -47,6 +53,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ListTypeConstants;
 import com.liferay.portal.kernel.model.OrgLabor;
 import com.liferay.portal.kernel.model.OrganizationConstants;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.Website;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -743,11 +750,79 @@ public class OrganizationResourceImpl extends BaseOrganizationResourceImpl {
 		return organization;
 	}
 
+	private com.liferay.portal.kernel.model.Organization _addRoleRel(
+			com.liferay.portal.kernel.model.Organization organization,
+			RoleBrief roleBrief)
+		throws Exception {
+
+		String externalReferenceCode = roleBrief.getExternalReferenceCode();
+
+		if (Validator.isNull(externalReferenceCode)) {
+			return organization;
+		}
+
+		try {
+			Role role = _roleLocalService.getOrAddIncompleteRole(
+				externalReferenceCode, organization.getCompanyId(),
+				contextUser.getUserId(), Role.class.getName(), 0,
+				roleBrief.getName(), roleBrief.getRoleType());
+
+			_roleLocalService.addGroupRole(
+				organization.getGroupId(), role.getRoleId());
+		}
+		catch (SystemException systemException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(systemException);
+			}
+		}
+
+		return organization;
+	}
+
+	private com.liferay.portal.kernel.model.Organization
+			_addTaxonomyCategoryRel(
+				com.liferay.portal.kernel.model.Organization organization,
+				TaxonomyCategoryBrief taxonomyCategoryBrief)
+		throws Exception {
+
+		TaxonomyCategoryReference taxonomyCategoryReference =
+			taxonomyCategoryBrief.getTaxonomyCategoryReference();
+
+		if (taxonomyCategoryReference == null) {
+			return organization;
+		}
+
+		String externalReferenceCode =
+			taxonomyCategoryReference.getExternalReferenceCode();
+
+		if (Validator.isNull(externalReferenceCode)) {
+			return organization;
+		}
+
+		try {
+			_assetCategoryLocalService.getOrAddIncompleteCategory(
+				externalReferenceCode, contextUser.getUserId(),
+				organization.getGroupId());
+		}
+		catch (DuplicateAssetCategoryExternalReferenceCodeException
+					duplicateAssetCategoryExternalReferenceCodeException) {
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(
+					duplicateAssetCategoryExternalReferenceCodeException);
+			}
+		}
+
+		return organization;
+	}
+
 	private ServiceContext _createServiceContext(Organization organization)
 		throws Exception {
 
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			contextHttpServletRequest);
+
+		serviceContext.setAssetTagNames(organization.getKeywords());
 
 		serviceContext.setExpandoBridgeAttributes(
 			CustomFieldsUtil.toMap(
@@ -1303,6 +1378,27 @@ public class OrganizationResourceImpl extends BaseOrganizationResourceImpl {
 			}
 		}
 
+		RoleBrief[] roleBriefs = organization.getRoleBriefs();
+
+		if (ArrayUtil.isNotEmpty(roleBriefs)) {
+			for (RoleBrief roleBrief : roleBriefs) {
+				serviceBuilderOrganization = _addRoleRel(
+					serviceBuilderOrganization, roleBrief);
+			}
+		}
+
+		TaxonomyCategoryBrief[] taxonomyCategoryBriefs =
+			organization.getTaxonomyCategoryBriefs();
+
+		if (ArrayUtil.isNotEmpty(taxonomyCategoryBriefs)) {
+			for (TaxonomyCategoryBrief taxonomyCategoryBrief :
+					taxonomyCategoryBriefs) {
+
+				serviceBuilderOrganization = _addTaxonomyCategoryRel(
+					serviceBuilderOrganization, taxonomyCategoryBrief);
+			}
+		}
+
 		return ResourcePermissionUtil.setResourcePermissions(
 			serviceBuilderOrganization,
 			serviceBuilderOrganization.getCompanyId(),
@@ -1333,6 +1429,9 @@ public class OrganizationResourceImpl extends BaseOrganizationResourceImpl {
 
 	@Reference(target = DTOConverterConstants.ACCOUNT_RESOURCE_DTO_CONVERTER)
 	private DTOConverter<AccountEntry, Account> _accountResourceDTOConverter;
+
+	@Reference
+	private AssetCategoryLocalService _assetCategoryLocalService;
 
 	@Reference
 	private DLAppLocalService _dlAppLocalService;
