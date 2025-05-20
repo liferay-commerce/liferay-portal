@@ -16,8 +16,10 @@ import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.asset.kernel.model.AssetVocabulary;
+import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.asset.kernel.service.AssetTagLocalService;
+import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.asset.test.util.AssetTestUtil;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.expando.kernel.model.ExpandoColumn;
@@ -34,6 +36,9 @@ import com.liferay.headless.admin.user.client.dto.v1_0.Organization;
 import com.liferay.headless.admin.user.client.dto.v1_0.OrganizationContactInformation;
 import com.liferay.headless.admin.user.client.dto.v1_0.Phone;
 import com.liferay.headless.admin.user.client.dto.v1_0.PostalAddress;
+import com.liferay.headless.admin.user.client.dto.v1_0.RoleBrief;
+import com.liferay.headless.admin.user.client.dto.v1_0.TaxonomyCategoryBrief;
+import com.liferay.headless.admin.user.client.dto.v1_0.TaxonomyCategoryReference;
 import com.liferay.headless.admin.user.client.dto.v1_0.WebUrl;
 import com.liferay.headless.admin.user.client.pagination.Page;
 import com.liferay.headless.admin.user.client.pagination.Pagination;
@@ -981,6 +986,9 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 	private void _testGetOrganizationWithNestedFields() throws Exception {
 		Organization postOrganization = testGetOrganization_addOrganization();
 
+		postOrganization.setKeywords(
+			new String[] {RandomTestUtil.randomString()});
+
 		postOrganization.setOrganizationContactInformation(
 			_addOrganizationContactInformation());
 
@@ -1080,6 +1088,12 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 		Creator creator = getOrganization.getCreator();
 
 		Assert.assertTrue(creator.getId() == TestPropsValues.getUserId());
+
+		Assert.assertTrue(
+			ArrayUtil.exists(
+				postOrganization.getKeywords(),
+				keyword -> Objects.equals(
+					keyword, getOrganization.getKeywords()[0])));
 
 		Assert.assertTrue(
 			Objects.equals(
@@ -1216,6 +1230,66 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 		organization.setPermissions(
 			new Permission[] {permission1, permission2});
 
+		Role role1 = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		RoleBrief roleBrief1 = new RoleBrief() {
+			{
+				externalReferenceCode = role1.getExternalReferenceCode();
+				name = role1.getName();
+				roleType = role1.getType();
+			}
+		};
+		RoleBrief roleBrief2 = new RoleBrief() {
+			{
+				externalReferenceCode = RandomTestUtil.randomString();
+				name = RandomTestUtil.randomString();
+				roleType = RoleConstants.TYPE_ORGANIZATION;
+			}
+		};
+
+		organization.setRoleBriefs(new RoleBrief[] {roleBrief1, roleBrief2});
+
+		AssetVocabulary assetVocabulary =
+			_assetVocabularyLocalService.addVocabulary(
+				_user.getUserId(), TestPropsValues.getGroupId(),
+				RandomTestUtil.randomString(), new ServiceContext());
+
+		AssetCategory assetCategory1 = _assetCategoryLocalService.addCategory(
+			_user.getUserId(), TestPropsValues.getGroupId(),
+			RandomTestUtil.randomString(), assetVocabulary.getVocabularyId(),
+			new ServiceContext());
+
+		TaxonomyCategoryBrief taxonomyCategoryBrief1 =
+			new TaxonomyCategoryBrief() {
+				{
+					taxonomyCategoryName = assetCategory1.getTitle();
+					taxonomyCategoryReference =
+						new TaxonomyCategoryReference() {
+							{
+								externalReferenceCode =
+									assetCategory1.getExternalReferenceCode();
+							}
+						};
+				}
+			};
+		TaxonomyCategoryBrief taxonomyCategoryBrief2 =
+			new TaxonomyCategoryBrief() {
+				{
+					taxonomyCategoryReference =
+						new TaxonomyCategoryReference() {
+							{
+								externalReferenceCode =
+									RandomTestUtil.randomString();
+							}
+						};
+				}
+			};
+
+		organization.setTaxonomyCategoryBriefs(
+			new TaxonomyCategoryBrief[] {
+				taxonomyCategoryBrief1, taxonomyCategoryBrief2
+			});
+
 		waitForFinish(
 			"COMPLETED",
 			HTTPTestUtil.invokeToJSONObject(
@@ -1235,6 +1309,12 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 		Assert.assertEquals(
 			accountEntry1.getAccountEntryId(),
 			accountEntry2.getAccountEntryId());
+
+		Role role2 = _roleLocalService.fetchRoleByExternalReferenceCode(
+			roleBrief1.getExternalReferenceCode(),
+			TestPropsValues.getCompanyId());
+
+		Assert.assertEquals(role1.getRoleId(), role2.getRoleId());
 
 		com.liferay.portal.kernel.model.Organization
 			serviceBuilderOrganization =
@@ -1287,6 +1367,26 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 						accountEntry3.getAccountEntryId()));
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_INCOMPLETE, accountEntry3.getStatus());
+
+		Assert.assertTrue(
+			ArrayUtil.exists(
+				organization.getRoleBriefs(),
+				roleBrief -> Objects.equals(
+					roleBrief.getExternalReferenceCode(),
+					role2.getExternalReferenceCode())));
+
+		Role role3 = _roleLocalService.fetchRoleByExternalReferenceCode(
+			roleBrief2.getExternalReferenceCode(),
+			TestPropsValues.getCompanyId());
+
+		Assert.assertTrue(
+			ArrayUtil.exists(
+				organization.getRoleBriefs(),
+				roleBrief -> Objects.equals(
+					roleBrief.getExternalReferenceCode(),
+					role3.getExternalReferenceCode())));
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_INCOMPLETE, role3.getStatus());
 
 		Role serviceBuilderRole2 =
 			_roleLocalService.fetchRoleByExternalReferenceCode(
@@ -1347,6 +1447,54 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_INCOMPLETE,
 			serviceBuilderRole3.getStatus());
+
+		TaxonomyCategoryReference taxonomyCategoryReference1 =
+			taxonomyCategoryBrief1.getTaxonomyCategoryReference();
+
+		AssetCategory assetCategory2 =
+			_assetCategoryLocalService.
+				fetchAssetCategoryByExternalReferenceCode(
+					taxonomyCategoryReference1.getExternalReferenceCode(),
+					TestPropsValues.getGroupId());
+
+		Assert.assertEquals(
+			assetCategory1.getCategoryId(), assetCategory2.getCategoryId());
+
+		Assert.assertTrue(
+			ArrayUtil.exists(
+				organization.getTaxonomyCategoryBriefs(),
+				taxonomyCategoryBrief -> {
+					TaxonomyCategoryReference taxonomyCategoryReference =
+						taxonomyCategoryBrief.getTaxonomyCategoryReference();
+
+					return Objects.equals(
+						taxonomyCategoryReference.getExternalReferenceCode(),
+						taxonomyCategoryReference1.getExternalReferenceCode());
+				}));
+
+		TaxonomyCategoryReference taxonomyCategoryReference2 =
+			taxonomyCategoryBrief2.getTaxonomyCategoryReference();
+
+		AssetCategory assetCategory3 =
+			_assetCategoryLocalService.
+				fetchAssetCategoryByExternalReferenceCode(
+					taxonomyCategoryReference2.getExternalReferenceCode(),
+					serviceBuilderOrganization.getGroupId());
+
+		Assert.assertTrue(
+			ArrayUtil.exists(
+				organization.getTaxonomyCategoryBriefs(),
+				taxonomyCategoryBrief -> {
+					TaxonomyCategoryReference taxonomyCategoryReference =
+						taxonomyCategoryBrief.getTaxonomyCategoryReference();
+
+					return Objects.equals(
+						taxonomyCategoryReference.getExternalReferenceCode(),
+						taxonomyCategoryReference2.getExternalReferenceCode());
+				}));
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_INCOMPLETE, assetCategory3.getStatus());
 	}
 
 	private void _testPostOrganizationWithCustomFields() throws Exception {
@@ -1493,6 +1641,9 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 		_accountEntryOrganizationRelLocalService;
 
 	@Inject
+	private AssetCategoryLocalService _assetCategoryLocalService;
+
+	@Inject
 	private AssetEntryAssetCategoryRelLocalService
 		_assetEntryAssetCategoryRelLocalService;
 
@@ -1501,6 +1652,9 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 
 	@Inject
 	private AssetTagLocalService _assetTagLocalService;
+
+	@Inject
+	private AssetVocabularyLocalService _assetVocabularyLocalService;
 
 	@Inject
 	private ClassNameLocalService _classNameLocalService;
