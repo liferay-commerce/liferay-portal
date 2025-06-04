@@ -516,6 +516,7 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 	public void testPutOrganizationByExternalReferenceCode() throws Exception {
 		super.testPutOrganizationByExternalReferenceCode();
 
+		_testPutOrganizationByExternalReferenceCodeKeepsExternalReferenceCode();
 		_testPutOrganizationByExternalReferenceCodeWithImageExternalReferenceCode();
 	}
 
@@ -1274,6 +1275,24 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 		assertHttpResponseStatusCode(
 			400,
 			organizationResource.postOrganizationHttpResponse(organization));
+	}
+
+	private void _testPutOrganizationByExternalReferenceCodeKeepsExternalReferenceCode()
+		throws Exception {
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+		Organization organization = new Organization() {
+			{
+				setName(RandomTestUtil.randomString());
+			}
+		};
+
+		Organization putOrganization =
+			organizationResource.putOrganizationByExternalReferenceCode(
+				externalReferenceCode, organization);
+
+		Assert.assertEquals(
+			externalReferenceCode, putOrganization.getExternalReferenceCode());
 	}
 
 	private void _testPutOrganizationByExternalReferenceCodeWithImageExternalReferenceCode()
