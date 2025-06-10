@@ -14,6 +14,8 @@ import {loginTest} from '../../../../fixtures/loginTest';
 import {pageViewModePagesTest} from '../../../../fixtures/pageViewModePagesTest';
 import getRandomString from '../../../../utils/getRandomString';
 import {waitForAlert} from '../../../../utils/waitForAlert';
+import getPageDefinition from '../../../layout-content-page-editor-web/main/utils/getPageDefinition';
+import getWidgetDefinition from '../../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
 
 export const test = mergeTests(
 	apiHelpersTest,
@@ -69,48 +71,55 @@ test(
 
 test(
 	'Add Product to Cart with Backorders Enabled',
-	{tag: '@LPD-55441'},
+	{tag: ['@COMMERCE-6164', '@LPD-55441']},
 	async ({
 		apiHelpers,
+		commerceAdminChannelsPage,
 		commerceAdminProductDetailsConfigurationPage,
 		commerceAdminProductDetailsPage,
 		commerceAdminProductPage,
 		page,
 		productDetailsPage,
 		site,
-		widgetPagePage,
 	}) => {
-		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
-			groupId: site.id,
+		await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getWidgetDefinition({
+					id: getRandomString(),
+					widgetName:
+						'com_liferay_commerce_product_content_web_internal_portlet_CPContentPortlet',
+				}),
+			]),
+			siteId: site.id,
 			title: getRandomString(),
 		});
 
-		await apiHelpers.headlessCommerceAdminChannel.postChannel({
-			name: 'View product details',
-			siteGroupId: site.id,
-		});
+		const channel =
+			await apiHelpers.headlessCommerceAdminChannel.postChannel({
+				name: getRandomString(),
+				siteGroupId: site.id,
+			});
+
+		await commerceAdminChannelsPage.changeCommerceChannelSiteType(
+			channel.name,
+			'B2B'
+		);
 
 		const catalog =
-			await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
-				name: 'View product details',
-			});
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
 
 		const product =
 			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
 				catalogId: catalog.id,
-				name: {en_US: 'product'},
+				name: {en_US: getRandomString()},
 			});
 
 		await commerceAdminProductPage.gotoProduct(product.name['en_US']);
-
 		await commerceAdminProductDetailsPage.goToProductConfiguration();
-
 		await commerceAdminProductDetailsConfigurationPage.allowBackOrder.check();
-
 		await commerceAdminProductDetailsConfigurationPage.lowStockThreshold.fill(
 			'5.0'
 		);
-
 		await commerceAdminProductDetailsPage.publishLink.click();
 
 		await waitForAlert(page);
@@ -120,25 +129,18 @@ test(
 			type: 'business',
 		});
 
-		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
-
-		await widgetPagePage.addPortlet('Product Details');
-
-		await page.goto(`/web/${site.name}/p/product`);
+		await page.goto(`/web/${site.name}/p/${product.name['en_US']}`);
 
 		await expect(productDetailsPage.addToCartButton).toBeEnabled();
 
 		await commerceAdminProductPage.gotoProduct(product.name['en_US']);
-
 		await commerceAdminProductDetailsPage.goToProductConfiguration();
-
 		await commerceAdminProductDetailsConfigurationPage.allowBackOrder.click();
-
 		await commerceAdminProductDetailsPage.publishLink.click();
 
 		await waitForAlert(page);
 
-		await page.goto(`/web/${site.name}/p/product`);
+		await page.goto(`/web/${site.name}/p/${product.name['en_US']}`);
 
 		await expect(productDetailsPage.addToCartButton).toBeDisabled();
 	}
