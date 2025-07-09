@@ -1549,3 +1549,34 @@ test(
 		).toBeVisible();
 	}
 );
+
+test(
+	'Allow uploading user profile image of any size when max file size is set to 0',
+	{tag: '@LPD-1799'},
+	async ({
+		accountSettingsPage,
+		editUserPage,
+		page,
+		usersAndOrganizationsPage,
+	}) => {
+		await accountSettingsPage.updateUserImageMaxFileSizeInInstanceSettings(
+			0
+		);
+
+		await usersAndOrganizationsPage.goToUsers();
+
+		await (
+			await usersAndOrganizationsPage.usersTableRowLink('test')
+		).click();
+
+		await editUserPage.changeImageButton.click();
+
+		await page.locator('text=Upload Image').waitFor({state: 'visible'});
+
+		const iframeElement = await page.frameLocator('iframe');
+
+		await expect(
+			iframeElement.getByText('Upload images no larger than 0 B.')
+		).not.toBeVisible();
+	}
+);
