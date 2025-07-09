@@ -26,7 +26,7 @@ public class CartEntityModel implements EntityModel {
 			new CollectionEntityField(
 				new IntegerEntityField(
 					"accountId",
-					locale -> Field.getSortableFieldName("commerceAccountId"))),
+					locale -> Field.getSortableFieldName("commerceAccountId_Number"))),
 			new CollectionEntityField(
 				new IntegerEntityField("orderStatus", locale -> "orderStatus")),
 			new DateTimeEntityField(
