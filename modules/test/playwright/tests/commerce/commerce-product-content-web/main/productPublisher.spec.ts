@@ -84,3 +84,58 @@ test('LPD-30188 Product publisher tag filters can be added and removed', async (
 		await productPublisherPage.productLink(product2.name.en_US)
 	).toBeVisible();
 });
+
+test(
+	'Product names are properly escaped and appear correctly',
+	{tag: ['@LPD-3300', '@LPD-58881']},
+	async ({
+		apiHelpers,
+		commerceAdminChannelsPage,
+		page,
+		productPublisherPage,
+		site,
+		widgetPagePage,
+	}) => {
+		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: site.id,
+			title: getRandomString(),
+		});
+
+		const channel =
+			await apiHelpers.headlessCommerceAdminChannel.postChannel({
+				siteGroupId: site.id,
+			});
+
+		await commerceAdminChannelsPage.changeCommerceChannelSiteType(
+			channel.name,
+			'B2B'
+		);
+
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+		const productName1 = 'B "&" B';
+		await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+			catalogId: catalog.id,
+			name: {en_US: productName1},
+		});
+
+		const productName2 =
+			'"></option><img src=x onerror=alert(document.location)>';
+		await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+			catalogId: catalog.id,
+			name: {en_US: productName2},
+		});
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+
+		await widgetPagePage.addPortlet('Product Publisher');
+
+		await expect(
+			await productPublisherPage.productLink(productName1)
+		).toBeVisible();
+		await expect(
+			await productPublisherPage.productLink(productName2)
+		).toBeVisible();
+	}
+);
