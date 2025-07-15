@@ -24,6 +24,7 @@ export const test = mergeTests(
 
 test('LPD-30188 Product publisher tag filters can be added and removed', async ({
 	apiHelpers,
+	commerceAdminChannelsPage,
 	page,
 	productPublisherPage,
 	site,
@@ -34,9 +35,14 @@ test('LPD-30188 Product publisher tag filters can be added and removed', async (
 		title: getRandomString(),
 	});
 
-	await apiHelpers.headlessCommerceAdminChannel.postChannel({
+	const channel = await apiHelpers.headlessCommerceAdminChannel.postChannel({
 		siteGroupId: site.id,
 	});
+
+	await commerceAdminChannelsPage.changeCommerceChannelSiteType(
+		channel.name,
+		'B2B'
+	);
 
 	const catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
 
