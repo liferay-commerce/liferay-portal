@@ -10,6 +10,7 @@ import com.liferay.headless.batch.engine.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.object.dto.v1_0.BatchEngineJobResponse;
 import com.liferay.headless.object.dto.v1_0.ObjectEntryCMSBulkActionRequest;
 import com.liferay.headless.object.dto.v1_0.ObjectEntryCMSBulkActionResponse;
+import com.liferay.headless.object.internal.odata.entity.v1_0.ObjectEntryCMSBulkActionEntityModel;
 import com.liferay.headless.object.resource.v1_0.ObjectEntryCMSBulkActionResource;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
@@ -17,11 +18,21 @@ import com.liferay.object.model.ObjectEntryFolder;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.odata.entity.EntityModel;
+import com.liferay.portal.search.rest.dto.v1_0.SearchResult;
+import com.liferay.portal.search.rest.resource.v1_0.SearchResultResource;
+import com.liferay.portal.vulcan.pagination.Page;
+import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.permission.Permission;
+import com.liferay.portal.vulcan.resource.EntityModelResource;
+
+import jakarta.ws.rs.core.MultivaluedMap;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,7 +52,13 @@ import org.osgi.service.component.annotations.ServiceScope;
 	service = ObjectEntryCMSBulkActionResource.class
 )
 public class ObjectEntryCMSBulkActionResourceImpl
-	extends BaseObjectEntryCMSBulkActionResourceImpl {
+	extends BaseObjectEntryCMSBulkActionResourceImpl
+	implements EntityModelResource {
+
+	@Override
+	public EntityModel getEntityModel(MultivaluedMap multivaluedMap) {
+		return _objectEntryCMSBulkActionEntityModel;
+	}
 
 	@Override
 	public ObjectEntryCMSBulkActionResponse postObjectEntryCMSBulkAction(
@@ -52,9 +69,29 @@ public class ObjectEntryCMSBulkActionResourceImpl
 		Long[] ids = objectEntryCMSBulkActionRequest.getIds();
 
 		if (ArrayUtil.isEmpty(ids)) {
+			List<Long> searchResultIDs = new ArrayList<>();
 
-			// Retrieve results from original query + filters + search
+			_searchResultResource.setContextAcceptLanguage(
+				contextAcceptLanguage);
+			_searchResultResource.setContextCompany(contextCompany);
+			_searchResultResource.setContextHttpServletResponse(
+				contextHttpServletResponse);
+			_searchResultResource.setContextHttpServletRequest(
+				contextHttpServletRequest);
+			_searchResultResource.setContextUser(contextUser);
 
+			Page<SearchResult> searchPage = _searchResultResource.getSearchPage(
+				null, true, null, null, search, filter, Pagination.of(1, 100),
+				null);
+
+			for (SearchResult searchResult : searchPage.getItems()) {
+				JSONObject jsonObject = _jsonFactory.createJSONObject(
+					String.valueOf(searchResult.getEmbedded()));
+
+				searchResultIDs.add(jsonObject.getLong("id"));
+			}
+
+			ids = searchResultIDs.toArray(new Long[0]);
 		}
 
 		// Organize IDs by their ObjectDefinition
@@ -567,12 +604,22 @@ public class ObjectEntryCMSBulkActionResourceImpl
 	private ImportTaskResource.Factory _importTaskResourceFactory;
 
 	@Reference
+	private JSONFactory _jsonFactory;
+
+	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	private final ObjectEntryCMSBulkActionEntityModel
+		_objectEntryCMSBulkActionEntityModel =
+			new ObjectEntryCMSBulkActionEntityModel();
 
 	@Reference
 	private ObjectEntryFolderLocalService _objectEntryFolderLocalService;
 
 	@Reference
 	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Reference
+	private SearchResultResource _searchResultResource;
 
 }
