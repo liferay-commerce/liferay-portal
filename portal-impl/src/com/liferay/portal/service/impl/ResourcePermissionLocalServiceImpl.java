@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.internal.service.permission.ModelPermissionsImp
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.AuditedModel;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupedModel;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.Resource;
@@ -47,6 +48,7 @@ import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionUpdateHandler;
 import com.liferay.portal.kernel.security.permission.PermissionUpdateHandlerRegistryUtil;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.SQLStateAcceptor;
@@ -69,6 +71,7 @@ import com.liferay.portal.security.permission.PermissionCacheUtil;
 import com.liferay.portal.service.base.ResourcePermissionLocalServiceBaseImpl;
 import com.liferay.portal.service.persistence.impl.ResourcePermissionPersistenceImpl;
 import com.liferay.portal.util.PropsValues;
+import com.liferay.portlet.documentlibrary.constants.DLConstants;
 import com.liferay.util.dao.orm.CustomSQLUtil;
 
 import java.lang.reflect.Field;
@@ -1991,6 +1994,18 @@ public class ResourcePermissionLocalServiceImpl
 					actions =
 						ResourceActionsUtil.getModelResourceGroupDefaultActions(
 							name);
+				}
+
+				if (name.equals(DLConstants.RESOURCE_NAME)) {
+					Group group = GroupLocalServiceUtil.getGroup(groupId);
+
+					if (group.isSite() &&
+						(!group.isRegularSite() ||
+						 group.isUserPersonalSite())) {
+
+						actions = ListUtil.filter(
+							actions, action -> action.equals("VIEW"));
+					}
 				}
 
 				Role groupRole = _roleLocalService.getDefaultGroupRole(groupId);
