@@ -23,7 +23,7 @@ public class ViewRecentAssetsJSPSectionFragmentRenderer
 
 	@Override
 	public String getLabelKey() {
-		return "recentAssets";
+		return "recent-assets";
 	}
 
 	@Override

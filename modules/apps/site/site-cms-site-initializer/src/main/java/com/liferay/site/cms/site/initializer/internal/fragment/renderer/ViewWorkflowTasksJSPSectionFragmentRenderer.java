@@ -23,7 +23,7 @@ public class ViewWorkflowTasksJSPSectionFragmentRenderer
 
 	@Override
 	public String getLabelKey() {
-		return "workflowTasks";
+		return "cms-workflow-tasks";
 	}
 
 	@Override

@@ -23,7 +23,7 @@ public class ViewQuickActionsJSPSectionFragmentRenderer
 
 	@Override
 	public String getLabelKey() {
-		return "quickActions";
+		return "quick-actions";
 	}
 
 	@Override

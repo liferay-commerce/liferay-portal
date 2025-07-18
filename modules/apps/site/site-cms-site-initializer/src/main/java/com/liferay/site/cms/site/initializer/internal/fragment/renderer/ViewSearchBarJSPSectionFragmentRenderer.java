@@ -23,7 +23,7 @@ public class ViewSearchBarJSPSectionFragmentRenderer
 
 	@Override
 	public String getLabelKey() {
-		return "searchBar";
+		return "cms-search-bar";
 	}
 
 	@Override
