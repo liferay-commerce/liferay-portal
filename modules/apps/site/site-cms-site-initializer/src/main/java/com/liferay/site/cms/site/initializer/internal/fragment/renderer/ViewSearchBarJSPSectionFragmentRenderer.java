@@ -26,7 +26,7 @@ public class ViewSearchBarJSPSectionFragmentRenderer
 		return "searchBar";
 	}
 
-    @Override
+	@Override
 	protected ViewSearchBarDisplayContext getDisplayContext(
 		HttpServletRequest httpServletRequest) {
 

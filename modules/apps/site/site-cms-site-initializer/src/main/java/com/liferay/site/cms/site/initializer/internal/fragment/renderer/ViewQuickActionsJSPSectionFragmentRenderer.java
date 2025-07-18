@@ -26,7 +26,7 @@ public class ViewQuickActionsJSPSectionFragmentRenderer
 		return "quickActions";
 	}
 
-    @Override
+	@Override
 	protected ViewQuickActionsDisplayContext getDisplayContext(
 		HttpServletRequest httpServletRequest) {
 

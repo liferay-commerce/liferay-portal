@@ -26,7 +26,7 @@ public class ViewRecentAssetsJSPSectionFragmentRenderer
 		return "recentAssets";
 	}
 
-    @Override
+	@Override
 	protected ViewRecentAssetsDisplayContext getDisplayContext(
 		HttpServletRequest httpServletRequest) {
 
