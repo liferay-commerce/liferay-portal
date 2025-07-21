@@ -30,7 +30,7 @@ public class ViewWorkflowTasksJSPSectionFragmentRenderer
 	protected ViewWorkflowTasksDisplayContext getDisplayContext(
 		HttpServletRequest httpServletRequest) {
 
-		return new ViewWorkflowTasksDisplayContext(
+		return new ViewWorkflowTasksDisplayContext(httpServletRequest,
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY));
 	}
