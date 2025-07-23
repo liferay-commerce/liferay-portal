@@ -60,10 +60,8 @@ function MiniCart({
 	summaryDataMapper,
 	toggleable,
 }) {
-	const [isOpen, setIsOpen] = useState(!toggleable);
-	const [isUpdating, setIsUpdating] = useState(false);
-	const [editedItem, setEditedItem] = useState(null);
 	const [actionURLs, setActionURLs] = useState(cartActionURLs);
+	const [editedItem, setEditedItem] = useState(null);
 	const [CartViews, setCartViews] = useState({});
 	const [cartState, setCartState] = useState({
 		accountId,
@@ -71,6 +69,9 @@ function MiniCart({
 		id: orderId,
 		summary: {itemsQuantity},
 	});
+	const [isOpen, setIsOpen] = useState(!toggleable);
+	const [isUpdating, setIsUpdating] = useState(false);
+	const [replacementSKUList, setReplacementSKUList] = useState([]);
 
 	const closeCart = () => {
 		setIsOpen(false);
@@ -90,8 +91,6 @@ function MiniCart({
 
 		setIsOpen(true);
 	};
-
-	const [replacementSKUList, setReplacementSKUList] = useState([]);
 
 	const resetCartState = useCallback(
 		({accountId = 0, id = 0}) => {
@@ -158,22 +157,6 @@ function MiniCart({
 		},
 		[onAddToCart]
 	);
-
-	const updateReplacedSKUList = useCallback(
-		() =>
-			cartState.cartItems
-				? setReplacementSKUList(
-						cartState.cartItems.filter(
-							({replacedSku: replacedSKU}) => Boolean(replacedSKU)
-						)
-					)
-				: null,
-		[cartState.cartItems]
-	);
-
-	useEffect(() => {
-		updateReplacedSKUList();
-	}, [updateReplacedSKUList]);
 
 	useEffect(() => {
 		resolveCartViews(cartViews).then((views) => setCartViews(views));
