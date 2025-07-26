@@ -78,6 +78,9 @@ public interface OrganizationFinder {
 				<com.liferay.portal.kernel.model.Organization>
 					orderByComparator);
 
+	public java.util.List<com.liferay.portal.kernel.model.Organization>
+		findO_ByLogoId(long logoId);
+
 	public java.util.List<Object> findO_U_ByC_P(
 		long companyId, long parentOrganizationId,
 		com.liferay.portal.kernel.dao.orm.QueryDefinition<?> queryDefinition);

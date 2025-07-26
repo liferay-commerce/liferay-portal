@@ -125,6 +125,12 @@ public class OrganizationFinderUtil {
 			andOperator, start, end, orderByComparator);
 	}
 
+	public static java.util.List<com.liferay.portal.kernel.model.Organization>
+		findO_ByLogoId(long logoId) {
+
+		return getFinder().findO_ByLogoId(logoId);
+	}
+
 	public static java.util.List<Object> findO_U_ByC_P(
 		long companyId, long parentOrganizationId,
 		com.liferay.portal.kernel.dao.orm.QueryDefinition<?> queryDefinition) {
