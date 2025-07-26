@@ -84,6 +84,9 @@ public class OrganizationFinderImpl
 	public static final String FIND_O_BY_C_PO_N_L_S_C_Z_R_C =
 		OrganizationFinder.class.getName() + ".findO_ByC_PO_N_L_S_C_Z_R_C";
 
+	public static final String FIND_O_BY_LOGO_ID =
+		OrganizationFinder.class.getName() + ".findO_ByLogoId";
+
 	public static final String FIND_U_BY_C_S_O =
 		OrganizationFinder.class.getName() + ".findU_ByC_S_O";
 
@@ -620,6 +623,33 @@ public class OrganizationFinderImpl
 			}
 
 			return organizations;
+		}
+		catch (Exception exception) {
+			throw new SystemException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	@Override
+	public List<Organization> findO_ByLogoId(long logoId) {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			String sql = CustomSQLUtil.get(FIND_O_BY_LOGO_ID);
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			sqlQuery.addEntity("Organization_", OrganizationImpl.class);
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			queryPos.add(logoId);
+
+			return sqlQuery.list(true);
 		}
 		catch (Exception exception) {
 			throw new SystemException(exception);

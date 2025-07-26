@@ -510,6 +510,16 @@
 				Group_.groupId = ?
 		]]>
 	</sql>
+	<sql id="com.liferay.portal.kernel.service.persistence.OrganizationFinder.findO_ByLogoId">
+		<![CDATA[
+			SELECT
+				{Organization_.*}
+			FROM
+				Organization_
+			WHERE
+				Organization_.logoId = ?
+		]]>
+	</sql>
 	<sql id="com.liferay.portal.kernel.service.persistence.OrganizationFinder.findO_ByC_P">
 		<![CDATA[
 			SELECT
