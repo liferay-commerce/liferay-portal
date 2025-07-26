@@ -18,11 +18,14 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.OrganizationTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.TransactionalTestRule;
+
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -84,6 +87,19 @@ public class OrganizationFinderTest {
 			).build());
 
 		Assert.assertEquals(count1, count2);
+	}
+
+	@Test
+	public void testGetOrganizationByLogoId() {
+		_organization.setLogoId(RandomTestUtil.randomLong());
+
+		_organization = _organizationLocalService.updateOrganization(
+			_organization);
+
+		List<Organization> organizationList =
+			_organizationFinder.findO_ByLogoId(_organization.getLogoId());
+
+		Assert.assertTrue(organizationList.contains(_organization));
 	}
 
 	@DeleteAfterTestRun
