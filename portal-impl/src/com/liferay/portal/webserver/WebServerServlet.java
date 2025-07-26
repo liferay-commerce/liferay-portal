@@ -79,6 +79,7 @@ import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
 import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
+import com.liferay.portal.kernel.service.persistence.OrganizationFinderUtil;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.InactiveRequestHandler;
 import com.liferay.portal.kernel.servlet.PortalSessionThreadLocal;
@@ -685,16 +686,7 @@ public class WebServerServlet extends HttpServlet {
 			Organization organization = null;
 
 			List<Organization> organizations =
-				OrganizationLocalServiceUtil.dslQuery(
-					DSLQueryFactoryUtil.select(
-						OrganizationTable.INSTANCE
-					).from(
-						OrganizationTable.INSTANCE
-					).where(
-						OrganizationTable.INSTANCE.logoId.eq(imageId)
-					).limit(
-						0, 1
-					));
+				OrganizationFinderUtil.findO_ByLogoId(imageId);
 
 			if (ListUtil.isNotEmpty(organizations)) {
 				organization = organizations.get(0);
