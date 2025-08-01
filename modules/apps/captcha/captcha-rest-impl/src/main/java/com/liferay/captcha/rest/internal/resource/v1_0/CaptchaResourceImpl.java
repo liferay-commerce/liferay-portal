@@ -99,6 +99,12 @@ public class CaptchaResourceImpl extends BaseCaptchaResourceImpl {
 			throw new CaptchaTextException("Captcha is expired");
 		}
 
+		System.out.println("CAPTCHA CHECK OF ANSWER");
+
+		System.out.println("ANSWER GIVEN IN PARAMETER: " + captcha.getAnswer());
+
+		System.out.println("ANSWER IN THE JSON: " + jsonObject.getString("answer"));
+
 		if (!StringUtil.equalsIgnoreCase(
 				jsonObject.getString("answer"), captcha.getAnswer())) {
 

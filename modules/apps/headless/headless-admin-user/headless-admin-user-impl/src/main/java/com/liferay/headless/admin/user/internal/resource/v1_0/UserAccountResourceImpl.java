@@ -1023,12 +1023,15 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 			serviceContext.setPortalURL(company.getPortalURL(0));
 		}
 
+		System.out.println("CAPTHA CHECK: IS IT A GUEST USER? " + contextUser.isGuestUser());
 		if (contextUser.isGuestUser()) {
+			System.out.println("IS CREATE CAPTCHA ENABLED? " + _captchaSettings.isCreateAccountCaptchaEnabled());
 			if (_captchaSettings.isCreateAccountCaptchaEnabled()) {
 				try {
 					_captchaResource.setContextCompany(contextCompany);
 					_captchaResource.setContextUser(contextUser);
 
+					System.out.println("We are still in useraccountresurceimpl, answer is " + captchaAnswer);
 					_captchaResource.postCaptchaResponse(
 						new Captcha() {
 							{
