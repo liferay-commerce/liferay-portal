@@ -337,27 +337,27 @@ public class EditCommerceShipmentMVCActionCommand extends BaseMVCActionCommand {
 	}
 
 	private CommerceShipment _updateExpectedDate(ActionRequest actionRequest)
-		throws PortalException {
+		throws PortalException, ParseException {
 
 		long commerceShipmentId = ParamUtil.getLong(
 			actionRequest, "commerceShipmentId");
 
-		int expectedDateMonth = ParamUtil.getInteger(
-			actionRequest, "expectedDateMonth");
-		int expectedDateDay = ParamUtil.getInteger(
-			actionRequest, "expectedDateDay");
-		int expectedDateYear = ParamUtil.getInteger(
-			actionRequest, "expectedDateYear");
-		int expectedDateHour = ParamUtil.getInteger(
-			actionRequest, "expectedDateHour");
-		int expectedDateMinute = ParamUtil.getInteger(
-			actionRequest, "expectedDateMinute");
-		int expectedDateAmPm = ParamUtil.getInteger(
-			actionRequest, "expectedDateAmPm");
+		String expectedDeliveryDate = ParamUtil.getString(
+			actionRequest, "expectedDeliveryDate");
 
-		if (expectedDateAmPm == Calendar.PM) {
-			expectedDateHour += 12;
-		}
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+		Date startDate = dateFormat.parse(expectedDeliveryDate);
+
+		Calendar calendar = Calendar.getInstance();
+
+		calendar.setTime(startDate);
+
+		int expectedDateMonth = calendar.get(Calendar.MONTH);
+		int expectedDateDay = calendar.get(Calendar.DAY_OF_MONTH);
+		int expectedDateYear = calendar.get(Calendar.YEAR);
+		int expectedDateHour = calendar.get(Calendar.HOUR_OF_DAY);
+		int expectedDateMinute = calendar.get(Calendar.MINUTE);
 
 		return _commerceShipmentService.updateExpectedDate(
 			commerceShipmentId, expectedDateMonth, expectedDateDay,
