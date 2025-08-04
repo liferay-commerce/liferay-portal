@@ -17,6 +17,9 @@ Date shippingDate = commerceShipment.getShippingDate();
 int shippingDay = 0;
 int shippingMonth = -1;
 int shippingYear = 0;
+String dateString = null;
+
+Format format = FastDateFormatFactoryUtil.getSimpleDateFormat("yyyy-MM-dd", locale);
 
 if (shippingDate != null) {
 	Calendar calendar = CalendarFactoryUtil.getCalendar(shippingDate.getTime());
@@ -24,6 +27,8 @@ if (shippingDate != null) {
 	shippingDay = calendar.get(Calendar.DAY_OF_MONTH);
 	shippingMonth = calendar.get(Calendar.MONTH);
 	shippingYear = calendar.get(Calendar.YEAR);
+
+	dateString = format.format(calendar.getTime());
 }
 %>
 
@@ -34,17 +39,5 @@ if (shippingDate != null) {
 <aui:form action="<%= editCommerceShipmentURL %>" cssClass="container-fluid container-fluid-max-xl p-4" method="post" name="fm">
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="shippingDate" />
 	<aui:input name="commerceShipmentId" type="hidden" value="<%= commerceShipment.getCommerceShipmentId() %>" />
-
-	<liferay-ui:input-date
-		dayParam="shippingDateDay"
-		dayValue="<%= shippingDay %>"
-		disabled="<%= false %>"
-		monthParam="shippingDateMonth"
-		monthValue="<%= shippingMonth %>"
-		name="shippingDate"
-		nullable="<%= true %>"
-		showDisableCheckbox="<%= false %>"
-		yearParam="shippingDateYear"
-		yearValue="<%= shippingYear %>"
-	/>
+	<aui:input name="shippingDate" type="date" value="<%= dateString %>" />
 </aui:form>

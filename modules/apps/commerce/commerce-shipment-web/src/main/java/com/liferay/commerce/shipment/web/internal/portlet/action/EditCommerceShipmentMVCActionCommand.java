@@ -31,7 +31,12 @@ import jakarta.portlet.ActionResponse;
 
 import java.math.BigDecimal;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 import java.util.Calendar;
+import java.util.Date;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -360,27 +365,27 @@ public class EditCommerceShipmentMVCActionCommand extends BaseMVCActionCommand {
 	}
 
 	private CommerceShipment _updateShippingDate(ActionRequest actionRequest)
-		throws PortalException {
+		throws PortalException, ParseException {
 
 		long commerceShipmentId = ParamUtil.getLong(
 			actionRequest, "commerceShipmentId");
 
-		int shippingDateMonth = ParamUtil.getInteger(
-			actionRequest, "shippingDateMonth");
-		int shippingDateDay = ParamUtil.getInteger(
-			actionRequest, "shippingDateDay");
-		int shippingDateYear = ParamUtil.getInteger(
-			actionRequest, "shippingDateYear");
-		int shippingDateHour = ParamUtil.getInteger(
-			actionRequest, "shippingDateHour");
-		int shippingDateMinute = ParamUtil.getInteger(
-			actionRequest, "shippingDateMinute");
-		int shippingDateAmPm = ParamUtil.getInteger(
-			actionRequest, "shippingDateAmPm");
+		String shippingDate = ParamUtil.getString(
+			actionRequest, "shippingDate");
 
-		if (shippingDateAmPm == Calendar.PM) {
-			shippingDateHour += 12;
-		}
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+		Date startDate = dateFormat.parse(shippingDate);
+
+		Calendar calendar = Calendar.getInstance();
+
+		calendar.setTime(startDate);
+
+		int shippingDateMonth = calendar.get(Calendar.MONTH);
+		int shippingDateDay = calendar.get(Calendar.DAY_OF_MONTH);
+		int shippingDateYear = calendar.get(Calendar.YEAR);
+		int shippingDateHour = calendar.get(Calendar.HOUR_OF_DAY);
+		int shippingDateMinute = calendar.get(Calendar.MINUTE);
 
 		return _commerceShipmentService.updateShippingDate(
 			commerceShipmentId, shippingDateMonth, shippingDateDay,
