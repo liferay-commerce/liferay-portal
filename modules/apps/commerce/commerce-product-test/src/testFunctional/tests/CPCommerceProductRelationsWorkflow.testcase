@@ -84,6 +84,14 @@ definition {
 		task ("And accepts all the notifications received by the category manager") {
 			var notificationCount = 0;
 
+			Notifications.gotoNotifications();
+
+			Click(locator1 = "CommerceAccelerators#ACCOUNT_MANAGEMENT_REVERSE_SORT_DIRECTION_BUTTON");
+
+			AssertElementPresent(
+				key_icon = "order-list-up",
+				locator1 = "CommerceAccelerators#ACCOUNT_MANAGEMENT_REVERSE_SORT_DIRECTION_BUTTON_ICON");
+
 			while (${notificationCount} != 5) {
 				Notifications.gotoNotifications();
 
@@ -398,6 +406,14 @@ definition {
 
 		task ("And rejects all the notifications received by the category manager") {
 			var notificationCount = 0;
+
+			Notifications.gotoNotifications();
+
+			Click(locator1 = "CommerceAccelerators#ACCOUNT_MANAGEMENT_REVERSE_SORT_DIRECTION_BUTTON");
+
+			AssertElementPresent(
+				key_icon = "order-list-up",
+				locator1 = "CommerceAccelerators#ACCOUNT_MANAGEMENT_REVERSE_SORT_DIRECTION_BUTTON_ICON");
 
 			while (${notificationCount} != 5) {
 				Notifications.gotoNotifications();
