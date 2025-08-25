@@ -339,146 +339,6 @@
 		},
 		{
 			"enableCategorization": true,
-			"externalReferenceCode": "L_BULK_ACTION_TASK_ITEM",
-			"label": {
-				"en_US": "Bulk Action Task Item"
-			},
-			"modifiable": true,
-			"name": "BulkActionTaskItem",
-			"objectFields": [
-				{
-					"DBType": "String",
-					"businessType": "Text",
-					"externalReferenceCode": "CLASS_EXTERNAL_REFERENCE_CODE",
-					"indexed": true,
-					"indexedAsKeyword": false,
-					"indexedLanguageId": "en_US",
-					"label": {
-						"en_US": "Class External Reference Code"
-					},
-					"localized": false,
-					"name": "classExternalReferenceCode",
-					"required": false,
-					"state": false,
-					"system": true,
-					"type": "String"
-				},
-				{
-					"DBType": "Long",
-					"businessType": "LongInteger",
-					"externalReferenceCode": "CLASS_PK",
-					"indexed": true,
-					"indexedAsKeyword": false,
-					"label": {
-						"en_US": "Class PK"
-					},
-					"localized": false,
-					"name": "classPK",
-					"required": false,
-					"state": false,
-					"system": true,
-					"type": "Long"
-				},
-				{
-					"DBType": "String",
-					"businessType": "Text",
-					"externalReferenceCode": "DESCRIPTION",
-					"indexed": true,
-					"indexedAsKeyword": false,
-					"indexedLanguageId": "en_US",
-					"label": {
-						"en_US": "Description"
-					},
-					"localized": false,
-					"name": "description",
-					"required": false,
-					"state": false,
-					"system": true,
-					"type": "String"
-				},
-				{
-					"DBType": "String",
-					"businessType": "Text",
-					"externalReferenceCode": "EXECUTION_STATUS",
-					"indexed": true,
-					"indexedAsKeyword": false,
-					"indexedLanguageId": "en_US",
-					"label": {
-						"en_US": "Execution Status"
-					},
-					"localized": false,
-					"name": "executionStatus",
-					"required": false,
-					"state": false,
-					"system": true,
-					"type": "String"
-				},
-				{
-					"DBType": "Long",
-					"businessType": "LongInteger",
-					"externalReferenceCode": "IMPORT_TASK_ID",
-					"indexed": true,
-					"indexedAsKeyword": false,
-					"label": {
-						"en_US": "Import Task ID"
-					},
-					"localized": false,
-					"name": "importTaskID",
-					"required": false,
-					"state": false,
-					"system": true,
-					"type": "Long"
-				},
-				{
-					"DBType": "String",
-					"businessType": "Text",
-					"externalReferenceCode": "NAME",
-					"indexed": true,
-					"indexedAsKeyword": false,
-					"indexedLanguageId": "en_US",
-					"label": {
-						"en_US": "Name"
-					},
-					"localized": false,
-					"name": "name",
-					"required": false,
-					"state": false,
-					"system": true,
-					"type": "String"
-				},
-				{
-					"DBType": "String",
-					"businessType": "Text",
-					"externalReferenceCode": "TYPE",
-					"indexed": true,
-					"indexedAsKeyword": false,
-					"indexedLanguageId": "en_US",
-					"label": {
-						"en_US": "Type"
-					},
-					"localized": false,
-					"name": "type",
-					"required": false,
-					"state": false,
-					"system": true,
-					"type": "String"
-				}
-			],
-			"panelCategoryKey": "",
-			"parameterRequired": false,
-			"pluralLabel": {
-				"en_US": "Bulk Action Task Items"
-			},
-			"portlet": true,
-			"scope": "company",
-			"status": {
-				"code": 0
-			},
-			"system": true,
-			"titleObjectFieldName": "id"
-		},
-		{
-			"enableCategorization": true,
 			"externalReferenceCode": "L_BULK_ACTION_TASK",
 			"label": {
 				"en_US": "Bulk Action Task"
@@ -638,6 +498,146 @@
 			"parameterRequired": false,
 			"pluralLabel": {
 				"en_US": "Bulk Action Tasks"
+			},
+			"portlet": true,
+			"scope": "company",
+			"status": {
+				"code": 0
+			},
+			"system": true,
+			"titleObjectFieldName": "id"
+		},
+		{
+			"enableCategorization": true,
+			"externalReferenceCode": "L_BULK_ACTION_TASK_ITEM",
+			"label": {
+				"en_US": "Bulk Action Task Item"
+			},
+			"modifiable": true,
+			"name": "BulkActionTaskItem",
+			"objectFields": [
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "CLASS_EXTERNAL_REFERENCE_CODE",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Class External Reference Code"
+					},
+					"localized": false,
+					"name": "classExternalReferenceCode",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "String"
+				},
+				{
+					"DBType": "Long",
+					"businessType": "LongInteger",
+					"externalReferenceCode": "CLASS_PK",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Class PK"
+					},
+					"localized": false,
+					"name": "classPK",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "Long"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "DESCRIPTION",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Description"
+					},
+					"localized": false,
+					"name": "description",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "String"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "EXECUTION_STATUS",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Execution Status"
+					},
+					"localized": false,
+					"name": "executionStatus",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "String"
+				},
+				{
+					"DBType": "Long",
+					"businessType": "LongInteger",
+					"externalReferenceCode": "IMPORT_TASK_ID",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Import Task ID"
+					},
+					"localized": false,
+					"name": "importTaskID",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "Long"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "NAME",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Name"
+					},
+					"localized": false,
+					"name": "name",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "String"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "TYPE",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Type"
+					},
+					"localized": false,
+					"name": "type",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "String"
+				}
+			],
+			"panelCategoryKey": "",
+			"parameterRequired": false,
+			"pluralLabel": {
+				"en_US": "Bulk Action Task Items"
 			},
 			"portlet": true,
 			"scope": "company",
