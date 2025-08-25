@@ -92,7 +92,10 @@ const ProductOptionUpload = ({
 	);
 
 	useEffect(() => {
-		const required = forceRequired || productOption.required;
+		const required =
+			forceRequired ||
+			(productOption.required &&
+				(!productOption.value || productOption.value === '{}'));
 
 		setHasErrors(required);
 
