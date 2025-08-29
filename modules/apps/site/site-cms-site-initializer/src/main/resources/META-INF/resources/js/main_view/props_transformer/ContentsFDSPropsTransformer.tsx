@@ -10,6 +10,8 @@ import React from 'react';
 import formatActionURL from '../../common/utils/formatActionURL';
 import {ISearchAssetObjectEntry} from '../../structure_builder/types/AssetType';
 import AssetTypeInfoPanel from '../info_panel/AssetTypeInfoPanelContent';
+import EditCategoriesBulkActionModalContent from '../modal/EditCategoriesBulkActionModalContent';
+import EditTagsBulkActionModalContent from '../modal/EditTagsBulkActionModalContent';
 import FilePreviewerModalContent from '../modal/FilePreviewerModalContent';
 import createAssetAction from './actions/createAssetAction';
 import createFolderAction from './actions/createFolderAction';
@@ -40,7 +42,7 @@ export default function ContentFDSPropsTransformer({
 }: {
 	additionalProps: {
 		autocompleteURL: string;
-		cmsGroupId?: number;
+		cmsGroupId: string;
 		collaboratorURLs: Record<string, string>;
 	};
 	creationMenu: any;
@@ -163,6 +165,38 @@ export default function ContentFDSPropsTransformer({
 				deleteAssetEntriesBulkAction({
 					actionId: action.data.id,
 					selectedData,
+				});
+			}
+			else if (action?.data?.id === 'edit-categories') {
+				openModal({
+					contentComponent: ({
+						closeModal,
+					}: {
+						closeModal: () => void;
+					}) =>
+						EditCategoriesBulkActionModalContent({
+							actionId: action?.data.id,
+							closeModal,
+							cmsGroupId: additionalProps.cmsGroupId,
+							selectedData,
+						}),
+					size: 'full-screen',
+				});
+			}
+			else if (action?.data?.id === 'edit-tags') {
+				openModal({
+					contentComponent: ({
+						closeModal,
+					}: {
+						closeModal: () => void;
+					}) =>
+						EditTagsBulkActionModalContent({
+							actionId: action?.data.id,
+							closeModal,
+							cmsGroupId: additionalProps.cmsGroupId,
+							selectedData,
+						}),
+					size: 'md',
 				});
 			}
 		},
