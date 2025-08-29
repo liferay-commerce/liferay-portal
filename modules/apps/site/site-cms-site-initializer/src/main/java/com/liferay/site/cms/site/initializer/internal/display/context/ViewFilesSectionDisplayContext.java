@@ -60,6 +60,16 @@ public class ViewFilesSectionDisplayContext
 				null));
 		fdsBulkActionDropdownItems.add(
 			new FDSActionDropdownItem(
+				"#", "pencil", "edit-categories",
+				LanguageUtil.get(httpServletRequest, "edit-categories"), null,
+				null, null));
+		fdsBulkActionDropdownItems.add(
+			new FDSActionDropdownItem(
+				"#", "pencil", "edit-tags",
+				LanguageUtil.get(httpServletRequest, "edit-tags"), null, null,
+				null));
+		fdsBulkActionDropdownItems.add(
+			new FDSActionDropdownItem(
 				"#", "password-policies", "permissions",
 				LanguageUtil.get(httpServletRequest, "permissions"), null, null,
 				null));
