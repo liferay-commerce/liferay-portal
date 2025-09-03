@@ -568,7 +568,7 @@ public class EditCPDefinitionMVCActionCommand extends BaseMVCActionCommand {
 				expirationDateDay, expirationDateYear, expirationDateHour,
 				expirationDateMinute, neverExpire,
 				CPInstanceConstants.DEFAULT_SKU, false, 1, null, null, 0L,
-				WorkflowConstants.STATUS_DRAFT, serviceContext);
+				false, false, WorkflowConstants.STATUS_DRAFT, serviceContext);
 		}
 		else {
 			cpDefinition = _cpDefinitionService.updateCPDefinition(
@@ -578,7 +578,10 @@ public class EditCPDefinitionMVCActionCommand extends BaseMVCActionCommand {
 				published, displayDateMonth, displayDateDay, displayDateYear,
 				displayDateHour, displayDateMinute, expirationDateMonth,
 				expirationDateDay, expirationDateYear, expirationDateHour,
-				expirationDateMinute, neverExpire, serviceContext);
+				expirationDateMinute,
+				cpDefinition.isAccountGroupFilterEnabled(),
+				cpDefinition.isChannelFilterEnabled(), neverExpire,
+				serviceContext);
 		}
 
 		return cpDefinition;
@@ -646,7 +649,8 @@ public class EditCPDefinitionMVCActionCommand extends BaseMVCActionCommand {
 			displayCalendar.get(Calendar.YEAR), displayDateHour,
 			displayCalendar.get(Calendar.MINUTE), expirationDateMonth,
 			expirationDateDay, expirationDateYear, expirationDateHour,
-			expirationDateMinute, neverExpire, serviceContext);
+			expirationDateMinute, cpDefinition.isAccountGroupFilterEnabled(),
+			cpDefinition.isChannelFilterEnabled(), neverExpire, serviceContext);
 	}
 
 	private void _updateCPDefinitionInventory(
