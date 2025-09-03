@@ -6,6 +6,11 @@
 package com.liferay.headless.cms.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.asset.kernel.model.AssetVocabulary;
+import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetTagLocalService;
+import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.batch.engine.unit.BatchEngineUnitProcessor;
 import com.liferay.batch.engine.unit.BatchEngineUnitReader;
 import com.liferay.depot.constants.DepotConstants;
@@ -17,6 +22,8 @@ import com.liferay.headless.cms.client.dto.v1_0.BulkAction;
 import com.liferay.headless.cms.client.dto.v1_0.BulkActionItem;
 import com.liferay.headless.cms.client.dto.v1_0.BulkActionTask;
 import com.liferay.headless.cms.client.dto.v1_0.DeleteBulkAction;
+import com.liferay.headless.cms.client.dto.v1_0.KeywordBulkAction;
+import com.liferay.headless.cms.client.dto.v1_0.TaxonomyCategoryBulkAction;
 import com.liferay.headless.cms.client.problem.Problem;
 import com.liferay.object.constants.ObjectFolderConstants;
 import com.liferay.object.model.ObjectDefinition;
@@ -28,6 +35,7 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFolderLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -53,6 +61,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+
+import org.apache.commons.lang3.ArrayUtils;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -106,6 +116,7 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 					continue;
 				}
 
+				_deleteFile(bundle, "00.list.type.definition");
 				_deleteFile(bundle, "01.object.folder");
 				_deleteFile(bundle, "02.object.definition");
 
@@ -151,6 +162,26 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 	@Test
 	public void testPostBulkAction() throws Exception {
 		_testPostBulkActionWithTypeDelete();
+		_testPostBulkActionWithTypeKeyword();
+		_testPostBulkActionWithTypeTaxonomyCategory();
+	}
+
+	private BulkActionItem[] _createBulkActionItems(
+			ObjectEntry basicWebContentObjectEntry)
+		throws Exception {
+
+		return new BulkActionItem[] {
+			new BulkActionItem() {
+				{
+					setClassExternalReferenceCode(
+						basicWebContentObjectEntry.getExternalReferenceCode());
+					setClassName(
+						_basicWebContentObjectDefinition.getClassName());
+					setClassPK(basicWebContentObjectEntry.getObjectEntryId());
+					setName(basicWebContentObjectEntry.getTitleValue());
+				}
+			}
+		};
 	}
 
 	private void _deleteFile(Bundle bundle, String fileName) {
@@ -176,54 +207,10 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 		return false;
 	}
 
-	private void _testPostBulkActionWithTypeDelete() throws Exception {
-		BulkAction bulkAction = new DeleteBulkAction();
+	private void _postBulkAction(BulkActionTask bulkActionTask)
+		throws Exception {
 
-		bulkAction.setType(BulkAction.Type.DELETE_BULK_ACTION);
-
-		BulkActionTask bulkActionTask = bulkActionResource.postBulkAction(
-			null, null, bulkAction);
-
-		Assert.assertNull(bulkActionTask.getId());
-
-		bulkAction.setSelectAll(true);
-
-		try {
-			bulkActionResource.postBulkAction(null, null, bulkAction);
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
-			Assert.assertEquals("Filter cannot be null", problem.getTitle());
-		}
-
-		ObjectEntry basicWebContentObjectEntry =
-			ObjectEntryTestUtil.addObjectEntry(
-				_depotEntry.getGroupId(), _basicWebContentObjectDefinition,
-				Collections.emptyMap());
-
-		bulkAction.setBulkActionItems(
-			new BulkActionItem[] {
-				new BulkActionItem() {
-					{
-						setClassExternalReferenceCode(
-							basicWebContentObjectEntry.
-								getExternalReferenceCode());
-						setClassName(
-							_basicWebContentObjectDefinition.getClassName());
-						setClassPK(
-							basicWebContentObjectEntry.getObjectEntryId());
-						setName(basicWebContentObjectEntry.getTitleValue());
-					}
-				}
-			});
-		bulkAction.setSelectAll(false);
-
-		bulkActionTask = bulkActionResource.postBulkAction(
-			null, null, bulkAction);
-
-		Assert.assertEquals("STARTED", bulkActionTask.getExecuteStatus());
+		Assert.assertEquals("initial", bulkActionTask.getExecuteStatus());
 		Assert.assertNotNull(bulkActionTask.getId());
 
 		ObjectEntry bulkActionTaskObjectEntry =
@@ -251,25 +238,9 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 
 		Map<String, Serializable> values = objectEntry.getValues();
 
-		Assert.assertEquals(
-			basicWebContentObjectEntry.getExternalReferenceCode(),
-			values.get("classExternalReferenceCode"));
-		Assert.assertEquals(
-			basicWebContentObjectEntry.getObjectEntryId(),
-			values.get("classPK"));
-		Assert.assertEquals("BasicWebContent", values.get("type"));
-
-		_waitForFinish(GetterUtil.getLong(values.get("importTaskId")));
-
-		Assert.assertNull(
-			_objectEntryLocalService.fetchObjectEntry(
-				basicWebContentObjectEntry.getObjectEntryId()));
-	}
-
-	private void _waitForFinish(long importTaskId) throws Exception {
 		while (true) {
 			ImportTask importTask = _importTaskResource.getImportTask(
-				importTaskId);
+				GetterUtil.getLong(values.get("importTaskId")));
 
 			ImportTask.ExecuteStatus executeStatus =
 				importTask.getExecuteStatus();
@@ -283,6 +254,132 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 			}
 		}
 	}
+
+	private void _testPostBulkActionWithTypeDelete() throws Exception {
+		BulkAction bulkAction = new DeleteBulkAction();
+
+		bulkAction.setType(BulkAction.Type.DELETE_BULK_ACTION);
+
+		BulkActionTask bulkActionTask = bulkActionResource.postBulkAction(
+			null, null, bulkAction);
+
+		Assert.assertNull(bulkActionTask.getId());
+
+		bulkAction.setSelectAll(true);
+
+		try {
+			bulkActionResource.postBulkAction(null, null, bulkAction);
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
+			Assert.assertEquals("Filter is null", problem.getTitle());
+		}
+
+		ObjectEntry basicWebContentObjectEntry =
+			ObjectEntryTestUtil.addObjectEntry(
+				_depotEntry.getGroupId(), _basicWebContentObjectDefinition,
+				Collections.emptyMap());
+
+		bulkAction.setBulkActionItems(
+			_createBulkActionItems(basicWebContentObjectEntry));
+
+		_postBulkAction(
+			bulkActionResource.postBulkAction(null, null, bulkAction));
+
+		Assert.assertNull(
+			_objectEntryLocalService.fetchObjectEntry(
+				basicWebContentObjectEntry.getObjectEntryId()));
+	}
+
+	private void _testPostBulkActionWithTypeKeyword() throws Exception {
+		ObjectEntry basicWebContentObjectEntry =
+			ObjectEntryTestUtil.addObjectEntry(
+				_depotEntry.getGroupId(), _basicWebContentObjectDefinition,
+				Collections.emptyMap());
+
+		KeywordBulkAction keywordBulkAction = new KeywordBulkAction();
+
+		keywordBulkAction.setBulkActionItems(
+			_createBulkActionItems(basicWebContentObjectEntry));
+		keywordBulkAction.setType(BulkAction.Type.KEYWORD_BULK_ACTION);
+
+		String[] keywords = {
+			RandomTestUtil.randomString(), RandomTestUtil.randomString()
+		};
+
+		keywordBulkAction.setKeywords(keywords);
+
+		_postBulkAction(
+			bulkActionResource.postBulkAction(null, null, keywordBulkAction));
+
+		Assert.assertArrayEquals(
+			keywords,
+			_assetTagLocalService.getTagNames(
+				_basicWebContentObjectDefinition.getClassName(),
+				basicWebContentObjectEntry.getObjectEntryId()));
+	}
+
+	private void _testPostBulkActionWithTypeTaxonomyCategory()
+		throws Exception {
+
+		ObjectEntry basicWebContentObjectEntry =
+			ObjectEntryTestUtil.addObjectEntry(
+				_depotEntry.getGroupId(), _basicWebContentObjectDefinition,
+				Collections.emptyMap());
+
+		TaxonomyCategoryBulkAction taxonomyCategoryBulkAction =
+			new TaxonomyCategoryBulkAction();
+
+		taxonomyCategoryBulkAction.setBulkActionItems(
+			_createBulkActionItems(basicWebContentObjectEntry));
+
+		taxonomyCategoryBulkAction.setType(
+			BulkAction.Type.TAXONOMY_CATEGORY_BULK_ACTION);
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId());
+
+		AssetVocabulary assetVocabulary =
+			_assetVocabularyLocalService.addVocabulary(
+				TestPropsValues.getUserId(), testGroup.getGroupId(),
+				RandomTestUtil.randomString(), serviceContext);
+
+		AssetCategory assetCategory1 = _assetCategoryLocalService.addCategory(
+			TestPropsValues.getUserId(), testGroup.getGroupId(),
+			RandomTestUtil.randomString(), assetVocabulary.getVocabularyId(),
+			serviceContext);
+		AssetCategory assetCategory2 = _assetCategoryLocalService.addCategory(
+			TestPropsValues.getUserId(), testGroup.getGroupId(),
+			RandomTestUtil.randomString(), assetVocabulary.getVocabularyId(),
+			serviceContext);
+
+		Long[] taxonomyCategoryIds = {
+			assetCategory1.getCategoryId(), assetCategory2.getCategoryId()
+		};
+
+		taxonomyCategoryBulkAction.setTaxonomyCategoryIds(taxonomyCategoryIds);
+
+		_postBulkAction(
+			bulkActionResource.postBulkAction(
+				null, null, taxonomyCategoryBulkAction));
+
+		Assert.assertArrayEquals(
+			ArrayUtils.toPrimitive(taxonomyCategoryIds),
+			_assetCategoryLocalService.getCategoryIds(
+				_basicWebContentObjectDefinition.getClassName(),
+				basicWebContentObjectEntry.getObjectEntryId()));
+	}
+
+	@Inject
+	private AssetCategoryLocalService _assetCategoryLocalService;
+
+	@Inject
+	private AssetTagLocalService _assetTagLocalService;
+
+	@Inject
+	private AssetVocabularyLocalService _assetVocabularyLocalService;
 
 	private ObjectDefinition _basicWebContentObjectDefinition;
 
