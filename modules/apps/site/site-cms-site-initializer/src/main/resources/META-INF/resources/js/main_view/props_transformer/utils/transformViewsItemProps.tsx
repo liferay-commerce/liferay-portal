@@ -89,7 +89,7 @@ const getFileMimeTypeObjectDefinitionStickerValue = (
 
 		if (
 			fileMimeTypeValues &&
-			objectDefinitionExternalReferenceCode === 'L_BASIC_DOCUMENT'
+			objectDefinitionExternalReferenceCode === 'L_CMS_BASIC_DOCUMENT'
 		) {
 			const mimeType = item.embedded.file.mimeType;
 

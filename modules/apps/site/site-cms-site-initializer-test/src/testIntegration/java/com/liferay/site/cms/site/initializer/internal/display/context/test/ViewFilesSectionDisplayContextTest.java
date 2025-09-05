@@ -126,7 +126,7 @@ public class ViewFilesSectionDisplayContextTest
 		throws PortalException {
 
 		return HashMapBuilder.put(
-			"Basic Document", getRedirect("L_BASIC_DOCUMENT")
+			"Basic Document", getRedirect("L_CMS_BASIC_DOCUMENT")
 		).put(
 			"External Video", getRedirect("L_EXTERNAL_VIDEO")
 		).put(

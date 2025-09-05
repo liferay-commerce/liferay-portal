@@ -54,7 +54,7 @@ public class ViewAllSectionDisplayContextTest
 		return HashMapBuilder.put(
 			"Basic Document",
 			getRedirect(
-				"L_BASIC_DOCUMENT",
+				"L_CMS_BASIC_DOCUMENT",
 				ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_FILES)
 		).put(
 			"Basic Web Content",
