@@ -128,7 +128,7 @@ public class ViewFilesSectionDisplayContextTest
 		return HashMapBuilder.put(
 			"Basic Document", getRedirect("L_CMS_BASIC_DOCUMENT")
 		).put(
-			"External Video", getRedirect("L_EXTERNAL_VIDEO")
+			"External Video", getRedirect("L_CMS_EXTERNAL_VIDEO")
 		).put(
 			"folder", StringPool.BLANK
 		).put(

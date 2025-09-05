@@ -69,7 +69,7 @@ public class ViewAllSectionDisplayContextTest
 		).put(
 			"External Video",
 			getRedirect(
-				"L_EXTERNAL_VIDEO",
+				"L_CMS_EXTERNAL_VIDEO",
 				ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_FILES)
 		).put(
 			"Knowledge Base",
