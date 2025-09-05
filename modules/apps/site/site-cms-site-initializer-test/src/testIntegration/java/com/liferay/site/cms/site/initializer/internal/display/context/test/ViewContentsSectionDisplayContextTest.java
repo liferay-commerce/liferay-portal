@@ -110,7 +110,7 @@ public class ViewContentsSectionDisplayContextTest
 		).put(
 			"folder", StringPool.BLANK
 		).put(
-			"Knowledge Base", getRedirect("L_KNOWLEDGE_BASE")
+			"Knowledge Base", getRedirect("L_CMS_KNOWLEDGE_BASE")
 		).build();
 	}
 

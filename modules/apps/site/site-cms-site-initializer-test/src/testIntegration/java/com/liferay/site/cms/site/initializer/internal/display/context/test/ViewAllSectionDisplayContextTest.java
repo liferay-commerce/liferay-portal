@@ -74,7 +74,7 @@ public class ViewAllSectionDisplayContextTest
 		).put(
 			"Knowledge Base",
 			getRedirect(
-				"L_KNOWLEDGE_BASE",
+				"L_CMS_KNOWLEDGE_BASE",
 				ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS)
 		).put(
 			"multiple-files", StringPool.BLANK

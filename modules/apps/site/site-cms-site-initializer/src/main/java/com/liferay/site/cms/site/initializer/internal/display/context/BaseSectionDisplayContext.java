@@ -182,7 +182,7 @@ public abstract class BaseSectionDisplayContext {
 			).put(
 				"L_CMS_BLOG", "content-icon-blog"
 			).put(
-				"L_KNOWLEDGE_BASE", "content-icon-knowledge-base"
+				"L_CMS_KNOWLEDGE_BASE", "content-icon-knowledge-base"
 			).build()
 		).put(
 			"objectDefinitionIcons",
@@ -193,7 +193,7 @@ public abstract class BaseSectionDisplayContext {
 			).put(
 				"L_CMS_BLOG", "blogs"
 			).put(
-				"L_KNOWLEDGE_BASE", "wiki"
+				"L_CMS_KNOWLEDGE_BASE", "wiki"
 			).build()
 		).build();
 	}

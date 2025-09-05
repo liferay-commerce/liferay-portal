@@ -134,6 +134,8 @@ public class ObjectDefinitionUtil {
 		).put(
 			"CMSExternalVideo", "/cms/external-videos"
 		).put(
+			"CMSKnowledgeBase", "/cms/knowledge-bases"
+		).put(
 			"CommerceReturn", "/commerce/returns"
 		).put(
 			"CommerceReturnItem", "/commerce/return-items"
@@ -179,8 +181,6 @@ public class ObjectDefinitionUtil {
 			"FDSView", "/data-set-manager/data-sets"
 		).put(
 			"FunctionalCookieEntry", "/functional-cookies-entries"
-		).put(
-			"KnowledgeBase", "/cms/knowledge-bases"
 		).put(
 			"NecessaryCookieEntry", "/necessary-cookies-entries"
 		).put(

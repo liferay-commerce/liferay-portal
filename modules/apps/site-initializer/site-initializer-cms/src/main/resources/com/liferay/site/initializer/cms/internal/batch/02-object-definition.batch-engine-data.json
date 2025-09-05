@@ -835,12 +835,12 @@
 			"enableObjectEntryHistory": true,
 			"enableObjectEntrySchedule": true,
 			"enableObjectEntryVersioning": true,
-			"externalReferenceCode": "L_KNOWLEDGE_BASE",
+			"externalReferenceCode": "L_CMS_KNOWLEDGE_BASE",
 			"label": {
 				"en_US": "Knowledge Base"
 			},
 			"modifiable": true,
-			"name": "KnowledgeBase",
+			"name": "CMSKnowledgeBase",
 			"objectDefinitionSettings": [
 				{
 					"name": "acceptAllGroups",
