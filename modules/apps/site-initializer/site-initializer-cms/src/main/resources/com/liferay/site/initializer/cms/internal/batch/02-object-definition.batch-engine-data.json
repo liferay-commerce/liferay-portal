@@ -659,7 +659,7 @@
 			"enableObjectEntryVersioning": false,
 			"externalReferenceCode": "L_CMS_DEFAULT_PERMISSION",
 			"label": {
-				"en_US": "CMS Default Permission"
+				"en_US": "Default Permission"
 			},
 			"modifiable": false,
 			"name": "CMSDefaultPermission",
@@ -734,7 +734,7 @@
 			"panelCategoryKey": "",
 			"parameterRequired": false,
 			"pluralLabel": {
-				"en_US": "CMS Default Permissions"
+				"en_US": "Default Permissions"
 			},
 			"portlet": false,
 			"scope": "company",
