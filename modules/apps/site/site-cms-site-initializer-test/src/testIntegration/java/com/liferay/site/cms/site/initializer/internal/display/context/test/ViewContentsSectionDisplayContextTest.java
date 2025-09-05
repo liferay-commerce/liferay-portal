@@ -104,7 +104,7 @@ public class ViewContentsSectionDisplayContextTest
 		throws PortalException {
 
 		return HashMapBuilder.put(
-			"Basic Web Content", getRedirect("L_BASIC_WEB_CONTENT")
+			"Basic Web Content", getRedirect("L_CMS_BASIC_WEB_CONTENT")
 		).put(
 			"Blog", getRedirect("L_BLOG")
 		).put(

@@ -127,7 +127,7 @@ public class ExpiredAssetResourceTest extends BaseExpiredAssetResourceTestCase {
 		_objectDefinition =
 			_objectDefinitionLocalService.
 				getObjectDefinitionByExternalReferenceCode(
-					"L_BASIC_WEB_CONTENT", testCompany.getCompanyId());
+					"L_CMS_BASIC_WEB_CONTENT", testCompany.getCompanyId());
 		_themeDisplay = _getThemeDisplay();
 	}
 

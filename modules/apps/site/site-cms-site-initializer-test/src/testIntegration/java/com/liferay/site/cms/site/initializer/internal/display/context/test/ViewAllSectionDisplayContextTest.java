@@ -59,7 +59,7 @@ public class ViewAllSectionDisplayContextTest
 		).put(
 			"Basic Web Content",
 			getRedirect(
-				"L_BASIC_WEB_CONTENT",
+				"L_CMS_BASIC_WEB_CONTENT",
 				ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS)
 		).put(
 			"Blog",

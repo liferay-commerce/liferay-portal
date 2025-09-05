@@ -120,7 +120,7 @@ public class OverviewResourceTest extends BaseOverviewResourceTestCase {
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.
 				getObjectDefinitionByExternalReferenceCode(
-					"L_BASIC_WEB_CONTENT", testCompany.getCompanyId());
+					"L_CMS_BASIC_WEB_CONTENT", testCompany.getCompanyId());
 
 		_objectEntry = ObjectEntryTestUtil.addObjectEntry(
 			_depotEntry.getGroupId(), objectDefinition, Collections.emptyMap());

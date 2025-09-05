@@ -118,9 +118,9 @@ public abstract class BaseSectionDisplayContextTestCase
 			HashMapBuilder.put(
 				"default", "content-icon-custom-structure"
 			).put(
-				"L_BASIC_WEB_CONTENT", "content-icon-basic-content"
-			).put(
 				"L_BLOG", "content-icon-blog"
+			).put(
+				"L_CMS_BASIC_WEB_CONTENT", "content-icon-basic-content"
 			).put(
 				"L_KNOWLEDGE_BASE", "content-icon-knowledge-base"
 			).build()
@@ -129,9 +129,9 @@ public abstract class BaseSectionDisplayContextTestCase
 			HashMapBuilder.put(
 				"default", "web-content"
 			).put(
-				"L_BASIC_WEB_CONTENT", "forms"
-			).put(
 				"L_BLOG", "blogs"
+			).put(
+				"L_CMS_BASIC_WEB_CONTENT", "forms"
 			).put(
 				"L_KNOWLEDGE_BASE", "wiki"
 			).build()
