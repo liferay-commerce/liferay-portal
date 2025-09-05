@@ -64,7 +64,7 @@ public class ViewAllSectionDisplayContextTest
 		).put(
 			"Blog",
 			getRedirect(
-				"L_BLOG",
+				"L_CMS_BLOG",
 				ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS)
 		).put(
 			"External Video",

@@ -106,7 +106,7 @@ public class ViewContentsSectionDisplayContextTest
 		return HashMapBuilder.put(
 			"Basic Web Content", getRedirect("L_CMS_BASIC_WEB_CONTENT")
 		).put(
-			"Blog", getRedirect("L_BLOG")
+			"Blog", getRedirect("L_CMS_BLOG")
 		).put(
 			"folder", StringPool.BLANK
 		).put(
