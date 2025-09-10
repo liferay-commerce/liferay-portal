@@ -1,0 +1,4 @@
+Bundle-Name: Liferay Commerce Fragment Renderer Create Account CTA Implementation
+Bundle-SymbolicName: com.liferay.commerce.fragment.renderer.create.account.cta.impl
+Bundle-Version: 1.0.0
+-dsannotations-options: inherit
