@@ -96,7 +96,7 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 			HashMapBuilder.<String, Serializable>put(
 				"actionName", type
 			).put(
-				"executionStatus", "STARTED"
+				"executionStatus", "initial"
 			).put(
 				"type", type
 			).build(),
@@ -194,8 +194,9 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 					bulkActionTask.getId(),
 					bulkActionItem.getClassExternalReferenceCode(),
 					bulkActionItem.getClassPK(),
-					importTask.getExecuteStatusAsString(), importTask.getId(),
-					bulkActionItem.getName(),
+					importTask.getExecuteStatusAsString(
+					).toLowerCase(),
+					importTask.getId(), bulkActionItem.getName(),
 					_getBulkActionTaskItemObjectDefinitionId(),
 					taskItemDelegateName);
 			}
