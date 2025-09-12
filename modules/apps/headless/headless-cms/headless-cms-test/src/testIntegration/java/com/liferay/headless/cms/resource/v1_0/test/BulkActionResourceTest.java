@@ -23,7 +23,9 @@ import com.liferay.headless.cms.client.dto.v1_0.BulkActionItem;
 import com.liferay.headless.cms.client.dto.v1_0.BulkActionTask;
 import com.liferay.headless.cms.client.dto.v1_0.DeleteBulkAction;
 import com.liferay.headless.cms.client.dto.v1_0.KeywordBulkAction;
+import com.liferay.headless.cms.client.dto.v1_0.PermissionBulkAction;
 import com.liferay.headless.cms.client.dto.v1_0.TaxonomyCategoryBulkAction;
+import com.liferay.headless.cms.client.permission.Permission;
 import com.liferay.headless.cms.client.problem.Problem;
 import com.liferay.object.constants.ObjectFolderConstants;
 import com.liferay.object.model.ObjectDefinition;
@@ -35,10 +37,18 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFolderLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.ResourcePermission;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ContentTypes;
@@ -163,6 +173,7 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 	public void testPostBulkAction() throws Exception {
 		_testPostBulkActionWithTypeDelete();
 		_testPostBulkActionWithTypeKeyword();
+		_testPostBulkActionWithTypePermission();
 		_testPostBulkActionWithTypeTaxonomyCategory();
 	}
 
@@ -350,6 +361,91 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 				basicWebContentObjectEntry.getObjectEntryId()));
 	}
 
+	private void _testPostBulkActionWithTypePermission() throws Exception {
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_roleLocalService.addGroupRole(
+			testGroup.getGroupId(), role.getRoleId());
+
+		ObjectEntry basicWebContentObjectEntry =
+			ObjectEntryTestUtil.addObjectEntry(
+				_depotEntry.getGroupId(), _basicWebContentObjectDefinition,
+				Collections.emptyMap());
+
+		PermissionBulkAction permissionBulkAction = new PermissionBulkAction();
+
+		permissionBulkAction.setBulkActionItems(
+			new BulkActionItem[] {
+				new BulkActionItem() {
+					{
+						setClassExternalReferenceCode(
+							basicWebContentObjectEntry.
+								getExternalReferenceCode());
+						setClassName(
+							_basicWebContentObjectDefinition.getClassName());
+						setClassPK(
+							basicWebContentObjectEntry.getObjectEntryId());
+						setName(basicWebContentObjectEntry.getTitleValue());
+					}
+				}
+			});
+		permissionBulkAction.setPermissions(
+			ArrayUtils.toArray(
+				new Permission() {
+					{
+						setActionIds(ArrayUtils.toArray("VIEW"));
+						setRoleExternalReferenceCode(
+							role.getExternalReferenceCode());
+						setRoleName(role.getName());
+						setRoleType(role.getTypeLabel());
+					}
+				}));
+
+		permissionBulkAction.setType(BulkAction.Type.PERMISSION_BULK_ACTION);
+
+		BulkActionTask bulkActionTask = bulkActionResource.postBulkAction(
+			null, null, permissionBulkAction);
+
+		Assert.assertEquals("initial", bulkActionTask.getExecuteStatus());
+		Assert.assertNotNull(bulkActionTask.getId());
+
+		ObjectEntry bulkActionTaskObjectEntry =
+			_objectEntryLocalService.getObjectEntry(bulkActionTask.getId());
+
+		List<ObjectEntry> objectEntries = ListUtil.filter(
+			_objectEntryLocalService.getOneToManyObjectEntries(
+				bulkActionTaskObjectEntry.getGroupId(),
+				_objectRelationshipLocalService.getObjectRelationship(
+					_bulkActionTaskObjectDefinition.getObjectDefinitionId(),
+					"bulkActionTaskToBulkActionTaskItems"
+				).getObjectRelationshipId(),
+				null, bulkActionTaskObjectEntry.getObjectEntryId(), true, null,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null),
+			objectEntry -> Objects.equals(
+				GetterUtil.getLong(
+					objectEntry.getValues(
+					).get(
+						"r_bulkActionTaskToBulkActionTaskItems_c_" +
+							"bulkActionTaskId"
+					)),
+				bulkActionTaskObjectEntry.getObjectEntryId()));
+
+		ObjectEntry objectEntry = objectEntries.get(0);
+
+		Map<String, Serializable> values = objectEntry.getValues();
+
+		_waitForFinish(GetterUtil.getLong(values.get("importTaskId")));
+
+		ResourcePermission resourcePermission =
+			_resourcePermissionLocalService.getResourcePermission(
+				_depotEntry.getCompanyId(), ObjectEntry.class.getName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(basicWebContentObjectEntry.getObjectEntryId()),
+				role.getRoleId());
+
+		Assert.assertTrue(resourcePermission.hasActionId(ActionKeys.VIEW));
+	}
+
 	private void _testPostBulkActionWithTypeTaxonomyCategory()
 		throws Exception {
 
@@ -497,5 +593,11 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 
 	@Inject
 	private ObjectRelationshipLocalService _objectRelationshipLocalService;
+
+	@Inject
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Inject
+	private RoleLocalService _roleLocalService;
 
 }
