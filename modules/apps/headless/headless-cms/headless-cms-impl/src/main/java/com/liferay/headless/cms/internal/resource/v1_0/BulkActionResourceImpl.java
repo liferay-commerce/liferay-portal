@@ -12,6 +12,7 @@ import com.liferay.headless.cms.dto.v1_0.BulkActionItem;
 import com.liferay.headless.cms.dto.v1_0.BulkActionTask;
 import com.liferay.headless.cms.dto.v1_0.DeleteBulkAction;
 import com.liferay.headless.cms.dto.v1_0.KeywordBulkAction;
+import com.liferay.headless.cms.dto.v1_0.PermissionBulkAction;
 import com.liferay.headless.cms.dto.v1_0.TaxonomyCategoryBulkAction;
 import com.liferay.headless.cms.internal.odata.entity.v1_0.BulkActionEntityModel;
 import com.liferay.headless.cms.resource.v1_0.BulkActionResource;
@@ -28,6 +29,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.odata.entity.EntityModel;
@@ -35,6 +37,7 @@ import com.liferay.portal.search.rest.dto.v1_0.SearchResult;
 import com.liferay.portal.search.rest.resource.v1_0.SearchResultResource;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
+import com.liferay.portal.vulcan.permission.Permission;
 
 import jakarta.validation.ValidationException;
 
@@ -89,6 +92,13 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 		}
 		else if (BulkAction.Type.KEYWORD_BULK_ACTION.equals(type)) {
 			return _executeKeywordBulkAction(
+				bulkAction,
+				_getBulkActionItemsMap(
+					bulkAction.getBulkActionItems(), filter, search,
+					GetterUtil.getBoolean(bulkAction.getSelectAll())));
+		}
+		else if (BulkAction.Type.PERMISSION_BULK_ACTION.equals(type)) {
+			return _executePermissionBulkAction(
 				bulkAction,
 				_getBulkActionItemsMap(
 					bulkAction.getBulkActionItems(), filter, search,
@@ -287,6 +297,84 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 						importTask.getExecuteStatusAsString()),
 					importTask.getId(), bulkActionItem.getName(),
 					bulkActionTaskItemObjectDefinitionId, taskItemDelegateName);
+			}
+		}
+
+		return bulkActionTask;
+	}
+
+	private BulkActionTask _executePermissionBulkAction(
+			BulkAction bulkAction,
+			Map<String, List<BulkActionItem>> bulkActionItemsMap)
+		throws Exception {
+
+		PermissionBulkAction permissionBulkAction =
+			(PermissionBulkAction)bulkAction;
+
+		Permission[] permissions = permissionBulkAction.getPermissions();
+
+		if (MapUtil.isEmpty(bulkActionItemsMap) ||
+			ArrayUtil.isEmpty(permissions)) {
+
+			return new BulkActionTask();
+		}
+
+		BulkActionTask bulkActionTask = _addBulkActionTask(
+			permissionBulkAction.getTypeAsString());
+
+		ImportTaskResource importTaskResource =
+			_importTaskResourceFactory.create(
+			).httpServletRequest(
+				contextHttpServletRequest
+			).httpServletResponse(
+				contextHttpServletResponse
+			).uriInfo(
+				contextUriInfo
+			).user(
+				contextUser
+			).build();
+
+		for (Map.Entry<String, List<BulkActionItem>> entry :
+				bulkActionItemsMap.entrySet()) {
+
+			String taskItemDelegateName = _getTaskItemDelegateName(
+				entry.getKey());
+
+			ImportTask importTask = importTaskResource.putImportTaskObject(
+				_getClassName(entry.getKey()), null, null,
+				ImportTask.ImportStrategy.ON_ERROR_CONTINUE.getValue(),
+				taskItemDelegateName, "PARTIAL_UPDATE",
+				transform(
+					entry.getValue(),
+					bulkActionItem -> HashMapBuilder.<String, Object>put(
+						"id", bulkActionItem.getClassPK()
+					).put(
+						"permissions",
+						transformToList(
+							permissions,
+							permission -> HashMapBuilder.<String, Object>put(
+								"actionIds",
+								ListUtil.fromArray(permission.getActionIds())
+							).put(
+								"roleExternalReferenceCode",
+								permission.getRoleExternalReferenceCode()
+							).put(
+								"roleName", permission.getRoleName()
+							).put(
+								"roleType", permission.getRoleType()
+							).build())
+					).build()));
+
+			for (BulkActionItem bulkActionItem : entry.getValue()) {
+				_addBulkActionTaskItem(
+					bulkActionTask.getId(),
+					bulkActionItem.getClassExternalReferenceCode(),
+					bulkActionItem.getClassPK(),
+					StringUtil.toLowerCase(
+						importTask.getExecuteStatusAsString()),
+					importTask.getId(), bulkActionItem.getName(),
+					_getBulkActionTaskItemObjectDefinitionId(),
+					taskItemDelegateName);
 			}
 		}
 
