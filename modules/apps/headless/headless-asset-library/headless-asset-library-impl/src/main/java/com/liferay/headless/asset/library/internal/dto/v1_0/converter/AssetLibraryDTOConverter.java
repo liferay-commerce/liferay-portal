@@ -168,6 +168,7 @@ public class AssetLibraryDTOConverter
 			{
 				setExternalReferenceCode(group::getExternalReferenceCode);
 				setId(group::getGroupId);
+
 				setLogo(
 					() -> {
 						ThemeDisplay themeDisplay = new ThemeDisplay() {
