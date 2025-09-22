@@ -63,7 +63,13 @@ public class CookiesBannerBottomJSPDynamicInclude
 					_cookiesConfigurationProvider.
 						getCookiesPreferenceHandlingConfiguration(themeDisplay);
 
-			if (!cookiesPreferenceHandlingConfiguration.enabled()) {
+			String cookieManager =
+				cookiesPreferenceHandlingConfiguration.cookieManager();
+
+			if (!cookieManager.equals("liferay") ||
+				!cookiesPreferenceHandlingConfiguration.enabled() ||
+				cookiesPreferenceHandlingConfiguration.delegatedConsentMode()) {
+
 				return;
 			}
 		}

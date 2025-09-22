@@ -50,6 +50,12 @@ public class CookiesPreferenceHandlingConfigurationFormRenderer
 		HttpServletRequest httpServletRequest) {
 
 		return HashMapBuilder.<String, Object>put(
+			"cookieManager",
+			ParamUtil.getString(httpServletRequest, "cookieManager")
+		).put(
+			"delegatedConsentMode",
+			ParamUtil.getBoolean(httpServletRequest, "delegatedConsentMode")
+		).put(
 			"enabled", ParamUtil.getBoolean(httpServletRequest, "enabled")
 		).put(
 			"explicitConsentMode",
@@ -98,7 +104,7 @@ public class CookiesPreferenceHandlingConfigurationFormRenderer
 				new CookiesPreferenceHandlingConfigurationDisplayContext(
 					_cookiesConfigurationProvider,
 					ExtendedObjectClassDefinition.Scope.COMPANY,
-					themeDisplay.getCompanyId()));
+					themeDisplay.getCompanyId(), themeDisplay));
 		}
 		else if (portletId.equals(
 					ConfigurationAdminPortletKeys.SITE_SETTINGS)) {
@@ -109,7 +115,7 @@ public class CookiesPreferenceHandlingConfigurationFormRenderer
 				new CookiesPreferenceHandlingConfigurationDisplayContext(
 					_cookiesConfigurationProvider,
 					ExtendedObjectClassDefinition.Scope.GROUP,
-					themeDisplay.getScopeGroupId()));
+					themeDisplay.getScopeGroupId(), themeDisplay));
 		}
 		else {
 			httpServletRequest.setAttribute(
@@ -117,7 +123,8 @@ public class CookiesPreferenceHandlingConfigurationFormRenderer
 					COOKIES_PREFERENCE_HANDLING_CONFIGURATION_DISPLAY_CONTEXT,
 				new CookiesPreferenceHandlingConfigurationDisplayContext(
 					_cookiesConfigurationProvider,
-					ExtendedObjectClassDefinition.Scope.SYSTEM, 0L));
+					ExtendedObjectClassDefinition.Scope.SYSTEM, 0L,
+					themeDisplay));
 		}
 
 		requestDispatcher.include(httpServletRequest, httpServletResponse);

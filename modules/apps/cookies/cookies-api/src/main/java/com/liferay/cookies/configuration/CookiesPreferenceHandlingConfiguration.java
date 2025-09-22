@@ -23,6 +23,18 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 public interface CookiesPreferenceHandlingConfiguration {
 
 	@Meta.AD(
+		deflt = "liferay", description = "cookie-manager-help",
+		name = "cookie-manager", required = false
+	)
+	public String cookieManager();
+
+	@Meta.AD(
+		deflt = "false", description = "cookie-delegated-consent-mode-help",
+		name = "cookie-delegated-consent-mode", required = false
+	)
+	public boolean delegatedConsentMode();
+
+	@Meta.AD(
 		deflt = "false", description = "cookie-enabled-help", name = "enabled",
 		required = false
 	)

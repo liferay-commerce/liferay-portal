@@ -127,6 +127,17 @@ public class CookiesConfigurationProviderImpl
 	}
 
 	@Override
+	public String getCookiesPreferenceHandlingCookieManager(
+		ExtendedObjectClassDefinition.Scope scope, long scopePK) {
+
+		return _getScopeConfigurationAttribute(
+			scope, scopePK,
+			this::_getCompanyCookiesPreferenceHandlingCookieManager,
+			this::_getGroupCookiesPreferenceHandlingCookieManager,
+			this::_getSystemCookiesPreferenceHandlingCookieManager);
+	}
+
+	@Override
 	public String getGroupConfigurationURL(
 			HttpServletRequest httpServletRequest)
 		throws PortalException {
@@ -229,6 +240,17 @@ public class CookiesConfigurationProviderImpl
 	}
 
 	@Override
+	public boolean isCookiesPreferenceHandlingDelegatedConsentMode(
+		ExtendedObjectClassDefinition.Scope scope, long scopePK) {
+
+		return _getScopeConfigurationAttribute(
+			scope, scopePK,
+			this::_isCompanyCookiesPreferenceHandlingDelegatedConsentMode,
+			this::_isGroupCookiesPreferenceHandlingDelegatedConsentMode,
+			this::_isSystemCookiesPreferenceHandlingDelegatedConsentMode);
+	}
+
+	@Override
 	public boolean isCookiesPreferenceHandlingEnabled(
 		ExtendedObjectClassDefinition.Scope scope, long scopePK) {
 
@@ -306,6 +328,19 @@ public class CookiesConfigurationProviderImpl
 		).build();
 	}
 
+	private String _getCompanyCookiesPreferenceHandlingCookieManager(
+		long companyId) {
+
+		if (_cookiesPreferenceHandlingManagedServiceFactory == null) {
+			_cookiesPreferenceHandlingManagedServiceFactory =
+				(CookiesPreferenceHandlingManagedServiceFactory)
+					_managedServiceFactory;
+		}
+
+		return _cookiesPreferenceHandlingManagedServiceFactory.
+			getCompanyCookieManager(companyId);
+	}
+
 	private <T> T _getCookiesConfiguration(
 			Class<T> clazz, ThemeDisplay themeDisplay)
 		throws Exception {
@@ -372,6 +407,19 @@ public class CookiesConfigurationProviderImpl
 		}
 	}
 
+	private String _getGroupCookiesPreferenceHandlingCookieManager(
+		long groupId) {
+
+		if (_cookiesPreferenceHandlingManagedServiceFactory == null) {
+			_cookiesPreferenceHandlingManagedServiceFactory =
+				(CookiesPreferenceHandlingManagedServiceFactory)
+					_managedServiceFactory;
+		}
+
+		return _cookiesPreferenceHandlingManagedServiceFactory.
+			getGroupCookieManager(groupId);
+	}
+
 	private <T> T _getScopeConfigurationAttribute(
 		ExtendedObjectClassDefinition.Scope scope, long scopePK,
 		Function<Long, T> companyFunction, Function<Long, T> groupFunction,
@@ -408,6 +456,30 @@ public class CookiesConfigurationProviderImpl
 		return configurations[0];
 	}
 
+	private String _getSystemCookiesPreferenceHandlingCookieManager() {
+		if (_cookiesPreferenceHandlingManagedServiceFactory == null) {
+			_cookiesPreferenceHandlingManagedServiceFactory =
+				(CookiesPreferenceHandlingManagedServiceFactory)
+					_managedServiceFactory;
+		}
+
+		return _cookiesPreferenceHandlingManagedServiceFactory.
+			getSystemCookieManager();
+	}
+
+	private Boolean _isCompanyCookiesPreferenceHandlingDelegatedConsentMode(
+		long companyId) {
+
+		if (_cookiesPreferenceHandlingManagedServiceFactory == null) {
+			_cookiesPreferenceHandlingManagedServiceFactory =
+				(CookiesPreferenceHandlingManagedServiceFactory)
+					_managedServiceFactory;
+		}
+
+		return _cookiesPreferenceHandlingManagedServiceFactory.
+			getCompanyDelegatedConsentMode(companyId);
+	}
+
 	private boolean _isCompanyCookiesPreferenceHandlingEnabled(long companyId) {
 		if (_cookiesPreferenceHandlingManagedServiceFactory == null) {
 			_cookiesPreferenceHandlingManagedServiceFactory =
@@ -432,6 +504,19 @@ public class CookiesConfigurationProviderImpl
 			getCompanyExplicitConsentMode(companyId);
 	}
 
+	private Boolean _isGroupCookiesPreferenceHandlingDelegatedConsentMode(
+		long groupId) {
+
+		if (_cookiesPreferenceHandlingManagedServiceFactory == null) {
+			_cookiesPreferenceHandlingManagedServiceFactory =
+				(CookiesPreferenceHandlingManagedServiceFactory)
+					_managedServiceFactory;
+		}
+
+		return _cookiesPreferenceHandlingManagedServiceFactory.
+			getGroupDelegatedConsentMode(groupId);
+	}
+
 	private boolean _isGroupCookiesPreferenceHandlingEnabled(long groupId) {
 		if (_cookiesPreferenceHandlingManagedServiceFactory == null) {
 			_cookiesPreferenceHandlingManagedServiceFactory =
@@ -454,6 +539,17 @@ public class CookiesConfigurationProviderImpl
 
 		return _cookiesPreferenceHandlingManagedServiceFactory.
 			getGroupExplicitConsentMode(groupId);
+	}
+
+	private Boolean _isSystemCookiesPreferenceHandlingDelegatedConsentMode() {
+		if (_cookiesPreferenceHandlingManagedServiceFactory == null) {
+			_cookiesPreferenceHandlingManagedServiceFactory =
+				(CookiesPreferenceHandlingManagedServiceFactory)
+					_managedServiceFactory;
+		}
+
+		return _cookiesPreferenceHandlingManagedServiceFactory.
+			getSystemDelegatedConsentMode();
 	}
 
 	private boolean _isSystemCookiesPreferenceHandlingEnabled() {

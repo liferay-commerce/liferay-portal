@@ -10,6 +10,7 @@ import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
 import com.liferay.analytics.web.internal.constants.AnalyticsWebKeys;
 import com.liferay.cookies.configuration.CookiesConfigurationProvider;
 import com.liferay.cookies.configuration.CookiesPreferenceHandlingConfiguration;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -101,6 +102,14 @@ public class AnalyticsTopHeadJSPDynamicInclude extends BaseJSPDynamicInclude {
 		}
 
 		httpServletRequest.setAttribute(
+			AnalyticsWebKeys.ANALYTICS_COOKIES_COOKIE_MANAGER,
+			_getCookiesCookieManager(themeDisplay));
+
+		httpServletRequest.setAttribute(
+			AnalyticsWebKeys.ANALYTICS_COOKIES_DELEGATED_CONSENT_MODE,
+			_isCookiesDelegatedConsentMode(themeDisplay));
+
+		httpServletRequest.setAttribute(
 			AnalyticsWebKeys.ANALYTICS_COOKIES_EXPLICIT_CONSENT_MODE,
 			_isCookiesExplicitConsentMode(themeDisplay));
 
@@ -154,6 +163,22 @@ public class AnalyticsTopHeadJSPDynamicInclude extends BaseJSPDynamicInclude {
 		).put(
 			"projectId", analyticsConfiguration.liferayAnalyticsProjectId()
 		).build();
+	}
+
+	private String _getCookiesCookieManager(ThemeDisplay themeDisplay) {
+		try {
+			CookiesPreferenceHandlingConfiguration
+				cookiesPreferenceHandlingConfiguration =
+					_cookiesConfigurationProvider.
+						getCookiesPreferenceHandlingConfiguration(themeDisplay);
+
+			return cookiesPreferenceHandlingConfiguration.cookieManager();
+		}
+		catch (Exception exception) {
+			_log.error(exception);
+		}
+
+		return StringPool.BLANK;
 	}
 
 	private String _getLiferayAnalyticsChannelId(
@@ -210,6 +235,28 @@ public class AnalyticsTopHeadJSPDynamicInclude extends BaseJSPDynamicInclude {
 				syncedGroupIds, String.valueOf(layout.getGroupId()))) {
 
 			return true;
+		}
+
+		return false;
+	}
+
+	private boolean _isCookiesDelegatedConsentMode(ThemeDisplay themeDisplay) {
+		try {
+			CookiesPreferenceHandlingConfiguration
+				cookiesPreferenceHandlingConfiguration =
+					_cookiesConfigurationProvider.
+						getCookiesPreferenceHandlingConfiguration(themeDisplay);
+
+			if (cookiesPreferenceHandlingConfiguration.enabled() &&
+				cookiesPreferenceHandlingConfiguration.explicitConsentMode()) {
+
+				return true;
+			}
+
+			return false;
+		}
+		catch (Exception exception) {
+			_log.error(exception);
 		}
 
 		return false;

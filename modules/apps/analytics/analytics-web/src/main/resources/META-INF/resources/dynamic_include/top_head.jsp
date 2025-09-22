@@ -7,6 +7,11 @@
 
 <%@ include file="/init.jsp" %>
 
+<%
+String cookieManager = (String)request.getAttribute(AnalyticsWebKeys.ANALYTICS_COOKIES_COOKIE_MANAGER);
+boolean delegatedConsentMode = (boolean)request.getAttribute(AnalyticsWebKeys.ANALYTICS_COOKIES_DELEGATED_CONSENT_MODE);
+%>
+
 <meta content="<%= (String)request.getAttribute(AnalyticsWebKeys.ANALYTICS_CLIENT_READABLE_CONTENT) %>" name="data-analytics-readable-content" />
 
 <aui:script senna="temporary" type="text/javascript">
@@ -24,81 +29,87 @@
 		'<%= (String)request.getAttribute(AnalyticsWebKeys.ANALYTICS_EXTERNAL_REFERENCE_CODE) %>';
 
 	var cookieManagers = {
-		'cookie.onetrust': {
-			checkConsent: () => {
-				var OptanonActiveGroups = window.OptanonActiveGroups;
+		<c:choose>
+			<c:when test='<%= cookieManager.equals("liferay") %>'>
+				'cookie.liferay': {
+					checkConsent: ({navigation}) => {
+						var performanceCookieEnabled = Liferay.Util.Cookie.get(
+							Liferay.Util.Cookie.TYPES.PERFORMANCE
+						);
 
-				return OptanonActiveGroups && OptanonActiveGroups.includes('C0002');
-			},
-			enabled: () => {
-				if (!window.OneTrustStub && !window.OneTrust) {
-					return Promise.resolve(false);
-				}
+						if (performanceCookieEnabled === 'false') {
+							if (window.Analytics) {
+								Analytics.dispose();
+							}
 
-				return new Promise((resolve, reject) => {
-					var startTime = Date.now();
-
-					var checkObject = () => {
-						if (window['OneTrust']) {
-							resolve(window['OneTrust']);
+							return false;
 						}
-						else if (Date.now() - startTime >= 5000) {
-							reject();
-						}
-						else {
-							setTimeout(checkObject, 100);
-						}
-					};
 
-					checkObject();
-				})
-					.then(() => {
+						if (
+							!analyticsCookiesConsentMode &&
+							typeof performanceCookieEnabled === 'undefined'
+						) {
+							return true;
+						}
+
+						if (navigation === 'normal' && window.Analytics) {
+							return false;
+						}
+
+						return performanceCookieEnabled === 'true';
+					},
+					enabled: () => {
 						return Promise.resolve(true);
-					})
-					.catch(() => {
-						return Promise.resolve(false);
-					});
-			},
-			onConsentChange: (callbackFn) => {
-				var OneTrust = window.OneTrust;
+					},
+					onConsentChange: (callbackFn) => {
+						Liferay.on('cookieBannerSetCookie', callbackFn);
+					},
+				},
+			</c:when>
+			<c:otherwise>
+				'cookie.onetrust': {
+					checkConsent: () => {
+						var OptanonActiveGroups = window.OptanonActiveGroups;
 
-				OneTrust.OnConsentChanged(callbackFn);
-			},
-		},
-		'cookie.liferay': {
-			checkConsent: ({navigation}) => {
-				var performanceCookieEnabled = Liferay.Util.Cookie.get(
-					Liferay.Util.Cookie.TYPES.PERFORMANCE
-				);
+						return OptanonActiveGroups && OptanonActiveGroups.includes('C0002');
+					},
+					enabled: () => {
+						if (!window.OneTrustStub && !window.OneTrust) {
+							return Promise.resolve(false);
+						}
 
-				if (performanceCookieEnabled === 'false') {
-					if (window.Analytics) {
-						Analytics.dispose();
-					}
+						return new Promise((resolve, reject) => {
+							var startTime = Date.now();
 
-					return false;
-				}
+							var checkObject = () => {
+								if (window['OneTrust']) {
+									resolve(window['OneTrust']);
+								}
+								else if (Date.now() - startTime >= 5000) {
+									reject();
+								}
+								else {
+									setTimeout(checkObject, 500);
+								}
+							};
 
-				if (
-					!analyticsCookiesConsentMode &&
-					typeof performanceCookieEnabled === 'undefined'
-				) {
-					return true;
-				}
+							checkObject();
+						})
+							.then(() => {
+								return Promise.resolve(true);
+							})
+							.catch(() => {
+								return Promise.resolve(false);
+							});
+					},
+					onConsentChange: (callbackFn) => {
+						var OneTrust = window.OneTrust;
 
-				if (navigation === 'normal' && window.Analytics) {
-					return false;
-				}
-
-				return performanceCookieEnabled === 'true';
-			},
-			enabled: () => {
-				return Promise.resolve(true);
-			},
-			onConsentChange: (callbackFn) => {
-				Liferay.on('cookieBannerSetCookie', callbackFn);
-			},
-		},
+						OneTrust.OnConsentChanged(callbackFn);
+					},
+				},
+			</c:otherwise>
+		</c:choose>
 	};
 
 	function <portlet:namespace />getAnalyticsSDKVersion() {
@@ -119,99 +130,118 @@
 </aui:script>
 
 <aui:script id="liferayAnalyticsScript" senna="permanent" type="text/javascript">
-	var allPromises = Object.keys(cookieManagers).map((key) =>
-		cookieManagers[key].enabled()
-	);
+	<c:if test="<%= delegatedConsentMode %>">
+		Liferay.on('cmp-sdk-loaded', () => {
+		</c:if>
 
-	Promise.all(allPromises).then((result) => {
-		var selectedIndex = result.findIndex((enabled) => enabled);
-		var selectedCookieManager = Object.values(cookieManagers)[selectedIndex];
+		var allPromises = Object.keys(cookieManagers).map((key) =>
+			cookieManagers[key].enabled()
+		);
 
-		function <portlet:namespace />initializeAnalyticsSDK() {
-			(function (u, c, a, m, o, l) {
-				o = 'script';
-				l = document;
-				a = l.createElement(o);
-				m = l.getElementsByTagName(o)[0];
-				a.async = 1;
-				a.src = u;
-				a.onload = c;
-				m.parentNode.insertBefore(a, m);
-			})(<portlet:namespace />getAnalyticsSDKVersion(), () => {
-				var config =
-					<%= (String)request.getAttribute(AnalyticsWebKeys.ANALYTICS_CLIENT_CONFIG) %>;
+		Promise.all(allPromises).then((result) => {
+			var selectedIndex = result.findIndex((enabled) => enabled);
+			var selectedCookieManager =
+				Object.values(cookieManagers)[selectedIndex];
 
-				var dxpMiddleware = function (request) {
-					request.context.canonicalUrl = themeDisplay.getCanonicalURL();
-					request.context.channelId = analyticsClientChannelId;
-					request.context.groupId =
-						themeDisplay.getScopeGroupIdOrLiveGroupId();
-					request.context.layoutExternalReferenceCode =
-						analyticsExternalReferenceCode;
+			function <portlet:namespace />initializeAnalyticsSDK() {
+				(function (u, c, a, m, o, l) {
+					o = 'script';
+					l = document;
+					a = l.createElement(o);
+					m = l.getElementsByTagName(o)[0];
+					a.async = 1;
+					a.src = u;
+					a.onload = c;
+					m.parentNode.insertBefore(a, m);
+				})(<portlet:namespace />getAnalyticsSDKVersion(), () => {
+					var config =
+						<%= (String)request.getAttribute(AnalyticsWebKeys.ANALYTICS_CLIENT_CONFIG) %>;
 
-					return request;
-				};
+					var dxpMiddleware = function (request) {
+						request.context.canonicalUrl =
+							themeDisplay.getCanonicalURL();
+						request.context.channelId = analyticsClientChannelId;
+						request.context.groupId =
+							themeDisplay.getScopeGroupIdOrLiveGroupId();
+						request.context.layoutExternalReferenceCode =
+							analyticsExternalReferenceCode;
 
-				Analytics.create(config, [dxpMiddleware]);
+						return request;
+					};
 
-				if (themeDisplay.isSignedIn()) {
-					Analytics.setIdentity({
-						email: themeDisplay.getUserEmailAddress(),
-						name: themeDisplay.getUserName(),
+					Analytics.create(config, [dxpMiddleware]);
+
+					if (themeDisplay.isSignedIn()) {
+						Analytics.setIdentity({
+							email: themeDisplay.getUserEmailAddress(),
+							name: themeDisplay.getUserName(),
+						});
+					}
+
+					runMiddlewares();
+
+					Analytics.send('pageViewed', 'Page', {
+						externalReferenceCode: analyticsExternalReferenceCode,
 					});
-				}
 
-				runMiddlewares();
+					<c:if test="<%= FrontendSPAUtil.isEnabled(company.getCompanyId()) %>">
+						Liferay.on('endNavigate', (event) => {
+							var allPromises = Object.keys(cookieManagers).map((key) =>
+								cookieManagers[key].enabled()
+							);
 
-				Analytics.send('pageViewed', 'Page', {
-					externalReferenceCode: analyticsExternalReferenceCode,
-				});
-
-				<c:if test="<%= FrontendSPAUtil.isEnabled(company.getCompanyId()) %>">
-					Liferay.on('endNavigate', (event) => {
-						var allPromises = Object.keys(cookieManagers).map((key) =>
-							cookieManagers[key].enabled()
-						);
-
-						Promise.all(allPromises).then((result) => {
-							function <portlet:namespace />initializeAnalyticsSDKFromSPA(
-								event
-							) {
-								Analytics.dispose();
-
-								if (
-									!themeDisplay.isControlPanel() &&
-									analyticsClientGroupIds.indexOf(
-										String(
-											themeDisplay.getScopeGroupIdOrLiveGroupId()
-										)
-									) >= 0
+							Promise.all(allPromises).then((result) => {
+								function <portlet:namespace />initializeAnalyticsSDKFromSPA(
+									event
 								) {
-									Analytics.create(config, [dxpMiddleware]);
+									Analytics.dispose();
 
-									if (themeDisplay.isSignedIn()) {
-										Analytics.setIdentity({
-											email: themeDisplay.getUserEmailAddress(),
-											name: themeDisplay.getUserName(),
+									if (
+										!themeDisplay.isControlPanel() &&
+										analyticsClientGroupIds.indexOf(
+											String(
+												themeDisplay.getScopeGroupIdOrLiveGroupId()
+											)
+										) >= 0
+									) {
+										Analytics.create(config, [dxpMiddleware]);
+
+										if (themeDisplay.isSignedIn()) {
+											Analytics.setIdentity({
+												email: themeDisplay.getUserEmailAddress(),
+												name: themeDisplay.getUserName(),
+											});
+										}
+
+										runMiddlewares();
+
+										Analytics.send('pageViewed', 'Page', {
+											externalReferenceCode:
+												analyticsExternalReferenceCode,
+											page: event.path,
 										});
 									}
-
-									runMiddlewares();
-
-									Analytics.send('pageViewed', 'Page', {
-										externalReferenceCode:
-											analyticsExternalReferenceCode,
-										page: event.path,
-									});
 								}
-							}
 
-							var selectedIndex = result.findIndex((enabled) => enabled);
-							var selectedCookieManager =
-								Object.values(cookieManagers)[selectedIndex];
+								var selectedIndex = result.findIndex(
+									(enabled) => enabled
+								);
+								var selectedCookieManager =
+									Object.values(cookieManagers)[selectedIndex];
 
-							if (selectedCookieManager) {
-								selectedCookieManager.onConsentChange(() => {
+								if (selectedCookieManager) {
+									selectedCookieManager.onConsentChange(() => {
+										if (
+											selectedCookieManager.checkConsent({
+												navigation: 'spa',
+											})
+										) {
+											<portlet:namespace />initializeAnalyticsSDKFromSPA(
+												event
+											);
+										}
+									});
+
 									if (
 										selectedCookieManager.checkConsent({
 											navigation: 'spa',
@@ -221,42 +251,37 @@
 											event
 										);
 									}
-								});
-
-								if (
-									selectedCookieManager.checkConsent({
-										navigation: 'spa',
-									})
-								) {
+								}
+								else {
 									<portlet:namespace />initializeAnalyticsSDKFromSPA(
 										event
 									);
 								}
-							}
-							else {
-								<portlet:namespace />initializeAnalyticsSDKFromSPA(
-									event
-								);
-							}
+							});
 						});
-					});
-				</c:if>
-			});
-		}
+					</c:if>
+				});
+			}
 
-		if (selectedCookieManager) {
-			selectedCookieManager.onConsentChange(() => {
+			if (selectedCookieManager) {
+				selectedCookieManager.onConsentChange(() => {
+					if (
+						selectedCookieManager.checkConsent({navigation: 'normal'})
+					) {
+						<portlet:namespace />initializeAnalyticsSDK();
+					}
+				});
+
 				if (selectedCookieManager.checkConsent({navigation: 'normal'})) {
 					<portlet:namespace />initializeAnalyticsSDK();
 				}
-			});
-
-			if (selectedCookieManager.checkConsent({navigation: 'normal'})) {
+			}
+			else if (!analyticsCookiesConsentMode) {
 				<portlet:namespace />initializeAnalyticsSDK();
 			}
-		}
-		else {
-			<portlet:namespace />initializeAnalyticsSDK();
-		}
-	});
+		});
+
+		<c:if test="<%= delegatedConsentMode %>">
+		});
+	</c:if>
 </aui:script>

@@ -11,18 +11,40 @@ export default function ({namespace}) {
 		'change',
 		'input[type="checkbox"]',
 		(event) => {
+			const cookieManager = document.querySelector(
+				`[name='${namespace}cookieManager']`
+			);
+			const delegatedConsentMode = document.querySelector(
+				`input[type='checkbox'][name='${namespace}delegatedConsentMode']`
+			);
 			const explicitConsentMode = document.querySelector(
 				`input[type='checkbox'][name='${namespace}explicitConsentMode']`
 			);
 
 			if (event.delegateTarget.id === `${namespace}enabled`) {
+				delegatedConsentMode.checked = false;
+				explicitConsentMode.checked = false;
+
 				if (event.delegateTarget.checked) {
+					cookieManager.removeAttribute('disabled');
+					delegatedConsentMode.removeAttribute('disabled');
 					explicitConsentMode.removeAttribute('disabled');
 				}
 				else {
-					explicitConsentMode.checked = true;
-
+					cookieManager.setAttribute('disabled', '');
+					delegatedConsentMode.setAttribute('disabled', '');
 					explicitConsentMode.setAttribute('disabled', '');
+				}
+			}
+
+			if (event.delegateTarget.id === `${namespace}explicitConsentMode`) {
+				delegatedConsentMode.checked = false;
+
+				if (event.delegateTarget.checked) {
+					delegatedConsentMode.removeAttribute('disabled');
+				}
+				else {
+					delegatedConsentMode.setAttribute('disabled', '');
 				}
 			}
 		}

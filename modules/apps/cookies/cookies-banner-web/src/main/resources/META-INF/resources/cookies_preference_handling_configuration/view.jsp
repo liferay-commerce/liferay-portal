@@ -32,7 +32,7 @@ CookiesPreferenceHandlingConfigurationDisplayContext cookiesPreferenceHandlingCo
 	<div class="col-sm-12 form-group">
 		<div class="form-group__inner">
 			<clay:checkbox
-				checked="<%= !cookiesPreferenceHandlingConfigurationDisplayContext.getCookiesPreferenceHandlingEnabled() || cookiesPreferenceHandlingConfigurationDisplayContext.getCookiesPreferenceHandlingExplicitConsentMode() %>"
+				checked="<%= !cookiesPreferenceHandlingConfigurationDisplayContext.getCookiesPreferenceHandlingEnabled() || cookiesPreferenceHandlingConfigurationDisplayContext.getCookiesPreferenceHandlingDelegatedConsentMode() || cookiesPreferenceHandlingConfigurationDisplayContext.getCookiesPreferenceHandlingExplicitConsentMode() %>"
 				disabled="<%= !cookiesPreferenceHandlingConfigurationDisplayContext.getCookiesPreferenceHandlingEnabled() %>"
 				id='<%= liferayPortletResponse.getNamespace() + "explicitConsentMode" %>'
 				label="cookie-explicit-consent-mode"
@@ -44,6 +44,51 @@ CookiesPreferenceHandlingConfigurationDisplayContext cookiesPreferenceHandlingCo
 					<liferay-ui:message key="cookie-explicit-consent-mode-help" />
 				</div>
 			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-12 form-group">
+		<div class="form-group__inner">
+			<clay:checkbox
+				checked="<%= cookiesPreferenceHandlingConfigurationDisplayContext.getCookiesPreferenceHandlingDelegatedConsentMode() %>"
+				disabled="<%= !(cookiesPreferenceHandlingConfigurationDisplayContext.getCookiesPreferenceHandlingEnabled() || cookiesPreferenceHandlingConfigurationDisplayContext.getCookiesPreferenceHandlingDelegatedConsentMode() || cookiesPreferenceHandlingConfigurationDisplayContext.getCookiesPreferenceHandlingExplicitConsentMode()) %>"
+				id='<%= liferayPortletResponse.getNamespace() + "delegatedConsentMode" %>'
+				label="cookie-delegated-consent-mode"
+				name='<%= liferayPortletResponse.getNamespace() + "delegatedConsentMode" %>'
+			/>
+
+			<div aria-hidden="true" class="form-feedback-group">
+				<div class="form-text text-weight-normal">
+					<liferay-ui:message key="cookie-delegated-consent-mode-help" />
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-12 form-group">
+		<div class="form-group__inner">
+			<label for="<portlet:namespace />cookieManager">
+				<liferay-ui:message key="supported-cookie-managers" />
+			</label>
+
+			<div aria-hidden="true" class="form-feedback-group">
+				<div class="form-text text-weight-normal">
+					<liferay-ui:message key="supported-cookie-managers-help" />
+				</div>
+			</div>
+
+			<clay:select
+				containerCssClass="mt-3"
+				disabled="<%= !(cookiesPreferenceHandlingConfigurationDisplayContext.getCookiesPreferenceHandlingEnabled() || cookiesPreferenceHandlingConfigurationDisplayContext.getCookiesPreferenceHandlingExplicitConsentMode()) %>"
+				id='<%= liferayPortletResponse.getNamespace() + "cookieManager" %>'
+				label="<%= null %>"
+				name="cookieManager"
+				options="<%= cookiesPreferenceHandlingConfigurationDisplayContext.getSelectOptions() %>"
+			/>
 		</div>
 	</div>
 </div>

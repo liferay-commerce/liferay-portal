@@ -43,6 +43,22 @@ public class CookiesPreferenceHandlingManagedServiceFactory
 		_unmapPid(pid);
 	}
 
+	public String getCompanyCookieManager(long companyId) {
+		CookiesPreferenceHandlingConfiguration
+			cookiesPreferenceHandlingConfiguration =
+				_getCompanyCookiesPreferenceHandlingConfiguration(companyId);
+
+		return cookiesPreferenceHandlingConfiguration.cookieManager();
+	}
+
+	public boolean getCompanyDelegatedConsentMode(long companyId) {
+		CookiesPreferenceHandlingConfiguration
+			cookiesPreferenceHandlingConfiguration =
+				_getCompanyCookiesPreferenceHandlingConfiguration(companyId);
+
+		return cookiesPreferenceHandlingConfiguration.delegatedConsentMode();
+	}
+
 	public boolean getCompanyEnabled(long companyId) {
 		CookiesPreferenceHandlingConfiguration
 			cookiesPreferenceHandlingConfiguration =
@@ -59,6 +75,22 @@ public class CookiesPreferenceHandlingManagedServiceFactory
 		return cookiesPreferenceHandlingConfiguration.explicitConsentMode();
 	}
 
+	public String getGroupCookieManager(long groupId) {
+		CookiesPreferenceHandlingConfiguration
+			cookiesPreferenceHandlingConfiguration =
+				_getGroupCookiesPreferenceHandlingConfiguration(groupId);
+
+		return cookiesPreferenceHandlingConfiguration.cookieManager();
+	}
+
+	public boolean getGroupDelegatedConsentMode(long groupId) {
+		CookiesPreferenceHandlingConfiguration
+			cookiesPreferenceHandlingConfiguration =
+				_getGroupCookiesPreferenceHandlingConfiguration(groupId);
+
+		return cookiesPreferenceHandlingConfiguration.delegatedConsentMode();
+	}
+
 	public boolean getGroupEnabled(long companyId) {
 		CookiesPreferenceHandlingConfiguration
 			cookiesPreferenceHandlingConfiguration =
@@ -67,10 +99,10 @@ public class CookiesPreferenceHandlingManagedServiceFactory
 		return cookiesPreferenceHandlingConfiguration.enabled();
 	}
 
-	public boolean getGroupExplicitConsentMode(long companyId) {
+	public boolean getGroupExplicitConsentMode(long groupId) {
 		CookiesPreferenceHandlingConfiguration
 			cookiesPreferenceHandlingConfiguration =
-				_getGroupCookiesPreferenceHandlingConfiguration(companyId);
+				_getGroupCookiesPreferenceHandlingConfiguration(groupId);
 
 		return cookiesPreferenceHandlingConfiguration.explicitConsentMode();
 	}
@@ -79,6 +111,15 @@ public class CookiesPreferenceHandlingManagedServiceFactory
 	public String getName() {
 		return "com.liferay.cookies.configuration." +
 			"CookiesPreferenceHandlingConfiguration.scoped";
+	}
+
+	public String getSystemCookieManager() {
+		return _systemCookiesPreferenceHandlingConfiguration.cookieManager();
+	}
+
+	public boolean getSystemDelegatedConsentMode() {
+		return _systemCookiesPreferenceHandlingConfiguration.
+			delegatedConsentMode();
 	}
 
 	public boolean getSystemEnabled() {

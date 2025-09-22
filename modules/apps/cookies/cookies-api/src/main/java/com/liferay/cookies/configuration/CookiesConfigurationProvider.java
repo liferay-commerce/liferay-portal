@@ -38,6 +38,9 @@ public interface CookiesConfigurationProvider {
 			getCookiesPreferenceHandlingConfiguration(ThemeDisplay themeDisplay)
 		throws Exception;
 
+	public String getCookiesPreferenceHandlingCookieManager(
+		ExtendedObjectClassDefinition.Scope scope, long scopePK);
+
 	public String getGroupConfigurationURL(
 			HttpServletRequest httpServletRequest)
 		throws PortalException;
@@ -49,6 +52,9 @@ public interface CookiesConfigurationProvider {
 	public boolean isCookiesPreferenceHandlingConfigurationDefined(
 			ExtendedObjectClassDefinition.Scope scope, long scopePK)
 		throws Exception;
+
+	public boolean isCookiesPreferenceHandlingDelegatedConsentMode(
+		ExtendedObjectClassDefinition.Scope scope, long scopePK);
 
 	public boolean isCookiesPreferenceHandlingEnabled(
 		ExtendedObjectClassDefinition.Scope scope, long scopePK);
