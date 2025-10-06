@@ -9,7 +9,6 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -23,7 +22,6 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,51 +33,47 @@ import java.util.regex.Pattern;
  */
 public class BooleanQueryParserUtil {
 
-	public static BooleanQuery parse(Queries queries, String filterString) {
-		if (Validator.isNull(filterString)) {
+	public static BooleanQuery parse(Queries queries, String filter) {
+		if (Validator.isNull(filter)) {
 			return null;
 		}
 
-		Map<String, Map<?, ?>> clauseMap = _getClauseMap(filterString);
+		Map<String, Map<?, ?>> clauses = _getClauseMap(filter);
 
-		if (MapUtil.isEmpty(clauseMap)) {
+		if (MapUtil.isEmpty(clauses)) {
 			return null;
 		}
 
 		BooleanQuery booleanQuery = queries.booleanQuery();
 
-		Map<String, SimpleClause> simpleClauses = (Map)clauseMap.get(
-			"simple");
+		Map<String, SimpleClause> simpleClauses = (Map)clauses.get("simple");
 
-		for (Map.Entry<String, SimpleClause> entry :
-				simpleClauses.entrySet()) {
-
+		for (Map.Entry<String, SimpleClause> entry : simpleClauses.entrySet()) {
 			SimpleClause simpleClause = entry.getValue();
 
-			String operator = simpleClause.getOperator();
-
-			if (operator.contains("eq")) {
+			if (StringUtil.equals(simpleClause.getOperator(), "eq")) {
 				booleanQuery.addFilterQueryClauses(
 					queries.term(
 						_fieldMapping.get(simpleClause.getField()),
 						simpleClause.getValue()));
 			}
-			else if (operator.contains("in")) {
+			else if (StringUtil.equals(simpleClause.getOperator(), "in")) {
 				TermsQuery termsQuery = queries.terms(
 					_fieldMapping.get(simpleClause.getField()));
 
-				ListUtil.isNotEmptyForEach(
-					(List)simpleClause.getValue(), termsQuery::addValues);
+				termsQuery.addValues(
+					(Object[])ArrayUtil.toStringArray(
+						(List)simpleClause.getValue()));
 
 				booleanQuery.addShouldQueryClauses(termsQuery);
 			}
-			else if (operator.contains("ne")) {
+			else if (StringUtil.equals(simpleClause.getOperator(), "ne")) {
 				booleanQuery.addMustNotQueryClauses(
 					queries.term(
 						_fieldMapping.get(simpleClause.getField()),
 						simpleClause.getValue()));
 			}
-			else if (operator.contains("not_in")) {
+			else if (StringUtil.equals(simpleClause.getOperator(), "not_in")) {
 				TermsQuery termsQuery = queries.terms(
 					_fieldMapping.get(simpleClause.getField()));
 
@@ -89,36 +83,25 @@ public class BooleanQueryParserUtil {
 
 				booleanQuery.addMustNotQueryClauses(termsQuery);
 			}
-			else if (operator.contains("or")) {
-				BooleanQuery orBooleanQuery = queries.booleanQuery();
+			else if (StringUtil.equals(simpleClause.getOperator(), "or")) {
+				BooleanQuery shouldBooleanQuery = queries.booleanQuery();
 
-				List<Query> values = new ArrayList<>();
-
-				ListUtil.isNotEmptyForEach(
-					(List)simpleClause.getValue(),
-					object -> values.add(
-						queries.term(
-							_fieldMapping.get(simpleClause.getField()),
-							object)));
-
-				orBooleanQuery.addShouldQueryClauses(
-					values.toArray(new Query[0]));
-
-				booleanQuery.addMustQueryClauses(orBooleanQuery);
+				booleanQuery.addMustQueryClauses(
+					shouldBooleanQuery.addShouldQueryClauses(
+						TransformUtil.transformToArray(
+							(List)simpleClause.getValue(),
+							value -> queries.term(
+								_fieldMapping.get(simpleClause.getField()),
+								value),
+							Query.class)));
 			}
 		}
 
-		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(
-			"yyyyMMddHHmmss"
-		).withZone(
-			ZoneId.of("UTC")
-		);
-
-		Map<String, DateRangeClause> dateRangeClauseMap = (Map)clauseMap.get(
-			"dateRange");
+		Map<String, DateRangeClause> dateRangeClauses =
+			(Map<String, DateRangeClause>)clauses.get("dateRange");
 
 		for (Map.Entry<String, DateRangeClause> entry :
-				dateRangeClauseMap.entrySet()) {
+				dateRangeClauses.entrySet()) {
 
 			DateRangeClause dateRangeClause = entry.getValue();
 
@@ -130,21 +113,21 @@ public class BooleanQueryParserUtil {
 					_fieldMapping.get(dateRangeClause.getField()),
 					Validator.isNotNull(start), Validator.isNotNull(end),
 					Validator.isNotNull(start) ?
-						dateTimeFormatter.format(Instant.parse(start)) : null,
+						_dateTimeFormatter.format(Instant.parse(start)) : null,
 					Validator.isNotNull(end) ?
-						dateTimeFormatter.format(Instant.parse(end)) : null));
+						_dateTimeFormatter.format(Instant.parse(end)) : null));
 		}
 
 		return booleanQuery;
 	}
 
-	private static Map<String, Map<?, ?>> _getClauseMap(String filterString) {
+	private static Map<String, Map<?, ?>> _getClauseMap(String filter) {
 		Map<String, DateRangeClause> dateRangeClauses = new HashMap<>();
 		Map<String, SimpleClause> simpleClauses = new HashMap<>();
 
 		String[] clauses = StringUtil.split(
 			StringUtil.trim(
-				filterString.replaceAll(
+				filter.replaceAll(
 					"\\s*AND\\s*", " AND "
 				).replaceAll(
 					"\\s*OR\\s*", " OR "
@@ -165,30 +148,21 @@ public class BooleanQueryParserUtil {
 			if (notMatcher.matches()) {
 				Matcher matcher = _clausesPattern.matcher(notMatcher.group(1));
 
-				if (notMatcher.matches() && matcher.find()) {
+				if (matcher.find()) {
 					String field = matcher.group(1);
-					String operator = matcher.group(2);
 
-					if (operator.equals("in")) {
-						String rawValue = matcher.group(3);
-
-						String innerIn = rawValue.replaceAll(
-							"^'|'$", ""
-						).replaceAll(
-							"^\\(|\\)$", ""
-						);
-
-						String[] parts = innerIn.split(",");
-
-						List<String> valuesList = new ArrayList<>();
-
-						for (String part : parts) {
-							valuesList.add(StringUtil.trim(part));
-						}
+					if (StringUtil.equals(matcher.group(2), "in")) {
+						String value = matcher.group(3);
 
 						simpleClauses.put(
 							field,
-							new SimpleClause(field, "not_in", valuesList));
+							new SimpleClause(
+								field, "not_in",
+								TransformUtil.transformToList(
+									StringUtil.split(
+										value.replaceAll("^\\(|\\)$", "")),
+									string -> StringUtil.trim(
+										string.replaceAll("^'|'$", "")))));
 
 						continue;
 					}
@@ -199,18 +173,16 @@ public class BooleanQueryParserUtil {
 				clause = clause.substring(1, clause.length() - 1);
 
 				if (clause.contains(" OR ")) {
-					String[] orParts = clause.split(" OR ");
 					List<String> values = new ArrayList<>();
 					String field = null;
 
-					for (String orPart : orParts) {
-						Matcher matcher = _clausesPattern.matcher(orPart);
+					for (String part : clause.split(" OR ")) {
+						Matcher matcher = _clausesPattern.matcher(part);
 
 						if (matcher.find()) {
 							String leftOperand = matcher.group(1);
-							String operator = matcher.group(2);
 
-							if (operator.equals("eq")) {
+							if (StringUtil.equals(matcher.group(2), "eq")) {
 								if (field == null) {
 									field = leftOperand;
 								}
@@ -242,20 +214,20 @@ public class BooleanQueryParserUtil {
 
 				String value = rawValue.replaceAll("^'|'$", "");
 
-				if (operator.equals("in")) {
-					value = value.replaceAll(
-						"^\\(|\\)$", ""
-					).replaceAll(
-						" ", ""
-					);
-
+				if (StringUtil.equals(operator, "in")) {
 					simpleClauses.put(
 						field,
 						new SimpleClause(
 							field, operator,
-							new ArrayList<>(Arrays.asList(value.split(",")))));
+							TransformUtil.transformToList(
+								StringUtil.split(
+									value.replaceAll("^\\(|\\)$", "")),
+								string -> StringUtil.trim(
+									string.replaceAll("^'|'$", "")))));
 				}
-				else if (operator.equals("ge") || operator.equals("le")) {
+				else if (StringUtil.equals(operator, "ge") ||
+						 StringUtil.equals(operator, "le")) {
+
 					dateRangeClauses.computeIfAbsent(
 						field, DateRangeClause::new
 					).addDateRangeClause(
@@ -280,6 +252,12 @@ public class BooleanQueryParserUtil {
 		"\\(\\s*not\\s+\\(([^)]+)\\)\\s*\\)", Pattern.CASE_INSENSITIVE);
 	private static final Pattern _clausesPattern = Pattern.compile(
 		"(\\w+)\\s+(eq|in|ge|le|ne)\\s+(.*)");
+	private static final DateTimeFormatter _dateTimeFormatter =
+		DateTimeFormatter.ofPattern(
+			"yyyyMMddHHmmss"
+		).withZone(
+			ZoneId.of("UTC")
+		);
 	private static final Map<String, String> _fieldMapping = HashMapBuilder.put(
 		"cmsKind", "cms_kind"
 	).put(
