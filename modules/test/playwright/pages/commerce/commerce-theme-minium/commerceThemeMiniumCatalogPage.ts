@@ -41,7 +41,7 @@ export class CommerceThemeMiniumCatalogPage {
 	readonly productLink: (productName: string) => Locator;
 
 	constructor(page: Page) {
-		this.accountSelectorButton = page.locator('.account-selector-dropdown');
+		this.accountSelectorButton = page.locator('.account-selector-dropdown').getByRole('button');
 		this.catalogSearch = page.getByTestId('searchInput');
 		this.clearSearchButton = page.getByRole('button', {
 			name: 'Clear Search',
