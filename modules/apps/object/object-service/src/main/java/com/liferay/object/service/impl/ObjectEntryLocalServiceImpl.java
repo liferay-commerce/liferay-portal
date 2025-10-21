@@ -166,6 +166,7 @@ import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModel;
@@ -6646,9 +6647,16 @@ public class ObjectEntryLocalServiceImpl
 		}
 
 		try {
-			_listTypeEntryService.getOrAddEmptyListTypeEntry(
-				objectField.getUserId(), objectField.getListTypeDefinitionId(),
-				listTypeEntryKey);
+			if (LazyReferencingThreadLocal.isEnabled()) {
+				_listTypeEntryService.getOrAddEmptyListTypeEntry(
+					objectField.getUserId(),
+					objectField.getListTypeDefinitionId(), listTypeEntryKey);
+			}
+			else {
+				_listTypeEntryLocalService.getOrAddEmptyListTypeEntry(
+					objectField.getUserId(),
+					objectField.getListTypeDefinitionId(), listTypeEntryKey);
+			}
 		}
 		catch (NoSuchListTypeEntryException noSuchListTypeEntryException) {
 			if (Validator.isNotNull(listTypeEntryKey)) {
