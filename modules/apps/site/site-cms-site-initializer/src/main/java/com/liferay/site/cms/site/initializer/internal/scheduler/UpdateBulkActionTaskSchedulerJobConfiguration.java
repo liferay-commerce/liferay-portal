@@ -7,7 +7,7 @@ package com.liferay.site.cms.site.initializer.internal.scheduler;
 
 import com.liferay.batch.engine.model.BatchEngineImportTask;
 import com.liferay.batch.engine.model.BatchEngineImportTaskError;
-import com.liferay.batch.engine.service.BatchEngineImportTaskService;
+import com.liferay.batch.engine.service.BatchEngineImportTaskLocalService;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
@@ -152,7 +152,7 @@ public class UpdateBulkActionTaskSchedulerJobConfiguration
 			long classPK = GetterUtil.getLong(values.get("classPK"));
 
 			BatchEngineImportTask batchEngineImportTask =
-				_batchEngineImportTaskService.getBatchEngineImportTask(
+				_batchEngineImportTaskLocalService.getBatchEngineImportTask(
 					GetterUtil.getLong(values.get("importTaskId")));
 
 			BatchEngineImportTaskError batchEngineImportTaskError =
@@ -296,7 +296,8 @@ public class UpdateBulkActionTaskSchedulerJobConfiguration
 		UpdateBulkActionTaskSchedulerJobConfiguration.class);
 
 	@Reference
-	private BatchEngineImportTaskService _batchEngineImportTaskService;
+	private BatchEngineImportTaskLocalService
+		_batchEngineImportTaskLocalService;
 
 	@Reference
 	private CompanyLocalService _companyLocalService;
