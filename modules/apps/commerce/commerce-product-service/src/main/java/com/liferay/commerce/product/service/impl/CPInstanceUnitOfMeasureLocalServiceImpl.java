@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.util.FriendlyURLNormalizerUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -74,7 +75,8 @@ public class CPInstanceUnitOfMeasureLocalServiceImpl
 			_normalizeCPInstanceUnitOfMeasureBaseDecimalQuantity(
 				incrementalOrderQuantity, precision));
 		cpInstanceUnitOfMeasure.setKey(key);
-		cpInstanceUnitOfMeasure.setNameMap(nameMap);
+		cpInstanceUnitOfMeasure.setNameMap(
+			_normalizeCPInstanceUnitOfMeasureNameMap(nameMap));
 		cpInstanceUnitOfMeasure.setPrecision(precision);
 		cpInstanceUnitOfMeasure.setPricingQuantity(pricingQuantity);
 		cpInstanceUnitOfMeasure.setPrimary(primary);
@@ -219,7 +221,8 @@ public class CPInstanceUnitOfMeasureLocalServiceImpl
 			_normalizeCPInstanceUnitOfMeasureBaseDecimalQuantity(
 				incrementalOrderQuantity, precision));
 		cpInstanceUnitOfMeasure.setKey(key);
-		cpInstanceUnitOfMeasure.setNameMap(nameMap);
+		cpInstanceUnitOfMeasure.setNameMap(
+			_normalizeCPInstanceUnitOfMeasureNameMap(nameMap));
 		cpInstanceUnitOfMeasure.setPrecision(precision);
 		cpInstanceUnitOfMeasure.setPricingQuantity(pricingQuantity);
 		cpInstanceUnitOfMeasure.setPrimary(primary);
@@ -241,6 +244,15 @@ public class CPInstanceUnitOfMeasureLocalServiceImpl
 		BigDecimal baseDecimalQuantity, int precision) {
 
 		return baseDecimalQuantity.setScale(precision, RoundingMode.HALF_UP);
+	}
+
+	private Map<Locale, String> _normalizeCPInstanceUnitOfMeasureNameMap(
+		Map<Locale, String> nameMap) {
+
+		nameMap.replaceAll(
+			(locale, value) -> FriendlyURLNormalizerUtil.normalize(value));
+
+		return nameMap;
 	}
 
 	private void _updatePrimary(
