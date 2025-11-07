@@ -19,7 +19,8 @@ import {
 	OBJECT_ENTRY_FOLDER_CLASS_NAME,
 	getScopeExternalReferenceCode,
 } from '../../common/utils/getScopeExternalReferenceCode';
-import CategoriesAndTagsModalContent from '../categorization/modal/CategoriesAndTagsModalContent';
+import CategoriesModalContent from '../categorization/modal/CategoriesModalContent';
+import TagsModalContent from '../categorization/modal/TagsModalContent';
 import {defaultPermissionsBulkAction} from '../default_permission/BulkDefaultPermissionModalContent';
 import {permissionsBulkAction} from '../default_permission/BulkPermissionModalContent';
 import DefaultPermissionModalContent from '../default_permission/DefaultPermissionModalContent';
@@ -339,7 +340,7 @@ export default function AssetsFDSPropsTransformer({
 			action: any;
 			selectedData: any;
 		}) => {
-			if (action?.data?.id === 'categoriesAndTags') {
+			if (action?.data?.id === 'edit-tags') {
 				openModal({
 					center: true,
 					containerProps: {
@@ -350,7 +351,27 @@ export default function AssetsFDSPropsTransformer({
 					}: {
 						closeModal: () => void;
 					}) =>
-						CategoriesAndTagsModalContent({
+						TagsModalContent({
+							apiURL: otherProps.apiURL,
+							closeModal,
+							cmsGroupId: additionalProps.cmsGroupId as number,
+							selectedData,
+						}),
+					size: 'md',
+				});
+			}
+			else if (action?.data?.id === 'edit-categories') {
+				openModal({
+					center: true,
+					containerProps: {
+						className: 'modal-height-lg',
+					},
+					contentComponent: ({
+										   closeModal,
+									   }: {
+						closeModal: () => void;
+					}) =>
+						CategoriesModalContent({
 							apiURL: otherProps.apiURL,
 							closeModal,
 							cmsGroupId: additionalProps.cmsGroupId as number,
