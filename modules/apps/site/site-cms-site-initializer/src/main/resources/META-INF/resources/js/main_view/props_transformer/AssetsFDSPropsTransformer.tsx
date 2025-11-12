@@ -367,8 +367,8 @@ export default function AssetsFDSPropsTransformer({
 						className: 'modal-height-lg',
 					},
 					contentComponent: ({
-										   closeModal,
-									   }: {
+						closeModal,
+					}: {
 						closeModal: () => void;
 					}) =>
 						CategoriesModalContent({

@@ -153,7 +153,6 @@ export default function CategoriesModalContent({
 					objectEntry={categorizationDTO}
 					updateObjectEntry={updateLocalObjectEntry}
 				/>
-
 			</ClayModal.Body>
 
 			<ClayModal.Footer

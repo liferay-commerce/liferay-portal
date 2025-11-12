@@ -218,29 +218,31 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 				getObjectDefinitionByExternalReferenceCode(
 					"L_CMS_BULK_ACTION_TASK", contextCompany.getCompanyId());
 
+		String typeString = type.toString();
+
 		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
 			0, contextUser.getUserId(),
 			objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			contextAcceptLanguage.getPreferredLanguageId(),
 			HashMapBuilder.<String, Serializable>put(
-				"actionName", type.toString()
+				"actionName", typeString
 			).put(
 				"executionStatus", "initial"
 			).put(
-				"type", type.toString()
+				"type", typeString
 			).build(),
 			new ServiceContext());
 
 		return new BulkActionTask() {
 			{
-				setActionName(() -> GetterUtil.getString(type.toString()));
+				setActionName(() -> GetterUtil.getString(typeString));
 				setAuthor(objectEntry::getUserName);
 				setCreatedDate(objectEntry::getCreateDate);
 				setExecuteStatus(() -> GetterUtil.getString("initial"));
 				setExternalReferenceCode(objectEntry::getExternalReferenceCode);
 				setId(objectEntry::getObjectEntryId);
-				setType(() -> GetterUtil.getString(type.toString()));
+				setType(() -> GetterUtil.getString(typeString));
 			}
 		};
 	}
