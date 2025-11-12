@@ -9,8 +9,10 @@ import com.liferay.bulk.rest.dto.v1_0.BulkAction;
 import com.liferay.bulk.rest.dto.v1_0.BulkActionItem;
 import com.liferay.bulk.rest.dto.v1_0.BulkActionTask;
 import com.liferay.bulk.rest.dto.v1_0.DefaultPermissionBulkAction;
+import com.liferay.bulk.rest.dto.v1_0.KeywordBulkAction;
 import com.liferay.bulk.rest.dto.v1_0.PermissionBulkAction;
 import com.liferay.bulk.rest.dto.v1_0.SelectionScope;
+import com.liferay.bulk.rest.dto.v1_0.TaxonomyCategoryBulkAction;
 import com.liferay.bulk.rest.internal.selection.v1_0.BulkActionBulkSelectionFactory;
 import com.liferay.bulk.rest.resource.v1_0.BulkActionResource;
 import com.liferay.bulk.selection.BulkSelection;
@@ -418,6 +420,31 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 		}
 		else if (BulkAction.Type.DELETE_BULK_ACTION.equals(type)) {
 			return hashMapWrapper.build();
+		}
+		else if (BulkAction.Type.KEYWORD_BULK_ACTION.equals(type)) {
+			KeywordBulkAction keywordBulkAction = (KeywordBulkAction)bulkAction;
+
+			return hashMapWrapper.put(
+				"append", true
+			).put(
+				"toAddTagNames", keywordBulkAction.getKeywordsToAdd()
+			).put(
+				"toRemoveTagNames", keywordBulkAction.getKeywordsToRemove()
+			).build();
+		}
+		else if (BulkAction.Type.TAXONOMY_CATEGORY_BULK_ACTION.equals(type)) {
+			TaxonomyCategoryBulkAction taxonomyCategoryBulkAction =
+				(TaxonomyCategoryBulkAction)bulkAction;
+
+			return hashMapWrapper.put(
+				"append", true
+			).put(
+				"toAddCategoryIds",
+				taxonomyCategoryBulkAction.getTaxonomyCategoryIdsToAdd()
+			).put(
+				"toRemoveCategoryIds",
+				taxonomyCategoryBulkAction.getTaxonomyCategoryIdsToRemove()
+			).build();
 		}
 		else if (BulkAction.Type.PERMISSION_BULK_ACTION.equals(type)) {
 			return hashMapWrapper.put(
