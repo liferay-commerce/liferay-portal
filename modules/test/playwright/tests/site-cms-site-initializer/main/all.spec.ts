@@ -1238,3 +1238,64 @@ test(
 		}
 	}
 );
+
+test(
+	'Newly Created tags appear immediately in the Item Selector',
+	{tag: '@LPD-71669'},
+	async ({apiHelpers, assetsPage, infoPanelPage, page}) => {
+		const applicationName = 'cms/basic-web-contents';
+		const contentTitle = getRandomString();
+		let objectEntry: ObjectEntry;
+		const tagName = getRandomString().substring(0, 7);
+
+		try {
+			objectEntry = await apiHelpers.objectEntry.postObjectEntry(
+				{
+					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+					title: contentTitle,
+				},
+				applicationName,
+				'Default'
+			);
+
+			await page.goto(PORTLET_URLS.cmsAll);
+
+			await assetsPage.execItemAction({
+				action: 'Show Details',
+				filter: contentTitle,
+			});
+
+			await expect(
+				page.getByRole('heading', {name: contentTitle})
+			).toBeVisible();
+
+			await infoPanelPage.selectTab('Categorization').click();
+
+			await page.getByPlaceholder('Add tag').fill(tagName);
+
+			const newTagOption = page.getByRole('option', {
+				name: 'Create New Tag:',
+			});
+
+			await newTagOption.waitFor();
+			await newTagOption.click();
+
+			const tagLabel = page.locator('.label-item', {hasText: tagName});
+
+			await expect(tagLabel).toBeAttached();
+
+			await page.getByPlaceholder('Add tag').fill(tagName);
+
+			await expect(page.getByText('No Results Found')).not.toBeVisible();
+			await expect(
+				page.getByRole('option', {name: tagName})
+			).toBeVisible();
+		}
+		finally {
+			await apiHelpers.objectEntry.deleteObjectEntry(
+				applicationName,
+				String(objectEntry.id)
+			);
+		}
+	}
+);
