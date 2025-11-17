@@ -295,8 +295,20 @@ public interface CommerceShippingFixedOptionRelLocalService
 				orderByComparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<CommerceShippingFixedOptionRel>
+		getCommerceShippingMethodFixedOptionRels(
+			long commerceShippingMethodId, long commerceShippingFixedOptionId,
+			int start, int end,
+			OrderByComparator<CommerceShippingFixedOptionRel>
+				orderByComparator);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceShippingMethodFixedOptionRelsCount(
 		long commerceShippingMethodId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getCommerceShippingMethodFixedOptionRelsCount(
+		long commerceShippingMethodId, long commerceShippingFixedOptionId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();

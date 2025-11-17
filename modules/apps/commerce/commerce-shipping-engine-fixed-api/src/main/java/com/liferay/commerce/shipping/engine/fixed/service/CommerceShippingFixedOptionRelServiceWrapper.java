@@ -112,6 +112,25 @@ public class CommerceShippingFixedOptionRelServiceWrapper
 	}
 
 	@Override
+	public java.util.List
+		<com.liferay.commerce.shipping.engine.fixed.model.
+			CommerceShippingFixedOptionRel>
+					getCommerceShippingMethodFixedOptionRels(
+						long commerceShippingMethodId,
+						long commerceShippingFixedOptionId, int start, int end,
+						com.liferay.portal.kernel.util.OrderByComparator
+							<com.liferay.commerce.shipping.engine.fixed.model.
+								CommerceShippingFixedOptionRel>
+									orderByComparator)
+				throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceShippingFixedOptionRelService.
+			getCommerceShippingMethodFixedOptionRels(
+				commerceShippingMethodId, commerceShippingFixedOptionId, start,
+				end, orderByComparator);
+	}
+
+	@Override
 	public int getCommerceShippingMethodFixedOptionRelsCount(
 			long commerceShippingMethodId)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -119,6 +138,16 @@ public class CommerceShippingFixedOptionRelServiceWrapper
 		return _commerceShippingFixedOptionRelService.
 			getCommerceShippingMethodFixedOptionRelsCount(
 				commerceShippingMethodId);
+	}
+
+	@Override
+	public int getCommerceShippingMethodFixedOptionRelsCount(
+			long commerceShippingMethodId, long commerceShippingFixedOptionId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceShippingFixedOptionRelService.
+			getCommerceShippingMethodFixedOptionRelsCount(
+				commerceShippingMethodId, commerceShippingFixedOptionId);
 	}
 
 	/**

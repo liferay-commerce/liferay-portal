@@ -433,12 +433,38 @@ public class CommerceShippingFixedOptionRelLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List
+		<com.liferay.commerce.shipping.engine.fixed.model.
+			CommerceShippingFixedOptionRel>
+				getCommerceShippingMethodFixedOptionRels(
+					long commerceShippingMethodId,
+					long commerceShippingFixedOptionId, int start, int end,
+					com.liferay.portal.kernel.util.OrderByComparator
+						<com.liferay.commerce.shipping.engine.fixed.model.
+							CommerceShippingFixedOptionRel> orderByComparator) {
+
+		return _commerceShippingFixedOptionRelLocalService.
+			getCommerceShippingMethodFixedOptionRels(
+				commerceShippingMethodId, commerceShippingFixedOptionId, start,
+				end, orderByComparator);
+	}
+
+	@Override
 	public int getCommerceShippingMethodFixedOptionRelsCount(
 		long commerceShippingMethodId) {
 
 		return _commerceShippingFixedOptionRelLocalService.
 			getCommerceShippingMethodFixedOptionRelsCount(
 				commerceShippingMethodId);
+	}
+
+	@Override
+	public int getCommerceShippingMethodFixedOptionRelsCount(
+		long commerceShippingMethodId, long commerceShippingFixedOptionId) {
+
+		return _commerceShippingFixedOptionRelLocalService.
+			getCommerceShippingMethodFixedOptionRelsCount(
+				commerceShippingMethodId, commerceShippingFixedOptionId);
 	}
 
 	@Override

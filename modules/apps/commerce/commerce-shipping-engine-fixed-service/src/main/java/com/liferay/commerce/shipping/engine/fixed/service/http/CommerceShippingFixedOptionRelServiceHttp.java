@@ -278,6 +278,59 @@ public class CommerceShippingFixedOptionRelServiceHttp {
 		}
 	}
 
+	public static java.util.List
+		<com.liferay.commerce.shipping.engine.fixed.model.
+			CommerceShippingFixedOptionRel>
+					getCommerceShippingMethodFixedOptionRels(
+						HttpPrincipal httpPrincipal,
+						long commerceShippingMethodId,
+						long commerceShippingFixedOptionId, int start, int end,
+						com.liferay.portal.kernel.util.OrderByComparator
+							<com.liferay.commerce.shipping.engine.fixed.model.
+								CommerceShippingFixedOptionRel>
+									orderByComparator)
+				throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				CommerceShippingFixedOptionRelServiceUtil.class,
+				"getCommerceShippingMethodFixedOptionRels",
+				_getCommerceShippingMethodFixedOptionRelsParameterTypes5);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, commerceShippingMethodId,
+				commerceShippingFixedOptionId, start, end, orderByComparator);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (java.util.List
+				<com.liferay.commerce.shipping.engine.fixed.model.
+					CommerceShippingFixedOptionRel>)returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
 	public static int getCommerceShippingMethodFixedOptionRelsCount(
 			HttpPrincipal httpPrincipal, long commerceShippingMethodId)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -286,10 +339,53 @@ public class CommerceShippingFixedOptionRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CommerceShippingFixedOptionRelServiceUtil.class,
 				"getCommerceShippingMethodFixedOptionRelsCount",
-				_getCommerceShippingMethodFixedOptionRelsCountParameterTypes5);
+				_getCommerceShippingMethodFixedOptionRelsCountParameterTypes6);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, commerceShippingMethodId);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return ((Integer)returnObj).intValue();
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
+	public static int getCommerceShippingMethodFixedOptionRelsCount(
+			HttpPrincipal httpPrincipal, long commerceShippingMethodId,
+			long commerceShippingFixedOptionId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				CommerceShippingFixedOptionRelServiceUtil.class,
+				"getCommerceShippingMethodFixedOptionRelsCount",
+				_getCommerceShippingMethodFixedOptionRelsCountParameterTypes7);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, commerceShippingMethodId,
+				commerceShippingFixedOptionId);
 
 			Object returnObj = null;
 
@@ -333,7 +429,7 @@ public class CommerceShippingFixedOptionRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CommerceShippingFixedOptionRelServiceUtil.class,
 				"updateCommerceShippingFixedOptionRel",
-				_updateCommerceShippingFixedOptionRelParameterTypes6);
+				_updateCommerceShippingFixedOptionRelParameterTypes8);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, commerceShippingFixedOptionRelId,
@@ -400,10 +496,18 @@ public class CommerceShippingFixedOptionRelServiceHttp {
 			com.liferay.portal.kernel.util.OrderByComparator.class
 		};
 	private static final Class<?>[]
-		_getCommerceShippingMethodFixedOptionRelsCountParameterTypes5 =
+		_getCommerceShippingMethodFixedOptionRelsParameterTypes5 = new Class[] {
+			long.class, long.class, int.class, int.class,
+			com.liferay.portal.kernel.util.OrderByComparator.class
+		};
+	private static final Class<?>[]
+		_getCommerceShippingMethodFixedOptionRelsCountParameterTypes6 =
 			new Class[] {long.class};
 	private static final Class<?>[]
-		_updateCommerceShippingFixedOptionRelParameterTypes6 = new Class[] {
+		_getCommerceShippingMethodFixedOptionRelsCountParameterTypes7 =
+			new Class[] {long.class, long.class};
+	private static final Class<?>[]
+		_updateCommerceShippingFixedOptionRelParameterTypes8 = new Class[] {
 			long.class, long.class, long.class, long.class, String.class,
 			double.class, double.class, java.math.BigDecimal.class,
 			java.math.BigDecimal.class, double.class

@@ -97,12 +97,33 @@ public class CommerceShippingFixedOptionRelServiceUtil {
 			commerceShippingMethodId, start, end, orderByComparator);
 	}
 
+	public static List<CommerceShippingFixedOptionRel>
+			getCommerceShippingMethodFixedOptionRels(
+				long commerceShippingMethodId,
+				long commerceShippingFixedOptionId, int start, int end,
+				OrderByComparator<CommerceShippingFixedOptionRel>
+					orderByComparator)
+		throws PortalException {
+
+		return getService().getCommerceShippingMethodFixedOptionRels(
+			commerceShippingMethodId, commerceShippingFixedOptionId, start, end,
+			orderByComparator);
+	}
+
 	public static int getCommerceShippingMethodFixedOptionRelsCount(
 			long commerceShippingMethodId)
 		throws PortalException {
 
 		return getService().getCommerceShippingMethodFixedOptionRelsCount(
 			commerceShippingMethodId);
+	}
+
+	public static int getCommerceShippingMethodFixedOptionRelsCount(
+			long commerceShippingMethodId, long commerceShippingFixedOptionId)
+		throws PortalException {
+
+		return getService().getCommerceShippingMethodFixedOptionRelsCount(
+			commerceShippingMethodId, commerceShippingFixedOptionId);
 	}
 
 	/**

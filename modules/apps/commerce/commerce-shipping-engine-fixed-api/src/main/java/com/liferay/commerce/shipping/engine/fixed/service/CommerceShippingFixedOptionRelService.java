@@ -85,8 +85,22 @@ public interface CommerceShippingFixedOptionRelService extends BaseService {
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<CommerceShippingFixedOptionRel>
+			getCommerceShippingMethodFixedOptionRels(
+				long commerceShippingMethodId,
+				long commerceShippingFixedOptionId, int start, int end,
+				OrderByComparator<CommerceShippingFixedOptionRel>
+					orderByComparator)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceShippingMethodFixedOptionRelsCount(
 			long commerceShippingMethodId)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getCommerceShippingMethodFixedOptionRelsCount(
+			long commerceShippingMethodId, long commerceShippingFixedOptionId)
 		throws PortalException;
 
 	/**
