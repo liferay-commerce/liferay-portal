@@ -134,6 +134,10 @@
 		<finder name="CommerceShippingFixedOptionId" return-type="Collection">
 			<finder-column name="commerceShippingFixedOptionId" />
 		</finder>
+		<finder name="C_C" return-type="Collection">
+			<finder-column name="commerceShippingMethodId" />
+			<finder-column name="commerceShippingFixedOptionId" />
+		</finder>
 	</entity>
 	<exceptions>
 		<exception>CommerceShippingFixedOptionAmount</exception>

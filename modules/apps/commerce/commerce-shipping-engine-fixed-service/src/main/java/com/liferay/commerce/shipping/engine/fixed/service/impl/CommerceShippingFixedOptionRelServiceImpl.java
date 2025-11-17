@@ -132,6 +132,25 @@ public class CommerceShippingFixedOptionRelServiceImpl
 	}
 
 	@Override
+	public List<CommerceShippingFixedOptionRel>
+			getCommerceShippingMethodFixedOptionRels(
+				long commerceShippingMethodId,
+				long commerceShippingFixedOptionId, int start, int end,
+				OrderByComparator<CommerceShippingFixedOptionRel>
+					orderByComparator)
+		throws PortalException {
+
+		CommerceShippingMethod commerceShippingMethod =
+			_commerceShippingMethodService.getCommerceShippingMethod(
+				commerceShippingMethodId);
+
+		return commerceShippingFixedOptionRelLocalService.
+			getCommerceShippingMethodFixedOptionRels(
+				commerceShippingMethod.getCommerceShippingMethodId(),
+				commerceShippingFixedOptionId, start, end, orderByComparator);
+	}
+
+	@Override
 	public int getCommerceShippingMethodFixedOptionRelsCount(
 			long commerceShippingMethodId)
 		throws PortalException {
@@ -143,6 +162,21 @@ public class CommerceShippingFixedOptionRelServiceImpl
 		return commerceShippingFixedOptionRelLocalService.
 			getCommerceShippingMethodFixedOptionRelsCount(
 				commerceShippingMethod.getCommerceShippingMethodId());
+	}
+
+	@Override
+	public int getCommerceShippingMethodFixedOptionRelsCount(
+			long commerceShippingMethodId, long commerceShippingFixedOptionId)
+		throws PortalException {
+
+		CommerceShippingMethod commerceShippingMethod =
+			_commerceShippingMethodService.getCommerceShippingMethod(
+				commerceShippingMethodId);
+
+		return commerceShippingFixedOptionRelLocalService.
+			getCommerceShippingMethodFixedOptionRelsCount(
+				commerceShippingMethod.getCommerceShippingMethodId(),
+				commerceShippingFixedOptionId);
 	}
 
 	@Override
