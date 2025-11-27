@@ -14,6 +14,7 @@ import com.liferay.list.type.constants.ListTypeActionKeys;
 import com.liferay.list.type.constants.ListTypeConstants;
 import com.liferay.list.type.service.ListTypeDefinitionService;
 import com.liferay.list.type.service.ListTypeEntryLocalService;
+import com.liferay.object.rest.dto.v1_0.util.CreatorUtil;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -21,8 +22,10 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.aggregation.Aggregation;
 import com.liferay.portal.vulcan.pagination.Page;
@@ -254,6 +257,11 @@ public class ListTypeDefinitionResourceImpl
 							serviceBuilderListTypeDefinition.
 								getListTypeDefinitionId())
 					).build());
+				setCreator(
+					() -> CreatorUtil.toCreator(
+						_portal, contextUriInfo,
+						_userLocalService.getUser(
+							serviceBuilderListTypeDefinition.getUserId())));
 				setDateCreated(serviceBuilderListTypeDefinition::getCreateDate);
 				setDateModified(
 					serviceBuilderListTypeDefinition::getModifiedDate);
@@ -268,7 +276,10 @@ public class ListTypeDefinitionResourceImpl
 								getListTypeDefinitionId(),
 							QueryUtil.ALL_POS, QueryUtil.ALL_POS),
 						listTypeEntry -> ListTypeEntryUtil.toListTypeEntry(
-							null, locale, listTypeEntry),
+							null, locale, _portal, listTypeEntry,
+							_userLocalService.getUser(
+								listTypeEntry.getUserId()),
+							contextUriInfo),
 						ListTypeEntry.class));
 				setName(() -> serviceBuilderListTypeDefinition.getName(locale));
 				setName_i18n(
@@ -290,5 +301,11 @@ public class ListTypeDefinitionResourceImpl
 
 	@Reference
 	private ObjectFieldLocalService _objectFieldLocalService;
+
+	@Reference
+	private Portal _portal;
+
+	@Reference
+	private UserLocalService _userLocalService;
 
 }
