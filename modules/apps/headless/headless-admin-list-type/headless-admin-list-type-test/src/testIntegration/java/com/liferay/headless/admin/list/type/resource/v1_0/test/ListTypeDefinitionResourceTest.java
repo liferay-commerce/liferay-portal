@@ -9,8 +9,23 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.headless.admin.list.type.client.dto.v1_0.ListTypeDefinition;
 import com.liferay.headless.admin.list.type.client.dto.v1_0.ListTypeEntry;
 import com.liferay.list.type.service.ListTypeDefinitionLocalService;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.test.rule.Inject;
@@ -25,6 +40,9 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 
 /**
  * @author Gabriel Albuquerque
@@ -85,6 +103,59 @@ public class ListTypeDefinitionResourceTest
 		_assertListTypeDefinitionNameLocalizedMap(
 			testPostListTypeDefinition_addListTypeDefinition(
 				randomListTypeDefinition));
+
+		// With permissions
+
+		_assertListTypeDefinition(
+			JSONUtil.putAll(_getOwnerPermissionsJSONObject()),
+			postListTypeDefinition);
+
+		String permissionName =
+			com.liferay.list.type.model.ListTypeDefinition.class.getName();
+
+		Role role1 = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			TestPropsValues.getCompanyId(), permissionName,
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(postListTypeDefinition.getId()), role1.getRoleId(),
+			new String[] {ActionKeys.DELETE});
+
+		Role role2 = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			TestPropsValues.getCompanyId(), permissionName,
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(postListTypeDefinition.getId()), role2.getRoleId(),
+			new String[] {ActionKeys.UPDATE, ActionKeys.VIEW});
+
+		_assertListTypeDefinition(
+			JSONUtil.putAll(
+				_getOwnerPermissionsJSONObject(),
+				_getPermissionsJSONObject(
+					new String[] {ActionKeys.DELETE}, role1.getName()),
+				_getPermissionsJSONObject(
+					new String[] {ActionKeys.UPDATE, ActionKeys.VIEW},
+					role2.getName())),
+			postListTypeDefinition);
+
+		_resourcePermissionLocalService.removeResourcePermission(
+			TestPropsValues.getCompanyId(), permissionName,
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(postListTypeDefinition.getId()), role1.getRoleId(),
+			ActionKeys.DELETE);
+		_resourcePermissionLocalService.removeResourcePermission(
+			TestPropsValues.getCompanyId(), permissionName,
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(postListTypeDefinition.getId()), role2.getRoleId(),
+			ActionKeys.VIEW);
+
+		_assertListTypeDefinition(
+			JSONUtil.putAll(
+				_getOwnerPermissionsJSONObject(),
+				_getPermissionsJSONObject(
+					new String[] {ActionKeys.UPDATE}, role2.getName())),
+			postListTypeDefinition);
 	}
 
 	@Override
@@ -229,6 +300,37 @@ public class ListTypeDefinitionResourceTest
 		return listTypeDefinition;
 	}
 
+	private void _assertListTypeDefinition(
+			JSONArray expectedPermissionsJSONArray,
+			ListTypeDefinition listTypeDefinition)
+		throws Exception {
+
+		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
+			null,
+			StringBundler.concat(
+				"headless-admin-list-type/v1.0/list-type-definitions",
+				"/by-external-reference-code/",
+				listTypeDefinition.getExternalReferenceCode(),
+				"?nestedFields=permissions"),
+			Http.Method.GET);
+
+		JSONObject actualCreatorJSONObject = jsonObject.getJSONObject(
+			"creator");
+
+		JSONObject expectedCreatorJSONObject = _getCreatorJSONObject();
+
+		JSONAssert.assertEquals(
+			expectedCreatorJSONObject.toString(),
+			actualCreatorJSONObject.toString(), JSONCompareMode.LENIENT);
+
+		JSONArray actualPermissionsJSONArray = jsonObject.getJSONArray(
+			"permissions");
+
+		JSONAssert.assertEquals(
+			expectedPermissionsJSONArray.toString(),
+			actualPermissionsJSONArray.toString(), JSONCompareMode.LENIENT);
+	}
+
 	private void _assertListTypeDefinitionNameLocalizedMap(
 		ListTypeDefinition listTypeDefinition) {
 
@@ -240,11 +342,46 @@ public class ListTypeDefinitionResourceTest
 			nameLocalizedMap.get(LocaleUtil.getSiteDefault()));
 	}
 
+	private JSONObject _getCreatorJSONObject() throws Exception {
+		User user = TestPropsValues.getUser();
+
+		return JSONUtil.put(
+			"id", user.getUserId()
+		).put(
+			"name", user.getFullName()
+		);
+	}
+
+	private JSONObject _getOwnerPermissionsJSONObject() {
+		return _getPermissionsJSONObject(
+			new String[] {
+				ActionKeys.DELETE, ActionKeys.PERMISSIONS, ActionKeys.UPDATE,
+				ActionKeys.VIEW
+			},
+			RoleConstants.OWNER);
+	}
+
+	private JSONObject _getPermissionsJSONObject(
+		String[] actionIds, String roleName) {
+
+		return JSONUtil.put(
+			"actionIds", actionIds
+		).put(
+			"roleName", roleName
+		);
+	}
+
 	@Inject
 	private ListTypeDefinitionLocalService _listTypeDefinitionLocalService;
 
 	@DeleteAfterTestRun
 	private List<com.liferay.list.type.model.ListTypeDefinition>
 		_listTypeDefinitions = new ArrayList<>();
+
+	@Inject
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Inject
+	private RoleLocalService _roleLocalService;
 
 }
