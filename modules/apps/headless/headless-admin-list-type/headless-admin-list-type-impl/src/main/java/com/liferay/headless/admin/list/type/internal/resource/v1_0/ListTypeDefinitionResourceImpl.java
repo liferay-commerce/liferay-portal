@@ -18,27 +18,39 @@ import com.liferay.list.type.service.ListTypeEntryLocalService;
 import com.liferay.object.constants.ObjectPortletKeys;
 import com.liferay.object.rest.dto.v1_0.util.CreatorUtil;
 import com.liferay.object.service.ObjectFieldLocalService;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.PermissionService;
+import com.liferay.portal.kernel.service.ResourceActionLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.RoleService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.aggregation.Aggregation;
 import com.liferay.portal.vulcan.fields.NestedFieldsSupplier;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
+import com.liferay.portal.vulcan.permission.ModelPermissionsUtil;
 import com.liferay.portal.vulcan.permission.Permission;
 import com.liferay.portal.vulcan.permission.PermissionUtil;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import com.liferay.portal.vulcan.util.SearchUtil;
+import com.liferay.roles.admin.role.type.contributor.RoleTypeContributor;
+import com.liferay.roles.admin.role.type.contributor.provider.RoleTypeContributorProvider;
 
 import jakarta.ws.rs.core.MultivaluedMap;
 
@@ -177,6 +189,9 @@ public class ListTypeDefinitionResourceImpl
 			ListTypeDefinition listTypeDefinition)
 		throws Exception {
 
+		ServiceContext serviceContext = _createServiceContext(
+			listTypeDefinition);
+
 		return _toListTypeDefinition(
 			_listTypeDefinitionService.addListTypeDefinition(
 				listTypeDefinition.getExternalReferenceCode(),
@@ -188,13 +203,17 @@ public class ListTypeDefinitionResourceImpl
 				transformToList(
 					listTypeDefinition.getListTypeEntries(),
 					listTypeEntry -> ListTypeEntryUtil.toListTypeEntry(
-						listTypeEntry, _listTypeEntryLocalService))));
+						listTypeEntry, _listTypeEntryLocalService)),
+				serviceContext));
 	}
 
 	@Override
 	public ListTypeDefinition putListTypeDefinition(
 			Long listTypeDefinitionId, ListTypeDefinition listTypeDefinition)
 		throws Exception {
+
+		ServiceContext serviceContext = _createServiceContext(
+			listTypeDefinition);
 
 		return _toListTypeDefinition(
 			_listTypeDefinitionService.updateListTypeDefinition(
@@ -207,7 +226,8 @@ public class ListTypeDefinitionResourceImpl
 				transformToList(
 					listTypeDefinition.getListTypeEntries(),
 					listTypeEntry -> ListTypeEntryUtil.toListTypeEntry(
-						listTypeEntry, _listTypeEntryLocalService))));
+						listTypeEntry, _listTypeEntryLocalService)),
+				serviceContext));
 	}
 
 	@Override
@@ -231,6 +251,57 @@ public class ListTypeDefinitionResourceImpl
 		}
 
 		return postListTypeDefinition(listTypeDefinition);
+	}
+
+	private ServiceContext _createServiceContext(
+			ListTypeDefinition listTypeDefinition)
+		throws Exception {
+
+		ServiceContext serviceContext = new ServiceContext();
+
+		if (listTypeDefinition.getPermissions() == null) {
+			serviceContext.setAddGroupPermissions(true);
+			serviceContext.setAddGuestPermissions(true);
+			serviceContext.setModelPermissions(null);
+
+			return serviceContext;
+		}
+
+		if (LazyReferencingThreadLocal.isEnabled()) {
+			for (Permission permission : listTypeDefinition.getPermissions()) {
+				if (Validator.isNull(
+						permission.getRoleExternalReferenceCode())) {
+
+					continue;
+				}
+
+				String className = StringPool.BLANK;
+
+				RoleTypeContributor roleTypeContributor =
+					_roleTypeContributorProvider.getRoleTypeContributor(
+						RoleConstants.getLabelType(permission.getRoleType()));
+
+				if (roleTypeContributor != null) {
+					className = roleTypeContributor.getClassName();
+				}
+
+				_roleService.getOrAddEmptyRole(
+					permission.getRoleExternalReferenceCode(), className, 0,
+					permission.getRoleName(),
+					RoleConstants.getLabelType(permission.getRoleType()));
+			}
+		}
+
+		serviceContext.setModelPermissions(
+			ModelPermissionsUtil.toModelPermissions(
+				contextCompany.getCompanyId(),
+				listTypeDefinition.getPermissions(),
+				GetterUtil.getLong(listTypeDefinition.getId()),
+				com.liferay.list.type.model.ListTypeDefinition.class.getName(),
+				_resourceActionLocalService, _resourcePermissionLocalService,
+				_roleLocalService));
+
+		return serviceContext;
 	}
 
 	private Locale _getLocale() {
@@ -378,6 +449,21 @@ public class ListTypeDefinitionResourceImpl
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private ResourceActionLocalService _resourceActionLocalService;
+
+	@Reference
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Reference
+	private RoleLocalService _roleLocalService;
+
+	@Reference
+	private RoleService _roleService;
+
+	@Reference
+	private RoleTypeContributorProvider _roleTypeContributorProvider;
 
 	@Reference
 	private UserLocalService _userLocalService;
