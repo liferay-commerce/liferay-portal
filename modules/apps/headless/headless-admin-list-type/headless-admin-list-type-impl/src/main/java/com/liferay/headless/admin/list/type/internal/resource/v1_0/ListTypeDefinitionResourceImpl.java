@@ -18,23 +18,29 @@ import com.liferay.object.rest.dto.v1_0.util.CreatorUtil;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.PermissionService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.aggregation.Aggregation;
+import com.liferay.portal.vulcan.fields.NestedFieldsSupplier;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
+import com.liferay.portal.vulcan.permission.Permission;
+import com.liferay.portal.vulcan.permission.PermissionUtil;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import com.liferay.portal.vulcan.util.SearchUtil;
 
 import jakarta.ws.rs.core.MultivaluedMap;
 
+import java.util.Collection;
 import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
@@ -285,6 +291,33 @@ public class ListTypeDefinitionResourceImpl
 				setName_i18n(
 					() -> LocalizedMapUtil.getI18nMap(
 						serviceBuilderListTypeDefinition.getNameMap()));
+				setPermissions(
+					() -> NestedFieldsSupplier.supply(
+						"permissions",
+						nestedFieldNames -> {
+							String permissionName =
+								com.liferay.list.type.model.ListTypeDefinition.
+									class.getName();
+
+							User user = _userLocalService.getUser(
+								serviceBuilderListTypeDefinition.getUserId());
+
+							_permissionService.checkPermission(
+								user.getGroupId(), permissionName,
+								serviceBuilderListTypeDefinition.
+									getListTypeDefinitionId());
+
+							Collection<Permission> permissions =
+								PermissionUtil.getPermissions(
+									user.getCompanyId(),
+									resourceActionLocalService.
+										getResourceActions(permissionName),
+									serviceBuilderListTypeDefinition.
+										getListTypeDefinitionId(),
+									permissionName, null);
+
+							return permissions.toArray(new Permission[0]);
+						}));
 				setSystem(serviceBuilderListTypeDefinition::isSystem);
 			}
 		};
@@ -301,6 +334,9 @@ public class ListTypeDefinitionResourceImpl
 
 	@Reference
 	private ObjectFieldLocalService _objectFieldLocalService;
+
+	@Reference
+	private PermissionService _permissionService;
 
 	@Reference
 	private Portal _portal;
