@@ -351,8 +351,8 @@ public class CommercePriceListLocalServiceImpl
 	public CommercePriceList fetchCatalogBaseCommercePriceList(long groupId)
 		throws PortalException {
 
-		return commercePriceListPersistence.fetchByG_C_T(
-			groupId, true, CommercePriceListConstants.TYPE_PRICE_LIST);
+		return commercePriceListPersistence.findByG_C_T_First(
+			groupId, true, CommercePriceListConstants.TYPE_PRICE_LIST, null);
 	}
 
 	@Override
@@ -360,7 +360,8 @@ public class CommercePriceListLocalServiceImpl
 			long groupId, String type)
 		throws PortalException {
 
-		return commercePriceListPersistence.fetchByG_C_T(groupId, true, type);
+		return commercePriceListPersistence.findByG_C_T_First(
+			groupId, true, type, null);
 	}
 
 	/**
@@ -448,8 +449,9 @@ public class CommercePriceListLocalServiceImpl
 		throws PortalException {
 
 		CommercePriceList commercePriceList =
-			commercePriceListPersistence.fetchByG_C_T(
-				groupId, true, CommercePriceListConstants.TYPE_PRICE_LIST);
+			commercePriceListPersistence.fetchByG_C_T_First(
+				groupId, true, CommercePriceListConstants.TYPE_PRICE_LIST,
+				null);
 
 		if (commercePriceList == null) {
 			throw new CommerceUndefinedBasePriceListException();
@@ -464,7 +466,8 @@ public class CommercePriceListLocalServiceImpl
 		throws PortalException {
 
 		CommercePriceList commercePriceList =
-			commercePriceListPersistence.fetchByG_C_T(groupId, true, type);
+			commercePriceListPersistence.fetchByG_C_T_First(
+				groupId, true, type, null);
 
 		if (commercePriceList == null) {
 			throw new CommerceUndefinedBasePriceListException();
@@ -1164,7 +1167,8 @@ public class CommercePriceListLocalServiceImpl
 		throws PortalException {
 
 		CommercePriceList baseCommercePriceList =
-			commercePriceListPersistence.fetchByG_C_T(groupId, true, type);
+			commercePriceListPersistence.fetchByG_C_T_First(
+				groupId, true, type, null);
 
 		if (baseCommercePriceList != null) {
 			commercePriceListLocalService.setCatalogBasePriceList(
@@ -1853,7 +1857,8 @@ public class CommercePriceListLocalServiceImpl
 
 		if (catalogBasePriceList) {
 			CommercePriceList basePriceList =
-				commercePriceListPersistence.fetchByG_C_T(groupId, true, type);
+				commercePriceListPersistence.fetchByG_C_T_First(
+					groupId, true, type, null);
 
 			if ((basePriceList != null) &&
 				(basePriceList.getCommercePriceListId() !=

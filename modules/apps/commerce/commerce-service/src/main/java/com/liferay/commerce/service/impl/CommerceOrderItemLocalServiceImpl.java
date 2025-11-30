@@ -15,6 +15,7 @@ import com.liferay.commerce.currency.model.CommerceMoney;
 import com.liferay.commerce.currency.model.CommerceMoneyFactory;
 import com.liferay.commerce.discount.CommerceDiscountValue;
 import com.liferay.commerce.exception.CommerceOrderValidatorException;
+import com.liferay.commerce.exception.DuplicateCommerceOrderItemException;
 import com.liferay.commerce.exception.GuestCartItemMaxAllowedException;
 import com.liferay.commerce.exception.NoSuchOrderItemException;
 import com.liferay.commerce.exception.ProductBundleException;
@@ -447,8 +448,8 @@ public class CommerceOrderItemLocalServiceImpl
 			long commerceInventoryBookedQuantityId) {
 
 		return commerceOrderItemPersistence.
-			fetchByCommerceInventoryBookedQuantityId(
-				commerceInventoryBookedQuantityId);
+			fetchByCommerceInventoryBookedQuantityId_First(
+				commerceInventoryBookedQuantityId, null);
 	}
 
 	@Override
@@ -802,10 +803,14 @@ public class CommerceOrderItemLocalServiceImpl
 	@Override
 	public CommerceOrderItem updateCommerceOrderItem(
 			long commerceOrderItemId, long commerceInventoryBookedQuantityId)
-		throws NoSuchOrderItemException {
+		throws PortalException {
 
 		CommerceOrderItem commerceOrderItem =
 			commerceOrderItemPersistence.findByPrimaryKey(commerceOrderItemId);
+
+		_validateCommerceInventoryBookedQuantityId(
+			commerceInventoryBookedQuantityId,
+			commerceOrderItem.getCommerceOrderItemId());
 
 		commerceOrderItem.setCommerceInventoryBookedQuantityId(
 			commerceInventoryBookedQuantityId);
@@ -2964,6 +2969,23 @@ public class CommerceOrderItemLocalServiceImpl
 				throw new CommerceOrderValidatorException(
 					commerceCartValidatorResults);
 			}
+		}
+	}
+
+	private void _validateCommerceInventoryBookedQuantityId(
+			long commerceInventoryBookedQuantityId, long commerceOrderItemId)
+		throws PortalException {
+
+		CommerceOrderItem commerceOrderItem =
+			commerceOrderItemLocalService.
+				fetchCommerceOrderItemByCommerceInventoryBookedQuantityId(
+					commerceInventoryBookedQuantityId);
+
+		if ((commerceOrderItem != null) &&
+			(commerceOrderItem.getCommerceOrderItemId() !=
+				commerceOrderItemId)) {
+
+			throw new DuplicateCommerceOrderItemException();
 		}
 	}
 
