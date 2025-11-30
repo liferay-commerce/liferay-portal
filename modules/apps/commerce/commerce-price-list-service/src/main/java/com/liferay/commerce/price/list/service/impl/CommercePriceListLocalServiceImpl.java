@@ -351,9 +351,8 @@ public class CommercePriceListLocalServiceImpl
 	public CommercePriceList fetchCatalogBaseCommercePriceList(long groupId)
 		throws PortalException {
 
-		return commercePriceListLocalService.
-			fetchCatalogBaseCommercePriceListByType(
-				groupId, CommercePriceListConstants.TYPE_PRICE_LIST);
+		return commercePriceListPersistence.fetchByG_C_T(
+			groupId, true, CommercePriceListConstants.TYPE_PRICE_LIST);
 	}
 
 	@Override
@@ -361,29 +360,7 @@ public class CommercePriceListLocalServiceImpl
 			long groupId, String type)
 		throws PortalException {
 
-		List<CommercePriceList> commercePriceLists = dslQuery(
-			DSLQueryFactoryUtil.selectDistinct(
-				CommercePriceListTable.INSTANCE
-			).from(
-				CommercePriceListTable.INSTANCE
-			).where(
-				CommercePriceListTable.INSTANCE.groupId.eq(
-					groupId
-				).and(
-					CommercePriceListTable.INSTANCE.catalogBasePriceList.eq(
-						true)
-				).and(
-					CommercePriceListTable.INSTANCE.type.eq(type)
-				)
-			).limit(
-				0, 1
-			));
-
-		if (commercePriceLists.isEmpty()) {
-			return null;
-		}
-
-		return commercePriceLists.get(0);
+		return commercePriceListPersistence.fetchByG_C_T(groupId, true, type);
 	}
 
 	/**
@@ -471,9 +448,8 @@ public class CommercePriceListLocalServiceImpl
 		throws PortalException {
 
 		CommercePriceList commercePriceList =
-			commercePriceListLocalService.
-				fetchCatalogBaseCommercePriceListByType(
-					groupId, CommercePriceListConstants.TYPE_PRICE_LIST);
+			commercePriceListPersistence.fetchByG_C_T(
+				groupId, true, CommercePriceListConstants.TYPE_PRICE_LIST);
 
 		if (commercePriceList == null) {
 			throw new CommerceUndefinedBasePriceListException();
@@ -488,8 +464,7 @@ public class CommercePriceListLocalServiceImpl
 		throws PortalException {
 
 		CommercePriceList commercePriceList =
-			commercePriceListLocalService.
-				fetchCatalogBaseCommercePriceListByType(groupId, type);
+			commercePriceListPersistence.fetchByG_C_T(groupId, true, type);
 
 		if (commercePriceList == null) {
 			throw new CommerceUndefinedBasePriceListException();
@@ -1189,8 +1164,7 @@ public class CommercePriceListLocalServiceImpl
 		throws PortalException {
 
 		CommercePriceList baseCommercePriceList =
-			commercePriceListLocalService.
-				fetchCatalogBaseCommercePriceListByType(groupId, type);
+			commercePriceListPersistence.fetchByG_C_T(groupId, true, type);
 
 		if (baseCommercePriceList != null) {
 			commercePriceListLocalService.setCatalogBasePriceList(
@@ -1879,8 +1853,7 @@ public class CommercePriceListLocalServiceImpl
 
 		if (catalogBasePriceList) {
 			CommercePriceList basePriceList =
-				commercePriceListLocalService.
-					fetchCatalogBaseCommercePriceListByType(groupId, type);
+				commercePriceListPersistence.fetchByG_C_T(groupId, true, type);
 
 			if ((basePriceList != null) &&
 				(basePriceList.getCommercePriceListId() !=

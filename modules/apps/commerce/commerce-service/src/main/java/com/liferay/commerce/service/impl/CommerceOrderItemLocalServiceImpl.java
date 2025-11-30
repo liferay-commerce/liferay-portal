@@ -15,7 +15,6 @@ import com.liferay.commerce.currency.model.CommerceMoney;
 import com.liferay.commerce.currency.model.CommerceMoneyFactory;
 import com.liferay.commerce.discount.CommerceDiscountValue;
 import com.liferay.commerce.exception.CommerceOrderValidatorException;
-import com.liferay.commerce.exception.DuplicateCommerceOrderItemException;
 import com.liferay.commerce.exception.GuestCartItemMaxAllowedException;
 import com.liferay.commerce.exception.NoSuchOrderItemException;
 import com.liferay.commerce.exception.ProductBundleException;
@@ -447,29 +446,9 @@ public class CommerceOrderItemLocalServiceImpl
 		fetchCommerceOrderItemByCommerceInventoryBookedQuantityId(
 			long commerceInventoryBookedQuantityId) {
 
-		List<CommerceOrderItem> commerceOrderItems = dslQuery(
-			DSLQueryFactoryUtil.selectDistinct(
-				CommerceOrderItemTable.INSTANCE
-			).from(
-				CommerceOrderItemTable.INSTANCE
-			).where(
-				CommerceOrderItemTable.INSTANCE.
-					commerceInventoryBookedQuantityId.gt(
-						0L
-					).and(
-						CommerceOrderItemTable.INSTANCE.
-							commerceInventoryBookedQuantityId.eq(
-								commerceInventoryBookedQuantityId)
-					)
-			).limit(
-				0, 1
-			));
-
-		if (commerceOrderItems.isEmpty()) {
-			return null;
-		}
-
-		return commerceOrderItems.get(0);
+		return commerceOrderItemPersistence.
+			fetchByCommerceInventoryBookedQuantityId(
+				commerceInventoryBookedQuantityId);
 	}
 
 	@Override
@@ -823,14 +802,10 @@ public class CommerceOrderItemLocalServiceImpl
 	@Override
 	public CommerceOrderItem updateCommerceOrderItem(
 			long commerceOrderItemId, long commerceInventoryBookedQuantityId)
-		throws PortalException {
+		throws NoSuchOrderItemException {
 
 		CommerceOrderItem commerceOrderItem =
 			commerceOrderItemPersistence.findByPrimaryKey(commerceOrderItemId);
-
-		_validateCommerceInventoryBookedQuantityId(
-			commerceInventoryBookedQuantityId,
-			commerceOrderItem.getCommerceOrderItemId());
 
 		commerceOrderItem.setCommerceInventoryBookedQuantityId(
 			commerceInventoryBookedQuantityId);
@@ -1469,7 +1444,7 @@ public class CommerceOrderItemLocalServiceImpl
 		CPDefinition cpDefinition = _cpDefinitionLocalService.getCPDefinition(
 			cpInstance.getCPDefinitionId());
 
-		_validateCommerceInventoryBookedQuantityId(
+		_validate(
 			serviceContext.getLocale(), commerceOrder, cpDefinition, cpInstance,
 			json, quantity, unitOfMeasureKey, child,
 			GetterUtil.getBoolean(
@@ -1524,8 +1499,7 @@ public class CommerceOrderItemLocalServiceImpl
 				commerceProductPrice.getDiscountValueWithTaxAmount(), true);
 		}
 
-		_validateCommerceInventoryBookedQuantityId(
-			serviceContext.getLocale(), commerceOrderItem, true);
+		_validate(serviceContext.getLocale(), commerceOrderItem, true);
 
 		return commerceOrderItem;
 	}
@@ -2722,7 +2696,7 @@ public class CommerceOrderItemLocalServiceImpl
 		CPDefinition cpDefinition = _cpDefinitionLocalService.getCPDefinition(
 			cpInstance.getCPDefinitionId());
 
-		_validateCommerceInventoryBookedQuantityId(
+		_validate(
 			serviceContext.getLocale(), commerceOrder, cpDefinition, cpInstance,
 			json, quantity, unitOfMeasureKey,
 			commerceOrderItem.hasParentCommerceOrderItem(),
@@ -2776,8 +2750,7 @@ public class CommerceOrderItemLocalServiceImpl
 				commerceProductPrice.getDiscountValueWithTaxAmount(), true);
 		}
 
-		_validateCommerceInventoryBookedQuantityId(
-			serviceContext.getLocale(), commerceOrderItem, true);
+		_validate(serviceContext.getLocale(), commerceOrderItem, true);
 
 		return commerceOrderItem;
 	}
@@ -2792,7 +2765,7 @@ public class CommerceOrderItemLocalServiceImpl
 
 		CommerceOrder commerceOrder = commerceOrderItem.getCommerceOrder();
 
-		_validateCommerceInventoryBookedQuantityId(
+		_validate(
 			serviceContext.getLocale(), commerceOrder,
 			commerceOrderItem.getCPDefinition(),
 			commerceOrderItem.fetchCPInstance(), json, quantity,
@@ -2812,8 +2785,7 @@ public class CommerceOrderItemLocalServiceImpl
 		commerceOrderItem.setQuantity(quantity);
 		commerceOrderItem.setExpandoBridgeAttributes(serviceContext);
 
-		_validateCommerceInventoryBookedQuantityId(
-			serviceContext.getLocale(), commerceOrderItem, true);
+		_validate(serviceContext.getLocale(), commerceOrderItem, true);
 
 		return commerceOrderItemPersistence.update(commerceOrderItem);
 	}
@@ -2830,7 +2802,7 @@ public class CommerceOrderItemLocalServiceImpl
 
 		CommerceOrder commerceOrder = commerceOrderItem.getCommerceOrder();
 
-		_validateCommerceInventoryBookedQuantityId(
+		_validate(
 			serviceContext.getLocale(), commerceOrder,
 			commerceOrderItem.getCPDefinition(),
 			commerceOrderItem.fetchCPInstance(), json, quantity,
@@ -2873,8 +2845,7 @@ public class CommerceOrderItemLocalServiceImpl
 
 		commerceOrderItem.setExpandoBridgeAttributes(serviceContext);
 
-		_validateCommerceInventoryBookedQuantityId(
-			serviceContext.getLocale(), commerceOrderItem, true);
+		_validate(serviceContext.getLocale(), commerceOrderItem, true);
 
 		commerceOrderItem = commerceOrderItemPersistence.update(
 			commerceOrderItem);
@@ -2912,7 +2883,7 @@ public class CommerceOrderItemLocalServiceImpl
 		return commerceOrder;
 	}
 
-	private void _validateCommerceInventoryBookedQuantityId(
+	private void _validate(
 			Locale locale, CommerceOrder commerceOrder,
 			CPDefinition cpDefinition, CPInstance cpInstance, String json,
 			BigDecimal quantity, String unitOfMeasureKey, boolean child,
@@ -2979,7 +2950,7 @@ public class CommerceOrderItemLocalServiceImpl
 		}
 	}
 
-	private void _validateCommerceInventoryBookedQuantityId(
+	private void _validate(
 			Locale locale, CommerceOrderItem commerceOrderItem,
 			boolean validateOrder)
 		throws PortalException {
@@ -2993,23 +2964,6 @@ public class CommerceOrderItemLocalServiceImpl
 				throw new CommerceOrderValidatorException(
 					commerceCartValidatorResults);
 			}
-		}
-	}
-
-	private void _validateCommerceInventoryBookedQuantityId(
-			long commerceInventoryBookedQuantityId, long commerceOrderItemId)
-		throws PortalException {
-
-		CommerceOrderItem commerceOrderItem =
-			commerceOrderItemLocalService.
-				fetchCommerceOrderItemByCommerceInventoryBookedQuantityId(
-					commerceInventoryBookedQuantityId);
-
-		if ((commerceOrderItem != null) &&
-			(commerceOrderItem.getCommerceOrderItemId() !=
-				commerceOrderItemId)) {
-
-			throw new DuplicateCommerceOrderItemException();
 		}
 	}
 
