@@ -980,13 +980,6 @@ public class CommerceOrderItemPersistenceTest {
 				new Class<?>[] {String.class}, "groupId"));
 
 		Assert.assertEquals(
-			Long.valueOf(
-				commerceOrderItem.getCommerceInventoryBookedQuantityId()),
-			ReflectionTestUtil.<Long>invoke(
-				commerceOrderItem, "getColumnOriginalValue",
-				new Class<?>[] {String.class}, "CIBookedQuantityId"));
-
-		Assert.assertEquals(
 			commerceOrderItem.getExternalReferenceCode(),
 			ReflectionTestUtil.invoke(
 				commerceOrderItem, "getColumnOriginalValue",

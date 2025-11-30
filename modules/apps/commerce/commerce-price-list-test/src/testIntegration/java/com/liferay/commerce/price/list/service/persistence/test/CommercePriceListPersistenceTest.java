@@ -771,39 +771,6 @@ public class CommercePriceListPersistenceTest {
 				new Class<?>[] {String.class}, "groupId"));
 
 		Assert.assertEquals(
-			Long.valueOf(commercePriceList.getParentCommercePriceListId()),
-			ReflectionTestUtil.<Long>invoke(
-				commercePriceList, "getColumnOriginalValue",
-				new Class<?>[] {String.class}, "parentCommercePriceListId"));
-
-		Assert.assertEquals(
-			Long.valueOf(commercePriceList.getGroupId()),
-			ReflectionTestUtil.<Long>invoke(
-				commercePriceList, "getColumnOriginalValue",
-				new Class<?>[] {String.class}, "groupId"));
-		Assert.assertEquals(
-			Boolean.valueOf(commercePriceList.getCatalogBasePriceList()),
-			ReflectionTestUtil.<Boolean>invoke(
-				commercePriceList, "getColumnOriginalValue",
-				new Class<?>[] {String.class}, "catalogBasePriceList"));
-
-		Assert.assertEquals(
-			Long.valueOf(commercePriceList.getGroupId()),
-			ReflectionTestUtil.<Long>invoke(
-				commercePriceList, "getColumnOriginalValue",
-				new Class<?>[] {String.class}, "groupId"));
-		Assert.assertEquals(
-			Boolean.valueOf(commercePriceList.getCatalogBasePriceList()),
-			ReflectionTestUtil.<Boolean>invoke(
-				commercePriceList, "getColumnOriginalValue",
-				new Class<?>[] {String.class}, "catalogBasePriceList"));
-		Assert.assertEquals(
-			commercePriceList.getType(),
-			ReflectionTestUtil.invoke(
-				commercePriceList, "getColumnOriginalValue",
-				new Class<?>[] {String.class}, "type_"));
-
-		Assert.assertEquals(
 			commercePriceList.getExternalReferenceCode(),
 			ReflectionTestUtil.invoke(
 				commercePriceList, "getColumnOriginalValue",
