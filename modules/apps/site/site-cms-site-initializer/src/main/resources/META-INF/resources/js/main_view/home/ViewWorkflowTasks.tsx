@@ -325,7 +325,7 @@ export default function ViewWorkflowTasks({
 	};
 
 	return (
-		<div className="container-fluid">
+		<div className="container-fluid p-2 p-sm-3">
 			<div className="align-items-center d-flex justify-content-between mb-4">
 				<div className="align-items-xl-center d-flex flex-column flex-xl-row justify-content-between">
 					<span className="font-weight-semi-bold mr-3 text-4">
