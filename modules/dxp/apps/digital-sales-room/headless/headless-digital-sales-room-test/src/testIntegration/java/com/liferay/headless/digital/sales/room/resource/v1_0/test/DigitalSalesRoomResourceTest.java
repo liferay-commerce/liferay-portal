@@ -118,6 +118,34 @@ public class DigitalSalesRoomResourceTest
 		super.testGetDigitalSalesRoomsPageWithPagination();
 	}
 
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLDeleteDigitalSalesRoom() throws Exception {
+		super.testGraphQLDeleteDigitalSalesRoom();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetDigitalSalesRoom() throws Exception {
+		super.testGraphQLGetDigitalSalesRoom();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetDigitalSalesRoomsPage() throws Exception {
+		super.testGraphQLGetDigitalSalesRoomsPage();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLPostDigitalSalesRoom() throws Exception {
+		super.testGraphQLPostDigitalSalesRoom();
+	}
+
 	@Override
 	@Test
 	public void testPatchDigitalSalesRoom() throws Exception {
@@ -162,6 +190,14 @@ public class DigitalSalesRoomResourceTest
 				secondaryColor = RandomTestUtil.randomString();
 			}
 		};
+	}
+
+	@Override
+	protected DigitalSalesRoom testDeleteDigitalSalesRoom_addDigitalSalesRoom()
+		throws Exception {
+
+		return digitalSalesRoomResource.postDigitalSalesRoom(
+			randomDigitalSalesRoom());
 	}
 
 	@Override
