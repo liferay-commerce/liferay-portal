@@ -85,6 +85,32 @@ public class DigitalSalesRoomResourceImpl
 	extends BaseDigitalSalesRoomResourceImpl {
 
 	@Override
+	public void deleteDigitalSalesRoom(Long digitalSalesRoomId)
+		throws Exception {
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				contextCompany.getCompanyId(), "LPD-66359")) {
+
+			throw new UnsupportedOperationException();
+		}
+
+		Group group = _groupService.getGroup(digitalSalesRoomId);
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					"L_DSR_ROOM", group.getCompanyId());
+
+		ObjectEntry objectEntry = _objectEntryLocalService.getObjectEntry(
+			group.getExternalReferenceCode(), group.getGroupId(),
+			objectDefinition.getObjectDefinitionId());
+
+		_objectEntryLocalService.deleteObjectEntry(objectEntry);
+
+		_groupService.deleteGroup(digitalSalesRoomId);
+	}
+
+	@Override
 	public DigitalSalesRoom getDigitalSalesRoom(Long digitalSalesRoomId)
 		throws Exception {
 
