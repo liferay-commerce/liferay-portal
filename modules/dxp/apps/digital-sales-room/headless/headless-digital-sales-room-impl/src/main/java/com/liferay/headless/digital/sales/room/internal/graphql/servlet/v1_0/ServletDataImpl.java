@@ -76,6 +76,11 @@ public class ServletDataImpl implements ServletData {
 			new HashMap<String, ObjectValuePair<Class<?>, String>>() {
 				{
 					put(
+						"mutation#deleteDigitalSalesRoom",
+						new ObjectValuePair<>(
+							DigitalSalesRoomResourceImpl.class,
+							"deleteDigitalSalesRoom"));
+					put(
 						"mutation#patchDigitalSalesRoom",
 						new ObjectValuePair<>(
 							DigitalSalesRoomResourceImpl.class,

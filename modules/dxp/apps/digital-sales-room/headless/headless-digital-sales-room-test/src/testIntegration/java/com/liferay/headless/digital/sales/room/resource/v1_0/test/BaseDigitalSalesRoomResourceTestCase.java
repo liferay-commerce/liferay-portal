@@ -23,6 +23,7 @@ import com.liferay.oauth2.provider.scope.ScopeChecker;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONDeserializer;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -223,6 +224,118 @@ public abstract class BaseDigitalSalesRoomResourceTestCase {
 		Assert.assertEquals(regex, digitalSalesRoom.getOwnerName());
 		Assert.assertEquals(regex, digitalSalesRoom.getPrimaryColor());
 		Assert.assertEquals(regex, digitalSalesRoom.getSecondaryColor());
+	}
+
+	@Test
+	public void testDeleteDigitalSalesRoom() throws Exception {
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		DigitalSalesRoom digitalSalesRoom =
+			testDeleteDigitalSalesRoom_addDigitalSalesRoom();
+
+		assertHttpResponseStatusCode(
+			204,
+			digitalSalesRoomResource.deleteDigitalSalesRoomHttpResponse(
+				digitalSalesRoom.getId()));
+
+		assertHttpResponseStatusCode(
+			404,
+			digitalSalesRoomResource.getDigitalSalesRoomHttpResponse(
+				digitalSalesRoom.getId()));
+		assertHttpResponseStatusCode(
+			404, digitalSalesRoomResource.getDigitalSalesRoomHttpResponse(0L));
+	}
+
+	protected DigitalSalesRoom testDeleteDigitalSalesRoom_addDigitalSalesRoom()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLDeleteDigitalSalesRoom() throws Exception {
+
+		// No namespace
+
+		DigitalSalesRoom digitalSalesRoom1 =
+			testGraphQLDeleteDigitalSalesRoom_addDigitalSalesRoom();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteDigitalSalesRoom",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"digitalSalesRoomId",
+									digitalSalesRoom1.getId());
+							}
+						})),
+				"JSONObject/data", "Object/deleteDigitalSalesRoom"));
+
+		JSONArray errorsJSONArray1 = JSONUtil.getValueAsJSONArray(
+			invokeGraphQLQuery(
+				new GraphQLField(
+					"digitalSalesRoom",
+					new HashMap<String, Object>() {
+						{
+							put(
+								"digitalSalesRoomId",
+								digitalSalesRoom1.getId());
+						}
+					},
+					getGraphQLFields())),
+			"JSONArray/errors");
+
+		Assert.assertTrue(errorsJSONArray1.length() > 0);
+
+		// Using the namespace headlessDigitalSalesRoom_v1_0
+
+		DigitalSalesRoom digitalSalesRoom2 =
+			testGraphQLDeleteDigitalSalesRoom_addDigitalSalesRoom();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessDigitalSalesRoom_v1_0",
+						new GraphQLField(
+							"deleteDigitalSalesRoom",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"digitalSalesRoomId",
+										digitalSalesRoom2.getId());
+								}
+							}))),
+				"JSONObject/data", "JSONObject/headlessDigitalSalesRoom_v1_0",
+				"Object/deleteDigitalSalesRoom"));
+
+		JSONArray errorsJSONArray2 = JSONUtil.getValueAsJSONArray(
+			invokeGraphQLQuery(
+				new GraphQLField(
+					"headlessDigitalSalesRoom_v1_0",
+					new GraphQLField(
+						"digitalSalesRoom",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"digitalSalesRoomId",
+									digitalSalesRoom2.getId());
+							}
+						},
+						getGraphQLFields()))),
+			"JSONArray/errors");
+
+		Assert.assertTrue(errorsJSONArray2.length() > 0);
+	}
+
+	protected DigitalSalesRoom
+			testGraphQLDeleteDigitalSalesRoom_addDigitalSalesRoom()
+		throws Exception {
+
+		return testGraphQLDigitalSalesRoom_addDigitalSalesRoom();
 	}
 
 	@Test
@@ -565,6 +678,12 @@ public abstract class BaseDigitalSalesRoomResourceTestCase {
 		assertContains(
 			digitalSalesRoom2, (List<DigitalSalesRoom>)page.getItems());
 		assertValid(page, testGetDigitalSalesRoomsPage_getExpectedActions());
+
+		digitalSalesRoomResource.deleteDigitalSalesRoom(
+			digitalSalesRoom1.getId());
+
+		digitalSalesRoomResource.deleteDigitalSalesRoom(
+			digitalSalesRoom2.getId());
 	}
 
 	protected Map<String, Map<String, String>>

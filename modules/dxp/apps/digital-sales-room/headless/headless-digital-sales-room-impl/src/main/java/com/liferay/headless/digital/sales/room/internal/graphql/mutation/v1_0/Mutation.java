@@ -41,6 +41,21 @@ public class Mutation {
 			digitalSalesRoomResourceComponentServiceObjects;
 	}
 
+	@GraphQLField(description = "Deletes the digital sales room.")
+	public boolean deleteDigitalSalesRoom(
+			@GraphQLName("digitalSalesRoomId") Long digitalSalesRoomId)
+		throws Exception {
+
+		_applyVoidComponentServiceObjects(
+			_digitalSalesRoomResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			digitalSalesRoomResource ->
+				digitalSalesRoomResource.deleteDigitalSalesRoom(
+					digitalSalesRoomId));
+
+		return true;
+	}
+
 	@GraphQLField
 	public DigitalSalesRoom patchDigitalSalesRoom(
 			@GraphQLName("digitalSalesRoomId") Long digitalSalesRoomId,
