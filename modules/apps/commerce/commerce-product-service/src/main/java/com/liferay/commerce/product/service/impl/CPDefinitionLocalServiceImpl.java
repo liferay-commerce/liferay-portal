@@ -36,6 +36,7 @@ import com.liferay.commerce.product.model.CPDefinitionLocalization;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
 import com.liferay.commerce.product.model.CPDefinitionSpecificationOptionValue;
+import com.liferay.commerce.product.model.CPDefinitionTable;
 import com.liferay.commerce.product.model.CPDisplayLayout;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CPInstanceOptionValueRel;
@@ -80,6 +81,7 @@ import com.liferay.friendly.url.model.FriendlyURLEntryLocalization;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.object.action.util.ObjectActionThreadLocal;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
@@ -2916,9 +2918,43 @@ public class CPDefinitionLocalServiceImpl
 		}
 	}
 
+	@Override
+	public List<CPDefinition> findByExpirationDate(
+		Date expirationDate, QueryDefinition<CPDefinition> queryDefinition) {
+
+		return TransformUtil.transform(
+			dslQuery(
+				DSLQueryFactoryUtil.selectDistinct(
+					CPDefinitionTable.INSTANCE.CPDefinitionId
+				).from(
+					CPDefinitionTable.INSTANCE
+				).where(
+					CPDefinitionTable.INSTANCE.expirationDate.lt(expirationDate)
+						.and(
+							CPDefinitionTable.INSTANCE.expirationDate.isNotNull()
+						)
+						.and(
+							() -> {
+								int status = queryDefinition.getStatus();
+								if (status == WorkflowConstants.STATUS_ANY) {
+									return CPDefinitionTable.INSTANCE.status.neq(
+										WorkflowConstants.STATUS_IN_TRASH);
+								}
+								return CPDefinitionTable.INSTANCE.status.eq(status);
+							}
+						)
+
+				).limit(
+					queryDefinition.getStart(), queryDefinition.getEnd()
+				)
+			),
+			cpDefinitionId -> cpDefinitionLocalService.getCPDefinition(
+				(long)cpDefinitionId)
+		);
+	}
+
 	private void _checkCPDefinitionsByExpirationDate() throws PortalException {
-		List<CPDefinition> cpDefinitions =
-			cpDefinitionFinder.findByExpirationDate(
+		List<CPDefinition> cpDefinitions = cpDefinitionLocalService.findByExpirationDate(
 				new Date(),
 				new QueryDefinition<>(WorkflowConstants.STATUS_APPROVED));
 
