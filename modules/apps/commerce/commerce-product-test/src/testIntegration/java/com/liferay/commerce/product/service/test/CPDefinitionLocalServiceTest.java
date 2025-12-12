@@ -32,6 +32,7 @@ import com.liferay.commerce.service.CPDefinitionInventoryLocalService;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
+import com.liferay.portal.kernel.dao.orm.QueryDefinition;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Company;
@@ -1044,6 +1045,35 @@ public class CPDefinitionLocalServiceTest {
 				expirationCalendar.get(Calendar.YEAR),
 				expirationCalendar.get(Calendar.HOUR_OF_DAY), 0,
 				user.getTimeZone(), null));
+	}
+
+	@Test
+	public void testFindByExpirationDate() throws Exception {
+		long time = System.currentTimeMillis();
+
+		Date pastDate = new Date(time - Time.DAY);
+		Date futureDate = new Date(time + Time.DAY);
+
+		CPDefinition cpDefinition = CPTestUtil.addCPDefinitionFromCatalog(
+			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME,
+			new Date(time - Time.MONTH), pastDate, false, false,
+			WorkflowConstants.STATUS_ANY);
+
+		CPTestUtil.addCPDefinitionFromCatalog(
+			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME,
+			new Date(time - Time.MONTH), futureDate, false, false,
+			WorkflowConstants.STATUS_ANY);
+
+		List<CPDefinition> cpDefinitions =
+			_cpDefinitionLocalService.findByExpirationDate(
+				new Date(time),
+				new QueryDefinition<CPDefinition>(
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, null));
+
+		Assert.assertEquals(1, cpDefinitions.size());
+		Assert.assertEquals(
+			cpDefinition.getCPDefinitionId(),
+			cpDefinitions.get(0).getCPDefinitionId());
 	}
 
 	@Rule
