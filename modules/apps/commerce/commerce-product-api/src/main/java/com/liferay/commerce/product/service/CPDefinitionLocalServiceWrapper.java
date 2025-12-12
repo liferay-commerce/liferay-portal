@@ -511,6 +511,16 @@ public class CPDefinitionLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<CPDefinition> findByExpirationDate(
+		java.util.Date expirationDate,
+		com.liferay.portal.kernel.dao.orm.QueryDefinition<CPDefinition>
+			queryDefinition) {
+
+		return _cpDefinitionLocalService.findByExpirationDate(
+			expirationDate, queryDefinition);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 

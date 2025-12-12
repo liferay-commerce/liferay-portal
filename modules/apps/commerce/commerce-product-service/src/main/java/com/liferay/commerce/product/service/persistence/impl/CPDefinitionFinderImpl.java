@@ -105,44 +105,6 @@ public class CPDefinitionFinderImpl
 	}
 
 	@Override
-	public List<CPDefinition> findByExpirationDate(
-		Date expirationDate, QueryDefinition<CPDefinition> queryDefinition) {
-
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			String sql = _customSQL.get(
-				getClass(), FIND_BY_EXPIRATION_DATE, queryDefinition,
-				CPDefinitionImpl.TABLE_NAME);
-
-			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
-
-			sqlQuery.addEntity(
-				CPDefinitionImpl.TABLE_NAME, CPDefinitionImpl.class);
-
-			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
-
-			if (expirationDate != null) {
-				queryPos.add(expirationDate);
-			}
-
-			queryPos.add(queryDefinition.getStatus());
-
-			return (List<CPDefinition>)QueryUtil.list(
-				sqlQuery, getDialect(), queryDefinition.getStart(),
-				queryDefinition.getEnd());
-		}
-		catch (Exception exception) {
-			throw new SystemException(exception);
-		}
-		finally {
-			closeSession(session);
-		}
-	}
-
-	@Override
 	public List<CPDefinition> findByG_P_S(
 		long groupId, String productTypeName, String languageId,
 		QueryDefinition<CPDefinition> queryDefinition) {
