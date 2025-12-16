@@ -29,6 +29,7 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryService;
 import com.liferay.portal.events.ServicePreAction;
 import com.liferay.portal.events.ThemeServicePreAction;
+import com.liferay.portal.kernel.exception.NoSuchGroupException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -122,6 +123,29 @@ public class DigitalSalesRoomResourceImpl
 	}
 
 	@Override
+	public void deleteDigitalSalesRoomByExternalReferenceCode(
+			String externalReferenceCode)
+		throws Exception {
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				contextCompany.getCompanyId(), "LPD-66359")) {
+
+			throw new UnsupportedOperationException();
+		}
+
+		Group group = _groupService.fetchGroupByExternalReferenceCode(
+			externalReferenceCode, contextCompany.getCompanyId());
+
+		if (group == null) {
+			throw new NoSuchGroupException(
+				"Unable to find group with external reference code " +
+					externalReferenceCode);
+		}
+
+		deleteDigitalSalesRoom(group.getGroupId());
+	}
+
+	@Override
 	public DigitalSalesRoom getDigitalSalesRoom(Long digitalSalesRoomId)
 		throws Exception {
 
@@ -139,6 +163,29 @@ public class DigitalSalesRoomResourceImpl
 			_objectEntryLocalService.getObjectEntry(
 				group.getExternalReferenceCode(), group.getGroupId(),
 				objectDefinition.getObjectDefinitionId()));
+	}
+
+	@Override
+	public DigitalSalesRoom getDigitalSalesRoomByExternalReferenceCode(
+			String externalReferenceCode)
+		throws Exception {
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				contextCompany.getCompanyId(), "LPD-66359")) {
+
+			throw new UnsupportedOperationException();
+		}
+
+		Group group = _groupService.fetchGroupByExternalReferenceCode(
+			externalReferenceCode, contextCompany.getCompanyId());
+
+		if (group == null) {
+			throw new NoSuchGroupException(
+				"Unable to find group with external reference code " +
+					externalReferenceCode);
+		}
+
+		return getDigitalSalesRoom(group.getGroupId());
 	}
 
 	@Override
@@ -253,6 +300,29 @@ public class DigitalSalesRoomResourceImpl
 		return _toDigitalSalesRoom(
 			group,
 			_objectEntryLocalService.getObjectEntry(objectEntry.getId()));
+	}
+
+	@Override
+	public DigitalSalesRoom patchDigitalSalesRoomByExternalReferenceCode(
+			String externalReferenceCode, DigitalSalesRoom digitalSalesRoom)
+		throws Exception {
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				contextCompany.getCompanyId(), "LPD-66359")) {
+
+			throw new UnsupportedOperationException();
+		}
+
+		Group group = _groupService.fetchGroupByExternalReferenceCode(
+			externalReferenceCode, contextCompany.getCompanyId());
+
+		if (group == null) {
+			throw new NoSuchGroupException(
+				"Unable to find group with external reference code " +
+					externalReferenceCode);
+		}
+
+		return patchDigitalSalesRoom(group.getGroupId(), digitalSalesRoom);
 	}
 
 	@Override
