@@ -190,7 +190,25 @@ public class DigitalSalesRoomResourceTest
 	}
 
 	@Override
+	protected DigitalSalesRoom
+			testDeleteDigitalSalesRoomByExternalReferenceCode_addDigitalSalesRoom()
+		throws Exception {
+
+		return digitalSalesRoomResource.postDigitalSalesRoom(
+			randomDigitalSalesRoom());
+	}
+
+	@Override
 	protected DigitalSalesRoom testGetDigitalSalesRoom_addDigitalSalesRoom()
+		throws Exception {
+
+		return digitalSalesRoomResource.postDigitalSalesRoom(
+			randomDigitalSalesRoom());
+	}
+
+	@Override
+	protected DigitalSalesRoom
+			testGetDigitalSalesRoomByExternalReferenceCode_addDigitalSalesRoom()
 		throws Exception {
 
 		return digitalSalesRoomResource.postDigitalSalesRoom(
@@ -207,6 +225,15 @@ public class DigitalSalesRoomResourceTest
 
 	@Override
 	protected DigitalSalesRoom testPatchDigitalSalesRoom_addDigitalSalesRoom()
+		throws Exception {
+
+		return digitalSalesRoomResource.postDigitalSalesRoom(
+			randomDigitalSalesRoom());
+	}
+
+	@Override
+	protected DigitalSalesRoom
+			testPatchDigitalSalesRoomByExternalReferenceCode_addDigitalSalesRoom()
 		throws Exception {
 
 		return digitalSalesRoomResource.postDigitalSalesRoom(
