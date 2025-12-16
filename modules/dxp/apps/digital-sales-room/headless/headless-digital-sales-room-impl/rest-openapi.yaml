@@ -366,6 +366,65 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/DigitalSalesRoom"
             tags: ["DigitalSalesRoom"]
+    "/digital-sales-rooms/by-external-reference-code/{externalReferenceCode}":
+        delete:
+            operationId: deleteDigitalSalesRoomByExternalReferenceCode
+            parameters:
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["DigitalSalesRoom"]
+        get:
+            operationId: getDigitalSalesRoomByExternalReferenceCode
+            parameters:
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/DigitalSalesRoom"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/DigitalSalesRoom"
+            tags: ["DigitalSalesRoom"]
+        patch:
+            operationId: patchDigitalSalesRoomByExternalReferenceCode
+            parameters:
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/DigitalSalesRoom"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/DigitalSalesRoom"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/DigitalSalesRoom"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/DigitalSalesRoom"
+            tags: ["DigitalSalesRoom"]
     "/digital-sales-rooms/{digitalSalesRoomId}":
         delete:
             operationId: deleteDigitalSalesRoom
