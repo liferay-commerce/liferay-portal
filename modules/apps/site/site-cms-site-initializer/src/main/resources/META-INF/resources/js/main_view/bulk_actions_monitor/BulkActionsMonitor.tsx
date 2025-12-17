@@ -27,13 +27,21 @@ import BulkActionsMonitorItemList from './components/BulkActionsMonitorItemList'
 import {BulkActionTaskStarter} from './services/BulkActionTaskStarter';
 import {INTERVAL_TASK_POLLING_MS, URL_TASKS_REPORT} from './util/constants';
 
+const FDS_EVENT_UPDATE_DISPLAY = 'fds-update-display';
+const TaskReportFDSId =
+	'com.liferay.site.cms.site.initializer-bulkActionTaskReportSection';
+
 function BulkActionsMonitor() {
 	const [active, setActive] = useState<boolean>(false);
+	const [dataSetLoading, setDataSetLoading] = useState(
+		new Set(TaskReportFDSId)
+	);
 	const [processingTasks, setProcessingTask] = useState(0);
 	const [tasks, setTasks] = useState<IBulkActionTask[]>([]);
 	const [tasksLoading, setTasksLoading] = useState<boolean>(false);
 
 	const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+	const processingTasksRef = useRef(0);
 
 	const getTasks = useCallback(
 		() =>
@@ -85,7 +93,23 @@ function BulkActionsMonitor() {
 					stopPolling();
 				}
 
-				setProcessingTask(data?.totalCount || 0);
+				const dataTotalCount = data?.totalCount || 0;
+
+				if (dataTotalCount < processingTasksRef.current) {
+					dataSetLoading.forEach((dataSetId) => {
+						Liferay.fire(FDS_EVENT_UPDATE_DISPLAY, {
+							id: dataSetId,
+						});
+					});
+
+					if (dataTotalCount === 0) {
+						setDataSetLoading(new Set(TaskReportFDSId));
+					}
+				}
+
+				processingTasksRef.current = dataTotalCount;
+
+				setProcessingTask(dataTotalCount);
 			}
 			catch {
 				stopPolling();
@@ -98,7 +122,7 @@ function BulkActionsMonitor() {
 			getProcessingTasks,
 			INTERVAL_TASK_POLLING_MS
 		);
-	}, [setProcessingTask, stopPolling]);
+	}, [setProcessingTask, stopPolling, dataSetLoading]);
 
 	const postBulkAction = useCallback(
 		async (
@@ -116,6 +140,13 @@ function BulkActionsMonitor() {
 				if (response.data) {
 					bulkAction.onCreateSuccess(response);
 
+					setDataSetLoading((prevState) => {
+						const newDataSet = new Set(prevState);
+						newDataSet.add(bulkActionDTO.dataSetId || '');
+
+						return newDataSet;
+					});
+
 					pollProcessingTasks();
 				}
 
@@ -131,7 +162,7 @@ function BulkActionsMonitor() {
 				}
 			}
 		},
-		[pollProcessingTasks]
+		[pollProcessingTasks, setDataSetLoading]
 	);
 
 	useEffect(() => {
