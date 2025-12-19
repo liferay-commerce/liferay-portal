@@ -40,8 +40,12 @@ public class FrontendJsWebDynamicJSImportMapsContributorTest {
 
 	@Test
 	public void testWriteGlobalImports() throws Exception {
-		_testWriteGlobalImports("/dxp");
 		_testWriteGlobalImports(StringPool.BLANK);
+	}
+
+	@Test
+	public void testWriteGlobalImportsWithPathContext() throws Exception {
+		_testWriteGlobalImports("/dxp");
 	}
 
 	private HashedFilesRegistry _mockHashedFileRegistry(String pathContext) {
