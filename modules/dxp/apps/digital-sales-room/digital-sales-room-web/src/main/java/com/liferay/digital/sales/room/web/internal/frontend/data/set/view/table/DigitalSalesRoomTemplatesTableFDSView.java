@@ -36,7 +36,7 @@ public class DigitalSalesRoomTemplatesTableFDSView extends BaseTableFDSView {
 		return fdsTableSchemaBuilder.add(
 			"name", "name",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
-				"actionLink")
+				"name")
 		).add(
 			"ownerName", "created-by"
 		).add(

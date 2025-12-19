@@ -4,4 +4,6 @@
  */
 
 export {default as DSRListFDSPropsTransformer} from './FDSPropsTransformer/DSRListFDSPropsTransformer';
+export {default as DSRTemplateListFDSPropsTransformer} from './FDSPropsTransformer/DSRTemplateListFDSPropsTransformer';
+export {default as DSRTemplateNameRenderer} from './FDSPropsTransformer/cell_renderers/DSRTemplateNameRenderer';
 export {default as DSRInitializer} from './components/DSRInitializer';
