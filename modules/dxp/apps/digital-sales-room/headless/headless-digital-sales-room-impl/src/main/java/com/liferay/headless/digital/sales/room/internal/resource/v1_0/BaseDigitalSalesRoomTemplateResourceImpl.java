@@ -199,7 +199,7 @@ public abstract class BaseDigitalSalesRoomTemplateResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-digital-sales-room/v1.0/digital-sales-room-templates' -d $'{"banner": ___, "clientLogo": ___, "clientName": ___, "description": ___, "externalReferenceCode": ___, "name": ___, "primaryColor": ___, "secondaryColor": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-digital-sales-room/v1.0/digital-sales-room-templates' -d $'{"banner": ___, "clientLogo": ___, "clientName": ___, "description": ___, "name": ___, "primaryColor": ___, "secondaryColor": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {
