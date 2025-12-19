@@ -10,6 +10,7 @@
 		"@clayui/modal": "3.151.0",
 		"@clayui/multi-select": "3.155.0",
 		"@clayui/sticker": "3.147.0",
+		"@liferay/frontend-data-set-web": "*",
 		"@liferay/frontend-js-react-web": "*",
 		"@liferay/layout-js-components-web": "*",
 		"@liferay/object-js-components-web": "*",
