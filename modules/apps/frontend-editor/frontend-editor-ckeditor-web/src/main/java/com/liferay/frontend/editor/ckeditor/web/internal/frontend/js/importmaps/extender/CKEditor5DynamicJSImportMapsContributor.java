@@ -33,11 +33,10 @@ public class CKEditor5DynamicJSImportMapsContributor
 			HttpServletRequest httpServletRequest, Writer writer)
 		throws IOException {
 
-		boolean first = true;
-
 		AbsolutePortalURLBuilder absolutePortalURLBuilder =
 			_absolutePortalURLBuilderFactory.getAbsolutePortalURLBuilder(
 				httpServletRequest);
+		boolean first = true;
 
 		for (String moduleName : _MODULE_NAMES) {
 			if (!first) {
