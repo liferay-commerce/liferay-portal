@@ -25,7 +25,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Marko Čikoš
  */
 @Component(service = DynamicJSImportMapsContributor.class)
-public class CKEditor5DynamicJSImportMapsContributor
+public class CKEditor5JSImportMapsContributor
 	implements DynamicJSImportMapsContributor {
 
 	@Override
