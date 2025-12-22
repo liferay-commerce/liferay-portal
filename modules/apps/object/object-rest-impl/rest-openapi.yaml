@@ -125,6 +125,12 @@ components:
                         The object definition's external reference code.
                     readOnly: true
                     type: string
+                classNameId:
+                    description:
+                        The object definition class name ID.
+                    format: int64
+                    readOnly: true
+                    type: integer
                 label:
                     description:
                         The object definition's label.

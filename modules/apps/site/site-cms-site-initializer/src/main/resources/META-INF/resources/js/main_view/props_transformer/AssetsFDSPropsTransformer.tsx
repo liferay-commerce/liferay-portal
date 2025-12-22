@@ -17,7 +17,6 @@ import {AssetLibrary} from '../../common/types/AssetLibrary';
 import {ISearchAssetObjectEntry} from '../../common/types/AssetType';
 import {OBJECT_ENTRY_FOLDER_CLASS_NAME} from '../../common/utils/constants';
 import {getScopeExternalReferenceCode} from '../../common/utils/getScopeExternalReferenceCode';
-import CategoriesAndTagsModalContent from '../categorization/modal/CategoriesAndTagsModalContent';
 import {defaultPermissionsBulkAction} from '../default_permission/BulkDefaultPermissionModalContent';
 import {permissionsBulkAction} from '../default_permission/BulkPermissionModalContent';
 import DefaultPermissionModalContent from '../default_permission/DefaultPermissionModalContent';
@@ -41,6 +40,9 @@ import TypeRenderer from './cell_renderers/TypeRenderer';
 import addOnClickToCreationMenuItems from './utils/addOnClickToCreationMenuItems';
 import transformViewsItemsProps from './utils/transformViewsItemProps';
 import GalleryView from './views/GalleryView';
+import EditAssetTagsModal from "../categorization/modal/EditAssetTagsModal";
+import EditAssetCategoriesModalContent
+	from "../categorization/modal/EditAssetCategoriesModalContent";
 
 export type AdditionalProps = {
 	assetLibraries: AssetLibrary[];
@@ -397,19 +399,39 @@ export default function AssetsFDSPropsTransformer({
 			action: any;
 			selectedData: any;
 		}) => {
-			if (action?.data?.id === 'categoriesAndTags') {
+			if (action?.data?.id === 'edit-categories') {
 				openModal({
 					center: true,
 					containerProps: {
 						className: 'modal-height-lg',
 					},
 					contentComponent: ({
-						closeModal,
+					   closeModal,
 					}: {
 						closeModal: () => void;
 					}) =>
-						CategoriesAndTagsModalContent({
+						EditAssetCategoriesModalContent({
 							apiURL: otherProps.apiURL,
+							closeModal,
+							cmsGroupId: additionalProps.cmsGroupId as number,
+							selectedData,
+						}),
+					size: 'md',
+				});
+			}
+			else if (action?.data?.id === 'edit-tags') {
+				openModal({
+					center: true,
+					containerProps: {
+						className: 'modal-height-md',
+					},
+					contentComponent: ({
+					   closeModal,
+				   }: {
+						closeModal: () => void;
+					}) =>
+						EditAssetTagsModal({
+							apiURL: otherProps?.apiURL,
 							closeModal,
 							cmsGroupId: additionalProps.cmsGroupId as number,
 							selectedData,

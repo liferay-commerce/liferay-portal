@@ -4,6 +4,7 @@
  */
 
 import {SharingPermission} from './SharingPermission';
+import {MimeTypes} from "../components/AssetIcon";
 
 export interface IAssetFile {
 	alternativeText?: string;
@@ -16,15 +17,30 @@ export interface IAssetFile {
 	metadata?: {
 		numberOfPages?: number;
 	};
-	mimeType?: string;
+	mimeType?: MimeTypes;
 	name: string;
-	previewURL: string;
-	thumbnailURL: string;
+	previewURL?: string;
+	thumbnailURL?: string;
 }
 
 export interface IAssetObjectEntry {
-	actions: any;
-	creator: any;
+	actions: {
+		[action: string]: {
+			method: 'DELETE' | 'GET' | 'PATCH' | 'POST' | 'PUT';
+			href: string;
+		}
+	};
+	content?: string;
+	contentRawText?: string;
+	creator: {
+		additionalName: string;
+		contentType: string;
+		externalReferenceCode: string;
+		familyName: string;
+		givenName: string;
+		id: number;
+		name: string;
+	};
 	dateCreated: string;
 	dateModified: string;
 	displayDate: string;
@@ -32,6 +48,9 @@ export interface IAssetObjectEntry {
 	externalReferenceCode: string;
 	file?: IAssetFile;
 	friendlyUrlPath: string;
+	friendlyUrlPath_i18n: {
+		[lang: string]: string;
+	};
 	id: number;
 	keywords: string[];
 	numberOfObjectEntries: number;
@@ -50,18 +69,30 @@ export interface IAssetObjectEntry {
 		label: string;
 		label_i18n: string;
 	};
-	systemProperties: IAssetVersion;
+	systemProperties: IAssetObjectDefinitionBrief & IAssetScope & IAssetVersion;
 	taxonomyCategoryBriefs: any[];
 	taxonomyCategoryIds?: number[];
 	title: string;
 	title_i18n: any;
 }
 
-export interface IAssetVersion {
+export interface IAssetObjectDefinitionBrief {
+	objectDefinitionBrief?: {
+		classNameId: number;
+		externalReferenceCode: string;
+		label: string;
+		objectFolderExternalReferenceCode: string;
+	};
+}
+
+export interface IAssetScope {
 	scope?: {
 		externalReferenceCode: string;
 		type: string;
 	};
+}
+
+export interface IAssetVersion {
 	version: {
 		number: number;
 	};
@@ -72,9 +103,11 @@ export interface ISearchAssetObjectEntry {
 	actions: any;
 	dateCreated: string;
 	dateModified: string;
-	embedded: Partial<IAssetObjectEntry>;
+	description: string;
+	embedded: IAssetObjectEntry;
 	entryClassName: string;
 	score: number;
+	title: string;
 }
 
 export interface IGroupedTaxonomies {
@@ -82,20 +115,6 @@ export interface IGroupedTaxonomies {
 	taxonomyVocabularies: {
 		[taxonomyVocabularyId: number]: ITaxonomyCategoryFacade[];
 	};
-}
-
-export interface ISearchAssetTypeInformation {
-	externalReferenceCode?: string | null;
-	icon?: string | null;
-	id?: number | null;
-	objectEntryFolderExternalReferenceCode?: string | null;
-	title?: string | null;
-	title_i18n?:
-		| {
-				[key: string]: string;
-		  }
-		| {};
-	type?: string | null;
 }
 
 export interface ITaxonomyCategoryFacade {

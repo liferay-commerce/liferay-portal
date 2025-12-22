@@ -31,10 +31,9 @@ export default function AssetCategorization({
 	hasUpdatePermission,
 	inputSize,
 	onUpdateCategorization,
-	updateObjectEntryURL = '',
 }: {
 	assetLibraryId: number | string;
-	categorization?: Categorization;
+	categorization: Categorization;
 	cmsGroupId: number | string;
 	getObjectEntryURL: string;
 	hasUpdatePermission: boolean;
@@ -49,64 +48,50 @@ export default function AssetCategorization({
 	const updateObjectEntry = async ({
 		keywords,
 		taxonomyCategoryIds,
-	}: EntryCategorizationDTO): Promise<void> => {
-		let newObjectEntry: IAssetObjectEntry | null = null;
+	}: IAssetObjectEntry): Promise<void> => {
 		let error: string | null = null;
+		let newObjectEntry = {
+			...objectEntry,
+			keywords: keywords || objectEntry.keywords,
+		};
 
-		if (updateObjectEntryURL && !categorization) {
-			({data: newObjectEntry, error} =
-				await ObjectEntryService.patchObjectEntry(
-					{
-						keywords: keywords || objectEntry?.keywords!,
-						...(taxonomyCategoryIds ? {taxonomyCategoryIds} : {}),
-					},
-					updateObjectEntryURL
-				));
-		}
-		else {
-			newObjectEntry = {
-				...objectEntry,
-				keywords: keywords || objectEntry.keywords,
-			};
+		if (taxonomyCategoryIds) {
+			if (
+				objectEntry.taxonomyCategoryBriefs.length >
+				taxonomyCategoryIds.length
+			) {
+				newObjectEntry = {
+					...newObjectEntry,
+					taxonomyCategoryBriefs:
+						objectEntry.taxonomyCategoryBriefs.filter(
+							({taxonomyCategoryId: id}) =>
+								taxonomyCategoryIds.includes(id)
+						),
+				};
+			}
+			else {
+				const addedCategoryId: number =
+					taxonomyCategoryIds[taxonomyCategoryIds.length - 1];
 
-			if (taxonomyCategoryIds) {
-				if (
-					objectEntry.taxonomyCategoryBriefs.length >
-					taxonomyCategoryIds.length
-				) {
+				const {data: newCategory} =
+					await CategoryService.getCategoryById(addedCategoryId);
+
+				if (newCategory) {
 					newObjectEntry = {
 						...newObjectEntry,
-						taxonomyCategoryBriefs:
-							objectEntry.taxonomyCategoryBriefs.filter(
-								({taxonomyCategoryId: id}) =>
-									taxonomyCategoryIds.includes(id)
-							),
+						taxonomyCategoryBriefs: [
+							...objectEntry.taxonomyCategoryBriefs,
+							{
+								embeddedTaxonomyCategory: newCategory,
+								taxonomyCategoryId: Number(newCategory.id),
+							},
+						],
 					};
 				}
-				else {
-					const addedCategoryId: number =
-						taxonomyCategoryIds[taxonomyCategoryIds.length - 1];
-
-					const {data: newCategory} =
-						await CategoryService.getCategoryById(addedCategoryId);
-
-					if (newCategory) {
-						newObjectEntry = {
-							...newObjectEntry,
-							taxonomyCategoryBriefs: [
-								...objectEntry.taxonomyCategoryBriefs,
-								{
-									embeddedTaxonomyCategory: newCategory,
-									taxonomyCategoryId: Number(newCategory.id),
-								},
-							],
-						};
-					}
-				}
 			}
-
-			onUpdateCategorization?.(newObjectEntry);
 		}
+
+		onUpdateCategorization?.(newObjectEntry);
 
 		if (newObjectEntry) {
 			setObjectEntry(newObjectEntry);

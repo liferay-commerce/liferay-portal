@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {IVocabulary} from '../../common/types/IVocabulary';
+import {ICommonCategories, IVocabulary} from '../../common/types/IVocabulary';
 import ApiHelper from './ApiHelper';
 
 async function createVocabulary(siteId: number, vocabulary: IVocabulary) {
@@ -26,4 +26,15 @@ async function updateVocabulary(vocabulary: IVocabulary) {
 	);
 }
 
-export default {createVocabulary, fetchVocabulary, updateVocabulary};
+async function getCommonCategories(groupId: number) {
+	return await ApiHelper.post<ICommonCategories[]>(
+		`/o/bulk/v1.0/sites/${groupId}/taxonomy-vocabularies/common`
+	);
+}
+
+export default {
+	createVocabulary,
+	getCommonCategories,
+	fetchVocabulary,
+	updateVocabulary
+};

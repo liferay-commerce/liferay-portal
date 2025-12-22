@@ -6,11 +6,11 @@
 import Label from '@clayui/label';
 import ClayPanel from '@clayui/panel';
 import {ItemSelector} from '@liferay/frontend-js-item-selector-web';
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 
 import {
 	IAssetObjectEntry,
-	IGroupedTaxonomies,
+	IGroupedTaxonomies, ISearchAssetObjectEntry,
 	ITaxonomyCategoryFacade,
 } from '../../../common/types/AssetType';
 import {CategorizationInputSize} from './AssetCategorization';
@@ -19,12 +19,14 @@ import type {EntryCategorizationDTO} from '../services/ObjectEntryService';
 
 const AssetCategories = ({
 	cmsGroupId,
+	collapsable = true,
 	hasUpdatePermission,
 	inputSize,
 	objectEntry,
 	updateObjectEntry,
 }: {
 	cmsGroupId: number | string;
+	collapsable?: boolean;
 	hasUpdatePermission?: boolean;
 	inputSize?: CategorizationInputSize;
 	objectEntry: IAssetObjectEntry | EntryCategorizationDTO;
@@ -32,8 +34,16 @@ const AssetCategories = ({
 }) => {
 	const [value, setValue] = useState('');
 
-	const groupedTaxonomies: IGroupedTaxonomies = (
-		objectEntry.taxonomyCategoryBriefs || []
+	const apiURL = useMemo(() => `${
+		Liferay.ThemeDisplay.getPortalURL()
+	}/o/headless-admin-taxonomy/v1.0/asset-libraries/${
+		objectEntry?.scopeId || cmsGroupId
+	}/taxonomy-categories?filter=assetTypes in ('0', '${
+		objectEntry?.systemProperties?.objectDefinitionBrief?.classNameId
+	}')`, [cmsGroupId, objectEntry]);
+
+	const groupedTaxonomies: IGroupedTaxonomies = useMemo(() => (
+		(objectEntry as IAssetObjectEntry).taxonomyCategoryBriefs || []
 	).reduce(
 		(groupedTaxonomies, {embeddedTaxonomyCategory: categoryBrief}) => {
 			const {id, taxonomyVocabularyId} = categoryBrief;
@@ -59,7 +69,7 @@ const AssetCategories = ({
 			taxonomyCategoryIds: [],
 			taxonomyVocabularies: {},
 		} as IGroupedTaxonomies
-	);
+	), [(objectEntry as IAssetObjectEntry).taxonomyCategoryBriefs]);
 
 	const addCategory = useCallback(
 		async (item: any) => {
@@ -73,13 +83,18 @@ const AssetCategories = ({
 				return;
 			}
 
+			const updated = [
+				...groupedTaxonomies.taxonomyCategoryIds,
+				taxonomyCategoryId,
+			];
+
 			await updateObjectEntry({
 				lastAddedBrief: item,
-				taxonomyCategoryIds: [
-					...groupedTaxonomies.taxonomyCategoryIds,
-					taxonomyCategoryId,
-				],
-			});
+				taxonomyCategoryIds: updated,
+				taxonomyCategoryIdsToAdd: updated,
+				/** TODO filter removed categories **/
+				taxonomyCategoryIdsToRemove: [],
+			} as unknown as EntryCategorizationDTO);
 		},
 		[groupedTaxonomies.taxonomyCategoryIds, updateObjectEntry]
 	);
@@ -98,14 +113,21 @@ const AssetCategories = ({
 
 			taxonomyCategoryIds.splice(index, 1);
 
-			await updateObjectEntry({taxonomyCategoryIds});
+			/**
+			 * TODO track removed IDs for bulk
+			 * TODO and fill the key: toRemoveCategoryIds
+			 */
+
+			await updateObjectEntry({
+				taxonomyCategoryIds
+			} as EntryCategorizationDTO);
 		},
 		[groupedTaxonomies, updateObjectEntry]
 	);
 
 	return (
 		<ClayPanel
-			collapsable
+			collapsable={collapsable}
 			defaultExpanded={true}
 			displayTitle={
 				<ClayPanel.Title className="panel-title text-secondary">
@@ -113,11 +135,11 @@ const AssetCategories = ({
 				</ClayPanel.Title>
 			}
 			displayType="unstyled"
-			showCollapseIcon={true}
+			showCollapseIcon={collapsable}
 		>
 			<ClayPanel.Body>
 				<ItemSelector<any>
-					apiURL={`${Liferay.ThemeDisplay.getPortalURL()}/o/headless-admin-taxonomy/v1.0/sites/${cmsGroupId}/taxonomy-categories`}
+					apiURL={apiURL}
 					disabled={!hasUpdatePermission}
 					locator={{
 						id: 'id',
@@ -137,6 +159,7 @@ const AssetCategories = ({
 						}
 					}}
 					placeholder={Liferay.Language.get('add-category')}
+					refetchOnActive
 					sizing={inputSize}
 					value={value}
 				>

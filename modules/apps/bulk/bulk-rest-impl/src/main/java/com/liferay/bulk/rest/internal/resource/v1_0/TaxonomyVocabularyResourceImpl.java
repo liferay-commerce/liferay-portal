@@ -19,6 +19,7 @@ import com.liferay.bulk.rest.resource.v1_0.TaxonomyVocabularyResource;
 import com.liferay.bulk.selection.BulkSelection;
 import com.liferay.depot.group.provider.SiteConnectedGroupGroupProvider;
 import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.object.model.ObjectEntry;
 import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -77,7 +78,7 @@ public class TaxonomyVocabularyResourceImpl
 		BulkSelection<?> bulkSelection = _documentBulkSelectionFactory.create(
 			documentBulkSelection);
 
-		BulkSelection<AssetEntry> assetEntryBulkSelection =
+		BulkSelection<Object> assetEntryBulkSelection =
 			bulkSelection.toAssetEntryBulkSelection();
 
 		assetEntryBulkSelection.forEach(

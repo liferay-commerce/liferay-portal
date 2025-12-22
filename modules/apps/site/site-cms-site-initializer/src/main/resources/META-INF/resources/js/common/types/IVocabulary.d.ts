@@ -3,6 +3,17 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+export interface ICommonCategories {
+	multiValued: boolean;
+	name: string;
+	required: boolean;
+	taxonomyCategories: Array<{
+		taxonomyCategoryId: number;
+		taxonomyCategoryName: string;
+	}>;
+	taxonomyVocabularyId: number;
+}
+
 export interface IVocabulary {
 	actions?: Actions;
 	assetLibraries: AssetLibraryType[];

@@ -26,7 +26,7 @@ export enum MimeTypes {
 	KnowledgeBase = 'knowledge-base',
 }
 
-function getAssetIcon(mimeType: MimeTypes) {
+export function getAssetIcon(mimeType: MimeTypes) {
 	switch (mimeType) {
 		case MimeTypes.DocumentCode:
 			return {

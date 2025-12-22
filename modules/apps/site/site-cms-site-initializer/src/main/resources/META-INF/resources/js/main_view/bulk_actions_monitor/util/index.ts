@@ -83,7 +83,7 @@ export function composeCreateTaskDTO(
 				return itemsTransformed;
 			}
 		),
-		selectionScope: {selectAll: selectAll ? true : null},
+		selectAll,
 		type: actionKey,
 		...keyValues,
 	} as TBulkActionTaskDTO;
