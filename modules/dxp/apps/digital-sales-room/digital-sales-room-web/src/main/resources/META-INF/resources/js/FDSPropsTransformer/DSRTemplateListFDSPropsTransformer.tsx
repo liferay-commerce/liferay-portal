@@ -3,10 +3,13 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+// @ts-ignore
+
 import {IInternalRenderer} from '@liferay/frontend-data-set-web';
 import {openModal} from 'frontend-js-components-web';
 
 import DSRTemplateInitializer from '../components/DSRTemplateInitializer';
+import deleteDSRAction from './actions/deleteDSRAction';
 import DSRTemplateNameRenderer from './cell_renderers/DSRTemplateNameRenderer';
 
 export default function propsTransformer({
@@ -63,5 +66,37 @@ export default function propsTransformer({
 			],
 		},
 		itemsActions,
+		onActionDropdownItemClick: ({
+			action,
+			event,
+			itemData,
+			loadData,
+		}: {
+			action: {
+				data: {
+					id: string;
+					permissionKey: string | null;
+				};
+			};
+			event: Event;
+			itemData: {
+				id: number;
+				name: string;
+			};
+			loadData: () => {};
+		}) => {
+			if (action?.data?.id === 'delete') {
+				event?.preventDefault();
+
+				deleteDSRAction({
+					groupId: itemData.id,
+					loadData,
+					model: 'room-template',
+					title: Liferay.Language.get(
+						'delete-digital-sales-room-template-confirmation-title'
+					),
+				});
+			}
+		},
 	};
 }
