@@ -8,7 +8,7 @@ package com.liferay.batch.engine.test.util;
 import com.liferay.batch.engine.unit.BatchEngineUnitProcessor;
 import com.liferay.batch.engine.unit.BatchEngineUnitReader;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.module.service.Snapshot;
 
 import java.io.File;
@@ -42,7 +42,8 @@ public class BatchEngineTestUtil {
 				continue;
 			}
 
-			Dictionary<String, String> headers = bundle.getHeaders("");
+			Dictionary<String, String> headers = bundle.getHeaders(
+				StringPool.BLANK);
 
 			for (String fileName :
 					Collections.list(
@@ -51,9 +52,8 @@ public class BatchEngineTestUtil {
 
 				File file = bundle.getDataFile(
 					StringBundler.concat(
-						".",
-						StringUtil.replace(
-							StringUtil.replace(fileName, '/', '.'), '-', '.'),
+						StringPool.PERIOD,
+						fileName.replaceAll("[/\\-]", StringPool.PERIOD),
 						".0.processed"));
 
 				if ((file != null) && file.exists()) {

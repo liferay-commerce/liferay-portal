@@ -47,8 +47,8 @@ public class DigitalSalesRoomTemplateResourceTest
 	public void setUp() throws Exception {
 		super.setUp();
 
-		_dsrRoomObjectDefinition = DigitalSalesRoomTestUtil.getObjectDefinition(
-			DigitalSalesRoomResourceTest.class);
+		_dsrRoomObjectDefinition =
+			DigitalSalesRoomTestUtil.getObjectDefinition();
 	}
 
 	@Ignore
