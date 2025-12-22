@@ -86,8 +86,7 @@ public class DownloadObjectEntryFolderServletTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_group = CMSTestUtil.getOrAddGroup(
-			DownloadObjectEntryFolderServletTest.class);
+		_group = CMSTestUtil.getOrAddGroup();
 
 		_depotEntry = _depotEntryLocalService.addDepotEntry(
 			Collections.singletonMap(

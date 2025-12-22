@@ -51,7 +51,7 @@ public class DepotEntryModelListenerTest {
 
 	@Before
 	public void setUp() throws Exception {
-		CMSTestUtil.getOrAddGroup(DepotEntryModelListenerTest.class);
+		CMSTestUtil.getOrAddGroup();
 	}
 
 	@Test

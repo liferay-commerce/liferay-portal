@@ -27,15 +27,13 @@ import org.osgi.framework.FrameworkUtil;
  */
 public class BatchEngineTestUtil {
 
-	public static void processBatchEngineUnits(
-		String bundleSymbolicName, Class<?> clazz) {
-
+	public static void processBatchEngineUnits(String bundleSymbolicName) {
 		BatchEngineUnitProcessor batchEngineUnitProcessor =
 			_batchEngineUnitProcessorSnapshot.get();
 		BatchEngineUnitReader batchEngineUnitReader =
 			_batchEngineUnitReaderSnapshot.get();
 
-		Bundle testBundle = FrameworkUtil.getBundle(clazz);
+		Bundle testBundle = FrameworkUtil.getBundle(BatchEngineTestUtil.class);
 
 		BundleContext bundleContext = testBundle.getBundleContext();
 

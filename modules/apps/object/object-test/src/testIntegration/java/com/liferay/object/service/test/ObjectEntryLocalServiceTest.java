@@ -1353,7 +1353,7 @@ public class ObjectEntryLocalServiceTest {
 	@FeatureFlag("LPD-17564")
 	@Test
 	public void testAddObjectEntryWithAssetTag() throws Exception {
-		CMSTestUtil.getOrAddGroup(ObjectEntryLocalServiceTest.class);
+		CMSTestUtil.getOrAddGroup();
 
 		ObjectFolder objectFolder =
 			_objectFolderLocalService.fetchObjectFolderByExternalReferenceCode(

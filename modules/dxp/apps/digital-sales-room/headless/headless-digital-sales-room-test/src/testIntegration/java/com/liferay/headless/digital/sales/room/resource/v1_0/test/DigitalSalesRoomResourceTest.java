@@ -86,8 +86,7 @@ public class DigitalSalesRoomResourceTest
 			ServiceContextTestUtil.getServiceContext(
 				TestPropsValues.getCompanyId(), TestPropsValues.getGroupId(),
 				TestPropsValues.getUserId()));
-		_objectDefinition = DigitalSalesRoomTestUtil.getObjectDefinition(
-			DigitalSalesRoomResourceTest.class);
+		_objectDefinition = DigitalSalesRoomTestUtil.getObjectDefinition();
 	}
 
 	@Override

@@ -210,7 +210,7 @@ public class OverviewResourceTest extends BaseOverviewResourceTestCase {
 	}
 
 	private void _setUpCMSContext() throws Exception {
-		CMSTestUtil.getOrAddGroup(OverviewResourceTest.class);
+		CMSTestUtil.getOrAddGroup();
 
 		_serviceContext = ServiceContextTestUtil.getServiceContext(
 			testGroup.getGroupId(), TestPropsValues.getUserId());

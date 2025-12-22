@@ -64,8 +64,7 @@ public class BreadcrumbComponentSectionFragmentRendererTest {
 
 	@Before
 	public void setUp() throws Exception {
-		CMSTestUtil.getOrAddGroup(
-			BreadcrumbComponentSectionFragmentRendererTest.class);
+		CMSTestUtil.getOrAddGroup();
 
 		_depotEntry = _depotEntryLocalService.addDepotEntry(
 			HashMapBuilder.put(

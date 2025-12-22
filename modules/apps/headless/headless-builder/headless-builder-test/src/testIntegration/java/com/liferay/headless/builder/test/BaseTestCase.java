@@ -36,7 +36,7 @@ public abstract class BaseTestCase {
 		// TODO Delete the bundle deployment when the FF LPS-178642 is removed
 
 		BatchEngineTestUtil.processBatchEngineUnits(
-			"com.liferay.headless.builder.impl", BaseTestCase.class);
+			"com.liferay.headless.builder.impl");
 	}
 
 	protected void assertSuccessfulJSONObject(

@@ -132,7 +132,7 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 	public void setUp() throws Exception {
 		super.setUp();
 
-		CMSTestUtil.getOrAddGroup(BulkActionResourceTest.class);
+		CMSTestUtil.getOrAddGroup();
 
 		_cmsAdministratorRole = _getOrAddCMSAdministratorRole(
 			TestPropsValues.getCompanyId(), TestPropsValues.getUserId());

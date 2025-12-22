@@ -60,7 +60,7 @@ public class ObjectEntryLocalServiceTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_group = CMSTestUtil.getOrAddGroup(ObjectEntryLocalServiceTest.class);
+		_group = CMSTestUtil.getOrAddGroup();
 	}
 
 	@Test

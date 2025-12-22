@@ -77,7 +77,7 @@ public class ObjectEntryModelListenerTest {
 
 	@Before
 	public void setUp() throws Exception {
-		CMSTestUtil.getOrAddGroup(ObjectEntryModelListenerTest.class);
+		CMSTestUtil.getOrAddGroup();
 
 		_cmsAdministratorRole = _getOrAddCMSAdministratorRole(
 			TestPropsValues.getCompanyId(), TestPropsValues.getUserId());

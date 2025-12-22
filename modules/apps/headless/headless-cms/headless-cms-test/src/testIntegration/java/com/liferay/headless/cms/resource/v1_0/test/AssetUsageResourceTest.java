@@ -99,7 +99,7 @@ public class AssetUsageResourceTest extends BaseAssetUsageResourceTestCase {
 	public void setUp() throws Exception {
 		super.setUp();
 
-		CMSTestUtil.getOrAddGroup(AssetUsageResourceTest.class);
+		CMSTestUtil.getOrAddGroup();
 
 		_cmsBasicDocumentObjectDefinition =
 			_objectDefinitionLocalService.

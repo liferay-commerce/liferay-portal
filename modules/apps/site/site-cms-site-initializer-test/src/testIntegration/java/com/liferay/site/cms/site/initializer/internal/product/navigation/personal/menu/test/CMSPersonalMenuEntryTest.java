@@ -30,7 +30,6 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.product.navigation.personal.menu.PersonalMenuEntry;
-import com.liferay.site.cms.site.initializer.internal.display.context.test.BaseDisplayContextTestCase;
 import com.liferay.site.cms.site.initializer.test.util.CMSTestUtil;
 
 import java.util.Collections;
@@ -58,7 +57,7 @@ public class CMSPersonalMenuEntryTest {
 
 	@Before
 	public void setUp() throws Exception {
-		CMSTestUtil.getOrAddGroup(BaseDisplayContextTestCase.class);
+		CMSTestUtil.getOrAddGroup();
 
 		_depotEntry = _depotEntryLocalService.addDepotEntry(
 			Collections.singletonMap(

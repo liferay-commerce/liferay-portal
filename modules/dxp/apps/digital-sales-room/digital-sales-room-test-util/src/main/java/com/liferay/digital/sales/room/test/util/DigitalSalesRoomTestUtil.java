@@ -15,9 +15,7 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
  */
 public class DigitalSalesRoomTestUtil {
 
-	public static ObjectDefinition getObjectDefinition(Class<?> clazz)
-		throws Exception {
-
+	public static ObjectDefinition getObjectDefinition() throws Exception {
 		ObjectDefinition objectDefinition =
 			ObjectDefinitionLocalServiceUtil.
 				fetchObjectDefinitionByExternalReferenceCode(
@@ -28,7 +26,7 @@ public class DigitalSalesRoomTestUtil {
 		}
 
 		BatchEngineTestUtil.processBatchEngineUnits(
-			"com.liferay.digital.sales.room.impl", clazz);
+			"com.liferay.digital.sales.room.impl");
 
 		return ObjectDefinitionLocalServiceUtil.
 			getObjectDefinitionByExternalReferenceCode(

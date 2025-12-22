@@ -71,7 +71,7 @@ public class GroupModelListenerTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_cmsGroup = CMSTestUtil.getOrAddGroup(GroupModelListenerTest.class);
+		_cmsGroup = CMSTestUtil.getOrAddGroup();
 	}
 
 	@Test

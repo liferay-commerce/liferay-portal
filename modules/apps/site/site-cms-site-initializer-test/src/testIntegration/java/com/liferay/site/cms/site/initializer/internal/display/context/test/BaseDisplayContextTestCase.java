@@ -47,7 +47,7 @@ public abstract class BaseDisplayContextTestCase {
 
 	@Before
 	public void setUp() throws Exception {
-		group = CMSTestUtil.getOrAddGroup(BaseDisplayContextTestCase.class);
+		group = CMSTestUtil.getOrAddGroup();
 
 		mockHttpServletRequest = getMockHttpServletRequest();
 
