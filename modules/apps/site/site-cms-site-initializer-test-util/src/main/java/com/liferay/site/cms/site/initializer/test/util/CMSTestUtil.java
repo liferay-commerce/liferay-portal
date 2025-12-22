@@ -76,15 +76,7 @@ public class CMSTestUtil {
 				siteInitializer.initialize(group.getGroupId());
 
 				BatchEngineTestUtil.processBatchEngineUnits(
-					_BUNDLE_SYMBOLIC_NAME, clazz,
-					new String[] {
-						"." + _BUNDLE_SYMBOLIC_NAME +
-							".internal.batch.00.list.type.definition",
-						"." + _BUNDLE_SYMBOLIC_NAME +
-							".internal.batch.01.object.folder",
-						"." + _BUNDLE_SYMBOLIC_NAME +
-							".internal.batch.02.object.definition"
-					});
+					_BUNDLE_SYMBOLIC_NAME, clazz);
 			}
 		}
 		finally {

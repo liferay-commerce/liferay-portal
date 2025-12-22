@@ -28,20 +28,11 @@ public class DigitalSalesRoomTestUtil {
 		}
 
 		BatchEngineTestUtil.processBatchEngineUnits(
-			_BUNDLE_SYMBOLIC_NAME + ".impl", clazz,
-			new String[] {
-				"." + _BUNDLE_SYMBOLIC_NAME +
-					".internal.batch.01.object.folder",
-				"." + _BUNDLE_SYMBOLIC_NAME +
-					".internal.batch.02.object.definition"
-			});
+			"com.liferay.digital.sales.room.impl", clazz);
 
 		return ObjectDefinitionLocalServiceUtil.
 			getObjectDefinitionByExternalReferenceCode(
 				"L_DSR_ROOM", TestPropsValues.getCompanyId());
 	}
-
-	private static final String _BUNDLE_SYMBOLIC_NAME =
-		"com.liferay.digital.sales.room";
 
 }
