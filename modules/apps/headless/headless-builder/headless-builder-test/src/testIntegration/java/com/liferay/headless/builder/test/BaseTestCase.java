@@ -6,29 +6,18 @@
 package com.liferay.headless.builder.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.batch.engine.unit.BatchEngineUnitProcessor;
-import com.liferay.batch.engine.unit.BatchEngineUnitReader;
+import com.liferay.batch.engine.test.util.BatchEngineTestUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.util.Http;
-import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-
-import java.io.File;
-
-import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
-
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
 
 /**
  * @author Alejandro Tardín
@@ -46,25 +35,14 @@ public abstract class BaseTestCase {
 
 		// TODO Delete the bundle deployment when the FF LPS-178642 is removed
 
-		Bundle testBundle = FrameworkUtil.getBundle(BaseTestCase.class);
-
-		BundleContext bundleContext = testBundle.getBundleContext();
-
-		for (Bundle bundle : bundleContext.getBundles()) {
-			if (Objects.equals(
-					bundle.getSymbolicName(),
-					"com.liferay.headless.builder.impl")) {
-
-				_deleteFile(bundle, "00.list.type.definition");
-				_deleteFile(bundle, "01.object.definition");
-
-				CompletableFuture<Void> completableFuture =
-					_batchEngineUnitProcessor.processBatchEngineUnits(
-						_batchEngineUnitReader.getBatchEngineUnits(bundle));
-
-				completableFuture.join();
-			}
-		}
+		BatchEngineTestUtil.processBatchEngineUnits(
+			_BUNDLE_SYMBOLIC_NAME + ".impl", BaseTestCase.class,
+			new String[] {
+				"." + _BUNDLE_SYMBOLIC_NAME +
+					".internal.batch.00.list.type.definition",
+				"." + _BUNDLE_SYMBOLIC_NAME +
+					".internal.batch.01.object.definition"
+			});
 	}
 
 	protected void assertSuccessfulJSONObject(
@@ -79,20 +57,7 @@ public abstract class BaseTestCase {
 			jsonObject.getString("status"));
 	}
 
-	private void _deleteFile(Bundle bundle, String processedFileName) {
-		File processedFile = bundle.getDataFile(
-			".com.liferay.headless.builder.internal.batch." +
-				processedFileName + ".batch.engine.data.json.0.processed");
-
-		if ((processedFile != null) && processedFile.exists()) {
-			processedFile.delete();
-		}
-	}
-
-	@Inject
-	private BatchEngineUnitProcessor _batchEngineUnitProcessor;
-
-	@Inject
-	private BatchEngineUnitReader _batchEngineUnitReader;
+	private static final String _BUNDLE_SYMBOLIC_NAME =
+		"com.liferay.headless.builder";
 
 }
