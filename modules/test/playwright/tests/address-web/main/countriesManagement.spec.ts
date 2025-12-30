@@ -1112,3 +1112,143 @@ test(
 		}
 	}
 );
+
+test(
+	'Test XSS vulnerability when adding region with malicious region code to a country',
+	{tag: ['@LPD-72279']},
+	async ({
+		countriesManagementPage,
+		editCountryPage,
+		editRegionPage,
+		page,
+	}) => {
+		await countriesManagementPage.goto();
+
+		await expect(
+			countriesManagementPage.countriesTable.searchInput
+		).toBeEditable();
+
+		const country = {
+			key: `AA1${getRandomInt()}`,
+			number: String(getRandomInt()),
+			priority: '0',
+			threeLetterIsocode: getRandomString().substring(0, 3),
+			title: `XSS_Test_${getRandomInt()}`,
+			twoLetterIsocode: getRandomString().substring(0, 2),
+		};
+
+		await expect(async () => {
+			await countriesManagementPage.countriesTable.newButton.click();
+
+			await expect(editCountryPage.titleInput).toBeVisible();
+		}).toPass();
+
+		await editCountryPage.editCountry(country);
+
+		await editCountryPage.backButton.click();
+
+		await countriesManagementPage.countriesTable.search(country.title);
+
+		await (
+			await countriesManagementPage.countriesTable.cellLink(country.title)
+		).click();
+		await countriesManagementPage.regionsLink.click();
+
+		await expect(
+			countriesManagementPage.regionsTable.searchInput
+		).toBeEditable();
+
+		await expect(async () => {
+			await countriesManagementPage.regionsTable.newButton.click();
+
+			await expect(editRegionPage.titleInput).toBeVisible();
+		}).toPass();
+
+		const xssPayload = `<img src=x onerror="alert('x')">`;
+		const region = {
+			key: `XSS_${getRandomInt()}`,
+			name: `XSS_Region_${getRandomInt()}`,
+			priority: '1.0',
+			regionCode: xssPayload,
+		};
+
+		await editRegionPage.editRegion(region);
+
+		try {
+			await editRegionPage.backButton.click();
+
+			await countriesManagementPage.goto();
+
+			await countriesManagementPage.countriesTable.search(country.title);
+			await (
+				await countriesManagementPage.countriesTable.cellLink(
+					country.title
+				)
+			).click();
+
+			const dialogHandler = async (dialog) => {
+				if (dialog.type() === 'alert') {
+					throw new Error('XSS');
+				}
+			};
+
+			page.on('dialog', dialogHandler);
+
+			await countriesManagementPage.regionsLink.click();
+
+			await expect(
+				countriesManagementPage.regionsTable.cell(region.name)
+			).toBeVisible();
+
+			await expect(
+				countriesManagementPage.regionsTable.cell(region.name)
+			).toBeVisible();
+
+			page.off('dialog', dialogHandler);
+		}
+		finally {
+			page.on('dialog', async (dialog) => await dialog.accept());
+
+			await countriesManagementPage.goto();
+
+			await countriesManagementPage.countriesTable.search(country.title);
+			await (
+				await countriesManagementPage.countriesTable.cellLink(
+					country.title
+				)
+			).click();
+			await countriesManagementPage.regionsLink.click();
+
+			await expect(async () => {
+				await (
+					await countriesManagementPage.regionsTable.rowActions(
+						region.name
+					)
+				).click();
+				await countriesManagementPage.deleteButton.click({
+					timeout: 500,
+				});
+
+				await waitForAlert(page);
+			}).toPass();
+
+			await countriesManagementPage.goto();
+
+			await expect(async () => {
+				await countriesManagementPage.countriesTable.search(
+					country.title
+				);
+				await (
+					await countriesManagementPage.countriesTable.rowActions(
+						country.title
+					)
+				).click();
+				await countriesManagementPage.deleteButton.click({
+					timeout: 500,
+				});
+
+				await waitForAlert(page);
+			}).toPass();
+		}
+	}
+);
