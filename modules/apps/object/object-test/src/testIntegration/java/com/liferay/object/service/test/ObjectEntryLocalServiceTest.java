@@ -1356,7 +1356,7 @@ public class ObjectEntryLocalServiceTest {
 		CMSTestUtil.getOrAddGroup();
 
 		ObjectFolder objectFolder =
-			_objectFolderLocalService.fetchObjectFolderByExternalReferenceCode(
+			_objectFolderLocalService.getObjectFolderByExternalReferenceCode(
 				ObjectFolderConstants.
 					EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES,
 				TestPropsValues.getCompanyId());
