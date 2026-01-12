@@ -249,6 +249,39 @@ public abstract class BaseDigitalSalesRoomResourceTestCase {
 	}
 
 	@Test
+	public void testDeleteDigitalSalesRoomByExternalReferenceCode()
+		throws Exception {
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		DigitalSalesRoom digitalSalesRoom =
+			testDeleteDigitalSalesRoomByExternalReferenceCode_addDigitalSalesRoom();
+
+		assertHttpResponseStatusCode(
+			204,
+			digitalSalesRoomResource.
+				deleteDigitalSalesRoomByExternalReferenceCodeHttpResponse(
+					digitalSalesRoom.getExternalReferenceCode()));
+
+		assertHttpResponseStatusCode(
+			404,
+			digitalSalesRoomResource.
+				getDigitalSalesRoomByExternalReferenceCodeHttpResponse(
+					digitalSalesRoom.getExternalReferenceCode()));
+		assertHttpResponseStatusCode(
+			404,
+			digitalSalesRoomResource.
+				getDigitalSalesRoomByExternalReferenceCodeHttpResponse("-"));
+	}
+
+	protected DigitalSalesRoom
+			testDeleteDigitalSalesRoomByExternalReferenceCode_addDigitalSalesRoom()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
 	public void testGetDigitalSalesRoom() throws Exception {
 		DigitalSalesRoom postDigitalSalesRoom =
 			testGetDigitalSalesRoom_addDigitalSalesRoom();
@@ -454,6 +487,29 @@ public abstract class BaseDigitalSalesRoomResourceTestCase {
 	}
 
 	protected DigitalSalesRoom testGetDigitalSalesRoom_addDigitalSalesRoom()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGetDigitalSalesRoomByExternalReferenceCode()
+		throws Exception {
+
+		DigitalSalesRoom postDigitalSalesRoom =
+			testGetDigitalSalesRoomByExternalReferenceCode_addDigitalSalesRoom();
+
+		DigitalSalesRoom getDigitalSalesRoom =
+			digitalSalesRoomResource.getDigitalSalesRoomByExternalReferenceCode(
+				postDigitalSalesRoom.getExternalReferenceCode());
+
+		assertEquals(postDigitalSalesRoom, getDigitalSalesRoom);
+		assertValid(getDigitalSalesRoom);
+	}
+
+	protected DigitalSalesRoom
+			testGetDigitalSalesRoomByExternalReferenceCode_addDigitalSalesRoom()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -738,6 +794,45 @@ public abstract class BaseDigitalSalesRoomResourceTestCase {
 	}
 
 	protected DigitalSalesRoom testPatchDigitalSalesRoom_addDigitalSalesRoom()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testPatchDigitalSalesRoomByExternalReferenceCode()
+		throws Exception {
+
+		DigitalSalesRoom postDigitalSalesRoom =
+			testPatchDigitalSalesRoomByExternalReferenceCode_addDigitalSalesRoom();
+
+		DigitalSalesRoom randomPatchDigitalSalesRoom =
+			randomPatchDigitalSalesRoom();
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		DigitalSalesRoom patchDigitalSalesRoom =
+			digitalSalesRoomResource.
+				patchDigitalSalesRoomByExternalReferenceCode(
+					postDigitalSalesRoom.getExternalReferenceCode(),
+					randomPatchDigitalSalesRoom);
+
+		DigitalSalesRoom expectedPatchDigitalSalesRoom =
+			postDigitalSalesRoom.clone();
+
+		BeanTestUtil.copyProperties(
+			randomPatchDigitalSalesRoom, expectedPatchDigitalSalesRoom);
+
+		DigitalSalesRoom getDigitalSalesRoom =
+			digitalSalesRoomResource.getDigitalSalesRoomByExternalReferenceCode(
+				patchDigitalSalesRoom.getExternalReferenceCode());
+
+		assertEquals(expectedPatchDigitalSalesRoom, getDigitalSalesRoom);
+		assertValid(getDigitalSalesRoom);
+	}
+
+	protected DigitalSalesRoom
+			testPatchDigitalSalesRoomByExternalReferenceCode_addDigitalSalesRoom()
 		throws Exception {
 
 		throw new UnsupportedOperationException(

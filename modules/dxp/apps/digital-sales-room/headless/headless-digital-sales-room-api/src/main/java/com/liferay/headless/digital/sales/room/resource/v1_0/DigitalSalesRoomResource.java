@@ -46,7 +46,15 @@ public interface DigitalSalesRoomResource {
 	public void deleteDigitalSalesRoom(Long digitalSalesRoomId)
 		throws Exception;
 
+	public void deleteDigitalSalesRoomByExternalReferenceCode(
+			String externalReferenceCode)
+		throws Exception;
+
 	public DigitalSalesRoom getDigitalSalesRoom(Long digitalSalesRoomId)
+		throws Exception;
+
+	public DigitalSalesRoom getDigitalSalesRoomByExternalReferenceCode(
+			String externalReferenceCode)
 		throws Exception;
 
 	public Page<DigitalSalesRoom>
@@ -60,6 +68,10 @@ public interface DigitalSalesRoomResource {
 
 	public DigitalSalesRoom patchDigitalSalesRoom(
 			Long digitalSalesRoomId, DigitalSalesRoom digitalSalesRoom)
+		throws Exception;
+
+	public DigitalSalesRoom patchDigitalSalesRoomByExternalReferenceCode(
+			String externalReferenceCode, DigitalSalesRoom digitalSalesRoom)
 		throws Exception;
 
 	public DigitalSalesRoom postDigitalSalesRoom(
