@@ -42,7 +42,7 @@ export type TChannelsDTO = {
 export type TCommentDTO = {
 	category: string;
 	creator: {
-		id: string;
+		id: number;
 		image: string;
 		name: string;
 	};
@@ -170,6 +170,13 @@ async function deleteDigitalSalesRoom(groupId: number) {
 	return await ApiHelper.delete(`${PATH}/${groupId}`);
 }
 
+async function deleteDigitalSalesRoomComment(
+	groupId: number,
+	commentId: number
+) {
+	return await ApiHelper.delete(`${PATH}/${groupId}/comments/${commentId}`);
+}
+
 async function deleteDigitalSalesRoomTemplate(groupId: number) {
 	return await ApiHelper.delete(`${TEMPLATE_PATH}/${groupId}`);
 }
@@ -248,6 +255,23 @@ async function getDigitalSalesRoomTemplates(): Promise<TDSRTemplatesDTO> {
 
 	if (data) {
 		return data as TDSRTemplatesDTO;
+	}
+
+	throw new Error(error);
+}
+
+async function patchDigitalSalesRoomComment(
+	commentId: number,
+	digitalSalesRoomId: number,
+	text: string
+): Promise<TCommentDTO> {
+	const {data, error} = await ApiHelper.patch(
+		`${PATH}/${digitalSalesRoomId}/comments/${commentId}`,
+		{text}
+	);
+
+	if (data) {
+		return data as TCommentDTO;
 	}
 
 	throw new Error(error);
@@ -485,6 +509,7 @@ async function postDigitalSalesRoomTemplateDigitalSalesRoomTemplate(
 
 export default {
 	deleteDigitalSalesRoom,
+	deleteDigitalSalesRoomComment,
 	deleteDigitalSalesRoomTemplate,
 	getAccounts,
 	getChannels,
@@ -493,6 +518,7 @@ export default {
 	getDigitalSalesRoomTemplate,
 	getDigitalSalesRoomTemplates,
 	patchDigitalSalesRoom,
+	patchDigitalSalesRoomComment,
 	patchDigitalSalesRoomTemplate,
 	postDigitalSalesRoom,
 	postDigitalSalesRoomComment,

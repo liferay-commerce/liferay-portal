@@ -3,7 +3,9 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayButton from '@clayui/button';
+import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
+import {ClayDropDownWithItems} from '@clayui/drop-down';
+import ClayEmptyState from '@clayui/empty-state';
 import {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import Sticker from '@clayui/sticker';
@@ -12,7 +14,6 @@ import {openToast} from 'frontend-js-components-web';
 import React, {useEffect, useState} from 'react';
 
 import '../../css/main.scss';
-
 import DigitalSalesRoomService, {
 	TCommentDTO,
 } from '../commons/DigitalSalesRoomService';
@@ -34,7 +35,11 @@ function formatDate(date: string, languageTag: string): string {
 
 function DSRCommentsPanel({roomId}: {roomId: number}) {
 	const [comments, setComments] = useState<Array<TCommentDTO>>([]);
+	const [commentToEditId, setCommentToEditId] = useState<number | undefined>(
+		undefined
+	);
 	const [page, setPage] = useState(1);
+	const [reload, setReload] = useState(0);
 	const [showLoadMore, setShowLoadMore] = useState(false);
 
 	useEffect(() => {
@@ -45,15 +50,7 @@ function DSRCommentsPanel({roomId}: {roomId: number}) {
 						return data.items;
 					}
 
-					const existingIds = new Set(
-						prevState.map((comment) => comment.id)
-					);
-
-					return prevState.concat(
-						data.items.filter(
-							(comment) => !existingIds.has(comment.id)
-						)
-					);
+					return prevState.concat(data.items);
 				});
 				setShowLoadMore(page < data.lastPage);
 			})
@@ -63,7 +60,85 @@ function DSRCommentsPanel({roomId}: {roomId: number}) {
 					type: 'danger',
 				});
 			});
-	}, [page, roomId]);
+	}, [page, reload, roomId]);
+
+	const handleDeleteComment = async (commentId: number) => {
+		try {
+			const response =
+				await DigitalSalesRoomService.deleteDigitalSalesRoomComment(
+					roomId,
+					commentId
+				);
+
+			if (response.error) {
+				throw new Error(response.error);
+			}
+
+			openToast({
+				message: Liferay.Language.get(
+					'your-request-completed-successfully'
+				),
+				type: 'success',
+			});
+
+			setComments((prevState) =>
+				prevState.filter((item) => item.id !== commentId)
+			);
+			setPage((prevPage) => {
+				if (prevPage !== 1) {
+					return 1;
+				}
+				else {
+					setReload((prev) => prev + 1);
+
+					return prevPage;
+				}
+			});
+
+			if (commentId === commentToEditId) {
+				setCommentToEditId(undefined);
+			}
+		}
+		catch (error) {
+			openToast({
+				message: (error as Error).message,
+				type: 'danger',
+			});
+		}
+	};
+
+	const handleEditComment = async (
+		comment: string,
+		id: number,
+		roomId: number
+	) => {
+		try {
+			const data =
+				await DigitalSalesRoomService.patchDigitalSalesRoomComment(
+					id,
+					roomId,
+					comment
+				);
+
+			setComments((prevState) =>
+				prevState.map((item) => (item.id === id ? data : item))
+			);
+			setCommentToEditId(undefined);
+
+			openToast({
+				message: Liferay.Language.get(
+					'your-request-completed-successfully'
+				),
+				type: 'success',
+			});
+		}
+		catch (error) {
+			openToast({
+				message: (error as Error).message,
+				type: 'danger',
+			});
+		}
+	};
 
 	const handleSaveComment = async (comment: string, roomId: number) => {
 		try {
@@ -73,7 +148,18 @@ function DSRCommentsPanel({roomId}: {roomId: number}) {
 					comment
 				);
 
-			setComments((prevState) => [data, ...prevState]);
+			setComments((prevState) => {
+				const newLength = prevState.length + 1;
+
+				if (newLength <= 20 || page > 1) {
+					return [data, ...prevState];
+				}
+				else {
+					setReload((prev) => prev + 1);
+
+					return prevState;
+				}
+			});
 
 			openToast({
 				message: Liferay.Language.get(
@@ -92,38 +178,77 @@ function DSRCommentsPanel({roomId}: {roomId: number}) {
 
 	return (
 		<>
-			{comments.length ? (
-				<ul className="p-0">
-					{comments.map((comment) => (
-						<DSRCommentNode comment={comment} key={comment.id} />
-					))}
-				</ul>
-			) : null}
+			<div className="dsr-comments-content">
+				{comments.length ? (
+					<ul className="p-0">
+						{comments.map((comment) => (
+							<DSRCommentNode
+								comment={comment}
+								key={comment.id}
+								onDelete={() => handleDeleteComment(comment.id)}
+								onEdit={async (commentId: number) => {
+									setCommentToEditId(commentId);
+								}}
+							/>
+						))}
+					</ul>
+				) : (
+					<ClayEmptyState
+						description={Liferay.Language.get(
+							'sorry,-no-results-were-found'
+						)}
+						imgSrc={
+							Liferay.ThemeDisplay.getPathThemeImages() +
+							'/states/search_state.svg'
+						}
+						title={Liferay.Language.get('no-results-found')}
+					/>
+				)}
 
-			{showLoadMore && (
-				<ClayButton
-					className="btn-block"
-					data-qa-id="loadMoreButton"
-					displayType="secondary"
-					onClick={() => {
-						setPage((prev) => prev + 1);
-					}}
-					size="sm"
-				>
-					{Liferay.Language.get('load-more')}
-				</ClayButton>
-			)}
-
+				{showLoadMore && (
+					<ClayButton
+						className="btn-block"
+						data-qa-id="loadMoreButton"
+						displayType="secondary"
+						onClick={() => {
+							setPage((prev) => prev + 1);
+						}}
+						size="sm"
+					>
+						{Liferay.Language.get('load-more')}
+					</ClayButton>
+				)}
+			</div>
 			<DSRCommentEditor
-				onSave={(comment) => {
-					return handleSaveComment(comment, roomId);
-				}}
-			></DSRCommentEditor>
+				commentText={
+					commentToEditId
+						? comments.find(
+								(comment) => comment.id === commentToEditId
+							)?.text || ''
+						: ''
+				}
+				onEdit={(commentText, commentId) =>
+					handleEditComment(commentText, commentId, roomId)
+				}
+				onSave={(comment) => handleSaveComment(comment, roomId)}
+				originalCommentId={commentToEditId}
+			/>
 		</>
 	);
 }
 
-function DSRCommentNode({comment}: {comment: TCommentDTO}) {
+function DSRCommentNode({
+	comment,
+	onDelete,
+	onEdit,
+}: {
+	comment: TCommentDTO;
+	onDelete: (commentId: number) => Promise<void>;
+	onEdit: (commentId: number) => Promise<void>;
+}) {
+	const isOwner =
+		comment.creator.id === Number(Liferay.ThemeDisplay.getUserId());
+
 	return (
 		<>
 			<li className={classNames('list-unstyled border-bottom pb-3')}>
@@ -154,9 +279,43 @@ function DSRCommentNode({comment}: {comment: TCommentDTO}) {
 								)}
 							</time>
 						</header>
+
+						{isOwner && (
+							<ClayDropDownWithItems
+								items={[
+									{
+										label: Liferay.Language.get('edit'),
+										onClick: async () => {
+											await onEdit(comment.id);
+										},
+										symbolLeft: 'pencil',
+									},
+									{
+										label: Liferay.Language.get('delete'),
+										onClick: async () =>
+											await onDelete(comment.id),
+										symbolLeft: 'trash',
+									},
+								]}
+								menuWidth="shrink"
+								trigger={
+									<ClayButtonWithIcon
+										borderless
+										data-qa-id="comment-actions"
+										displayType="secondary"
+										monospaced
+										size="xs"
+										symbol="ellipsis-v"
+										title={Liferay.Language.get('actions')}
+									/>
+								}
+							/>
+						)}
 					</div>
 
-					<pre className="dsr-comment-body my-3 text-3">{comment.text}</pre>
+					<pre className="dsr-comment-body my-3 text-3">
+						{comment.text}
+					</pre>
 				</article>
 			</li>
 		</>
@@ -164,18 +323,29 @@ function DSRCommentNode({comment}: {comment: TCommentDTO}) {
 }
 
 function DSRCommentEditor({
+	commentText,
+	onEdit,
 	onSave,
+	originalCommentId,
 }: {
+	commentText: string;
+	onEdit: (comment: string, commentId: number) => Promise<void>;
 	onSave: (comment: string) => Promise<void>;
+	originalCommentId?: number;
 }) {
-	const [comment, setComment] = useState('');
+	const [comment, setComment] = useState(commentText);
 	const [disabled, setDisabled] = useState<boolean>(false);
+
+	useEffect(() => {
+		setComment(commentText);
+	}, [commentText]);
 
 	return (
 		<div className="dsr-comment-editor">
 			<div className="py-2">
 				<strong>{Liferay.Language.get('add-comment')}</strong>
 			</div>
+
 			<ClayInput
 				className="form-control form-control-sm"
 				component="textarea"
@@ -186,13 +356,19 @@ function DSRCommentEditor({
 				placeholder={Liferay.Language.get('type-your-comment-here')}
 				value={comment}
 			></ClayInput>
+
 			<div className="my-3">
 				<ClayButton
 					disabled={disabled || !comment.trim()}
 					onClick={async () => {
 						setDisabled(true);
 						try {
-							await onSave(comment.trim());
+							if (originalCommentId !== undefined) {
+								await onEdit(comment.trim(), originalCommentId);
+							}
+							else {
+								await onSave(comment.trim());
+							}
 							setComment('');
 						}
 						finally {
