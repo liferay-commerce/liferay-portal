@@ -15,6 +15,7 @@ import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisibl
 import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
 import performLogin, {
+	performLoginViaApi,
 	performLogout,
 	userData,
 } from '../../../utils/performLogin';
@@ -775,7 +776,10 @@ test(
 			await test.step('Login as a space member and go to Info Panel Categorization tab', async () => {
 				await performLogout(page);
 
-				await performLogin(page, user.alternateName);
+				await performLoginViaApi({
+					page,
+					screenName: user.alternateName,
+				});
 
 				await assetsPage.gotoAll();
 
@@ -791,6 +795,8 @@ test(
 				).toBeVisible();
 
 				await infoPanelPage.selectTab('Categorization').click();
+
+				await page.waitForLoadState('domcontentloaded');
 			});
 
 			await test.step('Check that space member can see tags and vocabulary but cannot edit them', async () => {
