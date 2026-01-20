@@ -10,7 +10,6 @@ import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.model.AssetVocabularyGroupRel;
 import com.liferay.asset.kernel.service.AssetVocabularyGroupRelLocalService;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
-import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -165,19 +164,17 @@ public class AssetCategoryModelDocumentContributor
 	}
 
 	private long[] _getClassNameIds(long vocabularyId) {
-		try {
-			AssetVocabulary assetVocabulary =
-				_assetVocabularyLocalService.getVocabulary(vocabularyId);
+		AssetVocabulary assetVocabulary =
+			_assetVocabularyLocalService.fetchAssetVocabulary(vocabularyId);
 
-			AssetVocabularySettingsHelper assetVocabularySettingsHelper =
-				new AssetVocabularySettingsHelper(
-					assetVocabulary.getSettings());
+		if (assetVocabulary == null) {
+			return new long[0];
+		}
 
-			return assetVocabularySettingsHelper.getClassNameIds();
-		}
-		catch (PortalException portalException) {
-			return ReflectionUtil.throwException(portalException);
-		}
+		AssetVocabularySettingsHelper assetVocabularySettingsHelper =
+			new AssetVocabularySettingsHelper(assetVocabulary.getSettings());
+
+		return assetVocabularySettingsHelper.getClassNameIds();
 	}
 
 	private long[] _getGroupIds(long vocabularyId) {
