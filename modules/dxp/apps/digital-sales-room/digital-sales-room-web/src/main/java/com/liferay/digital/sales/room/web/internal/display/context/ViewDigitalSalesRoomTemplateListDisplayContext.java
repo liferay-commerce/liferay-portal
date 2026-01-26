@@ -60,6 +60,8 @@ public class ViewDigitalSalesRoomTemplateListDisplayContext {
 				LanguageUtil.get(_httpServletRequest, "edit")
 			).setMethod(
 				"patch"
+			).setPermissionKey(
+				"update"
 			).build(
 				"edit"
 			),
@@ -99,6 +101,8 @@ public class ViewDigitalSalesRoomTemplateListDisplayContext {
 			).setLabel(
 				LanguageUtil.get(_httpServletRequest, "delete")
 			).setMethod(
+				"delete"
+			).setPermissionKey(
 				"delete"
 			).build(
 				"delete"
