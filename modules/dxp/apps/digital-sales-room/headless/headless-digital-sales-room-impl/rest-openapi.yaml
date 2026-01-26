@@ -580,6 +580,61 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Comment"
             tags: ["Comment"]
+    "/digital-sales-rooms/{digitalSalesRoomId}/comments/{commentId}":
+        delete:
+            operationId: deleteDigitalSalesRoomComment
+            parameters:
+                -   in: path
+                    name: digitalSalesRoomId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: path
+                    name: commentId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["Comment"]
+        patch:
+            operationId: patchDigitalSalesRoomComment
+            parameters:
+                -   in: path
+                    name: digitalSalesRoomId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: path
+                    name: commentId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/Comment"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/Comment"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Comment"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Comment"
+            tags: ["Comment"]
     "/digital-sales-rooms/{digitalSalesRoomId}/digital-sales-room-templates":
         get:
             operationId: getDigitalSalesRoomDigitalSalesRoomTemplatesPage
