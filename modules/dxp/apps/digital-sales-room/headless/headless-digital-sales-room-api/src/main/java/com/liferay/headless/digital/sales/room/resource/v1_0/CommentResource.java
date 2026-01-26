@@ -43,9 +43,17 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface CommentResource {
 
+	public void deleteDigitalSalesRoomComment(
+			Long digitalSalesRoomId, Long commentId)
+		throws Exception;
+
 	public Page<Comment> getDigitalSalesRoomCommentsPage(
 			Long digitalSalesRoomId, String search, Pagination pagination,
 			com.liferay.portal.kernel.search.Sort[] sorts)
+		throws Exception;
+
+	public Comment patchDigitalSalesRoomComment(
+			Long digitalSalesRoomId, Long commentId, Comment comment)
 		throws Exception;
 
 	public Comment postDigitalSalesRoomComment(

@@ -185,6 +185,31 @@ public abstract class BaseCommentResourceTestCase {
 	}
 
 	@Test
+	public void testDeleteDigitalSalesRoomComment() throws Exception {
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		Comment comment = testDeleteDigitalSalesRoomComment_addComment();
+
+		assertHttpResponseStatusCode(
+			204,
+			commentResource.deleteDigitalSalesRoomCommentHttpResponse(
+				testDeleteDigitalSalesRoomComment_getDigitalSalesRoomId(),
+				comment.getId()));
+	}
+
+	protected Comment testDeleteDigitalSalesRoomComment_addComment()
+		throws Exception {
+
+		return testPostDigitalSalesRoomComment_addComment(randomComment());
+	}
+
+	protected Long testDeleteDigitalSalesRoomComment_getDigitalSalesRoomId()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
 	public void testGetDigitalSalesRoomCommentsPage() throws Exception {
 		Long digitalSalesRoomId =
 			testGetDigitalSalesRoomCommentsPage_getDigitalSalesRoomId();
@@ -497,6 +522,11 @@ public abstract class BaseCommentResourceTestCase {
 		throws Exception {
 
 		return null;
+	}
+
+	@Test
+	public void testPatchDigitalSalesRoomComment() throws Exception {
+		Assert.assertTrue(false);
 	}
 
 	@Test
