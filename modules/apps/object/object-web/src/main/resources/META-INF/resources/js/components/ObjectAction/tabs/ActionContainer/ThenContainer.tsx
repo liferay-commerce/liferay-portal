@@ -95,15 +95,8 @@ export function ThenContainer({
 				const NotificationTemplatesResponse =
 					await API.getNotificationTemplates();
 
-				let notificationArray: NotificationTemplate[] =
+				const notificationArray: NotificationTemplate[] =
 					NotificationTemplatesResponse;
-
-				if (systemObject) {
-					notificationArray = NotificationTemplatesResponse.filter(
-						(notificationTemplate) =>
-							notificationTemplate.type !== 'userNotification'
-					);
-				}
 
 				setNotificationTemplates(
 					notificationArray.map(

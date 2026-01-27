@@ -22,6 +22,8 @@ import com.liferay.notification.model.NotificationRecipientSettingModel;
 import com.liferay.notification.model.NotificationTemplate;
 import com.liferay.notification.type.BaseNotificationType;
 import com.liferay.notification.type.NotificationType;
+import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
@@ -144,9 +146,21 @@ public class UserNotificationType extends BaseNotificationType {
 				UserNotificationDefinition.NOTIFICATION_TYPE_UPDATE_ENTRY,
 				UserNotificationDeliveryConstants.TYPE_WEBSITE);
 
-			if (!deliver ||
-				!_objectEntryService.hasModelResourcePermission(
-					user, notificationContext.getClassPK(), ActionKeys.VIEW)) {
+			if (!deliver) {
+				continue;
+			}
+
+			ObjectEntry objectEntry = _objectEntryLocalService.fetchObjectEntry(
+				notificationContext.getClassPK());
+
+			if (((objectEntry != null) &&
+				 !_objectEntryService.hasModelResourcePermission(
+					 user, objectEntry.getObjectEntryId(), ActionKeys.VIEW)) ||
+				((objectEntry == null) &&
+				 !UserNotificationManagerUtil.hasPermission(
+					 notificationContext.getClassPK(),
+					 notificationContext.getPortletId(), StringPool.BLANK,
+					 user))) {
 
 				continue;
 			}
@@ -166,12 +180,16 @@ public class UserNotificationType extends BaseNotificationType {
 					"externalReferenceCode",
 					notificationContext.getExternalReferenceCode()
 				).put(
+					"fullName", user.getFullName()
+				).put(
 					"notificationMessage",
 					formatLocalizedContent(
 						notificationTemplate.getSubjectMap(),
 						notificationContext)
 				).put(
 					"portletId", notificationContext.getPortletId()
+				).put(
+					"userId", user.getUserId()
 				));
 
 			notificationRecipientSettings.add(
@@ -224,6 +242,9 @@ public class UserNotificationType extends BaseNotificationType {
 
 	@Reference
 	private ClassNameLocalService _classNameLocalService;
+
+	@Reference
+	private ObjectEntryLocalService _objectEntryLocalService;
 
 	@Reference
 	private ObjectEntryService _objectEntryService;

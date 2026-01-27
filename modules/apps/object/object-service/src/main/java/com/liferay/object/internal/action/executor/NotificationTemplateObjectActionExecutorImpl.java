@@ -105,8 +105,7 @@ public class NotificationTemplateObjectActionExecutorImpl
 			).parentClassPK(
 				GetterUtil.getLong(targetValues.get("parentClassPK"))
 			).portletId(
-				sourceObjectDefinition.isUnmodifiableSystemObject() ?
-					StringPool.BLANK : sourceObjectDefinition.getPortletId()
+				sourceObjectDefinition.getPortletId()
 			).preferredLanguageId(
 				payloadJSONObject.getString("preferredLanguageId")
 			).usePreferredLanguageForGuests(
