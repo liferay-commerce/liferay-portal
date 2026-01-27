@@ -11,6 +11,8 @@ import classNames from 'classnames';
 import {openToast} from 'frontend-js-components-web';
 import React, {useEffect, useState} from 'react';
 
+import '../../css/main.scss';
+
 import DigitalSalesRoomService, {
 	TCommentDTO,
 } from '../commons/DigitalSalesRoomService';
@@ -111,6 +113,7 @@ function DSRCommentsPanel({roomId}: {roomId: number}) {
 					{Liferay.Language.get('load-more')}
 				</ClayButton>
 			)}
+
 			<DSRCommentEditor
 				onSave={(comment) => {
 					return handleSaveComment(comment, roomId);
@@ -153,7 +156,7 @@ function DSRCommentNode({comment}: {comment: TCommentDTO}) {
 						</header>
 					</div>
 
-					<div className="my-3 text-3">{comment.text}</div>
+					<pre className="dsr-comment-body my-3 text-3">{comment.text}</pre>
 				</article>
 			</li>
 		</>
@@ -169,7 +172,7 @@ function DSRCommentEditor({
 	const [disabled, setDisabled] = useState<boolean>(false);
 
 	return (
-		<>
+		<div className="dsr-comment-editor">
 			<div className="py-2">
 				<strong>{Liferay.Language.get('add-comment')}</strong>
 			</div>
@@ -213,7 +216,7 @@ function DSRCommentEditor({
 					{Liferay.Language.get('cancel')}
 				</ClayButton>
 			</div>
-		</>
+		</div>
 	);
 }
 

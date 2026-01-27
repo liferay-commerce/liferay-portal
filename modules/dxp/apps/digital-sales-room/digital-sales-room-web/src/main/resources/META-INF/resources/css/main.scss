@@ -5,6 +5,16 @@
 	pointer-events: none;
 }
 
+.dsr-comment-body {
+	font-family: var(--font-family-base);
+}
+
+.dsr-comment-editor {
+	bottom: 0;
+	position: fixed;
+	width: calc(320px - 3rem);
+}
+
 .dsr-container-wrapper {
 	background-color: #fff;
 	flex: 0 0 calc(10 / 12 * 100%);
