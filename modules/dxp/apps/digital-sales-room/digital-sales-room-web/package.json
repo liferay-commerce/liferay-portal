@@ -5,6 +5,7 @@
 		"@clayui/color-picker": "*",
 		"@clayui/core": "*",
 		"@clayui/drop-down": "*",
+		"@clayui/empty-state": "*",
 		"@clayui/form": "*",
 		"@clayui/icon": "*",
 		"@clayui/link": "*",
