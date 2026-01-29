@@ -515,12 +515,12 @@ test(
 
 		await editDigitalSalesRoomPage.commentsButton.click();
 
-		await expect(editDigitalSalesRoomPage.roomCommentsText).toBeVisible();
+		await expect(editDigitalSalesRoomPage.noResultsText).toBeVisible();
 		await expect(editDigitalSalesRoomPage.commentSaveButton).toBeDisabled();
 
 		const comment = getRandomString();
 
-		await editDigitalSalesRoomPage.commentTextAreaPlaceholder.fill(comment);
+		await editDigitalSalesRoomPage.commentTextarea.fill(comment);
 
 		await expect(
 			editDigitalSalesRoomPage.commentSaveButton
@@ -530,10 +530,130 @@ test(
 
 		await waitForAlert(page);
 
-		await expect(
-			editDigitalSalesRoomPage.commentTextAreaPlaceholder
-		).toBeVisible();
+		await expect(editDigitalSalesRoomPage.commentTextarea).toBeEmpty();
 		await expect(page.getByText('Test Test')).toBeVisible();
 		await expect(page.getByText(comment)).toBeVisible();
+	}
+);
+
+test(
+	'Delete comment',
+	{tag: '@LPD-76076'},
+	async ({digitalSalesRoomsPage, editDigitalSalesRoomPage, page}) => {
+		const roomName = `A${getRandomInt()}`;
+
+		await digitalSalesRoomsPage.goto();
+
+		await digitalSalesRoomsPage.digitalSalesRoomsTable.newButton.click();
+
+		await editDigitalSalesRoomPage.addDigitalSalesRoom({
+			banner: path.join(__dirname, '/dependencies/liferay.png'),
+			roomName,
+		});
+
+		await digitalSalesRoomsPage.goto();
+
+		await expect(
+			digitalSalesRoomsPage.digitalSalesRoomsTable.cell(roomName)
+		).toBeVisible();
+		await expect(async () => {
+			await (
+				await digitalSalesRoomsPage.digitalSalesRoomsTable.rowActions(
+					roomName,
+					0
+				)
+			).click();
+			await expect(digitalSalesRoomsPage.editMenuItem).toBeVisible({
+				timeout: 200,
+			});
+		}).toPass({timeout: 1000});
+
+		await digitalSalesRoomsPage.editMenuItem.click();
+
+		await expect(editDigitalSalesRoomPage.onboardingMenuItem).toBeVisible();
+
+		await editDigitalSalesRoomPage.commentsButton.click();
+
+		const comment = getRandomString();
+
+		await editDigitalSalesRoomPage.commentTextarea.fill(comment);
+		await editDigitalSalesRoomPage.commentSaveButton.click();
+
+		await waitForAlert(page);
+
+		await expect(
+			editDigitalSalesRoomPage.commentActionsButton
+		).toBeVisible();
+
+		await editDigitalSalesRoomPage.commentActionsButton.click();
+		await editDigitalSalesRoomPage.commentDeleteButton.click();
+
+		await waitForAlert(page);
+
+		await expect(editDigitalSalesRoomPage.noResultsText).toBeVisible();
+	}
+);
+
+test(
+	'Edit comment',
+	{tag: '@LPD-76076'},
+	async ({digitalSalesRoomsPage, editDigitalSalesRoomPage, page}) => {
+		const roomName = `A${getRandomInt()}`;
+
+		await digitalSalesRoomsPage.goto();
+
+		await digitalSalesRoomsPage.digitalSalesRoomsTable.newButton.click();
+
+		await editDigitalSalesRoomPage.addDigitalSalesRoom({
+			banner: path.join(__dirname, '/dependencies/liferay.png'),
+			roomName,
+		});
+
+		await digitalSalesRoomsPage.goto();
+
+		await expect(
+			digitalSalesRoomsPage.digitalSalesRoomsTable.cell(roomName)
+		).toBeVisible();
+		await expect(async () => {
+			await (
+				await digitalSalesRoomsPage.digitalSalesRoomsTable.rowActions(
+					roomName,
+					0
+				)
+			).click();
+			await expect(digitalSalesRoomsPage.editMenuItem).toBeVisible({
+				timeout: 200,
+			});
+		}).toPass({timeout: 1000});
+
+		await digitalSalesRoomsPage.editMenuItem.click();
+
+		await expect(editDigitalSalesRoomPage.onboardingMenuItem).toBeVisible();
+
+		await editDigitalSalesRoomPage.commentsButton.click();
+
+		const comment = getRandomString();
+
+		await editDigitalSalesRoomPage.commentTextarea.fill(comment);
+		await editDigitalSalesRoomPage.commentSaveButton.click();
+
+		await waitForAlert(page);
+
+		await editDigitalSalesRoomPage.commentActionsButton.click();
+		await editDigitalSalesRoomPage.commentEditButton.click();
+
+		await expect(editDigitalSalesRoomPage.commentTextarea).toHaveValue(
+			comment
+		);
+
+		const comment2 = getRandomString();
+
+		await editDigitalSalesRoomPage.commentTextarea.fill(comment2);
+		await editDigitalSalesRoomPage.commentSaveButton.click();
+
+		await waitForAlert(page);
+
+		await expect(page.getByText(comment)).not.toBeVisible();
+		await expect(page.getByText(comment2)).toBeVisible();
 	}
 );

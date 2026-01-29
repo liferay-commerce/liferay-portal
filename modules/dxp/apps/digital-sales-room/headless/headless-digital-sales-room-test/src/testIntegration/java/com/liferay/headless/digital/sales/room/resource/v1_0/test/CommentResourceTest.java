@@ -9,6 +9,8 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.digital.sales.room.test.util.DigitalSalesRoomTestUtil;
 import com.liferay.headless.digital.sales.room.client.dto.v1_0.Comment;
 import com.liferay.headless.digital.sales.room.client.dto.v1_0.DigitalSalesRoom;
+import com.liferay.headless.digital.sales.room.client.pagination.Page;
+import com.liferay.headless.digital.sales.room.client.pagination.Pagination;
 import com.liferay.headless.digital.sales.room.client.resource.v1_0.DigitalSalesRoomResource;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.petra.string.StringPool;
@@ -20,6 +22,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
@@ -65,6 +68,31 @@ public class CommentResourceTest extends BaseCommentResourceTestCase {
 	}
 
 	@Override
+	@Test
+	public void testPatchDigitalSalesRoomComment() throws Exception {
+		Comment postComment = testPostDigitalSalesRoomComment_addComment(
+			randomComment());
+
+		Comment randomPatchComment = randomPatchComment();
+
+		commentResource.patchDigitalSalesRoomComment(
+			_digitalSalesRoom.getId(), postComment.getId(), randomPatchComment);
+
+		Comment expectedPatchComment = postComment.clone();
+
+		BaseDigitalSalesRoomResourceTestCase.BeanTestUtil.copyProperties(
+			randomPatchComment, expectedPatchComment);
+
+		Page<Comment> page = commentResource.getDigitalSalesRoomCommentsPage(
+			_digitalSalesRoom.getId(), null, Pagination.of(1, 10), null);
+
+		Comment getComment = page.fetchFirstItem();
+
+		assertEquals(expectedPatchComment, getComment);
+		assertValid(getComment);
+	}
+
+	@Override
 	protected String[] getAdditionalAssertFieldNames() {
 		return new String[] {"text"};
 	}
@@ -84,6 +112,13 @@ public class CommentResourceTest extends BaseCommentResourceTestCase {
 				text = StringUtil.toLowerCase(RandomTestUtil.randomString());
 			}
 		};
+	}
+
+	@Override
+	protected Long testDeleteDigitalSalesRoomComment_getDigitalSalesRoomId()
+		throws Exception {
+
+		return _digitalSalesRoom.getId();
 	}
 
 	@Override
