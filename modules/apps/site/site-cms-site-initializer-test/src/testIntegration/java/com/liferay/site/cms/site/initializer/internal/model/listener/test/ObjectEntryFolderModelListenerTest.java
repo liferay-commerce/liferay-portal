@@ -78,7 +78,7 @@ public class ObjectEntryFolderModelListenerTest {
 
 	@Before
 	public void setUp() throws Exception {
-		CMSTestUtil.getOrAddGroup(ObjectEntryFolderModelListenerTest.class);
+		CMSTestUtil.getOrAddGroup();
 
 		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
 			HashMapBuilder.put(

@@ -36,8 +36,7 @@ public class UserAccountBriefResourceTest
 		super.setUp();
 
 		ObjectDefinition objectDefinition =
-			DigitalSalesRoomTestUtil.getObjectDefinition(
-				DigitalSalesRoomResourceTest.class);
+			DigitalSalesRoomTestUtil.getObjectDefinition();
 
 		User user = UserTestUtil.getAdminUser(objectDefinition.getCompanyId());
 

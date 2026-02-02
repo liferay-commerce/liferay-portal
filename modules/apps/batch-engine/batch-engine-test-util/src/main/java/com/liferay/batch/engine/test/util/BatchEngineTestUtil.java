@@ -7,10 +7,14 @@ package com.liferay.batch.engine.test.util;
 
 import com.liferay.batch.engine.unit.BatchEngineUnitProcessor;
 import com.liferay.batch.engine.unit.BatchEngineUnitReader;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.module.service.Snapshot;
 
 import java.io.File;
 
+import java.util.Collections;
+import java.util.Dictionary;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
@@ -23,15 +27,13 @@ import org.osgi.framework.FrameworkUtil;
  */
 public class BatchEngineTestUtil {
 
-	public static void processBatchEngineUnits(
-		String bundleSymbolicName, Class<?> clazz, String[] fileNames) {
-
+	public static void processBatchEngineUnits(String bundleSymbolicName) {
 		BatchEngineUnitProcessor batchEngineUnitProcessor =
 			_batchEngineUnitProcessorSnapshot.get();
 		BatchEngineUnitReader batchEngineUnitReader =
 			_batchEngineUnitReaderSnapshot.get();
 
-		Bundle testBundle = FrameworkUtil.getBundle(clazz);
+		Bundle testBundle = FrameworkUtil.getBundle(BatchEngineTestUtil.class);
 
 		BundleContext bundleContext = testBundle.getBundleContext();
 
@@ -40,8 +42,23 @@ public class BatchEngineTestUtil {
 				continue;
 			}
 
-			for (String fileName : fileNames) {
-				_deleteFile(bundle, fileName);
+			Dictionary<String, String> headers = bundle.getHeaders(
+				StringPool.BLANK);
+
+			for (String fileName :
+					Collections.list(
+						bundle.getEntryPaths(
+							headers.get("Liferay-Client-Extension-Batch")))) {
+
+				File file = bundle.getDataFile(
+					StringBundler.concat(
+						StringPool.PERIOD,
+						fileName.replaceAll("[/\\-]", StringPool.PERIOD),
+						".0.processed"));
+
+				if ((file != null) && file.exists()) {
+					file.delete();
+				}
 			}
 
 			CompletableFuture<Void> completableFuture =
@@ -49,15 +66,6 @@ public class BatchEngineTestUtil {
 					batchEngineUnitReader.getBatchEngineUnits(bundle));
 
 			completableFuture.join();
-		}
-	}
-
-	private static void _deleteFile(Bundle bundle, String fileName) {
-		File file = bundle.getDataFile(
-			fileName + ".batch.engine.data.json.0.processed");
-
-		if ((file != null) && file.exists()) {
-			file.delete();
 		}
 	}
 

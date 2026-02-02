@@ -204,7 +204,7 @@ public class ExpiredAssetResourceTest extends BaseExpiredAssetResourceTestCase {
 	}
 
 	private void _setUpCMSContext() throws Exception {
-		CMSTestUtil.getOrAddGroup(ExpiredAssetResourceTest.class);
+		CMSTestUtil.getOrAddGroup();
 
 		_serviceContext = new ServiceContext() {
 			{

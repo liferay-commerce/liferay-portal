@@ -125,7 +125,7 @@ public class InventoryAnalysisResourceTest
 	}
 
 	private void _setUpCMSContext() throws Exception {
-		CMSTestUtil.getOrAddGroup(InventoryAnalysisResourceTest.class);
+		CMSTestUtil.getOrAddGroup();
 
 		_serviceContext = ServiceContextTestUtil.getServiceContext(
 			testGroup.getGroupId(), TestPropsValues.getUserId());

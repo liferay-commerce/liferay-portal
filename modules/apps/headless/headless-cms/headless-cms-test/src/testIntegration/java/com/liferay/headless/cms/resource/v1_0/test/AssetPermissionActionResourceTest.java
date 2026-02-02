@@ -81,7 +81,7 @@ public class AssetPermissionActionResourceTest
 	public void setUp() throws Exception {
 		super.setUp();
 
-		CMSTestUtil.getOrAddGroup(AssetPermissionActionResourceTest.class);
+		CMSTestUtil.getOrAddGroup();
 
 		_cmsAdministratorRole = _getOrAddCMSAdministratorRole(
 			TestPropsValues.getCompanyId(), TestPropsValues.getUserId());

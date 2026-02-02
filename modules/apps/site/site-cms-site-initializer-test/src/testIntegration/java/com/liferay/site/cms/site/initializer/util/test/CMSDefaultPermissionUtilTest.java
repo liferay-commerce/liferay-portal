@@ -61,7 +61,7 @@ public class CMSDefaultPermissionUtilTest {
 
 	@Before
 	public void setUp() throws Exception {
-		CMSTestUtil.getOrAddGroup(CMSDefaultPermissionUtilTest.class);
+		CMSTestUtil.getOrAddGroup();
 
 		_depotEntry = _depotEntryLocalService.addDepotEntry(
 			HashMapBuilder.put(
