@@ -95,7 +95,7 @@ test(
 		page,
 		usersAndOrganizationsPage,
 	}) => {
-		await page.on('dialog', (dialog) => dialog.accept());
+		page.on('dialog', (dialog) => dialog.accept());
 
 		const orgName = 'Organization' + getRandomInt();
 
@@ -277,7 +277,13 @@ test(
 	async ({editOrganizationPage, usersAndOrganizationsPage}) => {
 		await usersAndOrganizationsPage.goToOrganizations();
 
-		await usersAndOrganizationsPage.addOrganizationButton.click();
+		await expect(async () => {
+			await usersAndOrganizationsPage.addOrganizationButton.click();
+
+			await expect(editOrganizationPage.countrySelect).toBeVisible({
+				timeout: 1000,
+			});
+		}).toPass({timeout: 6000});
 
 		await expect(editOrganizationPage.countrySelect).not.toHaveAttribute(
 			'required'
@@ -300,7 +306,13 @@ test(
 		await usersAndOrganizationsPage.goToOrganizations();
 
 		await usersAndOrganizationsPage.organizationsLink.click();
-		await usersAndOrganizationsPage.addOrganizationButton.click();
+		await expect(async () => {
+			await usersAndOrganizationsPage.addOrganizationButton.click();
+
+			await expect(editOrganizationPage.countrySelect).toBeVisible({
+				timeout: 1000,
+			});
+		}).toPass({timeout: 6000});
 
 		const organizationName =
 			'"><img src=x onerror=prompt(document.cookie)></img>';

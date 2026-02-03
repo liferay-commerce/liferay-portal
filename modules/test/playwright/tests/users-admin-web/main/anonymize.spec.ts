@@ -861,11 +861,19 @@ test(
 		await performLoginViaApi({page, screenName: 'test'});
 
 		await usersAndOrganizationsPage.goToUsers(false);
-		await (
-			await usersAndOrganizationsPage.usersTableRowActions(
-				userAccount.alternateName
-			)
-		).click();
+
+		await expect(async () => {
+			await (
+				await usersAndOrganizationsPage.usersTableRowActions(
+					userAccount.alternateName
+				)
+			).click();
+
+			await expect(
+				usersAndOrganizationsPage.deletePersonalDataMenuItem
+			).toBeVisible({timeout: 500});
+		}).toPass({timeout: 5000});
+
 		await usersAndOrganizationsPage.deletePersonalDataMenuItem.click();
 		await personalDataErasurePage.documentsAndMediaRadioButton.check();
 		await (
@@ -878,7 +886,15 @@ test(
 				attachment.fileName
 			)
 		).check();
-		await personalDataErasurePage.actionsButton.click();
+
+		await expect(async () => {
+			await personalDataErasurePage.actionsButton.click();
+
+			await expect(personalDataErasurePage.anonymizeMenuItem).toBeVisible(
+				{timeout: 500}
+			);
+		}).toPass({timeout: 5000});
+
 		await personalDataErasurePage.anonymizeMenuItem.click();
 
 		await waitForAlert(page);
@@ -1102,11 +1118,19 @@ test(
 		await performLoginViaApi({page, screenName: 'test'});
 
 		await usersAndOrganizationsPage.goToUsers(false);
-		await (
-			await usersAndOrganizationsPage.usersTableRowActions(
-				userAccount.alternateName
-			)
-		).click();
+
+		await expect(async () => {
+			await (
+				await usersAndOrganizationsPage.usersTableRowActions(
+					userAccount.alternateName
+				)
+			).click();
+
+			await expect(
+				usersAndOrganizationsPage.deletePersonalDataMenuItem
+			).toBeVisible({timeout: 500});
+		}).toPass({timeout: 5000});
+
 		await usersAndOrganizationsPage.deletePersonalDataMenuItem.click();
 
 		await expect(
@@ -1119,7 +1143,14 @@ test(
 				attachment.fileName
 			)
 		).check();
-		await personalDataErasurePage.actionsButton.click();
+
+		await expect(async () => {
+			await personalDataErasurePage.actionsButton.click();
+
+			await expect(personalDataErasurePage.anonymizeMenuItem).toBeVisible(
+				{timeout: 500}
+			);
+		}).toPass({timeout: 5000});
 		await personalDataErasurePage.anonymizeMenuItem.click();
 
 		await waitForAlert(page);
