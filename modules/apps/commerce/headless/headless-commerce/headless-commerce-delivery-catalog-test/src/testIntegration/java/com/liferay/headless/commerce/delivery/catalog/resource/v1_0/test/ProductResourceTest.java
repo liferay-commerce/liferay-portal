@@ -29,6 +29,7 @@ import com.liferay.headless.commerce.delivery.catalog.client.dto.v1_0.Product;
 import com.liferay.headless.commerce.delivery.catalog.client.dto.v1_0.ProductConfiguration;
 import com.liferay.headless.commerce.delivery.catalog.client.pagination.Page;
 import com.liferay.headless.commerce.delivery.catalog.client.pagination.Pagination;
+import com.liferay.headless.commerce.delivery.catalog.client.resource.v1_0.ProductResource;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
@@ -44,6 +45,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 
 import java.math.BigDecimal;
@@ -108,6 +110,8 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 
 	@Override
 	protected Long testGetChannelProduct_getChannelId() throws Exception {
+		_testGetChannelProductDraftWithGuestUser();
+
 		return _commerceChannel.getCommerceChannelId();
 	}
 
@@ -283,6 +287,29 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 					});
 			}
 		};
+	}
+
+	private void _testGetChannelProductDraftWithGuestUser() throws Exception {
+		User guestUser = testCompany.getGuestUser();
+
+		ProductResource productResource = ProductResource.builder(
+		).authentication(
+			guestUser.getEmailAddress(), guestUser.getPassword()
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+
+		CPDefinition cpDefinition = CPTestUtil.addCPDefinition(
+			_commerceChannel.getGroupId(), false, true,
+			WorkflowConstants.STATUS_DRAFT);
+
+		assertHttpResponseStatusCode(
+			401,
+			productResource.getChannelProductHttpResponse(
+				_commerceChannel.getCommerceChannelId(),
+				cpDefinition.getCProductId(), null));
 	}
 
 	private void _testGetChannelProductsPageWithCustomFields()

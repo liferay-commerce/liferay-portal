@@ -968,6 +968,68 @@ public class CPDefinitionLocalServiceTest {
 	}
 
 	@Test
+	public void testUpdateCProductionVersionAfterDeletingLatestCPDefinition()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"Update CProduct version when versioning enabled"
+		).given(
+			"a new CPDefinition"
+		).when(
+			"make a copy of the current CPDefinition"
+		).and(
+			"delete the copy CPDefinition"
+		).then(
+			"the version of the CProduct is updated"
+		);
+
+		CPDefinition cpDefinition1 = CPTestUtil.addCPDefinitionFromCatalog(
+			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, false,
+			false);
+
+		Assert.assertTrue(cpDefinition1.isPublished());
+
+		CProduct cProduct = cpDefinition1.getCProduct();
+
+		Assert.assertEquals(1, cProduct.getLatestVersion());
+
+		Assert.assertEquals(
+			cpDefinition1.getCPDefinitionId(),
+			cProduct.getPublishedCPDefinitionId());
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						CProductVersionConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"enabled", true
+						).put(
+							"versionThreshold", 2
+						).build())) {
+
+			CPDefinition cpDefinition2 =
+				_cpDefinitionLocalService.copyCPDefinition(
+					cpDefinition1.getCPDefinitionId());
+
+			Assert.assertNotEquals(
+				cpDefinition1.getCPDefinitionId(),
+				cpDefinition2.getCPDefinitionId());
+
+			cProduct = cpDefinition2.getCProduct();
+
+			Assert.assertEquals(2, cProduct.getLatestVersion());
+
+			_cpDefinitionLocalService.deleteCPDefinition(
+				cpDefinition2.getCPDefinitionId());
+
+			cProduct = cpDefinition1.getCProduct();
+
+			Assert.assertEquals(2, cProduct.getLatestVersion());
+		}
+	}
+
+	@Test
 	public void testUpdateExpiredCPDefinitionWithStatusExpired()
 		throws Exception {
 
