@@ -216,7 +216,7 @@ public class CPDefinitionServiceImpl extends CPDefinitionServiceBaseImpl {
 		CPDefinition cpDefinition =
 			cpDefinitionLocalService.
 				fetchCPDefinitionByCProductExternalReferenceCode(
-					externalReferenceCode, companyId);
+					externalReferenceCode, companyId, false);
 
 		if (cpDefinition != null) {
 			_checkCommerceCatalogByCPDefinitionId(
@@ -231,7 +231,8 @@ public class CPDefinitionServiceImpl extends CPDefinitionServiceBaseImpl {
 		throws PortalException {
 
 		CPDefinition cpDefinition =
-			cpDefinitionLocalService.fetchCPDefinitionByCProductId(cProductId);
+			cpDefinitionLocalService.fetchCPDefinitionByCProductId(
+				cProductId, false);
 
 		if (cpDefinition != null) {
 			_checkCommerceCatalogByCPDefinitionId(
