@@ -1383,7 +1383,7 @@ public class CPDefinitionLocalServiceImpl
 
 	@Override
 	public CPDefinition fetchCPDefinitionByCProductExternalReferenceCode(
-		String externalReferenceCode, long companyId) {
+		String externalReferenceCode, long companyId, boolean excludeDraft) {
 
 		if (Validator.isNull(externalReferenceCode)) {
 			return null;
@@ -1400,6 +1400,12 @@ public class CPDefinitionLocalServiceImpl
 		CPDefinition cpDefinition = cpDefinitionPersistence.fetchByPrimaryKey(
 			cProduct.getPublishedCPDefinitionId());
 
+		if (excludeDraft &&
+			((cpDefinition == null) || !cpDefinition.isApproved())) {
+
+			return null;
+		}
+
 		if (cpDefinition != null) {
 			return cpDefinition;
 		}
@@ -1409,7 +1415,9 @@ public class CPDefinitionLocalServiceImpl
 	}
 
 	@Override
-	public CPDefinition fetchCPDefinitionByCProductId(long cProductId) {
+	public CPDefinition fetchCPDefinitionByCProductId(
+		long cProductId, boolean excludeDraft) {
+
 		CProduct cProduct = _cProductLocalService.fetchCProduct(cProductId);
 
 		if (cProduct == null) {
@@ -1418,6 +1426,12 @@ public class CPDefinitionLocalServiceImpl
 
 		CPDefinition cpDefinition = cpDefinitionPersistence.fetchByPrimaryKey(
 			cProduct.getPublishedCPDefinitionId());
+
+		if (excludeDraft &&
+			((cpDefinition == null) || !cpDefinition.isApproved())) {
+
+			return null;
+		}
 
 		if (cpDefinition != null) {
 			return cpDefinition;
@@ -1441,7 +1455,7 @@ public class CPDefinitionLocalServiceImpl
 		}
 
 		return cpDefinitionLocalService.fetchCPDefinitionByCProductId(
-			friendlyURLEntry.getClassPK());
+			friendlyURLEntry.getClassPK(), true);
 	}
 
 	@Override
