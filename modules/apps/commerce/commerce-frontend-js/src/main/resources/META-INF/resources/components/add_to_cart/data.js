@@ -167,7 +167,9 @@ export async function addToCart(
 
 		if (
 			includedCartItem &&
-			!Liferay.CommerceContext.showSeparateOrderItems
+			(Liferay.FeatureFlags['LPD-37492']
+				? !Liferay.CommerceContext.configuration.showSeparateOrderItems
+				: !Liferay.CommerceContext.showSeparateOrderItems)
 		) {
 			includedCartItem.quantity =
 				parseFloat(includedCartItem.quantity) +

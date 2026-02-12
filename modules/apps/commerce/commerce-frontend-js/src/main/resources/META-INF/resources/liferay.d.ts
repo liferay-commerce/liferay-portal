@@ -13,11 +13,12 @@ declare module Liferay {
 		commerceChannelGroupId: string;
 		commerceChannelId: string;
 		commerceSiteType: number;
+		configuration?: Configuration;
 		currency?: CommerceCurrency;
 		order?: CommerceOrder;
 		orderTypes?: CommerceOrderType[] | [];
-		showSeparateOrderItems: boolean;
-		showUnselectableOptions: boolean;
+		showSeparateOrderItems?: boolean;
+		showUnselectableOptions?: boolean;
 	};
 }
 
@@ -39,4 +40,23 @@ interface CommerceOrder {
 interface CommerceOrderType {
 	label_i18n: string;
 	orderTypeId: number;
+}
+
+interface Configuration {
+	accountCartMaxAllowed: number;
+	checkoutRequestedDeliveryDateEnabled: boolean;
+	guestCheckoutEnabled: boolean;
+	hideShippingPriceZero: boolean;
+	multishippingEnabled: boolean;
+	openOrdersVisibilityScope: string;
+	orderImporterDateFormat: string;
+	orderSelectionDisabled: boolean;
+	placedOrdersVisibilityScope: string;
+	quickCheckoutEnabled: boolean;
+	requestQuoteEnabled: boolean;
+	showPurchaseOrderNumber: boolean;
+	showSeparateOrderItems: boolean;
+	showUnselectableOptions: boolean;
+	slowConnectionOrderFlowEnabled: boolean;
+	undoCartItemDeletionDisabled: boolean;
 }

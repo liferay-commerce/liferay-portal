@@ -352,7 +352,11 @@ const ProductOptionRadio = ({
 						if (
 							!isAdmin &&
 							visible &&
-							Liferay.CommerceContext.showUnselectableOptions
+							(Liferay.FeatureFlags['LPD-37492']
+								? Liferay.CommerceContext.configuration
+										.showUnselectableOptions
+								: Liferay.CommerceContext
+										.showUnselectableOptions)
 						) {
 							return (
 								<ClayRadio

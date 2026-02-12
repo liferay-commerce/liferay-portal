@@ -389,7 +389,12 @@ const ProductOptionSelect = ({
 			).then((responseProductOptionValues) => {
 				setProductOptionValues(responseProductOptionValues.items);
 
-				if (!Liferay.CommerceContext.showUnselectableOptions) {
+				if (
+					Liferay.FeatureFlags['LPD-37492']
+						? !Liferay.CommerceContext.configuration
+								.showUnselectableOptions
+						: !Liferay.CommerceContext.showUnselectableOptions
+				) {
 					const currentProductOptionValues =
 						responseProductOptionValues.items.filter(
 							(productOptionValue) =>
@@ -485,7 +490,10 @@ const ProductOptionSelect = ({
 				<Asterisk required={optionIsRequired} />
 			</label>
 
-			{!isAdmin && Liferay.CommerceContext.showUnselectableOptions ? (
+			{!isAdmin &&
+			(Liferay.FeatureFlags['LPD-37492']
+				? Liferay.CommerceContext.configuration.showUnselectableOptions
+				: Liferay.CommerceContext.showUnselectableOptions) ? (
 				<Picker
 					data-sku-contributor={productOption.skuContributor}
 					defaultSelectedKey={

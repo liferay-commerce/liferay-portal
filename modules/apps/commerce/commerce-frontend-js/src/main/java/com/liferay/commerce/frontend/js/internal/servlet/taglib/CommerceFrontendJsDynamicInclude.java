@@ -7,6 +7,9 @@ package com.liferay.commerce.frontend.js.internal.servlet.taglib;
 
 import com.liferay.account.model.AccountEntry;
 import com.liferay.commerce.configuration.CommerceOrderCheckoutConfiguration;
+import com.liferay.commerce.configuration.CommerceOrderConfiguration;
+import com.liferay.commerce.configuration.CommerceOrderFieldsConfiguration;
+import com.liferay.commerce.configuration.CommerceOrderImporterDateFormatConfiguration;
 import com.liferay.commerce.constants.CommerceConstants;
 import com.liferay.commerce.constants.CommerceWebKeys;
 import com.liferay.commerce.context.CommerceContext;
@@ -21,6 +24,8 @@ import com.liferay.portal.configuration.module.configuration.ConfigurationProvid
 import com.liferay.portal.kernel.content.security.policy.ContentSecurityPolicyNonceProviderUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -79,95 +84,92 @@ public class CommerceFrontendJsDynamicInclude extends BaseDynamicInclude {
 			"/html/common/themes/top_head.jsp#post");
 	}
 
-	private String _getContent(
+	private JSONObject _getCommerceContextJSONObject(
 			CommerceContext commerceContext,
 			HttpServletRequest httpServletRequest)
 		throws PortalException {
 
-		return StringBundler.concat(
-			"<script",
-			ContentSecurityPolicyNonceProviderUtil.getNonceAttribute(
-				httpServletRequest),
-			" data-senna-track=\"temporary\">var Liferay = window.Liferay || ",
-			"{}; Liferay.CommerceContext = ",
-			JSONUtil.put(
-				"account",
-				() -> {
-					AccountEntry accountEntry =
-						commerceContext.getAccountEntry();
+		JSONObject jsonObject = JSONUtil.put(
+			"account",
+			() -> {
+				AccountEntry accountEntry = commerceContext.getAccountEntry();
 
-					if (accountEntry == null) {
-						return null;
-					}
-
-					return JSONUtil.put(
-						"accountId", accountEntry.getAccountEntryId()
-					).put(
-						"accountName", accountEntry.getName()
-					);
+				if (accountEntry == null) {
+					return null;
 				}
-			).put(
-				"accountEntryAllowedTypes",
-				commerceContext.getAccountEntryAllowedTypes()
-			).put(
-				"commerceAccountGroupIds",
-				commerceContext.getCommerceAccountGroupIds()
-			).put(
-				"commerceChannelGroupId",
-				commerceContext.getCommerceChannelGroupId()
-			).put(
-				"commerceChannelId", commerceContext.getCommerceChannelId()
-			).put(
-				"commerceSiteType", commerceContext.getCommerceSiteType()
-			).put(
-				"currency",
-				() -> {
-					CommerceCurrency commerceCurrency =
-						commerceContext.getCommerceCurrency();
 
-					if (commerceCurrency == null) {
-						return null;
-					}
+				return JSONUtil.put(
+					"accountId", accountEntry.getAccountEntryId()
+				).put(
+					"accountName", accountEntry.getName()
+				);
+			}
+		).put(
+			"accountEntryAllowedTypes",
+			commerceContext.getAccountEntryAllowedTypes()
+		).put(
+			"commerceAccountGroupIds",
+			commerceContext.getCommerceAccountGroupIds()
+		).put(
+			"commerceChannelGroupId",
+			commerceContext.getCommerceChannelGroupId()
+		).put(
+			"commerceChannelId", commerceContext.getCommerceChannelId()
+		).put(
+			"commerceSiteType", commerceContext.getCommerceSiteType()
+		).put(
+			"currency",
+			() -> {
+				CommerceCurrency commerceCurrency =
+					commerceContext.getCommerceCurrency();
 
-					return JSONUtil.put(
-						"currencyCode", commerceCurrency.getCode()
-					).put(
-						"currencyId", commerceCurrency.getCommerceCurrencyId()
-					);
+				if (commerceCurrency == null) {
+					return null;
 				}
-			).put(
-				"order",
-				() -> {
-					CommerceOrder commerceOrder =
-						commerceContext.getCommerceOrder();
 
-					if (commerceOrder == null) {
-						return null;
-					}
+				return JSONUtil.put(
+					"currencyCode", commerceCurrency.getCode()
+				).put(
+					"currencyId", commerceCurrency.getCommerceCurrencyId()
+				);
+			}
+		).put(
+			"order",
+			() -> {
+				CommerceOrder commerceOrder =
+					commerceContext.getCommerceOrder();
 
-					return JSONUtil.put(
-						"orderId", commerceOrder.getCommerceOrderId()
-					).put(
-						"orderType", commerceOrder.getCommerceOrderTypeId()
-					);
+				if (commerceOrder == null) {
+					return null;
 				}
-			).put(
-				"orderTypes",
-				() -> JSONUtil.toJSONArray(
-					_commerceOrderTypeLocalService.getCommerceOrderTypes(
-						_portal.getCompanyId(httpServletRequest),
-						CommerceChannel.class.getName(),
-						commerceContext.getCommerceChannelId(), true,
-						QueryUtil.ALL_POS, QueryUtil.ALL_POS),
-					commerceOrderType -> JSONUtil.put(
-						"name_i18n",
-						commerceOrderType.getName(
-							_portal.getLocale(httpServletRequest))
-					).put(
-						"orderTypeId",
-						commerceOrderType.getCommerceOrderTypeId()
-					))
-			).put(
+
+				return JSONUtil.put(
+					"orderId", commerceOrder.getCommerceOrderId()
+				).put(
+					"orderType", commerceOrder.getCommerceOrderTypeId()
+				);
+			}
+		).put(
+			"orderTypes",
+			() -> JSONUtil.toJSONArray(
+				_commerceOrderTypeLocalService.getCommerceOrderTypes(
+					_portal.getCompanyId(httpServletRequest),
+					CommerceChannel.class.getName(),
+					commerceContext.getCommerceChannelId(), true,
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS),
+				commerceOrderType -> JSONUtil.put(
+					"name_i18n",
+					commerceOrderType.getName(
+						_portal.getLocale(httpServletRequest))
+				).put(
+					"orderTypeId", commerceOrderType.getCommerceOrderTypeId()
+				))
+		);
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				_portal.getCompanyId(httpServletRequest), "LPD-37492")) {
+
+			return jsonObject.put(
 				"showSeparateOrderItems",
 				() -> {
 					CommerceChannel commerceChannel =
@@ -202,7 +204,153 @@ public class CommerceFrontendJsDynamicInclude extends BaseDynamicInclude {
 					return cpDefinitionOptionRelConfiguration.
 						showUnselectableOptions();
 				}
-			),
+			);
+		}
+
+		JSONObject configurationJSONObject = JSONUtil.put(
+			"showUnselectableOptions",
+			() -> {
+				CPDefinitionOptionRelConfiguration
+					cpDefinitionOptionRelConfiguration =
+						_configurationProvider.getCompanyConfiguration(
+							CPDefinitionOptionRelConfiguration.class,
+							_portal.getCompanyId(httpServletRequest));
+
+				return cpDefinitionOptionRelConfiguration.
+					showUnselectableOptions();
+			});
+
+		CommerceChannel commerceChannel =
+			_commerceChannelLocalService.fetchCommerceChannel(
+				commerceContext.getCommerceChannelId());
+
+		if (commerceChannel == null) {
+			configurationJSONObject.put(
+				"accountCartMaxAllowed", 0
+			).put(
+				"checkoutRequestedDeliveryDateEnabled", false
+			).put(
+				"guestCheckoutEnabled", false
+			).put(
+				"hideShippingPriceZero", false
+			).put(
+				"multishippingEnabled", false
+			).put(
+				"openOrdersVisibilityScope", "account"
+			).put(
+				"orderImporterDateFormat", "yyyy-MM-dd"
+			).put(
+				"orderSelectionDisabled", false
+			).put(
+				"placedOrdersVisibilityScope", "account"
+			).put(
+				"quickCheckoutEnabled", false
+			).put(
+				"requestQuoteEnabled", false
+			).put(
+				"showPurchaseOrderNumber", true
+			).put(
+				"showSeparateOrderItems", false
+			).put(
+				"slowConnectionOrderFlowEnabled", false
+			).put(
+				"undoCartItemDeletionDisabled", false
+			);
+		}
+		else {
+			CommerceOrderCheckoutConfiguration
+				commerceOrderCheckoutConfiguration =
+					_configurationProvider.getConfiguration(
+						CommerceOrderCheckoutConfiguration.class,
+						new GroupServiceSettingsLocator(
+							commerceChannel.getGroupId(),
+							CommerceConstants.SERVICE_NAME_COMMERCE_ORDER));
+			CommerceOrderConfiguration commerceOrderConfiguration =
+				_configurationProvider.getConfiguration(
+					CommerceOrderConfiguration.class,
+					new GroupServiceSettingsLocator(
+						commerceChannel.getGroupId(),
+						CommerceConstants.SERVICE_NAME_COMMERCE_ORDER));
+			CommerceOrderFieldsConfiguration commerceOrderFieldsConfiguration =
+				_configurationProvider.getConfiguration(
+					CommerceOrderFieldsConfiguration.class,
+					new GroupServiceSettingsLocator(
+						commerceChannel.getGroupId(),
+						CommerceConstants.SERVICE_NAME_COMMERCE_ORDER_FIELDS));
+			CommerceOrderImporterDateFormatConfiguration
+				commerceOrderImporterDateFormatConfiguration =
+					_configurationProvider.getConfiguration(
+						CommerceOrderImporterDateFormatConfiguration.class,
+						new GroupServiceSettingsLocator(
+							commerceChannel.getGroupId(),
+							CommerceConstants.
+								SERVICE_NAME_COMMERCE_ORDER_IMPORTER_DATE_FORMAT));
+
+			configurationJSONObject.put(
+				"accountCartMaxAllowed",
+				commerceOrderFieldsConfiguration.accountCartMaxAllowed()
+			).put(
+				"checkoutRequestedDeliveryDateEnabled",
+				commerceOrderCheckoutConfiguration.
+					checkoutRequestedDeliveryDateEnabled()
+			).put(
+				"guestCheckoutEnabled",
+				commerceOrderCheckoutConfiguration.guestCheckoutEnabled()
+			).put(
+				"hideShippingPriceZero",
+				commerceOrderCheckoutConfiguration.hideShippingPriceZero()
+			).put(
+				"multishippingEnabled",
+				commerceOrderCheckoutConfiguration.multishippingEnabled()
+			).put(
+				"openOrdersVisibilityScope",
+				commerceOrderConfiguration.openOrdersVisibilityScope()
+			).put(
+				"orderImporterDateFormat",
+				commerceOrderImporterDateFormatConfiguration.
+					orderImporterDateFormat()
+			).put(
+				"orderSelectionDisabled",
+				commerceOrderConfiguration.orderSelectionDisabled()
+			).put(
+				"placedOrdersVisibilityScope",
+				commerceOrderConfiguration.placedOrdersVisibilityScope()
+			).put(
+				"quickCheckoutEnabled",
+				commerceOrderCheckoutConfiguration.quickCheckoutEnabled()
+			).put(
+				"requestQuoteEnabled",
+				commerceOrderFieldsConfiguration.requestQuoteEnabled()
+			).put(
+				"showPurchaseOrderNumber",
+				commerceOrderFieldsConfiguration.showPurchaseOrderNumber()
+			).put(
+				"showSeparateOrderItems",
+				commerceOrderCheckoutConfiguration.showSeparateOrderItems()
+			).put(
+				"slowConnectionOrderFlowEnabled",
+				commerceOrderConfiguration.slowConnectionOrderFlowEnabled()
+			).put(
+				"undoCartItemDeletionDisabled",
+				commerceOrderConfiguration.undoCartItemDeletionDisabled()
+			);
+		}
+
+		return jsonObject.put("configuration", configurationJSONObject);
+	}
+
+	private String _getContent(
+			CommerceContext commerceContext,
+			HttpServletRequest httpServletRequest)
+		throws PortalException {
+
+		return StringBundler.concat(
+			"<script",
+			ContentSecurityPolicyNonceProviderUtil.getNonceAttribute(
+				httpServletRequest),
+			" data-senna-track=\"temporary\">var Liferay = window.Liferay || ",
+			"{}; Liferay.CommerceContext = ",
+			_getCommerceContextJSONObject(commerceContext, httpServletRequest),
 			";</script>");
 	}
 
