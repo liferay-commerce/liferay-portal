@@ -30,6 +30,7 @@ import com.liferay.commerce.product.exception.CPDefinitionMetaTitleException;
 import com.liferay.commerce.product.exception.CPDefinitionProductTypeNameException;
 import com.liferay.commerce.product.exception.CPDefinitionSubscriptionLengthException;
 import com.liferay.commerce.product.model.CPAttachmentFileEntry;
+import com.liferay.commerce.product.model.CPConfigurationEntry;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionLink;
 import com.liferay.commerce.product.model.CPDefinitionLocalization;
@@ -962,6 +963,31 @@ public class CPDefinitionLocalServiceImpl
 			newCPAttachmentFileEntry.setClassPK(newCPDefinitionId);
 
 			_cpAttachmentFileEntryPersistence.update(newCPAttachmentFileEntry);
+		}
+
+		List<CPConfigurationEntry> cpConfigurationEntries =
+			_cpConfigurationEntryLocalService.getCPConfigurationEntries(
+				cpDefinitionClassNameId, sourceCPDefinitionId);
+
+		for (CPConfigurationEntry cpConfigurationEntry :
+				cpConfigurationEntries) {
+
+			CPConfigurationEntry newCPConfigurationEntry =
+				(CPConfigurationEntry)cpConfigurationEntry.clone();
+
+			newCPConfigurationEntry.setUuid(PortalUUIDUtil.generate());
+
+			long cpConfigurationEntryId = counterLocalService.increment();
+
+			newCPConfigurationEntry.setExternalReferenceCode(
+				String.valueOf(cpConfigurationEntryId));
+			newCPConfigurationEntry.setCPConfigurationEntryId(
+				cpConfigurationEntryId);
+
+			newCPConfigurationEntry.setClassPK(newCPDefinitionId);
+
+			_cpConfigurationEntryLocalService.updateCPConfigurationEntry(
+				newCPConfigurationEntry);
 		}
 
 		List<CPDefinitionLink> cpDefinitionLinks =
