@@ -1302,6 +1302,17 @@ public class CPDefinitionLocalServiceImpl
 							lastApprovedCPDefinition.getCPDefinitionId());
 					}
 				}
+
+				CPDefinition latestVersionCPDefinition =
+					cpDefinitionPersistence.fetchByCProductId_First(
+						cProduct.getCProductId(),
+						OrderByComparatorFactoryUtil.create(
+							"CPDefinition", "version", "desc"));
+
+				cProduct.setLatestVersion(
+					latestVersionCPDefinition.getVersion());
+
+				_cProductLocalService.updateCProduct(cProduct);
 			}
 		}
 
