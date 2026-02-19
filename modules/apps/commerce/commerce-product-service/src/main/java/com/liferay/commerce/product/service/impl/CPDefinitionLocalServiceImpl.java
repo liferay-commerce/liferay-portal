@@ -2501,6 +2501,20 @@ public class CPDefinitionLocalServiceImpl
 
 			_assetEntryLocalService.updateVisible(
 				CPDefinition.class.getName(), cpDefinitionId, false);
+
+			// CProduct
+
+			CPDefinition latestApprovedCPDefinition =
+				cpDefinitionPersistence.fetchByC_S_First(
+					cpDefinition.getCProductId(),
+					WorkflowConstants.STATUS_APPROVED,
+					OrderByComparatorFactoryUtil.create(
+						"CPDefinition", "version", "desc"));
+
+			_cProductLocalService.updatePublishedCPDefinitionId(
+				cpDefinition.getCProductId(),
+				(latestApprovedCPDefinition == null) ? 0L :
+					latestApprovedCPDefinition.getCPDefinitionId());
 		}
 
 		// Commerce product instances

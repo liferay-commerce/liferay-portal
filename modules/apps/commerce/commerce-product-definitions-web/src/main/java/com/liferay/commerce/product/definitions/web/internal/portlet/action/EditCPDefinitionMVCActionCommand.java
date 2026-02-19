@@ -615,7 +615,9 @@ public class EditCPDefinitionMVCActionCommand extends BaseMVCActionCommand {
 				serviceContext);
 		}
 
-		return cpDefinition;
+		return _cpDefinitionService.updateStatus(
+			cpDefinition.getCPDefinitionId(), cpDefinition.getStatus(),
+			serviceContext, Collections.emptyMap());
 	}
 
 	private CPDefinition _updateCPDefinition(
