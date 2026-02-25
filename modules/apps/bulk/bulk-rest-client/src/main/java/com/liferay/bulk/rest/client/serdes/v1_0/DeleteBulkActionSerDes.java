@@ -47,6 +47,20 @@ public class DeleteBulkActionSerDes {
 
 		sb.append("{");
 
+		if (deleteBulkAction.getClassName() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"className\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(deleteBulkAction.getClassName()));
+
+			sb.append("\"");
+		}
+
 		if (deleteBulkAction.getBulkActionItems() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -111,6 +125,14 @@ public class DeleteBulkActionSerDes {
 
 		Map<String, String> map = new TreeMap<>();
 
+		if (deleteBulkAction.getClassName() == null) {
+			map.put("className", null);
+		}
+		else {
+			map.put(
+				"className", String.valueOf(deleteBulkAction.getClassName()));
+		}
+
 		if (deleteBulkAction.getBulkActionItems() == null) {
 			map.put("bulkActionItems", null);
 		}
@@ -154,7 +176,10 @@ public class DeleteBulkActionSerDes {
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
-			if (Objects.equals(jsonParserFieldName, "bulkActionItems")) {
+			if (Objects.equals(jsonParserFieldName, "className")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "bulkActionItems")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "selectionScope")) {
@@ -172,7 +197,12 @@ public class DeleteBulkActionSerDes {
 			DeleteBulkAction deleteBulkAction, String jsonParserFieldName,
 			Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "bulkActionItems")) {
+			if (Objects.equals(jsonParserFieldName, "className")) {
+				if (jsonParserFieldValue != null) {
+					deleteBulkAction.setClassName((String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "bulkActionItems")) {
 				if (jsonParserFieldValue != null) {
 					Object[] jsonParserFieldValues =
 						(Object[])jsonParserFieldValue;
