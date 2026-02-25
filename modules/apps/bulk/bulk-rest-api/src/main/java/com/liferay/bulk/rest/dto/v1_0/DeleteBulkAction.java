@@ -6,9 +6,13 @@
 package com.liferay.bulk.rest.dto.v1_0;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.vulcan.graphql.annotation.GraphQLField;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLName;
 import com.liferay.portal.vulcan.util.ObjectMapperUtil;
 
@@ -22,6 +26,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * @author Alejandro Tardín
@@ -40,6 +45,47 @@ public class DeleteBulkAction extends BulkAction implements Serializable {
 	public static DeleteBulkAction unsafeToDTO(String json) {
 		return ObjectMapperUtil.unsafeReadValue(DeleteBulkAction.class, json);
 	}
+
+	@io.swagger.v3.oas.annotations.media.Schema
+	public String getClassName() {
+		if (_classNameSupplier != null) {
+			className = _classNameSupplier.get();
+
+			_classNameSupplier = null;
+		}
+
+		return className;
+	}
+
+	public void setClassName(String className) {
+		this.className = className;
+
+		_classNameSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setClassName(
+		UnsafeSupplier<String, Exception> classNameUnsafeSupplier) {
+
+		_classNameSupplier = () -> {
+			try {
+				return classNameUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String className;
+
+	@JsonIgnore
+	private Supplier<String> _classNameSupplier;
 
 	@Override
 	public boolean equals(Object object) {
@@ -67,6 +113,22 @@ public class DeleteBulkAction extends BulkAction implements Serializable {
 		StringBundler sb = new StringBundler();
 
 		sb.append("{");
+
+		String className = getClassName();
+
+		if (className != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"className\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(className));
+
+			sb.append("\"");
+		}
 
 		BulkActionItem[] bulkActionItems = getBulkActionItems();
 
