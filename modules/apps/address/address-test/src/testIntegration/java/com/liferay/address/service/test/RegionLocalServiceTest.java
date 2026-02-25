@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.service.CountryLocalService;
 import com.liferay.portal.kernel.service.OrganizationLocalService;
 import com.liferay.portal.kernel.service.RegionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBumper;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.OrganizationTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -153,13 +154,28 @@ public class RegionLocalServiceTest {
 
 	@Test
 	public void testSearchRegions() throws Exception {
-		String keywords = RandomTestUtil.randomString();
+		UniqueStringRandomizerBumper.reset();
 
-		Country country1 = _addCountry("a1", "a11");
-		Country country2 = _addCountry("a2", "a22");
+		String randomString1 = RandomTestUtil.randomString(
+			1, UniqueStringRandomizerBumper.INSTANCE);
+		String randomString2 = RandomTestUtil.randomString(
+			2, UniqueStringRandomizerBumper.INSTANCE);
+
+		Country country1 = _addCountry(
+			"x" + randomString1, "x" + randomString2);
+
+		randomString1 = RandomTestUtil.randomString(
+			1, UniqueStringRandomizerBumper.INSTANCE);
+		randomString2 = RandomTestUtil.randomString(
+			2, UniqueStringRandomizerBumper.INSTANCE);
+
+		Country country2 = _addCountry(
+			"x" + randomString1, "x" + randomString2);
 
 		Region region1 = _addRegion(
 			true, country1.getCountryId(), RandomTestUtil.randomString());
+
+		String keywords = RandomTestUtil.randomString();
 
 		Region region2 = _addRegion(
 			true, country1.getCountryId(),
@@ -271,7 +287,9 @@ public class RegionLocalServiceTest {
 	}
 
 	private Country _addCountry() throws Exception {
-		return _addCountry("aa", "aaa");
+		return _addCountry(
+			"x" + RandomTestUtil.randomString(1),
+			"x" + RandomTestUtil.randomString(2));
 	}
 
 	private Country _addCountry(String a2, String a3) throws Exception {

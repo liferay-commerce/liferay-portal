@@ -65,8 +65,8 @@ public class CountryResourcePermissionUpgradeProcessTest {
 			group.getCompanyId(), group.getGroupId(), user.getUserId());
 
 		_country = _countryLocalService.addCountry(
-			"X" + RandomTestUtil.randomString(1),
-			"X" + RandomTestUtil.randomString(2), true, true,
+			"x" + RandomTestUtil.randomString(1),
+			"x" + RandomTestUtil.randomString(2), true, true,
 			RandomTestUtil.randomString(3), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), 0L, true, true, true,
 			_serviceContext);

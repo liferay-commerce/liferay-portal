@@ -55,11 +55,12 @@ public class RegionServiceTest {
 	@Before
 	public void setUp() throws Exception {
 		_country = _countryLocalService.addCountry(
-			"aa", "aaa", true, RandomTestUtil.randomBoolean(),
+			"x" + RandomTestUtil.randomString(1),
+			"x" + RandomTestUtil.randomString(2), true,
+			RandomTestUtil.randomBoolean(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomDouble(),
+			RandomTestUtil.randomDouble(), RandomTestUtil.randomBoolean(),
 			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),
-			RandomTestUtil.randomBoolean(),
 			ServiceContextTestUtil.getServiceContext());
 
 		_role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);

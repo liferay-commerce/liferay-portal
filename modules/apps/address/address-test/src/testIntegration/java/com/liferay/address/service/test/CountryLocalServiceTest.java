@@ -6,6 +6,7 @@
 package com.liferay.address.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.CountryTitleException;
 import com.liferay.portal.kernel.model.Address;
@@ -22,6 +23,7 @@ import com.liferay.portal.kernel.service.CountryLocalService;
 import com.liferay.portal.kernel.service.OrganizationLocalService;
 import com.liferay.portal.kernel.service.RegionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBumper;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.OrganizationTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -33,6 +35,7 @@ import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -150,14 +153,18 @@ public class CountryLocalServiceTest {
 
 	@Test
 	public void testSearchCountries() throws Exception {
-		Country country1 = _addCountry(
-			"a1", "a11", true, RandomTestUtil.randomString() + "_a11");
+		UniqueStringRandomizerBumper.reset();
+
+		Country country1 = _addCountryFromRandomString(
+			true, RandomTestUtil.randomString(), true);
 
 		String keywords = RandomTestUtil.randomString();
 
-		Country country2 = _addCountry("a2", "a22", true, keywords + "_a22");
-		Country country3 = _addCountry("a3", "a33", true, keywords + "_a33");
-		Country country4 = _addCountry("a4", "a44", false, keywords + "_a44");
+		Country country2 = _addCountryFromRandomString(true, keywords, true);
+
+		Country country3 = _addCountryFromRandomString(true, keywords, true);
+
+		Country country4 = _addCountryFromRandomString(false, keywords, true);
 
 		_testSearchCountries(keywords, true, country2, country3);
 		_testSearchCountries(keywords, false, country4);
@@ -173,9 +180,19 @@ public class CountryLocalServiceTest {
 
 	@Test
 	public void testSearchCountriesByISOCodes() throws Exception {
-		String a2 = "a1";
-		String a3 = "a11";
-		String number = "aaa";
+		UniqueStringRandomizerBumper.reset();
+
+		String a2 = "x" + RandomTestUtil.randomString(1);
+
+		String randomString = RandomTestUtil.randomString(
+			2, UniqueStringRandomizerBumper.INSTANCE);
+
+		String a3 = "x" + randomString;
+
+		randomString = RandomTestUtil.randomString(
+			2, UniqueStringRandomizerBumper.INSTANCE);
+
+		String number = "x" + randomString;
 
 		Country country = _addCountry(
 			a2, a3, true, RandomTestUtil.randomString(), number);
@@ -187,22 +204,18 @@ public class CountryLocalServiceTest {
 
 	@Test
 	public void testSearchCountriesPagination() throws Exception {
+		UniqueStringRandomizerBumper.reset();
+
 		String keywords = RandomTestUtil.randomString();
 
-		List<Country> expectedCountries = Arrays.asList(
-			_addCountry(
-				"a1", "a11", true, keywords + RandomTestUtil.randomString()),
-			_addCountry(
-				"a2", "a22", true, keywords + RandomTestUtil.randomString()),
-			_addCountry(
-				"a3", "a33", true, keywords + RandomTestUtil.randomString()),
-			_addCountry(
-				"a4", "a44", true, keywords + RandomTestUtil.randomString()),
-			_addCountry(
-				"a5", "a55", true, keywords + RandomTestUtil.randomString()));
+		_addCountryFromRandomString(false, keywords, false);
 
-		_addCountry(
-			"a6", "a66", false, keywords + RandomTestUtil.randomString());
+		List<Country> expectedCountries = new ArrayList<>();
+
+		for (int i = 0; i < 6; i++) {
+			expectedCountries.add(
+				_addCountryFromRandomString(true, keywords, false));
+		}
 
 		_assertSearchCountriesPaginationSort(
 			expectedCountries, keywords,
@@ -262,9 +275,10 @@ public class CountryLocalServiceTest {
 		throws Exception {
 
 		return _countryLocalService.addCountry(
-			"aa", "aaa", true, billingAllowed, RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), number, position, shippingAllowed,
-			subjectToVAT, zipRequired,
+			"x" + RandomTestUtil.randomString(1),
+			"x" + RandomTestUtil.randomString(2), true, billingAllowed,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			number, position, shippingAllowed, subjectToVAT, zipRequired,
 			ServiceContextTestUtil.getServiceContext());
 	}
 
@@ -285,6 +299,25 @@ public class CountryLocalServiceTest {
 			RandomTestUtil.randomDouble(), RandomTestUtil.randomBoolean(),
 			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),
 			ServiceContextTestUtil.getServiceContext());
+	}
+
+	private Country _addCountryFromRandomString(
+			boolean active, String keyword, boolean useA3InName)
+		throws Exception {
+
+		String randomString1 = RandomTestUtil.randomString(
+			1, UniqueStringRandomizerBumper.INSTANCE);
+		String randomString2 = RandomTestUtil.randomString(
+			2, UniqueStringRandomizerBumper.INSTANCE);
+
+		String a2 = "x" + randomString1;
+
+		String a3 = "x" + randomString2;
+
+		String name = useA3InName ? StringBundler.concat(keyword, "_", a3) :
+			keyword + RandomTestUtil.randomString();
+
+		return _addCountry(a2, a3, active, name);
 	}
 
 	private Region _addRegion(long countryId) throws Exception {
