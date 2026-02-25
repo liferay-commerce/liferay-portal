@@ -12,6 +12,7 @@ import {
 	IBulkActionTaskStarter,
 	IBulkActionTaskStarterDTO,
 	IBulkActionTaskType,
+	IBulkActionType,
 	TBulkActionTaskDTO,
 } from '../../../common/types/BulkActionTask';
 import {
@@ -45,7 +46,7 @@ export class BulkActionTaskStarter implements IBulkActionTaskStarter {
 		overrideDefaultSuccessToast = false,
 		selectedData,
 		type,
-	}: IBulkActionTaskStarterDTO<keyof IBulkActionTaskType>) {
+	}: IBulkActionTaskStarterDTO<keyof IBulkActionType>) {
 		if (!apiURL) {
 			throw new Error('Cannot POST bulk action task.');
 		}
@@ -74,7 +75,7 @@ export class BulkActionTaskStarter implements IBulkActionTaskStarter {
 		}
 		else {
 			const message = getBulkActionTaskMessage(
-				this.type,
+				response.data.type,
 				'info',
 				this.selectedData
 			);
