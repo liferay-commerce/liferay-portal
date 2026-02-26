@@ -162,42 +162,38 @@ public class CountryLocalServiceTest {
 
 	@Test
 	public void testSearchCountries() throws Exception {
-		String a2 = _getRandomString(1);
 		String a3 = _getRandomString(2);
 
 		Country country1 = _addCountry(
-			a2, a3, true, RandomTestUtil.randomBoolean(),
+			_getRandomString(1), a3, true, RandomTestUtil.randomBoolean(),
 			StringBundler.concat(RandomTestUtil.randomString(), "_", a3),
 			RandomTestUtil.randomString(), RandomTestUtil.randomDouble(),
 			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),
 			RandomTestUtil.randomBoolean());
 
 		String keywords = RandomTestUtil.randomString();
-		a2 = _getRandomString(1);
 		a3 = _getRandomString(2);
 
 		Country country2 = _addCountry(
-			a2, a3, true, RandomTestUtil.randomBoolean(),
+			_getRandomString(1), a3, true, RandomTestUtil.randomBoolean(),
 			StringBundler.concat(keywords, "_", a3),
 			RandomTestUtil.randomString(), RandomTestUtil.randomDouble(),
 			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),
 			RandomTestUtil.randomBoolean());
 
-		a2 = _getRandomString(1);
 		a3 = _getRandomString(2);
 
 		Country country3 = _addCountry(
-			a2, a3, true, RandomTestUtil.randomBoolean(),
+			_getRandomString(1), a3, true, RandomTestUtil.randomBoolean(),
 			StringBundler.concat(keywords, "_", a3),
 			RandomTestUtil.randomString(), RandomTestUtil.randomDouble(),
 			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),
 			RandomTestUtil.randomBoolean());
 
-		a2 = _getRandomString(1);
 		a3 = _getRandomString(2);
 
 		Country country4 = _addCountry(
-			a2, a3, false, RandomTestUtil.randomBoolean(),
+			_getRandomString(1), a3, false, RandomTestUtil.randomBoolean(),
 			StringBundler.concat(keywords, "_", a3),
 			RandomTestUtil.randomString(), RandomTestUtil.randomDouble(),
 			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),
