@@ -39,6 +39,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -55,6 +56,11 @@ public class RegionLocalServiceTest {
 	@Rule
 	public static final LiferayIntegrationTestRule liferayIntegrationTestRule =
 		new LiferayIntegrationTestRule();
+
+	@Before
+	public void setUp() {
+		UniqueStringRandomizerBumper.reset();
+	}
 
 	@Test
 	public void testAddRegion() throws Exception {
@@ -154,23 +160,8 @@ public class RegionLocalServiceTest {
 
 	@Test
 	public void testSearchRegions() throws Exception {
-		UniqueStringRandomizerBumper.reset();
-
-		String randomString1 = RandomTestUtil.randomString(
-			1, UniqueStringRandomizerBumper.INSTANCE);
-		String randomString2 = RandomTestUtil.randomString(
-			2, UniqueStringRandomizerBumper.INSTANCE);
-
-		Country country1 = _addCountry(
-			"x" + randomString1, "x" + randomString2);
-
-		randomString1 = RandomTestUtil.randomString(
-			1, UniqueStringRandomizerBumper.INSTANCE);
-		randomString2 = RandomTestUtil.randomString(
-			2, UniqueStringRandomizerBumper.INSTANCE);
-
-		Country country2 = _addCountry(
-			"x" + randomString1, "x" + randomString2);
+		Country country1 = _addCountry();
+		Country country2 = _addCountry();
 
 		Region region1 = _addRegion(
 			true, country1.getCountryId(), RandomTestUtil.randomString());
@@ -287,12 +278,16 @@ public class RegionLocalServiceTest {
 	}
 
 	private Country _addCountry() throws Exception {
-		return _addCountry(
-			"x" + RandomTestUtil.randomString(1),
-			"x" + RandomTestUtil.randomString(2));
-	}
+		String randomString = RandomTestUtil.randomString(
+			1, UniqueStringRandomizerBumper.INSTANCE);
 
-	private Country _addCountry(String a2, String a3) throws Exception {
+		String a2 = "x" + randomString;
+
+		randomString = RandomTestUtil.randomString(
+			2, UniqueStringRandomizerBumper.INSTANCE);
+
+		String a3 = "x" + randomString;
+
 		return _countryLocalService.addCountry(
 			a2, a3, true, RandomTestUtil.randomBoolean(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),

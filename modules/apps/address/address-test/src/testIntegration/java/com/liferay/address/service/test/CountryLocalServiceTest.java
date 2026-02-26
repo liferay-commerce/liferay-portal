@@ -42,6 +42,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -59,6 +60,11 @@ public class CountryLocalServiceTest {
 	public static final LiferayIntegrationTestRule liferayIntegrationTestRule =
 		new LiferayIntegrationTestRule();
 
+	@Before
+	public void setUp() {
+		UniqueStringRandomizerBumper.reset();
+	}
+
 	@Test
 	public void testAddCountry() throws Exception {
 		boolean billingAllowed = RandomTestUtil.randomBoolean();
@@ -69,8 +75,9 @@ public class CountryLocalServiceTest {
 		boolean zipRequired = RandomTestUtil.randomBoolean();
 
 		Country country = _addCountry(
-			billingAllowed, number, position, shippingAllowed, subjectToVAT,
-			zipRequired);
+			_getRandomString(1), _getRandomString(2), true, billingAllowed,
+			RandomTestUtil.randomString(), number, position, shippingAllowed,
+			subjectToVAT, zipRequired);
 
 		Assert.assertEquals(billingAllowed, country.isBillingAllowed());
 		Assert.assertEquals(number, country.getNumber());
@@ -86,9 +93,11 @@ public class CountryLocalServiceTest {
 	@Test
 	public void testDeleteCountry() throws Exception {
 		Country country = _addCountry(
+			_getRandomString(1), _getRandomString(2), true,
 			RandomTestUtil.randomBoolean(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomDouble(), RandomTestUtil.randomBoolean(),
-			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean());
+			RandomTestUtil.randomString(), RandomTestUtil.randomDouble(),
+			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),
+			RandomTestUtil.randomBoolean());
 
 		User user = TestPropsValues.getUser();
 
@@ -153,18 +162,46 @@ public class CountryLocalServiceTest {
 
 	@Test
 	public void testSearchCountries() throws Exception {
-		UniqueStringRandomizerBumper.reset();
+		String a2 = _getRandomString(1);
+		String a3 = _getRandomString(2);
 
-		Country country1 = _addCountryFromRandomString(
-			true, RandomTestUtil.randomString(), true);
+		Country country1 = _addCountry(
+			a2, a3, true, RandomTestUtil.randomBoolean(),
+			StringBundler.concat(RandomTestUtil.randomString(), "_", a3),
+			RandomTestUtil.randomString(), RandomTestUtil.randomDouble(),
+			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),
+			RandomTestUtil.randomBoolean());
 
 		String keywords = RandomTestUtil.randomString();
+		a2 = _getRandomString(1);
+		a3 = _getRandomString(2);
 
-		Country country2 = _addCountryFromRandomString(true, keywords, true);
+		Country country2 = _addCountry(
+			a2, a3, true, RandomTestUtil.randomBoolean(),
+			StringBundler.concat(keywords, "_", a3),
+			RandomTestUtil.randomString(), RandomTestUtil.randomDouble(),
+			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),
+			RandomTestUtil.randomBoolean());
 
-		Country country3 = _addCountryFromRandomString(true, keywords, true);
+		a2 = _getRandomString(1);
+		a3 = _getRandomString(2);
 
-		Country country4 = _addCountryFromRandomString(false, keywords, true);
+		Country country3 = _addCountry(
+			a2, a3, true, RandomTestUtil.randomBoolean(),
+			StringBundler.concat(keywords, "_", a3),
+			RandomTestUtil.randomString(), RandomTestUtil.randomDouble(),
+			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),
+			RandomTestUtil.randomBoolean());
+
+		a2 = _getRandomString(1);
+		a3 = _getRandomString(2);
+
+		Country country4 = _addCountry(
+			a2, a3, false, RandomTestUtil.randomBoolean(),
+			StringBundler.concat(keywords, "_", a3),
+			RandomTestUtil.randomString(), RandomTestUtil.randomDouble(),
+			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),
+			RandomTestUtil.randomBoolean());
 
 		_testSearchCountries(keywords, true, country2, country3);
 		_testSearchCountries(keywords, false, country4);
@@ -180,22 +217,15 @@ public class CountryLocalServiceTest {
 
 	@Test
 	public void testSearchCountriesByISOCodes() throws Exception {
-		UniqueStringRandomizerBumper.reset();
-
-		String a2 = "x" + RandomTestUtil.randomString(1);
-
-		String randomString = RandomTestUtil.randomString(
-			2, UniqueStringRandomizerBumper.INSTANCE);
-
-		String a3 = "x" + randomString;
-
-		randomString = RandomTestUtil.randomString(
-			2, UniqueStringRandomizerBumper.INSTANCE);
-
-		String number = "x" + randomString;
+		String a2 = _getRandomString(1);
+		String a3 = _getRandomString(2);
+		String number = _getRandomString(2);
 
 		Country country = _addCountry(
-			a2, a3, true, RandomTestUtil.randomString(), number);
+			a2, a3, true, RandomTestUtil.randomBoolean(),
+			RandomTestUtil.randomString(), number,
+			RandomTestUtil.randomDouble(), RandomTestUtil.randomBoolean(),
+			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean());
 
 		_testSearchCountries(a2, true, country);
 		_testSearchCountries(a3, true, country);
@@ -204,17 +234,29 @@ public class CountryLocalServiceTest {
 
 	@Test
 	public void testSearchCountriesPagination() throws Exception {
-		UniqueStringRandomizerBumper.reset();
-
 		String keywords = RandomTestUtil.randomString();
 
-		_addCountryFromRandomString(false, keywords, false);
+		_addCountry(
+			_getRandomString(1), _getRandomString(2), false,
+			RandomTestUtil.randomBoolean(),
+			keywords + RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomDouble(),
+			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),
+			RandomTestUtil.randomBoolean());
 
 		List<Country> expectedCountries = new ArrayList<>();
 
 		for (int i = 0; i < 6; i++) {
 			expectedCountries.add(
-				_addCountryFromRandomString(true, keywords, false));
+				_addCountry(
+					_getRandomString(1), _getRandomString(2), true,
+					RandomTestUtil.randomBoolean(),
+					keywords + RandomTestUtil.randomString(),
+					RandomTestUtil.randomString(),
+					RandomTestUtil.randomDouble(),
+					RandomTestUtil.randomBoolean(),
+					RandomTestUtil.randomBoolean(),
+					RandomTestUtil.randomBoolean()));
 		}
 
 		_assertSearchCountriesPaginationSort(
@@ -238,7 +280,8 @@ public class CountryLocalServiceTest {
 		boolean subjectToVAT = RandomTestUtil.randomBoolean();
 
 		Country country = _addCountry(
-			billingAllowed, RandomTestUtil.randomString(),
+			_getRandomString(1), _getRandomString(2), true, billingAllowed,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomDouble(), shippingAllowed, subjectToVAT, true);
 
 		String number = String.valueOf(9999 + RandomTestUtil.nextInt());
@@ -270,54 +313,16 @@ public class CountryLocalServiceTest {
 	}
 
 	private Country _addCountry(
-			boolean billingAllowed, String number, double position,
-			boolean shippingAllowed, boolean subjectToVAT, boolean zipRequired)
+			String a2, String a3, boolean active, boolean billingAllowed,
+			String name, String number, double position,
+			boolean shippingAllowed, boolean subjectToVAT,
+			boolean zipRequiredString)
 		throws Exception {
 
 		return _countryLocalService.addCountry(
-			"x" + RandomTestUtil.randomString(1),
-			"x" + RandomTestUtil.randomString(2), true, billingAllowed,
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			number, position, shippingAllowed, subjectToVAT, zipRequired,
+			a2, a3, active, billingAllowed, RandomTestUtil.randomString(), name,
+			number, position, shippingAllowed, subjectToVAT, zipRequiredString,
 			ServiceContextTestUtil.getServiceContext());
-	}
-
-	private Country _addCountry(
-			String a2, String a3, boolean active, String name)
-		throws Exception {
-
-		return _addCountry(a2, a3, active, name, RandomTestUtil.randomString());
-	}
-
-	private Country _addCountry(
-			String a2, String a3, boolean active, String name, String number)
-		throws Exception {
-
-		return _countryLocalService.addCountry(
-			a2, a3, active, RandomTestUtil.randomBoolean(),
-			RandomTestUtil.randomString(), name, number,
-			RandomTestUtil.randomDouble(), RandomTestUtil.randomBoolean(),
-			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),
-			ServiceContextTestUtil.getServiceContext());
-	}
-
-	private Country _addCountryFromRandomString(
-			boolean active, String keyword, boolean useA3InName)
-		throws Exception {
-
-		String randomString1 = RandomTestUtil.randomString(
-			1, UniqueStringRandomizerBumper.INSTANCE);
-		String randomString2 = RandomTestUtil.randomString(
-			2, UniqueStringRandomizerBumper.INSTANCE);
-
-		String a2 = "x" + randomString1;
-
-		String a3 = "x" + randomString2;
-
-		String name = useA3InName ? StringBundler.concat(keyword, "_", a3) :
-			keyword + RandomTestUtil.randomString();
-
-		return _addCountry(a2, a3, active, name);
 	}
 
 	private Region _addRegion(long countryId) throws Exception {
@@ -351,6 +356,13 @@ public class CountryLocalServiceTest {
 			Assert.assertEquals(
 				expectedCountries.get(start + i), actualCountries.get(i));
 		}
+	}
+
+	private String _getRandomString(int length) {
+		String randomString = RandomTestUtil.randomString(
+			length, UniqueStringRandomizerBumper.INSTANCE);
+
+		return "x" + randomString;
 	}
 
 	private void _testSearchCountries(

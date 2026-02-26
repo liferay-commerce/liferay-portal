@@ -100,14 +100,7 @@ public class CountryServiceTest {
 
 	@Test
 	public void testDeleteCountry() throws Exception {
-		_country = _countryLocalService.addCountry(
-			"x" + RandomTestUtil.randomString(1),
-			"x" + RandomTestUtil.randomString(2), true,
-			RandomTestUtil.randomBoolean(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomDouble(), RandomTestUtil.randomBoolean(),
-			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),
-			ServiceContextTestUtil.getServiceContext());
+		_addCountry();
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_user, PermissionCheckerFactoryUtil.create(_user))) {
@@ -137,14 +130,7 @@ public class CountryServiceTest {
 
 	@Test
 	public void testUpdateActive() throws Exception {
-		_country = _countryLocalService.addCountry(
-			"x" + RandomTestUtil.randomString(1),
-			"x" + RandomTestUtil.randomString(2), true,
-			RandomTestUtil.randomBoolean(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomDouble(), RandomTestUtil.randomBoolean(),
-			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),
-			ServiceContextTestUtil.getServiceContext());
+		_addCountry();
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_user, PermissionCheckerFactoryUtil.create(_user))) {
@@ -176,14 +162,7 @@ public class CountryServiceTest {
 
 	@Test
 	public void testUpdateCountry() throws Exception {
-		_country = _countryLocalService.addCountry(
-			"x" + RandomTestUtil.randomString(1),
-			"x" + RandomTestUtil.randomString(2), true,
-			RandomTestUtil.randomBoolean(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomDouble(), RandomTestUtil.randomBoolean(),
-			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),
-			ServiceContextTestUtil.getServiceContext());
+		_addCountry();
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_user, PermissionCheckerFactoryUtil.create(_user))) {
@@ -223,14 +202,7 @@ public class CountryServiceTest {
 
 	@Test
 	public void testUpdateGroupFilterEnabled() throws Exception {
-		_country = _countryLocalService.addCountry(
-			"x" + RandomTestUtil.randomString(1),
-			"x" + RandomTestUtil.randomString(2), true,
-			RandomTestUtil.randomBoolean(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomDouble(), RandomTestUtil.randomBoolean(),
-			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),
-			ServiceContextTestUtil.getServiceContext());
+		_addCountry();
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_user, PermissionCheckerFactoryUtil.create(_user))) {
@@ -258,6 +230,17 @@ public class CountryServiceTest {
 			_country = _countryService.updateGroupFilterEnabled(
 				_country.getCountryId(), true);
 		}
+	}
+
+	private void _addCountry() throws Exception {
+		_country = _countryLocalService.addCountry(
+			"x" + RandomTestUtil.randomString(1),
+			"x" + RandomTestUtil.randomString(2), true,
+			RandomTestUtil.randomBoolean(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomDouble(), RandomTestUtil.randomBoolean(),
+			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),
+			ServiceContextTestUtil.getServiceContext());
 	}
 
 	private void _assertMessage(String actionKey, String message, long userId) {
