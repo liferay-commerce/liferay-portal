@@ -19,7 +19,6 @@ export class CommerceThemeClassicOrdersPage extends CommerceDNDTablePage {
 	readonly orderTableItemsSelector: Locator;
 	readonly orderTableMenuItem: (value: string) => Locator;
 	readonly orderTabs: (tabName: string) => Locator;
-
 	readonly page: Page;
 
 	constructor(page: Page) {

@@ -484,7 +484,7 @@ test(
 			)
 		).items[0];
 
-		const productSku = (
+		const productSku = await (
 			await apiHelpers.headlessCommerceDeliveryCatalog.getChannelProductSkusPage(
 				channel.id,
 				product.productId,
@@ -623,7 +623,9 @@ test(
 				)
 			).toBeVisible();
 
-			await page.goto(`/web/${site.name}/p/` + product.name['en_US']);
+			await page.goto(`/web/${site.name}/p/` + product.name['en_US'], {
+				waitUntil: 'networkidle',
+			});
 
 			await expect(
 				await productDetailsPage.priceField(
@@ -650,7 +652,7 @@ test(
 			await commerceThemeClassicCatalogPage.ordersTab.click();
 
 			await (
-				await commerceThemeClassicOrdersPage.tableRowLink({
+				await commerceThemeClassicOrdersPage.tableRowButton({
 					colIndex: 1,
 					rowValue: cart.id,
 				})
