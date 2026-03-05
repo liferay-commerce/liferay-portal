@@ -27,6 +27,7 @@ export const PORTLET_URLS = {
 	cmsFiles: 'web/cms/files',
 	cmsHome: 'web/cms/home',
 	cmsNewCategory: 'web/cms/categorization/new-category',
+	cmsNewSpace: 'web/cms/new-space',
 	cmsNewVocabulary: 'web/cms/categorization/new-vocabulary',
 	cmsPicklistBuilder: 'web/cms/picklist-builder',
 	cmsRecycleBin: 'web/cms/recycle-bin',

@@ -31,9 +31,14 @@ type VerifyPermissionsOptions = {
 	permissions: Array<{action: string; checked: boolean; role: string}>;
 };
 
-async function checkModalHeader(heading: string, menuitem: string, page) {
+async function checkModalHeader(
+	folderName: string,
+	heading: string,
+	menuitem: string,
+	page
+) {
 	await expect(async () => {
-		await page.getByRole('button', {exact: true, name: 'Actions'}).click();
+		await page.getByRole('button', {name: `${folderName} Actions`}).click();
 
 		await handleClickMenuItem(menuitem, page);
 
@@ -79,7 +84,13 @@ async function closeInfoAlert(page) {
 }
 
 async function createSpace(page, spaceName: string) {
-	await page.getByLabel('Add Space').first().click();
+	await expect(async () => {
+		await page.goto(PORTLET_URLS.cmsNewSpace);
+
+		await expect(
+			page.getByRole('heading', {exact: true, name: 'Add Space'})
+		).toBeVisible();
+	}).toPass({timeout: 10000});
 	await page.getByLabel('Space Name').fill(spaceName);
 	await page.getByRole('button', {name: 'Continue'}).click();
 	await page.getByRole('button', {name: 'Continue'}).click();
@@ -187,8 +198,6 @@ test(
 	}) => {
 		test.setTimeout(90000);
 
-		await goToAllSpaces(page);
-
 		const spaceName = 'Space' + getRandomInt();
 
 		await createSpace(page, spaceName);
@@ -271,15 +280,9 @@ test(
 		const spaceName2 = 'Space' + getRandomInt();
 		const spaceName3 = 'Space' + getRandomInt();
 
-		await goToAllSpaces(page);
-
 		await createSpace(page, spaceName1);
 
-		await goToAllSpaces(page);
-
 		await createSpace(page, spaceName2);
-
-		await goToAllSpaces(page);
 
 		await createSpace(page, spaceName3);
 
@@ -343,11 +346,7 @@ test(
 		const spaceName1 = 'Space' + getRandomInt();
 		const spaceName2 = 'Space' + getRandomInt();
 
-		await goToAllSpaces(page);
-
 		await createSpace(page, spaceName1);
-
-		await goToAllSpaces(page);
 
 		await createSpace(page, spaceName2);
 
@@ -483,8 +482,6 @@ test(
 	async ({defaultPermissionsPage, folderPage, page, spaceSummaryPage}) => {
 		test.setTimeout(90000);
 
-		await goToAllSpaces(page);
-
 		const spaceName = 'Space' + getRandomInt();
 
 		await createSpace(page, spaceName);
@@ -575,8 +572,6 @@ test(
 		permissionsPage,
 		spaceSummaryPage,
 	}) => {
-		await goToAllSpaces(page);
-
 		const spaceName = 'Space' + getRandomInt();
 
 		await createSpace(page, spaceName);
@@ -658,8 +653,6 @@ test(
 		permissionsPage,
 		spaceSummaryPage,
 	}) => {
-		await goToAllSpaces(page);
-
 		const spaceName = 'Space' + getRandomInt();
 
 		await createSpace(page, spaceName);
@@ -804,8 +797,6 @@ test(
 	async ({contentsPage, defaultPermissionsPage, filesPage, page}) => {
 		const spaceName = 'Space' + getRandomInt();
 
-		await goToAllSpaces(page);
-
 		await createSpace(page, spaceName);
 
 		try {
@@ -887,8 +878,6 @@ test(
 	async ({page}) => {
 		const spaceName = 'Space' + getRandomInt();
 
-		await goToAllSpaces(page);
-
 		await createSpace(page, spaceName);
 
 		try {
@@ -912,18 +901,26 @@ test(
 				page.getByRole('link', {name: folderName}).first()
 			).toBeVisible();
 
-			await checkModalHeader('Permissions', 'Permissions', page);
 			await checkModalHeader(
+				folderName,
+				'Permissions',
+				'Permissions',
+				page
+			);
+			await checkModalHeader(
+				folderName,
 				'Edit Default Permissions',
 				'Default Permissions',
 				page
 			);
 			await checkModalHeader(
+				folderName,
 				'Edit Default Permissions',
 				'Edit and Propagate Default Permissions',
 				page
 			);
 			await checkModalHeader(
+				folderName,
 				'Confirm Reset to Default Permissions',
 				'Reset to Default Permissions',
 				page
@@ -941,8 +938,6 @@ test(
 	'Edit default permissions in bulk by role',
 	{tag: '@LPD-67434'},
 	async ({defaultPermissionsPage, page, spaceSummaryPage}) => {
-		await goToAllSpaces(page);
-
 		const spaceName = 'Space' + getRandomInt();
 
 		await createSpace(page, spaceName);
@@ -1060,8 +1055,6 @@ test(
 	'Edit permissions in bulk by role',
 	{tag: '@LPD-67434'},
 	async ({contentsPage, defaultPermissionsPage, page, spaceSummaryPage}) => {
-		await goToAllSpaces(page);
-
 		const spaceName = 'Space' + getRandomInt();
 
 		await createSpace(page, spaceName);
