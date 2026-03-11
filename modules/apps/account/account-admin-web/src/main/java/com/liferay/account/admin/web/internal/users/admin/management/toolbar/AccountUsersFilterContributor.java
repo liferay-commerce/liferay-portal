@@ -45,16 +45,24 @@ public class AccountUsersFilterContributor implements FilterContributor {
 	public Map<String, Object> getSearchParameters(String currentValue) {
 		Map<String, Object> params = new LinkedHashMap<>();
 
-		if (currentValue.equals("company-users")) {
-			params.put("accountEntryIds", new long[0]);
-		}
-		else if (currentValue.equals("account-users")) {
+		if (currentValue.equals("account-users")) {
 			params.put(
 				"accountEntryIds",
 				new long[] {AccountConstants.ACCOUNT_ENTRY_ID_ANY});
 		}
+		else if (currentValue.equals("company-users") ||
+				 currentValue.equals("users-without-an-account")) {
+
+			params.put("accountEntryIds", new long[0]);
+		}
+		else if (currentValue.equals("organization-users")) {
+			params.put("organizationUsers", new long[0]);
+		}
 		else if (currentValue.equals("unassociated-users")) {
 			params.put("noAccountEntriesAndNoOrganizations", new long[0]);
+		}
+		else if (currentValue.equals("users-without-an-organization")) {
+			params.put("noOrganizations", new long[0]);
 		}
 
 		return params;
@@ -73,7 +81,8 @@ public class AccountUsersFilterContributor implements FilterContributor {
 	@Override
 	public String[] getValues() {
 		return new String[] {
-			"all", "company-users", "account-users", "unassociated-users"
+			"all", "account-users", "organization-users", "unassociated-users",
+			"users-without-an-account", "users-without-an-organization"
 		};
 	}
 
