@@ -82,6 +82,7 @@ public class FiltersManagementToolbarDisplayContextWrapper
 							filterContributor.getParameter(),
 							_getCurrentValue(
 								httpServletRequest, filterContributor)));
+
 					dropdownGroupItem.setLabel(
 						filterContributor.getLabel(
 							httpServletRequest.getLocale()));

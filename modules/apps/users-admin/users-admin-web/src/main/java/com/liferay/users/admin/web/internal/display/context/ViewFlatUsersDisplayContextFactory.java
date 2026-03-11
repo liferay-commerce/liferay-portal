@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -157,6 +158,28 @@ public class ViewFlatUsersDisplayContextFactory {
 
 		LinkedHashMap<String, Object> params = new LinkedHashMap<>();
 
+		String selectionNavigation = ParamUtil.getString(
+			httpServletRequest, "selection", "all");
+
+		if (Objects.equals(selectionNavigation, "selected-account-users")) {
+			long[] accountEntryIds = _getAccountEntryIds(httpServletRequest);
+
+			if (accountEntryIds.length > 0) {
+				params.put("accountEntryIds", accountEntryIds);
+			}
+		}
+		else if (Objects.equals(
+					selectionNavigation, "selected-organization-users")) {
+
+			Long[] organizationIds = _getOrganizationIds(httpServletRequest);
+
+			if (organizationIds.length > 0) {
+				params.put("usersOrgs", organizationIds);
+			}
+		}
+
+		portletURL.setParameter("selection", selectionNavigation);
+
 		FilterContributor[] filterContributors = _getFilterContributors(
 			httpServletRequest);
 
@@ -200,11 +223,24 @@ public class ViewFlatUsersDisplayContextFactory {
 		return userSearch;
 	}
 
+	private static long[] _getAccountEntryIds(
+		HttpServletRequest httpServletRequest) {
+
+		return ParamUtil.getLongValues(httpServletRequest, "accountEntryIds");
+	}
+
 	private static FilterContributor[] _getFilterContributors(
 		HttpServletRequest httpServletRequest) {
 
 		return (FilterContributor[])httpServletRequest.getAttribute(
 			UsersAdminWebKeys.MANAGEMENT_TOOLBAR_FILTER_CONTRIBUTORS);
+	}
+
+	private static Long[] _getOrganizationIds(
+		HttpServletRequest httpServletRequest) {
+
+		return ArrayUtil.toArray(
+			ParamUtil.getLongValues(httpServletRequest, "organizationIds"));
 	}
 
 	private static boolean _isShowDeleteButton(
