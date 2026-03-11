@@ -76,12 +76,14 @@ public class FiltersManagementToolbarDisplayContextWrapper
 							value);
 					}
 
-					dropdownGroupItem.setDropdownItems(
-						getDropdownItems(
-							entriesMap, getPortletURL(),
-							filterContributor.getParameter(),
-							_getCurrentValue(
-								httpServletRequest, filterContributor)));
+					List<DropdownItem> dropdownItemList = getDropdownItems(
+						entriesMap, getPortletURL(),
+						filterContributor.getParameter(),
+						_getCurrentValue(
+							httpServletRequest, filterContributor));
+
+					dropdownGroupItem.setDropdownItems(dropdownItemList);
+
 					dropdownGroupItem.setLabel(
 						filterContributor.getLabel(
 							httpServletRequest.getLocale()));
