@@ -5,6 +5,8 @@
 
 package com.liferay.portal.service.persistence.impl;
 
+import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.CustomSQLParam;
@@ -18,6 +20,8 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.UserTable;
+import com.liferay.portal.kernel.model.Users_OrgsTable;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.persistence.OrganizationUtil;
@@ -107,6 +111,9 @@ public class UserFinderImpl extends UserFinderBaseImpl implements UserFinder {
 
 	public static final String JOIN_BY_NO_ORGANIZATIONS =
 		UserFinder.class.getName() + ".joinByNoOrganizations";
+
+	public static final String JOIN_BY_ORGANIZATION_USERS =
+		UserFinder.class.getName() + ".joinByOrganizationUsers";
 
 	public static final String JOIN_BY_USER_GROUP_ROLE =
 		UserFinder.class.getName() + ".joinByUserGroupRole";
@@ -866,6 +873,9 @@ public class UserFinderImpl extends UserFinderBaseImpl implements UserFinder {
 		else if (key.equals("noOrganizations")) {
 			join = CustomSQLUtil.get(JOIN_BY_NO_ORGANIZATIONS);
 		}
+		else if (key.equals("organizationUsers")) {
+			join = CustomSQLUtil.get(JOIN_BY_ORGANIZATION_USERS);
+		}
 		else if (key.equals("userGroupRole")) {
 			join = CustomSQLUtil.get(JOIN_BY_USER_GROUP_ROLE);
 		}
@@ -1296,6 +1306,9 @@ public class UserFinderImpl extends UserFinderBaseImpl implements UserFinder {
 		}
 		else if (key.equals("noOrganizations")) {
 			join = CustomSQLUtil.get(JOIN_BY_NO_ORGANIZATIONS);
+		}
+		else if (key.equals("organizationUsers")) {
+			join = CustomSQLUtil.get(JOIN_BY_ORGANIZATION_USERS);
 		}
 		else if (key.equals("userGroupRole")) {
 			join = CustomSQLUtil.get(JOIN_BY_USER_GROUP_ROLE);
