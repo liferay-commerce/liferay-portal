@@ -187,6 +187,7 @@ public class ViewFlatUsersDisplayContextFactory {
 				if (Validator.isNotNull(parameterValue)) {
 					portletURL.setParameter(
 						filterContributor.getParameter(), parameterValue);
+					//portletURL.setParameter("selection", "all");
 				}
 			}
 		}
