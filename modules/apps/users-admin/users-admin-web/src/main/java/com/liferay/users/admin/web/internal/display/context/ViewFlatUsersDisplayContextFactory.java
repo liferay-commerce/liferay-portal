@@ -158,19 +158,27 @@ public class ViewFlatUsersDisplayContextFactory {
 
 		LinkedHashMap<String, Object> params = new LinkedHashMap<>();
 
-		long[] accountEntryIds = _getAccountEntryIds(httpServletRequest);
+		String selectionNavigation = ParamUtil.getString(
+			httpServletRequest, "selection", "all");
 
-		if ((accountEntryIds != null) && (accountEntryIds.length > 0)) {
-			params.put("accountEntryIds", accountEntryIds);
-			portletURL.setParameter("selection", "selected-account-users");
+		if (Objects.equals(selectionNavigation, "selected-account-users")) {
+			long[] accountEntryIds = _getAccountEntryIds(httpServletRequest);
+
+			if ((accountEntryIds != null) && (accountEntryIds.length > 0)) {
+				params.put("accountEntryIds", accountEntryIds);
+			}
+		}
+		else if (Objects.equals(
+					selectionNavigation, "selected-organization-users")) {
+
+			Long[] organizationIds = _getOrganizationIds(httpServletRequest);
+
+			if (organizationIds.length > 0) {
+				params.put("usersOrgs", organizationIds);
+			}
 		}
 
-		Long[] organizationIds = _getOrganizationIds(httpServletRequest);
-
-		if ((organizationIds != null) && (organizationIds.length > 0)) {
-			params.put("usersOrgs", organizationIds);
-			portletURL.setParameter("selection", "selected-organization-users");
-		}
+		portletURL.setParameter("selection", selectionNavigation);
 
 		FilterContributor[] filterContributors = _getFilterContributors(
 			httpServletRequest);
@@ -187,7 +195,6 @@ public class ViewFlatUsersDisplayContextFactory {
 				if (Validator.isNotNull(parameterValue)) {
 					portletURL.setParameter(
 						filterContributor.getParameter(), parameterValue);
-					//portletURL.setParameter("selection", "all");
 				}
 			}
 		}

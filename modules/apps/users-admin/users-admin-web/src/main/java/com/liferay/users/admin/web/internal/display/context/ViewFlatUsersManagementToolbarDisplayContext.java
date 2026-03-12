@@ -14,7 +14,6 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItemList;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItemListBuilder;
 import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
@@ -38,7 +37,6 @@ import com.liferay.users.admin.web.internal.util.DisplayStyleUtil;
 
 import jakarta.portlet.PortletURL;
 
-import java.awt.*;
 import java.util.List;
 import java.util.Objects;
 
@@ -138,6 +136,10 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 		).setNavigation(
 			(String)null
 		).setParameter(
+			"accountIds", (String)null
+		).setParameter(
+			"organizationIds", (String)null
+		).setParameter(
 			"selection", "all"
 		).buildString();
 	}
@@ -178,8 +180,8 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 	public List<LabelItem> getFilterLabelItems() {
 		return new LabelItemList() {
 			{
-				if(Objects.equals(
-					_getSelectionNavigation(), "selected-account-users")) {
+				if (Objects.equals(
+						_getSelectionNavigation(), "selected-account-users")) {
 
 					long[] accountEntryIds = ParamUtil.getLongValues(
 						httpServletRequest, "accountEntryIds");
@@ -191,7 +193,7 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 
 						add(
 							labelItem -> {
-								PortletURL removeLabelURL =	getPortletURL();
+								PortletURL removeLabelURL = getPortletURL();
 
 								long[] newAccountEntryIds = ArrayUtil.remove(
 									accountEntryIds, accountEntryId);
@@ -220,22 +222,21 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 							});
 					}
 				}
-
-				if(Objects.equals(
-					_getSelectionNavigation(), "selected-organization-users")) {
+				else if (Objects.equals(
+							_getSelectionNavigation(),
+							"selected-organization-users")) {
 
 					long[] organizationIds = ParamUtil.getLongValues(
-						httpServletRequest, "organizationIds"
-					);
+						httpServletRequest, "organizationIds");
 
-					for(long organizationId : organizationIds) {
+					for (long organizationId : organizationIds) {
 						Organization organization =
 							OrganizationLocalServiceUtil.fetchOrganization(
 								organizationId);
 
 						add(
 							labelItem -> {
-								PortletURL removeLabelURL =	getPortletURL();
+								PortletURL removeLabelURL = getPortletURL();
 
 								long[] newOrganizationIds = ArrayUtil.remove(
 									organizationIds, organizationId);
@@ -273,7 +274,7 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 								PortletURLBuilder.create(
 									getPortletURL()
 								).setNavigation(
-									(String) null
+									(String)null
 								).buildString());
 							labelItem.setCloseable(true);
 							labelItem.setLabel(
@@ -287,9 +288,6 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 				}
 			}
 		};
-		).add(
-
-		).build();
 	}
 
 	@Override

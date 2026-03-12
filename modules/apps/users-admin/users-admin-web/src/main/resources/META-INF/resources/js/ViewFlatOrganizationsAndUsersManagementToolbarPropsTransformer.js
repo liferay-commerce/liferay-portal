@@ -3,16 +3,12 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {ACTIONS} from './actions';
 import {openSelectionModal} from 'frontend-js-components-web';
-import {
-	createPortletURL,
-	navigate,
-} from "frontend-js-web/src/main/resources/META-INF/resources/main";
+import {createPortletURL, navigate} from 'frontend-js-web';
 
+import {ACTIONS} from './actions';
 
 export default function propsTransformer({portletNamespace, ...otherProps}) {
-
 	const selectAccountEntries = (itemData) => {
 		openSelectionModal({
 			multiple: true,
@@ -54,7 +50,7 @@ export default function propsTransformer({portletNamespace, ...otherProps}) {
 			},
 			title: itemData?.dialogTitle,
 			url: itemData?.organizationsSelectorURL,
-		})
+		});
 	};
 
 	return {
@@ -73,7 +69,8 @@ export default function propsTransformer({portletNamespace, ...otherProps}) {
 		onFilterDropdownItemClick(event, {item}) {
 			if (item?.data?.action === 'selectAccountEntries') {
 				selectAccountEntries(item?.data);
-			} else if (item?.data?.action === 'selectOrganizations') {
+			}
+			else if (item?.data?.action === 'selectOrganizations') {
 				selectOrganizations(item?.data);
 			}
 		},
