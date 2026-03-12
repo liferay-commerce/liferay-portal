@@ -5,26 +5,32 @@
 
 package com.liferay.users.admin.web.internal.display.context;
 
+import com.liferay.account.model.AccountEntry;
+import com.liferay.account.service.AccountEntryLocalServiceUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.display.context.SearchContainerManagementToolbarDisplayContext;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItem;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItemListBuilder;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItemList;
 import com.liferay.petra.string.StringPool;
+import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.OrganizationLocalServiceUtil;
 import com.liferay.portal.kernel.service.permission.PortalPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.users.admin.search.UserSearchTerms;
@@ -173,48 +179,116 @@ public class ViewFlatUsersManagementToolbarDisplayContext
 
 	@Override
 	public List<LabelItem> getFilterLabelItems() {
-		return LabelItemListBuilder.add(
-			() -> !_navigation.equals("active"),
-			labelItem -> {
-				labelItem.putData(
-					"removeLabelURL",
-					PortletURLBuilder.create(
-						getPortletURL()
-					).setNavigation(
-						(String)null
-					).buildString());
+		return new LabelItemList() {
+			{
+				if (Objects.equals(
+						_getSelectionNavigation(), "selected-account-users")) {
 
-				labelItem.setCloseable(true);
-				labelItem.setLabel(
-					String.format(
-						"%s: %s",
-						LanguageUtil.get(httpServletRequest, "status"),
-						LanguageUtil.get(httpServletRequest, _navigation)));
-			}
-		).add(
-			() -> !Objects.equals(_getSelectionNavigation(), "all"),
-			labelItem -> {
-				labelItem.putData(
-					"removeLabelURL",
-					PortletURLBuilder.create(
-						getPortletURL()
-					).setParameter(
-						"accountEntryIds", (String)null
-					).setParameter(
-						"organizationIds", (String)null
-					).setParameter(
-						"selection", "all"
-					).buildString());
+					long[] accountEntryIds = ParamUtil.getLongValues(
+						httpServletRequest, "accountEntryIds");
 
-				labelItem.setDismissible(true);
-				labelItem.setLabel(
-					String.format(
-						"%s: %s",
-						LanguageUtil.get(httpServletRequest, "selection"),
-						LanguageUtil.get(
-							httpServletRequest, _getSelectionNavigation())));
+					PortletURL removeLabelURL = getPortletURL();
+
+					for (long accountEntryId : accountEntryIds) {
+						AccountEntry accountEntry =
+							AccountEntryLocalServiceUtil.fetchAccountEntry(
+								accountEntryId);
+
+						if (accountEntry == null) {
+							continue;
+						}
+
+						if (accountEntryIds.length == 1) {
+							removeLabelURL.setParameter(
+								"accountEntryIds", (String)null);
+							removeLabelURL.setParameter("selection", "all");
+						}
+						else {
+							removeLabelURL.setParameter(
+								"accountEntryIds",
+								StringUtil.merge(
+									ArrayUtil.remove(
+										accountEntryIds, accountEntryId),
+									StringPool.COMMA));
+						}
+
+						add(
+							labelItem -> {
+								labelItem.putData(
+									"removeLabelURL",
+									removeLabelURL.toString());
+								labelItem.setDismissible(true);
+								labelItem.setLabel(
+									HtmlUtil.escape(accountEntry.getName()));
+							});
+					}
+				}
+				else if (Objects.equals(
+							_getSelectionNavigation(),
+							"selected-organization-users")) {
+
+					long[] organizationIds = ParamUtil.getLongValues(
+						httpServletRequest, "organizationIds");
+
+					PortletURL removeLabelURL = getPortletURL();
+
+					for (long organizationId : organizationIds) {
+						Organization organization =
+							OrganizationLocalServiceUtil.fetchOrganization(
+								organizationId);
+
+						if (organization == null) {
+							continue;
+						}
+
+						if (organizationIds.length == 1) {
+							removeLabelURL.setParameter(
+								"organizationIds", (String)null);
+							removeLabelURL.setParameter("selection", "all");
+						}
+						else {
+							removeLabelURL.setParameter(
+								"organizationIds",
+								StringUtil.merge(
+									ArrayUtil.remove(
+										organizationIds, organizationId),
+									StringPool.COMMA));
+						}
+
+						add(
+							labelItem -> {
+								labelItem.putData(
+									"removeLabelURL",
+									removeLabelURL.toString());
+								labelItem.setDismissible(true);
+								labelItem.setLabel(
+									HtmlUtil.escape(organization.getName()));
+							});
+					}
+				}
+
+				if (!Objects.equals(_navigation, "active")) {
+					add(
+						labelItem -> {
+							labelItem.putData(
+								"removeLabelURL",
+								PortletURLBuilder.create(
+									getPortletURL()
+								).setNavigation(
+									(String)null
+								).buildString());
+							labelItem.setCloseable(true);
+							labelItem.setLabel(
+								String.format(
+									"%s: %s",
+									LanguageUtil.get(
+										httpServletRequest, "status"),
+									LanguageUtil.get(
+										httpServletRequest, getNavigation())));
+						});
+				}
 			}
-		).build();
+		};
 	}
 
 	@Override
