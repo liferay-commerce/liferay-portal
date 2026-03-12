@@ -325,6 +325,19 @@ public class UserFinderTest {
 		Assert.assertTrue(users.toString(), users.contains(_organizationUser1));
 		Assert.assertFalse(
 			users.toString(), users.contains(_organizationUser2));
+
+		users = _userFinder.findByKeywords(
+			TestPropsValues.getCompanyId(), null,
+			WorkflowConstants.STATUS_APPROVED,
+			LinkedHashMapBuilder.<String, Object>put(
+				"organizationUsers", new Long[0]
+			).build(),
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+
+		Assert.assertEquals(users.toString(), 2, users.size());
+
+		Assert.assertTrue(users.toString(), users.contains(_organizationUser1));
+		Assert.assertTrue(users.toString(), users.contains(_organizationUser2));
 	}
 
 	@Test
