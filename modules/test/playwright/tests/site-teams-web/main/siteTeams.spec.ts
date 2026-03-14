@@ -877,14 +877,14 @@ test(
 	'Checkbox is hidden and user is not selected if user membership is due to inheritance',
 	{tag: ['@LPD-82647']},
 	async ({
-			   apiHelpers,
-			   page,
-			   selectUserGroupPage,
-			   site,
-			   teamsPage,
-			   userGroupsPage,
-			   usersPage,
-		   }) => {
+		apiHelpers,
+		page,
+		selectUserGroupPage,
+		site,
+		teamsPage,
+		userGroupsPage,
+		usersPage,
+	}) => {
 		page.on('dialog', (dialog) => dialog.accept());
 
 		const userGroup = await apiHelpers.headlessAdminUser.postUserGroup();
@@ -973,9 +973,7 @@ test(
 
 		await usersPage.usersTable.selectAllItemsCheckbox.check();
 
-		await expect(
-			page.getByText('Items Selected')
-		).toContainText('1 of 2');
+		await expect(page.getByText('Items Selected')).toContainText('1 of 2');
 
 		await expect(async () => {
 			await expect(usersPage.deleteButton).toBeVisible({timeout: 200});
