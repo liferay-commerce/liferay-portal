@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.Team;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.UserConstants;
 import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.OrganizationLocalService;
@@ -32,6 +33,7 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserGroupTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.comparator.UserFirstNameComparator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
@@ -40,6 +42,7 @@ import com.liferay.portal.test.rule.TransactionalTestRule;
 import com.liferay.social.kernel.model.SocialRelationConstants;
 import com.liferay.social.kernel.service.SocialRelationLocalService;
 
+import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -234,6 +237,65 @@ public class UserFinderTest {
 				"announcementsDeliveryEmailOrSms", "general"
 			).build(),
 			true, 0, 1, null);
+	}
+
+	@Test
+	public void testFindByKeywordsExactNameMatch() throws Exception {
+		User user1 = UserTestUtil.addUser(
+			"AA", LocaleUtil.getDefault(), "Peter", "Parker", null);
+		User user2 = UserTestUtil.addUser(
+			"BB", LocaleUtil.getDefault(), "Petey", "Parker", null);
+		User user3 = UserTestUtil.addUser(
+			"CC", LocaleUtil.getDefault(), "Peter", "Porker", null);
+		User user4 = _userLocalService.addUser(
+			TestPropsValues.getUserId(), TestPropsValues.getCompanyId(), true,
+			StringPool.BLANK, StringPool.BLANK, true, StringPool.BLANK,
+			"UserTest" + RandomTestUtil.nextLong() + "@liferay.com",
+			LocaleUtil.getDefault(), "Peter", "Ben", "Parker", 0, 0, true,
+			Calendar.JANUARY, 12, 1964, StringPool.BLANK,
+			UserConstants.TYPE_REGULAR, null, null, null, null, false,
+			ServiceContextTestUtil.getServiceContext());
+		User user5 = UserTestUtil.addUser();
+
+		List<User> users = _userFinder.findByKeywords(
+			TestPropsValues.getCompanyId(), "\"Peter Parker\"",
+			WorkflowConstants.STATUS_APPROVED, null, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+
+		Assert.assertEquals(users.toString(), 2, users.size());
+		Assert.assertTrue(users.contains(user1));
+		Assert.assertTrue(users.contains(user4));
+
+		users = _userFinder.findByKeywords(
+			TestPropsValues.getCompanyId(), "\"Peter Ben Parker\"",
+			WorkflowConstants.STATUS_APPROVED, null, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+
+		Assert.assertEquals(users.toString(), 1, users.size());
+		Assert.assertFalse(users.contains(user1));
+		Assert.assertTrue(users.contains(user4));
+
+		users = _userFinder.findByKeywords(
+			TestPropsValues.getCompanyId(), "\"Peter\"",
+			WorkflowConstants.STATUS_APPROVED, null, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+
+		Assert.assertEquals(users.toString(), 3, users.size());
+		Assert.assertTrue(users.contains(user1));
+		Assert.assertTrue(users.contains(user3));
+		Assert.assertTrue(users.contains(user4));
+
+		users = _userFinder.findByKeywords(
+			TestPropsValues.getCompanyId(), "Pete",
+			WorkflowConstants.STATUS_APPROVED, null, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+
+		Assert.assertEquals(users.toString(), 4, users.size());
+		Assert.assertTrue(users.contains(user1));
+		Assert.assertTrue(users.contains(user2));
+		Assert.assertTrue(users.contains(user3));
+		Assert.assertTrue(users.contains(user4));
+		Assert.assertFalse(users.contains(user5));
 	}
 
 	@Test
