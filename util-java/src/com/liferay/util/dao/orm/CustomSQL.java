@@ -282,7 +282,11 @@ public class CustomSQL {
 				if (i > pos) {
 					String keyword = keywords.substring(pos, i);
 
-					keywordsList.add(insertWildcard(keyword, wildcardMode));
+					if (wildcardMode == null) {
+						keywordsList.add(keyword);
+					} else {
+						keywordsList.add(insertWildcard(keyword, wildcardMode));
+					}
 				}
 			}
 			else {
@@ -306,7 +310,11 @@ public class CustomSQL {
 
 				String keyword = keywords.substring(pos, i);
 
-				keywordsList.add(insertWildcard(keyword, wildcardMode));
+				if (wildcardMode == null) {
+					keywordsList.add(keyword);
+				} else {
+					keywordsList.add(insertWildcard(keyword, wildcardMode));
+				}
 			}
 		}
 
