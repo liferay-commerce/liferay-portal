@@ -163,7 +163,31 @@ public class UserFinderImpl extends UserFinderBaseImpl implements UserFinder {
 		String[] emailAddresses = null;
 		boolean andOperator = false;
 
-		if (Validator.isNotNull(keywords)) {
+		if (keywords.matches("\"(.*?)\"")) {
+			keywords = StringUtil.replace(
+				keywords, CharPool.QUOTE, CharPool.SPACE);
+			keywords = keywords.trim();
+
+			String[] keywordsArray = StringUtil.split(keywords, CharPool.SPACE);
+
+			if (keywordsArray.length == 2) {
+				firstNames = CustomSQLUtil.keywords(keywordsArray[0], null);
+				lastNames = CustomSQLUtil.keywords(keywordsArray[1], null);
+			}
+			else if (keywordsArray.length == 3) {
+				firstNames = CustomSQLUtil.keywords(keywordsArray[0], null);
+				middleNames = CustomSQLUtil.keywords(keywordsArray[1], null);
+				lastNames = CustomSQLUtil.keywords(keywordsArray[2], null);
+			}
+			else {
+				firstNames = CustomSQLUtil.keywords(keywords, null);
+				middleNames = CustomSQLUtil.keywords(keywords, null);
+				lastNames = CustomSQLUtil.keywords(keywords, null);
+				screenNames = CustomSQLUtil.keywords(keywords, null);
+				emailAddresses = CustomSQLUtil.keywords(keywords, null);
+			}
+		}
+		else if (Validator.isNotNull(keywords)) {
 			firstNames = CustomSQLUtil.keywords(keywords);
 			middleNames = CustomSQLUtil.keywords(keywords);
 			lastNames = CustomSQLUtil.keywords(keywords);
