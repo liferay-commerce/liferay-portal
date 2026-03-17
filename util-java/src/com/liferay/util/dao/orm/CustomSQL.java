@@ -284,7 +284,8 @@ public class CustomSQL {
 
 					if (wildcardMode == null) {
 						keywordsList.add(keyword);
-					} else {
+					}
+					else {
 						keywordsList.add(insertWildcard(keyword, wildcardMode));
 					}
 				}
@@ -312,7 +313,8 @@ public class CustomSQL {
 
 				if (wildcardMode == null) {
 					keywordsList.add(keyword);
-				} else {
+				}
+				else {
 					keywordsList.add(insertWildcard(keyword, wildcardMode));
 				}
 			}

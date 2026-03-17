@@ -469,8 +469,8 @@ public class UserFinderImpl extends UserFinderBaseImpl implements UserFinder {
 		}
 
 		if (keywords.matches("\"(.*?)\"")) {
-
-			keywords = StringUtil.replace(keywords, CharPool.QUOTE, CharPool.SPACE);
+			keywords = StringUtil.replace(
+				keywords, CharPool.QUOTE, CharPool.SPACE);
 			keywords = keywords.trim();
 
 			String[] keywordsArray = StringUtil.split(keywords, CharPool.SPACE);
@@ -479,14 +479,16 @@ public class UserFinderImpl extends UserFinderBaseImpl implements UserFinder {
 
 			if (keywordsArray.length == 2) {
 				firstNames = CustomSQLUtil.keywords(keywordsArray[0], null);
-				lastNames = CustomSQLUtil.keywords(keywordsArray[1],null);
+				lastNames = CustomSQLUtil.keywords(keywordsArray[1], null);
 				exactName = true;
-			} else if (keywordsArray.length == 3) {
+			}
+			else if (keywordsArray.length == 3) {
 				firstNames = CustomSQLUtil.keywords(keywordsArray[0], null);
 				middleNames = CustomSQLUtil.keywords(keywordsArray[1], null);
 				lastNames = CustomSQLUtil.keywords(keywordsArray[2], null);
 				exactName = true;
-			} else {
+			}
+			else {
 				firstNames = CustomSQLUtil.keywords(keywords, null);
 				middleNames = CustomSQLUtil.keywords(keywords, null);
 				lastNames = CustomSQLUtil.keywords(keywords, null);
@@ -496,10 +498,10 @@ public class UserFinderImpl extends UserFinderBaseImpl implements UserFinder {
 
 			return findByC_FN_MN_LN_SN_EA_S(
 				companyId, firstNames, middleNames, lastNames, screenNames,
-				emailAddresses, status, params, andOperator, exactName, start, end,
-				orderByComparator);
-
-		} else if (Validator.isNotNull(keywords)) {
+				emailAddresses, status, params, andOperator, exactName, start,
+				end, orderByComparator);
+		}
+		else if (Validator.isNotNull(keywords)) {
 			WildcardMode wildcardMode = (WildcardMode)GetterUtil.getObject(
 				params.get("wildcardMode"), WildcardMode.SURROUND);
 
@@ -712,6 +714,68 @@ public class UserFinderImpl extends UserFinderBaseImpl implements UserFinder {
 			orderByComparator);
 	}
 
+	public List<User> findByC_FN_MN_LN_SN_EA_S(
+		long companyId, String[] firstNames, String[] middleNames,
+		String[] lastNames, String[] screenNames, String[] emailAddresses,
+		int status, LinkedHashMap<String, Object> params, boolean andOperator,
+		boolean exactName, int start, int end,
+		OrderByComparator<User> orderByComparator) {
+
+		try {
+			List<Long> userIds = doFindByC_FN_MN_LN_SN_EA_S(
+				companyId, firstNames, middleNames, lastNames, screenNames,
+				emailAddresses, status, params, andOperator, start, end,
+				orderByComparator);
+
+			List<User> users = new ArrayList<>(userIds.size());
+
+			String fullName = null;
+
+			if (exactName) {
+				if (middleNames != null) {
+					fullName = StringBundler.concat(
+						firstNames[0], StringPool.SPACE, middleNames[0],
+						StringPool.SPACE, lastNames[0]);
+				}
+				else {
+					fullName = firstNames[0] + StringPool.SPACE + lastNames[0];
+				}
+			}
+
+			for (Long userId : userIds) {
+				User user = UserUtil.findByPrimaryKey(userId);
+
+				if (Validator.isNotNull(fullName)) {
+					if (middleNames != null) {
+						if (!StringUtil.equalsIgnoreCase(
+								fullName, user.getFullName())) {
+
+							continue;
+						}
+					}
+					else {
+						String firstAndLastName =
+							user.getFirstName() + StringPool.SPACE +
+								user.getLastName();
+
+						if (!StringUtil.equalsIgnoreCase(
+								fullName, firstAndLastName)) {
+
+							continue;
+						}
+					}
+				}
+
+				users.add(user);
+			}
+
+			return users;
+		}
+		catch (Exception exception) {
+			throw new SystemException(exception);
+		}
+	}
+
 	@Override
 	public List<User> findByC_FN_MN_LN_SN_EA_S(
 		long companyId, String[] firstNames, String[] middleNames,
@@ -729,67 +793,6 @@ public class UserFinderImpl extends UserFinderBaseImpl implements UserFinder {
 
 			for (Long userId : userIds) {
 				User user = UserUtil.findByPrimaryKey(userId);
-
-				users.add(user);
-			}
-
-			return users;
-		}
-		catch (Exception exception) {
-			throw new SystemException(exception);
-		}
-	}
-
-	public List<User> findByC_FN_MN_LN_SN_EA_S(
-		long companyId, String[] firstNames, String[] middleNames,
-		String[] lastNames, String[] screenNames, String[] emailAddresses,
-		int status, LinkedHashMap<String, Object> params, boolean andOperator,
-		boolean exactName, int start, int end, OrderByComparator<User> orderByComparator) {
-
-		try {
-			List<Long> userIds = doFindByC_FN_MN_LN_SN_EA_S(
-				companyId, firstNames, middleNames, lastNames, screenNames,
-				emailAddresses, status, params, andOperator, start, end,
-				orderByComparator);
-
-			List<User> users = new ArrayList<>(userIds.size());
-			String fullName = null;
-
-			if (exactName) {
-				if (middleNames != null) {
-					fullName = firstNames[0] + StringPool.SPACE +
-							   middleNames[0] + StringPool.SPACE +
-							   lastNames[0];
-
-				} else {
-					fullName = firstNames[0] + StringPool.SPACE +
-							   lastNames[0];
-				}
-			}
-
-			for (Long userId : userIds) {
-				User user = UserUtil.findByPrimaryKey(userId);
-
-				if (Validator.isNotNull(fullName)) {
-
-					if (middleNames != null) {
-
-						if (!StringUtil.equalsIgnoreCase(
-							fullName, user.getFullName())) {
-
-							continue;
-						}
-
-					} else {
-						String firstAndLastName = user.getFirstName() + StringPool.SPACE + user.getLastName();
-
-						if (!StringUtil.equalsIgnoreCase(
-							fullName, firstAndLastName)) {
-
-							continue;
-						}
-					}
-				}
 
 				users.add(user);
 			}
