@@ -966,7 +966,7 @@ test(
 
 		await expect(
 			await usersPage.usersTable.rowCheckbox(user1.name)
-		).toHaveCount(0);
+		).toBeDisabled();
 		await expect(
 			await usersPage.usersTable.rowCheckbox(user2.name)
 		).toBeVisible();
