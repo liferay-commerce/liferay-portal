@@ -69,7 +69,7 @@ if (Validator.isNull(commerceShippingOptionKey)) {
 
 						<li class="commerce-shipping-types list-group-item list-group-item-flex">
 							<div class="autofit-col autofit-col-expand">
-								<aui:input checked="<%= curCommerceShippingOptionKey.equals(commerceShippingOptionKey) %>" label="<%= HtmlUtil.escape(commerceShippingOptionName) %>" name="commerceShippingOptionKey" type="radio" value="<%= curCommerceShippingOptionKey %>" />
+								<aui:input checked="<%= curCommerceShippingOptionKey.equals(commerceShippingOptionKey) %>" label="<%= commerceShippingOptionName %>" name="commerceShippingOptionKey" type="radio" value="<%= curCommerceShippingOptionKey %>" />
 							</div>
 
 							<%
