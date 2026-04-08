@@ -79,6 +79,8 @@ export default function FeatureIndicator({
 		tooltipTitle = Liferay.Language.get('open-maintenance-mode-definition');
 	}
 
+	const isTranslucent = type === 'beta';
+
 	return (
 		<LearnResourcesContext.Provider value={learnResourceContext}>
 			{interactive ? (
@@ -102,7 +104,7 @@ export default function FeatureIndicator({
 								rounded
 								size="xs"
 								title={tooltipTitle}
-								translucent
+								translucent={isTranslucent}
 							>
 								<span className="inline-item text-uppercase">
 									{label}
@@ -130,7 +132,7 @@ export default function FeatureIndicator({
 					dark={dark}
 					displayType={displayType}
 					label={label}
-					translucent
+					translucent={isTranslucent}
 				/>
 			)}
 		</LearnResourcesContext.Provider>
