@@ -25,7 +25,7 @@ export default function SetupStep() {
 						)}
 					</div>
 
-					<div className="sheet-text text-3">
+					<div className="sheet-text text-secondary">
 						{Liferay.Language.get(
 							'provide-a-descriptive-name-for-your-export'
 						)}
@@ -49,7 +49,7 @@ export default function SetupStep() {
 					</div>
 
 					<div
-						className="sheet-text text-3"
+						className="sheet-text text-secondary"
 						id="selectedSectionIds-description"
 					>
 						{Liferay.Language.get(

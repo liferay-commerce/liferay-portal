@@ -23,6 +23,8 @@ export function FieldCheckbox({
 	name: string;
 	onChange: (checked: boolean) => void;
 } & React.ComponentProps<typeof ClayCheckbox>) {
+	const {disabled} = restProps;
+
 	const fieldId = id ?? name;
 	const labelId = `${fieldId}-label`;
 	const descriptionId = `${fieldId}-description`;
@@ -35,9 +37,18 @@ export function FieldCheckbox({
 
 	return (
 		<div
-			className="border mb-2 p-3 rounded text-3"
+			aria-checked={checked}
+			className="border mb-2 p-3 rounded text-secondary"
 			onClick={handleChange}
+			onKeyDown={(event) => {
+				if (event.key === ' ') {
+					event.preventDefault();
+					handleChange();
+				}
+			}}
+			role="checkbox"
 			style={{cursor: 'pointer'}}
+			tabIndex={disabled ? -1 : 0}
 		>
 			<ClayLayout.ContentRow padded>
 				<ClayLayout.ContentCol expand={false}>

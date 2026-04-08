@@ -19,7 +19,7 @@ export function FormikDebug() {
 					validationSchema: _validationSchema,
 					...rest
 				}) => (
-					<pre className="p-2 text-3">
+					<pre className="p-2 text-secondary">
 						{JSON.stringify(rest, null, 2)}
 					</pre>
 				)}
