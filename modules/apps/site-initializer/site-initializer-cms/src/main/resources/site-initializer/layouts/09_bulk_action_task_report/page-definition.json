@@ -36,7 +36,19 @@
 												},
 												"text": {
 													"value_i18n": {
-														"en_US": "Task Report"
+														"ar_SA": "تقرير المهمة",
+														"ca_ES": "Informe de tasques",
+														"de_DE": "Aufgabenbericht",
+														"en_US": "Task Report",
+														"es_ES": "Informe de tareas",
+														"fi_FI": "Tehtäväraportti",
+														"fr_FR": "Rapport de tâche",
+														"hu_HU": "Feladatjelentés",
+														"ja_JP": "タスクレポート",
+														"nl_NL": "Taakrapport",
+														"pt_BR": "Relatório da tarefas",
+														"sv_SE": "Uppgiftsrapport",
+														"zh_CN": "任务报告"
 													}
 												}
 											}

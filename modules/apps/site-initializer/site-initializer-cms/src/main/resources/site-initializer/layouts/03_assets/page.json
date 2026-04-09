@@ -4,7 +4,19 @@
 	"hidden": false,
 	"name": "Assets",
 	"name_i18n": {
-		"en_US": "Assets"
+		"ar_SA": "الأصول",
+		"ca_ES": "Continguts",
+		"de_DE": "Assets",
+		"en_US": "Assets",
+		"es_ES": "Activos",
+		"fi_FI": "Sisällöt",
+		"fr_FR": "Actifs",
+		"hu_HU": "Tartalmak",
+		"ja_JP": "アセット",
+		"nl_NL": "Assets",
+		"pt_BR": "Ativos",
+		"sv_SE": "Tillgångar",
+		"zh_CN": "资源"
 	},
 	"permissions": [
 		{

@@ -2,7 +2,19 @@
 	"friendlyURL": "/version-history",
 	"hidden": true,
 	"name_i18n": {
-		"en_US": "Version History"
+		"ar_SA": "تارخ النسخ",
+		"ca_ES": "Historial de la versió",
+		"de_DE": "Versionshistorie",
+		"en_US": "Version History",
+		"es_ES": "Histórico de versiones",
+		"fi_FI": "Versiohistoria",
+		"fr_FR": "Historique des versions",
+		"hu_HU": "Verzió-előzmények",
+		"ja_JP": "バージョン履歴",
+		"nl_NL": "Versiegeschiedenis",
+		"pt_BR": "Histórico da versão",
+		"sv_SE": "Versionshistorik",
+		"zh_CN": "版本历史"
 	},
 	"permissions": [
 		{

@@ -2,7 +2,19 @@
 	"friendlyURL": "/shared-with-me",
 	"hidden": false,
 	"name_i18n": {
-		"en_US": "Shared With Me"
+		"ar_SA": "مشترك معي",
+		"ca_ES": "Compartit amb mi",
+		"de_DE": "Mit mir geteilt",
+		"en_US": "Shared With Me",
+		"es_ES": "Compartido con mi usuario",
+		"fi_FI": "Jaettu Minun kanssani",
+		"fr_FR": "Partagé avec moi",
+		"hu_HU": "Megosztva velem",
+		"ja_JP": "自分と共有済み",
+		"nl_NL": "Gedeeld met mij",
+		"pt_BR": "Compartilhado comigo",
+		"sv_SE": "Delat med mig",
+		"zh_CN": "与我共享"
 	},
 	"permissions": [
 		{

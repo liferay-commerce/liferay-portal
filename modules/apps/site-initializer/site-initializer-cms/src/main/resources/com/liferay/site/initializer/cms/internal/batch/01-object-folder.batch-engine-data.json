@@ -25,7 +25,19 @@
 			},
 			"externalReferenceCode": "L_CMS_CONTENT_SETTINGS",
 			"label": {
-				"en_US": "CMS Content Settings"
+				"ar_SA": "خاصيات محتوى CMS",
+				"ca_ES": "Configuració del contingut del CMS",
+				"de_DE": "CMS-Inhaltseinstellungen",
+				"en_US": "CMS Content Settings",
+				"es_ES": "Propiedades del contenido de CMS",
+				"fi_FI": "CMS-sisällön asetukset",
+				"fr_FR": "Paramètres du contenu du CMS",
+				"hu_HU": "CMS tartalom beállítása",
+				"ja_JP": "CMSコンテンツの設定",
+				"nl_NL": "CMS-contentinstellingen",
+				"pt_BR": "Configurações de conteúdo do CMS",
+				"sv_SE": "CMS-innehållsinställningar",
+				"zh_CN": "CMS 内容设置"
 			},
 			"name": "CMSContentSettings",
 			"objectFolderItems": [
@@ -44,7 +56,19 @@
 			},
 			"externalReferenceCode": "L_CMS_CONTENT_STRUCTURES",
 			"label": {
-				"en_US": "CMS Content Structures"
+				"ar_SA": "بُنى محتويات CMS",
+				"ca_ES": "Estructures de contingut del CMS",
+				"de_DE": "CMS-Inhaltsstrukturen",
+				"en_US": "CMS Content Structures",
+				"es_ES": "Estructuras del contenido de CMS",
+				"fi_FI": "CMS-sisältörakenteet",
+				"fr_FR": "Structures de contenu du CMS",
+				"hu_HU": "CMS tartalomstruktúrák",
+				"ja_JP": "CMSコンテンツストラクチャー",
+				"nl_NL": "CMS-inhoudsstructuren",
+				"pt_BR": "Estruturas do conteúdo do CMS",
+				"sv_SE": "CMS-innehållsstrukturer",
+				"zh_CN": "CMS 内容结构"
 			},
 			"name": "CMSContentStructures",
 			"objectFolderItems": [
@@ -63,7 +87,19 @@
 			},
 			"externalReferenceCode": "L_CMS_FILE_TYPES",
 			"label": {
-				"en_US": "CMS File Types"
+				"ar_SA": "أنواع ملفات CMS",
+				"ca_ES": "Tipus de fitxer del CMS",
+				"de_DE": "CMS-Dateitypen",
+				"en_US": "CMS File Types",
+				"es_ES": "Tipos de archivos de CMS",
+				"fi_FI": "CMS-tiedostotyypit",
+				"fr_FR": "Types de fichiers du CMS",
+				"hu_HU": "CMS fájltípusok",
+				"ja_JP": "CMSファイルの種類",
+				"nl_NL": "CMS-bestandstypen",
+				"pt_BR": "Tipos de arquivo do CMS",
+				"sv_SE": "CMS-filtyper",
+				"zh_CN": "CMS 文件类型"
 			},
 			"name": "CMSFileTypes",
 			"objectFolderItems": [
@@ -82,7 +118,19 @@
 			},
 			"externalReferenceCode": "L_CMS_STRUCTURE_REPEATABLE_GROUPS",
 			"label": {
-				"en_US": "CMS Structure Repeatable Groups"
+				"ar_SA": "مجموعات هيكل CMS المتكررة",
+				"ca_ES": "Grups repetibles de l'estructura del CMS",
+				"de_DE": "Wiederholbare CMS-Strukturgruppen",
+				"en_US": "CMS Structure Repeatable Groups",
+				"es_ES": "Grupos repetibles de estructuras de CMS",
+				"fi_FI": "CMS-rakenteen toistettavat ryhmät",
+				"fr_FR": "Groupes répétables de structures du CMS",
+				"hu_HU": "CMS struktúra ismételhető csoportjai",
+				"ja_JP": "CMSストラクチャーの繰り返し可能なグループ",
+				"nl_NL": "Herhaalbare CMS-structuurgroepen",
+				"pt_BR": "Grupos repetíveis de estrutura do CMS",
+				"sv_SE": "Upprepbara grupper för CMS-struktur",
+				"zh_CN": "CMS 结构可重复组"
 			},
 			"name": "CMSStructureRepeatableGroups",
 			"objectFolderItems": [

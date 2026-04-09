@@ -2,7 +2,19 @@
 	"friendlyURL": "/structures",
 	"hidden": false,
 	"name_i18n": {
-		"en_US": "Content Structures"
+		"ar_SA": "بُنى المحتويات",
+		"ca_ES": "Estructures de contingut",
+		"de_DE": "Inhaltsstrukturen",
+		"en_US": "Content Structures",
+		"es_ES": "Estructuras del contenido",
+		"fi_FI": "Sisältörakenteet",
+		"fr_FR": "Structures de contenu",
+		"hu_HU": "Tartalomstruktúrák",
+		"ja_JP": "コンテンツストラクチャー",
+		"nl_NL": "Inhoudsstructuren",
+		"pt_BR": "Estruturas do conteúdo",
+		"sv_SE": "Innehållsstrukturer",
+		"zh_CN": "内容结构"
 	},
 	"permissions": [
 		{

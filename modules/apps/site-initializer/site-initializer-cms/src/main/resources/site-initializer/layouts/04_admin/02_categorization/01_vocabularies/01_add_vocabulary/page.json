@@ -2,7 +2,19 @@
 	"friendlyURL": "/categorization/new-vocabulary",
 	"hidden": false,
 	"name_i18n": {
-		"en_US": "Vocabularies"
+		"ar_SA": "مفردات",
+		"ca_ES": "Diccionaris",
+		"de_DE": "Vokabulare",
+		"en_US": "Vocabularies",
+		"es_ES": "Vocabularios",
+		"fi_FI": "Sanastot",
+		"fr_FR": "Vocabulaires",
+		"hu_HU": "Szótárak",
+		"ja_JP": "ボキャブラリ",
+		"nl_NL": "Woordenlijsten",
+		"pt_BR": "Vocabulários",
+		"sv_SE": "Ordlistor",
+		"zh_CN": "词汇"
 	},
 	"permissions": [
 		{

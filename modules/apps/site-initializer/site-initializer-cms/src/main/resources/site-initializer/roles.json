@@ -189,7 +189,19 @@
 		],
 		"name": "CMS Administrator",
 		"name_i18n": {
-			"en-US": "CMS Administrator"
+			"ar_SA": "مدير CMS",
+			"ca_ES": "Administrador del CMS",
+			"de_DE": "CMS-Administrator",
+			"en_US": "CMS Administrator",
+			"es_ES": "Administrador de CMS",
+			"fi_FI": "CMS-ylläpitäjä",
+			"fr_FR": "Administrateur du CMS",
+			"hu_HU": "CMS rendszergazda",
+			"ja_JP": "CMS管理者",
+			"nl_NL": "CMS-beheerder",
+			"pt_BR": "Administrador do CMS",
+			"sv_SE": "CMS-administratör",
+			"zh_CN": "CMS 管理员"
 		},
 		"scope": 1,
 		"type": 1

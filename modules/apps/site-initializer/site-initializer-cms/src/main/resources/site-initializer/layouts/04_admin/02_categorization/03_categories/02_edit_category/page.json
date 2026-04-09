@@ -2,7 +2,19 @@
 	"friendlyURL": "/categorization/edit-category",
 	"hidden": false,
 	"name_i18n": {
-		"en_US": "Categories"
+		"ar_SA": "تصنيفات",
+		"ca_ES": "Categories",
+		"de_DE": "Kategorien",
+		"en_US": "Categories",
+		"es_ES": "Categorías",
+		"fi_FI": "Luokitukset",
+		"fr_FR": "Catégories",
+		"hu_HU": "Kategóriák",
+		"ja_JP": "カテゴリ",
+		"nl_NL": "Categorieën",
+		"pt_BR": "Categorias",
+		"sv_SE": "Kategorier",
+		"zh_CN": "类别"
 	},
 	"permissions": [
 		{

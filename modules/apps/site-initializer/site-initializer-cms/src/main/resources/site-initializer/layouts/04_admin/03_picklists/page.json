@@ -2,7 +2,19 @@
 	"friendlyURL": "/picklist-builder",
 	"hidden": true,
 	"name_i18n": {
-		"en_US": "Picklist Builder"
+		"ar_SA": "باني قوائم الانتقاء",
+		"ca_ES": "Generador de llistes de selecció",
+		"de_DE": "Picklist Builder",
+		"en_US": "Picklist Builder",
+		"es_ES": "Generador de listas desplegables",
+		"fi_FI": "Valintaluettelon luontityökalu",
+		"fr_FR": "Générateur de liste de sélection",
+		"hu_HU": "Értéklista-építő",
+		"ja_JP": "候補リストビルダー",
+		"nl_NL": "Selectielijstbouwer",
+		"pt_BR": "Construtor de lista de seleção",
+		"sv_SE": "Verktyg för plocklista",
+		"zh_CN": "选择列表生成器"
 	},
 	"permissions": [
 		{

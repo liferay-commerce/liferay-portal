@@ -70,7 +70,19 @@
 											"fragmentConfig": {
 												"inputFieldId": "ObjectField_title",
 												"placeholder": {
-													"en_US": "New Basic Web Content"
+													"ar_SA": "محتوى ويب أساسي جديد",
+													"ca_ES": "Contingut web bàsic nou",
+													"de_DE": "Neuer einfacher Web-Content",
+													"en_US": "New Basic Web Content",
+													"es_ES": "Nuevo contenido web básico",
+													"fi_FI": "Uusi tavallinen web-sisältö",
+													"fr_FR": "Nouveau contenu web basique",
+													"hu_HU": "Új alapvető webtartalom",
+													"ja_JP": "新しい基本Webコンテンツ",
+													"nl_NL": "Nieuwe basiswebcontent",
+													"pt_BR": "Novo conteúdo Web básico",
+													"sv_SE": "Nytt vanligt innehåll",
+													"zh_CN": "新基本 Web 内容"
 												},
 												"showCharactersCount": false
 											},

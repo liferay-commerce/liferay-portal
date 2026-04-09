@@ -2,7 +2,19 @@
 	"friendlyURL": "/contents",
 	"hidden": false,
 	"name_i18n": {
-		"en_US": "Contents"
+		"ar_SA": "المحتويات",
+		"ca_ES": "Continguts",
+		"de_DE": "Content",
+		"en_US": "Contents",
+		"es_ES": "Contenidos",
+		"fi_FI": "Sisältö",
+		"fr_FR": "Contenus",
+		"hu_HU": "Tartalmak",
+		"ja_JP": "コンテンツ",
+		"nl_NL": "Inhoud",
+		"pt_BR": "Conteúdos",
+		"sv_SE": "Innehåll",
+		"zh_CN": "内容"
 	},
 	"permissions": [
 		{

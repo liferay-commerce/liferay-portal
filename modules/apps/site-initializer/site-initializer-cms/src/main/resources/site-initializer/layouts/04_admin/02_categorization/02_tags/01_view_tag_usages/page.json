@@ -2,7 +2,19 @@
 	"friendlyURL": "/categorization/view-tag-usages",
 	"hidden": false,
 	"name_i18n": {
-		"en_US": "Tag Usages"
+		"ar_SA": "التصنيفات",
+		"ca_ES": "Usos de l'etiqueta",
+		"de_DE": "Schlagwortnutzungen",
+		"en_US": "Tag Usages",
+		"es_ES": "Usos de etiqueta",
+		"fi_FI": "Tagien käytöt",
+		"fr_FR": "Utilisations des étiquettes",
+		"hu_HU": "Címkehasználat",
+		"ja_JP": "タグの使用状況",
+		"nl_NL": "Labelgebruik",
+		"pt_BR": "Usos de Marcadores",
+		"sv_SE": "Tagganvändningar",
+		"zh_CN": "标签使用"
 	},
 	"private": false,
 	"system": false,

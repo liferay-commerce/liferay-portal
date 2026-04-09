@@ -70,7 +70,19 @@
 											"fragmentConfig": {
 												"inputFieldId": "ObjectField_title",
 												"placeholder": {
-													"en_US": "New External Video"
+													"ar_SA": "فيديو خارجي جديد",
+													"ca_ES": "Vídeo extern nou",
+													"de_DE": "Neues externes Video",
+													"en_US": "New External Video",
+													"es_ES": "Nuevo vídeo externo",
+													"fi_FI": "Uusi ulkoinen video",
+													"fr_FR": "Nouvelle vidéo externe",
+													"hu_HU": "Új külső videó",
+													"ja_JP": "新しい外部動画",
+													"nl_NL": "Nieuwe externe video",
+													"pt_BR": "Novo vídeo externo",
+													"sv_SE": "Ny extern video",
+													"zh_CN": "新外部视频"
 												},
 												"showCharactersCount": false
 											},

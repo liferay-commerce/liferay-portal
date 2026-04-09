@@ -2,7 +2,19 @@
 	"friendlyURL": "/all-spaces",
 	"hidden": true,
 	"name_i18n": {
-		"en_US": "All Spaces"
+		"ar_SA": "جميع المسافات",
+		"ca_ES": "Tots els espais",
+		"de_DE": "Alle Bereiche",
+		"en_US": "All Spaces",
+		"es_ES": "Todos los espacios",
+		"fi_FI": "Kaikki tilat",
+		"fr_FR": "Tous les espaces",
+		"hu_HU": "Összes helyköz",
+		"ja_JP": "すべてのスペース",
+		"nl_NL": "Alle ruimten",
+		"pt_BR": "Todos os espaços",
+		"sv_SE": "Alla utrymmen",
+		"zh_CN": "所有空间"
 	},
 	"permissions": [
 		{

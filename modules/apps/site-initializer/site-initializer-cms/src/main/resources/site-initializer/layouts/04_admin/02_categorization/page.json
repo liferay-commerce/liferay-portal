@@ -2,7 +2,19 @@
 	"friendlyURL": "/categorization",
 	"hidden": false,
 	"name_i18n": {
-		"en_US": "Categorization"
+		"ar_SA": "التصنيف",
+		"ca_ES": "Categorització",
+		"de_DE": "Kategorisierung",
+		"en_US": "Categorization",
+		"es_ES": "Categorización",
+		"fi_FI": "Luokittelut",
+		"fr_FR": "Catégorisation",
+		"hu_HU": "Kategorizálás",
+		"ja_JP": "カテゴリの設定",
+		"nl_NL": "Categoriseren",
+		"pt_BR": "Categorização",
+		"sv_SE": "Kategorisering",
+		"zh_CN": "分类"
 	},
 	"permissions": [
 		{

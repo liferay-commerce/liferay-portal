@@ -70,7 +70,19 @@
 											"fragmentConfig": {
 												"inputFieldId": "ObjectField_title",
 												"placeholder": {
-													"en_US": "New Blog"
+													"ar_SA": "مدونة جديدة",
+													"ca_ES": "Bloc nou",
+													"de_DE": "Neuer Blog",
+													"en_US": "New Blog",
+													"es_ES": "Nuevo blog",
+													"fi_FI": "Uusi blogi",
+													"fr_FR": "Nouveau blogue",
+													"hu_HU": "Új blog",
+													"ja_JP": "新しいブログ",
+													"nl_NL": "Nieuwe blog",
+													"pt_BR": "Novo blog",
+													"sv_SE": "Ny blogg",
+													"zh_CN": "新博客"
 												},
 												"showCharactersCount": false
 											},

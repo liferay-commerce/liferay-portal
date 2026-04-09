@@ -2,7 +2,19 @@
 	"friendlyURL": "/dashboard",
 	"hidden": false,
 	"name_i18n": {
-		"en_US": "Dashboard"
+		"ar_SA": "لوحة المعلومات",
+		"ca_ES": "El meu quadre de comandament",
+		"de_DE": "Dashboard",
+		"en_US": "Dashboard",
+		"es_ES": "Panel de mando",
+		"fi_FI": "Koontinäyttöni",
+		"fr_FR": "Mon tableau de bord",
+		"hu_HU": "Vezérlőpultom",
+		"ja_JP": "マイダッシュボード",
+		"nl_NL": "Mijn dashboard",
+		"pt_BR": "Painel",
+		"sv_SE": "Kontrollpanel",
+		"zh_CN": "我的Dashboard"
 	},
 	"permissions": [
 		{

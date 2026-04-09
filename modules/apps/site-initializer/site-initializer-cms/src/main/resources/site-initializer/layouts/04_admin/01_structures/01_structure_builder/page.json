@@ -2,7 +2,19 @@
 	"friendlyURL": "/structure-builder",
 	"hidden": true,
 	"name_i18n": {
-		"en_US": "Structure Builder"
+		"ar_SA": "باني الهياكل",
+		"ca_ES": "Generador d'estructures",
+		"de_DE": "Structure Builder",
+		"en_US": "Structure Builder",
+		"es_ES": "Generador de estructuras",
+		"fi_FI": "Rakenteen luontityökalu",
+		"fr_FR": "Constructeur de structures",
+		"hu_HU": "Struktúraépítő",
+		"ja_JP": "ストラクチャービルダー",
+		"nl_NL": "Structuurbouwer",
+		"pt_BR": "Construtor de Estrutura",
+		"sv_SE": "Strukturverktyg",
+		"zh_CN": "结构生成器"
 	},
 	"permissions": [
 		{

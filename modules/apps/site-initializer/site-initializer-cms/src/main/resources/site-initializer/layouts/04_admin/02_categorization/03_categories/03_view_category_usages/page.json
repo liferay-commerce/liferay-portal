@@ -2,7 +2,19 @@
 	"friendlyURL": "/categorization/view-category-usages",
 	"hidden": false,
 	"name_i18n": {
-		"en_US": "Category Usages"
+		"ar_SA": "استخدامات الفئة",
+		"ca_ES": "Usos de la categoria",
+		"de_DE": "Kategorienutzungen",
+		"en_US": "Category Usages",
+		"es_ES": "Usos de categoría",
+		"fi_FI": "Luokkien käytöt",
+		"fr_FR": "Utilisations des catégories",
+		"hu_HU": "Kategóriahasználat",
+		"ja_JP": "カテゴリの使用状況",
+		"nl_NL": "Categoriegebruik",
+		"pt_BR": "Usos de Categoria",
+		"sv_SE": "Kategorianvändningar",
+		"zh_CN": "类别使用"
 	},
 	"permissions": [
 		{

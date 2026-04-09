@@ -70,7 +70,19 @@
 											"fragmentConfig": {
 												"inputFieldId": "ObjectField_title",
 												"placeholder": {
-													"en_US": "New Basic Document"
+													"ar_SA": "مستند أساسي جديد",
+													"ca_ES": "Document bàsic nou",
+													"de_DE": "Neues einfaches Dokument",
+													"en_US": "New Basic Document",
+													"es_ES": "Nuevo documento básico",
+													"fi_FI": "Uusi perus asiakirja",
+													"fr_FR": "Nouveau document de base",
+													"hu_HU": "Új alapvető dokumentum",
+													"ja_JP": "新しい基本ドキュメント",
+													"nl_NL": "Nieuw basisdocument",
+													"pt_BR": "Novo documento básico",
+													"sv_SE": "Nytt vanligt dokument",
+													"zh_CN": "新基本文档"
 												},
 												"showCharactersCount": false
 											},

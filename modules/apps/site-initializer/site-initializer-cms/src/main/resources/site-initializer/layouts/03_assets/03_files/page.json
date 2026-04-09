@@ -2,7 +2,19 @@
 	"friendlyURL": "/files",
 	"hidden": false,
 	"name_i18n": {
-		"en_US": "Files"
+		"ar_SA": "ملف",
+		"ca_ES": "Fitxers",
+		"de_DE": "Dateien",
+		"en_US": "Files",
+		"es_ES": "Archivos",
+		"fi_FI": "Tiedostot",
+		"fr_FR": "Dossiers",
+		"hu_HU": "Fájlok",
+		"ja_JP": "ファイル",
+		"nl_NL": "Bestanden",
+		"pt_BR": "Arquivos",
+		"sv_SE": "Filer",
+		"zh_CN": "文件"
 	},
 	"permissions": [
 		{

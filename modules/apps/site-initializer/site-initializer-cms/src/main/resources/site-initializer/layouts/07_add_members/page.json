@@ -2,7 +2,19 @@
 	"friendlyURL": "/add-space-members",
 	"hidden": true,
 	"name_i18n": {
-		"en_US": "Add Space Members"
+		"ar_SA": "إضافة أعضاء المسافة",
+		"ca_ES": "Afegeix membres de l'espai",
+		"de_DE": "Bereichsmitglieder hinzufügen",
+		"en_US": "Add Space Members",
+		"es_ES": "Añadir miembros del espacio",
+		"fi_FI": "Lisää tilan jäsenet",
+		"fr_FR": "Ajouter des membres de l'espace",
+		"hu_HU": "Helyköztagok hozzáadása",
+		"ja_JP": "スペースメンバーを追加",
+		"nl_NL": "Ruimteleden toevoegen",
+		"pt_BR": "Adicionar membros do espaço",
+		"sv_SE": "Lägg till utrymmesmedlemmar",
+		"zh_CN": "添加空间成员"
 	},
 	"permissions": [
 		{

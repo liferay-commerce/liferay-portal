@@ -2,7 +2,19 @@
 	"friendlyURL": "/categorization/view-tags",
 	"hidden": false,
 	"name_i18n": {
-		"en_US": "Tags"
+		"ar_SA": "التصنيفات",
+		"ca_ES": "Etiquetes",
+		"de_DE": "Schlagwörter",
+		"en_US": "Tags",
+		"es_ES": "Etiquetas",
+		"fi_FI": "Tagit",
+		"fr_FR": "Étiquettes",
+		"hu_HU": "Címkék",
+		"ja_JP": "タグ",
+		"nl_NL": "Labels",
+		"pt_BR": "Marcadores",
+		"sv_SE": "Taggar",
+		"zh_CN": "标签"
 	},
 	"permissions": [
 		{

@@ -2,7 +2,19 @@
 	"friendlyURL": "/recycle-bin",
 	"hidden": false,
 	"name_i18n": {
-		"en_US": "Recycle Bin"
+		"ar_SA": "سلة المحذوفات",
+		"ca_ES": "Paperera de reciclatge",
+		"de_DE": "Papierkorb",
+		"en_US": "Recycle Bin",
+		"es_ES": "Papelera de reciclaje",
+		"fi_FI": "Roskakori",
+		"fr_FR": "Corbeille",
+		"hu_HU": "Lomtár",
+		"ja_JP": "ゴミ箱",
+		"nl_NL": "Prullenbak",
+		"pt_BR": "Lixeira",
+		"sv_SE": "Papperskorgen",
+		"zh_CN": "回收站"
 	},
 	"permissions": [
 		{

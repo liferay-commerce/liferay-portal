@@ -49,7 +49,19 @@
 					}
 				],
 				"name_i18n": {
-					"en_US": "Assets"
+					"ar_SA": "الأصول",
+					"ca_ES": "Continguts",
+					"de_DE": "Assets",
+					"en_US": "Assets",
+					"es_ES": "Activos",
+					"fi_FI": "Sisällöt",
+					"fr_FR": "Actifs",
+					"hu_HU": "Tartalmak",
+					"ja_JP": "アセット",
+					"nl_NL": "Assets",
+					"pt_BR": "Ativos",
+					"sv_SE": "Tillgångar",
+					"zh_CN": "资源"
 				},
 				"type": "node"
 			},
@@ -72,7 +84,19 @@
 					}
 				],
 				"name_i18n": {
-					"en_US": "Admin"
+					"ar_SA": "إدارة الموقع",
+					"ca_ES": "Administració",
+					"de_DE": "Administration",
+					"en_US": "Admin",
+					"es_ES": "Administración",
+					"fi_FI": "Ylläpito",
+					"fr_FR": "Administreur",
+					"hu_HU": "Rendszergazda",
+					"ja_JP": "システム管理",
+					"nl_NL": "Beheer",
+					"pt_BR": "Administração",
+					"sv_SE": "Administration",
+					"zh_CN": "管理"
 				},
 				"type": "node"
 			}

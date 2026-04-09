@@ -2,7 +2,19 @@
 	"friendlyURL": "/bulk-action-task-report",
 	"hidden": true,
 	"name_i18n": {
-		"en_US": "Bulk Action Task Report"
+		"ar_SA": "تقرير مهام الإجراءات الجماعية",
+		"ca_ES": "Informe de tasques d'accions massives",
+		"de_DE": "Aufgabenbericht zu Sammelaktionen",
+		"en_US": "Bulk Action Task Report",
+		"es_ES": "Informe de tareas de acciones por lotes",
+		"fi_FI": "Joukkotoimintojen tehtäväraportti",
+		"fr_FR": "Rapport des tâches d'actions groupées",
+		"hu_HU": "Tömeges műveletek feladatjelentése",
+		"ja_JP": "一括アクションのタスクレポート",
+		"nl_NL": "Taakrapport bulkacties",
+		"pt_BR": "Relatório de tarefas de ações em lote",
+		"sv_SE": "Uppgiftsrapport för massåtgärder",
+		"zh_CN": "批量操作任务报告"
 	},
 	"permissions": [
 		{

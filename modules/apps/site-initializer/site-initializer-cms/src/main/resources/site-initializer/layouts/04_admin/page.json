@@ -2,7 +2,19 @@
 	"friendlyURL": "/admin",
 	"hidden": false,
 	"name_i18n": {
-		"en_US": "Admin"
+		"ar_SA": "إدارة الموقع",
+		"ca_ES": "Administració",
+		"de_DE": "Administration",
+		"en_US": "Admin",
+		"es_ES": "Administración",
+		"fi_FI": "Ylläpito",
+		"fr_FR": "Administreur",
+		"hu_HU": "Rendszergazda",
+		"ja_JP": "システム管理",
+		"nl_NL": "Beheer",
+		"pt_BR": "Administração",
+		"sv_SE": "Administration",
+		"zh_CN": "管理"
 	},
 	"permissions": [
 		{

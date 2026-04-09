@@ -2,7 +2,19 @@
 	"friendlyURL": "/home",
 	"hidden": false,
 	"name_i18n": {
-		"en_US": "Home"
+		"ar_SA": "الرئيسية",
+		"ca_ES": "Inici",
+		"de_DE": "Startseite",
+		"en_US": "Home",
+		"es_ES": "Inicio",
+		"fi_FI": "Etusivu",
+		"fr_FR": "Accueil",
+		"hu_HU": "Nyitólap",
+		"ja_JP": "ホーム",
+		"nl_NL": "Startpagina",
+		"pt_BR": "Início",
+		"sv_SE": "Hem",
+		"zh_CN": "主页"
 	},
 	"permissions": [
 		{
