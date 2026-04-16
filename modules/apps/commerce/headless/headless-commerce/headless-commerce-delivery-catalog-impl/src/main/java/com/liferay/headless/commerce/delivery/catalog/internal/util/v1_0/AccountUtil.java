@@ -41,17 +41,19 @@ public class AccountUtil {
 			commerceAccountHelper.countUserCommerceAccounts(userId, groupId);
 
 		if (countUserCommerceAccounts > 1) {
-			if (queryParameters == null) {
-				return 0;
+			if (queryParameters != null) {
+				String accountIdString = queryParameters.getFirst("accountId");
+
+				if (accountIdString != null) {
+					return GetterUtil.getLong(accountIdString);
+				}
+
+				throw new NoSuchEntryException();
 			}
 
-			String accountIdString = queryParameters.getFirst("accountId");
-
-			if (accountIdString != null) {
-				return GetterUtil.getLong(accountIdString);
+			if (accountId == null) {
+				throw new NoSuchEntryException();
 			}
-
-			throw new NoSuchEntryException();
 		}
 
 		long[] accountIds = commerceAccountHelper.getUserCommerceAccountIds(
