@@ -108,7 +108,7 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 	public void testGetChannelProductSkusPage() throws Exception {
 		super.testGetChannelProductSkusPage();
 
-		_testGetChannelProductSkusPageWithPriceListAccount();
+		_testGetChannelProductSkusPageWithPriceListAccountRel();
 		_testGetChannelProductSkusPageWithUnitOfMeasure();
 		_testGetChannelProductSkusPageWithUnitOfMeasurePrice();
 	}
@@ -487,7 +487,7 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 				price.getPromoPrice(), commercePriceEntryPrice.doubleValue()));
 	}
 
-	private void _testGetChannelProductSkusPageWithPriceListAccount()
+	private void _testGetChannelProductSkusPageWithPriceListAccountRel()
 		throws Exception {
 
 		CommerceCurrency commerceCurrency =
