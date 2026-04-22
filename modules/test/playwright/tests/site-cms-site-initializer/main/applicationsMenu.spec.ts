@@ -14,6 +14,7 @@ import performLogin, {
 	performLogout,
 	userData,
 } from '../../../utils/performLogin';
+import {PORTLET_URLS} from '../../../utils/portletUrls';
 import {cmsPagesTest} from './fixtures/cmsPagesTest';
 
 const test = mergeTests(
@@ -27,54 +28,76 @@ const test = mergeTests(
 
 test(
 	'Admin section is not visible for non-admin space members',
-	{tag: '@LPD-83160'},
+	{tag: ['@LPD-83160', '@LPD-86774']},
 	async ({apiHelpers, page, spaceSummaryPage}) => {
 		const spaceName = `Space ${getRandomString()}`;
 		let space = null;
 		let user = null;
 
-		space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: spaceName,
-			settings: {},
-			type: 'Space',
-		});
+		try {
+			space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+				name: spaceName,
+				settings: {},
+				type: 'Space',
+			});
 
-		user = await apiHelpers.headlessAdminUser.postUserAccount();
+			user = await apiHelpers.headlessAdminUser.postUserAccount();
 
-		userData[user.alternateName] = {
-			name: user.givenName,
-			password: 'test',
-			surname: user.familyName,
-		};
+			userData[user.alternateName] = {
+				name: user.givenName,
+				password: 'test',
+				surname: user.familyName,
+			};
 
-		await apiHelpers.jsonWebServicesUser.addGroupUsers(space.siteId, [
-			user.id,
-		]);
+			await apiHelpers.jsonWebServicesUser.addGroupUsers(space.siteId, [
+				user.id,
+			]);
 
-		await performLogout(page);
+			await performLogout(page);
 
-		await performLogin(page, user.alternateName, 'test');
+			await performLogin(page, user.alternateName, 'test');
 
-		await spaceSummaryPage.goto(spaceName);
+			await spaceSummaryPage.goto(spaceName);
 
-		await expect(
-			page
-				.locator('.vertical-navigation-fragment')
-				.getByRole('menuitem', {
-					name: 'Admin',
-				})
-		).not.toBeVisible();
+			await expect(
+				page
+					.locator('.vertical-navigation-fragment')
+					.getByRole('menuitem', {
+						name: 'Admin',
+					})
+			).not.toBeVisible();
 
-		await expect(
-			page
-				.locator('.vertical-navigation-fragment')
-				.getByRole('menuitem', {
-					name: 'Contents',
-				})
-		).toBeVisible();
+			await expect(
+				page
+					.locator('.vertical-navigation-fragment')
+					.getByRole('menuitem', {
+						name: 'Recycle Bin',
+					})
+			).not.toBeVisible();
 
-		await apiHelpers.headlessAdminUser.deleteUserAccount(user.id);
-		await apiHelpers.headlessAssetLibrary.deleteAssetLibrary(space.id);
+			await expect(
+				page
+					.locator('.vertical-navigation-fragment')
+					.getByRole('menuitem', {
+						name: 'Contents',
+					})
+			).toBeVisible();
+
+			await page.goto(PORTLET_URLS.recycleBin);
+
+			await expect(page.locator('.fds')).not.toBeVisible();
+		}
+		finally {
+			if (user) {
+				await apiHelpers.headlessAdminUser.deleteUserAccount(user.id);
+			}
+
+			if (space) {
+				await apiHelpers.headlessAssetLibrary.deleteAssetLibrary(
+					space.id
+				);
+			}
+		}
 	}
 );
 
