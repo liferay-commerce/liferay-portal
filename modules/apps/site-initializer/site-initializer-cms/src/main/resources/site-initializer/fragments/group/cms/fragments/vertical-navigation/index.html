@@ -7,7 +7,7 @@
 
 <div class="vertical-navigation-fragment">
 	[#if !navItems?has_content]
-		[#if themeDisplay.isSignedIn()]
+		[#if themeDisplay.isSignedIn() && permissionChecker.isGroupAdmin(themeDisplay.getScopeGroupId())]
 			<div class="alert alert-info">
 				[@liferay.language key="there-are-no-menu-items-to-display" /]
 			</div>
