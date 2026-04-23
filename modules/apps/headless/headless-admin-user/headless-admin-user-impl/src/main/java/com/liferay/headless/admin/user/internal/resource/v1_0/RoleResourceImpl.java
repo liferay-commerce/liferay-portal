@@ -523,8 +523,15 @@ public class RoleResourceImpl
 
 		if (ArrayUtil.isNotEmpty(role.getRolePermissions())) {
 			for (RolePermission rolePermission : role.getRolePermissions()) {
-				if (rolePermission.getScope() ==
-						ResourceConstants.SCOPE_INDIVIDUAL) {
+				int scope = Math.toIntExact(rolePermission.getScope());
+
+				if (scope == ResourceConstants.SCOPE_INDIVIDUAL) {
+					_resourcePermissionService.setIndividualResourcePermissions(
+						contextUser.getGroupId(), contextCompany.getCompanyId(),
+						rolePermission.getResourceName(),
+						rolePermission.getPrimaryKey(),
+						serviceBuilderRole.getRoleId(),
+						rolePermission.getActionIds());
 
 					continue;
 				}
@@ -532,8 +539,7 @@ public class RoleResourceImpl
 				for (String actionId : rolePermission.getActionIds()) {
 					_resourcePermissionService.addResourcePermission(
 						contextUser.getGroupId(), contextCompany.getCompanyId(),
-						rolePermission.getResourceName(),
-						Math.toIntExact(rolePermission.getScope()),
+						rolePermission.getResourceName(), scope,
 						rolePermission.getPrimaryKey(),
 						serviceBuilderRole.getRoleId(), actionId);
 				}

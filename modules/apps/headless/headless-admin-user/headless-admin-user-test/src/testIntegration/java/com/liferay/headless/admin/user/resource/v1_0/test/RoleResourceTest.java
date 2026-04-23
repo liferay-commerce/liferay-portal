@@ -14,10 +14,12 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.exportimport.test.rule.LazyReferencing;
 import com.liferay.exportimport.test.rule.LazyReferencingTestRule;
 import com.liferay.headless.admin.user.client.dto.v1_0.Role;
+import com.liferay.headless.admin.user.client.dto.v1_0.RolePermission;
 import com.liferay.headless.admin.user.client.pagination.Page;
 import com.liferay.headless.admin.user.client.pagination.Pagination;
 import com.liferay.headless.admin.user.client.permission.Permission;
 import com.liferay.headless.admin.user.client.resource.v1_0.RoleResource;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -271,6 +273,9 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 		super.testPostRole();
 
 		_testPostRoleBatch();
+		_testPostRoleWithRolePermissionScopeCompany();
+		_testPostRoleWithRolePermissionScopeGroup();
+		_testPostRoleWithRolePermissionScopeIndividual();
 	}
 
 	@Override
@@ -1053,6 +1058,67 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 			serviceBuilderRole3.getType());
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_EMPTY, serviceBuilderRole3.getStatus());
+	}
+
+	private void _testPostRoleWithRolePermission(int scopeArg, String primKey)
+		throws Exception {
+
+		Role role = randomRole();
+
+		role.setRoleType(
+			RoleConstants.getTypeLabel(RoleConstants.TYPE_REGULAR));
+
+		RolePermission rolePermission = new RolePermission();
+
+		rolePermission.setActionIds(new String[] {ActionKeys.VIEW});
+		rolePermission.setPrimaryKey(primKey);
+		rolePermission.setResourceName(
+			com.liferay.portal.kernel.model.Role.class.getName());
+		rolePermission.setScope((long)scopeArg);
+
+		role.setRolePermissions(new RolePermission[] {rolePermission});
+
+		Role postedRole = roleResource.postRole(role);
+
+		com.liferay.portal.kernel.model.Role createdRole =
+			_roleLocalService.fetchRole(postedRole.getId());
+
+		Assert.assertNotNull(createdRole);
+		Assert.assertTrue(
+			StringBundler.concat(
+			"Expected VIEW on " ,
+				com.liferay.portal.kernel.model.Role.class.getName() ,
+					" scope=" , scopeArg , " primKey=" + primKey ,
+						" for role ", createdRole.getRoleId()),
+			_resourcePermissionLocalService.hasResourcePermission(
+				testCompany.getCompanyId(),
+				com.liferay.portal.kernel.model.Role.class.getName(), scopeArg,
+				primKey, createdRole.getRoleId(), ActionKeys.VIEW));
+	}
+
+	private void _testPostRoleWithRolePermissionScopeCompany()
+		throws Exception {
+
+		_testPostRoleWithRolePermission(
+			ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(testCompany.getCompanyId()));
+	}
+
+	private void _testPostRoleWithRolePermissionScopeGroup() throws Exception {
+		_testPostRoleWithRolePermission(
+			ResourceConstants.SCOPE_GROUP,
+			String.valueOf(testGroup.getGroupId()));
+	}
+
+	private void _testPostRoleWithRolePermissionScopeIndividual()
+		throws Exception {
+
+		com.liferay.portal.kernel.model.Role targetRole = RoleTestUtil.addRole(
+			RoleConstants.TYPE_REGULAR);
+
+		_testPostRoleWithRolePermission(
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(targetRole.getRoleId()));
 	}
 
 	private Role _toRole(com.liferay.portal.kernel.model.Role role) {
