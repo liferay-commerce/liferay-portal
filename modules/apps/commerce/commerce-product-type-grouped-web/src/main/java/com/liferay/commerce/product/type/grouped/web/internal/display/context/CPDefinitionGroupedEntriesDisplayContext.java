@@ -91,7 +91,7 @@ public class CPDefinitionGroupedEntriesDisplayContext
 		Sort sort = null;
 
 		if (orderByCol.equals("priority")) {
-			sort = SortFactoryUtil.create("priority_Number_sortable", reverse);
+			sort = SortFactoryUtil.create("priority", reverse);
 		}
 		else if (orderByCol.equals("quantity")) {
 			sort = SortFactoryUtil.create("quantity_Number_sortable", reverse);
