@@ -1428,6 +1428,21 @@ public class Main {
 		Map<String, String> existingTaxonomyCategories = new HashMap<>();
 		Map<String, Long> existingTaxonomyVocabularies = new HashMap<>();
 
+		// The taxonomy-categories APIs are not working, so for now we
+		// rely on a hardcoded list of mock taxonomy vocabulary IDs instead of
+		// fetching them via getSiteTaxonomyVocabulariesPage.
+
+		List<Long> taxonomyVocabulariesMockIds = new ArrayList<>() {
+			{
+				add(23488662L);
+				add(23488711L);
+				add(23488721L);
+				add(23488728L);
+				add(24938065L);
+			}
+		};
+
+		/*
 		com.liferay.headless.admin.taxonomy.client.pagination.Page
 			<TaxonomyVocabulary> taxonomyVocabulariesPage =
 				_taxonomyVocabularyResource.getSiteTaxonomyVocabulariesPage(
@@ -1435,9 +1450,12 @@ public class Main {
 					com.liferay.headless.admin.taxonomy.client.pagination.
 						Pagination.of(-1, -1),
 					null);
+		*/
 
-		for (TaxonomyVocabulary taxonomyVocabulary :
-				taxonomyVocabulariesPage.getItems()) {
+		for (Long taxonomyVocabularyId : taxonomyVocabulariesMockIds) {
+			TaxonomyVocabulary taxonomyVocabulary =
+				_taxonomyVocabularyResource.getTaxonomyVocabulary(
+					taxonomyVocabularyId);
 
 			if (StringUtil.equals(
 					taxonomyVocabulary.getExternalReferenceCode(),
@@ -1488,6 +1506,14 @@ public class Main {
 			Long taxonomyVocabularyId = existingTaxonomyVocabularies.get(name);
 
 			if (taxonomyVocabularyId == null) {
+
+				// The taxonomy-categories APIs are not working, so for
+				// now we skip vocabularies not present in the mock IDs
+				// instead of creating them via postSiteTaxonomyVocabulary.
+
+				continue;
+
+				/*
 				TaxonomyVocabulary taxonomyVocabulary =
 					new TaxonomyVocabulary();
 
@@ -1498,6 +1524,7 @@ public class Main {
 						_globalSiteId, taxonomyVocabulary);
 
 				taxonomyVocabularyId = taxonomyVocabulary.getId();
+				*/
 			}
 
 			_loadTaxonomyCategories(
