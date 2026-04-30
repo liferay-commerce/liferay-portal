@@ -223,6 +223,8 @@ export function getDefaultField({
 		label: {
 			[Liferay.ThemeDisplay.getDefaultLanguageId()]:
 				label ?? FIELD_TYPE_LABEL[type],
+			[Liferay.ThemeDisplay.getLanguageId()]:
+				label ?? FIELD_TYPE_LABEL[type],
 		},
 		localized: true,
 		locked,
