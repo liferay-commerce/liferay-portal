@@ -882,10 +882,10 @@ public class CPDefinitionLocalServiceImpl
 		}
 
 		String lockKey = String.valueOf(sourceCPDefinition.getCProductId());
-		String lockOwner = PortalUUIDUtil.generate();
+		String owner = PortalUUIDUtil.generate();
 
 		Lock lock = _lockManager.lock(
-			CProduct.class.getName(), lockKey, lockOwner);
+			CProduct.class.getName(), lockKey, owner);
 
 		if (!lock.isNew()) {
 			throw new DuplicateCPDefinitionDraftException(
@@ -1291,7 +1291,7 @@ public class CPDefinitionLocalServiceImpl
 			return targetCPDefinition;
 		}
 		finally {
-			_lockManager.unlock(CProduct.class.getName(), lockKey, lockOwner);
+			_lockManager.unlock(CProduct.class.getName(), lockKey, owner);
 		}
 	}
 
