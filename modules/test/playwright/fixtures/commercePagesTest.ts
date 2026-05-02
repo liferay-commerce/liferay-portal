@@ -72,7 +72,6 @@ import {CommerceAdminWarehouseDetailsPage} from '../pages/commerce/commerce-ware
 import {CommerceAdminWarehouseEligibilityPage} from '../pages/commerce/commerce-warehouse-web/commerceAdminWarehouseEligibilityPage';
 import {CommerceAdminWarehousesPage} from '../pages/commerce/commerce-warehouse-web/commerceAdminWarehousesPage';
 import {CommerceWishListPage} from '../pages/commerce/commerce-wish-list-web/commerceWishListPage';
-import {CommerceCatalogSystemSettingsPage} from '../pages/commerce/commerceCatalogSystemSettingsPage';
 import {CommerceInstanceSettingsPage} from '../pages/commerce/commerceInstanceSettingsPage';
 import {CommerceMiniCartPage} from '../pages/commerce/commerceMiniCartPage';
 import {CommercePricingSystemSettingsPage} from '../pages/commerce/commercePricingSystemSettingsPage';
@@ -122,7 +121,6 @@ const commercePagesTest = test.extend<{
 	commerceAdminWarehousesPage: CommerceAdminWarehousesPage;
 	commerceCartPage: CommerceCartPage;
 	commerceCartSummaryPage: CommerceCartSummaryPage;
-	commerceCatalogSystemSettingsPage: CommerceCatalogSystemSettingsPage;
 	commerceChannelDefaultsPage: CommerceChannelDefaultsPage;
 	commerceInstanceSettingsPage: CommerceInstanceSettingsPage;
 	commerceLayoutsPage: CommerceLayoutsPage;
@@ -286,9 +284,6 @@ const commercePagesTest = test.extend<{
 	},
 	commerceCartSummaryPage: async ({page}, use) => {
 		await use(new CommerceCartSummaryPage(page));
-	},
-	commerceCatalogSystemSettingsPage: async ({page}, use) => {
-		await use(new CommerceCatalogSystemSettingsPage(page));
 	},
 	commerceChannelDefaultsPage: async ({page}, use) => {
 		await use(new CommerceChannelDefaultsPage(page));
