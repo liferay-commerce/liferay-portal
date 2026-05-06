@@ -4,6 +4,7 @@
  */
 
 import {ObjectField} from '../../common/types/ObjectDefinition';
+import {getDefaultLanguageLabel} from '../../common/utils/getDefaultLanguageLabel';
 import {Uuid} from '../types/Uuid';
 import getRandomId from './getRandomId';
 import getUuid from './getUuid';
@@ -23,6 +24,19 @@ export const FIELD_TYPES = [
 	'boolean',
 	'upload',
 ] as const;
+
+const FIELD_TYPE_LANGUAGE_KEY: Record<FieldType, string> = {
+	'boolean': 'boolean',
+	'date': 'date',
+	'datetime': 'date-and-time',
+	'decimal': 'decimal',
+	'integer': 'numeric',
+	'long-text': 'long-text',
+	'rich-text': 'rich-text',
+	'select-from-list': 'select-from-list',
+	'text': 'text',
+	'upload': 'upload',
+} as const;
 
 export const FIELD_TYPE_LABEL: Record<FieldType, string> = {
 	'boolean': Liferay.Language.get('boolean'),
@@ -222,7 +236,7 @@ export function getDefaultField({
 		},
 		label: {
 			[Liferay.ThemeDisplay.getDefaultLanguageId()]:
-				label ?? FIELD_TYPE_LABEL[type],
+				label ?? getDefaultLanguageLabel(FIELD_TYPE_LANGUAGE_KEY[type]),
 			[Liferay.ThemeDisplay.getLanguageId()]:
 				label ?? FIELD_TYPE_LABEL[type],
 		},
