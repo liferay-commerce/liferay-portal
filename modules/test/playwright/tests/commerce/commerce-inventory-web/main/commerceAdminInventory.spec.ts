@@ -198,6 +198,148 @@ test(
 );
 
 test(
+	'Add edit and remove an inventory item from a warehouse',
+	{tag: ['@COMMERCE-6207', '@LPD-87492']},
+	async ({apiHelpers, commerceAdminInventoryPage, page, site}) => {
+		const random = getRandomInt();
+		const skuName = `Sku${random}`;
+		const warehouseName = `WH${random}`;
+		const quantity = 50;
+		const safetyStockQuantity = 20;
+		const expectedAvailable = quantity - safetyStockQuantity;
+
+		await test.step('Set up catalog, channel, product and warehouse via API', async () => {
+			const catalog =
+				await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+			const channel =
+				await apiHelpers.headlessCommerceAdminChannel.postChannel({
+					siteGroupId: site.id,
+				});
+
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				skus: [
+					{
+						cost: 0,
+						price: 10,
+						published: true,
+						purchasable: true,
+						sku: skuName,
+					},
+				],
+			});
+
+			const warehouse =
+				await apiHelpers.headlessCommerceAdminInventoryApiHelper.postWarehouses(
+					{
+						active: true,
+						latitude: 12345,
+						longitude: 12345,
+						name: {en_US: warehouseName},
+					}
+				);
+
+			await apiHelpers.headlessCommerceAdminInventoryApiHelper.postWarehousesChannels(
+				warehouse.id,
+				channel.id
+			);
+		});
+
+		await test.step('Create inventory item from the Inventory + modal', async () => {
+			await commerceAdminInventoryPage.goto();
+			await commerceAdminInventoryPage.createInventoryItem({
+				quantity,
+				sku: skuName,
+				warehouseName,
+			});
+
+			await expect(
+				await commerceAdminInventoryPage.tableRowLink({
+					colIndex: 0,
+					rowValue: skuName,
+				})
+			).toBeVisible();
+		});
+
+		await test.step('Open SKU details and verify warehouse breakdown', async () => {
+			await (
+				await commerceAdminInventoryPage.tableRowLink({
+					colIndex: 0,
+					rowValue: skuName,
+				})
+			).click();
+
+			await expect(
+				await commerceAdminInventoryPage.warehouseBreakdownTableCell(
+					warehouseName,
+					3
+				)
+			).toHaveText(String(quantity));
+		});
+
+		await test.step('Edit safety stock quantity in the side panel', async () => {
+			await (
+				await commerceAdminInventoryPage.tableRowLink({
+					colIndex: 0,
+					rowValue: warehouseName,
+				})
+			).click();
+
+			await commerceAdminInventoryPage.sidePanelSafetyStockField.fill(
+				String(safetyStockQuantity)
+			);
+			await commerceAdminInventoryPage.sidePanelSaveButton.click();
+
+			await waitForAlert(
+				commerceAdminInventoryPage.sidePanelFrameLocator
+			);
+		});
+
+		await test.step('Verify safety stock and available quantity after edit', async () => {
+			await page.reload();
+
+			await expect(
+				await commerceAdminInventoryPage.warehouseBreakdownTableCell(
+					warehouseName,
+					2
+				)
+			).toHaveText(String(safetyStockQuantity));
+			await expect(
+				await commerceAdminInventoryPage.warehouseBreakdownTableCell(
+					warehouseName,
+					3
+				)
+			).toHaveText(String(expectedAvailable));
+		});
+
+		await test.step('Delete the inventory item from the inventory list', async () => {
+			await commerceAdminInventoryPage.goto();
+
+			await expect(
+				await commerceAdminInventoryPage.tableRowLink({
+					colIndex: 0,
+					rowValue: skuName,
+				})
+			).toBeVisible();
+
+			await (
+				await commerceAdminInventoryPage.commerceInventoryTableActions(
+					skuName
+				)
+			).click();
+			await commerceAdminInventoryPage.deleteItemMenuItem.click();
+
+			await waitForAlert(page);
+
+			await expect(
+				commerceAdminInventoryPage.emptyTableMessage
+			).toBeVisible();
+		});
+	}
+);
+
+test(
 	'Verify inventory for SKU with UOM is deleted',
 	{tag: ['@LPD-77826']},
 	async ({apiHelpers, commerceAdminInventoryPage, page, site}) => {
