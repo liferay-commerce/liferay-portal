@@ -9,10 +9,8 @@
 
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
 
-<%@ taglib uri="http://liferay.com/tld/adaptive-media-image" prefix="liferay-adaptive-media" %><%@
-taglib uri="http://liferay.com/tld/aui" prefix="aui" %><%@
+<%@ taglib uri="http://liferay.com/tld/aui" prefix="aui" %><%@
 taglib uri="http://liferay.com/tld/clay" prefix="clay" %><%@
-taglib uri="http://liferay.com/tld/commerce-ui" prefix="commerce-ui" %><%@
 taglib uri="http://liferay.com/tld/frontend" prefix="liferay-frontend" %><%@
 taglib uri="http://liferay.com/tld/frontend-data-set" prefix="frontend-data-set" %><%@
 taglib uri="http://liferay.com/tld/portlet" prefix="liferay-portlet" %><%@
@@ -59,34 +57,27 @@ page import="com.liferay.commerce.model.CommerceOrder" %><%@
 page import="com.liferay.commerce.model.CommerceOrderPayment" %><%@
 page import="com.liferay.commerce.model.CommerceShippingMethod" %><%@
 page import="com.liferay.commerce.model.CommerceShippingOption" %><%@
-page import="com.liferay.commerce.order.CommerceOrderValidatorResult" %><%@
 page import="com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel" %><%@
 page import="com.liferay.commerce.price.CommerceOrderPrice" %><%@
-page import="com.liferay.commerce.price.CommerceProductPrice" %><%@
 page import="com.liferay.commerce.pricing.constants.CommercePricingConstants" %><%@
-page import="com.liferay.commerce.product.model.CPDefinition" %><%@
-page import="com.liferay.commerce.product.model.CPInstance" %><%@
 page import="com.liferay.commerce.term.model.CommerceTermEntry" %><%@
 page import="com.liferay.commerce.util.CommerceCheckoutStep" %><%@
+page import="com.liferay.petra.string.StringBundler" %><%@
 page import="com.liferay.petra.string.StringPool" %><%@
 page import="com.liferay.portal.kernel.bean.BeanParamUtil" %><%@
 page import="com.liferay.portal.kernel.language.LanguageUtil" %><%@
 page import="com.liferay.portal.kernel.model.Country" %><%@
 page import="com.liferay.portal.kernel.model.Region" %><%@
 page import="com.liferay.portal.kernel.sanitizer.SanitizerUtil" %><%@
-page import="com.liferay.portal.kernel.util.BigDecimalUtil" %><%@
 page import="com.liferay.portal.kernel.util.CalendarFactoryUtil" %><%@
 page import="com.liferay.portal.kernel.util.Constants" %><%@
 page import="com.liferay.portal.kernel.util.FastDateFormatFactoryUtil" %><%@
 page import="com.liferay.portal.kernel.util.GetterUtil" %><%@
 page import="com.liferay.portal.kernel.util.HashMapBuilder" %><%@
 page import="com.liferay.portal.kernel.util.HtmlUtil" %><%@
-page import="com.liferay.portal.kernel.util.KeyValuePair" %><%@
 page import="com.liferay.portal.kernel.util.ParamUtil" %><%@
 page import="com.liferay.portal.kernel.util.Validator" %><%@
 page import="com.liferay.portal.kernel.util.WebKeys" %>
-
-<%@ page import="java.math.BigDecimal" %>
 
 <%@ page import="java.text.Format" %>
 
@@ -94,9 +85,7 @@ page import="com.liferay.portal.kernel.util.WebKeys" %>
 page import="java.util.Date" %><%@
 page import="java.util.Iterator" %><%@
 page import="java.util.List" %><%@
-page import="java.util.Map" %><%@
-page import="java.util.Objects" %><%@
-page import="java.util.StringJoiner" %>
+page import="java.util.Objects" %>
 
 <liferay-frontend:defineObjects />
 
