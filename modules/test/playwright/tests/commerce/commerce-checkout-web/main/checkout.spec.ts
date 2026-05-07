@@ -2556,3 +2556,101 @@ test(
 		});
 	}
 );
+
+test(
+	'Checkout widget order summary should be a headless display',
+	{tag: ['@LPD-89167']},
+	async ({apiHelpers, checkoutPage, page, site, widgetPagePage}) => {
+		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: site.id,
+			title: getRandomString(),
+		});
+
+		const channel =
+			await apiHelpers.headlessCommerceAdminChannel.postChannel({
+				siteGroupId: site.id,
+			});
+
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
+				name: getRandomString(),
+			});
+
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				name: {en_US: 'Product'},
+			});
+
+		const productSkus = await apiHelpers.headlessCommerceAdminCatalog
+			.getProduct(product.productId)
+			.then((product) => {
+				return product.skus;
+			});
+
+		const sku = productSkus[0];
+
+		const account = await apiHelpers.headlessAdminUser.postAccount({
+			name: getRandomString(),
+			type: 'person',
+		});
+
+		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
+			account.id,
+			['test@liferay.com']
+		);
+
+		await apiHelpers.headlessCommerceDeliveryCart.postCart(
+			{
+				accountId: account.id,
+				cartItems: [
+					{
+						options: '[]',
+						quantity: 1,
+						replacedSkuId: 0,
+						skuId: sku.id,
+					},
+				],
+				currencyCode: 'USD',
+			},
+			channel.id
+		);
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+
+		await widgetPagePage.addPortlet('Checkout');
+
+		const phoneNumber = '5551234';
+		const region = 'California';
+		const zipCode = '12345';
+
+		await checkoutPage.addressInput.fill('123 Sesame St');
+		await checkoutPage.cityInput.fill('Los Angeles');
+		await checkoutPage.countryInput.selectOption({label: 'United States'});
+		await checkoutPage.nameInput.fill('John Doe');
+		await checkoutPage.phoneNumberInput.fill(phoneNumber);
+		await checkoutPage.regionInput.selectOption({label: region});
+		await checkoutPage.zipInput.fill(zipCode);
+
+		await checkoutPage.continueButton.click();
+
+		await expect(
+			page.getByRole('gridcell', {exact: true, name: 'SKU'})
+		).toBeVisible();
+
+		await page
+			.getByRole('button', {
+				exact: true,
+				name: 'Manage Columns Visibility',
+			})
+			.click();
+
+		await page.getByRole('menuitem', {name: 'SKU'}).click();
+
+		await page.keyboard.press('Escape');
+
+		await expect(
+			page.getByRole('gridcell', {exact: true, name: 'SKU'})
+		).not.toBeVisible();
+	}
+);
