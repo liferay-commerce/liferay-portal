@@ -192,6 +192,8 @@ test(
 		const editedTitle = `edited-${getRandomString()}.png`;
 
 		await test.step('Edit the added attachment from the row dropdown', async () => {
+			await page.waitForTimeout(2000);
+
 			await expect(async () => {
 				await commerceAdminOrderAttachmentsPage
 					.rowActionsButton(addedTitle)
@@ -223,6 +225,8 @@ test(
 		});
 
 		await test.step('Delete the edited attachment from the row dropdown', async () => {
+			await page.waitForTimeout(2000);
+
 			await expect(async () => {
 				await commerceAdminOrderAttachmentsPage
 					.rowActionsButton(editedTitle)
@@ -338,6 +342,8 @@ test(
 		});
 
 		await test.step('Verify the file has the checkbox set', async () => {
+			await page.waitForTimeout(2000);
+
 			await expect(async () => {
 				await commerceAdminOrderAttachmentsPage
 					.rowActionsButton(addedTitle)
@@ -489,6 +495,8 @@ test(
 		});
 
 		await test.step('Delete the attachment from the admin panel', async () => {
+			await page.waitForTimeout(2000);
+
 			await expect(async () => {
 				await commerceAdminOrderAttachmentsPage
 					.rowActionsButton(attachmentTitle)
