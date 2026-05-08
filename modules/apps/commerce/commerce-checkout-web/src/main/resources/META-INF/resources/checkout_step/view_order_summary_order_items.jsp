@@ -13,10 +13,12 @@ OrderSummaryCheckoutStepDisplayContext orderSummaryCheckoutStepDisplayContext = 
 CommerceOrder commerceOrder = orderSummaryCheckoutStepDisplayContext.getCommerceOrder();
 %>
 
-<frontend-data-set:headless-display
-	apiURL='<%= StringBundler.concat("/o/headless-commerce-delivery-cart/v1.0/carts/", commerceOrder.getCommerceOrderId(), "/items") %>'
-	id="com_liferay_commerce_order_content_web_internal_fragment_renderer_OrderItemsDataSetFragmentRenderer-pendingOrderItems"
-	nestedItemsKey="id"
-	nestedItemsReferenceKey="cartItems"
-	selectedItemsKey="id"
-/>
+<div class="commerce-checkout-summary-body" id="<portlet:namespace />entriesContainer">
+	<frontend-data-set:headless-display
+		apiURL='<%= StringBundler.concat("/o/headless-commerce-delivery-cart/v1.0/carts/", commerceOrder.getCommerceOrderId(), "/items") %>'
+		id="com_liferay_commerce_order_content_web_internal_fragment_renderer_OrderItemsDataSetFragmentRenderer-pendingOrderItems"
+		nestedItemsKey="id"
+		nestedItemsReferenceKey="cartItems"
+		selectedItemsKey="id"
+	/>
+</div>
