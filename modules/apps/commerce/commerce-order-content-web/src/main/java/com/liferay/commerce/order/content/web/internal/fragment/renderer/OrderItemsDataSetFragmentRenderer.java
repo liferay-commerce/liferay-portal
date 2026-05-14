@@ -7,6 +7,7 @@ package com.liferay.commerce.order.content.web.internal.fragment.renderer;
 
 import com.liferay.commerce.constants.CommercePortletKeys;
 import com.liferay.commerce.model.CommerceOrder;
+import com.liferay.commerce.order.CommerceOrderValidatorRegistry;
 import com.liferay.commerce.order.content.web.internal.constants.CommerceOrderFragmentFDSNames;
 import com.liferay.commerce.product.url.CPFriendlyURL;
 import com.liferay.commerce.service.CommerceOrderService;
@@ -146,6 +147,13 @@ public class OrderItemsDataSetFragmentRenderer implements FragmentRenderer {
 			httpServletRequest.setAttribute(
 				"liferay-commerce:order-data-set:apiURL",
 				_getAPIURL(commerceOrder.getCommerceOrderId(), fdsName));
+			httpServletRequest.setAttribute(
+				"liferay-commerce:order-data-set:commerceOrder", commerceOrder);
+			httpServletRequest.setAttribute(
+				"liferay-commerce:order-data-set:commerceOrderValidatorResults",
+				_commerceOrderValidatorRegistry.
+					getCommerceOrderValidatorResults(
+						fragmentRendererContext.getLocale(), commerceOrder));
 			httpServletRequest.setAttribute(
 				"liferay-commerce:order-data-set:name", fdsName);
 
@@ -327,6 +335,9 @@ public class OrderItemsDataSetFragmentRenderer implements FragmentRenderer {
 
 	@Reference
 	private CommerceOrderService _commerceOrderService;
+
+	@Reference
+	private CommerceOrderValidatorRegistry _commerceOrderValidatorRegistry;
 
 	@Reference
 	private CPFriendlyURL _cpFriendlyURL;

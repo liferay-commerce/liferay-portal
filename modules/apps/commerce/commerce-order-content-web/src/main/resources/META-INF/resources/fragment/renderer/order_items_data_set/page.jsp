@@ -7,6 +7,33 @@
 
 <%@ include file="/fragment/renderer/order_items_data_set/init.jsp" %>
 
+<c:if test="<%= !commerceOrderValidatorResultsMap.isEmpty() %>">
+	<%
+	List<CommerceOrderItem> commerceOrderItems = commerceOrder.getCommerceOrderItems();
+
+	for (CommerceOrderItem commerceOrderItem : commerceOrderItems) {
+		List<CommerceOrderValidatorResult> commerceOrderValidatorResults = commerceOrderValidatorResultsMap.get(commerceOrderItem.getCommerceOrderItemId());
+
+		for (CommerceOrderValidatorResult commerceOrderValidatorResult : commerceOrderValidatorResults) {
+			StringBundler sb = new StringBundler(4);
+			sb.append(HtmlUtil.escape(commerceOrderItem.getName(languageId)));
+			sb.append(StringPool.COLON);
+			sb.append(StringPool.SPACE);
+			sb.append(HtmlUtil.escape(commerceOrderValidatorResult.getLocalizedMessage()));
+	%>
+
+	<liferay-ui:error>
+		<div class="alert-danger commerce-alert-danger">
+			<span><liferay-ui:message key="<%= sb.toString() %>" /></span>
+		</div>
+	</liferay-ui:error>
+
+	<%
+		}
+	}
+	%>
+</c:if>
+
 <frontend-data-set:headless-display
 	additionalProps="<%= additionalProps %>"
 	apiURL="<%= apiURL %>"

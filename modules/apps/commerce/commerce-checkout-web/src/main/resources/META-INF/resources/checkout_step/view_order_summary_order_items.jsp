@@ -11,7 +11,33 @@
 OrderSummaryCheckoutStepDisplayContext orderSummaryCheckoutStepDisplayContext = (OrderSummaryCheckoutStepDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
 
 CommerceOrder commerceOrder = orderSummaryCheckoutStepDisplayContext.getCommerceOrder();
+
+Map<Long, List<CommerceOrderValidatorResult>> commerceOrderValidatorResultsMap = orderSummaryCheckoutStepDisplayContext.getCommerceOrderValidatorResultsMap();
 %>
+
+<c:if test="<%= !commerceOrderValidatorResultsMap.isEmpty() %>">
+	<liferay-ui:error exception="<%= CommerceOrderValidatorException.class %>">
+
+		<%
+		List<CommerceOrderItem> commerceOrderItems = commerceOrder.getCommerceOrderItems();
+
+		for (CommerceOrderItem commerceOrderItem : commerceOrderItems) {
+			List<CommerceOrderValidatorResult> commerceOrderValidatorResults = commerceOrderValidatorResultsMap.get(commerceOrderItem.getCommerceOrderItemId());
+
+			for (CommerceOrderValidatorResult commerceOrderValidatorResult : commerceOrderValidatorResults) {
+		%>
+
+				<div class="alert-danger commerce-alert-danger">
+					<liferay-ui:message key="<%= HtmlUtil.escape(commerceOrderValidatorResult.getLocalizedMessage()) %>" />
+				</div>
+
+		<%
+			}
+		}
+		%>
+
+	</liferay-ui:error>
+</c:if>
 
 <div class="commerce-checkout-summary-body" id="<portlet:namespace />entriesContainer">
 	<frontend-data-set:headless-display
