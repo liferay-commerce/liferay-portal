@@ -13,6 +13,8 @@ OrderSummaryCheckoutStepDisplayContext orderSummaryCheckoutStepDisplayContext = 
 CommerceOrder commerceOrder = orderSummaryCheckoutStepDisplayContext.getCommerceOrder();
 
 Map<Long, List<CommerceOrderValidatorResult>> commerceOrderValidatorResultsMap = orderSummaryCheckoutStepDisplayContext.getCommerceOrderValidatorResultsMap();
+
+String languageId = LanguageUtil.getLanguageId(locale);
 %>
 
 <c:if test="<%= !commerceOrderValidatorResultsMap.isEmpty() %>">
@@ -25,10 +27,16 @@ Map<Long, List<CommerceOrderValidatorResult>> commerceOrderValidatorResultsMap =
 			List<CommerceOrderValidatorResult> commerceOrderValidatorResults = commerceOrderValidatorResultsMap.get(commerceOrderItem.getCommerceOrderItemId());
 
 			for (CommerceOrderValidatorResult commerceOrderValidatorResult : commerceOrderValidatorResults) {
+				StringBundler sb = new StringBundler(4);
+
+				sb.append(HtmlUtil.escape(commerceOrderItem.getName(languageId)));
+				sb.append(StringPool.COLON);
+				sb.append(StringPool.SPACE);
+				sb.append(HtmlUtil.escape(commerceOrderValidatorResult.getLocalizedMessage()));
 		%>
 
 				<div class="alert-danger commerce-alert-danger">
-					<liferay-ui:message key="<%= HtmlUtil.escape(commerceOrderValidatorResult.getLocalizedMessage()) %>" />
+					<span><liferay-ui:message key="<%= sb.toString() %>" /></span>
 				</div>
 
 		<%

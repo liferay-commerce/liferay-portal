@@ -7,13 +7,14 @@
 
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 
-<%@ taglib uri="http://liferay.com/tld/frontend-data-set" prefix="frontend-data-set" %><%@
+<%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
+
+<%@ taglib uri="http://liferay.com/tld/frontend" prefix="liferay-frontend" %><%@
+taglib uri="http://liferay.com/tld/frontend-data-set" prefix="frontend-data-set" %><%@
 taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %><%@
 taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 
-
-<%@ page import="com.liferay.commerce.exception.CommerceOrderValidatorException" %><%@
-page import="com.liferay.commerce.model.CommerceOrder" %><%@
+<%@ page import="com.liferay.commerce.model.CommerceOrder" %><%@
 page import="com.liferay.commerce.model.CommerceOrderItem" %><%@
 page import="com.liferay.commerce.order.CommerceOrderValidatorResult" %><%@
 page import="com.liferay.commerce.order.content.web.internal.constants.CommerceOrderFragmentFDSNames" %><%@
