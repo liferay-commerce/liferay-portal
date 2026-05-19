@@ -76,6 +76,9 @@ public abstract class BaseProductDisplayPageResourceImpl
 	 *
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/product-display-pages/{id}'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Deletes the product display page mapping by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls `CPDisplayLayoutService.deleteCPDisplayLayout`. Returns 404 if the entity does not exist; 409 if the entity has dependent state preventing deletion."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -152,6 +155,9 @@ public abstract class BaseProductDisplayPageResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/channels/by-externalReferenceCode/{externalReferenceCode}/product-display-pages'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Lists the ProductDisplayPage entries belonging to the parent Channel, addressed by external reference code (ERC). Supports `page`, `pageSize`, `search`, `filter` (OData), and `sort`. Calls `CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode`. Returns 404 if no entity matches the supplied identifier."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -215,6 +221,9 @@ public abstract class BaseProductDisplayPageResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/channels/{id}/product-display-pages'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Lists the ProductDisplayPage entries belonging to the parent Channel, addressed by internal ID. Supports `page`, `pageSize`, `search`, `filter` (OData), and `sort`. Calls `CommerceChannelLocalService.getCommerceChannel`. Returns 404 if no entity matches the supplied identifier."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -275,6 +284,9 @@ public abstract class BaseProductDisplayPageResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/product-display-pages/{id}'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Retrieves the product display page mapping by its internal ID. Calls `CPDisplayLayoutService.getCPDisplayLayout`. Returns 404 if no entity matches the supplied identifier."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -307,6 +319,9 @@ public abstract class BaseProductDisplayPageResourceImpl
 	 *
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/product-display-pages/{id}' -d $'{"pageTemplateUuid": ___, "pageUuid": ___, "productExternalReferenceCode": ___, "productId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Partially updates the product display page mapping addressed by its internal ID. Calls `CPDisplayLayoutService.updateCPDisplayLayout`. Uses JSON Merge Patch semantics, so only the fields supplied in the request body are replaced and omitted fields are left unchanged. Returns 404 if no mapping matches the supplied ID; 422 if the resulting state would fail domain validation."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -341,6 +356,9 @@ public abstract class BaseProductDisplayPageResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/channels/by-externalReferenceCode/{externalReferenceCode}/product-display-pages' -d $'{"pageTemplateUuid": ___, "pageUuid": ___, "productExternalReferenceCode": ___, "productId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Creates a new product display page mapping under the parent Channel, addressed by external reference code (ERC). Calls `CPDisplayLayoutService.addCPDisplayLayout`. Returns 422 if the request body fails domain validation. Returns 201 for newly created entities."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -378,6 +396,9 @@ public abstract class BaseProductDisplayPageResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/channels/{id}/product-display-pages' -d $'{"pageTemplateUuid": ___, "pageUuid": ___, "productExternalReferenceCode": ___, "productId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Creates a new product display page mapping under the parent Channel, addressed by internal ID. Calls `CPDisplayLayoutService.addCPDisplayLayout`. Returns 422 if the request body fails domain validation. Returns 201 for newly created entities."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -1156,4 +1177,4 @@ public abstract class BaseProductDisplayPageResourceImpl
 		LogFactoryUtil.getLog(BaseProductDisplayPageResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1423868152
+// LIFERAY-REST-BUILDER-HASH:883442138

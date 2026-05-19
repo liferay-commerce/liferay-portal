@@ -77,6 +77,9 @@ public abstract class BaseChannelResourceImpl
 	 *
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/channels/{channelId}'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Deletes the commerce channel by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls `CommerceChannelService.deleteCommerceChannel`. Returns 404 if the entity does not exist; 409 if the entity has dependent state preventing deletion."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -149,6 +152,9 @@ public abstract class BaseChannelResourceImpl
 	 *
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/channels/by-externalReferenceCode/{externalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Deletes the commerce channel by its external reference code (ERC). Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls `CommerceChannelService.deleteCommerceChannel`. Returns 404 if the entity does not exist; 409 if the entity has dependent state preventing deletion."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -179,6 +185,9 @@ public abstract class BaseChannelResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/account-address-channels/{accountAddressChannelId}/channel'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Retrieves the commerce channel associated with the parent AccountAddressChannel, addressed by internal ID. Calls `CommerceChannelRelService.getCommerceChannelRel`. Returns 404 if no entity matches the supplied identifier."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -212,7 +221,7 @@ public abstract class BaseChannelResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/channels/{channelId}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrive information of the given Channel."
+		description = "Retrieves the commerce channel by its internal ID. Calls `CommerceChannelService.fetchCommerceChannel`. Returns 404 if no entity matches the supplied identifier."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -245,7 +254,7 @@ public abstract class BaseChannelResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/channels/by-externalReferenceCode/{externalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrive information of the given Channel."
+		description = "Retrieves the commerce channel by its external reference code (ERC). Calls `CommerceChannelService.fetchCommerceChannelByExternalReferenceCode`. Returns 404 if no entity matches the supplied identifier."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -280,7 +289,7 @@ public abstract class BaseChannelResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/channels'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieves channels."
+		description = "Lists every commerce channel visible to the caller. Calls `CommerceChannelService.search`; results are scoped to channels the caller can read. Supports `page`, `pageSize`, `search` (matches the channel name), `filter` (OData v4 syntax; filterable fields are `name` and `siteGroupId`), and `sort` (sortable fields are `name` and `siteGroupId`)."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -330,8 +339,11 @@ public abstract class BaseChannelResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/channels/{channelId}' -d $'{"accountExternalReferenceCode": ___, "accountId": ___, "currencyCode": ___, "currencyExternalReferenceCode": ___, "currencyId": ___, "externalReferenceCode": ___, "id": ___, "name": ___, "siteGroupId": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/channels/{channelId}' -d $'{"accountExternalReferenceCode": ___, "accountId": ___, "currencyCode": ___, "currencyExternalReferenceCode": ___, "currencyId": ___, "externalReferenceCode": ___, "name": ___, "siteGroupId": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Partially updates the commerce channel by its internal ID — only the fields supplied in the body are replaced; omitted fields are left unchanged. A resolvable `currencyCode` (or matching `currencyId` / `currencyExternalReferenceCode`) is applied; an unresolved code is silently ignored and the channel's current currency is preserved. Calls `CommerceChannelService.updateCommerceChannel`. Uses JSON Merge Patch semantics. Returns 404 if the entity does not exist; 422 if the resulting state would fail domain validation."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -405,8 +417,11 @@ public abstract class BaseChannelResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/channels/by-externalReferenceCode/{externalReferenceCode}' -d $'{"accountExternalReferenceCode": ___, "accountId": ___, "currencyCode": ___, "currencyExternalReferenceCode": ___, "currencyId": ___, "externalReferenceCode": ___, "id": ___, "name": ___, "siteGroupId": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/channels/by-externalReferenceCode/{externalReferenceCode}' -d $'{"accountExternalReferenceCode": ___, "accountId": ___, "currencyCode": ___, "currencyExternalReferenceCode": ___, "currencyId": ___, "externalReferenceCode": ___, "name": ___, "siteGroupId": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Partially updates the commerce channel by its external reference code (ERC) — only the fields supplied in the body are replaced; omitted fields are left unchanged. A resolvable `currencyCode` (or matching `currencyId` / `currencyExternalReferenceCode`) is applied; an unresolved code is silently ignored and the channel's current currency is preserved. Calls `CommerceChannelService.updateCommerceChannel`. Uses JSON Merge Patch semantics. Returns 404 if the entity does not exist; 422 if the resulting state would fail domain validation."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -484,8 +499,11 @@ public abstract class BaseChannelResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/channels' -d $'{"accountExternalReferenceCode": ___, "accountId": ___, "currencyCode": ___, "currencyExternalReferenceCode": ___, "currencyId": ___, "externalReferenceCode": ___, "id": ___, "name": ___, "siteGroupId": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/channels' -d $'{"accountExternalReferenceCode": ___, "accountId": ___, "currencyCode": ___, "currencyExternalReferenceCode": ___, "currencyId": ___, "externalReferenceCode": ___, "name": ___, "siteGroupId": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Creates a new commerce channel and allocates a fresh internal ID via the portal counter. Calls `CommerceChannelService.addCommerceChannel`. This endpoint is not idempotent on `externalReferenceCode`; for upsert behavior keyed on ERC use `PUT /channels/by-externalReferenceCode/{externalReferenceCode}` instead. Returns 409 when `externalReferenceCode` conflicts with an existing channel; 422 when the request body fails domain validation."
+	)
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Channel")}
 	)
@@ -624,8 +642,11 @@ public abstract class BaseChannelResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PUT' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/channels/{channelId}' -d $'{"accountExternalReferenceCode": ___, "accountId": ___, "currencyCode": ___, "currencyExternalReferenceCode": ___, "currencyId": ___, "externalReferenceCode": ___, "id": ___, "name": ___, "siteGroupId": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PUT' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/channels/{channelId}' -d $'{"accountExternalReferenceCode": ___, "accountId": ___, "currencyCode": ___, "currencyExternalReferenceCode": ___, "currencyId": ___, "externalReferenceCode": ___, "name": ___, "siteGroupId": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Fully replaces the commerce channel by its internal ID — every mutable field is set from the body, and omitted optional fields are reset to their default. Falls back to a new-channel create when the supplied ID does not match an existing channel. The supplied `currencyCode` (or matching `currencyId` / `currencyExternalReferenceCode`) must resolve to an existing CommerceCurrency; an unresolved code returns 404. Calls `CommerceChannelService.updateCommerceChannel`. Returns 404 when the entity (or currency) cannot be resolved; 422 if the resulting state would fail domain validation."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -700,8 +721,11 @@ public abstract class BaseChannelResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PUT' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/channels/by-externalReferenceCode/{externalReferenceCode}' -d $'{"accountExternalReferenceCode": ___, "accountId": ___, "currencyCode": ___, "currencyExternalReferenceCode": ___, "currencyId": ___, "externalReferenceCode": ___, "id": ___, "name": ___, "siteGroupId": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PUT' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/channels/by-externalReferenceCode/{externalReferenceCode}' -d $'{"accountExternalReferenceCode": ___, "accountId": ___, "currencyCode": ___, "currencyExternalReferenceCode": ___, "currencyId": ___, "externalReferenceCode": ___, "name": ___, "siteGroupId": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Fully replaces the commerce channel by its external reference code (ERC) — every mutable field is set from the body, and omitted optional fields are reset to their default. Upserts when the ERC does not match an existing channel. The supplied `currencyCode` (or matching `currencyId` / `currencyExternalReferenceCode`) must resolve to an existing CommerceCurrency; an unresolved code returns 404. Calls `CommerceChannelService.addOrUpdateCommerceChannel`. Returns 404 when the currency cannot be resolved; 422 if the resulting state would fail domain validation."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -1527,4 +1551,4 @@ public abstract class BaseChannelResourceImpl
 		LogFactoryUtil.getLog(BaseChannelResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-178144586
+// LIFERAY-REST-BUILDER-HASH:-1585988828

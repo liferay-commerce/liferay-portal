@@ -73,6 +73,9 @@ public abstract class BasePaymentMethodGroupRelOrderTypeResourceImpl
 	 *
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/payment-method-group-rel-order-types/{paymentMethodGroupRelOrderTypeId}'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Deletes the payment-method-group-to-order-type relation by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls `CommercePaymentMethodGroupRelQualifierService.deleteCommercePaymentMethodGroupRelQualifier`. Returns 404 if the entity does not exist; 409 if the entity has dependent state preventing deletion."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -156,6 +159,9 @@ public abstract class BasePaymentMethodGroupRelOrderTypeResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/payment-method-group-rels/{id}/payment-method-group-rel-order-types'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Lists the PaymentMethodGroupRelOrderType entries belonging to the parent PaymentMethodGroupRel, addressed by internal ID. Supports `page`, `pageSize`, `search`, `filter` (OData), and `sort`. Calls `CommercePaymentMethodGroupRelService.getCommercePaymentMethodGroupRel`. Returns 404 if no entity matches the supplied identifier."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -219,8 +225,11 @@ public abstract class BasePaymentMethodGroupRelOrderTypeResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/payment-method-group-rels/{id}/payment-method-group-rel-order-types' -d $'{"orderTypeExternalReferenceCode": ___, "orderTypeId": ___, "paymentMethodGroupRelId": ___, "priority": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/payment-method-group-rels/{id}/payment-method-group-rel-order-types' -d $'{"orderTypeExternalReferenceCode": ___, "orderTypeId": ___, "paymentMethodGroupRelId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Creates a new payment-method-group-to-order-type relation under the parent PaymentMethodGroupRel, addressed by internal ID. Calls `CommercePaymentMethodGroupRelQualifierService.addCommercePaymentMethodGroupRelQualifier`. Returns 422 if the request body fails domain validation. Returns 201 for newly created entities."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -951,4 +960,4 @@ public abstract class BasePaymentMethodGroupRelOrderTypeResourceImpl
 			BasePaymentMethodGroupRelOrderTypeResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1498836802
+// LIFERAY-REST-BUILDER-HASH:-2000156336

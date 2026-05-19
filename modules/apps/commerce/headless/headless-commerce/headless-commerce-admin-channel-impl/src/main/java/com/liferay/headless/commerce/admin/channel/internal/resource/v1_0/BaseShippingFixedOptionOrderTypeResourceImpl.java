@@ -72,6 +72,9 @@ public abstract class BaseShippingFixedOptionOrderTypeResourceImpl
 	 *
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/shipping-fixed-option-order-types/{shippingFixedOptionOrderTypeId}'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Deletes the fixed-shipping-option-to-order-type relation by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls `CommerceShippingFixedOptionQualifierService.deleteCommerceShippingFixedOptionQualifier`. Returns 404 if the entity does not exist; 409 if the entity has dependent state preventing deletion."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -155,6 +158,9 @@ public abstract class BaseShippingFixedOptionOrderTypeResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/shipping-fixed-options/{id}/shipping-fixed-option-order-types'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Lists the ShippingFixedOptionOrderType entries belonging to the parent ShippingFixedOption, addressed by internal ID. Supports `page`, `pageSize`, `search`, `filter` (OData), and `sort`. Calls `CommerceShippingFixedOptionService.fetchCommerceShippingFixedOption`. Returns 404 if no entity matches the supplied identifier."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -218,8 +224,11 @@ public abstract class BaseShippingFixedOptionOrderTypeResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/shipping-fixed-options/{id}/shipping-fixed-option-order-types' -d $'{"orderTypeExternalReferenceCode": ___, "orderTypeId": ___, "priority": ___, "shippingFixedOptionId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-channel/v1.0/shipping-fixed-options/{id}/shipping-fixed-option-order-types' -d $'{"orderTypeExternalReferenceCode": ___, "orderTypeId": ___, "shippingFixedOptionId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Creates a new fixed-shipping-option-to-order-type relation under the parent ShippingFixedOption, addressed by internal ID. Calls `CommerceShippingFixedOptionQualifierService.addCommerceShippingFixedOptionQualifier`. Returns 422 if the request body fails domain validation. Returns 201 for newly created entities."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -950,4 +959,4 @@ public abstract class BaseShippingFixedOptionOrderTypeResourceImpl
 			BaseShippingFixedOptionOrderTypeResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-487497906
+// LIFERAY-REST-BUILDER-HASH:-15016794

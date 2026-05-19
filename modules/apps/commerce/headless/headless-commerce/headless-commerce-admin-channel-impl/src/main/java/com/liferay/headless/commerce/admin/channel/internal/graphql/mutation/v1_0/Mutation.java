@@ -168,7 +168,9 @@ public class Mutation {
 			taxCategoryResourceComponentServiceObjects;
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the account-address-channel binding by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls `CommerceChannelRelService.deleteCommerceChannelRel`. Returns 404 if the entity does not exist; 409 if the entity has dependent state preventing deletion."
+	)
 	public boolean deleteAccountAddressChannel(
 			@GraphQLName("accountAddressChannelId") Long
 				accountAddressChannelId)
@@ -198,7 +200,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates a new account-address-channel binding under the parent AccountAddress, addressed by external reference code (ERC). Calls `AddressLocalService.fetchAddressByExternalReferenceCode`. Returns 422 if the request body fails domain validation. Returns 201 for newly created entities."
+	)
 	public AccountAddressChannel
 			createAccountAddressByExternalReferenceCodeAccountAddressChannel(
 				@GraphQLName("externalReferenceCode") String
@@ -216,7 +220,9 @@ public class Mutation {
 						externalReferenceCode, accountAddressChannel));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates a new account-address-channel binding under the parent AccountAddress, addressed by internal ID. Calls `CommerceChannelRelService.addCommerceChannelRel`. Returns 422 if the request body fails domain validation. Returns 201 for newly created entities."
+	)
 	public AccountAddressChannel createAccountAddressIdAccountAddressChannel(
 			@GraphQLName("addressId") Long addressId,
 			@GraphQLName("accountAddressChannel") AccountAddressChannel
@@ -232,7 +238,9 @@ public class Mutation {
 						addressId, accountAddressChannel));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the category display page mapping by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls `CPDisplayLayoutService.deleteCPDisplayLayout`. Returns 404 if the entity does not exist; 409 if the entity has dependent state preventing deletion."
+	)
 	public boolean deleteCategoryDisplayPage(@GraphQLName("id") Long id)
 		throws Exception {
 
@@ -259,7 +267,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Partially updates the category display page mapping addressed by its internal ID. Calls `CPDisplayLayoutService.updateCPDisplayLayout`. Uses JSON Merge Patch semantics, so only the fields supplied in the request body are replaced and omitted fields are left unchanged. Returns 404 if no mapping matches the supplied ID; 422 if the resulting state would fail domain validation."
+	)
 	public CategoryDisplayPage patchCategoryDisplayPage(
 			@GraphQLName("id") Long id,
 			@GraphQLName("categoryDisplayPage") CategoryDisplayPage
@@ -274,7 +284,9 @@ public class Mutation {
 					id, categoryDisplayPage));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates a new category display page mapping under the parent Channel, addressed by external reference code (ERC). Calls `CPDisplayLayoutService.addCPDisplayLayout`. Returns 422 if the request body fails domain validation. Returns 201 for newly created entities."
+	)
 	public CategoryDisplayPage
 			createChannelByExternalReferenceCodeCategoryDisplayPage(
 				@GraphQLName("externalReferenceCode") String
@@ -292,7 +304,9 @@ public class Mutation {
 						externalReferenceCode, categoryDisplayPage));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates a new category display page mapping under the parent Channel, addressed by internal ID. Calls `CPDisplayLayoutService.addCPDisplayLayout`. Returns 422 if the request body fails domain validation. Returns 201 for newly created entities."
+	)
 	public CategoryDisplayPage createChannelIdCategoryDisplayPage(
 			@GraphQLName("id") Long id,
 			@GraphQLName("categoryDisplayPage") CategoryDisplayPage
@@ -307,7 +321,9 @@ public class Mutation {
 					id, categoryDisplayPage));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the commerce channel by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls `CommerceChannelService.deleteCommerceChannel`. Returns 404 if the entity does not exist; 409 if the entity has dependent state preventing deletion."
+	)
 	public boolean deleteChannel(@GraphQLName("channelId") Long channelId)
 		throws Exception {
 
@@ -332,7 +348,9 @@ public class Mutation {
 				callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the commerce channel by its external reference code (ERC). Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls `CommerceChannelService.deleteCommerceChannel`. Returns 404 if the entity does not exist; 409 if the entity has dependent state preventing deletion."
+	)
 	public boolean deleteChannelByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode)
 		throws Exception {
@@ -347,7 +365,9 @@ public class Mutation {
 		return true;
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Partially updates the commerce channel by its internal ID — only the fields supplied in the body are replaced; omitted fields are left unchanged. A resolvable `currencyCode` (or matching `currencyId` / `currencyExternalReferenceCode`) is applied; an unresolved code is silently ignored and the channel's current currency is preserved. Calls `CommerceChannelService.updateCommerceChannel`. Uses JSON Merge Patch semantics. Returns 404 if the entity does not exist; 422 if the resulting state would fail domain validation."
+	)
 	public Channel patchChannel(
 			@GraphQLName("channelId") Long channelId,
 			@GraphQLName("channel") Channel channel)
@@ -360,7 +380,9 @@ public class Mutation {
 				channelId, channel));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Partially updates the commerce channel by its external reference code (ERC) — only the fields supplied in the body are replaced; omitted fields are left unchanged. A resolvable `currencyCode` (or matching `currencyId` / `currencyExternalReferenceCode`) is applied; an unresolved code is silently ignored and the channel's current currency is preserved. Calls `CommerceChannelService.updateCommerceChannel`. Uses JSON Merge Patch semantics. Returns 404 if the entity does not exist; 422 if the resulting state would fail domain validation."
+	)
 	public Channel patchChannelByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
 			@GraphQLName("channel") Channel channel)
@@ -374,7 +396,9 @@ public class Mutation {
 					externalReferenceCode, channel));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates a new commerce channel and allocates a fresh internal ID via the portal counter. Calls `CommerceChannelService.addCommerceChannel`. This endpoint is not idempotent on `externalReferenceCode`; for upsert behavior keyed on ERC use `PUT /channels/by-externalReferenceCode/{externalReferenceCode}` instead. Returns 409 when `externalReferenceCode` conflicts with an existing channel; 422 when the request body fails domain validation."
+	)
 	public Channel createChannel(@GraphQLName("channel") Channel channel)
 		throws Exception {
 
@@ -416,7 +440,9 @@ public class Mutation {
 				callbackURL, contentType, fieldNames));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Fully replaces the commerce channel by its internal ID — every mutable field is set from the body, and omitted optional fields are reset to their default. Falls back to a new-channel create when the supplied ID does not match an existing channel. The supplied `currencyCode` (or matching `currencyId` / `currencyExternalReferenceCode`) must resolve to an existing CommerceCurrency; an unresolved code returns 404. Calls `CommerceChannelService.updateCommerceChannel`. Returns 404 when the entity (or currency) cannot be resolved; 422 if the resulting state would fail domain validation."
+	)
 	public Channel updateChannel(
 			@GraphQLName("channelId") Long channelId,
 			@GraphQLName("channel") Channel channel)
@@ -441,7 +467,9 @@ public class Mutation {
 				callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Fully replaces the commerce channel by its external reference code (ERC) — every mutable field is set from the body, and omitted optional fields are reset to their default. Upserts when the ERC does not match an existing channel. The supplied `currencyCode` (or matching `currencyId` / `currencyExternalReferenceCode`) must resolve to an existing CommerceCurrency; an unresolved code returns 404. Calls `CommerceChannelService.addOrUpdateCommerceChannel`. Returns 404 when the currency cannot be resolved; 422 if the resulting state would fail domain validation."
+	)
 	public Channel updateChannelByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
 			@GraphQLName("channel") Channel channel)
@@ -455,7 +483,9 @@ public class Mutation {
 					externalReferenceCode, channel));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the channel-account binding by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls `CommerceChannelAccountEntryRelService.deleteCommerceChannelAccountEntryRel`. Returns 404 if the entity does not exist; 409 if the entity has dependent state preventing deletion."
+	)
 	public boolean deleteChannelAccount(
 			@GraphQLName("channelAccountId") Long channelAccountId)
 		throws Exception {
@@ -483,7 +513,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates a new channel-account binding under the parent Channel, addressed by external reference code (ERC). Calls `CommerceChannelAccountEntryRelService.addCommerceChannelAccountEntryRel`. Returns 422 if the request body fails domain validation. Returns 201 for newly created entities."
+	)
 	public ChannelAccount createChannelByExternalReferenceCodeChannelAccount(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
 			@GraphQLName("channelAccount") ChannelAccount channelAccount)
@@ -498,7 +530,9 @@ public class Mutation {
 						externalReferenceCode, channelAccount));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates a new channel-account binding under the parent Channel, addressed by internal ID. Calls `CommerceChannelAccountEntryRelService.addCommerceChannelAccountEntryRel`. Returns 422 if the request body fails domain validation. Returns 201 for newly created entities."
+	)
 	public ChannelAccount createChannelIdChannelAccount(
 			@GraphQLName("id") Long id,
 			@GraphQLName("channelAccount") ChannelAccount channelAccount)
@@ -512,7 +546,9 @@ public class Mutation {
 					id, channelAccount));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the channel-level default category display page bound to the parent Channel, addressed by external reference code (ERC). Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls `CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode`. Returns 404 if the entity does not exist; 409 if the entity has dependent state preventing deletion."
+	)
 	public boolean
 			deleteChannelByExternalReferenceCodeDefaultCategoryDisplayPage(
 				@GraphQLName("externalReferenceCode") String
@@ -530,7 +566,9 @@ public class Mutation {
 		return true;
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the channel-level default category display page bound to the parent Channel, addressed by internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls `CommerceChannelLocalService.getCommerceChannel`. Returns 404 if the entity does not exist; 409 if the entity has dependent state preventing deletion."
+	)
 	public boolean deleteChannelIdDefaultCategoryDisplayPage(
 			@GraphQLName("id") Long id)
 		throws Exception {
@@ -545,7 +583,9 @@ public class Mutation {
 		return true;
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates a new channel-level default category display page under the parent Channel, addressed by external reference code (ERC). Calls `CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode`. Returns 422 if the request body fails domain validation. Returns 201 for newly created entities."
+	)
 	public DefaultCategoryDisplayPage
 			createChannelByExternalReferenceCodeDefaultCategoryDisplayPage(
 				@GraphQLName("externalReferenceCode") String
@@ -563,7 +603,9 @@ public class Mutation {
 						externalReferenceCode, defaultCategoryDisplayPage));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates a new channel-level default category display page under the parent Channel, addressed by internal ID. Calls `CommerceChannelLocalService.getCommerceChannel`. Returns 422 if the request body fails domain validation. Returns 201 for newly created entities."
+	)
 	public DefaultCategoryDisplayPage createChannelIdDefaultCategoryDisplayPage(
 			@GraphQLName("id") Long id,
 			@GraphQLName("defaultCategoryDisplayPage")
@@ -579,7 +621,9 @@ public class Mutation {
 						id, defaultCategoryDisplayPage));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the channel-level default product display page bound to the parent Channel, addressed by external reference code (ERC). Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls `CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode`. Returns 404 if the entity does not exist; 409 if the entity has dependent state preventing deletion."
+	)
 	public boolean
 			deleteChannelByExternalReferenceCodeDefaultProductDisplayPage(
 				@GraphQLName("externalReferenceCode") String
@@ -597,7 +641,9 @@ public class Mutation {
 		return true;
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the channel-level default product display page bound to the parent Channel, addressed by internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls `CommerceChannelLocalService.getCommerceChannel`. Returns 404 if the entity does not exist; 409 if the entity has dependent state preventing deletion."
+	)
 	public boolean deleteChannelIdDefaultProductDisplayPage(
 			@GraphQLName("id") Long id)
 		throws Exception {
@@ -612,7 +658,9 @@ public class Mutation {
 		return true;
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates a new channel-level default product display page under the parent Channel, addressed by external reference code (ERC). Calls `CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode`. Returns 422 if the request body fails domain validation. Returns 201 for newly created entities."
+	)
 	public DefaultProductDisplayPage
 			createChannelByExternalReferenceCodeDefaultProductDisplayPage(
 				@GraphQLName("externalReferenceCode") String
@@ -630,7 +678,9 @@ public class Mutation {
 						externalReferenceCode, defaultProductDisplayPage));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates a new channel-level default product display page under the parent Channel, addressed by internal ID. Calls `CommerceChannelLocalService.getCommerceChannel`. Returns 422 if the request body fails domain validation. Returns 201 for newly created entities."
+	)
 	public DefaultProductDisplayPage createChannelIdDefaultProductDisplayPage(
 			@GraphQLName("id") Long id,
 			@GraphQLName("defaultProductDisplayPage") DefaultProductDisplayPage
@@ -646,7 +696,9 @@ public class Mutation {
 						id, defaultProductDisplayPage));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the payment-method-group-to-order-type relation by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls `CommercePaymentMethodGroupRelQualifierService.deleteCommercePaymentMethodGroupRelQualifier`. Returns 404 if the entity does not exist; 409 if the entity has dependent state preventing deletion."
+	)
 	public boolean deletePaymentMethodGroupRelOrderType(
 			@GraphQLName("paymentMethodGroupRelOrderTypeId") Long
 				paymentMethodGroupRelOrderTypeId)
@@ -678,7 +730,9 @@ public class Mutation {
 						callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates a new payment-method-group-to-order-type relation under the parent PaymentMethodGroupRel, addressed by internal ID. Calls `CommercePaymentMethodGroupRelQualifierService.addCommercePaymentMethodGroupRelQualifier`. Returns 422 if the request body fails domain validation. Returns 201 for newly created entities."
+	)
 	public PaymentMethodGroupRelOrderType
 			createPaymentMethodGroupRelIdPaymentMethodGroupRelOrderType(
 				@GraphQLName("id") Long id,
@@ -696,7 +750,9 @@ public class Mutation {
 						id, paymentMethodGroupRelOrderType));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the payment-method-group-to-term relation by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls `CommercePaymentMethodGroupRelQualifierService.deleteCommercePaymentMethodGroupRelQualifier`. Returns 404 if the entity does not exist; 409 if the entity has dependent state preventing deletion."
+	)
 	public boolean deletePaymentMethodGroupRelTerm(
 			@GraphQLName("paymentMethodGroupRelTermId") Long
 				paymentMethodGroupRelTermId)
@@ -727,7 +783,9 @@ public class Mutation {
 					deletePaymentMethodGroupRelTermBatch(callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates a new payment-method-group-to-term relation under the parent PaymentMethodGroupRel, addressed by internal ID. Calls `CommercePaymentMethodGroupRelQualifierService.addCommercePaymentMethodGroupRelQualifier`. Returns 422 if the request body fails domain validation. Returns 201 for newly created entities."
+	)
 	public PaymentMethodGroupRelTerm
 			createPaymentMethodGroupRelIdPaymentMethodGroupRelTerm(
 				@GraphQLName("id") Long id,
@@ -744,7 +802,9 @@ public class Mutation {
 						id, paymentMethodGroupRelTerm));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the product display page mapping by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls `CPDisplayLayoutService.deleteCPDisplayLayout`. Returns 404 if the entity does not exist; 409 if the entity has dependent state preventing deletion."
+	)
 	public boolean deleteProductDisplayPage(@GraphQLName("id") Long id)
 		throws Exception {
 
@@ -771,7 +831,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Partially updates the product display page mapping addressed by its internal ID. Calls `CPDisplayLayoutService.updateCPDisplayLayout`. Uses JSON Merge Patch semantics, so only the fields supplied in the request body are replaced and omitted fields are left unchanged. Returns 404 if no mapping matches the supplied ID; 422 if the resulting state would fail domain validation."
+	)
 	public ProductDisplayPage patchProductDisplayPage(
 			@GraphQLName("id") Long id,
 			@GraphQLName("productDisplayPage") ProductDisplayPage
@@ -786,7 +848,9 @@ public class Mutation {
 					id, productDisplayPage));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates a new product display page mapping under the parent Channel, addressed by external reference code (ERC). Calls `CPDisplayLayoutService.addCPDisplayLayout`. Returns 422 if the request body fails domain validation. Returns 201 for newly created entities."
+	)
 	public ProductDisplayPage
 			createChannelByExternalReferenceCodeProductDisplayPage(
 				@GraphQLName("externalReferenceCode") String
@@ -804,7 +868,9 @@ public class Mutation {
 						externalReferenceCode, productDisplayPage));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates a new product display page mapping under the parent Channel, addressed by internal ID. Calls `CPDisplayLayoutService.addCPDisplayLayout`. Returns 422 if the request body fails domain validation. Returns 201 for newly created entities."
+	)
 	public ProductDisplayPage createChannelIdProductDisplayPage(
 			@GraphQLName("id") Long id,
 			@GraphQLName("productDisplayPage") ProductDisplayPage
@@ -819,7 +885,9 @@ public class Mutation {
 					id, productDisplayPage));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the fixed-shipping-option-to-order-type relation by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls `CommerceShippingFixedOptionQualifierService.deleteCommerceShippingFixedOptionQualifier`. Returns 404 if the entity does not exist; 409 if the entity has dependent state preventing deletion."
+	)
 	public boolean deleteShippingFixedOptionOrderType(
 			@GraphQLName("shippingFixedOptionOrderTypeId") Long
 				shippingFixedOptionOrderTypeId)
@@ -851,7 +919,9 @@ public class Mutation {
 						callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates a new fixed-shipping-option-to-order-type relation under the parent ShippingFixedOption, addressed by internal ID. Calls `CommerceShippingFixedOptionQualifierService.addCommerceShippingFixedOptionQualifier`. Returns 422 if the request body fails domain validation. Returns 201 for newly created entities."
+	)
 	public ShippingFixedOptionOrderType
 			createShippingFixedOptionIdShippingFixedOptionOrderType(
 				@GraphQLName("id") Long id,
@@ -868,7 +938,9 @@ public class Mutation {
 						id, shippingFixedOptionOrderType));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the fixed-shipping-option-to-term relation by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls `CommerceShippingFixedOptionQualifierService.deleteCommerceShippingFixedOptionQualifier`. Returns 404 if the entity does not exist; 409 if the entity has dependent state preventing deletion."
+	)
 	public boolean deleteShippingFixedOptionTerm(
 			@GraphQLName("shippingFixedOptionTermId") Long
 				shippingFixedOptionTermId)
@@ -898,7 +970,9 @@ public class Mutation {
 					deleteShippingFixedOptionTermBatch(callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates a new fixed-shipping-option-to-term relation under the parent ShippingFixedOption, addressed by internal ID. Calls `CommerceShippingFixedOptionQualifierService.addCommerceShippingFixedOptionQualifier`. Returns 422 if the request body fails domain validation. Returns 201 for newly created entities."
+	)
 	public ShippingFixedOptionTerm
 			createShippingFixedOptionIdShippingFixedOptionTerm(
 				@GraphQLName("id") Long id,
@@ -1328,4 +1402,4 @@ public class Mutation {
 		_vulcanBatchEngineImportTaskResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-589383605
+// LIFERAY-REST-BUILDER-HASH:-1499100632
