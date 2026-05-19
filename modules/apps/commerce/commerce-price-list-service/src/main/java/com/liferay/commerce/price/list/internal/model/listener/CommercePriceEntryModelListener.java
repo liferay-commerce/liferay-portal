@@ -5,13 +5,25 @@
 
 package com.liferay.commerce.price.list.internal.model.listener;
 
+import com.liferay.commerce.constants.CommerceOrderConstants;
+import com.liferay.commerce.context.CommerceContext;
+import com.liferay.commerce.context.CommerceContextFactory;
+import com.liferay.commerce.model.CommerceOrder;
+import com.liferay.commerce.model.CommerceOrderItem;
 import com.liferay.commerce.price.list.model.CommercePriceEntry;
 import com.liferay.commerce.price.list.service.CommerceTierPriceEntryLocalService;
+import com.liferay.commerce.product.model.CPInstance;
+import com.liferay.commerce.product.service.CPInstanceLocalService;
+import com.liferay.commerce.service.CommerceOrderItemLocalService;
+import com.liferay.commerce.service.CommerceOrderLocalService;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
+
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -22,6 +34,46 @@ import org.osgi.service.component.annotations.Reference;
 @Component(service = ModelListener.class)
 public class CommercePriceEntryModelListener
 	extends BaseModelListener<CommercePriceEntry> {
+
+	@Override
+	public void onAfterUpdate(
+		CommercePriceEntry originalCommercePriceEntry,
+		CommercePriceEntry commercePriceEntry) {
+
+		try {
+			CPInstance cpInstance = _cpInstanceLocalService.fetchCPInstance(
+				commercePriceEntry.getCProductId(),
+				commercePriceEntry.getCPInstanceUuid());
+
+			List<CommerceOrderItem> commerceOrderItems =
+				_commerceOrderItemLocalService.getCommerceOrderItems(
+					cpInstance.getCPInstanceId(),
+					new int[] {CommerceOrderConstants.ORDER_STATUS_OPEN},
+					commercePriceEntry.getUnitOfMeasureKey(), QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS);
+
+			for (CommerceOrderItem commerceOrderItem : commerceOrderItems) {
+				CommerceOrder commerceOrder =
+					commerceOrderItem.getCommerceOrder();
+
+				CommerceContext commerceContext =
+					_commerceContextFactory.create(
+						commerceOrder.getCommerceAccountId(),
+						commerceOrder.getGroupId(),
+						commerceOrder.getCommerceCurrencyCode(),
+						commerceOrder.getCommerceOrderId(),
+						commerceOrder.getCompanyId());
+
+				_commerceOrderLocalService.recalculatePrice(
+					commerceOrder.getCommerceOrderId(), commerceContext);
+			}
+		}
+		catch (PortalException portalException) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(portalException);
+			}
+		}
+	}
 
 	@Override
 	public void onBeforeRemove(CommercePriceEntry commercePriceEntry) {
@@ -40,7 +92,19 @@ public class CommercePriceEntryModelListener
 		CommercePriceEntryModelListener.class);
 
 	@Reference
+	private CommerceContextFactory _commerceContextFactory;
+
+	@Reference
+	private CommerceOrderLocalService _commerceOrderLocalService;
+
+	@Reference
+	private CommerceOrderItemLocalService _commerceOrderItemLocalService;
+
+	@Reference
 	private CommerceTierPriceEntryLocalService
 		_commerceTierPriceEntryLocalService;
+
+	@Reference
+	private CPInstanceLocalService _cpInstanceLocalService;
 
 }
