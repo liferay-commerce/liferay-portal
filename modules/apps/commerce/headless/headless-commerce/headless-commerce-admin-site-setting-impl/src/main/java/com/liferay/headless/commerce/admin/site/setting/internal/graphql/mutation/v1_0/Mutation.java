@@ -74,7 +74,9 @@ public class Mutation {
 			warehouseResourceComponentServiceObjects;
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the AvailabilityEstimate addressed by its internal long ID. Calls `CommerceAvailabilityEstimateService.deleteCommerceAvailabilityEstimate`; returns 404 when no estimate matches the supplied ID."
+	)
 	public Response deleteAvailabilityEstimate(@GraphQLName("id") Long id)
 		throws Exception {
 
@@ -99,7 +101,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Stub endpoint for creating an AvailabilityEstimate under the supplied site (`groupId`). The current implementation returns 200 with an empty AvailabilityEstimate payload and does not invoke `CommerceAvailabilityEstimateService`, so no record is persisted."
+	)
 	public AvailabilityEstimate
 			createCommerceAdminSiteSettingGroupAvailabilityEstimate(
 				@GraphQLName("groupId") Long groupId,
@@ -116,7 +120,9 @@ public class Mutation {
 						groupId, availabilityEstimate));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Stub endpoint for replacing an AvailabilityEstimate by its internal long ID. The current implementation returns 200 with an empty body and does not invoke `CommerceAvailabilityEstimateService`, so the addressed record is not changed."
+	)
 	public Response updateAvailabilityEstimate(
 			@GraphQLName("id") Long id,
 			@GraphQLName("availabilityEstimate") AvailabilityEstimate
@@ -145,7 +151,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the MeasurementUnit addressed by its internal long ID. Calls `CPMeasurementUnitService.deleteCPMeasurementUnit`; raises `NoSuchCPMeasurementUnitException` (404) when no entity matches."
+	)
 	public boolean deleteMeasurementUnit(@GraphQLName("id") Long id)
 		throws Exception {
 
@@ -172,7 +180,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the MeasurementUnit addressed by its external reference code. Resolves the unit via `fetchCPMeasurementUnitByExternalReferenceCode` and calls `deleteCPMeasurementUnit`; raises `NoSuchCPMeasurementUnitException` (404) when no entity matches."
+	)
 	public boolean deleteMeasurementUnitByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode)
 		throws Exception {
@@ -188,7 +198,9 @@ public class Mutation {
 		return true;
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the MeasurementUnit addressed by its stable string `key`. Resolves the unit via `fetchCPMeasurementUnit(companyId, key)` and calls `deleteCPMeasurementUnit`; raises `NoSuchCPMeasurementUnitException` (404) when no entity matches."
+	)
 	public boolean deleteMeasurementUnitByKey(@GraphQLName("key") String key)
 		throws Exception {
 
@@ -201,7 +213,9 @@ public class Mutation {
 		return true;
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Partially updates the MeasurementUnit addressed by its internal long ID, following JSON Merge Patch semantics (only fields present in the body are modified). Calls `updateCPMeasurementUnit`; returns 409 when the updated payload would duplicate an existing external reference code or key, and 422 on domain validation errors."
+	)
 	public Response patchMeasurementUnit(
 			@GraphQLName("id") Long id,
 			@GraphQLName("measurementUnit") MeasurementUnit measurementUnit)
@@ -215,7 +229,9 @@ public class Mutation {
 					id, measurementUnit));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Partially updates the MeasurementUnit addressed by its external reference code, following JSON Merge Patch semantics (only fields present in the body are modified). Calls `updateCPMeasurementUnit`; returns 409 when the updated payload would duplicate an existing external reference code or key, and 422 on domain validation errors."
+	)
 	public Response patchMeasurementUnitByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
 			@GraphQLName("measurementUnit") MeasurementUnit measurementUnit)
@@ -230,7 +246,9 @@ public class Mutation {
 						externalReferenceCode, measurementUnit));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Partially updates the MeasurementUnit addressed by its stable string `key`, following JSON Merge Patch semantics (only fields present in the body are modified). Calls `updateCPMeasurementUnit`; returns 409 when the updated payload would duplicate an existing external reference code or key, and 422 on domain validation errors."
+	)
 	public Response patchMeasurementUnitByKey(
 			@GraphQLName("key") String key,
 			@GraphQLName("measurementUnit") MeasurementUnit measurementUnit)
@@ -244,7 +262,9 @@ public class Mutation {
 					key, measurementUnit));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates a MeasurementUnit for the caller's company. Calls `CPMeasurementUnitService.addCPMeasurementUnit` with the supplied `name`, `key`, `rate`, `priority`, and `type`. Returns 422 if domain validation fails (for example, unknown `type`); 409 when `externalReferenceCode` or `key` collides with an existing unit."
+	)
 	public MeasurementUnit createMeasurementUnit(
 			@GraphQLName("measurementUnit") MeasurementUnit measurementUnit)
 		throws Exception {
@@ -291,7 +311,9 @@ public class Mutation {
 					callbackURL, contentType, fieldNames));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Upsert by external reference code. When a MeasurementUnit with the supplied ERC exists, it is fully replaced with the request body; otherwise a new entity is created (delegating to `postMeasurementUnit`). Returns 422 on domain validation errors; 409 on conflict."
+	)
 	public MeasurementUnit updateMeasurementUnitByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
 			@GraphQLName("measurementUnit") MeasurementUnit measurementUnit)
@@ -306,7 +328,9 @@ public class Mutation {
 						externalReferenceCode, measurementUnit));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the TaxCategory addressed by its internal long ID. Calls `CPTaxCategoryService.deleteCPTaxCategory`; returns 404 when no entity matches the supplied ID."
+	)
 	public Response deleteTaxCategory(@GraphQLName("id") Long id)
 		throws Exception {
 
@@ -329,7 +353,9 @@ public class Mutation {
 				callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Stub endpoint for creating a TaxCategory under the supplied site (groupId). The current implementation in BaseTaxCategoryResourceImpl returns 200 with an empty TaxCategory payload and does not invoke CPTaxCategoryService, so no record is persisted."
+	)
 	public TaxCategory createCommerceAdminSiteSettingGroupTaxCategory(
 			@GraphQLName("groupId") Long groupId,
 			@GraphQLName("taxCategory") TaxCategory taxCategory)
@@ -344,7 +370,9 @@ public class Mutation {
 						groupId, taxCategory));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Stub endpoint for replacing a TaxCategory by its internal long ID. The current implementation in BaseTaxCategoryResourceImpl returns 200 with an empty body and does not invoke CPTaxCategoryService, so the addressed record is not changed."
+	)
 	public Response updateTaxCategory(
 			@GraphQLName("id") Long id,
 			@GraphQLName("taxCategory") TaxCategory taxCategory)
@@ -370,7 +398,9 @@ public class Mutation {
 				callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the Warehouse definition addressed by its internal long ID. Calls `CommerceInventoryWarehouseService.deleteCommerceInventoryWarehouse`; returns 404 when no entity matches the supplied ID. Does not remove stock levels held in the admin-inventory API."
+	)
 	public Response deleteWarehouse(@GraphQLName("id") Long id)
 		throws Exception {
 
@@ -393,7 +423,9 @@ public class Mutation {
 				callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Stub endpoint for creating a Warehouse under the supplied site (groupId). The current implementation in BaseWarehouseResourceImpl returns 200 with an empty Warehouse payload and does not invoke CommerceInventoryWarehouseService, so no record is persisted. For Warehouse writes that persist, including stock levels and per-account/group/channel scoping, use the inventory administration API."
+	)
 	public Warehouse createCommerceAdminSiteSettingGroupWarehouse(
 			@GraphQLName("groupId") Long groupId,
 			@GraphQLName("warehouse") Warehouse warehouse)
@@ -407,7 +439,9 @@ public class Mutation {
 					groupId, warehouse));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Stub endpoint for replacing a Warehouse by its internal long ID. The current implementation in BaseWarehouseResourceImpl returns 200 with an empty body and does not invoke CommerceInventoryWarehouseService, so the addressed record is not changed. For Warehouse writes that persist, use the inventory administration API."
+	)
 	public Response updateWarehouse(
 			@GraphQLName("id") Long id,
 			@GraphQLName("warehouse") Warehouse warehouse)
@@ -581,4 +615,4 @@ public class Mutation {
 		_vulcanBatchEngineImportTaskResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-289692581
+// LIFERAY-REST-BUILDER-HASH:-1855892028

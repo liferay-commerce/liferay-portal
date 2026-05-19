@@ -76,6 +76,9 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 	 *
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/availabilityEstimate/{id}'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Deletes the AvailabilityEstimate addressed by its internal long ID. Calls `CommerceAvailabilityEstimateService.deleteCommerceAvailabilityEstimate`; returns 404 when no estimate matches the supplied ID."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -160,6 +163,9 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/availabilityEstimate/{id}'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Returns the AvailabilityEstimate addressed by its internal long ID. Calls `CommerceAvailabilityEstimateService.getCommerceAvailabilityEstimate` and maps the model through DTOMapperUtil; returns 404 when no estimate matches the supplied ID."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -194,6 +200,9 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/commerceAdminSiteSetting/{groupId}/availabilityEstimate'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Stub endpoint for listing AvailabilityEstimate records under the supplied site (groupId). The current implementation in BaseAvailabilityEstimateResourceImpl returns an empty Page without invoking CommerceAvailabilityEstimateService. The `page` query parameter is 1-based and `pageSize` defaults to the server-configured page size, but both are accepted and discarded on this stub and have no observable effect on the response."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -238,8 +247,11 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/commerceAdminSiteSetting/{groupId}/availabilityEstimate' -d $'{"id": ___, "priority": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/commerceAdminSiteSetting/{groupId}/availabilityEstimate' -d $'{"priority": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Stub endpoint for creating an AvailabilityEstimate under the supplied site (`groupId`). The current implementation returns 200 with an empty AvailabilityEstimate payload and does not invoke `CommerceAvailabilityEstimateService`, so no record is persisted."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -277,8 +289,11 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PUT' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/availabilityEstimate/{id}' -d $'{"id": ___, "priority": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PUT' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/availabilityEstimate/{id}' -d $'{"priority": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Stub endpoint for replacing an AvailabilityEstimate by its internal long ID. The current implementation returns 200 with an empty body and does not invoke `CommerceAvailabilityEstimateService`, so the addressed record is not changed."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -1083,4 +1098,4 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 		LogFactoryUtil.getLog(BaseAvailabilityEstimateResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:706659240
+// LIFERAY-REST-BUILDER-HASH:-1344760643
