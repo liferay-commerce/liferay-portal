@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
@@ -45,6 +46,10 @@ public class CommercePriceEntryModelListener
 				commercePriceEntry.getCProductId(),
 				commercePriceEntry.getCPInstanceUuid());
 
+			if (cpInstance == null) {
+				return;
+			}
+
 			List<CommerceOrderItem> commerceOrderItems =
 				_commerceOrderItemLocalService.getCommerceOrderItems(
 					cpInstance.getCPInstanceId(),
@@ -52,9 +57,18 @@ public class CommercePriceEntryModelListener
 					commercePriceEntry.getUnitOfMeasureKey(), QueryUtil.ALL_POS,
 					QueryUtil.ALL_POS);
 
+			List<Long> commerceOrderIds = new ArrayList<>();
+
 			for (CommerceOrderItem commerceOrderItem : commerceOrderItems) {
 				CommerceOrder commerceOrder =
 					commerceOrderItem.getCommerceOrder();
+
+				if (!commerceOrderIds.isEmpty() &&
+					commerceOrderIds.contains(
+						commerceOrder.getCommerceOrderId())) {
+
+					continue;
+				}
 
 				CommerceContext commerceContext =
 					_commerceContextFactory.create(
@@ -66,6 +80,8 @@ public class CommercePriceEntryModelListener
 
 				_commerceOrderLocalService.recalculatePrice(
 					commerceOrder.getCommerceOrderId(), commerceContext);
+
+				commerceOrderIds.add(commerceOrder.getCommerceOrderId());
 			}
 		}
 		catch (PortalException portalException) {
@@ -95,10 +111,10 @@ public class CommercePriceEntryModelListener
 	private CommerceContextFactory _commerceContextFactory;
 
 	@Reference
-	private CommerceOrderLocalService _commerceOrderLocalService;
+	private CommerceOrderItemLocalService _commerceOrderItemLocalService;
 
 	@Reference
-	private CommerceOrderItemLocalService _commerceOrderItemLocalService;
+	private CommerceOrderLocalService _commerceOrderLocalService;
 
 	@Reference
 	private CommerceTierPriceEntryLocalService
