@@ -1939,7 +1939,81 @@ public class CommerceOrderLocalServiceImpl
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public CommerceOrder updateCommerceOrderPrices(
-			long commerceOrderId, BigDecimal shippingAmount,
+		long commerceOrderId, BigDecimal shippingAmount,
+		BigDecimal shippingDiscountAmount,
+		BigDecimal shippingDiscountPercentageLevel1,
+		BigDecimal shippingDiscountPercentageLevel2,
+		BigDecimal shippingDiscountPercentageLevel3,
+		BigDecimal shippingDiscountPercentageLevel4,
+		BigDecimal shippingDiscountPercentageLevel1WithTaxAmount,
+		BigDecimal shippingDiscountPercentageLevel2WithTaxAmount,
+		BigDecimal shippingDiscountPercentageLevel3WithTaxAmount,
+		BigDecimal shippingDiscountPercentageLevel4WithTaxAmount,
+		BigDecimal shippingDiscountWithTaxAmount,
+		BigDecimal shippingWithTaxAmount, BigDecimal subtotal,
+		BigDecimal subtotalDiscountAmount,
+		BigDecimal subtotalDiscountPercentageLevel1,
+		BigDecimal subtotalDiscountPercentageLevel2,
+		BigDecimal subtotalDiscountPercentageLevel3,
+		BigDecimal subtotalDiscountPercentageLevel4,
+		BigDecimal subtotalDiscountPercentageLevel1WithTaxAmount,
+		BigDecimal subtotalDiscountPercentageLevel2WithTaxAmount,
+		BigDecimal subtotalDiscountPercentageLevel3WithTaxAmount,
+		BigDecimal subtotalDiscountPercentageLevel4WithTaxAmount,
+		BigDecimal subtotalDiscountWithTaxAmount,
+		BigDecimal subtotalWithTaxAmount, BigDecimal taxAmount,
+		BigDecimal total, BigDecimal totalDiscountAmount,
+		BigDecimal totalDiscountPercentageLevel1,
+		BigDecimal totalDiscountPercentageLevel2,
+		BigDecimal totalDiscountPercentageLevel3,
+		BigDecimal totalDiscountPercentageLevel4,
+		BigDecimal totalDiscountPercentageLevel1WithTaxAmount,
+		BigDecimal totalDiscountPercentageLevel2WithTaxAmount,
+		BigDecimal totalDiscountPercentageLevel3WithTaxAmount,
+		BigDecimal totalDiscountPercentageLevel4WithTaxAmount,
+		BigDecimal totalDiscountWithTaxAmount,
+		BigDecimal totalWithTaxAmount)
+		throws PortalException {
+
+		CommerceOrder commerceOrder = commerceOrderPersistence.findByPrimaryKey(
+			commerceOrderId);
+
+		return commerceOrderLocalService.updateCommerceOrderPrices(
+			commerceOrderId, true, shippingAmount, shippingDiscountAmount,
+			shippingDiscountPercentageLevel1, shippingDiscountPercentageLevel2,
+			shippingDiscountPercentageLevel3, shippingDiscountPercentageLevel4,
+			commerceOrder.getShippingDiscountPercentageLevel1WithTaxAmount(),
+			commerceOrder.getShippingDiscountPercentageLevel2WithTaxAmount(),
+			commerceOrder.getShippingDiscountPercentageLevel3WithTaxAmount(),
+			commerceOrder.getShippingDiscountPercentageLevel4WithTaxAmount(),
+			commerceOrder.getShippingDiscountWithTaxAmount(),
+			commerceOrder.getShippingWithTaxAmount(), subtotal,
+			subtotalDiscountAmount, subtotalDiscountPercentageLevel1,
+			subtotalDiscountPercentageLevel2, subtotalDiscountPercentageLevel3,
+			subtotalDiscountPercentageLevel4,
+			commerceOrder.getSubtotalDiscountPercentageLevel1WithTaxAmount(),
+			commerceOrder.getSubtotalDiscountPercentageLevel2WithTaxAmount(),
+			commerceOrder.getSubtotalDiscountPercentageLevel3WithTaxAmount(),
+			commerceOrder.getSubtotalDiscountPercentageLevel4WithTaxAmount(),
+			commerceOrder.getSubtotalDiscountWithTaxAmount(),
+			commerceOrder.getSubtotalWithTaxAmount(), taxAmount, total,
+			totalDiscountAmount, totalDiscountPercentageLevel1,
+			totalDiscountPercentageLevel2, totalDiscountPercentageLevel3,
+			totalDiscountPercentageLevel4,
+			commerceOrder.getTotalDiscountPercentageLevel1WithTaxAmount(),
+			commerceOrder.getTotalDiscountPercentageLevel2WithTaxAmount(),
+			commerceOrder.getTotalDiscountPercentageLevel3WithTaxAmount(),
+			commerceOrder.getTotalDiscountPercentageLevel4WithTaxAmount(),
+			commerceOrder.getTotalDiscountWithTaxAmount(),
+			commerceOrder.getTotalWithTaxAmount());
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public CommerceOrder updateCommerceOrderPrices(
+			long commerceOrderId,
+			boolean manuallyAdjusted,
+			BigDecimal shippingAmount,
 			BigDecimal shippingDiscountAmount,
 			BigDecimal shippingDiscountPercentageLevel1,
 			BigDecimal shippingDiscountPercentageLevel2,
@@ -1979,7 +2053,7 @@ public class CommerceOrderLocalServiceImpl
 			commerceOrderId);
 
 		commerceOrder.setLastPriceUpdateDate(new Date());
-		commerceOrder.setManuallyAdjusted(true);
+		commerceOrder.setManuallyAdjusted(manuallyAdjusted);
 		commerceOrder.setShippingAmount(shippingAmount);
 		commerceOrder.setShippingDiscountAmount(shippingDiscountAmount);
 		commerceOrder.setShippingDiscountPercentageLevel1(
