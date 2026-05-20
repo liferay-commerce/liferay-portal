@@ -1062,7 +1062,7 @@ public class CommerceOrderLocalServiceImpl
 			commerceOrderPrice.getTotalDiscountValueWithTaxAmount(), true);
 
 		return commerceOrderLocalService.updateCommerceOrderPrices(
-			commerceOrder.getCommerceOrderId(),
+			commerceOrder.getCommerceOrderId(), false,
 			commerceOrder.getShippingAmount(),
 			commerceOrder.getShippingDiscountAmount(),
 			commerceOrder.getShippingDiscountPercentageLevel1(),
