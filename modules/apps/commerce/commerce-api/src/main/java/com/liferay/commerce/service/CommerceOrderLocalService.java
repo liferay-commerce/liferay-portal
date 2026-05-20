@@ -705,6 +705,44 @@ public interface CommerceOrderLocalService
 			BigDecimal totalWithTaxAmount)
 		throws PortalException;
 
+	@Indexable(type = IndexableType.REINDEX)
+	public CommerceOrder updateCommerceOrderPrices(
+			long commerceOrderId, boolean manuallyAdjusted,
+			BigDecimal shippingAmount, BigDecimal shippingDiscountAmount,
+			BigDecimal shippingDiscountPercentageLevel1,
+			BigDecimal shippingDiscountPercentageLevel2,
+			BigDecimal shippingDiscountPercentageLevel3,
+			BigDecimal shippingDiscountPercentageLevel4,
+			BigDecimal shippingDiscountPercentageLevel1WithTaxAmount,
+			BigDecimal shippingDiscountPercentageLevel2WithTaxAmount,
+			BigDecimal shippingDiscountPercentageLevel3WithTaxAmount,
+			BigDecimal shippingDiscountPercentageLevel4WithTaxAmount,
+			BigDecimal shippingDiscountWithTaxAmount,
+			BigDecimal shippingWithTaxAmount, BigDecimal subtotal,
+			BigDecimal subtotalDiscountAmount,
+			BigDecimal subtotalDiscountPercentageLevel1,
+			BigDecimal subtotalDiscountPercentageLevel2,
+			BigDecimal subtotalDiscountPercentageLevel3,
+			BigDecimal subtotalDiscountPercentageLevel4,
+			BigDecimal subtotalDiscountPercentageLevel1WithTaxAmount,
+			BigDecimal subtotalDiscountPercentageLevel2WithTaxAmount,
+			BigDecimal subtotalDiscountPercentageLevel3WithTaxAmount,
+			BigDecimal subtotalDiscountPercentageLevel4WithTaxAmount,
+			BigDecimal subtotalDiscountWithTaxAmount,
+			BigDecimal subtotalWithTaxAmount, BigDecimal taxAmount,
+			BigDecimal total, BigDecimal totalDiscountAmount,
+			BigDecimal totalDiscountPercentageLevel1,
+			BigDecimal totalDiscountPercentageLevel2,
+			BigDecimal totalDiscountPercentageLevel3,
+			BigDecimal totalDiscountPercentageLevel4,
+			BigDecimal totalDiscountPercentageLevel1WithTaxAmount,
+			BigDecimal totalDiscountPercentageLevel2WithTaxAmount,
+			BigDecimal totalDiscountPercentageLevel3WithTaxAmount,
+			BigDecimal totalDiscountPercentageLevel4WithTaxAmount,
+			BigDecimal totalDiscountWithTaxAmount,
+			BigDecimal totalWithTaxAmount)
+		throws PortalException;
+
 	public CommerceOrder updateCommercePaymentMethodKey(
 			long commerceOrderId, String commercePaymentMethodKey)
 		throws PortalException;
@@ -784,4 +822,4 @@ public interface CommerceOrderLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:338506159
+// LIFERAY-SERVICE-BUILDER-HASH:-749797050

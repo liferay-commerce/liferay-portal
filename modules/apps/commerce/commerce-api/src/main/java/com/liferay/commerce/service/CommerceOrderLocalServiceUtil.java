@@ -1013,6 +1013,74 @@ public class CommerceOrderLocalServiceUtil {
 			totalDiscountWithTaxAmount, totalWithTaxAmount);
 	}
 
+	public static CommerceOrder updateCommerceOrderPrices(
+			long commerceOrderId, boolean manuallyAdjusted,
+			java.math.BigDecimal shippingAmount,
+			java.math.BigDecimal shippingDiscountAmount,
+			java.math.BigDecimal shippingDiscountPercentageLevel1,
+			java.math.BigDecimal shippingDiscountPercentageLevel2,
+			java.math.BigDecimal shippingDiscountPercentageLevel3,
+			java.math.BigDecimal shippingDiscountPercentageLevel4,
+			java.math.BigDecimal shippingDiscountPercentageLevel1WithTaxAmount,
+			java.math.BigDecimal shippingDiscountPercentageLevel2WithTaxAmount,
+			java.math.BigDecimal shippingDiscountPercentageLevel3WithTaxAmount,
+			java.math.BigDecimal shippingDiscountPercentageLevel4WithTaxAmount,
+			java.math.BigDecimal shippingDiscountWithTaxAmount,
+			java.math.BigDecimal shippingWithTaxAmount,
+			java.math.BigDecimal subtotal,
+			java.math.BigDecimal subtotalDiscountAmount,
+			java.math.BigDecimal subtotalDiscountPercentageLevel1,
+			java.math.BigDecimal subtotalDiscountPercentageLevel2,
+			java.math.BigDecimal subtotalDiscountPercentageLevel3,
+			java.math.BigDecimal subtotalDiscountPercentageLevel4,
+			java.math.BigDecimal subtotalDiscountPercentageLevel1WithTaxAmount,
+			java.math.BigDecimal subtotalDiscountPercentageLevel2WithTaxAmount,
+			java.math.BigDecimal subtotalDiscountPercentageLevel3WithTaxAmount,
+			java.math.BigDecimal subtotalDiscountPercentageLevel4WithTaxAmount,
+			java.math.BigDecimal subtotalDiscountWithTaxAmount,
+			java.math.BigDecimal subtotalWithTaxAmount,
+			java.math.BigDecimal taxAmount, java.math.BigDecimal total,
+			java.math.BigDecimal totalDiscountAmount,
+			java.math.BigDecimal totalDiscountPercentageLevel1,
+			java.math.BigDecimal totalDiscountPercentageLevel2,
+			java.math.BigDecimal totalDiscountPercentageLevel3,
+			java.math.BigDecimal totalDiscountPercentageLevel4,
+			java.math.BigDecimal totalDiscountPercentageLevel1WithTaxAmount,
+			java.math.BigDecimal totalDiscountPercentageLevel2WithTaxAmount,
+			java.math.BigDecimal totalDiscountPercentageLevel3WithTaxAmount,
+			java.math.BigDecimal totalDiscountPercentageLevel4WithTaxAmount,
+			java.math.BigDecimal totalDiscountWithTaxAmount,
+			java.math.BigDecimal totalWithTaxAmount)
+		throws PortalException {
+
+		return getService().updateCommerceOrderPrices(
+			commerceOrderId, manuallyAdjusted, shippingAmount,
+			shippingDiscountAmount, shippingDiscountPercentageLevel1,
+			shippingDiscountPercentageLevel2, shippingDiscountPercentageLevel3,
+			shippingDiscountPercentageLevel4,
+			shippingDiscountPercentageLevel1WithTaxAmount,
+			shippingDiscountPercentageLevel2WithTaxAmount,
+			shippingDiscountPercentageLevel3WithTaxAmount,
+			shippingDiscountPercentageLevel4WithTaxAmount,
+			shippingDiscountWithTaxAmount, shippingWithTaxAmount, subtotal,
+			subtotalDiscountAmount, subtotalDiscountPercentageLevel1,
+			subtotalDiscountPercentageLevel2, subtotalDiscountPercentageLevel3,
+			subtotalDiscountPercentageLevel4,
+			subtotalDiscountPercentageLevel1WithTaxAmount,
+			subtotalDiscountPercentageLevel2WithTaxAmount,
+			subtotalDiscountPercentageLevel3WithTaxAmount,
+			subtotalDiscountPercentageLevel4WithTaxAmount,
+			subtotalDiscountWithTaxAmount, subtotalWithTaxAmount, taxAmount,
+			total, totalDiscountAmount, totalDiscountPercentageLevel1,
+			totalDiscountPercentageLevel2, totalDiscountPercentageLevel3,
+			totalDiscountPercentageLevel4,
+			totalDiscountPercentageLevel1WithTaxAmount,
+			totalDiscountPercentageLevel2WithTaxAmount,
+			totalDiscountPercentageLevel3WithTaxAmount,
+			totalDiscountPercentageLevel4WithTaxAmount,
+			totalDiscountWithTaxAmount, totalWithTaxAmount);
+	}
+
 	public static CommerceOrder updateCommercePaymentMethodKey(
 			long commerceOrderId, String commercePaymentMethodKey)
 		throws PortalException {
@@ -1153,4 +1221,4 @@ public class CommerceOrderLocalServiceUtil {
 			CommerceOrderLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2075724431
+// LIFERAY-SERVICE-BUILDER-HASH:1742187624
