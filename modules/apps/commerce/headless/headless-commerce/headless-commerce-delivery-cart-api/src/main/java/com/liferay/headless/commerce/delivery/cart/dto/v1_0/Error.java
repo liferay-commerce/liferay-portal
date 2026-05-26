@@ -57,7 +57,7 @@ public class Error implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Internal error code mapping", example = "996"
+		description = "Internal error code mapping.", example = "996"
 	)
 	public Integer getErrorCode() {
 		if (_errorCodeSupplier != null) {
@@ -92,7 +92,7 @@ public class Error implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Internal error code mapping")
+	@GraphQLField(description = "Internal error code mapping.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	@NotNull
 	protected Integer errorCode;
@@ -147,7 +147,7 @@ public class Error implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Localized message intended for end-user display.",
-		example = "No CommerceCurrency exists with the key {groupId=41811, code=US Dollar}"
+		example = "Unable to find currency for the supplied currency code."
 	)
 	public String getMessage() {
 		if (_messageSupplier != null) {
@@ -193,7 +193,7 @@ public class Error implements Serializable {
 	private Supplier<String> _messageSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "HTTP Status code", example = "404"
+		description = "HTTP status code.", example = "404"
 	)
 	public Integer getStatus() {
 		if (_statusSupplier != null) {
@@ -228,7 +228,7 @@ public class Error implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "HTTP Status code")
+	@GraphQLField(description = "HTTP status code.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	@NotNull
 	protected Integer status;
@@ -420,4 +420,4 @@ public class Error implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:388693611
+// LIFERAY-REST-BUILDER-HASH:-691983408

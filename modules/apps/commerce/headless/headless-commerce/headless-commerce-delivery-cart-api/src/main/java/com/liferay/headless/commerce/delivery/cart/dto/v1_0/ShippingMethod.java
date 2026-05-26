@@ -36,7 +36,7 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Shipping method (CommerceShippingMethod) qualified for a cart. The nested ShippingOption set is computed by the registered CommerceShippingEngine against the cart's shipping address country.",
+	description = "Shipping method qualified for a cart. The nested shipping options are computed by the active shipping engine against the cart's shipping address country.",
 	value = "ShippingMethod"
 )
 @JsonFilter("Liferay.Vulcan")
@@ -52,7 +52,8 @@ public class ShippingMethod implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Localized description of the shipping method."
+		description = "Localized description of the shipping method.",
+		example = "Standard ground shipping"
 	)
 	public String getDescription() {
 		if (_descriptionSupplier != null) {
@@ -95,7 +96,8 @@ public class ShippingMethod implements Serializable {
 	private Supplier<String> _descriptionSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Stable engine key identifying the shipping integration (for example, `fixed-shipping`, `by-weight`). Used as the value of Cart.shippingMethod."
+		description = "Stable engine key identifying the shipping integration. Used as the value of the cart's shipping method field.",
+		example = "fixed"
 	)
 	public String getEngineKey() {
 		if (_engineKeySupplier != null) {
@@ -131,7 +133,7 @@ public class ShippingMethod implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Stable engine key identifying the shipping integration (for example, `fixed-shipping`, `by-weight`). Used as the value of Cart.shippingMethod."
+		description = "Stable engine key identifying the shipping integration. Used as the value of the cart's shipping method field."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String engineKey;
@@ -140,7 +142,8 @@ public class ShippingMethod implements Serializable {
 	private Supplier<String> _engineKeySupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Reference to the CommerceShippingMethod entity (PK)."
+		description = "Reference to the shipping method (FK identifier).",
+		example = "30130"
 	)
 	public Long getId() {
 		if (_idSupplier != null) {
@@ -174,7 +177,7 @@ public class ShippingMethod implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Reference to the CommerceShippingMethod entity (PK)."
+		description = "Reference to the shipping method (FK identifier)."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long id;
@@ -183,7 +186,8 @@ public class ShippingMethod implements Serializable {
 	private Supplier<Long> _idSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Localized display name of the shipping method."
+		description = "Localized display name of the shipping method.",
+		example = "Standard Shipping"
 	)
 	public String getName() {
 		if (_nameSupplier != null) {
@@ -482,4 +486,4 @@ public class ShippingMethod implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:52171551
+// LIFERAY-REST-BUILDER-HASH:777884516

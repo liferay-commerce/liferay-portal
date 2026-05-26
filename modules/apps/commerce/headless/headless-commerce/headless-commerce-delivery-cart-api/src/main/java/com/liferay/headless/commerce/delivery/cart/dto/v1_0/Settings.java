@@ -38,7 +38,7 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Quantity constraints for a cart item, sourced from CPDefinitionInventory. minQuantity and maxQuantity bound the orderable range; multipleQuantity forces quantities to be a multiple of the value; when allowedQuantities is set, it overrides the other constraints with an explicit allow-list.",
+	description = "Quantity constraints for a cart item. The minimum and maximum bound the orderable range; the multiple forces quantities to a fixed step; when the allowed-quantities list is set, it overrides the other constraints with an explicit allow-list.",
 	value = "Settings"
 )
 @JsonFilter("Liferay.Vulcan")
@@ -54,7 +54,8 @@ public class Settings implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Explicit allow-list of orderable quantities. When set, overrides minQuantity, maxQuantity, and multipleQuantity."
+		description = "Explicit allow-list of orderable quantities. When set, overrides the minimum, maximum, and multiple constraints.",
+		example = "[1, 5, 10]"
 	)
 	@Valid
 	public BigDecimal[] getAllowedQuantities() {
@@ -92,7 +93,7 @@ public class Settings implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Explicit allow-list of orderable quantities. When set, overrides minQuantity, maxQuantity, and multipleQuantity."
+		description = "Explicit allow-list of orderable quantities. When set, overrides the minimum, maximum, and multiple constraints."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected BigDecimal[] allowedQuantities;
@@ -102,7 +103,7 @@ public class Settings implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Maximum orderable quantity in the item's unit of measure.",
-		example = "10.1"
+		example = "100.0"
 	)
 	@Valid
 	public BigDecimal getMaxQuantity() {
@@ -149,7 +150,7 @@ public class Settings implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Minimum orderable quantity in the item's unit of measure.",
-		example = "10.1"
+		example = "1.0"
 	)
 	@Valid
 	public BigDecimal getMinQuantity() {
@@ -195,8 +196,8 @@ public class Settings implements Serializable {
 	private Supplier<BigDecimal> _minQuantitySupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Quantity granularity. The ordered quantity must be a multiple of this value (for example, 5 forces increments of 5).",
-		example = "10.1"
+		description = "Quantity granularity. The ordered quantity must be a multiple of this value.",
+		example = "5.0"
 	)
 	@Valid
 	public BigDecimal getMultipleQuantity() {
@@ -233,7 +234,7 @@ public class Settings implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Quantity granularity. The ordered quantity must be a multiple of this value (for example, 5 forces increments of 5)."
+		description = "Quantity granularity. The ordered quantity must be a multiple of this value."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected BigDecimal multipleQuantity;
@@ -427,4 +428,4 @@ public class Settings implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:722166782
+// LIFERAY-REST-BUILDER-HASH:-538316220

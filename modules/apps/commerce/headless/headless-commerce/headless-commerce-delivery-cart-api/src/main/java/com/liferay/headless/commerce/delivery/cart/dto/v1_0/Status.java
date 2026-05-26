@@ -34,7 +34,7 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Generic status snapshot returned alongside structured order, payment, and workflow states. code is the integer status code; label is the canonical key (for example open, completed, authorized); label_i18n is the localized display string.",
+	description = "Generic status snapshot returned alongside the structured order, payment, and workflow states. The code is the integer status code; the label is the canonical key; the localized label is the display string.",
 	value = "Status"
 )
 @JsonFilter("Liferay.Vulcan")
@@ -50,7 +50,8 @@ public class Status implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Integer status code. The semantic mapping depends on the host field (orderStatus, paymentStatus, workflow status)."
+		description = "Integer status code. The semantic mapping depends on the host field (order, payment, workflow). Read-only.",
+		example = "0"
 	)
 	public Integer getCode() {
 		if (_codeSupplier != null) {
@@ -84,7 +85,7 @@ public class Status implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Integer status code. The semantic mapping depends on the host field (orderStatus, paymentStatus, workflow status)."
+		description = "Integer status code. The semantic mapping depends on the host field (order, payment, workflow). Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Integer code;
@@ -93,8 +94,7 @@ public class Status implements Serializable {
 	private Supplier<Integer> _codeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Canonical status key (for example, `open`, `completed`, `authorized`).",
-		example = "black"
+		description = "Canonical status key.", example = "approved"
 	)
 	public String getLabel() {
 		if (_labelSupplier != null) {
@@ -129,9 +129,7 @@ public class Status implements Serializable {
 		};
 	}
 
-	@GraphQLField(
-		description = "Canonical status key (for example, `open`, `completed`, `authorized`)."
-	)
+	@GraphQLField(description = "Canonical status key.")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String label;
 
@@ -139,7 +137,7 @@ public class Status implements Serializable {
 	private Supplier<String> _labelSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Localized label for the status.", example = "black"
+		description = "Localized label for the status.", example = "Approved"
 	)
 	public String getLabel_i18n() {
 		if (_label_i18nSupplier != null) {
@@ -353,4 +351,4 @@ public class Status implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:588944183
+// LIFERAY-REST-BUILDER-HASH:-1395659224

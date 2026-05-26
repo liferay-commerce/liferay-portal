@@ -34,7 +34,7 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Request payload for creating a cart attachment from a base64-encoded file. Used by the /carts/<cartId>/attachments/by-base64 endpoint (and the by-externalReferenceCode variant).",
+	description = "Request payload for uploading a cart attachment as a base64-encoded file. Used by the /attachments/by-base64 endpoint to create a single attachment under a cart.",
 	value = "AttachmentBase64"
 )
 @JsonFilter("Liferay.Vulcan")
@@ -50,7 +50,8 @@ public class AttachmentBase64 implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Base64 encoded file"
+		description = "Base64-encoded file content. Required on create.",
+		example = "JVBERi0xLjQKJeLjz9MKMyAwIG9iag=="
 	)
 	public String getAttachment() {
 		if (_attachmentSupplier != null) {
@@ -85,7 +86,9 @@ public class AttachmentBase64 implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Base64 encoded file")
+	@GraphQLField(
+		description = "Base64-encoded file content. Required on create."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String attachment;
 
@@ -93,7 +96,7 @@ public class AttachmentBase64 implements Serializable {
 	private Supplier<String> _attachmentSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Optional idempotency key for the resulting CommerceOrderAttachment.",
+		description = "Optional idempotency key for the resulting attachment.",
 		example = "AB-34098-789-N"
 	)
 	public String getExternalReferenceCode() {
@@ -130,7 +133,7 @@ public class AttachmentBase64 implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Optional idempotency key for the resulting CommerceOrderAttachment."
+		description = "Optional idempotency key for the resulting attachment."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String externalReferenceCode;
@@ -139,7 +142,8 @@ public class AttachmentBase64 implements Serializable {
 	private Supplier<String> _externalReferenceCodeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Display and sort priority. Lower values appear first."
+		description = "Display and sort priority. Lower values appear first.",
+		example = "1.0"
 	)
 	public Double getPriority() {
 		if (_prioritySupplier != null) {
@@ -184,7 +188,8 @@ public class AttachmentBase64 implements Serializable {
 	private Supplier<Double> _prioritySupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "When true, the resulting attachment is visible only to staff with MANAGE_COMMERCE_ORDER_NOTES."
+		description = "When true, the resulting attachment is visible only to staff with the manage-comments permission.",
+		example = "false"
 	)
 	public Boolean getRestricted() {
 		if (_restrictedSupplier != null) {
@@ -220,7 +225,7 @@ public class AttachmentBase64 implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "When true, the resulting attachment is visible only to staff with MANAGE_COMMERCE_ORDER_NOTES."
+		description = "When true, the resulting attachment is visible only to staff with the manage-comments permission."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Boolean restricted;
@@ -229,7 +234,8 @@ public class AttachmentBase64 implements Serializable {
 	private Supplier<Boolean> _restrictedSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "File title or display name to store on the attachment."
+		description = "File title or display name to store on the attachment.",
+		example = "purchase-order.pdf"
 	)
 	public String getTitle() {
 		if (_titleSupplier != null) {
@@ -274,7 +280,8 @@ public class AttachmentBase64 implements Serializable {
 	private Supplier<String> _titleSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Attachment type code (resolved against the ListTypeDefinition bound to commerce.order.attachment.type)."
+		description = "Attachment type code resolved against the configured attachment-type list.",
+		example = "invoice"
 	)
 	public String getType() {
 		if (_typeSupplier != null) {
@@ -308,7 +315,7 @@ public class AttachmentBase64 implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Attachment type code (resolved against the ListTypeDefinition bound to commerce.order.attachment.type)."
+		description = "Attachment type code resolved against the configured attachment-type list."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String type;
@@ -532,4 +539,4 @@ public class AttachmentBase64 implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1670134230
+// LIFERAY-REST-BUILDER-HASH:-1510179244

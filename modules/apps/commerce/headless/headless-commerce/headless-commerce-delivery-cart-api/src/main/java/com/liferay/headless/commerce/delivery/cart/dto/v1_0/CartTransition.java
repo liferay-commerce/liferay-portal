@@ -34,7 +34,7 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Workflow or order-status transition available on a cart. Each entry names the transition (workflow task name or one of request-quote, submit, quick-checkout, checkout), its localized label, whether it is currently open, and an optional comment captured when the transition is fired.",
+	description = "Workflow or order-status transition available on the cart. Each entry names the transition (a workflow task name or one of request-quote, submit, quick-checkout, checkout), its localized label, whether the transition is currently allowed, and an optional comment captured when the transition is fired.",
 	value = "CartTransition"
 )
 @JsonFilter("Liferay.Vulcan")
@@ -50,7 +50,8 @@ public class CartTransition implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Reference to the parent CommerceOrder (FK). Read-only."
+		description = "Reference to the parent cart (FK identifier). Read-only.",
+		example = "10130"
 	)
 	public Long getCartId() {
 		if (_cartIdSupplier != null) {
@@ -86,7 +87,7 @@ public class CartTransition implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Reference to the parent CommerceOrder (FK). Read-only."
+		description = "Reference to the parent cart (FK identifier). Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long cartId;
@@ -95,7 +96,8 @@ public class CartTransition implements Serializable {
 	private Supplier<Long> _cartIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Optional comment recorded with the transition (for example, a reason for a quote request)."
+		description = "Optional comment recorded with the transition -- for example, a reason for a quote request.",
+		example = "Please quote with rush shipping."
 	)
 	public String getComment() {
 		if (_commentSupplier != null) {
@@ -131,7 +133,7 @@ public class CartTransition implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Optional comment recorded with the transition (for example, a reason for a quote request)."
+		description = "Optional comment recorded with the transition -- for example, a reason for a quote request."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String comment;
@@ -140,7 +142,8 @@ public class CartTransition implements Serializable {
 	private Supplier<String> _commentSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Localized label for the transition. Read-only."
+		description = "Localized label for the transition. Read-only.",
+		example = "Submit"
 	)
 	public String getLabel() {
 		if (_labelSupplier != null) {
@@ -185,7 +188,8 @@ public class CartTransition implements Serializable {
 	private Supplier<String> _labelSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Transition identifier. Either a workflow task name or one of the order-status transitions -- request-quote, submit, quick-checkout, checkout."
+		description = "Transition identifier. Either a workflow task name or one of the order-status transitions: request-quote, submit, quick-checkout, checkout.",
+		example = "submit"
 	)
 	public String getName() {
 		if (_nameSupplier != null) {
@@ -219,7 +223,7 @@ public class CartTransition implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Transition identifier. Either a workflow task name or one of the order-status transitions -- request-quote, submit, quick-checkout, checkout."
+		description = "Transition identifier. Either a workflow task name or one of the order-status transitions: request-quote, submit, quick-checkout, checkout."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String name;
@@ -228,7 +232,8 @@ public class CartTransition implements Serializable {
 	private Supplier<String> _nameSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "When true, the transition is currently available against the cart's state. Read-only."
+		description = "When true, the transition is currently allowed against the cart's state. Read-only.",
+		example = "true"
 	)
 	public Boolean getOpen() {
 		if (_openSupplier != null) {
@@ -262,7 +267,7 @@ public class CartTransition implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "When true, the transition is currently available against the cart's state. Read-only."
+		description = "When true, the transition is currently allowed against the cart's state. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Boolean open;
@@ -271,7 +276,8 @@ public class CartTransition implements Serializable {
 	private Supplier<Boolean> _openSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "When true, firing the transition requires elevated permission (for example, MANAGE_COMMERCE_ORDERS)."
+		description = "When true, firing the transition requires an elevated permission -- typically the manage-orders permission on the cart.",
+		example = "false"
 	)
 	public Boolean getRestricted() {
 		if (_restrictedSupplier != null) {
@@ -307,7 +313,7 @@ public class CartTransition implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "When true, firing the transition requires elevated permission (for example, MANAGE_COMMERCE_ORDERS)."
+		description = "When true, firing the transition requires an elevated permission -- typically the manage-orders permission on the cart."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Boolean restricted;
@@ -316,7 +322,8 @@ public class CartTransition implements Serializable {
 	private Supplier<Boolean> _restrictedSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Reference to the active WorkflowTask when name names a workflow transition (FK). 0 when the transition is an order-status transition."
+		description = "Reference to the active workflow task when the transition is a workflow transition (FK identifier); 0 when the transition is an order-status transition.",
+		example = "30130"
 	)
 	public Long getWorkflowTaskId() {
 		if (_workflowTaskIdSupplier != null) {
@@ -352,7 +359,7 @@ public class CartTransition implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Reference to the active WorkflowTask when name names a workflow transition (FK). 0 when the transition is an order-status transition."
+		description = "Reference to the active workflow task when the transition is a workflow transition (FK identifier); 0 when the transition is an order-status transition."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long workflowTaskId;
@@ -584,4 +591,4 @@ public class CartTransition implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1925057438
+// LIFERAY-REST-BUILDER-HASH:1138143671

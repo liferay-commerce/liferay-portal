@@ -34,7 +34,7 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Checkout step descriptor (from CommerceOrderStepTrackerHelper). id is the step key (cart, shipping, payment, confirmation); state is its progress -- pending, active, completed.",
+	description = "Checkout step descriptor. The id is the step key (cart, shipping, payment, confirmation); the state is its progress -- pending, active, or completed.",
 	value = "Step"
 )
 @JsonFilter("Liferay.Vulcan")
@@ -50,7 +50,8 @@ public class Step implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Step key (for example, `cart`, `shipping`, `payment`, `confirmation`). Read-only."
+		description = "Step key -- cart, shipping, payment, or confirmation. Read-only.",
+		example = "shipping"
 	)
 	public String getId() {
 		if (_idSupplier != null) {
@@ -84,7 +85,7 @@ public class Step implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Step key (for example, `cart`, `shipping`, `payment`, `confirmation`). Read-only."
+		description = "Step key -- cart, shipping, payment, or confirmation. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String id;
@@ -93,7 +94,7 @@ public class Step implements Serializable {
 	private Supplier<String> _idSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Localized step label. Read-only."
+		description = "Localized step label. Read-only.", example = "Shipping"
 	)
 	public String getLabel() {
 		if (_labelSupplier != null) {
@@ -136,7 +137,8 @@ public class Step implements Serializable {
 	private Supplier<String> _labelSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Step progress -- one of `pending`, `active`, `completed`. Read-only."
+		description = "Step progress -- pending, active, or completed. Read-only.",
+		example = "active"
 	)
 	public String getState() {
 		if (_stateSupplier != null) {
@@ -172,7 +174,7 @@ public class Step implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Step progress -- one of `pending`, `active`, `completed`. Read-only."
+		description = "Step progress -- pending, active, or completed. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String state;
@@ -356,4 +358,4 @@ public class Step implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:517522968
+// LIFERAY-REST-BUILDER-HASH:1416425865

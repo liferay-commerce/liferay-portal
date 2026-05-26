@@ -36,7 +36,7 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Delivery or payment term (CommerceTermEntry). Returned filtered by CommerceOrderType and the currently selected shipping method (for delivery terms) or payment method (for payment terms).",
+	description = "Delivery or payment term. Returned filtered by order type and the currently selected shipping method (for delivery terms) or payment method (for payment terms).",
 	value = "Term"
 )
 @JsonFilter("Liferay.Vulcan")
@@ -52,8 +52,8 @@ public class Term implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Localized description (terms and conditions text). Read-only.",
-		example = "description"
+		description = "Localized description (terms-and-conditions text). Read-only.",
+		example = "Net 30 payment terms apply."
 	)
 	public String getDescription() {
 		if (_descriptionSupplier != null) {
@@ -89,7 +89,7 @@ public class Term implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Localized description (terms and conditions text). Read-only."
+		description = "Localized description (terms-and-conditions text). Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String description;
@@ -98,8 +98,8 @@ public class Term implements Serializable {
 	private Supplier<String> _descriptionSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "External reference code of the CommerceTermEntry. Idempotency key.",
-		example = "AAB-34098-789-N"
+		description = "External reference code of the term. Idempotency key.",
+		example = "AB-34098-789-N"
 	)
 	public String getExternalReferenceCode() {
 		if (_externalReferenceCodeSupplier != null) {
@@ -135,7 +135,7 @@ public class Term implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "External reference code of the CommerceTermEntry. Idempotency key."
+		description = "External reference code of the term. Idempotency key."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String externalReferenceCode;
@@ -145,7 +145,7 @@ public class Term implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Reference to the CommerceTermEntry entity (PK).",
+		description = "Reference to the term (FK identifier).",
 		example = "30130"
 	)
 	public Long getId() {
@@ -179,9 +179,7 @@ public class Term implements Serializable {
 		};
 	}
 
-	@GraphQLField(
-		description = "Reference to the CommerceTermEntry entity (PK)."
-	)
+	@GraphQLField(description = "Reference to the term (FK identifier).")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long id;
 
@@ -190,7 +188,7 @@ public class Term implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Localized label of the term. Read-only.",
-		example = "label"
+		example = "Net 30"
 	)
 	public String getLabel() {
 		if (_labelSupplier != null) {
@@ -233,8 +231,8 @@ public class Term implements Serializable {
 	private Supplier<String> _labelSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Internal name of the term (for example, `Net 30`). Read-only.",
-		example = "name"
+		description = "Internal name of the term. Read-only.",
+		example = "net-30"
 	)
 	public String getName() {
 		if (_nameSupplier != null) {
@@ -267,9 +265,7 @@ public class Term implements Serializable {
 		};
 	}
 
-	@GraphQLField(
-		description = "Internal name of the term (for example, `Net 30`). Read-only."
-	)
+	@GraphQLField(description = "Internal name of the term. Read-only.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String name;
 
@@ -480,4 +476,4 @@ public class Term implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1712637282
+// LIFERAY-REST-BUILDER-HASH:-261011811

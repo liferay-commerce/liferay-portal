@@ -41,7 +41,7 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Shopping cart (CommerceOrder) for the storefront buyer flow while in ORDER_STATUS_OPEN. Aggregates line items, billing and shipping addresses, applied coupon, delivery and payment terms, order type, currency, the computed Summary totals, and the workflow/order/payment status snapshots.",
+	description = "Shopping cart for a buyer flow while the order is still open. Aggregates line items, billing and shipping addresses, applied coupon, delivery and payment terms, order type, currency, computed totals, and the order, payment, and workflow status snapshots.",
 	value = "Cart"
 )
 @JsonFilter("Liferay.Vulcan")
@@ -57,7 +57,8 @@ public class Cart implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Display name of the buyer account (CommerceAccount.name). Read-only."
+		description = "Display name of the buyer account that owns the cart. Read-only.",
+		example = "Acme Industrial Supply"
 	)
 	public String getAccount() {
 		if (_accountSupplier != null) {
@@ -93,7 +94,7 @@ public class Cart implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Display name of the buyer account (CommerceAccount.name). Read-only."
+		description = "Display name of the buyer account that owns the cart. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String account;
@@ -102,7 +103,8 @@ public class Cart implements Serializable {
 	private Supplier<String> _accountSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Reference to the CommerceAccount entity (FK)."
+		description = "Reference to the buyer account (FK identifier).",
+		example = "30130"
 	)
 	public Long getAccountId() {
 		if (_accountIdSupplier != null) {
@@ -137,7 +139,9 @@ public class Cart implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Reference to the CommerceAccount entity (FK).")
+	@GraphQLField(
+		description = "Reference to the buyer account (FK identifier)."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long accountId;
 
@@ -145,7 +149,7 @@ public class Cart implements Serializable {
 	private Supplier<Long> _accountIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "File attachments linked to the cart. Read-only on the cart payload; mutate through the /attachments endpoints."
+		description = "File attachments linked to the cart. Read-only on the cart payload; mutate through the attachments endpoints."
 	)
 	@Valid
 	public Attachment[] getAttachments() {
@@ -182,7 +186,7 @@ public class Cart implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "File attachments linked to the cart. Read-only on the cart payload; mutate through the /attachments endpoints."
+		description = "File attachments linked to the cart. Read-only on the cart payload; mutate through the attachments endpoints."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Attachment[] attachments;
@@ -191,7 +195,8 @@ public class Cart implements Serializable {
 	private Supplier<Attachment[]> _attachmentsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Display name of the user who created the cart. Read-only."
+		description = "Display name of the user who created the cart. Read-only.",
+		example = "Casey Buyer"
 	)
 	public String getAuthor() {
 		if (_authorSupplier != null) {
@@ -278,8 +283,8 @@ public class Cart implements Serializable {
 	private Supplier<Address> _billingAddressSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "External reference code of the CommerceAddress to use as billing address. Alternative to billingAddressId.",
-		example = "AAB-34098-789-N"
+		description = "External reference code of the address to use as the billing address. Alternative to the billing-address ID.",
+		example = "AB-34098-789-N"
 	)
 	public String getBillingAddressExternalReferenceCode() {
 		if (_billingAddressExternalReferenceCodeSupplier != null) {
@@ -320,7 +325,7 @@ public class Cart implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "External reference code of the CommerceAddress to use as billing address. Alternative to billingAddressId."
+		description = "External reference code of the address to use as the billing address. Alternative to the billing-address ID."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String billingAddressExternalReferenceCode;
@@ -329,7 +334,8 @@ public class Cart implements Serializable {
 	private Supplier<String> _billingAddressExternalReferenceCodeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Reference to the CommerceAddress entity used as billing address (FK)."
+		description = "Reference to the billing address (FK identifier).",
+		example = "10130"
 	)
 	public Long getBillingAddressId() {
 		if (_billingAddressIdSupplier != null) {
@@ -365,7 +371,7 @@ public class Cart implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Reference to the CommerceAddress entity used as billing address (FK)."
+		description = "Reference to the billing address (FK identifier)."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long billingAddressId;
@@ -374,7 +380,7 @@ public class Cart implements Serializable {
 	private Supplier<Long> _billingAddressIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Cart line items. Read-only on the cart payload; mutate through the /items endpoints."
+		description = "Cart line items. Read-only on the cart payload; mutate through the items endpoints."
 	)
 	@Valid
 	public CartItem[] getCartItems() {
@@ -411,7 +417,7 @@ public class Cart implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Cart line items. Read-only on the cart payload; mutate through the /items endpoints."
+		description = "Cart line items. Read-only on the cart payload; mutate through the items endpoints."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected CartItem[] cartItems;
@@ -420,7 +426,8 @@ public class Cart implements Serializable {
 	private Supplier<CartItem[]> _cartItemsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Reference to the CommerceChannel entity (FK). Read-only; the channel is fixed at cart creation."
+		description = "Reference to the channel that scopes the cart (FK identifier). Read-only; the channel is fixed at cart creation.",
+		example = "20078"
 	)
 	public Long getChannelId() {
 		if (_channelIdSupplier != null) {
@@ -456,7 +463,7 @@ public class Cart implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Reference to the CommerceChannel entity (FK). Read-only; the channel is fixed at cart creation."
+		description = "Reference to the channel that scopes the cart (FK identifier). Read-only; the channel is fixed at cart creation."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long channelId;
@@ -465,7 +472,8 @@ public class Cart implements Serializable {
 	private Supplier<Long> _channelIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Currently applied promotional coupon code (CommerceDiscount.couponCode). Set via the /coupon-code endpoint."
+		description = "Currently applied promotional coupon code. Set through the coupon-code endpoint.",
+		example = "SUMMER25"
 	)
 	public String getCouponCode() {
 		if (_couponCodeSupplier != null) {
@@ -501,7 +509,7 @@ public class Cart implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Currently applied promotional coupon code (CommerceDiscount.couponCode). Set via the /coupon-code endpoint."
+		description = "Currently applied promotional coupon code. Set through the coupon-code endpoint."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String couponCode;
@@ -510,7 +518,8 @@ public class Cart implements Serializable {
 	private Supplier<String> _couponCodeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Creation timestamp in ISO 8601 with the portal's configured timezone. Read-only."
+		description = "Creation timestamp in ISO 8601. Read-only; set when the cart is first persisted.",
+		example = "2017-07-21"
 	)
 	public Date getCreateDate() {
 		if (_createDateSupplier != null) {
@@ -546,7 +555,7 @@ public class Cart implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Creation timestamp in ISO 8601 with the portal's configured timezone. Read-only."
+		description = "Creation timestamp in ISO 8601. Read-only; set when the cart is first persisted."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Date createDate;
@@ -555,7 +564,7 @@ public class Cart implements Serializable {
 	private Supplier<Date> _createDateSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "ISO 4217 currency code (for example, `USD`, `EUR`)."
+		description = "ISO 4217 currency code.", example = "USD"
 	)
 	public String getCurrencyCode() {
 		if (_currencyCodeSupplier != null) {
@@ -590,9 +599,7 @@ public class Cart implements Serializable {
 		};
 	}
 
-	@GraphQLField(
-		description = "ISO 4217 currency code (for example, `USD`, `EUR`)."
-	)
+	@GraphQLField(description = "ISO 4217 currency code.")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String currencyCode;
 
@@ -600,8 +607,8 @@ public class Cart implements Serializable {
 	private Supplier<String> _currencyCodeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "External reference code of the CommerceCurrency. Alternative to currencyId.",
-		example = "AAB-34098-789-N"
+		description = "External reference code of the currency. Alternative to the currency ID.",
+		example = "AB-34098-789-N"
 	)
 	public String getCurrencyExternalReferenceCode() {
 		if (_currencyExternalReferenceCodeSupplier != null) {
@@ -641,7 +648,7 @@ public class Cart implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "External reference code of the CommerceCurrency. Alternative to currencyId."
+		description = "External reference code of the currency. Alternative to the currency ID."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String currencyExternalReferenceCode;
@@ -651,7 +658,7 @@ public class Cart implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Reference to the CommerceCurrency entity (FK).",
+		description = "Reference to the currency (FK identifier).",
 		example = "30130"
 	)
 	public Long getCurrencyId() {
@@ -687,9 +694,7 @@ public class Cart implements Serializable {
 		};
 	}
 
-	@GraphQLField(
-		description = "Reference to the CommerceCurrency entity (FK)."
-	)
+	@GraphQLField(description = "Reference to the currency (FK identifier).")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long currencyId;
 
@@ -697,7 +702,7 @@ public class Cart implements Serializable {
 	private Supplier<Long> _currencyIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Expando bridge attributes. Keys are the configured custom-field names; values are typed by the custom-field definition."
+		description = "Custom attribute bag. Keys are the configured custom-field names; values are typed by the custom-field definition."
 	)
 	@Valid
 	public Map<String, ?> getCustomFields() {
@@ -734,7 +739,7 @@ public class Cart implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Expando bridge attributes. Keys are the configured custom-field names; values are typed by the custom-field definition."
+		description = "Custom attribute bag. Keys are the configured custom-field names; values are typed by the custom-field definition."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Map<String, ?> customFields;
@@ -743,7 +748,8 @@ public class Cart implements Serializable {
 	private Supplier<Map<String, ?>> _customFieldsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Reference to the CommerceTermEntry entity used as delivery term (FK)."
+		description = "Reference to the delivery term selected on the cart (FK identifier).",
+		example = "10131"
 	)
 	public Long getDeliveryTermId() {
 		if (_deliveryTermIdSupplier != null) {
@@ -779,7 +785,7 @@ public class Cart implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Reference to the CommerceTermEntry entity used as delivery term (FK)."
+		description = "Reference to the delivery term selected on the cart (FK identifier)."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long deliveryTermId;
@@ -788,7 +794,8 @@ public class Cart implements Serializable {
 	private Supplier<Long> _deliveryTermIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Localized label of the resolved delivery term. Read-only."
+		description = "Localized label of the resolved delivery term. Read-only.",
+		example = "Free On Board"
 	)
 	public String getDeliveryTermLabel() {
 		if (_deliveryTermLabelSupplier != null) {
@@ -833,7 +840,7 @@ public class Cart implements Serializable {
 	private Supplier<String> _deliveryTermLabelSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Validation messages collected during cart-level validation (for example, missing address, invalid item quantity)."
+		description = "Validation messages collected during cart-level validation. Each message names a missing or invalid field."
 	)
 	public String[] getErrorMessages() {
 		if (_errorMessagesSupplier != null) {
@@ -869,7 +876,7 @@ public class Cart implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Validation messages collected during cart-level validation (for example, missing address, invalid item quantity)."
+		description = "Validation messages collected during cart-level validation. Each message names a missing or invalid field."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String[] errorMessages;
@@ -878,7 +885,7 @@ public class Cart implements Serializable {
 	private Supplier<String[]> _errorMessagesSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Idempotency key for the underlying CommerceOrder; unique per cart within the company. Read-only on the wire.",
+		description = "Idempotency key for the underlying cart; unique per cart within the company. Read-only on the wire and set automatically when omitted.",
 		example = "AB-34098-789-N"
 	)
 	public String getExternalReferenceCode() {
@@ -915,7 +922,7 @@ public class Cart implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Idempotency key for the underlying CommerceOrder; unique per cart within the company. Read-only on the wire."
+		description = "Idempotency key for the underlying cart; unique per cart within the company. Read-only on the wire and set automatically when omitted."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String externalReferenceCode;
@@ -924,7 +931,8 @@ public class Cart implements Serializable {
 	private Supplier<String> _externalReferenceCodeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Friendly URL separator used to build storefront links. Read-only."
+		description = "Friendly URL separator used to build storefront links. Read-only.",
+		example = "/-/"
 	)
 	public String getFriendlyURLSeparator() {
 		if (_friendlyURLSeparatorSupplier != null) {
@@ -969,7 +977,8 @@ public class Cart implements Serializable {
 	private Supplier<String> _friendlyURLSeparatorSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Reference to the CommerceOrder entity (PK). Read-only."
+		description = "Reference to the cart (FK identifier). Read-only.",
+		example = "30130"
 	)
 	public Long getId() {
 		if (_idSupplier != null) {
@@ -1003,7 +1012,7 @@ public class Cart implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Reference to the CommerceOrder entity (PK). Read-only."
+		description = "Reference to the cart (FK identifier). Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long id;
@@ -1012,7 +1021,8 @@ public class Cart implements Serializable {
 	private Supplier<Long> _idSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Timestamp of the last price recalculation in ISO 8601. Read-only."
+		description = "Timestamp of the last price recalculation in ISO 8601. Read-only.",
+		example = "2017-07-21"
 	)
 	public Date getLastPriceUpdateDate() {
 		if (_lastPriceUpdateDateSupplier != null) {
@@ -1057,7 +1067,8 @@ public class Cart implements Serializable {
 	private Supplier<Date> _lastPriceUpdateDateSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Last modification timestamp in ISO 8601 with the portal's configured timezone. Read-only."
+		description = "Last modification timestamp in ISO 8601. Read-only.",
+		example = "2017-07-21"
 	)
 	public Date getModifiedDate() {
 		if (_modifiedDateSupplier != null) {
@@ -1093,7 +1104,7 @@ public class Cart implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Last modification timestamp in ISO 8601 with the portal's configured timezone. Read-only."
+		description = "Last modification timestamp in ISO 8601. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Date modifiedDate;
@@ -1143,7 +1154,7 @@ public class Cart implements Serializable {
 	private Supplier<String> _nameSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Cart comments attached to the cart. Read-only on the cart payload; mutate through the /comments endpoints. Restricted notes are filtered by permission."
+		description = "Comments attached to the cart. Read-only on the cart payload; mutate through the comments endpoints. Restricted notes are filtered by permission."
 	)
 	@Valid
 	public CartComment[] getNotes() {
@@ -1180,7 +1191,7 @@ public class Cart implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Cart comments attached to the cart. Read-only on the cart payload; mutate through the /comments endpoints. Restricted notes are filtered by permission."
+		description = "Comments attached to the cart. Read-only on the cart payload; mutate through the comments endpoints. Restricted notes are filtered by permission."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected CartComment[] notes;
@@ -1231,7 +1242,8 @@ public class Cart implements Serializable {
 	private Supplier<Status> _orderStatusInfoSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Localized display name of the resolved CommerceOrderType. Read-only."
+		description = "Localized display name of the resolved order type. Read-only.",
+		example = "Standard Order"
 	)
 	public String getOrderType() {
 		if (_orderTypeSupplier != null) {
@@ -1267,7 +1279,7 @@ public class Cart implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Localized display name of the resolved CommerceOrderType. Read-only."
+		description = "Localized display name of the resolved order type. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String orderType;
@@ -1276,7 +1288,7 @@ public class Cart implements Serializable {
 	private Supplier<String> _orderTypeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "External reference code of the CommerceOrderType. Alternative to orderTypeId.",
+		description = "External reference code of the order type. Alternative to the order-type ID.",
 		example = "AB-34098-789-N"
 	)
 	public String getOrderTypeExternalReferenceCode() {
@@ -1317,7 +1329,7 @@ public class Cart implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "External reference code of the CommerceOrderType. Alternative to orderTypeId."
+		description = "External reference code of the order type. Alternative to the order-type ID."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String orderTypeExternalReferenceCode;
@@ -1326,7 +1338,8 @@ public class Cart implements Serializable {
 	private Supplier<String> _orderTypeExternalReferenceCodeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Reference to the CommerceOrderType entity (FK)."
+		description = "Reference to the order type (FK identifier).",
+		example = "10131"
 	)
 	public Long getOrderTypeId() {
 		if (_orderTypeIdSupplier != null) {
@@ -1361,9 +1374,7 @@ public class Cart implements Serializable {
 		};
 	}
 
-	@GraphQLField(
-		description = "Reference to the CommerceOrderType entity (FK)."
-	)
+	@GraphQLField(description = "Reference to the order type (FK identifier).")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long orderTypeId;
 
@@ -1371,7 +1382,8 @@ public class Cart implements Serializable {
 	private Supplier<Long> _orderTypeIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Stable UUID of the underlying CommerceOrder. Read-only."
+		description = "Stable UUID of the underlying cart record. Read-only.",
+		example = "c8e8b6e0-7b9e-4f8b-9b8f-1c2d3e4f5a6b"
 	)
 	public String getOrderUUID() {
 		if (_orderUUIDSupplier != null) {
@@ -1407,7 +1419,7 @@ public class Cart implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Stable UUID of the underlying CommerceOrder. Read-only."
+		description = "Stable UUID of the underlying cart record. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String orderUUID;
@@ -1416,7 +1428,8 @@ public class Cart implements Serializable {
 	private Supplier<String> _orderUUIDSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Currently selected payment method key (matches PaymentMethod.key on the /payment-methods enumeration)."
+		description = "Currently selected payment method key. Matches the payment method engine key on the payment-methods enumeration.",
+		example = "money-order"
 	)
 	public String getPaymentMethod() {
 		if (_paymentMethodSupplier != null) {
@@ -1452,7 +1465,7 @@ public class Cart implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Currently selected payment method key (matches PaymentMethod.key on the /payment-methods enumeration)."
+		description = "Currently selected payment method key. Matches the payment method engine key on the payment-methods enumeration."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String paymentMethod;
@@ -1461,7 +1474,8 @@ public class Cart implements Serializable {
 	private Supplier<String> _paymentMethodSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Localized label of the selected payment method. Read-only."
+		description = "Localized label of the selected payment method. Read-only.",
+		example = "Money Order"
 	)
 	public String getPaymentMethodLabel() {
 		if (_paymentMethodLabelSupplier != null) {
@@ -1506,7 +1520,8 @@ public class Cart implements Serializable {
 	private Supplier<String> _paymentMethodLabelSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Integer payment method type derived from CommercePaymentMethod.getPaymentType (online, offline, recurring, subscription). Read-only."
+		description = "Integer payment method type: 1=Online standard, 2=Online recurring, 3=Online subscription, 4=Offline. Read-only.",
+		example = "1"
 	)
 	public Integer getPaymentMethodType() {
 		if (_paymentMethodTypeSupplier != null) {
@@ -1542,7 +1557,7 @@ public class Cart implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Integer payment method type derived from CommercePaymentMethod.getPaymentType (online, offline, recurring, subscription). Read-only."
+		description = "Integer payment method type: 1=Online standard, 2=Online recurring, 3=Online subscription, 4=Offline. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Integer paymentMethodType;
@@ -1551,7 +1566,8 @@ public class Cart implements Serializable {
 	private Supplier<Integer> _paymentMethodTypeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Integer payment status (CommerceOrderPaymentConstants): 0=COMPLETED, 1=PENDING, 2=AUTHORIZED, 5=FAILED, 17=REFUNDED, 23=NOT_REQUIRED, 51=CANCELLED. Read-only."
+		description = "Integer payment status: 0=Completed, 1=Pending, 2=Authorized, 5=Failed, 17=Refunded, 23=Not Required, 51=Cancelled. Read-only.",
+		example = "0"
 	)
 	public Integer getPaymentStatus() {
 		if (_paymentStatusSupplier != null) {
@@ -1587,7 +1603,7 @@ public class Cart implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Integer payment status (CommerceOrderPaymentConstants): 0=COMPLETED, 1=PENDING, 2=AUTHORIZED, 5=FAILED, 17=REFUNDED, 23=NOT_REQUIRED, 51=CANCELLED. Read-only."
+		description = "Integer payment status: 0=Completed, 1=Pending, 2=Authorized, 5=Failed, 17=Refunded, 23=Not Required, 51=Cancelled. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Integer paymentStatus;
@@ -1638,7 +1654,8 @@ public class Cart implements Serializable {
 	private Supplier<Status> _paymentStatusInfoSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Localized label of the payment status. Read-only."
+		description = "Localized label of the payment status. Read-only.",
+		example = "Completed"
 	)
 	public String getPaymentStatusLabel() {
 		if (_paymentStatusLabelSupplier != null) {
@@ -1683,7 +1700,8 @@ public class Cart implements Serializable {
 	private Supplier<String> _paymentStatusLabelSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Reference to the CommerceTermEntry entity used as payment term (FK)."
+		description = "Reference to the payment term selected on the cart (FK identifier).",
+		example = "10130"
 	)
 	public Long getPaymentTermId() {
 		if (_paymentTermIdSupplier != null) {
@@ -1719,7 +1737,7 @@ public class Cart implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Reference to the CommerceTermEntry entity used as payment term (FK)."
+		description = "Reference to the payment term selected on the cart (FK identifier)."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long paymentTermId;
@@ -1728,7 +1746,8 @@ public class Cart implements Serializable {
 	private Supplier<Long> _paymentTermIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Localized label of the resolved payment term. Read-only."
+		description = "Localized label of the resolved payment term. Read-only.",
+		example = "Net 30"
 	)
 	public String getPaymentTermLabel() {
 		if (_paymentTermLabelSupplier != null) {
@@ -1773,7 +1792,8 @@ public class Cart implements Serializable {
 	private Supplier<String> _paymentTermLabelSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Free-form note rendered onto the printed order document."
+		description = "Free-form note rendered onto the printed order document.",
+		example = "Please leave at the side door."
 	)
 	public String getPrintedNote() {
 		if (_printedNoteSupplier != null) {
@@ -1818,7 +1838,8 @@ public class Cart implements Serializable {
 	private Supplier<String> _printedNoteSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Buyer-supplied purchase order number for B2B reconciliation."
+		description = "Buyer-supplied purchase order number for back-office reconciliation.",
+		example = "PO-2024-00457"
 	)
 	public String getPurchaseOrderNumber() {
 		if (_purchaseOrderNumberSupplier != null) {
@@ -1854,7 +1875,7 @@ public class Cart implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Buyer-supplied purchase order number for B2B reconciliation."
+		description = "Buyer-supplied purchase order number for back-office reconciliation."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String purchaseOrderNumber;
@@ -1951,8 +1972,8 @@ public class Cart implements Serializable {
 	private Supplier<Address> _shippingAddressSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "External reference code of the CommerceAddress to use as shipping address. Alternative to shippingAddressId.",
-		example = "AAB-34098-789-N"
+		description = "External reference code of the address to use as the shipping address. Alternative to the shipping-address ID.",
+		example = "AB-34098-789-N"
 	)
 	public String getShippingAddressExternalReferenceCode() {
 		if (_shippingAddressExternalReferenceCodeSupplier != null) {
@@ -1993,7 +2014,7 @@ public class Cart implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "External reference code of the CommerceAddress to use as shipping address. Alternative to shippingAddressId."
+		description = "External reference code of the address to use as the shipping address. Alternative to the shipping-address ID."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String shippingAddressExternalReferenceCode;
@@ -2002,7 +2023,8 @@ public class Cart implements Serializable {
 	private Supplier<String> _shippingAddressExternalReferenceCodeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Reference to the CommerceAddress entity used as shipping address (FK)."
+		description = "Reference to the shipping address (FK identifier).",
+		example = "10131"
 	)
 	public Long getShippingAddressId() {
 		if (_shippingAddressIdSupplier != null) {
@@ -2038,7 +2060,7 @@ public class Cart implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Reference to the CommerceAddress entity used as shipping address (FK)."
+		description = "Reference to the shipping address (FK identifier)."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long shippingAddressId;
@@ -2047,7 +2069,8 @@ public class Cart implements Serializable {
 	private Supplier<Long> _shippingAddressIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Currently selected shipping method key (matches ShippingMethod.engineKey on the /shipping-methods enumeration)."
+		description = "Currently selected shipping method key. Matches the shipping method engine key on the shipping-methods enumeration.",
+		example = "fixed"
 	)
 	public String getShippingMethod() {
 		if (_shippingMethodSupplier != null) {
@@ -2083,7 +2106,7 @@ public class Cart implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Currently selected shipping method key (matches ShippingMethod.engineKey on the /shipping-methods enumeration)."
+		description = "Currently selected shipping method key. Matches the shipping method engine key on the shipping-methods enumeration."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String shippingMethod;
@@ -2092,7 +2115,8 @@ public class Cart implements Serializable {
 	private Supplier<String> _shippingMethodSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Currently selected shipping option name (matches ShippingOption.name on the chosen ShippingMethod)."
+		description = "Currently selected shipping option name within the chosen shipping method.",
+		example = "Standard"
 	)
 	public String getShippingOption() {
 		if (_shippingOptionSupplier != null) {
@@ -2128,7 +2152,7 @@ public class Cart implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Currently selected shipping option name (matches ShippingOption.name on the chosen ShippingMethod)."
+		description = "Currently selected shipping option name within the chosen shipping method."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String shippingOption;
@@ -2137,7 +2161,8 @@ public class Cart implements Serializable {
 	private Supplier<String> _shippingOptionSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Workflow status label string (for example, `draft`, `pending`, `approved`). Read-only; for the integer code see orderStatusInfo.code."
+		description = "Workflow status label string. Read-only; for the integer code see the order-status snapshot.",
+		example = "approved"
 	)
 	public String getStatus() {
 		if (_statusSupplier != null) {
@@ -2173,7 +2198,7 @@ public class Cart implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Workflow status label string (for example, `draft`, `pending`, `approved`). Read-only; for the integer code see orderStatusInfo.code."
+		description = "Workflow status label string. Read-only; for the integer code see the order-status snapshot."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String status;
@@ -2182,7 +2207,7 @@ public class Cart implements Serializable {
 	private Supplier<String> _statusSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Checkout step progress; ordered list of Step entries with state pending/active/completed."
+		description = "Checkout step progress; ordered list of step entries with state pending, active, or completed."
 	)
 	@Valid
 	public Step[] getSteps() {
@@ -2219,7 +2244,7 @@ public class Cart implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Checkout step progress; ordered list of Step entries with state pending/active/completed."
+		description = "Checkout step progress; ordered list of step entries with state pending, active, or completed."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Step[] steps;
@@ -2270,7 +2295,8 @@ public class Cart implements Serializable {
 	private Supplier<Summary> _summarySupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "When true, the shipping address is copied to the billing address on save."
+		description = "When true, the shipping address is copied to the billing address on save.",
+		example = "true"
 	)
 	public Boolean getUseAsBilling() {
 		if (_useAsBillingSupplier != null) {
@@ -2315,7 +2341,8 @@ public class Cart implements Serializable {
 	private Supplier<Boolean> _useAsBillingSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Aggregate validation flag -- true when no errorMessages and no item-level errors are present. Read-only."
+		description = "Aggregate validation flag -- true when no cart-level error messages and no item-level errors are present. Read-only.",
+		example = "true"
 	)
 	public Boolean getValid() {
 		if (_validSupplier != null) {
@@ -2351,7 +2378,7 @@ public class Cart implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Aggregate validation flag -- true when no errorMessages and no item-level errors are present. Read-only."
+		description = "Aggregate validation flag -- true when no cart-level error messages and no item-level errors are present. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Boolean valid;
@@ -3322,4 +3349,4 @@ public class Cart implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1436643751
+// LIFERAY-REST-BUILDER-HASH:1436248763

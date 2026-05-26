@@ -39,7 +39,7 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Unit-of-measure tier (CPInstanceUnitOfMeasure) bound to the SKU on a cart item. key and name identify the tier (for example, `pl`/Pallet); rate is the conversion factor against the base unit; incrementalOrderQuantity is the minimum order increment in this UOM.",
+	description = "Unit-of-measure tier bound to the SKU on a cart item. The key and name identify the tier (for example a Pallet tier on a base unit); the rate is the conversion factor against the base unit; the incremental order quantity is the minimum order increment in this tier.",
 	value = "SkuUnitOfMeasure"
 )
 @JsonFilter("Liferay.Vulcan")
@@ -56,7 +56,7 @@ public class SkuUnitOfMeasure implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Minimum order increment expressed in this UOM.",
+		description = "Minimum order increment expressed in this unit-of-measure tier.",
 		example = "1.5"
 	)
 	@Valid
@@ -97,7 +97,7 @@ public class SkuUnitOfMeasure implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Minimum order increment expressed in this UOM."
+		description = "Minimum order increment expressed in this unit-of-measure tier."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected BigDecimal incrementalOrderQuantity;
@@ -106,7 +106,7 @@ public class SkuUnitOfMeasure implements Serializable {
 	private Supplier<BigDecimal> _incrementalOrderQuantitySupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Stable identifier of the UOM tier (for example, `pl` for pallet).",
+		description = "Stable identifier of the unit-of-measure tier.",
 		example = "pl"
 	)
 	public String getKey() {
@@ -141,7 +141,7 @@ public class SkuUnitOfMeasure implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Stable identifier of the UOM tier (for example, `pl` for pallet)."
+		description = "Stable identifier of the unit-of-measure tier."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String key;
@@ -150,8 +150,7 @@ public class SkuUnitOfMeasure implements Serializable {
 	private Supplier<String> _keySupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Localized display name (for example, `Pallet`).",
-		example = "Pallet"
+		description = "Localized display name of the tier.", example = "Pallet"
 	)
 	public String getName() {
 		if (_nameSupplier != null) {
@@ -184,9 +183,7 @@ public class SkuUnitOfMeasure implements Serializable {
 		};
 	}
 
-	@GraphQLField(
-		description = "Localized display name (for example, `Pallet`)."
-	)
+	@GraphQLField(description = "Localized display name of the tier.")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String name;
 
@@ -194,7 +191,7 @@ public class SkuUnitOfMeasure implements Serializable {
 	private Supplier<String> _nameSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Number of decimal places allowed in the ordered quantity for this UOM.",
+		description = "Number of decimal places allowed in the ordered quantity for this tier.",
 		example = "3"
 	)
 	public Integer getPrecision() {
@@ -231,7 +228,7 @@ public class SkuUnitOfMeasure implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Number of decimal places allowed in the ordered quantity for this UOM."
+		description = "Number of decimal places allowed in the ordered quantity for this tier."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Integer precision;
@@ -240,7 +237,7 @@ public class SkuUnitOfMeasure implements Serializable {
 	private Supplier<Integer> _precisionSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "When true, this is the default UOM for the SKU.",
+		description = "When true, this is the default unit-of-measure tier for the SKU.",
 		example = "true"
 	)
 	public Boolean getPrimary() {
@@ -277,7 +274,7 @@ public class SkuUnitOfMeasure implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "When true, this is the default UOM for the SKU."
+		description = "When true, this is the default unit-of-measure tier for the SKU."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Boolean primary;
@@ -287,7 +284,7 @@ public class SkuUnitOfMeasure implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Display priority among the SKU's UOM tiers. Lower values appear first.",
+		description = "Display priority among the SKU's unit-of-measure tiers. Lower values appear first.",
 		example = "1.1"
 	)
 	public Double getPriority() {
@@ -324,7 +321,7 @@ public class SkuUnitOfMeasure implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Display priority among the SKU's UOM tiers. Lower values appear first."
+		description = "Display priority among the SKU's unit-of-measure tiers. Lower values appear first."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Double priority;
@@ -334,7 +331,7 @@ public class SkuUnitOfMeasure implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Conversion factor from this UOM to the base unit (for example, 200 base units per pallet).",
+		description = "Conversion factor from this tier to the base unit -- for example, the number of base units per pallet.",
 		example = "202.1"
 	)
 	@Valid
@@ -372,7 +369,7 @@ public class SkuUnitOfMeasure implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Conversion factor from this UOM to the base unit (for example, 200 base units per pallet)."
+		description = "Conversion factor from this tier to the base unit -- for example, the number of base units per pallet."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected BigDecimal rate;
@@ -600,4 +597,4 @@ public class SkuUnitOfMeasure implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-141860014
+// LIFERAY-REST-BUILDER-HASH:-1689500995

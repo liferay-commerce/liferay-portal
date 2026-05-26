@@ -38,7 +38,7 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Computed totals for a cart (CommerceOrderPrice summary). Carries subtotal, shipping and tax components, absolute and percentage discounts at each level (subtotal, shipping, total), and the final total. The currency is inherited from the parent cart.",
+	description = "Computed totals for a cart. Carries the subtotal, the shipping and tax components, the absolute and percentage discounts at each level (subtotal, shipping, total), and the final total. The currency is inherited from the parent cart.",
 	value = "Summary"
 )
 @JsonFilter("Liferay.Vulcan")
@@ -54,7 +54,8 @@ public class Summary implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "ISO 4217 currency code inherited from the parent cart."
+		description = "ISO 4217 currency code inherited from the parent cart.",
+		example = "USD"
 	)
 	public String getCurrency() {
 		if (_currencySupplier != null) {
@@ -142,7 +143,7 @@ public class Summary implements Serializable {
 	private Supplier<Integer> _itemsCountSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Sum of CartItem.quantity across all line items.",
+		description = "Sum of line item quantities across the cart.",
 		example = "1.1"
 	)
 	@Valid
@@ -179,9 +180,7 @@ public class Summary implements Serializable {
 		};
 	}
 
-	@GraphQLField(
-		description = "Sum of CartItem.quantity across all line items."
-	)
+	@GraphQLField(description = "Sum of line item quantities across the cart.")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected BigDecimal itemsQuantity;
 
@@ -189,7 +188,8 @@ public class Summary implements Serializable {
 	private Supplier<BigDecimal> _itemsQuantitySupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Per-level percentage discounts applied to shipping, in cascade order."
+		description = "Per-level percentage discounts applied to shipping, in cascade order.",
+		example = "[10, 5, 0, 0]"
 	)
 	public String[] getShippingDiscountPercentages() {
 		if (_shippingDiscountPercentagesSupplier != null) {
@@ -238,7 +238,8 @@ public class Summary implements Serializable {
 	private Supplier<String[]> _shippingDiscountPercentagesSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Absolute discount applied to the shipping component."
+		description = "Absolute discount applied to the shipping component.",
+		example = "1.5"
 	)
 	public Double getShippingDiscountValue() {
 		if (_shippingDiscountValueSupplier != null) {
@@ -283,7 +284,7 @@ public class Summary implements Serializable {
 	private Supplier<Double> _shippingDiscountValueSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Currency-formatted shipping discount."
+		description = "Currency-formatted shipping discount.", example = "$1.50"
 	)
 	public String getShippingDiscountValueFormatted() {
 		if (_shippingDiscountValueFormattedSupplier != null) {
@@ -330,7 +331,7 @@ public class Summary implements Serializable {
 	private Supplier<String> _shippingDiscountValueFormattedSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Total shipping cost before tax."
+		description = "Total shipping cost before tax.", example = "9.99"
 	)
 	public Double getShippingValue() {
 		if (_shippingValueSupplier != null) {
@@ -373,7 +374,7 @@ public class Summary implements Serializable {
 	private Supplier<Double> _shippingValueSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Currency-formatted shipping cost."
+		description = "Currency-formatted shipping cost.", example = "$9.99"
 	)
 	public String getShippingValueFormatted() {
 		if (_shippingValueFormattedSupplier != null) {
@@ -417,7 +418,7 @@ public class Summary implements Serializable {
 	private Supplier<String> _shippingValueFormattedSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Total shipping cost including tax."
+		description = "Total shipping cost including tax.", example = "10.79"
 	)
 	public Double getShippingValueWithTaxAmount() {
 		if (_shippingValueWithTaxAmountSupplier != null) {
@@ -464,7 +465,8 @@ public class Summary implements Serializable {
 	private Supplier<Double> _shippingValueWithTaxAmountSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Currency-formatted shipping cost with tax."
+		description = "Currency-formatted shipping cost with tax.",
+		example = "$10.79"
 	)
 	public String getShippingValueWithTaxAmountFormatted() {
 		if (_shippingValueWithTaxAmountFormattedSupplier != null) {
@@ -512,7 +514,8 @@ public class Summary implements Serializable {
 	private Supplier<String> _shippingValueWithTaxAmountFormattedSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Sum of line item prices before tax, shipping, and cart-level discounts."
+		description = "Sum of line item prices before tax, shipping, and cart-level discounts.",
+		example = "50.0"
 	)
 	public Double getSubtotal() {
 		if (_subtotalSupplier != null) {
@@ -557,7 +560,8 @@ public class Summary implements Serializable {
 	private Supplier<Double> _subtotalSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Per-level percentage discounts applied to the subtotal, in cascade order."
+		description = "Per-level percentage discounts applied to the subtotal, in cascade order.",
+		example = "[10, 5, 0, 0]"
 	)
 	public String[] getSubtotalDiscountPercentages() {
 		if (_subtotalDiscountPercentagesSupplier != null) {
@@ -606,7 +610,8 @@ public class Summary implements Serializable {
 	private Supplier<String[]> _subtotalDiscountPercentagesSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Absolute discount applied to the subtotal."
+		description = "Absolute discount applied to the subtotal.",
+		example = "5.0"
 	)
 	public Double getSubtotalDiscountValue() {
 		if (_subtotalDiscountValueSupplier != null) {
@@ -649,7 +654,7 @@ public class Summary implements Serializable {
 	private Supplier<Double> _subtotalDiscountValueSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Currency-formatted subtotal discount."
+		description = "Currency-formatted subtotal discount.", example = "$5.00"
 	)
 	public String getSubtotalDiscountValueFormatted() {
 		if (_subtotalDiscountValueFormattedSupplier != null) {
@@ -696,7 +701,7 @@ public class Summary implements Serializable {
 	private Supplier<String> _subtotalDiscountValueFormattedSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Currency-formatted subtotal."
+		description = "Currency-formatted subtotal.", example = "$50.00"
 	)
 	public String getSubtotalFormatted() {
 		if (_subtotalFormattedSupplier != null) {
@@ -739,7 +744,8 @@ public class Summary implements Serializable {
 	private Supplier<String> _subtotalFormattedSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Total tax (sales tax plus VAT) computed by the active tax engine."
+		description = "Total tax (sales tax plus VAT) computed by the active tax engine.",
+		example = "4.05"
 	)
 	public Double getTaxValue() {
 		if (_taxValueSupplier != null) {
@@ -784,7 +790,7 @@ public class Summary implements Serializable {
 	private Supplier<Double> _taxValueSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Currency-formatted tax."
+		description = "Currency-formatted tax.", example = "$4.05"
 	)
 	public String getTaxValueFormatted() {
 		if (_taxValueFormattedSupplier != null) {
@@ -827,7 +833,8 @@ public class Summary implements Serializable {
 	private Supplier<String> _taxValueFormattedSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Final total -- subtotal plus shipping plus tax minus all discounts."
+		description = "Final total -- subtotal plus shipping plus tax minus all discounts.",
+		example = "58.54"
 	)
 	public Double getTotal() {
 		if (_totalSupplier != null) {
@@ -872,7 +879,8 @@ public class Summary implements Serializable {
 	private Supplier<Double> _totalSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Aggregate percentage discounts across all levels."
+		description = "Aggregate percentage discounts across all levels.",
+		example = "[10, 5, 0, 0]"
 	)
 	public String[] getTotalDiscountPercentages() {
 		if (_totalDiscountPercentagesSupplier != null) {
@@ -918,7 +926,8 @@ public class Summary implements Serializable {
 	private Supplier<String[]> _totalDiscountPercentagesSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Aggregate absolute discount across subtotal, shipping, and other levels."
+		description = "Aggregate absolute discount across subtotal, shipping, and other levels.",
+		example = "6.5"
 	)
 	public Double getTotalDiscountValue() {
 		if (_totalDiscountValueSupplier != null) {
@@ -963,7 +972,7 @@ public class Summary implements Serializable {
 	private Supplier<Double> _totalDiscountValueSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Currency-formatted total discount."
+		description = "Currency-formatted total discount.", example = "$6.50"
 	)
 	public String getTotalDiscountValueFormatted() {
 		if (_totalDiscountValueFormattedSupplier != null) {
@@ -1010,7 +1019,7 @@ public class Summary implements Serializable {
 	private Supplier<String> _totalDiscountValueFormattedSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Currency-formatted total."
+		description = "Currency-formatted total.", example = "$58.54"
 	)
 	public String getTotalFormatted() {
 		if (_totalFormattedSupplier != null) {
@@ -1525,4 +1534,4 @@ public class Summary implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1124704927
+// LIFERAY-REST-BUILDER-HASH:1347825819
