@@ -33,7 +33,10 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("ShippingOption")
+@GraphQLName(
+	description = "A single shipping option within a CommerceShippingMethod, with its name, localized label, computed cost amount, and currency-formatted display string.",
+	value = "ShippingOption"
+)
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "ShippingOption")
 public class ShippingOption implements Serializable {
@@ -46,7 +49,9 @@ public class ShippingOption implements Serializable {
 		return ObjectMapperUtil.unsafeReadValue(ShippingOption.class, json);
 	}
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Computed shipping cost in the cart's currency."
+	)
 	public Double getAmount() {
 		if (_amountSupplier != null) {
 			amount = _amountSupplier.get();
@@ -80,14 +85,18 @@ public class ShippingOption implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Computed shipping cost in the cart's currency."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Double amount;
 
 	@JsonIgnore
 	private Supplier<Double> _amountSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Currency-formatted shipping cost."
+	)
 	public String getAmountFormatted() {
 		if (_amountFormattedSupplier != null) {
 			amountFormatted = _amountFormattedSupplier.get();
@@ -121,14 +130,16 @@ public class ShippingOption implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "Currency-formatted shipping cost.")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String amountFormatted;
 
 	@JsonIgnore
 	private Supplier<String> _amountFormattedSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Localized label of the option."
+	)
 	public String getLabel() {
 		if (_labelSupplier != null) {
 			label = _labelSupplier.get();
@@ -162,14 +173,16 @@ public class ShippingOption implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "Localized label of the option.")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String label;
 
 	@JsonIgnore
 	private Supplier<String> _labelSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Option identifier within the parent ShippingMethod. Used as the value of Cart.shippingOption."
+	)
 	public String getName() {
 		if (_nameSupplier != null) {
 			name = _nameSupplier.get();
@@ -201,7 +214,9 @@ public class ShippingOption implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Option identifier within the parent ShippingMethod. Used as the value of Cart.shippingOption."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String name;
 
@@ -396,4 +411,4 @@ public class ShippingOption implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1729579588
+// LIFERAY-REST-BUILDER-HASH:1026360913

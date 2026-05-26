@@ -33,7 +33,10 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("CouponCode")
+@GraphQLName(
+	description = "Request payload for applying a coupon to a cart. Carries the coupon code string that CommerceOrderService.applyCouponCode resolves against the active CommerceDiscount rules.",
+	value = "CouponCode"
+)
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "CouponCode")
 public class CouponCode implements Serializable {
@@ -46,7 +49,9 @@ public class CouponCode implements Serializable {
 		return ObjectMapperUtil.unsafeReadValue(CouponCode.class, json);
 	}
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Coupon code string to apply. Resolved against the active CommerceDiscount rules; raises an error when the code is unknown, expired, or not applicable."
+	)
 	public String getCode() {
 		if (_codeSupplier != null) {
 			code = _codeSupplier.get();
@@ -78,7 +83,9 @@ public class CouponCode implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Coupon code string to apply. Resolved against the active CommerceDiscount rules; raises an error when the code is unknown, expired, or not applicable."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String code;
 
@@ -229,4 +236,4 @@ public class CouponCode implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2063347802
+// LIFERAY-REST-BUILDER-HASH:-917227520

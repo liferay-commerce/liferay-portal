@@ -35,7 +35,10 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("ShippingMethod")
+@GraphQLName(
+	description = "Shipping method (CommerceShippingMethod) qualified for a cart. The nested ShippingOption set is computed by the registered CommerceShippingEngine against the cart's shipping address country.",
+	value = "ShippingMethod"
+)
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "ShippingMethod")
 public class ShippingMethod implements Serializable {
@@ -48,7 +51,9 @@ public class ShippingMethod implements Serializable {
 		return ObjectMapperUtil.unsafeReadValue(ShippingMethod.class, json);
 	}
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Localized description of the shipping method."
+	)
 	public String getDescription() {
 		if (_descriptionSupplier != null) {
 			description = _descriptionSupplier.get();
@@ -82,14 +87,16 @@ public class ShippingMethod implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "Localized description of the shipping method.")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String description;
 
 	@JsonIgnore
 	private Supplier<String> _descriptionSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Stable engine key identifying the shipping integration (for example, `fixed-shipping`, `by-weight`). Used as the value of Cart.shippingMethod."
+	)
 	public String getEngineKey() {
 		if (_engineKeySupplier != null) {
 			engineKey = _engineKeySupplier.get();
@@ -123,14 +130,18 @@ public class ShippingMethod implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Stable engine key identifying the shipping integration (for example, `fixed-shipping`, `by-weight`). Used as the value of Cart.shippingMethod."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String engineKey;
 
 	@JsonIgnore
 	private Supplier<String> _engineKeySupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Reference to the CommerceShippingMethod entity (PK)."
+	)
 	public Long getId() {
 		if (_idSupplier != null) {
 			id = _idSupplier.get();
@@ -162,14 +173,18 @@ public class ShippingMethod implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Reference to the CommerceShippingMethod entity (PK)."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long id;
 
 	@JsonIgnore
 	private Supplier<Long> _idSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Localized display name of the shipping method."
+	)
 	public String getName() {
 		if (_nameSupplier != null) {
 			name = _nameSupplier.get();
@@ -201,14 +216,18 @@ public class ShippingMethod implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Localized display name of the shipping method."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String name;
 
 	@JsonIgnore
 	private Supplier<String> _nameSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Available shipping options computed by the engine against the cart's shipping address."
+	)
 	@Valid
 	public ShippingOption[] getShippingOptions() {
 		if (_shippingOptionsSupplier != null) {
@@ -244,7 +263,9 @@ public class ShippingMethod implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Available shipping options computed by the engine against the cart's shipping address."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected ShippingOption[] shippingOptions;
 
@@ -461,4 +482,4 @@ public class ShippingMethod implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:973247361
+// LIFERAY-REST-BUILDER-HASH:52171551

@@ -33,7 +33,10 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("AttachmentBase64")
+@GraphQLName(
+	description = "Request payload for creating a cart attachment from a base64-encoded file. Used by the /carts/<cartId>/attachments/by-base64 endpoint (and the by-externalReferenceCode variant).",
+	value = "AttachmentBase64"
+)
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "AttachmentBase64")
 public class AttachmentBase64 implements Serializable {
@@ -89,7 +92,10 @@ public class AttachmentBase64 implements Serializable {
 	@JsonIgnore
 	private Supplier<String> _attachmentSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "AB-34098-789-N")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Optional idempotency key for the resulting CommerceOrderAttachment.",
+		example = "AB-34098-789-N"
+	)
 	public String getExternalReferenceCode() {
 		if (_externalReferenceCodeSupplier != null) {
 			externalReferenceCode = _externalReferenceCodeSupplier.get();
@@ -123,14 +129,18 @@ public class AttachmentBase64 implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Optional idempotency key for the resulting CommerceOrderAttachment."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String externalReferenceCode;
 
 	@JsonIgnore
 	private Supplier<String> _externalReferenceCodeSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Display and sort priority. Lower values appear first."
+	)
 	public Double getPriority() {
 		if (_prioritySupplier != null) {
 			priority = _prioritySupplier.get();
@@ -164,14 +174,18 @@ public class AttachmentBase64 implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Display and sort priority. Lower values appear first."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Double priority;
 
 	@JsonIgnore
 	private Supplier<Double> _prioritySupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "When true, the resulting attachment is visible only to staff with MANAGE_COMMERCE_ORDER_NOTES."
+	)
 	public Boolean getRestricted() {
 		if (_restrictedSupplier != null) {
 			restricted = _restrictedSupplier.get();
@@ -205,14 +219,18 @@ public class AttachmentBase64 implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "When true, the resulting attachment is visible only to staff with MANAGE_COMMERCE_ORDER_NOTES."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Boolean restricted;
 
 	@JsonIgnore
 	private Supplier<Boolean> _restrictedSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "File title or display name to store on the attachment."
+	)
 	public String getTitle() {
 		if (_titleSupplier != null) {
 			title = _titleSupplier.get();
@@ -246,14 +264,18 @@ public class AttachmentBase64 implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "File title or display name to store on the attachment."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String title;
 
 	@JsonIgnore
 	private Supplier<String> _titleSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Attachment type code (resolved against the ListTypeDefinition bound to commerce.order.attachment.type)."
+	)
 	public String getType() {
 		if (_typeSupplier != null) {
 			type = _typeSupplier.get();
@@ -285,7 +307,9 @@ public class AttachmentBase64 implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Attachment type code (resolved against the ListTypeDefinition bound to commerce.order.attachment.type)."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String type;
 
@@ -508,4 +532,4 @@ public class AttachmentBase64 implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2138241968
+// LIFERAY-REST-BUILDER-HASH:1670134230

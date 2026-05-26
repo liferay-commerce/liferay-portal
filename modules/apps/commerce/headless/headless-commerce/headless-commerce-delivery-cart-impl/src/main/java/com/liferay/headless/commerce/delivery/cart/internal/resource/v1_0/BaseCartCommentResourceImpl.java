@@ -76,6 +76,9 @@ public abstract class BaseCartCommentResourceImpl
 	 *
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-delivery-cart/v1.0/cart-comments/{cartCommentId}'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Deletes the CommerceOrderNote addressed by its internal identifier via CommerceOrderNoteService.deleteCommerceOrderNote."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -149,7 +152,7 @@ public abstract class BaseCartCommentResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-delivery-cart/v1.0/cart-comments/by-externalReferenceCode/{externalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes a Cart Comment by external reference code."
+		description = "Deletes the CommerceOrderNote addressed by its external reference code via CommerceOrderNoteService.deleteCommerceOrderNote."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -181,6 +184,9 @@ public abstract class BaseCartCommentResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-cart/v1.0/carts/by-externalReferenceCode/{externalReferenceCode}/comments'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Lists CommerceOrderNote entries attached to the cart addressed by external reference code via CommerceOrderNoteService.getCommerceOrderNotes. Restricted notes are filtered out unless the caller has MANAGE_COMMERCE_ORDER_NOTES on the cart."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -222,6 +228,9 @@ public abstract class BaseCartCommentResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-cart/v1.0/cart-comments/{cartCommentId}'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Retrieves a single CommerceOrderNote by ID via CommerceOrderNoteService.getCommerceOrderNote. Restricted notes are returned only to users with MANAGE_COMMERCE_ORDER_NOTES on the parent cart."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -253,7 +262,7 @@ public abstract class BaseCartCommentResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-cart/v1.0/cart-comments/by-externalReferenceCode/{externalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieve information of the given Cart Comment by external reference code."
+		description = "Retrieves a single CommerceOrderNote by external reference code via CommerceOrderNoteService.getCommerceOrderNote. Restricted notes are returned only to users with MANAGE_COMMERCE_ORDER_NOTES permission on the parent cart."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -287,6 +296,9 @@ public abstract class BaseCartCommentResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-cart/v1.0/carts/{cartId}/comments'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Lists CommerceOrderNote entries attached to the cart addressed by ID via CommerceOrderNoteService.getCommerceOrderNotes. Restricted notes are filtered out unless the caller has MANAGE_COMMERCE_ORDER_NOTES on the cart."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -326,6 +338,9 @@ public abstract class BaseCartCommentResourceImpl
 	 *
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-delivery-cart/v1.0/cart-comments/{cartCommentId}' -d $'{"content": ___, "restricted": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Updates the CommerceOrderNote addressed by ID with JSON Merge Patch semantics (only supplied fields are modified). Mutates content and restricted via CommerceOrderNoteService.addOrUpdateCommerceOrderNote."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -371,7 +386,7 @@ public abstract class BaseCartCommentResourceImpl
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-delivery-cart/v1.0/cart-comments/by-externalReferenceCode/{externalReferenceCode}' -d $'{"content": ___, "restricted": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Update the provided Cart Comment by external reference code."
+		description = "Updates the CommerceOrderNote addressed by external reference code with JSON Merge Patch semantics (only supplied fields are modified). Mutates content and restricted via CommerceOrderNoteService.addOrUpdateCommerceOrderNote."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -421,6 +436,9 @@ public abstract class BaseCartCommentResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-delivery-cart/v1.0/carts/by-externalReferenceCode/{externalReferenceCode}/comments' -d $'{"content": ___, "restricted": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Creates (or upserts when CartComment.externalReferenceCode is provided) a CommerceOrderNote on the cart addressed by external reference code via CommerceOrderNoteService.addOrUpdateCommerceOrderNote."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -455,6 +473,9 @@ public abstract class BaseCartCommentResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-delivery-cart/v1.0/carts/{cartId}/comments' -d $'{"content": ___, "restricted": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Creates (or upserts when CartComment.externalReferenceCode is provided) a CommerceOrderNote on the cart addressed by ID via CommerceOrderNoteService.addOrUpdateCommerceOrderNote."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -487,6 +508,9 @@ public abstract class BaseCartCommentResourceImpl
 	 *
 	 * curl -X 'PUT' 'http://localhost:8080/o/headless-commerce-delivery-cart/v1.0/cart-comments/{cartCommentId}' -d $'{"content": ___, "restricted": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Replaces the CommerceOrderNote addressed by ID via CommerceOrderNoteService.addOrUpdateCommerceOrderNote."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -564,7 +588,7 @@ public abstract class BaseCartCommentResourceImpl
 	 * curl -X 'PUT' 'http://localhost:8080/o/headless-commerce-delivery-cart/v1.0/cart-comments/by-externalReferenceCode/{externalReferenceCode}' -d $'{"content": ___, "restricted": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Update the provided Cart Comment by external reference code."
+		description = "Replaces the CommerceOrderNote addressed by external reference code via CommerceOrderNoteService.addOrUpdateCommerceOrderNote. PUT is upsert when the externalReferenceCode is unknown."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1376,4 +1400,4 @@ public abstract class BaseCartCommentResourceImpl
 		LogFactoryUtil.getLog(BaseCartCommentResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1823643249
+// LIFERAY-REST-BUILDER-HASH:656565890
