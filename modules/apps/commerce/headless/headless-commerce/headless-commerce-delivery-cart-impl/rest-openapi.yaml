@@ -1,29 +1,90 @@
 components:
     parameters:
-        addressId:
+        accountExternalReferenceCodePathParam:
             in: path
+            description:
+                External reference code identifying the account whose carts are being queried in the given channel.
+                Resolved against the company scope before filtering carts.
             explode: false
-            name: addressId
+            name: accountExternalReferenceCode
             required: true
             schema:
                 description:
-                    Address Id
+                    Account external reference code
+                type: string
+            style: simple
+        accountIdPathParam:
+            in: path
+            description:
+                Internal numeric identifier of the account whose carts are being queried in the given channel.
+                Counterpart to the by-externalReferenceCode variant.
+            explode: false
+            name: accountId
+            required: true
+            schema:
+                description:
+                    Account Id
                 format: int64
                 type: integer
             style: simple
-        cartCommentId:
+        attachmentExternalReferenceCodePathParam:
             in: path
+            description:
+                External reference code that addresses the target CommerceOrderAttachment under the parent cart on the
+                by-externalReferenceCode sub-path. Idempotency key, unique per attachment within the cart scope.
+            explode: false
+            name: attachmentExternalReferenceCode
+            required: true
+            schema:
+                description:
+                    The resource external reference code
+                example: AB-34098-789-N
+                minLength: 1
+                type: string
+            style: simple
+        attachmentIdPathParam:
+            in: path
+            description:
+                Internal numeric identifier of a CommerceOrderAttachment linked to a cart.
+            explode: false
+            name: attachmentId
+            required: true
+            schema:
+                description:
+                    Attachment Id
+                format: int64
+                type: integer
+            style: simple
+        callbackURLQueryParam:
+            in: query
+            description:
+                Optional URL the payment gateway redirects the buyer to after the payment flow completes or is
+                abandoned. When omitted, the gateway-default callback configured on the channel is used.
+            explode: true
+            name: callbackURL
+            required: false
+            schema:
+                type: string
+            style: form
+        cartCommentIdPathParam:
+            in: path
+            description:
+                Internal numeric identifier of a CommerceOrderNote (cart comment). Counterpart to the
+                by-externalReferenceCode variant.
             explode: false
             name: cartCommentId
             required: true
             schema:
                 description:
-                    Comment Id
+                    Note Id
                 format: int64
                 type: integer
             style: simple
-        cartId:
+        cartIdPathParam:
             in: path
+            description:
+                Internal numeric identifier of a cart (CommerceOrder). Counterpart to the by-externalReferenceCode path
+                variant; identifiers are server-assigned and stable across the cart's lifetime.
             explode: false
             name: cartId
             required: true
@@ -33,8 +94,11 @@ components:
                 format: int64
                 type: integer
             style: simple
-        cartItemId:
+        cartItemIdPathParam:
             in: path
+            description:
+                Internal numeric identifier of a CommerceOrderItem (cart line item). Counterpart to the
+                by-externalReferenceCode variant.
             explode: false
             name: cartItemId
             required: true
@@ -44,8 +108,24 @@ components:
                 format: int64
                 type: integer
             style: simple
-        channelId:
+        channelExternalReferenceCodePathParam:
             in: path
+            description:
+                External reference code identifying the CommerceChannel that scopes the carts. The channel determines
+                currency, available payment methods, available shipping methods, and visibility rules.
+            explode: false
+            name: channelExternalReferenceCode
+            required: true
+            schema:
+                description:
+                    Channel external reference code
+                type: string
+            style: simple
+        channelIdPathParam:
+            in: path
+            description:
+                Internal numeric identifier of the CommerceChannel that scopes the carts. Counterpart to the
+                by-externalReferenceCode variant.
             explode: false
             name: channelId
             required: true
@@ -55,207 +135,441 @@ components:
                 format: int64
                 type: integer
             style: simple
+        externalReferenceCodePathParam:
+            in: path
+            description:
+                External reference code that addresses the target resource on the by-externalReferenceCode paths. The
+                code is the integration-supplied idempotency key, unique within the resource scope; POST against this
+                path is upsert (create when absent, replace when present).
+            explode: false
+            name: externalReferenceCode
+            required: true
+            schema:
+                description:
+                    The resource external reference code
+                example: AB-34098-789-N
+                minLength: 1
+                type: string
+            style: simple
+        filterQueryParam:
+            in: query
+            description:
+                OData v4 filter expression that narrows the result set. Supported fields depend on the endpoint and come
+                from the matching entity model. For /carts list endpoints, supported fields include accountId,
+                orderStatus, createDate, modifiedDate, orderDate, id, orderId, account, author, externalReferenceCode,
+                name, orderType, and purchaseOrderNumber. For /carts/<cartId>/attachments, restricted, dateCreated,
+                dateModified, priority, commerceOrderId, externalReferenceCode, title, and type are supported. For
+                /carts/<cartId>/items, quantity, name, sku, and unitOfMeasure are supported. Example -- filter=accountId
+                eq 12345.
+            explode: true
+            name: filter
+            required: false
+            schema:
+                type: string
+            style: form
+        pageQueryParam:
+            in: query
+            description:
+                One-based page index. Combined with pageSize to paginate the result set; defaults to 1 when omitted.
+            explode: true
+            name: page
+            required: false
+            schema:
+                type: integer
+            style: form
+        pageSizeQueryParam:
+            in: query
+            description:
+                Number of items per page. Defaults to the portal's configured page size when omitted; capped by the
+                portal configuration to prevent unbounded reads.
+            explode: true
+            name: pageSize
+            required: false
+            schema:
+                type: integer
+            style: form
+        searchQueryParam:
+            in: query
+            description:
+                Full-text search query. For /carts list endpoints the search corpus is the CommerceOrder index (matches
+                against account, author, name, and other indexed fields). For nested /items and /attachments endpoints
+                the corpus is the corresponding CommerceOrderItem or CommerceOrderAttachment index.
+            explode: true
+            name: search
+            required: false
+            schema:
+                type: string
+            style: form
+        skuIdQueryParam:
+            in: query
+            description:
+                Restrict the result set to cart items that reference this SKU (CPInstance) identifier.
+            explode: true
+            name: skuId
+            required: false
+            schema:
+                format: int64
+                type: integer
+            style: form
+        sortQueryParam:
+            in: query
+            description:
+                Sort expression. Comma-separated `field:direction` pairs (direction `asc` or `desc`). Supported sort
+                fields are the same as the filterable fields documented on filter for the same endpoint.
+            explode: true
+            name: sort
+            required: false
+            schema:
+                type: string
+            style: form
     schemas:
         Address:
+            description:
+                Billing or shipping address (CommerceAddress) attached to a cart. Carries the structured fields (street,
+                city, region, country, ZIP, phone, VAT) plus a typeId that classifies the address as billing, shipping,
+                or both.
             properties:
                 city:
+                    description:
+                        City name. Required.
                     type: string
                 country:
+                    description:
+                        Country display name. Sourced from the Country lookup keyed by countryISOCode.
                     type: string
                 countryISOCode:
+                    description:
+                        ISO 3166-1 alpha-2 country code (for example, `US`). Required.
                     type: string
                 description:
+                    description:
+                        Optional free-text description for the address.
                     type: string
                 externalReferenceCode:
+                    description:
+                        Idempotency key for create and update; must be unique per address within the company. Read-only
+                        on the wire.
                     example: AB-34098-789-N
                     readOnly: true
                     type: string
                 id:
+                    description:
+                        Reference to the CommerceAddress entity (PK).
                     format: int64
                     type: integer
                 latitude:
+                    description:
+                        Geographic latitude in decimal degrees.
                     format: double
                     type: number
                 longitude:
+                    description:
+                        Geographic longitude in decimal degrees.
                     format: double
                     type: number
                 name:
+                    description:
+                        Address label (for example, `Home`, `Office`). Required.
                     type: string
                 phoneNumber:
+                    description:
+                        Phone number string. Free-form; no validation against the country code.
                     type: string
                 region:
+                    description:
+                        State or province display name. Sourced from the Region lookup keyed by regionISOCode.
                     type: string
                 regionISOCode:
+                    description:
+                        ISO 3166-2 region code (for example, `CA` for California).
                     type: string
                 street1:
+                    description:
+                        Street line 1. Required.
                     type: string
                 street2:
+                    description:
+                        Optional street line 2.
                     type: string
                 street3:
+                    description:
+                        Optional street line 3.
                     type: string
                 subtype:
+                    description:
+                        Custom address subtype free-form string (for example, `residential`, `business`).
                     type: string
                 type:
+                    description:
+                        Address type label, derived from typeId. Read-only.
                     readOnly: true
                     type: string
                 typeId:
+                    description:
+                        Address type code (CommerceAddressConstants). 1=BILLING, 2=BILLING_AND_SHIPPING, 3=SHIPPING.
                     format: int32
                     type: integer
                 vatNumber:
+                    description:
+                        VAT or tax identification number.
                     type: string
                 zip:
+                    description:
+                        ZIP or postal code.
                     type: string
             required:
-                -   city
-                -   countryISOCode
-                -   name
-                -   street1
+            -   city
+            -   countryISOCode
+            -   name
+            -   street1
             type: object
         Attachment:
+            description:
+                File attachment (CommerceOrderAttachment, or FileEntry under feature flag LPD-6252) linked to a cart.
+                Read-only on the wire; create via AttachmentBase64 on the /attachments/by-base64 endpoint.
             properties:
                 actions:
                     additionalProperties:
                         additionalProperties:
                             type: string
                         type: object
+                    description:
+                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
+                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     readOnly: true
                     type: object
                 dateModified:
+                    description:
+                        Last modification timestamp in ISO 8601 with UTC timezone. Read-only.
                     format: date-time
                     readOnly: true
                     type: string
                 extension:
+                    description:
+                        File extension (for example, `pdf`, `jpg`). Read-only.
                     readOnly: true
                     type: string
                 externalReferenceCode:
+                    description:
+                        Idempotency key for the underlying CommerceOrderAttachment; unique per attachment within the
+                        cart scope. Read-only on the wire.
                     example: AB-34098-789-N
                     readOnly: true
                     type: string
                 id:
+                    description:
+                        Reference to the CommerceOrderAttachment entity (PK). Read-only.
                     format: int64
                     readOnly: true
                     type: integer
                 priority:
+                    description:
+                        Display and sort priority. Lower values appear first. Read-only.
                     format: double
                     readOnly: true
                     type: number
                 restricted:
+                    description:
+                        When true, the attachment is visible only to staff with MANAGE_COMMERCE_ORDER_NOTES on the
+                        parent cart. Read-only.
                     readOnly: true
                     type: boolean
                 title:
+                    description:
+                        File title or display name. Read-only.
                     readOnly: true
                     type: string
                 type:
+                    description:
+                        Attachment type code (for example, `invoice`, `spec-sheet`); resolved against the
+                        ListTypeDefinition bound to commerce.order.attachment.type. Read-only.
                     readOnly: true
                     type: string
                 typeLabel:
+                    description:
+                        Localized label for type, sourced from the matching ListTypeEntry. Read-only.
                     readOnly: true
                     type: string
                 url:
+                    description:
+                        Public download URL for the file. Read-only.
                     readOnly: true
                     type: string
         AttachmentBase64:
+            description:
+                Request payload for creating a cart attachment from a base64-encoded file. Used by the
+                /carts/<cartId>/attachments/by-base64 endpoint (and the by-externalReferenceCode variant).
             properties:
                 attachment:
                     description:
                         Base64 encoded file
                     type: string
                 externalReferenceCode:
+                    description:
+                        Optional idempotency key for the resulting CommerceOrderAttachment.
                     example: AB-34098-789-N
                     type: string
                 priority:
+                    description:
+                        Display and sort priority. Lower values appear first.
                     format: double
                     type: number
                 restricted:
+                    description:
+                        When true, the resulting attachment is visible only to staff with MANAGE_COMMERCE_ORDER_NOTES.
                     type: boolean
                 title:
+                    description:
+                        File title or display name to store on the attachment.
                     type: string
                 type:
+                    description:
+                        Attachment type code (resolved against the ListTypeDefinition bound to
+                        commerce.order.attachment.type).
                     type: string
             type: object
         Cart:
+            description:
+                Shopping cart (CommerceOrder) for the storefront buyer flow while in ORDER_STATUS_OPEN. Aggregates line
+                items, billing and shipping addresses, applied coupon, delivery and payment terms, order type, currency,
+                the computed Summary totals, and the workflow/order/payment status snapshots.
             properties:
                 account:
+                    description:
+                        Display name of the buyer account (CommerceAccount.name). Read-only.
                     readOnly: true
                     type: string
                 accountId:
+                    description:
+                        Reference to the CommerceAccount entity (FK).
                     format: int64
                     type: integer
                 attachments:
+                    description:
+                        File attachments linked to the cart. Read-only on the cart payload; mutate through the
+                        /attachments endpoints.
                     items:
                         $ref: "#/components/schemas/Attachment"
                     type: array
                 author:
+                    description:
+                        Display name of the user who created the cart. Read-only.
                     readOnly: true
                     type: string
                 billingAddress:
                     $ref: "#/components/schemas/Address"
                 billingAddressExternalReferenceCode:
+                    description:
+                        External reference code of the CommerceAddress to use as billing address. Alternative to
+                        billingAddressId.
                     example: AAB-34098-789-N
                     type: string
                 billingAddressId:
+                    description:
+                        Reference to the CommerceAddress entity used as billing address (FK).
                     format: int64
                     type: integer
                 cartItems:
+                    description:
+                        Cart line items. Read-only on the cart payload; mutate through the /items endpoints.
                     items:
                         $ref: "#/components/schemas/CartItem"
                     type: array
                 channelId:
+                    description:
+                        Reference to the CommerceChannel entity (FK). Read-only; the channel is fixed at cart creation.
                     format: int64
                     readOnly: true
                     type: integer
                 couponCode:
+                    description:
+                        Currently applied promotional coupon code (CommerceDiscount.couponCode). Set via the
+                        /coupon-code endpoint.
                     type: string
                 createDate:
+                    description:
+                        Creation timestamp in ISO 8601 with the portal's configured timezone. Read-only.
                     format: date
                     readOnly: true
                     type: string
                 currencyCode:
+                    description:
+                        ISO 4217 currency code (for example, `USD`, `EUR`).
                     type: string
                 currencyExternalReferenceCode:
+                    description:
+                        External reference code of the CommerceCurrency. Alternative to currencyId.
                     example: AAB-34098-789-N
                     type: string
                 currencyId:
+                    description:
+                        Reference to the CommerceCurrency entity (FK).
                     example: 30130
                     format: int64
                     minimum: 0
                     type: integer
                 customFields:
                     additionalProperties: true
+                    description:
+                        Expando bridge attributes. Keys are the configured custom-field names; values are typed by the
+                        custom-field definition.
                     type: object
                 deliveryTermId:
+                    description:
+                        Reference to the CommerceTermEntry entity used as delivery term (FK).
                     format: int64
                     type: integer
                 deliveryTermLabel:
+                    description:
+                        Localized label of the resolved delivery term. Read-only.
                     readOnly: true
                     type: string
                 errorMessages:
+                    description:
+                        Validation messages collected during cart-level validation (for example, missing address,
+                        invalid item quantity).
                     items:
                         type: string
                     type: array
                 externalReferenceCode:
+                    description:
+                        Idempotency key for the underlying CommerceOrder; unique per cart within the company. Read-only
+                        on the wire.
                     example: AB-34098-789-N
                     readOnly: true
                     type: string
                 friendlyURLSeparator:
+                    description:
+                        Friendly URL separator used to build storefront links. Read-only.
                     readOnly: true
                     type: string
                 id:
+                    description:
+                        Reference to the CommerceOrder entity (PK). Read-only.
                     format: int64
                     readOnly: true
                     type: integer
                 lastPriceUpdateDate:
+                    description:
+                        Timestamp of the last price recalculation in ISO 8601. Read-only.
                     format: date
                     readOnly: true
                     type: string
                 modifiedDate:
+                    description:
+                        Last modification timestamp in ISO 8601 with the portal's configured timezone. Read-only.
                     format: date
                     readOnly: true
                     type: string
                 name:
+                    description:
+                        Cart or order display name.
                     example: Order Name
                     type: string
                 notes:
+                    description:
+                        Cart comments attached to the cart. Read-only on the cart payload; mutate through the /comments
+                        endpoints. Restricted notes are filtered by permission.
                     items:
                         $ref: "#/components/schemas/CartComment"
                     type: array
@@ -263,27 +577,45 @@ components:
                     $ref: "#/components/schemas/Status"
                     readOnly: true
                 orderType:
+                    description:
+                        Localized display name of the resolved CommerceOrderType. Read-only.
                     readOnly: true
                     type: string
                 orderTypeExternalReferenceCode:
+                    description:
+                        External reference code of the CommerceOrderType. Alternative to orderTypeId.
                     example: AB-34098-789-N
                     type: string
                 orderTypeId:
+                    description:
+                        Reference to the CommerceOrderType entity (FK).
                     format: int64
                     type: integer
                 orderUUID:
+                    description:
+                        Stable UUID of the underlying CommerceOrder. Read-only.
                     readOnly: true
                     type: string
                 paymentMethod:
+                    description:
+                        Currently selected payment method key (matches PaymentMethod.key on the /payment-methods
+                        enumeration).
                     type: string
                 paymentMethodLabel:
+                    description:
+                        Localized label of the selected payment method. Read-only.
                     readOnly: true
                     type: string
                 paymentMethodType:
+                    description:
+                        Integer payment method type derived from CommercePaymentMethod.getPaymentType (online, offline,
+                        recurring, subscription). Read-only.
                     format: int32
                     readOnly: true
                     type: integer
                 paymentStatus:
+                    description:
+                        "Integer payment status (CommerceOrderPaymentConstants): 0=COMPLETED, 1=PENDING, 2=AUTHORIZED, 5=FAILED, 17=REFUNDED, 23=NOT_REQUIRED, 51=CANCELLED. Read-only."
                     format: int32
                     readOnly: true
                     type: integer
@@ -291,46 +623,79 @@ components:
                     $ref: "#/components/schemas/Status"
                     readOnly: true
                 paymentStatusLabel:
+                    description:
+                        Localized label of the payment status. Read-only.
                     readOnly: true
                     type: string
                 paymentTermId:
+                    description:
+                        Reference to the CommerceTermEntry entity used as payment term (FK).
                     format: int64
                     type: integer
                 paymentTermLabel:
+                    description:
+                        Localized label of the resolved payment term. Read-only.
                     readOnly: true
                     type: string
                 printedNote:
+                    description:
+                        Free-form note rendered onto the printed order document.
                     type: string
                 purchaseOrderNumber:
+                    description:
+                        Buyer-supplied purchase order number for B2B reconciliation.
                     type: string
                 requestedDeliveryDate:
+                    description:
+                        Buyer-requested delivery date in ISO 8601 (date only, no time component).
                     example: 2017-07-21
                     format: date
                     type: string
                 shippingAddress:
                     $ref: "#/components/schemas/Address"
                 shippingAddressExternalReferenceCode:
+                    description:
+                        External reference code of the CommerceAddress to use as shipping address. Alternative to
+                        shippingAddressId.
                     example: AAB-34098-789-N
                     type: string
                 shippingAddressId:
+                    description:
+                        Reference to the CommerceAddress entity used as shipping address (FK).
                     format: int64
                     type: integer
                 shippingMethod:
+                    description:
+                        Currently selected shipping method key (matches ShippingMethod.engineKey on the
+                        /shipping-methods enumeration).
                     type: string
                 shippingOption:
+                    description:
+                        Currently selected shipping option name (matches ShippingOption.name on the chosen
+                        ShippingMethod).
                     type: string
                 status:
+                    description:
+                        Workflow status label string (for example, `draft`, `pending`, `approved`). Read-only; for the
+                        integer code see orderStatusInfo.code.
                     readOnly: true
                     type: string
                 steps:
+                    description:
+                        Checkout step progress; ordered list of Step entries with state pending/active/completed.
                     items:
                         $ref: "#/components/schemas/Step"
                     type: array
                 summary:
                     $ref: "#/components/schemas/Summary"
                 useAsBilling:
+                    description:
+                        When true, the shipping address is copied to the billing address on save.
                     type: boolean
                 valid:
+                    description:
+                        Aggregate validation flag -- true when no errorMessages and no item-level errors are present.
+                        Read-only.
                     readOnly: true
                     type: boolean
                 workflowStatusInfo:
@@ -338,84 +703,141 @@ components:
                     readOnly: true
             type: object
         CartComment:
+            description:
+                Note attached to a cart (CommerceOrderNote). Restricted comments are visible only to users with
+                MANAGE_COMMERCE_ORDER_NOTES on the parent cart; non-restricted comments are buyer-visible.
             properties:
                 author:
+                    description:
+                        Display name of the user who authored the note. Read-only.
                     readOnly: true
                     type: string
                 authorId:
+                    description:
+                        Reference to the User entity who authored the note (FK). Read-only.
                     format: int64
                     readOnly: true
                     type: integer
                 authorPortraitURL:
+                    description:
+                        Avatar URL of the note author. Read-only.
                     readOnly: true
                     type: string
                 content:
+                    description:
+                        Note body text.
                     type: string
                 externalReferenceCode:
+                    description:
+                        Idempotency key for the CommerceOrderNote; unique per note within the cart scope. Read-only on
+                        the wire.
                     example: AB-34098-789-N
                     readOnly: true
                     type: string
                 id:
+                    description:
+                        Reference to the CommerceOrderNote entity (PK). Read-only.
                     format: int64
                     readOnly: true
                     type: integer
                 modifiedDate:
+                    description:
+                        Last modification timestamp in ISO 8601. Read-only.
                     format: date
                     readOnly: true
                     type: string
                 orderId:
+                    description:
+                        Reference to the parent CommerceOrder (FK). Read-only.
                     format: int64
                     readOnly: true
                     type: integer
                 restricted:
+                    description:
+                        When true, the note is visible only to staff with MANAGE_COMMERCE_ORDER_NOTES on the parent
+                        cart.
                     type: boolean
             type: object
         CartItem:
+            description:
+                Cart line item (CommerceOrderItem). Binds a SKU and quantity to its parent cart, with unit pricing,
+                selected options, unit-of-measure tier, optional per-item shipping address, and bundle children.
             properties:
                 adaptiveMediaImageHTMLTag:
+                    description:
+                        Pre-rendered HTML `<img>` tag for the SKU's adaptive media thumbnail. Read-only.
                     readOnly: true
                     type: string
                 cartItems:
+                    description:
+                        Nested child cart items when this item is a bundle parent.
                     items:
                         $ref: "#/components/schemas/CartItem"
                     type: array
                 customFields:
                     additionalProperties: true
+                    description:
+                        Expando bridge attributes on the CommerceOrderItem.
                     type: object
                 deliveryGroup:
                     deprecated: true
+                    description:
+                        Deprecated -- use deliveryGroupName instead. Retained for backward compatibility; the converter
+                        writes both fields but only deliveryGroupName is honored on POST and PATCH.
                     type: string
                 deliveryGroupName:
+                    description:
+                        Warehouse or fulfillment group name used to split shipments across origins.
                     type: string
                 errorMessages:
+                    description:
+                        Validation messages collected during item-level validation (for example, quantity outside
+                        Settings bounds).
                     items:
                         type: string
                     type: array
                 externalReferenceCode:
+                    description:
+                        Idempotency key for the CommerceOrderItem; unique per item within the company. Read-only on the
+                        wire.
                     example: AB-34098-789-N
                     readOnly: true
                     type: string
                 id:
+                    description:
+                        Reference to the CommerceOrderItem entity (PK). Read-only.
                     format: int64
                     readOnly: true
                     type: integer
                 name:
+                    description:
+                        Localized product display name as of the time of the item snapshot. Read-only.
                     readOnly: true
                     type: string
                 options:
+                    description:
+                        JSON-serialized snapshot of the buyer-selected ProductOptionValue ids.
                     type: string
                 parentCartItemId:
+                    description:
+                        Reference to the parent CommerceOrderItem when this row is a bundle child (FK); 0 for top-level
+                        items. Read-only.
                     format: int64
                     readOnly: true
                     type: integer
                 price:
                     $ref: "#/components/schemas/Price"
                 productId:
+                    description:
+                        Reference to the CProduct entity (FK) the SKU belongs to.
                     format: int64
                     type: integer
                 productURLs:
                     additionalProperties:
                         type: string
+                    description:
+                        Localized text. Map keys are locale codes (for example, en_US, it_IT); values are the storefront
+                        product URLs. Read-only.
                     example:
                         en_US: product-url-us
                         hr_HR: product-url-hr
@@ -423,20 +845,33 @@ components:
                     readOnly: true
                     type: object
                 quantity:
+                    description:
+                        Ordered quantity expressed in the item's unit of measure. Validated against Settings (min, max,
+                        multiple, allowedQuantities).
                     example: 10.1
                     format: bigdecimal
                     type: number
                 replacedSku:
+                    description:
+                        Original SKU code when this line replaces another SKU (for example, after an out-of-stock
+                        substitution). Read-only.
                     example: "12341234"
                     readOnly: true
                     type: string
                 replacedSkuExternalReferenceCode:
+                    description:
+                        External reference code of the replaced SKU. Alternative to replacedSkuId.
                     example: AB-34098-789-N
                     type: string
                 replacedSkuId:
+                    description:
+                        Reference to the CPInstance the original SKU pointed to before replacement (FK).
                     format: int64
                     type: integer
                 requestedDeliveryDate:
+                    description:
+                        Item-specific requested delivery date in ISO 8601 (date only). Overrides the cart-level
+                        requestedDeliveryDate when set.
                     format: date
                     type: string
                 settings:
@@ -444,62 +879,110 @@ components:
                 shippingAddress:
                     $ref: "#/components/schemas/Address"
                 shippingAddressExternalReferenceCode:
+                    description:
+                        External reference code of the CommerceAddress to use as the item-level shipping address.
                     example: AB-34098-789-N
                     type: string
                 shippingAddressId:
+                    description:
+                        Reference to the CommerceAddress entity used as item-level shipping address (FK). Overrides the
+                        cart-level shipping address for this line.
                     format: int64
                     type: integer
                 sku:
+                    description:
+                        SKU code (CPInstance.sku) of the purchased variant. Read-only.
                     readOnly: true
                     type: string
                 skuId:
+                    description:
+                        Reference to the CPInstance entity (FK). Required to create a cart item.
                     format: int64
                     type: integer
                 skuUnitOfMeasure:
                     $ref: "#/components/schemas/SkuUnitOfMeasure"
                 subscription:
+                    description:
+                        When true, the SKU is configured for subscription-based delivery. Read-only.
                     example: true
                     readOnly: true
                     type: boolean
                 thumbnail:
+                    description:
+                        URL of the SKU's adaptive media thumbnail. Read-only.
                     readOnly: true
                     type: string
                 unitOfMeasure:
+                    description:
+                        Localized unit-of-measure label (for example, `Pallet`). Read-only; derived from
+                        skuUnitOfMeasure.name.
                     readOnly: true
                     type: string
                 valid:
+                    description:
+                        Aggregate validation flag for the item. Read-only.
                     readOnly: true
                     type: boolean
             required:
-                -   skuId
+            -   skuId
             type: object
         CartTransition:
+            description:
+                Workflow or order-status transition available on a cart. Each entry names the transition (workflow task
+                name or one of request-quote, submit, quick-checkout, checkout), its localized label, whether it is
+                currently open, and an optional comment captured when the transition is fired.
             properties:
                 cartId:
+                    description:
+                        Reference to the parent CommerceOrder (FK). Read-only.
                     format: int64
                     readOnly: true
                     type: integer
                 comment:
+                    description:
+                        Optional comment recorded with the transition (for example, a reason for a quote request).
                     type: string
                 label:
+                    description:
+                        Localized label for the transition. Read-only.
                     readOnly: true
                     type: string
                 name:
+                    description:
+                        Transition identifier. Either a workflow task name or one of the order-status transitions --
+                        request-quote, submit, quick-checkout, checkout.
                     type: string
                 open:
+                    description:
+                        When true, the transition is currently available against the cart's state. Read-only.
                     readOnly: true
                     type: boolean
                 restricted:
+                    description:
+                        When true, firing the transition requires elevated permission (for example,
+                        MANAGE_COMMERCE_ORDERS).
                     type: boolean
                 workflowTaskId:
+                    description:
+                        Reference to the active WorkflowTask when name names a workflow transition (FK). 0 when the
+                        transition is an order-status transition.
                     format: int64
                     type: integer
         CouponCode:
+            description:
+                Request payload for applying a coupon to a cart. Carries the coupon code string that
+                CommerceOrderService.applyCouponCode resolves against the active CommerceDiscount rules.
             properties:
                 code:
+                    description:
+                        Coupon code string to apply. Resolved against the active CommerceDiscount rules; raises an error
+                        when the code is unknown, expired, or not applicable.
                     type: string
             type: object
         Error:
+            description:
+                Standard error envelope returned on non-2xx responses. Carries the HTTP status, an internal error code,
+                a developer-facing description, and a localized message.
             properties:
                 errorCode:
                     description:
@@ -508,13 +991,15 @@ components:
                     readOnly: true
                     type: integer
                 errorDescription:
-                    example: Unable to find currency. Currency code should be expressed with
-                        3-letter ISO 4217 format.
+                    description:
+                        Developer-facing description of the failure.
+                    example: Unable to find currency. Currency code should be expressed with 3-letter ISO 4217 format.
                     readOnly: true
                     type: string
                 message:
-                    example: No CommerceCurrency exists with the key {groupId=41811, code=US
-                        Dollar}
+                    description:
+                        Localized message intended for end-user display.
+                    example: No CommerceCurrency exists with the key {groupId=41811, code=US Dollar}
                     readOnly: true
                     type: string
                 status:
@@ -524,282 +1009,506 @@ components:
                     readOnly: true
                     type: integer
             required:
-                -   errorCode
-                -   errorDescription
-                -   message
-                -   status
+            -   errorCode
+            -   errorDescription
+            -   message
+            -   status
             type: object
         PaymentMethod:
+            description:
+                Payment method (CommercePaymentMethodGroupRel) qualified for a cart. The PaymentMethod entries returned
+                for a given cart depend on the cart's billing address country, the CommerceOrderType qualifiers, the
+                buyer's ActionKeys.VIEW permission, and subscription eligibility.
             properties:
                 description:
+                    description:
+                        Localized description of the payment method, as configured on the CommercePaymentMethodGroupRel.
                     type: string
                 key:
+                    description:
+                        Stable engine key identifying the payment integration (for example, `paypal`, `stripe`,
+                        `money-order`). Used as the value of Cart.paymentMethod.
                     type: string
                 name:
+                    description:
+                        Localized display name of the payment method.
                     type: string
             type: object
         Price:
+            description:
+                Computed unit price snapshot for a cart item (CommerceOrderItemPrice). Carries the base price, the promo
+                price, the absolute and percentage discount levels, and the final price. The currency is inherited from
+                the parent cart; the priceOnApplication flag indicates the price is negotiated and not displayed on the
+                storefront.
             properties:
                 currency:
+                    description:
+                        ISO 4217 currency code inherited from the parent cart.
                     type: string
                 discount:
+                    description:
+                        Absolute discount amount applied to the unit price.
                     format: double
                     type: number
                 discountFormatted:
+                    description:
+                        Currency-formatted discount string (for example, `$5.00`).
                     type: string
                 discountPercentage:
+                    description:
+                        Discount expressed as a percentage string (for example, `10%`).
                     type: string
                 discountPercentageLevel1:
+                    description:
+                        Discount percentage at tier 1 of the CommerceDiscount cascade.
                     format: double
                     type: number
                 discountPercentageLevel2:
+                    description:
+                        Discount percentage at tier 2 of the CommerceDiscount cascade.
                     format: double
                     type: number
                 discountPercentageLevel3:
+                    description:
+                        Discount percentage at tier 3 of the CommerceDiscount cascade.
                     format: double
                     type: number
                 discountPercentageLevel4:
+                    description:
+                        Discount percentage at tier 4 of the CommerceDiscount cascade.
                     format: double
                     type: number
                 finalPrice:
+                    description:
+                        Unit price after all applicable discounts.
                     format: double
                     type: number
                 finalPriceFormatted:
+                    description:
+                        Currency-formatted final price.
                     type: string
                 price:
+                    description:
+                        Base catalog unit price before promotional or volume discounts.
                     format: double
                     type: number
                 priceFormatted:
+                    description:
+                        Currency-formatted base price.
                     type: string
                 priceOnApplication:
+                    description:
+                        When true, the price is negotiated and not displayed on the storefront (`Call for price`).
+                        Read-only.
                     readOnly: true
                     type: boolean
                 promoPrice:
+                    description:
+                        Promotional unit price when a CommerceCatalog promotion is active.
                     format: double
                     type: number
                 promoPriceFormatted:
+                    description:
+                        Currency-formatted promotional price.
                     type: string
             type: object
         Settings:
+            description:
+                Quantity constraints for a cart item, sourced from CPDefinitionInventory. minQuantity and maxQuantity
+                bound the orderable range; multipleQuantity forces quantities to be a multiple of the value; when
+                allowedQuantities is set, it overrides the other constraints with an explicit allow-list.
             properties:
                 allowedQuantities:
+                    description:
+                        Explicit allow-list of orderable quantities. When set, overrides minQuantity, maxQuantity, and
+                        multipleQuantity.
                     items:
                         example: 10.1
                         format: bigdecimal
                         type: number
                     type: array
                 maxQuantity:
+                    description:
+                        Maximum orderable quantity in the item's unit of measure.
                     example: 10.1
                     format: bigdecimal
                     type: number
                 minQuantity:
+                    description:
+                        Minimum orderable quantity in the item's unit of measure.
                     example: 10.1
                     format: bigdecimal
                     type: number
                 multipleQuantity:
+                    description:
+                        Quantity granularity. The ordered quantity must be a multiple of this value (for example, 5
+                        forces increments of 5).
                     example: 10.1
                     format: bigdecimal
                     type: number
             type: object
         ShippingMethod:
+            description:
+                Shipping method (CommerceShippingMethod) qualified for a cart. The nested ShippingOption set is computed
+                by the registered CommerceShippingEngine against the cart's shipping address country.
             properties:
                 description:
+                    description:
+                        Localized description of the shipping method.
                     type: string
                 engineKey:
+                    description:
+                        Stable engine key identifying the shipping integration (for example, `fixed-shipping`,
+                        `by-weight`). Used as the value of Cart.shippingMethod.
                     type: string
                 id:
+                    description:
+                        Reference to the CommerceShippingMethod entity (PK).
                     format: int64
                     type: integer
                 name:
+                    description:
+                        Localized display name of the shipping method.
                     type: string
                 shippingOptions:
+                    description:
+                        Available shipping options computed by the engine against the cart's shipping address.
                     items:
                         $ref: "#/components/schemas/ShippingOption"
                     type: array
             type: object
         ShippingOption:
+            description:
+                A single shipping option within a CommerceShippingMethod, with its name, localized label, computed cost
+                amount, and currency-formatted display string.
             properties:
                 amount:
+                    description:
+                        Computed shipping cost in the cart's currency.
                     format: double
                     type: number
                 amountFormatted:
+                    description:
+                        Currency-formatted shipping cost.
                     type: string
                 label:
+                    description:
+                        Localized label of the option.
                     type: string
                 name:
+                    description:
+                        Option identifier within the parent ShippingMethod. Used as the value of Cart.shippingOption.
                     type: string
             type: object
         SkuUnitOfMeasure:
+            description:
+                Unit-of-measure tier (CPInstanceUnitOfMeasure) bound to the SKU on a cart item. key and name identify
+                the tier (for example, `pl`/Pallet); rate is the conversion factor against the base unit;
+                incrementalOrderQuantity is the minimum order increment in this UOM.
             properties:
                 incrementalOrderQuantity:
+                    description:
+                        Minimum order increment expressed in this UOM.
                     example: 1.5
                     format: bigdecimal
                     minimum: 0
                     type: number
                 key:
+                    description:
+                        Stable identifier of the UOM tier (for example, `pl` for pallet).
                     example: pl
                     type: string
                 name:
+                    description:
+                        Localized display name (for example, `Pallet`).
                     example: Pallet
                     type: string
                 precision:
+                    description:
+                        Number of decimal places allowed in the ordered quantity for this UOM.
                     example: 3
                     type: integer
                 primary:
+                    description:
+                        When true, this is the default UOM for the SKU.
                     example: true
                     type: boolean
                 priority:
+                    description:
+                        Display priority among the SKU's UOM tiers. Lower values appear first.
                     example: 1.1
                     format: double
                     minimum: 0
                     type: number
                 rate:
+                    description:
+                        Conversion factor from this UOM to the base unit (for example, 200 base units per pallet).
                     example: 202.1
                     format: bigdecimal
                     minimum: 0
                     type: number
             type: object
         Status:
+            description:
+                Generic status snapshot returned alongside structured order, payment, and workflow states. code is the
+                integer status code; label is the canonical key (for example open, completed, authorized); label_i18n is
+                the localized display string.
             properties:
                 code:
+                    description:
+                        Integer status code. The semantic mapping depends on the host field (orderStatus, paymentStatus,
+                        workflow status).
                     format: int32
                     readOnly: true
                     type: integer
                 label:
+                    description:
+                        Canonical status key (for example, `open`, `completed`, `authorized`).
                     example: black
                     type: string
                 label_i18n:
+                    description:
+                        Localized label for the status.
                     example: black
                     type: string
             type: object
         Step:
+            description:
+                Checkout step descriptor (from CommerceOrderStepTrackerHelper). id is the step key (cart, shipping,
+                payment, confirmation); state is its progress -- pending, active, completed.
             properties:
                 id:
+                    description:
+                        Step key (for example, `cart`, `shipping`, `payment`, `confirmation`). Read-only.
                     readOnly: true
                     type: string
                 label:
+                    description:
+                        Localized step label. Read-only.
                     readOnly: true
                     type: string
                 state:
+                    description:
+                        Step progress -- one of `pending`, `active`, `completed`. Read-only.
                     readOnly: true
                     type: string
         Summary:
+            description:
+                Computed totals for a cart (CommerceOrderPrice summary). Carries subtotal, shipping and tax components,
+                absolute and percentage discounts at each level (subtotal, shipping, total), and the final total. The
+                currency is inherited from the parent cart.
             properties:
                 currency:
+                    description:
+                        ISO 4217 currency code inherited from the parent cart.
                     type: string
                 itemsCount:
+                    description:
+                        Number of distinct line items. Read-only.
                     example: 1
                     format: int32
                     readOnly: true
                     type: integer
                 itemsQuantity:
+                    description:
+                        Sum of CartItem.quantity across all line items.
                     example: 1.1
                     format: bigdecimal
                     type: number
                 shippingDiscountPercentages:
+                    description:
+                        Per-level percentage discounts applied to shipping, in cascade order.
                     items:
                         type: string
                     type: array
                 shippingDiscountValue:
+                    description:
+                        Absolute discount applied to the shipping component.
                     format: double
                     type: number
                 shippingDiscountValueFormatted:
+                    description:
+                        Currency-formatted shipping discount.
                     type: string
                 shippingValue:
+                    description:
+                        Total shipping cost before tax.
                     format: double
                     type: number
                 shippingValueFormatted:
+                    description:
+                        Currency-formatted shipping cost.
                     type: string
                 shippingValueWithTaxAmount:
+                    description:
+                        Total shipping cost including tax.
                     format: double
                     type: number
                 shippingValueWithTaxAmountFormatted:
+                    description:
+                        Currency-formatted shipping cost with tax.
                     type: string
                 subtotal:
+                    description:
+                        Sum of line item prices before tax, shipping, and cart-level discounts.
                     format: double
                     type: number
                 subtotalDiscountPercentages:
+                    description:
+                        Per-level percentage discounts applied to the subtotal, in cascade order.
                     items:
                         type: string
                     type: array
                 subtotalDiscountValue:
+                    description:
+                        Absolute discount applied to the subtotal.
                     format: double
                     type: number
                 subtotalDiscountValueFormatted:
+                    description:
+                        Currency-formatted subtotal discount.
                     type: string
                 subtotalFormatted:
+                    description:
+                        Currency-formatted subtotal.
                     type: string
                 taxValue:
+                    description:
+                        Total tax (sales tax plus VAT) computed by the active tax engine.
                     format: double
                     type: number
                 taxValueFormatted:
+                    description:
+                        Currency-formatted tax.
                     type: string
                 total:
+                    description:
+                        Final total -- subtotal plus shipping plus tax minus all discounts.
                     format: double
                     type: number
                 totalDiscountPercentages:
+                    description:
+                        Aggregate percentage discounts across all levels.
                     items:
                         type: string
                     type: array
                 totalDiscountValue:
+                    description:
+                        Aggregate absolute discount across subtotal, shipping, and other levels.
                     format: double
                     type: number
                 totalDiscountValueFormatted:
+                    description:
+                        Currency-formatted total discount.
                     type: string
                 totalFormatted:
+                    description:
+                        Currency-formatted total.
                     type: string
             type: object
         Term:
+            description:
+                Delivery or payment term (CommerceTermEntry). Returned filtered by CommerceOrderType and the currently
+                selected shipping method (for delivery terms) or payment method (for payment terms).
             properties:
                 description:
+                    description:
+                        Localized description (terms and conditions text). Read-only.
                     example: description
                     readOnly: true
                     type: string
                 externalReferenceCode:
+                    description:
+                        External reference code of the CommerceTermEntry. Idempotency key.
                     example: AAB-34098-789-N
                     type: string
                 id:
+                    description:
+                        Reference to the CommerceTermEntry entity (PK).
                     example: 30130
                     format: int64
                     minimum: 0
                     type: integer
                 label:
+                    description:
+                        Localized label of the term. Read-only.
                     example: label
                     readOnly: true
                     type: string
                 name:
+                    description:
+                        Internal name of the term (for example, `Net 30`). Read-only.
                     example: name
                     readOnly: true
                     type: string
 info:
     description:
-        "Headless Delivery Commerce Cart API. A Java client JAR is available for use with the group ID 'com.liferay',
-        artifact ID 'com.liferay.headless.commerce.delivery.cart.client', and version '4.0.55'."
+        "Storefront REST API for buyer-facing shopping cart interactions in Liferay Commerce. Manages the lifecycle of a
+        CommerceOrder while it is still an open cart -- creation under a channel, line item management (CartItem),
+        addresses (Address) for billing and shipping, applied coupon codes (CouponCode), buyer comments (CartComment),
+        file attachments (AttachmentBase64 upload), delivery and payment terms (Term), available payment and shipping
+        methods (PaymentMethod, ShippingMethod), and the workflow transitions (CartTransition) that move the cart
+        through quote and checkout flows. The API is scoped to the storefront (delivery) perspective; back-office order
+        management belongs to the headless-commerce-admin-order module, and catalog browsing to
+        headless-commerce-delivery-catalog. Most resources are addressable both by internal ID (for example
+        /carts/<cartId>) and by external reference code (for example
+        /carts/by-externalReferenceCode/<externalReferenceCode>). The ERC is the integration-supplied idempotency key,
+        unique per resource within the company; POST against the by-externalReferenceCode path is upsert. PATCH applies
+        JSON Merge Patch semantics (only supplied fields are modified); PUT replaces the resource. All mutating
+        operations require the cart to be in ORDER_STATUS_OPEN; checkout transitions the cart to
+        ORDER_STATUS_IN_PROGRESS via the configured CommerceOrderEngine and validator chain. -- Common workflows: Create
+        and populate a cart -- (1) POST /channels/<channelId>/carts (or
+        /channels/by-externalReferenceCode/<externalReferenceCode>/carts) with accountId (or
+        accountExternalReferenceCode) and currencyCode to create a new CommerceOrder in ORDER_STATUS_OPEN; (2) POST
+        /carts/<cartId>/items per line item with skuId and quantity to add CartItem rows; (3) PATCH /carts/<cartId> to
+        set billing and shipping addresses (billingAddressId/shippingAddressId or their ERCs), delivery term
+        (deliveryTermId), payment term (paymentTermId), and order type (orderTypeId); (4) POST
+        /carts/<cartId>/coupon-code with a code to apply a promotional discount. -- Apply terms and choose
+        payment/shipping -- (1) GET /carts/<cartId>/delivery-terms and /carts/<cartId>/payment-terms to list the Term
+        entries qualified for the current cart configuration; (2) GET /carts/<cartId>/shipping-methods and
+        /carts/<cartId>/payment-methods to enumerate available CommerceShippingMethod and CommercePaymentMethodGroupRel
+        options filtered by address country and cart eligibility; (3) PATCH /carts/<cartId> to set shippingMethod,
+        shippingOption, and paymentMethod accordingly. -- Submit, request a quote, or check out -- (1) GET
+        /carts/<cartId>/cart-transitions to enumerate the available transitions (request-quote, submit, quick-checkout,
+        checkout, or workflow task transitions) given the current order state; (2) POST /carts/<cartId>/cart-transitions
+        with a CartTransition naming the transition to fire it; (3) Or POST /carts/<cartId>/checkout to run the
+        validator chain (billing address, shipping method, payment method, items) and transition the cart to
+        ORDER_STATUS_IN_PROGRESS; (4) GET /carts/<cartId>/payment-url to retrieve the encrypted redirect URL into the
+        payment gateway. -- Annotate a cart and attach files -- (1) POST /carts/<cartId>/comments with
+        CartComment.content and restricted to add a CommerceOrderNote (restricted notes are visible only to users with
+        MANAGE_COMMERCE_ORDER_NOTES); (2) POST /carts/<cartId>/attachments/by-base64 with AttachmentBase64
+        (base64-encoded file plus title, type, restricted) to upload a CommerceOrderAttachment file linked to the cart.
+        -- Resolve a cart for a buyer in a channel -- (1) GET /channels/<channelId>/account/<accountId>/carts (or the
+        by-externalReferenceCode variants) to list open carts for an account in a channel, with OData filter and search;
+        (2) GET /carts/<cartId> or /carts/by-externalReferenceCode/<externalReferenceCode> to retrieve a single cart
+        with summary, items, addresses, and status. A Java client JAR is available for use with the group ID
+        'com.liferay', artifact ID 'com.liferay.headless.commerce.delivery.cart.client', and version '4.0.55'."
     license:
         name: Apache 2.0
         url: http://www.apache.org/licenses/LICENSE-2.0.html
-    title: Headless Delivery Commerce Cart API
+    title: Liferay Commerce Delivery Cart API
     version: v1.0
 openapi: 3.0.1
 paths:
     /cart-comments/by-externalReferenceCode/{externalReferenceCode}:
         delete:
             description:
-                Deletes a Cart Comment by external reference code.
+                Deletes the CommerceOrderNote addressed by its external reference code via
+                CommerceOrderNoteService.deleteCommerceOrderNote.
             operationId: deleteCartCommentByExternalReferenceCode
             parameters:
-                -   in: path
-                    explode: false
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        description:
-                            Cart Comment external reference code
-                        example: AB-34098-789-N
-                        minLength: 1
-                        type: string
-                    style: simple
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             responses:
+                "403":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
                 204:
                     content:
                         application/json: {}
@@ -814,24 +1523,27 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Authentication information is missing or invalid
-            tags: ["CartComment"]
+            tags:
+            -   CartComment
         get:
             description:
-                Retrieve information of the given Cart Comment by external reference code.
+                Retrieves a single CommerceOrderNote by external reference code via
+                CommerceOrderNoteService.getCommerceOrderNote. Restricted notes are returned only to users with
+                MANAGE_COMMERCE_ORDER_NOTES permission on the parent cart.
             operationId: getCartCommentByExternalReferenceCode
             parameters:
-                -   in: path
-                    explode: false
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        description:
-                            Cart Comment external reference code
-                        example: AB-34098-789-N
-                        minLength: 1
-                        type: string
-                    style: simple
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             responses:
+                "403":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
                 200:
                     content:
                         application/json:
@@ -875,23 +1587,16 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["CartComment"]
+            tags:
+            -   CartComment
         patch:
             description:
-                Update the provided Cart Comment by external reference code.
+                Updates the CommerceOrderNote addressed by external reference code with JSON Merge Patch semantics (only
+                supplied fields are modified). Mutates content and restricted via
+                CommerceOrderNoteService.addOrUpdateCommerceOrderNote.
             operationId: patchCartCommentByExternalReferenceCode
             parameters:
-                -   in: path
-                    explode: false
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        description:
-                            Cart Comment external reference code
-                        example: AB-34098-789-N
-                        minLength: 1
-                        type: string
-                    style: simple
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             requestBody:
                 content:
                     application/json:
@@ -902,6 +1607,21 @@ paths:
                             $ref: "#/components/schemas/CartComment"
                 required: true
             responses:
+                "403":
+                    content: &id001
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
+                "422":
+                    content: *id001
+                    description:
+                        Domain validation failed (for example, unknown skuId on a cart item, missing cross-reference, or
+                        quantity outside the configured Settings bounds).
                 200:
                     content:
                         application/json:
@@ -911,7 +1631,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/CartComment"
                     description:
-                        Succesfully update the comment
+                        Successfully updated the comment
                 400:
                     description:
                         Invalid input
@@ -945,23 +1665,16 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["CartComment"]
+            tags:
+            -   CartComment
         put:
             description:
-                Update the provided Cart Comment by external reference code.
+                Replaces the CommerceOrderNote addressed by external reference code via
+                CommerceOrderNoteService.addOrUpdateCommerceOrderNote. PUT is upsert when the externalReferenceCode is
+                unknown.
             operationId: putCartCommentByExternalReferenceCode
             parameters:
-                -   in: path
-                    explode: false
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        description:
-                            Cart Comment external reference code
-                        example: AB-34098-789-N
-                        minLength: 1
-                        type: string
-                    style: simple
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             requestBody:
                 content:
                     application/json:
@@ -972,6 +1685,21 @@ paths:
                             $ref: "#/components/schemas/CartComment"
                 required: true
             responses:
+                "403":
+                    content: &id002
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
+                "422":
+                    content: *id002
+                    description:
+                        Domain validation failed (for example, unknown skuId on a cart item, missing cross-reference, or
+                        quantity outside the configured Settings bounds).
                 200:
                     content:
                         application/json:
@@ -981,7 +1709,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/CartComment"
                     description:
-                        Succesfully update the comment
+                        Successfully updated the comment
                 400:
                     description:
                         Invalid input
@@ -1015,22 +1743,27 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["CartComment"]
+            tags:
+            -   CartComment
     /cart-comments/{cartCommentId}:
         delete:
+            description:
+                Deletes the CommerceOrderNote addressed by its internal identifier via
+                CommerceOrderNoteService.deleteCommerceOrderNote.
             operationId: deleteCartComment
             parameters:
-                -   in: path
-                    explode: false
-                    name: cartCommentId
-                    required: true
-                    schema:
-                        description:
-                            Note Id
-                        format: int64
-                        type: integer
-                    style: simple
+            -   $ref: "#/components/parameters/cartCommentIdPathParam"
             responses:
+                "403":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
                 204:
                     content:
                         application/json: {}
@@ -1045,22 +1778,27 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Authentication information is missing or invalid
-            summary: Deletes an Cart Comment by ID.
-            tags: ["CartComment"]
+            summary: Deletes a Cart Comment by ID.
+            tags:
+            -   CartComment
         get:
+            description:
+                Retrieves a single CommerceOrderNote by ID via CommerceOrderNoteService.getCommerceOrderNote. Restricted
+                notes are returned only to users with MANAGE_COMMERCE_ORDER_NOTES on the parent cart.
             operationId: getCartComment
             parameters:
-                -   in: path
-                    explode: false
-                    name: cartCommentId
-                    required: true
-                    schema:
-                        description:
-                            Note Id
-                        format: int64
-                        type: integer
-                    style: simple
+            -   $ref: "#/components/parameters/cartCommentIdPathParam"
             responses:
+                "403":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
                 200:
                     content:
                         application/json:
@@ -1104,21 +1842,16 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            summary: Gets a Note by ID.
-            tags: ["CartComment"]
+            summary: Gets a Cart Comment by ID.
+            tags:
+            -   CartComment
         patch:
+            description:
+                Updates the CommerceOrderNote addressed by ID with JSON Merge Patch semantics (only supplied fields are
+                modified). Mutates content and restricted via CommerceOrderNoteService.addOrUpdateCommerceOrderNote.
             operationId: patchCartComment
             parameters:
-                -   in: path
-                    explode: false
-                    name: cartCommentId
-                    required: true
-                    schema:
-                        description:
-                            Note Id
-                        format: int64
-                        type: integer
-                    style: simple
+            -   $ref: "#/components/parameters/cartCommentIdPathParam"
             requestBody:
                 content:
                     application/json:
@@ -1129,6 +1862,21 @@ paths:
                             $ref: "#/components/schemas/CartComment"
                 required: true
             responses:
+                "403":
+                    content: &id003
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
+                "422":
+                    content: *id003
+                    description:
+                        Domain validation failed (for example, unknown skuId on a cart item, missing cross-reference, or
+                        quantity outside the configured Settings bounds).
                 200:
                     content:
                         application/json:
@@ -1138,7 +1886,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/CartComment"
                     description:
-                        Succesfully update the comment
+                        Successfully updated the comment
                 400:
                     description:
                         Invalid input
@@ -1172,21 +1920,16 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            summary: Updates an Cart Note by ID.
-            tags: ["CartComment"]
+            summary: Updates a Cart Comment by ID.
+            tags:
+            -   CartComment
         put:
+            description:
+                Replaces the CommerceOrderNote addressed by ID via
+                CommerceOrderNoteService.addOrUpdateCommerceOrderNote.
             operationId: putCartComment
             parameters:
-                -   in: path
-                    explode: false
-                    name: cartCommentId
-                    required: true
-                    schema:
-                        description:
-                            Note Id
-                        format: int64
-                        type: integer
-                    style: simple
+            -   $ref: "#/components/parameters/cartCommentIdPathParam"
             requestBody:
                 content:
                     application/json:
@@ -1197,6 +1940,21 @@ paths:
                             $ref: "#/components/schemas/CartComment"
                 required: true
             responses:
+                "403":
+                    content: &id004
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
+                "422":
+                    content: *id004
+                    description:
+                        Domain validation failed (for example, unknown skuId on a cart item, missing cross-reference, or
+                        quantity outside the configured Settings bounds).
                 200:
                     content:
                         application/json:
@@ -1206,7 +1964,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/CartComment"
                     description:
-                        Succesfully update the comment
+                        Successfully updated the comment
                 400:
                     description:
                         Invalid input
@@ -1240,26 +1998,29 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            summary: Updates an Cart Comment by ID.
-            tags: ["CartComment"]
+            summary: Updates a Cart Comment by ID.
+            tags:
+            -   CartComment
     /cart-items/by-externalReferenceCode/{externalReferenceCode}:
         delete:
             description:
-                Deletes a Cart Item by external reference code.
+                Deletes the CommerceOrderItem addressed by external reference code via
+                CommerceOrderItemService.deleteCommerceOrderItem. The deletion runs through the CommerceContext bound to
+                the parent cart, so cascading inventory and pricing recalculations on the cart fire as a side effect.
             operationId: deleteCartItemByExternalReferenceCode
             parameters:
-                -   in: path
-                    explode: false
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        description:
-                            Cart Item external Reference Code
-                        example: AB-34098-789-N
-                        minLength: 1
-                        type: string
-                    style: simple
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             responses:
+                "403":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
                 204:
                     content:
                         application/json: {}
@@ -1274,24 +2035,25 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Authentication information is missing or invalid
-            tags: ["CartItem"]
+            tags:
+            -   CartItem
         get:
             description:
-                Retrieve information of the given Cart Item by external reference code.
+                Retrieves a single CommerceOrderItem by external reference code via CommerceOrderItemService.
             operationId: getCartItemByExternalReferenceCode
             parameters:
-                -   in: path
-                    explode: false
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        description:
-                            Cart Item external Reference Code
-                        example: AB-34098-789-N
-                        minLength: 1
-                        type: string
-                    style: simple
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             responses:
+                "403":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
                 200:
                     content:
                         application/json:
@@ -1330,23 +2092,16 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["CartItem"]
+            tags:
+            -   CartItem
         patch:
             description:
-                Update the provided Cart Item by external reference code.
+                Updates the CommerceOrderItem addressed by external reference code with JSON Merge Patch semantics.
+                Mutates quantity, skuId, shippingAddressId, requestedDeliveryDate, and customFields via
+                CommerceOrderItemService.updateCommerceOrderItem; recalculates parent cart pricing as a side effect.
             operationId: patchCartItemByExternalReferenceCode
             parameters:
-                -   in: path
-                    explode: false
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        description:
-                            Cart Item external Reference Code
-                        example: AB-34098-789-N
-                        minLength: 1
-                        type: string
-                    style: simple
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             requestBody:
                 content:
                     application/json:
@@ -1357,6 +2112,21 @@ paths:
                             $ref: "#/components/schemas/CartItem"
                 required: true
             responses:
+                "403":
+                    content: &id005
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
+                "422":
+                    content: *id005
+                    description:
+                        Domain validation failed (for example, unknown skuId on a cart item, missing cross-reference, or
+                        quantity outside the configured Settings bounds).
                 200:
                     content:
                         application/json:
@@ -1395,23 +2165,15 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["CartItem"]
+            tags:
+            -   CartItem
         put:
             description:
-                Update the provided Cart Item by external reference code.
+                Replaces the CommerceOrderItem addressed by external reference code via CommerceOrderItemService. PUT is
+                upsert when the externalReferenceCode is unknown; the cart pricing is recalculated as a side effect.
             operationId: putCartItemByExternalReferenceCode
             parameters:
-                -   in: path
-                    explode: false
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        description:
-                            Cart Item external Reference Code
-                        example: AB-34098-789-N
-                        minLength: 1
-                        type: string
-                    style: simple
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             requestBody:
                 content:
                     application/json:
@@ -1422,6 +2184,21 @@ paths:
                             $ref: "#/components/schemas/CartItem"
                 required: true
             responses:
+                "403":
+                    content: &id006
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
+                "422":
+                    content: *id006
+                    description:
+                        Domain validation failed (for example, unknown skuId on a cart item, missing cross-reference, or
+                        quantity outside the configured Settings bounds).
                 200:
                     content:
                         application/json:
@@ -1460,24 +2237,28 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["CartItem"]
+            tags:
+            -   CartItem
     /cart-items/{cartItemId}:
         delete:
             description:
-                Deletes an Cart Item by ID.
+                Deletes the CommerceOrderItem addressed by its internal identifier via
+                CommerceOrderItemService.deleteCommerceOrderItem. Triggers cart pricing recalculation through the
+                CommerceContext.
             operationId: deleteCartItem
             parameters:
-                -   in: path
-                    explode: false
-                    name: cartItemId
-                    required: true
-                    schema:
-                        description:
-                            Cart Item Id
-                        format: int64
-                        type: integer
-                    style: simple
+            -   $ref: "#/components/parameters/cartItemIdPathParam"
             responses:
+                "403":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
                 204:
                     content:
                         application/json: {}
@@ -1492,23 +2273,25 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Authentication information is missing or invalid
-            tags: ["CartItem"]
+            tags:
+            -   CartItem
         get:
             description:
-                Retrieve information of the given Cart
+                Retrieves a single CommerceOrderItem by ID via CommerceOrderItemService.
             operationId: getCartItem
             parameters:
-                -   in: path
-                    explode: false
-                    name: cartItemId
-                    required: true
-                    schema:
-                        description:
-                            Cart Item Id
-                        format: int64
-                        type: integer
-                    style: simple
+            -   $ref: "#/components/parameters/cartItemIdPathParam"
             responses:
+                "403":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
                 200:
                     content:
                         application/json:
@@ -1547,22 +2330,16 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["CartItem"]
+            tags:
+            -   CartItem
         patch:
             description:
-                Retrieve information of the given Cart.
+                Updates the CommerceOrderItem addressed by ID with JSON Merge Patch semantics (only supplied fields are
+                modified). Mutates quantity, skuId, shippingAddressId, requestedDeliveryDate, and customFields; cart
+                pricing is recalculated as a side effect.
             operationId: patchCartItem
             parameters:
-                -   in: path
-                    explode: false
-                    name: cartItemId
-                    required: true
-                    schema:
-                        description:
-                            Cart Item Id
-                        format: int64
-                        type: integer
-                    style: simple
+            -   $ref: "#/components/parameters/cartItemIdPathParam"
             requestBody:
                 content:
                     application/json:
@@ -1573,6 +2350,21 @@ paths:
                             $ref: "#/components/schemas/CartItem"
                 required: true
             responses:
+                "403":
+                    content: &id007
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
+                "422":
+                    content: *id007
+                    description:
+                        Domain validation failed (for example, unknown skuId on a cart item, missing cross-reference, or
+                        quantity outside the configured Settings bounds).
                 200:
                     content:
                         application/json:
@@ -1611,22 +2403,15 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["CartItem"]
+            tags:
+            -   CartItem
         put:
             description:
-                update the given Cart.
+                Replaces the CommerceOrderItem addressed by ID via CommerceOrderItemService; cart pricing is
+                recalculated as a side effect.
             operationId: putCartItem
             parameters:
-                -   in: path
-                    explode: false
-                    name: cartItemId
-                    required: true
-                    schema:
-                        description:
-                            Cart Item Id
-                        format: int64
-                        type: integer
-                    style: simple
+            -   $ref: "#/components/parameters/cartItemIdPathParam"
             requestBody:
                 content:
                     application/json:
@@ -1637,6 +2422,21 @@ paths:
                             $ref: "#/components/schemas/CartItem"
                 required: true
             responses:
+                "403":
+                    content: &id008
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
+                "422":
+                    content: *id008
+                    description:
+                        Domain validation failed (for example, unknown skuId on a cart item, missing cross-reference, or
+                        quantity outside the configured Settings bounds).
                 200:
                     content:
                         application/json:
@@ -1675,20 +2475,32 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["CartItem"]
+            tags:
+            -   CartItem
     /carts/by-externalReferenceCode/{externalReferenceCode}:
         delete:
+            description:
+                Deletes the cart (CommerceOrder) addressed by external reference code via
+                CommerceOrderService.deleteCommerceOrder. The cart must be in ORDER_STATUS_OPEN; deleting a placed order
+                raises CommerceOrderStatusException.
             parameters:
-                -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        description:
-                            The resource external reference code
-                        example: AB-34098-789-N
-                        minLength: 1
-                        type: string
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             responses:
+                "403":
+                    content: &id009
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
+                "409":
+                    content: *id009
+                    description:
+                        The cart is not in ORDER_STATUS_OPEN, the requested transition is not currently allowed, or a
+                        workflow state conflict occurred.
                 204:
                     description:
                         No content
@@ -1702,22 +2514,26 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Authentication information is missing or invalid
-            summary: Deletes a Cart by by external reference code.
-            tags: ["Cart"]
+            summary: Deletes a Cart by external reference code.
+            tags:
+            -   Cart
         get:
             description:
-                Retrieve information of the given Cart by external reference code.
+                Retrieves the cart (CommerceOrder) addressed by external reference code with its items, addresses,
+                summary, and status via CommerceOrderService.
             parameters:
-                -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        description:
-                            The resource external reference code
-                        example: AB-34098-789-N
-                        minLength: 1
-                        type: string
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             responses:
+                "403":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
                 200:
                     content:
                         application/json:
@@ -1756,18 +2572,16 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["Cart"]
+            tags:
+            -   Cart
         patch:
+            description:
+                Updates the cart addressed by external reference code with JSON Merge Patch semantics (only supplied
+                fields are modified). Mutates shipping/billing addresses (by ID or ERC), delivery/payment terms, order
+                type, coupon, shipping method, and payment method. Requires ORDER_STATUS_OPEN; raises
+                CommerceOrderStatusException if the cart has been placed.
             parameters:
-                -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        description:
-                            The resource external reference code
-                        example: AB-34098-789-N
-                        minLength: 1
-                        type: string
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             requestBody:
                 content:
                     application/json:
@@ -1778,6 +2592,26 @@ paths:
                             $ref: "#/components/schemas/Cart"
                 required: true
             responses:
+                "403":
+                    content: &id010
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
+                "409":
+                    content: *id010
+                    description:
+                        The cart is not in ORDER_STATUS_OPEN, the requested transition is not currently allowed, or a
+                        workflow state conflict occurred.
+                "422":
+                    content: *id010
+                    description:
+                        Domain validation failed (for example, unknown skuId on a cart item, missing cross-reference, or
+                        quantity outside the configured Settings bounds).
                 200:
                     content:
                         application/json:
@@ -1822,18 +2656,14 @@ paths:
                     description:
                         Unexpected error
             summary: Updates a Cart by external reference code.
-            tags: ["Cart"]
+            tags:
+            -   Cart
         put:
+            description:
+                Replaces the cart addressed by external reference code via CommerceOrderService. PUT is upsert when the
+                externalReferenceCode is unknown; the cart must be (or become) in ORDER_STATUS_OPEN.
             parameters:
-                -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        description:
-                            The resource external reference code
-                        example: AB-34098-789-N
-                        minLength: 1
-                        type: string
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             requestBody:
                 content:
                     application/json:
@@ -1844,6 +2674,26 @@ paths:
                             $ref: "#/components/schemas/Cart"
                 required: true
             responses:
+                "403":
+                    content: &id011
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
+                "409":
+                    content: *id011
+                    description:
+                        The cart is not in ORDER_STATUS_OPEN, the requested transition is not currently allowed, or a
+                        workflow state conflict occurred.
+                "422":
+                    content: *id011
+                    description:
+                        Domain validation failed (for example, unknown skuId on a cart item, missing cross-reference, or
+                        quantity outside the configured Settings bounds).
                 200:
                     content:
                         application/json:
@@ -1888,48 +2738,21 @@ paths:
                     description:
                         Unexpected error
             summary: Updates a Cart.
-            tags: ["Cart"]
+            tags:
+            -   Cart
     /carts/by-externalReferenceCode/{externalReferenceCode}/attachments:
         get:
+            description:
+                Lists CommerceOrderAttachment files linked to the cart addressed by external reference code. Filterable
+                by restricted, dateCreated, dateModified, priority, commerceOrderId, externalReferenceCode, title, and
+                type via AttachmentEntityModel; pageable; searchable through the corresponding index.
             parameters:
-                -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        description:
-                            The resource external reference code
-                        example: AB-34098-789-N
-                        minLength: 1
-                        type: string
-                -   in: query
-                    name: filter
-                    required: false
-                    schema:
-                        type: string
-                -   in: query
-                    explode: true
-                    name: page
-                    required: false
-                    schema:
-                        type: integer
-                    style: form
-                -   in: query
-                    explode: true
-                    name: pageSize
-                    required: false
-                    schema:
-                        type: integer
-                    style: form
-                -   in: query
-                    name: search
-                    required: false
-                    schema:
-                        type: string
-                -   in: query
-                    name: sort
-                    required: false
-                    schema:
-                        type: string
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
+            -   $ref: "#/components/parameters/filterQueryParam"
+            -   $ref: "#/components/parameters/pageQueryParam"
+            -   $ref: "#/components/parameters/pageSizeQueryParam"
+            -   $ref: "#/components/parameters/searchQueryParam"
+            -   $ref: "#/components/parameters/sortQueryParam"
             responses:
                 200:
                     content:
@@ -1974,19 +2797,17 @@ paths:
                     description:
                         Unexpected error
             summary: Gets a list of attachments related to a cart.
-            tags: ["Attachment"]
+            tags:
+            -   Attachment
     /carts/by-externalReferenceCode/{externalReferenceCode}/attachments/by-base64:
         post:
+            description:
+                Creates a CommerceOrderAttachment from a base64-encoded payload (AttachmentBase64) and links it to the
+                cart addressed by external reference code. When feature flag LPD-6252 is enabled the file is stored as a
+                FileEntry via CommerceOrderService.addAttachmentFileEntry, otherwise via
+                CommerceOrderAttachmentService.addCommerceOrderAttachment.
             parameters:
-                -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        description:
-                            The resource external reference code
-                        example: AB-34098-789-N
-                        minLength: 1
-                        type: string
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             requestBody:
                 content:
                     application/json:
@@ -1997,6 +2818,21 @@ paths:
                             $ref: "#/components/schemas/AttachmentBase64"
                 required: true
             responses:
+                "403":
+                    content: &id012
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
+                "422":
+                    content: *id012
+                    description:
+                        Domain validation failed (for example, unknown skuId on a cart item, missing cross-reference, or
+                        quantity outside the configured Settings bounds).
                 200:
                     content:
                         application/json:
@@ -2036,29 +2872,27 @@ paths:
                     description:
                         Unexpected error
             summary: Creates an attachment related to a cart.
-            tags: ["Attachment"]
+            tags:
+            -   Attachment
     /carts/by-externalReferenceCode/{externalReferenceCode}/attachments/by-externalReferenceCode/{attachmentExternalReferenceCode}:
         delete:
+            description:
+                Deletes the CommerceOrderAttachment addressed by its external reference code under the parent cart (also
+                addressed by ERC).
             parameters:
-                -   in: path
-                    name: attachmentExternalReferenceCode
-                    required: true
-                    schema:
-                        description:
-                            The resource external reference code
-                        example: AB-34098-789-N
-                        minLength: 1
-                        type: string
-                -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        description:
-                            The resource external reference code
-                        example: AB-34098-789-N
-                        minLength: 1
-                        type: string
+            -   $ref: "#/components/parameters/attachmentExternalReferenceCodePathParam"
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             responses:
+                "403":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
                 200:
                     content:
                         application/json: {}
@@ -2094,22 +2928,25 @@ paths:
                     description:
                         Unexpected error
             summary: Deletes an attachment by external reference code.
-            tags: ["Attachment"]
+            tags:
+            -   Attachment
     /carts/by-externalReferenceCode/{externalReferenceCode}/billing-address:
         get:
             description:
-                Retrieve cart billing address.
+                Returns the Address bound as the cart's billing address via cart.billingAddressId; read-only.
             parameters:
-                -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        description:
-                            The resource external reference code
-                        example: AB-34098-789-N
-                        minLength: 1
-                        type: string
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             responses:
+                "403":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
                 200:
                     content:
                         application/json:
@@ -2148,20 +2985,37 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["Address"]
+            tags:
+            -   Address
     /carts/by-externalReferenceCode/{externalReferenceCode}/checkout:
         post:
+            description:
+                Runs the checkout validator chain against the cart addressed by external reference code (billing
+                address, shipping method, payment method, items) via CommerceOrderEngine and transitions the cart from
+                ORDER_STATUS_OPEN to ORDER_STATUS_IN_PROGRESS. Synchronous; returns the updated cart on success.
             parameters:
-                -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        description:
-                            The resource external reference code
-                        example: AB-34098-789-N
-                        minLength: 1
-                        type: string
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             responses:
+                "403":
+                    content: &id013
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
+                "409":
+                    content: *id013
+                    description:
+                        The cart is not in ORDER_STATUS_OPEN, the requested transition is not currently allowed, or a
+                        workflow state conflict occurred.
+                "422":
+                    content: *id013
+                    description:
+                        Domain validation failed (for example, unknown skuId on a cart item, missing cross-reference, or
+                        quantity outside the configured Settings bounds).
                 200:
                     content:
                         application/json:
@@ -2170,29 +3024,18 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/Cart"
-            tags: ["Cart"]
+            tags:
+            -   Cart
     /carts/by-externalReferenceCode/{externalReferenceCode}/comments:
         get:
+            description:
+                Lists CommerceOrderNote entries attached to the cart addressed by external reference code via
+                CommerceOrderNoteService.getCommerceOrderNotes. Restricted notes are filtered out unless the caller has
+                MANAGE_COMMERCE_ORDER_NOTES on the cart.
             parameters:
-                -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        description:
-                            The resource external reference code
-                        example: AB-34098-789-N
-                        minLength: 1
-                        type: string
-                -   in: query
-                    name: page
-                    required: false
-                    schema:
-                        type: integer
-                -   in: query
-                    name: pageSize
-                    required: false
-                    schema:
-                        type: integer
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
+            -   $ref: "#/components/parameters/pageQueryParam"
+            -   $ref: "#/components/parameters/pageSizeQueryParam"
             responses:
                 200:
                     content:
@@ -2242,18 +3085,14 @@ paths:
                     description:
                         Unexpected error
             summary: Gets a list of Comments related to a Cart.
-            tags: ["CartComment"]
+            tags:
+            -   CartComment
         post:
+            description:
+                Creates (or upserts when CartComment.externalReferenceCode is provided) a CommerceOrderNote on the cart
+                addressed by external reference code via CommerceOrderNoteService.addOrUpdateCommerceOrderNote.
             parameters:
-                -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        description:
-                            The resource external reference code
-                        example: AB-34098-789-N
-                        minLength: 1
-                        type: string
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             requestBody:
                 content:
                     application/json:
@@ -2264,6 +3103,21 @@ paths:
                             $ref: "#/components/schemas/CartComment"
                 required: true
             responses:
+                "403":
+                    content: &id014
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
+                "422":
+                    content: *id014
+                    description:
+                        Domain validation failed (for example, unknown skuId on a cart item, missing cross-reference, or
+                        quantity outside the configured Settings bounds).
                 201:
                     content:
                         application/json:
@@ -2308,21 +3162,16 @@ paths:
                     description:
                         Unexpected error
             summary: Creates or updates a Comment.
-            tags: ["CartComment"]
+            tags:
+            -   CartComment
     /carts/by-externalReferenceCode/{externalReferenceCode}/coupon-code:
         post:
             description:
-                Add a coupon code to a Cart, return the whole Cart updated.
+                Applies a coupon code (CouponCode.code) to the cart addressed by external reference code via
+                CommerceOrderService.applyCouponCode and returns the updated cart with the recalculated Summary.
+                Requires ORDER_STATUS_OPEN.
             parameters:
-                -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        description:
-                            The resource external reference code
-                        example: AB-34098-789-N
-                        minLength: 1
-                        type: string
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             requestBody:
                 content:
                     application/json:
@@ -2333,6 +3182,26 @@ paths:
                             $ref: "#/components/schemas/CouponCode"
                 required: true
             responses:
+                "403":
+                    content: &id015
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
+                "409":
+                    content: *id015
+                    description:
+                        The cart is not in ORDER_STATUS_OPEN, the requested transition is not currently allowed, or a
+                        workflow state conflict occurred.
+                "422":
+                    content: *id015
+                    description:
+                        Domain validation failed (for example, unknown skuId on a cart item, missing cross-reference, or
+                        quantity outside the configured Settings bounds).
                 200:
                     content:
                         application/json:
@@ -2373,21 +3242,15 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["Cart"]
+            tags:
+            -   Cart
     /carts/by-externalReferenceCode/{externalReferenceCode}/delivery-terms:
         get:
             description:
-                Retrieve delivery terms available for the Cart.
+                Lists the CommerceTermEntry rows qualified as delivery terms for the cart addressed by external
+                reference code, filtered by CommerceOrderType and the currently selected shipping method.
             parameters:
-                -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        description:
-                            The resource external reference code
-                        example: AB-34098-789-N
-                        minLength: 1
-                        type: string
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             responses:
                 200:
                     content:
@@ -2433,42 +3296,21 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["Term"]
+            tags:
+            -   Term
     /carts/by-externalReferenceCode/{externalReferenceCode}/items:
         get:
             description:
-                Retrieve cart items of a Cart.
+                Lists the top-level CommerceOrderItem rows on the cart addressed by external reference code (children of
+                bundle items are excluded). Filterable by quantity, name, sku, and unitOfMeasure via
+                CartItemEntityModel; searchable through the CommerceOrderItem index; restrictable to a specific SKU via
+                skuId.
             parameters:
-                -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        description:
-                            The resource external reference code
-                        example: AB-34098-789-N
-                        minLength: 1
-                        type: string
-                -   in: query
-                    name: page
-                    required: false
-                    schema:
-                        type: integer
-                -   in: query
-                    name: pageSize
-                    required: false
-                    schema:
-                        type: integer
-                -   in: query
-                    name: search
-                    required: false
-                    schema:
-                        type: string
-                -   in: query
-                    name: skuId
-                    required: false
-                    schema:
-                        format: int64
-                        type: integer
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
+            -   $ref: "#/components/parameters/pageQueryParam"
+            -   $ref: "#/components/parameters/pageSizeQueryParam"
+            -   $ref: "#/components/parameters/searchQueryParam"
+            -   $ref: "#/components/parameters/skuIdQueryParam"
             responses:
                 200:
                     content:
@@ -2514,20 +3356,15 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["CartItem"]
+            tags:
+            -   CartItem
         post:
             description:
-                Add new Item to a Cart, return the whole Cart updated.
+                Adds a new CommerceOrderItem to the cart addressed by external reference code via
+                CommerceOrderItemService.addCommerceOrderItem. CartItem.skuId is required. Triggers cart pricing
+                recalculation.
             parameters:
-                -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        description:
-                            The resource external reference code
-                        example: AB-34098-789-N
-                        minLength: 1
-                        type: string
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             requestBody:
                 content:
                     application/json:
@@ -2538,6 +3375,21 @@ paths:
                             $ref: "#/components/schemas/CartItem"
                 required: true
             responses:
+                "403":
+                    content: &id016
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
+                "422":
+                    content: *id016
+                    description:
+                        Domain validation failed (for example, unknown skuId on a cart item, missing cross-reference, or
+                        quantity outside the configured Settings bounds).
                 201:
                     content:
                         application/json:
@@ -2578,21 +3430,16 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["CartItem"]
+            tags:
+            -   CartItem
     /carts/by-externalReferenceCode/{externalReferenceCode}/payment-methods:
         get:
             description:
-                Retrieve payment methods available for the Cart.
+                Lists the CommercePaymentMethodGroupRel entries qualified for the cart addressed by external reference
+                code -- filtered by billing address country, CommerceOrderType qualifiers, ActionKeys.VIEW permission,
+                and subscription eligibility, sorted by CommercePaymentMethodPriorityComparator.
             parameters:
-                -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        description:
-                            The resource external reference code
-                        example: AB-34098-789-N
-                        minLength: 1
-                        type: string
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             responses:
                 200:
                     content:
@@ -2636,21 +3483,15 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["PaymentMethod"]
+            tags:
+            -   PaymentMethod
     /carts/by-externalReferenceCode/{externalReferenceCode}/payment-terms:
         get:
             description:
-                Retrieve payment terms available for the Cart.
+                Lists the CommerceTermEntry rows qualified as payment terms for the cart addressed by external reference
+                code, filtered by CommerceOrderType and the currently selected payment method.
             parameters:
-                -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        description:
-                            The resource external reference code
-                        example: AB-34098-789-N
-                        minLength: 1
-                        type: string
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             responses:
                 200:
                     content:
@@ -2696,46 +3537,41 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["Term"]
+            tags:
+            -   Term
     /carts/by-externalReferenceCode/{externalReferenceCode}/payment-url:
         get:
+            description:
+                Returns the encrypted payment-gateway redirect URL for the cart addressed by external reference code.
+                The optional callbackURL is encoded into the encrypted token; the response is a plain-text URL.
             parameters:
-                -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        description:
-                            The resource external reference code
-                        example: AB-34098-789-N
-                        minLength: 1
-                        type: string
-                -   in: query
-                    name: callbackURL
-                    required: false
-                    schema:
-                        type: string
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
+            -   $ref: "#/components/parameters/callbackURLQueryParam"
             responses:
                 200:
                     content:
                         text/plain:
                             schema:
                                 type: string
-            tags: ["Cart"]
+            tags:
+            -   Cart
     /carts/by-externalReferenceCode/{externalReferenceCode}/shipping-address:
         get:
             description:
-                Retrieve cart billing address.
+                Returns the Address bound as the cart's shipping address via cart.shippingAddressId; read-only.
             parameters:
-                -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        description:
-                            The resource external reference code
-                        example: AB-34098-789-N
-                        minLength: 1
-                        type: string
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             responses:
+                "403":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
                 200:
                     content:
                         application/json:
@@ -2774,21 +3610,16 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["Address"]
+            tags:
+            -   Address
     /carts/by-externalReferenceCode/{externalReferenceCode}/shipping-methods:
         get:
             description:
-                Retrieve payment methods available for the Cart.
+                Lists the CommerceShippingMethod entries qualified for the cart addressed by external reference code,
+                with the nested ShippingOption set computed by each CommerceShippingEngine against the cart's shipping
+                address.
             parameters:
-                -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        description:
-                            The resource external reference code
-                        example: AB-34098-789-N
-                        minLength: 1
-                        type: string
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             responses:
                 200:
                     content:
@@ -2834,22 +3665,32 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["ShippingMethod"]
+            tags:
+            -   ShippingMethod
     /carts/{cartId}:
         delete:
+            description:
+                Deletes the cart (CommerceOrder) addressed by its internal identifier via
+                CommerceOrderService.deleteCommerceOrder. The cart must be in ORDER_STATUS_OPEN.
             operationId: deleteCart
             parameters:
-                -   in: path
-                    explode: false
-                    name: cartId
-                    required: true
-                    schema:
-                        description:
-                            Cart Id
-                        format: int64
-                        type: integer
-                    style: simple
+            -   $ref: "#/components/parameters/cartIdPathParam"
             responses:
+                "403":
+                    content: &id017
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
+                "409":
+                    content: *id017
+                    description:
+                        The cart is not in ORDER_STATUS_OPEN, the requested transition is not currently allowed, or a
+                        workflow state conflict occurred.
                 204:
                     description:
                         No content
@@ -2864,23 +3705,26 @@ paths:
                     description:
                         Authentication information is missing or invalid
             summary: Deletes a Cart by ID.
-            tags: ["Cart"]
+            tags:
+            -   Cart
         get:
             description:
-                Retrieve information of the given Cart.
+                Retrieves the cart (CommerceOrder) addressed by ID with its items, addresses, summary, and status via
+                CommerceOrderService.
             operationId: getCart
             parameters:
-                -   in: path
-                    explode: false
-                    name: cartId
-                    required: true
-                    schema:
-                        description:
-                            Cart Id
-                        format: int64
-                        type: integer
-                    style: simple
+            -   $ref: "#/components/parameters/cartIdPathParam"
             responses:
+                "403":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
                 200:
                     content:
                         application/json:
@@ -2919,20 +3763,17 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["Cart"]
+            tags:
+            -   Cart
         patch:
+            description:
+                Updates the cart addressed by ID with JSON Merge Patch semantics (only supplied fields are modified).
+                Mutates shipping/billing addresses, delivery/payment terms, order type, coupon, shipping method, and
+                payment method. Requires ORDER_STATUS_OPEN; raises CommerceOrderStatusException if the cart has been
+                placed.
             operationId: patchCart
             parameters:
-                -   in: path
-                    explode: false
-                    name: cartId
-                    required: true
-                    schema:
-                        description:
-                            Cart Id
-                        format: int64
-                        type: integer
-                    style: simple
+            -   $ref: "#/components/parameters/cartIdPathParam"
             requestBody:
                 content:
                     application/json:
@@ -2943,6 +3784,26 @@ paths:
                             $ref: "#/components/schemas/Cart"
                 required: true
             responses:
+                "403":
+                    content: &id018
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
+                "409":
+                    content: *id018
+                    description:
+                        The cart is not in ORDER_STATUS_OPEN, the requested transition is not currently allowed, or a
+                        workflow state conflict occurred.
+                "422":
+                    content: *id018
+                    description:
+                        Domain validation failed (for example, unknown skuId on a cart item, missing cross-reference, or
+                        quantity outside the configured Settings bounds).
                 200:
                     content:
                         application/json:
@@ -2987,20 +3848,14 @@ paths:
                     description:
                         Unexpected error
             summary: Updates a Cart.
-            tags: ["Cart"]
+            tags:
+            -   Cart
         put:
+            description:
+                Replaces the cart addressed by ID via CommerceOrderService; the cart must be in ORDER_STATUS_OPEN.
             operationId: putCart
             parameters:
-                -   in: path
-                    explode: false
-                    name: cartId
-                    required: true
-                    schema:
-                        description:
-                            Cart Id
-                        format: int64
-                        type: integer
-                    style: simple
+            -   $ref: "#/components/parameters/cartIdPathParam"
             requestBody:
                 content:
                     application/json:
@@ -3011,6 +3866,26 @@ paths:
                             $ref: "#/components/schemas/Cart"
                 required: true
             responses:
+                "403":
+                    content: &id019
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
+                "409":
+                    content: *id019
+                    description:
+                        The cart is not in ORDER_STATUS_OPEN, the requested transition is not currently allowed, or a
+                        workflow state conflict occurred.
+                "422":
+                    content: *id019
+                    description:
+                        Domain validation failed (for example, unknown skuId on a cart item, missing cross-reference, or
+                        quantity outside the configured Settings bounds).
                 200:
                     content:
                         application/json:
@@ -3055,49 +3930,21 @@ paths:
                     description:
                         Unexpected error
             summary: Updates a Cart.
-            tags: ["Cart"]
+            tags:
+            -   Cart
     /carts/{cartId}/attachments:
         get:
+            description:
+                Lists CommerceOrderAttachment files linked to the cart addressed by ID. Filterable by restricted,
+                dateCreated, dateModified, priority, commerceOrderId, externalReferenceCode, title, and type via
+                AttachmentEntityModel; pageable; searchable.
             parameters:
-                -   in: path
-                    explode: false
-                    name: cartId
-                    required: true
-                    schema:
-                        description:
-                            Cart Id
-                        format: int64
-                        type: integer
-                    style: simple
-                -   in: query
-                    name: filter
-                    required: false
-                    schema:
-                        type: string
-                -   in: query
-                    explode: true
-                    name: page
-                    required: false
-                    schema:
-                        type: integer
-                    style: form
-                -   in: query
-                    explode: true
-                    name: pageSize
-                    required: false
-                    schema:
-                        type: integer
-                    style: form
-                -   in: query
-                    name: search
-                    required: false
-                    schema:
-                        type: string
-                -   in: query
-                    name: sort
-                    required: false
-                    schema:
-                        type: string
+            -   $ref: "#/components/parameters/cartIdPathParam"
+            -   $ref: "#/components/parameters/filterQueryParam"
+            -   $ref: "#/components/parameters/pageQueryParam"
+            -   $ref: "#/components/parameters/pageSizeQueryParam"
+            -   $ref: "#/components/parameters/searchQueryParam"
+            -   $ref: "#/components/parameters/sortQueryParam"
             responses:
                 200:
                     content:
@@ -3142,20 +3989,16 @@ paths:
                     description:
                         Unexpected error
             summary: Gets a list of attachments related to a cart.
-            tags: ["Attachment"]
+            tags:
+            -   Attachment
     /carts/{cartId}/attachments/by-base64:
         post:
+            description:
+                Creates a CommerceOrderAttachment from a base64-encoded payload (AttachmentBase64) and links it to the
+                cart addressed by ID. When feature flag LPD-6252 is enabled the file is stored as a FileEntry, otherwise
+                as a dedicated CommerceOrderAttachment record.
             parameters:
-                -   in: path
-                    explode: false
-                    name: cartId
-                    required: true
-                    schema:
-                        description:
-                            Cart Id
-                        format: int64
-                        type: integer
-                    style: simple
+            -   $ref: "#/components/parameters/cartIdPathParam"
             requestBody:
                 content:
                     application/json:
@@ -3166,6 +4009,21 @@ paths:
                             $ref: "#/components/schemas/AttachmentBase64"
                 required: true
             responses:
+                "403":
+                    content: &id020
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
+                "422":
+                    content: *id020
+                    description:
+                        Domain validation failed (for example, unknown skuId on a cart item, missing cross-reference, or
+                        quantity outside the configured Settings bounds).
                 200:
                     content:
                         application/json:
@@ -3205,31 +4063,26 @@ paths:
                     description:
                         Unexpected error
             summary: Creates an attachment related to a cart.
-            tags: ["Attachment"]
+            tags:
+            -   Attachment
     /carts/{cartId}/attachments/{attachmentId}:
         delete:
+            description:
+                Deletes the CommerceOrderAttachment addressed by ID under the parent cart (also addressed by ID).
             parameters:
-                -   in: path
-                    explode: false
-                    name: attachmentId
-                    required: true
-                    schema:
-                        description:
-                            Attachment Id
-                        format: int64
-                        type: integer
-                    style: simple
-                -   in: path
-                    explode: false
-                    name: cartId
-                    required: true
-                    schema:
-                        description:
-                            Cart Id
-                        format: int64
-                        type: integer
-                    style: simple
+            -   $ref: "#/components/parameters/attachmentIdPathParam"
+            -   $ref: "#/components/parameters/cartIdPathParam"
             responses:
+                "403":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
                 200:
                     content:
                         application/json: {}
@@ -3265,24 +4118,26 @@ paths:
                     description:
                         Unexpected error
             summary: Deletes an attachment by id.
-            tags: ["Attachment"]
+            tags:
+            -   Attachment
     /carts/{cartId}/billing-address:
         get:
             description:
-                Retrieve cart billing address.
+                Returns the Address bound as the cart's billing address via cart.billingAddressId; read-only.
             operationId: getCartBillingAddres
             parameters:
-                -   in: path
-                    explode: false
-                    name: cartId
-                    required: true
-                    schema:
-                        description:
-                            Cart Id
-                        format: int64
-                        type: integer
-                    style: simple
+            -   $ref: "#/components/parameters/cartIdPathParam"
             responses:
+                "403":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
                 200:
                     content:
                         application/json:
@@ -3321,23 +4176,17 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["Address"]
+            tags:
+            -   Address
     /carts/{cartId}/cart-transitions:
         get:
             description:
-                Retrieve cart transitions of the given Cart.
+                Lists the available CartTransition entries on the cart addressed by ID. Combines workflow task
+                transitions (when the cart has an active workflow instance) and order-status transitions (request-quote,
+                submit, quick-checkout, checkout) derived from CommerceOrderStatusRegistry.
             operationId: getCartCartTransitionsPage
             parameters:
-                -   in: path
-                    explode: false
-                    name: cartId
-                    required: true
-                    schema:
-                        description:
-                            Cart Id
-                        format: int64
-                        type: integer
-                    style: simple
+            -   $ref: "#/components/parameters/cartIdPathParam"
             responses:
                 200:
                     content:
@@ -3381,16 +4230,17 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["CartTransition"]
+            tags:
+            -   CartTransition
         post:
+            description:
+                Fires a CartTransition by name against the cart addressed by ID. Workflow task names are dispatched
+                through CommerceWorkflowedModelHelper; order-status names are dispatched through
+                CommerceOrderEngine.transitionCommerceOrder. Requires ORDER_STATUS_OPEN and a valid combination of
+                billing address, payment method, and items.
             operationId: postCartCartTransition
             parameters:
-                -   in: path
-                    name: cartId
-                    required: true
-                    schema:
-                        format: int64
-                        type: integer
+            -   $ref: "#/components/parameters/cartIdPathParam"
             requestBody:
                 content:
                     application/json:
@@ -3401,6 +4251,26 @@ paths:
                             $ref: "#/components/schemas/CartTransition"
                 required: true
             responses:
+                "403":
+                    content: &id021
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
+                "409":
+                    content: *id021
+                    description:
+                        The cart is not in ORDER_STATUS_OPEN, the requested transition is not currently allowed, or a
+                        workflow state conflict occurred.
+                "422":
+                    content: *id021
+                    description:
+                        Domain validation failed (for example, unknown skuId on a cart item, missing cross-reference, or
+                        quantity outside the configured Settings bounds).
                 200:
                     content:
                         application/json:
@@ -3409,18 +4279,38 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/CartTransition"
-            tags: ["CartTransition"]
+            tags:
+            -   CartTransition
     /carts/{cartId}/checkout:
         post:
+            description:
+                Runs the checkout validator chain against the cart addressed by ID (billing address, shipping method,
+                payment method, items) via CommerceOrderEngine and transitions the cart from ORDER_STATUS_OPEN to
+                ORDER_STATUS_IN_PROGRESS. Synchronous; returns the updated cart on success.
             operationId: postCartCheckout
             parameters:
-                -   in: path
-                    name: cartId
-                    required: true
-                    schema:
-                        format: int64
-                        type: integer
+            -   $ref: "#/components/parameters/cartIdPathParam"
             responses:
+                "403":
+                    content: &id022
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
+                "409":
+                    content: *id022
+                    description:
+                        The cart is not in ORDER_STATUS_OPEN, the requested transition is not currently allowed, or a
+                        workflow state conflict occurred.
+                "422":
+                    content: *id022
+                    description:
+                        Domain validation failed (for example, unknown skuId on a cart item, missing cross-reference, or
+                        quantity outside the configured Settings bounds).
                 200:
                     content:
                         application/json:
@@ -3429,31 +4319,19 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/Cart"
-            tags: ["Cart"]
+            tags:
+            -   Cart
     /carts/{cartId}/comments:
         get:
+            description:
+                Lists CommerceOrderNote entries attached to the cart addressed by ID via
+                CommerceOrderNoteService.getCommerceOrderNotes. Restricted notes are filtered out unless the caller has
+                MANAGE_COMMERCE_ORDER_NOTES on the cart.
             operationId: getCartCommentsPage
             parameters:
-                -   in: path
-                    explode: false
-                    name: cartId
-                    required: true
-                    schema:
-                        description:
-                            Cart Id
-                        format: int64
-                        type: integer
-                    style: simple
-                -   in: query
-                    name: page
-                    required: false
-                    schema:
-                        type: integer
-                -   in: query
-                    name: pageSize
-                    required: false
-                    schema:
-                        type: integer
+            -   $ref: "#/components/parameters/cartIdPathParam"
+            -   $ref: "#/components/parameters/pageQueryParam"
+            -   $ref: "#/components/parameters/pageSizeQueryParam"
             responses:
                 200:
                     content:
@@ -3503,20 +4381,15 @@ paths:
                     description:
                         Unexpected error
             summary: Gets a list of Comments related to a Cart.
-            tags: ["CartComment"]
+            tags:
+            -   CartComment
         post:
+            description:
+                Creates (or upserts when CartComment.externalReferenceCode is provided) a CommerceOrderNote on the cart
+                addressed by ID via CommerceOrderNoteService.addOrUpdateCommerceOrderNote.
             operationId: postCartComment
             parameters:
-                -   in: path
-                    explode: false
-                    name: cartId
-                    required: true
-                    schema:
-                        description:
-                            Cart Id
-                        format: int64
-                        type: integer
-                    style: simple
+            -   $ref: "#/components/parameters/cartIdPathParam"
             requestBody:
                 content:
                     application/json:
@@ -3527,6 +4400,21 @@ paths:
                             $ref: "#/components/schemas/CartComment"
                 required: true
             responses:
+                "403":
+                    content: &id023
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
+                "422":
+                    content: *id023
+                    description:
+                        Domain validation failed (for example, unknown skuId on a cart item, missing cross-reference, or
+                        quantity outside the configured Settings bounds).
                 201:
                     content:
                         application/json:
@@ -3571,23 +4459,17 @@ paths:
                     description:
                         Unexpected error
             summary: Creates or updates a Comment.
-            tags: ["CartComment"]
+            tags:
+            -   CartComment
     /carts/{cartId}/coupon-code:
         post:
             description:
-                Add a coupon code to a Cart, return the whole Cart updated.
+                Applies a coupon code (CouponCode.code) to the cart addressed by ID via
+                CommerceOrderService.applyCouponCode and returns the updated cart with the recalculated Summary.
+                Requires ORDER_STATUS_OPEN.
             operationId: postCartCouponCode
             parameters:
-                -   in: path
-                    explode: false
-                    name: cartId
-                    required: true
-                    schema:
-                        description:
-                            Cart Id
-                        format: int64
-                        type: integer
-                    style: simple
+            -   $ref: "#/components/parameters/cartIdPathParam"
             requestBody:
                 content:
                     application/json:
@@ -3598,6 +4480,26 @@ paths:
                             $ref: "#/components/schemas/CouponCode"
                 required: true
             responses:
+                "403":
+                    content: &id024
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
+                "409":
+                    content: *id024
+                    description:
+                        The cart is not in ORDER_STATUS_OPEN, the requested transition is not currently allowed, or a
+                        workflow state conflict occurred.
+                "422":
+                    content: *id024
+                    description:
+                        Domain validation failed (for example, unknown skuId on a cart item, missing cross-reference, or
+                        quantity outside the configured Settings bounds).
                 200:
                     content:
                         application/json:
@@ -3638,23 +4540,16 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["Cart"]
+            tags:
+            -   Cart
     /carts/{cartId}/delivery-terms:
         get:
             description:
-                Retrieve delivery terms available for the Cart.
+                Lists the CommerceTermEntry rows qualified as delivery terms for the cart addressed by ID, filtered by
+                CommerceOrderType and the currently selected shipping method.
             operationId: getCartDeliveryTermsPage
             parameters:
-                -   in: path
-                    explode: false
-                    name: cartId
-                    required: true
-                    schema:
-                        description:
-                            Cart Id
-                        format: int64
-                        type: integer
-                    style: simple
+            -   $ref: "#/components/parameters/cartIdPathParam"
             responses:
                 200:
                     content:
@@ -3700,44 +4595,21 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["Term"]
+            tags:
+            -   Term
     /carts/{cartId}/items:
         get:
             description:
-                Retrieve cart items of a Cart.
+                Lists the top-level CommerceOrderItem rows on the cart addressed by ID (children of bundle items are
+                excluded). Filterable by quantity, name, sku, and unitOfMeasure via CartItemEntityModel; searchable;
+                restrictable to a specific SKU via skuId.
             operationId: getCartItemsPage
             parameters:
-                -   in: path
-                    explode: false
-                    name: cartId
-                    required: true
-                    schema:
-                        description:
-                            Cart Id
-                        format: int64
-                        type: integer
-                    style: simple
-                -   in: query
-                    name: page
-                    required: false
-                    schema:
-                        type: integer
-                -   in: query
-                    name: pageSize
-                    required: false
-                    schema:
-                        type: integer
-                -   in: query
-                    name: search
-                    required: false
-                    schema:
-                        type: string
-                -   in: query
-                    name: skuId
-                    required: false
-                    schema:
-                        format: int64
-                        type: integer
+            -   $ref: "#/components/parameters/cartIdPathParam"
+            -   $ref: "#/components/parameters/pageQueryParam"
+            -   $ref: "#/components/parameters/pageSizeQueryParam"
+            -   $ref: "#/components/parameters/searchQueryParam"
+            -   $ref: "#/components/parameters/skuIdQueryParam"
             responses:
                 200:
                     content:
@@ -3783,22 +4655,16 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["CartItem"]
+            tags:
+            -   CartItem
         post:
             description:
-                Add new Items to a Cart, return the whole Cart updated.
+                Adds a new CommerceOrderItem to the cart addressed by ID via
+                CommerceOrderItemService.addCommerceOrderItem. CartItem.skuId is required. Triggers cart pricing
+                recalculation.
             operationId: postCartItem
             parameters:
-                -   in: path
-                    explode: false
-                    name: cartId
-                    required: true
-                    schema:
-                        description:
-                            Cart Id
-                        format: int64
-                        type: integer
-                    style: simple
+            -   $ref: "#/components/parameters/cartIdPathParam"
             requestBody:
                 content:
                     application/json:
@@ -3809,6 +4675,21 @@ paths:
                             $ref: "#/components/schemas/CartItem"
                 required: true
             responses:
+                "403":
+                    content: &id025
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
+                "422":
+                    content: *id025
+                    description:
+                        Domain validation failed (for example, unknown skuId on a cart item, missing cross-reference, or
+                        quantity outside the configured Settings bounds).
                 201:
                     content:
                         application/json:
@@ -3849,23 +4730,17 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["CartItem"]
+            tags:
+            -   CartItem
     /carts/{cartId}/payment-methods:
         get:
             description:
-                Retrieve payment methods available for the Cart.
+                Lists the CommercePaymentMethodGroupRel entries qualified for the cart addressed by ID -- filtered by
+                billing address country, CommerceOrderType qualifiers, ActionKeys.VIEW permission, and subscription
+                eligibility, sorted by CommercePaymentMethodPriorityComparator.
             operationId: getCartPaymentMethodsPage
             parameters:
-                -   in: path
-                    explode: false
-                    name: cartId
-                    required: true
-                    schema:
-                        description:
-                            Cart Id
-                        format: int64
-                        type: integer
-                    style: simple
+            -   $ref: "#/components/parameters/cartIdPathParam"
             responses:
                 200:
                     content:
@@ -3909,23 +4784,16 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["PaymentMethod"]
+            tags:
+            -   PaymentMethod
     /carts/{cartId}/payment-terms:
         get:
             description:
-                Retrieve payment terms available for the Cart.
+                Lists the CommerceTermEntry rows qualified as payment terms for the cart addressed by ID, filtered by
+                CommerceOrderType and the currently selected payment method.
             operationId: getCartPaymentTermsPage
             parameters:
-                -   in: path
-                    explode: false
-                    name: cartId
-                    required: true
-                    schema:
-                        description:
-                            Cart Id
-                        format: int64
-                        type: integer
-                    style: simple
+            -   $ref: "#/components/parameters/cartIdPathParam"
             responses:
                 200:
                     content:
@@ -3971,46 +4839,43 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["Term"]
+            tags:
+            -   Term
     /carts/{cartId}/payment-url:
         get:
+            description:
+                Returns the encrypted payment-gateway redirect URL for the cart addressed by ID. The optional
+                callbackURL is encoded into the encrypted token; the response is a plain-text URL.
             operationId: getCartPaymentURL
             parameters:
-                -   in: path
-                    name: cartId
-                    required: true
-                    schema:
-                        format: int64
-                        type: integer
-                -   in: query
-                    name: callbackURL
-                    required: false
-                    schema:
-                        type: string
+            -   $ref: "#/components/parameters/cartIdPathParam"
+            -   $ref: "#/components/parameters/callbackURLQueryParam"
             responses:
                 200:
                     content:
                         text/plain:
                             schema:
                                 type: string
-            tags: ["Cart"]
+            tags:
+            -   Cart
     /carts/{cartId}/shipping-address:
         get:
             description:
-                Retrieve cart billing address.
+                Returns the Address bound as the cart's shipping address via cart.shippingAddressId; read-only.
             operationId: getCartShippingAddres
             parameters:
-                -   in: path
-                    explode: false
-                    name: cartId
-                    required: true
-                    schema:
-                        description:
-                            Cart Id
-                        format: int64
-                        type: integer
-                    style: simple
+            -   $ref: "#/components/parameters/cartIdPathParam"
             responses:
+                "403":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
                 200:
                     content:
                         application/json:
@@ -4049,23 +4914,16 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["Address"]
+            tags:
+            -   Address
     /carts/{cartId}/shipping-methods:
         get:
             description:
-                Retrieve payment methods available for the Cart.
+                Lists the CommerceShippingMethod entries qualified for the cart addressed by ID, with the nested
+                ShippingOption set computed by each CommerceShippingEngine against the cart's shipping address.
             operationId: getCartShippingMethodsPage
             parameters:
-                -   in: path
-                    explode: false
-                    name: cartId
-                    required: true
-                    schema:
-                        description:
-                            Cart Id
-                        format: int64
-                        type: integer
-                    style: simple
+            -   $ref: "#/components/parameters/cartIdPathParam"
             responses:
                 200:
                     content:
@@ -4111,56 +4969,24 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["ShippingMethod"]
+            tags:
+            -   ShippingMethod
     /channels/by-externalReferenceCode/{channelExternalReferenceCode}/account/by-externalReferenceCode/{accountExternalReferenceCode}/carts:
         get:
             description:
-                Retrieves carts for specific account in the given channel.
+                Lists open carts (ORDER_STATUS_OPEN CommerceOrders) for the account, scoped to the channel, both addressed
+                by external reference code. Filterable by accountId, orderStatus, createDate, modifiedDate, orderDate, id,
+                orderId, account, author, externalReferenceCode, name, orderType, and purchaseOrderNumber via
+                CartEntityModel; searchable through the CommerceOrder index; pageable.
             operationId: getChannelByExternalReferenceCodeChannelExternalReferenceCodeAccountByExternalReferenceCodeAccountExternalReferenceCodeCartsPage
             parameters:
-                -   in: path
-                    explode: false
-                    name: accountExternalReferenceCode
-                    required: true
-                    schema:
-                        description:
-                            Account external reference code
-                        type: string
-                    style: simple
-                -   in: path
-                    explode: false
-                    name: channelExternalReferenceCode
-                    required: true
-                    schema:
-                        description:
-                            Channel external reference code
-                        type: string
-                    style: simple
-                -   in: query
-                    name: filter
-                    required: false
-                    schema:
-                        type: string
-                -   in: query
-                    name: page
-                    required: false
-                    schema:
-                        type: integer
-                -   in: query
-                    name: pageSize
-                    required: false
-                    schema:
-                        type: integer
-                -   in: query
-                    name: search
-                    required: false
-                    schema:
-                        type: string
-                -   in: query
-                    name: sort
-                    required: false
-                    schema:
-                        type: string
+            -   $ref: "#/components/parameters/accountExternalReferenceCodePathParam"
+            -   $ref: "#/components/parameters/channelExternalReferenceCodePathParam"
+            -   $ref: "#/components/parameters/filterQueryParam"
+            -   $ref: "#/components/parameters/pageQueryParam"
+            -   $ref: "#/components/parameters/pageSizeQueryParam"
+            -   $ref: "#/components/parameters/searchQueryParam"
+            -   $ref: "#/components/parameters/sortQueryParam"
             responses:
                 200:
                     content:
@@ -4206,22 +5032,16 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["Cart"]
+            tags:
+            -   Cart
     /channels/by-externalReferenceCode/{externalReferenceCode}/carts:
         post:
             description:
-                Creates a Cart.
+                Creates a new cart (CommerceOrder) under the channel addressed by external reference code, then applies
+                the provided Cart fields (account, currency, addresses, terms, items) through CommerceOrderService.
             operationId: postChannelCartByExternalReferenceCode
             parameters:
-                -   in: path
-                    explode: false
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        description:
-                            Channel external reference code
-                        type: string
-                    style: simple
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             requestBody:
                 content:
                     application/json:
@@ -4232,6 +5052,21 @@ paths:
                             $ref: "#/components/schemas/Cart"
                 required: true
             responses:
+                "403":
+                    content: &id026
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
+                "422":
+                    content: *id026
+                    description:
+                        Domain validation failed (for example, unknown skuId on a cart item, missing cross-reference, or
+                        quantity outside the configured Settings bounds).
                 201:
                     content:
                         application/json:
@@ -4275,58 +5110,24 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["Cart"]
+            tags:
+            -   Cart
     /channels/{channelId}/account/{accountId}/carts:
         get:
             description:
-                Retrieves carts for specific account in the given channel.
+                Lists open carts (ORDER_STATUS_OPEN CommerceOrders) for the account, scoped to the channel, both
+                addressed by ID. Filterable by accountId, orderStatus, createDate, modifiedDate, orderDate, id, orderId,
+                account, author, externalReferenceCode, name, orderType, and purchaseOrderNumber via CartEntityModel;
+                searchable through the CommerceOrder index; pageable.
             operationId: getChannelAccountCartsPage
             parameters:
-                -   in: path
-                    explode: false
-                    name: accountId
-                    required: true
-                    schema:
-                        description:
-                            Account Id
-                        format: int64
-                        type: integer
-                    style: simple
-                -   in: path
-                    explode: false
-                    name: channelId
-                    required: true
-                    schema:
-                        description:
-                            Channel Id
-                        format: int64
-                        type: integer
-                    style: simple
-                -   in: query
-                    name: filter
-                    required: false
-                    schema:
-                        type: string
-                -   in: query
-                    name: page
-                    required: false
-                    schema:
-                        type: integer
-                -   in: query
-                    name: pageSize
-                    required: false
-                    schema:
-                        type: integer
-                -   in: query
-                    name: search
-                    required: false
-                    schema:
-                        type: string
-                -   in: query
-                    name: sort
-                    required: false
-                    schema:
-                        type: string
+            -   $ref: "#/components/parameters/accountIdPathParam"
+            -   $ref: "#/components/parameters/channelIdPathParam"
+            -   $ref: "#/components/parameters/filterQueryParam"
+            -   $ref: "#/components/parameters/pageQueryParam"
+            -   $ref: "#/components/parameters/pageSizeQueryParam"
+            -   $ref: "#/components/parameters/searchQueryParam"
+            -   $ref: "#/components/parameters/sortQueryParam"
             responses:
                 200:
                     content:
@@ -4372,48 +5173,21 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["Cart"]
+            tags:
+            -   Cart
     /channels/{channelId}/carts:
         get:
             description:
-                Retrieves carts in the given channel.
+                Lists open carts (ORDER_STATUS_OPEN CommerceOrders) scoped to the channel addressed by ID. Filterable,
+                searchable, and pageable through CartEntityModel.
             operationId: getChannelCartsPage
             parameters:
-                -   in: path
-                    explode: false
-                    name: channelId
-                    required: true
-                    schema:
-                        description:
-                            Channel Id
-                        format: int64
-                        type: integer
-                    style: simple
-                -   in: query
-                    name: filter
-                    required: false
-                    schema:
-                        type: string
-                -   in: query
-                    name: page
-                    required: false
-                    schema:
-                        type: integer
-                -   in: query
-                    name: pageSize
-                    required: false
-                    schema:
-                        type: integer
-                -   in: query
-                    name: search
-                    required: false
-                    schema:
-                        type: string
-                -   in: query
-                    name: sort
-                    required: false
-                    schema:
-                        type: string
+            -   $ref: "#/components/parameters/channelIdPathParam"
+            -   $ref: "#/components/parameters/filterQueryParam"
+            -   $ref: "#/components/parameters/pageQueryParam"
+            -   $ref: "#/components/parameters/pageSizeQueryParam"
+            -   $ref: "#/components/parameters/searchQueryParam"
+            -   $ref: "#/components/parameters/sortQueryParam"
             responses:
                 200:
                     content:
@@ -4459,20 +5233,15 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
-            tags: ["Cart"]
+            tags:
+            -   Cart
         post:
+            description:
+                Creates a new cart (CommerceOrder) under the channel addressed by ID, then applies the provided Cart
+                fields (account, currency, addresses, terms, items) through CommerceOrderService.
             operationId: postChannelCart
             parameters:
-                -   in: path
-                    explode: false
-                    name: channelId
-                    required: true
-                    schema:
-                        description:
-                            Channel Id
-                        format: int64
-                        type: integer
-                    style: simple
+            -   $ref: "#/components/parameters/channelIdPathParam"
             requestBody:
                 content:
                     application/json:
@@ -4483,6 +5252,17 @@ paths:
                             $ref: "#/components/schemas/Cart"
                 required: true
             responses:
+                "422":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Domain validation failed (for example, unknown skuId on a cart item, missing cross-reference, or
+                        quantity outside the configured Settings bounds).
                 201:
                     content:
                         application/json:
@@ -4527,4 +5307,42 @@ paths:
                     description:
                         Unexpected error
             summary: Creates a Cart.
-            tags: ["Cart"]
+            tags:
+            -   Cart
+tags:
+-   description:
+        Billing and shipping addresses (CommerceAddress) attached to a cart, exposed as nested read-only views off the
+        parent cart.
+    name: Address
+-   description:
+        File attachments (CommerceOrderAttachment) uploaded against a cart -- invoices, signed quotes, spec sheets, and
+        similar buyer-facing documents.
+    name: Attachment
+-   description:
+        Top-level shopping cart (CommerceOrder while in ORDER_STATUS_OPEN). Carries items, addresses, applied coupon,
+        terms, and the workflow status that moves it to checkout.
+    name: Cart
+-   description:
+        Buyer or staff notes (CommerceOrderNote) attached to a cart. Restricted notes are visible only to users with
+        MANAGE_COMMERCE_ORDER_NOTES.
+    name: CartComment
+-   description:
+        Cart line items (CommerceOrderItem). Each item binds a purchasable SKU and quantity, with unit pricing, options,
+        settings, and optional per-item shipping address.
+    name: CartItem
+-   description:
+        Workflow and status transitions available on a cart, including request-quote, submit, quick-checkout, checkout,
+        and any active workflow task transitions.
+    name: CartTransition
+-   description:
+        Read-only enumeration of payment methods (CommercePaymentMethodGroupRel) qualified for the cart's billing
+        address, order type, and subscription eligibility.
+    name: PaymentMethod
+-   description:
+        Read-only enumeration of shipping methods (CommerceShippingMethod) qualified for the cart's shipping address
+        country, with computed shipping options.
+    name: ShippingMethod
+-   description:
+        Delivery and payment terms (CommerceTermEntry) qualified for the cart's order type and the currently selected
+        shipping or payment method.
+    name: Term
