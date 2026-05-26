@@ -1279,14 +1279,13 @@ info:
         /carts/by-externalReferenceCode/<externalReferenceCode>). The ERC is the integration-supplied idempotency key,
         unique per resource within the company; POST against the by-externalReferenceCode path is upsert. PATCH applies
         JSON Merge Patch semantics (only supplied fields are modified); PUT replaces the resource. All mutating
-        operations require the cart to be in ORDER_STATUS_OPEN; checkout transitions the cart to
-        ORDER_STATUS_IN_PROGRESS via the configured CommerceOrderEngine and validator chain. -- Common workflows: Create
-        and populate a cart -- (1) POST /channels/<channelId>/carts (or
-        /channels/by-externalReferenceCode/<externalReferenceCode>/carts) with accountId (or
-        accountExternalReferenceCode) and currencyCode to create a new CommerceOrder in ORDER_STATUS_OPEN; (2) POST
-        /carts/<cartId>/items per line item with skuId and quantity to add CartItem rows; (3) PATCH /carts/<cartId> to
-        set billing and shipping addresses (billingAddressId/shippingAddressId or their ERCs), delivery term
-        (deliveryTermId), payment term (paymentTermId), and order type (orderTypeId); (4) POST
+        operations require the cart to be in the Open state; checkout transitions the cart to the In Progress state via
+        the configured CommerceOrderEngine and validator chain. -- Common workflows: Create and populate a cart -- (1)
+        POST /channels/<channelId>/carts (or /channels/by-externalReferenceCode/<externalReferenceCode>/carts) with
+        accountId (or accountExternalReferenceCode) and currencyCode to create a new CommerceOrder in the Open state;
+        (2) POST /carts/<cartId>/items per line item with skuId and quantity to add CartItem rows; (3) PATCH
+        /carts/<cartId> to set billing and shipping addresses (billingAddressId/shippingAddressId or their ERCs),
+        delivery term (deliveryTermId), payment term (paymentTermId), and order type (orderTypeId); (4) POST
         /carts/<cartId>/coupon-code with a code to apply a promotional discount. -- Apply terms and choose
         payment/shipping -- (1) GET /carts/<cartId>/delivery-terms and /carts/<cartId>/payment-terms to list the Term
         entries qualified for the current cart configuration; (2) GET /carts/<cartId>/shipping-methods and
@@ -1296,23 +1295,23 @@ info:
         /carts/<cartId>/cart-transitions to enumerate the available transitions (request-quote, submit, quick-checkout,
         checkout, or workflow task transitions) given the current order state; (2) POST /carts/<cartId>/cart-transitions
         with a CartTransition naming the transition to fire it; (3) Or POST /carts/<cartId>/checkout to run the
-        validator chain (billing address, shipping method, payment method, items) and transition the cart to
-        ORDER_STATUS_IN_PROGRESS; (4) GET /carts/<cartId>/payment-url to retrieve the encrypted redirect URL into the
-        payment gateway. -- Annotate a cart and attach files -- (1) POST /carts/<cartId>/comments with
-        CartComment.content and restricted to add a CommerceOrderNote (restricted notes are visible only to users with
-        MANAGE_COMMERCE_ORDER_NOTES); (2) POST /carts/<cartId>/attachments/by-base64 with AttachmentBase64
-        (base64-encoded file plus title, type, restricted) to upload a CommerceOrderAttachment file linked to the cart.
-        -- Resolve a cart for a buyer in a channel -- (1) GET /channels/<channelId>/account/<accountId>/carts (or the
-        by-externalReferenceCode variants) to list open carts for an account in a channel, with OData filter and search;
-        (2) GET /carts/<cartId> or /carts/by-externalReferenceCode/<externalReferenceCode> to retrieve a single cart
-        with summary, items, addresses, and status. A Java client JAR is available for use with the group ID
-        'com.liferay', artifact ID 'com.liferay.headless.commerce.delivery.cart.client', and version '4.0.55'."
+        validator chain (billing address, shipping method, payment method, items) and transition the cart to the In
+        Progress state; (4) GET /carts/<cartId>/payment-url to retrieve the encrypted redirect URL into the payment
+        gateway. -- Annotate a cart and attach files -- (1) POST /carts/<cartId>/comments with CartComment.content and
+        restricted to add a CommerceOrderNote (restricted notes are visible only to users with the manage-comments
+        permission); (2) POST /carts/<cartId>/attachments/by-base64 with AttachmentBase64 (base64-encoded file plus
+        title, type, restricted) to upload a CommerceOrderAttachment file linked to the cart. -- Resolve a cart for a
+        buyer in a channel -- (1) GET /channels/<channelId>/account/<accountId>/carts (or the by-externalReferenceCode
+        variants) to list open carts for an account in a channel, with OData filter and search; (2) GET /carts/<cartId>
+        or /carts/by-externalReferenceCode/<externalReferenceCode> to retrieve a single cart with summary, items,
+        addresses, and status. A Java client JAR is available for use with the group ID 'com.liferay', artifact ID
+        'com.liferay.headless.commerce.delivery.cart.client', and version '4.0.55'."
     license:
         name: Apache 2.0
         url: http://www.apache.org/licenses/LICENSE-2.0.html
     title: Liferay Commerce Delivery Cart API
     version: v1.0
-openapi: 3.0.1
+openapi: 3.0.0
 paths:
     /cart-comments/by-externalReferenceCode/{externalReferenceCode}:
         delete:
@@ -1346,7 +1345,7 @@ paths:
             tags:
             - CartComment
         get:
-            description: Retrieves a single CommerceOrderNote by external reference code via CommerceOrderNoteService.getCommerceOrderNote. Restricted notes are returned only to users with MANAGE_COMMERCE_ORDER_NOTES permission on the parent cart.
+            description: Retrieves a single CommerceOrderNote by external reference code via CommerceOrderNoteService.getCommerceOrderNote. Restricted notes are returned only to users with the manage-comments permission on the parent cart.
             operationId: getCartCommentByExternalReferenceCode
             parameters:
             -   $ref: "#/components/parameters/externalReferenceCodePathParam"
@@ -1567,7 +1566,7 @@ paths:
             tags:
             - CartComment
         get:
-            description: Retrieves a single CommerceOrderNote by ID via CommerceOrderNoteService.getCommerceOrderNote. Restricted notes are returned only to users with MANAGE_COMMERCE_ORDER_NOTES on the parent cart.
+            description: Retrieves a single CommerceOrderNote by ID via CommerceOrderNoteService.getCommerceOrderNote. Restricted notes are returned only to users with the manage-comments permission on the parent cart.
             operationId: getCartComment
             parameters:
             -   $ref: "#/components/parameters/cartCommentIdPathParam"
@@ -2182,7 +2181,7 @@ paths:
             - CartItem
     /carts/by-externalReferenceCode/{externalReferenceCode}:
         delete:
-            description: Deletes the cart (CommerceOrder) addressed by external reference code via CommerceOrderService.deleteCommerceOrder. The cart must be in ORDER_STATUS_OPEN; deleting a placed order raises CommerceOrderStatusException.
+            description: Deletes the cart (CommerceOrder) addressed by external reference code via CommerceOrderService.deleteCommerceOrder. The cart must be in the Open state; deleting a placed order raises CommerceOrderStatusException.
             parameters:
             -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             responses:
@@ -2197,7 +2196,7 @@ paths:
                     description: The authenticated user lacks permission for the requested action on this cart.
                 "409":
                     content: *id009
-                    description: The cart is not in ORDER_STATUS_OPEN, the requested transition is not currently allowed, or a workflow state conflict occurred.
+                    description: The cart is not in the Open state, the requested transition is not currently allowed, or a workflow state conflict occurred.
                 204:
                     description: No content
                 401:
@@ -2264,7 +2263,7 @@ paths:
             tags:
             - Cart
         patch:
-            description: Updates the cart addressed by external reference code with JSON Merge Patch semantics (only supplied fields are modified). Mutates shipping/billing addresses (by ID or ERC), delivery/payment terms, order type, coupon, shipping method, and payment method. Requires ORDER_STATUS_OPEN; raises CommerceOrderStatusException if the cart has been placed.
+            description: Updates the cart addressed by external reference code with JSON Merge Patch semantics (only supplied fields are modified). Mutates shipping/billing addresses (by ID or ERC), delivery/payment terms, order type, coupon, shipping method, and payment method. Requires the cart to be in the Open state; raises CommerceOrderStatusException if the cart has been placed.
             parameters:
             -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             requestBody:
@@ -2288,7 +2287,7 @@ paths:
                     description: The authenticated user lacks permission for the requested action on this cart.
                 "409":
                     content: *id010
-                    description: The cart is not in ORDER_STATUS_OPEN, the requested transition is not currently allowed, or a workflow state conflict occurred.
+                    description: The cart is not in the Open state, the requested transition is not currently allowed, or a workflow state conflict occurred.
                 "422":
                     content: *id010
                     description: Domain validation failed (for example, unknown skuId on a cart item, missing cross-reference, or quantity outside the configured Settings bounds).
@@ -2334,7 +2333,7 @@ paths:
             tags:
             - Cart
         put:
-            description: Replaces the cart addressed by external reference code via CommerceOrderService. PUT is upsert when the externalReferenceCode is unknown; the cart must be (or become) in ORDER_STATUS_OPEN.
+            description: Replaces the cart addressed by external reference code via CommerceOrderService. PUT is upsert when the externalReferenceCode is unknown; the cart must be (or become) in the Open state.
             parameters:
             -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             requestBody:
@@ -2358,7 +2357,7 @@ paths:
                     description: The authenticated user lacks permission for the requested action on this cart.
                 "409":
                     content: *id011
-                    description: The cart is not in ORDER_STATUS_OPEN, the requested transition is not currently allowed, or a workflow state conflict occurred.
+                    description: The cart is not in the Open state, the requested transition is not currently allowed, or a workflow state conflict occurred.
                 "422":
                     content: *id011
                     description: Domain validation failed (for example, unknown skuId on a cart item, missing cross-reference, or quantity outside the configured Settings bounds).
@@ -2458,7 +2457,7 @@ paths:
             - Attachment
     /carts/by-externalReferenceCode/{externalReferenceCode}/attachments/by-base64:
         post:
-            description: Creates a CommerceOrderAttachment from a base64-encoded payload (AttachmentBase64) and links it to the cart addressed by external reference code. When feature flag LPD-6252 is enabled the file is stored as a FileEntry via CommerceOrderService.addAttachmentFileEntry, otherwise via CommerceOrderAttachmentService.addCommerceOrderAttachment.
+            description: Creates a CommerceOrderAttachment from a base64-encoded payload (AttachmentBase64) and links it to the cart addressed by external reference code. The file is stored either as a dedicated attachment record or as a document-library file entry depending on the active attachment-storage configuration.
             parameters:
             -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             requestBody:
@@ -2625,7 +2624,7 @@ paths:
             - Address
     /carts/by-externalReferenceCode/{externalReferenceCode}/checkout:
         post:
-            description: Runs the checkout validator chain against the cart addressed by external reference code (billing address, shipping method, payment method, items) via CommerceOrderEngine and transitions the cart from ORDER_STATUS_OPEN to ORDER_STATUS_IN_PROGRESS. Synchronous; returns the updated cart on success.
+            description: Runs the checkout validator chain against the cart addressed by external reference code (billing address, shipping method, payment method, items) via CommerceOrderEngine and transitions the cart from the Open state to the In Progress state. Synchronous; returns the updated cart on success.
             parameters:
             -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             responses:
@@ -2640,7 +2639,7 @@ paths:
                     description: The authenticated user lacks permission for the requested action on this cart.
                 "409":
                     content: *id013
-                    description: The cart is not in ORDER_STATUS_OPEN, the requested transition is not currently allowed, or a workflow state conflict occurred.
+                    description: The cart is not in the Open state, the requested transition is not currently allowed, or a workflow state conflict occurred.
                 "422":
                     content: *id013
                     description: Domain validation failed (for example, unknown skuId on a cart item, missing cross-reference, or quantity outside the configured Settings bounds).
@@ -2656,7 +2655,7 @@ paths:
             - Cart
     /carts/by-externalReferenceCode/{externalReferenceCode}/comments:
         get:
-            description: Lists CommerceOrderNote entries attached to the cart addressed by external reference code via CommerceOrderNoteService.getCommerceOrderNotes. Restricted notes are filtered out unless the caller has MANAGE_COMMERCE_ORDER_NOTES on the cart.
+            description: Lists CommerceOrderNote entries attached to the cart addressed by external reference code via CommerceOrderNoteService.getCommerceOrderNotes. Restricted notes are filtered out unless the caller has the manage-comments permission on the cart.
             parameters:
             -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             -   $ref: "#/components/parameters/pageQueryParam"
@@ -2776,7 +2775,7 @@ paths:
             - CartComment
     /carts/by-externalReferenceCode/{externalReferenceCode}/coupon-code:
         post:
-            description: Applies a coupon code (CouponCode.code) to the cart addressed by external reference code via CommerceOrderService.applyCouponCode and returns the updated cart with the recalculated Summary. Requires ORDER_STATUS_OPEN.
+            description: Applies a coupon code (CouponCode.code) to the cart addressed by external reference code via CommerceOrderService.applyCouponCode and returns the updated cart with the recalculated Summary. Requires the cart to be in the Open state.
             parameters:
             -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             requestBody:
@@ -2800,7 +2799,7 @@ paths:
                     description: The authenticated user lacks permission for the requested action on this cart.
                 "409":
                     content: *id015
-                    description: The cart is not in ORDER_STATUS_OPEN, the requested transition is not currently allowed, or a workflow state conflict occurred.
+                    description: The cart is not in the Open state, the requested transition is not currently allowed, or a workflow state conflict occurred.
                 "422":
                     content: *id015
                     description: Domain validation failed (for example, unknown skuId on a cart item, missing cross-reference, or quantity outside the configured Settings bounds).
@@ -3008,7 +3007,7 @@ paths:
             - CartItem
     /carts/by-externalReferenceCode/{externalReferenceCode}/payment-methods:
         get:
-            description: Lists the CommercePaymentMethodGroupRel entries qualified for the cart addressed by external reference code -- filtered by billing address country, CommerceOrderType qualifiers, ActionKeys.VIEW permission, and subscription eligibility, sorted by CommercePaymentMethodPriorityComparator.
+            description: Lists the CommercePaymentMethodGroupRel entries qualified for the cart addressed by external reference code -- filtered by billing address country, CommerceOrderType qualifiers, view permission, and subscription eligibility, sorted by CommercePaymentMethodPriorityComparator.
             parameters:
             -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             responses:
@@ -3217,7 +3216,7 @@ paths:
             - ShippingMethod
     /carts/{cartId}:
         delete:
-            description: Deletes the cart (CommerceOrder) addressed by its internal identifier via CommerceOrderService.deleteCommerceOrder. The cart must be in ORDER_STATUS_OPEN.
+            description: Deletes the cart (CommerceOrder) addressed by its internal identifier via CommerceOrderService.deleteCommerceOrder. The cart must be in the Open state.
             operationId: deleteCart
             parameters:
             -   $ref: "#/components/parameters/cartIdPathParam"
@@ -3233,7 +3232,7 @@ paths:
                     description: The authenticated user lacks permission for the requested action on this cart.
                 "409":
                     content: *id017
-                    description: The cart is not in ORDER_STATUS_OPEN, the requested transition is not currently allowed, or a workflow state conflict occurred.
+                    description: The cart is not in the Open state, the requested transition is not currently allowed, or a workflow state conflict occurred.
                 204:
                     description: No content
                 401:
@@ -3301,7 +3300,7 @@ paths:
             tags:
             - Cart
         patch:
-            description: Updates the cart addressed by ID with JSON Merge Patch semantics (only supplied fields are modified). Mutates shipping/billing addresses, delivery/payment terms, order type, coupon, shipping method, and payment method. Requires ORDER_STATUS_OPEN; raises CommerceOrderStatusException if the cart has been placed.
+            description: Updates the cart addressed by ID with JSON Merge Patch semantics (only supplied fields are modified). Mutates shipping/billing addresses, delivery/payment terms, order type, coupon, shipping method, and payment method. Requires the cart to be in the Open state; raises CommerceOrderStatusException if the cart has been placed.
             operationId: patchCart
             parameters:
             -   $ref: "#/components/parameters/cartIdPathParam"
@@ -3326,7 +3325,7 @@ paths:
                     description: The authenticated user lacks permission for the requested action on this cart.
                 "409":
                     content: *id018
-                    description: The cart is not in ORDER_STATUS_OPEN, the requested transition is not currently allowed, or a workflow state conflict occurred.
+                    description: The cart is not in the Open state, the requested transition is not currently allowed, or a workflow state conflict occurred.
                 "422":
                     content: *id018
                     description: Domain validation failed (for example, unknown skuId on a cart item, missing cross-reference, or quantity outside the configured Settings bounds).
@@ -3372,7 +3371,7 @@ paths:
             tags:
             - Cart
         put:
-            description: Replaces the cart addressed by ID via CommerceOrderService; the cart must be in ORDER_STATUS_OPEN.
+            description: Replaces the cart addressed by ID via CommerceOrderService; the cart must be in the Open state.
             operationId: putCart
             parameters:
             -   $ref: "#/components/parameters/cartIdPathParam"
@@ -3397,7 +3396,7 @@ paths:
                     description: The authenticated user lacks permission for the requested action on this cart.
                 "409":
                     content: *id019
-                    description: The cart is not in ORDER_STATUS_OPEN, the requested transition is not currently allowed, or a workflow state conflict occurred.
+                    description: The cart is not in the Open state, the requested transition is not currently allowed, or a workflow state conflict occurred.
                 "422":
                     content: *id019
                     description: Domain validation failed (for example, unknown skuId on a cart item, missing cross-reference, or quantity outside the configured Settings bounds).
@@ -3497,7 +3496,7 @@ paths:
             - Attachment
     /carts/{cartId}/attachments/by-base64:
         post:
-            description: Creates a CommerceOrderAttachment from a base64-encoded payload (AttachmentBase64) and links it to the cart addressed by ID. When feature flag LPD-6252 is enabled the file is stored as a FileEntry, otherwise as a dedicated CommerceOrderAttachment record.
+            description: Creates a CommerceOrderAttachment from a base64-encoded payload (AttachmentBase64) and links it to the cart addressed by ID. The file is stored either as a dedicated attachment record or as a document-library file entry depending on the active attachment-storage configuration.
             parameters:
             -   $ref: "#/components/parameters/cartIdPathParam"
             requestBody:
@@ -3712,7 +3711,7 @@ paths:
             tags:
             - CartTransition
         post:
-            description: Fires a CartTransition by name against the cart addressed by ID. Workflow task names are dispatched through CommerceWorkflowedModelHelper; order-status names are dispatched through CommerceOrderEngine.transitionCommerceOrder. Requires ORDER_STATUS_OPEN and a valid combination of billing address, payment method, and items.
+            description: Fires a CartTransition by name against the cart addressed by ID. Workflow task names are dispatched through CommerceWorkflowedModelHelper; order-status names are dispatched through CommerceOrderEngine.transitionCommerceOrder. Requires the cart to be in the Open state and a valid combination of billing address, payment method, and items.
             operationId: postCartCartTransition
             parameters:
             -   $ref: "#/components/parameters/cartIdPathParam"
@@ -3737,7 +3736,7 @@ paths:
                     description: The authenticated user lacks permission for the requested action on this cart.
                 "409":
                     content: *id021
-                    description: The cart is not in ORDER_STATUS_OPEN, the requested transition is not currently allowed, or a workflow state conflict occurred.
+                    description: The cart is not in the Open state, the requested transition is not currently allowed, or a workflow state conflict occurred.
                 "422":
                     content: *id021
                     description: Domain validation failed (for example, unknown skuId on a cart item, missing cross-reference, or quantity outside the configured Settings bounds).
@@ -3753,7 +3752,7 @@ paths:
             - CartTransition
     /carts/{cartId}/checkout:
         post:
-            description: Runs the checkout validator chain against the cart addressed by ID (billing address, shipping method, payment method, items) via CommerceOrderEngine and transitions the cart from ORDER_STATUS_OPEN to ORDER_STATUS_IN_PROGRESS. Synchronous; returns the updated cart on success.
+            description: Runs the checkout validator chain against the cart addressed by ID (billing address, shipping method, payment method, items) via CommerceOrderEngine and transitions the cart from the Open state to the In Progress state. Synchronous; returns the updated cart on success.
             operationId: postCartCheckout
             parameters:
             -   $ref: "#/components/parameters/cartIdPathParam"
@@ -3769,7 +3768,7 @@ paths:
                     description: The authenticated user lacks permission for the requested action on this cart.
                 "409":
                     content: *id022
-                    description: The cart is not in ORDER_STATUS_OPEN, the requested transition is not currently allowed, or a workflow state conflict occurred.
+                    description: The cart is not in the Open state, the requested transition is not currently allowed, or a workflow state conflict occurred.
                 "422":
                     content: *id022
                     description: Domain validation failed (for example, unknown skuId on a cart item, missing cross-reference, or quantity outside the configured Settings bounds).
@@ -3785,7 +3784,7 @@ paths:
             - Cart
     /carts/{cartId}/comments:
         get:
-            description: Lists CommerceOrderNote entries attached to the cart addressed by ID via CommerceOrderNoteService.getCommerceOrderNotes. Restricted notes are filtered out unless the caller has MANAGE_COMMERCE_ORDER_NOTES on the cart.
+            description: Lists CommerceOrderNote entries attached to the cart addressed by ID via CommerceOrderNoteService.getCommerceOrderNotes. Restricted notes are filtered out unless the caller has the manage-comments permission on the cart.
             operationId: getCartCommentsPage
             parameters:
             -   $ref: "#/components/parameters/cartIdPathParam"
@@ -3907,7 +3906,7 @@ paths:
             - CartComment
     /carts/{cartId}/coupon-code:
         post:
-            description: Applies a coupon code (CouponCode.code) to the cart addressed by ID via CommerceOrderService.applyCouponCode and returns the updated cart with the recalculated Summary. Requires ORDER_STATUS_OPEN.
+            description: Applies a coupon code (CouponCode.code) to the cart addressed by ID via CommerceOrderService.applyCouponCode and returns the updated cart with the recalculated Summary. Requires the cart to be in the Open state.
             operationId: postCartCouponCode
             parameters:
             -   $ref: "#/components/parameters/cartIdPathParam"
@@ -3932,7 +3931,7 @@ paths:
                     description: The authenticated user lacks permission for the requested action on this cart.
                 "409":
                     content: *id024
-                    description: The cart is not in ORDER_STATUS_OPEN, the requested transition is not currently allowed, or a workflow state conflict occurred.
+                    description: The cart is not in the Open state, the requested transition is not currently allowed, or a workflow state conflict occurred.
                 "422":
                     content: *id024
                     description: Domain validation failed (for example, unknown skuId on a cart item, missing cross-reference, or quantity outside the configured Settings bounds).
@@ -4143,7 +4142,7 @@ paths:
             - CartItem
     /carts/{cartId}/payment-methods:
         get:
-            description: Lists the CommercePaymentMethodGroupRel entries qualified for the cart addressed by ID -- filtered by billing address country, CommerceOrderType qualifiers, ActionKeys.VIEW permission, and subscription eligibility, sorted by CommercePaymentMethodPriorityComparator.
+            description: Lists the CommercePaymentMethodGroupRel entries qualified for the cart addressed by ID -- filtered by billing address country, CommerceOrderType qualifiers, view permission, and subscription eligibility, sorted by CommercePaymentMethodPriorityComparator.
             operationId: getCartPaymentMethodsPage
             parameters:
             -   $ref: "#/components/parameters/cartIdPathParam"
@@ -4357,7 +4356,7 @@ paths:
             - ShippingMethod
     ? /channels/by-externalReferenceCode/{channelExternalReferenceCode}/account/by-externalReferenceCode/{accountExternalReferenceCode}/carts
     :   get:
-            description: Lists open carts (ORDER_STATUS_OPEN CommerceOrders) for the account, scoped to the channel, both addressed by external reference code. Filterable by accountId, orderStatus, createDate, modifiedDate, orderDate, id, orderId, account, author, externalReferenceCode, name, orderType, and purchaseOrderNumber via CartEntityModel; searchable through the CommerceOrder index; pageable.
+            description: Lists open carts (the Open state CommerceOrders) for the account, scoped to the channel, both addressed by external reference code. Filterable by accountId, orderStatus, createDate, modifiedDate, orderDate, id, orderId, account, author, externalReferenceCode, name, orderType, and purchaseOrderNumber via CartEntityModel; searchable through the CommerceOrder index; pageable.
             operationId: getChannelByExternalReferenceCodeChannelExternalReferenceCodeAccountByExternalReferenceCodeAccountExternalReferenceCodeCartsPage
             parameters:
             -   $ref: "#/components/parameters/accountExternalReferenceCodePathParam"
@@ -4480,7 +4479,7 @@ paths:
             - Cart
     /channels/{channelId}/account/{accountId}/carts:
         get:
-            description: Lists open carts (ORDER_STATUS_OPEN CommerceOrders) for the account, scoped to the channel, both addressed by ID. Filterable by accountId, orderStatus, createDate, modifiedDate, orderDate, id, orderId, account, author, externalReferenceCode, name, orderType, and purchaseOrderNumber via CartEntityModel; searchable through the CommerceOrder index; pageable.
+            description: Lists open carts (the Open state CommerceOrders) for the account, scoped to the channel, both addressed by ID. Filterable by accountId, orderStatus, createDate, modifiedDate, orderDate, id, orderId, account, author, externalReferenceCode, name, orderType, and purchaseOrderNumber via CartEntityModel; searchable through the CommerceOrder index; pageable.
             operationId: getChannelAccountCartsPage
             parameters:
             -   $ref: "#/components/parameters/accountIdPathParam"
@@ -4535,7 +4534,7 @@ paths:
             - Cart
     /channels/{channelId}/carts:
         get:
-            description: Lists open carts (ORDER_STATUS_OPEN CommerceOrders) scoped to the channel addressed by ID. Filterable, searchable, and pageable through CartEntityModel.
+            description: Lists open carts (the Open state CommerceOrders) scoped to the channel addressed by ID. Filterable, searchable, and pageable through CartEntityModel.
             operationId: getChannelCartsPage
             parameters:
             -   $ref: "#/components/parameters/channelIdPathParam"
@@ -4653,21 +4652,21 @@ paths:
             tags:
             - Cart
 tags:
--   description: Billing and shipping addresses (CommerceAddress) attached to a cart, exposed as nested read-only views off the parent cart.
+-   description: Billing and shipping addresses attached to a cart, returned as nested read-only views off the parent cart. The same address record can be reused across multiple carts for the same buyer account; addresses are addressed by ID or by external reference code.
     name: Address
--   description: File attachments (CommerceOrderAttachment) uploaded against a cart -- invoices, signed quotes, spec sheets, and similar buyer-facing documents.
+-   description: Files linked to a cart -- typically invoices, signed quotes, spec sheets, and similar buyer-facing documents. Created via the by-base64 endpoint; deleted via the matching ID or external-reference-code path. The download URL is computed at response time.
     name: Attachment
--   description: Top-level shopping cart (CommerceOrder while in ORDER_STATUS_OPEN). Carries items, addresses, applied coupon, terms, and the workflow status that moves it to checkout.
+-   description: Top-level shopping cart for the storefront buyer flow. Aggregates line items, billing and shipping addresses, applied coupon, delivery and payment terms, order type, currency, and the computed totals; the workflow status moves the cart from open through checkout into fulfillment.
     name: Cart
--   description: Buyer or staff notes (CommerceOrderNote) attached to a cart. Restricted notes are visible only to users with MANAGE_COMMERCE_ORDER_NOTES.
+-   description: Comments attached to a cart by buyers or back-office staff. Unrestricted comments are visible to the buyer; restricted comments are visible only to staff with the manage-comments permission on the parent cart.
     name: CartComment
--   description: Cart line items (CommerceOrderItem). Each item binds a purchasable SKU and quantity, with unit pricing, options, settings, and optional per-item shipping address.
+-   description: Cart line items. Each item binds a purchasable SKU and quantity to its parent cart, with unit pricing, selected options, the resolved unit-of-measure tier, an optional per-item shipping address, and any bundle children.
     name: CartItem
--   description: Workflow and status transitions available on a cart, including request-quote, submit, quick-checkout, checkout, and any active workflow task transitions.
+-   description: Workflow and order-status transitions available on a cart. Combines workflow task transitions (when the cart has an active workflow instance) with order-status transitions -- request-quote, submit, quick-checkout, and checkout -- derived from the cart's current state.
     name: CartTransition
--   description: Read-only enumeration of payment methods (CommercePaymentMethodGroupRel) qualified for the cart's billing address, order type, and subscription eligibility.
+-   description: Read-only enumeration of payment methods qualified for a cart. The methods returned depend on the cart's billing address country, the order-type qualifiers, the buyer's view permission, and subscription eligibility.
     name: PaymentMethod
--   description: Read-only enumeration of shipping methods (CommerceShippingMethod) qualified for the cart's shipping address country, with computed shipping options.
+-   description: Read-only enumeration of shipping methods qualified for a cart. The nested shipping options are computed by the active shipping engine against the cart's shipping address country.
     name: ShippingMethod
--   description: Delivery and payment terms (CommerceTermEntry) qualified for the cart's order type and the currently selected shipping or payment method.
+-   description: Delivery and payment terms qualified for a cart. The list is filtered by the cart's order type and by the currently selected shipping method (for delivery terms) or payment method (for payment terms).
     name: Term
