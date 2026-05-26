@@ -110,7 +110,7 @@ public abstract class BaseCartTransitionResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-delivery-cart/v1.0/carts/{cartId}/cart-transitions' -d $'{"comment": ___, "name": ___, "restricted": ___, "workflowTaskId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Fires a CartTransition by name against the cart addressed by ID. Workflow task names are dispatched through CommerceWorkflowedModelHelper; order-status names are dispatched through CommerceOrderEngine.transitionCommerceOrder. Requires ORDER_STATUS_OPEN and a valid combination of billing address, payment method, and items."
+		description = "Fires a CartTransition by name against the cart addressed by ID. Workflow task names are dispatched through CommerceWorkflowedModelHelper; order-status names are dispatched through CommerceOrderEngine.transitionCommerceOrder. Requires the cart to be in the Open state and a valid combination of billing address, payment method, and items."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -976,4 +976,4 @@ public abstract class BaseCartTransitionResourceImpl
 		LogFactoryUtil.getLog(BaseCartTransitionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-188593563
+// LIFERAY-REST-BUILDER-HASH:-2011599161

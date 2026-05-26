@@ -145,7 +145,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates a CommerceOrderAttachment from a base64-encoded payload (AttachmentBase64) and links it to the cart addressed by ID. When feature flag LPD-6252 is enabled the file is stored as a FileEntry, otherwise as a dedicated CommerceOrderAttachment record."
+		description = "Creates a CommerceOrderAttachment from a base64-encoded payload (AttachmentBase64) and links it to the cart addressed by ID. The file is stored either as a dedicated attachment record or as a document-library file entry depending on the active attachment-storage configuration."
 	)
 	public Attachment createCartAttachmentByBase64(
 			@GraphQLName("cartId") Long cartId,
@@ -182,7 +182,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates a CommerceOrderAttachment from a base64-encoded payload (AttachmentBase64) and links it to the cart addressed by external reference code. When feature flag LPD-6252 is enabled the file is stored as a FileEntry via CommerceOrderService.addAttachmentFileEntry, otherwise via CommerceOrderAttachmentService.addCommerceOrderAttachment."
+		description = "Creates a CommerceOrderAttachment from a base64-encoded payload (AttachmentBase64) and links it to the cart addressed by external reference code. The file is stored either as a dedicated attachment record or as a document-library file entry depending on the active attachment-storage configuration."
 	)
 	public Attachment createCartByExternalReferenceCodeAttachmentByBase64(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
@@ -199,7 +199,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the cart (CommerceOrder) addressed by its internal identifier via CommerceOrderService.deleteCommerceOrder. The cart must be in ORDER_STATUS_OPEN."
+		description = "Deletes the cart (CommerceOrder) addressed by its internal identifier via CommerceOrderService.deleteCommerceOrder. The cart must be in the Open state."
 	)
 	public Response deleteCart(@GraphQLName("cartId") Long cartId)
 		throws Exception {
@@ -223,7 +223,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the cart (CommerceOrder) addressed by external reference code via CommerceOrderService.deleteCommerceOrder. The cart must be in ORDER_STATUS_OPEN; deleting a placed order raises CommerceOrderStatusException."
+		description = "Deletes the cart (CommerceOrder) addressed by external reference code via CommerceOrderService.deleteCommerceOrder. The cart must be in the Open state; deleting a placed order raises CommerceOrderStatusException."
 	)
 	public Response deleteCartByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode)
@@ -237,7 +237,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Updates the cart addressed by ID with JSON Merge Patch semantics (only supplied fields are modified). Mutates shipping/billing addresses, delivery/payment terms, order type, coupon, shipping method, and payment method. Requires ORDER_STATUS_OPEN; raises CommerceOrderStatusException if the cart has been placed."
+		description = "Updates the cart addressed by ID with JSON Merge Patch semantics (only supplied fields are modified). Mutates shipping/billing addresses, delivery/payment terms, order type, coupon, shipping method, and payment method. Requires the cart to be in the Open state; raises CommerceOrderStatusException if the cart has been placed."
 	)
 	public Cart patchCart(
 			@GraphQLName("cartId") Long cartId, @GraphQLName("cart") Cart cart)
@@ -250,7 +250,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Updates the cart addressed by external reference code with JSON Merge Patch semantics (only supplied fields are modified). Mutates shipping/billing addresses (by ID or ERC), delivery/payment terms, order type, coupon, shipping method, and payment method. Requires ORDER_STATUS_OPEN; raises CommerceOrderStatusException if the cart has been placed."
+		description = "Updates the cart addressed by external reference code with JSON Merge Patch semantics (only supplied fields are modified). Mutates shipping/billing addresses (by ID or ERC), delivery/payment terms, order type, coupon, shipping method, and payment method. Requires the cart to be in the Open state; raises CommerceOrderStatusException if the cart has been placed."
 	)
 	public Cart patchCartByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
@@ -265,7 +265,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Runs the checkout validator chain against the cart addressed by external reference code (billing address, shipping method, payment method, items) via CommerceOrderEngine and transitions the cart from ORDER_STATUS_OPEN to ORDER_STATUS_IN_PROGRESS. Synchronous; returns the updated cart on success."
+		description = "Runs the checkout validator chain against the cart addressed by external reference code (billing address, shipping method, payment method, items) via CommerceOrderEngine and transitions the cart from the Open state to the In Progress state. Synchronous; returns the updated cart on success."
 	)
 	public Cart createCartByExternalReferenceCodeCheckout(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode)
@@ -280,7 +280,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Applies a coupon code (CouponCode.code) to the cart addressed by external reference code via CommerceOrderService.applyCouponCode and returns the updated cart with the recalculated Summary. Requires ORDER_STATUS_OPEN."
+		description = "Applies a coupon code (CouponCode.code) to the cart addressed by external reference code via CommerceOrderService.applyCouponCode and returns the updated cart with the recalculated Summary. Requires the cart to be in the Open state."
 	)
 	public Cart createCartByExternalReferenceCodeCouponCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
@@ -296,7 +296,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Runs the checkout validator chain against the cart addressed by ID (billing address, shipping method, payment method, items) via CommerceOrderEngine and transitions the cart from ORDER_STATUS_OPEN to ORDER_STATUS_IN_PROGRESS. Synchronous; returns the updated cart on success."
+		description = "Runs the checkout validator chain against the cart addressed by ID (billing address, shipping method, payment method, items) via CommerceOrderEngine and transitions the cart from the Open state to the In Progress state. Synchronous; returns the updated cart on success."
 	)
 	public Cart createCartCheckout(@GraphQLName("cartId") Long cartId)
 		throws Exception {
@@ -308,7 +308,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Applies a coupon code (CouponCode.code) to the cart addressed by ID via CommerceOrderService.applyCouponCode and returns the updated cart with the recalculated Summary. Requires ORDER_STATUS_OPEN."
+		description = "Applies a coupon code (CouponCode.code) to the cart addressed by ID via CommerceOrderService.applyCouponCode and returns the updated cart with the recalculated Summary. Requires the cart to be in the Open state."
 	)
 	public Cart createCartCouponCode(
 			@GraphQLName("cartId") Long cartId,
@@ -352,7 +352,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Replaces the cart addressed by ID via CommerceOrderService; the cart must be in ORDER_STATUS_OPEN."
+		description = "Replaces the cart addressed by ID via CommerceOrderService; the cart must be in the Open state."
 	)
 	public Cart updateCart(
 			@GraphQLName("cartId") Long cartId, @GraphQLName("cart") Cart cart)
@@ -377,7 +377,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Replaces the cart addressed by external reference code via CommerceOrderService. PUT is upsert when the externalReferenceCode is unknown; the cart must be (or become) in ORDER_STATUS_OPEN."
+		description = "Replaces the cart addressed by external reference code via CommerceOrderService. PUT is upsert when the externalReferenceCode is unknown; the cart must be (or become) in the Open state."
 	)
 	public Cart updateCartByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
@@ -694,7 +694,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Fires a CartTransition by name against the cart addressed by ID. Workflow task names are dispatched through CommerceWorkflowedModelHelper; order-status names are dispatched through CommerceOrderEngine.transitionCommerceOrder. Requires ORDER_STATUS_OPEN and a valid combination of billing address, payment method, and items."
+		description = "Fires a CartTransition by name against the cart addressed by ID. Workflow task names are dispatched through CommerceWorkflowedModelHelper; order-status names are dispatched through CommerceOrderEngine.transitionCommerceOrder. Requires the cart to be in the Open state and a valid combination of billing address, payment method, and items."
 	)
 	public CartTransition createCartCartTransition(
 			@GraphQLName("cartId") Long cartId,
@@ -986,4 +986,4 @@ public class Mutation {
 		_vulcanBatchEngineImportTaskResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1179959321
+// LIFERAY-REST-BUILDER-HASH:-28340376

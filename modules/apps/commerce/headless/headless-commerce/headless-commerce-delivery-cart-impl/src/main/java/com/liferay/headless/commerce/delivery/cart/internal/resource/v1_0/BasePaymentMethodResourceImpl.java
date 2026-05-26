@@ -74,7 +74,7 @@ public abstract class BasePaymentMethodResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-cart/v1.0/carts/by-externalReferenceCode/{externalReferenceCode}/payment-methods'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Lists the CommercePaymentMethodGroupRel entries qualified for the cart addressed by external reference code -- filtered by billing address country, CommerceOrderType qualifiers, ActionKeys.VIEW permission, and subscription eligibility, sorted by CommercePaymentMethodPriorityComparator."
+		description = "Lists the CommercePaymentMethodGroupRel entries qualified for the cart addressed by external reference code -- filtered by billing address country, CommerceOrderType qualifiers, view permission, and subscription eligibility, sorted by CommercePaymentMethodPriorityComparator."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -111,7 +111,7 @@ public abstract class BasePaymentMethodResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-cart/v1.0/carts/{cartId}/payment-methods'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Lists the CommercePaymentMethodGroupRel entries qualified for the cart addressed by ID -- filtered by billing address country, CommerceOrderType qualifiers, ActionKeys.VIEW permission, and subscription eligibility, sorted by CommercePaymentMethodPriorityComparator."
+		description = "Lists the CommercePaymentMethodGroupRel entries qualified for the cart addressed by ID -- filtered by billing address country, CommerceOrderType qualifiers, view permission, and subscription eligibility, sorted by CommercePaymentMethodPriorityComparator."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -885,4 +885,4 @@ public abstract class BasePaymentMethodResourceImpl
 		LogFactoryUtil.getLog(BasePaymentMethodResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1263732537
+// LIFERAY-REST-BUILDER-HASH:-2038097893

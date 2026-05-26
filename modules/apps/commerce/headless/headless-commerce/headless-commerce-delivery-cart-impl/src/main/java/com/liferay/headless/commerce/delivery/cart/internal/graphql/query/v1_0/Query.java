@@ -341,7 +341,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {channelAccountCarts(accountId: ___, channelId: ___, filter: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists open carts (ORDER_STATUS_OPEN CommerceOrders) for the account, scoped to the channel, both addressed by ID. Filterable by accountId, orderStatus, createDate, modifiedDate, orderDate, id, orderId, account, author, externalReferenceCode, name, orderType, and purchaseOrderNumber via CartEntityModel; searchable through the CommerceOrder index; pageable."
+		description = "Lists open carts (the Open state CommerceOrders) for the account, scoped to the channel, both addressed by ID. Filterable by accountId, orderStatus, createDate, modifiedDate, orderDate, id, orderId, account, author, externalReferenceCode, name, orderType, and purchaseOrderNumber via CartEntityModel; searchable through the CommerceOrder index; pageable."
 	)
 	public CartPage channelAccountCarts(
 			@GraphQLName("accountId") Long accountId,
@@ -370,7 +370,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {channelByExternalReferenceCodeChannelExternalReferenceCodeAccountByExternalReferenceCodeAccountExternalReferenceCodeCarts(accountExternalReferenceCode: ___, channelExternalReferenceCode: ___, filter: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists open carts (ORDER_STATUS_OPEN CommerceOrders) for the account, scoped to the channel, both addressed by external reference code. Filterable by accountId, orderStatus, createDate, modifiedDate, orderDate, id, orderId, account, author, externalReferenceCode, name, orderType, and purchaseOrderNumber via CartEntityModel; searchable through the CommerceOrder index; pageable."
+		description = "Lists open carts (the Open state CommerceOrders) for the account, scoped to the channel, both addressed by external reference code. Filterable by accountId, orderStatus, createDate, modifiedDate, orderDate, id, orderId, account, author, externalReferenceCode, name, orderType, and purchaseOrderNumber via CartEntityModel; searchable through the CommerceOrder index; pageable."
 	)
 	public CartPage
 			channelByExternalReferenceCodeChannelExternalReferenceCodeAccountByExternalReferenceCodeAccountExternalReferenceCodeCarts(
@@ -404,7 +404,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {channelCarts(channelId: ___, filter: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists open carts (ORDER_STATUS_OPEN CommerceOrders) scoped to the channel addressed by ID. Filterable, searchable, and pageable through CartEntityModel."
+		description = "Lists open carts (the Open state CommerceOrders) scoped to the channel addressed by ID. Filterable, searchable, and pageable through CartEntityModel."
 	)
 	public CartPage channelCarts(
 			@GraphQLName("channelId") Long channelId,
@@ -432,7 +432,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {cartByExternalReferenceCodeComments(externalReferenceCode: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists CommerceOrderNote entries attached to the cart addressed by external reference code via CommerceOrderNoteService.getCommerceOrderNotes. Restricted notes are filtered out unless the caller has MANAGE_COMMERCE_ORDER_NOTES on the cart."
+		description = "Lists CommerceOrderNote entries attached to the cart addressed by external reference code via CommerceOrderNoteService.getCommerceOrderNotes. Restricted notes are filtered out unless the caller has the manage-comments permission on the cart."
 	)
 	public CartCommentPage cartByExternalReferenceCodeComments(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
@@ -454,7 +454,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {cartComment(cartCommentId: ___){author, authorId, authorPortraitURL, content, externalReferenceCode, id, modifiedDate, orderId, restricted}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Retrieves a single CommerceOrderNote by ID via CommerceOrderNoteService.getCommerceOrderNote. Restricted notes are returned only to users with MANAGE_COMMERCE_ORDER_NOTES on the parent cart."
+		description = "Retrieves a single CommerceOrderNote by ID via CommerceOrderNoteService.getCommerceOrderNote. Restricted notes are returned only to users with the manage-comments permission on the parent cart."
 	)
 	public CartComment cartComment(
 			@GraphQLName("cartCommentId") Long cartCommentId)
@@ -473,7 +473,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {cartCommentByExternalReferenceCode(externalReferenceCode: ___){author, authorId, authorPortraitURL, content, externalReferenceCode, id, modifiedDate, orderId, restricted}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Retrieves a single CommerceOrderNote by external reference code via CommerceOrderNoteService.getCommerceOrderNote. Restricted notes are returned only to users with MANAGE_COMMERCE_ORDER_NOTES permission on the parent cart."
+		description = "Retrieves a single CommerceOrderNote by external reference code via CommerceOrderNoteService.getCommerceOrderNote. Restricted notes are returned only to users with the manage-comments permission on the parent cart."
 	)
 	public CartComment cartCommentByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode)
@@ -493,7 +493,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {cartComments(cartId: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists CommerceOrderNote entries attached to the cart addressed by ID via CommerceOrderNoteService.getCommerceOrderNotes. Restricted notes are filtered out unless the caller has MANAGE_COMMERCE_ORDER_NOTES on the cart."
+		description = "Lists CommerceOrderNote entries attached to the cart addressed by ID via CommerceOrderNoteService.getCommerceOrderNotes. Restricted notes are filtered out unless the caller has the manage-comments permission on the cart."
 	)
 	public CartCommentPage cartComments(
 			@GraphQLName("cartId") Long cartId,
@@ -620,7 +620,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {cartByExternalReferenceCodePaymentMethods(externalReferenceCode: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the CommercePaymentMethodGroupRel entries qualified for the cart addressed by external reference code -- filtered by billing address country, CommerceOrderType qualifiers, ActionKeys.VIEW permission, and subscription eligibility, sorted by CommercePaymentMethodPriorityComparator."
+		description = "Lists the CommercePaymentMethodGroupRel entries qualified for the cart addressed by external reference code -- filtered by billing address country, CommerceOrderType qualifiers, view permission, and subscription eligibility, sorted by CommercePaymentMethodPriorityComparator."
 	)
 	public PaymentMethodPage cartByExternalReferenceCodePaymentMethods(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode)
@@ -641,7 +641,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {cartPaymentMethods(cartId: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Lists the CommercePaymentMethodGroupRel entries qualified for the cart addressed by ID -- filtered by billing address country, CommerceOrderType qualifiers, ActionKeys.VIEW permission, and subscription eligibility, sorted by CommercePaymentMethodPriorityComparator."
+		description = "Lists the CommercePaymentMethodGroupRel entries qualified for the cart addressed by ID -- filtered by billing address country, CommerceOrderType qualifiers, view permission, and subscription eligibility, sorted by CommercePaymentMethodPriorityComparator."
 	)
 	public PaymentMethodPage cartPaymentMethods(
 			@GraphQLName("cartId") Long cartId)
@@ -892,7 +892,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Retrieves a single CommerceOrderNote by external reference code via CommerceOrderNoteService.getCommerceOrderNote. Restricted notes are returned only to users with MANAGE_COMMERCE_ORDER_NOTES permission on the parent cart."
+			description = "Retrieves a single CommerceOrderNote by external reference code via CommerceOrderNoteService.getCommerceOrderNote. Restricted notes are returned only to users with the manage-comments permission on the parent cart."
 		)
 		public CartComment commentByExternalReferenceCode() throws Exception {
 			return _applyComponentServiceObjects(
@@ -915,7 +915,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Lists CommerceOrderNote entries attached to the cart addressed by ID via CommerceOrderNoteService.getCommerceOrderNotes. Restricted notes are filtered out unless the caller has MANAGE_COMMERCE_ORDER_NOTES on the cart."
+			description = "Lists CommerceOrderNote entries attached to the cart addressed by ID via CommerceOrderNoteService.getCommerceOrderNotes. Restricted notes are filtered out unless the caller has the manage-comments permission on the cart."
 		)
 		public CartCommentPage comments(
 				@GraphQLName("pageSize") int pageSize,
@@ -1018,7 +1018,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Lists the CommercePaymentMethodGroupRel entries qualified for the cart addressed by ID -- filtered by billing address country, CommerceOrderType qualifiers, ActionKeys.VIEW permission, and subscription eligibility, sorted by CommercePaymentMethodPriorityComparator."
+			description = "Lists the CommercePaymentMethodGroupRel entries qualified for the cart addressed by ID -- filtered by billing address country, CommerceOrderType qualifiers, view permission, and subscription eligibility, sorted by CommercePaymentMethodPriorityComparator."
 		)
 		public PaymentMethodPage paymentMethods() throws Exception {
 			return _applyComponentServiceObjects(
@@ -1232,7 +1232,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Lists CommerceOrderNote entries attached to the cart addressed by external reference code via CommerceOrderNoteService.getCommerceOrderNotes. Restricted notes are filtered out unless the caller has MANAGE_COMMERCE_ORDER_NOTES on the cart."
+			description = "Lists CommerceOrderNote entries attached to the cart addressed by external reference code via CommerceOrderNoteService.getCommerceOrderNotes. Restricted notes are filtered out unless the caller has the manage-comments permission on the cart."
 		)
 		public CartCommentPage byExternalReferenceCodeComments(
 				@GraphQLName("pageSize") int pageSize,
@@ -1293,7 +1293,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Lists the CommercePaymentMethodGroupRel entries qualified for the cart addressed by external reference code -- filtered by billing address country, CommerceOrderType qualifiers, ActionKeys.VIEW permission, and subscription eligibility, sorted by CommercePaymentMethodPriorityComparator."
+			description = "Lists the CommercePaymentMethodGroupRel entries qualified for the cart addressed by external reference code -- filtered by billing address country, CommerceOrderType qualifiers, view permission, and subscription eligibility, sorted by CommercePaymentMethodPriorityComparator."
 		)
 		public PaymentMethodPage byExternalReferenceCodePaymentMethods()
 			throws Exception {
@@ -1931,4 +1931,4 @@ public class Query {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1427521551
+// LIFERAY-REST-BUILDER-HASH:1941031105

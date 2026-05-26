@@ -280,7 +280,7 @@ public abstract class BaseAttachmentResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-delivery-cart/v1.0/carts/{cartId}/attachments/by-base64' -d $'{"attachment": ___, "externalReferenceCode": ___, "priority": ___, "restricted": ___, "title": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates a CommerceOrderAttachment from a base64-encoded payload (AttachmentBase64) and links it to the cart addressed by ID. When feature flag LPD-6252 is enabled the file is stored as a FileEntry, otherwise as a dedicated CommerceOrderAttachment record."
+		description = "Creates a CommerceOrderAttachment from a base64-encoded payload (AttachmentBase64) and links it to the cart addressed by ID. The file is stored either as a dedicated attachment record or as a document-library file entry depending on the active attachment-storage configuration."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -403,7 +403,7 @@ public abstract class BaseAttachmentResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-delivery-cart/v1.0/carts/by-externalReferenceCode/{externalReferenceCode}/attachments/by-base64' -d $'{"attachment": ___, "externalReferenceCode": ___, "priority": ___, "restricted": ___, "title": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates a CommerceOrderAttachment from a base64-encoded payload (AttachmentBase64) and links it to the cart addressed by external reference code. When feature flag LPD-6252 is enabled the file is stored as a FileEntry via CommerceOrderService.addAttachmentFileEntry, otherwise via CommerceOrderAttachmentService.addCommerceOrderAttachment."
+		description = "Creates a CommerceOrderAttachment from a base64-encoded payload (AttachmentBase64) and links it to the cart addressed by external reference code. The file is stored either as a dedicated attachment record or as a document-library file entry depending on the active attachment-storage configuration."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1108,4 +1108,4 @@ public abstract class BaseAttachmentResourceImpl
 		LogFactoryUtil.getLog(BaseAttachmentResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1829205269
+// LIFERAY-REST-BUILDER-HASH:-1305287034

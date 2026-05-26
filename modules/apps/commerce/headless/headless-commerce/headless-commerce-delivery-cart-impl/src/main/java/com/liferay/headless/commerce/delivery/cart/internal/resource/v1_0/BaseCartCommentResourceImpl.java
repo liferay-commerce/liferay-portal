@@ -185,7 +185,7 @@ public abstract class BaseCartCommentResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-cart/v1.0/carts/by-externalReferenceCode/{externalReferenceCode}/comments'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Lists CommerceOrderNote entries attached to the cart addressed by external reference code via CommerceOrderNoteService.getCommerceOrderNotes. Restricted notes are filtered out unless the caller has MANAGE_COMMERCE_ORDER_NOTES on the cart."
+		description = "Lists CommerceOrderNote entries attached to the cart addressed by external reference code via CommerceOrderNoteService.getCommerceOrderNotes. Restricted notes are filtered out unless the caller has the manage-comments permission on the cart."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -229,7 +229,7 @@ public abstract class BaseCartCommentResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-cart/v1.0/cart-comments/{cartCommentId}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieves a single CommerceOrderNote by ID via CommerceOrderNoteService.getCommerceOrderNote. Restricted notes are returned only to users with MANAGE_COMMERCE_ORDER_NOTES on the parent cart."
+		description = "Retrieves a single CommerceOrderNote by ID via CommerceOrderNoteService.getCommerceOrderNote. Restricted notes are returned only to users with the manage-comments permission on the parent cart."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -262,7 +262,7 @@ public abstract class BaseCartCommentResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-cart/v1.0/cart-comments/by-externalReferenceCode/{externalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieves a single CommerceOrderNote by external reference code via CommerceOrderNoteService.getCommerceOrderNote. Restricted notes are returned only to users with MANAGE_COMMERCE_ORDER_NOTES permission on the parent cart."
+		description = "Retrieves a single CommerceOrderNote by external reference code via CommerceOrderNoteService.getCommerceOrderNote. Restricted notes are returned only to users with the manage-comments permission on the parent cart."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -297,7 +297,7 @@ public abstract class BaseCartCommentResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-delivery-cart/v1.0/carts/{cartId}/comments'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Lists CommerceOrderNote entries attached to the cart addressed by ID via CommerceOrderNoteService.getCommerceOrderNotes. Restricted notes are filtered out unless the caller has MANAGE_COMMERCE_ORDER_NOTES on the cart."
+		description = "Lists CommerceOrderNote entries attached to the cart addressed by ID via CommerceOrderNoteService.getCommerceOrderNotes. Restricted notes are filtered out unless the caller has the manage-comments permission on the cart."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1400,4 +1400,4 @@ public abstract class BaseCartCommentResourceImpl
 		LogFactoryUtil.getLog(BaseCartCommentResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:656565890
+// LIFERAY-REST-BUILDER-HASH:-93774423
