@@ -42,7 +42,10 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("Payment")
+@GraphQLName(
+	description = "Payment entry produced by the commerce checkout and refund flows. A payment record captures the amount, currency, payment integration (money order, PayPal, Stripe, and similar), workflow status, related order or subscription, and the gateway transaction code. The schema is shared by payment and refund records, distinguished by the type field (0=Payment, 1=Refund).",
+	value = "Payment"
+)
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "Payment")
 public class Payment implements Serializable {
@@ -55,7 +58,9 @@ public class Payment implements Serializable {
 		return ObjectMapperUtil.unsafeReadValue(Payment.class, json);
 	}
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Map of HATEOAS actions available to the current user, keyed by action name (create, delete, get, update). Each value carries the href template and HTTP method, computed dynamically from user permissions. Read-only."
+	)
 	@Valid
 	public Map<String, Map<String, String>> getActions() {
 		if (_actionsSupplier != null) {
@@ -91,14 +96,19 @@ public class Payment implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Map of HATEOAS actions available to the current user, keyed by action name (create, delete, get, update). Each value carries the href template and HTTP method, computed dynamically from user permissions. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Map<String, Map<String, String>> actions;
 
 	@JsonIgnore
 	private Supplier<Map<String, Map<String, String>>> _actionsSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "101")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Monetary amount of the payment in the payment's currency, expressed as a decimal number. Tax handling matches the parent order or subscription.",
+		example = "101"
+	)
 	@Valid
 	public BigDecimal getAmount() {
 		if (_amountSupplier != null) {
@@ -133,14 +143,19 @@ public class Payment implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Monetary amount of the payment in the payment's currency, expressed as a decimal number. Tax handling matches the parent order or subscription."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected BigDecimal amount;
 
 	@JsonIgnore
 	private Supplier<BigDecimal> _amountSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "$ 101.00")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Localized, currency-formatted rendering of `amount`. Computed by the price formatter using the payment currency and the request locale; read-only.",
+		example = "$ 101.00"
+	)
 	public String getAmountFormatted() {
 		if (_amountFormattedSupplier != null) {
 			amountFormatted = _amountFormattedSupplier.get();
@@ -174,14 +189,18 @@ public class Payment implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Localized, currency-formatted rendering of `amount`. Computed by the price formatter using the payment currency and the request locale; read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String amountFormatted;
 
 	@JsonIgnore
 	private Supplier<String> _amountFormattedSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Display name of the user who created the payment entry. Read-only."
+	)
 	public String getAuthor() {
 		if (_authorSupplier != null) {
 			author = _authorSupplier.get();
@@ -215,14 +234,18 @@ public class Payment implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Display name of the user who created the payment entry. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String author;
 
 	@JsonIgnore
 	private Supplier<String> _authorSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "URL the payment gateway calls back to notify the portal of the payment outcome (server-to- server notification)."
+	)
 	public String getCallbackURL() {
 		if (_callbackURLSupplier != null) {
 			callbackURL = _callbackURLSupplier.get();
@@ -256,14 +279,18 @@ public class Payment implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "URL the payment gateway calls back to notify the portal of the payment outcome (server-to- server notification)."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String callbackURL;
 
 	@JsonIgnore
 	private Supplier<String> _callbackURLSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "URL the buyer is redirected to when the payment is cancelled at the gateway."
+	)
 	public String getCancelURL() {
 		if (_cancelURLSupplier != null) {
 			cancelURL = _cancelURLSupplier.get();
@@ -297,7 +324,9 @@ public class Payment implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "URL the buyer is redirected to when the payment is cancelled at the gateway."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String cancelURL;
 
@@ -305,7 +334,10 @@ public class Payment implements Serializable {
 	private Supplier<String> _cancelURLSupplier;
 
 	@DecimalMin("0")
-	@io.swagger.v3.oas.annotations.media.Schema(example = "30130")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Reference to the CommerceChannel entity (FK). Identifies the storefront channel that owns the payment.",
+		example = "30130"
+	)
 	public Long getChannelId() {
 		if (_channelIdSupplier != null) {
 			channelId = _channelIdSupplier.get();
@@ -339,14 +371,18 @@ public class Payment implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Reference to the CommerceChannel entity (FK). Identifies the storefront channel that owns the payment."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long channelId;
 
 	@JsonIgnore
 	private Supplier<Long> _channelIdSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Free-text note attached to the payment, surfaced in the admin UI for back-office annotations. Backed by the `note` column on CommercePaymentEntry."
+	)
 	public String getComment() {
 		if (_commentSupplier != null) {
 			comment = _commentSupplier.get();
@@ -380,14 +416,19 @@ public class Payment implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Free-text note attached to the payment, surfaced in the admin UI for back-office annotations. Backed by the `note` column on CommercePaymentEntry."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String comment;
 
 	@JsonIgnore
 	private Supplier<String> _commentSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "2023-12-01")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Date the payment was created, ISO 8601 (yyyy-MM-dd). Read-only.",
+		example = "2023-12-01"
+	)
 	public Date getCreateDate() {
 		if (_createDateSupplier != null) {
 			createDate = _createDateSupplier.get();
@@ -421,14 +462,19 @@ public class Payment implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Date the payment was created, ISO 8601 (yyyy-MM-dd). Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Date createDate;
 
 	@JsonIgnore
 	private Supplier<Date> _createDateSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "USD")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "ISO 4217 three-letter currency code (for example, USD, EUR). One of `currencyCode`, `currencyExternalReferenceCode`, or `currencyId` resolves the CommerceCurrency on write.",
+		example = "USD"
+	)
 	public String getCurrencyCode() {
 		if (_currencyCodeSupplier != null) {
 			currencyCode = _currencyCodeSupplier.get();
@@ -462,14 +508,19 @@ public class Payment implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "ISO 4217 three-letter currency code (for example, USD, EUR). One of `currencyCode`, `currencyExternalReferenceCode`, or `currencyId` resolves the CommerceCurrency on write."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String currencyCode;
 
 	@JsonIgnore
 	private Supplier<String> _currencyCodeSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "AAB-34098-789-N")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "External reference code of the CommerceCurrency entity. Alternative lookup key for resolving the currency on write.",
+		example = "AAB-34098-789-N"
+	)
 	public String getCurrencyExternalReferenceCode() {
 		if (_currencyExternalReferenceCodeSupplier != null) {
 			currencyExternalReferenceCode =
@@ -507,7 +558,9 @@ public class Payment implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "External reference code of the CommerceCurrency entity. Alternative lookup key for resolving the currency on write."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String currencyExternalReferenceCode;
 
@@ -515,7 +568,10 @@ public class Payment implements Serializable {
 	private Supplier<String> _currencyExternalReferenceCodeSupplier;
 
 	@DecimalMin("0")
-	@io.swagger.v3.oas.annotations.media.Schema(example = "30130")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Reference to the CommerceCurrency entity (FK). Alternative lookup key for resolving the currency on write.",
+		example = "30130"
+	)
 	public Long getCurrencyId() {
 		if (_currencyIdSupplier != null) {
 			currencyId = _currencyIdSupplier.get();
@@ -549,14 +605,18 @@ public class Payment implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Reference to the CommerceCurrency entity (FK). Alternative lookup key for resolving the currency on write."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long currencyId;
 
 	@JsonIgnore
 	private Supplier<Long> _currencyIdSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Error messages reported by the payment gateway during the transaction. Populated when the gateway returns a failure."
+	)
 	public String getErrorMessages() {
 		if (_errorMessagesSupplier != null) {
 			errorMessages = _errorMessagesSupplier.get();
@@ -590,14 +650,19 @@ public class Payment implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Error messages reported by the payment gateway during the transaction. Populated when the gateway returns a failure."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String errorMessages;
 
 	@JsonIgnore
 	private Supplier<String> _errorMessagesSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "AB-34098-789-N")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Idempotency key for create and update. Must be unique per payment within the company.",
+		example = "AB-34098-789-N"
+	)
 	public String getExternalReferenceCode() {
 		if (_externalReferenceCodeSupplier != null) {
 			externalReferenceCode = _externalReferenceCodeSupplier.get();
@@ -631,7 +696,9 @@ public class Payment implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Idempotency key for create and update. Must be unique per payment within the company."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String externalReferenceCode;
 
@@ -639,7 +706,10 @@ public class Payment implements Serializable {
 	private Supplier<String> _externalReferenceCodeSupplier;
 
 	@DecimalMin("0")
-	@io.swagger.v3.oas.annotations.media.Schema(example = "30130")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Internal numeric identifier (CommercePaymentEntryId). Server-assigned and stable across the payment's lifetime. Read-only.",
+		example = "30130"
+	)
 	public Long getId() {
 		if (_idSupplier != null) {
 			id = _idSupplier.get();
@@ -671,14 +741,19 @@ public class Payment implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Internal numeric identifier (CommercePaymentEntryId). Server-assigned and stable across the payment's lifetime. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long id;
 
 	@JsonIgnore
 	private Supplier<Long> _idSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "en_US")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Liferay locale identifier (for example, en_US, it_IT) of the buyer at the time of the payment. Used by the gateway to localize redirect pages.",
+		example = "en_US"
+	)
 	public String getLanguageId() {
 		if (_languageIdSupplier != null) {
 			languageId = _languageIdSupplier.get();
@@ -712,14 +787,18 @@ public class Payment implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Liferay locale identifier (for example, en_US, it_IT) of the buyer at the time of the payment. Used by the gateway to localize redirect pages."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String languageId;
 
 	@JsonIgnore
 	private Supplier<String> _languageIdSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Raw gateway payload (typically JSON or XML) captured from the payment integration for audit and replay."
+	)
 	public String getPayload() {
 		if (_payloadSupplier != null) {
 			payload = _payloadSupplier.get();
@@ -753,14 +832,19 @@ public class Payment implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Raw gateway payload (typically JSON or XML) captured from the payment integration for audit and replay."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String payload;
 
 	@JsonIgnore
 	private Supplier<String> _payloadSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "money-order")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Identifier of the payment integration in use (for example, money-order, paypal, stripe). Matches the OSGi `commerce.payment.engine.method.key` property of the registered integration.",
+		example = "money-order"
+	)
 	public String getPaymentIntegrationKey() {
 		if (_paymentIntegrationKeySupplier != null) {
 			paymentIntegrationKey = _paymentIntegrationKeySupplier.get();
@@ -794,7 +878,9 @@ public class Payment implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Identifier of the payment integration in use (for example, money-order, paypal, stripe). Matches the OSGi `commerce.payment.engine.method.key` property of the registered integration."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String paymentIntegrationKey;
 
@@ -802,7 +888,10 @@ public class Payment implements Serializable {
 	private Supplier<String> _paymentIntegrationKeySupplier;
 
 	@DecimalMin("0")
-	@io.swagger.v3.oas.annotations.media.Schema(example = "0")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Integer integration type, indicating how the gateway is invoked. Maps to CommercePaymentMethodConstants -- 0=Online (standard redirect or server-to-server), 1=Online Recurring (subscription-capable), 2=Offline (manual).",
+		example = "0"
+	)
 	public Integer getPaymentIntegrationType() {
 		if (_paymentIntegrationTypeSupplier != null) {
 			paymentIntegrationType = _paymentIntegrationTypeSupplier.get();
@@ -837,7 +926,9 @@ public class Payment implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Integer integration type, indicating how the gateway is invoked. Maps to CommercePaymentMethodConstants -- 0=Online (standard redirect or server-to-server), 1=Online Recurring (subscription-capable), 2=Offline (manual)."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Integer paymentIntegrationType;
 
@@ -845,7 +936,10 @@ public class Payment implements Serializable {
 	private Supplier<Integer> _paymentIntegrationTypeSupplier;
 
 	@DecimalMin("0")
-	@io.swagger.v3.oas.annotations.media.Schema(example = "0")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Integer workflow status of the payment. Maps to CommercePaymentEntryConstants which delegates to WorkflowConstants -- 0=Completed (Approved), 1=Pending, 2=Authorized (Draft), 4=Failed (Denied), 8=Cancelled (In Trash), 17=Refunded, 18=Created, 23=Not Required.",
+		example = "0"
+	)
 	public Integer getPaymentStatus() {
 		if (_paymentStatusSupplier != null) {
 			paymentStatus = _paymentStatusSupplier.get();
@@ -879,7 +973,9 @@ public class Payment implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Integer workflow status of the payment. Maps to CommercePaymentEntryConstants which delegates to WorkflowConstants -- 0=Completed (Approved), 1=Pending, 2=Authorized (Draft), 4=Failed (Denied), 8=Cancelled (In Trash), 17=Refunded, 18=Created, 23=Not Required."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Integer paymentStatus;
 
@@ -928,7 +1024,10 @@ public class Payment implements Serializable {
 	@JsonIgnore
 	private Supplier<Status> _paymentStatusStatusSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "product-defect")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Reason code for a refund (or, on a failed payment, the gateway-reported decline reason). Free text driven by the integration vocabulary (for example, product-defect, customer-request).",
+		example = "product-defect"
+	)
 	public String getReasonKey() {
 		if (_reasonKeySupplier != null) {
 			reasonKey = _reasonKeySupplier.get();
@@ -962,7 +1061,9 @@ public class Payment implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Reason code for a refund (or, on a failed payment, the gateway-reported decline reason). Free text driven by the integration vocabulary (for example, product-defect, customer-request)."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String reasonKey;
 
@@ -970,6 +1071,7 @@ public class Payment implements Serializable {
 	private Supplier<String> _reasonKeySupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Localized refund reason text. Map keys are locale codes (for example, en_US, it_IT); values are the translated strings. Read-only.",
 		example = "{en_US=Product Defect, hr_HR=Product Defect HR, hu_HU=Product Defect HU}"
 	)
 	@Valid
@@ -1007,14 +1109,18 @@ public class Payment implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Localized refund reason text. Map keys are locale codes (for example, en_US, it_IT); values are the translated strings. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Map<String, String> reasonName;
 
 	@JsonIgnore
 	private Supplier<Map<String, String>> _reasonNameSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "URL the buyer is redirected to after the gateway completes the transaction successfully."
+	)
 	public String getRedirectURL() {
 		if (_redirectURLSupplier != null) {
 			redirectURL = _redirectURLSupplier.get();
@@ -1048,7 +1154,9 @@ public class Payment implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "URL the buyer is redirected to after the gateway completes the transaction successfully."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String redirectURL;
 
@@ -1056,7 +1164,10 @@ public class Payment implements Serializable {
 	private Supplier<String> _redirectURLSupplier;
 
 	@DecimalMin("0")
-	@io.swagger.v3.oas.annotations.media.Schema(example = "30130")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Reference to the related entity (FK). Indexed as `classPK`; typically the CommerceOrderId of the order the payment funds, or the CommerceSubscriptionEntryId for a subscription renewal.",
+		example = "30130"
+	)
 	public Long getRelatedItemId() {
 		if (_relatedItemIdSupplier != null) {
 			relatedItemId = _relatedItemIdSupplier.get();
@@ -1090,7 +1201,9 @@ public class Payment implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Reference to the related entity (FK). Indexed as `classPK`; typically the CommerceOrderId of the order the payment funds, or the CommerceSubscriptionEntryId for a subscription renewal."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long relatedItemId;
 
@@ -1098,6 +1211,7 @@ public class Payment implements Serializable {
 	private Supplier<Long> _relatedItemIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Fully qualified class name of the related entity (for example, com.liferay.commerce.model.CommerceOrder). Resolved into a class name id on write.",
 		example = "com.liferay.commerce.model.CommerceOrder"
 	)
 	public String getRelatedItemName() {
@@ -1133,14 +1247,19 @@ public class Payment implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Fully qualified class name of the related entity (for example, com.liferay.commerce.model.CommerceOrder). Resolved into a class name id on write."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String relatedItemName;
 
 	@JsonIgnore
 	private Supplier<String> _relatedItemNameSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "Order")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Localized, human-readable label for `relatedItemName` (for example, Order). Read-only.",
+		example = "Order"
+	)
 	public String getRelatedItemNameLabel() {
 		if (_relatedItemNameLabelSupplier != null) {
 			relatedItemNameLabel = _relatedItemNameLabelSupplier.get();
@@ -1174,14 +1293,18 @@ public class Payment implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Localized, human-readable label for `relatedItemName` (for example, Order). Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String relatedItemNameLabel;
 
 	@JsonIgnore
 	private Supplier<String> _relatedItemNameLabelSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Identifier returned by the payment gateway for the transaction. Used for reconciliation, chargeback investigation, and refund linkage."
+	)
 	public String getTransactionCode() {
 		if (_transactionCodeSupplier != null) {
 			transactionCode = _transactionCodeSupplier.get();
@@ -1215,14 +1338,19 @@ public class Payment implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Identifier returned by the payment gateway for the transaction. Used for reconciliation, chargeback investigation, and refund linkage."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String transactionCode;
 
 	@JsonIgnore
 	private Supplier<String> _transactionCodeSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "0")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Integer payment type discriminator. Maps to CommercePaymentEntryConstants -- 0=Payment, 1=Refund. The `/refund` operations require type=1; a refund record points to the source payment via `relatedItemId`.",
+		example = "0"
+	)
 	public Integer getType() {
 		if (_typeSupplier != null) {
 			type = _typeSupplier.get();
@@ -1254,14 +1382,19 @@ public class Payment implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Integer payment type discriminator. Maps to CommercePaymentEntryConstants -- 0=Payment, 1=Refund. The `/refund` operations require type=1; a refund record points to the source payment via `relatedItemId`."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Integer type;
 
 	@JsonIgnore
 	private Supplier<Integer> _typeSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "Refund")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Localized, human-readable label for `type` (Payment or Refund). Read-only.",
+		example = "Refund"
+	)
 	public String getTypeLabel() {
 		if (_typeLabelSupplier != null) {
 			typeLabel = _typeLabelSupplier.get();
@@ -1295,7 +1428,9 @@ public class Payment implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Localized, human-readable label for `type` (Payment or Refund). Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String typeLabel;
 
@@ -1870,4 +2005,4 @@ public class Payment implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1598480191
+// LIFERAY-REST-BUILDER-HASH:1592762963

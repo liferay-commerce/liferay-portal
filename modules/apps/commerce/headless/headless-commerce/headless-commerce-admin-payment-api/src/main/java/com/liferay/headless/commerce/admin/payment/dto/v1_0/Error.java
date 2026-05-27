@@ -36,8 +36,12 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("Error")
+@GraphQLName(
+	description = "Error envelope returned by the API when a request fails. Carries the HTTP status, an internal error code, a developer-facing error description, and a human-readable message that names the offending input.",
+	value = "Error"
+)
 @io.swagger.v3.oas.annotations.media.Schema(
+	description = "Error envelope returned by the API when a request fails. Carries the HTTP status, an internal error code, a developer-facing error description, and a human-readable message that names the offending input.",
 	requiredProperties = {"errorCode", "errorDescription", "message", "status"}
 )
 @JsonFilter("Liferay.Vulcan")
@@ -97,6 +101,7 @@ public class Error implements Serializable {
 	private Supplier<Integer> _errorCodeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Developer-facing description of the error, typically naming the invalid field or the missing cross-reference.",
 		example = "Unable to find currency. Currency code should be expressed with 3-letter ISO 4217 format."
 	)
 	public String getErrorDescription() {
@@ -132,7 +137,9 @@ public class Error implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Developer-facing description of the error, typically naming the invalid field or the missing cross-reference."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	@NotEmpty
 	protected String errorDescription;
@@ -141,7 +148,8 @@ public class Error implements Serializable {
 	private Supplier<String> _errorDescriptionSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		example = "No CommerceCurrency exists with the key {groupId=41811, code=US Dollar}"
+		description = "Human-readable error message. May embed lookup keys that identify the offending entity.",
+		example = "No CommerceCurrency exists with the key (groupId=41811, code=US Dollar)"
 	)
 	public String getMessage() {
 		if (_messageSupplier != null) {
@@ -176,7 +184,9 @@ public class Error implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Human-readable error message. May embed lookup keys that identify the offending entity."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	@NotEmpty
 	protected String message;
@@ -412,4 +422,4 @@ public class Error implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1748889014
+// LIFERAY-REST-BUILDER-HASH:184944304
