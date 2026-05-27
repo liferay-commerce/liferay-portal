@@ -1134,7 +1134,8 @@ components:
                 Computed unit price snapshot for a cart item. Carries the base price, the promotional price, the
                 absolute and percentage discount levels, and the final price. The currency is inherited from the parent
                 cart; the price-on-application flag indicates the price is negotiated and not displayed on the
-                storefront.
+                storefront. All monetary amounts are per unit and tax-exclusive -- cart-level tax is computed by the
+                active tax engine and reported on the cart Summary (taxValue, total), not on this per-unit snapshot.
             properties:
                 currency:
                     description:
@@ -1143,7 +1144,8 @@ components:
                     type: string
                 discount:
                     description:
-                        Absolute discount amount applied to the unit price.
+                        Absolute discount amount applied to the unit price, expressed tax-exclusive in the cart
+                        currency.
                     example: 5.0
                     format: double
                     type: number
@@ -1183,7 +1185,8 @@ components:
                     type: number
                 finalPrice:
                     description:
-                        Unit price after all applicable discounts.
+                        Unit price after all applicable discounts, tax-exclusive in the cart currency. Multiply by the
+                        item quantity for the line subtotal; cart-level tax is reported on the cart Summary.
                     example: 45.0
                     format: double
                     type: number
@@ -1194,7 +1197,8 @@ components:
                     type: string
                 price:
                     description:
-                        Base catalog unit price before promotional or volume discounts.
+                        Base catalog unit price before promotional or volume discounts, tax-exclusive in the cart
+                        currency.
                     example: 50.0
                     format: double
                     type: number
@@ -1212,7 +1216,7 @@ components:
                     type: boolean
                 promoPrice:
                     description:
-                        Promotional unit price when a catalog promotion is active.
+                        Promotional unit price when a catalog promotion is active, tax-exclusive in the cart currency.
                     example: 45.0
                     format: double
                     type: number
@@ -1680,6 +1684,7 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Authentication information is missing or invalid
+            summary: Deletes a cart comment by external reference code.
             tags:
             -   CartComment
         get:
@@ -1744,6 +1749,7 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            summary: Gets a cart comment by external reference code.
             tags:
             -   CartComment
         patch:
@@ -1822,6 +1828,7 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            summary: Updates a cart comment by external reference code.
             tags:
             -   CartComment
         put:
@@ -1900,6 +1907,7 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            summary: Updates a cart comment by external reference code.
             tags:
             -   CartComment
     /cart-comments/{cartCommentId}:
@@ -2192,6 +2200,7 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Authentication information is missing or invalid
+            summary: Deletes a cart item by external reference code.
             tags:
             -   CartItem
         get:
@@ -2249,6 +2258,7 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            summary: Gets a cart item by external reference code.
             tags:
             -   CartItem
         patch:
@@ -2322,6 +2332,7 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            summary: Updates a cart item by external reference code.
             tags:
             -   CartItem
         put:
@@ -2394,6 +2405,7 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            summary: Updates a cart item by external reference code.
             tags:
             -   CartItem
     /cart-items/{cartItemId}:
@@ -2430,6 +2442,7 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Authentication information is missing or invalid
+            summary: Deletes a cart item by ID.
             tags:
             -   CartItem
         get:
@@ -2487,6 +2500,7 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            summary: Gets a cart item by ID.
             tags:
             -   CartItem
         patch:
@@ -2560,6 +2574,7 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            summary: Updates a cart item by ID.
             tags:
             -   CartItem
         put:
@@ -2632,6 +2647,7 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            summary: Updates a cart item by ID.
             tags:
             -   CartItem
     /carts/by-externalReferenceCode/{externalReferenceCode}:
@@ -2729,6 +2745,7 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            summary: Gets a cart by external reference code.
             tags:
             -   Cart
         patch:
@@ -3141,6 +3158,7 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            summary: Gets the billing address of a cart by external reference code.
             tags:
             -   Address
     /carts/by-externalReferenceCode/{externalReferenceCode}/checkout:
@@ -3180,6 +3198,7 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/Cart"
+            summary: Checks out a cart by external reference code.
             tags:
             -   Cart
     /carts/by-externalReferenceCode/{externalReferenceCode}/comments:
@@ -3398,6 +3417,7 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            summary: Applies a coupon code to a cart by external reference code.
             tags:
             -   Cart
     /carts/by-externalReferenceCode/{externalReferenceCode}/delivery-terms:
@@ -3452,6 +3472,7 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            summary: Gets a list of delivery terms available for a cart by external reference code.
             tags:
             -   Term
     /carts/by-externalReferenceCode/{externalReferenceCode}/items:
@@ -3512,6 +3533,7 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            summary: Gets a list of items in a cart by external reference code.
             tags:
             -   CartItem
         post:
@@ -3586,6 +3608,7 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            summary: Adds an item to a cart by external reference code.
             tags:
             -   CartItem
     /carts/by-externalReferenceCode/{externalReferenceCode}/payment-methods:
@@ -3639,6 +3662,7 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            summary: Gets a list of payment methods available for a cart by external reference code.
             tags:
             -   PaymentMethod
     /carts/by-externalReferenceCode/{externalReferenceCode}/payment-terms:
@@ -3693,6 +3717,7 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            summary: Gets a list of payment terms available for a cart by external reference code.
             tags:
             -   Term
     /carts/by-externalReferenceCode/{externalReferenceCode}/payment-url:
@@ -3709,6 +3734,7 @@ paths:
                         text/plain:
                             schema:
                                 type: string
+            summary: Gets the payment URL of a cart by external reference code.
             tags:
             -   Cart
     /carts/by-externalReferenceCode/{externalReferenceCode}/shipping-address:
@@ -3766,6 +3792,7 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            summary: Gets the shipping address of a cart by external reference code.
             tags:
             -   Address
     /carts/by-externalReferenceCode/{externalReferenceCode}/shipping-methods:
@@ -3821,6 +3848,7 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            summary: Gets a list of shipping methods available for a cart by external reference code.
             tags:
             -   ShippingMethod
     /carts/{cartId}:
@@ -3919,6 +3947,7 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            summary: Gets a cart by ID.
             tags:
             -   Cart
         patch:
@@ -4332,6 +4361,7 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            summary: Gets the billing address of a cart.
             tags:
             -   Address
     /carts/{cartId}/cart-transitions:
@@ -4386,6 +4416,7 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            summary: Gets a list of transitions available for a cart.
             tags:
             -   CartTransition
         post:
@@ -4435,6 +4466,7 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/CartTransition"
+            summary: Triggers a workflow or order-status transition on a cart.
             tags:
             -   CartTransition
     /carts/{cartId}/checkout:
@@ -4475,6 +4507,7 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/Cart"
+            summary: Checks out a cart.
             tags:
             -   Cart
     /carts/{cartId}/comments:
@@ -4696,6 +4729,7 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            summary: Applies a coupon code to a cart.
             tags:
             -   Cart
     /carts/{cartId}/delivery-terms:
@@ -4751,6 +4785,7 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            summary: Gets a list of delivery terms available for a cart.
             tags:
             -   Term
     /carts/{cartId}/items:
@@ -4811,6 +4846,7 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            summary: Gets a list of items in a cart.
             tags:
             -   CartItem
         post:
@@ -4886,6 +4922,7 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            summary: Adds an item to a cart.
             tags:
             -   CartItem
     /carts/{cartId}/payment-methods:
@@ -4940,6 +4977,7 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            summary: Gets a list of payment methods available for a cart.
             tags:
             -   PaymentMethod
     /carts/{cartId}/payment-terms:
@@ -4995,6 +5033,7 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            summary: Gets a list of payment terms available for a cart.
             tags:
             -   Term
     /carts/{cartId}/payment-url:
@@ -5012,6 +5051,7 @@ paths:
                         text/plain:
                             schema:
                                 type: string
+            summary: Gets the payment URL of a cart.
             tags:
             -   Cart
     /carts/{cartId}/shipping-address:
@@ -5070,6 +5110,7 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            summary: Gets the shipping address of a cart.
             tags:
             -   Address
     /carts/{cartId}/shipping-methods:
@@ -5125,6 +5166,7 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            summary: Gets a list of shipping methods available for a cart.
             tags:
             -   ShippingMethod
     ? /channels/by-externalReferenceCode/{channelExternalReferenceCode}/account/by-externalReferenceCode/{accountExternalReferenceCode}/carts
@@ -5266,6 +5308,7 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            summary: Creates a cart in a channel by external reference code.
             tags:
             -   Cart
     /channels/{channelId}/account/{accountId}/carts:
@@ -5329,6 +5372,7 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            summary: Gets a list of carts for an account in a channel.
             tags:
             -   Cart
     /channels/{channelId}/carts:
@@ -5389,6 +5433,7 @@ paths:
                                 $ref: "#/components/schemas/Error"
                     description:
                         Unexpected error
+            summary: Gets a list of carts in a channel.
             tags:
             -   Cart
         post:
@@ -5494,6 +5539,10 @@ tags:
         an active workflow instance) with order-status transitions -- request-quote, submit, quick-checkout, and
         checkout -- derived from the cart's current state.
     name: CartTransition
+-   description:
+        Promotional coupon codes applied to a cart. Applying a code through the coupon-code endpoint recalculates the
+        cart-level discounts; the currently applied code is reflected on the cart's couponCode field.
+    name: CouponCode
 -   description:
         Read-only enumeration of payment methods qualified for a cart. The methods returned depend on the cart's billing
         address country, the order-type qualifiers, the buyer's view permission, and subscription eligibility.
