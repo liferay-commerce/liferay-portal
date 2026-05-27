@@ -98,7 +98,8 @@ components:
             properties:
                 errorCode:
                     description:
-                        Internal error code mapping
+                        Internal error code that identifies the specific validation or lookup failure. Stable across
+                        releases for the same error condition.
                     example: 996
                     readOnly: true
                     type: integer
@@ -113,13 +114,12 @@ components:
                 message:
                     description:
                         Human-readable error message. May embed lookup keys that identify the offending entity.
-                    example: No CommerceCurrency exists with the key (groupId=41811, code=US
-                        Dollar)
+                    example: No currency exists with the key (companyId=41811, code=USD)
                     readOnly: true
                     type: string
                 status:
                     description:
-                        HTTP Status code
+                        HTTP status code returned with the response. Mirrors the numeric status of the response line.
                     example: 404
                     readOnly: true
                     type: integer
@@ -131,10 +131,10 @@ components:
             type: object
         Payment:
             description:
-                Payment entry produced by the commerce checkout and refund flows. A payment record captures the
-                amount, currency, payment integration (money order, PayPal, Stripe, and similar), workflow status,
-                related order or subscription, and the gateway transaction code. The schema is shared by payment and
-                refund records, distinguished by the type field (0=Payment, 1=Refund).
+                Payment or refund record produced by the commerce checkout and back-office flows. Captures the amount,
+                currency, payment integration, workflow status, related order or subscription, and the gateway
+                transaction code. The same schema is used for both kinds of record and is distinguished by the integer
+                `type` discriminator.
             properties:
                 actions:
                     additionalProperties:
@@ -142,43 +142,45 @@ components:
                             type: string
                         type: object
                     description:
-                        Map of HATEOAS actions available to the current user, keyed by action name (create, delete,
-                        get, update). Each value carries the href template and HTTP method, computed dynamically from
-                        user permissions. Read-only.
+                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
+                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     readOnly: true
                     type: object
                 amount:
                     description:
-                        Monetary amount of the payment in the payment's currency, expressed as a decimal number. Tax
-                        handling matches the parent order or subscription.
-                    example: 101
+                        Monetary amount of the payment in the payment's currency, expressed as a decimal number. Must
+                        be greater than zero on create. Tax handling matches the parent order or subscription.
+                    example: 10.1
                     format: bigdecimal
                     type: number
                 amountFormatted:
                     description:
                         Localized, currency-formatted rendering of `amount`. Computed by the price formatter using the
-                        payment currency and the request locale; read-only.
-                    example: $ 101.00
+                        payment currency and the request locale. Read-only.
+                    example: $10.10
                     readOnly: true
                     type: string
                 author:
                     description:
-                        Display name of the user who created the payment entry. Read-only.
+                        Full name of the user who created the payment record. Computed from the authenticated user at
+                        create time and stored alongside the record. Read-only.
+                    example: Liferay Administrator
                     readOnly: true
                     type: string
                 callbackURL:
                     description:
-                        URL the payment gateway calls back to notify the portal of the payment outcome (server-to-
-                        server notification).
+                        Server-to-server callback URL the payment gateway invokes to notify the portal of the payment
+                        outcome.
+                    example: https://example.com/payment/callback
                     type: string
                 cancelURL:
                     description:
-                        URL the buyer is redirected to when the payment is cancelled at the gateway.
+                        Frontend URL the buyer is redirected to when the payment is cancelled at the gateway.
+                    example: https://example.com/payment/cancel
                     type: string
                 channelId:
                     description:
-                        Reference to the CommerceChannel entity (FK). Identifies the storefront channel that owns the
-                        payment.
+                        Reference to the storefront channel that owns the payment (FK identifier).
                     example: 30130
                     format: int64
                     minimum: 0
@@ -186,39 +188,41 @@ components:
                 comment:
                     description:
                         Free-text note attached to the payment, surfaced in the admin UI for back-office annotations.
-                        Backed by the `note` column on CommercePaymentEntry.
+                    example: Manually verified offline payment.
                     type: string
                 createDate:
                     description:
-                        Date the payment was created, ISO 8601 (yyyy-MM-dd). Read-only.
-                    example: 2023-12-01
+                        Creation date of the payment in ISO 8601 (yyyy-MM-dd). Read-only; set when the record is first
+                        persisted. Sortable via the OData query parameter.
+                    example: 2017-07-21
                     format: date
                     readOnly: true
                     type: string
                 currencyCode:
                     description:
-                        ISO 4217 three-letter currency code (for example, USD, EUR). One of `currencyCode`,
-                        `currencyExternalReferenceCode`, or `currencyId` resolves the CommerceCurrency on write.
+                        ISO 4217 three-letter currency code. One of `currencyCode`, `currencyExternalReferenceCode`,
+                        or `currencyId` resolves the currency on write.
                     example: USD
                     type: string
                 currencyExternalReferenceCode:
                     description:
-                        External reference code of the CommerceCurrency entity. Alternative lookup key for resolving
-                        the currency on write.
-                    example: AAB-34098-789-N
+                        External reference code of the currency. Alternative lookup key for resolving the currency on
+                        write.
+                    example: AB-34098-789-N
                     type: string
                 currencyId:
                     description:
-                        Reference to the CommerceCurrency entity (FK). Alternative lookup key for resolving the
-                        currency on write.
+                        Reference to the currency (FK identifier). Alternative lookup key for resolving the currency
+                        on write.
                     example: 30130
                     format: int64
                     minimum: 0
                     type: integer
                 errorMessages:
                     description:
-                        Error messages reported by the payment gateway during the transaction. Populated when the
-                        gateway returns a failure.
+                        Error message returned by the payment gateway when the transaction fails. Populated by the
+                        integration on a failed authorization, capture, or refund.
+                    example: Card declined due to insufficient funds.
                     type: string
                 externalReferenceCode:
                     description:
@@ -227,8 +231,8 @@ components:
                     type: string
                 id:
                     description:
-                        Internal numeric identifier (CommercePaymentEntryId). Server-assigned and stable across the
-                        payment's lifetime. Read-only.
+                        Internal numeric identifier of the payment. Server-assigned and stable across the payment's
+                        lifetime. Read-only; sortable via the OData query parameter.
                     example: 30130
                     format: int64
                     minimum: 0
@@ -236,35 +240,34 @@ components:
                     type: integer
                 languageId:
                     description:
-                        Liferay locale identifier (for example, en_US, it_IT) of the buyer at the time of the
-                        payment. Used by the gateway to localize redirect pages.
+                        Liferay locale identifier of the buyer at the time of the payment. Used by the gateway to
+                        localize redirect pages.
                     example: en_US
                     type: string
                 payload:
                     description:
-                        Raw gateway payload (typically JSON or XML) captured from the payment integration for audit
-                        and replay.
+                        Raw gateway payload captured from the payment integration for audit and replay. The portal
+                        stores the value as supplied without parsing it.
+                    example: intent_id=pi_3O8L7v2eZvKYlo2C1pX2DV4z
                     type: string
                 paymentIntegrationKey:
                     description:
-                        Identifier of the payment integration in use (for example, money-order, paypal, stripe).
-                        Matches the OSGi `commerce.payment.engine.method.key` property of the registered integration.
+                        Identifier of the payment integration in use. Matches the registered integration's method key.
                     example: money-order
                     type: string
                 paymentIntegrationType:
                     description:
-                        Integer integration type, indicating how the gateway is invoked. Maps to
-                        CommercePaymentMethodConstants -- 0=Online (standard redirect or server-to-server), 1=Online
-                        Recurring (subscription-capable), 2=Offline (manual).
+                        Integer integration type indicating how the gateway is invoked. 0=Online Standard, 1=Online
+                        Redirect, 2=Offline. Must be zero or greater on create.
                     example: 0
                     format: int32
                     minimum: 0
                     type: integer
                 paymentStatus:
                     description:
-                        Integer workflow status of the payment. Maps to CommercePaymentEntryConstants which delegates
-                        to WorkflowConstants -- 0=Completed (Approved), 1=Pending, 2=Authorized (Draft), 4=Failed
-                        (Denied), 8=Cancelled (In Trash), 17=Refunded, 18=Created, 23=Not Required.
+                        Integer workflow status of the payment. 0=Completed, 1=Pending, 2=Authorized, 4=Failed,
+                        8=Cancelled, 17=Refunded, 18=Created, 23=Not Required. Forced to Pending on create; cannot be
+                        set to Refunded by the client. Filterable and sortable via the OData query parameter.
                     example: 0
                     format: int32
                     minimum: 0
@@ -274,16 +277,17 @@ components:
                     readOnly: true
                 reasonKey:
                     description:
-                        Reason code for a refund (or, on a failed payment, the gateway-reported decline reason). Free
-                        text driven by the integration vocabulary (for example, product-defect, customer-request).
+                        Reason code for a refund, or, on a failed payment, the gateway-reported decline reason. Free
+                        text driven by the integration vocabulary; on a refund record the value must resolve to a
+                        registered refund type. Filterable and sortable via the OData query parameter.
                     example: product-defect
                     type: string
                 reasonName:
                     additionalProperties:
                         type: string
                     description:
-                        Localized refund reason text. Map keys are locale codes (for example, en_US, it_IT); values
-                        are the translated strings. Read-only.
+                        Localized refund reason text. Map keys are locale codes; values are the translated strings.
+                        Computed from the registered refund type matching `reasonKey`. Read-only.
                     example:
                         en_US: Product Defect
                         hr_HR: Product Defect HR
@@ -292,68 +296,72 @@ components:
                     type: object
                 redirectURL:
                     description:
-                        URL the buyer is redirected to after the gateway completes the transaction successfully.
+                        Frontend URL the buyer is redirected to after the gateway completes the transaction
+                        successfully.
+                    example: https://example.com/payment/redirect
                     type: string
                 relatedItemId:
                     description:
-                        Reference to the related entity (FK). Indexed as `classPK`; typically the CommerceOrderId
-                        of the order the payment funds, or the CommerceSubscriptionEntryId for a subscription
-                        renewal.
-                    example: 30130
+                        Reference to the related entity (FK identifier). Typically the order the payment funds, or
+                        the source payment when this record is a refund. Filterable and sortable via the OData query
+                        parameter.
+                    example: 20078
                     format: int64
                     minimum: 0
                     type: integer
                 relatedItemName:
                     description:
-                        Fully qualified class name of the related entity (for example,
-                        com.liferay.commerce.model.CommerceOrder). Resolved into a class name id on write.
+                        Fully qualified class name of the related entity. Resolved into a class name identifier on
+                        write. For a refund record, must reference a payment.
                     example: com.liferay.commerce.model.CommerceOrder
                     type: string
                 relatedItemNameLabel:
                     description:
-                        Localized, human-readable label for `relatedItemName` (for example, Order). Read-only.
+                        Localized, human-readable label for the related entity. Read-only.
                     example: Order
                     type: string
                 transactionCode:
                     description:
                         Identifier returned by the payment gateway for the transaction. Used for reconciliation,
                         chargeback investigation, and refund linkage.
+                    example: txn-1A2B3C4D
                     type: string
                 type:
                     description:
-                        Integer payment type discriminator. Maps to CommercePaymentEntryConstants -- 0=Payment,
-                        1=Refund. The `/refund` operations require type=1; a refund record points to the source
-                        payment via `relatedItemId`.
+                        Integer payment type discriminator. 0=Payment, 1=Refund. The `/refund` operations require
+                        type=1; a refund record points to the source payment via `relatedItemId`. Filterable and
+                        sortable via the OData query parameter.
                     example: 0
                     format: int32
                     type: integer
                 typeLabel:
                     description:
-                        Localized, human-readable label for `type` (Payment or Refund). Read-only.
-                    example: Refund
+                        Localized, human-readable label for `type`. Read-only.
+                    example: Payment
                     readOnly: true
                     type: string
         Status:
             description:
-                Workflow status envelope attached to the payment, exposing the integer status code together with its
-                label and localized label. Read-only.
+                Payment status envelope. Exposes the integer status code together with the English label key and the
+                label rendered in the request locale. Read-only.
             properties:
                 code:
                     description:
-                        Integer payment status -- 0=Completed (Approved), 1=Pending, 2=Authorized (Draft), 4=Failed
-                        (Denied), 8=Cancelled (In Trash), 17=Refunded, 18=Created, 23=Not Required. Read-only.
+                        Integer payment status. 0=Completed, 1=Pending, 2=Authorized, 4=Failed, 8=Cancelled,
+                        17=Refunded, 18=Created, 23=Not Required. Read-only.
+                    example: 0
                     format: int32
                     readOnly: true
                     type: integer
                 label:
                     description:
-                        English language key for the status (for example, completed, pending, refunded).
-                    example: black
+                        English label key for the status. Stable identifier used to look up translations.
+                    example: completed
                     type: string
                 label_i18n:
                     description:
                         Localized rendering of `label` in the request locale.
-                    example: black
+                    example: Completed
                     type: string
             type: object
     securitySchemes:
