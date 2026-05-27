@@ -3047,62 +3047,62 @@ paths:
             summary: Creates an attachment related to a cart.
             tags:
             -   Attachment
-    ? /carts/by-externalReferenceCode/{externalReferenceCode}/attachments/by-externalReferenceCode/{attachmentExternalReferenceCode}
-    :   delete:
-        description:
-            Deletes the CommerceOrderAttachment addressed by its external reference code under the parent cart (also
-            addressed by ERC).
-        parameters:
-        -   $ref: "#/components/parameters/attachmentExternalReferenceCodePathParam"
-        -   $ref: "#/components/parameters/externalReferenceCodePathParam"
-        responses:
-            "403":
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/Error"
-                    application/xml:
-                        schema:
-                            $ref: "#/components/schemas/Error"
-                description:
-                    The authenticated user lacks permission for the requested action on this cart.
-            200:
-                content:
-                    application/json: {}
-                    application/xml: {}
-            401:
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/Error"
-                    application/xml:
-                        schema:
-                            $ref: "#/components/schemas/Error"
-                description:
-                    Authentication information is missing or invalid
-            404:
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/Error"
-                    application/xml:
-                        schema:
-                            $ref: "#/components/schemas/Error"
-                description:
-                    The specified resource was not found
-            500:
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/Error"
-                    application/xml:
-                        schema:
-                            $ref: "#/components/schemas/Error"
-                description:
-                    Unexpected error
-        summary: Deletes an attachment by external reference code.
-        tags:
-        -   Attachment
+    /carts/by-externalReferenceCode/{externalReferenceCode}/attachments/by-externalReferenceCode/{attachmentExternalReferenceCode}:
+        delete:
+            description:
+                Deletes the CommerceOrderAttachment addressed by its external reference code under the parent cart (also
+                addressed by ERC).
+            parameters:
+            -   $ref: "#/components/parameters/attachmentExternalReferenceCodePathParam"
+            -   $ref: "#/components/parameters/externalReferenceCodePathParam"
+            responses:
+                "403":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this cart.
+                200:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                404:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The specified resource was not found
+                500:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Unexpected error
+            summary: Deletes an attachment by external reference code.
+            tags:
+            -   Attachment
     /carts/by-externalReferenceCode/{externalReferenceCode}/billing-address:
         get:
             description:
@@ -5169,69 +5169,70 @@ paths:
             summary: Gets a list of shipping methods available for a cart.
             tags:
             -   ShippingMethod
-    ? /channels/by-externalReferenceCode/{channelExternalReferenceCode}/account/by-externalReferenceCode/{accountExternalReferenceCode}/carts
-    :   get:
-        description:
-            Lists open carts (the Open state CommerceOrders) for the account, scoped to the channel, both addressed by
-            external reference code. Filterable by accountId, orderStatus, createDate, modifiedDate, orderDate, id,
-            orderId, account, author, externalReferenceCode, name, orderType, and purchaseOrderNumber via
-            CartEntityModel; searchable through the CommerceOrder index; pageable.
-        operationId: getChannelByExternalReferenceCodeChannelExternalReferenceCodeAccountByExternalReferenceCodeAccountExternalReferenceCodeCartsPage
-        parameters:
-        -   $ref: "#/components/parameters/accountExternalReferenceCodePathParam"
-        -   $ref: "#/components/parameters/channelExternalReferenceCodePathParam"
-        -   $ref: "#/components/parameters/filterQueryParam"
-        -   $ref: "#/components/parameters/pageQueryParam"
-        -   $ref: "#/components/parameters/pageSizeQueryParam"
-        -   $ref: "#/components/parameters/searchQueryParam"
-        -   $ref: "#/components/parameters/sortQueryParam"
-        responses:
-            200:
-                content:
-                    application/json:
-                        schema:
-                            items:
-                                $ref: "#/components/schemas/Cart"
-                            type: array
-                    application/xml:
-                        schema:
-                            items:
-                                $ref: "#/components/schemas/Cart"
-                            type: array
-                description:
-                    Successful operation
-            401:
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/Error"
-                    application/xml:
-                        schema:
-                            $ref: "#/components/schemas/Error"
-                description:
-                    Authentication information is missing or invalid
-            404:
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/Error"
-                    application/xml:
-                        schema:
-                            $ref: "#/components/schemas/Error"
-                description:
-                    The specified resource was not found
-            500:
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/Error"
-                    application/xml:
-                        schema:
-                            $ref: "#/components/schemas/Error"
-                description:
-                    Unexpected error
-        tags:
-        -   Cart
+    /channels/by-externalReferenceCode/{channelExternalReferenceCode}/account/by-externalReferenceCode/{accountExternalReferenceCode}/carts:
+        get:
+            description:
+                Lists open carts (the Open state CommerceOrders) for the account, scoped to the channel, both addressed
+                by external reference code. Filterable by accountId, orderStatus, createDate, modifiedDate, orderDate,
+                id, orderId, account, author, externalReferenceCode, name, orderType, and purchaseOrderNumber via
+                CartEntityModel; searchable through the CommerceOrder index; pageable.
+            operationId: getChannelByExternalReferenceCodeChannelExternalReferenceCodeAccountByExternalReferenceCodeAccountExternalReferenceCodeCartsPage
+            parameters:
+            -   $ref: "#/components/parameters/accountExternalReferenceCodePathParam"
+            -   $ref: "#/components/parameters/channelExternalReferenceCodePathParam"
+            -   $ref: "#/components/parameters/filterQueryParam"
+            -   $ref: "#/components/parameters/pageQueryParam"
+            -   $ref: "#/components/parameters/pageSizeQueryParam"
+            -   $ref: "#/components/parameters/searchQueryParam"
+            -   $ref: "#/components/parameters/sortQueryParam"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/Cart"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/Cart"
+                                type: array
+                    description:
+                        Successful operation
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                404:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The specified resource was not found
+                500:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Unexpected error
+            summary: Gets a list of carts for an account in a channel, both addressed by external reference code.
+            tags:
+            -   Cart
     /channels/by-externalReferenceCode/{externalReferenceCode}/carts:
         post:
             description:
