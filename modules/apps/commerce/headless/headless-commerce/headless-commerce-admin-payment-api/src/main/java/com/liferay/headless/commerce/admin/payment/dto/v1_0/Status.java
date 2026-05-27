@@ -34,7 +34,7 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Workflow status envelope attached to the payment, exposing the integer status code together with its label and localized label. Read-only.",
+	description = "Payment status envelope. Exposes the integer status code together with the English label key and the label rendered in the request locale. Read-only.",
 	value = "Status"
 )
 @JsonFilter("Liferay.Vulcan")
@@ -50,7 +50,8 @@ public class Status implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Integer payment status -- 0=Completed (Approved), 1=Pending, 2=Authorized (Draft), 4=Failed (Denied), 8=Cancelled (In Trash), 17=Refunded, 18=Created, 23=Not Required. Read-only."
+		description = "Integer payment status. 0=Completed, 1=Pending, 2=Authorized, 4=Failed, 8=Cancelled, 17=Refunded, 18=Created, 23=Not Required. Read-only.",
+		example = "0"
 	)
 	public Integer getCode() {
 		if (_codeSupplier != null) {
@@ -84,7 +85,7 @@ public class Status implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Integer payment status -- 0=Completed (Approved), 1=Pending, 2=Authorized (Draft), 4=Failed (Denied), 8=Cancelled (In Trash), 17=Refunded, 18=Created, 23=Not Required. Read-only."
+		description = "Integer payment status. 0=Completed, 1=Pending, 2=Authorized, 4=Failed, 8=Cancelled, 17=Refunded, 18=Created, 23=Not Required. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Integer code;
@@ -93,8 +94,8 @@ public class Status implements Serializable {
 	private Supplier<Integer> _codeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "English language key for the status (for example, completed, pending, refunded).",
-		example = "black"
+		description = "English label key for the status. Stable identifier used to look up translations.",
+		example = "completed"
 	)
 	public String getLabel() {
 		if (_labelSupplier != null) {
@@ -130,7 +131,7 @@ public class Status implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "English language key for the status (for example, completed, pending, refunded)."
+		description = "English label key for the status. Stable identifier used to look up translations."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String label;
@@ -140,7 +141,7 @@ public class Status implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Localized rendering of `label` in the request locale.",
-		example = "black"
+		example = "Completed"
 	)
 	public String getLabel_i18n() {
 		if (_label_i18nSupplier != null) {
@@ -356,4 +357,4 @@ public class Status implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1655509174
+// LIFERAY-REST-BUILDER-HASH:1101655821

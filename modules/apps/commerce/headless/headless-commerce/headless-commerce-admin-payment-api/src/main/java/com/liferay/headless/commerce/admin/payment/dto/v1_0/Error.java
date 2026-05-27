@@ -57,7 +57,8 @@ public class Error implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Internal error code mapping", example = "996"
+		description = "Internal error code that identifies the specific validation or lookup failure. Stable across releases for the same error condition.",
+		example = "996"
 	)
 	public Integer getErrorCode() {
 		if (_errorCodeSupplier != null) {
@@ -92,7 +93,9 @@ public class Error implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Internal error code mapping")
+	@GraphQLField(
+		description = "Internal error code that identifies the specific validation or lookup failure. Stable across releases for the same error condition."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	@NotNull
 	protected Integer errorCode;
@@ -149,7 +152,7 @@ public class Error implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Human-readable error message. May embed lookup keys that identify the offending entity.",
-		example = "No CommerceCurrency exists with the key (groupId=41811, code=US Dollar)"
+		example = "No currency exists with the key (companyId=41811, code=USD)"
 	)
 	public String getMessage() {
 		if (_messageSupplier != null) {
@@ -195,7 +198,8 @@ public class Error implements Serializable {
 	private Supplier<String> _messageSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "HTTP Status code", example = "404"
+		description = "HTTP status code returned with the response. Mirrors the numeric status of the response line.",
+		example = "404"
 	)
 	public Integer getStatus() {
 		if (_statusSupplier != null) {
@@ -230,7 +234,9 @@ public class Error implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "HTTP Status code")
+	@GraphQLField(
+		description = "HTTP status code returned with the response. Mirrors the numeric status of the response line."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	@NotNull
 	protected Integer status;
@@ -422,4 +428,4 @@ public class Error implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:184944304
+// LIFERAY-REST-BUILDER-HASH:-41017105
