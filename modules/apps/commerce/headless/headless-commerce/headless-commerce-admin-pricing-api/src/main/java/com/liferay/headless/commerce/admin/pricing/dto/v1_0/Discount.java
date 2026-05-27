@@ -44,11 +44,11 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Discount program scoped to a company. Backed by CommerceDiscount; carries the percentage tiers (or fixed-amount cap), target slice, limitation policy, optional coupon code, and the four rel collections (account groups, categories, products, rules) that scope eligibility.",
+	description = "Promotional discount program scoped to a single company. Backed by CommerceDiscount; carries the target slice (subtotal, total, products, categories, skus, product-groups, or shipping), the limitation policy that caps reuse, an optional couponCode gate, the percentage tiers (or fixed-amount cap), and four cascading rel collections (account-group, category, product, rule). Workflow-aware -- the runtime only honours discounts whose status is approved (WorkflowConstants.STATUS_APPROVED).",
 	value = "Discount"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "Discount program scoped to a company. Backed by CommerceDiscount; carries the percentage tiers (or fixed-amount cap), target slice, limitation policy, optional coupon code, and the four rel collections (account groups, categories, products, rules) that scope eligibility.",
+	description = "Promotional discount program scoped to a single company. Backed by CommerceDiscount; carries the target slice (subtotal, total, products, categories, skus, product-groups, or shipping), the limitation policy that caps reuse, an optional couponCode gate, the percentage tiers (or fixed-amount cap), and four cascading rel collections (account-group, category, product, rule). Workflow-aware -- the runtime only honours discounts whose status is approved (WorkflowConstants.STATUS_APPROVED).",
 	requiredProperties = {"limitationType", "target", "title"}
 )
 @JsonFilter("Liferay.Vulcan")
@@ -64,7 +64,7 @@ public class Discount implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Whether the discount is currently enabled. When false the runtime skips the discount during cart evaluation.",
+		description = "Whether the discount is currently enabled. Inverted from CommerceDiscount.isActive in the runtime; when false the price calculation engine skips the discount during cart evaluation.",
 		example = "true"
 	)
 	public Boolean getActive() {
@@ -101,7 +101,7 @@ public class Discount implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Whether the discount is currently enabled. When false the runtime skips the discount during cart evaluation."
+		description = "Whether the discount is currently enabled. Inverted from CommerceDiscount.isActive in the runtime; when false the price calculation engine skips the discount during cart evaluation."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Boolean active;
@@ -110,7 +110,7 @@ public class Discount implements Serializable {
 	private Supplier<Boolean> _activeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Optional coupon code required at checkout when `useCouponCode` is true. Case-sensitive; ignored when `useCouponCode` is false.",
+		description = "Optional coupon code that the buyer must supply at checkout when `useCouponCode` is true. Case-sensitive; resolved by CommerceDiscountLocalService.fetchByCouponCode; ignored when `useCouponCode` is false.",
 		example = "SAVE20"
 	)
 	public String getCouponCode() {
@@ -147,7 +147,7 @@ public class Discount implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Optional coupon code required at checkout when `useCouponCode` is true. Case-sensitive; ignored when `useCouponCode` is false."
+		description = "Optional coupon code that the buyer must supply at checkout when `useCouponCode` is true. Case-sensitive; resolved by CommerceDiscountLocalService.fetchByCouponCode; ignored when `useCouponCode` is false."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String couponCode;
@@ -156,7 +156,8 @@ public class Discount implements Serializable {
 	private Supplier<String> _couponCodeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Free-form Expando custom fields attached to the underlying CommerceDiscount entity. Keys are attribute names; values follow each attribute's declared type."
+		description = "Free-form Expando custom fields attached to the underlying CommerceDiscount entity. Keys are Expando attribute names; values follow each attribute's declared column type. Read and write through ExpandoBridge on the entity.",
+		example = "{customField1=value1}"
 	)
 	@Valid
 	public Map<String, ?> getCustomFields() {
@@ -193,7 +194,7 @@ public class Discount implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Free-form Expando custom fields attached to the underlying CommerceDiscount entity. Keys are attribute names; values follow each attribute's declared type."
+		description = "Free-form Expando custom fields attached to the underlying CommerceDiscount entity. Keys are Expando attribute names; values follow each attribute's declared column type. Read and write through ExpandoBridge on the entity."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Map<String, ?> customFields;
@@ -391,7 +392,8 @@ public class Discount implements Serializable {
 	private Supplier<DiscountRule[]> _discountRulesSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Date and time at which the discount becomes eligible for cart evaluation. Accepted in the request locale and time zone and normalized to the portal's time zone."
+		description = "Date and time at which the discount becomes eligible for cart evaluation. Accepted in the request locale and time zone, normalized to the portal's time zone, and compared against the current server clock at price calculation time.",
+		example = "2025-01-01"
 	)
 	public Date getDisplayDate() {
 		if (_displayDateSupplier != null) {
@@ -427,7 +429,7 @@ public class Discount implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Date and time at which the discount becomes eligible for cart evaluation. Accepted in the request locale and time zone and normalized to the portal's time zone."
+		description = "Date and time at which the discount becomes eligible for cart evaluation. Accepted in the request locale and time zone, normalized to the portal's time zone, and compared against the current server clock at price calculation time."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Date displayDate;
@@ -436,7 +438,8 @@ public class Discount implements Serializable {
 	private Supplier<Date> _displayDateSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Date and time after which the discount stops applying. Ignored when `neverExpire` is true; accepted in the request locale and time zone."
+		description = "Date and time after which the discount stops applying. Ignored when `neverExpire` is true; accepted in the request locale and time zone and normalized to the portal's time zone.",
+		example = "2099-12-31"
 	)
 	public Date getExpirationDate() {
 		if (_expirationDateSupplier != null) {
@@ -472,7 +475,7 @@ public class Discount implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Date and time after which the discount stops applying. Ignored when `neverExpire` is true; accepted in the request locale and time zone."
+		description = "Date and time after which the discount stops applying. Ignored when `neverExpire` is true; accepted in the request locale and time zone and normalized to the portal's time zone."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Date expirationDate;
@@ -481,8 +484,8 @@ public class Discount implements Serializable {
 	private Supplier<Date> _expirationDateSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Idempotency key for create and update; must be unique per discount within the company. Indexed for exact-match lookups.",
-		example = "AB-34098-789-N"
+		description = "Idempotency key for create and update. Must be unique per CommerceDiscount within the company; resolved by CommerceDiscountService.fetchByExternalReferenceCode; indexed for exact-match search.",
+		example = "DISC-SUMMER-2025"
 	)
 	public String getExternalReferenceCode() {
 		if (_externalReferenceCodeSupplier != null) {
@@ -518,7 +521,7 @@ public class Discount implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Idempotency key for create and update; must be unique per discount within the company. Indexed for exact-match lookups."
+		description = "Idempotency key for create and update. Must be unique per CommerceDiscount within the company; resolved by CommerceDiscountService.fetchByExternalReferenceCode; indexed for exact-match search."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String externalReferenceCode;
@@ -528,7 +531,7 @@ public class Discount implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Internal numeric identifier of the discount; read-only and assigned by the service on create.",
+		description = "Internal numeric identifier of the CommerceDiscount; read-only and assigned by the service on create. Stable across the discount's lifetime.",
 		example = "30130"
 	)
 	public Long getId() {
@@ -563,7 +566,7 @@ public class Discount implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Internal numeric identifier of the discount; read-only and assigned by the service on create."
+		description = "Internal numeric identifier of the CommerceDiscount; read-only and assigned by the service on create. Stable across the discount's lifetime."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long id;
@@ -573,8 +576,8 @@ public class Discount implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Cap on the number of times this discount may be applied across orders. Used together with `limitationType`; 0 means unlimited.",
-		example = "0"
+		description = "Cap on the total number of applications across orders. Interpreted together with `limitationType` -- `unlimited` ignores this value, `limited` enforces a global cap, `limited-for-accounts` enforces a per-account cap, and `limited-for-accounts-and-total` enforces both. Stored as int; 0 means unlimited.",
+		example = "100"
 	)
 	public Integer getLimitationTimes() {
 		if (_limitationTimesSupplier != null) {
@@ -610,7 +613,7 @@ public class Discount implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Cap on the number of times this discount may be applied across orders. Used together with `limitationType`; 0 means unlimited."
+		description = "Cap on the total number of applications across orders. Interpreted together with `limitationType` -- `unlimited` ignores this value, `limited` enforces a global cap, `limited-for-accounts` enforces a per-account cap, and `limited-for-accounts-and-total` enforces both. Stored as int; 0 means unlimited."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Integer limitationTimes;
@@ -619,7 +622,7 @@ public class Discount implements Serializable {
 	private Supplier<Integer> _limitationTimesSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "How the discount usage cap is enforced. One of `unlimited`, `limited`, `limited-for-accounts`, `limited-for-accounts-and-total` (sourced from CommerceDiscountConstants).",
+		description = "Strategy that decides how the discount usage cap is enforced. One of `unlimited`, `limited`, `limited-for-accounts`, `limited-for-accounts-and-total` (sourced from CommerceDiscountConstants.LIMITATION_TYPES). Required on create.",
 		example = "unlimited"
 	)
 	public String getLimitationType() {
@@ -656,7 +659,7 @@ public class Discount implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "How the discount usage cap is enforced. One of `unlimited`, `limited`, `limited-for-accounts`, `limited-for-accounts-and-total` (sourced from CommerceDiscountConstants)."
+		description = "Strategy that decides how the discount usage cap is enforced. One of `unlimited`, `limited`, `limited-for-accounts`, `limited-for-accounts-and-total` (sourced from CommerceDiscountConstants.LIMITATION_TYPES). Required on create."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	@NotEmpty
@@ -667,8 +670,8 @@ public class Discount implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Maximum monetary amount that can be discounted in a single application. Expressed in the order's currency; ignored when `usePercentage` is true.",
-		example = "25"
+		description = "Maximum monetary amount that can be discounted in a single application. Expressed in the order's currency with the same scale as the price entries; honoured only when `usePercentage` is true and the computed percentage payout exceeds this cap.",
+		example = "50"
 	)
 	@Valid
 	public BigDecimal getMaximumDiscountAmount() {
@@ -706,7 +709,7 @@ public class Discount implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Maximum monetary amount that can be discounted in a single application. Expressed in the order's currency; ignored when `usePercentage` is true."
+		description = "Maximum monetary amount that can be discounted in a single application. Expressed in the order's currency with the same scale as the price entries; honoured only when `usePercentage` is true and the computed percentage payout exceeds this cap."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected BigDecimal maximumDiscountAmount;
@@ -715,8 +718,8 @@ public class Discount implements Serializable {
 	private Supplier<BigDecimal> _maximumDiscountAmountSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "When true the discount has no expiration date and `expirationDate` is ignored. Defaults to true when `expirationDate` is not supplied on create.",
-		example = "true"
+		description = "When true the discount has no expiration date and `expirationDate` is ignored. Defaults to true on the DTO when `expirationDate` is null; persisted as expirationDate == null in the backend.",
+		example = "false"
 	)
 	public Boolean getNeverExpire() {
 		if (_neverExpireSupplier != null) {
@@ -752,7 +755,7 @@ public class Discount implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "When true the discount has no expiration date and `expirationDate` is ignored. Defaults to true when `expirationDate` is not supplied on create."
+		description = "When true the discount has no expiration date and `expirationDate` is ignored. Defaults to true on the DTO when `expirationDate` is null; persisted as expirationDate == null in the backend."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Boolean neverExpire;
@@ -762,8 +765,8 @@ public class Discount implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "How many times the discount has been used. Read-only; incremented by the runtime when the discount is applied to a placed order.",
-		example = "5"
+		description = "How many times the discount has been applied to a placed order. Read-only; incremented by the runtime via CommerceDiscountUsageEntryLocalService when the discount fires on a checkout.",
+		example = "12"
 	)
 	public Integer getNumberOfUse() {
 		if (_numberOfUseSupplier != null) {
@@ -799,7 +802,7 @@ public class Discount implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "How many times the discount has been used. Read-only; incremented by the runtime when the discount is applied to a placed order."
+		description = "How many times the discount has been applied to a placed order. Read-only; incremented by the runtime via CommerceDiscountUsageEntryLocalService when the discount fires on a checkout."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Integer numberOfUse;
@@ -809,7 +812,7 @@ public class Discount implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "First tier of the discount percentage. Used when `usePercentage` is true; expressed as a decimal (for example, 20 = 20%). Some target types (such as `subtotal`) only consume Level 1.",
+		description = "First tier of the discount percentage. Used when `usePercentage` is true; expressed as a decimal where 20 means 20%. Targets like `subtotal` and `total` only consume Level 1; SKU and category targets can chain Levels 1-4.",
 		example = "20"
 	)
 	@Valid
@@ -847,7 +850,7 @@ public class Discount implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "First tier of the discount percentage. Used when `usePercentage` is true; expressed as a decimal (for example, 20 = 20%). Some target types (such as `subtotal`) only consume Level 1."
+		description = "First tier of the discount percentage. Used when `usePercentage` is true; expressed as a decimal where 20 means 20%. Targets like `subtotal` and `total` only consume Level 1; SKU and category targets can chain Levels 1-4."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected BigDecimal percentageLevel1;
@@ -857,7 +860,7 @@ public class Discount implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Second tier of the discount percentage. Applies to multi-tier promotions; expressed as a decimal.",
+		description = "Second tier of the discount percentage. Applies to multi-tier discount targets (chained off Level 1). Expressed as a decimal; 0 means no second tier.",
 		example = "0"
 	)
 	@Valid
@@ -895,7 +898,7 @@ public class Discount implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Second tier of the discount percentage. Applies to multi-tier promotions; expressed as a decimal."
+		description = "Second tier of the discount percentage. Applies to multi-tier discount targets (chained off Level 1). Expressed as a decimal; 0 means no second tier."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected BigDecimal percentageLevel2;
@@ -905,7 +908,7 @@ public class Discount implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Third tier of the discount percentage. Applies to multi-tier promotions; expressed as a decimal.",
+		description = "Third tier of the discount percentage. Applies to multi-tier discount targets. Expressed as a decimal; 0 means no third tier.",
 		example = "0"
 	)
 	@Valid
@@ -943,7 +946,7 @@ public class Discount implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Third tier of the discount percentage. Applies to multi-tier promotions; expressed as a decimal."
+		description = "Third tier of the discount percentage. Applies to multi-tier discount targets. Expressed as a decimal; 0 means no third tier."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected BigDecimal percentageLevel3;
@@ -953,7 +956,7 @@ public class Discount implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Fourth tier of the discount percentage. Applies to multi-tier promotions; expressed as a decimal.",
+		description = "Fourth tier of the discount percentage. Applies to multi-tier discount targets. Expressed as a decimal; 0 means no fourth tier.",
 		example = "0"
 	)
 	@Valid
@@ -991,7 +994,7 @@ public class Discount implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Fourth tier of the discount percentage. Applies to multi-tier promotions; expressed as a decimal."
+		description = "Fourth tier of the discount percentage. Applies to multi-tier discount targets. Expressed as a decimal; 0 means no fourth tier."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected BigDecimal percentageLevel4;
@@ -1000,7 +1003,7 @@ public class Discount implements Serializable {
 	private Supplier<BigDecimal> _percentageLevel4Supplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Slice of the order the discount applies to. One of `subtotal`, `total`, `products`, `categories`, `skus`, `product-groups`, `shipping` (sourced from CommerceDiscountConstants).",
+		description = "Slice of the order the discount applies to. One of `subtotal`, `total`, `products`, `categories`, `skus`, `product-groups`, `shipping` (sourced from CommerceDiscountConstants.TARGETS). Required on create. The choice decides which of the four rel collections (categories, products, account groups) the price calculation engine consults.",
 		example = "subtotal"
 	)
 	public String getTarget() {
@@ -1037,7 +1040,7 @@ public class Discount implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Slice of the order the discount applies to. One of `subtotal`, `total`, `products`, `categories`, `skus`, `product-groups`, `shipping` (sourced from CommerceDiscountConstants)."
+		description = "Slice of the order the discount applies to. One of `subtotal`, `total`, `products`, `categories`, `skus`, `product-groups`, `shipping` (sourced from CommerceDiscountConstants.TARGETS). Required on create. The choice decides which of the four rel collections (categories, products, account groups) the price calculation engine consults."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	@NotEmpty
@@ -1047,8 +1050,8 @@ public class Discount implements Serializable {
 	private Supplier<String> _targetSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Human-readable name of the discount shown in the admin UI and in reports.",
-		example = "20% Off"
+		description = "Human-readable title of the discount. Shown in the admin UI, in usage reports, and in any HATEOAS link that references the discount.",
+		example = "Summer 20% Off"
 	)
 	public String getTitle() {
 		if (_titleSupplier != null) {
@@ -1084,7 +1087,7 @@ public class Discount implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Human-readable name of the discount shown in the admin UI and in reports."
+		description = "Human-readable title of the discount. Shown in the admin UI, in usage reports, and in any HATEOAS link that references the discount."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	@NotEmpty
@@ -1094,7 +1097,7 @@ public class Discount implements Serializable {
 	private Supplier<String> _titleSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "When true the discount only applies when the buyer supplies the matching `couponCode` at checkout.",
+		description = "When true the discount only applies when the buyer supplies the matching `couponCode` at checkout. Storefront enforces this via the cart's coupon-code workflow.",
 		example = "true"
 	)
 	public Boolean getUseCouponCode() {
@@ -1131,7 +1134,7 @@ public class Discount implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "When true the discount only applies when the buyer supplies the matching `couponCode` at checkout."
+		description = "When true the discount only applies when the buyer supplies the matching `couponCode` at checkout. Storefront enforces this via the cart's coupon-code workflow."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Boolean useCouponCode;
@@ -1673,4 +1676,4 @@ public class Discount implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1029282666
+// LIFERAY-REST-BUILDER-HASH:813559207

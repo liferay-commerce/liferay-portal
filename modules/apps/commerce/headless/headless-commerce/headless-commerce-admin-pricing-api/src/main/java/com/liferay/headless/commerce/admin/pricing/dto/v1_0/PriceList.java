@@ -42,11 +42,11 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Versioned price catalog scoped to a CommerceCatalog. Backed by CommercePriceList; carries the currency, priority, display/expiration window, and nested priceEntries and priceListAccountGroups collections. `active` is the inverse of the backend `inactive` flag.",
+	description = "Versioned price catalog scoped to a CommerceCatalog. Backed by CommercePriceList; carries the currency, the resolution priority, an optional display/expiration window, and nested priceEntries and priceListAccountGroups collections. The DTO field `active` is the logical inverse of the backend `inactive` flag.",
 	value = "PriceList"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "Versioned price catalog scoped to a CommerceCatalog. Backed by CommercePriceList; carries the currency, priority, display/expiration window, and nested priceEntries and priceListAccountGroups collections. `active` is the inverse of the backend `inactive` flag.",
+	description = "Versioned price catalog scoped to a CommerceCatalog. Backed by CommercePriceList; carries the currency, the resolution priority, an optional display/expiration window, and nested priceEntries and priceListAccountGroups collections. The DTO field `active` is the logical inverse of the backend `inactive` flag.",
 	requiredProperties = {"currencyCode", "name"}
 )
 @JsonFilter("Liferay.Vulcan")
@@ -109,7 +109,7 @@ public class PriceList implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Internal numeric identifier of the parent CommerceCatalog. The price list inherits the catalog's scope on create.",
+		description = "Internal numeric identifier of the parent CommerceCatalog. Resolved by the converter via CommerceCatalogLocalService.fetchByGroupId on the price list's groupId; 0 when the lookup fails.",
 		example = "23130"
 	)
 	public Long getCatalogId() {
@@ -146,7 +146,7 @@ public class PriceList implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Internal numeric identifier of the parent CommerceCatalog. The price list inherits the catalog's scope on create."
+		description = "Internal numeric identifier of the parent CommerceCatalog. Resolved by the converter via CommerceCatalogLocalService.fetchByGroupId on the price list's groupId; 0 when the lookup fails."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long catalogId;
@@ -155,8 +155,8 @@ public class PriceList implements Serializable {
 	private Supplier<Long> _catalogIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "ISO 4217 code of the currency the prices are expressed in (for example, USD, EUR). Must match an existing CommerceCurrency in the company scope.",
-		example = "EUR"
+		description = "ISO 4217 code of the currency the prices are expressed in. Must match an existing CommerceCurrency in the company scope (resolved by CommerceCurrencyLocalService.fetchByCode).",
+		example = "USD"
 	)
 	public String getCurrencyCode() {
 		if (_currencyCodeSupplier != null) {
@@ -192,7 +192,7 @@ public class PriceList implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "ISO 4217 code of the currency the prices are expressed in (for example, USD, EUR). Must match an existing CommerceCurrency in the company scope."
+		description = "ISO 4217 code of the currency the prices are expressed in. Must match an existing CommerceCurrency in the company scope (resolved by CommerceCurrencyLocalService.fetchByCode)."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	@NotEmpty
@@ -202,7 +202,8 @@ public class PriceList implements Serializable {
 	private Supplier<String> _currencyCodeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Free-form Expando custom fields attached to the underlying CommercePriceList entity. Keys are attribute names; values follow each attribute's declared type."
+		description = "Free-form Expando custom fields attached to the underlying CommercePriceList entity. Keys are Expando attribute names; values follow each attribute's declared column type.",
+		example = "{customField1=value1}"
 	)
 	@Valid
 	public Map<String, ?> getCustomFields() {
@@ -239,7 +240,7 @@ public class PriceList implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Free-form Expando custom fields attached to the underlying CommercePriceList entity. Keys are attribute names; values follow each attribute's declared type."
+		description = "Free-form Expando custom fields attached to the underlying CommercePriceList entity. Keys are Expando attribute names; values follow each attribute's declared column type."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Map<String, ?> customFields;
@@ -248,7 +249,8 @@ public class PriceList implements Serializable {
 	private Supplier<Map<String, ?>> _customFieldsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Date and time at which the price list becomes eligible for price resolution. Accepted in the request locale and time zone."
+		description = "Date and time at which the price list becomes eligible for price resolution. Accepted in the request locale and time zone, normalized to the portal's time zone.",
+		example = "2025-01-01"
 	)
 	public Date getDisplayDate() {
 		if (_displayDateSupplier != null) {
@@ -284,7 +286,7 @@ public class PriceList implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Date and time at which the price list becomes eligible for price resolution. Accepted in the request locale and time zone."
+		description = "Date and time at which the price list becomes eligible for price resolution. Accepted in the request locale and time zone, normalized to the portal's time zone."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Date displayDate;
@@ -293,7 +295,8 @@ public class PriceList implements Serializable {
 	private Supplier<Date> _displayDateSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Date and time after which the price list stops applying. Ignored when `neverExpire` is true."
+		description = "Date and time after which the price list stops applying. Ignored when `neverExpire` is true; accepted in the request locale and time zone.",
+		example = "2099-12-31"
 	)
 	public Date getExpirationDate() {
 		if (_expirationDateSupplier != null) {
@@ -329,7 +332,7 @@ public class PriceList implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Date and time after which the price list stops applying. Ignored when `neverExpire` is true."
+		description = "Date and time after which the price list stops applying. Ignored when `neverExpire` is true; accepted in the request locale and time zone."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Date expirationDate;
@@ -338,8 +341,8 @@ public class PriceList implements Serializable {
 	private Supplier<Date> _expirationDateSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Idempotency key for create and update; must be unique per price list within the company.",
-		example = "AB-34098-789-N"
+		description = "Idempotency key for create and update. Must be unique per CommercePriceList within the company; resolved by CommercePriceListService.fetchByExternalReferenceCode.",
+		example = "PL-DEFAULT-USD"
 	)
 	public String getExternalReferenceCode() {
 		if (_externalReferenceCodeSupplier != null) {
@@ -375,7 +378,7 @@ public class PriceList implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Idempotency key for create and update; must be unique per price list within the company."
+		description = "Idempotency key for create and update. Must be unique per CommercePriceList within the company; resolved by CommercePriceListService.fetchByExternalReferenceCode."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String externalReferenceCode;
@@ -429,8 +432,8 @@ public class PriceList implements Serializable {
 	private Supplier<Long> _idSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Human-readable name of the price list shown in the admin UI and indexed for search.",
-		example = "Laptops, Beverages"
+		description = "Human-readable name of the price list shown in the admin UI. Indexed for search and exposed as the OData `name` field for filter and sort.",
+		example = "Default USD Price List"
 	)
 	public String getName() {
 		if (_nameSupplier != null) {
@@ -464,7 +467,7 @@ public class PriceList implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Human-readable name of the price list shown in the admin UI and indexed for search."
+		description = "Human-readable name of the price list shown in the admin UI. Indexed for search and exposed as the OData `name` field for filter and sort."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	@NotEmpty
@@ -474,8 +477,8 @@ public class PriceList implements Serializable {
 	private Supplier<String> _nameSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "When true the price list has no expiration date and `expirationDate` is ignored.",
-		example = "true"
+		description = "When true the price list has no expiration date and `expirationDate` is ignored. Defaults to true on the DTO when `expirationDate` is null.",
+		example = "false"
 	)
 	public Boolean getNeverExpire() {
 		if (_neverExpireSupplier != null) {
@@ -511,7 +514,7 @@ public class PriceList implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "When true the price list has no expiration date and `expirationDate` is ignored."
+		description = "When true the price list has no expiration date and `expirationDate` is ignored. Defaults to true on the DTO when `expirationDate` is null."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Boolean neverExpire;
@@ -615,8 +618,8 @@ public class PriceList implements Serializable {
 	private Supplier<PriceListAccountGroup[]> _priceListAccountGroupsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Resolution priority used when more than one eligible price list applies to a buyer. Higher values win; ties are broken by external reference code.",
-		example = "1.2"
+		description = "Resolution priority used when more than one eligible price list applies to a buyer. Higher values win; ties are broken by externalReferenceCode lexicographic order.",
+		example = "1.0"
 	)
 	public Double getPriority() {
 		if (_prioritySupplier != null) {
@@ -652,7 +655,7 @@ public class PriceList implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Resolution priority used when more than one eligible price list applies to a buyer. Higher values win; ties are broken by external reference code."
+		description = "Resolution priority used when more than one eligible price list applies to a buyer. Higher values win; ties are broken by externalReferenceCode lexicographic order."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Double priority;
@@ -988,4 +991,4 @@ public class PriceList implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-296159265
+// LIFERAY-REST-BUILDER-HASH:1773285009

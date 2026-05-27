@@ -39,7 +39,7 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Quantity-break override on a price entry. Backed by CommerceTierPriceEntry; the request body's minimumQuantity maps to the backend minQuantity BigDecimal threshold above which `price` (and optional `promoPrice`) supersede the parent price entry.",
+	description = "Quantity-break override on a CommercePriceEntry. Backed by CommerceTierPriceEntry; the DTO's `minimumQuantity` maps to the backend `minQuantity` BigDecimal threshold above which `price` (and optional `promoPrice`) supersede the parent price entry.",
 	value = "TierPrice"
 )
 @JsonFilter("Liferay.Vulcan")
@@ -55,7 +55,8 @@ public class TierPrice implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Free-form Expando custom fields attached to the underlying CommerceTierPriceEntry entity. Keys are attribute names; values follow each attribute's declared type."
+		description = "Free-form Expando custom fields attached to the underlying CommerceTierPriceEntry entity. Keys are Expando attribute names; values follow each attribute's declared column type.",
+		example = "{customField1=value1}"
 	)
 	@Valid
 	public Map<String, ?> getCustomFields() {
@@ -92,7 +93,7 @@ public class TierPrice implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Free-form Expando custom fields attached to the underlying CommerceTierPriceEntry entity. Keys are attribute names; values follow each attribute's declared type."
+		description = "Free-form Expando custom fields attached to the underlying CommerceTierPriceEntry entity. Keys are Expando attribute names; values follow each attribute's declared column type."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Map<String, ?> customFields;
@@ -101,8 +102,8 @@ public class TierPrice implements Serializable {
 	private Supplier<Map<String, ?>> _customFieldsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Idempotency key for create and update; must be unique per tier price within the company.",
-		example = "AB-34098-789-N"
+		description = "Idempotency key for create and update. Must be unique per CommerceTierPriceEntry within the company; resolved by CommerceTierPriceEntryService.fetchByExternalReferenceCode.",
+		example = "TP-HAND-SAW-Q10"
 	)
 	public String getExternalReferenceCode() {
 		if (_externalReferenceCodeSupplier != null) {
@@ -138,7 +139,7 @@ public class TierPrice implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Idempotency key for create and update; must be unique per tier price within the company."
+		description = "Idempotency key for create and update. Must be unique per CommerceTierPriceEntry within the company; resolved by CommerceTierPriceEntryService.fetchByExternalReferenceCode."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String externalReferenceCode;
@@ -193,8 +194,8 @@ public class TierPrice implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Quantity threshold above which the tier `price` (and optional `promoPrice`) supersedes the parent price entry. Maps to the backend minQuantity BigDecimal field.",
-		example = "5"
+		description = "Quantity threshold above which the tier `price` (and optional `promoPrice`) supersedes the parent price entry. Maps to CommerceTierPriceEntry.minQuantity (BigDecimal); supplied as integer in the DTO and converted on persistence.",
+		example = "10"
 	)
 	public Integer getMinimumQuantity() {
 		if (_minimumQuantitySupplier != null) {
@@ -230,7 +231,7 @@ public class TierPrice implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Quantity threshold above which the tier `price` (and optional `promoPrice`) supersedes the parent price entry. Maps to the backend minQuantity BigDecimal field."
+		description = "Quantity threshold above which the tier `price` (and optional `promoPrice`) supersedes the parent price entry. Maps to CommerceTierPriceEntry.minQuantity (BigDecimal); supplied as integer in the DTO and converted on persistence."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Integer minimumQuantity;
@@ -240,8 +241,8 @@ public class TierPrice implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Override price applied at or above `minimumQuantity`. Expressed in the parent price list's currency; rejected when negative.",
-		example = "25"
+		description = "Override price applied at or above `minimumQuantity`. Expressed in the parent price list's currency with the price-list scale; rejected when negative.",
+		example = "89.99"
 	)
 	@Valid
 	public BigDecimal getPrice() {
@@ -278,7 +279,7 @@ public class TierPrice implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Override price applied at or above `minimumQuantity`. Expressed in the parent price list's currency; rejected when negative."
+		description = "Override price applied at or above `minimumQuantity`. Expressed in the parent price list's currency with the price-list scale; rejected when negative."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected BigDecimal price;
@@ -287,8 +288,8 @@ public class TierPrice implements Serializable {
 	private Supplier<BigDecimal> _priceSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "External reference code of the parent CommercePriceEntry. Populated by the server on response.",
-		example = "CAB-34098-789-N"
+		description = "External reference code of the parent CommercePriceEntry. Populated by the server on response; on create the parent is resolved from the URL path.",
+		example = "PE-HAND-SAW-DEFAULT"
 	)
 	public String getPriceEntryExternalReferenceCode() {
 		if (_priceEntryExternalReferenceCodeSupplier != null) {
@@ -328,7 +329,7 @@ public class TierPrice implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "External reference code of the parent CommercePriceEntry. Populated by the server on response."
+		description = "External reference code of the parent CommercePriceEntry. Populated by the server on response; on create the parent is resolved from the URL path."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String priceEntryExternalReferenceCode;
@@ -338,7 +339,7 @@ public class TierPrice implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Internal numeric identifier of the parent CommercePriceEntry. Populated by the server on response.",
+		description = "Internal numeric identifier of the parent CommercePriceEntry. Populated by the server on response; on create the parent is resolved from the URL path.",
 		example = "30130"
 	)
 	public Long getPriceEntryId() {
@@ -375,7 +376,7 @@ public class TierPrice implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Internal numeric identifier of the parent CommercePriceEntry. Populated by the server on response."
+		description = "Internal numeric identifier of the parent CommercePriceEntry. Populated by the server on response; on create the parent is resolved from the URL path."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long priceEntryId;
@@ -386,7 +387,7 @@ public class TierPrice implements Serializable {
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Promotional override price applied at or above `minimumQuantity` when a promotion is active. Expressed in the parent price list's currency; rejected when negative.",
-		example = "20"
+		example = "79.99"
 	)
 	@Valid
 	public BigDecimal getPromoPrice() {
@@ -664,4 +665,4 @@ public class TierPrice implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-992185371
+// LIFERAY-REST-BUILDER-HASH:-598726334

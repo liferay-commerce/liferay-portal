@@ -36,7 +36,7 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Account-group binding that restricts a discount to a specific AccountGroup. Backed by CommerceDiscountCommerceAccountGroupRel; one row per (discount, accountGroup) pair.",
+	description = "Account-group binding that restricts a CommerceDiscount to a specific AccountGroup. Backed by CommerceDiscountCommerceAccountGroupRel; one row per (discount, accountGroup) pair, the pair is enforced unique by the underlying service.",
 	value = "DiscountAccountGroup"
 )
 @JsonFilter("Liferay.Vulcan")
@@ -53,8 +53,8 @@ public class DiscountAccountGroup implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "External reference code of the target AccountGroup. Either this or `accountGroupId` must be supplied on create.",
-		example = "PAB-34098-789-N"
+		description = "External reference code of the target AccountGroup. Either this or `accountGroupId` must be supplied on create; resolved through AccountGroupLocalService.fetchByExternalReferenceCode.",
+		example = "ACG-PARTNERS"
 	)
 	public String getAccountGroupExternalReferenceCode() {
 		if (_accountGroupExternalReferenceCodeSupplier != null) {
@@ -95,7 +95,7 @@ public class DiscountAccountGroup implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "External reference code of the target AccountGroup. Either this or `accountGroupId` must be supplied on create."
+		description = "External reference code of the target AccountGroup. Either this or `accountGroupId` must be supplied on create; resolved through AccountGroupLocalService.fetchByExternalReferenceCode."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String accountGroupExternalReferenceCode;
@@ -106,7 +106,7 @@ public class DiscountAccountGroup implements Serializable {
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Internal numeric identifier of the target AccountGroup. Either this or `accountGroupExternalReferenceCode` must be supplied on create.",
-		example = "30130"
+		example = "41001"
 	)
 	public Long getAccountGroupId() {
 		if (_accountGroupIdSupplier != null) {
@@ -152,7 +152,7 @@ public class DiscountAccountGroup implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "External reference code of the parent CommerceDiscount. Populated by the server on response; on create the discount is resolved from the URL path.",
-		example = "DAB-34098-789-N"
+		example = "DISC-SUMMER-2025"
 	)
 	public String getDiscountExternalReferenceCode() {
 		if (_discountExternalReferenceCodeSupplier != null) {
@@ -203,7 +203,7 @@ public class DiscountAccountGroup implements Serializable {
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Internal numeric identifier of the parent CommerceDiscount. Populated by the server on response; on create the discount is resolved from the URL path.",
-		example = "30324"
+		example = "30130"
 	)
 	public Long getDiscountId() {
 		if (_discountIdSupplier != null) {
@@ -491,4 +491,4 @@ public class DiscountAccountGroup implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1531078604
+// LIFERAY-REST-BUILDER-HASH:-880966599

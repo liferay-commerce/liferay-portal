@@ -36,7 +36,7 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Product binding that restricts a discount to a specific CPDefinition. Backed by CommerceDiscountRel with the CPDefinition class name; one row per (discount, product) pair.",
+	description = "Product binding that restricts a CommerceDiscount to a specific CPDefinition. Backed by CommerceDiscountRel where classNameId resolves to CPDefinition; honoured only when the parent discount's `target` is `products`.",
 	value = "DiscountProduct"
 )
 @JsonFilter("Liferay.Vulcan")
@@ -53,7 +53,7 @@ public class DiscountProduct implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "External reference code of the parent CommerceDiscount. Populated by the server on response; on create the discount is resolved from the URL path.",
-		example = "DAB-34098-789-N"
+		example = "DISC-SUMMER-2025"
 	)
 	public String getDiscountExternalReferenceCode() {
 		if (_discountExternalReferenceCodeSupplier != null) {
@@ -104,7 +104,7 @@ public class DiscountProduct implements Serializable {
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Internal numeric identifier of the parent CommerceDiscount. Populated by the server on response; on create the discount is resolved from the URL path.",
-		example = "30324"
+		example = "30130"
 	)
 	public Long getDiscountId() {
 		if (_discountIdSupplier != null) {
@@ -150,8 +150,8 @@ public class DiscountProduct implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Internal numeric identifier of the CommerceDiscountRel (Product binding); read-only and assigned by the service on create.",
-		example = "30643"
+		description = "Internal numeric identifier of the CommerceDiscountRel (CPDefinition binding); read-only and assigned by the service on create.",
+		example = "30645"
 	)
 	public Long getId() {
 		if (_idSupplier != null) {
@@ -185,7 +185,7 @@ public class DiscountProduct implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Internal numeric identifier of the CommerceDiscountRel (Product binding); read-only and assigned by the service on create."
+		description = "Internal numeric identifier of the CommerceDiscountRel (CPDefinition binding); read-only and assigned by the service on create."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long id;
@@ -194,8 +194,8 @@ public class DiscountProduct implements Serializable {
 	private Supplier<Long> _idSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "External reference code of the target CPDefinition product. Either this or `productId` must be supplied on create.",
-		example = "PAB-34098-789-N"
+		description = "External reference code of the target CPDefinition. Either this or `productId` must be supplied on create; resolved through CPDefinitionLocalService.fetchByExternalReferenceCode.",
+		example = "PROD-HAND-SAW"
 	)
 	public String getProductExternalReferenceCode() {
 		if (_productExternalReferenceCodeSupplier != null) {
@@ -235,7 +235,7 @@ public class DiscountProduct implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "External reference code of the target CPDefinition product. Either this or `productId` must be supplied on create."
+		description = "External reference code of the target CPDefinition. Either this or `productId` must be supplied on create; resolved through CPDefinitionLocalService.fetchByExternalReferenceCode."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String productExternalReferenceCode;
@@ -245,8 +245,8 @@ public class DiscountProduct implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Internal numeric identifier of the target CPDefinition product. Either this or `productExternalReferenceCode` must be supplied on create.",
-		example = "30130"
+		description = "Internal numeric identifier of the target CPDefinition. Either this or `productExternalReferenceCode` must be supplied on create.",
+		example = "42001"
 	)
 	public Long getProductId() {
 		if (_productIdSupplier != null) {
@@ -282,7 +282,7 @@ public class DiscountProduct implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Internal numeric identifier of the target CPDefinition product. Either this or `productExternalReferenceCode` must be supplied on create."
+		description = "Internal numeric identifier of the target CPDefinition. Either this or `productExternalReferenceCode` must be supplied on create."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long productId;
@@ -487,4 +487,4 @@ public class DiscountProduct implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:183995617
+// LIFERAY-REST-BUILDER-HASH:227036431

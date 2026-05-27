@@ -36,7 +36,7 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Category binding that restricts a discount to an AssetCategory. Backed by CommerceDiscountRel with the AssetCategory class name; one row per (discount, category) pair.",
+	description = "Category binding that restricts a CommerceDiscount to products tagged with a specific AssetCategory. Backed by CommerceDiscountRel where classNameId resolves to AssetCategory; honoured only when the parent discount's `target` is `categories`.",
 	value = "DiscountCategory"
 )
 @JsonFilter("Liferay.Vulcan")
@@ -52,8 +52,8 @@ public class DiscountCategory implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "External reference code of the target AssetCategory. Either this or `categoryId` must be supplied on create.",
-		example = "PAB-34098-789-N"
+		description = "External reference code of the target AssetCategory. Either this or `categoryId` must be supplied on create; resolved through AssetCategoryLocalService.fetchByExternalReferenceCode.",
+		example = "CAT-LAPTOPS"
 	)
 	public String getCategoryExternalReferenceCode() {
 		if (_categoryExternalReferenceCodeSupplier != null) {
@@ -93,7 +93,7 @@ public class DiscountCategory implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "External reference code of the target AssetCategory. Either this or `categoryId` must be supplied on create."
+		description = "External reference code of the target AssetCategory. Either this or `categoryId` must be supplied on create; resolved through AssetCategoryLocalService.fetchByExternalReferenceCode."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String categoryExternalReferenceCode;
@@ -104,7 +104,7 @@ public class DiscountCategory implements Serializable {
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Internal numeric identifier of the target AssetCategory. Either this or `categoryExternalReferenceCode` must be supplied on create.",
-		example = "30130"
+		example = "41002"
 	)
 	public Long getCategoryId() {
 		if (_categoryIdSupplier != null) {
@@ -150,7 +150,7 @@ public class DiscountCategory implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "External reference code of the parent CommerceDiscount. Populated by the server on response; on create the discount is resolved from the URL path.",
-		example = "DAB-34098-789-N"
+		example = "DISC-SUMMER-2025"
 	)
 	public String getDiscountExternalReferenceCode() {
 		if (_discountExternalReferenceCodeSupplier != null) {
@@ -201,7 +201,7 @@ public class DiscountCategory implements Serializable {
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Internal numeric identifier of the parent CommerceDiscount. Populated by the server on response; on create the discount is resolved from the URL path.",
-		example = "30324"
+		example = "30130"
 	)
 	public Long getDiscountId() {
 		if (_discountIdSupplier != null) {
@@ -247,8 +247,8 @@ public class DiscountCategory implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Internal numeric identifier of the CommerceDiscountRel (Category binding); read-only and assigned by the service on create.",
-		example = "30643"
+		description = "Internal numeric identifier of the CommerceDiscountRel (AssetCategory binding); read-only and assigned by the service on create.",
+		example = "30644"
 	)
 	public Long getId() {
 		if (_idSupplier != null) {
@@ -282,7 +282,7 @@ public class DiscountCategory implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Internal numeric identifier of the CommerceDiscountRel (Category binding); read-only and assigned by the service on create."
+		description = "Internal numeric identifier of the CommerceDiscountRel (AssetCategory binding); read-only and assigned by the service on create."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long id;
@@ -488,4 +488,4 @@ public class DiscountCategory implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-66612252
+// LIFERAY-REST-BUILDER-HASH:41308619
