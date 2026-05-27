@@ -34,7 +34,7 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Computed unit price snapshot for a cart item. Carries the base price, the promotional price, the absolute and percentage discount levels, and the final price. The currency is inherited from the parent cart; the price-on-application flag indicates the price is negotiated and not displayed on the storefront.",
+	description = "Computed unit price snapshot for a cart item. Carries the base price, the promotional price, the absolute and percentage discount levels, and the final price. The currency is inherited from the parent cart; the price-on-application flag indicates the price is negotiated and not displayed on the storefront. All monetary amounts are per unit and tax-exclusive -- cart-level tax is computed by the active tax engine and reported on the cart Summary (taxValue, total), not on this per-unit snapshot.",
 	value = "Price"
 )
 @JsonFilter("Liferay.Vulcan")
@@ -96,7 +96,7 @@ public class Price implements Serializable {
 	private Supplier<String> _currencySupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Absolute discount amount applied to the unit price.",
+		description = "Absolute discount amount applied to the unit price, expressed tax-exclusive in the cart currency.",
 		example = "5.0"
 	)
 	public Double getDiscount() {
@@ -133,7 +133,7 @@ public class Price implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Absolute discount amount applied to the unit price."
+		description = "Absolute discount amount applied to the unit price, expressed tax-exclusive in the cart currency."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Double discount;
@@ -417,7 +417,7 @@ public class Price implements Serializable {
 	private Supplier<Double> _discountPercentageLevel4Supplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Unit price after all applicable discounts.",
+		description = "Unit price after all applicable discounts, tax-exclusive in the cart currency. Multiply by the item quantity for the line subtotal; cart-level tax is reported on the cart Summary.",
 		example = "45.0"
 	)
 	public Double getFinalPrice() {
@@ -453,7 +453,9 @@ public class Price implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Unit price after all applicable discounts.")
+	@GraphQLField(
+		description = "Unit price after all applicable discounts, tax-exclusive in the cart currency. Multiply by the item quantity for the line subtotal; cart-level tax is reported on the cart Summary."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Double finalPrice;
 
@@ -504,7 +506,7 @@ public class Price implements Serializable {
 	private Supplier<String> _finalPriceFormattedSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Base catalog unit price before promotional or volume discounts.",
+		description = "Base catalog unit price before promotional or volume discounts, tax-exclusive in the cart currency.",
 		example = "50.0"
 	)
 	public Double getPrice() {
@@ -541,7 +543,7 @@ public class Price implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Base catalog unit price before promotional or volume discounts."
+		description = "Base catalog unit price before promotional or volume discounts, tax-exclusive in the cart currency."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Double price;
@@ -639,7 +641,7 @@ public class Price implements Serializable {
 	private Supplier<Boolean> _priceOnApplicationSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Promotional unit price when a catalog promotion is active.",
+		description = "Promotional unit price when a catalog promotion is active, tax-exclusive in the cart currency.",
 		example = "45.0"
 	)
 	public Double getPromoPrice() {
@@ -676,7 +678,7 @@ public class Price implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Promotional unit price when a catalog promotion is active."
+		description = "Promotional unit price when a catalog promotion is active, tax-exclusive in the cart currency."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Double promoPrice;
@@ -1060,4 +1062,4 @@ public class Price implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-633735173
+// LIFERAY-REST-BUILDER-HASH:424180139
