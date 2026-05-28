@@ -698,7 +698,7 @@ components:
                     type: string
                 shippingAmountValue:
                     description: Raw decimal value of the shipping charge without currency formatting. Read-only.
-                    example: "9.99"
+                    example: 9.99
                     format: double
                     minimum: 0
                     type: number
@@ -713,7 +713,7 @@ components:
                     type: string
                 shippingDiscountAmountValue:
                     description: Raw decimal value of the shipping-discount amount without currency formatting. Read-only.
-                    example: "0.00"
+                    example: 0.0
                     format: double
                     type: number
                 shippingDiscountPercentageLevel1:
@@ -793,7 +793,7 @@ components:
                     type: string
                 shippingWithTaxAmountValue:
                     description: Raw decimal value of the shipping charge with tax included. Read-only.
-                    example: "10.79"
+                    example: 10.79
                     format: double
                     minimum: 0
                     type: number
@@ -889,7 +889,7 @@ components:
                     type: string
                 subtotalWithTaxAmountValue:
                     description: Raw decimal value of the subtotal with tax included. Read-only.
-                    example: "108.00"
+                    example: 108.0
                     format: double
                     readOnly: true
                     type: number
@@ -905,7 +905,7 @@ components:
                     type: string
                 taxAmountValue:
                     description: Raw decimal value of the tax amount without currency formatting. Read-only.
-                    example: "8.00"
+                    example: 8.0
                     format: double
                     minimum: 0
                     type: number
@@ -934,7 +934,7 @@ components:
                     type: string
                 totalDiscountAmountValue:
                     description: Raw decimal value of the total-discount amount without currency formatting. Read-only.
-                    example: "0.00"
+                    example: 0.0
                     format: double
                     minimum: 0
                     type: number
@@ -998,7 +998,7 @@ components:
                     type: string
                 totalDiscountWithTaxAmountValue:
                     description: Raw decimal value of the total-discount amount with tax included. Read-only.
-                    example: "0.00"
+                    example: 0.0
                     format: double
                     minimum: 0
                     type: number
@@ -1018,7 +1018,7 @@ components:
                     type: string
                 totalWithTaxAmountValue:
                     description: Raw decimal value of the total with tax included. Read-only.
-                    example: "126.79"
+                    example: 126.79
                     format: double
                     minimum: 0
                     readOnly: true
