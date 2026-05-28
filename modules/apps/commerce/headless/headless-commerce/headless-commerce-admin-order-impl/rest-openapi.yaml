@@ -1073,7 +1073,7 @@ components:
                     type: number
                 deliveryGroup:
                     deprecated: true
-                    description: Identifier of the delivery group this line item belongs to. Used to split shipments.
+                    description: Deprecated -- use deliveryGroupName instead. Identifier of the delivery group this line item belongs to; carried for backward compatibility with clients that predate deliveryGroupName.
                     example: separate-package
                     type: string
                 deliveryGroupName:
@@ -6561,6 +6561,7 @@ paths:
                                     $ref: "#/components/schemas/Attachment"
                                 type: array
                     description: Successful operation
+            summary: Gets a list of attachments on an order by external reference code.
             tags:
             - Attachment
         post:
@@ -6605,6 +6606,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description: Domain validation failed -- an invalid lookup key (channel, account, currency, order type, term), an out-of-range numeric value, or a missing required cross-reference on the attachment payload prevented the operation.
+            summary: Creates an attachment on an order by external reference code.
             tags:
             - Attachment
     ? /orders/by-externalReferenceCode/{externalReferenceCode}/attachments/by-externalReferenceCode/{attachmentExternalReferenceCode}
@@ -6628,6 +6630,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description: The authenticated user lacks permission for the requested action on this attachment.
+            summary: Deletes an attachment on an order by external reference code.
             tags:
             - Attachment
         get:
@@ -6655,6 +6658,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description: The authenticated user lacks permission for the requested action on this attachment.
+            summary: Gets an attachment on an order by external reference code.
             tags:
             - Attachment
         patch:
@@ -6700,6 +6704,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description: Domain validation failed -- an invalid lookup key (channel, account, currency, order type, term), an out-of-range numeric value, or a missing required cross-reference on the attachment payload prevented the operation.
+            summary: Updates an attachment on an order by external reference code.
             tags:
             - Attachment
     /orders/by-externalReferenceCode/{externalReferenceCode}/billingAddress:
@@ -8209,6 +8214,7 @@ paths:
                                     $ref: "#/components/schemas/Attachment"
                                 type: array
                     description: Successful operation
+            summary: Gets a list of attachments on an order by ID.
             tags:
             - Attachment
         post:
@@ -8253,6 +8259,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description: Domain validation failed -- an invalid lookup key (channel, account, currency, order type, term), an out-of-range numeric value, or a missing required cross-reference on the attachment payload prevented the operation.
+            summary: Creates an attachment on an order by ID.
             tags:
             - Attachment
     /orders/{orderId}/attachments/{attachmentId}:
@@ -8276,6 +8283,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description: The authenticated user lacks permission for the requested action on this attachment.
+            summary: Deletes an attachment on an order by ID.
             tags:
             - Attachment
         get:
@@ -8303,6 +8311,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description: The authenticated user lacks permission for the requested action on this attachment.
+            summary: Gets an attachment on an order by ID.
             tags:
             - Attachment
         patch:
@@ -8348,6 +8357,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description: Domain validation failed -- an invalid lookup key (channel, account, currency, order type, term), an out-of-range numeric value, or a missing required cross-reference on the attachment payload prevented the operation.
+            summary: Updates an attachment on an order by ID.
             tags:
             - Attachment
     /term-order-types/{termOrderTypeId}:
