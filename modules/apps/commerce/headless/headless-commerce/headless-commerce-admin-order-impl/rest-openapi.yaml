@@ -188,14 +188,17 @@ components:
             style: simple
     schemas:
         Account:
-            description: An Account entity representing a customer account or organizational unit with billing contact info, identity, and type classification.
+            description: A customer account that places orders. Represents either a person or a business and carries identity, contact, and tax-attribution data; created on POST and updated on PATCH.
             properties:
                 customFields:
                     additionalProperties: true
-                    description: Map of custom field values, keyed by field name; values depend on custom field type.
+                    description: Map of custom-field values keyed by field name. Values depend on the custom-field type and are configured per company.
+                    example:
+                        customField: customValue
                     type: object
                 emailAddress:
                     description: Primary email contact for the account.
+                    example: tester@liferay.com
                     format: email
                     type: string
                 externalReferenceCode:
@@ -203,38 +206,38 @@ components:
                     example: AB-34098-789-N
                     type: string
                 id:
-                    description: Unique account identifier (FK to AccountEntry.accountEntryId).
+                    description: Reference to the account (FK identifier). Read-only; set by the service when the account is first persisted.
                     example: 30130
                     format: int64
                     minimum: 0
                     type: integer
                 logoId:
-                    description: File entry ID of the account's logo image (FK).
+                    description: Reference to the file entry that stores the account logo image (FK identifier). 0 when no logo is set.
                     example: 20078
                     format: int64
                     minimum: 0
                     type: integer
                 name:
-                    description: Display name of the account.
-                    example: Account Name
+                    description: Display name of the account. Required on create; trimmed by the service before persistence.
+                    example: Acme Corporation
                     type: string
                 root:
-                    description: Boolean indicating whether this is a root/parent account (vs. subsidiary).
+                    description: When true, the account is a top-level (parent) account with no parent. When false, the account is a subsidiary.
                     example: true
                     type: boolean
                 taxId:
-                    description: Tax identification number for the account (e.g., VAT, EIN).
+                    description: Tax identification number for the account (for example, VAT or EIN). Free-form string.
                     example: Abcd1234
                     type: string
                 type:
-                    description: Account type code ; typically 1 for B2B accounts. Mapping -- 0=Person, 1=Business, 2=Guest.
+                    description: "Integer account type: 0=Person, 1=Business, 2=Guest."
                     example: 1
                     format: int32
                     maximum: 2
                     minimum: 0
                     type: integer
         Attachment:
-            description: A file attachment associated with an order, including file metadata, URL, access control (restricted flag), and priority ranking.
+            description: A file attached to an order (image, document, virtual asset). Carries the file content on upload and file metadata, download URL, and a restricted flag for visibility control on retrieval.
             properties:
                 actions:
                     additionalProperties:
@@ -245,16 +248,19 @@ components:
                     readOnly: true
                     type: object
                 attachment:
-                    description: Base64 encoded file
+                    description: Base64-encoded file content to upload. Write-only; omitted from GET responses.
+                    example: iVBORw0KGgoAAAANSUhEUgAA
                     format: byte
                     type: string
                 dateModified:
-                    description: ISO 8601 timestamp of last modification. Read-only.
+                    description: Last-modification timestamp in ISO 8601 (UTC). Read-only; set by the service on each update.
+                    example: "2017-07-21T19:30:00Z"
                     format: date-time
                     readOnly: true
                     type: string
                 extension:
-                    description: File extension (e.g., "pdf", "jpg") extracted from file entry. Read-only.
+                    description: File extension extracted from the uploaded file name (for example, pdf, jpg). Read-only.
+                    example: pdf
                     readOnly: true
                     type: string
                 externalReferenceCode:
@@ -262,108 +268,114 @@ components:
                     example: AB-34098-789-N
                     type: string
                 fileName:
-                    description: Original filename when uploaded.
+                    description: Original file name supplied at upload time.
+                    example: invoice.pdf
                     type: string
                 id:
-                    description: Unique attachment identifier (FK to CommerceOrderAttachment.commerceOrderAttachmentId). Read-only.
+                    description: Reference to the order attachment (FK identifier). Read-only.
                     example: 30130
                     format: int64
                     minimum: 0
                     readOnly: true
                     type: integer
                 priority:
-                    description: Numeric sort order for displaying multiple attachments (0.0 = highest).
+                    description: Numeric sort order for displaying multiple attachments. Lower values come first; defaults to 0.
+                    example: 1.0
                     format: double
                     type: number
                 restricted:
-                    description: Boolean; if true, attachment is internal-only (not visible to customer/storefront).
+                    description: When true, the attachment is internal-only and not visible to the storefront. When false, it is visible to the buyer.
                     example: false
                     type: boolean
                 title:
-                    description: Display title for the attachment (may differ from fileName).
+                    description: Display title for the attachment; may differ from the original file name.
+                    example: Invoice
                     type: string
                 type:
-                    description: Classification type (from list type definition L_COMMERCE_ORDER_ATTACHMENT_TYPES); allows custom type taxonomy.
+                    description: Type key for the attachment, drawn from the attachment-type list configured for the company. Free-form string.
+                    example: general
                     type: string
                 typeLabel:
-                    description: Localized label for the type code. Read-only.
+                    description: Localized human-readable label for the type key. Read-only; resolved against the request locale.
+                    example: General
                     readOnly: true
                     type: string
                 url:
-                    description: Fully-qualified download URL for the file. Read-only.
+                    description: Fully qualified download URL for the file. Read-only; generated by the service.
+                    example: https://example.com/attachments/invoice.pdf
                     readOnly: true
                     type: string
             type: object
         BillingAddress:
-            description: A postal address entity designated as the billing address for an order, including street, city, postal code, state, and country codes.
+            description: Postal address used for billing the order. Stored as an address record on the order and accessed by order ID or external reference code.
             properties:
                 city:
-                    description: City name.
+                    description: City name of the address. Required on create.
                     example: Diamond Bar
                     type: string
                 countryISOCode:
-                    description: ISO 3166-1 alpha-2 country code (e.g., US, DE, FR).
+                    description: ISO 3166-1 alpha-2 country code of the address. Required on create.
                     example: US
                     type: string
                 description:
-                    description: Free-text notes or directions for delivery (e.g., "suite 200, north building").
-                    example: right stairs, first room on the left
+                    description: Free-text delivery notes or directions associated with the address.
+                    example: Right stairs, first room on the left.
                     type: string
                 externalReferenceCode:
-                    description: Idempotency key for create and update; must be unique per address within the company.
+                    description: Idempotency key for create and update; must be unique per address within the company. Read-only after create.
                     example: AB-34098-789-N
                     readOnly: true
                     type: string
                 id:
-                    description: Unique address identifier (FK to CommerceAddress.commerceAddressId).
+                    description: Reference to the address (FK identifier).
                     example: 31130
                     format: int64
                     minimum: 0
                     type: integer
                 latitude:
-                    description: Decimal latitude for geocoding.
+                    description: Decimal latitude of the address for geocoding.
                     example: 33.9976884
                     format: double
                     type: number
                 longitude:
-                    description: Decimal longitude for geocoding.
+                    description: Decimal longitude of the address for geocoding.
                     example: -117.8144595
                     format: double
                     type: number
                 name:
-                    description: Address name/label (e.g., "Head Office", "Warehouse").
+                    description: Address label or recipient name (for example, head office, warehouse). Required on create.
                     example: Alessio Antonio Rendina
                     type: string
                 phoneNumber:
-                    description: Phone number associated with the address.
+                    description: Contact phone number associated with the address.
                     example: (123) 456 7890
                     type: string
                 regionISOCode:
-                    description: ISO 3166-2 sub-region code (province or state) within the country (for example, CA, NY).
+                    description: ISO 3166-2 sub-region (province or state) code within the country.
                     example: CA
                     type: string
                 street1:
-                    description: Primary street address line.
+                    description: Primary street line of the address. Required on create.
                     example: 1400 Montefino Ave
                     type: string
                 street2:
-                    description: Secondary street address line (apartment, suite, etc.).
+                    description: Secondary street line (apartment, suite, floor).
                     example: 1st floor
                     type: string
                 street3:
-                    description: Tertiary street address line.
-                    example: suite 200
+                    description: Tertiary street line for additional address detail.
+                    example: Suite 200
                     type: string
                 subtype:
-                    description: Address subtype classifier (for example, billing or shipping default). Free-text identifier.
-                    example: box
+                    description: Address subtype classifier (for example, residential, business). Free-form string.
+                    example: business
                     type: string
                 vatNumber:
                     description: VAT or tax registration number associated with the address.
                     example: "353246836565"
                     type: string
                 zip:
-                    description: ZIP or postal code for the address.
+                    description: ZIP or postal code of the address.
                     example: "91765"
                     type: string
             required:
@@ -373,50 +385,51 @@ components:
             - street1
             type: object
         Channel:
-            description: A Commerce Channel entity representing a sales channel (store, marketplace, etc.) that groups products and orders.
+            description: A commerce sales channel that groups products, prices, and orders. Channels carry a default currency and a type that classifies the storefront context.
             properties:
                 currencyCode:
-                    description: ISO 4217 currency code (e.g., USD, EUR) used by default in this channel.
+                    description: ISO 4217 currency code used as the default currency for the channel.
                     example: USD
                     type: string
                 externalReferenceCode:
-                    description: Idempotency key; must be unique per channel within the company.
+                    description: Idempotency key for create and update; must be unique per channel within the company.
                     example: AB-34098-789-N
                     type: string
                 id:
-                    description: Unique channel identifier (FK to CommerceChannel.commerceChannelId).
+                    description: Reference to the channel (FK identifier).
                     example: 31130
                     format: int64
                     minimum: 0
                     type: integer
                 name:
-                    description: Display name of the sales channel.
-                    example: Alessio Antonio Rendina
+                    description: Display name of the channel.
+                    example: Default Channel
                     type: string
                 type:
-                    description: Channel type classification (e.g., "web", "marketplace", "physical-store").
+                    description: Channel type identifier classifying the storefront context. Free-form string.
+                    example: site
                     type: string
             type: object
         Error:
-            description: Standard error response containing HTTP status code, error message, and error type identifier.
+            description: Standard error envelope returned on non-success responses, with HTTP status code, internal error code, developer message, and user-facing description.
             properties:
                 errorCode:
-                    description: Internal error code mapping
+                    description: Internal numeric error code that identifies the failure category. Read-only.
                     example: 996
                     readOnly: true
                     type: integer
                 errorDescription:
-                    description: Human-readable description of the error condition. Read-only.
+                    description: Human-readable description of the error suitable for end users. Read-only.
                     example: Unable to find currency. Currency code should be expressed with 3-letter ISO 4217 format.
                     readOnly: true
                     type: string
                 message:
-                    description: Developer-facing message that pinpoints the failing field or service call. Read-only.
-                    example: No CommerceCurrency exists with the key {groupId=41811, code=US Dollar}
+                    description: Developer-facing message that pinpoints the failing field or call. Read-only.
+                    example: No currency exists with the code USD.
                     readOnly: true
                     type: string
                 status:
-                    description: HTTP Status code
+                    description: HTTP status code echoed in the body. Read-only.
                     example: 404
                     readOnly: true
                     type: integer
@@ -427,17 +440,17 @@ components:
             - status
             type: object
         Order:
-            description: A commerce order entity capturing purchase details including account, items, pricing, addresses, shipping/payment terms, order status, and nested relationships.
+            description: A purchase order placed by an account in a channel. Carries the buyer account, addresses, currency, payment and delivery terms, line items, notes, attachments, and tax-aware totals; created on POST, updated on PATCH, replaced on PUT against the external reference code.
             properties:
                 account:
                     $ref: "#/components/schemas/Account"
                     readOnly: true
                 accountExternalReferenceCode:
-                    description: External reference code of the account; used for lookup if accountId is not provided.
-                    example: AAB-34098-789-N
+                    description: External reference code of the buyer account. Used as a lookup key when the numeric account ID is not supplied.
+                    example: AB-34098-789-N
                     type: string
                 accountId:
-                    description: Reference to the Account entity (FK). Identifies the customer/buyer.
+                    description: Reference to the buyer account (FK identifier). One of accountId or accountExternalReferenceCode is required on create.
                     example: 30130
                     format: int64
                     minimum: 0
@@ -447,25 +460,26 @@ components:
                         additionalProperties:
                             type: string
                         type: object
-                    description: Map of HATEOAS actions (delete, get, update) available to the current user. Read-only.
+                    description: Map of HATEOAS actions available to the current user, keyed by action name. Each value carries the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     readOnly: true
                     type: object
                 advanceStatus:
-                    description: Free-text status field for custom order workflows (e.g., "on-hold", "escalated").
-                    example: trasmitted
+                    description: Free-text status string for custom workflows on top of the standard order status (for example, on-hold, escalated).
+                    example: transmitted
                     type: string
                 author:
-                    description: Display name of the user who created the Order. Read-only.
+                    description: Display name of the user who created the order. Read-only.
+                    example: Test Test
                     readOnly: true
                     type: string
                 billingAddress:
                     $ref: "#/components/schemas/BillingAddress"
                 billingAddressExternalReferenceCode:
-                    description: External reference code of the billing address; used for lookup if billingAddressId not provided.
-                    example: AAB-34098-789-N
+                    description: External reference code of the billing address. Used as a lookup key when the numeric address ID is not supplied.
+                    example: AB-34098-789-N
                     type: string
                 billingAddressId:
-                    description: Reference to the CommerceAddress (FK) used as billing address.
+                    description: Reference to the billing address (FK identifier).
                     example: 31130
                     format: int64
                     minimum: 0
@@ -474,64 +488,67 @@ components:
                     $ref: "#/components/schemas/Channel"
                     readOnly: true
                 channelExternalReferenceCode:
-                    description: External reference code of the channel entity. Used as a lookup key in place of the numeric channelId.
-                    example: AAB-34098-789-N
+                    description: External reference code of the channel. Used as a lookup key when the numeric channel ID is not supplied.
+                    example: AB-34098-789-N
                     type: string
                 channelId:
-                    description: Reference to the CommerceChannel entity (FK). Identifies the sales channel where the order was placed.
+                    description: Reference to the channel where the order was placed (FK identifier). One of channelId or channelExternalReferenceCode is required on create.
                     example: 30130
                     format: int64
                     minimum: 0
                     type: integer
                 couponCode:
-                    description: Coupon code applied to the order. Drives matching commerce discount rules.
-                    example: save20
+                    description: Coupon code applied to the order. When present, matching commerce discount rules are evaluated.
+                    example: SAVE20
                     type: string
                 createDate:
-                    description: ISO 8601 timestamp of order creation. Read-only.
-                    example: 2017-07-21
+                    description: Creation date for the order. Read-only; set by the service when the record is first persisted.
+                    example: "2017-07-21"
                     format: date
                     type: string
                 creatorEmailAddress:
-                    description: Email address of the user who created the order. Read-only.
+                    description: Email address of the user who created the order. Indexed for search.
+                    example: tester@liferay.com
                     format: email
                     type: string
                 currencyCode:
-                    description: ISO 4217 currency code (e.g., USD, EUR) for order totals.
+                    description: ISO 4217 currency code applied to every monetary value on the order. Defaults to the channel currency.
                     example: USD
                     type: string
                 currencyExternalReferenceCode:
-                    description: External reference code of the currency entity; used for lookup if currencyId not provided.
-                    example: AAB-34098-789-N
+                    description: External reference code of the currency entry. Used as a lookup key when the numeric currency ID is not supplied.
+                    example: AB-34098-789-N
                     type: string
                 currencyId:
-                    description: Reference to the CommerceCurrency entity (FK).
+                    description: Reference to the currency entry (FK identifier).
                     example: 30130
                     format: int64
                     minimum: 0
                     type: integer
                 customFields:
                     additionalProperties: true
-                    description: Map of custom field values; handled by expando bridge.
+                    description: Map of custom-field values keyed by field name. Values depend on the custom-field type and are configured per company.
+                    example:
+                        customField: customValue
                     type: object
                 deliveryTermDescription:
-                    description: Description of the deliveryTerm entity. Read-only.
-                    example: Orders delivery terms description
+                    description: Localized description of the bound delivery term, resolved against the request locale. Read-only.
+                    example: Standard delivery within 5 business days.
                     readOnly: true
                     type: string
                 deliveryTermExternalReferenceCode:
-                    description: External reference code of the delivery term; used for lookup.
-                    example: AAB-34098-789-N
+                    description: External reference code of the delivery term. Used as a lookup key when the numeric term ID is not supplied.
+                    example: AB-34098-789-N
                     type: string
                 deliveryTermId:
-                    description: Reference to a CommerceTermEntry (FK) representing delivery terms.
+                    description: Reference to the delivery term (FK identifier).
                     example: 30130
                     format: int64
                     minimum: 0
                     type: integer
                 deliveryTermName:
-                    description: Display name of the deliveryTerm entity. Read-only.
-                    example: Orders delivery terms name
+                    description: Localized display name of the bound delivery term, resolved against the request locale. Read-only.
+                    example: Standard Delivery
                     readOnly: true
                     type: string
                 externalReferenceCode:
@@ -539,28 +556,28 @@ components:
                     example: AB-34098-789-N
                     type: string
                 id:
-                    description: Unique order identifier (FK to CommerceOrder.commerceOrderId). Read-only.
+                    description: Reference to the order (FK identifier). Read-only.
                     example: 30130
                     format: int64
                     minimum: 0
                     type: integer
                 lastPriceUpdateDate:
-                    description: ISO 8601 timestamp of the most recent price recalculation on the order.
-                    example: 2017-07-21
+                    description: Date of the most recent price recalculation on the order. Read-only.
+                    example: "2017-07-21"
                     format: date
                     type: string
                 modifiedDate:
-                    description: ISO 8601 timestamp of last modification. Read-only.
-                    example: 2017-08-21
+                    description: Last-modification date for the order. Read-only.
+                    example: "2017-08-21"
                     format: date
                     type: string
                 name:
-                    description: Free-text order name or label.
-                    example: Order Name
+                    description: Free-text label or name for the order, intended for administrator-facing displays.
+                    example: Acme PO-12345
                     type: string
                 orderDate:
-                    description: ISO 8601 timestamp when the order was placed (may differ from createDate if imported). Server timezone to UTC ISO 8601 format.
-                    example: 2017-07-21
+                    description: Date the order was placed. May differ from the creation date when the order is imported from another system.
+                    example: "2017-07-21"
                     format: date
                     type: string
                 orderItems:
@@ -569,7 +586,7 @@ components:
                         $ref: "#/components/schemas/OrderItem"
                     type: array
                 orderStatus:
-                    description: Integer order status code . Drives workflow state. Mapping -- 0=Pending, 1=Open, 9=Subscription, 10=Processing, 13=AwaitingPickup, 14=PartiallyShipped, 15=Shipped, 16=Declined/Approved/Completed, 17=Refunded, 18=Disputed, 19=PartiallyRefunded, 20=OnHold, 21=QuoteRequested, 22=QuoteProcessed.
+                    description: "Integer order status: 0=Approved, 1=Pending, 2=Open, 9=Subscription, 10=Processing, 13=AwaitingPickup, 14=PartiallyShipped, 15=Shipped, 16=Declined, 17=Refunded, 18=Disputed, 19=PartiallyRefunded, 20=OnHold, 21=QuoteRequested, 22=QuoteProcessed."
                     example: 0
                     format: int32
                     minimum: 0
@@ -578,21 +595,21 @@ components:
                     $ref: "#/components/schemas/Status"
                     readOnly: true
                 orderTypeExternalReferenceCode:
-                    description: External reference code of the order type; used for lookup.
+                    description: External reference code of the order type. Used as a lookup key when the numeric order type ID is not supplied. Filterable via the OData query parameter.
                     example: AB-34098-789-N
                     type: string
                 orderTypeId:
-                    description: Reference to a CommerceOrderType (FK) for order classification.
+                    description: Reference to the order type (FK identifier). Filterable via the OData query parameter.
                     example: 30130
                     format: int64
                     minimum: 0
                     type: integer
                 paymentMethod:
-                    description: Free-text payment method identifier or name (e.g., "credit_card", "purchase_order").
-                    example: paypal
+                    description: Identifier of the payment method used by the order (for example, credit_card, purchase_order). Free-form string.
+                    example: credit_card
                     type: string
                 paymentStatus:
-                    description: Integer payment status code . Mapping -- 0=Pending, 1=Authorized (Draft), 2=Completed (Approved), 4=Failed (Denied), 17=Refunded, 23=NotRequired.
+                    description: "Integer payment status: 0=Approved, 1=Pending, 2=Authorized, 4=Failed, 17=Refunded, 23=NotRequired."
                     example: 0
                     format: int32
                     minimum: 0
@@ -601,36 +618,36 @@ components:
                     $ref: "#/components/schemas/Status"
                     readOnly: true
                 paymentTermDescription:
-                    description: Description of the paymentTerm entity. Read-only.
-                    example: Orders payment terms description
+                    description: Localized description of the bound payment term, resolved against the request locale. Read-only.
+                    example: Net 30 days from invoice date.
                     readOnly: true
                     type: string
                 paymentTermExternalReferenceCode:
-                    description: External reference code of the payment term; used for lookup.
-                    example: AAB-34098-789-N
+                    description: External reference code of the payment term. Used as a lookup key when the numeric term ID is not supplied.
+                    example: AB-34098-789-N
                     type: string
                 paymentTermId:
-                    description: Reference to a CommerceTermEntry (FK) representing payment terms.
+                    description: Reference to the payment term (FK identifier).
                     example: 30130
                     format: int64
                     minimum: 0
                     type: integer
                 paymentTermName:
-                    description: Display name of the paymentTerm entity. Read-only.
-                    example: Orders payment terms name
+                    description: Localized display name of the bound payment term, resolved against the request locale. Read-only.
+                    example: Net 30
                     readOnly: true
                     type: string
                 printedNote:
-                    description: Free-text memo or internal note on the order (e.g., "handle with care").
-                    example: Order printed note
+                    description: Free-text note printed on invoices and shipping slips.
+                    example: Handle with care.
                     type: string
                 purchaseOrderNumber:
-                    description: Free-text PO number or external order identifier from buyer.
-                    example: Abcd1234
+                    description: Buyer-supplied purchase order number or external order identifier.
+                    example: PO-12345
                     type: string
                 requestedDeliveryDate:
-                    description: ISO 8601 timestamp for desired delivery date. Server timezone to UTC ISO 8601 format.
-                    example: 2017-07-21
+                    description: Buyer-requested delivery date.
+                    example: "2017-07-21"
                     format: date
                     type: string
                 shippable:
@@ -641,223 +658,241 @@ components:
                 shippingAddress:
                     $ref: "#/components/schemas/ShippingAddress"
                 shippingAddressExternalReferenceCode:
-                    description: External reference code of the shipping address; used for lookup if shippingAddressId not provided.
-                    example: AAB-34098-789-N
+                    description: External reference code of the shipping address. Used as a lookup key when the numeric address ID is not supplied.
+                    example: AB-34098-789-N
                     type: string
                 shippingAddressId:
-                    description: Reference to the CommerceAddress (FK) used as shipping address.
+                    description: Reference to the shipping address (FK identifier).
                     example: 31130
                     format: int64
                     minimum: 0
                     type: integer
                 shippingAmount:
-                    description: BigDecimal shipping charge (tax-exclusive). Currency and precision determined by channel/order currency.
-                    example: 12
+                    description: Shipping charge in the order currency. Tax-exclusive.
+                    example: 9.99
                     format: bigdecimal
                     minimum: 0
                     type: number
                 shippingAmountFormatted:
-                    description: Locale-aware formatted string representation of the shippingAmount amount, including the currency symbol. Read-only.
+                    description: Locale-aware formatted shipping charge with the currency symbol. Read-only.
+                    example: $9.99
                     type: string
                 shippingAmountValue:
-                    description: Raw BigDecimal value of the shippingAmount field, without currency formatting.
-                    example: 12
+                    description: Raw decimal value of the shipping charge without currency formatting. Read-only.
+                    example: "9.99"
                     format: double
                     minimum: 0
                     type: number
                 shippingDiscountAmount:
-                    description: BigDecimal total discount applied to shipping (across all discount levels).
+                    description: Total shipping discount across every discount tier, in the order currency. Tax-exclusive.
+                    example: 0
                     format: bigdecimal
                     type: number
                 shippingDiscountAmountFormatted:
-                    description: Locale-aware formatted string representation of the shippingDiscountAmount amount, including the currency symbol. Read-only.
+                    description: Locale-aware formatted shipping-discount amount with the currency symbol. Read-only.
+                    example: $0.00
                     type: string
                 shippingDiscountAmountValue:
-                    description: Raw BigDecimal value of the shippingDiscountAmount field, without currency formatting.
+                    description: Raw decimal value of the shipping-discount amount without currency formatting. Read-only.
+                    example: "0.00"
                     format: double
                     type: number
                 shippingDiscountPercentageLevel1:
-                    description: BigDecimal level-1 tiered discount percentage applied to the order (tax-exclusive).
-                    example: 20
+                    description: Level-1 tiered shipping discount percentage. Tax-exclusive.
+                    example: 0
                     format: bigdecimal
                     minimum: 0
                     type: number
                 shippingDiscountPercentageLevel1WithTaxAmount:
-                    description: BigDecimal shippingDiscountPercentageLevel1 value with tax included. Currency follows the order or channel currency.
-                    example: 20
+                    description: Level-1 tiered shipping discount percentage after tax application.
+                    example: 0
                     format: bigdecimal
                     minimum: 0
                     type: number
                 shippingDiscountPercentageLevel2:
-                    description: BigDecimal level-2 tiered discount percentage applied to the order (tax-exclusive).
+                    description: Level-2 tiered shipping discount percentage. Tax-exclusive.
                     example: 0
                     format: bigdecimal
                     minimum: 0
                     type: number
                 shippingDiscountPercentageLevel2WithTaxAmount:
-                    description: BigDecimal shippingDiscountPercentageLevel2 value with tax included. Currency follows the order or channel currency.
+                    description: Level-2 tiered shipping discount percentage after tax application.
                     example: 0
                     format: bigdecimal
                     minimum: 0
                     type: number
                 shippingDiscountPercentageLevel3:
-                    description: BigDecimal level-3 tiered discount percentage applied to the order (tax-exclusive).
+                    description: Level-3 tiered shipping discount percentage. Tax-exclusive.
                     example: 0
                     format: bigdecimal
                     minimum: 0
                     type: number
                 shippingDiscountPercentageLevel3WithTaxAmount:
-                    description: BigDecimal shippingDiscountPercentageLevel3 value with tax included. Currency follows the order or channel currency.
+                    description: Level-3 tiered shipping discount percentage after tax application.
                     example: 0
                     format: bigdecimal
                     minimum: 0
                     type: number
                 shippingDiscountPercentageLevel4:
-                    description: BigDecimal level-4 tiered discount percentage applied to the order (tax-exclusive).
+                    description: Level-4 tiered shipping discount percentage. Tax-exclusive.
                     example: 0
                     format: bigdecimal
                     minimum: 0
                     type: number
                 shippingDiscountPercentageLevel4WithTaxAmount:
-                    description: BigDecimal shippingDiscountPercentageLevel4 value with tax included. Currency follows the order or channel currency.
+                    description: Level-4 tiered shipping discount percentage after tax application.
                     example: 0
                     format: bigdecimal
                     minimum: 0
                     type: number
                 shippingDiscountWithTaxAmount:
-                    description: BigDecimal total shipping discount with tax included.
+                    description: Total shipping discount with tax included.
+                    example: 0
                     format: bigdecimal
                     type: number
                 shippingDiscountWithTaxAmountFormatted:
-                    description: Locale-aware formatted string representation of the shippingDiscountWithTaxAmount amount, including the currency symbol. Read-only.
+                    description: Locale-aware formatted shipping-discount amount with tax included. Read-only.
+                    example: $0.00
                     type: string
                 shippingMethod:
-                    description: Free-text name of the shipping method (e.g., "Standard Ground", "Express 2-Day").
-                    example: fixed
+                    description: Display name of the shipping method (for example, Standard Ground, Express 2-Day).
+                    example: Standard Ground
                     type: string
                 shippingOption:
-                    description: Free-text customer-visible shipping option label.
-                    example: by Air
+                    description: Buyer-visible label for the shipping option chosen at checkout.
+                    example: Standard Ground
                     type: string
                 shippingWithTaxAmount:
-                    description: BigDecimal shipping charge (tax-inclusive).
-                    example: 12
+                    description: Shipping charge with tax included, in the order currency.
+                    example: 10.79
                     format: bigdecimal
                     minimum: 0
                     type: number
                 shippingWithTaxAmountFormatted:
-                    description: Locale-aware formatted string representation of the shippingWithTaxAmount amount, including the currency symbol. Read-only.
+                    description: Locale-aware formatted shipping charge with tax included. Read-only.
+                    example: $10.79
                     type: string
                 shippingWithTaxAmountValue:
-                    description: Raw BigDecimal value of the shippingWithTaxAmount field, without currency formatting.
-                    example: 12
+                    description: Raw decimal value of the shipping charge with tax included. Read-only.
+                    example: "10.79"
                     format: double
                     minimum: 0
                     type: number
                 subtotal:
-                    description: BigDecimal sum of line item prices before discounts and tax.
+                    description: Sum of every line item price before discounts and tax. Tax-exclusive.
+                    example: 100.0
                     format: bigdecimal
                     type: number
                 subtotalAmount:
-                    description: BigDecimal subtotal value (tax-exclusive). Currency follows the order or channel currency.
+                    description: Sum of every line item price before discounts and tax. Tax-exclusive.
+                    example: 100.0
                     format: double
                     readOnly: true
                     type: number
                 subtotalDiscountAmount:
-                    description: BigDecimal total discount applied to subtotal.
+                    description: Total discount applied to the subtotal across every discount tier. Tax-exclusive.
+                    example: 0
                     format: bigdecimal
                     type: number
                 subtotalDiscountAmountFormatted:
-                    description: Locale-aware formatted string representation of the subtotalDiscountAmount amount, including the currency symbol. Read-only.
+                    description: Locale-aware formatted subtotal-discount amount with the currency symbol. Read-only.
+                    example: $0.00
                     type: string
                 subtotalDiscountPercentageLevel1:
-                    description: BigDecimal level-1 tiered discount percentage applied to the order (tax-exclusive).
-                    example: 20
+                    description: Level-1 tiered subtotal discount percentage. Tax-exclusive.
+                    example: 0
                     format: bigdecimal
                     minimum: 0
                     type: number
                 subtotalDiscountPercentageLevel1WithTaxAmount:
-                    description: BigDecimal subtotalDiscountPercentageLevel1 value with tax included. Currency follows the order or channel currency.
-                    example: 20
+                    description: Level-1 tiered subtotal discount percentage after tax application.
+                    example: 0
                     format: bigdecimal
                     minimum: 0
                     type: number
                 subtotalDiscountPercentageLevel2:
-                    description: BigDecimal level-2 tiered discount percentage applied to the order (tax-exclusive).
+                    description: Level-2 tiered subtotal discount percentage. Tax-exclusive.
                     example: 0
                     format: bigdecimal
                     minimum: 0
                     type: number
                 subtotalDiscountPercentageLevel2WithTaxAmount:
-                    description: BigDecimal subtotalDiscountPercentageLevel2 value with tax included. Currency follows the order or channel currency.
+                    description: Level-2 tiered subtotal discount percentage after tax application.
                     example: 0
                     format: bigdecimal
                     minimum: 0
                     type: number
                 subtotalDiscountPercentageLevel3:
-                    description: BigDecimal level-3 tiered discount percentage applied to the order (tax-exclusive).
+                    description: Level-3 tiered subtotal discount percentage. Tax-exclusive.
                     example: 0
                     format: bigdecimal
                     minimum: 0
                     type: number
                 subtotalDiscountPercentageLevel3WithTaxAmount:
-                    description: BigDecimal subtotalDiscountPercentageLevel3 value with tax included. Currency follows the order or channel currency.
+                    description: Level-3 tiered subtotal discount percentage after tax application.
                     example: 0
                     format: bigdecimal
                     minimum: 0
                     type: number
                 subtotalDiscountPercentageLevel4:
-                    description: BigDecimal level-4 tiered discount percentage applied to the order (tax-exclusive).
+                    description: Level-4 tiered subtotal discount percentage. Tax-exclusive.
                     example: 0
                     format: bigdecimal
                     minimum: 0
                     type: number
                 subtotalDiscountPercentageLevel4WithTaxAmount:
-                    description: BigDecimal subtotalDiscountPercentageLevel4 value with tax included. Currency follows the order or channel currency.
+                    description: Level-4 tiered subtotal discount percentage after tax application.
                     example: 0
                     format: bigdecimal
                     minimum: 0
                     type: number
                 subtotalDiscountWithTaxAmount:
-                    description: BigDecimal total subtotal discount with tax included.
+                    description: Total subtotal discount with tax included.
+                    example: 0
                     format: bigdecimal
                     type: number
                 subtotalDiscountWithTaxAmountFormatted:
-                    description: Locale-aware formatted string representation of the subtotalDiscountWithTaxAmount amount, including the currency symbol. Read-only.
+                    description: Locale-aware formatted subtotal-discount amount with tax included. Read-only.
+                    example: $0.00
                     type: string
                 subtotalFormatted:
-                    description: Locale-aware formatted string representation of the subtotal amount, including the currency symbol. Read-only.
+                    description: Locale-aware formatted subtotal with the currency symbol. Read-only.
+                    example: $100.00
                     type: string
                 subtotalWithTaxAmount:
-                    description: BigDecimal subtotal after tax.
+                    description: Subtotal with tax included.
+                    example: 108.0
                     format: bigdecimal
                     type: number
                 subtotalWithTaxAmountFormatted:
-                    description: Locale-aware formatted string representation of the subtotalWithTaxAmount amount, including the currency symbol. Read-only.
+                    description: Locale-aware formatted subtotal with tax included. Read-only.
+                    example: $108.00
                     type: string
                 subtotalWithTaxAmountValue:
-                    description: Raw BigDecimal value of the subtotalWithTaxAmount field, without currency formatting.
+                    description: Raw decimal value of the subtotal with tax included. Read-only.
+                    example: "108.00"
                     format: double
                     readOnly: true
                     type: number
                 taxAmount:
-                    description: BigDecimal total sales tax or VAT on the order (sum of line item taxes + shipping tax).
-                    example: 11
+                    description: Total sales tax or VAT on the order, summed across every line item and shipping.
+                    example: 8.0
                     format: bigdecimal
                     minimum: 0
                     type: number
                 taxAmountFormatted:
-                    description: Locale-aware formatted string representation of the taxAmount amount, including the currency symbol. Read-only.
+                    description: Locale-aware formatted tax amount with the currency symbol. Read-only.
+                    example: $8.00
                     type: string
                 taxAmountValue:
-                    description: Raw BigDecimal value of the taxAmount field, without currency formatting.
-                    example: 12
+                    description: Raw decimal value of the tax amount without currency formatting. Read-only.
+                    example: "8.00"
                     format: double
                     minimum: 0
                     type: number
                 total:
-                    description: BigDecimal final order total before discounts.
-                    example: 113
+                    description: Final order total before discounts. Tax-exclusive.
+                    example: 117.99
                     format: bigdecimal
                     minimum: 0
                     type: number
@@ -869,23 +904,24 @@ components:
                     readOnly: true
                     type: number
                 totalDiscountAmount:
-                    description: BigDecimal total discount across all line items and shipping.
-                    example: 11
+                    description: Total discount across every line item and shipping, in the order currency. Tax-exclusive.
+                    example: 0
                     format: bigdecimal
                     minimum: 0
                     type: number
                 totalDiscountAmountFormatted:
-                    description: Locale-aware formatted string representation of the totalDiscountAmount amount, including the currency symbol. Read-only.
+                    description: Locale-aware formatted total-discount amount with the currency symbol. Read-only.
+                    example: $0.00
                     type: string
                 totalDiscountAmountValue:
-                    description: Raw BigDecimal value of the totalDiscountAmount field, without currency formatting.
-                    example: 11
+                    description: Raw decimal value of the total-discount amount without currency formatting. Read-only.
+                    example: "0.00"
                     format: double
                     minimum: 0
                     type: number
                 totalDiscountPercentageLevel1:
-                    description: BigDecimal level-1 tiered discount percentage applied to the order (tax-exclusive).
-                    example: 20
+                    description: Level-1 tiered total discount percentage. Tax-exclusive.
+                    example: 0
                     format: bigdecimal
                     minimum: 0
                     type: number
@@ -896,7 +932,7 @@ components:
                     minimum: 0
                     type: number
                 totalDiscountPercentageLevel2:
-                    description: BigDecimal level-2 tiered discount percentage applied to the order (tax-exclusive).
+                    description: Level-2 tiered total discount percentage. Tax-exclusive.
                     example: 0
                     format: bigdecimal
                     minimum: 0
@@ -908,7 +944,7 @@ components:
                     minimum: 0
                     type: number
                 totalDiscountPercentageLevel3:
-                    description: BigDecimal level-3 tiered discount percentage applied to the order (tax-exclusive).
+                    description: Level-3 tiered total discount percentage. Tax-exclusive.
                     example: 0
                     format: bigdecimal
                     minimum: 0
@@ -920,7 +956,7 @@ components:
                     minimum: 0
                     type: number
                 totalDiscountPercentageLevel4:
-                    description: BigDecimal level-4 tiered discount percentage applied to the order (tax-exclusive).
+                    description: Level-4 tiered total discount percentage. Tax-exclusive.
                     example: 0
                     format: bigdecimal
                     minimum: 0
@@ -932,41 +968,45 @@ components:
                     minimum: 0
                     type: number
                 totalDiscountWithTaxAmount:
-                    description: BigDecimal total order discount with tax included.
-                    example: 11
+                    description: Total discount with tax included.
+                    example: 0
                     format: bigdecimal
                     minimum: 0
                     type: number
                 totalDiscountWithTaxAmountFormatted:
-                    description: Locale-aware formatted string representation of the totalDiscountWithTaxAmount amount, including the currency symbol. Read-only.
+                    description: Locale-aware formatted total-discount amount with tax included. Read-only.
+                    example: $0.00
                     type: string
                 totalDiscountWithTaxAmountValue:
-                    description: Raw BigDecimal value of the totalDiscountWithTaxAmount field, without currency formatting.
-                    example: 11
+                    description: Raw decimal value of the total-discount amount with tax included. Read-only.
+                    example: "0.00"
                     format: double
                     minimum: 0
                     type: number
                 totalFormatted:
-                    description: Locale-aware formatted string representation of the total amount, including the currency symbol. Read-only.
+                    description: Locale-aware formatted total with the currency symbol. Read-only.
+                    example: $117.99
                     type: string
                 totalWithTaxAmount:
-                    description: BigDecimal final order total (tax-inclusive, post-discount).
-                    example: 113
+                    description: Final order total with tax included, after discounts.
+                    example: 126.79
                     format: bigdecimal
                     minimum: 0
                     type: number
                 totalWithTaxAmountFormatted:
-                    description: Locale-aware formatted string representation of the totalWithTaxAmount amount, including the currency symbol. Read-only.
+                    description: Locale-aware formatted total with tax included. Read-only.
+                    example: $126.79
                     type: string
                 totalWithTaxAmountValue:
-                    description: Raw BigDecimal value of the totalWithTaxAmount field, without currency formatting.
-                    example: 113
+                    description: Raw decimal value of the total with tax included. Read-only.
+                    example: "126.79"
                     format: double
                     minimum: 0
                     readOnly: true
                     type: number
                 transactionId:
                     description: Reference to the transaction entity (FK).
+                    example: tx-12345-abcdef
                     type: string
                 workflowStatusInfo:
                     $ref: "#/components/schemas/Status"
@@ -976,10 +1016,10 @@ components:
             - currencyCode
             type: object
         OrderAccountGroup:
-            description: An account group linked to an order rule, representing a grouping of accounts for rule application.
+            description: Binding between an order rule and an account group. Identifies an account group the rule applies to.
             properties:
                 id:
-                    description: Unique relationship identifier (FK to AccountGroup.accountGroupId).
+                    description: Reference to the account group (FK identifier).
                     example: 30130
                     format: int64
                     minimum: 0
@@ -987,20 +1027,22 @@ components:
                     type: integer
                 name:
                     description: Display name of the linked account group. Read-only.
-                    example: OrderAccountGroup Name
+                    example: Wholesale Buyers
                     type: string
             type: object
         OrderItem:
-            description: A line item within an order, including product SKU, quantity, unit price, discounts, tax, and per-item shipping address.
+            description: A single line item within an order. Carries the SKU, quantity, options, unit price, line discount, line-level tax, and an optional per-item shipping address.
             properties:
                 bookedQuantityId:
-                    description: Reference to the inventory booking entry (CommerceInventoryBookedQuantity) that reserves stock for this line item.
+                    description: Reference to the inventory booking entry that reserves stock for this line item (FK identifier).
                     example: 32144
                     format: int64
                     minimum: 0
                     type: integer
                 customFields:
-                    description: Map of custom field values for this line item.
+                    description: Map of custom-field values keyed by field name. Values depend on the custom-field type and are configured per company.
+                    example:
+                        customField: customValue
                     items:
                         type: customField
                     type: array
@@ -1012,15 +1054,15 @@ components:
                     type: number
                 deliveryGroup:
                     deprecated: true
-                    description: Identifier of the delivery group this item belongs to. Used to split shipments.
-                    example: separate package
+                    description: Identifier of the delivery group this line item belongs to. Used to split shipments.
+                    example: separate-package
                     type: string
                 deliveryGroupName:
                     description: Display name of the delivery group. Read-only.
-                    example: separate package
+                    example: Separate Package
                     type: string
                 discountAmount:
-                    description: BigDecimal line-item discount amount (tax-exclusive).
+                    description: Line-item discount amount in the order currency. Tax-exclusive.
                     example: 2
                     format: bigdecimal
                     minimum: 0
@@ -1031,56 +1073,56 @@ components:
                     readOnly: true
                     type: boolean
                 discountPercentageLevel1:
-                    description: BigDecimal level-1 tiered discount percentage applied to this order item (tax-exclusive).
+                    description: Level-1 tiered line-item discount percentage. Tax-exclusive.
                     example: 20
                     format: bigdecimal
                     minimum: 0
                     type: number
                 discountPercentageLevel1WithTaxAmount:
-                    description: BigDecimal discountPercentageLevel1 value with tax included. Currency follows the order or channel currency.
-                    example: 20
+                    description: Level-1 tiered line-item discount percentage after tax application.
+                    example: 21.6
                     format: bigdecimal
                     minimum: 0
                     type: number
                 discountPercentageLevel2:
-                    description: BigDecimal level-2 tiered discount percentage applied to this order item (tax-exclusive).
+                    description: Level-2 tiered line-item discount percentage. Tax-exclusive.
                     example: 0
                     format: bigdecimal
                     minimum: 0
                     type: number
                 discountPercentageLevel2WithTaxAmount:
-                    description: BigDecimal discountPercentageLevel2 value with tax included. Currency follows the order or channel currency.
+                    description: Level-2 tiered line-item discount percentage after tax application.
                     example: 0
                     format: bigdecimal
                     minimum: 0
                     type: number
                 discountPercentageLevel3:
-                    description: BigDecimal level-3 tiered discount percentage applied to this order item (tax-exclusive).
+                    description: Level-3 tiered line-item discount percentage. Tax-exclusive.
                     example: 0
                     format: bigdecimal
                     minimum: 0
                     type: number
                 discountPercentageLevel3WithTaxAmount:
-                    description: BigDecimal discountPercentageLevel3 value with tax included. Currency follows the order or channel currency.
+                    description: Level-3 tiered line-item discount percentage after tax application.
                     example: 0
                     format: bigdecimal
                     minimum: 0
                     type: number
                 discountPercentageLevel4:
-                    description: BigDecimal level-4 tiered discount percentage applied to this order item (tax-exclusive).
+                    description: Level-4 tiered line-item discount percentage. Tax-exclusive.
                     example: 0
                     format: bigdecimal
                     minimum: 0
                     type: number
                 discountPercentageLevel4WithTaxAmount:
-                    description: BigDecimal discountPercentageLevel4 value with tax included. Currency follows the order or channel currency.
+                    description: Level-4 tiered line-item discount percentage after tax application.
                     example: 0
                     format: bigdecimal
                     minimum: 0
                     type: number
                 discountWithTaxAmount:
-                    description: BigDecimal total line-item discount with tax included.
-                    example: 2
+                    description: Total line-item discount with tax included.
+                    example: 2.16
                     format: bigdecimal
                     minimum: 0
                     type: number
@@ -1089,23 +1131,24 @@ components:
                     example: AB-34098-789-N
                     type: string
                 finalPrice:
-                    description: BigDecimal unit price after all discounts (tax-exclusive).
-                    example: 200
+                    description: Unit price after every line-item discount, in the order currency. Tax-exclusive.
+                    example: 8.0
                     format: bigdecimal
                     minimum: 0
                     type: number
                 finalPriceWithTaxAmount:
-                    description: BigDecimal final unit price with tax included.
-                    example: 200
+                    description: Unit price after every line-item discount, tax-inclusive.
+                    example: 8.64
                     format: bigdecimal
                     minimum: 0
                     type: number
                 formattedQuantity:
-                    description: Locale-aware formatted string representation of the quantity, including the unit-of-measure when applicable. Read-only.
+                    description: Locale-aware formatted quantity, including the unit of measure when applicable. Read-only.
+                    example: 5 EA
                     readOnly: true
                     type: string
                 id:
-                    description: Unique order item identifier (FK to CommerceOrderItem.commerceOrderItemId). Read-only.
+                    description: Reference to the order item (FK identifier). Read-only.
                     example: 30130
                     format: int64
                     minimum: 0
@@ -1113,60 +1156,59 @@ components:
                 name:
                     additionalProperties:
                         type: string
-                    description: Display name of the product or SKU on this line item. Read-only.
-                    example:
-                        en_US: Hand Saw
-                        hr_HR: Product Name HR
-                        hu_HU: Product Name HU
+                    description: Display name of the product or SKU on this line item. Resolved against the request locale. Read-only.
+                    example: Hand Saw
                     type: object
                 options:
-                    description: Stringified JSON representation of the product options selected for this line item. Encodes the option-value combinations that distinguish the SKU variant; example -- a size and color pair.
+                    description: Stringified JSON representation of the product options selected for this line item. Encodes the option-value combinations that distinguish the SKU variant.
+                    example: sizeColor=L_red
                     type: string
                 orderExternalReferenceCode:
-                    description: External reference code of the parent order. Used to address the line item by its parent ERC.
-                    example: CAB-34098-789-N
+                    description: External reference code of the parent order. Used to address the line item by its parent external reference code.
+                    example: AB-34098-789-N
                     type: string
                 orderId:
-                    description: Reference to the parent Order (FK to CommerceOrder.commerceOrderId).
+                    description: Reference to the parent order (FK identifier).
                     example: 30128
                     format: int64
                     minimum: 0
                     type: integer
                 priceManuallyAdjusted:
                     description: When true, the unit price was overridden by an administrator and is preserved across price recalculations.
-                    example: true
+                    example: false
                     readOnly: true
                     type: boolean
                 printedNote:
-                    description: Free-text note to display on the line item in printable documents (invoices, shipping slips).
-                    example: Order item printed note
+                    description: Free-text note for display on the line item in invoices and shipping slips.
+                    example: Engrave with initials.
                     type: string
                 productId:
                     description: Reference to the product entity (FK).
+                    example: 32130
                     format: int64
                     readOnly: true
                     type: integer
                 promoPrice:
-                    description: BigDecimal promotional/sale unit price (tax-exclusive).
-                    example: 101
+                    description: Promotional unit price for the line item. Tax-exclusive.
+                    example: 7.5
                     format: bigdecimal
                     minimum: 0
                     type: number
                 promoPriceWithTaxAmount:
-                    description: BigDecimal promotional price with tax included.
-                    example: 101
+                    description: Promotional unit price with tax included.
+                    example: 8.1
                     format: bigdecimal
                     minimum: 0
                     type: number
                 quantity:
                     description: Integer quantity of the item ordered.
-                    example: 2.1
+                    example: 5
                     format: bigdecimal
                     minimum: 0
                     type: number
                 replacedSku:
-                    description: When a SKU has been replaced by another, this field carries the new SKU code that replaced the original.
-                    example: "1234123124"
+                    description: When the SKU has been replaced by another, this field carries the SKU code that replaced the original.
+                    example: HAND-SAW-V2
                     readOnly: true
                     type: string
                 replacedSkuExternalReferenceCode:
@@ -1175,21 +1217,22 @@ components:
                     type: string
                 replacedSkuId:
                     description: Reference to the replacedSku entity (FK).
+                    example: 32131
                     format: int64
                     type: integer
                 requestedDeliveryDate:
-                    description: ISO 8601 date and time of the buyer-requested delivery for the order.
-                    example: 2017-07-21
+                    description: Buyer-requested delivery date for this line item.
+                    example: "2017-07-21"
                     format: date
                     type: string
                 shippable:
-                    description: When true, the orderitem (or its product) ships physically; when false, it is virtual or non-shippable. Read-only.
+                    description: When true, the line item ships physically. When false, the item is virtual or non-shippable. Read-only.
                     example: true
                     readOnly: true
                     type: boolean
                 shippedQuantity:
                     description: Integer quantity already shipped for this line item. Read-only.
-                    example: 1.1
+                    example: 0
                     format: bigdecimal
                     minimum: 0
                     type: number
@@ -1200,14 +1243,14 @@ components:
                     example: AB-34098-789-N
                     type: string
                 shippingAddressId:
-                    description: Reference to the shippingAddress entity (FK).
-                    example: 31130
+                    description: Reference to the per-item shipping address (FK identifier). 0 when the line item uses the order shipping address.
+                    example: 31131
                     format: int64
                     minimum: 0
                     type: integer
                 sku:
-                    description: Product SKU code (links to CPInstance).
-                    example: "12341234"
+                    description: SKU code of the purchased variant. Matched by the search query parameter on the list endpoint.
+                    example: HAND-SAW-001
                     type: string
                 skuExternalReferenceCode:
                     description: External reference code of the sku entity. Used as a lookup key in place of the numeric skuId.
@@ -1220,31 +1263,33 @@ components:
                     minimum: 0
                     type: integer
                 subscription:
-                    description: When true, this line item is part of a subscription cycle. Read-only.
-                    example: true
+                    description: When true, the line item is part of a subscription cycle. Read-only.
+                    example: false
                     type: boolean
                 unitOfMeasure:
                     description: Display name of the unit of measure (for example, case, pallet). Read-only.
-                    example: pc
+                    example: Each
                     type: string
                 unitOfMeasureKey:
-                    description: Identifier (key) of the unit of measure used by this line item (for example, EA, KG, CS). Drives stock and price tiers.
-                    example: s
+                    description: Identifier of the unit of measure used by this line item. Drives stock and tier-price lookups.
+                    example: EA
                     type: string
                 unitPrice:
-                    description: BigDecimal base unit price (tax-exclusive).
-                    example: 101
+                    description: Base unit price of the line item, in the order currency. Tax-exclusive.
+                    example: 10.0
                     format: bigdecimal
                     minimum: 0
                     type: number
                 unitPriceWithTaxAmount:
-                    description: BigDecimal unit price with tax included.
-                    example: 101
+                    description: Base unit price of the line item with tax included.
+                    example: 10.8
                     format: bigdecimal
                     minimum: 0
                     type: number
                 virtualItemURLs:
                     description: List of download URLs for the virtual-item assets bound to this line item. Read-only.
+                    example:
+                    - https://example.com/downloads/license.pdf
                     items:
                         type: string
                     readOnly: true
@@ -1256,43 +1301,43 @@ components:
                     type: array
             type: object
         OrderNote:
-            description: A note or comment attached to an order, with content, timestamp, restricted flag (internal-only), and author tracking.
+            description: A note attached to an order. Carries free-text content and a restricted flag that hides internal-only notes from the storefront.
             properties:
                 author:
-                    description: Display name of the user who created the OrderNote. Read-only.
-                    example: Alessio Antonio Rendina
+                    description: Display name of the user who authored the note. Read-only.
+                    example: Test Test
                     type: string
                 content:
-                    description: Free-text note content.
-                    example: This order will be shipped separately
+                    description: Free-text content of the note.
+                    example: Customer requested expedited shipping.
                     type: string
                 externalReferenceCode:
                     description: Idempotency key for create and update; must be unique per note within the company.
                     example: AB-34098-789-N
                     type: string
                 id:
-                    description: Unique note identifier (FK to CommerceOrderNote.commerceOrderNoteId). Read-only.
+                    description: Reference to the order note (FK identifier). Read-only.
                     example: 30130
                     format: int64
                     minimum: 0
                     type: integer
                 orderExternalReferenceCode:
-                    description: External reference code of the parent order. Used to address the line item by its parent ERC.
-                    example: CAB-34098-789-N
+                    description: External reference code of the parent order.
+                    example: AB-34098-789-N
                     type: string
                 orderId:
-                    description: Reference to the order entity (FK).
+                    description: Reference to the parent order (FK identifier).
                     example: 30128
                     format: int64
                     minimum: 0
                     type: integer
                 restricted:
-                    description: Boolean; if true, note is internal-only (not visible to customer/storefront).
-                    example: true
+                    description: When true, the note is internal-only and not visible to the storefront. When false, it is visible to the buyer.
+                    example: false
                     type: boolean
             type: object
         OrderRule:
-            description: A rule entity (COREntry) that applies business logic to orders based on linked accounts, account groups, channels, and order types.
+            description: A business rule that conditions order behavior on the linked accounts, account groups, channels, and order types. Drives discounting, validation, and other administrator-defined order policy.
             properties:
                 actions:
                     additionalProperties:
@@ -1303,30 +1348,30 @@ components:
                     readOnly: true
                     type: object
                 active:
-                    description: Boolean activation flag for the rule.
+                    description: When true, the rule is evaluated against orders. When false, the rule is disabled.
                     example: true
                     type: boolean
                 author:
-                    description: Display name of the user who created the OrderRule. Read-only.
-                    example: admin
+                    description: Display name of the user who created the rule. Read-only.
+                    example: Test Test
                     type: string
                 createDate:
-                    description: ISO 8601 timestamp of when the OrderRule was created. Read-only.
-                    example: 2017-07-21
+                    description: Creation date for the rule. Read-only.
+                    example: "2017-07-21"
                     format: date
                     type: string
                 description:
-                    description: Free-text description of the rule's purpose and logic.
-                    example: Laptops, Beverages
+                    description: Free-text description of the rule purpose and logic.
+                    example: Applies a 10% discount on orders over $500.
                     type: string
                 displayDate:
-                    description: ISO 8601 date when the rule becomes active. Server timezone to UTC.
-                    example: 2017-07-21
+                    description: Date the rule becomes active.
+                    example: "2017-07-21"
                     format: date
                     type: string
                 expirationDate:
-                    description: ISO 8601 date when the rule expires and stops applying.
-                    example: 2017-08-21
+                    description: Date the rule expires and stops applying.
+                    example: "2017-08-21"
                     format: date
                     type: string
                 externalReferenceCode:
@@ -1334,51 +1379,51 @@ components:
                     example: AB-34098-789-N
                     type: string
                 id:
-                    description: Unique rule identifier (FK to COREntry.corEntryId). Read-only.
+                    description: Reference to the order rule (FK identifier). Read-only.
                     example: 30130
                     format: int64
                     minimum: 0
                     type: integer
                 name:
-                    description: Display name of the rule.
-                    example: Laptops, Beverages
+                    description: Display name of the rule. Filterable via the OData query parameter.
+                    example: Volume Discount
                     type: string
                 neverExpire:
-                    description: Boolean; if true, ignores expirationDate and rule never expires.
-                    example: true
+                    description: When true, the rule ignores expirationDate and never expires.
+                    example: false
                     type: boolean
                 orderRuleAccount:
-                    description: Nested array of OrderRuleAccount objects describing the accounts the rule applies to.
+                    description: "List of accounts the rule applies to. Upserts on PATCH: missing entries are deleted."
                     items:
                         $ref: "#/components/schemas/OrderRuleAccount"
                     type: array
                 orderRuleAccountGroup:
-                    description: Nested array of OrderRuleAccountGroup objects describing the account groups the rule applies to.
+                    description: "List of account groups the rule applies to. Upserts on PATCH: missing entries are deleted."
                     items:
                         $ref: "#/components/schemas/OrderRuleAccountGroup"
                     type: array
                 orderRuleChannel:
-                    description: Nested array of OrderRuleChannel objects describing the channels the rule applies to.
+                    description: "List of channels the rule applies to. Upserts on PATCH: missing entries are deleted."
                     items:
                         $ref: "#/components/schemas/OrderRuleChannel"
                     type: array
                 orderRuleOrderType:
-                    description: Nested array of OrderRuleOrderType objects describing the order types the rule applies to.
+                    description: "List of order types the rule applies to. Upserts on PATCH: missing entries are deleted."
                     items:
                         $ref: "#/components/schemas/OrderRuleOrderType"
                     type: array
                 priority:
-                    description: Integer numeric priority for rule evaluation order (higher number = higher priority).
-                    example: 1.2
+                    description: Numeric priority for rule evaluation order. Higher values are evaluated first.
+                    example: 1
                     format: double
                     type: number
                 type:
-                    description: Free-text rule type identifier (e.g., "minimum_order_value", "shipping_restriction").
-                    example: order-limit
+                    description: Rule type identifier (for example, minimum_order_value, shipping_restriction). Free-form string.
+                    example: minimum_order_value
                     type: string
                 typeSettings:
-                    description: Free-text or JSON settings/configuration specific to the rule type.
-                    example: "22.50"
+                    description: Free-form JSON or text configuration specific to the rule type.
+                    example: minValue=500
                     type: string
                 workflowStatusInfo:
                     $ref: "#/components/schemas/Status"
@@ -1388,18 +1433,18 @@ components:
             - type
             type: object
         OrderRuleAccount:
-            description: A relationship entity linking an account to an order rule for rule application targeting.
+            description: Binding between an order rule and a specific account. Identifies an account the rule applies to.
             properties:
                 account:
                     $ref: "#/components/schemas/Account"
                     readOnly: true
                 accountExternalReferenceCode:
-                    description: External reference code of the account; used for lookup.
-                    example: DAB-34098-789-N
+                    description: External reference code of the account. Used as a lookup key when the numeric account ID is not supplied.
+                    example: AB-34098-789-N
                     type: string
                 accountId:
-                    description: Reference to the Account entity (FK).
-                    example: 30324
+                    description: Reference to the account (FK identifier).
+                    example: 30130
                     format: int64
                     minimum: 0
                     type: integer
@@ -1412,18 +1457,18 @@ components:
                     readOnly: true
                     type: object
                 orderRuleAccountId:
-                    description: Reference to the orderRuleAccount entity (FK).
-                    example: 30643
+                    description: Reference to the order rule account relationship (FK identifier). Read-only.
+                    example: 30130
                     format: int64
                     minimum: 0
                     readOnly: true
                     type: integer
                 orderRuleExternalReferenceCode:
-                    description: External reference code of the orderRule entity. Used as a lookup key in place of the numeric orderRuleId.
-                    example: PAB-34098-789-N
+                    description: External reference code of the parent order rule.
+                    example: AB-34098-789-N
                     type: string
                 orderRuleId:
-                    description: Reference to the orderRule entity (FK).
+                    description: Reference to the parent order rule (FK identifier).
                     example: 30130
                     format: int64
                     minimum: 0
@@ -1433,18 +1478,18 @@ components:
             - orderRuleId
             type: object
         OrderRuleAccountGroup:
-            description: A relationship entity linking an account group to an order rule for rule application targeting.
+            description: Binding between an order rule and an account group. Identifies an account group the rule applies to.
             properties:
                 accountGroup:
                     $ref: "#/components/schemas/OrderAccountGroup"
                     readOnly: true
                 accountGroupExternalReferenceCode:
-                    description: External reference code of the account group; used for lookup.
-                    example: DAB-34098-789-N
+                    description: External reference code of the account group. Used as a lookup key when the numeric account group ID is not supplied.
+                    example: AB-34098-789-N
                     type: string
                 accountGroupId:
-                    description: Reference to the AccountGroup entity (FK).
-                    example: 30324
+                    description: Reference to the account group (FK identifier).
+                    example: 30130
                     format: int64
                     minimum: 0
                     type: integer
@@ -1457,18 +1502,18 @@ components:
                     readOnly: true
                     type: object
                 orderRuleAccountGroupId:
-                    description: Unique identifier of this orderRuleAccountGroup relationship entry (FK). Read-only.
-                    example: 30643
+                    description: Reference to the order rule account group relationship (FK identifier). Read-only.
+                    example: 30130
                     format: int64
                     minimum: 0
                     readOnly: true
                     type: integer
                 orderRuleExternalReferenceCode:
-                    description: External reference code of the orderRule entity. Used as a lookup key in place of the numeric orderRuleId.
-                    example: PAB-34098-789-N
+                    description: External reference code of the parent order rule.
+                    example: AB-34098-789-N
                     type: string
                 orderRuleId:
-                    description: Reference to the orderRule entity (FK).
+                    description: Reference to the parent order rule (FK identifier).
                     example: 30130
                     format: int64
                     minimum: 0
@@ -1478,7 +1523,7 @@ components:
             - orderRuleId
             type: object
         OrderRuleChannel:
-            description: A relationship entity linking a channel to an order rule for channel-specific rule application.
+            description: Binding between an order rule and a sales channel. Identifies a channel the rule applies to.
             properties:
                 actions:
                     additionalProperties:
@@ -1492,28 +1537,28 @@ components:
                     $ref: "#/components/schemas/Channel"
                     readOnly: true
                 channelExternalReferenceCode:
-                    description: External reference code of the channel; used for lookup.
-                    example: DAB-34098-789-N
+                    description: External reference code of the channel. Used as a lookup key when the numeric channel ID is not supplied.
+                    example: AB-34098-789-N
                     type: string
                 channelId:
-                    description: Reference to the CommerceChannel entity (FK).
-                    example: 30324
+                    description: Reference to the channel (FK identifier).
+                    example: 30130
                     format: int64
                     minimum: 0
                     type: integer
                 orderRuleChannelId:
-                    description: Reference to the orderRuleChannel entity (FK).
-                    example: 30643
+                    description: Reference to the order rule channel relationship (FK identifier). Read-only.
+                    example: 30130
                     format: int64
                     minimum: 0
                     readOnly: true
                     type: integer
                 orderRuleExternalReferenceCode:
-                    description: External reference code of the orderRule entity. Used as a lookup key in place of the numeric orderRuleId.
-                    example: PAB-34098-789-N
+                    description: External reference code of the parent order rule.
+                    example: AB-34098-789-N
                     type: string
                 orderRuleId:
-                    description: Reference to the orderRule entity (FK).
+                    description: Reference to the parent order rule (FK identifier).
                     example: 30130
                     format: int64
                     minimum: 0
@@ -1523,7 +1568,7 @@ components:
             - orderRuleId
             type: object
         OrderRuleOrderType:
-            description: A relationship entity linking an order type to an order rule for order-type-specific rule application.
+            description: Binding between an order rule and an order type. Identifies an order type the rule applies to.
             properties:
                 actions:
                     additionalProperties:
@@ -1534,18 +1579,18 @@ components:
                     readOnly: true
                     type: object
                 orderRuleExternalReferenceCode:
-                    description: External reference code of the orderRule entity. Used as a lookup key in place of the numeric orderRuleId.
-                    example: PAB-34098-789-N
+                    description: External reference code of the parent order rule.
+                    example: AB-34098-789-N
                     type: string
                 orderRuleId:
-                    description: Reference to the orderRule entity (FK).
+                    description: Reference to the parent order rule (FK identifier).
                     example: 30130
                     format: int64
                     minimum: 0
                     type: integer
                 orderRuleOrderTypeId:
-                    description: Reference to the orderRuleOrderType entity (FK).
-                    example: 30643
+                    description: Reference to the order rule order type relationship (FK identifier). Read-only.
+                    example: 30130
                     format: int64
                     minimum: 0
                     readOnly: true
@@ -1554,12 +1599,12 @@ components:
                     $ref: "#/components/schemas/OrderType"
                     readOnly: true
                 orderTypeExternalReferenceCode:
-                    description: External reference code of the order type; used for lookup.
-                    example: DAB-34098-789-N
+                    description: External reference code of the order type. Used as a lookup key when the numeric order type ID is not supplied.
+                    example: AB-34098-789-N
                     type: string
                 orderTypeId:
-                    description: Reference to the CommerceOrderType entity (FK).
-                    example: 30324
+                    description: Reference to the order type (FK identifier).
+                    example: 30130
                     format: int64
                     minimum: 0
                     type: integer
@@ -1568,47 +1613,49 @@ components:
             - orderTypeId
             type: object
         OrderType:
-            description: An order type classification entity that groups orders and can be linked to channels and terms.
+            description: An order classification that groups orders by purpose (B2B quote, retail purchase, subscription, etc.). Order types can be restricted to specific channels and bound to specific delivery and payment terms.
             properties:
                 actions:
                     additionalProperties:
                         additionalProperties:
                             type: string
                         type: object
-                    description: Map of HATEOAS actions available to the current user. Read-only.
+                    description: Map of HATEOAS actions available to the current user, keyed by action name. Each value carries the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     readOnly: true
                     type: object
                 active:
-                    description: Boolean activation flag for the order type.
+                    description: When true, the order type is available for new orders. When false, the order type is disabled.
                     example: true
                     type: boolean
                 customFields:
                     additionalProperties: true
-                    description: Map of custom field values.
+                    description: Map of custom-field values keyed by field name. Values depend on the custom-field type.
+                    example:
+                        customField: customValue
                     type: object
                 description:
                     additionalProperties:
                         type: string
-                    description: Localized text. Map keys are locale codes (for example, en_US, it_IT); values are the translated strings.
+                    description: Localized text. Map keys are locale codes; values are the translated descriptions.
                     example:
-                        en_US: Title
-                        hr_HR: Title HR
-                        hu_HU: Title HU
+                        en_US: Cordless circular saw with brushless motor.
+                        hr_HR: Product Description HR
+                        hu_HU: Product Description HU
                     type: object
                 displayDate:
-                    description: ISO 8601 date when the order type becomes active.
-                    example: 2017-07-21
+                    description: Date the order type becomes active.
+                    example: "2017-07-21"
                     format: date
                     type: string
                 displayOrder:
-                    description: Integer sort order for displaying multiple order types.
+                    description: Numeric sort order for displaying multiple order types. Lower values come first.
                     example: 1
                     format: int32
                     minimum: 0
                     type: integer
                 expirationDate:
-                    description: ISO 8601 date when the order type expires.
-                    example: 2017-08-21
+                    description: Date the order type expires.
+                    example: "2017-08-21"
                     format: date
                     type: string
                 externalReferenceCode:
@@ -1616,7 +1663,7 @@ components:
                     example: AB-34098-789-N
                     type: string
                 id:
-                    description: Unique order type identifier (FK to CommerceOrderType.commerceOrderTypeId). Read-only.
+                    description: Reference to the order type (FK identifier). Read-only.
                     example: 30130
                     format: int64
                     minimum: 0
@@ -1624,15 +1671,15 @@ components:
                 name:
                     additionalProperties:
                         type: string
-                    description: Localized text. Map keys are locale codes; values are the translated strings.
+                    description: Localized text. Map keys are locale codes; values are the translated names.
                     example:
-                        en_US: Title
-                        hr_HR: Title HR
-                        hu_HU: Title HU
+                        en_US: Hand Saw
+                        hr_HR: Product Name HR
+                        hu_HU: Product Name HU
                     type: object
                 neverExpire:
-                    description: Boolean; if true, ignores expirationDate and order type never expires.
-                    example: true
+                    description: When true, the order type ignores expirationDate and never expires.
+                    example: false
                     type: boolean
                 orderTypeChannels:
                     description: Nested array of OrderTypeChannel objects (upsert semantics).
@@ -1646,7 +1693,7 @@ components:
             - name
             type: object
         OrderTypeChannel:
-            description: A relationship entity linking a channel to an order type for channel-specific type classification.
+            description: Binding between an order type and a sales channel. Identifies a channel where the order type is available.
             properties:
                 actions:
                     additionalProperties:
@@ -1660,29 +1707,29 @@ components:
                     $ref: "#/components/schemas/Channel"
                     readOnly: true
                 channelExternalReferenceCode:
-                    description: External reference code of the channel; used for lookup if channelId not provided.
-                    example: PAB-34098-789-N
+                    description: External reference code of the channel. Used as a lookup key when the numeric channel ID is not supplied.
+                    example: AB-34098-789-N
                     type: string
                 channelId:
-                    description: Reference to the CommerceChannel entity (FK).
+                    description: Reference to the channel (FK identifier).
                     example: 30130
                     format: int64
                     minimum: 0
                     type: integer
                 orderTypeChannelId:
-                    description: Reference to the orderTypeChannel entity (FK).
-                    example: 30643
+                    description: Reference to the order-type-channel link (FK identifier). Read-only.
+                    example: 30130
                     format: int64
                     minimum: 0
                     readOnly: true
                     type: integer
                 orderTypeExternalReferenceCode:
-                    description: External reference code of the orderType entity. Used as a lookup key in place of the numeric orderTypeId.
-                    example: DAB-34098-789-N
+                    description: External reference code of the parent order type.
+                    example: AB-34098-789-N
                     type: string
                 orderTypeId:
-                    description: Reference to the orderType entity (FK).
-                    example: 30324
+                    description: Reference to the parent order type (FK identifier).
+                    example: 30130
                     format: int64
                     minimum: 0
                     type: integer
@@ -1691,19 +1738,19 @@ components:
             - orderTypeId
             type: object
         ShippingAddress:
-            description: A postal address entity designated as the shipping address for an order or order item.
+            description: Postal address used for shipping the order or a single line item. Stored as an address record on the order and accessed by order ID or external reference code.
             properties:
                 city:
-                    description: City name.
+                    description: City name of the address. Required on create.
                     example: Diamond Bar
                     type: string
                 countryISOCode:
-                    description: ISO 3166-1 alpha-2 country code.
+                    description: ISO 3166-1 alpha-2 country code of the address.
                     example: US
                     type: string
                 description:
-                    description: Free-text notes or directions for delivery.
-                    example: right stairs, first room on the left
+                    description: Free-text delivery notes or directions associated with the address.
+                    example: Right stairs, first room on the left.
                     type: string
                 externalReferenceCode:
                     description: Idempotency key for create and update; must be unique per address within the company.
@@ -1711,51 +1758,51 @@ components:
                     readOnly: true
                     type: string
                 id:
-                    description: Unique address identifier (FK to CommerceAddress.commerceAddressId).
+                    description: Reference to the address (FK identifier).
                     example: 31130
                     format: int64
                     minimum: 0
                     type: integer
                 latitude:
-                    description: Decimal latitude for geocoding.
+                    description: Decimal latitude of the address for geocoding.
                     example: 33.9976884
                     format: double
                     type: number
                 longitude:
-                    description: Decimal longitude for geocoding.
+                    description: Decimal longitude of the address for geocoding.
                     example: -117.8144595
                     format: double
                     type: number
                 name:
-                    description: Address name/label.
+                    description: Address label or recipient name.
                     example: Alessio Antonio Rendina
                     type: string
                 phoneNumber:
-                    description: Phone number associated with the address.
+                    description: Contact phone number associated with the address.
                     example: (123) 456 7890
                     type: string
                 regionISOCode:
-                    description: ISO 3166-2 sub-region code (province or state) within the country (for example, CA, NY).
+                    description: ISO 3166-2 sub-region (province or state) code within the country.
                     example: CA
                     type: string
                 street1:
-                    description: Primary street address line.
+                    description: Primary street line of the address.
                     example: 1400 Montefino Ave
                     type: string
                 street2:
-                    description: Secondary street address line.
+                    description: Secondary street line (apartment, suite, floor).
                     example: 1st floor
                     type: string
                 street3:
-                    description: Tertiary street address line.
-                    example: suite 200
+                    description: Tertiary street line for additional address detail.
+                    example: Suite 200
                     type: string
                 subtype:
-                    description: Address subtype classifier (for example, billing or shipping default). Free-text identifier.
-                    example: box
+                    description: Address subtype classifier. Free-form string.
+                    example: business
                     type: string
                 zip:
-                    description: ZIP or postal code for the address.
+                    description: ZIP or postal code of the address.
                     example: "91765"
                     type: string
             required:
@@ -1765,40 +1812,41 @@ components:
             - street1
             type: object
         Status:
-            description: A status code enumeration representing order workflow states (pending, processing, completed, cancelled, etc.).
+            description: Status pair returned for workflow- and payment-style integer codes. Carries the numeric code and its human-readable label.
             properties:
                 code:
                     description: Integer status code value.
+                    example: 0
                     format: int32
                     readOnly: true
                     type: integer
                 label:
-                    description: Human-readable label for the status (e.g., "Pending", "Processing", "Completed").
-                    example: black
+                    description: Human-readable label for the status code.
+                    example: Approved
                     type: string
                 label_i18n:
-                    description: Localized text. Map keys are locale codes (for example, en_US, it_IT); values are the translated strings.
-                    example: black
+                    description: Localized human-readable label for the status code, resolved against the request locale.
+                    example: Approved
                     type: string
             type: object
         Term:
-            description: A commerce term entry (delivery or payment term) that can be linked to orders and order types via TermOrderType.
+            description: A reusable commerce term (delivery term or payment term) that can be bound to one or more order types. Carries a localized label and description, a priority for evaluation order, and active or expiration dates.
             properties:
                 actions:
                     additionalProperties:
                         additionalProperties:
                             type: string
                         type: object
-                    description: Map of HATEOAS actions available to the current user. Read-only.
+                    description: Map of HATEOAS actions available to the current user, keyed by action name. Each value carries the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     readOnly: true
                     type: object
                 active:
-                    description: Boolean activation flag for the term.
+                    description: When true, the term is evaluated when orders are placed. When false, the term is disabled.
                     example: true
                     type: boolean
                 createDate:
-                    description: ISO 8601 timestamp of when the Term was created. Read-only.
-                    example: 2017-07-21
+                    description: Creation date for the term. Read-only.
+                    example: "2017-07-21"
                     format: date
                     type: string
                 description:
@@ -1806,18 +1854,18 @@ components:
                         type: string
                     description: Localized text. Map keys are locale codes; values are the translated descriptions.
                     example:
-                        en_US: Term Description US
+                        en_US: Payable within 30 days.
                         hr_HR: Term Description HR
                         hu_HU: Term Description HU
                     type: object
                 displayDate:
-                    description: ISO 8601 date when the term becomes active.
-                    example: 2017-07-21
+                    description: Date the term becomes active.
+                    example: "2017-07-21"
                     format: date
                     type: string
                 expirationDate:
-                    description: ISO 8601 date when the term expires.
-                    example: 2017-08-21
+                    description: Date the term expires.
+                    example: "2017-08-21"
                     format: date
                     type: string
                 externalReferenceCode:
@@ -1825,7 +1873,7 @@ components:
                     example: AB-34098-789-N
                     type: string
                 id:
-                    description: Unique term identifier (FK to CommerceTermEntry.commerceTermEntryId). Read-only.
+                    description: Reference to the term (FK identifier). Read-only.
                     example: 30130
                     format: int64
                     minimum: 0
@@ -1835,21 +1883,21 @@ components:
                         type: string
                     description: Localized text. Map keys are locale codes; values are the translated labels (display names).
                     example:
-                        en_US: Term Label US
+                        en_US: Net 30
                         hr_HR: Term Label HR
                         hu_HU: Term Label HU
                     type: object
                 name:
-                    description: Free-text name/identifier for the term (e.g., "Net30", "2/10 Net30").
-                    example: Laptops, Beverages
+                    description: Free-text name identifying the term (for example, Net30, 2/10 Net30).
+                    example: Net 30
                     type: string
                 neverExpire:
-                    description: Boolean; if true, ignores expirationDate and term never expires.
-                    example: true
+                    description: When true, the term ignores expirationDate and never expires.
+                    example: false
                     type: boolean
                 priority:
-                    description: Double numeric priority for term evaluation order.
-                    example: 1.2
+                    description: Numeric priority for term evaluation order.
+                    example: 1.0
                     format: double
                     type: number
                 termOrderType:
@@ -1858,15 +1906,16 @@ components:
                         $ref: "#/components/schemas/TermOrderType"
                     type: array
                 type:
-                    description: Free-text term type identifier (e.g., "delivery", "payment").
-                    example: payment-terms
+                    description: Term type identifier (delivery or payment). Free-form string drawn from the configured term-type list.
+                    example: payment
                     type: string
                 typeLocalized:
                     description: Localized text. Map keys are locale codes; values are the translated strings.
                     example: Payment Terms
                     type: string
                 typeSettings:
-                    description: Free-text or JSON settings/configuration specific to the term type.
+                    description: Free-form JSON or text configuration specific to the term type.
+                    example: daysFromInvoice=30
                     type: string
                 workflowStatusInfo:
                     $ref: "#/components/schemas/Status"
@@ -1876,7 +1925,7 @@ components:
             - type
             type: object
         TermOrderType:
-            description: A relationship entity linking an order type to a term for term applicability to specific order types.
+            description: Binding between a term and an order type. Identifies an order type the term applies to.
             properties:
                 actions:
                     additionalProperties:
@@ -1890,28 +1939,28 @@ components:
                     $ref: "#/components/schemas/OrderType"
                     readOnly: true
                 orderTypeExternalReferenceCode:
-                    description: External reference code of the order type; used for lookup.
-                    example: DAB-34098-789-N
+                    description: External reference code of the order type. Used as a lookup key when the numeric order type ID is not supplied.
+                    example: AB-34098-789-N
                     type: string
                 orderTypeId:
-                    description: Reference to the CommerceOrderType entity (FK).
-                    example: 30324
+                    description: Reference to the order type (FK identifier).
+                    example: 30130
                     format: int64
                     minimum: 0
                     type: integer
                 termExternalReferenceCode:
-                    description: External reference code of the term entity. Used as a lookup key in place of the numeric termId.
-                    example: PAB-34098-789-N
+                    description: External reference code of the parent term.
+                    example: AB-34098-789-N
                     type: string
                 termId:
-                    description: Denormalized term ID (may be same as id in some implementations).
+                    description: Reference to the parent term (FK identifier).
                     example: 30130
                     format: int64
                     minimum: 0
                     type: integer
                 termOrderTypeId:
-                    description: Reference to the termOrderType entity (FK).
-                    example: 30643
+                    description: Reference to the term-order-type link (FK identifier). Read-only.
+                    example: 30130
                     format: int64
                     minimum: 0
                     readOnly: true
@@ -1921,18 +1970,19 @@ components:
             - termId
             type: object
         VirtualItem:
-            description: A virtual/digital product item within an order (extends OrderItem concept for non-physical goods).
+            description: A virtual or downloadable asset associated with an order item, such as a license URL with usage limits.
             properties:
                 url:
-                    description: Fully qualified URL where the resource asset can be downloaded. Read-only.
-                    example: http://www.liferay.com
+                    description: Fully qualified URL where the virtual asset can be downloaded.
+                    example: https://example.com/downloads/license.pdf
                     type: string
                 usages:
-                    description: Maximum number of times the virtual asset can be redeemed. 0 -- unlimited.
+                    description: Integer maximum number of times the virtual asset can be redeemed. 0 means unlimited.
+                    example: 5
                     format: int32
                     type: integer
                 version:
-                    description: Version label of the virtual asset (for example, v1.0.0).
+                    description: Version label of the virtual asset.
                     example: v1.0.0
                     type: string
             type: object
