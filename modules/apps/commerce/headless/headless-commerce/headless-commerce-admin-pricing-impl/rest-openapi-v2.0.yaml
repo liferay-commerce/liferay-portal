@@ -450,10 +450,12 @@ components:
                 externalReferenceCode:
                     description:
                         Idempotency key for create and update; must be unique within the company.
+                    example: AB-34098-789-N
                     type: string
                 id:
                     description:
                         Internal numeric identifier of the channel. Server-assigned and stable.
+                    example: 30130
                     format: int64
                     type: integer
                 name:
@@ -462,7 +464,8 @@ components:
                     type: string
                 siteGroupId:
                     description:
-                        Reference to the siteGroup entity (FK identifier).
+                        Identifier of the Liferay site Group that hosts this CommerceChannel. Read-only.
+                    example: 30130
                     format: int64
                     type: integer
                 type:
@@ -722,7 +725,7 @@ components:
                     readOnly: true
                 accountExternalReferenceCode:
                     description:
-                        String value of `accountExternalReferenceCode`.
+                        External reference code of the bound account; alternative to `accountId` for lookup.
                     example: PAB-34098-789-N
                     type: string
                 accountId:
@@ -752,7 +755,7 @@ components:
                     type: integer
                 discountExternalReferenceCode:
                     description:
-                        String value of `discountExternalReferenceCode`.
+                        External reference code of the bound discount; alternative to `discountId` for lookup.
                     example: DAB-34098-789-N
                     type: string
                 discountId:
@@ -776,7 +779,7 @@ components:
                     readOnly: true
                 accountGroupExternalReferenceCode:
                     description:
-                        String value of `accountGroupExternalReferenceCode`.
+                        External reference code of the bound accountGroup; alternative to `accountGroupId` for lookup.
                     example: PAB-34098-789-N
                     type: string
                 accountGroupId:
@@ -806,7 +809,7 @@ components:
                     type: integer
                 discountExternalReferenceCode:
                     description:
-                        String value of `discountExternalReferenceCode`.
+                        External reference code of the bound discount; alternative to `discountId` for lookup.
                     example: DAB-34098-789-N
                     type: string
                 discountId:
@@ -840,7 +843,7 @@ components:
                     readOnly: true
                 categoryExternalReferenceCode:
                     description:
-                        String value of `categoryExternalReferenceCode`.
+                        External reference code of the bound category; alternative to `categoryId` for lookup.
                     example: PAB-34098-789-N
                     type: string
                 categoryId:
@@ -860,7 +863,7 @@ components:
                     type: integer
                 discountExternalReferenceCode:
                     description:
-                        String value of `discountExternalReferenceCode`.
+                        External reference code of the bound discount; alternative to `discountId` for lookup.
                     example: DAB-34098-789-N
                     type: string
                 discountId:
@@ -894,7 +897,7 @@ components:
                     readOnly: true
                 channelExternalReferenceCode:
                     description:
-                        String value of `channelExternalReferenceCode`.
+                        External reference code of the bound channel; alternative to `channelId` for lookup.
                     example: PAB-34098-789-N
                     type: string
                 channelId:
@@ -914,7 +917,7 @@ components:
                     type: integer
                 discountExternalReferenceCode:
                     description:
-                        String value of `discountExternalReferenceCode`.
+                        External reference code of the bound discount; alternative to `discountId` for lookup.
                     example: DAB-34098-789-N
                     type: string
                 discountId:
@@ -945,7 +948,7 @@ components:
                     type: object
                 discountExternalReferenceCode:
                     description:
-                        String value of `discountExternalReferenceCode`.
+                        External reference code of the bound discount; alternative to `discountId` for lookup.
                     example: PAB-34098-789-N
                     type: string
                 discountId:
@@ -969,7 +972,7 @@ components:
                     readOnly: true
                 orderTypeExternalReferenceCode:
                     description:
-                        String value of `orderTypeExternalReferenceCode`.
+                        External reference code of the bound orderType; alternative to `orderTypeId` for lookup.
                     example: DAB-34098-789-N
                     type: string
                 orderTypeId:
@@ -1007,7 +1010,7 @@ components:
                     type: object
                 discountExternalReferenceCode:
                     description:
-                        String value of `discountExternalReferenceCode`.
+                        External reference code of the bound discount; alternative to `discountId` for lookup.
                     example: DAB-34098-789-N
                     type: string
                 discountId:
@@ -1031,7 +1034,7 @@ components:
                     readOnly: true
                 productExternalReferenceCode:
                     description:
-                        String value of `productExternalReferenceCode`.
+                        External reference code of the bound product; alternative to `productId` for lookup.
                     example: PAB-34098-789-N
                     type: string
                 productId:
@@ -1061,7 +1064,7 @@ components:
                     type: object
                 discountExternalReferenceCode:
                     description:
-                        String value of `discountExternalReferenceCode`.
+                        External reference code of the bound discount; alternative to `discountId` for lookup.
                     example: DAB-34098-789-N
                     type: string
                 discountId:
@@ -1085,7 +1088,7 @@ components:
                     readOnly: true
                 productGroupExternalReferenceCode:
                     description:
-                        String value of `productGroupExternalReferenceCode`.
+                        External reference code of the bound productGroup; alternative to `productGroupId` for lookup.
                     example: PAB-34098-789-N
                     type: string
                 productGroupId:
@@ -1164,7 +1167,7 @@ components:
                     type: object
                 discountExternalReferenceCode:
                     description:
-                        String value of `discountExternalReferenceCode`.
+                        External reference code of the bound discount; alternative to `discountId` for lookup.
                     example: DAB-34098-789-N
                     type: string
                 discountId:
@@ -1192,7 +1195,8 @@ components:
                     type: integer
                 productName:
                     description:
-                        Value of `productName`.
+                        Localized display name of the bound product, mirrored from the underlying CPDefinition.
+                        Read-only.
                     additionalProperties:
                         type: string
                     example:
@@ -1205,7 +1209,7 @@ components:
                     readOnly: true
                 skuExternalReferenceCode:
                     description:
-                        External reference code of the bound SKU; alternative to the `sku` key for lookup.
+                        External reference code of the bound sku; alternative to `skuId` for lookup.
                     example: PAB-34098-789-N
                     type: string
                 skuId:
@@ -1308,7 +1312,8 @@ components:
                     type: boolean
                 bulkPricing:
                     description:
-                        Boolean flag controlling the `bulkPricing` aspect of this priceentry.
+                        When true, the priceentry enables bulk-pricing tier discovery on this SKU. Surfaces the
+                        underlying CommercePriceEntry.bulkPricing flag.
                     example: true
                     type: boolean
                 customFields:
@@ -1319,40 +1324,44 @@ components:
                     type: object
                 discountDiscovery:
                     description:
-                        Boolean flag controlling the `discountDiscovery` aspect of this priceentry.
+                        When true, runtime discount discovery walks this priceentry when resolving the cart-line price.
                     example: true
                     type: boolean
                 discountLevel1:
                     description:
-                        Numeric value of `discountLevel1`.
+                        Per-unit discount amount applied to this entry when the matching cart-line quantity falls in the
+                        level-1 band; sourced from CommercePriceEntry.discountLevel1.
                     example: 30130
                     format: bigdecimal
                     minimum: 0
                     type: number
                 discountLevel2:
                     description:
-                        Numeric value of `discountLevel2`.
+                        Per-unit discount amount applied to this entry when the matching cart-line quantity falls in the
+                        level-2 band; sourced from CommercePriceEntry.discountLevel2.
                     example: 30130
                     format: bigdecimal
                     minimum: 0
                     type: number
                 discountLevel3:
                     description:
-                        Numeric value of `discountLevel3`.
+                        Per-unit discount amount applied to this entry when the matching cart-line quantity falls in the
+                        level-3 band; sourced from CommercePriceEntry.discountLevel3.
                     example: 30130
                     format: bigdecimal
                     minimum: 0
                     type: number
                 discountLevel4:
                     description:
-                        Numeric value of `discountLevel4`.
+                        Per-unit discount amount applied to this entry when the matching cart-line quantity falls in the
+                        level-4 band; sourced from CommercePriceEntry.discountLevel4.
                     example: 30130
                     format: bigdecimal
                     minimum: 0
                     type: number
                 discountLevelsFormatted:
                     description:
-                        String value of `discountLevelsFormatted`.
+                        Pre-formatted display string of the per-level discount values. Read-only.
                     example: 10 | 10 | 10 | 10
                     type: string
                 displayDate:
@@ -1385,6 +1394,7 @@ components:
                 price:
                     description:
                         Unit price in the parent price list's currency.
+                    example: 10.1
                     format: double
                     type: number
                 priceEntryId:
@@ -1396,11 +1406,12 @@ components:
                     type: integer
                 priceFormatted:
                     description:
-                        String value of `priceFormatted`.
+                        Pre-formatted display string of the unit price, in the parent price list's currency. Read-only.
+                    example: $10.00
                     type: string
                 priceListExternalReferenceCode:
                     description:
-                        String value of `priceListExternalReferenceCode`.
+                        External reference code of the bound priceList; alternative to `priceListId` for lookup.
                     example: PLAB-34098-789-N
                     type: string
                 priceListId:
@@ -1412,7 +1423,8 @@ components:
                     type: integer
                 priceOnApplication:
                     description:
-                        Boolean flag controlling the `priceOnApplication` aspect of this priceentry.
+                        When true, the SKU price is hidden from the storefront and the buyer is required to request a
+                        quote.
                     example: true
                     type: boolean
                 product:
@@ -1420,7 +1432,8 @@ components:
                     readOnly: true
                 quantity:
                     description:
-                        Numeric value of `quantity`.
+                        Quantity bound to this priceentry entry; used for tier resolution against the cart line
+                        quantity.
                     example: 10.1
                     format: bigdecimal
                     type: number
@@ -1429,7 +1442,7 @@ components:
                     readOnly: true
                 skuExternalReferenceCode:
                     description:
-                        External reference code of the bound SKU; alternative to the `sku` key for lookup.
+                        External reference code of the bound sku; alternative to `skuId` for lookup.
                     example: CAB-34098-789-N
                     type: string
                 skuId:
@@ -1481,17 +1494,18 @@ components:
                     type: boolean
                 author:
                     description:
-                        String value of `author`.
+                        Login of the user who last persisted the record. Read-only.
                     example: admin
                     type: string
                 catalogBasePriceList:
                     description:
-                        Boolean flag controlling the `catalogBasePriceList` aspect of this pricelist.
+                        When true, the price list is the catalog's base list and serves as the fallback when no other
+                        price list resolves.
                     example: true
                     type: boolean
                 catalogExternalReferenceCode:
                     description:
-                        String value of `catalogExternalReferenceCode`.
+                        External reference code of the bound catalog; alternative to `catalogId` for lookup.
                     example: AAB-34098-789-N
                     type: string
                 catalogId:
@@ -1503,7 +1517,7 @@ components:
                     type: integer
                 catalogName:
                     description:
-                        String value of `catalogName`.
+                        Display name of the parent CommerceCatalog, mirrored from CommerceCatalog.name. Read-only.
                     example: catalog
                     type: string
                 createDate:
@@ -1519,12 +1533,12 @@ components:
                     type: string
                 currencyExternalReferenceCode:
                     description:
-                        String value of `currencyExternalReferenceCode`.
+                        External reference code of the bound currency; alternative to `currencyId` for lookup.
                     example: AAB-34098-789-N
                     type: string
                 currencyId:
                     description:
-                        Reference to the currency entity (FK identifier).
+                        Reference to the CommerceCurrency that the price list expresses monetary values in.
                     example: 30130
                     format: int64
                     minimum: 0
@@ -1566,7 +1580,8 @@ components:
                     type: string
                 netPrice:
                     description:
-                        Boolean flag controlling the `netPrice` aspect of this pricelist.
+                        When true, prices in this price list are expressed net of tax; when false, prices are gross
+                        (tax-inclusive).
                     example: true
                     type: boolean
                 neverExpire:
@@ -1576,7 +1591,8 @@ components:
                     type: boolean
                 parentPriceListId:
                     description:
-                        Reference to the parentPriceList entity (FK identifier).
+                        Reference to the parent CommercePriceList; non-null when this list is a child of another price
+                        list.
                     example: 30130
                     format: int64
                     minimum: 0
@@ -1658,7 +1674,7 @@ components:
                     readOnly: true
                 accountExternalReferenceCode:
                     description:
-                        String value of `accountExternalReferenceCode`.
+                        External reference code of the bound account; alternative to `accountId` for lookup.
                     example: DAB-34098-789-N
                     type: string
                 accountId:
@@ -1696,7 +1712,7 @@ components:
                     type: integer
                 priceListExternalReferenceCode:
                     description:
-                        String value of `priceListExternalReferenceCode`.
+                        External reference code of the bound priceList; alternative to `priceListId` for lookup.
                     example: PAB-34098-789-N
                     type: string
                 priceListId:
@@ -1721,7 +1737,7 @@ components:
                     readOnly: true
                 accountGroupExternalReferenceCode:
                     description:
-                        String value of `accountGroupExternalReferenceCode`.
+                        External reference code of the bound accountGroup; alternative to `accountGroupId` for lookup.
                     example: DAB-34098-789-N
                     type: string
                 accountGroupId:
@@ -1759,7 +1775,7 @@ components:
                     type: integer
                 priceListExternalReferenceCode:
                     description:
-                        String value of `priceListExternalReferenceCode`.
+                        External reference code of the bound priceList; alternative to `priceListId` for lookup.
                     example: PAB-34098-789-N
                     type: string
                 priceListId:
@@ -1793,7 +1809,7 @@ components:
                     readOnly: true
                 channelExternalReferenceCode:
                     description:
-                        String value of `channelExternalReferenceCode`.
+                        External reference code of the bound channel; alternative to `channelId` for lookup.
                     example: DAB-34098-789-N
                     type: string
                 channelId:
@@ -1821,7 +1837,7 @@ components:
                     type: integer
                 priceListExternalReferenceCode:
                     description:
-                        String value of `priceListExternalReferenceCode`.
+                        External reference code of the bound priceList; alternative to `priceListId` for lookup.
                     example: PAB-34098-789-N
                     type: string
                 priceListId:
@@ -1842,7 +1858,7 @@ components:
             properties:
                 discountExternalReferenceCode:
                     description:
-                        String value of `discountExternalReferenceCode`.
+                        External reference code of the bound discount; alternative to `discountId` for lookup.
                     example: DAB-34098-789-N
                     type: string
                 discountId:
@@ -1854,8 +1870,9 @@ components:
                     type: integer
                 discountName:
                     description:
-                        String value of `discountName`.
+                        Display name of the linked CommerceDiscount, mirrored from CommerceDiscount.title. Read-only.
                     readOnly: true
+                    example: 20% Off
                     type: string
                 order:
                     description:
@@ -1875,7 +1892,7 @@ components:
                     type: integer
                 priceListExternalReferenceCode:
                     description:
-                        String value of `priceListExternalReferenceCode`.
+                        External reference code of the bound priceList; alternative to `priceListId` for lookup.
                     example: PAB-34098-789-N
                     type: string
                 priceListId:
@@ -1909,7 +1926,7 @@ components:
                     readOnly: true
                 orderTypeExternalReferenceCode:
                     description:
-                        String value of `orderTypeExternalReferenceCode`.
+                        External reference code of the bound orderType; alternative to `orderTypeId` for lookup.
                     example: DAB-34098-789-N
                     type: string
                 orderTypeId:
@@ -1921,7 +1938,7 @@ components:
                     type: integer
                 priceListExternalReferenceCode:
                     description:
-                        String value of `priceListExternalReferenceCode`.
+                        External reference code of the bound priceList; alternative to `priceListId` for lookup.
                     example: PAB-34098-789-N
                     type: string
                 priceListId:
@@ -2017,7 +2034,7 @@ components:
                     type: boolean
                 priceListExternalReferenceCode:
                     description:
-                        String value of `priceListExternalReferenceCode`.
+                        External reference code of the bound priceList; alternative to `priceListId` for lookup.
                     example: PLAB-34098-789-N
                     type: string
                 priceListId:
@@ -2089,7 +2106,7 @@ components:
                     readOnly: true
                 categoryExternalReferenceCode:
                     description:
-                        String value of `categoryExternalReferenceCode`.
+                        External reference code of the bound category; alternative to `categoryId` for lookup.
                     example: PAB-34098-789-N
                     type: string
                 categoryId:
@@ -2109,7 +2126,7 @@ components:
                     type: integer
                 priceModifierExternalReferenceCode:
                     description:
-                        String value of `priceModifierExternalReferenceCode`.
+                        External reference code of the bound priceModifier; alternative to `priceModifierId` for lookup.
                     example: DAB-34098-789-N
                     type: string
                 priceModifierId:
@@ -2140,7 +2157,7 @@ components:
                     type: object
                 priceModifierExternalReferenceCode:
                     description:
-                        String value of `priceModifierExternalReferenceCode`.
+                        External reference code of the bound priceModifier; alternative to `priceModifierId` for lookup.
                     example: DAB-34098-789-N
                     type: string
                 priceModifierId:
@@ -2163,7 +2180,7 @@ components:
                     readOnly: true
                 productExternalReferenceCode:
                     description:
-                        String value of `productExternalReferenceCode`.
+                        External reference code of the bound product; alternative to `productId` for lookup.
                     example: PAB-34098-789-N
                     type: string
                 productId:
@@ -2194,7 +2211,7 @@ components:
                     type: object
                 priceModifierExternalReferenceCode:
                     description:
-                        String value of `priceModifierExternalReferenceCode`.
+                        External reference code of the bound priceModifier; alternative to `priceModifierId` for lookup.
                     example: DAB-34098-789-N
                     type: string
                 priceModifierId:
@@ -2217,7 +2234,7 @@ components:
                     readOnly: true
                 productGroupExternalReferenceCode:
                     description:
-                        String value of `productGroupExternalReferenceCode`.
+                        External reference code of the bound productGroup; alternative to `productGroupId` for lookup.
                     example: PAB-34098-789-N
                     type: string
                 productGroupId:
@@ -2281,7 +2298,7 @@ components:
                     type: string
                 thumbnail:
                     description:
-                        String value of `thumbnail`.
+                        Resolved thumbnail URL for the bound product. Read-only.
                     example: simple
                     readOnly: true
                     type: string
@@ -2300,7 +2317,7 @@ components:
                     type: integer
                 productsCount:
                     description:
-                        Numeric value of `productsCount`.
+                        Number of products that belong to the product group at read time. Read-only.
                     example: 20
                     format: int32
                     minimum: 0
@@ -2323,21 +2340,25 @@ components:
             properties:
                 basePrice:
                     description:
-                        Numeric value of `basePrice`.
+                        Base regular price of the SKU when no per-customer price list applies.
+                    example: 10.1
                     format: double
                     type: number
                 basePriceFormatted:
                     description:
-                        String value of `basePriceFormatted`.
+                        Pre-formatted display string of the base price, in the SKU's resolved currency. Read-only.
+                    example: $10.00
                     type: string
                 basePromoPrice:
                     description:
-                        Numeric value of `basePromoPrice`.
+                        Base promo price of the SKU when no per-customer price list applies.
+                    example: 10.1
                     format: double
                     type: number
                 basePromoPriceFormatted:
                     description:
-                        String value of `basePromoPriceFormatted`.
+                        Pre-formatted display string of the base promo price, in the SKU's resolved currency. Read-only.
+                    example: $10.00
                     type: string
                 id:
                     description:
@@ -2408,33 +2429,37 @@ components:
                     type: object
                 discountDiscovery:
                     description:
-                        Boolean flag controlling the `discountDiscovery` aspect of this tierprice.
+                        When true, runtime discount discovery walks this tierprice when resolving the cart-line price.
                     example: true
                     type: boolean
                 discountLevel1:
                     description:
-                        Numeric value of `discountLevel1`.
+                        Per-unit discount amount applied to this entry when the matching cart-line quantity falls in the
+                        level-1 band; sourced from CommercePriceEntry.discountLevel1.
                     example: 30130
                     format: bigdecimal
                     minimum: 0
                     type: number
                 discountLevel2:
                     description:
-                        Numeric value of `discountLevel2`.
+                        Per-unit discount amount applied to this entry when the matching cart-line quantity falls in the
+                        level-2 band; sourced from CommercePriceEntry.discountLevel2.
                     example: 30130
                     format: bigdecimal
                     minimum: 0
                     type: number
                 discountLevel3:
                     description:
-                        Numeric value of `discountLevel3`.
+                        Per-unit discount amount applied to this entry when the matching cart-line quantity falls in the
+                        level-3 band; sourced from CommercePriceEntry.discountLevel3.
                     example: 30130
                     format: bigdecimal
                     minimum: 0
                     type: number
                 discountLevel4:
                     description:
-                        Numeric value of `discountLevel4`.
+                        Per-unit discount amount applied to this entry when the matching cart-line quantity falls in the
+                        level-4 band; sourced from CommercePriceEntry.discountLevel4.
                     example: 30130
                     format: bigdecimal
                     minimum: 0
@@ -2479,11 +2504,12 @@ components:
                 price:
                     description:
                         Unit price in the parent price list's currency.
+                    example: 10.1
                     format: double
                     type: number
                 priceEntryExternalReferenceCode:
                     description:
-                        String value of `priceEntryExternalReferenceCode`.
+                        External reference code of the bound priceEntry; alternative to `priceEntryId` for lookup.
                     example: CAB-34098-789-N
                     type: string
                 priceEntryId:
@@ -2495,7 +2521,8 @@ components:
                     type: integer
                 priceFormatted:
                     description:
-                        String value of `priceFormatted`.
+                        Pre-formatted display string of the unit price, in the parent price list's currency. Read-only.
+                    example: $10.00
                     type: string
                 unitOfMeasureKey:
                     description:
