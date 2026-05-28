@@ -147,7 +147,7 @@ public class DiscountChannel implements Serializable {
 	private Supplier<Channel> _channelSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "String value of `channelExternalReferenceCode`.",
+		description = "External reference code of the bound channel; alternative to `channelId` for lookup.",
 		example = "PAB-34098-789-N"
 	)
 	public String getChannelExternalReferenceCode() {
@@ -188,7 +188,7 @@ public class DiscountChannel implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "String value of `channelExternalReferenceCode`."
+		description = "External reference code of the bound channel; alternative to `channelId` for lookup."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String channelExternalReferenceCode;
@@ -292,7 +292,7 @@ public class DiscountChannel implements Serializable {
 	private Supplier<Long> _discountChannelIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "String value of `discountExternalReferenceCode`.",
+		description = "External reference code of the bound discount; alternative to `discountId` for lookup.",
 		example = "DAB-34098-789-N"
 	)
 	public String getDiscountExternalReferenceCode() {
@@ -333,7 +333,7 @@ public class DiscountChannel implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "String value of `discountExternalReferenceCode`."
+		description = "External reference code of the bound discount; alternative to `discountId` for lookup."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String discountExternalReferenceCode;
@@ -609,4 +609,4 @@ public class DiscountChannel implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:191370192
+// LIFERAY-REST-BUILDER-HASH:-2007824132

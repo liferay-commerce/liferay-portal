@@ -52,7 +52,8 @@ public class Sku implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Numeric value of `basePrice`."
+		description = "Base regular price of the SKU when no per-customer price list applies.",
+		example = "10.1"
 	)
 	public Double getBasePrice() {
 		if (_basePriceSupplier != null) {
@@ -87,7 +88,9 @@ public class Sku implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Numeric value of `basePrice`.")
+	@GraphQLField(
+		description = "Base regular price of the SKU when no per-customer price list applies."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Double basePrice;
 
@@ -95,7 +98,8 @@ public class Sku implements Serializable {
 	private Supplier<Double> _basePriceSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "String value of `basePriceFormatted`."
+		description = "Pre-formatted display string of the base price, in the SKU's resolved currency. Read-only.",
+		example = "$10.00"
 	)
 	public String getBasePriceFormatted() {
 		if (_basePriceFormattedSupplier != null) {
@@ -130,7 +134,9 @@ public class Sku implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "String value of `basePriceFormatted`.")
+	@GraphQLField(
+		description = "Pre-formatted display string of the base price, in the SKU's resolved currency. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String basePriceFormatted;
 
@@ -138,7 +144,8 @@ public class Sku implements Serializable {
 	private Supplier<String> _basePriceFormattedSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Numeric value of `basePromoPrice`."
+		description = "Base promo price of the SKU when no per-customer price list applies.",
+		example = "10.1"
 	)
 	public Double getBasePromoPrice() {
 		if (_basePromoPriceSupplier != null) {
@@ -173,7 +180,9 @@ public class Sku implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Numeric value of `basePromoPrice`.")
+	@GraphQLField(
+		description = "Base promo price of the SKU when no per-customer price list applies."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Double basePromoPrice;
 
@@ -181,7 +190,8 @@ public class Sku implements Serializable {
 	private Supplier<Double> _basePromoPriceSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "String value of `basePromoPriceFormatted`."
+		description = "Pre-formatted display string of the base promo price, in the SKU's resolved currency. Read-only.",
+		example = "$10.00"
 	)
 	public String getBasePromoPriceFormatted() {
 		if (_basePromoPriceFormattedSupplier != null) {
@@ -217,7 +227,9 @@ public class Sku implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "String value of `basePromoPriceFormatted`.")
+	@GraphQLField(
+		description = "Pre-formatted display string of the base promo price, in the SKU's resolved currency. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String basePromoPriceFormatted;
 
@@ -522,4 +534,4 @@ public class Sku implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:334280530
+// LIFERAY-REST-BUILDER-HASH:-1047161700

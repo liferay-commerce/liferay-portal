@@ -106,7 +106,7 @@ public class DiscountProductGroup implements Serializable {
 	private Supplier<Map<String, Map<String, String>>> _actionsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "String value of `discountExternalReferenceCode`.",
+		description = "External reference code of the bound discount; alternative to `discountId` for lookup.",
 		example = "DAB-34098-789-N"
 	)
 	public String getDiscountExternalReferenceCode() {
@@ -147,7 +147,7 @@ public class DiscountProductGroup implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "String value of `discountExternalReferenceCode`."
+		description = "External reference code of the bound discount; alternative to `discountId` for lookup."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String discountExternalReferenceCode;
@@ -292,7 +292,7 @@ public class DiscountProductGroup implements Serializable {
 	private Supplier<ProductGroup> _productGroupSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "String value of `productGroupExternalReferenceCode`.",
+		description = "External reference code of the bound productGroup; alternative to `productGroupId` for lookup.",
 		example = "PAB-34098-789-N"
 	)
 	public String getProductGroupExternalReferenceCode() {
@@ -334,7 +334,7 @@ public class DiscountProductGroup implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "String value of `productGroupExternalReferenceCode`."
+		description = "External reference code of the bound productGroup; alternative to `productGroupId` for lookup."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String productGroupExternalReferenceCode;
@@ -613,4 +613,4 @@ public class DiscountProductGroup implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:763569768
+// LIFERAY-REST-BUILDER-HASH:-1067572920

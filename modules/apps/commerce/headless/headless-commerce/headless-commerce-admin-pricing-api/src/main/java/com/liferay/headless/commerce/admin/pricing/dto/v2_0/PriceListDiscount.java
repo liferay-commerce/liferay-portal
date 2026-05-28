@@ -57,7 +57,7 @@ public class PriceListDiscount implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "String value of `discountExternalReferenceCode`.",
+		description = "External reference code of the bound discount; alternative to `discountId` for lookup.",
 		example = "DAB-34098-789-N"
 	)
 	public String getDiscountExternalReferenceCode() {
@@ -98,7 +98,7 @@ public class PriceListDiscount implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "String value of `discountExternalReferenceCode`."
+		description = "External reference code of the bound discount; alternative to `discountId` for lookup."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String discountExternalReferenceCode;
@@ -155,7 +155,8 @@ public class PriceListDiscount implements Serializable {
 	private Supplier<Long> _discountIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "String value of `discountName`."
+		description = "Display name of the linked CommerceDiscount, mirrored from CommerceDiscount.title. Read-only.",
+		example = "20% Off"
 	)
 	public String getDiscountName() {
 		if (_discountNameSupplier != null) {
@@ -190,7 +191,9 @@ public class PriceListDiscount implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "String value of `discountName`.")
+	@GraphQLField(
+		description = "Display name of the linked CommerceDiscount, mirrored from CommerceDiscount.title. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String discountName;
 
@@ -292,7 +295,7 @@ public class PriceListDiscount implements Serializable {
 	private Supplier<Long> _priceListDiscountIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "String value of `priceListExternalReferenceCode`.",
+		description = "External reference code of the bound priceList; alternative to `priceListId` for lookup.",
 		example = "PAB-34098-789-N"
 	)
 	public String getPriceListExternalReferenceCode() {
@@ -333,7 +336,7 @@ public class PriceListDiscount implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "String value of `priceListExternalReferenceCode`."
+		description = "External reference code of the bound priceList; alternative to `priceListId` for lookup."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String priceListExternalReferenceCode;
@@ -615,4 +618,4 @@ public class PriceListDiscount implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1338701798
+// LIFERAY-REST-BUILDER-HASH:1942184722

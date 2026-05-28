@@ -187,7 +187,8 @@ public class Product implements Serializable {
 	private Supplier<String> _skuSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "String value of `thumbnail`.", example = "simple"
+		description = "Resolved thumbnail URL for the bound product. Read-only.",
+		example = "simple"
 	)
 	public String getThumbnail() {
 		if (_thumbnailSupplier != null) {
@@ -222,7 +223,9 @@ public class Product implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "String value of `thumbnail`.")
+	@GraphQLField(
+		description = "Resolved thumbnail URL for the bound product. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String thumbnail;
 
@@ -413,4 +416,4 @@ public class Product implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-50535599
+// LIFERAY-REST-BUILDER-HASH:1363142453

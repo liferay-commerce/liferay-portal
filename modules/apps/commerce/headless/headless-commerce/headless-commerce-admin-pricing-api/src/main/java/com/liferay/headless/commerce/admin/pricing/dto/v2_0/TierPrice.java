@@ -203,7 +203,7 @@ public class TierPrice implements Serializable {
 	private Supplier<Map<String, ?>> _customFieldsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Boolean flag controlling the `discountDiscovery` aspect of this tierprice.",
+		description = "When true, runtime discount discovery walks this tierprice when resolving the cart-line price.",
 		example = "true"
 	)
 	public Boolean getDiscountDiscovery() {
@@ -240,7 +240,7 @@ public class TierPrice implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Boolean flag controlling the `discountDiscovery` aspect of this tierprice."
+		description = "When true, runtime discount discovery walks this tierprice when resolving the cart-line price."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Boolean discountDiscovery;
@@ -250,7 +250,8 @@ public class TierPrice implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Numeric value of `discountLevel1`.", example = "30130"
+		description = "Per-unit discount amount applied to this entry when the matching cart-line quantity falls in the level-1 band; sourced from CommercePriceEntry.discountLevel1.",
+		example = "30130"
 	)
 	@Valid
 	public BigDecimal getDiscountLevel1() {
@@ -286,7 +287,9 @@ public class TierPrice implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Numeric value of `discountLevel1`.")
+	@GraphQLField(
+		description = "Per-unit discount amount applied to this entry when the matching cart-line quantity falls in the level-1 band; sourced from CommercePriceEntry.discountLevel1."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected BigDecimal discountLevel1;
 
@@ -295,7 +298,8 @@ public class TierPrice implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Numeric value of `discountLevel2`.", example = "30130"
+		description = "Per-unit discount amount applied to this entry when the matching cart-line quantity falls in the level-2 band; sourced from CommercePriceEntry.discountLevel2.",
+		example = "30130"
 	)
 	@Valid
 	public BigDecimal getDiscountLevel2() {
@@ -331,7 +335,9 @@ public class TierPrice implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Numeric value of `discountLevel2`.")
+	@GraphQLField(
+		description = "Per-unit discount amount applied to this entry when the matching cart-line quantity falls in the level-2 band; sourced from CommercePriceEntry.discountLevel2."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected BigDecimal discountLevel2;
 
@@ -340,7 +346,8 @@ public class TierPrice implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Numeric value of `discountLevel3`.", example = "30130"
+		description = "Per-unit discount amount applied to this entry when the matching cart-line quantity falls in the level-3 band; sourced from CommercePriceEntry.discountLevel3.",
+		example = "30130"
 	)
 	@Valid
 	public BigDecimal getDiscountLevel3() {
@@ -376,7 +383,9 @@ public class TierPrice implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Numeric value of `discountLevel3`.")
+	@GraphQLField(
+		description = "Per-unit discount amount applied to this entry when the matching cart-line quantity falls in the level-3 band; sourced from CommercePriceEntry.discountLevel3."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected BigDecimal discountLevel3;
 
@@ -385,7 +394,8 @@ public class TierPrice implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Numeric value of `discountLevel4`.", example = "30130"
+		description = "Per-unit discount amount applied to this entry when the matching cart-line quantity falls in the level-4 band; sourced from CommercePriceEntry.discountLevel4.",
+		example = "30130"
 	)
 	@Valid
 	public BigDecimal getDiscountLevel4() {
@@ -421,7 +431,9 @@ public class TierPrice implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Numeric value of `discountLevel4`.")
+	@GraphQLField(
+		description = "Per-unit discount amount applied to this entry when the matching cart-line quantity falls in the level-4 band; sourced from CommercePriceEntry.discountLevel4."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected BigDecimal discountLevel4;
 
@@ -707,7 +719,8 @@ public class TierPrice implements Serializable {
 	private Supplier<Boolean> _neverExpireSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Unit price in the parent price list's currency."
+		description = "Unit price in the parent price list's currency.",
+		example = "10.1"
 	)
 	public Double getPrice() {
 		if (_priceSupplier != null) {
@@ -753,7 +766,7 @@ public class TierPrice implements Serializable {
 	private Supplier<Double> _priceSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "String value of `priceEntryExternalReferenceCode`.",
+		description = "External reference code of the bound priceEntry; alternative to `priceEntryId` for lookup.",
 		example = "CAB-34098-789-N"
 	)
 	public String getPriceEntryExternalReferenceCode() {
@@ -794,7 +807,7 @@ public class TierPrice implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "String value of `priceEntryExternalReferenceCode`."
+		description = "External reference code of the bound priceEntry; alternative to `priceEntryId` for lookup."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String priceEntryExternalReferenceCode;
@@ -851,7 +864,8 @@ public class TierPrice implements Serializable {
 	private Supplier<Long> _priceEntryIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "String value of `priceFormatted`."
+		description = "Pre-formatted display string of the unit price, in the parent price list's currency. Read-only.",
+		example = "$10.00"
 	)
 	public String getPriceFormatted() {
 		if (_priceFormattedSupplier != null) {
@@ -886,7 +900,9 @@ public class TierPrice implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "String value of `priceFormatted`.")
+	@GraphQLField(
+		description = "Pre-formatted display string of the unit price, in the parent price list's currency. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String priceFormatted;
 
@@ -1323,4 +1339,4 @@ public class TierPrice implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1630970894
+// LIFERAY-REST-BUILDER-HASH:-1511402805

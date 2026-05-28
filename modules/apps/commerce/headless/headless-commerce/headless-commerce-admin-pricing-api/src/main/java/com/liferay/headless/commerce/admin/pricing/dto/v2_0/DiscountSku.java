@@ -105,7 +105,7 @@ public class DiscountSku implements Serializable {
 	private Supplier<Map<String, Map<String, String>>> _actionsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "String value of `discountExternalReferenceCode`.",
+		description = "External reference code of the bound discount; alternative to `discountId` for lookup.",
 		example = "DAB-34098-789-N"
 	)
 	public String getDiscountExternalReferenceCode() {
@@ -146,7 +146,7 @@ public class DiscountSku implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "String value of `discountExternalReferenceCode`."
+		description = "External reference code of the bound discount; alternative to `discountId` for lookup."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String discountExternalReferenceCode;
@@ -296,7 +296,7 @@ public class DiscountSku implements Serializable {
 	private Supplier<Long> _productIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Value of `productName`.",
+		description = "Localized display name of the bound product, mirrored from the underlying CPDefinition. Read-only.",
 		example = "{en_US=Hand Saw, hr_HR=Product Name HR, hu_HU=Product Name HU}"
 	)
 	@Valid
@@ -334,7 +334,9 @@ public class DiscountSku implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Value of `productName`.")
+	@GraphQLField(
+		description = "Localized display name of the bound product, mirrored from the underlying CPDefinition. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Map<String, String> productName;
 
@@ -382,7 +384,7 @@ public class DiscountSku implements Serializable {
 	private Supplier<Sku> _skuSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "External reference code of the bound SKU; alternative to the `sku` key for lookup.",
+		description = "External reference code of the bound sku; alternative to `skuId` for lookup.",
 		example = "PAB-34098-789-N"
 	)
 	public String getSkuExternalReferenceCode() {
@@ -420,7 +422,7 @@ public class DiscountSku implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "External reference code of the bound SKU; alternative to the `sku` key for lookup."
+		description = "External reference code of the bound sku; alternative to `skuId` for lookup."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String skuExternalReferenceCode;
@@ -779,4 +781,4 @@ public class DiscountSku implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-253372650
+// LIFERAY-REST-BUILDER-HASH:176447368

@@ -95,7 +95,8 @@ public class Channel implements Serializable {
 	private Supplier<String> _currencyCodeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Idempotency key for create and update; must be unique within the company."
+		description = "Idempotency key for create and update; must be unique within the company.",
+		example = "AB-34098-789-N"
 	)
 	public String getExternalReferenceCode() {
 		if (_externalReferenceCodeSupplier != null) {
@@ -140,7 +141,8 @@ public class Channel implements Serializable {
 	private Supplier<String> _externalReferenceCodeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Internal numeric identifier of the channel. Server-assigned and stable."
+		description = "Internal numeric identifier of the channel. Server-assigned and stable.",
+		example = "30130"
 	)
 	public Long getId() {
 		if (_idSupplier != null) {
@@ -224,7 +226,8 @@ public class Channel implements Serializable {
 	private Supplier<String> _nameSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Reference to the siteGroup entity (FK identifier)."
+		description = "Identifier of the Liferay site Group that hosts this CommerceChannel. Read-only.",
+		example = "30130"
 	)
 	public Long getSiteGroupId() {
 		if (_siteGroupIdSupplier != null) {
@@ -260,7 +263,7 @@ public class Channel implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Reference to the siteGroup entity (FK identifier)."
+		description = "Identifier of the Liferay site Group that hosts this CommerceChannel. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long siteGroupId;
@@ -527,4 +530,4 @@ public class Channel implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1809834717
+// LIFERAY-REST-BUILDER-HASH:888187759

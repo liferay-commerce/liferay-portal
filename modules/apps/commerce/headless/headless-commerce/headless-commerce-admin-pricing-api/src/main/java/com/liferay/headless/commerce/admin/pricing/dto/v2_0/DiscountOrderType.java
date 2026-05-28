@@ -105,7 +105,7 @@ public class DiscountOrderType implements Serializable {
 	private Supplier<Map<String, Map<String, String>>> _actionsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "String value of `discountExternalReferenceCode`.",
+		description = "External reference code of the bound discount; alternative to `discountId` for lookup.",
 		example = "PAB-34098-789-N"
 	)
 	public String getDiscountExternalReferenceCode() {
@@ -146,7 +146,7 @@ public class DiscountOrderType implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "String value of `discountExternalReferenceCode`."
+		description = "External reference code of the bound discount; alternative to `discountId` for lookup."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String discountExternalReferenceCode;
@@ -291,7 +291,7 @@ public class DiscountOrderType implements Serializable {
 	private Supplier<OrderType> _orderTypeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "String value of `orderTypeExternalReferenceCode`.",
+		description = "External reference code of the bound orderType; alternative to `orderTypeId` for lookup.",
 		example = "DAB-34098-789-N"
 	)
 	public String getOrderTypeExternalReferenceCode() {
@@ -332,7 +332,7 @@ public class DiscountOrderType implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "String value of `orderTypeExternalReferenceCode`."
+		description = "External reference code of the bound orderType; alternative to `orderTypeId` for lookup."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String orderTypeExternalReferenceCode;
@@ -669,4 +669,4 @@ public class DiscountOrderType implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1572375684
+// LIFERAY-REST-BUILDER-HASH:-996983390

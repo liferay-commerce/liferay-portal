@@ -99,7 +99,8 @@ public class ProductGroup implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Numeric value of `productsCount`.", example = "20"
+		description = "Number of products that belong to the product group at read time. Read-only.",
+		example = "20"
 	)
 	public Integer getProductsCount() {
 		if (_productsCountSupplier != null) {
@@ -134,7 +135,9 @@ public class ProductGroup implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Numeric value of `productsCount`.")
+	@GraphQLField(
+		description = "Number of products that belong to the product group at read time. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Integer productsCount;
 
@@ -350,4 +353,4 @@ public class ProductGroup implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-644993572
+// LIFERAY-REST-BUILDER-HASH:174714432

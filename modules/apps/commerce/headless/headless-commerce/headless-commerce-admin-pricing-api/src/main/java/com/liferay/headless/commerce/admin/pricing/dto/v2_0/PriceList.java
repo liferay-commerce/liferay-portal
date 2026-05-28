@@ -159,7 +159,8 @@ public class PriceList implements Serializable {
 	private Supplier<Boolean> _activeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "String value of `author`.", example = "admin"
+		description = "Login of the user who last persisted the record. Read-only.",
+		example = "admin"
 	)
 	public String getAuthor() {
 		if (_authorSupplier != null) {
@@ -194,7 +195,9 @@ public class PriceList implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "String value of `author`.")
+	@GraphQLField(
+		description = "Login of the user who last persisted the record. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String author;
 
@@ -202,7 +205,7 @@ public class PriceList implements Serializable {
 	private Supplier<String> _authorSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Boolean flag controlling the `catalogBasePriceList` aspect of this pricelist.",
+		description = "When true, the price list is the catalog's base list and serves as the fallback when no other price list resolves.",
 		example = "true"
 	)
 	public Boolean getCatalogBasePriceList() {
@@ -239,7 +242,7 @@ public class PriceList implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Boolean flag controlling the `catalogBasePriceList` aspect of this pricelist."
+		description = "When true, the price list is the catalog's base list and serves as the fallback when no other price list resolves."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Boolean catalogBasePriceList;
@@ -248,7 +251,7 @@ public class PriceList implements Serializable {
 	private Supplier<Boolean> _catalogBasePriceListSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "String value of `catalogExternalReferenceCode`.",
+		description = "External reference code of the bound catalog; alternative to `catalogId` for lookup.",
 		example = "AAB-34098-789-N"
 	)
 	public String getCatalogExternalReferenceCode() {
@@ -289,7 +292,7 @@ public class PriceList implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "String value of `catalogExternalReferenceCode`."
+		description = "External reference code of the bound catalog; alternative to `catalogId` for lookup."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String catalogExternalReferenceCode;
@@ -346,7 +349,8 @@ public class PriceList implements Serializable {
 	private Supplier<Long> _catalogIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "String value of `catalogName`.", example = "catalog"
+		description = "Display name of the parent CommerceCatalog, mirrored from CommerceCatalog.name. Read-only.",
+		example = "catalog"
 	)
 	public String getCatalogName() {
 		if (_catalogNameSupplier != null) {
@@ -381,7 +385,9 @@ public class PriceList implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "String value of `catalogName`.")
+	@GraphQLField(
+		description = "Display name of the parent CommerceCatalog, mirrored from CommerceCatalog.name. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String catalogName;
 
@@ -479,7 +485,7 @@ public class PriceList implements Serializable {
 	private Supplier<String> _currencyCodeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "String value of `currencyExternalReferenceCode`.",
+		description = "External reference code of the bound currency; alternative to `currencyId` for lookup.",
 		example = "AAB-34098-789-N"
 	)
 	public String getCurrencyExternalReferenceCode() {
@@ -520,7 +526,7 @@ public class PriceList implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "String value of `currencyExternalReferenceCode`."
+		description = "External reference code of the bound currency; alternative to `currencyId` for lookup."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String currencyExternalReferenceCode;
@@ -530,7 +536,7 @@ public class PriceList implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Reference to the currency entity (FK identifier).",
+		description = "Reference to the CommerceCurrency that the price list expresses monetary values in.",
 		example = "30130"
 	)
 	public Long getCurrencyId() {
@@ -567,7 +573,7 @@ public class PriceList implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Reference to the currency entity (FK identifier)."
+		description = "Reference to the CommerceCurrency that the price list expresses monetary values in."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long currencyId;
@@ -848,7 +854,7 @@ public class PriceList implements Serializable {
 	private Supplier<String> _nameSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Boolean flag controlling the `netPrice` aspect of this pricelist.",
+		description = "When true, prices in this price list are expressed net of tax; when false, prices are gross (tax-inclusive).",
 		example = "true"
 	)
 	public Boolean getNetPrice() {
@@ -885,7 +891,7 @@ public class PriceList implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Boolean flag controlling the `netPrice` aspect of this pricelist."
+		description = "When true, prices in this price list are expressed net of tax; when false, prices are gross (tax-inclusive)."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Boolean netPrice;
@@ -941,7 +947,7 @@ public class PriceList implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Reference to the parentPriceList entity (FK identifier).",
+		description = "Reference to the parent CommercePriceList; non-null when this list is a child of another price list.",
 		example = "30130"
 	)
 	public Long getParentPriceListId() {
@@ -978,7 +984,7 @@ public class PriceList implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Reference to the parentPriceList entity (FK identifier)."
+		description = "Reference to the parent CommercePriceList; non-null when this list is a child of another price list."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long parentPriceListId;
@@ -2107,4 +2113,4 @@ public class PriceList implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1515046905
+// LIFERAY-REST-BUILDER-HASH:1892200219
