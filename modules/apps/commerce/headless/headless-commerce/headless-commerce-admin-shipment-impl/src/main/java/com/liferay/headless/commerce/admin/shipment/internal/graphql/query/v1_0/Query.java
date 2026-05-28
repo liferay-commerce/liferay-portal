@@ -72,7 +72,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {shipment(shipmentId: ___){accountId, actions, carrier, createDate, customFields, expectedDate, externalReferenceCode, id, modifiedDate, orderExternalReferenceCode, orderId, shipmentItems, shippingAddress, shippingAddressId, shippingDate, shippingMethodId, shippingOptionName, status, trackingNumber, trackingURL, userName}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Returns the CommerceShipment identified by shipmentId. Read-only fetch through CommerceShipmentService.getCommerceShipment; the response includes the actions HATEOAS map for the current user."
+	)
 	public Shipment shipment(@GraphQLName("shipmentId") Long shipmentId)
 		throws Exception {
 
@@ -87,7 +89,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {shipmentByExternalReferenceCode(externalReferenceCode: ___){accountId, actions, carrier, createDate, customFields, expectedDate, externalReferenceCode, id, modifiedDate, orderExternalReferenceCode, orderId, shipmentItems, shippingAddress, shippingAddressId, shippingDate, shippingMethodId, shippingOptionName, status, trackingNumber, trackingURL, userName}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField(description = "Retrive information of the given Shipment.")
+	@GraphQLField(
+		description = "Returns the CommerceShipment identified by external reference code. Resolves the row via CommerceShipmentService.fetchCommerceShipmentByExternalReferenceCode against the current company scope; raises NoSuchShipmentException (404) when the ERC is unknown."
+	)
 	public Shipment shipmentByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode)
 		throws Exception {
@@ -105,7 +109,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {shipments(filter: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Lists CommerceShipment rows for the current company through Liferay's SearchUtil with status set to STATUS_ANY (all workflow states returned). Supports OData v4 filter, full-text search across the shipment's indexed fields, sort, and one-based page/pageSize pagination; the filter and sort fields are sourced from CommerceShipment's entity model."
+	)
 	public ShipmentPage shipments(
 			@GraphQLName("search") String search,
 			@GraphQLName("filter") String filterString,
@@ -130,7 +136,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {shipmentByExternalReferenceCodeItem(externalReferenceCode: ___){actions, createDate, externalReferenceCode, id, modifiedDate, orderItemExternalReferenceCode, orderItemId, quantity, shipmentExternalReferenceCode, shipmentId, unitOfMeasureKey, userName, validateInventory, warehouseExternalReferenceCode, warehouseId}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Returns the CommerceShipmentItem identified by external reference code. Resolves the row via CommerceShipmentItemService.fetchCommerceShipmentItemByExternalReferenceCode against the current company scope; raises NoSuchShipmentItemException (404) when the ERC is unknown."
+	)
 	public ShipmentItem shipmentByExternalReferenceCodeItem(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode)
 		throws Exception {
@@ -148,7 +156,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {shipmentByExternalReferenceCodeItems(externalReferenceCode: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Returns the CommerceShipmentItem rows owned by the CommerceShipment identified by external reference code, paged through CommerceShipmentItemService.getCommerceShipmentItems. Raises NoSuchShipmentException (404) when the parent ERC is unknown."
+	)
 	public ShipmentItemPage shipmentByExternalReferenceCodeItems(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
 			@GraphQLName("pageSize") int pageSize,
@@ -169,7 +179,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {shipmentItem(shipmentItemId: ___){actions, createDate, externalReferenceCode, id, modifiedDate, orderItemExternalReferenceCode, orderItemId, quantity, shipmentExternalReferenceCode, shipmentId, unitOfMeasureKey, userName, validateInventory, warehouseExternalReferenceCode, warehouseId}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Returns the CommerceShipmentItem identified by shipmentItemId. Read-only fetch through CommerceShipmentItemService.getCommerceShipmentItem; the response includes the actions HATEOAS map for the current user."
+	)
 	public ShipmentItem shipmentItem(
 			@GraphQLName("shipmentItemId") Long shipmentItemId)
 		throws Exception {
@@ -186,7 +198,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {shipmentItems(page: ___, pageSize: ___, shipmentId: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Returns the CommerceShipmentItem rows owned by the CommerceShipment identified by shipmentId, paged through CommerceShipmentItemService.getCommerceShipmentItems. Exposed as a nested field on the Shipment schema so a single GET on the parent can expand the shipmentItems collection."
+	)
 	public ShipmentItemPage shipmentItems(
 			@GraphQLName("shipmentId") Long shipmentId,
 			@GraphQLName("pageSize") int pageSize,
@@ -206,7 +220,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {shipmentByExternalReferenceCodeShippingAddress(externalReferenceCode: ___){city, countryISOCode, description, externalReferenceCode, id, latitude, longitude, name, phoneNumber, regionISOCode, street1, street2, street3, zip}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Returns the ShippingAddress bound to the CommerceShipment identified by external reference code. Resolves the parent shipment via fetchCommerceShipmentByExternalReferenceCode and reads the CommerceAddress through CommerceAddressService.fetchCommerceAddress; raises NoSuchShipmentException (404) when the ERC is unknown. Returns an empty ShippingAddress when no CommerceAddress is bound yet."
+	)
 	public ShippingAddress shipmentByExternalReferenceCodeShippingAddress(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode)
 		throws Exception {
@@ -225,7 +241,9 @@ public class Query {
 	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {shipmentShippingAddress(shipmentId: ___){city, countryISOCode, description, externalReferenceCode, id, latitude, longitude, name, phoneNumber, regionISOCode, street1, street2, street3, zip}}"}' -u 'test@liferay.com:test'
 	 */
-	@GraphQLField
+	@GraphQLField(
+		description = "Returns the ShippingAddress bound to the CommerceShipment identified by shipmentId. Reads the underlying CommerceAddress through CommerceAddressService.fetchCommerceAddress; returns an empty ShippingAddress when no CommerceAddress is bound yet. Exposed as a nested field on the Shipment schema so a single GET on the parent can expand the shippingAddress object."
+	)
 	public ShippingAddress shipmentShippingAddress(
 			@GraphQLName("shipmentId") Long shipmentId)
 		throws Exception {
@@ -244,7 +262,9 @@ public class Query {
 			_shipmentItem = shipmentItem;
 		}
 
-		@GraphQLField
+		@GraphQLField(
+			description = "Returns the CommerceShipment identified by shipmentId. Read-only fetch through CommerceShipmentService.getCommerceShipment; the response includes the actions HATEOAS map for the current user."
+		)
 		public Shipment shipment() throws Exception {
 			return _applyComponentServiceObjects(
 				_shipmentResourceComponentServiceObjects,
@@ -267,7 +287,7 @@ public class Query {
 		}
 
 		@GraphQLField(
-			description = "Retrive information of the given Shipment."
+			description = "Returns the CommerceShipment identified by external reference code. Resolves the row via CommerceShipmentService.fetchCommerceShipmentByExternalReferenceCode against the current company scope; raises NoSuchShipmentException (404) when the ERC is unknown."
 		)
 		public Shipment shipmentByExternalReferenceCode() throws Exception {
 			return _applyComponentServiceObjects(
@@ -291,7 +311,9 @@ public class Query {
 			_shipment = shipment;
 		}
 
-		@GraphQLField
+		@GraphQLField(
+			description = "Returns the CommerceShipmentItem identified by external reference code. Resolves the row via CommerceShipmentItemService.fetchCommerceShipmentItemByExternalReferenceCode against the current company scope; raises NoSuchShipmentItemException (404) when the ERC is unknown."
+		)
 		public ShipmentItem byExternalReferenceCodeItem() throws Exception {
 			return _applyComponentServiceObjects(
 				_shipmentItemResourceComponentServiceObjects,
@@ -312,7 +334,9 @@ public class Query {
 			_shipment = shipment;
 		}
 
-		@GraphQLField
+		@GraphQLField(
+			description = "Returns the CommerceShipmentItem rows owned by the CommerceShipment identified by shipmentId, paged through CommerceShipmentItemService.getCommerceShipmentItems. Exposed as a nested field on the Shipment schema so a single GET on the parent can expand the shipmentItems collection."
+		)
 		public ShipmentItemPage items(
 				@GraphQLName("pageSize") int pageSize,
 				@GraphQLName("page") int page)
@@ -339,7 +363,9 @@ public class Query {
 			_shipment = shipment;
 		}
 
-		@GraphQLField
+		@GraphQLField(
+			description = "Returns the CommerceShipmentItem rows owned by the CommerceShipment identified by external reference code, paged through CommerceShipmentItemService.getCommerceShipmentItems. Raises NoSuchShipmentException (404) when the parent ERC is unknown."
+		)
 		public ShipmentItemPage byExternalReferenceCodeItems(
 				@GraphQLName("pageSize") int pageSize,
 				@GraphQLName("page") int page)
@@ -369,7 +395,9 @@ public class Query {
 			_shipment = shipment;
 		}
 
-		@GraphQLField
+		@GraphQLField(
+			description = "Returns the ShippingAddress bound to the CommerceShipment identified by external reference code. Resolves the parent shipment via fetchCommerceShipmentByExternalReferenceCode and reads the CommerceAddress through CommerceAddressService.fetchCommerceAddress; raises NoSuchShipmentException (404) when the ERC is unknown. Returns an empty ShippingAddress when no CommerceAddress is bound yet."
+		)
 		public ShippingAddress byExternalReferenceCodeShippingAddress()
 			throws Exception {
 
@@ -584,4 +612,4 @@ public class Query {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:454408935
+// LIFERAY-REST-BUILDER-HASH:-1934620749
