@@ -151,7 +151,7 @@ public class Attachment implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Last-modification timestamp in ISO 8601 (UTC). Read-only; set by the service on each update.",
-		example = "2017-07-21T19:30:00Z"
+		example = "2017-07-21"
 	)
 	public Date getDateModified() {
 		if (_dateModifiedSupplier != null) {
@@ -971,4 +971,4 @@ public class Attachment implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1473996631
+// LIFERAY-REST-BUILDER-HASH:1921653554
