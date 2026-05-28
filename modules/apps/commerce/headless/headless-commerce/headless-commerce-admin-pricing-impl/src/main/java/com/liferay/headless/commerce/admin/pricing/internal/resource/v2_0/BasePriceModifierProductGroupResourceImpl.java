@@ -74,6 +74,9 @@ public abstract class BasePriceModifierProductGroupResourceImpl
 	 *
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-modifier-product-groups/{priceModifierProductGroupId}'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Deletes the CommercePriceModifierRel (CommercePricingClass binding) addressed by internal id via CommercePriceModifierRelService."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -156,6 +159,9 @@ public abstract class BasePriceModifierProductGroupResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-modifiers/by-externalReferenceCode/{externalReferenceCode}/price-modifier-product-groups'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Pages PriceModifierProductGroups for a PriceModifier by ERC via CommercePriceModifierRelService filtered by the CommercePricingClass class name."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -202,6 +208,9 @@ public abstract class BasePriceModifierProductGroupResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-modifiers/{id}/price-modifier-product-groups'  -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Pages PriceModifierProductGroups for a PriceModifier by id via CommercePriceModifierRelService.getCommercePricingClassesCommercePriceModifierRels with search."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -265,6 +274,9 @@ public abstract class BasePriceModifierProductGroupResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-modifiers/by-externalReferenceCode/{externalReferenceCode}/price-modifier-product-groups' -d $'{"priceModifierExternalReferenceCode": ___, "priceModifierId": ___, "productGroupExternalReferenceCode": ___, "productGroupId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Creates CommercePriceModifierRel (CommercePricingClass binding) for PriceModifier by ERC. Throws NoSuchPriceModifierException when modifier ERC is unknown."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -304,6 +316,9 @@ public abstract class BasePriceModifierProductGroupResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-modifiers/{id}/price-modifier-product-groups' -d $'{"priceModifierExternalReferenceCode": ___, "priceModifierId": ___, "productGroupExternalReferenceCode": ___, "productGroupId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Creates CommercePriceModifierRel (CommercePricingClass binding) for PriceModifier by id via CommercePriceModifierRelService."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -1119,4 +1134,4 @@ public abstract class BasePriceModifierProductGroupResourceImpl
 		LogFactoryUtil.getLog(BasePriceModifierProductGroupResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1228586155
+// LIFERAY-REST-BUILDER-HASH:-1653200347

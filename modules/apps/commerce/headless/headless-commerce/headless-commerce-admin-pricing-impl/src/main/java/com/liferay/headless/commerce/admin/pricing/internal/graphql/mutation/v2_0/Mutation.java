@@ -255,7 +255,9 @@ public class Mutation {
 			tierPriceResourceComponentServiceObjects;
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the CommerceDiscount addressed by internal id. Cascades deletion of all associated discount rels (account-group, account, category, channel, order-type, product, product-group, sku, rule). Throws NoSuchDiscountException on unknown id."
+	)
 	public boolean deleteDiscount(@GraphQLName("id") Long id) throws Exception {
 		_applyVoidComponentServiceObjects(
 			_discountResourceComponentServiceObjects,
@@ -278,7 +280,9 @@ public class Mutation {
 				callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the CommerceDiscount by company-scoped external reference code. Throws NoSuchDiscountException when ERC is unknown."
+	)
 	public boolean deleteDiscountByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode)
 		throws Exception {
@@ -293,7 +297,9 @@ public class Mutation {
 		return true;
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Updates CommerceDiscount by id using JSON Merge Patch semantics (only supplied fields modified) via CommerceDiscountService.updateCommerceDiscount. Also updates nested relations if supplied."
+	)
 	public Discount patchDiscount(
 			@GraphQLName("id") Long id,
 			@GraphQLName("discount") Discount discount)
@@ -305,7 +311,9 @@ public class Mutation {
 			discountResource -> discountResource.patchDiscount(id, discount));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Updates CommerceDiscount by ERC using JSON Merge Patch semantics via CommerceDiscountService.updateCommerceDiscount. Throws NoSuchDiscountException when ERC is unknown."
+	)
 	public Discount patchDiscountByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
 			@GraphQLName("discount") Discount discount)
@@ -319,7 +327,9 @@ public class Mutation {
 					externalReferenceCode, discount));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates or updates CommerceDiscount via CommerceDiscountService.addOrUpdateCommerceDiscount; upsert by external reference code semantics. Cascades supplied nested relations (account-group, account, category, channel, order-type, product, product-group, sku, rule)."
+	)
 	public Discount createDiscount(@GraphQLName("discount") Discount discount)
 		throws Exception {
 
@@ -361,7 +371,9 @@ public class Mutation {
 				callbackURL, contentType, fieldNames));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Replaces CommerceDiscount by ERC via CommerceDiscountService.addOrUpdateCommerceDiscount; PUT replaces the resource while PATCH applies JSON Merge Patch."
+	)
 	public Discount updateDiscountByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
 			@GraphQLName("discount") Discount discount)
@@ -375,7 +387,9 @@ public class Mutation {
 					externalReferenceCode, discount));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the CommerceDiscountAccountRel addressed by internal id via CommerceDiscountAccountRelService. Throws NoSuchDiscountException when relation id is unknown."
+	)
 	public boolean deleteDiscountAccount(
 			@GraphQLName("discountAccountId") Long discountAccountId)
 		throws Exception {
@@ -404,7 +418,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates CommerceDiscountAccountRel for Discount by ERC. Throws NoSuchDiscountException when discount ERC is unknown."
+	)
 	public DiscountAccount createDiscountByExternalReferenceCodeDiscountAccount(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
 			@GraphQLName("discountAccount") DiscountAccount discountAccount)
@@ -419,7 +435,9 @@ public class Mutation {
 						externalReferenceCode, discountAccount));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates CommerceDiscountAccountRel for Discount by id via CommerceDiscountAccountRelService."
+	)
 	public DiscountAccount createDiscountIdDiscountAccount(
 			@GraphQLName("id") Long id,
 			@GraphQLName("discountAccount") DiscountAccount discountAccount)
@@ -447,7 +465,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the CommerceDiscountCommerceAccountGroupRel addressed by internal id via CommerceDiscountCommerceAccountGroupRelService."
+	)
 	public boolean deleteDiscountAccountGroup(
 			@GraphQLName("discountAccountGroupId") Long discountAccountGroupId)
 		throws Exception {
@@ -476,7 +496,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates CommerceDiscountCommerceAccountGroupRel for Discount by ERC. Throws NoSuchDiscountException when discount ERC is unknown."
+	)
 	public DiscountAccountGroup
 			createDiscountByExternalReferenceCodeDiscountAccountGroup(
 				@GraphQLName("externalReferenceCode") String
@@ -494,7 +516,9 @@ public class Mutation {
 						externalReferenceCode, discountAccountGroup));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates CommerceDiscountCommerceAccountGroupRel for Discount by id via CommerceDiscountCommerceAccountGroupRelService."
+	)
 	public DiscountAccountGroup createDiscountIdDiscountAccountGroup(
 			@GraphQLName("id") Long id,
 			@GraphQLName("discountAccountGroup") DiscountAccountGroup
@@ -524,7 +548,9 @@ public class Mutation {
 						callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the CommerceDiscountRel (AssetCategory binding) addressed by internal id via CommerceDiscountRelService."
+	)
 	public boolean deleteDiscountCategory(
 			@GraphQLName("discountCategoryId") Long discountCategoryId)
 		throws Exception {
@@ -553,7 +579,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates CommerceDiscountRel (AssetCategory binding) for Discount by ERC. Throws NoSuchDiscountException when discount ERC is unknown."
+	)
 	public DiscountCategory
 			createDiscountByExternalReferenceCodeDiscountCategory(
 				@GraphQLName("externalReferenceCode") String
@@ -571,7 +599,9 @@ public class Mutation {
 						externalReferenceCode, discountCategory));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates CommerceDiscountRel (AssetCategory binding) for Discount by id via CommerceDiscountRelService."
+	)
 	public DiscountCategory createDiscountIdDiscountCategory(
 			@GraphQLName("id") Long id,
 			@GraphQLName("discountCategory") DiscountCategory discountCategory)
@@ -599,7 +629,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the CommerceChannelRel (discount channel binding) addressed by internal id via CommerceChannelRelService."
+	)
 	public boolean deleteDiscountChannel(
 			@GraphQLName("discountChannelId") Long discountChannelId)
 		throws Exception {
@@ -628,7 +660,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates CommerceChannelRel (discount channel binding) for Discount by ERC. Throws NoSuchDiscountException when discount ERC is unknown."
+	)
 	public DiscountChannel createDiscountByExternalReferenceCodeDiscountChannel(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
 			@GraphQLName("discountChannel") DiscountChannel discountChannel)
@@ -643,7 +677,9 @@ public class Mutation {
 						externalReferenceCode, discountChannel));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates CommerceChannelRel (discount channel binding) for Discount by id via CommerceChannelRelService."
+	)
 	public DiscountChannel createDiscountIdDiscountChannel(
 			@GraphQLName("id") Long id,
 			@GraphQLName("discountChannel") DiscountChannel discountChannel)
@@ -747,7 +783,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the CommerceDiscountRel (CPDefinition binding) addressed by internal id via CommerceDiscountRelService."
+	)
 	public boolean deleteDiscountProduct(
 			@GraphQLName("discountProductId") Long discountProductId)
 		throws Exception {
@@ -776,7 +814,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates CommerceDiscountRel (CPDefinition binding) for Discount by ERC. Throws NoSuchDiscountException or NoSuchCProductException on lookup failure."
+	)
 	public DiscountProduct createDiscountByExternalReferenceCodeDiscountProduct(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
 			@GraphQLName("discountProduct") DiscountProduct discountProduct)
@@ -791,7 +831,9 @@ public class Mutation {
 						externalReferenceCode, discountProduct));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates CommerceDiscountRel (CPDefinition binding) for Discount by id via CommerceDiscountRelService."
+	)
 	public DiscountProduct createDiscountIdDiscountProduct(
 			@GraphQLName("id") Long id,
 			@GraphQLName("discountProduct") DiscountProduct discountProduct)
@@ -819,7 +861,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the CommerceDiscountRel (CommercePricingClass binding) addressed by internal id via CommerceDiscountRelService."
+	)
 	public boolean deleteDiscountProductGroup(
 			@GraphQLName("discountProductGroupId") Long discountProductGroupId)
 		throws Exception {
@@ -848,7 +892,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates CommerceDiscountRel (CommercePricingClass binding) for Discount by ERC. Throws NoSuchDiscountException when discount ERC is unknown."
+	)
 	public DiscountProductGroup
 			createDiscountByExternalReferenceCodeDiscountProductGroup(
 				@GraphQLName("externalReferenceCode") String
@@ -866,7 +912,9 @@ public class Mutation {
 						externalReferenceCode, discountProductGroup));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates CommerceDiscountRel (CommercePricingClass binding) for Discount by id via CommerceDiscountRelService."
+	)
 	public DiscountProductGroup createDiscountIdDiscountProductGroup(
 			@GraphQLName("id") Long id,
 			@GraphQLName("discountProductGroup") DiscountProductGroup
@@ -896,7 +944,9 @@ public class Mutation {
 						callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the CommerceDiscountRule addressed by internal id via CommerceDiscountRuleService."
+	)
 	public boolean deleteDiscountRule(@GraphQLName("id") Long id)
 		throws Exception {
 
@@ -923,7 +973,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Updates CommerceDiscountRule by id using JSON Merge Patch semantics via CommerceDiscountRuleService.updateCommerceDiscountRule."
+	)
 	public DiscountRule patchDiscountRule(
 			@GraphQLName("id") Long id,
 			@GraphQLName("discountRule") DiscountRule discountRule)
@@ -936,7 +988,9 @@ public class Mutation {
 				id, discountRule));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates CommerceDiscountRule for Discount by ERC. Throws NoSuchDiscountException when discount ERC is unknown."
+	)
 	public DiscountRule createDiscountByExternalReferenceCodeDiscountRule(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
 			@GraphQLName("discountRule") DiscountRule discountRule)
@@ -951,7 +1005,9 @@ public class Mutation {
 						externalReferenceCode, discountRule));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates CommerceDiscountRule for Discount by id via CommerceDiscountRuleService."
+	)
 	public DiscountRule createDiscountIdDiscountRule(
 			@GraphQLName("id") Long id,
 			@GraphQLName("discountRule") DiscountRule discountRule)
@@ -979,7 +1035,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the CommerceDiscountRel (CPInstance binding) addressed by internal id via CommerceDiscountRelService."
+	)
 	public boolean deleteDiscountSku(
 			@GraphQLName("discountSkuId") Long discountSkuId)
 		throws Exception {
@@ -1006,7 +1064,9 @@ public class Mutation {
 				callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates CommerceDiscountRel (CPInstance binding) for Discount by ERC. Throws NoSuchDiscountException when discount ERC is unknown."
+	)
 	public DiscountSku createDiscountByExternalReferenceCodeDiscountSku(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
 			@GraphQLName("discountSku") DiscountSku discountSku)
@@ -1021,7 +1081,9 @@ public class Mutation {
 						externalReferenceCode, discountSku));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates CommerceDiscountRel (CPInstance binding) for Discount by id via CommerceDiscountRelService."
+	)
 	public DiscountSku createDiscountIdDiscountSku(
 			@GraphQLName("id") Long id,
 			@GraphQLName("discountSku") DiscountSku discountSku)
@@ -1048,7 +1110,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the CommercePriceEntry addressed by internal id via CommercePriceEntryService."
+	)
 	public boolean deletePriceEntry(
 			@GraphQLName("priceEntryId") Long priceEntryId)
 		throws Exception {
@@ -1075,7 +1139,9 @@ public class Mutation {
 				callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the CommercePriceEntry by company-scoped external reference code. Throws NoSuchPriceEntryException when ERC is unknown."
+	)
 	public boolean deletePriceEntryByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode)
 		throws Exception {
@@ -1090,7 +1156,9 @@ public class Mutation {
 		return true;
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Updates CommercePriceEntry by id using JSON Merge Patch semantics via CommercePriceEntryService.updateCommercePriceEntry. Also updates nested tier prices if supplied."
+	)
 	public PriceEntry patchPriceEntry(
 			@GraphQLName("priceEntryId") Long priceEntryId,
 			@GraphQLName("priceEntry") PriceEntry priceEntry)
@@ -1103,7 +1171,9 @@ public class Mutation {
 				priceEntryId, priceEntry));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Updates CommercePriceEntry by ERC using JSON Merge Patch semantics via CommercePriceEntryService.updateCommercePriceEntry. Throws NoSuchPriceEntryException when ERC is unknown."
+	)
 	public PriceEntry patchPriceEntryByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
 			@GraphQLName("priceEntry") PriceEntry priceEntry)
@@ -1117,7 +1187,9 @@ public class Mutation {
 					externalReferenceCode, priceEntry));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates CommercePriceEntry for PriceList by ERC. Throws NoSuchPriceListException when price list ERC is unknown."
+	)
 	public PriceEntry createPriceListByExternalReferenceCodePriceEntry(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
 			@GraphQLName("priceEntry") PriceEntry priceEntry)
@@ -1132,7 +1204,9 @@ public class Mutation {
 						externalReferenceCode, priceEntry));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates CommercePriceEntry for PriceList by id via CommercePriceEntryService."
+	)
 	public PriceEntry createPriceListIdPriceEntry(
 			@GraphQLName("id") Long id,
 			@GraphQLName("priceEntry") PriceEntry priceEntry)
@@ -1159,7 +1233,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the CommercePriceList addressed by internal id via CommercePriceListService."
+	)
 	public boolean deletePriceList(@GraphQLName("id") Long id)
 		throws Exception {
 
@@ -1184,7 +1260,9 @@ public class Mutation {
 				callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the CommercePriceList by company-scoped external reference code. Throws NoSuchPriceListException when ERC is unknown."
+	)
 	public boolean deletePriceListByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode)
 		throws Exception {
@@ -1199,7 +1277,9 @@ public class Mutation {
 		return true;
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Updates CommercePriceList by id using JSON Merge Patch semantics via CommercePriceListService.updateCommercePriceList. Also updates nested relations if supplied."
+	)
 	public PriceList patchPriceList(
 			@GraphQLName("id") Long id,
 			@GraphQLName("priceList") PriceList priceList)
@@ -1212,7 +1292,9 @@ public class Mutation {
 				id, priceList));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Updates CommercePriceList by ERC using JSON Merge Patch semantics via CommercePriceListService.updateCommercePriceList. Throws NoSuchPriceListException when ERC is unknown."
+	)
 	public PriceList patchPriceListByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
 			@GraphQLName("priceList") PriceList priceList)
@@ -1226,7 +1308,9 @@ public class Mutation {
 					externalReferenceCode, priceList));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates or updates CommercePriceList via CommercePriceListService.addOrUpdateCommercePriceList; upsert by external reference code semantics. Cascades supplied nested relations (account-group, account, channel, discount, order-type, modifier, entry)."
+	)
 	public PriceList createPriceList(
 			@GraphQLName("priceList") PriceList priceList)
 		throws Exception {
@@ -1271,7 +1355,9 @@ public class Mutation {
 					callbackURL, contentType, fieldNames));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Replaces CommercePriceList by ERC via CommercePriceListService.addOrUpdateCommercePriceList; PUT replaces the resource while PATCH applies JSON Merge Patch."
+	)
 	public PriceList updatePriceListByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
 			@GraphQLName("priceList") PriceList priceList)
@@ -1285,7 +1371,9 @@ public class Mutation {
 					externalReferenceCode, priceList));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the CommercePriceListAccountRel addressed by internal id via CommercePriceListAccountRelService."
+	)
 	public boolean deletePriceListAccount(
 			@GraphQLName("priceListAccountId") Long priceListAccountId)
 		throws Exception {
@@ -1314,7 +1402,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates CommercePriceListAccountRel for PriceList by ERC. Throws NoSuchPriceListException when price list ERC is unknown."
+	)
 	public PriceListAccount
 			createPriceListByExternalReferenceCodePriceListAccount(
 				@GraphQLName("externalReferenceCode") String
@@ -1332,7 +1422,9 @@ public class Mutation {
 						externalReferenceCode, priceListAccount));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates CommercePriceListAccountRel for PriceList by id via CommercePriceListAccountRelService."
+	)
 	public PriceListAccount createPriceListIdPriceListAccount(
 			@GraphQLName("id") Long id,
 			@GraphQLName("priceListAccount") PriceListAccount priceListAccount)
@@ -1360,7 +1452,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the CommercePriceListCommerceAccountGroupRel addressed by internal id via CommercePriceListCommerceAccountGroupRelService."
+	)
 	public boolean deletePriceListAccountGroup(
 			@GraphQLName("priceListAccountGroupId") Long
 				priceListAccountGroupId)
@@ -1390,7 +1484,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates CommercePriceListCommerceAccountGroupRel for PriceList by ERC. Throws NoSuchPriceListException when price list ERC is unknown."
+	)
 	public PriceListAccountGroup
 			createPriceListByExternalReferenceCodePriceListAccountGroup(
 				@GraphQLName("externalReferenceCode") String
@@ -1408,7 +1504,9 @@ public class Mutation {
 						externalReferenceCode, priceListAccountGroup));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates CommercePriceListCommerceAccountGroupRel for PriceList by id via CommercePriceListCommerceAccountGroupRelService."
+	)
 	public PriceListAccountGroup createPriceListIdPriceListAccountGroup(
 			@GraphQLName("id") Long id,
 			@GraphQLName("priceListAccountGroup") PriceListAccountGroup
@@ -1439,7 +1537,9 @@ public class Mutation {
 						callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the CommercePriceListChannelRel addressed by internal id via CommercePriceListChannelRelService."
+	)
 	public boolean deletePriceListChannel(
 			@GraphQLName("priceListChannelId") Long priceListChannelId)
 		throws Exception {
@@ -1468,7 +1568,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates CommercePriceListChannelRel for PriceList by ERC. Throws NoSuchPriceListException when price list ERC is unknown."
+	)
 	public PriceListChannel
 			createPriceListByExternalReferenceCodePriceListChannel(
 				@GraphQLName("externalReferenceCode") String
@@ -1486,7 +1588,9 @@ public class Mutation {
 						externalReferenceCode, priceListChannel));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates CommercePriceListChannelRel for PriceList by id via CommercePriceListChannelRelService."
+	)
 	public PriceListChannel createPriceListIdPriceListChannel(
 			@GraphQLName("id") Long id,
 			@GraphQLName("priceListChannel") PriceListChannel priceListChannel)
@@ -1514,7 +1618,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the CommercePriceListDiscountRel addressed by internal id via CommercePriceListDiscountRelService."
+	)
 	public boolean deletePriceListDiscount(
 			@GraphQLName("priceListDiscountId") Long priceListDiscountId)
 		throws Exception {
@@ -1543,7 +1649,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates CommercePriceListDiscountRel for PriceList by ERC. Throws NoSuchPriceListException when price list ERC is unknown."
+	)
 	public PriceListDiscount
 			createPriceListByExternalReferenceCodePriceListDiscount(
 				@GraphQLName("externalReferenceCode") String
@@ -1561,7 +1669,9 @@ public class Mutation {
 						externalReferenceCode, priceListDiscount));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates CommercePriceListDiscountRel for PriceList by id via CommercePriceListDiscountRelService."
+	)
 	public PriceListDiscount createPriceListIdPriceListDiscount(
 			@GraphQLName("id") Long id,
 			@GraphQLName("priceListDiscount") PriceListDiscount
@@ -1590,7 +1700,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the CommercePriceListOrderTypeRel addressed by internal id via CommercePriceListOrderTypeRelService."
+	)
 	public boolean deletePriceListOrderType(
 			@GraphQLName("priceListOrderTypeId") Long priceListOrderTypeId)
 		throws Exception {
@@ -1619,7 +1731,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates CommercePriceListOrderTypeRel for PriceList by ERC. Throws NoSuchPriceListException when price list ERC is unknown."
+	)
 	public PriceListOrderType
 			createPriceListByExternalReferenceCodePriceListOrderType(
 				@GraphQLName("externalReferenceCode") String
@@ -1637,7 +1751,9 @@ public class Mutation {
 						externalReferenceCode, priceListOrderType));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates CommercePriceListOrderTypeRel for PriceList by id via CommercePriceListOrderTypeRelService."
+	)
 	public PriceListOrderType createPriceListIdPriceListOrderType(
 			@GraphQLName("id") Long id,
 			@GraphQLName("priceListOrderType") PriceListOrderType
@@ -1667,7 +1783,9 @@ public class Mutation {
 						callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the CommercePriceModifier addressed by internal id via CommercePriceModifierService."
+	)
 	public boolean deletePriceModifier(@GraphQLName("id") Long id)
 		throws Exception {
 
@@ -1694,7 +1812,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the CommercePriceModifier by company-scoped external reference code. Throws NoSuchPriceModifierException when ERC is unknown."
+	)
 	public boolean deletePriceModifierByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode)
 		throws Exception {
@@ -1710,7 +1830,9 @@ public class Mutation {
 		return true;
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Updates CommercePriceModifier by id using JSON Merge Patch semantics via CommercePriceModifierService.updateCommercePriceModifier. Also updates nested modifier rels if supplied."
+	)
 	public Response patchPriceModifier(
 			@GraphQLName("id") Long id,
 			@GraphQLName("priceModifier") PriceModifier priceModifier)
@@ -1723,7 +1845,9 @@ public class Mutation {
 				id, priceModifier));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Updates CommercePriceModifier by ERC using JSON Merge Patch semantics via CommercePriceModifierService.updateCommercePriceModifier. Throws NoSuchPriceModifierException when ERC is unknown."
+	)
 	public Response patchPriceModifierByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
 			@GraphQLName("priceModifier") PriceModifier priceModifier)
@@ -1737,7 +1861,9 @@ public class Mutation {
 					externalReferenceCode, priceModifier));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates CommercePriceModifier for PriceList by ERC. Throws NoSuchPriceListException when price list ERC is unknown."
+	)
 	public PriceModifier createPriceListByExternalReferenceCodePriceModifier(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
 			@GraphQLName("priceModifier") PriceModifier priceModifier)
@@ -1752,7 +1878,9 @@ public class Mutation {
 						externalReferenceCode, priceModifier));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates CommercePriceModifier for PriceList by id via CommercePriceModifierService."
+	)
 	public PriceModifier createPriceListIdPriceModifier(
 			@GraphQLName("id") Long id,
 			@GraphQLName("priceModifier") PriceModifier priceModifier)
@@ -1780,7 +1908,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the CommercePriceModifierRel (AssetCategory binding) addressed by internal id via CommercePriceModifierRelService."
+	)
 	public boolean deletePriceModifierCategory(
 			@GraphQLName("priceModifierCategoryId") Long
 				priceModifierCategoryId)
@@ -1810,7 +1940,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates CommercePriceModifierRel (AssetCategory binding) for PriceModifier by ERC. Throws NoSuchPriceModifierException when modifier ERC is unknown."
+	)
 	public PriceModifierCategory
 			createPriceModifierByExternalReferenceCodePriceModifierCategory(
 				@GraphQLName("externalReferenceCode") String
@@ -1828,7 +1960,9 @@ public class Mutation {
 						externalReferenceCode, priceModifierCategory));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates CommercePriceModifierRel (AssetCategory binding) for PriceModifier by id via CommercePriceModifierRelService."
+	)
 	public PriceModifierCategory createPriceModifierIdPriceModifierCategory(
 			@GraphQLName("id") Long id,
 			@GraphQLName("priceModifierCategory") PriceModifierCategory
@@ -1859,7 +1993,9 @@ public class Mutation {
 						callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the CommercePriceModifierRel (CPDefinition binding) addressed by internal id via CommercePriceModifierRelService."
+	)
 	public boolean deletePriceModifierProduct(
 			@GraphQLName("priceModifierProductId") Long priceModifierProductId)
 		throws Exception {
@@ -1888,7 +2024,9 @@ public class Mutation {
 					callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates CommercePriceModifierRel (CPDefinition binding) for PriceModifier by ERC. Throws NoSuchPriceModifierException when modifier ERC is unknown."
+	)
 	public PriceModifierProduct
 			createPriceModifierByExternalReferenceCodePriceModifierProduct(
 				@GraphQLName("externalReferenceCode") String
@@ -1906,7 +2044,9 @@ public class Mutation {
 						externalReferenceCode, priceModifierProduct));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates CommercePriceModifierRel (CPDefinition binding) for PriceModifier by id via CommercePriceModifierRelService."
+	)
 	public PriceModifierProduct createPriceModifierIdPriceModifierProduct(
 			@GraphQLName("id") Long id,
 			@GraphQLName("priceModifierProduct") PriceModifierProduct
@@ -1937,7 +2077,9 @@ public class Mutation {
 						callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the CommercePriceModifierRel (CommercePricingClass binding) addressed by internal id via CommercePriceModifierRelService."
+	)
 	public boolean deletePriceModifierProductGroup(
 			@GraphQLName("priceModifierProductGroupId") Long
 				priceModifierProductGroupId)
@@ -1968,7 +2110,9 @@ public class Mutation {
 					deletePriceModifierProductGroupBatch(callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates CommercePriceModifierRel (CommercePricingClass binding) for PriceModifier by ERC. Throws NoSuchPriceModifierException when modifier ERC is unknown."
+	)
 	public PriceModifierProductGroup
 			createPriceModifierByExternalReferenceCodePriceModifierProductGroup(
 				@GraphQLName("externalReferenceCode") String
@@ -1986,7 +2130,9 @@ public class Mutation {
 						externalReferenceCode, priceModifierProductGroup));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates CommercePriceModifierRel (CommercePricingClass binding) for PriceModifier by id via CommercePriceModifierRelService."
+	)
 	public PriceModifierProductGroup
 			createPriceModifierIdPriceModifierProductGroup(
 				@GraphQLName("id") Long id,
@@ -2018,7 +2164,9 @@ public class Mutation {
 						callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the CommerceTierPriceEntry addressed by internal id via CommerceTierPriceEntryService."
+	)
 	public boolean deleteTierPrice(@GraphQLName("id") Long id)
 		throws Exception {
 
@@ -2043,7 +2191,9 @@ public class Mutation {
 				callbackURL, object));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Deletes the CommerceTierPriceEntry by company-scoped external reference code. Throws NoSuchTierPriceEntryException when ERC is unknown."
+	)
 	public boolean deleteTierPriceByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode)
 		throws Exception {
@@ -2058,7 +2208,9 @@ public class Mutation {
 		return true;
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Updates CommerceTierPriceEntry by id using JSON Merge Patch semantics via CommerceTierPriceEntryService.updateCommerceTierPriceEntry."
+	)
 	public Response patchTierPrice(
 			@GraphQLName("id") Long id,
 			@GraphQLName("tierPrice") TierPrice tierPrice)
@@ -2071,7 +2223,9 @@ public class Mutation {
 				id, tierPrice));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Updates CommerceTierPriceEntry by ERC using JSON Merge Patch semantics via CommerceTierPriceEntryService.updateCommerceTierPriceEntry. Throws NoSuchTierPriceEntryException when ERC is unknown."
+	)
 	public Response patchTierPriceByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
 			@GraphQLName("tierPrice") TierPrice tierPrice)
@@ -2085,7 +2239,9 @@ public class Mutation {
 					externalReferenceCode, tierPrice));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates CommerceTierPriceEntry for PriceEntry by ERC. Throws NoSuchPriceEntryException when price entry ERC is unknown."
+	)
 	public TierPrice createPriceEntryByExternalReferenceCodeTierPrice(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
 			@GraphQLName("tierPrice") TierPrice tierPrice)
@@ -2100,7 +2256,9 @@ public class Mutation {
 						externalReferenceCode, tierPrice));
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Creates CommerceTierPriceEntry for PriceEntry by id via CommerceTierPriceEntryService."
+	)
 	public TierPrice createPriceEntryIdTierPrice(
 			@GraphQLName("priceEntryId") Long priceEntryId,
 			@GraphQLName("tierPrice") TierPrice tierPrice)
@@ -2703,4 +2861,4 @@ public class Mutation {
 		_vulcanBatchEngineImportTaskResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2053941055
+// LIFERAY-REST-BUILDER-HASH:1983465783
