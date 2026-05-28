@@ -209,7 +209,7 @@ public class OrderItem implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		deprecated = true,
-		description = "Identifier of the delivery group this line item belongs to. Used to split shipments.",
+		description = "Deprecated -- use deliveryGroupName instead. Identifier of the delivery group this line item belongs to; carried for backward compatibility with clients that predate deliveryGroupName.",
 		example = "separate-package"
 	)
 	public String getDeliveryGroup() {
@@ -247,7 +247,7 @@ public class OrderItem implements Serializable {
 
 	@Deprecated
 	@GraphQLField(
-		description = "Identifier of the delivery group this line item belongs to. Used to split shipments."
+		description = "Deprecated -- use deliveryGroupName instead. Identifier of the delivery group this line item belongs to; carried for backward compatibility with clients that predate deliveryGroupName."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String deliveryGroup;
@@ -3277,4 +3277,4 @@ public class OrderItem implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1155698671
+// LIFERAY-REST-BUILDER-HASH:1470961903
