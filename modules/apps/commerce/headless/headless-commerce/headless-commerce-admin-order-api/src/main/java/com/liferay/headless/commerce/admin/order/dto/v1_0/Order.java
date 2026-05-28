@@ -2538,7 +2538,7 @@ public class Order implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Raw decimal value of the shipping-discount amount without currency formatting. Read-only.",
-		example = "0.00"
+		example = "0.0"
 	)
 	public Double getShippingDiscountAmountValue() {
 		if (_shippingDiscountAmountValueSupplier != null) {
@@ -4228,7 +4228,7 @@ public class Order implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Raw decimal value of the subtotal with tax included. Read-only.",
-		example = "108.00"
+		example = "108.0"
 	)
 	public Double getSubtotalWithTaxAmountValue() {
 		if (_subtotalWithTaxAmountValueSupplier != null) {
@@ -4373,7 +4373,7 @@ public class Order implements Serializable {
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Raw decimal value of the tax amount without currency formatting. Read-only.",
-		example = "8.00"
+		example = "8.0"
 	)
 	public Double getTaxAmountValue() {
 		if (_taxAmountValueSupplier != null) {
@@ -4614,7 +4614,7 @@ public class Order implements Serializable {
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Raw decimal value of the total-discount amount without currency formatting. Read-only.",
-		example = "0.00"
+		example = "0.0"
 	)
 	public Double getTotalDiscountAmountValue() {
 		if (_totalDiscountAmountValueSupplier != null) {
@@ -5190,7 +5190,7 @@ public class Order implements Serializable {
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Raw decimal value of the total-discount amount with tax included. Read-only.",
-		example = "0.00"
+		example = "0.0"
 	)
 	public Double getTotalDiscountWithTaxAmountValue() {
 		if (_totalDiscountWithTaxAmountValueSupplier != null) {
@@ -7214,4 +7214,4 @@ public class Order implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1493355106
+// LIFERAY-REST-BUILDER-HASH:536855160
