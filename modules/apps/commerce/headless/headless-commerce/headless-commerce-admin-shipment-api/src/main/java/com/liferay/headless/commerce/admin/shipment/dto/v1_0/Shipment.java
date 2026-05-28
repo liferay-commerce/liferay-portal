@@ -41,7 +41,7 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Fulfillment record for a CommerceOrder. Carries the carrier, tracking, expected and shipping dates, the shipping address, the picked items (CommerceShipmentItem rows), and the workflow status that advances from PROCESSING through READY_TO_BE_SHIPPED and SHIPPED to DELIVERED.",
+	description = "Fulfillment record that ships a single parcel for a source order. Carries the carrier, tracking identifiers, expected and shipping dates, the ship-to address, the picked items, and the workflow status that advances from processing through ready-to-be-shipped and shipped to delivered.",
 	value = "Shipment"
 )
 @JsonFilter("Liferay.Vulcan")
@@ -58,7 +58,7 @@ public class Shipment implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Reference to the CommerceAccount that owns the source order (FK). Copied from the order on create and read-only thereafter.",
+		description = "Reference to the customer account that owns the source order (FK identifier). Copied from the order at creation time and read-only thereafter.",
 		example = "30130"
 	)
 	public Long getAccountId() {
@@ -95,7 +95,7 @@ public class Shipment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Reference to the CommerceAccount that owns the source order (FK). Copied from the order on create and read-only thereafter."
+		description = "Reference to the customer account that owns the source order (FK identifier). Copied from the order at creation time and read-only thereafter."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long accountId;
@@ -104,7 +104,7 @@ public class Shipment implements Serializable {
 	private Supplier<Long> _accountIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Map of HATEOAS actions available to the current user, keyed by action name (typically delete, get, update). Each value carries the href template and HTTP method, computed dynamically from the user's permissions on the shipment. Read-only."
+		description = "Map of HATEOAS actions available to the current user, keyed by action name. Each value carries the href template and HTTP method, computed dynamically from user permissions. Read-only."
 	)
 	@Valid
 	public Map<String, Map<String, String>> getActions() {
@@ -142,7 +142,7 @@ public class Shipment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Map of HATEOAS actions available to the current user, keyed by action name (typically delete, get, update). Each value carries the href template and HTTP method, computed dynamically from the user's permissions on the shipment. Read-only."
+		description = "Map of HATEOAS actions available to the current user, keyed by action name. Each value carries the href template and HTTP method, computed dynamically from user permissions. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Map<String, Map<String, String>> actions;
@@ -151,7 +151,7 @@ public class Shipment implements Serializable {
 	private Supplier<Map<String, Map<String, String>>> _actionsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Name of the shipping carrier handling the parcel (for example, FedEx, UPS, DHL). Free-form string set by the fulfillment operator.",
+		description = "Name of the shipping carrier handling the parcel. Free-form string supplied by the fulfillment operator; updatable while the shipment is still in flight.",
 		example = "FedEx"
 	)
 	public String getCarrier() {
@@ -188,7 +188,7 @@ public class Shipment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Name of the shipping carrier handling the parcel (for example, FedEx, UPS, DHL). Free-form string set by the fulfillment operator."
+		description = "Name of the shipping carrier handling the parcel. Free-form string supplied by the fulfillment operator; updatable while the shipment is still in flight."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String carrier;
@@ -197,7 +197,8 @@ public class Shipment implements Serializable {
 	private Supplier<String> _carrierSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Timestamp when the shipment row was created. Read-only."
+		description = "Creation timestamp in ISO 8601. Read-only; set when the shipment is first persisted.",
+		example = "2017-07-21T19:30:00Z"
 	)
 	public Date getCreateDate() {
 		if (_createDateSupplier != null) {
@@ -233,7 +234,7 @@ public class Shipment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Timestamp when the shipment row was created. Read-only."
+		description = "Creation timestamp in ISO 8601. Read-only; set when the shipment is first persisted."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Date createDate;
@@ -242,7 +243,7 @@ public class Shipment implements Serializable {
 	private Supplier<Date> _createDateSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Portal Expando custom field values attached to the CommerceShipment, expressed as a flat list of name/value entries. The fields and their value types are declared on the CommerceShipment.class custom-fields configuration."
+		description = "Custom field values attached to the shipment by the platform's expando mechanism. Each entry is a name/value pair declared on the shipment's custom-fields configuration; the field set is installation-specific."
 	)
 	@Valid
 	public com.liferay.portal.vulcan.custom.field.CustomField[]
@@ -285,7 +286,7 @@ public class Shipment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Portal Expando custom field values attached to the CommerceShipment, expressed as a flat list of name/value entries. The fields and their value types are declared on the CommerceShipment.class custom-fields configuration."
+		description = "Custom field values attached to the shipment by the platform's expando mechanism. Each entry is a name/value pair declared on the shipment's custom-fields configuration; the field set is installation-specific."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected com.liferay.portal.vulcan.custom.field.CustomField[] customFields;
@@ -295,7 +296,8 @@ public class Shipment implements Serializable {
 		_customFieldsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Date on which the parcel is expected to arrive at the customer. Supplied by the fulfillment operator; updatable until the shipment reaches DELIVERED status."
+		description = "Estimated delivery date in ISO 8601. Supplied by the fulfillment operator; updatable until the shipment is delivered.",
+		example = "2017-07-21T19:30:00Z"
 	)
 	public Date getExpectedDate() {
 		if (_expectedDateSupplier != null) {
@@ -331,7 +333,7 @@ public class Shipment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Date on which the parcel is expected to arrive at the customer. Supplied by the fulfillment operator; updatable until the shipment reaches DELIVERED status."
+		description = "Estimated delivery date in ISO 8601. Supplied by the fulfillment operator; updatable until the shipment is delivered."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Date expectedDate;
@@ -340,7 +342,8 @@ public class Shipment implements Serializable {
 	private Supplier<Date> _expectedDateSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Idempotency key for create and update; must be unique per shipment within the company. When set, the resource is also addressable through the `/shipments/by-externalReferenceCode/...` paths."
+		description = "Idempotency key for create and update; must be unique per shipment within the company. When set, the resource is also addressable through the by-external-reference-code paths.",
+		example = "AB-34098-789-N"
 	)
 	public String getExternalReferenceCode() {
 		if (_externalReferenceCodeSupplier != null) {
@@ -376,7 +379,7 @@ public class Shipment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Idempotency key for create and update; must be unique per shipment within the company. When set, the resource is also addressable through the `/shipments/by-externalReferenceCode/...` paths."
+		description = "Idempotency key for create and update; must be unique per shipment within the company. When set, the resource is also addressable through the by-external-reference-code paths."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String externalReferenceCode;
@@ -386,7 +389,7 @@ public class Shipment implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Server-assigned identifier of the CommerceShipment (commerceShipmentId). Stable across the shipment's lifetime. Read-only.",
+		description = "Server-assigned identifier of the shipment. Stable across the shipment's lifetime. Read-only.",
 		example = "30130"
 	)
 	public Long getId() {
@@ -421,7 +424,7 @@ public class Shipment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Server-assigned identifier of the CommerceShipment (commerceShipmentId). Stable across the shipment's lifetime. Read-only."
+		description = "Server-assigned identifier of the shipment. Stable across the shipment's lifetime. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long id;
@@ -430,7 +433,8 @@ public class Shipment implements Serializable {
 	private Supplier<Long> _idSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Timestamp of the most recent update to the shipment row. Read-only."
+		description = "Timestamp of the most recent update in ISO 8601. Read-only; refreshed on every persisted change.",
+		example = "2017-07-21T19:30:00Z"
 	)
 	public Date getModifiedDate() {
 		if (_modifiedDateSupplier != null) {
@@ -466,7 +470,7 @@ public class Shipment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Timestamp of the most recent update to the shipment row. Read-only."
+		description = "Timestamp of the most recent update in ISO 8601. Read-only; refreshed on every persisted change."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Date modifiedDate;
@@ -475,7 +479,7 @@ public class Shipment implements Serializable {
 	private Supplier<Date> _modifiedDateSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "External reference code of the CommerceOrder this shipment fulfills. Accepted on create as an alternative to orderId; the order is resolved against the current company scope. Not returned on read; the shipment carries the resolved orderId and accountId instead.",
+		description = "External reference code of the source order. Accepted on create as an alternative to orderId; the order is resolved against the current company scope. Write-only -- the response carries the resolved orderId and accountId instead.",
 		example = "AB-34098-789-N"
 	)
 	public String getOrderExternalReferenceCode() {
@@ -516,7 +520,7 @@ public class Shipment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "External reference code of the CommerceOrder this shipment fulfills. Accepted on create as an alternative to orderId; the order is resolved against the current company scope. Not returned on read; the shipment carries the resolved orderId and accountId instead."
+		description = "External reference code of the source order. Accepted on create as an alternative to orderId; the order is resolved against the current company scope. Write-only -- the response carries the resolved orderId and accountId instead."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String orderExternalReferenceCode;
@@ -526,7 +530,7 @@ public class Shipment implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Identifier of the CommerceOrder this shipment fulfills (FK). Required on create unless orderExternalReferenceCode is supplied; used to seed the shipment's groupId, accountId, shippingAddressId, shippingMethodId, and shippingOptionName.",
+		description = "Reference to the source order this shipment fulfills (FK identifier). Required on create when orderExternalReferenceCode is omitted; seeds the shipment's group, customer account, ship-to address, shipping method, and shipping-option label.",
 		example = "30130"
 	)
 	public Long getOrderId() {
@@ -563,7 +567,7 @@ public class Shipment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Identifier of the CommerceOrder this shipment fulfills (FK). Required on create unless orderExternalReferenceCode is supplied; used to seed the shipment's groupId, accountId, shippingAddressId, shippingMethodId, and shippingOptionName."
+		description = "Reference to the source order this shipment fulfills (FK identifier). Required on create when orderExternalReferenceCode is omitted; seeds the shipment's group, customer account, ship-to address, shipping method, and shipping-option label."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long orderId;
@@ -572,7 +576,7 @@ public class Shipment implements Serializable {
 	private Supplier<Long> _orderIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Nested list of CommerceShipmentItem rows to write together with the shipment. When supplied on update, every existing shipment item on the parent shipment is deleted first and the array is replayed; supply an empty array to clear all items, or omit the field to leave items untouched."
+		description = "Nested picked-line rows to write together with the shipment. When supplied on update, every existing line on the parent is removed first and the array is replayed; supply an empty array to clear all lines, or omit the field to leave the lines untouched."
 	)
 	@Valid
 	public ShipmentItem[] getShipmentItems() {
@@ -609,7 +613,7 @@ public class Shipment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Nested list of CommerceShipmentItem rows to write together with the shipment. When supplied on update, every existing shipment item on the parent shipment is deleted first and the array is replayed; supply an empty array to clear all items, or omit the field to leave items untouched."
+		description = "Nested picked-line rows to write together with the shipment. When supplied on update, every existing line on the parent is removed first and the array is replayed; supply an empty array to clear all lines, or omit the field to leave the lines untouched."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected ShipmentItem[] shipmentItems;
@@ -618,7 +622,7 @@ public class Shipment implements Serializable {
 	private Supplier<ShipmentItem[]> _shipmentItemsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Nested ShippingAddress applied to this shipment. When supplied, the existing CommerceAddress is updated in place (or a new one is created when none is linked yet) and the shipment is rebound to it. Omit to leave the address inherited from the source order."
+		description = "Nested ship-to address applied to this shipment. When supplied, the existing address row is updated in place (or a new one is created when none is linked yet) and the shipment is rebound to it. Omit to leave the address inherited from the source order."
 	)
 	@Valid
 	public ShippingAddress getShippingAddress() {
@@ -656,7 +660,7 @@ public class Shipment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Nested ShippingAddress applied to this shipment. When supplied, the existing CommerceAddress is updated in place (or a new one is created when none is linked yet) and the shipment is rebound to it. Omit to leave the address inherited from the source order."
+		description = "Nested ship-to address applied to this shipment. When supplied, the existing address row is updated in place (or a new one is created when none is linked yet) and the shipment is rebound to it. Omit to leave the address inherited from the source order."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected ShippingAddress shippingAddress;
@@ -666,7 +670,7 @@ public class Shipment implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Identifier of the CommerceAddress the parcel is shipped to (FK). Copied from the source order on create; can be retargeted in flight by supplying a nested shippingAddress or by calling the shipping-address endpoint.",
+		description = "Reference to the postal address the parcel ships to (FK identifier). Copied from the source order at creation time; can be retargeted by supplying a nested shippingAddress or by calling the shipping-address endpoint.",
 		example = "31130"
 	)
 	public Long getShippingAddressId() {
@@ -703,7 +707,7 @@ public class Shipment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Identifier of the CommerceAddress the parcel is shipped to (FK). Copied from the source order on create; can be retargeted in flight by supplying a nested shippingAddress or by calling the shipping-address endpoint."
+		description = "Reference to the postal address the parcel ships to (FK identifier). Copied from the source order at creation time; can be retargeted by supplying a nested shippingAddress or by calling the shipping-address endpoint."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long shippingAddressId;
@@ -712,7 +716,8 @@ public class Shipment implements Serializable {
 	private Supplier<Long> _shippingAddressIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Date on which the parcel was handed over to the carrier. Typically set when the shipment transitions to SHIPPED."
+		description = "Date the parcel was handed over to the carrier, in ISO 8601. Typically set when the shipment transitions to shipped.",
+		example = "2017-07-21T19:30:00Z"
 	)
 	public Date getShippingDate() {
 		if (_shippingDateSupplier != null) {
@@ -748,7 +753,7 @@ public class Shipment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Date on which the parcel was handed over to the carrier. Typically set when the shipment transitions to SHIPPED."
+		description = "Date the parcel was handed over to the carrier, in ISO 8601. Typically set when the shipment transitions to shipped."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Date shippingDate;
@@ -758,7 +763,7 @@ public class Shipment implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Identifier of the CommerceShippingMethod used by the carrier (FK). Copied from the source order on create; updatable while the shipment is still in PROCESSING or READY_TO_BE_SHIPPED.",
+		description = "Reference to the shipping method used by the carrier (FK identifier). Copied from the source order at creation time; updatable while the shipment is still processing or ready to be shipped.",
 		example = "30130"
 	)
 	public Long getShippingMethodId() {
@@ -795,7 +800,7 @@ public class Shipment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Identifier of the CommerceShippingMethod used by the carrier (FK). Copied from the source order on create; updatable while the shipment is still in PROCESSING or READY_TO_BE_SHIPPED."
+		description = "Reference to the shipping method used by the carrier (FK identifier). Copied from the source order at creation time; updatable while the shipment is still processing or ready to be shipped."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long shippingMethodId;
@@ -804,7 +809,7 @@ public class Shipment implements Serializable {
 	private Supplier<Long> _shippingMethodIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Label of the shipping option selected on the source order (for example, Standard Delivery, Express). Copied from the order on create. Read-only.",
+		description = "Label of the shipping option selected on the source order. Copied from the order at creation time. Read-only.",
 		example = "Standard Delivery"
 	)
 	public String getShippingOptionName() {
@@ -841,7 +846,7 @@ public class Shipment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Label of the shipping option selected on the source order (for example, Standard Delivery, Express). Copied from the order on create. Read-only."
+		description = "Label of the shipping option selected on the source order. Copied from the order at creation time. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String shippingOptionName;
@@ -850,7 +855,7 @@ public class Shipment implements Serializable {
 	private Supplier<String> _shippingOptionNameSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Workflow state of the shipment, exposed as a Status envelope with the integer `code` and its human-readable label. The code values are 0=PROCESSING, 1=READY_TO_BE_SHIPPED, 2=SHIPPED, 3=DELIVERED; transitions are driven by the status-* POST endpoints. Read-only on this schema."
+		description = "Workflow envelope with the integer code and the localized label of the shipment. Transitions are driven by the dedicated status-* endpoints and cannot run backwards; reaching shipped or delivered emits an asynchronous shipment-status message. Read-only on this schema."
 	)
 	@Valid
 	public Status getStatus() {
@@ -887,7 +892,7 @@ public class Shipment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Workflow state of the shipment, exposed as a Status envelope with the integer `code` and its human-readable label. The code values are 0=PROCESSING, 1=READY_TO_BE_SHIPPED, 2=SHIPPED, 3=DELIVERED; transitions are driven by the status-* POST endpoints. Read-only on this schema."
+		description = "Workflow envelope with the integer code and the localized label of the shipment. Transitions are driven by the dedicated status-* endpoints and cannot run backwards; reaching shipped or delivered emits an asynchronous shipment-status message. Read-only on this schema."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Status status;
@@ -896,7 +901,7 @@ public class Shipment implements Serializable {
 	private Supplier<Status> _statusSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Carrier-assigned tracking number for the parcel. Free-form string set by the fulfillment operator.",
+		description = "Carrier-assigned tracking number for the parcel. Free-form string supplied by the fulfillment operator.",
 		example = "123AD-asd"
 	)
 	public String getTrackingNumber() {
@@ -933,7 +938,7 @@ public class Shipment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Carrier-assigned tracking number for the parcel. Free-form string set by the fulfillment operator."
+		description = "Carrier-assigned tracking number for the parcel. Free-form string supplied by the fulfillment operator."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String trackingNumber;
@@ -942,7 +947,7 @@ public class Shipment implements Serializable {
 	private Supplier<String> _trackingNumberSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "URL of the carrier tracking page for this parcel. Free-form string; not validated as a URL.",
+		description = "Carrier tracking page for the parcel. Free-form string; not validated as a URL. Defaults to the tracking URL configured on the selected shipping method when the field is omitted.",
 		example = "https://example.com/track?number=123AD-asd"
 	)
 	public String getTrackingURL() {
@@ -979,7 +984,7 @@ public class Shipment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "URL of the carrier tracking page for this parcel. Free-form string; not validated as a URL."
+		description = "Carrier tracking page for the parcel. Free-form string; not validated as a URL. Defaults to the tracking URL configured on the selected shipping method when the field is omitted."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String trackingURL;
@@ -988,8 +993,8 @@ public class Shipment implements Serializable {
 	private Supplier<String> _trackingURLSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Display name of the user who created the shipment. Read-only.",
-		example = "John"
+		description = "Full name of the user who created the shipment. Read-only.",
+		example = "John Doe"
 	)
 	public String getUserName() {
 		if (_userNameSupplier != null) {
@@ -1025,7 +1030,7 @@ public class Shipment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Display name of the user who created the shipment. Read-only."
+		description = "Full name of the user who created the shipment. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String userName;
@@ -1481,4 +1486,4 @@ public class Shipment implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1247221645
+// LIFERAY-REST-BUILDER-HASH:923006457

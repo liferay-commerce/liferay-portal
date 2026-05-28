@@ -37,11 +37,11 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Standard error envelope returned with every non-success HTTP status. Carries the HTTP status, an internal error code, a human-readable message, and a developer-oriented description.",
+	description = "Standard error envelope returned on every non-success response. Carries the HTTP status, an internal error code, a short human-readable message, and a developer-oriented diagnostic description.",
 	value = "Error"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "Standard error envelope returned with every non-success HTTP status. Carries the HTTP status, an internal error code, a human-readable message, and a developer-oriented description.",
+	description = "Standard error envelope returned on every non-success response. Carries the HTTP status, an internal error code, a short human-readable message, and a developer-oriented diagnostic description.",
 	requiredProperties = {"errorCode", "errorDescription", "message", "status"}
 )
 @JsonFilter("Liferay.Vulcan")
@@ -57,7 +57,7 @@ public class Error implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Internal error code mapping used by tooling to group related failures. Read-only.",
+		description = "Numeric tooling-facing identifier that groups related failures across the API. Read-only.",
 		example = "996"
 	)
 	public Integer getErrorCode() {
@@ -94,7 +94,7 @@ public class Error implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Internal error code mapping used by tooling to group related failures. Read-only."
+		description = "Numeric tooling-facing identifier that groups related failures across the API. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	@NotNull
@@ -104,7 +104,7 @@ public class Error implements Serializable {
 	private Supplier<Integer> _errorCodeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Developer-oriented diagnostic message describing the failure. Suitable for logging and debugging; not intended for end-user display. Read-only.",
+		description = "Diagnostic message describing the failure. Intended for logs and debugging surfaces; not meant for end-user display. Read-only.",
 		example = "Unable to find currency. Currency code should be expressed with 3-letter ISO 4217 format."
 	)
 	public String getErrorDescription() {
@@ -141,7 +141,7 @@ public class Error implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Developer-oriented diagnostic message describing the failure. Suitable for logging and debugging; not intended for end-user display. Read-only."
+		description = "Diagnostic message describing the failure. Intended for logs and debugging surfaces; not meant for end-user display. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	@NotEmpty
@@ -151,7 +151,7 @@ public class Error implements Serializable {
 	private Supplier<String> _errorDescriptionSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Short human-readable summary of the failure. Suitable for end-user display when the surrounding UI does not provide a domain-specific message. Read-only.",
+		description = "Short human-readable summary of the failure, suitable for end-user display when the calling client does not provide a domain-specific message. Read-only.",
 		example = "No CommerceCurrency exists with the key {groupId=41811, code=US Dollar}"
 	)
 	public String getMessage() {
@@ -188,7 +188,7 @@ public class Error implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Short human-readable summary of the failure. Suitable for end-user display when the surrounding UI does not provide a domain-specific message. Read-only."
+		description = "Short human-readable summary of the failure, suitable for end-user display when the calling client does not provide a domain-specific message. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	@NotEmpty
@@ -198,7 +198,7 @@ public class Error implements Serializable {
 	private Supplier<String> _messageSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "HTTP status code returned with the response (mirrors the response status line). Read-only.",
+		description = "HTTP status code returned with the response; mirrors the response status line. Read-only.",
 		example = "404"
 	)
 	public Integer getStatus() {
@@ -235,7 +235,7 @@ public class Error implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "HTTP status code returned with the response (mirrors the response status line). Read-only."
+		description = "HTTP status code returned with the response; mirrors the response status line. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	@NotNull
@@ -428,4 +428,4 @@ public class Error implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-877628429
+// LIFERAY-REST-BUILDER-HASH:1001570227

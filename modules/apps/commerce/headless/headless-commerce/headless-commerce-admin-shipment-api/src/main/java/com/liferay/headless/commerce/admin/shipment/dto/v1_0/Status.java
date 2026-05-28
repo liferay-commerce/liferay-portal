@@ -34,7 +34,7 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Workflow-status envelope describing the integer code and the localized label of a CommerceShipment. Used by the Shipment.status property; values are sourced from CommerceShipmentConstants.",
+	description = "Workflow envelope describing the integer code and human-readable label of a shipment's current state. Used by the Shipment.status property; the value follows the shipment lifecycle and is not editable directly on the parent resource.",
 	value = "Status"
 )
 @JsonFilter("Liferay.Vulcan")
@@ -50,7 +50,8 @@ public class Status implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Integer status of the shipment -- 0=PROCESSING, 1=READY_TO_BE_SHIPPED, 2=SHIPPED, 3=DELIVERED. Transitions are driven by the status-* POST endpoints; the code is not editable directly on the Shipment resource. Read-only."
+		description = "Integer status of the shipment -- 0=Processing, 1=Ready to be shipped, 2=Shipped, 3=Delivered. Transitions are driven by the dedicated status-* endpoints and cannot run backwards. Read-only.",
+		example = "2"
 	)
 	public Integer getCode() {
 		if (_codeSupplier != null) {
@@ -84,7 +85,7 @@ public class Status implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Integer status of the shipment -- 0=PROCESSING, 1=READY_TO_BE_SHIPPED, 2=SHIPPED, 3=DELIVERED. Transitions are driven by the status-* POST endpoints; the code is not editable directly on the Shipment resource. Read-only."
+		description = "Integer status of the shipment -- 0=Processing, 1=Ready to be shipped, 2=Shipped, 3=Delivered. Transitions are driven by the dedicated status-* endpoints and cannot run backwards. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Integer code;
@@ -93,7 +94,7 @@ public class Status implements Serializable {
 	private Supplier<Integer> _codeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Non-localized label corresponding to the code (for example, processing, ready-to-be-shipped, shipped, delivered).",
+		description = "Non-localized label corresponding to the integer code.",
 		example = "shipped"
 	)
 	public String getLabel() {
@@ -130,7 +131,7 @@ public class Status implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Non-localized label corresponding to the code (for example, processing, ready-to-be-shipped, shipped, delivered)."
+		description = "Non-localized label corresponding to the integer code."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String label;
@@ -139,7 +140,7 @@ public class Status implements Serializable {
 	private Supplier<String> _labelSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Localized label for the code, resolved against the current request's preferred locale.",
+		description = "Localized label corresponding to the integer code, resolved against the current request's preferred locale.",
 		example = "Spedito"
 	)
 	public String getLabel_i18n() {
@@ -176,7 +177,7 @@ public class Status implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Localized label for the code, resolved against the current request's preferred locale."
+		description = "Localized label corresponding to the integer code, resolved against the current request's preferred locale."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String label_i18n;
@@ -356,4 +357,4 @@ public class Status implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-799288930
+// LIFERAY-REST-BUILDER-HASH:-677892406
