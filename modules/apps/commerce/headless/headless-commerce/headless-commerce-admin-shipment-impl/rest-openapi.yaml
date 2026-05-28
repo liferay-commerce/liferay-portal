@@ -119,8 +119,8 @@ components:
                     type: integer
                 errorDescription:
                     description:
-                        Diagnostic message describing the failure. Intended for logs and debugging surfaces; not
-                        meant for end-user display. Read-only.
+                        Diagnostic message describing the failure. Intended for logs and debugging surfaces; not meant
+                        for end-user display. Read-only.
                     example: Unable to find currency. Currency code should be expressed with 3-letter ISO 4217 format.
                     readOnly: true
                     type: string
@@ -146,8 +146,8 @@ components:
         Shipment:
             description:
                 Fulfillment record that ships a single parcel for a source order. Carries the carrier, tracking
-                identifiers, expected and shipping dates, the ship-to address, the picked items, and the workflow
-                status that advances from processing through ready-to-be-shipped and shipped to delivered.
+                identifiers, expected and shipping dates, the ship-to address, the picked items, and the workflow status
+                that advances from processing through ready-to-be-shipped and shipped to delivered.
             properties:
                 accountId:
                     description:
@@ -159,13 +159,13 @@ components:
                     readOnly: true
                     type: integer
                 actions:
-                    description:
-                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
-                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     additionalProperties:
                         additionalProperties:
                             type: string
                         type: object
+                    description:
+                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
+                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     readOnly: true
                     type: object
                 carrier:
@@ -177,14 +177,14 @@ components:
                 createDate:
                     description:
                         Creation timestamp in ISO 8601. Read-only; set when the shipment is first persisted.
-                    example: "2017-07-21T19:30:00Z"
+                    example: 2017-07-21T19:30:00Z
                     format: date
                     readOnly: true
                     type: string
                 customFields:
                     description:
-                        Custom field values attached to the shipment by the platform's expando mechanism. Each entry
-                        is a name/value pair declared on the shipment's custom-fields configuration; the field set is
+                        Custom field values attached to the shipment by the platform's expando mechanism. Each entry is
+                        a name/value pair declared on the shipment's custom-fields configuration; the field set is
                         installation-specific.
                     items:
                         type: customField
@@ -193,13 +193,13 @@ components:
                     description:
                         Estimated delivery date in ISO 8601. Supplied by the fulfillment operator; updatable until the
                         shipment is delivered.
-                    example: "2017-07-21T19:30:00Z"
+                    example: 2017-07-21T19:30:00Z
                     format: date
                     type: string
                 externalReferenceCode:
                     description:
-                        Idempotency key for create and update; must be unique per shipment within the company. When
-                        set, the resource is also addressable through the by-external-reference-code paths.
+                        Idempotency key for create and update; must be unique per shipment within the company. When set,
+                        the resource is also addressable through the by-external-reference-code paths.
                     example: AB-34098-789-N
                     type: string
                 id:
@@ -212,17 +212,16 @@ components:
                     type: integer
                 modifiedDate:
                     description:
-                        Timestamp of the most recent update in ISO 8601. Read-only; refreshed on every persisted
-                        change.
-                    example: "2017-07-21T19:30:00Z"
+                        Timestamp of the most recent update in ISO 8601. Read-only; refreshed on every persisted change.
+                    example: 2017-07-21T19:30:00Z
                     format: date
                     readOnly: true
                     type: string
                 orderExternalReferenceCode:
                     description:
                         External reference code of the source order. Accepted on create as an alternative to orderId;
-                        the order is resolved against the current company scope. Write-only -- the response carries
-                        the resolved orderId and accountId instead.
+                        the order is resolved against the current company scope. Write-only -- the response carries the
+                        resolved orderId and accountId instead.
                     example: AB-34098-789-N
                     type: string
                 orderId:
@@ -237,17 +236,17 @@ components:
                 shipmentItems:
                     description:
                         Nested picked-line rows to write together with the shipment. When supplied on update, every
-                        existing line on the parent is removed first and the array is replayed; supply an empty array
-                        to clear all lines, or omit the field to leave the lines untouched.
+                        existing line on the parent is removed first and the array is replayed; supply an empty array to
+                        clear all lines, or omit the field to leave the lines untouched.
                     items:
                         $ref: "#/components/schemas/ShipmentItem"
                     type: array
                 shippingAddress:
+                    $ref: "#/components/schemas/ShippingAddress"
                     description:
                         Nested ship-to address applied to this shipment. When supplied, the existing address row is
                         updated in place (or a new one is created when none is linked yet) and the shipment is rebound
                         to it. Omit to leave the address inherited from the source order.
-                    $ref: "#/components/schemas/ShippingAddress"
                 shippingAddressId:
                     description:
                         Reference to the postal address the parcel ships to (FK identifier). Copied from the source
@@ -261,14 +260,13 @@ components:
                     description:
                         Date the parcel was handed over to the carrier, in ISO 8601. Typically set when the shipment
                         transitions to shipped.
-                    example: "2017-07-21T19:30:00Z"
+                    example: 2017-07-21T19:30:00Z
                     format: date
                     type: string
                 shippingMethodId:
                     description:
                         Reference to the shipping method used by the carrier (FK identifier). Copied from the source
-                        order at creation time; updatable while the shipment is still processing or ready to be
-                        shipped.
+                        order at creation time; updatable while the shipment is still processing or ready to be shipped.
                     example: 30130
                     format: int64
                     minimum: 0
@@ -281,11 +279,11 @@ components:
                     readOnly: true
                     type: string
                 status:
-                    description:
-                        Workflow envelope with the integer code and the localized label of the shipment. Transitions
-                        are driven by the dedicated status-* endpoints and cannot run backwards; reaching shipped or
-                        delivered emits an asynchronous shipment-status message. Read-only on this schema.
                     $ref: "#/components/schemas/Status"
+                    description:
+                        Workflow envelope with the integer code and the localized label of the shipment. Transitions are
+                        driven by the dedicated status-* endpoints and cannot run backwards; reaching shipped or
+                        delivered emits an asynchronous shipment-status message. Read-only on this schema.
                     readOnly: true
                 trackingNumber:
                     description:
@@ -295,8 +293,8 @@ components:
                     type: string
                 trackingURL:
                     description:
-                        Carrier tracking page for the parcel. Free-form string; not validated as a URL. Defaults to
-                        the tracking URL configured on the selected shipping method when the field is omitted.
+                        Carrier tracking page for the parcel. Free-form string; not validated as a URL. Defaults to the
+                        tracking URL configured on the selected shipping method when the field is omitted.
                     example: https://example.com/track?number=123AD-asd
                     type: string
                 userName:
@@ -312,19 +310,19 @@ components:
                 specific inventory warehouse, optionally validating against stock on hand at write time.
             properties:
                 actions:
-                    description:
-                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
-                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     additionalProperties:
                         additionalProperties:
                             type: string
                         type: object
+                    description:
+                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
+                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     readOnly: true
                     type: object
                 createDate:
                     description:
                         Creation timestamp in ISO 8601. Read-only; set when the picked-line row is first persisted.
-                    example: "2017-07-21T19:30:00Z"
+                    example: 2017-07-21T19:30:00Z
                     format: date
                     readOnly: true
                     type: string
@@ -336,8 +334,7 @@ components:
                     type: string
                 id:
                     description:
-                        Server-assigned identifier of the picked-line row. Stable across the row's lifetime.
-                        Read-only.
+                        Server-assigned identifier of the picked-line row. Stable across the row's lifetime. Read-only.
                     example: 30130
                     format: int64
                     minimum: 0
@@ -345,22 +342,21 @@ components:
                     type: integer
                 modifiedDate:
                     description:
-                        Timestamp of the most recent update in ISO 8601. Read-only; refreshed on every persisted
-                        change.
-                    example: "2017-07-21T19:30:00Z"
+                        Timestamp of the most recent update in ISO 8601. Read-only; refreshed on every persisted change.
+                    example: 2017-07-21T19:30:00Z
                     format: date
                     readOnly: true
                     type: string
                 orderItemExternalReferenceCode:
                     description:
-                        External reference code of the source order item this line draws from. Accepted on create as
-                        an alternative to orderItemId; the order item is resolved against the current company scope.
+                        External reference code of the source order item this line draws from. Accepted on create as an
+                        alternative to orderItemId; the order item is resolved against the current company scope.
                     example: AB-34098-789-N
                     type: string
                 orderItemId:
                     description:
-                        Reference to the source order item this line draws from (FK identifier). Required on create
-                        when orderItemExternalReferenceCode is omitted; identifies the SKU and the remaining quantity
+                        Reference to the source order item this line draws from (FK identifier). Required on create when
+                        orderItemExternalReferenceCode is omitted; identifies the SKU and the remaining quantity
                         available to ship.
                     example: 30130
                     format: int64
@@ -369,16 +365,16 @@ components:
                 quantity:
                     description:
                         Quantity shipped on this line, expressed in the unit of measure of the referenced order item.
-                        Formatted on read against the SKU's unit-of-measure configuration. Required on create; must
-                        be positive.
+                        Formatted on read against the SKU's unit-of-measure configuration. Required on create; must be
+                        positive.
                     example: 10.1
                     format: bigdecimal
                     minimum: 0
                     type: number
                 shipmentExternalReferenceCode:
                     description:
-                        External reference code of the parent shipment this line belongs to. Read-only; derived from
-                        the linked shipment.
+                        External reference code of the parent shipment this line belongs to. Read-only; derived from the
+                        linked shipment.
                     example: AB-34098-789-N
                     type: string
                 shipmentId:
@@ -404,22 +400,21 @@ components:
                     type: string
                 validateInventory:
                     description:
-                        When true, the server validates the requested quantity against the warehouse's current stock
-                        on hand and rejects the write when stock is insufficient. Defaults to true when omitted.
+                        When true, the server validates the requested quantity against the warehouse's current stock on
+                        hand and rejects the write when stock is insufficient. Defaults to true when omitted.
                     example: true
                     type: boolean
                 warehouseExternalReferenceCode:
                     description:
-                        External reference code of the inventory warehouse the line is picked from. Accepted on
-                        create as an alternative to warehouseId; the warehouse is resolved against the current
-                        company scope.
+                        External reference code of the inventory warehouse the line is picked from. Accepted on create
+                        as an alternative to warehouseId; the warehouse is resolved against the current company scope.
                     example: AB-34098-789-N
                     type: string
                 warehouseId:
                     description:
-                        Reference to the inventory warehouse the line is picked from (FK identifier). Required on
-                        create when warehouseExternalReferenceCode is omitted. Defaults on update to the warehouse
-                        already bound to the row.
+                        Reference to the inventory warehouse the line is picked from (FK identifier). Required on create
+                        when warehouseExternalReferenceCode is omitted. Defaults on update to the warehouse already
+                        bound to the row.
                     example: 30130
                     format: int64
                     minimum: 0
@@ -429,9 +424,9 @@ components:
             type: object
         ShippingAddress:
             description:
-                Postal address used as the ship-to location for a shipment. Country and region are resolved by ISO
-                code against the portal's country and region catalogs; the same row is shared with the parent
-                shipment's address slot.
+                Postal address used as the ship-to location for a shipment. Country and region are resolved by ISO code
+                against the portal's country and region catalogs; the same row is shared with the parent shipment's
+                address slot.
             properties:
                 city:
                     description:
@@ -523,8 +518,7 @@ components:
                 code:
                     description:
                         Integer status of the shipment -- 0=Processing, 1=Ready to be shipped, 2=Shipped, 3=Delivered.
-                        Transitions are driven by the dedicated status-* endpoints and cannot run backwards.
-                        Read-only.
+                        Transitions are driven by the dedicated status-* endpoints and cannot run backwards. Read-only.
                     example: 2
                     format: int32
                     readOnly: true
@@ -635,8 +629,8 @@ paths:
         get:
             description:
                 Returns the CommerceShipmentItem identified by external reference code. Resolves the row via
-                CommerceShipmentItemService.fetchCommerceShipmentItemByExternalReferenceCode against the current
-                company scope; raises NoSuchShipmentItemException (404) when the ERC is unknown.
+                CommerceShipmentItemService.fetchCommerceShipmentItemByExternalReferenceCode against the current company
+                scope; raises NoSuchShipmentItemException (404) when the ERC is unknown.
             operationId: getShipmentByExternalReferenceCodeItem
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
@@ -704,11 +698,11 @@ paths:
                 -   ShipmentItem
         patch:
             description:
-                Updates the CommerceShipmentItem identified by external reference code using JSON Merge Patch (only
-                the supplied fields are modified). Resolves the row, then calls
+                Updates the CommerceShipmentItem identified by external reference code using JSON Merge Patch (only the
+                supplied fields are modified). Resolves the row, then calls
                 CommerceShipmentItemService.updateCommerceShipmentItem with the resolved warehouse, the new quantity,
-                and the validateInventory flag (default true). Raises NoSuchShipmentItemException (404) when the ERC
-                is unknown; domain validation (inactive warehouse, insufficient stock) maps to 422.
+                and the validateInventory flag (default true). Raises NoSuchShipmentItemException (404) when the ERC is
+                unknown; domain validation (inactive warehouse, insufficient stock) maps to 422.
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             requestBody:
@@ -908,11 +902,11 @@ paths:
                 -   ShipmentItem
         patch:
             description:
-                Updates the CommerceShipmentItem identified by shipmentItemId using JSON Merge Patch (only the
-                supplied fields are modified). Resolves the row via
-                CommerceShipmentItemService.getCommerceShipmentItem, then calls updateCommerceShipmentItem with the
-                resolved warehouse, the new quantity, and the validateInventory flag (default true). Domain
-                validation (inactive warehouse, insufficient stock) maps to 422.
+                Updates the CommerceShipmentItem identified by shipmentItemId using JSON Merge Patch (only the supplied
+                fields are modified). Resolves the row via CommerceShipmentItemService.getCommerceShipmentItem, then
+                calls updateCommerceShipmentItem with the resolved warehouse, the new quantity, and the
+                validateInventory flag (default true). Domain validation (inactive warehouse, insufficient stock) maps
+                to 422.
             operationId: patchShipmentItem
             parameters:
                 -   $ref: "#/components/parameters/shipmentItemIdPathParam"
@@ -1004,8 +998,8 @@ paths:
             description:
                 Lists CommerceShipment rows for the current company through Liferay's SearchUtil with status set to
                 STATUS_ANY (all workflow states returned). Supports OData v4 filter, full-text search across the
-                shipment's indexed fields, sort, and one-based page/pageSize pagination; the filter and sort fields
-                are sourced from CommerceShipment's entity model.
+                shipment's indexed fields, sort, and one-based page/pageSize pagination; the filter and sort fields are
+                sourced from CommerceShipment's entity model.
             operationId: getShipmentsPage
             parameters:
                 -   $ref: "#/components/parameters/filterQueryParam"
@@ -1072,13 +1066,13 @@ paths:
         post:
             description:
                 Creates a CommerceShipment for an existing CommerceOrder identified by orderId (preferred) or
-                orderExternalReferenceCode. Resolves the order, then calls
-                CommerceShipmentService.addCommerceShipment cloning the order's groupId, accountId, shippingAddressId,
-                shippingMethodId, and shippingOptionName. Applies the optional carrier, trackingNumber, trackingURL,
-                expectedDate, and shippingDate via updateCommerceShipment; when shippingAddress is supplied the linked
-                CommerceAddress is updated in place, and when shipmentItems is supplied every existing item is
-                replaced. Raises NoSuchOrderException (404) when orderExternalReferenceCode is unknown; domain
-                validation (inactive warehouse, invalid shipping address) maps to 422.
+                orderExternalReferenceCode. Resolves the order, then calls CommerceShipmentService.addCommerceShipment
+                cloning the order's groupId, accountId, shippingAddressId, shippingMethodId, and shippingOptionName.
+                Applies the optional carrier, trackingNumber, trackingURL, expectedDate, and shippingDate via
+                updateCommerceShipment; when shippingAddress is supplied the linked CommerceAddress is updated in place,
+                and when shipmentItems is supplied every existing item is replaced. Raises NoSuchOrderException (404)
+                when orderExternalReferenceCode is unknown; domain validation (inactive warehouse, invalid shipping
+                address) maps to 422.
             operationId: postShipment
             requestBody:
                 content:
@@ -1163,9 +1157,9 @@ paths:
         delete:
             description:
                 Deletes the CommerceShipment identified by external reference code. Resolves the row via
-                CommerceShipmentService.fetchCommerceShipmentByExternalReferenceCode against the current company
-                scope and calls deleteCommerceShipment with restoreStockQuantity=false; raises
-                NoSuchShipmentException (404) when the ERC is unknown.
+                CommerceShipmentService.fetchCommerceShipmentByExternalReferenceCode against the current company scope
+                and calls deleteCommerceShipment with restoreStockQuantity=false; raises NoSuchShipmentException (404)
+                when the ERC is unknown.
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             responses:
@@ -1199,8 +1193,8 @@ paths:
         get:
             description:
                 Returns the CommerceShipment identified by external reference code. Resolves the row via
-                CommerceShipmentService.fetchCommerceShipmentByExternalReferenceCode against the current company
-                scope; raises NoSuchShipmentException (404) when the ERC is unknown.
+                CommerceShipmentService.fetchCommerceShipmentByExternalReferenceCode against the current company scope;
+                raises NoSuchShipmentException (404) when the ERC is unknown.
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             responses:
@@ -1259,10 +1253,10 @@ paths:
             description:
                 Updates the CommerceShipment identified by external reference code using JSON Merge Patch (only the
                 supplied fields are modified). Resolves the row, applies carrier, trackingNumber, trackingURL,
-                expectedDate, shippingDate, and shippingMethodId via
-                CommerceShipmentService.updateCommerceShipment, and replays the nested shippingAddress and
-                shipmentItems collections when supplied. Raises NoSuchShipmentException (404) when the ERC is unknown;
-                domain validation (inactive warehouse, malformed address) maps to 422.
+                expectedDate, shippingDate, and shippingMethodId via CommerceShipmentService.updateCommerceShipment, and
+                replays the nested shippingAddress and shipmentItems collections when supplied. Raises
+                NoSuchShipmentException (404) when the ERC is unknown; domain validation (inactive warehouse, malformed
+                address) maps to 422.
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             requestBody:
@@ -1353,8 +1347,8 @@ paths:
             description:
                 Upserts the CommerceShipment identified by external reference code. When the ERC resolves, the row is
                 updated through CommerceShipmentService.updateCommerceShipment and the nested shippingAddress and
-                shipmentItems collections are replayed; when the ERC is unknown, the request body's orderId is used
-                to resolve the source CommerceOrder and addCommerceShipment is invoked to seed a new shipment from the
+                shipmentItems collections are replayed; when the ERC is unknown, the request body's orderId is used to
+                resolve the source CommerceOrder and addCommerceShipment is invoked to seed a new shipment from the
                 order's groupId, accountId, shippingAddressId, shippingMethodId, and shippingOptionName. Domain
                 validation maps to 422.
             parameters:
@@ -1447,8 +1441,8 @@ paths:
         get:
             description:
                 Returns the CommerceShipmentItem rows owned by the CommerceShipment identified by external reference
-                code, paged through CommerceShipmentItemService.getCommerceShipmentItems. Raises
-                NoSuchShipmentException (404) when the parent ERC is unknown.
+                code, paged through CommerceShipmentItemService.getCommerceShipmentItems. Raises NoSuchShipmentException
+                (404) when the parent ERC is unknown.
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
                 -   $ref: "#/components/parameters/pageQueryParam"
@@ -1521,9 +1515,9 @@ paths:
                 -   ShipmentItem
         post:
             description:
-                Creates a CommerceShipmentItem on the CommerceShipment identified by external reference code.
-                Resolves the parent shipment via fetchCommerceShipmentByExternalReferenceCode and then delegates to
-                the postShipmentItem flow, which resolves the warehouse and order item, then calls
+                Creates a CommerceShipmentItem on the CommerceShipment identified by external reference code. Resolves
+                the parent shipment via fetchCommerceShipmentByExternalReferenceCode and then delegates to the
+                postShipmentItem flow, which resolves the warehouse and order item, then calls
                 CommerceShipmentItemService.addCommerceShipmentItem with the supplied quantity and validateInventory
                 flag (default true). Raises NoSuchShipmentException (404) when the parent ERC is unknown; domain
                 validation (inactive warehouse, insufficient stock) maps to 422.
@@ -1621,10 +1615,10 @@ paths:
                 -   ShipmentItem
         put:
             description:
-                Upserts a CommerceShipmentItem on the CommerceShipment addressed by external reference code. The
-                parent shipment is resolved by ERC and, when missing, by the body's shipmentId; the item is then
-                created or updated through ShipmentItemUtil.addOrUpdateShipmentItem keyed by the body's
-                externalReferenceCode. Domain validation (inactive warehouse, insufficient stock) maps to 422.
+                Upserts a CommerceShipmentItem on the CommerceShipment addressed by external reference code. The parent
+                shipment is resolved by ERC and, when missing, by the body's shipmentId; the item is then created or
+                updated through ShipmentItemUtil.addOrUpdateShipmentItem keyed by the body's externalReferenceCode.
+                Domain validation (inactive warehouse, insufficient stock) maps to 422.
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             requestBody:
@@ -1791,9 +1785,9 @@ paths:
                 Updates the ShippingAddress bound to the CommerceShipment identified by external reference code.
                 Resolves the parent shipment via fetchCommerceShipmentByExternalReferenceCode and delegates to
                 ShippingAddressUtil.updateShippingAddress, which creates or updates the underlying CommerceAddress and
-                rebinds the shipment to it; country and region are resolved by ISO code. Raises
-                NoSuchShipmentException (404) when the ERC is unknown; domain validation (malformed city, country,
-                name, street, or zip) maps to 422.
+                rebinds the shipment to it; country and region are resolved by ISO code. Raises NoSuchShipmentException
+                (404) when the ERC is unknown; domain validation (malformed city, country, name, street, or zip) maps to
+                422.
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             requestBody:
@@ -1881,11 +1875,11 @@ paths:
     /shipments/by-externalReferenceCode/{externalReferenceCode}/status-delivered:
         post:
             description:
-                Transitions the CommerceShipment identified by external reference code to the DELIVERED workflow
-                state (code 3). Resolves the parent shipment via fetchCommerceShipmentByExternalReferenceCode and
-                calls CommerceShipmentService.updateStatus with SHIPMENT_STATUS_DELIVERED; raises
-                NoSuchShipmentException (404) when the ERC is unknown and CommerceShipmentStatusException (400) when
-                the transition is not allowed from the current state.
+                Transitions the CommerceShipment identified by external reference code to the DELIVERED workflow state
+                (code 3). Resolves the parent shipment via fetchCommerceShipmentByExternalReferenceCode and calls
+                CommerceShipmentService.updateStatus with SHIPMENT_STATUS_DELIVERED; raises NoSuchShipmentException
+                (404) when the ERC is unknown and CommerceShipmentStatusException (400) when the transition is not
+                allowed from the current state.
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             responses:
@@ -1938,8 +1932,8 @@ paths:
                 Transitions the CommerceShipment identified by external reference code to the READY_TO_BE_SHIPPED
                 workflow state (code 1). Resolves the parent shipment via fetchCommerceShipmentByExternalReferenceCode
                 and calls CommerceShipmentService.updateStatus with SHIPMENT_STATUS_READY_TO_BE_SHIPPED; raises
-                NoSuchShipmentException (404) when the ERC is unknown and CommerceShipmentStatusException (400) when
-                the transition is not allowed from the current state.
+                NoSuchShipmentException (404) when the ERC is unknown and CommerceShipmentStatusException (400) when the
+                transition is not allowed from the current state.
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             responses:
@@ -1991,9 +1985,9 @@ paths:
             description:
                 Transitions the CommerceShipment identified by external reference code to the SHIPPED workflow state
                 (code 2). Resolves the parent shipment via fetchCommerceShipmentByExternalReferenceCode and calls
-                CommerceShipmentService.updateStatus with SHIPMENT_STATUS_SHIPPED; raises NoSuchShipmentException
-                (404) when the ERC is unknown and CommerceShipmentStatusException (400) when the transition is not
-                allowed from the current state.
+                CommerceShipmentService.updateStatus with SHIPMENT_STATUS_SHIPPED; raises NoSuchShipmentException (404)
+                when the ERC is unknown and CommerceShipmentStatusException (400) when the transition is not allowed
+                from the current state.
             operationId: postShipmentByExternalReferenceCodeStatusShipped
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
@@ -2155,12 +2149,12 @@ paths:
                 -   Shipment
         patch:
             description:
-                Updates the CommerceShipment identified by shipmentId using JSON Merge Patch (only the supplied
-                fields are modified). Resolves the row via CommerceShipmentService.getCommerceShipment, applies
-                carrier, trackingNumber, trackingURL, expectedDate, shippingDate, and shippingMethodId via
-                updateCommerceShipment, replays the nested shippingAddress and shipmentItems collections when
-                supplied, and optionally rewrites externalReferenceCode. Domain validation (inactive warehouse,
-                malformed address) maps to 422.
+                Updates the CommerceShipment identified by shipmentId using JSON Merge Patch (only the supplied fields
+                are modified). Resolves the row via CommerceShipmentService.getCommerceShipment, applies carrier,
+                trackingNumber, trackingURL, expectedDate, shippingDate, and shippingMethodId via
+                updateCommerceShipment, replays the nested shippingAddress and shipmentItems collections when supplied,
+                and optionally rewrites externalReferenceCode. Domain validation (inactive warehouse, malformed address)
+                maps to 422.
             operationId: patchShipment
             parameters:
                 -   $ref: "#/components/parameters/shipmentIdPathParam"
@@ -2250,8 +2244,8 @@ paths:
         get:
             description:
                 Returns the CommerceShipmentItem rows owned by the CommerceShipment identified by shipmentId, paged
-                through CommerceShipmentItemService.getCommerceShipmentItems. Exposed as a nested field on the
-                Shipment schema so a single GET on the parent can expand the shipmentItems collection.
+                through CommerceShipmentItemService.getCommerceShipmentItems. Exposed as a nested field on the Shipment
+                schema so a single GET on the parent can expand the shipmentItems collection.
             operationId: getShipmentItemsPage
             parameters:
                 -   $ref: "#/components/parameters/shipmentIdPathParam"
@@ -2326,8 +2320,8 @@ paths:
         post:
             description:
                 Creates a CommerceShipmentItem on the CommerceShipment identified by shipmentId. Resolves the
-                CommerceOrderItem and CommerceInventoryWarehouse via the supplied IDs or external reference codes,
-                then calls CommerceShipmentItemService.addCommerceShipmentItem with the requested quantity and the
+                CommerceOrderItem and CommerceInventoryWarehouse via the supplied IDs or external reference codes, then
+                calls CommerceShipmentItemService.addCommerceShipmentItem with the requested quantity and the
                 validateInventory flag (default true). Domain validation (inactive warehouse, insufficient stock,
                 missing order item) maps to 422.
             operationId: postShipmentItem
@@ -2425,10 +2419,10 @@ paths:
     /shipments/{shipmentId}/shipping-address:
         get:
             description:
-                Returns the ShippingAddress bound to the CommerceShipment identified by shipmentId. Reads the
-                underlying CommerceAddress through CommerceAddressService.fetchCommerceAddress; returns an empty
-                ShippingAddress when no CommerceAddress is bound yet. Exposed as a nested field on the Shipment schema
-                so a single GET on the parent can expand the shippingAddress object.
+                Returns the ShippingAddress bound to the CommerceShipment identified by shipmentId. Reads the underlying
+                CommerceAddress through CommerceAddressService.fetchCommerceAddress; returns an empty ShippingAddress
+                when no CommerceAddress is bound yet. Exposed as a nested field on the Shipment schema so a single GET
+                on the parent can expand the shippingAddress object.
             operationId: getShipmentShippingAddress
             parameters:
                 -   $ref: "#/components/parameters/shipmentIdPathParam"
@@ -2496,8 +2490,8 @@ paths:
                 -   ShippingAddress
         patch:
             description:
-                Updates the ShippingAddress bound to the CommerceShipment identified by shipmentId. Resolves the
-                parent shipment via CommerceShipmentService.getCommerceShipment and delegates to
+                Updates the ShippingAddress bound to the CommerceShipment identified by shipmentId. Resolves the parent
+                shipment via CommerceShipmentService.getCommerceShipment and delegates to
                 ShippingAddressUtil.updateShippingAddress, which creates or updates the underlying CommerceAddress and
                 rebinds the shipment to it; country and region are resolved by ISO code. Domain validation (malformed
                 city, country, name, street, or zip) maps to 422.
@@ -2695,8 +2689,8 @@ paths:
     /shipments/{shipmentId}/status-shipped:
         post:
             description:
-                Transitions the CommerceShipment identified by shipmentId to the SHIPPED workflow state (code 2).
-                Calls CommerceShipmentService.updateStatus with SHIPMENT_STATUS_SHIPPED; raises
+                Transitions the CommerceShipment identified by shipmentId to the SHIPPED workflow state (code 2). Calls
+                CommerceShipmentService.updateStatus with SHIPMENT_STATUS_SHIPPED; raises
                 CommerceShipmentStatusException (400) when the transition is not allowed from the current state.
             operationId: postShipmentStatusShipped
             parameters:
