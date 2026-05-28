@@ -41,8 +41,14 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("OrderType")
-@io.swagger.v3.oas.annotations.media.Schema(requiredProperties = {"name"})
+@GraphQLName(
+	description = "An order type classification entity that groups orders and can be linked to channels and terms.",
+	value = "OrderType"
+)
+@io.swagger.v3.oas.annotations.media.Schema(
+	description = "An order type classification entity that groups orders and can be linked to channels and terms.",
+	requiredProperties = {"name"}
+)
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "OrderType")
 public class OrderType implements Serializable {
@@ -55,7 +61,9 @@ public class OrderType implements Serializable {
 		return ObjectMapperUtil.unsafeReadValue(OrderType.class, json);
 	}
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Map of HATEOAS actions available to the current user. Read-only."
+	)
 	@Valid
 	public Map<String, Map<String, String>> getActions() {
 		if (_actionsSupplier != null) {
@@ -91,14 +99,19 @@ public class OrderType implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Map of HATEOAS actions available to the current user. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Map<String, Map<String, String>> actions;
 
 	@JsonIgnore
 	private Supplier<Map<String, Map<String, String>>> _actionsSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "true")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Boolean activation flag for the order type.",
+		example = "true"
+	)
 	public Boolean getActive() {
 		if (_activeSupplier != null) {
 			active = _activeSupplier.get();
@@ -132,14 +145,16 @@ public class OrderType implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "Boolean activation flag for the order type.")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Boolean active;
 
 	@JsonIgnore
 	private Supplier<Boolean> _activeSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Map of custom field values."
+	)
 	@Valid
 	public Map<String, ?> getCustomFields() {
 		if (_customFieldsSupplier != null) {
@@ -174,7 +189,7 @@ public class OrderType implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "Map of custom field values.")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Map<String, ?> customFields;
 
@@ -182,6 +197,7 @@ public class OrderType implements Serializable {
 	private Supplier<Map<String, ?>> _customFieldsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Localized text. Map keys are locale codes (for example, en_US, it_IT); values are the translated strings.",
 		example = "{en_US=Title, hr_HR=Title HR, hu_HU=Title HU}"
 	)
 	@Valid
@@ -219,14 +235,19 @@ public class OrderType implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Localized text. Map keys are locale codes (for example, en_US, it_IT); values are the translated strings."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Map<String, String> description;
 
 	@JsonIgnore
 	private Supplier<Map<String, String>> _descriptionSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "2017-07-21")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "ISO 8601 date when the order type becomes active.",
+		example = "2017-07-21"
+	)
 	public Date getDisplayDate() {
 		if (_displayDateSupplier != null) {
 			displayDate = _displayDateSupplier.get();
@@ -260,7 +281,9 @@ public class OrderType implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "ISO 8601 date when the order type becomes active."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Date displayDate;
 
@@ -268,7 +291,10 @@ public class OrderType implements Serializable {
 	private Supplier<Date> _displayDateSupplier;
 
 	@DecimalMin("0")
-	@io.swagger.v3.oas.annotations.media.Schema(example = "1")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Integer sort order for displaying multiple order types.",
+		example = "1"
+	)
 	public Integer getDisplayOrder() {
 		if (_displayOrderSupplier != null) {
 			displayOrder = _displayOrderSupplier.get();
@@ -302,14 +328,19 @@ public class OrderType implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Integer sort order for displaying multiple order types."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Integer displayOrder;
 
 	@JsonIgnore
 	private Supplier<Integer> _displayOrderSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "2017-08-21")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "ISO 8601 date when the order type expires.",
+		example = "2017-08-21"
+	)
 	public Date getExpirationDate() {
 		if (_expirationDateSupplier != null) {
 			expirationDate = _expirationDateSupplier.get();
@@ -343,14 +374,17 @@ public class OrderType implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "ISO 8601 date when the order type expires.")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Date expirationDate;
 
 	@JsonIgnore
 	private Supplier<Date> _expirationDateSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "AB-34098-789-N")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Idempotency key for create and update; must be unique per order type within the company.",
+		example = "AB-34098-789-N"
+	)
 	public String getExternalReferenceCode() {
 		if (_externalReferenceCodeSupplier != null) {
 			externalReferenceCode = _externalReferenceCodeSupplier.get();
@@ -384,7 +418,9 @@ public class OrderType implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Idempotency key for create and update; must be unique per order type within the company."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String externalReferenceCode;
 
@@ -392,7 +428,10 @@ public class OrderType implements Serializable {
 	private Supplier<String> _externalReferenceCodeSupplier;
 
 	@DecimalMin("0")
-	@io.swagger.v3.oas.annotations.media.Schema(example = "30130")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Unique order type identifier (FK to CommerceOrderType.commerceOrderTypeId). Read-only.",
+		example = "30130"
+	)
 	public Long getId() {
 		if (_idSupplier != null) {
 			id = _idSupplier.get();
@@ -424,7 +463,9 @@ public class OrderType implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Unique order type identifier (FK to CommerceOrderType.commerceOrderTypeId). Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long id;
 
@@ -432,6 +473,7 @@ public class OrderType implements Serializable {
 	private Supplier<Long> _idSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Localized text. Map keys are locale codes; values are the translated strings.",
 		example = "{en_US=Title, hr_HR=Title HR, hu_HU=Title HU}"
 	)
 	@Valid
@@ -468,7 +510,9 @@ public class OrderType implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Localized text. Map keys are locale codes; values are the translated strings."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	@NotNull
 	protected Map<String, String> name;
@@ -476,7 +520,10 @@ public class OrderType implements Serializable {
 	@JsonIgnore
 	private Supplier<Map<String, String>> _nameSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "true")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Boolean; if true, ignores expirationDate and order type never expires.",
+		example = "true"
+	)
 	public Boolean getNeverExpire() {
 		if (_neverExpireSupplier != null) {
 			neverExpire = _neverExpireSupplier.get();
@@ -510,14 +557,18 @@ public class OrderType implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Boolean; if true, ignores expirationDate and order type never expires."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Boolean neverExpire;
 
 	@JsonIgnore
 	private Supplier<Boolean> _neverExpireSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Nested array of OrderTypeChannel objects (upsert semantics)."
+	)
 	@Valid
 	public OrderTypeChannel[] getOrderTypeChannels() {
 		if (_orderTypeChannelsSupplier != null) {
@@ -553,7 +604,9 @@ public class OrderType implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Nested array of OrderTypeChannel objects (upsert semantics)."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected OrderTypeChannel[] orderTypeChannels;
 
@@ -911,4 +964,4 @@ public class OrderType implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:788774398
+// LIFERAY-REST-BUILDER-HASH:1609402250

@@ -37,8 +37,12 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("OrderRuleOrderType")
+@GraphQLName(
+	description = "A relationship entity linking an order type to an order rule for order-type-specific rule application.",
+	value = "OrderRuleOrderType"
+)
 @io.swagger.v3.oas.annotations.media.Schema(
+	description = "A relationship entity linking an order type to an order rule for order-type-specific rule application.",
 	requiredProperties = {"orderRuleId", "orderTypeId"}
 )
 @JsonFilter("Liferay.Vulcan")
@@ -53,7 +57,9 @@ public class OrderRuleOrderType implements Serializable {
 		return ObjectMapperUtil.unsafeReadValue(OrderRuleOrderType.class, json);
 	}
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Map of HATEOAS actions (delete). Read-only."
+	)
 	@Valid
 	public Map<String, Map<String, String>> getActions() {
 		if (_actionsSupplier != null) {
@@ -89,14 +95,17 @@ public class OrderRuleOrderType implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "Map of HATEOAS actions (delete). Read-only.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Map<String, Map<String, String>> actions;
 
 	@JsonIgnore
 	private Supplier<Map<String, Map<String, String>>> _actionsSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "PAB-34098-789-N")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "External reference code of the orderRule entity. Used as a lookup key in place of the numeric orderRuleId.",
+		example = "PAB-34098-789-N"
+	)
 	public String getOrderRuleExternalReferenceCode() {
 		if (_orderRuleExternalReferenceCodeSupplier != null) {
 			orderRuleExternalReferenceCode =
@@ -134,7 +143,9 @@ public class OrderRuleOrderType implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "External reference code of the orderRule entity. Used as a lookup key in place of the numeric orderRuleId."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String orderRuleExternalReferenceCode;
 
@@ -142,7 +153,10 @@ public class OrderRuleOrderType implements Serializable {
 	private Supplier<String> _orderRuleExternalReferenceCodeSupplier;
 
 	@DecimalMin("0")
-	@io.swagger.v3.oas.annotations.media.Schema(example = "30130")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Reference to the orderRule entity (FK).",
+		example = "30130"
+	)
 	public Long getOrderRuleId() {
 		if (_orderRuleIdSupplier != null) {
 			orderRuleId = _orderRuleIdSupplier.get();
@@ -176,7 +190,7 @@ public class OrderRuleOrderType implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(description = "Reference to the orderRule entity (FK).")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	@NotNull
 	protected Long orderRuleId;
@@ -185,7 +199,10 @@ public class OrderRuleOrderType implements Serializable {
 	private Supplier<Long> _orderRuleIdSupplier;
 
 	@DecimalMin("0")
-	@io.swagger.v3.oas.annotations.media.Schema(example = "30643")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Reference to the orderRuleOrderType entity (FK).",
+		example = "30643"
+	)
 	public Long getOrderRuleOrderTypeId() {
 		if (_orderRuleOrderTypeIdSupplier != null) {
 			orderRuleOrderTypeId = _orderRuleOrderTypeIdSupplier.get();
@@ -219,7 +236,9 @@ public class OrderRuleOrderType implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Reference to the orderRuleOrderType entity (FK)."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long orderRuleOrderTypeId;
 
@@ -268,7 +287,10 @@ public class OrderRuleOrderType implements Serializable {
 	@JsonIgnore
 	private Supplier<OrderType> _orderTypeSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(example = "DAB-34098-789-N")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "External reference code of the order type; used for lookup.",
+		example = "DAB-34098-789-N"
+	)
 	public String getOrderTypeExternalReferenceCode() {
 		if (_orderTypeExternalReferenceCodeSupplier != null) {
 			orderTypeExternalReferenceCode =
@@ -306,7 +328,9 @@ public class OrderRuleOrderType implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "External reference code of the order type; used for lookup."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String orderTypeExternalReferenceCode;
 
@@ -314,7 +338,10 @@ public class OrderRuleOrderType implements Serializable {
 	private Supplier<String> _orderTypeExternalReferenceCodeSupplier;
 
 	@DecimalMin("0")
-	@io.swagger.v3.oas.annotations.media.Schema(example = "30324")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Reference to the CommerceOrderType entity (FK).",
+		example = "30324"
+	)
 	public Long getOrderTypeId() {
 		if (_orderTypeIdSupplier != null) {
 			orderTypeId = _orderTypeIdSupplier.get();
@@ -348,7 +375,9 @@ public class OrderRuleOrderType implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Reference to the CommerceOrderType entity (FK)."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	@NotNull
 	protected Long orderTypeId;
@@ -578,4 +607,4 @@ public class OrderRuleOrderType implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-508031438
+// LIFERAY-REST-BUILDER-HASH:474759740

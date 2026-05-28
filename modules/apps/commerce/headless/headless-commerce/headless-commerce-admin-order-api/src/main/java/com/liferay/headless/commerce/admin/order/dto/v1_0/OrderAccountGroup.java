@@ -35,7 +35,10 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("OrderAccountGroup")
+@GraphQLName(
+	description = "An account group linked to an order rule, representing a grouping of accounts for rule application.",
+	value = "OrderAccountGroup"
+)
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "OrderAccountGroup")
 public class OrderAccountGroup implements Serializable {
@@ -49,7 +52,10 @@ public class OrderAccountGroup implements Serializable {
 	}
 
 	@DecimalMin("0")
-	@io.swagger.v3.oas.annotations.media.Schema(example = "30130")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Unique relationship identifier (FK to AccountGroup.accountGroupId).",
+		example = "30130"
+	)
 	public Long getId() {
 		if (_idSupplier != null) {
 			id = _idSupplier.get();
@@ -81,7 +87,9 @@ public class OrderAccountGroup implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Unique relationship identifier (FK to AccountGroup.accountGroupId)."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long id;
 
@@ -89,6 +97,7 @@ public class OrderAccountGroup implements Serializable {
 	private Supplier<Long> _idSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Display name of the linked account group. Read-only.",
 		example = "OrderAccountGroup Name"
 	)
 	public String getName() {
@@ -122,7 +131,9 @@ public class OrderAccountGroup implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "Display name of the linked account group. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String name;
 
@@ -285,4 +296,4 @@ public class OrderAccountGroup implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:575864962
+// LIFERAY-REST-BUILDER-HASH:-1452598753
