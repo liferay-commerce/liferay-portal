@@ -36,7 +36,7 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "A Commerce Channel entity representing a sales channel (store, marketplace, etc.) that groups products and orders.",
+	description = "A commerce sales channel that groups products, prices, and orders. Channels carry a default currency and a type that classifies the storefront context.",
 	value = "Channel"
 )
 @JsonFilter("Liferay.Vulcan")
@@ -52,7 +52,7 @@ public class Channel implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "ISO 4217 currency code (e.g., USD, EUR) used by default in this channel.",
+		description = "ISO 4217 currency code used as the default currency for the channel.",
 		example = "USD"
 	)
 	public String getCurrencyCode() {
@@ -89,7 +89,7 @@ public class Channel implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "ISO 4217 currency code (e.g., USD, EUR) used by default in this channel."
+		description = "ISO 4217 currency code used as the default currency for the channel."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String currencyCode;
@@ -98,7 +98,7 @@ public class Channel implements Serializable {
 	private Supplier<String> _currencyCodeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Idempotency key; must be unique per channel within the company.",
+		description = "Idempotency key for create and update; must be unique per channel within the company.",
 		example = "AB-34098-789-N"
 	)
 	public String getExternalReferenceCode() {
@@ -135,7 +135,7 @@ public class Channel implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Idempotency key; must be unique per channel within the company."
+		description = "Idempotency key for create and update; must be unique per channel within the company."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String externalReferenceCode;
@@ -145,7 +145,7 @@ public class Channel implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Unique channel identifier (FK to CommerceChannel.commerceChannelId).",
+		description = "Reference to the channel (FK identifier).",
 		example = "31130"
 	)
 	public Long getId() {
@@ -179,9 +179,7 @@ public class Channel implements Serializable {
 		};
 	}
 
-	@GraphQLField(
-		description = "Unique channel identifier (FK to CommerceChannel.commerceChannelId)."
-	)
+	@GraphQLField(description = "Reference to the channel (FK identifier).")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long id;
 
@@ -189,8 +187,8 @@ public class Channel implements Serializable {
 	private Supplier<Long> _idSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Display name of the sales channel.",
-		example = "Alessio Antonio Rendina"
+		description = "Display name of the channel.",
+		example = "Default Channel"
 	)
 	public String getName() {
 		if (_nameSupplier != null) {
@@ -223,7 +221,7 @@ public class Channel implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Display name of the sales channel.")
+	@GraphQLField(description = "Display name of the channel.")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String name;
 
@@ -231,7 +229,8 @@ public class Channel implements Serializable {
 	private Supplier<String> _nameSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Channel type classification (e.g., \"web\", \"marketplace\", \"physical-store\")."
+		description = "Channel type identifier classifying the storefront context. Free-form string.",
+		example = "site"
 	)
 	public String getType() {
 		if (_typeSupplier != null) {
@@ -265,7 +264,7 @@ public class Channel implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Channel type classification (e.g., \"web\", \"marketplace\", \"physical-store\")."
+		description = "Channel type identifier classifying the storefront context. Free-form string."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String type;
@@ -477,4 +476,4 @@ public class Channel implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:654323386
+// LIFERAY-REST-BUILDER-HASH:125365587

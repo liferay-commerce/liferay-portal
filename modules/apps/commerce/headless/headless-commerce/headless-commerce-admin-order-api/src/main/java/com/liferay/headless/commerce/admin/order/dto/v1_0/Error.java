@@ -37,11 +37,11 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Standard error response containing HTTP status code, error message, and error type identifier.",
+	description = "Standard error envelope returned on non-success responses, with HTTP status code, internal error code, developer message, and user-facing description.",
 	value = "Error"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "Standard error response containing HTTP status code, error message, and error type identifier.",
+	description = "Standard error envelope returned on non-success responses, with HTTP status code, internal error code, developer message, and user-facing description.",
 	requiredProperties = {"errorCode", "errorDescription", "message", "status"}
 )
 @JsonFilter("Liferay.Vulcan")
@@ -57,7 +57,8 @@ public class Error implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Internal error code mapping", example = "996"
+		description = "Internal numeric error code that identifies the failure category. Read-only.",
+		example = "996"
 	)
 	public Integer getErrorCode() {
 		if (_errorCodeSupplier != null) {
@@ -92,7 +93,9 @@ public class Error implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Internal error code mapping")
+	@GraphQLField(
+		description = "Internal numeric error code that identifies the failure category. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	@NotNull
 	protected Integer errorCode;
@@ -101,7 +104,7 @@ public class Error implements Serializable {
 	private Supplier<Integer> _errorCodeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Human-readable description of the error condition. Read-only.",
+		description = "Human-readable description of the error suitable for end users. Read-only.",
 		example = "Unable to find currency. Currency code should be expressed with 3-letter ISO 4217 format."
 	)
 	public String getErrorDescription() {
@@ -138,7 +141,7 @@ public class Error implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Human-readable description of the error condition. Read-only."
+		description = "Human-readable description of the error suitable for end users. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	@NotEmpty
@@ -148,8 +151,8 @@ public class Error implements Serializable {
 	private Supplier<String> _errorDescriptionSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Developer-facing message that pinpoints the failing field or service call. Read-only.",
-		example = "No CommerceCurrency exists with the key {groupId=41811, code=US Dollar}"
+		description = "Developer-facing message that pinpoints the failing field or call. Read-only.",
+		example = "No currency exists with the code USD."
 	)
 	public String getMessage() {
 		if (_messageSupplier != null) {
@@ -185,7 +188,7 @@ public class Error implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Developer-facing message that pinpoints the failing field or service call. Read-only."
+		description = "Developer-facing message that pinpoints the failing field or call. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	@NotEmpty
@@ -195,7 +198,8 @@ public class Error implements Serializable {
 	private Supplier<String> _messageSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "HTTP Status code", example = "404"
+		description = "HTTP status code echoed in the body. Read-only.",
+		example = "404"
 	)
 	public Integer getStatus() {
 		if (_statusSupplier != null) {
@@ -230,7 +234,9 @@ public class Error implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "HTTP Status code")
+	@GraphQLField(
+		description = "HTTP status code echoed in the body. Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	@NotNull
 	protected Integer status;
@@ -422,4 +428,4 @@ public class Error implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1442446202
+// LIFERAY-REST-BUILDER-HASH:1259299865

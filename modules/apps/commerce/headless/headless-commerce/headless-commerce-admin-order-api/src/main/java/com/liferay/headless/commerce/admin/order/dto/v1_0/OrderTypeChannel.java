@@ -38,11 +38,11 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "A relationship entity linking a channel to an order type for channel-specific type classification.",
+	description = "Binding between an order type and a sales channel. Identifies a channel where the order type is available.",
 	value = "OrderTypeChannel"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "A relationship entity linking a channel to an order type for channel-specific type classification.",
+	description = "Binding between an order type and a sales channel. Identifies a channel where the order type is available.",
 	requiredProperties = {"channelId", "orderTypeId"}
 )
 @JsonFilter("Liferay.Vulcan")
@@ -145,8 +145,8 @@ public class OrderTypeChannel implements Serializable {
 	private Supplier<Channel> _channelSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "External reference code of the channel; used for lookup if channelId not provided.",
-		example = "PAB-34098-789-N"
+		description = "External reference code of the channel. Used as a lookup key when the numeric channel ID is not supplied.",
+		example = "AB-34098-789-N"
 	)
 	public String getChannelExternalReferenceCode() {
 		if (_channelExternalReferenceCodeSupplier != null) {
@@ -186,7 +186,7 @@ public class OrderTypeChannel implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "External reference code of the channel; used for lookup if channelId not provided."
+		description = "External reference code of the channel. Used as a lookup key when the numeric channel ID is not supplied."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String channelExternalReferenceCode;
@@ -196,7 +196,7 @@ public class OrderTypeChannel implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Reference to the CommerceChannel entity (FK).",
+		description = "Reference to the channel (FK identifier).",
 		example = "30130"
 	)
 	public Long getChannelId() {
@@ -232,7 +232,7 @@ public class OrderTypeChannel implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Reference to the CommerceChannel entity (FK).")
+	@GraphQLField(description = "Reference to the channel (FK identifier).")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	@NotNull
 	protected Long channelId;
@@ -242,8 +242,8 @@ public class OrderTypeChannel implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Reference to the orderTypeChannel entity (FK).",
-		example = "30643"
+		description = "Reference to the order-type-channel link (FK identifier). Read-only.",
+		example = "30130"
 	)
 	public Long getOrderTypeChannelId() {
 		if (_orderTypeChannelIdSupplier != null) {
@@ -279,7 +279,7 @@ public class OrderTypeChannel implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Reference to the orderTypeChannel entity (FK)."
+		description = "Reference to the order-type-channel link (FK identifier). Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long orderTypeChannelId;
@@ -288,8 +288,8 @@ public class OrderTypeChannel implements Serializable {
 	private Supplier<Long> _orderTypeChannelIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "External reference code of the orderType entity. Used as a lookup key in place of the numeric orderTypeId.",
-		example = "DAB-34098-789-N"
+		description = "External reference code of the parent order type.",
+		example = "AB-34098-789-N"
 	)
 	public String getOrderTypeExternalReferenceCode() {
 		if (_orderTypeExternalReferenceCodeSupplier != null) {
@@ -329,7 +329,7 @@ public class OrderTypeChannel implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "External reference code of the orderType entity. Used as a lookup key in place of the numeric orderTypeId."
+		description = "External reference code of the parent order type."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String orderTypeExternalReferenceCode;
@@ -339,8 +339,8 @@ public class OrderTypeChannel implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Reference to the orderType entity (FK).",
-		example = "30324"
+		description = "Reference to the parent order type (FK identifier).",
+		example = "30130"
 	)
 	public Long getOrderTypeId() {
 		if (_orderTypeIdSupplier != null) {
@@ -375,7 +375,9 @@ public class OrderTypeChannel implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Reference to the orderType entity (FK).")
+	@GraphQLField(
+		description = "Reference to the parent order type (FK identifier)."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	@NotNull
 	protected Long orderTypeId;
@@ -604,4 +606,4 @@ public class OrderTypeChannel implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:722411198
+// LIFERAY-REST-BUILDER-HASH:1402346796

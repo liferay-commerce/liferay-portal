@@ -36,7 +36,7 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "An account group linked to an order rule, representing a grouping of accounts for rule application.",
+	description = "Binding between an order rule and an account group. Identifies an account group the rule applies to.",
 	value = "OrderAccountGroup"
 )
 @JsonFilter("Liferay.Vulcan")
@@ -53,7 +53,7 @@ public class OrderAccountGroup implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Unique relationship identifier (FK to AccountGroup.accountGroupId).",
+		description = "Reference to the account group (FK identifier).",
 		example = "30130"
 	)
 	public Long getId() {
@@ -88,7 +88,7 @@ public class OrderAccountGroup implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Unique relationship identifier (FK to AccountGroup.accountGroupId)."
+		description = "Reference to the account group (FK identifier)."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long id;
@@ -98,7 +98,7 @@ public class OrderAccountGroup implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Display name of the linked account group. Read-only.",
-		example = "OrderAccountGroup Name"
+		example = "Wholesale Buyers"
 	)
 	public String getName() {
 		if (_nameSupplier != null) {
@@ -296,4 +296,4 @@ public class OrderAccountGroup implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1452598753
+// LIFERAY-REST-BUILDER-HASH:513448745

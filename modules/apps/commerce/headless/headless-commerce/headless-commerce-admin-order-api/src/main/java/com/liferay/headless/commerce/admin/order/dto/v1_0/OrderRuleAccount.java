@@ -38,11 +38,11 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "A relationship entity linking an account to an order rule for rule application targeting.",
+	description = "Binding between an order rule and a specific account. Identifies an account the rule applies to.",
 	value = "OrderRuleAccount"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "A relationship entity linking an account to an order rule for rule application targeting.",
+	description = "Binding between an order rule and a specific account. Identifies an account the rule applies to.",
 	requiredProperties = {"accountId", "orderRuleId"}
 )
 @JsonFilter("Liferay.Vulcan")
@@ -100,8 +100,8 @@ public class OrderRuleAccount implements Serializable {
 	private Supplier<Account> _accountSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "External reference code of the account; used for lookup.",
-		example = "DAB-34098-789-N"
+		description = "External reference code of the account. Used as a lookup key when the numeric account ID is not supplied.",
+		example = "AB-34098-789-N"
 	)
 	public String getAccountExternalReferenceCode() {
 		if (_accountExternalReferenceCodeSupplier != null) {
@@ -141,7 +141,7 @@ public class OrderRuleAccount implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "External reference code of the account; used for lookup."
+		description = "External reference code of the account. Used as a lookup key when the numeric account ID is not supplied."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String accountExternalReferenceCode;
@@ -151,7 +151,8 @@ public class OrderRuleAccount implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Reference to the Account entity (FK).", example = "30324"
+		description = "Reference to the account (FK identifier).",
+		example = "30130"
 	)
 	public Long getAccountId() {
 		if (_accountIdSupplier != null) {
@@ -186,7 +187,7 @@ public class OrderRuleAccount implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Reference to the Account entity (FK).")
+	@GraphQLField(description = "Reference to the account (FK identifier).")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	@NotNull
 	protected Long accountId;
@@ -241,8 +242,8 @@ public class OrderRuleAccount implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Reference to the orderRuleAccount entity (FK).",
-		example = "30643"
+		description = "Reference to the order rule account relationship (FK identifier). Read-only.",
+		example = "30130"
 	)
 	public Long getOrderRuleAccountId() {
 		if (_orderRuleAccountIdSupplier != null) {
@@ -278,7 +279,7 @@ public class OrderRuleAccount implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Reference to the orderRuleAccount entity (FK)."
+		description = "Reference to the order rule account relationship (FK identifier). Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long orderRuleAccountId;
@@ -287,8 +288,8 @@ public class OrderRuleAccount implements Serializable {
 	private Supplier<Long> _orderRuleAccountIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "External reference code of the orderRule entity. Used as a lookup key in place of the numeric orderRuleId.",
-		example = "PAB-34098-789-N"
+		description = "External reference code of the parent order rule.",
+		example = "AB-34098-789-N"
 	)
 	public String getOrderRuleExternalReferenceCode() {
 		if (_orderRuleExternalReferenceCodeSupplier != null) {
@@ -328,7 +329,7 @@ public class OrderRuleAccount implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "External reference code of the orderRule entity. Used as a lookup key in place of the numeric orderRuleId."
+		description = "External reference code of the parent order rule."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String orderRuleExternalReferenceCode;
@@ -338,7 +339,7 @@ public class OrderRuleAccount implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Reference to the orderRule entity (FK).",
+		description = "Reference to the parent order rule (FK identifier).",
 		example = "30130"
 	)
 	public Long getOrderRuleId() {
@@ -374,7 +375,9 @@ public class OrderRuleAccount implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Reference to the orderRule entity (FK).")
+	@GraphQLField(
+		description = "Reference to the parent order rule (FK identifier)."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	@NotNull
 	protected Long orderRuleId;
@@ -603,4 +606,4 @@ public class OrderRuleAccount implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1073957698
+// LIFERAY-REST-BUILDER-HASH:-569624342

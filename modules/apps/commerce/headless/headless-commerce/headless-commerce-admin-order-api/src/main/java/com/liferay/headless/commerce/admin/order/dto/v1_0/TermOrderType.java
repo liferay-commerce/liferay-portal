@@ -38,11 +38,11 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "A relationship entity linking an order type to a term for term applicability to specific order types.",
+	description = "Binding between a term and an order type. Identifies an order type the term applies to.",
 	value = "TermOrderType"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "A relationship entity linking an order type to a term for term applicability to specific order types.",
+	description = "Binding between a term and an order type. Identifies an order type the term applies to.",
 	requiredProperties = {"orderTypeId", "termId"}
 )
 @JsonFilter("Liferay.Vulcan")
@@ -145,8 +145,8 @@ public class TermOrderType implements Serializable {
 	private Supplier<OrderType> _orderTypeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "External reference code of the order type; used for lookup.",
-		example = "DAB-34098-789-N"
+		description = "External reference code of the order type. Used as a lookup key when the numeric order type ID is not supplied.",
+		example = "AB-34098-789-N"
 	)
 	public String getOrderTypeExternalReferenceCode() {
 		if (_orderTypeExternalReferenceCodeSupplier != null) {
@@ -186,7 +186,7 @@ public class TermOrderType implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "External reference code of the order type; used for lookup."
+		description = "External reference code of the order type. Used as a lookup key when the numeric order type ID is not supplied."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String orderTypeExternalReferenceCode;
@@ -196,8 +196,8 @@ public class TermOrderType implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Reference to the CommerceOrderType entity (FK).",
-		example = "30324"
+		description = "Reference to the order type (FK identifier).",
+		example = "30130"
 	)
 	public Long getOrderTypeId() {
 		if (_orderTypeIdSupplier != null) {
@@ -232,9 +232,7 @@ public class TermOrderType implements Serializable {
 		};
 	}
 
-	@GraphQLField(
-		description = "Reference to the CommerceOrderType entity (FK)."
-	)
+	@GraphQLField(description = "Reference to the order type (FK identifier).")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	@NotNull
 	protected Long orderTypeId;
@@ -243,8 +241,8 @@ public class TermOrderType implements Serializable {
 	private Supplier<Long> _orderTypeIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "External reference code of the term entity. Used as a lookup key in place of the numeric termId.",
-		example = "PAB-34098-789-N"
+		description = "External reference code of the parent term.",
+		example = "AB-34098-789-N"
 	)
 	public String getTermExternalReferenceCode() {
 		if (_termExternalReferenceCodeSupplier != null) {
@@ -281,9 +279,7 @@ public class TermOrderType implements Serializable {
 		};
 	}
 
-	@GraphQLField(
-		description = "External reference code of the term entity. Used as a lookup key in place of the numeric termId."
-	)
+	@GraphQLField(description = "External reference code of the parent term.")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String termExternalReferenceCode;
 
@@ -292,7 +288,7 @@ public class TermOrderType implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Denormalized term ID (may be same as id in some implementations).",
+		description = "Reference to the parent term (FK identifier).",
 		example = "30130"
 	)
 	public Long getTermId() {
@@ -328,9 +324,7 @@ public class TermOrderType implements Serializable {
 		};
 	}
 
-	@GraphQLField(
-		description = "Denormalized term ID (may be same as id in some implementations)."
-	)
+	@GraphQLField(description = "Reference to the parent term (FK identifier).")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	@NotNull
 	protected Long termId;
@@ -340,8 +334,8 @@ public class TermOrderType implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Reference to the termOrderType entity (FK).",
-		example = "30643"
+		description = "Reference to the term-order-type link (FK identifier). Read-only.",
+		example = "30130"
 	)
 	public Long getTermOrderTypeId() {
 		if (_termOrderTypeIdSupplier != null) {
@@ -376,7 +370,9 @@ public class TermOrderType implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Reference to the termOrderType entity (FK).")
+	@GraphQLField(
+		description = "Reference to the term-order-type link (FK identifier). Read-only."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long termOrderTypeId;
 
@@ -604,4 +600,4 @@ public class TermOrderType implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1649313258
+// LIFERAY-REST-BUILDER-HASH:-810757628

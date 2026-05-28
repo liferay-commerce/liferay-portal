@@ -42,11 +42,11 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "An order type classification entity that groups orders and can be linked to channels and terms.",
+	description = "An order classification that groups orders by purpose (B2B quote, retail purchase, subscription, etc.). Order types can be restricted to specific channels and bound to specific delivery and payment terms.",
 	value = "OrderType"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "An order type classification entity that groups orders and can be linked to channels and terms.",
+	description = "An order classification that groups orders by purpose (B2B quote, retail purchase, subscription, etc.). Order types can be restricted to specific channels and bound to specific delivery and payment terms.",
 	requiredProperties = {"name"}
 )
 @JsonFilter("Liferay.Vulcan")
@@ -62,7 +62,7 @@ public class OrderType implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Map of HATEOAS actions available to the current user. Read-only."
+		description = "Map of HATEOAS actions available to the current user, keyed by action name. Each value carries the href template and HTTP method, computed dynamically from user permissions. Read-only."
 	)
 	@Valid
 	public Map<String, Map<String, String>> getActions() {
@@ -100,7 +100,7 @@ public class OrderType implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Map of HATEOAS actions available to the current user. Read-only."
+		description = "Map of HATEOAS actions available to the current user, keyed by action name. Each value carries the href template and HTTP method, computed dynamically from user permissions. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Map<String, Map<String, String>> actions;
@@ -109,7 +109,7 @@ public class OrderType implements Serializable {
 	private Supplier<Map<String, Map<String, String>>> _actionsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Boolean activation flag for the order type.",
+		description = "When true, the order type is available for new orders. When false, the order type is disabled.",
 		example = "true"
 	)
 	public Boolean getActive() {
@@ -145,7 +145,9 @@ public class OrderType implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Boolean activation flag for the order type.")
+	@GraphQLField(
+		description = "When true, the order type is available for new orders. When false, the order type is disabled."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Boolean active;
 
@@ -153,7 +155,8 @@ public class OrderType implements Serializable {
 	private Supplier<Boolean> _activeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Map of custom field values."
+		description = "Map of custom-field values keyed by field name. Values depend on the custom-field type.",
+		example = "{customField=customValue}"
 	)
 	@Valid
 	public Map<String, ?> getCustomFields() {
@@ -189,7 +192,9 @@ public class OrderType implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Map of custom field values.")
+	@GraphQLField(
+		description = "Map of custom-field values keyed by field name. Values depend on the custom-field type."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Map<String, ?> customFields;
 
@@ -197,8 +202,8 @@ public class OrderType implements Serializable {
 	private Supplier<Map<String, ?>> _customFieldsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Localized text. Map keys are locale codes (for example, en_US, it_IT); values are the translated strings.",
-		example = "{en_US=Title, hr_HR=Title HR, hu_HU=Title HU}"
+		description = "Localized text. Map keys are locale codes; values are the translated descriptions.",
+		example = "{en_US=Cordless circular saw with brushless motor., hr_HR=Product Description HR, hu_HU=Product Description HU}"
 	)
 	@Valid
 	public Map<String, String> getDescription() {
@@ -236,7 +241,7 @@ public class OrderType implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Localized text. Map keys are locale codes (for example, en_US, it_IT); values are the translated strings."
+		description = "Localized text. Map keys are locale codes; values are the translated descriptions."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Map<String, String> description;
@@ -245,7 +250,7 @@ public class OrderType implements Serializable {
 	private Supplier<Map<String, String>> _descriptionSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "ISO 8601 date when the order type becomes active.",
+		description = "Date the order type becomes active.",
 		example = "2017-07-21"
 	)
 	public Date getDisplayDate() {
@@ -281,9 +286,7 @@ public class OrderType implements Serializable {
 		};
 	}
 
-	@GraphQLField(
-		description = "ISO 8601 date when the order type becomes active."
-	)
+	@GraphQLField(description = "Date the order type becomes active.")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Date displayDate;
 
@@ -292,7 +295,7 @@ public class OrderType implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Integer sort order for displaying multiple order types.",
+		description = "Numeric sort order for displaying multiple order types. Lower values come first.",
 		example = "1"
 	)
 	public Integer getDisplayOrder() {
@@ -329,7 +332,7 @@ public class OrderType implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Integer sort order for displaying multiple order types."
+		description = "Numeric sort order for displaying multiple order types. Lower values come first."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Integer displayOrder;
@@ -338,8 +341,7 @@ public class OrderType implements Serializable {
 	private Supplier<Integer> _displayOrderSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "ISO 8601 date when the order type expires.",
-		example = "2017-08-21"
+		description = "Date the order type expires.", example = "2017-08-21"
 	)
 	public Date getExpirationDate() {
 		if (_expirationDateSupplier != null) {
@@ -374,7 +376,7 @@ public class OrderType implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "ISO 8601 date when the order type expires.")
+	@GraphQLField(description = "Date the order type expires.")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Date expirationDate;
 
@@ -429,7 +431,7 @@ public class OrderType implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Unique order type identifier (FK to CommerceOrderType.commerceOrderTypeId). Read-only.",
+		description = "Reference to the order type (FK identifier). Read-only.",
 		example = "30130"
 	)
 	public Long getId() {
@@ -464,7 +466,7 @@ public class OrderType implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Unique order type identifier (FK to CommerceOrderType.commerceOrderTypeId). Read-only."
+		description = "Reference to the order type (FK identifier). Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long id;
@@ -473,8 +475,8 @@ public class OrderType implements Serializable {
 	private Supplier<Long> _idSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Localized text. Map keys are locale codes; values are the translated strings.",
-		example = "{en_US=Title, hr_HR=Title HR, hu_HU=Title HU}"
+		description = "Localized text. Map keys are locale codes; values are the translated names.",
+		example = "{en_US=Hand Saw, hr_HR=Product Name HR, hu_HU=Product Name HU}"
 	)
 	@Valid
 	public Map<String, String> getName() {
@@ -511,7 +513,7 @@ public class OrderType implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Localized text. Map keys are locale codes; values are the translated strings."
+		description = "Localized text. Map keys are locale codes; values are the translated names."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	@NotNull
@@ -521,8 +523,8 @@ public class OrderType implements Serializable {
 	private Supplier<Map<String, String>> _nameSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Boolean; if true, ignores expirationDate and order type never expires.",
-		example = "true"
+		description = "When true, the order type ignores expirationDate and never expires.",
+		example = "false"
 	)
 	public Boolean getNeverExpire() {
 		if (_neverExpireSupplier != null) {
@@ -558,7 +560,7 @@ public class OrderType implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Boolean; if true, ignores expirationDate and order type never expires."
+		description = "When true, the order type ignores expirationDate and never expires."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Boolean neverExpire;
@@ -964,4 +966,4 @@ public class OrderType implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1609402250
+// LIFERAY-REST-BUILDER-HASH:1196498482

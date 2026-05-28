@@ -38,7 +38,7 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "An Account entity representing a customer account or organizational unit with billing contact info, identity, and type classification.",
+	description = "A customer account that places orders. Represents either a person or a business and carries identity, contact, and tax-attribution data; created on POST and updated on PATCH.",
 	value = "Account"
 )
 @JsonFilter("Liferay.Vulcan")
@@ -54,7 +54,8 @@ public class Account implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Map of custom field values, keyed by field name; values depend on custom field type."
+		description = "Map of custom-field values keyed by field name. Values depend on the custom-field type and are configured per company.",
+		example = "{customField=customValue}"
 	)
 	@Valid
 	public Map<String, ?> getCustomFields() {
@@ -91,7 +92,7 @@ public class Account implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Map of custom field values, keyed by field name; values depend on custom field type."
+		description = "Map of custom-field values keyed by field name. Values depend on the custom-field type and are configured per company."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Map<String, ?> customFields;
@@ -100,7 +101,8 @@ public class Account implements Serializable {
 	private Supplier<Map<String, ?>> _customFieldsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Primary email contact for the account."
+		description = "Primary email contact for the account.",
+		example = "tester@liferay.com"
 	)
 	public String getEmailAddress() {
 		if (_emailAddressSupplier != null) {
@@ -190,7 +192,7 @@ public class Account implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Unique account identifier (FK to AccountEntry.accountEntryId).",
+		description = "Reference to the account (FK identifier). Read-only; set by the service when the account is first persisted.",
 		example = "30130"
 	)
 	public Long getId() {
@@ -225,7 +227,7 @@ public class Account implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Unique account identifier (FK to AccountEntry.accountEntryId)."
+		description = "Reference to the account (FK identifier). Read-only; set by the service when the account is first persisted."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long id;
@@ -235,7 +237,7 @@ public class Account implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "File entry ID of the account's logo image (FK).",
+		description = "Reference to the file entry that stores the account logo image (FK identifier). 0 when no logo is set.",
 		example = "20078"
 	)
 	public Long getLogoId() {
@@ -272,7 +274,7 @@ public class Account implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "File entry ID of the account's logo image (FK)."
+		description = "Reference to the file entry that stores the account logo image (FK identifier). 0 when no logo is set."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long logoId;
@@ -281,7 +283,8 @@ public class Account implements Serializable {
 	private Supplier<Long> _logoIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Display name of the account.", example = "Account Name"
+		description = "Display name of the account. Required on create; trimmed by the service before persistence.",
+		example = "Acme Corporation"
 	)
 	public String getName() {
 		if (_nameSupplier != null) {
@@ -314,7 +317,9 @@ public class Account implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Display name of the account.")
+	@GraphQLField(
+		description = "Display name of the account. Required on create; trimmed by the service before persistence."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String name;
 
@@ -322,7 +327,7 @@ public class Account implements Serializable {
 	private Supplier<String> _nameSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Boolean indicating whether this is a root/parent account (vs. subsidiary).",
+		description = "When true, the account is a top-level (parent) account with no parent. When false, the account is a subsidiary.",
 		example = "true"
 	)
 	public Boolean getRoot() {
@@ -357,7 +362,7 @@ public class Account implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Boolean indicating whether this is a root/parent account (vs. subsidiary)."
+		description = "When true, the account is a top-level (parent) account with no parent. When false, the account is a subsidiary."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Boolean root;
@@ -366,7 +371,7 @@ public class Account implements Serializable {
 	private Supplier<Boolean> _rootSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Tax identification number for the account (e.g., VAT, EIN).",
+		description = "Tax identification number for the account (for example, VAT or EIN). Free-form string.",
 		example = "Abcd1234"
 	)
 	public String getTaxId() {
@@ -403,7 +408,7 @@ public class Account implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Tax identification number for the account (e.g., VAT, EIN)."
+		description = "Tax identification number for the account (for example, VAT or EIN). Free-form string."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String taxId;
@@ -414,7 +419,7 @@ public class Account implements Serializable {
 	@DecimalMax("2")
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Account type code ; typically 1 for B2B accounts. Mapping -- 0=Person, 1=Business, 2=Guest.",
+		description = "Integer account type: 0=Person, 1=Business, 2=Guest.",
 		example = "1"
 	)
 	public Integer getType() {
@@ -449,7 +454,7 @@ public class Account implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Account type code ; typically 1 for B2B accounts. Mapping -- 0=Person, 1=Business, 2=Guest."
+		description = "Integer account type: 0=Person, 1=Business, 2=Guest."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Integer type;
@@ -709,4 +714,4 @@ public class Account implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1464344185
+// LIFERAY-REST-BUILDER-HASH:-1988706684

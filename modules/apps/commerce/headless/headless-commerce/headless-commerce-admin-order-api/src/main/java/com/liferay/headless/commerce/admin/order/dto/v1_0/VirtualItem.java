@@ -34,7 +34,7 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "A virtual/digital product item within an order (extends OrderItem concept for non-physical goods).",
+	description = "A virtual or downloadable asset associated with an order item, such as a license URL with usage limits.",
 	value = "VirtualItem"
 )
 @JsonFilter("Liferay.Vulcan")
@@ -50,8 +50,8 @@ public class VirtualItem implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Fully qualified URL where the resource asset can be downloaded. Read-only.",
-		example = "http://www.liferay.com"
+		description = "Fully qualified URL where the virtual asset can be downloaded.",
+		example = "https://example.com/downloads/license.pdf"
 	)
 	public String getUrl() {
 		if (_urlSupplier != null) {
@@ -85,7 +85,7 @@ public class VirtualItem implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Fully qualified URL where the resource asset can be downloaded. Read-only."
+		description = "Fully qualified URL where the virtual asset can be downloaded."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String url;
@@ -94,7 +94,8 @@ public class VirtualItem implements Serializable {
 	private Supplier<String> _urlSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Maximum number of times the virtual asset can be redeemed. 0 -- unlimited."
+		description = "Integer maximum number of times the virtual asset can be redeemed. 0 means unlimited.",
+		example = "5"
 	)
 	public Integer getUsages() {
 		if (_usagesSupplier != null) {
@@ -130,7 +131,7 @@ public class VirtualItem implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Maximum number of times the virtual asset can be redeemed. 0 -- unlimited."
+		description = "Integer maximum number of times the virtual asset can be redeemed. 0 means unlimited."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Integer usages;
@@ -139,8 +140,7 @@ public class VirtualItem implements Serializable {
 	private Supplier<Integer> _usagesSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Version label of the virtual asset (for example, v1.0.0).",
-		example = "v1.0.0"
+		description = "Version label of the virtual asset.", example = "v1.0.0"
 	)
 	public String getVersion() {
 		if (_versionSupplier != null) {
@@ -175,9 +175,7 @@ public class VirtualItem implements Serializable {
 		};
 	}
 
-	@GraphQLField(
-		description = "Version label of the virtual asset (for example, v1.0.0)."
-	)
+	@GraphQLField(description = "Version label of the virtual asset.")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String version;
 
@@ -356,4 +354,4 @@ public class VirtualItem implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1619909763
+// LIFERAY-REST-BUILDER-HASH:-205948776

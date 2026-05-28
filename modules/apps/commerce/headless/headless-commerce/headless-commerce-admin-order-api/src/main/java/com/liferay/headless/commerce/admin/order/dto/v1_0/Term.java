@@ -42,11 +42,11 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "A commerce term entry (delivery or payment term) that can be linked to orders and order types via TermOrderType.",
+	description = "A reusable commerce term (delivery term or payment term) that can be bound to one or more order types. Carries a localized label and description, a priority for evaluation order, and active or expiration dates.",
 	value = "Term"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "A commerce term entry (delivery or payment term) that can be linked to orders and order types via TermOrderType.",
+	description = "A reusable commerce term (delivery term or payment term) that can be bound to one or more order types. Carries a localized label and description, a priority for evaluation order, and active or expiration dates.",
 	requiredProperties = {"name", "type"}
 )
 @JsonFilter("Liferay.Vulcan")
@@ -62,7 +62,7 @@ public class Term implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Map of HATEOAS actions available to the current user. Read-only."
+		description = "Map of HATEOAS actions available to the current user, keyed by action name. Each value carries the href template and HTTP method, computed dynamically from user permissions. Read-only."
 	)
 	@Valid
 	public Map<String, Map<String, String>> getActions() {
@@ -100,7 +100,7 @@ public class Term implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Map of HATEOAS actions available to the current user. Read-only."
+		description = "Map of HATEOAS actions available to the current user, keyed by action name. Each value carries the href template and HTTP method, computed dynamically from user permissions. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Map<String, Map<String, String>> actions;
@@ -109,7 +109,8 @@ public class Term implements Serializable {
 	private Supplier<Map<String, Map<String, String>>> _actionsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Boolean activation flag for the term.", example = "true"
+		description = "When true, the term is evaluated when orders are placed. When false, the term is disabled.",
+		example = "true"
 	)
 	public Boolean getActive() {
 		if (_activeSupplier != null) {
@@ -144,7 +145,9 @@ public class Term implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Boolean activation flag for the term.")
+	@GraphQLField(
+		description = "When true, the term is evaluated when orders are placed. When false, the term is disabled."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Boolean active;
 
@@ -152,7 +155,7 @@ public class Term implements Serializable {
 	private Supplier<Boolean> _activeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "ISO 8601 timestamp of when the Term was created. Read-only.",
+		description = "Creation date for the term. Read-only.",
 		example = "2017-07-21"
 	)
 	public Date getCreateDate() {
@@ -188,9 +191,7 @@ public class Term implements Serializable {
 		};
 	}
 
-	@GraphQLField(
-		description = "ISO 8601 timestamp of when the Term was created. Read-only."
-	)
+	@GraphQLField(description = "Creation date for the term. Read-only.")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Date createDate;
 
@@ -199,7 +200,7 @@ public class Term implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Localized text. Map keys are locale codes; values are the translated descriptions.",
-		example = "{en_US=Term Description US, hr_HR=Term Description HR, hu_HU=Term Description HU}"
+		example = "{en_US=Payable within 30 days., hr_HR=Term Description HR, hu_HU=Term Description HU}"
 	)
 	@Valid
 	public Map<String, String> getDescription() {
@@ -246,8 +247,7 @@ public class Term implements Serializable {
 	private Supplier<Map<String, String>> _descriptionSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "ISO 8601 date when the term becomes active.",
-		example = "2017-07-21"
+		description = "Date the term becomes active.", example = "2017-07-21"
 	)
 	public Date getDisplayDate() {
 		if (_displayDateSupplier != null) {
@@ -282,7 +282,7 @@ public class Term implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "ISO 8601 date when the term becomes active.")
+	@GraphQLField(description = "Date the term becomes active.")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Date displayDate;
 
@@ -290,8 +290,7 @@ public class Term implements Serializable {
 	private Supplier<Date> _displayDateSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "ISO 8601 date when the term expires.",
-		example = "2017-08-21"
+		description = "Date the term expires.", example = "2017-08-21"
 	)
 	public Date getExpirationDate() {
 		if (_expirationDateSupplier != null) {
@@ -326,7 +325,7 @@ public class Term implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "ISO 8601 date when the term expires.")
+	@GraphQLField(description = "Date the term expires.")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Date expirationDate;
 
@@ -381,7 +380,7 @@ public class Term implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Unique term identifier (FK to CommerceTermEntry.commerceTermEntryId). Read-only.",
+		description = "Reference to the term (FK identifier). Read-only.",
 		example = "30130"
 	)
 	public Long getId() {
@@ -416,7 +415,7 @@ public class Term implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Unique term identifier (FK to CommerceTermEntry.commerceTermEntryId). Read-only."
+		description = "Reference to the term (FK identifier). Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long id;
@@ -426,7 +425,7 @@ public class Term implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Localized text. Map keys are locale codes; values are the translated labels (display names).",
-		example = "{en_US=Term Label US, hr_HR=Term Label HR, hu_HU=Term Label HU}"
+		example = "{en_US=Net 30, hr_HR=Term Label HR, hu_HU=Term Label HU}"
 	)
 	@Valid
 	public Map<String, String> getLabel() {
@@ -472,8 +471,8 @@ public class Term implements Serializable {
 	private Supplier<Map<String, String>> _labelSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Free-text name/identifier for the term (e.g., \"Net30\", \"2/10 Net30\").",
-		example = "Laptops, Beverages"
+		description = "Free-text name identifying the term (for example, Net30, 2/10 Net30).",
+		example = "Net 30"
 	)
 	public String getName() {
 		if (_nameSupplier != null) {
@@ -507,7 +506,7 @@ public class Term implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Free-text name/identifier for the term (e.g., \"Net30\", \"2/10 Net30\")."
+		description = "Free-text name identifying the term (for example, Net30, 2/10 Net30)."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	@NotEmpty
@@ -517,8 +516,8 @@ public class Term implements Serializable {
 	private Supplier<String> _nameSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Boolean; if true, ignores expirationDate and term never expires.",
-		example = "true"
+		description = "When true, the term ignores expirationDate and never expires.",
+		example = "false"
 	)
 	public Boolean getNeverExpire() {
 		if (_neverExpireSupplier != null) {
@@ -554,7 +553,7 @@ public class Term implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Boolean; if true, ignores expirationDate and term never expires."
+		description = "When true, the term ignores expirationDate and never expires."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Boolean neverExpire;
@@ -563,8 +562,8 @@ public class Term implements Serializable {
 	private Supplier<Boolean> _neverExpireSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Double numeric priority for term evaluation order.",
-		example = "1.2"
+		description = "Numeric priority for term evaluation order.",
+		example = "1.0"
 	)
 	public Double getPriority() {
 		if (_prioritySupplier != null) {
@@ -599,9 +598,7 @@ public class Term implements Serializable {
 		};
 	}
 
-	@GraphQLField(
-		description = "Double numeric priority for term evaluation order."
-	)
+	@GraphQLField(description = "Numeric priority for term evaluation order.")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Double priority;
 
@@ -656,8 +653,8 @@ public class Term implements Serializable {
 	private Supplier<TermOrderType[]> _termOrderTypeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Free-text term type identifier (e.g., \"delivery\", \"payment\").",
-		example = "payment-terms"
+		description = "Term type identifier (delivery or payment). Free-form string drawn from the configured term-type list.",
+		example = "payment"
 	)
 	public String getType() {
 		if (_typeSupplier != null) {
@@ -691,7 +688,7 @@ public class Term implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Free-text term type identifier (e.g., \"delivery\", \"payment\")."
+		description = "Term type identifier (delivery or payment). Free-form string drawn from the configured term-type list."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	@NotEmpty
@@ -747,7 +744,8 @@ public class Term implements Serializable {
 	private Supplier<String> _typeLocalizedSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Free-text or JSON settings/configuration specific to the term type."
+		description = "Free-form JSON or text configuration specific to the term type.",
+		example = "daysFromInvoice=30"
 	)
 	public String getTypeSettings() {
 		if (_typeSettingsSupplier != null) {
@@ -783,7 +781,7 @@ public class Term implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Free-text or JSON settings/configuration specific to the term type."
+		description = "Free-form JSON or text configuration specific to the term type."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String typeSettings;
@@ -1210,4 +1208,4 @@ public class Term implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:853635435
+// LIFERAY-REST-BUILDER-HASH:-2092270960

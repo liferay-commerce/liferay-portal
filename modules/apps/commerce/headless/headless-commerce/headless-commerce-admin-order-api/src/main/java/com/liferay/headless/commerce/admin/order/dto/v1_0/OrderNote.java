@@ -36,7 +36,7 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "A note or comment attached to an order, with content, timestamp, restricted flag (internal-only), and author tracking.",
+	description = "A note attached to an order. Carries free-text content and a restricted flag that hides internal-only notes from the storefront.",
 	value = "OrderNote"
 )
 @JsonFilter("Liferay.Vulcan")
@@ -52,8 +52,8 @@ public class OrderNote implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Display name of the user who created the OrderNote. Read-only.",
-		example = "Alessio Antonio Rendina"
+		description = "Display name of the user who authored the note. Read-only.",
+		example = "Test Test"
 	)
 	public String getAuthor() {
 		if (_authorSupplier != null) {
@@ -89,7 +89,7 @@ public class OrderNote implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Display name of the user who created the OrderNote. Read-only."
+		description = "Display name of the user who authored the note. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String author;
@@ -98,8 +98,8 @@ public class OrderNote implements Serializable {
 	private Supplier<String> _authorSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Free-text note content.",
-		example = "This order will be shipped separately"
+		description = "Free-text content of the note.",
+		example = "Customer requested expedited shipping."
 	)
 	public String getContent() {
 		if (_contentSupplier != null) {
@@ -134,7 +134,7 @@ public class OrderNote implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Free-text note content.")
+	@GraphQLField(description = "Free-text content of the note.")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String content;
 
@@ -189,7 +189,7 @@ public class OrderNote implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Unique note identifier (FK to CommerceOrderNote.commerceOrderNoteId). Read-only.",
+		description = "Reference to the order note (FK identifier). Read-only.",
 		example = "30130"
 	)
 	public Long getId() {
@@ -224,7 +224,7 @@ public class OrderNote implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Unique note identifier (FK to CommerceOrderNote.commerceOrderNoteId). Read-only."
+		description = "Reference to the order note (FK identifier). Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long id;
@@ -233,8 +233,8 @@ public class OrderNote implements Serializable {
 	private Supplier<Long> _idSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "External reference code of the parent order. Used to address the line item by its parent ERC.",
-		example = "CAB-34098-789-N"
+		description = "External reference code of the parent order.",
+		example = "AB-34098-789-N"
 	)
 	public String getOrderExternalReferenceCode() {
 		if (_orderExternalReferenceCodeSupplier != null) {
@@ -273,9 +273,7 @@ public class OrderNote implements Serializable {
 		};
 	}
 
-	@GraphQLField(
-		description = "External reference code of the parent order. Used to address the line item by its parent ERC."
-	)
+	@GraphQLField(description = "External reference code of the parent order.")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String orderExternalReferenceCode;
 
@@ -284,7 +282,8 @@ public class OrderNote implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Reference to the order entity (FK).", example = "30128"
+		description = "Reference to the parent order (FK identifier).",
+		example = "30128"
 	)
 	public Long getOrderId() {
 		if (_orderIdSupplier != null) {
@@ -319,7 +318,9 @@ public class OrderNote implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Reference to the order entity (FK).")
+	@GraphQLField(
+		description = "Reference to the parent order (FK identifier)."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long orderId;
 
@@ -327,8 +328,8 @@ public class OrderNote implements Serializable {
 	private Supplier<Long> _orderIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Boolean; if true, note is internal-only (not visible to customer/storefront).",
-		example = "true"
+		description = "When true, the note is internal-only and not visible to the storefront. When false, it is visible to the buyer.",
+		example = "false"
 	)
 	public Boolean getRestricted() {
 		if (_restrictedSupplier != null) {
@@ -364,7 +365,7 @@ public class OrderNote implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Boolean; if true, note is internal-only (not visible to customer/storefront)."
+		description = "When true, the note is internal-only and not visible to the storefront. When false, it is visible to the buyer."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Boolean restricted;
@@ -600,4 +601,4 @@ public class OrderNote implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1653782937
+// LIFERAY-REST-BUILDER-HASH:1860396753
