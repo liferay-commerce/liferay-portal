@@ -3,8 +3,8 @@ components:
         discountAccountGroupIdPathParam:
             in: path
             description:
-                Internal numeric identifier of the target discount-account-group binding. Server-assigned and stable across the
-                resource's lifetime.
+                Internal numeric identifier of the target discount-account-group binding. Server-assigned and stable
+                across the resource's lifetime.
             explode: false
             name: discountAccountGroupId
             required: true
@@ -19,8 +19,8 @@ components:
         discountAccountIdPathParam:
             in: path
             description:
-                Internal numeric identifier of the target discount-account binding. Server-assigned and stable across the
-                resource's lifetime.
+                Internal numeric identifier of the target discount-account binding. Server-assigned and stable across
+                the resource's lifetime.
             explode: false
             name: discountAccountId
             required: true
@@ -35,8 +35,8 @@ components:
         discountCategoryIdPathParam:
             in: path
             description:
-                Internal numeric identifier of the target discount-category binding. Server-assigned and stable across the
-                resource's lifetime.
+                Internal numeric identifier of the target discount-category binding. Server-assigned and stable across
+                the resource's lifetime.
             explode: false
             name: discountCategoryId
             required: true
@@ -51,8 +51,8 @@ components:
         discountChannelIdPathParam:
             in: path
             description:
-                Internal numeric identifier of the target discount-channel binding. Server-assigned and stable across the
-                resource's lifetime.
+                Internal numeric identifier of the target discount-channel binding. Server-assigned and stable across
+                the resource's lifetime.
             explode: false
             name: discountChannelId
             required: true
@@ -67,8 +67,8 @@ components:
         discountOrderTypeIdPathParam:
             in: path
             description:
-                Internal numeric identifier of the target discount-order-type binding. Server-assigned and stable across the
-                resource's lifetime.
+                Internal numeric identifier of the target discount-order-type binding. Server-assigned and stable across
+                the resource's lifetime.
             explode: false
             name: discountOrderTypeId
             required: true
@@ -83,8 +83,8 @@ components:
         discountProductGroupIdPathParam:
             in: path
             description:
-                Internal numeric identifier of the target discount-product-group binding. Server-assigned and stable across the
-                resource's lifetime.
+                Internal numeric identifier of the target discount-product-group binding. Server-assigned and stable
+                across the resource's lifetime.
             explode: false
             name: discountProductGroupId
             required: true
@@ -99,8 +99,8 @@ components:
         discountProductIdPathParam:
             in: path
             description:
-                Internal numeric identifier of the target discount-product binding. Server-assigned and stable across the
-                resource's lifetime.
+                Internal numeric identifier of the target discount-product binding. Server-assigned and stable across
+                the resource's lifetime.
             explode: false
             name: discountProductId
             required: true
@@ -211,8 +211,8 @@ components:
         priceListAccountGroupIdPathParam:
             in: path
             description:
-                Internal numeric identifier of the target price-list-account-group binding. Server-assigned and stable across the
-                resource's lifetime.
+                Internal numeric identifier of the target price-list-account-group binding. Server-assigned and stable
+                across the resource's lifetime.
             explode: false
             name: priceListAccountGroupId
             required: true
@@ -227,8 +227,8 @@ components:
         priceListAccountIdPathParam:
             in: path
             description:
-                Internal numeric identifier of the target price-list-account binding. Server-assigned and stable across the
-                resource's lifetime.
+                Internal numeric identifier of the target price-list-account binding. Server-assigned and stable across
+                the resource's lifetime.
             explode: false
             name: priceListAccountId
             required: true
@@ -243,8 +243,8 @@ components:
         priceListChannelIdPathParam:
             in: path
             description:
-                Internal numeric identifier of the target price-list-channel binding. Server-assigned and stable across the
-                resource's lifetime.
+                Internal numeric identifier of the target price-list-channel binding. Server-assigned and stable across
+                the resource's lifetime.
             explode: false
             name: priceListChannelId
             required: true
@@ -259,8 +259,8 @@ components:
         priceListDiscountIdPathParam:
             in: path
             description:
-                Internal numeric identifier of the target price-list-discount binding. Server-assigned and stable across the
-                resource's lifetime.
+                Internal numeric identifier of the target price-list-discount binding. Server-assigned and stable across
+                the resource's lifetime.
             explode: false
             name: priceListDiscountId
             required: true
@@ -275,8 +275,8 @@ components:
         priceListOrderTypeIdPathParam:
             in: path
             description:
-                Internal numeric identifier of the target price-list-order-type binding. Server-assigned and stable across the
-                resource's lifetime.
+                Internal numeric identifier of the target price-list-order-type binding. Server-assigned and stable
+                across the resource's lifetime.
             explode: false
             name: priceListOrderTypeId
             required: true
@@ -291,8 +291,8 @@ components:
         priceModifierCategoryIdPathParam:
             in: path
             description:
-                Internal numeric identifier of the target price-modifier-category binding. Server-assigned and stable across the
-                resource's lifetime.
+                Internal numeric identifier of the target price-modifier-category binding. Server-assigned and stable
+                across the resource's lifetime.
             explode: false
             name: priceModifierCategoryId
             required: true
@@ -307,8 +307,8 @@ components:
         priceModifierProductGroupIdPathParam:
             in: path
             description:
-                Internal numeric identifier of the target price-modifier-product-group binding. Server-assigned and stable across the
-                resource's lifetime.
+                Internal numeric identifier of the target price-modifier-product-group binding. Server-assigned and
+                stable across the resource's lifetime.
             explode: false
             name: priceModifierProductGroupId
             required: true
@@ -323,8 +323,8 @@ components:
         priceModifierProductIdPathParam:
             in: path
             description:
-                Internal numeric identifier of the target price-modifier-product binding. Server-assigned and stable across the
-                resource's lifetime.
+                Internal numeric identifier of the target price-modifier-product binding. Server-assigned and stable
+                across the resource's lifetime.
             explode: false
             name: priceModifierProductId
             required: true
@@ -484,13 +484,13 @@ components:
                 (WorkflowConstants.STATUS_APPROVED).
             properties:
                 actions:
-                    description:
-                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
-                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     additionalProperties:
                         additionalProperties:
                             type: string
                         type: object
+                    description:
+                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
+                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     readOnly: true
                     type: object
                 active:
@@ -510,10 +510,10 @@ components:
                     example: SAVE20
                     type: string
                 customFields:
+                    additionalProperties: true
                     description:
                         Free-form Expando custom fields attached to the underlying CommerceDiscount entity. Keys are
                         Expando attribute names; values follow each attribute's declared column type.
-                    additionalProperties: true
                     type: object
                 discountAccountGroups:
                     description:
@@ -736,13 +736,13 @@ components:
                     minimum: 0
                     type: integer
                 actions:
-                    description:
-                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
-                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     additionalProperties:
                         additionalProperties:
                             type: string
                         type: object
+                    description:
+                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
+                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     readOnly: true
                     type: object
                 discountAccountId:
@@ -790,13 +790,13 @@ components:
                     minimum: 0
                     type: integer
                 actions:
-                    description:
-                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
-                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     additionalProperties:
                         additionalProperties:
                             type: string
                         type: object
+                    description:
+                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
+                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     readOnly: true
                     type: object
                 discountAccountGroupId:
@@ -829,13 +829,13 @@ components:
                 CommerceDiscountRel with the AssetCategory class name.
             properties:
                 actions:
-                    description:
-                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
-                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     additionalProperties:
                         additionalProperties:
                             type: string
                         type: object
+                    description:
+                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
+                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     readOnly: true
                     type: object
                 category:
@@ -883,13 +883,13 @@ components:
                 CommerceChannelRel with the CommerceDiscount class name.
             properties:
                 actions:
-                    description:
-                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
-                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     additionalProperties:
                         additionalProperties:
                             type: string
                         type: object
+                    description:
+                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
+                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     readOnly: true
                     type: object
                 channel:
@@ -937,13 +937,13 @@ components:
                 CommerceDiscountCommerceOrderTypeRel.
             properties:
                 actions:
-                    description:
-                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
-                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     additionalProperties:
                         additionalProperties:
                             type: string
                         type: object
+                    description:
+                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
+                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     readOnly: true
                     type: object
                 discountExternalReferenceCode:
@@ -999,13 +999,13 @@ components:
                 the CPDefinition class name.
             properties:
                 actions:
-                    description:
-                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
-                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     additionalProperties:
                         additionalProperties:
                             type: string
                         type: object
+                    description:
+                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
+                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     readOnly: true
                     type: object
                 discountExternalReferenceCode:
@@ -1053,13 +1053,13 @@ components:
                 CommerceDiscountRel with the CommercePricingClass class name.
             properties:
                 actions:
-                    description:
-                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
-                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     additionalProperties:
                         additionalProperties:
                             type: string
                         type: object
+                    description:
+                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
+                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     readOnly: true
                     type: object
                 discountExternalReferenceCode:
@@ -1107,13 +1107,13 @@ components:
                 and a JSON typeSettings payload interpreted by the matching CommerceDiscountRuleType at evaluation time.
             properties:
                 actions:
-                    description:
-                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
-                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     additionalProperties:
                         additionalProperties:
                             type: string
                         type: object
+                    description:
+                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
+                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     readOnly: true
                     type: object
                 discountId:
@@ -1156,13 +1156,13 @@ components:
                 the CPInstance class name.
             properties:
                 actions:
-                    description:
-                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
-                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     additionalProperties:
                         additionalProperties:
                             type: string
                         type: object
+                    description:
+                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
+                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     readOnly: true
                     type: object
                 discountExternalReferenceCode:
@@ -1194,11 +1194,11 @@ components:
                     minimum: 0
                     type: integer
                 productName:
+                    additionalProperties:
+                        type: string
                     description:
                         Localized display name of the bound product, mirrored from the underlying CPDefinition.
                         Read-only.
-                    additionalProperties:
-                        type: string
                     example:
                         en_US: Hand Saw
                         hr_HR: Product Name HR
@@ -1279,10 +1279,10 @@ components:
                     readOnly: true
                     type: integer
                 name:
-                    description:
-                        Display name of the ordertype.
                     additionalProperties:
                         type: string
+                    description:
+                        Display name of the ordertype.
                     example:
                         en_US: Hand Saw
                         hr_HR: Product Name HR
@@ -1295,13 +1295,13 @@ components:
                 promo price; entries with quantity-break overrides expose `hasTierPrice`. Backed by CommercePriceEntry.
             properties:
                 actions:
-                    description:
-                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
-                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     additionalProperties:
                         additionalProperties:
                             type: string
                         type: object
+                    description:
+                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
+                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     readOnly: true
                     type: object
                 active:
@@ -1317,10 +1317,10 @@ components:
                     example: true
                     type: boolean
                 customFields:
+                    additionalProperties: true
                     description:
                         Free-form Expando custom fields attached to the underlying entity. Keys are Expando attribute
                         names; values follow each attribute's declared column type.
-                    additionalProperties: true
                     type: object
                 discountDiscovery:
                     description:
@@ -1477,13 +1477,13 @@ components:
                 only honours price lists whose status is approved.
             properties:
                 actions:
-                    description:
-                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
-                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     additionalProperties:
                         additionalProperties:
                             type: string
                         type: object
+                    description:
+                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
+                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     readOnly: true
                     type: object
                 active:
@@ -1544,10 +1544,10 @@ components:
                     minimum: 0
                     type: integer
                 customFields:
+                    additionalProperties: true
                     description:
                         Free-form Expando custom fields attached to the underlying entity. Keys are Expando attribute
                         names; values follow each attribute's declared column type.
-                    additionalProperties: true
                     type: object
                 displayDate:
                     description:
@@ -1685,13 +1685,13 @@ components:
                     minimum: 0
                     type: integer
                 actions:
-                    description:
-                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
-                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     additionalProperties:
                         additionalProperties:
                             type: string
                         type: object
+                    description:
+                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
+                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     readOnly: true
                     type: object
                 order:
@@ -1748,13 +1748,13 @@ components:
                     minimum: 0
                     type: integer
                 actions:
-                    description:
-                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
-                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     additionalProperties:
                         additionalProperties:
                             type: string
                         type: object
+                    description:
+                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
+                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     readOnly: true
                     type: object
                 order:
@@ -1795,13 +1795,13 @@ components:
                 CommercePriceListChannelRel.
             properties:
                 actions:
-                    description:
-                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
-                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     additionalProperties:
                         additionalProperties:
                             type: string
                         type: object
+                    description:
+                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
+                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     readOnly: true
                     type: object
                 channel:
@@ -1871,8 +1871,8 @@ components:
                 discountName:
                     description:
                         Display name of the linked CommerceDiscount, mirrored from CommerceDiscount.title. Read-only.
-                    readOnly: true
                     example: 20% Off
+                    readOnly: true
                     type: string
                 order:
                     description:
@@ -1912,13 +1912,13 @@ components:
                 CommercePriceListOrderTypeRel.
             properties:
                 actions:
-                    description:
-                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
-                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     additionalProperties:
                         additionalProperties:
                             type: string
                         type: object
+                    description:
+                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
+                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     readOnly: true
                     type: object
                 orderType:
@@ -1975,13 +1975,13 @@ components:
                 limitationType, and a priority. Backed by CommercePriceModifier.
             properties:
                 actions:
-                    description:
-                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
-                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     additionalProperties:
                         additionalProperties:
                             type: string
                         type: object
+                    description:
+                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
+                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     readOnly: true
                     type: object
                 active:
@@ -2092,13 +2092,13 @@ components:
                 Backed by CommercePriceModifierRel with the AssetCategory class name.
             properties:
                 actions:
-                    description:
-                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
-                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     additionalProperties:
                         additionalProperties:
                             type: string
                         type: object
+                    description:
+                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
+                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     readOnly: true
                     type: object
                 category:
@@ -2146,13 +2146,13 @@ components:
                 CommercePriceModifierRel with the CPDefinition class name.
             properties:
                 actions:
-                    description:
-                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
-                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     additionalProperties:
                         additionalProperties:
                             type: string
                         type: object
+                    description:
+                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
+                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     readOnly: true
                     type: object
                 priceModifierExternalReferenceCode:
@@ -2200,13 +2200,13 @@ components:
                 by CommercePriceModifierRel with the CommercePricingClass class name.
             properties:
                 actions:
-                    description:
-                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
-                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     additionalProperties:
                         additionalProperties:
                             type: string
                         type: object
+                    description:
+                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
+                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     readOnly: true
                     type: object
                 priceModifierExternalReferenceCode:
@@ -2281,10 +2281,10 @@ components:
                     readOnly: true
                     type: integer
                 name:
-                    description:
-                        Display name of the product.
                     additionalProperties:
                         type: string
+                    description:
+                        Display name of the product.
                     example:
                         en_US: Hand Saw
                         hr_HR: Product Name HR
@@ -2323,10 +2323,10 @@ components:
                     minimum: 0
                     type: integer
                 title:
-                    description:
-                        Display title of the productgroup.
                     additionalProperties:
                         type: string
+                    description:
+                        Display title of the productgroup.
                     example:
                         en_US: Title
                         hr_HR: Title HR
@@ -2406,13 +2406,13 @@ components:
                 Backed by CommerceTierPriceEntry.
             properties:
                 actions:
-                    description:
-                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
-                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     additionalProperties:
                         additionalProperties:
                             type: string
                         type: object
+                    description:
+                        Map of HATEOAS actions available to the current user, keyed by action name. Each value carries
+                        the href template and HTTP method, computed dynamically from user permissions. Read-only.
                     readOnly: true
                     type: object
                 active:
@@ -2422,10 +2422,10 @@ components:
                     example: true
                     type: boolean
                 customFields:
+                    additionalProperties: true
                     description:
                         Free-form Expando custom fields attached to the underlying entity. Keys are Expando attribute
                         names; values follow each attribute's declared column type.
-                    additionalProperties: true
                     type: object
                 discountDiscovery:
                     description:
@@ -3530,7 +3530,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -3784,7 +3785,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -3979,7 +3981,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -4072,7 +4075,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -4226,7 +4230,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -4380,7 +4385,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -4535,7 +4541,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -4690,7 +4697,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -4847,7 +4855,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -5002,7 +5011,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -5157,7 +5167,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -5314,7 +5325,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -5469,7 +5481,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -5665,7 +5678,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -5823,7 +5837,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -5979,7 +5994,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -6136,7 +6152,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -6292,7 +6309,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -6452,7 +6470,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -6610,7 +6629,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -6768,7 +6788,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -6927,7 +6948,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -7084,7 +7106,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -7280,7 +7303,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -7437,7 +7461,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -7630,7 +7655,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -7924,7 +7950,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -8544,7 +8571,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -8739,7 +8767,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -8832,7 +8861,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -8989,7 +9019,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -9143,7 +9174,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -9297,7 +9329,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -9451,7 +9484,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -9605,7 +9639,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -9759,7 +9794,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -9913,7 +9949,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -10106,7 +10143,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -10262,7 +10300,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -10420,7 +10459,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -10575,7 +10615,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -10730,7 +10771,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -10883,7 +10925,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -11037,7 +11080,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -11192,7 +11236,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -11711,7 +11756,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -11869,7 +11915,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -12027,7 +12074,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -12185,7 +12233,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -12374,7 +12423,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -12532,7 +12582,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -12690,7 +12741,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -12848,7 +12900,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -13040,7 +13093,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -13229,7 +13283,8 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range value, or broken cross-domain binding.
+                        Domain validation error -- invalid lookup key, missing required cross-reference, out-of-range
+                        value, or broken cross-domain binding.
                 500:
                     content:
                         application/json:
@@ -13249,9 +13304,8 @@ paths:
             tags: ["TierPrice"]
 tags:
     -   description:
-            Read-only lookups of Account records referenced by other pricing resources -- exposed so a client that
-            holds a discount or price-list account binding can resolve the linked account without leaving the pricing
-            module.
+            Read-only lookups of Account records referenced by other pricing resources -- exposed so a client that holds
+            a discount or price-list account binding can resolve the linked account without leaving the pricing module.
         name: Account
     -   description:
             Read-only lookups of AssetCategory records referenced by discount and price-modifier category bindings.
@@ -13262,16 +13316,16 @@ tags:
     -   description:
             Promotional discount programs scoped to a company. Each discount carries a target (subtotal, total,
             products, categories, skus, product-groups, or shipping), a limitation policy (unlimited, limited,
-            limited-for-accounts, limited-for-accounts-and-total), a percentage or fixed-amount payout, and may be
-            gated by an optional couponCode. Backed by CommerceDiscount.
+            limited-for-accounts, limited-for-accounts-and-total), a percentage or fixed-amount payout, and may be gated
+            by an optional couponCode. Backed by CommerceDiscount.
         name: Discount
     -   description:
             Account bindings that restrict a discount's eligibility to a specific set of Accounts. Backed by
             CommerceDiscountCommerceAccountRel.
         name: DiscountAccount
     -   description:
-            Account-group bindings that restrict a discount's eligibility to a specific set of AccountGroups. Backed
-            by CommerceDiscountCommerceAccountGroupRel.
+            Account-group bindings that restrict a discount's eligibility to a specific set of AccountGroups. Backed by
+            CommerceDiscountCommerceAccountGroupRel.
         name: DiscountAccountGroup
     -   description:
             Category bindings that restrict a discount to products tagged with specific asset categories. Backed by
@@ -13294,8 +13348,8 @@ tags:
             CommerceDiscountCommerceProductGroupRel.
         name: DiscountProductGroup
     -   description:
-            Pre-qualification, post-qualification, or target validators attached to a discount. Each rule carries a
-            type string and a JSON typeSettings payload interpreted by the matching CommerceDiscountRuleType.
+            Pre-qualification, post-qualification, or target validators attached to a discount. Each rule carries a type
+            string and a JSON typeSettings payload interpreted by the matching CommerceDiscountRuleType.
         name: DiscountRule
     -   description:
             SKU bindings that restrict a discount to specific CPInstances. Backed by CommerceDiscountRel with the
@@ -13309,34 +13363,33 @@ tags:
             optional promo price; entries with quantity-break overrides expose `hasTierPrice`.
         name: PriceEntry
     -   description:
-            Versioned price catalogs that price SKUs in a specific currency for a CommerceCatalog. Each price list has
-            a priority, a display/expiration window, and may be scoped to specific accounts, account-groups, channels,
-            or order types.
+            Versioned price catalogs that price SKUs in a specific currency for a CommerceCatalog. Each price list has a
+            priority, a display/expiration window, and may be scoped to specific accounts, account-groups, channels, or
+            order types.
         name: PriceList
     -   description:
             Account bindings that restrict a price list's eligibility to a specific set of Accounts. Backed by
             CommercePriceListCommerceAccountRel.
         name: PriceListAccount
     -   description:
-            Account-group bindings that restrict a price list's eligibility to a specific set of AccountGroups, with
-            an `order` integer that controls the resolution priority.
+            Account-group bindings that restrict a price list's eligibility to a specific set of AccountGroups, with an
+            `order` integer that controls the resolution priority.
         name: PriceListAccountGroup
     -   description:
             Channel bindings that restrict a price list's eligibility to a specific set of CommerceChannels. Backed by
             CommercePriceListCommerceChannelRel.
         name: PriceListChannel
     -   description:
-            Discount linkages attached to a price list. Each binding ties one CommerceDiscount to the price list so
-            its rules participate in price resolution against that list. Backed by
-            CommercePriceListCommerceDiscountRel.
+            Discount linkages attached to a price list. Each binding ties one CommerceDiscount to the price list so its
+            rules participate in price resolution against that list. Backed by CommercePriceListCommerceDiscountRel.
         name: PriceListDiscount
     -   description:
             CommerceOrderType bindings that restrict a price list's eligibility to specific order types. Backed by
             CommercePriceListCommerceOrderTypeRel.
         name: PriceListOrderType
     -   description:
-            Add-on price calculations layered on a price list. Each modifier carries a target (categories, products,
-            or product-groups), a modifierAmount or modifierPercentage, a modifierType (absolute or percentage), a
+            Add-on price calculations layered on a price list. Each modifier carries a target (categories, products, or
+            product-groups), a modifierAmount or modifierPercentage, a modifierType (absolute or percentage), a
             limitationType, and a priority. Backed by CommercePriceModifier.
         name: PriceModifier
     -   description:
@@ -13366,7 +13419,7 @@ tags:
             Read-only lookups of CPInstance (SKU) records referenced by discount sku bindings and by price entries.
         name: Sku
     -   description:
-            Quantity-break overrides on a price entry. Each tier price binds a minimumQuantity threshold to an
-            override price; the runtime resolves the highest-quantity tier whose minimumQuantity is at most the cart
-            line quantity.
+            Quantity-break overrides on a price entry. Each tier price binds a minimumQuantity threshold to an override
+            price; the runtime resolves the highest-quantity tier whose minimumQuantity is at most the cart line
+            quantity.
         name: TierPrice
