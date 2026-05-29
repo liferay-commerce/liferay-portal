@@ -161,8 +161,8 @@ components:
                         street3: suite 200
                         zip: "91765"
                     description:
-                        Addresses owned by this Account. Persisted in the same transaction when supplied on POST or
-                        PATCH.
+                        Addresses owned by this account. Persisted in the same transaction when supplied on POST or
+                        PATCH; existing addresses are matched by `id` and updated when supplied, otherwise added.
                     items:
                         $ref: "#/components/schemas/AccountAddress"
                     type: array
@@ -176,8 +176,9 @@ components:
                         name: Alessio Antonio Rendina
                         roles:
                     description:
-                        Members (user-to-account links) of this Account. Each member carries the user's account-scoped
-                        AccountRoles.
+                        Members (user-to-account links) on this account. Each member carries the user's account-scoped
+                        roles. Persisted in the same transaction when supplied on POST or PATCH; existing memberships
+                        are not removed.
                     items:
                         $ref: "#/components/schemas/AccountMember"
                     type: array
@@ -188,46 +189,52 @@ components:
                         organizationId: 20433
                         treePath: /Liferay/Liferay Italy
                     description:
-                        Liferay Organizations linked to this Account.
+                        Organizations linked to this account. Persisted in the same transaction when supplied on POST or
+                        PATCH; existing links are not removed.
                     items:
                         $ref: "#/components/schemas/AccountOrganization"
                     type: array
                 active:
                     description:
-                        Whether the Account is active. Inactive accounts cannot place orders but remain visible in the
-                        admin UI.
+                        Whether the account is active. Inactive accounts cannot place orders but remain visible in the
+                        admin UI. Defaults to true on create; mapped to the workflow status of the underlying account
+                        record (active when approved, inactive otherwise).
                     example: true
                     type: boolean
                 customFields:
                     additionalProperties: true
                     description:
-                        Free-form custom field map. Keys are the registered custom field names; values follow the type
-                        declared on the field definition.
+                        Free-form custom field map populated by the platform expando mechanism. Keys are the registered
+                        custom field names; values follow the type declared on the field definition.
                     type: object
                 dateCreated:
                     description:
-                        Creation timestamp in ISO 8601 (UTC). Read-only.
+                        Creation timestamp in ISO 8601 (UTC). Read-only; set when the account is first persisted.
+                        Filterable and sortable via the OData query parameter.
+                    example: 2017-07-21T19:30:00Z
                     format: date-time
                     readOnly: true
                     type: string
                 dateModified:
                     description:
-                        Last modification timestamp in ISO 8601 (UTC). Read-only.
+                        Last modification timestamp in ISO 8601 (UTC). Read-only; updated on each save. Filterable and
+                        sortable via the OData query parameter.
+                    example: 2017-07-21T19:30:00Z
                     format: date-time
                     readOnly: true
                     type: string
                 defaultBillingAccountAddressId:
                     description:
-                        Reference to the AccountAddress entity (FK) used as the default billing address. Setting this
-                        field clears the previous default billing flag on sibling addresses.
+                        Reference to the address (FK identifier) used as the default billing address for the account.
+                        Setting this field clears the previous default billing flag on sibling addresses.
                     example: 10130
                     format: int64
                     minimum: 0
                     type: integer
                 defaultShippingAccountAddressId:
                     description:
-                        Reference to the AccountAddress entity (FK) used as the default shipping address. Setting this
-                        field clears the previous default shipping flag on sibling addresses.
+                        Reference to the address (FK identifier) used as the default shipping address for the account.
+                        Setting this field clears the previous default shipping flag on sibling addresses.
                     example: 10131
                     format: int64
                     minimum: 0
@@ -238,14 +245,15 @@ components:
                     -   joe.2@commerce.com
                     -   joe.3@commerce.com
                     description:
-                        Email addresses associated with the Account. The first entry is the primary contact.
+                        Email addresses associated with the account. The first entry is the primary contact email; on
+                        create or update only the first entry is persisted as the account email.
                     items:
                         format: email
                         type: string
                     type: array
                 externalReferenceCode:
                     description:
-                        Idempotency key for create and update; must be unique per Account within the company. Used as
+                        Idempotency key for create and update; must be unique per account within the company. Used as
                         the addressing key on the by-externalReferenceCode endpoints.
                     example: AB-34098-789-N
                     type: string
@@ -258,37 +266,41 @@ components:
                     type: integer
                 logoId:
                     description:
-                        Reference to the DLFileEntry that stores the Account logo (FK). Set through the dedicated logo
-                        upload endpoint.
+                        Reference to the document library entry (FK identifier) that stores the account logo image.
+                        Read-only on this schema; set through the dedicated logo upload endpoint.
                     example: 20078
                     format: int64
                     minimum: 0
                     type: integer
                 logoURL:
                     description:
-                        URL the front-end uses to fetch the Account logo. Computed; read-only.
-                    example: AB-34098-789-N
+                        Relative URL the back-office uses to fetch the account logo image. Computed from the logo
+                        identifier and a cache-busting token; read-only.
+                    example: /image/organization_logo?img_id=20078&t=1500000000000
                     type: string
                 name:
                     description:
-                        Display name of the Account.
+                        Display name of the account. Required on create. Filterable and sortable via the OData query
+                        parameter; matched by the search query parameter.
                     example: Account Name
                     type: string
                 root:
                     description:
-                        Whether this Account is the root of an organizational hierarchy. Used by the auto-assign
-                        feature.
+                        Whether this account sits at the root of the account hierarchy. Read-only; true when the account
+                        has no parent account.
                     example: true
                     type: boolean
                 taxId:
                     description:
-                        Tax identifier of the Account (for example, a VAT or EIN). Used on invoices.
+                        Tax identifier of the account such as a VAT or EIN number. Persisted as supplied and surfaced on
+                        invoices.
                     example: Abcd1234
                     type: string
                 type:
                     description:
-                        Integer Account type -- 0=GUEST, 1=PERSONAL, 2=BUSINESS. Sourced from AccountConstants;
-                        determines the available members and address flows.
+                        Integer account type -- 0=Guest, 1=Personal, 2=Business. Determines the available members and
+                        address flows. Defaults to Personal on create. Filterable and sortable via the OData query
+                        parameter.
                     example: 1
                     format: int32
                     maximum: 2
@@ -299,30 +311,32 @@ components:
             -   name
             description:
                 Commerce buyer organization or end customer that places orders. Owns addresses, members (users with
-                account-scoped roles), and links to Liferay Organizations and AccountGroups.
+                account-scoped roles), and links to organizations and account groups. Created on POST, updated on PATCH,
+                and returned by the matching list endpoint.
             type: object
         AccountAddress:
             properties:
                 city:
                     description:
-                        City name.
+                        City name. Required on create.
                     example: Diamond Bar
                     type: string
                 countryISOCode:
                     description:
-                        Country ISO 3166-1 alpha-2 code (for example, US, IT, DE).
+                        Country code in ISO 3166-1 alpha-2 form. Required on create; resolved against the platform's
+                        country list and rejected when no matching country exists for the company.
                     example: US
                     type: string
                 defaultBilling:
                     description:
-                        Whether this address is the default billing address for the account. Setting this to true clears
-                        the same flag on sibling addresses.
+                        Whether this address is the default billing address for the owning account. Setting this to true
+                        clears the same flag on sibling addresses on the account.
                     example: true
                     type: boolean
                 defaultShipping:
                     description:
-                        Whether this address is the default shipping address for the account. Setting this to true
-                        clears the same flag on sibling addresses.
+                        Whether this address is the default shipping address for the owning account. Setting this to
+                        true clears the same flag on sibling addresses on the account.
                     example: true
                     type: boolean
                 description:
@@ -344,19 +358,19 @@ components:
                     type: integer
                 latitude:
                     description:
-                        Latitude in decimal degrees. Optional; populated only when the address is geocoded.
+                        Latitude in decimal degrees. Optional; populated only when the address has been geocoded.
                     example: 33.9976884
                     format: double
                     type: number
                 longitude:
                     description:
-                        Longitude in decimal degrees. Optional; populated only when the address is geocoded.
+                        Longitude in decimal degrees. Optional; populated only when the address has been geocoded.
                     example: -117.8144595
                     format: double
                     type: number
                 name:
                     description:
-                        Recipient name attached to the address.
+                        Recipient name attached to the address. Required on create.
                     example: Alessio Antonio Rendina
                     type: string
                 phoneNumber:
@@ -366,12 +380,13 @@ components:
                     type: string
                 regionISOCode:
                     description:
-                        Region ISO 3166-2 code (for example, CA, MI). Required when the country uses regions.
+                        Region code in ISO 3166-2 form. Required when the country has registered regions; resolved
+                        against the regions registered on the country and left blank when unresolved.
                     example: CA
                     type: string
                 street1:
                     description:
-                        First street line.
+                        First street line. Required on create.
                     example: 1400 Montefino Ave
                     type: string
                 street2:
@@ -386,8 +401,8 @@ components:
                     type: string
                 type:
                     description:
-                        Integer address purpose -- 1=BILLING, 2=BILLING_AND_SHIPPING, 3=SHIPPING. Sourced from
-                        CommerceAddressConstants.
+                        Integer address purpose -- 1=Billing, 2=Billing and shipping, 3=Shipping. Defaults to Billing
+                        and shipping on create when not supplied.
                     example: 1
                     format: int32
                     maximum: 3
@@ -395,7 +410,7 @@ components:
                     type: integer
                 zip:
                     description:
-                        Postal code or ZIP.
+                        Postal or ZIP code attached to the address.
                     example: "91765"
                     type: string
             required:
@@ -404,24 +419,29 @@ components:
             -   name
             -   street1
             description:
-                Billing, shipping, or combined-purpose address owned by an Account. Marking an address as default
+                Billing, shipping, or combined-purpose address owned by an account. Marking an address as default
                 billing or shipping clears the previously default address on the same account.
             type: object
         AccountChannelEntry:
             deprecated: true
             description:
                 Deprecated -- per-account override of a channel-level commerce rule (currency, delivery or payment term,
-                discount, payment method, price list, reserved billing or shipping address, or assigned user). New
-                integrations should use the AccountChannelShippingOption schema or nested account sub-resources.
+                discount, payment method, price list, reserved billing or shipping address, or assigned user). The
+                effective override type is derived from the endpoint path rather than from the payload. New integrations
+                should use the per-account shipping option override or the nested account sub-resources.
             properties:
                 accountExternalReferenceCode:
                     description:
-                        Idempotency key for the parent Account; read-only on this schema.
+                        Idempotency key of the parent account that owns the override. Read-only on this schema; mirrored
+                        from the parent account record.
+                    example: AB-34098-789-N
                     readOnly: true
                     type: string
                 accountId:
                     description:
-                        Reference to the Account entity (FK); read-only on this schema.
+                        Reference to the parent account that owns the override (FK identifier). Read-only on this
+                        schema; mirrored from the parent account record.
+                    example: 30130
                     format: int64
                     readOnly: true
                     type: integer
@@ -437,27 +457,34 @@ components:
                     type: object
                 channelExternalReferenceCode:
                     description:
-                        External reference code of the Channel being overridden.
+                        External reference code of the channel being overridden. Alternative to `channelId` on POST.
+                    example: AB-34098-789-N
                     type: string
                 channelId:
                     description:
-                        Reference to the Channel entity (FK) being overridden.
+                        Reference to the channel being overridden (FK identifier). Alternative to
+                        `channelExternalReferenceCode` on POST.
+                    example: 30130
                     format: int64
                     type: integer
                 classExternalReferenceCode:
                     description:
-                        External reference code of the target entity (currency, term, discount, etc.) being attached to
-                        the channel-account pair.
+                        External reference code of the target entity (currency, term, discount, payment method, price
+                        list, address, or user) being attached to the channel-account pair. The interpretation of this
+                        code depends on the override type derived from the endpoint path.
+                    example: AB-34098-789-N
                     type: string
                 classPK:
                     description:
-                        Internal primary key of the target entity being attached. Read in conjunction with the implicit
-                        type derived from the endpoint URL.
+                        Internal primary key of the target entity being attached (FK identifier). Read in conjunction
+                        with the override type derived from the endpoint path.
+                    example: 30130
                     format: int64
                     type: integer
                 id:
                     description:
                         Internal primary key. Read-only; assigned by the system on create.
+                    example: 30130
                     format: int64
                     readOnly: true
                     type: integer
@@ -465,27 +492,31 @@ components:
                     description:
                         Whether this override bypasses channel-level eligibility checks. When true the rule is applied
                         to the account regardless of channel-level filters.
+                    example: true
                     type: boolean
                 priority:
                     description:
                         Sort priority among overrides of the same type for the same account. Lower values are applied
                         first.
+                    example: 1.0
                     format: double
                     type: number
             type: object
         AccountChannelShippingOption:
             description:
-                Per-account override of a shipping option on a commerce channel. Pairs the account, the channel, a
-                shipping method, and a specific fixed option key.
+                Per-account override of a shipping option on a commerce channel. Pairs the owning account, the channel,
+                a shipping method engine key, and a specific fixed option key; only one override may exist for a given
+                account and channel.
             properties:
                 accountExternalReferenceCode:
                     description:
-                        Idempotency key for the parent Account; read-only on this schema.
-                    example: UAB-34098-789-N
+                        Idempotency key of the parent account that owns the override. Read-only on this schema; mirrored
+                        from the parent account record.
+                    example: AB-34098-789-N
                     type: string
                 accountId:
                     description:
-                        Reference to the Account entity (FK).
+                        Reference to the parent account that owns the override (FK identifier).
                     example: 30130
                     format: int64
                     minimum: 0
@@ -502,11 +533,15 @@ components:
                     type: object
                 channelExternalReferenceCode:
                     description:
-                        External reference code of the Channel on which this shipping option applies.
+                        External reference code of the channel on which the shipping option override applies.
+                        Alternative to `channelId` on POST.
+                    example: AB-34098-789-N
                     type: string
                 channelId:
                     description:
-                        Reference to the Channel entity (FK).
+                        Reference to the channel on which the shipping option override applies (FK identifier).
+                        Alternative to `channelExternalReferenceCode` on POST.
+                    example: 30130
                     format: int64
                     type: integer
                 id:
@@ -518,33 +553,40 @@ components:
                     type: integer
                 shippingMethodId:
                     description:
-                        Reference to the CommerceShippingMethod entity (FK).
+                        Reference to the shipping method (FK identifier). On write the method is resolved from
+                        `shippingMethodKey` first and falls back to this identifier; the method must be active and
+                        registered on the same channel.
                     example: 30324
                     format: int64
                     minimum: 0
                     type: integer
                 shippingMethodKey:
                     description:
-                        Engine key of the shipping method (for example, fixed, by-weight).
+                        Engine key of the shipping method. On write the method is resolved by key first and falls back
+                        to `shippingMethodId`; the method must be active and registered on the same channel.
+                    example: fixed
                     type: string
                 shippingOptionId:
                     description:
-                        Reference to the CommerceShippingFixedOption entity (FK). Used when the shipping method has
-                        fixed options.
+                        Reference to the fixed shipping option (FK identifier). Used when the resolved shipping method
+                        has fixed options; the option must be registered on the resolved shipping method.
                     example: 30324
                     format: int64
                     minimum: 0
                     type: integer
                 shippingOptionKey:
                     description:
-                        Engine key of the shipping fixed option, when applicable.
+                        Engine key of the fixed shipping option. On write the option is resolved by key first and falls
+                        back to `shippingOptionId`; the option must be registered on the resolved shipping method.
+                    example: expedited
                     type: string
             type: object
         AccountMember:
             properties:
                 accountId:
                     description:
-                        Reference to the Account entity (FK). Read-only on this schema.
+                        Reference to the parent account on which the membership is created (FK identifier). Read-only on
+                        this schema.
                     example: 30130
                     format: int64
                     minimum: 0
@@ -560,34 +602,37 @@ components:
                             hr_HR: Order Manager Description HR
                             hu_HU: Order Manager Description HU
                     description:
-                        AccountRoles assigned to the user on this account. On PATCH the supplied list fully replaces the
-                        user's previous role set; roles not present are removed.
+                        Account-scoped roles assigned to the user on this account. Each entry carries the localized
+                        title and description of the role.
                     items:
                         $ref: "#/components/schemas/AccountRole"
                     type: array
                 email:
                     description:
-                        Email address of the user being attached as a member.
+                        Email address of the user being attached as a member. Required on create; resolved against the
+                        platform user directory and rejected when no matching user exists.
                     example: joe.1@commerce.com
                     type: string
                 externalReferenceCode:
                     description:
-                        Idempotency key for the User on whom the membership is created.
+                        Idempotency key for the membership; must be unique per membership within the company.
                     example: AB-34098-789-N
                     type: string
                 name:
                     description:
-                        Display name of the user being attached as a member.
+                        Display name of the user attached as a member. Read-only; mirrored from the user record.
                     example: User Name
                     type: string
                 userExternalReferenceCode:
                     description:
-                        External reference code of the User attached as a member. Alternative to userId on POST.
-                    example: UAB-34098-789-N
+                        External reference code of the user attached as a member. Alternative to `email` or `userId` on
+                        POST; resolved against the platform user directory and rejected when no matching user exists.
+                    example: AB-34098-789-N
                     type: string
                 userId:
                     description:
-                        Reference to the User entity (FK).
+                        Reference to the user attached as a member (FK identifier). Alternative to `email` or
+                        `userExternalReferenceCode` on POST.
                     example: 30002
                     format: int64
                     minimum: 0
@@ -595,42 +640,45 @@ components:
             required:
             -   email
             description:
-                Membership relation between an Account and a User. Carries the user's account-scoped AccountRoles.
-                Updating a member replaces the entire role set on the account.
+                Membership relation between an account and a user. Carries the user's account-scoped roles and the
+                identifiers needed to resolve the user on create. Returned as a sub-resource of the owning account.
             type: object
         AccountOrganization:
             description:
-                Link between an Account and a Liferay Organization. Used to mirror an organizational hierarchy into the
-                commerce domain.
+                Link between an account and a Liferay organization. Used to mirror an organizational hierarchy into the
+                commerce domain so that users tied to the organization inherit the account context.
             properties:
                 accountId:
                     description:
-                        Reference to the Account entity (FK).
+                        Reference to the parent account that owns the link (FK identifier). Read-only on this schema.
                     example: 30130
                     format: int64
                     minimum: 0
                     type: integer
                 name:
                     description:
-                        Display name of the linked Organization. Read-only; mirrored from the Organization entity.
+                        Display name of the linked organization. Read-only; mirrored from the organization record.
                     example: Organization Name
                     type: string
                 organizationExternalReferenceCode:
                     description:
-                        External reference code of the linked Organization. Alternative to organizationId on POST.
-                    example: UAB-34098-789-N
+                        External reference code of the linked organization. Alternative to `organizationId` on POST;
+                        resolved against the platform organization directory and rejected when no matching organization
+                        exists.
+                    example: AB-34098-789-N
                     type: string
                 organizationId:
                     description:
-                        Reference to the Liferay Organization entity (FK).
+                        Reference to the linked organization (FK identifier). Alternative to
+                        `organizationExternalReferenceCode` on POST.
                     example: 30002
                     format: int64
                     minimum: 0
                     type: integer
                 treePath:
                     description:
-                        Slash-delimited path from the root of the organization tree to the linked Organization.
-                        Read-only.
+                        Slash-delimited path from the root of the organization tree to the linked organization.
+                        Read-only; mirrored from the organization record.
                     example: /Parent Organization/Organization Name
                     type: string
             type: object
@@ -640,8 +688,8 @@ components:
                     additionalProperties:
                         type: string
                     description:
-                        Localized description of the role. Map keys are locale codes (for example, en_US, it_IT);
-                        values are the translated strings.
+                        Localized description of the role. Map keys are locale codes; values are the translated
+                        strings. Read-only; mirrored from the role record.
                     example:
                         en_US: Role Description US
                         hr_HR: Role Description HR
@@ -649,12 +697,13 @@ components:
                     type: object
                 name:
                     description:
-                        Internal name of the role (for example, Account Administrator).
+                        Internal name of the role, used as its stable identifier in the role registry. Required on
+                        create.
                     example: Role Name
                     type: string
                 roleId:
                     description:
-                        Reference to the Liferay Role entity (FK).
+                        Reference to the platform role record (FK identifier).
                     example: 30130
                     format: int64
                     minimum: 0
@@ -663,8 +712,8 @@ components:
                     additionalProperties:
                         type: string
                     description:
-                        Localized title of the role. Map keys are locale codes (for example, en_US, it_IT); values are
-                        the translated strings.
+                        Localized title of the role. Map keys are locale codes; values are the translated strings.
+                        Read-only; mirrored from the role record.
                     example:
                         en_US: Role Title US
                         hr_HR: Role Title HR
@@ -673,24 +722,25 @@ components:
             required:
             -   name
             description:
-                Account-scoped Liferay Role assigned to a user through their AccountMember. Carries the localized title
-                and description that surface in the back-office.
+                Account-scoped role assigned to a user through their account membership. Carries the localized title and
+                description that surface in the back-office.
             type: object
         AdminAccountGroup:
             properties:
                 customFields:
                     additionalProperties: true
                     description:
-                        Free-form custom field map declared against the AccountGroup entity.
+                        Free-form custom field map populated by the platform expando mechanism. Keys are the registered
+                        custom field names; values follow the type declared on the field definition.
                     type: object
                 description:
                     description:
-                        Display description of the AccountGroup.
+                        Free-form description of the account group, displayed in the back-office.
                     example: AdminAccountGroup Description
                     type: string
                 externalReferenceCode:
                     description:
-                        Idempotency key for create and update; must be unique per AccountGroup within the company.
+                        Idempotency key for create and update; must be unique per account group within the company.
                     example: AB-34098-789-N
                     type: string
                 id:
@@ -703,35 +753,36 @@ components:
                     type: integer
                 name:
                     description:
-                        Display name of the AccountGroup.
+                        Display name of the account group. Required on create. Filterable and sortable via the OData
+                        query parameter.
                     example: AdminAccountGroup Name
                     type: string
             required:
             -   name
             description:
-                Collection of Accounts that share commerce rules, price lists, or discounts. Corresponds to the standard
-                Liferay AccountGroup entity; the AdminAccountGroup name is preserved to avoid colliding with the
-                AccountGroup schema in com.liferay.headless.admin.user.
+                Collection of accounts that share commerce rules, price lists, or discounts. The schema name carries the
+                `Admin` prefix to avoid colliding with the account group schema exposed by the headless admin-user
+                module.
             type: object
         Error:
             properties:
                 errorCode:
                     description:
-                        Internal numeric error code, distinct from the HTTP status. Mapped from the Liferay exception
+                        Internal numeric error code, distinct from the HTTP status. Mapped from the underlying exception
                         that produced the response. Read-only.
                     example: 996
                     readOnly: true
                     type: integer
                 errorDescription:
                     description:
-                        Human-readable description of the error suitable for surfacing to operators. Read-only.
+                        Human-readable description of the error, suitable for surfacing to operators. Read-only.
                     example: Unable to find currency. Currency code should be expressed with 3-letter ISO 4217 format.
                     readOnly: true
                     type: string
                 message:
                     description:
                         Underlying exception message, often including the lookup keys that failed. Read-only.
-                    example: No CommerceCurrency exists with the key {groupId=41811, code=US Dollar}
+                    example: No commerce currency exists with the key groupId=41811, code=US Dollar
                     readOnly: true
                     type: string
                 status:
@@ -753,17 +804,19 @@ components:
             properties:
                 email:
                     description:
-                        Primary email address. Used as the login when the portal is configured to log in by email.
+                        Primary email address of the user. Required on create; used as the login when the portal is
+                        configured to log in by email.
                     example: joe.1@commerce.com
                     type: string
                 externalReferenceCode:
                     description:
-                        Idempotency key for create and update; must be unique per User within the company.
+                        Idempotency key for create and update; must be unique per user within the company.
                     example: AB-34098-789-N
                     type: string
                 firstName:
                     description:
-                        Given name.
+                        Given name of the user. Required on create.
+                    example: John
                     type: string
                 id:
                     description:
@@ -775,10 +828,12 @@ components:
                 jobTitle:
                     description:
                         Free-form job title displayed in the back-office.
+                    example: Account Manager
                     type: string
                 lastName:
                     description:
-                        Family name.
+                        Family name of the user. Required on create.
+                    example: Doe
                     type: string
                 male:
                     description:
@@ -788,11 +843,16 @@ components:
                     type: boolean
                 middleName:
                     description:
-                        Middle name, when supplied.
+                        Middle name of the user, when supplied.
+                    example: Robert
                     type: string
                 roles:
                     description:
-                        Names of the regular (portal-scoped) Liferay roles to assign to the user.
+                        Names of the regular portal-scoped roles to assign to the user. Each entry is the stable role
+                        name in the role registry.
+                    example:
+                    -   User
+                    -   Power User
                     items:
                         type: string
                     type: array
@@ -801,29 +861,31 @@ components:
             -   firstName
             -   lastName
             description:
-                Liferay user account. Returned by the createUser endpoint when a new user is provisioned as part of an
-                Account membership invitation.
+                Portal user record. Returned by the createUser endpoint when a new user is provisioned as part of an
+                account membership invitation; carries the identifiers and profile fields needed to address the user in
+                subsequent calls.
             type: object
         body:
             description:
-                Multipart upload envelope for an Account logo. Contains a single binary file field named logo.
+                Multipart upload envelope for an account logo addressed by internal identifier. Contains a single binary
+                file field named `logo` that replaces the current account logo.
             properties:
                 logo:
                     description:
-                        Binary image file uploaded as the Account logo. Standard image formats (PNG, JPEG, GIF) are
-                        accepted.
+                        Binary image file uploaded as the account logo. Standard image formats (PNG, JPEG, GIF) are
+                        accepted; the uploaded bytes replace the existing logo when supplied.
                     format: binary
                     type: string
             type: object
         body_1:
             description:
-                Multipart upload envelope for an Account logo addressed by external reference code. Contains a single
-                binary file field named logo.
+                Multipart upload envelope for an account logo addressed by external reference code. Contains a single
+                binary file field named `logo` that replaces the current account logo.
             properties:
                 logo:
                     description:
-                        Binary image file uploaded as the Account logo. Standard image formats (PNG, JPEG, GIF) are
-                        accepted.
+                        Binary image file uploaded as the account logo. Standard image formats (PNG, JPEG, GIF) are
+                        accepted; the uploaded bytes replace the existing logo when supplied.
                     format: binary
                     type: string
             type: object
