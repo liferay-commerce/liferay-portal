@@ -197,7 +197,7 @@ public class CommercePaymentHelperImpl implements CommercePaymentHelper {
 				key, String.valueOf(commerceOrder.getCommerceOrderId()));
 
 			sb.append("&guestToken=");
-			sb.append(token);
+			sb.append(URLCodec.encodeURL(token));
 			sb.append(StringPool.AMPERSAND);
 		}
 
