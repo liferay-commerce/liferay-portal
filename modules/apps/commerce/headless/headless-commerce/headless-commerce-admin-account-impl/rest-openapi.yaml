@@ -3555,6 +3555,8 @@ paths:
             description:
                 Lists AccountGroups with paging, search, filter, and sort. Filterable and sortable field -- name
                 (sourced from AccountGroupEntityModel). Search corpus -- the indexed name field on AccountGroup.
+                Deprecated. Use `GET /o/headless-admin-user/v1.0/account-groups` from the headless-admin-user module
+                instead.
         post:
             deprecated: true
             operationId: postAccountGroup
@@ -3639,7 +3641,8 @@ paths:
             description:
                 Creates or upserts an AccountGroup keyed by external reference code. When the supplied ERC matches an
                 existing group, the group is updated; otherwise a new group is created. Returns 201 with the created
-                group, or 204 when an existing group is updated.
+                group, or 204 when an existing group is updated. Deprecated. Use `POST
+                /o/headless-admin-user/v1.0/account-groups` from the headless-admin-user module instead.
     /accountGroups/by-externalReferenceCode/{externalReferenceCode}:
         delete:
             deprecated: true
@@ -3680,7 +3683,9 @@ paths:
             -   AdminAccountGroup
             description:
                 Deletes an AccountGroup by its external reference code. Resolves to the internal ID and calls
-                AccountGroupService.deleteAccountGroup.
+                AccountGroupService.deleteAccountGroup. Deprecated. Use `DELETE
+                /o/headless-admin-user/v1.0/account-groups/by-external-reference-code/{externalReferenceCode}` from the
+                headless-admin-user module instead.
         get:
             deprecated: true
             operationId: getAccountGroupByExternalReferenceCode
@@ -3749,7 +3754,9 @@ paths:
             tags:
             -   AdminAccountGroup
             description:
-                Reads an AccountGroup by its external reference code. Returns the AdminAccountGroup DTO.
+                Reads an AccountGroup by its external reference code. Returns the AdminAccountGroup DTO. Deprecated. Use
+                `GET /o/headless-admin-user/v1.0/account-groups/by-external-reference-code/{externalReferenceCode}` from
+                the headless-admin-user module instead.
         patch:
             deprecated: true
             operationId: patchAccountGroupByExternalReferenceCode
@@ -3835,7 +3842,9 @@ paths:
             -   AdminAccountGroup
             description:
                 Partially updates an AccountGroup by its external reference code. JSON Merge Patch semantics; updates
-                name, description, and custom fields.
+                name, description, and custom fields. Deprecated. Use `PATCH
+                /o/headless-admin-user/v1.0/account-groups/by-external-reference-code/{externalReferenceCode}` from the
+                headless-admin-user module instead.
     /accountGroups/by-externalReferenceCode/{externalReferenceCode}/accounts:
         post:
             deprecated: true
@@ -4007,7 +4016,9 @@ paths:
             -   Account
             description:
                 Removes the link between an Account and an AccountGroup, both addressed by external reference code.
-                Deletes the AccountGroupRel.
+                Deletes the AccountGroupRel. Deprecated. Use `DELETE
+                /o/headless-admin-user/v1.0/account-groups/by-external-reference-code/{accountGroupExternalReferenceCode}/accounts/by-external-reference-code/{externalReferenceCode}`
+                from the headless-admin-user module instead.
     /accountGroups/{id}:
         delete:
             deprecated: true
@@ -4047,7 +4058,9 @@ paths:
             tags:
             -   AdminAccountGroup
             description:
-                Deletes an AccountGroup by its internal ID. Calls AccountGroupService.deleteAccountGroup.
+                Deletes an AccountGroup by its internal ID. Calls AccountGroupService.deleteAccountGroup. Deprecated.
+                Use `DELETE /o/headless-admin-user/v1.0/account-groups/{accountGroupId}` from the headless-admin-user
+                module instead.
         get:
             deprecated: true
             operationId: getAccountGroup
@@ -4116,7 +4129,9 @@ paths:
             tags:
             -   AdminAccountGroup
             description:
-                Reads an AccountGroup by its internal ID. Returns the AdminAccountGroup DTO.
+                Reads an AccountGroup by its internal ID. Returns the AdminAccountGroup DTO. Deprecated. Use `GET
+                /o/headless-admin-user/v1.0/account-groups/{accountGroupId}` from the headless-admin-user module
+                instead.
         patch:
             deprecated: true
             operationId: patchAccountGroup
@@ -4202,7 +4217,9 @@ paths:
             -   AdminAccountGroup
             description:
                 Partially updates an AccountGroup by its internal ID. JSON Merge Patch semantics; updates name,
-                description, and custom fields.
+                description, and custom fields. Deprecated. Use `PATCH
+                /o/headless-admin-user/v1.0/account-groups/{accountGroupId}` from the headless-admin-user module
+                instead.
     /accounts:
         get:
             deprecated: true
@@ -4269,7 +4286,8 @@ paths:
             description:
                 Lists Accounts with paging, search, filter, and sort. Filterable and sortable fields (sourced from
                 AccountEntityModel) -- dateCreated, dateModified, externalReferenceCode, name, status, taxIdNumber, and
-                type. Search corpus -- the indexed name and description fields on AccountEntry.
+                type. Search corpus -- the indexed name and description fields on AccountEntry. Deprecated. Use `GET
+                /o/headless-admin-user/v1.0/accounts` from the headless-admin-user module instead.
         post:
             deprecated: true
             operationId: postAccount
@@ -4365,7 +4383,8 @@ paths:
                 Creates or upserts an Account keyed by external reference code. Nested addresses, members, and
                 organizations supplied in the body are persisted in the same transaction. When the ERC matches an
                 existing account, the account is updated; otherwise a new account is created. Returns 201 with the
-                created account, or 204 when an existing account is updated.
+                created account, or 204 when an existing account is updated. Deprecated. Use `POST
+                /o/headless-admin-user/v1.0/accounts` from the headless-admin-user module instead.
     /accounts/by-externalReferenceCode/{externalReferenceCode}:
         delete:
             deprecated: true
@@ -4407,7 +4426,9 @@ paths:
             description:
                 Deletes an Account by its external reference code. Resolves to the internal ID and calls
                 AccountEntryService.deleteAccountEntry. Cascades to addresses, memberships, and channel overrides per
-                the underlying service contract.
+                the underlying service contract. Deprecated. Use `DELETE
+                /o/headless-admin-user/v1.0/accounts/by-external-reference-code/{externalReferenceCode}` from the
+                headless-admin-user module instead.
         get:
             deprecated: true
             operationId: getAccountByExternalReferenceCode
@@ -4477,7 +4498,9 @@ paths:
             -   Account
             description:
                 Reads an Account by its external reference code. Returns the Account DTO with nested addresses, members,
-                and organizations.
+                and organizations. Deprecated. Use `GET
+                /o/headless-admin-user/v1.0/accounts/by-external-reference-code/{externalReferenceCode}` from the
+                headless-admin-user module instead.
         patch:
             deprecated: true
             operationId: patchAccountByExternalReferenceCode
@@ -4564,7 +4587,9 @@ paths:
             description:
                 Partially updates an Account by its external reference code. JSON Merge Patch semantics; only the
                 supplied fields (name, taxId, type, status, addresses, members, organizations, custom fields) are
-                modified.
+                modified. Deprecated. Use `PATCH
+                /o/headless-admin-user/v1.0/accounts/by-external-reference-code/{externalReferenceCode}` from the
+                headless-admin-user module instead.
     /accounts/by-externalReferenceCode/{externalReferenceCode}/account-channel-billing-addresses:
         get:
             deprecated: true
@@ -6514,7 +6539,9 @@ paths:
             -   AdminAccountGroup
             description:
                 Lists the AccountGroups the Account belongs to, addressed by Account external reference code. Returns
-                the AdminAccountGroup pages joined through AccountGroupRel.
+                the AdminAccountGroup pages joined through AccountGroupRel. Deprecated. Use `GET
+                /o/headless-admin-user/v1.0/accounts/by-external-reference-code/{accountExternalReferenceCode}/account-groups`
+                from the headless-admin-user module instead.
     /accounts/by-externalReferenceCode/{externalReferenceCode}/accountMembers:
         get:
             deprecated: true
@@ -6581,7 +6608,9 @@ paths:
             -   AccountMember
             description:
                 Lists the AccountMembers of the Account identified by external reference code. Each entry pairs a user
-                with their account-scoped AccountRoles.
+                with their account-scoped AccountRoles. Deprecated. Use `GET
+                /o/headless-admin-user/v1.0/accounts/by-external-reference-code/{externalReferenceCode}/user-accounts`
+                from the headless-admin-user module instead.
         post:
             deprecated: true
             operationId: postAccountByExternalReferenceCodeAccountMember
@@ -6786,7 +6815,9 @@ paths:
             description:
                 Creates a new User and immediately adds them as a member of the Account identified by external reference
                 code. Useful for inviting buyers who do not yet exist in Liferay. The newly created user inherits the
-                supplied accountRoles.
+                supplied accountRoles. Deprecated. Use `POST
+                /o/headless-admin-user/v1.0/accounts/by-external-reference-code/{externalReferenceCode}/user-accounts`
+                from the headless-admin-user module instead.
     /accounts/by-externalReferenceCode/{externalReferenceCode}/accountMembers/{userId}:
         delete:
             deprecated: true
@@ -7052,7 +7083,10 @@ paths:
             tags:
             -   AccountOrganization
             description:
-                Lists the Organizations linked to the Account, addressed by Account external reference code.
+                Lists the Organizations linked to the Account, addressed by Account external reference code. Deprecated.
+                Use `GET
+                /o/headless-admin-user/v1.0/accounts/by-external-reference-code/{externalReferenceCode}/organizations`
+                from the headless-admin-user module instead.
         post:
             deprecated: true
             operationId: postAccountByExternalReferenceCodeAccountOrganization
@@ -7149,6 +7183,9 @@ paths:
             description:
                 Links a Liferay Organization to the Account, addressed by Account external reference code. The
                 organization is referenced by organizationId or organizationExternalReferenceCode in the body.
+                Deprecated. Use `POST
+                /o/headless-admin-user/v1.0/accounts/by-external-reference-code/{externalReferenceCode}/organizations/{organizationId}`
+                from the headless-admin-user module instead.
     /accounts/by-externalReferenceCode/{externalReferenceCode}/accountOrganizations/{organizationId}:
         delete:
             deprecated: true
@@ -7190,7 +7227,9 @@ paths:
             -   AccountOrganization
             description:
                 Removes the link between the Account and a Liferay Organization, addressed by Account external reference
-                code and Organization internal ID.
+                code and Organization internal ID. Deprecated. Use `DELETE
+                /o/headless-admin-user/v1.0/accounts/by-external-reference-code/{externalReferenceCode}/organizations/{organizationId}`
+                from the headless-admin-user module instead.
         get:
             deprecated: true
             operationId: getAccountByExternalReferenceCodeAccountOrganization
@@ -7261,7 +7300,9 @@ paths:
             -   AccountOrganization
             description:
                 Reads a single Account-Organization link, addressed by Account external reference code and Organization
-                internal ID.
+                internal ID. Deprecated. Use `GET
+                /o/headless-admin-user/v1.0/accounts/by-external-reference-code/{externalReferenceCode}/organizations/{organizationId}`
+                from the headless-admin-user module instead.
     /accounts/by-externalReferenceCode/{externalReferenceCode}/logo:
         post:
             deprecated: true
@@ -7389,7 +7430,8 @@ paths:
             -   Account
             description:
                 Deletes an Account by its internal ID. Calls AccountEntryService.deleteAccountEntry. Cascades to
-                addresses, memberships, and channel overrides per the underlying service contract.
+                addresses, memberships, and channel overrides per the underlying service contract. Deprecated. Use
+                `DELETE /o/headless-admin-user/v1.0/accounts/{accountId}` from the headless-admin-user module instead.
         get:
             deprecated: true
             operationId: getAccount
@@ -7459,7 +7501,8 @@ paths:
             -   Account
             description:
                 Reads an Account by its internal ID. Returns the Account DTO with nested addresses, members, and
-                organizations.
+                organizations. Deprecated. Use `GET /o/headless-admin-user/v1.0/accounts/{accountId}` from the
+                headless-admin-user module instead.
         patch:
             deprecated: true
             operationId: patchAccount
@@ -7545,7 +7588,9 @@ paths:
             -   Account
             description:
                 Partially updates an Account by its internal ID. JSON Merge Patch semantics; only the supplied fields
-                (name, taxId, type, status, addresses, members, organizations, custom fields) are modified.
+                (name, taxId, type, status, addresses, members, organizations, custom fields) are modified. Deprecated.
+                Use `PATCH /o/headless-admin-user/v1.0/accounts/{accountId}` from the headless-admin-user module
+                instead.
     /accounts/{id}/account-channel-billing-addresses:
         get:
             deprecated: true
@@ -9490,7 +9535,9 @@ paths:
             -   AdminAccountGroup
             description:
                 Lists the AccountGroups the Account belongs to, addressed by Account internal ID. Returns the
-                AdminAccountGroup pages joined through AccountGroupRel.
+                AdminAccountGroup pages joined through AccountGroupRel. Deprecated. Use `GET
+                /o/headless-admin-user/v1.0/accounts/{accountId}/account-groups` from the headless-admin-user module
+                instead.
     /accounts/{id}/accountMembers:
         get:
             deprecated: true
@@ -9557,7 +9604,9 @@ paths:
             -   AccountMember
             description:
                 Lists the AccountMembers of the Account identified by internal ID. Each entry pairs a user with their
-                account-scoped AccountRoles.
+                account-scoped AccountRoles. Deprecated. Use `GET
+                /o/headless-admin-user/v1.0/accounts/{accountId}/user-accounts` from the headless-admin-user module
+                instead.
         post:
             deprecated: true
             operationId: postAccountIdAccountMember
@@ -9696,7 +9745,9 @@ paths:
             -   AccountMember
             description:
                 Removes a member from the Account, addressed by Account internal ID and User internal ID. Deletes the
-                AccountEntryUserRel.
+                AccountEntryUserRel. Deprecated. Use `DELETE
+                /o/headless-admin-user/v1.0/accounts/{accountId}/user-accounts/{userAccountId}` from the
+                headless-admin-user module instead.
         get:
             deprecated: true
             operationId: getAccountIdAccountMember
@@ -9766,7 +9817,9 @@ paths:
             tags:
             -   AccountMember
             description:
-                Reads a single AccountMember, addressed by Account internal ID and User internal ID.
+                Reads a single AccountMember, addressed by Account internal ID and User internal ID. Deprecated. Use
+                `GET /o/headless-admin-user/v1.0/accounts/{accountId}/user-accounts/{userAccountId}` from the
+                headless-admin-user module instead.
         patch:
             deprecated: true
             operationId: patchAccountIdAccountMember
@@ -9920,7 +9973,9 @@ paths:
             tags:
             -   AccountOrganization
             description:
-                Lists the Organizations linked to the Account, addressed by Account internal ID.
+                Lists the Organizations linked to the Account, addressed by Account internal ID. Deprecated. Use `GET
+                /o/headless-admin-user/v1.0/accounts/{accountId}/organizations` from the headless-admin-user module
+                instead.
         post:
             deprecated: true
             operationId: postAccountIdAccountOrganization
@@ -10016,7 +10071,9 @@ paths:
             -   AccountOrganization
             description:
                 Links a Liferay Organization to the Account, addressed by Account internal ID. The organization is
-                referenced by organizationId or organizationExternalReferenceCode in the body.
+                referenced by organizationId or organizationExternalReferenceCode in the body. Deprecated. Use `POST
+                /o/headless-admin-user/v1.0/accounts/{accountId}/organizations/{organizationId}` from the
+                headless-admin-user module instead.
     /accounts/{id}/accountOrganizations/{organizationId}:
         delete:
             deprecated: true
@@ -10058,7 +10115,9 @@ paths:
             -   AccountOrganization
             description:
                 Removes the link between the Account and a Liferay Organization, addressed by Account internal ID and
-                Organization internal ID.
+                Organization internal ID. Deprecated. Use `DELETE
+                /o/headless-admin-user/v1.0/accounts/{accountId}/organizations/{organizationId}` from the
+                headless-admin-user module instead.
         get:
             deprecated: true
             operationId: getAccountIdAccountOrganization
@@ -10129,6 +10188,8 @@ paths:
             -   AccountOrganization
             description:
                 Reads a single Account-Organization link, addressed by Account internal ID and Organization internal ID.
+                Deprecated. Use `GET /o/headless-admin-user/v1.0/accounts/{accountId}/organizations/{organizationId}`
+                from the headless-admin-user module instead.
     /accounts/{id}/logo:
         post:
             deprecated: true
