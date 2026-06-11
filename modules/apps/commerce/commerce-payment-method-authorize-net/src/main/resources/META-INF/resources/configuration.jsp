@@ -9,6 +9,8 @@
 
 <%
 AuthorizeNetGroupServiceConfiguration authorizeNetGroupServiceConfiguration = (AuthorizeNetGroupServiceConfiguration)request.getAttribute(AuthorizeNetGroupServiceConfiguration.class.getName());
+
+String authorizeNetWebhookURL = themeDisplay.getPortalURL() + PortalUtil.getPathModule() + StringPool.SLASH + AuthorizeNetCommercePaymentMethodConstants.COMPLETE_PAYMENT_SERVLET_PATH;
 %>
 
 <portlet:actionURL name="/commerce_payment_methods/edit_authorize_net_commerce_payment_method_configuration" var="editCommercePaymentMethodActionURL" />
@@ -18,6 +20,10 @@ AuthorizeNetGroupServiceConfiguration authorizeNetGroupServiceConfiguration = (A
 	<aui:input name="commerceChannelId" type="hidden" value='<%= ParamUtil.getLong(request, "commerceChannelId") %>' />
 	<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
 
+	<div class="alert alert-info">
+		<%= LanguageUtil.format(request, "register-x-as-the-webhook-endpoint-url-in-your-authorize-net-account-and-subscribe-to-the-x-event", new Object[] {HtmlUtil.escape(authorizeNetWebhookURL), AuthorizeNetCommercePaymentMethodConstants.AUTH_CAPTURE_CREATED_EVENT_TYPE}, false) %>
+	</div>
+
 	<commerce-ui:panel>
 		<commerce-ui:info-box
 			title='<%= LanguageUtil.get(request, "authentication") %>'
@@ -25,6 +31,8 @@ AuthorizeNetGroupServiceConfiguration authorizeNetGroupServiceConfiguration = (A
 			<aui:input label="api-login-id" name="settings--apiLoginId--" value="<%= authorizeNetGroupServiceConfiguration.apiLoginId() %>" />
 
 			<aui:input label="transaction-key" name="settings--transactionKey--" value="<%= authorizeNetGroupServiceConfiguration.transactionKey() %>" />
+
+			<aui:input label="signature-key" name="settings--signatureKey--" value="<%= authorizeNetGroupServiceConfiguration.signatureKey() %>" />
 
 			<aui:select name="settings--environment--">
 
