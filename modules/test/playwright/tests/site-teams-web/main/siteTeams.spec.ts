@@ -11,6 +11,8 @@ import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {siteSettingsPagesTest} from '../../../fixtures/siteSettingsPagesTest';
 import {usersAndOrganizationsPagesTest} from '../../../fixtures/usersAndOrganizationsPagesTest';
+import {DataTablePage} from '../../../pages/account-admin-web/DataTablePage';
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
 import {performUserSwitch, userData} from '../../../utils/performLogin';
 import {waitForAlert} from '../../../utils/waitForAlert';
@@ -30,6 +32,24 @@ const test = mergeTests(
 	siteTeamsPagesTest,
 	usersAndOrganizationsPagesTest
 );
+
+async function switchToTableView(table: DataTablePage) {
+	await clickAndExpectToBeVisible({
+		target: table.selectViewTableButton,
+		timeout: 1000,
+		trigger: table.selectViewButton,
+	});
+
+	if (
+		(await table.selectViewTableButton.getAttribute('aria-selected')) ===
+		'true'
+	) {
+		await table.selectViewTableButton.press('Escape');
+	}
+	else {
+		await table.selectViewTableButton.click({force: true});
+	}
+}
 
 test(
 	'Can Add / Update / Delete a site team',
@@ -189,7 +209,7 @@ test(
 
 		await expect(usersPage.usersTable.searchInput).toBeEnabled();
 
-		await usersPage.usersTable.changeView('Table');
+		await switchToTableView(usersPage.usersTable);
 
 		await expect(usersPage.noUsersMessage).toBeVisible();
 
@@ -256,7 +276,7 @@ test(
 
 		await expect(usersPage.usersTable.searchInput).toBeEnabled();
 
-		await usersPage.usersTable.changeView('Table');
+		await switchToTableView(usersPage.usersTable);
 
 		await expect(usersPage.noUsersMessage).toBeVisible();
 
@@ -335,7 +355,7 @@ test(
 
 		await expect(userGroupsPage.userGroupsTable.searchInput).toBeEnabled();
 
-		await userGroupsPage.userGroupsTable.changeView('Table');
+		await switchToTableView(userGroupsPage.userGroupsTable);
 
 		await expect(userGroupsPage.noUserGroupsMessage).toBeVisible();
 
@@ -347,7 +367,7 @@ test(
 			});
 		}).toPass({timeout: 5000});
 
-		await selectUserGroupPage.userGroupsTable.changeView('Table');
+		await switchToTableView(selectUserGroupPage.userGroupsTable);
 
 		await (
 			await selectUserGroupPage.userGroupsTable.rowCheckbox(
@@ -426,7 +446,7 @@ test(
 
 		await expect(userGroupsPage.userGroupsTable.searchInput).toBeEnabled();
 
-		await userGroupsPage.userGroupsTable.changeView('Table');
+		await switchToTableView(userGroupsPage.userGroupsTable);
 
 		await expect(userGroupsPage.noUserGroupsMessage).toBeVisible();
 
@@ -438,7 +458,7 @@ test(
 			});
 		}).toPass({timeout: 5000});
 
-		await selectUserGroupPage.userGroupsTable.changeView('Table');
+		await switchToTableView(selectUserGroupPage.userGroupsTable);
 
 		await (
 			await selectUserGroupPage.userGroupsTable.rowCheckbox(
@@ -811,7 +831,7 @@ test(
 
 		await expect(userGroupsPage.userGroupsTable.searchInput).toBeEnabled();
 
-		await userGroupsPage.userGroupsTable.changeView('Table');
+		await switchToTableView(userGroupsPage.userGroupsTable);
 
 		await expect(userGroupsPage.noUserGroupsMessage).toBeVisible();
 
@@ -823,7 +843,7 @@ test(
 			});
 		}).toPass({timeout: 5000});
 
-		await selectUserGroupPage.userGroupsTable.changeView('Table');
+		await switchToTableView(selectUserGroupPage.userGroupsTable);
 
 		await (
 			await selectUserGroupPage.userGroupsTable.rowCheckbox(
@@ -840,7 +860,7 @@ test(
 
 		await expect(usersPage.usersTable.searchInput).toBeEnabled();
 
-		await usersPage.usersTable.changeView('Table');
+		await switchToTableView(usersPage.usersTable);
 
 		await expect(usersPage.usersTable.cell(user1.name)).toBeVisible();
 		await expect(usersPage.usersTable.cell(user2.name)).toBeVisible();
@@ -995,7 +1015,7 @@ test(
 
 		await expect(userGroupsPage.userGroupsTable.searchInput).toBeEnabled();
 
-		await userGroupsPage.userGroupsTable.changeView('Table');
+		await switchToTableView(userGroupsPage.userGroupsTable);
 
 		await expect(userGroupsPage.noUserGroupsMessage).toBeVisible();
 
@@ -1007,7 +1027,7 @@ test(
 			});
 		}).toPass({timeout: 5000});
 
-		await selectUserGroupPage.userGroupsTable.changeView('Table');
+		await switchToTableView(selectUserGroupPage.userGroupsTable);
 
 		await (
 			await selectUserGroupPage.userGroupsTable.rowCheckbox(
@@ -1023,7 +1043,7 @@ test(
 
 		await teamsPage.usersTab.click();
 
-		await usersPage.usersTable.changeView('Table');
+		await switchToTableView(usersPage.usersTable);
 
 		await expect(usersPage.usersTable.cell(user1.name)).toBeVisible();
 		await expect(usersPage.usersTable.cell(user2.name)).toBeVisible();
@@ -1034,7 +1054,7 @@ test(
 			await expect(selectUserPage.addButton).toBeVisible({timeout: 2000});
 		}).toPass({timeout: 5000});
 
-		await selectUserPage.usersTable.changeView('Table');
+		await switchToTableView(selectUserPage.usersTable);
 
 		await selectUserPage.usersTable.search(`"${user1.name}"`);
 
@@ -1115,7 +1135,7 @@ test(
 
 		await expect(userGroupsPage.userGroupsTable.searchInput).toBeEnabled();
 
-		await userGroupsPage.userGroupsTable.changeView('Table');
+		await switchToTableView(userGroupsPage.userGroupsTable);
 
 		await expect(userGroupsPage.noUserGroupsMessage).toBeVisible();
 
@@ -1127,7 +1147,7 @@ test(
 			});
 		}).toPass({timeout: 5000});
 
-		await selectUserGroupPage.userGroupsTable.changeView('Table');
+		await switchToTableView(selectUserGroupPage.userGroupsTable);
 
 		await (
 			await selectUserGroupPage.userGroupsTable.rowCheckbox(
@@ -1144,7 +1164,7 @@ test(
 
 		await expect(usersPage.usersTable.searchInput).toBeEnabled();
 
-		await usersPage.usersTable.changeView('Table');
+		await switchToTableView(usersPage.usersTable);
 
 		await expect(usersPage.usersTable.cell(user1.name)).toBeVisible();
 		await expect(usersPage.usersTable.cell(user2.name)).toBeVisible();
