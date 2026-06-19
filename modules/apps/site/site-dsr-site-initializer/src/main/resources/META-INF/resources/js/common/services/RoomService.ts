@@ -44,7 +44,11 @@ async function addRoom({
 
 async function addRoomUserAccount(
 	roomId: number,
-	userAccount: {emailAddress: string; roleKey?: string}
+	userAccount: {
+		emailAddress: string;
+		membershipExpirationDate?: string;
+		roleKey?: string;
+	}
 ): Promise<IUserAccount> {
 	const {data, error} = await ApiHelper.post<IUserAccount>(
 		`${DSR_PATH}/${roomId}/user-accounts`,
@@ -226,7 +230,7 @@ async function updateRoom(
 async function updateRoomInvitedMember(
 	roomId: number,
 	invitedMemberId: number,
-	invitedMember: {roleKey?: string}
+	invitedMember: {membershipExpirationDate?: string; roleKey?: string}
 ): Promise<IInvitedMember> {
 	const {data, error} = await ApiHelper.patch<IInvitedMember>(
 		invitedMember,
@@ -243,7 +247,7 @@ async function updateRoomInvitedMember(
 async function updateRoomUserAccount(
 	roomId: number,
 	userId: number,
-	userAccount: {roleKey?: string}
+	userAccount: {membershipExpirationDate?: string; roleKey?: string}
 ): Promise<IUserAccount> {
 	const {data, error} = await ApiHelper.patch<IUserAccount>(
 		userAccount,
