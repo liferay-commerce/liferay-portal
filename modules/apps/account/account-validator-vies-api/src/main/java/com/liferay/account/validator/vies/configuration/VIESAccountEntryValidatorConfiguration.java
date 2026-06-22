@@ -37,7 +37,7 @@ public interface VIESAccountEntryValidatorConfiguration
 		description = "vies-countries-description", name = "vies-countries",
 		required = false
 	)
-	public String[] countries();
+	public String[] countryCodes();
 
 	@Meta.AD(deflt = "true", name = "enabled", required = false)
 	@Override

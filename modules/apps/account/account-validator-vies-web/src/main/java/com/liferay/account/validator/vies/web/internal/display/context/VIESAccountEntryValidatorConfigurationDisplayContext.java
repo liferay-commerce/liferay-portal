@@ -97,7 +97,8 @@ public class VIESAccountEntryValidatorConfigurationDisplayContext {
 			viesAccountEntryValidatorConfiguration =
 				_getVIESAccountEntryValidatorConfiguration();
 
-		String[] countries = viesAccountEntryValidatorConfiguration.countries();
+		String[] countries =
+			viesAccountEntryValidatorConfiguration.countryCodes();
 
 		return ListUtil.sort(
 			TransformUtil.transform(
