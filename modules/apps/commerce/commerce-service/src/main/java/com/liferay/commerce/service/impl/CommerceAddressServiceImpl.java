@@ -404,13 +404,15 @@ public class CommerceAddressServiceImpl extends CommerceAddressServiceBaseImpl {
 				_accountEntryLocalService.fetchAccountEntry(classPK);
 			}
 			else {
-				_accountEntryLocalService.getAccountEntry(classPK);
+				AccountEntry accountEntry =
+					_accountEntryLocalService.getAccountEntry(classPK);
 
-				if (!Objects.equals(
+				if (!accountEntry.isGuestAccount() &&
+					(!Objects.equals(
 						actionId, AccountActionKeys.VIEW_ADDRESSES) ||
-					!_accountEntryModelResourcePermission.contains(
-						getPermissionChecker(), classPK,
-						AccountActionKeys.MANAGE_ADDRESSES)) {
+					 !_accountEntryModelResourcePermission.contains(
+						 getPermissionChecker(), classPK,
+						 AccountActionKeys.MANAGE_ADDRESSES))) {
 
 					_accountEntryModelResourcePermission.check(
 						getPermissionChecker(), classPK, actionId);
