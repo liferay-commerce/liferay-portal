@@ -6,7 +6,9 @@
 package com.liferay.commerce.service.test;
 
 import com.liferay.account.constants.AccountActionKeys;
+import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.model.AccountEntry;
+import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.account.test.util.CommerceAccountTestUtil;
 import com.liferay.commerce.constants.CommerceAddressConstants;
@@ -28,6 +30,7 @@ import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -104,6 +107,17 @@ public class CommerceAddressServiceTest {
 			_addCommerceAddress(
 				_accountEntry.getAccountEntryId(), _country.getCountryId());
 		}
+
+		AccountEntry accountEntry = _addGuestAccountEntry();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				UserTestUtil.addUser(TestPropsValues.getCompanyId()))) {
+
+			CommerceAddress commerceAddress = _addCommerceAddress(
+				accountEntry.getAccountEntryId(), _country.getCountryId());
+
+			Assert.assertNotNull(commerceAddress);
+		}
 	}
 
 	@Test
@@ -126,6 +140,18 @@ public class CommerceAddressServiceTest {
 			_commerceAddressService.deleteCommerceAddress(
 				_commerceAddress.getCommerceAddressId());
 		}
+
+		AccountEntry accountEntry = _addGuestAccountEntry();
+
+		CommerceAddress commerceAddress = _addCommerceAddress(
+			accountEntry.getAccountEntryId(), _country.getCountryId());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				UserTestUtil.addUser(TestPropsValues.getCompanyId()))) {
+
+			_commerceAddressService.deleteCommerceAddress(
+				commerceAddress.getCommerceAddressId());
+		}
 	}
 
 	@Test
@@ -147,6 +173,19 @@ public class CommerceAddressServiceTest {
 
 			_commerceAddressService.fetchCommerceAddress(
 				_commerceAddress.getCommerceAddressId());
+		}
+
+		AccountEntry accountEntry = _addGuestAccountEntry();
+
+		CommerceAddress commerceAddress = _addCommerceAddress(
+			accountEntry.getAccountEntryId(), _country.getCountryId());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				UserTestUtil.addUser(TestPropsValues.getCompanyId()))) {
+
+			Assert.assertNotNull(
+				_commerceAddressService.fetchCommerceAddress(
+					commerceAddress.getCommerceAddressId()));
 		}
 	}
 
@@ -174,6 +213,21 @@ public class CommerceAddressServiceTest {
 				_commerceAddress.getExternalReferenceCode(),
 				_commerceAddress.getCompanyId());
 		}
+
+		AccountEntry accountEntry = _addGuestAccountEntry();
+
+		CommerceAddress commerceAddress = _addCommerceAddress(
+			accountEntry.getAccountEntryId(), _country.getCountryId());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				UserTestUtil.addUser(TestPropsValues.getCompanyId()))) {
+
+			Assert.assertNotNull(
+				_commerceAddressService.
+					fetchCommerceAddressByExternalReferenceCode(
+						commerceAddress.getExternalReferenceCode(),
+						commerceAddress.getCompanyId()));
+		}
 	}
 
 	@Test
@@ -195,6 +249,19 @@ public class CommerceAddressServiceTest {
 
 			_commerceAddressService.getCommerceAddress(
 				_commerceAddress.getCommerceAddressId());
+		}
+
+		AccountEntry accountEntry = _addGuestAccountEntry();
+
+		CommerceAddress commerceAddress = _addCommerceAddress(
+			accountEntry.getAccountEntryId(), _country.getCountryId());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				UserTestUtil.addUser(TestPropsValues.getCompanyId()))) {
+
+			Assert.assertNotNull(
+				_commerceAddressService.getCommerceAddress(
+					commerceAddress.getCommerceAddressId()));
 		}
 	}
 
@@ -218,6 +285,19 @@ public class CommerceAddressServiceTest {
 			_updateCommerceAddress(
 				RandomTestUtil.randomString(), _commerceAddress);
 		}
+
+		AccountEntry accountEntry = _addGuestAccountEntry();
+
+		CommerceAddress commerceAddress = _addCommerceAddress(
+			accountEntry.getAccountEntryId(), _country.getCountryId());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				UserTestUtil.addUser(TestPropsValues.getCompanyId()))) {
+
+			Assert.assertNotNull(
+				_updateCommerceAddress(
+					RandomTestUtil.randomString(), commerceAddress));
+		}
 	}
 
 	private CommerceAddress _addCommerceAddress(
@@ -233,6 +313,17 @@ public class CommerceAddressServiceTest {
 			StringPool.BLANK,
 			CommerceAddressConstants.ADDRESS_TYPE_BILLING_AND_SHIPPING,
 			RandomTestUtil.randomString(),
+			ServiceContextTestUtil.getServiceContext(
+				TestPropsValues.getGroupId()));
+	}
+
+	private AccountEntry _addGuestAccountEntry() throws Exception {
+		return _accountEntryLocalService.addAccountEntry(
+			StringPool.BLANK, TestPropsValues.getUserId(),
+			AccountConstants.PARENT_ACCOUNT_ENTRY_ID_DEFAULT,
+			RandomTestUtil.randomString(), null, null, StringPool.BLANK, null,
+			null, AccountConstants.ACCOUNT_ENTRY_TYPE_GUEST,
+			WorkflowConstants.STATUS_APPROVED,
 			ServiceContextTestUtil.getServiceContext(
 				TestPropsValues.getGroupId()));
 	}
@@ -264,6 +355,10 @@ public class CommerceAddressServiceTest {
 	}
 
 	private AccountEntry _accountEntry;
+
+	@Inject
+	private AccountEntryLocalService _accountEntryLocalService;
+
 	private CommerceAddress _commerceAddress;
 
 	@Inject
