@@ -17,6 +17,8 @@ import com.liferay.portal.kernel.security.permission.resource.PortletResourcePer
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
+import java.util.Objects;
+
 /**
  * @author Tancredi Covioli
  */
@@ -79,8 +81,9 @@ public class DSRDefaultPermissionObjectEntryModelResourcePermission
 			String actionId)
 		throws PortalException {
 
-		if (MapUtil.getInteger(objectEntry.getValues(), "roomStatus") !=
-				WorkflowConstants.STATUS_INACTIVE) {
+		if (Objects.equals(actionId, ActionKeys.VIEW) ||
+			(MapUtil.getInteger(objectEntry.getValues(), "roomStatus") !=
+				WorkflowConstants.STATUS_INACTIVE)) {
 
 			return _contains(permissionChecker, objectEntry, actionId);
 		}

@@ -8,6 +8,7 @@ package com.liferay.site.dsr.site.initializer.internal.servlet.taglib;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
+import com.liferay.object.service.ObjectEntryLocalServiceUtil;
 import com.liferay.object.service.ObjectEntryServiceUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -20,10 +21,13 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.site.dsr.site.initializer.internal.servlet.ServletContextUtil;
 import com.liferay.taglib.util.IncludeTag;
 
@@ -97,13 +101,27 @@ public class CommentsTag extends IncludeTag {
 			return;
 		}
 
-		String addCommentURL = "";
-		String deleteCommentURL = "";
-		String editCommentURL = "";
+		ObjectEntry objectEntry = ObjectEntryLocalServiceUtil.fetchObjectEntry(
+			group.getClassPK());
 
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
+
+		PermissionChecker permissionChecker =
+			themeDisplay.getPermissionChecker();
+
+		if ((objectEntry != null) &&
+			(MapUtil.getInteger(objectEntry.getValues(), "roomStatus") ==
+				WorkflowConstants.STATUS_INACTIVE) &&
+			!permissionChecker.isCompanyAdmin()) {
+
+			return;
+		}
+
+		String addCommentURL = "";
+		String deleteCommentURL = "";
+		String editCommentURL = "";
 
 		try {
 			ModelResourcePermission<ObjectEntry> modelResourcePermission =
@@ -111,7 +129,7 @@ public class CommentsTag extends IncludeTag {
 					objectDefinition.getObjectDefinitionId());
 
 			if (modelResourcePermission.contains(
-					themeDisplay.getPermissionChecker(), group.getClassPK(),
+					permissionChecker, group.getClassPK(),
 					ActionKeys.ADD_DISCUSSION)) {
 
 				addCommentURL = StringBundler.concat(
@@ -125,7 +143,7 @@ public class CommentsTag extends IncludeTag {
 			}
 
 			if (modelResourcePermission.contains(
-					themeDisplay.getPermissionChecker(), group.getClassPK(),
+					permissionChecker, group.getClassPK(),
 					ActionKeys.DELETE_DISCUSSION)) {
 
 				deleteCommentURL = StringBundler.concat(
@@ -135,7 +153,7 @@ public class CommentsTag extends IncludeTag {
 			}
 
 			if (modelResourcePermission.contains(
-					themeDisplay.getPermissionChecker(), group.getClassPK(),
+					permissionChecker, group.getClassPK(),
 					ActionKeys.UPDATE_DISCUSSION)) {
 
 				editCommentURL = StringBundler.concat(

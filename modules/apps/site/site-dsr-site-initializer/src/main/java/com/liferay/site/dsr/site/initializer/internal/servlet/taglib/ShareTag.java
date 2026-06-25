@@ -20,7 +20,9 @@ import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermi
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.site.dsr.site.initializer.internal.servlet.ServletContextUtil;
 import com.liferay.taglib.util.IncludeTag;
 
@@ -64,8 +66,18 @@ public class ShareTag extends IncludeTag {
 				return SKIP_BODY;
 			}
 
+			PermissionChecker permissionChecker =
+				themeDisplay.getPermissionChecker();
+
+			if ((MapUtil.getInteger(objectEntry.getValues(), "roomStatus") ==
+					WorkflowConstants.STATUS_INACTIVE) &&
+				!permissionChecker.isCompanyAdmin()) {
+
+				return SKIP_BODY;
+			}
+
 			_hasAssignMembersPermission = _hasAssignMembersPermission(
-				themeDisplay.getPermissionChecker(), objectEntry);
+				permissionChecker, objectEntry);
 
 			if (!_hasAssignMembersPermission) {
 				return SKIP_BODY;

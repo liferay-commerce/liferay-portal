@@ -5,10 +5,13 @@
 
 package com.liferay.site.dsr.site.initializer.internal.object.deployer;
 
+import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
+import com.liferay.document.library.kernel.service.DLFolderLocalService;
 import com.liferay.object.constants.ObjectActionKeys;
 import com.liferay.object.deployer.ObjectDefinitionDeployer;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -22,6 +25,8 @@ import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionRegistryUtil;
@@ -37,6 +42,8 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.site.dsr.site.initializer.constants.DSRRoleConstants;
+import com.liferay.site.dsr.site.initializer.internal.security.permission.resource.DSRArchivedRoomFileEntryModelResourcePermission;
+import com.liferay.site.dsr.site.initializer.internal.security.permission.resource.DSRArchivedRoomFolderModelResourcePermission;
 import com.liferay.site.dsr.site.initializer.internal.security.permission.resource.DSRDefaultPermissionObjectEntryModelResourcePermission;
 import com.liferay.site.dsr.site.initializer.internal.util.SiteInitializerUtil;
 import com.liferay.site.initializer.SiteInitializer;
@@ -81,23 +88,58 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 			_log.error(portalException);
 		}
 
-		ModelResourcePermission<ObjectEntry> modelResourcePermission =
+		ModelResourcePermission<FileEntry> fileEntryModelResourcePermission =
 			ModelResourcePermissionRegistryUtil.getModelResourcePermission(
-				objectDefinition.getClassName());
+				FileEntry.class.getName());
 
-		if (modelResourcePermission == null) {
+		ModelResourcePermission<Folder> folderModelResourcePermission =
+			ModelResourcePermissionRegistryUtil.getModelResourcePermission(
+				Folder.class.getName());
+
+		ModelResourcePermission<ObjectEntry>
+			objectEntryModelResourcePermission =
+				ModelResourcePermissionRegistryUtil.getModelResourcePermission(
+					objectDefinition.getClassName());
+
+		if ((fileEntryModelResourcePermission == null) ||
+			(folderModelResourcePermission == null) ||
+			(objectEntryModelResourcePermission == null)) {
+
 			return Collections.emptyList();
 		}
 
 		return ListUtil.fromArray(
 			_bundleContext.registerService(
 				ModelResourcePermission.class,
+				new DSRArchivedRoomFileEntryModelResourcePermission(
+					fileEntryModelResourcePermission, _dlFileEntryLocalService,
+					_groupLocalService, _objectDefinitionLocalService,
+					_objectEntryLocalService),
+				HashMapDictionaryBuilder.<String, Object>put(
+					"model.class.name", FileEntry.class.getName()
+				).put(
+					"service.ranking", 200
+				).build()),
+			_bundleContext.registerService(
+				ModelResourcePermission.class,
+				new DSRArchivedRoomFolderModelResourcePermission(
+					folderModelResourcePermission, _dlFolderLocalService,
+					_groupLocalService, _objectDefinitionLocalService,
+					_objectEntryLocalService),
+				HashMapDictionaryBuilder.<String, Object>put(
+					"model.class.name", Folder.class.getName()
+				).put(
+					"service.ranking", 200
+				).build()),
+			_bundleContext.registerService(
+				ModelResourcePermission.class,
 				new DSRDefaultPermissionObjectEntryModelResourcePermission(
-					modelResourcePermission, _objectEntryLocalService),
+					objectEntryModelResourcePermission,
+					_objectEntryLocalService),
 				HashMapDictionaryBuilder.<String, Object>put(
 					"model.class.name", objectDefinition.getClassName()
 				).put(
-					"service.ranking", Integer.valueOf(200)
+					"service.ranking", 200
 				).build()));
 	}
 
@@ -265,10 +307,19 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 	private BundleContext _bundleContext;
 
 	@Reference
+	private DLFileEntryLocalService _dlFileEntryLocalService;
+
+	@Reference
+	private DLFolderLocalService _dlFolderLocalService;
+
+	@Reference
 	private GroupLocalService _groupLocalService;
 
 	@Reference
 	private LayoutSetPrototypeLocalService _layoutSetPrototypeLocalService;
+
+	@Reference
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Reference
 	private ObjectEntryLocalService _objectEntryLocalService;
