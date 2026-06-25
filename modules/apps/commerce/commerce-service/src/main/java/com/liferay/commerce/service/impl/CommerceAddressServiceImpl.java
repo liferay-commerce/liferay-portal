@@ -67,7 +67,8 @@ public class CommerceAddressServiceImpl extends CommerceAddressServiceBaseImpl {
 		CommerceAddress commerceAddress =
 			commerceAddressLocalService.getCommerceAddress(commerceAddressId);
 
-		_checkPermission(commerceAddress, AccountActionKeys.MANAGE_ADDRESSES);
+		_checkPermission(
+			commerceAddress, AccountActionKeys.MANAGE_ADDRESSES, false);
 
 		commerceAddressLocalService.deleteCommerceAddress(commerceAddress);
 	}
@@ -387,13 +388,29 @@ public class CommerceAddressServiceImpl extends CommerceAddressServiceBaseImpl {
 			CommerceAddress commerceAddress, String actionId)
 		throws PortalException {
 
+		_checkPermission(commerceAddress, actionId, true);
+	}
+
+	private void _checkPermission(
+			CommerceAddress commerceAddress, String actionId,
+			boolean guestAccountAllowed)
+		throws PortalException {
+
 		_checkPermission(
 			commerceAddress.getClassName(), commerceAddress.getClassPK(),
-			actionId);
+			actionId, guestAccountAllowed);
 	}
 
 	private void _checkPermission(
 			String className, long classPK, String actionId)
+		throws PortalException {
+
+		_checkPermission(className, classPK, actionId, true);
+	}
+
+	private void _checkPermission(
+			String className, long classPK, String actionId,
+			boolean guestAccountAllowed)
 		throws PortalException {
 
 		if (className.equals(CommerceOrder.class.getName())) {
@@ -407,12 +424,15 @@ public class CommerceAddressServiceImpl extends CommerceAddressServiceBaseImpl {
 				AccountEntry accountEntry =
 					_accountEntryLocalService.getAccountEntry(classPK);
 
-				if (!accountEntry.isGuestAccount() &&
-					(!Objects.equals(
+				if (guestAccountAllowed && accountEntry.isGuestAccount()) {
+					return;
+				}
+
+				if (!Objects.equals(
 						actionId, AccountActionKeys.VIEW_ADDRESSES) ||
-					 !_accountEntryModelResourcePermission.contains(
-						 getPermissionChecker(), classPK,
-						 AccountActionKeys.MANAGE_ADDRESSES))) {
+					!_accountEntryModelResourcePermission.contains(
+						getPermissionChecker(), classPK,
+						AccountActionKeys.MANAGE_ADDRESSES)) {
 
 					_accountEntryModelResourcePermission.check(
 						getPermissionChecker(), classPK, actionId);
