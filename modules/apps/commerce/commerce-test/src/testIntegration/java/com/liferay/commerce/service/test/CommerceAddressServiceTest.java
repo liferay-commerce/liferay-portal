@@ -151,6 +151,13 @@ public class CommerceAddressServiceTest {
 
 			_commerceAddressService.deleteCommerceAddress(
 				commerceAddress.getCommerceAddressId());
+
+			Assert.fail();
+		}
+		catch (PrincipalException.MustHavePermission principalException) {
+			Assert.assertEquals(
+				accountEntry.getAccountEntryId(),
+				principalException.resourceId);
 		}
 	}
 
