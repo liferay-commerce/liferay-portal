@@ -48,6 +48,7 @@ type TCurrency = {
 
 export type TDiagram = {
 	attachmentBase64: TAttachmentBase64;
+	radius?: number;
 };
 
 export type TPin = {
