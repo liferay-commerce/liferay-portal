@@ -8,7 +8,6 @@ import {devices, expect, mergeTests} from '@playwright/test';
 import {apiHelpersTest} from '../../../../fixtures/apiHelpersTest';
 import {commercePagesTest} from '../../../../fixtures/commercePagesTest';
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
-import {globalMenuPagesTest} from '../../../../fixtures/globalMenuPagesTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {miniumSetUp} from '../../utils/commerce';
 
@@ -16,7 +15,6 @@ export const test = mergeTests(
 	apiHelpersTest,
 	commercePagesTest,
 	dataApiHelpersTest,
-	globalMenuPagesTest,
 	loginTest()
 );
 
@@ -27,12 +25,11 @@ test.use({
 test('LPD-3391 Minium sidebar user navigation items are clickable in responsive mode', async ({
 	apiHelpers,
 	commerceThemeMiniumPage,
-	globalMenuPage,
 	page,
 }) => {
 	const {site} = await miniumSetUp(apiHelpers);
 
-	await globalMenuPage.goToSite(site.name);
+	await page.goto(`/web/${site.name}`);
 
 	await commerceThemeMiniumPage.stickerUserNav.click();
 	await commerceThemeMiniumPage.myProfileItemMenu.click();
