@@ -8,6 +8,7 @@ import {expect, mergeTests} from '@playwright/test';
 import {apiHelpersTest} from '../../../../fixtures/apiHelpersTest';
 import {commercePagesTest} from '../../../../fixtures/commercePagesTest';
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
+import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {usersAndOrganizationsPagesTest} from '../../../../fixtures/usersAndOrganizationsPagesTest';
 import getRandomString from '../../../../utils/getRandomString';
@@ -15,12 +16,17 @@ import performLogin, {
 	performLoginViaApi,
 	performLogout,
 } from '../../../../utils/performLogin';
+import getPageDefinition from '../../../layout-content-page-editor-web/main/utils/getPageDefinition';
+import getWidgetDefinition from '../../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
 import {classicCommerceSetUp, miniumSetUp} from '../../utils/commerce';
 
 export const test = mergeTests(
 	apiHelpersTest,
 	commercePagesTest,
 	dataApiHelpersTest,
+	featureFlagsTest({
+		'LPS-178052': {enabled: true},
+	}),
 	loginTest(),
 	usersAndOrganizationsPagesTest
 );
@@ -550,3 +556,159 @@ test('COMMERCE-6193. As a buyer, I want the first selectable quantity of a produ
 		);
 	}
 });
+
+test(
+	'Add and remove products from the wish list via the product card',
+	{tag: ['@COMMERCE-5866', '@COMMERCE-5867', '@LPD-96522']},
+	async ({
+		apiHelpers,
+		commerceAdminChannelsPage,
+		commerceThemeClassicCatalogPage,
+		commerceWishListPage,
+		page,
+	}) => {
+		test.setTimeout(180000);
+
+		const product1Name = 'Wish List Product One ' + getRandomString();
+		const product2Name = 'Wish List Product Two ' + getRandomString();
+
+		let catalogLayout;
+		let channel;
+		let site;
+		let wishListLayout;
+
+		await test.step('Create a commerce site and build the storefront pages', async () => {
+			site = await apiHelpers.headlessAdminSite.postSite({
+				name: getRandomString(),
+			});
+
+			catalogLayout = await apiHelpers.headlessDelivery.createSitePage({
+				pageDefinition: getPageDefinition([
+					getWidgetDefinition({
+						id: getRandomString(),
+						widgetName:
+							'com_liferay_commerce_product_content_web_internal_portlet_CPPublisherPortlet',
+					}),
+				]),
+				siteId: site.id,
+				title: getRandomString(),
+			});
+
+			wishListLayout = await apiHelpers.headlessDelivery.createSitePage({
+				pageDefinition: getPageDefinition([
+					getWidgetDefinition({
+						id: getRandomString(),
+						widgetName:
+							'com_liferay_commerce_wish_list_web_internal_portlet_CommerceWishListContentPortlet',
+					}),
+				]),
+				siteId: site.id,
+				title: getRandomString(),
+			});
+		});
+
+		await test.step('Create a channel, catalog and products', async () => {
+			channel = await apiHelpers.headlessCommerceAdminChannel.postChannel(
+				{
+					siteGroupId: site.id,
+				}
+			);
+
+			const catalog =
+				await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				name: {en_US: product1Name},
+			});
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				name: {en_US: product2Name},
+			});
+		});
+
+		await test.step('Set the channel site type to B2B', async () => {
+			await commerceAdminChannelsPage.changeCommerceChannelSiteType(
+				channel.name,
+				'B2B'
+			);
+		});
+
+		await test.step('Create a buyer for the account', async () => {
+			const account = await apiHelpers.headlessAdminUser.postAccount({
+				name: getRandomString(),
+				type: 'business',
+			});
+
+			const user =
+				await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
+					'demo.unprivileged@liferay.com'
+				);
+			const rolesResponse =
+				await apiHelpers.headlessAdminUser.getAccountRoles(account.id);
+
+			const accountRoleBuyer = rolesResponse?.items?.filter((role) => {
+				return role.name === 'Buyer';
+			});
+
+			await apiHelpers.headlessAdminUser.assignAccountRoles(
+				account.externalReferenceCode,
+				accountRoleBuyer[0].id,
+				user.emailAddress
+			);
+			const siteRole =
+				await apiHelpers.headlessAdminUser.getRoleByName('Site Member');
+			await apiHelpers.headlessAdminUser.assignUserToSite(
+				siteRole.id,
+				site.id,
+				user.id
+			);
+			await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
+				account.id,
+				[user.emailAddress]
+			);
+		});
+
+		await test.step('As a buyer, add two products to the wish list from their cards', async () => {
+			await performLogout(page);
+			await performLoginViaApi({page, screenName: 'demo.unprivileged'});
+
+			await page.goto(
+				`/web/${site.name}/${catalogLayout.friendlyUrlPath}`
+			);
+
+			await commerceThemeClassicCatalogPage
+				.productCardAddToWishListButton(product1Name)
+				.click();
+			await commerceThemeClassicCatalogPage
+				.productCardAddToWishListButton(product2Name)
+				.click();
+		});
+
+		await test.step('Both products appear in the wish list', async () => {
+			await page.goto(
+				`/web/${site.name}/${wishListLayout.friendlyUrlPath}`
+			);
+
+			await expect(
+				commerceWishListPage.wishListItem(product1Name)
+			).toBeVisible();
+			await expect(
+				commerceWishListPage.wishListItem(product2Name)
+			).toBeVisible();
+		});
+
+		await test.step('Removing a product from the wish list drops only that product', async () => {
+			await commerceWishListPage
+				.wishListItemDeleteButton(product1Name)
+				.click();
+
+			await expect(
+				commerceWishListPage.wishListItem(product1Name)
+			).not.toBeVisible();
+			await expect(
+				commerceWishListPage.wishListItem(product2Name)
+			).toBeVisible();
+		});
+	}
+);
