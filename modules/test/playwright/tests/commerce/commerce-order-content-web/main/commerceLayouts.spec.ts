@@ -3771,3 +3771,158 @@ test(
 		await expect(page.getByText(privateComment)).toBeVisible();
 	}
 );
+
+test(
+	'View the list of shipments in the placed order details page',
+	{tag: '@COMMERCE-6382'},
+	async ({
+		apiHelpers,
+		commerceLayoutsPage,
+		commerceThemeClassicOrdersPage,
+		displayPageTemplatesPage,
+		page,
+		pageEditorPage,
+		site,
+	}) => {
+		const account = await apiHelpers.headlessAdminUser.postAccount({
+			type: 'person',
+		});
+
+		const address =
+			await apiHelpers.headlessCommerceAdminAccount.postAddress(
+				account.id,
+				{phoneNumber: '1234567890', regionISOCode: 'AL'}
+			);
+
+		const channel =
+			await apiHelpers.headlessCommerceAdminChannel.postChannel({
+				siteGroupId: site.id,
+			});
+
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+			});
+
+		const sku = product.skus[0];
+
+		const warehouse =
+			await apiHelpers.headlessCommerceAdminInventoryApiHelper.postWarehouses(
+				{
+					active: true,
+					latitude: getRandomInt(),
+					longitude: getRandomInt(),
+					warehouseItems: [{quantity: 100, sku: sku.sku}],
+				}
+			);
+
+		await apiHelpers.headlessCommerceAdminInventoryApiHelper.postWarehousesChannels(
+			warehouse.id,
+			channel.id
+		);
+
+		const order = await apiHelpers.headlessCommerceAdminOrder.postOrder({
+			accountId: account.id,
+			billingAddressId: address.id,
+			channelId: channel.id,
+			orderItems: [
+				{
+					quantity: 2,
+					skuId: String(sku.id),
+				},
+			],
+			shippingAddressId: address.id,
+		});
+		await apiHelpers.headlessCommerceAdminOrder.patchOrder(order.id, {
+			orderStatus: ORDER_WORKFLOW_STATUS_CODE.PROCESSING,
+		});
+
+		const carrier = 'Test Carrier';
+		const trackingNumber = getRandomString();
+
+		const shipment =
+			await apiHelpers.headlessCommerceAdminShipment.postShipment({
+				carrier,
+				orderId: order.id,
+				shipmentItems: [
+					{
+						orderItemId: order.orderItems[0].id,
+						quantity: 1,
+						warehouseId: warehouse.id,
+					},
+				],
+				shippingAddressId: address.id,
+				trackingNumber,
+			});
+		await apiHelpers.headlessCommerceAdminShipment.postShipmentStatusDelivered(
+			shipment.id
+		);
+
+		await displayPageTemplatesPage.goto(site.friendlyUrlPath);
+
+		const displayPageTemplateName = getRandomString();
+
+		await displayPageTemplatesPage.createTemplate({
+			contentType: 'Order',
+			name: displayPageTemplateName,
+		});
+		await displayPageTemplatesPage.editTemplate(displayPageTemplateName);
+
+		await pageEditorPage.addFragment(
+			'Order',
+			'Placed Order Shipments Data Set'
+		);
+		await pageEditorPage.addFragment('Order', 'Order Items Data Set');
+		await pageEditorPage.waitForChangesSaved();
+
+		await displayPageTemplatesPage.publishTemplate();
+		await displayPageTemplatesPage.clickMoreActions(
+			displayPageTemplateName,
+			'Mark as Default'
+		);
+
+		await waitForAlert(page);
+
+		await expect(
+			commerceLayoutsPage.defaultDisplayPageTemplateIcon
+		).toBeVisible();
+
+		await page.goto(
+			liferayConfig.environment.baseUrl +
+				`/web/${site.name}/order/${order.id}`
+		);
+
+		await (
+			await commerceThemeClassicOrdersPage.orderItemsTableRow(2, sku.sku)
+		).row
+			.getByRole('button', {name: 'Actions'})
+			.click();
+
+		await expect(
+			commerceThemeClassicOrdersPage.orderTableMenuItem('Shipments')
+		).toBeVisible();
+
+		await commerceThemeClassicOrdersPage
+			.orderTableMenuItem('Shipments')
+			.click();
+
+		await expect(
+			commerceThemeClassicOrdersPage.orderItemShipmentsIframe.getByText(
+				'Delivered'
+			)
+		).toBeVisible();
+		await expect(
+			commerceThemeClassicOrdersPage.orderItemShipmentsIframe.getByText(
+				carrier
+			)
+		).toBeVisible();
+		await expect(
+			commerceThemeClassicOrdersPage.orderItemShipmentsIframe.getByText(
+				trackingNumber
+			)
+		).toBeVisible();
+	}
+);
