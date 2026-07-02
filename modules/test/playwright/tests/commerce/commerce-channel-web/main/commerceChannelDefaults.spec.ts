@@ -67,6 +67,7 @@ test(
 						'UNASSIGN_USERS',
 						'UPDATE',
 						'UPDATE_USERS',
+						'VIEW_ADDRESSES',
 					],
 					primaryKey: companyId,
 					resourceName: 'com.liferay.account.model.AccountEntry',
