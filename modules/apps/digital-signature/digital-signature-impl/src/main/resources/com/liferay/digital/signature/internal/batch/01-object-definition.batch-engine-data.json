@@ -1,0 +1,281 @@
+{
+	"configuration": {
+		"className": "com.liferay.object.admin.rest.dto.v1_0.ObjectDefinition",
+		"multiCompany": true,
+		"parameters": {
+			"containsHeaders": "true",
+			"createStrategy": "UPSERT",
+			"featureFlag": "LPD-69290",
+			"importStrategy": "ON_ERROR_FAIL",
+			"updateStrategy": "UPDATE"
+		},
+		"taskItemDelegateName": "DEFAULT"
+	},
+	"items": [
+		{
+			"className": "com.liferay.object.model.ObjectDefinition#DSR1",
+			"enableCategorization": false,
+			"enableFormContainer": false,
+			"externalReferenceCode": "L_DS_REQUEST",
+			"label": {
+				"en_US": "Signature Request"
+			},
+			"name": "DSRequest",
+			"objectFields": [
+				{
+					"DBType": "DateTime",
+					"businessType": "DateTime",
+					"externalReferenceCode": "COMPLETION_DATE",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Completion Date"
+					},
+					"name": "completionDate",
+					"required": false,
+					"state": false,
+					"system": false,
+					"type": "Date"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "EMAIL_SUBJECT",
+					"indexed": false,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Email Subject"
+					},
+					"name": "emailSubject",
+					"required": false,
+					"state": false,
+					"system": false,
+					"type": "String"
+				},
+				{
+					"DBType": "Long",
+					"businessType": "LongInteger",
+					"externalReferenceCode": "FILE_ENTRY_ID",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "File Entry ID"
+					},
+					"name": "fileEntryId",
+					"required": false,
+					"state": false,
+					"system": false,
+					"type": "Long"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "PROVIDER_KEY",
+					"indexed": true,
+					"indexedAsKeyword": true,
+					"label": {
+						"en_US": "Provider Key"
+					},
+					"name": "providerKey",
+					"required": true,
+					"state": false,
+					"system": false,
+					"type": "String"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "PROVIDER_REQUEST_ID",
+					"indexed": true,
+					"indexedAsKeyword": true,
+					"label": {
+						"en_US": "Provider Request ID"
+					},
+					"name": "providerRequestId",
+					"required": true,
+					"state": false,
+					"system": false,
+					"type": "String"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Picklist",
+					"defaultValue": "sent",
+					"externalReferenceCode": "STATUS",
+					"indexed": true,
+					"indexedAsKeyword": true,
+					"label": {
+						"en_US": "Status"
+					},
+					"listTypeDefinitionExternalReferenceCode": "L_DS_STATUS",
+					"name": "status",
+					"required": true,
+					"state": true,
+					"system": false,
+					"type": "String"
+				}
+			],
+			"objectRelationships": [
+				{
+					"deletionType": "cascade",
+					"edge": false,
+					"externalReferenceCode": "L_DS_REQUEST_TO_RECIPIENTS",
+					"label": {
+						"en_US": "Signature Request to Recipients"
+					},
+					"name": "dsRequestToRecipients",
+					"objectDefinitionExternalReferenceCode1": "L_DS_REQUEST",
+					"objectDefinitionExternalReferenceCode2": "L_DS_REQUEST_RECIPIENT",
+					"objectDefinitionModifiable2": true,
+					"objectDefinitionName2": "DSRequestRecipient",
+					"objectDefinitionSystem2": true,
+					"objectField": {
+						"DBType": "Long",
+						"businessType": "Relationship",
+						"externalReferenceCode": "L_R_REQUEST_TO_RECIPIENTS",
+						"indexed": true,
+						"indexedAsKeyword": false,
+						"label": {
+							"en_US": "Signature Request to Recipients"
+						},
+						"localized": false,
+						"name": "r_dsRequestToRecipients_dsRequestId",
+						"objectFieldSettings": [
+							{
+								"name": "objectDefinition1ShortName",
+								"value": "DSRequest"
+							},
+							{
+								"name": "objectRelationshipERCObjectFieldName",
+								"value": "r_dsRequestToRecipients_dsRequestERC"
+							}
+						],
+						"relationshipType": "oneToMany",
+						"required": true,
+						"state": false,
+						"system": false,
+						"type": "Long"
+					},
+					"parameterObjectFieldId": 0,
+					"parameterObjectFieldName": "",
+					"reverse": false,
+					"system": false,
+					"type": "oneToMany"
+				}
+			],
+			"panelCategoryKey": "",
+			"parameterRequired": false,
+			"pluralLabel": {
+				"en_US": "Signature Requests"
+			},
+			"portlet": false,
+			"scope": "company",
+			"status": {
+				"code": 0
+			},
+			"system": true,
+			"titleObjectFieldName": "providerRequestId"
+		},
+		{
+			"className": "com.liferay.object.model.ObjectDefinition#DSR2",
+			"enableCategorization": false,
+			"enableFormContainer": false,
+			"externalReferenceCode": "L_DS_REQUEST_RECIPIENT",
+			"label": {
+				"en_US": "Signature Request Recipient"
+			},
+			"name": "DSRequestRecipient",
+			"objectFields": [
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "EMAIL_ADDRESS",
+					"indexed": true,
+					"indexedAsKeyword": true,
+					"label": {
+						"en_US": "Email Address"
+					},
+					"name": "emailAddress",
+					"required": false,
+					"state": false,
+					"system": false,
+					"type": "String"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "NAME",
+					"indexed": false,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Name"
+					},
+					"name": "name",
+					"required": false,
+					"state": false,
+					"system": false,
+					"type": "String"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "PROVIDER_RECIPIENT_ID",
+					"indexed": true,
+					"indexedAsKeyword": true,
+					"label": {
+						"en_US": "Provider Recipient ID"
+					},
+					"name": "providerRecipientId",
+					"required": true,
+					"state": false,
+					"system": false,
+					"type": "String"
+				},
+				{
+					"DBType": "Long",
+					"businessType": "LongInteger",
+					"externalReferenceCode": "RECIPIENT_USER_ID",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Recipient User ID"
+					},
+					"name": "recipientUserId",
+					"required": false,
+					"state": false,
+					"system": false,
+					"type": "Long"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Picklist",
+					"defaultValue": "sent",
+					"externalReferenceCode": "STATUS",
+					"indexed": true,
+					"indexedAsKeyword": true,
+					"label": {
+						"en_US": "Status"
+					},
+					"listTypeDefinitionExternalReferenceCode": "L_DS_STATUS",
+					"name": "status",
+					"required": true,
+					"state": false,
+					"system": false,
+					"type": "String"
+				}
+			],
+			"panelCategoryKey": "",
+			"parameterRequired": false,
+			"pluralLabel": {
+				"en_US": "Signature Request Recipients"
+			},
+			"portlet": false,
+			"scope": "company",
+			"status": {
+				"code": 0
+			},
+			"system": true,
+			"titleObjectFieldName": "emailAddress"
+		}
+	]
+}
