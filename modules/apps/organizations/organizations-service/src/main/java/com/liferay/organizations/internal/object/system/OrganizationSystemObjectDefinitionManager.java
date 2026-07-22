@@ -82,7 +82,7 @@ public class OrganizationSystemObjectDefinitionManager
 
 	@Override
 	public String getAdditionalAPIURLParameters() {
-		return "flatten=true";
+		return "flatten=true&fields=id,name";
 	}
 
 	@Override
