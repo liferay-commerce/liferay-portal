@@ -10,7 +10,6 @@ import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.field.builder.LongIntegerObjectFieldBuilder;
 import com.liferay.object.field.builder.TextObjectFieldBuilder;
 import com.liferay.object.model.ObjectField;
-import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.test.util.BaseSystemObjectDefinitionManagerTestCase;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.NoSuchOrganizationException;
@@ -351,9 +350,6 @@ public class OrganizationSystemObjectDefinitionManagerTest
 
 	@Inject
 	private Language _language;
-
-	@Inject
-	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Inject
 	private OrganizationLocalService _organizationLocalService;
