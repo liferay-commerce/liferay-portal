@@ -30,6 +30,7 @@ export class EditDigitalSalesRoomPage {
 	readonly fileUploadButton: Locator;
 	readonly fragmentImage: Locator;
 	readonly friendlyURLInput: Locator;
+	readonly multipleFileUploadButton: Locator;
 	readonly newButton: Locator;
 	readonly nextButton: Locator;
 	readonly noDocumentsMessage: Locator;
@@ -51,6 +52,8 @@ export class EditDigitalSalesRoomPage {
 	readonly selectImageFrame: FrameLocator;
 	readonly selectOption: (value: string) => Locator;
 	readonly templatePreviewFrame: FrameLocator;
+	readonly uploadContainer: Locator;
+	readonly uploadDropzone: Locator;
 	readonly viewerRoleInputButton: Locator;
 
 	constructor(page: Page) {
@@ -98,6 +101,9 @@ export class EditDigitalSalesRoomPage {
 		});
 		this.fragmentImage = page.locator('#page-editor img').first();
 		this.friendlyURLInput = page.getByLabel('Friendly URL');
+		this.multipleFileUploadButton = page.getByRole('menuitem', {
+			name: 'Multiple Files Upload',
+		});
 		this.newButton = page.getByRole('button', {name: 'New'});
 		this.nextButton = page.getByRole('button', {name: 'Next'});
 		this.noDocumentsMessage = page.getByText(
@@ -135,9 +141,26 @@ export class EditDigitalSalesRoomPage {
 		this.templatePreviewFrame = page
 			.getByLabel('Create New Digital Sales Room')
 			.frameLocator('iframe');
+		this.uploadContainer = page.locator('.container-form-lg .sheet');
+		this.uploadDropzone = page.locator('.lfr-dynamic-uploader');
 		this.viewerRoleInputButton = page.locator(
 			'[data-testid="roleKeyItem_Viewer"]'
 		);
+	}
+
+	async clickDocumentsNewMenuItem(menuItem: Locator, target: Locator) {
+		await clickAndExpectToBeVisible({
+			target: this.newButton,
+			trigger: this.documentsMenuItem,
+		});
+		await clickAndExpectToBeVisible({
+			target: menuItem,
+			trigger: this.newButton,
+		});
+		await clickAndExpectToBeVisible({
+			target,
+			trigger: menuItem,
+		});
 	}
 
 	async uploadDocument(filePath: string) {

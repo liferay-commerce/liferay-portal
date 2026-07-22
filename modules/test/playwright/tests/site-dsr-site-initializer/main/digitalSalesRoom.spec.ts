@@ -828,6 +828,54 @@ test(
 );
 
 test(
+	'The multiple file upload dropzone spans the full container width',
+	{tag: '@LPD-97494'},
+	async ({apiHelpers, digitalSalesRoomsPage, editDigitalSalesRoomPage}) => {
+		const account = await apiHelpers.headlessAdminUser.postAccount({
+			type: 'business',
+		});
+
+		const roomName = `A${getRandomInt()}`;
+
+		await digitalSalesRoomsPage.goToRoomsPage();
+
+		await expect(
+			digitalSalesRoomsPage.digitalSalesRoomsTable.searchInput
+		).toBeVisible();
+
+		await digitalSalesRoomsPage.digitalSalesRoomsTable.newButton.click();
+		await editDigitalSalesRoomPage.addDigitalSalesRoom({
+			accountName: account.name,
+			roomName,
+		});
+
+		await digitalSalesRoomsPage.goToRoomsPage();
+
+		await digitalSalesRoomsPage.clickRowActionsMenuItem(
+			roomName,
+			digitalSalesRoomsPage.viewMenuItem
+		);
+
+		await editDigitalSalesRoomPage.clickDocumentsNewMenuItem(
+			editDigitalSalesRoomPage.multipleFileUploadButton,
+			editDigitalSalesRoomPage.uploadDropzone
+		);
+
+		const dropzoneBox =
+			await editDigitalSalesRoomPage.uploadDropzone.boundingBox();
+		const containerBox =
+			await editDigitalSalesRoomPage.uploadContainer.boundingBox();
+
+		expect(dropzoneBox).not.toBeNull();
+		expect(containerBox).not.toBeNull();
+
+		if (dropzoneBox && containerBox) {
+			expect(dropzoneBox.width).toBeGreaterThan(containerBox.width * 0.8);
+		}
+	}
+);
+
+test(
 	'A viewer cannot upload files nor share but can make comments',
 	{tag: ['@LPD-87116', '@LPD-96701']},
 	async ({

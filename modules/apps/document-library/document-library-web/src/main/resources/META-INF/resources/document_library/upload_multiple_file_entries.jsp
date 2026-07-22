@@ -47,7 +47,7 @@ if (portletTitleBasedNavigation) {
 			<c:when test="<%= DLFolderPermission.contains(permissionChecker, scopeGroupId, folderId, ActionKeys.ADD_DOCUMENT) %>">
 				<clay:row>
 					<clay:col
-						md="6"
+						md="12"
 					>
 						<aui:form name="fm1">
 							<div class="lfr-dynamic-uploader">
@@ -92,7 +92,7 @@ if (portletTitleBasedNavigation) {
 					</clay:col>
 
 					<clay:col
-						md="6"
+						md="12"
 					>
 						<div>
 							<div class="common-file-metadata-container hide selected" id="<portlet:namespace />commonFileMetadataContainer">
