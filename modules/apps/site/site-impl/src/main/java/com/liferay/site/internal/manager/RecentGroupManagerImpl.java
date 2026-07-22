@@ -35,6 +35,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.constants.SiteWebKeys;
+import com.liferay.site.contributor.MySitesExcludedGroupIdsContributor;
 import com.liferay.site.manager.RecentGroupManager;
 import com.liferay.site.provider.GroupURLProvider;
 
@@ -47,13 +48,18 @@ import jakarta.servlet.http.HttpSessionListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 /**
  * @author Lourdes Fernández Besada
@@ -200,11 +206,18 @@ public class RecentGroupManagerImpl implements RecentGroupManager {
 
 		List<Group> groups = new ArrayList<>(groupIds.length);
 
+		User user = _portal.getUser(portletRequest);
+
+		Set<Long> excludedGroupIds = _getExcludedGroupIds(user);
+
 		PermissionChecker permissionChecker =
-			PermissionCheckerFactoryUtil.create(
-				_portal.getUser(portletRequest));
+			PermissionCheckerFactoryUtil.create(user);
 
 		for (long groupId : groupIds) {
+			if (excludedGroupIds.contains(groupId)) {
+				continue;
+			}
+
 			Group group = _groupLocalService.fetchGroup(groupId);
 
 			if ((group == null) || group.isCompany() ||
@@ -253,6 +266,21 @@ public class RecentGroupManagerImpl implements RecentGroupManager {
 		}
 
 		return groups;
+	}
+
+	private Set<Long> _getExcludedGroupIds(User user) {
+		Set<Long> excludedGroupIds = new HashSet<>();
+
+		for (MySitesExcludedGroupIdsContributor
+				mySitesExcludedGroupIdsContributor :
+					_mySitesExcludedGroupIdsContributors) {
+
+			excludedGroupIds.addAll(
+				mySitesExcludedGroupIdsContributor.getExcludedGroupIds(
+					user.getCompanyId(), user.getUserId()));
+		}
+
+		return excludedGroupIds;
 	}
 
 	private long _getLiveGroupId(long groupId) {
@@ -312,6 +340,14 @@ public class RecentGroupManagerImpl implements RecentGroupManager {
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;
+
+	@Reference(
+		cardinality = ReferenceCardinality.MULTIPLE,
+		policy = ReferencePolicy.DYNAMIC,
+		policyOption = ReferencePolicyOption.GREEDY
+	)
+	private volatile List<MySitesExcludedGroupIdsContributor>
+		_mySitesExcludedGroupIdsContributors;
 
 	@Reference
 	private Portal _portal;
