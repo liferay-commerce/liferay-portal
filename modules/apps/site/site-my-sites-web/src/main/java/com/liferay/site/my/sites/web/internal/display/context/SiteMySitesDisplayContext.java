@@ -24,11 +24,13 @@ import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portlet.usersadmin.util.UsersAdminUtil;
 import com.liferay.site.my.sites.web.internal.constants.MySitesPortletKeys;
+import com.liferay.site.my.sites.web.internal.constants.MySitesWebKeys;
 import com.liferay.site.my.sites.web.internal.servlet.taglib.util.SiteActionDropdownItemsProvider;
 import com.liferay.site.search.GroupSearch;
 
@@ -44,6 +46,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author Eudaldo Alonso
@@ -138,6 +141,14 @@ public class SiteMySitesDisplayContext {
 			groupParams.put("types", types);
 
 			groupParams.put("active", Boolean.TRUE);
+		}
+
+		Set<Long> excludedGroupIds = (Set<Long>)_renderRequest.getAttribute(
+			MySitesWebKeys.EXCLUDED_GROUP_IDS);
+
+		if (SetUtil.isNotEmpty(excludedGroupIds)) {
+			groupParams.put(
+				"excludedGroupIds", ListUtil.fromCollection(excludedGroupIds));
 		}
 
 		String keywords = ParamUtil.getString(_httpServletRequest, "keywords");

@@ -23,17 +23,28 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.liveusers.LiveUsers;
+import com.liferay.site.contributor.MySitesExcludedGroupIdsContributor;
 import com.liferay.site.my.sites.web.internal.constants.MySitesPortletKeys;
+import com.liferay.site.my.sites.web.internal.constants.MySitesWebKeys;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
 import jakarta.portlet.Portlet;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
+
+import java.io.IOException;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 /**
  * @author Eudaldo Alonso
@@ -93,6 +104,18 @@ public class MySitesPortlet extends MVCPortlet {
 		}
 
 		sendRedirect(actionRequest, actionResponse);
+	}
+
+	@Override
+	public void render(
+			RenderRequest renderRequest, RenderResponse renderResponse)
+		throws IOException, PortletException {
+
+		renderRequest.setAttribute(
+			MySitesWebKeys.EXCLUDED_GROUP_IDS,
+			_getExcludedGroupIds(renderRequest));
+
+		super.render(renderRequest, renderResponse);
 	}
 
 	public void updateGroupUsers(
@@ -165,8 +188,34 @@ public class MySitesPortlet extends MVCPortlet {
 		return ArrayUtil.toArray(filteredUserIds.toArray(new Long[0]));
 	}
 
+	private Set<Long> _getExcludedGroupIds(RenderRequest renderRequest) {
+		Set<Long> excludedGroupIds = new HashSet<>();
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		for (MySitesExcludedGroupIdsContributor
+				mySitesExcludedGroupIdsContributor :
+					_mySitesExcludedGroupIdsContributors) {
+
+			excludedGroupIds.addAll(
+				mySitesExcludedGroupIdsContributor.getExcludedGroupIds(
+					themeDisplay.getCompanyId(), themeDisplay.getUserId()));
+		}
+
+		return excludedGroupIds;
+	}
+
 	@Reference
 	private MembershipRequestLocalService _membershipRequestLocalService;
+
+	@Reference(
+		cardinality = ReferenceCardinality.MULTIPLE,
+		policy = ReferencePolicy.DYNAMIC,
+		policyOption = ReferencePolicyOption.GREEDY
+	)
+	private volatile List<MySitesExcludedGroupIdsContributor>
+		_mySitesExcludedGroupIdsContributors;
 
 	@Reference(
 		target = "(&(release.bundle.symbolic.name=com.liferay.site.my.sites.web)(&(release.schema.version>=1.0.0)(!(release.schema.version>=2.0.0))))"
