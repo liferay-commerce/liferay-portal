@@ -16,9 +16,11 @@ import com.liferay.headless.asset.library.client.problem.Problem;
 import com.liferay.headless.asset.library.client.resource.v1_0.UserAccountResource;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -92,6 +94,24 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 	public void testBatchEngineDeleteImportTask() {
 	}
 
+	@Test
+	public void testDeleteAssetLibraryUserAccountWithOnlyAssignMembersPermission()
+		throws Exception {
+
+		UserAccountResource assignMembersUserAccountResource =
+			_getAssignMembersOnlyUserAccountResource();
+
+		UserAccount userAccount = randomUserAccount();
+
+		userAccountResource.putAssetLibraryUserAccount(
+			testDepotEntryGroup.getExternalReferenceCode(),
+			userAccount.getExternalReferenceCode());
+
+		assignMembersUserAccountResource.deleteAssetLibraryUserAccount(
+			testDepotEntryGroup.getExternalReferenceCode(),
+			userAccount.getExternalReferenceCode());
+	}
+
 	@Override
 	@Test
 	public void testGetAssetLibraryUserAccount() throws Exception {
@@ -133,6 +153,38 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 			_spaceDepotEntry.getGroup(), cmsAdministratorUserAccountResource);
 
 		_testGetAssetLibraryUserAccountsPageWithSortId();
+	}
+
+	@Test
+	public void testPutAssetLibraryUserAccountWithOnlyAssignMembersPermission()
+		throws Exception {
+
+		UserAccountResource assignMembersUserAccountResource =
+			_getAssignMembersOnlyUserAccountResource();
+
+		UserAccount userAccount = randomUserAccount();
+
+		UserAccount putUserAccount =
+			assignMembersUserAccountResource.putAssetLibraryUserAccount(
+				testDepotEntryGroup.getExternalReferenceCode(),
+				userAccount.getExternalReferenceCode());
+
+		assertValid(putUserAccount);
+	}
+
+	@Test
+	public void testPutAssetLibraryUserAccountWithoutAssignMembersPermission()
+		throws Exception {
+
+		UserAccountResource noPermissionUserAccountResource =
+			_getNoPermissionUserAccountResource();
+
+		UserAccount userAccount = randomUserAccount();
+
+		_assertFailure(
+			() -> noPermissionUserAccountResource.putAssetLibraryUserAccount(
+				testDepotEntryGroup.getExternalReferenceCode(),
+				userAccount.getExternalReferenceCode()));
 	}
 
 	@Override
@@ -247,6 +299,38 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 		).build();
 	}
 
+	private UserAccountResource _getAssignMembersOnlyUserAccountResource()
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(
+			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			password, RandomTestUtil.randomString() + "@liferay.com",
+			RandomTestUtil.randomString(), LocaleUtil.getDefault(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(), null,
+			ServiceContextTestUtil.getServiceContext());
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_userLocalService.addRoleUser(role.getRoleId(), user);
+
+		RoleTestUtil.addResourcePermission(
+			role, Group.class.getName(), ResourceConstants.SCOPE_GROUP,
+			String.valueOf(testDepotEntry.getGroupId()),
+			ActionKeys.ASSIGN_MEMBERS);
+
+		return UserAccountResource.builder(
+		).authentication(
+			user.getEmailAddress(), password
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+	}
+
 	private UserAccountResource _getCMSAdministratorUserAccountResource()
 		throws Exception {
 
@@ -279,6 +363,29 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 		Group group = testDepotEntry.getGroup();
 
 		return group.getExternalReferenceCode();
+	}
+
+	private UserAccountResource _getNoPermissionUserAccountResource()
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(
+			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			password, RandomTestUtil.randomString() + "@liferay.com",
+			RandomTestUtil.randomString(), LocaleUtil.getDefault(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(), null,
+			ServiceContextTestUtil.getServiceContext());
+
+		return UserAccountResource.builder(
+		).authentication(
+			user.getEmailAddress(), password
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
 	}
 
 	private void _testGetAssetLibraryUserAccount(
