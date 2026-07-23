@@ -602,6 +602,25 @@ test(
 
 		await performUserSwitch(page, userAccount.alternateName);
 
+		await digitalSalesRoomsPage.goToRoomActionsMenu(roomName, true);
+
+		await expect(digitalSalesRoomsPage.archiveMenuItem).toBeHidden();
+		await expect(digitalSalesRoomsPage.deleteMenuItem).toBeHidden();
+		await expect(digitalSalesRoomsPage.viewMenuItem).toBeHidden();
+
+		await performUserSwitch(page, 'test');
+
+		const {siteId} = await apiHelpers.headlessDigitalSalesRoom.getRoom(
+			room.id
+		);
+
+		await apiHelpers.jsonWebServicesUser.assignUsersToSite(
+			String(siteId),
+			userAccount.id
+		);
+
+		await performUserSwitch(page, userAccount.alternateName);
+
 		await digitalSalesRoomsPage.goToRoomActionsMenu(roomName);
 
 		await expect(digitalSalesRoomsPage.archiveMenuItem).toBeVisible();

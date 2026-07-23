@@ -39,6 +39,12 @@ export class HeadlessDigitalSalesRoomApiHelper {
 		);
 	}
 
+	async getRoom(roomId: number) {
+		return this.apiHelpers.get(
+			`${this.apiHelpers.baseUrl}${this.basePath}/rooms/${roomId}`
+		);
+	}
+
 	async getRooms() {
 		return this.apiHelpers.get(
 			`${this.apiHelpers.baseUrl}${this.basePath}/rooms`
