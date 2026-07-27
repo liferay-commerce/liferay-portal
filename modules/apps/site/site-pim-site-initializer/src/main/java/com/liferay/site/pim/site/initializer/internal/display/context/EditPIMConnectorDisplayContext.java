@@ -13,8 +13,8 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -48,7 +48,7 @@ public class EditPIMConnectorDisplayContext {
 			WebKeys.THEME_DISPLAY);
 	}
 
-	public Map<String, Object> getReactData() throws Exception {
+	public Map<String, Object> getReactData() {
 		Map<String, Serializable> values = _getValues();
 
 		return HashMapBuilder.<String, Object>put(
@@ -56,9 +56,11 @@ public class EditPIMConnectorDisplayContext {
 		).put(
 			"backURL", _getBackURL()
 		).put(
-			"connector", _getConnectorJSONObject(values)
+			"objectEntryId", _objectEntryId
 		).put(
-			"connectors",
+			"pimConnector", _getPIMConnectorJSONObject(values)
+		).put(
+			"pimConnectors",
 			JSONUtil.toJSONArray(
 				_pimConnectors,
 				pimConnector -> JSONUtil.put(
@@ -66,8 +68,6 @@ public class EditPIMConnectorDisplayContext {
 				).put(
 					"name", _getPIMConnectorName(pimConnector)
 				))
-		).put(
-			"objectEntryId", _objectEntryId
 		).put(
 			"title", _getTitle(values)
 		).build();
@@ -91,7 +91,7 @@ public class EditPIMConnectorDisplayContext {
 		return _themeDisplay.getURLCurrent();
 	}
 
-	private JSONObject _getConnectorJSONObject(
+	private JSONObject _getPIMConnectorJSONObject(
 		Map<String, Serializable> values) {
 
 		if (values == null) {
@@ -99,13 +99,13 @@ public class EditPIMConnectorDisplayContext {
 		}
 
 		return JSONUtil.put(
-			"active", GetterUtil.getBoolean(values.get("active"))
+			"active", MapUtil.getBoolean(values, "active")
 		).put(
-			"apiSchema", GetterUtil.getString(values.get("apiSchema"))
+			"apiSchema", MapUtil.getString(values, "apiSchema")
 		).put(
-			"connectorKey", GetterUtil.getString(values.get("connectorKey"))
+			"connectorKey", MapUtil.getString(values, "connectorKey")
 		).put(
-			"name", GetterUtil.getString(values.get("name"))
+			"name", MapUtil.getString(values, "name")
 		);
 	}
 
@@ -124,7 +124,7 @@ public class EditPIMConnectorDisplayContext {
 			return LanguageUtil.get(_httpServletRequest, "new-connector");
 		}
 
-		String name = GetterUtil.getString(values.get("name"));
+		String name = MapUtil.getString(values, "name");
 
 		if (Validator.isNotNull(name)) {
 			return LanguageUtil.format(
@@ -134,7 +134,7 @@ public class EditPIMConnectorDisplayContext {
 		return LanguageUtil.get(_httpServletRequest, "edit-connector");
 	}
 
-	private Map<String, Serializable> _getValues() throws Exception {
+	private Map<String, Serializable> _getValues() {
 		if (_objectEntryId == 0) {
 			return null;
 		}
@@ -146,7 +146,7 @@ public class EditPIMConnectorDisplayContext {
 			return null;
 		}
 
-		return _objectEntryLocalService.getValues(objectEntry);
+		return objectEntry.getValues();
 	}
 
 	private final HttpServletRequest _httpServletRequest;

@@ -13,12 +13,12 @@ import {Toolbar} from '@liferay/site-cms-site-initializer';
 import {fetch, navigate, sub} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
 
-interface IConnector {
+interface IPIMConnector {
 	key: string;
 	name: string;
 }
 
-interface IConnectorData {
+interface IPIMConnectorData {
 	active: boolean;
 	apiSchema: string;
 	connectorKey: string;
@@ -28,34 +28,34 @@ interface IConnectorData {
 interface IProps {
 	apiURL: string;
 	backURL: string;
-	connector: IConnectorData | null;
-	connectors: IConnector[];
 	objectEntryId: number;
+	pimConnector: IPIMConnectorData | null;
+	pimConnectors: IPIMConnector[];
 	title: string;
 }
 
 export default function EditPIMConnector({
 	apiURL,
 	backURL,
-	connector,
-	connectors = [],
 	objectEntryId,
+	pimConnector,
+	pimConnectors = [],
 	title,
 }: IProps) {
 	const isNew = Number(objectEntryId) === 0;
 
-	const [active, setActive] = useState(Boolean(connector?.active));
-	const [apiSchema, setApiSchema] = useState(connector?.apiSchema || '');
+	const [active, setActive] = useState(Boolean(pimConnector?.active));
+	const [apiSchema, setApiSchema] = useState(pimConnector?.apiSchema || '');
 	const [connectorKey, setConnectorKey] = useState(
-		connector?.connectorKey || ''
+		pimConnector?.connectorKey || ''
 	);
-	const [name, setName] = useState(connector?.name || '');
+	const [name, setName] = useState(pimConnector?.name || '');
 
 	useEffect(() => {
-		if (!isNew && !connector) {
+		if (!isNew && !pimConnector) {
 			navigate(backURL);
 		}
-	}, [backURL, connector, isNew]);
+	}, [backURL, isNew, pimConnector]);
 
 	const handleSave = async () => {
 		try {
@@ -157,9 +157,9 @@ export default function EditPIMConnector({
 									),
 									value: '',
 								},
-								...connectors.map((connector) => ({
-									label: connector.name,
-									value: connector.key,
+								...pimConnectors.map((pimConnector) => ({
+									label: pimConnector.name,
+									value: pimConnector.key,
 								})),
 							]}
 							required

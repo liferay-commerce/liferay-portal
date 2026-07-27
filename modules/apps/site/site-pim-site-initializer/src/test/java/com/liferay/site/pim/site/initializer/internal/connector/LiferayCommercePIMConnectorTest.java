@@ -63,7 +63,7 @@ public class LiferayCommercePIMConnectorTest {
 		LiferayCommercePIMConnector liferayCommercePIMConnector =
 			new LiferayCommercePIMConnector();
 
-		Assert.assertTrue(liferayCommercePIMConnector.isActive(1L));
+		Assert.assertTrue(liferayCommercePIMConnector.isActive(1));
 	}
 
 }
