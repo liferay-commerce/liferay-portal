@@ -7,6 +7,7 @@ package com.liferay.site.manager.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
@@ -24,6 +25,7 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.JavaConstants;
+import com.liferay.portal.kernel.util.SessionClicks;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
@@ -179,8 +181,15 @@ public class RecentGroupManagerTest {
 		mockHttpServletRequest.setAttribute(
 			WebKeys.USER, TestPropsValues.getUser());
 
+		SessionClicks.put(
+			mockHttpServletRequest.getSession(), _KEY_RECENT_GROUPS,
+			StringPool.BLANK);
+
 		return mockHttpServletRequest;
 	}
+
+	private static final String _KEY_RECENT_GROUPS =
+		"com.liferay.site.util_recentGroups";
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
