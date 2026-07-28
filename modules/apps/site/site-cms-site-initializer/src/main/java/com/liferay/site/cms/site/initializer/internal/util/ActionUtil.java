@@ -6,41 +6,28 @@
 package com.liferay.site.cms.site.initializer.internal.util;
 
 import com.liferay.depot.model.DepotEntry;
-import com.liferay.fragment.contributor.util.FragmentCollectionContributorRegistryUtil;
 import com.liferay.fragment.entry.processor.constants.FragmentEntryProcessorConstants;
 import com.liferay.fragment.listener.FragmentEntryLinkListener;
 import com.liferay.fragment.listener.FragmentEntryLinkListenerRegistry;
-import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.model.FragmentEntryLink;
-import com.liferay.fragment.renderer.DefaultFragmentRendererContext;
-import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.fragment.renderer.FragmentRendererRegistry;
-import com.liferay.fragment.service.FragmentEntryLinkLocalServiceUtil;
 import com.liferay.fragment.service.FragmentEntryLinkService;
-import com.liferay.fragment.service.FragmentEntryLinkServiceUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemBuilder;
-import com.liferay.info.field.InfoField;
 import com.liferay.info.field.InfoFieldSet;
-import com.liferay.info.field.InfoFieldSetEntry;
-import com.liferay.info.field.type.RelationshipInfoFieldType;
 import com.liferay.info.form.InfoForm;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.item.provider.InfoItemFormProvider;
-import com.liferay.info.localized.InfoLocalizedValue;
 import com.liferay.info.search.InfoSearchClassMapperRegistry;
 import com.liferay.layout.constants.LayoutTypeSettingsConstants;
 import com.liferay.layout.manager.FormManager;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
-import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServiceUtil;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalServiceUtil;
 import com.liferay.layout.util.structure.ColumnLayoutStructureItem;
 import com.liferay.layout.util.structure.ContainerStyledLayoutStructureItem;
-import com.liferay.layout.util.structure.FormRelationshipStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.FormStyledLayoutStructureItem;
-import com.liferay.layout.util.structure.FragmentStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.layout.util.structure.RowStyledLayoutStructureItem;
@@ -67,6 +54,7 @@ import com.liferay.portal.kernel.model.ClassName;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.portlet.FriendlyURLResolver;
 import com.liferay.portal.kernel.portlet.FriendlyURLResolverRegistryUtil;
 import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
@@ -76,22 +64,22 @@ import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.ScopeUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.segments.service.SegmentsExperienceLocalServiceUtil;
 import com.liferay.site.cms.site.initializer.internal.fragment.renderer.SpacesComponentSectionFragmentRenderer;
+import com.liferay.site.cms.site.initializer.provider.CMSObjectEntryFormRendererProvider;
+import com.liferay.site.cms.site.initializer.renderer.ObjectEntryFormRenderer;
+import com.liferay.site.cms.site.initializer.util.CMSObjectEntryFormLayoutUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -99,7 +87,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 /**
  * @author Eudaldo Alonso
@@ -163,12 +150,14 @@ public class ActionUtil {
 
 		formStyledLayoutStructureItem.updateItemConfig(
 			JSONUtil.put(
-				"cssClasses", JSONUtil.put("lfr-main-form-container")));
+				"cssClasses",
+				JSONUtil.putAll(
+					"cms-object-layout-form", "lfr-main-form-container")));
 
 		List<FragmentEntryLink> addedFragmentEntryLinks = new ArrayList<>();
 
 		FragmentEntryLink localizationSelectFragmentEntryLink =
-			_addFragmentEntryLink(
+			CMSObjectEntryFormLayoutUtil.addFragmentEntryLink(
 				JSONUtil.toString(
 					JSONUtil.put(
 						FragmentEntryProcessorConstants.
@@ -199,7 +188,7 @@ public class ActionUtil {
 			layoutPageTemplateEntry.getClassNameId(), layout.getGroupId(),
 			infoItemServiceRegistry, infoSearchClassMapperRegistry);
 
-		_addInputFragmentEntryLink(
+		CMSObjectEntryFormLayoutUtil.addInputFragmentEntryLink(
 			addedFragmentEntryLinks,
 			JSONUtil.put(
 				"placeholder",
@@ -223,11 +212,12 @@ public class ActionUtil {
 			formStyledLayoutStructureItem, false, segmentsExperienceId,
 			serviceContext, JSONUtil.put("marginBottom", "5"));
 
-		FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
-			StringPool.BLANK, fragmentEntryLinkService,
-			fragmentRendererRegistry,
-			SpacesComponentSectionFragmentRenderer.class.getName(), layout,
-			segmentsExperienceId, serviceContext);
+		FragmentEntryLink fragmentEntryLink =
+			CMSObjectEntryFormLayoutUtil.addFragmentEntryLink(
+				StringPool.BLANK, fragmentEntryLinkService,
+				fragmentRendererRegistry,
+				SpacesComponentSectionFragmentRenderer.class.getName(), layout,
+				segmentsExperienceId, serviceContext);
 
 		if (fragmentEntryLink != null) {
 			LayoutStructureItem layoutStructureItem =
@@ -241,7 +231,7 @@ public class ActionUtil {
 			addedFragmentEntryLinks.add(fragmentEntryLink);
 		}
 
-		_addInputFragmentEntryLink(
+		CMSObjectEntryFormLayoutUtil.addInputFragmentEntryLink(
 			addedFragmentEntryLinks, null, formManager,
 			"INPUTS-friendly-url-input",
 			infoForm.getInfoField("objectEntryFriendlyURL"), layout,
@@ -253,14 +243,39 @@ public class ActionUtil {
 			ObjectDefinitionLocalServiceUtil.fetchObjectDefinitionByClassName(
 				layout.getCompanyId(), layoutPageTemplateEntry.getClassName());
 
-		layoutStructure = _addInputFragmentEntryLinks(
-			addedFragmentEntryLinks, true, fragmentEntryLinkListenerRegistry,
-			fragmentEntryLinkService, formManager, fragmentRendererRegistry,
-			(InfoFieldSet)infoForm.getInfoFieldSetEntry(
-				objectDefinition.getName()),
-			layout, layoutStructure, formStyledLayoutStructureItem,
-			objectDefinition.getName(), false, true, segmentsExperienceId,
-			serviceContext, JSONUtil.put("marginBottom", "16px"));
+		InfoFieldSet infoFieldSet = (InfoFieldSet)infoForm.getInfoFieldSetEntry(
+			objectDefinition.getName());
+
+		ObjectEntryFormRenderer objectEntryFormRenderer = null;
+
+		CMSObjectEntryFormRendererProvider cmsObjectEntryFormRendererProvider =
+			_cmsObjectEntryFormRendererProviderSnapshot.get();
+
+		if (cmsObjectEntryFormRendererProvider != null) {
+			objectEntryFormRenderer =
+				cmsObjectEntryFormRendererProvider.getObjectEntryFormRenderer(
+					objectDefinition);
+		}
+
+		if (objectEntryFormRenderer != null) {
+			layoutStructure = objectEntryFormRenderer.render(
+				formManager, fragmentEntryLinkListenerRegistry,
+				addedFragmentEntryLinks, fragmentEntryLinkService,
+				fragmentRendererRegistry, infoFieldSet, layout, layoutStructure,
+				formStyledLayoutStructureItem, objectDefinition,
+				segmentsExperienceId, serviceContext);
+		}
+		else {
+			layoutStructure =
+				CMSObjectEntryFormLayoutUtil.addInputFragmentEntryLinks(
+					addedFragmentEntryLinks, true,
+					fragmentEntryLinkListenerRegistry, fragmentEntryLinkService,
+					formManager, fragmentRendererRegistry, infoFieldSet, layout,
+					layoutStructure, formStyledLayoutStructureItem,
+					objectDefinition.getName(), false, true,
+					segmentsExperienceId, serviceContext,
+					JSONUtil.put("marginBottom", "16px"));
+		}
 
 		LayoutPageTemplateStructureLocalServiceUtil.
 			updateLayoutPageTemplateStructureData(
@@ -345,29 +360,31 @@ public class ActionUtil {
 			SegmentsExperienceLocalServiceUtil.fetchDefaultSegmentsExperienceId(
 				layout.getPlid());
 
-		_addInputFragmentEntryLink(
+		CMSObjectEntryFormLayoutUtil.addInputFragmentEntryLink(
 			addedFragmentEntryLinks, null, formManager, "INPUTS-text-input",
 			infoForm.getInfoField("ObjectField_title"), layout, layoutStructure,
 			formStyledLayoutStructureItem, true, segmentsExperienceId,
 			serviceContext, JSONUtil.put("marginBottom", "24px"));
 
-		_addInputFragmentEntryLink(
+		CMSObjectEntryFormLayoutUtil.addInputFragmentEntryLink(
 			addedFragmentEntryLinks, null, formManager, "INPUTS-text-input",
 			infoForm.getInfoField("objectEntryFriendlyURL"), layout,
 			layoutStructure, formStyledLayoutStructureItem, true,
 			segmentsExperienceId, serviceContext,
 			JSONUtil.put("marginBottom", "24px"));
 
-		layoutStructure = _addInputFragmentEntryLinks(
-			addedFragmentEntryLinks, false, fragmentEntryLinkListenerRegistry,
-			fragmentEntryLinkService, formManager, fragmentRendererRegistry,
-			(InfoFieldSet)infoForm.getInfoFieldSetEntry(name), layout,
-			layoutStructure, formStyledLayoutStructureItem, name, true, false,
-			segmentsExperienceId, serviceContext,
-			JSONUtil.put("marginBottom", "24px"));
+		layoutStructure =
+			CMSObjectEntryFormLayoutUtil.addInputFragmentEntryLinks(
+				addedFragmentEntryLinks, false,
+				fragmentEntryLinkListenerRegistry, fragmentEntryLinkService,
+				formManager, fragmentRendererRegistry,
+				(InfoFieldSet)infoForm.getInfoFieldSetEntry(name), layout,
+				layoutStructure, formStyledLayoutStructureItem, name, true,
+				false, segmentsExperienceId, serviceContext,
+				JSONUtil.put("marginBottom", "24px"));
 
 		FragmentEntryLink localizationSelectFragmentEntryLink =
-			_addFragmentEntryLink(
+			CMSObjectEntryFormLayoutUtil.addFragmentEntryLink(
 				JSONUtil.toString(
 					JSONUtil.put(
 						FragmentEntryProcessorConstants.
@@ -408,40 +425,43 @@ public class ActionUtil {
 			JSONUtil.put(
 				"cssClasses", JSONUtil.put("lfr-main-form-container")));
 
-		_addInputFragmentEntryLink(
+		CMSObjectEntryFormLayoutUtil.addInputFragmentEntryLink(
 			addedFragmentEntryLinks, null, formManager, "INPUTS-text-input",
 			infoForm.getInfoField("ObjectField_title"), layout, layoutStructure,
 			formStyledLayoutStructureItem, false, segmentsExperienceId,
 			serviceContext, JSONUtil.put("marginBottom", "24px"));
 
-		_addInputFragmentEntryLink(
+		CMSObjectEntryFormLayoutUtil.addInputFragmentEntryLink(
 			addedFragmentEntryLinks, null, formManager, "INPUTS-text-input",
 			infoForm.getInfoField("objectEntryFriendlyURL"), layout,
 			layoutStructure, formStyledLayoutStructureItem, false,
 			segmentsExperienceId, serviceContext,
 			JSONUtil.put("marginBottom", "24px"));
 
-		layoutStructure = _addInputFragmentEntryLinks(
-			addedFragmentEntryLinks, false, fragmentEntryLinkListenerRegistry,
-			fragmentEntryLinkService, formManager, fragmentRendererRegistry,
-			(InfoFieldSet)infoForm.getInfoFieldSetEntry(name), layout,
-			layoutStructure, formStyledLayoutStructureItem, name, false, false,
-			segmentsExperienceId, serviceContext,
-			JSONUtil.put("marginBottom", "24px"));
+		layoutStructure =
+			CMSObjectEntryFormLayoutUtil.addInputFragmentEntryLinks(
+				addedFragmentEntryLinks, false,
+				fragmentEntryLinkListenerRegistry, fragmentEntryLinkService,
+				formManager, fragmentRendererRegistry,
+				(InfoFieldSet)infoForm.getInfoFieldSetEntry(name), layout,
+				layoutStructure, formStyledLayoutStructureItem, name, false,
+				false, segmentsExperienceId, serviceContext,
+				JSONUtil.put("marginBottom", "24px"));
 
-		localizationSelectFragmentEntryLink = _addFragmentEntryLink(
-			JSONUtil.toString(
-				JSONUtil.put(
-					FragmentEntryProcessorConstants.
-						KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR,
+		localizationSelectFragmentEntryLink =
+			CMSObjectEntryFormLayoutUtil.addFragmentEntryLink(
+				JSONUtil.toString(
 					JSONUtil.put(
-						"allowLocalizationManagement", "true"
-					).put(
-						"size", "small"
-					))),
-			fragmentEntryLinkService, fragmentRendererRegistry,
-			"localization-select", layout, segmentsExperienceId,
-			serviceContext);
+						FragmentEntryProcessorConstants.
+							KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR,
+						JSONUtil.put(
+							"allowLocalizationManagement", "true"
+						).put(
+							"size", "small"
+						))),
+				fragmentEntryLinkService, fragmentRendererRegistry,
+				"localization-select", layout, segmentsExperienceId,
+				serviceContext);
 
 		if (localizationSelectFragmentEntryLink != null) {
 			LayoutStructureItem layoutStructureItem =
@@ -1264,283 +1284,6 @@ public class ActionUtil {
 		return layoutPageTemplateEntry;
 	}
 
-	private static FragmentEntryLink _addFragmentEntryLink(
-			String editableValues,
-			FragmentEntryLinkService fragmentEntryLinkService,
-			FragmentRendererRegistry fragmentRendererRegistry,
-			String fragmentEntryKey, Layout layout, long segmentsExperienceId,
-			ServiceContext serviceContext)
-		throws Exception {
-
-		FragmentRenderer fragmentRenderer =
-			fragmentRendererRegistry.getFragmentRenderer(fragmentEntryKey);
-
-		if (fragmentRenderer != null) {
-			DefaultFragmentRendererContext defaultFragmentRendererContext =
-				new DefaultFragmentRendererContext(null);
-
-			return fragmentEntryLinkService.addFragmentEntryLink(
-				null, layout.getGroupId(), null, null, null,
-				segmentsExperienceId, layout.getPlid(), StringPool.BLANK,
-				StringPool.BLANK, StringPool.BLANK,
-				JSONFactoryUtil.toString(
-					fragmentRenderer.getConfigurationJSONObject(
-						defaultFragmentRendererContext)),
-				editableValues, StringPool.BLANK, 0, fragmentEntryKey,
-				fragmentRenderer.getType(), serviceContext);
-		}
-
-		FragmentEntry fragmentEntry =
-			FragmentCollectionContributorRegistryUtil.getFragmentEntry(
-				fragmentEntryKey);
-
-		if (fragmentEntry == null) {
-			return null;
-		}
-
-		String contributedRendererKey = null;
-
-		if (fragmentEntry.getFragmentEntryId() == 0) {
-			contributedRendererKey = fragmentEntryKey;
-		}
-
-		return fragmentEntryLinkService.addFragmentEntryLink(
-			null, layout.getGroupId(), null,
-			fragmentEntry.getExternalReferenceCode(),
-			ScopeUtil.getItemScopeExternalReferenceCode(
-				fragmentEntry.getGroupId(), layout.getGroupId()),
-			segmentsExperienceId, layout.getPlid(), fragmentEntry.getCss(),
-			fragmentEntry.getHtml(), fragmentEntry.getJs(),
-			fragmentEntry.getConfiguration(), editableValues, StringPool.BLANK,
-			0, contributedRendererKey, fragmentEntry.getType(), serviceContext);
-	}
-
-	private static void _addInputFragmentEntryLink(
-			List<FragmentEntryLink> addedFragmentEntryLinks,
-			JSONObject configurationJSONObject, FormManager formManager,
-			String fragmentEntryKey, InfoField<?> infoField, Layout layout,
-			LayoutStructure layoutStructure,
-			LayoutStructureItem layoutStructureItem, boolean readOnly,
-			long segmentsExperienceId, ServiceContext serviceContext,
-			JSONObject stylesJSONObject)
-		throws Exception {
-
-		if (infoField == null) {
-			return;
-		}
-
-		FragmentStyledLayoutStructureItem fragmentStyledLayoutStructureItem =
-			formManager.addFragmentEntryLinksLayoutStructureItem(
-				fragmentEntryKey, infoField, layout, layoutStructure,
-				layoutStructureItem, readOnly, segmentsExperienceId,
-				serviceContext);
-
-		if (fragmentStyledLayoutStructureItem == null) {
-			return;
-		}
-
-		fragmentStyledLayoutStructureItem.updateItemConfig(
-			JSONUtil.put("styles", stylesJSONObject));
-
-		FragmentEntryLink fragmentEntryLink =
-			FragmentEntryLinkLocalServiceUtil.fetchFragmentEntryLink(
-				fragmentStyledLayoutStructureItem.getFragmentEntryLinkId());
-
-		if (configurationJSONObject != null) {
-			JSONObject editableValuesJSONObject =
-				fragmentEntryLink.getEditableValuesJSONObject();
-
-			JSONObject jsonObject = editableValuesJSONObject.getJSONObject(
-				FragmentEntryProcessorConstants.
-					KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR);
-
-			for (String key : configurationJSONObject.keySet()) {
-				jsonObject.put(key, configurationJSONObject.get(key));
-			}
-
-			fragmentEntryLink =
-				FragmentEntryLinkServiceUtil.updateFragmentEntryLink(
-					fragmentEntryLink.getFragmentEntryLinkId(),
-					editableValuesJSONObject.toString());
-		}
-
-		if (fragmentEntryLink != null) {
-			addedFragmentEntryLinks.add(fragmentEntryLink);
-		}
-	}
-
-	private static LayoutStructure _addInputFragmentEntryLinks(
-			List<FragmentEntryLink> addedFragmentEntryLinks, boolean editMode,
-			FragmentEntryLinkListenerRegistry fragmentEntryLinkListenerRegistry,
-			FragmentEntryLinkService fragmentEntryLinkService,
-			FormManager formManager,
-			FragmentRendererRegistry fragmentRendererRegistry,
-			InfoFieldSet infoFieldSet, Layout layout,
-			LayoutStructure layoutStructure,
-			LayoutStructureItem layoutStructureItem,
-			String objectDefinitionName, boolean readOnly, boolean repeatable,
-			long segmentsExperienceId, ServiceContext serviceContext,
-			JSONObject stylesJSONObject)
-		throws Exception {
-
-		if (infoFieldSet.isRelationship()) {
-			FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
-				JSONUtil.toString(
-					JSONUtil.put(
-						FragmentEntryProcessorConstants.
-							KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
-						JSONUtil.put(
-							"accordion-title",
-							() -> {
-								InfoLocalizedValue<String>
-									labelInfoLocalizedValue =
-										infoFieldSet.
-											getLabelInfoLocalizedValue();
-
-								JSONObject jsonObject =
-									JSONFactoryUtil.createJSONObject();
-
-								for (Locale availableLocale :
-										labelInfoLocalizedValue.
-											getAvailableLocales()) {
-
-									jsonObject.put(
-										LocaleUtil.toLanguageId(
-											availableLocale),
-										labelInfoLocalizedValue.getValue(
-											availableLocale));
-								}
-
-								return jsonObject;
-							}))),
-				fragmentEntryLinkService, fragmentRendererRegistry,
-				"BASIC_COMPONENT-accordion", layout, segmentsExperienceId,
-				serviceContext);
-
-			if (fragmentEntryLink != null) {
-				LayoutStructureItem fragmentStyledLayoutStructureItem =
-					layoutStructure.addFragmentStyledLayoutStructureItem(
-						fragmentEntryLink.getFragmentEntryLinkId(),
-						layoutStructureItem.getItemId(), -1);
-
-				fragmentStyledLayoutStructureItem.updateItemConfig(
-					JSONUtil.put("styles", stylesJSONObject));
-
-				LayoutPageTemplateStructureLocalServiceUtil.
-					updateLayoutPageTemplateStructureData(
-						serviceContext.getUserId(), layout.getGroupId(),
-						layout.getPlid(), segmentsExperienceId,
-						layoutStructure.toString());
-
-				for (FragmentEntryLinkListener fragmentEntryLinkListener :
-						fragmentEntryLinkListenerRegistry.
-							getFragmentEntryLinkListeners()) {
-
-					fragmentEntryLinkListener.onAddFragmentEntryLink(
-						fragmentEntryLink);
-				}
-
-				LayoutPageTemplateStructure layoutPageTemplateStructure =
-					LayoutPageTemplateStructureLocalServiceUtil.
-						fetchLayoutPageTemplateStructure(
-							layout.getGroupId(), layout.getPlid());
-
-				layoutStructure = LayoutStructure.of(
-					layoutPageTemplateStructure.getData(segmentsExperienceId));
-
-				fragmentStyledLayoutStructureItem =
-					layoutStructure.getLayoutStructureItem(
-						fragmentStyledLayoutStructureItem.getItemId());
-
-				String childrenItemId =
-					fragmentStyledLayoutStructureItem.getChildrenItemId(0);
-
-				if (childrenItemId != null) {
-					layoutStructureItem =
-						layoutStructure.getLayoutStructureItem(childrenItemId);
-				}
-			}
-
-			FormRelationshipStyledLayoutStructureItem
-				formRelationshipStyledLayoutStructureItem =
-					(FormRelationshipStyledLayoutStructureItem)
-						layoutStructure.
-							addFormRelationshipStyledLayoutStructureItem(
-								PortalUUIDUtil.generate(),
-								layoutStructureItem.getItemId(), -1);
-
-			formRelationshipStyledLayoutStructureItem.setContentType(
-				infoFieldSet.getName());
-			formRelationshipStyledLayoutStructureItem.setRepeatable(repeatable);
-
-			layoutStructureItem = formRelationshipStyledLayoutStructureItem;
-		}
-
-		for (InfoFieldSetEntry infoFieldSetEntry :
-				infoFieldSet.getInfoFieldSetEntries()) {
-
-			if (Objects.equals(infoFieldSet.getName(), objectDefinitionName) &&
-				ArrayUtil.contains(
-					_HIDDEN_INFO_FIELDS, infoFieldSetEntry.getName())) {
-
-				continue;
-			}
-
-			if (infoFieldSetEntry instanceof InfoField) {
-				InfoField<?> infoField = (InfoField<?>)infoFieldSetEntry;
-
-				if (RelationshipInfoFieldType.INSTANCE ==
-						infoField.getInfoFieldType()) {
-
-					if (!editMode) {
-						continue;
-					}
-
-					InfoField<RelationshipInfoFieldType> relationshipInfoField =
-						(InfoField<RelationshipInfoFieldType>)infoField;
-
-					if (relationshipInfoField.getAttribute(
-							RelationshipInfoFieldType.INHERITANCE)) {
-
-						continue;
-					}
-
-					if (relationshipInfoField.getAttribute(
-							RelationshipInfoFieldType.MULTIPLE)) {
-
-						_addInputFragmentEntryLink(
-							addedFragmentEntryLinks, null, formManager,
-							"INPUTS-multiselector-dropdown",
-							(InfoField<?>)infoFieldSetEntry, layout,
-							layoutStructure, layoutStructureItem, readOnly,
-							segmentsExperienceId, serviceContext,
-							stylesJSONObject);
-
-						continue;
-					}
-				}
-
-				_addInputFragmentEntryLink(
-					addedFragmentEntryLinks, null, formManager, null,
-					(InfoField<?>)infoFieldSetEntry, layout, layoutStructure,
-					layoutStructureItem, readOnly, segmentsExperienceId,
-					serviceContext, stylesJSONObject);
-			}
-			else if (infoFieldSetEntry instanceof InfoFieldSet) {
-				layoutStructure = _addInputFragmentEntryLinks(
-					addedFragmentEntryLinks, editMode,
-					fragmentEntryLinkListenerRegistry, fragmentEntryLinkService,
-					formManager, fragmentRendererRegistry,
-					(InfoFieldSet)infoFieldSetEntry, layout, layoutStructure,
-					layoutStructureItem, objectDefinitionName, readOnly,
-					repeatable, segmentsExperienceId, serviceContext,
-					stylesJSONObject);
-			}
-		}
-
-		return layoutStructure;
-	}
-
 	private static LayoutPageTemplateEntry
 			_addTranslateContentDefaultLayoutPageTemplateEntry(
 				long classNameId, FormManager formManager,
@@ -1704,15 +1447,14 @@ public class ActionUtil {
 		return FriendlyURLResolverConstants.URL_SEPARATOR_X_CUSTOM_ASSET;
 	}
 
-	private static final String[] _HIDDEN_INFO_FIELDS = {
-		"displayDate", "expirationDate", "externalReferenceCode",
-		"objectEntryFriendlyURL", "reviewDate", "title"
-	};
-
 	private static final String
 		_TRANSLATION_LAYOUT_PAGE_TEMPLATE_ENTRY_KEY_PREFIX =
 			"LFR_CMS_TRANSLATION_";
 
 	private static final Log _log = LogFactoryUtil.getLog(ActionUtil.class);
+
+	private static final Snapshot<CMSObjectEntryFormRendererProvider>
+		_cmsObjectEntryFormRendererProviderSnapshot = new Snapshot<>(
+			ActionUtil.class, CMSObjectEntryFormRendererProvider.class);
 
 }
