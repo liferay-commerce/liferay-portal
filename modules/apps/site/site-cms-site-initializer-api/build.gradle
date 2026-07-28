@@ -11,6 +11,11 @@ dependencies {
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:bulk:bulk-selection-api")
 	compileOnly project(":apps:depot:depot-api")
+	compileOnly project(":apps:fragment:fragment-api")
+	compileOnly project(":apps:fragment:fragment-entry-processor:fragment-entry-processor-api")
+	compileOnly project(":apps:info:info-api")
+	compileOnly project(":apps:layout:layout-api")
+	compileOnly project(":apps:layout:layout-page-template-api")
 	compileOnly project(":apps:object:object-api")
 	compileOnly project(":apps:object:object-rest-api")
 	compileOnly project(":apps:portal-odata:portal-odata-api")
