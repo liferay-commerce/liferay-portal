@@ -235,7 +235,9 @@ function createObjectDefinition(
 }
 
 function getChildFieldNames(structure: ReturnType<typeof buildStructure>) {
-	return Array.from(structure.children.values()).map((child) => child.name);
+	return Array.from(structure.children.values()).map((child) =>
+		'name' in child ? child.name : undefined
+	);
 }
 
 describe('buildStructure', () => {
@@ -255,7 +257,7 @@ describe('buildStructure', () => {
 
 		const childrenMap = new Map(
 			Array.from(structure.children.values()).map((child) => [
-				child.erc,
+				'erc' in child ? child.erc : undefined,
 				child,
 			])
 		);
@@ -282,7 +284,7 @@ describe('buildStructure', () => {
 		});
 
 		const emailField = Array.from(structure.children.values()).find(
-			(child) => child.erc === 'email-field'
+			(child) => 'erc' in child && child.erc === 'email-field'
 		);
 
 		expect(emailField).toEqual(
