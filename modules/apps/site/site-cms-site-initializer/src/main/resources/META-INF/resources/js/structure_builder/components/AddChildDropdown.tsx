@@ -10,6 +10,7 @@ import React from 'react';
 import buildLocalizedValue from '../../common/utils/buildLocalizedValue';
 import {useCache} from '../contexts/CacheContext';
 import {useSelector, useStateDispatch} from '../contexts/StateContext';
+import structureBuilderRegistry from '../contributors/registry';
 import selectStructure from '../selectors/selectStructure';
 import {RepeatableGroup} from '../types/Structure';
 import {
@@ -19,6 +20,7 @@ import {
 	Field,
 	getDefaultField,
 } from '../utils/field';
+import findChild from '../utils/findChild';
 import getRandomId from '../utils/getRandomId';
 import getRandomName from '../utils/getRandomName';
 import getUuid from '../utils/getUuid';
@@ -29,6 +31,7 @@ type Item = {
 	label: string;
 	onClick: () => void;
 	symbolLeft: string;
+	type?: 'divider';
 };
 
 export default function AddChildDropdown({
@@ -48,6 +51,17 @@ export default function AddChildDropdown({
 	const structure = useSelector(selectStructure);
 
 	const {data: objectDefinitions, status} = useCache('object-definitions');
+
+	const parent = parentUuid
+		? findChild({root: structure, uuid: parentUuid})
+		: null;
+
+	const insideGroup = Boolean(
+		parent &&
+			structureBuilderRegistry
+				.getProvider(structure.type)
+				?.isGroupingContainer?.(parent)
+	);
 
 	const addField = (type: Field['type']) =>
 		dispatch({
@@ -84,28 +98,35 @@ export default function AddChildDropdown({
 							symbolLeft: FIELD_TYPE_ICON[type],
 						})
 					),
-					{type: 'divider'},
-					{
-						className: 'dropdown-item-cms-warning',
-						label: Liferay.Language.get('select-related-content'),
-						onClick: () => addRelatedContent(),
-						symbolLeft: 'select-from-list',
-					},
-					{
-						className: 'dropdown-item-cms-warning',
-						label: Liferay.Language.get(
-							'referenced-content-structure'
-						),
-						onClick: () =>
-							openReferencedStructureModal({
-								dispatch,
-								objectDefinitions,
-								parentUuid: parentUuid ?? structure.uuid,
-								status,
-								structure,
-							}),
-						symbolLeft: 'edit-layout',
-					},
+					...(insideGroup
+						? []
+						: [
+								{type: 'divider'} as Item,
+								{
+									className: 'dropdown-item-cms-warning',
+									label: Liferay.Language.get(
+										'select-related-content'
+									),
+									onClick: () => addRelatedContent(),
+									symbolLeft: 'select-from-list',
+								},
+								{
+									className: 'dropdown-item-cms-warning',
+									label: Liferay.Language.get(
+										'referenced-content-structure'
+									),
+									onClick: () =>
+										openReferencedStructureModal({
+											dispatch,
+											objectDefinitions,
+											parentUuid:
+												parentUuid ?? structure.uuid,
+											status,
+											structure,
+										}),
+									symbolLeft: 'edit-layout',
+								},
+							]),
 				]}
 				menuElementAttrs={{className: 'dropdown-menu-cms'}}
 				menuHeight="auto"

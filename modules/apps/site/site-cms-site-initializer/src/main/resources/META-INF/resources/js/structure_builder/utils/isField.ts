@@ -4,6 +4,7 @@
  */
 
 import {
+	GroupingContainer,
 	ReferencedStructure,
 	RelatedContent,
 	RepeatableGroup,
@@ -13,12 +14,14 @@ import {Field, FieldType} from './field';
 export default function isField(item: {
 	type?:
 		| FieldType
+		| GroupingContainer['type']
 		| ReferencedStructure['type']
 		| RelatedContent['type']
 		| RepeatableGroup['type'];
 }): item is Field {
 	return Boolean(
 		item.type &&
+			item.type !== 'grouping-container' &&
 			item.type !== 'referenced-structure' &&
 			item.type !== 'related-content' &&
 			item.type !== 'repeatable-group'

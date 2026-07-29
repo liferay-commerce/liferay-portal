@@ -7,7 +7,10 @@ import ClayEmptyState from '@clayui/empty-state';
 import React from 'react';
 
 import {getImage} from '../../../common/utils/getImage';
+import {useSelector} from '../../contexts/StateContext';
+import structureBuilderRegistry from '../../contributors/registry';
 import useSelectedItem from '../../hooks/useSelectedItem';
+import selectStructure from '../../selectors/selectStructure';
 import ReferencedStructureSettings from './ReferencedStructureSettings';
 import RelatedContentSettings from './RelatedContentSettings';
 import RepeatableGroupSettings from './RepeatableGroupSettings';
@@ -16,6 +19,8 @@ import StructureSettings from './StructureSettings';
 
 export default function Settings() {
 	const item = useSelectedItem();
+
+	const structure = useSelector(selectStructure);
 
 	if (item.type === 'multiselection') {
 		return <MultiselectionState />;
@@ -47,6 +52,17 @@ export default function Settings() {
 				group={item.group}
 				key={item.group.uuid}
 			/>
+		);
+	}
+
+	if (item.type === 'grouping-container') {
+		return (
+			structureBuilderRegistry
+				.getProvider(structure.type)
+				?.renderSettings?.({
+					child: item.child,
+					disabled: item.referenced,
+				}) ?? null
 		);
 	}
 

@@ -19,6 +19,7 @@ import {
 	StructureChild,
 } from '../types/Structure';
 import {Field, SelectFromListField} from './field';
+import isContainer from './isContainer';
 
 const NAME_MAX_LENGTH = 41;
 const ERC_MAX_LENGTH = 75;
@@ -280,8 +281,8 @@ export function getErrorMessage(
 	property: ValidationProperty,
 	error: ValidationError,
 	values: {
-		erc: string;
-		name: string;
+		erc?: string;
+		name?: string;
 	}
 ) {
 	const {erc, name} = values;
@@ -373,17 +374,16 @@ function getSiblingFieldNames(
 	const deletedFields =
 		deletedChildren?.filter(
 			(child) =>
-				child.type !== 'referenced-structure' &&
-				child.type !== 'repeatable-group'
+				child.type !== 'referenced-structure' && !isContainer(child)
 		) || [];
 
 	const fields = [...deletedFields, ...children.values()];
 
 	return fields
 		.filter(
-			(child) =>
+			(child): child is Field | RelatedContent =>
 				child.type !== 'referenced-structure' &&
-				child.type !== 'repeatable-group' &&
+				!isContainer(child) &&
 				child.uuid !== uuid
 		)
 		.map((child) => child.name);

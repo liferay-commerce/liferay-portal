@@ -16,6 +16,7 @@ import findAvailableFieldName from '../findAvailableFieldName';
 import getRandomId from '../getRandomId';
 import getRandomName from '../getRandomName';
 import getUuid from '../getUuid';
+import isContainer from '../isContainer';
 
 export default function cloneChild({
 	child,
@@ -89,6 +90,28 @@ export default function cloneChild({
 		};
 
 		return relatedContent;
+	}
+
+	if (isContainer(child)) {
+		const container = {
+			...child,
+			children: new Map(),
+			parent,
+			uuid,
+		};
+
+		for (const grandchild of child.children.values()) {
+			const cloned = cloneChild({
+				child: grandchild,
+				deletedChildren,
+				parent: uuid,
+				siblings: container.children,
+			});
+
+			container.children.set(cloned.uuid, cloned);
+		}
+
+		return container;
 	}
 
 	const field: Field = {

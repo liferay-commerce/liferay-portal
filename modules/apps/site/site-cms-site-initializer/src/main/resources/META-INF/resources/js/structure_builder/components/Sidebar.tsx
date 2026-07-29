@@ -14,9 +14,11 @@ import {sub} from 'frontend-js-web';
 import React, {useRef, useState} from 'react';
 
 import {useSelector, useStateDispatch} from '../contexts/StateContext';
+import structureBuilderRegistry from '../contributors/registry';
 import selectPublishedChildren from '../selectors/selectPublishedChildren';
 import selectSelection from '../selectors/selectSelection';
 import selectStructure from '../selectors/selectStructure';
+import findChild from '../utils/findChild';
 import handleAddRepeatableGroup from '../utils/handleAddRepeatableGroup';
 import handleDeleteChildren from '../utils/handleDeleteChildren';
 import isCopyable from '../utils/isCopyable';
@@ -178,6 +180,17 @@ function Toolbar({
 							}),
 						symbolLeft: 'repeat',
 					},
+
+					...(structureBuilderRegistry
+						.getProvider(structure.type)
+						?.getItemActions?.({
+							dispatch,
+							items: selection.map(
+								(uuid) => findChild({root: structure, uuid})!
+							),
+							structure,
+						}) ?? []),
+
 					{type: 'divider'},
 					{
 						disabled: !copyableUuids.length,

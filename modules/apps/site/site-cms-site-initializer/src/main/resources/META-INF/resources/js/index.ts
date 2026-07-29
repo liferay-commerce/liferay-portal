@@ -21,7 +21,19 @@ export {
 	IBulkActionTaskStarterDTO,
 } from './common/types/BulkActionTask';
 export {ObjectField, StateFlowValue} from './common/types/ObjectDefinition';
+export type {
+	ObjectDefinition,
+	ObjectDefinitions,
+	ObjectLayout,
+	ObjectLayoutBox,
+	ObjectLayoutTab,
+} from './common/types/ObjectDefinition';
+
 export {type Space} from './common/types/Space';
+
+export {default as buildLocalizedValue} from './common/utils/buildLocalizedValue';
+export {setDefaultLanguageLabels} from './common/utils/defaultLanguageLabels';
+export {default as focusInvalidElement} from './common/utils/focusInvalidElement';
 export {getScopeExternalReferenceCode} from './common/utils/getScopeExternalReferenceCode';
 export {
 	displayCreateSuccessToast,
@@ -34,7 +46,6 @@ export {
 	displaySystemErrorToast,
 	displayNameInUseErrorToast,
 } from './common/utils/toastUtil';
-
 export {default as ContentEditorPreview} from './content_editor/components/ContentEditorPreview';
 export {default as ContentEditorSidePanel} from './content_editor/components/ContentEditorSidePanel';
 
@@ -42,7 +53,6 @@ export {default as ContentEditorSidePanel} from './content_editor/components/Con
 
 export {default as ContentEditorToolbar} from './content_editor/components/ContentEditorToolbar';
 export {default as Spaces} from './content_editor/components/Spaces';
-
 export {default as CommentsPanel} from './content_editor/components/panels/CommentsPanel';
 export {default as BulkActionTaskAssets} from './main_view/bulk_action_task/BulkActionTaskAssets';
 export {default as BulkActionTaskDuration} from './main_view/bulk_action_task/BulkActionTaskDuration';
@@ -53,11 +63,9 @@ export {default as EditCategoryPage} from './main_view/categorization/categories
 export {default as ViewTags} from './main_view/categorization/tags/ViewTags';
 export {default as EditVocabulary} from './main_view/categorization/vocabularies/EditVocabulary';
 export {default as Dashboards} from './main_view/dashboard/Dashboards';
-
 export {default as EditFolder} from './main_view/folders/EditFolder';
 export {default as QuickActions} from './main_view/home/QuickActions';
 export {default as SearchBar} from './main_view/home/SearchBar';
-
 export {default as ViewWorkflowTasks} from './main_view/home/ViewWorkflowTasks';
 
 // Main
@@ -109,5 +117,41 @@ export {default as ViewAsset} from './main_view/view_asset/ViewAsset';
 
 // Structure Builder
 
+export {default as StructureBreadcrumb} from './structure_builder/components/Breadcrumb';
+export {LocalizedInput} from './structure_builder/components/LocalizedInput';
 export {default as StructureBuilder} from './structure_builder/components/StructureBuilder';
 export {default as PicklistBuilder} from './structure_builder/components/picklist_builder/PicklistBuilder';
+export {
+	useSelector,
+	useStateDispatch,
+} from './structure_builder/contexts/StateContext';
+export {STRUCTURE_BUILDER_CONTRIBUTORS_ID} from './structure_builder/contributors/registry';
+export type {
+	AddGroupingContainerAction,
+	StructureBuilderItemAction,
+	StructureBuilderProvider,
+	StructureBuilderReduceAction,
+	StructureBuilderReduceResult,
+	StructureBuilderRegistry,
+	UpdateGroupingContainerAction,
+} from './structure_builder/contributors/registry';
+export {default as selectErrors} from './structure_builder/selectors/selectErrors';
+export type {
+	GroupingContainer,
+	RepeatableGroup,
+	Structure,
+	StructureChild,
+	StructureType,
+} from './structure_builder/types/Structure';
+export type {Uuid} from './structure_builder/types/Uuid';
+export {buildChildren} from './structure_builder/utils/buildStructure';
+export type {Field} from './structure_builder/utils/field';
+export {default as findChild} from './structure_builder/utils/findChild';
+export {default as getUuid} from './structure_builder/utils/getUuid';
+export {default as isContainer} from './structure_builder/utils/isContainer';
+export type {Container} from './structure_builder/utils/isContainer';
+export {default as isField} from './structure_builder/utils/isField';
+export {default as sortChildren} from './structure_builder/utils/state/sortChildren';
+export {default as updateChild} from './structure_builder/utils/state/updateChild';
+export {validateRepeatableGroup} from './structure_builder/utils/validation';
+export type {ErrorMap} from './structure_builder/utils/validation';

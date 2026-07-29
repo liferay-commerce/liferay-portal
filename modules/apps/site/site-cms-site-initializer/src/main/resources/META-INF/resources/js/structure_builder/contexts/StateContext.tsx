@@ -16,6 +16,11 @@ import {ObjectDefinitions} from '../../common/types/ObjectDefinition';
 import {Space} from '../../common/types/Space';
 import {Workflow} from '../../common/types/Workflow';
 import getLocalizedValue from '../../common/utils/getLocalizedValue';
+import structureBuilderRegistry, {
+	AddGroupingContainerAction,
+	StructureBuilderReduceAction,
+	UpdateGroupingContainerAction,
+} from '../contributors/registry';
 import {
 	ReferencedStructure,
 	RelatedContent,
@@ -26,12 +31,17 @@ import {
 } from '../types/Structure';
 import {Uuid} from '../types/Uuid';
 import actionGeneratesChanges from '../utils/actionGeneratesChanges';
+import {
+	getBaseObjectDefinition,
+	getBaseObjectDefinitions,
+} from '../utils/baseObjectDefinition';
 import {Field, SelectFromListField, getDefaultField} from '../utils/field';
 import findAvailableFieldName from '../utils/findAvailableFieldName';
 import findChild from '../utils/findChild';
 import {getChildrenUuids} from '../utils/getChildrenUuids';
 import getRandomId from '../utils/getRandomId';
 import getUuid from '../utils/getUuid';
+import isContainer, {Container} from '../utils/isContainer';
 import normalizeString from '../utils/normalizeString';
 import addChild from '../utils/state/addChild';
 import addRepeatableGroup from '../utils/state/addRepeatableGroup';
@@ -244,6 +254,7 @@ type ValidateAction = {
 
 export type Action =
 	| AddFieldAction
+	| AddGroupingContainerAction
 	| AddReferencedStructuresAction
 	| AddRelatedContentAction
 	| AddRepeatableGroupAction
@@ -264,6 +275,7 @@ export type Action =
 	| SetWorkflowAction
 	| UngroupAction
 	| UpdateFieldAction
+	| UpdateGroupingContainerAction
 	| UpdateRelatedContentAction
 	| UpdateRepeatableGroupAction
 	| UpdateStructureAction
@@ -280,12 +292,12 @@ function reducer(state: State, action: Action): State {
 
 			const {structure} = state;
 
-			let parent: Structure | RepeatableGroup = structure;
+			let parent: Container | Structure = structure;
 
 			if (field.parent !== structure.uuid) {
 				const item = findChild({root: structure, uuid: field.parent});
 
-				if (item?.type === 'repeatable-group') {
+				if (item && isContainer(item)) {
 					parent = item;
 				}
 			}
@@ -1066,8 +1078,27 @@ function reducer(state: State, action: Action): State {
 				selection: [firstUuid],
 			};
 		}
-		default:
+		default: {
+			const structureBuilderProvider =
+				structureBuilderRegistry.getProvider(state.structure.type);
+
+			const result = structureBuilderProvider?.reduce?.({
+				action: action as StructureBuilderReduceAction,
+				invalids: state.invalids,
+				structure: state.structure,
+			});
+
+			if (result) {
+				return {
+					...state,
+					...(result.invalids && {invalids: result.invalids}),
+					...(result.selection && {selection: result.selection}),
+					structure: {...state.structure, children: result.children},
+				};
+			}
+
 			return state;
+		}
 	}
 }
 
@@ -1129,6 +1160,18 @@ function useStateDispatch() {
 
 function getDefaultChildren(structureUuid: Uuid) {
 	const type = getType();
+
+	const baseObjectDefinition = getBaseObjectDefinition();
+
+	const structureBuilderProvider = structureBuilderRegistry.getProvider(type);
+
+	if (baseObjectDefinition && structureBuilderProvider?.seedChildren) {
+		return structureBuilderProvider.seedChildren({
+			objectDefinition: baseObjectDefinition,
+			objectDefinitions: getBaseObjectDefinitions(),
+			parent: structureUuid,
+		});
+	}
 
 	const children = new Map();
 
@@ -1224,8 +1267,7 @@ function getTargetChildren({
 
 	if (
 		target &&
-		(target.type === 'repeatable-group' ||
-			target.type === 'referenced-structure')
+		(isContainer(target) || target.type === 'referenced-structure')
 	) {
 		return target.children;
 	}
