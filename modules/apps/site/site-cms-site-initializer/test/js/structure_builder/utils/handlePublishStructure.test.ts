@@ -56,6 +56,7 @@ const EMPTY_HISTORY = {
 	deletedGroupERCs: [],
 	deletedRelationships: [],
 	modifiedNames: new Set<Uuid>(),
+	modifiedSlugs: new Set<Uuid>(),
 };
 
 function field(name: string, uuid: Uuid, parent: Uuid): Field {
@@ -83,6 +84,7 @@ function buildState(type: StructureType, children: StructureChild[]): State {
 		label: {en_US: 'Structure'},
 		name: 'Structure',
 		path: '',
+		slug: '',
 		spaces: 'all',
 		status: 'published',
 		system: false,

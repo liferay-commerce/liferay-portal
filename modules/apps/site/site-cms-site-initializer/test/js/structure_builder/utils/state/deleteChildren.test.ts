@@ -79,6 +79,7 @@ function createRoot(children: StructureChild[]): Structure {
 		label: {},
 		name: 'Root',
 		path: '',
+		slug: '',
 		spaces: 'all',
 		status: 'new',
 		system: false,
