@@ -167,8 +167,8 @@ public class ActionUtil {
 						).put(
 							"size", "small"
 						))),
-				fragmentEntryLinkService, fragmentRendererRegistry,
-				"localization-select", layout, segmentsExperienceId,
+				"localization-select", fragmentEntryLinkService,
+				fragmentRendererRegistry, layout, segmentsExperienceId,
 				serviceContext);
 
 		if (localizationSelectFragmentEntryLink != null) {
@@ -210,13 +210,13 @@ public class ActionUtil {
 			formManager, "INPUTS-inline-text-input",
 			infoForm.getInfoField("ObjectField_title"), layout, layoutStructure,
 			formStyledLayoutStructureItem, false, segmentsExperienceId,
-			serviceContext, JSONUtil.put("marginBottom", "5"));
+			JSONUtil.put("marginBottom", "5"), serviceContext);
 
 		FragmentEntryLink fragmentEntryLink =
 			CMSObjectEntryFormLayoutUtil.addFragmentEntryLink(
-				StringPool.BLANK, fragmentEntryLinkService,
-				fragmentRendererRegistry,
-				SpacesComponentSectionFragmentRenderer.class.getName(), layout,
+				StringPool.BLANK,
+				SpacesComponentSectionFragmentRenderer.class.getName(),
+				fragmentEntryLinkService, fragmentRendererRegistry, layout,
 				segmentsExperienceId, serviceContext);
 
 		if (fragmentEntryLink != null) {
@@ -236,8 +236,8 @@ public class ActionUtil {
 			"INPUTS-friendly-url-input",
 			infoForm.getInfoField("objectEntryFriendlyURL"), layout,
 			layoutStructure, formStyledLayoutStructureItem, false,
-			segmentsExperienceId, serviceContext,
-			JSONUtil.put("marginBottom", "5"));
+			segmentsExperienceId, JSONUtil.put("marginBottom", "5"),
+			serviceContext);
 
 		ObjectDefinition objectDefinition =
 			ObjectDefinitionLocalServiceUtil.fetchObjectDefinitionByClassName(
@@ -268,13 +268,13 @@ public class ActionUtil {
 		else {
 			layoutStructure =
 				CMSObjectEntryFormLayoutUtil.addInputFragmentEntryLinks(
-					addedFragmentEntryLinks, true,
-					fragmentEntryLinkListenerRegistry, fragmentEntryLinkService,
-					formManager, fragmentRendererRegistry, infoFieldSet, layout,
+					true, formManager, fragmentEntryLinkListenerRegistry,
+					addedFragmentEntryLinks, fragmentEntryLinkService,
+					fragmentRendererRegistry, infoFieldSet, layout,
 					layoutStructure, formStyledLayoutStructureItem,
 					objectDefinition.getName(), false, true,
-					segmentsExperienceId, serviceContext,
-					JSONUtil.put("marginBottom", "16px"));
+					segmentsExperienceId, JSONUtil.put("marginBottom", "16px"),
+					serviceContext);
 		}
 
 		LayoutPageTemplateStructureLocalServiceUtil.
@@ -364,24 +364,24 @@ public class ActionUtil {
 			addedFragmentEntryLinks, null, formManager, "INPUTS-text-input",
 			infoForm.getInfoField("ObjectField_title"), layout, layoutStructure,
 			formStyledLayoutStructureItem, true, segmentsExperienceId,
-			serviceContext, JSONUtil.put("marginBottom", "24px"));
+			JSONUtil.put("marginBottom", "24px"), serviceContext);
 
 		CMSObjectEntryFormLayoutUtil.addInputFragmentEntryLink(
 			addedFragmentEntryLinks, null, formManager, "INPUTS-text-input",
 			infoForm.getInfoField("objectEntryFriendlyURL"), layout,
 			layoutStructure, formStyledLayoutStructureItem, true,
-			segmentsExperienceId, serviceContext,
-			JSONUtil.put("marginBottom", "24px"));
+			segmentsExperienceId, JSONUtil.put("marginBottom", "24px"),
+			serviceContext);
 
 		layoutStructure =
 			CMSObjectEntryFormLayoutUtil.addInputFragmentEntryLinks(
-				addedFragmentEntryLinks, false,
-				fragmentEntryLinkListenerRegistry, fragmentEntryLinkService,
-				formManager, fragmentRendererRegistry,
+				false, formManager, fragmentEntryLinkListenerRegistry,
+				addedFragmentEntryLinks, fragmentEntryLinkService,
+				fragmentRendererRegistry,
 				(InfoFieldSet)infoForm.getInfoFieldSetEntry(name), layout,
 				layoutStructure, formStyledLayoutStructureItem, name, true,
-				false, segmentsExperienceId, serviceContext,
-				JSONUtil.put("marginBottom", "24px"));
+				false, segmentsExperienceId,
+				JSONUtil.put("marginBottom", "24px"), serviceContext);
 
 		FragmentEntryLink localizationSelectFragmentEntryLink =
 			CMSObjectEntryFormLayoutUtil.addFragmentEntryLink(
@@ -390,8 +390,8 @@ public class ActionUtil {
 						FragmentEntryProcessorConstants.
 							KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR,
 						JSONUtil.put("size", "small"))),
-				fragmentEntryLinkService, fragmentRendererRegistry,
-				"localization-select", layout, segmentsExperienceId,
+				"localization-select", fragmentEntryLinkService,
+				fragmentRendererRegistry, layout, segmentsExperienceId,
 				serviceContext);
 
 		if (localizationSelectFragmentEntryLink != null) {
@@ -429,24 +429,24 @@ public class ActionUtil {
 			addedFragmentEntryLinks, null, formManager, "INPUTS-text-input",
 			infoForm.getInfoField("ObjectField_title"), layout, layoutStructure,
 			formStyledLayoutStructureItem, false, segmentsExperienceId,
-			serviceContext, JSONUtil.put("marginBottom", "24px"));
+			JSONUtil.put("marginBottom", "24px"), serviceContext);
 
 		CMSObjectEntryFormLayoutUtil.addInputFragmentEntryLink(
 			addedFragmentEntryLinks, null, formManager, "INPUTS-text-input",
 			infoForm.getInfoField("objectEntryFriendlyURL"), layout,
 			layoutStructure, formStyledLayoutStructureItem, false,
-			segmentsExperienceId, serviceContext,
-			JSONUtil.put("marginBottom", "24px"));
+			segmentsExperienceId, JSONUtil.put("marginBottom", "24px"),
+			serviceContext);
 
 		layoutStructure =
 			CMSObjectEntryFormLayoutUtil.addInputFragmentEntryLinks(
-				addedFragmentEntryLinks, false,
-				fragmentEntryLinkListenerRegistry, fragmentEntryLinkService,
-				formManager, fragmentRendererRegistry,
+				false, formManager, fragmentEntryLinkListenerRegistry,
+				addedFragmentEntryLinks, fragmentEntryLinkService,
+				fragmentRendererRegistry,
 				(InfoFieldSet)infoForm.getInfoFieldSetEntry(name), layout,
 				layoutStructure, formStyledLayoutStructureItem, name, false,
-				false, segmentsExperienceId, serviceContext,
-				JSONUtil.put("marginBottom", "24px"));
+				false, segmentsExperienceId,
+				JSONUtil.put("marginBottom", "24px"), serviceContext);
 
 		localizationSelectFragmentEntryLink =
 			CMSObjectEntryFormLayoutUtil.addFragmentEntryLink(
@@ -459,8 +459,8 @@ public class ActionUtil {
 						).put(
 							"size", "small"
 						))),
-				fragmentEntryLinkService, fragmentRendererRegistry,
-				"localization-select", layout, segmentsExperienceId,
+				"localization-select", fragmentEntryLinkService,
+				fragmentRendererRegistry, layout, segmentsExperienceId,
 				serviceContext);
 
 		if (localizationSelectFragmentEntryLink != null) {

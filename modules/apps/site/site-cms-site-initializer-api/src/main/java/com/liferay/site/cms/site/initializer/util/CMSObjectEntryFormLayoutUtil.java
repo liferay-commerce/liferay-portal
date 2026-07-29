@@ -51,11 +51,10 @@ import java.util.Objects;
 public class CMSObjectEntryFormLayoutUtil {
 
 	public static FragmentEntryLink addFragmentEntryLink(
-			String editableValues,
+			String editableValues, String fragmentEntryKey,
 			FragmentEntryLinkService fragmentEntryLinkService,
-			FragmentRendererRegistry fragmentRendererRegistry,
-			String fragmentEntryKey, Layout layout, long segmentsExperienceId,
-			ServiceContext serviceContext)
+			FragmentRendererRegistry fragmentRendererRegistry, Layout layout,
+			long segmentsExperienceId, ServiceContext serviceContext)
 		throws Exception {
 
 		FragmentRenderer fragmentRenderer =
@@ -102,12 +101,12 @@ public class CMSObjectEntryFormLayoutUtil {
 	}
 
 	public static void addInfoFieldFragmentEntryLink(
-			List<FragmentEntryLink> addedFragmentEntryLinks, boolean editMode,
-			FormManager formManager, InfoField<?> infoField, Layout layout,
-			LayoutStructure layoutStructure,
+			boolean editMode, FormManager formManager,
+			List<FragmentEntryLink> fragmentEntryLinks, InfoField<?> infoField,
+			Layout layout, LayoutStructure layoutStructure,
 			LayoutStructureItem layoutStructureItem, boolean readOnly,
-			long segmentsExperienceId, ServiceContext serviceContext,
-			JSONObject stylesJSONObject)
+			long segmentsExperienceId, JSONObject stylesJSONObject,
+			ServiceContext serviceContext)
 		throws Exception {
 
 		if (RelationshipInfoFieldType.INSTANCE ==
@@ -130,29 +129,29 @@ public class CMSObjectEntryFormLayoutUtil {
 					RelationshipInfoFieldType.MULTIPLE)) {
 
 				addInputFragmentEntryLink(
-					addedFragmentEntryLinks, null, formManager,
+					fragmentEntryLinks, null, formManager,
 					"INPUTS-multiselector-dropdown", infoField, layout,
 					layoutStructure, layoutStructureItem, readOnly,
-					segmentsExperienceId, serviceContext, stylesJSONObject);
+					segmentsExperienceId, stylesJSONObject, serviceContext);
 
 				return;
 			}
 		}
 
 		addInputFragmentEntryLink(
-			addedFragmentEntryLinks, null, formManager, null, infoField, layout,
+			fragmentEntryLinks, null, formManager, null, infoField, layout,
 			layoutStructure, layoutStructureItem, readOnly,
-			segmentsExperienceId, serviceContext, stylesJSONObject);
+			segmentsExperienceId, stylesJSONObject, serviceContext);
 	}
 
 	public static void addInputFragmentEntryLink(
-			List<FragmentEntryLink> addedFragmentEntryLinks,
+			List<FragmentEntryLink> fragmentEntryLinks,
 			JSONObject configurationJSONObject, FormManager formManager,
 			String fragmentEntryKey, InfoField<?> infoField, Layout layout,
 			LayoutStructure layoutStructure,
 			LayoutStructureItem layoutStructureItem, boolean readOnly,
-			long segmentsExperienceId, ServiceContext serviceContext,
-			JSONObject stylesJSONObject)
+			long segmentsExperienceId, JSONObject stylesJSONObject,
+			ServiceContext serviceContext)
 		throws Exception {
 
 		if (infoField == null) {
@@ -195,22 +194,22 @@ public class CMSObjectEntryFormLayoutUtil {
 		}
 
 		if (fragmentEntryLink != null) {
-			addedFragmentEntryLinks.add(fragmentEntryLink);
+			fragmentEntryLinks.add(fragmentEntryLink);
 		}
 	}
 
 	public static LayoutStructure addInputFragmentEntryLinks(
-			List<FragmentEntryLink> addedFragmentEntryLinks, boolean editMode,
+			boolean editMode, FormManager formManager,
 			FragmentEntryLinkListenerRegistry fragmentEntryLinkListenerRegistry,
+			List<FragmentEntryLink> fragmentEntryLinks,
 			FragmentEntryLinkService fragmentEntryLinkService,
-			FormManager formManager,
 			FragmentRendererRegistry fragmentRendererRegistry,
 			InfoFieldSet infoFieldSet, Layout layout,
 			LayoutStructure layoutStructure,
 			LayoutStructureItem layoutStructureItem,
 			String objectDefinitionName, boolean readOnly, boolean repeatable,
-			long segmentsExperienceId, ServiceContext serviceContext,
-			JSONObject stylesJSONObject)
+			long segmentsExperienceId, JSONObject stylesJSONObject,
+			ServiceContext serviceContext)
 		throws Exception {
 
 		if (infoFieldSet.isRelationship()) {
@@ -243,8 +242,8 @@ public class CMSObjectEntryFormLayoutUtil {
 
 								return jsonObject;
 							}))),
-				fragmentEntryLinkService, fragmentRendererRegistry,
-				"BASIC_COMPONENT-accordion", layout, segmentsExperienceId,
+				"BASIC_COMPONENT-accordion", fragmentEntryLinkService,
+				fragmentRendererRegistry, layout, segmentsExperienceId,
 				serviceContext);
 
 			if (fragmentEntryLink != null) {
@@ -318,20 +317,19 @@ public class CMSObjectEntryFormLayoutUtil {
 
 			if (infoFieldSetEntry instanceof InfoField) {
 				addInfoFieldFragmentEntryLink(
-					addedFragmentEntryLinks, editMode, formManager,
+					editMode, formManager, fragmentEntryLinks,
 					(InfoField<?>)infoFieldSetEntry, layout, layoutStructure,
 					layoutStructureItem, readOnly, segmentsExperienceId,
-					serviceContext, stylesJSONObject);
+					stylesJSONObject, serviceContext);
 			}
 			else if (infoFieldSetEntry instanceof InfoFieldSet) {
 				layoutStructure = addInputFragmentEntryLinks(
-					addedFragmentEntryLinks, editMode,
-					fragmentEntryLinkListenerRegistry, fragmentEntryLinkService,
-					formManager, fragmentRendererRegistry,
-					(InfoFieldSet)infoFieldSetEntry, layout, layoutStructure,
-					layoutStructureItem, objectDefinitionName, readOnly,
-					repeatable, segmentsExperienceId, serviceContext,
-					stylesJSONObject);
+					editMode, formManager, fragmentEntryLinkListenerRegistry,
+					fragmentEntryLinks, fragmentEntryLinkService,
+					fragmentRendererRegistry, (InfoFieldSet)infoFieldSetEntry,
+					layout, layoutStructure, layoutStructureItem,
+					objectDefinitionName, readOnly, repeatable,
+					segmentsExperienceId, stylesJSONObject, serviceContext);
 			}
 		}
 
@@ -352,10 +350,10 @@ public class CMSObjectEntryFormLayoutUtil {
 	}
 
 	public static LayoutStructure persistAndRefetchLayoutStructure(
+			FragmentEntryLink fragmentEntryLink,
 			FragmentEntryLinkListenerRegistry fragmentEntryLinkListenerRegistry,
 			Layout layout, LayoutStructure layoutStructure,
-			long segmentsExperienceId, ServiceContext serviceContext,
-			FragmentEntryLink fragmentEntryLink)
+			long segmentsExperienceId, ServiceContext serviceContext)
 		throws Exception {
 
 		LayoutPageTemplateStructureLocalServiceUtil.
