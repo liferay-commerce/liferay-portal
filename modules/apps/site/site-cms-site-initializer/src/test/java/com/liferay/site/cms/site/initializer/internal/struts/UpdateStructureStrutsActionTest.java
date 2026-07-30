@@ -7,7 +7,6 @@ package com.liferay.site.cms.site.initializer.internal.struts;
 
 import com.liferay.object.admin.rest.dto.v1_0.ObjectDefinition;
 import com.liferay.object.admin.rest.dto.v1_0.ObjectDefinitionSetting;
-import com.liferay.object.admin.rest.resource.v1_0.ObjectDefinitionResource;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -20,8 +19,6 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
-import org.mockito.Mockito;
-
 /**
  * @author Stefano Motta
  */
@@ -33,7 +30,7 @@ public class UpdateStructureStrutsActionTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
-	public void testUpdateObjectDefinition() throws Exception {
+	public void testMergeObjectDefinitionSettings() throws Exception {
 		ObjectDefinition existingObjectDefinition = new ObjectDefinition();
 		String key1 = RandomTestUtil.randomString();
 
@@ -50,17 +47,6 @@ public class UpdateStructureStrutsActionTest {
 
 		existingObjectDefinition.setTitleObjectFieldName(titleObjectFieldName);
 
-		long objectDefinitionId = RandomTestUtil.randomLong();
-
-		ObjectDefinitionResource objectDefinitionResource = Mockito.mock(
-			ObjectDefinitionResource.class);
-
-		Mockito.when(
-			objectDefinitionResource.getObjectDefinition(objectDefinitionId)
-		).thenReturn(
-			existingObjectDefinition
-		);
-
 		ObjectDefinition objectDefinition = new ObjectDefinition();
 
 		String key2 = RandomTestUtil.randomString();
@@ -73,13 +59,12 @@ public class UpdateStructureStrutsActionTest {
 				_createObjectDefinitionSetting(key2, value2)
 			});
 
+		objectDefinition.setTitleObjectFieldName(RandomTestUtil.randomString());
+
 		ReflectionTestUtil.invoke(
-			new UpdateStructureStrutsAction(), "_updateObjectDefinition",
-			new Class<?>[] {
-				ObjectDefinition.class, long.class,
-				ObjectDefinitionResource.class
-			},
-			objectDefinition, objectDefinitionId, objectDefinitionResource);
+			new UpdateStructureStrutsAction(), "_mergeObjectDefinitionSettings",
+			new Class<?>[] {ObjectDefinition.class, ObjectDefinition.class},
+			existingObjectDefinition, objectDefinition);
 
 		ObjectDefinitionSetting[] objectDefinitionSettings =
 			objectDefinition.getObjectDefinitionSettings();
