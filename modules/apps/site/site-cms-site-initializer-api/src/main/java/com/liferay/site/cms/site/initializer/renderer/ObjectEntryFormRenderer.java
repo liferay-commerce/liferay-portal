@@ -5,12 +5,8 @@
 
 package com.liferay.site.cms.site.initializer.renderer;
 
-import com.liferay.fragment.listener.FragmentEntryLinkListenerRegistry;
 import com.liferay.fragment.model.FragmentEntryLink;
-import com.liferay.fragment.renderer.FragmentRendererRegistry;
-import com.liferay.fragment.service.FragmentEntryLinkService;
 import com.liferay.info.field.InfoFieldSet;
-import com.liferay.layout.manager.FormManager;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.object.model.ObjectDefinition;
@@ -25,11 +21,7 @@ import java.util.List;
 public interface ObjectEntryFormRenderer {
 
 	public LayoutStructure render(
-			FormManager formManager,
-			FragmentEntryLinkListenerRegistry fragmentEntryLinkListenerRegistry,
 			List<FragmentEntryLink> fragmentEntryLinks,
-			FragmentEntryLinkService fragmentEntryLinkService,
-			FragmentRendererRegistry fragmentRendererRegistry,
 			InfoFieldSet infoFieldSet, Layout layout,
 			LayoutStructure layoutStructure,
 			LayoutStructureItem layoutStructureItem,

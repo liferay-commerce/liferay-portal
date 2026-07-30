@@ -259,9 +259,7 @@ public class ActionUtil {
 
 		if (objectEntryFormRenderer != null) {
 			layoutStructure = objectEntryFormRenderer.render(
-				formManager, fragmentEntryLinkListenerRegistry,
-				addedFragmentEntryLinks, fragmentEntryLinkService,
-				fragmentRendererRegistry, infoFieldSet, layout, layoutStructure,
+				addedFragmentEntryLinks, infoFieldSet, layout, layoutStructure,
 				formStyledLayoutStructureItem, objectDefinition,
 				segmentsExperienceId, serviceContext);
 		}

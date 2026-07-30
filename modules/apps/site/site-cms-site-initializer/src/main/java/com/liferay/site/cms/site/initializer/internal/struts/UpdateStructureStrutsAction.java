@@ -204,16 +204,12 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 		return objectRelationships;
 	}
 
-	private void _updateObjectDefinition(
-			ObjectDefinition objectDefinition, long objectDefinitionId,
-			ObjectDefinitionResource objectDefinitionResource)
-		throws Exception {
+	private void _mergeObjectDefinitionSettings(
+		ObjectDefinition existingObjectDefinition,
+		ObjectDefinition objectDefinition) {
 
 		Map<String, ObjectDefinitionSetting> objectDefinitionSettingsMap =
 			new LinkedHashMap<>();
-
-		ObjectDefinition existingObjectDefinition =
-			objectDefinitionResource.getObjectDefinition(objectDefinitionId);
 
 		ObjectDefinitionSetting[] existingObjectDefinitionSettings =
 			existingObjectDefinition.getObjectDefinitionSettings();
@@ -258,13 +254,9 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 			existingObjectDefinition::getTitleObjectFieldName);
 	}
 
-	private void _updateObjectRelationships(
-			ObjectDefinition objectDefinition, long objectDefinitionId,
-			ObjectDefinitionResource objectDefinitionResource)
-		throws Exception {
-
-		ObjectDefinition existingObjectDefinition =
-			objectDefinitionResource.getObjectDefinition(objectDefinitionId);
+	private void _mergeObjectRelationships(
+		ObjectDefinition existingObjectDefinition,
+		ObjectDefinition objectDefinition) {
 
 		ObjectRelationship[] existingObjectRelationships =
 			existingObjectDefinition.getObjectRelationships();
@@ -448,12 +440,14 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 				}
 			}
 
-			_updateObjectDefinition(
-				_objectDefinition, _objectDefinitionId,
-				objectDefinitionResource);
-			_updateObjectRelationships(
-				_objectDefinition, _objectDefinitionId,
-				objectDefinitionResource);
+			ObjectDefinition existingObjectDefinition =
+				objectDefinitionResource.getObjectDefinition(
+					_objectDefinitionId);
+
+			_mergeObjectDefinitionSettings(
+				existingObjectDefinition, _objectDefinition);
+			_mergeObjectRelationships(
+				existingObjectDefinition, _objectDefinition);
 
 			objectDefinitionResource.putObjectDefinition(
 				_objectDefinitionId, _objectDefinition);

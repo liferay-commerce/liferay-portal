@@ -434,13 +434,24 @@ public class StructureBuilderDisplayContext {
 				}
 
 				jsonObject.put(entry.getKey(), jsonArray);
+			}
 
-				if ((objectDefinition != null) &&
-					Objects.equals(
-						objectFolderExternalReferenceCode,
-						cmsStructureObjectFolderContributor.
-							getObjectFolderExternalReferenceCode())) {
+			String baseObjectDefinitionExternalReferenceCode =
+				cmsStructureObjectFolderContributor.
+					getBaseObjectDefinitionExternalReferenceCode();
 
+			if ((objectDefinition != null) &&
+				Validator.isNotNull(
+					baseObjectDefinitionExternalReferenceCode) &&
+				Objects.equals(
+					objectFolderExternalReferenceCode,
+					cmsStructureObjectFolderContributor.
+						getObjectFolderExternalReferenceCode())) {
+
+				JSONArray jsonArray = jsonObject.getJSONArray(
+					baseObjectDefinitionExternalReferenceCode);
+
+				if (jsonArray != null) {
 					jsonObject.put(
 						objectDefinition.getExternalReferenceCode(), jsonArray);
 				}
