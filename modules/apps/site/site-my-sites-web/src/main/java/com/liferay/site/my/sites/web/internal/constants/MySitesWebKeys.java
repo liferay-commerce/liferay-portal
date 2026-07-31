@@ -10,6 +10,8 @@ package com.liferay.site.my.sites.web.internal.constants;
  */
 public class MySitesWebKeys {
 
+	public static final String EXCLUDED_GROUP_IDS = "EXCLUDED_GROUP_IDS";
+
 	public static final String SITES_DROPDOWN_DEFAULT_EVENT_HANDLER =
 		"SITES_DROPDOWN_DEFAULT_EVENT_HANDLER";
 
