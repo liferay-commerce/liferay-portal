@@ -226,9 +226,9 @@ test(
 	async ({rolePage, rolesPage}) => {
 		await rolesPage.goto();
 
-		await expect(rolesPage.rolesLink('Depot')).toBeVisible();
+		await expect(rolesPage.rolesLink('Space')).toBeVisible();
 
-		await rolesPage.rolesLink('Depot').click();
+		await rolesPage.rolesLink('Space').click();
 
 		await expect(rolesPage.rolesTable.newButton).toBeVisible();
 
