@@ -169,6 +169,25 @@ const DigitalSignatureFormBase = ({
 				type="textarea"
 				value={values.emailMessage}
 			/>
+
+			<Input
+				label={Liferay.Language.get('days-until-expiration')}
+				name="expireAfter"
+				onChange={handleChange}
+				type="number"
+				value={values.expireAfter}
+			/>
+
+			<Input
+				error={errors.expireWarn}
+				label={Liferay.Language.get(
+					'days-to-warn-signers-before-expiration'
+				)}
+				name="expireWarn"
+				onChange={handleChange}
+				type="number"
+				value={values.expireWarn}
+			/>
 		</>
 	);
 };
