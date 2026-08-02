@@ -4,6 +4,7 @@
  */
 
 import {act, cleanup, fireEvent, render} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import {AppContext} from '../../../../src/main/resources/META-INF/resources/js/AppContext';
@@ -64,5 +65,24 @@ describe('DigitalSignatureForm', () => {
 		expect(parentEmailSubject.classList.contains('has-error')).toBeTruthy();
 
 		expect(asFragment()).toMatchSnapshot();
+	});
+
+	it('Validates the expiration warning period', async () => {
+		const {getByLabelText, getByText} = render(
+			<DigitalSignatureFormWithProvider />
+		);
+
+		const inputExpireWarn = getByLabelText(
+			'days-to-warn-signers-before-expiration'
+		);
+
+		await userEvent.clear(inputExpireWarn);
+		await userEvent.type(inputExpireWarn, '120');
+
+		expect(
+			getByText(
+				'days-to-warn-signers-must-be-fewer-than-days-until-expiration'
+			)
+		).toBeInTheDocument();
 	});
 });
