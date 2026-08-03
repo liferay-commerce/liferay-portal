@@ -42,13 +42,16 @@ export default function updateHistory({
 				child.type === 'related-content' ||
 				child.type === 'referenced-structure'
 			) {
-				let parentERC =
+				const parentItem =
 					child.parent === structure.uuid
-						? structure.erc
+						? structure
 						: findChild({
 								root: structure,
 								uuid: child.parent,
-							})?.erc || '';
+							});
+
+				let parentERC =
+					parentItem && 'erc' in parentItem ? parentItem.erc : '';
 
 				if (child.type === 'related-content' && !child.multiselection) {
 					parentERC = child.relatedStructureERC;

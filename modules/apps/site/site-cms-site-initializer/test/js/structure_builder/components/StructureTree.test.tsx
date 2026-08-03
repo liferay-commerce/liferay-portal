@@ -9,10 +9,18 @@ import React from 'react';
 
 import StructureTree, {
 	flatItemIds,
+	getItemActions,
 	getRangeItems,
 } from '../../../../src/main/resources/META-INF/resources/js/structure_builder/components/StructureTree';
 import {useStateDispatch} from '../../../../src/main/resources/META-INF/resources/js/structure_builder/contexts/StateContext';
+import structureBuilderRegistry from '../../../../src/main/resources/META-INF/resources/js/structure_builder/contributors/registry';
+import {
+	GroupingContainer,
+	Structure,
+} from '../../../../src/main/resources/META-INF/resources/js/structure_builder/types/Structure';
 import {Uuid} from '../../../../src/main/resources/META-INF/resources/js/structure_builder/types/Uuid';
+import {Field} from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/field';
+import getUuid from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/getUuid';
 import {MockCacheProvider} from '../mocks/MockCacheProvider';
 import {DEFAULT_STRUCTURE, MockStateProvider} from '../mocks/MockStateProvider';
 
@@ -191,5 +199,79 @@ it('clears selection on Escape', () => {
 	expect(mockDispatch).toHaveBeenCalledWith({
 		selection: [],
 		type: 'set-selection',
+	});
+});
+
+describe('getItemActions contributor delegation', () => {
+	const CONTRIBUTOR_ACTION = 'contributor-action';
+
+	const buildField = (parent: Uuid): Field =>
+		({
+			label: {en_US: `Field-${parent}`},
+			locked: false,
+			name: `field-${parent}`,
+			parent,
+			type: 'text',
+			uuid: getUuid(),
+		}) as unknown as Field;
+
+	const labelsOf = (structure: Structure, item: Field | GroupingContainer) =>
+		getItemActions({
+			clipboard: null,
+			dispatch: jest.fn(),
+			item,
+			publishedChildren: new Map() as never,
+			structure,
+		})
+			.map((action) => ('label' in action ? action.label : undefined))
+			.filter(Boolean);
+
+	beforeAll(() => {
+		structureBuilderRegistry.addProvider({
+			getItemActions: () => [
+				{label: CONTRIBUTOR_ACTION, onClick: () => {}},
+			],
+			id: 'structure-tree-test-contributor',
+			isGroupingContainer: (child) => child.type === 'grouping-container',
+			supports: () => true,
+		});
+	});
+
+	it('offers the built-in repeatable-group action plus the contributor actions for a field at the root', () => {
+		const field = buildField(ROOT);
+
+		const structure = {
+			children: new Map([[field.uuid, field]]),
+			type: 'L_CMS_CONTENT_STRUCTURES',
+			uuid: ROOT,
+		} as unknown as Structure;
+
+		const labels = labelsOf(structure, field);
+
+		expect(labels).toContain('create-repeatable-group');
+		expect(labels).toContain(CONTRIBUTOR_ACTION);
+	});
+
+	it('suppresses the repeatable-group action for a field inside a grouping container but keeps the contributor actions', () => {
+		const nestedField = buildField(A);
+
+		const container: GroupingContainer = {
+			children: new Map([[nestedField.uuid, nestedField]]),
+			label: {en_US: 'Group'},
+			parent: ROOT,
+			type: 'grouping-container',
+			uuid: A,
+		};
+
+		const structure = {
+			children: new Map([[A, container]]),
+			type: 'L_CMS_CONTENT_STRUCTURES',
+			uuid: ROOT,
+		} as unknown as Structure;
+
+		const labels = labelsOf(structure, nestedField);
+
+		expect(labels).not.toContain('create-repeatable-group');
+		expect(labels).toContain(CONTRIBUTOR_ACTION);
 	});
 });

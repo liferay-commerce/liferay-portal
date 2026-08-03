@@ -56,8 +56,18 @@ export type RepeatableGroup = {
 	uuid: Uuid;
 };
 
+export type GroupingContainer = {
+	children: Map<Uuid, StructureChild>;
+	label: Liferay.Language.LocalizedValue<string>;
+	parent: Uuid;
+	type: 'grouping-container';
+	uuid: Uuid;
+	variant?: string;
+};
+
 export type StructureChild =
 	| Field
+	| GroupingContainer
 	| ReferencedStructure
 	| RelatedContent
 	| RepeatableGroup;
@@ -79,6 +89,9 @@ export type Structure = {
 	workflows: Workflows;
 };
 
-export type StructureType = 'L_CMS_CONTENT_STRUCTURES' | 'L_CMS_FILE_TYPES';
+export type StructureType =
+	| 'L_CMS_CONTENT_STRUCTURES'
+	| 'L_CMS_FILE_TYPES'
+	| (string & {});
 
 export type Structures = Map<Structure['erc'], Structure>;

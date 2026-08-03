@@ -5,6 +5,8 @@
 
 package com.liferay.site.cms.site.initializer.contributor;
 
+import com.liferay.site.cms.site.initializer.renderer.ObjectEntryFormRenderer;
+
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +15,15 @@ import java.util.Map;
  */
 public interface CMSStructureObjectFolderContributor {
 
+	public default String getBaseObjectDefinitionExternalReferenceCode() {
+		return null;
+	}
+
 	public String getLabel();
+
+	public default ObjectEntryFormRenderer getObjectEntryFormRenderer() {
+		return null;
+	}
 
 	public String getObjectFolderExternalReferenceCode();
 

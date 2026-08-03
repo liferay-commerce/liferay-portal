@@ -33,6 +33,11 @@ public class ProductTypesCMSStructureObjectFolderContributor
 	implements CMSStructureObjectFolderContributor {
 
 	@Override
+	public String getBaseObjectDefinitionExternalReferenceCode() {
+		return PIMObjectDefinitionConstants.EXTERNAL_REFERENCE_CODE_BASE_SKU;
+	}
+
+	@Override
 	public String getLabel() {
 		return "product";
 	}

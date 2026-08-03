@@ -5,6 +5,7 @@
 
 import {State} from '../contexts/StateContext';
 import {Structure} from '../types/Structure';
+import isContainer from './isContainer';
 
 export default function findAvailableFieldName(
 	children: Structure['children'],
@@ -14,8 +15,7 @@ export default function findAvailableFieldName(
 	const deletedFields =
 		deletedChildren?.filter(
 			(child) =>
-				child.type !== 'referenced-structure' &&
-				child.type !== 'repeatable-group'
+				child.type !== 'referenced-structure' && !isContainer(child)
 		) || [];
 
 	const fields = [...deletedFields, ...children.values()];
@@ -24,7 +24,7 @@ export default function findAvailableFieldName(
 		fields.some(
 			(child) =>
 				child.type !== 'referenced-structure' &&
-				child.type !== 'repeatable-group' &&
+				!isContainer(child) &&
 				child.name === name
 		);
 

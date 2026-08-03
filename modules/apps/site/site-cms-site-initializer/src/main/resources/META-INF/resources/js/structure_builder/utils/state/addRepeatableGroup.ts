@@ -12,6 +12,7 @@ import {
 import {Uuid} from '../../types/Uuid';
 import getRandomId from '../getRandomId';
 import getRandomName from '../getRandomName';
+import isContainer, {Container} from '../isContainer';
 import sortChildren from './sortChildren';
 
 export default function addRepeatableGroup({
@@ -23,8 +24,8 @@ export default function addRepeatableGroup({
 	groupChildren: StructureChild[];
 	groupParent: Uuid;
 	groupUuid: Uuid;
-	root: Structure | RepeatableGroup;
-}): Structure['children'] | RepeatableGroup['children'] {
+	root: Structure | Container;
+}): Structure['children'] | Container['children'] {
 	const children = new Map();
 
 	// Iterate over children
@@ -37,10 +38,10 @@ export default function addRepeatableGroup({
 			continue;
 		}
 
-		// Insert the child. If it's a repeatable group, build it with recursive call
+		// Insert the child. If it's a container, build it with recursive call
 
-		if (child.type === 'repeatable-group') {
-			const group: RepeatableGroup = {
+		if (isContainer(child)) {
+			const container = {
 				...child,
 				children: addRepeatableGroup({
 					groupChildren,
@@ -50,7 +51,7 @@ export default function addRepeatableGroup({
 				}),
 			};
 
-			children.set(group.uuid, group);
+			children.set(container.uuid, container);
 		}
 		else {
 			children.set(child.uuid, child);

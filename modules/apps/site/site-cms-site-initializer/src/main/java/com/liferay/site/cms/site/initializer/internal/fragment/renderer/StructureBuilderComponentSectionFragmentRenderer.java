@@ -11,6 +11,8 @@ import com.liferay.object.admin.rest.resource.v1_0.ObjectDefinitionResource;
 import com.liferay.object.field.business.type.ObjectFieldBusinessTypeRegistry;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.servlet.taglib.DynamicIncludeUtil;
+import com.liferay.site.cms.site.initializer.constants.CMSStructureBuilderConstants;
 import com.liferay.site.cms.site.initializer.contributor.CMSStructureObjectFolderContributor;
 import com.liferay.site.cms.site.initializer.internal.display.context.StructureBuilderDisplayContext;
 import com.liferay.taglib.ui.SuccessTag;
@@ -60,6 +62,11 @@ public class StructureBuilderComponentSectionFragmentRenderer
 			super.render(
 				fragmentRendererContext, httpServletRequest,
 				httpServletResponse);
+
+			DynamicIncludeUtil.include(
+				httpServletRequest, httpServletResponse,
+				CMSStructureBuilderConstants.CONTRIBUTORS_DYNAMIC_INCLUDE_KEY,
+				true);
 		}
 		catch (Exception exception) {
 			ReflectionUtil.throwException(exception);

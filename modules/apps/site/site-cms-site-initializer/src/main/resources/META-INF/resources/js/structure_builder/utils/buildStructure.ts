@@ -11,6 +11,7 @@ import {
 	ObjectField,
 	ObjectRelationship,
 } from '../../common/types/ObjectDefinition';
+import structureBuilderRegistry from '../contributors/registry';
 import {
 	ReferencedStructure,
 	RelatedContent,
@@ -34,12 +35,25 @@ export default function buildStructure({
 
 	const isPublished = mainObjectDefinition.status?.code === 0;
 
+	const type =
+		mainObjectDefinition.objectFolderExternalReferenceCode as Structure['type'];
+
+	const children = buildChildren({
+		objectDefinition: mainObjectDefinition,
+		objectDefinitions,
+		parent: uuid,
+	});
+
+	const structureBuilderProvider = structureBuilderRegistry.getProvider(type);
+
 	return {
-		children: buildChildren({
-			objectDefinition: mainObjectDefinition,
-			objectDefinitions,
-			parent: uuid,
-		}),
+		children: structureBuilderProvider?.deserialize
+			? structureBuilderProvider.deserialize({
+					children,
+					objectDefinition: mainObjectDefinition,
+					parent: uuid,
+				})
+			: children,
 		erc: mainObjectDefinition.externalReferenceCode,
 		id: mainObjectDefinition.id,
 		label: mainObjectDefinition.label,
@@ -50,7 +64,7 @@ export default function buildStructure({
 		spaces: getSpaces(mainObjectDefinition),
 		status: isPublished ? 'published' : 'draft',
 		system: mainObjectDefinition.system ?? false,
-		type: mainObjectDefinition.objectFolderExternalReferenceCode as Structure['type'],
+		type,
 		uuid,
 		workflows: getWorkflows(mainObjectDefinition),
 	};
