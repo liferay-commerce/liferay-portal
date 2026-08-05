@@ -67,6 +67,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.liveusers.LiveUsers;
 import com.liferay.portal.security.permission.PermissionCacheUtil;
@@ -300,6 +301,16 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 
 			_updateFragmentEntryLink(group);
 		}
+	}
+
+	private Group _fetchGroup(
+		ObjectDefinition objectDefinition, ObjectEntry objectEntry) {
+
+		return _groupLocalService.fetchGroup(
+			objectEntry.getCompanyId(),
+			_classNameLocalService.getClassNameId(
+				objectDefinition.getClassName()),
+			objectEntry.getObjectEntryId());
 	}
 
 	private User _getAdministratorUser(long companyId) throws Exception {
@@ -550,54 +561,15 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		ObjectDefinition objectDefinition = objectEntry.getObjectDefinition();
 
 		if (!Objects.equals(
-				objectDefinition.getExternalReferenceCode(), "L_DSR_ROOM") ||
-			(Objects.equals(
-				MapUtil.getString(originalObjectEntry.getValues(), "name"),
-				MapUtil.getString(objectEntry.getValues(), "name")) &&
-			 Objects.equals(
-				 MapUtil.getString(
-					 originalObjectEntry.getValues(), "friendlyURL"),
-				 MapUtil.getString(objectEntry.getValues(), "friendlyURL")))) {
+				objectDefinition.getExternalReferenceCode(), "L_DSR_ROOM")) {
 
 			return;
 		}
 
-		Group group = _groupLocalService.fetchGroup(
-			objectEntry.getCompanyId(),
-			_classNameLocalService.getClassNameId(
-				objectDefinition.getClassName()),
-			objectEntry.getObjectEntryId());
+		_updateGroupName(originalObjectEntry, objectEntry, objectDefinition);
 
-		if (group == null) {
-			return;
-		}
-
-		String name = MapUtil.getString(objectEntry.getValues(), "name");
-
-		String friendlyURL = _getFriendlyURL(
-			MapUtil.getString(objectEntry.getValues(), "friendlyURL", name));
-
-		Map<Locale, String> nameMap = group.getNameMap();
-
-		if (Objects.equals(friendlyURL, group.getFriendlyURL()) &&
-			Objects.equals(name, nameMap.get(LocaleUtil.getDefault()))) {
-
-			return;
-		}
-
-		nameMap.put(LocaleUtil.getDefault(), name);
-
-		ServiceContext serviceContext = new ServiceContext();
-
-		serviceContext.setCompanyId(objectEntry.getCompanyId());
-		serviceContext.setUserId(objectEntry.getUserId());
-
-		_groupLocalService.updateGroup(
-			group.getGroupId(), group.getParentGroupId(), nameMap,
-			group.getDescriptionMap(), group.getType(), group.getTypeSettings(),
-			group.isManualMembership(), group.getMembershipRestriction(),
-			friendlyURL, group.isInheritContent(), group.isActive(),
-			serviceContext);
+		_updateGroupMaintenanceMode(
+			originalObjectEntry, objectEntry, objectDefinition);
 	}
 
 	private void _onBeforeCreate(ObjectEntry objectEntry) {
@@ -731,6 +703,100 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 				_log.error(portalException);
 			}
 		}
+	}
+
+	private void _updateGroupMaintenanceMode(
+			ObjectEntry originalObjectEntry, ObjectEntry objectEntry,
+			ObjectDefinition objectDefinition)
+		throws Exception {
+
+		boolean archived = DSRRoomUtil.isArchived(objectEntry);
+
+		if (archived == DSRRoomUtil.isArchived(originalObjectEntry)) {
+			return;
+		}
+
+		Group group = _fetchGroup(objectDefinition, objectEntry);
+
+		if (group == null) {
+			return;
+		}
+
+		UnicodeProperties typeSettingsUnicodeProperties =
+			group.getTypeSettingsProperties();
+
+		if (archived) {
+			typeSettingsUnicodeProperties.setProperty(
+				GroupConstants.TYPE_SETTINGS_KEY_MAINTENANCE_MODE,
+				Boolean.TRUE.toString());
+		}
+		else {
+			typeSettingsUnicodeProperties.remove(
+				GroupConstants.TYPE_SETTINGS_KEY_MAINTENANCE_MODE);
+		}
+
+		ServiceContext serviceContext = new ServiceContext();
+
+		serviceContext.setCompanyId(objectEntry.getCompanyId());
+		serviceContext.setUserId(objectEntry.getUserId());
+
+		_groupLocalService.updateGroup(
+			group.getGroupId(), group.getParentGroupId(), group.getNameMap(),
+			group.getDescriptionMap(), group.getType(),
+			typeSettingsUnicodeProperties.toString(),
+			group.isManualMembership(), group.getMembershipRestriction(),
+			group.getFriendlyURL(), group.isInheritContent(), !archived,
+			serviceContext);
+	}
+
+	private void _updateGroupName(
+			ObjectEntry originalObjectEntry, ObjectEntry objectEntry,
+			ObjectDefinition objectDefinition)
+		throws Exception {
+
+		if (Objects.equals(
+				MapUtil.getString(originalObjectEntry.getValues(), "name"),
+				MapUtil.getString(objectEntry.getValues(), "name")) &&
+			Objects.equals(
+				MapUtil.getString(
+					originalObjectEntry.getValues(), "friendlyURL"),
+				MapUtil.getString(objectEntry.getValues(), "friendlyURL"))) {
+
+			return;
+		}
+
+		Group group = _fetchGroup(objectDefinition, objectEntry);
+
+		if (group == null) {
+			return;
+		}
+
+		String name = MapUtil.getString(objectEntry.getValues(), "name");
+
+		String friendlyURL = _getFriendlyURL(
+			MapUtil.getString(objectEntry.getValues(), "friendlyURL", name));
+
+		Map<Locale, String> nameMap = group.getNameMap();
+
+		if (Objects.equals(friendlyURL, group.getFriendlyURL()) &&
+			Objects.equals(name, nameMap.get(LocaleUtil.getDefault()))) {
+
+			return;
+		}
+
+		nameMap.put(LocaleUtil.getDefault(), name);
+
+		ServiceContext serviceContext = new ServiceContext();
+
+		serviceContext.setCompanyId(objectEntry.getCompanyId());
+		serviceContext.setUserId(objectEntry.getUserId());
+
+		_groupLocalService.updateGroup(
+			group.getGroupId(), group.getParentGroupId(), nameMap,
+			group.getDescriptionMap(), group.getType(), group.getTypeSettings(),
+			group.isManualMembership(), group.getMembershipRestriction(),
+			friendlyURL, group.isInheritContent(), group.isActive(),
+			serviceContext);
 	}
 
 	private static final String _DSR_CHANNEL_NAME = "DSR";
