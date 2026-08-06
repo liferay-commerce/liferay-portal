@@ -159,6 +159,13 @@ const ACTIONS = {
 		});
 	},
 
+	sign({fileEntryTitle, signURL}) {
+		openModal({
+			title: fileEntryTitle,
+			url: signURL,
+		});
+	},
+
 	subscribeFileEntry({subscribeFileEntryURL}) {
 		location.href = subscribeFileEntryURL;
 	},

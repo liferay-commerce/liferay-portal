@@ -128,7 +128,12 @@ public class SignatureDLViewFileVersionDisplayContext
 	}
 
 	private DropdownItem _getSignDropdownItem() {
-		return DropdownItemBuilder.setHref(
+		return DropdownItemBuilder.putData(
+			"action", "sign"
+		).putData(
+			"fileEntryTitle", _fileVersion.getFileName()
+		).putData(
+			"signURL",
 			() -> {
 				String portletNamespace = PortalUtil.getPortletNamespace(
 					DigitalSignaturePortletKeys.SIGN_DIGITAL_SIGNATURE);

@@ -24,6 +24,8 @@ page import="com.liferay.digital.signature.web.internal.constants.DigitalSignatu
 page import="com.liferay.portal.kernel.language.LanguageUtil" %><%@
 page import="com.liferay.portal.kernel.util.GetterUtil" %><%@
 page import="com.liferay.portal.kernel.util.HashMapBuilder" %><%@
+page import="com.liferay.portal.kernel.util.HtmlUtil" %><%@
+page import="com.liferay.portal.kernel.util.ParamUtil" %><%@
 page import="com.liferay.portal.kernel.util.StringUtil" %><%@
 page import="com.liferay.portal.kernel.util.Validator" %>
 

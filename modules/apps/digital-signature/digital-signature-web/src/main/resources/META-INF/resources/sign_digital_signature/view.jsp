@@ -8,6 +8,8 @@
 <%@ include file="/init.jsp" %>
 
 <%
+String backURL = ParamUtil.getString(request, "backURL");
+
 String digitalSignatureRecipientStatus = GetterUtil.getString(request.getAttribute(DigitalSignatureWebKeys.DIGITAL_SIGNATURE_RECIPIENT_STATUS));
 
 Object digitalSignatureSigningConfig = request.getAttribute(DigitalSignatureWebKeys.DIGITAL_SIGNATURE_SIGNING_CONFIG);
@@ -38,10 +40,26 @@ Object digitalSignatureSigningConfig = request.getAttribute(DigitalSignatureWebK
 						});
 
 						signing.on('sessionEnd', function (event) {
-							window.location.href =
+							var returnURL =
 								signingConfig.returnURL +
 								'&event=' +
 								encodeURIComponent(event.sessionEndType);
+
+							var opener = Liferay.Util.getOpener();
+
+							if (opener && opener !== window) {
+								fetch(returnURL, {
+									method: 'POST',
+								}).then(function () {
+									opener.Liferay.fire('closeModal', {
+										redirect: '<%= HtmlUtil.escapeJS(backURL) %>',
+									});
+								});
+
+								return;
+							}
+
+							window.location.href = returnURL;
 						});
 
 						signing.mount(
