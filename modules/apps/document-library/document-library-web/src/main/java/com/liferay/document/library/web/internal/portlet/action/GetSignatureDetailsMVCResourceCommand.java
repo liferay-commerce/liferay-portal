@@ -5,9 +5,9 @@
 
 package com.liferay.document.library.web.internal.portlet.action;
 
-import com.liferay.digital.signature.request.DSRequestDetail;
+import com.liferay.digital.signature.model.DSRequest;
+import com.liferay.digital.signature.model.DSRequestRecipient;
 import com.liferay.digital.signature.request.DSRequestManager;
-import com.liferay.digital.signature.request.DSRequestRecipientDetail;
 import com.liferay.document.library.constants.DLPortletKeys;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -57,10 +57,10 @@ public class GetSignatureDetailsMVCResourceCommand
 		_fileEntryModelResourcePermission.check(
 			themeDisplay.getPermissionChecker(), fileEntryId, ActionKeys.VIEW);
 
-		DSRequestDetail dsRequestDetail = _dsRequestManager.getRequestDetail(
+		DSRequest dsRequest = _dsRequestManager.fetchDSRequest(
 			themeDisplay.getCompanyId(), fileEntryId);
 
-		if (dsRequestDetail == null) {
+		if (dsRequest == null) {
 			JSONPortletResponseUtil.writeJSON(
 				resourceRequest, resourceResponse,
 				_jsonFactory.createJSONObject());
@@ -71,44 +71,42 @@ public class GetSignatureDetailsMVCResourceCommand
 		JSONPortletResponseUtil.writeJSON(
 			resourceRequest, resourceResponse,
 			JSONUtil.put(
-				"createDate", _toTime(dsRequestDetail.getCreateDate())
+				"createDate", _toTime(dsRequest.getCreateDate())
 			).put(
-				"emailSubject", dsRequestDetail.getEmailSubject()
+				"emailSubject", dsRequest.getEmailSubject()
 			).put(
-				"expirationDate", _toTime(dsRequestDetail.getExpirationDate())
+				"expirationDate", _toTime(dsRequest.getExpirationDate())
 			).put(
-				"providerRequestId", dsRequestDetail.getProviderRequestId()
+				"providerRequestId", dsRequest.getProviderRequestId()
 			).put(
 				"recipients",
 				JSONUtil.toJSONArray(
-					dsRequestDetail.getRecipientDetails(),
+					dsRequest.getDSRequestRecipients(),
 					this::_toRecipientJSONObject)
 			).put(
-				"requesterEmailAddress",
-				dsRequestDetail.getRequesterEmailAddress()
+				"requesterEmailAddress", dsRequest.getRequesterEmailAddress()
 			).put(
-				"requesterName", dsRequestDetail.getRequesterName()
+				"requesterName", dsRequest.getRequesterName()
 			).put(
-				"requestStatus", dsRequestDetail.getRequestStatus()
+				"requestStatus", dsRequest.getStatus()
 			).put(
-				"statusDate", _toTime(dsRequestDetail.getStatusDate())
+				"statusDate", _toTime(dsRequest.getStatusDate())
 			));
 	}
 
 	private JSONObject _toRecipientJSONObject(
-		DSRequestRecipientDetail dsRequestRecipientDetail) {
+		DSRequestRecipient dsRequestRecipient) {
 
 		return JSONUtil.put(
-			"emailAddress", dsRequestRecipientDetail.getEmailAddress()
+			"emailAddress", dsRequestRecipient.getEmailAddress()
 		).put(
-			"name", dsRequestRecipientDetail.getName()
+			"name", dsRequestRecipient.getName()
 		).put(
-			"requestRecipientStatus",
-			dsRequestRecipientDetail.getRequestRecipientStatus()
+			"requestRecipientStatus", dsRequestRecipient.getStatus()
 		).put(
-			"sentDate", _toTime(dsRequestRecipientDetail.getSentDate())
+			"sentDate", _toTime(dsRequestRecipient.getSentDate())
 		).put(
-			"statusDate", _toTime(dsRequestRecipientDetail.getStatusDate())
+			"statusDate", _toTime(dsRequestRecipient.getStatusDate())
 		);
 	}
 

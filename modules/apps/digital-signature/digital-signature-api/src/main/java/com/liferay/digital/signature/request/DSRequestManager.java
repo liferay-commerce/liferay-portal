@@ -6,6 +6,7 @@
 package com.liferay.digital.signature.request;
 
 import com.liferay.digital.signature.model.DSEnvelope;
+import com.liferay.digital.signature.model.DSRequest;
 
 import java.util.Collection;
 import java.util.Map;
@@ -23,13 +24,13 @@ public interface DSRequestManager {
 		long companyId, long groupId, long userId, DSEnvelope dsEnvelope,
 		long[] fileEntryIds);
 
+	public DSRequest fetchDSRequest(long companyId, long fileEntryId);
+
 	public Map<Long, String> getProviderRequestIds(
 		long companyId, long userId, Collection<String> statuses);
 
 	public Map<Long, Map<Long, String>> getRecipientStatusesByFileEntryId(
 		long companyId, Collection<Long> fileEntryIds);
-
-	public DSRequestDetail getRequestDetail(long companyId, long fileEntryId);
 
 	public Map<Long, String> getRequestStatusesByFileEntryId(
 		long companyId, Collection<Long> fileEntryIds);

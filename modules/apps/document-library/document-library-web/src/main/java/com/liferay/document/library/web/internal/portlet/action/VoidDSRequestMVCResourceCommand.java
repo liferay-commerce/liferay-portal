@@ -5,7 +5,7 @@
 
 package com.liferay.document.library.web.internal.portlet.action;
 
-import com.liferay.digital.signature.request.DSRequestDetail;
+import com.liferay.digital.signature.model.DSRequest;
 import com.liferay.digital.signature.request.DSRequestManager;
 import com.liferay.document.library.constants.DLPortletKeys;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -53,10 +53,10 @@ public class VoidDSRequestMVCResourceCommand extends BaseMVCResourceCommand {
 			themeDisplay.getPermissionChecker(), fileEntryId,
 			ActionKeys.UPDATE);
 
-		DSRequestDetail dsRequestDetail = _dsRequestManager.getRequestDetail(
+		DSRequest dsRequest = _dsRequestManager.fetchDSRequest(
 			themeDisplay.getCompanyId(), fileEntryId);
 
-		if (dsRequestDetail != null) {
+		if (dsRequest != null) {
 			String reason = ParamUtil.getString(resourceRequest, "reason");
 
 			if (Validator.isNull(reason)) {
@@ -65,7 +65,7 @@ public class VoidDSRequestMVCResourceCommand extends BaseMVCResourceCommand {
 
 			_dsRequestManager.voidDSRequest(
 				themeDisplay.getCompanyId(), themeDisplay.getScopeGroupId(),
-				dsRequestDetail.getProviderRequestId(), reason);
+				dsRequest.getProviderRequestId(), reason);
 		}
 
 		JSONPortletResponseUtil.writeJSON(
