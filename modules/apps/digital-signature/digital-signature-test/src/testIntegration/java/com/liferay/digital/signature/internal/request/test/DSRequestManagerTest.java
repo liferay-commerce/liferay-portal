@@ -221,6 +221,32 @@ public class DSRequestManagerTest {
 	}
 
 	@Test
+	public void testGetRecipientStatusesByFileEntryIdForMultipleDocuments()
+		throws Exception {
+
+		long companyId = TestPropsValues.getCompanyId();
+
+		long fileEntryId1 = RandomTestUtil.randomInt();
+		long fileEntryId2 = RandomTestUtil.randomInt();
+
+		_dsRequestManager.addDSRequest(
+			companyId, _group.getGroupId(), TestPropsValues.getUserId(),
+			_createDSEnvelope(fileEntryId1),
+			new long[] {fileEntryId1, fileEntryId2});
+
+		Map<Long, Map<Long, String>> recipientStatusesByFileEntryId =
+			_dsRequestManager.getRecipientStatusesByFileEntryId(
+				companyId, ListUtil.fromArray(fileEntryId1, fileEntryId2));
+
+		Assert.assertEquals(
+			recipientStatusesByFileEntryId.toString(), 2,
+			recipientStatusesByFileEntryId.size());
+		Assert.assertEquals(
+			recipientStatusesByFileEntryId.get(fileEntryId1),
+			recipientStatusesByFileEntryId.get(fileEntryId2));
+	}
+
+	@Test
 	public void testGetRequestStatuses() throws Exception {
 		long companyId = TestPropsValues.getCompanyId();
 

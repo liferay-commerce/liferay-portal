@@ -327,13 +327,8 @@ public class DSRequestManagerImpl implements DSRequestManager {
 				return recipientStatusesByFileEntryId;
 			}
 
-			Map<Long, Long> fileEntryIdsByRequestId = new HashMap<>();
-
-			for (Map.Entry<Long, Long> entry :
-					requestIdsByFileEntryId.entrySet()) {
-
-				fileEntryIdsByRequestId.put(entry.getValue(), entry.getKey());
-			}
+			Map<Long, Map<Long, String>> statusesByUserIdByRequestId =
+				new HashMap<>();
 
 			for (Map<String, Serializable> recipientValues :
 					_getValuesList(
@@ -341,21 +336,16 @@ public class DSRequestManagerImpl implements DSRequestManager {
 						StringBundler.concat(
 							"(", recipientFieldName, " in ('",
 							StringUtil.merge(
-								fileEntryIdsByRequestId.keySet(), "', '"),
+								new HashSet<>(requestIdsByFileEntryId.values()),
+								"', '"),
 							"'))"),
 						null)) {
 
-				Long fileEntryId = fileEntryIdsByRequestId.get(
-					GetterUtil.getLong(
-						recipientValues.get(recipientFieldName)));
-
-				if (fileEntryId == null) {
-					continue;
-				}
-
 				Map<Long, String> statusesByUserId =
-					recipientStatusesByFileEntryId.computeIfAbsent(
-						fileEntryId, key -> new HashMap<>());
+					statusesByUserIdByRequestId.computeIfAbsent(
+						GetterUtil.getLong(
+							recipientValues.get(recipientFieldName)),
+						requestId -> new HashMap<>());
 
 				statusesByUserId.put(
 					GetterUtil.getLong(
@@ -363,6 +353,20 @@ public class DSRequestManagerImpl implements DSRequestManager {
 							"r_userToDSRequestRecipient_userId")),
 					GetterUtil.getString(
 						recipientValues.get("requestRecipientStatus")));
+			}
+
+			for (Map.Entry<Long, Long> entry :
+					requestIdsByFileEntryId.entrySet()) {
+
+				Map<Long, String> statusesByUserId =
+					statusesByUserIdByRequestId.get(entry.getValue());
+
+				if (statusesByUserId == null) {
+					continue;
+				}
+
+				recipientStatusesByFileEntryId.put(
+					entry.getKey(), new HashMap<>(statusesByUserId));
 			}
 		}
 		catch (Exception exception) {
