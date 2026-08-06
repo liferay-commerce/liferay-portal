@@ -44,6 +44,18 @@ public class DSEnvelope {
 		return emailSubject;
 	}
 
+	public int getExpireAfter() {
+		return expireAfter;
+	}
+
+	public LocalDateTime getExpireLocalDateTime() {
+		return expireLocalDateTime;
+	}
+
+	public int getExpireWarn() {
+		return expireWarn;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -54,6 +66,10 @@ public class DSEnvelope {
 
 	public String getStatus() {
 		return status;
+	}
+
+	public LocalDateTime getStatusChangedLocalDateTime() {
+		return statusChangedLocalDateTime;
 	}
 
 	public void setCreatedLocalDateTime(LocalDateTime createdLocalDateTime) {
@@ -80,6 +96,18 @@ public class DSEnvelope {
 		this.emailSubject = emailSubject;
 	}
 
+	public void setExpireAfter(int expireAfter) {
+		this.expireAfter = expireAfter;
+	}
+
+	public void setExpireLocalDateTime(LocalDateTime expireLocalDateTime) {
+		this.expireLocalDateTime = expireLocalDateTime;
+	}
+
+	public void setExpireWarn(int expireWarn) {
+		this.expireWarn = expireWarn;
+	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -92,8 +120,14 @@ public class DSEnvelope {
 		this.status = status;
 	}
 
+	public void setStatusChangedLocalDateTime(
+		LocalDateTime statusChangedLocalDateTime) {
+
+		this.statusChangedLocalDateTime = statusChangedLocalDateTime;
+	}
+
 	public JSONObject toJSONObject() {
-		return JSONUtil.put(
+		JSONObject jsonObject = JSONUtil.put(
 			"createdLocalDateTime", getCreatedLocalDateTime()
 		).put(
 			"documents",
@@ -119,6 +153,25 @@ public class DSEnvelope {
 		).put(
 			"status", getStatus()
 		);
+
+		if (getExpireAfter() > 0) {
+			jsonObject.put(
+				"notification",
+				JSONUtil.put(
+					"expirations",
+					JSONUtil.put(
+						"expireAfter", String.valueOf(getExpireAfter())
+					).put(
+						"expireEnabled", "true"
+					).put(
+						"expireWarn", String.valueOf(getExpireWarn())
+					)
+				).put(
+					"useAccountDefaults", "false"
+				));
+		}
+
+		return jsonObject;
 	}
 
 	@Override
@@ -132,9 +185,13 @@ public class DSEnvelope {
 	protected List<DSRecipient> dsRecipients;
 	protected String emailBlurb;
 	protected String emailSubject;
+	protected int expireAfter;
+	protected LocalDateTime expireLocalDateTime;
+	protected int expireWarn;
 	protected String name;
 	protected String senderEmailAddress;
 	protected String status;
+	protected LocalDateTime statusChangedLocalDateTime;
 
 	private static final Log _log = LogFactoryUtil.getLog(DSEnvelope.class);
 

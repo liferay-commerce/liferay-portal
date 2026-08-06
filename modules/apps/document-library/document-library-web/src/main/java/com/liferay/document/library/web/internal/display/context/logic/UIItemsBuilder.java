@@ -9,6 +9,7 @@ import com.liferay.digital.signature.configuration.DigitalSignatureConfiguration
 import com.liferay.digital.signature.configuration.DigitalSignatureConfigurationUtil;
 import com.liferay.digital.signature.constants.DigitalSignatureConstants;
 import com.liferay.digital.signature.constants.DigitalSignaturePortletKeys;
+import com.liferay.digital.signature.request.DSRequestManager;
 import com.liferay.document.library.constants.DLPortletKeys;
 import com.liferay.document.library.display.context.DLUIItemKeys;
 import com.liferay.document.library.kernel.document.conversion.DocumentConversionUtil;
@@ -85,6 +86,8 @@ import jakarta.portlet.WindowStateException;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.Collections;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -730,6 +733,7 @@ public class UIItemsBuilder {
 				_themeDisplay.getCompanyId(), _themeDisplay.getSiteGroupId());
 
 		if (!digitalSignatureConfiguration.enabled() ||
+			!digitalSignatureConfiguration.enableEmbeddedView() ||
 			!ArrayUtil.contains(
 				DigitalSignatureConstants.ALLOWED_FILE_EXTENSIONS,
 				_fileEntry.getExtension())) {
@@ -737,7 +741,23 @@ public class UIItemsBuilder {
 			return false;
 		}
 
-		return true;
+		DSRequestManager dsRequestManager =
+			(DSRequestManager)_httpServletRequest.getAttribute(
+				DSRequestManager.class.getName());
+
+		if (dsRequestManager == null) {
+			return true;
+		}
+
+		Map<Long, String> requestStatusesByFileEntryId =
+			dsRequestManager.getRequestStatusesByFileEntryId(
+				_themeDisplay.getCompanyId(),
+				Collections.singletonList(_fileEntry.getFileEntryId()));
+
+		String requestStatus = requestStatusesByFileEntryId.get(
+			_fileEntry.getFileEntryId());
+
+		return Validator.isNull(requestStatus);
 	}
 
 	public boolean isCompareToActionAvailable() {
