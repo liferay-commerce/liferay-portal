@@ -161,6 +161,12 @@ public class ObjectRelationshipLocalServiceImpl
 			externalReferenceCode, 0L, user.getCompanyId(),
 			objectDefinitionId1);
 
+		Map<Locale, String> labelMap = objectField.getLabelMap();
+
+		if (labelMap.isEmpty()) {
+			labelMap = LocalizedMapUtil.getLocalizedMap(externalReferenceCode);
+		}
+
 		String objectFieldName = objectField.getName();
 
 		return _addObjectRelationship(
@@ -168,8 +174,7 @@ public class ObjectRelationshipLocalServiceImpl
 			_objectDefinitionPersistence.findByPrimaryKey(objectDefinitionId1),
 			_objectDefinitionPersistence.findByPrimaryKey(objectDefinitionId2),
 			0, ObjectRelationshipConstants.DELETION_TYPE_PREVENT, false,
-			LocalizedMapUtil.getLocalizedMap(externalReferenceCode),
-			objectFieldName.split(StringPool.UNDERLINE)[1], false,
+			labelMap, objectFieldName.split(StringPool.UNDERLINE)[1], false,
 			objectField.isSystem(),
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY, objectField);
 	}
