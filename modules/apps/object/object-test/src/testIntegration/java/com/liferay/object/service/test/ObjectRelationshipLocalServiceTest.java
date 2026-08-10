@@ -1766,6 +1766,7 @@ public class ObjectRelationshipLocalServiceTest {
 
 		_testAddObjectRelationshipOneToManyWithObjectField(false);
 		_testAddObjectRelationshipOneToManyWithObjectField(true);
+		_testAddObjectRelationshipOneToManyWithObjectFieldWithoutLabel();
 	}
 
 	private void _testAddObjectRelationshipOneToManyWithObjectField(
@@ -1795,6 +1796,9 @@ public class ObjectRelationshipLocalServiceTest {
 				expectedObjectField);
 
 		Assert.assertEquals(
+			expectedObjectField.getLabelMap(),
+			objectRelationship.getLabelMap());
+		Assert.assertEquals(
 			expectedObjectField.isSystem(), objectRelationship.isSystem());
 
 		ObjectField actualObjectField = _objectFieldLocalService.getObjectField(
@@ -1811,6 +1815,33 @@ public class ObjectRelationshipLocalServiceTest {
 			expectedObjectField.isRequired(), actualObjectField.isRequired());
 		Assert.assertEquals(
 			expectedObjectField.isSystem(), actualObjectField.isSystem());
+
+		_objectRelationshipLocalService.deleteObjectRelationship(
+			objectRelationship);
+	}
+
+	private void _testAddObjectRelationshipOneToManyWithObjectFieldWithoutLabel()
+		throws Exception {
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		ObjectField expectedObjectField = new ObjectFieldBuilder(
+		).name(
+			"a_" + RandomTestUtil.randomString()
+		).readOnly(
+			ObjectFieldConstants.READ_ONLY_FALSE
+		).build();
+
+		ObjectRelationship objectRelationship =
+			_objectRelationshipLocalService.addObjectRelationship(
+				externalReferenceCode, TestPropsValues.getUserId(),
+				_objectDefinition1.getObjectDefinitionId(),
+				_objectDefinition2.getObjectDefinitionId(),
+				expectedObjectField);
+
+		Assert.assertEquals(
+			LocalizedMapUtil.getLocalizedMap(externalReferenceCode),
+			objectRelationship.getLabelMap());
 
 		_objectRelationshipLocalService.deleteObjectRelationship(
 			objectRelationship);
