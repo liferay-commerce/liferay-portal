@@ -174,6 +174,48 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 		Assert.assertTrue(false);
 	}
 
+	@Test
+	public void testPatchAccountWithInvalidName() throws Exception {
+		Account postAccount = randomAccount();
+
+		postAccount.setDefaultBillingAccountAddressId((Long)null);
+		postAccount.setDefaultShippingAccountAddressId((Long)null);
+
+		Account account = _postAccount(postAccount);
+
+		Account patchAccount = new Account() {
+			{
+				name = RandomTestUtil.randomString(251);
+			}
+		};
+
+		assertHttpResponseStatusCode(
+			400,
+			accountResource.patchAccountHttpResponse(
+				account.getId(), patchAccount));
+	}
+
+	@Test
+	public void testPatchAccountWithInvalidTaxIdNumber() throws Exception {
+		Account postAccount = randomAccount();
+
+		postAccount.setDefaultBillingAccountAddressId((Long)null);
+		postAccount.setDefaultShippingAccountAddressId((Long)null);
+
+		Account account = _postAccount(postAccount);
+
+		Account patchAccount = new Account() {
+			{
+				taxId = RandomTestUtil.randomString(76);
+			}
+		};
+
+		assertHttpResponseStatusCode(
+			400,
+			accountResource.patchAccountHttpResponse(
+				account.getId(), patchAccount));
+	}
+
 	@Ignore
 	@Override
 	@Test
@@ -195,6 +237,38 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 	@Test
 	public void testPostAccountLogo() throws Exception {
 		Assert.assertTrue(false);
+	}
+
+	@Test
+	public void testPostAccountWithInvalidExternalReferenceCode()
+		throws Exception {
+
+		Account account = randomAccount();
+
+		account.setExternalReferenceCode(RandomTestUtil.randomString(76));
+
+		assertHttpResponseStatusCode(
+			400, accountResource.postAccountHttpResponse(account));
+	}
+
+	@Test
+	public void testPostAccountWithInvalidName() throws Exception {
+		Account account = randomAccount();
+
+		account.setName(RandomTestUtil.randomString(251));
+
+		assertHttpResponseStatusCode(
+			400, accountResource.postAccountHttpResponse(account));
+	}
+
+	@Test
+	public void testPostAccountWithInvalidTaxIdNumber() throws Exception {
+		Account account = randomAccount();
+
+		account.setTaxId(RandomTestUtil.randomString(76));
+
+		assertHttpResponseStatusCode(
+			400, accountResource.postAccountHttpResponse(account));
 	}
 
 	@Override
