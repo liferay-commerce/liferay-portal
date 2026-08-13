@@ -1460,154 +1460,204 @@ test(
 	async ({
 		apiHelpers,
 		commerceAdminChannelsPage,
+		commerceMiniCartPage,
 		page,
 		productDetailsPage,
 		site,
 	}) => {
-		const catalog =
-			await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
-				name: getRandomString(),
+		const {boxSkuUnitOfMeasure, catalog, eachSkuUnitOfMeasure, product} =
+			await test.step('Create a product with Each and Box units of measure', async () => {
+				const catalog =
+					await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
+						name: getRandomString(),
+					});
+
+				const product =
+					await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+						catalogId: catalog.id,
+						name: {en_US: getRandomString()},
+					});
+
+				const eachSkuUnitOfMeasure =
+					await apiHelpers.headlessCommerceAdminCatalog.postSkuUnitOfMeasure(
+						product.skus[0].id,
+						{
+							incrementalOrderQuantity: 1,
+							name: {en_US: 'Each'},
+							primary: true,
+							priority: 1,
+							rate: 1,
+						}
+					);
+
+				const boxSkuUnitOfMeasure =
+					await apiHelpers.headlessCommerceAdminCatalog.postSkuUnitOfMeasure(
+						product.skus[0].id,
+						{
+							incrementalOrderQuantity: 1,
+							name: {en_US: 'Box'},
+							primary: false,
+							priority: 2,
+							rate: 1,
+						}
+					);
+
+				return {
+					boxSkuUnitOfMeasure,
+					catalog,
+					eachSkuUnitOfMeasure,
+					product,
+				};
 			});
 
-		const product =
-			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
-				catalogId: catalog.id,
-				name: {en_US: getRandomString()},
+		const {diagramName, pin} =
+			await test.step('Create a diagram with a pin mapped to the product', async () => {
+				const diagramName = getRandomString();
+
+				const productDiagram =
+					await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+						catalogId: catalog.id,
+						diagram: {
+							attachmentBase64: {
+								attachment:
+									'iVBORw0KGgoAAAANSUhEUgAAAOAAAADgCAMAAAAt85rTAAAAeFBMVEX///8LY84AXM+frr4AYM0AWcwAXMwAUspRgta9zO2NquIAYc0AXs35+ffL0tqotsS5zOkRadH///sAV8u0xefv8/sueNOyye2HpN5vldjA0efu8fR5ntnn7PJjktiowuVfjNfR3ezX4OqOqtpIhdcob9CNseMYbtMc8dVDAAADbUlEQVR4nO2da3OqMBBAQwv4CGoFi4+qtbW2//8fFmE6t9mAo3cwpMw5H3e2jqcwCYlLVikAAAAAAAAAAAAAAAAAAAAAAAAAAACAP8hkOnt0xGw6ca73vAyyB2dkyfLZrd9TnoWBQ3SWP7n1S1zqnUlcGj679zsburtLl5l7vyDIlq78JonuQjAMXI2l004uYHEJp44EZw/dCD7MHAk+diX4iCCCCCKIIII+CuokNqnWUlpEq0c8K/naB7/uBHVwWI1/sxqW4dyMjvfzwkXP12Z0lV9p2J1gctiJlLe8uIbZJjWjL9u4SN6+mNF0c+WzbXeC8djKGRaCAyu6iIIgGlnhQW8ERwgi6AIEFYImCCLYLggqBE0QRLBdbMGVTElLwVSGy9XEwkr2XjAcvomvvDkVi9joVRju9kmxHtyLxWP6GvkuGASnocnpHNRfIppXybkIf3m/oi+uoaSM6tqolez/nowjELyfoM4GJlF528UieqkyQ0cy2bpzO9w2zDdmRvp6HjjiTzGKvn80Guq5HHI31m5il/OgnPGqedD6TX3ROCGEQ+sjVrE/grc8yTQJWsljBO8FggpBBBWCdwRBhSCCCsE7gqDqm2CyFoUTaldWWbyL6OQov/M/wVwWarysZeV7hwve+XZksNiXX/pjYYaPl/bP9mbyYjv3Z8Eb6CQyqf75oYherGmSH2Ens+mE4H8L6rj2Fq3HSq52oqy73KNbtBhkxAixv+D3dRQjUrXXJgaZkU+DTLKvnSbqiY9ys+09832aaJjo66n/fdDviR5BBBFEsE0QVAiaIIhguyCoEDTxX7C+CKFB0CrGmwx8L0JoKCOpJ/wQu4npZ3xeBvtcRtJUCNRgKJPLK+V1IZAjEHQueFM5ZX1FpteC1xbEVttntTW1fgveUtKsT/J92DdrpvFO8JaidHseVB7Ng02C1l82v1bg95MMgj8g+BsE7waCCAoQRLBdEERQ0DNBazXxZwVrjjwq1oNx7ZFHYS7eklW7gz9VFg1Yh1atLx1aNRTnXh0Cj7YNmwxvOXYsrE32W7BlEEQQQQQRRNAHwd4fJN77o+AngdNmGj/oxFljlL63Y+h/Q43et0Qpm9o4baoROm5qc25LlLhsSxS4bkuket9YCgAAAAAAAAAAAAAAAAAAAAAAAAAAAKAFvgGY6WrR7U77yAAAAABJRU5ErkJggg==',
+								title: {en_US: 'title'},
+							},
+							radius: 1,
+						},
+						name: {en_US: diagramName},
+						productType: 'diagram',
+					});
+
+				const pin =
+					await apiHelpers.headlessCommerceAdminCatalog.postPin(
+						productDiagram.productId,
+						{
+							mappedProduct: {
+								productId: product.productId,
+								quantity: 1,
+								sequence: '1',
+								sku: product.skus[0].sku,
+								skuId: product.skus[0].id,
+							},
+							positionX: 50,
+							positionY: 10,
+							sequence: '1',
+						}
+					);
+
+				return {diagramName, pin};
 			});
 
-		const eachSkuUnitOfMeasure =
-			await apiHelpers.headlessCommerceAdminCatalog.postSkuUnitOfMeasure(
-				product.skus[0].id,
-				{
-					incrementalOrderQuantity: 1,
-					name: {en_US: 'Each'},
-					primary: true,
-					priority: 1,
-					rate: 1,
-				}
-			);
+		const account =
+			await test.step('Create a business account for the buyer', async () => {
+				const account = await apiHelpers.headlessAdminUser.postAccount({
+					name: getRandomString(),
+					type: 'business',
+				});
 
-		const boxSkuUnitOfMeasure =
-			await apiHelpers.headlessCommerceAdminCatalog.postSkuUnitOfMeasure(
-				product.skus[0].id,
-				{
-					incrementalOrderQuantity: 1,
-					name: {en_US: 'Box'},
-					primary: false,
-					priority: 2,
-					rate: 1,
-				}
-			);
+				await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
+					account.id,
+					['test@liferay.com']
+				);
 
-		const productDiagram =
-			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
-				catalogId: catalog.id,
-				diagram: {
-					attachmentBase64: {
-						attachment:
-							'iVBORw0KGgoAAAANSUhEUgAAAOAAAADgCAMAAAAt85rTAAAAeFBMVEX///8LY84AXM+frr4AYM0AWcwAXMwAUspRgta9zO2NquIAYc0AXs35+ffL0tqotsS5zOkRadH///sAV8u0xefv8/sueNOyye2HpN5vldjA0efu8fR5ntnn7PJjktiowuVfjNfR3ezX4OqOqtpIhdcob9CNseMYbtMc8dVDAAADbUlEQVR4nO2da3OqMBBAQwv4CGoFi4+qtbW2//8fFmE6t9mAo3cwpMw5H3e2jqcwCYlLVikAAAAAAAAAAAAAAAAAAAAAAAAAAACAP8hkOnt0xGw6ca73vAyyB2dkyfLZrd9TnoWBQ3SWP7n1S1zqnUlcGj679zsburtLl5l7vyDIlq78JonuQjAMXI2l004uYHEJp44EZw/dCD7MHAk+diX4iCCCCCKIIII+CuokNqnWUlpEq0c8K/naB7/uBHVwWI1/sxqW4dyMjvfzwkXP12Z0lV9p2J1gctiJlLe8uIbZJjWjL9u4SN6+mNF0c+WzbXeC8djKGRaCAyu6iIIgGlnhQW8ERwgi6AIEFYImCCLYLggqBE0QRLBdbMGVTElLwVSGy9XEwkr2XjAcvomvvDkVi9joVRju9kmxHtyLxWP6GvkuGASnocnpHNRfIppXybkIf3m/oi+uoaSM6tqolez/nowjELyfoM4GJlF528UieqkyQ0cy2bpzO9w2zDdmRvp6HjjiTzGKvn80Guq5HHI31m5il/OgnPGqedD6TX3ROCGEQ+sjVrE/grc8yTQJWsljBO8FggpBBBWCdwRBhSCCCsE7gqDqm2CyFoUTaldWWbyL6OQov/M/wVwWarysZeV7hwve+XZksNiXX/pjYYaPl/bP9mbyYjv3Z8Eb6CQyqf75oYherGmSH2Ens+mE4H8L6rj2Fq3HSq52oqy73KNbtBhkxAixv+D3dRQjUrXXJgaZkU+DTLKvnSbqiY9ys+09832aaJjo66n/fdDviR5BBBFEsE0QVAiaIIhguyCoEDTxX7C+CKFB0CrGmwx8L0JoKCOpJ/wQu4npZ3xeBvtcRtJUCNRgKJPLK+V1IZAjEHQueFM5ZX1FpteC1xbEVttntTW1fgveUtKsT/J92DdrpvFO8JaidHseVB7Ng02C1l82v1bg95MMgj8g+BsE7waCCAoQRLBdEERQ0DNBazXxZwVrjjwq1oNx7ZFHYS7eklW7gz9VFg1Yh1atLx1aNRTnXh0Cj7YNmwxvOXYsrE32W7BlEEQQQQQRRNAHwd4fJN77o+AngdNmGj/oxFljlL63Y+h/Q43et0Qpm9o4baoROm5qc25LlLhsSxS4bkuket9YCgAAAAAAAAAAAAAAAAAAAAAAAAAAAKAFvgGY6WrR7U77yAAAAABJRU5ErkJggg==',
-						title: {en_US: 'title'},
-					},
-				},
-				name: {en_US: 'diagram'},
-				productType: 'diagram',
+				return account;
 			});
 
-		const pin = await apiHelpers.headlessCommerceAdminCatalog.postPin(
-			productDiagram.productId,
-			{
-				mappedProduct: {
-					productId: product.productId,
-					quantity: 1,
-					sequence: '1',
-					sku: product.skus[0].sku,
-					skuId: product.skus[0].id,
-				},
-				sequence: '1',
-			}
-		);
-
-		const account = await apiHelpers.headlessAdminUser.postAccount({
-			name: getRandomString(),
-			type: 'business',
+		await test.step('Create a storefront page with the diagram widget', async () => {
+			await apiHelpers.headlessDelivery.createSitePage({
+				pageDefinition: getPageDefinition([
+					getFragmentDefinition({
+						id: getRandomString(),
+						key: 'COMMERCE_CART_FRAGMENTS-mini-cart',
+					}),
+					getFragmentDefinition({
+						id: getRandomString(),
+						key: 'COMMERCE_ACCOUNT_FRAGMENTS-account-selector',
+					}),
+					getWidgetDefinition({
+						id: getRandomString(),
+						widgetName:
+							'com_liferay_commerce_product_content_web_internal_portlet_CPContentPortlet',
+					}),
+				]),
+				siteId: site.id,
+				title: getRandomString(),
+			});
 		});
 
-		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
-			account.id,
-			['test@liferay.com']
-		);
+		const channel = await test.step('Create a B2B channel', async () => {
+			const channel =
+				await apiHelpers.headlessCommerceAdminChannel.postChannel({
+					siteGroupId: site.id,
+				});
 
-		await apiHelpers.headlessDelivery.createSitePage({
-			pageDefinition: getPageDefinition([
-				getFragmentDefinition({
-					id: getRandomString(),
-					key: 'COMMERCE_CART_FRAGMENTS-mini-cart',
-				}),
-				getFragmentDefinition({
-					id: getRandomString(),
-					key: 'COMMERCE_ACCOUNT_FRAGMENTS-account-selector',
-				}),
-				getWidgetDefinition({
-					id: getRandomString(),
-					widgetName:
-						'com_liferay_commerce_product_content_web_internal_portlet_CPContentPortlet',
-				}),
-			]),
-			siteId: site.id,
-			title: getRandomString(),
+			await commerceAdminChannelsPage.changeCommerceChannelSiteType(
+				channel.name,
+				'B2B'
+			);
+
+			return channel;
 		});
 
-		const channel =
-			await apiHelpers.headlessCommerceAdminChannel.postChannel({
-				siteGroupId: site.id,
-			});
-
-		await commerceAdminChannelsPage.changeCommerceChannelSiteType(
-			channel.name,
-			'B2B'
-		);
-
-		const cart = await apiHelpers.headlessCommerceDeliveryCart.postCart(
-			{
-				accountId: account.id,
-				cartItems: [
+		const cart =
+			await test.step('Seed a cart with the product in the Box unit of measure', async () =>
+				apiHelpers.headlessCommerceDeliveryCart.postCart(
 					{
-						options: '[]',
-						quantity: 1,
-						skuId: product.skus[0].id,
-						skuUnitOfMeasure: {key: boxSkuUnitOfMeasure.key},
+						accountId: account.id,
+						cartItems: [
+							{
+								options: '[]',
+								quantity: 1,
+								skuId: product.skus[0].id,
+								skuUnitOfMeasure: {
+									key: boxSkuUnitOfMeasure.key,
+								},
+							},
+						],
 					},
-				],
-			},
-			channel.id
-		);
+					channel.id
+				));
 
-		await page.goto(`/web/${site.name}/p/diagram`);
+		await test.step('Add the mapped product to the cart from the diagram tooltip', async () => {
+			await page.goto(`/web/${site.name}/p/${diagramName}`);
 
-		await (await productDetailsPage.diagramPin(pin.sequence)).click();
+			await expect(commerceMiniCartPage.miniCartButton).toHaveAttribute(
+				'data-badge-count',
+				'1'
+			);
 
-		await expect(productDetailsPage.pinAddToCartButton).toBeVisible();
-		await expect(productDetailsPage.pinAddToCartButton).not.toHaveClass(
-			/is-added/
-		);
+			await (await productDetailsPage.diagramPin(pin.sequence)).click();
 
-		await productDetailsPage.pinAddToCartButton.click();
+			await expect(productDetailsPage.pinAddToCartButton).toBeVisible();
+			await expect(productDetailsPage.pinAddToCartButton).not.toHaveClass(
+				/is-added/
+			);
 
-		await expect(productDetailsPage.pinAddToCartButton).toHaveClass(
-			/is-added/
-		);
+			await productDetailsPage.pinAddToCartButton.click();
 
-		const cartItems =
-			await apiHelpers.headlessCommerceDeliveryCart.getCartItems(cart.id);
+			await expect(productDetailsPage.pinAddToCartButton).toHaveClass(
+				/is-added/
+			);
+		});
 
-		expect(cartItems.items).toHaveLength(2);
+		await test.step('Assert the cart keeps a separate row per unit of measure', async () => {
+			await expect(async () => {
+				const cartItems =
+					await apiHelpers.headlessCommerceDeliveryCart.getCartItems(
+						cart.id
+					);
 
-		const uomKeys = cartItems.items
-			.map((item) => item.skuUnitOfMeasure?.key)
-			.sort();
+				expect(cartItems.items).toHaveLength(2);
 
-		expect(uomKeys).toEqual(
-			[boxSkuUnitOfMeasure.key, eachSkuUnitOfMeasure.key].sort()
-		);
+				const uomKeys = cartItems.items
+					.map((item) => item.skuUnitOfMeasure?.key)
+					.sort();
+
+				expect(uomKeys).toEqual(
+					[boxSkuUnitOfMeasure.key, eachSkuUnitOfMeasure.key].sort()
+				);
+			}).toPass();
+		});
 	}
 );
