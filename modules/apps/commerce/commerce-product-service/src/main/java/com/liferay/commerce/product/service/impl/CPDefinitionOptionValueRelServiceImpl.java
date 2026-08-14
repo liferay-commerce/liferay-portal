@@ -49,30 +49,10 @@ public class CPDefinitionOptionValueRelServiceImpl
 
 	@Override
 	public CPDefinitionOptionValueRel addCPDefinitionOptionValueRel(
-			long cpDefinitionOptionRelId, long cpInstanceId, String key,
-			Map<Locale, String> nameMap, boolean preselected,
-			BigDecimal deltaPrice, double priority, BigDecimal quantity,
-			String unitOfMeasureKey, ServiceContext serviceContext)
-		throws PortalException {
-
-		CPDefinitionOptionRel cpDefinitionOptionRel =
-			_cpDefinitionOptionRelPersistence.findByPrimaryKey(
-				cpDefinitionOptionRelId);
-
-		_checkCommerceCatalog(
-			cpDefinitionOptionRel.getCPDefinitionId(), ActionKeys.VIEW);
-
-		return cpDefinitionOptionValueRelLocalService.
-			addCPDefinitionOptionValueRel(
-				cpDefinitionOptionRelId, cpInstanceId, key, nameMap,
-				preselected, deltaPrice, priority, quantity, unitOfMeasureKey,
-				serviceContext);
-	}
-
-	@Override
-	public CPDefinitionOptionValueRel addCPDefinitionOptionValueRel(
-			long cpDefinitionOptionRelId, String key,
-			Map<Locale, String> nameMap, double priority,
+			String externalReferenceCode, long cpDefinitionOptionRelId,
+			long cpInstanceId, String key, Map<Locale, String> nameMap,
+			boolean preselected, BigDecimal deltaPrice, double priority,
+			BigDecimal quantity, String unitOfMeasureKey,
 			ServiceContext serviceContext)
 		throws PortalException {
 
@@ -85,8 +65,29 @@ public class CPDefinitionOptionValueRelServiceImpl
 
 		return cpDefinitionOptionValueRelLocalService.
 			addCPDefinitionOptionValueRel(
-				cpDefinitionOptionRelId, key, nameMap, priority,
-				serviceContext);
+				externalReferenceCode, cpDefinitionOptionRelId, cpInstanceId,
+				key, nameMap, preselected, deltaPrice, priority, quantity,
+				unitOfMeasureKey, serviceContext);
+	}
+
+	@Override
+	public CPDefinitionOptionValueRel addCPDefinitionOptionValueRel(
+			String externalReferenceCode, long cpDefinitionOptionRelId,
+			String key, Map<Locale, String> nameMap, double priority,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		CPDefinitionOptionRel cpDefinitionOptionRel =
+			_cpDefinitionOptionRelPersistence.findByPrimaryKey(
+				cpDefinitionOptionRelId);
+
+		_checkCommerceCatalog(
+			cpDefinitionOptionRel.getCPDefinitionId(), ActionKeys.VIEW);
+
+		return cpDefinitionOptionValueRelLocalService.
+			addCPDefinitionOptionValueRel(
+				externalReferenceCode, cpDefinitionOptionRelId, key, nameMap,
+				priority, serviceContext);
 	}
 
 	@Override
@@ -138,6 +139,29 @@ public class CPDefinitionOptionValueRelServiceImpl
 		CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
 			cpDefinitionOptionValueRelLocalService.
 				fetchCPDefinitionOptionValueRel(cpDefinitionOptionRelId, key);
+
+		if (cpDefinitionOptionValueRel != null) {
+			CPDefinitionOptionRel cpDefinitionOptionRel =
+				_cpDefinitionOptionRelPersistence.findByPrimaryKey(
+					cpDefinitionOptionValueRel.getCPDefinitionOptionRelId());
+
+			_checkCommerceCatalog(
+				cpDefinitionOptionRel.getCPDefinitionId(), ActionKeys.VIEW);
+		}
+
+		return cpDefinitionOptionValueRel;
+	}
+
+	@Override
+	public CPDefinitionOptionValueRel
+			fetchCPDefinitionOptionValueRelByExternalReferenceCode(
+				String externalReferenceCode, long companyId)
+		throws PortalException {
+
+		CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
+			cpDefinitionOptionValueRelLocalService.
+				fetchCPDefinitionOptionValueRelByExternalReferenceCode(
+					externalReferenceCode, companyId);
 
 		if (cpDefinitionOptionValueRel != null) {
 			CPDefinitionOptionRel cpDefinitionOptionRel =
