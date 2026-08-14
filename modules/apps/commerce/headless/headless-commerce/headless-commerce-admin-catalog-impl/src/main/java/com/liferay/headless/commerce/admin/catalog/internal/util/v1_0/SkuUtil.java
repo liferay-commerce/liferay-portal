@@ -214,8 +214,8 @@ public class SkuUtil {
 			sku.getManufacturerPartNumber(),
 			GetterUtil.get(sku.getPurchasable(), false),
 			_getOptions(
-				cpDefinitionOptionRelService, cpDefinitionOptionValueRelService,
-				sku),
+				cpDefinition.getCompanyId(), cpDefinitionOptionRelService,
+				cpDefinitionOptionValueRelService, sku),
 			GetterUtil.get(sku.getWidth(), 0.0),
 			GetterUtil.get(sku.getHeight(), 0.0),
 			GetterUtil.get(sku.getDepth(), 0.0),
@@ -293,6 +293,23 @@ public class SkuUtil {
 		return null;
 	}
 
+	private static String _getCPDefinitionOptionRelKey(
+			String externalReferenceCode, long companyId,
+			CPDefinitionOptionRelService cpDefinitionOptionRelService)
+		throws Exception {
+
+		CPDefinitionOptionRel cpDefinitionOptionRel =
+			cpDefinitionOptionRelService.
+				fetchCPDefinitionOptionRelByExternalReferenceCode(
+					externalReferenceCode, companyId);
+
+		if (cpDefinitionOptionRel != null) {
+			return cpDefinitionOptionRel.getKey();
+		}
+
+		return null;
+	}
+
 	private static String _getCPDefinitionOptionValueRelKey(
 			long optionValueId,
 			CPDefinitionOptionValueRelService cpDefinitionOptionValueRelService)
@@ -309,7 +326,25 @@ public class SkuUtil {
 		return null;
 	}
 
+	private static String _getCPDefinitionOptionValueRelKey(
+			String externalReferenceCode, long companyId,
+			CPDefinitionOptionValueRelService cpDefinitionOptionValueRelService)
+		throws Exception {
+
+		CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
+			cpDefinitionOptionValueRelService.
+				fetchCPDefinitionOptionValueRelByExternalReferenceCode(
+					externalReferenceCode, companyId);
+
+		if (cpDefinitionOptionValueRel != null) {
+			return cpDefinitionOptionValueRel.getKey();
+		}
+
+		return null;
+	}
+
 	private static String _getOptions(
+		long companyId,
 		CPDefinitionOptionRelService cpDefinitionOptionRelService,
 		CPDefinitionOptionValueRelService cpDefinitionOptionValueRelService,
 		Sku sku) {
@@ -327,6 +362,20 @@ public class SkuUtil {
 				JSONUtil.put(
 					"key",
 					() -> {
+						String externalReferenceCode =
+							skuOption.getOptionExternalReferenceCode();
+
+						if (Validator.isNotNull(externalReferenceCode)) {
+							String cpDefinitionOptionRelKey =
+								_getCPDefinitionOptionRelKey(
+									externalReferenceCode, companyId,
+									cpDefinitionOptionRelService);
+
+							if (Validator.isNotNull(cpDefinitionOptionRelKey)) {
+								return cpDefinitionOptionRelKey;
+							}
+						}
+
 						if (Validator.isNull(skuOption.getKey())) {
 							return _getCPDefinitionOptionRelKey(
 								GetterUtil.getLong(skuOption.getOptionId()),
@@ -356,6 +405,22 @@ public class SkuUtil {
 					"value",
 					JSONUtil.put(
 						() -> {
+							String externalReferenceCode =
+								skuOption.getOptionValueExternalReferenceCode();
+
+							if (Validator.isNotNull(externalReferenceCode)) {
+								String cpDefinitionOptionValueRelKey =
+									_getCPDefinitionOptionValueRelKey(
+										externalReferenceCode, companyId,
+										cpDefinitionOptionValueRelService);
+
+								if (Validator.isNotNull(
+										cpDefinitionOptionValueRelKey)) {
+
+									return cpDefinitionOptionValueRelKey;
+								}
+							}
+
 							if (Validator.isNull(skuOption.getValue())) {
 								return _getCPDefinitionOptionValueRelKey(
 									GetterUtil.getLong(
