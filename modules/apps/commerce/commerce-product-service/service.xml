@@ -726,7 +726,7 @@
 			<finder-column name="status" />
 		</finder>
 	</entity>
-	<entity local-service="true" name="CPDefinitionOptionRel" remote-service="true" uuid="true">
+	<entity external-reference-code="company" local-service="true" name="CPDefinitionOptionRel" remote-service="true" uuid="true">
 
 		<!-- PK fields -->
 
@@ -760,6 +760,7 @@
 		<column name="key" type="String" />
 		<column name="priceType" type="String" />
 		<column name="typeSettings" type="String" />
+		<column name="status" type="int" />
 
 		<!-- Order -->
 
@@ -798,7 +799,7 @@
 			<finder-column name="key" />
 		</finder>
 	</entity>
-	<entity local-service="true" name="CPDefinitionOptionValueRel" remote-service="true" uuid="true">
+	<entity external-reference-code="company" local-service="true" name="CPDefinitionOptionValueRel" remote-service="true" uuid="true">
 
 		<!-- PK fields -->
 
@@ -828,6 +829,7 @@
 		<column name="priority" type="double" />
 		<column name="quantity" type="BigDecimal" />
 		<column name="unitOfMeasureKey" type="String" />
+		<column name="status" type="int" />
 
 		<!-- Order -->
 
