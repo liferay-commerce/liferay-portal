@@ -69,7 +69,7 @@ public class CPDefinitionOptionRelCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(49);
+		StringBundler sb = new StringBundler(53);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -77,6 +77,8 @@ public class CPDefinitionOptionRelCacheModel
 		sb.append(ctCollectionId);
 		sb.append(", uuid=");
 		sb.append(uuid);
+		sb.append(", externalReferenceCode=");
+		sb.append(externalReferenceCode);
 		sb.append(", CPDefinitionOptionRelId=");
 		sb.append(CPDefinitionOptionRelId);
 		sb.append(", groupId=");
@@ -119,6 +121,8 @@ public class CPDefinitionOptionRelCacheModel
 		sb.append(priceType);
 		sb.append(", typeSettings=");
 		sb.append(typeSettings);
+		sb.append(", status=");
+		sb.append(status);
 		sb.append("}");
 
 		return sb.toString();
@@ -137,6 +141,14 @@ public class CPDefinitionOptionRelCacheModel
 		}
 		else {
 			cpDefinitionOptionRelImpl.setUuid(uuid);
+		}
+
+		if (externalReferenceCode == null) {
+			cpDefinitionOptionRelImpl.setExternalReferenceCode("");
+		}
+		else {
+			cpDefinitionOptionRelImpl.setExternalReferenceCode(
+				externalReferenceCode);
 		}
 
 		cpDefinitionOptionRelImpl.setCPDefinitionOptionRelId(
@@ -225,6 +237,8 @@ public class CPDefinitionOptionRelCacheModel
 			cpDefinitionOptionRelImpl.setTypeSettings(typeSettings);
 		}
 
+		cpDefinitionOptionRelImpl.setStatus(status);
+
 		cpDefinitionOptionRelImpl.resetOriginalValues();
 
 		return cpDefinitionOptionRelImpl;
@@ -238,6 +252,7 @@ public class CPDefinitionOptionRelCacheModel
 
 		ctCollectionId = objectInput.readLong();
 		uuid = objectInput.readUTF();
+		externalReferenceCode = objectInput.readUTF();
 
 		CPDefinitionOptionRelId = objectInput.readLong();
 
@@ -270,6 +285,8 @@ public class CPDefinitionOptionRelCacheModel
 		key = objectInput.readUTF();
 		priceType = objectInput.readUTF();
 		typeSettings = (String)objectInput.readObject();
+
+		status = objectInput.readInt();
 	}
 
 	@Override
@@ -283,6 +300,13 @@ public class CPDefinitionOptionRelCacheModel
 		}
 		else {
 			objectOutput.writeUTF(uuid);
+		}
+
+		if (externalReferenceCode == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(externalReferenceCode);
 		}
 
 		objectOutput.writeLong(CPDefinitionOptionRelId);
@@ -365,11 +389,14 @@ public class CPDefinitionOptionRelCacheModel
 		else {
 			objectOutput.writeObject(typeSettings);
 		}
+
+		objectOutput.writeInt(status);
 	}
 
 	public long mvccVersion;
 	public long ctCollectionId;
 	public String uuid;
+	public String externalReferenceCode;
 	public long CPDefinitionOptionRelId;
 	public long groupId;
 	public long companyId;
@@ -391,6 +418,7 @@ public class CPDefinitionOptionRelCacheModel
 	public String key;
 	public String priceType;
 	public String typeSettings;
+	public int status;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-250277603
+// LIFERAY-SERVICE-BUILDER-HASH:-534252585

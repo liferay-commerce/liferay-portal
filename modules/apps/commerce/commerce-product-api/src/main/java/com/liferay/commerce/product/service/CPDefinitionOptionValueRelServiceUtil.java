@@ -33,7 +33,8 @@ public class CPDefinitionOptionValueRelServiceUtil {
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.commerce.product.service.impl.CPDefinitionOptionValueRelServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
 	public static CPDefinitionOptionValueRel addCPDefinitionOptionValueRel(
-			long cpDefinitionOptionRelId, long cpInstanceId, String key,
+			String externalReferenceCode, long cpDefinitionOptionRelId,
+			long cpInstanceId, String key,
 			Map<java.util.Locale, String> nameMap, boolean preselected,
 			java.math.BigDecimal deltaPrice, double priority,
 			java.math.BigDecimal quantity, String unitOfMeasureKey,
@@ -41,18 +42,20 @@ public class CPDefinitionOptionValueRelServiceUtil {
 		throws PortalException {
 
 		return getService().addCPDefinitionOptionValueRel(
-			cpDefinitionOptionRelId, cpInstanceId, key, nameMap, preselected,
-			deltaPrice, priority, quantity, unitOfMeasureKey, serviceContext);
+			externalReferenceCode, cpDefinitionOptionRelId, cpInstanceId, key,
+			nameMap, preselected, deltaPrice, priority, quantity,
+			unitOfMeasureKey, serviceContext);
 	}
 
 	public static CPDefinitionOptionValueRel addCPDefinitionOptionValueRel(
-			long cpDefinitionOptionRelId, String key,
-			Map<java.util.Locale, String> nameMap, double priority,
+			String externalReferenceCode, long cpDefinitionOptionRelId,
+			String key, Map<java.util.Locale, String> nameMap, double priority,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws PortalException {
 
 		return getService().addCPDefinitionOptionValueRel(
-			cpDefinitionOptionRelId, key, nameMap, priority, serviceContext);
+			externalReferenceCode, cpDefinitionOptionRelId, key, nameMap,
+			priority, serviceContext);
 	}
 
 	public static CPDefinitionOptionValueRel deleteCPDefinitionOptionValueRel(
@@ -77,6 +80,16 @@ public class CPDefinitionOptionValueRelServiceUtil {
 
 		return getService().fetchCPDefinitionOptionValueRel(
 			cpDefinitionOptionRelId, key);
+	}
+
+	public static CPDefinitionOptionValueRel
+			fetchCPDefinitionOptionValueRelByExternalReferenceCode(
+				String externalReferenceCode, long companyId)
+		throws PortalException {
+
+		return getService().
+			fetchCPDefinitionOptionValueRelByExternalReferenceCode(
+				externalReferenceCode, companyId);
 	}
 
 	public static CPDefinitionOptionValueRel getCPDefinitionOptionValueRel(
@@ -195,4 +208,4 @@ public class CPDefinitionOptionValueRelServiceUtil {
 			CPDefinitionOptionValueRelService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1373674799
+// LIFERAY-SERVICE-BUILDER-HASH:150417191

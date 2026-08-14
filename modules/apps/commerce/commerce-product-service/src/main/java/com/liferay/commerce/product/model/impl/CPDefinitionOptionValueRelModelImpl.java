@@ -76,7 +76,7 @@ public class CPDefinitionOptionValueRelModelImpl
 
 	public static final Object[][] TABLE_COLUMNS = {
 		{"mvccVersion", Types.BIGINT}, {"ctCollectionId", Types.BIGINT},
-		{"uuid_", Types.VARCHAR},
+		{"uuid_", Types.VARCHAR}, {"externalReferenceCode", Types.VARCHAR},
 		{"CPDefinitionOptionValueRelId", Types.BIGINT},
 		{"groupId", Types.BIGINT}, {"companyId", Types.BIGINT},
 		{"userId", Types.BIGINT}, {"userName", Types.VARCHAR},
@@ -86,7 +86,7 @@ public class CPDefinitionOptionValueRelModelImpl
 		{"key_", Types.VARCHAR}, {"name", Types.VARCHAR},
 		{"preselected", Types.BOOLEAN}, {"price", Types.DECIMAL},
 		{"priority", Types.DOUBLE}, {"quantity", Types.DECIMAL},
-		{"unitOfMeasureKey", Types.VARCHAR}
+		{"unitOfMeasureKey", Types.VARCHAR}, {"status", Types.INTEGER}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -96,6 +96,7 @@ public class CPDefinitionOptionValueRelModelImpl
 		TABLE_COLUMNS_MAP.put("mvccVersion", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("ctCollectionId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("uuid_", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("externalReferenceCode", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("CPDefinitionOptionValueRelId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("groupId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
@@ -113,10 +114,11 @@ public class CPDefinitionOptionValueRelModelImpl
 		TABLE_COLUMNS_MAP.put("priority", Types.DOUBLE);
 		TABLE_COLUMNS_MAP.put("quantity", Types.DECIMAL);
 		TABLE_COLUMNS_MAP.put("unitOfMeasureKey", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("status", Types.INTEGER);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table CPDefinitionOptionValueRel (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,CPDefinitionOptionValueRelId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,CPDefinitionOptionRelId LONG,CPInstanceUuid VARCHAR(75) null,CProductId LONG,key_ VARCHAR(75) null,name STRING null,preselected BOOLEAN,price BIGDECIMAL null,priority DOUBLE,quantity BIGDECIMAL null,unitOfMeasureKey VARCHAR(75) null,primary key (CPDefinitionOptionValueRelId, ctCollectionId))";
+		"create table CPDefinitionOptionValueRel (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,CPDefinitionOptionValueRelId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,CPDefinitionOptionRelId LONG,CPInstanceUuid VARCHAR(75) null,CProductId LONG,key_ VARCHAR(75) null,name STRING null,preselected BOOLEAN,price BIGDECIMAL null,priority DOUBLE,quantity BIGDECIMAL null,unitOfMeasureKey VARCHAR(75) null,status INTEGER,primary key (CPDefinitionOptionValueRelId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table CPDefinitionOptionValueRel";
@@ -157,39 +159,45 @@ public class CPDefinitionOptionValueRelModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long GROUPID_COLUMN_BITMASK = 8L;
+	public static final long EXTERNALREFERENCECODE_COLUMN_BITMASK = 8L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long KEY_COLUMN_BITMASK = 16L;
+	public static final long GROUPID_COLUMN_BITMASK = 16L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long PRESELECTED_COLUMN_BITMASK = 32L;
+	public static final long KEY_COLUMN_BITMASK = 32L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long UUID_COLUMN_BITMASK = 64L;
+	public static final long PRESELECTED_COLUMN_BITMASK = 64L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long UUID_COLUMN_BITMASK = 128L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long PRIORITY_COLUMN_BITMASK = 128L;
+	public static final long PRIORITY_COLUMN_BITMASK = 256L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long CREATEDATE_COLUMN_BITMASK = 256L;
+	public static final long CREATEDATE_COLUMN_BITMASK = 512L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -313,6 +321,9 @@ public class CPDefinitionOptionValueRelModelImpl
 			attributeGetterFunctions.put(
 				"uuid", CPDefinitionOptionValueRel::getUuid);
 			attributeGetterFunctions.put(
+				"externalReferenceCode",
+				CPDefinitionOptionValueRel::getExternalReferenceCode);
+			attributeGetterFunctions.put(
 				"CPDefinitionOptionValueRelId",
 				CPDefinitionOptionValueRel::getCPDefinitionOptionValueRelId);
 			attributeGetterFunctions.put(
@@ -350,6 +361,8 @@ public class CPDefinitionOptionValueRelModelImpl
 			attributeGetterFunctions.put(
 				"unitOfMeasureKey",
 				CPDefinitionOptionValueRel::getUnitOfMeasureKey);
+			attributeGetterFunctions.put(
+				"status", CPDefinitionOptionValueRel::getStatus);
 
 			_attributeGetterFunctions = Collections.unmodifiableMap(
 				attributeGetterFunctions);
@@ -381,6 +394,10 @@ public class CPDefinitionOptionValueRelModelImpl
 				"uuid",
 				(BiConsumer<CPDefinitionOptionValueRel, String>)
 					CPDefinitionOptionValueRel::setUuid);
+			attributeSetterBiConsumers.put(
+				"externalReferenceCode",
+				(BiConsumer<CPDefinitionOptionValueRel, String>)
+					CPDefinitionOptionValueRel::setExternalReferenceCode);
 			attributeSetterBiConsumers.put(
 				"CPDefinitionOptionValueRelId",
 				(BiConsumer<CPDefinitionOptionValueRel, Long>)
@@ -450,6 +467,10 @@ public class CPDefinitionOptionValueRelModelImpl
 				"unitOfMeasureKey",
 				(BiConsumer<CPDefinitionOptionValueRel, String>)
 					CPDefinitionOptionValueRel::setUnitOfMeasureKey);
+			attributeSetterBiConsumers.put(
+				"status",
+				(BiConsumer<CPDefinitionOptionValueRel, Integer>)
+					CPDefinitionOptionValueRel::setStatus);
 
 			_attributeSetterBiConsumers = Collections.unmodifiableMap(
 				(Map)attributeSetterBiConsumers);
@@ -514,6 +535,35 @@ public class CPDefinitionOptionValueRelModelImpl
 	@Deprecated
 	public String getOriginalUuid() {
 		return getColumnOriginalValue("uuid_");
+	}
+
+	@JSON
+	@Override
+	public String getExternalReferenceCode() {
+		if (_externalReferenceCode == null) {
+			return "";
+		}
+		else {
+			return _externalReferenceCode;
+		}
+	}
+
+	@Override
+	public void setExternalReferenceCode(String externalReferenceCode) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_externalReferenceCode = externalReferenceCode;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public String getOriginalExternalReferenceCode() {
+		return getColumnOriginalValue("externalReferenceCode");
 	}
 
 	@JSON
@@ -970,6 +1020,21 @@ public class CPDefinitionOptionValueRelModelImpl
 		_unitOfMeasureKey = unitOfMeasureKey;
 	}
 
+	@JSON
+	@Override
+	public int getStatus() {
+		return _status;
+	}
+
+	@Override
+	public void setStatus(int status) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_status = status;
+	}
+
 	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(
@@ -1104,6 +1169,8 @@ public class CPDefinitionOptionValueRelModelImpl
 		cpDefinitionOptionValueRelImpl.setMvccVersion(getMvccVersion());
 		cpDefinitionOptionValueRelImpl.setCtCollectionId(getCtCollectionId());
 		cpDefinitionOptionValueRelImpl.setUuid(getUuid());
+		cpDefinitionOptionValueRelImpl.setExternalReferenceCode(
+			getExternalReferenceCode());
 		cpDefinitionOptionValueRelImpl.setCPDefinitionOptionValueRelId(
 			getCPDefinitionOptionValueRelId());
 		cpDefinitionOptionValueRelImpl.setGroupId(getGroupId());
@@ -1124,6 +1191,7 @@ public class CPDefinitionOptionValueRelModelImpl
 		cpDefinitionOptionValueRelImpl.setQuantity(getQuantity());
 		cpDefinitionOptionValueRelImpl.setUnitOfMeasureKey(
 			getUnitOfMeasureKey());
+		cpDefinitionOptionValueRelImpl.setStatus(getStatus());
 
 		cpDefinitionOptionValueRelImpl.resetOriginalValues();
 
@@ -1141,6 +1209,8 @@ public class CPDefinitionOptionValueRelModelImpl
 			this.<Long>getColumnOriginalValue("ctCollectionId"));
 		cpDefinitionOptionValueRelImpl.setUuid(
 			this.<String>getColumnOriginalValue("uuid_"));
+		cpDefinitionOptionValueRelImpl.setExternalReferenceCode(
+			this.<String>getColumnOriginalValue("externalReferenceCode"));
 		cpDefinitionOptionValueRelImpl.setCPDefinitionOptionValueRelId(
 			this.<Long>getColumnOriginalValue("CPDefinitionOptionValueRelId"));
 		cpDefinitionOptionValueRelImpl.setGroupId(
@@ -1175,6 +1245,8 @@ public class CPDefinitionOptionValueRelModelImpl
 			this.<BigDecimal>getColumnOriginalValue("quantity"));
 		cpDefinitionOptionValueRelImpl.setUnitOfMeasureKey(
 			this.<String>getColumnOriginalValue("unitOfMeasureKey"));
+		cpDefinitionOptionValueRelImpl.setStatus(
+			this.<Integer>getColumnOriginalValue("status"));
 
 		return cpDefinitionOptionValueRelImpl;
 	}
@@ -1283,6 +1355,18 @@ public class CPDefinitionOptionValueRelModelImpl
 			cpDefinitionOptionValueRelCacheModel.uuid = null;
 		}
 
+		cpDefinitionOptionValueRelCacheModel.externalReferenceCode =
+			getExternalReferenceCode();
+
+		String externalReferenceCode =
+			cpDefinitionOptionValueRelCacheModel.externalReferenceCode;
+
+		if ((externalReferenceCode != null) &&
+			(externalReferenceCode.length() == 0)) {
+
+			cpDefinitionOptionValueRelCacheModel.externalReferenceCode = null;
+		}
+
 		cpDefinitionOptionValueRelCacheModel.CPDefinitionOptionValueRelId =
 			getCPDefinitionOptionValueRelId();
 
@@ -1369,6 +1453,8 @@ public class CPDefinitionOptionValueRelModelImpl
 			cpDefinitionOptionValueRelCacheModel.unitOfMeasureKey = null;
 		}
 
+		cpDefinitionOptionValueRelCacheModel.status = getStatus();
+
 		return cpDefinitionOptionValueRelCacheModel;
 	}
 
@@ -1435,6 +1521,7 @@ public class CPDefinitionOptionValueRelModelImpl
 	private long _mvccVersion;
 	private long _ctCollectionId;
 	private String _uuid;
+	private String _externalReferenceCode;
 	private long _CPDefinitionOptionValueRelId;
 	private long _groupId;
 	private long _companyId;
@@ -1454,6 +1541,7 @@ public class CPDefinitionOptionValueRelModelImpl
 	private double _priority;
 	private BigDecimal _quantity;
 	private String _unitOfMeasureKey;
+	private int _status;
 
 	public <T> T getColumnValue(String columnName) {
 		columnName = _attributeNames.getOrDefault(columnName, columnName);
@@ -1489,6 +1577,8 @@ public class CPDefinitionOptionValueRelModelImpl
 		_columnOriginalValues.put("ctCollectionId", _ctCollectionId);
 		_columnOriginalValues.put("uuid_", _uuid);
 		_columnOriginalValues.put(
+			"externalReferenceCode", _externalReferenceCode);
+		_columnOriginalValues.put(
 			"CPDefinitionOptionValueRelId", _CPDefinitionOptionValueRelId);
 		_columnOriginalValues.put("groupId", _groupId);
 		_columnOriginalValues.put("companyId", _companyId);
@@ -1507,6 +1597,7 @@ public class CPDefinitionOptionValueRelModelImpl
 		_columnOriginalValues.put("priority", _priority);
 		_columnOriginalValues.put("quantity", _quantity);
 		_columnOriginalValues.put("unitOfMeasureKey", _unitOfMeasureKey);
+		_columnOriginalValues.put("status", _status);
 	}
 
 	private static final Map<String, String> _attributeNames;
@@ -1537,39 +1628,43 @@ public class CPDefinitionOptionValueRelModelImpl
 
 		columnBitmasks.put("uuid_", 4L);
 
-		columnBitmasks.put("CPDefinitionOptionValueRelId", 8L);
+		columnBitmasks.put("externalReferenceCode", 8L);
 
-		columnBitmasks.put("groupId", 16L);
+		columnBitmasks.put("CPDefinitionOptionValueRelId", 16L);
 
-		columnBitmasks.put("companyId", 32L);
+		columnBitmasks.put("groupId", 32L);
 
-		columnBitmasks.put("userId", 64L);
+		columnBitmasks.put("companyId", 64L);
 
-		columnBitmasks.put("userName", 128L);
+		columnBitmasks.put("userId", 128L);
 
-		columnBitmasks.put("createDate", 256L);
+		columnBitmasks.put("userName", 256L);
 
-		columnBitmasks.put("modifiedDate", 512L);
+		columnBitmasks.put("createDate", 512L);
 
-		columnBitmasks.put("CPDefinitionOptionRelId", 1024L);
+		columnBitmasks.put("modifiedDate", 1024L);
 
-		columnBitmasks.put("CPInstanceUuid", 2048L);
+		columnBitmasks.put("CPDefinitionOptionRelId", 2048L);
 
-		columnBitmasks.put("CProductId", 4096L);
+		columnBitmasks.put("CPInstanceUuid", 4096L);
 
-		columnBitmasks.put("key_", 8192L);
+		columnBitmasks.put("CProductId", 8192L);
 
-		columnBitmasks.put("name", 16384L);
+		columnBitmasks.put("key_", 16384L);
 
-		columnBitmasks.put("preselected", 32768L);
+		columnBitmasks.put("name", 32768L);
 
-		columnBitmasks.put("price", 65536L);
+		columnBitmasks.put("preselected", 65536L);
 
-		columnBitmasks.put("priority", 131072L);
+		columnBitmasks.put("price", 131072L);
 
-		columnBitmasks.put("quantity", 262144L);
+		columnBitmasks.put("priority", 262144L);
 
-		columnBitmasks.put("unitOfMeasureKey", 524288L);
+		columnBitmasks.put("quantity", 524288L);
+
+		columnBitmasks.put("unitOfMeasureKey", 1048576L);
+
+		columnBitmasks.put("status", 2097152L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
@@ -1578,4 +1673,4 @@ public class CPDefinitionOptionValueRelModelImpl
 	private CPDefinitionOptionValueRel _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-304390507
+// LIFERAY-SERVICE-BUILDER-HASH:2090149615

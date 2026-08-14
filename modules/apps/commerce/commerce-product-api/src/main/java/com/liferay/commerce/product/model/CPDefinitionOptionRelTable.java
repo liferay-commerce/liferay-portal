@@ -34,6 +34,10 @@ public class CPDefinitionOptionRelTable
 			"ctCollectionId", Long.class, Types.BIGINT, Column.FLAG_PRIMARY);
 	public final Column<CPDefinitionOptionRelTable, String> uuid = createColumn(
 		"uuid_", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<CPDefinitionOptionRelTable, String>
+		externalReferenceCode = createColumn(
+			"externalReferenceCode", String.class, Types.VARCHAR,
+			Column.FLAG_DEFAULT);
 	public final Column<CPDefinitionOptionRelTable, Long>
 		CPDefinitionOptionRelId = createColumn(
 			"CPDefinitionOptionRelId", Long.class, Types.BIGINT,
@@ -98,10 +102,13 @@ public class CPDefinitionOptionRelTable
 	public final Column<CPDefinitionOptionRelTable, Clob> typeSettings =
 		createColumn(
 			"typeSettings", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
+	public final Column<CPDefinitionOptionRelTable, Integer> status =
+		createColumn(
+			"status", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
 
 	private CPDefinitionOptionRelTable() {
 		super("CPDefinitionOptionRel", CPDefinitionOptionRelTable::new);
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1716955653
+// LIFERAY-SERVICE-BUILDER-HASH:-1324443464

@@ -269,6 +269,7 @@ create table CPDefinitionOptionRel (
 	mvccVersion LONG default 0 not null,
 	ctCollectionId LONG default 0 not null,
 	uuid_ VARCHAR(75) null,
+	externalReferenceCode VARCHAR(75) null,
 	CPDefinitionOptionRelId LONG not null,
 	groupId LONG,
 	companyId LONG,
@@ -290,6 +291,7 @@ create table CPDefinitionOptionRel (
 	key_ VARCHAR(75) null,
 	priceType VARCHAR(75) null,
 	typeSettings TEXT null,
+	status INTEGER,
 	primary key (CPDefinitionOptionRelId, ctCollectionId)
 );
 
@@ -297,6 +299,7 @@ create table CPDefinitionOptionValueRel (
 	mvccVersion LONG default 0 not null,
 	ctCollectionId LONG default 0 not null,
 	uuid_ VARCHAR(75) null,
+	externalReferenceCode VARCHAR(75) null,
 	CPDefinitionOptionValueRelId LONG not null,
 	groupId LONG,
 	companyId LONG,
@@ -314,6 +317,7 @@ create table CPDefinitionOptionValueRel (
 	priority DOUBLE,
 	quantity BIGDECIMAL null,
 	unitOfMeasureKey VARCHAR(75) null,
+	status INTEGER,
 	primary key (CPDefinitionOptionValueRelId, ctCollectionId)
 );
 
