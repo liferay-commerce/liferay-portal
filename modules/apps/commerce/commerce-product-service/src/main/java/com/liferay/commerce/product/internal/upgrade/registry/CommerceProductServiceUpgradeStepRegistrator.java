@@ -704,6 +704,11 @@ public class CommerceProductServiceUpgradeStepRegistrator
 			new com.liferay.commerce.product.internal.upgrade.v6_6_0.
 				CPDefinitionCProductExternalReferenceCodeUpgradeProcess());
 
+		registry.register(
+			"6.6.0", "6.7.0",
+			new com.liferay.commerce.product.internal.upgrade.v6_7_0.
+				CommerceProductExternalReferenceCodeUpgradeProcess());
+
 		if (_log.isInfoEnabled()) {
 			_log.info("Commerce product upgrade step registrator finished");
 		}
