@@ -162,6 +162,7 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 	public void testPostProductIdSku() throws Exception {
 		super.testPostProductIdSku();
 
+		_testPostProductIdSkuWithOptionExternalReferenceCode();
 		_testPostProductIdSkuWithOptionId();
 		_testPostProductIdSkuWithOptionIdKey();
 		_testPostProductIdSkuWithOptionKey();
@@ -552,6 +553,56 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 			randomSkuUnitOfMeasurePromoPrice.setScale(2, RoundingMode.HALF_UP));
 
 		assertValid(patchSku);
+	}
+
+	private void _testPostProductIdSkuWithOptionExternalReferenceCode()
+		throws Exception {
+
+		CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
+			_cpDefinitionOptionValueRels.get(0);
+
+		String cpDefinitionOptionRelExternalReferenceCode =
+			_cpDefinitionOptionRel.getExternalReferenceCode();
+		String cpDefinitionOptionValueRelExternalReferenceCode =
+			cpDefinitionOptionValueRel.getExternalReferenceCode();
+
+		Sku randomSku = randomSku();
+
+		randomSku.setSkuOptions(
+			() -> new SkuOption[] {
+				new SkuOption() {
+					{
+						optionExternalReferenceCode =
+							cpDefinitionOptionRelExternalReferenceCode;
+						optionValueExternalReferenceCode =
+							cpDefinitionOptionValueRelExternalReferenceCode;
+					}
+				}
+			});
+
+		Sku postSku = skuResource.postProductIdSku(
+			_cpDefinition.getCProductId(), randomSku);
+
+		SkuOption[] skuOptions = postSku.getSkuOptions();
+
+		Assert.assertTrue((skuOptions != null) && (skuOptions.length == 1));
+
+		SkuOption skuOption = skuOptions[0];
+
+		Assert.assertEquals(skuOption.getKey(), _cpOption.getKey());
+		Assert.assertEquals(
+			skuOption.getOptionExternalReferenceCode(),
+			_cpDefinitionOptionRel.getExternalReferenceCode());
+		Assert.assertEquals(
+			(long)skuOption.getOptionId(),
+			_cpDefinitionOptionRel.getCPDefinitionOptionRelId());
+		Assert.assertEquals(
+			skuOption.getOptionValueExternalReferenceCode(),
+			cpDefinitionOptionValueRel.getExternalReferenceCode());
+		Assert.assertEquals(
+			(long)skuOption.getOptionValueId(),
+			cpDefinitionOptionValueRel.getCPDefinitionOptionValueRelId());
+		Assert.assertEquals(skuOption.getValue(), _cpOptionValue.getKey());
 	}
 
 	private void _testPostProductIdSkuWithOptionId() throws Exception {
