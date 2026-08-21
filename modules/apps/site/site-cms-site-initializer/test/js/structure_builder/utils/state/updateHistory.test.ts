@@ -11,8 +11,8 @@ import {
 import getUuid from '../../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/getUuid';
 import updateHistory from '../../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/state/updateHistory';
 
-const ROOT_UUID = getUuid();
 const RELATED_CONTENT_UUID = getUuid();
+const ROOT_UUID = getUuid();
 
 const INITIAL_HISTORY: State['history'] = {
 	deletedChildren: [],

@@ -9,12 +9,24 @@ import React from 'react';
 
 import StructureTree, {
 	flatItemIds,
+	getItemActions,
 	getRangeItems,
 } from '../../../../src/main/resources/META-INF/resources/js/structure_builder/components/StructureTree';
 import {useStateDispatch} from '../../../../src/main/resources/META-INF/resources/js/structure_builder/contexts/StateContext';
+import {
+	Group,
+	Structure,
+} from '../../../../src/main/resources/META-INF/resources/js/structure_builder/types/Structure';
 import {Uuid} from '../../../../src/main/resources/META-INF/resources/js/structure_builder/types/Uuid';
+import {Field} from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/field';
+import getUuid from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/getUuid';
 import {MockCacheProvider} from '../mocks/MockCacheProvider';
 import {DEFAULT_STRUCTURE, MockStateProvider} from '../mocks/MockStateProvider';
+
+jest.mock(
+	'../../../../src/main/resources/META-INF/resources/js/structure_builder/config',
+	() => ({config: {isGroupsEnabled: true}})
+);
 
 jest.mock(
 	'../../../../src/main/resources/META-INF/resources/js/structure_builder/contexts/StateContext',
@@ -191,5 +203,66 @@ it('clears selection on Escape', () => {
 	expect(mockDispatch).toHaveBeenCalledWith({
 		selection: [],
 		type: 'set-selection',
+	});
+});
+
+describe('getItemActions group actions', () => {
+	const buildField = (parent: Uuid): Field =>
+		({
+			label: {en_US: `Field-${parent}`},
+			locked: false,
+			name: `field-${parent}`,
+			parent,
+			type: 'text',
+			uuid: getUuid(),
+		}) as unknown as Field;
+
+	const labelsOf = (structure: Structure, item: Field | Group) =>
+		getItemActions({
+			clipboard: null,
+			dispatch: jest.fn(),
+			item,
+			publishedChildren: new Map() as never,
+			structure,
+		})
+			.map((action) => ('label' in action ? action.label : undefined))
+			.filter(Boolean);
+
+	it('offers the built-in repeatable-group action plus the group action for a field at the root', () => {
+		const field = buildField(ROOT);
+
+		const structure = {
+			children: new Map([[field.uuid, field]]),
+			type: 'L_CMS_CONTENT_STRUCTURES',
+			uuid: ROOT,
+		} as unknown as Structure;
+
+		const labels = labelsOf(structure, field);
+
+		expect(labels).toContain('create-repeatable-group');
+		expect(labels).toContain('create-group');
+	});
+
+	it('suppresses the repeatable-group action for a field inside a group but keeps the group action', () => {
+		const nestedField = buildField(A);
+
+		const container: Group = {
+			children: new Map([[nestedField.uuid, nestedField]]),
+			label: {en_US: 'Group'},
+			parent: ROOT,
+			type: 'group',
+			uuid: A,
+		};
+
+		const structure = {
+			children: new Map([[A, container]]),
+			type: 'L_CMS_CONTENT_STRUCTURES',
+			uuid: ROOT,
+		} as unknown as Structure;
+
+		const labels = labelsOf(structure, nestedField);
+
+		expect(labels).not.toContain('create-repeatable-group');
+		expect(labels).toContain('create-group');
 	});
 });

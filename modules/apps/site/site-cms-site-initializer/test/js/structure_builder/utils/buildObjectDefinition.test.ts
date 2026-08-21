@@ -4,6 +4,7 @@
  */
 
 import {
+	Group,
 	ReferencedStructure,
 	RelatedContent,
 	RepeatableGroup,
@@ -492,6 +493,60 @@ describe('buildObjectDefinition', () => {
 			spaces: [],
 			status: 'draft',
 		});
+
+		expect(result.objectRelationships).toEqual([
+			{
+				deletionType: 'cascade',
+				edge: true,
+				externalReferenceCode: 'group-rel-erc',
+				label: {en_US: 'Repeatable Group'},
+				name: 'groupRelationship',
+				objectDefinitionExternalReferenceCode1: 'structureERC',
+				objectDefinitionExternalReferenceCode2: 'group-erc',
+				type: 'oneToMany',
+			},
+		]);
+	});
+
+	it('keeps a repeatable group nested in a group as a relationship, not a field', () => {
+		const repeatableGroup: RepeatableGroup = {
+			children: new Map(),
+			erc: 'group-erc',
+			label: {en_US: 'Repeatable Group'},
+			name: 'repeatableGroup',
+			parent: getUuid(),
+			relationshipERC: 'group-rel-erc',
+			relationshipName: 'groupRelationship',
+			type: 'repeatable-group',
+			uuid: getUuid(),
+		};
+
+		const tab: Group = {
+			children: new Map<Uuid, StructureChild>([
+				[repeatableGroup.uuid, repeatableGroup],
+				[TEXT_FIELD.uuid, TEXT_FIELD],
+			]),
+			label: {en_US: 'Variants'},
+			parent: getUuid(),
+			type: 'group',
+			uuid: getUuid(),
+		};
+
+		const result = buildObjectDefinition({
+			children: new Map<Uuid, StructureChild>([
+				[TITLE_FIELD.uuid, TITLE_FIELD],
+				[tab.uuid, tab],
+			]),
+			erc: 'structureERC',
+			label: {en_US: 'Structure'},
+			name: 'myStructure',
+			spaces: [],
+			status: 'draft',
+		});
+
+		expect(
+			result.objectFields?.map((objectField) => objectField.name)
+		).toEqual(['titleField', 'textField']);
 
 		expect(result.objectRelationships).toEqual([
 			{
