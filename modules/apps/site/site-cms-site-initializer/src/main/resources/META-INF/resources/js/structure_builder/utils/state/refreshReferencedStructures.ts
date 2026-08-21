@@ -18,6 +18,8 @@ import {
 	buildRepeatableGroup,
 	getSpaces,
 } from '../buildStructure';
+import hasName from '../hasName';
+import isContainer from '../isContainer';
 import isCustomObjectField from '../isCustomObjectField';
 import sortChildren from './sortChildren';
 
@@ -112,6 +114,9 @@ export default function refreshReferencedStructures({
 
 			children.set(repeatableGroup.uuid, repeatableGroup);
 		}
+		else if (isContainer(child)) {
+			children.set(child.uuid, child);
+		}
 
 		// It's a field
 
@@ -145,12 +150,12 @@ export default function refreshReferencedStructures({
 	// If we are inside referenced structure or repeatable group, insert new elements
 
 	if (objectDefinition) {
-		const childrenNames = Array.from(root.children.values()).map(
-			(child) => child.name
+		const childrenNames = Array.from(root.children.values()).map((child) =>
+			hasName(child) ? child.name : undefined
 		);
 
-		const childrenERCs = Array.from(root.children.values()).map(
-			(child) => child.erc
+		const childrenERCs = Array.from(root.children.values()).map((child) =>
+			'erc' in child ? child.erc : undefined
 		);
 
 		// Insert new fields
@@ -167,7 +172,12 @@ export default function refreshReferencedStructures({
 		);
 
 		for (const objectField of newObjectFields) {
-			const field = buildField({objectField, parent: root.uuid});
+			const field = buildField({
+				objectDefinitionExternalReferenceCode:
+					objectDefinition.externalReferenceCode,
+				objectField,
+				parent: root.uuid,
+			});
 
 			children.set(field.uuid, field);
 		}

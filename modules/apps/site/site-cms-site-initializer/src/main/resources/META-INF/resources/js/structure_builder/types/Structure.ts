@@ -18,6 +18,14 @@ export type StructureSettings = {
 
 type Workflows = Record<'' | Space['externalReferenceCode'], Workflow['name']>;
 
+export type Group = {
+	children: Map<Uuid, StructureChild>;
+	label: Liferay.Language.LocalizedValue<string>;
+	parent: Uuid;
+	type: 'group';
+	uuid: Uuid;
+};
+
 export type ReferencedStructure = {
 	children: Map<Uuid, StructureChild>;
 	editURL: string;
@@ -38,6 +46,7 @@ export type RelatedContent = {
 	label: Liferay.Language.LocalizedValue<string>;
 	multiselection: boolean;
 	name: string;
+	objectFieldName?: string;
 	parent: Uuid;
 	relatedStructureERC: string;
 	type: 'related-content';
@@ -58,6 +67,7 @@ export type RepeatableGroup = {
 
 export type StructureChild =
 	| Field
+	| Group
 	| ReferencedStructure
 	| RelatedContent
 	| RepeatableGroup;
@@ -79,6 +89,9 @@ export type Structure = {
 	workflows: Workflows;
 };
 
-export type StructureType = 'L_CMS_CONTENT_STRUCTURES' | 'L_CMS_FILE_TYPES';
+export type StructureType =
+	| 'L_CMS_CONTENT_STRUCTURES'
+	| 'L_CMS_FILE_TYPES'
+	| (string & {});
 
 export type Structures = Map<Structure['erc'], Structure>;

@@ -36,6 +36,7 @@ import selectStructureUuid from '../selectors/selectStructureUuid';
 import selectStructureWorkflows from '../selectors/selectStructureWorkflows';
 import DisplayPageService from '../services/DisplayPageService';
 import buildStructureErrorAction from './buildStructureErrorAction';
+import persistStructureData from './persistStructureData';
 
 type Props = {
 	dispatch: Dispatch<Action>;
@@ -291,7 +292,14 @@ export default async function handlePublishStructure({
 
 			return;
 		}
-		else if (data) {
+
+		if (await persistStructureData(state.structure)) {
+			onError('unexpected');
+
+			return;
+		}
+
+		if (data) {
 			structureId = data.id;
 
 			dispatch({id: data.id, type: 'publish-structure'});
@@ -320,9 +328,14 @@ export default async function handlePublishStructure({
 
 			return;
 		}
-		else {
-			dispatch({type: 'publish-structure'});
+
+		if (await persistStructureData(state.structure)) {
+			onError('unexpected');
+
+			return;
 		}
+
+		dispatch({type: 'publish-structure'});
 	}
 
 	if (status === 'published') {

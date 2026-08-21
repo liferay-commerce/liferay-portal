@@ -11,8 +11,8 @@ import {
 import getUuid from '../../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/getUuid';
 import addRepeatableGroup from '../../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/state/addRepeatableGroup';
 
-const ROOT_UUID = getUuid();
 const GROUP_UUID = getUuid();
+const ROOT_UUID = getUuid();
 
 const ROOT: Structure = {
 	children: new Map(),
