@@ -8,6 +8,8 @@ import React from 'react';
 
 import {getImage} from '../../../common/utils/getImage';
 import useSelectedItem from '../../hooks/useSelectedItem';
+import {Group} from '../../types/Structure';
+import GroupSettings from './GroupSettings';
 import ReferencedStructureSettings from './ReferencedStructureSettings';
 import RelatedContentSettings from './RelatedContentSettings';
 import RepeatableGroupSettings from './RepeatableGroupSettings';
@@ -46,6 +48,16 @@ export default function Settings() {
 				disabled={item.referenced}
 				group={item.group}
 				key={item.group.uuid}
+			/>
+		);
+	}
+
+	if (item.type === 'group') {
+		return (
+			<GroupSettings
+				disabled={item.referenced}
+				group={item.child as Group}
+				key={item.child.uuid}
 			/>
 		);
 	}

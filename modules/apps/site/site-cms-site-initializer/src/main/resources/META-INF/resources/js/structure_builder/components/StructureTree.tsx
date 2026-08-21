@@ -33,6 +33,7 @@ import selectStructureChildren from '../selectors/selectStructureChildren';
 import selectStructureLocalizedLabel from '../selectors/selectStructureLocalizedLabel';
 import selectStructureUuid from '../selectors/selectStructureUuid';
 import {
+	Group,
 	ReferencedStructure,
 	RelatedContent,
 	RepeatableGroup,
@@ -41,11 +42,14 @@ import {
 } from '../types/Structure';
 import {Uuid} from '../types/Uuid';
 import {FIELD_TYPE_ICON, FieldType} from '../utils/field';
+import findChild from '../utils/findChild';
+import getGroupItemActions from '../utils/getGroupItemActions';
 import handleAddRepeatableGroup from '../utils/handleAddRepeatableGroup';
 import handleDeleteChildren from '../utils/handleDeleteChildren';
 import handleMoveChildren from '../utils/handleMoveChildren';
 import handlePaste from '../utils/handlePaste';
 import handleUngroupRepeatableGroup from '../utils/handleUngroupRepeatableGroup';
+import isContainer from '../utils/isContainer';
 import isCopyable from '../utils/isCopyable';
 import isField from '../utils/isField';
 import isLocked from '../utils/isLocked';
@@ -65,6 +69,7 @@ type TreeItem = {
 		type?: 'divider';
 	}>;
 	children?: TreeItem[];
+	container?: boolean;
 	editURL?: string;
 	erc?: string;
 	icon: string;
@@ -75,6 +80,7 @@ type TreeItem = {
 	name?: string;
 	type?:
 		| FieldType
+		| Group['type']
 		| ReferencedStructure['type']
 		| RelatedContent['type']
 		| RepeatableGroup['type'];
@@ -309,7 +315,7 @@ export default function StructureTree({search}: {search: string}) {
 					return true;
 				}
 
-				if (target.type !== 'repeatable-group') {
+				if (!target.container) {
 					return false;
 				}
 
@@ -377,7 +383,7 @@ export default function StructureTree({search}: {search: string}) {
 								'structure-builder__tree-node--field-icon':
 									isField(item),
 								'structure-builder__tree-node--group-icon':
-									item.type === 'repeatable-group',
+									item.container,
 								'structure-builder__tree-node--structure-icon':
 									item.type === 'referenced-structure',
 							})}
@@ -393,8 +399,7 @@ export default function StructureTree({search}: {search: string}) {
 								actions={
 									isBeingRenamed(childItem.id) ? undefined : (
 										<>
-											{childItem.type ===
-												'repeatable-group' &&
+											{childItem.container &&
 											!isReferenced({
 												root: structure,
 												uuid: childItem.id,
@@ -448,8 +453,9 @@ export default function StructureTree({search}: {search: string}) {
 								<ClayIcon
 									className={classNames({
 										'structure-builder__tree-node--field-icon':
-											childItem.type !==
-											'related-content',
+											isField(childItem),
+										'structure-builder__tree-node--group-icon':
+											childItem.container,
 										'structure-builder__tree-node--related-content-icon':
 											childItem.type ===
 											'related-content',
@@ -748,7 +754,7 @@ function buildItems({
 			}
 			else if (
 				child.type === 'referenced-structure' ||
-				child.type === 'repeatable-group'
+				isContainer(child)
 			) {
 				const label = getLocalizedValue(child.label);
 
@@ -769,13 +775,17 @@ function buildItems({
 						search,
 						structure,
 					}),
-					erc: child.erc,
+					container: isContainer(child),
 					icon: 'fieldset',
 					id: child.uuid,
 					invalid: invalids.has(child.uuid),
 					label,
 					type: child.type,
 				};
+
+				if ('erc' in child) {
+					item.erc = child.erc;
+				}
 
 				if (child.type === 'referenced-structure') {
 					item.icon = 'edit-layout';
@@ -822,7 +832,7 @@ function match(value: string, keyword: string) {
 	return value.toLowerCase().includes(keyword.toLowerCase());
 }
 
-function getItemActions({
+export function getItemActions({
 	clipboard,
 	dispatch,
 	item,
@@ -835,14 +845,20 @@ function getItemActions({
 	publishedChildren: State['publishedChildren'];
 	structure: Structure;
 }) {
-	if (
-		isLocked({root: structure, uuid: item.uuid}) ||
-		isReferenced({root: structure, uuid: item.uuid})
-	) {
-		return [];
-	}
-
 	const actions: TreeItem['actions'] = [];
+
+	const locked = isLocked({root: structure, uuid: item.uuid});
+	const referenced = isReferenced({root: structure, uuid: item.uuid});
+
+	const groupActions = referenced
+		? []
+		: getGroupItemActions({dispatch, items: [item], structure});
+
+	if (locked || referenced) {
+		actions.push(...groupActions);
+
+		return actions;
+	}
 
 	if (item.type === 'referenced-structure' && item.erc) {
 		actions.push({
@@ -854,20 +870,34 @@ function getItemActions({
 		});
 	}
 
+	const parentChild =
+		item.parent === structure.uuid
+			? undefined
+			: findChild({root: structure, uuid: item.parent});
+
+	const parentIsGroup = parentChild?.type === 'group';
+
 	if (isField(item)) {
-		actions.push({
-			label: Liferay.Language.get('create-repeatable-group'),
-			onClick: () =>
-				handleAddRepeatableGroup({
-					dispatch,
-					publishedChildren,
-					structure,
-					uuids: [item.uuid],
-				}),
-			symbolLeft: 'repeat',
-		});
+		if (!parentIsGroup) {
+			actions.push({
+				label: Liferay.Language.get('create-repeatable-group'),
+				onClick: () =>
+					handleAddRepeatableGroup({
+						dispatch,
+						publishedChildren,
+						structure,
+						uuids: [item.uuid],
+					}),
+				symbolLeft: 'repeat',
+			});
+		}
+
+		actions.push(...groupActions);
 
 		actions.push({type: 'divider' as const});
+	}
+	else if (groupActions.length) {
+		actions.push(...groupActions, {type: 'divider' as const});
 	}
 
 	if (item.type === 'repeatable-group') {

@@ -1,21 +1,19 @@
 /**
- * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
 import buildLocalizedValue from '../../../common/utils/buildLocalizedValue';
-import {
-	RepeatableGroup,
-	Structure,
-	StructureChild,
-} from '../../types/Structure';
+import {Group, Structure, StructureChild} from '../../types/Structure';
 import {Uuid} from '../../types/Uuid';
-import getRandomId from '../getRandomId';
-import getRandomName from '../getRandomName';
 import isContainer, {Container} from '../isContainer';
 import sortChildren from './sortChildren';
 
-export default function addRepeatableGroup({
+// Groups are presentation only: unlike a repeatable group they create no child
+// object definition and no relationship, and the nesting is serialized to the
+// object layout on save.
+
+export default function addGroup({
 	groupChildren,
 	groupParent,
 	groupUuid,
@@ -28,22 +26,15 @@ export default function addRepeatableGroup({
 }): Structure['children'] | Container['children'] {
 	const children = new Map();
 
-	// Iterate over children
-
 	for (const child of root.children.values()) {
-
-		// Don't insert the child if it belongs to the new group
-
 		if (groupChildren.some(({uuid}) => uuid === child.uuid)) {
 			continue;
 		}
 
-		// Insert the child. If it's a container, build it with recursive call
-
 		if (isContainer(child)) {
 			const container = {
 				...child,
-				children: addRepeatableGroup({
+				children: addGroup({
 					groupChildren,
 					groupParent,
 					groupUuid,
@@ -58,23 +49,17 @@ export default function addRepeatableGroup({
 		}
 	}
 
-	// Add new group if this is the correct parent
-
 	if (root.uuid === groupParent) {
-		const group: RepeatableGroup = {
+		const group: Group = {
 			children: new Map(
 				groupChildren.map((child) => [
 					child.uuid,
 					{...child, parent: groupUuid},
 				])
 			),
-			erc: getRandomId(),
-			label: buildLocalizedValue('repeatable-group'),
-			name: getRandomName({capitalize: true}),
+			label: buildLocalizedValue('group'),
 			parent: groupParent,
-			relationshipERC: getRandomId(),
-			relationshipName: getRandomName(),
-			type: 'repeatable-group',
+			type: 'group',
 			uuid: groupUuid,
 		};
 

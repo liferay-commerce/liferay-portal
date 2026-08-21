@@ -5,17 +5,17 @@
 
 import {
 	ReferencedStructure,
-	RepeatableGroup,
 	Structure,
 	StructureChild,
 } from '../types/Structure';
 import {Uuid} from '../types/Uuid';
+import isContainer, {Container} from './isContainer';
 
 export default function findChild({
 	root,
 	uuid,
 }: {
-	root: ReferencedStructure | RepeatableGroup | Structure;
+	root: Container | ReferencedStructure | Structure;
 	uuid: Uuid;
 }): StructureChild | null {
 	for (const child of root.children.values()) {
@@ -23,10 +23,7 @@ export default function findChild({
 			return child;
 		}
 
-		if (
-			child.type === 'referenced-structure' ||
-			child.type === 'repeatable-group'
-		) {
+		if (child.type === 'referenced-structure' || isContainer(child)) {
 			const found = findChild({root: child, uuid});
 
 			if (found) {

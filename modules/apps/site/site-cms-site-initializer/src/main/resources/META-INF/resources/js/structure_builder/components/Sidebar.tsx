@@ -17,6 +17,8 @@ import {useSelector, useStateDispatch} from '../contexts/StateContext';
 import selectPublishedChildren from '../selectors/selectPublishedChildren';
 import selectSelection from '../selectors/selectSelection';
 import selectStructure from '../selectors/selectStructure';
+import findChild from '../utils/findChild';
+import getGroupItemActions from '../utils/getGroupItemActions';
 import handleAddRepeatableGroup from '../utils/handleAddRepeatableGroup';
 import handleDeleteChildren from '../utils/handleDeleteChildren';
 import isCopyable from '../utils/isCopyable';
@@ -178,6 +180,15 @@ function Toolbar({
 							}),
 						symbolLeft: 'repeat',
 					},
+
+					...getGroupItemActions({
+						dispatch,
+						items: selection.map(
+							(uuid) => findChild({root: structure, uuid})!
+						),
+						structure,
+					}),
+
 					{type: 'divider'},
 					{
 						disabled: !copyableUuids.length,

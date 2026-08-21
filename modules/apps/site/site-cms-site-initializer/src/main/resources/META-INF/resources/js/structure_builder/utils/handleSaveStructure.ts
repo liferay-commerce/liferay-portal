@@ -25,6 +25,7 @@ import selectStructureStatus from '../selectors/selectStructureStatus';
 import selectStructureUuid from '../selectors/selectStructureUuid';
 import selectStructureWorkflows from '../selectors/selectStructureWorkflows';
 import buildStructureErrorAction from './buildStructureErrorAction';
+import persistStructureData from './persistStructureData';
 
 type Props = {
 	dispatch: Dispatch<Action>;
@@ -63,6 +64,8 @@ export default async function handleSaveStructure({
 
 	dispatch({operation: 'saving', type: 'start-operation'});
 
+	let structureId: number | undefined;
+
 	if (status === 'new') {
 		const {data, error} = await StructureService.createStructure({
 			children,
@@ -84,9 +87,8 @@ export default async function handleSaveStructure({
 
 			return;
 		}
-		else if (data) {
-			dispatch({id: data.id, type: 'create-structure'});
-		}
+
+		structureId = data?.id;
 	}
 	else {
 		const {error} = await StructureService.updateStructure({
@@ -111,10 +113,22 @@ export default async function handleSaveStructure({
 
 			return;
 		}
-		else {
-			dispatch({type: 'save-structure'});
-			dispatch({type: 'clear-errors'});
+	}
+
+	if (await persistStructureData(state.structure)) {
+		onError('unexpected');
+
+		return;
+	}
+
+	if (status === 'new') {
+		if (structureId !== undefined) {
+			dispatch({id: structureId, type: 'create-structure'});
 		}
+	}
+	else {
+		dispatch({type: 'save-structure'});
+		dispatch({type: 'clear-errors'});
 	}
 
 	openToast({

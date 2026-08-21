@@ -13,12 +13,14 @@ import {State, useSelector, useStateDispatch} from '../contexts/StateContext';
 import selectState from '../selectors/selectState';
 import selectStructureChildren from '../selectors/selectStructureChildren';
 import {
+	Group,
 	RelatedContent,
 	RepeatableGroup,
 	Structure,
 	StructureChild,
 } from '../types/Structure';
 import {Field, SelectFromListField} from './field';
+import isContainer from './isContainer';
 
 const NAME_MAX_LENGTH = 41;
 const ERC_MAX_LENGTH = 75;
@@ -175,6 +177,16 @@ export function validateRelatedContent({
 	return errors;
 }
 
+export function validateGroup({
+	currentErrors,
+	data,
+}: {
+	currentErrors?: ErrorMap;
+	data: Partial<Group>;
+}): ErrorMap {
+	return validateLabel({currentErrors, label: data.label});
+}
+
 export function validateRepeatableGroup({
 	currentErrors,
 	data,
@@ -182,8 +194,16 @@ export function validateRepeatableGroup({
 	currentErrors?: ErrorMap;
 	data: Partial<RepeatableGroup>;
 }): ErrorMap {
-	const {label} = data;
+	return validateLabel({currentErrors, label: data.label});
+}
 
+function validateLabel({
+	currentErrors,
+	label,
+}: {
+	currentErrors?: ErrorMap;
+	label?: Liferay.Language.LocalizedValue<string>;
+}): ErrorMap {
 	const errors = new Map(currentErrors);
 
 	if (!isNullOrUndefined(label)) {
@@ -280,8 +300,8 @@ export function getErrorMessage(
 	property: ValidationProperty,
 	error: ValidationError,
 	values: {
-		erc: string;
-		name: string;
+		erc?: string;
+		name?: string;
 	}
 ) {
 	const {erc, name} = values;
@@ -373,17 +393,16 @@ function getSiblingFieldNames(
 	const deletedFields =
 		deletedChildren?.filter(
 			(child) =>
-				child.type !== 'referenced-structure' &&
-				child.type !== 'repeatable-group'
+				child.type !== 'referenced-structure' && !isContainer(child)
 		) || [];
 
 	const fields = [...deletedFields, ...children.values()];
 
 	return fields
 		.filter(
-			(child) =>
+			(child): child is Field | RelatedContent =>
 				child.type !== 'referenced-structure' &&
-				child.type !== 'repeatable-group' &&
+				!isContainer(child) &&
 				child.uuid !== uuid
 		)
 		.map((child) => child.name);

@@ -11,11 +11,15 @@ import {
 	RelatedContent,
 	RepeatableGroup,
 	Structure,
+	StructureChild,
 } from '../types/Structure';
 import {Uuid} from '../types/Uuid';
 import {Field} from '../utils/field';
+import isContainer, {Container} from '../utils/isContainer';
+import isField from '../utils/isField';
 
 type SelectedChild =
+	| {child: StructureChild; referenced: boolean; type: 'group'}
 	| {field: Field; referenced: boolean; type: 'field'}
 	| {referencedStructure: ReferencedStructure; type: 'referenced-structure'}
 	| {
@@ -55,7 +59,7 @@ export default function useSelectedItem(): SelectedItem {
 
 function findSelectedChild(
 	uuid: Uuid,
-	children: (ReferencedStructure | RepeatableGroup | Structure)['children'],
+	children: (Container | ReferencedStructure | Structure)['children'],
 	isReferenced: boolean = false
 ): SelectedChild | null {
 	for (const child of children.values()) {
@@ -80,17 +84,24 @@ function findSelectedChild(
 					type: 'repeatable-group',
 				};
 			}
-			else {
+			else if (isField(child)) {
 				return {
 					field: child,
 					referenced: isReferenced,
 					type: 'field',
 				};
 			}
+			else {
+				return {
+					child,
+					referenced: isReferenced,
+					type: 'group',
+				};
+			}
 		}
 		else if (
 			child.type === 'referenced-structure' ||
-			child.type === 'repeatable-group'
+			isContainer(child)
 		) {
 			const group = findSelectedChild(
 				uuid,

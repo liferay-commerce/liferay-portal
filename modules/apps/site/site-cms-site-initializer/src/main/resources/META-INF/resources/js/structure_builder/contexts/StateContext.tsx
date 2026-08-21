@@ -26,14 +26,22 @@ import {
 } from '../types/Structure';
 import {Uuid} from '../types/Uuid';
 import actionGeneratesChanges from '../utils/actionGeneratesChanges';
+import applyObjectLayout from '../utils/applyObjectLayout';
+import {
+	getBaseObjectDefinition,
+	getBaseObjectDefinitions,
+} from '../utils/baseObjectDefinition';
+import {buildChildren} from '../utils/buildStructure';
 import {Field, SelectFromListField, getDefaultField} from '../utils/field';
 import findAvailableFieldName from '../utils/findAvailableFieldName';
 import findChild from '../utils/findChild';
 import {getChildrenUuids} from '../utils/getChildrenUuids';
 import getRandomId from '../utils/getRandomId';
 import getUuid from '../utils/getUuid';
+import isContainer, {Container} from '../utils/isContainer';
 import normalizeString from '../utils/normalizeString';
 import addChild from '../utils/state/addChild';
+import addGroup from '../utils/state/addGroup';
 import addRepeatableGroup from '../utils/state/addRepeatableGroup';
 import cloneChild from '../utils/state/cloneChild';
 import deleteChildren from '../utils/state/deleteChildren';
@@ -42,6 +50,7 @@ import refreshReferencedStructures from '../utils/state/refreshReferencedStructu
 import sortChildren from '../utils/state/sortChildren';
 import ungroup from '../utils/state/ungroupRepeatableGroup';
 import updateChild from '../utils/state/updateChild';
+import updateGroup from '../utils/state/updateGroup';
 import updateHistory from '../utils/state/updateHistory';
 import {
 	ErrorMap,
@@ -117,6 +126,12 @@ const INITIAL_STATE: State = {
 };
 
 type AddFieldAction = {field: Field; type: 'add-field'};
+
+type AddGroupAction = {
+	parent: Uuid;
+	type: 'add-group';
+	uuids: Uuid[];
+};
 
 type AddReferencedStructuresAction = {
 	referencedStructures: ReferencedStructure[];
@@ -221,6 +236,12 @@ type UpdateFieldAction = {
 	uuid: Uuid;
 };
 
+type UpdateGroupAction = {
+	label: Liferay.Language.LocalizedValue<string>;
+	type: 'update-group';
+	uuid: Uuid;
+};
+
 type UpdateRelatedContentAction = {
 	erc?: string;
 	label?: Liferay.Language.LocalizedValue<string>;
@@ -253,6 +274,7 @@ type ValidateAction = {
 
 export type Action =
 	| AddFieldAction
+	| AddGroupAction
 	| AddReferencedStructuresAction
 	| AddRelatedContentAction
 	| AddRepeatableGroupAction
@@ -275,6 +297,7 @@ export type Action =
 	| StartOperationAction
 	| UngroupAction
 	| UpdateFieldAction
+	| UpdateGroupAction
 	| UpdateRelatedContentAction
 	| UpdateRepeatableGroupAction
 	| UpdateStructureAction
@@ -291,12 +314,12 @@ function reducer(state: State, action: Action): State {
 
 			const {structure} = state;
 
-			let parent: Structure | RepeatableGroup = structure;
+			let parent: Container | Structure = structure;
 
 			if (field.parent !== structure.uuid) {
 				const item = findChild({root: structure, uuid: field.parent});
 
-				if (item?.type === 'repeatable-group') {
+				if (item && isContainer(item)) {
 					parent = item;
 				}
 			}
@@ -322,6 +345,28 @@ function reducer(state: State, action: Action): State {
 					...structure,
 					children,
 				},
+			};
+		}
+		case 'add-group': {
+			const {parent, uuids} = action;
+
+			const {structure} = state;
+
+			const groupUuid = getUuid();
+
+			const children = addGroup({
+				groupChildren: uuids.map(
+					(uuid) => findChild({root: structure, uuid})!
+				),
+				groupParent: parent,
+				groupUuid,
+				root: structure,
+			});
+
+			return {
+				...state,
+				selection: [groupUuid],
+				structure: {...structure, children},
 			};
 		}
 		case 'add-referenced-structures': {
@@ -873,6 +918,26 @@ function reducer(state: State, action: Action): State {
 				},
 			};
 		}
+		case 'update-group': {
+			const {label, uuid} = action;
+
+			const result = updateGroup({
+				invalids: state.invalids,
+				label,
+				structure: state.structure,
+				uuid,
+			});
+
+			if (!result) {
+				return state;
+			}
+
+			return {
+				...state,
+				invalids: result.invalids,
+				structure: {...state.structure, children: result.children},
+			};
+		}
 		case 'update-related-content': {
 			const {erc, label, multiselection, relatedStructureERC, uuid} =
 				action;
@@ -1162,6 +1227,20 @@ function useStateDispatch() {
 function getDefaultChildren(structureUuid: Uuid) {
 	const type = getType();
 
+	const baseObjectDefinition = getBaseObjectDefinition();
+
+	if (baseObjectDefinition) {
+		return applyObjectLayout({
+			children: buildChildren({
+				objectDefinition: baseObjectDefinition,
+				objectDefinitions: getBaseObjectDefinitions(),
+				parent: structureUuid,
+			}),
+			objectDefinition: baseObjectDefinition,
+			parent: structureUuid,
+		});
+	}
+
 	const children = new Map();
 
 	const title = getDefaultField({
@@ -1256,8 +1335,7 @@ function getTargetChildren({
 
 	if (
 		target &&
-		(target.type === 'repeatable-group' ||
-			target.type === 'referenced-structure')
+		(isContainer(target) || target.type === 'referenced-structure')
 	) {
 		return target.children;
 	}
