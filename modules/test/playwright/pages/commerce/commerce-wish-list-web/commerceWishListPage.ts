@@ -7,8 +7,17 @@ import {Locator, Page} from '@playwright/test';
 
 export class CommerceWishListPage {
 	readonly addToCartButton: Locator;
+	readonly wishListItem: (productName: string) => Locator;
+	readonly wishListItemDeleteButton: (productName: string) => Locator;
 
 	constructor(page: Page) {
 		this.addToCartButton = page.getByRole('button', {name: 'Add to Cart'});
+		this.wishListItem = (productName: string) =>
+			page.locator('tr').filter({hasText: productName});
+		this.wishListItemDeleteButton = (productName: string) =>
+			this.wishListItem(productName).getByRole('link', {
+				exact: true,
+				name: 'Delete',
+			});
 	}
 }

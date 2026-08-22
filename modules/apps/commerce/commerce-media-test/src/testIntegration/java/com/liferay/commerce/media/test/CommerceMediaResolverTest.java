@@ -137,6 +137,30 @@ public class CommerceMediaResolverTest {
 	}
 
 	@Test
+	public void testGetDefaultURL() throws Exception {
+		frutillaRule.scenario(
+			"Test commerce media resolver default URL"
+		).given(
+			"A commerce catalog group"
+		).when(
+			"I invoke getDefaultURL method"
+		).then(
+			"I expect the catalog default image URL to be formatted correctly"
+		);
+
+		long groupId = _commerceCatalog.getGroupId();
+
+		String defaultURL = _commerceMediaResolver.getDefaultURL(groupId);
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				_portal.getPathModule(), StringPool.SLASH,
+				CommerceMediaConstants.SERVLET_PATH, "/default/?groupId=",
+				groupId),
+			defaultURL);
+	}
+
+	@Test
 	public void testGetDownloadVirtualOrderItemURL() throws Exception {
 		frutillaRule.scenario(
 			"Test commerce media resolver URL"
