@@ -245,11 +245,45 @@ function copy_resources {
 		delete_flag=""
 	fi
 
-	rsync --include="*.zip" --include="*/" --exclude="*" --inplace --prune-empty-dirs --recursive --whole-file "${LIFERAY_LEARN_ETC_CRON_GIT_REPOSITORY_DIR}/site/" /public_html
+	local digest
 
-	rsync ${delete_flag} --inplace --prune-empty-dirs --recursive --whole-file "${LIFERAY_LEARN_ETC_CRON_GIT_REPOSITORY_DIR}/site/examples" /public_html
+	digest=$(resources_digest)
 
-	copy_tree_sharded "${LIFERAY_LEARN_ETC_CRON_GIT_REPOSITORY_DIR}/site/images" /public_html/images "${delete_flag}"
+	if [ "${LIFERAY_LEARN_ETC_CRON_PARTIAL:-}" != "true" ] &&
+	   [ -f /public_html/.learn-importer-resources-digest ] &&
+	   [ "$(cat /public_html/.learn-importer-resources-digest)" == "${digest}" ]
+	then
+		echo "[cron-1] Resources digest HIT (${digest}): skipping the examples and images copy."
+	else
+		echo "[cron-1] Resources digest MISS (${digest}): copying the examples and images."
+
+		rsync \
+			--include="*.zip" \
+			--include="*/" \
+			--exclude="*" \
+			--inplace \
+			--prune-empty-dirs \
+			--recursive \
+			--whole-file \
+			"${LIFERAY_LEARN_ETC_CRON_GIT_REPOSITORY_DIR}/site/" \
+			/public_html
+
+		rsync \
+			${delete_flag} \
+			--inplace \
+			--prune-empty-dirs \
+			--recursive \
+			--whole-file \
+			"${LIFERAY_LEARN_ETC_CRON_GIT_REPOSITORY_DIR}/site/examples" \
+			/public_html
+
+		copy_tree_sharded "${LIFERAY_LEARN_ETC_CRON_GIT_REPOSITORY_DIR}/site/images" /public_html/images "${delete_flag}"
+
+		if [ "${LIFERAY_LEARN_ETC_CRON_PARTIAL:-}" != "true" ]
+		then
+			echo "${digest}" > /public_html/.learn-importer-resources-digest
+		fi
+	fi
 
 	if [ -z "${_SKIP_REFERENCE_COPY}" ]
 	then
@@ -500,6 +534,25 @@ function record_phase {
 	echo "[cron-1] Phase: ${name}"
 
 	echo "phase ${name} $(date +%s)" >> /tmp/liferay_learn_run_phases
+}
+
+function resources_digest {
+	local docs_dir="${LIFERAY_LEARN_ETC_CRON_GIT_REPOSITORY_DIR}/docs"
+
+	if [ ! -d "${docs_dir}" ]
+	then
+		echo "absent"
+
+		return 0
+	fi
+
+	( \
+		cd "${docs_dir}" && \
+		find . -type f \( -path "*/images/*" -o -path "*.zip/*" \) -print0 | \
+			sort --zero-terminated | \
+			xargs --null md5sum | \
+			md5sum | \
+			awk '{print $1}')
 }
 
 function run_preflight {
