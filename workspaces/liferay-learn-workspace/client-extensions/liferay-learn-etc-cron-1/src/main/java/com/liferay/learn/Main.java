@@ -60,6 +60,8 @@ import com.vladsch.flexmark.util.data.MutableDataSet;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
 
 import java.net.URL;
 
@@ -68,6 +70,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -86,6 +89,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.output.TeeOutputStream;
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.client.config.RequestConfig;
@@ -115,6 +119,10 @@ public class Main {
 		List<String> argumentsList = Arrays.asList(arguments);
 
 		boolean preflight = argumentsList.contains("--preflight");
+
+		if (!preflight) {
+			_captureConsole();
+		}
 
 		if (!preflight &&
 			!Files.exists(Paths.get("/tmp/liferay_jar_runner_set_up_ok"))) {
@@ -809,6 +817,27 @@ public class Main {
 			}
 
 			throw new Exception(_errorMessages.size() + " error messages");
+		}
+	}
+
+	private static void _captureConsole() {
+		try {
+			OutputStream outputStream = Files.newOutputStream(
+				Paths.get("/tmp/liferay_learn_run.log"),
+				StandardOpenOption.APPEND, StandardOpenOption.CREATE);
+
+			System.setErr(
+				new PrintStream(
+					new TeeOutputStream(System.err, outputStream), true,
+					StandardCharsets.UTF_8.name()));
+			System.setOut(
+				new PrintStream(
+					new TeeOutputStream(System.out, outputStream), true,
+					StandardCharsets.UTF_8.name()));
+		}
+		catch (Exception exception) {
+			System.out.println(
+				"Unable to capture the console output: " + exception);
 		}
 	}
 
