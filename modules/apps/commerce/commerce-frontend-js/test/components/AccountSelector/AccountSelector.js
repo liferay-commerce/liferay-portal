@@ -373,4 +373,124 @@ describe('AccountSelector', () => {
 			).toBeInTheDocument();
 		});
 	});
+
+	describe('When the user can create a new account in flow', () => {
+		const NEW_ACCOUNT = {id: 55555, name: 'Commerce Account'};
+
+		let renderedComponent;
+
+		beforeEach(() => {
+			fetchMock.restore();
+
+			const accountsEndpointRegexp = new RegExp(
+				ACCOUNTS_HEADLESS_API_ENDPOINT
+			);
+
+			fetchMock.get(
+				accountsEndpointRegexp,
+				(url) => ({
+					...getAccounts(url),
+					actions: {create: {href: '/create', method: 'POST'}},
+				}),
+				{name: 'accounts-get'}
+			);
+
+			fetchMock.get(
+				new RegExp('/o/headless-admin-user/v1.0/organizations'),
+				{items: []},
+				{name: 'organizations-get'}
+			);
+
+			fetchMock.get(new RegExp('/carts'), (url) => getOrders(url), {
+				name: 'orders-get',
+			});
+
+			fetchMock.post(
+				accountsEndpointRegexp,
+				(url, {body}) => {
+					expect(JSON.parse(body).name).toBe(NEW_ACCOUNT.name);
+
+					return NEW_ACCOUNT;
+				},
+				{name: 'accounts-post'}
+			);
+
+			fetchMock.post(
+				new RegExp('account-selector/setCurrentAccounts'),
+				(url, {body}) => {
+					expect(body.get('accountId')).toBe(
+						NEW_ACCOUNT.id.toString()
+					);
+
+					return 200;
+				},
+				{name: 'set-current-account'}
+			);
+
+			renderedComponent = render(
+				<AccountSelector
+					createNewOrderURL="/order-link"
+					selectOrderURL="/test-url/{id}"
+					setCurrentAccountURL="/account-selector/setCurrentAccounts"
+				/>
+			);
+		});
+
+		it('creates the new account and selects it as the active account', async () => {
+			await act(async () => {
+				fireEvent.click(
+					renderedComponent.baseElement.querySelector(
+						'.btn-account-selector'
+					)
+				);
+			});
+
+			await waitFor(() =>
+				expect(
+					renderedComponent.getByText('create-new-account')
+				).toBeInTheDocument()
+			);
+
+			await act(async () => {
+				fireEvent.click(
+					renderedComponent.getByText('create-new-account')
+				);
+			});
+
+			await waitFor(() =>
+				expect(
+					renderedComponent.baseElement.querySelector(
+						'input[name="accountName"]'
+					)
+				).toBeInTheDocument()
+			);
+
+			await act(async () => {
+				fireEvent.change(
+					renderedComponent.baseElement.querySelector(
+						'input[name="accountName"]'
+					),
+					{
+						target: {value: NEW_ACCOUNT.name},
+					}
+				);
+			});
+
+			await act(async () => {
+				fireEvent.click(
+					renderedComponent.baseElement.querySelector(
+						'button[type="submit"]'
+					)
+				);
+			});
+
+			await waitFor(
+				() =>
+					expect(fetchMock.called('set-current-account')).toBe(true),
+				{timeout: 3000}
+			);
+
+			expect(fetchMock.called('accounts-post')).toBe(true);
+		});
+	});
 });
