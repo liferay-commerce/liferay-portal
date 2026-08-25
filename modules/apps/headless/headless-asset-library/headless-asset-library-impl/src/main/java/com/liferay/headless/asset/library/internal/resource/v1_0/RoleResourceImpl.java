@@ -176,6 +176,10 @@ public class RoleResourceImpl extends BaseRoleResourceImpl {
 				user.getUserId(), group.getGroupId());
 		}
 		else {
+			long[] roleIds = _getRoleIds(roles);
+
+			DepotRoleUtil.validate(group.getGroupId(), roleIds);
+
 			_userGroupRoleService.deleteUserGroupRoles(
 				user.getUserId(), group.getGroupId(),
 				ListUtil.toLongArray(
@@ -183,7 +187,7 @@ public class RoleResourceImpl extends BaseRoleResourceImpl {
 					com.liferay.portal.kernel.model.Role.ROLE_ID_ACCESSOR));
 
 			_userGroupRoleService.addUserGroupRoles(
-				user.getUserId(), group.getGroupId(), _getRoleIds(roles));
+				user.getUserId(), group.getGroupId(), roleIds);
 
 			updatedServiceBuilderRoles = _roleService.getUserGroupRoles(
 				user.getUserId(), group.getGroupId());
