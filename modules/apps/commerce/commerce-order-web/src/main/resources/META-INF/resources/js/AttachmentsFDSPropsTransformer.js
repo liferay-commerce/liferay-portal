@@ -119,7 +119,11 @@ const AttachmentsFDSPropsTransformer = (props) => ({
 				return;
 			}
 
-			window.location.href = fileURL;
+			const downloadURL = new URL(fileURL, window.location.origin);
+
+			downloadURL.searchParams.set('p_auth', Liferay.authToken);
+
+			window.location.href = downloadURL.toString();
 		}
 	},
 });
