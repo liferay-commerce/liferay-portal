@@ -24,6 +24,7 @@ import jakarta.annotation.Generated;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 
 import java.util.Collections;
@@ -55,6 +56,9 @@ public interface AttachmentResource {
 		throws Exception;
 
 	public Attachment getOrderAttachment(Long orderId, Long attachmentId)
+		throws Exception;
+
+	public Response getOrderAttachmentContent(Long orderId, Long attachmentId)
 		throws Exception;
 
 	public Page<Attachment> getOrderAttachmentsPage(
@@ -190,4 +194,4 @@ public interface AttachmentResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1906497406
+// LIFERAY-REST-BUILDER-HASH:669482795

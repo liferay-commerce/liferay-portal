@@ -648,6 +648,11 @@ public class ServletDataImpl implements ServletData {
 							AttachmentResourceImpl.class,
 							"getOrderAttachment"));
 					put(
+						"query#orderAttachmentContent",
+						new ObjectValuePair<>(
+							AttachmentResourceImpl.class,
+							"getOrderAttachmentContent"));
+					put(
 						"query#orderAttachments",
 						new ObjectValuePair<>(
 							AttachmentResourceImpl.class,
@@ -1052,4 +1057,4 @@ public class ServletDataImpl implements ServletData {
 		_orderAccountGroupResourceComponentServiceObjects;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1694090567
+// LIFERAY-REST-BUILDER-HASH:-476991067

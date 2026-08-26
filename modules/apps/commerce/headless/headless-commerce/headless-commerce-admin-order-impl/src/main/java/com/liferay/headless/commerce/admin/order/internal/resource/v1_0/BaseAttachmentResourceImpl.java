@@ -47,6 +47,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.NotSupportedException;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 
 import java.io.Serializable;
@@ -194,6 +195,53 @@ public abstract class BaseAttachmentResourceImpl
 		throws Exception {
 
 		return new Attachment();
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-order/v1.0/orders/{orderId}/attachments/{attachmentId}/content'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Streams the binary content of an order attachment. Requires VIEW permission on the order and on the attachment, so restricted attachments are only served to users holding the VIEW_RESTRICTED_COMMERCE_ORDER_ATTACHMENTS permission. Responds with the file entry mime type and a content-disposition header carrying the original file name. Throws NoSuchOrderAttachmentException (404) if not found."
+	)
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Internal numeric identifier of the target order. Used as the parent context when accessing nested resources (items, notes, attachments, addresses).",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "orderId"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Internal numeric identifier of the target order attachment.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "attachmentId"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Attachment")}
+	)
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/orders/{orderId}/attachments/{attachmentId}/content")
+	@jakarta.ws.rs.Produces(
+		{"application/json", "application/octet-stream", "application/xml"}
+	)
+	@Override
+	public Response getOrderAttachmentContent(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("orderId")
+			Long orderId,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("attachmentId")
+			Long attachmentId)
+		throws Exception {
+
+		Response.ResponseBuilder responseBuilder = Response.ok();
+
+		return responseBuilder.build();
 	}
 
 	/**
@@ -1240,4 +1288,4 @@ public abstract class BaseAttachmentResourceImpl
 		LogFactoryUtil.getLog(BaseAttachmentResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:178123424
+// LIFERAY-REST-BUILDER-HASH:-1761385697
