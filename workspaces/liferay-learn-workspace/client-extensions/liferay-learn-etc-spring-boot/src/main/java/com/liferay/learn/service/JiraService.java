@@ -162,8 +162,8 @@ public class JiraService extends BaseService {
 	public List<JSONObject> search(
 			String[] filterAffectedVersions, String[] filterCategories,
 			String[] filterClassifications, String[] filterFixVersions,
-			String[] filterSeverities, String keywords, String sortOrder,
-			boolean hasEarlyPublishAccess)
+			String[] filterSeverities, boolean hasEarlyPublishAccess,
+			String keywords, String sortOrder)
 		throws Exception {
 
 		List<JSONObject> jsonObjects = new ArrayList<>();

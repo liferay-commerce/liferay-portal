@@ -113,8 +113,8 @@ public class JiraRestController extends BaseRestController {
 		try {
 			List<JSONObject> jsonObjects = _jiraService.search(
 				filterAffectedVersions, filterCategories, filterClassifications,
-				filterFixVersions, filterSeverities, keywords, sortOrder,
-				_hasEarlyPublishAccess(jwt));
+				filterFixVersions, filterSeverities,
+				_hasEarlyPublishAccess(jwt), keywords, sortOrder);
 
 			JSONObject jsonObject = _toJSONObject(jsonObjects, page, pageSize);
 
