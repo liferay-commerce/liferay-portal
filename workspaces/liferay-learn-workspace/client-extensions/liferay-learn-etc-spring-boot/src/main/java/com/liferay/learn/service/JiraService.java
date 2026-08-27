@@ -137,7 +137,7 @@ public class JiraService extends BaseService {
 
 	@CacheEvict(allEntries = true, value = "affectedVersions")
 	@Scheduled(
-		cron = "${liferay.customer.jira.service.affected.versions.cache.eviction.cron}"
+		cron = "${liferay.learn.jira.service.affected.versions.cache.eviction.cron}"
 	)
 	public void scheduledAffectedVersionsCacheEviction() throws Exception {
 	}
@@ -146,14 +146,14 @@ public class JiraService extends BaseService {
 		allEntries = true, value = {"assetObjectFieldOptions", "assetObjects"}
 	)
 	@Scheduled(
-		cron = "${liferay.customer.jira.service.jsm.objects.cache.eviction.cron}"
+		cron = "${liferay.learn.jira.service.jsm.objects.cache.eviction.cron}"
 	)
 	public void scheduledAssetObjectsCacheEviction() throws Exception {
 	}
 
 	@CacheEvict(allEntries = true, value = {"issue", "issues"})
 	@Scheduled(
-		cron = "${liferay.customer.jira.service.issues.cache.eviction.cron}"
+		cron = "${liferay.learn.jira.service.issues.cache.eviction.cron}"
 	)
 	public void scheduledIssuesCacheEviction() throws Exception {
 	}
