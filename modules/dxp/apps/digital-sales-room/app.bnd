@@ -1,0 +1,15 @@
+Liferay-Releng-App-Description: A Digital Sales Room (DSR) is a private, centralized, and secure microsite for B2B sellers and buyers to collaborate throughout the sales process. A DSR is designed to meet the needs of the modern, self-directed buyer by consolidating all sales-related content, communication, and key stakeholders into a single hub. Liferay DSR replaces fragmented email chains and disorganized files with a single source of truth, providing a streamlined and personalized buying experience that reduces friction and moves deals forward.
+Liferay-Releng-App-Title: ${liferay.releng.app.title.prefix} Digital Sales Room
+Liferay-Releng-Bundle: false
+Liferay-Releng-Category: Utility
+Liferay-Releng-Demo-Url:
+Liferay-Releng-Deprecated: false
+Liferay-Releng-Fix-Delivery-Method:
+Liferay-Releng-Labs: false
+Liferay-Releng-Marketplace: true
+Liferay-Releng-Portal-Required: false
+Liferay-Releng-Public: ${liferay.releng.public}
+Liferay-Releng-Restart-Required: true
+Liferay-Releng-Suite:
+Liferay-Releng-Support-Url: http://www.liferay.com
+Liferay-Releng-Supported: ${liferay.releng.supported}
