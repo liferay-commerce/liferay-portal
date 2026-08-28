@@ -6,6 +6,12 @@ set -o pipefail
 
 _APPS_MARKDOWN_FILE_NAME="${LIFERAY_LEARN_ETC_CRON_GIT_REPOSITORY_DIR:-}/docs/reference/latest/en/dxp/apps.md"
 
+_ATTEMPT_FILE_NAME=/public_html/.learn-importer-attempt
+
+_REMOTE_COMMIT=""
+
+_SUCCESS_FILE_NAME=/public_html/.learn-importer-success
+
 function check_environment {
 	record_phase "preflight"
 
@@ -71,6 +77,84 @@ function check_environment {
 	fi
 
 	echo "[cron-1] Environment verified, ${resource_url} answered ${resource_status}."
+}
+
+function check_for_changes {
+	_REMOTE_COMMIT=$(git ls-remote git@github.com:"${LIFERAY_LEARN_ETC_CRON_GITHUB_USER:-liferay}"/liferay-learn.git refs/heads/"${LIFERAY_LEARN_ETC_CRON_GITHUB_BRANCH:-master}" | awk '{print $1}') || true
+
+	if [ -z "${_REMOTE_COMMIT}" ]
+	then
+		_REMOTE_COMMIT="unknown"
+	fi
+
+	local attempt_commit attempt_force attempt_seconds
+
+	attempt_commit=$(awk '{print $1}' "${_ATTEMPT_FILE_NAME}" 2> /dev/null) || true
+	attempt_force=$(awk '{print $3}' "${_ATTEMPT_FILE_NAME}" 2> /dev/null) || true
+	attempt_seconds=$(awk '{print $2}' "${_ATTEMPT_FILE_NAME}" 2> /dev/null) || true
+
+	local force=${LIFERAY_LEARN_ETC_CRON_FORCE_RUN:-}
+
+	if [ -n "${force}" ] && [ "${force}" != "false" ] &&
+	   [ "${force}" != "${attempt_force}" ]
+	then
+		echo "[cron-1] A full run was forced by \"${force}\", change the value to force another one."
+
+		return 0
+	fi
+
+	if [[ ! "${attempt_seconds}" =~ ^[0-9]+$ ]]
+	then
+		attempt_seconds=0
+	fi
+
+	if [ "${_REMOTE_COMMIT}" == "unknown" ] ||
+	   [ "${_REMOTE_COMMIT}" != "${attempt_commit}" ]
+	then
+		echo "[cron-1] The remote branch is at ${_REMOTE_COMMIT} and the last attempt was ${attempt_commit:-none}, so there is work to do."
+
+		return 0
+	fi
+
+	local attempt_hours
+
+	attempt_hours=$(hours_since "${attempt_seconds}")
+
+	if [[ "${attempt_hours}" -ge "${LIFERAY_LEARN_ETC_CRON_RETRY_HOURS:-6}" ]]
+	then
+		local success_seconds
+
+		success_seconds=$(cat "${_SUCCESS_FILE_NAME}" 2> /dev/null) || true
+
+		if [[ ! "${success_seconds}" =~ ^[0-9]+$ ]]
+		then
+			success_seconds=0
+		fi
+
+		local success_hours
+
+		success_hours=$(hours_since "${success_seconds}")
+
+		if [[ "${success_seconds}" -lt "${attempt_seconds}" ]]
+		then
+			echo "[cron-1] The last attempt never reported success, so it is being retried."
+
+			return 0
+		fi
+
+		if [[ "${success_hours}" -ge "${LIFERAY_LEARN_ETC_CRON_RECONCILE_HOURS:-20}" ]]
+		then
+			echo "[cron-1] The last successful run was ${success_hours} hours ago, so the site is being reconciled."
+
+			return 0
+		fi
+	fi
+
+	echo "[cron-1] There is no new commit since ${attempt_commit} and the last attempt was ${attempt_hours} hours ago, so there is nothing to do."
+
+	touch /tmp/liferay_jar_runner_skipped
+
+	exit 0
 }
 
 function check_generated_site {
@@ -208,12 +292,6 @@ function check_reference_cache {
 
 function clone_repository {
 	record_phase "clone"
-
-	eval "$(ssh-agent -s)"
-
-	echo -e "-----BEGIN OPENSSH PRIVATE KEY-----\n${LIFERAY_LEARN_ETC_CRON_GITHUB_DEPLOY_KEY}\n-----END OPENSSH PRIVATE KEY-----" | ssh-add -
-
-	export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=accept-new -q"
 
 	rm --force --recursive "${LIFERAY_LEARN_ETC_CRON_GIT_REPOSITORY_DIR}"
 
@@ -383,6 +461,19 @@ function generate_docs {
 	check_generated_site
 }
 
+function hours_since {
+	local seconds=${1:-}
+
+	if [ -z "${seconds}" ] || [ "${seconds}" == "0" ]
+	then
+		echo 99999
+
+		return 0
+	fi
+
+	echo "$((($(date +%s) - seconds) / 3600))"
+}
+
 function log_url {
 	echo "https://console.${LCP_INFRASTRUCTURE_DOMAIN:-}/projects/${LCP_PROJECT_ID:-}/logs?instanceId=${HOSTNAME:-}&logServiceId=${LCP_SERVICE_ID:-}"
 }
@@ -390,9 +481,15 @@ function log_url {
 function main {
 	exec > >(tee /tmp/liferay_learn_run.log) 2>&1
 
-	rm --force /tmp/liferay_learn_run_phases
+	rm --force /tmp/liferay_jar_runner_skipped /tmp/liferay_learn_run_phases
 
-	notify_slack ":rocket: *liferay-learn-etc-cron-1* run started\\nBranch: ${LIFERAY_LEARN_ETC_CRON_GITHUB_BRANCH:-master} · <$(log_url)|console log>"
+	set_up_ssh
+
+	check_for_changes
+
+	record_attempt
+
+	notify_slack ":rocket: *liferay-learn-etc-cron-1* run started\\nBranch: ${LIFERAY_LEARN_ETC_CRON_GITHUB_BRANCH:-master} · Source: ${_REMOTE_COMMIT:0:8} · <$(log_url)|console log>"
 
 	check_environment
 
@@ -528,6 +625,17 @@ function preflight_warnings {
 	echo "${message}"
 }
 
+function record_attempt {
+	if ! echo "${_REMOTE_COMMIT} $(date +%s) ${LIFERAY_LEARN_ETC_CRON_FORCE_RUN:-none}" > "${_ATTEMPT_FILE_NAME}"
+	then
+		echo "[cron-1] ERROR: ${_ATTEMPT_FILE_NAME} is not writable"
+
+		exit 1
+	fi
+
+	echo "[cron-1] The attempt was recorded for commit ${_REMOTE_COMMIT}."
+}
+
 function record_phase {
 	local name=${1}
 
@@ -561,6 +669,21 @@ function run_preflight {
 	local java_options=(${LIFERAY_JAR_RUNNER_JAVA_OPTS:-})
 
 	java "${java_options[@]}" -jar /opt/liferay/jar-runner.jar --preflight
+}
+
+function set_up_ssh {
+	if [ -z "${LIFERAY_LEARN_ETC_CRON_GITHUB_DEPLOY_KEY:-}" ]
+	then
+		echo "[cron-1] ERROR: missing required environment variable: LIFERAY_LEARN_ETC_CRON_GITHUB_DEPLOY_KEY"
+
+		exit 1
+	fi
+
+	eval "$(ssh-agent -s)"
+
+	echo -e "-----BEGIN OPENSSH PRIVATE KEY-----\n${LIFERAY_LEARN_ETC_CRON_GITHUB_DEPLOY_KEY}\n-----END OPENSSH PRIVATE KEY-----" | ssh-add -
+
+	export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=accept-new -q"
 }
 
 function source_commit {

@@ -15,6 +15,13 @@ function log_tail {
 }
 
 function main {
+	if [ -f /tmp/liferay_jar_runner_skipped ]
+	then
+		echo "[cron-1] Job completed: there was nothing to do."
+
+		return 0
+	fi
+
 	if [ -f /tmp/liferay_jar_runner_main_ok ]
 	then
 		echo "[cron-1] Job completed successfully."
