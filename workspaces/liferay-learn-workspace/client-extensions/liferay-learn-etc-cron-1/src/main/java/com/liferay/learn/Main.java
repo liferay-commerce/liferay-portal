@@ -125,6 +125,16 @@ public class Main {
 		}
 
 		if (!preflight &&
+			Files.exists(Paths.get("/tmp/liferay_jar_runner_skipped"))) {
+
+			System.out.println(
+				"liferay-learn-etc-cron-1: the setup script found nothing to " +
+					"do, skipping the import");
+
+			return;
+		}
+
+		if (!preflight &&
 			!Files.exists(Paths.get("/tmp/liferay_jar_runner_set_up_ok"))) {
 
 			System.err.println(
@@ -818,6 +828,8 @@ public class Main {
 
 			throw new Exception(_errorMessages.size() + " error messages");
 		}
+
+		_recordSuccess();
 	}
 
 	private static void _captureConsole() {
@@ -2250,6 +2262,33 @@ public class Main {
 		}
 
 		return phases;
+	}
+
+	private void _recordSuccess() {
+		if (Objects.equals(
+				System.getenv("LIFERAY_LEARN_ETC_CRON_PARTIAL"), "true")) {
+
+			System.out.println(
+				"The success marker was not updated because a partial run " +
+					"does not reconcile the whole site.");
+
+			return;
+		}
+
+		try {
+			File file = new File("/public_html/.learn-importer-success");
+
+			FileUtils.writeStringToFile(
+				file, String.valueOf(System.currentTimeMillis() / 1000),
+				StandardCharsets.UTF_8);
+
+			System.out.println(
+				"The success marker was updated in " + file.getPath() + ".");
+		}
+		catch (Exception exception) {
+			System.out.println(
+				"Unable to update the success marker: " + exception);
+		}
 	}
 
 	private void _renewOAuthAuthorization() throws Exception {

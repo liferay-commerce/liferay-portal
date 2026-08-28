@@ -8,8 +8,8 @@
 		"LIFERAY_JAR_RUNNER_JAVA_OPTS": "-Xmx2048m",
 		"LIFERAY_LEARN_ETC_CRON_DXP_DATA_DEFINITION_KEY": "LEARN-ARTICLE",
 		"LIFERAY_LEARN_ETC_CRON_DXP_SITE_FRIENDLY_URL_PATH": "guest",
-		"LIFERAY_LEARN_ETC_CRON_DXP_URL": "https://learn.liferay.com",
 		"LIFERAY_LEARN_ETC_CRON_FORCE_REFERENCE_DOCS": "false",
+		"LIFERAY_LEARN_ETC_CRON_FORCE_RUN": "false",
 		"LIFERAY_LEARN_ETC_CRON_GITHUB_BRANCH": "master",
 		"LIFERAY_LEARN_ETC_CRON_GITHUB_DEPLOY_KEY": "@liferay-learn-github-deploy-key",
 		"LIFERAY_LEARN_ETC_CRON_GITHUB_USER": "liferay",
@@ -20,14 +20,14 @@
 		"LIFERAY_LEARN_ETC_CRON_ORPHAN_CLEANUP": "true",
 		"LIFERAY_LEARN_ETC_CRON_ORPHAN_THRESHOLD_PERCENTAGE": "5",
 		"LIFERAY_LEARN_ETC_CRON_PARTIAL": "false",
+		"LIFERAY_LEARN_ETC_CRON_RECONCILE_HOURS": "20",
+		"LIFERAY_LEARN_ETC_CRON_RETRY_HOURS": "6",
 		"LIFERAY_LEARN_ETC_CRON_RUN_PARALLEL": "true",
 		"LIFERAY_LEARN_ETC_CRON_SKIP_LOCALES_CONTENT": "ko",
 		"LIFERAY_LEARN_ETC_CRON_SKIP_MD5_CHECK": "false",
 		"LIFERAY_LEARN_ETC_CRON_SKIP_UPDATE_EXAMPLES": "",
-		"LIFERAY_LEARN_ETC_CRON_SLACK_CHANNEL": "#lr-learn-cron-1-prod",
 		"LIFERAY_LEARN_ETC_CRON_SLACK_ENDPOINT": "@slack-endpoint",
 		"LIFERAY_LEARN_ETC_CRON_VERIFY_THRESHOLD_PERCENTAGE": "5",
-		"LIFERAY_LEARN_RESOURCE_DOMAIN": "https://resources.learn.liferay.com",
 		"LIFERAY_LEARN_UPDATE_EXAMPLES_JOBS": "4"
 	},
 	"environments": {
@@ -36,11 +36,15 @@
 				"LIFERAY_LEARN_ETC_CRON_DXP_URL": "https://learn-dev.liferay.com",
 				"LIFERAY_LEARN_ETC_CRON_SLACK_CHANNEL": "#lr-learn-cron-1-dev",
 				"LIFERAY_LEARN_RESOURCE_DOMAIN": "https://resources.learn-dev.liferay.com"
-			},
-			"schedule": "0 6 * * *"
+			}
 		},
 		"extprd": {
-			"deploy": false
+			"env": {
+				"LIFERAY_LEARN_ETC_CRON_DXP_URL": "https://learn.liferay.com",
+				"LIFERAY_LEARN_ETC_CRON_ORPHAN_CLEANUP": "false",
+				"LIFERAY_LEARN_ETC_CRON_SLACK_CHANNEL": "#is-sites-learn-devops-prd",
+				"LIFERAY_LEARN_RESOURCE_DOMAIN": "https://resources.learn.liferay.com"
+			}
 		},
 		"extuat": {
 			"deploy": false
@@ -53,7 +57,7 @@
 	"kind": "CronJob",
 	"memory": 3000,
 	"scale": 1,
-	"schedule": "0 15 * * *",
+	"schedule": "0 */2 * * *",
 	"volumes": {
 		"publicHtml": "/public_html"
 	}
