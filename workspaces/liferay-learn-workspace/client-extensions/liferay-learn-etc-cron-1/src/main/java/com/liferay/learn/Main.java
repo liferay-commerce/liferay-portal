@@ -1649,23 +1649,39 @@ public class Main {
 		long lastPage = 0;
 
 		for (int page = 1;; page++) {
-			_renewOAuthAuthorization();
-
 			Page<StructuredContent> structuredContentsPage = null;
 
-			try {
-				structuredContentsPage =
-					_structuredContentResource.getSiteStructuredContentsPage(
-						siteId, true, null, null, null, Pagination.of(page, 50),
-						null);
-			}
-			catch (Exception exception) {
-				throw new Exception(
-					StringBundler.concat(
-						"Unable to read page ", page, " of ", lastPage,
-						" after reading ", structuredContents.size(),
-						" structured contents: ", exception),
-					exception);
+			for (int attempt = 1;; attempt++) {
+				_renewOAuthAuthorization();
+
+				try {
+					structuredContentsPage =
+						_structuredContentResource.
+							getSiteStructuredContentsPage(
+								siteId, true, null, null, null,
+								Pagination.of(page, 50), null);
+
+					break;
+				}
+				catch (Exception exception) {
+					if (attempt >= _READ_ATTEMPT_COUNT) {
+						throw new Exception(
+							StringBundler.concat(
+								"Unable to read page ", page, " of ", lastPage,
+								" after reading ", structuredContents.size(),
+								" structured contents in ", attempt,
+								" attempts: ", exception),
+							exception);
+					}
+
+					System.err.println(
+						StringBundler.concat(
+							"Retrying page ", page, " of ", lastPage,
+							" after attempt ", attempt, " failed: ",
+							exception));
+
+					Thread.sleep(_READ_ATTEMPT_DELAY * attempt);
+				}
 			}
 
 			structuredContents.addAll(structuredContentsPage.getItems());
@@ -2611,6 +2627,10 @@ public class Main {
 
 		FileUtils.writeStringToFile(file, content, StandardCharsets.UTF_8);
 	}
+
+	private static final int _READ_ATTEMPT_COUNT = 3;
+
+	private static final long _READ_ATTEMPT_DELAY = 3000;
 
 	private static final Pattern _lineTrailingWhitespacePattern =
 		Pattern.compile("[ \\t]+(?=\\n)");
