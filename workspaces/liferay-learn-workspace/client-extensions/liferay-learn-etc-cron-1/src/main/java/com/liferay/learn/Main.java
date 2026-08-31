@@ -186,6 +186,8 @@ public class Main {
 				liferaySiteFriendlyUrlPath, new URL(liferayURL), baseDirFile,
 				GetterUtil.getBoolean(
 					System.getenv("LIFERAY_LEARN_ETC_CRON_OFFLINE")),
+				System.getenv(
+					"LIFERAY_LEARN_ETC_CRON_PREFLIGHT_TOC_EXCLUSIONS"),
 				GetterUtil.getBoolean(
 					System.getenv("LIFERAY_LEARN_ETC_CRON_SKIP_MD5_CHECK")),
 				System.getenv("LIFERAY_LEARN_ETC_CRON_SKIP_LOCALES_CONTENT"));
@@ -235,7 +237,8 @@ public class Main {
 			String liferayDataDefinitionKey, String liferayOAuthClientId,
 			String liferayOAuthClientSecret, String liferaySiteFriendlyUrlPath,
 			URL liferayURL, File baseDir, boolean offline,
-			boolean skipDiffCheck, String skipLocalesContent)
+			String preflightTocExclusions, boolean skipDiffCheck,
+			String skipLocalesContent)
 		throws Exception {
 
 		_liferayOAuthClientId = liferayOAuthClientId;
@@ -243,6 +246,23 @@ public class Main {
 		_liferayURL = liferayURL;
 		_offline = offline;
 		_skipDiffCheck = skipDiffCheck;
+
+		if (preflightTocExclusions != null) {
+			for (String preflightTocExclusion :
+					preflightTocExclusions.split(",")) {
+
+				String trimmedPreflightTocExclusion =
+					preflightTocExclusion.trim();
+
+				if (!trimmedPreflightTocExclusion.isEmpty()) {
+					_preflightTocExclusions.add(trimmedPreflightTocExclusion);
+				}
+			}
+		}
+
+		System.out.println(
+			"Toc entries excluded from the preflight: " +
+				_preflightTocExclusions);
 
 		if (skipLocalesContent != null) {
 			for (String skipLocale : skipLocalesContent.split(",")) {
@@ -553,6 +573,10 @@ public class Main {
 						file.getParent() + File.separator + tocEntry);
 
 					if (!tocFile.exists() || tocFile.isDirectory()) {
+						if (_isExcludedTocFile(tocFile)) {
+							continue;
+						}
+
 						preflightWarningCount++;
 
 						System.out.println(
@@ -2006,6 +2030,21 @@ public class Main {
 		}
 	}
 
+	private boolean _isExcludedTocFile(File tocFile) throws Exception {
+		if (_preflightTocExclusions.isEmpty()) {
+			return false;
+		}
+
+		String canonicalPath = tocFile.getCanonicalPath();
+
+		if (!canonicalPath.startsWith(_docsDirName + File.separator)) {
+			return false;
+		}
+
+		return _preflightTocExclusions.contains(
+			canonicalPath.substring(_docsDirName.length() + 1));
+	}
+
 	private boolean _isMovedStructuredContent(
 		StructuredContent siteStructuredContent,
 		StructuredContent structuredContent) {
@@ -2611,6 +2650,7 @@ public class Main {
 	private long _oauthIssuedMillis;
 	private final boolean _offline;
 	private Parser _parser;
+	private final Set<String> _preflightTocExclusions = new TreeSet<>();
 	private SiteResource _siteResource;
 	private final boolean _skipDiffCheck;
 	private final Set<String> _skipLocales = new TreeSet<>();
