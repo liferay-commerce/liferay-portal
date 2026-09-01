@@ -92,7 +92,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.frutilla.FrutillaRule;
 
@@ -516,6 +518,38 @@ public class CPDefinitionLocalServiceTest {
 	}
 
 	@Test
+	public void testCloneCPDefinitionOptionRelExternalReferenceCodes()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"Duplicate a product that carries options"
+		).given(
+			"A product with one option and two option values"
+		).when(
+			"The product is duplicated"
+		).then(
+			"The duplicated option and option values carry their own " +
+				"external reference codes"
+		);
+
+		CPInstance cpInstance = CPTestUtil.addCPInstanceWithRandomSku(
+			_commerceCatalog.getGroupId(), new BigDecimal(5));
+
+		CPDefinitionOptionRel cpDefinitionOptionRel1 =
+			CPTestUtil.addCPDefinitionOptionRel(
+				_commerceCatalog.getGroupId(), cpInstance.getCPDefinitionId(),
+				true, 2);
+
+		CPDefinition cpDefinition2 =
+			_cpDefinitionLocalService.cloneCPDefinition(
+				TestPropsValues.getUserId(), cpInstance.getCPDefinitionId(),
+				_commerceCatalog.getGroupId(), _serviceContext);
+
+		_assertCopiedExternalReferenceCodes(
+			cpDefinitionOptionRel1, cpDefinition2);
+	}
+
+	@Test
 	public void testClonedProductPriceChangeDoesNotAffectParent()
 		throws PortalException {
 
@@ -576,6 +610,7 @@ public class CPDefinitionLocalServiceTest {
 	public void testCopyCPDefinition() throws Exception {
 		_testCopyCPDefinition();
 		_testCopyCPDefinitionDoesNotCopyDraftCPDefinition();
+		_testCopyCPDefinitionOptionRelExternalReferenceCodes();
 		_testCopyCPDefinitionSetsExistingDraftToIncomplete();
 		_testCopyCPDefinitionWithSKUCombinations();
 	}
@@ -1382,6 +1417,52 @@ public class CPDefinitionLocalServiceTest {
 	@Rule
 	public final FrutillaRule frutillaRule = new FrutillaRule();
 
+	private void _assertCopiedExternalReferenceCodes(
+		CPDefinitionOptionRel sourceCPDefinitionOptionRel,
+		CPDefinition targetCPDefinition) {
+
+		List<CPDefinitionOptionRel> cpDefinitionOptionRels =
+			targetCPDefinition.getCPDefinitionOptionRels();
+
+		Assert.assertEquals(
+			cpDefinitionOptionRels.toString(), 1,
+			cpDefinitionOptionRels.size());
+
+		CPDefinitionOptionRel targetCPDefinitionOptionRel =
+			cpDefinitionOptionRels.get(0);
+
+		Assert.assertNotEquals(
+			sourceCPDefinitionOptionRel.getExternalReferenceCode(),
+			targetCPDefinitionOptionRel.getExternalReferenceCode());
+
+		List<CPDefinitionOptionValueRel> sourceCPDefinitionOptionValueRels =
+			sourceCPDefinitionOptionRel.getCPDefinitionOptionValueRels();
+		List<CPDefinitionOptionValueRel> targetCPDefinitionOptionValueRels =
+			targetCPDefinitionOptionRel.getCPDefinitionOptionValueRels();
+
+		Assert.assertEquals(
+			targetCPDefinitionOptionValueRels.toString(),
+			sourceCPDefinitionOptionValueRels.size(),
+			targetCPDefinitionOptionValueRels.size());
+
+		Set<String> externalReferenceCodes = new HashSet<>();
+
+		for (CPDefinitionOptionValueRel cpDefinitionOptionValueRel :
+				sourceCPDefinitionOptionValueRels) {
+
+			externalReferenceCodes.add(
+				cpDefinitionOptionValueRel.getExternalReferenceCode());
+		}
+
+		for (CPDefinitionOptionValueRel cpDefinitionOptionValueRel :
+				targetCPDefinitionOptionValueRels) {
+
+			Assert.assertTrue(
+				externalReferenceCodes.add(
+					cpDefinitionOptionValueRel.getExternalReferenceCode()));
+		}
+	}
+
 	private void _testCopyCPDefinition() throws Exception {
 		frutillaRule.scenario(
 			"Copy a product"
@@ -1529,6 +1610,53 @@ public class CPDefinitionLocalServiceTest {
 			Assert.assertEquals(
 				cpDefinition2.getCPDefinitionId(),
 				cpDefinition3.getCPDefinitionId());
+		}
+	}
+
+	private void _testCopyCPDefinitionOptionRelExternalReferenceCodes()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"Version a product that carries options"
+		).given(
+			"A published product with one option and two option values"
+		).when(
+			"A new version of the product is created"
+		).then(
+			"The copied option and option values carry their own external " +
+				"reference codes"
+		);
+
+		CPDefinition cpDefinition1 = CPTestUtil.addCPDefinitionFromCatalog(
+			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, true,
+			true);
+
+		CPDefinitionOptionRel cpDefinitionOptionRel1 =
+			CPTestUtil.addCPDefinitionOptionRel(
+				_commerceCatalog.getGroupId(),
+				cpDefinition1.getCPDefinitionId(), true, 2);
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						CProductVersionConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"enabled", true
+						).put(
+							"versionThreshold", 2
+						).build())) {
+
+			CPDefinition cpDefinition2 =
+				_cpDefinitionLocalService.copyCPDefinition(
+					cpDefinition1.getCPDefinitionId());
+
+			Assert.assertNotEquals(
+				cpDefinition1.getCPDefinitionId(),
+				cpDefinition2.getCPDefinitionId());
+
+			_assertCopiedExternalReferenceCodes(
+				cpDefinitionOptionRel1, cpDefinition2);
 		}
 	}
 

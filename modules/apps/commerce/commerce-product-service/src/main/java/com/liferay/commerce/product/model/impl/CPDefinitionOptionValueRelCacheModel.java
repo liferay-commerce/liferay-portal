@@ -74,7 +74,7 @@ public class CPDefinitionOptionValueRelCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(41);
+		StringBundler sb = new StringBundler(45);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -82,6 +82,8 @@ public class CPDefinitionOptionValueRelCacheModel
 		sb.append(ctCollectionId);
 		sb.append(", uuid=");
 		sb.append(uuid);
+		sb.append(", externalReferenceCode=");
+		sb.append(externalReferenceCode);
 		sb.append(", CPDefinitionOptionValueRelId=");
 		sb.append(CPDefinitionOptionValueRelId);
 		sb.append(", groupId=");
@@ -116,6 +118,8 @@ public class CPDefinitionOptionValueRelCacheModel
 		sb.append(quantity);
 		sb.append(", unitOfMeasureKey=");
 		sb.append(unitOfMeasureKey);
+		sb.append(", status=");
+		sb.append(status);
 		sb.append("}");
 
 		return sb.toString();
@@ -134,6 +138,14 @@ public class CPDefinitionOptionValueRelCacheModel
 		}
 		else {
 			cpDefinitionOptionValueRelImpl.setUuid(uuid);
+		}
+
+		if (externalReferenceCode == null) {
+			cpDefinitionOptionValueRelImpl.setExternalReferenceCode("");
+		}
+		else {
+			cpDefinitionOptionValueRelImpl.setExternalReferenceCode(
+				externalReferenceCode);
 		}
 
 		cpDefinitionOptionValueRelImpl.setCPDefinitionOptionValueRelId(
@@ -203,6 +215,8 @@ public class CPDefinitionOptionValueRelCacheModel
 				unitOfMeasureKey);
 		}
 
+		cpDefinitionOptionValueRelImpl.setStatus(status);
+
 		cpDefinitionOptionValueRelImpl.resetOriginalValues();
 
 		return cpDefinitionOptionValueRelImpl;
@@ -216,6 +230,7 @@ public class CPDefinitionOptionValueRelCacheModel
 
 		ctCollectionId = objectInput.readLong();
 		uuid = objectInput.readUTF();
+		externalReferenceCode = objectInput.readUTF();
 
 		CPDefinitionOptionValueRelId = objectInput.readLong();
 
@@ -241,6 +256,8 @@ public class CPDefinitionOptionValueRelCacheModel
 		priority = objectInput.readDouble();
 		quantity = (BigDecimal)objectInput.readObject();
 		unitOfMeasureKey = objectInput.readUTF();
+
+		status = objectInput.readInt();
 	}
 
 	@Override
@@ -254,6 +271,13 @@ public class CPDefinitionOptionValueRelCacheModel
 		}
 		else {
 			objectOutput.writeUTF(uuid);
+		}
+
+		if (externalReferenceCode == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(externalReferenceCode);
 		}
 
 		objectOutput.writeLong(CPDefinitionOptionValueRelId);
@@ -311,11 +335,14 @@ public class CPDefinitionOptionValueRelCacheModel
 		else {
 			objectOutput.writeUTF(unitOfMeasureKey);
 		}
+
+		objectOutput.writeInt(status);
 	}
 
 	public long mvccVersion;
 	public long ctCollectionId;
 	public String uuid;
+	public String externalReferenceCode;
 	public long CPDefinitionOptionValueRelId;
 	public long groupId;
 	public long companyId;
@@ -333,6 +360,7 @@ public class CPDefinitionOptionValueRelCacheModel
 	public double priority;
 	public BigDecimal quantity;
 	public String unitOfMeasureKey;
+	public int status;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2030565164
+// LIFERAY-SERVICE-BUILDER-HASH:-721774598

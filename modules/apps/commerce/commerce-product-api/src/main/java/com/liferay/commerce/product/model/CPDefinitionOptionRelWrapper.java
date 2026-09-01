@@ -41,6 +41,7 @@ public class CPDefinitionOptionRelWrapper
 		attributes.put("mvccVersion", getMvccVersion());
 		attributes.put("ctCollectionId", getCtCollectionId());
 		attributes.put("uuid", getUuid());
+		attributes.put("externalReferenceCode", getExternalReferenceCode());
 		attributes.put("CPDefinitionOptionRelId", getCPDefinitionOptionRelId());
 		attributes.put("groupId", getGroupId());
 		attributes.put("companyId", getCompanyId());
@@ -62,6 +63,7 @@ public class CPDefinitionOptionRelWrapper
 		attributes.put("key", getKey());
 		attributes.put("priceType", getPriceType());
 		attributes.put("typeSettings", getTypeSettings());
+		attributes.put("status", getStatus());
 
 		return attributes;
 	}
@@ -84,6 +86,13 @@ public class CPDefinitionOptionRelWrapper
 
 		if (uuid != null) {
 			setUuid(uuid);
+		}
+
+		String externalReferenceCode = (String)attributes.get(
+			"externalReferenceCode");
+
+		if (externalReferenceCode != null) {
+			setExternalReferenceCode(externalReferenceCode);
 		}
 
 		Long CPDefinitionOptionRelId = (Long)attributes.get(
@@ -214,6 +223,12 @@ public class CPDefinitionOptionRelWrapper
 
 		if (typeSettings != null) {
 			setTypeSettings(typeSettings);
+		}
+
+		Integer status = (Integer)attributes.get("status");
+
+		if (status != null) {
+			setStatus(status);
 		}
 	}
 
@@ -422,6 +437,16 @@ public class CPDefinitionOptionRelWrapper
 	}
 
 	/**
+	 * Returns the external reference code of this cp definition option rel.
+	 *
+	 * @return the external reference code of this cp definition option rel
+	 */
+	@Override
+	public String getExternalReferenceCode() {
+		return model.getExternalReferenceCode();
+	}
+
+	/**
 	 * Returns the facetable of this cp definition option rel.
 	 *
 	 * @return the facetable of this cp definition option rel
@@ -605,6 +630,16 @@ public class CPDefinitionOptionRelWrapper
 	@Override
 	public boolean getSkuContributor() {
 		return model.getSkuContributor();
+	}
+
+	/**
+	 * Returns the status of this cp definition option rel.
+	 *
+	 * @return the status of this cp definition option rel
+	 */
+	@Override
+	public int getStatus() {
+		return model.getStatus();
 	}
 
 	/**
@@ -887,6 +922,16 @@ public class CPDefinitionOptionRelWrapper
 	}
 
 	/**
+	 * Sets the external reference code of this cp definition option rel.
+	 *
+	 * @param externalReferenceCode the external reference code of this cp definition option rel
+	 */
+	@Override
+	public void setExternalReferenceCode(String externalReferenceCode) {
+		model.setExternalReferenceCode(externalReferenceCode);
+	}
+
+	/**
 	 * Sets whether this cp definition option rel is facetable.
 	 *
 	 * @param facetable the facetable of this cp definition option rel
@@ -1060,6 +1105,16 @@ public class CPDefinitionOptionRelWrapper
 	}
 
 	/**
+	 * Sets the status of this cp definition option rel.
+	 *
+	 * @param status the status of this cp definition option rel
+	 */
+	@Override
+	public void setStatus(int status) {
+		model.setStatus(status);
+	}
+
+	/**
 	 * Sets the type settings of this cp definition option rel.
 	 *
 	 * @param typeSettings the type settings of this cp definition option rel
@@ -1141,4 +1196,4 @@ public class CPDefinitionOptionRelWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:884559721
+// LIFERAY-SERVICE-BUILDER-HASH:1839775525

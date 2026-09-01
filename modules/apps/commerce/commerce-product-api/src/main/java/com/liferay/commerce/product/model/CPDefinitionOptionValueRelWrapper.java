@@ -44,6 +44,7 @@ public class CPDefinitionOptionValueRelWrapper
 		attributes.put("mvccVersion", getMvccVersion());
 		attributes.put("ctCollectionId", getCtCollectionId());
 		attributes.put("uuid", getUuid());
+		attributes.put("externalReferenceCode", getExternalReferenceCode());
 		attributes.put(
 			"CPDefinitionOptionValueRelId", getCPDefinitionOptionValueRelId());
 		attributes.put("groupId", getGroupId());
@@ -62,6 +63,7 @@ public class CPDefinitionOptionValueRelWrapper
 		attributes.put("priority", getPriority());
 		attributes.put("quantity", getQuantity());
 		attributes.put("unitOfMeasureKey", getUnitOfMeasureKey());
+		attributes.put("status", getStatus());
 
 		return attributes;
 	}
@@ -84,6 +86,13 @@ public class CPDefinitionOptionValueRelWrapper
 
 		if (uuid != null) {
 			setUuid(uuid);
+		}
+
+		String externalReferenceCode = (String)attributes.get(
+			"externalReferenceCode");
+
+		if (externalReferenceCode != null) {
+			setExternalReferenceCode(externalReferenceCode);
 		}
 
 		Long CPDefinitionOptionValueRelId = (Long)attributes.get(
@@ -189,6 +198,12 @@ public class CPDefinitionOptionValueRelWrapper
 		if (unitOfMeasureKey != null) {
 			setUnitOfMeasureKey(unitOfMeasureKey);
 		}
+
+		Integer status = (Integer)attributes.get("status");
+
+		if (status != null) {
+			setStatus(status);
+		}
 	}
 
 	@Override
@@ -286,6 +301,16 @@ public class CPDefinitionOptionValueRelWrapper
 	@Override
 	public String getDefaultLanguageId() {
 		return model.getDefaultLanguageId();
+	}
+
+	/**
+	 * Returns the external reference code of this cp definition option value rel.
+	 *
+	 * @return the external reference code of this cp definition option value rel
+	 */
+	@Override
+	public String getExternalReferenceCode() {
+		return model.getExternalReferenceCode();
 	}
 
 	/**
@@ -455,6 +480,16 @@ public class CPDefinitionOptionValueRelWrapper
 	}
 
 	/**
+	 * Returns the status of this cp definition option value rel.
+	 *
+	 * @return the status of this cp definition option value rel
+	 */
+	@Override
+	public int getStatus() {
+		return model.getStatus();
+	}
+
+	/**
 	 * Returns the unit of measure key of this cp definition option value rel.
 	 *
 	 * @return the unit of measure key of this cp definition option value rel
@@ -604,6 +639,16 @@ public class CPDefinitionOptionValueRelWrapper
 	@Override
 	public void setCtCollectionId(long ctCollectionId) {
 		model.setCtCollectionId(ctCollectionId);
+	}
+
+	/**
+	 * Sets the external reference code of this cp definition option value rel.
+	 *
+	 * @param externalReferenceCode the external reference code of this cp definition option value rel
+	 */
+	@Override
+	public void setExternalReferenceCode(String externalReferenceCode) {
+		model.setExternalReferenceCode(externalReferenceCode);
 	}
 
 	/**
@@ -760,6 +805,16 @@ public class CPDefinitionOptionValueRelWrapper
 	}
 
 	/**
+	 * Sets the status of this cp definition option value rel.
+	 *
+	 * @param status the status of this cp definition option value rel
+	 */
+	@Override
+	public void setStatus(int status) {
+		model.setStatus(status);
+	}
+
+	/**
 	 * Sets the unit of measure key of this cp definition option value rel.
 	 *
 	 * @param unitOfMeasureKey the unit of measure key of this cp definition option value rel
@@ -842,4 +897,4 @@ public class CPDefinitionOptionValueRelWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-234846733
+// LIFERAY-SERVICE-BUILDER-HASH:-479857731

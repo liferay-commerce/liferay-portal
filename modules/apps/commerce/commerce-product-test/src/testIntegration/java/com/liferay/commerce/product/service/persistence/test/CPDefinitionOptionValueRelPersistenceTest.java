@@ -6,6 +6,7 @@
 package com.liferay.commerce.product.service.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.commerce.product.exception.DuplicateCPDefinitionOptionValueRelExternalReferenceCodeException;
 import com.liferay.commerce.product.exception.NoSuchCPDefinitionOptionValueRelException;
 import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
 import com.liferay.commerce.product.service.CPDefinitionOptionValueRelLocalServiceUtil;
@@ -126,6 +127,9 @@ public class CPDefinitionOptionValueRelPersistenceTest {
 
 		newCPDefinitionOptionValueRel.setUuid(RandomTestUtil.randomString());
 
+		newCPDefinitionOptionValueRel.setExternalReferenceCode(
+			RandomTestUtil.randomString());
+
 		newCPDefinitionOptionValueRel.setGroupId(RandomTestUtil.nextLong());
 
 		newCPDefinitionOptionValueRel.setCompanyId(RandomTestUtil.nextLong());
@@ -166,6 +170,8 @@ public class CPDefinitionOptionValueRelPersistenceTest {
 		newCPDefinitionOptionValueRel.setUnitOfMeasureKey(
 			RandomTestUtil.randomString());
 
+		newCPDefinitionOptionValueRel.setStatus(RandomTestUtil.nextInt());
+
 		newCPDefinitionOptionValueRel = _persistence.update(
 			newCPDefinitionOptionValueRel);
 
@@ -184,6 +190,9 @@ public class CPDefinitionOptionValueRelPersistenceTest {
 		Assert.assertEquals(
 			existingCPDefinitionOptionValueRel.getUuid(),
 			newCPDefinitionOptionValueRel.getUuid());
+		Assert.assertEquals(
+			existingCPDefinitionOptionValueRel.getExternalReferenceCode(),
+			newCPDefinitionOptionValueRel.getExternalReferenceCode());
 		Assert.assertEquals(
 			existingCPDefinitionOptionValueRel.
 				getCPDefinitionOptionValueRelId(),
@@ -240,6 +249,35 @@ public class CPDefinitionOptionValueRelPersistenceTest {
 		Assert.assertEquals(
 			existingCPDefinitionOptionValueRel.getUnitOfMeasureKey(),
 			newCPDefinitionOptionValueRel.getUnitOfMeasureKey());
+		Assert.assertEquals(
+			existingCPDefinitionOptionValueRel.getStatus(),
+			newCPDefinitionOptionValueRel.getStatus());
+	}
+
+	@Test(
+		expected = DuplicateCPDefinitionOptionValueRelExternalReferenceCodeException.class
+	)
+	public void testUpdateWithExistingExternalReferenceCode() throws Exception {
+		CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
+			addCPDefinitionOptionValueRel();
+
+		CPDefinitionOptionValueRel newCPDefinitionOptionValueRel =
+			addCPDefinitionOptionValueRel();
+
+		newCPDefinitionOptionValueRel.setCompanyId(
+			cpDefinitionOptionValueRel.getCompanyId());
+
+		newCPDefinitionOptionValueRel = _persistence.update(
+			newCPDefinitionOptionValueRel);
+
+		Session session = _persistence.getCurrentSession();
+
+		session.evict(newCPDefinitionOptionValueRel);
+
+		newCPDefinitionOptionValueRel.setExternalReferenceCode(
+			cpDefinitionOptionValueRel.getExternalReferenceCode());
+
+		_persistence.update(newCPDefinitionOptionValueRel);
 	}
 
 	@Test
@@ -326,6 +364,15 @@ public class CPDefinitionOptionValueRelPersistenceTest {
 	}
 
 	@Test
+	public void testCountByERC_C() throws Exception {
+		_persistence.countByERC_C("", RandomTestUtil.nextLong());
+
+		_persistence.countByERC_C("null", 0L);
+
+		_persistence.countByERC_C((String)null, 0L);
+	}
+
+	@Test
 	public void testFindByPrimaryKeyExisting() throws Exception {
 		CPDefinitionOptionValueRel newCPDefinitionOptionValueRel =
 			addCPDefinitionOptionValueRel();
@@ -356,12 +403,13 @@ public class CPDefinitionOptionValueRelPersistenceTest {
 
 		return OrderByComparatorFactoryUtil.create(
 			"CPDefinitionOptionValueRel", "mvccVersion", true, "ctCollectionId",
-			true, "uuid", true, "CPDefinitionOptionValueRelId", true, "groupId",
-			true, "companyId", true, "userId", true, "userName", true,
-			"createDate", true, "modifiedDate", true, "CPDefinitionOptionRelId",
-			true, "CPInstanceUuid", true, "CProductId", true, "key", true,
-			"name", true, "preselected", true, "price", true, "priority", true,
-			"quantity", true, "unitOfMeasureKey", true);
+			true, "uuid", true, "externalReferenceCode", true,
+			"CPDefinitionOptionValueRelId", true, "groupId", true, "companyId",
+			true, "userId", true, "userName", true, "createDate", true,
+			"modifiedDate", true, "CPDefinitionOptionRelId", true,
+			"CPInstanceUuid", true, "CProductId", true, "key", true, "name",
+			true, "preselected", true, "price", true, "priority", true,
+			"quantity", true, "unitOfMeasureKey", true, "status", true);
 	}
 
 	@Test
@@ -689,6 +737,17 @@ public class CPDefinitionOptionValueRelPersistenceTest {
 			ReflectionTestUtil.invoke(
 				cpDefinitionOptionValueRel, "getColumnOriginalValue",
 				new Class<?>[] {String.class}, "key_"));
+
+		Assert.assertEquals(
+			cpDefinitionOptionValueRel.getExternalReferenceCode(),
+			ReflectionTestUtil.invoke(
+				cpDefinitionOptionValueRel, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "externalReferenceCode"));
+		Assert.assertEquals(
+			Long.valueOf(cpDefinitionOptionValueRel.getCompanyId()),
+			ReflectionTestUtil.<Long>invoke(
+				cpDefinitionOptionValueRel, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "companyId"));
 	}
 
 	protected CPDefinitionOptionValueRel addCPDefinitionOptionValueRel()
@@ -702,6 +761,9 @@ public class CPDefinitionOptionValueRelPersistenceTest {
 		cpDefinitionOptionValueRel.setCtCollectionId(RandomTestUtil.nextLong());
 
 		cpDefinitionOptionValueRel.setUuid(RandomTestUtil.randomString());
+
+		cpDefinitionOptionValueRel.setExternalReferenceCode(
+			RandomTestUtil.randomString());
 
 		cpDefinitionOptionValueRel.setGroupId(RandomTestUtil.nextLong());
 
@@ -741,6 +803,8 @@ public class CPDefinitionOptionValueRelPersistenceTest {
 		cpDefinitionOptionValueRel.setUnitOfMeasureKey(
 			RandomTestUtil.randomString());
 
+		cpDefinitionOptionValueRel.setStatus(RandomTestUtil.nextInt());
+
 		_cpDefinitionOptionValueRels.add(
 			_persistence.update(cpDefinitionOptionValueRel));
 
@@ -753,4 +817,4 @@ public class CPDefinitionOptionValueRelPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:87310304
+// LIFERAY-SERVICE-BUILDER-HASH:-529901618
