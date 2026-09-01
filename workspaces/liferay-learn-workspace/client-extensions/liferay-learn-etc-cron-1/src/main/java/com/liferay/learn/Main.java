@@ -188,6 +188,8 @@ public class Main {
 					System.getenv("LIFERAY_LEARN_ETC_CRON_OFFLINE")),
 				System.getenv(
 					"LIFERAY_LEARN_ETC_CRON_PREFLIGHT_TOC_EXCLUSIONS"),
+				System.getenv("LIFERAY_LEARN_ETC_CRON_RESTRICTED_PATHS"),
+				System.getenv("LIFERAY_LEARN_ETC_CRON_RESTRICTED_ROLES"),
 				GetterUtil.getBoolean(
 					System.getenv("LIFERAY_LEARN_ETC_CRON_SKIP_MD5_CHECK")),
 				System.getenv("LIFERAY_LEARN_ETC_CRON_SKIP_LOCALES_CONTENT"));
@@ -237,7 +239,8 @@ public class Main {
 			String liferayDataDefinitionKey, String liferayOAuthClientId,
 			String liferayOAuthClientSecret, String liferaySiteFriendlyUrlPath,
 			URL liferayURL, File baseDir, boolean offline,
-			String preflightTocExclusions, boolean skipDiffCheck,
+			String preflightTocExclusions, String restrictedPaths,
+			String restrictedRoles, boolean skipDiffCheck,
 			String skipLocalesContent)
 		throws Exception {
 
@@ -263,6 +266,31 @@ public class Main {
 		System.out.println(
 			"Toc entries excluded from the preflight: " +
 				_preflightTocExclusions);
+
+		if (restrictedPaths != null) {
+			for (String restrictedPath : restrictedPaths.split(",")) {
+				String trimmedRestrictedPath = restrictedPath.trim();
+
+				if (!trimmedRestrictedPath.isEmpty()) {
+					_restrictedPaths.add(trimmedRestrictedPath);
+				}
+			}
+		}
+
+		if (restrictedRoles != null) {
+			for (String restrictedRole : restrictedRoles.split(",")) {
+				String trimmedRestrictedRole = restrictedRole.trim();
+
+				if (!trimmedRestrictedRole.isEmpty()) {
+					_restrictedRoles.add(trimmedRestrictedRole);
+				}
+			}
+		}
+
+		System.out.println(
+			StringBundler.concat(
+				"Paths restricted to ", _restrictedRoles, ": ",
+				_restrictedPaths));
 
 		if (skipLocalesContent != null) {
 			for (String skipLocale : skipLocalesContent.split(",")) {
@@ -1579,6 +1607,29 @@ public class Main {
 			}
 		}
 
+		if (_isRestrictedFile(fileName)) {
+			for (String restrictedRole : _restrictedRoles) {
+				permissions.add(
+					new Permission() {
+						{
+							setActionIds(
+								new String[] {"ADD_DISCUSSION", "VIEW"});
+							setRoleName(restrictedRole);
+						}
+					});
+			}
+
+			permissions.add(
+				new Permission() {
+					{
+						setActionIds(new String[0]);
+						setRoleName("Guest");
+					}
+				});
+
+			return permissions.toArray(new Permission[0]);
+		}
+
 		SnakeYamlFrontMatterVisitor snakeYamlFrontMatterVisitor =
 			new SnakeYamlFrontMatterVisitor();
 
@@ -2085,6 +2136,33 @@ public class Main {
 				System.getenv("LIFERAY_LEARN_ETC_CRON_PARTIAL"), "true")) {
 
 			return true;
+		}
+
+		return false;
+	}
+
+	private boolean _isRestrictedFile(String fileName) throws Exception {
+		if (_restrictedPaths.isEmpty()) {
+			return false;
+		}
+
+		File file = new File(fileName);
+
+		String canonicalPath = file.getCanonicalPath();
+
+		if (!canonicalPath.startsWith(_docsDirName + File.separator)) {
+			return false;
+		}
+
+		String docsRelativePath = canonicalPath.substring(
+			_docsDirName.length() + 1);
+
+		for (String restrictedPath : _restrictedPaths) {
+			if (docsRelativePath.equals(restrictedPath) ||
+				docsRelativePath.startsWith(restrictedPath + "/")) {
+
+				return true;
+			}
 		}
 
 		return false;
@@ -2671,6 +2749,8 @@ public class Main {
 	private final boolean _offline;
 	private Parser _parser;
 	private final Set<String> _preflightTocExclusions = new TreeSet<>();
+	private final Set<String> _restrictedPaths = new TreeSet<>();
+	private final Set<String> _restrictedRoles = new TreeSet<>();
 	private SiteResource _siteResource;
 	private final boolean _skipDiffCheck;
 	private final Set<String> _skipLocales = new TreeSet<>();
