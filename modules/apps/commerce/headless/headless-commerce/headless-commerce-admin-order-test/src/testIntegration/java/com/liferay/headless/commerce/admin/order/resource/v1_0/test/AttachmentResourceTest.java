@@ -19,6 +19,8 @@ import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.test.util.CommerceOrderAttachmentTestUtil;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.headless.commerce.admin.order.client.dto.v1_0.Attachment;
+import com.liferay.headless.commerce.admin.order.client.http.HttpInvoker;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -34,6 +36,7 @@ import java.math.BigDecimal;
 
 import java.util.HashMap;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -88,6 +91,29 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 
 		_commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
 			_commerceOrder);
+	}
+
+	@Override
+	@Test
+	public void testGetOrderAttachmentContent() throws Exception {
+		Attachment attachment = testPostOrderAttachment_addAttachment(
+			randomAttachment());
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				"orders/", _commerceOrder.getCommerceOrderId(), "/attachments/",
+				attachment.getId(), "/content"),
+			StringUtil.extractLast(attachment.getUrl(), "v1.0/"));
+
+		HttpInvoker.HttpResponse httpResponse =
+			attachmentResource.getOrderAttachmentContentHttpResponse(
+				_commerceOrder.getCommerceOrderId(), attachment.getId());
+
+		Assert.assertEquals(200, httpResponse.getStatusCode());
+		Assert.assertArrayEquals(
+			FileUtil.getBytes(
+				AttachmentResourceTest.class, "dependencies/image.jpg"),
+			httpResponse.getBinaryContent());
 	}
 
 	@Override

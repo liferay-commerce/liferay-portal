@@ -12,7 +12,6 @@ import com.liferay.commerce.model.CommerceOrderAttachment;
 import com.liferay.commerce.service.CommerceOrderAttachmentService;
 import com.liferay.commerce.service.CommerceOrderService;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
-import com.liferay.document.library.util.DLURLHelperUtil;
 import com.liferay.headless.commerce.admin.order.dto.v1_0.Attachment;
 import com.liferay.headless.commerce.admin.order.internal.odata.entity.v1_0.AttachmentEntityModel;
 import com.liferay.headless.commerce.admin.order.resource.v1_0.AttachmentResource;
@@ -20,7 +19,7 @@ import com.liferay.list.type.model.ListTypeDefinition;
 import com.liferay.list.type.model.ListTypeEntry;
 import com.liferay.list.type.service.ListTypeDefinitionLocalService;
 import com.liferay.list.type.service.ListTypeEntryLocalService;
-import com.liferay.petra.string.StringPool;
+import com.liferay.petra.io.StreamUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Field;
@@ -37,10 +36,15 @@ import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.util.ActionUtil;
 import com.liferay.portal.vulcan.util.SearchUtil;
+import com.liferay.portal.vulcan.util.UriInfoUtil;
 
 import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.StreamingOutput;
+import jakarta.ws.rs.core.UriBuilder;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 import java.util.Collections;
 import java.util.Map;
@@ -103,6 +107,31 @@ public class AttachmentResourceImpl extends BaseAttachmentResourceImpl {
 		return _toAttachment(
 			_commerceOrderAttachmentService.getCommerceOrderAttachment(
 				attachmentId));
+	}
+
+	@Override
+	public Response getOrderAttachmentContent(Long orderId, Long attachmentId)
+		throws Exception {
+
+		_commerceOrderService.getCommerceOrder(orderId);
+
+		CommerceOrderAttachment commerceOrderAttachment =
+			_commerceOrderAttachmentService.getCommerceOrderAttachment(
+				attachmentId);
+
+		FileEntry fileEntry = _dlAppLocalService.getFileEntry(
+			commerceOrderAttachment.getFileEntryId());
+
+		InputStream inputStream = fileEntry.getContentStream();
+
+		return Response.ok(
+			(StreamingOutput)outputStream -> StreamUtil.transfer(
+				inputStream, outputStream),
+			fileEntry.getMimeType()
+		).header(
+			"Content-Disposition",
+			"attachment; filename=\"" + fileEntry.getFileName() + "\""
+		).build();
 	}
 
 	@Override
@@ -295,6 +324,19 @@ public class AttachmentResourceImpl extends BaseAttachmentResourceImpl {
 		return commerceOrder;
 	}
 
+	private String _getContentURL(long commerceOrderId, long attachmentId) {
+		UriBuilder uriBuilder = UriInfoUtil.getBaseUriBuilder(contextUriInfo);
+
+		return String.valueOf(
+			uriBuilder.path(
+				BaseAttachmentResourceImpl.class
+			).path(
+				BaseAttachmentResourceImpl.class, "getOrderAttachmentContent"
+			).build(
+				commerceOrderId, attachmentId
+			));
+	}
+
 	private String _getTypeLabel(String type) {
 		if (Validator.isNull(type)) {
 			return type;
@@ -386,9 +428,7 @@ public class AttachmentResourceImpl extends BaseAttachmentResourceImpl {
 							return null;
 						}
 
-						return DLURLHelperUtil.getDownloadURL(
-							fileEntry, fileEntry.getLatestFileVersion(), null,
-							StringPool.BLANK, true, true);
+						return _getContentURL(commerceOrderId, attachmentId);
 					});
 			}
 		};

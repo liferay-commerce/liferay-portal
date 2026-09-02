@@ -59,6 +59,7 @@ import jakarta.annotation.Generated;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 
 import java.util.Map;
@@ -288,6 +289,26 @@ public class Query {
 			_attachmentResourceComponentServiceObjects,
 			this::_populateResourceContext,
 			attachmentResource -> attachmentResource.getOrderAttachment(
+				orderId, attachmentId));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {orderAttachmentContent(attachmentId: ___, orderId: ___){}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField(
+		description = "Streams the binary content of an order attachment. Requires VIEW permission on the order and on the attachment, so restricted attachments are only served to users holding the VIEW_RESTRICTED_COMMERCE_ORDER_ATTACHMENTS permission. Responds with the file entry mime type and a content-disposition header carrying the original file name. Throws NoSuchOrderAttachmentException (404) if not found."
+	)
+	public Response orderAttachmentContent(
+			@GraphQLName("orderId") Long orderId,
+			@GraphQLName("attachmentId") Long attachmentId)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_attachmentResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			attachmentResource -> attachmentResource.getOrderAttachmentContent(
 				orderId, attachmentId));
 	}
 
@@ -2910,4 +2931,4 @@ public class Query {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-663038204
+// LIFERAY-REST-BUILDER-HASH:-1701242564

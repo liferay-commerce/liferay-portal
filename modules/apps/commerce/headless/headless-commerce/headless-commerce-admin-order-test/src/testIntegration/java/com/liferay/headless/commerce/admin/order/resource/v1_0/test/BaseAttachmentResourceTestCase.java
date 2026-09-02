@@ -640,6 +640,11 @@ public abstract class BaseAttachmentResourceTestCase {
 	}
 
 	@Test
+	public void testGetOrderAttachmentContent() throws Exception {
+		Assert.assertTrue(false);
+	}
+
+	@Test
 	public void testGetOrderAttachmentsPage() throws Exception {
 		Long orderId = testGetOrderAttachmentsPage_getOrderId();
 		Long irrelevantOrderId =
@@ -3277,4 +3282,4 @@ public abstract class BaseAttachmentResourceTestCase {
 			AttachmentResource _attachmentResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1607620888
+// LIFERAY-REST-BUILDER-HASH:-445289390
