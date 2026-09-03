@@ -9,6 +9,9 @@ import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryServiceUtil;
 import com.liferay.asset.kernel.service.AssetVocabularyServiceUtil;
 import com.liferay.depot.util.SiteConnectedGroupGroupProviderUtil;
+import com.liferay.digital.signature.constants.DigitalSignatureConstants;
+import com.liferay.digital.signature.model.DSRequest;
+import com.liferay.digital.signature.request.DSRequestManager;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFileVersion;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
@@ -23,6 +26,8 @@ import com.liferay.document.library.web.internal.search.EntriesChecker;
 import com.liferay.document.library.web.internal.search.EntriesMover;
 import com.liferay.document.library.web.internal.security.permission.resource.DLFileEntryPermission;
 import com.liferay.document.library.web.internal.security.permission.resource.DLFolderPermission;
+import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.ResourceConstants;
@@ -57,6 +62,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -85,6 +91,9 @@ public class DLViewEntriesDisplayContext {
 
 		_dlPortletInstanceSettingsHelper = new DLPortletInstanceSettingsHelper(
 			_dlRequestHelper);
+
+		_dsRequestManager = (DSRequestManager)_httpServletRequest.getAttribute(
+			DSRequestManager.class.getName());
 	}
 
 	public List<String> getAvailableActions(FileEntry fileEntry)
@@ -270,6 +279,36 @@ public class DLViewEntriesDisplayContext {
 		return searchContainer;
 	}
 
+	public String getSignatureStatus(FileEntry fileEntry) {
+		DSRequest dsRequest = _getDSRequest(fileEntry);
+
+		if (dsRequest == null) {
+			return StringPool.BLANK;
+		}
+
+		return dsRequest.getStatus();
+	}
+
+	public String getSignatureStatusDisplayType(String signatureStatus) {
+		if (Objects.equals(signatureStatus, "completed") ||
+			Objects.equals(signatureStatus, "signed")) {
+
+			return "success";
+		}
+
+		if (Objects.equals(signatureStatus, "declined") ||
+			Objects.equals(signatureStatus, "voided")) {
+
+			return "danger";
+		}
+
+		if (Objects.equals(signatureStatus, "expired")) {
+			return "warning";
+		}
+
+		return "info";
+	}
+
 	public String getThumbnailSrc(FileVersion fileVersion) throws Exception {
 		return _addDoAsUserIdParameter(
 			DLURLHelperUtil.getThumbnailSrc(
@@ -367,6 +406,16 @@ public class DLViewEntriesDisplayContext {
 		return true;
 	}
 
+	public boolean isSignatureRequired(FileEntry fileEntry) {
+		DSRequest dsRequest = _getDSRequest(fileEntry);
+
+		if (dsRequest == null) {
+			return false;
+		}
+
+		return dsRequest.isSignatureRequired(_themeDisplay.getUserId());
+	}
+
 	public boolean isVersioningStrategyOverridable() {
 		return _dlAdminDisplayContext.isVersioningStrategyOverridable();
 	}
@@ -380,6 +429,40 @@ public class DLViewEntriesDisplayContext {
 
 		return HttpComponentsUtil.setParameter(
 			url, "doAsUserId", _themeDisplay.getDoAsUserId());
+	}
+
+	private DSRequest _getDSRequest(FileEntry fileEntry) {
+		if (_dsRequestManager == null) {
+			return null;
+		}
+
+		if (_dsRequests == null) {
+			_dsRequests = _dsRequestManager.getDSRequests(
+				_themeDisplay.getCompanyId(), _getPageFileEntryIds());
+
+			_httpServletRequest.setAttribute(
+				DigitalSignatureConstants.DS_REQUESTS_ATTRIBUTE_NAME,
+				_dsRequests);
+		}
+
+		return _dsRequests.get(fileEntry.getFileEntryId());
+	}
+
+	private List<Long> _getPageFileEntryIds() {
+		SearchContainer<RepositoryEntry> searchContainer =
+			_dlAdminDisplayContext.getSearchContainer();
+
+		return TransformUtil.transform(
+			searchContainer.getResults(),
+			repositoryEntry -> {
+				if (repositoryEntry instanceof FileEntry) {
+					FileEntry fileEntry = (FileEntry)repositoryEntry;
+
+					return fileEntry.getFileEntryId();
+				}
+
+				return null;
+			});
 	}
 
 	private long _getRepositoryId() {
@@ -455,6 +538,8 @@ public class DLViewEntriesDisplayContext {
 		_dlPortletInstanceSettingsHelper;
 	private final DLRequestHelper _dlRequestHelper;
 	private final DLTrashHelper _dlTrashHelper;
+	private final DSRequestManager _dsRequestManager;
+	private Map<Long, DSRequest> _dsRequests;
 	private Role _guestRole;
 	private Boolean _hasValidAssetVocabularies;
 	private final HttpServletRequest _httpServletRequest;
