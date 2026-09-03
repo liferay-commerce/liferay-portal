@@ -1082,10 +1082,13 @@ public class DLAdminDisplayContext {
 
 		searchContext.setAttribute("paginationType", paginationType);
 		searchContext.setEnd(searchContainer.getEnd());
-		searchContext.setSorts(
-			_getSort(
-				searchContainer.getOrderByCol(),
-				searchContainer.getOrderByType()));
+
+		String orderByCol = searchContainer.getOrderByCol();
+
+		if (Validator.isNotNull(orderByCol)) {
+			searchContext.setSorts(
+				_getSort(orderByCol, searchContainer.getOrderByType()));
+		}
 
 		searchContext.setStart(searchContainer.getStart());
 
