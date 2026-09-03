@@ -49,6 +49,34 @@ public class ResourceActionPostUpgradeDataCleanupProcessTest
 	extends BasePostUpgradeDataCleanupProcessTestCase {
 
 	@Test
+	public void testCleanUpDoesNotRunIfBundleIsStopped() throws Exception {
+		AtomicReference<Bundle> bundleAtomicReference = new AtomicReference<>();
+
+		test(
+			logCapture -> {
+				List<String> messages = logCapture.getMessages();
+
+				Assert.assertTrue(
+					messages.toString(),
+					messages.contains(
+						"ResourceActionPostUpgradeDataCleanupProcess cannot " +
+							"be executed because there are modules that are " +
+								"inactive"));
+			},
+			() -> {
+				Bundle bundle = bundleAtomicReference.get();
+
+				if (bundle != null) {
+					startBundle(bundle);
+				}
+			},
+			() -> bundleAtomicReference.set(
+				stopBundle(
+					SystemBundleUtil.getBundleContext(),
+					"com.liferay.dynamic.data.mapping.service")));
+	}
+
+	@Test
 	public void testFoundObjectDefinitionResourceActionsAreNotDeleted()
 		throws Exception {
 
@@ -291,8 +319,8 @@ public class ResourceActionPostUpgradeDataCleanupProcessTest
 					messages.toString(),
 					messages.contains(
 						"ResourceActionPostUpgradeDataCleanupProcess cannot " +
-							"be executed because there are modules with " +
-								"unsatisfied references"));
+							"be executed because there are modules that are " +
+								"inactive"));
 			},
 			() -> {
 				Bundle bundle = bundleAtomicReference.get();

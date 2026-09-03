@@ -10,27 +10,34 @@ import com.liferay.digital.signature.manager.DSEnvelopeManager;
 import com.liferay.digital.signature.model.DSDocument;
 import com.liferay.digital.signature.model.DSEnvelope;
 import com.liferay.digital.signature.model.DSRecipient;
+import com.liferay.digital.signature.request.DSRequestManager;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.IntegerWrapper;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.ResourceRequest;
 import jakarta.portlet.ResourceResponse;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -56,36 +63,78 @@ public class AddDSEnvelopeMVCResourceCommand extends BaseMVCResourceCommand {
 		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
+		long[] fileEntryIds = ParamUtil.getLongValues(
+			resourceRequest, "fileEntryIds");
+
+		Map<Long, String> requestStatusesByFileEntryId =
+			_dsRequestManager.getRequestStatusesByFileEntryId(
+				themeDisplay.getCompanyId(), ListUtil.fromArray(fileEntryIds));
+
+		for (Map.Entry<Long, String> entry :
+				requestStatusesByFileEntryId.entrySet()) {
+
+			String requestStatus = entry.getValue();
+
+			if (Validator.isNotNull(requestStatus) &&
+				!Objects.equals(requestStatus, "declined") &&
+				!Objects.equals(requestStatus, "expired") &&
+				!Objects.equals(requestStatus, "voided")) {
+
+				throw new PortalException(
+					StringBundler.concat(
+						"File entry ", entry.getKey(),
+						" already has a signature request with status \"",
+						requestStatus, "\""));
+			}
+		}
+
+		int expireAfterDays = ParamUtil.getInteger(
+			resourceRequest, "expireAfter");
+		int expireWarnDays = ParamUtil.getInteger(
+			resourceRequest, "expireWarn");
+
+		if ((expireAfterDays > 0) && (expireWarnDays >= expireAfterDays)) {
+			throw new PortalException(
+				_language.get(
+					themeDisplay.getLocale(),
+					"days-to-warn-signers-must-be-fewer-than-days-until-" +
+						"expiration"));
+		}
+
 		User user = themeDisplay.getUser();
 
 		DSEnvelope dsEnvelope = _dsEnvelopeManager.addDSEnvelope(
 			themeDisplay.getCompanyId(), themeDisplay.getSiteGroupId(),
 			new DSEnvelope() {
 				{
-					dsDocuments = _getDSDocuments(resourceRequest);
+					dsDocuments = _getDSDocuments(fileEntryIds);
 					dsRecipients = _getDSRecipients(resourceRequest);
 					emailBlurb = ParamUtil.getString(
 						resourceRequest, "emailMessage");
 					emailSubject = ParamUtil.getString(
 						resourceRequest, "emailSubject");
+					expireAfter = expireAfterDays;
+					expireWarn = expireWarnDays;
 					name = ParamUtil.getString(resourceRequest, "envelopeName");
 					senderEmailAddress = user.getEmailAddress();
 					status = "sent";
 				}
 			});
 
+		_dsRequestManager.addDSRequest(
+			themeDisplay.getCompanyId(), themeDisplay.getSiteGroupId(),
+			user.getUserId(), dsEnvelope, fileEntryIds);
+
 		JSONPortletResponseUtil.writeJSON(
 			resourceRequest, resourceResponse,
 			JSONUtil.put("dsEnvelopeId", dsEnvelope.getDSEnvelopeId()));
 	}
 
-	private List<DSDocument> _getDSDocuments(ResourceRequest resourceRequest)
+	private List<DSDocument> _getDSDocuments(long[] fileEntryIds)
 		throws Exception {
 
 		return TransformUtil.transformToList(
-			ArrayUtil.toLongArray(
-				ParamUtil.getLongValues(resourceRequest, "fileEntryIds")),
-			fileEntryId -> _toDSDocument(fileEntryId));
+			fileEntryIds, fileEntryId -> _toDSDocument(fileEntryId));
 	}
 
 	private List<DSRecipient> _getDSRecipients(ResourceRequest resourceRequest)
@@ -126,6 +175,12 @@ public class AddDSEnvelopeMVCResourceCommand extends BaseMVCResourceCommand {
 	private DSEnvelopeManager _dsEnvelopeManager;
 
 	@Reference
+	private DSRequestManager _dsRequestManager;
+
+	@Reference
 	private JSONFactory _jsonFactory;
+
+	@Reference
+	private Language _language;
 
 }

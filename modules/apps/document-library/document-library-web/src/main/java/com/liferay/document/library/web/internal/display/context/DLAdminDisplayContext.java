@@ -472,6 +472,78 @@ public class DLAdminDisplayContext {
 			getSelectedRepositoryId(), getRootFolderId());
 	}
 
+	public String[] getSignatureRecipientStatuses() {
+		if (_signatureRecipientStatuses == null) {
+			_signatureRecipientStatuses = ParamUtil.getStringValues(
+				_httpServletRequest, "signatureRecipientStatus");
+		}
+
+		return _signatureRecipientStatuses;
+	}
+
+	public int getSignatureRequiredCount() {
+		if (_signatureRequiredCount != null) {
+			return _signatureRequiredCount;
+		}
+
+		_signatureRequiredCount = 0;
+
+		try {
+			SearchContext searchContext = _getSearchContext(
+				new SearchContainer<>(
+					_liferayPortletRequest, getViewRenderURL(), null, null),
+				"none");
+
+			long searchRepositoryId = _getSearchRepositoryId();
+
+			searchContext.setAttribute(
+				"searchRepositoryId", searchRepositoryId);
+
+			searchContext.setAttribute(
+				"status", WorkflowConstants.STATUS_APPROVED);
+			searchContext.setBooleanClauses(
+				_getBooleanClauses(
+					null, null, null, -1, new String[] {"signature-required"},
+					null, 0));
+			searchContext.setFolderIds(new long[] {getRootFolderId()});
+
+			Group group = GroupLocalServiceUtil.fetchGroup(searchRepositoryId);
+
+			if ((group != null) &&
+				GroupPermissionUtil.contains(
+					_themeDisplay.getPermissionChecker(), group,
+					ActionKeys.VIEW)) {
+
+				searchContext.setGroupIds(new long[] {searchRepositoryId});
+			}
+
+			QueryConfig queryConfig = searchContext.getQueryConfig();
+
+			queryConfig.setSearchSubfolders(true);
+
+			Hits hits = DLAppServiceUtil.search(
+				searchRepositoryId, searchContext);
+
+			_signatureRequiredCount = hits.getLength();
+		}
+		catch (PortalException portalException) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(portalException);
+			}
+		}
+
+		return _signatureRequiredCount;
+	}
+
+	public String[] getSignatureStatuses() {
+		if (_signatureStatuses == null) {
+			_signatureStatuses = ParamUtil.getStringValues(
+				_httpServletRequest, "signatureStatus");
+		}
+
+		return _signatureStatuses;
+	}
+
 	public PortletURL getViewRenderURL() {
 		PortletURL renderURL = PortletURLBuilder.createRenderURL(
 			_liferayPortletResponse
@@ -490,8 +562,10 @@ public class DLAdminDisplayContext {
 		if (ArrayUtil.isNotEmpty(getAssetCategoryIds()) ||
 			(getFileEntryTypeId() >= 0) ||
 			ArrayUtil.isNotEmpty(getAssetTagIds()) ||
-			ArrayUtil.isNotEmpty(getExtensions()) || isNavigationMine() ||
-			isNavigationRecent()) {
+			ArrayUtil.isNotEmpty(getExtensions()) ||
+			ArrayUtil.isNotEmpty(getSignatureRecipientStatuses()) ||
+			ArrayUtil.isNotEmpty(getSignatureStatuses()) ||
+			isNavigationMine() || isNavigationRecent()) {
 
 			return true;
 		}
@@ -681,7 +755,8 @@ public class DLAdminDisplayContext {
 
 	private BooleanClause<Query>[] _getBooleanClauses(
 		long[] assetCategoryIds, String[] assetTagNames, String[] extensions,
-		long fileEntryTypeId, long userId) {
+		long fileEntryTypeId, String[] signatureRecipientStatuses,
+		String[] signatureStatuses, long userId) {
 
 		BooleanQuery booleanQuery = new BooleanQuery();
 
@@ -707,6 +782,19 @@ public class DLAdminDisplayContext {
 		if (fileEntryTypeId >= 0) {
 			booleanFilter.addTerm(
 				"fileEntryTypeId", String.valueOf(fileEntryTypeId),
+				BooleanClauseOccur.MUST);
+		}
+
+		if (ArrayUtil.isNotEmpty(signatureRecipientStatuses)) {
+			booleanFilter.add(
+				_getSignatureRecipientStatusesFilter(
+					signatureRecipientStatuses),
+				BooleanClauseOccur.MUST);
+		}
+
+		if (ArrayUtil.isNotEmpty(signatureStatuses)) {
+			booleanFilter.add(
+				_getSignatureStatusesFilter(signatureStatuses),
 				BooleanClauseOccur.MUST);
 		}
 
@@ -1117,6 +1205,45 @@ public class DLAdminDisplayContext {
 		return searchContainer;
 	}
 
+	private Filter _getSignatureRecipientStatusesFilter(
+		String[] signatureRecipientStatuses) {
+
+		BooleanFilter booleanFilter = new BooleanFilter();
+
+		String userId = String.valueOf(_themeDisplay.getUserId());
+
+		for (String signatureRecipientStatus : signatureRecipientStatuses) {
+			if (Objects.equals(
+					signatureRecipientStatus, "signature-required")) {
+
+				booleanFilter.addTerm(
+					"signatureRecipientStatuses", userId + "_sent",
+					BooleanClauseOccur.SHOULD);
+			}
+			else if (Objects.equals(signatureRecipientStatus, "signed")) {
+				booleanFilter.addTerm(
+					"signatureRecipientStatuses", userId + "_completed",
+					BooleanClauseOccur.SHOULD);
+				booleanFilter.addTerm(
+					"signatureRecipientStatuses", userId + "_signed",
+					BooleanClauseOccur.SHOULD);
+			}
+		}
+
+		return booleanFilter;
+	}
+
+	private Filter _getSignatureStatusesFilter(String[] signatureStatuses) {
+		BooleanFilter booleanFilter = new BooleanFilter();
+
+		for (String signatureStatus : signatureStatuses) {
+			booleanFilter.addTerm(
+				"signatureStatus", signatureStatus, BooleanClauseOccur.SHOULD);
+		}
+
+		return booleanFilter;
+	}
+
 	private Sort _getSort(String orderByCol, String orderByType) {
 		int type = Sort.STRING_TYPE;
 		String fieldName = orderByCol;
@@ -1175,7 +1302,8 @@ public class DLAdminDisplayContext {
 		searchContext.setBooleanClauses(
 			_getBooleanClauses(
 				getAssetCategoryIds(), getAssetTagIds(), getExtensions(),
-				getFileEntryTypeId(), userId));
+				getFileEntryTypeId(), getSignatureRecipientStatuses(),
+				getSignatureStatuses(), userId));
 
 		long folderId = ParamUtil.getLong(
 			_httpServletRequest, "folderId", getFolderId());
@@ -1301,6 +1429,9 @@ public class DLAdminDisplayContext {
 	private Long _searchFolderId;
 	private Long _searchRepositoryId;
 	private long _selectedRepositoryId;
+	private String[] _signatureRecipientStatuses;
+	private Integer _signatureRequiredCount;
+	private String[] _signatureStatuses;
 	private final ThemeDisplay _themeDisplay;
 	private final TrashHelper _trashHelper;
 	private final VersioningStrategy _versioningStrategy;
