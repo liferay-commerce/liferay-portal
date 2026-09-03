@@ -60,11 +60,25 @@ public class DSSignatureReminderTest {
 		_configurationProvider.saveCompanyConfiguration(
 			DigitalSignatureConfiguration.class, TestPropsValues.getCompanyId(),
 			HashMapDictionaryBuilder.<String, Object>put(
+				"accountBaseURI", "https://demo.docusign.net/restapi"
+			).put(
+				"apiAccountId", RandomTestUtil.randomString()
+			).put(
+				"apiUsername", RandomTestUtil.randomString()
+			).put(
 				"enabled", true
 			).put(
 				"enableEmbeddedView", true
 			).put(
+				"environment", "sandbox"
+			).put(
+				"integrationKey", RandomTestUtil.randomString()
+			).put(
+				"rsaPrivateKey", RandomTestUtil.randomString()
+			).put(
 				"signatureReminderEnabled", true
+			).put(
+				"siteSettingsStrategy", "always-inherit"
 			).build());
 
 		_group = GroupTestUtil.addGroup();
@@ -133,6 +147,8 @@ public class DSSignatureReminderTest {
 				objectField.getName(), requestObjectEntry.getObjectEntryId()
 			).put(
 				"emailAddress", "ray.chen@liferay.com"
+			).put(
+				"providerRecipientId", "1"
 			).put(
 				"requestRecipientStatus", "sent"
 			).build(),
