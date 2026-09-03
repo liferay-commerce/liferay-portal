@@ -11,6 +11,7 @@ import com.liferay.account.model.AccountEntry;
 import com.liferay.account.role.AccountRolePermissionThreadLocal;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.service.AccountRoleLocalService;
+import com.liferay.account.service.AccountRoleService;
 import com.liferay.headless.admin.user.dto.v1_0.Account;
 import com.liferay.headless.admin.user.dto.v1_0.AccountRole;
 import com.liferay.headless.admin.user.dto.v1_0.UserAccount;
@@ -59,7 +60,7 @@ public class AccountRoleResourceImpl extends BaseAccountRoleResourceImpl {
 			Long accountId, Long accountRoleId, Long userAccountId)
 		throws Exception {
 
-		_accountRoleLocalService.unassociateUser(
+		_accountRoleService.unassociateUser(
 			accountId, accountRoleId, userAccountId);
 	}
 
@@ -250,9 +251,9 @@ public class AccountRoleResourceImpl extends BaseAccountRoleResourceImpl {
 		throws Exception {
 
 		return _toAccountRole(
-			_accountRoleLocalService.addAccountRole(
-				accountRole.getExternalReferenceCode(), contextUser.getUserId(),
-				accountId, accountRole.getName(),
+			_accountRoleService.addAccountRole(
+				accountRole.getExternalReferenceCode(), accountId,
+				accountRole.getName(),
 				Collections.singletonMap(
 					contextAcceptLanguage.getPreferredLocale(),
 					accountRole.getDisplayName()),
@@ -277,7 +278,7 @@ public class AccountRoleResourceImpl extends BaseAccountRoleResourceImpl {
 			Long accountId, Long accountRoleId, Long userAccountId)
 		throws Exception {
 
-		_accountRoleLocalService.associateUser(
+		_accountRoleService.associateUser(
 			accountId, accountRoleId, userAccountId);
 	}
 
@@ -394,6 +395,9 @@ public class AccountRoleResourceImpl extends BaseAccountRoleResourceImpl {
 
 	@Reference
 	private AccountRoleLocalService _accountRoleLocalService;
+
+	@Reference
+	private AccountRoleService _accountRoleService;
 
 	@Reference
 	private UserLocalService _userLocalService;
