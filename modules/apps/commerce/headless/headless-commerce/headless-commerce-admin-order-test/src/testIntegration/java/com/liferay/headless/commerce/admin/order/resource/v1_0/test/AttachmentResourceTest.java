@@ -9,6 +9,7 @@ import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.commerce.constants.CommerceOrderAttachmentConstants;
 import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
@@ -34,6 +35,7 @@ import java.math.BigDecimal;
 
 import java.util.HashMap;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -88,6 +90,24 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 
 		_commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
 			_commerceOrder);
+	}
+
+	@Override
+	@Test
+	public void testGetOrderAttachment() throws Exception {
+		super.testGetOrderAttachment();
+
+		Attachment postAttachment = testGetOrderAttachment_addAttachment();
+
+		Attachment getAttachment = attachmentResource.getOrderAttachment(
+			testGetOrderAttachment_getOrderId(), postAttachment.getId());
+
+		Assert.assertEquals(
+			CommerceOrderAttachmentConstants.SERVLET_PATH + StringPool.SLASH +
+				getAttachment.getId(),
+			StringUtil.extractLast(getAttachment.getUrl(), "/o/"));
+		Assert.assertTrue(
+			StringUtil.startsWith(getAttachment.getUrl(), "http"));
 	}
 
 	@Override

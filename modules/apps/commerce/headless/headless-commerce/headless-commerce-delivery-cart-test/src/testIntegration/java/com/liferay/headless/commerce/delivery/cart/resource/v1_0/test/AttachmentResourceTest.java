@@ -9,6 +9,7 @@ import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.commerce.constants.CommerceOrderAttachmentConstants;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.model.CommerceOrder;
@@ -34,6 +35,7 @@ import java.math.BigDecimal;
 
 import java.util.HashMap;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -98,6 +100,22 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 				deleteCartByExternalReferenceCodeAttachmentByExternalReferenceCodeAttachmentExternalReferenceCodeHttpResponse(
 					attachment.getExternalReferenceCode(),
 					_commerceOrder.getExternalReferenceCode()));
+	}
+
+	@Override
+	@Test
+	public void testPostCartAttachmentByBase64() throws Exception {
+		super.testPostCartAttachmentByBase64();
+
+		Attachment postAttachment =
+			testPostCartAttachmentByBase64_addAttachment(randomAttachment());
+
+		Assert.assertEquals(
+			CommerceOrderAttachmentConstants.SERVLET_PATH + StringPool.SLASH +
+				postAttachment.getId(),
+			StringUtil.extractLast(postAttachment.getUrl(), "/o/"));
+		Assert.assertTrue(
+			StringUtil.startsWith(postAttachment.getUrl(), "http"));
 	}
 
 	@Override
