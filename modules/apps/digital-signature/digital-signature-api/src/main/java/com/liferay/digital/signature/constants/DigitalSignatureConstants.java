@@ -17,6 +17,9 @@ public class DigitalSignatureConstants {
 		"xlsm", "xlsx", "xps"
 	};
 
+	public static final String DS_REQUESTS_ATTRIBUTE_NAME =
+		"com.liferay.digital.signature.request.DSRequests";
+
 	public static final String[] ENVIRONMENTS = {"production", "sandbox"};
 
 	public static final String[] REQUEST_RECIPIENT_STATUSES = {

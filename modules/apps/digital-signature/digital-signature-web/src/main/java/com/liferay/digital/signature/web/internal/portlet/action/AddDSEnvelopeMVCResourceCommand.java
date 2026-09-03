@@ -10,6 +10,7 @@ import com.liferay.digital.signature.manager.DSEnvelopeManager;
 import com.liferay.digital.signature.model.DSDocument;
 import com.liferay.digital.signature.model.DSEnvelope;
 import com.liferay.digital.signature.model.DSRecipient;
+import com.liferay.digital.signature.model.DSRequest;
 import com.liferay.digital.signature.request.DSRequestManager;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -66,14 +67,13 @@ public class AddDSEnvelopeMVCResourceCommand extends BaseMVCResourceCommand {
 		long[] fileEntryIds = ParamUtil.getLongValues(
 			resourceRequest, "fileEntryIds");
 
-		Map<Long, String> requestStatusesByFileEntryId =
-			_dsRequestManager.getRequestStatusesByFileEntryId(
-				themeDisplay.getCompanyId(), ListUtil.fromArray(fileEntryIds));
+		Map<Long, DSRequest> dsRequests = _dsRequestManager.getDSRequests(
+			themeDisplay.getCompanyId(), ListUtil.fromArray(fileEntryIds));
 
-		for (Map.Entry<Long, String> entry :
-				requestStatusesByFileEntryId.entrySet()) {
+		for (Map.Entry<Long, DSRequest> entry : dsRequests.entrySet()) {
+			DSRequest dsRequest = entry.getValue();
 
-			String requestStatus = entry.getValue();
+			String requestStatus = dsRequest.getStatus();
 
 			if (Validator.isNotNull(requestStatus) &&
 				!Objects.equals(requestStatus, "declined") &&

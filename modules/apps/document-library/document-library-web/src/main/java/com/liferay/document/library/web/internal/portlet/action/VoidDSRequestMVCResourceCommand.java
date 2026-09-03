@@ -65,7 +65,7 @@ public class VoidDSRequestMVCResourceCommand extends BaseMVCResourceCommand {
 
 			_dsRequestManager.voidDSRequest(
 				themeDisplay.getCompanyId(), themeDisplay.getScopeGroupId(),
-				dsRequest.getProviderRequestId(), reason);
+				dsRequest, reason);
 		}
 
 		JSONPortletResponseUtil.writeJSON(

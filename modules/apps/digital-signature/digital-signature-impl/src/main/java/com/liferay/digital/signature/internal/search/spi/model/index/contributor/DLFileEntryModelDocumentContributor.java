@@ -5,16 +5,17 @@
 
 package com.liferay.digital.signature.internal.search.spi.model.index.contributor;
 
+import com.liferay.digital.signature.model.DSRequest;
+import com.liferay.digital.signature.model.DSRequestRecipient;
 import com.liferay.digital.signature.request.DSRequestManager;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.search.Document;
-import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.search.spi.model.index.contributor.ModelDocumentContributor;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.Objects;
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -31,41 +32,43 @@ public class DLFileEntryModelDocumentContributor
 
 	@Override
 	public void contribute(Document document, DLFileEntry dlFileEntry) {
-		long companyId = dlFileEntry.getCompanyId();
-		long fileEntryId = dlFileEntry.getFileEntryId();
+		DSRequest dsRequest = _dsRequestManager.fetchDSRequest(
+			dlFileEntry.getCompanyId(), dlFileEntry.getFileEntryId());
 
-		Map<Long, String> requestStatusesByFileEntryId =
-			_dsRequestManager.getRequestStatusesByFileEntryId(
-				companyId, Collections.singletonList(fileEntryId));
-
-		String requestStatus = requestStatusesByFileEntryId.get(fileEntryId);
-
-		if (requestStatus != null) {
-			document.addKeyword("signatureStatus", requestStatus);
-		}
-
-		if (!Objects.equals(requestStatus, "created") &&
-			!Objects.equals(requestStatus, "sent")) {
-
+		if (dsRequest == null) {
 			return;
 		}
 
-		Map<Long, Map<Long, String>> recipientStatusesByFileEntryId =
-			_dsRequestManager.getRecipientStatusesByFileEntryId(
-				companyId, Collections.singletonList(fileEntryId));
+		String status = dsRequest.getStatus();
 
-		Map<Long, String> statusesByUserId = recipientStatusesByFileEntryId.get(
-			fileEntryId);
+		if (Validator.isNotNull(status)) {
+			document.addKeyword("signatureStatus", status);
+		}
 
-		if (MapUtil.isEmpty(statusesByUserId)) {
+		if (dsRequest.isTerminal()) {
+			return;
+		}
+
+		List<DSRequestRecipient> dsRequestRecipients =
+			dsRequest.getDSRequestRecipients();
+
+		if (ListUtil.isEmpty(dsRequestRecipients)) {
 			return;
 		}
 
 		document.addKeyword(
 			"signatureRecipientStatuses",
 			TransformUtil.transformToArray(
-				statusesByUserId.entrySet(),
-				entry -> entry.getKey() + "_" + entry.getValue(),
+				dsRequestRecipients,
+				dsRequestRecipient -> {
+					long userId = dsRequestRecipient.getUserId();
+
+					if (userId <= 0) {
+						return null;
+					}
+
+					return userId + "_" + dsRequestRecipient.getStatus();
+				},
 				String.class));
 	}
 

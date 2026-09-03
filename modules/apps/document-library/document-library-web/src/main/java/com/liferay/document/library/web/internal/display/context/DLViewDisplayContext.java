@@ -9,7 +9,6 @@ import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetVocabularyServiceUtil;
 import com.liferay.depot.util.SiteConnectedGroupGroupProviderUtil;
-import com.liferay.digital.signature.request.DSRequestManager;
 import com.liferay.document.library.constants.DLPortletKeys;
 import com.liferay.document.library.kernel.model.DLFileEntryConstants;
 import com.liferay.document.library.kernel.model.DLFileEntryTypeConstants;
@@ -281,28 +280,7 @@ public class DLViewDisplayContext {
 	}
 
 	public int getSignatureRequiredCount() {
-		if (_signatureRequiredCount != null) {
-			return _signatureRequiredCount;
-		}
-
-		DSRequestManager dsRequestManager =
-			(DSRequestManager)_httpServletRequest.getAttribute(
-				DSRequestManager.class.getName());
-
-		if (dsRequestManager == null) {
-			_signatureRequiredCount = 0;
-
-			return _signatureRequiredCount;
-		}
-
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)_httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
-		_signatureRequiredCount = dsRequestManager.getSignatureRequiredCount(
-			themeDisplay.getCompanyId(), themeDisplay.getUserId());
-
-		return _signatureRequiredCount;
+		return _dlAdminDisplayContext.getSignatureRequiredCount();
 	}
 
 	public String getUploadURL() throws PortalException {
@@ -486,6 +464,5 @@ public class DLViewDisplayContext {
 	private final HttpServletRequest _httpServletRequest;
 	private final RenderRequest _renderRequest;
 	private final RenderResponse _renderResponse;
-	private Integer _signatureRequiredCount;
 
 }

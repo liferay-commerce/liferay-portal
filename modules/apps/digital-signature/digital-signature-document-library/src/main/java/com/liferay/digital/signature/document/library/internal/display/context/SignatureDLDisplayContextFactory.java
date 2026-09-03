@@ -5,6 +5,8 @@
 
 package com.liferay.digital.signature.document.library.internal.display.context;
 
+import com.liferay.digital.signature.constants.DigitalSignatureConstants;
+import com.liferay.digital.signature.model.DSRequest;
 import com.liferay.digital.signature.request.DSRequestManager;
 import com.liferay.digital.signature.url.SignDSURLProvider;
 import com.liferay.document.library.display.context.DLDisplayContextFactory;
@@ -20,14 +22,11 @@ import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
@@ -86,37 +85,15 @@ public class SignatureDLDisplayContextFactory
 			return parentDLViewFileVersionDisplayContext;
 		}
 
-		Map<Long, String> providerRequestIds =
-			(Map<Long, String>)httpServletRequest.getAttribute(
-				_PROVIDER_REQUEST_IDS);
-
-		if (providerRequestIds == null) {
-			providerRequestIds = _dsRequestManager.getProviderRequestIds(
-				themeDisplay.getCompanyId(), themeDisplay.getUserId(),
-				Arrays.asList("sent"));
-
-			httpServletRequest.setAttribute(
-				_PROVIDER_REQUEST_IDS, providerRequestIds);
-		}
-
 		try {
 			FileEntry fileEntry = fileVersion.getFileEntry();
 
 			long fileEntryId = fileEntry.getFileEntryId();
 
-			String providerRequestId = providerRequestIds.get(fileEntryId);
+			DSRequest dsRequest = _getDSRequest(
+				httpServletRequest, themeDisplay.getCompanyId(), fileEntryId);
 
-			Map<Long, String> requestStatusesByFileEntryId =
-				_dsRequestManager.getRequestStatusesByFileEntryId(
-					themeDisplay.getCompanyId(),
-					Collections.singletonList(fileEntryId));
-
-			String requestStatus = requestStatusesByFileEntryId.get(
-				fileEntryId);
-
-			if (Validator.isNull(providerRequestId) &&
-				Validator.isNull(requestStatus)) {
-
+			if (dsRequest == null) {
 				return parentDLViewFileVersionDisplayContext;
 			}
 
@@ -128,7 +105,7 @@ public class SignatureDLDisplayContextFactory
 			return new SignatureDLViewFileVersionDisplayContext(
 				parentDLViewFileVersionDisplayContext, httpServletRequest,
 				httpServletResponse, fileVersion, hasUpdatePermission,
-				providerRequestId, requestStatus, _signDSURLProvider);
+				dsRequest, _signDSURLProvider);
 		}
 		catch (PortalException portalException) {
 			throw new SystemException(
@@ -138,9 +115,20 @@ public class SignatureDLDisplayContextFactory
 		}
 	}
 
-	private static final String _PROVIDER_REQUEST_IDS =
-		SignatureDLDisplayContextFactory.class.getName() +
-			"#PROVIDER_REQUEST_IDS";
+	private DSRequest _getDSRequest(
+		HttpServletRequest httpServletRequest, long companyId,
+		long fileEntryId) {
+
+		Map<Long, DSRequest> dsRequests =
+			(Map<Long, DSRequest>)httpServletRequest.getAttribute(
+				DigitalSignatureConstants.DS_REQUESTS_ATTRIBUTE_NAME);
+
+		if (dsRequests != null) {
+			return dsRequests.get(fileEntryId);
+		}
+
+		return _dsRequestManager.fetchDSRequest(companyId, fileEntryId);
+	}
 
 	@Reference(
 		target = "(model.class.name=com.liferay.document.library.kernel.model.DLFileEntry)"

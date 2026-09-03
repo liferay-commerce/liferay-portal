@@ -10,7 +10,6 @@ import com.liferay.digital.signature.model.DSRequest;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -26,22 +25,11 @@ public interface DSRequestManager {
 
 	public DSRequest fetchDSRequest(long companyId, long fileEntryId);
 
-	public Map<Long, String> getProviderRequestIds(
-		long companyId, long userId, Collection<String> statuses);
-
-	public Map<Long, Map<Long, String>> getRecipientStatusesByFileEntryId(
+	public Map<Long, DSRequest> getDSRequests(
 		long companyId, Collection<Long> fileEntryIds);
-
-	public Map<Long, String> getRequestStatusesByFileEntryId(
-		long companyId, Collection<Long> fileEntryIds);
-
-	public int getSignatureRequiredCount(long companyId, long userId);
-
-	public Set<Long> getSignatureRequiredFileEntryIds(
-		long companyId, long userId, Collection<Long> fileEntryIds);
 
 	public void resendDSRequestNotifications(
-		long companyId, long groupId, String providerRequestId);
+		long companyId, long groupId, DSRequest dsRequest);
 
 	public int sendSignatureReminders(long companyId);
 
@@ -49,6 +37,6 @@ public interface DSRequestManager {
 		long companyId, long groupId, String providerRequestId);
 
 	public void voidDSRequest(
-		long companyId, long groupId, String providerRequestId, String reason);
+		long companyId, long groupId, DSRequest dsRequest, String reason);
 
 }

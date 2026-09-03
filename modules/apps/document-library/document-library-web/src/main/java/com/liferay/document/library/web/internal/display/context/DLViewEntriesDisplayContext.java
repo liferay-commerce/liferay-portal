@@ -9,6 +9,8 @@ import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryServiceUtil;
 import com.liferay.asset.kernel.service.AssetVocabularyServiceUtil;
 import com.liferay.depot.util.SiteConnectedGroupGroupProviderUtil;
+import com.liferay.digital.signature.constants.DigitalSignatureConstants;
+import com.liferay.digital.signature.model.DSRequest;
 import com.liferay.digital.signature.request.DSRequestManager;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFileVersion;
@@ -62,7 +64,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * @author Adolfo Pérez
@@ -279,16 +280,13 @@ public class DLViewEntriesDisplayContext {
 	}
 
 	public String getSignatureStatus(FileEntry fileEntry) {
-		if (_dsRequestManager == null) {
+		DSRequest dsRequest = _getDSRequest(fileEntry);
+
+		if (dsRequest == null) {
 			return StringPool.BLANK;
 		}
 
-		if (_signatureStatuses == null) {
-			_signatureStatuses = _getSignatureStatuses();
-		}
-
-		return _signatureStatuses.getOrDefault(
-			fileEntry.getFileEntryId(), StringPool.BLANK);
+		return dsRequest.getStatus();
 	}
 
 	public String getSignatureStatusDisplayType(String signatureStatus) {
@@ -409,19 +407,13 @@ public class DLViewEntriesDisplayContext {
 	}
 
 	public boolean isSignatureRequired(FileEntry fileEntry) {
-		if (_dsRequestManager == null) {
+		DSRequest dsRequest = _getDSRequest(fileEntry);
+
+		if (dsRequest == null) {
 			return false;
 		}
 
-		if (_signatureRequiredFileEntryIds == null) {
-			_signatureRequiredFileEntryIds =
-				_dsRequestManager.getSignatureRequiredFileEntryIds(
-					_themeDisplay.getCompanyId(), _themeDisplay.getUserId(),
-					_getPageFileEntryIds());
-		}
-
-		return _signatureRequiredFileEntryIds.contains(
-			fileEntry.getFileEntryId());
+		return dsRequest.isSignatureRequired(_themeDisplay.getUserId());
 	}
 
 	public boolean isVersioningStrategyOverridable() {
@@ -437,6 +429,23 @@ public class DLViewEntriesDisplayContext {
 
 		return HttpComponentsUtil.setParameter(
 			url, "doAsUserId", _themeDisplay.getDoAsUserId());
+	}
+
+	private DSRequest _getDSRequest(FileEntry fileEntry) {
+		if (_dsRequestManager == null) {
+			return null;
+		}
+
+		if (_dsRequests == null) {
+			_dsRequests = _dsRequestManager.getDSRequests(
+				_themeDisplay.getCompanyId(), _getPageFileEntryIds());
+
+			_httpServletRequest.setAttribute(
+				DigitalSignatureConstants.DS_REQUESTS_ATTRIBUTE_NAME,
+				_dsRequests);
+		}
+
+		return _dsRequests.get(fileEntry.getFileEntryId());
 	}
 
 	private List<Long> _getPageFileEntryIds() {
@@ -459,11 +468,6 @@ public class DLViewEntriesDisplayContext {
 	private long _getRepositoryId() {
 		return GetterUtil.getLong(
 			_liferayPortletRequest.getAttribute("view.jsp-repositoryId"));
-	}
-
-	private Map<Long, String> _getSignatureStatuses() {
-		return _dsRequestManager.getRequestStatusesByFileEntryId(
-			_themeDisplay.getCompanyId(), _getPageFileEntryIds());
 	}
 
 	private boolean _hasValidAssetVocabularies(long scopeGroupId)
@@ -535,14 +539,13 @@ public class DLViewEntriesDisplayContext {
 	private final DLRequestHelper _dlRequestHelper;
 	private final DLTrashHelper _dlTrashHelper;
 	private final DSRequestManager _dsRequestManager;
+	private Map<Long, DSRequest> _dsRequests;
 	private Role _guestRole;
 	private Boolean _hasValidAssetVocabularies;
 	private final HttpServletRequest _httpServletRequest;
 	private final LiferayPortletRequest _liferayPortletRequest;
 	private final LiferayPortletResponse _liferayPortletResponse;
 	private String _redirect;
-	private Set<Long> _signatureRequiredFileEntryIds;
-	private Map<Long, String> _signatureStatuses;
 	private final ThemeDisplay _themeDisplay;
 
 }

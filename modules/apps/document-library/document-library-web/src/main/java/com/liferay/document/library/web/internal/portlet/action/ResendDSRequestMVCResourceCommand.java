@@ -58,7 +58,7 @@ public class ResendDSRequestMVCResourceCommand extends BaseMVCResourceCommand {
 		if (dsRequest != null) {
 			_dsRequestManager.resendDSRequestNotifications(
 				themeDisplay.getCompanyId(), themeDisplay.getScopeGroupId(),
-				dsRequest.getProviderRequestId());
+				dsRequest);
 		}
 
 		JSONPortletResponseUtil.writeJSON(

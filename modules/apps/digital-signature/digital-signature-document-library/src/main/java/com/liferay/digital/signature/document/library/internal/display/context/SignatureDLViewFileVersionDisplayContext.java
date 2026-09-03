@@ -6,6 +6,7 @@
 package com.liferay.digital.signature.document.library.internal.display.context;
 
 import com.liferay.digital.signature.constants.DigitalSignaturePortletKeys;
+import com.liferay.digital.signature.model.DSRequest;
 import com.liferay.digital.signature.url.SignDSURLProvider;
 import com.liferay.document.library.display.context.BaseDLViewFileVersionDisplayContext;
 import com.liferay.document.library.display.context.DLViewFileVersionDisplayContext;
@@ -19,7 +20,6 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.PortletResponse;
@@ -31,7 +31,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -44,8 +43,8 @@ public class SignatureDLViewFileVersionDisplayContext
 		DLViewFileVersionDisplayContext parentDLDisplayContext,
 		HttpServletRequest httpServletRequest,
 		HttpServletResponse httpServletResponse, FileVersion fileVersion,
-		boolean hasUpdatePermission, String providerRequestId,
-		String requestStatus, SignDSURLProvider signDSURLProvider) {
+		boolean hasUpdatePermission, DSRequest dsRequest,
+		SignDSURLProvider signDSURLProvider) {
 
 		super(
 			UUID.fromString("9b5f3f1a-2d4c-4b7e-9c8a-1e2f3a4b5c6d"),
@@ -55,8 +54,7 @@ public class SignatureDLViewFileVersionDisplayContext
 		_httpServletRequest = httpServletRequest;
 		_fileVersion = fileVersion;
 		_hasUpdatePermission = hasUpdatePermission;
-		_providerRequestId = providerRequestId;
-		_requestStatus = requestStatus;
+		_dsRequest = dsRequest;
 		_signDSURLProvider = signDSURLProvider;
 
 		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
@@ -73,14 +71,14 @@ public class SignatureDLViewFileVersionDisplayContext
 
 		List<DropdownItem> signatureDropdownItems = new ArrayList<>();
 
-		if (Validator.isNotNull(_providerRequestId)) {
+		if (_dsRequest.isSignatureRequired(_themeDisplay.getUserId())) {
 			signatureDropdownItems.add(_getSignDropdownItem());
 		}
 
 		if (_hasUpdatePermission) {
 			signatureDropdownItems.add(_getViewSignatureStatusDropdownItem());
 
-			if (Objects.equals(_requestStatus, "sent")) {
+			if (!_dsRequest.isTerminal()) {
 				signatureDropdownItems.add(_getResendDropdownItem());
 				signatureDropdownItems.add(_getVoidDropdownItem());
 			}
@@ -140,7 +138,8 @@ public class SignatureDLViewFileVersionDisplayContext
 
 				return HttpComponentsUtil.addParameter(
 					_signDSURLProvider.getURL(
-						_themeDisplay.getCompanyId(), _providerRequestId),
+						_themeDisplay.getCompanyId(),
+						_dsRequest.getProviderRequestId()),
 					portletNamespace + "backURL",
 					_themeDisplay.getURLCurrent());
 			}
@@ -187,11 +186,10 @@ public class SignatureDLViewFileVersionDisplayContext
 		).build();
 	}
 
+	private final DSRequest _dsRequest;
 	private final FileVersion _fileVersion;
 	private final boolean _hasUpdatePermission;
 	private final HttpServletRequest _httpServletRequest;
-	private final String _providerRequestId;
-	private final String _requestStatus;
 	private final SignDSURLProvider _signDSURLProvider;
 	private final ThemeDisplay _themeDisplay;
 

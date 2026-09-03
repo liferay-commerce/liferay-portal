@@ -9,6 +9,7 @@ import com.liferay.digital.signature.configuration.DigitalSignatureConfiguration
 import com.liferay.digital.signature.configuration.DigitalSignatureConfigurationUtil;
 import com.liferay.digital.signature.constants.DigitalSignatureConstants;
 import com.liferay.digital.signature.constants.DigitalSignaturePortletKeys;
+import com.liferay.digital.signature.model.DSRequest;
 import com.liferay.digital.signature.request.DSRequestManager;
 import com.liferay.document.library.constants.DLPortletKeys;
 import com.liferay.document.library.display.context.DLUIItemKeys;
@@ -86,8 +87,6 @@ import jakarta.portlet.WindowStateException;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.util.Collections;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -749,15 +748,14 @@ public class UIItemsBuilder {
 			return true;
 		}
 
-		Map<Long, String> requestStatusesByFileEntryId =
-			dsRequestManager.getRequestStatusesByFileEntryId(
-				_themeDisplay.getCompanyId(),
-				Collections.singletonList(_fileEntry.getFileEntryId()));
+		DSRequest dsRequest = dsRequestManager.fetchDSRequest(
+			_themeDisplay.getCompanyId(), _fileEntry.getFileEntryId());
 
-		String requestStatus = requestStatusesByFileEntryId.get(
-			_fileEntry.getFileEntryId());
+		if (dsRequest == null) {
+			return true;
+		}
 
-		return Validator.isNull(requestStatus);
+		return Validator.isNull(dsRequest.getStatus());
 	}
 
 	public boolean isCompareToActionAvailable() {
