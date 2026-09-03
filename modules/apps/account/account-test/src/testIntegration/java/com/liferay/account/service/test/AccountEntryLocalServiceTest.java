@@ -8,7 +8,9 @@ package com.liferay.account.service.test;
 import com.liferay.account.configuration.AccountEntryEmailDomainsConfiguration;
 import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.exception.AccountEntryDomainsException;
+import com.liferay.account.exception.AccountEntryExternalReferenceCodeException;
 import com.liferay.account.exception.AccountEntryNameException;
+import com.liferay.account.exception.AccountEntryTaxIdNumberException;
 import com.liferay.account.exception.NoSuchEntryException;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.model.AccountEntryUserRel;
@@ -43,6 +45,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.ModelListenerException;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -210,7 +213,7 @@ public class AccountEntryLocalServiceTest {
 		catch (AccountEntryNameException accountEntryNameException) {
 			String message = accountEntryNameException.getMessage();
 
-			Assert.assertTrue(message.contains("Name is null"));
+			Assert.assertTrue(message.contains("Account entry name is null"));
 		}
 
 		AccountEntry accountEntry = AccountEntryTestUtil.addAccountEntry();
@@ -228,7 +231,7 @@ public class AccountEntryLocalServiceTest {
 		catch (AccountEntryNameException accountEntryNameException) {
 			String message = accountEntryNameException.getMessage();
 
-			Assert.assertTrue(message.contains("Name is null"));
+			Assert.assertTrue(message.contains("Account entry name is null"));
 		}
 	}
 
@@ -531,6 +534,21 @@ public class AccountEntryLocalServiceTest {
 			accountEntry, WorkflowConstants.STATUS_APPROVED,
 			TestPropsValues.getUser());
 		Assert.assertFalse(_hasWorkflowInstance(accountEntry));
+
+		Assert.assertThrows(
+			AccountEntryExternalReferenceCodeException.class,
+			() -> AccountEntryTestUtil.addAccountEntry(
+				AccountEntryArgs.withExternalReferenceCode(
+					RandomTestUtil.randomString(76))));
+		Assert.assertThrows(
+			AccountEntryNameException.class,
+			() -> AccountEntryTestUtil.addAccountEntry(
+				AccountEntryArgs.withName(RandomTestUtil.randomString(251))));
+		Assert.assertThrows(
+			AccountEntryTaxIdNumberException.class,
+			() -> AccountEntryTestUtil.addAccountEntry(
+				AccountEntryArgs.withTaxIdNumber(
+					RandomTestUtil.randomString(76))));
 	}
 
 	@Test
@@ -1354,6 +1372,74 @@ public class AccountEntryLocalServiceTest {
 			"customFieldValue",
 			GetterUtil.getString(
 				expandoBridge.getAttribute("customFieldName")));
+
+		AccountEntry updatedAccountEntry = accountEntry;
+
+		Assert.assertThrows(
+			AccountEntryExternalReferenceCodeException.class,
+			() -> _accountEntryLocalService.updateAccountEntry(
+				RandomTestUtil.randomString(76),
+				updatedAccountEntry.getAccountEntryId(),
+				updatedAccountEntry.getParentAccountEntryId(),
+				updatedAccountEntry.getName(), null, false, null, null, null,
+				updatedAccountEntry.getTaxIdNumber(),
+				updatedAccountEntry.getStatus(),
+				ServiceContextTestUtil.getServiceContext()));
+		Assert.assertThrows(
+			AccountEntryNameException.class,
+			() -> _accountEntryLocalService.updateAccountEntry(
+				updatedAccountEntry.getExternalReferenceCode(),
+				updatedAccountEntry.getAccountEntryId(),
+				updatedAccountEntry.getParentAccountEntryId(),
+				RandomTestUtil.randomString(251), null, false, null, null, null,
+				updatedAccountEntry.getTaxIdNumber(),
+				updatedAccountEntry.getStatus(),
+				ServiceContextTestUtil.getServiceContext()));
+		Assert.assertThrows(
+			AccountEntryTaxIdNumberException.class,
+			() -> _accountEntryLocalService.updateAccountEntry(
+				updatedAccountEntry.getExternalReferenceCode(),
+				updatedAccountEntry.getAccountEntryId(),
+				updatedAccountEntry.getParentAccountEntryId(),
+				updatedAccountEntry.getName(), null, false, null, null, null,
+				RandomTestUtil.randomString(76),
+				updatedAccountEntry.getStatus(),
+				ServiceContextTestUtil.getServiceContext()));
+		Assert.assertThrows(
+			SystemException.class,
+			() -> {
+				AccountEntry invalidAccountEntry =
+					(AccountEntry)updatedAccountEntry.clone();
+
+				invalidAccountEntry.setExternalReferenceCode(
+					RandomTestUtil.randomString(76));
+
+				_accountEntryLocalService.updateAccountEntry(
+					invalidAccountEntry);
+			});
+		Assert.assertThrows(
+			SystemException.class,
+			() -> {
+				AccountEntry invalidAccountEntry =
+					(AccountEntry)updatedAccountEntry.clone();
+
+				invalidAccountEntry.setName(RandomTestUtil.randomString(251));
+
+				_accountEntryLocalService.updateAccountEntry(
+					invalidAccountEntry);
+			});
+		Assert.assertThrows(
+			SystemException.class,
+			() -> {
+				AccountEntry invalidAccountEntry =
+					(AccountEntry)updatedAccountEntry.clone();
+
+				invalidAccountEntry.setTaxIdNumber(
+					RandomTestUtil.randomString(76));
+
+				_accountEntryLocalService.updateAccountEntry(
+					invalidAccountEntry);
+			});
 	}
 
 	@Test

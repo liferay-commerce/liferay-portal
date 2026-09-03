@@ -8,7 +8,9 @@ package com.liferay.account.service.impl;
 import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.exception.AccountEntryDomainsException;
 import com.liferay.account.exception.AccountEntryEmailAddressException;
+import com.liferay.account.exception.AccountEntryExternalReferenceCodeException;
 import com.liferay.account.exception.AccountEntryNameException;
+import com.liferay.account.exception.AccountEntryTaxIdNumberException;
 import com.liferay.account.exception.AccountEntryTypeException;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.model.AccountEntryOrganizationRel;
@@ -45,11 +47,13 @@ import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.SystemEventConstants;
@@ -155,6 +159,8 @@ public class AccountEntryLocalServiceImpl
 			ServiceContext serviceContext)
 		throws PortalException {
 
+		_validate(externalReferenceCode, name, taxIdNumber);
+
 		// Account entry
 
 		long accountEntryId = counterLocalService.increment();
@@ -170,9 +176,6 @@ public class AccountEntryLocalServiceImpl
 		accountEntry.setUserName(user.getFullName());
 
 		accountEntry.setParentAccountEntryId(parentAccountEntryId);
-
-		_validateName(name);
-
 		accountEntry.setDescription(description);
 		accountEntry.setName(name);
 
@@ -636,6 +639,21 @@ public class AccountEntryLocalServiceImpl
 			accountEntries, searchResponse.getTotalHits());
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public AccountEntry updateAccountEntry(AccountEntry accountEntry) {
+		try {
+			_validate(
+				accountEntry.getExternalReferenceCode(), accountEntry.getName(),
+				accountEntry.getTaxIdNumber());
+		}
+		catch (PortalException portalException) {
+			throw new SystemException(portalException);
+		}
+
+		return super.updateAccountEntry(accountEntry);
+	}
+
 	@Override
 	public AccountEntry updateAccountEntry(
 			String externalReferenceCode, long accountEntryId,
@@ -645,14 +663,13 @@ public class AccountEntryLocalServiceImpl
 			ServiceContext serviceContext)
 		throws PortalException {
 
+		_validate(externalReferenceCode, name, taxIdNumber);
+
 		AccountEntry accountEntry = accountEntryPersistence.findByPrimaryKey(
 			accountEntryId);
 
 		accountEntry.setExternalReferenceCode(externalReferenceCode);
 		accountEntry.setParentAccountEntryId(parentAccountEntryId);
-
-		_validateName(name);
-
 		accountEntry.setDescription(description);
 		accountEntry.setName(name);
 
@@ -782,6 +799,10 @@ public class AccountEntryLocalServiceImpl
 
 			return accountEntry;
 		}
+
+		_validate(
+			externalReferenceCode, accountEntry.getName(),
+			accountEntry.getTaxIdNumber());
 
 		accountEntry.setExternalReferenceCode(externalReferenceCode);
 
@@ -1227,6 +1248,49 @@ public class AccountEntryLocalServiceImpl
 			null, null, null, 0, 0, null);
 	}
 
+	private void _validate(
+			String externalReferenceCode, String name, String taxIdNumber)
+		throws PortalException {
+
+		int maxLength = ModelHintsUtil.getMaxLength(
+			AccountEntry.class.getName(), "externalReferenceCode");
+
+		if (Validator.isNotNull(externalReferenceCode) &&
+			(externalReferenceCode.length() > maxLength)) {
+
+			throw new AccountEntryExternalReferenceCodeException(
+				StringBundler.concat(
+					"Account entry external reference code length cannot ",
+					"exceed ", maxLength, " characters"));
+		}
+
+		if (Validator.isNull(name)) {
+			throw new AccountEntryNameException("Account entry name is null");
+		}
+
+		maxLength = ModelHintsUtil.getMaxLength(
+			AccountEntry.class.getName(), "name");
+
+		if (name.length() > maxLength) {
+			throw new AccountEntryNameException(
+				StringBundler.concat(
+					"Account entry name length cannot exceed ", maxLength,
+					" characters"));
+		}
+
+		maxLength = ModelHintsUtil.getMaxLength(
+			AccountEntry.class.getName(), "taxIdNumber");
+
+		if (Validator.isNotNull(taxIdNumber) &&
+			(taxIdNumber.length() > maxLength)) {
+
+			throw new AccountEntryTaxIdNumberException(
+				StringBundler.concat(
+					"Account entry tax ID number length cannot exceed ",
+					maxLength, " characters"));
+		}
+	}
+
 	private String[] _validateDomains(
 			AccountEntryEmailAddressValidator accountEntryEmailAddressValidator,
 			String[] domains)
@@ -1264,12 +1328,6 @@ public class AccountEntryLocalServiceImpl
 				emailAddress)) {
 
 			throw new AccountEntryEmailAddressException();
-		}
-	}
-
-	private void _validateName(String name) throws PortalException {
-		if (Validator.isNull(name)) {
-			throw new AccountEntryNameException("Name is null");
 		}
 	}
 
