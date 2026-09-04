@@ -26,6 +26,7 @@ interface IProps {
 		persisted: boolean;
 	};
 	filtersJSONString: string;
+	groupIds: string[];
 	isAnalyticsEnabled: boolean;
 }
 
@@ -33,6 +34,7 @@ export default function Navigation({
 	activeTab,
 	filterSettings,
 	filtersJSONString,
+	groupIds,
 	isAnalyticsEnabled,
 }: IProps) {
 	const [filters, setFilter] = useAnalyticsFilters(
@@ -57,6 +59,7 @@ export default function Navigation({
 									AnalyticsFilters.ROOM
 								] as IAnalyticsRoomFilter
 							}
+							groupIds={groupIds}
 							setValue={setFilter}
 						/>
 					)}

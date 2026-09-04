@@ -10,11 +10,18 @@ import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParser;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.site.dsr.site.initializer.util.DSRRoomUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -77,7 +84,25 @@ public class ViewAnalyticsNavigationAnalyticsSectionDisplayContext
 			"filterSettings", getFilterSettingsJSONObject()
 		).put(
 			"filtersJSONString", getAnalyticsStoreFilters()
+		).put(
+			"groupIds", _getGroupIdsJSONArray()
 		).build();
 	}
+
+	private JSONArray _getGroupIdsJSONArray() {
+		try {
+			return JSONUtil.putAll(
+				(Object[])DSRRoomUtil.getGroupIds(
+					null, PermissionThreadLocal.getPermissionChecker()));
+		}
+		catch (PortalException portalException) {
+			_log.error(portalException);
+
+			return JSONFactoryUtil.createJSONArray();
+		}
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		ViewAnalyticsNavigationAnalyticsSectionDisplayContext.class);
 
 }

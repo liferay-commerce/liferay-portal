@@ -7,10 +7,13 @@ package com.liferay.site.dsr.analytics.rest.internal.resource.v1_0;
 
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
 import com.liferay.analytics.settings.rest.resource.v1_0.ChannelResource;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.site.dsr.analytics.rest.dto.v1_0.VisitFrequency;
 import com.liferay.site.dsr.analytics.rest.internal.client.AnalyticsCloudClient;
 import com.liferay.site.dsr.analytics.rest.resource.v1_0.VisitFrequencyResource;
+import com.liferay.site.dsr.site.initializer.util.DSRRoomUtil;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -30,6 +33,13 @@ public class VisitFrequencyResourceImpl extends BaseVisitFrequencyResourceImpl {
 			String[] groupIds, String rangeEnd, Integer rangeKey,
 			String rangeStart)
 		throws Exception {
+
+		groupIds = DSRRoomUtil.getGroupIds(
+			groupIds, PermissionThreadLocal.getPermissionChecker());
+
+		if (ArrayUtil.isEmpty(groupIds)) {
+			return new VisitFrequency();
+		}
 
 		AnalyticsCloudClient analyticsCloudClient = new AnalyticsCloudClient(
 			_channelResourceFactory, _http, contextUser);

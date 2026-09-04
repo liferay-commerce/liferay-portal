@@ -397,15 +397,10 @@ public class AnalyticsCloudClient {
 	}
 
 	private void _putGroupIds(ObjectNode objectNode, String[] groupIds) {
-		if (ArrayUtil.isEmpty(groupIds)) {
-			objectNode.putNull("groupIds");
-		}
-		else {
-			ArrayNode groupIdsArrayNode = objectNode.putArray("groupIds");
+		ArrayNode groupIdsArrayNode = objectNode.putArray("groupIds");
 
-			for (String groupId : groupIds) {
-				groupIdsArrayNode.add(groupId);
-			}
+		for (String groupId : groupIds) {
+			groupIdsArrayNode.add(groupId);
 		}
 	}
 
