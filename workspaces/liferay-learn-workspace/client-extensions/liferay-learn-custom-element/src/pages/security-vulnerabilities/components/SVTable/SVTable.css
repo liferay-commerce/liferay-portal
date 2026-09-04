@@ -1,0 +1,40 @@
+.sv-table {
+	.be-header-label {
+		color: #54555F;
+	}
+
+	.sv-name {
+		color: #0b5fff;
+	}
+
+	.sv-row {
+		cursor: pointer;
+	}
+
+	.sv-severity {
+		border-radius: 4px;
+		color: #54555f;
+		font-size: var(--font-size-sm);
+		min-width: var(--spacer-6);
+		padding: 4px 8px;
+	}
+
+	.sv-severity-critical {
+		background-color: #fbe3e3;
+		color: #830c0c;
+	}
+
+	.sv-severity-high {
+		background-color: #F7EAE0;
+		color: #6F3000;
+	}
+
+	.sv-severity-low {
+		background-color: #e1e1e4;
+	}
+
+	.sv-severity-medium {
+		background-color: #e6ebf5;
+		color: #1c3667;
+	}
+}

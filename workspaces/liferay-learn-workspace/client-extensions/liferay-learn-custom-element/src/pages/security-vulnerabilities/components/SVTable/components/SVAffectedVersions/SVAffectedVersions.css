@@ -1,0 +1,12 @@
+.sv-affected-version {
+	background-color: #E2E2E4;
+	border: none;
+	color: #54555f;
+	font-size: var(--font-size-sm);
+	min-width: var(--spacer-6);
+	padding: 4px 8px;
+}
+
+.sv-affected-versions-remaining {
+	cursor: pointer;
+}
