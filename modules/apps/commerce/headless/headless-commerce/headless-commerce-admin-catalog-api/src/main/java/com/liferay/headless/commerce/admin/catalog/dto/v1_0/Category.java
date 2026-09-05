@@ -20,7 +20,6 @@ import jakarta.annotation.Generated;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotNull;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
 
@@ -42,8 +41,7 @@ import java.util.function.Supplier;
 	value = "Category"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "Asset-based taxonomy entry used to classify products; within the admin catalog API a category appears only as a reference body for assigning or listing categories against a product, and the resource itself does not create or delete category records.",
-	requiredProperties = {"id"}
+	description = "Asset-based taxonomy entry used to classify products; within the admin catalog API a category appears only as a reference body for assigning or listing categories against a product, and the resource itself does not create or delete category records."
 )
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "Category")
@@ -58,7 +56,7 @@ public class Category implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Idempotency key for create and update; must be unique per category within the company.",
+		description = "Idempotency key for create and update; must be unique per category within the site that owns the category. Identifies the category when assigning categories to a product, and takes precedence over the ID when both are supplied; a code that resolves to nothing is rejected.",
 		example = "AB-34098-789-N"
 	)
 	public String getExternalReferenceCode() {
@@ -95,7 +93,7 @@ public class Category implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Idempotency key for create and update; must be unique per category within the company."
+		description = "Idempotency key for create and update; must be unique per category within the site that owns the category. Identifies the category when assigning categories to a product, and takes precedence over the ID when both are supplied; a code that resolves to nothing is rejected."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String externalReferenceCode;
@@ -105,7 +103,7 @@ public class Category implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Reference to the category (FK identifier); required when patching product-category assignments because each entry is resolved by identifier and unknown identifiers are rejected.",
+		description = "Reference to the category (FK identifier); identifies the category when assigning categories to a product and `externalReferenceCode` is absent.",
 		example = "30130"
 	)
 	public Long getId() {
@@ -140,10 +138,9 @@ public class Category implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Reference to the category (FK identifier); required when patching product-category assignments because each entry is resolved by identifier and unknown identifiers are rejected."
+		description = "Reference to the category (FK identifier); identifies the category when assigning categories to a product and `externalReferenceCode` is absent."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	@NotNull
 	protected Long id;
 
 	@JsonIgnore
@@ -194,7 +191,7 @@ public class Category implements Serializable {
 	private Supplier<String> _nameSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Reference to the Liferay site (FK identifier) where the category was defined.",
+		description = "Reference to the Liferay site (FK identifier) where the category was defined; on write it says which site to resolve `externalReferenceCode` against, defaulting to the company site that the product categorization UI reads from.",
 		example = "20121"
 	)
 	public Long getSiteId() {
@@ -231,7 +228,7 @@ public class Category implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Reference to the Liferay site (FK identifier) where the category was defined."
+		description = "Reference to the Liferay site (FK identifier) where the category was defined; on write it says which site to resolve `externalReferenceCode` against, defaulting to the company site that the product categorization UI reads from."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long siteId;
@@ -544,4 +541,4 @@ public class Category implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1065727664
+// LIFERAY-REST-BUILDER-HASH:-669094346
