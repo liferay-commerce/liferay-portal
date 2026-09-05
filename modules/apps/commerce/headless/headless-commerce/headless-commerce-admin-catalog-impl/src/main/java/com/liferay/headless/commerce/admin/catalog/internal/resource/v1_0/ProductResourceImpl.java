@@ -9,7 +9,6 @@ import com.liferay.account.model.AccountGroup;
 import com.liferay.account.service.AccountGroupRelLocalService;
 import com.liferay.account.service.AccountGroupRelService;
 import com.liferay.account.service.AccountGroupService;
-import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetTagService;
@@ -85,6 +84,7 @@ import com.liferay.headless.commerce.admin.catalog.dto.v1_0.SkuUnitOfMeasure;
 import com.liferay.headless.commerce.admin.catalog.internal.odata.entity.v1_0.ProductEntityModel;
 import com.liferay.headless.commerce.admin.catalog.internal.util.DateConfigUtil;
 import com.liferay.headless.commerce.admin.catalog.internal.util.v1_0.AttachmentUtil;
+import com.liferay.headless.commerce.admin.catalog.internal.util.v1_0.CategoryUtil;
 import com.liferay.headless.commerce.admin.catalog.internal.util.v1_0.DiagramUtil;
 import com.liferay.headless.commerce.admin.catalog.internal.util.v1_0.MappedProductUtil;
 import com.liferay.headless.commerce.admin.catalog.internal.util.v1_0.PinUtil;
@@ -156,7 +156,6 @@ import java.io.Serializable;
 
 import java.math.BigDecimal;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -739,26 +738,19 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 
 		if (categories != null) {
 			serviceContext.setAssetCategoryIds(
-				transformToLongArray(
-					Arrays.asList(categories),
+				unsafeTransformToLongArray(
+					categories,
 					category -> {
-						if (Validator.isNull(
-								category.getExternalReferenceCode())) {
+						Long assetCategoryId = CategoryUtil.getAssetCategoryId(
+							category, contextCompany.getGroupId(),
+							_assetCategoryLocalService::
+								fetchAssetCategoryByExternalReferenceCode);
 
-							return category.getId();
+						if (assetCategoryId != null) {
+							return assetCategoryId;
 						}
 
-						AssetCategory assetCategory =
-							_assetCategoryLocalService.
-								fetchAssetCategoryByExternalReferenceCode(
-									category.getExternalReferenceCode(),
-									contextCompany.getGroupId());
-
-						if (assetCategory == null) {
-							return null;
-						}
-
-						return assetCategory.getCategoryId();
+						return category.getId();
 					}));
 		}
 		else if (cpDefinition != null) {
@@ -1690,22 +1682,19 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 		}
 		else {
 			serviceContext.setAssetCategoryIds(
-				transformToLongArray(
-					Arrays.asList(categories),
+				unsafeTransformToLongArray(
+					categories,
 					category -> {
-						if (Validator.isNull(
-								category.getExternalReferenceCode())) {
+						Long assetCategoryId = CategoryUtil.getAssetCategoryId(
+							category, contextCompany.getGroupId(),
+							_assetCategoryLocalService::
+								fetchAssetCategoryByExternalReferenceCode);
 
-							return category.getId();
+						if (assetCategoryId != null) {
+							return assetCategoryId;
 						}
 
-						AssetCategory assetCategory =
-							_assetCategoryLocalService.
-								fetchAssetCategoryByExternalReferenceCode(
-									category.getExternalReferenceCode(),
-									contextCompany.getGroupId());
-
-						return assetCategory.getCategoryId();
+						return category.getId();
 					}));
 		}
 
