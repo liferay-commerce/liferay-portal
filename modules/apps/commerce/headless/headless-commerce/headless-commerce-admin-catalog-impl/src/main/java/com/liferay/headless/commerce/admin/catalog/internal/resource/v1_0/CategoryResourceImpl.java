@@ -13,13 +13,13 @@ import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Category;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Product;
+import com.liferay.headless.commerce.admin.catalog.internal.util.v1_0.CategoryUtil;
 import com.liferay.headless.commerce.admin.catalog.internal.util.v1_0.ProductUtil;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.CategoryResource;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.fields.NestedField;
@@ -169,25 +169,33 @@ public class CategoryResourceImpl extends BaseCategoryResourceImpl {
 			CPDefinition cpDefinition, Category[] categories)
 		throws Exception {
 
-		long[] assetCategoryIds = new long[0];
-
-		for (Category category : categories) {
-			AssetCategory assetCategory = _assetCategoryService.fetchCategory(
-				category.getId());
-
-			if (assetCategory == null) {
-				throw new NoSuchCategoryException(
-					"Unable to find Category with ID: " + category.getId());
-			}
-
-			assetCategoryIds = ArrayUtil.append(
-				assetCategoryIds, assetCategory.getCategoryId());
-		}
-
 		ServiceContext serviceContext = _serviceContextHelper.getServiceContext(
 			cpDefinition.getGroupId());
 
-		serviceContext.setAssetCategoryIds(assetCategoryIds);
+		serviceContext.setAssetCategoryIds(
+			unsafeTransformToLongArray(
+				categories,
+				category -> {
+					Long assetCategoryId = CategoryUtil.getAssetCategoryId(
+						category, contextCompany.getGroupId(),
+						_assetCategoryService::
+							fetchCategoryByExternalReferenceCode);
+
+					if (assetCategoryId != null) {
+						return assetCategoryId;
+					}
+
+					AssetCategory assetCategory =
+						_assetCategoryService.fetchCategory(category.getId());
+
+					if (assetCategory == null) {
+						throw new NoSuchCategoryException(
+							"Unable to find Category with ID: " +
+								category.getId());
+					}
+
+					return assetCategory.getCategoryId();
+				}));
 
 		_cpDefinitionService.updateCPDefinitionCategorization(
 			cpDefinition.getCPDefinitionId(), serviceContext);

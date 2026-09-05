@@ -800,12 +800,12 @@ components:
             properties:
                 externalReferenceCode:
                     description:
-                        Idempotency key for create and update; must be unique per category within the company.
+                        Idempotency key for create and update; must be unique per category within the site that owns the category. Identifies the category when assigning categories to a product, and takes precedence over the ID when both are supplied; a code that resolves to nothing is rejected.
                     example: AB-34098-789-N
                     type: string
                 id:
                     description:
-                        Reference to the category (FK identifier); required when patching product-category assignments because each entry is resolved by identifier and unknown identifiers are rejected.
+                        Reference to the category (FK identifier); identifies the category when assigning categories to a product and `externalReferenceCode` is absent.
                     example: 30130
                     format: int64
                     minimum: 0
@@ -817,7 +817,7 @@ components:
                     type: string
                 siteId:
                     description:
-                        Reference to the Liferay site (FK identifier) where the category was defined.
+                        Reference to the Liferay site (FK identifier) where the category was defined; on write it says which site to resolve `externalReferenceCode` against, defaulting to the company site that the product categorization UI reads from.
                     example: 20121
                     format: int64
                     type: integer
@@ -837,8 +837,6 @@ components:
                     example: Default Vocabulary
                     readOnly: true
                     type: string
-            required:
-                -   id
             type: object
         Channel:
             description:
