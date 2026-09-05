@@ -25,6 +25,7 @@ import com.liferay.commerce.product.type.simple.constants.SimpleCPTypeConstants;
 import com.liferay.commerce.product.type.virtual.constants.VirtualCPTypeConstants;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.headless.batch.engine.client.http.HttpInvoker;
+import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Category;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Product;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductAccountGroup;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductChannel;
@@ -38,6 +39,7 @@ import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Sku;
 import com.liferay.headless.commerce.admin.catalog.client.pagination.Page;
 import com.liferay.headless.commerce.admin.catalog.client.pagination.Pagination;
 import com.liferay.headless.commerce.admin.catalog.client.problem.Problem;
+import com.liferay.headless.commerce.admin.catalog.client.resource.v1_0.CategoryResource;
 import com.liferay.headless.commerce.admin.catalog.client.resource.v1_0.ProductResource;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
 import com.liferay.journal.constants.JournalFolderConstants;
@@ -76,6 +78,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -146,6 +149,18 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 			testGroup.getGroupId());
 		_cpSpecificationOption = CPTestUtil.addCPSpecificationOption(
 			testGroup.getGroupId(), true);
+
+		User adminUser = UserTestUtil.getAdminUser(testCompany.getCompanyId());
+
+		_categoryResource = CategoryResource.builder(
+		).authentication(
+			adminUser.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
 	}
 
 	@After
@@ -344,6 +359,7 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		Assert.assertEquals(
 			getProduct.getExpirationDate(), postProduct.getExpirationDate());
 
+		_testPatchProductCategoryWithCategoryExternalReferenceCode();
 		_testPatchProductWithNegativeValue("cost");
 		_testPatchProductWithNegativeValue("depth");
 		_testPatchProductWithNegativeValue("height");
@@ -390,10 +406,13 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		_testPostProductProductShippingConfigurationFromProductConfiguration();
 		_testPostProductProductTaxConfigurationFromProductConfiguration();
 		_testPostProductVirtual();
+		_testPostProductWithCategoryExternalReferenceCode();
+		_testPostProductWithCategoryWithoutIdOrExternalReferenceCode();
 		_testPostProductWithProductAccountGroupExternalReferenceCode();
 		_testPostProductWithProductChannelExternalReferenceCode();
 		_testPostProductWithTermsOfUseJournalArticleExternalReferenceCode();
 		_testPostProductWithTermsOfUseJournalArticleGroupExternalReferenceCode();
+		_testPostProductWithUnknownCategoryExternalReferenceCode();
 		_testPostProductWithWorkflowSingleApprover();
 	}
 
@@ -505,6 +524,25 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		throws Exception {
 
 		return productResource.postProduct(product);
+	}
+
+	private void _assertProductCategory(
+			AssetCategory assetCategory, Product product)
+		throws Exception {
+
+		Page<Category> categoriesPage =
+			_categoryResource.getProductIdCategoriesPage(
+				product.getProductId(), Pagination.of(1, 2));
+
+		Assert.assertEquals(1, categoriesPage.getTotalCount());
+
+		Category category = categoriesPage.fetchFirstItem();
+
+		Assert.assertEquals(
+			assetCategory.getExternalReferenceCode(),
+			category.getExternalReferenceCode());
+		Assert.assertEquals(
+			Long.valueOf(assetCategory.getCategoryId()), category.getId());
 	}
 
 	private ProductVirtualSettings _postProductWithTermsOfUse(
@@ -1038,6 +1076,28 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		Assert.assertEquals(value, jsonObject.getString(objectField.getName()));
 	}
 
+	private void _testPatchProductCategoryWithCategoryExternalReferenceCode()
+		throws Exception {
+
+		Product product = productResource.postProduct(_randomProductWithSku());
+
+		AssetCategory assetCategory = CPTestUtil.addCategoryToCPDefinitions(
+			testCompany.getGroupId());
+
+		_categoryResource.patchProductIdCategory(
+			product.getProductId(),
+			new Category[] {
+				new Category() {
+					{
+						externalReferenceCode =
+							assetCategory.getExternalReferenceCode();
+					}
+				}
+			});
+
+		_assertProductCategory(assetCategory, product);
+	}
+
 	private void _testPatchProductWithNegativeValue(String fieldName)
 		throws Exception {
 
@@ -1208,6 +1268,66 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		Assert.assertNotNull(productVirtualSettingsFileEntry.getSrc());
 	}
 
+	private void _testPostProductWithCategoryExternalReferenceCode()
+		throws Exception {
+
+		AssetCategory companyAssetCategory =
+			CPTestUtil.addCategoryToCPDefinitions(testCompany.getGroupId());
+
+		Product randomProduct = _randomProductWithSku();
+
+		randomProduct.setCategories(
+			new Category[] {
+				new Category() {
+					{
+						externalReferenceCode =
+							companyAssetCategory.getExternalReferenceCode();
+					}
+				}
+			});
+
+		_assertProductCategory(
+			companyAssetCategory, productResource.postProduct(randomProduct));
+
+		AssetCategory siteAssetCategory = CPTestUtil.addCategoryToCPDefinitions(
+			testGroup.getGroupId());
+
+		randomProduct = _randomProductWithSku();
+
+		randomProduct.setCategories(
+			new Category[] {
+				new Category() {
+					{
+						externalReferenceCode =
+							siteAssetCategory.getExternalReferenceCode();
+						siteId = testGroup.getGroupId();
+					}
+				}
+			});
+
+		_assertProductCategory(
+			siteAssetCategory, productResource.postProduct(randomProduct));
+	}
+
+	private void _testPostProductWithCategoryWithoutIdOrExternalReferenceCode()
+		throws Exception {
+
+		Product randomProduct = _randomProductWithSku();
+
+		randomProduct.setCategories(new Category[] {new Category()});
+
+		try {
+			productResource.postProduct(randomProduct);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
+		}
+	}
+
 	private void _testPostProductWithProductAccountGroupExternalReferenceCode()
 		throws Exception {
 
@@ -1345,6 +1465,32 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 			productVirtualSettings.getTermsOfUseJournalArticleId());
 	}
 
+	private void _testPostProductWithUnknownCategoryExternalReferenceCode()
+		throws Exception {
+
+		Product randomProduct = _randomProductWithSku();
+
+		randomProduct.setCategories(
+			new Category[] {
+				new Category() {
+					{
+						externalReferenceCode = RandomTestUtil.randomString();
+					}
+				}
+			});
+
+		try {
+			productResource.postProduct(randomProduct);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+		}
+	}
+
 	private void _testPostProductWithWorkflowSingleApprover() throws Exception {
 		_workflowDefinitionLinkLocalService.updateWorkflowDefinitionLink(
 			TestPropsValues.getUserId(), testCompany.getCompanyId(),
@@ -1441,6 +1587,8 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 
 	@Inject
 	private AccountGroupLocalService _accountGroupLocalService;
+
+	private CategoryResource _categoryResource;
 
 	@DeleteAfterTestRun
 	private CommerceCatalog _commerceCatalog;
