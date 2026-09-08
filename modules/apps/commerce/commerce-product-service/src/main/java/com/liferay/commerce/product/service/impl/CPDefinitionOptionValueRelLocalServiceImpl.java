@@ -504,7 +504,8 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 						Predicate.or(
 							CPInstanceTable.INSTANCE.expirationDate.isNull(),
 							CPInstanceTable.INSTANCE.expirationDate.gt(
-								new Date()))
+								new Date())
+						).withParentheses()
 					)
 			).orderBy(
 				CPDefinitionOptionValueRelTable.INSTANCE.priority.ascending(),
