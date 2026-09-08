@@ -83,6 +83,7 @@ import com.liferay.taglib.security.PermissionsURLTag;
 import jakarta.portlet.PortletRequest;
 import jakarta.portlet.PortletResponse;
 import jakarta.portlet.PortletURL;
+import jakarta.portlet.WindowState;
 import jakarta.portlet.WindowStateException;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -206,12 +207,14 @@ public class UIItemsBuilder {
 						_httpServletRequest);
 
 				return PortletURLBuilder.create(
-					requestBackedPortletURLFactory.createActionURL(
+					requestBackedPortletURLFactory.createRenderURL(
 						DigitalSignaturePortletKeys.COLLECT_DIGITAL_SIGNATURE)
 				).setBackURL(
 					_getCurrentURL()
 				).setParameter(
 					"fileEntryId", _fileEntry.getFileEntryId()
+				).setWindowState(
+					WindowState.MAXIMIZED
 				).buildString();
 			}
 		).setKey(
