@@ -179,6 +179,85 @@ public class CommerceSitemapURLProviderTest {
 	}
 
 	@Test
+	public void testAssetCategorySitemapURLProviderReflectsTranslatedFriendlyURL()
+		throws Exception {
+
+		Locale siteDefaultLocale = LocaleUtil.getSiteDefault();
+
+		List<Locale> siteLocales = new ArrayList<>(
+			_language.getCompanyAvailableLocales(_company.getCompanyId()));
+
+		GroupTestUtil.updateDisplaySettings(
+			_group.getGroupId(), siteLocales, siteDefaultLocale);
+
+		Locale translatedLocale = null;
+
+		for (Locale siteLocale : siteLocales) {
+			if (!siteLocale.equals(siteDefaultLocale)) {
+				translatedLocale = siteLocale;
+
+				break;
+			}
+		}
+
+		Assert.assertNotNull(siteLocales.toString(), translatedLocale);
+
+		AssetCategory assetCategory = _addAssetCategory(
+			AssetTestUtil.addVocabulary(_company.getGroupId()),
+			AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID);
+
+		String translatedUrlTitle =
+			"translated-" +
+				StringUtil.toLowerCase(RandomTestUtil.randomString());
+
+		_friendlyURLEntryLocalService.updateFriendlyURLEntryLocalization(
+			_friendlyURLEntryLocalService.getMainFriendlyURLEntry(
+				_portal.getClassNameId(AssetCategory.class),
+				assetCategory.getCategoryId()),
+			_language.getLanguageId(translatedLocale), translatedUrlTitle);
+
+		Element element = _visitLayout(
+			_assetCategorySitemapURLProvider,
+			CPPortletKeys.CP_CATEGORY_CONTENT_WEB);
+
+		List<String> sitemapURLs = _getSitemapURLs(element);
+
+		Assert.assertEquals(sitemapURLs.toString(), 2, sitemapURLs.size());
+		Assert.assertTrue(
+			sitemapURLs.toString(),
+			sitemapURLs.remove(_getCategoryFriendlyURL(assetCategory)));
+
+		String translatedCategoryFriendlyURL = sitemapURLs.get(0);
+
+		String urlSeparator = _cpFriendlyURL.getAssetCategoryURLSeparator(
+			_themeDisplay.getCompanyId());
+
+		Assert.assertTrue(
+			translatedCategoryFriendlyURL,
+			translatedCategoryFriendlyURL.endsWith(
+				urlSeparator + translatedUrlTitle));
+
+		Assert.assertNotEquals(
+			_getCategoryFriendlyURL(translatedUrlTitle),
+			translatedCategoryFriendlyURL);
+
+		for (Element urlElement : element.elements()) {
+			List<String> hreflangs = _getHreflangs(urlElement);
+
+			Assert.assertTrue(
+				hreflangs.toString(), hreflangs.contains("x-default"));
+			Assert.assertTrue(
+				hreflangs.toString(),
+				hreflangs.contains(
+					LocaleUtil.toW3cLanguageId(siteDefaultLocale)));
+			Assert.assertTrue(
+				hreflangs.toString(),
+				hreflangs.contains(
+					LocaleUtil.toW3cLanguageId(translatedLocale)));
+		}
+	}
+
+	@Test
 	public void testCPDefinitionSitemapURLProvider() throws Exception {
 		CPDefinition cpDefinition = _addCPDefinition();
 
@@ -352,6 +431,20 @@ public class CommerceSitemapURLProviderTest {
 			_cpFriendlyURL.getAssetCategoryURLSeparator(
 				_themeDisplay.getCompanyId()),
 			urlTitle);
+	}
+
+	private List<String> _getHreflangs(Element urlElement) {
+		return TransformUtil.transform(
+			urlElement.elements(),
+			childElement -> {
+				String elementName = childElement.getName();
+
+				if (elementName.equals("link")) {
+					return childElement.attributeValue("hreflang");
+				}
+
+				return null;
+			});
 	}
 
 	private List<String> _getSitemapURLs(Element element) {
