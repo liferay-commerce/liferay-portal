@@ -258,6 +258,33 @@ public class CommerceSitemapURLProviderTest {
 	}
 
 	@Test
+	public void testAssetCategorySitemapURLProviderWithSubcategories()
+		throws Exception {
+
+		AssetVocabulary assetVocabulary = AssetTestUtil.addVocabulary(
+			_company.getGroupId());
+
+		AssetCategory assetCategory = _addAssetCategory(
+			assetVocabulary, AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID);
+
+		AssetCategory childAssetCategory = _addAssetCategory(
+			assetVocabulary, assetCategory.getCategoryId());
+
+		Element element = _visitLayout(
+			_assetCategorySitemapURLProvider,
+			CPPortletKeys.CP_CATEGORY_CONTENT_WEB);
+
+		List<String> sitemapURLs = _getSitemapURLs(element);
+
+		Assert.assertTrue(
+			sitemapURLs.toString(),
+			sitemapURLs.contains(_getCategoryFriendlyURL(assetCategory)));
+		Assert.assertTrue(
+			sitemapURLs.toString(),
+			sitemapURLs.contains(_getCategoryFriendlyURL(childAssetCategory)));
+	}
+
+	@Test
 	public void testCPDefinitionSitemapURLProvider() throws Exception {
 		CPDefinition cpDefinition = _addCPDefinition();
 
