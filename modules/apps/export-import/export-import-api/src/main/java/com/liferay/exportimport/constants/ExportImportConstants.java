@@ -12,6 +12,8 @@ public class ExportImportConstants {
 
 	public static final String EXPORT_IMPORT_SCHEMA_VERSION = "4.0.0";
 
+	public static final String SECTION_KEY_COMMERCE = "commerce";
+
 	public static final String SECTION_KEY_CONFIGURATION =
 		"category.site_administration.configuration";
 
