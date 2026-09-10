@@ -134,15 +134,12 @@ public class DLAdminManagementToolbarDisplayContext
 			return null;
 		}
 
-		DigitalSignatureConfiguration digitalSignatureConfiguration =
-			DigitalSignatureConfigurationUtil.getDigitalSignatureConfiguration(
-				_themeDisplay.getCompanyId(), _themeDisplay.getSiteGroupId());
 		boolean enableOnBulk = _isEnableOnBulk();
 		boolean stagedActions = _isStagedActions();
 		User user = _themeDisplay.getUser();
 
 		return DropdownItemListBuilder.add(
-			() -> digitalSignatureConfiguration.enabled() && stagedActions,
+			() -> _isDigitalSignatureEnabled() && stagedActions,
 			dropdownItem -> {
 				dropdownItem.putData("action", "collectDigitalSignature");
 				dropdownItem.setIcon("signature");
@@ -343,6 +340,24 @@ public class DLAdminManagementToolbarDisplayContext
 					_getFilterNavigationDropdownItems());
 				dropdownGroupItem.setLabel(
 					LanguageUtil.get(_httpServletRequest, "filter-by"));
+			}
+		).addGroup(
+			() -> _isDigitalSignatureEnabled(),
+			dropdownGroupItem -> {
+				dropdownGroupItem.setDropdownItems(
+					_getSignatureRecipientStatusFilterDropdownItems());
+				dropdownGroupItem.setLabel(
+					LanguageUtil.get(_httpServletRequest, "signature"));
+			}
+		).addGroup(
+			() -> ArrayUtil.contains(
+				_dlPortletInstanceSettingsHelper.getEntryColumns(),
+				"signature-status"),
+			dropdownGroupItem -> {
+				dropdownGroupItem.setDropdownItems(
+					_getSignatureStatusFilterDropdownItems());
+				dropdownGroupItem.setLabel(
+					LanguageUtil.get(_httpServletRequest, "signature-status"));
 			}
 		).build();
 	}
@@ -558,6 +573,71 @@ public class DLAdminManagementToolbarDisplayContext
 		}
 	}
 
+	private void _addSignatureRecipientStatusFilterLabelItems(
+		LabelItemListBuilder.LabelItemListWrapper labelItemListWrapper) {
+
+		String[] signatureRecipientStatuses =
+			_dlAdminDisplayContext.getSignatureRecipientStatuses();
+
+		if (ArrayUtil.isEmpty(signatureRecipientStatuses)) {
+			return;
+		}
+
+		for (String signatureRecipientStatus : signatureRecipientStatuses) {
+			labelItemListWrapper.add(
+				labelItem -> {
+					labelItem.putData(
+						"removeLabelURL",
+						_getRemoveLabelURL(
+							"signatureRecipientStatus",
+							() -> ArrayUtil.remove(
+								signatureRecipientStatuses,
+								signatureRecipientStatus)));
+					labelItem.setCloseable(true);
+
+					String label = signatureRecipientStatus;
+
+					if (signatureRecipientStatus.equals("signature-required")) {
+						label = "required";
+					}
+
+					labelItem.setLabel(
+						_getLabel(
+							"signature",
+							LanguageUtil.get(_httpServletRequest, label)));
+				});
+		}
+	}
+
+	private void _addSignatureStatusFilterLabelItems(
+		LabelItemListBuilder.LabelItemListWrapper labelItemListWrapper) {
+
+		String[] signatureStatuses =
+			_dlAdminDisplayContext.getSignatureStatuses();
+
+		if (ArrayUtil.isEmpty(signatureStatuses)) {
+			return;
+		}
+
+		for (String signatureStatus : signatureStatuses) {
+			labelItemListWrapper.add(
+				labelItem -> {
+					labelItem.putData(
+						"removeLabelURL",
+						_getRemoveLabelURL(
+							"signatureStatus",
+							() -> ArrayUtil.remove(
+								signatureStatuses, signatureStatus)));
+					labelItem.setCloseable(true);
+					labelItem.setLabel(
+						_getLabel(
+							"signature-status",
+							LanguageUtil.get(
+								_httpServletRequest, signatureStatus)));
+				});
+		}
+	}
+
 	private long[] _getAssetCategoryIds() {
 		return _dlAdminDisplayContext.getAssetCategoryIds();
 	}
@@ -699,6 +779,10 @@ public class DLAdminManagementToolbarDisplayContext
 		_addAssetCategoriesFilterLabelItems(labelItemListWrapper);
 
 		_addExtensionFilterLabelItems(labelItemListWrapper);
+
+		_addSignatureRecipientStatusFilterLabelItems(labelItemListWrapper);
+
+		_addSignatureStatusFilterLabelItems(labelItemListWrapper);
 
 		_addAssetTagsFilterLabelItems(labelItemListWrapper);
 
@@ -1008,6 +1092,107 @@ public class DLAdminManagementToolbarDisplayContext
 		).buildString();
 	}
 
+	private List<DropdownItem>
+		_getSignatureRecipientStatusFilterDropdownItems() {
+
+		String[] signatureRecipientStatuses =
+			_dlAdminDisplayContext.getSignatureRecipientStatuses();
+
+		DropdownItemListBuilder.DropdownItemListWrapper
+			dropdownItemListWrapper =
+				new DropdownItemListBuilder.DropdownItemListWrapper();
+
+		for (String signatureRecipientStatus : _SIGNATURE_RECIPIENT_STATUSES) {
+			boolean active = ArrayUtil.contains(
+				signatureRecipientStatuses, signatureRecipientStatus);
+
+			String[] newSignatureRecipientStatuses = null;
+
+			if (active) {
+				newSignatureRecipientStatuses = ArrayUtil.remove(
+					signatureRecipientStatuses, signatureRecipientStatus);
+			}
+			else {
+				newSignatureRecipientStatuses = ArrayUtil.append(
+					signatureRecipientStatuses, signatureRecipientStatus);
+			}
+
+			String[] hrefSignatureRecipientStatuses =
+				newSignatureRecipientStatuses;
+
+			dropdownItemListWrapper.add(
+				dropdownItem -> {
+					dropdownItem.setActive(active);
+					dropdownItem.setHref(
+						PortletURLBuilder.create(
+							PortletURLUtil.clone(
+								_currentURLObj, _liferayPortletResponse)
+						).setMVCRenderCommandName(
+							"/document_library/view"
+						).setParameter(
+							"signatureRecipientStatus",
+							hrefSignatureRecipientStatuses
+						).buildPortletURL());
+
+					String label = signatureRecipientStatus;
+
+					if (signatureRecipientStatus.equals("signature-required")) {
+						label = "required";
+					}
+
+					dropdownItem.setLabel(
+						LanguageUtil.get(_httpServletRequest, label));
+				});
+		}
+
+		return dropdownItemListWrapper.build();
+	}
+
+	private List<DropdownItem> _getSignatureStatusFilterDropdownItems() {
+		String[] signatureStatuses =
+			_dlAdminDisplayContext.getSignatureStatuses();
+
+		DropdownItemListBuilder.DropdownItemListWrapper
+			dropdownItemListWrapper =
+				new DropdownItemListBuilder.DropdownItemListWrapper();
+
+		for (String signatureStatus : _SIGNATURE_STATUSES) {
+			boolean active = ArrayUtil.contains(
+				signatureStatuses, signatureStatus);
+
+			String[] newSignatureStatuses = null;
+
+			if (active) {
+				newSignatureStatuses = ArrayUtil.remove(
+					signatureStatuses, signatureStatus);
+			}
+			else {
+				newSignatureStatuses = ArrayUtil.append(
+					signatureStatuses, signatureStatus);
+			}
+
+			String[] hrefSignatureStatuses = newSignatureStatuses;
+
+			dropdownItemListWrapper.add(
+				dropdownItem -> {
+					dropdownItem.setActive(active);
+					dropdownItem.setHref(
+						PortletURLBuilder.create(
+							PortletURLUtil.clone(
+								_currentURLObj, _liferayPortletResponse)
+						).setMVCRenderCommandName(
+							"/document_library/view"
+						).setParameter(
+							"signatureStatus", hrefSignatureStatuses
+						).buildPortletURL());
+					dropdownItem.setLabel(
+						LanguageUtil.get(_httpServletRequest, signatureStatus));
+				});
+		}
+
+		return dropdownItemListWrapper.build();
+	}
+
 	private boolean _hasValidAssetVocabularies() {
 		if (_hasValidAssetVocabularies != null) {
 			return _hasValidAssetVocabularies;
@@ -1047,6 +1232,24 @@ public class DLAdminManagementToolbarDisplayContext
 			folderId, fileEntryTypeId);
 	}
 
+	private boolean _isDigitalSignatureEnabled() {
+		DigitalSignatureConfiguration digitalSignatureConfiguration =
+			DigitalSignatureConfigurationUtil.getDigitalSignatureConfiguration(
+				_themeDisplay.getCompanyId(), _themeDisplay.getSiteGroupId());
+
+		if (digitalSignatureConfiguration == null) {
+			return false;
+		}
+
+		if (digitalSignatureConfiguration.enabled() &&
+			digitalSignatureConfiguration.enableEmbeddedView()) {
+
+			return true;
+		}
+
+		return false;
+	}
+
 	private boolean _isEnableOnBulk() {
 		long folderId = ParamUtil.getLong(_httpServletRequest, "folderId");
 
@@ -1072,6 +1275,14 @@ public class DLAdminManagementToolbarDisplayContext
 
 		return false;
 	}
+
+	private static final String[] _SIGNATURE_RECIPIENT_STATUSES = {
+		"signature-required", "signed"
+	};
+
+	private static final String[] _SIGNATURE_STATUSES = {
+		"completed", "declined", "expired", "sent", "voided"
+	};
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		DLAdminManagementToolbarDisplayContext.class.getName());

@@ -9,6 +9,8 @@ import com.liferay.digital.signature.configuration.DigitalSignatureConfiguration
 import com.liferay.digital.signature.configuration.DigitalSignatureConfigurationUtil;
 import com.liferay.digital.signature.constants.DigitalSignatureConstants;
 import com.liferay.digital.signature.constants.DigitalSignaturePortletKeys;
+import com.liferay.digital.signature.model.DSRequest;
+import com.liferay.digital.signature.request.DSRequestManager;
 import com.liferay.document.library.constants.DLPortletKeys;
 import com.liferay.document.library.display.context.DLUIItemKeys;
 import com.liferay.document.library.kernel.document.conversion.DocumentConversionUtil;
@@ -81,6 +83,7 @@ import com.liferay.taglib.security.PermissionsURLTag;
 import jakarta.portlet.PortletRequest;
 import jakarta.portlet.PortletResponse;
 import jakarta.portlet.PortletURL;
+import jakarta.portlet.WindowState;
 import jakarta.portlet.WindowStateException;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -204,12 +207,14 @@ public class UIItemsBuilder {
 						_httpServletRequest);
 
 				return PortletURLBuilder.create(
-					requestBackedPortletURLFactory.createActionURL(
+					requestBackedPortletURLFactory.createRenderURL(
 						DigitalSignaturePortletKeys.COLLECT_DIGITAL_SIGNATURE)
 				).setBackURL(
 					_getCurrentURL()
 				).setParameter(
 					"fileEntryId", _fileEntry.getFileEntryId()
+				).setWindowState(
+					WindowState.MAXIMIZED
 				).buildString();
 			}
 		).setKey(
@@ -730,6 +735,7 @@ public class UIItemsBuilder {
 				_themeDisplay.getCompanyId(), _themeDisplay.getSiteGroupId());
 
 		if (!digitalSignatureConfiguration.enabled() ||
+			!digitalSignatureConfiguration.enableEmbeddedView() ||
 			!ArrayUtil.contains(
 				DigitalSignatureConstants.ALLOWED_FILE_EXTENSIONS,
 				_fileEntry.getExtension())) {
@@ -737,7 +743,22 @@ public class UIItemsBuilder {
 			return false;
 		}
 
-		return true;
+		DSRequestManager dsRequestManager =
+			(DSRequestManager)_httpServletRequest.getAttribute(
+				DSRequestManager.class.getName());
+
+		if (dsRequestManager == null) {
+			return true;
+		}
+
+		DSRequest dsRequest = dsRequestManager.fetchDSRequest(
+			_themeDisplay.getCompanyId(), _fileEntry.getFileEntryId());
+
+		if (dsRequest == null) {
+			return true;
+		}
+
+		return Validator.isNull(dsRequest.getStatus());
 	}
 
 	public boolean isCompareToActionAvailable() {

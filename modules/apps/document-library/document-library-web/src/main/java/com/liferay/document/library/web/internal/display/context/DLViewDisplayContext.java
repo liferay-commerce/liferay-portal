@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ClassNameLocalServiceUtil;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.servlet.BrowserSnifferUtil;
@@ -278,6 +279,10 @@ public class DLViewDisplayContext {
 		return resourceURL.toString();
 	}
 
+	public int getSignatureRequiredCount() {
+		return _dlAdminDisplayContext.getSignatureRequiredCount();
+	}
+
 	public String getUploadURL() throws PortalException {
 		if (!isUploadable()) {
 			return StringPool.BLANK;
@@ -384,6 +389,20 @@ public class DLViewDisplayContext {
 		}
 
 		return false;
+	}
+
+	public boolean isSignatureRequiredNoticeVisible() {
+		if (getSignatureRequiredCount() <= 0) {
+			return false;
+		}
+
+		if (!_dlAdminDisplayContext.hasFilterParameters()) {
+			return true;
+		}
+
+		return ArrayUtil.contains(
+			_dlAdminDisplayContext.getSignatureRecipientStatuses(),
+			"signature-required");
 	}
 
 	public boolean isUploadable() throws PortalException {

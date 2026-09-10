@@ -17,7 +17,24 @@ public class DigitalSignatureConstants {
 		"xlsm", "xlsx", "xps"
 	};
 
+	public static final String DS_REQUESTS_ATTRIBUTE_NAME =
+		"com.liferay.digital.signature.request.DSRequests";
+
 	public static final String[] ENVIRONMENTS = {"production", "sandbox"};
+
+	public static final String[] REQUEST_RECIPIENT_STATUSES = {
+		"completed", "created", "declined", "sent", "signed"
+	};
+
+	public static final String[] REQUEST_RECIPIENT_STATUSES_PENDING = {"sent"};
+
+	public static final String[] REQUEST_STATUSES = {
+		"completed", "created", "declined", "expired", "sent", "voided"
+	};
+
+	public static final String[] REQUEST_STATUSES_TERMINAL = {
+		"completed", "declined", "expired", "voided"
+	};
 
 	public static final String[] SITE_SETTINGS_STRATEGIES = {
 		"always-inherit", "always-override", "inherit-or-override"
