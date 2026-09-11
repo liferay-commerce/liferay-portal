@@ -16,7 +16,10 @@ import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUti
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.test.randomizerbumpers.NumericStringRandomizerBumper;
+import com.liferay.portal.kernel.test.randomizerbumpers.SiteFriendlyURLKeywordRandomizerBumper;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.site.initializer.SiteInitializer;
@@ -81,6 +84,12 @@ public class DSRTestUtil {
 		}
 
 		return group;
+	}
+
+	public static String randomRoomName() {
+		return RandomTestUtil.randomString(
+			NumericStringRandomizerBumper.INSTANCE,
+			SiteFriendlyURLKeywordRandomizerBumper.INSTANCE);
 	}
 
 	private static final String _BUNDLE_SYMBOLIC_NAME =
