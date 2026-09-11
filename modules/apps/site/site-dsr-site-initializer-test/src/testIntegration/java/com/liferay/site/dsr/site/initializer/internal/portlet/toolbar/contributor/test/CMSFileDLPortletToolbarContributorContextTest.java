@@ -117,7 +117,7 @@ public class CMSFileDLPortletToolbarContributorContextTest {
 			0, TestPropsValues.getUserId(),
 			_objectDefinition.getObjectDefinitionId(), 0, null,
 			HashMapBuilder.<String, Serializable>put(
-				"name", RandomTestUtil.randomString()
+				"name", DSRTestUtil.randomRoomName()
 			).put(
 				"r_accountToDSRRooms_accountEntryId",
 				_accountEntry.getAccountEntryId()

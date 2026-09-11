@@ -146,8 +146,7 @@ public class ObjectEntryModelListenerTest {
 
 	@Test
 	public void testOnAfterRemove() throws Exception {
-		ObjectEntry objectEntry = _addObjectEntry(
-			"A" + RandomTestUtil.randomString());
+		ObjectEntry objectEntry = _addObjectEntry(DSRTestUtil.randomRoomName());
 
 		Assert.assertNotNull(
 			_groupLocalService.fetchGroup(
@@ -178,7 +177,7 @@ public class ObjectEntryModelListenerTest {
 					"expirationDate",
 					new Date(System.currentTimeMillis() + Time.DAY)
 				).put(
-					"name", "A" + RandomTestUtil.randomString()
+					"name", DSRTestUtil.randomRoomName()
 				).put(
 					"r_accountToDSRRooms_accountEntryId",
 					_accountEntry.getAccountEntryId()
@@ -198,8 +197,7 @@ public class ObjectEntryModelListenerTest {
 	@Test
 	@TestInfo("LPD-102253")
 	public void testOnBeforeUpdate() throws Exception {
-		ObjectEntry objectEntry = _addObjectEntry(
-			"A" + RandomTestUtil.randomString());
+		ObjectEntry objectEntry = _addObjectEntry(DSRTestUtil.randomRoomName());
 
 		try {
 			_objectEntryLocalService.partialUpdateObjectEntry(
@@ -289,8 +287,7 @@ public class ObjectEntryModelListenerTest {
 	}
 
 	private void _testOnAfterCreate() throws Exception {
-		String name = StringUtil.toLowerCase(
-			"A" + RandomTestUtil.randomString());
+		String name = StringUtil.toLowerCase(DSRTestUtil.randomRoomName());
 
 		ObjectEntry objectEntry = _addObjectEntry(name);
 
@@ -321,7 +318,7 @@ public class ObjectEntryModelListenerTest {
 		Assert.assertEquals(group.getGroupId(), values.get("siteId"));
 
 		String friendlyURL = StringUtil.toLowerCase(
-			"A" + RandomTestUtil.randomString());
+			DSRTestUtil.randomRoomName());
 
 		objectEntry = _objectEntryLocalService.addObjectEntry(
 			0, TestPropsValues.getUserId(),
@@ -370,7 +367,7 @@ public class ObjectEntryModelListenerTest {
 
 	private void _testOnAfterCreateWithDSRRoomThreadLocal() throws Exception {
 		ObjectEntry sourceObjectEntry = _addObjectEntry(
-			StringUtil.toLowerCase("A" + RandomTestUtil.randomString()));
+			StringUtil.toLowerCase(DSRTestUtil.randomRoomName()));
 
 		Group sourceGroup = _groupLocalService.fetchGroup(
 			TestPropsValues.getCompanyId(),
@@ -397,7 +394,7 @@ public class ObjectEntryModelListenerTest {
 
 		try {
 			objectEntry = _addObjectEntry(
-				StringUtil.toLowerCase("A" + RandomTestUtil.randomString()));
+				StringUtil.toLowerCase(DSRTestUtil.randomRoomName()));
 		}
 		finally {
 			DSRRoomThreadLocal.setFileEntryIds(new long[0]);
@@ -452,8 +449,7 @@ public class ObjectEntryModelListenerTest {
 
 		_userLocalService.addRoleUser(dsrSellerRole.getRoleId(), user);
 
-		String name = StringUtil.toLowerCase(
-			"B" + RandomTestUtil.randomString());
+		String name = StringUtil.toLowerCase(DSRTestUtil.randomRoomName());
 
 		ObjectEntry objectEntry;
 

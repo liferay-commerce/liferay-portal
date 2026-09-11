@@ -90,7 +90,7 @@ public class InvitedMemberResourceTest
 			0, user1.getUserId(), objectDefinition.getObjectDefinitionId(), 0,
 			null,
 			HashMapBuilder.<String, Serializable>put(
-				"name", RandomTestUtil.randomString()
+				"name", DSRTestUtil.randomRoomName()
 			).put(
 				"r_accountToDSRRooms_accountEntryId",
 				() -> {

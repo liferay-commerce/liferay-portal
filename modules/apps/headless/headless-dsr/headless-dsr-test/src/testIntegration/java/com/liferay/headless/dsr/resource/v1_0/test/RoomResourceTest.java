@@ -86,8 +86,7 @@ public class RoomResourceTest extends BaseRoomResourceTestCase {
 			0, TestPropsValues.getUserId(),
 			_objectDefinition.getObjectDefinitionId(), 0, null,
 			HashMapBuilder.<String, Serializable>put(
-				"name",
-				StringUtil.toLowerCase("A" + RandomTestUtil.randomString())
+				"name", StringUtil.toLowerCase(DSRTestUtil.randomRoomName())
 			).put(
 				"r_accountToDSRRooms_accountEntryId",
 				_accountEntry.getAccountEntryId()
@@ -114,8 +113,7 @@ public class RoomResourceTest extends BaseRoomResourceTestCase {
 				{
 					setFileEntryIds(new Long[] {dlFileEntry1.getFileEntryId()});
 					setName(
-						StringUtil.toLowerCase(
-							"A" + RandomTestUtil.randomString()));
+						StringUtil.toLowerCase(DSRTestUtil.randomRoomName()));
 				}
 			});
 
@@ -167,7 +165,7 @@ public class RoomResourceTest extends BaseRoomResourceTestCase {
 					{
 						setName(
 							StringUtil.toLowerCase(
-								"A" + RandomTestUtil.randomString()));
+								DSRTestUtil.randomRoomName()));
 					}
 				});
 
@@ -190,8 +188,7 @@ public class RoomResourceTest extends BaseRoomResourceTestCase {
 			new Room() {
 				{
 					setName(
-						StringUtil.toLowerCase(
-							"A" + RandomTestUtil.randomString()));
+						StringUtil.toLowerCase(DSRTestUtil.randomRoomName()));
 				}
 			});
 
