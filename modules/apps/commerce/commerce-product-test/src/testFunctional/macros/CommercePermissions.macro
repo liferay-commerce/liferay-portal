@@ -2,16 +2,16 @@ definition {
 
 	@summary = "Default summary"
 	macro assertSingleRolePermissionsPG(roleTitle = null, permissions = null) {
-		SelectFrameTop(value1 = "relative=top");
-
-		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
-
 		var key_roleTitle = StringUtil.replace(${roleTitle}, " ", "-");
 
 		var key_roleTitle = StringUtil.lowerCase(${key_roleTitle});
 
+		CommercePermissions.searchRolePG(roleTitle = ${roleTitle});
+
 		for (var permission : list ${permissions}) {
 			var permission = StringUtil.upperCase(${permission});
+
+			WaitForElementPresent(locator1 = "Permissions#INLINE_PERMISSIONS_${permission}_CHECKBOX");
 
 			AssertChecked.assertCheckedNotVisible(locator1 = "Permissions#INLINE_PERMISSIONS_${permission}_CHECKBOX");
 		}
@@ -150,28 +150,26 @@ definition {
 
 	@summary = "Default summary"
 	macro definePermissionsPG(permissionDefinitionKey = null, roleTitles = null) {
-		SelectFrameTop(value1 = "relative=top");
-
-		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
-
 		for (var roleTitle : list ${roleTitles}) {
 			var key_roleTitle = StringUtil.replace(${roleTitle}, " ", "-");
 
 			var key_roleTitle = StringUtil.lowerCase(${key_roleTitle});
+
+			CommercePermissions.searchRolePG(roleTitle = ${roleTitle});
+
+			WaitForElementPresent(locator1 = "Permissions#${permissionDefinitionKey}");
 
 			Check.checkNotVisible(locator1 = "Permissions#${permissionDefinitionKey}");
-		}
 
-		Button.clickSave();
+			Button.clickSave();
 
-		AssertTextEquals.assertPartialText(
-			locator1 = "Message#SUCCESS",
-			value1 = "Your request completed successfully.");
+			AssertTextEquals.assertPartialText(
+				locator1 = "Message#SUCCESS",
+				value1 = "Your request completed successfully.");
 
-		for (var roleTitle : list ${roleTitles}) {
-			var key_roleTitle = StringUtil.replace(${roleTitle}, " ", "-");
+			CommercePermissions.searchRolePG(roleTitle = ${roleTitle});
 
-			var key_roleTitle = StringUtil.lowerCase(${key_roleTitle});
+			WaitForElementPresent(locator1 = "Permissions#${permissionDefinitionKey}");
 
 			AssertChecked.assertCheckedNotVisible(locator1 = "Permissions#${permissionDefinitionKey}");
 		}
@@ -221,16 +219,16 @@ definition {
 
 	@summary = "Default summary"
 	macro defineSingleRolePermissionsPG(roleTitle = null, permissions = null) {
-		SelectFrameTop(value1 = "relative=top");
-
-		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
-
 		var key_roleTitle = StringUtil.replace(${roleTitle}, " ", "-");
 
 		var key_roleTitle = StringUtil.lowerCase(${key_roleTitle});
 
+		CommercePermissions.searchRolePG(roleTitle = ${roleTitle});
+
 		for (var permission : list ${permissions}) {
 			var permission = StringUtil.upperCase(${permission});
+
+			WaitForElementPresent(locator1 = "Permissions#INLINE_PERMISSIONS_${permission}_CHECKBOX");
 
 			Check.checkNotVisible(locator1 = "Permissions#INLINE_PERMISSIONS_${permission}_CHECKBOX");
 		}
@@ -241,11 +239,9 @@ definition {
 			locator1 = "Message#SUCCESS",
 			value1 = "Your request completed successfully.");
 
-		for (var permission : list ${permissions}) {
-			var permission = StringUtil.upperCase(${permission});
-
-			AssertChecked.assertCheckedNotVisible(locator1 = "Permissions#INLINE_PERMISSIONS_${permission}_CHECKBOX");
-		}
+		CommercePermissions.assertSingleRolePermissionsPG(
+			permissions = ${permissions},
+			roleTitle = ${roleTitle});
 	}
 
 	@summary = "Default summary"
@@ -271,28 +267,26 @@ definition {
 
 	@summary = "Default summary"
 	macro removePermissionsPG(permissionDefinitionKey = null, roleTitles = null) {
-		SelectFrameTop(value1 = "relative=top");
-
-		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
-
 		for (var roleTitle : list ${roleTitles}) {
 			var key_roleTitle = StringUtil.replace(${roleTitle}, " ", "-");
 
 			var key_roleTitle = StringUtil.lowerCase(${key_roleTitle});
+
+			CommercePermissions.searchRolePG(roleTitle = ${roleTitle});
+
+			WaitForElementPresent(locator1 = "Permissions#${permissionDefinitionKey}");
 
 			Uncheck.uncheckNotVisible(locator1 = "Permissions#${permissionDefinitionKey}");
-		}
 
-		Button.clickSave();
+			Button.clickSave();
 
-		AssertTextEquals.assertPartialText(
-			locator1 = "Message#SUCCESS",
-			value1 = "Your request completed successfully.");
+			AssertTextEquals.assertPartialText(
+				locator1 = "Message#SUCCESS",
+				value1 = "Your request completed successfully.");
 
-		for (var roleTitle : list ${roleTitles}) {
-			var key_roleTitle = StringUtil.replace(${roleTitle}, " ", "-");
+			CommercePermissions.searchRolePG(roleTitle = ${roleTitle});
 
-			var key_roleTitle = StringUtil.lowerCase(${key_roleTitle});
+			WaitForElementPresent(locator1 = "Permissions#${permissionDefinitionKey}");
 
 			AssertNotChecked.assertNotCheckedNotVisible(locator1 = "Permissions#${permissionDefinitionKey}");
 		}
@@ -315,6 +309,39 @@ definition {
 			locator1 = "CommercePermissions#REMOVE_PERMISSION");
 
 		Click(locator1 = "CommerceNavigation#BACK");
+	}
+
+	@summary = "Default summary"
+	macro searchRolePG(roleTitle = null) {
+		SelectFrameTop(value1 = "relative=top");
+
+		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
+
+		if (IsElementPresent(locator1 = "ManagementBar#CLEAR_FILTER")) {
+			Click(locator1 = "ManagementBar#CLEAR_FILTER");
+
+			SelectFrameTop(value1 = "relative=top");
+
+			SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
+
+			WaitForElementNotPresent(locator1 = "ManagementBar#CLEAR_FILTER");
+		}
+
+		WaitForElementPresent(locator1 = "TextInput#SEARCH");
+
+		Type(
+			locator1 = "TextInput#SEARCH",
+			value1 = ${roleTitle});
+
+		KeyPress(
+			locator1 = "TextInput#SEARCH",
+			value1 = "\RETURN");
+
+		SelectFrameTop(value1 = "relative=top");
+
+		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
+
+		WaitForElementPresent(locator1 = "ManagementBar#CLEAR_FILTER");
 	}
 
 }
