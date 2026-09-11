@@ -89,7 +89,7 @@ public class BackgroundTaskStatusMessageListenerTest {
 				0, TestPropsValues.getUserId(),
 				_objectDefinition.getObjectDefinitionId(), 0, null,
 				HashMapBuilder.<String, Serializable>put(
-					"name", "A" + RandomTestUtil.randomString()
+					"name", DSRTestUtil.randomRoomName()
 				).put(
 					"r_accountToDSRRooms_accountEntryId",
 					_accountEntry.getAccountEntryId()

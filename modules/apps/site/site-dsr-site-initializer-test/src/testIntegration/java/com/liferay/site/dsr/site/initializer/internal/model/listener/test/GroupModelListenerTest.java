@@ -72,8 +72,7 @@ public class GroupModelListenerTest {
 
 	@Test
 	public void testOnAfterUpdate() throws Exception {
-		String name = StringUtil.toLowerCase(
-			"A" + RandomTestUtil.randomString());
+		String name = StringUtil.toLowerCase(DSRTestUtil.randomRoomName());
 
 		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
 			0, TestPropsValues.getUserId(),
@@ -94,7 +93,7 @@ public class GroupModelListenerTest {
 
 		Assert.assertEquals(name, group.getName(LocaleUtil.getDefault()));
 
-		name = StringUtil.toLowerCase("B" + RandomTestUtil.randomString());
+		name = StringUtil.toLowerCase(DSRTestUtil.randomRoomName());
 
 		_groupLocalService.updateGroup(
 			group.getGroupId(), group.getParentGroupId(),
