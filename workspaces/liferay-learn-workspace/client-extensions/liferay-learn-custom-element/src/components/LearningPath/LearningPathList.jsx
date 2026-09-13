@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import "../../index.scss";
 import ClayLayout from "@clayui/layout";
 import { useEffect, useState } from "react";
 import { getLearningPaths } from "../../services/learning-path";
 import SectionCard from "../Common/SectionCard";
+
+import "../../index.scss";
 
 const LearningPathsList = () => {
     const [learningPaths, setLearningPaths] = useState(null);

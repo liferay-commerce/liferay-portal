@@ -1,0 +1,74 @@
+.sv-item {
+	.sv-badge {
+		background-color: #e6ebf5;
+		border-radius: 4px;
+		color: #1c3667;
+		font-size: 11px;
+		line-height: 1.4;
+		padding: 4px 8px;
+	}
+
+	.sv-badge-list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+
+	.sv-breadcrumbs {
+		font-size: var(--font-size-sm);
+
+		& a {
+			color: var(--color-neutral-0);
+		}
+	}
+
+	.sv-item-details {
+		background-color: var(--color-neutral-1);
+		border-radius: var(--border-radius-lg);
+		padding: var(--spacer-4);
+	}
+
+	.sv-item-header {
+		background: linear-gradient(
+			90deg,
+			#00256c 20%,
+			#0038a3 40%,
+			#0b5fff 60%,
+			#00a4fa 80%
+		);
+		border-radius: var(--border-radius-lg);
+		color: var(--color-neutral-0);
+		padding: var(--spacer-4);
+		position: relative;
+
+		.sv-gradient {
+			right: 0;
+		}
+
+		.sv-severity {
+			border-radius: 4px;
+			color: #54555f;
+			margin-left: var(--spacer-4);
+			padding: var(--spacer-1) var(--spacer-2);
+		}
+
+		.sv-severity-critical {
+			background-color: #fbe3e3;
+			color: #830c0c;
+		}
+
+		.sv-severity-high {
+			background-color: #f7eae0;
+			color: #6f3000;
+		}
+
+		.sv-severity-low {
+			background-color: #e1e1e4;
+		}
+
+		.sv-severity-medium {
+			background-color: #e6ebf5;
+			color: #1c3667;
+		}
+	}
+}

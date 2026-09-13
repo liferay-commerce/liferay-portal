@@ -1,3 +1,5 @@
-body {
-	background: white;
+:root {
+	--color-brand-primary: var(--color-action-primary-default, #0b5fff);
+	--container-max-xl: 1600px;
+	font-size: 13px;
 }
