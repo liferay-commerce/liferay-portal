@@ -19,7 +19,6 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -37,17 +36,18 @@ public class DepotUserGroupGroupRoleServiceWrapperTest {
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
 
-	@Before
-	public void setUp() {
-		_depotUserGroupGroupRoleServiceWrapper =
-			new DepotUserGroupGroupRoleServiceWrapper();
-
-		_depotUserGroupGroupRoleServiceWrapper.setWrappedService(
-			Mockito.mock(UserGroupGroupRoleService.class));
-	}
-
 	@Test
 	public void testAddUserGroupGroupRoles() throws Exception {
+		DepotUserGroupGroupRoleServiceWrapper
+			depotUserGroupGroupRoleServiceWrapper =
+				new DepotUserGroupGroupRoleServiceWrapper();
+
+		UserGroupGroupRoleService userGroupGroupRoleService = Mockito.mock(
+			UserGroupGroupRoleService.class);
+
+		depotUserGroupGroupRoleServiceWrapper.setWrappedService(
+			userGroupGroupRoleService);
+
 		try (MockedStatic<DepotEntryLocalServiceUtil>
 				depotEntryLocalServiceUtilMockedStatic = Mockito.mockStatic(
 					DepotEntryLocalServiceUtil.class);
@@ -58,13 +58,6 @@ public class DepotUserGroupGroupRoleServiceWrapperTest {
 				roleLocalServiceUtilMockedStatic = Mockito.mockStatic(
 					RoleLocalServiceUtil.class)) {
 
-			featureFlagManagerUtilMockedStatic.when(
-				() -> FeatureFlagManagerUtil.isEnabled(
-					Mockito.anyLong(), Mockito.eq("LPD-96750"))
-			).thenReturn(
-				true
-			);
-
 			DepotEntry depotEntry = Mockito.mock(DepotEntry.class);
 
 			Mockito.when(
@@ -74,65 +67,93 @@ public class DepotUserGroupGroupRoleServiceWrapperTest {
 			);
 
 			depotEntryLocalServiceUtilMockedStatic.when(
-				() -> DepotEntryLocalServiceUtil.fetchGroupDepotEntry(
-					_PROJECT_GROUP_ID)
+				() -> DepotEntryLocalServiceUtil.fetchGroupDepotEntry(_GROUP_ID)
 			).thenReturn(
 				depotEntry
 			);
+
+			_mockFeatureFlag(featureFlagManagerUtilMockedStatic, false);
 
 			long designLibraryRoleId = _mockRole(
 				roleLocalServiceUtilMockedStatic,
 				DepotRolesConstants.SUBTYPE_DESIGN_LIBRARY);
 
-			_assertAddUserGroupGroupRoles(designLibraryRoleId, false);
+			long[] designLibraryRoleIds = {designLibraryRoleId};
+
+			depotUserGroupGroupRoleServiceWrapper.addUserGroupGroupRoles(
+				_USER_GROUP_ID, _GROUP_ID, designLibraryRoleIds);
+
+			Mockito.verify(
+				userGroupGroupRoleService
+			).addUserGroupGroupRoles(
+				_USER_GROUP_ID, _GROUP_ID, designLibraryRoleIds
+			);
+
+			long[] userGroupIds = {_USER_GROUP_ID};
+
+			depotUserGroupGroupRoleServiceWrapper.addUserGroupGroupRoles(
+				userGroupIds, _GROUP_ID, designLibraryRoleId);
+
+			Mockito.verify(
+				userGroupGroupRoleService
+			).addUserGroupGroupRoles(
+				userGroupIds, _GROUP_ID, designLibraryRoleId
+			);
+
+			_mockFeatureFlag(featureFlagManagerUtilMockedStatic, true);
 
 			long projectRoleId = _mockRole(
 				roleLocalServiceUtilMockedStatic,
 				DepotRolesConstants.SUBTYPE_PROJECT);
 
-			_assertAddUserGroupGroupRoles(projectRoleId, true);
+			long[] projectRoleIds = {projectRoleId};
 
-			featureFlagManagerUtilMockedStatic.when(
-				() -> FeatureFlagManagerUtil.isEnabled(
-					Mockito.anyLong(), Mockito.eq("LPD-96750"))
-			).thenReturn(
-				false
+			depotUserGroupGroupRoleServiceWrapper.addUserGroupGroupRoles(
+				_USER_GROUP_ID, _GROUP_ID, projectRoleIds);
+
+			Mockito.verify(
+				userGroupGroupRoleService
+			).addUserGroupGroupRoles(
+				_USER_GROUP_ID, _GROUP_ID, projectRoleIds
 			);
 
-			_assertAddUserGroupGroupRoles(designLibraryRoleId, true);
+			depotUserGroupGroupRoleServiceWrapper.addUserGroupGroupRoles(
+				userGroupIds, _GROUP_ID, projectRoleId);
+
+			Mockito.verify(
+				userGroupGroupRoleService
+			).addUserGroupGroupRoles(
+				userGroupIds, _GROUP_ID, projectRoleId
+			);
+
+			Mockito.clearInvocations(userGroupGroupRoleService);
+
+			Assert.assertThrows(
+				RoleSubtypeException.class,
+				() ->
+					depotUserGroupGroupRoleServiceWrapper.
+						addUserGroupGroupRoles(
+							_USER_GROUP_ID, _GROUP_ID, designLibraryRoleIds));
+			Assert.assertThrows(
+				RoleSubtypeException.class,
+				() ->
+					depotUserGroupGroupRoleServiceWrapper.
+						addUserGroupGroupRoles(
+							userGroupIds, _GROUP_ID, designLibraryRoleId));
+
+			Mockito.verifyNoInteractions(userGroupGroupRoleService);
 		}
 	}
 
-	private void _assertAddUserGroupGroupRoles(long roleId, boolean valid)
-		throws Exception {
+	private void _mockFeatureFlag(
+		MockedStatic<FeatureFlagManagerUtil> mockedStatic, boolean enabled) {
 
-		try {
-			_depotUserGroupGroupRoleServiceWrapper.addUserGroupGroupRoles(
-				_USER_GROUP_ID, _PROJECT_GROUP_ID, new long[] {roleId});
-
-			if (!valid) {
-				Assert.fail();
-			}
-		}
-		catch (RoleSubtypeException roleSubtypeException) {
-			if (valid) {
-				throw roleSubtypeException;
-			}
-		}
-
-		try {
-			_depotUserGroupGroupRoleServiceWrapper.addUserGroupGroupRoles(
-				new long[] {_USER_GROUP_ID}, _PROJECT_GROUP_ID, roleId);
-
-			if (!valid) {
-				Assert.fail();
-			}
-		}
-		catch (RoleSubtypeException roleSubtypeException) {
-			if (valid) {
-				throw roleSubtypeException;
-			}
-		}
+		mockedStatic.when(
+			() -> FeatureFlagManagerUtil.isEnabled(
+				Mockito.anyLong(), Mockito.eq("LPD-96750"))
+		).thenReturn(
+			enabled
+		);
 	}
 
 	private long _mockRole(
@@ -141,12 +162,6 @@ public class DepotUserGroupGroupRoleServiceWrapperTest {
 		long roleId = RandomTestUtil.randomLong();
 
 		Role role = Mockito.mock(Role.class);
-
-		Mockito.when(
-			role.getRoleId()
-		).thenReturn(
-			roleId
-		);
 
 		Mockito.when(
 			role.getSubtype()
@@ -169,11 +184,8 @@ public class DepotUserGroupGroupRoleServiceWrapperTest {
 		return roleId;
 	}
 
-	private static final long _PROJECT_GROUP_ID = RandomTestUtil.randomLong();
+	private static final long _GROUP_ID = RandomTestUtil.randomLong();
 
 	private static final long _USER_GROUP_ID = RandomTestUtil.randomLong();
-
-	private DepotUserGroupGroupRoleServiceWrapper
-		_depotUserGroupGroupRoleServiceWrapper;
 
 }
