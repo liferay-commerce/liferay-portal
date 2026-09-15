@@ -1454,7 +1454,11 @@ public class SitemapManagerTest {
 				_sitemapManager.getAssetTypeKeys();
 
 			for (Map.Entry<Long, String> entry : assetTypeKeys.entrySet()) {
-				if (entry.getKey() == _objectEntryClassNameId) {
+				String xml = _sitemapManager.getSitemap(
+					entry.getKey(), null, _group.getGroupId(), false,
+					_themeDisplay);
+
+				if (xml == null) {
 					continue;
 				}
 

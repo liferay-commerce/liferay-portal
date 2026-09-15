@@ -28,6 +28,7 @@ import com.liferay.commerce.product.constants.CPConstants;
 import com.liferay.commerce.product.constants.CommerceChannelConstants;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
+import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.model.CommerceChannelRel;
@@ -49,6 +50,8 @@ import com.liferay.commerce.tax.engine.fixed.service.CommerceTaxFixedRateLocalSe
 import com.liferay.commerce.tax.model.CommerceTaxMethod;
 import com.liferay.commerce.tax.service.CommerceTaxMethodLocalServiceUtil;
 import com.liferay.commerce.test.util.context.TestCommerceContext;
+import com.liferay.friendly.url.model.FriendlyURLEntry;
+import com.liferay.friendly.url.service.FriendlyURLEntryLocalServiceUtil;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.GroupConfigurationTemporarySwapper;
@@ -63,6 +66,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 
 import java.math.BigDecimal;
 
@@ -628,6 +632,17 @@ public class CommerceTestUtil {
 			commerceShippingFixedOption.getNameCurrentValue());
 
 		return CommerceOrderLocalServiceUtil.updateCommerceOrder(commerceOrder);
+	}
+
+	public static String getCPDefinitionURLTitle(CPDefinition cpDefinition)
+		throws Exception {
+
+		FriendlyURLEntry friendlyURLEntry =
+			FriendlyURLEntryLocalServiceUtil.getMainFriendlyURLEntry(
+				PortalUtil.getClassNameId(CProduct.class),
+				cpDefinition.getCProductId());
+
+		return friendlyURLEntry.getUrlTitle();
 	}
 
 	public static void runWithGuestCheckoutDisabledOnB2BChannel(
