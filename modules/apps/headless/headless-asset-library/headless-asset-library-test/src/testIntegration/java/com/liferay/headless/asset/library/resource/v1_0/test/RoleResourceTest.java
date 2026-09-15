@@ -45,6 +45,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -97,6 +98,9 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 		_testGetAssetLibraryRolesPageWithSubtype();
 	}
 
+	@FeatureFlags(
+		featureFlags = {@FeatureFlag("LPD-58677"), @FeatureFlag("LPD-96750")}
+	)
 	@Override
 	@Test
 	public void testPutAssetLibraryUserAccountRolesPage() throws Exception {
@@ -114,6 +118,7 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 		_testPutAssetLibraryUserAccountRolesPageWithAssignMembersPermissionAndAdministratorRole();
 		_testPutAssetLibraryUserAccountRolesPageWithAssignUserRolesPermission();
 		_testPutAssetLibraryUserAccountRolesPageWithAssignUserRolesPermissionAndWithoutRoleViewPermission();
+		_testPutAssetLibraryUserAccountRolesPageWithInvalidSubtype();
 	}
 
 	@Override
@@ -231,6 +236,24 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 		throws Exception {
 
 		return _userGroup.getExternalReferenceCode();
+	}
+
+	private void _assertProblemException(
+			String status, String title,
+			UnsafeRunnable<Exception> unsafeRunnable)
+		throws Exception {
+
+		try {
+			unsafeRunnable.run();
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals(status, problem.getStatus());
+			Assert.assertEquals(title, problem.getTitle());
+		}
 	}
 
 	private void _assertProblemStatus(
@@ -561,6 +584,46 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 					testDepotEntryGroup.getExternalReferenceCode(),
 					user.getExternalReferenceCode(),
 					_toRoles(assetLibraryContentReviewerServiceBuilderRole)));
+	}
+
+	private void _testPutAssetLibraryUserAccountRolesPageWithInvalidSubtype()
+		throws Exception {
+
+		_depotEntry = _depotEntryLocalService.addDepotEntry(
+			Collections.singletonMap(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+			null, DepotConstants.TYPE_SPACE,
+			new ServiceContext() {
+				{
+					setCompanyId(testCompany.getCompanyId());
+					setUserId(TestPropsValues.getUserId());
+				}
+			});
+
+		Group group = _depotEntry.getGroup();
+
+		User user = UserTestUtil.addUser(group.getGroupId());
+
+		roleResource.putAssetLibraryUserAccountRolesPage(
+			group.getExternalReferenceCode(), user.getExternalReferenceCode(),
+			_toRoles(
+				_getServiceBuilderRole(
+					DepotRolesConstants.ASSET_LIBRARY_MEMBER)));
+
+		com.liferay.portal.kernel.model.Role serviceBuilderRole =
+			_roleLocalService.addRole(
+				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+				null, 0, RandomTestUtil.randomString(), null, null,
+				RoleConstants.TYPE_DEPOT, DepotRolesConstants.SUBTYPE_PROJECT,
+				null);
+
+		_serviceBuilderRoles.add(serviceBuilderRole);
+
+		_assertProblemException(
+			"BAD_REQUEST", "Please enter a valid subtype.",
+			() -> roleResource.putAssetLibraryUserAccountRolesPage(
+				group.getExternalReferenceCode(),
+				user.getExternalReferenceCode(), _toRoles(serviceBuilderRole)));
 	}
 
 	private void _testPutRolesPage(
