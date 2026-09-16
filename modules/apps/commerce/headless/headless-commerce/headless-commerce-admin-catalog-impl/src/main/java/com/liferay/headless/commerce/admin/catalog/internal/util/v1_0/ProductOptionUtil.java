@@ -35,16 +35,18 @@ public class ProductOptionUtil {
 			long cpDefinitionId, ServiceContext serviceContext)
 		throws PortalException {
 
+		String optionExternalReferenceCode =
+			productOption.getOptionExternalReferenceCode();
+
 		CPOption cpOption = null;
 
-		long optionId = GetterUtil.getLong(productOption.getOptionId());
-
-		if (optionId > 0) {
-			cpOption = cpOptionService.getCPOption(optionId);
+		if (Validator.isNotNull(optionExternalReferenceCode)) {
+			cpOption = cpOptionService.getOrAddEmptyCPOption(
+				optionExternalReferenceCode);
 		}
 		else {
-			cpOption = cpOptionService.getOrAddEmptyCPOption(
-				productOption.getOptionExternalReferenceCode());
+			cpOption = cpOptionService.getCPOption(
+				GetterUtil.getLong(productOption.getOptionId()));
 		}
 
 		CPDefinitionOptionRel cpDefinitionOptionRel = null;
