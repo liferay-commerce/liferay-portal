@@ -662,6 +662,10 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 			}
 		}
 
+		if (shippingAddressId > 0) {
+			_commerceAddressService.getCommerceAddress(shippingAddressId);
+		}
+
 		String deliveryGroupName = GetterUtil.getString(
 			cartItem.getDeliveryGroupName());
 
@@ -1335,6 +1339,10 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 			}
 		}
 
+		if (billingAddressId > 0) {
+			_commerceAddressService.getCommerceAddress(billingAddressId);
+		}
+
 		long commerceShippingMethodId =
 			commerceOrder.getCommerceShippingMethodId();
 
@@ -1363,6 +1371,10 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 			else {
 				shippingAddressId = commerceAddress.getCommerceAddressId();
 			}
+		}
+
+		if (shippingAddressId > 0) {
+			_commerceAddressService.getCommerceAddress(shippingAddressId);
 		}
 
 		CommerceContext commerceContext = _commerceContextFactory.create(

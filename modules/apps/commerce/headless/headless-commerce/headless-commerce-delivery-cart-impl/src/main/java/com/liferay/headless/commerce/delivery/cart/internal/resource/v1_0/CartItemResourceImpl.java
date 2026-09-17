@@ -315,6 +315,10 @@ public class CartItemResourceImpl extends BaseCartItemResourceImpl {
 			}
 		}
 
+		if (shippingAddressId > 0) {
+			_commerceAddressService.getCommerceAddress(shippingAddressId);
+		}
+
 		String deliveryGroupName = GetterUtil.getString(
 			cartItem.getDeliveryGroupName());
 
@@ -487,6 +491,10 @@ public class CartItemResourceImpl extends BaseCartItemResourceImpl {
 			else {
 				shippingAddressId = commerceOrderItem.getShippingAddressId();
 			}
+		}
+
+		if (shippingAddressId > 0) {
+			_commerceAddressService.getCommerceAddress(shippingAddressId);
 		}
 
 		String deliveryGroupName = GetterUtil.getString(
