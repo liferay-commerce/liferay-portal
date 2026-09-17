@@ -16,6 +16,7 @@ import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
 import com.liferay.commerce.inventory.model.CommerceInventoryWarehouse;
 import com.liferay.commerce.model.CommerceAddress;
 import com.liferay.commerce.model.CommerceOrder;
+import com.liferay.commerce.model.CommerceOrderItem;
 import com.liferay.commerce.price.list.constants.CommercePriceListConstants;
 import com.liferay.commerce.price.list.model.CommercePriceEntry;
 import com.liferay.commerce.price.list.service.CommercePriceEntryLocalService;
@@ -642,11 +643,15 @@ public class CartItemResourceTest extends BaseCartItemResourceTestCase {
 
 		Assert.assertEquals("FORBIDDEN", problem.getStatus());
 
-		Assert.assertEquals(
-			0,
+		CommerceOrderItem commerceOrderItem =
 			_commerceOrderItemLocalService.getCommerceOrderItem(
-				postCartItem.getId()
-			).getShippingAddressId());
+				postCartItem.getId());
+
+		Assert.assertEquals(0, commerceOrderItem.getShippingAddressId());
+
+		BigDecimal quantity = commerceOrderItem.getQuantity();
+
+		Assert.assertEquals(0, quantity.compareTo(postCartItem.getQuantity()));
 
 		CommerceAddress commerceAddress = _addAccountEntryCommerceAddress(
 			_accountEntry.getAccountEntryId(), serviceContext);

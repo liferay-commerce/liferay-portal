@@ -1377,6 +1377,20 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 			_commerceAddressService.getCommerceAddress(shippingAddressId);
 		}
 
+		CartItem[] cartItems = cart.getCartItems();
+
+		if (cartItems != null) {
+			for (CartItem cartItem : cartItems) {
+				long requestedShippingAddressId = GetterUtil.getLong(
+					cartItem.getShippingAddressId());
+
+				if (requestedShippingAddressId > 0) {
+					_commerceAddressService.getCommerceAddress(
+						requestedShippingAddressId);
+				}
+			}
+		}
+
 		CommerceContext commerceContext = _commerceContextFactory.create(
 			commerceOrder.getCommerceAccountId(), commerceOrder.getGroupId(),
 			cart.getCurrencyCode(), commerceOrder.getCommerceOrderId(),
