@@ -16,7 +16,6 @@ import com.liferay.asset.kernel.service.AssetTagService;
 import com.liferay.commerce.price.list.service.CommercePriceEntryLocalService;
 import com.liferay.commerce.price.list.service.CommercePriceEntryService;
 import com.liferay.commerce.price.list.service.CommercePriceListLocalService;
-import com.liferay.commerce.product.configuration.CProductVersionConfiguration;
 import com.liferay.commerce.product.constants.CPAttachmentFileEntryConstants;
 import com.liferay.commerce.product.exception.CPDefinitionProductTypeNameException;
 import com.liferay.commerce.product.exception.NoSuchCPDefinitionException;
@@ -111,7 +110,6 @@ import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.change.tracking.CTAware;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.NoSuchModelException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -125,7 +123,6 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.GroupService;
 import com.liferay.portal.kernel.service.RepositoryLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.settings.CompanyServiceSettingsLocator;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
@@ -158,7 +155,6 @@ import java.math.BigDecimal;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -980,30 +976,9 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 			(serviceContext.getWorkflowAction() ==
 				WorkflowConstants.ACTION_SAVE_DRAFT)) {
 
-			CProductVersionConfiguration cProductVersionConfiguration =
-				_configurationProvider.getConfiguration(
-					CProductVersionConfiguration.class,
-					new CompanyServiceSettingsLocator(
-						cpDefinition.getCompanyId(),
-						CProductVersionConfiguration.class.getName()));
-
-			if (cProductVersionConfiguration.enabled()) {
-				for (CPDefinition cProductCPDefinition :
-						_cpDefinitionService.getCProductCPDefinitions(
-							cpDefinition.getCProductId(),
-							WorkflowConstants.STATUS_DRAFT, QueryUtil.ALL_POS,
-							QueryUtil.ALL_POS)) {
-
-					_cpDefinitionService.updateStatus(
-						cProductCPDefinition.getCPDefinitionId(),
-						WorkflowConstants.STATUS_INCOMPLETE, serviceContext,
-						Collections.emptyMap());
-				}
-
-				cpDefinition = _cpDefinitionService.copyCPDefinition(
-					cpDefinition.getCPDefinitionId(), cpDefinition.getGroupId(),
-					WorkflowConstants.STATUS_DRAFT);
-			}
+			return _cpDefinitionService.copyCPDefinition(
+				cpDefinition.getCPDefinitionId(), cpDefinition.getGroupId(),
+				WorkflowConstants.STATUS_DRAFT);
 		}
 
 		return cpDefinition;
