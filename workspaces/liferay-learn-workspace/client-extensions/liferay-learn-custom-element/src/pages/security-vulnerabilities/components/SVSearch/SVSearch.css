@@ -1,0 +1,22 @@
+.sv-search-container {
+	width: 100%;
+
+	@media (max-width: 830px) {
+		width: 100%;
+	}
+
+	.sv-search {
+		max-width: 700px;
+	}
+
+	.sv-search-icon {
+		bottom: calc(50% - var(--font-size-base)/2);
+		font-size: var(--font-size-base);
+		right: var(--spacer-4);
+	}
+
+	.sv-search-input {
+		color: #54555F;
+		width: 100%;
+	}
+}
