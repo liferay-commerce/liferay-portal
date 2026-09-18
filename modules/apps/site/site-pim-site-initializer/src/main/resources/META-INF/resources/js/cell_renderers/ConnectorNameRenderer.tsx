@@ -4,7 +4,7 @@
  */
 
 import ClayLink from '@clayui/link';
-import {findAction, replaceTokens} from '@liferay/frontend-data-set-web';
+import {getItemActionURL} from '@liferay/frontend-data-set-web';
 import React from 'react';
 
 export default function ConnectorNameRenderer({
@@ -16,12 +16,9 @@ export default function ConnectorNameRenderer({
 	itemData: any;
 	value: string;
 }) {
-	const editAction = findAction(actions, 'edit');
-
-	const href =
-		editAction?.href && itemData?.actions?.update
-			? replaceTokens(editAction.href, itemData)
-			: null;
+	const href = itemData?.actions?.update
+		? getItemActionURL(actions, 'fieldMapping', itemData)
+		: null;
 
 	return (
 		<span className="table-list-title">
