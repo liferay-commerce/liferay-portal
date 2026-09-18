@@ -318,7 +318,8 @@ public class CPDefinitionOptionValueRelLocalServiceTest {
 				getOrAddEmptyCPDefinitionOptionValueRel(
 					externalReferenceCode, _serviceContext.getCompanyId(),
 					_serviceContext.getUserId(),
-					cpDefinitionOptionRel.getCPDefinitionOptionRelId());
+					cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
+					externalReferenceCode);
 
 			Assert.fail();
 		}
@@ -338,7 +339,8 @@ public class CPDefinitionOptionValueRelLocalServiceTest {
 					getOrAddEmptyCPDefinitionOptionValueRel(
 						externalReferenceCode, _serviceContext.getCompanyId(),
 						_serviceContext.getUserId(),
-						cpDefinitionOptionRel.getCPDefinitionOptionRelId());
+						cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
+						externalReferenceCode);
 
 			Assert.assertEquals(
 				WorkflowConstants.STATUS_EMPTY,
@@ -355,7 +357,8 @@ public class CPDefinitionOptionValueRelLocalServiceTest {
 					getOrAddEmptyCPDefinitionOptionValueRel(
 						externalReferenceCode, _serviceContext.getCompanyId(),
 						_serviceContext.getUserId(),
-						cpDefinitionOptionRel.getCPDefinitionOptionRelId());
+						cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
+						externalReferenceCode);
 
 			Assert.assertEquals(
 				cpDefinitionOptionValueRel.getCPDefinitionOptionValueRelId(),
