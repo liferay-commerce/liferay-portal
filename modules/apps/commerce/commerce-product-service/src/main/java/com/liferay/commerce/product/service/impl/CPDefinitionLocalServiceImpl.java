@@ -882,7 +882,7 @@ public class CPDefinitionLocalServiceImpl
 		CPDefinition sourceCPDefinition =
 			cpDefinitionPersistence.findByPrimaryKey(sourceCPDefinitionId);
 
-		return cpDefinitionLocalService.copyCPDefinition(
+		return cpDefinitionLocalService.getOrCopyCPDefinition(
 			sourceCPDefinitionId, sourceCPDefinition.getGroupId(),
 			WorkflowConstants.STATUS_DRAFT);
 	}
@@ -895,27 +895,6 @@ public class CPDefinitionLocalServiceImpl
 
 		CPDefinition sourceCPDefinition =
 			cpDefinitionPersistence.findByPrimaryKey(sourceCPDefinitionId);
-
-		CProduct sourceCProduct = sourceCPDefinition.getCProduct();
-
-		if (!cpDefinitionLocalService.isVersionable(
-				sourceCProduct.getPublishedCPDefinitionId()) ||
-			(sourceCPDefinition.isDraft() &&
-			 (status == WorkflowConstants.STATUS_DRAFT))) {
-
-			return sourceCPDefinition;
-		}
-
-		if (status == WorkflowConstants.STATUS_DRAFT) {
-			CPDefinition draftCPDefinition =
-				cpDefinitionLocalService.fetchCPDefinitionByCProductId(
-					sourceCPDefinition.getCProductId(),
-					WorkflowConstants.STATUS_DRAFT);
-
-			if (draftCPDefinition != null) {
-				return draftCPDefinition;
-			}
-		}
 
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
@@ -2064,6 +2043,39 @@ public class CPDefinitionLocalServiceImpl
 					curExternalReferenceCode, curCompanyId, false),
 			this::getCPDefinitionByCProductExternalReferenceCode,
 			CPDefinition.class.getName());
+	}
+
+	@Override
+	public CPDefinition getOrCopyCPDefinition(
+			long sourceCPDefinitionId, long groupId, int status)
+		throws PortalException {
+
+		CPDefinition sourceCPDefinition =
+			cpDefinitionPersistence.findByPrimaryKey(sourceCPDefinitionId);
+
+		CProduct sourceCProduct = sourceCPDefinition.getCProduct();
+
+		if (!cpDefinitionLocalService.isVersionable(
+				sourceCProduct.getPublishedCPDefinitionId()) ||
+			(sourceCPDefinition.isDraft() &&
+			 (status == WorkflowConstants.STATUS_DRAFT))) {
+
+			return sourceCPDefinition;
+		}
+
+		if (status == WorkflowConstants.STATUS_DRAFT) {
+			CPDefinition cpDefinition =
+				cpDefinitionLocalService.fetchCPDefinitionByCProductId(
+					sourceCPDefinition.getCProductId(),
+					WorkflowConstants.STATUS_DRAFT);
+
+			if (cpDefinition != null) {
+				return cpDefinition;
+			}
+		}
+
+		return cpDefinitionLocalService.copyCPDefinition(
+			sourceCPDefinitionId, groupId, status);
 	}
 
 	@Override

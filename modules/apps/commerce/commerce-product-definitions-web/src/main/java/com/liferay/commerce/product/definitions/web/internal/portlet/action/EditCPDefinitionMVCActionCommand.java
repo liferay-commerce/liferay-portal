@@ -127,7 +127,7 @@ public class EditCPDefinitionMVCActionCommand extends BaseMVCActionCommand {
 					actionRequest, "convertToDraft");
 
 				if ((cpDefinition != null) && !convertToDraft) {
-					cpDefinition = _cpDefinitionService.copyCPDefinition(
+					cpDefinition = _cpDefinitionService.getOrCopyCPDefinition(
 						cpDefinition.getCPDefinitionId(),
 						cpDefinition.getGroupId(),
 						WorkflowConstants.STATUS_DRAFT);
@@ -419,7 +419,7 @@ public class EditCPDefinitionMVCActionCommand extends BaseMVCActionCommand {
 					actionRequest, "saveAsDraft");
 
 				if (saveAsDraft) {
-					cpDefinition = _cpDefinitionService.copyCPDefinition(
+					cpDefinition = _cpDefinitionService.getOrCopyCPDefinition(
 						cpDefinitionId, cpDefinition.getGroupId(),
 						WorkflowConstants.STATUS_DRAFT);
 				}
