@@ -5,9 +5,12 @@
 
 package com.liferay.headless.commerce.admin.catalog.internal.resource.v1_0;
 
+import com.liferay.commerce.product.constants.CPPortletKeys;
 import com.liferay.commerce.product.exception.NoSuchCPOptionException;
 import com.liferay.commerce.product.model.CPOption;
 import com.liferay.commerce.product.service.CPOptionService;
+import com.liferay.exportimport.constants.ExportImportConstants;
+import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Option;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.OptionValue;
 import com.liferay.headless.commerce.admin.catalog.internal.odata.entity.v1_0.OptionEntityModel;
@@ -41,6 +44,7 @@ import java.io.Serializable;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
@@ -52,10 +56,13 @@ import org.osgi.service.component.annotations.ServiceScope;
  */
 @Component(
 	properties = "OSGI-INF/liferay/rest/v1_0/option.properties",
+	property = "export.import.vulcan.batch.engine.task.item.delegate=true",
 	scope = ServiceScope.PROTOTYPE, service = OptionResource.class
 )
 @CTAware
-public class OptionResourceImpl extends BaseOptionResourceImpl {
+public class OptionResourceImpl
+	extends BaseOptionResourceImpl
+	implements ExportImportVulcanBatchEngineTaskItemDelegate<Option> {
 
 	@Override
 	public Response deleteOption(Long id) throws Exception {
@@ -95,6 +102,48 @@ public class OptionResourceImpl extends BaseOptionResourceImpl {
 		throws Exception {
 
 		return _entityModel;
+	}
+
+	@Override
+	public ExportImportDescriptor<CPOption> getExportImportDescriptor() {
+		return new ExportImportDescriptor<>() {
+
+			@Override
+			public String getKey() {
+				return OptionResourceImpl.class.getName();
+			}
+
+			@Override
+			public String getLabelLanguageKey() {
+				return "options";
+			}
+
+			@Override
+			public Class<CPOption> getModelClass() {
+				return CPOption.class;
+			}
+
+			@Override
+			public List<String> getNestedFields() {
+				return List.of("optionValues");
+			}
+
+			@Override
+			public String getPortletId() {
+				return CPPortletKeys.CP_OPTIONS;
+			}
+
+			@Override
+			public Scope getScope() {
+				return Scope.COMPANY;
+			}
+
+			@Override
+			public String getSectionKey() {
+				return ExportImportConstants.SECTION_KEY_PRODUCT_MANAGEMENT;
+			}
+
+		};
 	}
 
 	@Override
