@@ -5,15 +5,20 @@
 
 package com.liferay.headless.commerce.admin.catalog.internal.dto.v1_0.converter;
 
+import com.liferay.commerce.currency.model.CommerceCurrency;
+import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.product.helper.CPInstanceHelper;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CPInstanceUnitOfMeasure;
+import com.liferay.commerce.product.model.CPOption;
+import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.service.CPDefinitionOptionRelLocalService;
 import com.liferay.commerce.product.service.CPDefinitionOptionValueRelLocalService;
 import com.liferay.commerce.product.service.CPInstanceService;
+import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Sku;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.SkuOption;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.SkuUnitOfMeasure;
@@ -54,6 +59,14 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 			(Long)dtoConverterContext.getId());
 
 		CPDefinition cpDefinition = cpInstance.getCPDefinition();
+
+		CommerceCatalog commerceCatalog =
+			_commerceCatalogLocalService.fetchCommerceCatalogByGroupId(
+				cpDefinition.getGroupId());
+
+		CommerceCurrency commerceCurrency = _fetchCommerceCurrency(
+			commerceCatalog);
+
 		CPInstance replacementCPInstance =
 			_cpInstanceService.fetchCProductInstance(
 				cpInstance.getReplacementCProductId(),
@@ -65,6 +78,30 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 
 		return new Sku() {
 			{
+				setCatalogCurrencyCode(
+					() -> {
+						if (commerceCatalog == null) {
+							return null;
+						}
+
+						return commerceCatalog.getCommerceCurrencyCode();
+					});
+				setCatalogCurrencyExternalReferenceCode(
+					() -> {
+						if (commerceCurrency == null) {
+							return null;
+						}
+
+						return commerceCurrency.getExternalReferenceCode();
+					});
+				setCatalogExternalReferenceCode(
+					() -> {
+						if (commerceCatalog == null) {
+							return null;
+						}
+
+						return commerceCatalog.getExternalReferenceCode();
+					});
 				setCost(cpInstance::getCost);
 				setCustomFields(
 					() -> CustomFieldsUtil.toCustomFields(
@@ -84,10 +121,13 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 				setManufacturerPartNumber(
 					cpInstance::getManufacturerPartNumber);
 				setPrice(cpInstance::getPrice);
+				setProductExternalReferenceCode(
+					cpDefinition::getCProductExternalReferenceCode);
 				setProductId(cpDefinition::getCProductId);
 				setProductName(
 					() -> LanguageUtils.getLanguageIdMap(
 						cpDefinition.getNameMap()));
+				setProductType(cpDefinition::getProductTypeName);
 				setPromoPrice(cpInstance::getPromoPrice);
 				setPublished(cpInstance::isPublished);
 				setPurchasable(cpInstance::isPurchasable);
@@ -135,21 +175,36 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 								return null;
 							}
 
+							CPOption cpOption =
+								cpDefinitionOptionRel.getCPOption();
+
 							return new SkuOption() {
 								{
 									setKey(cpDefinitionOptionRel::getKey);
 									setOptionExternalReferenceCode(
 										cpDefinitionOptionRel::
 											getExternalReferenceCode);
+									setOptionFieldType(
+										cpDefinitionOptionRel::
+											getCommerceOptionTypeKey);
 									setOptionId(
 										cpDefinitionOptionRel::
 											getCPDefinitionOptionRelId);
+									setOptionSkuContributor(
+										cpDefinitionOptionRel::
+											isSkuContributor);
 									setOptionValueExternalReferenceCode(
 										cpDefinitionOptionValueRel::
 											getExternalReferenceCode);
 									setOptionValueId(
 										cpDefinitionOptionValueRel::
 											getCPDefinitionOptionValueRelId);
+									setParentOptionExternalReferenceCode(
+										cpOption::getExternalReferenceCode);
+									setParentOptionFieldType(
+										cpOption::getCommerceOptionTypeKey);
+									setParentOptionSkuContributor(
+										cpOption::isSkuContributor);
 									setValue(
 										cpDefinitionOptionValueRel::getKey);
 								}
@@ -194,6 +249,18 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 		};
 	}
 
+	private CommerceCurrency _fetchCommerceCurrency(
+		CommerceCatalog commerceCatalog) {
+
+		if (commerceCatalog == null) {
+			return null;
+		}
+
+		return _commerceCurrencyLocalService.fetchCommerceCurrency(
+			commerceCatalog.getCompanyId(),
+			commerceCatalog.getCommerceCurrencyCode());
+	}
+
 	private SkuUnitOfMeasure[] _toSkuUnitOfMeasures(
 		CPInstance cpInstance, DTOConverterContext dtoConverterContext) {
 
@@ -214,6 +281,12 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 			},
 			SkuUnitOfMeasure.class);
 	}
+
+	@Reference
+	private CommerceCatalogLocalService _commerceCatalogLocalService;
+
+	@Reference
+	private CommerceCurrencyLocalService _commerceCurrencyLocalService;
 
 	@Reference
 	private CPDefinitionOptionRelLocalService
