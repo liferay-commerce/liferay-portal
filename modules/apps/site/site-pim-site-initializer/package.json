@@ -1,9 +1,12 @@
 {
 	"dependencies": {
 		"@clayui/button": "^3.166.0",
+		"@clayui/empty-state": "^3.166.0",
 		"@clayui/form": "^3.166.0",
 		"@clayui/icon": "^3.166.0",
+		"@clayui/label": "^3.166.0",
 		"@clayui/link": "^3.166.0",
+		"@clayui/panel": "^3.166.0",
 		"@clayui/sticker": "^3.166.0",
 		"@liferay/frontend-data-set-web": "*",
 		"@liferay/frontend-js-item-selector-web": "*",
