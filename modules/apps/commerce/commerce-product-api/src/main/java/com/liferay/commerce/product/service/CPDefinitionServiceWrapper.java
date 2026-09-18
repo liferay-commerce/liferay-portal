@@ -270,6 +270,15 @@ public class CPDefinitionServiceWrapper
 			cpDefinitionId);
 	}
 
+	@Override
+	public CPDefinition getOrCopyCPDefinition(
+			long sourceCPDefinitionId, long groupId, int status)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpDefinitionService.getOrCopyCPDefinition(
+			sourceCPDefinitionId, groupId, status);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -483,4 +492,4 @@ public class CPDefinitionServiceWrapper
 	private CPDefinitionService _cpDefinitionService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1646990015
+// LIFERAY-SERVICE-BUILDER-HASH:797304361
