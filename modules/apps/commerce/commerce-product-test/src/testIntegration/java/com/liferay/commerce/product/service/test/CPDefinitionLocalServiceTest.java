@@ -1301,7 +1301,7 @@ public class CPDefinitionLocalServiceTest {
 						).build())) {
 
 			CPDefinition cpDefinition2 =
-				_cpDefinitionLocalService.copyCPDefinition(
+				_cpDefinitionLocalService.getOrCopyCPDefinition(
 					cpDefinition1.getCPDefinitionId());
 
 			Assert.assertNotEquals(
@@ -1591,8 +1591,9 @@ public class CPDefinitionLocalServiceTest {
 			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, true,
 			true);
 
-		CPDefinition cpDefinition2 = _cpDefinitionLocalService.copyCPDefinition(
-			cpDefinition1.getCPDefinitionId());
+		CPDefinition cpDefinition2 =
+			_cpDefinitionLocalService.getOrCopyCPDefinition(
+				cpDefinition1.getCPDefinitionId());
 
 		Assert.assertEquals(
 			cpDefinition1.getCPDefinitionId(),
@@ -1646,7 +1647,7 @@ public class CPDefinitionLocalServiceTest {
 						).build())) {
 
 			CPDefinition cpDefinition3 =
-				_cpDefinitionLocalService.copyCPDefinition(
+				_cpDefinitionLocalService.getOrCopyCPDefinition(
 					cpDefinitionSpecificationOptionValue1.getCPDefinitionId());
 
 			Assert.assertNotEquals(
@@ -1712,7 +1713,7 @@ public class CPDefinitionLocalServiceTest {
 						).build())) {
 
 			CPDefinition cpDefinition2 =
-				_cpDefinitionLocalService.copyCPDefinition(
+				_cpDefinitionLocalService.getOrCopyCPDefinition(
 					cpDefinition1.getCPDefinitionId());
 
 			Assert.assertNotEquals(

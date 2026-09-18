@@ -875,18 +875,6 @@ public class CPDefinitionLocalServiceImpl
 		return newCPDefinition;
 	}
 
-	@Override
-	public CPDefinition copyCPDefinition(long sourceCPDefinitionId)
-		throws PortalException {
-
-		CPDefinition sourceCPDefinition =
-			cpDefinitionPersistence.findByPrimaryKey(sourceCPDefinitionId);
-
-		return cpDefinitionLocalService.getOrCopyCPDefinition(
-			sourceCPDefinitionId, sourceCPDefinition.getGroupId(),
-			WorkflowConstants.STATUS_DRAFT);
-	}
-
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public CPDefinition copyCPDefinition(
@@ -2046,6 +2034,18 @@ public class CPDefinitionLocalServiceImpl
 	}
 
 	@Override
+	public CPDefinition getOrCopyCPDefinition(long sourceCPDefinitionId)
+		throws PortalException {
+
+		CPDefinition sourceCPDefinition =
+			cpDefinitionPersistence.findByPrimaryKey(sourceCPDefinitionId);
+
+		return cpDefinitionLocalService.getOrCopyCPDefinition(
+			sourceCPDefinitionId, sourceCPDefinition.getGroupId(),
+			WorkflowConstants.STATUS_DRAFT);
+	}
+
+	@Override
 	public CPDefinition getOrCopyCPDefinition(
 			long sourceCPDefinitionId, long groupId, int status)
 		throws PortalException {
@@ -2500,7 +2500,7 @@ public class CPDefinitionLocalServiceImpl
 			cpDefinitionId);
 
 		if (cpDefinitionLocalService.isVersionable(cpDefinition)) {
-			cpDefinition = cpDefinitionLocalService.copyCPDefinition(
+			cpDefinition = cpDefinitionLocalService.getOrCopyCPDefinition(
 				cpDefinitionId);
 
 			cpDefinitionId = cpDefinition.getCPDefinitionId();
@@ -2598,7 +2598,7 @@ public class CPDefinitionLocalServiceImpl
 			cpDefinitionId);
 
 		if (cpDefinitionLocalService.isVersionable(cpDefinition)) {
-			cpDefinition = cpDefinitionLocalService.copyCPDefinition(
+			cpDefinition = cpDefinitionLocalService.getOrCopyCPDefinition(
 				cpDefinitionId);
 		}
 
@@ -2792,7 +2792,7 @@ public class CPDefinitionLocalServiceImpl
 			cpDefinitionId);
 
 		if (cpDefinitionLocalService.isVersionable(cpDefinition)) {
-			cpDefinition = cpDefinitionLocalService.copyCPDefinition(
+			cpDefinition = cpDefinitionLocalService.getOrCopyCPDefinition(
 				cpDefinitionId);
 		}
 
@@ -2824,7 +2824,7 @@ public class CPDefinitionLocalServiceImpl
 			cpDefinitionId);
 
 		if (cpDefinitionLocalService.isVersionable(cpDefinition)) {
-			cpDefinition = cpDefinitionLocalService.copyCPDefinition(
+			cpDefinition = cpDefinitionLocalService.getOrCopyCPDefinition(
 				cpDefinitionId);
 		}
 
