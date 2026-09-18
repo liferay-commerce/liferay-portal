@@ -10,6 +10,9 @@ import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.test.util.AssetTestUtil;
+import com.liferay.commerce.product.model.CPDefinition;
+import com.liferay.commerce.product.service.CPDefinitionLocalService;
+import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.service.JournalArticleLocalService;
@@ -43,7 +46,6 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
-import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.test.rule.Inject;
@@ -321,6 +323,41 @@ public class SitemapRegenerationSchedulerTest {
 	}
 
 	@Test
+	public void testScheduleRegenerateSitemapWithAddCPDefinition()
+		throws Exception {
+
+		CPTestUtil.addCPDefinition(_group.getGroupId());
+
+		_assertSiteSitemapRegenerationEntry(
+			SitemapConstants.ASSET_TYPE_KEY_COMMERCE_PRODUCTS, 0);
+	}
+
+	@Test
+	public void testScheduleRegenerateSitemapWithAddCPDefinitionCachedGenerationDisabled()
+		throws Exception {
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						_PID_SITEMAP_COMPANY_CONFIGURATION,
+						HashMapDictionaryBuilder.<String, Object>put(
+							"cachedGenerationEnabled", false
+						).build())) {
+
+			CPTestUtil.addCPDefinition(_group.getGroupId());
+
+			List<SiteSitemapRegenerationEntry> siteSitemapRegenerationEntries =
+				_getSiteSitemapRegenerationEntries(
+					SitemapConstants.ASSET_TYPE_KEY_COMMERCE_PRODUCTS, 0);
+
+			Assert.assertTrue(
+				siteSitemapRegenerationEntries.toString(),
+				siteSitemapRegenerationEntries.isEmpty());
+		}
+	}
+
+	@Test
 	public void testScheduleRegenerateSitemapWithAddJournalArticle()
 		throws Exception {
 
@@ -349,8 +386,9 @@ public class SitemapRegenerationSchedulerTest {
 					new CompanyConfigurationTemporarySwapper(
 						TestPropsValues.getCompanyId(),
 						_PID_SITEMAP_COMPANY_CONFIGURATION,
-						MapUtil.<String, Object>singletonDictionary(
-							"cachedGenerationEnabled", false))) {
+						HashMapDictionaryBuilder.<String, Object>put(
+							"cachedGenerationEnabled", false
+						).build())) {
 
 			LayoutTestUtil.addTypePortletLayout(_group);
 
@@ -456,6 +494,21 @@ public class SitemapRegenerationSchedulerTest {
 	}
 
 	@Test
+	public void testScheduleRegenerateSitemapWithDeleteCPDefinition()
+		throws Exception {
+
+		CPDefinition cpDefinition = CPTestUtil.addCPDefinition(
+			_group.getGroupId());
+
+		_deleteSiteSitemapRegenerationEntries();
+
+		_cpDefinitionLocalService.deleteCPDefinition(cpDefinition);
+
+		_assertSiteSitemapRegenerationEntry(
+			SitemapConstants.ASSET_TYPE_KEY_COMMERCE_PRODUCTS, 0);
+	}
+
+	@Test
 	public void testScheduleRegenerateSitemapWithDeleteJournalArticle()
 		throws Exception {
 
@@ -521,6 +574,21 @@ public class SitemapRegenerationSchedulerTest {
 
 		_assertSiteSitemapRegenerationEntry(
 			SitemapConstants.ASSET_TYPE_KEY_CATEGORIES);
+	}
+
+	@Test
+	public void testScheduleRegenerateSitemapWithUpdateCPDefinition()
+		throws Exception {
+
+		CPDefinition cpDefinition = CPTestUtil.addCPDefinition(
+			_group.getGroupId());
+
+		_deleteSiteSitemapRegenerationEntries();
+
+		_cpDefinitionLocalService.updateCPDefinition(cpDefinition);
+
+		_assertSiteSitemapRegenerationEntry(
+			SitemapConstants.ASSET_TYPE_KEY_COMMERCE_PRODUCTS, 0);
 	}
 
 	@Test
@@ -775,6 +843,9 @@ public class SitemapRegenerationSchedulerTest {
 
 	@DeleteAfterTestRun
 	private ObjectDefinition _companyObjectDefinition;
+
+	@Inject
+	private CPDefinitionLocalService _cpDefinitionLocalService;
 
 	@DeleteAfterTestRun
 	private Group _group;
