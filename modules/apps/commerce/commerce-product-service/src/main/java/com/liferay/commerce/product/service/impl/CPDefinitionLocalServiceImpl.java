@@ -875,18 +875,6 @@ public class CPDefinitionLocalServiceImpl
 		return newCPDefinition;
 	}
 
-	@Override
-	public CPDefinition copyCPDefinition(long sourceCPDefinitionId)
-		throws PortalException {
-
-		CPDefinition sourceCPDefinition =
-			cpDefinitionPersistence.findByPrimaryKey(sourceCPDefinitionId);
-
-		return cpDefinitionLocalService.copyCPDefinition(
-			sourceCPDefinitionId, sourceCPDefinition.getGroupId(),
-			WorkflowConstants.STATUS_DRAFT);
-	}
-
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public CPDefinition copyCPDefinition(
@@ -896,36 +884,10 @@ public class CPDefinitionLocalServiceImpl
 		CPDefinition sourceCPDefinition =
 			cpDefinitionPersistence.findByPrimaryKey(sourceCPDefinitionId);
 
-		CProduct sourceCProduct = sourceCPDefinition.getCProduct();
-
-		if (!cpDefinitionLocalService.isVersionable(
-				sourceCProduct.getPublishedCPDefinitionId()) ||
-			(sourceCPDefinition.isDraft() &&
-			 (status == WorkflowConstants.STATUS_DRAFT))) {
-
-			return sourceCPDefinition;
-		}
-
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
 		User user = _userLocalService.getUser(serviceContext.getUserId());
-
-		if (!sourceCPDefinition.isDraft() &&
-			(status == WorkflowConstants.STATUS_DRAFT)) {
-
-			for (CPDefinition cProductCPDefinition :
-					cpDefinitionPersistence.findByC_S(
-						sourceCPDefinition.getCProductId(),
-						WorkflowConstants.STATUS_DRAFT, QueryUtil.ALL_POS,
-						QueryUtil.ALL_POS)) {
-
-				cpDefinitionLocalService.updateStatus(
-					user.getUserId(), cProductCPDefinition.getCPDefinitionId(),
-					WorkflowConstants.STATUS_INCOMPLETE, serviceContext,
-					Collections.emptyMap());
-			}
-		}
 
 		CPDefinition targetCPDefinition =
 			(CPDefinition)sourceCPDefinition.clone();
@@ -2072,6 +2034,51 @@ public class CPDefinitionLocalServiceImpl
 	}
 
 	@Override
+	public CPDefinition getOrCopyCPDefinition(long sourceCPDefinitionId)
+		throws PortalException {
+
+		CPDefinition sourceCPDefinition =
+			cpDefinitionPersistence.findByPrimaryKey(sourceCPDefinitionId);
+
+		return cpDefinitionLocalService.getOrCopyCPDefinition(
+			sourceCPDefinitionId, sourceCPDefinition.getGroupId(),
+			WorkflowConstants.STATUS_DRAFT);
+	}
+
+	@Override
+	public CPDefinition getOrCopyCPDefinition(
+			long sourceCPDefinitionId, long groupId, int status)
+		throws PortalException {
+
+		CPDefinition sourceCPDefinition =
+			cpDefinitionPersistence.findByPrimaryKey(sourceCPDefinitionId);
+
+		CProduct sourceCProduct = sourceCPDefinition.getCProduct();
+
+		if (!cpDefinitionLocalService.isVersionable(
+				sourceCProduct.getPublishedCPDefinitionId()) ||
+			(sourceCPDefinition.isDraft() &&
+			 (status == WorkflowConstants.STATUS_DRAFT))) {
+
+			return sourceCPDefinition;
+		}
+
+		if (status == WorkflowConstants.STATUS_DRAFT) {
+			CPDefinition cpDefinition =
+				cpDefinitionLocalService.fetchCPDefinitionByCProductId(
+					sourceCPDefinition.getCProductId(),
+					WorkflowConstants.STATUS_DRAFT);
+
+			if (cpDefinition != null) {
+				return cpDefinition;
+			}
+		}
+
+		return cpDefinitionLocalService.copyCPDefinition(
+			sourceCPDefinitionId, groupId, status);
+	}
+
+	@Override
 	public Map<Locale, String> getUrlTitleMap(long cpDefinitionId) {
 		CPDefinition cpDefinition = cpDefinitionPersistence.fetchByPrimaryKey(
 			cpDefinitionId);
@@ -2493,7 +2500,7 @@ public class CPDefinitionLocalServiceImpl
 			cpDefinitionId);
 
 		if (cpDefinitionLocalService.isVersionable(cpDefinition)) {
-			cpDefinition = cpDefinitionLocalService.copyCPDefinition(
+			cpDefinition = cpDefinitionLocalService.getOrCopyCPDefinition(
 				cpDefinitionId);
 
 			cpDefinitionId = cpDefinition.getCPDefinitionId();
@@ -2591,7 +2598,7 @@ public class CPDefinitionLocalServiceImpl
 			cpDefinitionId);
 
 		if (cpDefinitionLocalService.isVersionable(cpDefinition)) {
-			cpDefinition = cpDefinitionLocalService.copyCPDefinition(
+			cpDefinition = cpDefinitionLocalService.getOrCopyCPDefinition(
 				cpDefinitionId);
 		}
 
@@ -2641,9 +2648,15 @@ public class CPDefinitionLocalServiceImpl
 		}
 
 		if ((status == WorkflowConstants.STATUS_EXPIRED) &&
+			(cpDefinition.getStatus() != WorkflowConstants.STATUS_EXPIRED) &&
 			((expirationDate == null) || expirationDate.after(date))) {
 
 			cpDefinition.setExpirationDate(date);
+		}
+
+		if (status == WorkflowConstants.STATUS_DRAFT) {
+			_updateDraftCPDefinitionStatuses(
+				user.getUserId(), cpDefinition, serviceContext);
 		}
 
 		cpDefinition.setStatus(status);
@@ -2779,7 +2792,7 @@ public class CPDefinitionLocalServiceImpl
 			cpDefinitionId);
 
 		if (cpDefinitionLocalService.isVersionable(cpDefinition)) {
-			cpDefinition = cpDefinitionLocalService.copyCPDefinition(
+			cpDefinition = cpDefinitionLocalService.getOrCopyCPDefinition(
 				cpDefinitionId);
 		}
 
@@ -2811,7 +2824,7 @@ public class CPDefinitionLocalServiceImpl
 			cpDefinitionId);
 
 		if (cpDefinitionLocalService.isVersionable(cpDefinition)) {
-			cpDefinition = cpDefinitionLocalService.copyCPDefinition(
+			cpDefinition = cpDefinitionLocalService.getOrCopyCPDefinition(
 				cpDefinitionId);
 		}
 
@@ -3513,6 +3526,32 @@ public class CPDefinitionLocalServiceImpl
 		}
 
 		return newCPDefinitionLocalizations;
+	}
+
+	private void _updateDraftCPDefinitionStatuses(
+			long userId, CPDefinition cpDefinition,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		if (!_isVersioningEnabled(cpDefinition.getCompanyId())) {
+			return;
+		}
+
+		for (CPDefinition draftCPDefinition :
+				cpDefinitionPersistence.findByC_S(
+					cpDefinition.getCProductId(),
+					WorkflowConstants.STATUS_DRAFT, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS)) {
+
+			if (draftCPDefinition.getCPDefinitionId() !=
+					cpDefinition.getCPDefinitionId()) {
+
+				cpDefinitionLocalService.updateStatus(
+					userId, draftCPDefinition.getCPDefinitionId(),
+					WorkflowConstants.STATUS_INCOMPLETE, serviceContext,
+					Collections.emptyMap());
+			}
+		}
 	}
 
 	private void _validate(

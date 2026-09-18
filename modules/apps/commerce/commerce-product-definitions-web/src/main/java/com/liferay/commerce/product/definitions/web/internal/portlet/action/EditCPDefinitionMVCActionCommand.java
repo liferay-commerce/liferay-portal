@@ -123,13 +123,30 @@ public class EditCPDefinitionMVCActionCommand extends BaseMVCActionCommand {
 			CPDefinition cpDefinition = _getCPDefinition(actionRequest);
 
 			if (cmd.equals(Constants.ADD) || cmd.equals(Constants.UPDATE)) {
-				cpDefinition = _getDraftCPDefinition(cpDefinition);
+				boolean convertToDraft = ParamUtil.getBoolean(
+					actionRequest, "convertToDraft");
+
+				if ((cpDefinition != null) && !convertToDraft) {
+					cpDefinition = _cpDefinitionService.getOrCopyCPDefinition(
+						cpDefinition.getCPDefinitionId(),
+						cpDefinition.getGroupId(),
+						WorkflowConstants.STATUS_DRAFT);
+				}
 
 				Callable<CPDefinition> cpDefinitionCallable =
 					new CPDefinitionCallable(actionRequest, cpDefinition);
 
 				cpDefinition = TransactionInvokerUtil.invoke(
 					_transactionConfig, cpDefinitionCallable);
+
+				if (convertToDraft) {
+					cpDefinition = _cpDefinitionService.updateStatus(
+						cpDefinition.getCPDefinitionId(),
+						WorkflowConstants.STATUS_DRAFT,
+						ServiceContextFactory.getInstance(
+							CPDefinition.class.getName(), actionRequest),
+						null);
+				}
 
 				String redirect = getSaveAndContinueRedirect(
 					actionRequest, cpDefinition.getCPDefinitionId(),
@@ -402,7 +419,7 @@ public class EditCPDefinitionMVCActionCommand extends BaseMVCActionCommand {
 					actionRequest, "saveAsDraft");
 
 				if (saveAsDraft) {
-					cpDefinition = _cpDefinitionService.copyCPDefinition(
+					cpDefinition = _cpDefinitionService.getOrCopyCPDefinition(
 						cpDefinitionId, cpDefinition.getGroupId(),
 						WorkflowConstants.STATUS_DRAFT);
 				}
@@ -410,26 +427,6 @@ public class EditCPDefinitionMVCActionCommand extends BaseMVCActionCommand {
 		}
 
 		return cpDefinition;
-	}
-
-	private CPDefinition _getDraftCPDefinition(CPDefinition cpDefinition)
-		throws PortalException {
-
-		if (!_cpDefinitionService.isVersionable(cpDefinition)) {
-			return cpDefinition;
-		}
-
-		CPDefinition draftCPDefinition =
-			_cpDefinitionService.fetchCPDefinitionByCProductId(
-				cpDefinition.getCProductId(), WorkflowConstants.STATUS_DRAFT);
-
-		if (draftCPDefinition != null) {
-			return draftCPDefinition;
-		}
-
-		return _cpDefinitionService.copyCPDefinition(
-			cpDefinition.getCPDefinitionId(), cpDefinition.getGroupId(),
-			WorkflowConstants.STATUS_DRAFT);
 	}
 
 	private Map<String, String> _getQueryMap(
