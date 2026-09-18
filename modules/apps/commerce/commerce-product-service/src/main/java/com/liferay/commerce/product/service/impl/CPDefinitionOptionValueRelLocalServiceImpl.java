@@ -676,7 +676,7 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 	@Override
 	public CPDefinitionOptionValueRel getOrAddEmptyCPDefinitionOptionValueRel(
 			String externalReferenceCode, long companyId, long userId,
-			long cpDefinitionOptionRelId)
+			long cpDefinitionOptionRelId, String key)
 		throws PortalException {
 
 		ServiceContext serviceContext = new ServiceContext();
@@ -689,8 +689,7 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 			() ->
 				cpDefinitionOptionValueRelLocalService.
 					addCPDefinitionOptionValueRel(
-						externalReferenceCode, cpDefinitionOptionRelId,
-						externalReferenceCode,
+						externalReferenceCode, cpDefinitionOptionRelId, key,
 						Collections.singletonMap(
 							LocaleUtil.getSiteDefault(), externalReferenceCode),
 						0, serviceContext),
