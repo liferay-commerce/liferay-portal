@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -58,11 +59,12 @@ import java.util.Objects;
 public class SkuUtil {
 
 	public static CPInstance addOrUpdateCPInstance(
-			CPInstanceService cpInstanceService, Sku sku,
 			CPDefinition cpDefinition,
 			CPDefinitionOptionRelService cpDefinitionOptionRelService,
 			CPDefinitionOptionValueRelService cpDefinitionOptionValueRelService,
-			CPOptionService cpOptionService, ServiceContext serviceContext)
+			CPInstanceService cpInstanceService,
+			CPOptionService cpOptionService, String externalReferenceCode,
+			Sku sku, ServiceContext serviceContext)
 		throws PortalException {
 
 		long replacementCProductId = 0;
@@ -213,7 +215,7 @@ public class SkuUtil {
 		}
 
 		return cpInstanceService.addOrUpdateCPInstance(
-			sku.getExternalReferenceCode(), cpDefinition.getCPDefinitionId(),
+			externalReferenceCode, cpDefinition.getCPDefinitionId(),
 			cpDefinition.getGroupId(), sku.getSku(), sku.getGtin(),
 			sku.getManufacturerPartNumber(),
 			GetterUtil.get(sku.getPurchasable(), false),
@@ -279,20 +281,15 @@ public class SkuUtil {
 			skuOption.getOptionExternalReferenceCode();
 
 		if (Validator.isNotNull(externalReferenceCode)) {
-			CPOption cpOption = cpOptionService.fetchCPOption(
-				cpDefinition.getCompanyId(), skuOption.getKey());
-
-			if (cpOption == null) {
-				return cpDefinitionOptionRelService.
-					getCPDefinitionOptionRelByExternalReferenceCode(
-						externalReferenceCode, cpDefinition.getCompanyId());
+			if (LazyReferencingThreadLocal.isEnabled()) {
+				return _getOrAddEmptyCPDefinitionOptionRel(
+					cpDefinition, cpDefinitionOptionRelService, cpOptionService,
+					skuOption);
 			}
 
 			return cpDefinitionOptionRelService.
-				getOrAddEmptyCPDefinitionOptionRel(
-					externalReferenceCode, cpDefinition.getCPDefinitionId(),
-					cpOption.getCPOptionId(),
-					cpOption.getCommerceOptionTypeKey());
+				getCPDefinitionOptionRelByExternalReferenceCode(
+					externalReferenceCode, cpDefinition.getCompanyId());
 		}
 
 		if (Validator.isNull(skuOption.getKey())) {
@@ -335,7 +332,9 @@ public class SkuUtil {
 			CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
 				cpDefinitionOptionValueRelService.
 					getOrAddEmptyCPDefinitionOptionValueRel(
-						externalReferenceCode, cpDefinitionOptionRelId);
+						externalReferenceCode, cpDefinitionOptionRelId,
+						GetterUtil.get(
+							skuOption.getValue(), externalReferenceCode));
 
 			if (cpDefinitionOptionValueRel.getCPDefinitionOptionRelId() !=
 					cpDefinitionOptionRelId) {
@@ -434,6 +433,45 @@ public class SkuUtil {
 		}
 
 		return jsonArray.toString();
+	}
+
+	private static CPDefinitionOptionRel _getOrAddEmptyCPDefinitionOptionRel(
+			CPDefinition cpDefinition,
+			CPDefinitionOptionRelService cpDefinitionOptionRelService,
+			CPOptionService cpOptionService, SkuOption skuOption)
+		throws PortalException {
+
+		String externalReferenceCode =
+			skuOption.getOptionExternalReferenceCode();
+
+		CPOption cpOption = cpOptionService.fetchCPOption(
+			cpDefinition.getCompanyId(), skuOption.getKey());
+
+		if (cpOption == null) {
+			if (Validator.isNull(
+					skuOption.getParentOptionExternalReferenceCode())) {
+
+				return cpDefinitionOptionRelService.
+					getCPDefinitionOptionRelByExternalReferenceCode(
+						externalReferenceCode, cpDefinition.getCompanyId());
+			}
+
+			cpOption = cpOptionService.getOrAddEmptyCPOption(
+				skuOption.getParentOptionExternalReferenceCode(),
+				skuOption.getParentOptionFieldType(),
+				GetterUtil.get(
+					skuOption.getParentOptionSkuContributor(), false));
+		}
+
+		return cpDefinitionOptionRelService.getOrAddEmptyCPDefinitionOptionRel(
+			externalReferenceCode, cpDefinition.getCPDefinitionId(),
+			cpOption.getCPOptionId(),
+			GetterUtil.get(
+				skuOption.getOptionFieldType(),
+				cpOption.getCommerceOptionTypeKey()),
+			GetterUtil.get(
+				skuOption.getOptionSkuContributor(),
+				cpOption.isSkuContributor()));
 	}
 
 	private static void _updateCommercePriceEntry(
