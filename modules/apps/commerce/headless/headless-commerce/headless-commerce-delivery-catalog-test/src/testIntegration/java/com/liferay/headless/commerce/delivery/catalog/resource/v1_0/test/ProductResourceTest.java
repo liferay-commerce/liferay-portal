@@ -218,6 +218,7 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 				cpDefinition1.getUrlTitleMap(), cpDefinition1.getWeight(),
 				cpDefinition1.getWidth(), _serviceContext);
 
+		_cpDefinitions.add(cpDefinition1);
 		_cpDefinitions.add(cpDefinition2);
 
 		return new Product() {
@@ -263,6 +264,8 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 
 		CPDefinition cpDefinition2 =
 			_cpDefinitionLocalService.updateCPDefinition(cpDefinition1);
+
+		_cpDefinitions.add(cpDefinition2);
 
 		return new Product() {
 			{
@@ -363,8 +366,11 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 				commerceCatalog.getGroupId(), 0, false,
 				RandomTestUtil.randomString(), 2, 1, 1, 2024, 0, 0, 0, 0, 0, 0,
 				0, true, new ServiceContext());
+
 		CPDefinition cpDefinition1 = CPTestUtil.addCPDefinition(
 			commerceCatalog.getGroupId());
+
+		_cpDefinitions.add(cpDefinition1);
 
 		CPConfigurationEntry cpConfigurationEntry =
 			_cpConfigurationEntryLocalService.addCPConfigurationEntry(
@@ -379,6 +385,9 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 
 		CPDefinition cpDefinition2 = CPTestUtil.addCPDefinition(
 			commerceCatalog.getGroupId());
+
+		_cpDefinitions.add(cpDefinition2);
+
 		CPConfigurationList masterCPConfigurationList =
 			_cpConfigurationListLocalService.getMasterCPConfigurationList(
 				commerceCatalog.getGroupId());
