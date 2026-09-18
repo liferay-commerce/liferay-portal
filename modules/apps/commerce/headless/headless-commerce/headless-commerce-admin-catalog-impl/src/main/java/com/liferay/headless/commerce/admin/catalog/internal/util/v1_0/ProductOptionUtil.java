@@ -5,7 +5,6 @@
 
 package com.liferay.headless.commerce.admin.catalog.internal.util.v1_0;
 
-import com.liferay.commerce.product.exception.NoSuchCPOptionException;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.model.CPOption;
 import com.liferay.commerce.product.service.CPDefinitionOptionRelService;
@@ -14,6 +13,7 @@ import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductOption;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -36,20 +36,23 @@ public class ProductOptionUtil {
 			long cpDefinitionId, ServiceContext serviceContext)
 		throws PortalException {
 
+		String optionExternalReferenceCode =
+			productOption.getOptionExternalReferenceCode();
+
 		CPOption cpOption = null;
 
-		long optionId = GetterUtil.getLong(productOption.getOptionId());
-
-		if (optionId > 0) {
-			cpOption = cpOptionService.getCPOption(optionId);
+		if (LazyReferencingThreadLocal.isEnabled()) {
+			cpOption = cpOptionService.getOrAddEmptyCPOption(
+				optionExternalReferenceCode, productOption.getFieldType(),
+				GetterUtil.get(productOption.getSkuContributor(), false));
 		}
 		else {
 			cpOption = cpOptionService.fetchCPOptionByExternalReferenceCode(
-				productOption.getOptionExternalReferenceCode(),
-				serviceContext.getCompanyId());
+				optionExternalReferenceCode, serviceContext.getCompanyId());
 
 			if (cpOption == null) {
-				throw new NoSuchCPOptionException();
+				cpOption = cpOptionService.getCPOption(
+					GetterUtil.getLong(productOption.getOptionId()));
 			}
 		}
 

@@ -85,6 +85,12 @@ public interface CPOptionService extends BaseService {
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CPOption getCPOption(long cpOptionId) throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CPOption getOrAddEmptyCPOption(
+			String externalReferenceCode, String commerceOptionTypeKey,
+			boolean skuContributor)
+		throws PortalException;
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -109,4 +115,4 @@ public interface CPOptionService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:346910118
+// LIFERAY-SERVICE-BUILDER-HASH:1567956413

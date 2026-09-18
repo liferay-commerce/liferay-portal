@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -189,11 +190,18 @@ public class AttachmentUtil {
 			fileEntryId = fileEntry.getFileEntryId();
 		}
 
+		long cpAttachmentFileEntryId = 0;
+
+		if (Validator.isNull(attachmentBase64.getExternalReferenceCode())) {
+			cpAttachmentFileEntryId = GetterUtil.getLong(
+				attachmentBase64.getId());
+		}
+
 		return cpAttachmentFileEntryService.addOrUpdateCPAttachmentFileEntry(
 			attachmentBase64.getExternalReferenceCode(),
 			serviceContext.getScopeGroupId(), classNameId, classPK,
-			GetterUtil.getLong(attachmentBase64.getId()), fileEntryId, false,
-			null, displayDateConfig.getMonth(), displayDateConfig.getDay(),
+			cpAttachmentFileEntryId, fileEntryId, false, null,
+			displayDateConfig.getMonth(), displayDateConfig.getDay(),
 			displayDateConfig.getYear(), displayDateConfig.getHour(),
 			displayDateConfig.getMinute(), expirationDateConfig.getMonth(),
 			expirationDateConfig.getDay(), expirationDateConfig.getYear(),
@@ -251,10 +259,16 @@ public class AttachmentUtil {
 			fileEntryId = fileEntry.getFileEntryId();
 		}
 
+		long cpAttachmentFileEntryId = 0;
+
+		if (Validator.isNull(attachmentUrl.getExternalReferenceCode())) {
+			cpAttachmentFileEntryId = GetterUtil.getLong(attachmentUrl.getId());
+		}
+
 		return cpAttachmentFileEntryService.addOrUpdateCPAttachmentFileEntry(
 			attachmentUrl.getExternalReferenceCode(),
 			serviceContext.getScopeGroupId(), classNameId, classPK,
-			GetterUtil.getLong(attachmentUrl.getId()), fileEntryId, false, null,
+			cpAttachmentFileEntryId, fileEntryId, false, null,
 			displayDateConfig.getMonth(), displayDateConfig.getDay(),
 			displayDateConfig.getYear(), displayDateConfig.getHour(),
 			displayDateConfig.getMinute(), expirationDateConfig.getMonth(),
@@ -298,6 +312,16 @@ public class AttachmentUtil {
 
 		long fileEntryId = GetterUtil.getLong(attachment.getFileEntryId());
 
+		if (fileEntryId > 0) {
+			FileEntry fileEntry = dlAppLocalService.fetchFileEntry(fileEntryId);
+
+			if ((fileEntry == null) ||
+				(fileEntry.getCompanyId() != serviceContext.getCompanyId())) {
+
+				fileEntryId = 0;
+			}
+		}
+
 		if (fileEntryId == 0) {
 			String fileEntryExternalReferenceCode = GetterUtil.getString(
 				attachment.getFileEntryExternalReferenceCode());
@@ -317,17 +341,32 @@ public class AttachmentUtil {
 						attachment.getFileEntryGroupExternalReferenceCode(),
 						serviceContext.getCompanyId());
 
-				if (group == null) {
-					throw new NoSuchGroupException();
+				FileEntry fileEntry = null;
+
+				if (group != null) {
+					fileEntry =
+						dlAppLocalService.fetchFileEntryByExternalReferenceCode(
+							group.getGroupId(), fileEntryExternalReferenceCode);
 				}
 
-				FileEntry fileEntry =
-					dlAppLocalService.fetchFileEntryByExternalReferenceCode(
-						group.getGroupId(),
-						attachment.getFileEntryExternalReferenceCode());
+				if ((fileEntry == null) &&
+					LazyReferencingThreadLocal.isEnabled()) {
+
+					fileEntry = addFileEntry(
+						attachment, uniqueFileNameProvider,
+						dlFileEntryCloneServiceContext);
+				}
 
 				if (fileEntry != null) {
 					fileEntryId = fileEntry.getFileEntryId();
+				}
+				else if (group == null) {
+					String fileEntryGroupExternalReferenceCode =
+						attachment.getFileEntryGroupExternalReferenceCode();
+
+					throw new NoSuchGroupException(
+						"Unable to find group with external reference code " +
+							fileEntryGroupExternalReferenceCode);
 				}
 			}
 		}
@@ -366,9 +405,15 @@ public class AttachmentUtil {
 
 		DateConfig expirationDateConfig = new DateConfig(expirationCalendar);
 
+		long cpAttachmentFileEntryId = 0;
+
+		if (Validator.isNull(attachment.getExternalReferenceCode())) {
+			cpAttachmentFileEntryId = GetterUtil.getLong(attachment.getId());
+		}
+
 		return cpAttachmentFileEntryService.addOrUpdateCPAttachmentFileEntry(
 			attachment.getExternalReferenceCode(), groupId, classNameId,
-			classPK, GetterUtil.getLong(attachment.getId()), fileEntryId,
+			classPK, cpAttachmentFileEntryId, fileEntryId,
 			GetterUtil.get(attachment.getCdnEnabled(), false),
 			GetterUtil.getString(attachment.getCdnURL()),
 			displayDateConfig.getMonth(), displayDateConfig.getDay(),
@@ -419,6 +464,16 @@ public class AttachmentUtil {
 
 		long fileEntryId = GetterUtil.getLong(attachment.getFileEntryId());
 
+		if (fileEntryId > 0) {
+			FileEntry fileEntry = dlAppLocalService.fetchFileEntry(fileEntryId);
+
+			if ((fileEntry == null) ||
+				(fileEntry.getCompanyId() != serviceContext.getCompanyId())) {
+
+				fileEntryId = 0;
+			}
+		}
+
 		if (fileEntryId == 0) {
 			String fileEntryExternalReferenceCode = GetterUtil.getString(
 				attachment.getFileEntryExternalReferenceCode());
@@ -432,18 +487,19 @@ public class AttachmentUtil {
 						attachment.getFileEntryGroupExternalReferenceCode(),
 						serviceContext.getCompanyId());
 
-				if (group == null) {
-					throw new NoSuchGroupException();
-				}
+				FileEntry fileEntry = null;
 
-				FileEntry fileEntry =
-					dlAppLocalService.fetchFileEntryByExternalReferenceCode(
-						group.getGroupId(),
-						GetterUtil.getString(
-							attachment.getFileEntryExternalReferenceCode()));
+				if (group != null) {
+					fileEntry =
+						dlAppLocalService.fetchFileEntryByExternalReferenceCode(
+							group.getGroupId(), fileEntryExternalReferenceCode);
+				}
 
 				if (fileEntry != null) {
 					fileEntryId = fileEntry.getFileEntryId();
+				}
+				else {
+					fileEntryId = cpAttachmentFileEntry.getFileEntryId();
 				}
 			}
 		}
