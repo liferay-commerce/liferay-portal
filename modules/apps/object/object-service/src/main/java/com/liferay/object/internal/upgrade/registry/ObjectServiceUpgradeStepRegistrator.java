@@ -228,6 +228,11 @@ public class ObjectServiceUpgradeStepRegistrator
 
 		registry.register("3.21.0", "3.22.0", new ObjectFieldUpgradeProcess());
 
+		// This step adds ObjectDefinition's external reference code column.
+		// Other modules gate their own upgrade processes on this schema
+		// version, so renumbering it breaks them. See
+		// AccountServiceUpgradeStepRegistrator.
+
 		registry.register(
 			"3.22.0", "3.23.0",
 			new BaseExternalReferenceCodeUpgradeProcess() {
