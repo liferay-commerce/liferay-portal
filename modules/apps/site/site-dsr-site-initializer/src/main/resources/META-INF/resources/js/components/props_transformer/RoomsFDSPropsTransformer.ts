@@ -186,6 +186,31 @@ export default function RoomsFDSPropsTransformer({
 			if (action.data.id === 'archive') {
 				event?.preventDefault();
 
+				if (!additionalProps.maintenanceModeEnabled) {
+					openModal({
+						bodyHTML: sub(
+							Liferay.Language.get(
+								'digital-sales-rooms-cannot-be-archived-because-the-feature-flag-x-is-disabled'
+							),
+							'LPD-82960'
+						),
+						buttons: [
+							{
+								autoFocus: true,
+								displayType: 'secondary',
+								label: Liferay.Language.get('close'),
+								type: 'cancel',
+							},
+						],
+						status: 'warning',
+						title: Liferay.Language.get(
+							'archiving-is-not-available'
+						),
+					});
+
+					return;
+				}
+
 				openModal({
 					bodyHTML: Liferay.Language.get(
 						'archive-digital-sales-room-confirmation-body'
