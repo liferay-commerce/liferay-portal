@@ -1140,7 +1140,7 @@ test(
 
 test(
 	'Can configure and checkout a bundled product with different catalog sku linked',
-	{tag: ['@LPD-61820']},
+	{tag: ['@LPD-106599', '@LPD-61820']},
 	async ({
 		apiHelpers,
 		checkoutPage,
@@ -1238,6 +1238,7 @@ test(
 					{
 						name: {en_US: product3Name},
 						productConfiguration: {
+							allowBackOrder: false,
 							displayStockQuantity: true,
 						},
 						productOptions: [
@@ -1267,6 +1268,14 @@ test(
 										position: 2,
 										quantity: 1,
 										skuId: product2.skus[0].id,
+									},
+									{
+										key: 'red',
+										name: {
+											en_US: 'Red',
+										},
+										position: 3,
+										quantity: 1,
 									},
 								],
 								required: true,
@@ -1356,6 +1365,7 @@ test(
 				'Choose an Option',
 				'Black',
 				'White + $ 10.00',
+				'Red',
 			]);
 
 			let itemStock =
@@ -1373,6 +1383,28 @@ test(
 			itemStock = await productDetailsPage.inStockQuantity.textContent();
 
 			expect(itemStock).toContain('20 in Stock');
+		});
+
+		await test.step('Assert that an option value without stock cannot be added to the cart when back orders are not allowed', async () => {
+			await productDetailsPage
+				.optionSelector('Color')
+				.selectOption({label: 'Red'});
+
+			await expect(productDetailsPage.inStockQuantity).toContainText(
+				'0 in Stock'
+			);
+			await expect(productDetailsPage.addToCartButton).toBeDisabled();
+
+			const whiteOptionValue = await productDetailsPage
+				.optionSelector('Color')
+				.locator('option', {hasText: 'White'})
+				.getAttribute('value');
+
+			await productDetailsPage
+				.optionSelector('Color')
+				.selectOption(whiteOptionValue);
+
+			await expect(productDetailsPage.addToCartButton).toBeEnabled();
 		});
 
 		try {

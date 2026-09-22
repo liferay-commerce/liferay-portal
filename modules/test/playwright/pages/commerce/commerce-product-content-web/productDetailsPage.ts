@@ -43,6 +43,7 @@ export class ProductDetailsPage {
 	readonly mappedProductRowAt: (index: number) => Locator;
 	readonly mappedProductSelectAllCheckbox: Locator;
 	readonly mappedProductsTable: Locator;
+	readonly minimumQuantityPerOrderLabel: (minQuantity: number) => Locator;
 	readonly mpnField: (mpn: string) => Promise<Locator>;
 	readonly nameField: (name: string) => Promise<Locator>;
 	readonly optionSelector: (optionName: string) => Locator;
@@ -75,7 +76,10 @@ export class ProductDetailsPage {
 		promoPrice: string,
 		container?: Locator | Page
 	) => Promise<Locator>;
+	readonly quantitySelect: Locator;
 	readonly quantitySelector: Locator;
+	readonly quantitySelectorErrorContainer: Locator;
+	readonly quantitySelectorPopoverMessage: (message: string) => Locator;
 	readonly replacementProductButton: Locator;
 	readonly replacementsSearchBar: Locator;
 	readonly replacementsSearchButton: Locator;
@@ -180,6 +184,10 @@ export class ProductDetailsPage {
 			'.shop-by-diagram-table thead input[type="checkbox"]'
 		);
 		this.mappedProductsTable = page.locator('.shop-by-diagram-table');
+		this.minimumQuantityPerOrderLabel = (minQuantity: number) =>
+			page.getByText(`Minimum Quantity per Order: ${minQuantity}`, {
+				exact: true,
+			});
 		this.mpnField = async (mpn: string) => {
 			return page.getByText(mpn, {exact: true});
 		};
@@ -250,10 +258,17 @@ export class ProductDetailsPage {
 		) => {
 			return container.getByText(promoPrice);
 		};
+		this.quantitySelect = page.locator('select.quantity-selector');
 		this.quantitySelector = page.getByRole('spinbutton', {
 			exact: true,
 			name: 'Quantity Selector',
 		});
+		this.quantitySelectorErrorContainer =
+			this.quantitySelector.locator('..');
+		this.quantitySelectorPopoverMessage = (message: string) =>
+			page
+				.locator('.quantity-selector-popover')
+				.getByText(message, {exact: true});
 		this.replacementProductButton = page.getByRole('button', {
 			name: 'Replacement Product',
 		});
