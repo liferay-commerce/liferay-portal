@@ -10,6 +10,7 @@ import {CommerceLayoutsPage} from '../commerce-order-content-web/commerceLayouts
 
 export class ProductDetailsPage {
 	readonly addToCartButton: Locator;
+	readonly allowedQuantitiesSelect: Locator;
 	readonly attachments: Locator;
 	readonly attachmentItem: (title: string) => Promise<Locator>;
 	readonly attachmentItems: Locator;
@@ -44,6 +45,7 @@ export class ProductDetailsPage {
 	readonly mappedProductRowAt: (index: number) => Locator;
 	readonly mappedProductSelectAllCheckbox: Locator;
 	readonly mappedProductsTable: Locator;
+	readonly minimumQuantityPerOrderLabel: (minQuantity: number) => Locator;
 	readonly mpnField: (mpn: string) => Promise<Locator>;
 	readonly nameField: (name: string) => Promise<Locator>;
 	readonly optionField: (
@@ -92,6 +94,8 @@ export class ProductDetailsPage {
 		container?: Locator | Page
 	) => Promise<Locator>;
 	readonly quantitySelector: Locator;
+	readonly quantitySelectorErrorContainer: Locator;
+	readonly quantitySelectorPopoverMessage: (message: string) => Locator;
 	readonly replacementProductButton: Locator;
 	readonly replacementsSearchBar: Locator;
 	readonly replacementsSearchButton: Locator;
@@ -130,6 +134,7 @@ export class ProductDetailsPage {
 		this.addToCartButton = page
 			.getByRole('button', {exact: true, name: 'Add to Cart'})
 			.first();
+		this.allowedQuantitiesSelect = page.locator('select.quantity-selector');
 		this.attachments = page.locator(
 			'#_com_liferay_commerce_product_content_web_internal_portlet_CPContentPortlet_navCPMedia'
 		);
@@ -201,6 +206,10 @@ export class ProductDetailsPage {
 			'.shop-by-diagram-table thead input[type="checkbox"]'
 		);
 		this.mappedProductsTable = page.locator('.shop-by-diagram-table');
+		this.minimumQuantityPerOrderLabel = (minQuantity: number) =>
+			page.getByText(`Minimum Quantity per Order: ${minQuantity}`, {
+				exact: true,
+			});
 		this.mpnField = async (mpn: string) => {
 			return page.getByText(mpn, {exact: true});
 		};
@@ -305,6 +314,13 @@ export class ProductDetailsPage {
 			exact: true,
 			name: 'Quantity Selector',
 		});
+		this.quantitySelectorErrorContainer = page
+			.locator('.has-error')
+			.filter({has: this.quantitySelector});
+		this.quantitySelectorPopoverMessage = (message: string) =>
+			page
+				.locator('.quantity-selector-popover')
+				.getByText(message, {exact: true});
 		this.replacementProductButton = page.getByRole('button', {
 			name: 'Replacement Product',
 		});
