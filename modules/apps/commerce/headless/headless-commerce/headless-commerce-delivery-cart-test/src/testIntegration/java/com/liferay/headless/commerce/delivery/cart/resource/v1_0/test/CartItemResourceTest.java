@@ -199,7 +199,7 @@ public class CartItemResourceTest extends BaseCartItemResourceTestCase {
 	public void testPutCartItem() throws Exception {
 		super.testPutCartItem();
 
-		_testPutCartItemWithForeignShippingAddressId();
+		_testPutCartItemWithForeignShippingAddress();
 	}
 
 	@Override
@@ -358,8 +358,8 @@ public class CartItemResourceTest extends BaseCartItemResourceTestCase {
 		throws Exception {
 
 		return _commerceAddressLocalService.addCommerceAddress(
-			null, AccountEntry.class.getName(), accountEntryId,
-			_country.getCountryId(), _region.getRegionId(),
+			RandomTestUtil.randomString(), AccountEntry.class.getName(),
+			accountEntryId, _country.getCountryId(), _region.getRegionId(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
@@ -391,6 +391,19 @@ public class CartItemResourceTest extends BaseCartItemResourceTestCase {
 		}
 
 		return cpInstance;
+	}
+
+	private void _assertForbiddenPutCartItem(
+		CartItem cartItem, Long cartItemId,
+		CartItemResource userCartItemResource) {
+
+		Problem.ProblemException problemException = Assert.assertThrows(
+			Problem.ProblemException.class,
+			() -> userCartItemResource.putCartItem(cartItemId, cartItem));
+
+		Problem problem = problemException.getProblem();
+
+		Assert.assertEquals("FORBIDDEN", problem.getStatus());
 	}
 
 	private CartItem _randomCartItem(boolean priceOnApplication)
@@ -580,9 +593,7 @@ public class CartItemResourceTest extends BaseCartItemResourceTestCase {
 			});
 	}
 
-	private void _testPutCartItemWithForeignShippingAddressId()
-		throws Exception {
-
+	private void _testPutCartItemWithForeignShippingAddress() throws Exception {
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
 				testCompany.getCompanyId(), testGroup.getGroupId(),
@@ -634,14 +645,8 @@ public class CartItemResourceTest extends BaseCartItemResourceTestCase {
 		foreignCartItem.setShippingAddressId(
 			foreignCommerceAddress.getCommerceAddressId());
 
-		Problem.ProblemException problemException = Assert.assertThrows(
-			Problem.ProblemException.class,
-			() -> userCartItemResource.putCartItem(
-				postCartItem.getId(), foreignCartItem));
-
-		Problem problem = problemException.getProblem();
-
-		Assert.assertEquals("FORBIDDEN", problem.getStatus());
+		_assertForbiddenPutCartItem(
+			foreignCartItem, postCartItem.getId(), userCartItemResource);
 
 		CommerceOrderItem commerceOrderItem =
 			_commerceOrderItemLocalService.getCommerceOrderItem(
@@ -650,6 +655,26 @@ public class CartItemResourceTest extends BaseCartItemResourceTestCase {
 		Assert.assertEquals(0, commerceOrderItem.getShippingAddressId());
 
 		BigDecimal quantity = commerceOrderItem.getQuantity();
+
+		Assert.assertEquals(0, quantity.compareTo(postCartItem.getQuantity()));
+
+		CartItem foreignExternalReferenceCodeCartItem = _randomCartItem(
+			cpInstance);
+
+		foreignExternalReferenceCodeCartItem.
+			setShippingAddressExternalReferenceCode(
+				foreignCommerceAddress.getExternalReferenceCode());
+
+		_assertForbiddenPutCartItem(
+			foreignExternalReferenceCodeCartItem, postCartItem.getId(),
+			userCartItemResource);
+
+		commerceOrderItem = _commerceOrderItemLocalService.getCommerceOrderItem(
+			postCartItem.getId());
+
+		Assert.assertEquals(0, commerceOrderItem.getShippingAddressId());
+
+		quantity = commerceOrderItem.getQuantity();
 
 		Assert.assertEquals(0, quantity.compareTo(postCartItem.getQuantity()));
 

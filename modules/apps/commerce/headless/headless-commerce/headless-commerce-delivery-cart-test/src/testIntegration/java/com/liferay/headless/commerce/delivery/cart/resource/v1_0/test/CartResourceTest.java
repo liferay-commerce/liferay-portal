@@ -23,12 +23,16 @@ import com.liferay.commerce.discount.model.CommerceDiscount;
 import com.liferay.commerce.discount.service.CommerceDiscountLocalService;
 import com.liferay.commerce.model.CommerceAddress;
 import com.liferay.commerce.model.CommerceOrder;
+import com.liferay.commerce.model.CommerceOrderItem;
 import com.liferay.commerce.order.rule.constants.COREntryConstants;
 import com.liferay.commerce.order.rule.model.COREntry;
 import com.liferay.commerce.order.rule.service.COREntryLocalService;
 import com.liferay.commerce.order.rule.service.COREntryRelLocalService;
+import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CommerceChannel;
+import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.service.CommerceAddressLocalService;
+import com.liferay.commerce.service.CommerceOrderItemLocalService;
 import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.commerce.test.util.validator.TestAccountEntryValidator;
@@ -47,6 +51,7 @@ import com.liferay.list.type.service.ListTypeEntryLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.encryptor.Encryptor;
 import com.liferay.portal.kernel.model.Country;
 import com.liferay.portal.kernel.model.Region;
@@ -252,6 +257,7 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 		_testPatchCartByGuestWithGuestCheckoutDisabledOnB2BChannel();
 		_testPatchCartWithAddressSubtype();
 		_testPatchCartWithForeignAddressIds();
+		_testPatchCartWithForeignCartItemShippingAddress();
 		_testPatchCartWithMoreExternalReferenceCodes();
 	}
 
@@ -659,8 +665,8 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 		throws Exception {
 
 		return _commerceAddressLocalService.addCommerceAddress(
-			null, AccountEntry.class.getName(), accountEntryId,
-			_country.getCountryId(), _region.getRegionId(),
+			RandomTestUtil.randomString(), AccountEntry.class.getName(),
+			accountEntryId, _country.getCountryId(), _region.getRegionId(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
@@ -675,8 +681,24 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 			_accountEntry.getAccountEntryId(), _commerceCurrency.getCode(), 0);
 	}
 
+	private void _assertCartItemShippingAddressId(
+		long commerceOrderId, long shippingAddressId) {
+
+		List<CommerceOrderItem> commerceOrderItems =
+			_commerceOrderItemLocalService.getCommerceOrderItems(
+				commerceOrderId, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+		Assert.assertEquals(
+			commerceOrderItems.toString(), 1, commerceOrderItems.size());
+
+		CommerceOrderItem commerceOrderItem = commerceOrderItems.get(0);
+
+		Assert.assertEquals(
+			shippingAddressId, commerceOrderItem.getShippingAddressId());
+	}
+
 	private void _assertForbiddenPatchCart(
-		CartResource userCartResource, Long cartId, Cart cart) {
+		Cart cart, Long cartId, CartResource userCartResource) {
 
 		Problem.ProblemException problemException = Assert.assertThrows(
 			Problem.ProblemException.class,
@@ -712,6 +734,21 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 					commerceOrder.getStatus());
 			}
 		};
+	}
+
+	private CartResource _getUserCartResource() throws Exception {
+		_userLocalService.updatePassword(
+			_user.getUserId(), _PASSWORD, _PASSWORD, false, true);
+
+		return CartResource.builder(
+		).authentication(
+			_user.getEmailAddress(), _PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
 	}
 
 	private Cart _randomGuestCart() throws Exception {
@@ -1064,18 +1101,7 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 	}
 
 	private void _testPatchCartWithForeignAddressIds() throws Exception {
-		_userLocalService.updatePassword(
-			_user.getUserId(), _PASSWORD, _PASSWORD, false, true);
-
-		CartResource userCartResource = CartResource.builder(
-		).authentication(
-			_user.getEmailAddress(), _PASSWORD
-		).endpoint(
-			testCompany.getVirtualHostname(),
-			PortalUtil.getPortalServerPort(false), "http"
-		).locale(
-			LocaleUtil.getDefault()
-		).build();
+		CartResource userCartResource = _getUserCartResource();
 
 		Cart postCart = userCartResource.postChannelCart(
 			_commerceChannel.getCommerceChannelId(), randomCart());
@@ -1096,19 +1122,19 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 			foreignCommerceAddress.getCommerceAddressId();
 
 		_assertForbiddenPatchCart(
-			userCartResource, postCart.getId(),
 			new Cart() {
 				{
 					shippingAddressId = foreignCommerceAddressId;
 				}
-			});
+			},
+			postCart.getId(), userCartResource);
 		_assertForbiddenPatchCart(
-			userCartResource, postCart.getId(),
 			new Cart() {
 				{
 					billingAddressId = foreignCommerceAddressId;
 				}
-			});
+			},
+			postCart.getId(), userCartResource);
 
 		CommerceOrder commerceOrder =
 			_commerceOrderLocalService.getCommerceOrder(postCart.getId());
@@ -1131,6 +1157,106 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 
 		Assert.assertEquals(
 			Long.valueOf(commerceAddressId), patchCart.getShippingAddressId());
+
+		_accountEntryLocalService.deleteAccountEntry(accountEntry);
+	}
+
+	private void _testPatchCartWithForeignCartItemShippingAddress()
+		throws Exception {
+
+		CartResource userCartResource = _getUserCartResource();
+
+		Cart postCart = userCartResource.postChannelCart(
+			_commerceChannel.getCommerceChannelId(), randomCart());
+
+		CPInstance cpInstance = CPTestUtil.addCPInstanceWithRandomSku(
+			testGroup.getGroupId(),
+			BigDecimal.valueOf(RandomTestUtil.randomDouble()));
+
+		CommerceTestUtil.addCommerceOrderItem(
+			postCart.getId(), cpInstance.getCPInstanceId(),
+			BigDecimal.valueOf(RandomTestUtil.randomInt(1, 10)));
+
+		User user = UserTestUtil.addUser(testCompany);
+
+		AccountEntry accountEntry =
+			CommerceAccountTestUtil.addBusinessAccountEntry(
+				user.getUserId(), RandomTestUtil.randomString(), null,
+				ServiceContextTestUtil.getServiceContext(
+					testCompany.getCompanyId(), testGroup.getGroupId(),
+					user.getUserId()));
+
+		CommerceAddress foreignCommerceAddress =
+			_addAccountEntryCommerceAddress(accountEntry.getAccountEntryId());
+
+		long foreignCommerceAddressId =
+			foreignCommerceAddress.getCommerceAddressId();
+		String foreignExternalReferenceCode =
+			foreignCommerceAddress.getExternalReferenceCode();
+
+		BigDecimal cartItemQuantity = BigDecimal.valueOf(
+			RandomTestUtil.randomInt(1, 10));
+		long cpInstanceId = cpInstance.getCPInstanceId();
+
+		_assertForbiddenPatchCart(
+			new Cart() {
+				{
+					cartItems = new CartItem[] {
+						new CartItem() {
+							{
+								quantity = cartItemQuantity;
+								shippingAddressId = foreignCommerceAddressId;
+								skuId = cpInstanceId;
+							}
+						}
+					};
+				}
+			},
+			postCart.getId(), userCartResource);
+		_assertForbiddenPatchCart(
+			new Cart() {
+				{
+					cartItems = new CartItem[] {
+						new CartItem() {
+							{
+								quantity = cartItemQuantity;
+								shippingAddressExternalReferenceCode =
+									foreignExternalReferenceCode;
+								skuId = cpInstanceId;
+							}
+						}
+					};
+				}
+			},
+			postCart.getId(), userCartResource);
+
+		Assert.assertEquals(
+			1,
+			_commerceOrderItemLocalService.getCommerceOrderItemsCount(
+				postCart.getId()));
+
+		CommerceAddress commerceAddress = _addAccountEntryCommerceAddress(
+			_accountEntry.getAccountEntryId());
+
+		long commerceAddressId = commerceAddress.getCommerceAddressId();
+
+		userCartResource.patchCart(
+			postCart.getId(),
+			new Cart() {
+				{
+					cartItems = new CartItem[] {
+						new CartItem() {
+							{
+								quantity = cartItemQuantity;
+								shippingAddressId = commerceAddressId;
+								skuId = cpInstanceId;
+							}
+						}
+					};
+				}
+			});
+
+		_assertCartItemShippingAddressId(postCart.getId(), commerceAddressId);
 
 		_accountEntryLocalService.deleteAccountEntry(accountEntry);
 	}
@@ -1476,6 +1602,9 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 
 	@DeleteAfterTestRun
 	private CommerceOrder _commerceOrder;
+
+	@Inject
+	private CommerceOrderItemLocalService _commerceOrderItemLocalService;
 
 	@Inject
 	private CommerceOrderLocalService _commerceOrderLocalService;
