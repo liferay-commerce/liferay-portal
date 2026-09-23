@@ -385,3 +385,112 @@ test(
 		});
 	}
 );
+
+test(
+	'Specification groups and labels can be created',
+	{tag: '@LPD-107362'},
+	async ({apiHelpers, commerceSpecificationsPage, globalMenuPage, page}) => {
+		await test.step('Create a specification label', async () => {
+			await globalMenuPage.goToCommerce('Specifications');
+
+			await commerceSpecificationsPage.createNewSpecificationsProduct.click();
+
+			const specificationTitle = getRandomString();
+
+			await fillLocalizedInput(
+				commerceSpecificationsPage.specificationLabel,
+				specificationTitle
+			);
+			await fillLocalizedInput(
+				commerceSpecificationsPage.addDescriptionSpecifications,
+				`${specificationTitle} Description`
+			);
+			await commerceSpecificationsPage.keyContent.fill(
+				specificationTitle
+			);
+			await commerceSpecificationsPage.saveButton.click();
+
+			await waitForAlert(page);
+
+			const specification = (
+				await apiHelpers.headlessCommerceAdminCatalog.getSpecifications(
+					new URLSearchParams({search: specificationTitle})
+				)
+			).items.find((item) => item.title.en_US === specificationTitle);
+
+			apiHelpers.data.push({
+				id: specification.id,
+				type: 'specification',
+			});
+
+			await commerceSpecificationsPage.goBack.click();
+			await commerceSpecificationsPage.searchInput.fill(
+				specificationTitle
+			);
+			await commerceSpecificationsPage.searchInput.press('Enter');
+			await commerceSpecificationsPage
+				.specificationNameLink(specificationTitle)
+				.click();
+
+			await expect(
+				commerceSpecificationsPage.specificationLabel
+			).toHaveValue(specificationTitle);
+			await expect(
+				commerceSpecificationsPage.addDescriptionSpecifications
+			).toHaveValue(`${specificationTitle} Description`);
+			await expect(commerceSpecificationsPage.keyContent).toHaveValue(
+				specificationTitle
+			);
+		});
+
+		await test.step('Create a specification group', async () => {
+			await globalMenuPage.goToCommerce('Specifications');
+			await commerceSpecificationsPage.goToSpecificationGroup.click();
+			await commerceSpecificationsPage.createNewSpecificationsProductGroup.click();
+
+			const optionCategoryTitle = getRandomString();
+
+			await fillLocalizedInput(
+				commerceSpecificationsPage.groupTitle,
+				optionCategoryTitle
+			);
+			await fillLocalizedInput(
+				commerceSpecificationsPage.addDescriptionSpecificationsGroup,
+				`${optionCategoryTitle} Description`
+			);
+			await commerceSpecificationsPage.saveButton.click();
+
+			await waitForAlert(page);
+
+			const optionCategory = (
+				await apiHelpers.headlessCommerceAdminCatalog.getOptionCategories(
+					new URLSearchParams({pageSize: '200'})
+				)
+			).items.find((item) => item.title.en_US === optionCategoryTitle);
+
+			apiHelpers.data.push({
+				id: optionCategory.id,
+				type: 'optionCategory',
+			});
+
+			await commerceSpecificationsPage.goBack.click();
+			await commerceSpecificationsPage.searchInput.fill(
+				optionCategoryTitle
+			);
+			await commerceSpecificationsPage.searchInput.press('Enter');
+			await commerceSpecificationsPage
+				.specificationNameLink(optionCategoryTitle)
+				.click();
+
+			await expect(commerceSpecificationsPage.groupTitle).toHaveValue(
+				optionCategoryTitle
+			);
+			await expect(
+				commerceSpecificationsPage.addDescriptionSpecificationsGroup
+			).toHaveValue(`${optionCategoryTitle} Description`);
+			await expect(commerceSpecificationsPage.keyContent).toHaveValue(
+				optionCategoryTitle
+			);
+		});
+	}
+);

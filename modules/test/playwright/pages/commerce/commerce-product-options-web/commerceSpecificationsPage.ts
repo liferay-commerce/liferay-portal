@@ -22,6 +22,7 @@ export class CommerceSpecificationsPage {
 	readonly keyContent: Locator;
 	readonly page: Page;
 	readonly saveButton: Locator;
+	readonly searchInput: Locator;
 	readonly sidePanelSpecificationPicklistItemsFrame: FrameLocator;
 	readonly specificationLabel: Locator;
 	readonly specificationNameLink: (specificationName: string) => Locator;
@@ -75,6 +76,7 @@ export class CommerceSpecificationsPage {
 		this.groupTitle = page.getByLabel('Title Required');
 		this.keyContent = page.getByLabel('Key Required');
 		this.saveButton = page.getByRole('button', {name: 'Save'});
+		this.searchInput = page.getByPlaceholder('Search for');
 		this.sidePanelSpecificationPicklistItemsFrame =
 			page.frameLocator('iframe');
 		this.specificationLabel = page.getByLabel('Label Required');
