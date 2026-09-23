@@ -33,6 +33,7 @@ export class CommerceAdminProductDetailsPage {
 	readonly frameDropdownSpecification: Locator;
 	readonly frameSubmitSpecification: Locator;
 	readonly menuItemSpecification: (chooseAddOrCreate: string) => Locator;
+	readonly nameInput: Locator;
 	readonly nameInputLocaleSelector: Locator;
 	readonly page: Page;
 	readonly productConfigurationLink: Locator;
@@ -46,6 +47,7 @@ export class CommerceAdminProductDetailsPage {
 	readonly productSkusLink: Locator;
 	readonly productVisibilityLink: Locator;
 	readonly publishLink: Locator;
+	readonly shortDescriptionInput: Locator;
 	readonly textTableCell: (text: string) => Locator;
 	readonly visibleToggle: Locator;
 
@@ -123,6 +125,7 @@ export class CommerceAdminProductDetailsPage {
 		this.menuItemSpecification = (chooseAddOrCreate: string) => {
 			return page.getByRole('menuitem', {name: chooseAddOrCreate});
 		};
+		this.nameInput = page.locator('input[id$="_nameMapAsXML"]');
 		this.nameInputLocaleSelector = page.locator(
 			'[id$="nameMapAsXMLBoundingBox"] .input-localized-trigger'
 		);
@@ -156,6 +159,9 @@ export class CommerceAdminProductDetailsPage {
 			name: 'Visibility',
 		});
 		this.publishLink = page.getByRole('link', {name: 'Publish'});
+		this.shortDescriptionInput = page.locator(
+			'textarea[id$="_shortDescriptionMapAsXML"]'
+		);
 		this.textTableCell = (text: string) =>
 			this.page.getByRole('cell', {
 				exact: true,

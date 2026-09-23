@@ -13,6 +13,7 @@ import {loginTest} from '../../../../fixtures/loginTest';
 import {userPersonalBarPagesTest} from '../../../../fixtures/userPersonalBarPagesTest';
 import getRandomString from '../../../../utils/getRandomString';
 import {userData} from '../../../../utils/performLogin';
+import {fillLocalizedInput} from '../../utils/fillLocalizedInput';
 
 export const test = mergeTests(
 	apiHelpersTest,
@@ -474,5 +475,73 @@ test(
 		await expect(
 			commerceAdminProductDetailsPage.nameInputLocaleSelector
 		).toHaveText('es-ES');
+	}
+);
+
+test(
+	'Publish a simple product',
+	{tag: '@LPD-107362'},
+	async ({
+		apiHelpers,
+		commerceAdminProductDetailsPage,
+		commerceAdminProductPage,
+		page,
+	}) => {
+		await commerceAdminProductPage.goto();
+
+		await commerceAdminProductPage.addButton.click();
+		await commerceAdminProductPage.menuItemProductType('Simple').click();
+
+		const productName = getRandomString();
+
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+		await commerceAdminProductPage.modalFieldName.fill(productName);
+		await commerceAdminProductPage.modalPlaceHolder.fill(catalog.name);
+		await commerceAdminProductPage.modalMenuItem(catalog.name).click();
+		await commerceAdminProductPage.modalSubmitButton.click();
+
+		await expect(commerceAdminProductDetailsPage.nameInput).toHaveValue(
+			productName
+		);
+
+		const product = (
+			await apiHelpers.headlessCommerceAdminCatalog.getProducts(
+				new URLSearchParams({
+					filter: `name eq '${productName}'`,
+				})
+			)
+		).items[0];
+
+		apiHelpers.data.push({
+			id: product.productId,
+			type: 'product',
+		});
+
+		await expect(page.locator('.workflow-status-draft')).toBeVisible();
+		await expect(
+			page
+				.locator('select[name$="_commerceCatalogGroupId"]')
+				.locator('option:checked')
+		).toHaveText(catalog.name);
+
+		await fillLocalizedInput(
+			commerceAdminProductDetailsPage.shortDescriptionInput,
+			`${productName} Short Description`
+		);
+
+		await commerceAdminProductDetailsPage.publish();
+
+		await expect(page.locator('.workflow-status-approved')).toBeVisible();
+
+		await commerceAdminProductPage.gotoProduct(productName);
+
+		await expect(commerceAdminProductDetailsPage.nameInput).toHaveValue(
+			productName
+		);
+		await expect(
+			commerceAdminProductDetailsPage.shortDescriptionInput
+		).toHaveValue(`${productName} Short Description`);
 	}
 );
