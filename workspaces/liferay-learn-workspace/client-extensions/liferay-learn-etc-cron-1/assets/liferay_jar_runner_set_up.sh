@@ -381,6 +381,13 @@ function copy_resources {
 function copy_tree_sharded {
 	local source_dir=${1} dest_dir=${2} delete_flag=${3}
 
+	local exclude_flags=()
+
+	if [ -n "${delete_flag}" ]
+	then
+		mapfile -t exclude_flags < <(get_orphan_exclude_flags)
+	fi
+
 	local work_dir
 
 	work_dir=$(mktemp --directory)
@@ -421,12 +428,18 @@ function copy_tree_sharded {
 
 	if [ -n "${delete_flag}" ]
 	then
+		if [[ "${#exclude_flags[@]}" -gt 0 ]]
+		then
+			echo "[cron-1] Protected from deletion under ${dest_dir}: ${exclude_flags[*]}"
+		fi
+
 		rsync \
 			--delete \
 			--existing \
 			--ignore-existing \
 			--prune-empty-dirs \
 			--recursive \
+			${exclude_flags[@]+"${exclude_flags[@]}"} \
 			"${source_dir}/" \
 			"${dest_dir}/"
 	fi
@@ -459,6 +472,35 @@ function generate_docs {
 	popd
 
 	check_generated_site
+}
+
+function get_orphan_exclude_flags {
+	local exclusions
+
+	IFS=',' read -r -a exclusions <<< "${LIFERAY_LEARN_ETC_CRON_ORPHAN_EXCLUSIONS:-}"
+
+	local exclusion
+
+	for exclusion in ${exclusions[@]+"${exclusions[@]}"}
+	do
+		exclusion=$(echo "${exclusion}" | sed --expression "s|^[[:space:]/]*||" --expression "s|[[:space:]/]*$||")
+
+		if [ -z "${exclusion}" ]
+		then
+			continue
+		fi
+
+		local product=$(echo "${exclusion}" | awk -F "/" '{print $1}')
+
+		if [ "${product}" == "${exclusion}" ]
+		then
+			echo "--exclude=/${product}/"
+		else
+			local rest=$(echo "${exclusion}" | sed --expression "s|^[^/]*/||")
+
+			echo "--exclude=/${product}/latest/*/${rest}/"
+		fi
+	done
 }
 
 function hours_since {

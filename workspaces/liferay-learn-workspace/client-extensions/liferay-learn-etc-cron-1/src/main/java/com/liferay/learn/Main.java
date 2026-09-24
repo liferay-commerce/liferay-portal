@@ -77,6 +77,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -186,6 +187,7 @@ public class Main {
 				liferaySiteFriendlyUrlPath, new URL(liferayURL), baseDirFile,
 				GetterUtil.getBoolean(
 					System.getenv("LIFERAY_LEARN_ETC_CRON_OFFLINE")),
+				System.getenv("LIFERAY_LEARN_ETC_CRON_ORPHAN_EXCLUSIONS"),
 				System.getenv(
 					"LIFERAY_LEARN_ETC_CRON_PREFLIGHT_TOC_EXCLUSIONS"),
 				System.getenv("LIFERAY_LEARN_ETC_CRON_RESTRICTED_PATHS"),
@@ -239,9 +241,9 @@ public class Main {
 			String liferayDataDefinitionKey, String liferayOAuthClientId,
 			String liferayOAuthClientSecret, String liferaySiteFriendlyUrlPath,
 			URL liferayURL, File baseDir, boolean offline,
-			String preflightTocExclusions, String restrictedPaths,
-			String restrictedRoles, boolean skipDiffCheck,
-			String skipLocalesContent)
+			String orphanExclusions, String preflightTocExclusions,
+			String restrictedPaths, String restrictedRoles,
+			boolean skipDiffCheck, String skipLocalesContent)
 		throws Exception {
 
 		_liferayOAuthClientId = liferayOAuthClientId;
@@ -249,6 +251,21 @@ public class Main {
 		_liferayURL = liferayURL;
 		_offline = offline;
 		_skipDiffCheck = skipDiffCheck;
+
+		if (orphanExclusions != null) {
+			for (String orphanExclusion : orphanExclusions.split(",")) {
+				String trimmedOrphanExclusion = StringUtil.trim(
+					orphanExclusion.trim(), CharPool.FORWARD_SLASH);
+
+				if (!trimmedOrphanExclusion.isEmpty()) {
+					_orphanExclusions.add(trimmedOrphanExclusion);
+				}
+			}
+		}
+
+		System.out.println(
+			"Friendly URL paths excluded from the orphan cleanup: " +
+				_orphanExclusions);
 
 		if (preflightTocExclusions != null) {
 			for (String preflightTocExclusion :
@@ -937,6 +954,29 @@ public class Main {
 			idStructuredContents.keySet());
 
 		orphanedStructuredContentIds.removeAll(importedStructuredContentIds);
+
+		int excludedCount = 0;
+
+		Iterator<Long> iterator = orphanedStructuredContentIds.iterator();
+
+		while (iterator.hasNext()) {
+			StructuredContent structuredContent = idStructuredContents.get(
+				iterator.next());
+
+			if (!_isExcludedOrphan(structuredContent.getFriendlyUrlPath())) {
+				continue;
+			}
+
+			excludedCount++;
+
+			iterator.remove();
+		}
+
+		if (excludedCount > 0) {
+			System.out.println(
+				excludedCount +
+					" orphaned structured contents were kept (excluded).");
+		}
 
 		int orphanCount = orphanedStructuredContentIds.size();
 
@@ -2097,6 +2137,27 @@ public class Main {
 		}
 	}
 
+	private boolean _isExcludedOrphan(String friendlyUrlPath) {
+		if (_orphanExclusions.isEmpty() || (friendlyUrlPath == null)) {
+			return false;
+		}
+
+		if (friendlyUrlPath.startsWith(StringPool.FORWARD_SLASH)) {
+			friendlyUrlPath = friendlyUrlPath.substring(1);
+		}
+
+		for (String orphanExclusion : _orphanExclusions) {
+			if (friendlyUrlPath.equals(orphanExclusion) ||
+				friendlyUrlPath.startsWith(
+					orphanExclusion + StringPool.FORWARD_SLASH)) {
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	private boolean _isExcludedTocFile(File tocFile) throws Exception {
 		if (_preflightTocExclusions.isEmpty()) {
 			return false;
@@ -2747,6 +2808,7 @@ public class Main {
 	private long _oauthExpirationMillis;
 	private long _oauthIssuedMillis;
 	private final boolean _offline;
+	private final Set<String> _orphanExclusions = new TreeSet<>();
 	private Parser _parser;
 	private final Set<String> _preflightTocExclusions = new TreeSet<>();
 	private final Set<String> _restrictedPaths = new TreeSet<>();
