@@ -371,46 +371,6 @@ public class CPDefinitionLocalizationPersistenceImpl
 						cpDefinitionLocalizationId, ContentTypes.TEXT_HTML,
 						Sanitizer.MODE_ALL,
 						cpDefinitionLocalization.getDescription(), null));
-
-				cpDefinitionLocalization.setMetaDescription(
-					SanitizerUtil.sanitize(
-						companyId, groupId, userId,
-						CPDefinitionLocalization.class.getName(),
-						cpDefinitionLocalizationId, ContentTypes.TEXT_HTML,
-						Sanitizer.MODE_ALL,
-						cpDefinitionLocalization.getMetaDescription(), null));
-
-				cpDefinitionLocalization.setMetaKeywords(
-					SanitizerUtil.sanitize(
-						companyId, groupId, userId,
-						CPDefinitionLocalization.class.getName(),
-						cpDefinitionLocalizationId, ContentTypes.TEXT_HTML,
-						Sanitizer.MODE_ALL,
-						cpDefinitionLocalization.getMetaKeywords(), null));
-
-				cpDefinitionLocalization.setMetaTitle(
-					SanitizerUtil.sanitize(
-						companyId, groupId, userId,
-						CPDefinitionLocalization.class.getName(),
-						cpDefinitionLocalizationId, ContentTypes.TEXT_HTML,
-						Sanitizer.MODE_ALL,
-						cpDefinitionLocalization.getMetaTitle(), null));
-
-				cpDefinitionLocalization.setName(
-					SanitizerUtil.sanitize(
-						companyId, groupId, userId,
-						CPDefinitionLocalization.class.getName(),
-						cpDefinitionLocalizationId, ContentTypes.TEXT_PLAIN,
-						Sanitizer.MODE_ALL, cpDefinitionLocalization.getName(),
-						null));
-
-				cpDefinitionLocalization.setShortDescription(
-					SanitizerUtil.sanitize(
-						companyId, groupId, userId,
-						CPDefinitionLocalization.class.getName(),
-						cpDefinitionLocalizationId, ContentTypes.TEXT_HTML,
-						Sanitizer.MODE_ALL,
-						cpDefinitionLocalization.getShortDescription(), null));
 			}
 			catch (SanitizerException sanitizerException) {
 				throw new SystemException(sanitizerException);
