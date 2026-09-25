@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -333,9 +334,9 @@ public class SkuUtil {
 				cpDefinitionOptionRel.getCPDefinitionOptionRelId();
 
 			CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
-				cpDefinitionOptionValueRelService.
-					getOrAddEmptyCPDefinitionOptionValueRel(
-						externalReferenceCode, cpDefinitionOptionRelId);
+				_getCPDefinitionOptionValueRel(
+					companyId, cpDefinitionOptionRelId,
+					cpDefinitionOptionValueRelService, externalReferenceCode);
 
 			if (cpDefinitionOptionValueRel.getCPDefinitionOptionRelId() !=
 					cpDefinitionOptionRelId) {
@@ -369,6 +370,32 @@ public class SkuUtil {
 		}
 
 		return null;
+	}
+
+	private static CPDefinitionOptionValueRel _getCPDefinitionOptionValueRel(
+			long companyId, long cpDefinitionOptionRelId,
+			CPDefinitionOptionValueRelService cpDefinitionOptionValueRelService,
+			String externalReferenceCode)
+		throws PortalException {
+
+		if (!LazyReferencingThreadLocal.isEnabled()) {
+			CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
+				cpDefinitionOptionValueRelService.
+					fetchCPDefinitionOptionValueRelByExternalReferenceCode(
+						externalReferenceCode, companyId);
+
+			if (cpDefinitionOptionValueRel == null) {
+				throw new NoSuchCPDefinitionOptionValueRelException(
+					"Unable to find product option value with external " +
+						"reference code " + externalReferenceCode);
+			}
+
+			return cpDefinitionOptionValueRel;
+		}
+
+		return cpDefinitionOptionValueRelService.
+			getOrAddEmptyCPDefinitionOptionValueRel(
+				externalReferenceCode, cpDefinitionOptionRelId);
 	}
 
 	private static String _getCommercePricingConfigurationKey(
