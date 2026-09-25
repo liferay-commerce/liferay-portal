@@ -9,17 +9,22 @@ import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.account.test.util.CommerceAccountTestUtil;
+import com.liferay.commerce.constants.CommerceAddressConstants;
 import com.liferay.commerce.constants.CommerceConstants;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
 import com.liferay.commerce.inventory.model.CommerceInventoryWarehouse;
+import com.liferay.commerce.model.CommerceAddress;
 import com.liferay.commerce.model.CommerceOrder;
+import com.liferay.commerce.model.CommerceOrderItem;
 import com.liferay.commerce.price.list.constants.CommercePriceListConstants;
 import com.liferay.commerce.price.list.model.CommercePriceEntry;
 import com.liferay.commerce.price.list.service.CommercePriceEntryLocalService;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.test.util.CPTestUtil;
+import com.liferay.commerce.service.CommerceAddressLocalService;
+import com.liferay.commerce.service.CommerceOrderItemLocalService;
 import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.test.util.CommerceInventoryTestUtil;
 import com.liferay.commerce.test.util.CommerceTestUtil;
@@ -29,9 +34,15 @@ import com.liferay.headless.commerce.delivery.cart.client.dto.v1_0.SkuUnitOfMeas
 import com.liferay.headless.commerce.delivery.cart.client.pagination.Page;
 import com.liferay.headless.commerce.delivery.cart.client.pagination.Pagination;
 import com.liferay.headless.commerce.delivery.cart.client.problem.Problem;
+import com.liferay.headless.commerce.delivery.cart.client.resource.v1_0.CartItemResource;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.model.Country;
+import com.liferay.portal.kernel.model.Region;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.CountryLocalService;
+import com.liferay.portal.kernel.service.RegionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.settings.FallbackKeysSettingsUtil;
 import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.settings.ModifiableSettings;
@@ -40,6 +51,8 @@ import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.test.rule.Inject;
 
 import java.math.BigDecimal;
@@ -179,6 +192,14 @@ public class CartItemResourceTest extends BaseCartItemResourceTestCase {
 		super.testPostCartItem();
 
 		_testPostCartItemToGuestOrderWithGuestCheckoutDisabledOnB2BChannel();
+	}
+
+	@Override
+	@Test
+	public void testPutCartItem() throws Exception {
+		super.testPutCartItem();
+
+		_testPutCartItemWithForeignShippingAddress();
 	}
 
 	@Override
@@ -332,6 +353,21 @@ public class CartItemResourceTest extends BaseCartItemResourceTestCase {
 			_commerceOrder.getExternalReferenceCode(), randomCartItem());
 	}
 
+	private CommerceAddress _addAccountEntryCommerceAddress(
+			long accountEntryId, ServiceContext serviceContext)
+		throws Exception {
+
+		return _commerceAddressLocalService.addCommerceAddress(
+			RandomTestUtil.randomString(), AccountEntry.class.getName(),
+			accountEntryId, _country.getCountryId(), _region.getRegionId(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), StringPool.BLANK,
+			CommerceAddressConstants.ADDRESS_TYPE_BILLING_AND_SHIPPING,
+			RandomTestUtil.randomString(), serviceContext);
+	}
+
 	private CPInstance _addCPInstance(boolean priceOnApplication)
 		throws Exception {
 
@@ -355,6 +391,19 @@ public class CartItemResourceTest extends BaseCartItemResourceTestCase {
 		}
 
 		return cpInstance;
+	}
+
+	private void _assertForbiddenPutCartItem(
+		CartItem cartItem, Long cartItemId,
+		CartItemResource userCartItemResource) {
+
+		Problem.ProblemException problemException = Assert.assertThrows(
+			Problem.ProblemException.class,
+			() -> userCartItemResource.putCartItem(cartItemId, cartItem));
+
+		Problem problem = problemException.getProblem();
+
+		Assert.assertEquals("FORBIDDEN", problem.getStatus());
 	}
 
 	private CartItem _randomCartItem(boolean priceOnApplication)
@@ -544,6 +593,108 @@ public class CartItemResourceTest extends BaseCartItemResourceTestCase {
 			});
 	}
 
+	private void _testPutCartItemWithForeignShippingAddress() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				testCompany.getCompanyId(), testGroup.getGroupId(),
+				_user.getUserId());
+
+		_country = _countryLocalService.addCountry(
+			null, "XY", "XYZ", true, true, RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.nextDouble(), true, true, false, serviceContext);
+
+		_region = _regionLocalService.addRegion(
+			null, _country.getCountryId(), true, RandomTestUtil.randomString(),
+			RandomTestUtil.nextDouble(), RandomTestUtil.randomString(),
+			serviceContext);
+
+		_userLocalService.updatePassword(
+			_user.getUserId(), _PASSWORD, _PASSWORD, false, true);
+
+		CartItemResource userCartItemResource = CartItemResource.builder(
+		).authentication(
+			_user.getEmailAddress(), _PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+
+		CPInstance cpInstance = _addCPInstance(false);
+
+		CartItem postCartItem = cartItemResource.postCartItem(
+			_commerceOrder.getCommerceOrderId(), _randomCartItem(cpInstance));
+
+		User user = UserTestUtil.addUser(testCompany);
+
+		AccountEntry accountEntry =
+			CommerceAccountTestUtil.addBusinessAccountEntry(
+				user.getUserId(), RandomTestUtil.randomString(), null,
+				ServiceContextTestUtil.getServiceContext(
+					testCompany.getCompanyId(), testGroup.getGroupId(),
+					user.getUserId()));
+
+		CommerceAddress foreignCommerceAddress =
+			_addAccountEntryCommerceAddress(
+				accountEntry.getAccountEntryId(), serviceContext);
+
+		CartItem foreignCartItem = _randomCartItem(cpInstance);
+
+		foreignCartItem.setShippingAddressId(
+			foreignCommerceAddress.getCommerceAddressId());
+
+		_assertForbiddenPutCartItem(
+			foreignCartItem, postCartItem.getId(), userCartItemResource);
+
+		CommerceOrderItem commerceOrderItem =
+			_commerceOrderItemLocalService.getCommerceOrderItem(
+				postCartItem.getId());
+
+		Assert.assertEquals(0, commerceOrderItem.getShippingAddressId());
+
+		BigDecimal quantity = commerceOrderItem.getQuantity();
+
+		Assert.assertEquals(0, quantity.compareTo(postCartItem.getQuantity()));
+
+		CartItem foreignExternalReferenceCodeCartItem = _randomCartItem(
+			cpInstance);
+
+		foreignExternalReferenceCodeCartItem.
+			setShippingAddressExternalReferenceCode(
+				foreignCommerceAddress.getExternalReferenceCode());
+
+		_assertForbiddenPutCartItem(
+			foreignExternalReferenceCodeCartItem, postCartItem.getId(),
+			userCartItemResource);
+
+		commerceOrderItem = _commerceOrderItemLocalService.getCommerceOrderItem(
+			postCartItem.getId());
+
+		Assert.assertEquals(0, commerceOrderItem.getShippingAddressId());
+
+		quantity = commerceOrderItem.getQuantity();
+
+		Assert.assertEquals(0, quantity.compareTo(postCartItem.getQuantity()));
+
+		CommerceAddress commerceAddress = _addAccountEntryCommerceAddress(
+			_accountEntry.getAccountEntryId(), serviceContext);
+
+		CartItem cartItem = _randomCartItem(cpInstance);
+
+		cartItem.setShippingAddressId(commerceAddress.getCommerceAddressId());
+
+		CartItem putCartItem = userCartItemResource.putCartItem(
+			postCartItem.getId(), cartItem);
+
+		Assert.assertEquals(
+			Long.valueOf(commerceAddress.getCommerceAddressId()),
+			putCartItem.getShippingAddressId());
+
+		_accountEntryLocalService.deleteAccountEntry(accountEntry);
+	}
+
 	private void _updateCommercePriceEntry(
 		CPInstance cpInstance, boolean priceOnApplication,
 		String typePriceList) {
@@ -563,11 +714,16 @@ public class CartItemResourceTest extends BaseCartItemResourceTestCase {
 			commercePriceEntry);
 	}
 
+	private static final String _PASSWORD = RandomTestUtil.randomString();
+
 	@DeleteAfterTestRun
 	private AccountEntry _accountEntry;
 
 	@Inject
 	private AccountEntryLocalService _accountEntryLocalService;
+
+	@Inject
+	private CommerceAddressLocalService _commerceAddressLocalService;
 
 	@DeleteAfterTestRun
 	private CommerceChannel _commerceChannel;
@@ -582,10 +738,19 @@ public class CartItemResourceTest extends BaseCartItemResourceTestCase {
 	private CommerceOrder _commerceOrder;
 
 	@Inject
+	private CommerceOrderItemLocalService _commerceOrderItemLocalService;
+
+	@Inject
 	private CommerceOrderLocalService _commerceOrderLocalService;
 
 	@Inject
 	private CommercePriceEntryLocalService _commercePriceEntryLocalService;
+
+	@DeleteAfterTestRun
+	private Country _country;
+
+	@Inject
+	private CountryLocalService _countryLocalService;
 
 	@DeleteAfterTestRun
 	private final List<CPInstance> _cpInstances = new ArrayList<>();
@@ -594,6 +759,15 @@ public class CartItemResourceTest extends BaseCartItemResourceTestCase {
 	private CommerceOrder _guestCommerceOrder;
 
 	@DeleteAfterTestRun
+	private Region _region;
+
+	@Inject
+	private RegionLocalService _regionLocalService;
+
+	@DeleteAfterTestRun
 	private User _user;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }

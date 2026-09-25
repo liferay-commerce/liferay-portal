@@ -283,6 +283,14 @@ public class CartItemResourceImpl extends BaseCartItemResourceImpl {
 		ServiceContext serviceContext = _serviceContextHelper.getServiceContext(
 			commerceOrder.getGroupId());
 
+		long requestedShippingAddressId = GetterUtil.getLong(
+			cartItem.getShippingAddressId());
+
+		if (requestedShippingAddressId > 0) {
+			_commerceAddressService.getCommerceAddress(
+				requestedShippingAddressId);
+		}
+
 		if (Validator.isNotNull(options)) {
 			commerceOrderItem =
 				_commerceOrderItemService.updateCommerceOrderItem(
@@ -313,6 +321,10 @@ public class CartItemResourceImpl extends BaseCartItemResourceImpl {
 			else {
 				shippingAddressId = commerceOrderItem.getShippingAddressId();
 			}
+		}
+
+		if (shippingAddressId > 0) {
+			_commerceAddressService.getCommerceAddress(shippingAddressId);
 		}
 
 		String deliveryGroupName = GetterUtil.getString(
@@ -408,6 +420,14 @@ public class CartItemResourceImpl extends BaseCartItemResourceImpl {
 		CommerceChannelConfigurationUtil.validateGuestCheckout(
 			commerceOrder.getCommerceOrderId());
 
+		long requestedShippingAddressId = GetterUtil.getLong(
+			cartItem.getShippingAddressId());
+
+		if (requestedShippingAddressId > 0) {
+			_commerceAddressService.getCommerceAddress(
+				requestedShippingAddressId);
+		}
+
 		SkuUnitOfMeasure skuUnitOfMeasure = cartItem.getSkuUnitOfMeasure();
 		String skuUnitOfMeasureKey = StringPool.BLANK;
 
@@ -487,6 +507,10 @@ public class CartItemResourceImpl extends BaseCartItemResourceImpl {
 			else {
 				shippingAddressId = commerceOrderItem.getShippingAddressId();
 			}
+		}
+
+		if (shippingAddressId > 0) {
+			_commerceAddressService.getCommerceAddress(shippingAddressId);
 		}
 
 		String deliveryGroupName = GetterUtil.getString(
