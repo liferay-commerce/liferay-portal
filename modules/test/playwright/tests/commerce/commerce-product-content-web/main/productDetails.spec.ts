@@ -1727,7 +1727,7 @@ test(
 
 test(
 	'Verify the storefront product page reflects the calculated stock quantity',
-	{tag: ['@COMMERCE-11873']},
+	{tag: ['@COMMERCE-11873', '@LPD-106599']},
 	async ({
 		apiHelpers,
 		commerceAdminChannelsPage,
@@ -1749,19 +1749,21 @@ test(
 			'B2B'
 		);
 
+		const productConfiguration = {
+			allowBackOrder: false,
+			displayAvailability: true,
+			displayStockQuantity: true,
+			maxOrderQuantity: 10000,
+			minOrderQuantity: 1,
+			minStockQuantity: 0,
+			multipleOrderQuantity: 1,
+		};
+
 		const product =
 			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
 				catalogId: catalog.id,
 				name: {en_US: 'Product' + getRandomInt()},
-				productConfiguration: {
-					allowBackOrder: false,
-					displayAvailability: true,
-					displayStockQuantity: true,
-					maxOrderQuantity: 10000,
-					minOrderQuantity: 1,
-					minStockQuantity: 0,
-					multipleOrderQuantity: 1,
-				},
+				productConfiguration,
 				skus: [
 					{
 						cost: 0,
@@ -1867,6 +1869,152 @@ test(
 			await expect(page.getByText('0 in Stock')).toBeVisible();
 
 			await expect(productDetailsPage.addToCartButton).toBeDisabled();
+		});
+
+		const productId = String(product.productId);
+
+		await test.step('Verify allowing back orders enables ordering the product without stock', async () => {
+			await apiHelpers.headlessCommerceAdminCatalog.patchProduct(
+				productId,
+				{
+					name: product.name,
+					productConfiguration: {
+						...productConfiguration,
+						allowBackOrder: true,
+					},
+				}
+			);
+
+			await page.goto(`/web/${site.name}/p/${product.name['en_US']}`);
+
+			await expect(productDetailsPage.addToCartButton).toBeEnabled();
+		});
+
+		await test.step('Verify a sku that is not purchasable cannot be added to the cart', async () => {
+			await apiHelpers.headlessCommerceAdminCatalog.patchSku(sku.id, {
+				purchasable: false,
+				sku: sku.sku,
+			});
+
+			await page.goto(`/web/${site.name}/p/${product.name['en_US']}`);
+
+			await expect(productDetailsPage.addToCartButton).toBeDisabled();
+
+			await apiHelpers.headlessCommerceAdminCatalog.patchSku(sku.id, {
+				purchasable: true,
+				sku: sku.sku,
+			});
+		});
+
+		await test.step('Verify only the allowed order quantities are selectable', async () => {
+			await apiHelpers.headlessCommerceAdminCatalog.patchProduct(
+				productId,
+				{
+					name: product.name,
+					productConfiguration: {
+						...productConfiguration,
+						allowBackOrder: true,
+						allowedOrderQuantities: [1, 4, 5, 7, 11],
+					},
+				}
+			);
+
+			await page.goto(`/web/${site.name}/p/${product.name['en_US']}`);
+
+			await expect(
+				productDetailsPage.quantitySelect.locator('option')
+			).toHaveText(['1', '4', '5', '7', '11']);
+		});
+
+		await test.step('Verify the selectable quantities start from the minimum order quantity', async () => {
+			await apiHelpers.headlessCommerceAdminCatalog.patchProduct(
+				productId,
+				{
+					name: product.name,
+					productConfiguration: {
+						...productConfiguration,
+						allowBackOrder: true,
+						allowedOrderQuantities: [],
+						minOrderQuantity: 3,
+					},
+				}
+			);
+
+			await page.goto(`/web/${site.name}/p/${product.name['en_US']}`);
+
+			await expect(
+				productDetailsPage.minimumQuantityPerOrderLabel(3)
+			).toBeVisible();
+			await expect(productDetailsPage.quantitySelector).toHaveValue('3');
+
+			await productDetailsPage.quantitySelector.fill('');
+
+			await expect(productDetailsPage.addToCartButton).toBeDisabled();
+
+			await productDetailsPage.quantitySelector.fill('2');
+
+			await expect(
+				productDetailsPage.quantitySelectorErrorContainer
+			).toHaveClass(/has-error/);
+			await expect(
+				productDetailsPage.quantitySelectorPopoverMessage(
+					'Min quantity per order is 3'
+				)
+			).toHaveClass(/text-danger/);
+
+			await productDetailsPage.quantitySelector.fill('3');
+
+			await expect(
+				productDetailsPage.quantitySelectorErrorContainer
+			).not.toHaveClass(/has-error/);
+			await expect(productDetailsPage.addToCartButton).toBeEnabled();
+		});
+
+		await test.step('Verify the maximum order quantity is rounded down to the multiple order quantity', async () => {
+			await apiHelpers.headlessCommerceAdminCatalog.patchProduct(
+				productId,
+				{
+					name: product.name,
+					productConfiguration: {
+						...productConfiguration,
+						allowBackOrder: true,
+						maxOrderQuantity: 10,
+						multipleOrderQuantity: 4,
+					},
+				}
+			);
+
+			await page.goto(`/web/${site.name}/p/${product.name['en_US']}`);
+
+			await expect(productDetailsPage.quantitySelector).toHaveValue('4');
+
+			await productDetailsPage.quantitySelector.fill('12');
+
+			await expect(
+				productDetailsPage.quantitySelectorPopoverMessage(
+					'Maximum quantity per order is 8.'
+				)
+			).toHaveClass(/text-danger/);
+
+			await productDetailsPage.quantitySelector.fill('6');
+
+			await expect(
+				productDetailsPage.quantitySelectorPopoverMessage(
+					'Maximum quantity per order is 8.'
+				)
+			).not.toHaveClass(/text-danger/);
+			await expect(
+				productDetailsPage.quantitySelectorPopoverMessage(
+					'Quantity must be a multiple of 4'
+				)
+			).toHaveClass(/text-danger/);
+
+			await productDetailsPage.quantitySelector.fill('8');
+
+			await expect(
+				productDetailsPage.quantitySelectorErrorContainer
+			).not.toHaveClass(/has-error/);
+			await expect(productDetailsPage.addToCartButton).toBeEnabled();
 		});
 	}
 );
