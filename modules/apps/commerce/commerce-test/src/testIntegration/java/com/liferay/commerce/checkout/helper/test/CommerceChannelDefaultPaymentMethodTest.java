@@ -6,12 +6,15 @@
 package com.liferay.commerce.checkout.helper.test;
 
 import com.liferay.account.constants.AccountConstants;
+import com.liferay.account.constants.AccountRoleConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.account.test.util.CommerceAccountTestUtil;
 import com.liferay.commerce.checkout.helper.CommerceCheckoutStepHttpHelper;
 import com.liferay.commerce.constants.CommerceAddressConstants;
 import com.liferay.commerce.constants.CommerceCheckoutWebKeys;
+import com.liferay.commerce.constants.CommerceOrderActionKeys;
+import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.constants.CommerceWebKeys;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
@@ -37,16 +40,24 @@ import com.liferay.commerce.test.util.context.TestCommerceContext;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Country;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Region;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.Sync;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
-import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -75,6 +86,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
  * @author Crescenzo Rega
  */
 @RunWith(Arquillian.class)
+@Sync
 public class CommerceChannelDefaultPaymentMethodTest {
 
 	@ClassRule
@@ -287,6 +299,53 @@ public class CommerceChannelDefaultPaymentMethodTest {
 			"mercanet", _commerceOrder.getCommercePaymentMethodKey());
 	}
 
+	@Test
+	public void testIsActivePaymentMethodCommerceCheckoutStepWithoutPermission()
+		throws Exception {
+
+		_addCommercePaymentMethodGroupRel(true, "authorize-net", 1);
+		_addCommercePaymentMethodGroupRel(true, "money-order", 2);
+
+		Role role = _roleLocalService.getRole(
+			_group.getCompanyId(),
+			AccountRoleConstants.ROLE_NAME_ACCOUNT_BUYER);
+
+		_resourcePermissionLocalService.removeResourcePermission(
+			_group.getCompanyId(), CommerceOrderConstants.RESOURCE_NAME,
+			ResourceConstants.SCOPE_GROUP_TEMPLATE,
+			String.valueOf(GroupConstants.DEFAULT_PARENT_GROUP_ID),
+			role.getRoleId(),
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PAYMENT_METHODS);
+
+		try {
+			User user = UserTestUtil.addUser(_group.getGroupId());
+
+			_userGroupRoleLocalService.addUserGroupRole(
+				user.getUserId(), _accountEntry.getAccountEntryGroupId(),
+				role.getRoleId());
+
+			PermissionThreadLocal.setPermissionChecker(
+				PermissionCheckerFactoryUtil.create(user));
+
+			boolean activePaymentMethodCommerceCheckoutStep =
+				_isActivePaymentMethodCommerceCheckoutStep();
+
+			Assert.assertEquals(
+				"money-order", _commerceOrder.getCommercePaymentMethodKey());
+			Assert.assertFalse(activePaymentMethodCommerceCheckoutStep);
+		}
+		finally {
+			_resourcePermissionLocalService.addResourcePermission(
+				_group.getCompanyId(), CommerceOrderConstants.RESOURCE_NAME,
+				ResourceConstants.SCOPE_GROUP_TEMPLATE,
+				String.valueOf(GroupConstants.DEFAULT_PARENT_GROUP_ID),
+				role.getRoleId(),
+				CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PAYMENT_METHODS);
+		}
+
+		Assert.assertTrue(_isActivePaymentMethodCommerceCheckoutStep());
+	}
+
 	private void _addCommerceChannelAccountEntryRel(
 			CommercePaymentMethodGroupRel commercePaymentMethodGroupRel)
 		throws Exception {
@@ -335,7 +394,9 @@ public class CommerceChannelDefaultPaymentMethodTest {
 					getCommercePaymentMethodGroupRelId());
 	}
 
-	private void _isActivePaymentMethodCommerceCheckoutStep() throws Exception {
+	private boolean _isActivePaymentMethodCommerceCheckoutStep()
+		throws Exception {
+
 		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
 
 		httpServletRequest.setAttribute(
@@ -348,23 +409,28 @@ public class CommerceChannelDefaultPaymentMethodTest {
 
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
 		themeDisplay.setCompany(
 			_companyLocalService.getCompany(_group.getCompanyId()));
-		themeDisplay.setPermissionChecker(
-			PermissionThreadLocal.getPermissionChecker());
+		themeDisplay.setPermissionChecker(permissionChecker);
 		themeDisplay.setRequest(new MockHttpServletRequest());
 		themeDisplay.setScopeGroupId(_commerceChannel.getGroupId());
 		themeDisplay.setSiteGroupId(_group.getGroupId());
-		themeDisplay.setUser(TestPropsValues.getUser());
+		themeDisplay.setUser(permissionChecker.getUser());
 
 		httpServletRequest.setAttribute(WebKeys.THEME_DISPLAY, themeDisplay);
 
-		_commerceCheckoutStepHttpHelper.
-			isActivePaymentMethodCommerceCheckoutStep(
-				httpServletRequest, _commerceOrder);
+		boolean activePaymentMethodCommerceCheckoutStep =
+			_commerceCheckoutStepHttpHelper.
+				isActivePaymentMethodCommerceCheckoutStep(
+					httpServletRequest, _commerceOrder);
 
 		_commerceOrder = _commerceOrderLocalService.getCommerceOrder(
 			_commerceOrder.getCommerceOrderId());
+
+		return activePaymentMethodCommerceCheckoutStep;
 	}
 
 	private void _setCommerceOrderType(CommerceOrderType commerceOrderType) {
@@ -413,6 +479,16 @@ public class CommerceChannelDefaultPaymentMethodTest {
 	private CompanyLocalService _companyLocalService;
 
 	private Group _group;
+
+	@Inject
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Inject
+	private RoleLocalService _roleLocalService;
+
 	private User _user;
+
+	@Inject
+	private UserGroupRoleLocalService _userGroupRoleLocalService;
 
 }
