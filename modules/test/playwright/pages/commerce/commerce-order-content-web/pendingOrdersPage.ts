@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Locator, Page, expect} from '@playwright/test';
+import {FrameLocator, Locator, Page, expect} from '@playwright/test';
 
 import {DataApiHelpers} from '../../../helpers/ApiHelpers';
+import {waitForAlert} from '../../../utils/waitForAlert';
 import {
 	CommerceDNDTablePage,
 	searchTableRowByValue,
@@ -15,6 +16,10 @@ import {CommerceLayoutsPage} from './commerceLayoutsPage';
 export class PendingOrdersPage extends CommerceDNDTablePage {
 	readonly approveButton: Locator;
 	readonly checkoutButton: Locator;
+	readonly configurationIFrame: FrameLocator;
+	readonly configurationIFrameDisplayTemplateSelector: Locator;
+	readonly configurationIFrameSaveButton: Locator;
+	readonly configurationMenuItem: Locator;
 	readonly deleteMenuItem: Locator;
 	readonly doneButton: Locator;
 	readonly editMenuItem: Locator;
@@ -22,6 +27,7 @@ export class PendingOrdersPage extends CommerceDNDTablePage {
 	readonly importFromCSVMenuItem: Locator;
 	readonly importerTypeMenuButton: Locator;
 	readonly layoutsPage: CommerceLayoutsPage;
+	readonly optionsButton: Locator;
 	readonly orderActionsButton: Locator;
 	readonly orderCell: (orderId: string) => Locator;
 	readonly orderColumn: (rowIndex: number, rowColumn: number) => Locator;
@@ -44,6 +50,7 @@ export class PendingOrdersPage extends CommerceDNDTablePage {
 	readonly pageLabel: Locator;
 	readonly pageTitle: Locator;
 	readonly panelList: Locator;
+	readonly portlet: Locator;
 	readonly printMenuItem: Locator;
 	readonly questionsAndAnswersLink: Locator;
 	readonly questionAndAnswersText: Locator;
@@ -64,6 +71,21 @@ export class PendingOrdersPage extends CommerceDNDTablePage {
 			name: 'Approve',
 		});
 		this.checkoutButton = page.getByText('Checkout');
+		this.configurationIFrame = page.frameLocator(
+			'iframe[id="modalIframe"]'
+		);
+		this.configurationIFrameDisplayTemplateSelector =
+			this.configurationIFrame.locator(
+				'[id="_com_liferay_portlet_configuration_web_portlet_PortletConfigurationPortlet_displayStyle"]'
+			);
+		this.configurationIFrameSaveButton = this.configurationIFrame.getByRole(
+			'button',
+			{name: 'Save'}
+		);
+		this.configurationMenuItem = page.getByRole('menuitem', {
+			exact: true,
+			name: 'Configuration',
+		});
 		this.doneButton = page.getByRole('button', {
 			exact: true,
 			name: 'Done',
@@ -86,6 +108,10 @@ export class PendingOrdersPage extends CommerceDNDTablePage {
 		});
 		this.importerTypeMenuButton = page.locator('.thumb-menu');
 		this.layoutsPage = new CommerceLayoutsPage(page);
+		this.portlet = page.locator(
+			'#portlet_com_liferay_commerce_order_content_web_internal_portlet_CommerceOpenOrderContentPortlet'
+		);
+		this.optionsButton = this.portlet.getByLabel('Options');
 		this.orderActionsButton = page.getByRole('button', {
 			exact: true,
 			name: 'Actions',
@@ -239,5 +265,26 @@ export class PendingOrdersPage extends CommerceDNDTablePage {
 
 	async goto() {
 		await this.layoutsPage.goto();
+	}
+
+	async goToConfiguration() {
+		await this.optionsButton.click();
+
+		await this.configurationMenuItem.click();
+	}
+
+	async selectDisplayTemplate(displayTemplateName: string) {
+		await this.configurationIFrameDisplayTemplateSelector.click();
+
+		await this.configurationIFrame
+			.getByRole('option', {name: displayTemplateName})
+			.click();
+
+		await this.configurationIFrameSaveButton.click();
+
+		await waitForAlert(
+			this.configurationIFrame,
+			'Success:You have successfully updated the setup'
+		);
 	}
 }
