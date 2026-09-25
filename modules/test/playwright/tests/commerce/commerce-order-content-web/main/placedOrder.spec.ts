@@ -2324,3 +2324,88 @@ test(
 		await performLoginViaApi({page, screenName: 'test'});
 	}
 );
+
+test(
+	'A placed order shows its delivery and payment terms without offering to edit them',
+	{tag: '@LPD-107065'},
+	async ({
+		apiHelpers,
+		commerceAdminChannelsPage,
+		page,
+		placedOrdersPage,
+		site,
+	}) => {
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getWidgetDefinition({
+					id: getRandomString(),
+					widgetName:
+						'com_liferay_commerce_order_content_web_internal_portlet_CommerceOrderContentPortlet',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		const channel =
+			await apiHelpers.headlessCommerceAdminChannel.postChannel({
+				siteGroupId: site.id,
+			});
+
+		await commerceAdminChannelsPage.changeCommerceChannelSiteType(
+			channel.name,
+			'B2B'
+		);
+
+		const {account, buyerUser} = await createAccountWithBuyerUser(
+			apiHelpers,
+			site.id
+		);
+
+		const deliveryTerm =
+			await apiHelpers.headlessCommerceAdminOrder.postTerm({
+				type: 'delivery-terms',
+			});
+		const paymentTerm =
+			await apiHelpers.headlessCommerceAdminOrder.postTerm({
+				type: 'payment-terms',
+			});
+
+		await apiHelpers.headlessCommerceAdminOrder.postOrder({
+			accountId: account.id,
+			channelId: channel.id,
+			deliveryTermId: deliveryTerm.id,
+			orderStatus: '1',
+			paymentTermId: paymentTerm.id,
+		});
+
+		await performLogout(page);
+		await performLoginViaApi({page, screenName: buyerUser.alternateName});
+
+		await page.goto(
+			`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`,
+			{waitUntil: 'networkidle'}
+		);
+
+		await placedOrdersPage.viewButton.click();
+
+		await expect(
+			placedOrdersPage.portlet.getByRole('link', {
+				exact: true,
+				name: deliveryTerm.label.en_US,
+			})
+		).toBeVisible();
+		await expect(
+			placedOrdersPage.portlet.getByRole('link', {
+				exact: true,
+				name: paymentTerm.label.en_US,
+			})
+		).toBeVisible();
+
+		await expect(
+			placedOrdersPage.portlet.getByText('Edit', {exact: true})
+		).toHaveCount(0);
+
+		await performLoginViaApi({page, screenName: 'test'});
+	}
+);

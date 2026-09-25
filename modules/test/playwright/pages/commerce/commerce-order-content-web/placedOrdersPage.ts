@@ -34,6 +34,7 @@ export class PlacedOrdersPage extends CommerceDNDTablePage {
 	readonly pageTitle: Locator;
 	readonly panelList: Locator;
 	readonly placedOrderTableViewButton: Locator;
+	readonly portlet: Locator;
 	readonly searchButton: Locator;
 	readonly searchInput: Locator;
 	readonly commerceShippingAddress: Locator;
@@ -72,11 +73,10 @@ export class PlacedOrdersPage extends CommerceDNDTablePage {
 			.locator('.autofit-col-toggle')
 			.getByRole('button');
 		this.layoutsPage = new CommerceLayoutsPage(page);
-		this.optionsButton = page
-			.locator(
-				'#portlet_com_liferay_commerce_order_content_web_internal_portlet_CommerceOrderContentPortlet'
-			)
-			.getByLabel('Options');
+		this.portlet = page.locator(
+			'#portlet_com_liferay_commerce_order_content_web_internal_portlet_CommerceOrderContentPortlet'
+		);
+		this.optionsButton = this.portlet.getByLabel('Options');
 		this.orderAccountName = (accountName: string) =>
 			this.table.getByText(accountName);
 		this.orderCell = (orderId) => page.getByRole('cell', {name: orderId});
