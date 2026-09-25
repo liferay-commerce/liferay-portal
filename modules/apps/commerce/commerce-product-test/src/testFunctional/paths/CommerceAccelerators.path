@@ -837,11 +837,6 @@
 	<td>//div[contains(@class,'input-group-item-shrink')]//button[contains(@class,'btn-primary')]</td>
 	<td></td>
 </tr>
-<tr>
-	<td>PRODUCT_CHIP_REMOVE_ICON</td>
-	<td>//span[contains(.,"${key_productSku}")]//button[contains(@class,'close')]</td>
-	<td></td>
-</tr>
 
 <!--ORDERS-->
 
