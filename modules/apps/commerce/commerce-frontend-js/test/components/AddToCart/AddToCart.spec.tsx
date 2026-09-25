@@ -366,4 +366,79 @@ describe('Add to Cart', () => {
 			).toEqual(['2', '3', '6']);
 		});
 	});
+
+	describe('bundled-product variants and purchasable contract', () => {
+
+		// eslint-disable-next-line @typescript-eslint/no-var-requires
+		const {
+			mockBundledProductMultiSku,
+			mockBundledProductSingleSku,
+
+			// @ts-ignore
+		} = require('../fixtures/productFixtures');
+
+		it('a single-SKU bundled product (purchasable=true) renders an enabled add-to-cart button alongside the quantity selector', () => {
+			const addToCart = render(
+				<AddToCart {...mockBundledProductSingleSku()} />
+			);
+
+			const {button, input} = getLocators(addToCart);
+
+			expect(input).toBeInTheDocument();
+			expect(button).toBeInTheDocument();
+			expect(button).not.toBeDisabled();
+		});
+
+		it('a static-price single-SKU bundled product also renders an enabled add-to-cart button (the price-type does not affect the AddToCart contract)', () => {
+			const addToCart = render(
+				<AddToCart
+					{...mockBundledProductSingleSku({
+						settings: {priceType: 'static'},
+					})}
+				/>
+			);
+
+			const {button, input} = getLocators(addToCart);
+
+			expect(input).toBeInTheDocument();
+			expect(button).toBeInTheDocument();
+			expect(button).not.toBeDisabled();
+		});
+
+		it('a multi-SKU bundled product (purchasable=false) renders the add-to-cart button in the disabled state', () => {
+			const addToCart = render(
+				<AddToCart {...mockBundledProductMultiSku()} />
+			);
+
+			const {button} = getLocators(addToCart);
+
+			expect(button).toBeInTheDocument();
+			expect(button).toBeDisabled();
+		});
+
+		it('a static-price multi-SKU bundled product also renders the add-to-cart button disabled', () => {
+			const addToCart = render(
+				<AddToCart
+					{...mockBundledProductMultiSku({
+						settings: {priceType: 'static'},
+					})}
+				/>
+			);
+
+			const {button} = getLocators(addToCart);
+
+			expect(button).toBeInTheDocument();
+			expect(button).toBeDisabled();
+		});
+
+		it('when a product cannot be purchased directly (purchasable=false), AddToCart is disabled — the surrounding product card is expected to surface a "view all variants" link instead', () => {
+			const addToCart = render(
+				<AddToCart {...mockBundledProductMultiSku()} />
+			);
+
+			const {button} = getLocators(addToCart);
+
+			expect(button).toBeDisabled();
+		});
+	});
 });
