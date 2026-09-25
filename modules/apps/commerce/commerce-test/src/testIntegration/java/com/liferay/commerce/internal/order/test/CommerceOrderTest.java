@@ -405,20 +405,7 @@ public class CommerceOrderTest {
 
 		for (CommerceOrder commerceOrder : randomOrders) {
 			if (RandomTestUtil.randomBoolean()) {
-				CommerceAddress commerceAddress = _addAddressToAccount(
-					commerceOrder.getCommerceAccountId());
-
-				commerceOrder.setBillingAddressId(
-					commerceAddress.getCommerceAddressId());
-				commerceOrder.setShippingAddressId(
-					commerceAddress.getCommerceAddressId());
-
-				commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
-					commerceOrder);
-
-				placedCommerceOrders.add(
-					_commerceOrderEngine.checkoutCommerceOrder(
-						commerceOrder, _user.getUserId()));
+				placedCommerceOrders.add(_checkoutCommerceOrder(commerceOrder));
 			}
 		}
 
@@ -594,19 +581,7 @@ public class CommerceOrderTest {
 
 		// Checkout the first order
 
-		CommerceAddress commerceAddress = _addAddressToAccount(
-			accountEntry.getAccountEntryId());
-
-		commerceOrder.setBillingAddressId(
-			commerceAddress.getCommerceAddressId());
-		commerceOrder.setShippingAddressId(
-			commerceAddress.getCommerceAddressId());
-
-		commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
-			commerceOrder);
-
-		commerceOrder = _commerceOrderEngine.checkoutCommerceOrder(
-			commerceOrder, _user.getUserId());
+		commerceOrder = _checkoutCommerceOrder(commerceOrder);
 
 		ordersCountByUser = _getUserOrdersCount(commerceChannelGroupId, true);
 
@@ -624,19 +599,7 @@ public class CommerceOrderTest {
 
 		// Checkout the second order
 
-		CommerceAddress secondCommerceAddress = _addAddressToAccount(
-			secondAccountEntry.getAccountEntryId());
-
-		secondCommerceOrder.setBillingAddressId(
-			secondCommerceAddress.getCommerceAddressId());
-		secondCommerceOrder.setShippingAddressId(
-			secondCommerceAddress.getCommerceAddressId());
-
-		secondCommerceOrder = _commerceOrderLocalService.updateCommerceOrder(
-			secondCommerceOrder);
-
-		secondCommerceOrder = _commerceOrderEngine.checkoutCommerceOrder(
-			secondCommerceOrder, _user.getUserId());
+		secondCommerceOrder = _checkoutCommerceOrder(secondCommerceOrder);
 
 		ordersCountByUser = _getUserOrdersCount(commerceChannelGroupId, true);
 
@@ -703,9 +666,6 @@ public class CommerceOrderTest {
 
 		_commerceOrderLocalService.deleteCommerceOrder(commerceOrder);
 		_commerceOrderLocalService.deleteCommerceOrder(secondCommerceOrder);
-		_commerceAddressLocalService.deleteCommerceAddress(commerceAddress);
-		_commerceAddressLocalService.deleteCommerceAddress(
-			secondCommerceAddress);
 		_accountEntryLocalService.deleteAccountEntry(accountEntry);
 		_accountEntryLocalService.deleteAccountEntry(secondAccountEntry);
 		_organizationLocalService.deleteUserOrganization(
@@ -906,25 +866,11 @@ public class CommerceOrderTest {
 
 		long commerceChannelGroupId = _commerceChannel.getGroupId();
 
-		CommerceOrder commerceOrder =
+		CommerceOrder commerceOrder = _checkoutCommerceOrder(
 			_commerceOrderLocalService.addCommerceOrder(
 				_user.getUserId(), commerceChannelGroupId,
 				accountEntry.getAccountEntryId(), _commerceCurrency.getCode(),
-				0);
-
-		CommerceAddress commerceAddress = _addAddressToAccount(
-			accountEntry.getAccountEntryId());
-
-		commerceOrder.setBillingAddressId(
-			commerceAddress.getCommerceAddressId());
-		commerceOrder.setShippingAddressId(
-			commerceAddress.getCommerceAddressId());
-
-		commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
-			commerceOrder);
-
-		commerceOrder = _commerceOrderEngine.checkoutCommerceOrder(
-			commerceOrder, _user.getUserId());
+				0));
 
 		int ordersCountByAccountId =
 			_commerceOrderService.getPlacedCommerceOrdersCount(
@@ -952,6 +898,90 @@ public class CommerceOrderTest {
 		actualCommerceOrder = commerceOrders.get(0);
 
 		Assert.assertEquals(commerceOrder, actualCommerceOrder);
+
+		_commerceOrderLocalService.deleteCommerceOrders(commerceChannelGroupId);
+		_accountEntryLocalService.deleteAccountEntry(accountEntry);
+	}
+
+	@Test
+	public void testGetUserPendingCommerceOrdersByCommerceOrderId()
+		throws Exception {
+
+		AccountEntry accountEntry =
+			CommerceAccountTestUtil.addBusinessAccountEntry(
+				_user.getUserId(), RandomTestUtil.randomString(), null, null,
+				new long[] {_user.getUserId()}, null, _serviceContext);
+
+		long commerceChannelGroupId = _commerceChannel.getGroupId();
+
+		_commerceOrderLocalService.addCommerceOrder(
+			_user.getUserId(), commerceChannelGroupId,
+			accountEntry.getAccountEntryId(), _commerceCurrency.getCode(), 0);
+
+		CommerceOrder commerceOrder =
+			_commerceOrderLocalService.addCommerceOrder(
+				_user.getUserId(), commerceChannelGroupId,
+				accountEntry.getAccountEntryId(), _commerceCurrency.getCode(),
+				0);
+
+		String keywords = String.valueOf(commerceOrder.getCommerceOrderId());
+
+		Assert.assertEquals(
+			1,
+			_commerceOrderService.getUserPendingCommerceOrdersCount(
+				_group.getCompanyId(), commerceChannelGroupId, keywords));
+
+		List<CommerceOrder> commerceOrders =
+			_commerceOrderService.getUserPendingCommerceOrders(
+				_group.getCompanyId(), commerceChannelGroupId, keywords,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+		Assert.assertEquals(
+			commerceOrders.toString(), 1, commerceOrders.size());
+		Assert.assertEquals(commerceOrder, commerceOrders.get(0));
+
+		_commerceOrderLocalService.deleteCommerceOrders(commerceChannelGroupId);
+		_accountEntryLocalService.deleteAccountEntry(accountEntry);
+	}
+
+	@Test
+	public void testGetUserPlacedCommerceOrdersByCommerceOrderId()
+		throws Exception {
+
+		AccountEntry accountEntry =
+			CommerceAccountTestUtil.addBusinessAccountEntry(
+				_user.getUserId(), RandomTestUtil.randomString(), null, null,
+				new long[] {_user.getUserId()}, null, _serviceContext);
+
+		long commerceChannelGroupId = _commerceChannel.getGroupId();
+
+		_checkoutCommerceOrder(
+			_commerceOrderLocalService.addCommerceOrder(
+				_user.getUserId(), commerceChannelGroupId,
+				accountEntry.getAccountEntryId(), _commerceCurrency.getCode(),
+				0));
+
+		CommerceOrder commerceOrder = _checkoutCommerceOrder(
+			_commerceOrderLocalService.addCommerceOrder(
+				_user.getUserId(), commerceChannelGroupId,
+				accountEntry.getAccountEntryId(), _commerceCurrency.getCode(),
+				0));
+
+		String keywords = String.valueOf(commerceOrder.getCommerceOrderId());
+
+		Assert.assertEquals(
+			1,
+			_commerceOrderService.getUserPlacedCommerceOrdersCount(
+				_group.getCompanyId(), commerceChannelGroupId, keywords));
+
+		List<CommerceOrder> commerceOrders =
+			_commerceOrderService.getUserPlacedCommerceOrders(
+				_group.getCompanyId(), commerceChannelGroupId, keywords,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+		Assert.assertEquals(
+			commerceOrders.toString(), 1, commerceOrders.size());
+		Assert.assertEquals(commerceOrder, commerceOrders.get(0));
 
 		_commerceOrderLocalService.deleteCommerceOrders(commerceChannelGroupId);
 		_accountEntryLocalService.deleteAccountEntry(accountEntry);
@@ -1148,6 +1178,22 @@ public class CommerceOrderTest {
 			"MANAGE_ORGANIZATIONS");
 
 		return role;
+	}
+
+	private CommerceOrder _checkoutCommerceOrder(CommerceOrder commerceOrder)
+		throws Exception {
+
+		CommerceAddress commerceAddress = _addAddressToAccount(
+			commerceOrder.getCommerceAccountId());
+
+		commerceOrder.setBillingAddressId(
+			commerceAddress.getCommerceAddressId());
+		commerceOrder.setShippingAddressId(
+			commerceAddress.getCommerceAddressId());
+
+		return _commerceOrderEngine.checkoutCommerceOrder(
+			_commerceOrderLocalService.updateCommerceOrder(commerceOrder),
+			_user.getUserId());
 	}
 
 	private List<CommerceOrder> _getUserOrders(long groupId, boolean negate)
