@@ -405,20 +405,7 @@ public class CommerceOrderTest {
 
 		for (CommerceOrder commerceOrder : randomOrders) {
 			if (RandomTestUtil.randomBoolean()) {
-				CommerceAddress commerceAddress = _addAddressToAccount(
-					commerceOrder.getCommerceAccountId());
-
-				commerceOrder.setBillingAddressId(
-					commerceAddress.getCommerceAddressId());
-				commerceOrder.setShippingAddressId(
-					commerceAddress.getCommerceAddressId());
-
-				commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
-					commerceOrder);
-
-				placedCommerceOrders.add(
-					_commerceOrderEngine.checkoutCommerceOrder(
-						commerceOrder, _user.getUserId()));
+				placedCommerceOrders.add(_checkoutCommerceOrder(commerceOrder));
 			}
 		}
 
@@ -594,19 +581,7 @@ public class CommerceOrderTest {
 
 		// Checkout the first order
 
-		CommerceAddress commerceAddress = _addAddressToAccount(
-			accountEntry.getAccountEntryId());
-
-		commerceOrder.setBillingAddressId(
-			commerceAddress.getCommerceAddressId());
-		commerceOrder.setShippingAddressId(
-			commerceAddress.getCommerceAddressId());
-
-		commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
-			commerceOrder);
-
-		commerceOrder = _commerceOrderEngine.checkoutCommerceOrder(
-			commerceOrder, _user.getUserId());
+		commerceOrder = _checkoutCommerceOrder(commerceOrder);
 
 		ordersCountByUser = _getUserOrdersCount(commerceChannelGroupId, true);
 
@@ -624,19 +599,7 @@ public class CommerceOrderTest {
 
 		// Checkout the second order
 
-		CommerceAddress secondCommerceAddress = _addAddressToAccount(
-			secondAccountEntry.getAccountEntryId());
-
-		secondCommerceOrder.setBillingAddressId(
-			secondCommerceAddress.getCommerceAddressId());
-		secondCommerceOrder.setShippingAddressId(
-			secondCommerceAddress.getCommerceAddressId());
-
-		secondCommerceOrder = _commerceOrderLocalService.updateCommerceOrder(
-			secondCommerceOrder);
-
-		secondCommerceOrder = _commerceOrderEngine.checkoutCommerceOrder(
-			secondCommerceOrder, _user.getUserId());
+		secondCommerceOrder = _checkoutCommerceOrder(secondCommerceOrder);
 
 		ordersCountByUser = _getUserOrdersCount(commerceChannelGroupId, true);
 
@@ -703,9 +666,6 @@ public class CommerceOrderTest {
 
 		_commerceOrderLocalService.deleteCommerceOrder(commerceOrder);
 		_commerceOrderLocalService.deleteCommerceOrder(secondCommerceOrder);
-		_commerceAddressLocalService.deleteCommerceAddress(commerceAddress);
-		_commerceAddressLocalService.deleteCommerceAddress(
-			secondCommerceAddress);
 		_accountEntryLocalService.deleteAccountEntry(accountEntry);
 		_accountEntryLocalService.deleteAccountEntry(secondAccountEntry);
 		_organizationLocalService.deleteUserOrganization(
@@ -906,25 +866,11 @@ public class CommerceOrderTest {
 
 		long commerceChannelGroupId = _commerceChannel.getGroupId();
 
-		CommerceOrder commerceOrder =
+		CommerceOrder commerceOrder = _checkoutCommerceOrder(
 			_commerceOrderLocalService.addCommerceOrder(
 				_user.getUserId(), commerceChannelGroupId,
 				accountEntry.getAccountEntryId(), _commerceCurrency.getCode(),
-				0);
-
-		CommerceAddress commerceAddress = _addAddressToAccount(
-			accountEntry.getAccountEntryId());
-
-		commerceOrder.setBillingAddressId(
-			commerceAddress.getCommerceAddressId());
-		commerceOrder.setShippingAddressId(
-			commerceAddress.getCommerceAddressId());
-
-		commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
-			commerceOrder);
-
-		commerceOrder = _commerceOrderEngine.checkoutCommerceOrder(
-			commerceOrder, _user.getUserId());
+				0));
 
 		int ordersCountByAccountId =
 			_commerceOrderService.getPlacedCommerceOrdersCount(
@@ -1148,6 +1094,22 @@ public class CommerceOrderTest {
 			"MANAGE_ORGANIZATIONS");
 
 		return role;
+	}
+
+	private CommerceOrder _checkoutCommerceOrder(CommerceOrder commerceOrder)
+		throws Exception {
+
+		CommerceAddress commerceAddress = _addAddressToAccount(
+			commerceOrder.getCommerceAccountId());
+
+		commerceOrder.setBillingAddressId(
+			commerceAddress.getCommerceAddressId());
+		commerceOrder.setShippingAddressId(
+			commerceAddress.getCommerceAddressId());
+
+		return _commerceOrderEngine.checkoutCommerceOrder(
+			_commerceOrderLocalService.updateCommerceOrder(commerceOrder),
+			_user.getUserId());
 	}
 
 	private List<CommerceOrder> _getUserOrders(long groupId, boolean negate)
