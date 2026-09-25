@@ -108,8 +108,8 @@ public class ProductShippingConfigurationResourceImpl
 			Long id, ProductShippingConfiguration productShippingConfiguration)
 		throws Exception {
 
-		CPDefinition cpDefinition = ProductUtil.fetchCPDefinitionByCProductId(
-			id, _cpDefinitionService);
+		CPDefinition cpDefinition =
+			_cpDefinitionService.fetchCPDefinitionByCProductId(id);
 
 		if (cpDefinition == null) {
 			throw new NoSuchCPDefinitionException(

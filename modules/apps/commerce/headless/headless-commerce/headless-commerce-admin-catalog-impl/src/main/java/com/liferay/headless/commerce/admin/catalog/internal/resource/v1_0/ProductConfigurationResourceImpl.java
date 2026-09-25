@@ -341,8 +341,8 @@ public class ProductConfigurationResourceImpl
 			Long id, ProductConfiguration productConfiguration)
 		throws Exception {
 
-		CPDefinition cpDefinition = ProductUtil.fetchCPDefinitionByCProductId(
-			id, _cpDefinitionService);
+		CPDefinition cpDefinition =
+			_cpDefinitionService.fetchCPDefinitionByCProductId(id);
 
 		if (cpDefinition == null) {
 			throw new NoSuchCPDefinitionException(

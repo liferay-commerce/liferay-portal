@@ -340,8 +340,8 @@ public class AttachmentResourceImpl extends BaseAttachmentResourceImpl {
 	public Attachment postProductIdAttachment(Long id, Attachment attachment)
 		throws Exception {
 
-		CPDefinition cpDefinition = ProductUtil.fetchCPDefinitionByCProductId(
-			id, _cpDefinitionService);
+		CPDefinition cpDefinition =
+			_cpDefinitionService.fetchCPDefinitionByCProductId(id);
 
 		if (cpDefinition == null) {
 			throw new NoSuchCPDefinitionException(
@@ -356,8 +356,8 @@ public class AttachmentResourceImpl extends BaseAttachmentResourceImpl {
 			Long id, AttachmentBase64 attachmentBase64)
 		throws Exception {
 
-		CPDefinition cpDefinition = ProductUtil.fetchCPDefinitionByCProductId(
-			id, _cpDefinitionService);
+		CPDefinition cpDefinition =
+			_cpDefinitionService.fetchCPDefinitionByCProductId(id);
 
 		if (cpDefinition == null) {
 			throw new NoSuchCPDefinitionException(
@@ -372,8 +372,8 @@ public class AttachmentResourceImpl extends BaseAttachmentResourceImpl {
 			Long id, AttachmentUrl attachmentUrl)
 		throws Exception {
 
-		CPDefinition cpDefinition = ProductUtil.fetchCPDefinitionByCProductId(
-			id, _cpDefinitionService);
+		CPDefinition cpDefinition =
+			_cpDefinitionService.fetchCPDefinitionByCProductId(id);
 
 		if (cpDefinition == null) {
 			throw new NoSuchCPDefinitionException(
@@ -387,8 +387,8 @@ public class AttachmentResourceImpl extends BaseAttachmentResourceImpl {
 	public Attachment postProductIdImage(Long id, Attachment attachment)
 		throws Exception {
 
-		CPDefinition cpDefinition = ProductUtil.fetchCPDefinitionByCProductId(
-			id, _cpDefinitionService);
+		CPDefinition cpDefinition =
+			_cpDefinitionService.fetchCPDefinitionByCProductId(id);
 
 		if (cpDefinition == null) {
 			throw new NoSuchCPDefinitionException(
@@ -403,8 +403,8 @@ public class AttachmentResourceImpl extends BaseAttachmentResourceImpl {
 			Long id, AttachmentBase64 attachmentBase64)
 		throws Exception {
 
-		CPDefinition cpDefinition = ProductUtil.fetchCPDefinitionByCProductId(
-			id, _cpDefinitionService);
+		CPDefinition cpDefinition =
+			_cpDefinitionService.fetchCPDefinitionByCProductId(id);
 
 		if (cpDefinition == null) {
 			throw new NoSuchCPDefinitionException(
@@ -419,8 +419,8 @@ public class AttachmentResourceImpl extends BaseAttachmentResourceImpl {
 			Long id, AttachmentUrl attachmentUrl)
 		throws Exception {
 
-		CPDefinition cpDefinition = ProductUtil.fetchCPDefinitionByCProductId(
-			id, _cpDefinitionService);
+		CPDefinition cpDefinition =
+			_cpDefinitionService.fetchCPDefinitionByCProductId(id);
 
 		if (cpDefinition == null) {
 			throw new NoSuchCPDefinitionException(

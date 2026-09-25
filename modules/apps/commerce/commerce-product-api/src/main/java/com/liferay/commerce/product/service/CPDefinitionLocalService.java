@@ -315,6 +315,9 @@ public interface CPDefinitionLocalService
 		String externalReferenceCode, long companyId, int status);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CPDefinition fetchCPDefinitionByCProductId(long cProductId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CPDefinition fetchCPDefinitionByCProductId(
 		long cProductId, boolean excludeDraft);
 
@@ -726,4 +729,4 @@ public interface CPDefinitionLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:960126460
+// LIFERAY-SERVICE-BUILDER-HASH:-753415223

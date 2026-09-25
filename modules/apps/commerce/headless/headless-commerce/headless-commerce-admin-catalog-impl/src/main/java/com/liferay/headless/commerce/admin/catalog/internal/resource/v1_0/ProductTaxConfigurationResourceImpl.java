@@ -105,8 +105,8 @@ public class ProductTaxConfigurationResourceImpl
 			Long id, ProductTaxConfiguration productTaxConfiguration)
 		throws Exception {
 
-		CPDefinition cpDefinition = ProductUtil.fetchCPDefinitionByCProductId(
-			id, _cpDefinitionService);
+		CPDefinition cpDefinition =
+			_cpDefinitionService.fetchCPDefinitionByCProductId(id);
 
 		if (cpDefinition == null) {
 			throw new NoSuchCPDefinitionException(

@@ -202,6 +202,13 @@ public class CPDefinitionServiceWrapper
 	}
 
 	@Override
+	public CPDefinition fetchCPDefinitionByCProductId(long cProductId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpDefinitionService.fetchCPDefinitionByCProductId(cProductId);
+	}
+
+	@Override
 	public CPDefinition fetchCPDefinitionByCProductId(
 			long cProductId, boolean excludeDraft)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -492,4 +499,4 @@ public class CPDefinitionServiceWrapper
 	private CPDefinitionService _cpDefinitionService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-8494158
+// LIFERAY-SERVICE-BUILDER-HASH:1175253987

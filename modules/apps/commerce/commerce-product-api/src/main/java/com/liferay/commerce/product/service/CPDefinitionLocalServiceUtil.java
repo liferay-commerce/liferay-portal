@@ -384,6 +384,10 @@ public class CPDefinitionLocalServiceUtil {
 			externalReferenceCode, companyId, status);
 	}
 
+	public static CPDefinition fetchCPDefinitionByCProductId(long cProductId) {
+		return getService().fetchCPDefinitionByCProductId(cProductId);
+	}
+
 	public static CPDefinition fetchCPDefinitionByCProductId(
 		long cProductId, boolean excludeDraft) {
 
@@ -1011,4 +1015,4 @@ public class CPDefinitionLocalServiceUtil {
 			CPDefinitionLocalServiceUtil.class, CPDefinitionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-420942032
+// LIFERAY-SERVICE-BUILDER-HASH:-350366690

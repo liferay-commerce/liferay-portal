@@ -123,8 +123,8 @@ public class RelatedProductResourceImpl extends BaseRelatedProductResourceImpl {
 			Long id, RelatedProduct relatedProduct)
 		throws Exception {
 
-		CPDefinition cpDefinition = ProductUtil.fetchCPDefinitionByCProductId(
-			id, _cpDefinitionService);
+		CPDefinition cpDefinition =
+			_cpDefinitionService.fetchCPDefinitionByCProductId(id);
 
 		if (cpDefinition == null) {
 			throw new NoSuchCPDefinitionException(

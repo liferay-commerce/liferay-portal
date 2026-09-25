@@ -176,8 +176,8 @@ public class PinResourceImpl extends BasePinResourceImpl {
 
 	@Override
 	public Pin postProductIdPin(Long productId, Pin pin) throws Exception {
-		CPDefinition cpDefinition = ProductUtil.fetchCPDefinitionByCProductId(
-			productId, _cpDefinitionService);
+		CPDefinition cpDefinition =
+			_cpDefinitionService.fetchCPDefinitionByCProductId(productId);
 
 		if (cpDefinition == null) {
 			throw new NoSuchCPDefinitionException(

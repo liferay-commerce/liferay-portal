@@ -13,7 +13,6 @@ import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductTaxConfigurat
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 /**
  * @author Alessio Antonio Rendina
@@ -34,34 +33,8 @@ public class ProductUtil {
 			return cpDefinition;
 		}
 
-		return fetchCPDefinitionByCProductId(
-			cpDefinition.getCProductId(), cpDefinitionService);
-	}
-
-	public static CPDefinition fetchCPDefinitionByCProductId(
-			long cProductId, CPDefinitionService cpDefinitionService)
-		throws PortalException {
-
-		CPDefinition cpDefinition =
-			cpDefinitionService.fetchCPDefinitionByCProductId(
-				cProductId, false);
-
-		if ((cpDefinition == null) ||
-			!cpDefinitionService.isVersionable(cpDefinition) ||
-			cpDefinition.isDraft()) {
-
-			return cpDefinition;
-		}
-
-		CPDefinition draftCPDefinition =
-			cpDefinitionService.fetchCPDefinitionByCProductId(
-				cProductId, WorkflowConstants.STATUS_DRAFT);
-
-		if (draftCPDefinition != null) {
-			return draftCPDefinition;
-		}
-
-		return cpDefinition;
+		return cpDefinitionService.fetchCPDefinitionByCProductId(
+			cpDefinition.getCProductId());
 	}
 
 	public static CPDefinition getCPDefinitionByCProductExternalReferenceCode(

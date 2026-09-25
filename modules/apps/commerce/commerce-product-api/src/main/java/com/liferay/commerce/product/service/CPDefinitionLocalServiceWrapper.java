@@ -423,6 +423,12 @@ public class CPDefinitionLocalServiceWrapper
 	}
 
 	@Override
+	public CPDefinition fetchCPDefinitionByCProductId(long cProductId) {
+		return _cpDefinitionLocalService.fetchCPDefinitionByCProductId(
+			cProductId);
+	}
+
+	@Override
 	public CPDefinition fetchCPDefinitionByCProductId(
 		long cProductId, boolean excludeDraft) {
 
@@ -1175,4 +1181,4 @@ public class CPDefinitionLocalServiceWrapper
 	private CPDefinitionLocalService _cpDefinitionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1666409241
+// LIFERAY-SERVICE-BUILDER-HASH:1871705063

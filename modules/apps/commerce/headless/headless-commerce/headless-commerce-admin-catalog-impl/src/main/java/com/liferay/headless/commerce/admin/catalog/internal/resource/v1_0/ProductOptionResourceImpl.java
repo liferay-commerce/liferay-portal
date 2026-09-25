@@ -266,8 +266,8 @@ public class ProductOptionResourceImpl extends BaseProductOptionResourceImpl {
 			Long id, ProductOption[] productOptions)
 		throws Exception {
 
-		CPDefinition cpDefinition = ProductUtil.fetchCPDefinitionByCProductId(
-			id, _cpDefinitionService);
+		CPDefinition cpDefinition =
+			_cpDefinitionService.fetchCPDefinitionByCProductId(id);
 
 		if (cpDefinition == null) {
 			throw new NoSuchCPDefinitionException(

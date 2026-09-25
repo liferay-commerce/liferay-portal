@@ -139,8 +139,8 @@ public class CategoryResourceImpl extends BaseCategoryResourceImpl {
 	public Response patchProductIdCategory(Long id, Category[] categories)
 		throws Exception {
 
-		CPDefinition cpDefinition = ProductUtil.fetchCPDefinitionByCProductId(
-			id, _cpDefinitionService);
+		CPDefinition cpDefinition =
+			_cpDefinitionService.fetchCPDefinitionByCProductId(id);
 
 		if (cpDefinition == null) {
 			throw new NoSuchCPDefinitionException(

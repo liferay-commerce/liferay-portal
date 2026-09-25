@@ -246,6 +246,21 @@ public class CPDefinitionServiceImpl extends CPDefinitionServiceBaseImpl {
 	}
 
 	@Override
+	public CPDefinition fetchCPDefinitionByCProductId(long cProductId)
+		throws PortalException {
+
+		CPDefinition cpDefinition =
+			cpDefinitionLocalService.fetchCPDefinitionByCProductId(cProductId);
+
+		if (cpDefinition != null) {
+			_checkCommerceCatalogByCPDefinitionId(
+				cpDefinition.getCPDefinitionId(), ActionKeys.VIEW);
+		}
+
+		return cpDefinition;
+	}
+
+	@Override
 	public CPDefinition fetchCPDefinitionByCProductId(
 			long cProductId, boolean excludeDraft)
 		throws PortalException {

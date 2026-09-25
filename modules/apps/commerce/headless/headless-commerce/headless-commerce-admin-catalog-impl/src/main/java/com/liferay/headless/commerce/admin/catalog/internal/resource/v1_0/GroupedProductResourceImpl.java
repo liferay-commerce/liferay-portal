@@ -135,8 +135,8 @@ public class GroupedProductResourceImpl extends BaseGroupedProductResourceImpl {
 			Long productId, GroupedProduct groupedProduct)
 		throws Exception {
 
-		CPDefinition cpDefinition = ProductUtil.fetchCPDefinitionByCProductId(
-			productId, _cpDefinitionService);
+		CPDefinition cpDefinition =
+			_cpDefinitionService.fetchCPDefinitionByCProductId(productId);
 
 		if (cpDefinition == null) {
 			throw new NoSuchCPDefinitionException(

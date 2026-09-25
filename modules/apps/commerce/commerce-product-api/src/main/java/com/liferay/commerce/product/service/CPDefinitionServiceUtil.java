@@ -194,6 +194,12 @@ public class CPDefinitionServiceUtil {
 			externalReferenceCode, companyId, status);
 	}
 
+	public static CPDefinition fetchCPDefinitionByCProductId(long cProductId)
+		throws PortalException {
+
+		return getService().fetchCPDefinitionByCProductId(cProductId);
+	}
+
 	public static CPDefinition fetchCPDefinitionByCProductId(
 			long cProductId, boolean excludeDraft)
 		throws PortalException {
@@ -454,4 +460,4 @@ public class CPDefinitionServiceUtil {
 			CPDefinitionServiceUtil.class, CPDefinitionService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1251338214
+// LIFERAY-SERVICE-BUILDER-HASH:-964520072

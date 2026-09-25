@@ -101,8 +101,8 @@ public class DiagramResourceImpl extends BaseDiagramResourceImpl {
 
 		CPDefinition cpDefinition = csDiagramSetting.getCPDefinition();
 
-		cpDefinition = ProductUtil.fetchCPDefinitionByCProductId(
-			cpDefinition.getCProductId(), _cpDefinitionService);
+		cpDefinition = _cpDefinitionService.fetchCPDefinitionByCProductId(
+			cpDefinition.getCProductId());
 
 		DiagramUtil.updateCSDiagramSetting(
 			contextCompany.getCompanyId(), _cpAttachmentFileEntryService,
@@ -146,8 +146,8 @@ public class DiagramResourceImpl extends BaseDiagramResourceImpl {
 	public Diagram postProductIdDiagram(Long productId, Diagram diagram)
 		throws Exception {
 
-		CPDefinition cpDefinition = ProductUtil.fetchCPDefinitionByCProductId(
-			productId, _cpDefinitionService);
+		CPDefinition cpDefinition =
+			_cpDefinitionService.fetchCPDefinitionByCProductId(productId);
 
 		if (cpDefinition == null) {
 			throw new NoSuchCPDefinitionException(
