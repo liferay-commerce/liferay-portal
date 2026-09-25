@@ -1,45 +1,54 @@
 {
+	"backoffLimit": 0,
 	"concurrencyPolicy": "Forbid",
 	"cpu": 4,
 	"env": {
 		"GRADLE_OPTS": "-Dorg.gradle.daemon=false",
 		"JAVA_VERSION": "zulu21",
-		"LIFERAY_JAR_RUNNER_JAVA_OPTS": "-Xmx4096m",
+		"LIFERAY_JAR_RUNNER_JAVA_OPTS": "-Xmx2048m",
+		"LIFERAY_LEARN_ETC_CRON_DXP_DATA_DEFINITION_KEY": "LEARN-ARTICLE",
+		"LIFERAY_LEARN_ETC_CRON_DXP_SITE_FRIENDLY_URL_PATH": "guest",
+		"LIFERAY_LEARN_ETC_CRON_FORCE_REFERENCE_DOCS": "false",
+		"LIFERAY_LEARN_ETC_CRON_FORCE_RUN": "false",
 		"LIFERAY_LEARN_ETC_CRON_GITHUB_BRANCH": "master",
 		"LIFERAY_LEARN_ETC_CRON_GITHUB_DEPLOY_KEY": "@liferay-learn-github-deploy-key",
 		"LIFERAY_LEARN_ETC_CRON_GITHUB_USER": "liferay",
 		"LIFERAY_LEARN_ETC_CRON_GIT_REPOSITORY_DIR": "/home/liferay/liferay-learn",
-		"LIFERAY_LEARN_ETC_CRON_LIFERAY_DATA_DEFINITION_KEY": "LEARN-ARTICLE",
-		"LIFERAY_LEARN_ETC_CRON_LIFERAY_OAUTH_CLIENT_ID": "@liferay-oauth-client-id",
-		"LIFERAY_LEARN_ETC_CRON_LIFERAY_OAUTH_CLIENT_SECRET": "@liferay-oauth-client-secret",
-		"LIFERAY_LEARN_ETC_CRON_LIFERAY_SITE_FRIENDLY_URL_PATH": "guest",
-		"LIFERAY_LEARN_ETC_CRON_LIFERAY_URL": "https://learn-dev.liferay.com",
-		"LIFERAY_LEARN_ETC_CRON_SLACK_CHANNEL": "#is-sites-learn-devops-dev",
+		"LIFERAY_LEARN_ETC_CRON_OAUTH_CLIENT_ID": "@liferay-oauth-client-id",
+		"LIFERAY_LEARN_ETC_CRON_OAUTH_CLIENT_SECRET": "@liferay-oauth-client-secret",
+		"LIFERAY_LEARN_ETC_CRON_OFFLINE": "false",
+		"LIFERAY_LEARN_ETC_CRON_ORPHAN_CLEANUP": "true",
+		"LIFERAY_LEARN_ETC_CRON_ORPHAN_THRESHOLD_PERCENTAGE": "5",
+		"LIFERAY_LEARN_ETC_CRON_PARTIAL": "false",
+		"LIFERAY_LEARN_ETC_CRON_PREFLIGHT_TOC_EXCLUSIONS": "reference/latest/en/dxp/apps.md",
+		"LIFERAY_LEARN_ETC_CRON_RECONCILE_HOURS": "20",
+		"LIFERAY_LEARN_ETC_CRON_RETRY_HOURS": "6",
+		"LIFERAY_LEARN_ETC_CRON_RUN_PARALLEL": "true",
+		"LIFERAY_LEARN_ETC_CRON_SKIP_LOCALES_CONTENT": "ko",
+		"LIFERAY_LEARN_ETC_CRON_SKIP_MD5_CHECK": "false",
+		"LIFERAY_LEARN_ETC_CRON_SKIP_UPDATE_EXAMPLES": "",
 		"LIFERAY_LEARN_ETC_CRON_SLACK_ENDPOINT": "@slack-endpoint",
-		"LIFERAY_LEARN_ETC_SKIP_DIFF_CHECK": false,
-		"LIFERAY_LEARN_ETC_SKIP_JAPANESE_CONTENT": true,
-		"LIFERAY_LEARN_RESOURCE_DOMAIN": "https://resources.learn-dev.liferay.com",
-		"LIFERAY_ROUTES_CLIENT_EXTENSION": "/etc/liferay/lxc/ext-init-metadata",
-		"LIFERAY_ROUTES_DXP": "/etc/liferay/lxc/dxp-metadata"
+		"LIFERAY_LEARN_ETC_CRON_VERIFY_THRESHOLD_PERCENTAGE": "5",
+		"LIFERAY_LEARN_UPDATE_EXAMPLES_JOBS": "4"
 	},
 	"environments": {
+		"extdev": {
+			"env": {
+				"LIFERAY_LEARN_ETC_CRON_DXP_URL": "https://learn-dev.liferay.com",
+				"LIFERAY_LEARN_ETC_CRON_SLACK_CHANNEL": "#lr-learn-cron-1-dev",
+				"LIFERAY_LEARN_RESOURCE_DOMAIN": "https://resources.learn-dev.liferay.com"
+			}
+		},
 		"extprd": {
 			"env": {
-				"LIFERAY_LEARN_ETC_CRON_LIFERAY_URL": "https://learn.liferay.com",
+				"LIFERAY_LEARN_ETC_CRON_DXP_URL": "https://learn.liferay.com",
+				"LIFERAY_LEARN_ETC_CRON_ORPHAN_CLEANUP": "false",
 				"LIFERAY_LEARN_ETC_CRON_SLACK_CHANNEL": "#is-sites-learn-devops-prd",
-				"LIFERAY_LEARN_ETC_SPRING_BOOT_SERVER_URL": "https://liferaylearnetcspringboot-exte5a2learn-extprd.lfr.cloud",
 				"LIFERAY_LEARN_RESOURCE_DOMAIN": "https://resources.learn.liferay.com"
-			},
-			"schedule": "0 15 * * *"
+			}
 		},
 		"extuat": {
-			"env": {
-				"LIFERAY_LEARN_ETC_CRON_LIFERAY_URL": "https://learn-uat.liferay.com",
-				"LIFERAY_LEARN_ETC_CRON_SLACK_CHANNEL": "#is-sites-learn-devops-uat",
-				"LIFERAY_LEARN_ETC_SPRING_BOOT_SERVER_URL": "https://liferaylearnetcspringboot-exte5a2learn-extuat.lfr.cloud",
-				"LIFERAY_LEARN_RESOURCE_DOMAIN": "https://resources.learn-uat.liferay.com"
-			},
-			"schedule": "0 15 * * *"
+			"deploy": false
 		},
 		"infra": {
 			"deploy": false
@@ -49,7 +58,7 @@
 	"kind": "CronJob",
 	"memory": 3000,
 	"scale": 1,
-	"schedule": "0 10 * * 1",
+	"schedule": "0 */2 * * *",
 	"volumes": {
 		"publicHtml": "/public_html"
 	}
