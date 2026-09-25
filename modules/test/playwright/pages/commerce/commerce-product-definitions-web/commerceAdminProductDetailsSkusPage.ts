@@ -14,6 +14,23 @@ export class CommerceAdminProductDetailsSkusPage extends CommerceDNDTablePage {
 	readonly addSkuUOMButton: Locator;
 	readonly closeSidePanelFrame: (isNestedFrame: boolean) => Promise<Locator>;
 	readonly incrementalOrderQuantity: Locator;
+	readonly inventoryTableRowFor: (
+		warehouseName: string,
+		unitOfMeasureKey?: string
+	) => Locator;
+	readonly inventoryTableRowQuantityInput: (
+		warehouseName: string,
+		unitOfMeasureKey?: string
+	) => Locator;
+	readonly inventoryTableRowSaveButton: (
+		warehouseName: string,
+		unitOfMeasureKey?: string
+	) => Locator;
+	readonly inventoryTableRowUnitOfMeasureCell: (
+		warehouseName: string,
+		unitOfMeasureKey?: string
+	) => Locator;
+	readonly inventoryTableRows: Locator;
 	readonly inventoryTableRow: (
 		colPosition: number,
 		value: number | string,
@@ -27,6 +44,13 @@ export class CommerceAdminProductDetailsSkusPage extends CommerceDNDTablePage {
 	readonly sidePanelFrame: FrameLocator;
 	readonly sidePanelInventoryTable: Locator;
 	readonly sidePanelNestedFrame: FrameLocator;
+	readonly sidePanelPriceTableRow: (entryName: string) => Locator;
+	readonly sidePanelPriceTableRowUnitOfMeasure: (
+		entryName: string
+	) => Locator;
+	readonly sidePanelPriceTableRowUnitPrice: (entryName: string) => Locator;
+	readonly skuUOMModalAddButton: Locator;
+	readonly skuUOMModalField: (label: string) => Locator;
 	readonly sidePanelNestedPriceListPrice: Locator;
 	readonly sidePanelNestedSaveButton: Locator;
 	readonly sidePanelSaveButton: Locator;
@@ -259,6 +283,59 @@ export class CommerceAdminProductDetailsSkusPage extends CommerceDNDTablePage {
 		this.skuUOMFrameCancelButton = this.sidePanelFrame
 			.frameLocator('iframe')
 			.getByRole('button', {name: 'Cancel'});
+		this.inventoryTableRows =
+			this.sidePanelInventoryTable.locator('tbody tr');
+		this.inventoryTableRowFor = (
+			warehouseName: string,
+			unitOfMeasureKey?: string
+		) => {
+			const rows = this.inventoryTableRows.filter({
+				hasText: warehouseName,
+			});
+
+			return unitOfMeasureKey
+				? rows.filter({hasText: unitOfMeasureKey})
+				: rows;
+		};
+		this.inventoryTableRowQuantityInput = (
+			warehouseName: string,
+			unitOfMeasureKey?: string
+		) =>
+			this.inventoryTableRowFor(
+				warehouseName,
+				unitOfMeasureKey
+			).getByRole('textbox', {
+				name: 'commerce-inventory-warehouse-',
+			});
+		this.inventoryTableRowSaveButton = (
+			warehouseName: string,
+			unitOfMeasureKey?: string
+		) =>
+			this.inventoryTableRowFor(
+				warehouseName,
+				unitOfMeasureKey
+			).getByRole('button', {exact: true, name: 'Save'});
+		this.inventoryTableRowUnitOfMeasureCell = (
+			warehouseName: string,
+			unitOfMeasureKey?: string
+		) =>
+			this.inventoryTableRowFor(warehouseName, unitOfMeasureKey)
+				.locator('td')
+				.nth(1);
+		this.sidePanelPriceTableRow = (entryName: string) =>
+			this.sidePanelFrame
+				.locator('tbody tr')
+				.filter({hasText: entryName});
+		this.sidePanelPriceTableRowUnitOfMeasure = (entryName: string) =>
+			this.sidePanelPriceTableRow(entryName).locator('td').nth(1);
+		this.sidePanelPriceTableRowUnitPrice = (entryName: string) =>
+			this.sidePanelPriceTableRow(entryName).locator('td').nth(3);
+		this.skuUOMModalAddButton = this.skuUOMModal.getByRole('button', {
+			exact: true,
+			name: 'Add',
+		});
+		this.skuUOMModalField = (label: string) =>
+			this.skuUOMModal.getByLabel(label, {exact: true});
 		this.uomTableRowLink = (uom: string) =>
 			this.sidePanelFrame.getByRole('link', {exact: true, name: uom});
 	}

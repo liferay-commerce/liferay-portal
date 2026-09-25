@@ -462,6 +462,12 @@ export class HeadlessCommerceAdminCatalogApiHelper {
 		return skus.items[0];
 	}
 
+	async getSkuUnitOfMeasure(skuUnitOfMeasureId: number) {
+		return this.apiHelpers.get(
+			`${this.apiHelpers.baseUrl}${this.basePath}/sku-unit-of-measures/${skuUnitOfMeasureId}`
+		);
+	}
+
 	async getSpecification(specificationId: string) {
 		return this.apiHelpers.get(
 			`${this.apiHelpers.baseUrl}${this.basePath}/specifications/${specificationId}`
@@ -560,6 +566,16 @@ export class HeadlessCommerceAdminCatalogApiHelper {
 		return this.apiHelpers.patch(
 			`${this.apiHelpers.baseUrl}${this.basePath}/skus/${cpInstanceId}`,
 			{sku: 'Sku' + getRandomInt(), ...(sku || {})}
+		);
+	}
+
+	async patchSkuUnitOfMeasure(
+		skuUnitOfMeasureId: number,
+		skuUnitOfMeasure: DataObject
+	) {
+		return this.apiHelpers.patch(
+			`${this.apiHelpers.baseUrl}${this.basePath}/sku-unit-of-measures/${skuUnitOfMeasureId}`,
+			skuUnitOfMeasure
 		);
 	}
 

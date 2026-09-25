@@ -140,24 +140,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro editInventoryByWarehouse(quantityOnHand = null, index = null, sku = null, safetyStockQuantity = null) {
-		CommerceInventory.openInventoryAdmin();
-
-		CommerceNavigator.searchEntry(entryName = ${sku});
-
-		CommerceNavigator.gotoTableListEntry(
-			entryName = ${sku},
-			index = ${index});
-
-		for (var warehouse : list ${warehouse}) {
-			CommerceInventory.editWarehouseInventory(
-				quantityOnHand = ${quantityOnHand},
-				safetyStockQuantity = ${safetyStockQuantity},
-				warehouse = ${warehouse});
-		}
-	}
-
-	@summary = "Default summary"
 	macro editWarehouseInventory(quantityOnHand = null, warehouse = null, safetyStockQuantity = null,) {
 		CommerceNavigator.gotoTableListEntry(entryName = ${warehouse});
 
@@ -250,17 +232,6 @@ definition {
 				key_entryTitle = ${warehouse},
 				key_index = 3,
 				key_value = ${quantity},
-				locator1 = "CommerceEntry#TABLE_ENTRY_FIELD_VALUE");
-		}
-	}
-
-	@summary = "Default summary"
-	macro viewInventoryByWarehouse(index = null, inventory = null) {
-		for (var warehouse : list ${warehouse}) {
-			AssertElementPresent(
-				key_entryTitle = ${warehouse},
-				key_index = ${index},
-				key_value = ${inventory},
 				locator1 = "CommerceEntry#TABLE_ENTRY_FIELD_VALUE");
 		}
 	}

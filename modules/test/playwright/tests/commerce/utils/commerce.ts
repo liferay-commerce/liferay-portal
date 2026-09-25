@@ -51,6 +51,19 @@ type TUnitOfMeasure = {
 	promoPrice: number;
 };
 
+export type TUnitOfMeasureSpec = {
+	active?: boolean;
+	basePrice: number;
+	incrementalOrderQuantity?: number;
+	key: string;
+	name: {[key: string]: string};
+	precision?: number;
+	primary?: boolean;
+	priority?: number;
+	promoPrice?: number;
+	rate?: number;
+};
+
 export async function classicCommerceSetUp(
 	apiHelpers: DataApiHelpers,
 	siteName?: string
@@ -1370,6 +1383,56 @@ export async function getSkusByName(
 	);
 }
 
+export async function patchUnitOfMeasureWarehouseItems(
+	apiHelpers: DataApiHelpers,
+	{
+		skuName,
+		unitOfMeasureKeys,
+		warehouseQuantities,
+	}: {
+		skuName: string;
+		unitOfMeasureKeys: string[];
+		warehouseQuantities: Array<[string, number]>;
+	}
+) {
+	const warehouses =
+		await apiHelpers.headlessCommerceAdminInventoryApiHelper.getWarehousesPage();
+
+	for (const [warehouseName, quantity] of warehouseQuantities) {
+		const warehouse = warehouses.items.find(
+			(warehouse: {name: {[key: string]: string}}) =>
+				warehouse.name['en_US'] === warehouseName
+		);
+
+		const warehouseItems =
+			await apiHelpers.headlessCommerceAdminInventoryApiHelper.getWarehouseIdWarehouseItemsPage(
+				warehouse.id
+			);
+
+		for (const warehouseItem of warehouseItems.items) {
+			if (
+				warehouseItem.sku !== skuName ||
+				!unitOfMeasureKeys.includes(warehouseItem.unitOfMeasureKey)
+			) {
+				continue;
+			}
+
+			await apiHelpers.headlessCommerceAdminInventoryApiHelper.patchWarehouseItem(
+				warehouseItem.id,
+				{
+					quantity,
+					sku: warehouseItem.sku,
+					unitOfMeasureKey: warehouseItem.unitOfMeasureKey,
+				}
+			);
+		}
+	}
+}
+
+export function randomToken() {
+	return getRandomString().replace(/-/g, '');
+}
+
 export async function setUpBrakeFluidUnitsOfMeasure(
 	apiHelpers: DataApiHelpers,
 	catalogId: number
@@ -1450,6 +1513,111 @@ export async function setUpBrakeFluidUnitsOfMeasure(
 		secondUnitOfMeasure,
 		thirdUnitOfMeasure: activeThenInactiveUnitsOfMeasure[0],
 	};
+}
+
+export async function setUpStockedUnitOfMeasures(
+	apiHelpers: DataApiHelpers,
+	catalogId: number,
+	{
+		price = 10,
+		productConfiguration,
+		unitsOfMeasure,
+		warehouseQuantities = [],
+	}: {
+		price?: number;
+		productConfiguration?: {[key: string]: boolean | number};
+		unitsOfMeasure: TUnitOfMeasureSpec[];
+		warehouseQuantities?: Array<[string, number]>;
+	}
+) {
+	const product = await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+		active: true,
+		catalogId,
+		name: {en_US: `Product${randomToken()}`},
+		...(productConfiguration && {productConfiguration}),
+		skus: [
+			{
+				cost: 0,
+				price,
+				published: true,
+				purchasable: true,
+				sku: `SKU${randomToken()}`,
+			},
+		],
+	});
+
+	const sku = product.skus[0];
+
+	if (warehouseQuantities.length) {
+		const warehouses =
+			await apiHelpers.headlessCommerceAdminInventoryApiHelper.getWarehousesPage();
+
+		for (const [warehouseName, quantity] of warehouseQuantities) {
+			const warehouse = warehouses.items.find(
+				(warehouse: {name: {[key: string]: string}}) =>
+					warehouse.name['en_US'] === warehouseName
+			);
+
+			await apiHelpers.headlessCommerceAdminInventoryApiHelper.postWarehousesWarehouseItems(
+				warehouse.id,
+				{quantity, sku: sku.sku}
+			);
+		}
+	}
+
+	const createdUnitsOfMeasure = [];
+
+	for (const unitOfMeasure of unitsOfMeasure) {
+		createdUnitsOfMeasure.push(
+			await apiHelpers.headlessCommerceAdminCatalog.postSkuUnitOfMeasure(
+				sku.id,
+				{
+					active: true,
+					incrementalOrderQuantity: 1,
+					precision: 2,
+					rate: 1,
+					...unitOfMeasure,
+				}
+			)
+		);
+	}
+
+	return {product, sku, unitsOfMeasure: createdUnitsOfMeasure};
+}
+
+export async function tableCellByColumnName(
+	page: Page,
+	rowText: string | string[],
+	columnName: string
+) {
+	let row = page.getByRole('row');
+
+	for (const text of [rowText].flat()) {
+		row = row.filter({hasText: text});
+	}
+
+	await row.first().waitFor();
+
+	const headerCells = row
+		.first()
+		.locator('xpath=ancestor::table[1]')
+		.locator('thead th');
+
+	await headerCells.first().waitFor({state: 'attached'});
+
+	const headers = await headerCells.allTextContents();
+
+	const columnIndex = headers.findIndex(
+		(header) => header.replace(/\s+/g, ' ').trim() === columnName
+	);
+
+	if (columnIndex < 0) {
+		throw new Error(
+			`Cannot locate column named ${columnName} in [${headers}]`
+		);
+	}
+
+	return row.locator('td').nth(columnIndex);
 }
 
 export function unitOfMeasurePriceLabel(

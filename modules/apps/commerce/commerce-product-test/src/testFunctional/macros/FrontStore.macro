@@ -383,15 +383,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro clickEllipsisItemInMiniCart(uomKey = null, menuItem = null) {
-		Click(
-			locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS_WITH_UOM",
-			uomKey = ${uomKey});
-
-		DropdownMenuItem.click(menuItem = ${menuItem});
-	}
-
-	@summary = "Default summary"
 	macro compareProducts(products = null, clickCompare = null) {
 		var comparisonItems = 0;
 
@@ -420,27 +411,6 @@ definition {
 		if (${clickCompare} != "false") {
 			Click(locator1 = "CommerceFrontStore#MINI_COMPARE_COMPARE_BUTTON");
 		}
-	}
-
-	@summary = "Default summary"
-	macro editUOMAndQuantityInMiniCart(quantity = null, uomKey = null, uomName = null) {
-		Click(
-			locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS_WITH_UOM",
-			uomKey = ${uomKey});
-
-		DropdownMenuItem.click(menuItem = "Edit");
-
-		Select(
-			locator1 = "CommerceAccelerators#MINI_CART_EDIT_ITEM_UOM_SELECTOR",
-			value1 = ${uomName});
-
-		if (isSet(quantity)) {
-			Type(
-				locator1 = "CommerceAccelerators#MINI_CART_EDIT_ITEM_QUANTITY_SELECTOR_INPUT_FIELD",
-				value1 = ${quantity});
-		}
-
-		Button.clickSave();
 	}
 
 	@summary = "Default summary"

@@ -6,6 +6,8 @@
 import {FrameLocator, Locator, Page} from '@playwright/test';
 
 export class CommerceAdminInventoryItemPage {
+	readonly editMenuItem: Locator;
+	readonly heading: (title: string) => Locator;
 	readonly incomingAddButton: Locator;
 	readonly incomingRowActionsButton: (warehouseName: string) => Locator;
 	readonly incomingRowDateCell: (warehouseName: string) => Locator;
@@ -34,6 +36,12 @@ export class CommerceAdminInventoryItemPage {
 	readonly warehouseRowSafetyStockCell: (warehouseName: string) => Locator;
 
 	constructor(page: Page) {
+		this.editMenuItem = page.getByRole('menuitem', {
+			exact: true,
+			name: 'Edit',
+		});
+		this.heading = (title: string) =>
+			page.getByRole('heading', {name: title});
 		this.incomingAddButton = page
 			.getByTestId('managementToolbar')
 			.locator('[data-testid="fdsCreationActionButton"]');
