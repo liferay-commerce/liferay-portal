@@ -30,6 +30,7 @@ import {waitForAlert} from '../../../../utils/waitForAlert';
 import getFragmentDefinition from '../../../layout-content-page-editor-web/main/utils/getFragmentDefinition';
 import getPageDefinition from '../../../layout-content-page-editor-web/main/utils/getPageDefinition';
 import getWidgetDefinition from '../../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
+import {templatesPageTest} from '../../../template-web/main/fixtures/templatesPageTest';
 import {
 	configureBuyerUserForSite,
 	configureOperationsManagerUserForSite,
@@ -53,6 +54,7 @@ export const test = mergeTests(
 	notificationPagesTest,
 	pageEditorPagesTest,
 	pageViewModePagesTest,
+	templatesPageTest,
 	usersAndOrganizationsPagesTest
 );
 
@@ -2407,5 +2409,78 @@ test(
 
 		await expect(pendingOrdersPage.orderRowLink(order1.id)).toBeHidden();
 		await expect(pendingOrdersPage.orderRowLink(order2.id)).toBeVisible();
+	}
+);
+
+test(
+	'A display template selected for the Pending Orders widget renders its pending orders',
+	{tag: ['@COMMERCE-6665', '@LPD-107065']},
+	async ({
+		apiHelpers,
+		commerceAdminChannelsPage,
+		page,
+		pendingOrdersPage,
+		site,
+		templatesPage,
+		widgetPagePage,
+	}) => {
+		const {account, buyerUser} = await createAccountWithBuyerUser(
+			apiHelpers,
+			site.id
+		);
+
+		const channel =
+			await apiHelpers.headlessCommerceAdminChannel.postChannel({
+				siteGroupId: site.id,
+			});
+
+		await commerceAdminChannelsPage.changeCommerceChannelSiteType(
+			channel.name,
+			'B2B'
+		);
+
+		const order = await apiHelpers.headlessCommerceAdminOrder.postOrder({
+			accountId: account.id,
+			channelId: channel.id,
+			orderStatus: '2',
+		});
+
+		const displayTemplateName = `Pending Orders ${getRandomString()}`;
+
+		await templatesPage.gotoWidgetTemplates(site.friendlyUrlPath);
+
+		await templatesPage.createWidgetTemplate(
+			displayTemplateName,
+			'Open Carts Template'
+		);
+		await templatesPage.editTemplate(displayTemplateName);
+		await templatesPage.importInformationTemplate(
+			__dirname,
+			'pending_orders_template.ftl'
+		);
+		await templatesPage.saveTemplate(displayTemplateName);
+
+		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: site.id,
+			title: getRandomString(),
+		});
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`, {
+			waitUntil: 'networkidle',
+		});
+
+		await widgetPagePage.addPortlet('Open Carts');
+
+		await pendingOrdersPage.goToConfiguration();
+		await pendingOrdersPage.selectDisplayTemplate(displayTemplateName);
+
+		await performLogout(page);
+		await performLoginViaApi({page, screenName: buyerUser.alternateName});
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+
+		await expect(
+			page.getByText(`Pending Order ${order.id}`, {exact: true})
+		).toBeVisible();
 	}
 );
