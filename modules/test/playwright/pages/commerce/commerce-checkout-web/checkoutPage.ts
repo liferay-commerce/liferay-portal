@@ -226,9 +226,7 @@ export class CheckoutPage extends CommerceDNDTablePage {
 			productName: string,
 			unitOfMeasureKey?: string
 		) => {
-			const row = page
-				.getByRole('row')
-				.filter({hasText: productName});
+			const row = page.getByRole('row').filter({hasText: productName});
 
 			return unitOfMeasureKey
 				? row.filter({hasText: unitOfMeasureKey})

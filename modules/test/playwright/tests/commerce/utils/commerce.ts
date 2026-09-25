@@ -60,8 +60,8 @@ export type TUnitOfMeasureSpec = {
 	precision?: number;
 	primary?: boolean;
 	priority?: number;
-	rate?: number;
 	promoPrice?: number;
+	rate?: number;
 };
 
 export async function classicCommerceSetUp(

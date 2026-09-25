@@ -10,11 +10,10 @@ import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {DataApiHelpers} from '../../../../helpers/ApiHelpers';
 import {CommerceMiniCartPage} from '../../../../pages/commerce/commerceMiniCartPage';
-import performLogin, {
+import {
 	performLoginViaApi,
 	performLogout,
 } from '../../../../utils/performLogin';
-import {waitForAlert} from '../../../../utils/waitForAlert';
 import {
 	createAccountWithBuyerUser,
 	miniumSetUp,
@@ -29,7 +28,6 @@ export const test = mergeTests(
 );
 
 let catalog: {id: number; name: string};
-let channel: {id: number; name: string; siteGroupId: number};
 let setupData: Array<{id: number | string; type: string}>;
 let site: Site;
 
@@ -43,7 +41,6 @@ test.beforeAll(async ({browser}) => {
 	const miniumResult = await miniumSetUp(apiHelpers);
 
 	catalog = miniumResult.catalog;
-	channel = miniumResult.channel;
 	site = miniumResult.site;
 
 	setupData = [...apiHelpers.data];
@@ -265,7 +262,9 @@ test(
 				unitOfMeasureKey
 			);
 
-			await commerceMiniCartPage.miniCartEditItemQuantitySelector.fill(quantity);
+			await commerceMiniCartPage.miniCartEditItemQuantitySelector.fill(
+				quantity
+			);
 		};
 
 		await test.step('A tier price applies above its minimum quantity', async () => {
@@ -280,7 +279,9 @@ test(
 				)
 			).toHaveText('$ 77.50');
 
-			await commerceMiniCartPage.miniCartEditItemQuantitySelector.fill('6');
+			await commerceMiniCartPage.miniCartEditItemQuantitySelector.fill(
+				'6'
+			);
 
 			await expect(
 				commerceMiniCartPage.miniCartEditItemPrice('List Price')
@@ -380,7 +381,6 @@ test(
 		});
 	}
 );
-
 
 test(
 	'The mini cart edit panel price table lists every active unit of measure and tier price',
@@ -486,11 +486,14 @@ test(
 			['0.6', true],
 		] as Array<[string, boolean]>) {
 			await commerceMiniCartPage.miniCartEditItemQuantitySelector.focus();
-			await commerceMiniCartPage.miniCartEditItemQuantitySelector.fill(quantity);
-
-			const multipleMessage = commerceThemeMiniumCatalogPage.popOverMessage(
-				'Quantity must be a multiple of 0.6'
+			await commerceMiniCartPage.miniCartEditItemQuantitySelector.fill(
+				quantity
 			);
+
+			const multipleMessage =
+				commerceThemeMiniumCatalogPage.popOverMessage(
+					'Quantity must be a multiple of 0.6'
+				);
 
 			await expect(multipleMessage).toBeVisible();
 

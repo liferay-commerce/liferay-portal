@@ -12,7 +12,7 @@ import {DataApiHelpers} from '../../../../helpers/ApiHelpers';
 import {ProductDetailsPage} from '../../../../pages/commerce/commerce-product-content-web/productDetailsPage';
 import {CommerceMiniCartPage} from '../../../../pages/commerce/commerceMiniCartPage';
 import getRandomString from '../../../../utils/getRandomString';
-import performLogin, {
+import {
 	performLoginViaApi,
 	performLogout,
 } from '../../../../utils/performLogin';
@@ -33,7 +33,6 @@ export const test = mergeTests(
 );
 
 let catalog: {id: number; name: string};
-let channel: {id: number; name: string; siteGroupId: number};
 let setupData: Array<{id: number | string; type: string}>;
 let site: Site;
 
@@ -47,7 +46,6 @@ test.beforeAll(async ({browser}) => {
 	const miniumResult = await miniumSetUp(apiHelpers);
 
 	catalog = miniumResult.catalog;
-	channel = miniumResult.channel;
 	site = miniumResult.site;
 
 	setupData = [...apiHelpers.data];
@@ -85,7 +83,9 @@ async function expectOrderItemUnitsOfMeasure(
 	orderItems: TOrderItem[]
 ) {
 	for (const {quantity, skuName, unitOfMeasureKey} of orderItems) {
-		const rowText = unitOfMeasureKey ? [skuName, unitOfMeasureKey] : skuName;
+		const rowText = unitOfMeasureKey
+			? [skuName, unitOfMeasureKey]
+			: skuName;
 
 		await expect(
 			await tableCellByColumnName(page, rowText, 'Quantity')
@@ -108,54 +108,66 @@ async function setUpOrderWithUnitsOfMeasure(
 		productDetailsPage: ProductDetailsPage;
 	}
 ) {
-	const twoUnitsProduct = await setUpStockedUnitOfMeasures(apiHelpers, catalog.id, {
-		productConfiguration: {
-			allowBackOrder: true,
-			multipleOrderQuantity: 0.1,
-		},
-		unitsOfMeasure: [
-			{
-				basePrice: 1,
-				key: 'uom1',
-				name: {en_US: 'UOM1'},
-				precision: 1,
-				primary: true,
-				priority: 1,
+	const twoUnitsProduct = await setUpStockedUnitOfMeasures(
+		apiHelpers,
+		catalog.id,
+		{
+			productConfiguration: {
+				allowBackOrder: true,
+				multipleOrderQuantity: 0.1,
 			},
-			{
-				basePrice: 2,
-				key: 'uom2',
-				name: {en_US: 'UOM2'},
-				precision: 1,
-				priority: 2,
-			},
-		],
-		warehouseQuantities: [['Italy', 100]],
-	});
+			unitsOfMeasure: [
+				{
+					basePrice: 1,
+					key: 'uom1',
+					name: {en_US: 'UOM1'},
+					precision: 1,
+					primary: true,
+					priority: 1,
+				},
+				{
+					basePrice: 2,
+					key: 'uom2',
+					name: {en_US: 'UOM2'},
+					precision: 1,
+					priority: 2,
+				},
+			],
+			warehouseQuantities: [['Italy', 100]],
+		}
+	);
 
-	const decimalProduct = await setUpStockedUnitOfMeasures(apiHelpers, catalog.id, {
-		productConfiguration: {
-			allowBackOrder: true,
-			multipleOrderQuantity: 0.1,
-		},
-		unitsOfMeasure: [
-			{
-				basePrice: 3,
-				incrementalOrderQuantity: 0.6,
-				key: 'uom3',
-				name: {en_US: 'UOM3'},
-				precision: 1,
-				primary: true,
+	const decimalProduct = await setUpStockedUnitOfMeasures(
+		apiHelpers,
+		catalog.id,
+		{
+			productConfiguration: {
+				allowBackOrder: true,
+				multipleOrderQuantity: 0.1,
 			},
-		],
-		warehouseQuantities: [['Italy', 100]],
-	});
+			unitsOfMeasure: [
+				{
+					basePrice: 3,
+					incrementalOrderQuantity: 0.6,
+					key: 'uom3',
+					name: {en_US: 'UOM3'},
+					precision: 1,
+					primary: true,
+				},
+			],
+			warehouseQuantities: [['Italy', 100]],
+		}
+	);
 
-	const plainProduct = await setUpStockedUnitOfMeasures(apiHelpers, catalog.id, {
-		productConfiguration: {allowBackOrder: true},
-		unitsOfMeasure: [],
-		warehouseQuantities: [['Italy', 100]],
-	});
+	const plainProduct = await setUpStockedUnitOfMeasures(
+		apiHelpers,
+		catalog.id,
+		{
+			productConfiguration: {allowBackOrder: true},
+			unitsOfMeasure: [],
+			warehouseQuantities: [['Italy', 100]],
+		}
+	);
 
 	const {account, buyerUser} = await createAccountWithBuyerUser(
 		apiHelpers,
@@ -442,7 +454,6 @@ test(
 					displayStockQuantity: true,
 					multipleOrderQuantity: 0.6,
 				},
-				warehouseQuantities: [['Italy', 120]],
 				unitsOfMeasure: [
 					{
 						basePrice: 20,
@@ -460,6 +471,7 @@ test(
 						promoPrice: 15,
 					},
 				],
+				warehouseQuantities: [['Italy', 120]],
 			}
 		);
 
@@ -538,7 +550,9 @@ test(
 			for (const expectedQuantity of ['3', '6']) {
 				await commerceMiniCartPage.close();
 
-				await productDetailsPage.productDetailQuantitySelector.fill('3');
+				await productDetailsPage.productDetailQuantitySelector.fill(
+					'3'
+				);
 
 				await expect(
 					productDetailsPage.productDetailAddToCartButton
@@ -623,14 +637,20 @@ test(
 
 		for (const [index, key] of ['uom1', 'uom3', 'uom4'].entries()) {
 			await expect(
-				productDetailsPage.unitOfMeasureSelect.locator('option').nth(index)
+				productDetailsPage.unitOfMeasureSelect
+					.locator('option')
+					.nth(index)
 			).toHaveAttribute('value', key);
 		}
 
-		await expect(productDetailsPage.unitOfMeasureSelect).toHaveValue('uom1');
+		await expect(productDetailsPage.unitOfMeasureSelect).toHaveValue(
+			'uom1'
+		);
 		await expect(productDetailsPage.productDetailListPrice).toHaveText(
 			unitOfMeasurePriceLabel(
-				unitsOfMeasure.find((unitOfMeasure) => unitOfMeasure.key === 'uom1'),
+				unitsOfMeasure.find(
+					(unitOfMeasure) => unitOfMeasure.key === 'uom1'
+				),
 				25
 			)
 		);
@@ -641,18 +661,22 @@ test(
 	'A unit of measure with no stock cannot reach the cart when back orders are disabled',
 	{tag: ['@COMMERCE-12551', '@LPD-107107']},
 	async ({apiHelpers, commerceMiniCartPage, page, productDetailsPage}) => {
-		const {product} = await setUpStockedUnitOfMeasures(apiHelpers, catalog.id, {
-			productConfiguration: {
-				allowBackOrder: false,
-				displayAvailability: true,
-				displayStockQuantity: true,
-			},
-			warehouseQuantities: [['Italy', 10]],
-			unitsOfMeasure: [
-				{basePrice: 1, key: 'uomKey1', name: {en_US: 'uomName1'}},
-				{basePrice: 2, key: 'uomKey2', name: {en_US: 'uomName2'}},
-			],
-		});
+		const {product} = await setUpStockedUnitOfMeasures(
+			apiHelpers,
+			catalog.id,
+			{
+				productConfiguration: {
+					allowBackOrder: false,
+					displayAvailability: true,
+					displayStockQuantity: true,
+				},
+				unitsOfMeasure: [
+					{basePrice: 1, key: 'uomKey1', name: {en_US: 'uomName1'}},
+					{basePrice: 2, key: 'uomKey2', name: {en_US: 'uomName2'}},
+				],
+				warehouseQuantities: [['Italy', 10]],
+			}
+		);
 
 		const {buyerUser} = await createAccountWithBuyerUser(
 			apiHelpers,
@@ -699,31 +723,35 @@ test(
 		page,
 		productDetailsPage,
 	}) => {
-		const {product} = await setUpStockedUnitOfMeasures(apiHelpers, catalog.id, {
-			price: 20,
-			productConfiguration: {
-				allowBackOrder: true,
-				multipleOrderQuantity: 0.01,
-			},
-			unitsOfMeasure: [
-				{
-					basePrice: 20,
-					incrementalOrderQuantity: 0.444,
-					key: 'UOM1KEY',
-					name: {en_US: 'UOM1'},
-					precision: 3,
-					priority: 1,
+		const {product} = await setUpStockedUnitOfMeasures(
+			apiHelpers,
+			catalog.id,
+			{
+				price: 20,
+				productConfiguration: {
+					allowBackOrder: true,
+					multipleOrderQuantity: 0.01,
 				},
-				{
-					basePrice: 20,
-					incrementalOrderQuantity: 0.25,
-					key: 'UOM2KEY',
-					name: {en_US: 'UOM2'},
-					precision: 2,
-					priority: 2,
-				},
-			],
-		});
+				unitsOfMeasure: [
+					{
+						basePrice: 20,
+						incrementalOrderQuantity: 0.444,
+						key: 'UOM1KEY',
+						name: {en_US: 'UOM1'},
+						precision: 3,
+						priority: 1,
+					},
+					{
+						basePrice: 20,
+						incrementalOrderQuantity: 0.25,
+						key: 'UOM2KEY',
+						name: {en_US: 'UOM2'},
+						precision: 2,
+						priority: 2,
+					},
+				],
+			}
+		);
 
 		const {buyerUser} = await createAccountWithBuyerUser(
 			apiHelpers,
@@ -794,9 +822,13 @@ test(
 		commerceAdminProductDetailsSkusPage,
 		commerceAdminProductPage,
 	}) => {
-		const {product, sku} = await setUpStockedUnitOfMeasures(apiHelpers, catalog.id, {
-			unitsOfMeasure: [],
-		});
+		const {product, sku} = await setUpStockedUnitOfMeasures(
+			apiHelpers,
+			catalog.id,
+			{
+				unitsOfMeasure: [],
+			}
+		);
 
 		const expectNoPricingFields = async (container: FrameLocator) => {
 			await expect(
@@ -865,16 +897,20 @@ test(
 		commerceAdminProductDetailsSkusPage,
 		commerceAdminProductPage,
 	}) => {
-		const {product, sku} = await setUpStockedUnitOfMeasures(apiHelpers, catalog.id, {
-			unitsOfMeasure: [
-				{
-					basePrice: 56,
-					key: 'uomKey1',
-					name: {en_US: 'uomName1'},
-					primary: true,
-				},
-			],
-		});
+		const {product, sku} = await setUpStockedUnitOfMeasures(
+			apiHelpers,
+			catalog.id,
+			{
+				unitsOfMeasure: [
+					{
+						basePrice: 56,
+						key: 'uomKey1',
+						name: {en_US: 'uomName1'},
+						primary: true,
+					},
+				],
+			}
+		);
 
 		await commerceAdminProductPage.gotoProduct(product.name['en_US']);
 
@@ -988,7 +1024,11 @@ test(
 				await tableCellByColumnName(page, 'MIN93015', 'Base Price')
 			).toHaveText('$ 50.00');
 			await expect(
-				await tableCellByColumnName(page, 'MIN93015', 'Price List Price')
+				await tableCellByColumnName(
+					page,
+					'MIN93015',
+					'Price List Price'
+				)
 			).toHaveText('$ 50.00');
 		});
 
@@ -1010,7 +1050,11 @@ test(
 				await tableCellByColumnName(page, 'MIN93015', 'UOM')
 			).toHaveText('');
 			await expect(
-				await tableCellByColumnName(page, 'MIN93015', 'Base Promotion Price')
+				await tableCellByColumnName(
+					page,
+					'MIN93015',
+					'Base Promotion Price'
+				)
 			).toHaveText('$ 0.00');
 			await expect(
 				await tableCellByColumnName(page, 'MIN93015', 'Promotion Price')
@@ -1058,11 +1102,11 @@ test(
 			).toHaveCount(1);
 
 			await expectInventoryRow(sku.sku, {
-				Available: '140',
-				Incoming: '0',
+				'Available': '140',
+				'Incoming': '0',
 				'On Hand': '140',
 				'On Order': '0',
-				UOM: '',
+				'UOM': '',
 			});
 		});
 
@@ -1087,15 +1131,15 @@ test(
 			).toHaveCount(2);
 
 			await expectInventoryRow('uomKey1', {
-				Available: '140',
-				Incoming: '0',
+				'Available': '140',
+				'Incoming': '0',
 				'On Hand': '140',
 				'On Order': '0',
 			});
 
 			await expectInventoryRow('uomKey2', {
-				Available: '0',
-				Incoming: '0',
+				'Available': '0',
+				'Incoming': '0',
 				'On Hand': '0',
 				'On Order': '0',
 			});
@@ -1145,14 +1189,18 @@ test(
 			'United States - Southwest',
 		];
 
-		const {product, sku} = await setUpStockedUnitOfMeasures(apiHelpers, catalog.id, {
-			unitsOfMeasure: [],
-			warehouseQuantities: [
-				['Italy', 20],
-				['United States - Northeast', 60],
-				['United States - Southwest', 60],
-			],
-		});
+		const {product, sku} = await setUpStockedUnitOfMeasures(
+			apiHelpers,
+			catalog.id,
+			{
+				unitsOfMeasure: [],
+				warehouseQuantities: [
+					['Italy', 20],
+					['United States - Northeast', 60],
+					['United States - Southwest', 60],
+				],
+			}
+		);
 
 		const goToSkuInventory = async () => {
 			await commerceAdminProductPage.gotoProduct(product.name['en_US']);
@@ -1177,10 +1225,14 @@ test(
 
 			for (const [index, warehouseName] of warehouseNames.entries()) {
 				await expect(
-					commerceAdminProductDetailsSkusPage.inventoryTableRowUnitOfMeasureCell(warehouseName)
+					commerceAdminProductDetailsSkusPage.inventoryTableRowUnitOfMeasureCell(
+						warehouseName
+					)
 				).toHaveText('');
 				await expect(
-					commerceAdminProductDetailsSkusPage.inventoryTableRowQuantityInput(warehouseName)
+					commerceAdminProductDetailsSkusPage.inventoryTableRowQuantityInput(
+						warehouseName
+					)
 				).toHaveValue(index === 0 ? '20' : '60');
 			}
 		});
@@ -1210,10 +1262,16 @@ test(
 
 			for (const [index, warehouseName] of warehouseNames.entries()) {
 				await expect(
-					commerceAdminProductDetailsSkusPage.inventoryTableRowQuantityInput(warehouseName, 'uomKey1')
+					commerceAdminProductDetailsSkusPage.inventoryTableRowQuantityInput(
+						warehouseName,
+						'uomKey1'
+					)
 				).toHaveValue(index === 0 ? '20' : '60');
 				await expect(
-					commerceAdminProductDetailsSkusPage.inventoryTableRowQuantityInput(warehouseName, 'uomKey2')
+					commerceAdminProductDetailsSkusPage.inventoryTableRowQuantityInput(
+						warehouseName,
+						'uomKey2'
+					)
 				).toHaveValue('0');
 			}
 		});
@@ -1234,10 +1292,16 @@ test(
 
 			for (const [index, warehouseName] of warehouseNames.entries()) {
 				await expect(
-					commerceAdminProductDetailsSkusPage.inventoryTableRowQuantityInput(warehouseName, 'uomKey1')
+					commerceAdminProductDetailsSkusPage.inventoryTableRowQuantityInput(
+						warehouseName,
+						'uomKey1'
+					)
 				).toHaveValue(index === 0 ? '20' : '60');
 				await expect(
-					commerceAdminProductDetailsSkusPage.inventoryTableRowQuantityInput(warehouseName, 'uomKey2')
+					commerceAdminProductDetailsSkusPage.inventoryTableRowQuantityInput(
+						warehouseName,
+						'uomKey2'
+					)
 				).toHaveValue(String(index * 2 + 2));
 			}
 		});
@@ -1257,11 +1321,15 @@ test(
 
 			for (const [index, warehouseName] of warehouseNames.entries()) {
 				await expect(
-					commerceAdminProductDetailsSkusPage.inventoryTableRowUnitOfMeasureCell(warehouseName)
+					commerceAdminProductDetailsSkusPage.inventoryTableRowUnitOfMeasureCell(
+						warehouseName
+					)
 				).toHaveText('');
-				await expect(commerceAdminProductDetailsSkusPage.inventoryTableRowQuantityInput(warehouseName)).toHaveValue(
-					String(index * 2 + 2)
-				);
+				await expect(
+					commerceAdminProductDetailsSkusPage.inventoryTableRowQuantityInput(
+						warehouseName
+					)
+				).toHaveValue(String(index * 2 + 2));
 			}
 		});
 	}
@@ -1371,7 +1439,9 @@ test(
 		const goToOrder = async () => {
 			await commerceAdminOrdersPage.goto();
 
-			await commerceAdminOrdersPage.menuActionButton(account.name).click();
+			await commerceAdminOrdersPage
+				.menuActionButton(account.name)
+				.click();
 			await commerceAdminOrdersPage.menuItemAction('View').click();
 		};
 
@@ -1420,10 +1490,14 @@ test(
 		commerceAdminProductPage,
 		page,
 	}) => {
-		const {product, sku} = await setUpStockedUnitOfMeasures(apiHelpers, catalog.id, {
-			price: 100,
-			unitsOfMeasure: [],
-		});
+		const {product, sku} = await setUpStockedUnitOfMeasures(
+			apiHelpers,
+			catalog.id,
+			{
+				price: 100,
+				unitsOfMeasure: [],
+			}
+		);
 
 		const basePromoPriceList =
 			await apiHelpers.headlessCommerceAdminPricing.getBasePromoPriceList(

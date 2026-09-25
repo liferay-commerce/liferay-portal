@@ -12,7 +12,7 @@ import {DataApiHelpers} from '../../../../helpers/ApiHelpers';
 import {ProductDetailsPage} from '../../../../pages/commerce/commerce-product-content-web/productDetailsPage';
 import {CommerceMiniCartPage} from '../../../../pages/commerce/commerceMiniCartPage';
 import getRandomString from '../../../../utils/getRandomString';
-import performLogin, {
+import {
 	performLoginViaApi,
 	performLogout,
 } from '../../../../utils/performLogin';
@@ -31,7 +31,6 @@ export const test = mergeTests(
 );
 
 let catalog: {id: number; name: string};
-let channel: {id: number; name: string; siteGroupId: number};
 let setupData: Array<{id: number | string; type: string}>;
 let site: Site;
 
@@ -45,7 +44,6 @@ test.beforeAll(async ({browser}) => {
 	const miniumResult = await miniumSetUp(apiHelpers);
 
 	catalog = miniumResult.catalog;
-	channel = miniumResult.channel;
 	site = miniumResult.site;
 
 	setupData = [...apiHelpers.data];
@@ -174,7 +172,8 @@ async function setUpLinkedUnitOfMeasureBundle(
 				...(deltaPrices[index] && {deltaPrice: deltaPrices[index]}),
 				quantity: linkedQuantities[index],
 				sku: sku.sku,
-				unitOfMeasureKey: unitsOfMeasure[index % unitsOfMeasure.length].key,
+				unitOfMeasureKey:
+					unitsOfMeasure[index % unitsOfMeasure.length].key,
 			}
 		);
 	}
@@ -237,7 +236,6 @@ test(
 		});
 
 		const pages = {commerceMiniCartPage, productDetailsPage};
-
 
 		await test.step('The option selector carries the price difference between the linked units of measure', async () => {
 			await expect(
@@ -358,7 +356,6 @@ test(
 
 		const pages = {commerceMiniCartPage, productDetailsPage};
 
-
 		await test.step('The decimal linked quantities convert each option value to one bundle unit', async () => {
 			await expect(
 				productDetailsPage.optionSelector('Color').locator('option')
@@ -472,7 +469,6 @@ test(
 		});
 
 		const pages = {commerceMiniCartPage, productDetailsPage};
-
 
 		await test.step('Adding the same option value twice through the product details page merges it', async () => {
 			await expect(
