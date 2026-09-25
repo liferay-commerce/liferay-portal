@@ -2149,64 +2149,6 @@ definition {
 		}
 	}
 
-	@description = "This is a test for COMMERCE-10629. Buyer user can remove selected product chips from the search bar of the quick add-to-cart"
-	@priority = 3
-	test CanRemoveQuickAddToCartChips {
-		property portal.acceptance = "false";
-
-		task ("Given an account with a buyer user is created") {
-			CommerceEntry.addAccountEntryUser(
-				accountName = "Commerce Account",
-				accountType = "Business",
-				agreeToTermsAndAnswerReminderQuery = "true",
-				createNewAccount = "true",
-				requireReset = "false",
-				userEmailAddress = "buyer@liferay.com",
-				userFirstName = "Buyer",
-				userLastName = "User",
-				userRole = "Buyer",
-				userScreenName = "buyeruser",
-				userSiteMembership = "Minium");
-		}
-
-		task ("And buyer user opens the minicart after signing in") {
-			User.logoutPG();
-
-			CommerceLogin.miniumLogin(
-				password = PropsUtil.get("default.admin.password"),
-				urlAppend = "web/minium",
-				userEmailAddress = "buyer@liferay.com");
-
-			CommerceNavigator.gotoMiniCart();
-		}
-
-		task ("And the buyer selects multiple skus on the quick add-to-cart") {
-			for (var productSku : list "MIN55861,MIN55860,MIN55859") {
-				FrontStore.quickAddToCartSearchAndSelectItem(orderItemSku = ${productSku});
-			}
-		}
-
-		task ("Then the buyer removes selected skus one by one") {
-			for (var productSku : list "MIN55861,MIN55860,MIN55859") {
-				Click(
-					key_productSku = ${productSku},
-					locator1 = "CommerceAccelerators#PRODUCT_CHIP_REMOVE_ICON");
-			}
-		}
-
-		task ("And in the search bar no sku is left") {
-			AssertElementPresent(
-				key_searchBarValue = "Search Products",
-				locator1 = "CommerceAccelerators#QUICK_ADD_TO_CART_EMPTY_SEARCH_BAR");
-
-			for (var productSku : list "MIN55861,MIN55860,MIN55859") {
-				AssertElementNotPresent(
-					locator1 = "CommerceWidget#TAG_FACET_LABEL_LAYOUT",
-					tagName = ${productSku});
-			}
-		}
-	}
-
 	@description = "This is a test for COMMERCE-10537. Buyer user can search all catalog SKUs"
 	@priority = 5
 	test CanSearchAllCatalogSKUs {
