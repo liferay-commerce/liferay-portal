@@ -18,13 +18,14 @@ import com.liferay.friendly.url.model.FriendlyURLEntryLocalizationTable;
 import com.liferay.friendly.url.model.FriendlyURLEntryMappingTable;
 import com.liferay.friendly.url.model.FriendlyURLEntryTable;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
+import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
+import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Layout;
-import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -127,15 +128,7 @@ public class CPDefinitionSitemapURLProvider implements SitemapURLProvider {
 			Element element, LayoutSet layoutSet, ThemeDisplay themeDisplay)
 		throws PortalException {
 
-		long plid = _portal.getPlidFromPortletId(
-			layoutSet.getGroupId(), layoutSet.isPrivateLayout(),
-			CPPortletKeys.CP_CONTENT_WEB);
-
-		if (plid == LayoutConstants.DEFAULT_PLID) {
-			return;
-		}
-
-		Layout layout = _layoutLocalService.fetchLayout(plid);
+		Layout layout = _getLayout(layoutSet);
 
 		if (layout == null) {
 			return;
@@ -213,6 +206,30 @@ public class CPDefinitionSitemapURLProvider implements SitemapURLProvider {
 		return languageIdsMap;
 	}
 
+	private Layout _getLayout(LayoutSet layoutSet) throws PortalException {
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_layoutPageTemplateEntryLocalService.
+				fetchDefaultLayoutPageTemplateEntry(
+					layoutSet.getGroupId(),
+					_portal.getClassNameId(CPDefinition.class), 0);
+
+		if ((layoutPageTemplateEntry != null) &&
+			layoutPageTemplateEntry.isDefaultTemplate()) {
+
+			Layout layout = _layoutLocalService.fetchLayout(
+				layoutPageTemplateEntry.getPlid());
+
+			if ((layout != null) && layout.isTypeAssetDisplay()) {
+				return layout;
+			}
+		}
+
+		return _layoutLocalService.fetchLayout(
+			_portal.getPlidFromPortletId(
+				layoutSet.getGroupId(), layoutSet.isPrivateLayout(),
+				CPPortletKeys.CP_CONTENT_WEB));
+	}
+
 	private void _visitCPDefinitions(
 			Element element, Layout layout, long siteGroupId,
 			ThemeDisplay themeDisplay)
@@ -222,7 +239,8 @@ public class CPDefinitionSitemapURLProvider implements SitemapURLProvider {
 			_commerceChannelLocalService.getCommerceChannelGroupIdBySiteGroupId(
 				siteGroupId);
 
-		if ((commerceChannelGroupId <= 0) || layout.isSystem() ||
+		if ((commerceChannelGroupId <= 0) ||
+			(layout.isSystem() && !layout.isTypeAssetDisplay()) ||
 			_sitemapURLProviderHelper.isExcludeLayoutFromSitemap(layout)) {
 
 			return;
@@ -328,6 +346,10 @@ public class CPDefinitionSitemapURLProvider implements SitemapURLProvider {
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;
+
+	@Reference
+	private LayoutPageTemplateEntryLocalService
+		_layoutPageTemplateEntryLocalService;
 
 	@Reference
 	private Portal _portal;
