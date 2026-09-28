@@ -5,6 +5,9 @@
 
 package com.liferay.commerce.product.internal.site.provider.test;
 
+import com.liferay.account.model.AccountGroup;
+import com.liferay.account.service.AccountGroupLocalService;
+import com.liferay.account.service.AccountGroupRelLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetCategoryConstants;
@@ -357,6 +360,40 @@ public class CommerceSitemapURLProviderTest {
 	}
 
 	@Test
+	public void testCPDefinitionSitemapURLProviderWithGuestAccountGroup()
+		throws Exception {
+
+		CPDefinition cpDefinition = _addCPDefinition();
+
+		cpDefinition.setAccountGroupFilterEnabled(true);
+
+		cpDefinition = _cpDefinitionLocalService.updateCPDefinition(
+			cpDefinition);
+
+		AccountGroup accountGroup =
+			_accountGroupLocalService.checkGuestAccountGroup(
+				_company.getCompanyId());
+
+		_accountGroupRelLocalService.addAccountGroupRel(
+			accountGroup.getAccountGroupId(), CPDefinition.class.getName(),
+			cpDefinition.getCPDefinitionId());
+
+		Assert.assertEquals(
+			cpDefinition.getModifiedDate(),
+			_cpDefinitionSitemapURLProvider.getModifiedDate(
+				_company.getCompanyId(), _group.getGroupId()));
+
+		Element element = _visitLayoutSet();
+
+		String xml = element.asXML();
+
+		Assert.assertTrue(
+			xml,
+			xml.contains(
+				CommerceTestUtil.getCPDefinitionURLTitle(cpDefinition)));
+	}
+
+	@Test
 	public void testCPDefinitionSitemapURLProviderWithLocalePrependedFriendlyURLStyle()
 		throws Exception {
 
@@ -487,6 +524,12 @@ public class CommerceSitemapURLProviderTest {
 
 		return element;
 	}
+
+	@Inject
+	private AccountGroupLocalService _accountGroupLocalService;
+
+	@Inject
+	private AccountGroupRelLocalService _accountGroupRelLocalService;
 
 	@Inject
 	private AssetCategoryLocalService _assetCategoryLocalService;
