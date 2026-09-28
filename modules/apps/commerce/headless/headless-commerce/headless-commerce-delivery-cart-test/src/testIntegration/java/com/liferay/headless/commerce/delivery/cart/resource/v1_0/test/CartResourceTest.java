@@ -14,18 +14,25 @@ import com.liferay.account.validator.AccountEntryValidator;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.account.test.util.CommerceAccountTestUtil;
 import com.liferay.commerce.constants.CommerceAccountEntryValidationConstants;
+import com.liferay.commerce.constants.CommerceAddressConstants;
 import com.liferay.commerce.constants.CommerceConstants;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
 import com.liferay.commerce.discount.constants.CommerceDiscountConstants;
 import com.liferay.commerce.discount.model.CommerceDiscount;
 import com.liferay.commerce.discount.service.CommerceDiscountLocalService;
+import com.liferay.commerce.model.CommerceAddress;
 import com.liferay.commerce.model.CommerceOrder;
+import com.liferay.commerce.model.CommerceOrderItem;
 import com.liferay.commerce.order.rule.constants.COREntryConstants;
 import com.liferay.commerce.order.rule.model.COREntry;
 import com.liferay.commerce.order.rule.service.COREntryLocalService;
 import com.liferay.commerce.order.rule.service.COREntryRelLocalService;
+import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CommerceChannel;
+import com.liferay.commerce.product.test.util.CPTestUtil;
+import com.liferay.commerce.service.CommerceAddressLocalService;
+import com.liferay.commerce.service.CommerceOrderItemLocalService;
 import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.commerce.test.util.validator.TestAccountEntryValidator;
@@ -41,9 +48,11 @@ import com.liferay.list.type.model.ListTypeDefinition;
 import com.liferay.list.type.model.ListTypeEntry;
 import com.liferay.list.type.service.ListTypeDefinitionLocalService;
 import com.liferay.list.type.service.ListTypeEntryLocalService;
+import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.encryptor.Encryptor;
 import com.liferay.portal.kernel.model.Country;
 import com.liferay.portal.kernel.model.Region;
@@ -52,6 +61,7 @@ import com.liferay.portal.kernel.service.AddressLocalService;
 import com.liferay.portal.kernel.service.CountryLocalService;
 import com.liferay.portal.kernel.service.RegionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.settings.FallbackKeysSettingsUtil;
 import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.settings.ModifiableSettings;
@@ -246,6 +256,7 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 
 		_testPatchCartByGuestWithGuestCheckoutDisabledOnB2BChannel();
 		_testPatchCartWithAddressSubtype();
+		_testPatchCartWithInvalidCommerceAddressIds();
 		_testPatchCartWithMoreExternalReferenceCodes();
 	}
 
@@ -406,6 +417,7 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 	public void testPutCart() throws Exception {
 		super.testPutCart();
 
+		_testPutCartWithInvalidCommerceAddressIds();
 		_testPutCartWithMoreExternalReferenceCodes();
 	}
 
@@ -649,10 +661,66 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 		return _createCart();
 	}
 
+	private CommerceAddress _addCommerceAddress(long accountEntryId)
+		throws Exception {
+
+		return _commerceAddressLocalService.addCommerceAddress(
+			RandomTestUtil.randomString(), AccountEntry.class.getName(),
+			accountEntryId, _country.getCountryId(), _region.getRegionId(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), StringPool.BLANK,
+			CommerceAddressConstants.ADDRESS_TYPE_BILLING_AND_SHIPPING,
+			RandomTestUtil.randomString(), _serviceContext);
+	}
+
 	private CommerceOrder _addCommerceOrder() throws Exception {
 		return _commerceOrderLocalService.addCommerceOrder(
 			_user.getUserId(), _commerceChannel.getGroupId(),
 			_accountEntry.getAccountEntryId(), _commerceCurrency.getCode(), 0);
+	}
+
+	private CommerceAddress _addInvalidCommerceAddress() throws Exception {
+		User user = UserTestUtil.addUser(testCompany);
+
+		AccountEntry accountEntry =
+			CommerceAccountTestUtil.addBusinessAccountEntry(
+				user.getUserId(), RandomTestUtil.randomString(), null,
+				ServiceContextTestUtil.getServiceContext(
+					testCompany.getCompanyId(), testGroup.getGroupId(),
+					user.getUserId()));
+
+		return _addCommerceAddress(accountEntry.getAccountEntryId());
+	}
+
+	private void _assertCartItemShippingAddressId(
+		long commerceOrderId, long shippingAddressId) {
+
+		List<CommerceOrderItem> commerceOrderItems =
+			_commerceOrderItemLocalService.getCommerceOrderItems(
+				commerceOrderId, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+		Assert.assertEquals(
+			commerceOrderItems.toString(), 1, commerceOrderItems.size());
+
+		CommerceOrderItem commerceOrderItem = commerceOrderItems.get(0);
+
+		Assert.assertEquals(
+			shippingAddressId, commerceOrderItem.getShippingAddressId());
+	}
+
+	private void _assertProblemException(
+			Cart cart, String expectedStatus,
+			UnsafeConsumer<Cart, Exception> unsafeConsumer)
+		throws Exception {
+
+		Problem.ProblemException problemException = Assert.assertThrows(
+			Problem.ProblemException.class, () -> unsafeConsumer.accept(cart));
+
+		Problem problem = problemException.getProblem();
+
+		Assert.assertEquals(expectedStatus, problem.getStatus());
 	}
 
 	private Cart _createCart() throws Exception {
@@ -680,6 +748,21 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 					commerceOrder.getStatus());
 			}
 		};
+	}
+
+	private CartResource _getCartResource() throws Exception {
+		_userLocalService.updatePassword(
+			_user.getUserId(), _PASSWORD, _PASSWORD, false, true);
+
+		return CartResource.builder(
+		).authentication(
+			_user.getEmailAddress(), _PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
 	}
 
 	private Cart _randomGuestCart() throws Exception {
@@ -1031,6 +1114,133 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 		}
 	}
 
+	private void _testPatchCartWithInvalidCommerceAddressIds()
+		throws Exception {
+
+		CartResource cartResource = _getCartResource();
+
+		Cart postCart = cartResource.postChannelCart(
+			_commerceChannel.getCommerceChannelId(), randomCart());
+
+		CommerceAddress commerceAddress1 = _addInvalidCommerceAddress();
+
+		_assertProblemException(
+			new Cart() {
+				{
+					billingAddressId = commerceAddress1.getCommerceAddressId();
+				}
+			},
+			"FORBIDDEN",
+			patchCart -> cartResource.patchCart(postCart.getId(), patchCart));
+		_assertProblemException(
+			new Cart() {
+				{
+					billingAddressExternalReferenceCode =
+						commerceAddress1.getExternalReferenceCode();
+				}
+			},
+			"FORBIDDEN",
+			patchCart -> cartResource.patchCart(postCart.getId(), patchCart));
+		_assertProblemException(
+			new Cart() {
+				{
+					shippingAddressId = commerceAddress1.getCommerceAddressId();
+				}
+			},
+			"FORBIDDEN",
+			patchCart -> cartResource.patchCart(postCart.getId(), patchCart));
+		_assertProblemException(
+			new Cart() {
+				{
+					shippingAddressExternalReferenceCode =
+						commerceAddress1.getExternalReferenceCode();
+				}
+			},
+			"FORBIDDEN",
+			patchCart -> cartResource.patchCart(postCart.getId(), patchCart));
+
+		CPInstance cpInstance = CPTestUtil.addCPInstanceWithRandomSku(
+			testGroup.getGroupId(),
+			BigDecimal.valueOf(RandomTestUtil.randomDouble()));
+
+		CommerceTestUtil.addCommerceOrderItem(
+			postCart.getId(), cpInstance.getCPInstanceId(),
+			BigDecimal.valueOf(RandomTestUtil.randomInt(1, 10)));
+
+		_assertProblemException(
+			new Cart() {
+				{
+					cartItems = new CartItem[] {
+						new CartItem() {
+							{
+								quantity = BigDecimal.valueOf(
+									RandomTestUtil.randomInt(1, 10));
+								shippingAddressId =
+									commerceAddress1.getCommerceAddressId();
+								skuId = cpInstance.getCPInstanceId();
+							}
+						}
+					};
+				}
+			},
+			"FORBIDDEN",
+			patchCart -> cartResource.patchCart(postCart.getId(), patchCart));
+		_assertProblemException(
+			new Cart() {
+				{
+					cartItems = new CartItem[] {
+						new CartItem() {
+							{
+								quantity = BigDecimal.valueOf(
+									RandomTestUtil.randomInt(1, 10));
+								shippingAddressExternalReferenceCode =
+									commerceAddress1.getExternalReferenceCode();
+								skuId = cpInstance.getCPInstanceId();
+							}
+						}
+					};
+				}
+			},
+			"FORBIDDEN",
+			patchCart -> cartResource.patchCart(postCart.getId(), patchCart));
+
+		CommerceAddress commerceAddress2 = _addCommerceAddress(
+			_accountEntry.getAccountEntryId());
+
+		Cart patchCart = cartResource.patchCart(
+			postCart.getId(),
+			new Cart() {
+				{
+					shippingAddressId = commerceAddress2.getCommerceAddressId();
+				}
+			});
+
+		Assert.assertEquals(
+			Long.valueOf(commerceAddress2.getCommerceAddressId()),
+			patchCart.getShippingAddressId());
+
+		cartResource.patchCart(
+			postCart.getId(),
+			new Cart() {
+				{
+					cartItems = new CartItem[] {
+						new CartItem() {
+							{
+								quantity = BigDecimal.valueOf(
+									RandomTestUtil.randomInt(1, 10));
+								shippingAddressId =
+									commerceAddress2.getCommerceAddressId();
+								skuId = cpInstance.getCPInstanceId();
+							}
+						}
+					};
+				}
+			});
+
+		_assertCartItemShippingAddressId(
+			postCart.getId(), commerceAddress2.getCommerceAddressId());
+	}
+
 	private void _testPatchCartWithMoreExternalReferenceCodes()
 		throws Exception {
 
@@ -1292,6 +1502,131 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 			getCart.getShippingAddressExternalReferenceCode());
 	}
 
+	private void _testPutCartWithInvalidCommerceAddressIds() throws Exception {
+		CartResource cartResource = _getCartResource();
+
+		Cart postCart = cartResource.postChannelCart(
+			_commerceChannel.getCommerceChannelId(), randomCart());
+
+		CommerceAddress commerceAddress1 = _addInvalidCommerceAddress();
+
+		_assertProblemException(
+			new Cart() {
+				{
+					billingAddressId = commerceAddress1.getCommerceAddressId();
+				}
+			},
+			"FORBIDDEN",
+			putCart -> cartResource.putCart(postCart.getId(), putCart));
+		_assertProblemException(
+			new Cart() {
+				{
+					billingAddressExternalReferenceCode =
+						commerceAddress1.getExternalReferenceCode();
+				}
+			},
+			"FORBIDDEN",
+			putCart -> cartResource.putCart(postCart.getId(), putCart));
+		_assertProblemException(
+			new Cart() {
+				{
+					shippingAddressId = commerceAddress1.getCommerceAddressId();
+				}
+			},
+			"FORBIDDEN",
+			putCart -> cartResource.putCart(postCart.getId(), putCart));
+		_assertProblemException(
+			new Cart() {
+				{
+					shippingAddressExternalReferenceCode =
+						commerceAddress1.getExternalReferenceCode();
+				}
+			},
+			"FORBIDDEN",
+			putCart -> cartResource.putCart(postCart.getId(), putCart));
+
+		CPInstance cpInstance = CPTestUtil.addCPInstanceWithRandomSku(
+			testGroup.getGroupId(),
+			BigDecimal.valueOf(RandomTestUtil.randomDouble()));
+
+		CommerceTestUtil.addCommerceOrderItem(
+			postCart.getId(), cpInstance.getCPInstanceId(),
+			BigDecimal.valueOf(RandomTestUtil.randomInt(1, 10)));
+
+		_assertProblemException(
+			new Cart() {
+				{
+					cartItems = new CartItem[] {
+						new CartItem() {
+							{
+								quantity = BigDecimal.valueOf(
+									RandomTestUtil.randomInt(1, 10));
+								shippingAddressId =
+									commerceAddress1.getCommerceAddressId();
+								skuId = cpInstance.getCPInstanceId();
+							}
+						}
+					};
+				}
+			},
+			"FORBIDDEN",
+			putCart -> cartResource.putCart(postCart.getId(), putCart));
+		_assertProblemException(
+			new Cart() {
+				{
+					cartItems = new CartItem[] {
+						new CartItem() {
+							{
+								quantity = BigDecimal.valueOf(
+									RandomTestUtil.randomInt(1, 10));
+								shippingAddressExternalReferenceCode =
+									commerceAddress1.getExternalReferenceCode();
+								skuId = cpInstance.getCPInstanceId();
+							}
+						}
+					};
+				}
+			},
+			"FORBIDDEN",
+			putCart -> cartResource.putCart(postCart.getId(), putCart));
+
+		CommerceAddress commerceAddress2 = _addCommerceAddress(
+			_accountEntry.getAccountEntryId());
+
+		Cart putCart = cartResource.putCart(
+			postCart.getId(),
+			new Cart() {
+				{
+					shippingAddressId = commerceAddress2.getCommerceAddressId();
+				}
+			});
+
+		Assert.assertEquals(
+			Long.valueOf(commerceAddress2.getCommerceAddressId()),
+			putCart.getShippingAddressId());
+
+		cartResource.putCart(
+			postCart.getId(),
+			new Cart() {
+				{
+					cartItems = new CartItem[] {
+						new CartItem() {
+							{
+								quantity = BigDecimal.valueOf(
+									RandomTestUtil.randomInt(1, 10));
+								shippingAddressId =
+									commerceAddress2.getCommerceAddressId();
+								skuId = cpInstance.getCPInstanceId();
+							}
+						}
+					};
+				}
+			});
+
+		_assertCartItemShippingAddressId(
+			postCart.getId(), commerceAddress2.getCommerceAddressId());
+	}
+
 	private void _testPutCartWithMoreExternalReferenceCodes() throws Exception {
 		Cart postCart = cartResource.postChannelCart(
 			_commerceChannel.getCommerceChannelId(), randomCart());
@@ -1366,6 +1701,8 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 			calendar.get(Calendar.MINUTE), true, _serviceContext);
 	}
 
+	private static final String _PASSWORD = RandomTestUtil.randomString();
+
 	private AccountEntry _accountEntry;
 
 	@Inject
@@ -1378,6 +1715,9 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 	private AddressLocalService _addressLocalService;
 
 	private BundleContext _bundleContext;
+
+	@Inject
+	private CommerceAddressLocalService _commerceAddressLocalService;
 
 	@DeleteAfterTestRun
 	private CommerceChannel _commerceChannel;
@@ -1393,6 +1733,9 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 
 	@DeleteAfterTestRun
 	private CommerceOrder _commerceOrder;
+
+	@Inject
+	private CommerceOrderItemLocalService _commerceOrderItemLocalService;
 
 	@Inject
 	private CommerceOrderLocalService _commerceOrderLocalService;
@@ -1428,5 +1771,8 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 
 	@DeleteAfterTestRun
 	private User _user;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }
