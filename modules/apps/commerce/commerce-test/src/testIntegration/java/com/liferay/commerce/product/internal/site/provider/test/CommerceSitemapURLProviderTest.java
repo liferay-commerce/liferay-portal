@@ -25,6 +25,7 @@ import com.liferay.commerce.product.url.CPFriendlyURL;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.friendly.url.model.FriendlyURLEntry;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
+import com.liferay.layout.page.template.test.util.DisplayPageTemplateTestUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -325,6 +326,34 @@ public class CommerceSitemapURLProviderTest {
 			xml,
 			xml.contains(
 				CommerceTestUtil.getCPDefinitionURLTitle(draftCPDefinition)));
+	}
+
+	@Test
+	public void testCPDefinitionSitemapURLProviderVisitLayoutSetWithDefaultDisplayPageTemplate()
+		throws Exception {
+
+		_layoutLocalService.deleteLayout(
+			_portal.getPlidFromPortletId(
+				_group.getGroupId(), false, CPPortletKeys.CP_CONTENT_WEB));
+
+		String urlTitle = CommerceTestUtil.getCPDefinitionURLTitle(
+			_addCPDefinition());
+
+		Element element = _visitLayoutSet();
+
+		String xml = element.asXML();
+
+		Assert.assertFalse(xml, xml.contains(urlTitle));
+
+		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+			_group.getGroupId(), _portal.getClassNameId(CPDefinition.class),
+			null, true, WorkflowConstants.STATUS_APPROVED);
+
+		element = _visitLayoutSet();
+
+		xml = element.asXML();
+
+		Assert.assertTrue(xml, xml.contains(urlTitle));
 	}
 
 	@Test
