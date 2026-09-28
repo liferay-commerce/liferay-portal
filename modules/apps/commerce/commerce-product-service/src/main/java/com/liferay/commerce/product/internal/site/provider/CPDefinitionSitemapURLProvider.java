@@ -6,6 +6,7 @@
 package com.liferay.commerce.product.internal.site.provider;
 
 import com.liferay.account.constants.AccountConstants;
+import com.liferay.account.service.AccountGroupLocalService;
 import com.liferay.commerce.product.constants.CPPortletKeys;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CProduct;
@@ -74,7 +75,9 @@ public class CPDefinitionSitemapURLProvider implements SitemapURLProvider {
 
 		List<CPDefinition> cpDefinitions =
 			_cpDefinitionLocalService.getCPDefinitions(
-				companyId, AccountConstants.ACCOUNT_ENTRY_ID_GUEST, new long[0],
+				companyId, AccountConstants.ACCOUNT_ENTRY_ID_GUEST,
+				_accountGroupLocalService.getAccountGroupIds(
+					AccountConstants.ACCOUNT_ENTRY_ID_GUEST),
 				new long[] {commerceChannelGroupId}, true,
 				new int[] {WorkflowConstants.STATUS_APPROVED}, 0, 1,
 				CPDefinitionModifiedDateComparator.getInstance(false));
@@ -246,6 +249,8 @@ public class CPDefinitionSitemapURLProvider implements SitemapURLProvider {
 			return;
 		}
 
+		long[] accountGroupIds = _accountGroupLocalService.getAccountGroupIds(
+			AccountConstants.ACCOUNT_ENTRY_ID_GUEST);
 		Set<Locale> availableLocales = _language.getAvailableLocales(
 			layout.getGroupId());
 		String currentSiteURL = _portal.getGroupFriendlyURL(
@@ -260,7 +265,7 @@ public class CPDefinitionSitemapURLProvider implements SitemapURLProvider {
 			List<CPDefinition> cpDefinitions =
 				_cpDefinitionLocalService.getCPDefinitions(
 					themeDisplay.getCompanyId(),
-					AccountConstants.ACCOUNT_ENTRY_ID_GUEST, new long[0],
+					AccountConstants.ACCOUNT_ENTRY_ID_GUEST, accountGroupIds,
 					new long[] {commerceChannelGroupId}, true,
 					new int[] {WorkflowConstants.STATUS_APPROVED}, start,
 					start + _BATCH_SIZE, null);
@@ -328,6 +333,9 @@ public class CPDefinitionSitemapURLProvider implements SitemapURLProvider {
 	}
 
 	private static final int _BATCH_SIZE = 500;
+
+	@Reference
+	private AccountGroupLocalService _accountGroupLocalService;
 
 	@Reference
 	private CommerceChannelLocalService _commerceChannelLocalService;
