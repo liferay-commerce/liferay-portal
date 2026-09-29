@@ -235,6 +235,34 @@ public class CPDefinitionSitemapURLProvider implements SitemapURLProvider {
 				CPPortletKeys.CP_CONTENT_WEB));
 	}
 
+	private void _visitCPDefinition(
+			Set<Locale> availableLocales, String currentSiteURL,
+			Element element, FriendlyURLEntry friendlyURLEntry,
+			List<String> languageIds, Layout layout, ThemeDisplay themeDisplay,
+			UnicodeProperties typeSettingsUnicodeProperties,
+			String urlSeparator)
+		throws PortalException {
+
+		Map<Locale, String> alternateFriendlyURLs =
+			SitemapURLProviderUtil.getAlternateFriendlyURLs(
+				_portal.getAlternateURLs(
+					StringBundler.concat(
+						currentSiteURL, urlSeparator,
+						friendlyURLEntry.getUrlTitle()),
+					themeDisplay, layout, availableLocales),
+				languageIds);
+
+		String productFriendlyURL = alternateFriendlyURLs.get(
+			_portal.getLocale(themeDisplay.getRequest()));
+
+		for (String alternateFriendlyURL : alternateFriendlyURLs.values()) {
+			_sitemapManager.addURLElement(
+				element, alternateFriendlyURL, typeSettingsUnicodeProperties,
+				layout.getModifiedDate(), productFriendlyURL,
+				alternateFriendlyURLs, layout.getGroupId());
+		}
+	}
+
 	private void _visitCPDefinitions(
 			Element element, Layout layout, long siteGroupId,
 			ThemeDisplay themeDisplay)
@@ -293,7 +321,7 @@ public class CPDefinitionSitemapURLProvider implements SitemapURLProvider {
 					continue;
 				}
 
-				_visitLayout(
+				_visitCPDefinition(
 					availableLocales, currentSiteURL, element, friendlyURLEntry,
 					languageIdsMap.get(
 						friendlyURLEntry.getFriendlyURLEntryId()),
@@ -306,34 +334,6 @@ public class CPDefinitionSitemapURLProvider implements SitemapURLProvider {
 			}
 
 			start += _BATCH_SIZE;
-		}
-	}
-
-	private void _visitLayout(
-			Set<Locale> availableLocales, String currentSiteURL,
-			Element element, FriendlyURLEntry friendlyURLEntry,
-			List<String> languageIds, Layout layout, ThemeDisplay themeDisplay,
-			UnicodeProperties typeSettingsUnicodeProperties,
-			String urlSeparator)
-		throws PortalException {
-
-		Map<Locale, String> alternateFriendlyURLs =
-			SitemapURLProviderUtil.getAlternateFriendlyURLs(
-				_portal.getAlternateURLs(
-					StringBundler.concat(
-						currentSiteURL, urlSeparator,
-						friendlyURLEntry.getUrlTitle()),
-					themeDisplay, layout, availableLocales),
-				languageIds);
-
-		String productFriendlyURL = alternateFriendlyURLs.get(
-			_portal.getLocale(themeDisplay.getRequest()));
-
-		for (String alternateFriendlyURL : alternateFriendlyURLs.values()) {
-			_sitemapManager.addURLElement(
-				element, alternateFriendlyURL, typeSettingsUnicodeProperties,
-				layout.getModifiedDate(), productFriendlyURL,
-				alternateFriendlyURLs, layout.getGroupId());
 		}
 	}
 
