@@ -49,6 +49,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -141,6 +142,11 @@ public class CPDefinitionSitemapURLProvider implements SitemapURLProvider {
 
 		_visitCPDefinitions(
 			element, layout, layoutSet.getGroupId(), themeDisplay);
+	}
+
+	@Activate
+	protected void activate() {
+		_batchSize = _BATCH_SIZE;
 	}
 
 	private Map<Long, FriendlyURLEntry> _getFriendlyURLEntriesMap(
@@ -301,7 +307,7 @@ public class CPDefinitionSitemapURLProvider implements SitemapURLProvider {
 					AccountConstants.ACCOUNT_ENTRY_ID_GUEST, accountGroupIds,
 					new long[] {commerceChannelGroupId}, true,
 					new int[] {WorkflowConstants.STATUS_APPROVED}, start,
-					start + _BATCH_SIZE, orderByComparator);
+					start + _batchSize, orderByComparator);
 
 			if (cpDefinitions.isEmpty()) {
 				return;
@@ -329,11 +335,11 @@ public class CPDefinitionSitemapURLProvider implements SitemapURLProvider {
 					urlSeparator);
 			}
 
-			if (cpDefinitions.size() < _BATCH_SIZE) {
+			if (cpDefinitions.size() < _batchSize) {
 				return;
 			}
 
-			start += _BATCH_SIZE;
+			start += _batchSize;
 		}
 	}
 
@@ -341,6 +347,8 @@ public class CPDefinitionSitemapURLProvider implements SitemapURLProvider {
 
 	@Reference
 	private AccountGroupLocalService _accountGroupLocalService;
+
+	private int _batchSize;
 
 	@Reference
 	private CommerceChannelLocalService _commerceChannelLocalService;
