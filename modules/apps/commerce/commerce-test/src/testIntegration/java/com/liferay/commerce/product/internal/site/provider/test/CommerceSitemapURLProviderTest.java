@@ -332,6 +332,25 @@ public class CommerceSitemapURLProviderTest {
 	}
 
 	@Test
+	public void testCPDefinitionSitemapURLProviderVisitLayoutSetOrdersByCPDefinitionId()
+		throws Exception {
+
+		CPDefinition cpDefinition1 = _addCPDefinition("B");
+		CPDefinition cpDefinition2 = _addCPDefinition("A");
+
+		Element element = _visitLayoutSet();
+
+		String xml = element.asXML();
+
+		int index1 = xml.indexOf(
+			CommerceTestUtil.getCPDefinitionURLTitle(cpDefinition1) + "</loc>");
+		int index2 = xml.indexOf(
+			CommerceTestUtil.getCPDefinitionURLTitle(cpDefinition2) + "</loc>");
+
+		Assert.assertTrue(xml, (index1 >= 0) && (index1 < index2));
+	}
+
+	@Test
 	public void testCPDefinitionSitemapURLProviderVisitLayoutSetWithDefaultDisplayPageTemplate()
 		throws Exception {
 
@@ -460,6 +479,17 @@ public class CommerceSitemapURLProviderTest {
 				commerceCatalog.getGroupId());
 
 		return cpInstance.getCPDefinition();
+	}
+
+	private CPDefinition _addCPDefinition(String name) throws Exception {
+		CPDefinition cpDefinition = _addCPDefinition();
+
+		_cpDefinitionLocalService.updateCPDefinitionLocalization(
+			cpDefinition, cpDefinition.getDefaultLanguageId(), StringPool.BLANK,
+			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, name,
+			StringPool.BLANK);
+
+		return cpDefinition;
 	}
 
 	private CPDefinition _addDraftCPDefinition() throws Exception {
