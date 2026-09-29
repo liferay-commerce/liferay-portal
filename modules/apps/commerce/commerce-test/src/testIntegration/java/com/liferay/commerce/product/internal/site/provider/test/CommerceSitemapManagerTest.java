@@ -223,7 +223,11 @@ public class CommerceSitemapManagerTest {
 				}
 			}
 
+			Assert.assertNotNull(xml, sitemapElement);
+
 			Element lastmodElement = sitemapElement.element("lastmod");
+
+			Assert.assertNotNull(xml, lastmodElement);
 
 			OffsetDateTime.parse(lastmodElement.getText());
 		}
