@@ -36,11 +36,13 @@
 	},
 	"environments": {
 		"extdev": {
+			"cpu": 1,
 			"env": {
 				"LIFERAY_LEARN_ETC_CRON_DXP_URL": "https://learn-dev.liferay.com",
 				"LIFERAY_LEARN_ETC_CRON_SLACK_CHANNEL": "#lr-learn-cron-1-dev",
 				"LIFERAY_LEARN_RESOURCE_DOMAIN": "https://resources.learn-dev.liferay.com"
-			}
+			},
+			"schedule": "55 * * * *"
 		},
 		"extprd": {
 			"env": {
