@@ -9,6 +9,8 @@ import com.liferay.analytics.settings.rest.dto.v1_0.Channel;
 import com.liferay.analytics.settings.rest.dto.v1_0.DataSource;
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
 import com.liferay.analytics.settings.rest.resource.v1_0.ChannelResource;
+import com.liferay.digital.sales.room.constants.DSRFolderConstants;
+import com.liferay.digital.sales.room.util.DSRRoomUtil;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.document.library.kernel.service.DLFolderLocalService;
@@ -30,8 +32,6 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.vulcan.pagination.Page;
-import com.liferay.digital.sales.room.constants.DSRFolderConstants;
-import com.liferay.digital.sales.room.util.DSRRoomUtil;
 
 import java.io.Serializable;
 
