@@ -30,6 +30,8 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -255,6 +257,9 @@ public class CPDefinitionSitemapURLProvider implements SitemapURLProvider {
 			layout.getGroupId());
 		String currentSiteURL = _portal.getGroupFriendlyURL(
 			layout.getLayoutSet(), themeDisplay, false, false);
+		OrderByComparator<CPDefinition> orderByComparator =
+			OrderByComparatorFactoryUtil.create(
+				"CPDefinition", "CPDefinitionId", true);
 		int start = 0;
 		UnicodeProperties typeSettingsUnicodeProperties =
 			layout.getTypeSettingsProperties();
@@ -268,7 +273,7 @@ public class CPDefinitionSitemapURLProvider implements SitemapURLProvider {
 					AccountConstants.ACCOUNT_ENTRY_ID_GUEST, accountGroupIds,
 					new long[] {commerceChannelGroupId}, true,
 					new int[] {WorkflowConstants.STATUS_APPROVED}, start,
-					start + _BATCH_SIZE, null);
+					start + _BATCH_SIZE, orderByComparator);
 
 			if (cpDefinitions.isEmpty()) {
 				return;
