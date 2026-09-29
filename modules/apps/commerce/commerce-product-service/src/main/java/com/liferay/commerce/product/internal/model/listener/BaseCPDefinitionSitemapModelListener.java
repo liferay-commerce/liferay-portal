@@ -9,6 +9,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.BaseModelListener;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.site.configuration.manager.SitemapConfigurationManager;
 import com.liferay.site.constants.SitemapConstants;
 import com.liferay.site.service.SiteSitemapRegenerationEntryLocalService;
@@ -35,7 +36,7 @@ public abstract class BaseCPDefinitionSitemapModelListener
 			siteSitemapRegenerationEntryLocalService.
 				addSiteSitemapRegenerationEntry(
 					SitemapConstants.ASSET_TYPE_KEY_COMMERCE_PRODUCTS,
-					companyId, _COMPANY_SCOPED_GROUP_ID);
+					companyId, GroupConstants.DEFAULT_PARENT_GROUP_ID);
 		}
 		catch (Exception exception) {
 			_log.error(
@@ -49,8 +50,6 @@ public abstract class BaseCPDefinitionSitemapModelListener
 
 	@Reference
 	protected SitemapConfigurationManager sitemapConfigurationManager;
-
-	private static final long _COMPANY_SCOPED_GROUP_ID = 0;
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		BaseCPDefinitionSitemapModelListener.class);
