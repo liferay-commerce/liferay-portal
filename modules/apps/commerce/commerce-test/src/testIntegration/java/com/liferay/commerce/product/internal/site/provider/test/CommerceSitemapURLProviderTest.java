@@ -46,6 +46,7 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutSetLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.VirtualHostLocalService;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.rule.Sync;
@@ -376,6 +377,45 @@ public class CommerceSitemapURLProviderTest {
 		xml = element.asXML();
 
 		Assert.assertTrue(xml, xml.contains(urlTitle));
+	}
+
+	@Test
+	public void testCPDefinitionSitemapURLProviderVisitLayoutSetWithMultipleBatches()
+		throws Exception {
+
+		List<CPDefinition> cpDefinitions = new ArrayList<>();
+
+		for (int i = 0; i < 3; i++) {
+			cpDefinitions.add(_addCPDefinition());
+		}
+
+		Element element = _visitLayoutSet();
+
+		String xml = element.asXML();
+
+		for (CPDefinition cpDefinition : cpDefinitions) {
+			Assert.assertTrue(
+				xml,
+				xml.contains(
+					CommerceTestUtil.getCPDefinitionURLTitle(cpDefinition) +
+						"</loc>"));
+		}
+
+		int batchSize = ReflectionTestUtil.getFieldValue(
+			_cpDefinitionSitemapURLProvider, "_batchSize");
+
+		ReflectionTestUtil.setFieldValue(
+			_cpDefinitionSitemapURLProvider, "_batchSize", 1);
+
+		try {
+			element = _visitLayoutSet();
+
+			Assert.assertEquals(xml, element.asXML());
+		}
+		finally {
+			ReflectionTestUtil.setFieldValue(
+				_cpDefinitionSitemapURLProvider, "_batchSize", batchSize);
+		}
 	}
 
 	@Test
