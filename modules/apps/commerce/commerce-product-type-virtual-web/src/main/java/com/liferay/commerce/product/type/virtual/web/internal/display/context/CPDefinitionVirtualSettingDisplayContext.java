@@ -12,6 +12,7 @@ import com.liferay.commerce.product.constants.CPPortletKeys;
 import com.liferay.commerce.product.display.context.BaseCPDefinitionsDisplayContext;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
+import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.portlet.action.ActionHelper;
 import com.liferay.commerce.product.type.CPType;
 import com.liferay.commerce.product.type.virtual.constants.VirtualCPTypeConstants;
@@ -361,6 +362,16 @@ public class CPDefinitionVirtualSettingDisplayContext
 				itemSelectorCriterion));
 	}
 
+	public boolean isShowSaveAndPropagate() throws PortalException {
+		if ((getCPDVirtualSettingFileEntry() == null) &&
+			_isPublishedCPDefinition()) {
+
+			return true;
+		}
+
+		return false;
+	}
+
 	private long _getGroupId() throws PortalException {
 		CommerceVirtualOrderItemFileEntry commerceVirtualOrderItemFileEntry =
 			getCommerceVirtualOrderItemFileEntry();
@@ -397,6 +408,24 @@ public class CPDefinitionVirtualSettingDisplayContext
 		}
 
 		return 0;
+	}
+
+	private boolean _isPublishedCPDefinition() throws PortalException {
+		CPDefinition cpDefinition = getCPDefinition();
+
+		if (cpDefinition == null) {
+			return false;
+		}
+
+		CProduct cProduct = cpDefinition.getCProduct();
+
+		if (cProduct.getPublishedCPDefinitionId() ==
+				cpDefinition.getCPDefinitionId()) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
