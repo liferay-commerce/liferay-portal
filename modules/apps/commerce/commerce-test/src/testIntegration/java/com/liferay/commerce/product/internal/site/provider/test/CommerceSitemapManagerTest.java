@@ -85,6 +85,12 @@ public class CommerceSitemapManagerTest {
 
 		_user = UserTestUtil.addUser();
 
+		_commerceCurrency = CommerceCurrencyTestUtil.addCommerceCurrency(
+			_company.getCompanyId());
+
+		_cpDefinitionClassNameId = _classNameLocalService.getClassNameId(
+			CPDefinition.class);
+
 		_serviceContext = ServiceContextTestUtil.getServiceContext(
 			_company.getCompanyId(), _group.getGroupId(), _user.getUserId());
 
@@ -102,12 +108,6 @@ public class CommerceSitemapManagerTest {
 		_themeDisplay.setServerPort(PortalUtil.getPortalServerPort(false));
 		_themeDisplay.setSiteGroupId(_group.getGroupId());
 		_themeDisplay.setUser(_user);
-
-		_commerceCurrency = CommerceCurrencyTestUtil.addCommerceCurrency(
-			_company.getCompanyId());
-
-		_cpDefinitionClassNameId = _classNameLocalService.getClassNameId(
-			CPDefinition.class);
 	}
 
 	@Test
