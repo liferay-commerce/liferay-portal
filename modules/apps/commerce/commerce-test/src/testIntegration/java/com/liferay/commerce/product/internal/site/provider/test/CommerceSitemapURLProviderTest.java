@@ -322,14 +322,8 @@ public class CommerceSitemapURLProviderTest {
 
 		String xml = element.asXML();
 
-		Assert.assertTrue(
-			xml,
-			xml.contains(
-				CommerceTestUtil.getCPDefinitionURLTitle(cpDefinition)));
-		Assert.assertFalse(
-			xml,
-			xml.contains(
-				CommerceTestUtil.getCPDefinitionURLTitle(draftCPDefinition)));
+		Assert.assertTrue(xml, xml.contains(_getURLTitle(cpDefinition)));
+		Assert.assertFalse(xml, xml.contains(_getURLTitle(draftCPDefinition)));
 	}
 
 	@Test
@@ -343,10 +337,8 @@ public class CommerceSitemapURLProviderTest {
 
 		String xml = element.asXML();
 
-		int index1 = xml.indexOf(
-			CommerceTestUtil.getCPDefinitionURLTitle(cpDefinition1) + "</loc>");
-		int index2 = xml.indexOf(
-			CommerceTestUtil.getCPDefinitionURLTitle(cpDefinition2) + "</loc>");
+		int index1 = xml.indexOf(_getURLTitle(cpDefinition1) + "</loc>");
+		int index2 = xml.indexOf(_getURLTitle(cpDefinition2) + "</loc>");
 
 		Assert.assertTrue(xml, (index1 >= 0) && (index1 < index2));
 	}
@@ -359,8 +351,7 @@ public class CommerceSitemapURLProviderTest {
 			_portal.getPlidFromPortletId(
 				_group.getGroupId(), false, CPPortletKeys.CP_CONTENT_WEB));
 
-		String urlTitle = CommerceTestUtil.getCPDefinitionURLTitle(
-			_addCPDefinition());
+		String urlTitle = _getURLTitle(_addCPDefinition());
 
 		Element element = _visitLayoutSet();
 
@@ -395,10 +386,7 @@ public class CommerceSitemapURLProviderTest {
 
 		for (CPDefinition cpDefinition : cpDefinitions) {
 			Assert.assertTrue(
-				xml,
-				xml.contains(
-					CommerceTestUtil.getCPDefinitionURLTitle(cpDefinition) +
-						"</loc>"));
+				xml, xml.contains(_getURLTitle(cpDefinition) + "</loc>"));
 		}
 
 		int batchSize = ReflectionTestUtil.getFieldValue(
@@ -446,10 +434,7 @@ public class CommerceSitemapURLProviderTest {
 
 		String xml = element.asXML();
 
-		Assert.assertTrue(
-			xml,
-			xml.contains(
-				CommerceTestUtil.getCPDefinitionURLTitle(cpDefinition)));
+		Assert.assertTrue(xml, xml.contains(_getURLTitle(cpDefinition)));
 	}
 
 	@Test
@@ -557,6 +542,15 @@ public class CommerceSitemapURLProviderTest {
 		element.addAttribute("xmlns:xhtml", "http://www.w3.org/1999/xhtml");
 
 		return element;
+	}
+
+	private String _getURLTitle(CPDefinition cpDefinition) throws Exception {
+		FriendlyURLEntry friendlyURLEntry =
+			_friendlyURLEntryLocalService.getMainFriendlyURLEntry(
+				_portal.getClassNameId(CProduct.class),
+				cpDefinition.getCProductId());
+
+		return friendlyURLEntry.getUrlTitle();
 	}
 
 	private Element _visitLayout() throws Exception {

@@ -11,9 +11,12 @@ import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
 import com.liferay.commerce.product.importer.CPFileImporter;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
+import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.test.util.CommerceTestUtil;
+import com.liferay.friendly.url.model.FriendlyURLEntry;
+import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -123,12 +126,15 @@ public class CommerceSitemapManagerTest {
 
 			String xml = _getAssetTypeSitemap();
 
+			FriendlyURLEntry friendlyURLEntry =
+				_friendlyURLEntryLocalService.getMainFriendlyURLEntry(
+					_classNameLocalService.getClassNameId(CProduct.class),
+					cpDefinition.getCProductId());
+
 			Assert.assertEquals(
 				xml, 1,
 				StringUtil.count(
-					xml,
-					CommerceTestUtil.getCPDefinitionURLTitle(cpDefinition) +
-						"</loc>"));
+					xml, friendlyURLEntry.getUrlTitle() + "</loc>"));
 		}
 	}
 
@@ -298,6 +304,9 @@ public class CommerceSitemapManagerTest {
 
 	@Inject
 	private CPFileImporter _cpFileImporter;
+
+	@Inject
+	private FriendlyURLEntryLocalService _friendlyURLEntryLocalService;
 
 	@DeleteAfterTestRun
 	private Group _group;
