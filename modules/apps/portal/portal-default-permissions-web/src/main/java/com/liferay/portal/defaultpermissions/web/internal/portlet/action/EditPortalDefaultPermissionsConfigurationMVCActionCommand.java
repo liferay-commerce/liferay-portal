@@ -6,6 +6,7 @@
 package com.liferay.portal.defaultpermissions.web.internal.portlet.action;
 
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
+import com.liferay.portal.defaultpermissions.web.internal.util.PortalDefaultPermissionsConfigurationPermissionUtil;
 import com.liferay.portal.kernel.defaultpermissions.configuration.manager.PortalDefaultPermissionsConfigurationManager;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -57,6 +58,13 @@ public class EditPortalDefaultPermissionsConfigurationMVCActionCommand
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
+		String scope = ParamUtil.getString(actionRequest, "scope");
+		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		PortalDefaultPermissionsConfigurationPermissionUtil.check(
+			scope, themeDisplay);
+
 		JSONObject jsonObject = _jsonFactory.createJSONObject();
 
 		hideDefaultErrorMessage(actionRequest);
@@ -67,10 +75,6 @@ public class EditPortalDefaultPermissionsConfigurationMVCActionCommand
 
 			String modelResource = ParamUtil.getString(
 				actionRequest, "modelResource");
-			String scope = ParamUtil.getString(actionRequest, "scope");
-
-			ThemeDisplay themeDisplay =
-				(ThemeDisplay)actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
 			if (cmd.equals("reset")) {
 				if (!scope.equals(

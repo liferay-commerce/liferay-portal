@@ -7,10 +7,16 @@ package com.liferay.portal.defaultpermissions.web.internal.portlet.action;
 
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.defaultpermissions.web.internal.constants.PortalDefaultPermissionsWebKeys;
+import com.liferay.portal.defaultpermissions.web.internal.util.PortalDefaultPermissionsConfigurationPermissionUtil;
 import com.liferay.portal.kernel.defaultpermissions.configuration.manager.PortalDefaultPermissionsConfigurationManager;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.constants.MVCRenderConstants;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.roles.admin.constants.RolesAdminWebKeys;
 import com.liferay.roles.admin.role.type.contributor.provider.RoleTypeContributorProvider;
 
@@ -22,6 +28,8 @@ import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -55,9 +63,15 @@ public class EditPortalDefaultPermissionsConfigurationMVCRenderCommand
 			HttpServletResponse httpServletResponse =
 				_portal.getHttpServletResponse(renderResponse);
 
-			String scope = httpServletRequest.getParameter("scope");
+			String scope = ParamUtil.getString(httpServletRequest, "scope");
 
-			if (scope.equals(
+			PortalDefaultPermissionsConfigurationPermissionUtil.check(
+				scope,
+				(ThemeDisplay)renderRequest.getAttribute(
+					WebKeys.THEME_DISPLAY));
+
+			if (Objects.equals(
+					scope,
 					ExtendedObjectClassDefinition.Scope.GROUP.toString())) {
 
 				renderRequest.setAttribute(
@@ -77,6 +91,11 @@ public class EditPortalDefaultPermissionsConfigurationMVCRenderCommand
 				_roleTypeContributorProvider);
 
 			requestDispatcher.include(httpServletRequest, httpServletResponse);
+		}
+		catch (PrincipalException principalException) {
+			SessionErrors.add(renderRequest, principalException.getClass());
+
+			return "/error.jsp";
 		}
 		catch (Exception exception) {
 			throw new PortletException(exception);
