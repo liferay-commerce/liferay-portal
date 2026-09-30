@@ -243,11 +243,6 @@ public class CommerceSitemapManagerTest {
 		}
 	}
 
-	private void _addCommerceChannel() throws Exception {
-		CommerceTestUtil.addCommerceChannel(
-			_group.getGroupId(), _commerceCurrency.getCode());
-	}
-
 	private void _addCPContentLayouts() throws Exception {
 		Class<?> clazz = CommerceSitemapManagerTest.class;
 
@@ -267,6 +262,11 @@ public class CommerceSitemapManagerTest {
 				_commerceCatalog.getGroupId());
 
 		return cpInstance.getCPDefinition();
+	}
+
+	private void _addCommerceChannel() throws Exception {
+		CommerceTestUtil.addCommerceChannel(
+			_group.getGroupId(), _commerceCurrency.getCode());
 	}
 
 	private String _getAssetTypeSitemap() throws Exception {
