@@ -88,6 +88,10 @@ public class CommerceSitemapManagerTest {
 		_commerceCurrency = CommerceCurrencyTestUtil.addCommerceCurrency(
 			_company.getCompanyId());
 
+		_commerceCatalog = CommerceTestUtil.addCommerceCatalog(
+			_company.getCompanyId(), _group.getGroupId(), _user.getUserId(),
+			_commerceCurrency.getCode());
+
 		_cpDefinitionClassNameId = _classNameLocalService.getClassNameId(
 			CPDefinition.class);
 
@@ -258,13 +262,9 @@ public class CommerceSitemapManagerTest {
 	}
 
 	private CPDefinition _addCPDefinition() throws Exception {
-		CommerceCatalog commerceCatalog = CommerceTestUtil.addCommerceCatalog(
-			_company.getCompanyId(), _group.getGroupId(), _user.getUserId(),
-			_commerceCurrency.getCode());
-
 		CPInstance cpInstance =
 			CPTestUtil.addCPInstanceWithRandomSkuFromCatalog(
-				commerceCatalog.getGroupId());
+				_commerceCatalog.getGroupId());
 
 		return cpInstance.getCPDefinition();
 	}
@@ -295,6 +295,8 @@ public class CommerceSitemapManagerTest {
 
 	@Inject
 	private ClassNameLocalService _classNameLocalService;
+
+	private CommerceCatalog _commerceCatalog;
 
 	@DeleteAfterTestRun
 	private CommerceCurrency _commerceCurrency;

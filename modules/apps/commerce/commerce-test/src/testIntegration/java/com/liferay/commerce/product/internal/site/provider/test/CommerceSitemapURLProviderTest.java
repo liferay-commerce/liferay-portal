@@ -134,6 +134,10 @@ public class CommerceSitemapURLProviderTest {
 		_commerceCurrency = CommerceCurrencyTestUtil.addCommerceCurrency(
 			_company.getCompanyId());
 
+		_commerceCatalog = CommerceTestUtil.addCommerceCatalog(
+			_company.getCompanyId(), _group.getGroupId(), _user.getUserId(),
+			_commerceCurrency.getCode());
+
 		CommerceTestUtil.addCommerceChannel(
 			_group.getGroupId(), _commerceCurrency.getCode());
 
@@ -495,13 +499,9 @@ public class CommerceSitemapURLProviderTest {
 	}
 
 	private CPDefinition _addCPDefinition() throws Exception {
-		CommerceCatalog commerceCatalog = CommerceTestUtil.addCommerceCatalog(
-			_company.getCompanyId(), _group.getGroupId(), _user.getUserId(),
-			_commerceCurrency.getCode());
-
 		CPInstance cpInstance =
 			CPTestUtil.addCPInstanceWithRandomSkuFromCatalog(
-				commerceCatalog.getGroupId());
+				_commerceCatalog.getGroupId());
 
 		return cpInstance.getCPDefinition();
 	}
@@ -607,6 +607,7 @@ public class CommerceSitemapURLProviderTest {
 	@Inject
 	private AssetVocabularyLocalService _assetVocabularyLocalService;
 
+	private CommerceCatalog _commerceCatalog;
 	private CommerceCurrency _commerceCurrency;
 	private Company _company;
 
