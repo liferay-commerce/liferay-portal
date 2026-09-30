@@ -5,9 +5,16 @@
 
 package com.liferay.site.dsr.site.initializer.internal.upgrade.registry;
 
+import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
+import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
+import com.liferay.site.dsr.site.initializer.internal.upgrade.v1_0_0.DSRArchivedRoomGroupUpgradeProcess;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Jorge Díaz
@@ -19,6 +26,28 @@ public class DSRSiteInitializerUpgradeStepRegistrator
 	@Override
 	public void register(Registry registry) {
 		registry.registerInitialization();
+
+		registry.register(
+			"0.0.1", "1.0.0",
+			new DSRArchivedRoomGroupUpgradeProcess(
+				_classNameLocalService, _companyLocalService,
+				_groupLocalService, _objectDefinitionLocalService,
+				_objectEntryLocalService));
 	}
+
+	@Reference
+	private ClassNameLocalService _classNameLocalService;
+
+	@Reference
+	private CompanyLocalService _companyLocalService;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
+
+	@Reference
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Reference
+	private ObjectEntryLocalService _objectEntryLocalService;
 
 }
