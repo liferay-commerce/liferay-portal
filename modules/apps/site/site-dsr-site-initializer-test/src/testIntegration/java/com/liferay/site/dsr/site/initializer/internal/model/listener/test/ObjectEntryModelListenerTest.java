@@ -22,6 +22,7 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -34,6 +35,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.GroupService;
 import com.liferay.portal.kernel.service.LayoutSetLocalService;
 import com.liferay.portal.kernel.service.LayoutSetPrototypeLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
@@ -57,6 +59,8 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -64,6 +68,7 @@ import com.liferay.site.dsr.site.initializer.constants.DSRFolderConstants;
 import com.liferay.site.dsr.site.initializer.test.util.DSRLayoutTestUtil;
 import com.liferay.site.dsr.site.initializer.test.util.DSRTestUtil;
 import com.liferay.site.dsr.site.initializer.thread.local.DSRRoomThreadLocal;
+import com.liferay.site.dsr.site.initializer.util.DSRRoomUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
@@ -112,6 +117,7 @@ public class ObjectEntryModelListenerTest {
 			_objectDefinitionLocalService.
 				getObjectDefinitionByExternalReferenceCode(
 					"L_DSR_ROOM", TestPropsValues.getCompanyId());
+		_user = UserTestUtil.addUser();
 
 		BundleContext bundleContext = FrameworkUtil.getBundle(
 			ObjectEntryModelListenerTest.class
@@ -165,6 +171,76 @@ public class ObjectEntryModelListenerTest {
 				_classNameLocalService.getClassNameId(
 					_objectDefinition.getClassName()),
 				objectEntry.getObjectEntryId()));
+	}
+
+	@FeatureFlag("LPD-82960")
+	@Test
+	@TestInfo("LPD-97751")
+	public void testOnAfterUpdateWithArchivedRoom() throws Exception {
+		ObjectEntry objectEntry = _addObjectEntry(
+			_user.getUserId(),
+			StringUtil.toLowerCase("A" + RandomTestUtil.randomString()));
+
+		Group group = _groupLocalService.fetchGroup(
+			TestPropsValues.getCompanyId(),
+			_classNameLocalService.getClassNameId(
+				_objectDefinition.getClassName()),
+			objectEntry.getObjectEntryId());
+
+		Assert.assertTrue(group.isActive());
+		Assert.assertFalse(_groupLocalService.isMaintenanceMode(group));
+		Assert.assertTrue(_hasUserSitesGroup(group));
+
+		_objectEntryLocalService.partialUpdateObjectEntry(
+			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			objectEntry.getObjectEntryFolderId(),
+			HashMapBuilder.<String, Serializable>put(
+				"roomStatus", WorkflowConstants.STATUS_INACTIVE
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+
+		group = _groupLocalService.getGroup(group.getGroupId());
+
+		Assert.assertFalse(group.isActive());
+		Assert.assertTrue(_groupLocalService.isMaintenanceMode(group));
+		Assert.assertFalse(_hasUserSitesGroup(group));
+	}
+
+	@FeatureFlag("LPD-82960")
+	@Test
+	@TestInfo("LPD-97751")
+	public void testOnAfterUpdateWithRestoredRoom() throws Exception {
+		ObjectEntry objectEntry = _addObjectEntry(
+			_user.getUserId(),
+			StringUtil.toLowerCase("A" + RandomTestUtil.randomString()));
+
+		Group group = _groupLocalService.fetchGroup(
+			TestPropsValues.getCompanyId(),
+			_classNameLocalService.getClassNameId(
+				_objectDefinition.getClassName()),
+			objectEntry.getObjectEntryId());
+
+		_objectEntryLocalService.partialUpdateObjectEntry(
+			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			objectEntry.getObjectEntryFolderId(),
+			HashMapBuilder.<String, Serializable>put(
+				"roomStatus", WorkflowConstants.STATUS_INACTIVE
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+
+		_objectEntryLocalService.partialUpdateObjectEntry(
+			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			objectEntry.getObjectEntryFolderId(),
+			HashMapBuilder.<String, Serializable>put(
+				"roomStatus", WorkflowConstants.STATUS_APPROVED
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+
+		group = _groupLocalService.getGroup(group.getGroupId());
+
+		Assert.assertTrue(group.isActive());
+		Assert.assertFalse(_groupLocalService.isMaintenanceMode(group));
+		Assert.assertTrue(_hasUserSitesGroup(group));
 	}
 
 	@Test
@@ -235,6 +311,47 @@ public class ObjectEntryModelListenerTest {
 		}
 	}
 
+	@FeatureFlag(enable = false, value = "LPD-82960")
+	@Test
+	@TestInfo("LPD-97751")
+	public void testOnBeforeUpdateWithArchivedRoom() throws Exception {
+		ObjectEntry objectEntry = _addObjectEntry(
+			StringUtil.toLowerCase("A" + RandomTestUtil.randomString()));
+
+		Group group = _groupLocalService.fetchGroup(
+			TestPropsValues.getCompanyId(),
+			_classNameLocalService.getClassNameId(
+				_objectDefinition.getClassName()),
+			objectEntry.getObjectEntryId());
+
+		try {
+			_objectEntryLocalService.partialUpdateObjectEntry(
+				TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+				objectEntry.getObjectEntryFolderId(),
+				HashMapBuilder.<String, Serializable>put(
+					"roomStatus", WorkflowConstants.STATUS_INACTIVE
+				).build(),
+				ServiceContextTestUtil.getServiceContext());
+
+			Assert.fail();
+		}
+		catch (ModelListenerException modelListenerException) {
+			Throwable throwable = modelListenerException.getCause();
+
+			Assert.assertEquals(
+				UnsupportedOperationException.class, throwable.getClass());
+		}
+
+		Assert.assertFalse(
+			DSRRoomUtil.isArchived(
+				_objectEntryLocalService.getObjectEntry(
+					objectEntry.getObjectEntryId())));
+
+		group = _groupLocalService.getGroup(group.getGroupId());
+
+		Assert.assertTrue(group.isActive());
+	}
+
 	private DLFileEntry _addFileEntry(long folderId, Group group)
 		throws Exception {
 
@@ -263,10 +380,11 @@ public class ObjectEntryModelListenerTest {
 		}
 	}
 
-	private ObjectEntry _addObjectEntry(String name) throws Exception {
+	private ObjectEntry _addObjectEntry(long userId, String name)
+		throws Exception {
+
 		return _objectEntryLocalService.addObjectEntry(
-			0, TestPropsValues.getUserId(),
-			_objectDefinition.getObjectDefinitionId(), 0, null,
+			0, userId, _objectDefinition.getObjectDefinitionId(), 0, null,
 			HashMapBuilder.<String, Serializable>put(
 				"name", name
 			).put(
@@ -274,6 +392,10 @@ public class ObjectEntryModelListenerTest {
 				_accountEntry.getAccountEntryId()
 			).build(),
 			ServiceContextTestUtil.getServiceContext());
+	}
+
+	private ObjectEntry _addObjectEntry(String name) throws Exception {
+		return _addObjectEntry(TestPropsValues.getUserId(), name);
 	}
 
 	private void _assertHasResourcePermission(
@@ -286,6 +408,19 @@ public class ObjectEntryModelListenerTest {
 				ResourceConstants.SCOPE_INDIVIDUAL,
 				String.valueOf(objectEntry.getObjectEntryId()), roleId,
 				actionId));
+	}
+
+	private boolean _hasUserSitesGroup(Group group) throws Exception {
+		if (ListUtil.exists(
+				_groupService.getUserSitesGroups(
+					_user.getUserId(), new String[] {Group.class.getName()},
+					QueryUtil.ALL_POS),
+				curGroup -> curGroup.getGroupId() == group.getGroupId())) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private void _testOnAfterCreate() throws Exception {
@@ -530,6 +665,9 @@ public class ObjectEntryModelListenerTest {
 	private GroupLocalService _groupLocalService;
 
 	@Inject
+	private GroupService _groupService;
+
+	@Inject
 	private LayoutSetLocalService _layoutSetLocalService;
 
 	@Inject
@@ -557,6 +695,7 @@ public class ObjectEntryModelListenerTest {
 
 	private final List<ServiceRegistration<?>> _serviceRegistrations =
 		new ArrayList<>();
+	private User _user;
 
 	@Inject
 	private UserGroupRoleLocalService _userGroupRoleLocalService;
