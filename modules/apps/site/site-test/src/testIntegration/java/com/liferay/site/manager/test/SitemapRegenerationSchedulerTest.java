@@ -5,11 +5,20 @@
 
 package com.liferay.site.manager.test;
 
+import com.liferay.account.model.AccountGroup;
+import com.liferay.account.model.AccountGroupRel;
+import com.liferay.account.service.AccountGroupLocalService;
+import com.liferay.account.service.AccountGroupRelLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.test.util.AssetTestUtil;
+import com.liferay.commerce.product.model.CPDefinition;
+import com.liferay.commerce.product.model.CommerceChannelRel;
+import com.liferay.commerce.product.service.CPDefinitionLocalService;
+import com.liferay.commerce.product.service.CommerceChannelRelLocalService;
+import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.service.JournalArticleLocalService;
@@ -43,7 +52,6 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
-import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.test.rule.Inject;
@@ -307,6 +315,21 @@ public class SitemapRegenerationSchedulerTest {
 	}
 
 	@Test
+	public void testScheduleRegenerateSitemapWithAddAccountGroupRel()
+		throws Exception {
+
+		CPDefinition cpDefinition = CPTestUtil.addCPDefinition(
+			_group.getGroupId());
+
+		_deleteSiteSitemapRegenerationEntries();
+
+		_addAccountGroupRel(cpDefinition);
+
+		_assertSiteSitemapRegenerationEntry(
+			SitemapConstants.ASSET_TYPE_KEY_COMMERCE_PRODUCTS, 0);
+	}
+
+	@Test
 	public void testScheduleRegenerateSitemapWithAddAssetCategory()
 		throws Exception {
 
@@ -318,6 +341,56 @@ public class SitemapRegenerationSchedulerTest {
 
 		_assertSiteSitemapRegenerationEntry(
 			SitemapConstants.ASSET_TYPE_KEY_CATEGORIES);
+	}
+
+	@Test
+	public void testScheduleRegenerateSitemapWithAddCPDefinition()
+		throws Exception {
+
+		CPTestUtil.addCPDefinition(_group.getGroupId());
+
+		_assertSiteSitemapRegenerationEntry(
+			SitemapConstants.ASSET_TYPE_KEY_COMMERCE_PRODUCTS, 0);
+	}
+
+	@Test
+	public void testScheduleRegenerateSitemapWithAddCPDefinitionCachedGenerationDisabled()
+		throws Exception {
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						_PID_SITEMAP_COMPANY_CONFIGURATION,
+						HashMapDictionaryBuilder.<String, Object>put(
+							"cachedGenerationEnabled", false
+						).build())) {
+
+			CPTestUtil.addCPDefinition(_group.getGroupId());
+
+			List<SiteSitemapRegenerationEntry> siteSitemapRegenerationEntries =
+				_getSiteSitemapRegenerationEntries(
+					SitemapConstants.ASSET_TYPE_KEY_COMMERCE_PRODUCTS, 0);
+
+			Assert.assertTrue(
+				siteSitemapRegenerationEntries.toString(),
+				siteSitemapRegenerationEntries.isEmpty());
+		}
+	}
+
+	@Test
+	public void testScheduleRegenerateSitemapWithAddCommerceChannelRel()
+		throws Exception {
+
+		CPDefinition cpDefinition = CPTestUtil.addCPDefinition(
+			_group.getGroupId());
+
+		_deleteSiteSitemapRegenerationEntries();
+
+		_addCommerceChannelRel(cpDefinition);
+
+		_assertSiteSitemapRegenerationEntry(
+			SitemapConstants.ASSET_TYPE_KEY_COMMERCE_PRODUCTS, 0);
 	}
 
 	@Test
@@ -349,8 +422,9 @@ public class SitemapRegenerationSchedulerTest {
 					new CompanyConfigurationTemporarySwapper(
 						TestPropsValues.getCompanyId(),
 						_PID_SITEMAP_COMPANY_CONFIGURATION,
-						MapUtil.<String, Object>singletonDictionary(
-							"cachedGenerationEnabled", false))) {
+						HashMapDictionaryBuilder.<String, Object>put(
+							"cachedGenerationEnabled", false
+						).build())) {
 
 			LayoutTestUtil.addTypePortletLayout(_group);
 
@@ -438,6 +512,21 @@ public class SitemapRegenerationSchedulerTest {
 	}
 
 	@Test
+	public void testScheduleRegenerateSitemapWithDeleteAccountGroupRel()
+		throws Exception {
+
+		AccountGroupRel accountGroupRel = _addAccountGroupRel(
+			CPTestUtil.addCPDefinition(_group.getGroupId()));
+
+		_deleteSiteSitemapRegenerationEntries();
+
+		_accountGroupRelLocalService.deleteAccountGroupRel(accountGroupRel);
+
+		_assertSiteSitemapRegenerationEntry(
+			SitemapConstants.ASSET_TYPE_KEY_COMMERCE_PRODUCTS, 0);
+	}
+
+	@Test
 	public void testScheduleRegenerateSitemapWithDeleteAssetCategory()
 		throws Exception {
 
@@ -453,6 +542,37 @@ public class SitemapRegenerationSchedulerTest {
 
 		_assertSiteSitemapRegenerationEntry(
 			SitemapConstants.ASSET_TYPE_KEY_CATEGORIES);
+	}
+
+	@Test
+	public void testScheduleRegenerateSitemapWithDeleteCPDefinition()
+		throws Exception {
+
+		CPDefinition cpDefinition = CPTestUtil.addCPDefinition(
+			_group.getGroupId());
+
+		_deleteSiteSitemapRegenerationEntries();
+
+		_cpDefinitionLocalService.deleteCPDefinition(cpDefinition);
+
+		_assertSiteSitemapRegenerationEntry(
+			SitemapConstants.ASSET_TYPE_KEY_COMMERCE_PRODUCTS, 0);
+	}
+
+	@Test
+	public void testScheduleRegenerateSitemapWithDeleteCommerceChannelRel()
+		throws Exception {
+
+		CommerceChannelRel commerceChannelRel = _addCommerceChannelRel(
+			CPTestUtil.addCPDefinition(_group.getGroupId()));
+
+		_deleteSiteSitemapRegenerationEntries();
+
+		_commerceChannelRelLocalService.deleteCommerceChannelRel(
+			commerceChannelRel);
+
+		_assertSiteSitemapRegenerationEntry(
+			SitemapConstants.ASSET_TYPE_KEY_COMMERCE_PRODUCTS, 0);
 	}
 
 	@Test
@@ -524,6 +644,21 @@ public class SitemapRegenerationSchedulerTest {
 	}
 
 	@Test
+	public void testScheduleRegenerateSitemapWithUpdateCPDefinition()
+		throws Exception {
+
+		CPDefinition cpDefinition = CPTestUtil.addCPDefinition(
+			_group.getGroupId());
+
+		_deleteSiteSitemapRegenerationEntries();
+
+		_cpDefinitionLocalService.updateCPDefinition(cpDefinition);
+
+		_assertSiteSitemapRegenerationEntry(
+			SitemapConstants.ASSET_TYPE_KEY_COMMERCE_PRODUCTS, 0);
+	}
+
+	@Test
 	public void testScheduleRegenerateSitemapWithUpdateJournalArticle()
 		throws Exception {
 
@@ -577,6 +712,27 @@ public class SitemapRegenerationSchedulerTest {
 			_assertSiteSitemapRegenerationEntry(
 				SitemapConstants.ASSET_TYPE_KEY_OBJECT_ENTRIES);
 		}
+	}
+
+	private AccountGroupRel _addAccountGroupRel(CPDefinition cpDefinition)
+		throws Exception {
+
+		AccountGroup accountGroup =
+			_accountGroupLocalService.checkGuestAccountGroup(
+				TestPropsValues.getCompanyId());
+
+		return _accountGroupRelLocalService.addAccountGroupRel(
+			accountGroup.getAccountGroupId(), CPDefinition.class.getName(),
+			cpDefinition.getCPDefinitionId());
+	}
+
+	private CommerceChannelRel _addCommerceChannelRel(CPDefinition cpDefinition)
+		throws Exception {
+
+		return _commerceChannelRelLocalService.addCommerceChannelRel(
+			CPDefinition.class.getName(), cpDefinition.getCPDefinitionId(),
+			RandomTestUtil.randomLong(),
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 	}
 
 	private ObjectEntry _addObjectEntry(long groupId) throws Exception {
@@ -771,10 +927,22 @@ public class SitemapRegenerationSchedulerTest {
 		_companyConfigurationTemporarySwapper;
 
 	@Inject
+	private AccountGroupLocalService _accountGroupLocalService;
+
+	@Inject
+	private AccountGroupRelLocalService _accountGroupRelLocalService;
+
+	@Inject
 	private AssetCategoryLocalService _assetCategoryLocalService;
+
+	@Inject
+	private CommerceChannelRelLocalService _commerceChannelRelLocalService;
 
 	@DeleteAfterTestRun
 	private ObjectDefinition _companyObjectDefinition;
+
+	@Inject
+	private CPDefinitionLocalService _cpDefinitionLocalService;
 
 	@DeleteAfterTestRun
 	private Group _group;

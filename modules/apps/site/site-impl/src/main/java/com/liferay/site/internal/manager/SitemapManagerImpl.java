@@ -857,6 +857,8 @@ public class SitemapManagerImpl implements SitemapManager {
 
 		PermissionChecker originalPermissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
+		long originalScopeGroupId = themeDisplay.getScopeGroupId();
+		long originalSiteGroupId = themeDisplay.getSiteGroupId();
 
 		_unsafeBiConsumerThreadLocal.set(unsafeBiConsumer);
 
@@ -866,6 +868,9 @@ public class SitemapManagerImpl implements SitemapManager {
 			PermissionThreadLocal.setPermissionChecker(
 				_permissionCheckerFactory.create(
 					_userLocalService.getGuestUser(companyId)));
+
+			themeDisplay.setScopeGroupId(groupId);
+			themeDisplay.setSiteGroupId(groupId);
 
 			Document document = _createSitemapDocument(
 				"urlset", "http://www.sitemaps.org/schemas/sitemap/0.9");
@@ -896,6 +901,9 @@ public class SitemapManagerImpl implements SitemapManager {
 		finally {
 			PermissionThreadLocal.setPermissionChecker(
 				originalPermissionChecker);
+
+			themeDisplay.setScopeGroupId(originalScopeGroupId);
+			themeDisplay.setSiteGroupId(originalSiteGroupId);
 
 			_unsafeBiConsumerThreadLocal.remove();
 		}
@@ -1696,6 +1704,8 @@ public class SitemapManagerImpl implements SitemapManager {
 	private static final Map<String, String> _assetTypeKeysByClassName = Map.of(
 		AssetCategory.class.getName(),
 		SitemapConstants.ASSET_TYPE_KEY_CATEGORIES,
+		"com.liferay.commerce.product.model.CPDefinition",
+		SitemapConstants.ASSET_TYPE_KEY_COMMERCE_PRODUCTS,
 		JournalArticle.class.getName(),
 		SitemapConstants.ASSET_TYPE_KEY_WEB_CONTENT, Layout.class.getName(),
 		SitemapConstants.ASSET_TYPE_KEY_PAGES, ObjectEntry.class.getName(),
