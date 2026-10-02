@@ -5,6 +5,7 @@
 
 package com.liferay.site.pim.site.initializer.internal.display.context;
 
+import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;
@@ -81,6 +82,12 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 			invocationOnMock ->
 				invocationOnMock.getArgument(1) + ": " +
 					invocationOnMock.getArgument(2)
+		);
+
+		Mockito.when(
+			language.get(Mockito.eq(LocaleUtil.US), Mockito.anyString())
+		).thenAnswer(
+			invocationOnMock -> invocationOnMock.getArgument(1)
 		);
 
 		languageUtil.setLanguage(language);
@@ -299,11 +306,12 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 		PIMConnector pimConnector = Mockito.mock(PIMConnector.class);
 
 		Mockito.when(
-			pimConnector.getPIMConnectorChannelFields(LocaleUtil.US)
+			pimConnector.getPIMConnectorChannelFields()
 		).thenReturn(
 			Collections.singletonList(
 				new PIMConnectorChannelField(
-					"SKU", false, _CHANNEL_FIELD, true))
+					"SKU", false, _CHANNEL_FIELD, true,
+					ObjectFieldConstants.BUSINESS_TYPE_TEXT))
 		);
 
 		Mockito.when(
