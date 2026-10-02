@@ -23,6 +23,10 @@ export class CommerceAdminInventoryPage extends CommerceDNDTablePage {
 		strictEqual?: boolean
 	) => Promise<{column: Locator; row: Locator}>;
 	readonly deleteItemMenuItem: Locator;
+	readonly inventoryRowSkuLink: (
+		skuName: string,
+		unitOfMeasureKey: string
+	) => Locator;
 	readonly globalMenuPage: GlobalMenuPage;
 	readonly modalFrameLocator: FrameLocator;
 	readonly modalQuantityInput: Locator;
@@ -76,6 +80,14 @@ export class CommerceAdminInventoryPage extends CommerceDNDTablePage {
 				strictEqual
 			);
 		};
+		this.inventoryRowSkuLink = (
+			skuName: string,
+			unitOfMeasureKey: string
+		) =>
+			page
+				.getByRole('row')
+				.filter({hasText: unitOfMeasureKey})
+				.getByRole('link', {name: skuName});
 		this.deleteItemMenuItem = page.getByRole('menuitem', {
 			exact: true,
 			name: 'Delete',

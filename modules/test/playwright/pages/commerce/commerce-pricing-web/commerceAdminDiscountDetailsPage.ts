@@ -37,6 +37,17 @@ export class CommerceAdminDiscountDetailsPage extends CommerceDNDTablePage {
 	readonly relationResultCell: (entryName: string) => Locator;
 	readonly relationRowSelectButton: (entryName: string) => Locator;
 	readonly saveButton: Locator;
+	readonly skuFinderBackdrop: Locator;
+	readonly skuFinderOpenPanel: Locator;
+	readonly skuFinderRowProductName: (rowIndex: number) => Locator;
+	readonly skuFinderRowSelectButton: (rowIndex: number) => Locator;
+	readonly skuFinderRowSku: (rowIndex: number) => Locator;
+	readonly skuFinderRowUnitOfMeasureKey: (rowIndex: number) => Locator;
+	readonly skuFinderRows: Locator;
+	readonly skuTableRowProductName: (rowIndex: number) => Locator;
+	readonly skuTableRowSku: (rowIndex: number) => Locator;
+	readonly skuTableRowUnitOfMeasureKey: (rowIndex: number) => Locator;
+	readonly skuTableRows: Locator;
 	readonly specificAccountGroupsRadio: Locator;
 	readonly specificAccountsRadio: Locator;
 	readonly specificChannelsRadio: Locator;
@@ -104,6 +115,26 @@ export class CommerceAdminDiscountDetailsPage extends CommerceDNDTablePage {
 				.getByRole('row')
 				.filter({hasText: entryName})
 				.getByRole('button', {exact: true, name: 'Select'});
+		this.skuFinderBackdrop = page.locator('.expose__backdrop');
+		this.skuFinderOpenPanel = page.locator('.expose.is-open');
+		this.skuFinderRows = page.locator('.add-or-create tbody tr');
+		this.skuFinderRowProductName = (rowIndex: number) =>
+			this.skuFinderRows.nth(rowIndex).locator('td').nth(1);
+		this.skuFinderRowSku = (rowIndex: number) =>
+			this.skuFinderRows.nth(rowIndex).locator('td').nth(2);
+		this.skuFinderRowUnitOfMeasureKey = (rowIndex: number) =>
+			this.skuFinderRows.nth(rowIndex).locator('td').nth(3);
+		this.skuFinderRowSelectButton = (rowIndex: number) =>
+			this.skuFinderRows
+				.nth(rowIndex)
+				.getByRole('button', {exact: true, name: 'Select'});
+		this.skuTableRows = this.table.locator('tbody tr');
+		this.skuTableRowSku = (rowIndex: number) =>
+			this.skuTableRows.nth(rowIndex).locator('td').nth(0);
+		this.skuTableRowProductName = (rowIndex: number) =>
+			this.skuTableRows.nth(rowIndex).locator('td').nth(1);
+		this.skuTableRowUnitOfMeasureKey = (rowIndex: number) =>
+			this.skuTableRows.nth(rowIndex).locator('td').nth(2);
 		this.specificAccountGroupsRadio = page.getByRole('radio', {
 			name: 'Specific Account Groups',
 		});
@@ -153,6 +184,16 @@ export class CommerceAdminDiscountDetailsPage extends CommerceDNDTablePage {
 		this.specificOrderTypesRadio = page.getByRole('radio', {
 			name: 'Specific Order Types',
 		});
+	}
+
+	async closeSkuFinder() {
+		await expect(async () => {
+			await this.page.keyboard.press('Escape');
+
+			await expect(this.skuFinderOpenPanel).toHaveCount(0, {
+				timeout: 2000,
+			});
+		}).toPass({timeout: 15000});
 	}
 
 	async addEligibilityEntry(placeholder: string, entryName: string) {

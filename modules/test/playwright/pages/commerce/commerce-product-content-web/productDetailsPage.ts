@@ -82,6 +82,9 @@ export class ProductDetailsPage {
 	readonly productDetail: Locator;
 	readonly productDetailAddToCartButton: Locator;
 	readonly productDetailAvailabilityLabel: Locator;
+	readonly productDetailInactivePrice: Locator;
+	readonly productDetailListPrice: Locator;
+	readonly productDetailPromoPrice: Locator;
 	readonly productDetailValue: (label: string) => Locator;
 	readonly productDetailQuantitySelector: Locator;
 	readonly productOptionUploadFormFeedback: Locator;
@@ -274,6 +277,14 @@ export class ProductDetailsPage {
 		this.productDetailAvailabilityLabel = this.productDetail.locator(
 			'[class*="availability-label"]'
 		);
+		this.productDetailInactivePrice = this.priceContainer.locator(
+			'.price-value-inactive:not(.price-value-promo)'
+		);
+		this.productDetailListPrice = this.priceContainer.locator(
+			'.price-value:not(.price-value-promo)'
+		);
+		this.productDetailPromoPrice =
+			this.priceContainer.locator('.price-value-promo');
 		this.productDetailValue = (label: string) =>
 			this.productDetail
 				.locator('p')
