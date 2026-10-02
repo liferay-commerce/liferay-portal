@@ -17,6 +17,7 @@ import com.liferay.commerce.price.list.model.CommercePriceList;
 import com.liferay.commerce.price.list.service.CommercePriceEntryLocalService;
 import com.liferay.commerce.price.list.service.CommercePriceListAccountRelLocalService;
 import com.liferay.commerce.price.list.service.CommercePriceListLocalServiceUtil;
+import com.liferay.commerce.product.model.CPConfigurationEntry;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
@@ -24,6 +25,7 @@ import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.model.CommerceChannel;
+import com.liferay.commerce.product.service.CPConfigurationEntryLocalService;
 import com.liferay.commerce.product.service.CPInstanceLocalService;
 import com.liferay.commerce.product.service.CPInstanceUnitOfMeasureLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
@@ -31,8 +33,10 @@ import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.commerce.test.util.price.list.CommercePriceEntryTestUtil;
 import com.liferay.commerce.test.util.price.list.CommercePriceListTestUtil;
 import com.liferay.commerce.test.util.price.list.CommerceTierPriceEntryTestUtil;
+import com.liferay.headless.commerce.delivery.catalog.client.dto.v1_0.Availability;
 import com.liferay.headless.commerce.delivery.catalog.client.dto.v1_0.Price;
 import com.liferay.headless.commerce.delivery.catalog.client.dto.v1_0.Sku;
+import com.liferay.headless.commerce.delivery.catalog.client.dto.v1_0.SkuOption;
 import com.liferay.headless.commerce.delivery.catalog.client.dto.v1_0.SkuUnitOfMeasure;
 import com.liferay.headless.commerce.delivery.catalog.client.dto.v1_0.TierPrice;
 import com.liferay.headless.commerce.delivery.catalog.client.pagination.Page;
@@ -144,6 +148,14 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 	@Override
 	@Test
 	public void testPostChannelProductSku() {
+	}
+
+	@Override
+	@Test
+	public void testPostChannelProductSkuBySkuOption() throws Exception {
+		super.testPostChannelProductSkuBySkuOption();
+
+		_testPostChannelProductSkuBySkuOptionWithBackOrder();
 	}
 
 	@Override
@@ -813,6 +825,60 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 		}
 	}
 
+	private void _testPostChannelProductSkuBySkuOptionWithBackOrder()
+		throws Exception {
+
+		List<CPDefinitionOptionValueRel> cpDefinitionOptionValueRels =
+			_cpDefinitionOptionRel.getCPDefinitionOptionValueRels();
+
+		CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
+			cpDefinitionOptionValueRels.get(_cpInstances.size());
+
+		Sku sku = _addCPInstance(randomSku());
+
+		CPConfigurationEntry cpConfigurationEntry =
+			_cpDefinition.fetchMasterCPConfigurationEntry();
+
+		cpConfigurationEntry.setBackOrders(false);
+		cpConfigurationEntry.setDisplayStockQuantity(true);
+
+		cpConfigurationEntry =
+			_cpConfigurationEntryLocalService.updateCPConfigurationEntry(
+				cpConfigurationEntry);
+
+		SkuOption[] skuOptions = {
+			new SkuOption() {
+				{
+					skuOptionKey = _cpDefinitionOptionRel.getKey();
+					skuOptionValueKey = cpDefinitionOptionValueRel.getKey();
+				}
+			}
+		};
+
+		Sku postSku = skuResource.postChannelProductSkuBySkuOption(
+			_commerceChannel.getCommerceChannelId(),
+			_cpDefinition.getCProductId(), null, null, null, null, skuOptions);
+
+		Assert.assertEquals(sku.getId(), postSku.getId());
+		Assert.assertFalse(postSku.getBackOrderAllowed());
+
+		Availability availability = postSku.getAvailability();
+
+		Assert.assertTrue(
+			BigDecimalUtil.isZero(availability.getStockQuantity()));
+
+		cpConfigurationEntry.setBackOrders(true);
+
+		_cpConfigurationEntryLocalService.updateCPConfigurationEntry(
+			cpConfigurationEntry);
+
+		postSku = skuResource.postChannelProductSkuBySkuOption(
+			_commerceChannel.getCommerceChannelId(),
+			_cpDefinition.getCProductId(), null, null, null, null, skuOptions);
+
+		Assert.assertTrue(postSku.getBackOrderAllowed());
+	}
+
 	@Inject
 	private AccountEntryLocalService _accountEntryLocalService;
 
@@ -828,6 +894,9 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 	@Inject
 	private CommercePriceListAccountRelLocalService
 		_commercePriceListAccountRelLocalService;
+
+	@Inject
+	private CPConfigurationEntryLocalService _cpConfigurationEntryLocalService;
 
 	@DeleteAfterTestRun
 	private CPDefinition _cpDefinition;
