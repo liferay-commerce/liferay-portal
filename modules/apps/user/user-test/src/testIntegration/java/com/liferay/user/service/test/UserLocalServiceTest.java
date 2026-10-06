@@ -2208,6 +2208,8 @@ public class UserLocalServiceTest {
 			String uriString, User user)
 		throws Exception {
 
+		user = _userLocalService.getUser(user.getUserId());
+
 		user.setDigest(user.getDigest(password));
 
 		user = _userLocalService.updateUser(user);
