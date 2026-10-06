@@ -47,7 +47,7 @@ public class ProductTypesCMSStructureObjectFolderContributor
 
 	@Override
 	public String getCreationMenuIcon() {
-		return "shopping-cart";
+		return "products";
 	}
 
 	@Override

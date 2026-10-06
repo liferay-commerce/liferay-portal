@@ -376,7 +376,10 @@ public class PIMCMSObjectEntryFormContributor
 			"title" + (numberOfTabs + 1), _getLocalizedNameJSONObject(layout));
 
 		freeMarkerJSONObject.put(
-			"numberOfTabs", String.valueOf(numberOfTabs + 1));
+			"numberOfTabs", String.valueOf(numberOfTabs + 1)
+		).put(
+			"persistSelectedTab", false
+		);
 
 		_notifyFragmentEntryLinkListeners(
 			_fragmentEntryLinkLocalService.updateFragmentEntryLink(

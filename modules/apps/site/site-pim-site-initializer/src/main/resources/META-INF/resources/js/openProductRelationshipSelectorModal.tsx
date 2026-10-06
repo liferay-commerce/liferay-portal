@@ -57,7 +57,7 @@ export default async function openProductRelationshipSelectorModal(
 
 	openItemSelectorModal({
 		apiURL,
-		confirmButtonLabel: Liferay.Language.get('add'),
+		confirmButtonLabel: Liferay.Language.get('save'),
 		fdsProps: {
 			customRenderers: {
 				tableCell: [

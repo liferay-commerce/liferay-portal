@@ -15,7 +15,7 @@ export default function ProductRelationshipSelectorNameRenderer({
 	return (
 		<span className="align-items-center d-flex table-list-title">
 			<ClaySticker className="c-mr-2 content-icon-custom-structure flex-shrink-0 inline-item inline-item-before">
-				<ClayIcon symbol="web-content" />
+				<ClayIcon symbol="product-configuration" />
 			</ClaySticker>
 
 			<span>{value}</span>

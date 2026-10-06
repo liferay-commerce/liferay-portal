@@ -98,7 +98,7 @@ public class ProductRelationshipsDisplayContext {
 			).putData(
 				"searchAPIURL", _getSearchAPIURL(objectEntry)
 			).setLabel(
-				LanguageUtil.get(_httpServletRequest, "add-relationship")
+				LanguageUtil.get(_httpServletRequest, "new")
 			).build());
 
 		return creationMenu;
@@ -123,21 +123,12 @@ public class ProductRelationshipsDisplayContext {
 		}
 
 		return ListUtil.fromArray(
-			FDSActionDropdownItemBuilder.setConfirmationMessage(
-				LanguageUtil.get(
-					_httpServletRequest, "are-you-sure-you-want-to-delete-this")
-			).setHref(
-				"{actions.delete.href}"
-			).setIcon(
-				"trash"
+			FDSActionDropdownItemBuilder.setIcon(
+				"times-circle"
 			).setLabel(
-				LanguageUtil.get(_httpServletRequest, "delete")
-			).setMethod(
-				"delete"
+				LanguageUtil.get(_httpServletRequest, "remove")
 			).setPermissionKey(
 				"delete"
-			).setTarget(
-				"headless"
 			).build(
 				"delete"
 			));

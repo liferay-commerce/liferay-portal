@@ -59,7 +59,7 @@ public class PIMConnectorChannelFieldDisplay {
 				"danger", LanguageUtil.get(_locale, "required-not-mapped"));
 		}
 
-		return new Status("secondary", LanguageUtil.get(_locale, "not-mapped"));
+		return new Status("info", LanguageUtil.get(_locale, "not-mapped"));
 	}
 
 	public boolean isMapped() {

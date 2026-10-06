@@ -5,8 +5,10 @@
 
 package com.liferay.site.pim.site.initializer.internal.display.context;
 
+import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -31,9 +33,11 @@ public class PIMConnectorFieldMappingsDisplayContext {
 
 	public PIMConnectorFieldMappingsDisplayContext(
 		HttpServletRequest httpServletRequest,
+		ObjectDefinition objectDefinition,
 		ObjectEntryLocalService objectEntryLocalService) {
 
 		_httpServletRequest = httpServletRequest;
+		_objectDefinition = objectDefinition;
 		_objectEntryLocalService = objectEntryLocalService;
 
 		_objectEntryId = ParamUtil.getLong(httpServletRequest, "objectEntryId");
@@ -42,6 +46,8 @@ public class PIMConnectorFieldMappingsDisplayContext {
 	}
 
 	public Map<String, Object> getBreadcrumbProps() {
+		String name = _getName();
+
 		return HashMapBuilder.<String, Object>put(
 			"actionItems",
 			JSONUtil.putAll(
@@ -51,6 +57,35 @@ public class PIMConnectorFieldMappingsDisplayContext {
 						String.valueOf(_objectEntryId), _themeDisplay)
 				).put(
 					"label", LanguageUtil.get(_httpServletRequest, "edit")
+				),
+				JSONUtil.put(
+					"className", "text-danger"
+				).put(
+					"confirmationMessage",
+					LanguageUtil.get(
+						_httpServletRequest,
+						"the-connector-and-all-its-field-mappings-will-be-" +
+							"deleted.-this-action-cannot-be-undone")
+				).put(
+					"confirmationTitle",
+					LanguageUtil.format(_httpServletRequest, "delete-x", name)
+				).put(
+					"href",
+					() -> {
+						if (_objectDefinition == null) {
+							return StringPool.BLANK;
+						}
+
+						return StringBundler.concat(
+							"/o", _objectDefinition.getRESTContextPath(),
+							StringPool.SLASH, _objectEntryId);
+					}
+				).put(
+					"label", LanguageUtil.get(_httpServletRequest, "delete")
+				).put(
+					"redirect", PIMURLUtil.getConnectorsURL(_themeDisplay)
+				).put(
+					"target", "asyncDelete"
 				))
 		).put(
 			"breadcrumbItems",
@@ -67,7 +102,7 @@ public class PIMConnectorFieldMappingsDisplayContext {
 				).put(
 					"href", StringPool.BLANK
 				).put(
-					"label", _getName()
+					"label", name
 				))
 		).put(
 			"hideSpace", true
@@ -117,6 +152,7 @@ public class PIMConnectorFieldMappingsDisplayContext {
 	}
 
 	private final HttpServletRequest _httpServletRequest;
+	private final ObjectDefinition _objectDefinition;
 	private final long _objectEntryId;
 	private final ObjectEntryLocalService _objectEntryLocalService;
 	private final ThemeDisplay _themeDisplay;

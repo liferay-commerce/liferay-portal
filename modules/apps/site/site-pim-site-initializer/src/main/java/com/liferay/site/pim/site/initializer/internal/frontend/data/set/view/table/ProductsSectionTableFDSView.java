@@ -51,7 +51,7 @@ public class ProductsSectionTableFDSView extends BasePIMTableFDSView {
 		).add(
 			"embedded.status", "status",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
-				"status")
+				"statusTableCellRenderer")
 		).build();
 	}
 

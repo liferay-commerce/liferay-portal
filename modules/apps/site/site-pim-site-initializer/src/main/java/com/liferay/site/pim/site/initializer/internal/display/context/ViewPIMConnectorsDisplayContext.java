@@ -74,19 +74,6 @@ public class ViewPIMConnectorsDisplayContext {
 	public List<FDSActionDropdownItem> getFDSActionDropdownItems() {
 		return ListUtil.fromArray(
 			FDSActionDropdownItemBuilder.setHref(
-				PIMURLUtil.getEditConnectorURL("{id}", _themeDisplay)
-			).setIcon(
-				"pencil"
-			).setLabel(
-				LanguageUtil.get(_httpServletRequest, "edit")
-			).setMethod(
-				"get"
-			).setPermissionKey(
-				"update"
-			).build(
-				"edit"
-			),
-			FDSActionDropdownItemBuilder.setHref(
 				PIMURLUtil.getFieldMappingsURL("{id}", _themeDisplay)
 			).setIcon(
 				"sheets"
@@ -98,6 +85,19 @@ public class ViewPIMConnectorsDisplayContext {
 				"update"
 			).build(
 				"fieldMappings"
+			),
+			FDSActionDropdownItemBuilder.setHref(
+				PIMURLUtil.getEditConnectorURL("{id}", _themeDisplay)
+			).setIcon(
+				"pencil"
+			).setLabel(
+				LanguageUtil.get(_httpServletRequest, "edit")
+			).setMethod(
+				"get"
+			).setPermissionKey(
+				"update"
+			).build(
+				"edit"
 			),
 			FDSActionDropdownItemBuilder.setHref(
 				PIMURLUtil.getExportURL("{id}")
@@ -112,21 +112,12 @@ public class ViewPIMConnectorsDisplayContext {
 			).build(
 				"export"
 			),
-			FDSActionDropdownItemBuilder.setConfirmationMessage(
-				LanguageUtil.get(
-					_httpServletRequest, "are-you-sure-you-want-to-delete-this")
-			).setHref(
-				"{actions.delete.href}"
-			).setIcon(
+			FDSActionDropdownItemBuilder.setIcon(
 				"trash"
 			).setLabel(
 				LanguageUtil.get(_httpServletRequest, "delete")
-			).setMethod(
-				"delete"
 			).setPermissionKey(
 				"delete"
-			).setTarget(
-				"headless"
 			).build(
 				"delete"
 			));

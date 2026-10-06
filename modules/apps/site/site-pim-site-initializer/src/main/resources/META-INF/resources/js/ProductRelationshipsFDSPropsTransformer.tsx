@@ -3,7 +3,14 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {addOnClickToCreationMenuItems} from '@liferay/site-cms-site-initializer';
+import {
+	StatusLabel,
+	addOnClickToCreationMenuItems,
+	confirmAndDeleteEntryAction,
+	styleDeleteAction,
+} from '@liferay/site-cms-site-initializer';
+import {sub} from 'frontend-js-web';
+import React from 'react';
 
 import ProductRelationshipSelectorNameRenderer from './cell_renderers/ProductRelationshipSelectorNameRenderer';
 import openProductRelationshipSelectorModal from './openProductRelationshipSelectorModal';
@@ -37,12 +44,50 @@ export default function propsTransformer({
 					name: 'nameTableCellRenderer',
 					type: 'internal',
 				},
+				{
+					component: ({value}: any) => (
+						<StatusLabel label={value?.label} />
+					),
+					name: 'statusTableCellRenderer',
+					type: 'internal',
+				},
 			],
 		},
-		itemsActions: itemsActions?.map((action) =>
-			action?.data?.id === 'delete'
-				? {...action, className: 'text-danger'}
-				: action
-		),
+		hideManagementBarInEmptyState: true,
+		itemsActions: itemsActions?.map(styleDeleteAction),
+		onActionDropdownItemClick({
+			action,
+			event,
+			itemData,
+			loadData,
+		}: {
+			action: {data?: {id?: string}};
+			event: Event;
+			itemData: {
+				actions: {delete: {href: string; method: string}};
+				name: string;
+			};
+			loadData: () => void;
+		}) {
+			if (action?.data?.id !== 'delete') {
+				return;
+			}
+
+			event.preventDefault();
+
+			confirmAndDeleteEntryAction({
+				bodyHTML: Liferay.Language.get(
+					'the-relationship-will-be-removed.-this-action-cannot-be-undone'
+				),
+				confirmButtonLabel: Liferay.Language.get('remove'),
+				deleteAction: itemData.actions.delete,
+				loadData,
+				successMessage: sub(
+					Liferay.Language.get('x-was-removed-successfully'),
+					Liferay.Util.escapeHTML(itemData.name)
+				),
+				title: sub(Liferay.Language.get('remove-x'), itemData.name),
+			});
+		},
 	};
 }

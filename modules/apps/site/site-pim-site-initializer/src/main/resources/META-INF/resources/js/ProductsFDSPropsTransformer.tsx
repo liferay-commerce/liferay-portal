@@ -7,9 +7,11 @@ import {
 	ACTIONS,
 	AuthorRenderer,
 	SpaceRendererWithCache,
+	StatusLabel,
 	addOnClickToCreationMenuItems,
 	deleteAssetEntriesBulkAction,
 	getScopeExternalReferenceCode,
+	styleDeleteAction,
 	transformFDSBulkActions,
 } from '@liferay/site-cms-site-initializer';
 import React from 'react';
@@ -62,14 +64,22 @@ export default function propsTransformer({
 					name: 'spaceTableCellRenderer',
 					type: 'internal',
 				},
+				{
+					component: ({itemData, value}: any) => (
+						<StatusLabel
+							expirationDate={
+								itemData?.embedded?.expirationDate ?? undefined
+							}
+							label={value?.label}
+						/>
+					),
+					name: 'statusTableCellRenderer',
+					type: 'internal',
+				},
 			],
 		},
 		hideManagementBarInEmptyState: true,
-		itemsActions: itemsActions?.map((action) =>
-			action?.data?.id === 'delete'
-				? {...action, className: 'text-danger'}
-				: action
-		),
+		itemsActions: itemsActions?.map(styleDeleteAction),
 		onBulkActionItemClick: ({
 			action,
 			selectedData,

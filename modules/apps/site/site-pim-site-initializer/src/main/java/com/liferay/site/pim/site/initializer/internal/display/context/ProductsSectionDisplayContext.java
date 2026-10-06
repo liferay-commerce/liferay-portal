@@ -43,6 +43,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.site.cms.site.initializer.constants.CMSWorkflowConstants;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectEntryFolderConstants;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectFolderConstants;
 
@@ -65,9 +66,14 @@ public class ProductsSectionDisplayContext {
 	}
 
 	public String getAPIURL() {
-		return "/o/search/v1.0/search?emptySearch=true&filter=" +
-			URLCodec.encodeURL("cmsSection eq 'products'") +
-				"&nestedFields=embedded,systemProperties.objectDefinitionBrief";
+		return StringBundler.concat(
+			"/o/search/v1.0/search?emptySearch=true&filter=",
+			URLCodec.encodeURL(
+				StringBundler.concat(
+					"cmsSection eq 'products' and status in (",
+					StringUtil.merge(CMSWorkflowConstants.STATUSES, ", "),
+					")")),
+			"&nestedFields=embedded,systemProperties.objectDefinitionBrief");
 	}
 
 	public List<DropdownItem> getBulkActionDropdownItems() {
