@@ -78,6 +78,62 @@ test(
 );
 
 test(
+	'Confirm a connector deletion through a modal',
+	{tag: ['@LPD-107968']},
+	async ({connectorsPage}) => {
+		const connectorName = getRandomString();
+
+		try {
+			await connectorsPage.createConnector({
+				connector: 'Liferay Commerce',
+				name: connectorName,
+			});
+
+			await test.step('The modal spells out what is deleted', async () => {
+				await connectorsPage.openDeleteConfirmation(connectorName);
+
+				await expect(connectorsPage.deleteModalTitle).toContainText(
+					`Delete ${connectorName}`
+				);
+				await expect(connectorsPage.deleteModal).toContainText(
+					'The connector and all its field mappings will be deleted. This action cannot be undone.'
+				);
+				await expect(
+					connectorsPage.deleteModalCancelButton
+				).toBeVisible();
+				await expect(
+					connectorsPage.deleteModalConfirmButton
+				).toBeVisible();
+			});
+
+			await test.step('Cancelling keeps the connector', async () => {
+				await connectorsPage.deleteModalCancelButton.click();
+
+				await expect(connectorsPage.deleteModal).toBeHidden();
+				await expect(
+					connectorsPage.getConnector(connectorName)
+				).toBeVisible();
+			});
+
+			await test.step('Confirming deletes it', async () => {
+				await connectorsPage.openDeleteConfirmation(connectorName);
+
+				await connectorsPage.deleteModalConfirmButton.click();
+
+				await expect(
+					connectorsPage.getConnector(connectorName)
+				).toBeHidden();
+			});
+		}
+		finally {
+			await connectorsPage.goto();
+
+			await connectorsPage.deleteConnectorIfPresent(connectorName);
+		}
+	}
+);
+
+test(
 	'Narrow the connectors list by status and by name',
 	{tag: ['@LPD-106219']},
 	async ({connectorsPage, editConnectorPage, page}) => {

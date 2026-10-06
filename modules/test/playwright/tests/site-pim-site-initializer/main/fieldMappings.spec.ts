@@ -188,6 +188,51 @@ test(
 );
 
 test(
+	'Map a channel field to two fixed values at once',
+	{tag: ['@LPD-107968']},
+	async ({
+		connectorsPage,
+		editFieldMappingsPage,
+		fieldMappingsPage,
+		page,
+	}) => {
+		const connectorName = getRandomString();
+
+		try {
+			await connectorsPage.createConnector({
+				connector: 'Liferay Commerce',
+				name: connectorName,
+			});
+
+			await connectorsPage.getConnector(connectorName).click();
+
+			await fieldMappingsPage.channelField('SKU').click();
+
+			await expect(editFieldMappingsPage.destinationHeading).toBeVisible();
+
+			await editFieldMappingsPage.mapToValue('ABC-1');
+
+			await editFieldMappingsPage.addRowButton.click();
+
+			await editFieldMappingsPage.mapToValue('ABC-2', 1);
+
+			await editFieldMappingsPage.saveButton.click();
+
+			await expect(page).toHaveURL(/\/field-mappings\?/);
+			await expect(fieldMappingsPage.status('SKU')).toHaveText('Mapped');
+			await expect(fieldMappingsPage.sourceAttributes('SKU')).toHaveText(
+				'ABC-1ABC-2'
+			);
+		}
+		finally {
+			await connectorsPage.goto();
+
+			await connectorsPage.deleteConnectorIfPresent(connectorName);
+		}
+	}
+);
+
+test(
 	'Edit and clear a channel field mapping from its row actions',
 	{tag: ['@LPD-106221']},
 	async ({

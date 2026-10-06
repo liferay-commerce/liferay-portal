@@ -190,7 +190,7 @@ test(
 				productName3,
 			]);
 
-			await productRelationshipsPage.deleteRelationship(productName3);
+			await productRelationshipsPage.removeRelationship(productName3);
 
 			await test.step('The removed product keeps no relationship', async () => {
 				await expect(productRelationshipsPage.rows).toHaveCount(1);

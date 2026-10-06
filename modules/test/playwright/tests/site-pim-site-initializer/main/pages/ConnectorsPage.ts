@@ -11,6 +11,10 @@ import {EditConnectorPage} from './EditConnectorPage';
 
 export class ConnectorsPage {
 	readonly dataSetFragmentPage: DataSetPage;
+	readonly deleteModal: Locator;
+	readonly deleteModalCancelButton: Locator;
+	readonly deleteModalConfirmButton: Locator;
+	readonly deleteModalTitle: Locator;
 	readonly emptyStateTitle: Locator;
 	readonly filterButton: Locator;
 	readonly filterMenuItem: (name: string) => Locator;
@@ -19,6 +23,16 @@ export class ConnectorsPage {
 
 	constructor(page: Page) {
 		this.dataSetFragmentPage = new DataSetPage(page);
+		this.deleteModal = page.locator('.modal-content');
+		this.deleteModalCancelButton = this.deleteModal.getByRole('button', {
+			exact: true,
+			name: 'Cancel',
+		});
+		this.deleteModalConfirmButton = this.deleteModal.getByRole('button', {
+			exact: true,
+			name: 'Delete',
+		});
+		this.deleteModalTitle = this.deleteModal.locator('.modal-title');
 		this.emptyStateTitle = page.getByText('No Connectors Yet', {
 			exact: true,
 		});
@@ -51,14 +65,17 @@ export class ConnectorsPage {
 	}
 
 	async deleteConnector(name: string) {
-		this.page.once('dialog', (dialog) => dialog.accept());
+		await this.openDeleteConfirmation(name);
 
-		await this.dataSetFragmentPage.execItemAction({
-			action: 'Delete',
-			filter: name,
-		});
+		await this.deleteModalConfirmButton.click();
 
 		await this.getConnector(name).waitFor({state: 'hidden'});
+	}
+
+	async deleteConnectorIfPresent(name: string) {
+		if (await this.getConnector(name).isVisible()) {
+			await this.deleteConnector(name);
+		}
 	}
 
 	getConnector(name: string) {
@@ -67,6 +84,15 @@ export class ConnectorsPage {
 
 	getConnectorStatus(name: string) {
 		return this.dataSetFragmentPage.getRow(name).locator('.label');
+	}
+
+	async openDeleteConfirmation(name: string) {
+		await this.dataSetFragmentPage.execItemAction({
+			action: 'Delete',
+			filter: name,
+		});
+
+		await this.deleteModal.waitFor({state: 'visible'});
 	}
 
 	async goto() {

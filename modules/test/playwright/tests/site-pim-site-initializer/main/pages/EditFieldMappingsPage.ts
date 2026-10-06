@@ -29,7 +29,7 @@ export class EditFieldMappingsPage {
 			page.getByLabel('Source', {exact: true}).nth(index);
 		this.sourceAttribute = (index) =>
 			page.getByLabel('Source Attribute', {exact: true}).nth(index);
-		this.value = page.getByLabel('Value', {exact: true});
+		this.value = page.getByLabel('Value', {exact: true}).last();
 	}
 
 	async mapToSourceAttribute(sourceAttributeLabel: string, index = 0) {

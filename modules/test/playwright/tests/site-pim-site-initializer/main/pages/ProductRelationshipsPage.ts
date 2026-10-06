@@ -27,7 +27,7 @@ export class ProductRelationshipsPage {
 
 		this.selectorConfirmButton = this.selectorDialog.getByRole('button', {
 			exact: true,
-			name: 'Add',
+			name: 'Save',
 		});
 	}
 
@@ -52,11 +52,14 @@ export class ProductRelationshipsPage {
 		}
 	}
 
-	async deleteRelationship(name: string) {
-		this.page.once('dialog', (dialog) => dialog.accept());
-
+	async removeRelationship(name: string) {
 		await this.getRelatedProduct(name)
-			.getByRole('button', {name: 'Delete'})
+			.getByRole('button', {name: 'Remove'})
+			.click();
+
+		await this.page
+			.locator('.modal-content')
+			.getByRole('button', {name: 'Remove'})
 			.click();
 
 		await expect(this.getRelatedProduct(name)).toBeHidden();
