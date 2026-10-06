@@ -11,10 +11,15 @@ jest.mock('@liferay/site-cms-site-initializer', () => ({
 	ACTIONS: {},
 	AuthorRenderer: () => null,
 	SpaceRendererWithCache: () => null,
+	StatusLabel: () => null,
 	addOnClickToCreationMenuItems: (primaryItems) => primaryItems,
 	deleteAssetEntriesBulkAction: (...args) =>
 		mockDeleteAssetEntriesBulkAction(...args),
 	getScopeExternalReferenceCode: () => '',
+	styleDeleteAction: (action) =>
+		action?.data?.id === 'delete'
+			? {...action, className: 'text-danger'}
+			: action,
 	transformFDSBulkActions: (bulkActions) =>
 		bulkActions.map((bulkAction) => ({...bulkAction, transformed: true})),
 }));

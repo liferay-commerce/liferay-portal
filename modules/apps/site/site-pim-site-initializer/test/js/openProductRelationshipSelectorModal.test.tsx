@@ -82,7 +82,7 @@ describe('openProductRelationshipSelectorModal', () => {
 
 		expect(props.apiURL).toContain('/o/search/v1.0/search');
 		expect(props.apiURL).toContain('%2842,111,222%29%29');
-		expect(props.confirmButtonLabel).toBe('add');
+		expect(props.confirmButtonLabel).toBe('save');
 		expect(props.fdsProps.filters).toEqual([{id: 'status'}]);
 		expect(props.multiSelect).toBe(true);
 		expect(props.size).toBe('lg');

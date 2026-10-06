@@ -7,9 +7,27 @@ import propsTransformer from '../../src/main/resources/META-INF/resources/js/Pro
 import ProductRelationshipSelectorNameRenderer from '../../src/main/resources/META-INF/resources/js/cell_renderers/ProductRelationshipSelectorNameRenderer';
 
 jest.mock('@liferay/site-cms-site-initializer', () => ({
+	StatusLabel: jest.fn(),
 	addOnClickToCreationMenuItems: (items) =>
 		items.map((item) => ({...item, onClick() {}})),
+	confirmAndDeleteEntryAction: (...args) =>
+		mockConfirmAndDeleteEntryAction(...args),
+	styleDeleteAction: (action) =>
+		action?.data?.id === 'delete'
+			? {...action, className: 'text-danger'}
+			: action,
 }));
+
+jest.mock('frontend-js-web', () => ({
+	sub: (template) => template,
+}));
+
+const DELETE_HREF =
+	'/o/headless-pim/v1.0/scopes/39226/links?className=com.liferay.object.model.ObjectDefinition%23P4R4&externalReferenceCode=SHIRT-BLUE&type=variant';
+
+const mockConfirmAndDeleteEntryAction = jest.fn();
+
+Liferay.Util = {...Liferay.Util, escapeHTML: (value) => value};
 
 jest.mock(
 	'../../src/main/resources/META-INF/resources/js/openProductRelationshipSelectorModal',
@@ -20,6 +38,10 @@ jest.mock(
 );
 
 describe('ProductRelationshipsFDSPropsTransformer', () => {
+	beforeEach(() => {
+		jest.clearAllMocks();
+	});
+
 	it('marks the delete action as text-danger and leaves the other actions unchanged', () => {
 		const result = propsTransformer({
 			itemsActions: [
@@ -55,10 +77,62 @@ describe('ProductRelationshipsFDSPropsTransformer', () => {
 		expect(renderer.name).toBe('nameTableCellRenderer');
 	});
 
-	it('preserves the other props and omits items actions when none are given', () => {
+	it('forces hideManagementBarInEmptyState to true and preserves the other props', () => {
+		const result = propsTransformer({
+			hideManagementBarInEmptyState: false,
+			id: 'productRelationships',
+		});
+
+		expect(result.hideManagementBarInEmptyState).toBe(true);
+		expect(result.id).toBe('productRelationships');
+	});
+
+	it('confirms a removal through the modal rather than the browser dialog', () => {
+		const event = {preventDefault: jest.fn()};
+
+		propsTransformer({}).onActionDropdownItemClick({
+			action: {data: {id: 'delete'}},
+			event,
+			itemData: {
+				actions: {
+					delete: {
+						href: DELETE_HREF,
+						method: 'DELETE',
+					},
+				},
+				name: 'Blue Shirt',
+			},
+			loadData: jest.fn(),
+		});
+
+		expect(event.preventDefault).toHaveBeenCalled();
+		expect(mockConfirmAndDeleteEntryAction).toHaveBeenCalledWith(
+			expect.objectContaining({
+				deleteAction: {
+					href: DELETE_HREF,
+					method: 'DELETE',
+				},
+			})
+		);
+	});
+
+	it('leaves the other item actions to the data set', () => {
+		const event = {preventDefault: jest.fn()};
+
+		propsTransformer({}).onActionDropdownItemClick({
+			action: {data: {id: 'edit'}},
+			event,
+			itemData: {actions: {delete: {href: '', method: ''}}, name: ''},
+			loadData: jest.fn(),
+		});
+
+		expect(event.preventDefault).not.toHaveBeenCalled();
+		expect(mockConfirmAndDeleteEntryAction).not.toHaveBeenCalled();
+	});
+
+	it('omits items actions when none are given', () => {
 		const result = propsTransformer({id: 'productRelationships'});
 
-		expect(result.id).toBe('productRelationships');
 		expect(result.itemsActions).toBeUndefined();
 	});
 });
