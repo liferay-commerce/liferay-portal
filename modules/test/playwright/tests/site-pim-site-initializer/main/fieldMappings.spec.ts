@@ -208,7 +208,9 @@ test(
 
 			await fieldMappingsPage.channelField('SKU').click();
 
-			await expect(editFieldMappingsPage.destinationHeading).toBeVisible();
+			await expect(
+				editFieldMappingsPage.destinationHeading
+			).toBeVisible();
 
 			await editFieldMappingsPage.mapToValue('ABC-1');
 
