@@ -79,10 +79,9 @@ public class ProductRelationshipsDisplayContextTest {
 
 		Mockito.when(
 			language.get(
-				Mockito.any(HttpServletRequest.class),
-				Mockito.eq("add-relationship"))
+				Mockito.any(HttpServletRequest.class), Mockito.eq("new"))
 		).thenReturn(
-			"Add Relationship"
+			"New"
 		);
 
 		_languageUtil.setLanguage(language);
@@ -170,7 +169,7 @@ public class ProductRelationshipsDisplayContextTest {
 
 			DropdownItem dropdownItem = dropdownItems.get(0);
 
-			Assert.assertEquals("Add Relationship", dropdownItem.get("label"));
+			Assert.assertEquals("New", dropdownItem.get("label"));
 
 			Map<?, ?> data = (Map<?, ?>)dropdownItem.get("data");
 
@@ -235,17 +234,9 @@ public class ProductRelationshipsDisplayContextTest {
 
 		Mockito.when(
 			language.get(
-				Mockito.any(HttpServletRequest.class),
-				Mockito.eq("are-you-sure-you-want-to-delete-this"))
+				Mockito.any(HttpServletRequest.class), Mockito.eq("remove"))
 		).thenReturn(
-			"Are you sure?"
-		);
-
-		Mockito.when(
-			language.get(
-				Mockito.any(HttpServletRequest.class), Mockito.eq("delete"))
-		).thenReturn(
-			"Delete"
+			"Remove"
 		);
 
 		_languageUtil.setLanguage(language);
@@ -290,19 +281,17 @@ public class ProductRelationshipsDisplayContextTest {
 			FDSActionDropdownItem fdsActionDropdownItem =
 				fdsActionDropdownItems.get(0);
 
+			Assert.assertNull(fdsActionDropdownItem.get("href"));
 			Assert.assertEquals(
-				"{actions.delete.href}", fdsActionDropdownItem.get("href"));
-			Assert.assertEquals("trash", fdsActionDropdownItem.get("icon"));
-			Assert.assertEquals("Delete", fdsActionDropdownItem.get("label"));
-			Assert.assertEquals(
-				"headless", fdsActionDropdownItem.get("target"));
+				"times-circle", fdsActionDropdownItem.get("icon"));
+			Assert.assertEquals("Remove", fdsActionDropdownItem.get("label"));
+			Assert.assertNull(fdsActionDropdownItem.get("target"));
 
 			Map<?, ?> data = (Map<?, ?>)fdsActionDropdownItem.get("data");
 
-			Assert.assertEquals(
-				"Are you sure?", data.get("confirmationMessage"));
+			Assert.assertNull(data.get("confirmationMessage"));
 			Assert.assertEquals("delete", data.get("id"));
-			Assert.assertEquals("delete", data.get("method"));
+			Assert.assertNull(data.get("method"));
 			Assert.assertEquals("delete", data.get("permissionKey"));
 		}
 	}

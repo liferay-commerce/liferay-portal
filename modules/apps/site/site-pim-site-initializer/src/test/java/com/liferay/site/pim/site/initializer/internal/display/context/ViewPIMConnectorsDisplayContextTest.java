@@ -160,13 +160,6 @@ public class ViewPIMConnectorsDisplayContextTest {
 			HttpServletRequest.class);
 
 		Mockito.when(
-			language.get(
-				httpServletRequest, "are-you-sure-you-want-to-delete-this")
-		).thenReturn(
-			"Are you sure?"
-		);
-
-		Mockito.when(
 			language.get(httpServletRequest, "delete")
 		).thenReturn(
 			"Delete"
@@ -215,15 +208,15 @@ public class ViewPIMConnectorsDisplayContextTest {
 
 		Assert.assertEquals(
 			StringBundler.concat(
-				"/web/cms/edit-connector?backURL=",
+				"/web/cms/field-mappings?backURL=",
 				URLCodec.encodeURL(_URL_CURRENT), "&objectEntryId={id}"),
 			fdsActionDropdownItem.get("href"));
-		Assert.assertEquals("pencil", fdsActionDropdownItem.get("icon"));
-		Assert.assertEquals("Edit", fdsActionDropdownItem.get("label"));
+		Assert.assertEquals("sheets", fdsActionDropdownItem.get("icon"));
+		Assert.assertEquals("Map Fields", fdsActionDropdownItem.get("label"));
 
 		Map<?, ?> data = (Map<?, ?>)fdsActionDropdownItem.get("data");
 
-		Assert.assertEquals("edit", data.get("id"));
+		Assert.assertEquals("fieldMappings", data.get("id"));
 		Assert.assertEquals("get", data.get("method"));
 		Assert.assertEquals("update", data.get("permissionKey"));
 
@@ -231,15 +224,15 @@ public class ViewPIMConnectorsDisplayContextTest {
 
 		Assert.assertEquals(
 			StringBundler.concat(
-				"/web/cms/field-mappings?backURL=",
+				"/web/cms/edit-connector?backURL=",
 				URLCodec.encodeURL(_URL_CURRENT), "&objectEntryId={id}"),
 			fdsActionDropdownItem.get("href"));
-		Assert.assertEquals("sheets", fdsActionDropdownItem.get("icon"));
-		Assert.assertEquals("Map Fields", fdsActionDropdownItem.get("label"));
+		Assert.assertEquals("pencil", fdsActionDropdownItem.get("icon"));
+		Assert.assertEquals("Edit", fdsActionDropdownItem.get("label"));
 
 		data = (Map<?, ?>)fdsActionDropdownItem.get("data");
 
-		Assert.assertEquals("fieldMappings", data.get("id"));
+		Assert.assertEquals("edit", data.get("id"));
 		Assert.assertEquals("get", data.get("method"));
 		Assert.assertEquals("update", data.get("permissionKey"));
 
@@ -259,17 +252,15 @@ public class ViewPIMConnectorsDisplayContextTest {
 
 		fdsActionDropdownItem = fdsActionDropdownItems.get(3);
 
-		Assert.assertEquals(
-			"{actions.delete.href}", fdsActionDropdownItem.get("href"));
+		Assert.assertNull(fdsActionDropdownItem.get("href"));
 		Assert.assertEquals("trash", fdsActionDropdownItem.get("icon"));
 		Assert.assertEquals("Delete", fdsActionDropdownItem.get("label"));
-		Assert.assertEquals("headless", fdsActionDropdownItem.get("target"));
+		Assert.assertNull(fdsActionDropdownItem.get("target"));
 
 		data = (Map<?, ?>)fdsActionDropdownItem.get("data");
 
-		Assert.assertEquals("Are you sure?", data.get("confirmationMessage"));
 		Assert.assertEquals("delete", data.get("id"));
-		Assert.assertEquals("delete", data.get("method"));
+		Assert.assertNull(data.get("method"));
 		Assert.assertEquals("delete", data.get("permissionKey"));
 	}
 

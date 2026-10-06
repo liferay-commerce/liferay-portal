@@ -48,7 +48,8 @@ public class ProductsSectionDisplayContextTest {
 		Assert.assertEquals(
 			StringBundler.concat(
 				"/o/search/v1.0/search?emptySearch=true&filter=",
-				URLCodec.encodeURL("cmsSection eq 'products'"),
+				URLCodec.encodeURL(
+					"cmsSection eq 'products' and status in (0, 2, 3, 1, 7)"),
 				"&nestedFields=embedded,systemProperties.",
 				"objectDefinitionBrief"),
 			productsSectionDisplayContext.getAPIURL());

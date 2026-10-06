@@ -5,6 +5,7 @@
 
 package com.liferay.site.pim.site.initializer.internal.display.context;
 
+import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.string.StringBundler;
@@ -112,6 +113,22 @@ public class PIMConnectorFieldMappingsDisplayContextTest {
 		);
 
 		Mockito.when(
+			language.get(
+				_httpServletRequest,
+				"the-connector-and-all-its-field-mappings-will-be-deleted.-" +
+					"this-action-cannot-be-undone")
+		).thenReturn(
+			"The connector and all its field mappings will be deleted. This " +
+				"action cannot be undone."
+		);
+
+		Mockito.when(
+			language.get(_httpServletRequest, "delete")
+		).thenReturn(
+			"delete"
+		);
+
+		Mockito.when(
 			language.get(_httpServletRequest, "field-mappings")
 		).thenReturn(
 			"Field Mappings"
@@ -131,6 +148,14 @@ public class PIMConnectorFieldMappingsDisplayContextTest {
 			"This connector does not declare any fields."
 		);
 
+		Mockito.when(
+			language.format(
+				Mockito.eq(_httpServletRequest), Mockito.eq("delete-x"),
+				Mockito.any(Object.class))
+		).thenAnswer(
+			invocationOnMock -> "Delete " + invocationOnMock.getArgument(2)
+		);
+
 		languageUtil.setLanguage(language);
 	}
 
@@ -139,7 +164,7 @@ public class PIMConnectorFieldMappingsDisplayContextTest {
 		PIMConnectorFieldMappingsDisplayContext
 			pimConnectorFieldMappingsDisplayContext =
 				new PIMConnectorFieldMappingsDisplayContext(
-					_httpServletRequest,
+					_httpServletRequest, _mockObjectDefinition(),
 					Mockito.mock(ObjectEntryLocalService.class));
 
 		Map<String, Object> breadcrumbProps =
@@ -164,7 +189,7 @@ public class PIMConnectorFieldMappingsDisplayContextTest {
 
 		jsonArray = (JSONArray)breadcrumbProps.get("actionItems");
 
-		Assert.assertEquals(jsonArray.toString(), 1, jsonArray.length());
+		Assert.assertEquals(jsonArray.toString(), 2, jsonArray.length());
 
 		jsonObject = jsonArray.getJSONObject(0);
 
@@ -175,6 +200,23 @@ public class PIMConnectorFieldMappingsDisplayContextTest {
 				_OBJECT_ENTRY_ID),
 			jsonObject.getString("href"));
 		Assert.assertEquals("edit", jsonObject.getString("label"));
+
+		jsonObject = jsonArray.getJSONObject(1);
+
+		Assert.assertEquals("text-danger", jsonObject.getString("className"));
+		Assert.assertEquals(
+			"The connector and all its field mappings will be deleted. This " +
+				"action cannot be undone.",
+			jsonObject.getString("confirmationMessage"));
+		Assert.assertEquals(
+			"Delete " + name, jsonObject.getString("confirmationTitle"));
+		Assert.assertEquals(
+			"/o/c/pimconnectors/" + _OBJECT_ENTRY_ID,
+			jsonObject.getString("href"));
+		Assert.assertEquals("delete", jsonObject.getString("label"));
+		Assert.assertEquals(
+			"/web/cms/connectors", jsonObject.getString("redirect"));
+		Assert.assertEquals("asyncDelete", jsonObject.getString("target"));
 
 		jsonArray = (JSONArray)breadcrumbProps.get("breadcrumbItems");
 
@@ -260,7 +302,21 @@ public class PIMConnectorFieldMappingsDisplayContextTest {
 		);
 
 		return new PIMConnectorFieldMappingsDisplayContext(
-			_httpServletRequest, objectEntryLocalService);
+			_httpServletRequest, _mockObjectDefinition(),
+			objectEntryLocalService);
+	}
+
+	private ObjectDefinition _mockObjectDefinition() {
+		ObjectDefinition objectDefinition = Mockito.mock(
+			ObjectDefinition.class);
+
+		Mockito.when(
+			objectDefinition.getRESTContextPath()
+		).thenReturn(
+			"/c/pimconnectors"
+		);
+
+		return objectDefinition;
 	}
 
 	private static final long _OBJECT_ENTRY_ID = RandomTestUtil.randomLong();

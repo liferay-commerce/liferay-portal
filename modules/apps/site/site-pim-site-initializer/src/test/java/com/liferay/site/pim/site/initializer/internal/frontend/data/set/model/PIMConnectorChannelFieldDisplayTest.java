@@ -57,7 +57,7 @@ public class PIMConnectorChannelFieldDisplayTest {
 		PIMConnectorChannelFieldDisplay.Status status =
 			pimConnectorChannelFieldDisplay.getStatus();
 
-		Assert.assertEquals("secondary", status.getDisplayStyle());
+		Assert.assertEquals("info", status.getDisplayStyle());
 		Assert.assertEquals("not-mapped", status.getLabel());
 
 		pimConnectorChannelFieldDisplay = new PIMConnectorChannelFieldDisplay(
