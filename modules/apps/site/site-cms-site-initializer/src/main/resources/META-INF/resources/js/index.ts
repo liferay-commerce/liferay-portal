@@ -9,6 +9,7 @@ export {default as EnterpriseOnlyPlaceholder} from './common/components/Enterpri
 export {default as EnterpriseProductMenuBanner} from './common/components/EnterpriseProductMenuBanner';
 export {default as SpaceSelector} from './common/components/SpaceSelector';
 export {default as SpaceSticker} from './common/components/SpaceSticker';
+export {default as StatusLabel} from './common/components/StatusLabel';
 export {default as Toolbar} from './common/components/Toolbar';
 export {default as VerticalNavLayout} from './common/components/VerticalNavLayout';
 export {default as FieldPicker} from './common/components/forms/FieldPicker';
@@ -94,6 +95,7 @@ export {default as StructuresFDSPropsTransformer} from './main_view/props_transf
 export {default as TagUsagesFDSPropsTransformer} from './main_view/props_transformer/TagUsagesFDSPropsTransformer';
 export {default as ViewVersionHistoryFDSPropsTransformer} from './main_view/props_transformer/ViewVersionHistoryFDSPropsTransformer';
 export {default as VocabularyFDSPropsTransformer} from './main_view/props_transformer/VocabularyFDSPropsTransformer';
+export {default as confirmAndDeleteEntryAction} from './main_view/props_transformer/actions/confirmAndDeleteEntryAction';
 export {default as ACTIONS} from './main_view/props_transformer/actions/creationMenuActions';
 export {default as deleteAssetEntriesBulkAction} from './main_view/props_transformer/actions/deleteAssetEntriesBulkAction';
 export {default as deleteItemAction} from './main_view/props_transformer/actions/deleteItemAction';
@@ -103,6 +105,7 @@ export {default as AuthorRenderer} from './main_view/props_transformer/cell_rend
 export {default as SimpleActionLinkRenderer} from './main_view/props_transformer/cell_renderers/SimpleActionLinkRenderer';
 export {default as SpaceRendererWithCache} from './main_view/props_transformer/cell_renderers/SpaceRendererWithCache';
 export {default as addOnClickToCreationMenuItems} from './main_view/props_transformer/utils/addOnClickToCreationMenuItems';
+export {default as styleDeleteAction} from './main_view/props_transformer/utils/styleDeleteAction';
 export {default as transformFDSBulkActions} from './main_view/props_transformer/utils/transformFDSBulkActions';
 export {default as AllQuickFilters} from './main_view/quick_filters/AllQuickFilters';
 export {default as RecycleBinToolbar} from './main_view/recycle_bin/RecycleBinToolbar';
