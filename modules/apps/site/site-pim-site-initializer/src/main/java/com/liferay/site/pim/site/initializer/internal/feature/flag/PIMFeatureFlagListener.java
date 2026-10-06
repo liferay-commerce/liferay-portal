@@ -17,7 +17,9 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.security.auth.CompanyInheritableThreadLocalCallable;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.servlet.InitialRequestSyncUtil;
 import com.liferay.site.initializer.SiteInitializer;
 import com.liferay.site.pim.site.initializer.internal.util.PIMObjectEntryFolderUtil;
 import com.liferay.site.pim.site.initializer.internal.util.SiteInitializerUtil;
@@ -43,6 +45,20 @@ public class PIMFeatureFlagListener implements FeatureFlagListener {
 			return;
 		}
 
+		// On startup the feature flag manager runs as soon as this listener is
+		// registered. Sync on the initial request, the same phase the CMS site
+		// initializer runs in.
+
+		InitialRequestSyncUtil.registerSyncCallable(
+			new CompanyInheritableThreadLocalCallable<>(
+				() -> {
+					_initialize(companyId);
+
+					return null;
+				}));
+	}
+
+	private void _initialize(long companyId) {
 		Group group = _groupLocalService.fetchGroup(
 			companyId, GroupConstants.CMS);
 
@@ -55,7 +71,13 @@ public class PIMFeatureFlagListener implements FeatureFlagListener {
 
 			_groupLocalService.checkSystemGroups(companyId);
 
-			SiteInitializerUtil.initialize(companyId, _siteInitializer);
+			// The PIM site initializer appends to the pages and the primary
+			// navigation menu the CMS one creates, so run that one first.
+
+			com.liferay.site.cms.site.initializer.util.SiteInitializerUtil.
+				initialize(companyId, _cmsSiteInitializer);
+
+			SiteInitializerUtil.initialize(companyId, _pimSiteInitializer);
 
 			for (DepotEntry depotEntry :
 					_depotEntryLocalService.getDepotEntries(
@@ -73,6 +95,11 @@ public class PIMFeatureFlagListener implements FeatureFlagListener {
 	private static final Log _log = LogFactoryUtil.getLog(
 		PIMFeatureFlagListener.class);
 
+	@Reference(
+		target = "(site.initializer.key=com.liferay.site.initializer.cms)"
+	)
+	private SiteInitializer _cmsSiteInitializer;
+
 	@Reference
 	private DepotEntryLocalService _depotEntryLocalService;
 
@@ -85,6 +112,6 @@ public class PIMFeatureFlagListener implements FeatureFlagListener {
 	@Reference(
 		target = "(site.initializer.key=com.liferay.site.initializer.pim)"
 	)
-	private SiteInitializer _siteInitializer;
+	private SiteInitializer _pimSiteInitializer;
 
 }
