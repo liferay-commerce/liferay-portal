@@ -7,7 +7,7 @@
 				"externalReferenceCode": "CMSPRIMARYNAVIGATION4",
 				"menuItems": [
 					{
-						"displayIcon": "shopping-cart",
+						"displayIcon": "products",
 						"externalReferenceCode": "PIMPRIMARYNAVIGATIONPRODUCTS",
 						"friendlyURL": "/products",
 						"privateLayout": false,

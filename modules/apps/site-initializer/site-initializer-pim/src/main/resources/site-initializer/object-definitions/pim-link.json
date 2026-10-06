@@ -10,6 +10,7 @@
 	"enableObjectEntrySchedule": false,
 	"enableObjectEntrySubscription": false,
 	"externalReferenceCode": "L_PIM_LINK",
+	"friendlyURLSeparator": "l",
 	"label": {
 		"en_US": "PIM Link"
 	},
