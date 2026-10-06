@@ -30,6 +30,7 @@ import com.liferay.commerce.product.type.virtual.order.service.CommerceVirtualOr
 import com.liferay.commerce.product.type.virtual.order.util.CommerceVirtualOrderItemChecker;
 import com.liferay.commerce.product.type.virtual.service.CPDVirtualSettingFileEntryLocalServiceUtil;
 import com.liferay.commerce.product.type.virtual.test.util.VirtualCPTypeTestUtil;
+import com.liferay.commerce.service.CommerceOrderItemLocalService;
 import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.subscription.CommerceSubscriptionEntryHelper;
 import com.liferay.commerce.test.util.CommerceTestUtil;
@@ -39,14 +40,20 @@ import com.liferay.document.library.test.util.DLTestUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.test.constants.TestDataConstants;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.SystemProperties;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+
+import java.io.File;
 
 import java.math.BigDecimal;
 
@@ -372,6 +379,127 @@ public class CommerceVirtualOrderItemLocalServiceTest {
 		Assert.assertNotNull(commerceVirtualOrderItemFileEntry.getFileEntry());
 	}
 
+	@Test
+	public void testGetFile() throws Exception {
+		CPDefinition cpDefinition = CPTestUtil.addCPDefinition(
+			_commerceCatalog.getGroupId(), VirtualCPTypeConstants.NAME);
+
+		DLFolder dlFolder = DLTestUtil.addDLFolder(
+			_commerceCatalog.getGroupId());
+
+		DLFileEntry dlFileEntry = DLTestUtil.addDLFileEntry(
+			dlFolder.getFolderId());
+
+		VirtualCPTypeTestUtil.addCPDefinitionVirtualSetting(
+			_commerceCatalog.getGroupId(), cpDefinition.getModelClassName(),
+			cpDefinition.getCPDefinitionId(), dlFileEntry.getFileEntryId(), 1,
+			0, 0, 0);
+
+		CommerceTestUtil.updateBackOrderCPDefinitionInventory(cpDefinition);
+
+		CommerceOrder commerceOrder = CommerceTestUtil.addB2CCommerceOrder(
+			_user.getUserId(), _commerceChannel.getGroupId(),
+			_commerceCurrency);
+
+		_commerceOrders.add(commerceOrder);
+
+		CommercePriceList commercePriceList =
+			_commercePriceListLocalService.fetchCatalogBaseCommercePriceList(
+				cpDefinition.getGroupId());
+
+		for (CPInstance cpInstance : cpDefinition.getCPInstances()) {
+			_commercePriceEntryLocalService.addCommercePriceEntry(
+				null, cpDefinition.getCProductId(),
+				cpInstance.getCPInstanceUuid(),
+				commercePriceList.getCommercePriceListId(), BigDecimal.ZERO,
+				false, BigDecimal.ZERO, null,
+				ServiceContextTestUtil.getServiceContext(_user.getGroupId()));
+
+			CommerceTestUtil.addCommerceOrderItem(
+				commerceOrder.getCommerceOrderId(),
+				cpInstance.getCPInstanceId(), BigDecimal.ONE);
+		}
+
+		commerceOrder = _setCommerceOrderStatuses(
+			_commerceOrderLocalService.getCommerceOrder(
+				commerceOrder.getCommerceOrderId()),
+			CommerceOrderPaymentConstants.STATUS_COMPLETED,
+			CommerceOrderConstants.ORDER_STATUS_PENDING);
+
+		_commerceVirtualOrderItemChecker.checkCommerceVirtualOrderItems(
+			commerceOrder.getCommerceOrderId());
+
+		List<CommerceVirtualOrderItem> commerceVirtualOrderItems =
+			_commerceVirtualOrderItemLocalService.getCommerceVirtualOrderItems(
+				_commerceChannel.getGroupId(),
+				commerceOrder.getCommerceAccountId(), QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null);
+
+		CommerceVirtualOrderItem commerceVirtualOrderItem =
+			commerceVirtualOrderItems.get(0);
+
+		CommerceOrderItem commerceOrderItem =
+			commerceVirtualOrderItem.getCommerceOrderItem();
+
+		commerceOrderItem.setName(".");
+
+		commerceOrderItem =
+			_commerceOrderItemLocalService.updateCommerceOrderItem(
+				commerceOrderItem);
+
+		List<CommerceVirtualOrderItemFileEntry>
+			commerceVirtualOrderItemFileEntries =
+				commerceVirtualOrderItem.
+					getCommerceVirtualOrderItemFileEntries();
+
+		CommerceVirtualOrderItemFileEntry commerceVirtualOrderItemFileEntry =
+			commerceVirtualOrderItemFileEntries.get(0);
+
+		File file = _commerceVirtualOrderItemLocalService.getFile(
+			commerceVirtualOrderItem.getCommerceVirtualOrderItemId(),
+			commerceVirtualOrderItemFileEntry.
+				getCommerceVirtualOrderItemFileEntryId());
+
+		try {
+			Assert.assertArrayEquals(
+				TestDataConstants.TEST_BYTE_ARRAY, FileUtil.getBytes(file));
+		}
+		finally {
+			file.delete();
+		}
+
+		String name = RandomTestUtil.randomString();
+
+		commerceOrderItem.setName("../" + name);
+
+		_commerceOrderItemLocalService.updateCommerceOrderItem(
+			commerceOrderItem);
+
+		file = _commerceVirtualOrderItemLocalService.getFile(
+			commerceVirtualOrderItem.getCommerceVirtualOrderItemId(),
+			commerceVirtualOrderItemFileEntry.
+				getCommerceVirtualOrderItemFileEntryId());
+
+		try {
+			Assert.assertArrayEquals(
+				TestDataConstants.TEST_BYTE_ARRAY, FileUtil.getBytes(file));
+			Assert.assertEquals(
+				name + "." + dlFileEntry.getExtension(), file.getName());
+
+			String canonicalPath = file.getCanonicalPath();
+
+			File tempDir = new File(
+				SystemProperties.get(SystemProperties.TMP_DIR));
+
+			Assert.assertTrue(
+				canonicalPath.startsWith(
+					tempDir.getCanonicalPath() + File.separator));
+		}
+		finally {
+			file.delete();
+		}
+	}
+
 	@Rule
 	public FrutillaRule frutillaRule = new FrutillaRule();
 
@@ -402,6 +530,9 @@ public class CommerceVirtualOrderItemLocalServiceTest {
 
 	@DeleteAfterTestRun
 	private CommerceCurrency _commerceCurrency;
+
+	@Inject
+	private CommerceOrderItemLocalService _commerceOrderItemLocalService;
 
 	@Inject
 	private CommerceOrderLocalService _commerceOrderLocalService;
