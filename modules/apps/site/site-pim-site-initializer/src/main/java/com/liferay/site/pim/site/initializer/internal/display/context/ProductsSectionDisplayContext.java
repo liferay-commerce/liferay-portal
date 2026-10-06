@@ -24,7 +24,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -50,7 +49,6 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -156,10 +154,26 @@ public class ProductsSectionDisplayContext {
 							EXTERNAL_REFERENCE_CODE_PRODUCT_TYPES
 					})) {
 
-			JSONArray jsonArray = _getJSONArray(
+			JSONArray jsonArray = JSONUtil.toJSONArray(
 				_getAcceptedGroupIds(
 					groupIds, objectDefinition.getObjectDefinitionId()),
-				themeDisplay.getLocale());
+				groupId -> {
+					Group group = GroupLocalServiceUtil.fetchGroup(groupId);
+
+					if (group == null) {
+						return null;
+					}
+
+					return JSONUtil.put(
+						"externalReferenceCode",
+						group.getExternalReferenceCode()
+					).put(
+						"groupId", group.getGroupId()
+					).put(
+						"name", group.getName(themeDisplay.getLocale())
+					);
+				},
+				_log);
 
 			if (jsonArray.length() == 0) {
 				continue;
@@ -300,29 +314,6 @@ public class ProductsSectionDisplayContext {
 		).setLabel(
 			objectDefinition.getLabel(themeDisplay.getLocale())
 		).build();
-	}
-
-	private JSONArray _getJSONArray(List<Long> groupIds, Locale locale) {
-		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
-
-		for (long groupId : groupIds) {
-			Group group = GroupLocalServiceUtil.fetchGroup(groupId);
-
-			if (group == null) {
-				continue;
-			}
-
-			jsonArray.put(
-				JSONUtil.put(
-					"externalReferenceCode", group.getExternalReferenceCode()
-				).put(
-					"groupId", group.getGroupId()
-				).put(
-					"name", group.getName(locale)
-				));
-		}
-
-		return jsonArray;
 	}
 
 	private ThemeDisplay _getThemeDisplay() {
