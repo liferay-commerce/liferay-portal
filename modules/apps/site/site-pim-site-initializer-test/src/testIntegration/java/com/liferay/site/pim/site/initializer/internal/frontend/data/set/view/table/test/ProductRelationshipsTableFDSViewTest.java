@@ -64,7 +64,8 @@ public class ProductRelationshipsTableFDSViewTest {
 			fdsTableSchemaFieldsMap.get("status");
 
 		Assert.assertEquals(
-			"status", statusFDSTableSchemaField.getContentRenderer());
+			"statusTableCellRenderer",
+			statusFDSTableSchemaField.getContentRenderer());
 	}
 
 	@Inject
