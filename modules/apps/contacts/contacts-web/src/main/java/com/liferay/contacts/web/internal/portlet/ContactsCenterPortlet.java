@@ -16,7 +16,7 @@ import com.liferay.contacts.service.EntryLocalService;
 import com.liferay.contacts.service.EntryService;
 import com.liferay.contacts.util.ContactsUtil;
 import com.liferay.contacts.web.internal.constants.ContactsPortletKeys;
-import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.bean.BeanParamUtil;
@@ -727,7 +727,7 @@ public class ContactsCenterPortlet extends MVCPortlet {
 		announcementsDeliveryLocalService;
 
 	@Reference
-	protected DLAppLocalService dlAppLocalService;
+	protected DLAppService dlAppService;
 
 	@Reference
 	protected EntryLocalService entryLocalService;
@@ -1247,7 +1247,7 @@ public class ContactsCenterPortlet extends MVCPortlet {
 		long fileEntryId = ParamUtil.getLong(actionRequest, "fileEntryId");
 
 		if (!deleteLogo && (fileEntryId > 0)) {
-			FileEntry fileEntry = dlAppLocalService.getFileEntry(fileEntryId);
+			FileEntry fileEntry = dlAppService.getFileEntry(fileEntryId);
 
 			try (InputStream inputStream = fileEntry.getContentStream()) {
 				portraitBytes = file.getBytes(inputStream);

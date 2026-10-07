@@ -7,7 +7,7 @@ package com.liferay.users.admin.web.internal.portlet.action;
 
 import com.liferay.asset.kernel.exception.AssetCategoryException;
 import com.liferay.asset.kernel.exception.AssetTagException;
-import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.portal.kernel.exception.DataLimitExceededException;
 import com.liferay.portal.kernel.exception.DuplicateOrganizationException;
 import com.liferay.portal.kernel.exception.NoSuchCountryException;
@@ -194,7 +194,7 @@ public class EditOrganizationMVCActionCommand
 		long fileEntryId = ParamUtil.getLong(actionRequest, "fileEntryId");
 
 		if (fileEntryId > 0) {
-			FileEntry fileEntry = _dlAppLocalService.getFileEntry(fileEntryId);
+			FileEntry fileEntry = _dlAppService.getFileEntry(fileEntryId);
 
 			logoBytes = FileUtil.getBytes(fileEntry.getContentStream());
 		}
@@ -242,7 +242,7 @@ public class EditOrganizationMVCActionCommand
 	}
 
 	@Reference
-	private DLAppLocalService _dlAppLocalService;
+	private DLAppService _dlAppService;
 
 	@Reference
 	private OrganizationLocalService _organizationLocalService;
