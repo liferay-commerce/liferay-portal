@@ -6,21 +6,32 @@
 package com.liferay.users.admin.web.internal.portlet.action.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.model.DLFolderConstants;
+import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.document.library.test.util.DLTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.configuration.Filter;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Contact;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutTypePortlet;
 import com.liferay.portal.kernel.model.ListType;
 import com.liferay.portal.kernel.model.ListTypeConstants;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserConstants;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.portlet.LiferayActionRequest;
 import com.liferay.portal.kernel.portlet.LiferayStateAwareResponse;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
+import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
@@ -28,22 +39,31 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ListTypeLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.service.WorkflowInstanceLinkLocalService;
 import com.liferay.portal.kernel.servlet.PortletServlet;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
+import com.liferay.portal.kernel.test.portlet.MockPortletSession;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.Sync;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.PropsValues;
@@ -100,6 +120,66 @@ public class EditUserMVCActionCommandTest {
 	public void tearDown() {
 		PermissionThreadLocal.setPermissionChecker(_originalPermissionChecker);
 		PrincipalThreadLocal.setName(_originalName);
+	}
+
+	@Test
+	public void testAddUserPortrait() throws Exception {
+		Group group = GroupTestUtil.addGroup();
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(group.getGroupId());
+
+		serviceContext.setAddGroupPermissions(false);
+		serviceContext.setAddGuestPermissions(false);
+
+		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString() + ".png", ContentTypes.IMAGE_PNG,
+			DLTestUtil.getImageBytes("png"), null, null, null, serviceContext);
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			TestPropsValues.getCompanyId(), PortletKeys.PORTAL,
+			ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(TestPropsValues.getCompanyId()), role.getRoleId(),
+			new String[] {ActionKeys.ADD_USER});
+
+		User user = UserTestUtil.addUser();
+
+		_userLocalService.addRoleUsers(
+			role.getRoleId(), new long[] {user.getUserId()});
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			try {
+				ReflectionTestUtil.invoke(
+					_mvcActionCommand, "_addUser",
+					new Class<?>[] {ActionRequest.class},
+					_getMockLiferayPortletActionRequest(fileEntry));
+
+				Assert.fail();
+			}
+			catch (PrincipalException.MustHavePermission principalException) {
+				Assert.assertEquals(
+					fileEntry.getFileEntryId(), principalException.resourceId);
+			}
+
+			_resourcePermissionLocalService.setResourcePermissions(
+				TestPropsValues.getCompanyId(), DLFileEntry.class.getName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(fileEntry.getFileEntryId()), role.getRoleId(),
+				new String[] {ActionKeys.VIEW});
+
+			user = ReflectionTestUtil.invoke(
+				_mvcActionCommand, "_addUser",
+				new Class<?>[] {ActionRequest.class},
+				_getMockLiferayPortletActionRequest(fileEntry));
+
+			Assert.assertNotEquals(0, user.getPortraitId());
+		}
 	}
 
 	@Test
@@ -287,6 +367,99 @@ public class EditUserMVCActionCommandTest {
 			WorkflowConstants.STATUS_APPROVED, user.getStatus());
 	}
 
+	@Test
+	public void testUpdatePortrait() throws Exception {
+		Group group = GroupTestUtil.addGroup();
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(group.getGroupId());
+
+		serviceContext.setAddGroupPermissions(false);
+		serviceContext.setAddGuestPermissions(false);
+
+		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString() + ".png", ContentTypes.IMAGE_PNG,
+			DLTestUtil.getImageBytes("png"), null, null, null, serviceContext);
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+		User user = UserTestUtil.addUser();
+
+		_userLocalService.addRoleUsers(
+			role.getRoleId(), new long[] {user.getUserId()});
+
+		PermissionChecker permissionChecker =
+			PermissionCheckerFactoryUtil.create(user);
+
+		Map<String, String> params = HashMapBuilder.put(
+			Constants.CMD, Constants.UPDATE
+		).put(
+			"fileEntryId", String.valueOf(fileEntry.getFileEntryId())
+		).put(
+			"p_u_i_d", String.valueOf(user.getUserId())
+		).build();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, permissionChecker)) {
+
+			_processAction(
+				"/users_admin/edit_user", params, permissionChecker,
+				user.getUserId());
+
+			user = _userLocalService.getUser(user.getUserId());
+
+			Assert.assertEquals(0, user.getPortraitId());
+
+			_resourcePermissionLocalService.setResourcePermissions(
+				TestPropsValues.getCompanyId(), DLFileEntry.class.getName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(fileEntry.getFileEntryId()), role.getRoleId(),
+				new String[] {ActionKeys.VIEW});
+
+			_processAction(
+				"/users_admin/edit_user", params, permissionChecker,
+				user.getUserId());
+
+			user = _userLocalService.getUser(user.getUserId());
+
+			Assert.assertNotEquals(0, user.getPortraitId());
+		}
+	}
+
+	private MockLiferayPortletActionRequest _getMockLiferayPortletActionRequest(
+			FileEntry fileEntry)
+		throws Exception {
+
+		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+			new MockLiferayPortletActionRequest();
+
+		mockLiferayPortletActionRequest.setAttribute(
+			WebKeys.PORTLET_ID, UsersAdminPortletKeys.USERS_ADMIN);
+		mockLiferayPortletActionRequest.setAttribute(
+			WebKeys.THEME_DISPLAY,
+			_getThemeDisplay(PermissionThreadLocal.getPermissionChecker()));
+		mockLiferayPortletActionRequest.setParameter("birthdayDay", "1");
+		mockLiferayPortletActionRequest.setParameter("birthdayYear", "1970");
+		mockLiferayPortletActionRequest.setParameter(
+			"emailAddress",
+			StringUtil.toLowerCase(RandomTestUtil.randomString()) +
+				"@liferay.com");
+		mockLiferayPortletActionRequest.setParameter(
+			"fileEntryId", String.valueOf(fileEntry.getFileEntryId()));
+		mockLiferayPortletActionRequest.setParameter(
+			"firstName", RandomTestUtil.randomString());
+		mockLiferayPortletActionRequest.setParameter(
+			"lastName", RandomTestUtil.randomString());
+		mockLiferayPortletActionRequest.setParameter(
+			"screenName",
+			StringUtil.toLowerCase(RandomTestUtil.randomString()));
+		mockLiferayPortletActionRequest.setPortletSession(
+			new MockPortletSession());
+
+		return mockLiferayPortletActionRequest;
+	}
+
 	private ThemeDisplay _getThemeDisplay(PermissionChecker permissionChecker)
 		throws Exception {
 
@@ -355,6 +528,9 @@ public class EditUserMVCActionCommandTest {
 	private CompanyLocalService _companyLocalService;
 
 	@Inject
+	private DLAppLocalService _dlAppLocalService;
+
+	@Inject
 	private LayoutLocalService _layoutLocalService;
 
 	@Inject
@@ -373,6 +549,9 @@ public class EditUserMVCActionCommandTest {
 
 	@Inject
 	private PortletLocalService _portletLocalService;
+
+	@Inject
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
 
 	@Inject
 	private UserLocalService _userLocalService;
