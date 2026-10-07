@@ -18,7 +18,9 @@ export class CommerceMiniCartPage {
 	readonly miniCartOpenDrawer: Locator;
 	readonly miniCartOverlay: Locator;
 	readonly miniCartEditItemPanel: Locator;
+	readonly miniCartEditItemCancelButton: Locator;
 	readonly miniCartEditItemInactivePrice: Locator;
+	readonly miniCartEditItemQuantitySelector: Locator;
 	readonly miniCartEditItemOptionValues: (optionName: string) => Locator;
 	readonly miniCartEditItemPrice: (priceName: string) => Locator;
 	readonly miniCartItemDiscountLevels: (product: string | Locator) => Locator;
@@ -54,6 +56,9 @@ export class CommerceMiniCartPage {
 		product: string | Locator
 	) => Locator;
 	readonly miniCartItemPromoPrice: (product: string | Locator) => Locator;
+	readonly miniCartItemQuantitySelector: (
+		product: string | Locator
+	) => Locator;
 	readonly miniCartItemReplacementLabel: (productName: string) => Locator;
 	readonly miniCartItemUnitOfMeasure: (product: string | Locator) => Locator;
 	readonly miniCartReplacementInfoMessage: Locator;
@@ -105,6 +110,13 @@ export class CommerceMiniCartPage {
 		this.miniCartOpenDrawer = page.locator('.mini-cart.is-open');
 		this.miniCartOverlay = page.locator('.mini-cart-overlay');
 		this.miniCartEditItemPanel = page.locator('.mini-cart-edit-item');
+		this.miniCartEditItemCancelButton =
+			this.miniCartEditItemPanel.getByRole('button', {
+				exact: true,
+				name: 'Cancel',
+			});
+		this.miniCartEditItemQuantitySelector =
+			this.miniCartEditItemPanel.getByRole('spinbutton');
 		this.miniCartEditItemInactivePrice = page
 			.locator('.mini-cart-edit-item')
 			.locator('.price-line-through');
@@ -196,6 +208,8 @@ export class CommerceMiniCartPage {
 				.locator('div')
 				.filter({hasText: text})
 				.first();
+		this.miniCartItemQuantitySelector = (product: string | Locator) =>
+			this._cartItem(product).getByRole('spinbutton');
 		this.miniCartItemReplacementLabel = (productName: string) =>
 			this.miniCartItem(productName).getByText('Replacement', {
 				exact: true,

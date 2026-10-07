@@ -69,6 +69,18 @@ export class CheckoutPage extends CommerceDNDTablePage {
 	readonly orderSummaryItemListPrice: (productName: string) => Locator;
 	readonly orderSummaryItemPromoPrice: (productName: string) => Locator;
 	readonly orderSummaryItemRow: (productName: string) => Locator;
+	readonly orderSummaryRow: (
+		productName: string,
+		unitOfMeasureKey?: string
+	) => Locator;
+	readonly orderSummaryRowQuantity: (
+		productName: string,
+		unitOfMeasureKey?: string
+	) => Locator;
+	readonly orderSummaryRowUnitOfMeasure: (
+		productName: string,
+		unitOfMeasureKey?: string
+	) => Locator;
 	readonly orderSummarySubtotal: Locator;
 	readonly orderSummaryPaymentMethod: Locator;
 	readonly orderSummaryTotal: Locator;
@@ -209,6 +221,30 @@ export class CheckoutPage extends CommerceDNDTablePage {
 		this.orderSummaryItemCell = (productName: string, columnName: string) =>
 			this.orderSummaryItemRow(productName).locator(
 				`td.lfr-${columnName}-column`
+			);
+		this.orderSummaryRow = (
+			productName: string,
+			unitOfMeasureKey?: string
+		) => {
+			const row = page.getByRole('row').filter({hasText: productName});
+
+			return unitOfMeasureKey
+				? row.filter({hasText: unitOfMeasureKey})
+				: row;
+		};
+		this.orderSummaryRowQuantity = (
+			productName: string,
+			unitOfMeasureKey?: string
+		) =>
+			this.orderSummaryRow(productName, unitOfMeasureKey).locator(
+				'span.commerce-quantity'
+			);
+		this.orderSummaryRowUnitOfMeasure = (
+			productName: string,
+			unitOfMeasureKey?: string
+		) =>
+			this.orderSummaryRow(productName, unitOfMeasureKey).locator(
+				'td.lfr-uom-column span.commerce-value'
 			);
 		this.orderSummaryItemListPrice = (productName: string) =>
 			this.orderSummaryItemCell(productName, 'price').locator(
