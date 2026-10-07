@@ -17,11 +17,16 @@ import com.liferay.application.list.constants.ApplicationListWebKeys;
 import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.application.list.display.context.logic.PersonalMenuEntryHelper;
 import com.liferay.application.list.util.PanelCategoryRegistryUtil;
+import com.liferay.asset.tags.constants.AssetTagsAdminPortletKeys;
+import com.liferay.depot.constants.DepotPortletKeys;
+import com.liferay.depot.constants.DepotRolesConstants;
+import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectDefinitionSettingConstants;
 import com.liferay.object.definition.setting.util.ObjectDefinitionSettingUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.PortletCategory;
@@ -127,7 +132,8 @@ public class EditRolePermissionsNavigationDisplayContext {
 			String portletId = portlet.getPortletId();
 
 			if (Validator.isNull(portletId) ||
-				hiddenPortletIds.contains(portletId)) {
+				hiddenPortletIds.contains(portletId) ||
+				!_isSiteAndAssetLibraryAdministrationPortlet(portletId)) {
 
 				continue;
 			}
@@ -137,6 +143,10 @@ public class EditRolePermissionsNavigationDisplayContext {
 					PortalUtil.getPortletLongTitle(
 						portlet, _servletContext, _locale),
 					_getPortletResourceNavigationItemConsumer(portletId)));
+		}
+
+		if (navigationItems.isEmpty()) {
+			return null;
 		}
 
 		return NavigationItem.create(
@@ -234,6 +244,30 @@ public class EditRolePermissionsNavigationDisplayContext {
 				}));
 	}
 
+	private NavigationItem _getPanelAppsNavigationItem(
+		List<PanelApp> panelApps, PanelCategory panelCategory) {
+
+		if (panelApps.isEmpty()) {
+			return null;
+		}
+
+		return NavigationItem.create(
+			panelCategory.getLabel(_locale),
+			navigationItem -> {
+				for (PanelApp panelApp : panelApps) {
+					Portlet portlet = PortletLocalServiceUtil.getPortletById(
+						_themeDisplay.getCompanyId(), panelApp.getPortletId());
+
+					navigationItem.addNavigationItems(
+						NavigationItem.create(
+							PortalUtil.getPortletLongTitle(
+								portlet, _servletContext, _locale),
+							_getPortletResourceNavigationItemConsumer(
+								portlet.getPortletId())));
+				}
+			});
+	}
+
 	private NavigationItem _getPanelCategoryNavigationItem(
 		PanelCategory panelCategory, String[] excludedPanelAppKeys) {
 
@@ -327,7 +361,7 @@ public class EditRolePermissionsNavigationDisplayContext {
 	}
 
 	private List<NavigationItem>
-		_getSiteAdministrationPanelCategoryNavigationItems() {
+		_getSiteAndAssetLibraryAdministrationNavigationItems() {
 
 		List<NavigationItem> navigationItems = new ArrayList<>();
 
@@ -335,12 +369,23 @@ public class EditRolePermissionsNavigationDisplayContext {
 				PanelCategoryRegistryUtil.getChildPanelCategories(
 					PanelCategoryKeys.SITE_ADMINISTRATION)) {
 
-			NavigationItem navigationItem =
-				_getUnfilteredPanelCategoryNavigationItem(panelCategory);
+			NavigationItem navigationItem = _getPanelAppsNavigationItem(
+				ListUtil.filter(
+					_panelAppRegistry.getPanelApps(panelCategory),
+					panelApp -> _isSiteAndAssetLibraryAdministrationPortlet(
+						panelApp.getPortletId())),
+				panelCategory);
 
 			if (navigationItem != null) {
 				navigationItems.add(navigationItem);
 			}
+		}
+
+		NavigationItem applicationsNavigationItem =
+			_getApplicationsNavigationItem();
+
+		if (applicationsNavigationItem != null) {
+			navigationItems.add(applicationsNavigationItem);
 		}
 
 		return navigationItems;
@@ -464,16 +509,17 @@ public class EditRolePermissionsNavigationDisplayContext {
 			}
 		}
 
-		topLevelNavigationItem.addNavigationItems(
-			NavigationItem.create(
-				LanguageUtil.get(
-					_locale, "site-and-asset-library-administration"),
-				navigationItem -> {
-					navigationItem.addNavigationItems(
-						_getSiteAdministrationPanelCategoryNavigationItems());
-					navigationItem.addNavigationItems(
-						_getApplicationsNavigationItem());
-				}));
+		List<NavigationItem> siteAndAssetLibraryAdministrationNavigationItems =
+			_getSiteAndAssetLibraryAdministrationNavigationItems();
+
+		if (!siteAndAssetLibraryAdministrationNavigationItems.isEmpty()) {
+			topLevelNavigationItem.addNavigationItems(
+				NavigationItem.create(
+					LanguageUtil.get(
+						_locale, "site-and-asset-library-administration"),
+					navigationItem -> navigationItem.addNavigationItems(
+						siteAndAssetLibraryAdministrationNavigationItems)));
+		}
 
 		if (roleType == RoleConstants.TYPE_REGULAR) {
 			topLevelNavigationItem.addNavigationItems(
@@ -496,7 +542,8 @@ public class EditRolePermissionsNavigationDisplayContext {
 						_panelAppRegistry.getPanelApps(panelCategory))) {
 
 					NavigationItem panelCategoryNavigationItem =
-						_getUnfilteredPanelCategoryNavigationItem(
+						_getPanelAppsNavigationItem(
+							_panelAppRegistry.getPanelApps(panelCategory),
 							panelCategory);
 
 					if (panelCategoryNavigationItem != null) {
@@ -508,35 +555,6 @@ public class EditRolePermissionsNavigationDisplayContext {
 		}
 
 		return topLevelNavigationItem;
-	}
-
-	private NavigationItem _getUnfilteredPanelCategoryNavigationItem(
-		PanelCategory panelCategory) {
-
-		List<PanelApp> panelApps = _panelAppRegistry.getPanelApps(
-			panelCategory);
-
-		if (panelApps.isEmpty()) {
-			return null;
-		}
-
-		return NavigationItem.create(
-			panelCategory.getLabel(_locale),
-			navigationItem -> {
-				for (PanelApp panelApp : panelApps) {
-					Portlet panelAppPortlet =
-						PortletLocalServiceUtil.getPortletById(
-							_themeDisplay.getCompanyId(),
-							panelApp.getPortletId());
-
-					navigationItem.addNavigationItems(
-						NavigationItem.create(
-							PortalUtil.getPortletLongTitle(
-								panelAppPortlet, _servletContext, _locale),
-							_getPortletResourceNavigationItemConsumer(
-								panelAppPortlet.getPortletId())));
-				}
-			});
 	}
 
 	private List<NavigationItem> _getUserNavigationItems() {
@@ -576,9 +594,7 @@ public class EditRolePermissionsNavigationDisplayContext {
 	private boolean _hasObjectDefinitionValidDomain(
 		ObjectDefinition objectDefinition) {
 
-		if ((_role.getType() != RoleConstants.TYPE_DEPOT) ||
-			Validator.isNull(_role.getSubtype())) {
-
+		if (_role.getType() != RoleConstants.TYPE_DEPOT) {
 			return true;
 		}
 
@@ -586,11 +602,59 @@ public class EditRolePermissionsNavigationDisplayContext {
 			ObjectDefinitionSettingConstants.NAME_DOMAIN,
 			objectDefinition.getObjectDefinitionSettings());
 
-		if (Validator.isNull(domain)) {
-			return true;
+		if (!FeatureFlagManagerUtil.isEnabled(
+				_themeDisplay.getCompanyId(), "LPD-96750")) {
+
+			if (Validator.isNull(_role.getSubtype()) ||
+				Validator.isNull(domain)) {
+
+				return true;
+			}
+
+			return Objects.equals(domain, _role.getSubtype());
+		}
+
+		if (!Objects.equals(
+				objectDefinition.getScope(),
+				ObjectDefinitionConstants.SCOPE_DEPOT)) {
+
+			return false;
+		}
+
+		if (Validator.isNull(_role.getSubtype()) ||
+			Objects.equals(
+				_role.getSubtype(), DepotRolesConstants.SUBTYPE_SPACE)) {
+
+			if (Validator.isNull(domain)) {
+				return true;
+			}
+
+			return Objects.equals(domain, DepotRolesConstants.SUBTYPE_SPACE);
 		}
 
 		return Objects.equals(domain, _role.getSubtype());
+	}
+
+	private boolean _isSiteAndAssetLibraryAdministrationPortlet(
+		String portletId) {
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				_themeDisplay.getCompanyId(), "LPD-96750") ||
+			Objects.equals(portletId, DepotPortletKeys.DEPOT_SETTINGS) ||
+			(Objects.equals(
+				portletId, AssetTagsAdminPortletKeys.ASSET_TAGS_ADMIN) &&
+			 Objects.equals(
+				 _role.getSubtype(),
+				 DepotRolesConstants.SUBTYPE_DESIGN_LIBRARY)) ||
+			Validator.isNull(_role.getSubtype()) ||
+			Objects.equals(
+				_role.getSubtype(), DepotRolesConstants.SUBTYPE_SPACE) ||
+			(_role.getType() != RoleConstants.TYPE_DEPOT)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private final Boolean _accountRoleGroupScope;
