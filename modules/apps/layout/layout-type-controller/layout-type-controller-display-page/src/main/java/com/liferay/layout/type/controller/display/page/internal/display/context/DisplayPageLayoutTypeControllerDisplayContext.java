@@ -123,13 +123,15 @@ public class DisplayPageLayoutTypeControllerDisplayContext {
 			PermissionChecker permissionChecker, String actionId)
 		throws Exception {
 
-		if (_infoItemDetails == null) {
-			if (layoutPageTemplateEntry == null) {
-				return true;
-			}
+		if ((layoutPageTemplateEntry != null) &&
+			!_layoutPageTemplateEntryModelResourcePermission.contains(
+				permissionChecker, layoutPageTemplateEntry, actionId)) {
 
-			return _layoutPageTemplateEntryModelResourcePermission.contains(
-				permissionChecker, layoutPageTemplateEntry, actionId);
+			return false;
+		}
+
+		if (_infoItemDetails == null) {
+			return true;
 		}
 
 		InfoItemPermissionProvider infoItemPermissionProvider =
