@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.xml.Element;
+import com.liferay.site.configuration.manager.SitemapConfigurationManager;
 import com.liferay.site.manager.SitemapManager;
 import com.liferay.site.provider.SitemapURLProvider;
 import com.liferay.site.provider.helper.SitemapURLProviderHelper;
@@ -97,6 +98,12 @@ public class CPDefinitionSitemapURLProvider implements SitemapURLProvider {
 	@Override
 	public boolean isInclude(long companyId, long groupId)
 		throws PortalException {
+
+		if (!_sitemapConfigurationManager.includeCommerceProductsGroupEnabled(
+				companyId, groupId)) {
+
+			return false;
+		}
 
 		long commerceChannelGroupId =
 			_commerceChannelLocalService.getCommerceChannelGroupIdBySiteGroupId(
@@ -374,6 +381,9 @@ public class CPDefinitionSitemapURLProvider implements SitemapURLProvider {
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private SitemapConfigurationManager _sitemapConfigurationManager;
 
 	@Reference
 	private SitemapManager _sitemapManager;
