@@ -29,6 +29,7 @@ export type RoleExternalReferenceCode =
 	| 'L_PROJECT_MEMBER';
 
 export interface UserRole {
+	externalReferenceCode: string;
 	id: number;
 	name: string;
 }
