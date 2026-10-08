@@ -32,6 +32,19 @@ public class PIMURLUtil {
 		return defaultBackURL;
 	}
 
+	public static String getConnectorExecuteURL(String objectEntryId) {
+		return "/o/pim/connector/execute?objectEntryId=" + objectEntryId;
+	}
+
+	public static String getConnectorScheduleURL(
+		String objectEntryId, ThemeDisplay themeDisplay) {
+
+		return StringBundler.concat(
+			"/o/pim/connector/schedule?backURL=",
+			URLCodec.encodeURL(themeDisplay.getURLCurrent()), "&objectEntryId=",
+			objectEntryId);
+	}
+
 	public static String getConnectorsURL(ThemeDisplay themeDisplay) {
 		return _getSiteURL("/connectors", themeDisplay);
 	}
@@ -46,10 +59,6 @@ public class PIMURLUtil {
 		String objectEntryId, ThemeDisplay themeDisplay) {
 
 		return _getURL("/edit-field-mappings", objectEntryId, themeDisplay);
-	}
-
-	public static String getExportURL(String objectEntryId) {
-		return "/o/pim/export?objectEntryId=" + objectEntryId;
 	}
 
 	public static String getFieldMappingsURL(

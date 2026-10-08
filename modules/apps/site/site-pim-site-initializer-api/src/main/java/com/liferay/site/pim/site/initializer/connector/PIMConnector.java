@@ -19,7 +19,7 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface PIMConnector {
 
-	public String export(ObjectEntry objectEntry) throws Exception;
+	public String execute(ObjectEntry objectEntry) throws Exception;
 
 	public String getKey();
 

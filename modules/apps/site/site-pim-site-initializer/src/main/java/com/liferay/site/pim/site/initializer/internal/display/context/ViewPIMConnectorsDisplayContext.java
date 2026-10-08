@@ -100,17 +100,37 @@ public class ViewPIMConnectorsDisplayContext {
 				"edit"
 			),
 			FDSActionDropdownItemBuilder.setHref(
-				PIMURLUtil.getExportURL("{id}")
+				PIMURLUtil.getConnectorExecuteURL("{id}")
 			).setIcon(
-				"download"
+				"play"
 			).setLabel(
-				LanguageUtil.get(_httpServletRequest, "export")
+				LanguageUtil.get(_httpServletRequest, "execute")
+			).setMethod(
+				"post"
+			).setSuccessMessage(
+				LanguageUtil.get(
+					_httpServletRequest,
+					"execution-has-started-successfully-and-will-continue-in-" +
+						"the-background")
+			).setTarget(
+				"async"
+			).setVisibilityFilters(
+				HashMapBuilder.<String, Object>put(
+					"active", Boolean.TRUE
+				).build()
+			).build(
+				"execute"
+			),
+			FDSActionDropdownItemBuilder.setHref(
+				PIMURLUtil.getConnectorScheduleURL("{id}", _themeDisplay)
+			).setIcon(
+				"date-time"
+			).setLabel(
+				LanguageUtil.get(_httpServletRequest, "schedule")
 			).setMethod(
 				"get"
-			).setTarget(
-				"blank"
 			).build(
-				"export"
+				"schedule"
 			),
 			FDSActionDropdownItemBuilder.setIcon(
 				"trash"
