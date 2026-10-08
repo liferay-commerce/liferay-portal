@@ -4,8 +4,10 @@
  */
 
 import "../../index.scss";
+
 import ClayLayout from "@clayui/layout";
 import { useEffect, useState } from "react";
+
 import { getLearningPaths } from "../../services/learning-path";
 import SectionCard from "../Common/SectionCard";
 
@@ -23,7 +25,7 @@ const LearningPathsList = () => {
     return (
         <ClayLayout.ContainerFluid view>
             <ClayLayout.Row justify="start">
-                {learningPaths && learningPaths.length > 0 && (
+                {learningPaths && !!learningPaths.length && (
                     <>
                         {learningPaths.map((learningPath, index) => {
                             return (
