@@ -5,6 +5,7 @@
 
 import {test} from '@playwright/test';
 
+import {CommerceAccountAddressEligibilityPage} from '../pages/commerce/commerce-account-web/commerceAccountAddressEligibilityPage';
 import {CommerceAccountManagementPage} from '../pages/commerce/commerce-account-web/commerceAccountManagementPage';
 import {CommerceChannelDefaultsPage} from '../pages/commerce/commerce-account-web/commerceChannelDefaultsPage';
 import {CommerceCartPage} from '../pages/commerce/commerce-cart-content-web/commerceCartPage';
@@ -88,6 +89,7 @@ import {CommercePricingSystemSettingsPage} from '../pages/commerce/commercePrici
 const commercePagesTest = test.extend<{
 	attachmentsPage: AttachmentsPage;
 	checkoutPage: CheckoutPage;
+	commerceAccountAddressEligibilityPage: CommerceAccountAddressEligibilityPage;
 	commerceAccountManagementPage: CommerceAccountManagementPage;
 	commerceAdminCatalogDetailsPage: CommerceAdminCatalogDetailsPage;
 	commerceAdminCatalogsPage: CommerceAdminCatalogsPage;
@@ -171,6 +173,9 @@ const commercePagesTest = test.extend<{
 	},
 	checkoutPage: async ({page}, use) => {
 		await use(new CheckoutPage(page));
+	},
+	commerceAccountAddressEligibilityPage: async ({page}, use) => {
+		await use(new CommerceAccountAddressEligibilityPage(page));
 	},
 	commerceAccountManagementPage: async ({page}, use) => {
 		await use(new CommerceAccountManagementPage(page));
