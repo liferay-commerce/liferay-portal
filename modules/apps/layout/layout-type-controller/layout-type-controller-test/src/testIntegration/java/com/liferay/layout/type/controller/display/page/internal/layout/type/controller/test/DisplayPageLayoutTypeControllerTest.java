@@ -315,6 +315,82 @@ public class DisplayPageLayoutTypeControllerTest {
 	}
 
 	@Test
+	@TestInfo("LPD-104513")
+	public void testDisplayPageTypeControllerWithInfoItemWithoutDisplayPageTemplateGuestPermissionsWithPromptDisabled()
+		throws Exception {
+
+		Layout layout = _addDisplayPageTemplateLayout();
+
+		_assertIncludeLayoutContent(
+			HttpServletResponse.SC_OK, true, layout.getPlid(), _guestUser);
+	}
+
+	@Test
+	@TestInfo("LPD-104513")
+	public void testDisplayPageTypeControllerWithInfoItemWithoutDisplayPageTemplateGuestPermissionsWithPromptEnabled()
+		throws Exception {
+
+		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					_PID,
+					HashMapDictionaryBuilder.<String, Object>put(
+						"promptEnabled", true
+					).build())) {
+
+			Layout layout = _addDisplayPageTemplateLayout();
+
+			LayoutTypeController layoutTypeController =
+				LayoutTypeControllerTracker.getLayoutTypeController(
+					LayoutConstants.TYPE_ASSET_DISPLAY);
+
+			try {
+				ServiceContext serviceContext =
+					ServiceContextTestUtil.getServiceContext(
+						_group.getGroupId(), _guestUser.getUserId());
+
+				MockHttpServletRequest mockHttpServletRequest =
+					_getMockHttpServletRequest(layout, _guestUser);
+
+				serviceContext.setRequest(mockHttpServletRequest);
+
+				ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
+				MockHttpServletResponse mockHttpServletResponse =
+					new MockHttpServletResponse();
+
+				layoutTypeController.includeLayoutContent(
+					mockHttpServletRequest, mockHttpServletResponse, layout);
+
+				String redirectURL = mockHttpServletResponse.getRedirectedUrl();
+
+				Assert.assertTrue(redirectURL.contains("redirect"));
+
+				Assert.assertEquals(
+					HttpServletResponse.SC_FOUND,
+					mockHttpServletResponse.getStatus());
+			}
+			finally {
+				ServiceContextThreadLocal.popServiceContext();
+			}
+		}
+	}
+
+	@Test
+	@TestInfo("LPD-104513")
+	public void testDisplayPageTypeControllerWithInfoItemWithoutDisplayPageTemplateUserPermissions()
+		throws Exception {
+
+		Layout layout = _addDisplayPageTemplateLayout();
+
+		_assertIncludeLayoutContent(
+			HttpServletResponse.SC_FORBIDDEN, false, layout.getPlid(),
+			UserTestUtil.addUser());
+		_assertIncludeLayoutContent(
+			HttpServletResponse.SC_OK, false, layout.getPlid(),
+			UserTestUtil.addGroupUser(_group, RoleConstants.SITE_MEMBER));
+	}
+
+	@Test
 	@TestInfo("LPS-136421")
 	public void testDisplayPageTypeControllerWithInfoItemWithoutGuestPermissionsWithPromptDisabled()
 		throws Exception {
@@ -518,6 +594,39 @@ public class DisplayPageLayoutTypeControllerTest {
 			HttpServletResponse.SC_FORBIDDEN, draftLayout, user);
 		_testDisplayPageTypeControllerWithoutContextInfoItemWithLoginRequest(
 			draftLayout);
+	}
+
+	private Layout _addDisplayPageTemplateLayout() throws Exception {
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_layoutPageTemplateEntryService.addLayoutPageTemplateEntry(
+				null, _group.getGroupId(), 0, null,
+				_portal.getClassNameId(AssetCategory.class.getName()), null,
+				RandomTestUtil.randomString(), 0,
+				WorkflowConstants.STATUS_DRAFT, _serviceContext);
+
+		Layout layout = _layoutLocalService.getLayout(
+			layoutPageTemplateEntry.getPlid());
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		Assert.assertNotNull(draftLayout);
+
+		_setUpInfoItem(true);
+
+		_addFragmentEntryLink(draftLayout);
+
+		ContentLayoutTestUtil.publishLayout(draftLayout, layout);
+
+		Assert.assertTrue(layout.isPublished());
+
+		RoleTestUtil.removeResourcePermission(
+			RoleConstants.GUEST, LayoutPageTemplateEntry.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(
+				layoutPageTemplateEntry.getLayoutPageTemplateEntryId()),
+			ActionKeys.VIEW);
+
+		return layout;
 	}
 
 	private void _addFragmentEntryLink(Layout layout) throws Exception {
