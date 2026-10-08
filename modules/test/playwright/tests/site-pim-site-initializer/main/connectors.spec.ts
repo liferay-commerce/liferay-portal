@@ -19,6 +19,134 @@ const test = mergeTests(
 );
 
 test(
+	'Execute a connector and open its schedule',
+	{tag: ['@LPD-108228']},
+	async ({connectorSchedulePage, connectorsPage}) => {
+		const connectorName = getRandomString();
+
+		try {
+			await connectorsPage.createConnector({
+				active: true,
+				connector: 'Liferay Commerce',
+				name: connectorName,
+			});
+
+			await test.step('Execute the connector', async () => {
+				await connectorsPage.executeConnector(connectorName);
+			});
+
+			await test.step('Open the connector schedule', async () => {
+				await connectorsPage.openConnectorSchedule(connectorName);
+
+				await expect(
+					connectorSchedulePage.cronExpressionInput
+				).toHaveValue('0 0 0 * * ?');
+			});
+
+			await test.step('Go back to the connectors', async () => {
+				await connectorSchedulePage.backLink.click();
+
+				await expect(
+					connectorsPage.getConnector(connectorName)
+				).toBeVisible();
+			});
+		}
+		finally {
+			await connectorsPage.goto();
+
+			await connectorsPage.deleteConnectorIfPresent(connectorName);
+		}
+	}
+);
+
+test(
+	'Execute a connector and log the products JSON',
+	{tag: ['@LPD-108228']},
+	async ({
+		connectorSchedulePage,
+		connectorsPage,
+		editFieldMappingsPage,
+		fieldMappingsPage,
+		productPage,
+		productsPage,
+	}) => {
+		const connectorName = getRandomString();
+		const productName = getRandomString();
+
+		try {
+			await test.step('Add a product', async () => {
+				await productsPage.goto();
+
+				await productsPage.openNewProductEditor();
+
+				await productPage.code.fill(getRandomString());
+				await productPage.name.fill(productName);
+
+				await productPage.save();
+			});
+
+			await test.step('Create an active connector', async () => {
+				await connectorsPage.createConnector({
+					active: true,
+					connector: 'Liferay Commerce',
+					name: connectorName,
+				});
+			});
+
+			await test.step('Map only the required channel fields', async () => {
+				await connectorsPage.getConnector(connectorName).click();
+
+				for (const {channelField, sourceAttribute, value} of [
+					{channelField: 'Catalog ID', value: '1'},
+					{channelField: 'Name', sourceAttribute: 'Name (name)'},
+					{channelField: 'Product Type', value: 'simple'},
+					{channelField: 'SKU', sourceAttribute: 'Code (code)'},
+				]) {
+					await fieldMappingsPage.channelField(channelField).click();
+
+					if (sourceAttribute) {
+						await editFieldMappingsPage.mapToSourceAttribute(
+							sourceAttribute
+						);
+					}
+					else {
+						await editFieldMappingsPage.mapToValue(value);
+					}
+
+					await editFieldMappingsPage.saveButton.click();
+
+					await expect(
+						fieldMappingsPage.status(channelField)
+					).toHaveText('Mapped');
+				}
+			});
+
+			await test.step('Execute the connector from its field mappings', async () => {
+				await fieldMappingsPage.executeConnector();
+			});
+
+			await test.step('The job log holds the products JSON', async () => {
+				await fieldMappingsPage.openConnectorSchedule();
+
+				await connectorSchedulePage.openLatestSuccessfulLog();
+
+				await expect(connectorSchedulePage.logOutput).toHaveText(/^\[/);
+				await expect(connectorSchedulePage.logError).toBeHidden();
+			});
+		}
+		finally {
+			await connectorsPage.goto();
+
+			await connectorsPage.deleteConnectorIfPresent(connectorName);
+
+			await productsPage.goto();
+
+			await productsPage.deleteProduct(productName);
+		}
+	}
+);
+
+test(
 	'Hide the search bar in the connectors empty state',
 	{tag: ['@LPD-98441']},
 	async ({connectorsPage}) => {
@@ -135,7 +263,7 @@ test(
 
 test(
 	'Narrow the connectors list by status and by name',
-	{tag: ['@LPD-106219']},
+	{tag: ['@LPD-106219', '@LPD-108228']},
 	async ({connectorsPage, editConnectorPage, page}) => {
 		const connectorName = getRandomString();
 
@@ -153,6 +281,12 @@ test(
 				await expect(
 					connectorsPage.getConnectorStatus(connectorName)
 				).toHaveText('Inactive');
+			});
+
+			await test.step('An inactive connector cannot be executed', async () => {
+				await connectorsPage.dataSetFragmentPage.expectItemActionHidden(
+					{action: 'Execute', filter: connectorName}
+				);
 			});
 
 			await test.step('Activate the connector', async () => {

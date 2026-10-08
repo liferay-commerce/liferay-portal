@@ -6,11 +6,14 @@
 import {Locator, Page} from '@playwright/test';
 
 import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
+import {waitForAlert} from '../../../../utils/waitForAlert';
 import {DataSetPage} from '../../../site-cms-site-initializer/main/pages/DataSetPage';
 
 export class FieldMappingsPage {
 	readonly channelField: (channelField: string) => Locator;
 	readonly dataSetFragmentPage: DataSetPage;
+	readonly moreActionsButton: Locator;
+	readonly moreActionsMenuItem: (name: string) => Locator;
 	readonly page: Page;
 	readonly row: (channelField: string) => Locator;
 	readonly sourceAttributes: (channelField: string) => Locator;
@@ -23,6 +26,11 @@ export class FieldMappingsPage {
 				name: channelField,
 			});
 		this.dataSetFragmentPage = new DataSetPage(page);
+		this.moreActionsButton = page.getByRole('button', {
+			name: 'More Actions',
+		});
+		this.moreActionsMenuItem = (name) =>
+			page.getByRole('menuitem', {exact: true, name});
 		this.page = page;
 		this.row = (channelField) =>
 			this.dataSetFragmentPage.table.bodyRows.filter({
@@ -53,6 +61,19 @@ export class FieldMappingsPage {
 		});
 	}
 
+	async executeConnector() {
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.moreActionsMenuItem('Execute'),
+			trigger: this.moreActionsButton,
+		});
+
+		await waitForAlert(
+			this.page,
+			'Execution has started successfully and will continue in the background.'
+		);
+	}
+
 	async expectClearVisible(channelField: string) {
 		await clickAndExpectToBeVisible({
 			target: this.page.getByRole('menuitem', {
@@ -65,5 +86,15 @@ export class FieldMappingsPage {
 		});
 
 		await this.page.keyboard.press('Escape');
+	}
+
+	async openConnectorSchedule() {
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.moreActionsMenuItem('Schedule'),
+			trigger: this.moreActionsButton,
+		});
+
+		await this.page.waitForURL(/edit_dispatch_trigger/);
 	}
 }

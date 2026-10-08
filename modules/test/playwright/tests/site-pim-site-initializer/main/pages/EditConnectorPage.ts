@@ -28,15 +28,21 @@ export class EditConnectorPage {
 	}
 
 	async createConnector({
+		active = false,
 		connector,
 		name,
 	}: {
+		active?: boolean;
 		connector: string;
 		name: string;
 	}) {
 		await this.nameInput.fill(name);
 
 		await this.connectorSelect.selectOption({label: connector});
+
+		if (active) {
+			await this.activeToggle.click();
+		}
 
 		await this.saveButton.click();
 
