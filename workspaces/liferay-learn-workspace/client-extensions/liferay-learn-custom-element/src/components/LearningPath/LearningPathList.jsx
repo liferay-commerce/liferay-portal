@@ -25,7 +25,7 @@ const LearningPathsList = () => {
     return (
         <ClayLayout.ContainerFluid view>
             <ClayLayout.Row justify="start">
-                {learningPaths && !!learningPaths.length && (
+                {!!learningPaths?.length && (
                     <>
                         {learningPaths.map((learningPath, index) => {
                             return (

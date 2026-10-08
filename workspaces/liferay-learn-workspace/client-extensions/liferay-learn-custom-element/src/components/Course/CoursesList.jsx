@@ -36,7 +36,7 @@ const CoursesList = () => {
 	return (
 		<ClayLayout.ContainerFluid view>
 			<ClayLayout.Row justify="start">
-				{courses && !!courses.length && (
+				{!!courses?.length && (
 					<>
 						{courses.map((course, index) => {
 							return (
