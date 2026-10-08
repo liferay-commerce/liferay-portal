@@ -22,6 +22,9 @@ import getRandomString from '../../../utils/getRandomString';
 import {performLogout, userData} from '../../../utils/performLogin';
 import {openProductMenu} from '../../../utils/productMenu';
 import {waitForAlert} from '../../../utils/waitForAlert';
+import getFragmentDefinition from '../../layout-content-page-editor-web/main/utils/getFragmentDefinition';
+import getPageDefinition from '../../layout-content-page-editor-web/main/utils/getPageDefinition';
+import getWidgetDefinition from '../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
 import {ORDER_WORKFLOW_STATUS_CODE} from '../../workspaces/liferay-workspace-marketplace/main/utils/constants';
 
 type TBrakeFluidUnitsOfMeasure = {
@@ -52,6 +55,83 @@ type TUnitOfMeasure = {
 	name: {[key: string]: string};
 	promoPrice: number;
 };
+
+export async function checkoutStorefrontSetUp(
+	apiHelpers: DataApiHelpers,
+	commerceAdminChannelsPage: CommerceAdminChannelsPage,
+	page: Page,
+	site: Site
+) {
+	const channel = await apiHelpers.headlessCommerceAdminChannel.postChannel({
+		name: getRandomString(),
+		siteGroupId: site.id,
+	});
+
+	await commerceAdminChannelsPage.changeCommerceChannelSiteType(
+		channel.name,
+		'B2B'
+	);
+
+	await waitForAlert(page);
+
+	const catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
+		name: getRandomString(),
+	});
+
+	const product = await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+		catalogId: catalog.id,
+		name: {en_US: getRandomString()},
+		skus: [
+			{
+				cost: 0,
+				price: 10,
+				published: true,
+				purchasable: true,
+				sku: getRandomString(),
+			},
+		],
+	});
+
+	const {skus} = await apiHelpers.headlessCommerceAdminCatalog.getProduct(
+		product.productId
+	);
+
+	const {account, buyerUser} = await createAccountWithBuyerUser(
+		apiHelpers,
+		site.id
+	);
+
+	const miniCartLayout = await apiHelpers.headlessDelivery.createSitePage({
+		pageDefinition: getPageDefinition([
+			getFragmentDefinition({
+				id: getRandomString(),
+				key: 'COMMERCE_CART_FRAGMENTS-mini-cart',
+			}),
+		]),
+		siteId: site.id,
+		title: getRandomString(),
+	});
+
+	await apiHelpers.headlessDelivery.createSitePage({
+		pageDefinition: getPageDefinition([
+			getWidgetDefinition({
+				id: getRandomString(),
+				widgetName:
+					'com_liferay_commerce_checkout_web_internal_portlet_CommerceCheckoutPortlet',
+			}),
+		]),
+		siteId: site.id,
+		title: getRandomString(),
+	});
+
+	return {
+		account,
+		buyerUser,
+		channel,
+		miniCartLayout,
+		sku: skus[0],
+	};
+}
 
 export async function classicCommerceSetUp(
 	apiHelpers: DataApiHelpers,
