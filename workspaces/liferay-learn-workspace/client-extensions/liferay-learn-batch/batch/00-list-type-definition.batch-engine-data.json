@@ -11,6 +11,22 @@
 	},
 	"items": [
 		{
+			"externalReferenceCode": "P2S3_EXAM_RESULT_SOURCES",
+			"listTypeEntries": [
+				{
+					"externalReferenceCode": "CERTMANAGER",
+					"key": "certmanager",
+					"name": "Certmanager"
+				},
+				{
+					"externalReferenceCode": "WEBASSESSOR",
+					"key": "webassessor",
+					"name": "WebAssessor"
+				}
+			],
+			"name": "P2S3 Exam Result Sources"
+		},
+		{
 			"externalReferenceCode": "P2S3_EXPERTISE_LEVELS",
 			"listTypeEntries": [
 				{
@@ -201,6 +217,10 @@
 			"externalReferenceCode": "P2S3_SYNCHRONIZATION_STATUS",
 			"listTypeEntries": [
 				{
+					"externalReferenceCode": "DISCARDED",
+					"key": "discarded",
+					"name": "Discarded"
+				},{
 					"externalReferenceCode": "FAILED",
 					"key": "failed",
 					"name": "Failed"

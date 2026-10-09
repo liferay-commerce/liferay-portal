@@ -1694,6 +1694,23 @@
 					"unique": false
 				},
 				{
+					"DBType": "Boolean",
+					"businessType": "Boolean",
+					"externalReferenceCode": "MISSED_PREREQUISITE",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Missed Prerequisite"
+					},
+					"localized": false,
+					"name": "missedPrerequisite",
+					"readOnly": "false",
+					"required": false,
+					"state": false,
+					"type": "Boolean",
+					"unique": false
+				},
+				{
 					"DBType": "String",
 					"businessType": "Picklist",
 					"externalReferenceCode": "RESULT",
@@ -1728,6 +1745,25 @@
 					"required": true,
 					"state": false,
 					"type": "Double",
+					"unique": false
+				},
+				{
+					"DBType": "String",
+					"businessType": "Picklist",
+					"externalReferenceCode": "SOURCE",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Source"
+					},
+					"listTypeDefinitionExternalReferenceCode": "P2S3_EXAM_RESULT_SOURCES",
+					"localized": false,
+					"name": "source",
+					"readOnly": "false",
+					"required": false,
+					"state": false,
+					"type": "String",
 					"unique": false
 				},
 				{
@@ -1819,6 +1855,25 @@
 					"required": false,
 					"state": false,
 					"type": "Long",
+					"unique": false
+				},
+				{
+					"DBType": "String",
+					"businessType": "Picklist",
+					"externalReferenceCode": "SOURCE",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Source"
+					},
+					"listTypeDefinitionExternalReferenceCode": "P2S3_EXAM_RESULT_SOURCES",
+					"localized": false,
+					"name": "source",
+					"readOnly": "false",
+					"required": false,
+					"state": false,
+					"type": "String",
 					"unique": false
 				},
 				{
