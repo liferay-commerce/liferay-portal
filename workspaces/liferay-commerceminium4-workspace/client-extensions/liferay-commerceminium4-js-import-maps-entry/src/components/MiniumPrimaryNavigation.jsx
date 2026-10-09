@@ -1,18 +1,23 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
 import { VerticalNav as ClayVerticalNav } from '@clayui/core';
-import classnames from 'classnames';
 import ClayIcon from '@clayui/icon';
+import classnames from 'classnames';
 import React from 'react';
 
 const DEFAULT_LAYOUT_ICONS = {
     'account-management': 'briefcase',
+    'catalog': 'tag',
+    'dashboard': 'analytics',
+    'orders': 'order-form',
     'pending-orders': '',
     'placed-orders': '',
-    catalog: 'tag',
-    dashboard: 'analytics',
-    orders: 'order-form',
-    quotes: 'order-pencil',
-    returns: 'document-pending',
-    shipments: 'truck',
+    'quotes': 'order-pencil',
+    'returns': 'document-pending',
+    'shipments': 'truck',
 };
 
 function toItems(entries) {
@@ -65,8 +70,8 @@ export default function MiniumPrimaryNavigation({
                                 })
                             }>
                                 <ClayIcon
-                                    symbol={item.icon}
                                     spritemap={spritemap}
+                                    symbol={item.icon}
                                 />
                             </span>
                         )}

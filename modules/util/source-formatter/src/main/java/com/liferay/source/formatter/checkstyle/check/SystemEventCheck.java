@@ -39,9 +39,7 @@ public class SystemEventCheck extends BaseCheck {
 	protected void doVisitToken(DetailAST detailAST) {
 		_entityElement = null;
 
-		DetailAST parentDetailAST = detailAST.getParent();
-
-		if (parentDetailAST != null) {
+		if (!isDirectChildOfCompilationUnit(detailAST)) {
 			return;
 		}
 

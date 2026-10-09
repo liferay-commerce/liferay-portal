@@ -5,19 +5,21 @@
 
 package com.liferay.portal.tools.java.parser.util;
 
-import antlr.CommonASTWithHiddenTokens;
-import antlr.CommonHiddenStreamToken;
-
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.tools.java.parser.Position;
 
+import com.puppycrawl.tools.checkstyle.DetailAstImpl;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FileContents;
+import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import org.antlr.v4.runtime.Token;
 
 /**
  * @author Hugo Huijser
@@ -34,6 +36,18 @@ public class DetailASTUtil {
 		DetailAST detailAST, boolean recursive, int... tokenTypes) {
 
 		return _getAllChildTokens(detailAST, recursive, null, tokenTypes);
+	}
+
+	public static String getBaseTypeName(DetailAST detailAST) {
+		FullIdent fullIdent = FullIdent.createFullIdent(detailAST);
+
+		String baseTypeName = fullIdent.getText();
+
+		while (baseTypeName.endsWith("[]")) {
+			baseTypeName = baseTypeName.substring(0, baseTypeName.length() - 2);
+		}
+
+		return baseTypeName;
 	}
 
 	public static DetailAST getClosingDetailAST(DetailAST detailAST) {
@@ -71,8 +85,9 @@ public class DetailASTUtil {
 		}
 
 		if (detailAST.getType() == TokenTypes.ENUM_CONSTANT_DEF) {
-			while ((detailAST.getType() == TokenTypes.COMMA) ||
-				   (detailAST.getType() == TokenTypes.ENUM_CONSTANT_DEF)) {
+			while (TokenUtil.isOfType(
+						detailAST, TokenTypes.COMMA,
+						TokenTypes.ENUM_CONSTANT_DEF)) {
 
 				detailAST = detailAST.getNextSibling();
 			}
@@ -114,9 +129,9 @@ public class DetailASTUtil {
 			return emptyStatDetailAST;
 		}
 
-		if ((detailAST.getType() == TokenTypes.LITERAL_FOR) ||
-			(detailAST.getType() == TokenTypes.LITERAL_IF) ||
-			(detailAST.getType() == TokenTypes.LITERAL_WHILE)) {
+		if (TokenUtil.isOfType(
+				detailAST, TokenTypes.LITERAL_FOR, TokenTypes.LITERAL_IF,
+				TokenTypes.LITERAL_WHILE)) {
 
 			return null;
 		}
@@ -181,9 +196,9 @@ public class DetailASTUtil {
 			rparenDetailAST = firstChildDetailAST.findFirstToken(
 				TokenTypes.RPAREN);
 		}
-		else if ((detailAST.getType() == TokenTypes.LITERAL_FOR) ||
-				 (detailAST.getType() == TokenTypes.LITERAL_IF) ||
-				 (detailAST.getType() == TokenTypes.LITERAL_WHILE)) {
+		else if (TokenUtil.isOfType(
+					detailAST, TokenTypes.LITERAL_FOR, TokenTypes.LITERAL_IF,
+					TokenTypes.LITERAL_WHILE)) {
 
 			rparenDetailAST = detailAST.findFirstToken(TokenTypes.RPAREN);
 		}
@@ -227,11 +242,10 @@ public class DetailASTUtil {
 		return endPosition;
 	}
 
-	public static CommonHiddenStreamToken getHiddenBefore(DetailAST detailAST) {
-		CommonASTWithHiddenTokens commonASTWithHiddenTokens =
-			(CommonASTWithHiddenTokens)detailAST;
+	public static List<Token> getHiddenBefore(DetailAST detailAST) {
+		DetailAstImpl detailAstImpl = (DetailAstImpl)detailAST;
 
-		return commonASTWithHiddenTokens.getHiddenBefore();
+		return detailAstImpl.getHiddenBefore();
 	}
 
 	public static Position getStartPosition(DetailAST detailAST) {

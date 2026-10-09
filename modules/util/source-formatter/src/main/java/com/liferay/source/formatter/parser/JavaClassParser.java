@@ -19,6 +19,7 @@ import com.puppycrawl.tools.checkstyle.api.FileContents;
 import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,29 +56,29 @@ public class JavaClassParser {
 			}
 		}
 
-		DetailAST siblingDetailAST = detailAST.getNextSibling();
+		DetailAST childDetailAST = detailAST.getFirstChild();
 
-		while ((siblingDetailAST != null) &&
-			   (siblingDetailAST.getType() != TokenTypes.CLASS_DEF) &&
-			   (siblingDetailAST.getType() != TokenTypes.ENUM_DEF) &&
-			   (siblingDetailAST.getType() != TokenTypes.INTERFACE_DEF)) {
+		while ((childDetailAST != null) &&
+			   !TokenUtil.isOfType(
+				   childDetailAST, TokenTypes.CLASS_DEF, TokenTypes.ENUM_DEF,
+				   TokenTypes.INTERFACE_DEF)) {
 
-			siblingDetailAST = siblingDetailAST.getNextSibling();
+			childDetailAST = childDetailAST.getNextSibling();
 		}
 
-		if (siblingDetailAST == null) {
+		if (childDetailAST == null) {
 			return Collections.emptyList();
 		}
 
 		List<JavaClass> anonymousClasses = new ArrayList<>();
 
 		List<DetailAST> leteralNewDetailASTs = DetailASTUtil.getAllChildTokens(
-			siblingDetailAST, true, TokenTypes.LITERAL_NEW);
+			childDetailAST, true, TokenTypes.LITERAL_NEW);
 
 		JavaClass parentJavaClass = null;
 
 		if (!leteralNewDetailASTs.isEmpty() &&
-			(siblingDetailAST.getType() == TokenTypes.CLASS_DEF)) {
+			(childDetailAST.getType() == TokenTypes.CLASS_DEF)) {
 
 			parentJavaClass = parseJavaClass(content, detailAST, fileContents);
 		}
@@ -117,19 +118,18 @@ public class JavaClassParser {
 			String content, DetailAST detailAST, FileContents fileContents)
 		throws IOException, ParseException {
 
-		DetailAST siblingDetailAST = detailAST.getNextSibling();
+		DetailAST childDetailAST = detailAST.getFirstChild();
 
-		while ((siblingDetailAST != null) &&
-			   (siblingDetailAST.getType() != TokenTypes.ANNOTATION_DEF) &&
-			   (siblingDetailAST.getType() != TokenTypes.CLASS_DEF) &&
-			   (siblingDetailAST.getType() != TokenTypes.ENUM_DEF) &&
-			   (siblingDetailAST.getType() != TokenTypes.INTERFACE_DEF) &&
-			   (siblingDetailAST.getType() != TokenTypes.RECORD_DEF)) {
+		while ((childDetailAST != null) &&
+			   !TokenUtil.isOfType(
+				   childDetailAST, TokenTypes.ANNOTATION_DEF,
+				   TokenTypes.CLASS_DEF, TokenTypes.ENUM_DEF,
+				   TokenTypes.INTERFACE_DEF, TokenTypes.RECORD_DEF)) {
 
-			siblingDetailAST = siblingDetailAST.getNextSibling();
+			childDetailAST = childDetailAST.getNextSibling();
 		}
 
-		if (siblingDetailAST == null) {
+		if (childDetailAST == null) {
 			throw new ParseException(
 				"Parsing error at line \"" + detailAST.getLineNo() + "\"");
 		}
@@ -140,7 +140,7 @@ public class JavaClassParser {
 
 		boolean isInterface = false;
 
-		if (siblingDetailAST.getType() == TokenTypes.INTERFACE_DEF) {
+		if (childDetailAST.getType() == TokenTypes.INTERFACE_DEF) {
 			isInterface = true;
 		}
 
@@ -148,7 +148,7 @@ public class JavaClassParser {
 		boolean nonsealed = false;
 		boolean sealed = false;
 
-		DetailAST modifiersDetailAST = siblingDetailAST.findFirstToken(
+		DetailAST modifiersDetailAST = childDetailAST.findFirstToken(
 			TokenTypes.MODIFIERS);
 
 		if (modifiersDetailAST != null) {
@@ -189,26 +189,24 @@ public class JavaClassParser {
 			}
 		}
 
-		DetailAST nameDetailAST = siblingDetailAST.findFirstToken(
+		DetailAST nameDetailAST = childDetailAST.findFirstToken(
 			TokenTypes.IDENT);
 
-		String classContent = _getJavaTermContent(
-			fileContents, siblingDetailAST);
+		String classContent = _getJavaTermContent(fileContents, childDetailAST);
 
 		if (classContent == null) {
 			throw new ParseException(
-				"Parsing error at line \"" + siblingDetailAST.getLineNo() +
-					"\"");
+				"Parsing error at line \"" + childDetailAST.getLineNo() + "\"");
 		}
 
 		JavaClass javaClass = _parseJavaClass(
-			accessModifier, false, classContent, siblingDetailAST.getLineNo(),
+			accessModifier, false, classContent, childDetailAST.getLineNo(),
 			nameDetailAST.getText(), JavaSourceUtil.getImportNames(content),
 			isAbstract, isFinal, isInterface, false, isStrictfp, nonsealed,
 			JavaSourceUtil.getPackageName(content), sealed, fileContents,
-			siblingDetailAST, null);
+			childDetailAST, null);
 
-		_parseExtendsImplementsPermits(javaClass, siblingDetailAST);
+		_parseExtendsImplementsPermits(javaClass, childDetailAST);
 
 		return javaClass;
 	}
@@ -237,12 +235,10 @@ public class JavaClassParser {
 	}
 
 	private static Position _getEndPosition(DetailAST detailAST) {
-		if ((detailAST.getType() == TokenTypes.ANNOTATION_DEF) ||
-			(detailAST.getType() == TokenTypes.CLASS_DEF) ||
-			(detailAST.getType() == TokenTypes.ENUM_DEF) ||
-			(detailAST.getType() == TokenTypes.INTERFACE_DEF) ||
-			(detailAST.getType() == TokenTypes.LITERAL_NEW) ||
-			(detailAST.getType() == TokenTypes.RECORD_DEF)) {
+		if (TokenUtil.isOfType(
+				detailAST, TokenTypes.ANNOTATION_DEF, TokenTypes.CLASS_DEF,
+				TokenTypes.ENUM_DEF, TokenTypes.INTERFACE_DEF,
+				TokenTypes.LITERAL_NEW, TokenTypes.RECORD_DEF)) {
 
 			DetailAST objBlockDetailAST = detailAST.findFirstToken(
 				TokenTypes.OBJBLOCK);
@@ -272,8 +268,8 @@ public class JavaClassParser {
 				lastChildDetailAST.getLineNo());
 		}
 
-		if ((detailAST.getType() == TokenTypes.CTOR_DEF) ||
-			(detailAST.getType() == TokenTypes.METHOD_DEF)) {
+		if (TokenUtil.isOfType(
+				detailAST, TokenTypes.CTOR_DEF, TokenTypes.METHOD_DEF)) {
 
 			DetailAST lastChildDetailAST = detailAST.getLastChild();
 
@@ -408,11 +404,10 @@ public class JavaClassParser {
 			}
 		}
 
-		if ((detailAST.getType() == TokenTypes.ANNOTATION_DEF) ||
-			(detailAST.getType() == TokenTypes.CLASS_DEF) ||
-			(detailAST.getType() == TokenTypes.ENUM_DEF) ||
-			(detailAST.getType() == TokenTypes.INTERFACE_DEF) ||
-			(detailAST.getType() == TokenTypes.RECORD_DEF)) {
+		if (TokenUtil.isOfType(
+				detailAST, TokenTypes.ANNOTATION_DEF, TokenTypes.CLASS_DEF,
+				TokenTypes.ENUM_DEF, TokenTypes.INTERFACE_DEF,
+				TokenTypes.RECORD_DEF)) {
 
 			DetailAST nameDetailAST = detailAST.findFirstToken(
 				TokenTypes.IDENT);

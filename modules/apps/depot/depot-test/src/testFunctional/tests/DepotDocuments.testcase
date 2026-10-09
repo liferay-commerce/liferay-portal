@@ -104,45 +104,9 @@ definition {
 			textContent = "Text");
 	}
 
-	@description = "This ensures that a depot document can be copied to another folder."
+	@description = "This ensures that a depot folder and a depot document can be copied to another folder."
 	@priority = 5
-	test CanCopyDocumentToOtherFolder {
-		JSONDepot.addDepot(
-			depotDescription = "This is the description of a depot",
-			depotName = "Test Depot Name");
-
-		JSONFolder.addFolder(
-			dmFolderDescription = "DM Folder Description",
-			dmFolderName = "DM Folder Name",
-			groupName = "Test Depot Name");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Test Depot Name",
-			mimeType = "application/msword",
-			sourceFileName = "Document_1.doc");
-
-		DepotNavigator.openDepotDocumentsAndMediaAdmin(depotName = "Test Depot Name");
-
-		DMDocument.copy(
-			dmDocumentTitle = "DM Document Title",
-			targetFolderName = "DM Folder Name");
-
-		DepotNavigator.openDepotDocumentsAndMediaAdmin(depotName = "Test Depot Name");
-
-		LexiconEntry.viewEntryName(rowEntry = "DM Document Title");
-
-		DepotNavigator.openToDMFolder(
-			depotName = "Test Depot Name",
-			folderName = "DM Folder Name");
-
-		LexiconEntry.viewEntryName(rowEntry = "DM Document Title");
-	}
-
-	@description = "This ensures that a depot folder can be copied to another folder."
-	@priority = 5
-	test CanCopyFolderToOtherFolder {
+	test CanCopyDocumentAndFolderToOtherFolder {
 		JSONDepot.addDepot(
 			depotDescription = "This is the description of a depot",
 			depotName = "Test Depot Name");
@@ -161,6 +125,13 @@ definition {
 			dmDocumentDescription = "DM Document Description",
 			dmDocumentTitle = "DM Document Title",
 			folderName = "DM Folder Name1",
+			groupName = "Test Depot Name",
+			mimeType = "application/msword",
+			sourceFileName = "Document_1.doc");
+
+		JSONDocument.addFileWithUploadedFile(
+			dmDocumentDescription = "DM Document Description",
+			dmDocumentTitle = "DM Document Title",
 			groupName = "Test Depot Name",
 			mimeType = "application/msword",
 			sourceFileName = "Document_1.doc");
@@ -185,6 +156,22 @@ definition {
 			depotName = "Test Depot Name",
 			folderName = "DM Folder Name1",
 			parentFolderName = "DM Folder Name2");
+
+		LexiconEntry.viewEntryName(rowEntry = "DM Document Title");
+
+		DepotNavigator.openDepotDocumentsAndMediaAdmin(depotName = "Test Depot Name");
+
+		DMDocument.copy(
+			dmDocumentTitle = "DM Document Title",
+			targetFolderName = "DM Folder Name2");
+
+		DepotNavigator.openDepotDocumentsAndMediaAdmin(depotName = "Test Depot Name");
+
+		LexiconEntry.viewEntryName(rowEntry = "DM Document Title");
+
+		DepotNavigator.openToDMFolder(
+			depotName = "Test Depot Name",
+			folderName = "DM Folder Name2");
 
 		LexiconEntry.viewEntryName(rowEntry = "DM Document Title");
 	}
@@ -292,9 +279,9 @@ definition {
 		DMFolder.viewCP(dmFolderName = "DM Folder Name Edit");
 	}
 
-	@description = "This test makes sure that the documents can be filtered by category."
-	@priority = 4
-	test CanFilterByCategory {
+	@description = "This test makes sure that the documents can be filtered by category, by extension and by tag."
+	@priority = 5
+	test CanFilterDocumentsByCategoryExtensionAndTag {
 		JSONDepot.addDepot(
 			depotDescription = "This is the description of a depot",
 			depotName = "Test Depot Name");
@@ -317,6 +304,7 @@ definition {
 
 		JSONDocument.addFileWithUploadedFile(
 			assetCategoryIds = "${categoryId1},${categoryId2}",
+			assetTagNames = "tag1,tag2",
 			dmDocumentTitle = "DM Document Title 1",
 			groupName = "Test Depot Name",
 			mimeType = "application/msword",
@@ -324,10 +312,11 @@ definition {
 
 		JSONDocument.addFileWithUploadedFile(
 			assetCategoryIds = ${categoryId2},
+			assetTagNames = "tag2",
 			dmDocumentTitle = "DM Document Title 2",
 			groupName = "Test Depot Name",
-			mimeType = "application/msword",
-			sourceFileName = "Document_2.doc");
+			mimeType = "image/jpeg",
+			sourceFileName = "Document_2.jpg");
 
 		DepotNavigator.openDepotDocumentsAndMediaAdmin(depotName = "Test Depot Name");
 
@@ -356,26 +345,6 @@ definition {
 		LexiconEntry.viewEntryName(rowEntry = "DM Document Title 1");
 
 		LexiconEntry.viewEntryName(rowEntry = "DM Document Title 2");
-	}
-
-	@description = "This test makes sure that the documents can be filtered by extension."
-	@priority = 5
-	test CanFilterByExtension {
-		JSONDepot.addDepot(
-			depotDescription = "This is the description of a depot",
-			depotName = "Test Depot Name");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentTitle = "DM Document Title 1",
-			groupName = "Test Depot Name",
-			mimeType = "application/msword",
-			sourceFileName = "Document_1.doc");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentTitle = "DM Document Title 2",
-			groupName = "Test Depot Name",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_2.jpg");
 
 		DepotNavigator.openDepotDocumentsAndMediaAdmin(depotName = "Test Depot Name");
 
@@ -402,28 +371,6 @@ definition {
 		LexiconEntry.viewNoEntry(rowEntry = "DM Document Title 1");
 
 		LexiconEntry.viewEntryName(rowEntry = "DM Document Title 2");
-	}
-
-	@description = "This test makes sure that the documents can be filtered by tag."
-	@priority = 5
-	test CanFilterByTag {
-		JSONDepot.addDepot(
-			depotDescription = "This is the description of a depot",
-			depotName = "Test Depot Name");
-
-		JSONDocument.addFileWithUploadedFile(
-			assetTagNames = "tag1,tag2",
-			dmDocumentTitle = "DM Document Title 1",
-			groupName = "Test Depot Name",
-			mimeType = "application/msword",
-			sourceFileName = "Document_1.doc");
-
-		JSONDocument.addFileWithUploadedFile(
-			assetTagNames = "tag2",
-			dmDocumentTitle = "DM Document Title 2",
-			groupName = "Test Depot Name",
-			mimeType = "application/msword",
-			sourceFileName = "Document_2.doc");
 
 		DepotNavigator.openDepotDocumentsAndMediaAdmin(depotName = "Test Depot Name");
 
@@ -518,9 +465,9 @@ definition {
 		DMDocument.viewCP(dmDocumentTitle = "DM Document Title");
 	}
 
-	@description = "This ensures that the friendly URL of a document created on a depot will be updated automatically if it duplicates the existing one on the depot."
+	@description = "This ensures that the friendly URL of a document created on a depot will be updated automatically if it duplicates the one of an existing document on the depot or of a document in the recycle bin of the depot."
 	@priority = 4
-	test FriendlyURLDuplicatingDepotDocIsAutomaticallyChanged {
+	test FriendlyURLDuplicatingDepotOrRecycleBinDocIsAutomaticallyChanged {
 		JSONDepot.addDepot(
 			depotDescription = "This is the description of a depot",
 			depotName = "Test Depot Name");
@@ -531,6 +478,18 @@ definition {
 			groupName = "Test Depot Name",
 			mimeType = "text/txt",
 			sourceFileName = "Document_1.txt");
+
+		JSONDocument.addFileWithUploadedFile(
+			dmDocumentDescription = "DM Document Description",
+			dmDocumentTitle = "Document_3",
+			groupName = "Test Depot Name",
+			mimeType = "application/excel",
+			sourceFileName = "Document_3.xls");
+
+		JSONDocument.moveToRecycleBin(
+			dmDocumentTitle = "Document_3",
+			groupName = "Test Depot Name",
+			site = "false");
 
 		DepotNavigator.openToAddDMEntry(depotName = "Test Depot Name");
 
@@ -547,42 +506,22 @@ definition {
 			dmDocumentTitle = "Document_2");
 
 		DMDocument.viewEntryInEdit(friendlyURL = "document_1-1");
-	}
-
-	@description = "This ensures that the friendly URL of a document created on a depot will be updated automatically if it duplicates the one in the recycle bin of the depot."
-	@priority = 3
-	test FriendlyURLDuplicatingDepotRecycleBinDocIsAutomaticallyChanged {
-		JSONDepot.addDepot(
-			depotDescription = "This is the description of a depot",
-			depotName = "Test Depot Name");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "Document_1",
-			groupName = "Test Depot Name",
-			mimeType = "application/excel",
-			sourceFileName = "Document_1.xls");
-
-		JSONDocument.moveToRecycleBin(
-			dmDocumentTitle = "Document_1",
-			groupName = "Test Depot Name",
-			site = "false");
 
 		DepotNavigator.openToAddDMEntry(depotName = "Test Depot Name");
 
 		DMDocument.editDocument(
-			dmDocumentFile = "Document_2.xls",
-			dmDocumentTitle = "Document_2");
+			dmDocumentFile = "Document_4.txt",
+			dmDocumentTitle = "Document_4");
 
-		DMDocument.editFriendlyURL(friendlyURLEdit = "document_1");
+		DMDocument.editFriendlyURL(friendlyURLEdit = "document_3");
 
-		Alert.viewWarningSpecific(warningMessage = "Warning:The friendly URL document_1 was changed to document_1-1 to ensure uniqueness.");
+		Alert.viewWarningSpecific(warningMessage = "Warning:The friendly URL document_3 was changed to document_3-1 to ensure uniqueness.");
 
 		DepotNavigator.openToEditDMEntryInDepot(
 			depotName = "Test Depot Name",
-			dmDocumentTitle = "Document_2");
+			dmDocumentTitle = "Document_4");
 
-		DMDocument.viewEntryInEdit(friendlyURL = "document_1-1");
+		DMDocument.viewEntryInEdit(friendlyURL = "document_3-1");
 	}
 
 }

@@ -17,6 +17,7 @@ import com.liferay.object.exception.ObjectEntryValuesException;
 import com.liferay.object.exception.ObjectValidationRuleEngineException;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectFieldSetting;
+import com.liferay.object.rest.manager.exception.ObjectEntryManagerHttpException;
 import com.liferay.object.service.ObjectFieldLocalServiceUtil;
 import com.liferay.object.service.ObjectFieldSettingLocalServiceUtil;
 import com.liferay.object.validation.rule.ObjectValidationRuleResult;
@@ -165,6 +166,10 @@ public class ObjectEntryInfoItemExceptionRequestHandler {
 			throw new InfoFormValidationException.InvalidExpirationDate(
 				infoFieldUniqueId,
 				objectEntryExpirationDateException.getMessageKey());
+		}
+
+		if (exception instanceof ObjectEntryManagerHttpException) {
+			throw new InfoFormException(exception.getMessage());
 		}
 
 		if (exception instanceof

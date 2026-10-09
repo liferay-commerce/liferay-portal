@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.TicketLocalService;
 import com.liferay.portal.kernel.service.UserGroupLocalService;
+import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -1443,7 +1444,8 @@ public class SharingEntryLocalServiceTest {
 			Collections.emptyList(), true, null, _serviceContext);
 	}
 
-	@Test(expected = SharingEntryExpirationDateException.class)
+	@Test
+	@TestInfo("LPD-102180")
 	public void testUpdateSharingEntryWithExpirationDateInThePast()
 		throws Exception {
 
@@ -1454,12 +1456,64 @@ public class SharingEntryLocalServiceTest {
 
 		Instant instant = Instant.now();
 
-		Date expirationDate = Date.from(instant.minus(2, ChronoUnit.DAYS));
+		Date pastExpirationDate = Date.from(instant.minus(2, ChronoUnit.DAYS));
 
-		_sharingEntryLocalService.updateSharingEntry(
-			_fromUser.getUserId(), sharingEntry.getSharingEntryId(),
-			Arrays.asList(SharingEntryAction.VIEW), true, expirationDate,
-			_serviceContext);
+		AssertUtils.assertFailure(
+			SharingEntryExpirationDateException.class,
+			"Expiration date is in the past",
+			() -> _sharingEntryLocalService.updateSharingEntry(
+				_fromUser.getUserId(), sharingEntry.getSharingEntryId(),
+				Arrays.asList(SharingEntryAction.VIEW), true,
+				pastExpirationDate, _serviceContext));
+
+		_expireSharingEntry(sharingEntry);
+
+		AssertUtils.assertFailure(
+			SharingEntryExpirationDateException.class,
+			"Expiration date is in the past",
+			() -> _sharingEntryLocalService.updateSharingEntry(
+				_fromUser.getUserId(), sharingEntry.getSharingEntryId(),
+				Arrays.asList(
+					SharingEntryAction.VIEW, SharingEntryAction.UPDATE),
+				true, sharingEntry.getExpirationDate(), _serviceContext));
+
+		Date currentExpirationDate = sharingEntry.getExpirationDate();
+
+		Instant expiredInstant = currentExpirationDate.toInstant();
+
+		Date fullSecondExpirationDate = Date.from(
+			expiredInstant.plusMillis(1000));
+
+		AssertUtils.assertFailure(
+			SharingEntryExpirationDateException.class,
+			"Expiration date is in the past",
+			() -> _sharingEntryLocalService.updateSharingEntry(
+				_fromUser.getUserId(), sharingEntry.getSharingEntryId(),
+				Arrays.asList(SharingEntryAction.VIEW), true,
+				fullSecondExpirationDate, _serviceContext));
+
+		Date millisecondExpirationDate = Date.from(
+			expiredInstant.plusMillis(500));
+
+		SharingEntry millisecondUpdatedSharingEntry =
+			_sharingEntryLocalService.updateSharingEntry(
+				_fromUser.getUserId(), sharingEntry.getSharingEntryId(),
+				Arrays.asList(SharingEntryAction.VIEW), true,
+				millisecondExpirationDate, _serviceContext);
+
+		Assert.assertEquals(
+			millisecondExpirationDate,
+			millisecondUpdatedSharingEntry.getExpirationDate());
+
+		SharingEntry noChangesUpdatedSharingEntry =
+			_sharingEntryLocalService.updateSharingEntry(
+				_fromUser.getUserId(), sharingEntry.getSharingEntryId(),
+				Arrays.asList(SharingEntryAction.VIEW), true,
+				millisecondExpirationDate, _serviceContext);
+
+		Assert.assertEquals(
+			millisecondExpirationDate,
+			noChangesUpdatedSharingEntry.getExpirationDate());
 	}
 
 	@Test(expected = SharingEntryActionIdsException.class)

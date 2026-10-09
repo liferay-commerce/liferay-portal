@@ -129,6 +129,22 @@ public class PIMConnectorFieldMappingsDisplayContextTest {
 		);
 
 		Mockito.when(
+			language.get(_httpServletRequest, "execute")
+		).thenReturn(
+			"execute"
+		);
+
+		Mockito.when(
+			language.get(
+				_httpServletRequest,
+				"execution-has-started-successfully-and-will-continue-in-the-" +
+					"background")
+		).thenReturn(
+			"Execution has started successfully and will continue in the " +
+				"background."
+		);
+
+		Mockito.when(
 			language.get(_httpServletRequest, "field-mappings")
 		).thenReturn(
 			"Field Mappings"
@@ -138,6 +154,12 @@ public class PIMConnectorFieldMappingsDisplayContextTest {
 			language.get(_httpServletRequest, "no-fields-were-found")
 		).thenReturn(
 			"No fields were found."
+		);
+
+		Mockito.when(
+			language.get(_httpServletRequest, "schedule")
+		).thenReturn(
+			"schedule"
 		);
 
 		Mockito.when(
@@ -189,7 +211,7 @@ public class PIMConnectorFieldMappingsDisplayContextTest {
 
 		jsonArray = (JSONArray)breadcrumbProps.get("actionItems");
 
-		Assert.assertEquals(jsonArray.toString(), 2, jsonArray.length());
+		Assert.assertEquals(jsonArray.toString(), 3, jsonArray.length());
 
 		jsonObject = jsonArray.getJSONObject(0);
 
@@ -200,8 +222,20 @@ public class PIMConnectorFieldMappingsDisplayContextTest {
 				_OBJECT_ENTRY_ID),
 			jsonObject.getString("href"));
 		Assert.assertEquals("edit", jsonObject.getString("label"));
+		Assert.assertEquals("pencil", jsonObject.getString("symbolLeft"));
 
 		jsonObject = jsonArray.getJSONObject(1);
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				"/o/pim/connector/schedule?backURL=",
+				URLCodec.encodeURL(_URL_CURRENT), "&objectEntryId=",
+				_OBJECT_ENTRY_ID),
+			jsonObject.getString("href"));
+		Assert.assertEquals("schedule", jsonObject.getString("label"));
+		Assert.assertEquals("date-time", jsonObject.getString("symbolLeft"));
+
+		jsonObject = jsonArray.getJSONObject(2);
 
 		Assert.assertEquals("text-danger", jsonObject.getString("className"));
 		Assert.assertEquals(
@@ -216,6 +250,7 @@ public class PIMConnectorFieldMappingsDisplayContextTest {
 		Assert.assertEquals("delete", jsonObject.getString("label"));
 		Assert.assertEquals(
 			"/web/cms/connectors", jsonObject.getString("redirect"));
+		Assert.assertEquals("trash", jsonObject.getString("symbolLeft"));
 		Assert.assertEquals("asyncDelete", jsonObject.getString("target"));
 
 		jsonArray = (JSONArray)breadcrumbProps.get("breadcrumbItems");
@@ -237,6 +272,34 @@ public class PIMConnectorFieldMappingsDisplayContextTest {
 
 		Assert.assertEquals(Boolean.TRUE, breadcrumbProps.get("hideSpace"));
 		Assert.assertEquals("lg", breadcrumbProps.get("size"));
+
+		pimConnectorFieldMappingsDisplayContext =
+			_createPIMConnectorFieldMappingsDisplayContext(
+				HashMapBuilder.<String, Serializable>put(
+					"active", true
+				).put(
+					"name", name
+				).build());
+
+		breadcrumbProps =
+			pimConnectorFieldMappingsDisplayContext.getBreadcrumbProps();
+
+		jsonArray = (JSONArray)breadcrumbProps.get("actionItems");
+
+		Assert.assertEquals(jsonArray.toString(), 4, jsonArray.length());
+
+		jsonObject = jsonArray.getJSONObject(1);
+
+		Assert.assertEquals(
+			"/o/pim/connector/execute?objectEntryId=" + _OBJECT_ENTRY_ID,
+			jsonObject.getString("href"));
+		Assert.assertEquals("execute", jsonObject.getString("label"));
+		Assert.assertEquals(
+			"Execution has started successfully and will continue in the " +
+				"background.",
+			jsonObject.getString("successMessage"));
+		Assert.assertEquals("play", jsonObject.getString("symbolLeft"));
+		Assert.assertEquals("asyncPost", jsonObject.getString("target"));
 	}
 
 	@Test

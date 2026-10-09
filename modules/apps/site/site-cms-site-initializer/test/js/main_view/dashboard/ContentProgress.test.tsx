@@ -9,6 +9,7 @@ import {serializeFDSConfig} from '@liferay/frontend-data-set-web';
 // eslint-disable-next-line @liferay/portal/no-cross-module-deep-import
 import {checkAccessibility} from '@liferay/layout-js-components-web/test/__lib__/index';
 import {render, screen} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import {
@@ -18,6 +19,12 @@ import {
 import {GovernanceContext} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/governance/GovernanceContext';
 import GovernanceService from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/governance/GovernanceService';
 import {ContentProgress} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/governance/components/ContentProgress';
+
+jest.mock('frontend-js-web', () => ({
+	...(jest.requireActual('frontend-js-web') as object),
+	sub: (key: string, ...values: unknown[]) =>
+		[key, ...values.flat()].join(' '),
+}));
 
 jest.mock('@liferay/frontend-data-set-web', () => ({
 	getConfigParamName: (fdsName: string) => `${fdsName}_fdsConfig`,
@@ -98,6 +105,18 @@ describe('ContentProgress', () => {
 		expect(
 			segments.map((segment) => segment.getAttribute('aria-label'))
 		).toEqual(['draft: 3', 'approved: 5']);
+	});
+
+	it('shows the share of each status in the legend', async () => {
+		mockContentProgress(BUCKETS);
+
+		renderContentProgress();
+
+		await screen.findAllByRole('link');
+
+		['20.0%', '13.3%', '33.3%', '26.7%', '6.7%'].forEach((share) => {
+			expect(screen.getByText(share)).toBeInTheDocument();
+		});
 	});
 
 	it('links each status segment to the All section filtered by that status', async () => {
@@ -242,7 +261,29 @@ describe('ContentProgress', () => {
 
 		expect(GovernanceService.getContentProgress).toHaveBeenCalledWith(
 			'contentProgressFilter',
-			123
+			123,
+			7
+		);
+	});
+
+	it('requests the content again for the selected time range', async () => {
+		mockContentProgress(BUCKETS);
+
+		renderContentProgress();
+
+		await screen.findAllByRole('link');
+
+		await userEvent.click(
+			screen.getByRole('combobox', {name: 'time-range'})
+		);
+		await userEvent.click(
+			screen.getByRole('option', {name: 'last-x-days 90'})
+		);
+
+		expect(GovernanceService.getContentProgress).toHaveBeenLastCalledWith(
+			'contentProgressFilter',
+			undefined,
+			90
 		);
 	});
 

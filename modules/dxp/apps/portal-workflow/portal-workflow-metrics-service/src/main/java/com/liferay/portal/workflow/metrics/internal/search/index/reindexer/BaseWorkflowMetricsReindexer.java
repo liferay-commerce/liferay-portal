@@ -13,6 +13,7 @@ import com.liferay.portal.search.engine.adapter.SearchEngineAdapter;
 import com.liferay.portal.search.index.IndexNameBuilder;
 import com.liferay.portal.search.index.SyncReindexManager;
 import com.liferay.portal.search.spi.reindexer.IndexReindexer;
+import com.liferay.portal.workflow.metrics.internal.petra.executor.WorkflowMetricsPortalExecutor;
 import com.liferay.portal.workflow.metrics.internal.search.index.WorkflowMetricsIndex;
 import com.liferay.portal.workflow.metrics.search.index.reindexer.WorkflowMetricsReindexer;
 
@@ -65,6 +66,8 @@ public abstract class BaseWorkflowMetricsReindexer
 			Thread.sleep(1000);
 		}
 		else {
+			workflowMetricsPortalExecutor.await();
+
 			workflowMetricsIndex.removeIndex(
 				searchCapabilities, searchEngineAdapter, indexNameBuilder,
 				companyId);
@@ -115,6 +118,9 @@ public abstract class BaseWorkflowMetricsReindexer
 
 	@Reference
 	protected SearchEngineAdapter searchEngineAdapter;
+
+	@Reference
+	protected WorkflowMetricsPortalExecutor workflowMetricsPortalExecutor;
 
 	private static final Snapshot<SyncReindexManager>
 		_syncReindexManagerSnapshot = new Snapshot<>(

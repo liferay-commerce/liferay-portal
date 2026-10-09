@@ -6,6 +6,7 @@
 import {Locator, Page, expect} from '@playwright/test';
 
 import {PORTLET_URLS} from '../../../../utils/portletUrls';
+import {waitForAlert} from '../../../../utils/waitForAlert';
 import {DataSetPage} from '../../../site-cms-site-initializer/main/pages/DataSetPage';
 import {EditConnectorPage} from './EditConnectorPage';
 
@@ -47,9 +48,11 @@ export class ConnectorsPage {
 	}
 
 	async createConnector({
+		active = false,
 		connector,
 		name,
 	}: {
+		active?: boolean;
 		connector: string;
 		name: string;
 	}) {
@@ -59,7 +62,7 @@ export class ConnectorsPage {
 
 		const editConnectorPage = new EditConnectorPage(this.page);
 
-		await editConnectorPage.createConnector({connector, name});
+		await editConnectorPage.createConnector({active, connector, name});
 
 		await expect(this.getConnector(name)).toBeVisible();
 	}
@@ -78,12 +81,33 @@ export class ConnectorsPage {
 		}
 	}
 
+	async executeConnector(name: string) {
+		await this.dataSetFragmentPage.execItemAction({
+			action: 'Execute',
+			filter: name,
+		});
+
+		await waitForAlert(
+			this.page,
+			'Execution has started successfully and will continue in the background.'
+		);
+	}
+
 	getConnector(name: string) {
 		return this.dataSetFragmentPage.getRow(name).getByRole('link', {name});
 	}
 
 	getConnectorStatus(name: string) {
 		return this.dataSetFragmentPage.getRow(name).locator('.label');
+	}
+
+	async openConnectorSchedule(name: string) {
+		await this.dataSetFragmentPage.execItemAction({
+			action: 'Schedule',
+			filter: name,
+		});
+
+		await this.page.waitForURL(/edit_dispatch_trigger/);
 	}
 
 	async openDeleteConfirmation(name: string) {

@@ -485,215 +485,9 @@ definition {
 			value1 = "Documents and Media");
 	}
 
-	@description = "This ensures that assets stored in the asset library folder can be deleted by a user with permissions Via DM widget on a connected site."
+	@description = "This ensures that assets stored in the asset library folder can be edited and deleted by a user with permissions Via DM widget on a connected site."
 	@priority = 4
-	test CanDeleteFileInDMWidget {
-		property custom.properties = "jsonws.web.service.paths.excludes=";
-
-		JSONUser.addUser(
-			userEmailAddress = "userea@liferay.com",
-			userFirstName = "userfn",
-			userLastName = "userln",
-			userScreenName = "usersn");
-
-		JSONUser.setFirstPassword(
-			agreeToTermsAndAnswerReminderQuery = "true",
-			requireReset = "false",
-			userEmailAddress = "userea@liferay.com");
-
-		JSONRole.addRegularRole(
-			roleKey = "Regular Role",
-			roleTitle = "Regular Role");
-
-		Permissions.definePermissionViaJSONAPI(
-			resourceAction = "VIEW",
-			resourceName = "com.liferay.document.library.kernel.model.DLFileEntry",
-			roleTitle = "Regular Role");
-
-		Permissions.definePermissionViaJSONAPI(
-			resourceAction = "DELETE",
-			resourceName = "com.liferay.document.library.kernel.model.DLFileEntry",
-			roleTitle = "Regular Role");
-
-		JSONRole.assignRoleToUser(
-			roleTitle = "Regular Role",
-			userEmailAddress = "userea@liferay.com");
-
-		HeadlessSite.addSite(siteName = "Site Name");
-
-		JSONDepot.connectSite(
-			depotName = "Test Depot Name",
-			groupName = "Site Name");
-
-		JSONLayout.addPublicLayout(
-			groupName = "Site Name",
-			layoutName = "Documents and Media Page");
-
-		JSONLayout.addWidgetToPublicLayout(
-			column = 1,
-			groupName = "Site Name",
-			layoutName = "Documents and Media Page",
-			widgetName = "Documents and Media");
-
-		JSONFolder.addFolder(
-			dmFolderDescription = "DM Folder Description",
-			dmFolderName = "Depot Folder Name",
-			groupName = "Test Depot Name");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			folderName = "Depot Folder Name",
-			groupName = "Test Depot Name",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_1.jpg");
-
-		Navigator.openSitePage(
-			pageName = "Documents and Media Page",
-			siteName = "Site Name");
-
-		DMDocument.enableActionsMenuOnPortlet();
-
-		Navigator.openSitePage(
-			pageName = "Documents and Media Page",
-			siteName = "Site Name");
-
-		DMDocument.setRootFolder(
-			depotName = "Test Depot Name",
-			dmRootFolderName = "Depot Folder Name");
-
-		User.logoutAndLoginPG(
-			userLoginEmailAddress = "userea@liferay.com",
-			userLoginFullName = "userfn userln");
-
-		Navigator.openSitePage(
-			pageName = "Documents and Media Page",
-			siteName = "Site Name");
-
-		DMDocument.deletePG(dmDocumentTitle = "DM Document Title");
-
-		User.logoutAndLoginPG(
-			userLoginEmailAddress = "test@liferay.com",
-			userLoginFullName = "Test Test");
-
-		DepotNavigator.openToDMFolder(
-			depotName = "Test Depot Name",
-			folderName = "Depot Folder Name");
-
-		DMDocument.viewDefault();
-	}
-
-	@description = "This ensures that an image stored in asset library folder can be deleted by a user with permissions via MG on a connected site."
-	@priority = 4
-	test CanDeleteImageInMG {
-		property custom.properties = "jsonws.web.service.paths.excludes=";
-
-		var portalURL = PropsUtil.get("portal.url");
-
-		JSONUser.addUser(
-			userEmailAddress = "userea@liferay.com",
-			userFirstName = "userfn",
-			userLastName = "userln",
-			userScreenName = "usersn");
-
-		JSONUser.setFirstPassword(
-			agreeToTermsAndAnswerReminderQuery = "true",
-			requireReset = "false",
-			userEmailAddress = "userea@liferay.com");
-
-		JSONRole.addRegularRole(
-			roleKey = "Remove MG Role",
-			roleTitle = "Remove MG Role");
-
-		Permissions.definePermissionViaJSONAPI(
-			resourceAction = "VIEW",
-			resourceName = "com.liferay.document.library.kernel.model.DLFileEntry",
-			roleTitle = "Remove MG Role");
-
-		Permissions.definePermissionViaJSONAPI(
-			resourceAction = "DELETE",
-			resourceName = "com.liferay.document.library.kernel.model.DLFileEntry",
-			roleTitle = "Remove MG Role");
-
-		JSONRole.assignRoleToUser(
-			roleTitle = "Remove MG Role",
-			userEmailAddress = "userea@liferay.com");
-
-		HeadlessSite.addSite(siteName = "Site Name");
-
-		JSONLayout.addPublicLayout(
-			groupName = "Site Name",
-			layoutName = "Media Gallery Page");
-
-		JSONLayout.addWidgetToPublicLayout(
-			column = 1,
-			groupName = "Site Name",
-			layoutName = "Media Gallery Page",
-			widgetName = "Media Gallery");
-
-		JSONFolder.addFolder(
-			dmFolderDescription = "DM Folder Description",
-			dmFolderName = "DM Folder Name",
-			groupName = "Test Depot Name");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Image Description",
-			dmDocumentTitle = "Document_2.jpg",
-			folderName = "DM Folder Name",
-			groupName = "Test Depot Name",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_2.jpg");
-
-		DepotNavigator.openToDMFolder(
-			depotName = "Test Depot Name",
-			folderName = "DM Folder Name");
-
-		DMNavigator.gotoDocumentPermissionsCP(dmDocumentTitle = "Document_2.jpg");
-
-		PermissionsInline.addOrRemoveViewPermissionFromAllRoles(
-			addOrRemoveViewPermission = "Remove",
-			roleList = "Guest,User");
-
-		JSONDepot.connectSite(
-			depotName = "Test Depot Name",
-			groupName = "Site Name");
-
-		Navigator.openSitePage(
-			pageName = "Media Gallery Page",
-			siteName = "Site Name");
-
-		MGPortlet.configureShowAllPG();
-
-		Navigator.openSitePage(
-			pageName = "Media Gallery Page",
-			siteName = "Site Name");
-
-		MGPortlet.setRootFolder(
-			depotName = "Test Depot Name",
-			dmRootFolderName = "DM Folder Name");
-
-		User.logoutAndLoginPG(
-			userLoginEmailAddress = "userea@liferay.com",
-			userLoginFullName = "userfn userln");
-
-		Navigator.openSpecificURL(url = "${portalURL}/web/site-name/media-gallery-page");
-
-		DMDocument.deletePGViaMG(mgDocumentTitle = "Document_2.jpg");
-
-		User.logoutAndLoginPG(
-			userLoginEmailAddress = "test@liferay.com",
-			userLoginFullName = "Test Test");
-
-		DepotNavigator.openToDMFolder(
-			depotName = "Test Depot Name",
-			folderName = "DM Folder Name");
-
-		DMDocument.viewDefault();
-	}
-
-	@description = "This ensures that assets stored in the asset library folder can be edited by a user with permissions Via DM widget on a connected site."
-	@priority = 4
-	test CanEditFileInDMWidget {
+	test CanEditAndDeleteFileInDMWidget {
 		property custom.properties = "jsonws.web.service.paths.excludes=";
 
 		JSONUser.addUser(
@@ -718,6 +512,11 @@ definition {
 
 		Permissions.definePermissionViaJSONAPI(
 			resourceAction = "UPDATE",
+			resourceName = "com.liferay.document.library.kernel.model.DLFileEntry",
+			roleTitle = "Regular Role");
+
+		Permissions.definePermissionViaJSONAPI(
+			resourceAction = "DELETE",
 			resourceName = "com.liferay.document.library.kernel.model.DLFileEntry",
 			roleTitle = "Regular Role");
 
@@ -791,11 +590,31 @@ definition {
 		DMNavigator.gotoDocumentCP(dmDocumentTitle = "DM Document Title Edit");
 
 		DMDocument.viewCP(dmDocumentTitle = "DM Document Title Edit");
+
+		User.logoutAndLoginPG(
+			userLoginEmailAddress = "userea@liferay.com",
+			userLoginFullName = "userfn userln");
+
+		Navigator.openSitePage(
+			pageName = "Documents and Media Page",
+			siteName = "Site Name");
+
+		DMDocument.deletePG(dmDocumentTitle = "DM Document Title Edit");
+
+		User.logoutAndLoginPG(
+			userLoginEmailAddress = "test@liferay.com",
+			userLoginFullName = "Test Test");
+
+		DepotNavigator.openToDMFolder(
+			depotName = "Test Depot Name",
+			folderName = "Depot Folder Name");
+
+		DMDocument.viewDefault();
 	}
 
-	@description = "This ensures that an image stored in asset library folder can be edited by a user with permissions via MG on a connected site."
+	@description = "This ensures that an image stored in asset library folder can be edited and deleted by a user with permissions via MG on a connected site."
 	@priority = 4
-	test CanEditImageInMG {
+	test CanEditAndDeleteImageInMG {
 		property custom.properties = "jsonws.web.service.paths.excludes=";
 
 		var portalURL = PropsUtil.get("portal.url");
@@ -822,6 +641,11 @@ definition {
 
 		Permissions.definePermissionViaJSONAPI(
 			resourceAction = "UPDATE",
+			resourceName = "com.liferay.document.library.kernel.model.DLFileEntry",
+			roleTitle = "Update MG Role");
+
+		Permissions.definePermissionViaJSONAPI(
+			resourceAction = "DELETE",
 			resourceName = "com.liferay.document.library.kernel.model.DLFileEntry",
 			roleTitle = "Update MG Role");
 
@@ -905,6 +729,24 @@ definition {
 		DMNavigator.gotoDocumentCP(dmDocumentTitle = "DM Image Title Edit");
 
 		DMDocument.viewCP(dmDocumentTitle = "DM Image Title Edit");
+
+		User.logoutAndLoginPG(
+			userLoginEmailAddress = "userea@liferay.com",
+			userLoginFullName = "userfn userln");
+
+		Navigator.openSpecificURL(url = "${portalURL}/web/site-name/media-gallery-page");
+
+		DMDocument.deletePGViaMG(mgDocumentTitle = "DM Image Title Edit");
+
+		User.logoutAndLoginPG(
+			userLoginEmailAddress = "test@liferay.com",
+			userLoginFullName = "Test Test");
+
+		DepotNavigator.openToDMFolder(
+			depotName = "Test Depot Name",
+			folderName = "DM Folder Name");
+
+		DMDocument.viewDefault();
 	}
 
 	@description = "This test covers LPS-120011. This ensures that no asset libraries be returned when a user without view permission searches the asset library."
@@ -1219,154 +1061,175 @@ definition {
 		}
 	}
 
-	@description = "This ensures that able to select and deselect specific asset libraries scope from Collections permissions."
-	@priority = 3
+	@description = "This ensures that a specific asset library scope can be selected and deselected from DM, Collections and WC permissions, and that an unsupported application like Blogs cannot select an asset library as the scope of the permission."
+	@priority = 4
 	@refactordone
-	test CanSelectAndDeselectScopeFromCollectionsPermissions {
+	test CanSelectDepotScopeOnlyFromSupportedApplicationPermissions {
 		JSONRole.addRegularRole(roleKey = "Depot Regrole Name");
 
-		Permissions.definePermissionViaJSONAPI(
-			resourceAction = "DELETE",
-			resourceName = "com.liferay.asset.list.model.AssetListEntry",
-			roleTitle = "Depot Regrole Name");
+		task ("Select and deselect the depot scope from Documents and Media permissions") {
+			Permissions.definePermissionViaJSONAPI(
+				resourceAction = "ADD_DOCUMENT",
+				resourceName = "com.liferay.document.library",
+				roleTitle = "Depot Regrole Name");
 
-		Role.openRolesAdmin();
+			Role.openRolesAdmin();
 
-		RoleNavigator.gotoRoleType();
+			RoleNavigator.gotoRoleType();
 
-		LexiconEntry.gotoEntry(rowEntry = "Depot Regrole Name");
+			LexiconEntry.gotoEntry(rowEntry = "Depot Regrole Name");
 
-		Role.editPermissionCP(
-			assetLibrariesScope = "true",
-			define = "true",
-			permissionNavHeader = "Site Builder",
-			permissionNavItem = "Collections",
-			permissionSheetSubtitle = "Asset List Entry",
-			permissionValues = "Delete",
-			siteNameScope = "Test Depot Name");
+			Role.editPermissionCP(
+				assetLibrariesScope = "true",
+				define = "true",
+				permissionNavHeader = "Content & Data",
+				permissionNavItem = "Documents and Media",
+				permissionSheetSubtitle = "Documents",
+				permissionValues = "Add Document",
+				siteNameScope = "Test Depot Name");
 
-		Role.viewPermissionCP(
-			permissionDefinitionValue = "Delete",
-			permissionNavigationValue = "Collections > Asset List Entry",
-			siteNameScope = "Test Depot Name");
+			Role.viewPermissionCP(
+				permissionDefinitionValue = "Add Document",
+				permissionNavigationValue = "Documents and Media > Documents",
+				siteNameScope = "Test Depot Name");
 
-		Role.openRolesAdmin();
+			Role.openRolesAdmin();
 
-		RoleNavigator.gotoRoleType();
+			RoleNavigator.gotoRoleType();
 
-		LexiconEntry.gotoEntry(rowEntry = "Depot Regrole Name");
+			LexiconEntry.gotoEntry(rowEntry = "Depot Regrole Name");
 
-		Role.editPermissionCP(
-			permissionNavHeader = "Site Builder",
-			permissionNavItem = "Collections",
-			permissionSheetSubtitle = "Asset List Entry",
-			permissionValues = "Delete",
-			removeSiteScope = "Test Depot Name");
+			Role.editPermissionCP(
+				permissionNavHeader = "Content & Data",
+				permissionNavItem = "Documents and Media",
+				permissionSheetSubtitle = "Documents",
+				permissionValues = "Add Document",
+				removeSiteScope = "Test Depot Name");
 
-		Role.viewPermissionCP(
-			permissionDefinitionValue = "Delete",
-			permissionNavigationValue = "Collections > Asset List Entry",
-			siteNameScope = "All Sites and Asset Libraries");
-	}
+			Role.viewPermissionCP(
+				permissionDefinitionValue = "Add Document",
+				permissionNavigationValue = "Documents and Media > Documents",
+				siteNameScope = "All Sites and Asset Libraries");
+		}
 
-	@description = "This ensures that able to select and deselect specific asset libraries scope from DM permissions."
-	@priority = 3
-	@refactordone
-	test CanSelectAndDeselectScopeFromDMPermissions {
-		JSONRole.addRegularRole(roleKey = "Depot Regrole Name");
+		task ("Select and deselect the depot scope from Collections permissions") {
+			Permissions.definePermissionViaJSONAPI(
+				resourceAction = "DELETE",
+				resourceName = "com.liferay.asset.list.model.AssetListEntry",
+				roleTitle = "Depot Regrole Name");
 
-		Permissions.definePermissionViaJSONAPI(
-			resourceAction = "ADD_DOCUMENT",
-			resourceName = "com.liferay.document.library",
-			roleTitle = "Depot Regrole Name");
+			Role.openRolesAdmin();
 
-		Role.openRolesAdmin();
+			RoleNavigator.gotoRoleType();
 
-		RoleNavigator.gotoRoleType();
+			LexiconEntry.gotoEntry(rowEntry = "Depot Regrole Name");
 
-		LexiconEntry.gotoEntry(rowEntry = "Depot Regrole Name");
+			Role.editPermissionCP(
+				assetLibrariesScope = "true",
+				define = "true",
+				permissionNavHeader = "Site Builder",
+				permissionNavItem = "Collections",
+				permissionSheetSubtitle = "Asset List Entry",
+				permissionValues = "Delete",
+				siteNameScope = "Test Depot Name");
 
-		Role.editPermissionCP(
-			assetLibrariesScope = "true",
-			define = "true",
-			permissionNavHeader = "Content & Data",
-			permissionNavItem = "Documents and Media",
-			permissionSheetSubtitle = "Documents",
-			permissionValues = "Add Document",
-			siteNameScope = "Test Depot Name");
+			Role.viewPermissionCP(
+				permissionDefinitionValue = "Delete",
+				permissionNavigationValue = "Collections > Asset List Entry",
+				siteNameScope = "Test Depot Name");
 
-		Role.viewPermissionCP(
-			permissionDefinitionValue = "Add Document",
-			permissionNavigationValue = "Documents and Media > Documents",
-			siteNameScope = "Test Depot Name");
+			Role.openRolesAdmin();
 
-		Role.openRolesAdmin();
+			RoleNavigator.gotoRoleType();
 
-		RoleNavigator.gotoRoleType();
+			LexiconEntry.gotoEntry(rowEntry = "Depot Regrole Name");
 
-		LexiconEntry.gotoEntry(rowEntry = "Depot Regrole Name");
+			Role.editPermissionCP(
+				permissionNavHeader = "Site Builder",
+				permissionNavItem = "Collections",
+				permissionSheetSubtitle = "Asset List Entry",
+				permissionValues = "Delete",
+				removeSiteScope = "Test Depot Name");
 
-		Role.editPermissionCP(
-			permissionNavHeader = "Content & Data",
-			permissionNavItem = "Documents and Media",
-			permissionSheetSubtitle = "Documents",
-			permissionValues = "Add Document",
-			removeSiteScope = "Test Depot Name");
+			Role.viewPermissionCP(
+				permissionDefinitionValue = "Delete",
+				permissionNavigationValue = "Collections > Asset List Entry",
+				siteNameScope = "All Sites and Asset Libraries");
+		}
 
-		Role.viewPermissionCP(
-			permissionDefinitionValue = "Add Document",
-			permissionNavigationValue = "Documents and Media > Documents",
-			siteNameScope = "All Sites and Asset Libraries");
-	}
+		task ("Select and deselect the depot scope from Web Content permissions") {
+			Permissions.definePermissionViaJSONAPI(
+				resourceAction = "VIEW",
+				resourceName = "com_liferay_journal_web_portlet_JournalPortlet",
+				roleTitle = "Depot Regrole Name");
 
-	@description = "This ensures that able to select and deselect specific asset libraries scope from WC permissions."
-	@priority = 3
-	@refactordone
-	test CanSelectAndDeselectScopeFromWCPermissions {
-		JSONRole.addRegularRole(roleKey = "Depot Regrole Name");
+			Role.openRolesAdmin();
 
-		Permissions.definePermissionViaJSONAPI(
-			resourceAction = "VIEW",
-			resourceName = "com_liferay_journal_web_portlet_JournalPortlet",
-			roleTitle = "Depot Regrole Name");
+			RoleNavigator.gotoRoleType();
 
-		Role.openRolesAdmin();
+			LexiconEntry.gotoEntry(rowEntry = "Depot Regrole Name");
 
-		RoleNavigator.gotoRoleType();
+			Role.editPermissionCP(
+				assetLibrariesScope = "true",
+				define = "true",
+				permissionNavHeader = "Content & Data",
+				permissionNavItem = "Web Content",
+				permissionSheetSubtitle = "General Permissions",
+				permissionValues = "View",
+				siteNameScope = "Test Depot Name");
 
-		LexiconEntry.gotoEntry(rowEntry = "Depot Regrole Name");
+			Role.viewPermissionCP(
+				permissionDefinitionValue = "View",
+				permissionNavigationValue = "Web Content",
+				siteNameScope = "Test Depot Name");
 
-		Role.editPermissionCP(
-			assetLibrariesScope = "true",
-			define = "true",
-			permissionNavHeader = "Content & Data",
-			permissionNavItem = "Web Content",
-			permissionSheetSubtitle = "General Permissions",
-			permissionValues = "View",
-			siteNameScope = "Test Depot Name");
+			Role.openRolesAdmin();
 
-		Role.viewPermissionCP(
-			permissionDefinitionValue = "View",
-			permissionNavigationValue = "Web Content",
-			siteNameScope = "Test Depot Name");
+			RoleNavigator.gotoRoleType();
 
-		Role.openRolesAdmin();
+			LexiconEntry.gotoEntry(rowEntry = "Depot Regrole Name");
 
-		RoleNavigator.gotoRoleType();
+			Role.editPermissionCP(
+				permissionNavHeader = "Content & Data",
+				permissionNavItem = "Web Content",
+				permissionSheetSubtitle = "General Permissions",
+				permissionValues = "View",
+				removeSiteScope = "Test Depot Name");
 
-		LexiconEntry.gotoEntry(rowEntry = "Depot Regrole Name");
+			Role.viewPermissionCP(
+				permissionDefinitionValue = "View",
+				permissionNavigationValue = "Web Content",
+				siteNameScope = "All Sites and Asset Libraries");
+		}
 
-		Role.editPermissionCP(
-			permissionNavHeader = "Content & Data",
-			permissionNavItem = "Web Content",
-			permissionSheetSubtitle = "General Permissions",
-			permissionValues = "View",
-			removeSiteScope = "Test Depot Name");
+		task ("View that the depot scope cannot be selected from Blogs permissions") {
+			Role.openRolesAdmin();
 
-		Role.viewPermissionCP(
-			permissionDefinitionValue = "View",
-			permissionNavigationValue = "Web Content",
-			siteNameScope = "All Sites and Asset Libraries");
+			RoleNavigator.gotoDefineRolePermissions(
+				permissionNavHeader = "Content & Data",
+				permissionNavItem = "Blogs",
+				roleTitle = "Depot Regrole Name");
+
+			AssertClick(
+				key_permissionSheetSubtitle = "Blogs Entry",
+				key_permissionValue = "View",
+				locator1 = "RolesPermissions#PERMISSION_CHANGE_SCOPE",
+				value1 = "Change");
+
+			SelectFrame(locator1 = "RolesPermissionsSelectSite#SELECT_SITE_IFRAME");
+
+			AssertVisible(
+				locator1 = "NavBar#RECENT",
+				value1 = "Recent");
+
+			AssertVisible(
+				locator1 = "NavBar#MY_SITES",
+				value1 = "My Sites");
+
+			AssertElementNotPresent(
+				locator1 = "NavBar#ASSET_LIBRARIES",
+				value1 = "Asset Libraries");
+		}
 	}
 
 	@description = "This test covers LPS-119994. It ensures that the user with access application permission can view the depot dashboard."
@@ -1573,40 +1436,6 @@ definition {
 			dmDocumentTitle = "Depot DM Document Title");
 
 		DMDocument.viewCP(dmDocumentTitle = "Depot DM Document Title");
-	}
-
-	@description = "This ensures that the unsupported application can not select a depot as the scope of the permission."
-	@priority = 4
-	@refactordone
-	test CanViewScopeFromUnsupportedApplicationPermissions {
-		JSONRole.addRegularRole(roleKey = "Depot Regrole Name");
-
-		Role.openRolesAdmin();
-
-		RoleNavigator.gotoDefineRolePermissions(
-			permissionNavHeader = "Content & Data",
-			permissionNavItem = "Blogs",
-			roleTitle = "Depot Regrole Name");
-
-		AssertClick(
-			key_permissionSheetSubtitle = "Blogs Entry",
-			key_permissionValue = "View",
-			locator1 = "RolesPermissions#PERMISSION_CHANGE_SCOPE",
-			value1 = "Change");
-
-		SelectFrame(locator1 = "RolesPermissionsSelectSite#SELECT_SITE_IFRAME");
-
-		AssertVisible(
-			locator1 = "NavBar#RECENT",
-			value1 = "Recent");
-
-		AssertVisible(
-			locator1 = "NavBar#MY_SITES",
-			value1 = "My Sites");
-
-		AssertElementNotPresent(
-			locator1 = "NavBar#ASSET_LIBRARIES",
-			value1 = "Asset Libraries");
 	}
 
 	@description = "This ensures that a document from depot cannot be accessed through Blogs on a connected site when a user doesn't have permissions. Skip the instance for performance improvement."

@@ -124,6 +124,12 @@ public class MCPServerProfileToolObjectEntryModelListenerTest {
 			mcpServerProfileObjectEntry.getExternalReferenceCode(), null,
 			"getMCPServerProfilesPage", "mcp-server-profiles");
 
+		// The same tool name in another tool set
+
+		MCPServerTestUtil.addMCPServerProfileToolObjectEntry(
+			_mcpServerProfileExternalReferenceCode, null,
+			"getMCPServerProfilesPage", RandomTestUtil.randomString());
+
 		// The same tool twice in one profile, whatever it restricts
 
 		AssertUtils.assertFailure(

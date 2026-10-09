@@ -9,6 +9,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.DateUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.extension.PropertyDefinition;
 import com.liferay.portal.vulcan.util.ObjectMapperUtil;
 
@@ -40,17 +41,24 @@ public class DefaultPropertyValidator implements PropertyValidator {
 
 		if (propertyType == PropertyDefinition.PropertyType.DATE_TIME) {
 			if (propertyValue instanceof String) {
-				try {
-					LocalDateTime.parse(
-						(String)propertyValue,
-						DateTimeFormatter.ofPattern(
-							_getDateTimePattern((String)propertyValue)));
+				String value = (String)propertyValue;
 
+				if (Validator.isNull(value)) {
 					valid = true;
 				}
-				catch (DateTimeParseException dateTimeParseException) {
-					if (_log.isDebugEnabled()) {
-						_log.debug(dateTimeParseException);
+				else {
+					try {
+						LocalDateTime.parse(
+							value,
+							DateTimeFormatter.ofPattern(
+								_getDateTimePattern(value)));
+
+						valid = true;
+					}
+					catch (DateTimeParseException dateTimeParseException) {
+						if (_log.isDebugEnabled()) {
+							_log.debug(dateTimeParseException);
+						}
 					}
 				}
 			}

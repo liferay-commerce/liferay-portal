@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.TicketLocalService;
+import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -744,7 +745,8 @@ public class SharingEntryServiceTest {
 		Assert.assertEquals(expirationDate, sharingEntry.getExpirationDate());
 	}
 
-	@Test(expected = SharingEntryExpirationDateException.class)
+	@Test
+	@TestInfo("LPD-102180")
 	public void testUpdateSharingEntryWithExpirationDateInThePast()
 		throws Exception {
 
@@ -759,12 +761,38 @@ public class SharingEntryServiceTest {
 
 		Instant instant = Instant.now();
 
-		Date expirationDate = Date.from(instant.minus(2, ChronoUnit.DAYS));
+		Date pastExpirationDate = Date.from(instant.minus(2, ChronoUnit.DAYS));
 
-		_sharingEntryService.updateSharingEntry(
-			sharingEntry.getSharingEntryId(),
-			Collections.singletonList(SharingEntryAction.VIEW), true,
-			expirationDate, _serviceContext);
+		AssertUtils.assertFailure(
+			SharingEntryExpirationDateException.class,
+			"Expiration date is in the past",
+			() -> _sharingEntryService.updateSharingEntry(
+				sharingEntry.getSharingEntryId(),
+				Collections.singletonList(SharingEntryAction.VIEW), true,
+				pastExpirationDate, _serviceContext));
+
+		_expireSharingEntry(sharingEntry);
+
+		AssertUtils.assertFailure(
+			SharingEntryExpirationDateException.class,
+			"Expiration date is in the past",
+			() -> _sharingEntryService.updateSharingEntry(
+				sharingEntry.getSharingEntryId(),
+				Arrays.asList(
+					SharingEntryAction.UPDATE, SharingEntryAction.VIEW),
+				true, sharingEntry.getExpirationDate(), _serviceContext));
+
+		Date currentExpirationDate = sharingEntry.getExpirationDate();
+
+		SharingEntry noChangesUpdatedSharingEntry =
+			_sharingEntryService.updateSharingEntry(
+				sharingEntry.getSharingEntryId(),
+				Collections.singletonList(SharingEntryAction.VIEW), true,
+				currentExpirationDate, _serviceContext);
+
+		Assert.assertEquals(
+			currentExpirationDate,
+			noChangesUpdatedSharingEntry.getExpirationDate());
 	}
 
 	@Test
@@ -844,6 +872,15 @@ public class SharingEntryServiceTest {
 			).toString(),
 			new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(48)),
 			new ServiceContext());
+	}
+
+	private void _expireSharingEntry(SharingEntry sharingEntry) {
+		Instant instant = Instant.now();
+
+		sharingEntry.setExpirationDate(
+			Date.from(instant.minus(1, ChronoUnit.DAYS)));
+
+		_sharingEntryLocalService.updateSharingEntry(sharingEntry);
 	}
 
 	private void _registerSharingPermissionChecker(

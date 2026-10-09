@@ -17,11 +17,6 @@ import com.liferay.object.service.ObjectRelationshipLocalServiceUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactory;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
@@ -30,10 +25,12 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.search.document.Document;
 import com.liferay.portal.search.filter.ComplexQueryPart;
 import com.liferay.portal.search.filter.ComplexQueryPartBuilder;
 import com.liferay.portal.search.filter.ComplexQueryPartBuilderFactory;
+import com.liferay.portal.search.query.QueriesUtil;
 import com.liferay.portal.search.searcher.SearchRequest;
 import com.liferay.portal.search.searcher.SearchRequestBuilder;
 import com.liferay.portal.search.searcher.SearchRequestBuilderFactory;
@@ -51,6 +48,7 @@ import com.liferay.site.pim.site.initializer.internal.link.VariantPIMLinkType;
 import java.io.Serializable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -174,16 +172,7 @@ public class BasePIMConnectorTest {
 	public void tearDown() {
 		_objectEntryLocalServiceUtilMockedStatic.close();
 		_objectRelationshipLocalServiceUtilMockedStatic.close();
-	}
-
-	@Test
-	public void testExport() throws Exception {
-		_testExport();
-		_testExportWithBlankRequiredChannelFieldMapping();
-		_testExportWithFixedValueOnlyMapping();
-		_testExportWithFullSearchPage();
-		_testExportWithVariantPIMLinks();
-		_testExportWithoutRequiredChannelFieldMapping();
+		_queriesUtilMockedStatic.close();
 	}
 
 	@Test
@@ -192,16 +181,44 @@ public class BasePIMConnectorTest {
 			"Test PIM Connector", _pimConnector.getName(LocaleUtil.US));
 	}
 
-	private void _assertExternalReferenceCodes(
-		int index, JSONArray jsonArray, String... externalReferenceCodes) {
+	@Test
+	public void testGetPIMFieldMappingObjectEntriesMap() throws Exception {
+		_testGetPIMFieldMappingObjectEntriesMap();
+		_testGetPIMFieldMappingObjectEntriesMapWithBlankRequiredMapping();
+		_testGetPIMFieldMappingObjectEntriesMapWithFixedValueMapping();
+		_testGetPIMFieldMappingObjectEntriesMapWithoutRequiredMapping();
+	}
 
-		JSONObject jsonObject = jsonArray.getJSONObject(index);
+	@Test
+	public void testGetPIMProductObjectEntriesMap() throws Exception {
+		_testGetPIMProductObjectEntriesMap();
+		_testGetPIMProductObjectEntriesMapWithFullSearchPage();
+		_testGetPIMProductObjectEntriesMapWithVariantPIMLinks();
+	}
+
+	private void _assertPIMConnectorException() throws Exception {
+		try {
+			_pimConnector.getPIMFieldMappingObjectEntriesMap(
+				_pimConnectorObjectEntry);
+
+			Assert.fail();
+		}
+		catch (PIMConnectorException pimConnectorException) {
+			Assert.assertEquals(
+				"a-required-channel-field-is-not-mapped",
+				pimConnectorException.getMessage());
+		}
+	}
+
+	private void _assertPIMProductObjectEntriesMap(
+		String key, Map<String, List<ObjectEntry>> pimProductObjectEntriesMap,
+		String... externalReferenceCodes) {
 
 		Assert.assertEquals(
-			JSONUtil.putAll(
-				(Object[])externalReferenceCodes
-			).toString(),
-			String.valueOf(jsonObject.getJSONArray("externalReferenceCodes")));
+			Arrays.asList(externalReferenceCodes),
+			TransformUtil.transform(
+				pimProductObjectEntriesMap.get(key),
+				ObjectEntry::getExternalReferenceCode));
 	}
 
 	private Document _mockDocument(long entryClassPK) {
@@ -322,36 +339,29 @@ public class BasePIMConnectorTest {
 		);
 	}
 
-	private void _testExport() throws Exception {
+	private void _testGetPIMFieldMappingObjectEntriesMap() throws Exception {
+		ObjectEntry nameObjectEntry = _mockFieldMapping(
+			"name", 1, "name", StringPool.BLANK);
+		ObjectEntry tag1ObjectEntry = _mockFieldMapping(
+			"tags", 2, "tag1", StringPool.BLANK);
+		ObjectEntry tag2ObjectEntry = _mockFieldMapping(
+			"tags", 3, "tag2", StringPool.BLANK);
+
 		_mockPIMFieldMappingObjectEntries(
 			ListUtil.fromArray(
-				_mockFieldMapping("name", 1, "name", StringPool.BLANK),
-				_mockFieldMapping("tags", 2, "tag", StringPool.BLANK)));
-		_mockProductObjectEntry(1, "SKU-1", _GROUP_ID);
-		_mockProductObjectEntry(2, "SKU-2", _GROUP_ID);
-		_mockSearchResponse(
-			ListUtil.fromArray(_mockDocument(1), _mockDocument(2)));
-
-		JSONArray jsonArray = _jsonFactory.createJSONArray(
-			_pimConnector.export(_pimConnectorObjectEntry));
-
-		Assert.assertEquals(jsonArray.toString(), 2, jsonArray.length());
-
-		_assertExternalReferenceCodes(0, jsonArray, "SKU-1");
-		_assertExternalReferenceCodes(1, jsonArray, "SKU-2");
+				nameObjectEntry, tag1ObjectEntry, tag2ObjectEntry));
 
 		Assert.assertEquals(
-			_pimFieldMappingObjectEntriesMap.toString(), 2,
-			_pimFieldMappingObjectEntriesMap.size());
-		Assert.assertTrue(
-			_pimFieldMappingObjectEntriesMap.toString(),
-			_pimFieldMappingObjectEntriesMap.containsKey("name"));
-		Assert.assertTrue(
-			_pimFieldMappingObjectEntriesMap.toString(),
-			_pimFieldMappingObjectEntriesMap.containsKey("tags"));
+			HashMapBuilder.put(
+				"name", Collections.singletonList(nameObjectEntry)
+			).put(
+				"tags", Arrays.asList(tag1ObjectEntry, tag2ObjectEntry)
+			).build(),
+			_pimConnector.getPIMFieldMappingObjectEntriesMap(
+				_pimConnectorObjectEntry));
 	}
 
-	private void _testExportWithBlankRequiredChannelFieldMapping()
+	private void _testGetPIMFieldMappingObjectEntriesMapWithBlankRequiredMapping()
 		throws Exception {
 
 		_mockPIMFieldMappingObjectEntries(
@@ -359,37 +369,61 @@ public class BasePIMConnectorTest {
 				_mockFieldMapping(
 					"name", 1, StringPool.BLANK, StringPool.BLANK)));
 
-		try {
-			_pimConnector.export(_pimConnectorObjectEntry);
-
-			Assert.fail();
-		}
-		catch (PIMConnectorException pimConnectorException) {
-			Assert.assertEquals(
-				"a-required-channel-field-is-not-mapped",
-				pimConnectorException.getMessage());
-		}
+		_assertPIMConnectorException();
 	}
 
-	private void _testExportWithFixedValueOnlyMapping() throws Exception {
+	private void _testGetPIMFieldMappingObjectEntriesMapWithFixedValueMapping()
+		throws Exception {
+
+		ObjectEntry objectEntry = _mockFieldMapping(
+			"name", 1, StringPool.BLANK, "A shirt");
+
+		_mockPIMFieldMappingObjectEntries(ListUtil.fromArray(objectEntry));
+
+		Assert.assertEquals(
+			HashMapBuilder.put(
+				"name", Collections.singletonList(objectEntry)
+			).build(),
+			_pimConnector.getPIMFieldMappingObjectEntriesMap(
+				_pimConnectorObjectEntry));
+	}
+
+	private void _testGetPIMFieldMappingObjectEntriesMapWithoutRequiredMapping()
+		throws Exception {
+
 		_mockPIMFieldMappingObjectEntries(
 			ListUtil.fromArray(
-				_mockFieldMapping("name", 1, StringPool.BLANK, "A shirt")));
+				_mockFieldMapping("tags", 1, "tag", StringPool.BLANK)));
+
+		_assertPIMConnectorException();
+	}
+
+	private void _testGetPIMProductObjectEntriesMap() throws Exception {
 		_mockProductObjectEntry(1, "SKU-1", _GROUP_ID);
-		_mockSearchResponse(ListUtil.fromArray(_mockDocument(1)));
+		_mockProductObjectEntry(2, "SKU-2", _GROUP_ID);
+		_mockSearchResponse(
+			ListUtil.fromArray(_mockDocument(1), _mockDocument(2)));
 
-		JSONArray jsonArray = _jsonFactory.createJSONArray(
-			_pimConnector.export(_pimConnectorObjectEntry));
+		Map<String, List<ObjectEntry>> pimProductObjectEntriesMap =
+			_pimConnector.getPIMProductObjectEntriesMap(_COMPANY_ID);
 
-		Assert.assertEquals(jsonArray.toString(), 1, jsonArray.length());
+		Assert.assertEquals(
+			Arrays.asList("SKU-1", "SKU-2"),
+			new ArrayList<>(pimProductObjectEntriesMap.keySet()));
 
-		_assertExternalReferenceCodes(0, jsonArray, "SKU-1");
+		_assertPIMProductObjectEntriesMap(
+			"SKU-1", pimProductObjectEntriesMap, "SKU-1");
+		_assertPIMProductObjectEntriesMap(
+			"SKU-2", pimProductObjectEntriesMap, "SKU-2");
+
+		_queriesUtilMockedStatic.verify(
+			() -> QueriesUtil.term(
+				Field.STATUS, WorkflowConstants.STATUS_APPROVED));
 	}
 
-	private void _testExportWithFullSearchPage() throws Exception {
-		_mockPIMFieldMappingObjectEntries(
-			ListUtil.fromArray(
-				_mockFieldMapping("name", 1, "name", StringPool.BLANK)));
+	private void _testGetPIMProductObjectEntriesMapWithFullSearchPage()
+		throws Exception {
+
 		_mockProductObjectEntry(1, "SKU-1", _GROUP_ID);
 		_mockProductObjectEntry(2, "SKU-2", _GROUP_ID);
 
@@ -402,8 +436,8 @@ public class BasePIMConnectorTest {
 
 		Mockito.clearInvocations(_searcher);
 
-		JSONArray jsonArray = _jsonFactory.createJSONArray(
-			_pimConnector.export(_pimConnectorObjectEntry));
+		Map<String, List<ObjectEntry>> pimProductObjectEntriesMap =
+			_pimConnector.getPIMProductObjectEntriesMap(_COMPANY_ID);
 
 		Mockito.verify(
 			_searcher, Mockito.times(2)
@@ -411,23 +445,23 @@ public class BasePIMConnectorTest {
 			_searchRequest
 		);
 
-		Assert.assertEquals(jsonArray.toString(), 2, jsonArray.length());
+		Assert.assertEquals(
+			pimProductObjectEntriesMap.toString(), 2,
+			pimProductObjectEntriesMap.size());
 
-		JSONObject jsonObject = jsonArray.getJSONObject(0);
-
-		JSONArray externalReferenceCodesJSONArray = jsonObject.getJSONArray(
-			"externalReferenceCodes");
+		List<ObjectEntry> objectEntries = pimProductObjectEntriesMap.get(
+			"SKU-1");
 
 		Assert.assertEquals(
-			_SEARCH_SIZE - 1, externalReferenceCodesJSONArray.length());
+			objectEntries.toString(), _SEARCH_SIZE - 1, objectEntries.size());
 
-		_assertExternalReferenceCodes(1, jsonArray, "SKU-2");
+		_assertPIMProductObjectEntriesMap(
+			"SKU-2", pimProductObjectEntriesMap, "SKU-2");
 	}
 
-	private void _testExportWithVariantPIMLinks() throws Exception {
-		_mockPIMFieldMappingObjectEntries(
-			ListUtil.fromArray(
-				_mockFieldMapping("name", 1, "name", StringPool.BLANK)));
+	private void _testGetPIMProductObjectEntriesMapWithVariantPIMLinks()
+		throws Exception {
+
 		_mockProductObjectEntry(1, "SKU-1", _GROUP_ID);
 		_mockProductObjectEntry(2, "SKU-2", _GROUP_ID);
 		_mockProductObjectEntry(3, "SKU-3", _GROUP_ID);
@@ -443,14 +477,19 @@ public class BasePIMConnectorTest {
 				"SKU-2", "CLUSTER-1"
 			).build());
 
-		JSONArray jsonArray = _jsonFactory.createJSONArray(
-			_pimConnector.export(_pimConnectorObjectEntry));
+		Map<String, List<ObjectEntry>> pimProductObjectEntriesMap =
+			_pimConnector.getPIMProductObjectEntriesMap(_COMPANY_ID);
 
-		Assert.assertEquals(jsonArray.toString(), 3, jsonArray.length());
+		Assert.assertEquals(
+			Arrays.asList("CLUSTER-1", "SKU-3", "SKU-4"),
+			new ArrayList<>(pimProductObjectEntriesMap.keySet()));
 
-		_assertExternalReferenceCodes(0, jsonArray, "SKU-1", "SKU-2");
-		_assertExternalReferenceCodes(1, jsonArray, "SKU-3");
-		_assertExternalReferenceCodes(2, jsonArray, "SKU-4");
+		_assertPIMProductObjectEntriesMap(
+			"CLUSTER-1", pimProductObjectEntriesMap, "SKU-1", "SKU-2");
+		_assertPIMProductObjectEntriesMap(
+			"SKU-3", pimProductObjectEntriesMap, "SKU-3");
+		_assertPIMProductObjectEntriesMap(
+			"SKU-4", pimProductObjectEntriesMap, "SKU-4");
 
 		Mockito.verify(
 			_filterFactory, Mockito.times(2)
@@ -467,25 +506,6 @@ public class BasePIMConnectorTest {
 		).thenReturn(
 			null
 		);
-	}
-
-	private void _testExportWithoutRequiredChannelFieldMapping()
-		throws Exception {
-
-		_mockPIMFieldMappingObjectEntries(
-			ListUtil.fromArray(
-				_mockFieldMapping("tags", 1, "tag", StringPool.BLANK)));
-
-		try {
-			_pimConnector.export(_pimConnectorObjectEntry);
-
-			Assert.fail();
-		}
-		catch (PIMConnectorException pimConnectorException) {
-			Assert.assertEquals(
-				"a-required-channel-field-is-not-mapped",
-				pimConnectorException.getMessage());
-		}
 	}
 
 	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
@@ -516,7 +536,6 @@ public class BasePIMConnectorTest {
 			ComplexQueryPartBuilderFactory.class);
 	private final FilterFactory<Predicate> _filterFactory = Mockito.mock(
 		FilterFactory.class);
-	private final JSONFactory _jsonFactory = JSONFactoryUtil.getJSONFactory();
 	private final Language _language = Mockito.mock(Language.class);
 	private final ObjectDefinitionLocalService _objectDefinitionLocalService =
 		Mockito.mock(ObjectDefinitionLocalService.class);
@@ -533,7 +552,8 @@ public class BasePIMConnectorTest {
 	private final BasePIMConnector _pimConnector = new TestPIMConnector();
 	private final ObjectEntry _pimConnectorObjectEntry = Mockito.mock(
 		ObjectEntry.class);
-	private Map<String, List<ObjectEntry>> _pimFieldMappingObjectEntriesMap;
+	private final MockedStatic<QueriesUtil> _queriesUtilMockedStatic =
+		Mockito.mockStatic(QueriesUtil.class);
 	private final SearchRequest _searchRequest = Mockito.mock(
 		SearchRequest.class);
 	private final SearchRequestBuilder _searchRequestBuilder = Mockito.mock(
@@ -546,6 +566,11 @@ public class BasePIMConnectorTest {
 	private final Sorts _sorts = Mockito.mock(Sorts.class);
 
 	private class TestPIMConnector extends BasePIMConnector {
+
+		@Override
+		public String execute(ObjectEntry pimConnectorObjectEntry) {
+			return StringPool.BLANK;
+		}
 
 		@Override
 		public String getKey() {
@@ -562,21 +587,6 @@ public class BasePIMConnectorTest {
 		@Override
 		public boolean isActive(long companyId) {
 			return true;
-		}
-
-		@Override
-		protected JSONObject createProductJSONObject(
-			Map<String, List<ObjectEntry>> pimFieldMappingObjectEntriesMap,
-			List<ObjectEntry> pimProductObjectEntries) {
-
-			_pimFieldMappingObjectEntriesMap = pimFieldMappingObjectEntriesMap;
-
-			return JSONUtil.put(
-				"externalReferenceCodes",
-				JSONUtil.putAll(
-					(Object[])TransformUtil.transformToArray(
-						pimProductObjectEntries,
-						ObjectEntry::getExternalReferenceCode, String.class)));
 		}
 
 	}

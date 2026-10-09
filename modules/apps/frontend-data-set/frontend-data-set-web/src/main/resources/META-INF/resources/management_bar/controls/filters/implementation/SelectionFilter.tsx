@@ -175,9 +175,15 @@ function getOdataString({
 		entityFieldType === EEntityFieldType.COLLECTION_INTEGER ||
 		entityFieldType === EEntityFieldType.COLLECTION_STRING
 	) {
-		return `${id}/any(x:${quotedSelectedItems
-			.map((value) => `(x ${exclude ? 'ne' : 'eq'} ${value})`)
-			.join(exclude ? ' and ' : ' or ')})`;
+		const expression = `${id}/any(x:x in (${quotedSelectedItems.join(
+			', '
+		)}))`;
+
+		if (exclude) {
+			return `not (${expression})`;
+		}
+
+		return expression;
 	}
 	else if (selectedItems.length === 1 && !multiple) {
 		return `${id} ${exclude ? 'ne' : 'eq'} ${quotedSelectedItems[0]}`;
@@ -186,7 +192,7 @@ function getOdataString({
 		const expression = `${id} in (${quotedSelectedItems.join(', ')})`;
 
 		if (exclude) {
-			return 'not (' + expression + ')';
+			return `not (${expression})`;
 		}
 
 		return expression;

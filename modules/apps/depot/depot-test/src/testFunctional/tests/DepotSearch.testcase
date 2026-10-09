@@ -51,101 +51,10 @@ definition {
 		}
 	}
 
-	@description = "This ensures that a depot document cannot be searched from the disconnected site."
-	@priority = 4
-	@refactordone
-	test CanNotSearchForDocumentFromDisconnectedSite {
-		JSONDocument.addFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Test Depot Name");
-
-		Navigator.openSitePage(
-			pageName = "Page Name",
-			siteName = "Site Name");
-
-		Search.searchCP(searchTerm = "DM Document Title");
-
-		SearchResults.viewNoSearchResults(searchTerm = "DM Document Title");
-	}
-
-	@description = "This ensures that a depot web content can be searched on a connected site when searching is reenabled."
-	@priority = 4
-	@refactordone
-	test CanReenableSearchability {
-		JSONWebcontent.addWebContent(
-			content = "WC WebContent Content",
-			groupName = "Test Depot Name",
-			site = "false",
-			title = "WC WebContent Title");
-
-		JSONDepot.connectSite(
-			depotName = "Test Depot Name",
-			groupName = "Site Name");
-
-		DepotNavigator.openDepotAdmin();
-
-		Depot.configureSearch(
-			depotName = "Test Depot Name",
-			item = "Make Unsearchable",
-			siteList = "Site Name",
-			tableEntryText = "No");
-
-		DepotNavigator.openDepotAdmin();
-
-		Depot.configureSearch(
-			depotName = "Test Depot Name",
-			item = "Make Searchable",
-			siteList = "Site Name",
-			tableEntryText = "Yes");
-
-		Navigator.openSitePage(
-			pageName = "Page Name",
-			siteName = "Site Name");
-
-		Search.searchCP(searchTerm = "WC WebContent Title");
-
-		SearchResults.viewSearchResults(
-			searchAssetTitle = "WC WebContent Title",
-			searchAssetType = "Web Content Article");
-
-		SearchPage.gotoResultDetails(searchAssetTitle = "WC WebContent Title");
-
-		SearchPage.viewResultDetails(searchAssetTitle = "WC WebContent Title");
-	}
-
-	@description = "This ensures that users can search for depot document from connected site."
+	@description = "This ensures that a depot document cannot be searched from a disconnected site, and that depot content can be searched by user, by title and by tag from the connected site."
 	@priority = 5
 	@refactordone
-	test CanSearchForDocument {
-		JSONDocument.addFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Test Depot Name");
-
-		JSONDepot.connectSite(
-			depotName = "Test Depot Name",
-			groupName = "Site Name");
-
-		Navigator.openSitePage(
-			pageName = "Page Name",
-			siteName = "Site Name");
-
-		Search.searchCP(searchTerm = "DM Document Title");
-
-		SearchResults.viewSearchResults(
-			searchAssetTitle = "DM Document Title",
-			searchAssetType = "Document");
-
-		SearchPage.gotoResultDetails(searchAssetTitle = "DM Document Title");
-
-		SearchPage.viewResultDetails(searchAssetTitle = "DM Document Title");
-	}
-
-	@description = "This ensures that a depot document associated with a tag can be searched from the connected site."
-	@priority = 5
-	@refactordone
-	test CanSearchForTag {
+	test CanSearchDepotContentByTitleTagAndUser {
 		JSONDocument.addFileWithUploadedFile(
 			assetTagNames = "depot",
 			dmDocumentDescription = "DM Document Description",
@@ -154,39 +63,19 @@ definition {
 			mimeType = "image/jpeg",
 			sourceFileName = "Document_4.jpg");
 
-		JSONDepot.connectSite(
-			depotName = "Test Depot Name",
-			groupName = "Site Name");
-
-		Navigator.openSitePage(
-			pageName = "Page Name",
-			siteName = "Site Name");
-
-		Search.searchCP(searchTerm = "depot");
-
-		SearchResults.viewSearchResults(
-			searchAssetTitle = "DM Document Title",
-			searchAssetType = "Document");
-
-		SearchPage.gotoResultDetails(searchAssetTitle = "DM Document Title");
-
-		SearchPage.viewResultDetails(searchAssetTitle = "DM Document Title");
-	}
-
-	@description = "This ensures that a depot content associated with the user can be searched with from the connected site."
-	@priority = 5
-	@refactordone
-	test CanSearchForUser {
-		JSONDocument.addFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Test Depot Name");
-
 		JSONWebcontent.addWebContent(
 			content = "WC WebContent Content",
 			groupName = "Test Depot Name",
 			site = "false",
 			title = "WC WebContent Title");
+
+		Navigator.openSitePage(
+			pageName = "Page Name",
+			siteName = "Site Name");
+
+		Search.searchCP(searchTerm = "DM Document Title");
+
+		SearchResults.viewNoSearchResults(searchTerm = "DM Document Title");
 
 		JSONDepot.connectSite(
 			depotName = "Test Depot Name",
@@ -205,6 +94,34 @@ definition {
 		SearchResults.viewSearchResults(
 			searchAssetTitle = "WC WebContent Title",
 			searchAssetType = "Web Content Article");
+
+		Navigator.openSitePage(
+			pageName = "Page Name",
+			siteName = "Site Name");
+
+		Search.searchCP(searchTerm = "DM Document Title");
+
+		SearchResults.viewSearchResults(
+			searchAssetTitle = "DM Document Title",
+			searchAssetType = "Document");
+
+		SearchPage.gotoResultDetails(searchAssetTitle = "DM Document Title");
+
+		SearchPage.viewResultDetails(searchAssetTitle = "DM Document Title");
+
+		Navigator.openSitePage(
+			pageName = "Page Name",
+			siteName = "Site Name");
+
+		Search.searchCP(searchTerm = "depot");
+
+		SearchResults.viewSearchResults(
+			searchAssetTitle = "DM Document Title",
+			searchAssetType = "Document");
+
+		SearchPage.gotoResultDetails(searchAssetTitle = "DM Document Title");
+
+		SearchPage.viewResultDetails(searchAssetTitle = "DM Document Title");
 	}
 
 	@description = "This ensures that a depot web content can be searched from the connected site."
@@ -238,77 +155,17 @@ definition {
 		SearchPage.viewResultDetails(searchAssetTitle = "WC WebContent Title");
 	}
 
-	@description = "This ensures that a depot document cannot be searched on a connected site when searching is disabled."
+	@description = "This ensures that depot documents and web content cannot be searched on a connected site by user, by title or by tag when searching is disabled, and that web content can be searched again when searching is reenabled."
 	@priority = 5
 	@refactordone
-	test DocumentCanNotBeSearchedWhenDisabled {
-		JSONDocument.addFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Test Depot Name");
-
-		JSONDepot.connectSite(
-			depotName = "Test Depot Name",
-			groupName = "Site Name");
-
-		DepotNavigator.openDepotAdmin();
-
-		Depot.configureSearch(
-			depotName = "Test Depot Name",
-			item = "Make Unsearchable",
-			siteList = "Site Name",
-			tableEntryText = "No");
-
-		Navigator.openSitePage(
-			pageName = "Page Name",
-			siteName = "Site Name");
-
-		Search.searchCP(searchTerm = "DM Document Title");
-
-		SearchResults.viewNoSearchResults(searchTerm = "DM Document Title");
-	}
-
-	@description = "This ensures that a depot document associated with a tag cannot be searched on a connected site when searching is disabled."
-	@priority = 5
-	@refactordone
-	test TagCanNotBeSearchedWhenDisabled {
+	test CanToggleDepotSearchabilityOnConnectedSite {
 		JSONDocument.addFileWithUploadedFile(
 			assetTagNames = "depot",
 			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "Document_1.doc",
-			groupName = "Test Depot Name",
-			mimeType = "application/msword",
-			sourceFileName = "Document_1.doc");
-
-		JSONDepot.connectSite(
-			depotName = "Test Depot Name",
-			groupName = "Site Name");
-
-		DepotNavigator.openDepotAdmin();
-
-		Depot.configureSearch(
-			depotName = "Test Depot Name",
-			item = "Make Unsearchable",
-			siteList = "Site Name",
-			tableEntryText = "No");
-
-		Navigator.openSitePage(
-			pageName = "Page Name",
-			siteName = "Site Name");
-
-		Search.searchCP(searchTerm = "depot");
-
-		SearchResults.viewNoSearchResults(searchTerm = "depot");
-	}
-
-	@description = "This ensures that a depot content associated with the user cannot be searched on a connected site when searching is disabled."
-	@priority = 5
-	@refactordone
-	test UserCanNotBeSearchedWhenDisabled {
-		JSONDocument.addFile(
-			dmDocumentDescription = "DM Document Description",
 			dmDocumentTitle = "DM Document Title",
-			groupName = "Test Depot Name");
+			groupName = "Test Depot Name",
+			mimeType = "image/jpeg",
+			sourceFileName = "Document_4.jpg");
 
 		JSONWebcontent.addWebContent(
 			content = "WC WebContent Content",
@@ -343,29 +200,22 @@ definition {
 			key_searchAssetTitle = "WC WebContent Title",
 			key_searchAssetType = "Web Content Article",
 			locator1 = "SearchPage#RESULT_TITLE_SPECIFIC");
-	}
 
-	@description = "This ensures that a depot web content cannot be searched on a connected site when searching is disabled."
-	@priority = 5
-	@refactordone
-	test WCCanNotBeSearchedWhenDisabled {
-		JSONWebcontent.addWebContent(
-			content = "WC WebContent Content",
-			groupName = "Test Depot Name",
-			site = "false",
-			title = "WC WebContent Title");
+		Navigator.openSitePage(
+			pageName = "Page Name",
+			siteName = "Site Name");
 
-		JSONDepot.connectSite(
-			depotName = "Test Depot Name",
-			groupName = "Site Name");
+		Search.searchCP(searchTerm = "DM Document Title");
 
-		DepotNavigator.openDepotAdmin();
+		SearchResults.viewNoSearchResults(searchTerm = "DM Document Title");
 
-		Depot.configureSearch(
-			depotName = "Test Depot Name",
-			item = "Make Unsearchable",
-			siteList = "Site Name",
-			tableEntryText = "No");
+		Navigator.openSitePage(
+			pageName = "Page Name",
+			siteName = "Site Name");
+
+		Search.searchCP(searchTerm = "depot");
+
+		SearchResults.viewNoSearchResults(searchTerm = "depot");
 
 		Navigator.openSitePage(
 			pageName = "Page Name",
@@ -374,6 +224,28 @@ definition {
 		Search.searchCP(searchTerm = "WC WebContent Title");
 
 		SearchResults.viewNoSearchResults(searchTerm = "WC WebContent Title");
+
+		DepotNavigator.openDepotAdmin();
+
+		Depot.configureSearch(
+			depotName = "Test Depot Name",
+			item = "Make Searchable",
+			siteList = "Site Name",
+			tableEntryText = "Yes");
+
+		Navigator.openSitePage(
+			pageName = "Page Name",
+			siteName = "Site Name");
+
+		Search.searchCP(searchTerm = "WC WebContent Title");
+
+		SearchResults.viewSearchResults(
+			searchAssetTitle = "WC WebContent Title",
+			searchAssetType = "Web Content Article");
+
+		SearchPage.gotoResultDetails(searchAssetTitle = "WC WebContent Title");
+
+		SearchPage.viewResultDetails(searchAssetTitle = "WC WebContent Title");
 	}
 
 }

@@ -28,7 +28,7 @@ public class NestedFieldAnnotationCheck extends BaseCheck {
 
 	@Override
 	protected void doVisitToken(DetailAST detailAST) {
-		if ((detailAST.getParent() != null) ||
+		if (!isDirectChildOfCompilationUnit(detailAST) ||
 			!AnnotationUtil.containsAnnotation(detailAST, "Component")) {
 
 			return;

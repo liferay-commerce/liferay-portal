@@ -715,10 +715,10 @@ definition {
 			locator1 = "WCD#WEB_CONTENT_IMAGE");
 	}
 
-	@description = "This ensures that a document pending review cannot be searched for in a staged site when enabling remote staging."
+	@description = "This ensures that a document pending review in depot can be neither selected nor searched for in a staged site when enabling remote staging."
 	@priority = 4
 	@refactordone
-	test CanNotSearchForPendingDocument {
+	test CanNotFindPendingDocumentInItemSelectorOrSearch {
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -738,12 +738,28 @@ definition {
 
 		DMDocument.addWithWorkflowCP(
 			dmDocumentDescription = "DM Document Description",
-			dmDocumentFile = "Document_1.doc",
+			dmDocumentFile = "Document_1.jpg",
 			dmDocumentTitle = "DM Document Title");
 
 		DepotNavigator.switchStagingStatus(stagingItem = "Publish to Live");
 
 		Staging.publishToLive(remoteStaging = "true");
+
+		BlogsNavigator.openToAddEntry(siteURLKey = "site-name");
+
+		BlogsNavigator.gotoSelectFile();
+
+		ItemSelector.configureFilterViaSelectFile(
+			filterBy = "Everywhere",
+			navTab = "Documents and Media");
+
+		AssertElementPresent(
+			key_card = "DM Folder Name",
+			locator1 = "Card#CARD_TITLE");
+
+		AssertElementNotPresent(
+			key_card = "DM Document Title",
+			locator1 = "Card#CARD_TITLE");
 
 		Navigator.openSitePage(
 			pageName = "Test Page",
@@ -835,52 +851,6 @@ definition {
 
 		AssertElementNotPresent(
 			key_card = "Document_2.jpg",
-			locator1 = "Card#CARD_TITLE");
-	}
-
-	@description = "This ensures that a pending image in depot cannot be found in remote staging site."
-	@priority = 4
-	@refactordone
-	test CanNotViewPendingImage {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		JSONFolder.addFolder(
-			dmFolderDescription = "DM Folder Description",
-			dmFolderName = "DM Folder Name",
-			groupName = "Test Depot Name");
-
-		DepotNavigator.openDepotDocumentsAndMediaAdmin(depotName = "Test Depot Name");
-
-		DMFolder.configureWorkflowCP(
-			dmFolderName = "DM Folder Name",
-			workflowDefinition = "Single Approver",
-			workflowRestriction = "Default Workflow");
-
-		DMNavigator.gotoFolder(dmFolderName = "DM Folder Name");
-
-		DMDocument.addWithWorkflowCP(
-			dmDocumentFile = "Document_1.jpg",
-			dmDocumentTitle = "Document_1.jpg");
-
-		DepotNavigator.switchStagingStatus(stagingItem = "Publish to Live");
-
-		Staging.publishToLive(remoteStaging = "true");
-
-		BlogsNavigator.openToAddEntry(siteURLKey = "site-name");
-
-		BlogsNavigator.gotoSelectFile();
-
-		ItemSelector.configureFilterViaSelectFile(
-			filterBy = "Everywhere",
-			navTab = "Documents and Media");
-
-		AssertElementPresent(
-			key_card = "DM Folder Name",
-			locator1 = "Card#CARD_TITLE");
-
-		AssertElementNotPresent(
-			key_card = "Document_1.jpg",
 			locator1 = "Card#CARD_TITLE");
 	}
 

@@ -9,6 +9,7 @@ import com.liferay.object.constants.ObjectActionKeys;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.rest.dto.v1_0.ObjectEntry;
 import com.liferay.object.rest.internal.configuration.FunctionObjectEntryManagerConfiguration;
+import com.liferay.object.rest.manager.exception.ObjectEntryManagerHttpException;
 import com.liferay.object.rest.manager.v1_0.BaseObjectEntryManager;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManager;
 import com.liferay.object.scope.CompanyScoped;
@@ -40,6 +41,7 @@ import com.liferay.portal.vulcan.pagination.Pagination;
 
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import org.osgi.service.component.annotations.Activate;
@@ -82,8 +84,7 @@ public class FunctionObjectEntryManagerImpl
 					StringPool.SLASH,
 					HttpComponentsUtil.encodePath(
 						objectDefinition.getExternalReferenceCode())),
-				dtoConverterContext.getUserId()
-			).get(),
+				dtoConverterContext.getUserId()),
 			dtoConverterContext, objectDefinition, scopeKey);
 	}
 
@@ -143,8 +144,7 @@ public class FunctionObjectEntryManagerImpl
 		return _toObjectEntries(
 			_launch(
 				Http.Method.GET, null, resourcePath,
-				dtoConverterContext.getUserId()
-			).get(),
+				dtoConverterContext.getUserId()),
 			dtoConverterContext, objectDefinition, pagination, scopeKey);
 	}
 
@@ -175,8 +175,7 @@ public class FunctionObjectEntryManagerImpl
 				Http.Method.GET, null,
 				_appendBaseParameters(
 					dtoConverterContext, resourcePath, scopeKey),
-				dtoConverterContext.getUserId()
-			).get(),
+				dtoConverterContext.getUserId()),
 			dtoConverterContext, objectDefinition, scopeKey);
 	}
 
@@ -215,8 +214,7 @@ public class FunctionObjectEntryManagerImpl
 					HttpComponentsUtil.encodePath(
 						objectDefinition.getExternalReferenceCode()),
 					StringPool.SLASH, externalReferenceCode),
-				dtoConverterContext.getUserId()
-			).get(),
+				dtoConverterContext.getUserId()),
 			dtoConverterContext, objectDefinition, scopeKey);
 	}
 
@@ -298,16 +296,29 @@ public class FunctionObjectEntryManagerImpl
 		return resourcePath;
 	}
 
-	private Future<byte[]> _launch(
+	private byte[] _launch(
 			Http.Method method, JSONObject payloadJSONObject,
 			String resourcePath, long userId)
 		throws Exception {
 
-		return _portalCatapult.launch(
+		Future<byte[]> future = _portalCatapult.launch(
 			_companyId, method,
 			_functionObjectEntryManagerConfiguration.
 				oAuth2ApplicationExternalReferenceCode(),
 			payloadJSONObject, resourcePath, userId);
+
+		try {
+			return future.get();
+		}
+		catch (ExecutionException executionException) {
+			Throwable throwable = executionException.getCause();
+
+			if (throwable == null) {
+				throwable = executionException;
+			}
+
+			throw new ObjectEntryManagerHttpException(throwable.getMessage());
+		}
 	}
 
 	private JSONObject _toJSONObject(

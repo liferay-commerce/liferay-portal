@@ -36,6 +36,18 @@ import org.osgi.service.component.annotations.Reference;
 @Component(service = WorkflowMetricsPortalExecutor.class)
 public class WorkflowMetricsPortalExecutor {
 
+	public void await() throws Exception {
+		if (_executeInProcess.get()) {
+			return;
+		}
+
+		NoticeableFuture<?> noticeableFuture = execute(
+			() -> {
+			});
+
+		noticeableFuture.get();
+	}
+
 	public <T extends Throwable> NoticeableFuture<?> execute(
 		UnsafeRunnable<T> unsafeRunnable) {
 
@@ -59,6 +71,8 @@ public class WorkflowMetricsPortalExecutor {
 
 		return _noticeableExecutorService.submit(
 			() -> {
+				_executeInProcess.set(true);
+
 				try {
 					unsafeRunnable.run();
 				}
@@ -109,6 +123,11 @@ public class WorkflowMetricsPortalExecutor {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		WorkflowMetricsPortalExecutor.class);
+
+	private static final ThreadLocal<Boolean> _executeInProcess =
+		new CentralizedThreadLocal<>(
+			WorkflowMetricsPortalExecutor.class + "._executeInProcess",
+			() -> Boolean.FALSE);
 
 	private NoticeableExecutorService _noticeableExecutorService;
 

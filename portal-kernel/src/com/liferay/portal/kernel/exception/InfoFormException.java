@@ -14,9 +14,22 @@ import java.util.Locale;
  */
 public class InfoFormException extends PortalException {
 
+	public InfoFormException() {
+	}
+
+	public InfoFormException(String message) {
+		_message = message;
+	}
+
 	public String getLocalizedMessage(Locale locale) {
+		if (_message != null) {
+			return _message;
+		}
+
 		return LanguageUtil.get(
 			locale, "an-error-occurred-while-sending-the-form-information");
 	}
+
+	private String _message;
 
 }

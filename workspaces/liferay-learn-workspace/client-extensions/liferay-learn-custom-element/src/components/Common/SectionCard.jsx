@@ -5,8 +5,10 @@
 
 import ClayLayout from '@clayui/layout';
 import {ClayTooltipProvider} from '@clayui/tooltip';
-import {getPersonasLabel, getPersonasTooltip, truncateText} from '../../utils/util';
 import React from 'react';
+
+import {getPersonasLabel, getPersonasTooltip, truncateText} from '../../utils/util';
+
 import './SectionCard.scss';
 
 const SectionCard = ({

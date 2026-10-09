@@ -30,9 +30,7 @@ public class ComponentAnnotationCheck extends BaseCheck {
 	protected void doVisitToken(DetailAST detailAST) {
 		List<String> importNames = getImportNames(detailAST);
 
-		DetailAST parentDetailAST = detailAST.getParent();
-
-		if ((parentDetailAST != null) ||
+		if (!isDirectChildOfCompilationUnit(detailAST) ||
 			!importNames.contains(
 				"org.osgi.service.component.annotations.Component")) {
 

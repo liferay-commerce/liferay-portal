@@ -42,6 +42,7 @@ import java.nio.charset.StandardCharsets;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -116,6 +117,28 @@ public class PortalCatapultTest {
 			Assert.assertEquals(
 				payloadJSONObject.toString(),
 				clientExtensionHttpServer._getRequestBody());
+		}
+	}
+
+	@Test
+	public void testLaunchWithErrorResponse() throws Exception {
+		String responseBody = RandomTestUtil.randomString();
+
+		try (ClientExtensionHttpServer clientExtensionHttpServer =
+				new ClientExtensionHttpServer(
+					responseBody, HttpURLConnection.HTTP_CONFLICT)) {
+
+			ExecutionException executionException = Assert.assertThrows(
+				ExecutionException.class,
+				() -> _launch(
+					clientExtensionHttpServer, Http.Method.GET, null,
+					(companyId, headers, homePageURL, location,
+					 oAuth2ApplicationFeatures, userId) -> {
+					}));
+
+			Throwable throwable = executionException.getCause();
+
+			Assert.assertEquals(responseBody, throwable.getMessage());
 		}
 	}
 
@@ -216,6 +239,12 @@ public class PortalCatapultTest {
 	private static class ClientExtensionHttpServer implements AutoCloseable {
 
 		public ClientExtensionHttpServer() throws IOException {
+			this("{}", HttpURLConnection.HTTP_OK);
+		}
+
+		public ClientExtensionHttpServer(String responseBody, int statusCode)
+			throws IOException {
+
 			_httpServer = HttpServer.create(
 				new InetSocketAddress("127.0.0.1", 0), 0);
 
@@ -231,7 +260,8 @@ public class PortalCatapultTest {
 							inputStream.readAllBytes(), StandardCharsets.UTF_8);
 					}
 
-					byte[] bytes = "{}".getBytes(StandardCharsets.UTF_8);
+					byte[] bytes = responseBody.getBytes(
+						StandardCharsets.UTF_8);
 
 					Headers responseHeaders = httpExchange.getResponseHeaders();
 
@@ -239,8 +269,7 @@ public class PortalCatapultTest {
 						HttpHeaders.CONTENT_TYPE,
 						ContentTypes.APPLICATION_JSON);
 
-					httpExchange.sendResponseHeaders(
-						HttpURLConnection.HTTP_OK, bytes.length);
+					httpExchange.sendResponseHeaders(statusCode, bytes.length);
 
 					try (OutputStream outputStream =
 							httpExchange.getResponseBody()) {

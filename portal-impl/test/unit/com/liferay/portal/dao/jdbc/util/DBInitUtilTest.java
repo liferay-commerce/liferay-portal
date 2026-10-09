@@ -7,15 +7,20 @@ package com.liferay.portal.dao.jdbc.util;
 
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.dao.init.DBInitUtil;
+import com.liferay.portal.events.StartupHelperUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.util.ReleaseInfo;
+import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
+import com.liferay.portal.upgrade.PortalUpgradeProcess;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -25,6 +30,7 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 /**
@@ -36,6 +42,25 @@ public class DBInitUtilTest {
 	@Rule
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
+
+	@Test
+	public void testCheckDefaultRelease() {
+		boolean newRelease = StartupHelperUtil.isNewRelease();
+
+		try {
+			Date buildDate = new Date();
+
+			_testCheckDefaultRelease(buildDate, null, true);
+			_testCheckDefaultRelease(
+				buildDate, new Date(buildDate.getTime() - Time.DAY), true);
+			_testCheckDefaultRelease(buildDate, buildDate, false);
+			_testCheckDefaultRelease(
+				buildDate, new Date(buildDate.getTime() + Time.DAY), true);
+		}
+		finally {
+			StartupHelperUtil.setNewRelease(newRelease);
+		}
+	}
 
 	@Test
 	public void testCheckSQLServer() throws Exception {
@@ -101,6 +126,45 @@ public class DBInitUtilTest {
 						"\"lportal\". To enable, execute: alter database ",
 						"lportal set read_committed_snapshot on")));
 		}
+	}
+
+	private void _testCheckDefaultRelease(
+		Date buildDate, Date currentBuildDate, boolean expectedNewRelease) {
+
+		Connection connection = Mockito.mock(Connection.class);
+
+		try (MockedStatic<PortalUpgradeProcess>
+				portalUpgradeProcessMockedStatic = Mockito.mockStatic(
+					PortalUpgradeProcess.class);
+			MockedStatic<ReleaseInfo> releaseInfoMockedStatic =
+				Mockito.mockStatic(ReleaseInfo.class)) {
+
+			portalUpgradeProcessMockedStatic.when(
+				() -> PortalUpgradeProcess.getCurrentBuildDate(connection)
+			).thenReturn(
+				currentBuildDate
+			);
+
+			portalUpgradeProcessMockedStatic.when(
+				() -> PortalUpgradeProcess.hasPortalRelease(connection)
+			).thenReturn(
+				true
+			);
+
+			releaseInfoMockedStatic.when(
+				ReleaseInfo::getBuildDate
+			).thenReturn(
+				buildDate
+			);
+
+			Assert.assertTrue(
+				ReflectionTestUtil.invoke(
+					DBInitUtil.class, "_checkDefaultRelease",
+					new Class<?>[] {Connection.class}, connection));
+		}
+
+		Assert.assertEquals(
+			expectedNewRelease, StartupHelperUtil.isNewRelease());
 	}
 
 }

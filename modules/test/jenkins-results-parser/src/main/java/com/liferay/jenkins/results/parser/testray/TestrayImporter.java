@@ -89,6 +89,9 @@ public class TestrayImporter {
 		_portalReleases = buildDatabase.getPortalReleases();
 		_pullRequests = buildDatabase.getPullRequests();
 		_workspaces = buildDatabase.getWorkspaces();
+
+		_testrayTextReplacer = TestrayFactory.newTestrayTextReplacer(
+			buildDatabase, topLevelBuildReport);
 	}
 
 	public String getJenkinsBuildDescription() {
@@ -280,8 +283,8 @@ public class TestrayImporter {
 
 				testrayBuild = testrayRoutine.createTestrayBuild(
 					testrayProductVersion,
-					_replaceEnvVars(testrayBuildName, true), testrayBuildDate,
-					testrayBuildDescription, testrayBuildSHA);
+					_testrayTextReplacer.replace(testrayBuildName),
+					testrayBuildDate, testrayBuildDescription, testrayBuildSHA);
 			}
 
 			testrayBuildId = _getBuildParameter("TESTRAY_BUILD_ID");
@@ -300,8 +303,8 @@ public class TestrayImporter {
 
 				testrayBuild = testrayRoutine.createTestrayBuild(
 					testrayProductVersion,
-					_replaceEnvVars(testrayBuildName, true), testrayBuildDate,
-					testrayBuildDescription, testrayBuildSHA);
+					_testrayTextReplacer.replace(testrayBuildName),
+					testrayBuildDate, testrayBuildDescription, testrayBuildSHA);
 			}
 
 			if (testrayBuild == null) {
@@ -327,7 +330,7 @@ public class TestrayImporter {
 				if (!JenkinsResultsParserUtil.isNullOrEmpty(testrayBuildName)) {
 					testrayBuild = testrayRoutine.createTestrayBuild(
 						testrayProductVersion,
-						_replaceEnvVars(testrayBuildName, true),
+						_testrayTextReplacer.replace(testrayBuildName),
 						testrayBuildDate, testrayBuildDescription,
 						testrayBuildSHA);
 				}
@@ -510,7 +513,8 @@ public class TestrayImporter {
 
 				testrayProductVersion =
 					testrayProject.createTestrayProductVersion(
-						_replaceEnvVars(testrayProductVersionName, true));
+						_testrayTextReplacer.replace(
+							testrayProductVersionName));
 			}
 
 			testrayProductVersionId = _getBuildParameter(
@@ -534,7 +538,8 @@ public class TestrayImporter {
 
 				testrayProductVersion =
 					testrayProject.createTestrayProductVersion(
-						_replaceEnvVars(testrayProductVersionName, true));
+						_testrayTextReplacer.replace(
+							testrayProductVersionName));
 			}
 
 			if (testrayProductVersion == null) {
@@ -560,7 +565,7 @@ public class TestrayImporter {
 
 				testrayProductVersion =
 					testrayProject.createTestrayProductVersion(
-						_replaceEnvVars("1.x", true));
+						_testrayTextReplacer.replace("1.x"));
 			}
 
 			if (testrayProductVersion == null) {
@@ -574,7 +579,8 @@ public class TestrayImporter {
 
 					testrayProductVersion =
 						testrayProject.createTestrayProductVersion(
-							_replaceEnvVars(testrayProductVersionName, true));
+							_testrayTextReplacer.replace(
+								testrayProductVersionName));
 				}
 			}
 
@@ -585,7 +591,7 @@ public class TestrayImporter {
 
 				testrayProductVersion =
 					testrayProject.createTestrayProductVersion(
-						_replaceEnvVars(portalReleaseVersion, true));
+						_testrayTextReplacer.replace(portalReleaseVersion));
 			}
 		}
 		finally {
@@ -633,14 +639,14 @@ public class TestrayImporter {
 				!JenkinsResultsParserUtil.isNullOrEmpty(testrayProjectName)) {
 
 				testrayProject = testrayServer.getTestrayProjectByName(
-					_replaceEnvVars(testrayProjectName, true));
+					_testrayTextReplacer.replace(testrayProjectName));
 			}
 
 			if ((testrayProject == null) &&
 				!JenkinsResultsParserUtil.isNullOrEmpty(testrayProjectName)) {
 
 				testrayProject = testrayServer.createTestrayProject(
-					_replaceEnvVars(testrayProjectName, true));
+					_testrayTextReplacer.replace(testrayProjectName));
 			}
 
 			testrayProjectId = _getBuildParameter("TESTRAY_PROJECT_ID");
@@ -658,7 +664,7 @@ public class TestrayImporter {
 				!JenkinsResultsParserUtil.isNullOrEmpty(testrayProjectName)) {
 
 				testrayProject = testrayServer.getTestrayProjectByName(
-					_replaceEnvVars(testrayProjectName, true));
+					_testrayTextReplacer.replace(testrayProjectName));
 			}
 
 			if (testrayProject == null) {
@@ -685,7 +691,7 @@ public class TestrayImporter {
 						testrayProjectName)) {
 
 					testrayProject = testrayServer.getTestrayProjectByName(
-						_replaceEnvVars(testrayProjectName, true));
+						_testrayTextReplacer.replace(testrayProjectName));
 				}
 			}
 
@@ -709,7 +715,7 @@ public class TestrayImporter {
 							quarter.toUpperCase());
 
 						testrayProject = testrayServer.getTestrayProjectByName(
-							_replaceEnvVars(testrayProjectName, true));
+							_testrayTextReplacer.replace(testrayProjectName));
 					}
 				}
 			}
@@ -725,7 +731,7 @@ public class TestrayImporter {
 						"testray.override.project.name");
 
 					testrayProject = testrayServer.getTestrayProjectByName(
-						_replaceEnvVars(testrayProjectName, true));
+						_testrayTextReplacer.replace(testrayProjectName));
 				}
 			}
 			catch (IOException ioException) {
@@ -778,7 +784,7 @@ public class TestrayImporter {
 				!JenkinsResultsParserUtil.isNullOrEmpty(testrayRoutineName)) {
 
 				testrayRoutine = testrayProject.createTestrayRoutine(
-					_replaceEnvVars(testrayRoutineName, true));
+					_testrayTextReplacer.replace(testrayRoutineName));
 			}
 
 			testrayRoutineId = _getBuildParameter("TESTRAY_ROUTINE_ID");
@@ -796,7 +802,7 @@ public class TestrayImporter {
 				!JenkinsResultsParserUtil.isNullOrEmpty(testrayRoutineName)) {
 
 				testrayRoutine = testrayProject.createTestrayRoutine(
-					_replaceEnvVars(testrayRoutineName, true));
+					_testrayTextReplacer.replace(testrayRoutineName));
 			}
 
 			testrayRoutineName = _getBuildParameter("TESTRAY_BUILD_TYPE");
@@ -805,7 +811,7 @@ public class TestrayImporter {
 				!JenkinsResultsParserUtil.isNullOrEmpty(testrayRoutineName)) {
 
 				testrayRoutine = testrayProject.createTestrayRoutine(
-					_replaceEnvVars(testrayRoutineName, true));
+					_testrayTextReplacer.replace(testrayRoutineName));
 			}
 
 			if (testrayRoutine == null) {
@@ -832,7 +838,7 @@ public class TestrayImporter {
 						testrayRoutineName)) {
 
 					testrayRoutine = testrayProject.createTestrayRoutine(
-						_replaceEnvVars(testrayRoutineName, true));
+						_testrayTextReplacer.replace(testrayRoutineName));
 				}
 			}
 
@@ -847,7 +853,7 @@ public class TestrayImporter {
 						"testray.override.routine.name");
 
 					testrayRoutine = testrayProject.createTestrayRoutine(
-						_replaceEnvVars(testrayRoutineName, true));
+						_testrayTextReplacer.replace(testrayRoutineName));
 				}
 			}
 			catch (IOException ioException) {
@@ -1132,14 +1138,6 @@ public class TestrayImporter {
 		}
 	}
 
-	private String _fixSlackString(String string) {
-		string = string.replace("*", "&#42;");
-		string = string.replace(">", "&gt;");
-		string = string.replace("<", "&lt;");
-
-		return string.replace("|", "&vert;");
-	}
-
 	private String _getBuildParameter(String buildParameterName) {
 		Map<String, String> buildParameters = new HashMap<>();
 
@@ -1263,30 +1261,6 @@ public class TestrayImporter {
 
 		throw new RuntimeException(
 			"Unable to get job property " + basePropertyName);
-	}
-
-	private String _getMajorPortalVersion() {
-		PortalWorkspaceGitRepository portalWorkspaceGitRepository =
-			_getPortalWorkspaceGitRepository();
-
-		if (portalWorkspaceGitRepository == null) {
-			return "7.4";
-		}
-
-		File releasePropertiesFile = new File(
-			portalWorkspaceGitRepository.getDirectory(), "release.properties");
-
-		Properties releaseProperties = JenkinsResultsParserUtil.getProperties(
-			releasePropertiesFile);
-
-		String majorPortalVersion = JenkinsResultsParserUtil.getProperty(
-			releaseProperties, "lp.version.major");
-
-		if (JenkinsResultsParserUtil.isNullOrEmpty(majorPortalVersion)) {
-			return "7.4";
-		}
-
-		return majorPortalVersion;
 	}
 
 	private PluginsWorkspaceGitRepository _getPluginsWorkspaceGitRepository() {
@@ -1829,452 +1803,9 @@ public class TestrayImporter {
 		return topLevelStandaloneBuildTestrayCaseResult;
 	}
 
-	private String _replaceEnvVars(String string, boolean truncate) {
-		string = _replaceEnvVarsControllerBuild(string);
-		string = _replaceEnvVarsPluginsBranchInformationBuild(string);
-		string = _replaceEnvVarsPluginsTopLevelBuild(string);
-		string = _replaceEnvVarsPortalAppReleaseTopLevelBuild(string);
-		string = _replaceEnvVarsPortalBranchInformationBuild(string);
-		string = _replaceEnvVarsPortalRelease(string);
-		string = _replaceEnvVarsPullRequestBuild(string);
-		string = _replaceEnvVarsQAWebsitesTopLevelBuild(string);
-		string = _replaceEnvVarsTopLevelBuild(string);
-
-		String jobName = _topLevelBuildReport.getJobName();
-
-		if (jobName.contains("subrepository")) {
-			string = _replaceEnvVarsSubrepository(string);
-		}
-
-		if (truncate && !JenkinsResultsParserUtil.isNullOrEmpty(string) &&
-			(string.length() > 150)) {
-
-			string = string.substring(string.length() - 150);
-		}
-
-		return string;
-	}
-
-	private String _replaceEnvVarsControllerBuild(String string) {
-		ControllerBuildReport controllerBuildReport =
-			_topLevelBuildReport.getControllerBuildReport();
-
-		if (controllerBuildReport == null) {
-			return string;
-		}
-
-		string = string.replace(
-			"$(jenkins.controller.build.url)",
-			String.valueOf(controllerBuildReport.getBuildURL()));
-		string = string.replace(
-			"$(jenkins.controller.build.number)",
-			String.valueOf(controllerBuildReport.getBuildNumber()));
-		string = string.replace(
-			"$(jenkins.controller.build.start)",
-			controllerBuildReport.getTestrayBuildDateString());
-		string = string.replace(
-			"$(jenkins.controller.job.name)",
-			controllerBuildReport.getJobName());
-
-		JenkinsMaster jenkinsMaster = controllerBuildReport.getJenkinsMaster();
-
-		return string.replace(
-			"$(jenkins.controller.master.hostname)", jenkinsMaster.getName());
-	}
-
-	private String _replaceEnvVarsPluginsBranchInformationBuild(String string) {
-		PluginsWorkspaceGitRepository pluginsWorkspaceGitRepository =
-			_getPluginsWorkspaceGitRepository();
-
-		if (pluginsWorkspaceGitRepository == null) {
-			return string;
-		}
-
-		string = string.replace(
-			"$(plugins.branch.name)",
-			pluginsWorkspaceGitRepository.getUpstreamBranchName());
-		string = string.replace(
-			"$(plugins.custom.branch.name)",
-			pluginsWorkspaceGitRepository.getSenderBranchName());
-		string = string.replace(
-			"$(plugins.custom.branch.username)",
-			pluginsWorkspaceGitRepository.getSenderBranchUsername());
-		string = string.replace(
-			"$(plugins.repository)", pluginsWorkspaceGitRepository.getName());
-
-		return string.replace(
-			"$(plugins.sha)",
-			pluginsWorkspaceGitRepository.getSenderBranchSHA());
-	}
-
-	private String _replaceEnvVarsPluginsTopLevelBuild(String string) {
-		Map<String, String> buildParameters =
-			_topLevelBuildReport.getBuildParameters();
-
-		String pluginName = buildParameters.get("TEST_PLUGIN_NAME");
-
-		if (!JenkinsResultsParserUtil.isNullOrEmpty(pluginName)) {
-			string = string.replace("$(plugin.name)", pluginName);
-		}
-
-		return string;
-	}
-
-	private String _replaceEnvVarsPortalAppReleaseTopLevelBuild(String string) {
-		Map<String, String> buildParameters =
-			_topLevelBuildReport.getBuildParameters();
-
-		String portalAppName = buildParameters.get("TEST_PORTAL_APP_NAME");
-
-		if (!JenkinsResultsParserUtil.isNullOrEmpty(portalAppName)) {
-			string = string.replace("$(portal.app.name)", portalAppName);
-		}
-
-		return string;
-	}
-
-	private String _replaceEnvVarsPortalBranchInformationBuild(String string) {
-		Job.BuildProfile buildProfile = _topLevelBuildReport.getBuildProfile();
-
-		if (buildProfile != null) {
-			string = string.replace(
-				"$(portal.profile)", buildProfile.toDisplayString());
-
-			if (buildProfile == Job.BuildProfile.PORTAL) {
-				string = string.replace("$(portal.type)", "CE");
-			}
-			else {
-				string = string.replace("$(portal.type)", "EE");
-			}
-		}
-
-		String majorPortalVersion = _getMajorPortalVersion();
-
-		string = string.replace("$(portal.version)", majorPortalVersion);
-
-		string = string.replace(
-			"$(portal.product.version)", majorPortalVersion + ".x");
-
-		PortalWorkspaceGitRepository portalWorkspaceGitRepository =
-			_getPortalWorkspaceGitRepository();
-
-		if (portalWorkspaceGitRepository == null) {
-			return string;
-		}
-
-		String portalUpstreamBranchName =
-			portalWorkspaceGitRepository.getUpstreamBranchName();
-
-		string = string.replace(
-			"$(portal.branch.name)", portalUpstreamBranchName);
-
-		Matcher releaseBranchMatcher = _releaseBranchPattern.matcher(
-			portalUpstreamBranchName);
-
-		if (releaseBranchMatcher.find()) {
-			string = string.replace(
-				"$(portal.branch.display.name)",
-				JenkinsResultsParserUtil.combine(
-					releaseBranchMatcher.group("year"), " Q",
-					releaseBranchMatcher.group("quarter")));
-		}
-		else {
-			string = string.replace(
-				"$(portal.branch.display.name)", majorPortalVersion);
-		}
-
-		string = string.replace(
-			"$(portal.repository)", portalWorkspaceGitRepository.getName());
-
-		return string.replace(
-			"$(portal.sha)", portalWorkspaceGitRepository.getSenderBranchSHA());
-	}
-
-	private String _replaceEnvVarsPortalRelease(String string) {
-		PortalRelease portalRelease = getPortalRelease();
-
-		if (portalRelease != null) {
-			String portalBundleTomcatURLString = String.valueOf(
-				portalRelease.getPortalBundleTomcatURL());
-
-			string = string.replace(
-				"$(portal.product.version)", portalRelease.getPortalVersion());
-			string = string.replace(
-				"$(portal.release.tomcat.url)", portalBundleTomcatURLString);
-			string = string.replace(
-				"$(portal.release.version)", portalRelease.getPortalVersion());
-
-			Matcher matcher = _releaseArtifactURLPattern.matcher(
-				portalBundleTomcatURLString);
-
-			if (matcher.find()) {
-				string = string.replace(
-					"$(portal.release.tomcat.name)",
-					matcher.group("releaseName"));
-			}
-
-			Map<String, String> buildParameters =
-				_topLevelBuildReport.getBuildParameters();
-
-			String portalReleaseBuildVersion = buildParameters.get(
-				"TEST_PORTAL_RELEASE_VERSION");
-
-			if (!JenkinsResultsParserUtil.isNullOrEmpty(
-					portalReleaseBuildVersion)) {
-
-				string = string.replace(
-					"$(portal.release.build.version)",
-					portalReleaseBuildVersion);
-			}
-		}
-
-		PortalFixpackRelease portalFixpackRelease = getPortalFixpackRelease();
-
-		if (portalFixpackRelease != null) {
-			String portalFixpackURL = String.valueOf(
-				portalFixpackRelease.getPortalFixpackURL());
-
-			string = string.replace(
-				"$(portal.fixpack.release.url)", portalFixpackURL);
-
-			string = string.replace(
-				"$(portal.fixpack.release.version)",
-				portalFixpackRelease.getPortalFixpackVersion());
-
-			Matcher matcher = _releaseArtifactURLPattern.matcher(
-				portalFixpackURL);
-
-			if (matcher.find()) {
-				string = string.replace(
-					"$(portal.fixpack.release.name)",
-					matcher.group("releaseName"));
-			}
-		}
-
-		PortalHotfixRelease portalHotfixRelease = getPortalHotfixRelease();
-
-		if (portalHotfixRelease != null) {
-			String portalHotfixURL = String.valueOf(
-				portalHotfixRelease.getPortalHotfixReleaseURL());
-
-			string = string.replace(
-				"$(portal.hotfix.release.url)", portalHotfixURL);
-
-			string = string.replace(
-				"$(portal.hotfix.release.version)",
-				portalHotfixRelease.getPortalHotfixReleaseVersion());
-
-			if (portalRelease != null) {
-				string = string.replace(
-					"$(portal.product.version)",
-					portalRelease.getPortalVersion());
-			}
-
-			Matcher matcher = _releaseArtifactURLPattern.matcher(
-				portalHotfixURL);
-
-			if (matcher.find()) {
-				string = string.replace(
-					"$(portal.hotfix.release.name)",
-					matcher.group("releaseName"));
-			}
-		}
-
-		StringBuilder sb = new StringBuilder();
-
-		if (portalRelease == null) {
-			sb.append(_getMajorPortalVersion());
-			sb.append(".x");
-
-			string = string.replace("$(portal.product.version)", sb.toString());
-		}
-		else {
-			sb.append(portalRelease.getPortalVersion());
-
-			string = string.replace(
-				"$(portal.product.version)", portalRelease.getPortalVersion());
-
-			if (portalFixpackRelease != null) {
-				sb.append(" FP");
-				sb.append(portalFixpackRelease.getPortalFixpackVersion());
-			}
-
-			if (portalHotfixRelease != null) {
-				sb.append(" HF");
-				sb.append(portalHotfixRelease.getPortalHotfixReleaseVersion());
-			}
-		}
-
-		return string.replace("$(portal.release.name)", sb.toString());
-	}
-
-	private String _replaceEnvVarsPullRequestBuild(String string) {
-		PullRequest pullRequest = getPullRequest();
-
-		if (pullRequest == null) {
-			return string;
-		}
-
-		string = string.replace(
-			"$(pull.request.number)", pullRequest.getNumber());
-		string = string.replace(
-			"$(pull.request.url)", pullRequest.getHtmlURL());
-		string = string.replace(
-			"$(pull.request.receiver.username)",
-			pullRequest.getReceiverUsername());
-
-		return string.replace(
-			"$(pull.request.sender.username)", pullRequest.getSenderUsername());
-	}
-
-	private String _replaceEnvVarsQAWebsitesTopLevelBuild(String string) {
-		Map<String, String> buildParameters =
-			_topLevelBuildReport.getBuildParameters();
-
-		String projectNames = buildParameters.get("PROJECT_NAMES");
-
-		if (!JenkinsResultsParserUtil.isNullOrEmpty(projectNames)) {
-			string = string.replace(
-				"$(qa.websites.project.name)", projectNames);
-		}
-
-		return string;
-	}
-
-	private String _replaceEnvVarsSubrepository(String string) {
-		Map<String, String> buildParameters =
-			_topLevelBuildReport.getBuildParameters();
-
-		String githubUpstreamBranchName = buildParameters.get(
-			"GITHUB_UPSTREAM_BRANCH_NAME");
-
-		if (!JenkinsResultsParserUtil.isNullOrEmpty(githubUpstreamBranchName)) {
-			string = string.replace(
-				"$(github.upstream.branch.name)", githubUpstreamBranchName);
-		}
-
-		String repositoryName = buildParameters.get("REPOSITORY_NAME");
-
-		if (!JenkinsResultsParserUtil.isNullOrEmpty(repositoryName)) {
-			string = string.replace("$(repository.name)", repositoryName);
-		}
-
-		return string;
-	}
-
-	private String _replaceEnvVarsTopLevelBuild(String string) {
-		string = string.replace(
-			"$(ci.test.suite)", _topLevelBuildReport.getTestSuiteName());
-		string = string.replace(
-			"$(jenkins.build.number)",
-			String.valueOf(_topLevelBuildReport.getBuildNumber()));
-		string = string.replace(
-			"$(jenkins.build.start)",
-			JenkinsResultsParserUtil.toDateString(
-				_topLevelBuildReport.getStartDate(), "yyyy-MM-dd[HH:mm:ss]",
-				"America/Los_Angeles"));
-		string = string.replace(
-			"$(jenkins.build.url)",
-			String.valueOf(_topLevelBuildReport.getBuildURL()));
-		string = string.replace(
-			"$(jenkins.job.name)", _topLevelBuildReport.getJobName());
-
-		JenkinsMaster jenkinsMaster = _topLevelBuildReport.getJenkinsMaster();
-
-		string = string.replace(
-			"$(jenkins.master.hostname)", jenkinsMaster.getName());
-
-		return string.replace(
-			"$(jenkins.report.url)",
-			String.valueOf(_topLevelBuildReport.getJenkinsReportURL()));
-	}
-
 	private String _replaceSlackEnvVars(String string, File testBaseDir) {
-		string = _replaceEnvVars(string, false);
-
-		string = _replaceSlackEnvVarsTestrayInformation(string, testBaseDir);
-		string = _replaceSlackEnvVarsTestrayImporter(string);
-
-		return string;
-	}
-
-	private String _replaceSlackEnvVarsTestrayImporter(String string) {
-		String buildNumber = Environment.get("BUILD_NUMBER");
-
-		if (!JenkinsResultsParserUtil.isNullOrEmpty(buildNumber)) {
-			string = string.replace(
-				"$(testray.importer.build.number)", buildNumber);
-		}
-
-		String buildURL = Environment.get("BUILD_URL");
-
-		if (!JenkinsResultsParserUtil.isNullOrEmpty(buildURL)) {
-			string = string.replace("$(testray.importer.build.url)", buildURL);
-		}
-
-		String jobName = Environment.get("JOB_NAME");
-
-		if (!JenkinsResultsParserUtil.isNullOrEmpty(jobName)) {
-			string = string.replace("$(testray.importer.job.name)", jobName);
-		}
-
-		return string;
-	}
-
-	private String _replaceSlackEnvVarsTestrayInformation(
-		String string, File testBaseDir) {
-
-		TestrayServer testrayServer = getTestrayServer(testBaseDir);
-
-		if (testrayServer != null) {
-			string = string.replace(
-				"$(testray.server.url)",
-				String.valueOf(testrayServer.getURL()));
-		}
-
-		TestrayProject testrayProject = getTestrayProject(testBaseDir);
-
-		if (testrayProject != null) {
-			string = string.replace(
-				"$(testray.project.name)",
-				_fixSlackString(testrayProject.getName()));
-
-			string = string.replace(
-				"$(testray.project.url)",
-				String.valueOf(testrayProject.getURL()));
-		}
-
-		TestrayProductVersion testrayProductVersion = getTestrayProductVersion(
-			testBaseDir);
-
-		if (testrayProductVersion != null) {
-			string = string.replace(
-				"$(testray.product.version.name)",
-				_fixSlackString(testrayProductVersion.getName()));
-		}
-
-		TestrayRoutine testrayRoutine = getTestrayRoutine(testBaseDir);
-
-		if (testrayRoutine != null) {
-			string = string.replace(
-				"$(testray.routine.name)",
-				_fixSlackString(testrayRoutine.getName()));
-			string = string.replace(
-				"$(testray.routine.url)",
-				String.valueOf(testrayRoutine.getURL()));
-		}
-
-		TestrayBuild testrayBuild = getTestrayBuild(testBaseDir);
-
-		if (testrayBuild != null) {
-			string = string.replace(
-				"$(testray.build.name)",
-				_fixSlackString(testrayBuild.getName()));
-			string = string.replace(
-				"$(testray.build.url)", String.valueOf(testrayBuild.getURL()));
-		}
-
-		return string;
+		return _testrayTextReplacer.replaceSlack(
+			string, getTestrayBuild(testBaseDir));
 	}
 
 	private void _sendPullRequestNotification() {
@@ -2293,10 +1824,6 @@ public class TestrayImporter {
 		JenkinsResultsParserUtil.getNewThreadPoolExecutor(10, true);
 	private static final Pattern _quarterlyReleaseVersionPattern =
 		Pattern.compile("(?<year>\\d{4}).(?<quarter>[Qq]\\d+).\\d+");
-	private static final Pattern _releaseArtifactURLPattern = Pattern.compile(
-		"https?://.+/(?<releaseName>[^/]+)(.7z|.tar.gz|.war|.zip)");
-	private static final Pattern _releaseBranchPattern = Pattern.compile(
-		"release-(?<year>\\d{4})\\.q(?<quarter>[1-4])");
 
 	private final List<Job> _jobs;
 	private final List<PortalFixpackRelease> _portalFixpackReleases;
@@ -2313,6 +1840,7 @@ public class TestrayImporter {
 		Collections.synchronizedMap(new HashMap<File, TestrayRoutine>());
 	private final Map<File, TestrayServer> _testrayServers =
 		Collections.synchronizedMap(new HashMap<File, TestrayServer>());
+	private final TestrayTextReplacer _testrayTextReplacer;
 	private final TopLevelBuildReport _topLevelBuildReport;
 	private final AtomicInteger _uncreatedTestrayCaseResultsCount =
 		new AtomicInteger();

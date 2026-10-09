@@ -32,6 +32,10 @@ public class MonitorFactory {
 				return new ResourceThresholdMonitor(monitorConfig);
 			}
 
+			if (type.equals("smtp-endpoint")) {
+				return new SMTPEndpointMonitor(monitorConfig);
+			}
+
 			if (type.equals("upstream-job-health")) {
 				return new UpstreamJobHealthMonitor(monitorConfig);
 			}

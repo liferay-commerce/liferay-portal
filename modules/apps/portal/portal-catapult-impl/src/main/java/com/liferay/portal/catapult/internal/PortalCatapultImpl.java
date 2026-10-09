@@ -30,6 +30,8 @@ import com.liferay.portal.kernel.util.StringUtil;
 
 import java.io.IOException;
 
+import java.net.HttpURLConnection;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -103,7 +105,19 @@ public class PortalCatapultImpl implements PortalCatapult {
 		return executorService.submit(
 			() -> {
 				try {
-					return _http.URLtoByteArray(options);
+					byte[] bytes = _http.URLtoByteArray(options);
+
+					Http.Response response = options.getResponse();
+
+					if ((response.getResponseCode() >=
+							HttpURLConnection.HTTP_MULT_CHOICE) ||
+						(response.getResponseCode() <
+							HttpURLConnection.HTTP_OK)) {
+
+						throw new PortalException(new String(bytes));
+					}
+
+					return bytes;
 				}
 				catch (IOException ioException) {
 					_log.error(ioException);

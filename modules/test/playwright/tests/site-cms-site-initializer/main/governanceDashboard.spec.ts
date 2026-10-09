@@ -1250,7 +1250,7 @@ test.describe('Duplication and Similarity section', () => {
 	);
 });
 
-test.describe('Workflow and Content Progress section', () => {
+test.describe('Operations section', () => {
 	test(
 		'Shows the distribution of contents by status for the selected space',
 		{tag: '@LPD-97421'},

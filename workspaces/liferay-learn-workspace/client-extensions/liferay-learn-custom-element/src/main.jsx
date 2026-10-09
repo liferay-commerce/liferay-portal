@@ -4,7 +4,9 @@
  */
 
 import { createRoot} from 'react-dom/client';
+
 import Routes from './Routes';
+
 import './index.scss';
 
 class WebComponent extends HTMLElement {

@@ -9,6 +9,7 @@ dependencies {
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:depot:depot-api")
+	compileOnly project(":apps:dispatch:dispatch-api")
 	compileOnly project(":apps:fragment:fragment-api")
 	compileOnly project(":apps:fragment:fragment-entry-processor:fragment-entry-processor-api")
 	compileOnly project(":apps:frontend-data-set:frontend-data-set-api")
@@ -35,5 +36,6 @@ dependencies {
 	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
+	testImplementation project(":apps:static:osgi:osgi-util")
 	testImplementation project(":apps:trash:trash-api")
 }

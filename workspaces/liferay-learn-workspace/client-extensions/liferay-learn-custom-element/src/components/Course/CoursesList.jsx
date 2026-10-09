@@ -15,29 +15,28 @@ const CoursesList = () => {
 	const [courses, setCourses] = useState(null);
 
 	useEffect(() => {
-		async () => {
-			const response = await getCoursesAndFirstLessons();
-
-			setCourses(
-				response
-					.filter(
-						(course) => course.lesson && course.r_module_c_course
-					)
-					.sort(
-						(a, b) =>
-							a.r_module_c_course.position -
-							b.r_module_c_course.position
-					)
-					.slice(0, 3)
-			);
-		};
-
+		getCoursesAndFirstLessons()
+			.then((response) =>
+				setCourses(
+					response
+						.filter(
+							(course) => course.lesson && course.r_module_c_course
+						)
+						.sort(
+							(a, b) =>
+								a.r_module_c_course.position -
+								b.r_module_c_course.position
+						)
+						.slice(0, 3)
+				)
+			)
+			.catch((error) => console.error(error));
 	}, []);
 
 	return (
 		<ClayLayout.ContainerFluid view>
 			<ClayLayout.Row justify="start">
-				{courses && !!courses.length && (
+				{!!courses?.length && (
 					<>
 						{courses.map((course, index) => {
 							return (

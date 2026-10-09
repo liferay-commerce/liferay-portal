@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConstants;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectFolderConstants;
 import com.liferay.site.pim.site.initializer.exception.DuplicatePIMLinkException;
+import com.liferay.site.pim.site.initializer.internal.util.PIMConnectorDispatchTriggerUtil;
 import com.liferay.site.pim.site.initializer.internal.util.PIMLinkUtil;
 import com.liferay.site.pim.site.initializer.internal.util.PIMObjectEntryFolderUtil;
 import com.liferay.site.pim.site.initializer.link.PIMLinkType;
@@ -53,6 +54,18 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(service = ModelListener.class)
 public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
+
+	@Override
+	public void onAfterCreate(ObjectEntry objectEntry)
+		throws ModelListenerException {
+
+		try {
+			_onAfterCreate(objectEntry);
+		}
+		catch (Exception exception) {
+			throw new ModelListenerException(exception);
+		}
+	}
 
 	@Override
 	public void onAfterRemove(ObjectEntry objectEntry)
@@ -160,14 +173,50 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		return false;
 	}
 
+	private void _onAfterCreate(ObjectEntry objectEntry)
+		throws PortalException {
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				objectEntry.getCompanyId(), "LPD-96666")) {
+
+			return;
+		}
+
+		ObjectDefinition objectDefinition = objectEntry.getObjectDefinition();
+
+		if ((objectDefinition != null) &&
+			Objects.equals(
+				objectDefinition.getExternalReferenceCode(),
+				PIMObjectDefinitionConstants.
+					EXTERNAL_REFERENCE_CODE_CONNECTOR)) {
+
+			PIMConnectorDispatchTriggerUtil.addDispatchTrigger(objectEntry);
+		}
+	}
+
 	private void _onAfterRemove(ObjectEntry objectEntry)
 		throws PortalException {
 
-		if (FeatureFlagManagerUtil.isEnabled(
-				objectEntry.getCompanyId(), "LPD-96666") &&
-			(objectEntry.getObjectDefinition() != null) &&
-			_isPIMProductObjectEntry(objectEntry)) {
+		if (!FeatureFlagManagerUtil.isEnabled(
+				objectEntry.getCompanyId(), "LPD-96666")) {
 
+			return;
+		}
+
+		ObjectDefinition objectDefinition = objectEntry.getObjectDefinition();
+
+		if (objectDefinition == null) {
+			return;
+		}
+
+		if (Objects.equals(
+				objectDefinition.getExternalReferenceCode(),
+				PIMObjectDefinitionConstants.
+					EXTERNAL_REFERENCE_CODE_CONNECTOR)) {
+
+			PIMConnectorDispatchTriggerUtil.deleteDispatchTrigger(objectEntry);
+		}
+		else if (_isPIMProductObjectEntry(objectEntry)) {
 			_deletePIMLinkObjectEntries(objectEntry);
 		}
 	}
@@ -176,13 +225,29 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 			ObjectEntry originalObjectEntry, ObjectEntry objectEntry)
 		throws PortalException {
 
-		if (FeatureFlagManagerUtil.isEnabled(
-				objectEntry.getCompanyId(), "LPD-96666") &&
-			!Objects.equals(
-				originalObjectEntry.getExternalReferenceCode(),
-				objectEntry.getExternalReferenceCode()) &&
-			(objectEntry.getObjectDefinition() != null) &&
-			_isPIMProductObjectEntry(objectEntry)) {
+		if (!FeatureFlagManagerUtil.isEnabled(
+				objectEntry.getCompanyId(), "LPD-96666")) {
+
+			return;
+		}
+
+		ObjectDefinition objectDefinition = objectEntry.getObjectDefinition();
+
+		if (objectDefinition == null) {
+			return;
+		}
+
+		if (Objects.equals(
+				objectDefinition.getExternalReferenceCode(),
+				PIMObjectDefinitionConstants.
+					EXTERNAL_REFERENCE_CODE_CONNECTOR)) {
+
+			PIMConnectorDispatchTriggerUtil.updateDispatchTrigger(objectEntry);
+		}
+		else if (!Objects.equals(
+					originalObjectEntry.getExternalReferenceCode(),
+					objectEntry.getExternalReferenceCode()) &&
+				 _isPIMProductObjectEntry(objectEntry)) {
 
 			_updatePIMLinkObjectEntries(originalObjectEntry, objectEntry);
 		}

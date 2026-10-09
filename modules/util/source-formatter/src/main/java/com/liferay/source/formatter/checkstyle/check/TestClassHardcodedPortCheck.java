@@ -27,7 +27,7 @@ public class TestClassHardcodedPortCheck extends BaseCheck {
 		String absolutePath = getAbsolutePath();
 
 		if (!absolutePath.endsWith("Test.java") ||
-			(detailAST.getParent() != null)) {
+			!isDirectChildOfCompilationUnit(detailAST)) {
 
 			return;
 		}

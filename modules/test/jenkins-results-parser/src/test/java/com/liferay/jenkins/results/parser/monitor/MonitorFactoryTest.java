@@ -111,6 +111,23 @@ public class MonitorFactoryTest
 	}
 
 	@Test
+	public void testNewMonitorSMTPEndpoint() {
+		Properties monitorProperties = new Properties();
+
+		monitorProperties.setProperty(
+			"monitor[a].parameter[url]",
+			"smtp://" + RandomTestUtil.randomString());
+		monitorProperties.setProperty("monitor[a].type", "smtp-endpoint");
+
+		List<MonitorConfig> monitorConfigs =
+			MonitorConfigLoader.getMonitorConfigs(monitorProperties);
+
+		Monitor monitor = MonitorFactory.newMonitor(monitorConfigs.get(0));
+
+		Assert.assertTrue(monitor instanceof SMTPEndpointMonitor);
+	}
+
+	@Test
 	public void testNewMonitorUnknownType() {
 		_testNewMonitorExpectedIllegalArgumentException(
 			new MonitorConfig(

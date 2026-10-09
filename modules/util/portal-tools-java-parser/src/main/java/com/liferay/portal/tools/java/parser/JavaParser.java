@@ -5,8 +5,6 @@
 
 package com.liferay.portal.tools.java.parser;
 
-import antlr.CommonHiddenStreamToken;
-
 import com.liferay.petra.io.unsync.UnsyncBufferedReader;
 import com.liferay.petra.io.unsync.UnsyncStringReader;
 import com.liferay.petra.string.CharPool;
@@ -32,6 +30,7 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FileContents;
 import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,7 +39,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
+
+import org.antlr.v4.runtime.Token;
 
 /**
  * @author Hugo Huijser
@@ -212,10 +214,10 @@ public class JavaParser {
 		ParsedJavaTerm parsedJavaTerm, String indent,
 		FileContents fileContents) {
 
-		CommonHiddenStreamToken precedingCommentToken =
-			parsedJavaTerm.getPrecedingCommentToken();
+		List<Token> precedingCommentTokens =
+			parsedJavaTerm.getPrecedingCommentTokens();
 
-		if (precedingCommentToken == null) {
+		if (precedingCommentTokens == null) {
 			return contentModifications;
 		}
 
@@ -230,15 +232,18 @@ public class JavaParser {
 			expectedCommentIndent += "\t";
 		}
 
-		while (true) {
-			if (precedingCommentToken == null) {
-				return contentModifications;
-			}
+		ListIterator<Token> listIterator = precedingCommentTokens.listIterator(
+			precedingCommentTokens.size());
+
+		while (listIterator.hasPrevious()) {
+			Token precedingCommentToken = listIterator.previous();
 
 			String line = fileContents.getLine(
 				precedingCommentToken.getLine() - 1);
 
-			if (!_isAtLineStart(line, precedingCommentToken.getColumn() - 1)) {
+			if (!_isAtLineStart(
+					line, precedingCommentToken.getCharPositionInLine())) {
+
 				return contentModifications;
 			}
 
@@ -253,8 +258,6 @@ public class JavaParser {
 			if (precedingCommentToken.getType() ==
 					TokenTypes.SINGLE_LINE_COMMENT) {
 
-				precedingCommentToken = precedingCommentToken.getHiddenBefore();
-
 				continue;
 			}
 
@@ -266,8 +269,6 @@ public class JavaParser {
 				javadoc = true;
 			}
 			else if (actualCommentIndent.equals(expectedCommentIndent)) {
-				precedingCommentToken = precedingCommentToken.getHiddenBefore();
-
 				continue;
 			}
 
@@ -300,9 +301,9 @@ public class JavaParser {
 						i);
 				}
 			}
-
-			precedingCommentToken = precedingCommentToken.getHiddenBefore();
 		}
+
+		return contentModifications;
 	}
 
 	private static ContentModifications _addContentModifications(
@@ -661,8 +662,9 @@ public class JavaParser {
 			return curlyBracePositionList;
 		}
 
-		if ((detailAST.getType() == TokenTypes.ENUM_CONSTANT_DEF) ||
-			(detailAST.getType() == TokenTypes.LITERAL_NEW)) {
+		if (TokenUtil.isOfType(
+				detailAST, TokenTypes.ENUM_CONSTANT_DEF,
+				TokenTypes.LITERAL_NEW)) {
 
 			DetailAST objblockDetailAST = detailAST.findFirstToken(
 				TokenTypes.OBJBLOCK);
@@ -725,11 +727,17 @@ public class JavaParser {
 					new Position(
 						lastChildDetailAST.getLineNo(),
 						lastChildDetailAST.getColumnNo()));
+
+				// Switch rules are parsed as separate terms, so the curly
+				// braces nested inside them belong to those terms
+
+				return _getCurlyBracePositionList(
+					curlyBracePositionList, detailAST.getNextSibling());
 			}
 		}
 
-		if ((detailAST.getType() != TokenTypes.OBJBLOCK) &&
-			(detailAST.getType() != TokenTypes.SLIST)) {
+		if (!TokenUtil.isOfType(
+				detailAST, TokenTypes.OBJBLOCK, TokenTypes.SLIST)) {
 
 			curlyBracePositionList = _getCurlyBracePositionList(
 				curlyBracePositionList, detailAST.getFirstChild());
@@ -751,10 +759,10 @@ public class JavaParser {
 				break;
 			}
 
-			if ((parentDetailAST.getType() == TokenTypes.ELIST) ||
-				(parentDetailAST.getType() == TokenTypes.LITERAL_SWITCH) ||
-				(parentDetailAST.getType() == TokenTypes.OBJBLOCK) ||
-				(parentDetailAST.getType() == TokenTypes.SLIST)) {
+			if (TokenUtil.isOfType(
+					parentDetailAST, TokenTypes.ELIST,
+					TokenTypes.LITERAL_SWITCH, TokenTypes.OBJBLOCK,
+					TokenTypes.SLIST)) {
 
 				indent += StringPool.TAB;
 			}
@@ -819,27 +827,23 @@ public class JavaParser {
 				continue;
 			}
 
-			if ((parentDetailAST.getType() != TokenTypes.LITERAL_ELSE) &&
-				(parentDetailAST.getType() != TokenTypes.LITERAL_IF) &&
-				(parentDetailAST.getType() != TokenTypes.SLIST)) {
+			if (!TokenUtil.isOfType(
+					parentDetailAST, TokenTypes.LITERAL_ELSE,
+					TokenTypes.LITERAL_IF, TokenTypes.SLIST)) {
 
 				DetailAST grandParentDetailAST = parentDetailAST.getParent();
 
-				if ((grandParentDetailAST != null) &&
-					((grandParentDetailAST.getType() ==
-						TokenTypes.LITERAL_ELSE) ||
-					 (grandParentDetailAST.getType() ==
-						 TokenTypes.LITERAL_IF) ||
-					 (grandParentDetailAST.getType() ==
-						 TokenTypes.LITERAL_WHILE))) {
+				if (TokenUtil.isOfType(
+						grandParentDetailAST, TokenTypes.LITERAL_ELSE,
+						TokenTypes.LITERAL_IF, TokenTypes.LITERAL_WHILE)) {
 
 					indent += "\t";
 				}
 			}
 
-			if (((parentDetailAST.getType() == TokenTypes.LITERAL_FOR) ||
-				 (parentDetailAST.getType() == TokenTypes.LITERAL_IF) ||
-				 (parentDetailAST.getType() == TokenTypes.LITERAL_WHILE)) &&
+			if (TokenUtil.isOfType(
+					parentDetailAST, TokenTypes.LITERAL_FOR,
+					TokenTypes.LITERAL_IF, TokenTypes.LITERAL_WHILE) &&
 				(parentDetailAST.findFirstToken(TokenTypes.SLIST) == null)) {
 
 				indent += "\t";
@@ -961,14 +965,14 @@ public class JavaParser {
 	}
 
 	private static boolean _isExcludedJavaTerm(ParsedJavaTerm parsedJavaTerm) {
-		CommonHiddenStreamToken precedingCommentToken =
-			parsedJavaTerm.getPrecedingCommentToken();
+		List<Token> precedingCommentTokens =
+			parsedJavaTerm.getPrecedingCommentTokens();
 
-		while (true) {
-			if (precedingCommentToken == null) {
-				return false;
-			}
+		if (precedingCommentTokens == null) {
+			return false;
+		}
 
+		for (Token precedingCommentToken : precedingCommentTokens) {
 			if ((precedingCommentToken.getType() ==
 					TokenTypes.SINGLE_LINE_COMMENT) &&
 				StringUtil.startsWith(
@@ -977,9 +981,9 @@ public class JavaParser {
 
 				return true;
 			}
-
-			precedingCommentToken = precedingCommentToken.getHiddenBefore();
 		}
+
+		return false;
 	}
 
 	private static String _parse(
@@ -1208,9 +1212,9 @@ public class JavaParser {
 			}
 		}
 
-		if (((detailAST.getType() == TokenTypes.LITERAL_FOR) ||
-			 (detailAST.getType() == TokenTypes.LITERAL_IF) ||
-			 (detailAST.getType() == TokenTypes.LITERAL_WHILE)) &&
+		if (TokenUtil.isOfType(
+				detailAST, TokenTypes.LITERAL_FOR, TokenTypes.LITERAL_IF,
+				TokenTypes.LITERAL_WHILE) &&
 			(detailAST.findFirstToken(TokenTypes.SLIST) == null)) {
 
 			DetailAST rparentDetailAST = detailAST.findFirstToken(
@@ -1275,41 +1279,37 @@ public class JavaParser {
 
 		DetailAST parentDetailAST = detailAST.getParent();
 
-		if (((detailAST.getType() == TokenTypes.ANNOTATION_DEF) ||
-			 (detailAST.getType() == TokenTypes.CLASS_DEF) ||
-			 (detailAST.getType() == TokenTypes.ENUM_DEF) ||
-			 (detailAST.getType() == TokenTypes.INTERFACE_DEF) ||
-			 (detailAST.getType() == TokenTypes.RECORD_DEF)) &&
+		if (TokenUtil.isOfType(
+				detailAST, TokenTypes.ANNOTATION_DEF, TokenTypes.CLASS_DEF,
+				TokenTypes.ENUM_DEF, TokenTypes.INTERFACE_DEF,
+				TokenTypes.RECORD_DEF) &&
 			((parentDetailAST == null) ||
 			 (parentDetailAST.getType() != TokenTypes.OBJBLOCK))) {
 
 			parsedJavaClass = _parseDetailAST(
 				parsedJavaClass, detailAST, fileContents, maxLineLength);
 		}
-		else if ((detailAST.getType() == TokenTypes.IMPORT) ||
-				 (detailAST.getType() == TokenTypes.PACKAGE_DEF) ||
-				 (detailAST.getType() == TokenTypes.STATIC_IMPORT) ||
-				 (detailAST.getType() == TokenTypes.SWITCH_RULE)) {
+		else if (TokenUtil.isOfType(
+					detailAST, TokenTypes.IMPORT, TokenTypes.PACKAGE_DEF,
+					TokenTypes.STATIC_IMPORT, TokenTypes.SWITCH_RULE)) {
 
 			parsedJavaClass = _parseDetailAST(
 				parsedJavaClass, detailAST, fileContents, maxLineLength);
 		}
 
-		if ((parentDetailAST != null) &&
-			((parentDetailAST.getType() == TokenTypes.OBJBLOCK) ||
-			 (parentDetailAST.getType() == TokenTypes.SLIST))) {
+		if (TokenUtil.isOfType(
+				parentDetailAST, TokenTypes.OBJBLOCK, TokenTypes.SLIST)) {
 
 			parsedJavaClass = _parseDetailAST(
 				parsedJavaClass, detailAST, fileContents, maxLineLength);
 		}
 
-		CommonHiddenStreamToken commonHiddenStreamToken =
-			DetailASTUtil.getHiddenBefore(detailAST);
+		List<Token> hiddenBeforeTokens = DetailASTUtil.getHiddenBefore(
+			detailAST);
 
-		if (commonHiddenStreamToken != null) {
-			parsedJavaClass.addPrecedingCommentToken(
-				commonHiddenStreamToken,
-				DetailASTUtil.getStartPosition(detailAST));
+		if (hiddenBeforeTokens != null) {
+			parsedJavaClass.addPrecedingCommentTokens(
+				hiddenBeforeTokens, DetailASTUtil.getStartPosition(detailAST));
 		}
 
 		parsedJavaClass = _walk(

@@ -612,6 +612,11 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
+	public void testJavaLogVariableDefinition() throws Exception {
+		test("JavaLogVariableDefinition.testjava");
+	}
+
+	@Test
 	public void testJavaNewProblemInstantiationParameters() throws Exception {
 		test("JavaNewProblemInstantiationParameters.testjava");
 	}
@@ -880,6 +885,18 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
+	public void testNestedSwitchExpressions() throws Exception {
+		test(
+			SourceProcessorTestParameters.create(
+				"NestedSwitchExpressions.testjava"
+			).addExpectedMessage(
+				"Use \"if/else\" statement instead of \"switch\"", 14
+			).addExpectedMessage(
+				"Use \"if/else\" statement instead of \"switch\"", 15
+			));
+	}
+
+	@Test
 	public void testNullAssertionInIfStatement() throws Exception {
 		test(
 			SourceProcessorTestParameters.create(
@@ -913,6 +930,30 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
+	public void testPatternMatchingForSwitch() throws Exception {
+		test(
+			SourceProcessorTestParameters.create(
+				"PatternMatchingForSwitch.testjava"
+			).addExpectedMessage(
+				"Use \"if/else\" statement instead of \"switch\"", 14
+			).addExpectedMessage(
+				"Do not use pattern matching for switch", 16
+			).addExpectedMessage(
+				"Do not use pattern matching for switch", 17
+			).addExpectedMessage(
+				"Use \"if/else\" statement instead of \"switch\"", 23
+			).addExpectedMessage(
+				"Use \"if/else\" statement instead of \"switch\"", 25
+			).addExpectedMessage(
+				"Do not use pattern matching for switch", 26
+			).addExpectedMessage(
+				"Use \"if/else\" statement instead of \"switch\"", 35
+			).addExpectedMessage(
+				"Do not use pattern matching for switch", 36
+			));
+	}
+
+	@Test
 	public void testProxyUsage() throws Exception {
 		test(
 			"ProxyUsage.testjava",
@@ -938,6 +979,22 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 	@Test
 	public void testRecordClass() throws Exception {
 		test("RecordClass.testjava", "Do not declare record class", 11);
+	}
+
+	@Test
+	public void testRecordPattern() throws Exception {
+		test(
+			SourceProcessorTestParameters.create(
+				"RecordPattern.testjava"
+			).addExpectedMessage(
+				"Do not use record patterns", 18
+			).addExpectedMessage(
+				"Use \"if/else\" statement instead of \"switch\"", 35
+			).addExpectedMessage(
+				"Do not use pattern matching for switch", 36
+			).addExpectedMessage(
+				"Do not use record patterns", 36
+			));
 	}
 
 	@Test

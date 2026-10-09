@@ -102,121 +102,9 @@ definition {
 		}
 	}
 
-	@description = "LPS-134960 When in Blogs, search by category or to assign a category to an item, all categories, regardless the visibility of the vocabularies they belong to, are available."
+	@description = "LPS-134960 When in Web Content, Blogs or Documents & Media, search by category or to assign a category to an item, all categories, regardless the visibility of the vocabularies they belong to, are available."
 	@priority = 4
-	test AddCategoryOfAnyVisibilityToBlogs {
-		task ("Create public vocabulary") {
-			JSONCategory.addVocabulary(
-				groupName = "Test Site Name",
-				title = "Public Vocabulary Name");
-		}
-
-		task ("Add category to public vocabulary") {
-			JSONCategory.addCategory(
-				groupName = "Test Site Name",
-				title = "Public Category Name",
-				vocabularyName = "Public Vocabulary Name");
-		}
-
-		task ("Create internal vocabulary") {
-			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
-
-			Vocabulary.addInternalVocabulary(vocabularyName = "Internal Vocabulary Name");
-		}
-
-		task ("Add categories to internal vocabulary") {
-			JSONCategory.addCategory(
-				groupName = "Test Site Name",
-				title = "Internal Category Name",
-				vocabularyName = "Internal Vocabulary Name");
-		}
-
-		task ("Create a new blog") {
-			HeadlessBlog.addBlogEntry(
-				content = "Blogs Entry Content",
-				groupName = "Test Site Name",
-				title = "Blogs Entry Title");
-		}
-
-		task ("Add public and internal categories to Blogs") {
-			BlogsNavigator.openBlogsAdmin(siteURLKey = "test-site-name");
-
-			BlogsNavigator.gotoEditCP(entryTitle = "Blogs Entry Title");
-
-			Blogs.expandPanel(panel = "Categorization");
-
-			AssetCategorization.addCategory(
-				categoryName = "Public Category Name",
-				vocabularyName = "Public Vocabulary Name");
-
-			AssetCategorization.addCategory(
-				categoryName = "Internal Category Name",
-				vocabularyName = "Internal Vocabulary Name");
-
-			PortletEntry.publish();
-		}
-	}
-
-	@description = "LPS-134960 When in Documents & Media, search by category or to assign a category to an item, all categories, regardless the visibility of the vocabularies they belong to, are available."
-	@priority = 4
-	test AddCategoryOfAnyVisibilityToDocsAndMedia {
-		task ("Create public vocabulary") {
-			JSONCategory.addVocabulary(
-				groupName = "Test Site Name",
-				title = "Public Vocabulary Name");
-		}
-
-		task ("Add category to public vocabulary") {
-			JSONCategory.addCategory(
-				groupName = "Test Site Name",
-				title = "Public Category Name",
-				vocabularyName = "Public Vocabulary Name");
-		}
-
-		task ("Create internal vocabulary") {
-			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
-
-			Vocabulary.addInternalVocabulary(vocabularyName = "Internal Vocabulary Name");
-		}
-
-		task ("Add categories to internal vocabulary") {
-			JSONCategory.addCategory(
-				groupName = "Test Site Name",
-				title = "Internal Category Name",
-				vocabularyName = "Internal Vocabulary Name");
-		}
-
-		task ("Create a new Document") {
-			JSONDocument.addFile(
-				dmDocumentDescription = "DM Document Description",
-				dmDocumentTitle = "DM Document Title",
-				groupName = "Test Site Name");
-		}
-
-		task ("Add public and internal categories to Document") {
-			DMDocument.openDocumentsAndMediaAdmin(siteURLKey = "test-site-name");
-
-			LexiconEntry.gotoEntryMenuItem(
-				menuItem = "Edit",
-				rowEntry = "DM Document Title");
-
-			DMDocument.addCategories(
-				categoryNameList = "Public Category Name",
-				vocabularyName = "Public Vocabulary Name");
-
-			DMDocument.addCategories(
-				categoryNameList = "Internal Category Name",
-				vocabularyName = "Internal Vocabulary Name");
-
-			Button.clickSubmitButton();
-
-			Alert.viewSuccessMessage();
-		}
-	}
-
-	@description = "LPS-134960 When in Web Content, search by category or to assign a category to an item, all categories, regardless the visibility of the vocabularies they belong to, are available."
-	@priority = 4
-	test AddCategoryOfAnyVisibilityToWebContent {
+	test AddCategoryOfAnyVisibilityToAssets {
 		task ("Create public vocabulary") {
 			JSONCategory.addVocabulary(
 				groupName = "Test Site Name",
@@ -264,6 +152,58 @@ definition {
 				vocabularyName = "Internal Vocabulary Name");
 
 			WebContent.publishExistingWCArticleWithPermissions();
+		}
+
+		task ("Create a new blog") {
+			HeadlessBlog.addBlogEntry(
+				content = "Blogs Entry Content",
+				groupName = "Test Site Name",
+				title = "Blogs Entry Title");
+		}
+
+		task ("Add public and internal categories to Blogs") {
+			BlogsNavigator.openBlogsAdmin(siteURLKey = "test-site-name");
+
+			BlogsNavigator.gotoEditCP(entryTitle = "Blogs Entry Title");
+
+			Blogs.expandPanel(panel = "Categorization");
+
+			AssetCategorization.addCategory(
+				categoryName = "Public Category Name",
+				vocabularyName = "Public Vocabulary Name");
+
+			AssetCategorization.addCategory(
+				categoryName = "Internal Category Name",
+				vocabularyName = "Internal Vocabulary Name");
+
+			PortletEntry.publish();
+		}
+
+		task ("Create a new Document") {
+			JSONDocument.addFile(
+				dmDocumentDescription = "DM Document Description",
+				dmDocumentTitle = "DM Document Title",
+				groupName = "Test Site Name");
+		}
+
+		task ("Add public and internal categories to Document") {
+			DMDocument.openDocumentsAndMediaAdmin(siteURLKey = "test-site-name");
+
+			LexiconEntry.gotoEntryMenuItem(
+				menuItem = "Edit",
+				rowEntry = "DM Document Title");
+
+			DMDocument.addCategories(
+				categoryNameList = "Public Category Name",
+				vocabularyName = "Public Vocabulary Name");
+
+			DMDocument.addCategories(
+				categoryNameList = "Internal Category Name",
+				vocabularyName = "Internal Vocabulary Name");
+
+			Button.clickSubmitButton();
+
+			Alert.viewSuccessMessage();
 		}
 	}
 
@@ -377,93 +317,6 @@ definition {
 			WebContentNavigator.gotoEditCP(webContentTitle = "WC Content Title");
 
 			WebContent.viewCategorizationCategoryCP(categoryNameList = "Category Name");
-		}
-	}
-
-	@description = "Add a web content with required category."
-	@priority = 3
-	test AddWebContentWithRequiredCategory {
-		task ("Add a vocabulary for Web Content Article") {
-			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
-
-			Vocabulary.addWithAssociatedAssetTypeCP(
-				assetType = "Web Content Article",
-				required = "true",
-				vocabularyName = "Vocabulary Name");
-		}
-
-		task ("Add a category") {
-			JSONCategory.addCategory(
-				groupName = "Test Site Name",
-				title = "Category Name",
-				vocabularyName = "Vocabulary Name");
-		}
-
-		task ("Cannot add a web content without required category") {
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			WebContentNavigator.gotoAddCP();
-
-			WebContent.addFailWithoutRequiredCategoryAssetTypeCP(vocabularyName = "Vocabulary Name");
-		}
-
-		task ("View add a web content with required category") {
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			WebContentNavigator.gotoAddCP();
-
-			WebContent.addWithCategoryCP(
-				categoryName = "Category Name",
-				vocabularyName = "Vocabulary Name",
-				webContentContent = "Web Content Content",
-				webContentTitle = "Web Content Title");
-		}
-
-		task ("View the category is assigned to web content") {
-			WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
-
-			WebContent.viewCategorizationCategoryCP(
-				categoryNameList = "Category Name",
-				vocabularyName = "Vocabulary Name");
-		}
-	}
-
-	@description = "Add a web content with a specific type category."
-	@priority = 3
-	test AddWebContentWithSpecificTypeCategory {
-		task ("Add a vocabulary for Web Content Article") {
-			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
-
-			Vocabulary.addWithAssociatedAssetTypeCP(
-				assetType = "Web Content Article",
-				vocabularyName = "Vocabulary Name");
-		}
-
-		task ("Add a category") {
-			JSONCategory.addCategory(
-				groupName = "Test Site Name",
-				title = "Category Name",
-				vocabularyName = "Vocabulary Name");
-		}
-
-		task ("Add a web content with the category") {
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			WebContentNavigator.gotoAddCP();
-
-			WebContent.addWithCategoryCP(
-				categoryName = "Category Name",
-				vocabularyName = "Vocabulary Name",
-				webContentContent = "Web Content Content",
-				webContentTitle = "Web Content Title");
-		}
-
-		task ("View the category is assigned to web content") {
-			WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
-
-			WebContent.viewCategorizationCategoryCP(
-				categoryNameList = "Category Name",
-				vocabularyName = "Vocabulary Name");
 		}
 	}
 
@@ -662,9 +515,9 @@ definition {
 		}
 	}
 
-	@description = "Search categories in vocabulary."
+	@description = "Search categories in vocabulary and subcategories in category by name and description, and view the empty search result for an unrelated keyword at both levels."
 	@priority = 4
-	test SearchCategoryInVocabulary {
+	test SearchCategoriesAndSubcategoriesInCategoriesAdmin {
 		task ("Add a vocabulary") {
 			JSONCategory.addVocabulary(
 				groupName = "Test Site Name",
@@ -685,6 +538,29 @@ definition {
 				vocabularyName = "Vocabulary Name");
 		}
 
+		task ("Add a category") {
+			JSONCategory.addCategory(
+				groupName = "Test Site Name",
+				title = "Category Name",
+				vocabularyName = "Vocabulary Name");
+		}
+
+		task ("Add subcategories") {
+			JSONCategory.addSubcategory(
+				description = "friendly chops",
+				groupName = "Test Site Name",
+				parentCategoryName = "Category Name",
+				title = "beard hair",
+				vocabularyName = "Vocabulary Name");
+
+			JSONCategory.addSubcategory(
+				description = "handlebar",
+				groupName = "Test Site Name",
+				parentCategoryName = "Category Name",
+				title = "mustache hair",
+				vocabularyName = "Vocabulary Name");
+		}
+
 		task ("Search categories by name") {
 			for (var categoryName : list "llama,panda") {
 				Category.openCategoriesAdmin(siteURLKey = "test-site-name");
@@ -698,15 +574,21 @@ definition {
 		}
 
 		task ("Search categories by description") {
-			for (var categoryDescription : list "brown,black") {
-				Category.openCategoriesAdmin(siteURLKey = "test-site-name");
+			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
 
-				Category.searchCP(
-					categorySearchEntry = ${categoryDescription},
-					vocabularyName = "Vocabulary Name");
+			Category.searchCP(
+				categorySearchEntry = "brown",
+				vocabularyName = "Vocabulary Name");
 
-				Category.viewSearchResultsCP(categoryDefinitionList = ${categoryDescription});
-			}
+			Category.viewSearchResultsCP(categoryDescriptionList = "brown or white");
+
+			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
+
+			Category.searchCP(
+				categorySearchEntry = "black",
+				vocabularyName = "Vocabulary Name");
+
+			Category.viewSearchResultsCP(categoryDescriptionList = "black and white");
 
 			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
 
@@ -715,8 +597,80 @@ definition {
 				vocabularyName = "Vocabulary Name");
 
 			Category.viewSearchResultsCP(
-				categoryDefinitionList = "brown or white,black and white",
+				categoryDescriptionList = "brown or white,black and white",
 				categoryNameList = "llama,panda");
+		}
+
+		task ("Search an unrelated keyword in vocabulary") {
+			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
+
+			Category.searchCP(
+				categorySearchEntry = "Null",
+				vocabularyName = "Vocabulary Name");
+
+			Category.viewSearchResultsCP(nullResult = "true");
+		}
+
+		task ("Search subcategories by name") {
+			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
+
+			Subcategory.searchCP(
+				categoryName = "Category Name",
+				subcategorySearchEntry = "beard",
+				vocabularyName = "Vocabulary Name");
+
+			Category.viewSearchResultsCP(categoryNameList = "beard hair");
+
+			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
+
+			Subcategory.searchCP(
+				categoryName = "Category Name",
+				subcategorySearchEntry = "mustache",
+				vocabularyName = "Vocabulary Name");
+
+			Category.viewSearchResultsCP(categoryNameList = "mustache hair");
+		}
+
+		task ("Search subcategories by description") {
+			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
+
+			Subcategory.searchCP(
+				categoryName = "Category Name",
+				subcategorySearchEntry = "friendly chops",
+				vocabularyName = "Vocabulary Name");
+
+			Category.viewSearchResultsCP(categoryDescriptionList = "friendly chops");
+
+			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
+
+			Subcategory.searchCP(
+				categoryName = "Category Name",
+				subcategorySearchEntry = "handlebar",
+				vocabularyName = "Vocabulary Name");
+
+			Category.viewSearchResultsCP(categoryDescriptionList = "handlebar");
+
+			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
+
+			Subcategory.searchCP(
+				categoryName = "Category Name",
+				subcategorySearchEntry = "hair",
+				vocabularyName = "Vocabulary Name");
+
+			Category.viewSearchResultsCP(
+				categoryDescriptionList = "friendly chops,handlebar",
+				categoryNameList = "beard hair,mustache hair");
+		}
+
+		task ("Search an unrelated keyword in category") {
+			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
+
+			Subcategory.searchCP(
+				categoryName = "Category Name",
+				subcategorySearchEntry = "Null",
+				vocabularyName = "Vocabulary Name");
+
+			Category.viewSearchResultsCP(nullResult = "true");
 		}
 	}
 
@@ -845,76 +799,6 @@ definition {
 		}
 	}
 
-	@description = "Search subcategories in category."
-	@priority = 4
-	test SearchSubcategoryInCategory {
-		task ("Add a vocabulary") {
-			JSONCategory.addVocabulary(
-				groupName = "Test Site Name",
-				title = "Vocabulary Name");
-		}
-
-		task ("Add a category") {
-			JSONCategory.addCategory(
-				groupName = "Test Site Name",
-				title = "Category Name",
-				vocabularyName = "Vocabulary Name");
-		}
-
-		task ("Add categories") {
-			JSONCategory.addSubcategory(
-				description = "friendly chops",
-				groupName = "Test Site Name",
-				parentCategoryName = "Category Name",
-				title = "beard hair",
-				vocabularyName = "Vocabulary Name");
-
-			JSONCategory.addSubcategory(
-				description = "handlebar",
-				groupName = "Test Site Name",
-				parentCategoryName = "Category Name",
-				title = "mustache hair",
-				vocabularyName = "Vocabulary Name");
-		}
-
-		task ("Search subcategory by name") {
-			for (var categoryName : list "beard,mustache") {
-				Category.openCategoriesAdmin(siteURLKey = "test-site-name");
-
-				Subcategory.searchCP(
-					categoryName = "Category Name",
-					subcategorySearchEntry = ${subcategoryName},
-					vocabularyName = "Vocabulary Name");
-
-				Subcategory.viewSearchResultsCP(categoryNameList = ${categoryName});
-			}
-		}
-
-		task ("Search subcategory by description") {
-			for (var categoryDescription : list "friendly chops,handlebar") {
-				Category.openCategoriesAdmin(siteURLKey = "test-site-name");
-
-				Subcategory.searchCP(
-					categoryName = "Category Name",
-					categorySearchEntry = ${subcategoryDescription},
-					vocabularyName = "Vocabulary Name");
-
-				Subcategory.viewSearchResultsCP(subcategoryDefinitionList = ${subcategoryDescription});
-			}
-
-			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
-
-			Subcategory.searchCP(
-				categoryName = "Category Name",
-				categorySearchEntry = "hair",
-				vocabularyName = "Vocabulary Name");
-
-			Subcategory.viewSearchResultsCP(
-				subcategoryDefinitionList = "friendly chops,handlebar",
-				subcategoryNameList = "mustache,beard");
-		}
-	}
-
 	@description = "Search web content by edited category."
 	@priority = 4
 	test SearchWebContentByEditedCategory {
@@ -1018,50 +902,9 @@ definition {
 		}
 	}
 
-	@description = "This is for LPS-101409. Validate if select a required category when entering the page name not based on a page template."
+	@description = "This is for LPS-101409. Validate if select a required category when entering the page name of a widget page based on a page template and of a content page not based on a page template. Also add a step to check adding page with category successfully via json."
 	@priority = 5
-	test SelectRequiredCategoryInContentPageCreation {
-		property portal.acceptance = "true";
-
-		task ("Add a vocabulary with required for page") {
-			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
-
-			Vocabulary.addWithAssociatedAssetTypeCP(
-				assetType = "Page",
-				required = "true",
-				vocabularyName = "Vocabulary Name");
-		}
-
-		task ("Add a category") {
-			JSONCategory.addCategory(
-				groupName = "Test Site Name",
-				title = "Category Name",
-				vocabularyName = "Vocabulary Name");
-		}
-
-		task ("Add a content page and select a required category") {
-			PagesAdmin.openPagesAdmin(siteURLKey = "test-site-name");
-
-			ContentPages.addPage(
-				categoryName = "Category Name",
-				pageName = "Test Content Page Name",
-				vocabularyName = "Vocabulary Name");
-
-			Alert.viewSuccessMessage();
-		}
-
-		task ("View the new page in Pages admin") {
-			PagesAdmin.openPagesAdmin(siteURLKey = "test-site-name");
-
-			AssertVisible(
-				key_itemName = "Test Content Page Name",
-				locator1 = "PagesAdmin#LIST_GROUP_ITEM");
-		}
-	}
-
-	@description = "This is for LPS-101409. Validate if select a required category when entering the page name based on a page template. Also add a step to check adding page with category successfully via json."
-	@priority = 5
-	test SelectRequiredCategoryInWidgetPageCreation {
+	test SelectRequiredCategoryInContentAndWidgetPageCreation {
 		property portal.acceptance = "true";
 
 		task ("Enable widget pages") {
@@ -1103,6 +946,25 @@ definition {
 				locator1 = "PagesAdmin#LIST_GROUP_ITEM");
 		}
 
+		task ("Add a content page and select a required category") {
+			PagesAdmin.openPagesAdmin(siteURLKey = "test-site-name");
+
+			ContentPages.addPage(
+				categoryName = "Category Name",
+				pageName = "Test Content Page Name",
+				vocabularyName = "Vocabulary Name");
+
+			Alert.viewSuccessMessage();
+		}
+
+		task ("View the new content page in Pages admin") {
+			PagesAdmin.openPagesAdmin(siteURLKey = "test-site-name");
+
+			AssertVisible(
+				key_itemName = "Test Content Page Name",
+				locator1 = "PagesAdmin#LIST_GROUP_ITEM");
+		}
+
 		task ("Add a page with category via JSONWS") {
 			JSONLayout.addPublicLayout(
 				assetCategoryIds = ${categoryId},
@@ -1116,56 +978,6 @@ definition {
 			AssertVisible(
 				key_itemName = "Test Page Name 2",
 				locator1 = "PagesAdmin#LIST_GROUP_ITEM");
-		}
-	}
-
-	@description = "View empty search result."
-	@priority = 3
-	test ViewEmptySearchResult {
-		task ("Add a vocabulary") {
-			JSONCategory.addVocabulary(
-				groupName = "Test Site Name",
-				title = "Vocabulary Name");
-		}
-
-		task ("Add a category") {
-			JSONCategory.addCategory(
-				groupName = "Test Site Name",
-				title = "Category Name",
-				vocabularyName = "Vocabulary Name");
-		}
-
-		task ("Add a subcategory") {
-			JSONCategory.addSubcategory(
-				groupName = "Test Site Name",
-				parentCategoryName = "Category Name",
-				title = "Subcategory Name",
-				vocabularyName = "Vocabulary Name");
-		}
-
-		task ("Search an unrelated keyword in vocabulary") {
-			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
-
-			Category.searchCP(
-				categorySearchEntry = "Null",
-				vocabularyName = "Vocabulary Name");
-		}
-
-		task ("View empty search result") {
-			Category.viewSearchResultsCP(nullResult = "true");
-		}
-
-		task ("Search an unrelated keyword in category") {
-			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
-
-			Subcategory.searchCP(
-				categoryName = "Category Name",
-				subCategorySearchEntry = "Null",
-				vocabularyName = "Vocabulary Name");
-		}
-
-		task ("View empty search result") {
-			Subcategory.viewSearchResultsCP(nullResult = "true");
 		}
 	}
 
@@ -1202,6 +1014,95 @@ definition {
 			Button.click(button = "Save");
 
 			Alert.viewErrorMessage(errorMessage = "Error: Please select at least one category for Vocabulary Name.");
+		}
+	}
+
+	@description = "This is a test for LPS-131984. View vocabulary for specific Asset Types in asset editor. A web content cannot be added without the required category, and the category is assigned once selected."
+	@priority = 4
+	test ViewRequiredVocabularyForSpecificAssetTypesInAssetEditor {
+		task ("Add a vocabulary for specific assets types") {
+			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
+
+			Vocabulary.gotoAddVocabulary();
+
+			PortletEntry.inputName(name = "Vocabulary Name");
+
+			Vocabulary.addAssociatedAssetType(assetType = "Blogs Entry");
+
+			Button.clickAddRow();
+
+			Vocabulary.addAssociatedAssetType(
+				assetType = "Web Content Article",
+				required = "true",
+				rowNumber = 2);
+
+			Button.clickNoError(button = "Save");
+
+			AssertConfirm.assertPartialConfirmation(value1 = "Are you sure you want to create this vocabulary with public visibility?");
+
+			Alert.viewSuccessMessage();
+		}
+
+		task ("View associated asset types of vocabulary in Categories admin") {
+			AssertVisible(
+				assetTitle = "Vocabulary Name",
+				info = "Asset Types: Blogs Entry, Web Content Article *(Required)",
+				locator1 = "Message#ASSET_INFO");
+		}
+
+		task ("Add a category") {
+			JSONCategory.addCategory(
+				groupName = "Test Site Name",
+				title = "Category Name",
+				vocabularyName = "Vocabulary Name");
+		}
+
+		task ("Cannot add a web content without required category") {
+			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
+
+			WebContentNavigator.gotoAddCP();
+
+			WebContent.addFailWithoutRequiredCategoryAssetTypeCP(vocabularyName = "Vocabulary Name");
+		}
+
+		task ("View the vocabulary in web content editor") {
+			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
+
+			WebContentNavigator.gotoAddCP();
+
+			WebContent.addWithCategoryCP(
+				categoryName = "Category Name",
+				vocabularyName = "Vocabulary Name",
+				webContentContent = "Web Content Content",
+				webContentTitle = "Web Content Title");
+		}
+
+		task ("View the category is assigned to web content") {
+			WebContentNavigator.gotoEditCP(webContentTitle = "Web Content Title");
+
+			WebContent.viewCategorizationCategoryCP(
+				categoryNameList = "Category Name",
+				vocabularyName = "Vocabulary Name");
+		}
+
+		task ("Add a widget page") {
+			JSONLayout.addPublicLayout(
+				groupName = "Test Site Name",
+				layoutName = "Page Name");
+		}
+
+		task ("View the vocabulary not shown in page editor") {
+			PagesAdmin.openPagesAdmin(siteURLKey = "test-site-name");
+
+			PagesAdmin.gotoPageEllipsisMenuItem(
+				menuItem = "Configure",
+				pageName = "Page Name");
+
+			Navigator.gotoNavTab(navTab = "SEO");
+
+			AssertElementNotPresent(
+				key_vocabularyName = "Vocabulary Name",
+				locator1 = "AssetCategorization#CATEGORY_SELECT");
 		}
 	}
 
@@ -1260,79 +1161,6 @@ definition {
 			Panel.expandPanel(panel = "Categorization");
 
 			AssertTextNotPresent(value1 = "Vocabulary Name");
-		}
-	}
-
-	@description = "This is a test for LPS-131984. View vocabulary for specific Asset Types in asset editor."
-	@priority = 4
-	test ViewVocabularyForSpecificAssetTypesInAssetEditor {
-		task ("Add a vocabulary for specific assets types") {
-			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
-
-			Vocabulary.gotoAddVocabulary();
-
-			PortletEntry.inputName(name = "Vocabulary Name");
-
-			Vocabulary.addAssociatedAssetType(assetType = "Blogs Entry");
-
-			Button.clickAddRow();
-
-			Vocabulary.addAssociatedAssetType(
-				assetType = "Web Content Article",
-				required = "true",
-				rowNumber = 2);
-
-			Button.clickNoError(button = "Save");
-
-			AssertConfirm.assertPartialConfirmation(value1 = "Are you sure you want to create this vocabulary with public visibility?");
-
-			Alert.viewSuccessMessage();
-		}
-
-		task ("View associated asset types of vocabulary in Categories admin") {
-			AssertVisible(
-				assetTitle = "Vocabulary Name",
-				info = "Asset Types: Blogs Entry, Web Content Article *(Required)",
-				locator1 = "Message#ASSET_INFO");
-		}
-
-		task ("Add a category") {
-			JSONCategory.addCategory(
-				groupName = "Test Site Name",
-				title = "Category Name",
-				vocabularyName = "Vocabulary Name");
-		}
-
-		task ("View the vocabulary in web content editor") {
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			WebContentNavigator.gotoAddCP();
-
-			WebContent.addWithCategoryCP(
-				categoryName = "Category Name",
-				vocabularyName = "Vocabulary Name",
-				webContentContent = "Web Content Content",
-				webContentTitle = "Web Content Title");
-		}
-
-		task ("Add a widget page") {
-			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Page Name");
-		}
-
-		task ("View the vocabulary not shown in page editor") {
-			PagesAdmin.openPagesAdmin(siteURLKey = "test-site-name");
-
-			PagesAdmin.gotoPageEllipsisMenuItem(
-				menuItem = "Configure",
-				pageName = "Page Name");
-
-			Navigator.gotoNavTab(navTab = "SEO");
-
-			AssertElementNotPresent(
-				key_vocabularyName = "Vocabulary Name",
-				locator1 = "AssetCategorization#CATEGORY_SELECT");
 		}
 	}
 

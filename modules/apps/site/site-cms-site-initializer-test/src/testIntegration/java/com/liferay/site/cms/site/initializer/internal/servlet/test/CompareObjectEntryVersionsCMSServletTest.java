@@ -417,8 +417,10 @@ public class CompareObjectEntryVersionsCMSServletTest
 	private void _testCompareObjectEntryVersionsWithSameVersions()
 		throws Exception {
 
+		String content = RandomTestUtil.randomString();
+
 		ObjectEntry objectEntry = _addObjectEntry(
-			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+			content, RandomTestUtil.randomString());
 
 		MockHttpServletResponse mockHttpServletResponse = _service(
 			objectEntry.getObjectEntryId(), 1, 1, TestPropsValues.getUser());
@@ -436,9 +438,12 @@ public class CompareObjectEntryVersionsCMSServletTest
 		JSONObject targetJSONObject = diffsJSONObject.getJSONObject("target");
 
 		Assert.assertEquals(
-			sourceJSONObject.toString(), 0, sourceJSONObject.length());
+			sourceJSONObject.toString(), 1, sourceJSONObject.length());
 		Assert.assertEquals(
-			targetJSONObject.toString(), 0, targetJSONObject.length());
+			targetJSONObject.toString(), 1, targetJSONObject.length());
+
+		Assert.assertEquals(content, sourceJSONObject.getString("content"));
+		Assert.assertEquals(content, targetJSONObject.getString("content"));
 	}
 
 	private void _testCompareObjectEntryVersionsWithTextObjectField()
@@ -470,10 +475,8 @@ public class CompareObjectEntryVersionsCMSServletTest
 		JSONObject sourceJSONObject = diffsJSONObject.getJSONObject("source");
 		JSONObject targetJSONObject = diffsJSONObject.getJSONObject("target");
 
-		Assert.assertFalse(
-			sourceJSONObject.toString(), sourceJSONObject.has("content"));
-		Assert.assertFalse(
-			targetJSONObject.toString(), targetJSONObject.has("content"));
+		Assert.assertEquals(content, sourceJSONObject.getString("content"));
+		Assert.assertEquals(content, targetJSONObject.getString("content"));
 
 		String sourceDiff = sourceJSONObject.getString("title");
 		String targetDiff = targetJSONObject.getString("title");

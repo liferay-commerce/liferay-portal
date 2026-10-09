@@ -14,17 +14,14 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.search.document.Document;
 import com.liferay.portal.search.filter.ComplexQueryPartBuilderFactory;
 import com.liferay.portal.search.query.QueriesUtil;
@@ -58,7 +55,14 @@ import org.osgi.service.component.annotations.Reference;
 public abstract class BasePIMConnector implements PIMConnector {
 
 	@Override
-	public String export(ObjectEntry pimConnectorObjectEntry) throws Exception {
+	public String getName(Locale locale) {
+		return language.get(locale, getKey());
+	}
+
+	protected Map<String, List<ObjectEntry>> getPIMFieldMappingObjectEntriesMap(
+			ObjectEntry pimConnectorObjectEntry)
+		throws Exception {
+
 		Map<String, List<ObjectEntry>> objectEntriesMap = new HashMap<>();
 
 		for (ObjectEntry objectEntry :
@@ -74,23 +78,48 @@ public abstract class BasePIMConnector implements PIMConnector {
 
 		_validate(objectEntriesMap);
 
-		return String.valueOf(
-			JSONUtil.toJSONArray(
-				_getPIMProductObjectEntriesList(
-					pimConnectorObjectEntry.getCompanyId()),
-				objectEntries -> createProductJSONObject(
-					objectEntriesMap, objectEntries)));
+		return objectEntriesMap;
 	}
 
-	@Override
-	public String getName(Locale locale) {
-		return language.get(locale, getKey());
-	}
+	protected Map<String, List<ObjectEntry>> getPIMProductObjectEntriesMap(
+			long companyId)
+		throws Exception {
 
-	protected abstract JSONObject createProductJSONObject(
-			Map<String, List<ObjectEntry>> pimFieldMappingObjectEntriesMap,
-			List<ObjectEntry> pimProductObjectEntries)
-		throws PortalException;
+		Map<String, List<ObjectEntry>> objectEntriesMap = new LinkedHashMap<>();
+
+		Map<Long, Map<String, String>> clusterKeysMap = new HashMap<>();
+		ObjectDefinition objectDefinition =
+			objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					PIMObjectDefinitionConstants.EXTERNAL_REFERENCE_CODE_LINK,
+					companyId);
+
+		for (ObjectEntry objectEntry : _getPIMProductObjectEntries(companyId)) {
+			long groupId = objectEntry.getGroupId();
+
+			Map<String, String> clusterKeys = clusterKeysMap.get(groupId);
+
+			if (clusterKeys == null) {
+				clusterKeys = _getVariantPIMLinkClusterKeys(
+					companyId, groupId, objectDefinition);
+
+				clusterKeysMap.put(groupId, clusterKeys);
+			}
+
+			String externalReferenceCode =
+				objectEntry.getExternalReferenceCode();
+
+			List<ObjectEntry> objectEntries = objectEntriesMap.computeIfAbsent(
+				GetterUtil.getString(
+					clusterKeys.get(externalReferenceCode),
+					externalReferenceCode),
+				key -> new ArrayList<>());
+
+			objectEntries.add(objectEntry);
+		}
+
+		return objectEntriesMap;
+	}
 
 	@Reference
 	protected ComplexQueryPartBuilderFactory complexQueryPartBuilderFactory;
@@ -150,48 +179,6 @@ public abstract class BasePIMConnector implements PIMConnector {
 		return objectEntries;
 	}
 
-	private List<List<ObjectEntry>> _getPIMProductObjectEntriesList(
-			long companyId)
-		throws Exception {
-
-		Map<String, List<ObjectEntry>> objectEntriesMap = new LinkedHashMap<>();
-
-		Map<Long, Map<String, String>> clusterKeysMap = new HashMap<>();
-		ObjectDefinition objectDefinition =
-			objectDefinitionLocalService.
-				fetchObjectDefinitionByExternalReferenceCode(
-					PIMObjectDefinitionConstants.EXTERNAL_REFERENCE_CODE_LINK,
-					companyId);
-
-		for (ObjectEntry objectEntry : _getPIMProductObjectEntries(companyId)) {
-			long groupId = objectEntry.getGroupId();
-
-			Map<String, String> clusterKeys = clusterKeysMap.get(groupId);
-
-			if (clusterKeys == null) {
-				clusterKeys = _getVariantPIMLinkClusterKeys(
-					companyId, groupId, objectDefinition);
-
-				clusterKeysMap.put(groupId, clusterKeys);
-			}
-
-			String externalReferenceCode =
-				objectEntry.getExternalReferenceCode();
-
-			List<ObjectEntry> objectEntries = objectEntriesMap.computeIfAbsent(
-				StringBundler.concat(
-					groupId, StringPool.POUND,
-					GetterUtil.getString(
-						clusterKeys.get(externalReferenceCode),
-						externalReferenceCode)),
-				key -> new ArrayList<>());
-
-			objectEntries.add(objectEntry);
-		}
-
-		return new ArrayList<>(objectEntriesMap.values());
-	}
-
 	private Map<String, String> _getVariantPIMLinkClusterKeys(
 			long companyId, long groupId, ObjectDefinition objectDefinition)
 		throws Exception {
@@ -244,6 +231,14 @@ public abstract class BasePIMConnector implements PIMConnector {
 					QueriesUtil.rangeTerm(
 						Field.ENTRY_CLASS_PK, false, true, entryClassPK,
 						Long.MAX_VALUE)
+				).build()
+			).addComplexQueryPart(
+				complexQueryPartBuilderFactory.builder(
+				).occur(
+					"filter"
+				).query(
+					QueriesUtil.term(
+						Field.STATUS, WorkflowConstants.STATUS_APPROVED)
 				).build()
 			).companyId(
 				companyId

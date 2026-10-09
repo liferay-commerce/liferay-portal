@@ -14,6 +14,7 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FileContents;
 import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 import java.io.File;
 
@@ -40,18 +41,18 @@ public class LegacyPropertiesUtil {
 
 		DetailAST rootDetailAST = JavaParser.parse(fileContents);
 
-		DetailAST nextSiblingDetailAST = rootDetailAST.getNextSibling();
+		DetailAST childDetailAST = rootDetailAST.getFirstChild();
 
 		while (true) {
-			if (nextSiblingDetailAST.getType() != TokenTypes.CLASS_DEF) {
-				nextSiblingDetailAST = nextSiblingDetailAST.getNextSibling();
+			if (childDetailAST.getType() != TokenTypes.CLASS_DEF) {
+				childDetailAST = childDetailAST.getNextSibling();
 
 				continue;
 			}
 
 			List<DetailAST> variableDefinitionDetailASTs =
 				DetailASTUtil.getAllChildTokens(
-					nextSiblingDetailAST, true, TokenTypes.VARIABLE_DEF);
+					childDetailAST, true, TokenTypes.VARIABLE_DEF);
 
 			for (DetailAST variableDefinitionDetailAST :
 					variableDefinitionDetailASTs) {
@@ -155,8 +156,8 @@ public class LegacyPropertiesUtil {
 				return arrayValueDetailASTs;
 			}
 
-			if ((childDetailAST.getType() != TokenTypes.COMMA) &&
-				(childDetailAST.getType() != TokenTypes.RCURLY)) {
+			if (!TokenUtil.isOfType(
+					childDetailAST, TokenTypes.COMMA, TokenTypes.RCURLY)) {
 
 				arrayValueDetailASTs.add(childDetailAST);
 			}

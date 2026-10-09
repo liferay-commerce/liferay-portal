@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Tuple;
 import com.liferay.source.formatter.check.util.JavaSourceUtil;
+import com.liferay.source.formatter.checkstyle.util.DetailASTUtil;
 import com.liferay.source.formatter.util.FileUtil;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
@@ -26,6 +27,7 @@ import com.puppycrawl.tools.checkstyle.api.FileText;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.utils.AnnotationUtil;
+import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,8 +52,9 @@ public class GenericTypeCheck extends BaseCheck {
 
 	@Override
 	protected void doVisitToken(DetailAST detailAST) {
-		if ((detailAST.getType() == TokenTypes.EXTENDS_CLAUSE) ||
-			(detailAST.getType() == TokenTypes.IMPLEMENTS_CLAUSE)) {
+		if (TokenUtil.isOfType(
+				detailAST, TokenTypes.EXTENDS_CLAUSE,
+				TokenTypes.IMPLEMENTS_CLAUSE)) {
 
 			List<DetailAST> childDetailASTs = getAllChildTokens(
 				detailAST, false, TokenTypes.DOT, TokenTypes.IDENT);
@@ -220,16 +223,14 @@ public class GenericTypeCheck extends BaseCheck {
 	}
 
 	private String _getTypeName(DetailAST detailAST) {
-		if ((detailAST.getType() == TokenTypes.TYPE) ||
-			(detailAST.getType() == TokenTypes.TYPE_ARGUMENT)) {
+		if (TokenUtil.isOfType(
+				detailAST, TokenTypes.TYPE, TokenTypes.TYPE_ARGUMENT)) {
 
 			return getTypeName(detailAST, false);
 		}
 
 		if (detailAST.getType() == TokenTypes.DOT) {
-			FullIdent fullIdent = FullIdent.createFullIdent(detailAST);
-
-			return fullIdent.getText();
+			return DetailASTUtil.getBaseTypeName(detailAST);
 		}
 
 		return detailAST.getText();

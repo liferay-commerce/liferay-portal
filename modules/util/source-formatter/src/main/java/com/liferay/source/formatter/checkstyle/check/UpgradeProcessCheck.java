@@ -14,6 +14,7 @@ import com.liferay.source.formatter.check.util.JavaSourceUtil;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.utils.AnnotationUtil;
+import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 import java.util.List;
 
@@ -29,9 +30,9 @@ public class UpgradeProcessCheck extends BaseCheck {
 
 	@Override
 	protected void doVisitToken(DetailAST detailAST) {
-		DetailAST parentDetailAST = detailAST.getParent();
+		if (!isDirectChildOfCompilationUnit(detailAST) ||
+			!_isUpgradeProcess(detailAST)) {
 
-		if ((parentDetailAST != null) || !_isUpgradeProcess(detailAST)) {
 			return;
 		}
 
@@ -202,8 +203,9 @@ public class UpgradeProcessCheck extends BaseCheck {
 			lastChildDetailAST.getPreviousSibling();
 
 		while (previousSiblingDetailAST != null) {
-			if ((previousSiblingDetailAST.getType() != TokenTypes.EXPR) &&
-				(previousSiblingDetailAST.getType() != TokenTypes.SEMI)) {
+			if (!TokenUtil.isOfType(
+					previousSiblingDetailAST, TokenTypes.EXPR,
+					TokenTypes.SEMI)) {
 
 				return false;
 			}
@@ -251,8 +253,9 @@ public class UpgradeProcessCheck extends BaseCheck {
 			lastChildDetailAST.getPreviousSibling();
 
 		while (previousSiblingDetailAST != null) {
-			if ((previousSiblingDetailAST.getType() != TokenTypes.EXPR) &&
-				(previousSiblingDetailAST.getType() != TokenTypes.SEMI)) {
+			if (!TokenUtil.isOfType(
+					previousSiblingDetailAST, TokenTypes.EXPR,
+					TokenTypes.SEMI)) {
 
 				return false;
 			}
