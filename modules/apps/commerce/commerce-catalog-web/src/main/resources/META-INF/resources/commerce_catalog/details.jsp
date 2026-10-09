@@ -11,6 +11,7 @@
 CommerceCatalogDisplayContext commerceCatalogDisplayContext = (CommerceCatalogDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
 
 CommerceCatalog commerceCatalog = commerceCatalogDisplayContext.getCommerceCatalog();
+CommerceCurrency commerceCatalogInactiveCommerceCurrency = commerceCatalogDisplayContext.getCommerceCatalogInactiveCommerceCurrency();
 List<CommerceCurrency> commerceCurrencies = commerceCatalogDisplayContext.getCommerceCurrencies();
 FileEntry fileEntry = commerceCatalogDisplayContext.getDefaultFileEntry();
 
@@ -67,7 +68,7 @@ boolean viewOnly = !commerceCatalogDisplayContext.hasModelResourcePermission(com
 
 					</aui:select>
 
-					<aui:select disabled="<%= viewOnly %>" label="currency" name="commerceCurrencyCode" required="<%= true %>" title="currency">
+					<aui:select disabled="<%= viewOnly %>" label="currency" name="commerceCurrencyCode" required="<%= true %>" title="currency" wrapperCssClass='<%= (commerceCatalogInactiveCommerceCurrency == null) ? StringPool.BLANK : "has-warning mb-0" %>'>
 
 						<%
 						for (CommerceCurrency commerceCurrency : commerceCurrencies) {
@@ -81,6 +82,20 @@ boolean viewOnly = !commerceCatalogDisplayContext.hasModelResourcePermission(com
 						%>
 
 					</aui:select>
+
+					<c:if test="<%= commerceCatalogInactiveCommerceCurrency != null %>">
+						<div class="form-group has-warning">
+							<div class="form-feedback-item">
+								<span class="form-feedback-indicator">
+									<clay:icon
+										symbol="warning-full"
+									/>
+								</span>
+
+								<liferay-ui:message arguments="<%= HtmlUtil.escape(commerceCatalogInactiveCommerceCurrency.getName(locale)) %>" key="the-current-catalog-currency-x-is-inactive" translateArguments="<%= false %>" />
+							</div>
+						</div>
+					</c:if>
 
 					<aui:select label="inventory-method-key" name="inventorySettings--inventoryMethodKey--" required="<%= true %>">
 

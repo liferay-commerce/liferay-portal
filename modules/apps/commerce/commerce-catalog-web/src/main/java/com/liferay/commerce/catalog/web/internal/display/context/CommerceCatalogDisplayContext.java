@@ -190,12 +190,43 @@ public class CommerceCatalogDisplayContext {
 		return commerceCatalog.getCommerceCatalogId();
 	}
 
+	public CommerceCurrency getCommerceCatalogInactiveCommerceCurrency()
+		throws PortalException {
+
+		CommerceCatalog commerceCatalog = getCommerceCatalog();
+
+		if (commerceCatalog == null) {
+			return null;
+		}
+
+		CommerceCurrency commerceCurrency =
+			_commerceCurrencyLocalService.fetchCommerceCurrency(
+				cpRequestHelper.getCompanyId(),
+				commerceCatalog.getCommerceCurrencyCode());
+
+		if ((commerceCurrency == null) || commerceCurrency.isActive()) {
+			return null;
+		}
+
+		return commerceCurrency;
+	}
+
 	public List<CommerceCurrency> getCommerceCurrencies()
 		throws PortalException {
 
-		return _commerceCurrencyLocalService.getCommerceCurrencies(
-			cpRequestHelper.getCompanyId(), true, QueryUtil.ALL_POS,
-			QueryUtil.ALL_POS, null);
+		List<CommerceCurrency> commerceCurrencies = new ArrayList<>(
+			_commerceCurrencyLocalService.getCommerceCurrencies(
+				cpRequestHelper.getCompanyId(), true, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null));
+
+		CommerceCurrency commerceCatalogInactiveCommerceCurrency =
+			getCommerceCatalogInactiveCommerceCurrency();
+
+		if (commerceCatalogInactiveCommerceCurrency != null) {
+			commerceCurrencies.add(0, commerceCatalogInactiveCommerceCurrency);
+		}
+
+		return commerceCurrencies;
 	}
 
 	public List<CommerceInventoryMethod> getCommerceInventoryMethods() {
