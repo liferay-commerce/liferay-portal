@@ -201,6 +201,17 @@ public class ObjectDefinitionResourceTest
 	public void testGetObjectDefinitionsPage() throws Exception {
 		super.testGetObjectDefinitionsPage();
 
+		Page<ObjectDefinition> page =
+			objectDefinitionResource.getObjectDefinitionsPage(
+				null, null, "hidden eq false", Pagination.of(1, 10), null);
+
+		long visibleTotalCount = page.getTotalCount();
+
+		page = objectDefinitionResource.getObjectDefinitionsPage(
+			null, null, "hidden eq true", Pagination.of(1, 10), null);
+
+		long hiddenTotalCount = page.getTotalCount();
+
 		ObjectDefinition modifiableSystemObjectDefinition1 =
 			_addObjectDefinition(_randomModifiableSystemObjectDefinition());
 		ObjectDefinition modifiableSystemObjectDefinition2 =
@@ -214,9 +225,9 @@ public class ObjectDefinitionResourceTest
 						}
 					}));
 
-		Page<ObjectDefinition> page =
-			objectDefinitionResource.getObjectDefinitionsPage(
-				null, null, "hidden eq false", null, null);
+		page = objectDefinitionResource.getObjectDefinitionsPage(
+			null, null, "hidden eq false",
+			Pagination.of(1, (int)visibleTotalCount + 1), null);
 
 		Assert.assertFalse(
 			_contains(
@@ -228,7 +239,8 @@ public class ObjectDefinitionResourceTest
 				(List<ObjectDefinition>)page.getItems()));
 
 		page = objectDefinitionResource.getObjectDefinitionsPage(
-			null, null, "hidden eq true", null, null);
+			null, null, "hidden eq true",
+			Pagination.of(1, (int)hiddenTotalCount + 1), null);
 
 		Assert.assertTrue(
 			_contains(

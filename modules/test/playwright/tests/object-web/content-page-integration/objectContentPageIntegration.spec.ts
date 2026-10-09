@@ -84,7 +84,12 @@ test.describe('Collection Display', () => {
 
 		await collectionsPage.goto(site.friendlyUrlPath);
 
-		await page.getByRole('link', {name: 'Collection Providers'}).click();
+		await page.goto(
+			(await page
+				.getByRole('link', {name: 'Collection Providers'})
+				.getAttribute('href')) +
+				'&_com_liferay_asset_list_web_portlet_AssetListPortlet_delta=200'
+		);
 
 		await expect(
 			page.getByText(objectDefinition.name).first()
