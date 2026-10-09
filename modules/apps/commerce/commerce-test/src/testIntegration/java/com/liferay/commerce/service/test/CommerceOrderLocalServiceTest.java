@@ -30,6 +30,7 @@ import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CPConfigurationEntryLocalService;
 import com.liferay.commerce.product.service.CommerceChannelAccountEntryRelLocalService;
+import com.liferay.commerce.product.service.CommerceChannelRelLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.service.CommerceAddressLocalService;
 import com.liferay.commerce.service.CommerceOrderItemLocalService;
@@ -402,6 +403,81 @@ public class CommerceOrderLocalServiceTest {
 	}
 
 	@Test
+	public void testAddCommerceOrderWhenAccountDefaultAddressIsNotEligible()
+		throws Exception {
+
+		_accountEntry = CommerceAccountTestUtil.addBusinessAccountEntry(
+			_user.getUserId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString() + "@liferay.com",
+			RandomTestUtil.randomString(), new long[] {_user.getUserId()}, null,
+			_serviceContext);
+
+		CommerceAddress commerceAddress = _addCommerceAddress();
+
+		_addCommerceChannelAccountEntryRels(commerceAddress, 0);
+
+		CommerceOrder commerceOrder = CommerceTestUtil.addB2BCommerceOrder(
+			_group.getGroupId(), _user.getUserId(),
+			_accountEntry.getAccountEntryId(),
+			_commerceCurrency.getCommerceCurrencyId());
+
+		Assert.assertEquals(
+			commerceAddress.getCommerceAddressId(),
+			commerceOrder.getBillingAddressId());
+		Assert.assertEquals(
+			commerceAddress.getCommerceAddressId(),
+			commerceOrder.getShippingAddressId());
+
+		_addCommerceChannelRel(commerceAddress);
+
+		commerceOrder = CommerceTestUtil.addB2BCommerceOrder(
+			_group.getGroupId(), _user.getUserId(),
+			_accountEntry.getAccountEntryId(),
+			_commerceCurrency.getCommerceCurrencyId());
+
+		Assert.assertEquals(0, commerceOrder.getBillingAddressId());
+		Assert.assertEquals(0, commerceOrder.getShippingAddressId());
+	}
+
+	@Test
+	public void testAddCommerceOrderWhenChannelDefaultAddressIsNotEligible()
+		throws Exception {
+
+		_accountEntry = CommerceAccountTestUtil.addBusinessAccountEntry(
+			_user.getUserId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString() + "@liferay.com",
+			RandomTestUtil.randomString(), new long[] {_user.getUserId()}, null,
+			_serviceContext);
+
+		CommerceAddress commerceAddress = _addCommerceAddress();
+
+		_addCommerceChannelAccountEntryRels(
+			commerceAddress, _commerceChannel.getCommerceChannelId());
+
+		CommerceOrder commerceOrder = CommerceTestUtil.addB2BCommerceOrder(
+			_group.getGroupId(), _user.getUserId(),
+			_accountEntry.getAccountEntryId(),
+			_commerceCurrency.getCommerceCurrencyId());
+
+		Assert.assertEquals(
+			commerceAddress.getCommerceAddressId(),
+			commerceOrder.getBillingAddressId());
+		Assert.assertEquals(
+			commerceAddress.getCommerceAddressId(),
+			commerceOrder.getShippingAddressId());
+
+		_addCommerceChannelRel(commerceAddress);
+
+		commerceOrder = CommerceTestUtil.addB2BCommerceOrder(
+			_group.getGroupId(), _user.getUserId(),
+			_accountEntry.getAccountEntryId(),
+			_commerceCurrency.getCommerceCurrencyId());
+
+		Assert.assertEquals(0, commerceOrder.getBillingAddressId());
+		Assert.assertEquals(0, commerceOrder.getShippingAddressId());
+	}
+
+	@Test
 	public void testAddCommerceOrderWithCPConfigurationEntryShippable()
 		throws Exception {
 
@@ -620,8 +696,103 @@ public class CommerceOrderLocalServiceTest {
 			commerceOrders.toString(), commerceOrder2, commerceOrders.get(1));
 	}
 
+	@Test
+	public void testReorderCommerceOrderWhenAddressIsNotEligible()
+		throws Exception {
+
+		_accountEntry = CommerceAccountTestUtil.addBusinessAccountEntry(
+			_user.getUserId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString() + "@liferay.com",
+			RandomTestUtil.randomString(), new long[] {_user.getUserId()}, null,
+			_serviceContext);
+
+		CommerceAddress commerceAddress = _addCommerceAddress();
+
+		_addCommerceChannelAccountEntryRels(
+			commerceAddress, _commerceChannel.getCommerceChannelId());
+
+		CommerceOrder commerceOrder = CommerceTestUtil.addB2BCommerceOrder(
+			_group.getGroupId(), _user.getUserId(),
+			_accountEntry.getAccountEntryId(),
+			_commerceCurrency.getCommerceCurrencyId());
+
+		Assert.assertEquals(
+			commerceAddress.getCommerceAddressId(),
+			commerceOrder.getBillingAddressId());
+		Assert.assertEquals(
+			commerceAddress.getCommerceAddressId(),
+			commerceOrder.getShippingAddressId());
+
+		_addCommerceChannelRel(commerceAddress);
+
+		CommerceOrder newCommerceOrder =
+			_commerceOrderLocalService.reorderCommerceOrder(
+				_user.getUserId(), commerceOrder.getCommerceOrderId(),
+				_commerceContext);
+
+		CommerceAddress billingCommerceAddress =
+			newCommerceOrder.getBillingAddress();
+
+		Assert.assertNotEquals(
+			commerceAddress.getCommerceAddressId(),
+			billingCommerceAddress.getCommerceAddressId());
+		Assert.assertEquals(
+			_portal.getClassNameId(CommerceOrder.class),
+			billingCommerceAddress.getClassNameId());
+		Assert.assertEquals(
+			billingCommerceAddress.getCommerceAddressId(),
+			newCommerceOrder.getShippingAddressId());
+	}
+
 	@Rule
 	public FrutillaRule frutillaRule = new FrutillaRule();
+
+	private CommerceAddress _addCommerceAddress() throws Exception {
+		Country country = CommerceInventoryTestUtil.addCountry(_serviceContext);
+
+		Region region = CommerceInventoryTestUtil.addRegion(
+			country.getCountryId(), _serviceContext);
+
+		return _commerceAddressLocalService.addCommerceAddress(
+			StringPool.BLANK, AccountEntry.class.getName(),
+			_accountEntry.getAccountEntryId(), country.getCountryId(),
+			region.getRegionId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			StringPool.BLANK,
+			CommerceAddressConstants.ADDRESS_TYPE_BILLING_AND_SHIPPING,
+			String.valueOf(30133), _serviceContext);
+	}
+
+	private void _addCommerceChannelAccountEntryRels(
+			CommerceAddress commerceAddress, long commerceChannelId)
+		throws Exception {
+
+		_commerceChannelAccountEntryRelLocalService.
+			addCommerceChannelAccountEntryRel(
+				_user.getUserId(), _accountEntry.getAccountEntryId(),
+				Address.class.getName(), commerceAddress.getCommerceAddressId(),
+				commerceChannelId, true, 0,
+				CommerceChannelAccountEntryRelConstants.TYPE_BILLING_ADDRESS);
+		_commerceChannelAccountEntryRelLocalService.
+			addCommerceChannelAccountEntryRel(
+				_user.getUserId(), _accountEntry.getAccountEntryId(),
+				Address.class.getName(), commerceAddress.getCommerceAddressId(),
+				commerceChannelId, true, 0,
+				CommerceChannelAccountEntryRelConstants.TYPE_SHIPPING_ADDRESS);
+	}
+
+	private void _addCommerceChannelRel(CommerceAddress commerceAddress)
+		throws Exception {
+
+		CommerceChannel commerceChannel = CommerceTestUtil.addCommerceChannel(
+			_commerceCurrency.getCode());
+
+		_commerceChannelRelLocalService.addCommerceChannelRel(
+			Address.class.getName(), commerceAddress.getCommerceAddressId(),
+			commerceChannel.getCommerceChannelId(), _serviceContext);
+	}
 
 	private AccountEntry _accountEntry;
 
@@ -633,6 +804,9 @@ public class CommerceOrderLocalServiceTest {
 	@Inject
 	private CommerceChannelAccountEntryRelLocalService
 		_commerceChannelAccountEntryRelLocalService;
+
+	@Inject
+	private CommerceChannelRelLocalService _commerceChannelRelLocalService;
 
 	private CommerceContext _commerceContext;
 	private CommerceCurrency _commerceCurrency;
