@@ -584,6 +584,7 @@ public class CPDefinitionLocalServiceTest {
 
 	@Test
 	public void testDeleteCPDefinition() throws Exception {
+		_testDeleteCPDefinitionWithClonedCPDefinitions();
 		_testDeleteCPDefinitionWithExistingDraftCPDefinition();
 		_testDeleteCPDefinitionWithVersioningEnabled();
 	}
@@ -1031,6 +1032,18 @@ public class CPDefinitionLocalServiceTest {
 	@Rule
 	public final FrutillaRule frutillaRule = new FrutillaRule();
 
+	private void _assertApproved(CPDefinition cpDefinition) {
+		cpDefinition = _cpDefinitionLocalService.fetchCPDefinition(
+			cpDefinition.getCPDefinitionId());
+
+		Assert.assertNotNull(cpDefinition);
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, cpDefinition.getStatus());
+
+		Assert.assertNotNull(
+			_cProductLocalService.fetchCProduct(cpDefinition.getCProductId()));
+	}
+
 	private void _assertUniqueExternalReferenceCodes(
 		CPDefinitionOptionRel sourceCPDefinitionOptionRel,
 		CPDefinition targetCPDefinition) {
@@ -1071,6 +1084,20 @@ public class CPDefinitionLocalServiceTest {
 		Assert.assertEquals(
 			externalReferenceCodes.toString(), externalReferenceCodes.size(),
 			externalReferenceCodesSet.size());
+	}
+
+	private CPDefinition _cloneCPDefinition(CPDefinition cpDefinition)
+		throws Exception {
+
+		CPDefinition clonedCPDefinition =
+			_cpDefinitionLocalService.cloneCPDefinition(
+				TestPropsValues.getUserId(), cpDefinition.getCPDefinitionId(),
+				_commerceCatalog.getGroupId(), _serviceContext);
+
+		return _cpDefinitionLocalService.updateStatus(
+			_serviceContext.getUserId(), clonedCPDefinition.getCPDefinitionId(),
+			WorkflowConstants.STATUS_APPROVED, _serviceContext,
+			Collections.emptyMap());
 	}
 
 	private void _testAddFutureExpiredCPDefinition() throws Exception {
@@ -1563,6 +1590,88 @@ public class CPDefinitionLocalServiceTest {
 			1,
 			_cpDefinitionLocalService.getCProductCPDefinitionsCount(
 				cpDefinition1.getCProductId(), WorkflowConstants.STATUS_DRAFT));
+	}
+
+	private void _testDeleteCPDefinitionWithClonedCPDefinitions()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"Delete a product and its clones one by one"
+		).given(
+			"A published product, its published clone and the published " +
+				"clone of the clone, with versioning enabled"
+		).when(
+			"the product definitions are deleted one by one"
+		).then(
+			"each deletion removes only that product"
+		).and(
+			"the remaining clones stay published"
+		);
+
+		CPDefinition cpDefinition = CPTestUtil.addCPDefinitionFromCatalog(
+			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, false,
+			false);
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						CProductVersionConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"enabled", true
+						).put(
+							"versionThreshold", 2
+						).build())) {
+
+			CPDefinition clonedCPDefinition = _cloneCPDefinition(cpDefinition);
+
+			String languageId = LocaleUtil.toLanguageId(
+				LocaleUtil.getDefault());
+
+			Assert.assertEquals(
+				"Copy of " + cpDefinition.getName(languageId),
+				clonedCPDefinition.getName(languageId));
+
+			Assert.assertNotEquals(
+				cpDefinition.getCProductId(),
+				clonedCPDefinition.getCProductId());
+
+			CPDefinition clonedClonedCPDefinition = _cloneCPDefinition(
+				clonedCPDefinition);
+
+			Assert.assertEquals(
+				"Copy of Copy of " + cpDefinition.getName(languageId),
+				clonedClonedCPDefinition.getName(languageId));
+
+			_cpDefinitionLocalService.deleteCPDefinition(
+				cpDefinition.getCPDefinitionId());
+
+			Assert.assertNull(
+				_cProductLocalService.fetchCProduct(
+					cpDefinition.getCProductId()));
+
+			_assertApproved(clonedCPDefinition);
+			_assertApproved(clonedClonedCPDefinition);
+
+			_cpDefinitionLocalService.deleteCPDefinition(
+				clonedCPDefinition.getCPDefinitionId());
+
+			Assert.assertNull(
+				_cProductLocalService.fetchCProduct(
+					clonedCPDefinition.getCProductId()));
+
+			_assertApproved(clonedClonedCPDefinition);
+
+			_cpDefinitionLocalService.deleteCPDefinition(
+				clonedClonedCPDefinition.getCPDefinitionId());
+
+			Assert.assertNull(
+				_cpDefinitionLocalService.fetchCPDefinition(
+					clonedClonedCPDefinition.getCPDefinitionId()));
+			Assert.assertNull(
+				_cProductLocalService.fetchCProduct(
+					clonedClonedCPDefinition.getCProductId()));
+		}
 	}
 
 	private void _testDeleteCPDefinitionWithExistingDraftCPDefinition()
