@@ -213,6 +213,47 @@ public class CPDefinitionInventoryEngineTest {
 				cpConfigurationEntry.getMultipleOrderQuantity()));
 	}
 
+	@Test
+	public void testIsDisplayAvailabilityWithoutCPConfigurationEntry()
+		throws Exception {
+
+		_deleteCPConfigurationEntriesAndUpdateCPDefinitionInventory();
+
+		Assert.assertTrue(
+			_cpDefinitionInventoryEngine.isDisplayAvailability(
+				_cpConfigurationList.getCPConfigurationListId(), _cpInstance));
+	}
+
+	@Test
+	public void testIsDisplayStockQuantityWithoutCPConfigurationEntry()
+		throws Exception {
+
+		_deleteCPConfigurationEntriesAndUpdateCPDefinitionInventory();
+
+		Assert.assertTrue(
+			_cpDefinitionInventoryEngine.isDisplayStockQuantity(
+				_cpConfigurationList.getCPConfigurationListId(), _cpInstance));
+	}
+
+	private void _deleteCPConfigurationEntriesAndUpdateCPDefinitionInventory()
+		throws Exception {
+
+		_cpConfigurationEntryLocalService.deleteCPConfigurationEntries(
+			_classNameLocalService.getClassNameId(CPDefinition.class),
+			_cpInstance.getCPDefinitionId(), true);
+
+		CPDefinitionInventory cpDefinitionInventory =
+			_cpDefinitionInventoryLocalService.
+				fetchCPDefinitionInventoryByCPDefinitionId(
+					_cpInstance.getCPDefinitionId());
+
+		cpDefinitionInventory.setDisplayAvailability(true);
+		cpDefinitionInventory.setDisplayStockQuantity(true);
+
+		_cpDefinitionInventoryLocalService.updateCPDefinitionInventory(
+			cpDefinitionInventory);
+	}
+
 	@Inject
 	private ClassNameLocalService _classNameLocalService;
 
