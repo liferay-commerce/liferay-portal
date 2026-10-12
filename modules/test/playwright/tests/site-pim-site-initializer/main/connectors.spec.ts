@@ -71,7 +71,7 @@ test(
 		productsPage,
 	}) => {
 		const connectorName = getRandomString();
-		const productName = getRandomString();
+		const productTitle = getRandomString();
 
 		try {
 			await test.step('Add a product', async () => {
@@ -79,8 +79,8 @@ test(
 
 				await productsPage.openNewProductEditor();
 
-				await productPage.code.fill(getRandomString());
-				await productPage.name.fill(productName);
+				await productPage.sku.fill(getRandomString());
+				await productPage.title.fill(productTitle);
 
 				await productPage.save();
 			});
@@ -98,9 +98,9 @@ test(
 
 				for (const {channelField, sourceAttribute, value} of [
 					{channelField: 'Catalog ID', value: '1'},
-					{channelField: 'Name', sourceAttribute: 'Name (name)'},
+					{channelField: 'Name', sourceAttribute: 'Title (title)'},
 					{channelField: 'Product Type', value: 'simple'},
-					{channelField: 'SKU', sourceAttribute: 'Code (code)'},
+					{channelField: 'SKU', sourceAttribute: 'SKU (sku)'},
 				]) {
 					await fieldMappingsPage.channelField(channelField).click();
 
@@ -141,7 +141,7 @@ test(
 
 			await productsPage.goto();
 
-			await productsPage.deleteProduct(productName);
+			await productsPage.deleteProduct(productTitle);
 		}
 	}
 );

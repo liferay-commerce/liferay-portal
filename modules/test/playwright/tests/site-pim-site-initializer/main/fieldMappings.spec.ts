@@ -114,7 +114,7 @@ test(
 			});
 
 			await test.step('Map the channel field to a source attribute', async () => {
-				await editFieldMappingsPage.mapToSourceAttribute('Code (code)');
+				await editFieldMappingsPage.mapToSourceAttribute('SKU (sku)');
 
 				await editFieldMappingsPage.saveButton.click();
 
@@ -124,7 +124,7 @@ test(
 				);
 				await expect(
 					fieldMappingsPage.sourceAttributes('SKU')
-				).toHaveText('Code');
+				).toHaveText('SKU');
 			});
 
 			await test.step('The mapping comes back on reopening', async () => {
@@ -132,21 +132,21 @@ test(
 
 				await expect(
 					editFieldMappingsPage.sourceAttribute(0)
-				).toHaveValue('code');
+				).toHaveValue('sku');
 			});
 
 			await test.step('Narrow the mapping to one structure', async () => {
 				await editFieldMappingsPage.source(0).selectOption({
-					label: 'PIM Base SKU',
+					label: 'PIM Basic Product',
 				});
-				await editFieldMappingsPage.mapToSourceAttribute('Code (code)');
+				await editFieldMappingsPage.mapToSourceAttribute('SKU (sku)');
 
 				await editFieldMappingsPage.saveButton.click();
 
 				await expect(page).toHaveURL(/\/field-mappings\?/);
 				await expect(
 					fieldMappingsPage.sourceAttributes('SKU')
-				).toHaveText('PIM Base SKU/Code');
+				).toHaveText('PIM Basic Product/SKU');
 			});
 
 			await test.step('Add a fixed value as a second source', async () => {
@@ -161,7 +161,7 @@ test(
 				await expect(page).toHaveURL(/\/field-mappings\?/);
 				await expect(
 					fieldMappingsPage.sourceAttributes('SKU')
-				).toHaveText('PIM Base SKU/CodeABC-1');
+				).toHaveText('PIM Basic Product/SKUABC-1');
 			});
 
 			await test.step('Unmap the channel field', async () => {
@@ -268,7 +268,7 @@ test(
 
 				await expect(page).toHaveURL(/\/edit-field-mappings\?/);
 
-				await editFieldMappingsPage.mapToSourceAttribute('Code (code)');
+				await editFieldMappingsPage.mapToSourceAttribute('SKU (sku)');
 
 				await editFieldMappingsPage.saveButton.click();
 
