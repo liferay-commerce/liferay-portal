@@ -22,6 +22,9 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistry;
+import com.liferay.portal.kernel.search.QueryConfig;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
@@ -197,6 +200,67 @@ public class CPDefinitionHelperTest {
 	}
 
 	@Test
+	public void testSearchCPDefinitionsByLocalizedName()
+		throws PortalException {
+
+		frutillaRule.scenario(
+			"Search for CPDefinitions by localized name"
+		).given(
+			"A CPDefinition with a name and a short description in Portuguese"
+		).when(
+			"I search for the Portuguese name with the Portuguese locale"
+		).then(
+			"The result contains the Portuguese name and short description"
+		);
+
+		CPInstance cpInstance = CPTestUtil.addCPInstanceFromCatalog(
+			_commerceCatalog.getGroupId());
+
+		CPDefinition cpDefinition = cpInstance.getCPDefinition();
+
+		String name = RandomTestUtil.randomString();
+		String shortDescription = RandomTestUtil.randomString();
+
+		_cpDefinitionLocalService.updateCPDefinitionLocalization(
+			cpDefinition, LocaleUtil.toLanguageId(LocaleUtil.BRAZIL), null,
+			null, null, null, name, shortDescription);
+
+		Indexer<CPDefinition> indexer = _indexerRegistry.getIndexer(
+			CPDefinition.class);
+
+		indexer.reindex(cpDefinition);
+
+		SearchContext searchContext = CPTestUtil.getSearchContext(
+			name, WorkflowConstants.STATUS_APPROVED,
+			_commerceCatalog.getGroup());
+
+		searchContext.setLocale(LocaleUtil.BRAZIL);
+
+		QueryConfig queryConfig = searchContext.getQueryConfig();
+
+		queryConfig.setLocale(LocaleUtil.BRAZIL);
+
+		CPDataSourceResult cpDataSourceResult = _cpDefinitionHelper.search(
+			_commerceCatalog.getGroupId(), searchContext, new CPQuery(),
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+		List<CPCatalogEntry> cpCatalogEntries =
+			cpDataSourceResult.getCPCatalogEntries();
+
+		Assert.assertEquals(
+			cpCatalogEntries.toString(), 1, cpCatalogEntries.size());
+
+		CPCatalogEntry cpCatalogEntry = cpCatalogEntries.get(0);
+
+		Assert.assertEquals(
+			cpDefinition.getCPDefinitionId(),
+			cpCatalogEntry.getCPDefinitionId());
+		Assert.assertEquals(name, cpCatalogEntry.getName());
+		Assert.assertEquals(
+			shortDescription, cpCatalogEntry.getShortDescription());
+	}
+
+	@Test
 	public void testSearchCPDefinitionsByName() throws PortalException {
 		frutillaRule.scenario(
 			"Search for CPDefinitions by name"
@@ -267,5 +331,8 @@ public class CPDefinitionHelperTest {
 
 	@Inject
 	private CPDefinitionLocalService _cpDefinitionLocalService;
+
+	@Inject
+	private IndexerRegistry _indexerRegistry;
 
 }
