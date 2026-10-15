@@ -7,12 +7,11 @@ import {
 	StatusLabel,
 	addOnClickToCreationMenuItems,
 	confirmAndDeleteEntryAction,
-	styleDeleteAction,
 } from '@liferay/site-cms-site-initializer';
 import {sub} from 'frontend-js-web';
 import React from 'react';
 
-import ProductRelationshipSelectorNameRenderer from './cell_renderers/ProductRelationshipSelectorNameRenderer';
+import ProductRelationshipSelectorTitleRenderer from './cell_renderers/ProductRelationshipSelectorTitleRenderer';
 import openProductRelationshipSelectorModal from './openProductRelationshipSelectorModal';
 
 const ACTIONS = {
@@ -21,11 +20,9 @@ const ACTIONS = {
 
 export default function propsTransformer({
 	creationMenu,
-	itemsActions,
 	...props
 }: {
 	creationMenu?: any;
-	itemsActions?: any[];
 	[key: string]: any;
 }) {
 	return {
@@ -40,8 +37,8 @@ export default function propsTransformer({
 		customRenderers: {
 			tableCell: [
 				{
-					component: ProductRelationshipSelectorNameRenderer,
-					name: 'nameTableCellRenderer',
+					component: ProductRelationshipSelectorTitleRenderer,
+					name: 'titleTableCellRenderer',
 					type: 'internal',
 				},
 				{
@@ -54,7 +51,6 @@ export default function propsTransformer({
 			],
 		},
 		hideManagementBarInEmptyState: true,
-		itemsActions: itemsActions?.map(styleDeleteAction),
 		onActionDropdownItemClick({
 			action,
 			event,
@@ -65,7 +61,7 @@ export default function propsTransformer({
 			event: Event;
 			itemData: {
 				actions: {delete: {href: string; method: string}};
-				name: string;
+				title: string;
 			};
 			loadData: () => void;
 		}) {
@@ -82,11 +78,12 @@ export default function propsTransformer({
 				confirmButtonLabel: Liferay.Language.get('remove'),
 				deleteAction: itemData.actions.delete,
 				loadData,
+				status: 'warning',
 				successMessage: sub(
 					Liferay.Language.get('x-was-removed-successfully'),
-					Liferay.Util.escapeHTML(itemData.name)
+					Liferay.Util.escapeHTML(itemData.title)
 				),
-				title: sub(Liferay.Language.get('remove-x'), itemData.name),
+				title: sub(Liferay.Language.get('remove-x'), itemData.title),
 			});
 		},
 	};

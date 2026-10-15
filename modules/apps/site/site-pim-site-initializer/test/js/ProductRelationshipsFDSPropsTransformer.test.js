@@ -4,7 +4,7 @@
  */
 
 import propsTransformer from '../../src/main/resources/META-INF/resources/js/ProductRelationshipsFDSPropsTransformer';
-import ProductRelationshipSelectorNameRenderer from '../../src/main/resources/META-INF/resources/js/cell_renderers/ProductRelationshipSelectorNameRenderer';
+import ProductRelationshipSelectorTitleRenderer from '../../src/main/resources/META-INF/resources/js/cell_renderers/ProductRelationshipSelectorTitleRenderer';
 
 jest.mock('@liferay/site-cms-site-initializer', () => ({
 	StatusLabel: jest.fn(),
@@ -12,10 +12,6 @@ jest.mock('@liferay/site-cms-site-initializer', () => ({
 		items.map((item) => ({...item, onClick() {}})),
 	confirmAndDeleteEntryAction: (...args) =>
 		mockConfirmAndDeleteEntryAction(...args),
-	styleDeleteAction: (action) =>
-		action?.data?.id === 'delete'
-			? {...action, className: 'text-danger'}
-			: action,
 }));
 
 jest.mock('frontend-js-web', () => ({
@@ -42,18 +38,6 @@ describe('ProductRelationshipsFDSPropsTransformer', () => {
 		jest.clearAllMocks();
 	});
 
-	it('marks the delete action as text-danger and leaves the other actions unchanged', () => {
-		const result = propsTransformer({
-			itemsActions: [
-				{data: {id: 'edit'}, icon: 'pencil'},
-				{data: {id: 'delete'}, icon: 'trash'},
-			],
-		});
-
-		expect(result.itemsActions[0].className).toBeUndefined();
-		expect(result.itemsActions[1].className).toBe('text-danger');
-	});
-
 	it('wires an onClick onto the creation menu primary items', () => {
 		const result = propsTransformer({
 			creationMenu: {
@@ -66,15 +50,15 @@ describe('ProductRelationshipsFDSPropsTransformer', () => {
 		);
 	});
 
-	it('registers the product name cell renderer', () => {
+	it('registers the product title cell renderer', () => {
 		const result = propsTransformer({});
 
 		const [renderer] = result.customRenderers.tableCell;
 
 		expect(renderer.component).toBe(
-			ProductRelationshipSelectorNameRenderer
+			ProductRelationshipSelectorTitleRenderer
 		);
-		expect(renderer.name).toBe('nameTableCellRenderer');
+		expect(renderer.name).toBe('titleTableCellRenderer');
 	});
 
 	it('forces hideManagementBarInEmptyState to true and preserves the other props', () => {
@@ -100,7 +84,7 @@ describe('ProductRelationshipsFDSPropsTransformer', () => {
 						method: 'DELETE',
 					},
 				},
-				name: 'Blue Shirt',
+				title: 'Blue Shirt',
 			},
 			loadData: jest.fn(),
 		});
@@ -120,9 +104,9 @@ describe('ProductRelationshipsFDSPropsTransformer', () => {
 		const event = {preventDefault: jest.fn()};
 
 		propsTransformer({}).onActionDropdownItemClick({
-			action: {data: {id: 'edit'}},
+			action: {data: {id: 'view'}},
 			event,
-			itemData: {actions: {delete: {href: '', method: ''}}, name: ''},
+			itemData: {actions: {delete: {href: '', method: ''}}, title: ''},
 			loadData: jest.fn(),
 		});
 
