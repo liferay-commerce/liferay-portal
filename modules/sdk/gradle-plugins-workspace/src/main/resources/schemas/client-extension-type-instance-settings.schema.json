@@ -1469,6 +1469,10 @@
 				"apiUsername": {
 					"type": "string"
 				},
+				"embeddedViewEnabled": {
+					"default": false,
+					"type": "boolean"
+				},
 				"enabled": {
 					"type": "boolean"
 				},
@@ -1488,6 +1492,10 @@
 				},
 				"rsaPrivateKey": {
 					"type": "string"
+				},
+				"signatureReminderEnabled": {
+					"default": false,
+					"type": "boolean"
 				},
 				"siteSettingsStrategy": {
 					"type": "string"
