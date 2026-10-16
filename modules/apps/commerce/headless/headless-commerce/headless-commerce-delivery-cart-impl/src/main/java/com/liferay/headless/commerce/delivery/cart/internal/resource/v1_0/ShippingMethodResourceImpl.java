@@ -14,6 +14,7 @@ import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceShippingEngine;
 import com.liferay.commerce.model.CommerceShippingMethod;
 import com.liferay.commerce.model.CommerceShippingOption;
+import com.liferay.commerce.order.CommerceOrderHttpHelper;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.service.CommerceOrderService;
@@ -58,6 +59,9 @@ public class ShippingMethodResourceImpl extends BaseShippingMethodResourceImpl {
 					externalReferenceCode);
 		}
 
+		_commerceOrderHttpHelper.checkGuestCommerceOrder(
+			commerceOrder, contextHttpServletRequest);
+
 		CommerceAddress shippingCommerceAddress =
 			commerceOrder.getShippingAddress();
 
@@ -85,6 +89,9 @@ public class ShippingMethodResourceImpl extends BaseShippingMethodResourceImpl {
 
 		CommerceOrder commerceOrder = _commerceOrderService.getCommerceOrder(
 			cartId);
+
+		_commerceOrderHttpHelper.checkGuestCommerceOrder(
+			commerceOrder, contextHttpServletRequest);
 
 		CommerceAddress shippingCommerceAddress =
 			commerceOrder.getShippingAddress();
@@ -181,6 +188,9 @@ public class ShippingMethodResourceImpl extends BaseShippingMethodResourceImpl {
 
 	@Reference
 	private CommerceContextFactory _commerceContextFactory;
+
+	@Reference
+	private CommerceOrderHttpHelper _commerceOrderHttpHelper;
 
 	@Reference
 	private CommerceOrderService _commerceOrderService;

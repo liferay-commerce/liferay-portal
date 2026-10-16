@@ -15,6 +15,7 @@ import com.liferay.commerce.model.CommerceOrderItemModel;
 import com.liferay.commerce.model.CommerceShippingEngine;
 import com.liferay.commerce.model.CommerceShippingMethod;
 import com.liferay.commerce.model.CommerceShippingOption;
+import com.liferay.commerce.order.CommerceOrderHttpHelper;
 import com.liferay.commerce.order.engine.CommerceOrderEngine;
 import com.liferay.commerce.order.status.CommerceOrderStatus;
 import com.liferay.commerce.order.status.CommerceOrderStatusRegistry;
@@ -65,6 +66,9 @@ public class CartTransitionResourceImpl extends BaseCartTransitionResourceImpl {
 
 		CommerceOrder commerceOrder = _commerceOrderService.getCommerceOrder(
 			cartId);
+
+		_commerceOrderHttpHelper.checkGuestCommerceOrder(
+			commerceOrder, contextHttpServletRequest);
 
 		if (!commerceOrder.isOpen()) {
 			throw new CommerceOrderStatusException(
@@ -156,6 +160,9 @@ public class CartTransitionResourceImpl extends BaseCartTransitionResourceImpl {
 
 		CommerceOrder commerceOrder = _commerceOrderService.getCommerceOrder(
 			cartId);
+
+		_commerceOrderHttpHelper.checkGuestCommerceOrder(
+			commerceOrder, contextHttpServletRequest);
 
 		if (!commerceOrder.isOpen()) {
 			throw new CommerceOrderStatusException(
@@ -329,6 +336,9 @@ public class CartTransitionResourceImpl extends BaseCartTransitionResourceImpl {
 
 	@Reference
 	private CommerceOrderEngine _commerceOrderEngine;
+
+	@Reference
+	private CommerceOrderHttpHelper _commerceOrderHttpHelper;
 
 	@Reference
 	private CommerceOrderNoteLocalService _commerceOrderNoteLocalService;

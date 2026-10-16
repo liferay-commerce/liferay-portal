@@ -9,6 +9,7 @@ import com.liferay.commerce.exception.NoSuchOrderException;
 import com.liferay.commerce.model.CommerceAddress;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderType;
+import com.liferay.commerce.order.CommerceOrderHttpHelper;
 import com.liferay.commerce.payment.integration.CommercePaymentIntegration;
 import com.liferay.commerce.payment.integration.CommercePaymentIntegrationRegistry;
 import com.liferay.commerce.payment.method.CommercePaymentMethod;
@@ -60,6 +61,9 @@ public class PaymentMethodResourceImpl extends BasePaymentMethodResourceImpl {
 					externalReferenceCode);
 		}
 
+		_commerceOrderHttpHelper.checkGuestCommerceOrder(
+			commerceOrder, contextHttpServletRequest);
+
 		return _getPaymentMethodPage(commerceOrder);
 	}
 
@@ -67,8 +71,13 @@ public class PaymentMethodResourceImpl extends BasePaymentMethodResourceImpl {
 	public Page<PaymentMethod> getCartPaymentMethodsPage(Long cartId)
 		throws Exception {
 
-		return _getPaymentMethodPage(
-			_commerceOrderService.getCommerceOrder(cartId));
+		CommerceOrder commerceOrder = _commerceOrderService.getCommerceOrder(
+			cartId);
+
+		_commerceOrderHttpHelper.checkGuestCommerceOrder(
+			commerceOrder, contextHttpServletRequest);
+
+		return _getPaymentMethodPage(commerceOrder);
 	}
 
 	private List<CommercePaymentMethodGroupRel>
@@ -203,6 +212,9 @@ public class PaymentMethodResourceImpl extends BasePaymentMethodResourceImpl {
 			}
 		};
 	}
+
+	@Reference
+	private CommerceOrderHttpHelper _commerceOrderHttpHelper;
 
 	@Reference
 	private CommerceOrderService _commerceOrderService;
