@@ -24,6 +24,10 @@ public interface CommerceOrderHttpHelper {
 	public CommerceOrder addCommerceOrder(HttpServletRequest httpServletRequest)
 		throws PortalException;
 
+	public void checkGuestCommerceOrder(
+			CommerceOrder commerceOrder, HttpServletRequest httpServletRequest)
+		throws PortalException;
+
 	public void deleteCommerceOrder(
 			ActionRequest actionRequest, long commerceOrderId)
 		throws PortalException;
