@@ -103,7 +103,7 @@ test(
 			[{actionIds: ['VIEW'], roleName: role.name}]
 		);
 
-		const displayUrl = `/web${site.friendlyUrlPath}/cmsbasicwebcontent/asset-library-${space.id}/${friendlyUrlPath}`;
+		const displayUrl = `/web${site.friendlyUrlPath}/cmsbasicwebcontent${space.friendlyURL}/${friendlyUrlPath}`;
 
 		await test.step('GUEST is denied and the content body is not exposed', async () => {
 			const guestContext = await browser.newContext({

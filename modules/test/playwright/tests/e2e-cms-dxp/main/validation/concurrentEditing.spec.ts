@@ -100,7 +100,7 @@ test(
 			});
 			const guestPage = await guestContext.newPage();
 
-			const viewUrl = `/web/cms/cmsbasicwebcontent/asset-library-${space.id}/${friendlyUrl}`;
+			const viewUrl = `/web/cms/cmsbasicwebcontent${space.friendlyURL}/${friendlyUrl}`;
 
 			await expect(async () => {
 				await guestPage.goto(viewUrl);
