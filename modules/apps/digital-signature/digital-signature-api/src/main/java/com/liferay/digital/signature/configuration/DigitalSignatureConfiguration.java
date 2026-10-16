@@ -32,6 +32,9 @@ public interface DigitalSignatureConfiguration {
 
 	public String apiUsername();
 
+	@Meta.AD(deflt = "false", required = false)
+	public boolean embeddedViewEnabled();
+
 	public boolean enabled();
 
 	public String environment();
@@ -44,6 +47,9 @@ public interface DigitalSignatureConfiguration {
 
 	@Meta.AD(type = Meta.Type.Password)
 	public String rsaPrivateKey();
+
+	@Meta.AD(deflt = "false", required = false)
+	public boolean signatureReminderEnabled();
 
 	public String siteSettingsStrategy();
 

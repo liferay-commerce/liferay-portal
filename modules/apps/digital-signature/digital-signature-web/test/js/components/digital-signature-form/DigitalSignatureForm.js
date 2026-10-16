@@ -4,6 +4,7 @@
  */
 
 import {act, cleanup, fireEvent, render} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import {AppContext} from '../../../../src/main/resources/META-INF/resources/js/AppContext';
@@ -64,5 +65,40 @@ describe('DigitalSignatureForm', () => {
 		expect(parentEmailSubject.classList.contains('has-error')).toBeTruthy();
 
 		expect(asFragment()).toMatchSnapshot();
+	});
+
+	it('Validates the expiration warning period when embedded signing is enabled', async () => {
+		const {getByLabelText, getByText} = render(
+			<AppContext.Provider value={{embeddedViewEnabled: true}}>
+				<DigitalSignatureForm />
+			</AppContext.Provider>
+		);
+
+		const inputExpireWarn = getByLabelText(
+			'days-to-warn-signers-before-expiration'
+		);
+
+		await userEvent.clear(inputExpireWarn);
+		await userEvent.type(inputExpireWarn, '120');
+
+		expect(
+			getByText(
+				'days-to-warn-signers-must-be-fewer-than-days-until-expiration'
+			)
+		).toBeInTheDocument();
+	});
+
+	it('Restricts recipients to existing users when embedded signing is enabled', () => {
+		const {getByPlaceholderText, queryByPlaceholderText} = render(
+			<AppContext.Provider value={{embeddedViewEnabled: true}}>
+				<DigitalSignatureForm />
+			</AppContext.Provider>
+		);
+
+		expect(getByPlaceholderText('search-for')).toBeTruthy();
+		expect(queryByPlaceholderText('recipient-email')).toBeNull();
+		expect(
+			getByPlaceholderText('recipient-full-name').hasAttribute('disabled')
+		).toBeTruthy();
 	});
 });
