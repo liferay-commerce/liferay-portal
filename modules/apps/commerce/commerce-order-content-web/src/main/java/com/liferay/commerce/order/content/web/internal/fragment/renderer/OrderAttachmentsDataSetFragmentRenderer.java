@@ -6,6 +6,7 @@
 package com.liferay.commerce.order.content.web.internal.fragment.renderer;
 
 import com.liferay.commerce.model.CommerceOrder;
+import com.liferay.commerce.order.CommerceOrderAttachmentFDSActionContributor;
 import com.liferay.commerce.order.content.web.internal.constants.CommerceOrderFragmentFDSNames;
 import com.liferay.commerce.service.CommerceOrderService;
 import com.liferay.commerce.util.CommerceOrderInfoItemUtil;
@@ -46,6 +47,8 @@ import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 /**
  * @author Tancredi Covioli
@@ -128,7 +131,7 @@ public class OrderAttachmentsDataSetFragmentRenderer
 
 			httpServletRequest.setAttribute(
 				"liferay-commerce:order-attachments-data-set:additionalProps",
-				_getFDSAdditionalProps(commerceOrder.getCommerceOrderId()));
+				_getFDSAdditionalProps(commerceOrder, httpServletRequest));
 			httpServletRequest.setAttribute(
 				"liferay-commerce:order-attachments-data-set:apiURL",
 				_getAPIURL(commerceOrder));
@@ -147,7 +150,7 @@ public class OrderAttachmentsDataSetFragmentRenderer
 			httpServletRequest.setAttribute(
 				"liferay-commerce:order-attachments-data-set:" +
 					"fdsActionDropdownItems",
-				_getFDSActionDropdownItems(httpServletRequest));
+				_getFDSActionDropdownItems(commerceOrder, httpServletRequest));
 			httpServletRequest.setAttribute(
 				"liferay-commerce:order-attachments-data-set:name",
 				_getName(commerceOrder));
@@ -176,35 +179,62 @@ public class OrderAttachmentsDataSetFragmentRenderer
 	}
 
 	private List<FDSActionDropdownItem> _getFDSActionDropdownItems(
-		HttpServletRequest httpServletRequest) {
+		CommerceOrder commerceOrder, HttpServletRequest httpServletRequest) {
 
-		return FDSActionDropdownItemList.of(
-			FDSActionDropdownItemBuilder.setHref(
-				StringPool.POUND
-			).setIcon(
-				"download"
-			).setLabel(
-				_language.get(httpServletRequest, "download")
-			).build(
-				"download"
-			),
-			FDSActionDropdownItemBuilder.setHref(
-				StringPool.POUND
-			).setIcon(
-				"trash"
-			).setLabel(
-				_language.get(httpServletRequest, "delete")
-			).setPermissionKey(
-				"delete"
-			).build(
-				"delete"
-			));
+		List<FDSActionDropdownItem> fdsActionDropdownItems =
+			FDSActionDropdownItemList.of(
+				FDSActionDropdownItemBuilder.setHref(
+					StringPool.POUND
+				).setIcon(
+					"download"
+				).setLabel(
+					_language.get(httpServletRequest, "download")
+				).build(
+					"download"
+				),
+				FDSActionDropdownItemBuilder.setHref(
+					StringPool.POUND
+				).setIcon(
+					"trash"
+				).setLabel(
+					_language.get(httpServletRequest, "delete")
+				).setPermissionKey(
+					"delete"
+				).build(
+					"delete"
+				));
+
+		for (CommerceOrderAttachmentFDSActionContributor
+				commerceOrderAttachmentFDSActionContributor :
+					_commerceOrderAttachmentFDSActionContributors) {
+
+			fdsActionDropdownItems.addAll(
+				commerceOrderAttachmentFDSActionContributor.
+					getFDSActionDropdownItems(
+						commerceOrder, httpServletRequest));
+		}
+
+		return fdsActionDropdownItems;
 	}
 
-	private Map<String, Object> _getFDSAdditionalProps(long commerceOrderId) {
-		return HashMapBuilder.<String, Object>put(
-			"commerceOrderId", commerceOrderId
-		).build();
+	private Map<String, Object> _getFDSAdditionalProps(
+		CommerceOrder commerceOrder, HttpServletRequest httpServletRequest) {
+
+		Map<String, Object> additionalProps =
+			HashMapBuilder.<String, Object>put(
+				"commerceOrderId", commerceOrder.getCommerceOrderId()
+			).build();
+
+		for (CommerceOrderAttachmentFDSActionContributor
+				commerceOrderAttachmentFDSActionContributor :
+					_commerceOrderAttachmentFDSActionContributors) {
+
+			additionalProps.putAll(
+				commerceOrderAttachmentFDSActionContributor.getAdditionalProps(
+					commerceOrder, httpServletRequest));
+		}
+
+		return additionalProps;
 	}
 
 	private String _getName(CommerceOrder commerceOrder) {
@@ -227,6 +257,13 @@ public class OrderAttachmentsDataSetFragmentRenderer
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		OrderAttachmentsDataSetFragmentRenderer.class);
+
+	@Reference(
+		cardinality = ReferenceCardinality.MULTIPLE,
+		policyOption = ReferencePolicyOption.GREEDY
+	)
+	private List<CommerceOrderAttachmentFDSActionContributor>
+		_commerceOrderAttachmentFDSActionContributors;
 
 	@Reference
 	private CommerceOrderService _commerceOrderService;

@@ -8,6 +8,7 @@ package com.liferay.digital.signature.web.internal.portlet.action;
 import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
 import com.liferay.digital.signature.configuration.DigitalSignatureConfiguration;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
@@ -57,6 +58,25 @@ public class SaveCompanyConfigurationMVCActionCommand
 			return;
 		}
 
+		boolean embeddedViewEnabled = ParamUtil.getBoolean(
+			actionRequest, "embeddedViewEnabled");
+		boolean signatureReminderEnabled = ParamUtil.getBoolean(
+			actionRequest, "signatureReminderEnabled");
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				themeDisplay.getCompanyId(), "LPD-69290")) {
+
+			DigitalSignatureConfiguration digitalSignatureConfiguration =
+				_configurationProvider.getCompanyConfiguration(
+					DigitalSignatureConfiguration.class,
+					themeDisplay.getCompanyId());
+
+			embeddedViewEnabled =
+				digitalSignatureConfiguration.embeddedViewEnabled();
+			signatureReminderEnabled =
+				digitalSignatureConfiguration.signatureReminderEnabled();
+		}
+
 		_configurationProvider.saveCompanyConfiguration(
 			DigitalSignatureConfiguration.class, themeDisplay.getCompanyId(),
 			HashMapDictionaryBuilder.<String, Object>put(
@@ -68,6 +88,8 @@ public class SaveCompanyConfigurationMVCActionCommand
 			).put(
 				"apiUsername", ParamUtil.getString(actionRequest, "apiUsername")
 			).put(
+				"embeddedViewEnabled", embeddedViewEnabled
+			).put(
 				"enabled", ParamUtil.getBoolean(actionRequest, "enabled")
 			).put(
 				"environment", ParamUtil.getString(actionRequest, "environment")
@@ -77,6 +99,8 @@ public class SaveCompanyConfigurationMVCActionCommand
 			).put(
 				"rsaPrivateKey",
 				ParamUtil.getString(actionRequest, "rsaPrivateKey")
+			).put(
+				"signatureReminderEnabled", signatureReminderEnabled
 			).put(
 				"siteSettingsStrategy",
 				ParamUtil.getString(actionRequest, "siteSettingsStrategy")
