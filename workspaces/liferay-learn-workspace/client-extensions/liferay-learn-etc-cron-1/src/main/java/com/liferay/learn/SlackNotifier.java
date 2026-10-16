@@ -17,7 +17,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -38,8 +37,8 @@ import org.json.JSONObject;
  */
 public class SlackNotifier {
 
-	public SlackNotifier(List<String> errorMessages) {
-		_errorMessages = errorMessages;
+	public SlackNotifier(RunReport runReport) {
+		_runReport = runReport;
 	}
 
 	public void sendReport(
@@ -59,13 +58,13 @@ public class SlackNotifier {
 
 		StringBundler sb = new StringBundler();
 
-		if (_errorMessages.isEmpty()) {
+		if (!_runReport.hasErrors()) {
 			sb.append(":sunflower: *liferay-learn-etc-cron-1* run completed");
 		}
 		else {
 			sb.append(":rotating_light: *liferay-learn-etc-cron-1* run ");
 			sb.append("failed with ");
-			sb.append(_errorMessages.size());
+			sb.append(_runReport.getErrorCount());
 			sb.append(" errors");
 		}
 
@@ -104,16 +103,20 @@ public class SlackNotifier {
 			sb.append("|console log>");
 		}
 
-		int reportedErrorCount = Math.min(_errorMessages.size(), 10);
+		int reportedErrorCount = Math.min(_runReport.getErrorCount(), 10);
 
 		for (int i = 0; i < reportedErrorCount; i++) {
 			sb.append("\n> ");
-			sb.append(_errorMessages.get(i));
+			sb.append(
+				_runReport.getErrorMessages(
+				).get(
+					i
+				));
 		}
 
-		if (_errorMessages.size() > reportedErrorCount) {
+		if (_runReport.getErrorCount() > reportedErrorCount) {
 			sb.append("\n> and ");
-			sb.append(_errorMessages.size() - reportedErrorCount);
+			sb.append(_runReport.getErrorCount() - reportedErrorCount);
 			sb.append(" more, see the console log");
 		}
 
@@ -320,6 +323,6 @@ public class SlackNotifier {
 		"preflight-dxp", "sources"
 	).build();
 
-	private final List<String> _errorMessages;
+	private final RunReport _runReport;
 
 }

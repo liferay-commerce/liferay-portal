@@ -848,7 +848,7 @@ public class Main {
 					importedStructuredContent.getId(), fileName);
 			}
 			catch (Exception exception) {
-				_error(fileName + ": " + exception);
+				_runReport.addError(fileName + ": " + exception);
 
 				if (publishedStructuredContentId != null) {
 					_invalidateMD5Hex(
@@ -861,44 +861,23 @@ public class Main {
 			_getIdStructuredContents(siteStructuredContents),
 			importedStructuredContentIds);
 
-		System.out.println(
-			addedStructuredContentCount + " structured contents were added.");
+		_runReport.printSummary(
+			addedStructuredContentCount, deletedStructuredContentCount,
+			updatedStructuredContentCount);
 
-		if (deletedStructuredContentCount > 0) {
-			System.out.println(
-				deletedStructuredContentCount +
-					" structured contents were deleted.");
-		}
-
-		System.out.println(
-			updatedStructuredContentCount +
-				" structured contents were updated.");
-
-		if (!_warningMessages.isEmpty()) {
-			System.out.println(_warningMessages.size() + " warning messages:");
-
-			for (String warningMessage : _warningMessages) {
-				System.out.println(warningMessage);
-			}
-		}
-
-		SlackNotifier slackNotifier = new SlackNotifier(_errorMessages);
+		SlackNotifier slackNotifier = new SlackNotifier(_runReport);
 
 		slackNotifier.sendReport(
 			addedStructuredContentCount, deletedStructuredContentCount,
 			skippedStructuredContentCount, updatedStructuredContentCount);
 
-		if (!_errorMessages.isEmpty()) {
-			System.out.println(_errorMessages.size() + " error messages:");
+		_runReport.printErrors();
 
-			for (String errorMessage : _errorMessages) {
-				System.out.println(errorMessage);
-			}
-
-			throw new Exception(_errorMessages.size() + " error messages");
+		if (_runReport.hasErrors()) {
+			throw new Exception(_runReport.getErrorCount() + " error messages");
 		}
 
-		_recordSuccess();
+		_runReport.recordSuccess();
 	}
 
 	private static void _captureConsole() {
@@ -980,11 +959,11 @@ public class Main {
 			return 0;
 		}
 
-		if (!_errorMessages.isEmpty()) {
+		if (_runReport.hasErrors()) {
 			System.out.println(
 				StringBundler.concat(
 					"Skipping orphan cleanup because the run has ",
-					_errorMessages.size(), " errors: ", orphanCount,
+					_runReport.getErrorCount(), " errors: ", orphanCount,
 					" orphaned structured contents were kept."));
 
 			return 0;
@@ -995,7 +974,7 @@ public class Main {
 		int orphanThreshold = _getOrphanThreshold(inventoryCount);
 
 		if (orphanCount > orphanThreshold) {
-			_error(
+			_runReport.addError(
 				StringBundler.concat(
 					"Orphan cleanup aborted: ", orphanCount, " orphans exceed ",
 					"the threshold of ", orphanThreshold,
@@ -1020,7 +999,7 @@ public class Main {
 					orphanedStructuredContentId);
 			}
 			catch (Exception exception) {
-				_error(
+				_runReport.addError(
 					structuredContent.getFriendlyUrlPath() + ": " + exception);
 			}
 		}
@@ -1062,12 +1041,6 @@ public class Main {
 			CharPool.NEW_LINE, "\\n");
 
 		System.out.println("Generated: " + generatedExcerpt);
-	}
-
-	private void _error(String errorMessage) {
-		System.out.println(errorMessage);
-
-		_errorMessages.add(errorMessage);
 	}
 
 	private String _generateMD5Hex(File file) throws Exception {
@@ -1169,7 +1142,7 @@ public class Main {
 			File tocFile = new File(filePathString);
 
 			if (!tocFile.exists() || tocFile.isDirectory()) {
-				_warn(
+				_runReport.addWarning(
 					StringBundler.concat(
 						"Nonexistent or invalid TOC file ", tocFile.getPath(),
 						" in file ", file.getPath()));
@@ -1319,7 +1292,7 @@ public class Main {
 		int threshold = _getDivergenceThreshold(publishedCount);
 
 		if (divergentExternalReferenceCodes.size() > threshold) {
-			_error(
+			_runReport.addError(
 				StringBundler.concat(
 					"Verification aborted: ",
 					divergentExternalReferenceCodes.size(), " of ",
@@ -1579,7 +1552,7 @@ public class Main {
 		}
 
 		if (!parentMarkdownFile.exists()) {
-			_warn(
+			_runReport.addWarning(
 				"Missing parent markdown for " + parentMarkdownFile.getPath());
 
 			return null;
@@ -1859,7 +1832,7 @@ public class Main {
 					"OFFICIAL_DOCUMENTATION"));
 		}
 		catch (Exception exception) {
-			_error(exception.getMessage());
+			_runReport.addError(exception.getMessage());
 		}
 
 		for (Object taxonomyCategoryNameObject : (List)taxonomyCategoryNames) {
@@ -1870,7 +1843,7 @@ public class Main {
 			String taxonomyCategoryName = (String)taxonomyCategoryNameObject;
 
 			if (!_taxonomyCategoriesJSONObject.has(taxonomyCategoryName)) {
-				_warn(
+				_runReport.addWarning(
 					"No taxonomy category exists with the name: " +
 						taxonomyCategoryName);
 
@@ -2095,7 +2068,7 @@ public class Main {
 					structuredContent.getFriendlyUrlPath());
 		}
 		catch (Exception exception) {
-			_error(
+			_runReport.addError(
 				StringBundler.concat(
 					"Unable to invalidate md5Hex for ",
 					structuredContent.getFriendlyUrlPath(), ": ", exception));
@@ -2306,33 +2279,6 @@ public class Main {
 			structuredContentId, _toJapaneseStructuredContent(japaneseFile));
 	}
 
-	private void _recordSuccess() {
-		if (Objects.equals(
-				System.getenv("LIFERAY_LEARN_ETC_CRON_PARTIAL"), "true")) {
-
-			System.out.println(
-				"The success marker was not updated because a partial run " +
-					"does not reconcile the whole site.");
-
-			return;
-		}
-
-		try {
-			File file = new File("/public_html/.learn-importer-success");
-
-			FileUtils.writeStringToFile(
-				file, String.valueOf(System.currentTimeMillis() / 1000),
-				StandardCharsets.UTF_8);
-
-			System.out.println(
-				"The success marker was updated in " + file.getPath() + ".");
-		}
-		catch (Exception exception) {
-			System.out.println(
-				"Unable to update the success marker: " + exception);
-		}
-	}
-
 	private void _renewOAuthAuthorization() throws Exception {
 		if (_offline) {
 			return;
@@ -2485,12 +2431,6 @@ public class Main {
 		return sb.toString();
 	}
 
-	private void _warn(String warningMessage) {
-		System.out.println(warningMessage);
-
-		_warningMessages.add(warningMessage);
-	}
-
 	private void _write(String content, String dirName, File markdownFile)
 		throws Exception {
 
@@ -2519,7 +2459,6 @@ public class Main {
 	private final String _baseDirName;
 	private DataDefinitionResource _dataDefinitionResource;
 	private final String _docsDirName;
-	private final List<String> _errorMessages = new ArrayList<>();
 	private final Set<String> _fileNames = new TreeSet<>();
 	private final long _globalSiteId;
 	private StructuredContentResource _japaneseStructuredContentResource;
@@ -2536,6 +2475,7 @@ public class Main {
 	private final Set<String> _preflightTocExclusions = new TreeSet<>();
 	private final Set<String> _restrictedPaths = new TreeSet<>();
 	private final Set<String> _restrictedRoles = new TreeSet<>();
+	private final RunReport _runReport = new RunReport();
 	private SiteResource _siteResource;
 	private final boolean _skipDiffCheck;
 	private final Set<String> _skipLocales = new TreeSet<>();
@@ -2546,7 +2486,6 @@ public class Main {
 	private final JSONObject _taxonomyCategoriesJSONObject = new JSONObject();
 	private TaxonomyCategoryResource _taxonomyCategoryResource;
 	private TaxonomyVocabularyResource _taxonomyVocabularyResource;
-	private final List<String> _warningMessages = new ArrayList<>();
 	private final Yaml _yaml = new Yaml();
 
 	private class SnakeYamlFrontMatterVisitor
