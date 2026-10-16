@@ -23,7 +23,7 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConstants;
-import com.liferay.site.pim.site.initializer.test.util.PIMBaseSKUTestUtil;
+import com.liferay.site.pim.site.initializer.test.util.PIMBasicProductTestUtil;
 import com.liferay.site.pim.site.initializer.test.util.PIMTestUtil;
 
 import java.io.Serializable;
@@ -67,10 +67,12 @@ public class LinkResourceTest extends BaseLinkResourceTestCase {
 	public void testDeleteScopeScopeKeyLink() throws Exception {
 		DepotEntry depotEntry = PIMTestUtil.addSpaceDepotEntry();
 
-		ObjectEntry objectEntry1 = PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
-			depotEntry.getGroupId());
-		ObjectEntry objectEntry2 = PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
-			depotEntry.getGroupId());
+		ObjectEntry objectEntry1 =
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
+				depotEntry.getGroupId());
+		ObjectEntry objectEntry2 =
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
+				depotEntry.getGroupId());
 
 		linkResource.postScopeScopeKeyLink(
 			String.valueOf(depotEntry.getGroupId()),
@@ -102,10 +104,12 @@ public class LinkResourceTest extends BaseLinkResourceTestCase {
 	public void testPostScopeScopeKeyLink() throws Exception {
 		DepotEntry depotEntry = PIMTestUtil.addSpaceDepotEntry();
 
-		ObjectEntry objectEntry1 = PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
-			depotEntry.getGroupId());
-		ObjectEntry objectEntry2 = PIMBaseSKUTestUtil.addPIMBaseSKUObjectEntry(
-			depotEntry.getGroupId());
+		ObjectEntry objectEntry1 =
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
+				depotEntry.getGroupId());
+		ObjectEntry objectEntry2 =
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
+				depotEntry.getGroupId());
 
 		linkResource.postScopeScopeKeyLink(
 			String.valueOf(depotEntry.getGroupId()),
@@ -123,7 +127,36 @@ public class LinkResourceTest extends BaseLinkResourceTestCase {
 				objectEntry2.getExternalReferenceCode()));
 	}
 
-	private String _getClusterKey(long groupId, String externalReferenceCode)
+	@Override
+	@Test
+	public void testPutScopeScopeKeyLinkPrimary() throws Exception {
+		DepotEntry depotEntry = PIMTestUtil.addSpaceDepotEntry();
+
+		ObjectEntry objectEntry1 =
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
+				depotEntry.getGroupId());
+		ObjectEntry objectEntry2 =
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
+				depotEntry.getGroupId());
+
+		linkResource.postScopeScopeKeyLink(
+			String.valueOf(depotEntry.getGroupId()),
+			_toLink(
+				_TYPE, objectEntry1, Collections.singletonList(objectEntry2)));
+
+		linkResource.putScopeScopeKeyLinkPrimary(
+			String.valueOf(depotEntry.getGroupId()),
+			objectEntry2.getModelClassName(),
+			objectEntry2.getExternalReferenceCode(), _TYPE);
+
+		Assert.assertTrue(
+			_isPrimary(
+				depotEntry.getGroupId(),
+				objectEntry2.getExternalReferenceCode()));
+	}
+
+	private Map<String, Serializable> _fetchValues(
+			long groupId, String externalReferenceCode)
 		throws Exception {
 
 		ObjectDefinition objectDefinition =
@@ -145,11 +178,37 @@ public class LinkResourceTest extends BaseLinkResourceTestCase {
 						values, "sourceClassExternalReferenceCode")) &&
 				Objects.equals(_TYPE, MapUtil.getString(values, "type"))) {
 
-				return MapUtil.getString(values, "clusterKey");
+				return values;
 			}
 		}
 
 		return null;
+	}
+
+	private String _getClusterKey(long groupId, String externalReferenceCode)
+		throws Exception {
+
+		Map<String, Serializable> values = _fetchValues(
+			groupId, externalReferenceCode);
+
+		if (values == null) {
+			return null;
+		}
+
+		return MapUtil.getString(values, "clusterKey");
+	}
+
+	private boolean _isPrimary(long groupId, String externalReferenceCode)
+		throws Exception {
+
+		Map<String, Serializable> values = _fetchValues(
+			groupId, externalReferenceCode);
+
+		if (values == null) {
+			return false;
+		}
+
+		return MapUtil.getBoolean(values, "primary");
 	}
 
 	private Link _toLink(

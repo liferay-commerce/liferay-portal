@@ -52,10 +52,21 @@ export class ProductRelationshipsPage {
 		}
 	}
 
+	async clickItemAction(action: string, name: string) {
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.page.getByRole('menuitem', {
+				exact: true,
+				name: action,
+			}),
+			trigger: this.getRelatedProduct(name).getByRole('button', {
+				name: `${name} Actions`,
+			}),
+		});
+	}
+
 	async removeRelationship(name: string) {
-		await this.getRelatedProduct(name)
-			.getByRole('button', {name: 'Remove'})
-			.click();
+		await this.clickItemAction('Remove', name);
 
 		await this.page
 			.locator('.modal-content')
@@ -63,6 +74,14 @@ export class ProductRelationshipsPage {
 			.click();
 
 		await expect(this.getRelatedProduct(name)).toBeHidden();
+	}
+
+	getCurrentLabel(name: string) {
+		return this.getRelatedProduct(name).getByText('Current', {exact: true});
+	}
+
+	getPrimaryCell(name: string) {
+		return this.getRelatedProduct(name).locator('.cell-primary');
 	}
 
 	getRelatedProduct(name: string) {

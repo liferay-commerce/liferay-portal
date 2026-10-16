@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -61,6 +62,17 @@ public class ProductRelationshipsDisplayContext {
 			URLCodec.encodeURL(objectEntry.getExternalReferenceCode()));
 	}
 
+	public Map<String, Object> getAdditionalProps() {
+		return HashMapBuilder.<String, Object>put(
+			"objectEntryId",
+			() -> {
+				ObjectEntry objectEntry = _getObjectEntry();
+
+				return String.valueOf(objectEntry.getObjectEntryId());
+			}
+		).build();
+	}
+
 	public CreationMenu getCreationMenu() {
 		CreationMenu creationMenu = new CreationMenu();
 
@@ -92,11 +104,11 @@ public class ProductRelationshipsDisplayContext {
 						PIMFDSNames.PRODUCT_RELATIONSHIP_SELECTOR,
 						_httpServletRequest))
 			).putData(
-				"name", _getName(objectEntry)
-			).putData(
 				"scopeKey", String.valueOf(objectEntry.getGroupId())
 			).putData(
 				"searchAPIURL", _getSearchAPIURL(objectEntry)
+			).putData(
+				"title", _getTitle(objectEntry)
 			).setLabel(
 				LanguageUtil.get(_httpServletRequest, "new")
 			).build());
@@ -123,6 +135,38 @@ public class ProductRelationshipsDisplayContext {
 		}
 
 		return ListUtil.fromArray(
+			FDSActionDropdownItemBuilder.setHref(
+				StringBundler.concat(
+					themeDisplay.getPortalURL(), themeDisplay.getPathMain(),
+					GroupConstants.CMS_FRIENDLY_URL,
+					"/edit_content_item?objectEntryId={id}&redirect=",
+					themeDisplay.getURLCurrent())
+			).setIcon(
+				"view"
+			).setLabel(
+				LanguageUtil.get(_httpServletRequest, "view")
+			).setMethod(
+				"get"
+			).setPermissionKey(
+				"get"
+			).build(
+				"view"
+			),
+			FDSActionDropdownItemBuilder.setHref(
+				"{actions.setPrimary.href}"
+			).setIcon(
+				"check-circle"
+			).setLabel(
+				LanguageUtil.get(_httpServletRequest, "set-as-primary")
+			).setMethod(
+				"put"
+			).setPermissionKey(
+				"setPrimary"
+			).setTarget(
+				"headless"
+			).build(
+				"setPrimary"
+			),
 			FDSActionDropdownItemBuilder.setIcon(
 				"times-circle"
 			).setLabel(
@@ -132,20 +176,6 @@ public class ProductRelationshipsDisplayContext {
 			).build(
 				"delete"
 			));
-	}
-
-	private String _getName(ObjectEntry objectEntry) {
-		try {
-			return MapUtil.getString(
-				_objectEntryLocalService.getValues(objectEntry), "name");
-		}
-		catch (PortalException portalException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(portalException);
-			}
-
-			return objectEntry.getExternalReferenceCode();
-		}
 	}
 
 	private ObjectEntry _getObjectEntry() {
@@ -168,6 +198,20 @@ public class ProductRelationshipsDisplayContext {
 	private ThemeDisplay _getThemeDisplay() {
 		return (ThemeDisplay)_httpServletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
+	}
+
+	private String _getTitle(ObjectEntry objectEntry) {
+		try {
+			return MapUtil.getString(
+				_objectEntryLocalService.getValues(objectEntry), "title");
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException);
+			}
+
+			return objectEntry.getExternalReferenceCode();
+		}
 	}
 
 	private boolean _hasUpdatePermission(

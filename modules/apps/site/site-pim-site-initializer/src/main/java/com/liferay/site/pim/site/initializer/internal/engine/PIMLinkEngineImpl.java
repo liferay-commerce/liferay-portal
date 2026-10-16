@@ -34,6 +34,7 @@ import com.liferay.site.pim.site.initializer.link.PIMLinkTypeRegistry;
 import java.io.Serializable;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -68,10 +69,17 @@ public class PIMLinkEngineImpl implements PIMLinkEngine {
 		String clusterKey = PIMLinkUtil.getClusterKey(
 			_filterFactory, sourceObjectEntry, type);
 
+		boolean hasPrimary = false;
+
 		if (Validator.isNull(clusterKey)) {
 			clusterKey = PortalUUIDUtil.generate();
 
 			_addObjectEntry(clusterKey, sourceObjectEntry, type);
+		}
+		else {
+			hasPrimary = _hasPrimary(
+				clusterKey, sourceObjectEntry.getCompanyId(),
+				sourceObjectEntry.getGroupId(), type);
 		}
 
 		for (ObjectEntry targetObjectEntry : targetObjectEntries) {
@@ -84,8 +92,14 @@ public class PIMLinkEngineImpl implements PIMLinkEngine {
 			else if (!Objects.equals(clusterKey, targetClusterKey)) {
 				_partialUpdateObjectEntryClusterKey(
 					targetObjectEntry.getCompanyId(),
-					targetObjectEntry.getGroupId(), targetClusterKey,
-					clusterKey, type);
+					targetObjectEntry.getGroupId(), hasPrimary,
+					targetClusterKey, clusterKey, type);
+
+				if (!hasPrimary) {
+					hasPrimary = _hasPrimary(
+						clusterKey, targetObjectEntry.getCompanyId(),
+						targetObjectEntry.getGroupId(), type);
+				}
 			}
 		}
 	}
@@ -150,7 +164,9 @@ public class PIMLinkEngineImpl implements PIMLinkEngine {
 					}
 
 					return new PIMLinkRelatedEntry(
-						pimLinkObjectEntry, MapUtil.getString(values, "type"));
+						pimLinkObjectEntry,
+						MapUtil.getBoolean(values, "primary"),
+						MapUtil.getString(values, "type"));
 				}));
 
 		List<String> clusterKeys = TransformUtil.transform(
@@ -171,27 +187,29 @@ public class PIMLinkEngineImpl implements PIMLinkEngine {
 			return pimLinkRelatedEntries;
 		}
 
+		List<Map<String, Serializable>> clusterValuesList =
+			PIMLinkUtil.getValuesList(
+				objectEntry.getCompanyId(), _filterFactory,
+				StringBundler.concat(
+					"clusterKey in ('", StringUtil.merge(clusterKeys, "','"),
+					"')"),
+				objectEntry.getGroupId());
+
+		if (!ListUtil.exists(
+				clusterValuesList,
+				values -> !_isSourceObjectEntry(objectEntry, values))) {
+
+			return pimLinkRelatedEntries;
+		}
+
 		return ListUtil.concat(
 			pimLinkRelatedEntries,
 			TransformUtil.transform(
-				PIMLinkUtil.getValuesList(
-					objectEntry.getCompanyId(), _filterFactory,
-					StringBundler.concat(
-						"clusterKey in ('",
-						StringUtil.merge(clusterKeys, "','"), "')"),
-					objectEntry.getGroupId()),
+				ListUtil.sort(
+					clusterValuesList,
+					Comparator.comparing(
+						values -> !_isSourceObjectEntry(objectEntry, values))),
 				values -> {
-					if (Objects.equals(
-							MapUtil.getString(
-								values, "sourceClassExternalReferenceCode"),
-							objectEntry.getExternalReferenceCode()) &&
-						Objects.equals(
-							MapUtil.getString(values, "sourceClassName"),
-							objectEntry.getModelClassName())) {
-
-						return null;
-					}
-
 					ObjectEntry pimLinkObjectEntry = _fetchObjectEntry(
 						MapUtil.getString(values, "sourceClassName"),
 						objectEntry.getCompanyId(),
@@ -204,8 +222,52 @@ public class PIMLinkEngineImpl implements PIMLinkEngine {
 					}
 
 					return new PIMLinkRelatedEntry(
-						pimLinkObjectEntry, MapUtil.getString(values, "type"));
+						pimLinkObjectEntry,
+						MapUtil.getBoolean(values, "primary"),
+						MapUtil.getString(values, "type"));
 				}));
+	}
+
+	@Override
+	public void setPrimaryPIMLink(ObjectEntry objectEntry, String type)
+		throws PortalException {
+
+		_validate(objectEntry, type);
+
+		String clusterKey = PIMLinkUtil.getClusterKey(
+			_filterFactory, objectEntry, type);
+
+		if (Validator.isNull(clusterKey)) {
+			throw new UnsupportedOperationException();
+		}
+
+		ObjectDefinition objectDefinition =
+			PIMLinkUtil.getPIMLinkObjectDefinition(objectEntry.getCompanyId());
+
+		List<Map<String, Serializable>> valuesList = PIMLinkUtil.getValuesList(
+			objectEntry.getCompanyId(), _filterFactory,
+			StringBundler.concat(
+				"clusterKey eq '", clusterKey, "' and type eq '", type, "'"),
+			objectEntry.getGroupId());
+
+		for (Map<String, Serializable> values : valuesList) {
+			boolean primary = _isSourceObjectEntry(objectEntry, values);
+
+			if (primary == MapUtil.getBoolean(values, "primary")) {
+				continue;
+			}
+
+			_objectEntryLocalService.partialUpdateObjectEntry(
+				PrincipalThreadLocal.getUserId(),
+				MapUtil.getLong(
+					values, objectDefinition.getPKObjectFieldName()),
+				0,
+				HashMapBuilder.<String, Serializable>put(
+					"primary", primary
+				).build(),
+				_getServiceContext(
+					objectEntry.getCompanyId(), objectEntry.getGroupId()));
+		}
 	}
 
 	private void _addObjectEntry(
@@ -256,9 +318,38 @@ public class PIMLinkEngineImpl implements PIMLinkEngine {
 		return serviceContext;
 	}
 
+	private boolean _hasPrimary(
+			String clusterKey, long companyId, long groupId, String type)
+		throws PortalException {
+
+		return ListUtil.isNotEmpty(
+			PIMLinkUtil.getValuesList(
+				companyId, _filterFactory,
+				StringBundler.concat(
+					"clusterKey eq '", clusterKey,
+					"' and primary eq true and type eq '", type, "'"),
+				groupId));
+	}
+
+	private boolean _isSourceObjectEntry(
+		ObjectEntry objectEntry, Map<String, Serializable> values) {
+
+		if (Objects.equals(
+				MapUtil.getString(values, "sourceClassExternalReferenceCode"),
+				objectEntry.getExternalReferenceCode()) &&
+			Objects.equals(
+				MapUtil.getString(values, "sourceClassName"),
+				objectEntry.getModelClassName())) {
+
+			return true;
+		}
+
+		return false;
+	}
+
 	private void _partialUpdateObjectEntryClusterKey(
-			long companyId, long groupId, String sourceClusterKey,
-			String targetClusterKey, String type)
+			long companyId, long groupId, boolean hasPrimary,
+			String sourceClusterKey, String targetClusterKey, String type)
 		throws PortalException {
 
 		ObjectDefinition objectDefinition =
@@ -285,6 +376,15 @@ public class PIMLinkEngineImpl implements PIMLinkEngine {
 					0,
 					HashMapBuilder.<String, Serializable>put(
 						"clusterKey", targetClusterKey
+					).put(
+						"primary",
+						() -> {
+							if (hasPrimary) {
+								return false;
+							}
+
+							return null;
+						}
 					).build(),
 					_getServiceContext(companyId, groupId));
 			}

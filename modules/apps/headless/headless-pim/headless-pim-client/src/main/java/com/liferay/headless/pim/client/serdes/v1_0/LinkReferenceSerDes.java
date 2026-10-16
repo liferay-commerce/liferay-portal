@@ -71,20 +71,6 @@ public class LinkReferenceSerDes {
 			sb.append("\"");
 		}
 
-		if (linkReference.getCode() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"code\": ");
-
-			sb.append("\"");
-
-			sb.append(_escape(linkReference.getCode()));
-
-			sb.append("\"");
-		}
-
 		if (linkReference.getExternalReferenceCode() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -109,16 +95,26 @@ public class LinkReferenceSerDes {
 			sb.append(linkReference.getId());
 		}
 
-		if (linkReference.getName() != null) {
+		if (linkReference.getPrimary() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"name\": ");
+			sb.append("\"primary\": ");
+
+			sb.append(linkReference.getPrimary());
+		}
+
+		if (linkReference.getSku() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"sku\": ");
 
 			sb.append("\"");
 
-			sb.append(_escape(linkReference.getName()));
+			sb.append(_escape(linkReference.getSku()));
 
 			sb.append("\"");
 		}
@@ -131,6 +127,20 @@ public class LinkReferenceSerDes {
 			sb.append("\"status\": ");
 
 			sb.append(String.valueOf(linkReference.getStatus()));
+		}
+
+		if (linkReference.getTitle() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"title\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(linkReference.getTitle()));
+
+			sb.append("\"");
 		}
 
 		if (linkReference.getType() != null) {
@@ -180,13 +190,6 @@ public class LinkReferenceSerDes {
 			map.put("className", String.valueOf(linkReference.getClassName()));
 		}
 
-		if (linkReference.getCode() == null) {
-			map.put("code", null);
-		}
-		else {
-			map.put("code", String.valueOf(linkReference.getCode()));
-		}
-
 		if (linkReference.getExternalReferenceCode() == null) {
 			map.put("externalReferenceCode", null);
 		}
@@ -203,11 +206,18 @@ public class LinkReferenceSerDes {
 			map.put("id", String.valueOf(linkReference.getId()));
 		}
 
-		if (linkReference.getName() == null) {
-			map.put("name", null);
+		if (linkReference.getPrimary() == null) {
+			map.put("primary", null);
 		}
 		else {
-			map.put("name", String.valueOf(linkReference.getName()));
+			map.put("primary", String.valueOf(linkReference.getPrimary()));
+		}
+
+		if (linkReference.getSku() == null) {
+			map.put("sku", null);
+		}
+		else {
+			map.put("sku", String.valueOf(linkReference.getSku()));
 		}
 
 		if (linkReference.getStatus() == null) {
@@ -215,6 +225,13 @@ public class LinkReferenceSerDes {
 		}
 		else {
 			map.put("status", String.valueOf(linkReference.getStatus()));
+		}
+
+		if (linkReference.getTitle() == null) {
+			map.put("title", null);
+		}
+		else {
+			map.put("title", String.valueOf(linkReference.getTitle()));
 		}
 
 		if (linkReference.getType() == null) {
@@ -248,9 +265,6 @@ public class LinkReferenceSerDes {
 			else if (Objects.equals(jsonParserFieldName, "className")) {
 				return false;
 			}
-			else if (Objects.equals(jsonParserFieldName, "code")) {
-				return false;
-			}
 			else if (Objects.equals(
 						jsonParserFieldName, "externalReferenceCode")) {
 
@@ -259,10 +273,16 @@ public class LinkReferenceSerDes {
 			else if (Objects.equals(jsonParserFieldName, "id")) {
 				return false;
 			}
-			else if (Objects.equals(jsonParserFieldName, "name")) {
+			else if (Objects.equals(jsonParserFieldName, "primary")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "sku")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "status")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "title")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "type")) {
@@ -288,11 +308,6 @@ public class LinkReferenceSerDes {
 					linkReference.setClassName((String)jsonParserFieldValue);
 				}
 			}
-			else if (Objects.equals(jsonParserFieldName, "code")) {
-				if (jsonParserFieldValue != null) {
-					linkReference.setCode((String)jsonParserFieldValue);
-				}
-			}
 			else if (Objects.equals(
 						jsonParserFieldName, "externalReferenceCode")) {
 
@@ -307,15 +322,25 @@ public class LinkReferenceSerDes {
 						Long.valueOf((String)jsonParserFieldValue));
 				}
 			}
-			else if (Objects.equals(jsonParserFieldName, "name")) {
+			else if (Objects.equals(jsonParserFieldName, "primary")) {
 				if (jsonParserFieldValue != null) {
-					linkReference.setName((String)jsonParserFieldValue);
+					linkReference.setPrimary((Boolean)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "sku")) {
+				if (jsonParserFieldValue != null) {
+					linkReference.setSku((String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "status")) {
 				if (jsonParserFieldValue != null) {
 					linkReference.setStatus(
 						StatusSerDes.toDTO((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "title")) {
+				if (jsonParserFieldValue != null) {
+					linkReference.setTitle((String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "type")) {
@@ -410,4 +435,4 @@ public class LinkReferenceSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1675359375
+// LIFERAY-REST-BUILDER-HASH:-1674665599

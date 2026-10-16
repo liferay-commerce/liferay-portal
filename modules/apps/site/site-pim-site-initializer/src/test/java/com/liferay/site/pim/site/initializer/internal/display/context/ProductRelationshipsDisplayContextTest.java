@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
@@ -112,7 +113,7 @@ public class ProductRelationshipsDisplayContextTest {
 			objectEntryLocalService.getValues(objectEntry)
 		).thenReturn(
 			HashMapBuilder.<String, Serializable>put(
-				"name", "Product Name"
+				"title", "Product Title"
 			).build()
 		);
 
@@ -181,7 +182,6 @@ public class ProductRelationshipsDisplayContextTest {
 				objectEntry.getExternalReferenceCode(),
 				data.get("externalReferenceCode"));
 			Assert.assertEquals("[\"filter\"]", data.get("filters"));
-			Assert.assertEquals("Product Name", data.get("name"));
 			Assert.assertEquals(
 				String.valueOf(objectEntry.getGroupId()), data.get("scopeKey"));
 
@@ -198,6 +198,8 @@ public class ProductRelationshipsDisplayContextTest {
 							objectEntry.getObjectEntryId()))));
 			Assert.assertTrue(
 				searchAPIURL, searchAPIURL.contains("{relatedObjectEntryIds}"));
+
+			Assert.assertEquals("Product Title", data.get("title"));
 		}
 	}
 
@@ -239,6 +241,21 @@ public class ProductRelationshipsDisplayContextTest {
 			"Remove"
 		);
 
+		Mockito.when(
+			language.get(
+				Mockito.any(HttpServletRequest.class),
+				Mockito.eq("set-as-primary"))
+		).thenReturn(
+			"Set as Primary"
+		);
+
+		Mockito.when(
+			language.get(
+				Mockito.any(HttpServletRequest.class), Mockito.eq("view"))
+		).thenReturn(
+			"View"
+		);
+
 		_languageUtil.setLanguage(language);
 
 		ObjectEntry objectEntry = _mockObjectEntry();
@@ -275,11 +292,46 @@ public class ProductRelationshipsDisplayContextTest {
 				productRelationshipsDisplayContext.getFDSActionDropdownItems();
 
 			Assert.assertEquals(
-				fdsActionDropdownItems.toString(), 1,
+				fdsActionDropdownItems.toString(), 3,
 				fdsActionDropdownItems.size());
 
 			FDSActionDropdownItem fdsActionDropdownItem =
 				fdsActionDropdownItems.get(0);
+
+			Assert.assertEquals(
+				StringBundler.concat(
+					"http://localhost:8080/c", GroupConstants.CMS_FRIENDLY_URL,
+					"/edit_content_item?objectEntryId={id}&redirect=/web/cms",
+					"/product"),
+				fdsActionDropdownItem.get("href"));
+			Assert.assertEquals("view", fdsActionDropdownItem.get("icon"));
+			Assert.assertEquals("View", fdsActionDropdownItem.get("label"));
+			Assert.assertNull(fdsActionDropdownItem.get("target"));
+
+			Map<?, ?> data = (Map<?, ?>)fdsActionDropdownItem.get("data");
+
+			Assert.assertEquals("view", data.get("id"));
+			Assert.assertEquals("get", data.get("method"));
+			Assert.assertEquals("get", data.get("permissionKey"));
+
+			fdsActionDropdownItem = fdsActionDropdownItems.get(1);
+
+			Assert.assertEquals(
+				"{actions.setPrimary.href}", fdsActionDropdownItem.get("href"));
+			Assert.assertEquals(
+				"check-circle", fdsActionDropdownItem.get("icon"));
+			Assert.assertEquals(
+				"Set as Primary", fdsActionDropdownItem.get("label"));
+			Assert.assertEquals(
+				"headless", fdsActionDropdownItem.get("target"));
+
+			data = (Map<?, ?>)fdsActionDropdownItem.get("data");
+
+			Assert.assertEquals("setPrimary", data.get("id"));
+			Assert.assertEquals("put", data.get("method"));
+			Assert.assertEquals("setPrimary", data.get("permissionKey"));
+
+			fdsActionDropdownItem = fdsActionDropdownItems.get(2);
 
 			Assert.assertNull(fdsActionDropdownItem.get("href"));
 			Assert.assertEquals(
@@ -287,7 +339,7 @@ public class ProductRelationshipsDisplayContextTest {
 			Assert.assertEquals("Remove", fdsActionDropdownItem.get("label"));
 			Assert.assertNull(fdsActionDropdownItem.get("target"));
 
-			Map<?, ?> data = (Map<?, ?>)fdsActionDropdownItem.get("data");
+			data = (Map<?, ?>)fdsActionDropdownItem.get("data");
 
 			Assert.assertNull(data.get("confirmationMessage"));
 			Assert.assertEquals("delete", data.get("id"));

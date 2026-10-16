@@ -69,25 +69,6 @@ public class LinkReference implements Cloneable, Serializable {
 
 	protected String className;
 
-	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
-	}
-
-	public void setCode(UnsafeSupplier<String, Exception> codeUnsafeSupplier) {
-		try {
-			code = codeUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected String code;
-
 	public String getExternalReferenceCode() {
 		return externalReferenceCode;
 	}
@@ -128,24 +109,45 @@ public class LinkReference implements Cloneable, Serializable {
 
 	protected Long id;
 
-	public String getName() {
-		return name;
+	public Boolean getPrimary() {
+		return primary;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setPrimary(Boolean primary) {
+		this.primary = primary;
 	}
 
-	public void setName(UnsafeSupplier<String, Exception> nameUnsafeSupplier) {
+	public void setPrimary(
+		UnsafeSupplier<Boolean, Exception> primaryUnsafeSupplier) {
+
 		try {
-			name = nameUnsafeSupplier.get();
+			primary = primaryUnsafeSupplier.get();
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	protected String name;
+	protected Boolean primary;
+
+	public String getSku() {
+		return sku;
+	}
+
+	public void setSku(String sku) {
+		this.sku = sku;
+	}
+
+	public void setSku(UnsafeSupplier<String, Exception> skuUnsafeSupplier) {
+		try {
+			sku = skuUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String sku;
 
 	public Status getStatus() {
 		return status;
@@ -167,6 +169,27 @@ public class LinkReference implements Cloneable, Serializable {
 	}
 
 	protected Status status;
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public void setTitle(
+		UnsafeSupplier<String, Exception> titleUnsafeSupplier) {
+
+		try {
+			title = titleUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String title;
 
 	public String getType() {
 		return type;
@@ -219,4 +242,4 @@ public class LinkReference implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-144619496
+// LIFERAY-REST-BUILDER-HASH:-1657957224

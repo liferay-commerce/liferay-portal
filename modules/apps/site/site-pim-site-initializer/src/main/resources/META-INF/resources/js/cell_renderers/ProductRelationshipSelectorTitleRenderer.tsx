@@ -4,12 +4,15 @@
  */
 
 import ClayIcon from '@clayui/icon';
+import ClayLabel from '@clayui/label';
 import ClaySticker from '@clayui/sticker';
 import React from 'react';
 
-export default function ProductRelationshipSelectorNameRenderer({
+export default function ProductRelationshipSelectorTitleRenderer({
+	current = false,
 	value,
 }: {
+	current?: boolean;
 	value: string;
 }) {
 	return (
@@ -19,6 +22,15 @@ export default function ProductRelationshipSelectorNameRenderer({
 			</ClaySticker>
 
 			<span>{value}</span>
+
+			{current && (
+				<ClayLabel
+					className="c-ml-2 font-weight-normal"
+					displayType="info"
+				>
+					{Liferay.Language.get('current')}
+				</ClayLabel>
+			)}
 		</span>
 	);
 }

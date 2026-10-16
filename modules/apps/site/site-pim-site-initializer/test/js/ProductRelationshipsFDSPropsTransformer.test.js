@@ -3,8 +3,10 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {render, screen} from '@testing-library/react';
+import React from 'react';
+
 import propsTransformer from '../../src/main/resources/META-INF/resources/js/ProductRelationshipsFDSPropsTransformer';
-import ProductRelationshipSelectorNameRenderer from '../../src/main/resources/META-INF/resources/js/cell_renderers/ProductRelationshipSelectorNameRenderer';
 
 jest.mock('@liferay/site-cms-site-initializer', () => ({
 	StatusLabel: jest.fn(),
@@ -12,10 +14,6 @@ jest.mock('@liferay/site-cms-site-initializer', () => ({
 		items.map((item) => ({...item, onClick() {}})),
 	confirmAndDeleteEntryAction: (...args) =>
 		mockConfirmAndDeleteEntryAction(...args),
-	styleDeleteAction: (action) =>
-		action?.data?.id === 'delete'
-			? {...action, className: 'text-danger'}
-			: action,
 }));
 
 jest.mock('frontend-js-web', () => ({
@@ -42,18 +40,6 @@ describe('ProductRelationshipsFDSPropsTransformer', () => {
 		jest.clearAllMocks();
 	});
 
-	it('marks the delete action as text-danger and leaves the other actions unchanged', () => {
-		const result = propsTransformer({
-			itemsActions: [
-				{data: {id: 'edit'}, icon: 'pencil'},
-				{data: {id: 'delete'}, icon: 'trash'},
-			],
-		});
-
-		expect(result.itemsActions[0].className).toBeUndefined();
-		expect(result.itemsActions[1].className).toBe('text-danger');
-	});
-
 	it('wires an onClick onto the creation menu primary items', () => {
 		const result = propsTransformer({
 			creationMenu: {
@@ -66,15 +52,39 @@ describe('ProductRelationshipsFDSPropsTransformer', () => {
 		);
 	});
 
-	it('registers the product name cell renderer', () => {
-		const result = propsTransformer({});
+	it('marks the current product in the title cell', () => {
+		const result = propsTransformer({
+			additionalProps: {objectEntryId: '42986'},
+		});
 
-		const [renderer] = result.customRenderers.tableCell;
+		const [{component: TitleRenderer, name}] =
+			result.customRenderers.tableCell;
 
-		expect(renderer.component).toBe(
-			ProductRelationshipSelectorNameRenderer
+		expect(name).toBe('titleTableCellRenderer');
+
+		const {rerender} = render(
+			<TitleRenderer itemData={{id: 42986}} value="Shirt" />
 		);
-		expect(renderer.name).toBe('nameTableCellRenderer');
+
+		expect(screen.getByText('Shirt')).toBeInTheDocument();
+		expect(screen.getByText('current')).toBeInTheDocument();
+
+		rerender(<TitleRenderer itemData={{id: 42994}} value="Shirt Red" />);
+
+		expect(screen.getByText('Shirt Red')).toBeInTheDocument();
+		expect(screen.queryByText('current')).not.toBeInTheDocument();
+	});
+
+	it('hides View on the row of the current product', () => {
+		const result = propsTransformer({
+			additionalProps: {objectEntryId: '42986'},
+			itemsActions: [{data: {id: 'view'}}],
+		});
+
+		const [viewItemsAction] = result.itemsActions;
+
+		expect(viewItemsAction.isVisible({id: 42986})).toBe(false);
+		expect(viewItemsAction.isVisible({id: 42994})).toBe(true);
 	});
 
 	it('forces hideManagementBarInEmptyState to true and preserves the other props', () => {
@@ -100,7 +110,7 @@ describe('ProductRelationshipsFDSPropsTransformer', () => {
 						method: 'DELETE',
 					},
 				},
-				name: 'Blue Shirt',
+				title: 'Blue Shirt',
 			},
 			loadData: jest.fn(),
 		});
@@ -120,9 +130,9 @@ describe('ProductRelationshipsFDSPropsTransformer', () => {
 		const event = {preventDefault: jest.fn()};
 
 		propsTransformer({}).onActionDropdownItemClick({
-			action: {data: {id: 'edit'}},
+			action: {data: {id: 'view'}},
 			event,
-			itemData: {actions: {delete: {href: '', method: ''}}, name: ''},
+			itemData: {actions: {delete: {href: '', method: ''}}, title: ''},
 			loadData: jest.fn(),
 		});
 

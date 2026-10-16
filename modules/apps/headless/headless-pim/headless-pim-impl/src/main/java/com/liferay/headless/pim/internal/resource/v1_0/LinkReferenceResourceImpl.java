@@ -81,13 +81,13 @@ public class LinkReferenceResourceImpl extends BaseLinkReferenceResourceImpl {
 						_objectEntryLocalService.getValues(
 							pimLinkRelatedEntry.getObjectEntry());
 
-					String code = StringUtil.toLowerCase(
-						MapUtil.getString(values, "code"));
-					String name = StringUtil.toLowerCase(
-						MapUtil.getString(values, "name"));
+					String sku = StringUtil.toLowerCase(
+						MapUtil.getString(values, "sku"));
+					String title = StringUtil.toLowerCase(
+						MapUtil.getString(values, "title"));
 
-					if (code.contains(StringUtil.toLowerCase(search)) ||
-						name.contains(StringUtil.toLowerCase(search))) {
+					if (sku.contains(StringUtil.toLowerCase(search)) ||
+						title.contains(StringUtil.toLowerCase(search))) {
 
 						return pimLinkRelatedEntry;
 					}
@@ -101,34 +101,68 @@ public class LinkReferenceResourceImpl extends BaseLinkReferenceResourceImpl {
 				ListUtil.subList(
 					pimLinkRelatedEntries, pagination.getStartPosition(),
 					pagination.getEndPosition()),
-				pimLinkRelatedEntry -> _toLinkReference(
-					pimLinkRelatedEntry.getType(),
-					pimLinkRelatedEntry.getObjectEntry())),
+				this::_toLinkReference),
 			pagination, pimLinkRelatedEntries.size());
 	}
 
 	private Map<String, Map<String, String>> _getActions(
-			ObjectEntry objectEntry, String type)
-		throws Exception {
+		PIMLinkRelatedEntry pimLinkRelatedEntry) {
 
-		if (!_hasUpdatePermission(objectEntry)) {
-			return null;
-		}
+		ObjectEntry objectEntry = pimLinkRelatedEntry.getObjectEntry();
+
+		String path = StringBundler.concat(
+			"/o/headless-pim/v1.0/scopes/", objectEntry.getGroupId(), "/links");
+		String queryString = StringBundler.concat(
+			"?className=", URLCodec.encodeURL(objectEntry.getModelClassName()),
+			"&externalReferenceCode=",
+			URLCodec.encodeURL(objectEntry.getExternalReferenceCode()));
+
+		String type = URLCodec.encodeURL(pimLinkRelatedEntry.getType());
 
 		return HashMapBuilder.<String, Map<String, String>>put(
 			"delete",
-			HashMapBuilder.put(
-				"href",
-				StringBundler.concat(
-					"/o/headless-pim/v1.0/scopes/", objectEntry.getGroupId(),
-					"/links?className=",
-					URLCodec.encodeURL(objectEntry.getModelClassName()),
-					"&externalReferenceCode=",
-					URLCodec.encodeURL(objectEntry.getExternalReferenceCode()),
-					"&type=", URLCodec.encodeURL(type))
-			).put(
-				"method", "DELETE"
-			).build()
+			() -> {
+				if (!_hasPermission(ActionKeys.UPDATE, objectEntry)) {
+					return null;
+				}
+
+				return HashMapBuilder.put(
+					"href",
+					StringBundler.concat(path, queryString, "&type=", type)
+				).put(
+					"method", "DELETE"
+				).build();
+			}
+		).put(
+			"get",
+			() -> {
+				if (!_hasPermission(ActionKeys.VIEW, objectEntry)) {
+					return null;
+				}
+
+				return HashMapBuilder.put(
+					"href", path + queryString
+				).put(
+					"method", "GET"
+				).build();
+			}
+		).put(
+			"setPrimary",
+			() -> {
+				if (pimLinkRelatedEntry.isPrimary() ||
+					!_hasPermission(ActionKeys.UPDATE, objectEntry)) {
+
+					return null;
+				}
+
+				return HashMapBuilder.put(
+					"href",
+					StringBundler.concat(
+						path, "/primary", queryString, "&type=", type)
+				).put(
+					"method", "PUT"
+				).build();
+			}
 		).build();
 	}
 
@@ -177,7 +211,7 @@ public class LinkReferenceResourceImpl extends BaseLinkReferenceResourceImpl {
 		return pimLinkType.getLabel(contextAcceptLanguage.getPreferredLocale());
 	}
 
-	private boolean _hasUpdatePermission(ObjectEntry objectEntry)
+	private boolean _hasPermission(String actionId, ObjectEntry objectEntry)
 		throws Exception {
 
 		ModelResourcePermission<ObjectEntry> modelResourcePermission =
@@ -186,24 +220,26 @@ public class LinkReferenceResourceImpl extends BaseLinkReferenceResourceImpl {
 
 		return modelResourcePermission.contains(
 			PermissionThreadLocal.getPermissionChecker(),
-			objectEntry.getObjectEntryId(), ActionKeys.UPDATE);
+			objectEntry.getObjectEntryId(), actionId);
 	}
 
 	private LinkReference _toLinkReference(
-			String linkType, ObjectEntry objectEntry)
+			PIMLinkRelatedEntry pimLinkRelatedEntry)
 		throws Exception {
+
+		ObjectEntry objectEntry = pimLinkRelatedEntry.getObjectEntry();
 
 		Map<String, Serializable> values = _objectEntryLocalService.getValues(
 			objectEntry);
 
 		return new LinkReference() {
 			{
-				setActions(() -> _getActions(objectEntry, linkType));
+				setActions(() -> _getActions(pimLinkRelatedEntry));
 				setClassName(objectEntry::getModelClassName);
-				setCode(() -> MapUtil.getString(values, "code"));
 				setExternalReferenceCode(objectEntry::getExternalReferenceCode);
 				setId(objectEntry::getObjectEntryId);
-				setName(() -> MapUtil.getString(values, "name"));
+				setPrimary(pimLinkRelatedEntry::isPrimary);
+				setSku(() -> MapUtil.getString(values, "sku"));
 				setStatus(
 					() -> new Status() {
 						{
@@ -218,7 +254,8 @@ public class LinkReferenceResourceImpl extends BaseLinkReferenceResourceImpl {
 										objectEntry.getStatus())));
 						}
 					});
-				setType(() -> _getTypeLabel(linkType));
+				setTitle(() -> MapUtil.getString(values, "title"));
+				setType(() -> _getTypeLabel(pimLinkRelatedEntry.getType()));
 			}
 		};
 	}
