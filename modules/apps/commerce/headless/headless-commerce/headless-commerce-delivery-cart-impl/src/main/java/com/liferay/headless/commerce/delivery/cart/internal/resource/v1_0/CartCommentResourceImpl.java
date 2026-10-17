@@ -10,6 +10,7 @@ import com.liferay.commerce.exception.NoSuchOrderException;
 import com.liferay.commerce.exception.NoSuchOrderNoteException;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderNote;
+import com.liferay.commerce.order.CommerceOrderHttpHelper;
 import com.liferay.commerce.service.CommerceOrderNoteService;
 import com.liferay.commerce.service.CommerceOrderService;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
@@ -45,6 +46,14 @@ public class CartCommentResourceImpl extends BaseCartCommentResourceImpl {
 
 	@Override
 	public void deleteCartComment(Long commentId) throws Exception {
+		CommerceOrderNote commerceOrderNote =
+			_commerceOrderNoteService.getCommerceOrderNote(commentId);
+
+		_commerceOrderHttpHelper.checkGuestCommerceOrder(
+			_commerceOrderService.getCommerceOrder(
+				commerceOrderNote.getCommerceOrderId()),
+			contextHttpServletRequest);
+
 		_commerceOrderNoteService.deleteCommerceOrderNote(commentId);
 	}
 
@@ -82,6 +91,9 @@ public class CartCommentResourceImpl extends BaseCartCommentResourceImpl {
 					externalReferenceCode);
 		}
 
+		_commerceOrderHttpHelper.checkGuestCommerceOrder(
+			commerceOrder, contextHttpServletRequest);
+
 		return Page.of(
 			_toOrderNotes(
 				_commerceOrderNoteService.getCommerceOrderNotes(
@@ -95,6 +107,14 @@ public class CartCommentResourceImpl extends BaseCartCommentResourceImpl {
 
 	@Override
 	public CartComment getCartComment(Long commentId) throws Exception {
+		CommerceOrderNote commerceOrderNote =
+			_commerceOrderNoteService.getCommerceOrderNote(commentId);
+
+		_commerceOrderHttpHelper.checkGuestCommerceOrder(
+			_commerceOrderService.getCommerceOrder(
+				commerceOrderNote.getCommerceOrderId()),
+			contextHttpServletRequest);
+
 		return _toOrderNote(GetterUtil.getLong(commentId));
 	}
 
@@ -128,6 +148,9 @@ public class CartCommentResourceImpl extends BaseCartCommentResourceImpl {
 
 		CommerceOrder commerceOrder = _commerceOrderService.getCommerceOrder(
 			cartId);
+
+		_commerceOrderHttpHelper.checkGuestCommerceOrder(
+			commerceOrder, contextHttpServletRequest);
 
 		if (portletResourcePermission.contains(
 				PermissionThreadLocal.getPermissionChecker(),
@@ -169,6 +192,9 @@ public class CartCommentResourceImpl extends BaseCartCommentResourceImpl {
 					externalReferenceCode);
 		}
 
+		_commerceOrderHttpHelper.checkGuestCommerceOrder(
+			commerceOrder, contextHttpServletRequest);
+
 		return _addOrUpdateOrderNote(commerceOrder, cartComment);
 	}
 
@@ -176,8 +202,13 @@ public class CartCommentResourceImpl extends BaseCartCommentResourceImpl {
 	public CartComment postCartComment(Long cartId, CartComment cartComment)
 		throws Exception {
 
-		return _addOrUpdateOrderNote(
-			_commerceOrderService.getCommerceOrder(cartId), cartComment);
+		CommerceOrder commerceOrder = _commerceOrderService.getCommerceOrder(
+			cartId);
+
+		_commerceOrderHttpHelper.checkGuestCommerceOrder(
+			commerceOrder, contextHttpServletRequest);
+
+		return _addOrUpdateOrderNote(commerceOrder, cartComment);
 	}
 
 	@Override
@@ -189,6 +220,9 @@ public class CartCommentResourceImpl extends BaseCartCommentResourceImpl {
 
 		CommerceOrder commerceOrder = _commerceOrderService.getCommerceOrder(
 			commerceOrderNote.getCommerceOrderId());
+
+		_commerceOrderHttpHelper.checkGuestCommerceOrder(
+			commerceOrder, contextHttpServletRequest);
 
 		cartComment.setId(() -> commentId);
 
@@ -248,6 +282,9 @@ public class CartCommentResourceImpl extends BaseCartCommentResourceImpl {
 			commerceOrderNote -> _toOrderNote(
 				commerceOrderNote.getCommerceOrderNoteId()));
 	}
+
+	@Reference
+	private CommerceOrderHttpHelper _commerceOrderHttpHelper;
 
 	@Reference
 	private CommerceOrderNoteService _commerceOrderNoteService;

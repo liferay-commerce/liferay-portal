@@ -14,6 +14,7 @@ import com.liferay.commerce.exception.NoSuchOrderItemException;
 import com.liferay.commerce.model.CommerceAddress;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderItem;
+import com.liferay.commerce.order.CommerceOrderHttpHelper;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.service.CPInstanceService;
 import com.liferay.commerce.service.CommerceAddressService;
@@ -76,6 +77,9 @@ public class CartItemResourceImpl extends BaseCartItemResourceImpl {
 
 		CommerceOrder commerceOrder = commerceOrderItem.getCommerceOrder();
 
+		_commerceOrderHttpHelper.checkGuestCommerceOrder(
+			commerceOrder, contextHttpServletRequest);
+
 		CommerceContext commerceContext = _commerceContextFactory.create(
 			commerceOrder.getCommerceAccountId(), commerceOrder.getGroupId(),
 			null, commerceOrder.getCommerceOrderId(),
@@ -120,6 +124,9 @@ public class CartItemResourceImpl extends BaseCartItemResourceImpl {
 					externalReferenceCode);
 		}
 
+		_commerceOrderHttpHelper.checkGuestCommerceOrder(
+			commerceOrder, contextHttpServletRequest);
+
 		return SearchUtil.search(
 			null, booleanQuery -> booleanQuery.getPreBooleanFilter(), null,
 			CommerceOrderItem.class.getName(), search, pagination,
@@ -144,6 +151,9 @@ public class CartItemResourceImpl extends BaseCartItemResourceImpl {
 			_commerceOrderItemService.getCommerceOrderItem(cartItemId);
 
 		CommerceOrder commerceOrder = commerceOrderItem.getCommerceOrder();
+
+		_commerceOrderHttpHelper.checkGuestCommerceOrder(
+			commerceOrder, contextHttpServletRequest);
 
 		return _toCartItem(
 			commerceOrder.getCommerceAccountId(), commerceOrderItem);
@@ -181,6 +191,9 @@ public class CartItemResourceImpl extends BaseCartItemResourceImpl {
 
 		CommerceOrder commerceOrder = _commerceOrderService.getCommerceOrder(
 			cartId);
+
+		_commerceOrderHttpHelper.checkGuestCommerceOrder(
+			commerceOrder, contextHttpServletRequest);
 
 		return SearchUtil.search(
 			null, booleanQuery -> booleanQuery.getPreBooleanFilter(), null,
@@ -247,6 +260,9 @@ public class CartItemResourceImpl extends BaseCartItemResourceImpl {
 					externalReferenceCode);
 		}
 
+		_commerceOrderHttpHelper.checkGuestCommerceOrder(
+			commerceOrder, contextHttpServletRequest);
+
 		return _toCartItem(
 			commerceOrder.getCommerceAccountId(),
 			_updateCartItem(cartItem, commerceOrder));
@@ -258,6 +274,9 @@ public class CartItemResourceImpl extends BaseCartItemResourceImpl {
 
 		CommerceOrder commerceOrder = _commerceOrderService.getCommerceOrder(
 			cartId);
+
+		_commerceOrderHttpHelper.checkGuestCommerceOrder(
+			commerceOrder, contextHttpServletRequest);
 
 		return _toCartItem(
 			commerceOrder.getCommerceAccountId(),
@@ -272,6 +291,9 @@ public class CartItemResourceImpl extends BaseCartItemResourceImpl {
 			_commerceOrderItemService.getCommerceOrderItem(cartItemId);
 
 		CommerceOrder commerceOrder = commerceOrderItem.getCommerceOrder();
+
+		_commerceOrderHttpHelper.checkGuestCommerceOrder(
+			commerceOrder, contextHttpServletRequest);
 
 		String options = GetterUtil.getString(cartItem.getOptions());
 
@@ -535,6 +557,9 @@ public class CartItemResourceImpl extends BaseCartItemResourceImpl {
 
 	@Reference
 	private CommerceContextFactory _commerceContextFactory;
+
+	@Reference
+	private CommerceOrderHttpHelper _commerceOrderHttpHelper;
 
 	@Reference
 	private CommerceOrderItemService _commerceOrderItemService;

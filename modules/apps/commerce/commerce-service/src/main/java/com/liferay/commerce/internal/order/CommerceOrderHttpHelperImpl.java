@@ -20,6 +20,7 @@ import com.liferay.commerce.constants.CommerceWebKeys;
 import com.liferay.commerce.context.CommerceContext;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.exception.CommerceOrderValidatorException;
+import com.liferay.commerce.exception.NoSuchOrderException;
 import com.liferay.commerce.helper.CommerceAccountHelper;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderItem;
@@ -103,6 +104,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 import org.osgi.service.component.annotations.Component;
@@ -155,6 +157,21 @@ public class CommerceOrderHttpHelperImpl implements CommerceOrderHttpHelper {
 		setCurrentCommerceOrder(httpServletRequest, commerceOrder);
 
 		return commerceOrder;
+	}
+
+	@Override
+	public void checkGuestCommerceOrder(
+			CommerceOrder commerceOrder, HttpServletRequest httpServletRequest)
+		throws PortalException {
+
+		if (commerceOrder.isGuestOrder() &&
+			!Objects.equals(
+				commerceOrder.getUuid(),
+				_fetchCommerceOrderUuid(
+					commerceOrder.getGroupId(), httpServletRequest))) {
+
+			throw new NoSuchOrderException();
+		}
 	}
 
 	@Override
@@ -906,12 +923,19 @@ public class CommerceOrderHttpHelperImpl implements CommerceOrderHttpHelper {
 			return null;
 		}
 
+		return _fetchCommerceOrderUuid(
+			commerceChannel.getGroupId(), httpServletRequest);
+	}
+
+	private String _fetchCommerceOrderUuid(
+		long groupId, HttpServletRequest httpServletRequest) {
+
 		HttpServletRequest originalHttpServletRequest =
 			_portal.getOriginalServletRequest(httpServletRequest);
 
 		HttpSession httpSession = originalHttpServletRequest.getSession();
 
-		String cookieName = getCookieName(commerceChannel.getGroupId());
+		String cookieName = getCookieName(groupId);
 
 		String commerceOrderUuid = (String)httpSession.getAttribute(cookieName);
 

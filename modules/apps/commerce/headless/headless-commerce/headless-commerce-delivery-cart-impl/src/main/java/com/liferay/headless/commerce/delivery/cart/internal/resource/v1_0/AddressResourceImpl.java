@@ -8,6 +8,7 @@ package com.liferay.headless.commerce.delivery.cart.internal.resource.v1_0;
 import com.liferay.commerce.exception.NoSuchOrderException;
 import com.liferay.commerce.model.CommerceAddress;
 import com.liferay.commerce.model.CommerceOrder;
+import com.liferay.commerce.order.CommerceOrderHttpHelper;
 import com.liferay.commerce.service.CommerceAddressService;
 import com.liferay.commerce.service.CommerceOrderService;
 import com.liferay.headless.commerce.delivery.cart.dto.v1_0.Address;
@@ -40,6 +41,9 @@ public class AddressResourceImpl extends BaseAddressResourceImpl {
 		CommerceOrder commerceOrder = _commerceOrderService.getCommerceOrder(
 			cartId);
 
+		_commerceOrderHttpHelper.checkGuestCommerceOrder(
+			commerceOrder, contextHttpServletRequest);
+
 		CommerceAddress commerceAddress =
 			_commerceAddressService.getCommerceAddress(
 				commerceOrder.getBillingAddressId());
@@ -64,6 +68,9 @@ public class AddressResourceImpl extends BaseAddressResourceImpl {
 				"Unable to find order with external reference code " +
 					externalReferenceCode);
 		}
+
+		_commerceOrderHttpHelper.checkGuestCommerceOrder(
+			commerceOrder, contextHttpServletRequest);
 
 		CommerceAddress commerceAddress =
 			_commerceAddressService.getCommerceAddress(
@@ -90,6 +97,9 @@ public class AddressResourceImpl extends BaseAddressResourceImpl {
 					externalReferenceCode);
 		}
 
+		_commerceOrderHttpHelper.checkGuestCommerceOrder(
+			commerceOrder, contextHttpServletRequest);
+
 		CommerceAddress commerceAddress =
 			_commerceAddressService.getCommerceAddress(
 				commerceOrder.getShippingAddressId());
@@ -108,6 +118,9 @@ public class AddressResourceImpl extends BaseAddressResourceImpl {
 		CommerceOrder commerceOrder = _commerceOrderService.getCommerceOrder(
 			cartId);
 
+		_commerceOrderHttpHelper.checkGuestCommerceOrder(
+			commerceOrder, contextHttpServletRequest);
+
 		CommerceAddress commerceAddress =
 			_commerceAddressService.getCommerceAddress(
 				commerceOrder.getShippingAddressId());
@@ -125,6 +138,9 @@ public class AddressResourceImpl extends BaseAddressResourceImpl {
 
 	@Reference
 	private CommerceAddressService _commerceAddressService;
+
+	@Reference
+	private CommerceOrderHttpHelper _commerceOrderHttpHelper;
 
 	@Reference
 	private CommerceOrderService _commerceOrderService;
