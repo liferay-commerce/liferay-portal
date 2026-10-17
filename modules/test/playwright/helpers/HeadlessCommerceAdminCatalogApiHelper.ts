@@ -369,9 +369,9 @@ export class HeadlessCommerceAdminCatalogApiHelper {
 		);
 	}
 
-	async getOptions() {
+	async getOptions(searchParams = new URLSearchParams()) {
 		return this.apiHelpers.get(
-			`${this.apiHelpers.baseUrl}${this.basePath}/options`
+			`${this.apiHelpers.baseUrl}${this.basePath}/options?${searchParams.toString()}`
 		);
 	}
 
@@ -470,9 +470,9 @@ export class HeadlessCommerceAdminCatalogApiHelper {
 		);
 	}
 
-	async getSpecifications() {
+	async getSpecifications(searchParams = new URLSearchParams()) {
 		return this.apiHelpers.get(
-			`${this.apiHelpers.baseUrl}${this.basePath}/specifications`
+			`${this.apiHelpers.baseUrl}${this.basePath}/specifications?${searchParams.toString()}`
 		);
 	}
 
