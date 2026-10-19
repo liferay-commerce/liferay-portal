@@ -13,6 +13,7 @@ import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.context.CommerceContext;
 import com.liferay.commerce.helper.CommerceAccountHelper;
 import com.liferay.commerce.internal.order.comparator.CommerceOrderModifiedDateComparator;
+import com.liferay.commerce.internal.util.JSONWebServiceCommerceOrderUtil;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.service.base.CommerceOrderServiceBaseImpl;
 import com.liferay.petra.string.StringPool;
@@ -227,6 +228,9 @@ public class CommerceOrderServiceImpl extends CommerceOrderServiceBaseImpl {
 		if (commerceOrder != null) {
 			_commerceOrderModelResourcePermission.check(
 				getPermissionChecker(), commerceOrder, ActionKeys.VIEW);
+
+			JSONWebServiceCommerceOrderUtil.checkGuestCommerceOrder(
+				commerceOrder);
 		}
 
 		return commerceOrder;
@@ -249,6 +253,9 @@ public class CommerceOrderServiceImpl extends CommerceOrderServiceBaseImpl {
 		if (commerceOrder != null) {
 			_commerceOrderModelResourcePermission.check(
 				getPermissionChecker(), commerceOrder, ActionKeys.VIEW);
+
+			JSONWebServiceCommerceOrderUtil.checkGuestCommerceOrder(
+				commerceOrder);
 		}
 
 		return commerceOrder;
@@ -266,6 +273,9 @@ public class CommerceOrderServiceImpl extends CommerceOrderServiceBaseImpl {
 		if (commerceOrder != null) {
 			_commerceOrderModelResourcePermission.check(
 				getPermissionChecker(), commerceOrder, ActionKeys.VIEW);
+
+			JSONWebServiceCommerceOrderUtil.checkGuestCommerceOrder(
+				commerceOrder);
 		}
 
 		return commerceOrder;
@@ -281,6 +291,9 @@ public class CommerceOrderServiceImpl extends CommerceOrderServiceBaseImpl {
 		if (commerceOrder != null) {
 			_commerceOrderModelResourcePermission.check(
 				getPermissionChecker(), commerceOrder, ActionKeys.VIEW);
+
+			JSONWebServiceCommerceOrderUtil.checkGuestCommerceOrder(
+				commerceOrder);
 		}
 
 		return commerceOrder;
@@ -311,6 +324,8 @@ public class CommerceOrderServiceImpl extends CommerceOrderServiceBaseImpl {
 
 		_commerceOrderModelResourcePermission.check(
 			getPermissionChecker(), commerceOrder, ActionKeys.VIEW);
+
+		JSONWebServiceCommerceOrderUtil.checkGuestCommerceOrder(commerceOrder);
 
 		return commerceOrder;
 	}

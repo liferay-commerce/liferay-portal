@@ -10,8 +10,10 @@ import com.liferay.commerce.exception.NoSuchOrderException;
 import com.liferay.commerce.exception.NoSuchOrderNoteException;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderNote;
+import com.liferay.commerce.order.CommerceOrderHttpHelper;
 import com.liferay.commerce.service.CommerceOrderNoteService;
 import com.liferay.commerce.service.CommerceOrderService;
+import com.liferay.commerce.util.GuestCommerceOrderUtil;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.headless.commerce.delivery.cart.dto.v1_0.Cart;
 import com.liferay.headless.commerce.delivery.cart.dto.v1_0.CartComment;
@@ -45,6 +47,14 @@ public class CartCommentResourceImpl extends BaseCartCommentResourceImpl {
 
 	@Override
 	public void deleteCartComment(Long commentId) throws Exception {
+		CommerceOrderNote commerceOrderNote =
+			_commerceOrderNoteService.getCommerceOrderNote(commentId);
+
+		GuestCommerceOrderUtil.checkGuestCommerceOrder(
+			_commerceOrderService.getCommerceOrder(
+				commerceOrderNote.getCommerceOrderId()),
+			_commerceOrderHttpHelper, contextHttpServletRequest);
+
 		_commerceOrderNoteService.deleteCommerceOrderNote(commentId);
 	}
 
@@ -82,6 +92,9 @@ public class CartCommentResourceImpl extends BaseCartCommentResourceImpl {
 					externalReferenceCode);
 		}
 
+		GuestCommerceOrderUtil.checkGuestCommerceOrder(
+			commerceOrder, _commerceOrderHttpHelper, contextHttpServletRequest);
+
 		return Page.of(
 			_toOrderNotes(
 				_commerceOrderNoteService.getCommerceOrderNotes(
@@ -95,6 +108,14 @@ public class CartCommentResourceImpl extends BaseCartCommentResourceImpl {
 
 	@Override
 	public CartComment getCartComment(Long commentId) throws Exception {
+		CommerceOrderNote commerceOrderNote =
+			_commerceOrderNoteService.getCommerceOrderNote(commentId);
+
+		GuestCommerceOrderUtil.checkGuestCommerceOrder(
+			_commerceOrderService.getCommerceOrder(
+				commerceOrderNote.getCommerceOrderId()),
+			_commerceOrderHttpHelper, contextHttpServletRequest);
+
 		return _toOrderNote(GetterUtil.getLong(commentId));
 	}
 
@@ -128,6 +149,9 @@ public class CartCommentResourceImpl extends BaseCartCommentResourceImpl {
 
 		CommerceOrder commerceOrder = _commerceOrderService.getCommerceOrder(
 			cartId);
+
+		GuestCommerceOrderUtil.checkGuestCommerceOrder(
+			commerceOrder, _commerceOrderHttpHelper, contextHttpServletRequest);
 
 		if (portletResourcePermission.contains(
 				PermissionThreadLocal.getPermissionChecker(),
@@ -169,6 +193,9 @@ public class CartCommentResourceImpl extends BaseCartCommentResourceImpl {
 					externalReferenceCode);
 		}
 
+		GuestCommerceOrderUtil.checkGuestCommerceOrder(
+			commerceOrder, _commerceOrderHttpHelper, contextHttpServletRequest);
+
 		return _addOrUpdateOrderNote(commerceOrder, cartComment);
 	}
 
@@ -176,8 +203,13 @@ public class CartCommentResourceImpl extends BaseCartCommentResourceImpl {
 	public CartComment postCartComment(Long cartId, CartComment cartComment)
 		throws Exception {
 
-		return _addOrUpdateOrderNote(
-			_commerceOrderService.getCommerceOrder(cartId), cartComment);
+		CommerceOrder commerceOrder = _commerceOrderService.getCommerceOrder(
+			cartId);
+
+		GuestCommerceOrderUtil.checkGuestCommerceOrder(
+			commerceOrder, _commerceOrderHttpHelper, contextHttpServletRequest);
+
+		return _addOrUpdateOrderNote(commerceOrder, cartComment);
 	}
 
 	@Override
@@ -189,6 +221,9 @@ public class CartCommentResourceImpl extends BaseCartCommentResourceImpl {
 
 		CommerceOrder commerceOrder = _commerceOrderService.getCommerceOrder(
 			commerceOrderNote.getCommerceOrderId());
+
+		GuestCommerceOrderUtil.checkGuestCommerceOrder(
+			commerceOrder, _commerceOrderHttpHelper, contextHttpServletRequest);
 
 		cartComment.setId(() -> commentId);
 
@@ -248,6 +283,9 @@ public class CartCommentResourceImpl extends BaseCartCommentResourceImpl {
 			commerceOrderNote -> _toOrderNote(
 				commerceOrderNote.getCommerceOrderNoteId()));
 	}
+
+	@Reference
+	private CommerceOrderHttpHelper _commerceOrderHttpHelper;
 
 	@Reference
 	private CommerceOrderNoteService _commerceOrderNoteService;
