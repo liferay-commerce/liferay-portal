@@ -319,13 +319,9 @@ public class Main {
 
 		System.out.println("Locales excluded from import: " + _skipLocales);
 
-		_baseDirName = baseDir.getCanonicalPath();
-
-		_docsDirName = _baseDirName + "/docs";
+		_docsDirectory = new DocsDirectory(baseDir);
 
 		System.out.println("Liferay URL: " + _liferayURL);
-
-		_addFileNames(_docsDirName);
 
 		_initFlexmark();
 
@@ -364,7 +360,8 @@ public class Main {
 			return;
 		}
 
-		File file = new File(_docsDirName + "/../taxonomy-vocabularies.json");
+		File file = new File(
+			_docsDirectory.getDocsDirName() + "/../taxonomy-vocabularies.json");
 
 		if (!file.exists()) {
 			return;
@@ -503,7 +500,7 @@ public class Main {
 		Map<String, String> uuidFileNames = new HashMap<>();
 		int validatedCount = 0;
 
-		for (String fileName : _fileNames) {
+		for (String fileName : _docsDirectory.getFileNames()) {
 			if (!fileName.contains("/en/") || !fileName.endsWith(".md")) {
 				continue;
 			}
@@ -676,7 +673,7 @@ public class Main {
 			_getDivergentExternalReferenceCodes(
 				externalReferenceCodeStructuredContents);
 
-		for (String fileName : _fileNames) {
+		for (String fileName : _docsDirectory.getFileNames()) {
 			if (!fileName.contains("/en/") || !fileName.endsWith(".md")) {
 				continue;
 			}
@@ -805,7 +802,9 @@ public class Main {
 					structuredContent.setStructuredContentFolderId(
 						() -> _getStructuredContentFolderId(
 							FilenameUtils.getPathNoEndSeparator(
-								fileName.substring(_docsDirName.length()))));
+								fileName.substring(
+									_docsDirectory.getDocsDirName(
+									).length()))));
 
 					structuredContent.setPermissions(
 						() -> _getPermissions(
@@ -899,21 +898,6 @@ public class Main {
 			System.out.println(
 				"Unable to capture the console output: " + exception);
 		}
-	}
-
-	private void _addFileNames(String fileName) {
-		File file = new File(fileName);
-
-		if (file.isDirectory() &&
-			!Objects.equals(file.getName(), "resources") &&
-			!Objects.equals(file.getName(), "_snippets")) {
-
-			for (String currentFileName : file.list()) {
-				_addFileNames(fileName + "/" + currentFileName);
-			}
-		}
-
-		_fileNames.add(fileName);
 	}
 
 	private int _deleteOrphans(
@@ -1046,10 +1030,12 @@ public class Main {
 	private String _generateMD5Hex(File file) throws Exception {
 		StringBundler sb = new StringBundler(3);
 
-		sb.append(DigestUtils.md5Hex(new FileInputStream(_getHTMLFile(file))));
+		sb.append(
+			DigestUtils.md5Hex(
+				new FileInputStream(_docsDirectory.getHTMLFile(file))));
 
 		if (!_skipLocales.contains("ja")) {
-			File japaneseHTMLFile = _getHTMLFile(
+			File japaneseHTMLFile = _docsDirectory.getHTMLFile(
 				new File(
 					StringUtil.replace(
 						file.getCanonicalPath(), "/en/", "/ja/")));
@@ -1188,28 +1174,6 @@ public class Main {
 			textCollectingVisitor.collectAndGetText(_parser.parse(text)), 300);
 	}
 
-	private String[] _getDirNames(String fileName) {
-		List<String> dirNames = new ArrayList<>();
-
-		String[] parts = fileName.split(
-			Matcher.quoteReplacement(File.separator));
-
-		for (String part : parts) {
-			if (StringUtil.equalsIgnoreCase(part, "en") ||
-				StringUtil.equalsIgnoreCase(part, "ja") ||
-				StringUtil.equalsIgnoreCase(part, "latest")) {
-
-				continue;
-			}
-
-			String dirName = part;
-
-			dirNames.add(dirName);
-		}
-
-		return dirNames.toArray(new String[0]);
-	}
-
 	private int _getDivergenceThreshold(int publishedCount) {
 		int percentage = GetterUtil.getInteger(
 			System.getenv("LIFERAY_LEARN_ETC_CRON_VERIFY_THRESHOLD_PERCENTAGE"),
@@ -1234,7 +1198,7 @@ public class Main {
 		List<String> divergentFriendlyUrlPaths = new ArrayList<>();
 		int publishedCount = 0;
 
-		for (String fileName : _fileNames) {
+		for (String fileName : _docsDirectory.getFileNames()) {
 			if (!fileName.contains("/en/") || !fileName.endsWith(".md")) {
 				continue;
 			}
@@ -1260,7 +1224,7 @@ public class Main {
 			}
 
 			String html = FileUtils.readFileToString(
-				_getHTMLFile(file), StandardCharsets.UTF_8);
+				_docsDirectory.getHTMLFile(file), StandardCharsets.UTF_8);
 
 			if (StringUtil.equals(
 					TextUtil.normalizeHTML(
@@ -1360,22 +1324,6 @@ public class Main {
 		return friendlyUrlPathStructuredContents;
 	}
 
-	private String _getHTML(File file) throws Exception {
-		return FileUtils.readFileToString(
-			_getHTMLFile(file), StandardCharsets.UTF_8);
-	}
-
-	private File _getHTMLFile(File file) throws Exception {
-		String htmlFilePath = file.getCanonicalPath();
-
-		htmlFilePath = htmlFilePath.replaceFirst(
-			_docsDirName, _baseDirName + "/site");
-
-		htmlFilePath = htmlFilePath.replaceFirst("\\.md", ".html");
-
-		return new File(htmlFilePath);
-	}
-
 	private Map<Long, StructuredContent> _getIdStructuredContents(
 		List<StructuredContent> structuredContents) {
 
@@ -1424,7 +1372,7 @@ public class Main {
 			_getTitle(
 				FileUtils.readFileToString(file, StandardCharsets.UTF_8)));
 
-		Path docsPath = Paths.get(_docsDirName);
+		Path docsPath = Paths.get(_docsDirectory.getDocsDirName());
 		Path filePath = Paths.get(file.toURI());
 
 		Path relativePath = docsPath.relativize(filePath);
@@ -1538,7 +1486,9 @@ public class Main {
 		while (!parentMarkdownFile.exists()) {
 			parentFile = parentFile.getParentFile();
 
-			if (Objects.equals(parentFile.getPath(), _docsDirName)) {
+			if (Objects.equals(
+					parentFile.getPath(), _docsDirectory.getDocsDirName())) {
+
 				break;
 			}
 
@@ -1731,7 +1681,7 @@ public class Main {
 
 		Long structuredContentFolderId = 0L;
 
-		for (String dirName : _getDirNames(fileName)) {
+		for (String dirName : _docsDirectory.getDirNames(fileName)) {
 			structuredContentFolderId = _getStructuredContentFolderId(
 				dirName, structuredContentFolderId);
 		}
@@ -2102,14 +2052,13 @@ public class Main {
 			return false;
 		}
 
-		String canonicalPath = tocFile.getCanonicalPath();
+		String relativePath = _docsDirectory.getRelativePath(tocFile);
 
-		if (!canonicalPath.startsWith(_docsDirName + File.separator)) {
+		if (relativePath == null) {
 			return false;
 		}
 
-		return _preflightTocExclusions.contains(
-			canonicalPath.substring(_docsDirName.length() + 1));
+		return _preflightTocExclusions.contains(relativePath);
 	}
 
 	private boolean _isMovedStructuredContent(
@@ -2146,16 +2095,12 @@ public class Main {
 			return false;
 		}
 
-		File file = new File(fileName);
+		String docsRelativePath = _docsDirectory.getRelativePath(
+			new File(fileName));
 
-		String canonicalPath = file.getCanonicalPath();
-
-		if (!canonicalPath.startsWith(_docsDirName + File.separator)) {
+		if (docsRelativePath == null) {
 			return false;
 		}
-
-		String docsRelativePath = canonicalPath.substring(
-			_docsDirName.length() + 1);
 
 		for (String restrictedPath : _restrictedPaths) {
 			if (docsRelativePath.equals(restrictedPath) ||
@@ -2299,18 +2244,6 @@ public class Main {
 		return contentField;
 	}
 
-	private String _toFriendlyURLPath(File file) {
-		String filePathString = file.getPath();
-
-		String relativeFilePathString = filePathString.substring(
-			_docsDirName.length() + 1);
-
-		String friendlyURLPathString = StringUtil.merge(
-			_getDirNames(relativeFilePathString), StringPool.FORWARD_SLASH);
-
-		return FilenameUtils.removeExtension(friendlyURLPathString);
-	}
-
 	private StructuredContent _toJapaneseStructuredContent(File japaneseFile)
 		throws Exception {
 
@@ -2321,7 +2254,8 @@ public class Main {
 
 		structuredContent.setContentFields(
 			() -> new ContentField[] {
-				_toContentField("content", () -> _getHTML(japaneseFile)),
+				_toContentField(
+					"content", () -> _docsDirectory.getHTML(japaneseFile)),
 				_toContentField(
 					"navigation",
 					() -> String.valueOf(
@@ -2351,7 +2285,8 @@ public class Main {
 
 		structuredContent.setContentFields(
 			() -> new ContentField[] {
-				_toContentField("content", () -> _getHTML(englishFile)),
+				_toContentField(
+					"content", () -> _docsDirectory.getHTML(englishFile)),
 				_toContentField("md5Hex", () -> _generateMD5Hex(englishFile)),
 				_toContentField(
 					"navigation",
@@ -2367,7 +2302,7 @@ public class Main {
 		structuredContent.setDescription(() -> _getDescription(englishText));
 		structuredContent.setExternalReferenceCode(() -> _getUuid(englishText));
 		structuredContent.setFriendlyUrlPath(
-			() -> _toFriendlyURLPath(englishFile));
+			() -> _docsDirectory.toFriendlyURLPath(englishFile));
 		structuredContent.setTaxonomyCategoryIds(
 			() -> _getTaxonomyCategoryIds(englishText));
 
@@ -2381,7 +2316,9 @@ public class Main {
 
 		String markdownFileName = markdownFile.getCanonicalPath();
 
-		markdownFileName = markdownFileName.substring(_docsDirName.length());
+		markdownFileName = markdownFileName.substring(
+			_docsDirectory.getDocsDirName(
+			).length());
 
 		File file = new File(dirName + markdownFileName);
 
@@ -2397,10 +2334,8 @@ public class Main {
 	private static final Pattern _markdownLinkPattern = Pattern.compile(
 		"\\[(.*)\\]\\((.*)\\)");
 
-	private final String _baseDirName;
 	private DataDefinitionResource _dataDefinitionResource;
-	private final String _docsDirName;
-	private final Set<String> _fileNames = new TreeSet<>();
+	private final DocsDirectory _docsDirectory;
 	private final long _globalSiteId;
 	private StructuredContentResource _japaneseStructuredContentResource;
 	private final long _liferayContentStructureId;
