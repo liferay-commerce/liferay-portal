@@ -284,8 +284,8 @@ test(
 );
 
 test(
-	'Add a price entry from the SKU price lists',
-	{tag: '@LPD-110416'},
+	'Add price entries from several price lists to a SKU',
+	{tag: ['@COMMERCE-11084', '@LPD-110416']},
 	async ({
 		apiHelpers,
 		commerceAdminProductDetailsPage,
@@ -306,7 +306,14 @@ test(
 				return product.skus;
 			});
 
-		const priceList =
+		const priceList1 =
+			await apiHelpers.headlessCommerceAdminPricing.postPriceList({
+				catalogId: catalog.id,
+				currencyCode: 'USD',
+				name: getRandomString(),
+				type: 'price-list',
+			});
+		const priceList2 =
 			await apiHelpers.headlessCommerceAdminPricing.postPriceList({
 				catalogId: catalog.id,
 				currencyCode: 'USD',
@@ -326,26 +333,44 @@ test(
 		await commerceAdminProductDetailsSkusPage.goToSkuTab('Price');
 		await commerceAdminProductDetailsSkusPage.skuPriceAddButton.click();
 
-		// Add the price entry
+		// Add a price entry for each price list
 
-		await commerceAdminProductDetailsSkusPage.skuPriceListSelect.selectOption(
-			priceList.name
-		);
-		await commerceAdminProductDetailsSkusPage.skuPriceAddModalUnitPriceInput.fill(
-			'15'
-		);
+		await commerceAdminProductDetailsSkusPage.skuPriceListSelect
+			.nth(0)
+			.selectOption(priceList1.name);
+		await commerceAdminProductDetailsSkusPage.skuPriceAddModalUnitPriceInput
+			.nth(0)
+			.fill('10');
+
+		await commerceAdminProductDetailsSkusPage.skuPriceAddModal
+			.getByRole('button', {exact: true, name: 'Add Entry'})
+			.click();
+
+		await commerceAdminProductDetailsSkusPage.skuPriceListSelect
+			.nth(1)
+			.selectOption(priceList2.name);
+		await commerceAdminProductDetailsSkusPage.skuPriceAddModalUnitPriceInput
+			.nth(1)
+			.fill('20');
+
 		await commerceAdminProductDetailsSkusPage.skuPriceAddModalAddButton.click();
 
 		// Check the dialog closes and the list refreshes
 
 		await expect(
-			commerceAdminProductDetailsSkusPage.skuPriceAddModalUnitPriceInput
+			commerceAdminProductDetailsSkusPage.skuPriceAddModalUnitPriceInput.first()
 		).toBeHidden();
+
 		await expect(
-			commerceAdminProductDetailsSkusPage.sidePanelSkuPriceTableRowLink(
-				priceList.name
-			)
-		).toBeVisible();
+			commerceAdminProductDetailsSkusPage.sidePanelFrame
+				.getByRole('row')
+				.filter({hasText: priceList1.name})
+		).toContainText('$ 10.00');
+		await expect(
+			commerceAdminProductDetailsSkusPage.sidePanelFrame
+				.getByRole('row')
+				.filter({hasText: priceList2.name})
+		).toContainText('$ 20.00');
 	}
 );
 
