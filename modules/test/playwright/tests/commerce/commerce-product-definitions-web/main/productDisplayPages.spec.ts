@@ -8,16 +8,20 @@ import {Page, expect, mergeTests} from '@playwright/test';
 import {apiHelpersTest} from '../../../../fixtures/apiHelpersTest';
 import {commercePagesTest} from '../../../../fixtures/commercePagesTest';
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
+import {displayPageTemplatesPagesTest} from '../../../../fixtures/displayPageTemplatesPagesTest';
 import {isolatedSiteTest} from '../../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../../fixtures/loginTest';
+import {pageEditorPagesTest} from '../../../../fixtures/pageEditorPagesTest';
 import getRandomString from '../../../../utils/getRandomString';
 
 export const test = mergeTests(
 	apiHelpersTest,
 	commercePagesTest,
 	dataApiHelpersTest,
+	displayPageTemplatesPagesTest,
 	isolatedSiteTest,
-	loginTest()
+	loginTest(),
+	pageEditorPagesTest
 );
 
 test(
@@ -378,6 +382,118 @@ test(
 	}
 );
 
+test(
+	'A product display page template override wins over the default',
+	{tag: '@COMMERCE-9433'},
+	async ({
+		apiHelpers,
+		displayPageTemplatesPage,
+		page,
+		pageEditorPage,
+		site,
+	}) => {
+		const channel =
+			await apiHelpers.headlessCommerceAdminChannel.postChannel({
+				siteGroupId: site.id,
+			});
+
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+		const product1 =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				name: {en_US: getRandomString()},
+			});
+		const product2 =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				name: {en_US: getRandomString()},
+			});
+		const product3 =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				name: {en_US: getRandomString()},
+			});
+
+		const layout = await _addProductDetailsLayout(
+			apiHelpers,
+			site.id,
+			false
+		);
+
+		const displayPageTemplate1 = await _addProductDisplayPageTemplate(
+			apiHelpers,
+			displayPageTemplatesPage,
+			pageEditorPage,
+			site,
+			'Heading'
+		);
+		const displayPageTemplate2 = await _addProductDisplayPageTemplate(
+			apiHelpers,
+			displayPageTemplatesPage,
+			pageEditorPage,
+			site,
+			'Paragraph'
+		);
+
+		const displayPageTemplate1Text = page.getByText('Heading Example');
+		const displayPageTemplate2Text = page.getByText(
+			'A paragraph is a self-contained unit'
+		);
+
+		await apiHelpers.jsonWebServicesLayoutPageTemplateEntry.markAsDefaultDisplayPageLayoutPageTemplateEntry(
+			{
+				layoutPageTemplateEntryId:
+					displayPageTemplate2.layoutPageTemplateEntryId,
+			}
+		);
+
+		// Override the default display page template
+
+		await apiHelpers.headlessCommerceAdminChannel.postProductDisplayPage(
+			channel.id,
+			{
+				pageTemplateUuid: displayPageTemplate1.uuid,
+				productId: product1.id,
+			}
+		);
+		await apiHelpers.headlessCommerceAdminChannel.postProductDisplayPage(
+			channel.id,
+			{pageUuid: layout.uuid, productId: product3.id}
+		);
+
+		await page.goto(
+			`/web${site.friendlyUrlPath}/p/${product1.urls['en_US']}`
+		);
+
+		await expect(displayPageTemplate1Text).toBeVisible();
+
+		await page.goto(
+			`/web${site.friendlyUrlPath}/p/${product2.urls['en_US']}`
+		);
+
+		await expect(displayPageTemplate2Text).toBeVisible();
+
+		await _assertProductDisplayPage(page, site, product3, layout);
+
+		await expect(displayPageTemplate2Text).toHaveCount(0);
+
+		// Set a default product display page
+
+		await apiHelpers.headlessCommerceAdminChannel.postDefaultProductDisplayPage(
+			channel.id,
+			{pageUuid: layout.uuid}
+		);
+
+		await page.goto(
+			`/web${site.friendlyUrlPath}/p/${product1.urls['en_US']}`
+		);
+
+		await expect(displayPageTemplate1Text).toBeVisible();
+	}
+);
+
 async function _addProductDetailsLayout(
 	apiHelpers,
 	groupId: string,
@@ -392,6 +508,44 @@ async function _addProductDetailsLayout(
 	});
 
 	return {...layout, privateLayout};
+}
+
+async function _addProductDisplayPageTemplate(
+	apiHelpers,
+	displayPageTemplatesPage,
+	pageEditorPage,
+	site,
+	fragmentName: string
+) {
+	const className = await apiHelpers.jsonWebServicesClassName.fetchClassName(
+		'com.liferay.commerce.product.model.CPDefinition'
+	);
+
+	const name = getRandomString();
+
+	const displayPageTemplate =
+		await apiHelpers.jsonWebServicesLayoutPageTemplateEntry.addDisplayPageLayoutPageTemplateEntry(
+			{
+				classNameId: className.classNameId,
+				groupId: site.id,
+				name,
+			}
+		);
+
+	apiHelpers.data.push({
+		id: displayPageTemplate.layoutPageTemplateEntryId,
+		type: 'layoutPageTemplateEntry',
+	});
+
+	await displayPageTemplatesPage.goto(site.friendlyUrlPath);
+
+	await displayPageTemplatesPage.editTemplate(name);
+
+	await pageEditorPage.addFragment('Basic Components', fragmentName);
+
+	await displayPageTemplatesPage.publishTemplate();
+
+	return displayPageTemplate;
 }
 
 async function _assertProductDisplayPage(page: Page, site, product, layout) {
