@@ -28,35 +28,7 @@ import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.StringUtil;
-
-import com.vladsch.flexmark.ast.Heading;
-import com.vladsch.flexmark.ext.admonition.AdmonitionExtension;
-import com.vladsch.flexmark.ext.anchorlink.AnchorLinkExtension;
-import com.vladsch.flexmark.ext.aside.AsideExtension;
-import com.vladsch.flexmark.ext.attributes.AttributesExtension;
-import com.vladsch.flexmark.ext.definition.DefinitionExtension;
-import com.vladsch.flexmark.ext.footnotes.FootnoteExtension;
-import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
-import com.vladsch.flexmark.ext.media.tags.MediaTagsExtension;
-import com.vladsch.flexmark.ext.superscript.SuperscriptExtension;
-import com.vladsch.flexmark.ext.tables.TablesExtension;
-import com.vladsch.flexmark.ext.toc.TocExtension;
-import com.vladsch.flexmark.ext.typographic.TypographicExtension;
-import com.vladsch.flexmark.ext.yaml.front.matter.YamlFrontMatterBlock;
-import com.vladsch.flexmark.ext.yaml.front.matter.YamlFrontMatterExtension;
-import com.vladsch.flexmark.ext.yaml.front.matter.YamlFrontMatterNode;
-import com.vladsch.flexmark.ext.yaml.front.matter.YamlFrontMatterVisitor;
-import com.vladsch.flexmark.ext.yaml.front.matter.YamlFrontMatterVisitorExt;
-import com.vladsch.flexmark.html.HtmlRenderer;
-import com.vladsch.flexmark.parser.Parser;
-import com.vladsch.flexmark.util.ast.Block;
-import com.vladsch.flexmark.util.ast.Document;
-import com.vladsch.flexmark.util.ast.Node;
-import com.vladsch.flexmark.util.ast.NodeVisitor;
-import com.vladsch.flexmark.util.ast.TextCollectingVisitor;
-import com.vladsch.flexmark.util.data.MutableDataSet;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -103,8 +75,6 @@ import org.apache.http.util.EntityUtils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import org.yaml.snakeyaml.Yaml;
 
 /**
  * @author Brian Wing Shun Chan
@@ -323,8 +293,6 @@ public class Main {
 
 		System.out.println("Liferay URL: " + _liferayURL);
 
-		_initFlexmark();
-
 		if (_offline) {
 			_globalSiteId = 0;
 			_liferayContentStructureId = 0;
@@ -514,12 +482,7 @@ public class Main {
 				text = FileUtils.readFileToString(
 					new File(fileName), StandardCharsets.UTF_8);
 
-				SnakeYamlFrontMatterVisitor snakeYamlFrontMatterVisitor =
-					new SnakeYamlFrontMatterVisitor();
-
-				snakeYamlFrontMatterVisitor.visit(_parser.parse(text));
-
-				data = snakeYamlFrontMatterVisitor.getData();
+				data = _markdownParser.getFrontMatter(text);
 			}
 			catch (Exception exception) {
 				preflightErrorMessages.add(
@@ -536,7 +499,7 @@ public class Main {
 				continue;
 			}
 
-			String uuid = _getUuid(data);
+			String uuid = _markdownParser.getUuid(data);
 
 			if (uuid.isEmpty()) {
 				preflightErrorMessages.add(
@@ -1080,14 +1043,7 @@ public class Main {
 			return childrenJSONArray;
 		}
 
-		SnakeYamlFrontMatterVisitor snakeYamlFrontMatterVisitor =
-			new SnakeYamlFrontMatterVisitor();
-
-		snakeYamlFrontMatterVisitor.visit(
-			_parser.parse(
-				FileUtils.readFileToString(file, StandardCharsets.UTF_8)));
-
-		Map<String, Object> data = snakeYamlFrontMatterVisitor.getData();
+		Map<String, Object> data = _markdownParser.getFrontMatter(file);
 
 		if ((data == null) || !data.containsKey("toc")) {
 			return childrenJSONArray;
@@ -1166,14 +1122,6 @@ public class Main {
 		return StringPool.BLANK;
 	}
 
-	private String _getDescription(String text) {
-		TextCollectingVisitor textCollectingVisitor =
-			new TextCollectingVisitor();
-
-		return StringUtil.shorten(
-			textCollectingVisitor.collectAndGetText(_parser.parse(text)), 300);
-	}
-
 	private int _getDivergenceThreshold(int publishedCount) {
 		int percentage = GetterUtil.getInteger(
 			System.getenv("LIFERAY_LEARN_ETC_CRON_VERIFY_THRESHOLD_PERCENTAGE"),
@@ -1205,7 +1153,7 @@ public class Main {
 
 			File file = new File(fileName);
 
-			String uuid = _getUuid(
+			String uuid = _markdownParser.getUuid(
 				FileUtils.readFileToString(file, StandardCharsets.UTF_8));
 
 			StructuredContent siteStructuredContent =
@@ -1369,7 +1317,7 @@ public class Main {
 
 		navigationItemJSONObject.put(
 			"title",
-			_getTitle(
+			_markdownParser.getTitle(
 				FileUtils.readFileToString(file, StandardCharsets.UTF_8)));
 
 		Path docsPath = Paths.get(_docsDirectory.getDocsDirName());
@@ -1559,16 +1507,8 @@ public class Main {
 			return permissions.toArray(new Permission[0]);
 		}
 
-		SnakeYamlFrontMatterVisitor snakeYamlFrontMatterVisitor =
-			new SnakeYamlFrontMatterVisitor();
-
-		File file = new File(fileName);
-
-		snakeYamlFrontMatterVisitor.visit(
-			_parser.parse(
-				FileUtils.readFileToString(file, StandardCharsets.UTF_8)));
-
-		Map<String, Object> data = snakeYamlFrontMatterVisitor.getData();
+		Map<String, Object> data = _markdownParser.getFrontMatter(
+			new File(fileName));
 
 		if ((data == null) || !data.containsKey("visibility")) {
 			permissions.add(
@@ -1758,12 +1698,7 @@ public class Main {
 	}
 
 	private Long[] _getTaxonomyCategoryIds(String text) {
-		SnakeYamlFrontMatterVisitor snakeYamlFrontMatterVisitor =
-			new SnakeYamlFrontMatterVisitor();
-
-		snakeYamlFrontMatterVisitor.visit(_parser.parse(text));
-
-		Map<String, Object> data = snakeYamlFrontMatterVisitor.getData();
+		Map<String, Object> data = _markdownParser.getFrontMatter(text);
 
 		if ((data == null) || !data.containsKey("taxonomy-category-names")) {
 			return new Long[0];
@@ -1816,112 +1751,6 @@ public class Main {
 		String taxonomyVocabularyName, String taxonomyCategoryName) {
 
 		return taxonomyVocabularyName + StringPool.COLON + taxonomyCategoryName;
-	}
-
-	private String _getTitle(Node node) {
-		if (node instanceof Heading) {
-			Heading heading = (Heading)node;
-
-			if ((heading.getLevel() == 1) && heading.hasChildren()) {
-				TextCollectingVisitor textCollectingVisitor =
-					new TextCollectingVisitor();
-
-				return textCollectingVisitor.collectAndGetText(heading);
-			}
-		}
-
-		if ((node instanceof Block) && node.hasChildren()) {
-			Node childNode = node.getFirstChild();
-
-			while (childNode != null) {
-				String title = _getTitle(childNode);
-
-				if (title != null) {
-					return title;
-				}
-
-				childNode = childNode.getNext();
-			}
-		}
-
-		return null;
-	}
-
-	private String _getTitle(String text) {
-		return _getTitle(_parser.parse(text));
-	}
-
-	private String _getUuid(Map<String, Object> data) {
-		if ((data == null) || !data.containsKey("uuid")) {
-			return StringPool.BLANK;
-		}
-
-		Object uuid = data.get("uuid");
-
-		if (!(uuid instanceof String)) {
-			return StringPool.BLANK;
-		}
-
-		return uuid.toString();
-	}
-
-	private String _getUuid(String text) {
-		Document document = _parser.parse(text);
-
-		SnakeYamlFrontMatterVisitor snakeYamlFrontMatterVisitor =
-			new SnakeYamlFrontMatterVisitor();
-
-		snakeYamlFrontMatterVisitor.visit(document);
-
-		return _getUuid(snakeYamlFrontMatterVisitor.getData());
-	}
-
-	private void _initFlexmark() {
-		MutableDataSet mutableDataSet = new MutableDataSet(
-		).set(
-			AdmonitionExtension.QUALIFIER_TYPE_MAP,
-			HashMapBuilder.put(
-				"error", "error"
-			).put(
-				"important", "important"
-			).put(
-				"note", "note"
-			).put(
-				"tip", "tip"
-			).put(
-				"warning", "warning"
-			).build()
-		).set(
-			AdmonitionExtension.TYPE_SVG_MAP, new HashMap<String, String>()
-		).set(
-			AsideExtension.ALLOW_LEADING_SPACE, true
-		).set(
-			AsideExtension.EXTEND_TO_BLANK_LINE, false
-		).set(
-			AsideExtension.IGNORE_BLANK_LINE, false
-		).set(
-			AsideExtension.INTERRUPTS_ITEM_PARAGRAPH, true
-		).set(
-			AsideExtension.INTERRUPTS_PARAGRAPH, true
-		).set(
-			AsideExtension.WITH_LEAD_SPACES_INTERRUPTS_ITEM_PARAGRAPH, true
-		).set(
-			HtmlRenderer.GENERATE_HEADER_ID, true
-		).set(
-			Parser.EXTENSIONS,
-			Arrays.asList(
-				AdmonitionExtension.create(), AnchorLinkExtension.create(),
-				AsideExtension.create(), AttributesExtension.create(),
-				DefinitionExtension.create(), FootnoteExtension.create(),
-				MediaTagsExtension.create(), StrikethroughExtension.create(),
-				SuperscriptExtension.create(), TablesExtension.create(),
-				TocExtension.create(), TypographicExtension.create(),
-				YamlFrontMatterExtension.create())
-		);
-
-		_parser = Parser.builder(
-			mutableDataSet
-		).build();
 	}
 
 	private void _initResourceBuilders(String authorization) throws Exception {
@@ -2113,29 +1942,6 @@ public class Main {
 		return false;
 	}
 
-	private boolean _isShowChildrenCards(File file) throws Exception {
-		SnakeYamlFrontMatterVisitor snakeYamlFrontMatterVisitor =
-			new SnakeYamlFrontMatterVisitor();
-
-		snakeYamlFrontMatterVisitor.visit(
-			_parser.parse(
-				FileUtils.readFileToString(file, StandardCharsets.UTF_8)));
-
-		Map<String, Object> data = snakeYamlFrontMatterVisitor.getData();
-
-		if ((data == null) || !data.containsKey("showChildrenCards") ||
-			!StringUtil.equals(
-				data.get(
-					"showChildrenCards"
-				).toString(),
-				"false")) {
-
-			return true;
-		}
-
-		return GetterUtil.getBoolean(data.get("showChildrenCards"));
-	}
-
 	private void _loadTaxonomyCategories(
 			Map<String, String> existingTaxonomyCategories,
 			String parentTaxonomyCategoryId,
@@ -2262,13 +2068,16 @@ public class Main {
 						_getNavigationJSONObject(japaneseFile))),
 				_toContentField(
 					"showChildrenCards",
-					() -> String.valueOf(_isShowChildrenCards(japaneseFile)))
+					() -> String.valueOf(
+						_markdownParser.isShowChildrenCards(japaneseFile)))
 			});
 
 		structuredContent.setContentStructureId(
 			() -> _liferayContentStructureId);
-		structuredContent.setDescription(() -> _getDescription(japaneseText));
-		structuredContent.setTitle(() -> _getTitle(japaneseText));
+		structuredContent.setDescription(
+			() -> _markdownParser.getDescription(japaneseText));
+		structuredContent.setTitle(
+			() -> _markdownParser.getTitle(japaneseText));
 
 		return structuredContent;
 	}
@@ -2294,19 +2103,22 @@ public class Main {
 						_getNavigationJSONObject(englishFile))),
 				_toContentField(
 					"showChildrenCards",
-					() -> String.valueOf(_isShowChildrenCards(englishFile)))
+					() -> String.valueOf(
+						_markdownParser.isShowChildrenCards(englishFile)))
 			});
 
 		structuredContent.setContentStructureId(
 			() -> _liferayContentStructureId);
-		structuredContent.setDescription(() -> _getDescription(englishText));
-		structuredContent.setExternalReferenceCode(() -> _getUuid(englishText));
+		structuredContent.setDescription(
+			() -> _markdownParser.getDescription(englishText));
+		structuredContent.setExternalReferenceCode(
+			() -> _markdownParser.getUuid(englishText));
 		structuredContent.setFriendlyUrlPath(
 			() -> _docsDirectory.toFriendlyURLPath(englishFile));
 		structuredContent.setTaxonomyCategoryIds(
 			() -> _getTaxonomyCategoryIds(englishText));
 
-		structuredContent.setTitle(() -> _getTitle(englishText));
+		structuredContent.setTitle(() -> _markdownParser.getTitle(englishText));
 
 		return structuredContent;
 	}
@@ -2343,11 +2155,11 @@ public class Main {
 	private final String _liferayOAuthClientSecret;
 	private final long _liferaySiteId;
 	private final URL _liferayURL;
+	private final MarkdownParser _markdownParser = new MarkdownParser();
 	private long _oauthExpirationMillis;
 	private long _oauthIssuedMillis;
 	private final boolean _offline;
 	private final Set<String> _orphanExclusions = new TreeSet<>();
-	private Parser _parser;
 	private final Set<String> _preflightTocExclusions = new TreeSet<>();
 	private final Set<String> _restrictedPaths = new TreeSet<>();
 	private final Set<String> _restrictedRoles = new TreeSet<>();
@@ -2362,36 +2174,5 @@ public class Main {
 	private final JSONObject _taxonomyCategoriesJSONObject = new JSONObject();
 	private TaxonomyCategoryResource _taxonomyCategoryResource;
 	private TaxonomyVocabularyResource _taxonomyVocabularyResource;
-	private final Yaml _yaml = new Yaml();
-
-	private class SnakeYamlFrontMatterVisitor
-		implements YamlFrontMatterVisitor {
-
-		public Map<String, Object> getData() {
-			return _data;
-		}
-
-		public void visit(Node node) {
-			_yamlFrontMatterVisitor.visit(node);
-		}
-
-		@Override
-		public void visit(YamlFrontMatterBlock yamlFrontMatterBlock) {
-			String yamlString = String.valueOf(yamlFrontMatterBlock.getChars());
-
-			yamlString = yamlString.replaceAll("---", "");
-
-			_data = _yaml.load(yamlString);
-		}
-
-		@Override
-		public void visit(YamlFrontMatterNode yamlFrontMatterNode) {
-		}
-
-		private Map<String, Object> _data;
-		private final NodeVisitor _yamlFrontMatterVisitor = new NodeVisitor(
-			YamlFrontMatterVisitorExt.VISIT_HANDLERS(this));
-
-	}
 
 }
