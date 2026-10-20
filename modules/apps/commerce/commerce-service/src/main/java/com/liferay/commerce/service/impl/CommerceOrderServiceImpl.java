@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermi
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.io.InputStream;
@@ -114,6 +115,11 @@ public class CommerceOrderServiceImpl extends CommerceOrderServiceBaseImpl {
 		else {
 			_commerceOrderModelResourcePermission.check(
 				getPermissionChecker(), commerceOrder, ActionKeys.UPDATE);
+
+			_checkCommerceOrderPrices(
+				commerceOrder, shippingAmount, shippingWithTaxAmount, subtotal,
+				subtotalWithTaxAmount, taxAmount, total,
+				commerceOrder.getTotalDiscountAmount(), totalWithTaxAmount);
 		}
 
 		return commerceOrderLocalService.addOrUpdateCommerceOrder(
@@ -717,6 +723,17 @@ public class CommerceOrderServiceImpl extends CommerceOrderServiceBaseImpl {
 		_commerceOrderModelResourcePermission.check(
 			getPermissionChecker(), commerceOrderId, ActionKeys.UPDATE);
 
+		CommerceOrder commerceOrder = commerceOrderPersistence.findByPrimaryKey(
+			commerceOrderId);
+
+		_checkCommerceOrderPrices(
+			commerceOrder, shippingAmount,
+			commerceOrder.getShippingWithTaxAmount(), subtotal,
+			commerceOrder.getSubtotalWithTaxAmount(),
+			commerceOrder.getTaxAmount(), total,
+			commerceOrder.getTotalDiscountAmount(),
+			commerceOrder.getTotalWithTaxAmount());
+
 		return commerceOrderLocalService.updateCommerceOrder(
 			externalReferenceCode, commerceOrderId, billingAddressId,
 			commerceShippingMethodId, shippingAddressId, advanceStatus,
@@ -739,6 +756,12 @@ public class CommerceOrderServiceImpl extends CommerceOrderServiceBaseImpl {
 
 		_commerceOrderModelResourcePermission.check(
 			getPermissionChecker(), commerceOrderId, ActionKeys.UPDATE);
+
+		_checkCommerceOrderPrices(
+			commerceOrderPersistence.findByPrimaryKey(commerceOrderId),
+			shippingAmount, shippingWithTaxAmount, subtotal,
+			subtotalWithTaxAmount, taxAmount, total, totalDiscountAmount,
+			totalWithTaxAmount);
 
 		return commerceOrderLocalService.updateCommerceOrder(
 			externalReferenceCode, commerceOrderId, billingAddressId,
@@ -1061,6 +1084,38 @@ public class CommerceOrderServiceImpl extends CommerceOrderServiceBaseImpl {
 				getPermissionChecker(), accountEntry.getAccountEntryGroup(),
 				action);
 		}
+	}
+
+	private void _checkCommerceOrderPrices(
+			CommerceOrder commerceOrder, BigDecimal shippingAmount,
+			BigDecimal shippingWithTaxAmount, BigDecimal subtotal,
+			BigDecimal subtotalWithTaxAmount, BigDecimal taxAmount,
+			BigDecimal total, BigDecimal totalDiscountAmount,
+			BigDecimal totalWithTaxAmount)
+		throws PortalException {
+
+		if (BigDecimalUtil.eq(
+				commerceOrder.getShippingAmount(), shippingAmount) &&
+			BigDecimalUtil.eq(
+				commerceOrder.getShippingWithTaxAmount(),
+				shippingWithTaxAmount) &&
+			BigDecimalUtil.eq(commerceOrder.getSubtotal(), subtotal) &&
+			BigDecimalUtil.eq(
+				commerceOrder.getSubtotalWithTaxAmount(),
+				subtotalWithTaxAmount) &&
+			BigDecimalUtil.eq(commerceOrder.getTaxAmount(), taxAmount) &&
+			BigDecimalUtil.eq(commerceOrder.getTotal(), total) &&
+			BigDecimalUtil.eq(
+				commerceOrder.getTotalDiscountAmount(), totalDiscountAmount) &&
+			BigDecimalUtil.eq(
+				commerceOrder.getTotalWithTaxAmount(), totalWithTaxAmount)) {
+
+			return;
+		}
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), commerceOrder.getGroupId(),
+			CommerceActionKeys.MANAGE_COMMERCE_ORDER_PRICES);
 	}
 
 	private void _checkPermissions(AccountEntry accountEntry, long groupId)
