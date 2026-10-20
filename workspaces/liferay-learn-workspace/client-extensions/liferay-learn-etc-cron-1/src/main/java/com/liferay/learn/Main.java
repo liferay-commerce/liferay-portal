@@ -1263,9 +1263,10 @@ public class Main {
 				_getHTMLFile(file), StandardCharsets.UTF_8);
 
 			if (StringUtil.equals(
-					_normalizeHTML(
-						_unescapeUnicode(_getContent(siteStructuredContent))),
-					_normalizeHTML(html))) {
+					TextUtil.normalizeHTML(
+						TextUtil.unescapeUnicode(
+							_getContent(siteStructuredContent))),
+					TextUtil.normalizeHTML(html))) {
 
 				continue;
 			}
@@ -2252,14 +2253,6 @@ public class Main {
 		}
 	}
 
-	private String _normalizeHTML(String html) {
-		Matcher matcher = _lineTrailingWhitespacePattern.matcher(html);
-
-		String normalizedHTML = matcher.replaceAll(StringPool.BLANK);
-
-		return normalizedHTML.stripTrailing();
-	}
-
 	private void _publishJapaneseStructuredContent(
 			long structuredContentId, String fileName)
 		throws Exception {
@@ -2383,54 +2376,6 @@ public class Main {
 		return structuredContent;
 	}
 
-	private String _unescapeUnicode(String text) {
-		StringBuilder sb = new StringBuilder(text.length());
-
-		int index = 0;
-
-		while (index < text.length()) {
-			char c = text.charAt(index);
-
-			if ((c != CharPool.BACK_SLASH) || ((index + 1) >= text.length())) {
-				sb.append(c);
-
-				index++;
-
-				continue;
-			}
-
-			char nextChar = text.charAt(index + 1);
-
-			if (nextChar == CharPool.BACK_SLASH) {
-				sb.append(CharPool.BACK_SLASH);
-
-				index += 2;
-
-				continue;
-			}
-
-			if ((nextChar == 'u') && ((index + 6) <= text.length()) &&
-				_unicodeEscapePattern.matcher(
-					text.substring(index, index + 6)
-				).matches()) {
-
-				sb.append(
-					(char)Integer.parseInt(
-						text.substring(index + 2, index + 6), 16));
-
-				index += 6;
-
-				continue;
-			}
-
-			sb.append(c);
-
-			index++;
-		}
-
-		return sb.toString();
-	}
-
 	private void _write(String content, String dirName, File markdownFile)
 		throws Exception {
 
@@ -2449,12 +2394,8 @@ public class Main {
 
 	private static final long _READ_ATTEMPT_DELAY = 3000;
 
-	private static final Pattern _lineTrailingWhitespacePattern =
-		Pattern.compile("[ \\t]+(?=\\n)");
 	private static final Pattern _markdownLinkPattern = Pattern.compile(
 		"\\[(.*)\\]\\((.*)\\)");
-	private static final Pattern _unicodeEscapePattern = Pattern.compile(
-		"\\\\u([0-9a-fA-F]{4})");
 
 	private final String _baseDirName;
 	private DataDefinitionResource _dataDefinitionResource;
