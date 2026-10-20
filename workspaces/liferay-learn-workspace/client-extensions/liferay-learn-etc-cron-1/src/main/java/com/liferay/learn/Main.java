@@ -18,7 +18,6 @@ import com.liferay.headless.delivery.client.dto.v1_0.ContentField;
 import com.liferay.headless.delivery.client.dto.v1_0.ContentFieldValue;
 import com.liferay.headless.delivery.client.dto.v1_0.StructuredContent;
 import com.liferay.headless.delivery.client.dto.v1_0.StructuredContentFolder;
-import com.liferay.headless.delivery.client.function.UnsafeSupplier;
 import com.liferay.headless.delivery.client.pagination.Page;
 import com.liferay.headless.delivery.client.pagination.Pagination;
 import com.liferay.headless.delivery.client.permission.Permission;
@@ -31,7 +30,6 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
@@ -55,7 +53,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.output.TeeOutputStream;
@@ -321,6 +318,10 @@ public class Main {
 
 			_liferayContentStructureId = dataDefinition.getId();
 		}
+
+		_structuredContentBuilder = new StructuredContentBuilder(
+			_docsDirectory, _liferayContentStructureId, _markdownParser,
+			_navigationHelper, _skipLocales, this::_getTaxonomyCategoryIds);
 	}
 
 	public void loadTaxonomyVocabularies() throws Exception {
@@ -640,7 +641,7 @@ public class Main {
 
 			if (_offline) {
 				JSONObject jsonObject = new JSONObject(
-					_toStructuredContent(fileName));
+					_structuredContentBuilder.toStructuredContent(fileName));
 
 				_write(
 					jsonObject.toString(4), "build/structured-content",
@@ -655,8 +656,8 @@ public class Main {
 			Long publishedStructuredContentId = null;
 
 			try {
-				StructuredContent structuredContent = _toStructuredContent(
-					fileName);
+				StructuredContent structuredContent =
+					_structuredContentBuilder.toStructuredContent(fileName);
 
 				desiredStructuredContent = structuredContent;
 
@@ -693,7 +694,8 @@ public class Main {
 						siteStructuredContent.getId());
 
 					if (StringUtil.equals(
-							_generateMD5Hex(new File(fileName)),
+							_structuredContentBuilder.generateMD5Hex(
+								new File(fileName)),
 							_getMD5Hex(siteStructuredContent)) &&
 						StringUtil.equals(
 							structuredContent.getFriendlyUrlPath(),
@@ -987,33 +989,6 @@ public class Main {
 		System.out.println("Generated: " + generatedExcerpt);
 	}
 
-	private String _generateMD5Hex(File file) throws Exception {
-		StringBundler sb = new StringBundler(3);
-
-		sb.append(
-			DigestUtils.md5Hex(
-				new FileInputStream(_docsDirectory.getHTMLFile(file))));
-
-		if (!_skipLocales.contains("ja")) {
-			File japaneseHTMLFile = _docsDirectory.getHTMLFile(
-				new File(
-					StringUtil.replace(
-						file.getCanonicalPath(), "/en/", "/ja/")));
-
-			if (japaneseHTMLFile.exists()) {
-				sb.append(
-					DigestUtils.md5Hex(new FileInputStream(japaneseHTMLFile)));
-			}
-		}
-
-		sb.append(
-			DigestUtils.md5Hex(
-				String.valueOf(
-					_navigationHelper.getNavigationJSONObject(file))));
-
-		return DigestUtils.md5Hex(sb.toString());
-	}
-
 	private String _getContent(StructuredContent structuredContent) {
 		ContentField[] contentFields = structuredContent.getContentFields();
 
@@ -1075,7 +1050,8 @@ public class Main {
 			publishedCount++;
 
 			if (!StringUtil.equals(
-					_generateMD5Hex(file), _getMD5Hex(siteStructuredContent))) {
+					_structuredContentBuilder.generateMD5Hex(file),
+					_getMD5Hex(siteStructuredContent))) {
 
 				continue;
 			}
@@ -1841,7 +1817,9 @@ public class Main {
 		}
 
 		_japaneseStructuredContentResource.putStructuredContent(
-			structuredContentId, _toJapaneseStructuredContent(japaneseFile));
+			structuredContentId,
+			_structuredContentBuilder.toJapaneseStructuredContent(
+				japaneseFile));
 	}
 
 	private void _renewOAuthAuthorization() throws Exception {
@@ -1854,96 +1832,6 @@ public class Main {
 		if (delta > (_oauthExpirationMillis - 100000)) {
 			_initResourceBuilders(_getOAuthAuthorization());
 		}
-	}
-
-	private ContentField _toContentField(
-		String name, UnsafeSupplier<String, Exception> unsafeSupplier) {
-
-		ContentFieldValue contentFieldValue = new ContentFieldValue();
-
-		contentFieldValue.setData(unsafeSupplier::get);
-
-		ContentField contentField = new ContentField();
-
-		contentField.setContentFieldValue(() -> contentFieldValue);
-		contentField.setName(() -> name);
-
-		return contentField;
-	}
-
-	private StructuredContent _toJapaneseStructuredContent(File japaneseFile)
-		throws Exception {
-
-		StructuredContent structuredContent = new StructuredContent();
-
-		String japaneseText = FileUtils.readFileToString(
-			japaneseFile, StandardCharsets.UTF_8);
-
-		structuredContent.setContentFields(
-			() -> new ContentField[] {
-				_toContentField(
-					"content", () -> _docsDirectory.getHTML(japaneseFile)),
-				_toContentField(
-					"navigation",
-					() -> String.valueOf(
-						_navigationHelper.getNavigationJSONObject(
-							japaneseFile))),
-				_toContentField(
-					"showChildrenCards",
-					() -> String.valueOf(
-						_markdownParser.isShowChildrenCards(japaneseFile)))
-			});
-
-		structuredContent.setContentStructureId(
-			() -> _liferayContentStructureId);
-		structuredContent.setDescription(
-			() -> _markdownParser.getDescription(japaneseText));
-		structuredContent.setTitle(
-			() -> _markdownParser.getTitle(japaneseText));
-
-		return structuredContent;
-	}
-
-	private StructuredContent _toStructuredContent(String fileName)
-		throws Exception {
-
-		StructuredContent structuredContent = new StructuredContent();
-
-		File englishFile = new File(fileName);
-
-		String englishText = FileUtils.readFileToString(
-			englishFile, StandardCharsets.UTF_8);
-
-		structuredContent.setContentFields(
-			() -> new ContentField[] {
-				_toContentField(
-					"content", () -> _docsDirectory.getHTML(englishFile)),
-				_toContentField("md5Hex", () -> _generateMD5Hex(englishFile)),
-				_toContentField(
-					"navigation",
-					() -> String.valueOf(
-						_navigationHelper.getNavigationJSONObject(
-							englishFile))),
-				_toContentField(
-					"showChildrenCards",
-					() -> String.valueOf(
-						_markdownParser.isShowChildrenCards(englishFile)))
-			});
-
-		structuredContent.setContentStructureId(
-			() -> _liferayContentStructureId);
-		structuredContent.setDescription(
-			() -> _markdownParser.getDescription(englishText));
-		structuredContent.setExternalReferenceCode(
-			() -> _markdownParser.getUuid(englishText));
-		structuredContent.setFriendlyUrlPath(
-			() -> _docsDirectory.toFriendlyURLPath(englishFile));
-		structuredContent.setTaxonomyCategoryIds(
-			() -> _getTaxonomyCategoryIds(englishText));
-
-		structuredContent.setTitle(() -> _markdownParser.getTitle(englishText));
-
-		return structuredContent;
 	}
 
 	private void _write(String content, String dirName, File markdownFile)
@@ -1988,6 +1876,7 @@ public class Main {
 	private SiteResource _siteResource;
 	private final boolean _skipDiffCheck;
 	private final Set<String> _skipLocales = new TreeSet<>();
+	private final StructuredContentBuilder _structuredContentBuilder;
 	private final Map<String, Long> _structuredContentFolderIds =
 		new HashMap<>();
 	private StructuredContentFolderResource _structuredContentFolderResource;
