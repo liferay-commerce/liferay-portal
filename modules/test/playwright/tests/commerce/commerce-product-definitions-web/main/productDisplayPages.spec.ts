@@ -131,6 +131,164 @@ test(
 );
 
 test(
+	'Add, edit and delete a product display page override',
+	{tag: ['@COMMERCE-7842', '@COMMERCE-7951', '@COMMERCE-9433']},
+	async ({
+		apiHelpers,
+		commerceAdminChannelDetailsProductDisplayPagesPage,
+		commerceAdminChannelsPage,
+		site,
+	}) => {
+		const channel =
+			await apiHelpers.headlessCommerceAdminChannel.postChannel({
+				siteGroupId: site.id,
+			});
+
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+		const product1 =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				name: {en_US: getRandomString()},
+			});
+		const product2 =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				name: {en_US: getRandomString()},
+			});
+
+		const layout1 = await _addProductDetailsLayout(
+			apiHelpers,
+			site.id,
+			false
+		);
+		const layout2 = await _addProductDetailsLayout(
+			apiHelpers,
+			site.id,
+			false
+		);
+
+		await commerceAdminChannelsPage.goto();
+
+		await (
+			await commerceAdminChannelsPage.channelsTableRowLink(channel.name)
+		).click();
+
+		await commerceAdminChannelDetailsProductDisplayPagesPage.goToProductDisplayPages();
+
+		// Save without a page
+
+		await commerceAdminChannelDetailsProductDisplayPagesPage.addDisplayLayoutButton.click();
+
+		await commerceAdminChannelDetailsProductDisplayPagesPage.selectProduct(
+			product1.name['en_US']
+		);
+
+		await commerceAdminChannelDetailsProductDisplayPagesPage.saveButton.click();
+
+		await expect(
+			commerceAdminChannelDetailsProductDisplayPagesPage.addDisplayLayoutFrame.getByText(
+				'Please select a valid layout.'
+			)
+		).toBeVisible();
+
+		await commerceAdminChannelDetailsProductDisplayPagesPage.closeButton.click();
+
+		// Save without a product
+
+		await commerceAdminChannelDetailsProductDisplayPagesPage.addDisplayLayoutButton.click();
+
+		await commerceAdminChannelDetailsProductDisplayPagesPage.selectLayout(
+			layout1.nameCurrentValue
+		);
+
+		await commerceAdminChannelDetailsProductDisplayPagesPage.saveButton.click();
+
+		await expect(
+			commerceAdminChannelDetailsProductDisplayPagesPage.addDisplayLayoutFrame.getByText(
+				'Please select a valid product.'
+			)
+		).toBeVisible();
+
+		await commerceAdminChannelDetailsProductDisplayPagesPage.closeButton.click();
+
+		// Add the override
+
+		await commerceAdminChannelDetailsProductDisplayPagesPage.addDisplayLayoutButton.click();
+
+		await commerceAdminChannelDetailsProductDisplayPagesPage.selectLayout(
+			layout1.nameCurrentValue
+		);
+
+		await commerceAdminChannelDetailsProductDisplayPagesPage.selectProduct(
+			product1.name['en_US']
+		);
+
+		await commerceAdminChannelDetailsProductDisplayPagesPage.saveButton.click();
+
+		await expect(
+			commerceAdminChannelDetailsProductDisplayPagesPage.successMessage
+		).toBeVisible();
+
+		await commerceAdminChannelDetailsProductDisplayPagesPage.closeButton.click();
+
+		await expect(
+			commerceAdminChannelDetailsProductDisplayPagesPage.tableRow(
+				product1.name['en_US']
+			)
+		).toContainText(layout1.nameCurrentValue);
+
+		// Edit the override
+
+		await commerceAdminChannelDetailsProductDisplayPagesPage.clickTableRowAction(
+			product1.name['en_US'],
+			'Edit'
+		);
+
+		await commerceAdminChannelDetailsProductDisplayPagesPage.selectLayout(
+			layout2.nameCurrentValue
+		);
+
+		await commerceAdminChannelDetailsProductDisplayPagesPage.selectProduct(
+			product2.name['en_US']
+		);
+
+		await commerceAdminChannelDetailsProductDisplayPagesPage.saveButton.click();
+
+		await expect(
+			commerceAdminChannelDetailsProductDisplayPagesPage.successMessage
+		).toBeVisible();
+
+		await commerceAdminChannelDetailsProductDisplayPagesPage.closeButton.click();
+
+		await expect(
+			commerceAdminChannelDetailsProductDisplayPagesPage.tableRow(
+				product1.name['en_US']
+			)
+		).toHaveCount(0);
+		await expect(
+			commerceAdminChannelDetailsProductDisplayPagesPage.tableRow(
+				product2.name['en_US']
+			)
+		).toContainText(layout2.nameCurrentValue);
+
+		// Delete the override
+
+		await commerceAdminChannelDetailsProductDisplayPagesPage.clickTableRowAction(
+			product2.name['en_US'],
+			'Delete'
+		);
+
+		await expect(
+			commerceAdminChannelDetailsProductDisplayPagesPage.tableRow(
+				product2.name['en_US']
+			)
+		).toHaveCount(0);
+	}
+);
+
+test(
 	'Default and override product display pages route to public and private pages',
 	{
 		tag: [
