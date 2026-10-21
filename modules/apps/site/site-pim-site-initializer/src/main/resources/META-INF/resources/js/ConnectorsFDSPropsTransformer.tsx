@@ -3,22 +3,14 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {
-	confirmAndDeleteEntryAction,
-	styleDeleteAction,
-} from '@liferay/site-cms-site-initializer';
+import {confirmAndDeleteEntryAction} from '@liferay/site-cms-site-initializer';
 import {sub} from 'frontend-js-web';
 
 import ConnectorNameRenderer from './cell_renderers/ConnectorNameRenderer';
 import ConnectorStatusRenderer from './cell_renderers/ConnectorStatusRenderer';
+import LastExecutionRenderer from './cell_renderers/LastExecutionRenderer';
 
-export default function propsTransformer({
-	itemsActions,
-	...props
-}: {
-	itemsActions?: any[];
-	[key: string]: any;
-}) {
+export default function propsTransformer(props: {[key: string]: any}) {
 	return {
 		...props,
 		customRenderers: {
@@ -33,10 +25,14 @@ export default function propsTransformer({
 					name: 'statusTableCellRenderer',
 					type: 'internal',
 				},
+				{
+					component: LastExecutionRenderer,
+					name: 'lastExecutionTableCellRenderer',
+					type: 'internal',
+				},
 			],
 		},
 		hideManagementBarInEmptyState: true,
-		itemsActions: itemsActions?.map(styleDeleteAction),
 		onActionDropdownItemClick({
 			action,
 			event,

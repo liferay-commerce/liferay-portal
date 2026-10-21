@@ -25,15 +25,16 @@ ViewPIMConnectorsDisplayContext viewPIMConnectorsDisplayContext = (ViewPIMConnec
 	</div>
 
 	<div class="cms-section custom-empty-state">
-		<frontend-data-set:headless-display
-			apiURL="<%= viewPIMConnectorsDisplayContext.getAPIURL() %>"
+		<frontend-data-set:classic-display
+			contextParams="<%= viewPIMConnectorsDisplayContext.getContextParams() %>"
 			creationMenu="<%= viewPIMConnectorsDisplayContext.getCreationMenu() %>"
+			dataProviderKey="<%= PIMFDSNames.CONNECTORS %>"
 			emptyState="<%= viewPIMConnectorsDisplayContext.getEmptyState() %>"
-			fdsActionDropdownItems="<%= viewPIMConnectorsDisplayContext.getFDSActionDropdownItems() %>"
 			id="<%= PIMFDSNames.CONNECTORS %>"
 			itemsPerPage="<%= 20 %>"
 			propsTransformer="{ConnectorsFDSPropsTransformer} from site-pim-site-initializer"
 			selectedItemsKey="id"
+			showSearch="<%= true %>"
 		/>
 	</div>
 </div>
