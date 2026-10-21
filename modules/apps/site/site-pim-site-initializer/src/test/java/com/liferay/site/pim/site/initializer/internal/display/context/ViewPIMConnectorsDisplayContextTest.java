@@ -5,11 +5,8 @@
 
 package com.liferay.site.pim.site.initializer.internal.display.context;
 
-import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
-import com.liferay.object.model.ObjectDefinition;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -44,31 +41,45 @@ public class ViewPIMConnectorsDisplayContextTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
-	public void testGetAPIURL() {
+	public void testGetContextParams() {
 		HttpServletRequest httpServletRequest = Mockito.mock(
 			HttpServletRequest.class);
 
-		ObjectDefinition objectDefinition = Mockito.mock(
-			ObjectDefinition.class);
+		ThemeDisplay themeDisplay = _mockThemeDisplay();
 
 		Mockito.when(
-			objectDefinition.getRESTContextPath()
+			httpServletRequest.getAttribute(WebKeys.THEME_DISPLAY)
 		).thenReturn(
-			"/pim/connectors"
+			themeDisplay
 		);
 
 		ViewPIMConnectorsDisplayContext viewPIMConnectorsDisplayContext =
-			new ViewPIMConnectorsDisplayContext(
-				httpServletRequest, objectDefinition);
+			new ViewPIMConnectorsDisplayContext(httpServletRequest);
 
 		Assert.assertEquals(
-			"/o/pim/connectors", viewPIMConnectorsDisplayContext.getAPIURL());
-
-		viewPIMConnectorsDisplayContext = new ViewPIMConnectorsDisplayContext(
-			httpServletRequest, null);
-
-		Assert.assertEquals(
-			StringPool.BLANK, viewPIMConnectorsDisplayContext.getAPIURL());
+			HashMapBuilder.put(
+				"editConnectorURL",
+				URLCodec.encodeURL(
+					StringBundler.concat(
+						"/web/cms/edit-connector?backURL=",
+						URLCodec.encodeURL(_URL_CURRENT),
+						"&objectEntryId={id}"))
+			).put(
+				"fieldMappingsURL",
+				URLCodec.encodeURL(
+					StringBundler.concat(
+						"/web/cms/field-mappings?backURL=",
+						URLCodec.encodeURL(_URL_CURRENT),
+						"&objectEntryId={id}"))
+			).put(
+				"scheduleURL",
+				URLCodec.encodeURL(
+					StringBundler.concat(
+						"/o/pim/connector/schedule?backURL=",
+						URLCodec.encodeURL(_URL_CURRENT),
+						"&objectEntryId={id}"))
+			).build(),
+			viewPIMConnectorsDisplayContext.getContextParams());
 	}
 
 	@Test
@@ -97,7 +108,7 @@ public class ViewPIMConnectorsDisplayContextTest {
 		);
 
 		ViewPIMConnectorsDisplayContext viewPIMConnectorsDisplayContext =
-			new ViewPIMConnectorsDisplayContext(httpServletRequest, null);
+			new ViewPIMConnectorsDisplayContext(httpServletRequest);
 
 		List<DropdownItem> dropdownItems = ReflectionTestUtil.getFieldValue(
 			viewPIMConnectorsDisplayContext.getCreationMenu(),
@@ -140,7 +151,7 @@ public class ViewPIMConnectorsDisplayContextTest {
 		languageUtil.setLanguage(language);
 
 		ViewPIMConnectorsDisplayContext viewPIMConnectorsDisplayContext =
-			new ViewPIMConnectorsDisplayContext(httpServletRequest, null);
+			new ViewPIMConnectorsDisplayContext(httpServletRequest);
 
 		Map<String, Object> emptyState =
 			viewPIMConnectorsDisplayContext.getEmptyState();
@@ -149,161 +160,6 @@ public class ViewPIMConnectorsDisplayContextTest {
 			"Create a connector to link the PIM to a shopping experience.",
 			emptyState.get("description"));
 		Assert.assertEquals("No Connectors Yet", emptyState.get("title"));
-	}
-
-	@Test
-	public void testGetFDSActionDropdownItems() {
-		LanguageUtil languageUtil = new LanguageUtil();
-
-		Language language = Mockito.mock(Language.class);
-
-		HttpServletRequest httpServletRequest = Mockito.mock(
-			HttpServletRequest.class);
-
-		Mockito.when(
-			language.get(httpServletRequest, "delete")
-		).thenReturn(
-			"Delete"
-		);
-
-		Mockito.when(
-			language.get(httpServletRequest, "edit")
-		).thenReturn(
-			"Edit"
-		);
-
-		Mockito.when(
-			language.get(httpServletRequest, "execute")
-		).thenReturn(
-			"Execute"
-		);
-
-		Mockito.when(
-			language.get(httpServletRequest, "map-fields")
-		).thenReturn(
-			"Map Fields"
-		);
-
-		Mockito.when(
-			language.get(httpServletRequest, "schedule")
-		).thenReturn(
-			"Schedule"
-		);
-
-		Mockito.when(
-			language.get(
-				httpServletRequest,
-				"execution-has-started-successfully-and-will-continue-in-the-" +
-					"background")
-		).thenReturn(
-			"Execution has started successfully and will continue in the " +
-				"background."
-		);
-
-		languageUtil.setLanguage(language);
-
-		ThemeDisplay themeDisplay = _mockThemeDisplay();
-
-		Mockito.when(
-			httpServletRequest.getAttribute(WebKeys.THEME_DISPLAY)
-		).thenReturn(
-			themeDisplay
-		);
-
-		ViewPIMConnectorsDisplayContext viewPIMConnectorsDisplayContext =
-			new ViewPIMConnectorsDisplayContext(httpServletRequest, null);
-
-		List<FDSActionDropdownItem> fdsActionDropdownItems =
-			viewPIMConnectorsDisplayContext.getFDSActionDropdownItems();
-
-		Assert.assertEquals(
-			fdsActionDropdownItems.toString(), 5,
-			fdsActionDropdownItems.size());
-
-		FDSActionDropdownItem fdsActionDropdownItem =
-			fdsActionDropdownItems.get(0);
-
-		Assert.assertEquals(
-			StringBundler.concat(
-				"/web/cms/field-mappings?backURL=",
-				URLCodec.encodeURL(_URL_CURRENT), "&objectEntryId={id}"),
-			fdsActionDropdownItem.get("href"));
-		Assert.assertEquals("sheets", fdsActionDropdownItem.get("icon"));
-		Assert.assertEquals("Map Fields", fdsActionDropdownItem.get("label"));
-
-		Map<?, ?> data = (Map<?, ?>)fdsActionDropdownItem.get("data");
-
-		Assert.assertEquals("fieldMappings", data.get("id"));
-		Assert.assertEquals("get", data.get("method"));
-		Assert.assertEquals("update", data.get("permissionKey"));
-
-		fdsActionDropdownItem = fdsActionDropdownItems.get(1);
-
-		Assert.assertEquals(
-			StringBundler.concat(
-				"/web/cms/edit-connector?backURL=",
-				URLCodec.encodeURL(_URL_CURRENT), "&objectEntryId={id}"),
-			fdsActionDropdownItem.get("href"));
-		Assert.assertEquals("pencil", fdsActionDropdownItem.get("icon"));
-		Assert.assertEquals("Edit", fdsActionDropdownItem.get("label"));
-
-		data = (Map<?, ?>)fdsActionDropdownItem.get("data");
-
-		Assert.assertEquals("edit", data.get("id"));
-		Assert.assertEquals("get", data.get("method"));
-		Assert.assertEquals("update", data.get("permissionKey"));
-
-		fdsActionDropdownItem = fdsActionDropdownItems.get(2);
-
-		Assert.assertEquals(
-			"/o/pim/connector/execute?objectEntryId={id}",
-			fdsActionDropdownItem.get("href"));
-		Assert.assertEquals("play", fdsActionDropdownItem.get("icon"));
-		Assert.assertEquals("Execute", fdsActionDropdownItem.get("label"));
-		Assert.assertEquals("async", fdsActionDropdownItem.get("target"));
-
-		data = (Map<?, ?>)fdsActionDropdownItem.get("data");
-
-		Assert.assertEquals("execute", data.get("id"));
-		Assert.assertEquals("post", data.get("method"));
-		Assert.assertEquals(
-			"Execution has started successfully and will continue in the " +
-				"background.",
-			data.get("successMessage"));
-		Assert.assertEquals(
-			HashMapBuilder.<String, Object>put(
-				"active", Boolean.TRUE
-			).build(),
-			data.get("visibilityFilters"));
-
-		fdsActionDropdownItem = fdsActionDropdownItems.get(3);
-
-		Assert.assertEquals(
-			StringBundler.concat(
-				"/o/pim/connector/schedule?backURL=",
-				URLCodec.encodeURL(_URL_CURRENT), "&objectEntryId={id}"),
-			fdsActionDropdownItem.get("href"));
-		Assert.assertEquals("date-time", fdsActionDropdownItem.get("icon"));
-		Assert.assertEquals("Schedule", fdsActionDropdownItem.get("label"));
-		Assert.assertNull(fdsActionDropdownItem.get("target"));
-
-		data = (Map<?, ?>)fdsActionDropdownItem.get("data");
-
-		Assert.assertEquals("schedule", data.get("id"));
-		Assert.assertEquals("get", data.get("method"));
-
-		fdsActionDropdownItem = fdsActionDropdownItems.get(4);
-
-		Assert.assertNull(fdsActionDropdownItem.get("href"));
-		Assert.assertEquals("trash", fdsActionDropdownItem.get("icon"));
-		Assert.assertEquals("Delete", fdsActionDropdownItem.get("label"));
-		Assert.assertNull(fdsActionDropdownItem.get("target"));
-
-		data = (Map<?, ?>)fdsActionDropdownItem.get("data");
-
-		Assert.assertEquals("delete", data.get("id"));
-		Assert.assertNull(data.get("method"));
-		Assert.assertEquals("delete", data.get("permissionKey"));
 	}
 
 	private ThemeDisplay _mockThemeDisplay() {
