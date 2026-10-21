@@ -97,8 +97,22 @@ export class ConnectorsPage {
 		return this.dataSetFragmentPage.getRow(name).getByRole('link', {name});
 	}
 
+	getConnectorLastExecution(name: string) {
+		return this.dataSetFragmentPage
+			.getRow(name)
+			.locator('.cell-lastExecution .label');
+	}
+
+	getConnectorLastExecutionDate(name: string) {
+		return this.dataSetFragmentPage
+			.getRow(name)
+			.locator('.cell-lastExecutionDate');
+	}
+
 	getConnectorStatus(name: string) {
-		return this.dataSetFragmentPage.getRow(name).locator('.label');
+		return this.dataSetFragmentPage
+			.getRow(name)
+			.locator('.cell-active .label');
 	}
 
 	async openConnectorSchedule(name: string) {

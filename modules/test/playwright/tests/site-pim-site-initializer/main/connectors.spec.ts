@@ -44,6 +44,15 @@ test(
 			name: connectorName,
 		});
 
+		await test.step('The connector was never executed', async () => {
+			await expect(
+				connectorsPage.getConnectorLastExecution(connectorName)
+			).toHaveText('Never Executed');
+			await expect(
+				connectorsPage.getConnectorLastExecutionDate(connectorName)
+			).toHaveText('');
+		});
+
 		await test.step('Execute the connector', async () => {
 			await connectorsPage.executeConnector(connectorName);
 		});
@@ -139,6 +148,17 @@ test(
 
 				await expect(connectorSchedulePage.logOutput).toHaveText(/^\[/);
 				await expect(connectorSchedulePage.logError).toBeHidden();
+			});
+
+			await test.step('The connectors list shows the successful execution', async () => {
+				await connectorsPage.goto();
+
+				await expect(
+					connectorsPage.getConnectorLastExecution(connectorName)
+				).toHaveText('Success');
+				await expect(
+					connectorsPage.getConnectorLastExecutionDate(connectorName)
+				).not.toHaveText('');
 			});
 		}
 		finally {
