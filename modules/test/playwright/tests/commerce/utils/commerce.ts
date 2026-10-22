@@ -1156,6 +1156,76 @@ export async function miniumSetUp(
 	);
 }
 
+export async function productComparisonSetUp(
+	apiHelpers: DataApiHelpers,
+	commerceAdminChannelsPage: CommerceAdminChannelsPage,
+	site: Site
+) {
+	const channel = await apiHelpers.headlessCommerceAdminChannel.postChannel({
+		siteGroupId: site.id,
+	});
+
+	await commerceAdminChannelsPage.changeCommerceChannelSiteType(
+		channel.name,
+		'B2B'
+	);
+
+	const catalogLayout = await apiHelpers.headlessDelivery.createSitePage({
+		pageDefinition: getPageDefinition([
+			getWidgetDefinition({
+				id: getRandomString(),
+				widgetConfig: {productsLimit: '3'},
+				widgetName:
+					'com_liferay_commerce_product_content_web_internal_portlet_CPCompareContentMiniPortlet',
+			}),
+			getWidgetDefinition({
+				id: getRandomString(),
+				widgetName:
+					'com_liferay_commerce_product_content_web_internal_portlet_CPPublisherPortlet',
+			}),
+		]),
+		siteId: site.id,
+		title: getRandomString(),
+	});
+
+	await apiHelpers.headlessDelivery.createSitePage({
+		pageDefinition: getPageDefinition([
+			getWidgetDefinition({
+				id: getRandomString(),
+				widgetName:
+					'com_liferay_commerce_product_content_web_internal_portlet_CPCompareContentMiniPortlet',
+			}),
+			getWidgetDefinition({
+				id: getRandomString(),
+				widgetName:
+					'com_liferay_commerce_product_content_web_internal_portlet_CPContentPortlet',
+			}),
+		]),
+		siteId: site.id,
+		title: getRandomString(),
+	});
+
+	const compareLayout = await apiHelpers.headlessDelivery.createSitePage({
+		pageDefinition: getPageDefinition([
+			getWidgetDefinition({
+				id: getRandomString(),
+				widgetName:
+					'com_liferay_commerce_product_content_web_internal_portlet_CPCompareContentMiniPortlet',
+			}),
+			getWidgetDefinition({
+				id: getRandomString(),
+				widgetConfig: {productsLimit: '3'},
+				widgetName:
+					'com_liferay_commerce_product_content_web_internal_portlet_CPCompareContentPortlet',
+			}),
+		]),
+		siteId: site.id,
+		title: getRandomString(),
+	});
+
+	return {catalogLayout, compareLayout};
+}
+
 export async function speedwellSetUp(
 	apiHelpers: DataApiHelpers,
 	siteName?: string
