@@ -62,8 +62,8 @@ public class PIMConnectorTableFDSViewTest {
 		_testGetFDSTableSchema(
 			"dateTime", "lastExecutionDate", "last-execution-date", false);
 		_testGetFDSTableSchema(
-			"lastExecutionTableCellRenderer", "lastExecution", "last-execution",
-			false);
+			"lastExecutionTableCellRenderer", "lastExecution",
+			"last-execution-status", false);
 		_testGetFDSTableSchema("nameTableCellRenderer", "name", "name", false);
 		_testGetFDSTableSchema(
 			"statusTableCellRenderer", "active", "status", false);
