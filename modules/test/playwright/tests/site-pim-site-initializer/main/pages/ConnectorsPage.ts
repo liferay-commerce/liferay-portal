@@ -109,6 +109,12 @@ export class ConnectorsPage {
 			.locator('.cell-lastExecutionDate');
 	}
 
+	getConnectorMappingStatus(name: string) {
+		return this.dataSetFragmentPage
+			.getRow(name)
+			.locator('.cell-mappingComplete .label');
+	}
+
 	getConnectorStatus(name: string) {
 		return this.dataSetFragmentPage
 			.getRow(name)

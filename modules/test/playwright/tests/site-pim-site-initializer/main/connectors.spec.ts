@@ -34,14 +34,37 @@ test.afterEach(async ({apiHelpers}) => {
 
 test(
 	'Execute a connector and open its schedule',
-	{tag: ['@LPD-108228']},
-	async ({connectorSchedulePage, connectorsPage}) => {
+	{tag: ['@LPD-108228', '@LPD-109731']},
+	async ({connectorSchedulePage, connectorsPage, fieldMappingsPage}) => {
 		const connectorName = getRandomString();
 
 		await connectorsPage.createConnector({
 			active: true,
 			connector: 'Liferay Commerce',
 			name: connectorName,
+		});
+
+		await test.step('An incomplete mapping cannot be executed', async () => {
+			await expect(
+				connectorsPage.getConnectorMappingStatus(connectorName)
+			).toHaveText('Incomplete');
+
+			await connectorsPage.dataSetFragmentPage.expectItemActionHidden({
+				action: 'Execute',
+				filter: connectorName,
+			});
+		});
+
+		await test.step('Map the required channel fields', async () => {
+			await connectorsPage.getConnector(connectorName).click();
+
+			await fieldMappingsPage.mapRequiredChannelFields();
+
+			await connectorsPage.goto();
+
+			await expect(
+				connectorsPage.getConnectorMappingStatus(connectorName)
+			).toHaveText('Complete');
 		});
 
 		await test.step('The connector was never executed', async () => {
