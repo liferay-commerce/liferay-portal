@@ -15,8 +15,12 @@ import com.liferay.frontend.data.set.provider.FDSDataProviderRegistry;
 import com.liferay.frontend.data.set.provider.search.FDSPagination;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.model.ObjectField;
+import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.service.ObjectFieldLocalService;
+import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.portal.kernel.bean.BeanPropertiesUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -121,8 +125,10 @@ public class PIMConnectorFDSDataProviderTest {
 			BeanPropertiesUtil.getString(item, "lastExecution"));
 		Assert.assertNull(
 			BeanPropertiesUtil.getObject(item, "lastExecutionDate"));
-		Assert.assertEquals(name, BeanPropertiesUtil.getString(item, "name"));
 		Assert.assertTrue(BeanPropertiesUtil.getBoolean(item, "active"));
+		Assert.assertFalse(
+			BeanPropertiesUtil.getBoolean(item, "mappingComplete"));
+		Assert.assertEquals(name, BeanPropertiesUtil.getString(item, "name"));
 
 		DispatchTrigger dispatchTrigger =
 			_dispatchTriggerLocalService.
@@ -155,6 +161,57 @@ public class PIMConnectorFDSDataProviderTest {
 			dispatchTrigger, startDate, DispatchTaskStatus.SUCCESSFUL);
 
 		_assertLastExecution("success", startDate);
+	}
+
+	@Test
+	public void testGetItemsWhenMappingIsComplete() throws Exception {
+		String name = RandomTestUtil.randomString();
+
+		ObjectEntry objectEntry = _addObjectEntry(name);
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					PIMObjectDefinitionConstants.
+						EXTERNAL_REFERENCE_CODE_CONNECTOR_FIELD_MAPPING,
+					TestPropsValues.getCompanyId());
+
+		ObjectRelationship objectRelationship =
+			_objectRelationshipLocalService.
+				fetchObjectRelationshipByExternalReferenceCode(
+					"L_PIM_CONNECTOR_TO_PIM_CONNECTOR_FIELD_MAPPINGS",
+					_objectDefinition.getObjectDefinitionId());
+
+		ObjectField objectField = _objectFieldLocalService.getObjectField(
+			objectRelationship.getObjectFieldId2());
+
+		for (String channelFieldName :
+				new String[] {
+					"catalogId", "name", "productType", "skus[].sku"
+				}) {
+
+			_objectEntryLocalService.addObjectEntry(
+				0, TestPropsValues.getUserId(),
+				objectDefinition.getObjectDefinitionId(), 0, null,
+				HashMapBuilder.<String, Serializable>put(
+					"channelFieldName", channelFieldName
+				).put(
+					objectField.getName(), objectEntry.getObjectEntryId()
+				).put(
+					"priority", 0
+				).put(
+					"type", "fixedValue"
+				).put(
+					"value", RandomTestUtil.randomString()
+				).build(),
+				ServiceContextTestUtil.getServiceContext());
+		}
+
+		_mockHttpServletRequest.setParameter(
+			"filter", "name eq '" + name + "'");
+
+		Assert.assertTrue(
+			BeanPropertiesUtil.getBoolean(_getItem(), "mappingComplete"));
 	}
 
 	private void _addDispatchLog(
@@ -261,5 +318,11 @@ public class PIMConnectorFDSDataProviderTest {
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Inject
+	private ObjectFieldLocalService _objectFieldLocalService;
+
+	@Inject
+	private ObjectRelationshipLocalService _objectRelationshipLocalService;
 
 }
