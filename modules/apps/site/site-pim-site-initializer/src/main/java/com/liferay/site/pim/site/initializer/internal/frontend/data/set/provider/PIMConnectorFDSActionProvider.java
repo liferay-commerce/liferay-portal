@@ -65,7 +65,9 @@ public class PIMConnectorFDSActionProvider implements FDSActionProvider {
 					_language.get(httpServletRequest, "edit"));
 			}
 		).add(
-			pimConnectorDisplay::isActive,
+			() ->
+				pimConnectorDisplay.isActive() &&
+				pimConnectorDisplay.isMappingComplete(),
 			dropdownItem -> {
 				dropdownItem.putData("id", "execute");
 				dropdownItem.putData("method", "post");

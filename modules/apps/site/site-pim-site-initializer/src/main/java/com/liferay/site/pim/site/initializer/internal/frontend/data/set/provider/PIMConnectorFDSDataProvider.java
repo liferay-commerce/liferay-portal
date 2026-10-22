@@ -19,6 +19,7 @@ import com.liferay.object.rest.manager.v1_0.ObjectEntryManager;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManagerRegistry;
 import com.liferay.object.rest.odata.entity.v1_0.provider.EntityModelProvider;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
@@ -38,10 +39,12 @@ import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.util.SortUtil;
+import com.liferay.site.pim.site.initializer.connector.PIMConnectorRegistry;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConstants;
 import com.liferay.site.pim.site.initializer.internal.constants.PIMFDSNames;
 import com.liferay.site.pim.site.initializer.internal.frontend.data.set.model.PIMConnectorDisplay;
 import com.liferay.site.pim.site.initializer.internal.util.PIMConnectorDispatchTriggerUtil;
+import com.liferay.site.pim.site.initializer.internal.util.PIMConnectorFieldMappingsUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -275,6 +278,20 @@ public class PIMConnectorFDSDataProvider
 				sort.getFieldName(), ":", sort.isReverse() ? "desc" : "asc"));
 	}
 
+	private boolean _isMappingComplete(long objectEntryId, String key)
+		throws PortalException {
+
+		com.liferay.object.model.ObjectEntry objectEntry =
+			_objectEntryLocalService.fetchObjectEntry(objectEntryId);
+
+		if (objectEntry == null) {
+			return false;
+		}
+
+		return PIMConnectorFieldMappingsUtil.isMappingComplete(
+			objectEntry, _pimConnectorRegistry.getPIMConnector(key));
+	}
+
 	private PIMConnectorDisplay _toPIMConnectorDisplay(
 			ObjectDefinition objectDefinition, ObjectEntry objectEntry)
 		throws PortalException {
@@ -291,6 +308,9 @@ public class PIMConnectorFDSDataProvider
 			GetterUtil.getString(properties.get("key")),
 			_getLastExecution(dispatchLog),
 			(dispatchLog == null) ? null : dispatchLog.getStartDate(),
+			_isMappingComplete(
+				objectEntry.getId(),
+				GetterUtil.getString(properties.get("key"))),
 			GetterUtil.getString(properties.get("name")));
 	}
 
@@ -304,10 +324,16 @@ public class PIMConnectorFDSDataProvider
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Reference
+	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Reference
 	private ObjectEntryManagerRegistry _objectEntryManagerRegistry;
 
 	@Reference
 	private ObjectEntryService _objectEntryService;
+
+	@Reference
+	private PIMConnectorRegistry _pimConnectorRegistry;
 
 	@Reference
 	private SortParserProvider _sortParserProvider;

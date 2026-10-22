@@ -9,6 +9,7 @@ import {sub} from 'frontend-js-web';
 import ConnectorNameRenderer from './cell_renderers/ConnectorNameRenderer';
 import ConnectorStatusRenderer from './cell_renderers/ConnectorStatusRenderer';
 import LastExecutionRenderer from './cell_renderers/LastExecutionRenderer';
+import MappingStatusRenderer from './cell_renderers/MappingStatusRenderer';
 
 export default function propsTransformer(props: {[key: string]: any}) {
 	return {
@@ -23,6 +24,11 @@ export default function propsTransformer(props: {[key: string]: any}) {
 				{
 					component: ConnectorStatusRenderer,
 					name: 'statusTableCellRenderer',
+					type: 'internal',
+				},
+				{
+					component: MappingStatusRenderer,
+					name: 'mappingStatusTableCellRenderer',
 					type: 'internal',
 				},
 				{

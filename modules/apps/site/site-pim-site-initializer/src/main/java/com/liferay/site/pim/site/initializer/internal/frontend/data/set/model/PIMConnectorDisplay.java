@@ -16,7 +16,7 @@ public class PIMConnectorDisplay {
 	public PIMConnectorDisplay(
 		Map<String, Map<String, String>> actions, boolean active,
 		Date dateModified, long id, String key, String lastExecution,
-		Date lastExecutionDate, String name) {
+		Date lastExecutionDate, boolean mappingComplete, String name) {
 
 		_actions = actions;
 		_active = active;
@@ -25,6 +25,7 @@ public class PIMConnectorDisplay {
 		_key = key;
 		_lastExecution = lastExecution;
 		_lastExecutionDate = lastExecutionDate;
+		_mappingComplete = mappingComplete;
 		_name = name;
 	}
 
@@ -60,6 +61,10 @@ public class PIMConnectorDisplay {
 		return _active;
 	}
 
+	public boolean isMappingComplete() {
+		return _mappingComplete;
+	}
+
 	private final Map<String, Map<String, String>> _actions;
 	private final boolean _active;
 	private final Date _dateModified;
@@ -67,6 +72,7 @@ public class PIMConnectorDisplay {
 	private final String _key;
 	private final String _lastExecution;
 	private final Date _lastExecutionDate;
+	private final boolean _mappingComplete;
 	private final String _name;
 
 }
