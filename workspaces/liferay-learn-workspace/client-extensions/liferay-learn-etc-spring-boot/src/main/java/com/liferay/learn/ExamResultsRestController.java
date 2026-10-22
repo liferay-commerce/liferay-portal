@@ -6,25 +6,36 @@
 package com.liferay.learn;
 
 import com.liferay.client.extension.util.spring.boot3.BaseRestController;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.StringReader;
 
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CoderResult;
 import java.nio.charset.StandardCharsets;
 
+import java.security.MessageDigest;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 
-import java.util.Objects;
+import java.util.HexFormat;
+import java.util.Locale;
+import java.util.Map;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -93,7 +104,7 @@ public class ExamResultsRestController extends BaseRestController {
 			return ResponseEntity.ok(_process(jwt, multipartFile));
 		}
 		catch (Exception exception) {
-			_log.error(exception);
+			_log.error("Unable to import CSV", exception);
 
 			return ResponseEntity.status(
 				HttpStatus.INTERNAL_SERVER_ERROR
@@ -103,52 +114,117 @@ public class ExamResultsRestController extends BaseRestController {
 		}
 	}
 
-	private String _process(
-			@AuthenticationPrincipal Jwt jwt, MultipartFile multipartFile)
+	private String _decode(byte[] bytes) {
+		CharBuffer charBuffer = CharBuffer.allocate(bytes.length);
+
+		CharsetDecoder charsetDecoder = StandardCharsets.UTF_8.newDecoder();
+
+		CoderResult coderResult = charsetDecoder.decode(
+			ByteBuffer.wrap(bytes), charBuffer, true);
+
+		if (coderResult.isError()) {
+			return new String(bytes, Charset.forName("windows-1252"));
+		}
+
+		charsetDecoder.flush(charBuffer);
+
+		charBuffer.flip();
+
+		return charBuffer.toString();
+	}
+
+	private String _getExternalReferenceCode(
+			String emailAddress, String examName, LocalDate localDate)
 		throws Exception {
 
-		try (BufferedReader bufferedReader = new BufferedReader(
-				new InputStreamReader(
-					multipartFile.getInputStream(), StandardCharsets.UTF_8));
+		String keyString = StringBundler.concat(
+			StringUtil.toLowerCase(emailAddress.trim()), "|", examName.trim(),
+			"|", localDate);
 
-			CSVParser csvParser = CSVFormat.DEFAULT.withFirstRecordAsHeader(
+		MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+
+		HexFormat hexFormat = HexFormat.of();
+
+		return hexFormat.formatHex(
+			messageDigest.digest(keyString.getBytes(StandardCharsets.UTF_8)));
+	}
+
+	private double _getScore(CSVRecord csvRecord) {
+		String scoreString = StringUtil.removeChar(
+			csvRecord.get(
+				7
+			).trim(),
+			'%');
+
+		if (!Validator.isNumber(scoreString)) {
+			throw new IllegalArgumentException(
+				StringBundler.concat(
+					"Score \"", scoreString, "\" in row ",
+					csvRecord.getRecordNumber() + 1, " is not a number"));
+		}
+
+		return GetterUtil.getDouble(scoreString);
+	}
+
+	private LocalDateTime _parseLocalDateTime(String value) {
+		TemporalAccessor temporalAccessor = _dateTimeFormatter.parseBest(
+			value, LocalDateTime::from, LocalDate::from);
+
+		if (temporalAccessor instanceof LocalDate) {
+			LocalDate localDate = (LocalDate)temporalAccessor;
+
+			return localDate.atStartOfDay();
+		}
+
+		return (LocalDateTime)temporalAccessor;
+	}
+
+	private String _process(Jwt jwt, MultipartFile multipartFile)
+		throws Exception {
+
+		try (CSVParser csvParser = CSVFormat.DEFAULT.builder(
+			).setHeader(
+			).setSkipHeaderRecord(
+				true
+			).build(
 			).parse(
-				bufferedReader
+				new StringReader(_decode(multipartFile.getBytes()))
 			)) {
 
 			JSONArray jsonArray = new JSONArray();
 
 			for (CSVRecord csvRecord : csvParser) {
-				String examName = csvRecord.get(6);
+				OffsetDateTime offsetDateTime = OffsetDateTime.of(
+					_parseLocalDateTime(
+						csvRecord.get(
+							10
+						).trim()),
+					ZoneOffset.UTC);
 
-				if (Objects.equals(
-						examName,
-						"Building Enterprise Websites with Liferay")) {
+				String emailAddress = csvRecord.get(
+					2
+				).trim();
 
-					examName =
-						"Building Enterprise Websites with Liferay " +
-							"Certification Exam (2024)";
-				}
+				String examName = csvRecord.get(
+					6
+				).trim();
+
+				examName = _examNames.getOrDefault(examName, examName);
 
 				jsonArray.put(
 					new JSONObject(
 					).put(
 						"date",
-						OffsetDateTime.of(
-							LocalDateTime.parse(
-								csvRecord.get(10),
-								DateTimeFormatter.ofPattern(
-									"yyyy-MM-dd'T'H:mm:ss[.SSS]")),
-							ZoneOffset.UTC
-						).format(
-							DateTimeFormatter.ISO_INSTANT
-						)
+						offsetDateTime.format(DateTimeFormatter.ISO_INSTANT)
 					).put(
-						"emailAddress", csvRecord.get(2)
+						"emailAddress", emailAddress
 					).put(
 						"examName", examName
 					).put(
-						"externalReferenceCode", csvRecord.get(0)
+						"externalReferenceCode",
+						_getExternalReferenceCode(
+							emailAddress, examName,
+							offsetDateTime.toLocalDate())
 					).put(
 						"firstName", csvRecord.get(3)
 					).put(
@@ -162,7 +238,7 @@ public class ExamResultsRestController extends BaseRestController {
 							"name", csvRecord.get(8)
 						)
 					).put(
-						"score", GetterUtil.getInteger(csvRecord.get(7))
+						"score", _getScore(csvRecord)
 					).put(
 						"testName", examName
 					));
@@ -252,5 +328,13 @@ public class ExamResultsRestController extends BaseRestController {
 
 	private static final Log _log = LogFactory.getLog(
 		ExamResultsRestController.class);
+
+	private static final DateTimeFormatter _dateTimeFormatter =
+		DateTimeFormatter.ofPattern(
+			"[yyyy-MM-dd'T'H:mm:ss[.SSS]][yyyy-MM-dd H:mm:ss][d MMMM yyyy]",
+			Locale.ENGLISH);
+	private static final Map<String, String> _examNames = Map.of(
+		"Building Enterprise Websites with Liferay",
+		"Building Enterprise Websites with Liferay Certification Exam");
 
 }
