@@ -33,6 +33,7 @@ describe('ConnectorsFDSPropsTransformer', () => {
 		expect(result.customRenderers.tableCell.map(({name}) => name)).toEqual([
 			'nameTableCellRenderer',
 			'statusTableCellRenderer',
+			'mappingStatusTableCellRenderer',
 			'lastExecutionTableCellRenderer',
 		]);
 	});
