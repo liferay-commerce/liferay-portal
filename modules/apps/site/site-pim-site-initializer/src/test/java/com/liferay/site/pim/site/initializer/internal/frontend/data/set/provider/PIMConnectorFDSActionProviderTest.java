@@ -79,7 +79,7 @@ public class PIMConnectorFDSActionProviderTest {
 					).put(
 						"update", Collections.emptyMap()
 					).build(),
-					true));
+					true, true));
 
 		Assert.assertEquals(dropdownItems.toString(), 5, dropdownItems.size());
 
@@ -135,11 +135,34 @@ public class PIMConnectorFDSActionProviderTest {
 	}
 
 	@Test
+	public void testGetDropdownItemsWhenMappingIsIncomplete() {
+		List<DropdownItem> dropdownItems =
+			_pimConnectorFDSActionProvider.getDropdownItems(
+				_GROUP_ID, _httpServletRequest,
+				_getPIMConnectorDisplay(
+					HashMapBuilder.<String, Map<String, String>>put(
+						"delete", Collections.emptyMap()
+					).put(
+						"update", Collections.emptyMap()
+					).build(),
+					true, false));
+
+		Assert.assertEquals(dropdownItems.toString(), 4, dropdownItems.size());
+		Assert.assertEquals(
+			"fieldMappings", _getDataValue(dropdownItems.get(0), "id"));
+		Assert.assertEquals("edit", _getDataValue(dropdownItems.get(1), "id"));
+		Assert.assertEquals(
+			"schedule", _getDataValue(dropdownItems.get(2), "id"));
+		Assert.assertEquals(
+			"delete", _getDataValue(dropdownItems.get(3), "id"));
+	}
+
+	@Test
 	public void testGetDropdownItemsWithoutPermissions() {
 		List<DropdownItem> dropdownItems =
 			_pimConnectorFDSActionProvider.getDropdownItems(
 				_GROUP_ID, _httpServletRequest,
-				_getPIMConnectorDisplay(Collections.emptyMap(), false));
+				_getPIMConnectorDisplay(Collections.emptyMap(), false, true));
 
 		Assert.assertEquals(dropdownItems.toString(), 1, dropdownItems.size());
 
@@ -156,11 +179,13 @@ public class PIMConnectorFDSActionProviderTest {
 	}
 
 	private PIMConnectorDisplay _getPIMConnectorDisplay(
-		Map<String, Map<String, String>> actions, boolean active) {
+		Map<String, Map<String, String>> actions, boolean active,
+		boolean mappingComplete) {
 
 		return new PIMConnectorDisplay(
 			actions, active, null, _OBJECT_ENTRY_ID, "liferay-commerce",
-			"never-executed", null, RandomTestUtil.randomString());
+			"never-executed", null, mappingComplete,
+			RandomTestUtil.randomString());
 	}
 
 	private static final long _GROUP_ID = RandomTestUtil.randomLong();
