@@ -1,0 +1,32 @@
+{
+	"concurrencyPolicy": "Forbid",
+	"cpu": 1,
+	"env": {
+		"JAVA_VERSION": "zulu21",
+		"LIFERAY_JAR_RUNNER_JAVA_OPTS": "-Xmx256m",
+		"LIFERAY_LEARN_ETC_CRON_EXPECTED_SCOPES": "c_article.everything,c_attachment.everything,c_p2s3badge.everything.read,c_p2s3course.everything,c_p2s3enrollment.everything,c_p2s3externalmedia.everything,c_p2s3learningpath.everything,c_p2s3learningpathstep.everything,c_p2s3lesson.everything,c_p2s3module.everything,c_p2s3examresult.everything,c_p2s3examresultssynchronization.everything,c_p2s3quiz.everything,c_p2s3quizanswer.everything.read,c_p2s3quizquestion.everything.read,c_p2s3quizresult.everything,c_p2s3userbadge.everything,Liferay.Headless.Admin.User.everything,Liferay.Object.Admin.REST.everything.read",
+		"LIFERAY_LEARN_ETC_CRON_LCP_PASSWORD": "@lcp-reconciler-password",
+		"LIFERAY_LEARN_ETC_CRON_LCP_PROJECT_ID": "exte5a2learn-extdev",
+		"LIFERAY_LEARN_ETC_CRON_LIFERAY_URL": "https://learn-dev.liferay.com",
+		"LIFERAY_LEARN_ETC_CRON_OAUTH_APPLICATION_ERC": "liferay-learn-etc-spring-boot-oahs",
+		"LIFERAY_LEARN_ETC_CRON_TARGET_SERVICE_ID": "liferaylearnetcspringboot",
+		"LIFERAY_ROUTES_CLIENT_EXTENSION": "/etc/liferay/lxc/ext-init-metadata",
+		"LIFERAY_ROUTES_DXP": "/etc/liferay/lxc/dxp-metadata"
+	},
+	"environments": {
+		"extprd": {
+			"env": {
+				"LIFERAY_LEARN_ETC_CRON_LCP_PROJECT_ID": "exte5a2learn-extprd",
+				"LIFERAY_LEARN_ETC_CRON_LIFERAY_URL": "https://learn.liferay.com"
+			}
+		},
+		"infra": {
+			"deploy": false
+		}
+	},
+	"id": "__PROJECT_ID__",
+	"kind": "CronJob",
+	"memory": 512,
+	"scale": 1,
+	"schedule": "*/15 * * * *"
+}
