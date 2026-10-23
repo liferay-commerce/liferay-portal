@@ -284,6 +284,97 @@ test(
 );
 
 test(
+	'Add price entries from several price lists to a SKU',
+	{tag: ['@COMMERCE-11084', '@LPD-110416']},
+	async ({
+		apiHelpers,
+		commerceAdminProductDetailsPage,
+		commerceAdminProductDetailsSkusPage,
+		commerceAdminProductPage,
+	}) => {
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+			});
+
+		const productSkus = await apiHelpers.headlessCommerceAdminCatalog
+			.getProduct(product.productId)
+			.then((product) => {
+				return product.skus;
+			});
+
+		const priceList1 =
+			await apiHelpers.headlessCommerceAdminPricing.postPriceList({
+				catalogId: catalog.id,
+				currencyCode: 'USD',
+				name: getRandomString(),
+				type: 'price-list',
+			});
+		const priceList2 =
+			await apiHelpers.headlessCommerceAdminPricing.postPriceList({
+				catalogId: catalog.id,
+				currencyCode: 'USD',
+				name: getRandomString(),
+				type: 'price-list',
+			});
+
+		// Open the add price dialog
+
+		await commerceAdminProductPage.gotoProduct(product.name['en_US']);
+
+		await commerceAdminProductDetailsPage.goToProductSkus();
+
+		await commerceAdminProductDetailsSkusPage
+			.skusTableRowLink(`${productSkus[0].sku}`)
+			.click();
+		await commerceAdminProductDetailsSkusPage.goToSkuTab('Price');
+		await commerceAdminProductDetailsSkusPage.skuPriceAddButton.click();
+
+		// Add a price entry for each price list
+
+		await commerceAdminProductDetailsSkusPage.skuPriceListSelect
+			.nth(0)
+			.selectOption(priceList1.name);
+		await commerceAdminProductDetailsSkusPage.skuPriceAddModalUnitPriceInput
+			.nth(0)
+			.fill('10');
+
+		await commerceAdminProductDetailsSkusPage.skuPriceAddModal
+			.getByRole('button', {exact: true, name: 'Add Entry'})
+			.click();
+
+		await commerceAdminProductDetailsSkusPage.skuPriceListSelect
+			.nth(1)
+			.selectOption(priceList2.name);
+		await commerceAdminProductDetailsSkusPage.skuPriceAddModalUnitPriceInput
+			.nth(1)
+			.fill('20');
+
+		await commerceAdminProductDetailsSkusPage.skuPriceAddModalAddButton.click();
+
+		// Check the dialog closes and the list refreshes
+
+		await expect(
+			commerceAdminProductDetailsSkusPage.skuPriceAddModalUnitPriceInput.first()
+		).toBeHidden();
+
+		await expect(
+			commerceAdminProductDetailsSkusPage.sidePanelFrame
+				.getByRole('row')
+				.filter({hasText: priceList1.name})
+		).toContainText('$ 10.00');
+		await expect(
+			commerceAdminProductDetailsSkusPage.sidePanelFrame
+				.getByRole('row')
+				.filter({hasText: priceList2.name})
+		).toContainText('$ 20.00');
+	}
+);
+
+test(
 	'Product name should be created for both user language and instance language',
 	{tag: '@LPD-64086'},
 	async ({apiHelpers, commerceAdminProductPage, page}) => {
