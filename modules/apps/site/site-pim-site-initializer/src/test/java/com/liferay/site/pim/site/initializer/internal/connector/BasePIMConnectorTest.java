@@ -195,7 +195,7 @@ public class BasePIMConnectorTest {
 
 		Map<String, Serializable> settings =
 			HashMapBuilder.<String, Serializable>put(
-				"url", "https://commerce.example.com"
+				"url", RandomTestUtil.randomString()
 			).build();
 
 		_mockSettingsObjectEntry(settings);
