@@ -33,8 +33,9 @@ public class PIMConnectorDispatchTriggerUtil {
 
 		DispatchTrigger dispatchTrigger =
 			DispatchTriggerLocalServiceUtil.addDispatchTrigger(
-				_getExternalReferenceCode(objectEntry), objectEntry.getUserId(),
-				PIMConnectorDispatchTaskExecutor.KEY,
+				_getExternalReferenceCode(
+					objectEntry.getExternalReferenceCode()),
+				objectEntry.getUserId(), PIMConnectorDispatchTaskExecutor.KEY,
 				UnicodePropertiesBuilder.put(
 					"pimConnectorObjectEntryId", objectEntry.getObjectEntryId()
 				).build(),
@@ -63,7 +64,8 @@ public class PIMConnectorDispatchTriggerUtil {
 		DispatchTrigger dispatchTrigger =
 			DispatchTriggerLocalServiceUtil.
 				fetchDispatchTriggerByExternalReferenceCode(
-					_getExternalReferenceCode(objectEntry),
+					_getExternalReferenceCode(
+						objectEntry.getExternalReferenceCode()),
 					objectEntry.getCompanyId());
 
 		if (dispatchTrigger != null) {
@@ -72,12 +74,22 @@ public class PIMConnectorDispatchTriggerUtil {
 		}
 	}
 
+	public static DispatchTrigger fetchDispatchTrigger(
+		long companyId, String objectEntryExternalReferenceCode) {
+
+		return DispatchTriggerLocalServiceUtil.
+			fetchDispatchTriggerByExternalReferenceCode(
+				_getExternalReferenceCode(objectEntryExternalReferenceCode),
+				companyId);
+	}
+
 	public static DispatchTrigger getDispatchTrigger(ObjectEntry objectEntry)
 		throws PortalException {
 
 		return DispatchTriggerLocalServiceUtil.
 			getDispatchTriggerByExternalReferenceCode(
-				_getExternalReferenceCode(objectEntry),
+				_getExternalReferenceCode(
+					objectEntry.getExternalReferenceCode()),
 				objectEntry.getCompanyId());
 	}
 
@@ -137,8 +149,10 @@ public class PIMConnectorDispatchTriggerUtil {
 		return calendar;
 	}
 
-	private static String _getExternalReferenceCode(ObjectEntry objectEntry) {
-		return "L_PIM_CONNECTOR_" + objectEntry.getExternalReferenceCode();
+	private static String _getExternalReferenceCode(
+		String objectEntryExternalReferenceCode) {
+
+		return "L_PIM_CONNECTOR_" + objectEntryExternalReferenceCode;
 	}
 
 	private static String _getName(ObjectEntry objectEntry) {

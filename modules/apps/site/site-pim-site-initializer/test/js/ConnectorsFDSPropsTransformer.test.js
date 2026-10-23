@@ -12,10 +12,6 @@ jest.mock('@liferay/frontend-data-set-web', () => ({
 jest.mock('@liferay/site-cms-site-initializer', () => ({
 	confirmAndDeleteEntryAction: (...args) =>
 		mockConfirmAndDeleteEntryAction(...args),
-	styleDeleteAction: (action) =>
-		action?.data?.id === 'delete'
-			? {...action, className: 'text-danger'}
-			: action,
 }));
 
 jest.mock('frontend-js-web', () => ({
@@ -31,16 +27,15 @@ describe('ConnectorsFDSPropsTransformer', () => {
 		jest.clearAllMocks();
 	});
 
-	it('marks the delete action as text-danger and leaves the other actions unchanged', () => {
-		const result = propsTransformer({
-			itemsActions: [
-				{data: {id: 'edit'}, icon: 'pencil'},
-				{data: {id: 'delete'}, icon: 'trash'},
-			],
-		});
+	it('registers the connector cell renderers', () => {
+		const result = propsTransformer({});
 
-		expect(result.itemsActions[0].className).toBeUndefined();
-		expect(result.itemsActions[1].className).toBe('text-danger');
+		expect(result.customRenderers.tableCell.map(({name}) => name)).toEqual([
+			'nameTableCellRenderer',
+			'statusTableCellRenderer',
+			'mappingStatusTableCellRenderer',
+			'lastExecutionTableCellRenderer',
+		]);
 	});
 
 	it('confirms a delete through the modal rather than the browser dialog', () => {
@@ -83,12 +78,10 @@ describe('ConnectorsFDSPropsTransformer', () => {
 
 	it('forces hideManagementBarInEmptyState to true and preserves the other props', () => {
 		const result = propsTransformer({
-			apiURL: '/o/c/pimconnectors',
 			hideManagementBarInEmptyState: false,
 			id: 'connectors',
 		});
 
-		expect(result.apiURL).toBe('/o/c/pimconnectors');
 		expect(result.hideManagementBarInEmptyState).toBe(true);
 		expect(result.id).toBe('connectors');
 	});

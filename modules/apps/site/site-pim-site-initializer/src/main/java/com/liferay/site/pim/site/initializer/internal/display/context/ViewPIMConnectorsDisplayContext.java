@@ -5,22 +5,18 @@
 
 package com.liferay.site.pim.site.initializer.internal.display.context;
 
-import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
-import com.liferay.frontend.data.set.model.FDSActionDropdownItemBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
-import com.liferay.object.model.ObjectDefinition;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.pim.site.initializer.internal.util.PIMURLUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,22 +26,28 @@ import java.util.Map;
 public class ViewPIMConnectorsDisplayContext {
 
 	public ViewPIMConnectorsDisplayContext(
-		HttpServletRequest httpServletRequest,
-		ObjectDefinition objectDefinition) {
+		HttpServletRequest httpServletRequest) {
 
 		_httpServletRequest = httpServletRequest;
-		_objectDefinition = objectDefinition;
 
 		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 	}
 
-	public String getAPIURL() {
-		if (_objectDefinition == null) {
-			return StringPool.BLANK;
-		}
-
-		return "/o" + _objectDefinition.getRESTContextPath();
+	public Map<String, String> getContextParams() {
+		return HashMapBuilder.put(
+			"editConnectorURL",
+			URLCodec.encodeURL(
+				PIMURLUtil.getEditConnectorURL("{id}", _themeDisplay))
+		).put(
+			"fieldMappingsURL",
+			URLCodec.encodeURL(
+				PIMURLUtil.getFieldMappingsURL("{id}", _themeDisplay))
+		).put(
+			"scheduleURL",
+			URLCodec.encodeURL(
+				PIMURLUtil.getConnectorScheduleURL("{id}", _themeDisplay))
+		).build();
 	}
 
 	public CreationMenu getCreationMenu() {
@@ -71,80 +73,7 @@ public class ViewPIMConnectorsDisplayContext {
 		).build();
 	}
 
-	public List<FDSActionDropdownItem> getFDSActionDropdownItems() {
-		return ListUtil.fromArray(
-			FDSActionDropdownItemBuilder.setHref(
-				PIMURLUtil.getFieldMappingsURL("{id}", _themeDisplay)
-			).setIcon(
-				"sheets"
-			).setLabel(
-				LanguageUtil.get(_httpServletRequest, "map-fields")
-			).setMethod(
-				"get"
-			).setPermissionKey(
-				"update"
-			).build(
-				"fieldMappings"
-			),
-			FDSActionDropdownItemBuilder.setHref(
-				PIMURLUtil.getEditConnectorURL("{id}", _themeDisplay)
-			).setIcon(
-				"pencil"
-			).setLabel(
-				LanguageUtil.get(_httpServletRequest, "edit")
-			).setMethod(
-				"get"
-			).setPermissionKey(
-				"update"
-			).build(
-				"edit"
-			),
-			FDSActionDropdownItemBuilder.setHref(
-				PIMURLUtil.getConnectorExecuteURL("{id}")
-			).setIcon(
-				"play"
-			).setLabel(
-				LanguageUtil.get(_httpServletRequest, "execute")
-			).setMethod(
-				"post"
-			).setSuccessMessage(
-				LanguageUtil.get(
-					_httpServletRequest,
-					"execution-has-started-successfully-and-will-continue-in-" +
-						"the-background")
-			).setTarget(
-				"async"
-			).setVisibilityFilters(
-				HashMapBuilder.<String, Object>put(
-					"active", Boolean.TRUE
-				).build()
-			).build(
-				"execute"
-			),
-			FDSActionDropdownItemBuilder.setHref(
-				PIMURLUtil.getConnectorScheduleURL("{id}", _themeDisplay)
-			).setIcon(
-				"date-time"
-			).setLabel(
-				LanguageUtil.get(_httpServletRequest, "schedule")
-			).setMethod(
-				"get"
-			).build(
-				"schedule"
-			),
-			FDSActionDropdownItemBuilder.setIcon(
-				"trash"
-			).setLabel(
-				LanguageUtil.get(_httpServletRequest, "delete")
-			).setPermissionKey(
-				"delete"
-			).build(
-				"delete"
-			));
-	}
-
 	private final HttpServletRequest _httpServletRequest;
-	private final ObjectDefinition _objectDefinition;
 	private final ThemeDisplay _themeDisplay;
 
 }

@@ -6,16 +6,11 @@
 package com.liferay.site.pim.site.initializer.internal.fragment.renderer;
 
 import com.liferay.fragment.renderer.FragmentRenderer;
-import com.liferay.object.service.ObjectDefinitionLocalService;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConstants;
 import com.liferay.site.pim.site.initializer.internal.display.context.ViewPIMConnectorsDisplayContext;
 
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Andrea Sbarra
@@ -33,20 +28,7 @@ public class ViewPIMConnectorsJSPSectionFragmentRenderer
 	protected ViewPIMConnectorsDisplayContext getDisplayContext(
 		HttpServletRequest httpServletRequest) {
 
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
-		return new ViewPIMConnectorsDisplayContext(
-			httpServletRequest,
-			_objectDefinitionLocalService.
-				fetchObjectDefinitionByExternalReferenceCode(
-					PIMObjectDefinitionConstants.
-						EXTERNAL_REFERENCE_CODE_CONNECTOR,
-					themeDisplay.getCompanyId()));
+		return new ViewPIMConnectorsDisplayContext(httpServletRequest);
 	}
-
-	@Reference
-	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 }
