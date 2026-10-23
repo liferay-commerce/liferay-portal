@@ -20,6 +20,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.DuplicateOrganizationException;
+import com.liferay.portal.kernel.exception.GroupFriendlyURLException;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.NoSuchOrganizationException;
 import com.liferay.portal.kernel.exception.OrganizationNameException;
@@ -42,6 +43,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ListTypeLocalService;
 import com.liferay.portal.kernel.service.OrganizationLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -1025,7 +1027,7 @@ public class OrganizationLocalServiceTest {
 		organizationA.setParentOrganizationId(
 			organizationAAAA.getOrganizationId());
 
-		_updateOrganization(organizationA);
+		_updateOrganization(organizationA.getName(), organizationA);
 	}
 
 	@Test
@@ -1087,7 +1089,7 @@ public class OrganizationLocalServiceTest {
 		organizationB.setParentOrganizationId(
 			organizationA.getOrganizationId());
 
-		_updateOrganization(organizationB);
+		_updateOrganization(organizationB.getName(), organizationB);
 
 		organizationBBB = _organizationLocalService.fetchOrganization(
 			organizationBBB.getOrganizationId());
@@ -1102,7 +1104,7 @@ public class OrganizationLocalServiceTest {
 		organizationB.setParentOrganizationId(
 			OrganizationConstants.DEFAULT_PARENT_ORGANIZATION_ID);
 
-		_updateOrganization(organizationB);
+		_updateOrganization(organizationB.getName(), organizationB);
 
 		organizationBBB = _organizationLocalService.fetchOrganization(
 			organizationBBB.getOrganizationId());
@@ -1355,6 +1357,75 @@ public class OrganizationLocalServiceTest {
 	}
 
 	@Test
+	public void testUpdateOrganizationWithFriendlyURLEndingWithDash()
+		throws Exception {
+
+		Organization organization1 = OrganizationTestUtil.addOrganization(
+			OrganizationConstants.DEFAULT_PARENT_ORGANIZATION_ID,
+			RandomTestUtil.randomString(), false);
+
+		Group group = organization1.getGroup();
+
+		String friendlyURL = group.getFriendlyURL();
+
+		group.setFriendlyURL(friendlyURL + StringPool.DASH);
+
+		group = _groupLocalService.updateGroup(group);
+
+		String name = RandomTestUtil.randomString();
+
+		organization1 = _updateOrganization(name, organization1);
+
+		Assert.assertEquals(name, organization1.getName());
+
+		group = _groupLocalService.getGroup(group.getGroupId());
+
+		Assert.assertEquals(friendlyURL, group.getFriendlyURL());
+
+		Organization organization2 = OrganizationTestUtil.addOrganization(
+			OrganizationConstants.DEFAULT_PARENT_ORGANIZATION_ID,
+			RandomTestUtil.randomString(), false);
+
+		group = organization2.getGroup();
+
+		group.setFriendlyURL(friendlyURL + StringPool.DASH);
+
+		_groupLocalService.updateGroup(group);
+
+		try {
+			_updateOrganization(RandomTestUtil.randomString(), organization2);
+
+			Assert.fail();
+		}
+		catch (GroupFriendlyURLException groupFriendlyURLException) {
+			Assert.assertEquals(
+				GroupFriendlyURLException.DUPLICATE,
+				groupFriendlyURLException.getType());
+		}
+
+		Organization organization3 = OrganizationTestUtil.addOrganization(
+			OrganizationConstants.DEFAULT_PARENT_ORGANIZATION_ID,
+			RandomTestUtil.randomString(), true);
+
+		group = organization3.getGroup();
+
+		group.setFriendlyURL(group.getFriendlyURL() + StringPool.DASH);
+
+		_groupLocalService.updateGroup(group);
+
+		try {
+			_updateOrganization(RandomTestUtil.randomString(), organization3);
+
+			Assert.fail();
+		}
+		catch (GroupFriendlyURLException groupFriendlyURLException) {
+			Assert.assertEquals(
+				GroupFriendlyURLException.ENDS_WITH_DASH,
+				groupFriendlyURLException.getType());
+		}
+	}
+
+	@Test
 	public void testUpdateOrganizationWithLazyReferencingEnabled()
 		throws Exception {
 
@@ -1492,14 +1563,15 @@ public class OrganizationLocalServiceTest {
 		}
 	}
 
-	private Organization _updateOrganization(Organization organization)
+	private Organization _updateOrganization(
+			String name, Organization organization)
 		throws Exception {
 
 		Group organizationGroup = organization.getGroup();
 
 		return _organizationLocalService.updateOrganization(
 			null, organization.getCompanyId(), organization.getOrganizationId(),
-			organization.getParentOrganizationId(), organization.getName(),
+			organization.getParentOrganizationId(), name,
 			organization.getType(), organization.getRegionId(),
 			organization.getCountryId(), organization.getStatusListTypeId(),
 			organization.getComments(), false, null, organizationGroup.isSite(),
@@ -1508,6 +1580,9 @@ public class OrganizationLocalServiceTest {
 
 	@Inject
 	private AssetEntryLocalService _assetEntryLocalService;
+
+	@Inject
+	private GroupLocalService _groupLocalService;
 
 	@Inject
 	private ListTypeLocalService _listTypeLocalService;
