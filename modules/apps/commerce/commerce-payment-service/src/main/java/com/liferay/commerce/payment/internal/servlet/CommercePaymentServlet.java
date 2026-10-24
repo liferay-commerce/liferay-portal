@@ -402,6 +402,9 @@ public class CommercePaymentServlet extends HttpServlet {
 						httpServletRequest, commercePaymentEntry));
 		}
 		else {
+			commercePaymentIntegration.validate(
+				httpServletRequest, commercePaymentEntry);
+
 			boolean cancel = ParamUtil.getBoolean(httpServletRequest, "cancel");
 
 			if (cancel) {
@@ -435,12 +438,6 @@ public class CommercePaymentServlet extends HttpServlet {
 
 				_commercePaymentGateway.cancel(
 					httpServletRequest, commercePaymentEntry);
-			}
-
-			String token = ParamUtil.getString(httpServletRequest, "token");
-
-			if (!Validator.isBlank(token)) {
-				commercePaymentEntry.setTransactionCode(token);
 			}
 
 			if (commercePaymentEntry.getPaymentStatus() ==
