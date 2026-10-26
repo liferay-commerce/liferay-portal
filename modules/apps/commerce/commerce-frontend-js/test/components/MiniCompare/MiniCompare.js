@@ -4,11 +4,15 @@
  */
 
 import '@testing-library/jest-dom';
-import {act, render, waitFor} from '@testing-library/react';
+import {act, fireEvent, render, waitFor} from '@testing-library/react';
 import React from 'react';
 
 import MiniCompare from '../../../src/main/resources/META-INF/resources/components/mini_compare/MiniCompare';
-import {TOGGLE_ITEM_IN_PRODUCT_COMPARISON} from '../../../src/main/resources/META-INF/resources/utilities/eventsDefinitions';
+import {
+	ITEM_REMOVED_FROM_COMPARE,
+	PRODUCT_COMPARISON_TOGGLED,
+	TOGGLE_ITEM_IN_PRODUCT_COMPARISON,
+} from '../../../src/main/resources/META-INF/resources/utilities/eventsDefinitions';
 
 const PRODUCT_COMPARISON_COOKIES_TITLE_KEY = 'product-comparison-cookies-title';
 const PRODUCT_COMPARISON_COOKIES_ALERT_KEY = 'product-comparison-cookies-alert';
@@ -282,5 +286,79 @@ describe('MiniCompare', () => {
 		expect(
 			container.querySelectorAll('.mini-compare-item.active')
 		).toHaveLength(1);
+	});
+
+	it('renders as many slots as the items limit and disables the product comparison when the compare bar reaches it', () => {
+		mockGetCookie.mockReturnValue('1:2');
+		mockCheckConsent.mockReturnValue(true);
+
+		let toggleItemTrigger;
+
+		window.Liferay.on = jest.fn((eventName, callback) => {
+			if (eventName === TOGGLE_ITEM_IN_PRODUCT_COMPARISON) {
+				toggleItemTrigger = callback;
+			}
+		});
+
+		const {container} = render(
+			<MiniCompare
+				{...BASE_PROPS}
+				items={[
+					{id: '1', thumbnail: 'thumb1.png'},
+					{id: '2', thumbnail: 'thumb2.png'},
+				]}
+				itemsLimit={3}
+			/>
+		);
+
+		expect(container.querySelectorAll('.mini-compare-item')).toHaveLength(
+			3
+		);
+		expect(window.Liferay.fire).toHaveBeenLastCalledWith(
+			PRODUCT_COMPARISON_TOGGLED,
+			{disabled: false}
+		);
+
+		act(() => {
+			toggleItemTrigger({id: '3', thumbnail: 'thumb3.png'});
+		});
+
+		expect(window.Liferay.fire).toHaveBeenLastCalledWith(
+			PRODUCT_COMPARISON_TOGGLED,
+			{disabled: true}
+		);
+	});
+
+	it('removes the product from the compare bar and the compare cookie when its delete button is clicked', () => {
+		mockGetCookie.mockReturnValue('1:2');
+		mockCheckConsent.mockReturnValue(true);
+
+		const {container, getAllByRole} = render(
+			<MiniCompare
+				{...BASE_PROPS}
+				items={[
+					{id: '1', thumbnail: 'thumb1.png'},
+					{id: '2', thumbnail: 'thumb2.png'},
+				]}
+			/>
+		);
+
+		act(() => {
+			fireEvent.click(getAllByRole('button', {name: 'delete-item'})[0]);
+		});
+
+		expect(
+			container.querySelectorAll('.mini-compare-item.active')
+		).toHaveLength(1);
+		expect(mockSetCookie).toHaveBeenCalledWith(
+			`COMMERCE_COMPARE_cpDefinitionIds_${BASE_PROPS.commerceChannelGroupId}`,
+			'2',
+			'CONSENT_TYPE_FUNCTIONAL',
+			{path: '/'}
+		);
+		expect(window.Liferay.fire).toHaveBeenCalledWith(
+			ITEM_REMOVED_FROM_COMPARE,
+			{id: '1', thumbnail: 'thumb1.png'}
+		);
 	});
 });
