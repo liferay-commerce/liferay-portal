@@ -554,11 +554,10 @@ public class RoleResourceImpl
 			}
 
 			String resourceName =
-				ObjectDefinitionResourceNameUtil.
-					toObjectDefinitionIdResourceName(
-						rolePermission.getResourceName(),
-						contextCompany.getCompanyId(),
-						_objectDefinitionLocalService);
+				ObjectDefinitionResourceNameUtil.toLocalResourceName(
+					contextCompany.getCompanyId(),
+					_objectDefinitionLocalService,
+					rolePermission.getResourceName());
 
 			for (String actionId : rolePermission.getActionIds()) {
 				try {
