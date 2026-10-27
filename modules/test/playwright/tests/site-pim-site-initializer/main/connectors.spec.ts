@@ -104,7 +104,10 @@ test(
 				await connectorsPage.getConnector(connectorName).click();
 
 				for (const {channelField, sourceAttribute, value} of [
-					{channelField: 'Catalog ID', value: '1'},
+					{
+						channelField: 'Catalog External Reference Code',
+						value: getRandomString(),
+					},
 					{channelField: 'Name', sourceAttribute: 'Title (title)'},
 					{channelField: 'Product Type', value: 'simple'},
 					{channelField: 'SKU', sourceAttribute: 'SKU (sku)'},
@@ -132,13 +135,17 @@ test(
 				await fieldMappingsPage.executeConnector();
 			});
 
-			await test.step('The job log holds the products JSON', async () => {
+			await test.step('The job log holds the requests sent to the remote instance', async () => {
 				await fieldMappingsPage.openConnectorSchedule();
 
-				await connectorSchedulePage.openLatestSuccessfulLog();
+				await connectorSchedulePage.openLatestLog('Failed');
 
-				await expect(connectorSchedulePage.logOutput).toHaveText(/^\[/);
-				await expect(connectorSchedulePage.logError).toBeHidden();
+				await expect(connectorSchedulePage.logError).toHaveText(
+					'Unable to connect to the remote instance.'
+				);
+				await expect(connectorSchedulePage.logOutput).toContainText(
+					'http://localhost:1/o/oauth2/token'
+				);
 			});
 		}
 		finally {
