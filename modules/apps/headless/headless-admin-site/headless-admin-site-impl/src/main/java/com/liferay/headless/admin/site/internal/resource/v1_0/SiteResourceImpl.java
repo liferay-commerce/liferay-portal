@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
+import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -131,6 +132,24 @@ public class SiteResourceImpl
 		}
 
 		_groupService.deleteGroup(group.getGroupId());
+	}
+
+	@Override
+	public Page<Site> getAllSitesPage(
+			Boolean active, String[] excludedExternalReferenceCodes,
+			String[] externalReferenceCodes, String search,
+			Pagination pagination)
+		throws Exception {
+
+		long[] classNameIds = {
+			_portal.getClassNameId(Company.class.getName()),
+			_portal.getClassNameId(Group.class.getName()),
+			_portal.getClassNameId(Organization.class.getName())
+		};
+
+		return _getSitesPage(
+			active, classNameIds, excludedExternalReferenceCodes,
+			externalReferenceCodes, pagination, search);
 	}
 
 	@Override
@@ -416,60 +435,9 @@ public class SiteResourceImpl
 			_portal.getClassNameId(Group.class.getName())
 		};
 
-		List<Group> groups = _groupService.search(
-			contextCompany.getCompanyId(), classNameIds, search, null,
-			LinkedHashMapBuilder.<String, Object>put(
-				"active",
-				() -> {
-					if (active != null) {
-						return GetterUtil.getBoolean(active);
-					}
-
-					return null;
-				}
-			).put(
-				"site", true
-			).build(),
-			true, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-			new GroupNameComparator());
-
-		if (ArrayUtil.isNotEmpty(externalReferenceCodes)) {
-			groups = ListUtil.filter(
-				groups,
-				group -> ArrayUtil.contains(
-					externalReferenceCodes, group.getExternalReferenceCode()));
-		}
-
-		if (ArrayUtil.isNotEmpty(excludedExternalReferenceCodes)) {
-			groups = ListUtil.filter(
-				groups,
-				group -> !ArrayUtil.contains(
-					excludedExternalReferenceCodes,
-					group.getExternalReferenceCode()));
-		}
-
-		return Page.of(
-			HashMapBuilder.put(
-				"create",
-				addAction(
-					ActionKeys.UPDATE, "postSite", Group.class.getName(), null)
-			).put(
-				"createBatch",
-				addAction(
-					ActionKeys.UPDATE, "postSiteBatch", Group.class.getName(),
-					null)
-			).put(
-				"deleteBatch",
-				addAction(
-					ActionKeys.DELETE, "deleteSiteBatch", Group.class.getName(),
-					null)
-			).build(),
-			transform(
-				ListUtil.subList(
-					groups, pagination.getStartPosition(),
-					pagination.getEndPosition()),
-				this::_toSite),
-			pagination, groups.size());
+		return _getSitesPage(
+			active, classNameIds, excludedExternalReferenceCodes,
+			externalReferenceCodes, pagination, search);
 	}
 
 	@Override
@@ -883,6 +851,69 @@ public class SiteResourceImpl
 		_initThemeDisplay();
 
 		return serviceContext;
+	}
+
+	private Page<Site> _getSitesPage(
+			Boolean active, long[] classNameIds,
+			String[] excludedExternalReferenceCodes,
+			String[] externalReferenceCodes, Pagination pagination,
+			String search)
+		throws Exception {
+
+		List<Group> groups = _groupService.search(
+			contextCompany.getCompanyId(), classNameIds, search, null,
+			LinkedHashMapBuilder.<String, Object>put(
+				"active",
+				() -> {
+					if (active != null) {
+						return GetterUtil.getBoolean(active);
+					}
+
+					return null;
+				}
+			).put(
+				"site", true
+			).build(),
+			true, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			new GroupNameComparator());
+
+		if (ArrayUtil.isNotEmpty(externalReferenceCodes)) {
+			groups = ListUtil.filter(
+				groups,
+				group -> ArrayUtil.contains(
+					externalReferenceCodes, group.getExternalReferenceCode()));
+		}
+
+		if (ArrayUtil.isNotEmpty(excludedExternalReferenceCodes)) {
+			groups = ListUtil.filter(
+				groups,
+				group -> !ArrayUtil.contains(
+					excludedExternalReferenceCodes,
+					group.getExternalReferenceCode()));
+		}
+
+		return Page.of(
+			HashMapBuilder.put(
+				"create",
+				addAction(
+					ActionKeys.UPDATE, "postSite", Group.class.getName(), null)
+			).put(
+				"createBatch",
+				addAction(
+					ActionKeys.UPDATE, "postSiteBatch", Group.class.getName(),
+					null)
+			).put(
+				"deleteBatch",
+				addAction(
+					ActionKeys.DELETE, "deleteSiteBatch", Group.class.getName(),
+					null)
+			).build(),
+			transform(
+				ListUtil.subList(
+					groups, pagination.getStartPosition(),
+					pagination.getEndPosition()),
+				this::_toSite),
+			pagination, groups.size());
 	}
 
 	private int _getType(Site.MembershipType membershipType) {
