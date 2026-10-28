@@ -11019,6 +11019,56 @@ paths:
                         application/json: {}
                         application/xml: {}
             tags: ["UtilityPage"]
+    /all-sites:
+        get:
+            description:
+                Retrieves the sites, including organization sites. Results can be paginated and searched.
+            operationId: getAllSitesPage
+            parameters:
+                -   in: query
+                    name: active
+                    schema:
+                        type: boolean
+                -   in: query
+                    name: excludedExternalReferenceCodes
+                    schema:
+                        items:
+                            type: string
+                        type: array
+                -   in: query
+                    name: externalReferenceCodes
+                    schema:
+                        items:
+                            type: string
+                        type: array
+                -   in: query
+                    name: page
+                    schema:
+                        type: integer
+                -   in: query
+                    name: pageSize
+                    schema:
+                        type: integer
+                -   in: query
+                    name: search
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/Site"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/Site"
+                                type: array
+                    description:
+                        default response
+            tags: ["Site"]
     /site-templates:
         get:
             description:
