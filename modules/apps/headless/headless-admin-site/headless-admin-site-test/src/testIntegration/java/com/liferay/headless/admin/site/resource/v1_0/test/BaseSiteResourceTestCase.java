@@ -293,6 +293,116 @@ public abstract class BaseSiteResourceTestCase {
 	}
 
 	@Test
+	public void testGetAllSitesPage() throws Exception {
+		Page<Site> page = siteResource.getAllSitesPage(
+			null, null, null, null, Pagination.of(1, 10));
+
+		long totalCount = page.getTotalCount();
+
+		Site site1 = testGetAllSitesPage_addSite(randomSite());
+
+		Site site2 = testGetAllSitesPage_addSite(randomSite());
+
+		page = siteResource.getAllSitesPage(
+			null, null, null, null, Pagination.of(1, (int)totalCount + 2));
+
+		Assert.assertEquals(totalCount + 2, page.getTotalCount());
+
+		assertContains(site1, (List<Site>)page.getItems());
+		assertContains(site2, (List<Site>)page.getItems());
+		assertValid(page, testGetAllSitesPage_getExpectedActions());
+
+		siteResource.deleteSite(site1.getExternalReferenceCode());
+
+		siteResource.deleteSite(site2.getExternalReferenceCode());
+	}
+
+	protected Map<String, Map<String, String>>
+			testGetAllSitesPage_getExpectedActions()
+		throws Exception {
+
+		Map<String, Map<String, String>> expectedActions = new HashMap<>();
+
+		return expectedActions;
+	}
+
+	@Test
+	public void testGetAllSitesPageWithPagination() throws Exception {
+		Page<Site> sitesPage = siteResource.getAllSitesPage(
+			null, null, null, null, null);
+
+		int totalCount = GetterUtil.getInteger(sitesPage.getTotalCount());
+
+		Site site1 = testGetAllSitesPage_addSite(randomSite());
+
+		Site site2 = testGetAllSitesPage_addSite(randomSite());
+
+		Site site3 = testGetAllSitesPage_addSite(randomSite());
+
+		// See com.liferay.portal.vulcan.internal.configuration.HeadlessAPICompanyConfiguration#pageSizeLimit
+
+		int pageSizeLimit = 500;
+
+		if (totalCount >= (pageSizeLimit - 2)) {
+			Page<Site> page1 = siteResource.getAllSitesPage(
+				null, null, null, null,
+				Pagination.of(
+					(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
+					pageSizeLimit));
+
+			Assert.assertEquals(totalCount + 3, page1.getTotalCount());
+
+			assertContains(site1, (List<Site>)page1.getItems());
+
+			Page<Site> page2 = siteResource.getAllSitesPage(
+				null, null, null, null,
+				Pagination.of(
+					(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
+					pageSizeLimit));
+
+			assertContains(site2, (List<Site>)page2.getItems());
+
+			Page<Site> page3 = siteResource.getAllSitesPage(
+				null, null, null, null,
+				Pagination.of(
+					(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
+					pageSizeLimit));
+
+			assertContains(site3, (List<Site>)page3.getItems());
+		}
+		else {
+			Page<Site> page1 = siteResource.getAllSitesPage(
+				null, null, null, null, Pagination.of(1, totalCount + 2));
+
+			List<Site> sites1 = (List<Site>)page1.getItems();
+
+			Assert.assertEquals(
+				sites1.toString(), totalCount + 2, sites1.size());
+
+			Page<Site> page2 = siteResource.getAllSitesPage(
+				null, null, null, null, Pagination.of(2, totalCount + 2));
+
+			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
+
+			List<Site> sites2 = (List<Site>)page2.getItems();
+
+			Assert.assertEquals(sites2.toString(), 1, sites2.size());
+
+			Page<Site> page3 = siteResource.getAllSitesPage(
+				null, null, null, null, Pagination.of(1, (int)totalCount + 3));
+
+			assertContains(site1, (List<Site>)page3.getItems());
+			assertContains(site2, (List<Site>)page3.getItems());
+			assertContains(site3, (List<Site>)page3.getItems());
+		}
+	}
+
+	protected Site testGetAllSitesPage_addSite(Site site) throws Exception {
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
 	public void testGetSite() throws Exception {
 		Site postSite = testGetSite_addSite();
 
@@ -2556,4 +2666,4 @@ public abstract class BaseSiteResourceTestCase {
 		_siteResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1554261833
+// LIFERAY-REST-BUILDER-HASH:412550321

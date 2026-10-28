@@ -52,6 +52,12 @@ public interface SiteResource {
 	public Response deleteSiteBatch(String callbackURL, Object object)
 		throws Exception;
 
+	public Page<Site> getAllSitesPage(
+			Boolean active, String[] excludedExternalReferenceCodes,
+			String[] externalReferenceCodes, String search,
+			Pagination pagination)
+		throws Exception;
+
 	public Site getSite(String siteExternalReferenceCode) throws Exception;
 
 	public Page<com.liferay.portal.vulcan.permission.Permission>
@@ -200,4 +206,4 @@ public interface SiteResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-51703399
+// LIFERAY-REST-BUILDER-HASH:1382443770
