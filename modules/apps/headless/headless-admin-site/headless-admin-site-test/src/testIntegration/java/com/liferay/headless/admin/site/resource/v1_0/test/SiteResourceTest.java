@@ -28,6 +28,7 @@ import com.liferay.headless.admin.site.client.pagination.Pagination;
 import com.liferay.headless.admin.site.client.problem.Problem;
 import com.liferay.headless.admin.site.client.resource.v1_0.SiteResource;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -38,6 +39,7 @@ import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
+import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
@@ -54,6 +56,7 @@ import com.liferay.portal.kernel.test.constants.TestDataConstants;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
+import com.liferay.portal.kernel.test.util.OrganizationTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -169,6 +172,14 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 			Assert.assertEquals("NOT_FOUND", problem.getStatus());
 			Assert.assertNull(problem.getTitle());
 		}
+	}
+
+	@Override
+	@Test
+	public void testGetAllSitesPage() throws Exception {
+		super.testGetAllSitesPage();
+
+		_testGetAllSitesPageWithOrganizationSite();
 	}
 
 	@Override
@@ -334,6 +345,11 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 	@Override
 	protected Site testDeleteSite_addSite() throws Exception {
 		return testPutSiteSiteInitializer_addSite();
+	}
+
+	@Override
+	protected Site testGetAllSitesPage_addSite(Site site) throws Exception {
+		return testPostSite_addSite(site);
 	}
 
 	@Override
@@ -565,6 +581,30 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 								new String[] {Boolean.TRUE.toString()}
 							).build())),
 			larFile);
+	}
+
+	private void _testGetAllSitesPageWithOrganizationSite() throws Exception {
+		_organization = OrganizationTestUtil.addOrganization(true);
+
+		Page<Site> sitesPage = siteResource.getAllSitesPage(
+			null, null, null, null, Pagination.of(1, 100));
+
+		List<String> externalReferenceCodes = TransformUtil.transform(
+			sitesPage.getItems(), Site::getExternalReferenceCode);
+
+		Group group = _organization.getGroup();
+
+		Assert.assertTrue(
+			externalReferenceCodes.contains(group.getExternalReferenceCode()));
+
+		sitesPage = siteResource.getSitesPage(
+			null, null, null, null, Pagination.of(1, 100));
+
+		externalReferenceCodes = TransformUtil.transform(
+			sitesPage.getItems(), Site::getExternalReferenceCode);
+
+		Assert.assertFalse(
+			externalReferenceCodes.contains(group.getExternalReferenceCode()));
 	}
 
 	private void _testGetSiteWithDollar() throws Exception {
@@ -2065,6 +2105,9 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 
 	@Inject
 	private LayoutSetPrototypeLocalService _layoutSetPrototypeLocalService;
+
+	@DeleteAfterTestRun
+	private Organization _organization;
 
 	@Inject
 	private RoleLocalService _roleLocalService;
