@@ -522,3 +522,39 @@ test(
 		}
 	}
 );
+
+test(
+	'A reviewer can see the details of a pending product relation in its workflow task',
+	{tag: ['@COMMERCE-12048', '@LPD-112652']},
+	async ({apiHelpers, workflowTaskDetailsPage}) => {
+		const catalog = await postSingleApproverCatalog(apiHelpers);
+
+		const relatedProduct =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+			});
+		const sourceProduct =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+			});
+
+		const productRelatedProduct =
+			await apiHelpers.headlessCommerceAdminCatalog.postProductRelatedProduct(
+				sourceProduct.productId,
+				{productId: relatedProduct.productId, type: 'up-sell'}
+			);
+
+		const workflowTask = await waitForWorkflowTask(
+			apiHelpers,
+			productRelatedProduct.id,
+			'review'
+		);
+
+		await workflowTaskDetailsPage.goToWorkflowTask(workflowTask.id);
+
+		const row = workflowTaskDetailsPage.row(relatedProduct.name.en_US);
+
+		await expect(row).toContainText('Up-Sell');
+		await expect(row).toContainText('Pending');
+	}
+);

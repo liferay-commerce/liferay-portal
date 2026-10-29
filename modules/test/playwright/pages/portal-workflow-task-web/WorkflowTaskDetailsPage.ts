@@ -5,6 +5,7 @@
 
 import {FrameLocator, Locator, Page} from '@playwright/test';
 
+import {PORTLET_URLS} from '../../utils/portletUrls';
 import {waitForAlert} from '../../utils/waitForAlert';
 import {WorkflowTasksPage} from './WorkflowTasksPage';
 
@@ -31,6 +32,7 @@ export class WorkflowTaskDetailsPage {
 	readonly replyButton: Locator;
 	readonly reviewActionMenu: Locator;
 	readonly reviewComment: Locator;
+	readonly row: (text: string) => Locator;
 	readonly subscribeButton: Locator;
 	readonly viewButton: Locator;
 	readonly workflowTasksPage: WorkflowTasksPage;
@@ -68,6 +70,8 @@ export class WorkflowTaskDetailsPage {
 			name: 'Open Actions Menu',
 		});
 		this.reviewComment = page.getByRole('textbox', {name: 'Comment'});
+		this.row = (text: string) =>
+			page.getByRole('row').filter({hasText: text});
 		this.subscribeButton = page.getByLabel('Subscribe to Comments');
 		this.commentsTextbox = page.frameLocator('iframe').getByRole('textbox');
 		this.viewButton = page.getByRole('button', {name: 'View'});
@@ -95,6 +99,12 @@ export class WorkflowTaskDetailsPage {
 		await this.selectAsset(assetTitle, taskName);
 	}
 
+	async goToWorkflowTask(workflowTaskId: number) {
+		await this.page.goto(
+			`/group/guest${PORTLET_URLS.myWorkflowTasks}&${this.portletNameSpace}mvcPath=/edit_workflow_task.jsp&${this.portletNameSpace}workflowTaskId=${workflowTaskId}`
+		);
+	}
+
 	async selectAsset(assetText: string, taskName?: string) {
 		await this._getRow(assetText, taskName)
 			.locator('.lfr-asset-title-column')
@@ -113,7 +123,7 @@ export class WorkflowTaskDetailsPage {
 	}
 
 	private _getRow(assetText: string, taskName?: string) {
-		const row = this.page.getByRole('row').filter({hasText: assetText});
+		const row = this.row(assetText);
 
 		return taskName ? row.filter({hasText: taskName}) : row;
 	}
