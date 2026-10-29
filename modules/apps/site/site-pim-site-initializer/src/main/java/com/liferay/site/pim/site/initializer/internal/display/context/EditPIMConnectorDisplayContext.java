@@ -64,7 +64,8 @@ public class EditPIMConnectorDisplayContext {
 	}
 
 	public Map<String, Object> getReactData() throws Exception {
-		ObjectEntry objectEntry = _getObjectEntry();
+		ObjectEntry objectEntry = _objectEntryLocalService.fetchObjectEntry(
+			_objectEntryId);
 
 		return HashMapBuilder.<String, Object>put(
 			"apiURL", _getAPIURL()
@@ -108,14 +109,6 @@ public class EditPIMConnectorDisplayContext {
 		return "/o" + _objectDefinition.getRESTContextPath();
 	}
 
-	private ObjectEntry _getObjectEntry() {
-		if (_objectEntryId == 0) {
-			return null;
-		}
-
-		return _objectEntryLocalService.fetchObjectEntry(_objectEntryId);
-	}
-
 	private JSONArray _getOptionsJSONArray(ObjectField objectField)
 		throws Exception {
 
@@ -135,18 +128,6 @@ public class EditPIMConnectorDisplayContext {
 			).put(
 				"value", listTypeEntry.getKey()
 			));
-	}
-
-	private PIMConnector _getPIMConnector(ObjectEntry objectEntry) {
-		String key = MapUtil.getString(objectEntry.getValues(), "key");
-
-		for (PIMConnector pimConnector : _pimConnectors) {
-			if (key.equals(pimConnector.getKey())) {
-				return pimConnector;
-			}
-		}
-
-		return null;
 	}
 
 	private JSONObject _getPIMConnectorJSONObject(ObjectEntry objectEntry) {
@@ -253,9 +234,21 @@ public class EditPIMConnectorDisplayContext {
 			return null;
 		}
 
+		PIMConnector pimConnector = null;
+
+		String key = MapUtil.getString(objectEntry.getValues(), "key");
+
+		for (PIMConnector curPIMConnector : _pimConnectors) {
+			if (key.equals(curPIMConnector.getKey())) {
+				pimConnector = curPIMConnector;
+
+				break;
+			}
+		}
+
 		ObjectEntry settingsObjectEntry =
 			PIMConnectorSettingsUtil.fetchObjectEntry(
-				_getPIMConnector(objectEntry), objectEntry);
+				pimConnector, objectEntry);
 
 		if (settingsObjectEntry == null) {
 			return null;
