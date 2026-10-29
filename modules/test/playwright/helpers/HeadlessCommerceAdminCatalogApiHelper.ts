@@ -432,6 +432,12 @@ export class HeadlessCommerceAdminCatalogApiHelper {
 		);
 	}
 
+	async getProductRelatedProducts(productId: number) {
+		return this.apiHelpers.get(
+			`${this.apiHelpers.baseUrl}${this.basePath}/products/${productId}/relatedProducts`
+		);
+	}
+
 	async getProducts(searchParams = new URLSearchParams()) {
 		if (!searchParams.has('nestedFields')) {
 			searchParams.append('nestedFields', 'skus');
