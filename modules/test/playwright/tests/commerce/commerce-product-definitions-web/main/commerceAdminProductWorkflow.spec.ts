@@ -9,9 +9,9 @@ import {apiHelpersTest} from '../../../../fixtures/apiHelpersTest';
 import {commercePagesTest} from '../../../../fixtures/commercePagesTest';
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../../../fixtures/loginTest';
-import {DataApiHelpers} from '../../../../helpers/ApiHelpers';
 import {CommerceAdminProductDetailsPage} from '../../../../pages/commerce/commerce-product-definitions-web/commerceAdminProductDetailsPage';
 import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
+import {postSingleApproverCatalog} from '../../utils/commerce';
 
 export const test = mergeTests(
 	apiHelpersTest,
@@ -39,35 +39,6 @@ async function duplicateProduct({
 	).toBeVisible();
 }
 
-async function postSingleApproverCatalog(apiHelpers: DataApiHelpers) {
-	const catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
-
-	const company =
-		await apiHelpers.jsonWebServicesCompany.getCompanyByWebId(
-			'liferay.com'
-		);
-
-	const group = await apiHelpers.jsonWebServicesGroup.getGroupByKey(
-		company.companyId,
-		String(catalog.id)
-	);
-
-	const workflowDefinition =
-		await apiHelpers.headlessAdminWorkflow.getWorkflowDefinitionByName(
-			'Single Approver'
-		);
-
-	await apiHelpers.headlessAdminWorkflow.postWorkflowDefinitionLink(
-		CP_DEFINITION_CLASS_NAME,
-		Number(group.groupId),
-		workflowDefinition.id,
-		workflowDefinition.name,
-		Number(workflowDefinition.version)
-	);
-
-	return catalog;
-}
-
 test(
 	'A draft product in a catalog with a workflow can be duplicated but not converted to draft',
 	{tag: ['@COMMERCE-9290', '@LPD-110302']},
@@ -76,7 +47,10 @@ test(
 		commerceAdminProductDetailsPage,
 		commerceAdminProductPage,
 	}) => {
-		const catalog = await postSingleApproverCatalog(apiHelpers);
+		const catalog = await postSingleApproverCatalog(
+			apiHelpers,
+			CP_DEFINITION_CLASS_NAME
+		);
 
 		const product =
 			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
@@ -121,7 +95,10 @@ test(
 		commerceAdminProductPage,
 		page,
 	}) => {
-		const catalog = await postSingleApproverCatalog(apiHelpers);
+		const catalog = await postSingleApproverCatalog(
+			apiHelpers,
+			CP_DEFINITION_CLASS_NAME
+		);
 
 		const product =
 			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
@@ -166,7 +143,10 @@ test(
 		commerceAdminProductPage,
 		page,
 	}) => {
-		const catalog = await postSingleApproverCatalog(apiHelpers);
+		const catalog = await postSingleApproverCatalog(
+			apiHelpers,
+			CP_DEFINITION_CLASS_NAME
+		);
 
 		const product =
 			await apiHelpers.headlessCommerceAdminCatalog.postProduct({

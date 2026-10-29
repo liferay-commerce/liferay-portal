@@ -12,6 +12,7 @@ import {loginTest} from '../../../../fixtures/loginTest';
 import {workflowPagesTest} from '../../../../fixtures/workflowPagesTest';
 import {DataApiHelpers} from '../../../../helpers/ApiHelpers';
 import {getRandomInt} from '../../../../utils/getRandomInt';
+import {postSingleApproverCatalog} from '../../utils/commerce';
 
 export const test = mergeTests(
 	apiHelpersTest,
@@ -23,35 +24,6 @@ export const test = mergeTests(
 
 const CP_DEFINITION_LINK_CLASS_NAME =
 	'com.liferay.commerce.product.model.CPDefinitionLink';
-
-async function postSingleApproverCatalog(apiHelpers: DataApiHelpers) {
-	const catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
-
-	const company =
-		await apiHelpers.jsonWebServicesCompany.getCompanyByWebId(
-			'liferay.com'
-		);
-
-	const group = await apiHelpers.jsonWebServicesGroup.getGroupByKey(
-		company.companyId,
-		String(catalog.id)
-	);
-
-	const workflowDefinition =
-		await apiHelpers.headlessAdminWorkflow.getWorkflowDefinitionByName(
-			'Single Approver'
-		);
-
-	await apiHelpers.headlessAdminWorkflow.postWorkflowDefinitionLink(
-		CP_DEFINITION_LINK_CLASS_NAME,
-		Number(group.groupId),
-		workflowDefinition.id,
-		workflowDefinition.name,
-		Number(workflowDefinition.version)
-	);
-
-	return catalog;
-}
 
 async function waitForWorkflowTask(
 	apiHelpers: DataApiHelpers,
@@ -382,7 +354,10 @@ test(
 
 		await page.goto('/');
 
-		const catalog = await postSingleApproverCatalog(apiHelpers);
+		const catalog = await postSingleApproverCatalog(
+			apiHelpers,
+			CP_DEFINITION_LINK_CLASS_NAME
+		);
 
 		const relatedProduct =
 			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
@@ -527,7 +502,10 @@ test(
 	'A reviewer can see the details of a pending product relation in its workflow task',
 	{tag: ['@COMMERCE-12048', '@LPD-112652']},
 	async ({apiHelpers, workflowTaskDetailsPage}) => {
-		const catalog = await postSingleApproverCatalog(apiHelpers);
+		const catalog = await postSingleApproverCatalog(
+			apiHelpers,
+			CP_DEFINITION_LINK_CLASS_NAME
+		);
 
 		const relatedProduct =
 			await apiHelpers.headlessCommerceAdminCatalog.postProduct({

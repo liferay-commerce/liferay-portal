@@ -1497,3 +1497,35 @@ export async function zeroWarehouseStock(
 		)
 	);
 }
+
+export async function postSingleApproverCatalog(
+	apiHelpers: DataApiHelpers,
+	className: string
+) {
+	const catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+	const company =
+		await apiHelpers.jsonWebServicesCompany.getCompanyByWebId(
+			'liferay.com'
+		);
+
+	const group = await apiHelpers.jsonWebServicesGroup.getGroupByKey(
+		company.companyId,
+		String(catalog.id)
+	);
+
+	const workflowDefinition =
+		await apiHelpers.headlessAdminWorkflow.getWorkflowDefinitionByName(
+			'Single Approver'
+		);
+
+	await apiHelpers.headlessAdminWorkflow.postWorkflowDefinitionLink(
+		className,
+		Number(group.groupId),
+		workflowDefinition.id,
+		workflowDefinition.name,
+		Number(workflowDefinition.version)
+	);
+
+	return catalog;
+}
