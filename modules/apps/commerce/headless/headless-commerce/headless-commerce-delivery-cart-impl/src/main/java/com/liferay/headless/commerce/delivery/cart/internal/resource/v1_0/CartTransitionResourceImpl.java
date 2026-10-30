@@ -15,6 +15,7 @@ import com.liferay.commerce.model.CommerceOrderItemModel;
 import com.liferay.commerce.model.CommerceShippingEngine;
 import com.liferay.commerce.model.CommerceShippingMethod;
 import com.liferay.commerce.model.CommerceShippingOption;
+import com.liferay.commerce.order.CommerceOrderHttpHelper;
 import com.liferay.commerce.order.engine.CommerceOrderEngine;
 import com.liferay.commerce.order.status.CommerceOrderStatus;
 import com.liferay.commerce.order.status.CommerceOrderStatusRegistry;
@@ -29,6 +30,7 @@ import com.liferay.commerce.shipping.engine.fixed.model.CommerceShippingFixedOpt
 import com.liferay.commerce.shipping.engine.fixed.service.CommerceShippingFixedOptionLocalService;
 import com.liferay.commerce.term.service.CommerceTermEntryLocalService;
 import com.liferay.commerce.util.CommerceShippingEngineRegistry;
+import com.liferay.commerce.util.GuestCommerceOrderUtil;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.headless.commerce.delivery.cart.dto.v1_0.CartTransition;
 import com.liferay.headless.commerce.delivery.cart.resource.v1_0.CartTransitionResource;
@@ -65,6 +67,9 @@ public class CartTransitionResourceImpl extends BaseCartTransitionResourceImpl {
 
 		CommerceOrder commerceOrder = _commerceOrderService.getCommerceOrder(
 			cartId);
+
+		GuestCommerceOrderUtil.checkGuestCommerceOrder(
+			commerceOrder, _commerceOrderHttpHelper, contextHttpServletRequest);
 
 		if (!commerceOrder.isOpen()) {
 			throw new CommerceOrderStatusException(
@@ -156,6 +161,9 @@ public class CartTransitionResourceImpl extends BaseCartTransitionResourceImpl {
 
 		CommerceOrder commerceOrder = _commerceOrderService.getCommerceOrder(
 			cartId);
+
+		GuestCommerceOrderUtil.checkGuestCommerceOrder(
+			commerceOrder, _commerceOrderHttpHelper, contextHttpServletRequest);
 
 		if (!commerceOrder.isOpen()) {
 			throw new CommerceOrderStatusException(
@@ -329,6 +337,9 @@ public class CartTransitionResourceImpl extends BaseCartTransitionResourceImpl {
 
 	@Reference
 	private CommerceOrderEngine _commerceOrderEngine;
+
+	@Reference
+	private CommerceOrderHttpHelper _commerceOrderHttpHelper;
 
 	@Reference
 	private CommerceOrderNoteLocalService _commerceOrderNoteLocalService;

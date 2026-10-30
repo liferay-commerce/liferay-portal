@@ -42,6 +42,7 @@ import com.liferay.commerce.service.CommerceOrderItemService;
 import com.liferay.commerce.service.CommerceOrderService;
 import com.liferay.commerce.util.CommerceOrderItemQuantityFormatter;
 import com.liferay.commerce.util.CommerceUtil;
+import com.liferay.commerce.util.GuestCommerceOrderUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -100,6 +101,9 @@ public class CommerceCartResource {
 			CommerceOrder commerceOrder =
 				_commerceOrderService.getCommerceOrder(commerceOrderId);
 
+			GuestCommerceOrderUtil.checkGuestCommerceOrder(
+				commerceOrder, _commerceOrderHttpHelper, httpServletRequest);
+
 			CommerceChannel commerceChannel =
 				_commerceChannelLocalService.getCommerceChannelByOrderGroupId(
 					commerceOrder.getGroupId());
@@ -138,6 +142,9 @@ public class CommerceCartResource {
 		try {
 			CommerceOrder commerceOrder =
 				_commerceOrderService.getCommerceOrder(commerceOrderId);
+
+			GuestCommerceOrderUtil.checkGuestCommerceOrder(
+				commerceOrder, _commerceOrderHttpHelper, httpServletRequest);
 
 			CommerceChannel commerceChannel =
 				_commerceChannelLocalService.getCommerceChannelByOrderGroupId(
@@ -197,6 +204,11 @@ public class CommerceCartResource {
 				commerceOrder =
 					_commerceOrderHttpHelper.getCurrentCommerceOrder(
 						httpServletRequest);
+			}
+			else {
+				GuestCommerceOrderUtil.checkGuestCommerceOrder(
+					commerceOrder, _commerceOrderHttpHelper,
+					httpServletRequest);
 			}
 
 			if (commerceOrder == null) {

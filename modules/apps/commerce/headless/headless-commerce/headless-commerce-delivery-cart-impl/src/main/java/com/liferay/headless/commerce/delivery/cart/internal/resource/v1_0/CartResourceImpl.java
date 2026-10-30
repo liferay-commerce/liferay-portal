@@ -38,6 +38,7 @@ import com.liferay.commerce.model.CommerceOrderType;
 import com.liferay.commerce.model.CommerceShippingEngine;
 import com.liferay.commerce.model.CommerceShippingMethod;
 import com.liferay.commerce.model.CommerceShippingOption;
+import com.liferay.commerce.order.CommerceOrderHttpHelper;
 import com.liferay.commerce.order.CommerceOrderValidatorRegistry;
 import com.liferay.commerce.order.CommerceOrderValidatorResult;
 import com.liferay.commerce.order.engine.CommerceOrderEngine;
@@ -60,6 +61,7 @@ import com.liferay.commerce.util.CommerceChannelConfigurationUtil;
 import com.liferay.commerce.util.CommerceCheckoutStep;
 import com.liferay.commerce.util.CommerceCheckoutStepRegistry;
 import com.liferay.commerce.util.CommerceShippingEngineRegistry;
+import com.liferay.commerce.util.GuestCommerceOrderUtil;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.headless.commerce.core.util.CommerceCurrencyUtil;
 import com.liferay.headless.commerce.core.util.DateConfig;
@@ -100,6 +102,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.servlet.DummyHttpServletResponse;
 import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -126,6 +129,7 @@ import java.security.Key;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -147,6 +151,10 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 
 	@Override
 	public Response deleteCart(Long cartId) throws Exception {
+		GuestCommerceOrderUtil.checkGuestCommerceOrder(
+			_commerceOrderService.getCommerceOrder(cartId),
+			_commerceOrderHttpHelper, contextHttpServletRequest);
+
 		_commerceOrderService.deleteCommerceOrder(cartId);
 
 		Response.ResponseBuilder responseBuilder = Response.noContent();
@@ -169,6 +177,9 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 					externalReferenceCode);
 		}
 
+		GuestCommerceOrderUtil.checkGuestCommerceOrder(
+			commerceOrder, _commerceOrderHttpHelper, contextHttpServletRequest);
+
 		_commerceOrderService.deleteCommerceOrder(
 			commerceOrder.getCommerceOrderId());
 
@@ -181,6 +192,9 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 	public Cart getCart(Long cartId) throws Exception {
 		CommerceOrder commerceOrder = _commerceOrderService.getCommerceOrder(
 			GetterUtil.getLong(cartId));
+
+		GuestCommerceOrderUtil.checkGuestCommerceOrder(
+			commerceOrder, _commerceOrderHttpHelper, contextHttpServletRequest);
 
 		return _toCart(commerceOrder.getCommerceOrderId(), true);
 	}
@@ -198,6 +212,9 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 				"Unable to find order with external reference code " +
 					externalReferenceCode);
 		}
+
+		GuestCommerceOrderUtil.checkGuestCommerceOrder(
+			commerceOrder, _commerceOrderHttpHelper, contextHttpServletRequest);
 
 		return _toCart(commerceOrder.getCommerceOrderId(), true);
 	}
@@ -217,6 +234,9 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 					externalReferenceCode);
 		}
 
+		GuestCommerceOrderUtil.checkGuestCommerceOrder(
+			commerceOrder, _commerceOrderHttpHelper, contextHttpServletRequest);
+
 		return _getPaymentURL(callbackURL, commerceOrder);
 	}
 
@@ -224,8 +244,13 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 	public String getCartPaymentURL(Long cartId, String callbackURL)
 		throws Exception {
 
-		return _getPaymentURL(
-			callbackURL, _commerceOrderService.getCommerceOrder(cartId));
+		CommerceOrder commerceOrder = _commerceOrderService.getCommerceOrder(
+			cartId);
+
+		GuestCommerceOrderUtil.checkGuestCommerceOrder(
+			commerceOrder, _commerceOrderHttpHelper, contextHttpServletRequest);
+
+		return _getPaymentURL(callbackURL, commerceOrder);
 	}
 
 	@Override
@@ -236,6 +261,15 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 
 		CommerceChannel commerceChannel =
 			_commerceChannelLocalService.getCommerceChannel(channelId);
+
+		long[] commerceAccountIds = _getCommerceAccountIds(
+			commerceChannel.getGroupId());
+
+		if ((commerceAccountIds != null) &&
+			!ArrayUtil.contains(commerceAccountIds, accountId)) {
+
+			return Page.of(Collections.emptyList());
+		}
 
 		return SearchUtil.search(
 			null,
@@ -337,6 +371,9 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 		CommerceOrder commerceOrder = _commerceOrderService.getCommerceOrder(
 			cartId);
 
+		GuestCommerceOrderUtil.checkGuestCommerceOrder(
+			commerceOrder, _commerceOrderHttpHelper, contextHttpServletRequest);
+
 		if (!commerceOrder.isOpen()) {
 			throw new CommerceOrderStatusException(
 				"Unable to patch a placed order");
@@ -361,6 +398,9 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 				"Unable to find order with external reference code " +
 					externalReferenceCode);
 		}
+
+		GuestCommerceOrderUtil.checkGuestCommerceOrder(
+			commerceOrder, _commerceOrderHttpHelper, contextHttpServletRequest);
 
 		if (!commerceOrder.isOpen()) {
 			throw new CommerceOrderStatusException(
@@ -387,6 +427,9 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 					externalReferenceCode);
 		}
 
+		GuestCommerceOrderUtil.checkGuestCommerceOrder(
+			commerceOrder, _commerceOrderHttpHelper, contextHttpServletRequest);
+
 		return _checkoutOrder(commerceOrder);
 	}
 
@@ -405,6 +448,9 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 					externalReferenceCode);
 		}
 
+		GuestCommerceOrderUtil.checkGuestCommerceOrder(
+			commerceOrder, _commerceOrderHttpHelper, contextHttpServletRequest);
+
 		commerceOrder = _commerceOrderService.applyCouponCode(
 			commerceOrder.getCommerceOrderId(), couponCode.getCode(),
 			_commerceContextFactory.create(
@@ -418,7 +464,13 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 
 	@Override
 	public Cart postCartCheckout(Long cartId) throws Exception {
-		return _checkoutOrder(_commerceOrderService.getCommerceOrder(cartId));
+		CommerceOrder commerceOrder = _commerceOrderService.getCommerceOrder(
+			cartId);
+
+		GuestCommerceOrderUtil.checkGuestCommerceOrder(
+			commerceOrder, _commerceOrderHttpHelper, contextHttpServletRequest);
+
+		return _checkoutOrder(commerceOrder);
 	}
 
 	@Override
@@ -427,6 +479,9 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 
 		CommerceOrder commerceOrder = _commerceOrderService.getCommerceOrder(
 			cartId);
+
+		GuestCommerceOrderUtil.checkGuestCommerceOrder(
+			commerceOrder, _commerceOrderHttpHelper, contextHttpServletRequest);
 
 		if (!commerceOrder.isOpen()) {
 			throw new CommerceOrderStatusException(
@@ -478,6 +533,9 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 		CommerceOrder commerceOrder = _commerceOrderService.getCommerceOrder(
 			cartId);
 
+		GuestCommerceOrderUtil.checkGuestCommerceOrder(
+			commerceOrder, _commerceOrderHttpHelper, contextHttpServletRequest);
+
 		if (!commerceOrder.isOpen()) {
 			throw new CommerceOrderStatusException(
 				"Unable to put a placed order");
@@ -502,6 +560,9 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 				"Unable to find order with external reference code " +
 					externalReferenceCode);
 		}
+
+		GuestCommerceOrderUtil.checkGuestCommerceOrder(
+			commerceOrder, _commerceOrderHttpHelper, contextHttpServletRequest);
 
 		if (!commerceOrder.isOpen()) {
 			throw new CommerceOrderStatusException(
@@ -1506,6 +1567,9 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 
 	@Reference
 	private CommerceOrderEngine _commerceOrderEngine;
+
+	@Reference
+	private CommerceOrderHttpHelper _commerceOrderHttpHelper;
 
 	@Reference
 	private CommerceOrderItemService _commerceOrderItemService;

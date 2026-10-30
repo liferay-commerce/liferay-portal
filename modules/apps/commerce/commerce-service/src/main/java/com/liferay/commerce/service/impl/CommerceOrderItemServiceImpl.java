@@ -9,6 +9,7 @@ import com.liferay.account.model.AccountEntry;
 import com.liferay.commerce.constants.CommerceActionKeys;
 import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.context.CommerceContext;
+import com.liferay.commerce.internal.util.JSONWebServiceCommerceOrderUtil;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderItem;
 import com.liferay.commerce.product.permission.CommerceProductViewPermission;
@@ -75,10 +76,13 @@ public class CommerceOrderItemServiceImpl
 			CommerceContext commerceContext, ServiceContext serviceContext)
 		throws PortalException {
 
+		CommerceOrder commerceOrder = _commerceOrderService.getCommerceOrder(
+			commerceOrderId);
+
 		_commerceOrderModelResourcePermission.check(
-			getPermissionChecker(),
-			_commerceOrderService.getCommerceOrder(commerceOrderId),
-			ActionKeys.UPDATE);
+			getPermissionChecker(), commerceOrder, ActionKeys.UPDATE);
+
+		JSONWebServiceCommerceOrderUtil.checkGuestCommerceOrder(commerceOrder);
 
 		return commerceOrderItemLocalService.addOrUpdateCommerceOrderItem(
 			getUserId(), commerceOrderId, cpInstanceId, json, quantity,
@@ -249,6 +253,9 @@ public class CommerceOrderItemServiceImpl
 			getPermissionChecker(), commerceOrderItem.getCommerceOrderId(),
 			ActionKeys.VIEW);
 
+		JSONWebServiceCommerceOrderUtil.checkGuestCommerceOrder(
+			commerceOrderItem.getCommerceOrderId());
+
 		return commerceOrderItem;
 	}
 
@@ -259,6 +266,9 @@ public class CommerceOrderItemServiceImpl
 
 		_commerceOrderModelResourcePermission.check(
 			getPermissionChecker(), commerceOrderId, ActionKeys.VIEW);
+
+		JSONWebServiceCommerceOrderUtil.checkGuestCommerceOrder(
+			commerceOrderId);
 
 		return commerceOrderItemPersistence.findByCommerceOrderId(
 			commerceOrderId, start, end);
@@ -273,8 +283,16 @@ public class CommerceOrderItemServiceImpl
 		_accountEntryModelResourcePermission.check(
 			getPermissionChecker(), commerceAccountId, ActionKeys.VIEW);
 
-		return commerceOrderItemLocalService.getCommerceOrderItems(
-			groupId, commerceAccountId, orderStatuses, start, end);
+		List<CommerceOrderItem> commerceOrderItems =
+			commerceOrderItemLocalService.getCommerceOrderItems(
+				groupId, commerceAccountId, orderStatuses, start, end);
+
+		for (CommerceOrderItem commerceOrderItem : commerceOrderItems) {
+			JSONWebServiceCommerceOrderUtil.checkGuestCommerceOrder(
+				commerceOrderItem.getCommerceOrderId());
+		}
+
+		return commerceOrderItems;
 	}
 
 	@Override
@@ -318,6 +336,9 @@ public class CommerceOrderItemServiceImpl
 
 		_commerceOrderModelResourcePermission.check(
 			getPermissionChecker(), commerceOrderId, ActionKeys.VIEW);
+
+		JSONWebServiceCommerceOrderUtil.checkGuestCommerceOrder(
+			commerceOrderId);
 
 		return commerceOrderItemLocalService.getCommerceOrderItemsQuantity(
 			commerceOrderId);
