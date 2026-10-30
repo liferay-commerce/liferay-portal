@@ -8,7 +8,7 @@ import {Locator, Page, expect} from '@playwright/test';
 import {PORTLET_URLS} from '../../../../utils/portletUrls';
 import {waitForAlert} from '../../../../utils/waitForAlert';
 import {DataSetPage} from '../../../site-cms-site-initializer/main/pages/DataSetPage';
-import {EditConnectorPage} from './EditConnectorPage';
+import {ConnectorSettings, EditConnectorPage} from './EditConnectorPage';
 
 export class ConnectorsPage {
 	readonly dataSetFragmentPage: DataSetPage;
@@ -51,10 +51,12 @@ export class ConnectorsPage {
 		active = false,
 		connector,
 		name,
+		settings,
 	}: {
 		active?: boolean;
 		connector: string;
 		name: string;
+		settings?: ConnectorSettings;
 	}) {
 		await this.goto();
 
@@ -62,7 +64,12 @@ export class ConnectorsPage {
 
 		const editConnectorPage = new EditConnectorPage(this.page);
 
-		await editConnectorPage.createConnector({active, connector, name});
+		await editConnectorPage.createConnector({
+			active,
+			connector,
+			name,
+			settings,
+		});
 
 		await expect(this.getConnector(name)).toBeVisible();
 	}

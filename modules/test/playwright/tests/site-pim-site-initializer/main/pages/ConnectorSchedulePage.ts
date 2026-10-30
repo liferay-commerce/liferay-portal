@@ -35,7 +35,7 @@ export class ConnectorSchedulePage {
 		this.page = page;
 	}
 
-	async openLatestSuccessfulLog() {
+	async openLatestLog(status: string) {
 		await this.logsTab.click();
 
 		await this.page.waitForURL(/screenNavigationCategoryKey=logs/);
@@ -43,7 +43,7 @@ export class ConnectorSchedulePage {
 		await expect(async () => {
 			await this.page.reload();
 
-			await expect(this.latestLogStatus).toHaveText('Successful', {
+			await expect(this.latestLogStatus).toHaveText(status, {
 				timeout: 2000,
 			});
 		}).toPass({timeout: 60000});
