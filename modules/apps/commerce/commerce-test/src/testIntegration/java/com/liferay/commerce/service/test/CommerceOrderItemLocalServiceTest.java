@@ -8,11 +8,13 @@ package com.liferay.commerce.service.test;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.account.test.util.CommerceAccountTestUtil;
+import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.context.CommerceContext;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.model.CommerceMoney;
 import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
+import com.liferay.commerce.exception.CommerceOrderStatusException;
 import com.liferay.commerce.exception.CommerceOrderValidatorException;
 import com.liferay.commerce.exception.ProductBundleException;
 import com.liferay.commerce.inventory.model.CommerceInventoryBookedQuantity;
@@ -1615,6 +1617,97 @@ public class CommerceOrderItemLocalServiceTest {
 		else {
 			_assertUpdateOrderItem(3, commerceOrderItem1, commerceOrderItem2);
 		}
+	}
+
+	@Test
+	public void testUpdateCommerceOrderItemUnitOfMeasure() throws Exception {
+		frutillaRule.scenario(
+			"Change the unit of measure of an order item"
+		).given(
+			"A SKU with two units of measure in an order"
+		).when(
+			"I change the unit of measure of the order item"
+		).then(
+			"The order item shall be updated only while the order is open"
+		);
+
+		CPInstance cpInstance = CPTestUtil.addCPInstance(_group.getGroupId());
+
+		_cpInstances.add(cpInstance);
+
+		String unitOfMeasureKey1 = RandomTestUtil.randomString();
+
+		CPTestUtil.addCPInstanceUnitOfMeasure(
+			_group.getGroupId(), cpInstance.getCPInstanceId(),
+			unitOfMeasureKey1, BigDecimal.ONE, cpInstance.getSku());
+
+		String unitOfMeasureKey2 = RandomTestUtil.randomString();
+
+		CPTestUtil.addCPInstanceUnitOfMeasure(
+			_group.getGroupId(), cpInstance.getCPInstanceId(),
+			unitOfMeasureKey2, BigDecimal.ONE, cpInstance.getSku());
+
+		_commerceInventoryWarehouse =
+			CommerceInventoryTestUtil.addCommerceInventoryWarehouse(
+				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		_commerceChannelRel = CommerceTestUtil.addWarehouseCommerceChannelRel(
+			_commerceInventoryWarehouse.getCommerceInventoryWarehouseId(),
+			_commerceChannel.getCommerceChannelId());
+
+		_commerceInventoryWarehouseItems.add(
+			CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
+				_user.getUserId(), _commerceInventoryWarehouse, BigDecimal.TEN,
+				cpInstance.getSku(), unitOfMeasureKey1));
+		_commerceInventoryWarehouseItems.add(
+			CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
+				_user.getUserId(), _commerceInventoryWarehouse, BigDecimal.TEN,
+				cpInstance.getSku(), unitOfMeasureKey2));
+
+		CommerceOrder commerceOrder =
+			_commerceOrderLocalService.addCommerceOrder(
+				_user.getUserId(), _commerceChannel.getGroupId(),
+				_accountEntry.getAccountEntryId(), _commerceCurrency.getCode(),
+				0);
+
+		_commerceOrders.add(commerceOrder);
+
+		CommerceOrderItem commerceOrderItem =
+			_commerceOrderItemLocalService.addCommerceOrderItem(
+				_user.getUserId(), commerceOrder.getCommerceOrderId(),
+				cpInstance.getCPInstanceId(), null, BigDecimal.ONE, 0,
+				BigDecimal.ZERO, unitOfMeasureKey1, _commerceContext,
+				_serviceContext);
+
+		CommerceOrderItem updatedCommerceOrderItem =
+			_commerceOrderItemLocalService.updateCommerceOrderItemUnitOfMeasure(
+				_user.getUserId(), commerceOrderItem.getCommerceOrderItemId(),
+				BigDecimal.ONE, unitOfMeasureKey2, _commerceContext,
+				_serviceContext);
+
+		Assert.assertEquals(
+			commerceOrderItem.getCommerceOrderItemId(),
+			updatedCommerceOrderItem.getCommerceOrderItemId());
+		Assert.assertEquals(
+			unitOfMeasureKey2, updatedCommerceOrderItem.getUnitOfMeasureKey());
+
+		commerceOrder = _commerceOrderLocalService.getCommerceOrder(
+			commerceOrder.getCommerceOrderId());
+
+		commerceOrder.setOrderStatus(
+			CommerceOrderConstants.ORDER_STATUS_PENDING);
+
+		_commerceOrderLocalService.updateCommerceOrder(commerceOrder);
+
+		Assert.assertThrows(
+			CommerceOrderStatusException.class,
+			() ->
+				_commerceOrderItemLocalService.
+					updateCommerceOrderItemUnitOfMeasure(
+						_user.getUserId(),
+						commerceOrderItem.getCommerceOrderItemId(),
+						BigDecimal.ONE, unitOfMeasureKey1, _commerceContext,
+						_serviceContext));
 	}
 
 	@Test
