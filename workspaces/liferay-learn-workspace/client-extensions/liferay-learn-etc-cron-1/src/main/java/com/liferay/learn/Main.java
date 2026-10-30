@@ -9,6 +9,7 @@ import com.liferay.data.engine.rest.client.dto.v2_0.DataDefinition;
 import com.liferay.data.engine.rest.client.resource.v2_0.DataDefinitionResource;
 import com.liferay.headless.admin.taxonomy.client.dto.v1_0.TaxonomyCategory;
 import com.liferay.headless.admin.taxonomy.client.dto.v1_0.TaxonomyVocabulary;
+import com.liferay.headless.admin.taxonomy.client.problem.Problem;
 import com.liferay.headless.admin.taxonomy.client.resource.v1_0.TaxonomyCategoryResource;
 import com.liferay.headless.admin.taxonomy.client.resource.v1_0.TaxonomyVocabularyResource;
 import com.liferay.headless.admin.user.client.dto.v1_0.Site;
@@ -22,130 +23,111 @@ import com.liferay.headless.delivery.client.pagination.Pagination;
 import com.liferay.headless.delivery.client.permission.Permission;
 import com.liferay.headless.delivery.client.resource.v1_0.StructuredContentFolderResource;
 import com.liferay.headless.delivery.client.resource.v1_0.StructuredContentResource;
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
-
-import com.vladsch.flexmark.ast.Heading;
-import com.vladsch.flexmark.ext.admonition.AdmonitionExtension;
-import com.vladsch.flexmark.ext.anchorlink.AnchorLinkExtension;
-import com.vladsch.flexmark.ext.aside.AsideExtension;
-import com.vladsch.flexmark.ext.attributes.AttributesExtension;
-import com.vladsch.flexmark.ext.definition.DefinitionExtension;
-import com.vladsch.flexmark.ext.footnotes.FootnoteExtension;
-import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
-import com.vladsch.flexmark.ext.media.tags.MediaTagsExtension;
-import com.vladsch.flexmark.ext.superscript.SuperscriptExtension;
-import com.vladsch.flexmark.ext.tables.TablesExtension;
-import com.vladsch.flexmark.ext.toc.TocExtension;
-import com.vladsch.flexmark.ext.typographic.TypographicExtension;
-import com.vladsch.flexmark.ext.yaml.front.matter.YamlFrontMatterBlock;
-import com.vladsch.flexmark.ext.yaml.front.matter.YamlFrontMatterExtension;
-import com.vladsch.flexmark.ext.yaml.front.matter.YamlFrontMatterNode;
-import com.vladsch.flexmark.ext.yaml.front.matter.YamlFrontMatterVisitor;
-import com.vladsch.flexmark.ext.yaml.front.matter.YamlFrontMatterVisitorExt;
-import com.vladsch.flexmark.html.HtmlRenderer;
-import com.vladsch.flexmark.parser.Parser;
-import com.vladsch.flexmark.util.ast.Block;
-import com.vladsch.flexmark.util.ast.Document;
-import com.vladsch.flexmark.util.ast.Node;
-import com.vladsch.flexmark.util.ast.NodeVisitor;
-import com.vladsch.flexmark.util.ast.TextCollectingVisitor;
-import com.vladsch.flexmark.util.data.MutableDataSet;
 
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
 
 import java.net.URL;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.output.TeeOutputStream;
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.diff.DiffEntry;
-import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.lib.ObjectReader;
-import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.revwalk.RevCommit;
-import org.eclipse.jgit.revwalk.RevTree;
-import org.eclipse.jgit.treewalk.CanonicalTreeParser;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import org.jsoup.Jsoup;
-
-import org.yaml.snakeyaml.Yaml;
 
 /**
  * @author Brian Wing Shun Chan
  * @author Rich Sezov
  * @author Allen Ziegenfus
+ * @author Francesco Acciaro
  */
 public class Main {
 
 	public static void main(String[] arguments) throws Exception {
-		String lastestHashFileName = System.getenv(
-			"LIFERAY_LEARN_ETC_CRON_LATEST_HASH_FILE_NAME");
+		List<String> argumentsList = Arrays.asList(arguments);
 
-		if (lastestHashFileName == null) {
-			lastestHashFileName = ".latest_hash";
+		boolean preflight = argumentsList.contains("--preflight");
+
+		if (!preflight) {
+			_captureConsole();
 		}
 
+		if (!preflight &&
+			Files.exists(Paths.get("/tmp/liferay_jar_runner_skipped"))) {
+
+			System.out.println(
+				"liferay-learn-etc-cron-1: the setup script found nothing to " +
+					"do, skipping the import");
+
+			return;
+		}
+
+		if (!preflight &&
+			!Files.exists(Paths.get("/tmp/liferay_jar_runner_set_up_ok"))) {
+
+			System.err.println(
+				"liferay-learn-etc-cron-1: the setup script did not " +
+					"complete, failing the run");
+
+			System.exit(1);
+		}
+
+		System.setProperty("sun.net.client.defaultConnectTimeout", "30000");
+		System.setProperty("sun.net.client.defaultReadTimeout", "120000");
+
 		String liferayDataDefinitionKey = System.getenv(
-			"LIFERAY_LEARN_ETC_CRON_LIFERAY_DATA_DEFINITION_KEY");
+			"LIFERAY_LEARN_ETC_CRON_DXP_DATA_DEFINITION_KEY");
 
 		if (liferayDataDefinitionKey == null) {
 			liferayDataDefinitionKey = "LEARN-ARTICLE";
 		}
 
 		String liferaySiteFriendlyUrlPath = System.getenv(
-			"LIFERAY_LEARN_ETC_CRON_LIFERAY_SITE_FRIENDLY_URL_PATH");
+			"LIFERAY_LEARN_ETC_CRON_DXP_SITE_FRIENDLY_URL_PATH");
 
 		if (liferaySiteFriendlyUrlPath == null) {
 			liferaySiteFriendlyUrlPath = "liferay-learn";
 		}
 
-		String liferayUrl = System.getenv("LIFERAY_LEARN_ETC_CRON_LIFERAY_URL");
+		String liferayURL = System.getenv("LIFERAY_LEARN_ETC_CRON_DXP_URL");
 
-		if (liferayUrl == null) {
-			liferayUrl = "http://localhost:8080";
+		if (liferayURL == null) {
+			liferayURL = "http://localhost:8080";
 		}
 
 		String baseDir = System.getenv(
@@ -157,85 +139,73 @@ public class Main {
 
 		File baseDirFile = new File(baseDir);
 
-		Main main = new Main(
-			lastestHashFileName, liferayDataDefinitionKey,
-			System.getenv("LIFERAY_LEARN_ETC_CRON_LIFERAY_OAUTH_CLIENT_ID"),
-			System.getenv("LIFERAY_LEARN_ETC_CRON_LIFERAY_OAUTH_CLIENT_SECRET"),
-			liferaySiteFriendlyUrlPath, new URL(liferayUrl), baseDirFile,
-			GetterUtil.getBoolean(
-				System.getenv("LIFERAY_LEARN_ETC_CRON_OFFLINE")),
-			GetterUtil.getBoolean(
-				System.getenv("LIFERAY_LEARN_ETC_SKIP_DIFF_CHECK")),
-			GetterUtil.getBoolean(
-				System.getenv("LIFERAY_LEARN_ETC_SKIP_JAPANESE_CONTENT")));
-
-		String exceptionMessage = null;
+		Main main = null;
 
 		try {
-			main.uploadToLiferay();
+			main = new Main(
+				liferayDataDefinitionKey,
+				System.getenv("LIFERAY_LEARN_ETC_CRON_OAUTH_CLIENT_ID"),
+				System.getenv("LIFERAY_LEARN_ETC_CRON_OAUTH_CLIENT_SECRET"),
+				liferaySiteFriendlyUrlPath, new URL(liferayURL), baseDirFile,
+				GetterUtil.getBoolean(
+					System.getenv("LIFERAY_LEARN_ETC_CRON_OFFLINE")),
+				System.getenv("LIFERAY_LEARN_ETC_CRON_ORPHAN_EXCLUSIONS"),
+				System.getenv(
+					"LIFERAY_LEARN_ETC_CRON_PREFLIGHT_TOC_EXCLUSIONS"),
+				System.getenv("LIFERAY_LEARN_ETC_CRON_RESTRICTED_PATHS"),
+				System.getenv("LIFERAY_LEARN_ETC_CRON_RESTRICTED_ROLES"),
+				GetterUtil.getBoolean(
+					System.getenv("LIFERAY_LEARN_ETC_CRON_SKIP_MD5_CHECK")),
+				System.getenv("LIFERAY_LEARN_ETC_CRON_SKIP_LOCALES_CONTENT"));
 		}
 		catch (Exception exception) {
-			exceptionMessage = exception.getMessage();
-		}
+			if (!preflight) {
+				throw exception;
+			}
 
-		sendSlackMessage(exceptionMessage);
-	}
-
-	public static void sendSlackMessage(String exceptionMessage)
-		throws Exception {
-
-		String slackEndpoint = System.getenv(
-			"LIFERAY_LEARN_ETC_CRON_SLACK_ENDPOINT");
-
-		if (slackEndpoint == null) {
-			return;
-		}
-
-		HttpPost httpPost = new HttpPost(slackEndpoint);
-
-		String slackMessage = StringBundler.concat(
-			new Date(), " *", System.getenv("LCP_PROJECT_ID"), "*->*",
-			System.getenv("LCP_SERVICE_ID"), "* <https://console.",
-			System.getenv("LCP_INFRASTRUCTURE_DOMAIN"), "/projects/",
-			System.getenv("LCP_PROJECT_ID"), "/logs?instanceId=",
-			System.getenv("HOSTNAME"), "&logServiceId=",
-			System.getenv("LCP_SERVICE_ID"), "|", System.getenv("HOSTNAME"),
-			"> \n>");
-
-		if (Validator.isNotNull(exceptionMessage)) {
-			slackMessage +=
-				":red-alert:Import job finished with return code 1\n>" +
-					exceptionMessage;
-		}
-		else {
-			slackMessage += ":sunflower:Import job finished with return code 0";
-		}
-
-		httpPost.setEntity(
-			new StringEntity(
+			System.out.println(
 				StringBundler.concat(
-					"{\"channel\": \"",
-					System.getenv("LIFERAY_LEARN_ETC_CRON_SLACK_CHANNEL"),
-					"\", \"icon_emoji\": \":robot_face:\", \"text\": \"",
-					slackMessage, "\", \"username\": \"devopsbot\"}")));
+					"[preflight] FAILED (DXP): unable to authenticate against ",
+					liferayURL, " or to resolve the site \"",
+					liferaySiteFriendlyUrlPath, "\" or the \"",
+					liferayDataDefinitionKey, "\" content structure: ",
+					exception));
 
-		httpPost.setHeader("Accept", "application/json");
-		httpPost.setHeader("Content-type", "application/json");
-
-		HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
-
-		try (CloseableHttpClient closeableHttpClient =
-				httpClientBuilder.build()) {
-
-			closeableHttpClient.execute(httpPost);
+			System.exit(1);
 		}
+
+		try {
+			main.loadTaxonomyVocabularies();
+		}
+		catch (Exception exception) {
+			if (!preflight) {
+				throw exception;
+			}
+
+			System.out.println(
+				StringBundler.concat(
+					"[preflight] FAILED (DXP): unable to reconcile the ",
+					"taxonomy vocabularies: ", exception));
+
+			System.exit(1);
+		}
+
+		if (preflight) {
+			System.exit(main.preflight());
+		}
+
+		main.uploadToLiferay();
+
+		Files.createFile(Paths.get("/tmp/liferay_jar_runner_main_ok"));
 	}
 
 	public Main(
-			String latestHashFileName, String liferayDataDefinitionKey,
-			String liferayOAuthClientId, String liferayOAuthClientSecret,
-			String liferaySiteFriendlyUrlPath, URL liferayURL, File baseDir,
-			boolean offline, boolean skipDiffCheck, boolean skipJapaneseContent)
+			String liferayDataDefinitionKey, String liferayOAuthClientId,
+			String liferayOAuthClientSecret, String liferaySiteFriendlyUrlPath,
+			URL liferayURL, File baseDir, boolean offline,
+			String orphanExclusions, String preflightTocExclusions,
+			String restrictedPaths, String restrictedRoles,
+			boolean skipDiffCheck, String skipLocalesContent)
 		throws Exception {
 
 		_liferayOAuthClientId = liferayOAuthClientId;
@@ -243,23 +213,82 @@ public class Main {
 		_liferayURL = liferayURL;
 		_offline = offline;
 		_skipDiffCheck = skipDiffCheck;
-		_skipJapaneseContent = skipJapaneseContent;
 
-		_lastestHashFileName = latestHashFileName;
+		if (orphanExclusions != null) {
+			for (String orphanExclusion : orphanExclusions.split(",")) {
+				String trimmedOrphanExclusion = StringUtil.trim(
+					orphanExclusion.trim(), CharPool.FORWARD_SLASH);
 
-		_baseDirName = baseDir.getCanonicalPath();
+				if (!trimmedOrphanExclusion.isEmpty()) {
+					_orphanExclusions.add(trimmedOrphanExclusion);
+				}
+			}
+		}
 
-		_docsDirName = _baseDirName + "/docs";
+		System.out.println(
+			"Friendly URL paths excluded from the orphan cleanup: " +
+				_orphanExclusions);
+
+		if (preflightTocExclusions != null) {
+			for (String preflightTocExclusion :
+					preflightTocExclusions.split(",")) {
+
+				String trimmedPreflightTocExclusion =
+					preflightTocExclusion.trim();
+
+				if (!trimmedPreflightTocExclusion.isEmpty()) {
+					_preflightTocExclusions.add(trimmedPreflightTocExclusion);
+				}
+			}
+		}
+
+		System.out.println(
+			"Toc entries excluded from the preflight: " +
+				_preflightTocExclusions);
+
+		if (restrictedPaths != null) {
+			for (String restrictedPath : restrictedPaths.split(",")) {
+				String trimmedRestrictedPath = restrictedPath.trim();
+
+				if (!trimmedRestrictedPath.isEmpty()) {
+					_restrictedPaths.add(trimmedRestrictedPath);
+				}
+			}
+		}
+
+		if (restrictedRoles != null) {
+			for (String restrictedRole : restrictedRoles.split(",")) {
+				String trimmedRestrictedRole = restrictedRole.trim();
+
+				if (!trimmedRestrictedRole.isEmpty()) {
+					_restrictedRoles.add(trimmedRestrictedRole);
+				}
+			}
+		}
+
+		System.out.println(
+			StringBundler.concat(
+				"Paths restricted to ", _restrictedRoles, ": ",
+				_restrictedPaths));
+
+		if (skipLocalesContent != null) {
+			for (String skipLocale : skipLocalesContent.split(",")) {
+				String trimmedSkipLocale = skipLocale.trim();
+
+				if (!trimmedSkipLocale.isEmpty()) {
+					_skipLocales.add(trimmedSkipLocale);
+				}
+			}
+		}
+
+		System.out.println("Locales excluded from import: " + _skipLocales);
+
+		_docsDirectory = new DocsDirectory(baseDir);
+
+		_navigationHelper = new NavigationHelper(
+			_docsDirectory, _markdownParser, _runReport);
 
 		System.out.println("Liferay URL: " + _liferayURL);
-
-		_readHashFromFile(baseDir);
-
-		_addFileNames(_docsDirName);
-
-		_getGitDiff(baseDir);
-
-		_initFlexmark();
 
 		if (_offline) {
 			_globalSiteId = 0;
@@ -288,22 +317,163 @@ public class Main {
 						liferayDataDefinitionKey);
 
 			_liferayContentStructureId = dataDefinition.getId();
+		}
 
-			_loadTaxonomyVocabularies();
+		_structuredContentBuilder = new StructuredContentBuilder(
+			_docsDirectory, _liferayContentStructureId, _markdownParser,
+			_navigationHelper, _skipLocales, this::_getTaxonomyCategoryIds);
+	}
+
+	public void loadTaxonomyVocabularies() throws Exception {
+		if (_offline) {
+			return;
+		}
+
+		File file = new File(
+			_docsDirectory.getDocsDirName() + "/../taxonomy-vocabularies.json");
+
+		if (!file.exists()) {
+			return;
+		}
+
+		JSONObject taxonomyVocabulariesJSONObject = new JSONObject(
+			FileUtils.readFileToString(file, StandardCharsets.UTF_8));
+
+		if (taxonomyVocabulariesJSONObject.isEmpty()) {
+			return;
+		}
+
+		List<TaxonomyVocabulary> taxonomyVocabularies = new ArrayList<>();
+
+		for (int page = 1;; page++) {
+			com.liferay.headless.admin.taxonomy.client.pagination.Page
+				<TaxonomyVocabulary> taxonomyVocabulariesPage;
+
+			try {
+				taxonomyVocabulariesPage =
+					_taxonomyVocabularyResource.getSiteTaxonomyVocabulariesPage(
+						_globalSiteId, null, null, null,
+						com.liferay.headless.admin.taxonomy.client.pagination.
+							Pagination.of(page, 50),
+						null);
+			}
+			catch (Problem.ProblemException problemException) {
+				Problem problem = problemException.getProblem();
+
+				System.err.println(
+					StringBundler.concat(
+						"Unable to get taxonomy vocabularies: status ",
+						problem.getStatus(), ", title ", problem.getTitle(),
+						", detail ", problem.getDetail()));
+
+				throw problemException;
+			}
+
+			taxonomyVocabularies.addAll(taxonomyVocabulariesPage.getItems());
+
+			if (taxonomyVocabulariesPage.getLastPage() == page) {
+				break;
+			}
+		}
+
+		Map<String, String> existingTaxonomyCategories = new HashMap<>();
+		Map<String, Long> existingTaxonomyVocabularies = new HashMap<>();
+
+		for (TaxonomyVocabulary taxonomyVocabulary : taxonomyVocabularies) {
+			if (StringUtil.equals(
+					taxonomyVocabulary.getExternalReferenceCode(),
+					"RESOURCE_TYPE")) {
+
+				TaxonomyCategory taxonomyCategory =
+					_taxonomyCategoryResource.
+						getTaxonomyVocabularyTaxonomyCategoryByExternalReferenceCode(
+							taxonomyVocabulary.getId(),
+							"OFFICIAL_DOCUMENTATION");
+
+				_taxonomyCategoriesJSONObject.put(
+					taxonomyCategory.getExternalReferenceCode(),
+					taxonomyCategory.getId());
+
+				continue;
+			}
+
+			existingTaxonomyVocabularies.put(
+				taxonomyVocabulary.getName(), taxonomyVocabulary.getId());
+
+			for (int page = 1;; page++) {
+				com.liferay.headless.admin.taxonomy.client.pagination.Page
+					<TaxonomyCategory> taxonomyCategoriesPage =
+						_taxonomyCategoryResource.
+							getTaxonomyVocabularyTaxonomyCategoriesPage(
+								taxonomyVocabulary.getId(), true, null, null,
+								null,
+								com.liferay.headless.admin.taxonomy.client.
+									pagination.Pagination.of(page, 50),
+								null);
+
+				for (TaxonomyCategory taxonomyCategory :
+						taxonomyCategoriesPage.getItems()) {
+
+					existingTaxonomyCategories.put(
+						_getTaxonomyCategoryKey(
+							taxonomyVocabulary.getName(),
+							taxonomyCategory.getName()),
+						taxonomyCategory.getId());
+				}
+
+				if (taxonomyCategoriesPage.getLastPage() == page) {
+					break;
+				}
+			}
+		}
+
+		JSONArray jsonArray = taxonomyVocabulariesJSONObject.getJSONArray(
+			"taxonomyVocabularies");
+
+		for (int i = 0; i < jsonArray.length(); i++) {
+			JSONObject taxonomyVocabularyJSONObject = jsonArray.getJSONObject(
+				i);
+
+			String name = taxonomyVocabularyJSONObject.getString("name");
+
+			Long taxonomyVocabularyId = existingTaxonomyVocabularies.get(name);
+
+			if (taxonomyVocabularyId == null) {
+				TaxonomyVocabulary taxonomyVocabulary =
+					new TaxonomyVocabulary();
+
+				taxonomyVocabulary.setName(() -> name);
+
+				taxonomyVocabulary =
+					_taxonomyVocabularyResource.postSiteTaxonomyVocabulary(
+						_globalSiteId, taxonomyVocabulary);
+
+				taxonomyVocabularyId = taxonomyVocabulary.getId();
+			}
+
+			_loadTaxonomyCategories(
+				existingTaxonomyCategories, null,
+				taxonomyVocabularyJSONObject.optJSONArray("taxonomyCategories"),
+				taxonomyVocabularyId, name);
 		}
 	}
 
-	public void uploadToLiferay() throws Exception {
-		long start = System.currentTimeMillis();
+	public int preflight() throws Exception {
+		System.out.println(
+			"[preflight] DXP is reachable, the site, content structure and " +
+				"taxonomies are resolved.");
 
+		MarkdownValidator markdownValidator = new MarkdownValidator(
+			_docsDirectory, _markdownParser, _preflightTocExclusions,
+			_taxonomyCategoriesJSONObject::has);
+
+		return markdownValidator.validate();
+	}
+
+	public void uploadToLiferay() throws Exception {
 		int addedStructuredContentCount = 0;
-		Set<Long> existingStructuredContentIds = new HashSet<>();
-		Map<String, StructuredContent> externalReferenceCodeStructuredContents =
-			new HashMap<>();
-		Map<String, StructuredContent> friendlyUrlPathStructuredContents =
-			new HashMap<>();
-		Map<Long, StructuredContent> idStructuredContents = new HashMap<>();
 		Set<Long> importedStructuredContentIds = new HashSet<>();
+		int skippedStructuredContentCount = 0;
 		int updatedStructuredContentCount = 0;
 
 		List<StructuredContent> siteStructuredContents =
@@ -313,32 +483,23 @@ public class Main {
 			"Site has " + siteStructuredContents.size() +
 				" structured contents");
 
-		for (StructuredContent siteStructuredContent : siteStructuredContents) {
-			if (siteStructuredContent.getContentStructureId() !=
-					_liferayContentStructureId) {
+		Map<String, StructuredContent> externalReferenceCodeStructuredContents =
+			_getExternalReferenceCodeStructuredContents(siteStructuredContents);
+		Map<String, StructuredContent> friendlyUrlPathStructuredContents =
+			_getFriendlyUrlPathStructuredContents(siteStructuredContents);
 
-				continue;
-			}
+		Set<String> divergentExternalReferenceCodes =
+			_getDivergentExternalReferenceCodes(
+				externalReferenceCodeStructuredContents);
 
-			existingStructuredContentIds.add(siteStructuredContent.getId());
-			externalReferenceCodeStructuredContents.put(
-				siteStructuredContent.getExternalReferenceCode(),
-				siteStructuredContent);
-			friendlyUrlPathStructuredContents.put(
-				siteStructuredContent.getFriendlyUrlPath(),
-				siteStructuredContent);
-			idStructuredContents.put(
-				siteStructuredContent.getId(), siteStructuredContent);
-		}
-
-		for (String fileName : _fileNames) {
+		for (String fileName : _docsDirectory.getFileNames()) {
 			if (!fileName.contains("/en/") || !fileName.endsWith(".md")) {
 				continue;
 			}
 
 			if (_offline) {
 				JSONObject jsonObject = new JSONObject(
-					_toStructuredContent(fileName));
+					_structuredContentBuilder.toStructuredContent(fileName));
 
 				_write(
 					jsonObject.toString(4), "build/structured-content",
@@ -347,46 +508,61 @@ public class Main {
 				continue;
 			}
 
-			long delta = System.currentTimeMillis() - start;
+			_renewOAuthAuthorization();
 
-			if (delta > (_oauthExpirationMillis - 100000)) {
-				_initResourceBuilders(_getOAuthAuthorization());
-
-				start = System.currentTimeMillis();
-			}
+			StructuredContent desiredStructuredContent = null;
+			Long publishedStructuredContentId = null;
 
 			try {
-				StructuredContent importedStructuredContent = null;
+				StructuredContent structuredContent =
+					_structuredContentBuilder.toStructuredContent(fileName);
 
-				StructuredContent structuredContent = _toStructuredContent(
-					fileName);
+				desiredStructuredContent = structuredContent;
+
+				StructuredContent importedStructuredContent = null;
 
 				StructuredContent siteStructuredContent =
 					externalReferenceCodeStructuredContents.get(
 						structuredContent.getExternalReferenceCode());
 
+				if ((siteStructuredContent != null) &&
+					_isMovedStructuredContent(
+						siteStructuredContent, structuredContent)) {
+
+					importedStructuredContentIds.add(
+						siteStructuredContent.getId());
+
+					System.out.println(
+						StringBundler.concat(
+							"Moving structured content ",
+							siteStructuredContent.getFriendlyUrlPath(), " to ",
+							structuredContent.getFriendlyUrlPath()));
+
+					_structuredContentResource.deleteStructuredContent(
+						siteStructuredContent.getId());
+
+					friendlyUrlPathStructuredContents.remove(
+						siteStructuredContent.getFriendlyUrlPath());
+
+					siteStructuredContent = null;
+				}
+
 				if (siteStructuredContent != null) {
 					importedStructuredContentIds.add(
 						siteStructuredContent.getId());
 
-					String relativeFileName = StringUtil.removeSubstring(
-						fileName, _baseDirName);
-
-					if (!_diffFileNames.isEmpty() &&
-						!_diffFileNames.contains(relativeFileName) &&
-						!_skipDiffCheck) {
-
-						System.out.println(
-							"Skipping structured content (no diffs) " +
-								structuredContent.getFriendlyUrlPath());
-
-						continue;
-					}
-
 					if (StringUtil.equals(
-							DigestUtils.md5Hex(new FileInputStream(fileName)),
+							_structuredContentBuilder.generateMD5Hex(
+								new File(fileName)),
 							_getMD5Hex(siteStructuredContent)) &&
+						StringUtil.equals(
+							structuredContent.getFriendlyUrlPath(),
+							siteStructuredContent.getFriendlyUrlPath()) &&
+						!divergentExternalReferenceCodes.contains(
+							structuredContent.getExternalReferenceCode()) &&
 						!_skipDiffCheck) {
+
+						skippedStructuredContentCount++;
 
 						System.out.println(
 							"Skipping structured content (same md5Hex) " +
@@ -399,17 +575,26 @@ public class Main {
 						"Updating structured content " +
 							structuredContent.getFriendlyUrlPath());
 
+					publishedStructuredContentId =
+						siteStructuredContent.getId();
+
 					importedStructuredContent =
 						_structuredContentResource.putStructuredContent(
 							siteStructuredContent.getId(), structuredContent);
 
-					_structuredContentResource.
-						putStructuredContentPermissionsPage(
-							importedStructuredContent.getId(),
-							_getPermissions(
-								fileName, importedStructuredContent.getId()));
-
-					_putRAGDocument(importedStructuredContent);
+					try {
+						_structuredContentResource.
+							putStructuredContentPermissionsPage(
+								importedStructuredContent.getId(),
+								_getPermissions(
+									fileName,
+									importedStructuredContent.getId()));
+					}
+					catch (Exception exception) {
+						throw new Exception(
+							"Unable to set permissions: " + exception,
+							exception);
+					}
 
 					updatedStructuredContentCount++;
 				}
@@ -422,47 +607,24 @@ public class Main {
 						importedStructuredContentIds.add(
 							friendlyUrlPathSiteStructuredContent.getId());
 
-						String relativeFileName = StringUtil.removeSubstring(
-							fileName, _baseDirName);
-
-						if (!_diffFileNames.isEmpty() &&
-							!_diffFileNames.contains(relativeFileName) &&
-							!_skipDiffCheck) {
-
-							System.out.println(
-								"Skipping structured content " +
-									structuredContent.getFriendlyUrlPath());
-
-							continue;
-						}
-
 						System.out.println(
 							"Deleting structured content " +
 								structuredContent.getFriendlyUrlPath());
-
-						_deleteRAGDocument(structuredContent.getId());
 
 						_structuredContentResource.deleteStructuredContent(
 							friendlyUrlPathSiteStructuredContent.getId());
 					}
 
-					String relativeFileName = StringUtil.removeSubstring(
-						fileName, _baseDirName);
-
-					if (!_diffFileNames.isEmpty() &&
-						!_diffFileNames.contains(relativeFileName) &&
-						!_skipDiffCheck) {
-
-						System.out.println(
-							"Skipping structured content " +
-								structuredContent.getFriendlyUrlPath());
-
-						continue;
-					}
-
 					System.out.println(
 						"Adding structured content " +
 							structuredContent.getFriendlyUrlPath());
+
+					structuredContent.setStructuredContentFolderId(
+						() -> _getStructuredContentFolderId(
+							FilenameUtils.getPathNoEndSeparator(
+								fileName.substring(
+									_docsDirectory.getDocsDirName(
+									).length()))));
 
 					structuredContent.setPermissions(
 						() -> _getPermissions(
@@ -475,7 +637,12 @@ public class Main {
 									getStructuredContentFolderId(),
 								structuredContent);
 
-					_putRAGDocument(importedStructuredContent);
+					publishedStructuredContentId =
+						importedStructuredContent.getId();
+
+					importedStructuredContent =
+						_structuredContentResource.putStructuredContent(
+							publishedStructuredContentId, structuredContent);
 
 					addedStructuredContentCount++;
 				}
@@ -484,304 +651,385 @@ public class Main {
 						importedStructuredContent.getFriendlyUrlPath(),
 						structuredContent.getFriendlyUrlPath())) {
 
-					_deleteRAGDocument(importedStructuredContent.getId());
+					String friendlyUrlPath =
+						importedStructuredContent.getFriendlyUrlPath();
 
 					_structuredContentResource.deleteStructuredContent(
 						importedStructuredContent.getId());
 
+					publishedStructuredContentId = null;
+
 					throw new Exception(
-						"Modified friendly URL path " +
-							importedStructuredContent.getFriendlyUrlPath());
+						"Modified friendly URL path " + friendlyUrlPath);
 				}
+
+				_publishJapaneseStructuredContent(
+					importedStructuredContent.getId(), fileName);
 			}
 			catch (Exception exception) {
-				_error(fileName + ": " + exception.getMessage());
+				_runReport.addError(fileName + ": " + exception);
+
+				if (publishedStructuredContentId != null) {
+					_invalidateMD5Hex(
+						publishedStructuredContentId, desiredStructuredContent);
+				}
 			}
 		}
 
-		existingStructuredContentIds.removeAll(importedStructuredContentIds);
+		int deletedStructuredContentCount = _deleteOrphans(
+			_getIdStructuredContents(siteStructuredContents),
+			importedStructuredContentIds);
 
-		for (Long existingStructuredContentId : existingStructuredContentIds) {
+		_runReport.printSummary(
+			addedStructuredContentCount, deletedStructuredContentCount,
+			updatedStructuredContentCount);
+
+		SlackNotifier slackNotifier = new SlackNotifier(_runReport);
+
+		slackNotifier.sendReport(
+			addedStructuredContentCount, deletedStructuredContentCount,
+			skippedStructuredContentCount, updatedStructuredContentCount);
+
+		_runReport.printErrors();
+
+		if (_runReport.hasErrors()) {
+			throw new Exception(_runReport.getErrorCount() + " error messages");
+		}
+
+		_runReport.recordSuccess();
+	}
+
+	private static void _captureConsole() {
+		try {
+			OutputStream outputStream = Files.newOutputStream(
+				Paths.get("/tmp/liferay_learn_run.log"),
+				StandardOpenOption.APPEND, StandardOpenOption.CREATE);
+
+			System.setErr(
+				new PrintStream(
+					new TeeOutputStream(System.err, outputStream), true,
+					StandardCharsets.UTF_8.name()));
+			System.setOut(
+				new PrintStream(
+					new TeeOutputStream(System.out, outputStream), true,
+					StandardCharsets.UTF_8.name()));
+		}
+		catch (Exception exception) {
+			System.out.println(
+				"Unable to capture the console output: " + exception);
+		}
+	}
+
+	private int _deleteOrphans(
+		Map<Long, StructuredContent> idStructuredContents,
+		Set<Long> importedStructuredContentIds) {
+
+		Set<Long> orphanedStructuredContentIds = new HashSet<>(
+			idStructuredContents.keySet());
+
+		orphanedStructuredContentIds.removeAll(importedStructuredContentIds);
+
+		int excludedCount = 0;
+
+		Iterator<Long> iterator = orphanedStructuredContentIds.iterator();
+
+		while (iterator.hasNext()) {
 			StructuredContent structuredContent = idStructuredContents.get(
-				existingStructuredContentId);
+				iterator.next());
+
+			if (!_isExcludedOrphan(structuredContent.getFriendlyUrlPath())) {
+				continue;
+			}
+
+			excludedCount++;
+
+			iterator.remove();
+		}
+
+		if (excludedCount > 0) {
+			System.out.println(
+				excludedCount +
+					" orphaned structured contents were kept (excluded).");
+		}
+
+		int orphanCount = orphanedStructuredContentIds.size();
+
+		if (!_isOrphanCleanupEnabled()) {
+			System.out.println(
+				orphanCount +
+					" orphaned structured contents were kept (cleanup " +
+						"disabled).");
+
+			return 0;
+		}
+
+		if (_runReport.hasErrors()) {
+			System.out.println(
+				StringBundler.concat(
+					"Skipping orphan cleanup because the run has ",
+					_runReport.getErrorCount(), " errors: ", orphanCount,
+					" orphaned structured contents were kept."));
+
+			return 0;
+		}
+
+		int inventoryCount = idStructuredContents.size();
+
+		int orphanThreshold = _getOrphanThreshold(inventoryCount);
+
+		if (orphanCount > orphanThreshold) {
+			_runReport.addError(
+				StringBundler.concat(
+					"Orphan cleanup aborted: ", orphanCount, " orphans exceed ",
+					"the threshold of ", orphanThreshold,
+					" for an inventory of ", inventoryCount,
+					". No structured content was deleted."));
+
+			return 0;
+		}
+
+		for (Long orphanedStructuredContentId : orphanedStructuredContentIds) {
+			StructuredContent structuredContent = idStructuredContents.get(
+				orphanedStructuredContentId);
 
 			try {
+				_renewOAuthAuthorization();
+
 				System.out.println(
 					"Deleting orphaned structured content " +
 						structuredContent.getFriendlyUrlPath());
 
-				_deleteRAGDocument(existingStructuredContentId);
-
 				_structuredContentResource.deleteStructuredContent(
-					existingStructuredContentId);
+					orphanedStructuredContentId);
 			}
 			catch (Exception exception) {
-				_error(
-					structuredContent.getFriendlyUrlPath() + ": " +
-						exception.getMessage());
+				_runReport.addError(
+					structuredContent.getFriendlyUrlPath() + ": " + exception);
 			}
 		}
 
-		_saveHashToFile(new File(_baseDirName), _newHash);
+		return orphanCount;
+	}
+
+	private void _describeDivergence(
+		StructuredContent structuredContent, String html) {
+
+		String content = _getContent(structuredContent);
+
+		int index = 0;
+
+		while ((index < content.length()) && (index < html.length()) &&
+			   (content.charAt(index) == html.charAt(index))) {
+
+			index++;
+		}
 
 		System.out.println(
-			addedStructuredContentCount + " structured contents were added.");
-		System.out.println(
-			existingStructuredContentIds.size() +
-				" structured contents were deleted.");
-		System.out.println(
-			updatedStructuredContentCount +
-				" structured contents were updated.");
+			StringBundler.concat(
+				"First divergence in ", structuredContent.getFriendlyUrlPath(),
+				": the published content is ", content.length(),
+				" characters, the generated HTML is ", html.length(),
+				", they differ from character ", index));
 
-		if (!_warningMessages.isEmpty()) {
-			System.out.println(_warningMessages.size() + " warning messages:");
+		String publishedExcerpt = StringUtil.replace(
+			content.substring(
+				Math.max(0, index - 60),
+				Math.min(content.length(), index + 60)),
+			CharPool.NEW_LINE, "\\n");
 
-			for (String warningMessage : _warningMessages) {
-				System.out.println(warningMessage);
+		System.out.println("Published: " + publishedExcerpt);
+
+		String generatedExcerpt = StringUtil.replace(
+			html.substring(
+				Math.max(0, index - 60), Math.min(html.length(), index + 60)),
+			CharPool.NEW_LINE, "\\n");
+
+		System.out.println("Generated: " + generatedExcerpt);
+	}
+
+	private String _getContent(StructuredContent structuredContent) {
+		ContentField[] contentFields = structuredContent.getContentFields();
+
+		for (ContentField contentField : contentFields) {
+			if (!StringUtil.equals(contentField.getName(), "content")) {
+				continue;
 			}
+
+			ContentFieldValue contentFieldValue =
+				contentField.getContentFieldValue();
+
+			return contentFieldValue.getData();
 		}
 
-		if (!_errorMessages.isEmpty()) {
-			System.out.println(_errorMessages.size() + " error messages:");
-
-			for (String errorMessage : _errorMessages) {
-				System.out.println(errorMessage);
-			}
-
-			throw new Exception(_errorMessages.size() + " error messages");
-		}
+		return StringPool.BLANK;
 	}
 
-	private void _addFileNames(String fileName) {
-		File file = new File(fileName);
+	private int _getDivergenceThreshold(int publishedCount) {
+		int percentage = GetterUtil.getInteger(
+			System.getenv("LIFERAY_LEARN_ETC_CRON_VERIFY_THRESHOLD_PERCENTAGE"),
+			5);
 
-		if (file.isDirectory() &&
-			!Objects.equals(file.getName(), "resources") &&
-			!Objects.equals(file.getName(), "_snippets")) {
+		int threshold = (publishedCount * percentage) / 100;
 
-			for (String currentFileName : file.list()) {
-				_addFileNames(fileName + "/" + currentFileName);
-			}
+		if (threshold < 5) {
+			return 5;
 		}
 
-		_fileNames.add(fileName);
+		return threshold;
 	}
 
-	private void _deleteRAGDocument(long id) throws Exception {
-		HttpDelete httpDelete = new HttpDelete(
-			System.getenv("LIFERAY_LEARN_ETC_SPRING_BOOT_SERVER_URL") +
-				"/rag/document/" + id);
-
-		HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
-
-		try (CloseableHttpClient closeableHttpClient =
-				httpClientBuilder.build();
-
-			CloseableHttpResponse closeableHttpResponse =
-				closeableHttpClient.execute(httpDelete)) {
-
-			StatusLine statusLine = closeableHttpResponse.getStatusLine();
-
-			if (statusLine.getStatusCode() != HttpStatus.SC_OK) {
-				System.out.println(
-					"Unable to delete existing RAG document " + id);
-			}
-		}
-		catch (Exception exception) {
-			_error(exception.getMessage());
-		}
-	}
-
-	private void _error(String errorMessage) {
-		System.out.println(errorMessage);
-
-		_errorMessages.add(errorMessage);
-	}
-
-	private JSONArray _getBreadcrumbJSONArray(File file) throws Exception {
-		JSONArray breadcrumbJSONArray = new JSONArray();
-
-		if (file == null) {
-			return breadcrumbJSONArray;
-		}
-
-		File parentMarkdownFile = null;
-
-		while ((parentMarkdownFile = _getParentMarkdownFile(file)) != null) {
-			breadcrumbJSONArray.put(
-				_getNavigationItemJSONObject(parentMarkdownFile));
-
-			file = parentMarkdownFile;
-		}
-
-		return breadcrumbJSONArray;
-	}
-
-	private JSONArray _getChildrenJSONArray(File file, boolean nested)
+	private Set<String> _getDivergentExternalReferenceCodes(
+			Map<String, StructuredContent>
+				externalReferenceCodeStructuredContents)
 		throws Exception {
 
-		JSONArray childrenJSONArray = new JSONArray();
+		Set<String> divergentExternalReferenceCodes = new TreeSet<>();
 
-		if (file == null) {
-			return childrenJSONArray;
-		}
+		List<String> divergentFriendlyUrlPaths = new ArrayList<>();
+		int publishedCount = 0;
 
-		SnakeYamlFrontMatterVisitor snakeYamlFrontMatterVisitor =
-			new SnakeYamlFrontMatterVisitor();
-
-		snakeYamlFrontMatterVisitor.visit(
-			_parser.parse(
-				FileUtils.readFileToString(file, StandardCharsets.UTF_8)));
-
-		Map<String, Object> data = snakeYamlFrontMatterVisitor.getData();
-
-		if ((data == null) || !data.containsKey("toc")) {
-			return childrenJSONArray;
-		}
-
-		Object toc = data.get("toc");
-
-		if (!(toc instanceof ArrayList)) {
-			return childrenJSONArray;
-		}
-
-		for (Object tocEntry : (ArrayList)toc) {
-			if (!(tocEntry instanceof String)) {
+		for (String fileName : _docsDirectory.getFileNames()) {
+			if (!fileName.contains("/en/") || !fileName.endsWith(".md")) {
 				continue;
 			}
 
-			Matcher matcher = _markdownLinkPattern.matcher((String)tocEntry);
+			File file = new File(fileName);
 
-			if (matcher.find()) {
-				JSONObject linkJSONObject = new JSONObject();
+			String uuid = _markdownParser.getUuid(
+				FileUtils.readFileToString(file, StandardCharsets.UTF_8));
 
-				linkJSONObject.put(
-					"title", matcher.group(1)
-				).put(
-					"url", matcher.group(2)
-				);
+			StructuredContent siteStructuredContent =
+				externalReferenceCodeStructuredContents.get(uuid);
 
-				childrenJSONArray.put(linkJSONObject);
+			if (siteStructuredContent == null) {
+				continue;
+			}
+
+			publishedCount++;
+
+			if (!StringUtil.equals(
+					_structuredContentBuilder.generateMD5Hex(file),
+					_getMD5Hex(siteStructuredContent))) {
 
 				continue;
 			}
 
-			String tocFileName = (String)tocEntry;
+			String html = FileUtils.readFileToString(
+				_docsDirectory.getHTMLFile(file), StandardCharsets.UTF_8);
 
-			String filePathString =
-				file.getParent() + File.separator + tocFileName;
-
-			File tocFile = new File(filePathString);
-
-			if (!tocFile.exists() || tocFile.isDirectory()) {
-				_warn(
-					StringBundler.concat(
-						"Nonexistent or invalid TOC file ", tocFile.getPath(),
-						" in file ", file.getPath()));
+			if (StringUtil.equals(
+					TextUtil.normalizeHTML(
+						TextUtil.unescapeUnicode(
+							_getContent(siteStructuredContent))),
+					TextUtil.normalizeHTML(html))) {
 
 				continue;
 			}
 
-			JSONObject childJSONObject = _getNavigationItemJSONObject(tocFile);
-
-			if (nested) {
-				childJSONObject.put(
-					"children", _getChildrenJSONArray(tocFile, false));
+			if (divergentExternalReferenceCodes.isEmpty()) {
+				_describeDivergence(siteStructuredContent, html);
 			}
 
-			childrenJSONArray.put(childJSONObject);
+			divergentExternalReferenceCodes.add(uuid);
+			divergentFriendlyUrlPaths.add(
+				siteStructuredContent.getFriendlyUrlPath());
 		}
 
-		return childrenJSONArray;
+		if (divergentExternalReferenceCodes.isEmpty()) {
+			System.out.println(
+				StringBundler.concat(
+					"Verified ", publishedCount,
+					" published structured contents against the repository: ",
+					"none diverged."));
+
+			return divergentExternalReferenceCodes;
+		}
+
+		int threshold = _getDivergenceThreshold(publishedCount);
+
+		if (divergentExternalReferenceCodes.size() > threshold) {
+			_runReport.addError(
+				StringBundler.concat(
+					"Verification aborted: ",
+					divergentExternalReferenceCodes.size(), " of ",
+					publishedCount,
+					" published structured contents diverge from the ",
+					"repository, above the threshold of ", threshold,
+					". Nothing was realigned: such a number points at the ",
+					"comparison itself rather than at manual edits."));
+
+			return Collections.emptySet();
+		}
+
+		System.out.println(
+			StringBundler.concat(
+				"Verification found ", divergentExternalReferenceCodes.size(),
+				" of ", publishedCount,
+				" published structured contents diverging from the ",
+				"repository, realigning them:"));
+
+		for (String divergentFriendlyUrlPath : divergentFriendlyUrlPaths) {
+			System.out.println(
+				"Diverged from the repository: " + divergentFriendlyUrlPath);
+		}
+
+		return divergentExternalReferenceCodes;
 	}
 
-	private String _getDescription(String text) {
-		TextCollectingVisitor textCollectingVisitor =
-			new TextCollectingVisitor();
+	private Map<String, StructuredContent>
+		_getExternalReferenceCodeStructuredContents(
+			List<StructuredContent> structuredContents) {
 
-		return StringUtil.shorten(
-			textCollectingVisitor.collectAndGetText(_parser.parse(text)), 300);
-	}
+		Map<String, StructuredContent> externalReferenceCodeStructuredContents =
+			new HashMap<>();
 
-	private String[] _getDirNames(String fileName) {
-		List<String> dirNames = new ArrayList<>();
+		for (StructuredContent structuredContent : structuredContents) {
+			if (structuredContent.getContentStructureId() ==
+					_liferayContentStructureId) {
 
-		String[] parts = fileName.split(
-			Matcher.quoteReplacement(File.separator));
-
-		for (String part : parts) {
-			if (StringUtil.equalsIgnoreCase(part, "en") ||
-				StringUtil.equalsIgnoreCase(part, "ja") ||
-				StringUtil.equalsIgnoreCase(part, "latest")) {
-
-				continue;
+				externalReferenceCodeStructuredContents.put(
+					structuredContent.getExternalReferenceCode(),
+					structuredContent);
 			}
-
-			String dirName = part;
-
-			dirNames.add(dirName);
 		}
 
-		return dirNames.toArray(new String[0]);
+		return externalReferenceCodeStructuredContents;
 	}
 
-	private void _getGitDiff(File dir) throws Exception {
-		Git git = Git.open(new File(dir, ".git"));
+	private Map<String, StructuredContent>
+		_getFriendlyUrlPathStructuredContents(
+			List<StructuredContent> structuredContents) {
 
-		Repository repository = git.getRepository();
+		Map<String, StructuredContent> friendlyUrlPathStructuredContents =
+			new HashMap<>();
 
-		ObjectId newRev = repository.resolve("HEAD");
-		ObjectId oldRev = repository.resolve(_oldHash);
+		for (StructuredContent structuredContent : structuredContents) {
+			if (structuredContent.getContentStructureId() ==
+					_liferayContentStructureId) {
 
-		_newHash = newRev.getName();
-
-		if (oldRev == null) {
-			return;
-		}
-
-		CanonicalTreeParser newTreeParser = new CanonicalTreeParser();
-		CanonicalTreeParser oldTreeParser = new CanonicalTreeParser();
-
-		try (ObjectReader objectReader = repository.newObjectReader()) {
-			RevCommit newCommit = repository.parseCommit(newRev);
-			RevCommit oldCommit = repository.parseCommit(oldRev);
-
-			RevTree newCommitTree = newCommit.getTree();
-			RevTree oldCommitTree = oldCommit.getTree();
-
-			newTreeParser.reset(objectReader, newCommitTree.getId());
-			oldTreeParser.reset(objectReader, oldCommitTree.getId());
-		}
-
-		List<DiffEntry> diffs = git.diff(
-		).setOldTree(
-			oldTreeParser
-		).setNewTree(
-			newTreeParser
-		).call();
-
-		for (DiffEntry diff : diffs) {
-			String newPath = diff.getNewPath();
-
-			if (!newPath.endsWith(".md")) {
-				continue;
+				friendlyUrlPathStructuredContents.put(
+					structuredContent.getFriendlyUrlPath(), structuredContent);
 			}
-
-			_diffFileNames.add("/" + newPath);
 		}
+
+		return friendlyUrlPathStructuredContents;
 	}
 
-	private String _getHTML(File file) throws Exception {
-		String htmlFilePath = file.getCanonicalPath();
+	private Map<Long, StructuredContent> _getIdStructuredContents(
+		List<StructuredContent> structuredContents) {
 
-		htmlFilePath = htmlFilePath.replaceFirst(
-			_docsDirName, _baseDirName + "/site");
+		Map<Long, StructuredContent> idStructuredContents = new HashMap<>();
 
-		htmlFilePath = htmlFilePath.replaceFirst("\\.md", ".html");
+		for (StructuredContent structuredContent : structuredContents) {
+			if (structuredContent.getContentStructureId() ==
+					_liferayContentStructureId) {
 
-		File htmlFile = new File(htmlFilePath);
+				idStructuredContents.put(
+					structuredContent.getId(), structuredContent);
+			}
+		}
 
-		return FileUtils.readFileToString(htmlFile, StandardCharsets.UTF_8);
+		return idStructuredContents;
 	}
 
 	private String _getMD5Hex(StructuredContent structuredContent) {
@@ -801,56 +1049,6 @@ public class Main {
 		return StringPool.BLANK;
 	}
 
-	private JSONObject _getNavigationItemJSONObject(File file)
-		throws Exception {
-
-		JSONObject navigationItemJSONObject = new JSONObject();
-
-		if (file == null) {
-			return navigationItemJSONObject;
-		}
-
-		navigationItemJSONObject.put(
-			"title",
-			_getTitle(
-				FileUtils.readFileToString(file, StandardCharsets.UTF_8)));
-
-		Path docsPath = Paths.get(_docsDirName);
-		Path filePath = Paths.get(file.toURI());
-
-		Path relativePath = docsPath.relativize(filePath);
-
-		String urlString =
-			"/w/" + FilenameUtils.removeExtension(String.valueOf(relativePath));
-
-		urlString =
-			urlString.substring(0, urlString.indexOf("/latest/")) +
-				urlString.substring(urlString.indexOf("/latest/") + 10);
-
-		navigationItemJSONObject.put("url", urlString);
-
-		return navigationItemJSONObject;
-	}
-
-	private JSONObject _getNavigationJSONObject(File file) throws Exception {
-		JSONObject navigationJSONObject = new JSONObject();
-
-		navigationJSONObject.put(
-			"breadcrumb", _getBreadcrumbJSONArray(file)
-		).put(
-			"children", _getChildrenJSONArray(file, true)
-		).put(
-			"parent", _getNavigationItemJSONObject(_getParentMarkdownFile(file))
-		).put(
-			"self", _getNavigationItemJSONObject(file)
-		).put(
-			"siblings",
-			_getChildrenJSONArray(_getParentMarkdownFile(file), false)
-		);
-
-		return navigationJSONObject;
-	}
-
 	private String _getOAuthAuthorization() throws Exception {
 		HttpPost httpPost = new HttpPost(_liferayURL + "/o/oauth2/token");
 
@@ -865,6 +1063,16 @@ public class Main {
 		httpPost.setHeader("Content-Type", "application/x-www-form-urlencoded");
 
 		HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
+
+		httpClientBuilder.setDefaultRequestConfig(
+			RequestConfig.custom(
+			).setConnectionRequestTimeout(
+				30000
+			).setConnectTimeout(
+				30000
+			).setSocketTimeout(
+				120000
+			).build());
 
 		try (CloseableHttpClient closeableHttpClient =
 				httpClientBuilder.build();
@@ -883,6 +1091,8 @@ public class Main {
 				_oauthExpirationMillis =
 					jsonObject.getLong("expires_in") * 1000;
 
+				_oauthIssuedMillis = System.currentTimeMillis();
+
 				return jsonObject.getString("token_type") + " " +
 					jsonObject.getString("access_token");
 			}
@@ -891,40 +1101,18 @@ public class Main {
 		}
 	}
 
-	private File _getParentMarkdownFile(File file) throws Exception {
-		if (Objects.equals(file.getName(), "index.md")) {
-			return null;
+	private int _getOrphanThreshold(int inventoryCount) {
+		int percentage = GetterUtil.getInteger(
+			System.getenv("LIFERAY_LEARN_ETC_CRON_ORPHAN_THRESHOLD_PERCENTAGE"),
+			5);
+
+		int threshold = (inventoryCount * percentage) / 100;
+
+		if (threshold < 5) {
+			return 5;
 		}
 
-		File parentFile = file.getParentFile();
-
-		File parentMarkdownFile = new File(parentFile.getPath() + ".md");
-
-		while (!parentMarkdownFile.exists()) {
-			parentFile = parentFile.getParentFile();
-
-			if (Objects.equals(parentFile.getPath(), _docsDirName)) {
-				break;
-			}
-
-			parentMarkdownFile = new File(parentFile.getPath() + ".md");
-		}
-
-		if (!parentMarkdownFile.exists()) {
-			parentFile = file.getParentFile();
-
-			parentMarkdownFile = new File(
-				parentFile.getPath() + File.separator + "index.md");
-		}
-
-		if (!parentMarkdownFile.exists()) {
-			_warn(
-				"Missing parent markdown for " + parentMarkdownFile.getPath());
-
-			return null;
-		}
-
-		return parentMarkdownFile;
+		return threshold;
 	}
 
 	private Permission[] _getPermissions(
@@ -951,16 +1139,31 @@ public class Main {
 			}
 		}
 
-		SnakeYamlFrontMatterVisitor snakeYamlFrontMatterVisitor =
-			new SnakeYamlFrontMatterVisitor();
+		if (_isRestrictedFile(fileName)) {
+			for (String restrictedRole : _restrictedRoles) {
+				permissions.add(
+					new Permission() {
+						{
+							setActionIds(
+								new String[] {"ADD_DISCUSSION", "VIEW"});
+							setRoleName(restrictedRole);
+						}
+					});
+			}
 
-		File file = new File(fileName);
+			permissions.add(
+				new Permission() {
+					{
+						setActionIds(new String[0]);
+						setRoleName("Guest");
+					}
+				});
 
-		snakeYamlFrontMatterVisitor.visit(
-			_parser.parse(
-				FileUtils.readFileToString(file, StandardCharsets.UTF_8)));
+			return permissions.toArray(new Permission[0]);
+		}
 
-		Map<String, Object> data = snakeYamlFrontMatterVisitor.getData();
+		Map<String, Object> data = _markdownParser.getFrontMatter(
+			new File(fileName));
 
 		if ((data == null) || !data.containsKey("visibility")) {
 			permissions.add(
@@ -976,11 +1179,11 @@ public class Main {
 
 		Object visibilityObject = data.get("visibility");
 
-		if (!(visibilityObject instanceof ArrayList)) {
+		if (!(visibilityObject instanceof List)) {
 			return null;
 		}
 
-		for (Object object : (ArrayList)visibilityObject) {
+		for (Object object : (List)visibilityObject) {
 			if (!(object instanceof String)) {
 				continue;
 			}
@@ -1018,15 +1221,49 @@ public class Main {
 
 		List<StructuredContent> structuredContents = new ArrayList<>();
 
+		long lastPage = 0;
+
 		for (int page = 1;; page++) {
-			Page<StructuredContent> structuredContentsPage =
-				_structuredContentResource.getSiteStructuredContentsPage(
-					siteId, true, null, null, null, Pagination.of(page, 50),
-					null);
+			Page<StructuredContent> structuredContentsPage = null;
+
+			for (int attempt = 1;; attempt++) {
+				_renewOAuthAuthorization();
+
+				try {
+					structuredContentsPage =
+						_structuredContentResource.
+							getSiteStructuredContentsPage(
+								siteId, true, null, null, null,
+								Pagination.of(page, 50), null);
+
+					break;
+				}
+				catch (Exception exception) {
+					if (attempt >= _READ_ATTEMPT_COUNT) {
+						throw new Exception(
+							StringBundler.concat(
+								"Unable to read page ", page, " of ", lastPage,
+								" after reading ", structuredContents.size(),
+								" structured contents in ", attempt,
+								" attempts: ", exception),
+							exception);
+					}
+
+					System.err.println(
+						StringBundler.concat(
+							"Retrying page ", page, " of ", lastPage,
+							" after attempt ", attempt, " failed: ",
+							exception));
+
+					Thread.sleep(_READ_ATTEMPT_DELAY * attempt);
+				}
+			}
 
 			structuredContents.addAll(structuredContentsPage.getItems());
 
-			if (structuredContentsPage.getLastPage() == page) {
+			lastPage = structuredContentsPage.getLastPage();
+
+			if (lastPage == page) {
 				break;
 			}
 		}
@@ -1039,7 +1276,7 @@ public class Main {
 
 		Long structuredContentFolderId = 0L;
 
-		for (String dirName : _getDirNames(fileName)) {
+		for (String dirName : _docsDirectory.getDirNames(fileName)) {
 			structuredContentFolderId = _getStructuredContentFolderId(
 				dirName, structuredContentFolderId);
 		}
@@ -1116,12 +1353,7 @@ public class Main {
 	}
 
 	private Long[] _getTaxonomyCategoryIds(String text) {
-		SnakeYamlFrontMatterVisitor snakeYamlFrontMatterVisitor =
-			new SnakeYamlFrontMatterVisitor();
-
-		snakeYamlFrontMatterVisitor.visit(_parser.parse(text));
-
-		Map<String, Object> data = snakeYamlFrontMatterVisitor.getData();
+		Map<String, Object> data = _markdownParser.getFrontMatter(text);
 
 		if ((data == null) || !data.containsKey("taxonomy-category-names")) {
 			return new Long[0];
@@ -1129,7 +1361,7 @@ public class Main {
 
 		Object taxonomyCategoryNames = data.get("taxonomy-category-names");
 
-		if (!(taxonomyCategoryNames instanceof ArrayList)) {
+		if (!(taxonomyCategoryNames instanceof List)) {
 			return new Long[0];
 		}
 
@@ -1141,12 +1373,10 @@ public class Main {
 					"OFFICIAL_DOCUMENTATION"));
 		}
 		catch (Exception exception) {
-			_error(exception.getMessage());
+			_runReport.addError(exception.getMessage());
 		}
 
-		for (Object taxonomyCategoryNameObject :
-				(ArrayList)taxonomyCategoryNames) {
-
+		for (Object taxonomyCategoryNameObject : (List)taxonomyCategoryNames) {
 			if (!(taxonomyCategoryNameObject instanceof String)) {
 				continue;
 			}
@@ -1154,7 +1384,7 @@ public class Main {
 			String taxonomyCategoryName = (String)taxonomyCategoryNameObject;
 
 			if (!_taxonomyCategoriesJSONObject.has(taxonomyCategoryName)) {
-				_warn(
+				_runReport.addWarning(
 					"No taxonomy category exists with the name: " +
 						taxonomyCategoryName);
 
@@ -1172,108 +1402,10 @@ public class Main {
 		return taxonomyCategoryIds.toArray(new Long[0]);
 	}
 
-	private String _getTitle(Node node) {
-		if (node instanceof Heading) {
-			Heading heading = (Heading)node;
+	private String _getTaxonomyCategoryKey(
+		String taxonomyVocabularyName, String taxonomyCategoryName) {
 
-			if ((heading.getLevel() == 1) && heading.hasChildren()) {
-				TextCollectingVisitor textCollectingVisitor =
-					new TextCollectingVisitor();
-
-				return textCollectingVisitor.collectAndGetText(heading);
-			}
-		}
-
-		if ((node instanceof Block) && node.hasChildren()) {
-			Node childNode = node.getFirstChild();
-
-			while (childNode != null) {
-				String title = _getTitle(childNode);
-
-				if (title != null) {
-					return title;
-				}
-
-				childNode = childNode.getNext();
-			}
-		}
-
-		return null;
-	}
-
-	private String _getTitle(String text) {
-		return _getTitle(_parser.parse(text));
-	}
-
-	private String _getUuid(String text) {
-		Document document = _parser.parse(text);
-
-		SnakeYamlFrontMatterVisitor snakeYamlFrontMatterVisitor =
-			new SnakeYamlFrontMatterVisitor();
-
-		snakeYamlFrontMatterVisitor.visit(document);
-
-		Map<String, Object> data = snakeYamlFrontMatterVisitor.getData();
-
-		if ((data == null) || !data.containsKey("uuid")) {
-			return StringPool.BLANK;
-		}
-
-		Object uuid = data.get("uuid");
-
-		if (!(uuid instanceof String)) {
-			return StringPool.BLANK;
-		}
-
-		return uuid.toString();
-	}
-
-	private void _initFlexmark() {
-		MutableDataSet mutableDataSet = new MutableDataSet(
-		).set(
-			AdmonitionExtension.QUALIFIER_TYPE_MAP,
-			HashMapBuilder.put(
-				"error", "error"
-			).put(
-				"important", "important"
-			).put(
-				"note", "note"
-			).put(
-				"tip", "tip"
-			).put(
-				"warning", "warning"
-			).build()
-		).set(
-			AdmonitionExtension.TYPE_SVG_MAP, new HashMap<String, String>()
-		).set(
-			AsideExtension.ALLOW_LEADING_SPACE, true
-		).set(
-			AsideExtension.EXTEND_TO_BLANK_LINE, false
-		).set(
-			AsideExtension.IGNORE_BLANK_LINE, false
-		).set(
-			AsideExtension.INTERRUPTS_ITEM_PARAGRAPH, true
-		).set(
-			AsideExtension.INTERRUPTS_PARAGRAPH, true
-		).set(
-			AsideExtension.WITH_LEAD_SPACES_INTERRUPTS_ITEM_PARAGRAPH, true
-		).set(
-			HtmlRenderer.GENERATE_HEADER_ID, true
-		).set(
-			Parser.EXTENSIONS,
-			Arrays.asList(
-				AdmonitionExtension.create(), AnchorLinkExtension.create(),
-				AsideExtension.create(), AttributesExtension.create(),
-				DefinitionExtension.create(), FootnoteExtension.create(),
-				MediaTagsExtension.create(), StrikethroughExtension.create(),
-				SuperscriptExtension.create(), TablesExtension.create(),
-				TocExtension.create(), TypographicExtension.create(),
-				YamlFrontMatterExtension.create())
-		);
-
-		_parser = Parser.builder(
-			mutableDataSet
-		).build();
+		return taxonomyVocabularyName + StringPool.COLON + taxonomyCategoryName;
 	}
 
 	private void _initResourceBuilders(String authorization) throws Exception {
@@ -1300,6 +1432,19 @@ public class Main {
 
 		_structuredContentFolderResource =
 			structuredContentFolderResourceBuilder.header(
+				"Authorization", authorization
+			).endpoint(
+				_liferayURL
+			).build();
+
+		StructuredContentResource.Builder
+			japaneseStructuredContentResourceBuilder =
+				StructuredContentResource.builder();
+
+		_japaneseStructuredContentResource =
+			japaneseStructuredContentResourceBuilder.header(
+				"Accept-Language", "ja-JP"
+			).header(
 				"Authorization", authorization
 			).endpoint(
 				_liferayURL
@@ -1333,47 +1478,132 @@ public class Main {
 		).build();
 	}
 
-	private boolean _isShowChildrenCards(File file) throws Exception {
-		SnakeYamlFrontMatterVisitor snakeYamlFrontMatterVisitor =
-			new SnakeYamlFrontMatterVisitor();
+	private void _invalidateMD5Hex(
+		long structuredContentId, StructuredContent structuredContent) {
 
-		snakeYamlFrontMatterVisitor.visit(
-			_parser.parse(
-				FileUtils.readFileToString(file, StandardCharsets.UTF_8)));
+		try {
+			ContentField[] contentFields = structuredContent.getContentFields();
 
-		Map<String, Object> data = snakeYamlFrontMatterVisitor.getData();
+			for (ContentField contentField : contentFields) {
+				if (!StringUtil.equals(contentField.getName(), "md5Hex")) {
+					continue;
+				}
 
-		if ((data == null) || !data.containsKey("showChildrenCards") ||
-			!StringUtil.equals(
-				data.get(
-					"showChildrenCards"
-				).toString(),
-				"false")) {
+				ContentFieldValue contentFieldValue =
+					contentField.getContentFieldValue();
+
+				contentFieldValue.setData(() -> StringPool.BLANK);
+			}
+
+			_structuredContentResource.putStructuredContent(
+				structuredContentId, structuredContent);
+
+			System.out.println(
+				"Invalidated md5Hex so the next run retries " +
+					structuredContent.getFriendlyUrlPath());
+		}
+		catch (Exception exception) {
+			_runReport.addError(
+				StringBundler.concat(
+					"Unable to invalidate md5Hex for ",
+					structuredContent.getFriendlyUrlPath(), ": ", exception));
+		}
+	}
+
+	private boolean _isExcludedOrphan(String friendlyUrlPath) {
+		if (_orphanExclusions.isEmpty() || (friendlyUrlPath == null)) {
+			return false;
+		}
+
+		if (friendlyUrlPath.startsWith(StringPool.FORWARD_SLASH)) {
+			friendlyUrlPath = friendlyUrlPath.substring(1);
+		}
+
+		for (String orphanExclusion : _orphanExclusions) {
+			if (friendlyUrlPath.equals(orphanExclusion) ||
+				friendlyUrlPath.startsWith(
+					orphanExclusion + StringPool.FORWARD_SLASH)) {
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private boolean _isMovedStructuredContent(
+		StructuredContent siteStructuredContent,
+		StructuredContent structuredContent) {
+
+		String friendlyUrlPath = siteStructuredContent.getFriendlyUrlPath();
+
+		if (friendlyUrlPath == null) {
+			return false;
+		}
+
+		return !StringUtil.equals(
+			FilenameUtils.getPathNoEndSeparator(friendlyUrlPath),
+			FilenameUtils.getPathNoEndSeparator(
+				structuredContent.getFriendlyUrlPath()));
+	}
+
+	private boolean _isOrphanCleanupEnabled() {
+		if (Objects.equals(
+				System.getenv("LIFERAY_LEARN_ETC_CRON_ORPHAN_CLEANUP"),
+				"true") &&
+			!Objects.equals(
+				System.getenv("LIFERAY_LEARN_ETC_CRON_PARTIAL"), "true")) {
 
 			return true;
 		}
 
-		return GetterUtil.getBoolean(data.get("showChildrenCards"));
+		return false;
+	}
+
+	private boolean _isRestrictedFile(String fileName) throws Exception {
+		if (_restrictedPaths.isEmpty()) {
+			return false;
+		}
+
+		String docsRelativePath = _docsDirectory.getRelativePath(
+			new File(fileName));
+
+		if (docsRelativePath == null) {
+			return false;
+		}
+
+		for (String restrictedPath : _restrictedPaths) {
+			if (docsRelativePath.equals(restrictedPath) ||
+				docsRelativePath.startsWith(restrictedPath + "/")) {
+
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	private void _loadTaxonomyCategories(
 			Map<String, String> existingTaxonomyCategories,
-			JSONObject jsonObject, String parentTaxonomyCategoryId,
-			long taxonomyVocabularyId)
+			String parentTaxonomyCategoryId,
+			JSONArray taxonomyCategoriesJSONArray, long taxonomyVocabularyId,
+			String taxonomyVocabularyName)
 		throws Exception {
 
-		if (!jsonObject.has("taxonomyCategories")) {
+		if (taxonomyCategoriesJSONArray == null) {
 			return;
 		}
 
-		JSONArray jsonArray = jsonObject.getJSONArray("taxonomyCategories");
-
-		for (int i = 0; i < jsonArray.length(); i++) {
-			JSONObject taxonomyCategoryJSONObject = jsonArray.getJSONObject(i);
+		for (int i = 0; i < taxonomyCategoriesJSONArray.length(); i++) {
+			JSONObject taxonomyCategoryJSONObject =
+				taxonomyCategoriesJSONArray.getJSONObject(i);
 
 			String name = taxonomyCategoryJSONObject.getString("name");
 
-			if (!existingTaxonomyCategories.containsKey(name)) {
+			String taxonomyCategoryKey = _getTaxonomyCategoryKey(
+				taxonomyVocabularyName, name);
+
+			if (!existingTaxonomyCategories.containsKey(taxonomyCategoryKey)) {
 				TaxonomyCategory taxonomyCategory = new TaxonomyCategory();
 
 				taxonomyCategory.setName(() -> name);
@@ -1394,421 +1624,58 @@ public class Main {
 								taxonomyCategory);
 				}
 
-				_taxonomyCategoriesJSONObject.put(
-					name, taxonomyCategory.getId());
-			}
-			else {
-				_taxonomyCategoriesJSONObject.put(
-					name, existingTaxonomyCategories.get(name));
-			}
-
-			_loadTaxonomyCategories(
-				existingTaxonomyCategories, taxonomyCategoryJSONObject,
-				_taxonomyCategoriesJSONObject.getString(name),
-				taxonomyVocabularyId);
-		}
-	}
-
-	private void _loadTaxonomyVocabularies() throws Exception {
-		File file = new File(_docsDirName + "/../taxonomy-vocabularies.json");
-
-		if (!file.exists()) {
-			return;
-		}
-
-		JSONObject taxonomyVocabulariesJSONObject = new JSONObject(
-			FileUtils.readFileToString(file, StandardCharsets.UTF_8));
-
-		if (taxonomyVocabulariesJSONObject.isEmpty()) {
-			return;
-		}
-
-		Map<String, String> existingTaxonomyCategories = new HashMap<>();
-		Map<String, Long> existingTaxonomyVocabularies = new HashMap<>();
-
-		com.liferay.headless.admin.taxonomy.client.pagination.Page
-			<TaxonomyVocabulary> taxonomyVocabulariesPage =
-				_taxonomyVocabularyResource.getSiteTaxonomyVocabulariesPage(
-					_globalSiteId, null, null, null,
-					com.liferay.headless.admin.taxonomy.client.pagination.
-						Pagination.of(-1, -1),
-					null);
-
-		for (TaxonomyVocabulary taxonomyVocabulary :
-				taxonomyVocabulariesPage.getItems()) {
-
-			if (StringUtil.equals(
-					taxonomyVocabulary.getExternalReferenceCode(),
-					"RESOURCE_TYPE")) {
-
-				TaxonomyCategory taxonomyCategory =
-					_taxonomyCategoryResource.
-						getTaxonomyVocabularyTaxonomyCategoryByExternalReferenceCode(
-							taxonomyVocabulary.getId(),
-							"OFFICIAL_DOCUMENTATION");
-
-				_taxonomyCategoriesJSONObject.put(
-					taxonomyCategory.getExternalReferenceCode(),
-					taxonomyCategory.getId());
-
-				continue;
-			}
-
-			existingTaxonomyVocabularies.put(
-				taxonomyVocabulary.getName(), taxonomyVocabulary.getId());
-
-			com.liferay.headless.admin.taxonomy.client.pagination.Page
-				<TaxonomyCategory> taxonomyCategoriesPage =
-					_taxonomyCategoryResource.
-						getTaxonomyVocabularyTaxonomyCategoriesPage(
-							taxonomyVocabulary.getId(), true, null, null, null,
-							com.liferay.headless.admin.taxonomy.client.
-								pagination.Pagination.of(-1, -1),
-							null);
-
-			for (TaxonomyCategory taxonomyCategory :
-					taxonomyCategoriesPage.getItems()) {
-
 				existingTaxonomyCategories.put(
-					taxonomyCategory.getName(), taxonomyCategory.getId());
+					taxonomyCategoryKey, taxonomyCategory.getId());
 			}
-		}
 
-		JSONArray jsonArray = taxonomyVocabulariesJSONObject.getJSONArray(
-			"taxonomyVocabularies");
+			String taxonomyCategoryId = existingTaxonomyCategories.get(
+				taxonomyCategoryKey);
 
-		for (int i = 0; i < jsonArray.length(); i++) {
-			JSONObject taxonomyVocabularyJSONObject = jsonArray.getJSONObject(
-				i);
+			_taxonomyCategoriesJSONObject.put(
+				taxonomyCategoryKey, taxonomyCategoryId);
 
-			String name = taxonomyVocabularyJSONObject.getString("name");
-
-			Long taxonomyVocabularyId = existingTaxonomyVocabularies.get(name);
-
-			if (taxonomyVocabularyId == null) {
-				TaxonomyVocabulary taxonomyVocabulary =
-					new TaxonomyVocabulary();
-
-				taxonomyVocabulary.setName(() -> name);
-
-				taxonomyVocabulary =
-					_taxonomyVocabularyResource.postSiteTaxonomyVocabulary(
-						_globalSiteId, taxonomyVocabulary);
-
-				taxonomyVocabularyId = taxonomyVocabulary.getId();
+			if (!_taxonomyCategoriesJSONObject.has(name)) {
+				_taxonomyCategoriesJSONObject.put(name, taxonomyCategoryId);
 			}
 
 			_loadTaxonomyCategories(
-				existingTaxonomyCategories, taxonomyVocabularyJSONObject, null,
-				taxonomyVocabularyId);
+				existingTaxonomyCategories, taxonomyCategoryId,
+				taxonomyCategoryJSONObject.optJSONArray("taxonomyCategories"),
+				taxonomyVocabularyId, taxonomyVocabularyName);
 		}
 	}
 
-	private void _putRAGDocument(StructuredContent structuredContent)
+	private void _publishJapaneseStructuredContent(
+			long structuredContentId, String fileName)
 		throws Exception {
 
-		ContentField contentField = structuredContent.getContentFields()[0];
-
-		ContentFieldValue contentFieldValue =
-			contentField.getContentFieldValue();
-
-		String content = Jsoup.parse(
-			contentFieldValue.getData()
-		).text();
-
-		if (content.length() <= 250) {
-			_deleteRAGDocument(structuredContent.getId());
-
+		if (_skipLocales.contains("ja")) {
 			return;
 		}
-
-		HttpPut httpPut = new HttpPut(
-			System.getenv("LIFERAY_LEARN_ETC_SPRING_BOOT_SERVER_URL") +
-				"/rag/document");
-
-		httpPut.setEntity(
-			new StringEntity(
-				new JSONObject(
-				).put(
-					"assetEntryId", structuredContent.getId()
-				).put(
-					"assetEntryType", "Journal Article"
-				).put(
-					"content", content
-				).put(
-					"description", structuredContent.getDescription()
-				).put(
-					"friendlyUrlPath",
-					"/w/" + structuredContent.getFriendlyUrlPath()
-				).put(
-					"name", structuredContent.getTitle()
-				).toString()));
-
-		HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
-
-		try (CloseableHttpClient closeableHttpClient =
-				httpClientBuilder.build();
-
-			CloseableHttpResponse closeableHttpResponse =
-				closeableHttpClient.execute(httpPut)) {
-
-			StatusLine statusLine = closeableHttpResponse.getStatusLine();
-
-			if (statusLine.getStatusCode() != HttpStatus.SC_NO_CONTENT) {
-				System.out.println(
-					"Unable to update RAG document " +
-						structuredContent.getId());
-			}
-		}
-		catch (Exception exception) {
-			_error(exception.getMessage());
-		}
-	}
-
-	private void _readHashFromFile(File dir) throws Exception {
-		File hashFile = new File(dir, _lastestHashFileName);
-
-		if (hashFile.exists()) {
-			_oldHash = Files.readString(hashFile.toPath());
-		}
-	}
-
-	private void _saveHashToFile(File dir, String hash) throws Exception {
-		File hashFile = new File(dir, _lastestHashFileName);
-
-		Files.writeString(hashFile.toPath(), hash);
-	}
-
-	private String _toFriendlyURLPath(File file) {
-		String filePathString = file.getPath();
-
-		String relativeFilePathString = filePathString.substring(
-			_docsDirName.length() + 1);
-
-		String friendlyURLPathString = StringUtil.merge(
-			_getDirNames(relativeFilePathString), StringPool.FORWARD_SLASH);
-
-		return FilenameUtils.removeExtension(friendlyURLPathString);
-	}
-
-	private StructuredContent _toStructuredContent(String fileName)
-		throws Exception {
-
-		StructuredContent structuredContent = new StructuredContent();
-
-		File englishFile = new File(fileName);
-
-		String englishText = FileUtils.readFileToString(
-			englishFile, StandardCharsets.UTF_8);
-
-		ContentFieldValue englishContentContentFieldValue =
-			new ContentFieldValue() {
-				{
-					setData(() -> _getHTML(englishFile));
-				}
-			};
-		ContentFieldValue englishMD5HexContentFieldValue =
-			new ContentFieldValue() {
-				{
-					setData(
-						() -> DigestUtils.md5Hex(
-							new FileInputStream(englishFile)));
-				}
-			};
-		ContentFieldValue englishNavigationContentFieldValue =
-			new ContentFieldValue() {
-				{
-					setData(
-						() -> String.valueOf(
-							_getNavigationJSONObject(englishFile)));
-				}
-			};
-		ContentFieldValue englishShowChildrenCardsContentFieldValue =
-			new ContentFieldValue() {
-				{
-					setData(
-						() -> String.valueOf(
-							_isShowChildrenCards(englishFile)));
-				}
-			};
-
-		String englishTitle = _getTitle(englishText);
 
 		File japaneseFile = new File(
 			StringUtil.replace(fileName, "/en/", "/ja/"));
 
-		if (!_skipJapaneseContent && japaneseFile.exists()) {
-			String japaneseText = FileUtils.readFileToString(
-				japaneseFile, StandardCharsets.UTF_8);
-
-			structuredContent.setContentFields(
-				() -> new ContentField[] {
-					new ContentField() {
-						{
-							setContentFieldValue(
-								() -> englishContentContentFieldValue);
-							setContentFieldValue_i18n(
-								() -> HashMapBuilder.put(
-									"en-US", englishContentContentFieldValue
-								).put(
-									"ja-JP",
-									new ContentFieldValue() {
-										{
-											setData(
-												() -> _getHTML(japaneseFile));
-										}
-									}
-								).build());
-							setName(() -> "content");
-						}
-					},
-					new ContentField() {
-						{
-							setContentFieldValue(
-								() -> englishMD5HexContentFieldValue);
-							setContentFieldValue_i18n(
-								() -> HashMapBuilder.put(
-									"en-US", englishMD5HexContentFieldValue
-								).put(
-									"ja-JP",
-									new ContentFieldValue() {
-										{
-											setData(
-												() -> DigestUtils.md5Hex(
-													new FileInputStream(
-														japaneseFile)));
-										}
-									}
-								).build());
-							setName(() -> "md5Hex");
-						}
-					},
-					new ContentField() {
-						{
-							setContentFieldValue(
-								() -> englishNavigationContentFieldValue);
-							setContentFieldValue_i18n(
-								() -> HashMapBuilder.put(
-									"en-US", englishNavigationContentFieldValue
-								).put(
-									"ja-JP",
-									new ContentFieldValue() {
-										{
-											setData(
-												() -> String.valueOf(
-													_getNavigationJSONObject(
-														japaneseFile)));
-										}
-									}
-								).build());
-							setName(() -> "navigation");
-						}
-					},
-					new ContentField() {
-						{
-							setContentFieldValue(
-								() ->
-									englishShowChildrenCardsContentFieldValue);
-							setContentFieldValue_i18n(
-								() -> HashMapBuilder.put(
-									"en-US",
-									englishShowChildrenCardsContentFieldValue
-								).put(
-									"ja-JP",
-									new ContentFieldValue() {
-										{
-											setData(
-												() -> String.valueOf(
-													_isShowChildrenCards(
-														japaneseFile)));
-										}
-									}
-								).build());
-							setName(() -> "showChildrenCards");
-						}
-					}
-				});
-			structuredContent.setDescription_i18n(
-				() -> HashMapBuilder.put(
-					"en-US", _getDescription(englishText)
-				).put(
-					"ja-JP", _getDescription(japaneseText)
-				).build());
-
-			structuredContent.setFriendlyUrlPath_i18n(
-				() -> HashMapBuilder.put(
-					"en-US", _toFriendlyURLPath(englishFile)
-				).put(
-					"ja-JP", _toFriendlyURLPath(japaneseFile)
-				).build());
-			structuredContent.setTitle_i18n(
-				() -> HashMapBuilder.put(
-					"en-US", englishTitle
-				).put(
-					"ja-JP", _getTitle(japaneseText)
-				).build());
-		}
-		else {
-			structuredContent.setContentFields(
-				() -> new ContentField[] {
-					new ContentField() {
-						{
-							setContentFieldValue(
-								() -> englishContentContentFieldValue);
-							setName(() -> "content");
-						}
-					},
-					new ContentField() {
-						{
-							setContentFieldValue(
-								() -> englishMD5HexContentFieldValue);
-							setName(() -> "md5Hex");
-						}
-					},
-					new ContentField() {
-						{
-							setContentFieldValue(
-								() -> englishNavigationContentFieldValue);
-							setName(() -> "navigation");
-						}
-					},
-					new ContentField() {
-						{
-							setContentFieldValue(
-								() ->
-									englishShowChildrenCardsContentFieldValue);
-							setName(() -> "showChildrenCards");
-						}
-					}
-				});
-			structuredContent.setDescription(
-				() -> _getDescription(englishText));
+		if (!japaneseFile.exists()) {
+			return;
 		}
 
-		structuredContent.setContentStructureId(
-			() -> _liferayContentStructureId);
-		structuredContent.setExternalReferenceCode(() -> _getUuid(englishText));
-		structuredContent.setFriendlyUrlPath(
-			() -> _toFriendlyURLPath(englishFile));
-		structuredContent.setTaxonomyCategoryIds(
-			() -> _getTaxonomyCategoryIds(englishText));
-
-		if (!_offline) {
-			structuredContent.setStructuredContentFolderId(
-				() -> _getStructuredContentFolderId(
-					FilenameUtils.getPathNoEndSeparator(
-						fileName.substring(_docsDirName.length()))));
-		}
-
-		structuredContent.setTitle(() -> englishTitle);
-
-		return structuredContent;
+		_japaneseStructuredContentResource.putStructuredContent(
+			structuredContentId,
+			_structuredContentBuilder.toJapaneseStructuredContent(
+				japaneseFile));
 	}
 
-	private void _warn(String warningMessage) {
-		System.out.println(warningMessage);
+	private void _renewOAuthAuthorization() throws Exception {
+		if (_offline) {
+			return;
+		}
 
-		_warningMessages.add(warningMessage);
+		long delta = System.currentTimeMillis() - _oauthIssuedMillis;
+
+		if (delta > (_oauthExpirationMillis - 100000)) {
+			_initResourceBuilders(_getOAuthAuthorization());
+		}
 	}
 
 	private void _write(String content, String dirName, File markdownFile)
@@ -1816,7 +1683,9 @@ public class Main {
 
 		String markdownFileName = markdownFile.getCanonicalPath();
 
-		markdownFileName = markdownFileName.substring(_docsDirName.length());
+		markdownFileName = markdownFileName.substring(
+			_docsDirectory.getDocsDirName(
+			).length());
 
 		File file = new File(dirName + markdownFileName);
 
@@ -1825,30 +1694,33 @@ public class Main {
 		FileUtils.writeStringToFile(file, content, StandardCharsets.UTF_8);
 	}
 
-	private static final Pattern _markdownLinkPattern = Pattern.compile(
-		"\\[(.*)\\]\\((.*)\\)");
+	private static final int _READ_ATTEMPT_COUNT = 3;
 
-	private final String _baseDirName;
+	private static final long _READ_ATTEMPT_DELAY = 3000;
+
 	private DataDefinitionResource _dataDefinitionResource;
-	private final Set<String> _diffFileNames = new TreeSet<>();
-	private final String _docsDirName;
-	private final List<String> _errorMessages = new ArrayList<>();
-	private final Set<String> _fileNames = new TreeSet<>();
+	private final DocsDirectory _docsDirectory;
 	private final long _globalSiteId;
-	private final String _lastestHashFileName;
+	private StructuredContentResource _japaneseStructuredContentResource;
 	private final long _liferayContentStructureId;
 	private final String _liferayOAuthClientId;
 	private final String _liferayOAuthClientSecret;
 	private final long _liferaySiteId;
 	private final URL _liferayURL;
-	private String _newHash = StringPool.BLANK;
+	private final MarkdownParser _markdownParser = new MarkdownParser();
+	private final NavigationHelper _navigationHelper;
 	private long _oauthExpirationMillis;
+	private long _oauthIssuedMillis;
 	private final boolean _offline;
-	private String _oldHash = StringPool.BLANK;
-	private Parser _parser;
+	private final Set<String> _orphanExclusions = new TreeSet<>();
+	private final Set<String> _preflightTocExclusions = new TreeSet<>();
+	private final Set<String> _restrictedPaths = new TreeSet<>();
+	private final Set<String> _restrictedRoles = new TreeSet<>();
+	private final RunReport _runReport = new RunReport();
 	private SiteResource _siteResource;
 	private final boolean _skipDiffCheck;
-	private final boolean _skipJapaneseContent;
+	private final Set<String> _skipLocales = new TreeSet<>();
+	private final StructuredContentBuilder _structuredContentBuilder;
 	private final Map<String, Long> _structuredContentFolderIds =
 		new HashMap<>();
 	private StructuredContentFolderResource _structuredContentFolderResource;
@@ -1856,37 +1728,5 @@ public class Main {
 	private final JSONObject _taxonomyCategoriesJSONObject = new JSONObject();
 	private TaxonomyCategoryResource _taxonomyCategoryResource;
 	private TaxonomyVocabularyResource _taxonomyVocabularyResource;
-	private final List<String> _warningMessages = new ArrayList<>();
-	private final Yaml _yaml = new Yaml();
-
-	private class SnakeYamlFrontMatterVisitor
-		implements YamlFrontMatterVisitor {
-
-		public Map<String, Object> getData() {
-			return _data;
-		}
-
-		public void visit(Node node) {
-			_yamlFrontMatterVisitor.visit(node);
-		}
-
-		@Override
-		public void visit(YamlFrontMatterBlock yamlFrontMatterBlock) {
-			String yamlString = String.valueOf(yamlFrontMatterBlock.getChars());
-
-			yamlString = yamlString.replaceAll("---", "");
-
-			_data = _yaml.load(yamlString);
-		}
-
-		@Override
-		public void visit(YamlFrontMatterNode yamlFrontMatterNode) {
-		}
-
-		private Map<String, Object> _data;
-		private final NodeVisitor _yamlFrontMatterVisitor = new NodeVisitor(
-			YamlFrontMatterVisitorExt.VISIT_HANDLERS(this));
-
-	}
 
 }
