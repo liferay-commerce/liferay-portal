@@ -1532,11 +1532,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>VALUE_PRODUCT_STATUS</td>
-	<td>//a[contains(text(),'${key_productName}')]/../../..//td[(text()='${key_productRelation}')]/..//*[contains(text(),'${key_productStatus}')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>ENTRY_SUBSCRIPTIONS</td>
 	<td>//div[contains(@class,'h4') and contains(text(),'${key_entryName}')]</td>
 	<td></td>
