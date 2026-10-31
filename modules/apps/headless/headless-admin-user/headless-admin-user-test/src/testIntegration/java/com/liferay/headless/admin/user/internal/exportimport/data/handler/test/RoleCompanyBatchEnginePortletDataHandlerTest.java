@@ -136,22 +136,22 @@ public class RoleCompanyBatchEnginePortletDataHandlerTest
 			_hasResourcePermission(
 				ActionKeys.ACCESS_IN_CONTROL_PANEL,
 				_objectDefinition1.getPortletId(), targetRole));
+		Assert.assertTrue(
+			_hasResourcePermission(
+				ActionKeys.ACCESS_IN_CONTROL_PANEL,
+				targetObjectDefinition.getPortletId(), targetRole));
 		Assert.assertFalse(
 			_hasResourcePermission(
 				ActionKeys.VIEW, _objectDefinition1.getClassName(),
+				targetRole));
+		Assert.assertTrue(
+			_hasResourcePermission(
+				ActionKeys.VIEW, targetObjectDefinition.getClassName(),
 				targetRole));
 		Assert.assertFalse(
 			_hasResourcePermission(
 				ObjectActionKeys.ADD_OBJECT_ENTRY,
 				_objectDefinition1.getResourceName(), targetRole));
-		Assert.assertTrue(
-			_hasResourcePermission(
-				ActionKeys.ACCESS_IN_CONTROL_PANEL,
-				targetObjectDefinition.getPortletId(), targetRole));
-		Assert.assertTrue(
-			_hasResourcePermission(
-				ActionKeys.VIEW, targetObjectDefinition.getClassName(),
-				targetRole));
 		Assert.assertTrue(
 			_hasResourcePermission(
 				ObjectActionKeys.ADD_OBJECT_ENTRY,

@@ -24,29 +24,29 @@ public class ObjectDefinitionResourceNameUtil {
 		ObjectDefinitionLocalService objectDefinitionLocalService,
 		String resourceName) {
 
-		if (StringUtil.startsWith(resourceName, _RESOURCE_NAME_PREFIX)) {
+		if (StringUtil.startsWith(resourceName, _PREFIX_RESOURCE_NAME)) {
 			return _toExternalReferenceCodeResourceName(
 				objectDefinitionLocalService.fetchObjectDefinition(
 					GetterUtil.getLong(
 						resourceName.substring(
-							_RESOURCE_NAME_PREFIX.length()))),
-				_RESOURCE_NAME_PREFIX, resourceName);
+							_PREFIX_RESOURCE_NAME.length()))),
+				_PREFIX_RESOURCE_NAME, resourceName);
 		}
 
-		if (StringUtil.startsWith(resourceName, _CLASS_NAME_PREFIX)) {
+		if (StringUtil.startsWith(resourceName, _PREFIX_CLASS_NAME)) {
 			return _toExternalReferenceCodeResourceName(
 				objectDefinitionLocalService.fetchObjectDefinitionByClassName(
 					companyId, resourceName),
-				_CLASS_NAME_PREFIX, resourceName);
+				_PREFIX_CLASS_NAME, resourceName);
 		}
 
-		if (StringUtil.startsWith(resourceName, _PORTLET_ID_PREFIX)) {
+		if (StringUtil.startsWith(resourceName, _PREFIX_PORTLET_ID)) {
 			return _toExternalReferenceCodeResourceName(
 				objectDefinitionLocalService.fetchObjectDefinitionByClassName(
 					companyId,
-					_CLASS_NAME_PREFIX +
-						resourceName.substring(_PORTLET_ID_PREFIX.length())),
-				_PORTLET_ID_PREFIX, resourceName);
+					_PREFIX_CLASS_NAME +
+						resourceName.substring(_PREFIX_PORTLET_ID.length())),
+				_PREFIX_PORTLET_ID, resourceName);
 		}
 
 		return resourceName;
@@ -57,28 +57,28 @@ public class ObjectDefinitionResourceNameUtil {
 		ObjectDefinitionLocalService objectDefinitionLocalService,
 		String resourceName) {
 
-		if (StringUtil.startsWith(resourceName, _RESOURCE_NAME_PREFIX)) {
+		if (StringUtil.startsWith(resourceName, _PREFIX_RESOURCE_NAME)) {
 			ObjectDefinition objectDefinition = _fetchObjectDefinition(
-				companyId, objectDefinitionLocalService, _RESOURCE_NAME_PREFIX,
+				companyId, objectDefinitionLocalService, _PREFIX_RESOURCE_NAME,
 				resourceName);
 
 			if (objectDefinition != null) {
-				return _RESOURCE_NAME_PREFIX +
+				return _PREFIX_RESOURCE_NAME +
 					objectDefinition.getObjectDefinitionId();
 			}
 		}
-		else if (StringUtil.startsWith(resourceName, _CLASS_NAME_PREFIX)) {
+		else if (StringUtil.startsWith(resourceName, _PREFIX_CLASS_NAME)) {
 			ObjectDefinition objectDefinition = _fetchObjectDefinition(
-				companyId, objectDefinitionLocalService, _CLASS_NAME_PREFIX,
+				companyId, objectDefinitionLocalService, _PREFIX_CLASS_NAME,
 				resourceName);
 
 			if (objectDefinition != null) {
 				return objectDefinition.getClassName();
 			}
 		}
-		else if (StringUtil.startsWith(resourceName, _PORTLET_ID_PREFIX)) {
+		else if (StringUtil.startsWith(resourceName, _PREFIX_PORTLET_ID)) {
 			ObjectDefinition objectDefinition = _fetchObjectDefinition(
-				companyId, objectDefinitionLocalService, _PORTLET_ID_PREFIX,
+				companyId, objectDefinitionLocalService, _PREFIX_PORTLET_ID,
 				resourceName);
 
 			if (objectDefinition != null) {
@@ -109,13 +109,13 @@ public class ObjectDefinitionResourceNameUtil {
 		return prefix + objectDefinition.getExternalReferenceCode();
 	}
 
-	private static final String _CLASS_NAME_PREFIX =
+	private static final String _PREFIX_CLASS_NAME =
 		ObjectDefinitionConstants.CLASS_NAME_PREFIX_CUSTOM_OBJECT_DEFINITION;
 
-	private static final String _PORTLET_ID_PREFIX =
+	private static final String _PREFIX_PORTLET_ID =
 		ObjectPortletKeys.OBJECT_DEFINITIONS + StringPool.UNDERLINE;
 
-	private static final String _RESOURCE_NAME_PREFIX =
+	private static final String _PREFIX_RESOURCE_NAME =
 		ObjectConstants.RESOURCE_NAME + StringPool.POUND;
 
 }
