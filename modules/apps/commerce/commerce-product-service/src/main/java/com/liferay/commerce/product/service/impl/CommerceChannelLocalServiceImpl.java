@@ -16,6 +16,7 @@ import com.liferay.commerce.product.channel.CommerceChannelTypeRegistry;
 import com.liferay.commerce.product.constants.CommerceChannelAccountEntryRelConstants;
 import com.liferay.commerce.product.constants.CommerceChannelConstants;
 import com.liferay.commerce.product.exception.CommerceChannelNameException;
+import com.liferay.commerce.product.exception.CommerceChannelSiteGroupIdException;
 import com.liferay.commerce.product.exception.CommerceChannelTypeException;
 import com.liferay.commerce.product.exception.DuplicateCommerceChannelAccountEntryIdException;
 import com.liferay.commerce.product.model.CommerceChannel;
@@ -117,6 +118,8 @@ public class CommerceChannelLocalServiceImpl
 		_validateName(name);
 
 		_validateType(type);
+
+		_validateSiteGroupId(user.getCompanyId(), 0, siteGroupId);
 
 		commerceChannel.setExternalReferenceCode(externalReferenceCode);
 		commerceChannel.setCompanyId(user.getCompanyId());
@@ -517,6 +520,9 @@ public class CommerceChannelLocalServiceImpl
 
 		long oldSiteGroupId = commerceChannel.getSiteGroupId();
 
+		_validateSiteGroupId(
+			commerceChannel.getCompanyId(), oldSiteGroupId, siteGroupId);
+
 		commerceChannel.setAccountEntryId(accountEntryId);
 		commerceChannel.setSiteGroupId(siteGroupId);
 		commerceChannel.setName(name);
@@ -732,6 +738,22 @@ public class CommerceChannelLocalServiceImpl
 	private void _validateName(String name) throws PortalException {
 		if (Validator.isNull(name)) {
 			throw new CommerceChannelNameException();
+		}
+	}
+
+	private void _validateSiteGroupId(
+			long companyId, long oldSiteGroupId, long siteGroupId)
+		throws PortalException {
+
+		if ((siteGroupId == 0) || (siteGroupId == oldSiteGroupId)) {
+			return;
+		}
+
+		Group group = _groupLocalService.fetchGroup(siteGroupId);
+
+		if ((group == null) || (group.getCompanyId() != companyId)) {
+			throw new CommerceChannelSiteGroupIdException(
+				"No site exists with group ID " + siteGroupId);
 		}
 	}
 
