@@ -14,11 +14,27 @@ import {
 	TOGGLE_ITEM_IN_PRODUCT_COMPARISON,
 } from '../../../src/main/resources/META-INF/resources/utilities/eventsDefinitions';
 
+const mockGetCookie = jest.fn();
+const mockSetCookie = jest.fn();
+
+jest.mock('frontend-js-web', () => ({
+	COOKIE_TYPES: {
+		FUNCTIONAL: 'CONSENT_TYPE_FUNCTIONAL',
+		NECESSARY: 'CONSENT_TYPE_NECESSARY',
+		PERFORMANCE: 'CONSENT_TYPE_PERFORMANCE',
+		PERSONALIZATION: 'CONSENT_TYPE_PERSONALIZATION',
+	},
+	getCookie: (...args) => mockGetCookie(...args),
+	setCookie: (...args) => mockSetCookie(...args),
+}));
+
 describe('CompareCheckbox', () => {
 	const BASE_PROPS = {
 		itemId: 12345,
 		pictureURL: 'http://some.url/picture.png',
 	};
+
+	const {location: originalLocation} = window;
 
 	let removeFromCompareTrigger;
 	let toggleCompareTrigger;
@@ -42,6 +58,13 @@ describe('CompareCheckbox', () => {
 	});
 
 	afterEach(() => {
+		Object.defineProperty(window, 'location', {
+			configurable: true,
+			value: originalLocation,
+		});
+
+		delete window.themeDisplay;
+
 		jest.resetAllMocks();
 	});
 
@@ -111,6 +134,46 @@ describe('CompareCheckbox', () => {
 						thumbnail: BASE_PROPS.pictureURL,
 					}
 				);
+			});
+		});
+
+		it('on click, if the product is in comparison and "refreshOnRemove" is true, removes it from the compare cookie and reloads the page', async () => {
+			Object.defineProperty(window, 'location', {
+				configurable: true,
+				value: {reload: jest.fn()},
+			});
+
+			window.themeDisplay = {
+				getPathContext: () => '/',
+			};
+
+			mockGetCookie.mockReturnValue('1:2:3');
+
+			const PROPS = {
+				...BASE_PROPS,
+				commerceChannelGroupId: 12345,
+				inCompare: true,
+				itemId: '2',
+				refreshOnRemove: true,
+			};
+
+			const {getByRole} = render(<CompareCheckbox {...PROPS} />);
+
+			const ComponentElement = getByRole('checkbox');
+
+			await act(async () => {
+				fireEvent.click(ComponentElement);
+			});
+
+			await waitFor(() => {
+				expect(mockSetCookie).toHaveBeenCalledWith(
+					`COMMERCE_COMPARE_cpDefinitionIds_${PROPS.commerceChannelGroupId}`,
+					'1:3',
+					'CONSENT_TYPE_FUNCTIONAL',
+					{path: '/'}
+				);
+				expect(window.location.reload).toHaveBeenCalled();
+				expect(window.Liferay.fire).not.toHaveBeenCalled();
 			});
 		});
 	});

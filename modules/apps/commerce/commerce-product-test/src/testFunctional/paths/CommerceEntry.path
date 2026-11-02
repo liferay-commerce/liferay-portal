@@ -111,18 +111,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>PRODUCT_CARD_COMPARE_CHECKBOX</td>
-	<td>//p[@title='${key_productName}']//../..//input[contains(@aria-label,'Compare')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>PRODUCT_DETAIL_UUID</td>
 	<td>//*[contains(text(),'${uuid}')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>PRODUCT_CARD_COMPARE_CHECKBOX_DISABLED</td>
-	<td>//p[@title='${key_productName}']//../..//input[contains(@aria-label,'Compare') and @disabled]</td>
 	<td></td>
 </tr>
 <tr>
