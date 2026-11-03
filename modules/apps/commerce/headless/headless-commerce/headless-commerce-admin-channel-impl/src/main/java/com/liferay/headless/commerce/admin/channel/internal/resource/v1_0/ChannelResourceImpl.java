@@ -8,15 +8,18 @@ package com.liferay.headless.commerce.admin.channel.internal.resource.v1_0;
 import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryService;
+import com.liferay.commerce.constants.CommerceConstants;
 import com.liferay.commerce.currency.exception.NoSuchCurrencyException;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.product.constants.CPPortletKeys;
+import com.liferay.commerce.product.exception.CommerceChannelGuestCheckoutException;
 import com.liferay.commerce.product.exception.NoSuchChannelException;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.model.CommerceChannelRel;
 import com.liferay.commerce.product.service.CommerceChannelRelService;
 import com.liferay.commerce.product.service.CommerceChannelService;
+import com.liferay.commerce.util.CommerceChannelConfigurationUtil;
 import com.liferay.exportimport.constants.ExportImportConstants;
 import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
 import com.liferay.headless.commerce.admin.channel.dto.v1_0.AccountAddressChannel;
@@ -25,11 +28,16 @@ import com.liferay.headless.commerce.admin.channel.internal.odata.entity.v1_0.Ch
 import com.liferay.headless.commerce.admin.channel.resource.v1_0.ChannelResource;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.headless.commerce.core.util.CommerceCurrencyUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
+import com.liferay.portal.kernel.settings.FallbackKeysSettingsUtil;
+import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
+import com.liferay.portal.kernel.settings.ModifiableSettings;
+import com.liferay.portal.kernel.settings.Settings;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.odata.entity.EntityModel;
@@ -171,21 +179,22 @@ public class ChannelResourceImpl
 			}
 		}
 
-		return _toChannel(
-			_commerceChannelService.updateCommerceChannel(
-				channelId,
-				_getAccountEntryId(
-					channel, commerceChannel.getAccountEntryId()),
-				GetterUtil.getLong(
-					channel.getSiteGroupId(), commerceChannel.getSiteGroupId()),
-				GetterUtil.getString(
-					channel.getName(), commerceChannel.getName()),
-				GetterUtil.getString(
-					channel.getType(), commerceChannel.getType()),
-				commerceChannel.getTypeSettingsUnicodeProperties(),
-				commerceCurrency.getCode(),
-				commerceChannel.getPriceDisplayType(),
-				commerceChannel.isDiscountsTargetNetPrice()));
+		_validateGuestCheckoutEnabled(channel, commerceChannel);
+
+		commerceChannel = _commerceChannelService.updateCommerceChannel(
+			channelId,
+			_getAccountEntryId(channel, commerceChannel.getAccountEntryId()),
+			GetterUtil.getLong(
+				channel.getSiteGroupId(), commerceChannel.getSiteGroupId()),
+			GetterUtil.getString(channel.getName(), commerceChannel.getName()),
+			GetterUtil.getString(channel.getType(), commerceChannel.getType()),
+			commerceChannel.getTypeSettingsUnicodeProperties(),
+			commerceCurrency.getCode(), commerceChannel.getPriceDisplayType(),
+			commerceChannel.isDiscountsTargetNetPrice());
+
+		_updateGuestSettings(channel, commerceChannel);
+
+		return _toChannel(commerceChannel);
 	}
 
 	@Override
@@ -220,21 +229,22 @@ public class ChannelResourceImpl
 			}
 		}
 
-		return _toChannel(
-			_commerceChannelService.updateCommerceChannel(
-				commerceChannel.getCommerceChannelId(),
-				_getAccountEntryId(
-					channel, commerceChannel.getAccountEntryId()),
-				GetterUtil.getLong(
-					channel.getSiteGroupId(), commerceChannel.getSiteGroupId()),
-				GetterUtil.getString(
-					channel.getName(), commerceChannel.getName()),
-				GetterUtil.getString(
-					channel.getType(), commerceChannel.getType()),
-				commerceChannel.getTypeSettingsUnicodeProperties(),
-				commerceCurrency.getCode(),
-				commerceChannel.getPriceDisplayType(),
-				commerceChannel.isDiscountsTargetNetPrice()));
+		_validateGuestCheckoutEnabled(channel, commerceChannel);
+
+		commerceChannel = _commerceChannelService.updateCommerceChannel(
+			commerceChannel.getCommerceChannelId(),
+			_getAccountEntryId(channel, commerceChannel.getAccountEntryId()),
+			GetterUtil.getLong(
+				channel.getSiteGroupId(), commerceChannel.getSiteGroupId()),
+			GetterUtil.getString(channel.getName(), commerceChannel.getName()),
+			GetterUtil.getString(channel.getType(), commerceChannel.getType()),
+			commerceChannel.getTypeSettingsUnicodeProperties(),
+			commerceCurrency.getCode(), commerceChannel.getPriceDisplayType(),
+			commerceChannel.isDiscountsTargetNetPrice());
+
+		_updateGuestSettings(channel, commerceChannel);
+
+		return _toChannel(commerceChannel);
 	}
 
 	@Override
@@ -293,14 +303,20 @@ public class ChannelResourceImpl
 				channel.getCurrencyExternalReferenceCode(),
 				GetterUtil.getLong(channel.getCurrencyId()));
 
-		return _toChannel(
+		_validateGuestCheckoutEnabled(channel, null);
+
+		CommerceChannel commerceChannel =
 			_commerceChannelService.addCommerceChannel(
 				channel.getExternalReferenceCode(),
 				_getAccountEntryId(
 					channel, AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT),
 				GetterUtil.getLong(channel.getSiteGroupId()), channel.getName(),
 				channel.getType(), null, commerceCurrency.getCode(),
-				_serviceContextHelper.getServiceContext(contextUser)));
+				_serviceContextHelper.getServiceContext(contextUser));
+
+		_updateGuestSettings(channel, commerceChannel);
+
+		return _toChannel(commerceChannel);
 	}
 
 	@Override
@@ -320,17 +336,21 @@ public class ChannelResourceImpl
 				channel.getCurrencyExternalReferenceCode(),
 				GetterUtil.getLong(channel.getCurrencyId()));
 
-		return _toChannel(
-			_commerceChannelService.updateCommerceChannel(
-				channelId,
-				_getAccountEntryId(
-					channel, AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT),
-				GetterUtil.getLong(channel.getSiteGroupId()), channel.getName(),
-				channel.getType(),
-				commerceChannel.getTypeSettingsUnicodeProperties(),
-				commerceCurrency.getCode(),
-				commerceChannel.getPriceDisplayType(),
-				commerceChannel.isDiscountsTargetNetPrice()));
+		_validateGuestCheckoutEnabled(channel, commerceChannel);
+
+		commerceChannel = _commerceChannelService.updateCommerceChannel(
+			channelId,
+			_getAccountEntryId(
+				channel, AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT),
+			GetterUtil.getLong(channel.getSiteGroupId()), channel.getName(),
+			channel.getType(),
+			commerceChannel.getTypeSettingsUnicodeProperties(),
+			commerceCurrency.getCode(), commerceChannel.getPriceDisplayType(),
+			commerceChannel.isDiscountsTargetNetPrice());
+
+		_updateGuestSettings(channel, commerceChannel);
+
+		return _toChannel(commerceChannel);
 	}
 
 	@Override
@@ -355,15 +375,20 @@ public class ChannelResourceImpl
 				commerceChannel.getTypeSettingsUnicodeProperties();
 		}
 
-		return _toChannel(
-			_commerceChannelService.addOrUpdateCommerceChannel(
-				externalReferenceCode,
-				_getAccountEntryId(
-					channel, AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT),
-				GetterUtil.getLong(channel.getSiteGroupId()), channel.getName(),
-				channel.getType(), typeSettingsUnicodeProperties,
-				commerceCurrency.getCode(),
-				_serviceContextHelper.getServiceContext()));
+		_validateGuestCheckoutEnabled(channel, commerceChannel);
+
+		commerceChannel = _commerceChannelService.addOrUpdateCommerceChannel(
+			externalReferenceCode,
+			_getAccountEntryId(
+				channel, AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT),
+			GetterUtil.getLong(channel.getSiteGroupId()), channel.getName(),
+			channel.getType(), typeSettingsUnicodeProperties,
+			commerceCurrency.getCode(),
+			_serviceContextHelper.getServiceContext());
+
+		_updateGuestSettings(channel, commerceChannel);
+
+		return _toChannel(commerceChannel);
 	}
 
 	@Override
@@ -397,6 +422,36 @@ public class ChannelResourceImpl
 		return defaultAccountEntryId;
 	}
 
+	private ModifiableSettings _getModifiableSettings(
+			long groupId, String settingsId)
+		throws Exception {
+
+		Settings settings = FallbackKeysSettingsUtil.getSettings(
+			new GroupServiceSettingsLocator(groupId, settingsId));
+
+		return settings.getModifiableSettings();
+	}
+
+	private boolean _isGuestBrowsingEnabled(
+		Channel channel, CommerceChannel commerceChannel) {
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				contextCompany.getCompanyId(), "LPD-109588")) {
+
+			return true;
+		}
+
+		if (commerceChannel == null) {
+			return GetterUtil.getBoolean(
+				channel.getGuestBrowsingEnabled(), true);
+		}
+
+		return GetterUtil.getBoolean(
+			channel.getGuestBrowsingEnabled(),
+			CommerceChannelConfigurationUtil.isGuestBrowsingEnabled(
+				commerceChannel.getGroupId()));
+	}
+
 	private Channel _toChannel(CommerceChannel commerceChannel)
 		throws Exception {
 
@@ -407,6 +462,58 @@ public class ChannelResourceImpl
 		return _channelDTOConverter.toDTO(
 			new DefaultDTOConverterContext(
 				commerceChannelId, contextAcceptLanguage.getPreferredLocale()));
+	}
+
+	private void _updateGuestSettings(
+			Channel channel, CommerceChannel commerceChannel)
+		throws Exception {
+
+		Boolean guestBrowsingEnabled = channel.getGuestBrowsingEnabled();
+		Boolean guestCheckoutEnabled = channel.getGuestCheckoutEnabled();
+
+		if ((guestBrowsingEnabled != null) &&
+			FeatureFlagManagerUtil.isEnabled(
+				contextCompany.getCompanyId(), "LPD-109588")) {
+
+			ModifiableSettings modifiableSettings = _getModifiableSettings(
+				commerceChannel.getGroupId(),
+				CommerceConstants.SERVICE_NAME_COMMERCE_ACCOUNT);
+
+			modifiableSettings.setValue(
+				"guestBrowsingEnabled", String.valueOf(guestBrowsingEnabled));
+
+			modifiableSettings.store();
+
+			if (!guestBrowsingEnabled) {
+				guestCheckoutEnabled = false;
+			}
+		}
+
+		if (guestCheckoutEnabled == null) {
+			return;
+		}
+
+		ModifiableSettings modifiableSettings = _getModifiableSettings(
+			commerceChannel.getGroupId(),
+			CommerceConstants.SERVICE_NAME_COMMERCE_ORDER);
+
+		modifiableSettings.setValue(
+			"guestCheckoutEnabled", String.valueOf(guestCheckoutEnabled));
+
+		modifiableSettings.store();
+	}
+
+	private void _validateGuestCheckoutEnabled(
+			Channel channel, CommerceChannel commerceChannel)
+		throws Exception {
+
+		if (GetterUtil.getBoolean(channel.getGuestCheckoutEnabled()) &&
+			!_isGuestBrowsingEnabled(channel, commerceChannel)) {
+
+			throw new CommerceChannelGuestCheckoutException(
+				"Guest checkout cannot be enabled while guest browsing is " +
+					"disabled");
+		}
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
