@@ -5,14 +5,14 @@
 
 import {FrameLocator, Locator, Page, expect} from '@playwright/test';
 
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
+
 export class CommerceAdminChannelDetailsCategoryDisplayPagesPage {
 	readonly addDisplayLayoutButton: Locator;
 	readonly addDisplayLayoutFrame: FrameLocator;
 	readonly categoryDisplayPageLabel: (pageName: string) => Promise<Locator>;
 	readonly categoryDisplayPageList: (pageName: string) => Promise<Locator>;
 	readonly categoryLabel: (categoryName: string) => Promise<Locator>;
-	readonly categoryList: (categoryName: string) => Promise<Locator>;
-	readonly categoryListDropDownButton: (siteName: string) => Promise<Locator>;
 	readonly categoryNameRowTableLink: (
 		categoryName: string
 	) => Promise<Locator>;
@@ -20,9 +20,12 @@ export class CommerceAdminChannelDetailsCategoryDisplayPagesPage {
 	readonly errorMessageSelectCategory: Locator;
 	readonly frameButton: (buttonName: string) => Promise<Locator>;
 	readonly frameSearchBar: Locator;
-	readonly selectCategoryDisplayPageFrame: FrameLocator;
-	readonly successMessage: Locator;
 	readonly page: Page;
+	readonly selectCategoryButton: Locator;
+	readonly selectCategoryDisplayPageFrame: FrameLocator;
+	readonly selectCategoryModal: Locator;
+	readonly selectVocabularyModal: Locator;
+	readonly successMessage: Locator;
 
 	constructor(page: Page) {
 		this.addDisplayLayoutButton = page.getByLabel('Add Display Layout');
@@ -39,18 +42,8 @@ export class CommerceAdminChannelDetailsCategoryDisplayPagesPage {
 			});
 		};
 
-		this.categoryList = async (categoryName: string) => {
-			return this.selectCategoryDisplayPageFrame.getByText(categoryName);
-		};
-
 		this.categoryDisplayPageList = async (pageName: string) => {
 			return this.selectCategoryDisplayPageFrame.getByText(pageName);
-		};
-
-		this.categoryListDropDownButton = async (siteName: string) => {
-			return this.selectCategoryDisplayPageFrame.getByText(
-				siteName + ' (Global)'
-			);
 		};
 
 		this.categoryLabel = async (categoryName: string) => {
@@ -77,11 +70,25 @@ export class CommerceAdminChannelDetailsCategoryDisplayPagesPage {
 		this.frameSearchBar =
 			this.selectCategoryDisplayPageFrame.getByPlaceholder('Search');
 
+		this.page = page;
+
+		this.selectCategoryButton = this.addDisplayLayoutFrame.locator(
+			'[id$="selectCategories"]'
+		);
+
+		this.selectCategoryModal = this.addDisplayLayoutFrame.getByRole(
+			'dialog',
+			{exact: true, name: 'Select Category'}
+		);
+
+		this.selectVocabularyModal = this.addDisplayLayoutFrame.getByRole(
+			'dialog',
+			{exact: true, name: 'Select Vocabulary'}
+		);
+
 		this.successMessage = this.addDisplayLayoutFrame.getByText(
 			'Success:Your request completed successfully.'
 		);
-
-		this.page = page;
 	}
 
 	async clickFrameButton(buttonName: string) {
@@ -92,10 +99,26 @@ export class CommerceAdminChannelDetailsCategoryDisplayPagesPage {
 		await (await this.frameButton(buttonName)).click();
 	}
 
-	async selectCategory(categoryName: string) {
-		await (await this.categoryList(categoryName)).click();
+	async selectCategory(vocabularyName: string, categoryName: string) {
+		await clickAndExpectToBeVisible({
+			target: this.selectVocabularyModal,
+			trigger: this.selectCategoryButton,
+		});
 
-		await (await this.frameButton('Done')).click();
+		await this.selectVocabularyModal
+			.getByRole('row')
+			.filter({hasText: vocabularyName})
+			.getByRole('radio')
+			.check();
+		await this.selectVocabularyModal
+			.getByRole('button', {exact: true, name: 'Select'})
+			.click();
+
+		await this.selectCategoryModal
+			.getByRole('treeitem', {name: categoryName})
+			.click();
+
+		await expect(this.selectCategoryModal).toBeHidden();
 	}
 
 	async selectCategoryDisplayPage(pageName: string) {

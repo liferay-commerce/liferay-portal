@@ -13,6 +13,8 @@ import {isolatedSiteTest} from '../../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../../fixtures/pageEditorPagesTest';
 import {pageViewModePagesTest} from '../../../../fixtures/pageViewModePagesTest';
+import {createCategories} from '../../../../helpers/CreateCategories';
+import getGlobalSiteId from '../../../../utils/getGlobalSiteId';
 import getRandomString from '../../../../utils/getRandomString';
 import {templatesPageTest} from '../../../template-web/main/fixtures/templatesPageTest';
 import {classicCommerceSetUp} from '../../utils/commerce';
@@ -269,5 +271,59 @@ test(
 				name: product.name['en_US'],
 			})
 		).toBeVisible();
+	}
+);
+
+test(
+	'The Product Publisher category filter picks categories from the item selector',
+	{tag: '@LPD-110420'},
+	async ({apiHelpers, page, productPublisherPage, site, widgetPagePage}) => {
+		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: site.id,
+			title: getRandomString(),
+		});
+
+		await apiHelpers.headlessCommerceAdminChannel.postChannel({
+			siteGroupId: site.id,
+		});
+
+		const [category] = await createCategories({
+			apiHelpers,
+			categoryNames: [{name: getRandomString()}],
+			siteId: await getGlobalSiteId(apiHelpers),
+			vocabularyName: getRandomString(),
+		});
+
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+		const product1 =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				categories: [category],
+				name: {en_US: getRandomString()},
+			});
+		const product2 =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				name: {en_US: getRandomString()},
+			});
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+
+		await widgetPagePage.addPortlet('Product Publisher');
+
+		await productPublisherPage.addProductPublisherCategoryFilter(
+			category.name
+		);
+
+		await page.reload();
+
+		await expect(
+			await productPublisherPage.productLink(product1.name['en_US'])
+		).toBeVisible();
+		await expect(
+			await productPublisherPage.productLink(product2.name['en_US'])
+		).toHaveCount(0);
 	}
 );
