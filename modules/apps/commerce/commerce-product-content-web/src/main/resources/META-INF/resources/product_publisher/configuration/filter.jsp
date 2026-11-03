@@ -46,8 +46,6 @@ CPPublisherConfigurationDisplayContext cpPublisherConfigurationDisplayContext = 
 		module="{AutoField} from commerce-product-content-web"
 		props='<%=
 			HashMapBuilder.<String, Object>put(
-				"categorySelectorURL", cpPublisherConfigurationDisplayContext.getCategorySelectorURL()
-			).put(
 				"groupIds", String.valueOf(company.getGroupId())
 			).put(
 				"id", "autofield"
