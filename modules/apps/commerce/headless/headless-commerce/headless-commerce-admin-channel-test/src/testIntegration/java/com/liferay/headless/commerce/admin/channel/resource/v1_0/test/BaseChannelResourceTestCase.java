@@ -2153,6 +2153,26 @@ public abstract class BaseChannelResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals(
+					"guestBrowsingEnabled", additionalAssertFieldName)) {
+
+				if (channel.getGuestBrowsingEnabled() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"guestCheckoutEnabled", additionalAssertFieldName)) {
+
+				if (channel.getGuestCheckoutEnabled() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("name", additionalAssertFieldName)) {
 				if (channel.getName() == null) {
 					valid = false;
@@ -2401,6 +2421,32 @@ public abstract class BaseChannelResourceTestCase {
 				if (!Objects.deepEquals(
 						channel1.getExternalReferenceCode(),
 						channel2.getExternalReferenceCode())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"guestBrowsingEnabled", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						channel1.getGuestBrowsingEnabled(),
+						channel2.getGuestBrowsingEnabled())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"guestCheckoutEnabled", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						channel1.getGuestCheckoutEnabled(),
+						channel2.getGuestCheckoutEnabled())) {
 
 					return false;
 				}
@@ -2820,6 +2866,16 @@ public abstract class BaseChannelResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("guestBrowsingEnabled")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("guestCheckoutEnabled")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("id")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -2986,6 +3042,8 @@ public abstract class BaseChannelResourceTestCase {
 				dateModified = RandomTestUtil.nextDate();
 				externalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
+				guestBrowsingEnabled = RandomTestUtil.randomBoolean();
+				guestCheckoutEnabled = RandomTestUtil.randomBoolean();
 				id = RandomTestUtil.randomLong();
 				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				siteGroupId = RandomTestUtil.randomLong();
@@ -3280,4 +3338,4 @@ public abstract class BaseChannelResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1503892846
+// LIFERAY-REST-BUILDER-HASH:165473455
