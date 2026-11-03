@@ -9,8 +9,11 @@ import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.commerce.configuration.CommerceOrderCheckoutConfiguration;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
+import com.liferay.commerce.product.constants.CPActionKeys;
+import com.liferay.commerce.product.constants.CPConstants;
 import com.liferay.commerce.product.constants.CommerceChannelConstants;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.model.CommerceChannelRel;
@@ -20,29 +23,47 @@ import com.liferay.headless.commerce.admin.channel.client.dto.v1_0.Channel;
 import com.liferay.headless.commerce.admin.channel.client.dto.v1_0.Creator;
 import com.liferay.headless.commerce.admin.channel.client.pagination.Page;
 import com.liferay.headless.commerce.admin.channel.client.pagination.Pagination;
+import com.liferay.headless.commerce.admin.channel.client.problem.Problem;
 import com.liferay.headless.commerce.admin.channel.client.resource.v1_0.ChannelResource;
+import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Address;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.AddressLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -88,24 +109,31 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 		super.testGraphQLGetChannelsPage();
 	}
 
+	@FeatureFlag("LPD-109588")
 	@Override
 	@Test
 	public void testPatchChannel() throws Exception {
 		super.testPatchChannel();
 
 		_testPatchChannelWithAccountExternalReferenceCode();
+		_testPatchChannelWithGuestSettings();
 		_testPatchChannelWithSiteGroupId();
+		_testPatchChannelWithoutGuestSettings();
 	}
 
+	@FeatureFlag("LPD-109588")
 	@Override
 	@Test
 	public void testPatchChannelByExternalReferenceCode() throws Exception {
 		super.testPatchChannelByExternalReferenceCode();
 
 		_testPatchChannelByExternalReferenceCodeWithAccountExternalReferenceCode();
+		_testPatchChannelByExternalReferenceCodeWithGuestSettings();
 		_testPatchChannelByExternalReferenceCodeWithSiteGroupId();
+		_testPatchChannelByExternalReferenceCodeWithoutGuestSettings();
 	}
 
+	@FeatureFlag("LPD-109588")
 	@Override
 	@Test
 	public void testPostChannel() throws Exception {
@@ -113,7 +141,9 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 
 		_testPostChannelWithAccountExternalReferenceCode();
 		_testPostChannelWithCreator();
+		_testPostChannelWithGuestSettings();
 		_testPostChannelWithSiteGroupId();
+		_testPostChannelWithoutGuestSettings();
 	}
 
 	@Override
@@ -123,10 +153,13 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 
 		_testPutChannelWithAccountExternalReferenceCode();
 		_testPutChannelWithCommerceChannelSettings();
+		_testPutChannelWithGuestSettings();
 		_testPutChannelWithSiteGroupId();
+		_testPutChannelWithoutGuestSettings();
 		_testPutChannelWithoutSiteGroupId();
 	}
 
+	@FeatureFlag("LPD-109588")
 	@Override
 	@Test
 	public void testPutChannelByExternalReferenceCode() throws Exception {
@@ -134,7 +167,10 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 
 		_testPutChannelByExternalReferenceCodeWithAccountExternalReferenceCode();
 		_testPutChannelByExternalReferenceCodeWithCommerceChannelSettings();
+		_testPutChannelByExternalReferenceCodeWithGuestSettings();
 		_testPutChannelByExternalReferenceCodeWithSiteGroupId();
+		_testPutChannelByExternalReferenceCodeWithoutGuestSettings();
+		_testPutChannelByExternalReferenceCodeWithoutUpdatePermission();
 	}
 
 	@Override
@@ -351,6 +387,19 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 		return _commerceChannelRel.getCommerceChannelRelId();
 	}
 
+	private String _getGraphQLMutationErrorMessage(
+			String name, Map<String, Object> arguments)
+		throws Exception {
+
+		JSONObject jsonObject = invokeGraphQLMutation(
+			new GraphQLField(
+				"headlessCommerceAdminChannel_v1_0",
+				new GraphQLField(name, arguments, new GraphQLField("id"))));
+
+		return JSONUtil.getValueAsString(
+			jsonObject, "JSONArray/errors", "Object/0", "Object/message");
+	}
+
 	private void _testGetChannelsPageWithFilter() throws Exception {
 		Channel randomChannel = randomChannel();
 
@@ -449,6 +498,83 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 			getChannel.getAccountExternalReferenceCode());
 	}
 
+	private void _testPatchChannelByExternalReferenceCodeWithGuestSettings()
+		throws Exception {
+
+		Channel postChannel = channelResource.postChannel(randomChannel());
+
+		Assert.assertTrue(postChannel.getGuestBrowsingEnabled());
+		Assert.assertFalse(postChannel.getGuestCheckoutEnabled());
+
+		Channel patchChannel =
+			channelResource.patchChannelByExternalReferenceCode(
+				postChannel.getExternalReferenceCode(),
+				new Channel() {
+					{
+						guestCheckoutEnabled = true;
+					}
+				});
+
+		Assert.assertTrue(patchChannel.getGuestBrowsingEnabled());
+		Assert.assertTrue(patchChannel.getGuestCheckoutEnabled());
+
+		patchChannel = channelResource.patchChannelByExternalReferenceCode(
+			postChannel.getExternalReferenceCode(),
+			new Channel() {
+				{
+					guestBrowsingEnabled = false;
+				}
+			});
+
+		Assert.assertFalse(patchChannel.getGuestBrowsingEnabled());
+		Assert.assertFalse(patchChannel.getGuestCheckoutEnabled());
+
+		assertHttpResponseStatusCode(
+			400,
+			channelResource.patchChannelByExternalReferenceCodeHttpResponse(
+				postChannel.getExternalReferenceCode(),
+				new Channel() {
+					{
+						guestCheckoutEnabled = true;
+					}
+				}));
+
+		Assert.assertEquals(
+			"Exception while fetching data " +
+				"(/headlessCommerceAdminChannel_v1_0/patchChannel" +
+					"ByExternalReferenceCode) : null",
+			_getGraphQLMutationErrorMessage(
+				"patchChannelByExternalReferenceCode",
+				HashMapBuilder.<String, Object>put(
+					"channel",
+					StringBundler.concat(
+						"{currencyCode: \"", _commerceCurrency.getCode(),
+						"\", guestCheckoutEnabled: true, name: \"",
+						RandomTestUtil.randomString(), "\", type: \"",
+						CommerceChannelConstants.CHANNEL_TYPE_SITE, "\"}")
+				).put(
+					"externalReferenceCode",
+					"\"" + postChannel.getExternalReferenceCode() + "\""
+				).build()));
+
+		Channel getChannel = channelResource.getChannel(postChannel.getId());
+
+		Assert.assertFalse(getChannel.getGuestCheckoutEnabled());
+		Assert.assertEquals(patchChannel.getName(), getChannel.getName());
+
+		patchChannel = channelResource.patchChannelByExternalReferenceCode(
+			postChannel.getExternalReferenceCode(),
+			new Channel() {
+				{
+					guestBrowsingEnabled = true;
+					guestCheckoutEnabled = true;
+				}
+			});
+
+		Assert.assertTrue(patchChannel.getGuestBrowsingEnabled());
+		Assert.assertTrue(patchChannel.getGuestCheckoutEnabled());
+	}
+
 	private void _testPatchChannelByExternalReferenceCodeWithSiteGroupId()
 		throws Exception {
 
@@ -468,6 +594,34 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 
 		Assert.assertEquals(
 			postChannel.getSiteGroupId(), getChannel.getSiteGroupId());
+	}
+
+	private void _testPatchChannelByExternalReferenceCodeWithoutGuestSettings()
+		throws Exception {
+
+		Channel postChannel = channelResource.postChannel(randomChannel());
+
+		channelResource.patchChannelByExternalReferenceCode(
+			postChannel.getExternalReferenceCode(),
+			new Channel() {
+				{
+					name = StringUtil.toLowerCase(
+						RandomTestUtil.randomString());
+				}
+			});
+
+		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					CommerceOrderCheckoutConfiguration.class.getName(),
+					HashMapDictionaryBuilder.<String, Object>put(
+						"guestCheckoutEnabled", true
+					).build())) {
+
+			Channel getChannel = channelResource.getChannel(
+				postChannel.getId());
+
+			Assert.assertTrue(getChannel.getGuestCheckoutEnabled());
+		}
 	}
 
 	private void _testPatchChannelWithAccountExternalReferenceCode()
@@ -512,6 +666,145 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 			getChannel.getAccountExternalReferenceCode());
 	}
 
+	private void _testPatchChannelWithGuestSettings() throws Exception {
+		Channel postChannel = channelResource.postChannel(randomChannel());
+
+		Assert.assertTrue(postChannel.getGuestBrowsingEnabled());
+		Assert.assertFalse(postChannel.getGuestCheckoutEnabled());
+
+		Channel patchChannel = channelResource.patchChannel(
+			postChannel.getId(),
+			new Channel() {
+				{
+					guestCheckoutEnabled = true;
+				}
+			});
+
+		Assert.assertTrue(patchChannel.getGuestBrowsingEnabled());
+		Assert.assertTrue(patchChannel.getGuestCheckoutEnabled());
+
+		patchChannel = channelResource.patchChannel(
+			postChannel.getId(),
+			new Channel() {
+				{
+					name = StringUtil.toLowerCase(
+						RandomTestUtil.randomString());
+				}
+			});
+
+		Assert.assertTrue(patchChannel.getGuestBrowsingEnabled());
+		Assert.assertTrue(patchChannel.getGuestCheckoutEnabled());
+
+		patchChannel = channelResource.patchChannel(
+			postChannel.getId(),
+			new Channel() {
+				{
+					guestBrowsingEnabled = false;
+				}
+			});
+
+		Assert.assertFalse(patchChannel.getGuestBrowsingEnabled());
+		Assert.assertFalse(patchChannel.getGuestCheckoutEnabled());
+
+		patchChannel = channelResource.patchChannel(
+			postChannel.getId(),
+			new Channel() {
+				{
+					guestCheckoutEnabled = false;
+				}
+			});
+
+		Assert.assertFalse(patchChannel.getGuestBrowsingEnabled());
+		Assert.assertFalse(patchChannel.getGuestCheckoutEnabled());
+
+		try {
+			channelResource.patchChannel(
+				postChannel.getId(),
+				new Channel() {
+					{
+						guestCheckoutEnabled = true;
+					}
+				});
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
+			Assert.assertEquals(
+				"Guest checkout cannot be enabled while guest browsing is " +
+					"disabled.",
+				problem.getTitle());
+		}
+
+		Assert.assertEquals(
+			"Exception while fetching data " +
+				"(/headlessCommerceAdminChannel_v1_0/patchChannel) : null",
+			_getGraphQLMutationErrorMessage(
+				"patchChannel",
+				HashMapBuilder.<String, Object>put(
+					"channel",
+					StringBundler.concat(
+						"{currencyCode: \"", _commerceCurrency.getCode(),
+						"\", guestCheckoutEnabled: true, name: \"",
+						RandomTestUtil.randomString(), "\", type: \"",
+						CommerceChannelConstants.CHANNEL_TYPE_SITE, "\"}")
+				).put(
+					"channelId", postChannel.getId()
+				).build()));
+
+		Channel getChannel = channelResource.getChannel(postChannel.getId());
+
+		Assert.assertFalse(getChannel.getGuestCheckoutEnabled());
+		Assert.assertEquals(patchChannel.getName(), getChannel.getName());
+
+		patchChannel = channelResource.patchChannel(
+			postChannel.getId(),
+			new Channel() {
+				{
+					guestBrowsingEnabled = true;
+					guestCheckoutEnabled = true;
+				}
+			});
+
+		Assert.assertTrue(patchChannel.getGuestBrowsingEnabled());
+		Assert.assertTrue(patchChannel.getGuestCheckoutEnabled());
+
+		assertHttpResponseStatusCode(
+			400,
+			channelResource.patchChannelHttpResponse(
+				postChannel.getId(),
+				new Channel() {
+					{
+						guestBrowsingEnabled = false;
+						guestCheckoutEnabled = true;
+					}
+				}));
+
+		patchChannel = channelResource.patchChannel(
+			postChannel.getId(),
+			new Channel() {
+				{
+					guestCheckoutEnabled = false;
+				}
+			});
+
+		Assert.assertTrue(patchChannel.getGuestBrowsingEnabled());
+		Assert.assertFalse(patchChannel.getGuestCheckoutEnabled());
+
+		patchChannel = channelResource.patchChannel(
+			postChannel.getId(),
+			new Channel() {
+				{
+					guestBrowsingEnabled = true;
+				}
+			});
+
+		Assert.assertTrue(patchChannel.getGuestBrowsingEnabled());
+		Assert.assertFalse(patchChannel.getGuestCheckoutEnabled());
+	}
+
 	private void _testPatchChannelWithSiteGroupId() throws Exception {
 		Channel postChannel = channelResource.postChannel(randomChannel());
 
@@ -528,6 +821,32 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 
 		Assert.assertEquals(
 			postChannel.getSiteGroupId(), getChannel.getSiteGroupId());
+	}
+
+	private void _testPatchChannelWithoutGuestSettings() throws Exception {
+		Channel postChannel = channelResource.postChannel(randomChannel());
+
+		channelResource.patchChannel(
+			postChannel.getId(),
+			new Channel() {
+				{
+					name = StringUtil.toLowerCase(
+						RandomTestUtil.randomString());
+				}
+			});
+
+		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					CommerceOrderCheckoutConfiguration.class.getName(),
+					HashMapDictionaryBuilder.<String, Object>put(
+						"guestCheckoutEnabled", true
+					).build())) {
+
+			Channel getChannel = channelResource.getChannel(
+				postChannel.getId());
+
+			Assert.assertTrue(getChannel.getGuestCheckoutEnabled());
+		}
 	}
 
 	private void _testPostChannelWithAccountExternalReferenceCode()
@@ -581,6 +900,82 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 			creator.getExternalReferenceCode());
 	}
 
+	private void _testPostChannelWithGuestSettings() throws Exception {
+		Channel randomChannel = randomChannel();
+
+		randomChannel.setGuestBrowsingEnabled(false);
+		randomChannel.setGuestCheckoutEnabled(true);
+
+		assertHttpResponseStatusCode(
+			400, channelResource.postChannelHttpResponse(randomChannel));
+
+		Assert.assertEquals(
+			"Exception while fetching data " +
+				"(/headlessCommerceAdminChannel_v1_0/createChannel) : null",
+			_getGraphQLMutationErrorMessage(
+				"createChannel",
+				HashMapBuilder.<String, Object>put(
+					"channel",
+					StringBundler.concat(
+						"{currencyCode: \"", _commerceCurrency.getCode(),
+						"\", externalReferenceCode: \"",
+						randomChannel.getExternalReferenceCode(),
+						"\", guestBrowsingEnabled: false, ",
+						"guestCheckoutEnabled: true, name: \"",
+						RandomTestUtil.randomString(), "\", type: \"",
+						CommerceChannelConstants.CHANNEL_TYPE_SITE, "\"}")
+				).build()));
+
+		assertHttpResponseStatusCode(
+			404,
+			channelResource.getChannelByExternalReferenceCodeHttpResponse(
+				randomChannel.getExternalReferenceCode()));
+
+		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					CommerceOrderCheckoutConfiguration.class.getName(),
+					HashMapDictionaryBuilder.<String, Object>put(
+						"guestCheckoutEnabled", true
+					).build())) {
+
+			randomChannel.setGuestCheckoutEnabled((Boolean)null);
+
+			Channel postChannel = channelResource.postChannel(randomChannel);
+
+			Assert.assertFalse(postChannel.getGuestBrowsingEnabled());
+			Assert.assertFalse(postChannel.getGuestCheckoutEnabled());
+
+			randomChannel = randomChannel();
+
+			randomChannel.setGuestBrowsingEnabled(false);
+			randomChannel.setGuestCheckoutEnabled(false);
+
+			postChannel = channelResource.postChannel(randomChannel);
+
+			Assert.assertFalse(postChannel.getGuestBrowsingEnabled());
+			Assert.assertFalse(postChannel.getGuestCheckoutEnabled());
+
+			randomChannel = randomChannel();
+
+			randomChannel.setGuestBrowsingEnabled(true);
+			randomChannel.setGuestCheckoutEnabled(false);
+
+			postChannel = channelResource.postChannel(randomChannel);
+
+			Assert.assertTrue(postChannel.getGuestBrowsingEnabled());
+			Assert.assertFalse(postChannel.getGuestCheckoutEnabled());
+		}
+
+		randomChannel = randomChannel();
+
+		randomChannel.setGuestCheckoutEnabled(true);
+
+		Channel postChannel = channelResource.postChannel(randomChannel);
+
+		Assert.assertTrue(postChannel.getGuestBrowsingEnabled());
+		Assert.assertTrue(postChannel.getGuestCheckoutEnabled());
+	}
+
 	private void _testPostChannelWithSiteGroupId() throws Exception {
 		Channel randomChannel = randomChannel();
 
@@ -592,6 +987,23 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 			404,
 			channelResource.getChannelByExternalReferenceCodeHttpResponse(
 				randomChannel.getExternalReferenceCode()));
+	}
+
+	private void _testPostChannelWithoutGuestSettings() throws Exception {
+		Channel postChannel = channelResource.postChannel(randomChannel());
+
+		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					CommerceOrderCheckoutConfiguration.class.getName(),
+					HashMapDictionaryBuilder.<String, Object>put(
+						"guestCheckoutEnabled", true
+					).build())) {
+
+			Channel getChannel = channelResource.getChannel(
+				postChannel.getId());
+
+			Assert.assertTrue(getChannel.getGuestCheckoutEnabled());
+		}
 	}
 
 	private void _testPutChannelByExternalReferenceCodeWithAccountExternalReferenceCode()
@@ -711,6 +1123,92 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 			putCommerceChannel.getTypeSettings());
 	}
 
+	private void _testPutChannelByExternalReferenceCodeWithGuestSettings()
+		throws Exception {
+
+		Channel postChannel = channelResource.postChannel(randomChannel());
+
+		Assert.assertTrue(postChannel.getGuestBrowsingEnabled());
+		Assert.assertFalse(postChannel.getGuestCheckoutEnabled());
+
+		Channel randomChannel = randomChannel();
+
+		randomChannel.setGuestCheckoutEnabled(true);
+
+		Channel putChannel = channelResource.putChannelByExternalReferenceCode(
+			postChannel.getExternalReferenceCode(), randomChannel);
+
+		Assert.assertTrue(putChannel.getGuestBrowsingEnabled());
+		Assert.assertTrue(putChannel.getGuestCheckoutEnabled());
+
+		randomChannel = randomChannel();
+
+		randomChannel.setGuestBrowsingEnabled(false);
+
+		putChannel = channelResource.putChannelByExternalReferenceCode(
+			postChannel.getExternalReferenceCode(), randomChannel);
+
+		Assert.assertFalse(putChannel.getGuestBrowsingEnabled());
+		Assert.assertFalse(putChannel.getGuestCheckoutEnabled());
+
+		randomChannel = randomChannel();
+
+		randomChannel.setGuestCheckoutEnabled(true);
+
+		assertHttpResponseStatusCode(
+			400,
+			channelResource.putChannelByExternalReferenceCodeHttpResponse(
+				postChannel.getExternalReferenceCode(), randomChannel));
+
+		Assert.assertEquals(
+			"Exception while fetching data " +
+				"(/headlessCommerceAdminChannel_v1_0/updateChannel" +
+					"ByExternalReferenceCode) : null",
+			_getGraphQLMutationErrorMessage(
+				"updateChannelByExternalReferenceCode",
+				HashMapBuilder.<String, Object>put(
+					"channel",
+					StringBundler.concat(
+						"{currencyCode: \"", _commerceCurrency.getCode(),
+						"\", guestCheckoutEnabled: true, name: \"",
+						RandomTestUtil.randomString(), "\", type: \"",
+						CommerceChannelConstants.CHANNEL_TYPE_SITE, "\"}")
+				).put(
+					"externalReferenceCode",
+					"\"" + postChannel.getExternalReferenceCode() + "\""
+				).build()));
+
+		Channel getChannel = channelResource.getChannel(postChannel.getId());
+
+		Assert.assertFalse(getChannel.getGuestCheckoutEnabled());
+		Assert.assertEquals(putChannel.getName(), getChannel.getName());
+
+		randomChannel = randomChannel();
+
+		randomChannel.setGuestBrowsingEnabled(true);
+		randomChannel.setGuestCheckoutEnabled(true);
+
+		putChannel = channelResource.putChannelByExternalReferenceCode(
+			postChannel.getExternalReferenceCode(), randomChannel);
+
+		Assert.assertTrue(putChannel.getGuestBrowsingEnabled());
+		Assert.assertTrue(putChannel.getGuestCheckoutEnabled());
+
+		randomChannel = randomChannel();
+
+		randomChannel.setGuestBrowsingEnabled(false);
+		randomChannel.setGuestCheckoutEnabled(true);
+
+		assertHttpResponseStatusCode(
+			400,
+			channelResource.putChannelByExternalReferenceCodeHttpResponse(
+				randomChannel.getExternalReferenceCode(), randomChannel));
+		assertHttpResponseStatusCode(
+			404,
+			channelResource.getChannelByExternalReferenceCodeHttpResponse(
+				randomChannel.getExternalReferenceCode()));
+	}
+
 	private void _testPutChannelByExternalReferenceCodeWithSiteGroupId()
 		throws Exception {
 
@@ -730,6 +1228,75 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 
 		Assert.assertEquals(
 			postChannel.getSiteGroupId(), getChannel.getSiteGroupId());
+	}
+
+	private void _testPutChannelByExternalReferenceCodeWithoutGuestSettings()
+		throws Exception {
+
+		Channel postChannel = channelResource.postChannel(randomChannel());
+
+		channelResource.putChannelByExternalReferenceCode(
+			postChannel.getExternalReferenceCode(), randomChannel());
+
+		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					CommerceOrderCheckoutConfiguration.class.getName(),
+					HashMapDictionaryBuilder.<String, Object>put(
+						"guestCheckoutEnabled", true
+					).build())) {
+
+			Channel getChannel = channelResource.getChannel(
+				postChannel.getId());
+
+			Assert.assertTrue(getChannel.getGuestCheckoutEnabled());
+		}
+	}
+
+	private void _testPutChannelByExternalReferenceCodeWithoutUpdatePermission()
+		throws Exception {
+
+		String primKey = String.valueOf(testCompany.getCompanyId());
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		RoleTestUtil.addResourcePermission(
+			role, CPConstants.RESOURCE_NAME_CHANNEL,
+			ResourceConstants.SCOPE_COMPANY, primKey,
+			CPActionKeys.ADD_COMMERCE_CHANNEL);
+		RoleTestUtil.addResourcePermission(
+			role, CommerceChannel.class.getName(),
+			ResourceConstants.SCOPE_COMPANY, primKey, ActionKeys.VIEW);
+
+		User user = UserTestUtil.addUser(testCompany, _PASSWORD);
+
+		_roleLocalService.addUserRoles(
+			user.getUserId(), new long[] {role.getRoleId()});
+
+		Channel postChannel = channelResource.postChannel(randomChannel());
+
+		ChannelResource channelResource = ChannelResource.builder(
+		).authentication(
+			user.getEmailAddress(), _PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+
+		assertHttpResponseStatusCode(
+			403,
+			channelResource.putChannelByExternalReferenceCodeHttpResponse(
+				postChannel.getExternalReferenceCode(), randomChannel()));
+
+		Channel newChannel =
+			testPutChannelByExternalReferenceCode_createChannel();
+
+		newChannel.setGuestCheckoutEnabled(true);
+
+		Channel putChannel = channelResource.putChannelByExternalReferenceCode(
+			newChannel.getExternalReferenceCode(), newChannel);
+
+		Assert.assertTrue(putChannel.getGuestCheckoutEnabled());
 	}
 
 	private void _testPutChannelWithAccountExternalReferenceCode()
@@ -805,6 +1372,88 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 			putCommerceChannel.getTypeSettings());
 	}
 
+	private void _testPutChannelWithGuestSettings() throws Exception {
+		Channel postChannel = channelResource.postChannel(randomChannel());
+
+		Assert.assertNull(postChannel.getGuestBrowsingEnabled());
+		Assert.assertFalse(postChannel.getGuestCheckoutEnabled());
+
+		Channel randomChannel = randomChannel();
+
+		randomChannel.setGuestBrowsingEnabled(false);
+		randomChannel.setGuestCheckoutEnabled(true);
+
+		Channel putChannel = channelResource.putChannel(
+			postChannel.getId(), randomChannel);
+
+		Assert.assertTrue(putChannel.getGuestCheckoutEnabled());
+
+		putChannel = channelResource.putChannel(
+			postChannel.getId(), randomChannel());
+
+		Assert.assertTrue(putChannel.getGuestCheckoutEnabled());
+
+		try (SafeCloseable safeCloseable =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					true, "LPD-109588")) {
+
+			Channel getChannel = channelResource.getChannel(
+				postChannel.getId());
+
+			Assert.assertTrue(getChannel.getGuestBrowsingEnabled());
+
+			randomChannel = randomChannel();
+
+			randomChannel.setGuestBrowsingEnabled(false);
+			randomChannel.setGuestCheckoutEnabled(true);
+
+			assertHttpResponseStatusCode(
+				400,
+				channelResource.putChannelHttpResponse(
+					postChannel.getId(), randomChannel));
+
+			randomChannel = randomChannel();
+
+			randomChannel.setGuestBrowsingEnabled(false);
+
+			putChannel = channelResource.putChannel(
+				postChannel.getId(), randomChannel);
+
+			Assert.assertFalse(putChannel.getGuestBrowsingEnabled());
+			Assert.assertFalse(putChannel.getGuestCheckoutEnabled());
+
+			Assert.assertEquals(
+				"Exception while fetching data " +
+					"(/headlessCommerceAdminChannel_v1_0/updateChannel) : null",
+				_getGraphQLMutationErrorMessage(
+					"updateChannel",
+					HashMapBuilder.<String, Object>put(
+						"channel",
+						StringBundler.concat(
+							"{currencyCode: \"", _commerceCurrency.getCode(),
+							"\", guestCheckoutEnabled: true, name: \"",
+							RandomTestUtil.randomString(), "\", type: \"",
+							CommerceChannelConstants.CHANNEL_TYPE_SITE, "\"}")
+					).put(
+						"channelId", postChannel.getId()
+					).build()));
+
+			getChannel = channelResource.getChannel(postChannel.getId());
+
+			Assert.assertFalse(getChannel.getGuestCheckoutEnabled());
+			Assert.assertEquals(putChannel.getName(), getChannel.getName());
+
+			randomChannel = randomChannel();
+
+			randomChannel.setGuestCheckoutEnabled(true);
+
+			assertHttpResponseStatusCode(
+				400,
+				channelResource.putChannelHttpResponse(
+					postChannel.getId(), randomChannel));
+		}
+	}
+
 	private void _testPutChannelWithSiteGroupId() throws Exception {
 		Channel postChannel = channelResource.postChannel(randomChannel());
 
@@ -821,6 +1470,25 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 
 		Assert.assertEquals(
 			postChannel.getSiteGroupId(), getChannel.getSiteGroupId());
+	}
+
+	private void _testPutChannelWithoutGuestSettings() throws Exception {
+		Channel postChannel = channelResource.postChannel(randomChannel());
+
+		channelResource.putChannel(postChannel.getId(), randomChannel());
+
+		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					CommerceOrderCheckoutConfiguration.class.getName(),
+					HashMapDictionaryBuilder.<String, Object>put(
+						"guestCheckoutEnabled", true
+					).build())) {
+
+			Channel getChannel = channelResource.getChannel(
+				postChannel.getId());
+
+			Assert.assertTrue(getChannel.getGuestCheckoutEnabled());
+		}
 	}
 
 	private void _testPutChannelWithoutSiteGroupId() throws Exception {
@@ -851,6 +1519,8 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 		};
 	}
 
+	private static final String _PASSWORD = RandomTestUtil.randomString();
+
 	@DeleteAfterTestRun
 	private AccountEntry _accountEntry;
 
@@ -877,6 +1547,10 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 
 	private CommerceCurrency _commerceCurrency;
 	private Group _group;
+
+	@Inject
+	private RoleLocalService _roleLocalService;
+
 	private ServiceContext _serviceContext;
 	private User _user;
 
