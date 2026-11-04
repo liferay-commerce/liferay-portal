@@ -17,7 +17,6 @@ const DEFAULT_RULE: TagRule = {
 };
 
 export interface Props {
-	categorySelectorURL: string;
 	groupIds: string;
 	id: string;
 	namespace: string;
@@ -27,7 +26,6 @@ export interface Props {
 }
 
 export default function AutoField({
-	categorySelectorURL,
 	groupIds,
 	id,
 	namespace,
@@ -103,7 +101,6 @@ export default function AutoField({
 
 				{rules.map((rule, index) => (
 					<Rule
-						categorySelectorURL={categorySelectorURL}
 						groupIds={groupIds}
 						index={index}
 						key={index}

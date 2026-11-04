@@ -1,6 +1,7 @@
 {
 	"dependencies": {
 		"@liferay/frontend-icons-web": "*",
+		"@liferay/frontend-js-item-selector-web": "*",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*"
 	},

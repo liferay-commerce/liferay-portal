@@ -22,8 +22,6 @@ export interface CategoryRule extends BaseRule {
 }
 
 interface Props {
-	categorySelectorURL: string;
-	eventName: string;
 	groupIds: string;
 	index: number;
 	namespace: string;
@@ -33,8 +31,6 @@ interface Props {
 }
 
 export function CategorySelector({
-	categorySelectorURL,
-	eventName,
 	groupIds,
 	index = 0,
 	namespace,
@@ -65,13 +61,11 @@ export function CategorySelector({
 			<input name={inputId} type="hidden" value={rule.queryValues} />
 
 			<AssetVocabularyCategoriesSelector
-				eventName={eventName}
 				groupIds={groupIdsList}
 				id={selectorId}
 				inputName={selectorId}
 				label={Liferay.Language.get('categories')}
 				onSelectedItemsChange={onChange}
-				portletURL={categorySelectorURL}
 				required={false}
 				selectedItems={selectedItems}
 				showVocabularyLabel={false}
