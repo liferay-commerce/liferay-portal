@@ -343,6 +343,98 @@ public class Channel implements Serializable {
 	private Supplier<String> _externalReferenceCodeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "When true, guests can find and view the channel's products; when false, only signed in users can. Defaults to true. Setting it to false also turns guest checkout off. Populated and applied only when the guest browsing feature flag is enabled.",
+		example = "true"
+	)
+	public Boolean getGuestBrowsingEnabled() {
+		if (_guestBrowsingEnabledSupplier != null) {
+			guestBrowsingEnabled = _guestBrowsingEnabledSupplier.get();
+
+			_guestBrowsingEnabledSupplier = null;
+		}
+
+		return guestBrowsingEnabled;
+	}
+
+	public void setGuestBrowsingEnabled(Boolean guestBrowsingEnabled) {
+		this.guestBrowsingEnabled = guestBrowsingEnabled;
+
+		_guestBrowsingEnabledSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setGuestBrowsingEnabled(
+		UnsafeSupplier<Boolean, Exception> guestBrowsingEnabledUnsafeSupplier) {
+
+		_guestBrowsingEnabledSupplier = () -> {
+			try {
+				return guestBrowsingEnabledUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "When true, guests can find and view the channel's products; when false, only signed in users can. Defaults to true. Setting it to false also turns guest checkout off. Populated and applied only when the guest browsing feature flag is enabled."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Boolean guestBrowsingEnabled;
+
+	@JsonIgnore
+	private Supplier<Boolean> _guestBrowsingEnabledSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "When true, guests can check out on the channel's B2B storefronts without signing in. Defaults to false. Setting it to true while guest browsing is off is rejected with 400.",
+		example = "false"
+	)
+	public Boolean getGuestCheckoutEnabled() {
+		if (_guestCheckoutEnabledSupplier != null) {
+			guestCheckoutEnabled = _guestCheckoutEnabledSupplier.get();
+
+			_guestCheckoutEnabledSupplier = null;
+		}
+
+		return guestCheckoutEnabled;
+	}
+
+	public void setGuestCheckoutEnabled(Boolean guestCheckoutEnabled) {
+		this.guestCheckoutEnabled = guestCheckoutEnabled;
+
+		_guestCheckoutEnabledSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setGuestCheckoutEnabled(
+		UnsafeSupplier<Boolean, Exception> guestCheckoutEnabledUnsafeSupplier) {
+
+		_guestCheckoutEnabledSupplier = () -> {
+			try {
+				return guestCheckoutEnabledUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "When true, guests can check out on the channel's B2B storefronts without signing in. Defaults to false. Setting it to true while guest browsing is off is rejected with 400."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Boolean guestCheckoutEnabled;
+
+	@JsonIgnore
+	private Supplier<Boolean> _guestCheckoutEnabledSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Internal long ID of the Channel record; read-only.",
 		example = "30130"
 	)
@@ -638,6 +730,30 @@ public class Channel implements Serializable {
 			sb.append("\"");
 		}
 
+		Boolean guestBrowsingEnabled = getGuestBrowsingEnabled();
+
+		if (guestBrowsingEnabled != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"guestBrowsingEnabled\": ");
+
+			sb.append(guestBrowsingEnabled);
+		}
+
+		Boolean guestCheckoutEnabled = getGuestCheckoutEnabled();
+
+		if (guestCheckoutEnabled != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"guestCheckoutEnabled\": ");
+
+			sb.append(guestCheckoutEnabled);
+		}
+
 		Long id = getId();
 
 		if (id != null) {
@@ -816,4 +932,4 @@ public class Channel implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:24105531
+// LIFERAY-REST-BUILDER-HASH:164523140

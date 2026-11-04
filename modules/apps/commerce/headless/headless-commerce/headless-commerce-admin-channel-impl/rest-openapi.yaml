@@ -471,6 +471,16 @@ components:
                         Idempotency key for create and update; must be unique per channel within the company.
                     example: AB-34098-789-N
                     type: string
+                guestBrowsingEnabled:
+                    description:
+                        When true, guests can find and view the channel's products; when false, only signed in users can. Defaults to true. Setting it to false also turns guest checkout off. Populated and applied only when the guest browsing feature flag is enabled.
+                    example: true
+                    type: boolean
+                guestCheckoutEnabled:
+                    description:
+                        When true, guests can check out on the channel's B2B storefronts without signing in. Defaults to false. Setting it to true while guest browsing is off is rejected with 400.
+                    example: false
+                    type: boolean
                 id:
                     description:
                         Internal long ID of the Channel record; read-only.
@@ -2271,7 +2281,7 @@ paths:
                 -   Channel
         post:
             description:
-                Creates a new commerce channel and allocates a fresh internal ID via the portal counter. Calls CommerceCurrencyUtil.getCommerceCurrency + AccountEntryService.fetchAccountEntryByExternalReferenceCode + CommerceChannelService.addCommerceChannel. Validation -- NoSuchCurrencyException -> 404 when currency not resolvable; DuplicateCommerceChannelException -> 409 when channel already exists; CommerceChannelNameException -> 400 when invalid name; DuplicateExternalReferenceCodeException -> 400 when duplicate ERC. Side effects -- provisions the channel site group and reindexes the channel.
+                Creates a new commerce channel and allocates a fresh internal ID via the portal counter. Calls CommerceCurrencyUtil.getCommerceCurrency + AccountEntryService.fetchAccountEntryByExternalReferenceCode + CommerceChannelService.addCommerceChannel. Validation -- NoSuchCurrencyException -> 404 when currency not resolvable; DuplicateCommerceChannelException -> 409 when channel already exists; CommerceChannelNameException -> 400 when invalid name; DuplicateExternalReferenceCodeException -> 400 when duplicate ERC; CommerceChannelGuestCheckoutException -> 400 when guest checkout is enabled while guest browsing is disabled. Side effects -- provisions the channel site group and reindexes the channel; stores the guest browsing and guest checkout settings that are provided.
             requestBody:
                 content:
                     application/json:
@@ -2458,7 +2468,7 @@ paths:
                 -   Channel
         patch:
             description:
-                Partially updates the commerce channel by its external reference code (ERC) — only the fields supplied in the body are replaced; omitted fields are left unchanged. A resolvable currencyCode (or matching currencyId / currencyExternalReferenceCode) is applied; an unresolved code is silently ignored and the channel's current currency is preserved. Calls CommerceChannelService.fetchCommerceChannelByExternalReferenceCode + CommerceCurrencyUtil.getCommerceCurrency + CommerceChannelService.updateCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel ERC not found; CommerceChannelNameException -> 400 when invalid name; CommerceChannelTypeException -> 400 when invalid type. Side effects -- an unresolvable currency code is swallowed and the existing currency kept; the channel is reindexed on update.
+                Partially updates the commerce channel by its external reference code (ERC) — only the fields supplied in the body are replaced; omitted fields are left unchanged. A resolvable currencyCode (or matching currencyId / currencyExternalReferenceCode) is applied; an unresolved code is silently ignored and the channel's current currency is preserved. Calls CommerceChannelService.fetchCommerceChannelByExternalReferenceCode + CommerceCurrencyUtil.getCommerceCurrency + CommerceChannelService.updateCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel ERC not found; CommerceChannelNameException -> 400 when invalid name; CommerceChannelTypeException -> 400 when invalid type; CommerceChannelGuestCheckoutException -> 400 when guest checkout is enabled while guest browsing is disabled. Side effects -- an unresolvable currency code is swallowed and the existing currency kept; the channel is reindexed on update; stores the guest browsing and guest checkout settings that are provided.
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             requestBody:
@@ -2546,7 +2556,7 @@ paths:
                 -   Channel
         put:
             description:
-                Fully replaces the commerce channel by its external reference code (ERC) — every mutable field is set from the body, and omitted optional fields are reset to their default. Upserts when the ERC does not match an existing channel. The supplied currencyCode (or matching currencyId / currencyExternalReferenceCode) must resolve to an existing CommerceCurrency; an unresolved code returns 404. Calls CommerceCurrencyUtil.getCommerceCurrency + AccountEntryService.fetchAccountEntryByExternalReferenceCode + CommerceChannelService.addOrUpdateCommerceChannel. Validation -- NoSuchCurrencyException -> 404 when currency not resolvable; CommerceChannelNameException -> 400 when invalid name; CommerceChannelTypeException -> 400 when invalid type. Side effects -- creates the channel and provisions its site group when the ERC is unknown; reindexes on write.
+                Fully replaces the commerce channel by its external reference code (ERC) — every mutable field is set from the body, and omitted optional fields are reset to their default, except guestBrowsingEnabled and guestCheckoutEnabled, which keep their current value. Upserts when the ERC does not match an existing channel. The supplied currencyCode (or matching currencyId / currencyExternalReferenceCode) must resolve to an existing CommerceCurrency; an unresolved code returns 404. Calls CommerceCurrencyUtil.getCommerceCurrency + AccountEntryService.fetchAccountEntryByExternalReferenceCode + CommerceChannelService.addOrUpdateCommerceChannel. Validation -- NoSuchCurrencyException -> 404 when currency not resolvable; CommerceChannelNameException -> 400 when invalid name; CommerceChannelTypeException -> 400 when invalid type; CommerceChannelGuestCheckoutException -> 400 when guest checkout is enabled while guest browsing is disabled. Side effects -- creates the channel and provisions its site group when the ERC is unknown; reindexes on write; stores the guest browsing and guest checkout settings that are provided.
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             requestBody:
@@ -3544,7 +3554,7 @@ paths:
                 -   Channel
         patch:
             description:
-                Partially updates the commerce channel by its internal ID — only the fields supplied in the body are replaced; omitted fields are left unchanged. A resolvable currencyCode (or matching currencyId / currencyExternalReferenceCode) is applied; an unresolved code is silently ignored and the channel's current currency is preserved. Calls CommerceChannelService.getCommerceChannel + CommerceCurrencyUtil.getCommerceCurrency + CommerceChannelService.updateCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel ID not found; CommerceChannelNameException -> 400 when invalid name; CommerceChannelTypeException -> 400 when invalid type. Side effects -- an unresolvable currency code is swallowed and the existing currency kept; the channel is reindexed on update.
+                Partially updates the commerce channel by its internal ID — only the fields supplied in the body are replaced; omitted fields are left unchanged. A resolvable currencyCode (or matching currencyId / currencyExternalReferenceCode) is applied; an unresolved code is silently ignored and the channel's current currency is preserved. Calls CommerceChannelService.getCommerceChannel + CommerceCurrencyUtil.getCommerceCurrency + CommerceChannelService.updateCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel ID not found; CommerceChannelNameException -> 400 when invalid name; CommerceChannelTypeException -> 400 when invalid type; CommerceChannelGuestCheckoutException -> 400 when guest checkout is enabled while guest browsing is disabled. Side effects -- an unresolvable currency code is swallowed and the existing currency kept; the channel is reindexed on update; stores the guest browsing and guest checkout settings that are provided.
             parameters:
                 -   $ref: "#/components/parameters/channelIdPathParam"
             requestBody:
@@ -3632,7 +3642,7 @@ paths:
                 -   Channel
         put:
             description:
-                Fully replaces the commerce channel by its internal ID — every mutable field is set from the body, and omitted optional fields are reset to their default. Falls back to a new-channel create when the supplied ID does not match an existing channel. The supplied currencyCode (or matching currencyId / currencyExternalReferenceCode) must resolve to an existing CommerceCurrency; an unresolved code returns 404. Calls CommerceChannelService.fetchCommerceChannel + CommerceCurrencyUtil.getCommerceCurrency + CommerceChannelService.updateCommerceChannel | addCommerceChannel. Validation -- NoSuchCurrencyException -> 404 when currency not resolvable; CommerceChannelNameException -> 400 when invalid name; CommerceChannelTypeException -> 400 when invalid type. Side effects -- creates the channel and provisions its site group when the ID is unknown; reindexes on write.
+                Fully replaces the commerce channel by its internal ID — every mutable field is set from the body, and omitted optional fields are reset to their default, except guestBrowsingEnabled and guestCheckoutEnabled, which keep their current value. Falls back to a new-channel create when the supplied ID does not match an existing channel. The supplied currencyCode (or matching currencyId / currencyExternalReferenceCode) must resolve to an existing CommerceCurrency; an unresolved code returns 404. Calls CommerceChannelService.fetchCommerceChannel + CommerceCurrencyUtil.getCommerceCurrency + CommerceChannelService.updateCommerceChannel | addCommerceChannel. Validation -- NoSuchCurrencyException -> 404 when currency not resolvable; CommerceChannelNameException -> 400 when invalid name; CommerceChannelTypeException -> 400 when invalid type; CommerceChannelGuestCheckoutException -> 400 when guest checkout is enabled while guest browsing is disabled. Side effects -- creates the channel and provisions its site group when the ID is unknown; reindexes on write; stores the guest browsing and guest checkout settings that are provided.
             parameters:
                 -   $ref: "#/components/parameters/channelIdPathParam"
             requestBody:

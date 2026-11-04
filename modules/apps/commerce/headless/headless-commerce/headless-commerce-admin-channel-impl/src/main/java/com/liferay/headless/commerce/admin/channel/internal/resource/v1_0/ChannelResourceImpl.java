@@ -27,6 +27,8 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.odata.entity.EntityModel;
@@ -168,21 +170,30 @@ public class ChannelResourceImpl extends BaseChannelResourceImpl {
 			}
 		}
 
-		return _toChannel(
-			_commerceChannelService.updateCommerceChannel(
-				channelId,
-				_getAccountEntryId(
-					channel, commerceChannel.getAccountEntryId()),
-				GetterUtil.getLong(
-					channel.getSiteGroupId(), commerceChannel.getSiteGroupId()),
-				GetterUtil.getString(
-					channel.getName(), commerceChannel.getName()),
-				GetterUtil.getString(
-					channel.getType(), commerceChannel.getType()),
-				commerceChannel.getTypeSettingsUnicodeProperties(),
-				commerceCurrency.getCode(),
-				commerceChannel.getPriceDisplayType(),
-				commerceChannel.isDiscountsTargetNetPrice()));
+		ServiceContextThreadLocal.pushServiceContext(
+			_getServiceContext(channel));
+
+		try {
+			return _toChannel(
+				_commerceChannelService.updateCommerceChannel(
+					channelId,
+					_getAccountEntryId(
+						channel, commerceChannel.getAccountEntryId()),
+					GetterUtil.getLong(
+						channel.getSiteGroupId(),
+						commerceChannel.getSiteGroupId()),
+					GetterUtil.getString(
+						channel.getName(), commerceChannel.getName()),
+					GetterUtil.getString(
+						channel.getType(), commerceChannel.getType()),
+					commerceChannel.getTypeSettingsUnicodeProperties(),
+					commerceCurrency.getCode(),
+					commerceChannel.getPriceDisplayType(),
+					commerceChannel.isDiscountsTargetNetPrice()));
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
 	}
 
 	@Override
@@ -217,21 +228,30 @@ public class ChannelResourceImpl extends BaseChannelResourceImpl {
 			}
 		}
 
-		return _toChannel(
-			_commerceChannelService.updateCommerceChannel(
-				commerceChannel.getCommerceChannelId(),
-				_getAccountEntryId(
-					channel, commerceChannel.getAccountEntryId()),
-				GetterUtil.getLong(
-					channel.getSiteGroupId(), commerceChannel.getSiteGroupId()),
-				GetterUtil.getString(
-					channel.getName(), commerceChannel.getName()),
-				GetterUtil.getString(
-					channel.getType(), commerceChannel.getType()),
-				commerceChannel.getTypeSettingsUnicodeProperties(),
-				commerceCurrency.getCode(),
-				commerceChannel.getPriceDisplayType(),
-				commerceChannel.isDiscountsTargetNetPrice()));
+		ServiceContextThreadLocal.pushServiceContext(
+			_getServiceContext(channel));
+
+		try {
+			return _toChannel(
+				_commerceChannelService.updateCommerceChannel(
+					commerceChannel.getCommerceChannelId(),
+					_getAccountEntryId(
+						channel, commerceChannel.getAccountEntryId()),
+					GetterUtil.getLong(
+						channel.getSiteGroupId(),
+						commerceChannel.getSiteGroupId()),
+					GetterUtil.getString(
+						channel.getName(), commerceChannel.getName()),
+					GetterUtil.getString(
+						channel.getType(), commerceChannel.getType()),
+					commerceChannel.getTypeSettingsUnicodeProperties(),
+					commerceCurrency.getCode(),
+					commerceChannel.getPriceDisplayType(),
+					commerceChannel.isDiscountsTargetNetPrice()));
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
 	}
 
 	@Override
@@ -249,7 +269,7 @@ public class ChannelResourceImpl extends BaseChannelResourceImpl {
 					channel, AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT),
 				GetterUtil.getLong(channel.getSiteGroupId()), channel.getName(),
 				channel.getType(), null, commerceCurrency.getCode(),
-				_serviceContextHelper.getServiceContext(contextUser)));
+				_getServiceContext(channel)));
 	}
 
 	@Override
@@ -269,17 +289,25 @@ public class ChannelResourceImpl extends BaseChannelResourceImpl {
 				channel.getCurrencyExternalReferenceCode(),
 				GetterUtil.getLong(channel.getCurrencyId()));
 
-		return _toChannel(
-			_commerceChannelService.updateCommerceChannel(
-				channelId,
-				_getAccountEntryId(
-					channel, AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT),
-				GetterUtil.getLong(channel.getSiteGroupId()), channel.getName(),
-				channel.getType(),
-				commerceChannel.getTypeSettingsUnicodeProperties(),
-				commerceCurrency.getCode(),
-				commerceChannel.getPriceDisplayType(),
-				commerceChannel.isDiscountsTargetNetPrice()));
+		ServiceContextThreadLocal.pushServiceContext(
+			_getServiceContext(channel));
+
+		try {
+			return _toChannel(
+				_commerceChannelService.updateCommerceChannel(
+					channelId,
+					_getAccountEntryId(
+						channel, AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT),
+					GetterUtil.getLong(channel.getSiteGroupId()),
+					channel.getName(), channel.getType(),
+					commerceChannel.getTypeSettingsUnicodeProperties(),
+					commerceCurrency.getCode(),
+					commerceChannel.getPriceDisplayType(),
+					commerceChannel.isDiscountsTargetNetPrice()));
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
 	}
 
 	@Override
@@ -311,8 +339,7 @@ public class ChannelResourceImpl extends BaseChannelResourceImpl {
 					channel, AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT),
 				GetterUtil.getLong(channel.getSiteGroupId()), channel.getName(),
 				channel.getType(), typeSettingsUnicodeProperties,
-				commerceCurrency.getCode(),
-				_serviceContextHelper.getServiceContext()));
+				commerceCurrency.getCode(), _getServiceContext(channel)));
 	}
 
 	private long _getAccountEntryId(Channel channel, long defaultAccountEntryId)
@@ -334,6 +361,20 @@ public class ChannelResourceImpl extends BaseChannelResourceImpl {
 		}
 
 		return defaultAccountEntryId;
+	}
+
+	private ServiceContext _getServiceContext(Channel channel)
+		throws Exception {
+
+		ServiceContext serviceContext = _serviceContextHelper.getServiceContext(
+			contextUser);
+
+		serviceContext.setAttribute(
+			"guestBrowsingEnabled", channel.getGuestBrowsingEnabled());
+		serviceContext.setAttribute(
+			"guestCheckoutEnabled", channel.getGuestCheckoutEnabled());
+
+		return serviceContext;
 	}
 
 	private Channel _toChannel(CommerceChannel commerceChannel)
