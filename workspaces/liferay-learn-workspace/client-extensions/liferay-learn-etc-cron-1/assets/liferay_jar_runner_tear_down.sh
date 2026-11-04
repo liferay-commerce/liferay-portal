@@ -74,7 +74,8 @@ function notify_slack {
 
 	payload_file=$(mktemp)
 
-	printf '{"channel":"%s","icon_emoji":":robot_face:","text":"%s <%s|console log>","username":"learn-importer"}' \
+	printf \
+		'{"channel": "%s", "icon_emoji": ":robot_face:", "text": "%s <%s|console log>", "username": "learn-importer"}' \
 		"${LIFERAY_LEARN_ETC_CRON_SLACK_CHANNEL:-}" \
 		"${text}" \
 		"${log_url}" > "${payload_file}"

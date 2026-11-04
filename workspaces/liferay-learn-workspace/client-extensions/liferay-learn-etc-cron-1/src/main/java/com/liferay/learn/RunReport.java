@@ -32,12 +32,12 @@ public class RunReport {
 		_warningMessages.add(warningMessage);
 	}
 
-	public int getErrorCount() {
-		return _errorMessages.size();
-	}
-
 	public List<String> getErrorMessages() {
 		return _errorMessages;
+	}
+
+	public int getErrorsCount() {
+		return _errorMessages.size();
 	}
 
 	public boolean hasErrors() {

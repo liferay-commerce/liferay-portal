@@ -38,7 +38,7 @@ public class MarkdownValidator {
 
 	public int validate() throws Exception {
 		List<String> preflightErrorMessages = new ArrayList<>();
-		int preflightWarningCount = 0;
+		int preflightWarningsCount = 0;
 
 		Map<String, String> uuidFileNames = new HashMap<>();
 		int validatedCount = 0;
@@ -78,7 +78,7 @@ public class MarkdownValidator {
 
 			if (uuid.isEmpty()) {
 				preflightErrorMessages.add(
-					fileName + ": the uuid is missing in the front matter");
+					fileName + ": the \"uuid\" is missing in the front matter");
 			}
 			else {
 				String duplicateFileName = uuidFileNames.put(uuid, fileName);
@@ -86,7 +86,7 @@ public class MarkdownValidator {
 				if (duplicateFileName != null) {
 					preflightErrorMessages.add(
 						StringBundler.concat(
-							"The uuid ", uuid, " is duplicated in ",
+							"The \"uuid\" ", uuid, " is duplicated in ",
 							duplicateFileName, " and ", fileName));
 				}
 			}
@@ -152,7 +152,7 @@ public class MarkdownValidator {
 							continue;
 						}
 
-						preflightWarningCount++;
+						preflightWarningsCount++;
 
 						System.out.println(
 							StringBundler.concat(
@@ -167,7 +167,7 @@ public class MarkdownValidator {
 			StringBundler.concat(
 				"[preflight] Validated ", validatedCount, " markdown files: ",
 				preflightErrorMessages.size(), " errors, ",
-				preflightWarningCount, " warnings."));
+				preflightWarningsCount, " warnings."));
 
 		if (preflightErrorMessages.isEmpty()) {
 			System.out.println("[preflight] PASSED");

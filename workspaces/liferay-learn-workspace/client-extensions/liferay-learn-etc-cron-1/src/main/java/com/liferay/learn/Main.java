@@ -26,6 +26,7 @@ import com.liferay.headless.delivery.client.resource.v1_0.StructuredContentResou
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
@@ -46,7 +47,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -79,9 +79,7 @@ import org.json.JSONObject;
 public class Main {
 
 	public static void main(String[] arguments) throws Exception {
-		List<String> argumentsList = Arrays.asList(arguments);
-
-		boolean preflight = argumentsList.contains("--preflight");
+		boolean preflight = ArrayUtil.contains(arguments, "--preflight");
 
 		if (!preflight) {
 			_captureConsole();
@@ -175,7 +173,7 @@ public class Main {
 		}
 
 		try {
-			main.loadTaxonomyVocabularies();
+			main._loadTaxonomyVocabularies();
 		}
 		catch (Exception exception) {
 			if (!preflight) {
@@ -191,7 +189,7 @@ public class Main {
 		}
 
 		if (preflight) {
-			System.exit(main.preflight());
+			System.exit(main._preflight());
 		}
 
 		main.uploadToLiferay();
@@ -324,157 +322,11 @@ public class Main {
 			_navigationHelper, _skipLocales, this::_getTaxonomyCategoryIds);
 	}
 
-	public void loadTaxonomyVocabularies() throws Exception {
-		if (_offline) {
-			return;
-		}
-
-		File file = new File(
-			_docsDirectory.getDocsDirName() + "/../taxonomy-vocabularies.json");
-
-		if (!file.exists()) {
-			return;
-		}
-
-		JSONObject taxonomyVocabulariesJSONObject = new JSONObject(
-			FileUtils.readFileToString(file, StandardCharsets.UTF_8));
-
-		if (taxonomyVocabulariesJSONObject.isEmpty()) {
-			return;
-		}
-
-		List<TaxonomyVocabulary> taxonomyVocabularies = new ArrayList<>();
-
-		for (int page = 1;; page++) {
-			com.liferay.headless.admin.taxonomy.client.pagination.Page
-				<TaxonomyVocabulary> taxonomyVocabulariesPage;
-
-			try {
-				taxonomyVocabulariesPage =
-					_taxonomyVocabularyResource.getSiteTaxonomyVocabulariesPage(
-						_globalSiteId, null, null, null,
-						com.liferay.headless.admin.taxonomy.client.pagination.
-							Pagination.of(page, 50),
-						null);
-			}
-			catch (Problem.ProblemException problemException) {
-				Problem problem = problemException.getProblem();
-
-				System.err.println(
-					StringBundler.concat(
-						"Unable to get taxonomy vocabularies: status ",
-						problem.getStatus(), ", title ", problem.getTitle(),
-						", detail ", problem.getDetail()));
-
-				throw problemException;
-			}
-
-			taxonomyVocabularies.addAll(taxonomyVocabulariesPage.getItems());
-
-			if (taxonomyVocabulariesPage.getLastPage() == page) {
-				break;
-			}
-		}
-
-		Map<String, String> existingTaxonomyCategories = new HashMap<>();
-		Map<String, Long> existingTaxonomyVocabularies = new HashMap<>();
-
-		for (TaxonomyVocabulary taxonomyVocabulary : taxonomyVocabularies) {
-			if (StringUtil.equals(
-					taxonomyVocabulary.getExternalReferenceCode(),
-					"RESOURCE_TYPE")) {
-
-				TaxonomyCategory taxonomyCategory =
-					_taxonomyCategoryResource.
-						getTaxonomyVocabularyTaxonomyCategoryByExternalReferenceCode(
-							taxonomyVocabulary.getId(),
-							"OFFICIAL_DOCUMENTATION");
-
-				_taxonomyCategoriesJSONObject.put(
-					taxonomyCategory.getExternalReferenceCode(),
-					taxonomyCategory.getId());
-
-				continue;
-			}
-
-			existingTaxonomyVocabularies.put(
-				taxonomyVocabulary.getName(), taxonomyVocabulary.getId());
-
-			for (int page = 1;; page++) {
-				com.liferay.headless.admin.taxonomy.client.pagination.Page
-					<TaxonomyCategory> taxonomyCategoriesPage =
-						_taxonomyCategoryResource.
-							getTaxonomyVocabularyTaxonomyCategoriesPage(
-								taxonomyVocabulary.getId(), true, null, null,
-								null,
-								com.liferay.headless.admin.taxonomy.client.
-									pagination.Pagination.of(page, 50),
-								null);
-
-				for (TaxonomyCategory taxonomyCategory :
-						taxonomyCategoriesPage.getItems()) {
-
-					existingTaxonomyCategories.put(
-						_getTaxonomyCategoryKey(
-							taxonomyVocabulary.getName(),
-							taxonomyCategory.getName()),
-						taxonomyCategory.getId());
-				}
-
-				if (taxonomyCategoriesPage.getLastPage() == page) {
-					break;
-				}
-			}
-		}
-
-		JSONArray jsonArray = taxonomyVocabulariesJSONObject.getJSONArray(
-			"taxonomyVocabularies");
-
-		for (int i = 0; i < jsonArray.length(); i++) {
-			JSONObject taxonomyVocabularyJSONObject = jsonArray.getJSONObject(
-				i);
-
-			String name = taxonomyVocabularyJSONObject.getString("name");
-
-			Long taxonomyVocabularyId = existingTaxonomyVocabularies.get(name);
-
-			if (taxonomyVocabularyId == null) {
-				TaxonomyVocabulary taxonomyVocabulary =
-					new TaxonomyVocabulary();
-
-				taxonomyVocabulary.setName(() -> name);
-
-				taxonomyVocabulary =
-					_taxonomyVocabularyResource.postSiteTaxonomyVocabulary(
-						_globalSiteId, taxonomyVocabulary);
-
-				taxonomyVocabularyId = taxonomyVocabulary.getId();
-			}
-
-			_loadTaxonomyCategories(
-				existingTaxonomyCategories, null,
-				taxonomyVocabularyJSONObject.optJSONArray("taxonomyCategories"),
-				taxonomyVocabularyId, name);
-		}
-	}
-
-	public int preflight() throws Exception {
-		System.out.println(
-			"[preflight] DXP is reachable, the site, content structure and " +
-				"taxonomies are resolved.");
-
-		MarkdownValidator markdownValidator = new MarkdownValidator(
-			_docsDirectory, _markdownParser, _preflightTocExclusions,
-			_taxonomyCategoriesJSONObject::has);
-
-		return markdownValidator.validate();
-	}
-
 	public void uploadToLiferay() throws Exception {
-		int addedStructuredContentCount = 0;
+		int addedStructuredContentsCount = 0;
 		Set<Long> importedStructuredContentIds = new HashSet<>();
-		int skippedStructuredContentCount = 0;
-		int updatedStructuredContentCount = 0;
+		int skippedStructuredContentsCount = 0;
+		int updatedStructuredContentsCount = 0;
 
 		List<StructuredContent> siteStructuredContents =
 			_getSiteStructuredContents(_liferaySiteId);
@@ -486,7 +338,7 @@ public class Main {
 		Map<String, StructuredContent> externalReferenceCodeStructuredContents =
 			_getExternalReferenceCodeStructuredContents(siteStructuredContents);
 		Map<String, StructuredContent> friendlyUrlPathStructuredContents =
-			_getFriendlyUrlPathStructuredContents(siteStructuredContents);
+			_getFriendlyURLPathStructuredContents(siteStructuredContents);
 
 		Set<String> divergentExternalReferenceCodes =
 			_getDivergentExternalReferenceCodes(
@@ -562,7 +414,7 @@ public class Main {
 							structuredContent.getExternalReferenceCode()) &&
 						!_skipDiffCheck) {
 
-						skippedStructuredContentCount++;
+						skippedStructuredContentsCount++;
 
 						System.out.println(
 							"Skipping structured content (same md5Hex) " +
@@ -582,21 +434,13 @@ public class Main {
 						_structuredContentResource.putStructuredContent(
 							siteStructuredContent.getId(), structuredContent);
 
-					try {
-						_structuredContentResource.
-							putStructuredContentPermissionsPage(
-								importedStructuredContent.getId(),
-								_getPermissions(
-									fileName,
-									importedStructuredContent.getId()));
-					}
-					catch (Exception exception) {
-						throw new Exception(
-							"Unable to set permissions: " + exception,
-							exception);
-					}
+					_structuredContentResource.
+						putStructuredContentPermissionsPage(
+							importedStructuredContent.getId(),
+							_getPermissions(
+								fileName, importedStructuredContent.getId()));
 
-					updatedStructuredContentCount++;
+					updatedStructuredContentsCount++;
 				}
 				else {
 					StructuredContent friendlyUrlPathSiteStructuredContent =
@@ -619,12 +463,12 @@ public class Main {
 						"Adding structured content " +
 							structuredContent.getFriendlyUrlPath());
 
+					String docsDirName = _docsDirectory.getDocsDirName();
+
 					structuredContent.setStructuredContentFolderId(
 						() -> _getStructuredContentFolderId(
 							FilenameUtils.getPathNoEndSeparator(
-								fileName.substring(
-									_docsDirectory.getDocsDirName(
-									).length()))));
+								fileName.substring(docsDirName.length()))));
 
 					structuredContent.setPermissions(
 						() -> _getPermissions(
@@ -644,7 +488,7 @@ public class Main {
 						_structuredContentResource.putStructuredContent(
 							publishedStructuredContentId, structuredContent);
 
-					addedStructuredContentCount++;
+					addedStructuredContentsCount++;
 				}
 
 				if (!Objects.equals(
@@ -676,24 +520,25 @@ public class Main {
 			}
 		}
 
-		int deletedStructuredContentCount = _deleteOrphans(
+		int deletedStructuredContentsCount = _deleteOrphans(
 			_getIdStructuredContents(siteStructuredContents),
 			importedStructuredContentIds);
 
 		_runReport.printSummary(
-			addedStructuredContentCount, deletedStructuredContentCount,
-			updatedStructuredContentCount);
+			addedStructuredContentsCount, deletedStructuredContentsCount,
+			updatedStructuredContentsCount);
 
 		SlackNotifier slackNotifier = new SlackNotifier(_runReport);
 
 		slackNotifier.sendReport(
-			addedStructuredContentCount, deletedStructuredContentCount,
-			skippedStructuredContentCount, updatedStructuredContentCount);
+			addedStructuredContentsCount, deletedStructuredContentsCount,
+			skippedStructuredContentsCount, updatedStructuredContentsCount);
 
 		_runReport.printErrors();
 
 		if (_runReport.hasErrors()) {
-			throw new Exception(_runReport.getErrorCount() + " error messages");
+			throw new Exception(
+				_runReport.getErrorsCount() + " error messages");
 		}
 
 		_runReport.recordSuccess();
@@ -729,27 +574,27 @@ public class Main {
 
 		orphanedStructuredContentIds.removeAll(importedStructuredContentIds);
 
-		int excludedCount = 0;
+		Set<Long> excludedStructuredContentIds = new HashSet<>();
 
-		Iterator<Long> iterator = orphanedStructuredContentIds.iterator();
-
-		while (iterator.hasNext()) {
+		for (Long orphanedStructuredContentId : orphanedStructuredContentIds) {
 			StructuredContent structuredContent = idStructuredContents.get(
-				iterator.next());
+				orphanedStructuredContentId);
 
 			if (!_isExcludedOrphan(structuredContent.getFriendlyUrlPath())) {
 				continue;
 			}
 
-			excludedCount++;
-
-			iterator.remove();
+			excludedStructuredContentIds.add(orphanedStructuredContentId);
 		}
+
+		orphanedStructuredContentIds.removeAll(excludedStructuredContentIds);
+
+		int excludedCount = excludedStructuredContentIds.size();
 
 		if (excludedCount > 0) {
 			System.out.println(
 				excludedCount +
-					" orphaned structured contents were kept (excluded).");
+					" orphaned structured contents were kept (excluded)");
 		}
 
 		int orphanCount = orphanedStructuredContentIds.size();
@@ -758,7 +603,7 @@ public class Main {
 			System.out.println(
 				orphanCount +
 					" orphaned structured contents were kept (cleanup " +
-						"disabled).");
+						"disabled)");
 
 			return 0;
 		}
@@ -767,7 +612,7 @@ public class Main {
 			System.out.println(
 				StringBundler.concat(
 					"Skipping orphan cleanup because the run has ",
-					_runReport.getErrorCount(), " errors: ", orphanCount,
+					_runReport.getErrorsCount(), " errors: ", orphanCount,
 					" orphaned structured contents were kept."));
 
 			return 0;
@@ -940,7 +785,7 @@ public class Main {
 				StringBundler.concat(
 					"Verified ", publishedCount,
 					" published structured contents against the repository: ",
-					"none diverged."));
+					"none diverged"));
 
 			return divergentExternalReferenceCodes;
 		}
@@ -997,7 +842,7 @@ public class Main {
 	}
 
 	private Map<String, StructuredContent>
-		_getFriendlyUrlPathStructuredContents(
+		_getFriendlyURLPathStructuredContents(
 			List<StructuredContent> structuredContents) {
 
 		Map<String, StructuredContent> friendlyUrlPathStructuredContents =
@@ -1239,7 +1084,7 @@ public class Main {
 					break;
 				}
 				catch (Exception exception) {
-					if (attempt >= _READ_ATTEMPT_COUNT) {
+					if (attempt >= _READ_ATTEMPTS_COUNT) {
 						throw new Exception(
 							StringBundler.concat(
 								"Unable to read page ", page, " of ", lastPage,
@@ -1565,16 +1410,16 @@ public class Main {
 			return false;
 		}
 
-		String docsRelativePath = _docsDirectory.getRelativePath(
+		String relativePath = _docsDirectory.getRelativePath(
 			new File(fileName));
 
-		if (docsRelativePath == null) {
+		if (relativePath == null) {
 			return false;
 		}
 
 		for (String restrictedPath : _restrictedPaths) {
-			if (docsRelativePath.equals(restrictedPath) ||
-				docsRelativePath.startsWith(restrictedPath + "/")) {
+			if (relativePath.equals(restrictedPath) ||
+				relativePath.startsWith(restrictedPath + "/")) {
 
 				return true;
 			}
@@ -1645,6 +1490,152 @@ public class Main {
 		}
 	}
 
+	private void _loadTaxonomyVocabularies() throws Exception {
+		if (_offline) {
+			return;
+		}
+
+		File file = new File(
+			_docsDirectory.getDocsDirName() + "/../taxonomy-vocabularies.json");
+
+		if (!file.exists()) {
+			return;
+		}
+
+		JSONObject taxonomyVocabulariesJSONObject = new JSONObject(
+			FileUtils.readFileToString(file, StandardCharsets.UTF_8));
+
+		if (taxonomyVocabulariesJSONObject.isEmpty()) {
+			return;
+		}
+
+		List<TaxonomyVocabulary> taxonomyVocabularies = new ArrayList<>();
+
+		for (int page = 1;; page++) {
+			com.liferay.headless.admin.taxonomy.client.pagination.Page
+				<TaxonomyVocabulary> taxonomyVocabulariesPage;
+
+			try {
+				taxonomyVocabulariesPage =
+					_taxonomyVocabularyResource.getSiteTaxonomyVocabulariesPage(
+						_globalSiteId, null, null, null,
+						com.liferay.headless.admin.taxonomy.client.pagination.
+							Pagination.of(page, 50),
+						null);
+			}
+			catch (Problem.ProblemException problemException) {
+				Problem problem = problemException.getProblem();
+
+				System.err.println(
+					StringBundler.concat(
+						"Unable to get taxonomy vocabularies: status ",
+						problem.getStatus(), ", title ", problem.getTitle(),
+						", detail ", problem.getDetail()));
+
+				throw problemException;
+			}
+
+			taxonomyVocabularies.addAll(taxonomyVocabulariesPage.getItems());
+
+			if (taxonomyVocabulariesPage.getLastPage() == page) {
+				break;
+			}
+		}
+
+		Map<String, String> existingTaxonomyCategories = new HashMap<>();
+		Map<String, Long> existingTaxonomyVocabularies = new HashMap<>();
+
+		for (TaxonomyVocabulary taxonomyVocabulary : taxonomyVocabularies) {
+			if (StringUtil.equals(
+					taxonomyVocabulary.getExternalReferenceCode(),
+					"RESOURCE_TYPE")) {
+
+				TaxonomyCategory taxonomyCategory =
+					_taxonomyCategoryResource.
+						getTaxonomyVocabularyTaxonomyCategoryByExternalReferenceCode(
+							taxonomyVocabulary.getId(),
+							"OFFICIAL_DOCUMENTATION");
+
+				_taxonomyCategoriesJSONObject.put(
+					taxonomyCategory.getExternalReferenceCode(),
+					taxonomyCategory.getId());
+
+				continue;
+			}
+
+			existingTaxonomyVocabularies.put(
+				taxonomyVocabulary.getName(), taxonomyVocabulary.getId());
+
+			for (int page = 1;; page++) {
+				com.liferay.headless.admin.taxonomy.client.pagination.Page
+					<TaxonomyCategory> taxonomyCategoriesPage =
+						_taxonomyCategoryResource.
+							getTaxonomyVocabularyTaxonomyCategoriesPage(
+								taxonomyVocabulary.getId(), true, null, null,
+								null,
+								com.liferay.headless.admin.taxonomy.client.
+									pagination.Pagination.of(page, 50),
+								null);
+
+				for (TaxonomyCategory taxonomyCategory :
+						taxonomyCategoriesPage.getItems()) {
+
+					existingTaxonomyCategories.put(
+						_getTaxonomyCategoryKey(
+							taxonomyVocabulary.getName(),
+							taxonomyCategory.getName()),
+						taxonomyCategory.getId());
+				}
+
+				if (taxonomyCategoriesPage.getLastPage() == page) {
+					break;
+				}
+			}
+		}
+
+		JSONArray jsonArray = taxonomyVocabulariesJSONObject.getJSONArray(
+			"taxonomyVocabularies");
+
+		for (int i = 0; i < jsonArray.length(); i++) {
+			JSONObject taxonomyVocabularyJSONObject = jsonArray.getJSONObject(
+				i);
+
+			String name = taxonomyVocabularyJSONObject.getString("name");
+
+			Long taxonomyVocabularyId = existingTaxonomyVocabularies.get(name);
+
+			if (taxonomyVocabularyId == null) {
+				TaxonomyVocabulary taxonomyVocabulary =
+					new TaxonomyVocabulary();
+
+				taxonomyVocabulary.setName(() -> name);
+
+				taxonomyVocabulary =
+					_taxonomyVocabularyResource.postSiteTaxonomyVocabulary(
+						_globalSiteId, taxonomyVocabulary);
+
+				taxonomyVocabularyId = taxonomyVocabulary.getId();
+			}
+
+			_loadTaxonomyCategories(
+				existingTaxonomyCategories, null,
+				taxonomyVocabularyJSONObject.optJSONArray("taxonomyCategories"),
+				taxonomyVocabularyId, name);
+		}
+	}
+
+	private int _preflight() throws Exception {
+		System.out.println(
+			"[preflight] DXP is reachable, the site, content structure and " +
+				"taxonomies are resolved.");
+
+		MarkdownValidator markdownValidator = new MarkdownValidator(
+			_docsDirectory, _markdownParser, _preflightTocExclusions,
+			_taxonomyCategoriesJSONObject::has);
+
+		return markdownValidator.validate();
+	}
+
 	private void _publishJapaneseStructuredContent(
 			long structuredContentId, String fileName)
 		throws Exception {
@@ -1683,9 +1674,9 @@ public class Main {
 
 		String markdownFileName = markdownFile.getCanonicalPath();
 
-		markdownFileName = markdownFileName.substring(
-			_docsDirectory.getDocsDirName(
-			).length());
+		String docsDirName = _docsDirectory.getDocsDirName();
+
+		markdownFileName = markdownFileName.substring(docsDirName.length());
 
 		File file = new File(dirName + markdownFileName);
 
@@ -1694,9 +1685,9 @@ public class Main {
 		FileUtils.writeStringToFile(file, content, StandardCharsets.UTF_8);
 	}
 
-	private static final int _READ_ATTEMPT_COUNT = 3;
-
 	private static final long _READ_ATTEMPT_DELAY = 3000;
+
+	private static final int _READ_ATTEMPTS_COUNT = 3;
 
 	private DataDefinitionResource _dataDefinitionResource;
 	private final DocsDirectory _docsDirectory;

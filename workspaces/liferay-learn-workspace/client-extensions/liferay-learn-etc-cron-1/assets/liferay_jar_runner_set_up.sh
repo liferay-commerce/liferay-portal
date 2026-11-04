@@ -27,7 +27,7 @@ function check_environment {
 		LIFERAY_LEARN_ETC_CRON_OAUTH_CLIENT_SECRET \
 		LIFERAY_LEARN_RESOURCE_DOMAIN
 	do
-		if [ -z "${!name:-}" ]
+		if [[ -z ${!name:-} ]]
 		then
 			missing_names+=("${name}")
 		fi
@@ -51,13 +51,10 @@ function check_environment {
 
 	local resource_url=${LIFERAY_LEARN_RESOURCE_DOMAIN}
 
-	case "${resource_url}" in
-		http://*|https://*)
-			;;
-		*)
-			resource_url="https://${resource_url}"
-			;;
-	esac
+	if [[ ! ${resource_url} == http://* ]] && [[ ! ${resource_url} == https://* ]]
+	then
+		resource_url="https://${resource_url}"
+	fi
 
 	local resource_status
 
@@ -67,9 +64,9 @@ function check_environment {
 			--output /dev/null \
 			--silent \
 			--write-out "%{http_code}" \
-			"${resource_url}/" || true)
+			"${resource_url}" || true)
 
-	if [ "${resource_status}" == "000" ]
+	if [[ ${resource_status} == 000 ]]
 	then
 		echo "[cron-1] ERROR: the resource domain ${resource_url} is unreachable"
 
@@ -82,7 +79,7 @@ function check_environment {
 function check_for_changes {
 	_REMOTE_COMMIT=$(git ls-remote git@github.com:"${LIFERAY_LEARN_ETC_CRON_GITHUB_USER:-liferay}"/liferay-learn.git refs/heads/"${LIFERAY_LEARN_ETC_CRON_GITHUB_BRANCH:-master}" | awk '{print $1}') || true
 
-	if [ -z "${_REMOTE_COMMIT}" ]
+	if [[ -z ${_REMOTE_COMMIT} ]]
 	then
 		_REMOTE_COMMIT="unknown"
 	fi
@@ -95,8 +92,8 @@ function check_for_changes {
 
 	local force=${LIFERAY_LEARN_ETC_CRON_FORCE_RUN:-}
 
-	if [ -n "${force}" ] && [ "${force}" != "false" ] &&
-	   [ "${force}" != "${attempt_force}" ]
+	if [[ -n ${force} ]] && [[ ${force} != false ]] &&
+	   [[ ${force} != ${attempt_force} ]]
 	then
 		echo "[cron-1] A full run was forced by \"${force}\", change the value to force another one."
 
@@ -170,13 +167,13 @@ function check_generated_site {
 
 	while IFS= read -r markdown_file
 	do
-		expected_count=$((expected_count + 1))
+		((++expected_count))
 
 		html_file="${site_dir}/${markdown_file%.md}.html"
 
 		if [ ! -f "${html_file}" ]
 		then
-			missing_count=$((missing_count + 1))
+			((++missing_count))
 
 			if [[ "${#examples[@]}" -lt 5 ]]
 			then
@@ -184,7 +181,7 @@ function check_generated_site {
 			fi
 		elif [ ! "${html_file}" -nt "${_GENERATION_START_MARKER}" ]
 		then
-			stale_count=$((stale_count + 1))
+			((++stale_count))
 
 			if [[ "${#examples[@]}" -lt 5 ]]
 			then
@@ -551,7 +548,7 @@ function main {
 	then
 		write_manifest
 	else
-		echo "[cron-1] Partial mode: manifest not written (it only describes full runs)."
+		echo "[cron-1] Partial mode: manifest was not written (it only describes full runs)."
 	fi
 
 	notify_resources_published
@@ -566,14 +563,14 @@ function main {
 function notify_resources_published {
 	local detail
 
-	detail="copy $(span copy now)"
+	detail="copy $(get_span copy now)"
 
 	if [ "${LIFERAY_LEARN_ETC_CRON_PARTIAL:-}" != "true" ]
 	then
-		detail="copy $(span copy manifest) · manifest $(span manifest now)"
+		detail="copy $(get_span copy manifest) · manifest $(get_span manifest now)"
 	fi
 
-	notify_slack ":truck: *Resources published* · $(span copy now)\\n${detail}"
+	notify_slack ":truck: *Resources published* · $(get_span copy now)\\n${detail}"
 }
 
 function notify_slack {
@@ -588,7 +585,8 @@ function notify_slack {
 
 	payload_file=$(mktemp)
 
-	printf '{"channel":"%s","icon_emoji":":robot_face:","text":"%s","username":"learn-importer"}' \
+	printf \
+		'{"channel": "%s", "icon_emoji": ":robot_face:", "text": "%s", "username": "learn-importer"}' \
 		"${LIFERAY_LEARN_ETC_CRON_SLACK_CHANNEL:-}" \
 		"${text}" > "${payload_file}"
 
@@ -614,7 +612,7 @@ function notify_sources_ready {
 		source_link="<https://github.com/${LIFERAY_LEARN_ETC_CRON_GITHUB_USER:-liferay}/liferay-learn/commit/${commit}|${commit}>"
 	fi
 
-	notify_slack ":hammer: *Sources ready* · $(span preflight now)\\nSource: ${source_link} · clone $(span clone preflight-dxp) · preflight-dxp $(span preflight-dxp generation) · generation $(span generation now)$(preflight_warnings)"
+	notify_slack ":hammer: *Sources ready* · $(get_span preflight now)\\nSource: ${source_link} · clone $(get_span clone preflight-dxp) · preflight-dxp $(get_span preflight-dxp generation) · generation $(get_span generation now)$(preflight_warnings)"
 }
 
 function phase_seconds {
@@ -739,10 +737,10 @@ function source_commit {
 		awk '{print $2}' || true
 }
 
-function span {
+function get_span {
 	local seconds
 
-	seconds=$(span_seconds "${1}" "${2}")
+	seconds=$(get_span_seconds "${1}" "${2}")
 
 	if [ -z "${seconds}" ]
 	then
@@ -754,7 +752,7 @@ function span {
 	to_duration "${seconds}"
 }
 
-function span_seconds {
+function get_span_seconds {
 	local from_name=${1} to_name=${2}
 
 	local from_seconds to_seconds

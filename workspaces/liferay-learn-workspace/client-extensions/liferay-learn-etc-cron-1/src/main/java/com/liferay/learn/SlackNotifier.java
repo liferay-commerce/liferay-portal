@@ -7,6 +7,8 @@ package com.liferay.learn;
 
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 
@@ -17,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -29,8 +32,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-
-import org.json.JSONObject;
 
 /**
  * @author Francesco Acciaro
@@ -49,7 +50,7 @@ public class SlackNotifier {
 
 		if ((endpoint == null) || endpoint.isEmpty()) {
 			System.out.println(
-				"No Slack endpoint is configured, skipping the notification.");
+				"No Slack endpoint is configured, skipping the notification");
 
 			return;
 		}
@@ -64,7 +65,7 @@ public class SlackNotifier {
 		else {
 			sb.append(":rotating_light: *liferay-learn-etc-cron-1* run ");
 			sb.append("failed with ");
-			sb.append(_runReport.getErrorCount());
+			sb.append(_runReport.getErrorsCount());
 			sb.append(" errors");
 		}
 
@@ -103,20 +104,18 @@ public class SlackNotifier {
 			sb.append("|console log>");
 		}
 
-		int reportedErrorCount = Math.min(_runReport.getErrorCount(), 10);
+		int reportedErrorsCount = Math.min(_runReport.getErrorsCount(), 10);
 
-		for (int i = 0; i < reportedErrorCount; i++) {
+		List<String> errorMessages = _runReport.getErrorMessages();
+
+		for (int i = 0; i < reportedErrorsCount; i++) {
 			sb.append("\n> ");
-			sb.append(
-				_runReport.getErrorMessages(
-				).get(
-					i
-				));
+			sb.append(errorMessages.get(i));
 		}
 
-		if (_runReport.getErrorCount() > reportedErrorCount) {
+		if (_runReport.getErrorsCount() > reportedErrorsCount) {
 			sb.append("\n> and ");
-			sb.append(_runReport.getErrorCount() - reportedErrorCount);
+			sb.append(_runReport.getErrorsCount() - reportedErrorsCount);
 			sb.append(" more, see the console log");
 		}
 
@@ -198,9 +197,7 @@ public class SlackNotifier {
 	}
 
 	private void _sendSlackMessage(String endpoint, String text) {
-		JSONObject jsonObject = new JSONObject();
-
-		jsonObject.put(
+		JSONObject jsonObject = JSONUtil.put(
 			"channel", System.getenv("LIFERAY_LEARN_ETC_CRON_SLACK_CHANNEL")
 		).put(
 			"icon_emoji", ":robot_face:"

@@ -6,6 +6,7 @@
 package com.liferay.learn;
 
 import com.liferay.petra.string.CharPool;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 
 import java.util.regex.Matcher;
@@ -25,7 +26,7 @@ public class TextUtil {
 	}
 
 	public static String unescapeUnicode(String text) {
-		StringBuilder sb = new StringBuilder(text.length());
+		StringBundler sb = new StringBundler(text.length());
 
 		int index = 0;
 
@@ -50,18 +51,19 @@ public class TextUtil {
 				continue;
 			}
 
-			if ((nextChar == 'u') && ((index + 6) <= text.length()) &&
-				_unicodeEscapePattern.matcher(
-					text.substring(index, index + 6)
-				).matches()) {
+			if ((nextChar == 'u') && ((index + 6) <= text.length())) {
+				Matcher matcher = _unicodeEscapePattern.matcher(
+					text.substring(index, index + 6));
 
-				sb.append(
-					(char)Integer.parseInt(
-						text.substring(index + 2, index + 6), 16));
+				if (matcher.matches()) {
+					sb.append(
+						(char)Integer.parseInt(
+							text.substring(index + 2, index + 6), 16));
 
-				index += 6;
+					index += 6;
 
-				continue;
+					continue;
+				}
 			}
 
 			sb.append(c);
