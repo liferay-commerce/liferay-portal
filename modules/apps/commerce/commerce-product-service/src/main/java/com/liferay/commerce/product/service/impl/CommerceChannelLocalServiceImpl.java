@@ -15,6 +15,7 @@ import com.liferay.commerce.pricing.constants.CommercePricingConstants;
 import com.liferay.commerce.product.channel.CommerceChannelTypeRegistry;
 import com.liferay.commerce.product.constants.CommerceChannelAccountEntryRelConstants;
 import com.liferay.commerce.product.constants.CommerceChannelConstants;
+import com.liferay.commerce.product.exception.CommerceChannelGuestCheckoutException;
 import com.liferay.commerce.product.exception.CommerceChannelNameException;
 import com.liferay.commerce.product.exception.CommerceChannelTypeException;
 import com.liferay.commerce.product.exception.DuplicateCommerceChannelAccountEntryIdException;
@@ -24,6 +25,7 @@ import com.liferay.commerce.product.model.CommerceChannelTable;
 import com.liferay.commerce.product.service.CommerceChannelAccountEntryRelLocalService;
 import com.liferay.commerce.product.service.CommerceChannelRelLocalService;
 import com.liferay.commerce.product.service.base.CommerceChannelLocalServiceBaseImpl;
+import com.liferay.commerce.util.CommerceChannelConfigurationUtil;
 import com.liferay.exportimport.kernel.empty.model.EmptyModelManager;
 import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
@@ -36,6 +38,8 @@ import com.liferay.portal.aop.AopService;
 import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.ResourceConstants;
@@ -60,7 +64,12 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.RepositoryLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.settings.FallbackKeysSettingsUtil;
+import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
+import com.liferay.portal.kernel.settings.ModifiableSettings;
+import com.liferay.portal.kernel.settings.Settings;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -70,6 +79,11 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+
+import jakarta.portlet.ValidatorException;
+
+import java.io.IOException;
+import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -117,6 +131,14 @@ public class CommerceChannelLocalServiceImpl
 		_validateName(name);
 
 		_validateType(type);
+
+		Boolean guestBrowsingEnabled = _getGuestBrowsingEnabled(
+			user.getCompanyId(), serviceContext);
+		Boolean guestCheckoutEnabled = _getBooleanAttribute(
+			"guestCheckoutEnabled", serviceContext);
+
+		_validateGuestSettings(
+			null, guestBrowsingEnabled, guestCheckoutEnabled);
 
 		commerceChannel.setExternalReferenceCode(externalReferenceCode);
 		commerceChannel.setCompanyId(user.getCompanyId());
@@ -175,6 +197,9 @@ public class CommerceChannelLocalServiceImpl
 
 		_resourceLocalService.addModelResources(
 			commerceChannel, serviceContext);
+
+		_updateGuestSettings(
+			commerceChannel, guestBrowsingEnabled, guestCheckoutEnabled);
 
 		return commerceChannel;
 	}
@@ -515,6 +540,17 @@ public class CommerceChannelLocalServiceImpl
 
 		_validateType(type);
 
+		ServiceContext serviceContext =
+			ServiceContextThreadLocal.getServiceContext();
+
+		Boolean guestBrowsingEnabled = _getGuestBrowsingEnabled(
+			commerceChannel.getCompanyId(), serviceContext);
+		Boolean guestCheckoutEnabled = _getBooleanAttribute(
+			"guestCheckoutEnabled", serviceContext);
+
+		_validateGuestSettings(
+			commerceChannel, guestBrowsingEnabled, guestCheckoutEnabled);
+
 		long oldSiteGroupId = commerceChannel.getSiteGroupId();
 
 		commerceChannel.setAccountEntryId(accountEntryId);
@@ -543,6 +579,9 @@ public class CommerceChannelLocalServiceImpl
 			_groupLocalService.updateGroup(
 				group.getGroupId(), _getGroupTypeSettings(group, siteGroupId));
 		}
+
+		_updateGuestSettings(
+			commerceChannel, guestBrowsingEnabled, guestCheckoutEnabled);
 
 		return commerceChannel;
 	}
@@ -581,6 +620,22 @@ public class CommerceChannelLocalServiceImpl
 		queryConfig.setScoreEnabled(false);
 
 		return searchContext;
+	}
+
+	private Boolean _getBooleanAttribute(
+		String name, ServiceContext serviceContext) {
+
+		if (serviceContext == null) {
+			return null;
+		}
+
+		Serializable value = serviceContext.getAttribute(name);
+
+		if (value == null) {
+			return null;
+		}
+
+		return GetterUtil.getBoolean(value);
 	}
 
 	private List<CommerceChannel> _getCommerceChannels(Hits hits)
@@ -652,6 +707,16 @@ public class CommerceChannelLocalServiceImpl
 		return unicodeProperties.toString();
 	}
 
+	private Boolean _getGuestBrowsingEnabled(
+		long companyId, ServiceContext serviceContext) {
+
+		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-109588")) {
+			return null;
+		}
+
+		return _getBooleanAttribute("guestBrowsingEnabled", serviceContext);
+	}
+
 	private List<CommerceChannel> _search(SearchContext searchContext)
 		throws PortalException {
 
@@ -679,6 +744,50 @@ public class CommerceChannelLocalServiceImpl
 			IndexerRegistryUtil.nullSafeGetIndexer(CommerceChannel.class);
 
 		return GetterUtil.getInteger(indexer.searchCount(searchContext));
+	}
+
+	private void _updateGuestSettings(
+			CommerceChannel commerceChannel, Boolean guestBrowsingEnabled,
+			Boolean guestCheckoutEnabled)
+		throws PortalException {
+
+		try {
+			if (guestBrowsingEnabled != null) {
+				_updateSettings(
+					commerceChannel.getGroupId(), "guestBrowsingEnabled",
+					CommerceConstants.SERVICE_NAME_COMMERCE_ACCOUNT,
+					String.valueOf(guestBrowsingEnabled));
+
+				if (!guestBrowsingEnabled) {
+					guestCheckoutEnabled = false;
+				}
+			}
+
+			if (guestCheckoutEnabled != null) {
+				_updateSettings(
+					commerceChannel.getGroupId(), "guestCheckoutEnabled",
+					CommerceConstants.SERVICE_NAME_COMMERCE_ORDER,
+					String.valueOf(guestCheckoutEnabled));
+			}
+		}
+		catch (IOException | ValidatorException exception) {
+			throw new SystemException(exception);
+		}
+	}
+
+	private void _updateSettings(
+			long groupId, String name, String serviceName, String value)
+		throws IOException, PortalException, ValidatorException {
+
+		Settings settings = FallbackKeysSettingsUtil.getSettings(
+			new GroupServiceSettingsLocator(groupId, serviceName));
+
+		ModifiableSettings modifiableSettings =
+			settings.getModifiableSettings();
+
+		modifiableSettings.setValue(name, value);
+
+		modifiableSettings.store();
 	}
 
 	private void _validateAccountEntry(
@@ -726,6 +835,26 @@ public class CommerceChannelLocalServiceImpl
 					"There is another commerce channel with account entry ID " +
 						accountEntryId);
 			}
+		}
+	}
+
+	private void _validateGuestSettings(
+			CommerceChannel commerceChannel, Boolean guestBrowsingEnabled,
+			Boolean guestCheckoutEnabled)
+		throws PortalException {
+
+		if (!Boolean.TRUE.equals(guestCheckoutEnabled)) {
+			return;
+		}
+
+		if ((commerceChannel != null) && (guestBrowsingEnabled == null)) {
+			guestBrowsingEnabled =
+				CommerceChannelConfigurationUtil.isGuestBrowsingEnabled(
+					commerceChannel.getGroupId());
+		}
+
+		if (Boolean.FALSE.equals(guestBrowsingEnabled)) {
+			throw new CommerceChannelGuestCheckoutException();
 		}
 	}
 
