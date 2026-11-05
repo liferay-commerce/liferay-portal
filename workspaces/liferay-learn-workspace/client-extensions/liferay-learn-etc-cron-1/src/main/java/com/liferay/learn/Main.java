@@ -217,9 +217,11 @@ public class Main {
 				String trimmedOrphanExclusion = StringUtil.trim(
 					orphanExclusion.trim(), CharPool.FORWARD_SLASH);
 
-				if (!trimmedOrphanExclusion.isEmpty()) {
-					_orphanExclusions.add(trimmedOrphanExclusion);
+				if (trimmedOrphanExclusion.isEmpty()) {
+					continue;
 				}
+
+				_orphanExclusions.add(trimmedOrphanExclusion);
 			}
 		}
 
@@ -234,9 +236,11 @@ public class Main {
 				String trimmedPreflightTocExclusion =
 					preflightTocExclusion.trim();
 
-				if (!trimmedPreflightTocExclusion.isEmpty()) {
-					_preflightTocExclusions.add(trimmedPreflightTocExclusion);
+				if (trimmedPreflightTocExclusion.isEmpty()) {
+					continue;
 				}
+
+				_preflightTocExclusions.add(trimmedPreflightTocExclusion);
 			}
 		}
 
@@ -248,9 +252,11 @@ public class Main {
 			for (String restrictedPath : restrictedPaths.split(",")) {
 				String trimmedRestrictedPath = restrictedPath.trim();
 
-				if (!trimmedRestrictedPath.isEmpty()) {
-					_restrictedPaths.add(trimmedRestrictedPath);
+				if (trimmedRestrictedPath.isEmpty()) {
+					continue;
 				}
+
+				_restrictedPaths.add(trimmedRestrictedPath);
 			}
 		}
 
@@ -258,9 +264,11 @@ public class Main {
 			for (String restrictedRole : restrictedRoles.split(",")) {
 				String trimmedRestrictedRole = restrictedRole.trim();
 
-				if (!trimmedRestrictedRole.isEmpty()) {
-					_restrictedRoles.add(trimmedRestrictedRole);
+				if (trimmedRestrictedRole.isEmpty()) {
+					continue;
 				}
+
+				_restrictedRoles.add(trimmedRestrictedRole);
 			}
 		}
 
@@ -273,9 +281,11 @@ public class Main {
 			for (String skipLocale : skipLocalesContent.split(",")) {
 				String trimmedSkipLocale = skipLocale.trim();
 
-				if (!trimmedSkipLocale.isEmpty()) {
-					_skipLocales.add(trimmedSkipLocale);
+				if (trimmedSkipLocale.isEmpty()) {
+					continue;
 				}
+
+				_skipLocales.add(trimmedSkipLocale);
 			}
 		}
 
@@ -829,13 +839,15 @@ public class Main {
 			new HashMap<>();
 
 		for (StructuredContent structuredContent : structuredContents) {
-			if (structuredContent.getContentStructureId() ==
+			if (structuredContent.getContentStructureId() !=
 					_liferayContentStructureId) {
 
-				externalReferenceCodeStructuredContents.put(
-					structuredContent.getExternalReferenceCode(),
-					structuredContent);
+				continue;
 			}
+
+			externalReferenceCodeStructuredContents.put(
+				structuredContent.getExternalReferenceCode(),
+				structuredContent);
 		}
 
 		return externalReferenceCodeStructuredContents;
@@ -849,12 +861,14 @@ public class Main {
 			new HashMap<>();
 
 		for (StructuredContent structuredContent : structuredContents) {
-			if (structuredContent.getContentStructureId() ==
+			if (structuredContent.getContentStructureId() !=
 					_liferayContentStructureId) {
 
-				friendlyUrlPathStructuredContents.put(
-					structuredContent.getFriendlyUrlPath(), structuredContent);
+				continue;
 			}
+
+			friendlyUrlPathStructuredContents.put(
+				structuredContent.getFriendlyUrlPath(), structuredContent);
 		}
 
 		return friendlyUrlPathStructuredContents;
@@ -866,12 +880,14 @@ public class Main {
 		Map<Long, StructuredContent> idStructuredContents = new HashMap<>();
 
 		for (StructuredContent structuredContent : structuredContents) {
-			if (structuredContent.getContentStructureId() ==
+			if (structuredContent.getContentStructureId() !=
 					_liferayContentStructureId) {
 
-				idStructuredContents.put(
-					structuredContent.getId(), structuredContent);
+				continue;
 			}
+
+			idStructuredContents.put(
+				structuredContent.getId(), structuredContent);
 		}
 
 		return idStructuredContents;

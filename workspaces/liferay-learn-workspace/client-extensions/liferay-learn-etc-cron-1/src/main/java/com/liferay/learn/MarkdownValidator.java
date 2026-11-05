@@ -127,39 +127,41 @@ public class MarkdownValidator {
 
 			Object toc = data.get("toc");
 
-			if (toc instanceof List) {
-				for (Object tocEntry : (List)toc) {
-					if (!(tocEntry instanceof String)) {
-						preflightErrorMessages.add(
-							StringBundler.concat(
-								fileName, ": the toc entry \"", tocEntry,
-								"\" must be quoted in the front matter"));
+			if (!(toc instanceof List)) {
+				continue;
+			}
 
-						continue;
-					}
+			for (Object tocEntry : (List)toc) {
+				if (!(tocEntry instanceof String)) {
+					preflightErrorMessages.add(
+						StringBundler.concat(
+							fileName, ": the toc entry \"", tocEntry,
+							"\" must be quoted in the front matter"));
 
-					if (NavigationHelper.isMarkdownLink((String)tocEntry)) {
-						continue;
-					}
-
-					File file = new File(fileName);
-
-					File tocFile = new File(
-						file.getParent() + File.separator + tocEntry);
-
-					if (!tocFile.exists() || tocFile.isDirectory()) {
-						if (_isExcludedTocFile(tocFile)) {
-							continue;
-						}
-
-						preflightWarningsCount++;
-
-						System.out.println(
-							StringBundler.concat(
-								"[preflight] Warning: ", fileName,
-								" lists a nonexistent toc entry ", tocEntry));
-					}
+					continue;
 				}
+
+				if (NavigationHelper.isMarkdownLink((String)tocEntry)) {
+					continue;
+				}
+
+				File file = new File(fileName);
+
+				File tocFile = new File(
+					file.getParent() + File.separator + tocEntry);
+
+				if ((tocFile.exists() && !tocFile.isDirectory()) ||
+					_isExcludedTocFile(tocFile)) {
+
+					continue;
+				}
+
+				preflightWarningsCount++;
+
+				System.out.println(
+					StringBundler.concat(
+						"[preflight] Warning: ", fileName,
+						" lists a nonexistent toc entry ", tocEntry));
 			}
 		}
 
