@@ -61,6 +61,7 @@ function DigitalSignatureFormBase({
 			expireAfter: 120,
 			fileEntries,
 			recipients,
+			sequential: true,
 		},
 		onSubmit: (values) => onSubmit(values),
 		validate: (values) =>
