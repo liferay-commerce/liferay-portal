@@ -154,6 +154,8 @@ public class AddDSEnvelopeMVCResourceCommand
 		throws Exception {
 
 		IntegerWrapper integerWrapper = new IntegerWrapper();
+		boolean sequential = ParamUtil.getBoolean(
+			resourceRequest, "sequential", true);
 
 		return JSONUtil.toList(
 			_jsonFactory.createJSONArray(
@@ -163,6 +165,12 @@ public class AddDSEnvelopeMVCResourceCommand
 					dsRecipientId = String.valueOf(integerWrapper.increment());
 					emailAddress = recipientJSONObject.getString("email");
 					name = recipientJSONObject.getString("fullName");
+
+					routingOrder = 1;
+
+					if (sequential) {
+						routingOrder = integerWrapper.getValue();
+					}
 				}
 			});
 	}
