@@ -20,26 +20,6 @@
 		}
 	}
 
-	.document-library-form {
-		.has-error .form-control {
-			background-color: #feefef !important;
-		}
-	}
-
-	.file-entries-list .has-error {
-		background-color: #feefef;
-		border: 1px solid #f48989;
-
-		.quick-action-menu {
-			background-color: #feefef;
-		}
-
-		.text-error {
-			color: #da1414;
-			margin-top: 3px;
-		}
-	}
-
 	.envelope-list {
 		.list-view {
 			&__table-with-pagination {
