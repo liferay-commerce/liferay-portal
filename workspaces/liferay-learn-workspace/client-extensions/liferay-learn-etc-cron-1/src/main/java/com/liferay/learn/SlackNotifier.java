@@ -7,8 +7,6 @@ package com.liferay.learn;
 
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 
@@ -32,6 +30,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+
+import org.json.JSONObject;
 
 /**
  * @author Francesco Acciaro
@@ -197,7 +197,9 @@ public class SlackNotifier {
 	}
 
 	private void _sendSlackMessage(String endpoint, String text) {
-		JSONObject jsonObject = JSONUtil.put(
+		JSONObject jsonObject = new JSONObject();
+
+		jsonObject.put(
 			"channel", System.getenv("LIFERAY_LEARN_ETC_CRON_SLACK_CHANNEL")
 		).put(
 			"icon_emoji", ":robot_face:"
