@@ -77,6 +77,7 @@ const DigitalSignatureForm = ({fileEntries = [], navigate}) => {
 					fullName: name,
 				}))
 			),
+			[`${portletNamespace}sequential`]: values.sequential,
 		};
 
 		try {
