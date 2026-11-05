@@ -4,63 +4,80 @@
  */
 
 import ClayAutocomplete from '@clayui/autocomplete';
-import ClayForm from '@clayui/form';
-import classNames from 'classnames';
-import {fetch} from 'frontend-js-web';
+import {FieldBase} from 'frontend-js-components-web';
 import React, {useEffect, useRef, useState} from 'react';
 
-import {ErrorFeedback} from '../form/FormBase';
+const RecipientUserAutocomplete = ({
+	error,
+	excludedUserIds = [],
+	id,
+	label,
+	onSelectUser,
+	searchUsers,
+	value = '',
+}) => {
+	const [query, setQuery] = useState(value);
+	const [users, setUsers] = useState([]);
 
-const RecipientUserAutocomplete = ({error, id, label, onSelectUser, value}) => {
-	const [query, setQuery] = useState(value || '');
-	const [userAccounts, setUserAccounts] = useState([]);
+	const searchUsersRef = useRef(searchUsers);
+	const selectedEmailAddressRef = useRef(value);
 
-	const selectedEmailAddressRef = useRef(value || '');
+	const excludedUserIdsKey = excludedUserIds.join();
 
 	useEffect(() => {
-		const emailAddress = value || '';
+		searchUsersRef.current = searchUsers;
+	}, [searchUsers]);
 
-		if (emailAddress === selectedEmailAddressRef.current) {
+	useEffect(() => {
+		if (value === selectedEmailAddressRef.current) {
 			return;
 		}
 
-		selectedEmailAddressRef.current = emailAddress;
+		selectedEmailAddressRef.current = value;
 
-		setQuery(emailAddress);
+		setQuery(value);
 	}, [value]);
 
 	useEffect(() => {
-		if (!query) {
-			setUserAccounts([]);
-
-			return;
-		}
+		let active = true;
 
 		const timeoutId = setTimeout(() => {
-			fetch(
-				`/o/headless-admin-user/v1.0/user-accounts?pageSize=10&search=${encodeURIComponent(
-					query
-				)}`
-			)
-				.then((response) => response.json())
-				.then(({items = []}) => setUserAccounts(items))
-				.catch(() => setUserAccounts([]));
+			searchUsersRef
+				.current(query)
+				.then((nextUsers) => {
+					if (active) {
+						setUsers(nextUsers);
+					}
+				})
+				.catch(() => {
+					if (active) {
+						setUsers([]);
+					}
+				});
 		}, 300);
 
-		return () => clearTimeout(timeoutId);
-	}, [query]);
+		return () => {
+			active = false;
+
+			clearTimeout(timeoutId);
+		};
+	}, [excludedUserIdsKey, query]);
 
 	return (
-		<ClayForm.Group
-			className={classNames('mb-0 w-100', {'has-error': error})}
+		<FieldBase
+			className="mb-0 w-100"
+			errorMessage={error}
+			id={id}
+			label={label}
+			required
 		>
-			<label htmlFor={id}>{label}</label>
-
 			<ClayAutocomplete
 				allowsCustomValue
 				filterKey="emailAddress"
 				id={id}
-				items={userAccounts}
+				items={users.filter(
+					({userId}) => !userId || !excludedUserIds.includes(userId)
+				)}
 				menuTrigger="focus"
 				messages={{
 					loading: Liferay.Language.get('loading'),
@@ -71,12 +88,12 @@ const RecipientUserAutocomplete = ({error, id, label, onSelectUser, value}) => {
 						setQuery('');
 					}
 				}}
-				onChange={(newQuery) => {
-					setQuery(newQuery);
+				onChange={(nextQuery) => {
+					setQuery(nextQuery);
 
 					if (
 						selectedEmailAddressRef.current &&
-						newQuery !== selectedEmailAddressRef.current
+						nextQuery !== selectedEmailAddressRef.current
 					) {
 						selectedEmailAddressRef.current = '';
 
@@ -86,25 +103,22 @@ const RecipientUserAutocomplete = ({error, id, label, onSelectUser, value}) => {
 				placeholder={Liferay.Language.get('search-for')}
 				value={query}
 			>
-				{(userAccount) => (
+				{(user) => (
 					<ClayAutocomplete.Item
-						key={userAccount.id}
+						key={user.userId}
 						onClick={() => {
-							selectedEmailAddressRef.current =
-								userAccount.emailAddress;
+							selectedEmailAddressRef.current = user.emailAddress;
 
-							setQuery(userAccount.emailAddress);
-							onSelectUser(userAccount);
+							setQuery(user.emailAddress);
+							onSelectUser(user);
 						}}
-						textValue={userAccount.emailAddress}
+						textValue={user.emailAddress}
 					>
-						<div>{`${userAccount.name} (${userAccount.emailAddress})`}</div>
+						<div>{`${user.name} (${user.emailAddress})`}</div>
 					</ClayAutocomplete.Item>
 				)}
 			</ClayAutocomplete>
-
-			{typeof error === 'string' && <ErrorFeedback error={error} />}
-		</ClayForm.Group>
+		</FieldBase>
 	);
 };
 

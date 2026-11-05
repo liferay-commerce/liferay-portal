@@ -1,225 +1,162 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
-import ClayForm, {ClayInput} from '@clayui/form';
-import ClayIcon from '@clayui/icon';
+import ClayButton from '@clayui/button';
+import ClayForm from '@clayui/form';
+import {useFormik} from 'formik';
 import {sub} from 'frontend-js-web';
-import React from 'react';
+import React, {useState} from 'react';
 
-import {errorToast} from '../../utils/toast';
-import {Input} from '../form/FormBase';
-import FileEntryList from './FileEntryList';
-import FileSelector from './FileSelector';
-import RecipientUserAutocomplete from './RecipientUserAutocomplete';
+import MessageStep, {validateMessageStep} from './steps/MessageStep';
+import RecipientsStep, {validateRecipientsStep} from './steps/RecipientsStep';
+import ReviewStep from './steps/ReviewStep';
 
-const MAX_LENGTH = {
-	ATTACHMENTS: 10,
-	EMAIL_MESSAGE: 10000,
-	RECEIPTS: 10,
-};
+function DigitalSignatureFormBase({
+	allowedFileExtensions,
+	expirationEnabled = false,
+	fileEntries = [],
+	maxFileEntries,
+	maxRecipients,
+	onCancel,
+	onSubmit,
+	recipients = [{emailAddress: '', name: ''}],
+	searchUsers,
+}) {
+	const [currentStep, setCurrentStep] = useState(0);
+	const [showErrors, setShowErrors] = useState(false);
 
-const DigitalSignatureFormBase = ({
-	defaultRecipient,
-	embeddedViewEnabled,
-	errors,
-	handleChange,
-	setFieldValue,
-	values,
-}) => {
-	const canAddMoreReceipt = values.recipients.length < MAX_LENGTH.RECEIPTS;
+	const steps = [
+		{
+			Component: RecipientsStep,
+			title: Liferay.Language.get('recipients'),
+			validate: validateRecipientsStep,
+		},
+		{
+			Component: MessageStep,
+			title: Liferay.Language.get('message'),
+			validate: validateMessageStep,
+		},
+		{
+			Component: ReviewStep,
+			title: Liferay.Language.get('review'),
+		},
+	];
 
-	const onAddFileEntry = (fileEntry) => {
-		const fileEntryExist = values.fileEntries.find(
-			({fileEntryId}) => fileEntryId === fileEntry.fileEntryId
-		);
+	const validateStep = (step, values) =>
+		step.validate
+			? step.validate(values, {
+					allowedFileExtensions,
+					maxFileEntries,
+					searchUsers,
+				})
+			: {};
 
-		if (fileEntryExist) {
-			return errorToast(
-				Liferay.Language.get('the-document-already-exists')
-			);
+	const formik = useFormik({
+		initialValues: {
+			emailMessage: '',
+			emailSubject: '',
+			envelopeName: '',
+			expireAfter: 120,
+			fileEntries,
+			recipients,
+		},
+		onSubmit: (values) => onSubmit(values),
+		validate: (values) =>
+			Object.assign(
+				{},
+				...steps.map((step) => validateStep(step, values))
+			),
+		validateOnMount: true,
+	});
+
+	const isLastStep = currentStep === steps.length - 1;
+	const ActiveStep = steps[currentStep].Component;
+
+	const onNextStep = () => {
+		if (
+			Object.keys(validateStep(steps[currentStep], formik.values)).length
+		) {
+			setShowErrors(true);
+
+			return;
 		}
 
-		setFieldValue('fileEntries', [...values.fileEntries, fileEntry]);
+		setShowErrors(false);
+		setCurrentStep((step) => step + 1);
 	};
 
-	const onAddNewRecipient = () => {
-		if (MAX_LENGTH.RECEIPTS && canAddMoreReceipt) {
-			setFieldValue('recipients', [
-				...values.recipients,
-				defaultRecipient,
-			]);
-		}
-	};
-
-	const onRemoveRecipient = (recipientIndex) => {
-		setFieldValue(
-			'recipients',
-			values.recipients.filter((_, index) => index !== recipientIndex)
-		);
-	};
-
-	const onSelectRecipient = (recipientIndex, user) => {
-		setFieldValue(
-			'recipients',
-			values.recipients.map((recipient, index) =>
-				index === recipientIndex
-					? {
-							...recipient,
-							email: user.emailAddress,
-							fullName: user.name,
-						}
-					: recipient
-			)
-		);
+	const onPreviousStep = () => {
+		setShowErrors(false);
+		setCurrentStep((step) => Math.max(step - 1, 0));
 	};
 
 	return (
-		<>
-			<Input
-				error={errors.envelopeName}
-				label={Liferay.Language.get('envelope-name')}
-				name="envelopeName"
-				onChange={handleChange}
-				placeholder={Liferay.Language.get('my-envelope-name')}
-				required
+		<ClayForm
+			className="digital-signature-request-form"
+			onSubmit={(event) => event.preventDefault()}
+		>
+			<div className="mb-4">
+				<div className="mb-1 text-secondary">
+					{sub(
+						Liferay.Language.get('step-x-of-x'),
+						currentStep + 1,
+						steps.length
+					)}
+				</div>
+
+				<div className="text-6 text-weight-bold">
+					{steps[currentStep].title}
+				</div>
+			</div>
+
+			<ActiveStep
+				errors={formik.errors}
+				expirationEnabled={expirationEnabled}
+				handleChange={formik.handleChange}
+				maxFileEntries={maxFileEntries}
+				maxRecipients={maxRecipients}
+				searchUsers={searchUsers}
+				setFieldValue={formik.setFieldValue}
+				showErrors={showErrors}
+				values={formik.values}
 			/>
 
-			<FileSelector
-				disabled={values.fileEntries.length === MAX_LENGTH.ATTACHMENTS}
-				onChange={(_, fileEntry) =>
-					onAddFileEntry(JSON.parse(fileEntry))
-				}
-			/>
-
-			<FileEntryList
-				errors={errors.fileEntries}
-				fileEntries={values.fileEntries}
-				setFieldValue={setFieldValue}
-			/>
-
-			{values.recipients.map((recipient, index) => (
-				<ClayForm.Group className="recipient" key={index}>
-					<ClayInput.Group>
-						<ClayInput.GroupItem>
-							<Input
-								className="mb-0"
-								disabled={embeddedViewEnabled}
-								error={
-									embeddedViewEnabled
-										? undefined
-										: errors?.recipients?.[index]?.fullName
-								}
-								label={Liferay.Language.get(
-									'recipient-full-name'
-								)}
-								name={`recipients[${index}].fullName`}
-								onChange={handleChange}
-								placeholder={Liferay.Language.get(
-									'recipient-full-name'
-								)}
-								required
-								value={recipient.fullName}
-							/>
-						</ClayInput.GroupItem>
-
-						<ClayInput.GroupItem>
-							{embeddedViewEnabled ? (
-								<RecipientUserAutocomplete
-									error={errors?.recipients?.[index]?.email}
-									id={`recipients[${index}].email`}
-									label={Liferay.Language.get(
-										'recipient-email'
-									)}
-									onSelectUser={(user) =>
-										onSelectRecipient(index, user)
-									}
-									value={recipient.email}
-								/>
-							) : (
-								<Input
-									className="mb-0"
-									error={errors?.recipients?.[index]?.email}
-									label={Liferay.Language.get(
-										'recipient-email'
-									)}
-									name={`recipients[${index}].email`}
-									onChange={handleChange}
-									placeholder={Liferay.Language.get(
-										'recipient-email'
-									)}
-									required
-									value={recipient.email}
-								/>
-							)}
-						</ClayInput.GroupItem>
-
-						<ClayInput.GroupItem shrink>
-							<ClayButtonWithIcon
-								className="recipient-icon-button"
-								disabled={values.recipients.length === 1}
-								displayType="secondary"
-								onClick={() => onRemoveRecipient(index)}
-								symbol="trash"
-							/>
-						</ClayInput.GroupItem>
-					</ClayInput.Group>
-				</ClayForm.Group>
-			))}
-
-			{canAddMoreReceipt && (
+			<ClayButton.Group className="mt-4" spaced>
 				<ClayButton
-					className="mb-4"
-					displayType="unstyled"
-					onClick={onAddNewRecipient}
+					disabled={formik.isSubmitting}
+					displayType="secondary"
+					onClick={onCancel}
 				>
-					<span className="inline-item inline-item-before">
-						<ClayIcon symbol="plus" />
-					</span>
-
-					<span>{Liferay.Language.get('add-recipient')}</span>
+					{Liferay.Language.get('cancel')}
 				</ClayButton>
-			)}
 
-			<Input
-				error={errors.emailSubject}
-				label={Liferay.Language.get('email-subject')}
-				name="emailSubject"
-				onChange={handleChange}
-				placeholder={Liferay.Language.get('please-sign-this-document')}
-				required
-				value={values.emailSubject}
-			/>
-
-			<Input
-				error={errors.emailMessage}
-				feedbackMessage={sub(
-					Liferay.Language.get('x-characters-remaining'),
-					MAX_LENGTH.EMAIL_MESSAGE - values.emailMessage.length
+				{currentStep > 0 && (
+					<ClayButton
+						disabled={formik.isSubmitting}
+						displayType="secondary"
+						onClick={onPreviousStep}
+					>
+						{Liferay.Language.get('previous')}
+					</ClayButton>
 				)}
-				label={Liferay.Language.get('email-message')}
-				maxLength={MAX_LENGTH.EMAIL_MESSAGE + 1}
-				name="emailMessage"
-				onChange={handleChange}
-				placeholder={Liferay.Language.get('email-message')}
-				type="textarea"
-				value={values.emailMessage}
-			/>
 
-			{embeddedViewEnabled && (
-				<Input
-					label={Liferay.Language.get('days-until-expiration')}
-					min="0"
-					name="expireAfter"
-					onChange={handleChange}
-					type="number"
-					value={values.expireAfter}
-				/>
-			)}
-		</>
+				{isLastStep ? (
+					<ClayButton
+						disabled={!formik.isValid || formik.isSubmitting}
+						onClick={() => formik.handleSubmit()}
+					>
+						{Liferay.Language.get('send')}
+					</ClayButton>
+				) : (
+					<ClayButton onClick={onNextStep}>
+						{Liferay.Language.get('next')}
+					</ClayButton>
+				)}
+			</ClayButton.Group>
+		</ClayForm>
 	);
-};
+}
 
 export default DigitalSignatureFormBase;
