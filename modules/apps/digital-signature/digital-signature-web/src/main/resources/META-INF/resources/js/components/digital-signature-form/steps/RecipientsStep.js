@@ -4,7 +4,7 @@
  */
 
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
-import ClayForm, {ClayInput} from '@clayui/form';
+import ClayForm, {ClayCheckbox, ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import {openToast} from 'frontend-js-components-web';
 import React from 'react';
@@ -133,6 +133,17 @@ function RecipientsStep({
 		);
 	};
 
+	const onMoveRecipient = (recipientIndex, offset) => {
+		const recipients = [...values.recipients];
+
+		[recipients[recipientIndex], recipients[recipientIndex + offset]] = [
+			recipients[recipientIndex + offset],
+			recipients[recipientIndex],
+		];
+
+		setFieldValue('recipients', recipients);
+	};
+
 	const onRemoveRecipient = (recipientIndex) => {
 		setFieldValue(
 			'recipients',
@@ -254,6 +265,49 @@ function RecipientsStep({
 								)}
 							</ClayInput.GroupItem>
 
+							{values.sequential && (
+								<>
+									<ClayInput.GroupItem shrink>
+										<ClayButtonWithIcon
+											aria-label={Liferay.Language.get(
+												'move-up'
+											)}
+											className="recipient-icon-button"
+											disabled={!index}
+											displayType="secondary"
+											onClick={() =>
+												onMoveRecipient(index, -1)
+											}
+											symbol="angle-up"
+											title={Liferay.Language.get(
+												'move-up'
+											)}
+										/>
+									</ClayInput.GroupItem>
+
+									<ClayInput.GroupItem shrink>
+										<ClayButtonWithIcon
+											aria-label={Liferay.Language.get(
+												'move-down'
+											)}
+											className="recipient-icon-button"
+											disabled={
+												index ===
+												values.recipients.length - 1
+											}
+											displayType="secondary"
+											onClick={() =>
+												onMoveRecipient(index, 1)
+											}
+											symbol="angle-down"
+											title={Liferay.Language.get(
+												'move-down'
+											)}
+										/>
+									</ClayInput.GroupItem>
+								</>
+							)}
+
 							<ClayInput.GroupItem shrink>
 								<ClayButtonWithIcon
 									aria-label={Liferay.Language.get('remove')}
@@ -283,6 +337,18 @@ function RecipientsStep({
 					<span>{Liferay.Language.get('add-recipient')}</span>
 				</ClayButton>
 			)}
+
+			<ClayForm.Group>
+				<ClayCheckbox
+					checked={values.sequential}
+					label={Liferay.Language.get(
+						'recipients-sign-in-the-order-listed'
+					)}
+					onChange={() =>
+						setFieldValue('sequential', !values.sequential)
+					}
+				/>
+			</ClayForm.Group>
 		</>
 	);
 }
