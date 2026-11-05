@@ -370,7 +370,7 @@ function copy_resources {
 
 			echo "${_REFERENCE_FINGERPRINT}" > /public_html/.learn-importer-reference-marker
 
-			echo "[cron-1] Reference marker and apps.md cache updated."
+			echo "[cron-1] Reference marker and apps.md cache were updated."
 		fi
 	fi
 }
@@ -810,7 +810,7 @@ function write_manifest {
 }
 EOF
 
-	echo "[cron-1] Manifest written to /public_html/.learn-importer-manifest.json."
+	echo "[cron-1] Manifest was written to /public_html/.learn-importer-manifest.json."
 }
 
 main "${@}"

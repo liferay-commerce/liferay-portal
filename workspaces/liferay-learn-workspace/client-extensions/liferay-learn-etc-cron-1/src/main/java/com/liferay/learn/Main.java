@@ -1368,7 +1368,7 @@ public class Main {
 		catch (Exception exception) {
 			_runReport.addError(
 				StringBundler.concat(
-					"Unable to invalidate md5Hex for ",
+					"Unable to invalidate \"md5Hex\" for ",
 					structuredContent.getFriendlyUrlPath(), ": ", exception));
 		}
 	}
