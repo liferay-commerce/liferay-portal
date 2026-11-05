@@ -42,7 +42,7 @@ function notify_slack {
 		return 0
 	fi
 
-	if [ -z "${LIFERAY_LEARN_ETC_CRON_SLACK_ENDPOINT:-}" ]
+	if [[ -z ${LIFERAY_LEARN_ETC_CRON_SLACK_ENDPOINT:-} ]]
 	then
 		return 0
 	fi
@@ -63,7 +63,7 @@ function notify_slack {
 
 	tail_lines=$(log_tail)
 
-	if [ -n "${tail_lines}" ]
+	if [[ -n ${tail_lines} ]]
 	then
 		text="${text}\\n\\nLast lines of the run:\\n\`\`\`\\n${tail_lines}\`\`\`"
 	fi

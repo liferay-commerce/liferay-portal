@@ -74,7 +74,7 @@ public class MarkdownValidator {
 				continue;
 			}
 
-			String uuid = _markdownParser.getUuid(data);
+			String uuid = _markdownParser.getUUID(data);
 
 			if (uuid.isEmpty()) {
 				preflightErrorMessages.add(
@@ -169,7 +169,7 @@ public class MarkdownValidator {
 			StringBundler.concat(
 				"[preflight] Validated ", validatedCount, " markdown files: ",
 				preflightErrorMessages.size(), " errors, ",
-				preflightWarningsCount, " warnings."));
+				preflightWarningsCount, " warnings"));
 
 		if (preflightErrorMessages.isEmpty()) {
 			System.out.println("[preflight] PASSED");
@@ -179,7 +179,7 @@ public class MarkdownValidator {
 
 		System.out.println(
 			"[preflight] FAILED (content): " + preflightErrorMessages.size() +
-				" blocking problems, nothing was generated or imported.");
+				" blocking problems, nothing was generated or imported");
 
 		for (String preflightErrorMessage : preflightErrorMessages) {
 			System.out.println("[preflight] " + preflightErrorMessage);

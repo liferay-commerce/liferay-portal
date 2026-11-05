@@ -133,7 +133,7 @@ public class StructuredContentBuilder {
 		structuredContent.setDescription(
 			() -> _markdownParser.getDescription(englishText));
 		structuredContent.setExternalReferenceCode(
-			() -> _markdownParser.getUuid(englishText));
+			() -> _markdownParser.getUUID(englishText));
 		structuredContent.setFriendlyUrlPath(
 			() -> _docsDirectory.toFriendlyURLPath(englishFile));
 		structuredContent.setTaxonomyCategoryIds(

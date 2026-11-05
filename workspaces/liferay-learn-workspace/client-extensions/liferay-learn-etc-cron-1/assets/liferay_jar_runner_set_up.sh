@@ -33,7 +33,7 @@ function check_environment {
 		fi
 	done
 
-	if [[ "${#missing_names[@]}" -gt 0 ]]
+	if [ ${#missing_names[@]} -gt 0 ]
 	then
 		echo "[cron-1] ERROR: missing required environment variables: ${missing_names[*]}"
 
@@ -105,8 +105,8 @@ function check_for_changes {
 		attempt_seconds=0
 	fi
 
-	if [ "${_REMOTE_COMMIT}" == "unknown" ] ||
-	   [ "${_REMOTE_COMMIT}" != "${attempt_commit}" ]
+	if [[ ${_REMOTE_COMMIT} == unknown ]] ||
+	   [[ ${_REMOTE_COMMIT} != ${attempt_commit} ]]
 	then
 		echo "[cron-1] The remote branch is at ${_REMOTE_COMMIT} and the last attempt was ${attempt_commit:-none}, so there is work to do."
 
@@ -117,7 +117,7 @@ function check_for_changes {
 
 	attempt_hours=$(hours_since "${attempt_seconds}")
 
-	if [[ "${attempt_hours}" -ge "${LIFERAY_LEARN_ETC_CRON_RETRY_HOURS:-6}" ]]
+	if [ ${attempt_hours} -ge ${LIFERAY_LEARN_ETC_CRON_RETRY_HOURS:-6} ]
 	then
 		local success_seconds
 
@@ -132,14 +132,14 @@ function check_for_changes {
 
 		success_hours=$(hours_since "${success_seconds}")
 
-		if [[ "${success_seconds}" -lt "${attempt_seconds}" ]]
+		if [ ${success_seconds} -lt ${attempt_seconds} ]
 		then
 			echo "[cron-1] The last attempt never reported success, so it is being retried."
 
 			return 0
 		fi
 
-		if [[ "${success_hours}" -ge "${LIFERAY_LEARN_ETC_CRON_RECONCILE_HOURS:-20}" ]]
+		if [ ${success_hours} -ge ${LIFERAY_LEARN_ETC_CRON_RECONCILE_HOURS:-20} ]
 		then
 			echo "[cron-1] The last successful run was ${success_hours} hours ago, so the site is being reconciled."
 
@@ -171,27 +171,27 @@ function check_generated_site {
 
 		html_file="${site_dir}/${markdown_file%.md}.html"
 
-		if [ ! -f "${html_file}" ]
+		if [ ! -f ${html_file} ]
 		then
 			((++missing_count))
 
-			if [[ "${#examples[@]}" -lt 5 ]]
+			if [ ${#examples[@]} -lt 5 ]
 			then
 				examples+=("never generated: ${html_file}")
 			fi
-		elif [ ! "${html_file}" -nt "${_GENERATION_START_MARKER}" ]
+		elif [ ! ${html_file} -nt ${_GENERATION_START_MARKER} ]
 		then
 			((++stale_count))
 
-			if [[ "${#examples[@]}" -lt 5 ]]
+			if [ ${#examples[@]} -lt 5 ]
 			then
 				examples+=("not regenerated in this run: ${html_file}")
 			fi
 		fi
 	done < <(find "${docs_dir}" -path "*/en/*" -name "*.md" -not -path "*/_snippets/*" -not -path "*/resources/*" -printf "%P\n")
 
-	if [[ "${missing_count}" -gt 0 ]] ||
-	   [[ "${stale_count}" -gt 0 ]]
+	if [ ${missing_count} -gt 0 ] ||
+	   [ ${stale_count} -gt 0 ]
 	then
 		echo "[cron-1] ERROR: the generated site does not match the markdown sources: ${missing_count} missing and ${stale_count} not regenerated out of ${expected_count}, refusing to publish"
 
@@ -217,7 +217,7 @@ function check_reference_cache {
 	_REFERENCE_FINGERPRINT=""
 	_SKIP_REFERENCE_COPY=""
 
-	if [ "${LIFERAY_LEARN_ETC_CRON_PARTIAL:-}" == "true" ]
+	if [[ ${LIFERAY_LEARN_ETC_CRON_PARTIAL:-} == true ]]
 	then
 		return 0
 	fi
@@ -229,9 +229,9 @@ function check_reference_cache {
 	doc_file_name=$(sed --expression "s/^readonly LIFERAY_LEARN_DXP_DOC_FILE_NAME=//p" --quiet "${common_file}")
 	release=$(sed --expression "s/^readonly LIFERAY_LEARN_DXP_RELEASE_TOKEN_VALUE=//p" --quiet "${common_file}")
 
-	if [ -z "${doc_file_name}" ] || [ -z "${release}" ]
+	if [[ -z ${doc_file_name} ]] || [[ -z ${release} ]]
 	then
-		echo "[cron-1] Reference cache: release tokens not found in _common.sh, forcing a full refresh."
+		echo "[cron-1] Reference cache: release tokens were not found in _common.sh, forcing a full refresh."
 
 		return 0
 	fi
@@ -252,7 +252,7 @@ function check_reference_cache {
 			tail --lines=1 | \
 			sed --expression "s|.*/||")
 
-	if [ -z "${total_size}" ]
+	if [[ -z ${total_size} ]]
 	then
 		echo "[cron-1] Reference cache: no fingerprint from the CDN, forcing a full refresh."
 
@@ -261,18 +261,18 @@ function check_reference_cache {
 
 	_REFERENCE_FINGERPRINT="${doc_file_name}|${total_size}"
 
-	if [ "${LIFERAY_LEARN_ETC_CRON_FORCE_REFERENCE_DOCS:-}" == "true" ]
+	if [[ ${LIFERAY_LEARN_ETC_CRON_FORCE_REFERENCE_DOCS:-} == true ]]
 	then
 		echo "[cron-1] Reference cache: forced refresh requested, ignoring the marker."
 
 		return 0
 	fi
 
-	if [ -f /public_html/.learn-importer-reference-marker ] && [ "$(cat /public_html/.learn-importer-reference-marker)" == "${_REFERENCE_FINGERPRINT}" ]
+	if [ -f /public_html/.learn-importer-reference-marker ] && [[ $(cat /public_html/.learn-importer-reference-marker) == ${_REFERENCE_FINGERPRINT} ]]
 	then
 		if [ ! -f /public_html/.learn-importer-apps-md ]
 		then
-			echo "[cron-1] Reference cache: apps.md not cached yet, forcing a full refresh."
+			echo "[cron-1] Reference cache: apps.md is not cached yet, forcing a full refresh."
 
 			return 0
 		fi
@@ -313,7 +313,7 @@ function copy_resources {
 
 	local delete_flag="--delete"
 
-	if [ "${LIFERAY_LEARN_ETC_CRON_PARTIAL:-}" == "true" ]
+	if [[ ${LIFERAY_LEARN_ETC_CRON_PARTIAL:-} == true ]]
 	then
 		echo "[cron-1] Partial mode: rsync without --delete."
 
@@ -324,9 +324,9 @@ function copy_resources {
 
 	digest=$(resources_digest)
 
-	if [ "${LIFERAY_LEARN_ETC_CRON_PARTIAL:-}" != "true" ] &&
+	if [[ ${LIFERAY_LEARN_ETC_CRON_PARTIAL:-} != true ]] &&
 	   [ -f /public_html/.learn-importer-resources-digest ] &&
-	   [ "$(cat /public_html/.learn-importer-resources-digest)" == "${digest}" ]
+	   [[ $(cat /public_html/.learn-importer-resources-digest) == ${digest} ]]
 	then
 		echo "[cron-1] Resources digest HIT (${digest}): skipping the examples and images copy."
 	else
@@ -354,17 +354,17 @@ function copy_resources {
 
 		copy_tree_sharded "${LIFERAY_LEARN_ETC_CRON_GIT_REPOSITORY_DIR}/site/images" /public_html/images "${delete_flag}"
 
-		if [ "${LIFERAY_LEARN_ETC_CRON_PARTIAL:-}" != "true" ]
+		if [[ ${LIFERAY_LEARN_ETC_CRON_PARTIAL:-} != true ]]
 		then
 			echo "${digest}" > /public_html/.learn-importer-resources-digest
 		fi
 	fi
 
-	if [ -z "${_SKIP_REFERENCE_COPY}" ]
+	if [[ -z ${_SKIP_REFERENCE_COPY} ]]
 	then
 		copy_tree_sharded "${LIFERAY_LEARN_ETC_CRON_GIT_REPOSITORY_DIR}/site/reference" /public_html/reference "${delete_flag}"
 
-		if [ -n "${_REFERENCE_FINGERPRINT}" ]
+		if [[ -n ${_REFERENCE_FINGERPRINT} ]]
 		then
 			cp "${_APPS_MARKDOWN_FILE_NAME}" /public_html/.learn-importer-apps-md
 
@@ -380,7 +380,7 @@ function copy_tree_sharded {
 
 	local exclude_flags=()
 
-	if [ -n "${delete_flag}" ]
+	if [[ -n ${delete_flag} ]]
 	then
 		mapfile -t exclude_flags < <(get_orphan_exclude_flags)
 	fi
@@ -391,7 +391,7 @@ function copy_tree_sharded {
 
 	(cd "${source_dir}" && find . -type f) > "${work_dir}/files"
 
-	if [ ! -s "${work_dir}/files" ]
+	if [ ! -s ${work_dir}/files ]
 	then
 		echo "[cron-1] Nothing to copy from ${source_dir}."
 
@@ -423,9 +423,9 @@ function copy_tree_sharded {
 		wait "${pid}"
 	done
 
-	if [ -n "${delete_flag}" ]
+	if [[ -n ${delete_flag} ]]
 	then
-		if [[ "${#exclude_flags[@]}" -gt 0 ]]
+		if [ ${#exclude_flags[@]} -gt 0 ]
 		then
 			echo "[cron-1] Protected from deletion under ${dest_dir}: ${exclude_flags[*]}"
 		fi
@@ -451,7 +451,7 @@ function generate_docs {
 
 	echo "[cron-1] Locales excluded from conversion: ${LIFERAY_LEARN_SKIP_LOCALES}"
 
-	if [ -n "${_SKIP_REFERENCE_COPY}" ]
+	if [[ -n ${_SKIP_REFERENCE_COPY} ]]
 	then
 		mkdir --parents "$(dirname "${_APPS_MARKDOWN_FILE_NAME}")"
 
@@ -482,14 +482,14 @@ function get_orphan_exclude_flags {
 	do
 		exclusion=$(echo "${exclusion}" | sed --expression "s|^[[:space:]/]*||" --expression "s|[[:space:]/]*$||")
 
-		if [ -z "${exclusion}" ]
+		if [[ -z ${exclusion} ]]
 		then
 			continue
 		fi
 
 		local product=$(echo "${exclusion}" | awk -F "/" '{print $1}')
 
-		if [ "${product}" == "${exclusion}" ]
+		if [[ ${product} == ${exclusion} ]]
 		then
 			echo "--exclude=/${product}/"
 		else
@@ -500,10 +500,47 @@ function get_orphan_exclude_flags {
 	done
 }
 
+function get_span {
+	local seconds
+
+	seconds=$(get_span_seconds "${1}" "${2}")
+
+	if [[ -z ${seconds} ]]
+	then
+		printf "n/a"
+
+		return 0
+	fi
+
+	to_duration "${seconds}"
+}
+
+function get_span_seconds {
+	local from_name=${1} to_name=${2}
+
+	local from_seconds to_seconds
+
+	from_seconds=$(phase_seconds "${from_name}")
+
+	if [[ ${to_name} == now ]]
+	then
+		to_seconds=$(date +%s)
+	else
+		to_seconds=$(phase_seconds "${to_name}")
+	fi
+
+	if [[ -z ${from_seconds} ]] || [[ -z ${to_seconds} ]]
+	then
+		return 0
+	fi
+
+	echo "$((to_seconds - from_seconds))"
+}
+
 function hours_since {
 	local seconds=${1:-}
 
-	if [ -z "${seconds}" ] || [ "${seconds}" == "0" ]
+	if [[ -z ${seconds} ]] || [[ ${seconds} == 0 ]]
 	then
 		echo 99999
 
@@ -544,7 +581,7 @@ function main {
 
 	copy_resources
 
-	if [ "${LIFERAY_LEARN_ETC_CRON_PARTIAL:-}" != "true" ]
+	if [[ ${LIFERAY_LEARN_ETC_CRON_PARTIAL:-} != true ]]
 	then
 		write_manifest
 	else
@@ -565,7 +602,7 @@ function notify_resources_published {
 
 	detail="copy $(get_span copy now)"
 
-	if [ "${LIFERAY_LEARN_ETC_CRON_PARTIAL:-}" != "true" ]
+	if [[ ${LIFERAY_LEARN_ETC_CRON_PARTIAL:-} != true ]]
 	then
 		detail="copy $(get_span copy manifest) · manifest $(get_span manifest now)"
 	fi
@@ -576,7 +613,7 @@ function notify_resources_published {
 function notify_slack {
 	local text=${1}
 
-	if [ -z "${LIFERAY_LEARN_ETC_CRON_SLACK_ENDPOINT:-}" ]
+	if [[ -z ${LIFERAY_LEARN_ETC_CRON_SLACK_ENDPOINT:-} ]]
 	then
 		return 0
 	fi
@@ -607,7 +644,7 @@ function notify_sources_ready {
 
 	local source_link="unknown"
 
-	if [ -n "${commit}" ]
+	if [[ -n ${commit} ]]
 	then
 		source_link="<https://github.com/${LIFERAY_LEARN_ETC_CRON_GITHUB_USER:-liferay}/liferay-learn/commit/${commit}|${commit}>"
 	fi
@@ -639,7 +676,7 @@ function preflight_warnings {
 				--expression "s|\\\\|\\\\\\\\|g" \
 				--expression "s|\"|\\\\\"|g") || true
 
-	if [ -z "${warnings}" ]
+	if [[ -z ${warnings} ]]
 	then
 		return 0
 	fi
@@ -657,7 +694,7 @@ function preflight_warnings {
 		message="${message}\\n> ${warning}"
 	done < <(echo "${warnings}" | head --lines=5)
 
-	if [[ "${count}" -gt 5 ]]
+	if [ ${count} -gt 5 ]
 	then
 		message="${message}\\n> and $((count - 5)) more, see the console log"
 	fi
@@ -687,7 +724,7 @@ function record_phase {
 function resources_digest {
 	local docs_dir="${LIFERAY_LEARN_ETC_CRON_GIT_REPOSITORY_DIR}/docs"
 
-	if [ ! -d "${docs_dir}" ]
+	if [ ! -d ${docs_dir} ]
 	then
 		echo "absent"
 
@@ -712,7 +749,7 @@ function run_preflight {
 }
 
 function set_up_ssh {
-	if [ -z "${LIFERAY_LEARN_ETC_CRON_GITHUB_DEPLOY_KEY:-}" ]
+	if [[ -z ${LIFERAY_LEARN_ETC_CRON_GITHUB_DEPLOY_KEY:-} ]]
 	then
 		echo "[cron-1] ERROR: missing required environment variable: LIFERAY_LEARN_ETC_CRON_GITHUB_DEPLOY_KEY"
 
@@ -737,47 +774,10 @@ function source_commit {
 		awk '{print $2}' || true
 }
 
-function get_span {
-	local seconds
-
-	seconds=$(get_span_seconds "${1}" "${2}")
-
-	if [ -z "${seconds}" ]
-	then
-		printf "n/a"
-
-		return 0
-	fi
-
-	to_duration "${seconds}"
-}
-
-function get_span_seconds {
-	local from_name=${1} to_name=${2}
-
-	local from_seconds to_seconds
-
-	from_seconds=$(phase_seconds "${from_name}")
-
-	if [ "${to_name}" == "now" ]
-	then
-		to_seconds=$(date +%s)
-	else
-		to_seconds=$(phase_seconds "${to_name}")
-	fi
-
-	if [ -z "${from_seconds}" ] || [ -z "${to_seconds}" ]
-	then
-		return 0
-	fi
-
-	echo "$((to_seconds - from_seconds))"
-}
-
 function to_duration {
 	local seconds=${1}
 
-	if [[ "${seconds}" -lt 60 ]]
+	if [ ${seconds} -lt 60 ]
 	then
 		printf "%ds" "${seconds}"
 	else

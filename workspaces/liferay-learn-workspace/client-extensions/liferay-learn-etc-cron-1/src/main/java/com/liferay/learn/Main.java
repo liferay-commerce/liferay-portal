@@ -189,7 +189,7 @@ public class Main {
 		}
 
 		if (preflight) {
-			System.exit(main._preflight());
+			System.exit(main._runPreflight());
 		}
 
 		main.uploadToLiferay();
@@ -427,7 +427,7 @@ public class Main {
 						skippedStructuredContentsCount++;
 
 						System.out.println(
-							"Skipping structured content (same md5Hex) " +
+							"Skipping structured content (same \"md5Hex\") " +
 								structuredContent.getFriendlyUrlPath());
 
 						continue;
@@ -607,11 +607,11 @@ public class Main {
 					" orphaned structured contents were kept (excluded)");
 		}
 
-		int orphanCount = orphanedStructuredContentIds.size();
+		int orphansCount = orphanedStructuredContentIds.size();
 
 		if (!_isOrphanCleanupEnabled()) {
 			System.out.println(
-				orphanCount +
+				orphansCount +
 					" orphaned structured contents were kept (cleanup " +
 						"disabled)");
 
@@ -622,8 +622,8 @@ public class Main {
 			System.out.println(
 				StringBundler.concat(
 					"Skipping orphan cleanup because the run has ",
-					_runReport.getErrorsCount(), " errors: ", orphanCount,
-					" orphaned structured contents were kept."));
+					_runReport.getErrorsCount(), " errors: ", orphansCount,
+					" orphaned structured contents were kept"));
 
 			return 0;
 		}
@@ -632,11 +632,11 @@ public class Main {
 
 		int orphanThreshold = _getOrphanThreshold(inventoryCount);
 
-		if (orphanCount > orphanThreshold) {
+		if (orphansCount > orphanThreshold) {
 			_runReport.addError(
 				StringBundler.concat(
-					"Orphan cleanup aborted: ", orphanCount, " orphans exceed ",
-					"the threshold of ", orphanThreshold,
+					"Orphan cleanup aborted: ", orphansCount,
+					" orphans exceed the threshold of ", orphanThreshold,
 					" for an inventory of ", inventoryCount,
 					". No structured content was deleted."));
 
@@ -663,7 +663,7 @@ public class Main {
 			}
 		}
 
-		return orphanCount;
+		return orphansCount;
 	}
 
 	private void _describeDivergence(
@@ -750,7 +750,7 @@ public class Main {
 
 			File file = new File(fileName);
 
-			String uuid = _markdownParser.getUuid(
+			String uuid = _markdownParser.getUUID(
 				FileUtils.readFileToString(file, StandardCharsets.UTF_8));
 
 			StructuredContent siteStructuredContent =
@@ -1234,7 +1234,9 @@ public class Main {
 					"OFFICIAL_DOCUMENTATION"));
 		}
 		catch (Exception exception) {
-			_runReport.addError(exception.getMessage());
+			_runReport.addError(
+				"Unable to get the \"OFFICIAL_DOCUMENTATION\" taxonomy " +
+					"category: " + exception);
 		}
 
 		for (Object taxonomyCategoryNameObject : (List)taxonomyCategoryNames) {
@@ -1360,7 +1362,7 @@ public class Main {
 				structuredContentId, structuredContent);
 
 			System.out.println(
-				"Invalidated md5Hex so the next run retries " +
+				"Invalidated \"md5Hex\" so the next run retries " +
 					structuredContent.getFriendlyUrlPath());
 		}
 		catch (Exception exception) {
@@ -1640,18 +1642,6 @@ public class Main {
 		}
 	}
 
-	private int _preflight() throws Exception {
-		System.out.println(
-			"[preflight] DXP is reachable, the site, content structure and " +
-				"taxonomies are resolved.");
-
-		MarkdownValidator markdownValidator = new MarkdownValidator(
-			_docsDirectory, _markdownParser, _preflightTocExclusions,
-			_taxonomyCategoriesJSONObject::has);
-
-		return markdownValidator.validate();
-	}
-
 	private void _publishJapaneseStructuredContent(
 			long structuredContentId, String fileName)
 		throws Exception {
@@ -1683,6 +1673,18 @@ public class Main {
 		if (delta > (_oauthExpirationMillis - 100000)) {
 			_initResourceBuilders(_getOAuthAuthorization());
 		}
+	}
+
+	private int _runPreflight() throws Exception {
+		System.out.println(
+			"[preflight] DXP is reachable, the site, content structure and " +
+				"taxonomies are resolved");
+
+		MarkdownValidator markdownValidator = new MarkdownValidator(
+			_docsDirectory, _markdownParser, _preflightTocExclusions,
+			_taxonomyCategoriesJSONObject::has);
+
+		return markdownValidator.validate();
 	}
 
 	private void _write(String content, String dirName, File markdownFile)

@@ -81,7 +81,7 @@ public class RunReport {
 
 			System.out.println(
 				"The success marker was not updated because a partial run " +
-					"does not reconcile the whole site.");
+					"does not reconcile the whole site");
 
 			return;
 		}
@@ -94,7 +94,7 @@ public class RunReport {
 				StandardCharsets.UTF_8);
 
 			System.out.println(
-				"The success marker was updated in " + file.getPath() + ".");
+				"The success marker was updated in " + file.getPath());
 		}
 		catch (Exception exception) {
 			System.out.println(

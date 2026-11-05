@@ -127,7 +127,7 @@ public class MarkdownParser {
 		return _getTitle(_parser.parse(text));
 	}
 
-	public String getUuid(Map<String, Object> data) {
+	public String getUUID(Map<String, Object> data) {
 		if ((data == null) || !data.containsKey("uuid")) {
 			return StringPool.BLANK;
 		}
@@ -141,24 +141,24 @@ public class MarkdownParser {
 		return uuid.toString();
 	}
 
-	public String getUuid(String text) {
-		return getUuid(getFrontMatter(text));
+	public String getUUID(String text) {
+		return getUUID(getFrontMatter(text));
 	}
 
 	public boolean isShowChildrenCards(File file) throws Exception {
 		Map<String, Object> data = getFrontMatter(file);
 
-		if ((data == null) || !data.containsKey("showChildrenCards") ||
-			!StringUtil.equals(
-				data.get(
-					"showChildrenCards"
-				).toString(),
-				"false")) {
-
+		if ((data == null) || !data.containsKey("showChildrenCards")) {
 			return true;
 		}
 
-		return GetterUtil.getBoolean(data.get("showChildrenCards"));
+		Object showChildrenCards = data.get("showChildrenCards");
+
+		if (!StringUtil.equals(showChildrenCards.toString(), "false")) {
+			return true;
+		}
+
+		return GetterUtil.getBoolean(showChildrenCards);
 	}
 
 	private String _getTitle(Node node) {
