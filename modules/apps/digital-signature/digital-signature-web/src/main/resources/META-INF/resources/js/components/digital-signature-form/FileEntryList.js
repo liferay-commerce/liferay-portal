@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
@@ -8,22 +8,7 @@ import ClayList from '@clayui/list';
 import classNames from 'classnames';
 import React from 'react';
 
-const FileEntryList = ({errors, fileEntries = [], setFieldValue}) => {
-	const hasError = (fileEntryId) => {
-		if (errors) {
-			return !!errors.find((entry) => entry.fileEntryId === fileEntryId);
-		}
-
-		return false;
-	};
-
-	const onRemoveFileEntry = (fileEntryIndex) => {
-		setFieldValue(
-			'fileEntries',
-			fileEntries.filter((_, index) => index !== fileEntryIndex)
-		);
-	};
-
+const FileEntryList = ({errors = [], fileEntries, onRemove}) => {
 	if (!fileEntries.length) {
 		return null;
 	}
@@ -34,36 +19,50 @@ const FileEntryList = ({errors, fileEntries = [], setFieldValue}) => {
 				{Liferay.Language.get('documents-added')}
 			</ClayList.Header>
 
-			{fileEntries.map(({fileEntryId, title}, index) => (
-				<ClayList.Item
-					className={classNames({
-						'has-error': hasError(fileEntryId),
-					})}
-					flex
-					key={fileEntryId}
-				>
-					<ClayList.ItemField expand>
-						<ClayList.ItemTitle>{title}</ClayList.ItemTitle>
+			<>
+				{fileEntries.map((fileEntry) => {
+					const hasError = errors.some(
+						({fileEntryId}) => fileEntryId === fileEntry.fileEntryId
+					);
 
-						{hasError(fileEntryId) && (
-							<ClayList.ItemTitle className="text-error">
-								{Liferay.Language.get(
-									'this-file-extension-is-not-supported-by-docusign'
+					return (
+						<ClayList.Item
+							className={classNames({'has-error': hasError})}
+							flex
+							key={fileEntry.fileEntryId}
+						>
+							<ClayList.ItemField expand>
+								<ClayList.ItemTitle>
+									{fileEntry.title}
+								</ClayList.ItemTitle>
+
+								{hasError && (
+									<ClayList.ItemTitle className="text-danger">
+										{Liferay.Language.get(
+											'this-file-extension-is-not-supported-by-docusign'
+										)}
+									</ClayList.ItemTitle>
 								)}
-							</ClayList.ItemTitle>
-						)}
-					</ClayList.ItemField>
+							</ClayList.ItemField>
 
-					<ClayList.ItemField>
-						<ClayButtonWithIcon
-							displayType="unstyled"
-							monospaced={false}
-							onClick={() => onRemoveFileEntry(index)}
-							symbol="trash"
-						/>
-					</ClayList.ItemField>
-				</ClayList.Item>
-			))}
+							{onRemove && (
+								<ClayList.ItemField>
+									<ClayButtonWithIcon
+										aria-label={Liferay.Language.get(
+											'remove'
+										)}
+										displayType="unstyled"
+										monospaced={false}
+										onClick={() => onRemove(fileEntry)}
+										symbol="trash"
+										title={Liferay.Language.get('remove')}
+									/>
+								</ClayList.ItemField>
+							)}
+						</ClayList.Item>
+					);
+				})}
+			</>
 		</ClayList>
 	);
 };
