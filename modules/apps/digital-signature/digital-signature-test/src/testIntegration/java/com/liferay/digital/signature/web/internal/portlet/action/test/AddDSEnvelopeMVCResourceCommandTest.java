@@ -10,10 +10,12 @@ import com.liferay.digital.signature.configuration.DigitalSignatureConfiguration
 import com.liferay.digital.signature.manager.DSEnvelopeManager;
 import com.liferay.digital.signature.manager.DSRequestManager;
 import com.liferay.digital.signature.model.DSEnvelope;
+import com.liferay.digital.signature.model.DSRecipient;
 import com.liferay.digital.signature.model.DSRequest;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -60,6 +62,7 @@ import jakarta.portlet.ResourceResponse;
 
 import java.io.ByteArrayOutputStream;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Objects;
@@ -105,7 +108,20 @@ public class AddDSEnvelopeMVCResourceCommandTest {
 		mockLiferayResourceRequest.setParameter(
 			"expireAfter", String.valueOf(days));
 
-		mockLiferayResourceRequest.setParameter("recipients", "[]");
+		mockLiferayResourceRequest.setParameter(
+			"recipients",
+			JSONUtil.putAll(
+				JSONUtil.put(
+					"email", RandomTestUtil.randomString() + "@liferay.com"
+				).put(
+					"fullName", RandomTestUtil.randomString()
+				),
+				JSONUtil.put(
+					"email", RandomTestUtil.randomString() + "@liferay.com"
+				).put(
+					"fullName", RandomTestUtil.randomString()
+				)
+			).toString());
 
 		try (CompanyConfigurationTemporarySwapper
 				companyConfigurationTemporarySwapper =
@@ -133,6 +149,11 @@ public class AddDSEnvelopeMVCResourceCommandTest {
 								DSEnvelope dsEnvelope =
 									(DSEnvelope)arguments[1];
 
+								Assert.assertEquals(
+									Arrays.asList(1, 2),
+									TransformUtil.transform(
+										dsEnvelope.getDSRecipients(),
+										DSRecipient::getRoutingOrder));
 								Assert.assertEquals(
 									days, dsEnvelope.getExpireAfter());
 
@@ -215,7 +236,21 @@ public class AddDSEnvelopeMVCResourceCommandTest {
 			WebKeys.THEME_DISPLAY, themeDisplay);
 
 		mockLiferayResourceRequest.setParameter("expireAfter", "5");
-		mockLiferayResourceRequest.setParameter("recipients", "[]");
+		mockLiferayResourceRequest.setParameter(
+			"recipients",
+			JSONUtil.putAll(
+				JSONUtil.put(
+					"email", RandomTestUtil.randomString() + "@liferay.com"
+				).put(
+					"fullName", RandomTestUtil.randomString()
+				),
+				JSONUtil.put(
+					"email", RandomTestUtil.randomString() + "@liferay.com"
+				).put(
+					"fullName", RandomTestUtil.randomString()
+				)
+			).toString());
+		mockLiferayResourceRequest.setParameter("sequential", "false");
 
 		String dsEnvelopeId = RandomTestUtil.randomString();
 
@@ -228,6 +263,11 @@ public class AddDSEnvelopeMVCResourceCommandTest {
 					(proxy, method, arguments) -> {
 						DSEnvelope dsEnvelope = (DSEnvelope)arguments[2];
 
+						Assert.assertEquals(
+							Arrays.asList(1, 1),
+							TransformUtil.transform(
+								dsEnvelope.getDSRecipients(),
+								DSRecipient::getRoutingOrder));
 						Assert.assertEquals(0, dsEnvelope.getExpireAfter());
 
 						dsEnvelope.setDSEnvelopeId(dsEnvelopeId);

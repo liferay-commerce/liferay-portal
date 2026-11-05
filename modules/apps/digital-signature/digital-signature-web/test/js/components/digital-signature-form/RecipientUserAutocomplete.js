@@ -7,13 +7,31 @@ import {render, screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
+import '@testing-library/jest-dom';
+
 import RecipientUserAutocomplete from '../../../../src/main/resources/META-INF/resources/js/components/digital-signature-form/RecipientUserAutocomplete';
 
-const USER_ACCOUNT = {
+const USER = {
 	emailAddress: 'test1@liferay.com',
-	id: 1,
 	name: 'Test Test',
+	userId: 1,
 };
+
+function renderRecipientUserAutocomplete(props = {}) {
+	const onSelectUser = jest.fn();
+
+	const result = render(
+		<RecipientUserAutocomplete
+			id="recipients[0].emailAddress"
+			label="recipient-email"
+			onSelectUser={onSelectUser}
+			searchUsers={() => Promise.resolve([USER])}
+			{...props}
+		/>
+	);
+
+	return {...result, onSelectUser};
+}
 
 describe('RecipientUserAutocomplete', () => {
 	afterAll(() => {
@@ -28,24 +46,10 @@ describe('RecipientUserAutocomplete', () => {
 		}));
 	});
 
-	beforeEach(() => {
-		fetch.mockResponse(JSON.stringify({items: []}));
-	});
-
 	it('clears an email that matches no user when the field is left', async () => {
-		fetch.mockResponse(JSON.stringify({items: [USER_ACCOUNT]}));
+		const {onSelectUser} = renderRecipientUserAutocomplete();
 
-		const onSelectUser = jest.fn();
-
-		render(
-			<RecipientUserAutocomplete
-				id="recipients[0].email"
-				label="recipient-email"
-				onSelectUser={onSelectUser}
-			/>
-		);
-
-		const input = screen.getByLabelText('recipient-email');
+		const input = screen.getByLabelText(/recipient-email/);
 
 		await userEvent.type(input, 'test');
 		await userEvent.click(
@@ -62,18 +66,11 @@ describe('RecipientUserAutocomplete', () => {
 	});
 
 	it('clears the selected user when the email is edited', async () => {
-		const onSelectUser = jest.fn();
+		const {onSelectUser} = renderRecipientUserAutocomplete({
+			value: 'test1@liferay.com',
+		});
 
-		render(
-			<RecipientUserAutocomplete
-				id="recipients[0].email"
-				label="recipient-email"
-				onSelectUser={onSelectUser}
-				value="test1@liferay.com"
-			/>
-		);
-
-		const input = screen.getByLabelText('recipient-email');
+		const input = screen.getByLabelText(/recipient-email/);
 
 		await userEvent.type(input, 'x');
 
@@ -83,106 +80,73 @@ describe('RecipientUserAutocomplete', () => {
 	});
 
 	it('keeps the user chosen from the list', async () => {
-		fetch.mockResponse(JSON.stringify({items: [USER_ACCOUNT]}));
+		const {onSelectUser} = renderRecipientUserAutocomplete();
 
-		const onSelectUser = jest.fn();
-
-		render(
-			<RecipientUserAutocomplete
-				id="recipients[0].email"
-				label="recipient-email"
-				onSelectUser={onSelectUser}
-			/>
-		);
-
-		const input = screen.getByLabelText('recipient-email');
+		const input = screen.getByLabelText(/recipient-email/);
 
 		await userEvent.type(input, 'test');
 		await userEvent.click(
 			await screen.findByText('Test Test (test1@liferay.com)')
 		);
 
-		expect(onSelectUser).toHaveBeenCalledWith(
-			expect.objectContaining({
-				emailAddress: USER_ACCOUNT.emailAddress,
-				name: USER_ACCOUNT.name,
-			})
-		);
+		expect(onSelectUser).toHaveBeenCalledWith(USER);
 		expect(onSelectUser).toHaveBeenCalledTimes(1);
-		expect(input).toHaveValue(USER_ACCOUNT.emailAddress);
+		expect(input).toHaveValue(USER.emailAddress);
 	});
 
 	it('keeps the user chosen with the keyboard', async () => {
-		fetch.mockResponse(JSON.stringify({items: [USER_ACCOUNT]}));
+		const {onSelectUser} = renderRecipientUserAutocomplete();
 
-		const onSelectUser = jest.fn();
-
-		render(
-			<RecipientUserAutocomplete
-				id="recipients[0].email"
-				label="recipient-email"
-				onSelectUser={onSelectUser}
-			/>
-		);
-
-		const input = screen.getByLabelText('recipient-email');
+		const input = screen.getByLabelText(/recipient-email/);
 
 		await userEvent.type(input, 'test');
 		await screen.findByText('Test Test (test1@liferay.com)');
 		await userEvent.keyboard('{ArrowDown}{Enter}');
 
-		expect(onSelectUser).toHaveBeenCalledWith(
-			expect.objectContaining({
-				emailAddress: USER_ACCOUNT.emailAddress,
-				name: USER_ACCOUNT.name,
-			})
-		);
+		expect(onSelectUser).toHaveBeenCalledWith(USER);
 		expect(onSelectUser).toHaveBeenCalledTimes(1);
-		expect(input).toHaveValue(USER_ACCOUNT.emailAddress);
+		expect(input).toHaveValue(USER.emailAddress);
 	});
 
-	it('searches the user accounts by the typed text', async () => {
-		render(
-			<RecipientUserAutocomplete
-				id="recipients[0].email"
-				label="recipient-email"
-				onSelectUser={jest.fn()}
-			/>
-		);
+	it('searches the users by the typed text', async () => {
+		const searchUsers = jest.fn(() => Promise.resolve([]));
+
+		renderRecipientUserAutocomplete({searchUsers});
 
 		await userEvent.type(
-			screen.getByLabelText('recipient-email'),
+			screen.getByLabelText(/recipient-email/),
 			'test user'
 		);
 
-		await waitFor(() => expect(fetch).toHaveBeenCalled());
+		await waitFor(() =>
+			expect(searchUsers).toHaveBeenLastCalledWith('test user')
+		);
+	});
 
-		const url = new URL(fetch.mock.calls[0][0], 'http://localhost');
+	it('leaves out the users excluded from the list', async () => {
+		renderRecipientUserAutocomplete({excludedUserIds: [USER.userId]});
 
-		expect(url.pathname).toBe('/o/headless-admin-user/v1.0/user-accounts');
-		expect(url.searchParams.get('search')).toBe('test user');
+		await userEvent.type(screen.getByLabelText(/recipient-email/), 'test');
+
+		expect(await screen.findByText('no-results-found')).toBeInTheDocument();
 	});
 
 	it('updates the email when the value changes', () => {
-		const {rerender} = render(
-			<RecipientUserAutocomplete
-				id="recipients[0].email"
-				label="recipient-email"
-				onSelectUser={jest.fn()}
-				value="test1@liferay.com"
-			/>
-		);
+		const {rerender} = renderRecipientUserAutocomplete({
+			value: 'test1@liferay.com',
+		});
 
 		rerender(
 			<RecipientUserAutocomplete
-				id="recipients[0].email"
+				id="recipients[0].emailAddress"
 				label="recipient-email"
 				onSelectUser={jest.fn()}
+				searchUsers={() => Promise.resolve([])}
 				value="test2@liferay.com"
 			/>
 		);
 
-		expect(screen.getByLabelText('recipient-email')).toHaveValue(
+		expect(screen.getByLabelText(/recipient-email/)).toHaveValue(
 			'test2@liferay.com'
 		);
 	});
