@@ -19,40 +19,22 @@ exports[`CollectDigitalSignature renders 1`] = `
       <div
         class="card-body m-2"
       >
-        <form>
+        <form
+          class="digital-signature-request-form"
+        >
           <div
-            class="form-group w-100"
+            class="mb-4"
           >
-            <label
-              class=""
-              for="envelopeName"
+            <div
+              class="mb-1 text-secondary"
             >
-              envelope-name
-              <span
-                class="inline-item-after reference-mark text-warning"
-              >
-                <svg
-                  class="lexicon-icon lexicon-icon-asterisk"
-                  role="presentation"
-                >
-                  <use
-                    href="#asterisk"
-                  />
-                </svg>
-              </span>
-              <span
-                class="hide-accessible sr-only"
-              >
-                required
-              </span>
-            </label>
-            <input
-              class="form-control form-control"
-              id="envelopeName"
-              name="envelopeName"
-              placeholder="my-envelope-name"
-              type="text"
-            />
+              step-x-of-x
+            </div>
+            <div
+              class="text-6 text-weight-bold"
+            >
+              recipients
+            </div>
           </div>
           <div
             class="document-library-form mb-4"
@@ -78,15 +60,15 @@ exports[`CollectDigitalSignature renders 1`] = `
                 class="input-group-item"
               >
                 <div
-                  class="form-group mb-0 w-100"
+                  class="form-group w-100 mb-0"
                 >
                   <label
                     class=""
-                    for="recipients[0].fullName"
+                    for="recipients[0].name"
                   >
                     recipient-full-name
                     <span
-                      class="inline-item-after reference-mark text-warning"
+                      class="ml-1 reference-mark text-warning"
                     >
                       <svg
                         class="lexicon-icon lexicon-icon-asterisk"
@@ -100,32 +82,41 @@ exports[`CollectDigitalSignature renders 1`] = `
                     <span
                       class="hide-accessible sr-only"
                     >
-                      required
+                      mandatory
                     </span>
                   </label>
                   <input
-                    class="form-control form-control"
-                    id="recipients[0].fullName"
-                    name="recipients[0].fullName"
+                    class="form-control"
+                    id="recipients[0].name"
+                    name="recipients[0].name"
                     placeholder="recipient-full-name"
                     type="text"
                     value=""
                   />
+                  <div
+                    class="form-feedback-group field-feedback"
+                    id="recipients[0].namefieldFeedback"
+                  >
+                    <div
+                      aria-live="assertive"
+                      class="form-feedback-item"
+                    />
+                  </div>
                 </div>
               </div>
               <div
                 class="input-group-item"
               >
                 <div
-                  class="form-group mb-0 w-100"
+                  class="form-group w-100 mb-0"
                 >
                   <label
                     class=""
-                    for="recipients[0].email"
+                    for="recipients[0].emailAddress"
                   >
                     recipient-email
                     <span
-                      class="inline-item-after reference-mark text-warning"
+                      class="ml-1 reference-mark text-warning"
                     >
                       <svg
                         class="lexicon-icon lexicon-icon-asterisk"
@@ -139,25 +130,76 @@ exports[`CollectDigitalSignature renders 1`] = `
                     <span
                       class="hide-accessible sr-only"
                     >
-                      required
+                      mandatory
                     </span>
                   </label>
                   <input
-                    class="form-control form-control"
-                    id="recipients[0].email"
-                    name="recipients[0].email"
+                    class="form-control"
+                    id="recipients[0].emailAddress"
+                    name="recipients[0].emailAddress"
                     placeholder="recipient-email"
                     type="text"
                     value=""
                   />
+                  <div
+                    class="form-feedback-group field-feedback"
+                    id="recipients[0].emailAddressfieldFeedback"
+                  >
+                    <div
+                      aria-live="assertive"
+                      class="form-feedback-item"
+                    />
+                  </div>
                 </div>
               </div>
               <div
                 class="input-group-item input-group-item-shrink"
               >
                 <button
+                  aria-label="move-up"
                   class="recipient-icon-button btn btn-monospaced btn-secondary"
                   disabled=""
+                  title="move-up"
+                  type="button"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-angle-up"
+                    role="presentation"
+                  >
+                    <use
+                      href="#angle-up"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <div
+                class="input-group-item input-group-item-shrink"
+              >
+                <button
+                  aria-label="move-down"
+                  class="recipient-icon-button btn btn-monospaced btn-secondary"
+                  disabled=""
+                  title="move-down"
+                  type="button"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-angle-down"
+                    role="presentation"
+                  >
+                    <use
+                      href="#angle-down"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <div
+                class="input-group-item input-group-item-shrink"
+              >
+                <button
+                  aria-label="remove"
+                  class="recipient-icon-button btn btn-monospaced btn-secondary"
+                  disabled=""
+                  title="remove"
                   type="button"
                 >
                   <svg
@@ -193,84 +235,46 @@ exports[`CollectDigitalSignature renders 1`] = `
             </span>
           </button>
           <div
-            class="form-group w-100"
+            class="form-group"
           >
-            <label
-              class=""
-              for="emailSubject"
-            >
-              email-subject
-              <span
-                class="inline-item-after reference-mark text-warning"
-              >
-                <svg
-                  class="lexicon-icon lexicon-icon-asterisk"
-                  role="presentation"
-                >
-                  <use
-                    href="#asterisk"
-                  />
-                </svg>
-              </span>
-              <span
-                class="hide-accessible sr-only"
-              >
-                required
-              </span>
-            </label>
-            <input
-              class="form-control form-control"
-              id="emailSubject"
-              name="emailSubject"
-              placeholder="please-sign-this-document"
-              type="text"
-              value=""
-            />
-          </div>
-          <div
-            class="form-group w-100"
-          >
-            <label
-              class=""
-              for="emailMessage"
-            >
-              email-message
-            </label>
-            <textarea
-              class="form-control form-control"
-              id="emailMessage"
-              maxlength="10001"
-              name="emailMessage"
-              placeholder="email-message"
-              type="textarea"
-            />
             <div
-              class="form-feedback-group"
+              class="custom-control custom-checkbox custom-control-outside"
             >
-              <div
-                class="form-feedback-item"
-              >
-                <div
-                  class="form-text"
+              <label>
+                <input
+                  checked=""
+                  class="custom-control-input"
+                  type="checkbox"
+                />
+                <span
+                  class="custom-control-label"
                 >
-                  x-characters-remaining
-                </div>
-              </div>
+                  <span
+                    class="custom-control-label-text"
+                  >
+                    recipients-sign-in-the-order-listed
+                  </span>
+                </span>
+              </label>
             </div>
           </div>
-          <button
-            class="btn btn-primary"
-            disabled=""
-            type="submit"
+          <div
+            class="mt-4 btn-group-spaced"
+            role="group"
           >
-            send
-          </button>
-          <button
-            class="ml-2 btn btn-secondary"
-            type="button"
-          >
-            cancel
-          </button>
+            <button
+              class="btn btn-secondary"
+              type="button"
+            >
+              cancel
+            </button>
+            <button
+              class="btn btn-primary"
+              type="button"
+            >
+              next
+            </button>
+          </div>
         </form>
       </div>
     </div>
