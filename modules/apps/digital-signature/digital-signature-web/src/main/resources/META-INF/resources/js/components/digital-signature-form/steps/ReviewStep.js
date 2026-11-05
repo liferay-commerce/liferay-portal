@@ -5,6 +5,13 @@
 
 import React from 'react';
 
+const RecipientList = ({children, sequential}) =>
+	sequential ? (
+		<ol className="mb-0 pl-3">{children}</ol>
+	) : (
+		<ul className="list-unstyled mb-0">{children}</ul>
+	);
+
 const ReviewField = ({children, label}) => (
 	<div className="review-field">
 		<label>{label}</label>
@@ -29,13 +36,13 @@ function ReviewStep({expirationEnabled, values}) {
 			</ReviewField>
 
 			<ReviewField label={Liferay.Language.get('recipients')}>
-				<ul className="list-unstyled mb-0">
+				<RecipientList sequential={values.sequential}>
 					{values.recipients.map((recipient, index) => (
 						<li key={index}>
 							{`${recipient.name} (${recipient.emailAddress})`}
 						</li>
 					))}
-				</ul>
+				</RecipientList>
 			</ReviewField>
 
 			<ReviewField label={Liferay.Language.get('email-subject')}>
