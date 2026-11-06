@@ -52,4 +52,16 @@ describe('FieldMappingSourceAttributesRenderer', () => {
 
 		expect(container).toBeEmptyDOMElement();
 	});
+
+	it('shows the full source attribute in a tooltip', () => {
+		render(
+			<FieldMappingSourceAttributesRenderer
+				value={['PIM Shirt \u203A Images \u203A Caption']}
+			/>
+		);
+
+		expect(
+			screen.getByTitle('PIM Shirt \u203A Images \u203A Caption')
+		).toBeInTheDocument();
+	});
 });
