@@ -7,6 +7,18 @@ import ClayAutocomplete from '@clayui/autocomplete';
 import {FieldBase} from 'frontend-js-components-web';
 import React, {useEffect, useRef, useState} from 'react';
 
+import {Recipient, RecipientUser, SearchUsers} from './types';
+
+interface Props {
+	error?: string;
+	excludedUserIds?: number[];
+	id: string;
+	label: string;
+	onSelectUser: (user: Recipient) => void;
+	searchUsers: SearchUsers;
+	value?: string;
+}
+
 const RecipientUserAutocomplete = ({
 	error,
 	excludedUserIds = [],
@@ -15,9 +27,9 @@ const RecipientUserAutocomplete = ({
 	onSelectUser,
 	searchUsers,
 	value = '',
-}) => {
+}: Props) => {
 	const [query, setQuery] = useState(value);
-	const [users, setUsers] = useState([]);
+	const [users, setUsers] = useState<RecipientUser[]>([]);
 
 	const searchUsersRef = useRef(searchUsers);
 	const selectedEmailAddressRef = useRef(value);
@@ -76,19 +88,19 @@ const RecipientUserAutocomplete = ({
 				filterKey="emailAddress"
 				id={id}
 				items={users.filter(
-					({userId}) => !userId || !excludedUserIds.includes(userId)
+					({userId}) => !excludedUserIds.includes(userId)
 				)}
 				menuTrigger="focus"
 				messages={{
 					loading: Liferay.Language.get('loading'),
 					notFound: Liferay.Language.get('no-results-found'),
 				}}
-				onActiveChange={(active) => {
+				onActiveChange={(active: boolean) => {
 					if (!active && !selectedEmailAddressRef.current) {
 						setQuery('');
 					}
 				}}
-				onChange={(nextQuery) => {
+				onChange={(nextQuery: string) => {
 					setQuery(nextQuery);
 
 					if (
@@ -103,7 +115,7 @@ const RecipientUserAutocomplete = ({
 				placeholder={Liferay.Language.get('search-for')}
 				value={query}
 			>
-				{(user) => (
+				{(user: RecipientUser) => (
 					<ClayAutocomplete.Item
 						key={user.userId}
 						onClick={() => {
