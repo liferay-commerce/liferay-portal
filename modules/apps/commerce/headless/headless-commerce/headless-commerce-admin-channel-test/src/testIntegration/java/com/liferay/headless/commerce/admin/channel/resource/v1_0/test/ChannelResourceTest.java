@@ -17,6 +17,8 @@ import com.liferay.commerce.product.model.CommerceChannelRel;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.product.service.CommerceChannelRelLocalService;
 import com.liferay.headless.commerce.admin.channel.client.dto.v1_0.Channel;
+import com.liferay.headless.commerce.admin.channel.client.pagination.Page;
+import com.liferay.headless.commerce.admin.channel.client.pagination.Pagination;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Address;
 import com.liferay.portal.kernel.model.User;
@@ -31,6 +33,8 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
+
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -57,6 +61,14 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 		_serviceContext = ServiceContextTestUtil.getServiceContext(
 			testCompany.getCompanyId(), testGroup.getGroupId(),
 			_user.getUserId());
+	}
+
+	@Override
+	@Test
+	public void testGetChannelsPage() throws Exception {
+		super.testGetChannelsPage();
+
+		_testGetChannelsPageWithFilter();
 	}
 
 	@Ignore
@@ -300,6 +312,31 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 		}
 
 		return _commerceChannelRel.getCommerceChannelRelId();
+	}
+
+	private void _testGetChannelsPageWithFilter() throws Exception {
+		Page<Channel> page = channelResource.getChannelsPage(
+			null, null, Pagination.of(1, 10), null);
+
+		long totalCount = page.getTotalCount();
+
+		Channel channel1 = testGetChannelsPage_addChannel(randomChannel());
+		Channel channel2 = testGetChannelsPage_addChannel(randomChannel());
+
+		page = channelResource.getChannelsPage(
+			null, "id eq " + channel1.getId(), Pagination.of(1, -1), null);
+
+		Assert.assertEquals(1, page.getTotalCount());
+
+		assertContains(channel1, (List<Channel>)page.getItems());
+
+		page = channelResource.getChannelsPage(
+			null, "not (id in (" + channel1.getId() + "))",
+			Pagination.of(1, -1), null);
+
+		Assert.assertEquals(totalCount + 1, page.getTotalCount());
+
+		assertContains(channel2, (List<Channel>)page.getItems());
 	}
 
 	private void _testPatchChannelByExternalReferenceCodeWithAccountExternalReferenceCode()
