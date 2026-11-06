@@ -10,6 +10,7 @@ import com.liferay.dispatch.model.DispatchTrigger;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.osgi.util.ServiceTrackerFactory;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
@@ -133,6 +134,7 @@ public class PIMConnectorDispatchTaskExecutorTest {
 		_testDoExecute();
 		_testDoExecuteWithInactiveConnector();
 		_testDoExecuteWithPIMConnectorException();
+		_testDoExecuteWithPIMConnectorExceptionOutput();
 		_testDoExecuteWithoutPIMConnector();
 	}
 
@@ -241,6 +243,45 @@ public class PIMConnectorDispatchTaskExecutorTest {
 		Assert.assertEquals(
 			"Localized a-required-channel-field-is-not-mapped",
 			dispatchTaskExecutorOutput.getError());
+		Assert.assertNull(dispatchTaskExecutorOutput.getOutput());
+	}
+
+	private void _testDoExecuteWithPIMConnectorExceptionOutput()
+		throws Exception {
+
+		_mockObjectEntryValues(true);
+
+		Mockito.doThrow(
+			new PIMConnectorException(
+				"unable-to-connect-to-the-remote-instance",
+				JSONUtil.toString(JSONUtil.put("log", JSONUtil.putAll())), null)
+		).when(
+			_pimConnector
+		).execute(
+			_objectEntry
+		);
+
+		DispatchTaskExecutorOutput dispatchTaskExecutorOutput =
+			new DispatchTaskExecutorOutput();
+
+		try {
+			_pimConnectorDispatchTaskExecutor.doExecute(
+				_dispatchTrigger, dispatchTaskExecutorOutput);
+
+			Assert.fail();
+		}
+		catch (PIMConnectorException pimConnectorException) {
+			Assert.assertEquals(
+				"unable-to-connect-to-the-remote-instance",
+				pimConnectorException.getMessage());
+		}
+
+		Assert.assertEquals(
+			"Localized unable-to-connect-to-the-remote-instance",
+			dispatchTaskExecutorOutput.getError());
+		Assert.assertEquals(
+			JSONUtil.toString(JSONUtil.put("log", JSONUtil.putAll())),
+			dispatchTaskExecutorOutput.getOutput());
 	}
 
 	private void _testDoExecuteWithoutPIMConnector() throws Exception {
