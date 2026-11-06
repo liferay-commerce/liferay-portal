@@ -79,6 +79,13 @@ const PROPS = {
 			className: 'com.liferay.object.model.ObjectDefinition#S1Z3',
 			label: 'PIM Shirt',
 			objectFields: [{label: 'Title', name: 'title'}],
+			repeatableGroups: [
+				{
+					label: 'Images',
+					name: 'r_images',
+					objectFields: [{label: 'Caption', name: 'caption'}],
+				},
+			],
 		},
 	],
 	objectEntryId: 42,
@@ -404,5 +411,62 @@ describe('EditPIMConnectorFieldMappings', () => {
 		});
 		expect(mockFetch).not.toHaveBeenCalled();
 		expect(mockNavigate).not.toHaveBeenCalled();
+	});
+
+	it('saves the path of a field inside a repeatable group', async () => {
+		render(<EditPIMConnectorFieldMappings {...PROPS} />);
+
+		await userEvent.selectOptions(
+			screen.getByLabelText('source-attribute'),
+			'r_images'
+		);
+
+		await userEvent.selectOptions(
+			screen.getByLabelText('Images'),
+			'caption'
+		);
+
+		await userEvent.click(screen.getByText('save'));
+
+		await waitFor(() => expect(mockFetch).toHaveBeenCalledTimes(1));
+
+		expect(getRequestBody(0).sourceFieldName).toBe('r_images/caption');
+	});
+
+	it('does not save a row that stops at a repeatable group', async () => {
+		render(<EditPIMConnectorFieldMappings {...PROPS} />);
+
+		await userEvent.selectOptions(
+			screen.getByLabelText('source-attribute'),
+			'r_images'
+		);
+
+		await userEvent.click(screen.getByText('save'));
+
+		await waitFor(() => expect(mockNavigate).toHaveBeenCalled());
+
+		expect(mockFetch).not.toHaveBeenCalled();
+	});
+
+	it('reopens a field mapping inside a repeatable group', () => {
+		render(
+			<EditPIMConnectorFieldMappings
+				{...PROPS}
+				fieldMappings={[
+					{
+						id: 7,
+						sourceClassName: '',
+						sourceFieldName: 'r_images/caption',
+						type: 'dynamicValue',
+						value: '',
+					},
+				]}
+			/>
+		);
+
+		expect(screen.getByLabelText('source-attribute')).toHaveValue(
+			'r_images'
+		);
+		expect(screen.getByLabelText('Images')).toHaveValue('caption');
 	});
 });
